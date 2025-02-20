@@ -1,477 +1,262 @@
-Return-Path: <bpf+bounces-52095-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52096-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BB8FA3E35D
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 19:07:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80E8BA3E36C
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 19:09:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DEA219C1D69
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 18:07:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 648151776AF
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 18:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9C82144D1;
-	Thu, 20 Feb 2025 18:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7607E214213;
+	Thu, 20 Feb 2025 18:09:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R3yyUQZP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N5Kh2fht"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E421215F7D
-	for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 18:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8760F1F892D;
+	Thu, 20 Feb 2025 18:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740074708; cv=none; b=Pk/mM87D62tqqPIU9kHjZf/82jmhHyNWyMaHWNmty89UWqCrzcdKczd0c6wk9Zz9poAAgpK1Q1sIvntZp/ri9RAjhw2QcnaiQ5gQl4NmAlGFLWLT4fM6A0jZMN1i0q6X17xdYZUe99zZ658ITAJ8jikSyLNf0YogDD+I+2Zgg/Y=
+	t=1740074983; cv=none; b=oZPPlWGJkUtj3fmgause9xBQeWP1ib+63xSi7KgYX/lQ7itWMhF+fgyyi+UPbqaKDkpDKyxQuxF9/8hmg3zGLVswaLGpYQybywTpjqdYfJhxZGEFP6oA0fKKoqHkN1YISweI1FRAJq8hQfA0Govdkm6NLgsLCRVkJN7KKlP44GQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740074708; c=relaxed/simple;
-	bh=muc/46IY+rZ8a/c5kLZuhSpmlb1Ay0HWhzijL0Jkupw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B3+9c7JGMofXRUj7y3C/cXotGf2ucS8xLkH3mtt3wIduI9X3tPaW1PW26dMEPtpwXozip/4J0h0IYylpc0d4XZmTV3kkIz4nbgzzTY7U8MT3dXBWvpYkfm1Tx3FnzYYZvPW12W6H5apDawPOnBzQQmVc5/BgkLjDKAFLroH2URc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R3yyUQZP; arc=none smtp.client-ip=209.85.216.46
+	s=arc-20240116; t=1740074983; c=relaxed/simple;
+	bh=QdZaPnPcljDb39RTNsoSRKxH+E0E0t7xExf0D2l8dP4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dre4gDH8skBYwRwPW/8zfTFYY0ow9Om/mHIU63TVwa2h3eCXQREbhs0u53z4Ph3JaoyzJAYaaYvz/8Gr6IGsDLki/GfWdIH8cjLevToH7CCH1rOGQv0xvREy4AqOULb8T4p8kfKmmE9Bkmgm/vDIVYJ9+nBfRAaMZoJxbqQRSEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N5Kh2fht; arc=none smtp.client-ip=209.85.216.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2fce3b01efcso707953a91.3
-        for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 10:05:06 -0800 (PST)
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2fc20e0f0ceso1949462a91.3;
+        Thu, 20 Feb 2025 10:09:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740074705; x=1740679505; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1740074981; x=1740679781; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dkE7FmLXL/wpfwmq6+0sVcMH1rdwDfl7AoyhflMSP5I=;
-        b=R3yyUQZP39ATpmBTjIKyNXHrNqFtB3FJpcAMGBsH6pEv3L2PvKvsFJm0CDZFO5TxeL
-         lY0uI6fmIKncyh8lJrbNc5Pcm+B+wnvskC8SzuiA1JCvBLGUvWumEKwO6ULF1kzG3b8F
-         /nzyMYPmX2fEeVf3W5pq16LNjpM7FCRZhHwMol8gUfjSPpAWmkZyT9IjLOxh5ZtrwsQj
-         FlCeI6zoNTGALBiV6/jR0itODFRxThNPDOhcMwVcRtYLP93XHPqFgviYUN82A6cujWb6
-         hstVDoUHodDJZWqwaRRJnv/S5X28VSPg3q5FD18IQN2Q1LOHe2Vhm2SaNbX+WBDiCstF
-         E7SQ==
+        bh=3l/TICtPB6aLyvVlXVnWR5r6Cz7ToaP43/KHj82QXRU=;
+        b=N5Kh2fhtqrcGhs88zpMVpWSjLxkPOxNp8Q8bvckkHtNS/b1x7dntVEQ6rVAuru6Rd8
+         XS5vvMRftTZVWF0LC0pNPi4rkOIPlz09HqoljMXb64ttUnxPk3jMF7YymF06zAmPeiU8
+         Oyf6y20uRPiWK0+VKjJlk8YcBG+3vWedl8Io1VVfxLwDbclxaHL520VC/fVzqgTNiSWO
+         cT+vM2kXpu2nmXzrYfiur92J3aSVZ4L21o6r9QoOu5Z/fxsmFO3iMb2Acq1hyoFclQy3
+         RZhmJpr9yLcy7lQZ0cl+Ut/Tx0ATRWRic/yiaS8ybNy8nyQE5vpV/ggcg/k1+2ocal+i
+         3w+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740074705; x=1740679505;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dkE7FmLXL/wpfwmq6+0sVcMH1rdwDfl7AoyhflMSP5I=;
-        b=I3tDiBX3gkEntCUN7QMH3nRslQ+B9luCYLjoYr5iMNjRGTyyD2EX4hNHV+ZCel8Ipx
-         MinpRIyQrnI07bCC5pmYOA1n71zh7s00B7rnrQ2thBPB1DQa//LU8Jso088yYN9tJNWR
-         8xeii3ePQ2kJFqAExI03ZznEl4ilFXGf4NK0hOR6nRmHNb8GEFCMIZ75Md1mr7AtSMZ5
-         y/puM9+gnSY0d/BtjaSC9zXJyWu2l0GCdZwxUXbqatPwtb1MSRj6m4sC7fqrZPlXHBbO
-         I6uuQlj60o9LCMeLJDTDknpcbXb/g30+RLPafgoPCIw5jBu/sbiiTB39NyEiZT/vhyNH
-         tIWw==
-X-Gm-Message-State: AOJu0Yz0r279htkrP/Jo61H4FinIr7ftn4C3EudDjwm/030uWiJZfDTp
-	83XxAz/cXQsvUdGPVoK7MqAkR/ZyYWnpfDquajeFQn49oiDTY+K8MoEoSw==
-X-Gm-Gg: ASbGnct8OEzlFOTbeZ5HuRwBfiVtiWJ4/i+pQpr+F2x0OGQqzFLN1lnGe3+nnSQth48
-	Ky53/CCs64U5TV9AkonLbpOQkCstmKz5qIMl4dyuFhjxHM8+wiMRV7VWYZhG4zrqLMKcLnnIPsd
-	XEzZyo27ebh8y1b3XZxnVBQV+espygx3Wgg4Umf5SBVJQ8CEf0eBhnbkNtintlvxBKXCjZWPy1R
-	6v+bkjDUzewsKtTGgsvFW6IJ3kwdUqxvuIG1KFehK9F+1Bf9AWjTktDDEYFSTrLxyTnjRI899lO
-	oASVZVrqnVRAmrmz0Lvxp0oiVyMk2X1/mpAKeFywQN+bV8zgy5UJJFhvibR92Wd6ug==
-X-Google-Smtp-Source: AGHT+IFoHn8x/bglcvZJxK6G+gTlK2TREXIbIJ8u0mpK84waJpmSWolMjoMoHJaZEEbNMY9gWPB5WQ==
-X-Received: by 2002:a17:90b:4a07:b0:2ee:bc1d:f98b with SMTP id 98e67ed59e1d1-2fce7b058e3mr117374a91.31.1740074705413;
-        Thu, 20 Feb 2025 10:05:05 -0800 (PST)
-Received: from localhost.localdomain (c-76-146-13-146.hsd1.wa.comcast.net. [76.146.13.146])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fc13ba60c1sm14399682a91.44.2025.02.20.10.05.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2025 10:05:05 -0800 (PST)
-From: Amery Hung <ameryhung@gmail.com>
-To: bpf@vger.kernel.org
-Cc: daniel@iogearbox.net,
-	andrii@kernel.org,
-	alexei.starovoitov@gmail.com,
-	martin.lau@kernel.org,
-	eddyz87@gmail.com,
-	ameryhung@gmail.com,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next v1 2/2] selftests/bpf: Test gen_pro/epilogue that generate kfuncs
-Date: Thu, 20 Feb 2025 10:04:55 -0800
-Message-ID: <20250220180455.436748-2-ameryhung@gmail.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250220180455.436748-1-ameryhung@gmail.com>
-References: <20250220180455.436748-1-ameryhung@gmail.com>
+        d=1e100.net; s=20230601; t=1740074981; x=1740679781;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3l/TICtPB6aLyvVlXVnWR5r6Cz7ToaP43/KHj82QXRU=;
+        b=FhbpQOnX4rnqCeiF/8dkLepY8h6uxTJoIEMmI+ez7zVWMPCXnFFUg3xEBocxKw/+MA
+         hTaGu4pCN83KXEBesUzgMHV/gc38d0Lc/Fzw2oLrbZQZbx0l2Npfo7Sa2OlF92x8Sowt
+         JDEp2OKzb5KHCdlnGkcJBEhEoDezwJR87+UAiMPMdDE2VZWjNeU9dAOtPctAFhUgAFYv
+         bKz+wrFUjnAkFKFgXebt9F7uW5BU+hFhEUxlHG/JAhtDjfWTZOUUH/CK0jF1ubswrBnL
+         n3NvrFSxtxHHzTTlI0SSF2euCLpooOnXdR6bXn2hymEQIFLAcQUmAB7pAazR4N+4vdvo
+         mo/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUhx5h51a2to1Kur68v9ECbW4MA2sVPeaGdwI6JcA4s1q5sSPBRf6Z3GilvR++Yh1niOPDBPaRxJt36Y+0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwmE2gh2NqaQFQcVj7ZbjCX/2zf84J9MagkQKuyBzNl6wv0YFm1
+	RI82ah3PgRQeTINdwB/ZhvfbC6TKKkhah2atuCqTelqVQOKV2XatHvQ/lg==
+X-Gm-Gg: ASbGnct8/2FNzN+gdf5H49cX055DTFyc6d8PfKA9L9wAR29ZEoNfuY2XyT0bSGvopdo
+	qNDTWEflTrJr93pfnoytdgnUbudNH/9qQeOYmqTluvfDjaPbg9dduQl6rA1mQV2KWGMckfjthn4
+	wwhrIDsrDU9SL3HA0LEiw0kfWVrllmNFdw0siqhGAI7NhSNShu51s+O0HWyPXtFfktINwBujd2F
+	urNzMHzotr8HBMxmhPvnJJjcajkbJqtQ0r3hDAU3dkDTxXeg4rt37TInSkTSo73nYxL62By5OxC
+	Eazo2+15/uWqxlhq08YptCvQAdpLwFSqBA==
+X-Google-Smtp-Source: AGHT+IFIiFKS1AS0Perub9V9/ASX6RDyGF1r5Cyup5Iyx3RkGjzyuclfJ7/ErYNUHDlLELKMZn7HJQ==
+X-Received: by 2002:a17:90b:2792:b0:2ee:bbe0:98c6 with SMTP id 98e67ed59e1d1-2fce78aa3e2mr181511a91.8.1740074980380;
+        Thu, 20 Feb 2025 10:09:40 -0800 (PST)
+Received: from [192.168.50.123] ([117.147.90.60])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fcbdd600b2sm3249443a91.20.2025.02.20.10.09.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Feb 2025 10:09:39 -0800 (PST)
+Message-ID: <0eee016f-2d37-4c80-98cf-fc134d3ad917@gmail.com>
+Date: Fri, 21 Feb 2025 02:09:33 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND bpf-next v7 0/4] Add prog_kfunc feature probe
+To: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, haoluo@google.com,
+ jolsa@kernel.org, qmo@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250212153912.24116-1-chen.dylane@gmail.com>
+ <2b025df3-144b-4909-a2b4-66356540f71c@gmail.com>
+ <598a7d089936b18472937679d4131286f102cb18.camel@gmail.com>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <598a7d089936b18472937679d4131286f102cb18.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Test gen_prologue and gen_epilogue that generate kfuncs that have not
-been seen in the main program.
+在 2025/2/19 06:51, Eduard Zingerman 写道:
+> On Mon, 2025-02-17 at 13:21 +0800, Tao Chen wrote:
+>> 在 2025/2/12 23:39, Tao Chen 写道:
+>>> More and more kfunc functions are being added to the kernel.
+>>> Different prog types have different restrictions when using kfunc.
+>>> Therefore, prog_kfunc probe is added to check whether it is supported,
+>>> and the use of this api will be added to bpftool later.
+>>>
+>>> Change list:
+>>> - v6 -> v7:
+>>>     - wrap err with libbpf_err
+>>>     - comments fix
+>>>     - handle btf_fd < 0 as vmlinux
+>>>     - patchset Reviewed-by: Jiri Olsa <jolsa@kernel.org>
+>>> - v6
+>>>     https://lore.kernel.org/bpf/20250211111859.6029-1-chen.dylane@gmail.com
+>>>
+>>> - v5 -> v6:
+>>>     - remove fd_array_cnt
+>>>     - test case clean code
+>>> - v5
+>>>     https://lore.kernel.org/bpf/20250210055945.27192-1-chen.dylane@gmail.com
+>>>
+>>> - v4 -> v5:
+>>>     - use fd_array on stack
+>>>     - declare the scope of use of btf_fd
+>>> - v4
+>>>     https://lore.kernel.org/bpf/20250206051557.27913-1-chen.dylane@gmail.com/
+>>>
+>>> - v3 -> v4:
+>>>     - add fd_array init for kfunc in mod btf
+>>>     - add test case for kfunc in mod btf
+>>>     - refactor common part as prog load type check for
+>>>       libbpf_probe_bpf_{helper,kfunc}
+>>> - v3
+>>>     https://lore.kernel.org/bpf/20250124144411.13468-1-chen.dylane@gmail.com
+>>>
+>>> - v2 -> v3:
+>>>     - rename parameter off with btf_fd
+>>>     - extract the common part for libbpf_probe_bpf_{helper,kfunc}
+>>> - v2
+>>>     https://lore.kernel.org/bpf/20250123170555.291896-1-chen.dylane@gmail.com
+>>>
+>>> - v1 -> v2:
+>>>     - check unsupported prog type like probe_bpf_helper
+>>>     - add off parameter for module btf
+>>>     - check verifier info when kfunc id invalid
+>>> - v1
+>>>     https://lore.kernel.org/bpf/20250122171359.232791-1-chen.dylane@gmail.com
+>>>
+>>> Tao Chen (4):
+>>>     libbpf: Extract prog load type check from libbpf_probe_bpf_helper
+>>>     libbpf: Init fd_array when prog probe load
+>>>     libbpf: Add libbpf_probe_bpf_kfunc API
+>>>     selftests/bpf: Add libbpf_probe_bpf_kfunc API selftests
+>>>
+>>>    tools/lib/bpf/libbpf.h                        |  19 ++-
+>>>    tools/lib/bpf/libbpf.map                      |   1 +
+>>>    tools/lib/bpf/libbpf_probes.c                 |  86 +++++++++++---
+>>>    .../selftests/bpf/prog_tests/libbpf_probes.c  | 111 ++++++++++++++++++
+>>>    4 files changed, 201 insertions(+), 16 deletions(-)
+>>>
+>>
+>> Ping...
+>>
+>> Hi Andrii, Eduard,
+>>
+>> I've revised the previous suggestions. Please review it again. Thanks.
+>>
+> 
+> I tried the test enumerating all kfuncs in BTF and doing
+> libbpf_probe_bpf_kfunc for BPF_PROG_TYPE_{KPROBE,XDP}.
+> (Source code at the end of the email).
+> 
+> The set of kfuncs returned for XDP looks correct.
+> The set of kfuncs returned for KPROBE contains a few incorrect entries:
+> - bpf_xdp_metadata_rx_hash
+> - bpf_xdp_metadata_rx_timestamp
+> - bpf_xdp_metadata_rx_vlan_tag
+> 
+> This is because of a different string reported by verifier for these
+> three functions.
+> 
+> Ideally, I'd write some script looking for
+> register_btf_kfunc_id_set(BPF_PROG_TYPE_***, kfunc_set)
+> calls in the kernel source code and extracting the prog type /
+> functions in the set, and comparing results of this script with
+> output of the test below for all program types.
+> But up to you if you'd like to do such rigorous verification or not.
+> 
+> Otherwise patch-set looks good to me, for all patch-set:
+> 
+> Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+> 
 
-The main bpf program and return value checks are identical to
-pro_epilogue.c introduced in commit 47e69431b57a ("selftests/bpf: Test
-gen_prologue and gen_epilogue"). However, now when bpf_testmod_st_ops
-detects a program name with prefix "test_kfunc_", it generates slightly
-different prologue and epilogue: They still add 1000 to args->a in
-prologue, add 10000 to args->a and set r0 to 2 * args->a in epilogue,
-but involve kfuncs.
+Hi Eduard,
 
-At high level, the alternative version of prologue and epilogue look
-like this:
+I try to run your test case, but it seems btf_is_decl_tag always return 
+false, Are there any special restrictions for the tag feature of btf？
 
-  cgrp = bpf_cgroup_from_id(0);
-  if (cgrp)
-          bpf_cgroup_release(cgrp);
-  else
-          /* Perform what original bpf_testmod_st_ops prologue or
-           * epilogue does
-           */
+My compilation environment：
 
-Since 0 is never a valid cgroup id, the original prologue or epilogue
-logic will be performed. As a result, the __retval check should expect
-the exact same return value.
+pahole --version
+v1.29
+clang --version
+Ubuntu clang version 18.1.3 (1ubuntu1)
 
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
----
- kernel/bpf/btf.c                              |   1 +
- .../selftests/bpf/prog_tests/pro_epilogue.c   |   2 +
- .../bpf/progs/pro_epilogue_with_kfunc.c       | 182 ++++++++++++++++++
- .../selftests/bpf/test_kmods/bpf_testmod.c    |  90 +++++++++
- 4 files changed, 275 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/pro_epilogue_with_kfunc.c
+> --- 8< -----------------------------------------------------
+> 
+> static const struct {
+> 	const char *name;
+> 	int code;
+> } program_types[] = {
+> #define _T(n) { #n, BPF_PROG_TYPE_ ## n }
+> 	_T(KPROBE),
+> 	_T(XDP),
+> #undef _T
+> };
+> 
+> void test_libbpf_probe_kfuncs_many(void)
+> {
+> 	int i, kfunc_id, ret, id;
+> 	const struct btf_type *t;
+> 	struct btf *btf = NULL;
+> 	const char *kfunc;
+> 	const char *tag;
+> 
+> 	btf = btf__parse("/sys/kernel/btf/vmlinux", NULL);
+> 	if (!ASSERT_OK_PTR(btf, "btf_parse"))
+> 		return;
+> 
+> 	for (id = 0; id < btf__type_cnt(btf); ++id) {
+> 		t = btf__type_by_id(btf, id);
+> 		if (!btf_is_decl_tag(t))
+> 			continue;
+> 		tag = btf__name_by_offset(btf, t->name_off);
+> 		if (strcmp(tag, "bpf_kfunc") != 0)
+> 			continue;
+> 		kfunc_id = t->type;
+> 		t = btf__type_by_id(btf, kfunc_id);
+> 		if (!btf_is_func(t))
+> 			continue;
+> 		kfunc = btf__name_by_offset(btf, t->name_off);
+> 		printf("[%-6d] %-42s ", kfunc_id, kfunc);
+> 		for (i = 0; i < ARRAY_SIZE(program_types); ++i) {
+> 			ret = libbpf_probe_bpf_kfunc(program_types[i].code, kfunc_id, -1, NULL);
+> 			if (ret < 0)
+> 				printf("%-8d  ", ret);
+> 			else if (ret == 0)
+> 				printf("%8s  ", "");
+> 			else
+> 				printf("%8s  ", program_types[i].name);
+> 		}
+> 		printf("\n");
+> 	}
+> 	btf__free(btf);
+> }
+> 
+> ----------------------------------------------------- >8 ---
+> 
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 6c296ff551e0..ddebab05934f 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -606,6 +606,7 @@ s32 bpf_find_btf_id(const char *name, u32 kind, struct btf **btf_p)
- 	spin_unlock_bh(&btf_idr_lock);
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(bpf_find_btf_id);
- 
- const struct btf_type *btf_type_skip_modifiers(const struct btf *btf,
- 					       u32 id, u32 *res_id)
-diff --git a/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c b/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c
-index 509883e6823a..5d3c00a08a88 100644
---- a/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c
-+++ b/tools/testing/selftests/bpf/prog_tests/pro_epilogue.c
-@@ -6,6 +6,7 @@
- #include "epilogue_tailcall.skel.h"
- #include "pro_epilogue_goto_start.skel.h"
- #include "epilogue_exit.skel.h"
-+#include "pro_epilogue_with_kfunc.skel.h"
- 
- struct st_ops_args {
- 	__u64 a;
-@@ -55,6 +56,7 @@ void test_pro_epilogue(void)
- 	RUN_TESTS(pro_epilogue);
- 	RUN_TESTS(pro_epilogue_goto_start);
- 	RUN_TESTS(epilogue_exit);
-+	RUN_TESTS(pro_epilogue_with_kfunc);
- 	if (test__start_subtest("tailcall"))
- 		test_tailcall();
- }
-diff --git a/tools/testing/selftests/bpf/progs/pro_epilogue_with_kfunc.c b/tools/testing/selftests/bpf/progs/pro_epilogue_with_kfunc.c
-new file mode 100644
-index 000000000000..c8fc31c4c3c4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/pro_epilogue_with_kfunc.c
-@@ -0,0 +1,182 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+#include "../test_kmods/bpf_testmod.h"
-+#include "../test_kmods/bpf_testmod_kfunc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+void __kfunc_btf_root(void)
-+{
-+	bpf_kfunc_st_ops_inc10(NULL);
-+}
-+
-+static __noinline __used int subprog(struct st_ops_args *args)
-+{
-+	args->a += 1;
-+	return args->a;
-+}
-+
-+__success
-+/* prologue */
-+__xlated("0: r8 = r1")
-+__xlated("1: r1 = 0")
-+__xlated("2: call kernel-function")
-+__xlated("3: if r0 != 0x0 goto pc+5")
-+__xlated("4: r6 = *(u64 *)(r8 +0)")
-+__xlated("5: r7 = *(u64 *)(r6 +0)")
-+__xlated("6: r7 += 1000")
-+__xlated("7: *(u64 *)(r6 +0) = r7")
-+__xlated("8: goto pc+2")
-+__xlated("9: r1 = r0")
-+__xlated("10: call kernel-function")
-+__xlated("11: r1 = r8")
-+/* main prog */
-+__xlated("12: r1 = *(u64 *)(r1 +0)")
-+__xlated("13: r6 = r1")
-+__xlated("14: call kernel-function")
-+__xlated("15: r1 = r6")
-+__xlated("16: call pc+1")
-+__xlated("17: exit")
-+SEC("struct_ops/test_prologue")
-+__naked int test_kfunc_prologue(void)
-+{
-+	asm volatile (
-+	"r1 = *(u64 *)(r1 +0);"
-+	"r6 = r1;"
-+	"call %[bpf_kfunc_st_ops_inc10];"
-+	"r1 = r6;"
-+	"call subprog;"
-+	"exit;"
-+	:
-+	: __imm(bpf_kfunc_st_ops_inc10)
-+	: __clobber_all);
-+}
-+
-+__success
-+/* save __u64 *ctx to stack */
-+__xlated("0: *(u64 *)(r10 -8) = r1")
-+/* main prog */
-+__xlated("1: r1 = *(u64 *)(r1 +0)")
-+__xlated("2: r6 = r1")
-+__xlated("3: call kernel-function")
-+__xlated("4: r1 = r6")
-+__xlated("5: call pc+")
-+/* epilogue */
-+__xlated("6: r1 = 0")
-+__xlated("7: call kernel-function")
-+__xlated("8: if r0 != 0x0 goto pc+6")
-+__xlated("9: r1 = *(u64 *)(r10 -8)")
-+__xlated("10: r1 = *(u64 *)(r1 +0)")
-+__xlated("11: r6 = *(u64 *)(r1 +0)")
-+__xlated("12: r6 += 10000")
-+__xlated("13: *(u64 *)(r1 +0) = r6")
-+__xlated("14: goto pc+2")
-+__xlated("15: r1 = r0")
-+__xlated("16: call kernel-function")
-+__xlated("17: r0 = r6")
-+__xlated("18: r0 *= 2")
-+__xlated("19: exit")
-+SEC("struct_ops/test_epilogue")
-+__naked int test_kfunc_epilogue(void)
-+{
-+	asm volatile (
-+	"r1 = *(u64 *)(r1 +0);"
-+	"r6 = r1;"
-+	"call %[bpf_kfunc_st_ops_inc10];"
-+	"r1 = r6;"
-+	"call subprog;"
-+	"exit;"
-+	:
-+	: __imm(bpf_kfunc_st_ops_inc10)
-+	: __clobber_all);
-+}
-+
-+__success
-+/* prologue */
-+__xlated("0: r8 = r1")
-+__xlated("1: r1 = 0")
-+__xlated("2: call kernel-function")
-+__xlated("3: if r0 != 0x0 goto pc+5")
-+__xlated("4: r6 = *(u64 *)(r8 +0)")
-+__xlated("5: r7 = *(u64 *)(r6 +0)")
-+__xlated("6: r7 += 1000")
-+__xlated("7: *(u64 *)(r6 +0) = r7")
-+__xlated("8: goto pc+2")
-+__xlated("9: r1 = r0")
-+__xlated("10: call kernel-function")
-+__xlated("11: r1 = r8")
-+/* save __u64 *ctx to stack */
-+__xlated("12: *(u64 *)(r10 -8) = r1")
-+/* main prog */
-+__xlated("13: r1 = *(u64 *)(r1 +0)")
-+__xlated("14: r6 = r1")
-+__xlated("15: call kernel-function")
-+__xlated("16: r1 = r6")
-+__xlated("17: call pc+")
-+/* epilogue */
-+__xlated("18: r1 = 0")
-+__xlated("19: call kernel-function")
-+__xlated("20: if r0 != 0x0 goto pc+6")
-+__xlated("21: r1 = *(u64 *)(r10 -8)")
-+__xlated("22: r1 = *(u64 *)(r1 +0)")
-+__xlated("23: r6 = *(u64 *)(r1 +0)")
-+__xlated("24: r6 += 10000")
-+__xlated("25: *(u64 *)(r1 +0) = r6")
-+__xlated("26: goto pc+2")
-+__xlated("27: r1 = r0")
-+__xlated("28: call kernel-function")
-+__xlated("29: r0 = r6")
-+__xlated("30: r0 *= 2")
-+__xlated("31: exit")
-+SEC("struct_ops/test_pro_epilogue")
-+__naked int test_kfunc_pro_epilogue(void)
-+{
-+	asm volatile (
-+	"r1 = *(u64 *)(r1 +0);"
-+	"r6 = r1;"
-+	"call %[bpf_kfunc_st_ops_inc10];"
-+	"r1 = r6;"
-+	"call subprog;"
-+	"exit;"
-+	:
-+	: __imm(bpf_kfunc_st_ops_inc10)
-+	: __clobber_all);
-+}
-+
-+SEC("syscall")
-+__retval(1011) /* PROLOGUE_A [1000] + KFUNC_INC10 + SUBPROG_A [1] */
-+int syscall_prologue(void *ctx)
-+{
-+	struct st_ops_args args = {};
-+
-+	return bpf_kfunc_st_ops_test_prologue(&args);
-+}
-+
-+SEC("syscall")
-+__retval(20022) /* (KFUNC_INC10 + SUBPROG_A [1] + EPILOGUE_A [10000]) * 2 */
-+int syscall_epilogue(void *ctx)
-+{
-+	struct st_ops_args args = {};
-+
-+	return bpf_kfunc_st_ops_test_epilogue(&args);
-+}
-+
-+SEC("syscall")
-+__retval(22022) /* (PROLOGUE_A [1000] + KFUNC_INC10 + SUBPROG_A [1] + EPILOGUE_A [10000]) * 2 */
-+int syscall_pro_epilogue(void *ctx)
-+{
-+	struct st_ops_args args = {};
-+
-+	return bpf_kfunc_st_ops_test_pro_epilogue(&args);
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_st_ops pro_epilogue_with_kfunc = {
-+	.test_prologue = (void *)test_kfunc_prologue,
-+	.test_epilogue = (void *)test_kfunc_epilogue,
-+	.test_pro_epilogue = (void *)test_kfunc_pro_epilogue,
-+};
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-index 89dc502de9d4..ecf2ef073fee 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-@@ -1308,6 +1308,83 @@ static int bpf_test_mod_st_ops__test_pro_epilogue(struct st_ops_args *args)
- 	return 0;
- }
- 
-+static int bpf_cgroup_from_id_id;
-+static int bpf_cgroup_release_id;
-+
-+static int st_ops_gen_prologue_with_kfunc(struct bpf_insn *insn_buf, bool direct_write,
-+					  const struct bpf_prog *prog)
-+{
-+	struct bpf_insn *insn = insn_buf;
-+
-+	/* r8 = r1; // r8 will be "u64 *ctx".
-+	 * r1 = 0;
-+	 * r0 = bpf_cgroup_from_id(r1);
-+	 * if r0 != 0 goto pc+5;
-+	 * r6 = r8[0]; // r6 will be "struct st_ops *args".
-+	 * r7 = r6->a;
-+	 * r7 += 1000;
-+	 * r6->a = r7;
-+	 * goto pc+2;
-+	 * r1 = r0;
-+	 * bpf_cgroup_release(r1);
-+	 * r1 = r8;
-+	 */
-+	*insn++ = BPF_MOV64_REG(BPF_REG_8, BPF_REG_1);
-+	*insn++ = BPF_MOV64_IMM(BPF_REG_1, 0);
-+	*insn++ = BPF_CALL_KFUNC(0, bpf_cgroup_from_id_id);
-+	*insn++ = BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 5);
-+	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_8, 0);
-+	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_7, BPF_REG_6, offsetof(struct st_ops_args, a));
-+	*insn++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_7, 1000);
-+	*insn++ = BPF_STX_MEM(BPF_DW, BPF_REG_6, BPF_REG_7, offsetof(struct st_ops_args, a));
-+	*insn++ = BPF_JMP_IMM(BPF_JA, 0, 0, 2);
-+	*insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_0);
-+	*insn++ = BPF_CALL_KFUNC(0, bpf_cgroup_release_id),
-+	*insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_8);
-+	*insn++ = prog->insnsi[0];
-+
-+	return insn - insn_buf;
-+}
-+
-+static int st_ops_gen_epilogue_with_kfunc(struct bpf_insn *insn_buf, const struct bpf_prog *prog,
-+					  s16 ctx_stack_off)
-+{
-+	struct bpf_insn *insn = insn_buf;
-+
-+	/* r1 = 0;
-+	 * r0 = bpf_cgroup_from_id(r1);
-+	 * if r0 != 0 goto pc+6;
-+	 * r1 = stack[ctx_stack_off]; // r1 will be "u64 *ctx"
-+	 * r1 = r1[0]; // r1 will be "struct st_ops *args"
-+	 * r6 = r1->a;
-+	 * r6 += 10000;
-+	 * r1->a = r6;
-+	 * goto pc+2
-+	 * r1 = r0;
-+	 * bpf_cgroup_release(r1);
-+	 * r0 = r6;
-+	 * r0 *= 2;
-+	 * BPF_EXIT;
-+	 */
-+	*insn++ = BPF_MOV64_IMM(BPF_REG_1, 0);
-+	*insn++ = BPF_CALL_KFUNC(0, bpf_cgroup_from_id_id);
-+	*insn++ = BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 6);
-+	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_FP, ctx_stack_off);
-+	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0);
-+	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_1, offsetof(struct st_ops_args, a));
-+	*insn++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_6, 10000);
-+	*insn++ = BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_6, offsetof(struct st_ops_args, a));
-+	*insn++ = BPF_JMP_IMM(BPF_JA, 0, 0, 2);
-+	*insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_0);
-+	*insn++ = BPF_CALL_KFUNC(0, bpf_cgroup_release_id),
-+	*insn++ = BPF_MOV64_REG(BPF_REG_0, BPF_REG_6);
-+	*insn++ = BPF_ALU64_IMM(BPF_MUL, BPF_REG_0, 2);
-+	*insn++ = BPF_EXIT_INSN();
-+
-+	return insn - insn_buf;
-+}
-+
-+#define KFUNC_PRO_EPI_PREFIX "test_kfunc_"
- static int st_ops_gen_prologue(struct bpf_insn *insn_buf, bool direct_write,
- 			       const struct bpf_prog *prog)
- {
-@@ -1317,6 +1394,9 @@ static int st_ops_gen_prologue(struct bpf_insn *insn_buf, bool direct_write,
- 	    strcmp(prog->aux->attach_func_name, "test_pro_epilogue"))
- 		return 0;
- 
-+	if (!strncmp(prog->aux->name, KFUNC_PRO_EPI_PREFIX, strlen(KFUNC_PRO_EPI_PREFIX)))
-+		return st_ops_gen_prologue_with_kfunc(insn_buf, direct_write, prog);
-+
- 	/* r6 = r1[0]; // r6 will be "struct st_ops *args". r1 is "u64 *ctx".
- 	 * r7 = r6->a;
- 	 * r7 += 1000;
-@@ -1340,6 +1420,9 @@ static int st_ops_gen_epilogue(struct bpf_insn *insn_buf, const struct bpf_prog
- 	    strcmp(prog->aux->attach_func_name, "test_pro_epilogue"))
- 		return 0;
- 
-+	if (!strncmp(prog->aux->name, KFUNC_PRO_EPI_PREFIX, strlen(KFUNC_PRO_EPI_PREFIX)))
-+		return st_ops_gen_epilogue_with_kfunc(insn_buf, prog, ctx_stack_off);
-+
- 	/* r1 = stack[ctx_stack_off]; // r1 will be "u64 *ctx"
- 	 * r1 = r1[0]; // r1 will be "struct st_ops *args"
- 	 * r6 = r1->a;
-@@ -1410,6 +1493,13 @@ static void st_ops_unreg(void *kdata, struct bpf_link *link)
- 
- static int st_ops_init(struct btf *btf)
- {
-+	struct btf *kfunc_btf;
-+
-+	bpf_cgroup_from_id_id = bpf_find_btf_id("bpf_cgroup_from_id", BTF_KIND_FUNC, &kfunc_btf);
-+	bpf_cgroup_release_id = bpf_find_btf_id("bpf_cgroup_release", BTF_KIND_FUNC, &kfunc_btf);
-+	if (!bpf_cgroup_from_id_id || !bpf_cgroup_release_id)
-+		return -EINVAL;
-+
- 	return 0;
- }
- 
+
 -- 
-2.47.1
-
+Best Regards
+Tao Chen
 
