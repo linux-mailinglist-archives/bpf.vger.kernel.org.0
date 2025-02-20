@@ -1,226 +1,145 @@
-Return-Path: <bpf+bounces-52091-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52092-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C6B6A3E2B6
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 18:40:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D346A3E307
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 18:51:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 094014216F3
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 17:39:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B94F73AF32B
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 17:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526922139C9;
-	Thu, 20 Feb 2025 17:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4CC82139CB;
+	Thu, 20 Feb 2025 17:45:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qtu12ke8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EeIBpr/F"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E734120485B;
-	Thu, 20 Feb 2025 17:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DF72139C4;
+	Thu, 20 Feb 2025 17:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740073126; cv=none; b=ju/VjpgINs0xX7gtuFqiQlLwhjKrUU7soeobDGrsRw9aJrc3xArOXOLdNkjl3tEELK6Q/HykMfXyw3wdsTpeUeCXwgCEucKwDEVUOxkHo75KRnBcuQreQj0rqHfUqg2E2pWn8lGWy1eiC0NWb9y87DkrMAYdHJM6Wko1rKL4B2Y=
+	t=1740073552; cv=none; b=Oq73gXZ/Mq8l6RHc6MSgOIDb0WGWJkyagZB/3908/6g7GyZ9cGXR9JehtmlTFsfQkvjd3xwTtUoFSj0SV1IWM40ppGIFi9/Ugoby4Xg+OGt0zHp2yDdOysjnbs1jyQ1C8klgYDSwWO2QfX8SFFqrufULTzS1iJ8oyH7I3QWa9EI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740073126; c=relaxed/simple;
-	bh=h8NKvwjpysRTbl1wf+xhpS9HjAsxrObYQPAQ0+Zk+cQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WESf3rfzvaa+4p2dKrR/o2NdnXp+2jNBQv0GckFYIvQtzytDP6AmCOqQihuAWKJL7vHGQal68U1OYD8Pz6kjhQ5E0EheLgVQsEDqFjolG2KbA/Bl2GDSHUfTmSVOJUJHI3jEiFgNjq+8Rms0VTKmH90ARkVbar4vvZqK2vRFQyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qtu12ke8; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740073125; x=1771609125;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=h8NKvwjpysRTbl1wf+xhpS9HjAsxrObYQPAQ0+Zk+cQ=;
-  b=Qtu12ke8lqWUTlRyhD+j/bHk8jmzFTZbCcTC1aw+UFkf0Ri9GwsfzOH/
-   KEygZZJU2fSgGyr/l9EZgpSEfCwKxoab3wctUZGRPmCXuTXNfjEUJvtiO
-   HEC5V0rwZHy+08+JAe9pZDRcQHKC5QFRX4DYhViixUK5TD9hfropfBdRE
-   wemaEPk/GZzlXc2xUk6LJgHcDqGSt0GPXwwLnXeDg8VZGbbIZgLQp+vBZ
-   eRlaAqhWnUwLH8dKH+aSkfvYFxI1I5sErym+xl1thNJJOUwzIm1O4s4tG
-   SjUeG+ojJdIbjpV5S5c7aK8McP9Ein6gIrbmBa4vy7irKxO2/KAaDJqeP
-   g==;
-X-CSE-ConnectionGUID: ybxDS3cLQmyiavFeh8xEOA==
-X-CSE-MsgGUID: UVFyrk1DT5KT7XAUqcuM/g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11351"; a="40789726"
-X-IronPort-AV: E=Sophos;i="6.13,302,1732608000"; 
-   d="scan'208";a="40789726"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2025 09:38:44 -0800
-X-CSE-ConnectionGUID: 2FkR9i9lRM+HImYsnGvcUw==
-X-CSE-MsgGUID: a8l0c6TSTG6oJVnuvZESCg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,302,1732608000"; 
-   d="scan'208";a="115637960"
-Received: from puneetse-mobl.amr.corp.intel.com (HELO [10.125.110.82]) ([10.125.110.82])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2025 09:38:39 -0800
-Message-ID: <408ebd8b-4bfb-4c4f-b118-7fe853c6e897@intel.com>
-Date: Thu, 20 Feb 2025 09:38:39 -0800
+	s=arc-20240116; t=1740073552; c=relaxed/simple;
+	bh=HA+OKXmo2pTz/MtjCaiQYYkjLWNpX9GASSMj+UYvcXQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B4b1x+NlaFVkitsvSQSaR/ZbYlao7N/xb14gssHXxAM8YJ+LXI/MCEwgQB0WvrghwlkyWvTEkbXUjcjmruyeEYyc6gZlQg99w9D/zaCTuTUU6bMtbj0ZaaNDiuwoVRos0RbKfvUID110KF0/hgV44mNdSdgR7mW6jhjWQDnqQNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EeIBpr/F; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2210d92292eso35408445ad.1;
+        Thu, 20 Feb 2025 09:45:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740073550; x=1740678350; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rt+51pdymN1363nprBW4r3PR8+yt8RTRn0YtVbZze+k=;
+        b=EeIBpr/FNdTOeLH1hf4QTgxsz0v++sHazQN54e/3KOpcAhjPlrDcQpe4ROksWA92FE
+         d0dbnEZNz5y9Rs5seHiKApvcGfBN8J1lXvGGjCNz8qBru8QEjJ8edQjA/ilXeAdBuQMD
+         H56CJ4mQBWrSQMIgWXLDbwTtZHtztxWPv9fKc85c2YoxRpbMBonejOH3ecvdGBZj5Dg7
+         OwVC6b8xJqLPJowcLYwjWmMZszcYy2CXbGixF6hwclE/Tgne+lNkBkuv/XTlEG/NSSBZ
+         DqNnOzmoFgkziJFPgWHJiHdDzv7H+ygQ6HKRsssBoTt6k87BK0SOjKCtIFoLi6EfMztY
+         aIIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740073550; x=1740678350;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rt+51pdymN1363nprBW4r3PR8+yt8RTRn0YtVbZze+k=;
+        b=K6VC/LdAl6nj74Xzcbpr3UBYMrZNNCiqckH56qiZuacvZI6o8WdUUBoBnHFI23XUWs
+         MHc1/nYcSi8Z/y/rnRcC+wr1Fe7+45PPM9AAjL7pkZtBmeBRVBZyEci/TtcCulMg/Szi
+         OxZLGyx14k4liz1AysJjRO5ZNMfr+ZkNl/9p6ex/0XP6xBpkDdD3S9TCRXvxrsrBPaNE
+         VnfmDuV/taSvbKVq+qgtGsEMR/tlcmi6s56fF/f460GvizAygpVeeh5h9+r59fqJ0Dov
+         Bp3SGTCle5Hnj9LXF+cNPFNDEg4EQL799aHb0SjIEwDGWqkWKNDi2Fmp9Pfv29OVpitG
+         zzTw==
+X-Forwarded-Encrypted: i=1; AJvYcCVjhs4zUL/GkDmLxBSJvjnI3lTAFkXsrxgnd0QfA66LbGFi+iMF0nPfP8BWSpIe8nLh/2+rKYs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyx5IeFNnvz/VAuizYS29NyXNZIBCfi7DcRpsNgkTcbgJhlsCpW
+	66/XttlpsjY5BKtsUHlBjR5oGTB0ndLjKxo0gaXAtFr9cCPubxo=
+X-Gm-Gg: ASbGncsc3yjsZx35g5lFEo8AiKUKmytyPXAmjh7AA0cIIbsa21p7dyFFtvAVE2ql+rI
+	csb1gxB4NG3ms+8TeB1RsfBSKfd6U7fFW7e8YQWr0onEiTGfMJnCPmXoAp117AbQmcs0JHcNXcw
+	MlRorLka7/avuUzi6Qb0b9KxpwTzk7eV3broPPuDN4TOD0BtvGhLKCPqo2UCEDxmW6g5xkVDsCo
+	tgXw2dexG8/AODJNDtECP1WtEdZz+/DJdUGJ5Z8cwREjW9DKizg2/mqOxabOLzD2bQ+y0sXW2fX
+	En3/Pk2CY9F/GE4=
+X-Google-Smtp-Source: AGHT+IEAe0Lzj8hBIFUkPCdfAD/4Rz1ex1JmHG9Mbsgs4pOVrfZWHq6SZEDZwHKkV8BBcPEWirYzUw==
+X-Received: by 2002:a17:903:2f8d:b0:216:6c77:7bbb with SMTP id d9443c01a7336-2219ff50e37mr559815ad.17.1740073550098;
+        Thu, 20 Feb 2025 09:45:50 -0800 (PST)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-22120093e41sm77182045ad.93.2025.02.20.09.45.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Feb 2025 09:45:49 -0800 (PST)
+Date: Thu, 20 Feb 2025 09:45:48 -0800
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Tushar Vyavahare <tushar.vyavahare@intel.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn@kernel.org,
+	magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com, davem@davemloft.net, kuba@kernel.org,
+	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net
+Subject: Re: [PATCH bpf-next 1/6] selftests/xsk: Add packet stream
+ replacement functions
+Message-ID: <Z7dqTLVxnVcO3YyF@mini-arch>
+References: <20250220084147.94494-1-tushar.vyavahare@intel.com>
+ <20250220084147.94494-2-tushar.vyavahare@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-To: Valentin Schneider <vschneid@redhat.com>, Jann Horn <jannh@google.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
- virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
- linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
- kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
- Ajay Kaher <ajay.kaher@broadcom.com>,
- Alexey Makhalov <alexey.amakhalov@broadcom.com>,
- Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Josh Poimboeuf <jpoimboe@kernel.org>,
- Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
- Sean Christopherson <seanjc@google.com>, Paolo Bonzini
- <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker <frederic@kernel.org>,
- "Paul E. McKenney" <paulmck@kernel.org>, Jason Baron <jbaron@akamai.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ard Biesheuvel <ardb@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Juri Lelli <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>,
- Yair Podemsky <ypodemsk@redhat.com>, Tomas Glozar <tglozar@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
- <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Kees Cook <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Christoph Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>,
- Sami Tolvanen <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>,
- Alice Ryhl <aliceryhl@google.com>,
- "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
- Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>,
- Nicolas Saenz Julienne <nsaenzju@redhat.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Yosry Ahmed <yosryahmed@google.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
- Jinghao Jia <jinghao7@illinois.edu>, Luis Chamberlain <mcgrof@kernel.org>,
- Randy Dunlap <rdunlap@infradead.org>, Tiezhu Yang <yangtiezhu@loongson.cn>
-References: <20250114175143.81438-1-vschneid@redhat.com>
- <20250114175143.81438-30-vschneid@redhat.com>
- <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
- <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com>
- <xhsmh5xlhk5p2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez1EAATYcX520Nnw=P8XtUDSr5pe+qGH1YVNk3xN2LE05g@mail.gmail.com>
- <xhsmh34gkk3ls.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <352317e3-c7dc-43b4-b4cb-9644489318d0@intel.com>
- <xhsmhjz9mj2qo.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <d0450bc8-6585-49ca-9cad-49e65934bd5c@intel.com>
- <xhsmhh64qhssj.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <eef09bdc-7546-462b-9ac0-661a44d2ceae@intel.com>
- <xhsmhfrk84k5k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-From: Dave Hansen <dave.hansen@intel.com>
-Content-Language: en-US
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <xhsmhfrk84k5k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250220084147.94494-2-tushar.vyavahare@intel.com>
 
-On 2/20/25 09:10, Valentin Schneider wrote:
->> The LDT and maybe the PEBS buffers are the only implicit supervisor
->> accesses to vmalloc()'d memory that I can think of. But those are both
->> handled specially and shouldn't ever get zapped while in use. The LDT
->> replacement has its own IPIs separate from TLB flushing.
->>
->> But I'm actually not all that worried about accesses while actually
->> running userspace. It's that "danger zone" in the kernel between entry
->> and when the TLB might have dangerous garbage in it.
->>
-> So say we have kPTI, thus no vmalloc() mapped in CR3 when running
-> userspace, and do a full TLB flush right before switching to userspace -
-> could the TLB still end up with vmalloc()-range-related entries when we're
-> back in the kernel and going through the danger zone?
+On 02/20, Tushar Vyavahare wrote:
+> Add pkt_stream_replace function to replace the packet stream for a given
+> ifobject. Add pkt_stream_replace_both function to replace the packet
+> streams for both transmit and receive ifobject in test_spec. Enhance test
+> framework to handle packet stream replacements efficiently.
+> 
+> Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
+> ---
+>  tools/testing/selftests/bpf/xskxceiver.c | 29 +++++++++++++-----------
+>  1 file changed, 16 insertions(+), 13 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+> index 11f047b8af75..1d9b03666ee6 100644
+> --- a/tools/testing/selftests/bpf/xskxceiver.c
+> +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> @@ -757,14 +757,15 @@ static struct pkt_stream *pkt_stream_clone(struct pkt_stream *pkt_stream)
+>  	return pkt_stream_generate(pkt_stream->nb_pkts, pkt_stream->pkts[0].len);
+>  }
+>  
+> -static void pkt_stream_replace(struct test_spec *test, u32 nb_pkts, u32 pkt_len)
+> +static void pkt_stream_replace(struct ifobject *ifobj, u32 nb_pkts, u32 pkt_len)
+>  {
+> -	struct pkt_stream *pkt_stream;
+> +	ifobj->xsk->pkt_stream = pkt_stream_generate(nb_pkts, pkt_len);
+> +}
+>  
+> -	pkt_stream = pkt_stream_generate(nb_pkts, pkt_len);
+> -	test->ifobj_tx->xsk->pkt_stream = pkt_stream;
+> -	pkt_stream = pkt_stream_generate(nb_pkts, pkt_len);
+> -	test->ifobj_rx->xsk->pkt_stream = pkt_stream;
 
-Yes, because the danger zone includes the switch back to the kernel CR3
-with vmalloc() fully mapped. All bets are off about what's in the TLB
-the moment that CR3 write occurs.
+[..]
 
-Actually, you could probably use that.
+> +static void pkt_stream_replace_both(struct test_spec *test, u32 nb_pkts, u32 pkt_len)
+> +{
+> +	pkt_stream_replace(test->ifobj_tx, nb_pkts, pkt_len);
+> +	pkt_stream_replace(test->ifobj_rx, nb_pkts, pkt_len);
+>  }
 
-If a mapping is in the PTI user page table, you can't defer the flushes
-for it. Basically the same rule for text poking in the danger zone.
+nit: maybe keep existing name pkt_stream_replace here? and add new
+helper pkt_stream_replace_ifobject to work on particular ifobject?
 
-If there's a deferred flush pending, make sure that all of the
-SWITCH_TO_KERNEL_CR3's fully flush the TLB. You'd need something similar
-to user_pcid_flush_mask.
+static void pkt_stream_replace_both(struct test_spec *test, u32 nb_pkts, u32 pkt_len)
+{
+	pkt_stream_replace_ifobject(test->ifobj_tx, nb_pkts, pkt_len);
+	pkt_stream_replace_ifobject(test->ifobj_rx, nb_pkts, pkt_len);
+}
 
-But, honestly, I'm still not sure this is worth all the trouble. If
-folks want to avoid IPIs for TLB flushes, there are hardware features
-that *DO* that. Just get new hardware instead of adding this complicated
-pile of software that we have to maintain forever. In 10 years, we'll
-still have this software *and* 95% of our hardware has the hardware
-feature too.
+This should avoid touching existing call sites.
 
