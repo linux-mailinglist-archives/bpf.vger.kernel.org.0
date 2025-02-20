@@ -1,107 +1,128 @@
-Return-Path: <bpf+bounces-52077-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52078-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E820A3DA0A
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 13:30:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CF3DA3DA12
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 13:31:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE9C8423593
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 12:26:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E5EA3AD674
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 12:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74AC1F7069;
-	Thu, 20 Feb 2025 12:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E871F7916;
+	Thu, 20 Feb 2025 12:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ThizSWME"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1FD51F463E;
-	Thu, 20 Feb 2025 12:24:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33EE81F4632
+	for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 12:26:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740054301; cv=none; b=NvFg5/zHh15c2UMOe9aoo4CkmHLeTmH5FARbmS4on1LqC2pDKGp8EUHAKZEWrrLnLX1uoeR0CZ03xHfZv91Cz9fTrdM8Q3g5A/KdN5jwdesGbVshVTToa//EzCy6yTikDI2/mRF1ce0mfq6RMoQwThXojt67AnvGXL+2BzrrLwI=
+	t=1740054375; cv=none; b=sHvC0hbEIZuc0tWUrEFgAhrINhN4EDIKBewfriBOKgQzoB0+y+lRv6CZ96bN8daz/e4VmMjMyOv0WFOPfjQhY2lVvg9kYJFb09XG7VOPKeGctU24SDAVycHxnmVUvlB1zg0cBRsic3SRRS92y6JEWLfd0Z+ps8jVrVYJUYWhj9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740054301; c=relaxed/simple;
-	bh=9lDxV9SZANXBV7H7rNmJV5m4Mh5PQt86AdSh42FbJeg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=k8kmWX5pMIkG3PoorQuwz2py0rnyg1VPv72Fho4UmmmyXs4fKUBcG2xomDnWQwEMaGWQlWOMFUzSmh022LlGSxgepyZvXMczVxw0COdGTUV/ljxQJMjybydNl/DiMMIzPtzzSYmS6Wlmj3CPjEgFMilLYXA889PZwezc81rjU48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4YzC8j6JLvzWmMc;
-	Thu, 20 Feb 2025 20:23:17 +0800 (CST)
-Received: from kwepemf100007.china.huawei.com (unknown [7.202.181.221])
-	by mail.maildlp.com (Postfix) with ESMTPS id 12F7C140390;
-	Thu, 20 Feb 2025 20:24:51 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemf100007.china.huawei.com (7.202.181.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 20 Feb 2025 20:24:50 +0800
-Message-ID: <c6a25b61-6545-4a03-b2f1-a38c07037d29@huawei.com>
-Date: Thu, 20 Feb 2025 20:24:49 +0800
+	s=arc-20240116; t=1740054375; c=relaxed/simple;
+	bh=YvVj3Y+E/X9aMBDeF+0zodv5Y6r1iWhyl676Hl/yr5o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kuOX1mxSz5BPm64KUq6s6hGUBDF0v3n8HUEDk1qOVgM1S6sED9jxBM3kfns9mwuDd88SSw2JJJj292IUhSiPrCFjJb6QjMBHAzvdfjqBKnnRKD6uK8Dpamu35G+S5xCFMvTrkqtRI5LEhiVtFnRB5eqoovmqKDaxK6+BYJJkgtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ThizSWME; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1740054373;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YvVj3Y+E/X9aMBDeF+0zodv5Y6r1iWhyl676Hl/yr5o=;
+	b=ThizSWMEOj58BAfXwZF+MrqwmFx1CIV5ALTv2GT52bhbYDcFZP/GE5dgjlM5Io0F+qocl0
+	zwgha6ITIX/7rUJsJ0FpAWkOUvO9EXMw0zrfZHtZWWEr1G2yR9Cnk9+nLDkCJVaAYMHbDV
+	Hc6XPiMb6qr/XfY6Dz/+3V8bFcvGSx0=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-427-Lpk1sia7P76NWT0yuqVEtQ-1; Thu,
+ 20 Feb 2025 07:26:09 -0500
+X-MC-Unique: Lpk1sia7P76NWT0yuqVEtQ-1
+X-Mimecast-MFC-AGG-ID: Lpk1sia7P76NWT0yuqVEtQ_1740054366
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 78AE419373C4;
+	Thu, 20 Feb 2025 12:26:05 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.147])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 9AE43180035F;
+	Thu, 20 Feb 2025 12:25:56 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu, 20 Feb 2025 13:25:36 +0100 (CET)
+Date: Thu, 20 Feb 2025 13:25:26 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Tong Tiangen <tongtiangen@huawei.com>
+Cc: David Hildenbrand <david@redhat.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+	wangkefeng.wang@huawei.com, linux-mm <linux-mm@kvack.org>
+Subject: Re: Add Morton,Peter and David for discussion//Re: [PATCH -next]
+ uprobes: fix two zero old_folio bugs in __replace_page()
+Message-ID: <20250220122525.GA30669@redhat.com>
+References: <20250217123826.88503-1-tongtiangen@huawei.com>
+ <c2924e9e-1a42-a4f6-5066-ea2e15477c11@huawei.com>
+ <3b893634-5453-42d0-b8dc-e9d07988e9e9@redhat.com>
+ <24a61833-f389-b074-0d9c-d5ad9efc2046@huawei.com>
+ <20250219152237.GB5948@redhat.com>
+ <34e18c47-e536-48e4-80ca-7c7bbc75ecce@redhat.com>
+ <2fe4c4d1-c480-c250-1ba2-1a82caf5d7fa@huawei.com>
+ <196fc7d8-30a8-439a-89bd-57353fd98df8@redhat.com>
+ <85725388-180b-267c-e121-3af1f1b75f94@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btf: move kern_type_id to goto cand_cache_unlock
-Content-Language: en-US
-To: Ethan Carter Edwards <ethan@ethancedwards.com>, Andrii Nakryiko
-	<andrii@kernel.org>
-CC: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eduard Zingerman
-	<eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, <bpf@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
-References: <20250220-bpf-uninit-v1-1-af07a5a57e5b@ethancedwards.com>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20250220-bpf-uninit-v1-1-af07a5a57e5b@ethancedwards.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemf100007.china.huawei.com (7.202.181.221)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <85725388-180b-267c-e121-3af1f1b75f94@huawei.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-On 2025/2/20 13:50, Ethan Carter Edwards wrote:
-> In most code paths variable move_kern_type_id remains uninitialized upon
-> return. By moving it to the goto, it is initialized in these code paths.
-> As well as others. Caught by Coverity.
-> 
-> Closes: https://scan5.scan.coverity.com/#/project-view/63874/10063?selectedIssue=1595567
-> Fixes: e2b3c4ff5d183d ("bpf: add __arg_trusted global func arg tag")
-> Signed-off-by: Ethan Carter Edwards <ethan@ethancedwards.com>
-> ---
->   kernel/bpf/btf.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 9de6acddd479b4f5e32a5e6ba43cf369de4cee29..8c82ced7da299ad1ad769024fe097898c269013b 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -7496,9 +7496,9 @@ static int btf_get_ptr_to_btf_id(struct bpf_verifier_log *log, int arg_idx,
->   		err = -EOPNOTSUPP;
->   		goto cand_cache_unlock;
->   	}
-> -	kern_type_id = cc->cands[0].id;
->   
->   cand_cache_unlock:
-> +	kern_type_id = cc->cands[0].id;
+On 02/20, Tong Tiangen wrote:
+>
+> 在 2025/2/20 16:38, David Hildenbrand 写道:
+> >On 20.02.25 03:31, Tong Tiangen wrote:
+> >>
+> >>@@ -506,6 +506,12 @@ int uprobe_write_opcode(struct arch_uprobe
+> >>*auprobe, struct mm_struct *mm,
+> >>          if (ret <= 0)
+> >>                  goto put_old;
+> >>
+> >>+       if (WARN(is_zero_page(old_page),
+> >
+> >This can likely be triggered by user space, so do not use WARN.
+>
+> OK,thanks.
+>
+> Hi Oleg, is that all right?
 
-Hi, for goto's branches, it will always `return err`, no need to make 
-this move.
+Thanks, LGTM.
 
->   	mutex_unlock(&cand_cache_mutex);
->   	if (err)
->   		return err;
-> 
-> ---
-> base-commit: 87a132e73910e8689902aed7f2fc229d6908383b
-> change-id: 20250220-bpf-uninit-3323a4426da9
-> 
-> Best regards,
+Oleg.
+
 
