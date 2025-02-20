@@ -1,205 +1,201 @@
-Return-Path: <bpf+bounces-52030-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52031-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E43DDA3CF74
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 03:46:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3790A3CF85
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 03:54:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89404189CAE4
-	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 02:46:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54687178CF0
+	for <lists+bpf@lfdr.de>; Thu, 20 Feb 2025 02:54:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC7D91D7E57;
-	Thu, 20 Feb 2025 02:46:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAD11D89FD;
+	Thu, 20 Feb 2025 02:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kXVsIdSq"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V0BlL5pm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C304563A9;
-	Thu, 20 Feb 2025 02:46:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0591CD1E0;
+	Thu, 20 Feb 2025 02:54:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740019565; cv=none; b=WfN6ZKFeh/mC1saQ3WfQQ34hg9Z7sEPwHsS/haY9fzwLfUZCCOf+iHNc5UPsLOIh5zaqNd11JwNCoGcFtwAe7yd9Titn3Re55H2stCQ1cvXszh29mn1vFbbWWs6WUUSXh5UEHyo3o6f1xLqNxL9P33lYsX3Omq4v8HbpuRJ2j20=
+	t=1740020053; cv=none; b=n+5OQV4dc/MXKNwgQUsDOPxInHYCiGovSUEMHCtNiJIjJr7jagajv5QYYMNdLlCCRE2hbGjMCD/dh1XfqKCULPUCg4NnuKENJJsby6LRHh3yniBzxzo3EaFjbnma7Yawaf0YDsOXndFxRCIKvzY4eHCmaAl2Nh65GIRKPdQuDU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740019565; c=relaxed/simple;
-	bh=73uLvuaiLscksGhZc+hY2cupAUVy2zHkoE90LdSw12E=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=ZisWYPUUmw4+OUXAIJtqEEw6TAropugqERFogUK7EQ/iH9YCpU9jrnv11AOHWzAwUgj5sXDILtTbVyPKtBCKKpP0LUj8MLbgczPqiemQ/b9O/r/ovfEs0IY0Mi/CGDgCn4Z9R+emSdXZflfY6ynadMSp+NXyQZz2asXepNCzt1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kXVsIdSq; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-46c8474d8f6so4276951cf.3;
-        Wed, 19 Feb 2025 18:46:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740019562; x=1740624362; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z/D3678QYRZKxPCIowYLLtnEL0WC8u1sCf7aliAuVuE=;
-        b=kXVsIdSqib3fZ9M4SQx1yh2bQXptUMTWi75eYfu9iU+AmAo9enZxR6zon9WRrLcR62
-         ZPVlVaj4eV7Xqgz2US6aA/s1KNwZrhqMx3/Y/T/x4Q+MHFB05P+H5dqmlLRLO/w0CE4U
-         gazSM/Oyj4LY7Z4Y4Gfu+nEVEvXSZS8ncG5QgtocvMcmexEtYsxlBohYPJtl0Nn3PKpR
-         XNaafEMw+X6l6GqARqmJrIGNk1gCuSTk3x/AmDM3wHl+g22RmfHErHbnSMgkFInx5C7y
-         rhDTpauxkTcysCTZA70MciEHELiQYlqgOqv/vsK9pgZGxgbDQ8TxtqtuXiN6Rp+d7L3q
-         SX4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740019562; x=1740624362;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Z/D3678QYRZKxPCIowYLLtnEL0WC8u1sCf7aliAuVuE=;
-        b=Wejy5vA1dLyntxn960tiIwDl7l7nYURcY2+ZeeO4AxXP+5Lh9j6QiUyQhb5a/X9wRf
-         80ZGYEaLl8wopN/Ciick6a9rWmPMtpNPStqDU9b82qbcwNUebPTw2xi2Dl/C+6118AW7
-         XlgCfoZt13ps7yieEzPbZfODVE/XJRIrJ9NO2RdQZDjLfcJhpXgm1UyKcc0Rg3liAt4n
-         Vl6UN4U5YbeVDJ8r6idjoJ3hT1zRetAz4WYEBvT2AbIZ8k6D2/Wj9YU2SkodjSdXDVap
-         YZq7Iq+qTlrzfwsVqLaCnFVyh04LeWRxx+uW3X8ghxcQSNZ/wrTaFRBZKHapsMf/Q3Qt
-         lS4A==
-X-Forwarded-Encrypted: i=1; AJvYcCVQDteKADtOxNI4XqqUVfJsDj/tspoJ5W7qCK8cHa3VEpLmuaF5WglilFX3v68DsLVzN8A=@vger.kernel.org, AJvYcCXlkdpyD1ny1Z+6y+TAv7PtqCyi5tHmHwePyQX+yNM1jpkiOdNUfVOMqCnzHd3TkxNWBvBxoRZW@vger.kernel.org
-X-Gm-Message-State: AOJu0YyRvynN3NIcluLB96OcBnPZW6yZoqMNxQvxVMxz5abuBL1HWv7t
-	gQsrc3YYYtDb7nwQaN8fvbJ1vt9NDns26FIBZr4qOcSmjnMvJdCYJHOUnQ==
-X-Gm-Gg: ASbGncu1ujSGcFGHLOGPUedLs0IgFyLmcUtx+hpyUMA36+g6Q1wTBA8EEDTqoun4P5T
-	wL6cLtPdPyYFXw8ZmZeVX5LvZ/44yKrJ+kgK5XVsppXupCdo2QLdxVIzhJsOypmKp6RnUTOnnw9
-	OBy0Vj2AeMrbXB4/XcHJ8/tESiJJHwLLya/LUIZn57sotgBO2tAY/5BTvA5j52EG4THtFfx5gyn
-	phaJLPg2uWbIWXFEBMmK07aWDe7FCSLgvaxrDdnKCiZjerDASbPOMupWvgL9Ys7a2r0e+vMzvec
-	zSbccWtEa1hQ0+awmOvQAFc+3UI1UGIJyLRuYOPQpN0h6rhA69WASCp2lN7c7T8=
-X-Google-Smtp-Source: AGHT+IEG9YapflJf2cUv8UVoSRBdPpMklvTrO3BRiqvzN12JeBtxzTYK7SAEFKyyNJwNn4PZ61++XQ==
-X-Received: by 2002:ac8:5e0a:0:b0:472:1040:10b2 with SMTP id d75a77b69052e-472173e1c5amr14212311cf.39.1740019562567;
-        Wed, 19 Feb 2025 18:46:02 -0800 (PST)
-Received: from localhost (15.60.86.34.bc.googleusercontent.com. [34.86.60.15])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-47209a1b133sm14864501cf.70.2025.02.19.18.46.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2025 18:46:01 -0800 (PST)
-Date: Wed, 19 Feb 2025 21:46:01 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- willemb@google.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- shuah@kernel.org, 
- ykolal@fb.com, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org
-Message-ID: <67b697697bdf8_20efb0294b4@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CAL+tcoCJNM3YyLQpFCCUtHPN7dU+o721yBYE71+hs9-1r937Xg@mail.gmail.com>
-References: <20250218050125.73676-1-kerneljasonxing@gmail.com>
- <20250218050125.73676-2-kerneljasonxing@gmail.com>
- <67b497b974fc3_10d6a32948b@willemb.c.googlers.com.notmuch>
- <03553725-648d-467f-9076-0d5c22b3cfb3@linux.dev>
- <CAL+tcoA==aPOmBjDTOi2WgZ7HEE4OJiZ+4Z-OD_yGn_XN2Onqw@mail.gmail.com>
- <67b542b9c4e3d_1692112944@willemb.c.googlers.com.notmuch>
- <CAL+tcoCHsJ9KQf5w6TLHmQy9DrkhPHChRPQb=+9L_WKTTd8FQA@mail.gmail.com>
- <67b5f4f5990b0_1b78d829412@willemb.c.googlers.com.notmuch>
- <CAL+tcoCJNM3YyLQpFCCUtHPN7dU+o721yBYE71+hs9-1r937Xg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v12 01/12] bpf: add networking timestamping
- support to bpf_get/setsockopt()
+	s=arc-20240116; t=1740020053; c=relaxed/simple;
+	bh=4ihQ18W37YEybWTFHP6Gwh3fdEE8cMA2BHRpm9XvhAs=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type; b=k7VHV09u4t6D4b7TB2oAVWRGC7nus5kCOfljzjUXMCel9J4nts0yxQiNqSCKY+3ziS2dFUBuVmNvnW0P0cnSFF/+zdxx2OAWNiqA/znjuZ+lKcH2+jgxIlnMSIy+jKYlFhZ07XcYitSJ68OF+BTH+RQLJ1Hr2PNNXtGKjETSANs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V0BlL5pm; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1740020052; x=1771556052;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4ihQ18W37YEybWTFHP6Gwh3fdEE8cMA2BHRpm9XvhAs=;
+  b=V0BlL5pmoPkhaPOde0V7jBjb8fR5i+aUxeyg678uPk8PTxhephrvBI8x
+   1YwuilyMPOHqezuU/5fxYxfQJux9MVcXV7PdVztgdP35Xlm6YRhiGl3qZ
+   vjuGLhooXXcEG3s+Sd2NyJADC3JhQGjHiTJ9iB2VEQSMVostyiYq5hI1e
+   2pKE5XZUDSXOd2mRfWUX+orLME4slMWonEPTQD1Hwv209PIZl2KngQJdZ
+   UuKO9Ov72IdCMdyFxXm1LAEAuSyqcCXL7gxFQzywqmvomcUovYZZoI889
+   MeNvxcVBNPW0n4ktWpZoZ4KYGKrM87/AZIsKHT/4cv32hzcPccwCI7OS6
+   w==;
+X-CSE-ConnectionGUID: MmACAzwdTaGKNOVOLl+aOg==
+X-CSE-MsgGUID: AYfnXw3NSNiGgq5ARtps0g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11350"; a="41041860"
+X-IronPort-AV: E=Sophos;i="6.13,300,1732608000"; 
+   d="scan'208";a="41041860"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2025 18:54:11 -0800
+X-CSE-ConnectionGUID: McM5zojKT0+O6ISKQfpAYA==
+X-CSE-MsgGUID: qUnE/Qg0RkyVbNylouun2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,300,1732608000"; 
+   d="scan'208";a="115104228"
+Received: from mohdfai2-ilbpg12-1.png.intel.com ([10.88.227.73])
+  by fmviesa008.fm.intel.com with ESMTP; 19 Feb 2025 18:54:03 -0800
+From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Simon Horman <horms@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Furong Xu <0x1207@gmail.com>,
+	Russell King <rmk+kernel@armlinux.org.uk>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Xiaolei Wang <xiaolei.wang@windriver.com>,
+	Suraj Jaiswal <quic_jsuraj@quicinc.com>,
+	Kory Maincent <kory.maincent@bootlin.com>,
+	Gal Pressman <gal@nvidia.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+	Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	bpf@vger.kernel.org
+Subject: [PATCH iwl-next v5 0/9] igc: Add support for Frame Preemption feature in IGC
+Date: Wed, 19 Feb 2025 21:53:40 -0500
+Message-Id: <20250220025349.3007793-1-faizal.abdul.rahim@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> > Can you find a hole further down to place this in, or at least a spot
-> > that does not result in 7b of wasted space (in the hotpath cacheline
-> > groups of all places).
-> 
-> There is one place where I can simply insert the flag.
-> 
-> The diff patch on top of this series is:
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index e85d6fb3a2ba..9fa27693fb02 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -446,8 +446,6 @@ struct sock {
->         u32                     sk_reserved_mem;
->         int                     sk_forward_alloc;
->         u32                     sk_tsflags;
-> -#define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG))
-> -       u8                      sk_bpf_cb_flags;
->         __cacheline_group_end(sock_write_rxtx);
-> 
->         __cacheline_group_begin(sock_write_tx);
-> @@ -528,6 +526,8 @@ struct sock {
->         u8                      sk_txtime_deadline_mode : 1,
->                                 sk_txtime_report_errors : 1,
->                                 sk_txtime_unused : 6;
-> +#define SK_BPF_CB_FLAG_TEST(SK, FLAG) ((SK)->sk_bpf_cb_flags & (FLAG))
-> +       u8                      sk_bpf_cb_flags;
-> 
->         void                    *sk_user_data;
->  #ifdef CONFIG_SECURITY
-> 
-> 
-> 1) before applying the whole series:
-> ...
->         /* --- cacheline 10 boundary (640 bytes) --- */
->         ktime_t                    sk_stamp;             /* 0x280   0x8 */
->         int                        sk_disconnects;       /* 0x288   0x4 */
->         u8                         sk_txrehash;          /* 0x28c   0x1 */
->         u8                         sk_clockid;           /* 0x28d   0x1 */
->         u8                         sk_txtime_deadline_mode:1; /* 0x28e: 0 0x1 */
->         u8                         sk_txtime_report_errors:1; /*
-> 0x28e:0x1 0x1 */
->         u8                         sk_txtime_unused:6;   /* 0x28e:0x2 0x1 */
-> 
->         /* XXX 1 byte hole, try to pack */
-> 
->         void *                     sk_user_data;         /* 0x290   0x8 */
->         void *                     sk_security;          /* 0x298   0x8 */
->         struct sock_cgroup_data    sk_cgrp_data;         /* 0x2a0  0x10 */
-> ...
-> /* sum members: 773, holes: 1, sum holes: 1 */
-> 
-> 
-> 2) after applying the series with the above diff patch:
-> ...
->         /* --- cacheline 10 boundary (640 bytes) --- */
->         ktime_t                    sk_stamp;             /* 0x280   0x8 */
->         int                        sk_disconnects;       /* 0x288   0x4 */
->         u8                         sk_txrehash;          /* 0x28c   0x1 */
->         u8                         sk_clockid;           /* 0x28d   0x1 */
->         u8                         sk_txtime_deadline_mode:1; /* 0x28e: 0 0x1 */
->         u8                         sk_txtime_report_errors:1; /*
-> 0x28e:0x1 0x1 */
->         u8                         sk_txtime_unused:6;   /* 0x28e:0x2 0x1 */
->         u8                         sk_bpf_cb_flags;      /* 0x28f   0x1 */
->         void *                     sk_user_data;         /* 0x290
-> 0x8 */
->         void *                     sk_security;          /* 0x298   0x8 */
->         struct sock_cgroup_data    sk_cgrp_data;         /* 0x2a0  0x10 */
-> ...
-> /* sum members: 774 */
-> 
-> It turns out that the new sk_bpf_cb_flags fills the hole exactly. The
-> new field and some of its nearby fields are quite similar because they
-> are only/nearly written during the creation or setsockopt phase.
-> 
-> I think now it's a good place to insert the new flag?
+Introduces support for the FPE feature in the IGC driver.
 
-Thanks. This seems fine to me.
- 
+The patches aligns with the upstream FPE API:
+https://patchwork.kernel.org/project/netdevbpf/cover/20230220122343.1156614-1-vladimir.oltean@nxp.com/
+https://patchwork.kernel.org/project/netdevbpf/cover/20230119122705.73054-1-vladimir.oltean@nxp.com/
 
+It builds upon earlier work:
+https://patchwork.kernel.org/project/netdevbpf/cover/20220520011538.1098888-1-vinicius.gomes@intel.com/
+
+The patch series adds the following functionalities to the IGC driver:
+a) Configure FPE using `ethtool --set-mm`.
+b) Display FPE settings via `ethtool --show-mm`.
+c) View FPE statistics using `ethtool --include-statistics --show-mm'.
+e) Block setting preemptible tc in taprio since it is not supported yet.
+   Existing code already blocks it in mqprio.
+
+Change Log:
+v4 -> v5:
+- Remove "igc: Add support for preemptible traffic class in taprio" patch (Vladimir)
+- Add a new patch "igc: Block setting preemptible traffic classes in taprio" (Vladimir)
+- Add kernel-doc for mmsv api (Vladimir)
+- olininfo_status to use host byte order (Simon)
+- status_error should host byte type (Simon)
+- Some code was misplaced in the wrong patch (Vladimir)
+- Mix of tabs and spaces in patch description (Vladimir)
+- Created igc_is_pmac_enabled() to reduce code repetition (Vladimir)
+
+v3 -> v4:
+- Fix compilation warnings introduced by this patch series
+
+v2 -> v3:
+- Implement configure_tx() mmsv callback (Vladimir)
+- Use static_branch_inc() and static_branch_dec() (Vladimir)
+- Add adapter->fpe.mmsv.pmac_enabled as extra check (Vladimir)
+- Remove unnecessary error check in igc_fpe_init_tx_descriptor() (Vladimir)
+- Additional places to use FIELD_PREP() instead of manual bit manipulation (Vladimir)
+- IGC_TXD_POPTS_SMD_V and IGC_TXD_POPTS_SMD_R type change to enum (Vladimir)
+- Remove unnecessary netif_running() check in igc_fpe_xmit_frame (Vladimir)
+- Rate limit print in igc_fpe_send_mpacket (Vladimir)
+
+v1 -> v2:
+- Extract the stmmac verification logic into a common library (Vladimir)
+- igc to use common library for verification (Vladimir)
+- Fix syntax for kernel-doc to use "Return:" (Vladimir)
+- Use FIELD_GET instead of manual bit masking (Vladimir)
+- Don't assign 0 to statistics counter in igc_ethtool_get_mm_stats() (Vladimir)
+- Use pmac-enabled as a condition to allow MAC address value 0 (Vladimir)
+- Define macro register value in increasing value order (Vladimir)
+- Fix tx-min-frag-size handling for igc (Vladimir)
+- Handle link state changes with verification in igc (Vladimir)
+- Add static key for fast path code (Vladimir)
+- rx_min_frag_size get from constant (Vladimir)
+
+v1: https://patchwork.kernel.org/project/netdevbpf/cover/20241216064720.931522-1-faizal.abdul.rahim@linux.intel.com/
+v2: https://patchwork.kernel.org/project/netdevbpf/cover/20250205100524.1138523-1-faizal.abdul.rahim@linux.intel.com/
+v3: https://patchwork.kernel.org/project/netdevbpf/cover/20250207165649.2245320-1-faizal.abdul.rahim@linux.intel.com/
+v4: https://patchwork.kernel.org/project/netdevbpf/cover/20250210070207.2615418-1-faizal.abdul.rahim@linux.intel.com/
+
+Faizal Rahim (8):
+  igc: Rename xdp_get_tx_ring() for non-xdp usage
+  igc: Optimize the TX packet buffer utilization
+  igc: Set the RX packet buffer size for TSN mode
+  igc: Add support for frame preemption verification
+  igc: Add support to set tx-min-frag-size
+  igc: Add support to get MAC Merge data via ethtool
+  igc: Add support to get frame preemption statistics via ethtool
+  igc: Block setting preemptible traffic class in taprio
+
+Vladimir Oltean (1):
+  net: ethtool: mm: extract stmmac verification logic into common
+    library
+
+ drivers/net/ethernet/intel/igc/igc.h          |  15 +-
+ drivers/net/ethernet/intel/igc/igc_base.h     |   1 +
+ drivers/net/ethernet/intel/igc/igc_defines.h  |  15 +-
+ drivers/net/ethernet/intel/igc/igc_ethtool.c  |  76 ++++++
+ drivers/net/ethernet/intel/igc/igc_main.c     |  67 +++++-
+ drivers/net/ethernet/intel/igc/igc_regs.h     |  16 ++
+ drivers/net/ethernet/intel/igc/igc_tsn.c      | 190 ++++++++++++++-
+ drivers/net/ethernet/intel/igc/igc_tsn.h      |  52 ++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  16 +-
+ .../ethernet/stmicro/stmmac/stmmac_ethtool.c  |  41 +---
+ .../net/ethernet/stmicro/stmmac/stmmac_fpe.c  | 174 +++-----------
+ .../net/ethernet/stmicro/stmmac/stmmac_fpe.h  |   5 -
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   8 +-
+ include/linux/ethtool.h                       | 131 ++++++++++
+ net/ethtool/mm.c                              | 227 +++++++++++++++++-
+ 15 files changed, 817 insertions(+), 217 deletions(-)
+
+--
+2.34.1
 
 
