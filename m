@@ -1,65 +1,88 @@
-Return-Path: <bpf+bounces-52200-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52201-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5518DA3FBC1
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 17:44:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D877A3FC26
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 17:53:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04EAA189A368
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 16:39:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8627E3BE675
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 16:47:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4C1218593;
-	Fri, 21 Feb 2025 16:36:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB65D1F541E;
+	Fri, 21 Feb 2025 16:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZGo9rfnH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2+e1Mhf"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D69D20FA86
-	for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 16:36:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07D3F1F236B
+	for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 16:47:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740155799; cv=none; b=J1gTTWv9WqWhvoWWVTvHl4N9UGgbYCW0a6PYR7D6okMSXIK+wv1blPrDNMq3gZa4SSyCVIoAuuOoIoZUU2+AmoHyO1WGz3+391t29//jyo6pykMI36X5pbYk/qPmocAr3NDXQNMwCFmwDg4OE0vwuRg3jlKyJtd0kuigIwhCQz0=
+	t=1740156453; cv=none; b=rHRKx14FPBPd1CtyfvcqZfcOJCEmtdbZ+2RwSaezgPXKu4/LrY4pH9tPvyu6j4ZVeiD3ef2GQo2DD9neQtczfjkwtPkrn6IZojBk35Kfw0RMxibPrn622UTZyrmXv+kjZPPiN25tIdyMdLZyaKLmoWqHmI0GJS1zjaHMjZJpIyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740155799; c=relaxed/simple;
-	bh=iX7YqtTQujLLqaNAUh00iVuqffF/jAbti+QBntYH1tk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mX2oOSrq7sa66+JFWdOGhJYxmZgTMkr59vYKuPEy00pDzLH7HQXbbmRSuDoEJjzlREiL/I7TV/AsZa0cUKeQbY369Tiz0LhH6gjtPre3CuYGgl8v6tPY0ZYkLwcl928xCnCIA4iUIKpL8Ojc51ggi9WdSu/4e/1fUI5YZb1Gi6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZGo9rfnH; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740155795;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=v8rj6X3iOa/EdVnWOpvJZa4qIATKiMnTI+AiRDP2lgg=;
-	b=ZGo9rfnHFOI2ll6L/pxZZNSZSsn/4h5DSdVFjyEdQYLlc8UnhLe5XY82bobN1nzc0oazwH
-	Bxv1OuqV3p7zEmae3s83rtmCfkTtjMLZnTBdyW7hxlCYzltskSzIZ4x4lunPZKSsAuXs8N
-	mcwAGJOeM0BBuTogYobqSZmAbSDmuiE=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
+	s=arc-20240116; t=1740156453; c=relaxed/simple;
+	bh=ZvHiGs57O+ZNc4XNRWrUmxzgbX/+zlzXCHH5PrO+Pfw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e3y2uPDhzKmXAkX9c+cfZr4FkfkYlJkvSwkkpOp41I35OH0w3igMeDqCIDwQPrnCI94F8sTD16541HA5I990dVAz/Cwkd0t3xYBNsEs3Dzw81xea8+Q6AcTv9pZarGN4NeVxiv8NubRXUFrNQgyjLcjjjun1SOS2+4l+hfBzfuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F2+e1Mhf; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-220c2a87378so41426235ad.1
+        for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 08:47:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740156451; x=1740761251; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=N4io0qf3sA2xS38ydPazBKeEFiCv0/bEMBmTD9p8Tbg=;
+        b=F2+e1Mhfhlg0f8pVQennZuxMcOx0e/JLw9xkaa8jqADpn4ofoh0pP0SEDpaYkLHIcf
+         5Db/Ett9aM9qROgYzZNSri5OvhGr59/yo6Bks2yxmCuzKmPO9BAv7Mt5cH0mXORfpnKE
+         rSI0FIoBohKjmNmh6AGQ7dz1s0gk7RgjC718Q34epXIiJWaatr+GB0aZnsrF16UxVIky
+         F+Zus0Rc7hPGhjlUmt8TXiLgCQLpFGTUp8hjUW+Y9yreVVYMdHHajcvSLHMJ78AfQJce
+         uYeqbzstWMaaNhByIEJzjknlZ1TTVtkkprTEx1hOmN59KzLqH/43QRAHuKn5IlsV5kve
+         eJOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740156451; x=1740761251;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N4io0qf3sA2xS38ydPazBKeEFiCv0/bEMBmTD9p8Tbg=;
+        b=bb7DBZy13UWPyJdWf5kDcdbX39ras+tcl+D5AkbcTUDK+q/KVIeeIwKAfcFKk4b5jl
+         H17kof5wiv6Y2QzjjsdW02WNk4bfrLr22qeipoKEJ2m1UnCBs/tzCSxNPmB1KZuWLodW
+         qRRmNtNntOZv9WEdaxXk7QCRGNtwsIoRxNDOAWhAuN5gcYzQ1bxk/WyTW2QkqnyqxkoW
+         ADT0i64pAz60LHrJJ4qajPOn0j7wiRVc4gc1Nwkv6D/GhPMeHbzJRg+F65mSdrGkwyXB
+         NNcp+AX9vAejego1zbsJr5BtImjrn7Adm5OXgguH5AgqQVFx55ardRmFUO0kYc1AvF3n
+         cbDA==
+X-Gm-Message-State: AOJu0YxEDhO4mb6KEwo9XSSt3YJ3fDnZ7zNKA0mrAAfccXdSgOKJU6m+
+	ttaDXYjSB7p/TGhZXUQjLbB1PXASKEuqfyUQQ1BwFRsRY5o1dteRPbE8IA==
+X-Gm-Gg: ASbGncsT5zHiLOhCwVfHeUP/K07vFqGG6UbY481lLvmbvYhXnBhNLonPyfuRFi3SxXm
+	UAU2VqbXx4DRpMO8kv3z4G4LEAx8k/ywBkTxHoc8pMnVMWI+pPYErIRACcLbFkzQKh0o73cKgau
+	XOr+IUwSfQQogaI0FPPycoWm0S8YmP4OzHnybL8NsEbs+rEP1UDHdTvker26ugilllKUoDMZ90a
+	9utpLnf31cxtYnF1aWH1T4177jWT+bDqFSJoQ67ce8ED1gAFXHpJMJG79jX0SB0iBbImkrcEfCk
+	9tTA5ImW/gKlUNnVm/u2iFiQF2D2iXiSsvYgbiNSM5+UWJdDM619sVsvGQedCWCf5s4uEB/yCmM
+	f
+X-Google-Smtp-Source: AGHT+IH02UeqVXWWMmvcyBjX4iXDzdFifKXN2Q0WwrDHMbAkbLhsBhng11wnGb4Bz8obifY2eYLnPw==
+X-Received: by 2002:a17:902:d4d2:b0:21f:4b63:d5c3 with SMTP id d9443c01a7336-221a0edbfa5mr55390645ad.12.1740156451129;
+        Fri, 21 Feb 2025 08:47:31 -0800 (PST)
+Received: from localhost.localdomain (c-76-146-13-146.hsd1.wa.comcast.net. [76.146.13.146])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2210001ea01sm110875785ad.176.2025.02.21.08.47.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Feb 2025 08:47:30 -0800 (PST)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: daniel@iogearbox.net,
 	andrii@kernel.org,
+	alexei.starovoitov@gmail.com,
+	martin.lau@kernel.org,
 	eddyz87@gmail.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	qmo@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	chen.dylane@gmail.com,
-	Tao Chen <chen.dylane@linux.dev>,
-	Tao Chen <dylane.chen@didiglobal.com>
-Subject: [PATCH bpf-next v8 4/4] selftests/bpf: Add libbpf_probe_bpf_kfunc API selftests
-Date: Sat, 22 Feb 2025 00:33:35 +0800
-Message-Id: <20250221163335.262143-5-chen.dylane@linux.dev>
-In-Reply-To: <20250221163335.262143-1-chen.dylane@linux.dev>
-References: <20250221163335.262143-1-chen.dylane@linux.dev>
+	ameryhung@gmail.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v3 1/2] bpf: Search and add kfuncs in struct_ops prologue and epilogue
+Date: Fri, 21 Feb 2025 08:47:20 -0800
+Message-ID: <20250221164721.1794729-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,210 +90,80 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Add selftests for prog_kfunc feature probing. Thanks for
-Eduard providing the libbpf_probe_func_many test case.
+From: Amery Hung <amery.hung@bytedance.com>
 
- ./test_progs -t libbpf_probe_kfuncs
- #153     libbpf_probe_kfuncs:OK
- Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Currently, add_kfunc_call() is only invoked once before the main
+verification loop. Therefore, the verifier could not find the
+bpf_kfunc_btf_tab of a new kfunc call which is not seen in user defined
+struct_ops operators but introduced in gen_prologue or gen_epilogue
+during do_misc_fixup(). Fix this by searching kfuncs in the patching
+instruction buffer and add them to prog->aux->kfunc_tab.
 
- ./test_progs -t libbpf_probe_kfuncs_many
- #154     libbpf_probe_kfuncs_many:OK
- Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Cc: Tao Chen <dylane.chen@didiglobal.com>
-Reviewed-by: Jiri Olsa <jolsa@kernel.org>
-Co-developed-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- .../selftests/bpf/prog_tests/libbpf_probes.c  | 173 ++++++++++++++++++
- 1 file changed, 173 insertions(+)
+ kernel/bpf/verifier.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-index 4ed46ed58a7b..db408fd67add 100644
---- a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-+++ b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-@@ -126,3 +126,176 @@ void test_libbpf_probe_helpers(void)
- 		ASSERT_EQ(res, d->supported, buf);
- 	}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 8f1df279e432..212b487fd39d 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3215,6 +3215,21 @@ bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
+ 	return res ? &res->func_model : NULL;
  }
-+
-+static int module_btf_fd(char *module)
+ 
++static int add_kfunc_in_insns(struct bpf_verifier_env *env,
++			      struct bpf_insn *insn, int cnt)
 +{
-+	int fd, err;
-+	__u32 id = 0, len;
-+	struct bpf_btf_info info;
-+	char name[64];
++	int i, ret;
 +
-+	while (true) {
-+		err = bpf_btf_get_next_id(id, &id);
-+		if (err)
-+			return -1;
-+
-+		fd = bpf_btf_get_fd_by_id(id);
-+		if (fd < 0) {
-+			if (errno == ENOENT)
-+				continue;
-+			return -1;
-+		}
-+		len = sizeof(info);
-+		memset(&info, 0, sizeof(info));
-+		info.name = ptr_to_u64(name);
-+		info.name_len = sizeof(name);
-+		err = bpf_btf_get_info_by_fd(fd, &info, &len);
-+		if (err) {
-+			close(fd);
-+			return -1;
-+		}
-+		/* find target module BTF */
-+		if (!strcmp(name, module))
-+			break;
-+
-+		close(fd);
-+	}
-+
-+	return fd;
-+}
-+
-+void test_libbpf_probe_kfuncs(void)
-+{
-+	int ret, kfunc_id, fd;
-+	char *kfunc = "bpf_cpumask_create";
-+	struct btf *vmlinux_btf = NULL;
-+	struct btf *module_btf = NULL;
-+
-+	vmlinux_btf = btf__parse("/sys/kernel/btf/vmlinux", NULL);
-+	if (!ASSERT_OK_PTR(vmlinux_btf, "btf_parse"))
-+		return;
-+
-+	kfunc_id = btf__find_by_name_kind(vmlinux_btf, kfunc, BTF_KIND_FUNC);
-+	if (!ASSERT_GT(kfunc_id, 0, kfunc))
-+		goto cleanup;
-+
-+	/* prog BPF_PROG_TYPE_SYSCALL supports kfunc bpf_cpumask_create */
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_SYSCALL, kfunc_id, -1, NULL);
-+	if (!ASSERT_EQ(ret, 1, "kfunc in vmlinux support"))
-+		goto cleanup;
-+
-+	/* prog BPF_PROG_TYPE_KPROBE does not support kfunc bpf_cpumask_create */
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_KPROBE, kfunc_id, -1, NULL);
-+	if (!ASSERT_EQ(ret, 0, "kfunc in vmlinux not suuport"))
-+		goto cleanup;
-+
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_KPROBE, -1, -1, NULL);
-+	if (!ASSERT_EQ(ret, 0, "invalid kfunc id:-1"))
-+		goto cleanup;
-+
-+	ret = libbpf_probe_bpf_kfunc(100000, kfunc_id, -1, NULL);
-+	if (!ASSERT_ERR(ret, "invalid prog type:100000"))
-+		goto cleanup;
-+
-+	if (!env.has_testmod)
-+		goto cleanup;
-+
-+	module_btf = btf__load_module_btf("bpf_testmod", vmlinux_btf);
-+	if (!ASSERT_OK_PTR(module_btf, "load module BTF"))
-+		goto cleanup;
-+
-+	kfunc_id = btf__find_by_name(module_btf, "bpf_kfunc_call_test1");
-+	if (!ASSERT_GT(kfunc_id, 0, "func not found"))
-+		goto cleanup;
-+
-+	fd = module_btf_fd("bpf_testmod");
-+	if (!ASSERT_GE(fd, 0, "module BTF fd"))
-+		goto cleanup;
-+
-+	/* prog BPF_PROG_TYPE_SYSCALL supports kfunc bpf_kfunc_call_test1 in bpf_testmod */
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_SYSCALL, kfunc_id, fd, NULL);
-+	if (!ASSERT_EQ(ret, 1, "kfunc in module BTF support"))
-+		goto cleanup_fd;
-+
-+	/* prog BPF_PROG_TYPE_KPROBE does not support kfunc bpf_kfunc_call_test1
-+	 * in bpf_testmod
-+	 */
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_KPROBE, kfunc_id, fd, NULL);
-+	if (!ASSERT_EQ(ret, 0, "kfunc in module BTF not support"))
-+		goto cleanup_fd;
-+
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_SYSCALL, -1, fd, NULL);
-+	if (!ASSERT_EQ(ret, 0, "invalid kfunc id in module BTF"))
-+		goto cleanup_fd;
-+
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_SYSCALL, kfunc_id, 100, NULL);
-+	ASSERT_EQ(ret, 0, "invalid BTF fd in module BTF");
-+
-+cleanup_fd:
-+	close(fd);
-+cleanup:
-+	btf__free(vmlinux_btf);
-+	btf__free(module_btf);
-+}
-+
-+static const struct {
-+	const char *name;
-+	int code;
-+} program_types[] = {
-+#define _T(n) { #n, BPF_PROG_TYPE_##n }
-+	_T(KPROBE),
-+	_T(XDP),
-+	_T(SYSCALL),
-+	_T(SCHED_CLS),
-+	_T(SCHED_ACT),
-+	_T(SK_SKB),
-+	_T(SOCKET_FILTER),
-+	_T(CGROUP_SKB),
-+	_T(LWT_OUT),
-+	_T(LWT_IN),
-+	_T(LWT_XMIT),
-+	_T(LWT_SEG6LOCAL),
-+	_T(NETFILTER),
-+	_T(CGROUP_SOCK_ADDR),
-+	_T(SCHED_ACT)
-+#undef _T
-+};
-+
-+void test_libbpf_probe_kfuncs_many(void)
-+{
-+	int i, kfunc_id, ret, id;
-+	const struct btf_type *t;
-+	struct btf *btf = NULL;
-+	const char *kfunc;
-+	const char *tag;
-+
-+	btf = btf__parse("/sys/kernel/btf/vmlinux", NULL);
-+	if (!ASSERT_OK_PTR(btf, "btf_parse"))
-+		return;
-+	for (id = 0; id < btf__type_cnt(btf); ++id) {
-+		t = btf__type_by_id(btf, id);
-+		if (!t)
-+			continue;
-+		if (!btf_is_decl_tag(t))
-+			continue;
-+		tag = btf__name_by_offset(btf, t->name_off);
-+		if (strcmp(tag, "bpf_kfunc") != 0)
-+			continue;
-+		kfunc_id = t->type;
-+		t = btf__type_by_id(btf, kfunc_id);
-+		if (!btf_is_func(t))
-+			continue;
-+		kfunc = btf__name_by_offset(btf, t->name_off);
-+		for (i = 0; i < ARRAY_SIZE(program_types); ++i) {
-+			ret = libbpf_probe_bpf_kfunc(program_types[i].code,
-+						     kfunc_id, -1, NULL);
-+			if (ret < 0) {
-+				ASSERT_FAIL("kfunc:%s use prog type:%d",
-+				      kfunc, program_types[i].code);
-+				goto cleanup;
-+			}
++	for (i = 0; i < cnt; i++, insn++) {
++		if (bpf_pseudo_kfunc_call(insn)) {
++			ret = add_kfunc_call(env, insn->imm, insn->off);
++			if (ret < 0)
++				return ret;
 +		}
 +	}
-+cleanup:
-+	btf__free(btf);
++	return 0;
 +}
++
+ static int add_subprog_and_kfunc(struct bpf_verifier_env *env)
+ {
+ 	struct bpf_subprog_info *subprog = env->subprog_info;
+@@ -20368,7 +20383,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ {
+ 	struct bpf_subprog_info *subprogs = env->subprog_info;
+ 	const struct bpf_verifier_ops *ops = env->ops;
+-	int i, cnt, size, ctx_field_size, delta = 0, epilogue_cnt = 0;
++	int i, cnt, size, ctx_field_size, ret, delta = 0, epilogue_cnt = 0;
+ 	const int insn_cnt = env->prog->len;
+ 	struct bpf_insn *epilogue_buf = env->epilogue_buf;
+ 	struct bpf_insn *insn_buf = env->insn_buf;
+@@ -20397,6 +20412,10 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 				return -ENOMEM;
+ 			env->prog = new_prog;
+ 			delta += cnt - 1;
++
++			ret = add_kfunc_in_insns(env, epilogue_buf, epilogue_cnt - 1);
++			if (ret < 0)
++				return ret;
+ 		}
+ 	}
+ 
+@@ -20417,6 +20436,10 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 
+ 			env->prog = new_prog;
+ 			delta += cnt - 1;
++
++			ret = add_kfunc_in_insns(env, insn_buf, cnt - 1);
++			if (ret < 0)
++				return ret;
+ 		}
+ 	}
+ 
 -- 
-2.43.0
+2.47.1
 
 
