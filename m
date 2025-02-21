@@ -1,303 +1,383 @@
-Return-Path: <bpf+bounces-52161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB53A3F123
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 10:58:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E953BA3F14A
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 11:03:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE0791888E62
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 09:57:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7042217E1C8
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 10:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BAD5204C0D;
-	Fri, 21 Feb 2025 09:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE8720409F;
+	Fri, 21 Feb 2025 10:03:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="QU3Oobwy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bEbk3we2"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03on2081.outbound.protection.outlook.com [40.107.103.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DBAD204694;
-	Fri, 21 Feb 2025 09:56:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.103.81
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740131820; cv=fail; b=FQTKMU7V0uL9WKmlUWhyOAgDKIF7z3dsIWWd15kh19zGGNdZDHi6/nU+zS72qoqmDhjRWcgNpUzwDig7MAWAk2HZ9eB38N5XPFo6OkjBJ0aRMdI38Tm6PFkApNLkthMfx6gSxjlGo2WfpyJrArzGHT9j6v0Y6NYHhXvSeqOYJ38=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740131820; c=relaxed/simple;
-	bh=2QVCqWtvu6MBAKfFWuAx/KENkqyAj7F+o2xX6WaQi1k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=c+Rgms9fTTAEral5SSdpp+kMwJDX+tD2hjROLImW1faSUaifAtbFEutBmjSWN9s32rWeLTs8Pc1WYEuGm6rp4F7ZmCzqh8mqqpgEQg76T4kiklAHpMvbK5z2wtDHaFbsD1Kalk/KEqEXNN8U1nCFBWX5mCmZcClFrG/oMwIXMa0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=QU3Oobwy; arc=fail smtp.client-ip=40.107.103.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=JvRbwSqXqSKi7G37KKY+RwWE4qn0ZGw4DnDzhRDM2KTTxyRITK3Dn3FiLyH/7K772Q7EPCBW6cCkDtQkq4wvvCICTjYUC00Ym2sx1W8wOuNOoDo8bD+n9SKwTC8DlK/Mb4esipWixnK5S+BrilE+JqCneB+EMH4dN70vEkpqA9vDGl0BZD7V7Z333CWoCU+1SbZWmutS4nD+5BZqNhEMwJK86yIWarEoUfgghBgeDesaN2hp0aGbLsB2J4OkdoWhVchDYYU8/ls2Y5yqb50WSZC+f/Dq858S0cd2ju9bOfFy6BPeto09FJQQ+DRIWtS8APUc7Ny1UbXZVj1B+L8n3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kWoaYZioXOXrcY4QWP9oFpmevY5Au2la9gRcxy/mpxo=;
- b=NlZKCesqIz/Dl5RMLtz7DFG7M6CSCG715ZoGYmYVzp+MRVPAvuRuudYs+ahenFbH9BBiydO9N0Rt1JkveVpP/J8qrGj5+OWHj21Tu8/vegAvcis/3e4OUe8niA8zHfz9sbQn1QHyPnoQdi9OT+dEH9MO1t3o1KTqy3CveqdXBOmi0Mvk+0xm6jXRxHt7PpY4BzfImk5XsgEKEeBZCfT59KQ5euW+mU8xpFqvtaJnaWG3SlwuCSTl8M64Y3fMVg93f32TR1OCs3lh8NhrVF2BsMyTr/YNSFhdikQo8FnjlPSwHkdqvctIeK4VBphVmf7qdQiuURKoLQp2fzHLv35p/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kWoaYZioXOXrcY4QWP9oFpmevY5Au2la9gRcxy/mpxo=;
- b=QU3OobwyTrHzCVsKRUMOB+cRUyOUEeq9z081Ze94r1YIuGl4RhUEejFM/gHAromXpwjN3Yfd818YBN6PNvzeuJ9eq3guxWee0/V51FN2j5D36n7jhH14BN2aKtoWAnDu/jNoL6ehkMGZ1L72dbHtbTYRcGsCwk0cymF+bn+okWf4g5svVUwnp0yATHK9MtJaYNrRpARYtnH/Go23t9c/N5PMVuX9ohYN3tKxm7SSJtw/J5S8KA5lsWq68/VxqcqrLmzDB8prRiDBvWGw+nJKDHVNs3/rkpw7lQmlSmuiEk01rGtIIQppFIfy9UYzl718BFLPgS3IP9AfGqrPcwlFwQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM8PR04MB7779.eurprd04.prod.outlook.com (2603:10a6:20b:24b::14)
- by PA4PR04MB7663.eurprd04.prod.outlook.com (2603:10a6:102:e9::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.15; Fri, 21 Feb
- 2025 09:56:55 +0000
-Received: from AM8PR04MB7779.eurprd04.prod.outlook.com
- ([fe80::7417:d17f:8d97:44d2]) by AM8PR04MB7779.eurprd04.prod.outlook.com
- ([fe80::7417:d17f:8d97:44d2%6]) with mapi id 15.20.8466.016; Fri, 21 Feb 2025
- 09:56:55 +0000
-Date: Fri, 21 Feb 2025 11:56:51 +0200
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
-To: Furong Xu <0x1207@gmail.com>
-Cc: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Simon Horman <horms@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Russell King <rmk+kernel@armlinux.org.uk>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Xiaolei Wang <xiaolei.wang@windriver.com>,
-	Suraj Jaiswal <quic_jsuraj@quicinc.com>,
-	Kory Maincent <kory.maincent@bootlin.com>,
-	Gal Pressman <gal@nvidia.com>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Andrew Halaney <ahalaney@redhat.com>,
-	Choong Yong Liang <yong.liang.choong@linux.intel.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH iwl-next v5 1/9] net: ethtool: mm: extract stmmac
- verification logic into common library
-Message-ID: <20250221095651.npjpkoy2y6nehusy@skbuf>
-References: <20250220025349.3007793-1-faizal.abdul.rahim@linux.intel.com>
- <20250220025349.3007793-2-faizal.abdul.rahim@linux.intel.com>
- <20250221174249.000000cc@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250221174249.000000cc@gmail.com>
-X-ClientProxiedBy: VI1P195CA0074.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:802:59::27) To AM8PR04MB7779.eurprd04.prod.outlook.com
- (2603:10a6:20b:24b::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 249C3199237;
+	Fri, 21 Feb 2025 10:03:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1740132190; cv=none; b=af/TOvxymPtOzyfQcKOQmp6cWhU79WQoGr4DpYzC5/IGE1bK+oA8ytYKs6AAT1SH/RtFuj1oiNyDKY8/QnkuZOVslU1kZM8QO6HiRWumNbb+Q5+ojFt1BEj/R0Tra1UuIDybgq4GyxVWWtCWbPpQPuu3t5GCIV0HCmYissHATbA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1740132190; c=relaxed/simple;
+	bh=ft5qZUmUcPmDr1vOHTSl2J7VjH0/Uk5IJJCo1NCKZQg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rToVeTW1xytyt5g5km1qAmOGTOo/lp0lskveY9Km/CaDP0hzsmvqPXM/3QmFmAfM+3YaNSEEg5qnKqQDsmz7ICJvCoI1TA37tL4vacvCPihTBQarUjVdtnmLnp5qVPty4p4ZlPqpdcvp+98xybnHp+3WuN1E7oKqtQrf1aUvMhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bEbk3we2; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-221206dbd7eso37260435ad.2;
+        Fri, 21 Feb 2025 02:03:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740132188; x=1740736988; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vuhBlibuXv8j0/W4WvNxTMxfqegPnT+8JEvpDcrZkDA=;
+        b=bEbk3we2xDCmpBoQWic7pD3uCsyagjGMXarlstuN0U82JU2Dm1nxOuMPRagpgnLSPk
+         zuoVDV/PC5WqwGGbIlqjfLTUfgSxkWyTwXUzMuafTo0MCNUMLSIL5fdXGXwlaPVdkHDk
+         wQRdUTdQCq0mTigjD6NCY19dvaDRtiMeP7uTsdaZUw5T497L8yvDk8eFJI321uEsd/Vh
+         PT6BGmHGNoFYObdShvQ76CuGCDwlJl/sxU1mZLj6aqX9AubzoUwzXYEKNSUY9f6Qgkim
+         zYYO71P3LsJs5Y0Z+8KGUyLeWIu0OLLxjPr+LJT0QV//iQD1m38b8Ghfe5wqmhA/k82s
+         SJ6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740132188; x=1740736988;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vuhBlibuXv8j0/W4WvNxTMxfqegPnT+8JEvpDcrZkDA=;
+        b=RJXXNhMLMky5EcOB37J7X5ZUlqlYi+ZDsqTq3tCDqaZTU0IbPEDUKX49TzW6KDkyBx
+         K0lzP737a4VoE/Kh2wR8sjIOR6HANxYmYsSXp57PNb8miTDbsiT/8xmtzo283B2Bm3kI
+         qNMfYURUVqIFZ1L1EmNnewID+7yirw7+UQPM8vuRE8yYK6JsPuEB8XoAh9Ll3EYRXUdV
+         GIfVDi+LyF3ZIeSs2vfuCux8JqEeo238OgGN4sK5udIafzrBdpfA24D02w1IYki2aq27
+         qg8t+AAPExZnzcDJLTRGExagO+kaSNoQDUTMj5OEi8Vbp/0ZVKN+5k+H+3tm++YcRdob
+         v98w==
+X-Forwarded-Encrypted: i=1; AJvYcCVo8aVTbAk7iHNpAR5pYQghZHuNcQnB7vBMRVJDBHUqO3nTT0bfWMdNs4oOQOqFHGtij7GVbs3Px+Ecd4U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUbcmSW+gAwZ6+ug8GuP6JO7xkBwDMacC4V+tT1GX3Bb/gRP7Z
+	oNO0CFJmOGKsP10yQYtSAwJm4JmHMBXxCUOYXiRXZ4Hu370Qs7GyobIsdg==
+X-Gm-Gg: ASbGncuab+OMyfW48jSL2xGOV+lAvFiN+glh8gGh0zBHWX4zuaV82xRuXNJqepFoVwt
+	lUdvPjqgu21G+hzijrFsprsvjxXpZtNfR7Zou4g9F/Tn64hTBkEIsPHC3Y2DAMnFFCuSPv9hi8N
+	ZXqhCxu1ITzugRxqnrDcclgF9fAG/ipOSN+Va7Qf4jGj+ywODYHa1ljBQ1HIhw3fIcFihPRGTyP
+	/WiLkWdK6bdJ5vLFMAVcrSY1/sFbgYvSSDD6FVUH3/IK0BJs1hjYQkrVyDCFgjGCwJhjI6AYxCC
+	kVSoaz/APLXYWKEWtb6SNXIUDRRJGA/22zOwEoNb60xZ
+X-Google-Smtp-Source: AGHT+IFceq0IpGzYck+OoXl3MPSNZdIwcu/xUbXWdTBTkySq9xzG/9XqgOpHRkrPwBvqDzvkRDUJkQ==
+X-Received: by 2002:a17:902:e851:b0:220:faa2:c90a with SMTP id d9443c01a7336-2219ffa75bemr40188705ad.37.1740132187973;
+        Fri, 21 Feb 2025 02:03:07 -0800 (PST)
+Received: from [172.23.162.68] ([183.134.211.52])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73265a589ebsm12013736b3a.143.2025.02.21.02.03.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Feb 2025 02:03:07 -0800 (PST)
+Message-ID: <1efd9535-82df-43f9-92e1-8c931354b945@gmail.com>
+Date: Fri, 21 Feb 2025 18:03:02 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM8PR04MB7779:EE_|PA4PR04MB7663:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4af42d0f-dc04-4714-3bec-08dd525e12c4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?jeFcrZKXuc3+feDn8YZ1ZHelYrz5vj6ud2IMuBJsH6NTdUUY7ZtRDXijMeXr?=
- =?us-ascii?Q?uuOlR+SIFX+2/Yba+OXFW/ETPj0b58yBZ5ivrlCm5DL6J9iocIwqlSUn0UUI?=
- =?us-ascii?Q?CBPfQ6LyBd384BBn2lXmr4Vmc0zCLlDGg7aqWXxis0aYnkEnmNG47UqVk+6k?=
- =?us-ascii?Q?o3Roy7C3cryBzwe0EGSnEKl73+qmxEV6vWdIBhuxvXvltAzphMFMQbEGockw?=
- =?us-ascii?Q?3oeli43v8WXbk7Oa2TX96U+oQ48OKwVmCouXvs2T6NJ+mqErifs8H57cC4WG?=
- =?us-ascii?Q?T69l21TXAdTirCqzPrwSCvqfkwZ6lv14L0m3gU8Mvtiex099d9qPhjSx9ndQ?=
- =?us-ascii?Q?5Apn8UpIMjak/5XHwJIWLTtz77FpNjmWAA1ypJIyFXveNj+AHDsK1hUxBCsf?=
- =?us-ascii?Q?jsv1rwGFmekhZt5ymlRLgfOkZ/bS6iPdDd9rADLKptwLKURbgu4LaXZYz7aa?=
- =?us-ascii?Q?oYMidnjjS6N0JknspfvhKkdOCprj5vEXS0sGBQBGnXnQjLMZqvzvi2lEXJnZ?=
- =?us-ascii?Q?Q38QGBam2eDQ+lZf94yhNGA5YEnCt/cs96XssPoz//vlgyCV6Lke9T7WZcDW?=
- =?us-ascii?Q?08hxqvcMNSsii+wGzKQ38uxZO+OJfAlLq+DbHEglQHhEMAptmW3VWZfuTpuR?=
- =?us-ascii?Q?6WdYddQdOGqzUyBS0Msv/RqEAlDwoHtSlsyRNxVAxVk0jM+FhB543PMD9rYU?=
- =?us-ascii?Q?Mi7tqA9TdIMelpXqGLIvF2hMr2opjXuuttsQq/Ml/MZXFKKoo3DPa+BArkPD?=
- =?us-ascii?Q?NwtFQFldZuF+0rU5kw55WOfb7ek9hrYFglUsnngScaa8SJAjQwuwfYLflIjA?=
- =?us-ascii?Q?XCe3XCIr8p20LpiL9IEJquQ1eRliE5qlDNgGLGa58SYkcVPRikvlpbtIsdB7?=
- =?us-ascii?Q?9URxCMewCPnQJmpa5nuKsiYlC3LCX61Ju+ENXKTAKU5bBIsgk1c7UAdzbE5H?=
- =?us-ascii?Q?yy8GrfPhMn78oYl/1ua/Y+EvXbj4KNg3F6vSdEs6MCX/t1QtaV4F7OCDenRi?=
- =?us-ascii?Q?Aic/f8udowk+gHHLWWd8SnmO9oYA5J0zbF2Q3SY8QO0UF66hvbxtPfGl6qVh?=
- =?us-ascii?Q?ASQZxfyogA5EUBi3Y950J6F+LqjkHNAYpDmKSf+zdenwYULIs6cFbNRi+B5T?=
- =?us-ascii?Q?B54AHE90+2vwJdNsw+ndaySSqGp6ktIfD3MHabZvKtOu5AgRLGlmcgI374/6?=
- =?us-ascii?Q?BpusoeYl6Up9i8XsITbuI1F6iQeOeTHVK9yLGwtqeEGB6x2u/kyqE6/EEjMW?=
- =?us-ascii?Q?vd8hDy8EmkqbGzCJvuq/jXlidWkiazApfNnn2X3enSaLYFRba6eakFVfx6No?=
- =?us-ascii?Q?92PerzPTDm2Zo4YuWbZ7Tv8faie0xeG/zzs0MOCeSnloCnZ2IFpMzgs0bNIh?=
- =?us-ascii?Q?DHcBvWblYpArcref8x9tdDtmE4+s?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7779.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?xR/oaMyX+PCvHydi5wiCKu3ZdrfikcBuBGf4x9m3+zoyFAMD4JH4XWfVgTXK?=
- =?us-ascii?Q?RBZERHXdswthRQhCFvY+rEUJ/UlCms+HERhDaC20Hb3lhXN6QYDHincom817?=
- =?us-ascii?Q?D5N+5kSuyDI3yqNVtUVh/8Oajh99LVzDQ4PF4OQCqojP2c+np9Uf3cVfpK2s?=
- =?us-ascii?Q?T5Kju1ucLFJgXUlxLz+Gk/LJhH6jNXt1bYPoEyiGWdFrS/o3z7mTupCKrdr6?=
- =?us-ascii?Q?jpfFH9bUtrOphV4wVUDWKMHea8N/gUYz++cDwIeQfFiRDXWKZJgvD58Z6x9V?=
- =?us-ascii?Q?F7cA4RT+wuFO8/wuIa9pQF2xGHDVqplfkVQ+fwyb/Y2y+vKPIbym/nHQ49lq?=
- =?us-ascii?Q?Ce5ELnqqRSlctvzIEgPI0MIyEV+yMyBtAoC11MZLC0CtBX8HsGaulsz7ymye?=
- =?us-ascii?Q?QJqhEPodGPDjk/G/Qbz6cHjyRrqO7S6Y06pfelozUZ/2PylXHcMFex+ygq/j?=
- =?us-ascii?Q?8v5Sg/pl1T2tB2zRDglOrH55ywAut3O/5oOGUQiboK3W8nDkqlPlczUf2DDI?=
- =?us-ascii?Q?BU6zJY83su+VBcAYRpoHG6iMZTPYldHVTfi/MG3X+YiRjRKJa8I26caWr52e?=
- =?us-ascii?Q?u7+79RNHJshSPWGnhMEHWKLPOLSsuZRJreIVAwSHMLE7pUmea+qoDtitjIX0?=
- =?us-ascii?Q?uGvmafUj+Gd9uR9RjxrtUnLIWbN7zX59Xq668dc8bzwC3W/73T++X9GNEfdW?=
- =?us-ascii?Q?2WbW1LZ/WAtLBT4quDmQSUIivjUaBZg2dqFj3gj+E1bkoW6CKEDTa7a+taqN?=
- =?us-ascii?Q?di+jzK2GpNL08d/tMcqrKUhkaxCHJ/pu7Q8vvPWGukUi0vzDIgEbSWcAB0Vd?=
- =?us-ascii?Q?te2EcfKMwW/3k/IFyB7iDeaVcWt3LGfrrfOncpUil4K9XmI9s8djuujZbjMi?=
- =?us-ascii?Q?scPvIU/q2m72cZPRUKfPbDbxqlSoeQkP6qoVcQ/pUHeUSIewpY1Fg0wQMzDX?=
- =?us-ascii?Q?np8wQVqXwbUobGjCa0SkLPU5hEPd7gisSpVNFQmVTFmpq2VWwUJ69MwMAK9L?=
- =?us-ascii?Q?PFXJOf8Xieyx1J7h6C1d1GZwB5io/4KyewRs/1TNWEDSMo9j8rtvHZCvpNzQ?=
- =?us-ascii?Q?e51PY7Dfo5wt7UvgQ7XML9xR80PFcRJ7MEpgUCnjk79ELWv6Qb0jqKQIoBtU?=
- =?us-ascii?Q?qMqwFjR/eRc5vQKrZ9bFlpdLjUi20cjDK118ElVt+YofRkZfTn3KS/rp/6AA?=
- =?us-ascii?Q?OaGR7UBnkIgdQUlem3C1YkSUXhG3TwmZDw0SBvQjHTcAFCIlKa2yllZj+x6z?=
- =?us-ascii?Q?wgkDdfLRrmr9m9fxVuyVTWlFJLVQ8tz05aYz8w6Gpv8Fdu92IHjgGkHkGRc7?=
- =?us-ascii?Q?CgUh566GiDv41ik+M3+bHFkpUZRsmURWcT1nRc73xuwG4ojgob4cgY/76JWA?=
- =?us-ascii?Q?GkTcdiem2pHsOY2CybYjKXCePsq4rbDY/aqLEAS9ytrb/2qSZn+OfXWo8N3B?=
- =?us-ascii?Q?cmgwZuhuHgfoUOPygnftOM2vNZ2xTIL3IGv+Viaze07ifziyuhaj7pktgukX?=
- =?us-ascii?Q?OuKxemO0ExLNIDoOWP0Gj8uAW2ENZGa7fusVVhKp9sF5ifJe1JZPWO6zlQTq?=
- =?us-ascii?Q?6KAumSmnYfZaJXfuaLOtatBPwsTJ2ymK+h8Sc1uL9a2tsy8+eCwrypqBtzlT?=
- =?us-ascii?Q?Tw=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4af42d0f-dc04-4714-3bec-08dd525e12c4
-X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7779.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2025 09:56:55.2901
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xWzyImesAG3oY+54AMS43JHrCI3vIuoLy0GL4u4+RnvJo2NYtUD4e/Fa4tLhQrPBy6wIu/uZWUHp+SNCBVVg8g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7663
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND bpf-next v7 0/4] Add prog_kfunc feature probe
+To: Eduard Zingerman <eddyz87@gmail.com>, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, haoluo@google.com,
+ jolsa@kernel.org, qmo@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250212153912.24116-1-chen.dylane@gmail.com>
+ <2b025df3-144b-4909-a2b4-66356540f71c@gmail.com>
+ <598a7d089936b18472937679d4131286f102cb18.camel@gmail.com>
+ <0eee016f-2d37-4c80-98cf-fc134d3ad917@gmail.com>
+ <475831c7d175529df4cc638506217c67010bf8da.camel@gmail.com>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <475831c7d175529df4cc638506217c67010bf8da.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 21, 2025 at 05:42:49PM +0800, Furong Xu wrote:
-> > +void ethtool_mmsv_link_state_handle(struct ethtool_mmsv *mmsv, bool up)
-> > +{
-> > +	unsigned long flags;
-> > +
-> > +	ethtool_mmsv_stop(mmsv);
-> > +
-> > +	spin_lock_irqsave(&mmsv->lock, flags);
-> > +
-> > +	if (up && mmsv->pmac_enabled) {
-> > +		/* VERIFY process requires pMAC enabled when NIC comes up */
-> > +		ethtool_mmsv_configure_pmac(mmsv, true);
-> > +
-> > +		/* New link => maybe new partner => new verification process */
-> > +		ethtool_mmsv_apply(mmsv);
-> > +	} else {
-> > +		mmsv->status = ETHTOOL_MM_VERIFY_STATUS_INITIAL;
+在 2025/2/21 02:43, Eduard Zingerman 写道:
+> On Fri, 2025-02-21 at 02:09 +0800, Tao Chen wrote:
 > 
-> Tested this patch on my side, everything works well, but the verify-status
-> is a little weird:
+> [...]
 > 
-> # kernel booted, check initial states:
-> ethtool --include-statistics --json --show-mm eth1
-> [ {
->         "ifname": "eth1",
->         "pmac-enabled": false,
->         "tx-enabled": false,
->         "tx-active": false,
->         "tx-min-frag-size": 60,
->         "rx-min-frag-size": 60,
->         "verify-enabled": false,
->         "verify-time": 128,
->         "max-verify-time": 128,
->         "verify-status": "INITIAL",
->         "statistics": {
->             "MACMergeFrameAssErrorCount": 0,
->             "MACMergeFrameSmdErrorCount": 0,
->             "MACMergeFrameAssOkCount": 0,
->             "MACMergeFragCountRx": 0,
->             "MACMergeFragCountTx": 0,
->             "MACMergeHoldCount": 0
->         }
->     } ]
+>> Hi Eduard,
+>>
+>> I try to run your test case, but it seems btf_is_decl_tag always return
+>> false, Are there any special restrictions for the tag feature of btf？
 > 
-> # Enable pMAC by: ethtool --set-mm eth1 pmac-enabled on
-> ethtool --include-statistics --json --show-mm eth1
-> [ {
->         "ifname": "eth1",
->         "pmac-enabled": true,
->         "tx-enabled": false,
->         "tx-active": false,
->         "tx-min-frag-size": 60,
->         "rx-min-frag-size": 60,
->         "verify-enabled": false,
->         "verify-time": 128,
->         "max-verify-time": 128,
->         "verify-status": "DISABLED",
->         "statistics": {
->             "MACMergeFrameAssErrorCount": 0,
->             "MACMergeFrameSmdErrorCount": 0,
->             "MACMergeFrameAssOkCount": 0,
->             "MACMergeFragCountRx": 0,
->             "MACMergeFragCountTx": 0,
->             "MACMergeHoldCount": 0
->         }
->     } ]
+> Hi Tao,
+>   
+>> My compilation environment：
+>>
+>> pahole --version
+>> v1.29
+>> clang --version
+>> Ubuntu clang version 18.1.3 (1ubuntu1)
 > 
-> # Disable pMAC by: ethtool --set-mm eth1 pmac-enabled off
-> ethtool --include-statistics --json --show-mm eth1
-> [ {
->         "ifname": "eth1",
->         "pmac-enabled": true,
->         "tx-enabled": false,
->         "tx-active": false,
->         "tx-min-frag-size": 60,
->         "rx-min-frag-size": 60,
->         "verify-enabled": false,
->         "verify-time": 128,
->         "max-verify-time": 128,
->         "verify-status": "DISABLED",
->         "statistics": {
->             "MACMergeFrameAssErrorCount": 0,
->             "MACMergeFrameSmdErrorCount": 0,
->             "MACMergeFrameAssOkCount": 0,
->             "MACMergeFragCountRx": 0,
->             "MACMergeFragCountTx": 0,
->             "MACMergeHoldCount": 0
->         }
->     } ]
+> Hm, pahole should generate kfunc tags since 1.27.
+> I use pahole 'next' branch, but it is the same as 1.29 at the moment.
+> Do you see kfunc prototypes at the bottom of vmlinux.h?
+> They look like so:
 > 
-> verify-status always normal on other cases.
+>    ...
+>    extern u32 tcp_reno_undo_cwnd(struct sock *sk) __weak __ksym;
+>    ...
+> 
+> These are generated by bpftool from decl tags I look for in the test case.
+> Decl tags are inserted by pahole, see btf_encoder.c:btf_encoder__tag_kfuncs().
+> 
 
-Thanks for testing and for reporting this inconsistency.
+It's all right now, when i use make 
+PAHOLE=/home/dylane/sdb/dwarves/build/pahole -j4, thanks.
 
-> @Vladimir, maybe we shouldn't update mmsv->status in ethtool_mmsv_link_state_handle()?
-> Or, update mmsv->status like below:
-> mmsv->status = mmsv->pmac_enabled ?
-> 		ETHTOOL_MM_VERIFY_STATUS_INITIAL :
-> 		ETHTOOL_MM_VERIFY_STATUS_DISABLED;
+> Anyways, below is the list of all kfuncs from my config,
+> it is possible to adapt the test case with something like this:
+> 
+>          for (i = 0; i < ARRAY_SIZE(all_kfuncs); ++i) {
+>                  kfunc = all_kfuncs[i];
+>                  kfunc_id = btf__find_by_name_kind(vmlinux_btf, kfunc, BTF_KIND_FUNC);
+>                  printf("%-42s ", kfunc);
+>                  if (kfunc_id < 0) {
+>                          printf("<not found>\n");
+>                          continue;
+>                  }
+>                  ...
+>          }
+> 
 
-You mean mmsv->status = mmsv->verify_enabled ? ETHTOOL_MM_VERIFY_STATUS_INITIAL :
-                        ~~~~~~~~~~~~~~~~~~~~   ETHTOOL_MM_VERIFY_STATUS_DISABLED?
+Well, i try it.
 
-> Anyway, this is too minor, so:
+> --- 8< --------------------------------------
 > 
-> Tested-by: Furong Xu <0x1207@gmail.com>
+> static const char *all_kfuncs[] = {
+> 	"bbr_cwnd_event",
+> 	"bbr_init",
+> 	"bbr_main",
+> 	"bbr_min_tso_segs",
+> 	"bbr_set_state",
+> 	"bbr_sndbuf_expand",
+> 	"bbr_ssthresh",
+> 	"bbr_undo_cwnd",
+> 	"bpf_arena_alloc_pages",
+> 	"bpf_arena_free_pages",
+> 	"bpf_cast_to_kern_ctx",
+> 	"bpf_cgroup_acquire",
+> 	"bpf_cgroup_ancestor",
+> 	"bpf_cgroup_from_id",
+> 	"bpf_cgroup_release",
+> 	"bpf_copy_from_user_str",
+> 	"bpf_cpumask_acquire",
+> 	"bpf_cpumask_and",
+> 	"bpf_cpumask_any_and_distribute",
+> 	"bpf_cpumask_any_distribute",
+> 	"bpf_cpumask_clear",
+> 	"bpf_cpumask_clear_cpu",
+> 	"bpf_cpumask_copy",
+> 	"bpf_cpumask_create",
+> 	"bpf_cpumask_empty",
+> 	"bpf_cpumask_equal",
+> 	"bpf_cpumask_first",
+> 	"bpf_cpumask_first_and",
+> 	"bpf_cpumask_first_zero",
+> 	"bpf_cpumask_full",
+> 	"bpf_cpumask_intersects",
+> 	"bpf_cpumask_or",
+> 	"bpf_cpumask_release",
+> 	"bpf_cpumask_set_cpu",
+> 	"bpf_cpumask_setall",
+> 	"bpf_cpumask_subset",
+> 	"bpf_cpumask_test_and_clear_cpu",
+> 	"bpf_cpumask_test_and_set_cpu",
+> 	"bpf_cpumask_test_cpu",
+> 	"bpf_cpumask_weight",
+> 	"bpf_cpumask_xor",
+> 	"bpf_crypto_ctx_acquire",
+> 	"bpf_crypto_ctx_create",
+> 	"bpf_crypto_ctx_release",
+> 	"bpf_crypto_decrypt",
+> 	"bpf_crypto_encrypt",
+> 	"bpf_ct_change_status",
+> 	"bpf_ct_change_timeout",
+> 	"bpf_ct_insert_entry",
+> 	"bpf_ct_release",
+> 	"bpf_ct_set_nat_info",
+> 	"bpf_ct_set_status",
+> 	"bpf_ct_set_timeout",
+> 	"bpf_dynptr_adjust",
+> 	"bpf_dynptr_clone",
+> 	"bpf_dynptr_from_skb",
+> 	"bpf_dynptr_from_xdp",
+> 	"bpf_dynptr_is_null",
+> 	"bpf_dynptr_is_rdonly",
+> 	"bpf_dynptr_size",
+> 	"bpf_dynptr_slice",
+> 	"bpf_dynptr_slice_rdwr",
+> 	"bpf_fentry_test1",
+> 	"bpf_get_dentry_xattr",
+> 	"bpf_get_file_xattr",
+> 	"bpf_get_fsverity_digest",
+> 	"bpf_get_kmem_cache",
+> 	"bpf_get_task_exe_file",
+> 	"bpf_iter_bits_destroy",
+> 	"bpf_iter_bits_new",
+> 	"bpf_iter_bits_next",
+> 	"bpf_iter_css_destroy",
+> 	"bpf_iter_css_new",
+> 	"bpf_iter_css_next",
+> 	"bpf_iter_css_task_destroy",
+> 	"bpf_iter_css_task_new",
+> 	"bpf_iter_css_task_next",
+> 	"bpf_iter_kmem_cache_destroy",
+> 	"bpf_iter_kmem_cache_new",
+> 	"bpf_iter_kmem_cache_next",
+> 	"bpf_iter_num_destroy",
+> 	"bpf_iter_num_new",
+> 	"bpf_iter_num_next",
+> 	"bpf_iter_scx_dsq_destroy",
+> 	"bpf_iter_scx_dsq_new",
+> 	"bpf_iter_scx_dsq_next",
+> 	"bpf_iter_task_destroy",
+> 	"bpf_iter_task_new",
+> 	"bpf_iter_task_next",
+> 	"bpf_iter_task_vma_destroy",
+> 	"bpf_iter_task_vma_new",
+> 	"bpf_iter_task_vma_next",
+> 	"bpf_key_put",
+> 	"bpf_kfunc_call_memb_release",
+> 	"bpf_kfunc_call_test_release",
+> 	"bpf_list_pop_back",
+> 	"bpf_list_pop_front",
+> 	"bpf_list_push_back_impl",
+> 	"bpf_list_push_front_impl",
+> 	"bpf_local_irq_restore",
+> 	"bpf_local_irq_save",
+> 	"bpf_lookup_system_key",
+> 	"bpf_lookup_user_key",
+> 	"bpf_map_sum_elem_count",
+> 	"bpf_modify_return_test",
+> 	"bpf_modify_return_test2",
+> 	"bpf_modify_return_test_tp",
+> 	"bpf_obj_drop_impl",
+> 	"bpf_obj_new_impl",
+> 	"bpf_path_d_path",
+> 	"bpf_percpu_obj_drop_impl",
+> 	"bpf_percpu_obj_new_impl",
+> 	"bpf_preempt_disable",
+> 	"bpf_preempt_enable",
+> 	"bpf_put_file",
+> 	"bpf_rbtree_add_impl",
+> 	"bpf_rbtree_first",
+> 	"bpf_rbtree_remove",
+> 	"bpf_rcu_read_lock",
+> 	"bpf_rcu_read_unlock",
+> 	"bpf_rdonly_cast",
+> 	"bpf_refcount_acquire_impl",
+> 	"bpf_remove_dentry_xattr",
+> 	"bpf_send_signal_task",
+> 	"bpf_session_cookie",
+> 	"bpf_session_is_return",
+> 	"bpf_set_dentry_xattr",
+> 	"bpf_sk_assign_tcp_reqsk",
+> 	"bpf_skb_ct_alloc",
+> 	"bpf_skb_ct_lookup",
+> 	"bpf_skb_get_fou_encap",
+> 	"bpf_skb_get_xfrm_info",
+> 	"bpf_skb_set_fou_encap",
+> 	"bpf_skb_set_xfrm_info",
+> 	"bpf_sock_addr_set_sun_path",
+> 	"bpf_sock_destroy",
+> 	"bpf_task_acquire",
+> 	"bpf_task_from_pid",
+> 	"bpf_task_from_vpid",
+> 	"bpf_task_get_cgroup1",
+> 	"bpf_task_release",
+> 	"bpf_task_under_cgroup",
+> 	"bpf_throw",
+> 	"bpf_verify_pkcs7_signature",
+> 	"bpf_wq_init",
+> 	"bpf_wq_set_callback_impl",
+> 	"bpf_wq_start",
+> 	"bpf_xdp_ct_alloc",
+> 	"bpf_xdp_ct_lookup",
+> 	"bpf_xdp_flow_lookup",
+> 	"bpf_xdp_get_xfrm_state",
+> 	"bpf_xdp_metadata_rx_hash",
+> 	"bpf_xdp_metadata_rx_timestamp",
+> 	"bpf_xdp_metadata_rx_vlan_tag",
+> 	"bpf_xdp_xfrm_state_release",
+> 	"cgroup_rstat_flush",
+> 	"cgroup_rstat_updated",
+> 	"crash_kexec",
+> 	"cubictcp_acked",
+> 	"cubictcp_cong_avoid",
+> 	"cubictcp_cwnd_event",
+> 	"cubictcp_init",
+> 	"cubictcp_recalc_ssthresh",
+> 	"cubictcp_state",
+> 	"dctcp_cwnd_event",
+> 	"dctcp_cwnd_undo",
+> 	"dctcp_init",
+> 	"dctcp_ssthresh",
+> 	"dctcp_state",
+> 	"dctcp_update_alpha",
+> 	"scx_bpf_consume",
+> 	"scx_bpf_cpu_rq",
+> 	"scx_bpf_cpuperf_cap",
+> 	"scx_bpf_cpuperf_cur",
+> 	"scx_bpf_cpuperf_set",
+> 	"scx_bpf_create_dsq",
+> 	"scx_bpf_destroy_dsq",
+> 	"scx_bpf_dispatch",
+> 	"scx_bpf_dispatch_cancel",
+> 	"scx_bpf_dispatch_from_dsq",
+> 	"scx_bpf_dispatch_from_dsq_set_slice",
+> 	"scx_bpf_dispatch_from_dsq_set_vtime",
+> 	"scx_bpf_dispatch_nr_slots",
+> 	"scx_bpf_dispatch_vtime",
+> 	"scx_bpf_dispatch_vtime_from_dsq",
+> 	"scx_bpf_dsq_insert",
+> 	"scx_bpf_dsq_insert_vtime",
+> 	"scx_bpf_dsq_move",
+> 	"scx_bpf_dsq_move_set_slice",
+> 	"scx_bpf_dsq_move_set_vtime",
+> 	"scx_bpf_dsq_move_to_local",
+> 	"scx_bpf_dsq_move_vtime",
+> 	"scx_bpf_dsq_nr_queued",
+> 	"scx_bpf_dump_bstr",
+> 	"scx_bpf_error_bstr",
+> 	"scx_bpf_exit_bstr",
+> 	"scx_bpf_get_idle_cpumask",
+> 	"scx_bpf_get_idle_smtmask",
+> 	"scx_bpf_get_online_cpumask",
+> 	"scx_bpf_get_possible_cpumask",
+> 	"scx_bpf_kick_cpu",
+> 	"scx_bpf_now",
+> 	"scx_bpf_nr_cpu_ids",
+> 	"scx_bpf_pick_any_cpu",
+> 	"scx_bpf_pick_idle_cpu",
+> 	"scx_bpf_put_cpumask",
+> 	"scx_bpf_put_idle_cpumask",
+> 	"scx_bpf_reenqueue_local",
+> 	"scx_bpf_select_cpu_dfl",
+> 	"scx_bpf_task_cgroup",
+> 	"scx_bpf_task_cpu",
+> 	"scx_bpf_task_running",
+> 	"scx_bpf_test_and_clear_cpu_idle",
+> 	"tcp_cong_avoid_ai",
+> 	"tcp_reno_cong_avoid",
+> 	"tcp_reno_ssthresh",
+> 	"tcp_reno_undo_cwnd",
+> 	"tcp_slow_start",
+> };
 > 
+> -------------------------------------- >8 ---
 > 
-> > +		mmsv->verify_retries = ETHTOOL_MM_MAX_VERIFY_RETRIES;
-> > +
-> > +		/* No link or pMAC not enabled */
-> > +		ethtool_mmsv_configure_pmac(mmsv, false);
-> > +		ethtool_mmsv_configure_tx(mmsv, false);
-> > +	}
-> > +
-> > +	spin_unlock_irqrestore(&mmsv->lock, flags);
-> > +}
-> > +EXPORT_SYMBOL_GPL(ethtool_mmsv_link_state_handle);
+> [...]
+> 
+
+
+-- 
+Best Regards
+Tao Chen
 
