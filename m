@@ -1,150 +1,118 @@
-Return-Path: <bpf+bounces-52163-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52164-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE585A3F14E
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 11:05:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CC4EA3F158
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 11:06:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E130A17E9CA
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 10:04:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCEAC189E059
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 10:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4251EE03C;
-	Fri, 21 Feb 2025 10:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC9E204C35;
+	Fri, 21 Feb 2025 10:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mElo3CJ+"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QJIvTzM+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B5F1FECA7;
-	Fri, 21 Feb 2025 10:03:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1391D6DDC;
+	Fri, 21 Feb 2025 10:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740132235; cv=none; b=pjlSrhxR7AHqXYDIh2NXfJWTqntnQUI2ToOZMeXqpfi7j42XgoO65rwU3RtLQA1hm84CM12Sx7s9T7hYFJjrxVU1HbaQpGaaD5Di5s7ki4rFg4fxvindRipDbLgawJ646WB5jVs8T0UdTCnXVQD+Z2JbpReGUoxxu9EdjU9F7eg=
+	t=1740132309; cv=none; b=Wj3zsU8LUMpt1LXtK45xukR4fyCtn6eRE6U3y1AQVuXEhxn5BVwYOnFnfTIc90TmnihQdmO8GnoWFos/LzDe2qStajwWWejthhtNAXakEuaoPmHqTL4+jYOouEOiCzKWrLiasMWcyMiYwjjppCh7HvQhESTBeqMr3HIPoygwYPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740132235; c=relaxed/simple;
-	bh=kdDYrB6N6WvXiJWxvXdlROQD7OkyuM6+oQ6tfN8JvYQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o69DU7IAySgjrqkbiWBAkwI/ZYduxX28ATxTrUlXqSIInBxVfPblKTE3m713LDPCn3chkgIQFZgzEMTx22xqxtU/O0REAd0AGCwTaAa65k7TGwf8GG37xpBFOIFexPh65hVAEP6Ut5q4Ip7r73CzLgSgx9Gn4OcgNi57EEqqlWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mElo3CJ+; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-220c8f38febso39643875ad.2;
-        Fri, 21 Feb 2025 02:03:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740132234; x=1740737034; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5PWSZrirQdj8aGkv2pYC6N6bxRY9wPrB8HX8oeQhEtQ=;
-        b=mElo3CJ+NxiWcTxk1m9gzt3Gtxwim4dtcrUv1CLgfEVw+NhAqCxPGcyrfjueVFD5oK
-         qSAcj2i+4ZEfPzocC37EirGG3c6kgZXLMY/UnX96wcvl95k1cAZizcRBuAlz0iQm0ZuZ
-         v/in/l7EIMOEEo49JUVXsx3PTA+raW0RrDine0s9+QFnmzXpjuSo6QQTQbaWVhNU5CY/
-         yvHPFERXemlytf8+wuoJC27VlaYq5HPJIU0toXL6qWuyN2MY17mFDfIsy5J4i/sFeat4
-         Fd63biFfFF8WfMlSh5hRGVxg2MGp2N2vyR6lJ7QDi+C/KJKYSbK7cyhfniNNVYsXagCd
-         YGgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740132234; x=1740737034;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5PWSZrirQdj8aGkv2pYC6N6bxRY9wPrB8HX8oeQhEtQ=;
-        b=E7Occ+7iqn32hAqOqEnbVrbJSeD3PPwVlvNyBMPEosbChDwfGU65+bzNZkfiFRYztQ
-         /RNHsLFIcBuI/4RuoNXlxT1/3fyPfsDR372kBQdnjDqMX6w4tn9aiwzoSt340gWAxIP4
-         T4wI+c6daq2CpdQ+GwQsy+xONdzQ8BDLSBKBwkOIoOLfCN/BW6EdbUC7HsrC5QFIhrgm
-         uqoI+0a7iRxpwcKyKH0oAOZWjRH/6J6LcneJn7iULGm3eKqKyTlkRWFXw5JieAINnlLS
-         rVd7VpoQ0SFB9NfPakuTNubS59a7zzM58rOczTG0eUgOyMdAVd0QeslM1Z3fjCrUX/Ma
-         LCEg==
-X-Forwarded-Encrypted: i=1; AJvYcCUjUjAf4bH8p+w8gKHqsv5RGKdzZeqrElHHWiigwF0CR/KX1rBeGKmPT1AYPbDf/QjovTolWb7OdT5kpxNk@vger.kernel.org, AJvYcCWjdEYkI2DPkSlWaUMKNBXzXDnKEJKcNx/4fA7slswIMBe/ICs9GcrGFYIlAIc+7t5EDfQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWY/TUxymTPBD7ugc14vactbCie5t9babvP1SCc8vdvSL5BofC
-	/o9e5GerIVc/xCIAi2e/LV58bdQxsH2Qt8VKrRwMcnxjGUTeUCXF
-X-Gm-Gg: ASbGnct9GkoebwaXnJ9i9F4N+hixB5npl186rRsR+XQpke07Neuu6CnkV3wHOtdC7aZ
-	jbpCehh3kKxzJs1stBLMR//ryfBky00wQD95EU6F8TiLQIE/goXFcQdxUnC9J4feaD95QIBtqKw
-	CXpCSbSRIWJup+6LikYY9Kb80GHaHikK5ut/BxX4ndFfqm2QaqvtaUU4pPcq09Jae0p26Mwpotq
-	ZL+hak5Qanfy/Xrp4+OhoC/1sqabbwzZLTlQPaUGQ8hWGcrdK18afA2pvSuwJ3hc0UNGy88B7kH
-	+5WnqVoPsbEYGXOJy38KeAuhCyF63z4FtZ3vi7UC0aZI
-X-Google-Smtp-Source: AGHT+IHcP/adC+b4mN4jC4IWtxIovv4qFvyLf8AWMB5KnZt3UQWVacgb2YqYxya3HyAbW1QZSWC42Q==
-X-Received: by 2002:a17:902:ce0a:b0:21f:860:6d0d with SMTP id d9443c01a7336-2219ff8433dmr48435205ad.5.1740132233683;
-        Fri, 21 Feb 2025 02:03:53 -0800 (PST)
-Received: from [172.23.162.68] ([183.134.211.52])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d556f97dsm133849185ad.172.2025.02.21.02.03.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Feb 2025 02:03:53 -0800 (PST)
-Message-ID: <3305ee5d-167e-4e32-b33f-814f3a63c623@gmail.com>
-Date: Fri, 21 Feb 2025 18:03:49 +0800
+	s=arc-20240116; t=1740132309; c=relaxed/simple;
+	bh=LD5Lhl1Q+KLHq2xv3l+SsRfVNOf4Q5JroCfGt9RJiOI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=U4Y+Our8K+ccQVd5qU19DpnapsPx1sCl0YFNqp8vlOOjwnkk7zCAoncQ24t+PWuaZgJUviIF66qjmS1nZZofByxhNTRT31TCj4yAuBuRwE5OpHT8Xf95spsjOkrqbJqNiHwHHd3G2liH4+HDQyOAS74Roxc4B/xBeIEmNFwyKOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QJIvTzM+; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D7ADC4439E;
+	Fri, 21 Feb 2025 10:04:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1740132300;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9o77DNgMUQd4emSOMc0omKMZ7sD/eszdoHGQSaoXRJI=;
+	b=QJIvTzM+G6gu/+bqs869VfAHqnZB53fGjm/HKF+/31QTi/1+RdxYlFLAQsmgG36J5W+SUc
+	aqpijeoLOD764Dts6O+oIcV2kRSnMtItSUSi5ER1frY8KW81SHu7DNcZUTbrEuChIwRxt3
+	NndqiOJFQPPncso4TQuvVrEJFVZKtKLzhWcSNMsrS0Dtw8flONJKOiiPbyVaR3XYsXKnT0
+	MNLZ53qfVTazEh6C/oJBB3Un4xaw7zmSpPdReP8CVm7BHX07S8XRPPYWwgL5b0nLKTxqUb
+	vxlBIAACtgIaeTAkOrRvyqva/mcc4WT/5Kw7G/cARALLRyPAfqk4u14TsRgKZw==
+From: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+Subject: [PATCH bpf-next 0/2] selftests/bpf: Migrate test_xdp_vlan.sh into
+ test_progs
+Date: Fri, 21 Feb 2025 11:04:56 +0100
+Message-Id: <20250221-xdp_vlan-v1-0-7d29847169af@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND bpf-next v7 0/4] Add prog_kfunc feature probe
-To: Eduard Zingerman <eddyz87@gmail.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- haoluo@google.com, jolsa@kernel.org, qmo@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250212153912.24116-1-chen.dylane@gmail.com>
- <2b025df3-144b-4909-a2b4-66356540f71c@gmail.com>
- <598a7d089936b18472937679d4131286f102cb18.camel@gmail.com>
- <CAEf4BzYsGnhmnhkHdUPN8yBfbv57R9h4N2R8RcqdjhmHWvJVkg@mail.gmail.com>
- <1fb198103e72d88c45caf6ef2dd8ebeb258ad48e.camel@gmail.com>
-From: Tao Chen <chen.dylane@gmail.com>
-In-Reply-To: <1fb198103e72d88c45caf6ef2dd8ebeb258ad48e.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMlPuGcC/x3MQQqAIBBA0avIrBPUCqKrRITpWANhoiGCdPek5
+ YPPr5AwEiaYWYWImRLdvkF2DMyp/YGcbDMooUYhe8GLDVu+tOc4qdGYwTo5aGh5iOio/KsF9uC
+ 4x/LA+r4fuXeWwWQAAAA=
+X-Change-ID: 20250130-xdp_vlan-e825cc4df14a
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+ Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+X-Mailer: b4 0.14.2
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeileejhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffufffkgggtgffvvefosehtjeertdertdejnecuhfhrohhmpedfuegrshhtihgvnhcuvehurhhuthgthhgvthculdgvuefrhfcuhfhouhhnuggrthhiohhnmddfuceosggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepkedtkefgtedtgeekhfdujeevfefhvdetgfduudeifedvhfdvgfefteehhfdvvefhnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopegludelvddrudeikedrtddrudegngdpmhgrihhlfhhrohhmpegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedvgedprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhhpshhinhhghheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtohepshhhuhgrhheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvgguugihiiekj
+ eesghhmrghilhdrtghomhdprhgtphhtthhopegsphhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhihkhholhgrlhesfhgsrdgtohhmpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhg
+X-GND-Sasl: bastien.curutchet@bootlin.com
 
-在 2025/2/21 09:11, Eduard Zingerman 写道:
-> On Thu, 2025-02-20 at 17:07 -0800, Andrii Nakryiko wrote:
->> On Tue, Feb 18, 2025 at 2:51 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
->>>
->>> On Mon, 2025-02-17 at 13:21 +0800, Tao Chen wrote:
-> 
-> [...]
-> 
->>> I tried the test enumerating all kfuncs in BTF and doing
->>> libbpf_probe_bpf_kfunc for BPF_PROG_TYPE_{KPROBE,XDP}.
->>> (Source code at the end of the email).
->>>
->>> The set of kfuncs returned for XDP looks correct.
->>> The set of kfuncs returned for KPROBE contains a few incorrect entries:
->>> - bpf_xdp_metadata_rx_hash
->>> - bpf_xdp_metadata_rx_timestamp
->>> - bpf_xdp_metadata_rx_vlan_tag
->>>
->>> This is because of a different string reported by verifier for these
->>> three functions.
->>>
->>> Ideally, I'd write some script looking for
->>> register_btf_kfunc_id_set(BPF_PROG_TYPE_***, kfunc_set)
->>> calls in the kernel source code and extracting the prog type /
->>> functions in the set, and comparing results of this script with
->>> output of the test below for all program types.
->>> But up to you if you'd like to do such rigorous verification or not.
->>>
->>> Otherwise patch-set looks good to me, for all patch-set:
->>>
->>> Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
->>
->> Shouldn't we fix the issue with those bpf_xdp_metadata_* kfuncs? Do
-> 
-> I assume Tao would post a v8 with the fix.
-> 
+Hi all,
 
-Sure, will fix it.
+This patch series continues the work to migrate the script tests into
+prog_tests.
 
->> you have details on what different string verifier reports?
-> 
-> The string is "metadata kfuncs require device-bound program\n".
-> 
-> [...]
-> 
+test_xdp_vlan.sh tests the ability of an XDP program to modify the VLAN
+ids on the fly. This isn't currently covered by an other test in the
+test_progs framework so I add a new file prog_tests/xdp_vlan.c that does
+the exact same tests (same network topology, same BPF programs) and
+remove the script.
 
+Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+---
+Bastien Curutchet (eBPF Foundation) (2):
+      selftests/bpf: test_xdp_vlan: Rename BPF sections
+      selftests/bpf: Migrate test_xdp_vlan.sh into test_progs
 
+ tools/testing/selftests/bpf/Makefile               |   4 +-
+ tools/testing/selftests/bpf/prog_tests/xdp_vlan.c  | 175 ++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_xdp_vlan.c  |  20 +-
+ tools/testing/selftests/bpf/test_xdp_vlan.sh       | 233 ---------------------
+ .../selftests/bpf/test_xdp_vlan_mode_generic.sh    |   9 -
+ .../selftests/bpf/test_xdp_vlan_mode_native.sh     |   9 -
+ 6 files changed, 186 insertions(+), 264 deletions(-)
+---
+base-commit: a814b9be27fb3c3f49343aee4b015b76f5875558
+change-id: 20250130-xdp_vlan-e825cc4df14a
+
+Best regards,
 -- 
-Best Regards
-Tao Chen
+Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+
 
