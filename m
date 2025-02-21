@@ -1,248 +1,229 @@
-Return-Path: <bpf+bounces-52206-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52207-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1650A3FD9F
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 18:41:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F4F7A3FE0A
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 18:57:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F1171886E89
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 17:41:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51173427272
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 17:57:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE241250BE8;
-	Fri, 21 Feb 2025 17:40:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7630224FC1E;
+	Fri, 21 Feb 2025 17:57:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DjGENyva"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HZb9T+NC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A672505D7;
-	Fri, 21 Feb 2025 17:40:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78FEF36AF5
+	for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 17:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740159653; cv=none; b=feSZz4jZ6YQnIS53iy0YMOkqqhbKCZAw8lY6+fa8NjzOzsR98/fllV8QaMtCX6C8Clg6lqm0zZ5hVQnacTmn7sd41Oahs1OLIFgTr4ViyC/Qn0mFdacEVtViZyv3SsNEiZRykgQWFMJXZDqnRrnHA4Y4M9T+8oV/6hbka7IZ4UM=
+	t=1740160639; cv=none; b=dCGr4UjVIWW66wzJZejDp2EGpbRny7cgAdLnQ4vtU/Ub8O0i3mtYKvtbCy0agUfF7mHFDzEJOUjDd4PimLP1dZMkRXMPh5G7cK3aKFh07yvJcD8BFYhJ9YbURwQ1tcY+j7Cmq4/PhGoUeHLu2K2haXT3f9q6ihw1N6rmqVCXLlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740159653; c=relaxed/simple;
-	bh=51abtb4G25xQbbr/J+RXcL4o16pvtYICBzOFpWSlHkE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kifuVG7kmZZ5e7xC6oJotS3B/vy/wryO+jF9/p8h0kZwwdSn/Bu6kOP6HWHl2XuHsJCr+pe+FhnNw5OspfUC8g9oiBqIYjVp6pwI+KcHtdIlJI8LP69Yi2/1C+urenbdHW2pg6NOtSUN30A40k369n2nUA1SEjy9ckUFRTIWtwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DjGENyva; arc=none smtp.client-ip=209.85.216.45
+	s=arc-20240116; t=1740160639; c=relaxed/simple;
+	bh=aEc0nhS8jnNZ9GCV3azUoolBQuPOFiuWzTyzyejIRRo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rvHOclG3PvHFv/LupIZahXfYjlCXo/MS39FnJi57WkGGoWW5lEjV1KwfpRxeGKyXOfEGPBAJUJgZ6LNK0666UG11BuvH6ir0FFVcSqyCQJkJ7Mo8qGzQcgDfNdxJ6xgEtjgP2tJ8eVhTXUjaqytnCOGpmnxQfSo/cuDjqSpA3nw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HZb9T+NC; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2fc20e0f0ceso3761602a91.3;
-        Fri, 21 Feb 2025 09:40:51 -0800 (PST)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2210d92292eso73691335ad.1
+        for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 09:57:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740159651; x=1740764451; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=51abtb4G25xQbbr/J+RXcL4o16pvtYICBzOFpWSlHkE=;
-        b=DjGENyvalEwUvXyIFhDKTBfNxZXL7MNnWYRRQ0gvVHNZoseyAe8g7Nb2ekNWBHBM1L
-         ETsp0MY/2UsvqafLxUtlUusSeryKsVi5c8tke3l5MfCl3Q4EpkvozLZE1nQFKEHdzLHF
-         60O8/R8LCyWbpptIq/MROuiK26PybBAEOQfAz7sUqLqvDUD3lwJ1nxzrzO2dvpLEze+r
-         xxnBTiLOQOqYXNjl6ddKgdtq8PW3rAN5CmWE5HkanFegfZFot3KDtcahC/EYNxiPQinN
-         SmXmbKFInGm5o4dzT+XgQFGvLgAkjNL0XCsfcS5qvVp1QygjxlFGvz5x+CnOVpkzEczh
-         ApMQ==
+        d=gmail.com; s=20230601; t=1740160633; x=1740765433; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oQO5Hum2iR9rBBddheqDvA5rHtRM6GiavxU+MEnf0eg=;
+        b=HZb9T+NC2nWw0cKIsTIg/1F2PMmJY+NJR5LeyNXsBeK7PFe46r9viBXD3JWBM/k0Bb
+         p4U+koyM4yms6UztiroR3/D1uH1XBzbC8Cl268vcVXy5jm/puS+CYZCPd4I1qDVAXX9a
+         eYgN7USW/s5/r2NKOSBBh4nUzl+/ar9wXkl+3fbilk3WGvt1jKym5+uERSeJ5SamKRR8
+         JBp7O0cn/iCw7bur1He5u0Aua5Bcz9DWzHsXx/MOF0TMbkFkTruMW9Au3lD6gYfsVfX5
+         o462D0IhZ0jnm/TClUIK0gfQNcBYPEo79fnCkSIMKl0QUrR9zD2ZSrCpypX+EdbwPevt
+         C6Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740159651; x=1740764451;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=51abtb4G25xQbbr/J+RXcL4o16pvtYICBzOFpWSlHkE=;
-        b=FwCeAezWIiaSiq6f7iZAiFHkwLNkNevl6zlAT2Up083AutnSOJ9H1tqWIfqn98KWxB
-         VNOM5jxnFv9b8Q+66kt/FVSHk/JT2+sIHZSNTvqqyWoVAqRlSKuYLsyhyJXTHygIJLd3
-         YhR4mm9W45FHDzXHnh7rnwqTLcnu+nDY9v/YgQ7wA6xq25VloFHN1Gu8BWYTyijMDT1+
-         BOgHWx2OUzbeOACwSvG2bCnGxGJcSQvteMga2mCehjHJxhNBnp2CKL7YffKMi8HLK31H
-         wmt3TzlI3ypzvLz2QCudwDMsL3USWdJUWbRY/RPWIP4IkdkznXx/MawbbeHoYafFIrWn
-         v4iA==
-X-Forwarded-Encrypted: i=1; AJvYcCWkxVUfevf3T+8BB43OLLKuJVK5eIZXauyMXDlHjSpvqc2I21+T6X+xcV8fjKC0Awj4pMs=@vger.kernel.org, AJvYcCX99R5i+A5vXJvuLIIrn5sD6JUMvwZzm71gk9FD20jrz7O667I1bFYJjiGXLZ8kgbOxKJAlStV1FHSiQ2A2VVx6@vger.kernel.org, AJvYcCXR7Fndz+cZ/Q42GaPZlSMGCQ8P4xEpmg4HSvznD0jceMzQsMmAbKnaETW7ALMFiTeARTQpyxqSE2RKI8r3@vger.kernel.org
-X-Gm-Message-State: AOJu0YxdMqCc/ehOTZBMKyiXdOxo8J8rx6p32iJEnDhViW5bgugskAlE
-	Z+8VzazRSsyYylxlTFTgg4plADGlOqlxKhfDeqIeFuo4Vg3b/P6nw/yLyf0hNMxx7CkiyMdd/uk
-	0HBXEaKIf8bwIpg0Kp8sjVriLE54=
-X-Gm-Gg: ASbGncs/0zs5XvdU3mS7u8gaeDz0sfsdQq24S/K32jg8O2Zfh6EIEbk2tmLr+AKKtCz
-	WtITNjQhNx/xMZa4HlUoWA3QXDzRw2bPqVzEmkuxq/kQ978RrXfKHTl2WwYR/UHdKteaMjl8Tsv
-	VjMr8sJMQelcuSj5Q9x0uzD68=
-X-Google-Smtp-Source: AGHT+IF0wvO6nfjhFNyrRaqFKb0R8TES6IvyDZZ2RRaEdEPeYGHy7fTD5oobMg7SXrr5e7wPV9/OWPniyDlc5SIHNw4=
-X-Received: by 2002:a17:90b:2b8e:b0:2ea:3f34:f18f with SMTP id
- 98e67ed59e1d1-2fce78cbeaemr6175693a91.19.1740159649264; Fri, 21 Feb 2025
- 09:40:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740160633; x=1740765433;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oQO5Hum2iR9rBBddheqDvA5rHtRM6GiavxU+MEnf0eg=;
+        b=ryiU1OnbxfTbna9YNwIBYxqgNAQu671quMze2Y6PTgpCbHYq4KTovMu6qtJt5RtCst
+         dju5u6jMtE5OCFojokhMGDMf/HQhnIOWwgJVG8fNXmwDHX0umJiit3kENkOzaNWbCvj5
+         t71/DnSAYWXPEJDOGe2+KkiXfOhVbVPMg9vA43pi6lHauukaDdlLSgHFMcs1Fn5hBLnj
+         JrqlUoOxRk1NM25U8TFBta+ncdOrNL2+Erl/oQpM+vBKZe+pE900rb+amiE23EsxVBjN
+         pSkl+/re2XPL7SRwUPoxwJBQUF4uLcCbmdyFG3e6YsUjSnvmkpWowuAEnGW98Eq30KCi
+         VVTA==
+X-Gm-Message-State: AOJu0YyGzxtJKZbsnTbgzt8kVNeBijQJsH1e1iaV6rnXarLSGPgD7GkB
+	BCuRh40ICY/+jdbURBHGObDUhqT2iOCzqBIUEsUi/7lTiawuQ383xQU33Q==
+X-Gm-Gg: ASbGncvagVMJ0XqdKL/FuBD5iQE7Kx/r1U/Gbha6Y2HFcnOCNyaRdlgPqnPbTOaNgeZ
+	rg2JgGBEmXileohBghO//EvToF4MPjD2sgPwVueCg5bQ49oDMT0Ut7/pEdTVAOGCTjgW/BVzPdv
+	iUvOQC8qmS79erkDW3lS6S9n4MQ8oqOcp4+aCHFWu0aEUB3V/a2bHJebboeR3j0MME5w1GJS07w
+	MyCyY53PAgofMCrsAjlmKy9UgMJXjgKyxsLYaJJDod4/3v47OYXqZM2X713n9aKTCm15h3/fX0+
+	hkXCUVTXj3mXE+7G2pIgiKiWBhChfCMCsCfNZ8gP69eV+8kscqIB8q2XJvCB6Nz4m/pLTaCsLYE
+	h
+X-Google-Smtp-Source: AGHT+IHeYE3xKpIFuBbScw/puXfz+nxy0cBXXFwG/x0jQ/WaDJgcHwYCjktGkXcCDRvNMUNCcOYAbQ==
+X-Received: by 2002:a17:902:da88:b0:21f:164d:93fe with SMTP id d9443c01a7336-221a000aa36mr71275195ad.53.1740160633527;
+        Fri, 21 Feb 2025 09:57:13 -0800 (PST)
+Received: from localhost.localdomain (c-76-146-13-146.hsd1.wa.comcast.net. [76.146.13.146])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7327367a960sm10806416b3a.150.2025.02.21.09.57.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Feb 2025 09:57:13 -0800 (PST)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: daniel@iogearbox.net,
+	andrii@kernel.org,
+	alexei.starovoitov@gmail.com,
+	ameryhung@gmail.com,
+	kernel-team@meta.com
+Subject: [PATCH] bpf: Refactor check_ctx_access()
+Date: Fri, 21 Feb 2025 09:56:44 -0800
+Message-ID: <20250221175644.1822383-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250122215206.59859-1-slava.imameev@crowdstrike.com>
- <20250122215206.59859-2-slava.imameev@crowdstrike.com> <CAEf4Bzajxh4xvg-aCaBhLQdNOZdhwceYUD2UsCcWku4ZBca_Hw@mail.gmail.com>
- <8831ed8fa183f76fefd71244360fa0ca35b11910.camel@crowdstrike.com>
- <CAEf4BzYWe0KCzA4-qwAGp5n_ydJ0_zyLSO=Crr_vewFHzZ0t6Q@mail.gmail.com>
- <e55a1441252079e73b2abdf3635efcebda6b47c1.camel@crowdstrike.com>
- <CAEf4BzZ8H0nQMEMaDGMfyngb15zMFEduy_R_ajakrdjGGtiOQA@mail.gmail.com> <7727e5d4f035c04d03ba274ad8b7fb8bc7da696c.camel@crowdstrike.com>
-In-Reply-To: <7727e5d4f035c04d03ba274ad8b7fb8bc7da696c.camel@crowdstrike.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 21 Feb 2025 09:40:36 -0800
-X-Gm-Features: AWEUYZmrHlpwSSF-oG8LZ8mihpEMSqMTy8rAUnz6iKydBzQ5cX3pjuinhtRb2Kk
-Message-ID: <CAEf4BzZ=-r7AkSGhru_NMxPcXDLmkVpTiQrBxUvsgq-LE0Lk6w@mail.gmail.com>
-Subject: Re: Re: Re: Re: [PATCH 2/2] libbpf: BPF programs dynamic loading and attaching
-To: Martin Kelly <martin.kelly@crowdstrike.com>
-Cc: "mykolal@fb.com" <mykolal@fb.com>, "shuah@kernel.org" <shuah@kernel.org>, 
-	"eddyz87@gmail.com" <eddyz87@gmail.com>, "song@kernel.org" <song@kernel.org>, 
-	Mark Fontana <mark.fontana@crowdstrike.com>, 
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, 
-	"yonghong.song@linux.dev" <yonghong.song@linux.dev>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"kpsingh@kernel.org" <kpsingh@kernel.org>, "martin.lau@linux.dev" <martin.lau@linux.dev>, 
-	"ast@kernel.org" <ast@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"sdf@fomichev.me" <sdf@fomichev.me>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, 
-	Slava Imameev <slava.imameev@crowdstrike.com>, "jolsa@kernel.org" <jolsa@kernel.org>, 
-	"haoluo@google.com" <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 12, 2025 at 2:31=E2=80=AFPM Martin Kelly
-<martin.kelly@crowdstrike.com> wrote:
->
-> On Mon, 2025-02-10 at 16:06 -0800, Andrii Nakryiko wrote:
-> > > Tracking associated maps for a program is not necessary. As long as
-> > > the last BPF program using the BPF map is unloaded, the kernel will
-> > > automatically free not-anymore-referenced BPF map. Note that
-> > > bpf_object itself will keep FDs for BPF maps, so you'd need to make
-> > > sure to do bpf_object__close() to release those references.
-> > >
-> > > But if you are going to ask to re-create BPF maps next time BPF
-> > > program is loaded... Well, I'll say you are asking for a bit too >
-> > > much,
-> > > tbh. If you want to be *that* sophisticated, it shouldn't be too
-> > > hard
-> > > for you to get all this information from BPF program's
-> > > instructions.
-> > >
->
-> We really are that sophisticated (see below for more details). We could
-> scan program instructions, but we'd then tie our logic to BPF
-> implementation details and duplicate logic already present in libbpf
-> (https://elixir.bootlin.com/linux/v6.13.2/source/tools/lib/bpf/libbpf.c#L=
-6087
-> ). Obviously this *can* be done but it's not at all ideal from an
-> application perspective.
->
+Reduce the variable passing madness surrounding check_ctx_access().
+Currently, check_mem_access() passes many pointers to local variables to
+check_ctx_access(). They are used to initialize "struct
+bpf_insn_access_aux info" in check_ctx_access() and then passed to
+is_valid_access(). Then, check_ctx_access() takes the data our from
+info and write them back the pointers to pass them back. This can be
+simpilified by moving info up to check_mem_access().
 
-I agree it's not ideal, but it's also not some complicated and
-bound-to-be-changed logic. What you point out in libbpf source code is
-a bit different thing, reality is much simpler. Only so-called ldimm64
-instruction (BPF_LD | BPF_IMM | BPF_DW opcode) can be referencing map
-FD, so analysing this is borderline trivial. And this is part of BPF
-ISA, so not going to change.
+No functional change.
 
-We need to double check, but I think libbpf doesn't use FD_ARRAY
-approach, unless you are using light skeleton, so if you don't you
-don't even have to worry about FD_ARRAY thing.
+Signed-off-by: Amery Hung <ameryhung@gmail.com>
+---
+ kernel/bpf/verifier.c | 56 ++++++++++++++++---------------------------
+ 1 file changed, 20 insertions(+), 36 deletions(-)
 
->
-> > > > >
-> > > bpf_object is the unit of coherence in libbpf, so I don't see us
-> > > refcounting maps between bpf_objects. Kernel is doing refcounting
-> > > based on FDs, so see if you can use that.
-> > >
->
-> I can understand that. That said, I think if there's no logic across
-> objects, and bpf_object access is not thread-safe, it puts us into a
-> tough situation:
-> - Complex refcounting, code scanning, etc to keep consistency when
-> manipulating maps used by multiple programs.
-> - Parallel loading not being well-balanced, if we split programs across
-> objects.
->
-> We could alternatively write our own custom loader, but then we=E2=80=99d=
- have
-> to duplicate much of the useful logic that libbpf already implements:
-> skeleton generation, map/program association, embedding programs into
-> ELFs, loading logic and kernel probing, etc. We=E2=80=99d like some way t=
-o
-> handle dynamic/parallel loading without having to replicate all the
-> advantages libbpf grants us.
->
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 212b487fd39d..98a376bd7287 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6006,19 +6006,10 @@ static int check_packet_access(struct bpf_verifier_env *env, u32 regno, int off,
+ 
+ /* check access to 'struct bpf_context' fields.  Supports fixed offsets only */
+ static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off, int size,
+-			    enum bpf_access_type t, enum bpf_reg_type *reg_type,
+-			    struct btf **btf, u32 *btf_id, bool *is_retval, bool is_ldsx,
+-			    u32 *ref_obj_id)
++			    enum bpf_access_type t, struct bpf_insn_access_aux *info)
+ {
+-	struct bpf_insn_access_aux info = {
+-		.reg_type = *reg_type,
+-		.log = &env->log,
+-		.is_retval = false,
+-		.is_ldsx = is_ldsx,
+-	};
+-
+ 	if (env->ops->is_valid_access &&
+-	    env->ops->is_valid_access(off, size, t, env->prog, &info)) {
++	    env->ops->is_valid_access(off, size, t, env->prog, info)) {
+ 		/* A non zero info.ctx_field_size indicates that this field is a
+ 		 * candidate for later verifier transformation to load the whole
+ 		 * field and then apply a mask when accessed with a narrower
+@@ -6026,22 +6017,15 @@ static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off,
+ 		 * will only allow for whole field access and rejects any other
+ 		 * type of narrower access.
+ 		 */
+-		*reg_type = info.reg_type;
+-		*is_retval = info.is_retval;
+-
+-		if (base_type(*reg_type) == PTR_TO_BTF_ID) {
+-			if (info.ref_obj_id &&
+-			    !find_reference_state(env->cur_state, info.ref_obj_id)) {
++		if (base_type(info->reg_type) == PTR_TO_BTF_ID) {
++			if (info->ref_obj_id &&
++			    !find_reference_state(env->cur_state, info->ref_obj_id)) {
+ 				verbose(env, "invalid bpf_context access off=%d. Reference may already be released\n",
+ 					off);
+ 				return -EACCES;
+ 			}
+-
+-			*btf = info.btf;
+-			*btf_id = info.btf_id;
+-			*ref_obj_id = info.ref_obj_id;
+ 		} else {
+-			env->insn_aux_data[insn_idx].ctx_field_size = info.ctx_field_size;
++			env->insn_aux_data[insn_idx].ctx_field_size = info->ctx_field_size;
+ 		}
+ 		/* remember the offset of last byte accessed in ctx */
+ 		if (env->prog->aux->max_ctx_offset < off + size)
+@@ -7398,11 +7382,12 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 		if (!err && value_regno >= 0 && (t == BPF_READ || rdonly_mem))
+ 			mark_reg_unknown(env, regs, value_regno);
+ 	} else if (reg->type == PTR_TO_CTX) {
+-		bool is_retval = false;
+ 		struct bpf_retval_range range;
+-		enum bpf_reg_type reg_type = SCALAR_VALUE;
+-		struct btf *btf = NULL;
+-		u32 btf_id = 0, ref_obj_id = 0;
++		struct bpf_insn_access_aux info = {
++			.reg_type = SCALAR_VALUE,
++			.is_ldsx = is_ldsx,
++			.log = &env->log,
++		};
+ 
+ 		if (t == BPF_WRITE && value_regno >= 0 &&
+ 		    is_pointer_value(env, value_regno)) {
+@@ -7414,8 +7399,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 		if (err < 0)
+ 			return err;
+ 
+-		err = check_ctx_access(env, insn_idx, off, size, t, &reg_type, &btf,
+-				       &btf_id, &is_retval, is_ldsx, &ref_obj_id);
++		err = check_ctx_access(env, insn_idx, off, size, t, &info);
+ 		if (err)
+ 			verbose_linfo(env, insn_idx, "; ");
+ 		if (!err && t == BPF_READ && value_regno >= 0) {
+@@ -7423,8 +7407,8 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 			 * PTR_TO_PACKET[_META,_END]. In the latter
+ 			 * case, we know the offset is zero.
+ 			 */
+-			if (reg_type == SCALAR_VALUE) {
+-				if (is_retval && get_func_retval_range(env->prog, &range)) {
++			if (info.reg_type == SCALAR_VALUE) {
++				if (info.is_retval && get_func_retval_range(env->prog, &range)) {
+ 					err = __mark_reg_s32_range(env, regs, value_regno,
+ 								   range.minval, range.maxval);
+ 					if (err)
+@@ -7435,7 +7419,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 			} else {
+ 				mark_reg_known_zero(env, regs,
+ 						    value_regno);
+-				if (type_may_be_null(reg_type))
++				if (type_may_be_null(info.reg_type))
+ 					regs[value_regno].id = ++env->id_gen;
+ 				/* A load of ctx field could have different
+ 				 * actual load size with the one encoded in the
+@@ -7443,13 +7427,13 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 				 * a sub-register.
+ 				 */
+ 				regs[value_regno].subreg_def = DEF_NOT_SUBREG;
+-				if (base_type(reg_type) == PTR_TO_BTF_ID) {
+-					regs[value_regno].btf = btf;
+-					regs[value_regno].btf_id = btf_id;
+-					regs[value_regno].ref_obj_id = ref_obj_id;
++				if (base_type(info.reg_type) == PTR_TO_BTF_ID) {
++					regs[value_regno].btf = info.btf;
++					regs[value_regno].btf_id = info.btf_id;
++					regs[value_regno].ref_obj_id = info.ref_obj_id;
+ 				}
+ 			}
+-			regs[value_regno].type = reg_type;
++			regs[value_regno].type = info.reg_type;
+ 		}
+ 
+ 	} else if (reg->type == PTR_TO_STACK) {
+-- 
+2.47.1
 
-Yeah, I can understand that as well, but bpf_object's single-threaded
-design and the fact that bpf_object__load is kind of the final step
-where programs are loaded (or not) is pretty backed in. I don't see
-bpf_object becoming multi-threaded. The dynamic program
-loading/unloading/loading again is something that I can't yet justify,
-tbh.
-
-So the best I can propose you is to use libbpf's skeleton and
-bpf_object concept for, effectively, ELF handling, relocations, all
-the preparations up to loading BPF programs. And after that you can
-take over loading and handling program lifetime outside of bpf_object.
-
-Dynamic map creation after bpf_object__load() I think is completely
-outside of the scope and you'll have to solve this problem for
-yourself. I would point out, though, that internally libbpf already
-switched to sort-of pre-creating stable FDs for maps before they are
-actually created in the kernel. So it's conceivable that we can have
-more granularity in bpf_object preparation. I.e., first step would be
-to parse ELF and handle relocations, prepare everything. After that we
-can have a step to create maps, and then another one to create
-programs. Usually people would do all that, but you can stop right
-before maps creation or before program creation, whatever fits your
-use case better.
-
-The key is that program instructions will be final and won't need
-adjustments regardless of maps actually being created or not. FDs, as
-I mentioned, are stable regardless.
-
-So, not ideal for your (very complicated) use case, but you still
-avoid dealing with all the ELF and relocation stuff (which is the
-annoying and rather complicated part, and I can see no one wanting to
-reimplement that). Map and program creation is relatively
-straightforward matters compared to that.
-
-> > >
-> > >
-> > > Is 100 just a nicely looking rather large number, or do you really
-> > > have 100 different BPF programs? Why so many and are they really
-> > > all
-> > > unique?
-> > >
-> > > Asking because if it's just a way to attach BPF program doing more
-> > > or
-> > > less uniform set of actions for different hooks, then perhaps there
-> > > are better ways to do this without having to duplicating BPF
-> > > programs
-> > > so much (like BPF cookie, multi-kprobes, etc, etc)
->
-> 100 is not an arbitrary number; we have that and higher (~200 is a good
-> current estimate, and that grows as new product features are added).
-> The programs are really doing different things. We also have to support
-> a wide range of kernels, handling cases like: "on this kernel range,
-> trampolines aren't supported, so use kretprobes with a context map for
-> function args instead of fexit, but on newer kernels just use an fexit
-> hook."
-
-Yes, this is typical, and bpf_program__set_autoload() and
-bpf_map__set_autocreate() are meant to handle that. It's the program
-loading after bpf_object load is what is not supported.
-
->
-> The use case here is that our security monitoring agent leverages eBPF
-> as its foundational technology to gather telemetry from the kernel. As
-> part of that, we hook many different kernel subsystems (process,
-> memory, filesystem, network, etc), tying them together and tracking
-> with maps. So we legitimately have a very large number of programs all
-> doing different work. For products of this scale, it increases security
-> and performance to load this set of programs and their maps in an
-> optimized, parallel fashion and subsequently change the loaded set of
-> programs and maps dynamically without disturbing the rest of the
-> application.
-
-Yes, makes sense. You'll need to decide for yourself if it's actually
-more meaningful to split those 200 programs into independent
-bpf_objects by features, and be rigorous about sharing state (maps)
-through bpf_map__reuse_fd(), which would allow to parallelize loading
-within confines of existing libbpf APIs. Or you can be a bit more
-low-level with program loading outside of bpf_object API, as I
-described above.
 
