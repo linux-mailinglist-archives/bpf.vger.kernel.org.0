@@ -1,118 +1,215 @@
-Return-Path: <bpf+bounces-52118-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52119-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C971BA3E901
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 01:08:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0AEFA3E92A
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 01:27:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA4F917DA09
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 00:08:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB20919C1ADB
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 00:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DB215A8;
-	Fri, 21 Feb 2025 00:08:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E253A94A;
+	Fri, 21 Feb 2025 00:27:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hZ0uSOUp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LIJgfwu9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827FEA50
-	for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 00:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C895680
+	for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 00:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740096524; cv=none; b=IgIHwsru+PaVWx6Gqcgx5n/LawLatp2+7a/X7QvYpoF0LYBlMw2D+RFz9aykBDqvebMzLUyoDnDXYQuGvPWNPkgQui5bS7d+f99TE2wGEL9yjEC23nxxWxqneLpSNFSoXUq0N2eg7IjjNtj25U44VmwU/HBmJt/I9AC5ZTRxQSY=
+	t=1740097655; cv=none; b=JSxcS+WiUHG16vY7UK3rmXyo5cn/GYl3qXiK2LLN0kgDesIq4p2LvwKBMeBrdoo+h+cdLiNusfIdSThNzjKkmsTENp7E8QZY4wKVhYy9vNlt9kC7L20j7TW+w9rHffHalq6NtBL1mbDg6o0VA6Ry9a0XSrEoFlOlUjE7gBkTszA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740096524; c=relaxed/simple;
-	bh=x9Iy0aQ/0u20HQD/iaQ8yx7I1x7qXkVIIXP1Yhim+BM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=C9HJTKyK1dLZ9454yWNFRiOkt9gSGStfjfl2l9iDpRI+aPg4C2fJ5appIAR+v3cmdp7uDmbcjeNOruSGl1kKqRUwpZgP8Ox2Mx0GJU4dtr1POyOk5/HUAyVq3F/eGMKDzZu8TVLFxDZ/I/VA7LC9+CLoX8l42GN95GJWW4Rogu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hZ0uSOUp; arc=none smtp.client-ip=209.85.214.172
+	s=arc-20240116; t=1740097655; c=relaxed/simple;
+	bh=TTdw1tPFi8yOHGp0ZMkHGvT2KdqRWrsaowg6na42ZgA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o9YmfIUlU5iq9MHgRQEoX9oN1WHFjb8Aq9LJeqSUgRiF7zuGPjX4WGCJWEBNIRTDokvt/1Ztp3bqIqkGPB5KcnMhXElppbZ4ONBPphcHDZsFtDTjSQIMOOgXImNewxaNgTU6DNUx4QD+C+FTMmjDPEC5NNtL6lMzGlD7q1xBi5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LIJgfwu9; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-220e989edb6so42146135ad.1
-        for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 16:08:42 -0800 (PST)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2fbfa8c73a6so3150478a91.2
+        for <bpf@vger.kernel.org>; Thu, 20 Feb 2025 16:27:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740096522; x=1740701322; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=x9Iy0aQ/0u20HQD/iaQ8yx7I1x7qXkVIIXP1Yhim+BM=;
-        b=hZ0uSOUpIwjIcq8nPdbYuwXdwkYP/3684uJBu4LduXDv5dkYhW6riCn+F8LDkviBpX
-         sO6l+fyZ4TRc6rx80/KkpRM9k1aJ1TU0+CzmogKgd20kTQRmSd2AAapTYOvWmYAsVStq
-         U50eYmE0rNmyMecLBcUpOfC9NCmFvMKCbK2zbz5uwriTgb3HQ8QxQV8hEEe+Qif+qarB
-         YIeP4rc2sOCEAhbt1BWins4kUdXP2K+SiWZv1fwOd5FOIvanDBPR39J9sLu/JFjWTraF
-         D8BGLPV+fxjKdBACDSbGJ3C6eTPpFWN9dRFHHAz7fCKDloSfwUHNW9qmX9y0epLQSFym
-         uApw==
+        d=gmail.com; s=20230601; t=1740097653; x=1740702453; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/VDipfeu3J7pK4FwGR9nB/uNJJHa2UZBHDvEXttMDpQ=;
+        b=LIJgfwu9GaPMW9o3iVHzKYDeWd2xnsyJmAsjZYgez34OZfhVa7j3BqAG9nhhn1cUpq
+         iuMw/lItM/CHXWBKUHqQsjIaWNv1FE6989zdFQzZe52UpZ20dGWujlos2tEDV9Z5c43b
+         AZfuTrFkMlBT70bHGNw2yfo646XbipAeZhSN6RG6XM7nHuUvpTYm93iAX3h+kWHK8UA2
+         kuk3CKdtOPgA/IxnM86FAv9SAIBi3cT4uQsu3WHJ1E+7MlB8+Tg/bFNFtTxfdjUA4ibC
+         bazq0mG7jqruENHAyzH/YGO0qx8BN/f7mzol4LXVCpzTFc2o2YWg+ULip1CcrLL/wAfz
+         h4Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740096522; x=1740701322;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=x9Iy0aQ/0u20HQD/iaQ8yx7I1x7qXkVIIXP1Yhim+BM=;
-        b=c2y/KkSP2TDTB04ajKINr4DKAqyKryxJFyjdpyNHNxTfhsEEmVa9pT4SQz6oKNPYDA
-         CVjZ4VcQX9PSjkC+XszO0JxsHG6GgkhKtPyucCJLrqEHsK9096SocPHzSiV48qsjnB68
-         TMqOmcRWnNQ+/2mw0d4DUml5YBQA8OHmp7fD25UMQVppHVJYqTFLaos7JNlO8DrSwRJa
-         2vVcSCf22zjcuepWcisYi1c9R3UD7b+ERI3EeVJ/dt7yUJGQeEsQwRRY+l7MAZE1R+YI
-         +kmrW7HJEnAkaEJQfbdGcHzu9ZsNYpvsDB2K0YSN8ksOr+UhZMFTwbDATIwhILX16qsv
-         N4eg==
-X-Forwarded-Encrypted: i=1; AJvYcCU46r7kyOuAC33jgzFLLSjsdw/NJ2LkSqSYamaHiy2eHrCXb3i8VkyMIkdt2Ke+ACVjirM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyweD2wplcI0OgOz/VoqUkB9vAsAOweB4mv5D6C2ZSOlHbCm6x+
-	P42YKSX+ykf4Yo0WyvFqwpWTmaauUTO3Km0QuTAh5SAlQZRvOdBI8Nm9N0K2
-X-Gm-Gg: ASbGncvz4VwtGYdTERu36JDwPQawkjM7yYyS1Sf3xvO2tvKlFt8Wh+0vFsldf15WAlV
-	PRDTlEtTmaK18Lze3wUsWjaNAVrmk8bp4P9WcT7RTZdaZ76BVJ+s+jQ1HQ62l4XwUsVuR8LtLLj
-	y7FHomeE+kh8LMDUYBMtZH046X6XhEHUWORhcqztpEz3Yg8zVfdWi6YjGgkkIJCj5KQe4Y77uie
-	TTncBx47ndQjZOHUUsXPvgsQ2GQgjfTJyCoF3+nfjNr11z2j5o723KdA4cXYuLUJTqSWQPzF+UU
-	SqQ4Pl/Y1N01
-X-Google-Smtp-Source: AGHT+IGTYHJJlHAeH3nbGav7KChatfpPZXnhs/tZ/YVwOOcoI0PKsMK5yuDFdC6TxVBt/SmFgzQMAg==
-X-Received: by 2002:a17:903:2a8d:b0:21f:3abc:b9e8 with SMTP id d9443c01a7336-2219ffc3345mr20362015ad.43.1740096521665;
-        Thu, 20 Feb 2025 16:08:41 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d559089asm126162225ad.241.2025.02.20.16.08.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2025 16:08:41 -0800 (PST)
-Message-ID: <b64dfd940e7ee594332832e0e522e38e0c94724d.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: Do not allow tail call in
- strcut_ops program with __ref argument
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Amery Hung <ameryhung@gmail.com>, bpf@vger.kernel.org
-Cc: daniel@iogearbox.net, andrii@kernel.org, alexei.starovoitov@gmail.com, 
-	martin.lau@kernel.org, kernel-team@meta.com
-Date: Thu, 20 Feb 2025 16:08:36 -0800
-In-Reply-To: <20250220221532.1079331-1-ameryhung@gmail.com>
-References: <20250220221532.1079331-1-ameryhung@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+        d=1e100.net; s=20230601; t=1740097653; x=1740702453;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/VDipfeu3J7pK4FwGR9nB/uNJJHa2UZBHDvEXttMDpQ=;
+        b=TOoDzBQ7C1NZXXps4N1wIpjuytkc8nsvQqcK0AoASTf9u7t/Kqh+Gei+KpcRU0lqpY
+         gMo9u7qApiy8xloxn7fLO2KhnR7z6OW++QB6+21HjLYKUWWyBmypAeA8fFCYZvX5AeDf
+         RXQEf1jIV04KgueAUy++TN9Fy08Yd9sSDSzel5JYG5SehI8ywvxYWWTG0+5i1/7uQxqm
+         zvNozxIo/6WaY6z6Vz+b8dSALaVc+9zAmsfFnN+rrYnMCHKl/6bXhIsDn4mv9MzbsseK
+         DulIcLc7loIWQPtH34QBMArYaxwxBw+rHdoLiSFZ+YTu5sCO62//fXVYXMxhrSeBLzsq
+         KCjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+7avmI2VDyi6r2uu5w406xQkNDAUEKy6j/f2RMfAzGmDoxm6y139ZIWcRSdtj5tQnAec=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxln3onhk4VYGgjwd1Cd1QV2vgSK+rnhEYxFTqltkfhSwOHT8nR
+	Ibyf0RhuvAeGZ/9LvFmmj7FHlCKshBEPhg+f9d6ItxJDjBYPDZZ+gCMZFTOM1FFhXUwfIVSj+6z
+	+0S6+0rJrzdZDgNvN865PrfXOcIo=
+X-Gm-Gg: ASbGncspyHsPpLbxEaMO4mACRdeW3Nbuw3kVjPfCud/fQ3MVBgB5gzD+FZkG4E052Nv
+	RRlCOagwB+Il2jIybpsTIJSPs37mS6dP1sPqsBHX/XQBUC50onBh+QqU0T5iqpMO9ePTtACkCD1
+	YbaALv1T5Xz+Gc
+X-Google-Smtp-Source: AGHT+IERkGgRFL5wRGu/nwG7K86LWw0zpb5PHzx/E9g7ZMRx5xrSsygM8OMG67DYcG7WNA2VMmrDdLpzqfxYmZhfgF4=
+X-Received: by 2002:a17:90b:2ccd:b0:2ee:b26c:10a0 with SMTP id
+ 98e67ed59e1d1-2fce8724390mr1426493a91.24.1740097652550; Thu, 20 Feb 2025
+ 16:27:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250219125117.1956939-1-memxor@gmail.com> <20250219125117.1956939-2-memxor@gmail.com>
+ <CAADnVQ+TBG+yAxtY1Q5D6HnhbvgusUVrzyRm7-8oF7wYw+Nqfw@mail.gmail.com>
+ <CAP01T74tZudfS8huoz=sP4UkEgs5ipkz9Qjf=6XNVzJvGOFLgQ@mail.gmail.com>
+ <CAEf4BzbyF3aWdE0Uk0KtdeYwmEYSahfpZk=vK-JhhZ-Bgb55ZQ@mail.gmail.com> <CAP01T76=Twha0twPgzO8Un6--e3cX1PMFEtu1jHVS_7iQzOcfQ@mail.gmail.com>
+In-Reply-To: <CAP01T76=Twha0twPgzO8Un6--e3cX1PMFEtu1jHVS_7iQzOcfQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 20 Feb 2025 16:27:20 -0800
+X-Gm-Features: AWEUYZm16Ewx3twDo-7BP-fD-UYrL96px-isKQTOLe1PVtb9bLAciDauAvm1YLU
+Message-ID: <CAEf4Bzbny7VFufpMq6RZJ1_poYsAFw89tpmKHhMSbTNb2=PsBg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v1 1/2] bpf: Explore PTR_TO_STACK as R0 for bpf_dynptr_slice_rdwr
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2025-02-20 at 14:15 -0800, Amery Hung wrote:
-> Reject struct_ops programs with refcounted kptr arguments (arguments
-> tagged with __ref suffix) that tail call. Once a refcounted kptr is
-> passed to a struct_ops program from the kernel, it can be freed or
-> xchged into maps. As there is no guarantee a callee can get the same
-> valid refcounted kptr in the ctx, we cannot allow such usage.
->=20
-> Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> ---
+On Thu, Feb 20, 2025 at 7:41=E2=80=AFAM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Thu, 20 Feb 2025 at 01:13, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
+ wrote:
+> >
+> > On Wed, Feb 19, 2025 at 10:10=E2=80=AFAM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > On Wed, 19 Feb 2025 at 18:41, Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Wed, Feb 19, 2025 at 4:51=E2=80=AFAM Kumar Kartikeya Dwivedi
+> > > > <memxor@gmail.com> wrote:
+> > > > >
+> > > > > For the bpf_dynptr_slice_rdwr kfunc, the verifier may return a po=
+inter
+> > > > > to the underlying packet (if the requested slice is linear), or c=
+opy out
+> > > > > the data to the buffer passed into the kfunc. The verifier perfor=
+ms
+> > > > > symbolic execution assuming the returned value is a PTR_TO_MEM of=
+ a
+> > > > > certain size (passed into the kfunc), and ensures reads and write=
+s are
+> > > > > within bounds.
+> > > >
+> > > > sounds like
+> > > > check_kfunc_mem_size_reg() -> check_mem_size_reg() ->
+> > > > check_helper_mem_access()
+> > > >    case PTR_TO_STACK:
+> > > >       check_stack_range_initialized()
+> > > >          clobber =3D true
+> > > >              if (clobber) {
+> > > >                   __mark_reg_unknown(env, &state->stack[spi].spille=
+d_ptr);
+> > > >
+> > > > is somehow broken?
+> > > >
+> > > > ohh. It might be:
+> > > > || !is_kfunc_arg_optional(meta->btf, buff_arg)
+> > > >
+> > > > This bit is wrong then.
+> > > > When arg is not-null check_kfunc_mem_size_reg() should be called.
+> > > > The PTR_TO_STACK abuse is a small subset of issues
+> > > > if check_kfunc_mem_size_reg() is indeed not called.
+> > >
+> > > The condition looks ok to me.
+> > >
+> > > The condition to do check_mem_size_reg is !null || !opt.
+> > > So when it's null, and it's opt, it will be skipped.
+> > > When it's null, and it's not opt, the check will happen.
+> > > When arg is not-null, the said function is called, opt does not matte=
+r then.
+> > > So the stack slots are marked misc.
+> > >
+> > > In our case we're not passing a NULL pointer in the selftest.
+> > >
+> > > The problem occurs once we spill to that slot _after_ the call, and
+> > > then do a write through returned mem pointer.
+> > >
+> > > The final few lines from the selftest do the dirty thing, where r0 is
+> > > aliasing fp-8, and r1 =3D 0.
+> > >
+> > > + *(u64 *)(r10 - 8) =3D r8; \
+> > > + *(u64 *)(r0 + 0) =3D r1; \
+> > > + r8 =3D *(u64 *)(r10 - 8); \
+> > > + r0 =3D *(u64 *)(r8 + 0); \
+> > >
+> > > The write through r0 must re-mark the stack, but the verifier doesn't
+> > > know it's pointing to the stack.
+> > > push_stack was the conceptually cleaner/simpler fix, but it apparentl=
+y
+> > > isn't good enough.
+> > >
+> > > Remarking the stack on write to PTR_TO_MEM, or invalidating PTR_TO_ME=
+M
+> > > when r8 is spilled to fp-8 first time after the call are two options.
+> > > Both have some concerns (first, the misaligned stack access is not
+> > > caught, second PTR_TO_MEM may outlive stack frame).
+> >
+> > Reading the description of the problem my first instinct was to have
+> > stack slots with associated obj_ref_id for such cases and when
+> > something writes into that stack slot, invalidate everything with that
+> > obj_ref_id. So that's probably what you mean by invalidating
+> > PTR_TO_MEM, right?
+> >
+> > Not sure I understand what "PTR_TO_STACK with mem_size" (that Alexei
+> > mentioned in another email) means, though, so hard to compare.
+> >
+>
+> Invalidation is certainly one option. The one Alexei mentioned was
+> where we discussed bounding how much data can be read through the
+> PTR_TO_STACK (similar to PTR_TO_MEM), and mark r0 as PTR_TO_STACK.
+> This ends up combining the constraints of both types of pointers (it
+> may as well be called PTR_TO_STACK_OR_MEM) without forking paths.
 
-An alternative location for this check would be in the
-check_helper_call(). If done there, this would allow dead code
-elimination for tail calls within functions with refcounted arguments.
-Which would be useful only if in the future tail calls from such
-functions would be allowed (e.g. a program having a branch w/o tail
-call for old kernel and with tail call for new kernel).
-Probably unlikely to happen, so I think current position of the check is ok=
+Yeah, PTR_TO_STACK_OR_MEM would be more precise. But how does that
+help with this problem? Not sure I follow the idea of the solution
+(but I can wait for patches to be posted).
+
+>
+> The benefit over the push_stack approach is that we avoid the states
+> regression for cls_redirect and balancer_ingress.
+
+yeah, of course, I don't particularly like the push_stack approach.
+
+> For the selftest failure, I plan to just silence the error by changing it=
 .
-
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-
-[...]
-
+>
+> > >
+> > > I don't recall if there was a hardware/JIT specific reason to care
+> > > about stack access alignment or not (on some architectures), but
+> > > otherwise we can over approximately mark at 8-byte granularity for an=
+y
+> > > slot(s) that overlap with the buffer to cover such a case. The second
+> > > problem is slightly trickier, which makes me lean towards invalidatin=
+g
+> > > returned PTR_TO_MEM when stack slot is overwritten or frame is
+> > > destroyed.
 
