@@ -1,346 +1,277 @@
-Return-Path: <bpf+bounces-52222-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52223-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D73A402C0
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 23:34:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE865A40394
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 00:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA32918956EE
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 22:34:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0586519C1429
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 23:40:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E8D253B73;
-	Fri, 21 Feb 2025 22:33:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2835820B21F;
+	Fri, 21 Feb 2025 23:40:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JfnyHpNe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WBbi6trk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1781A254B09
-	for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 22:33:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4B218DB0B;
+	Fri, 21 Feb 2025 23:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740177193; cv=none; b=QYpl3dKKTu4aefNSzvVydoZ3Y3KIb4I5BPMvK09axqHr9ND56IgwpRDm6ElceHsap95gnE5/aPQNo3KybICK+xiQBNuUrQ9PbkL6qquqsE0cfK1wsovouz33b6EumvAyYr0w4P42TWQk+30Gcjdj2EHWUlnzRGit8i1GiisI+50=
+	t=1740181233; cv=none; b=ff4ntypMVrY28FZ2gl1ugJNG1Cnp2C5eNqeqEiKXHODWWyesJ2f8lqOQRP7QaW2WQ7xZLEo3YpUYDBWASmpTfcqbXhWX8x2GXMeYmhiV7TncYBKzZ8qRx8T++spCeB8JPw0B18ldrN+B5N/brdXUz+pH7As1MCRBXbmwPzkNs3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740177193; c=relaxed/simple;
-	bh=yUctMfuA1l+sKHcncB6u6tr/puiw75j8Zz85C+UaQew=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m3h/1yoz7We/CiEbiJ19W5bUMIq/gHBLu3Ua7aLWi0mwwbBuXbVtRY+qG+0uYdyKy4U06W08+mHQyoUPZF0pWZpyGfkOXZV8q7OQlL5dX1eb93x91LnXp0FUKEQrqaNDRaT+z7rZNwV9GFPSelNsAJN2oa27tk38oK5Xo0+EyAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JfnyHpNe; arc=none smtp.client-ip=209.85.221.48
+	s=arc-20240116; t=1740181233; c=relaxed/simple;
+	bh=ZWn8yYSn8uQ8UCfwtAVNWvLesEqQcvP6HMF1xDer8kQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kHoEGTtBk5Bva+TLKcxfrOKAOgPeApTzLX2wor/fhwHrNARiNVHz6LZSQ5EdgjibBWgvosq5/Q+zCuRZnhjOBzHFf7wS5oJTkQLWG26iiE6B4HCNdmxpavWM0GRVUFDFJHUwh8y4cJcObh5pfVdArYPEiGrZx0bU5WV9RSu499M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WBbi6trk; arc=none smtp.client-ip=209.85.219.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-38dcac27bcbso2315607f8f.0
-        for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 14:33:09 -0800 (PST)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e5dad00b2e6so2411675276.3;
+        Fri, 21 Feb 2025 15:40:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740177188; x=1740781988; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1740181231; x=1740786031; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QMw2FquKdbplg420C4xGv1fVMSj6EEaetbkbDjSljEA=;
-        b=JfnyHpNe7cAP2q1CFoPNTrJZbjSf5Cqfwgr55PKpt+/2BpJ2SToirwib/OdQ+qINK9
-         1I910nKoWrFZ1IY7sOhXCIfXcOl8wlYooZA5bRQ2IAjDfrjdPur86JtFsji6Q6InH5AO
-         mDqKzj6AvYutSBnvEFpnLb20m+fGJIf7CQNmBOXYTVLlaBKUaf0tn/ikJbqzTFK3GCOE
-         PJvkv1tR609K0xhx3GjT6r5Iciguc4NccOsGwgCGsCwmEEQu2AGMRo/ptuGJ72Klacra
-         Jo+C8DCNb3FvWi+HUR5fSYS2yif7lNeTjsgmmw0NAhABwzCFU8RjOgMXYHZU5XlsZhIb
-         M0VQ==
+        bh=J0uFQuVa/FJCk6wKcXBfJoG6v5LmVIIjERgdYjCcMM0=;
+        b=WBbi6trkRmLejVujvwfhbUDUKFr9mmKoS1zZLA8xyh3tx6yUQ1AXKSdj6wk5rwxIvd
+         ubmPR2XKsOXdeFZVl4fXgg1V2Bk10KmQpza1kZgBqDvw3PgifMsFvLj47RXlya6rPU2C
+         7j3k2DyyBAjPc1OMjd5gXtPxyTF/nYlYpnmfMZ6clFauvq5Sv5dN90C00vb2r+p1y/AL
+         TopK4zDpJMMSx5UuuXwPYIriRGpkd3NcodHVXC4jDFB0TcMXwnXSZhJDcbrQmejKmGRX
+         f1pdx0iJc8Sa3Fl45gOlgt6rLAzJbkAnfYf1bX5M9U0T+nZm9NGhrAs9f/6zNXF+fM+w
+         u4SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740177188; x=1740781988;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1740181231; x=1740786031;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QMw2FquKdbplg420C4xGv1fVMSj6EEaetbkbDjSljEA=;
-        b=MqER+Di4W8nIGkSO0/Bzn/n9l4ko6F9dUJHnijvA1iv8jMwDMxi+v8SelW5xJPvJzT
-         Qlt7ctKmgcl8/DPZo53wgT1HpQzpXxixEpj17jZeaohzsbCuxqJ5YXWty5sAnYOg9NgY
-         zTvgLxsuCGu+LzuvnZn2Bjsql0j9zHXsSi3VOlnpWdAWs1EpRVqb90KSGe0GCh1cQeky
-         lmnzi/anZTSiK+iJn9PFtlkOCuLZEmKpIOwd+jvTu3aFd7+bFLpH8G4pLnkad7jG65Il
-         Jwp81+5fcnOmFZ28gf3PIE9RGoDDW+9QL0vrAxPGtkzpIl+P1cPah8v+RljirRWGi60d
-         gn7A==
-X-Gm-Message-State: AOJu0YyoeEc1hm6WIaV7kRZMY6pMplYBTE64eyzyV30ZfuKTT1enSwiC
-	ffN+YjpnVdUG/YAZtecIH7oTYDPKXsm4CQ6yOfJdTkY43hfV9jfMcSLyRQ==
-X-Gm-Gg: ASbGnctzrUzX8nJMaSykM8FuAgHp4ygH+OeHVJpmBJAjPNNggg2E0ADmAa1g89NSku5
-	2xo2nHCrDhCVBJUY75UXXmkLm8X9mNsYqjsb9bgXkXZykOc4mS32caaYxn4HfJPOdB/YZTFNzOJ
-	Mm+ETophswB+YTDpeAaaB4I/XrPXmCXa8lzilvw5PUPgMarxD4oBxUeAciYzYK8prFjJXjS7CYp
-	/3AHn3oSKKkwk2CogSzYKcNmnBxW65vXHBOl0///os2xBd6S1FMOQkqONHCQWgUhgHhGjOSBnLv
-	+dRxu7mhjv0KslMMBCDh7FQLjaRhAd2UYW61YtSVWklb08EFGDjWZGus5YVyIYutVazKgexwA3s
-	pNghHRaWM5lYCV+CZwwiwSjgSMwEUajA=
-X-Google-Smtp-Source: AGHT+IETHvzG1bGawbCn7UcLCi0tkNmRRsTJoEOLyppS/GhFIVuDIVyDDpNhziyZEsCIkgE7h82vag==
-X-Received: by 2002:a05:6000:1a87:b0:38f:3ec3:4801 with SMTP id ffacd0b85a97d-38f616323bamr8492030f8f.25.1740177188222;
-        Fri, 21 Feb 2025 14:33:08 -0800 (PST)
-Received: from localhost.localdomain (cpc158789-hari22-2-0-cust468.20-2.cable.virginm.net. [86.26.115.213])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38f259d9be9sm24880003f8f.79.2025.02.21.14.33.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Feb 2025 14:33:07 -0800 (PST)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v4 2/2] selftests/bpf: introduce veristat test
-Date: Fri, 21 Feb 2025 22:32:59 +0000
-Message-ID: <20250221223259.677471-3-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250221223259.677471-1-mykyta.yatsenko5@gmail.com>
-References: <20250221223259.677471-1-mykyta.yatsenko5@gmail.com>
+        bh=J0uFQuVa/FJCk6wKcXBfJoG6v5LmVIIjERgdYjCcMM0=;
+        b=Qg4kkIsfmz8efOncvymNkXAQfjwFW0toYGPQl/TC/RxI7zFX/oO/byWWlzjLozCAlb
+         s+nl+qDDcj7UnS2IvmzGvQuQAJgVxCGWn9GqX511sIT4ck5uLLHUo1R/sbJTECNTeKQO
+         39znSas2yVWMzokPAGaxq1nfXtAXVfLTGFDTOMC9lPzak07JhPkpbNmRyMp6NTd3tgKS
+         YL+7D+y6MrB1CdaT27XI5XIuJCtbA2nmOtZJ81hBHdwf4Jbk2Ja+aocmDGlYu0rNaE+N
+         I5jrqO5Sb+rvZfN6113bZA79iRbTVn2yafAL4t50HBLpl7+qZ/6kq2TxhVzOKGs2Sgq/
+         ojoA==
+X-Forwarded-Encrypted: i=1; AJvYcCWqd7GTHI5X1/9zzmgx0VjyI4SKwkqnnsB97r4VWxeVMUFIKNTQRMY8wRDt1+wyoJdN88wYr2Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyDs7ImC/BnLOdTKEqQ1A5UpgaO5BPKBcZZPT0UAe7Y5cqKRT5W
+	BwjIWsELfgWmSuFd9N4Pzt7ftKH2esyzZnV/P1JqtrNTZGRRl6Ugb2yrUHSeh70Vmg3lU5UyybA
+	InJhuj8KpyEOkJJexLWDK7lRdDZGRQjew
+X-Gm-Gg: ASbGncsybkXka14eCV5XWew0PvBm5DIn31duxCj7XFdH+QVIRrEap4zNvNFWXRpROvu
+	j606AjUckoOSLHMbSP2JSpj5iRgYdQyLV0Vu/4XMS5ABk+riTI3/joBg+2gxP9t3+6IabA5qw1c
+	/yGHbEwRE=
+X-Google-Smtp-Source: AGHT+IGxwkKGp7734gFQO04pUvI45oaeWxVNjU8kaAIwv4PoZexZ/GbiN8VfRp4aUkMLeeEHuVg6YZhl0tvgwerTN48=
+X-Received: by 2002:a05:6902:1086:b0:e5d:c0db:b3de with SMTP id
+ 3f1490d57ef6-e5e2467a803mr4627440276.34.1740181230695; Fri, 21 Feb 2025
+ 15:40:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250220134503.835224-1-maciej.fijalkowski@intel.com>
+ <20250220134503.835224-3-maciej.fijalkowski@intel.com> <0e66379b-3b37-4bbd-9e9d-1f934cb1fdc8@gmail.com>
+ <Z7iUMK1XePvptYc5@boxer> <CAMB2axNJjsytoFrYF=PdsOOWE-bbficZa-54C9YHT5JFu5PFBQ@mail.gmail.com>
+ <Z7jfXXQ06MrlallF@boxer>
+In-Reply-To: <Z7jfXXQ06MrlallF@boxer>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Fri, 21 Feb 2025 15:40:19 -0800
+X-Gm-Features: AWEUYZksvBSvS1N6L0RDkQvOuWoFxsCkeFLaQzDRz4FQm_SloMWNrP-pDR71dsg
+Message-ID: <CAMB2axPtxo+egJs_=SG0LMKdJ1DGyUVhSeGDUY2SDR8syAdeRg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: add kfunc for skb refcounting
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, netdev@vger.kernel.org, magnus.karlsson@intel.com, 
+	martin.lau@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+On Fri, Feb 21, 2025 at 12:17=E2=80=AFPM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> On Fri, Feb 21, 2025 at 11:11:27AM -0800, Amery Hung wrote:
+> > On Fri, Feb 21, 2025 at 6:57=E2=80=AFAM Maciej Fijalkowski
+> > <maciej.fijalkowski@intel.com> wrote:
+> > >
+> > > On Thu, Feb 20, 2025 at 03:25:03PM -0800, Amery Hung wrote:
+> > > >
+> > > >
+> > > > On 2/20/2025 5:45 AM, Maciej Fijalkowski wrote:
+> > > > > These have been mostly taken from Amery Hung's work related to bp=
+f qdisc
+> > > > > implementation. bpf_skb_{acquire,release}() are for increment/dec=
+rement
+> > > > > sk_buff::users whereas bpf_skb_destroy() is called for map entrie=
+s that
+> > > > > have not been released and map is being wiped out from system.
+> > > > >
+> > > > > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > > > > ---
+> > > > >   net/core/filter.c | 62 ++++++++++++++++++++++++++++++++++++++++=
++++++++
+> > > > >   1 file changed, 62 insertions(+)
+> > > > >
+> > > > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > > > index 2ec162dd83c4..9bd2701be088 100644
+> > > > > --- a/net/core/filter.c
+> > > > > +++ b/net/core/filter.c
+> > > > > @@ -12064,6 +12064,56 @@ __bpf_kfunc int bpf_sk_assign_tcp_reqsk(=
+struct __sk_buff *s, struct sock *sk,
+> > > > >   __bpf_kfunc_end_defs();
+> > > > > +__diag_push();
+> > > > > +__diag_ignore_all("-Wmissing-prototypes",
+> > > > > +             "Global functions as their definitions will be in v=
+mlinux BTF");
+> > > > > +
+> > > > > +/* bpf_skb_acquire - Acquire a reference to an skb. An skb acqui=
+red by this
+> > > > > + * kfunc which is not stored in a map as a kptr, must be release=
+d by calling
+> > > > > + * bpf_skb_release().
+> > > > > + * @skb: The skb on which a reference is being acquired.
+> > > > > + */
+> > > > > +__bpf_kfunc struct sk_buff *bpf_skb_acquire(struct sk_buff *skb)
+> > > > > +{
+> > > > > +   if (refcount_inc_not_zero(&skb->users))
+> > > > > +           return skb;
+> > > > > +   return NULL;
+> > > > > +}
+> > > > > +
+> > > > > +/* bpf_skb_release - Release the reference acquired on an skb.
+> > > > > + * @skb: The skb on which a reference is being released.
+> > > > > + */
+> > > > > +__bpf_kfunc void bpf_skb_release(struct sk_buff *skb)
+> > > > > +{
+> > > > > +   skb_unref(skb);
+> > > > > +}
+> > > > > +
+> > > > > +/* bpf_skb_destroy - Release an skb reference acquired and excha=
+nged into
+> > > > > + * an allocated object or a map.
+> > > > > + * @skb: The skb on which a reference is being released.
+> > > > > + */
+> > > > > +__bpf_kfunc void bpf_skb_destroy(struct sk_buff *skb)
+> > > > > +{
+> > > > > +   (void)skb_unref(skb);
+> > > > > +   consume_skb(skb);
+> > > > > +}
+> > > > > +
+> > > > > +__diag_pop();
+> > > > > +
+> > > > > +BTF_KFUNCS_START(skb_kfunc_btf_ids)
+> > > > > +BTF_ID_FLAGS(func, bpf_skb_acquire, KF_ACQUIRE | KF_RET_NULL)
+> > > > > +BTF_ID_FLAGS(func, bpf_skb_release, KF_RELEASE)
+> > > > > +BTF_KFUNCS_END(skb_kfunc_btf_ids)
+> > > > > +
+> > > > > +static const struct btf_kfunc_id_set skb_kfunc_set =3D {
+> > > > > +   .owner =3D THIS_MODULE,
+> > > > > +   .set   =3D &skb_kfunc_btf_ids,
+> > > > > +};
+> > > > > +
+> > > > > +BTF_ID_LIST(skb_kfunc_dtor_ids)
+> > > > > +BTF_ID(struct, sk_buff)
+> > > > > +BTF_ID_FLAGS(func, bpf_skb_destroy, KF_RELEASE)
+> > > > > +
+> > > > >   int bpf_dynptr_from_skb_rdonly(struct __sk_buff *skb, u64 flags=
+,
+> > > > >                            struct bpf_dynptr *ptr__uninit)
+> > > > >   {
+> > > > > @@ -12117,6 +12167,13 @@ static const struct btf_kfunc_id_set bpf=
+_kfunc_set_tcp_reqsk =3D {
+> > > > >   static int __init bpf_kfunc_init(void)
+> > > > >   {
+> > > > > +   const struct btf_id_dtor_kfunc skb_kfunc_dtors[] =3D {
+> > > > > +           {
+> > > > > +                   .btf_id       =3D skb_kfunc_dtor_ids[0],
+> > > > > +                   .kfunc_btf_id =3D skb_kfunc_dtor_ids[1]
+> > > > > +           },
+> > > > > +   };
+> > > > > +
+> > > > >     int ret;
+> > > > >     ret =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &b=
+pf_kfunc_set_skb);
+> > > > > @@ -12133,6 +12190,11 @@ static int __init bpf_kfunc_init(void)
+> > > > >     ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &=
+bpf_kfunc_set_xdp);
+> > > > >     ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP=
+_SOCK_ADDR,
+> > > > >                                            &bpf_kfunc_set_sock_ad=
+dr);
+> > > > > +   ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_=
+CLS, &skb_kfunc_set);
+> > > > > +
+> > > > > +   ret =3D ret ?: register_btf_id_dtor_kfuncs(skb_kfunc_dtors,
+> > > > > +                                            ARRAY_SIZE(skb_kfunc=
+_dtors),
+> > > > > +                                            THIS_MODULE);
+> > > >
+> > > > I think we will need to deal with two versions of skb dtors here. B=
+oth qdisc
+> > > > and cls will register dtor associated for skb. The qdisc one just c=
+all
+> > > > kfree_skb(). While only one can exist for a specific btf id in the =
+kernel if
+> > > > I understand correctly. Is it possible to have one that work
+> > > > for both use cases?
+> > >
+> > > Looking at the current code it seems bpf_find_btf_id() (which
+> > > btf_parse_kptr() calls) will go through modules and return the first =
+match
+> > > against sk_buff btf but that's currently a wild guess from my side. S=
+o
+> > > your concern stands as we have no mechanism that would distinguish th=
+e
+> > > dtors for same btf id.
+> > >
+> > > I would have to take a deeper look at btf_parse_kptr() and find some =
+way
+> > > to associate dtor with its module during registering and then use it
+> > > within btf_find_dtor_kfunc(). Would this be sufficient?
+> > >
+> >
+> > That might not be enough. Ultimately, if the user configures both
+> > modules to be built-in, then there is no way to tell where a trusted
+> > skb kptr in a bpf program is from.
+>
+> Am I missing something or how are you going to use the kfuncs that are
+> required for loading skb onto map as kptr without loaded module? Dtors ar=
+e
+> owned by same module as corresponding acquire/release kfuncs.
+>
 
-Introducing test for veristat, part of test_progs.
-Test cases cover functionality of setting global variables in BPF
-program.
+bpf qdisc will be either built-in (CONFIG_NET_SCH_BPF=3Dy) or not
+enabled (=3Dn). classifier can be either y or m.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- tools/testing/selftests/bpf/Makefile          |   1 +
- .../selftests/bpf/prog_tests/test_veristat.c  | 139 ++++++++++++++++++
- .../selftests/bpf/progs/set_global_vars.c     |  47 ++++++
- tools/testing/selftests/bpf/test_progs.h      |   8 +
- 4 files changed, 195 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_veristat.c
- create mode 100644 tools/testing/selftests/bpf/progs/set_global_vars.c
+Dtors are associated with (btf, btf_id). So in case both are built in,
+only one of them should be registered to (btf_vmlinux, struct skb).
+The current implementation does not check if a dtor of a btf id is
+already registered in register_btf_id_dtor_kfunc, but I don't think we
+should do it in the first place.
+}
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 0d552bfcfe7d..5e9d3c91c6db 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -690,6 +690,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 			     $(TRUNNER_EXTRA_OBJS) $$(BPFOBJ)		\
- 			     $(RESOLVE_BTFIDS)				\
- 			     $(TRUNNER_BPFTOOL)				\
-+			     $(OUTPUT)/veristat				\
- 			     | $(TRUNNER_BINARY)-extras
- 	$$(call msg,BINARY,,$$@)
- 	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) $$(LDFLAGS) -o $$@
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_veristat.c b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
-new file mode 100644
-index 000000000000..a95b42bf744a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
-@@ -0,0 +1,139 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include <string.h>
-+#include <stdio.h>
-+
-+#define __CHECK_STR(str, name)					    \
-+	do {							    \
-+		if (!ASSERT_HAS_SUBSTR(fix->output, (str), (name))) \
-+			goto out;				    \
-+	} while (0)
-+
-+struct fixture {
-+	char tmpfile[80];
-+	int fd;
-+	char *output;
-+	size_t sz;
-+	char veristat[80];
-+};
-+
-+static struct fixture *init_fixture(void)
-+{
-+	struct fixture *fix = malloc(sizeof(struct fixture));
-+
-+	/* for no_alu32 and cpuv4 veristat is in parent folder */
-+	if (access("./veristat", F_OK) == 0)
-+		strcpy(fix->veristat, "./veristat");
-+	else if (access("../veristat", F_OK) == 0)
-+		strcpy(fix->veristat, "../veristat");
-+	else
-+		PRINT_FAIL("Can't find veristat binary");
-+
-+	snprintf(fix->tmpfile, sizeof(fix->tmpfile), "/tmp/test_veristat.XXXXXX");
-+	fix->fd = mkstemp(fix->tmpfile);
-+	fix->sz = 1000000;
-+	fix->output = malloc(fix->sz);
-+	return fix;
-+}
-+
-+static void teardown_fixture(struct fixture *fix)
-+{
-+	free(fix->output);
-+	close(fix->fd);
-+	remove(fix->tmpfile);
-+	free(fix);
-+}
-+
-+static void test_set_global_vars_succeeds(void)
-+{
-+	struct fixture *fix = init_fixture();
-+
-+	SYS(out,
-+	    "%s set_global_vars.bpf.o"\
-+	    " -G \"var_s64 = 0xf000000000000001\" "\
-+	    " -G \"var_u64 = 0xfedcba9876543210\" "\
-+	    " -G \"var_s32 = -0x80000000\" "\
-+	    " -G \"var_u32 = 0x76543210\" "\
-+	    " -G \"var_s16 = -32768\" "\
-+	    " -G \"var_u16 = 60652\" "\
-+	    " -G \"var_s8 = -128\" "\
-+	    " -G \"var_u8 = 255\" "\
-+	    " -G \"var_ea = EA2\" "\
-+	    " -G \"var_eb = EB2\" "\
-+	    " -G \"var_ec = EC2\" "\
-+	    " -G \"var_b = 1\" "\
-+	    "-vl2 > %s", fix->veristat, fix->tmpfile);
-+
-+	read(fix->fd, fix->output, fix->sz);
-+	__CHECK_STR("_w=0xf000000000000001 ", "var_s64 = 0xf000000000000001");
-+	__CHECK_STR("_w=0xfedcba9876543210 ", "var_u64 = 0xfedcba9876543210");
-+	__CHECK_STR("_w=0x80000000 ", "var_s32 = -0x80000000");
-+	__CHECK_STR("_w=0x76543210 ", "var_u32 = 0x76543210");
-+	__CHECK_STR("_w=0x8000 ", "var_s16 = -32768");
-+	__CHECK_STR("_w=0xecec ", "var_u16 = 60652");
-+	__CHECK_STR("_w=128 ", "var_s8 = -128");
-+	__CHECK_STR("_w=255 ", "var_u8 = 255");
-+	__CHECK_STR("_w=11 ", "var_ea = EA2");
-+	__CHECK_STR("_w=12 ", "var_eb = EB2");
-+	__CHECK_STR("_w=13 ", "var_ec = EC2");
-+	__CHECK_STR("_w=1 ", "var_b = 1");
-+
-+out:
-+	teardown_fixture(fix);
-+}
-+
-+static void test_set_global_vars_from_file_succeeds(void)
-+{
-+	struct fixture *fix = init_fixture();
-+	char input_file[80];
-+	const char *vars = "var_s16 = -32768\nvar_u16 = 60652";
-+	int fd;
-+
-+	snprintf(input_file, sizeof(input_file), "/tmp/veristat_input.XXXXXX");
-+	fd = mkstemp(input_file);
-+	if (!ASSERT_GE(fd, 0, "valid fd"))
-+		goto out;
-+
-+	write(fd, vars, strlen(vars));
-+	syncfs(fd);
-+	SYS(out, "%s set_global_vars.bpf.o -G \"@%s\" -vl2 > %s",
-+	    fix->veristat, input_file, fix->tmpfile);
-+	read(fix->fd, fix->output, fix->sz);
-+	__CHECK_STR("_w=0x8000 ", "var_s16 = -32768");
-+	__CHECK_STR("_w=0xecec ", "var_u16 = 60652");
-+
-+out:
-+	close(fd);
-+	remove(input_file);
-+	teardown_fixture(fix);
-+}
-+
-+static void test_set_global_vars_out_of_range(void)
-+{
-+	struct fixture *fix = init_fixture();
-+
-+	SYS_FAIL(out,
-+		 "%s set_global_vars.bpf.o -G \"var_s32 = 2147483648\" -vl2 2> %s",
-+		 fix->veristat, fix->tmpfile);
-+
-+	read(fix->fd, fix->output, fix->sz);
-+	__CHECK_STR("is out of range [-2147483648; 2147483647]", "out of range");
-+
-+out:
-+	teardown_fixture(fix);
-+}
-+
-+void test_veristat(void)
-+{
-+	if (test__start_subtest("set_global_vars_succeeds"))
-+		test_set_global_vars_succeeds();
-+
-+	if (test__start_subtest("set_global_vars_out_of_range"))
-+		test_set_global_vars_out_of_range();
-+
-+	if (test__start_subtest("set_global_vars_from_file_succeeds"))
-+		test_set_global_vars_from_file_succeeds();
-+}
-+
-+#undef __CHECK_STR
-diff --git a/tools/testing/selftests/bpf/progs/set_global_vars.c b/tools/testing/selftests/bpf/progs/set_global_vars.c
-new file mode 100644
-index 000000000000..9adb5ba4cd4d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/set_global_vars.c
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include "bpf_experimental.h"
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+#include <stdbool.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+enum Enum { EA1 = 0, EA2 = 11 };
-+enum Enumu64 {EB1 = 0llu, EB2 = 12llu };
-+enum Enums64 { EC1 = 0ll, EC2 = 13ll };
-+
-+const volatile __s64 var_s64 = -1;
-+const volatile __u64 var_u64 = 0;
-+const volatile __s32 var_s32 = -1;
-+const volatile __u32 var_u32 = 0;
-+const volatile __s16 var_s16 = -1;
-+const volatile __u16 var_u16 = 0;
-+const volatile __s8 var_s8 = -1;
-+const volatile __u8 var_u8 = 0;
-+const volatile enum Enum var_ea = EA1;
-+const volatile enum Enumu64 var_eb = EB1;
-+const volatile enum Enums64 var_ec = EC1;
-+const volatile bool var_b = false;
-+
-+char arr[4] = {0};
-+
-+SEC("socket")
-+int test_set_globals(void *ctx)
-+{
-+	volatile __s8 a;
-+
-+	a = var_s64;
-+	a = var_u64;
-+	a = var_s32;
-+	a = var_u32;
-+	a = var_s16;
-+	a = var_u16;
-+	a = var_s8;
-+	a = var_u8;
-+	a = var_ea;
-+	a = var_eb;
-+	a = var_ec;
-+	a = var_b;
-+	return a;
-+}
-diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-index 404d0d4915d5..870694f2a359 100644
---- a/tools/testing/selftests/bpf/test_progs.h
-+++ b/tools/testing/selftests/bpf/test_progs.h
-@@ -427,6 +427,14 @@ void hexdump(const char *prefix, const void *buf, size_t len);
- 			goto goto_label;				\
- 	})
- 
-+#define SYS_FAIL(goto_label, fmt, ...)					\
-+	({								\
-+		char cmd[1024];						\
-+		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);		\
-+		if (!ASSERT_NEQ(0, system(cmd), cmd))			\
-+			goto goto_label;				\
-+	})
-+
- #define ALL_TO_DEV_NULL " >/dev/null 2>&1"
- 
- #define SYS_NOFAIL(fmt, ...)						\
--- 
-2.48.1
 
+
+> >
+> > Two possible ways to solve this:
+> >
+> > 1. Make the dtor be able to tell whether the skb is from qdisc or cls.
+> > Since we are both in the TC layer, maybe we can use skb->cb for this?
+> >
+> > 2. Associate KF_ACQUIRE kfuncs with the corresponding KF_RELEASE
+> > kfuncs somehow. Carry this additional information as the kptr
+> > propagates in the bpf world so that we know which dtor to call. This
+> > seems to be overly complicated.
+> >
+> >
+> > > >
+> > > > >     return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_C=
+LS, &bpf_kfunc_set_tcp_reqsk);
+> > > > >   }
+> > > > >   late_initcall(bpf_kfunc_init);
+> > > >
 
