@@ -1,77 +1,75 @@
-Return-Path: <bpf+bounces-52219-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52220-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B36FA4027D
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 23:14:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D088A402BC
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 23:34:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1DE917EBEB
-	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 22:14:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAE7D8631AC
+	for <lists+bpf@lfdr.de>; Fri, 21 Feb 2025 22:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61620254AE4;
-	Fri, 21 Feb 2025 22:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99CCC204698;
+	Fri, 21 Feb 2025 22:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LF85CbKM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i4c0JHLl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13796253F3B
-	for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 22:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B6321D5166
+	for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 22:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740176054; cv=none; b=spCpMXTyC0XiJtIweW1Tigeoxa3zTM56Qi6gylJ+neEb813/TbS3TDNqADIYnkafOJ0AgMOXBdiflxNrnrQkpYDtKaAJgHiD5PoqZwLogdEHWc0NUIYgXk8IX7GePAtamWhDr20M5HRGili9sb8jssUCypDJWh4czf3dWYYr6Yk=
+	t=1740177187; cv=none; b=AH8Wj3zz2aEnQQWZIBjnLUpNwg4g+/yewmMx1k4eX/xoksXlLohgrMubP6BUqItWx58BAIvF0fPhR3/+WhK1+7j3htnuaDVVVODPv6txfLvMcJTmnyqYx3JOTF2pv9vdknqGwM9FwAIomm7QeINFnzrHUq+8NyhA67HV/JJRcpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740176054; c=relaxed/simple;
-	bh=hkU94gsQL0oAgxYTfGzs7HNjfFoysGnBT8KjUdz4i2s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iU8hflG2rtrsOIXR2znb6IsaI4hLhSHWEpe/JCTGKarTaqwWkFSos0IbEGY2Ers5zBMb6lU0oj991qX6iRVC630F2NO/JSquHU9RbLYmfdXQQUkuQWlHLP2Xf/rn4xWhqcIAkLT0FyMZJQ1FfFkP1Rs1bOr0eKpnlRPQhv/gGAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LF85CbKM; arc=none smtp.client-ip=209.85.128.49
+	s=arc-20240116; t=1740177187; c=relaxed/simple;
+	bh=56GdDBWhM0hgcnLQ4aJpscw+7/94YjrWlYHN4UFC6Ik=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T4RLplHSNTIaF8o13K34/2DgFBuNfk1eK5IqKPH8FUB2NTeheBe7SOaZq2blGkmOCMmAtHcl6kYlve4TXRDAsKdRMxbwWHtDMVYDqXHVIB4NEVTfBi87iznI7YKGebWSlIDCK1+z0l0Du6XVza+EwkdKC3YtS2nzkiPIHXNKJjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i4c0JHLl; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4394a0c65fcso26401915e9.1
-        for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 14:14:12 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-38f70170005so1087456f8f.3
+        for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 14:33:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740176051; x=1740780851; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6FjE5DQWY/2WNS7aNEg53sV/Q9GrD/0CuPnveAlPfNo=;
-        b=LF85CbKMVxSIgpPcqzXlWfPDO0EzKTF1PNxzhWxQ2P4TwQXsoLNh9zsmSVtIWY2trM
-         rvFO2l9jzBMqpF1h4CeNTustxf8kur/Nqs49VVuxvTwmTDXlElGrx/YnFsR8ofxrwT0Z
-         eYCcQ0/UiCQEB0Mvlm5z8X+8uKJliraSTMZXY9CuETY2oTBVd47ozcOB+woUOcaAINsi
-         Ws/6WhvUl/ltcfIzKHrpnHLDG1P/IwZF4bNdROaT1FDf8nFj3qqh/vdVEuTR+at2G0u3
-         Nbnlm1SaPWbPJLj09XxFUP4o0Zt5C1jIA0ARvYzrwrifMvBgb7dJRV3CBQWSjTgSoHoE
-         saog==
+        d=gmail.com; s=20230601; t=1740177184; x=1740781984; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tBnTNBOHMtMWmRQxTvtvMEjJbEkWl3187MP93TX+eOs=;
+        b=i4c0JHLlejoMrpKBAPCFmT/HGDMplXqVg9jVMSOCZMcKacTe2QkiMXCFNo8p0p45az
+         15mmhl3NPlY8WiwDYA8NX25vu/0p2lfp8oR1t+1ZtuEHiS3bfRJ4XR2xmyWRSVbXI+2/
+         rW1jWBP2S0px9xWvb5taYsBkRFfL4PdgD6b7rXZX7NPCXh4REF7QA9NerammitSxhtfV
+         AeXeW6qQju7RSPtsb337RktE30LpjYYTTNUDpDSzNjmtvb5LnL2LD11ngFt71nhuzCi/
+         tYFeE3ghfMTw7/pK1fKcZEmU5se34e10Qlw6u1rr00EIfYAQgRVap3JitrzK2KNUEMIU
+         hMqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740176051; x=1740780851;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6FjE5DQWY/2WNS7aNEg53sV/Q9GrD/0CuPnveAlPfNo=;
-        b=ff5VhcuEa+RJwbQWSVI0JTnqlyBL0ilL4hj1K2/zLDwnOtnVTkUUQH2+lrkiK5D+8J
-         BLkFekRg+psZ93mlpcOdTjUGnrz9jbyzlxPHunyjvFeQhCqFh5S/Ei1XVOiBLKgto8b9
-         r1HgDQRpcDnFhEaShOYlyuKB3Dxwb8ip8I36satYWqJsx2ktB3BaO0z8D1G7Z3jSRuh3
-         e0bL+dF/rl5XkKQtXjfHgmwOYdpZdMMojUQZJhpFuYrcJQqxOQW8dvNuyJONGnRnyGFy
-         mGLX9DbeEIwlVRgAFZGIlc3r9seG/U5swPRhf8J+yOQuqyP/iR0EZlzgymYyVAtKZjT8
-         TPmA==
-X-Gm-Message-State: AOJu0YzBEVsJY6jLNzgvQNja7z0yYqRs1y+zUtO7BE2rDDEGqfDENSBb
-	kqa+MTYw50swg5uBICc1wBzz84ZzPHcIDe+95v3aC07uXcc4Um9aKEOh2g==
-X-Gm-Gg: ASbGncvgANp9rGq6P7w+K5DBe3HxIqpNWhDelOeaGP9C5bpwCSzFPZ/lK81U8b0S1Wb
-	bi90RWWV6KHALzdYankvXnmZetjazPbIAci7+VqiGDTB51MGtdnwZLx11VDyMxwUON78JKskXyL
-	MxiQMh016EUqPFtgtbgxkDTKNFud7R9EO3nWd08241700AwwUspvtUaMa/Ovk6Z8Kt9NpeCwJgo
-	An2a/CHswVwJBu3Vvy8Gk2DQidXhwmgdvyvXpcDct8YblVJUTgTfeWOgltWESybG6KkcyxJmmGE
-	cFQ6MFPcVjkpWoHThbOFco9BfcDq4wezwPfAILD0KjSI/7rDsr3uYtnMQsU1ENPt4AmX9oBMylm
-	gyRSU/S1GNc8T/mDKRT3fqf6RCQ/CdmY=
-X-Google-Smtp-Source: AGHT+IH+EzmaEK7VTJQYS5AM1X2VFsNqywHThc026sDcBDxzo/5tIcyOU1YLIjlC0Ke/R1pWAmCAOQ==
-X-Received: by 2002:a05:6000:885:b0:38c:3f12:64be with SMTP id ffacd0b85a97d-38f6f096fe5mr4552054f8f.35.1740176051104;
-        Fri, 21 Feb 2025 14:14:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740177184; x=1740781984;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tBnTNBOHMtMWmRQxTvtvMEjJbEkWl3187MP93TX+eOs=;
+        b=TdX57rgdrcbyLk4xDv6vugw19p6SbMCPVaBf9fzKQhm2XTqQN7UITd+k0HyFeC046c
+         xWlOHMaqv1iejURIizOSjNaePk6y/MhBkEtnjoes5G7r/TNPVmewVNYsXtr5vmt4P4Bv
+         1/2nOoL3fab/4l1xNcULdRbGf33MLegXxfJY/RAXFmPraee5YW9vuZhi4eEdVUkWG+jZ
+         sBKt6LTMB2B5zzUnupaDTsYYB3H/IMDOYvkfz3ojGv/E+lpNY2SY8iQRFIVyOk6yQOW4
+         yIh7HBMPdaEs9mqdNv+lc8sC/e0W9FlX7eKspcRwbj7kEspRYNDzD4nIztOo3O6zikWB
+         EKKw==
+X-Gm-Message-State: AOJu0Yx3Xj9GRuuSGaTK91lFEf2GYUIeDE2dZuuzWoi67e+/hJ10gUcu
+	0Svu7MhCAmmuXbrO2mSIbG5RzsRRoaSPZ9iakcrCms0sG6tmuEn3oZpVlg==
+X-Gm-Gg: ASbGncusAHfZBzoR4rd/HBEQcSQFwzLzmXaZyD2/VRtB06se6KwrkjcdZDYTdz2kgJ7
+	nz56rK8+nK5f2acdmQqe6d7+OzzZNv19CoYlxb5i/L29rL9/W3xlX+osTPmWb0dBO53xn7Awcap
+	yrbfEXKJ3T7oCH5o+a0tLEwou0ntpAhh5ZeVMu70guOPft1fkb4pEgIWbGfft6Lf4Ev4ySfol9R
+	hTpr1x4CjTTDjsrd+YvCdn7VYiRRqLhpFseHb9IfT+3xoKDnNw74FFP9TOdbbWROm83v82wyv9w
+	HM3Ukcxa/0YEOQxNJmgXvjT0Mk/XDW5296ODysQ0k/ER4q5EAYTAkt0JN0zHg0uxO95h6+dvQcp
+	Ewz59fCYbEY9n9glXDLha4RyMQZa4F4s=
+X-Google-Smtp-Source: AGHT+IGu8TWOAZHjc05FjU9O7pIBEv0776CFJnkunmtwdoY0NL4h1xsP6CoJ4ekHXm8u0aKtfvS4qQ==
+X-Received: by 2002:a5d:59a3:0:b0:38f:470c:932e with SMTP id ffacd0b85a97d-38f6f03e319mr4312908f8f.29.1740177183509;
+        Fri, 21 Feb 2025 14:33:03 -0800 (PST)
 Received: from localhost.localdomain (cpc158789-hari22-2-0-cust468.20-2.cable.virginm.net. [86.26.115.213])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38f259f7fe6sm24070707f8f.86.2025.02.21.14.14.10
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38f259d9be9sm24880003f8f.79.2025.02.21.14.33.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Feb 2025 14:14:10 -0800 (PST)
+        Fri, 21 Feb 2025 14:33:03 -0800 (PST)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -81,12 +79,10 @@ To: bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	eddyz87@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: add tests for bpf_dynptr_copy
-Date: Fri, 21 Feb 2025 22:14:00 +0000
-Message-ID: <20250221221400.672980-4-mykyta.yatsenko5@gmail.com>
+Subject: [PATCH bpf-next v4 0/2] selftests/bpf: implement setting global variables in veristat
+Date: Fri, 21 Feb 2025 22:32:57 +0000
+Message-ID: <20250221223259.677471-1-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250221221400.672980-1-mykyta.yatsenko5@gmail.com>
-References: <20250221221400.672980-1-mykyta.yatsenko5@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,218 +93,34 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Add XDP setup type for dynptr tests, enabling testing for
-non-contiguous buffer.
-Add 2 tests:
- - test_dynptr_copy - verify correctness for the fast (contiguous
- buffer) code path.
- - test_dynptr_copy_xdp - verifies code paths that handle
- non-contiguous buffer.
+To better verify some complex BPF programs by veristat, it would be useful
+to preset global variables. This patch set implements this functionality
+and introduces tests for veristat.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- .../testing/selftests/bpf/prog_tests/dynptr.c |  21 ++++
- .../selftests/bpf/progs/dynptr_success.c      | 112 +++++++++++++++++-
- 2 files changed, 128 insertions(+), 5 deletions(-)
+v3->v4:
+  * Fixing bug in set_global_var introduced by refactoring in previous patch set.
+  * Addressed nits from Eduard
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-index b614a5272dfd..e29cc16124c2 100644
---- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-@@ -10,6 +10,7 @@ enum test_setup_type {
- 	SETUP_SYSCALL_SLEEP,
- 	SETUP_SKB_PROG,
- 	SETUP_SKB_PROG_TP,
-+	SETUP_XDP_PROG,
- };
- 
- static struct {
-@@ -18,6 +19,8 @@ static struct {
- } success_tests[] = {
- 	{"test_read_write", SETUP_SYSCALL_SLEEP},
- 	{"test_dynptr_data", SETUP_SYSCALL_SLEEP},
-+	{"test_dynptr_copy", SETUP_SYSCALL_SLEEP},
-+	{"test_dynptr_copy_xdp", SETUP_XDP_PROG},
- 	{"test_ringbuf", SETUP_SYSCALL_SLEEP},
- 	{"test_skb_readonly", SETUP_SKB_PROG},
- 	{"test_dynptr_skb_data", SETUP_SKB_PROG},
-@@ -120,6 +123,24 @@ static void verify_success(const char *prog_name, enum test_setup_type setup_typ
- 
- 		break;
- 	}
-+	case SETUP_XDP_PROG:
-+	{
-+		char data[5000];
-+		int err, prog_fd;
-+		LIBBPF_OPTS(bpf_test_run_opts, opts,
-+			    .data_in = &data,
-+			    .data_size_in = sizeof(data),
-+			    .repeat = 1,
-+		);
-+
-+		prog_fd = bpf_program__fd(prog);
-+		err = bpf_prog_test_run_opts(prog_fd, &opts);
-+
-+		if (!ASSERT_OK(err, "test_run"))
-+			goto cleanup;
-+
-+		break;
-+	}
- 	}
- 
- 	ASSERT_EQ(skel->bss->err, 0, "err");
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/testing/selftests/bpf/progs/dynptr_success.c
-index bfcc85686cf0..dd10411d1c02 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_success.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
-@@ -1,20 +1,19 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2022 Facebook */
- 
-+#include <vmlinux.h>
- #include <string.h>
- #include <stdbool.h>
--#include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- #include "bpf_misc.h"
--#include "bpf_kfuncs.h"
- #include "errno.h"
- 
- char _license[] SEC("license") = "GPL";
- 
- int pid, err, val;
- 
--struct sample {
-+struct ringbuf_sample {
- 	int pid;
- 	int seq;
- 	long value;
-@@ -121,7 +120,7 @@ int test_dynptr_data(void *ctx)
- 
- static int ringbuf_callback(__u32 index, void *data)
- {
--	struct sample *sample;
-+	struct ringbuf_sample *sample;
- 
- 	struct bpf_dynptr *ptr = (struct bpf_dynptr *)data;
- 
-@@ -138,7 +137,7 @@ SEC("?tp/syscalls/sys_enter_nanosleep")
- int test_ringbuf(void *ctx)
- {
- 	struct bpf_dynptr ptr;
--	struct sample *sample;
-+	struct ringbuf_sample *sample;
- 
- 	if (bpf_get_current_pid_tgid() >> 32 != pid)
- 		return 0;
-@@ -567,3 +566,106 @@ int BPF_PROG(test_dynptr_skb_tp_btf, void *skb, void *location)
- 
- 	return 1;
- }
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int test_dynptr_copy(void *ctx)
-+{
-+	char data[] = "hello there, world!!";
-+	char buf[32] = {'\0'};
-+	__u32 sz = sizeof(data);
-+	struct bpf_dynptr src, dst;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sz, 0, &src);
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sz, 0, &dst);
-+
-+	/* Test basic case of copying contiguous memory backed dynptrs */
-+	err = bpf_dynptr_write(&src, 0, data, sz, 0);
-+	err = err ?: bpf_dynptr_copy(&dst, 0, &src, 0, sz);
-+	err = err ?: bpf_dynptr_read(buf, sz, &dst, 0, 0);
-+	err = err ?: __builtin_memcmp(data, buf, sz);
-+
-+	/* Test that offsets are handled correctly */
-+	err = err ?: bpf_dynptr_copy(&dst, 3, &src, 5, sz - 5);
-+	err = err ?: bpf_dynptr_read(buf, sz - 5, &dst, 3, 0);
-+	err = err ?: __builtin_memcmp(data + 5, buf, sz - 5);
-+
-+	bpf_ringbuf_discard_dynptr(&src, 0);
-+	bpf_ringbuf_discard_dynptr(&dst, 0);
-+	return 0;
-+}
-+
-+SEC("xdp")
-+int test_dynptr_copy_xdp(struct xdp_md *xdp)
-+{
-+	struct bpf_dynptr ptr_buf, ptr_xdp;
-+	char data[] = "qwertyuiopasdfghjkl";
-+	char buf[32] = {'\0'};
-+	__u32 len = sizeof(data);
-+	int i, chunks = 200;
-+
-+	/* ptr_xdp is backed by non-contiguous memory */
-+	bpf_dynptr_from_xdp(xdp, 0, &ptr_xdp);
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, len * chunks, 0, &ptr_buf);
-+
-+	/* Destination dynptr is backed by non-contiguous memory */
-+	bpf_for(i, 0, chunks) {
-+		err = bpf_dynptr_write(&ptr_buf, i * len, data, len, 0);
-+		if (err)
-+			goto out;
-+	}
-+
-+	err = bpf_dynptr_copy(&ptr_xdp, 0, &ptr_buf, 0, len * chunks);
-+	if (err)
-+		goto out;
-+
-+	bpf_for(i, 0, chunks) {
-+		__builtin_memset(buf, 0, sizeof(buf));
-+		err = bpf_dynptr_read(&buf, len, &ptr_xdp, i * len, 0);
-+		if (err)
-+			goto out;
-+		if (__builtin_memcmp(data, buf, len) != 0)
-+			goto out;
-+	}
-+
-+	/* Source dynptr is backed by non-contiguous memory */
-+	__builtin_memset(buf, 0, sizeof(buf));
-+	bpf_for(i, 0, chunks) {
-+		err = bpf_dynptr_write(&ptr_buf, i * len, buf, len, 0);
-+		if (err)
-+			goto out;
-+	}
-+
-+	err = bpf_dynptr_copy(&ptr_buf, 0, &ptr_xdp, 0, len * chunks);
-+	if (err)
-+		goto out;
-+
-+	bpf_for(i, 0, chunks) {
-+		__builtin_memset(buf, 0, sizeof(buf));
-+		err = bpf_dynptr_read(&buf, len, &ptr_buf, i * len, 0);
-+		if (err)
-+			goto out;
-+		if (__builtin_memcmp(data, buf, len) != 0)
-+			goto out;
-+	}
-+
-+	/* Both source and destination dynptrs are backed by non-contiguous memory */
-+	err = bpf_dynptr_copy(&ptr_xdp, 2, &ptr_xdp, len, len * (chunks - 1));
-+	if (err)
-+		goto out;
-+
-+	bpf_for(i, 0, chunks - 1) {
-+		__builtin_memset(buf, 0, sizeof(buf));
-+		err = bpf_dynptr_read(&buf, len, &ptr_xdp, 2 + i * len, 0);
-+		if (err)
-+			goto out;
-+		if (__builtin_memcmp(data, buf, len) != 0)
-+			goto out;
-+	}
-+
-+	if (bpf_dynptr_copy(&ptr_xdp, 2000, &ptr_xdp, 0, len * chunks) != -E2BIG)
-+		err = 1;
-+
-+out:
-+	bpf_ringbuf_discard_dynptr(&ptr_buf, 0);
-+	return XDP_DROP;
-+}
+v2->v3:
+  * Reworked parsing of the presets, using sscanf to split into variable and value, but
+still use strtoll/strtoull to support range checks when parsing integers
+  * Fix test failures for no_alu32 & cpuv4 by checking if veristat binary is in parent folder
+  * Introduce __CHECK_STR macro for simplifying checks in test
+  * Modify tests into sub-tests
+
+Mykyta Yatsenko (2):
+  selftests/bpf: implement setting global variables in veristat
+  selftests/bpf: introduce veristat test
+
+ tools/testing/selftests/bpf/Makefile          |   1 +
+ .../selftests/bpf/prog_tests/test_veristat.c  | 139 +++++++++
+ .../selftests/bpf/progs/set_global_vars.c     |  47 +++
+ tools/testing/selftests/bpf/test_progs.h      |   8 +
+ tools/testing/selftests/bpf/veristat.c        | 290 +++++++++++++++++-
+ 5 files changed, 484 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_veristat.c
+ create mode 100644 tools/testing/selftests/bpf/progs/set_global_vars.c
+
 -- 
 2.48.1
 
