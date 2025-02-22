@@ -1,153 +1,143 @@
-Return-Path: <bpf+bounces-52252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C4B6A4089F
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 14:19:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84E55A40AF6
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 19:31:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F022B16B4A2
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 13:19:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D33F23BFE44
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 18:31:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4FD20967F;
-	Sat, 22 Feb 2025 13:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE2520B21C;
+	Sat, 22 Feb 2025 18:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LaWgSSmr"
 X-Original-To: bpf@vger.kernel.org
-Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 611D519D8AC
-	for <bpf@vger.kernel.org>; Sat, 22 Feb 2025 13:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DD335961;
+	Sat, 22 Feb 2025 18:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740230371; cv=none; b=S5h5xDXttPDrSHqZ3078iRzmzh6WisAk5crAW70uNXD5WQk6I6y0oaTJ+8yNk3w6U3VTMiJ5h82ThessDHi9+fEd9bHHzqbzyx30tbYOjn4kPDrfzB7a6SptjR4K0Tmjc9hYoxUzjHDaal/y0C5xzaC9sYEOIuBik4a+S36y748=
+	t=1740249068; cv=none; b=ASmRyn+gCFi+3WqWkW8WMVlAYUgMqolzni34VMlQJd4bFtHmLNasZKGnC1+Hpr5Ot3wvWLO9DockCW7PncNBR5OfdFh9pBDIKTIH4Wj8KsNtB+1PybMwhqM9hp8lXgKpJynhovfEyAsq356a/tui39sjrqHAF7w1d+ikQDWUQYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740230371; c=relaxed/simple;
-	bh=edc+QxW/+4ELSnBW0EY5j2OzvDJQ7C4WjKtpyb0mTDw=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
-	 In-Reply-To:Content-Type; b=SpvjxPxRhBsu/QXWEedYb5TWH1N7qa8zuJHeQoVM7jvzDoIrRBw4g6JNJM43ypWOrrhX5hNEauD7FfyjVZN8MPLa9Dje3VLQzdMjMw+Ah8ZXhTpcej2i67c5WVLC/FSi4ZB/MEOoIEFNPUcNozke0b0cFZKRD3G1cORosRqy+dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
-Received: from sslproxy08.your-server.de ([78.47.166.52])
-	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1tlpPU-00035g-9T; Sat, 22 Feb 2025 14:19:12 +0100
-Received: from [2a0d:3344:1523:1f10:f118:b2d4:edbb:54af]
-	by sslproxy08.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1tlpPT-0008yK-1N;
-	Sat, 22 Feb 2025 14:19:12 +0100
-Message-ID: <3fffc23d-45fa-497b-82a1-e09bb81c0011@hetzner-cloud.de>
-Date: Sat, 22 Feb 2025 14:19:10 +0100
+	s=arc-20240116; t=1740249068; c=relaxed/simple;
+	bh=F370KETrMWzBfCAknccZHirCmbB67waMtTvyv7WFlGM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ewZYfN21mFUdfx3U28LwabbCff5uSYAFqQOFn2rv76105+wO9reZz7f2opOWa3UWraE/M8TdyMDEEDCq63puQmtqMk5dHbBe4sH0X/NcNa4Hjlx1aAI3ZBwOHuhidd17GSUXpMposb2xP8O730Es8YbRbF6tRCLpv9CQ2uvb7Cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LaWgSSmr; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-221206dbd7eso64681675ad.2;
+        Sat, 22 Feb 2025 10:31:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740249066; x=1740853866; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JO23ucqLx5sqqdPCYez77ZwthsWLwhAUyq51soFFXxk=;
+        b=LaWgSSmrwRIh99Lby8ICka4GG9LFkdgkgz7x/gqHdPl6Pj8pkiMZFZxtA+vbHv+fEX
+         Ws1SBxLEiUXvqd5/bXKnY5Ha31nqlXkG+cw6zfbJQ6tb5xuU+IkWeymOxAqf+uWSE8Dv
+         X+bLFq6GHa6U6o9nN83LRoh82rpQc/fpa36fpeUjyL11aVbD6GvBkF5xhTpTyAgTDIc4
+         zou47m09meZehfyETshMEv9UWuy4SNFvfgpqWLYwGVu66a03DUpXDCBh2bWUOVRzrCzg
+         HmxXkoN6WdbUb9h2NQq5yl9EhkJQoXOoHeF02nQH0cenrPLDOOOkyzWaQZyC59D/RZXL
+         9AUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740249066; x=1740853866;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JO23ucqLx5sqqdPCYez77ZwthsWLwhAUyq51soFFXxk=;
+        b=LHJHfka02thcysTwN0eAn6EVizc9D8cAKfUpTzYtakDvQfSODlCaWr/qAnebZedBx1
+         0GuHPnqFLvRRuNIiMgtyGtp7LbHHEzJULufNTM33Mgfk+l7FYwzfM5mQFNJFc916zBk4
+         nEdcGVtCJbnjCLDxmj0ZMd0suh0P4JBGFu4N+jj6RYihBQdBl75tN76YnKKC4e7gMyZr
+         M5ggZFrOr1jeYtPy4nDlfkqEMIREYsp6GJRmyBRzvCcw3RYGSqmN888se5dp+saAFreB
+         EKmAF5ydfMT3b2wMa8lF5bB7LkfxPNGwLOGlNZvMW77i49GjIxJm+Gg8+7gHHVoEd0v+
+         RJCw==
+X-Gm-Message-State: AOJu0Yx9Z/vo8urq6Qg9AiKENlYpWoEXhaHwFIB9sFluYt9D7KEQf2oD
+	tqDX8yiEtk5grV5Gqs+iXtWJ/PWeOqOCwM1gxj0AEc5E8wPUWaLd9NPwyQ==
+X-Gm-Gg: ASbGncseQ43dmH3groonh1ttSOnhQfnOQJ1RXkVk142bsx+QIXGBrAbH0JNZU9Gz2Ya
+	46w2aJoJj70nbHQw6zhow1kwk96QDhwFsxEGoXrdufLk4Xy+rZm5iSzWFMsHcTLBeqFURWfQSlv
+	Jz1A88xqnb2M1SuIpQqiRQaOpfSHjqkR3qdtJNbeh6Kj1btOmRewZXN/2vVQBGv31/yC6eGOAJw
+	gghhbZiUMmRnLiD1HI7Mo1skgrtackr23fDOZEeD3M5G9YlTXViRBUF/z980dYxrFqs4xPuSUTh
+	qOnEgyTIT/5PDJZ0SPkZGRf7Op9cy9IeF+A2qvs1gslGzx07CaLV51o=
+X-Google-Smtp-Source: AGHT+IHhOYfix2yw/nhson6NU50l6sm551VjCRHt0U4RfUKlhoZbwPgbkLHcVLk4h/MRnKMVs0ZC3w==
+X-Received: by 2002:a05:6a00:4f8f:b0:730:9242:e68 with SMTP id d2e1a72fcca58-73426d96062mr10895518b3a.23.1740249065716;
+        Sat, 22 Feb 2025 10:31:05 -0800 (PST)
+Received: from pop-os.hsd1.ca.comcast.net ([2601:647:6881:9060:2714:159c:631a:37c0])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73250dd701bsm16442959b3a.131.2025.02.22.10.31.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Feb 2025 10:31:05 -0800 (PST)
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	john.fastabend@gmail.com,
+	jakub@cloudflare.com,
+	zhoufeng.zf@bytedance.com,
+	zijianzhang@bytedance.com,
+	Cong Wang <xiyou.wangcong@gmail.com>
+Subject: [Patch bpf-next 0/4] tcp_bpf: improve ingress redirection performance with message corking
+Date: Sat, 22 Feb 2025 10:30:53 -0800
+Message-Id: <20250222183057.800800-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jordan Rome <linux@jordanrome.com>, bpf@vger.kernel.org,
- linux-mm@kvack.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Kernel Team <kernel-team@fb.com>, Andrew Morton <akpm@linux-foundation.org>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Alexander Potapenko <glider@google.com>
-References: <20250213152125.1837400-1-linux@jordanrome.com>
- <20250213152125.1837400-3-linux@jordanrome.com>
- <386d3514-1822-45a2-a2c5-1567a0d599a5@hetzner-cloud.de>
- <CAEf4BzYu9R0_0YghpXaE5-Ojds7W7eURyp+3BsaC4BHp=ZVszg@mail.gmail.com>
-Content-Language: en-US
-From: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Autocrypt: addr=marcus.wichelmann@hetzner-cloud.de; keydata=
- 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
- wySmewx3h/yfMh0aFxHhvLPxrO2IEQ==
-Subject: Re: [bpf-next v8 3/3] selftests/bpf: Add tests for
- bpf_copy_from_user_task_str
-In-Reply-To: <CAEf4BzYu9R0_0YghpXaE5-Ojds7W7eURyp+3BsaC4BHp=ZVszg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: marcus.wichelmann@hetzner-cloud.de
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27557/Sat Feb 22 10:28:44 2025)
 
-Am 21.02.25 um 19:26 schrieb Andrii Nakryiko:
-> On Fri, Feb 21, 2025 at 7:01 AM Marcus Wichelmann
-> <marcus.wichelmann@hetzner-cloud.de> wrote:
->>
->> Hi,
->>
->> I'm not sure what I'm doing wrong, but after rebasing on latest bpf-next
->> which includes this patch, I'm no longer able to build the bpf selftests:
->>
->> # pushd tools/testing/selftests/bpf/
->> # make -j80
->> [...]
->>     GEN-SKEL [test_progs] bpf_iter_task_vmas.skel.h
->>     CLNG-BPF [test_progs] bpf_iter_tasks.bpf.o
->> progs/bpf_iter_tasks.c:98:8: error: call to undeclared function 'bpf_copy_from_user_task_str'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->>      98 |         ret = bpf_copy_from_user_task_str((char *)task_str1, sizeof(task_str1), ptr, task, 0);
->>         |               ^
->> 1 error generated.
->> make: *** [Makefile:733: /root/linux/tools/testing/selftests/bpf/bpf_iter_tasks.bpf.o] Error 1
->>
->> I suppose the function definition should be in the vmlinux.h?
->>
-> 
-> Yes, it should be in vmlinux.h, and if you don't have it, then you
-> must have a bit too old pahole.
-> 
-> $ git tag --contains ce4d0bc0200e3
-> v1.27
-> v1.28
+This patchset improves skmsg ingress redirection performance by a)
+sophisticated batching with kworker; b) skmsg allocation caching with
+kmem cache.
 
-Ah, my pahole version was 1.25. Compiling a newer version from source did the trick.
-This was really the last thing I would have thought of.
+As a result, our patches significantly outperforms the vanilla kernel
+in terms of throughput for almost all packet sizes. The percentage
+improvement in throughput ranges from 3.13% to 160.92%, with smaller
+packets showing the highest improvements.
 
-Thank you very much for your help!
+For Latency, it induces slightly higher latency across most packet sizes
+compared to the vanilla, which is also expected since this is a natural
+side effect of batching.
 
-Marcus
+Please see the detailed benchmarks:
+
++-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Throughput  | 64     | 128    | 256    | 512    | 1k     | 4k     | 16k    | 32k    | 64k    | 128k   | 256k   |
++-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Vanilla     | 0.17±0.02 | 0.36±0.01 | 0.72±0.02 | 1.37±0.05 | 2.60±0.12 | 8.24±0.44 | 22.38±2.02 | 25.49±1.28 | 43.07±1.36 | 66.87±4.14 | 73.70±7.15 |
+| Patched     | 0.41±0.01 | 0.82±0.02 | 1.62±0.05 | 3.33±0.01 | 6.45±0.02 | 21.50±0.08 | 46.22±0.31 | 50.20±1.12 | 45.39±1.29 | 68.96±1.12 | 78.35±1.49 |
+| Percentage  | 141.18%   | 127.78%   | 125.00%   | 143.07%   | 148.08%   | 160.92%   | 106.52%    | 97.00%     | 5.38%      | 3.13%      | 6.32%      |
++-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+
++-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+| Latency     | 64        | 128       | 256       | 512       | 1k        | 4k        | 16k       | 32k       | 63k       |
++-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+| Vanilla     | 5.80±4.02 | 5.83±3.61 | 5.86±4.10 | 5.91±4.19 | 5.98±4.14 | 6.61±4.47 | 8.60±2.59 | 10.96±5.50| 15.02±6.78|
+| Patched     | 6.18±3.03 | 6.23±4.38 | 6.25±4.44 | 6.13±4.35 | 6.32±4.23 | 6.94±4.61 | 8.90±5.49 | 11.12±6.10| 14.88±6.55|
+| Percentage  | 6.55%     | 6.87%     | 6.66%     | 3.72%     | 5.68%     | 4.99%     | 3.49%     | 1.46%     |-0.93%     |
++-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+
+---
+Cong Wang (2):
+  skmsg: rename sk_msg_alloc() to sk_msg_expand()
+  skmsg: use bitfields for struct sk_psock
+
+Zijian Zhang (2):
+  skmsg: implement slab allocator cache for sk_msg
+  tcp_bpf: improve ingress redirection performance with message corking
+
+ include/linux/skmsg.h |  48 +++++++---
+ net/core/skmsg.c      | 173 ++++++++++++++++++++++++++++++++---
+ net/ipv4/tcp_bpf.c    | 204 +++++++++++++++++++++++++++++++++++++++---
+ net/tls/tls_sw.c      |   6 +-
+ net/xfrm/espintcp.c   |   2 +-
+ 5 files changed, 394 insertions(+), 39 deletions(-)
+
+-- 
+2.34.1
+
 
