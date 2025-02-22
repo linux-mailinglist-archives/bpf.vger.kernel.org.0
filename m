@@ -1,163 +1,147 @@
-Return-Path: <bpf+bounces-52243-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52246-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C959EA4060C
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 08:19:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FFA3A406D7
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 10:27:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C90153BEADC
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 07:19:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E022C19C6C69
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 09:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 033AA20127A;
-	Sat, 22 Feb 2025 07:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61E5207A10;
+	Sat, 22 Feb 2025 09:26:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b5mqtsqW"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A6F7494;
-	Sat, 22 Feb 2025 07:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A339520766E
+	for <bpf@vger.kernel.org>; Sat, 22 Feb 2025 09:26:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740208774; cv=none; b=PPjmr5SfCOdQB/hd+pnikGrIxQ3Kd4FINq28Nw8VoJb9lpir1KekZrPoerRn5mwz7VPtN4ALvFY3v5SO0pf8GhJVWeoOUj2SRYMtAHlJyxQs19AWx74WnoDKkncnCH1FSw8eAELeq1V8qRFfxL6h/8bEPCRXdg7VPSpzXNwlFvQ=
+	t=1740216392; cv=none; b=IgYs/o1UdnCLIEogZqHFKswIbv98fTzZky04f7YxGRfkb8WJo23RhQAMqj2K62XBpbqpE13Or0FdwvDYRrAxq/o40z4/7aTT1F7w1IKmWuqhUo8BT6b7EIwZC6bv3T1KhmuVCSx4xX2/h3hKdgsx7zUmN09xA0tvn2M4+mSbjvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740208774; c=relaxed/simple;
-	bh=R5+4K/Nzsi5fbnQc0W9jCxIEubmmJjFdB88aAxqxfu4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=bBGUPKogrHrAOHemJpl+KK7xRxKV33rElJ6ts6dqHaiHBHyOFsuJXwzK3COkMJvnAFVGT64wu01bxzN3uVlpp8d4HnqMQj7k/UuIYnj9mq0uPXbX0b/zDSS+hhI5PngDrF5n1ME1qH9SHwIK95y5mAl4bX10NfGq/VQ57JJigvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Z0JDw3nVGzvWpS;
-	Sat, 22 Feb 2025 15:15:44 +0800 (CST)
-Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
-	by mail.maildlp.com (Postfix) with ESMTPS id 20EC4140154;
-	Sat, 22 Feb 2025 15:19:27 +0800 (CST)
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Sat, 22 Feb 2025 15:19:25 +0800
-Message-ID: <ef999493-cac0-68bb-2684-97da0fb8b583@huawei.com>
-Date: Sat, 22 Feb 2025 15:19:24 +0800
+	s=arc-20240116; t=1740216392; c=relaxed/simple;
+	bh=8BKLAvfUEeiNwQLGr02luoIsZmn9btFVCQQ73Q+s9hU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QGcB+5PnydgDGrwMbodYmntRumCmCpkznbma4KkoMW+91JA8Y/esJbsCPg20//iuUO5DQl4r7pU0C45Jq/zZL02yUdoHy5DyVdyJmd8lzxMdjBUToynROlGUOJAWkWwFZHNu4O+WaSmTxFXVzdoDieREtqmFMqUaeOzA6/Ixtls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=b5mqtsqW; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740216378;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=EYBm0Ekxvt3l/iDJUii0Y8cGNo2O2CjlIZcmsVgVA+4=;
+	b=b5mqtsqWAY54Q+Hi0GLOq7C3uco1qFRUdbpmE1rFuEA+rV1n83LdifoSM2VmtfmnFr+/H2
+	QMWuZp8FJAf0erWK0MTCMQO/E6JDD5wsmr98I0b6dhQkqb7KmDPKRntCuti3XE8Ult2riN
+	9QuGH8OJ/4KIdOnt8cwkSZzlsvZBiMw=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	ricardo@marliere.net,
+	jiayuan.chen@linux.dev,
+	viro@zeniv.linux.org.uk,
+	dmantipov@yandex.ru,
+	aleksander.lobakin@intel.com,
+	linux-ppp@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mrpre@163.com,
+	Paul Mackerras <paulus@samba.org>
+Subject: [PATCH net-next v3 0/1] ppp: Fix KMSAN uninit-value warning with bpf
+Date: Sat, 22 Feb 2025 17:25:55 +0800
+Message-ID: <20250222092556.274267-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH -next v2] uprobes: fix two zero old_folio bugs in
- __replace_page()
-From: Tong Tiangen <tongtiangen@huawei.com>
-To: Oleg Nesterov <oleg@redhat.com>
-CC: David Hildenbrand <david@redhat.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, Ingo
- Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
-	<jolsa@kernel.org>, Peter Xu <peterx@redhat.com>, Ian Rogers
-	<irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, "Liang, Kan"
-	<kan.liang@linux.intel.com>, Masami Hiramatsu <mhiramat@kernel.org>,
-	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, <linux-trace-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <wangkefeng.wang@huawei.com>, Guohanjun
-	<guohanjun@huawei.com>
-References: <20250221015056.1269344-1-tongtiangen@huawei.com>
- <20250221152841.GA24705@redhat.com>
- <46a48eb4-5245-81ba-9779-ace8f162c31b@huawei.com>
-In-Reply-To: <46a48eb4-5245-81ba-9779-ace8f162c31b@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemk500005.china.huawei.com (7.202.194.90)
+X-Migadu-Flow: FLOW_OUT
+
+Syzbot caught an "KMSAN: uninit-value" warning [1], which is caused by the
+ppp driver not initializing a 2-byte header when using socket filters.
+
+Here's a detailed explanation:
+
+The following code can generate a PPP filter BPF program:
+'''
+struct bpf_program fp;
+pcap_t *handle;
+handle = pcap_open_dead(DLT_PPP_PPPD, 65535);
+pcap_compile(handle, &fp, "ip and outbound", 0, 0);
+bpf_dump(&fp, 1);
+'''
+Its output is:
+'''
+(000) ldh [2]
+(001) jeq #0x21 jt 2 jf 5
+(002) ldb [0]
+(003) jeq #0x1 jt 4 jf 5
+(004) ret #65535
+(005) ret #0
+'''
+
+You can find similar code at the following link:
+https://github.com/ppp-project/ppp/blob/master/pppd/options.c#L1680
+The maintainer of this code repository is also the original maintainer
+of the ppp driver.
 
 
+3. Current problem
+The problem is that the skb->data generated by ppp_write() starts from the
+'Protocol' field.
 
-在 2025/2/22 10:37, Tong Tiangen 写道:
-> 
-> 
-> 在 2025/2/21 23:28, Oleg Nesterov 写道:
->> On 02/21, Tong Tiangen wrote:
->>>
->>> --- a/kernel/events/uprobes.c
->>> +++ b/kernel/events/uprobes.c
->>> @@ -506,6 +506,11 @@ int uprobe_write_opcode(struct arch_uprobe 
->>> *auprobe, struct mm_struct *mm,
->>>       if (ret <= 0)
->>>           goto put_old;
->>>
->>> +    if (is_zero_page(old_page)) {
->>> +        ret = -EINVAL;
->>> +        goto put_old;
->>> +    }
->>
->> I agree with David, the subject looks a bit misleading.
->>
->> And. I won't insist, this is cosmetic, but if you send V2 please consider
->> moving the "verify_opcode()" check down, after the 
->> is_zero_page/PageCompound
->> checks.
->>
->> Oleg.
-> 
-> OK, check the validity of the old page first and modify the subject in
-> v3 .
-> 
-> Thanks.
+But the BPF program skips 2 bytes of data and then reads the 'Protocol'
+field to determine if it's an IP packet just like the comment in
+'drivers/net/ppp/ppp_generic.c':
+/* the filter instructions are constructed assuming
+   a four-byte PPP header on each packet */
 
-I'm going to add a new patch to moving the "verify_opcode()" check down
-, IIUC that "!PageAnon(old_page)" below also needs to be moved together,
-and as David said this can be triggered by user space, so delete the use
-  of "WARN", as follows:
+In the current PPP driver implementation, to correctly use the BPF filter
+program, a 2-byte header is added, after running the socket filter, it's
+restored:
+'''
+1768 *(u8 *)skb_push(skb, 2) = 1;
+1770 bpf_prog_run()
+1782 skb_pull(skb, 2);
+'''
 
+The issue is that only the first byte indicating direction is initialized,
+while the second byte is not initialized. For normal BPF programs
+generated by libpcap, uninitialized data won't be used, so it's not a
+problem.
 
-@@ -502,20 +502,16 @@ int uprobe_write_opcode(struct arch_uprobe 
-*auprobe, struct mm_struct *mm,
-         if (IS_ERR(old_page))
-                 return PTR_ERR(old_page);
+However, for carefully crafted BPF programs, such as those generated by
+syzkaller [2], which start reading from offset 0, the uninitialized data
+will be used and caught by KMSAN.
 
--       ret = verify_opcode(old_page, vaddr, &opcode);
--       if (ret <= 0)
-+       ret = -EINVAL;
-+       if (is_zero_page(old_page))
-                 goto put_old;
+4. Fix
+The fix is simple: initialize the entire 2-byte header.
 
--       if (is_zero_page(old_page)) {
--               ret = -EINVAL;
-+       if (!is_register && (PageCompound(old_page) || !PageAnon(old_page)))
-                 goto put_old;
--       }
+Cc: Paul Mackerras <paulus@samba.org>
 
--       if (WARN(!is_register && PageCompound(old_page),
--                "uprobe unregister should never work on compound 
-page\n")) {
--               ret = -EINVAL;
-+       ret = verify_opcode(old_page, vaddr, &opcode);
-+       if (ret <= 0)
-                 goto put_old;
--       }
+[1] https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
+[2] https://syzkaller.appspot.com/text?tag=ReproC&x=11994913980000
 
-         /* We are going to replace instruction, update ref_ctr. */
-         if (!ref_ctr_updated && uprobe->ref_ctr_offset) {
-@@ -526,10 +522,6 @@ int uprobe_write_opcode(struct arch_uprobe 
-*auprobe, struct mm_struct *mm,
-                 ref_ctr_updated = 1;
-         }
+Jiayuan Chen (1):
+  ppp: Fix KMSAN warning by initializing 2-byte header
 
--       ret = 0;
--       if (!is_register && !PageAnon(old_page))
--               goto put_old;
--
-         ret = anon_vma_prepare(vma);
+ drivers/net/ppp/ppp_generic.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-Thanks.
-> 
->>
->>
->> .
-> 
-> .
+-- 
+2.47.1
+
 
