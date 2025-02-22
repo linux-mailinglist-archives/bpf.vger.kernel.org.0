@@ -1,216 +1,92 @@
-Return-Path: <bpf+bounces-52227-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52228-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EDE3A40418
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 01:26:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A04A40423
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 01:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 397A5189C219
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 00:26:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18C597A88B7
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 00:29:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9AF138FAD;
-	Sat, 22 Feb 2025 00:26:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6908F7E765;
+	Sat, 22 Feb 2025 00:30:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mWPU/IGS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m+FTE8Gn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD663D76;
-	Sat, 22 Feb 2025 00:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE79078F24;
+	Sat, 22 Feb 2025 00:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740183975; cv=none; b=FocAnaZNvoXs+HTexZh4EoKdN0/CLRcRe5Tj9FONc4MJFs+x3fExmQHfrRKrFV9BarHIm8XEabsTqH3SC3WWDyd/nk2exUZ2fejkCujKiabZXpjnVrTqyrIlPWsGBaCSVYbGx6HNjEqcP6PXbHZgpCl8jBrxhCq98b3FmhwNxs8=
+	t=1740184207; cv=none; b=Sj1n41Jlhz5uRObI6D1zLJhJ3B2+LzDAf4NbliJr6VQcJTg+gLB3GxdPpqqq2hw4RgRSZso2J9V5iN21kH63qQhdb3km8ws0ndNRCOKj+XLKROpMbb3gNrJHENW6YkjuvC6+pXUp1NO/ZnrU3lsoWP49EV/I4fl4VP8Y6Tioouw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740183975; c=relaxed/simple;
-	bh=vrsf0n7ZKY8Rgo7QAxaBCIwX0QhPlVwAlrXV1JsxYTc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JM4Ew25ckpXs81dLLOHUp82m8pFR0nCdbZDp4ukXZj0e9hq9pdR1OBVZCu9e0RMdCwjZKGWlPnmDQxxKFhGyaf15V8zAg5M+5sCfBVSs0XFgaQDT+3JFn+fKvyTvh9gmMYP6Q/c0GJ2aWhoiZAInjbYu6GzjKBvYS2myOaWiJHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mWPU/IGS; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740183974; x=1771719974;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=vrsf0n7ZKY8Rgo7QAxaBCIwX0QhPlVwAlrXV1JsxYTc=;
-  b=mWPU/IGSmd9dXAQEoPw/AWm42YieklVTTbJo8Aa+6T8xcYflLrwkG+pe
-   5fuYFliXGGVXkKCxfbcFLpefBaJYvawZUGvYbvic+a8rYWNIC0NsKEjqi
-   vHF6zMIBEihtwiaOPVd01bT4FKeuX26l47s7FZkf2yhKHlrwaoAcxP4Q0
-   YOawdjjzxYlJi/1JDLBcWFGDBbyck7Ua9g/FsPlJ2QhF1YTBY1etPaPJq
-   ES9OqkodsIeqHHguVGomVuzGqCW5e4nhiCRXmiT6cguerGuHeuFIPG7Tw
-   8a8D588fOzFBMN2iglqwpM4SijslqcMlZDFaLXacCsOTxHpU4Qo//iu/R
-   A==;
-X-CSE-ConnectionGUID: V5i9HNfPR0iFBEgNSdS2QQ==
-X-CSE-MsgGUID: BX6k5LuZT1ytoW5Cs0tsPg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11352"; a="63488032"
-X-IronPort-AV: E=Sophos;i="6.13,306,1732608000"; 
-   d="scan'208";a="63488032"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2025 16:26:13 -0800
-X-CSE-ConnectionGUID: PHiHpXemQRq6zbcoQudtdA==
-X-CSE-MsgGUID: +tqM9EucTUKBlk9KS9eT2Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,306,1732608000"; 
-   d="scan'208";a="115474920"
-Received: from mohdfai2-mobl.gar.corp.intel.com (HELO [10.247.60.175]) ([10.247.60.175])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2025 16:26:05 -0800
-Message-ID: <fbcbfdc4-5f20-4dbc-9e46-e9c28fc399c8@linux.intel.com>
-Date: Sat, 22 Feb 2025 08:26:02 +0800
+	s=arc-20240116; t=1740184207; c=relaxed/simple;
+	bh=GbjB0KWrr23/xYMW7j05jxmuIebPEfg2Ab84myZi128=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=uEmTjsGnU+CHV24W1qK2Ohwi9FKdG5KAG3nh1TGpNDA0+QyL+34/9op/gpq/DjjolseVdoolK9kbQn29tcd9Rj/l01KirMMpmVq7f5hQEEQ+1oPKYOBPp4lIF2/NZ8xhcGv03I4Q5Jb2sy/VSAw+R/XYsBpnjsODGPWzrTx+zxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m+FTE8Gn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46E04C4CEE8;
+	Sat, 22 Feb 2025 00:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740184206;
+	bh=GbjB0KWrr23/xYMW7j05jxmuIebPEfg2Ab84myZi128=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=m+FTE8Gnk2+6ppYjo5uGRy9FP6wK3BluvoF0jFoRyzW3Zu+r5tRzo9S8p5pnw3FQp
+	 qjxVUipMkzY+HrM7FE7rWrKgjI6PqRjIHZnynGqqyd1R0Fk7RhOv90Qu723cjKbWWC
+	 yjtdRMcDq/No1hpSe9cbZYUdZ4ZC24KHfBkEyWKR+MyAgKDutBa6mv1W3spBnbZi2B
+	 eSEFWETb70DSg+ZqvWkj1Glgu4sixgAvhP5TUKdk69Qlh5p7UfIEmO4DWNY2F8iW/8
+	 INpVeBWQr1lQSmgUnG42tdNd8JywJs8MyBhfjJ1iCCc3Pb29wIMM5HMCaCTq/0yTB4
+	 BqVic22LBN/PQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7161C380CEF0;
+	Sat, 22 Feb 2025 00:30:38 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iwl-next v5 1/9] net: ethtool: mm: extract stmmac
- verification logic into common library
-To: Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: Furong Xu <0x1207@gmail.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S . Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Simon Horman <horms@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Russell King <rmk+kernel@armlinux.org.uk>,
- Serge Semin <fancer.lancer@gmail.com>,
- Xiaolei Wang <xiaolei.wang@windriver.com>,
- Suraj Jaiswal <quic_jsuraj@quicinc.com>,
- Kory Maincent <kory.maincent@bootlin.com>, Gal Pressman <gal@nvidia.com>,
- Jesper Nilsson <jesper.nilsson@axis.com>,
- Andrew Halaney <ahalaney@redhat.com>,
- Choong Yong Liang <yong.liang.choong@linux.intel.com>,
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
- Vinicius Costa Gomes <vinicius.gomes@intel.com>,
- intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-References: <20250220025349.3007793-1-faizal.abdul.rahim@linux.intel.com>
- <20250220025349.3007793-2-faizal.abdul.rahim@linux.intel.com>
- <20250221174249.000000cc@gmail.com> <20250221095651.npjpkoy2y6nehusy@skbuf>
- <20250221182409.00006fd1@gmail.com> <20250221104333.6s7nvn2wwco3axr3@skbuf>
- <3fbe3955-48b8-449d-93ff-2699a7efcd8d@linux.intel.com>
- <20250221144402.6nuuosfjmo5tqgmj@skbuf>
-Content-Language: en-US
-From: "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
-In-Reply-To: <20250221144402.6nuuosfjmo5tqgmj@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf-next 2025-02-20
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174018423699.2248733.5993313650415690136.git-patchwork-notify@kernel.org>
+Date: Sat, 22 Feb 2025 00:30:36 +0000
+References: <20250221022104.386462-1-martin.lau@linux.dev>
+In-Reply-To: <20250221022104.386462-1-martin.lau@linux.dev>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+ pabeni@redhat.com, ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ martin.lau@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
 
+Hello:
 
+This pull request was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-On 21/2/2025 10:44 pm, Vladimir Oltean wrote:
-> On Fri, Feb 21, 2025 at 09:30:09PM +0800, Abdul Rahim, Faizal wrote:
->> On 21/2/2025 6:43 pm, Vladimir Oltean wrote:
->>> On Fri, Feb 21, 2025 at 06:24:09PM +0800, Furong Xu wrote:
->>>> Your fix is better when link is up/down, so I vote verify_enabled.
->>>
->>> Hmmm... I thought this was a bug in stmmac that was carried over to
->>> ethtool_mmsv, but it looks like it isn't.
->>>
->>> In fact, looking at the original refactoring patch I had attached in
->>> this email:
->>> https://lore.kernel.org/netdev/20241217002254.lyakuia32jbnva46@skbuf/
->>>
->>> these 2 lines in ethtool_mmsv_link_state_handle() didn't exist at all.
->>>
->>> 	} else {
->>>>>>> 		mmsv->status = ETHTOOL_MM_VERIFY_STATUS_INITIAL;
->>>>>>> 		mmsv->verify_retries = ETHTOOL_MM_MAX_VERIFY_RETRIES;
->>>
->>> 		/* No link or pMAC not enabled */
->>> 		ethtool_mmsv_configure_pmac(mmsv, false);
->>> 		ethtool_mmsv_configure_tx(mmsv, false);
->>> 	}
->>>
->>> Faizal, could you remind me why they were added? I don't see this
->>> explained in change logs.
->>>
->>
->> Hi Vladimir,
->>
->> Yeah, it wasn’t there originally. I added that change because it failed the
->> link down/link up test.
->> After a successful verification, if the link partner goes down, the status
->> still shows ETHTOOL_MM_VERIFY_STATUS_SUCCEEDED, which isn’t correct—so
->> that’s why I added it.
->>
->> Sorry for not mentioning it earlier. I assumed you’d check the delta between
->> the original patch and the upstream one, my bad, should have mentioned this
->> logic change.
->>
->> Should I update it to the latest suggestion?
+On Thu, 20 Feb 2025 18:21:04 -0800 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
 > 
-> Never, ever modify logic in the same commit as you are moving code.
-> I was wondering what's with the Co-developed-by: tags, but I had just
-> assumed fixups were made to code I had improperly moved because I
-> didn't have hardware to test. Always structure patches to be one single
-> logical change per patch, well justified and trivially correct.
+> The following pull-request contains BPF updates for your *net-next* tree.
+> 
+> We've added 19 non-merge commits during the last 8 day(s) which contain
+> a total of 35 files changed, 1126 insertions(+), 53 deletions(-).
+> 
+> [...]
 
-Got it, sorry about that.
+Here is the summary with links:
+  - pull-request: bpf-next 2025-02-20
+    https://git.kernel.org/netdev/net-next/c/e87700965abe
 
-> I had assumed, in good faith, changes like this wouldn't sneak in, but I
-> guess thanks for letting me know I should check next time :)
-> 
-> I think it's a slightly open question which state should the verification
-> be in when the link fails, but in any case, your argument could be made
-> that the state of the previous verification should be lost.
-> 
-> If I look at figure 99-8 in the Verify state diagram, I see that
-> whenever the condition "begin || link_fail || disableVerify || !pEnable"
-> is true, we transition to the state INIT_VERIFICATION. From there, there
-> is a UCT (unconditional transition) to VERIFICATION_IDLE, and from there,
-> a transition to state SEND_VERIFY based on "pEnable && !disableVerify".
-> In principle what this is telling me is that as long as management
-> software doesn't set pEnable (tx_enable in Linux) to false, verification
-> would be attempted even with link down, and should eventually fail.
-> 
-> But the mmsv state machine does call ethtool_mmsv_configure_tx(mmsv, false),
-> and in that case, if I were to interpret the standard state machine very
-> strictly, it would remain blocked in state VERIFICATION_IDLE until a
-> link up (thus, we should report the state as "verifying").
-> 
-> But, to be honest, I think the existence of the VERIFICATION_IDLE state
-> doesn't make a lot of sense. The state machine should just transition on
-> "!link_fail && !disable_verify && pEnable" to SEND_VERIFY directly, and
-> from state WAIT_FOR_RESPONSE it should cycle back to SEND_VERIFY if the
-> verify timer expired but we still have retries, or to INIT_VERIFICATION
-> if link_fail, disableVerify or pEnable change. One more reason why I
-> believe the VERIFICATION_IDLE state is redundant and under-specified is
-> because it gives the user no chance to even _see_ the "initial" state
-> being reported ever, given the unconditional transition to VERIFICATION_IDLE.
-> 
-> So in that sense, I agree with your proposal, and in terms of code,
-> I would recommend just this:
-> 
->   } else {
-> +	/* Reset the reported verification state while the link is down */
-> +	if (mmsv->verify_enabled)
-> +		mmsv->status = ETHTOOL_MM_VERIFY_STATUS_INITIAL;
->   
->   	/* No link or pMAC not enabled */
->   	ethtool_mmsv_configure_pmac(mmsv, false);
->   	ethtool_mmsv_configure_tx(mmsv, false);
->   }
-> 
-> Because this is just for reporting to user space, resetting
-> "mmsv->verify_retries = ETHTOOL_MM_MAX_VERIFY_RETRIES;" doesn't matter,
-> we'll do it on link up anyway.
-> 
-> Also note that there's no ternary operator like in the discussion with
-> Furong. If mmsv->verify_enabled is false, the mmsv->status should
-> already be DISABLED, no need for us to re-assign it.
-> 
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Will update, thanks.
 
 
