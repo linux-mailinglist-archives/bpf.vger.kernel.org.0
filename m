@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-52238-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52239-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3506A40522
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 03:45:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 375D0A40523
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 03:45:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E809E19E0DC1
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 02:45:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B5CC70362C
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 02:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF531FECC0;
-	Sat, 22 Feb 2025 02:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC131FF615;
+	Sat, 22 Feb 2025 02:45:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HriQzGux"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MRST24dw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E82C1FC0FD
-	for <bpf@vger.kernel.org>; Sat, 22 Feb 2025 02:44:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDD91FBEB3
+	for <bpf@vger.kernel.org>; Sat, 22 Feb 2025 02:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740192297; cv=none; b=Rf/RFccgbEmPhagIjyBBZPOXzFYAvTUSkQJpQhTdTfWvcQXGi1a9076R8l0mge7BPebCtJMfhoiH3/XT//ezXdG/1J+D9eCK3zeKgYijwvfd01b4/Saib1Kh0LDi//4tQ+VEEVIHEINn8dfYeWRSngA39aucEdQLvlhRqyefOj8=
+	t=1740192302; cv=none; b=OT0EMbzNOuHRf0cisU+AWb4ucDGWrnqLs8+7CQq8te/zCQNsw1yFxjThbUzyj/GspGzrrWjrPXmDuE3vNM02iiZEEDq0LQFra0/+4WMk9y+GTiypnnuQ30Qvnp/4fzJkMAzfDageHVMf46tHhAMImJehJGSU56ENoIVTb0mCMRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740192297; c=relaxed/simple;
-	bh=FOGcEJwCLduPJ0BPyEAlIHEeGXOsaEMppo5JwHbgSgQ=;
+	s=arc-20240116; t=1740192302; c=relaxed/simple;
+	bh=C+J4n7BDOuX93zcgob79HbEJgPw+TUEypNT+5BPLQu0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nvaTXFHhuDnj3CF8GMhZouqvaBjYlwXk0amKz3B0qFQ5wR8wpSJqRNmCKWJpNpnLffiZhSXoGUwBx3jdBhK5nRCa7aJq9Vzx1Gid+nBeuIe0BhbG0O9h3ufRefe6kL75g9XJpBEpX4lA5Ii+lz03NvC6iS43bIK/G+WqpZ29kCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HriQzGux; arc=none smtp.client-ip=209.85.214.181
+	 MIME-Version; b=mc8XlW8J3q+1CxkiE/xZBkzK4ukIrSoM+o9kCXZMmnSzZVpxETPX4o8zUyKzW6+eHwH7STGoVYuSZqpQZ/NMjD05sW57Y+aHIsXRqFnOf2/GuMo9BZq+6yCWCi96usUM9RPnjfvUi3LTgiBnKxUiEKW/1Y0c1R2y31ZDIN7EO4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MRST24dw; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-220c4159f87so39129335ad.0
-        for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 18:44:56 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2211cd4463cso55988115ad.2
+        for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 18:45:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740192295; x=1740797095; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740192300; x=1740797100; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bolBZqmxiF6GETckqAk9OFKRadV+pg4VUXhxs/9P6QM=;
-        b=HriQzGuxZTxD0B2xpG9x0a6Ce1gMvWf7dxPPEtL9s+283CD2uvXTimNsQSUVGjeBt1
-         sMkh4wUG4s/Z38zgcWShJehz9C9dvNZLJP78Krp6Y9qQ0bf77ndbWZBhERNyMaP8R0WO
-         2imP90L2FHvTKY80F24OrGB2ORAj+ZTOOa8UHOf+66E6grup8db9npvywJ8+2p716LFc
-         ZnxIcKZk0VDdw6szVF8YHrC5lPizV7q625mD5U2f1mj+S0EIfgu9nMtr4IXAHVoVNjIw
-         CCRVCl3tjmjGcb57dRfaNuywEtNvsHK9iwkuHyJwKrXGDzgBv0yMfbGt5Uory/ahAA1f
-         zn0A==
+        bh=SPs3yc+PiAaWT0mDird4KgOQtxAcHODpsiThplYmhyc=;
+        b=MRST24dw7q5Jt5dt77oH3rchiBGGqMjkGoCzC3DoZTGH8m1PMawUJ8c1fVLj8WCxV/
+         1drPn44FUIrEO+V8kz1dA09pk9lzt2bWcTUUM4inOjqscw/aE4FBPmdTrBObCKaTjKmE
+         p9gjM+kC6invMgCeeMyXFh91KeEEDHxzO6SY9hLzMkaZj0Y2p/LqZfj2+lzRcm0VAbpG
+         D1nhA751BQjsKkWKl471q6RcrRQ8FVlOeuQfIzoEDFFn7ppQhLCR0zj2t9TYRRHy4kaY
+         Ehb6QPw4uMlh5W8012+kO/N524MshLJ7OrfreiCgQFldpw0apOx/8b3blaPi8iZko0BD
+         Emqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740192295; x=1740797095;
+        d=1e100.net; s=20230601; t=1740192300; x=1740797100;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bolBZqmxiF6GETckqAk9OFKRadV+pg4VUXhxs/9P6QM=;
-        b=BMHJ6cSJaLMpeRf0PlJPJATAB1njJHnQCz0DYE8A8eUkuXb6zDaZF7kfe6SaiUWDwF
-         EriYc40Z4QExEqxSecp9q7z/g554rdRD0MZztab/oFpOwiCqrJ8glLeW5yFJy1nKa60O
-         0JamUPJ8FRnreyl1Wv/Ya5oXXm0tRcfWNR1DxzC0zMxdmh2W1LHK9jWlud4+boM5AOYg
-         sab2aBwI2uWE4WEi6pKTUlvJwiDDZ6X2zex+NKlDNtMbpeMRsv+d5ehCsy2dxEUCmJKM
-         FxefmCrB6YUk7x85PLvqrNP4BH8YgpzjVl9X+yDx48FEkQFRcTteHE9qF7WXpK2oYMnh
-         yUAw==
-X-Gm-Message-State: AOJu0YyJZngbHZiR7deFWNt+Ahn9e9zx58iCvMYBj4dpb9ghkl3XfrT6
-	KkDesjUKlXaP7tu9dnZdswfDFQLszguSeO08REEBOMufj7MXnj1JL+UA4A==
-X-Gm-Gg: ASbGncuheGROQtMIFaW8AQpcyWSuJ8df/sjr3yWADfbD8r+FL/mxBr7oPk+e4a+RCfN
-	GXdbC1x4AIxeL9/pZqoe/zMb+ZdLbp92R4JmBYroqmzFpfsM0ovwYuliUo63vOspSRn/bMuQ7dU
-	KCWVUq1ojWiDhnNcd5isFTbxTy/yz302dyauQrPstQwGBq8VjPs/gsSl1Ovt/da7VAPy6IgN4tS
-	d4mTQQ99oNciJZjVoMAlGao2lcEpXAKJKQKT6unVBGTSYCHHaZJxuNk3/EAxbIOkaI5X0yNKr5X
-	boMS3q6Vma8Xc54utl6tTBJa5EpGbmpL/g3ITOF2jpDFV7bLmHU8cA==
-X-Google-Smtp-Source: AGHT+IFK4i6e5Q6HRwwkypHWm+mgn/XZd3aa3wu+p1h8KExIL05px6pJ1dJj76k5LTDiVqFHNgy7uw==
-X-Received: by 2002:a05:6a20:7f81:b0:1ee:c6bf:7c68 with SMTP id adf61e73a8af0-1eef3c8a93emr10233940637.17.1740192294949;
-        Fri, 21 Feb 2025 18:44:54 -0800 (PST)
+        bh=SPs3yc+PiAaWT0mDird4KgOQtxAcHODpsiThplYmhyc=;
+        b=W3n526cpzQC3wzsGF5QGxcIsX/10gEnVQlL+tV1yQDwHTCGQJrEw9tEGWPWtRU8/Mk
+         eBAXF4rTmVQTjGy7m7i5pZUOW/qBvK/1pC3Zl9TfZDw18fHmR2ik1nkVgBbIb6rY0jZ2
+         Deh4yaFxMQI5b7NYBm3WPL87G8pXyU2RVGDohTTESMaJXNyF+3gDuefAosbXyTvmqQSw
+         6+kC9C4yrMG15CWHqeW7K62RpIAfMAt8KkfLRZSNJuXNekI4ZO++to9gHzmDSSSOfvTp
+         Rf7OSSvHhgr4yA3SjYHUkgvz1U+ZBGguVhT8PHWvSORbXT9qNu660J2ZsKh41XW0xnMP
+         tUnw==
+X-Gm-Message-State: AOJu0Ywc71/eoG0iuCFYnZWWU1ZyZ1G/dfyR2e4dK1qnDOu29iUKcR0f
+	P1LH2g/TBKjBlG1YRIRn+XC/Ogf/G9C98DOnvmNr+2SnH3hH9uJdDwICYg==
+X-Gm-Gg: ASbGncsqpjv2MJBnKSgG+HEuG3DLLwZFlZjMssknKlLUqCnmlOyL+IumNE27e1ys7/i
+	7eIhJ5gwyESwNTpyOa6gS6xwpdZwEUZM4A+ms+yHwHeKkfBBpwZWo+Z2ATwC5b+PIBxs/DUkNDZ
+	X1fXdpCWf2K6Hrye0lVEraFUw0hCeQeUAJ2YqDm2Js3xQcdLa3aeGDcJXw1wXSOiCK8TdhlmX9l
+	vovPv7tR7QgVEys7ZqaU9QusxL+F8WIYmfmVkVtxmCsM9GavzGuyMO3L5atd21cmBwcbcPKNLyI
+	JICLVaOPMmEvH4FBlc+5XL4Z4VagNh3YUE4tWG/HCvsNtzruiM3tUQ==
+X-Google-Smtp-Source: AGHT+IGe5ruubfI6Kv2JX5V72ftGr8+QNktHSqGRav+UGawI2sLc8KeipECS2WW3ixuo2162gZmKxQ==
+X-Received: by 2002:a17:903:8c5:b0:21f:4c8b:c514 with SMTP id d9443c01a7336-2219fffa9f3mr82089215ad.45.1740192299832;
+        Fri, 21 Feb 2025 18:44:59 -0800 (PST)
 Received: from localhost.localdomain ([2620:10d:c090:400::5:fd1b])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ae0950ecb95sm7549891a12.41.2025.02.21.18.44.52
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d545d43dsm144772515ad.158.2025.02.21.18.44.57
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 21 Feb 2025 18:44:54 -0800 (PST)
+        Fri, 21 Feb 2025 18:44:59 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
@@ -90,9 +90,9 @@ Cc: andrii@kernel.org,
 	tj@kernel.org,
 	linux-mm@kvack.org,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next v9 5/6] mm, bpf: Use memcg in try_alloc_pages().
-Date: Fri, 21 Feb 2025 18:44:26 -0800
-Message-Id: <20250222024427.30294-6-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next v9 6/6] bpf: Use try_alloc_pages() to allocate pages for bpf needs.
+Date: Fri, 21 Feb 2025 18:44:27 -0800
+Message-Id: <20250222024427.30294-7-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
 References: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
@@ -106,43 +106,100 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Unconditionally use __GFP_ACCOUNT in try_alloc_pages().
-The caller is responsible to setup memcg correctly.
-All BPF memory accounting is memcg based.
+Use try_alloc_pages() and free_pages_nolock() for BPF needs
+when context doesn't allow using normal alloc_pages.
+This is a prerequisite for further work.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- mm/page_alloc.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ include/linux/bpf.h  |  2 +-
+ kernel/bpf/arena.c   |  5 ++---
+ kernel/bpf/syscall.c | 23 ++++++++++++++++++++---
+ 3 files changed, 23 insertions(+), 7 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 79b39ad4bb1b..4ad0ba7801a8 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7189,7 +7189,8 @@ struct page *try_alloc_pages_noprof(int nid, unsigned int order)
- 	 * specify it here to highlight that try_alloc_pages()
- 	 * doesn't want to deplete reserves.
- 	 */
--	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO | __GFP_NOMEMALLOC;
-+	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO | __GFP_NOMEMALLOC
-+			| __GFP_ACCOUNT;
- 	unsigned int alloc_flags = ALLOC_TRYLOCK;
- 	struct alloc_context ac = { };
- 	struct page *page;
-@@ -7233,6 +7234,11 @@ struct page *try_alloc_pages_noprof(int nid, unsigned int order)
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 15164787ce7f..aec102868b93 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2354,7 +2354,7 @@ int  generic_map_delete_batch(struct bpf_map *map,
+ struct bpf_map *bpf_map_get_curr_or_next(u32 *id);
+ struct bpf_prog *bpf_prog_get_curr_or_next(u32 *id);
  
- 	/* Unlike regular alloc_pages() there is no __alloc_pages_slowpath(). */
+-int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
++int bpf_map_alloc_pages(const struct bpf_map *map, int nid,
+ 			unsigned long nr_pages, struct page **page_array);
+ #ifdef CONFIG_MEMCG
+ void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
+diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+index 647b709d7d77..0d56cea71602 100644
+--- a/kernel/bpf/arena.c
++++ b/kernel/bpf/arena.c
+@@ -287,7 +287,7 @@ static vm_fault_t arena_vm_fault(struct vm_fault *vmf)
+ 		return VM_FAULT_SIGSEGV;
  
-+	if (memcg_kmem_online() && page &&
-+	    unlikely(__memcg_kmem_charge_page(page, alloc_gfp, order) != 0)) {
-+		free_pages_nolock(page, order);
-+		page = NULL;
-+	}
- 	trace_mm_page_alloc(page, order, alloc_gfp, ac.migratetype);
- 	kmsan_alloc_page(page, order, alloc_gfp);
- 	return page;
+ 	/* Account into memcg of the process that created bpf_arena */
+-	ret = bpf_map_alloc_pages(map, GFP_KERNEL | __GFP_ZERO, NUMA_NO_NODE, 1, &page);
++	ret = bpf_map_alloc_pages(map, NUMA_NO_NODE, 1, &page);
+ 	if (ret) {
+ 		range_tree_set(&arena->rt, vmf->pgoff, 1);
+ 		return VM_FAULT_SIGSEGV;
+@@ -465,8 +465,7 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+ 	if (ret)
+ 		goto out_free_pages;
+ 
+-	ret = bpf_map_alloc_pages(&arena->map, GFP_KERNEL | __GFP_ZERO,
+-				  node_id, page_cnt, pages);
++	ret = bpf_map_alloc_pages(&arena->map, node_id, page_cnt, pages);
+ 	if (ret)
+ 		goto out;
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index dbd89c13dd32..28680896c6a4 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -569,7 +569,24 @@ static void bpf_map_release_memcg(struct bpf_map *map)
+ }
+ #endif
+ 
+-int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
++static bool can_alloc_pages(void)
++{
++	return preempt_count() == 0 && !irqs_disabled() &&
++		!IS_ENABLED(CONFIG_PREEMPT_RT);
++}
++
++static struct page *__bpf_alloc_page(int nid)
++{
++	if (!can_alloc_pages())
++		return try_alloc_pages(nid, 0);
++
++	return alloc_pages_node(nid,
++				GFP_KERNEL | __GFP_ZERO | __GFP_ACCOUNT
++				| __GFP_NOWARN,
++				0);
++}
++
++int bpf_map_alloc_pages(const struct bpf_map *map, int nid,
+ 			unsigned long nr_pages, struct page **pages)
+ {
+ 	unsigned long i, j;
+@@ -582,14 +599,14 @@ int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
+ 	old_memcg = set_active_memcg(memcg);
+ #endif
+ 	for (i = 0; i < nr_pages; i++) {
+-		pg = alloc_pages_node(nid, gfp | __GFP_ACCOUNT, 0);
++		pg = __bpf_alloc_page(nid);
+ 
+ 		if (pg) {
+ 			pages[i] = pg;
+ 			continue;
+ 		}
+ 		for (j = 0; j < i; j++)
+-			__free_page(pages[j]);
++			free_pages_nolock(pages[j], 0);
+ 		ret = -ENOMEM;
+ 		break;
+ 	}
 -- 
 2.43.5
 
