@@ -1,74 +1,76 @@
-Return-Path: <bpf+bounces-52253-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52254-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84E55A40AF6
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 19:31:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C511A40AF8
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 19:31:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D33F23BFE44
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 18:31:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B432177B37
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 18:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE2520B21C;
-	Sat, 22 Feb 2025 18:31:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8EC20B81E;
+	Sat, 22 Feb 2025 18:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LaWgSSmr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jrLtDS02"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DD335961;
-	Sat, 22 Feb 2025 18:31:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E252770E2;
+	Sat, 22 Feb 2025 18:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740249068; cv=none; b=ASmRyn+gCFi+3WqWkW8WMVlAYUgMqolzni34VMlQJd4bFtHmLNasZKGnC1+Hpr5Ot3wvWLO9DockCW7PncNBR5OfdFh9pBDIKTIH4Wj8KsNtB+1PybMwhqM9hp8lXgKpJynhovfEyAsq356a/tui39sjrqHAF7w1d+ikQDWUQYE=
+	t=1740249069; cv=none; b=sYJMRBZ/E5aTFOfehslEr3t+IFXtHA7oMviLlTvjy9SSKsVjs2nRST3GX61kvDfSG17YAAW2/Ti2bHKt6K9AI1iweNyJs7lB9vUKePIq1A9zkaKYXf/3iI2cOe7naMntz9EX1S4nHuK5HDaFenttpC3M1kvTfDBvyOftUw/bKsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740249068; c=relaxed/simple;
-	bh=F370KETrMWzBfCAknccZHirCmbB67waMtTvyv7WFlGM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ewZYfN21mFUdfx3U28LwabbCff5uSYAFqQOFn2rv76105+wO9reZz7f2opOWa3UWraE/M8TdyMDEEDCq63puQmtqMk5dHbBe4sH0X/NcNa4Hjlx1aAI3ZBwOHuhidd17GSUXpMposb2xP8O730Es8YbRbF6tRCLpv9CQ2uvb7Cw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LaWgSSmr; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1740249069; c=relaxed/simple;
+	bh=38CB9debAPDMQ8RDwySRO3SUuWp+lyyWDRiWwde74vg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=OtFClFpTWxNZSjcFGNTA9eORY/nYT/9id3vfiOpbsYGmt3GLaAJxfR2kKGqvvjP1equHZhnhjsMU9xLf9R5xnWPaK9YBQSnW4qZKgh76BIJjWXboVCG0Q+0kQLpt7x9oGzbQTfHv8/QW0U0Hj7aJczD3JR10hUegYD2fPSuRyqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jrLtDS02; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-221206dbd7eso64681675ad.2;
-        Sat, 22 Feb 2025 10:31:06 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-21c2f1b610dso91368975ad.0;
+        Sat, 22 Feb 2025 10:31:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740249066; x=1740853866; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JO23ucqLx5sqqdPCYez77ZwthsWLwhAUyq51soFFXxk=;
-        b=LaWgSSmrwRIh99Lby8ICka4GG9LFkdgkgz7x/gqHdPl6Pj8pkiMZFZxtA+vbHv+fEX
-         Ws1SBxLEiUXvqd5/bXKnY5Ha31nqlXkG+cw6zfbJQ6tb5xuU+IkWeymOxAqf+uWSE8Dv
-         X+bLFq6GHa6U6o9nN83LRoh82rpQc/fpa36fpeUjyL11aVbD6GvBkF5xhTpTyAgTDIc4
-         zou47m09meZehfyETshMEv9UWuy4SNFvfgpqWLYwGVu66a03DUpXDCBh2bWUOVRzrCzg
-         HmxXkoN6WdbUb9h2NQq5yl9EhkJQoXOoHeF02nQH0cenrPLDOOOkyzWaQZyC59D/RZXL
-         9AUA==
+        d=gmail.com; s=20230601; t=1740249067; x=1740853867; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=onrvRy8A9CruBPz6kTY9C62B6nelGllJawVsW5K9X8c=;
+        b=jrLtDS02NYnMrrr2mxF8pMfqZQJW2jtCEdrxXWMJ8WawIJ5+0rF1u31t0xDpTJmn4w
+         s6ewkMMnJYxgBzoyXFtiHbqp6kar8FFHAKXBW6fL6C9beeafwALgR803/qlWXWQ4tGgL
+         YW/FAHIc0CZ/Kxn8IrhU38AVewowzdIo9XgTRb4998nkeXmJGJmL0a1FPUy6uNyyq/SH
+         2oGoS4xV4NRdTsdOBmiqted0ast+iJLg20Mm9P9A4fzQMTqManu5yLa6tTTOZK1XBhXh
+         bvY/PBGbe0Nc5pWZN/le2JPsvaVV7DWQ9wy/oY4LEgl1KFv4r3XxEBs9fN2ICTZVAhjS
+         cfzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740249066; x=1740853866;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JO23ucqLx5sqqdPCYez77ZwthsWLwhAUyq51soFFXxk=;
-        b=LHJHfka02thcysTwN0eAn6EVizc9D8cAKfUpTzYtakDvQfSODlCaWr/qAnebZedBx1
-         0GuHPnqFLvRRuNIiMgtyGtp7LbHHEzJULufNTM33Mgfk+l7FYwzfM5mQFNJFc916zBk4
-         nEdcGVtCJbnjCLDxmj0ZMd0suh0P4JBGFu4N+jj6RYihBQdBl75tN76YnKKC4e7gMyZr
-         M5ggZFrOr1jeYtPy4nDlfkqEMIREYsp6GJRmyBRzvCcw3RYGSqmN888se5dp+saAFreB
-         EKmAF5ydfMT3b2wMa8lF5bB7LkfxPNGwLOGlNZvMW77i49GjIxJm+Gg8+7gHHVoEd0v+
-         RJCw==
-X-Gm-Message-State: AOJu0Yx9Z/vo8urq6Qg9AiKENlYpWoEXhaHwFIB9sFluYt9D7KEQf2oD
-	tqDX8yiEtk5grV5Gqs+iXtWJ/PWeOqOCwM1gxj0AEc5E8wPUWaLd9NPwyQ==
-X-Gm-Gg: ASbGncseQ43dmH3groonh1ttSOnhQfnOQJ1RXkVk142bsx+QIXGBrAbH0JNZU9Gz2Ya
-	46w2aJoJj70nbHQw6zhow1kwk96QDhwFsxEGoXrdufLk4Xy+rZm5iSzWFMsHcTLBeqFURWfQSlv
-	Jz1A88xqnb2M1SuIpQqiRQaOpfSHjqkR3qdtJNbeh6Kj1btOmRewZXN/2vVQBGv31/yC6eGOAJw
-	gghhbZiUMmRnLiD1HI7Mo1skgrtackr23fDOZEeD3M5G9YlTXViRBUF/z980dYxrFqs4xPuSUTh
-	qOnEgyTIT/5PDJZ0SPkZGRf7Op9cy9IeF+A2qvs1gslGzx07CaLV51o=
-X-Google-Smtp-Source: AGHT+IHhOYfix2yw/nhson6NU50l6sm551VjCRHt0U4RfUKlhoZbwPgbkLHcVLk4h/MRnKMVs0ZC3w==
-X-Received: by 2002:a05:6a00:4f8f:b0:730:9242:e68 with SMTP id d2e1a72fcca58-73426d96062mr10895518b3a.23.1740249065716;
-        Sat, 22 Feb 2025 10:31:05 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740249067; x=1740853867;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=onrvRy8A9CruBPz6kTY9C62B6nelGllJawVsW5K9X8c=;
+        b=eqXXMbWA+QJ8FUfY6ukRlptrVLEe2e7eUPdvjg28Y2sSri8pz5Zh0J/3hbTDtjy1Hp
+         4R8Fju3dVRk8VD56Z2E09ny8AqholxR4/qDuSvp9lQmnx2+KYi8KYrinIzOg4bgHUKHf
+         8Kh411ylPoOJ4I1NgGTpmwM2Uc0oPDcDI3MEpwdJ/IDB5CnvVhVNWToRJJXLNKNTiQ3Y
+         rkeFgYomxcdP7g+e5yLxtEU/jYs1CemVqoCm4+z8Dm+DsChO4P03SX1ZrFEBHajVevMN
+         Kr9AUtEG9h1Gwo9bnyjXPb8n6eaRI1XRq7D2TmdDVQ1Xic6oaC7aqIrEpcbGfoXmdnSM
+         G62g==
+X-Gm-Message-State: AOJu0YzSLjYOR9WWpYwA4d+m3Y0awdIMsolQfrjnOu9uWGl/44r03ugo
+	QghS2JF+U8wEqP0dRlbgbySzriuFNhPuUPKcrzmMsGhFytZck1RjFDUJkQ==
+X-Gm-Gg: ASbGncubtvX1SxGHkk+pFinEYDlBhado8mVrJ7hNpzAPLsIgL16niL7mEvkVOb86Zd5
+	2MmUsnD1p/o+l67oSnu9LsLnCGJhbK2SNGmT+BUdafwTzVDXuQo7I9i/mU2W38V+DW/LIvnzeAn
+	InL4axDZv9R5Bw5q5VJqeUpYq1lzsKJTMfCKM3KpGLWbp25lLjpsfIJdSCZJUCsXipHtJ+z9/O7
+	GzS8/lOaZNNfhGy9KPFcwgR/Uw4yct8Dr3+PzWDkHsLH4ajfzeY8B5tXv6PKemsS6GpmhG9sjeY
+	FCyQbmdC99PFpNqAs+y3uqzcdMJRfWsllBFsf1ZCrdtSu1FJyn4sn4I=
+X-Google-Smtp-Source: AGHT+IF4gPyQpGKGTxrJexorYqQEqUew/Tga5Xx7dnnIRcN2cxD5qAUAmisU+M/bXeJ1eMsBuWdxPw==
+X-Received: by 2002:a05:6a20:1593:b0:1ee:efb2:f68c with SMTP id adf61e73a8af0-1eef3c9ae11mr13042831637.12.1740249067009;
+        Sat, 22 Feb 2025 10:31:07 -0800 (PST)
 Received: from pop-os.hsd1.ca.comcast.net ([2601:647:6881:9060:2714:159c:631a:37c0])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73250dd701bsm16442959b3a.131.2025.02.22.10.31.04
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73250dd701bsm16442959b3a.131.2025.02.22.10.31.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Feb 2025 10:31:05 -0800 (PST)
+        Sat, 22 Feb 2025 10:31:06 -0800 (PST)
 From: Cong Wang <xiyou.wangcong@gmail.com>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -76,67 +78,125 @@ Cc: bpf@vger.kernel.org,
 	jakub@cloudflare.com,
 	zhoufeng.zf@bytedance.com,
 	zijianzhang@bytedance.com,
-	Cong Wang <xiyou.wangcong@gmail.com>
-Subject: [Patch bpf-next 0/4] tcp_bpf: improve ingress redirection performance with message corking
-Date: Sat, 22 Feb 2025 10:30:53 -0800
-Message-Id: <20250222183057.800800-1-xiyou.wangcong@gmail.com>
+	Cong Wang <cong.wang@bytedance.com>
+Subject: [Patch bpf-next 1/4] skmsg: rename sk_msg_alloc() to sk_msg_expand()
+Date: Sat, 22 Feb 2025 10:30:54 -0800
+Message-Id: <20250222183057.800800-2-xiyou.wangcong@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250222183057.800800-1-xiyou.wangcong@gmail.com>
+References: <20250222183057.800800-1-xiyou.wangcong@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This patchset improves skmsg ingress redirection performance by a)
-sophisticated batching with kworker; b) skmsg allocation caching with
-kmem cache.
+From: Cong Wang <cong.wang@bytedance.com>
 
-As a result, our patches significantly outperforms the vanilla kernel
-in terms of throughput for almost all packet sizes. The percentage
-improvement in throughput ranges from 3.13% to 160.92%, with smaller
-packets showing the highest improvements.
+The name sk_msg_alloc is misleading, that function does not allocate
+sk_msg at all, it simply refills sock page frags. Rename it to
+sk_msg_expand() to better reflect what it actually does.
 
-For Latency, it induces slightly higher latency across most packet sizes
-compared to the vanilla, which is also expected since this is a natural
-side effect of batching.
-
-Please see the detailed benchmarks:
-
-+-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| Throughput  | 64     | 128    | 256    | 512    | 1k     | 4k     | 16k    | 32k    | 64k    | 128k   | 256k   |
-+-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-| Vanilla     | 0.17±0.02 | 0.36±0.01 | 0.72±0.02 | 1.37±0.05 | 2.60±0.12 | 8.24±0.44 | 22.38±2.02 | 25.49±1.28 | 43.07±1.36 | 66.87±4.14 | 73.70±7.15 |
-| Patched     | 0.41±0.01 | 0.82±0.02 | 1.62±0.05 | 3.33±0.01 | 6.45±0.02 | 21.50±0.08 | 46.22±0.31 | 50.20±1.12 | 45.39±1.29 | 68.96±1.12 | 78.35±1.49 |
-| Percentage  | 141.18%   | 127.78%   | 125.00%   | 143.07%   | 148.08%   | 160.92%   | 106.52%    | 97.00%     | 5.38%      | 3.13%      | 6.32%      |
-+-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-
-+-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
-| Latency     | 64        | 128       | 256       | 512       | 1k        | 4k        | 16k       | 32k       | 63k       |
-+-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
-| Vanilla     | 5.80±4.02 | 5.83±3.61 | 5.86±4.10 | 5.91±4.19 | 5.98±4.14 | 6.61±4.47 | 8.60±2.59 | 10.96±5.50| 15.02±6.78|
-| Patched     | 6.18±3.03 | 6.23±4.38 | 6.25±4.44 | 6.13±4.35 | 6.32±4.23 | 6.94±4.61 | 8.90±5.49 | 11.12±6.10| 14.88±6.55|
-| Percentage  | 6.55%     | 6.87%     | 6.66%     | 3.72%     | 5.68%     | 4.99%     | 3.49%     | 1.46%     |-0.93%     |
-+-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
-
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 ---
-Cong Wang (2):
-  skmsg: rename sk_msg_alloc() to sk_msg_expand()
-  skmsg: use bitfields for struct sk_psock
+ include/linux/skmsg.h | 4 ++--
+ net/core/skmsg.c      | 6 +++---
+ net/ipv4/tcp_bpf.c    | 2 +-
+ net/tls/tls_sw.c      | 6 +++---
+ net/xfrm/espintcp.c   | 2 +-
+ 5 files changed, 10 insertions(+), 10 deletions(-)
 
-Zijian Zhang (2):
-  skmsg: implement slab allocator cache for sk_msg
-  tcp_bpf: improve ingress redirection performance with message corking
-
- include/linux/skmsg.h |  48 +++++++---
- net/core/skmsg.c      | 173 ++++++++++++++++++++++++++++++++---
- net/ipv4/tcp_bpf.c    | 204 +++++++++++++++++++++++++++++++++++++++---
- net/tls/tls_sw.c      |   6 +-
- net/xfrm/espintcp.c   |   2 +-
- 5 files changed, 394 insertions(+), 39 deletions(-)
-
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index 0b9095a281b8..d6f0a8cd73c4 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -121,8 +121,8 @@ struct sk_psock {
+ 	struct rcu_work			rwork;
+ };
+ 
+-int sk_msg_alloc(struct sock *sk, struct sk_msg *msg, int len,
+-		 int elem_first_coalesce);
++int sk_msg_expand(struct sock *sk, struct sk_msg *msg, int len,
++		  int elem_first_coalesce);
+ int sk_msg_clone(struct sock *sk, struct sk_msg *dst, struct sk_msg *src,
+ 		 u32 off, u32 len);
+ void sk_msg_trim(struct sock *sk, struct sk_msg *msg, int len);
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 0ddc4c718833..4695cbd9c16f 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -24,8 +24,8 @@ static bool sk_msg_try_coalesce_ok(struct sk_msg *msg, int elem_first_coalesce)
+ 	return false;
+ }
+ 
+-int sk_msg_alloc(struct sock *sk, struct sk_msg *msg, int len,
+-		 int elem_first_coalesce)
++int sk_msg_expand(struct sock *sk, struct sk_msg *msg, int len,
++		  int elem_first_coalesce)
+ {
+ 	struct page_frag *pfrag = sk_page_frag(sk);
+ 	u32 osize = msg->sg.size;
+@@ -82,7 +82,7 @@ int sk_msg_alloc(struct sock *sk, struct sk_msg *msg, int len,
+ 	sk_msg_trim(sk, msg, osize);
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(sk_msg_alloc);
++EXPORT_SYMBOL_GPL(sk_msg_expand);
+ 
+ int sk_msg_clone(struct sock *sk, struct sk_msg *dst, struct sk_msg *src,
+ 		 u32 off, u32 len)
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index ba581785adb4..85b64ffc20c6 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -530,7 +530,7 @@ static int tcp_bpf_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+ 		}
+ 
+ 		osize = msg_tx->sg.size;
+-		err = sk_msg_alloc(sk, msg_tx, msg_tx->sg.size + copy, msg_tx->sg.end - 1);
++		err = sk_msg_expand(sk, msg_tx, msg_tx->sg.size + copy, msg_tx->sg.end - 1);
+ 		if (err) {
+ 			if (err != -ENOSPC)
+ 				goto wait_for_memory;
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index 914d4e1516a3..338b373c8fc5 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -324,7 +324,7 @@ static int tls_alloc_encrypted_msg(struct sock *sk, int len)
+ 	struct tls_rec *rec = ctx->open_rec;
+ 	struct sk_msg *msg_en = &rec->msg_encrypted;
+ 
+-	return sk_msg_alloc(sk, msg_en, len, 0);
++	return sk_msg_expand(sk, msg_en, len, 0);
+ }
+ 
+ static int tls_clone_plaintext_msg(struct sock *sk, int required)
+@@ -619,8 +619,8 @@ static int tls_split_open_record(struct sock *sk, struct tls_rec *from,
+ 	new = tls_get_rec(sk);
+ 	if (!new)
+ 		return -ENOMEM;
+-	ret = sk_msg_alloc(sk, &new->msg_encrypted, msg_opl->sg.size +
+-			   tx_overhead_size, 0);
++	ret = sk_msg_expand(sk, &new->msg_encrypted, msg_opl->sg.size +
++			    tx_overhead_size, 0);
+ 	if (ret < 0) {
+ 		tls_free_rec(sk, new);
+ 		return ret;
+diff --git a/net/xfrm/espintcp.c b/net/xfrm/espintcp.c
+index fe82e2d07300..4fd03edb4497 100644
+--- a/net/xfrm/espintcp.c
++++ b/net/xfrm/espintcp.c
+@@ -351,7 +351,7 @@ static int espintcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+ 	sk_msg_init(&emsg->skmsg);
+ 	while (1) {
+ 		/* only -ENOMEM is possible since we don't coalesce */
+-		err = sk_msg_alloc(sk, &emsg->skmsg, msglen, 0);
++		err = sk_msg_expand(sk, &emsg->skmsg, msglen, 0);
+ 		if (!err)
+ 			break;
+ 
 -- 
 2.34.1
 
