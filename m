@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-52255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 474BFA40AF9
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 19:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B131A40AFB
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 19:31:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13ED117783C
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 18:31:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81E6D17D948
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 18:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F8420C021;
-	Sat, 22 Feb 2025 18:31:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722CE20C469;
+	Sat, 22 Feb 2025 18:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Th1rh+8B"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ng68kHbs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61BBF20B7F7;
-	Sat, 22 Feb 2025 18:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD3720C008;
+	Sat, 22 Feb 2025 18:31:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740249071; cv=none; b=UhYEgPI1h5THZXKykrPNypP/ZP6UITOaqkvnqjqz+qUeMskC1oRAloFr4BiZiJ12vLSKpOhElHHc2U5LMDb7Go5Wp1Lf3qKAaG9HoFIx9jVWaWNgY4MTFB8U78TCvlF5280DeIQqnlS3ZdYKg/oFohszIj+JobSxyVnWiB8OKqo=
+	t=1740249072; cv=none; b=pMq3pm125phQj45mmkyFrairtcPXrnTtEcFWadVKXqgNXlUa/1lJT1krY5oAQcvKYDoTQGRITb1BtKx04QQtwu4C89LBhhnXmBeg7bWSyXMmh+9034fUenwCY6p5d2e/EehgBzWazVrdfh5PSZ6Pah8g+iRBLxO2a/kZKNZxJOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740249071; c=relaxed/simple;
-	bh=TI6cHoVsKSwW28kVC+WGOqjAE3DLRsM5y2hXa7t02hU=;
+	s=arc-20240116; t=1740249072; c=relaxed/simple;
+	bh=gRk2yRabhWhPWhADGM+Ok2+mzIHtLDY2SIR0tGl8w4I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DjFRFfGRET1lsQfyY0SMcC0memwOG2g8O8pe60eZhkShElLgWn8dpuj6TVC1pfBefeArzU3/9eMkErQ3VgLifKLX4fsj9++o0zCCJiM+85J2MjN773tJmRLM8JjWmZF67mC5Y9fvyAFYzEkWwCHeNxn2lwn1bGYa0FkGnDetBJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Th1rh+8B; arc=none smtp.client-ip=209.85.216.46
+	 MIME-Version; b=A/tQYjC7grpHcFAvsbDC4hUIfl8pAEU2Q5/X2VBcxTZY+o52xu/4H8p4Q1f8KPk28Lrou0GAZszaMRHAs++cEl8rl4pDinPM+5VNndAx6PzTB0yF2oW4GSILcWvD+B3rXvAMRZrOntGEFoCrBTYOdVVQDSC4PLbHlDt9UzSReV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ng68kHbs; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2fc1f410186so7340712a91.0;
-        Sat, 22 Feb 2025 10:31:09 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-220e989edb6so87235665ad.1;
+        Sat, 22 Feb 2025 10:31:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740249068; x=1740853868; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740249069; x=1740853869; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5wOjim4xlZk082hyKSlOHixdefH2Pq7iWo7w1+sb9so=;
-        b=Th1rh+8B/1pdz+F63EcWeRYsJJMxqhQvggxkzIyQxTFQfXzBFZ3SRs5cK7jJon3tl/
-         vU8upeVoWQmOKnFxnHOJw8/g7bB6XDJa8+aO8qThSbdA4xcU0H86GtXy+qQpp2ieyocK
-         QT8dVU1bk6ME7+xT/rQoZk2I9EKRYszZj9lLwumL5n0vs0DA/EhGaRvqHV+T2Pl0u+Aa
-         dbE09LNV16UDKFTF/TzSK/MNfXQqUXtS2cGNQYVT2PQMgGYwTbPVwF+rn1hUjAz0CnVq
-         Xyq3sNYltmz6/BgcpgcWHUcTLFPFKcXqxUSi/M7a52qvnbnqjuJjAw2E5YRE0CSPYMJg
-         8Jvw==
+        bh=9hBQjwKCpi/rRVV/Ve5h9twAin5N57JR7ZeRSA+Dds0=;
+        b=Ng68kHbswcHraLFi4WERh3QsALEMYgqge2XCZxtTYy33AQ9AlL8Nwn8kvqrQ/ibZf0
+         Lg4MIVa0kjfWxM577BC6NWziBflriTa28UcxdYu8IkjbBsXpJt5mJBUCNVPnhTO67lfY
+         Dajg5kmTvANsmTla6aphLuBeVTIFh1aYtbhCsOzGqNj5PhCrj4bn71LVsu7SOmp0K+2t
+         sMQLcJbr614Lsy1kBI1WAqsAaJk5ICWX70oxssrqQv7RtB6guB9MOcuzHjjPg9my9Lfq
+         m1xv9NqhORyknUoRZrwlz44avEDjsyqLn4xHHvZWLX3J1krAmHPzDvdIsLhirsHpLiOm
+         64oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740249068; x=1740853868;
+        d=1e100.net; s=20230601; t=1740249069; x=1740853869;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5wOjim4xlZk082hyKSlOHixdefH2Pq7iWo7w1+sb9so=;
-        b=QbX95ZXkk5Rl+02mSejVdFTmcLLqu0SJEScIKjhbOUePZ+8xgj+FK+iSJx27O/wG++
-         yBQNCt8O+stCaEcY5St72NQOnY8a5I0mWJJsHd57RHosZd/6tT5jBb3CEp7P3o3k7Jv9
-         +ZSqn1N8NL4O16GFRwFnaRzzb+hZ4T+47CLSedoPs1lDkwSFOGxrsda5PI7WMAD2CJae
-         p6jYsGGdwzTH2o2ZayODi18B8+MYhYti/4Qqcg5Hhg7rMcSeBRvzWE3hl/ay7980cAi5
-         J60CWO9UUHYN1RwX3BNlv/gSJeQwg8ofaHvyHTR6KwFlxNGyjx98KZSy/QjFT+v/NsSI
-         091g==
-X-Gm-Message-State: AOJu0YwnVT3cb3LFL8psv9XYHhOauqHoclHmtzusLUBVpQvYaZxqKLv3
-	0qoNWUFKMazg2kJcLRFdBNcHwi+/iP64vFlhh1ZntOtUcdvbIUdmVHuipg==
-X-Gm-Gg: ASbGnctRtHXYhIMBouLTZ9xRrikK61mRXGa5UAnl0+FqnTxl3qHVyHo06cJDlQm4jLn
-	VQV4LwurZ+8q9DJuVKhiL0Tr2AC/GPnYa/4BiNAl8jnt1Suiy64sofeoUY3XZljTbS9rfFQqPOL
-	fQ2gdu8IozAdFa9INUf0ql8gElNsVO62CGlv0QeOGTIDUokd4X1js6oKAOmTRz55sx0ZabaJfTo
-	ywv8FjYlOKMHCPVJRKKnDZ1RuTE3LcrTGLfY8C/N6N1ftxBzUsA0B2TBSPYkoO7PLlqPYHMtJHw
-	88o7d9QDHyIc5fca10KnWrwqP5hAXA/idNXWBcmz7M3jP9gJjawnWmo=
-X-Google-Smtp-Source: AGHT+IFiQllMOo7IZ27br3pEb/4UmsFTPjSJV4qpYiYd939IwuiLI8MyRqU3mqUt3nFVh/YEpAa1Cg==
-X-Received: by 2002:a05:6a20:a11b:b0:1ee:cfec:9e5e with SMTP id adf61e73a8af0-1eef3e1ec9fmr12613439637.21.1740249068189;
-        Sat, 22 Feb 2025 10:31:08 -0800 (PST)
+        bh=9hBQjwKCpi/rRVV/Ve5h9twAin5N57JR7ZeRSA+Dds0=;
+        b=C9kNobamtR4kEblky/5a/WSdI+hd3MFe2ciibF+/phoHs0ZPqa/duwsNrCxxo9D1l0
+         K2jXODUam5q6zCHrxASVl6gRpj3egMSvRjtCOf+RFbdyE5H90gG3J1P0A/wDqKvmpFD3
+         SBpuz5fDGl1qxLi4JidXQeSCrneVGZBr6Sc2/riDerd+32A5Xr/xL6MGI2hycc01dLsR
+         Wf7+SVE66KzNXTCzN5vqfqnOgEDdAtlCyT/Asi7jqfXmqVKwF2WV/X16G840vjetfWaa
+         T+XZPOBuN5VowX/6/np2AQsrAWf6/iQLP15lrRJBHZsHQ5fgkgOArqF4RwwKL9bU7ZEZ
+         N45g==
+X-Gm-Message-State: AOJu0Yz/DJpCXOW4AzvK/RZyMcNXwYTgS3Ab83lde7u/x73KXofaqY90
+	XtYzH7zh3ATgKYuS+iDrE+SP2C4ZNzsm5CtmM9Eo5gTyO3IXhtM27kFKMg==
+X-Gm-Gg: ASbGncub3CTa6QLBhgey80QrjU7WpIJRmgIPDgs6KQX/AY2E7HbXcgxt1kVA7F+DPVE
+	Zfov13+c5UrbFc3qzS4JuoAB9/UHcHGzr6MJA1K0Idu2wbFc03dCyPgyFCHUvybjowM1E45/Ri5
+	1ESKUATzWVw2/tRFj5Ikf175d5yEvc7VvSNxtg9mm6t0e0/QxVMVdMX4iH/x7chbED99ZRxVrZ2
+	uWyUHb0sfDxCF/v7iqJUi5liA1QV+OXr2RH5X/aOM3WTmqVDYYWPjqnjId6A7XqExZWj6s6+PuZ
+	MdRzIF4IXbhpzPbzJIgwtIZ+Jbx3wlHjQeTm2xBN0plPcc1tvfsbZqM=
+X-Google-Smtp-Source: AGHT+IEcJ5NIW7/K149wntM9GRaFkqfROC7xpdTfpsgut2DclceiUxD+9v++C9/yfx1G78OhKHi1Hw==
+X-Received: by 2002:a05:6a00:8d0:b0:724:59e0:5d22 with SMTP id d2e1a72fcca58-73426d8b897mr12304801b3a.20.1740249069452;
+        Sat, 22 Feb 2025 10:31:09 -0800 (PST)
 Received: from pop-os.hsd1.ca.comcast.net ([2601:647:6881:9060:2714:159c:631a:37c0])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73250dd701bsm16442959b3a.131.2025.02.22.10.31.07
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73250dd701bsm16442959b3a.131.2025.02.22.10.31.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Feb 2025 10:31:07 -0800 (PST)
+        Sat, 22 Feb 2025 10:31:08 -0800 (PST)
 From: Cong Wang <xiyou.wangcong@gmail.com>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -79,9 +79,9 @@ Cc: bpf@vger.kernel.org,
 	zhoufeng.zf@bytedance.com,
 	zijianzhang@bytedance.com,
 	Cong Wang <cong.wang@bytedance.com>
-Subject: [Patch bpf-next 2/4] skmsg: implement slab allocator cache for sk_msg
-Date: Sat, 22 Feb 2025 10:30:55 -0800
-Message-Id: <20250222183057.800800-3-xiyou.wangcong@gmail.com>
+Subject: [Patch bpf-next 3/4] skmsg: use bitfields for struct sk_psock
+Date: Sat, 22 Feb 2025 10:30:56 -0800
+Message-Id: <20250222183057.800800-4-xiyou.wangcong@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250222183057.800800-1-xiyou.wangcong@gmail.com>
 References: <20250222183057.800800-1-xiyou.wangcong@gmail.com>
@@ -93,203 +93,33 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Zijian Zhang <zijianzhang@bytedance.com>
+From: Cong Wang <cong.wang@bytedance.com>
 
-Optimizing redirect ingress performance requires frequent allocation and
-deallocation of sk_msg structures. Introduce a dedicated kmem_cache for
-sk_msg to reduce memory allocation overhead and improve performance.
+psock->eval can only have 4 possible values, make it 8-bit is
+sufficient.
 
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: Zijian Zhang <zijianzhang@bytedance.com>
+psock->redir_ingress is just a boolean, using 1 bit is enough.
+
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 ---
- include/linux/skmsg.h | 21 ++++++++++++---------
- net/core/skmsg.c      | 28 +++++++++++++++++++++-------
- net/ipv4/tcp_bpf.c    |  5 ++---
- 3 files changed, 35 insertions(+), 19 deletions(-)
+ include/linux/skmsg.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index d6f0a8cd73c4..bf28ce9b5fdb 100644
+index bf28ce9b5fdb..beaf79b2b68b 100644
 --- a/include/linux/skmsg.h
 +++ b/include/linux/skmsg.h
-@@ -121,6 +121,7 @@ struct sk_psock {
- 	struct rcu_work			rwork;
- };
- 
-+struct sk_msg *sk_msg_alloc(gfp_t gfp);
- int sk_msg_expand(struct sock *sk, struct sk_msg *msg, int len,
- 		  int elem_first_coalesce);
- int sk_msg_clone(struct sock *sk, struct sk_msg *dst, struct sk_msg *src,
-@@ -143,6 +144,8 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
- 		   int len, int flags);
- bool sk_msg_is_readable(struct sock *sk);
- 
-+extern struct kmem_cache *sk_msg_cachep;
-+
- static inline void sk_msg_check_to_free(struct sk_msg *msg, u32 i, u32 bytes)
- {
- 	WARN_ON(i == msg->sg.end && bytes);
-@@ -319,6 +322,13 @@ static inline void sock_drop(struct sock *sk, struct sk_buff *skb)
- 	kfree_skb(skb);
- }
- 
-+static inline void kfree_sk_msg(struct sk_msg *msg)
-+{
-+	if (msg->skb)
-+		consume_skb(msg->skb);
-+	kmem_cache_free(sk_msg_cachep, msg);
-+}
-+
- static inline bool sk_psock_queue_msg(struct sk_psock *psock,
- 				      struct sk_msg *msg)
- {
-@@ -330,7 +340,7 @@ static inline bool sk_psock_queue_msg(struct sk_psock *psock,
- 		ret = true;
- 	} else {
- 		sk_msg_free(psock->sk, msg);
--		kfree(msg);
-+		kfree_sk_msg(msg);
- 		ret = false;
- 	}
- 	spin_unlock_bh(&psock->ingress_lock);
-@@ -378,13 +388,6 @@ static inline bool sk_psock_queue_empty(const struct sk_psock *psock)
- 	return psock ? list_empty(&psock->ingress_msg) : true;
- }
- 
--static inline void kfree_sk_msg(struct sk_msg *msg)
--{
--	if (msg->skb)
--		consume_skb(msg->skb);
--	kfree(msg);
--}
--
- static inline void sk_psock_report_error(struct sk_psock *psock, int err)
- {
- 	struct sock *sk = psock->sk;
-@@ -441,7 +444,7 @@ static inline void sk_psock_cork_free(struct sk_psock *psock)
- {
- 	if (psock->cork) {
- 		sk_msg_free(psock->sk, psock->cork);
--		kfree(psock->cork);
-+		kfree_sk_msg(psock->cork);
- 		psock->cork = NULL;
- 	}
- }
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 4695cbd9c16f..25c53c8c9857 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -10,6 +10,8 @@
- #include <net/tls.h>
- #include <trace/events/sock.h>
- 
-+struct kmem_cache *sk_msg_cachep;
-+
- static bool sk_msg_try_coalesce_ok(struct sk_msg *msg, int elem_first_coalesce)
- {
- 	if (msg->sg.end > msg->sg.start &&
-@@ -503,16 +505,17 @@ bool sk_msg_is_readable(struct sock *sk)
- }
- EXPORT_SYMBOL_GPL(sk_msg_is_readable);
- 
--static struct sk_msg *alloc_sk_msg(gfp_t gfp)
-+struct sk_msg *sk_msg_alloc(gfp_t gfp)
- {
- 	struct sk_msg *msg;
- 
--	msg = kzalloc(sizeof(*msg), gfp | __GFP_NOWARN);
-+	msg = kmem_cache_zalloc(sk_msg_cachep, gfp | __GFP_NOWARN);
- 	if (unlikely(!msg))
- 		return NULL;
- 	sg_init_marker(msg->sg.data, NR_MSG_FRAG_IDS);
- 	return msg;
- }
-+EXPORT_SYMBOL_GPL(sk_msg_alloc);
- 
- static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
- 						  struct sk_buff *skb)
-@@ -523,7 +526,7 @@ static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
- 	if (!sk_rmem_schedule(sk, skb, skb->truesize))
- 		return NULL;
- 
--	return alloc_sk_msg(GFP_KERNEL);
-+	return sk_msg_alloc(GFP_KERNEL);
- }
- 
- static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
-@@ -592,7 +595,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb,
- 	skb_set_owner_r(skb, sk);
- 	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg);
- 	if (err < 0)
--		kfree(msg);
-+		kfree_sk_msg(msg);
- 	return err;
- }
- 
-@@ -603,7 +606,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb,
- static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb,
- 				     u32 off, u32 len)
- {
--	struct sk_msg *msg = alloc_sk_msg(GFP_ATOMIC);
-+	struct sk_msg *msg = sk_msg_alloc(GFP_ATOMIC);
- 	struct sock *sk = psock->sk;
- 	int err;
- 
-@@ -612,7 +615,7 @@ static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb
- 	skb_set_owner_r(skb, sk);
- 	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg);
- 	if (err < 0)
--		kfree(msg);
-+		kfree_sk_msg(msg);
- 	return err;
- }
- 
-@@ -781,7 +784,7 @@ static void __sk_psock_purge_ingress_msg(struct sk_psock *psock)
- 		if (!msg->skb)
- 			atomic_sub(msg->sg.size, &psock->sk->sk_rmem_alloc);
- 		sk_msg_free(psock->sk, msg);
--		kfree(msg);
-+		kfree_sk_msg(msg);
- 	}
- }
- 
-@@ -1266,3 +1269,14 @@ void sk_psock_stop_verdict(struct sock *sk, struct sk_psock *psock)
- 	sk->sk_data_ready = psock->saved_data_ready;
- 	psock->saved_data_ready = NULL;
- }
-+
-+static int __init sk_msg_cachep_init(void)
-+{
-+	sk_msg_cachep = kmem_cache_create("sk_msg_cachep",
-+					  sizeof(struct sk_msg),
-+					  0,
-+					  SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT,
-+					  NULL);
-+	return 0;
-+}
-+late_initcall(sk_msg_cachep_init);
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 85b64ffc20c6..f0ef41c951e2 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -38,7 +38,7 @@ static int bpf_tcp_ingress(struct sock *sk, struct sk_psock *psock,
- 	struct sk_msg *tmp;
- 	int i, ret = 0;
- 
--	tmp = kzalloc(sizeof(*tmp), __GFP_NOWARN | GFP_KERNEL);
-+	tmp = sk_msg_alloc(GFP_KERNEL);
- 	if (unlikely(!tmp))
- 		return -ENOMEM;
- 
-@@ -406,8 +406,7 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
- 	    msg->cork_bytes > msg->sg.size && !enospc) {
- 		psock->cork_bytes = msg->cork_bytes - msg->sg.size;
- 		if (!psock->cork) {
--			psock->cork = kzalloc(sizeof(*psock->cork),
--					      GFP_ATOMIC | __GFP_NOWARN);
-+			psock->cork = sk_msg_alloc(GFP_ATOMIC);
- 			if (!psock->cork)
- 				return -ENOMEM;
- 		}
+@@ -85,8 +85,8 @@ struct sk_psock {
+ 	struct sock			*sk_redir;
+ 	u32				apply_bytes;
+ 	u32				cork_bytes;
+-	u32				eval;
+-	bool				redir_ingress; /* undefined if sk_redir is null */
++	unsigned int			eval : 8;
++	unsigned int			redir_ingress : 1; /* undefined if sk_redir is null */
+ 	struct sk_msg			*cork;
+ 	struct sk_psock_progs		progs;
+ #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
 -- 
 2.34.1
 
