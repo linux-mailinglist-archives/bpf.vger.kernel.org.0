@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-52234-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52235-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 243D5A40525
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 03:45:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 404B3A40520
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 03:44:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0A43421D92
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 02:44:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEE7E7057B4
+	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 02:44:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 267051FDA76;
-	Sat, 22 Feb 2025 02:44:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19DB1FECCF;
+	Sat, 22 Feb 2025 02:44:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UM1ootlN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hEuIb7VD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03E351FBEB3
-	for <bpf@vger.kernel.org>; Sat, 22 Feb 2025 02:44:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70BB91FC7E6
+	for <bpf@vger.kernel.org>; Sat, 22 Feb 2025 02:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740192279; cv=none; b=mCf93VDHs79oNhU439Q5zZyAhobXN+Z9gvoq0m6ALVkLh+CvMK0f64B4dOZg21JAB0ZE4ke1lWIJJBVGiIU7qUsaJUgSyNbTVN9Amil07sK9kHTgfTdKBwzjHm7VMiq5gmCScWHwtWCsOaLpzEipjdCVheXz0Vpj47YGL4pffJc=
+	t=1740192284; cv=none; b=NO8xQmNX0gaPCeYuGHYFp1iN97eKPknni/Si2gpstjdelIjkOr+DUyo5tBUaDVfiUtHHGqPSzyVZ++VQFga6V8y4iP/XF8ndbxVQLGgqzICRoaDYR6Xg1qy02Flem4VxMi2SBjYZ7YkGdDPJk01leC2NBfILEjdQ2BdjabxVa68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740192279; c=relaxed/simple;
-	bh=WL71uV2ZNGnRr+mbHVLa0ks+Vqr1Ig6jqQJVVIKQsBw=;
+	s=arc-20240116; t=1740192284; c=relaxed/simple;
+	bh=8huareBgqZnv1YE/dweCJUp5CiJFrofwZ43IiNfQYhU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dC87WP8+p8Z2X5T5+9op5hM6nHY+6JI1fPcIEYXwiFdgHZwFupfNJJOywv/BfrOBXiAeoHm05xgNKjluKo+DdTcO1/nhU01oZsXeUqxuHZEaqgN82sFAOx2XhJ/RlvA7moh3Z5rC0g6Gdc0ilEsLSgzwHUtaFlruray8/Nte48Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UM1ootlN; arc=none smtp.client-ip=209.85.216.46
+	 MIME-Version; b=oY2kpmnf9oILr/jUI2VkORNL76m/l0Q5qnL9nyzh6wBuTNgPS31DFk8kYP2OgTVeag+U6d0LxtoJrJE9K0YWvs1ouMbr7Tb40buW+EknUUfkNvnY5ZGcPbIhVP09/D3MWfr1B2Urty10gfKnvhUy80jegWumaKuOjut37MPxfq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hEuIb7VD; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2fbf77b2b64so5573301a91.2
-        for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 18:44:37 -0800 (PST)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2fbfa8c73a6so5525846a91.2
+        for <bpf@vger.kernel.org>; Fri, 21 Feb 2025 18:44:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740192276; x=1740797076; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740192281; x=1740797081; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Sk02Orm/sDWbmfQ5EAte0I5oPgAuhzQ+C9dMQxWikoo=;
-        b=UM1ootlN2ZwEm00j3RFU+f/tPn5wSGiSvk1JLNsyBog88J2a03rBdScFABbDFgZVwB
-         lrXlW31XxZXFH4Taddvvj3ZBdmLp8jf06hhll6cd3Bml8LZgiCN5Rsa/5+7r/ZnU6BPt
-         xRyOGHtSUCqH/v6u8nCWNiP4YMDXNGWJKXlja5zUm+Btjl2jDDWCazgMOl2thy2/NI8K
-         i4VQaobh9KtxqDY4KMPt6jXOWB2FtF9R9j+ZLtawh3twlSAEX/S+AsFkGpx+hHDqo4oZ
-         VdId6UtuKUIvGIArM1yqsHgw0jegbopKHaPPN2rZB72JKgiZovrIZrvFTHEDqEWLG2MR
-         atmw==
+        bh=oJx8bfHvcsPdmDmREOhTX7J+3gMm5tOq1v0fsOdzZbU=;
+        b=hEuIb7VD4wqJEiEv8RxnhmytzmO7yfOYGJm9fYUFsW1ss2svIWbt9uzbaE/kngLuBW
+         91Ai+3uJ8enK2tA05nhy2BEkMPE+Mk1xW9v/XWSj/jvB3Bn8zLsskR7osMAjEM3ts3v+
+         kG0d+ko9LCIhtW/o+hnnrqQcT4goEAjkuSP2qyqfh6KQkkEfUCrh/VizcocN0Kkg+9Fa
+         T2pOh23xwADBMQpX2viqjJfxbqw3SCxaTp0XpzqkxOngs4FKkI5AWYjE14quavnwjzGO
+         IU5zDsAXeS5W8DOO4/lV0RRdBSA23t2+c54n1ZjrtnSxjuhgBHzRcZy9Vm8ZCk51iR0U
+         mw2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740192276; x=1740797076;
+        d=1e100.net; s=20230601; t=1740192281; x=1740797081;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Sk02Orm/sDWbmfQ5EAte0I5oPgAuhzQ+C9dMQxWikoo=;
-        b=VQtiGNV+hApehNmesQIO2Jl8KJyoYvFdClHPsBJrb22zyxOBt71gg4TZJ5Hvxxb9HS
-         fYUo74AQOwXckcPSLS/ksXw+h34J3jJ6V5pH5OUOAbeLKh+95Xh60WrlkzpwfnkT8PaV
-         yNv7sdKj5vViexk9ABLatAvhJLhdrU7sT3gSWmxV85N+DePdB7htyVv0QuvwyYJut6Yu
-         tEIYBwFYmMxcy4gHUwOkF0HLF3Jdiv5h8alwpntzv3sz4mKpv7KIShQxYDTHBcIgAT/B
-         mxCKKZHviX0gyJcUz9rBf7vwgHfsN4DDuZKsI4Ezg5HF7Mb+Mk0MEztX6xSurn96JMY9
-         9kkA==
-X-Gm-Message-State: AOJu0YyiLNBL7BriqPfSxnhK1tKy4FFrlOWcQcouV6kSUDVLGDpuZXNI
-	1Bi078mw8m47R9IIOCZ9TL2QQ6RP4nkKIE3cah3stJF6/OqatczN5+rstQ==
-X-Gm-Gg: ASbGnctM4iiWfsn/yFJq/kT51Psb1u43nVofAEbDzGCyzoI9JFPzU/Y8ViO+Zi+7DLK
-	cqlTR/yhaJqBc1anOKUnG+f0eEpoMXMSI5LdInoocxPt0VMVf2khbF9JV+ie5+BH+TYdfFwAKx7
-	btOtuIDwYLUz2RscbgA7UHdVvKIyrMVJVgaIGFmkntt4IrQq4Xo7JaafjehnxgKizDw4AWqSf18
-	qSFKAbRXM1bOnYEgyVtY8839QzOn8bPaLR3GWTtJoOzkzNMmBQ1bRxJki9I2DKu5CYxQM/BXMuz
-	bXP4gu1I9bQfzJ8cbAcUvJ8jTJYosompPX74rHFb8RVDlZDkyGqwDA==
-X-Google-Smtp-Source: AGHT+IGlSaTzpWPllvJGdoZ8RptnpXSPkTv04MwCkc6eCe1wznNZ2YqQBDcM5ibR5tXrH+w8nZ0TTA==
-X-Received: by 2002:a05:6a00:4fc4:b0:730:7771:39c6 with SMTP id d2e1a72fcca58-73426cab09emr10492884b3a.8.1740192276435;
-        Fri, 21 Feb 2025 18:44:36 -0800 (PST)
+        bh=oJx8bfHvcsPdmDmREOhTX7J+3gMm5tOq1v0fsOdzZbU=;
+        b=nRnqLwUvk5Yh7FP20O5eyj3Kh48JgbTMHTLvGs1B00v57g6fW/cjGgELMasRMREoc9
+         m1jhLYs4v9mGFTgSUAIvGlJCd4Ke0YUbpK0V+u0bHwj3OKs7LyeOI5wA5d/WekFidHC8
+         eZx0Ug9DjBEmmBRla4F3i+06Bxh65QbOauGdDKcrnzxxrnCXvnnlJkhnAPygb76IaAoW
+         pWz99QFbeghZSn/v1at9vg+cd+fRE5iEvbr7QzFp8E71sfrlCEUT5vZq5kK7R8rUG3OO
+         5Ku/MiWw0T9rlipKJmO76JalqliOiddzvwRtSJZ0+fuV+Xfirr+LHKBe0Hc5aAc/Cc07
+         bhPg==
+X-Gm-Message-State: AOJu0Ywx8Ii49L7BeQ2FnupFKQuUcopCBjMwuh69PmqG6HFOIjjLMmBr
+	Eq6GCLhSAN0yVeW6KOGybF8IijTxnTOzFMyDrDy0m3BQf+khrikKjsSgYg==
+X-Gm-Gg: ASbGncvEKDVVeTh9hNGnqN5D3vQ9kNLepwQ1rvthqAKqDJeghsmFslIFiQzEJ4ythpj
+	sswc4ex9Lzwe8LfmejouhF0tCLZ/WGyBCebYYi2Q+ersP7X3aQaXOZRphJU/kq4aFr1W7HV3VeC
+	RIJ6dGCM19yQTMZOYbp78SsZsWitFP3gn/lpvstDsQy6nC9+e0DYz4hOUdfnq26EzYwZKN5guLZ
+	W2DI0H+MoR9xjH/DY1FxOK0YB5oyxPdaokhyWl0nncrAqUo9Vs/tidAfe3RzG0tH+lMAFH2sFcj
+	jM9pzfw8WfM6kSjx+9XwiEaxc37Q90phS0Nc53/6jQ0fwV9g741bpQ==
+X-Google-Smtp-Source: AGHT+IFCLpvNiUlzSLAmScZOHfvBMu91BobDCkKJ+lN7CcdzTuYNWTOHAeEoc/CAjS1q1J3gFUhfzQ==
+X-Received: by 2002:a05:6a00:98f:b0:732:1eb2:7bf3 with SMTP id d2e1a72fcca58-73426d9f1abmr9857341b3a.21.1740192280978;
+        Fri, 21 Feb 2025 18:44:40 -0800 (PST)
 Received: from localhost.localdomain ([2620:10d:c090:400::5:fd1b])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73242546158sm17069167b3a.16.2025.02.21.18.44.34
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73275615173sm11027845b3a.168.2025.02.21.18.44.38
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 21 Feb 2025 18:44:36 -0800 (PST)
+        Fri, 21 Feb 2025 18:44:40 -0800 (PST)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
@@ -90,9 +90,9 @@ Cc: andrii@kernel.org,
 	tj@kernel.org,
 	linux-mm@kvack.org,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next v9 1/6] locking/local_lock: Introduce localtry_lock_t
-Date: Fri, 21 Feb 2025 18:44:22 -0800
-Message-Id: <20250222024427.30294-2-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next v9 2/6] mm, bpf: Introduce try_alloc_pages() for opportunistic page allocation
+Date: Fri, 21 Feb 2025 18:44:23 -0800
+Message-Id: <20250222024427.30294-3-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
 References: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
@@ -104,312 +104,250 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Alexei Starovoitov <ast@kernel.org>
 
-In !PREEMPT_RT local_lock_irqsave() disables interrupts to protect
-critical section, but it doesn't prevent NMI, so the fully reentrant
-code cannot use local_lock_irqsave() for exclusive access.
+Tracing BPF programs execute from tracepoints and kprobes where
+running context is unknown, but they need to request additional
+memory. The prior workarounds were using pre-allocated memory and
+BPF specific freelists to satisfy such allocation requests.
+Instead, introduce gfpflags_allow_spinning() condition that signals
+to the allocator that running context is unknown.
+Then rely on percpu free list of pages to allocate a page.
+try_alloc_pages() -> get_page_from_freelist() -> rmqueue() ->
+rmqueue_pcplist() will spin_trylock to grab the page from percpu
+free list. If it fails (due to re-entrancy or list being empty)
+then rmqueue_bulk()/rmqueue_buddy() will attempt to
+spin_trylock zone->lock and grab the page from there.
+spin_trylock() is not safe in PREEMPT_RT when in NMI or in hard IRQ.
+Bailout early in such case.
 
-Introduce localtry_lock_t and localtry_lock_irqsave() that
-disables interrupts and sets acquired=1, so localtry_lock_irqsave()
-from NMI attempting to acquire the same lock will return false.
+The support for gfpflags_allow_spinning() mode for free_page and memcg
+comes in the next patches.
 
-In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
-Map localtry_lock_irqsave() to preemptible spin_trylock().
-When in hard IRQ or NMI return false right away, since
-spin_trylock() is not safe due to explicit locking in the underneath
-rt_spin_trylock() implementation. Removing this explicit locking and
-attempting only "trylock" is undesired due to PI implications.
+This is a first step towards supporting BPF requirements in SLUB
+and getting rid of bpf_mem_alloc.
+That goal was discussed at LSFMM: https://lwn.net/Articles/974138/
 
-Note there is no need to use local_inc for acquired variable,
-since it's a percpu variable with strict nesting scopes.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- include/linux/local_lock.h          |  70 +++++++++++++
- include/linux/local_lock_internal.h | 146 ++++++++++++++++++++++++++++
- 2 files changed, 216 insertions(+)
+ include/linux/gfp.h |  22 ++++++++++
+ lib/stackdepot.c    |   5 ++-
+ mm/internal.h       |   1 +
+ mm/page_alloc.c     | 104 ++++++++++++++++++++++++++++++++++++++++++--
+ 4 files changed, 127 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
-index 091dc0b6bdfb..1a0bc35839e3 100644
---- a/include/linux/local_lock.h
-+++ b/include/linux/local_lock.h
-@@ -51,6 +51,76 @@
- #define local_unlock_irqrestore(lock, flags)			\
- 	__local_unlock_irqrestore(lock, flags)
- 
-+/**
-+ * localtry_lock_init - Runtime initialize a lock instance
-+ */
-+#define localtry_lock_init(lock)		__localtry_lock_init(lock)
-+
-+/**
-+ * localtry_lock - Acquire a per CPU local lock
-+ * @lock:	The lock variable
-+ */
-+#define localtry_lock(lock)		__localtry_lock(lock)
-+
-+/**
-+ * localtry_lock_irq - Acquire a per CPU local lock and disable interrupts
-+ * @lock:	The lock variable
-+ */
-+#define localtry_lock_irq(lock)		__localtry_lock_irq(lock)
-+
-+/**
-+ * localtry_lock_irqsave - Acquire a per CPU local lock, save and disable
-+ *			 interrupts
-+ * @lock:	The lock variable
-+ * @flags:	Storage for interrupt flags
-+ */
-+#define localtry_lock_irqsave(lock, flags)				\
-+	__localtry_lock_irqsave(lock, flags)
-+
-+/**
-+ * localtry_trylock - Try to acquire a per CPU local lock.
-+ * @lock:	The lock variable
-+ *
-+ * The function can be used in any context such as NMI or HARDIRQ. Due to
-+ * locking constrains it will _always_ fail to acquire the lock in NMI or
-+ * HARDIRQ context on PREEMPT_RT.
-+ */
-+#define localtry_trylock(lock)		__localtry_trylock(lock)
-+
-+/**
-+ * localtry_trylock_irqsave - Try to acquire a per CPU local lock, save and disable
-+ *			      interrupts if acquired
-+ * @lock:	The lock variable
-+ * @flags:	Storage for interrupt flags
-+ *
-+ * The function can be used in any context such as NMI or HARDIRQ. Due to
-+ * locking constrains it will _always_ fail to acquire the lock in NMI or
-+ * HARDIRQ context on PREEMPT_RT.
-+ */
-+#define localtry_trylock_irqsave(lock, flags)				\
-+	__localtry_trylock_irqsave(lock, flags)
-+
-+/**
-+ * local_unlock - Release a per CPU local lock
-+ * @lock:	The lock variable
-+ */
-+#define localtry_unlock(lock)		__localtry_unlock(lock)
-+
-+/**
-+ * local_unlock_irq - Release a per CPU local lock and enable interrupts
-+ * @lock:	The lock variable
-+ */
-+#define localtry_unlock_irq(lock)		__localtry_unlock_irq(lock)
-+
-+/**
-+ * localtry_unlock_irqrestore - Release a per CPU local lock and restore
-+ *			      interrupt flags
-+ * @lock:	The lock variable
-+ * @flags:      Interrupt flags to restore
-+ */
-+#define localtry_unlock_irqrestore(lock, flags)			\
-+	__localtry_unlock_irqrestore(lock, flags)
-+
- DEFINE_GUARD(local_lock, local_lock_t __percpu*,
- 	     local_lock(_T),
- 	     local_unlock(_T))
-diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
-index 8dd71fbbb6d2..67bd13d142fa 100644
---- a/include/linux/local_lock_internal.h
-+++ b/include/linux/local_lock_internal.h
-@@ -15,6 +15,11 @@ typedef struct {
- #endif
- } local_lock_t;
- 
-+typedef struct {
-+	local_lock_t	llock;
-+	unsigned int	acquired;
-+} localtry_lock_t;
-+
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- # define LOCAL_LOCK_DEBUG_INIT(lockname)		\
- 	.dep_map = {					\
-@@ -31,6 +36,13 @@ static inline void local_lock_acquire(local_lock_t *l)
- 	l->owner = current;
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 6bb1a5a7a4ae..5d9ee78c74e4 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -39,6 +39,25 @@ static inline bool gfpflags_allow_blocking(const gfp_t gfp_flags)
+ 	return !!(gfp_flags & __GFP_DIRECT_RECLAIM);
  }
  
-+static inline void local_trylock_acquire(local_lock_t *l)
++static inline bool gfpflags_allow_spinning(const gfp_t gfp_flags)
 +{
-+	lock_map_acquire_try(&l->dep_map);
-+	DEBUG_LOCKS_WARN_ON(l->owner);
-+	l->owner = current;
++	/*
++	 * !__GFP_DIRECT_RECLAIM -> direct claim is not allowed.
++	 * !__GFP_KSWAPD_RECLAIM -> it's not safe to wake up kswapd.
++	 * All GFP_* flags including GFP_NOWAIT use one or both flags.
++	 * try_alloc_pages() is the only API that doesn't specify either flag.
++	 *
++	 * This is stronger than GFP_NOWAIT or GFP_ATOMIC because
++	 * those are guaranteed to never block on a sleeping lock.
++	 * Here we are enforcing that the allocation doesn't ever spin
++	 * on any locks (i.e. only trylocks). There is no high level
++	 * GFP_$FOO flag for this use in try_alloc_pages() as the
++	 * regular page allocator doesn't fully support this
++	 * allocation mode.
++	 */
++	return !(gfp_flags & __GFP_RECLAIM);
 +}
 +
- static inline void local_lock_release(local_lock_t *l)
- {
- 	DEBUG_LOCKS_WARN_ON(l->owner != current);
-@@ -45,11 +57,13 @@ static inline void local_lock_debug_init(local_lock_t *l)
- #else /* CONFIG_DEBUG_LOCK_ALLOC */
- # define LOCAL_LOCK_DEBUG_INIT(lockname)
- static inline void local_lock_acquire(local_lock_t *l) { }
-+static inline void local_trylock_acquire(local_lock_t *l) { }
- static inline void local_lock_release(local_lock_t *l) { }
- static inline void local_lock_debug_init(local_lock_t *l) { }
- #endif /* !CONFIG_DEBUG_LOCK_ALLOC */
+ #ifdef CONFIG_HIGHMEM
+ #define OPT_ZONE_HIGHMEM ZONE_HIGHMEM
+ #else
+@@ -335,6 +354,9 @@ static inline struct page *alloc_page_vma_noprof(gfp_t gfp,
+ }
+ #define alloc_page_vma(...)			alloc_hooks(alloc_page_vma_noprof(__VA_ARGS__))
  
- #define INIT_LOCAL_LOCK(lockname)	{ LOCAL_LOCK_DEBUG_INIT(lockname) }
-+#define INIT_LOCALTRY_LOCK(lockname)	{ .llock = { LOCAL_LOCK_DEBUG_INIT(lockname.llock) }}
++struct page *try_alloc_pages_noprof(int nid, unsigned int order);
++#define try_alloc_pages(...)			alloc_hooks(try_alloc_pages_noprof(__VA_ARGS__))
++
+ extern unsigned long get_free_pages_noprof(gfp_t gfp_mask, unsigned int order);
+ #define __get_free_pages(...)			alloc_hooks(get_free_pages_noprof(__VA_ARGS__))
  
- #define __local_lock_init(lock)					\
- do {								\
-@@ -118,6 +132,104 @@ do {								\
- #define __local_unlock_nested_bh(lock)				\
- 	local_lock_release(this_cpu_ptr(lock))
+diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+index 245d5b416699..377194969e61 100644
+--- a/lib/stackdepot.c
++++ b/lib/stackdepot.c
+@@ -591,7 +591,8 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
+ 	depot_stack_handle_t handle = 0;
+ 	struct page *page = NULL;
+ 	void *prealloc = NULL;
+-	bool can_alloc = depot_flags & STACK_DEPOT_FLAG_CAN_ALLOC;
++	bool allow_spin = gfpflags_allow_spinning(alloc_flags);
++	bool can_alloc = (depot_flags & STACK_DEPOT_FLAG_CAN_ALLOC) && allow_spin;
+ 	unsigned long flags;
+ 	u32 hash;
  
-+/* localtry_lock_t variants */
-+
-+#define __localtry_lock_init(lock)				\
-+do {								\
-+	__local_lock_init(&(lock)->llock);			\
-+	WRITE_ONCE((lock)->acquired, 0);			\
-+} while (0)
-+
-+#define __localtry_lock(lock)					\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		preempt_disable();				\
-+		lt = this_cpu_ptr(lock);			\
-+		local_lock_acquire(&lt->llock);			\
-+		WRITE_ONCE(lt->acquired, 1);			\
-+	} while (0)
-+
-+#define __localtry_lock_irq(lock)				\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		local_irq_disable();				\
-+		lt = this_cpu_ptr(lock);			\
-+		local_lock_acquire(&lt->llock);			\
-+		WRITE_ONCE(lt->acquired, 1);			\
-+	} while (0)
-+
-+#define __localtry_lock_irqsave(lock, flags)			\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		local_irq_save(flags);				\
-+		lt = this_cpu_ptr(lock);			\
-+		local_lock_acquire(&lt->llock);			\
-+		WRITE_ONCE(lt->acquired, 1);			\
-+	} while (0)
-+
-+#define __localtry_trylock(lock)				\
-+	({							\
-+		localtry_lock_t *lt;				\
-+		bool _ret;					\
-+								\
-+		preempt_disable();				\
-+		lt = this_cpu_ptr(lock);			\
-+		if (!READ_ONCE(lt->acquired)) {			\
-+			WRITE_ONCE(lt->acquired, 1);		\
-+			local_trylock_acquire(&lt->llock);	\
-+			_ret = true;				\
-+		} else {					\
-+			_ret = false;				\
-+			preempt_enable();			\
-+		}						\
-+		_ret;						\
-+	})
-+
-+#define __localtry_trylock_irqsave(lock, flags)			\
-+	({							\
-+		localtry_lock_t *lt;				\
-+		bool _ret;					\
-+								\
-+		local_irq_save(flags);				\
-+		lt = this_cpu_ptr(lock);			\
-+		if (!READ_ONCE(lt->acquired)) {			\
-+			WRITE_ONCE(lt->acquired, 1);		\
-+			local_trylock_acquire(&lt->llock);	\
-+			_ret = true;				\
-+		} else {					\
-+			_ret = false;				\
-+			local_irq_restore(flags);		\
-+		}						\
-+		_ret;						\
-+	})
-+
-+#define __localtry_unlock(lock)					\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		lt = this_cpu_ptr(lock);			\
-+		WRITE_ONCE(lt->acquired, 0);			\
-+		local_lock_release(&lt->llock);			\
-+		preempt_enable();				\
-+	} while (0)
-+
-+#define __localtry_unlock_irq(lock)				\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		lt = this_cpu_ptr(lock);			\
-+		WRITE_ONCE(lt->acquired, 0);			\
-+		local_lock_release(&lt->llock);			\
-+		local_irq_enable();				\
-+	} while (0)
-+
-+#define __localtry_unlock_irqrestore(lock, flags)		\
-+	do {							\
-+		localtry_lock_t *lt;				\
-+		lt = this_cpu_ptr(lock);			\
-+		WRITE_ONCE(lt->acquired, 0);			\
-+		local_lock_release(&lt->llock);			\
-+		local_irq_restore(flags);			\
-+	} while (0)
-+
- #else /* !CONFIG_PREEMPT_RT */
+@@ -630,7 +631,7 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
+ 			prealloc = page_address(page);
+ 	}
  
- /*
-@@ -125,8 +237,10 @@ do {								\
-  * critical section while staying preemptible.
-  */
- typedef spinlock_t local_lock_t;
-+typedef spinlock_t localtry_lock_t;
+-	if (in_nmi()) {
++	if (in_nmi() || !allow_spin) {
+ 		/* We can never allocate in NMI context. */
+ 		WARN_ON_ONCE(can_alloc);
+ 		/* Best effort; bail if we fail to take the lock. */
+diff --git a/mm/internal.h b/mm/internal.h
+index 109ef30fee11..10a8b4b3b86e 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -1187,6 +1187,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+ #define ALLOC_NOFRAGMENT	  0x0
+ #endif
+ #define ALLOC_HIGHATOMIC	0x200 /* Allows access to MIGRATE_HIGHATOMIC */
++#define ALLOC_TRYLOCK		0x400 /* Only use spin_trylock in allocation path */
+ #define ALLOC_KSWAPD		0x800 /* allow waking of kswapd, __GFP_KSWAPD_RECLAIM set */
  
- #define INIT_LOCAL_LOCK(lockname) __LOCAL_SPIN_LOCK_UNLOCKED((lockname))
-+#define INIT_LOCALTRY_LOCK(lockname) INIT_LOCAL_LOCK(lockname)
+ /* Flags that allow allocations below the min watermark. */
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 579789600a3c..1f2a4e1c70ae 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2307,7 +2307,11 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+ 	unsigned long flags;
+ 	int i;
  
- #define __local_lock_init(l)					\
- 	do {							\
-@@ -169,4 +283,36 @@ do {								\
- 	spin_unlock(this_cpu_ptr((lock)));			\
- } while (0)
+-	spin_lock_irqsave(&zone->lock, flags);
++	if (!spin_trylock_irqsave(&zone->lock, flags)) {
++		if (unlikely(alloc_flags & ALLOC_TRYLOCK))
++			return 0;
++		spin_lock_irqsave(&zone->lock, flags);
++	}
+ 	for (i = 0; i < count; ++i) {
+ 		struct page *page = __rmqueue(zone, order, migratetype,
+ 								alloc_flags);
+@@ -2907,7 +2911,11 @@ struct page *rmqueue_buddy(struct zone *preferred_zone, struct zone *zone,
  
-+/* localtry_lock_t variants */
+ 	do {
+ 		page = NULL;
+-		spin_lock_irqsave(&zone->lock, flags);
++		if (!spin_trylock_irqsave(&zone->lock, flags)) {
++			if (unlikely(alloc_flags & ALLOC_TRYLOCK))
++				return NULL;
++			spin_lock_irqsave(&zone->lock, flags);
++		}
+ 		if (alloc_flags & ALLOC_HIGHATOMIC)
+ 			page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
+ 		if (!page) {
+@@ -4511,7 +4519,12 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+ 
+ 	might_alloc(gfp_mask);
+ 
+-	if (should_fail_alloc_page(gfp_mask, order))
++	/*
++	 * Don't invoke should_fail logic, since it may call
++	 * get_random_u32() and printk() which need to spin_lock.
++	 */
++	if (!(*alloc_flags & ALLOC_TRYLOCK) &&
++	    should_fail_alloc_page(gfp_mask, order))
+ 		return false;
+ 
+ 	*alloc_flags = gfp_to_alloc_flags_cma(gfp_mask, *alloc_flags);
+@@ -7071,3 +7084,88 @@ static bool __free_unaccepted(struct page *page)
+ }
+ 
+ #endif /* CONFIG_UNACCEPTED_MEMORY */
 +
-+#define __localtry_lock_init(lock)			__local_lock_init(lock)
-+#define __localtry_lock(lock)				__local_lock(lock)
-+#define __localtry_lock_irq(lock)			__local_lock(lock)
-+#define __localtry_lock_irqsave(lock, flags)		__local_lock_irqsave(lock, flags)
-+#define __localtry_unlock(lock)				__local_unlock(lock)
-+#define __localtry_unlock_irq(lock)			__local_unlock(lock)
-+#define __localtry_unlock_irqrestore(lock, flags)	__local_unlock_irqrestore(lock, flags)
++/**
++ * try_alloc_pages - opportunistic reentrant allocation from any context
++ * @nid - node to allocate from
++ * @order - allocation order size
++ *
++ * Allocates pages of a given order from the given node. This is safe to
++ * call from any context (from atomic, NMI, and also reentrant
++ * allocator -> tracepoint -> try_alloc_pages_noprof).
++ * Allocation is best effort and to be expected to fail easily so nobody should
++ * rely on the success. Failures are not reported via warn_alloc().
++ * See always fail conditions below.
++ *
++ * Return: allocated page or NULL on failure.
++ */
++struct page *try_alloc_pages_noprof(int nid, unsigned int order)
++{
++	/*
++	 * Do not specify __GFP_DIRECT_RECLAIM, since direct claim is not allowed.
++	 * Do not specify __GFP_KSWAPD_RECLAIM either, since wake up of kswapd
++	 * is not safe in arbitrary context.
++	 *
++	 * These two are the conditions for gfpflags_allow_spinning() being true.
++	 *
++	 * Specify __GFP_NOWARN since failing try_alloc_pages() is not a reason
++	 * to warn. Also warn would trigger printk() which is unsafe from
++	 * various contexts. We cannot use printk_deferred_enter() to mitigate,
++	 * since the running context is unknown.
++	 *
++	 * Specify __GFP_ZERO to make sure that call to kmsan_alloc_page() below
++	 * is safe in any context. Also zeroing the page is mandatory for
++	 * BPF use cases.
++	 *
++	 * Though __GFP_NOMEMALLOC is not checked in the code path below,
++	 * specify it here to highlight that try_alloc_pages()
++	 * doesn't want to deplete reserves.
++	 */
++	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_ZERO | __GFP_NOMEMALLOC;
++	unsigned int alloc_flags = ALLOC_TRYLOCK;
++	struct alloc_context ac = { };
++	struct page *page;
 +
-+#define __localtry_trylock(lock)				\
-+	({							\
-+		int __locked;					\
-+								\
-+		if (in_nmi() | in_hardirq()) {			\
-+			__locked = 0;				\
-+		} else {					\
-+			migrate_disable();			\
-+			__locked = spin_trylock(this_cpu_ptr((lock)));	\
-+			if (!__locked)				\
-+				migrate_enable();		\
-+		}						\
-+		__locked;					\
-+	})
++	/*
++	 * In PREEMPT_RT spin_trylock() will call raw_spin_lock() which is
++	 * unsafe in NMI. If spin_trylock() is called from hard IRQ the current
++	 * task may be waiting for one rt_spin_lock, but rt_spin_trylock() will
++	 * mark the task as the owner of another rt_spin_lock which will
++	 * confuse PI logic, so return immediately if called form hard IRQ or
++	 * NMI.
++	 *
++	 * Note, irqs_disabled() case is ok. This function can be called
++	 * from raw_spin_lock_irqsave region.
++	 */
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && (in_nmi() || in_hardirq()))
++		return NULL;
++	if (!pcp_allowed_order(order))
++		return NULL;
 +
-+#define __localtry_trylock_irqsave(lock, flags)			\
-+	({							\
-+		typecheck(unsigned long, flags);		\
-+		flags = 0;					\
-+		__localtry_trylock(lock);			\
-+	})
++#ifdef CONFIG_UNACCEPTED_MEMORY
++	/* Bailout, since try_to_accept_memory_one() needs to take a lock */
++	if (has_unaccepted_memory())
++		return NULL;
++#endif
++	/* Bailout, since _deferred_grow_zone() needs to take a lock */
++	if (deferred_pages_enabled())
++		return NULL;
 +
- #endif /* CONFIG_PREEMPT_RT */
++	if (nid == NUMA_NO_NODE)
++		nid = numa_node_id();
++
++	prepare_alloc_pages(alloc_gfp, order, nid, NULL, &ac,
++			    &alloc_gfp, &alloc_flags);
++
++	/*
++	 * Best effort allocation from percpu free list.
++	 * If it's empty attempt to spin_trylock zone->lock.
++	 */
++	page = get_page_from_freelist(alloc_gfp, order, alloc_flags, &ac);
++
++	/* Unlike regular alloc_pages() there is no __alloc_pages_slowpath(). */
++
++	trace_mm_page_alloc(page, order, alloc_gfp, ac.migratetype);
++	kmsan_alloc_page(page, order, alloc_gfp);
++	return page;
++}
 -- 
 2.43.5
 
