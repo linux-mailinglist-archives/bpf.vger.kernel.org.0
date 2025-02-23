@@ -1,127 +1,154 @@
-Return-Path: <bpf+bounces-52287-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52288-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06AC2A41182
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 21:24:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08E1FA41188
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 21:26:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79E5A3AD997
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 20:24:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 912957A6527
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 20:25:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1800E23A984;
-	Sun, 23 Feb 2025 20:24:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4036D23A9A4;
+	Sun, 23 Feb 2025 20:25:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hgK2l6ZY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LOwLQwd0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05DB21FFC6F
-	for <bpf@vger.kernel.org>; Sun, 23 Feb 2025 20:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AE615383;
+	Sun, 23 Feb 2025 20:25:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740342249; cv=none; b=C7eg/IhV3KA6m5ozXmSyNS3Q4myJ8w3P7z2DwNo9xeN+yzU+UL7JRiUChlCT1vOpHsUy9w9NEYCeuPUExyxkpTh4QsSZF9d3sPuyCd+kI7aZCGbDckf5ef4wvuCeAwNl3ix31+9aVjO12YCGDPIOPXTqcGy+Bkd5k+bhPASHZUs=
+	t=1740342349; cv=none; b=CsZnXysJimq0Im4hj7scGdMUYV+Bapyup4UAQTfewh1BX6Yf/ipwMR/Ye0j5YQM9grqDXgIAy91cSC4vRLQ37qThiB/oI6Q0S6vxUFjZi2F4ir6ZmONU44vS6OHNIshElNF2aUca4iwofiTIcYsU2Nnaq1bvTI7aWfTP47ylOpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740342249; c=relaxed/simple;
-	bh=QunztCzhk1rZ384ROqaExlboXwCM7FegyLfEubSSCoA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qlPzW20AlmZd0T9KKxpf1rTuhw4PzFQf9ABm8KPwa8u9W094+jtfLZtCsu9+nC0GqC9T2D7GvjSdRlIX/cGYSXYSOB4XlKEJnIkrasvy4Y7FqBYwh5TGn4IMobypASzLYKFLDV/BrYZhYhoRAMsiXS2qHHhH9q7yzQmggq3slB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hgK2l6ZY; arc=none smtp.client-ip=209.85.128.52
+	s=arc-20240116; t=1740342349; c=relaxed/simple;
+	bh=3yjKIYgRIOVvhYFiwNZ7Mv6DvekS5KCI6HkyIkBNqjw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QhN4QEcKdBlbi7g+pYMdRaB2VGCMXPGsuVMp3me5tKXOmjS3YBQCvb31XvxhZ3sgWV8R8vX3VDxNWiDsyPpmY1SN4zEzSg+lSjzaqZ+Rlr9xBf+KIeUo8PoibqpV6TfIv4rpEAtLKjVoN3XeN7lBMid62VMngiCdPLgtXv+5gEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LOwLQwd0; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4398738217aso32837085e9.3
-        for <bpf@vger.kernel.org>; Sun, 23 Feb 2025 12:24:07 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-abb8d63b447so476933466b.0;
+        Sun, 23 Feb 2025 12:25:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740342246; x=1740947046; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MyvNqghh/CYl2vB9CsAA52nb6qB8uX9QYqPTNMq3vZY=;
-        b=hgK2l6ZYaWzmqMMpNYH4SjU/kBmD1qfXETbEXH76wXZ2T5CMUMhMNisjA2jWYIGe+b
-         gz68P43Xy30nQEkXx5BjhVtFGxcL5wGd6pgKQwGZHj0YllEi+P+Xqr6VAaNoDz5O7Ysb
-         2iUvagKjoQKe/okq+u1kZ/h72/b/qiRfYRFKsAWHIP/vlE+WjG3UCvdx2648Q1jPzPhV
-         kTvHmIy9ug+UK9eKtmN1VlEaG3wd6VDwE1SxuRT1AJ+KipG6rh4YwYWLZu6BmS06wIxy
-         JBvJ71eF/U8zSvjbEV4KC+1bzbO2GzvqhqJHg3tuNQAZAe8J1mBn3qGiRJQ/pNzWuLUi
-         0T7g==
+        d=gmail.com; s=20230601; t=1740342346; x=1740947146; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KO/NRoKuG8XetnuWE85hFK1fCgTrWENxYrVqAq/LSbo=;
+        b=LOwLQwd0M8LRhLR7CcdbRek0krkmzr4tJ2xMBNYOiJImX6w/9xk+SWXv2lSAOrwWdd
+         +oV8Ka9/OSvR/smJVHjO+p6LLiWnOxrcxobJGgqT/ER9HCHJCswk/NYshODNR3V2whqY
+         +8W0IGn1fNlSBzUyCXGrtj8lLxIti1Fii0qL5pgmgqzPqlqvh8iiDbyoTTfD4inQCUDE
+         diRinKyaElCu9NuYDudVMVYg5XriQOePiCdjbPcPxEgPsrPoxeiTeFx1cLG+5gnV+NGz
+         ZYiJ9LkTd5YWFNMt0jyy3BBCxbVxYA6Win+o6Z3ku9nt/VTaUo+l8OCfMa3MhPxj/fgn
+         HxSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740342246; x=1740947046;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MyvNqghh/CYl2vB9CsAA52nb6qB8uX9QYqPTNMq3vZY=;
-        b=nFQvAI/e0WLu6hCTuydl6874qfn05DcF5bNDRjAXtjsQDo4al2YeYmvDB5PcSFiLnJ
-         xUDrqkALpZLhDNCWrvgvuVmONsLRrtkcP99VJEn8lqNES7JUMbFCDtX7MnAQSXr+o8YM
-         NBbdGITR4PFBc9JiUff6Gq5qrqsmVmB7Temh4MmUW0iQg0S5wE1Cbh6wwZETXg3wdfVx
-         psbhVEq8fgpW7Wqprg/5Yj5wmbgMD7dnmKZtUeklNOnSKjqkEYmcjiL7DHhdirD22Q0C
-         J01pizX8xIpSESThaA4NriiAQfn1qnxc3V3bThAcCSN8cfmTcNdPWADOO+JPq1z3mTy9
-         uUmg==
-X-Gm-Message-State: AOJu0Yyw8aJKMXHIDNrxQso3eOQzgcOpKErwj00Gnbi0nUCIs7rRYlz9
-	zUF42FEHhVvAz0/Ab5HULmJfiRR7YrT+WmKRGcRKlw+TDuAKujW7fTCLN8z3ZxPSJ47wpQRnfMv
-	+erHCrqzkQcf1Hu9osXFhidPMsEI=
-X-Gm-Gg: ASbGnctLQMSfaHqKALNaWEV2IWpoXn2kXnh7WtPh5aa4KfiAo0wkXqt7ibKboqNtz4z
-	gEEp17qij6aG9g1OsBhCLodorNJhjiDxLxBlys02mhvcAaGtV1evgHrLJocnlFH9UCn4R7CS0Rx
-	P5VioIbG+GMat0nPfzxUW+wMA=
-X-Google-Smtp-Source: AGHT+IE9mQsasdVU3svEPN9SokizAin3DFwj8m7pumaA29ydLMFRZjvMEt1z6TPOSKaUPEzTqsQHDNbnmQttNh+HmVo=
-X-Received: by 2002:a05:600c:4590:b0:439:95b9:91fc with SMTP id
- 5b1f17b1804b1-439ae1e6e9emr88004475e9.12.1740342246176; Sun, 23 Feb 2025
- 12:24:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740342346; x=1740947146;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KO/NRoKuG8XetnuWE85hFK1fCgTrWENxYrVqAq/LSbo=;
+        b=FEcMpsoB/YjPSJL/M8nU33bxsFYnJ4L0Njc5eO3ovOCE95qUVI4Ps9B6XhHfSm9ud/
+         Mdy3UJiUmvmi7GWVn7daI7ZXqVt+6Me8lzoNMt6EWad+TPyykVpPmE2gxpjHyqqOT+Or
+         /0YRexageJZNdTa1TzoWIGJyYyu85H00mf65zdEWuQdzVztDz/T4TLvWkRXHltAIK95N
+         lwgBkwjDI9q+3UslhtrU92jgesR4oe5lmQxR2n+MISUF8ZXO4tvNpz3+981RMyRRpCsU
+         ATiRiWhULJF+k592zBZOidbtG620IK5vpqzqUsG62iqZpE3qZxk3zbe37IO3Y32p/gHj
+         cVEA==
+X-Forwarded-Encrypted: i=1; AJvYcCURD/9W5PNUNUfDY6kS5p+l6AJhLr6eOWdJq2md2Vd+xP++U3s0BO9uruUmugsv8dScpTk=@vger.kernel.org, AJvYcCUfsxJjD0AKVL4HewWtKJjpWJGjl7fR1JGDixrQzBNuSDH8RpoQXxYPkbvjK5pBNxnTzwh9PjEyjJ6tbJl1@vger.kernel.org, AJvYcCVNSWNYm8c3auuvf/MlifN1yRiDZA+sXjhLFyPlOnv5tqTC6+Bah8DqWL8qiVUC8CnPfUoUKn/A@vger.kernel.org, AJvYcCVWKRcXyzwQgUBY0ybWdJRZfRHY2pOmd+036ROFck6H/gUsWIwi1DWLkblOI7bWmhzCW6b74C/D/igXO+1GzFE=@vger.kernel.org, AJvYcCVXhQpKQJXjw5/Nm98L0v2S+r44NM/dOPxdhe9Gk5u6SC8qe63KgRaBbWRzHVSFLmFZcxlzs+3DI6RwdT8=@vger.kernel.org, AJvYcCWoiN1r0NC84EsXeCwSlXdpJA3cbW4m5zhznSUnqZx40tJuIaQr272adQ+mjH9ecb8dvQmm56MZRfbxYKs=@vger.kernel.org, AJvYcCXno489TQCns5mk3gcEqf4Di9Sryzgl6r5DxcMmMi1lASdDvz7+aMrg+3e3OfZiI2e4WGZPJRQVRltOS8MX@vger.kernel.org
+X-Gm-Message-State: AOJu0YzEmtkMoYXyOxiVQDQ+wtAsYE2k2emxAprGVKGxhDcHurqhYhfi
+	gcEjXxykNuN3JjkYHFQ87qbR2yEvcz0btKApnZOD7UT22XEYlbCi
+X-Gm-Gg: ASbGncugjrP0Ab07AZ+biXLJg7mpalkI1oW6K4jW58XRfbzi8ip+GfkclXYgXQ0RlCF
+	zCV5gRPkyDQEbsZKSmY1+QP87APkECxPm+AHtPc0sGp96n2lt++TPZso1RJuXFezDBVvKW/55ZX
+	Hkors6FSNxjvQYp3ZEiEPkgoiUTHYBhq4geGOTnZwsVAu4bf9Ep4jBOhDemQaSjxy7jsq/XJNCd
+	6kOP+ww4S070622LbQd3/6b9GthnCvAGftvACbKHy1nkR26MxZlM1tUq5AM49vgzqcHeSOlI6Nl
+	39joOLi/kd4RcJb+0YZX1i8pISE=
+X-Google-Smtp-Source: AGHT+IEASkBZDUs2HV66FfbppKxrXfiPEOQdWl35/1TkX9MbOUwdnZRhQOYUiSPPWnjZ/EnkcBUtNQ==
+X-Received: by 2002:a17:907:1b26:b0:ab7:be81:8944 with SMTP id a640c23a62f3a-abc099b88ccmr1174431166b.6.1740342346244;
+        Sun, 23 Feb 2025 12:25:46 -0800 (PST)
+Received: from [192.168.1.100] ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abbbe74100asm1142813766b.95.2025.02.23.12.25.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Feb 2025 12:25:45 -0800 (PST)
+Message-ID: <602e03fd-ce4b-feef-5053-e95834ab35d7@gmail.com>
+Date: Sun, 23 Feb 2025 21:25:42 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250221175644.1822383-1-ameryhung@gmail.com>
-In-Reply-To: <20250221175644.1822383-1-ameryhung@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 23 Feb 2025 12:23:55 -0800
-X-Gm-Features: AWEUYZmO2DBElBkcyQQQ30vtt04MItlmJjxdsHk95-Rn8OgH87wDghVq9fx9-L0
-Message-ID: <CAADnVQKdfKS2e_BS6krLvf6KUBDbtB=jvXic59DQ3G_YRwSY7A@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Refactor check_ctx_access()
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 00/17] Introduce and use generic parity32/64 helper
+To: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+ jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
+ andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
+ airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
+ mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, parthiban.veerasooran@microchip.com,
+ arend.vanspriel@broadcom.com, johannes@sipsolutions.net,
+ gregkh@linuxfoundation.org, jirislaby@kernel.org, yury.norov@gmail.com,
+ akpm@linux-foundation.org
+Cc: hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
+ Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+ jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
+ netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+ brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+ linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+ Yu-Chun Lin <eleanor15x@gmail.com>
+References: <20250223164217.2139331-1-visitorckw@gmail.com>
+Content-Language: en-US
+From: Uros Bizjak <ubizjak@gmail.com>
+In-Reply-To: <20250223164217.2139331-1-visitorckw@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 21, 2025 at 9:57=E2=80=AFAM Amery Hung <ameryhung@gmail.com> wr=
-ote:
->
-> Reduce the variable passing madness surrounding check_ctx_access().
-> Currently, check_mem_access() passes many pointers to local variables to
-> check_ctx_access(). They are used to initialize "struct
-> bpf_insn_access_aux info" in check_ctx_access() and then passed to
-> is_valid_access(). Then, check_ctx_access() takes the data our from
-> info and write them back the pointers to pass them back. This can be
-> simpilified by moving info up to check_mem_access().
->
-> No functional change.
->
-> Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> ---
->  kernel/bpf/verifier.c | 56 ++++++++++++++++---------------------------
->  1 file changed, 20 insertions(+), 36 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 212b487fd39d..98a376bd7287 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -6006,19 +6006,10 @@ static int check_packet_access(struct bpf_verifie=
-r_env *env, u32 regno, int off,
->
->  /* check access to 'struct bpf_context' fields.  Supports fixed offsets =
-only */
->  static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, =
-int off, int size,
-> -                           enum bpf_access_type t, enum bpf_reg_type *re=
-g_type,
-> -                           struct btf **btf, u32 *btf_id, bool *is_retva=
-l, bool is_ldsx,
-> -                           u32 *ref_obj_id)
-> +                           enum bpf_access_type t, struct bpf_insn_acces=
-s_aux *info)
 
-Nice cleanup! Thanks, applied.
+
+On 23. 02. 25 17:42, Kuan-Wei Chiu wrote:
+> Several parts of the kernel contain redundant implementations of parity
+> calculations for 32-bit and 64-bit values. Introduces generic
+> parity32() and parity64() helpers in bitops.h, providing a standardized
+> and optimized implementation.
+> 
+> Subsequent patches refactor various kernel components to replace
+> open-coded parity calculations with the new helpers, reducing code
+> duplication and improving maintainability.
+
+Please note that GCC (and clang) provide __builtin_parity{,l,ll}() 
+family of builtin functions. Recently, I have tried to use this builtin 
+in a couple of places [1], [2], but I had to retract the patches, 
+because __builtin functions aren't strictly required to be inlined and 
+can generate a library call [3].
+
+As explained in [2], the compilers are able to emit optimized 
+target-dependent code (also automatically using popcnt insn when 
+avaialble), so ideally the generic parity64() and parity32() would be 
+implemented using __builtin_parity(), where the generic library would 
+provide a fallback __paritydi2() and __paritysi2() functions, otherwise 
+provided by the compiler support library.
+
+For x86, we would like to exercise the hardware parity calculation or 
+optimized code sequences involving HW parity calculation, as shown in 
+[1] and [2].
+
+[1] https://lore.kernel.org/lkml/20250129205746.10963-1-ubizjak@gmail.com/
+
+[2] https://lore.kernel.org/lkml/20250129154920.6773-2-ubizjak@gmail.com/
+
+[3] 
+https://lore.kernel.org/linux-mm/CAKbZUD0N7bkuw_Le3Pr9o1V2BjjcY_YiLm8a8DPceubTdZ00GQ@mail.gmail.com/
+
+Thanks,
+Uros.
 
