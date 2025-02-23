@@ -1,123 +1,202 @@
-Return-Path: <bpf+bounces-52267-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52268-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E050EA40D5F
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 09:21:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6C38A40FD1
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 17:43:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49BEC189C941
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 08:21:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCEA21895D40
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 16:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E4F1FCF54;
-	Sun, 23 Feb 2025 08:21:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860B413792B;
+	Sun, 23 Feb 2025 16:42:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RhPPoWxu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GRPIiQjd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4081F2C56;
-	Sun, 23 Feb 2025 08:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E95953AC;
+	Sun, 23 Feb 2025 16:42:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740298899; cv=none; b=fEy1qzOLvUViNnwfihYzkQ1ONjxMAMx0enmbJbIAOrtxobQVexfc3vMZG9Q/mQHnsRwq7V/goq8zR+2p265zn6gI51WXqWoFoaAe4VjjH898hfffoZvPDbsMJOmIYHI2DUHIL4xlFXDKLR7O7Te0UyhyzifDOzHR19fbt2QlROQ=
+	t=1740328970; cv=none; b=Xt7bgMtqyn8DhpbTo8bLgSn7LF0RTX8j/W7B3YYRDsme63mHrenySPAtp5RCkDp8K+E2jre12HBcWmbKWgeG7XtCD+jGXEJBQRd/yp3LVeQQYkt/cxWG9LfCG5dLuQ2y3yKnSjNd+k4gI35Wf8iJMeKuvtt6rOHWjhk0JnUV+8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740298899; c=relaxed/simple;
-	bh=90wQ+ltilL4gvTyMoe64RHL4T1bK+YyA9wK24My8hOU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dwU2RM/mRX7WX8MFUk4Ac4XNbAThpygBkuq6rWoJPlQ1h39Ksyg8zBPaI2L19DWZ7ZMgXalw7ij/Awi14DpMgAbmMyOXcKEFGJgkiRx1Lg365a5A8n4nGcQtwUoZYxUnfoCjn7WkS4oRu3+p5aFDxglygCOziV2iGUrtFsNYX7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RhPPoWxu; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740298897; x=1771834897;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=90wQ+ltilL4gvTyMoe64RHL4T1bK+YyA9wK24My8hOU=;
-  b=RhPPoWxurSLhnAX8Bdu7fmhPvu1b0XEpbt0Ua7y3J8WEXgjhON/yTjpF
-   rk1iGmUkEapLQYOhUrYfR4waPpnzLLhKcfR7AERkK+p29y5F+at0/Xifi
-   uIJk3NOGxUMNxYbQ0SSWLySJEeldrKnz8ahvyiFdq5RLYarb6YQlkeVwN
-   T2LY4WuxmEsd4HUebP1ZhSr/yAas6wa7yOA3xyWspth4w6svmr6Q5DHR7
-   shr/CiUco7dYvvNUgq2IQMeZbjcCGDQPgeTwK9Jr05x8ZYNpvS/8yHqdl
-   eYDZdTPWE5v93j8EmN70pfSsqA37SB30eLKp4zFk7dv7z1o9eqMQ84Q5X
-   w==;
-X-CSE-ConnectionGUID: oQ2Hp60cRTmtVjfL+oywbg==
-X-CSE-MsgGUID: o8nC5pA4SACeBd3vhI/SHw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11353"; a="51709928"
-X-IronPort-AV: E=Sophos;i="6.13,309,1732608000"; 
-   d="scan'208";a="51709928"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2025 00:21:36 -0800
-X-CSE-ConnectionGUID: MhJcB458TdmF83dgqq/7yg==
-X-CSE-MsgGUID: KIBtOcOFSxa6B4eHiNDYsA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,309,1732608000"; 
-   d="scan'208";a="116282573"
-Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
-  by fmviesa010.fm.intel.com with ESMTP; 23 Feb 2025 00:21:32 -0800
-Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tm7Ew-0007DH-22;
-	Sun, 23 Feb 2025 08:21:30 +0000
-Date: Sun, 23 Feb 2025 16:21:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, jolsa@kernel.org, jpoimboe@kernel.org,
-	peterz@infradead.org
-Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/3] objtool: Copy noreturns.h to
- include/linux
-Message-ID: <202502231624.0BVpxwbg-lkp@intel.com>
-References: <20250223062735.3341-2-laoar.shao@gmail.com>
+	s=arc-20240116; t=1740328970; c=relaxed/simple;
+	bh=8XZ+LCP+IJ1T0NsJnmk05Bo9WbAvIux7frjHXYDMeLk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GlF6zS9tRay79s6ofn93fFBm5UKOoWuRKowq8Ais8/9vE/4e0fk3yx/UTd5nDX1pns0rtQSurd98bP/4N0G1tlJd9+VHtuAJ3aFj4iOBXjjsXfjt/NexAj4IycmUsIxaFgTjnE/s86lzo10J+8IqtxjWVEmLdEVb1gSHlsLuIw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GRPIiQjd; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2fc0bd358ccso7495510a91.2;
+        Sun, 23 Feb 2025 08:42:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740328968; x=1740933768; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cC9XqKWpwoW6kaiQnMTAJRMWrDuUOdRDnNZLQfAjkgk=;
+        b=GRPIiQjddhJzUHQpYvDfou3r119xqd1cvidotyv7brVgIKsKxSBxFEK2Z5Erq4RFHA
+         1OZegso9ij4SjtTfpI7C2065u5Eh4oc6a+dwKqEQGHaqnBI9NISQ9kW4hFQ9shaw+Tl9
+         OaP7LYLPtTmSLDTME+qBh17Lkt93dhJsn6p2Snkt4DFuq1SjR0bPprABAAg/BI85eIl3
+         t2Z6xjWyKAUV+9LkHIPyro7+P8XBJF3p/Br2p1EdWFFxogs21zuF+YztoKLzcXY2TOhR
+         DaYWahcEmCIQWgBZSvPPNGQ0luNs6Jg+fB1jazhaCImRj4qbeD/F6c0kvi/kXLomdHUX
+         ukJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740328968; x=1740933768;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cC9XqKWpwoW6kaiQnMTAJRMWrDuUOdRDnNZLQfAjkgk=;
+        b=QNEJgEqSDwAVwQ75959ZfU321gFfDPwn6hTmsDIpVEcnVeWItYo6XQpSLRmu67GY3/
+         BVrDF0XRr/PgYs14E1f+egTBou/SpWFgdFoUluDmBXSgXfza+Nn0L8t+5tEKAAVB8jWL
+         Cv7mPM7c0XlVvQp2PCXXHq4V6jlJSaAhD00zualj96NkVLNsaCEa481NxjoYAWrsJ3wv
+         7rchfkSWKLimizObNi520wfhBpLRq4J79iLC9bBVDA+ingRz9XAs6BmrUkGnNQjiXbhk
+         8WUkVDBpR6CEyEvoma5ptfmmPecAZVdRxnqixhnWPhiUbwIJqTxAxwVp6jRT2Dlj63kL
+         ZD5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV/uIRslZP3XFTb64BoITBN/aH7egPb39l0YVD2TrIyv6kAzcAJ3cPGpBPmPN2AAjbpVqUYW5mzir0uWT+Xppk=@vger.kernel.org, AJvYcCVJ+ub+8HtMnWObF0w6s0jI2LrrbpzjznlngYp60hL/AAHxufdzRehDCgTpSTMvVozXq9/UJmtBUEJkoYRD@vger.kernel.org, AJvYcCVvxWG0YLv4uPfejjPLiUsomQbNUEzwdIXj3kdbW7f4AA0schy1RBEDQGY8FO3Mv8VeXa5oTBLEgfyrfDk=@vger.kernel.org, AJvYcCWiQ5CWAFrTfyV4cMACS66w6WgFKconxcQbBdR+kTB1zMUbWwcMj5sE02BrO933YbjLMZk=@vger.kernel.org, AJvYcCXPc6wBUuVUrYMRYlAZlMmRCyrsdg1yOAy70ZQa0gnQ+8YeZZwOvlcOcgEOK7BEqka6ElFJi24i@vger.kernel.org, AJvYcCXbdrbSu62NN25npmuZGXb8F1RHS5K35Cj0Nq20FDmf7GYLSJfND8ADgWXvcWcdzVSTD8Yf4vStSXXNMNU=@vger.kernel.org, AJvYcCXt24Qc4P7Zseza7fNMKbJdkgOczuuUmdXOzYYpCJCIslMRY9BEj7UaI0JDDYfp/9ioqbBagHDXa9vN4tGr@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwL6DIdY9R8JbMPcjehOUNgMGx9nK9bJxfNGp6UroixcrJWb8o
+	ToziF6JBkkq0pO9R+BSqO1jdKLvkUTj/1N5KjjHDrbH8O9S/bHth
+X-Gm-Gg: ASbGnctyIKnOAOVAC5bT1M8kPs9AsXj/kDAmYLq7MnlVPoIXqlbPbDJku3d5U1HqPzH
+	B/1kU2nOuegqTQdXwbSaZrk1JOfFfbimeJNxIhk22j/eIlXmXST9CVV4JgukJv3+Mwa5lgn8kb0
+	78h4zlwBT7tdTScJBiv1/YkQ7AFD83ecqstQv7nR8/VifvoyFpFHTTcaheNp2ZT6O8EhQG1V0lB
+	H90Dp0VSZ+4+LabPAWPafuXOb+gxBsmsrV/awCKoyBn6M28xFBMnOKZhBUbkML6+gIRFNVbIIWT
+	pYSf33A8Ddl2TdjkPlYM1r3pzj3B6WikGkhj4+Fwz1RcWiQB8vVqzPk9
+X-Google-Smtp-Source: AGHT+IE9IoeqkqZm6OQjrr5kPJ0U3iRTenWYdpH7xXhEtXcp87aYt41gR2kUOpfxylsV56aTy8WbdA==
+X-Received: by 2002:a17:90b:2e44:b0:2f5:63a:44f9 with SMTP id 98e67ed59e1d1-2fce7b0acaamr15072669a91.23.1740328967814;
+        Sun, 23 Feb 2025 08:42:47 -0800 (PST)
+Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fceb09f6e0sm4935080a91.44.2025.02.23.08.42.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Feb 2025 08:42:47 -0800 (PST)
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	jk@ozlabs.org,
+	joel@jms.id.au,
+	eajames@linux.ibm.com,
+	andrzej.hajda@intel.com,
+	neil.armstrong@linaro.org,
+	rfoss@kernel.org,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	simona@ffwll.ch,
+	dmitry.torokhov@gmail.com,
+	mchehab@kernel.org,
+	awalls@md.metrocast.net,
+	hverkuil@xs4all.nl,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	louis.peens@corigine.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com,
+	arend.vanspriel@broadcom.com,
+	johannes@sipsolutions.net,
+	gregkh@linuxfoundation.org,
+	jirislaby@kernel.org,
+	yury.norov@gmail.com,
+	akpm@linux-foundation.org
+Cc: hpa@zytor.com,
+	alistair@popple.id.au,
+	linux@rasmusvillemoes.dk,
+	Laurent.pinchart@ideasonboard.com,
+	jonas@kwiboo.se,
+	jernej.skrabec@gmail.com,
+	kuba@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-fsi@lists.ozlabs.org,
+	dri-devel@lists.freedesktop.org,
+	linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	oss-drivers@corigine.com,
+	netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com,
+	linux-serial@vger.kernel.org,
+	bpf@vger.kernel.org,
+	jserv@ccns.ncku.edu.tw,
+	Kuan-Wei Chiu <visitorckw@gmail.com>,
+	Yu-Chun Lin <eleanor15x@gmail.com>
+Subject: [PATCH 00/17] Introduce and use generic parity32/64 helper
+Date: Mon, 24 Feb 2025 00:42:00 +0800
+Message-Id: <20250223164217.2139331-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250223062735.3341-2-laoar.shao@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Yafang,
+Several parts of the kernel contain redundant implementations of parity
+calculations for 32-bit and 64-bit values. Introduces generic
+parity32() and parity64() helpers in bitops.h, providing a standardized
+and optimized implementation.  
 
-kernel test robot noticed the following build errors:
+Subsequent patches refactor various kernel components to replace
+open-coded parity calculations with the new helpers, reducing code
+duplication and improving maintainability.  
 
-[auto build test ERROR on bpf-next/master]
+Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
+Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/objtool-Copy-noreturns-h-to-include-linux/20250223-143010
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250223062735.3341-2-laoar.shao%40gmail.com
-patch subject: [PATCH v2 bpf-next 1/3] objtool: Copy noreturns.h to include/linux
-reproduce: (https://download.01.org/0day-ci/archive/20250223/202502231624.0BVpxwbg-lkp@intel.com/reproduce)
+Kuan-Wei Chiu (17):
+  bitops: Add generic parity calculation for u32
+  bitops: Add generic parity calculation for u64
+  x86: Replace open-coded parity calculation with parity8()
+  media: media/test_drivers: Replace open-coded parity calculation with
+    parity8()
+  media: pci: cx18-av-vbi: Replace open-coded parity calculation with
+    parity8()
+  media: saa7115: Replace open-coded parity calculation with parity8()
+  serial: max3100: Replace open-coded parity calculation with parity8()
+  lib/bch: Replace open-coded parity calculation with parity32()
+  Input: joystick - Replace open-coded parity calculation with
+    parity32()
+  net: ethernet: oa_tc6: Replace open-coded parity calculation with
+    parity32()
+  wifi: brcm80211: Replace open-coded parity calculation with parity32()
+  rm/bridge: dw-hdmi: Replace open-coded parity calculation with
+    parity32()
+  mtd: ssfdc: Replace open-coded parity calculation with parity32()
+  fsi: i2cr: Replace open-coded parity calculation with parity32()
+  fsi: i2cr: Replace open-coded parity calculation with parity64()
+  Input: joystick - Replace open-coded parity calculation with
+    parity64()
+  nfp: bpf: Replace open-coded parity calculation with parity64()
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202502231624.0BVpxwbg-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-         |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   1 error generated.
-   make[2]: *** [scripts/Makefile.build:102: scripts/mod/devicetable-offsets.s] Error 1
-   make[2]: Target 'scripts/mod/' not remade because of errors.
-   make[1]: *** [Makefile:1263: prepare0] Error 2
->> diff: tools/tools/objtool/noreturns.h: No such file or directory
-   Warning: Kernel ABI header at 'tools/tools/objtool/noreturns.h' differs from latest version at 'tools/objtool/noreturns.h'
-   make[3]: *** [Makefile:70: tools/objtool/objtool-in.o] Error 1
-   make[3]: Target 'all' not remade because of errors.
-   make[2]: *** [Makefile:73: objtool] Error 2
-   make[1]: *** [Makefile:1430: tools/objtool] Error 2
+ arch/x86/kernel/bootflag.c                    | 18 ++------
+ drivers/fsi/fsi-master-i2cr.c                 | 18 ++------
+ .../drm/bridge/synopsys/dw-hdmi-ahb-audio.c   |  8 +---
+ drivers/input/joystick/grip_mp.c              | 17 +-------
+ drivers/input/joystick/sidewinder.c           | 24 +++--------
+ drivers/media/i2c/saa7115.c                   | 12 +-----
+ drivers/media/pci/cx18/cx18-av-vbi.c          | 12 +-----
+ .../media/test-drivers/vivid/vivid-vbi-gen.c  |  8 +---
+ drivers/mtd/ssfdc.c                           | 17 +-------
+ drivers/net/ethernet/netronome/nfp/nfp_asm.c  |  7 +--
+ drivers/net/ethernet/oa_tc6.c                 | 19 ++------
+ .../broadcom/brcm80211/brcmsmac/dma.c         | 16 +------
+ drivers/tty/serial/max3100.c                  |  3 +-
+ include/linux/bitops.h                        | 43 +++++++++++++++++++
+ lib/bch.c                                     | 14 +-----
+ 15 files changed, 74 insertions(+), 162 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
