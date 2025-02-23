@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-52272-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52273-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CD50A40FE2
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 17:45:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 905D6A40FFD
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 17:47:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC9FC3B6E0C
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 16:44:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85B84179C6A
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 16:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E34A15886C;
-	Sun, 23 Feb 2025 16:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D11016F8E9;
+	Sun, 23 Feb 2025 16:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iyfZG0Xq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IP8bABKz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A7D1411DE;
-	Sun, 23 Feb 2025 16:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F62F13792B;
+	Sun, 23 Feb 2025 16:43:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740329016; cv=none; b=Ejmx1oaS82IdH9AgpIEKw/qpVzmH7qOrHDNJzQebuwjii8vOCGymNfCTVVj6gI6jbTkQ/jkseGsdxmpyAsYGT2J5XxJAxDAIabu/+gCHYPmue5aFYrj0VyjnPNYVeUzhd3oTqWeuxqP5gfX1RXebkJlEkLyPYDO0p5z3pHT/yqA=
+	t=1740329027; cv=none; b=uMaYkGl6ghhzLTR1Ete8Xds21m1KkgxBc1M1dbPLLb/J3VZzgJbW0UFx2iLcrmDXhnlwryk90HcXucQ1R7IBNtmE/FaumGO9VOVRAzLwPOJMgPYB41M6tobp6sKrDuBuFWBX/MTe9+3J/LySFIcaqH1viAK+wahyB9sQZVQWybs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740329016; c=relaxed/simple;
-	bh=090s4Ovpl+A5aROx9Sbb2Y+qxVciWEvZposjEggOoUo=;
+	s=arc-20240116; t=1740329027; c=relaxed/simple;
+	bh=JIGbdj519hBofglwm1x6Wa4PWHJoF7xJSHZGDTpyM6Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=O5C0l2hbOaafyRVjOnqLoXS0MsX/dyLmUOxIkpbOyiRN/Lw3ksnC5IaTKSWe+6QqpsVS1uVEA+eDUx69fq49/6+9mRZCUcf0huN6ZzSxanW6AdDRuAWDrJs/iaxEyRKDuacCwXjh9lwwIxRQIx4Q5OGvto3KJrzDluml+kWjTPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iyfZG0Xq; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version; b=JRnrNiUqwlLf2xLDpNkB1pZV9t/FL2xvbDf/tYLuqZcBha8+rhracb8s8yyVUu2yYfucBDsECKnNK/x67vt91xlMhMl4un00j1R252Bhs9ool78/fg+n/njIhnFsEZ83Mz+PBEQhd5nKOPGHwY8I7OMFNgJNOGBkQ1uHDXXaNsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IP8bABKz; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-220c2a87378so61384815ad.1;
-        Sun, 23 Feb 2025 08:43:35 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2fce3b01efcso4287431a91.3;
+        Sun, 23 Feb 2025 08:43:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740329014; x=1740933814; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740329025; x=1740933825; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eJ7uyC7/exlluLKkDx5P6Zr0yOli/KDaWMiD/A1Io8w=;
-        b=iyfZG0XqaBs1MjoxkMddkcRwbf7kSoMFC1zG3W02EKxfB+o1Jp+vD6q7whfyCYA12v
-         6mxV35+D82fqynspjP5NfXKmdvvhsPRSPfwthshrZhzwAts7YhxhzXJr1A7A00+uq4SF
-         7k6yZvQmrswme7r1gLZLfJlnvnLNmLsmCXzDj8ROCTT6ohM87/HSJFKn53HQlGz7safB
-         /rLZbThr0U0OOpbgQXdEzjWuwHieIJwnwVs5wu5WF49gHBbTDdJFBv6o1QvbOdpTdtd7
-         LN3txgD1pRLWDfETIWeNYVSyg/nvZG5y7OVy8eTff33ywVjjzfMEMRTCnvEbn9PRNWFn
-         wg0g==
+        bh=r0Ho2aCKNYfg5T/o22fFzxZ+UyjSx6Fm0wn6W8o8Gr8=;
+        b=IP8bABKzIVJdlwzWzDVNlmft0o/mQWGbMN/Ur66+5XF/KrJNlzaeuGPkCqXr1sCiTq
+         WpqRpwB09BEkuuwfnp1nWHawlVUFF/jC9+PZ6Oh3iKuXaJRNkEbx6kd2iY0hjGmuISYE
+         tJQcE+81Eb220RWkfMOulirlnntMnBlTPsVTnf2NEu9+X7uK52y/mWz/FFJSAjFKKvgl
+         gb6ie3kvk6fpm+wC0gpWtvMrI0CFE4lvhvwD/oOGsgTTDld85zURF5+IllKdLP4MY0uW
+         J3YVIBUWnmrgL/cX/3v7Q5A4StjeG6t57w15x8SfZSo7LFSotfHtQkgEToSOIqMvKOlf
+         72bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740329014; x=1740933814;
+        d=1e100.net; s=20230601; t=1740329025; x=1740933825;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eJ7uyC7/exlluLKkDx5P6Zr0yOli/KDaWMiD/A1Io8w=;
-        b=SIRi99hzq4p4a+l7XpiqcWL6peXLfciaAsUwSb5xzX4Cx25cXrl15jPwSIK1T47PFV
-         6TEaakVzq3wSnG6SSmac1ctGL6fuGx+k+bQj5LCUQt5onA7np+Z9SU+23I/pawrLSEpg
-         +0s0DoXl54/YOGfFk/FykcvH1woFtlri0YtaIChRefd33HkFJHREhnTmUtX5n74/CJDY
-         AQ7a1xUzmIWCUVzxqhIzxlGWed/RrwTVNjcbioEZM40zX8JmRmmEhekw8fMR5XGDrpMZ
-         KBuTqdbrQ06LwLvN5bI/Go0h07/05WItn0qHrNvOUSCtaaDzOk6bDA7dWkGc3gXhqu3f
-         SsqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3W+I3bIrTcjgFXHOPxzRsilUWmmodLwNnkvY+/gcVH0lNfEMDRUsvX0h3XGXNMygOfqmjntZHTWuPfew=@vger.kernel.org, AJvYcCUK/qSFOcO5h/qRmxeWCz/7JImpmwV+Tx/QcZhOJ/n/UlAdailrpPiTY9NdbiwrJLiUEhykoD5PYf0mjc3A@vger.kernel.org, AJvYcCUNO2IshK6LYZETi1i9gyVHCU5D+Y7hwqKl5VjRUPgdn9m9pFRKZ1mrbMc7OX8+GgZcmt6xNaXmNc8K7ryukD4=@vger.kernel.org, AJvYcCUl6lR/whG71J520Nca84FGj6tWf9ONO7VVSc3A7MUNHlKOHycfCyindoD/eRQ077YnyVy4knbw@vger.kernel.org, AJvYcCVXL2YUrwgUECmTS3a3cazGPKwKi2/QYfERno2kuQ7I+tts6oOLsjgrsE8NAnxOXgQFXP0eAXQSfKyCHYg=@vger.kernel.org, AJvYcCVmff/MA38timfkUDAN+C1yaRzqAeuWDZ0Pc1qA7zEiYP8wn3wT3IL+KG7W6aUJ5Hs+e4N8zsqe5ln7hnqa@vger.kernel.org, AJvYcCXBZUkgzlqvJZvVWUc5pYZk39ouBJUbAsJziCaCW8fCfEkMRrxmfIkmlfOAHk8iuPeU8Tc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZhBJy+678ebhk+rL+NFZj71kDq2xi+jSvSa12wU430oVpz9aL
-	sdDkLkyVrZiEq4RpMC65tCENIcCiITws3Ac1p6LPptnOjxQsUWFo
-X-Gm-Gg: ASbGnctr2Vdd4kZQJeRo2/bZuqpcAXhMx40E1sjtVLNjAeu0oNE2bf2whlDZ1EqK6Az
-	ViQJ0rzCDfzA4eLH0Cybt8HhzRulHfC9IuDyhQ/iuTYgod3dZjJeosFSUJbwdrH5YF2n+kh4P8r
-	IPKNoZk4g2/HAlCAbtr/liBJK4XT+QTcWiIFt76Ka7GF796V8aBwRPJbUV9bi+oZ9FA0CpDClZ2
-	UCaZcpbi07VdJkh4pJ9ymRfhxvHu0k5JAGMqR9L0ob9eXIHlNnZJIAyjJ677ZuwMIUFpXoIAdvO
-	Uq9dfuFR+wdKRpLkhf3+kQIdgb1efwsgPIrPPg1zi2JcgnONDWYNf5b4
-X-Google-Smtp-Source: AGHT+IGEf83VZ2oIxRJRK+CnkiI3bN9hJqE3s48Hx05CleZdaHJAPpPthd1i56ltfHnEYIca1Ehjjg==
-X-Received: by 2002:a05:6a21:394c:b0:1ee:cdda:b8ea with SMTP id adf61e73a8af0-1eef52f7d5fmr16011633637.19.1740329014620;
-        Sun, 23 Feb 2025 08:43:34 -0800 (PST)
+        bh=r0Ho2aCKNYfg5T/o22fFzxZ+UyjSx6Fm0wn6W8o8Gr8=;
+        b=Aqc95Y72Yc6MFVZSPSF0SjHm5a3aAuc+Y8O2Sak2h8/vI78R+5etr4FboMYFfizypO
+         yflYzh9t9mqNT0QiQPYua9fUhdd7LdJu8P31meuGK09+v9/Nx2+icJe2ela/EUrhbyz1
+         9i0EYUOwiNnYZ1xJD2LmKwvxqz1GRWLar0Av0XPtQrZ9B9yRTnkv9PYVEj1tDtvnGYAy
+         7ZXZKacqlNnDE9pw1430LLGKOiHAjyZhBtMJFjWCeyHXnRdhteJNeQUDvRvzh7yrW4KU
+         LXMGC4CIvpLS422qmb/GzkggfliiRUQCVtxPqTdMorGaPS8W2KAr4rm+N/VMV3E5/Z3s
+         gWcw==
+X-Forwarded-Encrypted: i=1; AJvYcCUHfUj1IqA2snmLgzjPbqbexT827UrGw0WGT9reiey1WMmBFxRrLSCqZDkgw/VUbMmY4HQ=@vger.kernel.org, AJvYcCUVhKLFPq1nQ6jDulijxhkQdVWzAEKRkdjOrI1pvxFqFMqbTHX7wkV5ZFU/FO5R6wzOqRO+IEOd4kKoBio=@vger.kernel.org, AJvYcCUd6HgvYDHfvOYJe+mN5wGw2ig4azVwEFxRaWPD4QiZxMAkuPR8tke/F3ararl+2ZcMhozaCj3vHM3wXyI=@vger.kernel.org, AJvYcCUfRDrswgElYQNG+HbrSN4gzi4gAA9c5AzZIHSJjhgy21F14T9s24slL8vOp5n+TqcWtQwEofkIOsdRVGXEXZE=@vger.kernel.org, AJvYcCVFE94nnmOJE5bdet8ZbdQ5aU/TfbyjvliHZ38SmCfxRr16aqNsE5Ts6hAv+Zt8rPzj6rvIrGxMIXoF/7+7@vger.kernel.org, AJvYcCVtDlKJlSPLH7bl2ARXMYJi5q86O4hD79qecMbrWlkilWQMSbyEfAlPEzCONSwOFAivIPI4TPeg@vger.kernel.org, AJvYcCXr1OOz9Wf4TR5Rkoxy58gewDFwmTeo5ptHX7o0CbzOefE+kMTiwD6QMp/fhqQwzt4evOfnE53JO4h8J28U@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7jIPYHaCzC8iipSLTrz5J5xI8C5lOBp0ocLfVJT40CkzEjSj8
+	koi921Sr+ELBx9aWYqqx3/PQTdVdIZrJBxrSpk9GjDL+/VIiiKjk
+X-Gm-Gg: ASbGncsa5F9m+aiUdIgf1+F/QQS9xKw2ZobApBXW++K1/5PnCljfXh6QCvw+Mu/tnY1
+	OBVoeZDqn2nTCxg+nd9fy7CCMsglhre67ZTjMwLHp54Pc7RcwunaSgjQ1K9A4p+48go1a6NETnY
+	2em8MNffW+xu6sAzsYf2/2gdNvUvWhTlfNz53fp4ldg0c1K2cSPyaAb8SkzTCvsvM7gg7NLv5e8
+	a35aiGR2Lr60BBy98RQr37noT0Z+aDzTqoAXA6W5jj7eSn9N3KRVVaWnlDj+Y3YXuw7pGhQtBEv
+	Xf0wRiVfLDVDQgmRXBneRCURNQn4HCVsuAa00auSWlhUyj+PS4ppM5As
+X-Google-Smtp-Source: AGHT+IGVq/VDL8yFNkkrNqMmhpwnPeH21AgiBV1Ypn8QzIpzc6gLajBMUvDiltb0IdO3Sbiytrzwqg==
+X-Received: by 2002:a17:90b:2e0d:b0:2f2:ab09:c256 with SMTP id 98e67ed59e1d1-2fce7b07205mr19070739a91.33.1740329025494;
+        Sun, 23 Feb 2025 08:43:45 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fceb09f6e0sm4935080a91.44.2025.02.23.08.43.25
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fceb09f6e0sm4935080a91.44.2025.02.23.08.43.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Feb 2025 08:43:34 -0800 (PST)
+        Sun, 23 Feb 2025 08:43:45 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -131,9 +131,9 @@ Cc: hpa@zytor.com,
 	jserv@ccns.ncku.edu.tw,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH 04/17] media: media/test_drivers: Replace open-coded parity calculation with parity8()
-Date: Mon, 24 Feb 2025 00:42:04 +0800
-Message-Id: <20250223164217.2139331-5-visitorckw@gmail.com>
+Subject: [PATCH 05/17] media: pci: cx18-av-vbi: Replace open-coded parity calculation with parity8()
+Date: Mon, 24 Feb 2025 00:42:05 +0800
+Message-Id: <20250223164217.2139331-6-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250223164217.2139331-1-visitorckw@gmail.com>
 References: <20250223164217.2139331-1-visitorckw@gmail.com>
@@ -153,35 +153,46 @@ Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- drivers/media/test-drivers/vivid/vivid-vbi-gen.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/media/pci/cx18/cx18-av-vbi.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/media/test-drivers/vivid/vivid-vbi-gen.c b/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
-index 70a4024d461e..90fafa533ccd 100644
---- a/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
-+++ b/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
-@@ -5,6 +5,7 @@
-  * Copyright 2014 Cisco Systems, Inc. and/or its affiliates. All rights reserved.
+diff --git a/drivers/media/pci/cx18/cx18-av-vbi.c b/drivers/media/pci/cx18/cx18-av-vbi.c
+index 65281d40c681..1a113aad9cd4 100644
+--- a/drivers/media/pci/cx18/cx18-av-vbi.c
++++ b/drivers/media/pci/cx18/cx18-av-vbi.c
+@@ -8,6 +8,7 @@
   */
  
+ 
 +#include <linux/bitops.h>
- #include <linux/errno.h>
- #include <linux/kernel.h>
- #include <linux/ktime.h>
-@@ -165,12 +166,7 @@ static const u8 vivid_cc_sequence2[30] = {
+ #include "cx18-driver.h"
  
- static u8 calc_parity(u8 val)
- {
--	unsigned i;
--	unsigned tot = 0;
+ /*
+@@ -56,15 +57,6 @@ struct vbi_anc_data {
+ 	/* u8 fill[]; Variable number of fill bytes */
+ };
+ 
+-static int odd_parity(u8 c)
+-{
+-	c ^= (c >> 4);
+-	c ^= (c >> 2);
+-	c ^= (c >> 1);
 -
--	for (i = 0; i < 7; i++)
--		tot += (val & (1 << i)) ? 1 : 0;
--	return val | ((tot & 1) ? 0 : 0x80);
-+	return val | ((parity8(val)) ? 0 : 0x80);
- }
- 
- static void vivid_vbi_gen_set_time_of_day(u8 *packet)
+-	return c & 1;
+-}
+-
+ static int decode_vps(u8 *dst, u8 *p)
+ {
+ 	static const u8 biphase_tbl[] = {
+@@ -278,7 +270,7 @@ int cx18_av_decode_vbi_line(struct v4l2_subdev *sd,
+ 		break;
+ 	case 6:
+ 		sdid = V4L2_SLICED_CAPTION_525;
+-		err = !odd_parity(p[0]) || !odd_parity(p[1]);
++		err = !parity8(p[0]) || !parity8(p[1]);
+ 		break;
+ 	case 9:
+ 		sdid = V4L2_SLICED_VPS;
 -- 
 2.34.1
 
