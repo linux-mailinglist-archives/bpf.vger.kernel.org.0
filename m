@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-52280-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52281-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3837AA41031
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 17:50:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94D52A4103B
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 17:51:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 122BE188C3EA
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 16:49:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 644A918908CC
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 16:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0684D20AF9F;
-	Sun, 23 Feb 2025 16:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C9620C00F;
+	Sun, 23 Feb 2025 16:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WJrRDO4H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kecdzp54"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 147D7209F52;
-	Sun, 23 Feb 2025 16:45:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27F4157E88;
+	Sun, 23 Feb 2025 16:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740329106; cv=none; b=t6iQcEDrvoTrhIadD8lJkO2fUraZcLTkck85/+vemiMD3uKKwZjtJTvA5648s+WuPM8yPehIqPxKKWJ4ct4yikiuRLAChNdibo6v/STkUzL2qRRlk7QtM238RycKy14BcE5kePFiDaQzsE9qiU0Eq8qfgqRR905EsDZxFCIcBqo=
+	t=1740329117; cv=none; b=jrnJvHqZ6J295+2Digq06Y0ThOQif0axVvAvwFpmK/qV+N8+1vTpQ6r0Y/gidgEbVMlBmMAasmoVGx3nGWQOhil2GhJlkqykQoxx4zUM5t6mTevRz6kWMP/zdwdu/9YLLYsA85e9nPEVgeXtzeG3WcewTtdeaZyl3KkuB6zaqtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740329106; c=relaxed/simple;
-	bh=TwYwZvCrklNfcmQ95nA9Xu2F+v+lRRPBTM6pl81qOZE=;
+	s=arc-20240116; t=1740329117; c=relaxed/simple;
+	bh=ZR7k7WuXjWgoiKosaPdwElgny5Md8dRLy7kh+y/t7/4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=N2sWytL9Bksbl4MTRYAdNQ5SkkG4uERxPVLEsV7ECrCHCwbSnuMBrMQFW7jm1O1rAlXSCrGN6J4Mc4veBFGsXEYmO43LdgUuoBjJXtcp4id6Jt/LxcfJ8tYO+LSPsR8J6a7Exljo+0sAHYLuhhyh4ztLyY0W76v2VajSO/hOK4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WJrRDO4H; arc=none smtp.client-ip=209.85.216.42
+	 MIME-Version; b=pAcMZuvattZMnP1WsrCOrYkpAjrl+0b+vksnsPSvPlk4uVpbZFpVizsaMe/0kg93/Avnjfe8OLSDqivjdxH0KHSv9+c/J8hM1YaTShZGBGx5bzHyIKdRPFeaFs5RlS1n9AqnJHk5y9ncvWivB+77UWhgQXo+64IT9tTP3Bz4IN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kecdzp54; arc=none smtp.client-ip=209.85.216.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2fcce9bb0ecso7231962a91.3;
-        Sun, 23 Feb 2025 08:45:04 -0800 (PST)
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2f9b91dff71so5518703a91.2;
+        Sun, 23 Feb 2025 08:45:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740329104; x=1740933904; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740329115; x=1740933915; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HQRFKAla41Ay10wYFnrS+X/WAyPF0gKgODKhC/FC/AE=;
-        b=WJrRDO4HwGn1ZbY5wFm3Tq38zpYftE+Y3tkiAGJsV7pKU/czwr+UfVg/uNFacEELDA
-         KNyHEX0lYtuBx8KmMBaaw+vfEuNbgBvNWvQ6w2qge5IfSmEl9D7slkaGD0mWFEgAVSbV
-         VyM99H48P/JvlPd/Vw9g183RePBp0XNuL7FE2uKk4OXmII2Y115xb/1gHPSt4gGRXBtS
-         dUhpEtjnE1bVgWs0LnKoV5Ua4CkbePvbXCYrDCjEEDM5ryFVvOKHS1Js+kujfDpO6mPm
-         hOZjmSMskwTEmWlCAjiYhVUmn5KgN+v1muo2gUsjkY5mSd0VgLMlOm96XYE5K5zqaUtB
-         GYKw==
+        bh=M0fPaIWjdscIdDk4T1YIhhdJwaKRFyAzbGum2CZXkTo=;
+        b=Kecdzp54CjErVHVKs0eq0Kgpq0rNxPJpXict9Ak4VppT1lBU90wzThiO+kXKMaB/pO
+         A35uUtjHme6ShFS9bMxNEe3RgWFs1nF4FaUcAtZxPereEt1u7v9jzwJHSppslI/Jt6kG
+         oraiW1VOrizSR/+oDadm8NwH30/IgmtWUwAb/Oz+1bKCEcpOK/f5+xUHX96bOBj3PyNl
+         oNmo5ENhg6jb2euY2/OskjCMkaFw1VzfXcO/EEy0L610YGWuyAWWihdE/wIgWXiXKND1
+         IKE/rLUCtgwPkKl/0eBZK6vlRW9tNzI8HbxPhz3z2/GqL1crB3mZ/xjScxXzqKkb7uqe
+         QtfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740329104; x=1740933904;
+        d=1e100.net; s=20230601; t=1740329115; x=1740933915;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HQRFKAla41Ay10wYFnrS+X/WAyPF0gKgODKhC/FC/AE=;
-        b=FcG1wJ2EB4qQazt58TiHedsFLTWwRbes5wDhhxvNSLHLrDuMDFd7p82rwggV2LgrO6
-         kuhUhZdmQNIq2+G/WlTRVkUb8bsvwi+LzDdd/NXM5TYBpTZyTmSZ3wbqEGVrtk8XK0I5
-         8rV3BwptjM0yZZPswqMul3IDhNFbN+efDDBNMkw3IwCSMU4iXA08EnISrRLsWu3qJj7v
-         Kj8RgLXkbCxi1W/sSnhJw/zmRysryoT6SyLQhDVpgzdMWuqoS+rWvsfBE55I5dP0K8ZD
-         IMLyS/biQjZsQ/PzRnH5VA3qY6hN/iREjXNQWKntF4PgN7AEgM5BRHLXGSzPW6bSZKh6
-         DL1w==
-X-Forwarded-Encrypted: i=1; AJvYcCUu8yHzO1pXoP+l2ElT40uAaRKK0EusGJpkwGZ1/eyu6zQXeGLUO66XTTOa//8hfwNcet3evX43OhIUXUQ=@vger.kernel.org, AJvYcCVh0VPfD33lnFTAmim6cr9rQDL3TyHaM+ztP3yuRGHNK2AWQHccS3P78ytI7Ar84Z61fFCfbxK4vn7+zwA=@vger.kernel.org, AJvYcCViOgQ7BkC6KsmEWwkBUZWta3E4QmuCXUMLP6/5jd9JrOK84AX/w5WSNjszXP0SJPPokms5/vU+eMIo/NrZ@vger.kernel.org, AJvYcCVpldCENwX8uGAIUTT6oDIMCj026OKc1PSuRBqPpjlQit7upspLe4M2ztm2Pn+FtYNpVeI=@vger.kernel.org, AJvYcCWCTAsUxtm/Ck1ZcNVoe8+iHi5Fl1nCK9W2rCyaoXBgGOzqFFtDt7Si1UzheYVnBzeLODQjtEWz80ai74Lb9yg=@vger.kernel.org, AJvYcCWbUrD2XRBuBqK70efe5/cPWQrbRlTll6iFJV2QK4JFNI0tm3AVwL2GcWiW0Bd/0ZphEDDLUnppOG6hfF6k@vger.kernel.org, AJvYcCX/56P0qRkLWWbdixhr72ip8PflClQvlOd1viMpn2VHsJ8hJKp8vg82RtAxysiBmjZ+1lSo2Kmt@vger.kernel.org
-X-Gm-Message-State: AOJu0YzC/zSJYG9db96yeiW/p8SQgUcTsXciW+V/jB4Igq5ECSxCH+gD
-	jRKizmGxEKAVMoFfdPS1HrLy/4g4x/pFlg0GwDiNZ8GQ8pEYlXjv
-X-Gm-Gg: ASbGncuTydqelhzyEFXc+mr+PV1G2HIH5umt18oanO9xfM3XZz3jLhAuWI6DH0zvAVb
-	e6bPml7B0WhRcvRAVy8Hios+BOnvHXiRHZoZAfCML05QrlQNmEQA7OKAnye/AsHIYfoxXyCi0vk
-	ieq2O3cBvEXltqg52JJyK5zxAHUXsl0Oly/aFavvunTJ3E9hG5edgaU1PKMJYJ2rEF9fKIcTBoz
-	rSj5+O2lgpZAGrZE/HoJpkQI5bNpzccP3dI1BiNuHEadcGxrXChsrcn3gzk8DIn4eRa4Adjukcv
-	iVLtt+3VXapdvWTh4T5RfwJ3/K4ygPbZS75Nb41ydV7SyzdCiGmFzNb2
-X-Google-Smtp-Source: AGHT+IGJMVNjh2ZkbH600/jnGa2+6i7gpIXMvZAnEqRCXvTYi+XMSGJQL5WK3aQh+mNtGiJ0yE3iuQ==
-X-Received: by 2002:a17:90b:2590:b0:2ee:df70:1ff3 with SMTP id 98e67ed59e1d1-2fce75e1b18mr21089922a91.0.1740329104301;
-        Sun, 23 Feb 2025 08:45:04 -0800 (PST)
+        bh=M0fPaIWjdscIdDk4T1YIhhdJwaKRFyAzbGum2CZXkTo=;
+        b=xN7SZF+6QVyd0W9n9L4GtVSNVqMW1ukS9M42OV7BnJKUYOuynf8mAe52WVyfV5Ri6k
+         Il3x3LB9LZS0GujxKxTBz8wZQ/EVX48wVZm92LYn1UKuzGtvnFByy7E5yBLsGvLvmK8+
+         dZTdX9VewaYMbrIEKzI5U5Wpeza0tdD+SLvxip+KYytP+M/4NEaJa91w+XsnN6VM4UUM
+         4IXZrduy0hB0IlEZ7t7bnN2InUVAOqv813EPEgFzOq8nUwF2zitYkil7t1OoY/1Exja1
+         fDP4s6SgoLQJ/fmNLkY2dZmjGETdb3kALpxP1bs6R1Yi+T9UFp3hiXAoF0FgP+U9pQv5
+         /TUA==
+X-Forwarded-Encrypted: i=1; AJvYcCUNeZOShh4o3sTAQRwpHh3AolTt5M47WXrplGBE3h9zJ0N8jNQKf7RgnhEXvK6gryLE9qtNl35mheHAHAo=@vger.kernel.org, AJvYcCUjuL9UMJ8rFUhVqB6jpd+RalTOaMuLS3UK+FxlY+7NipqXy3I298T4tECiuXsGC1eN3S4TtQr+7gATD5hI@vger.kernel.org, AJvYcCV+J8NNC+rTIXBj2w0dyyLwejJL6l8KRsPsQdM74pDfkmuYaJOsODWC48UWss2CUr/0ien32y6y@vger.kernel.org, AJvYcCVESlNrh7bZPZuUmHrOiKhTddwVODBqXmRaAl0ynytSP4zCYl1vZGp9nXl4JtPWtmMz4TB7ms00Ue3BsQM3@vger.kernel.org, AJvYcCVKfkGgfXFG3V8ad6sH7pPR4pv7nYp3SiIUSmkGH7nKHtRApZhSTDxdMPWeVW+G5v2rzrl4eFynklFzwBI=@vger.kernel.org, AJvYcCVrpFDeVULZKkj7Gv7awRNPXO364bY1mGje5cI/nA9yCScnRmLV/1YP3yoDvcflM+bEBXM=@vger.kernel.org, AJvYcCWDsXh2ATtLgLxUnTuyqcKEZi4Leqg00Qj9Pln1Jy6wwM3C4odGO4uBEUF8G3/wz1qHSN4MjKbXUup61fvS/cs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywznh54PHGrTVIPWIhy4FaJsJUgM+e65ltze5PJqynKzPok+2Nb
+	moBu9TvbVszP8tdkR/qCP5sZ0BLDePnnWh7cTI3Ul99PxOYpFcdq
+X-Gm-Gg: ASbGncvnwLVnhrNgwXBAXYHjxXA9AVWzFtqVTqgKiowBHjVKIzcczPhF7IvB3CeOplM
+	o6aytYrMciR/HIQjYgr0zlX7ej0MJ/JcrIUebpMUfM17Hu4XvKPFmDcUFf6UQ8rZ8lBQWOR6lJS
+	GbTZQGq+ALH5Hacegb27Rm/Y7bQ/LrC8QNbitZ9Sjkadg0LtZlmFGz82BeCjhP0PLCXHQOvRATF
+	zhOb+m2n2R0QUO3yUPha9VnQSLLi0YNgawRTPlyXcFhSXaHeJ91A3zwPn7vxWV00qB/mvgq/xIr
+	AHaEzu3cSDqKTvMemho56fdfV5iWQ2+axDlmmm9ib7zfT6aqJjPM9BFo
+X-Google-Smtp-Source: AGHT+IGRfmJ1JykXVI/nOn1hWPryN6XcmSxHhj3JPmFZZoIcxcyuC/O0UeP8Z39VhK9JcSyFdzE6jQ==
+X-Received: by 2002:a17:90b:548c:b0:2ee:c04a:4276 with SMTP id 98e67ed59e1d1-2fce77a4863mr16234632a91.5.1740329114693;
+        Sun, 23 Feb 2025 08:45:14 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fceb09f6e0sm4935080a91.44.2025.02.23.08.44.55
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fceb09f6e0sm4935080a91.44.2025.02.23.08.45.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Feb 2025 08:45:03 -0800 (PST)
+        Sun, 23 Feb 2025 08:45:14 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -131,9 +131,9 @@ Cc: hpa@zytor.com,
 	jserv@ccns.ncku.edu.tw,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH 12/17] drm/bridge: dw-hdmi: Replace open-coded parity calculation with parity32()
-Date: Mon, 24 Feb 2025 00:42:12 +0800
-Message-Id: <20250223164217.2139331-13-visitorckw@gmail.com>
+Subject: [PATCH 13/17] mtd: ssfdc: Replace open-coded parity calculation with parity32()
+Date: Mon, 24 Feb 2025 00:42:13 +0800
+Message-Id: <20250223164217.2139331-14-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250223164217.2139331-1-visitorckw@gmail.com>
 References: <20250223164217.2139331-1-visitorckw@gmail.com>
@@ -153,35 +153,51 @@ Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/mtd/ssfdc.c | 17 ++---------------
+ 1 file changed, 2 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-index cf1f66b7b192..833e65f33483 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-@@ -4,6 +4,7 @@
-  *
-  * Written and tested against the Designware HDMI Tx found in iMX6.
+diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
+index 46c01fa2ec46..e7f9e73da644 100644
+--- a/drivers/mtd/ssfdc.c
++++ b/drivers/mtd/ssfdc.c
+@@ -7,6 +7,7 @@
+  * Based on NTFL and MTDBLOCK_RO drivers
   */
-+#include <linux/bitops.h>
- #include <linux/io.h>
- #include <linux/interrupt.h>
- #include <linux/module.h>
-@@ -171,12 +172,7 @@ static void dw_hdmi_reformat_iec958(struct snd_dw_hdmi *dw,
  
- static u32 parity(u32 sample)
- {
--	sample ^= sample >> 16;
--	sample ^= sample >> 8;
--	sample ^= sample >> 4;
--	sample ^= sample >> 2;
--	sample ^= sample >> 1;
--	return (sample & 1) << 27;
-+	return parity32(sample) << 27;
++#include <linux/bitops.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
+@@ -178,20 +179,6 @@ static int read_raw_oob(struct mtd_info *mtd, loff_t offs, uint8_t *buf)
+ 	return 0;
  }
  
- static void dw_hdmi_reformat_s24(struct snd_dw_hdmi *dw,
+-/* Parity calculator on a word of n bit size */
+-static int get_parity(int number, int size)
+-{
+- 	int k;
+-	int parity;
+-
+-	parity = 1;
+-	for (k = 0; k < size; k++) {
+-		parity += (number >> k);
+-		parity &= 1;
+-	}
+-	return parity;
+-}
+-
+ /* Read and validate the logical block address field stored in the OOB */
+ static int get_logical_address(uint8_t *oob_buf)
+ {
+@@ -215,7 +202,7 @@ static int get_logical_address(uint8_t *oob_buf)
+ 			block_address &= 0x7FF;
+ 			block_address >>= 1;
+ 
+-			if (get_parity(block_address, 10) != parity) {
++			if (parity32(block_address & 0x3ff) == parity) {
+ 				pr_debug("SSFDC_RO: logical address field%d"
+ 					"parity error(0x%04X)\n", j+1,
+ 					block_address);
 -- 
 2.34.1
 
