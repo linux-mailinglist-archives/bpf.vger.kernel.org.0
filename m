@@ -1,259 +1,147 @@
-Return-Path: <bpf+bounces-52261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4851EA40BEE
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 23:53:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E92E8A40CDC
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 06:40:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EA533AE5CD
-	for <lists+bpf@lfdr.de>; Sat, 22 Feb 2025 22:52:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB34117C855
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 05:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 681082045B7;
-	Sat, 22 Feb 2025 22:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA251D7E4A;
+	Sun, 23 Feb 2025 05:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OxzJT5Xq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bb8cRfOI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6CA18EB0;
-	Sat, 22 Feb 2025 22:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 945852AE97;
+	Sun, 23 Feb 2025 05:40:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740264753; cv=none; b=LXUwpq7LkAMO+2Ow1Mlpe+1qAMk5ZRDaP0r8Q0+3ld+yCiIUcNp4yABs0RTCrLSYYjy6ny2QImNPkda8zNIpslsdMBeiaWbZ3vXe74HuOILiTESK59tOeftRldrUGQESkHaLcRKK5QxTLB6Q10CNnO2DYO1MOQF8qyj2Tw7HSKQ=
+	t=1740289206; cv=none; b=nZ0XCYtUbr3duyG6WA8YzcJdMuHK3v2hJh2Qcz7BPX0ejQLPsSYXteu5KDLFYTWxlmpP6a/Vc9dw2xp5SFLUE/qaAP1dTFLdefdJgZYqfpix8V26GLdBde8f1l9LyH9qU7v0hNPSVDlJtH8UbHKf5h/N2nfDnf4gQIJKkxBQqLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740264753; c=relaxed/simple;
-	bh=Nd6QA6/cYeZst96/ye9TyeT7k2VCgW2t+UlxpiR8J9Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ozRmJ26p9YQOxb+d2EYQFDKFmGeR1JziKvXPeYp4E2QspX/8zojwX4rzWzPbOzWA3BfplnXrKoqnlzlSFB4z0E9vyC2GRpypBCt6AeRZvMfLdjnLYkQmKPQAWx6NzG29MFAYUSjRyGKCkyKGiXVPOyVs7OqW/oYmJMqjGWZnAFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OxzJT5Xq; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740264752; x=1771800752;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Nd6QA6/cYeZst96/ye9TyeT7k2VCgW2t+UlxpiR8J9Y=;
-  b=OxzJT5XqBk6WnPKUzPmFHVO2TU1lsmZ9RJW+c5qMjwJVLPzEVrQo742e
-   0sMykq6oUtzRuPW9DeMptTAcNWWXcgMPPTnEM5aPJY2sqAOtvXDOWkvo+
-   BKZpGcisZdUt44abzZnKq+fERGiCWzim9c2/q31NnxVLedO6PKsRHiUrQ
-   13F7eqaIO2kEFKer3dgZtaE2dPJFrWUju6hI6RlAewHpJrF4L3ajR7JB9
-   3TlfQxNhYrG7jj78lWPxTtfZmjDUhSsqQIYcu7BaHCa6pAuOu+UVkMkoH
-   BYRAgMroGKmwtbd5Rh2ykXDxZ+vPFhoCIuVBX2tACXmQD0HUDuI+qdFgq
-   g==;
-X-CSE-ConnectionGUID: CTQC0RWFQ2ey/QSXDtWhEw==
-X-CSE-MsgGUID: mth7HNrnShC97oqGGUA/WQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11353"; a="44708768"
-X-IronPort-AV: E=Sophos;i="6.13,308,1732608000"; 
-   d="scan'208";a="44708768"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2025 14:52:32 -0800
-X-CSE-ConnectionGUID: LQxw2WKxTcGTo6alwSGThA==
-X-CSE-MsgGUID: KgyCal27QVKdc/FqrjGA4Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,308,1732608000"; 
-   d="scan'208";a="115720660"
-Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
-  by fmviesa007.fm.intel.com with ESMTP; 22 Feb 2025 14:52:25 -0800
-Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tlyMB-0006xr-0W;
-	Sat, 22 Feb 2025 22:52:23 +0000
-Date: Sun, 23 Feb 2025 06:51:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jason Xing <kerneljasonxing@gmail.com>, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	dsahern@kernel.org, kuniyu@amazon.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
-	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
-	ykolal@fb.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	bpf@vger.kernel.org, netdev@vger.kernel.org,
-	Jason Xing <kerneljasonxing@gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: support TCP_RTO_MAX_MS for
- bpf_setsockopt
-Message-ID: <202502230656.sZc7duhR-lkp@intel.com>
-References: <20250219081333.56378-2-kerneljasonxing@gmail.com>
+	s=arc-20240116; t=1740289206; c=relaxed/simple;
+	bh=GWnXskB+Vnogo6jwBuCS8eCJI1+64mIPToLBsPkUOtc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MvVIGzbkdCJ4hYIIb6ZrhKEQlSvK9Q4q6VdzGO1Na1Cg7kyxvKfBSlnf3X9C3Oh0iKncJ6wTy3AQRUiM/0f5RKr8VAkyn6W0IRr/9JB6z1CtMWxXxU6vSfSaPAsgJZSyjO+jPqIzyjCv/ZAg5KhIswznkvvq4gX9oxZ+0jLgEUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bb8cRfOI; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2fbfe16cc39so6908280a91.3;
+        Sat, 22 Feb 2025 21:40:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740289204; x=1740894004; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BfvuWvSB4FrYuL3Q9W8pUmNF8XrVHM6syd74IbIbqmI=;
+        b=bb8cRfOIDBvRVwrkc9TaYxxGtTt+onBQv/sYuOod8yGAkMJYKmvTU9pXIURG2Rlltc
+         fr0XdS1tgECDQxtQ0iyDi8P/uxdhqItpiaNxVbwXLIhMX0gioC8y0oq4f8o7xS8gDvs9
+         1FX/IrQcPjGHzA2RRLnT0XkYZBbmVDm/obzWO7nOdQZHu284Dj4ATSyOrhhUXQYekUjT
+         d89daMHeSySrTnSa5KG9jZZbhUuqk4LYQ9FHtUNilHZ8ZTbrdgBW+Hm1nYK8l99PkZRL
+         TytJvcEHRdhgRSe2k512oVSCjUWbLQ5LFc4szZH5BiWBiWmVFvXYMvXMKABdBuHE3Ko8
+         KaYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740289204; x=1740894004;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BfvuWvSB4FrYuL3Q9W8pUmNF8XrVHM6syd74IbIbqmI=;
+        b=oAZu5paSMBx3dEiX4JCrHWrqNQt4MWB2fBIwC/8yeZuimINvPX8U6eoaBo0yes3eVq
+         t1m0vsCi6l09RwFiFY5Aygx2RnYzlN6B2O5TDN4Ediv+ZqKzRqI9xNmZlDne3ZYROxZa
+         fB+sX1iLESgy0vEV6IdMCY6h5MXWWKCkobWb6kGhOUtoSKmNgSjoNvbLLBk2JTm+eIWC
+         /ZTNlRo2IUm5wD9sBVO69m/reLgCrhlaiF7tODz5YKPtc/tIAOPg32Hq7hANNyZ4thHu
+         WRHtC2ZUcYn/rMrrkMlTDhy1ZQxSG7R5PO8EyLaAw2HunYU9z4pCiwwkgW7ldI9dWejY
+         B3hw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDeSUCbGq/Xb/DiHb9YOf33AC+Z28GLKtCpZdiyaSDbu1cGtAZGeF1ktTKgExzWD3JRv4WvfEg@vger.kernel.org, AJvYcCWM6jsqKq7Z6hKQ7lB3QJ6hiyqO1SdFuGnlq0+jPuNfaMsTFW9vJ1M43nLdjyCvttrAL8YAKh9AL2Px1NXF@vger.kernel.org, AJvYcCXQ0Y0KNZf+Hmh0Oexb1EZPgkXYgFsiJq14pz0n/BTzSX+hRicKXylHCTbTOBPzJIA5zzM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUi7aczZQcm/364mgozTY01aj28TxnbuxBKEBrE555UiQ6APP5
+	fQVtw9Bs1oAWwld5MxEujwDf+s8hYi8ZgIM328pV9SDNSNqFy4od
+X-Gm-Gg: ASbGncuX1T9NmlQAeXz9ylfHGMADYDGXFd51N+rHuN90UMp150at/RWDwBk9+ykt83T
+	j0jyWUo7qpCj/IE2wAGbI8emo/h6ftZcPr+O7lVJM0dd3X0eImjRgS0reVY7oBLJl1gyCZgUvyj
+	VyhRlIwc46Y5bP9eNqGpBIaN9cRfRtxnwZiBODSfdr1m2C4/7hmctSOd1ghdqI7aYM4azit54Nv
+	UcgoOqZ76/hnTd+DkCciAGw7Ub9nfM6mm21sWBWC69/2bMLNG7Owyp9ckUbio6rkTai4aOnzcWX
+	kxAInh0HVnv+rRs9hhp8S8Y=
+X-Google-Smtp-Source: AGHT+IEsyitKBEB+TjtOIJ7j0ghQQ1PUySgYsjd6ENH+ooYHWDcum4IoJa9MuHEv9g0sOVIJCIQYCA==
+X-Received: by 2002:a05:6a20:8403:b0:1ee:efa5:6573 with SMTP id adf61e73a8af0-1eef52c9981mr17773167637.8.1740289203622;
+        Sat, 22 Feb 2025 21:40:03 -0800 (PST)
+Received: from localhost ([129.146.253.192])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73261ca7831sm15022814b3a.104.2025.02.22.21.39.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Feb 2025 21:40:03 -0800 (PST)
+Date: Sun, 23 Feb 2025 13:39:47 +0800
+From: Furong Xu <0x1207@gmail.com>
+To: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
+ <przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Maxime
+ Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Simon Horman <horms@kernel.org>, Russell
+ King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Russell King
+ <rmk+kernel@armlinux.org.uk>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ Serge Semin <fancer.lancer@gmail.com>, Xiaolei Wang
+ <xiaolei.wang@windriver.com>, Suraj Jaiswal <quic_jsuraj@quicinc.com>, Kory
+ Maincent <kory.maincent@bootlin.com>, Gal Pressman <gal@nvidia.com>, Jesper
+ Nilsson <jesper.nilsson@axis.com>, Andrew Halaney <ahalaney@redhat.com>,
+ Choong Yong Liang <yong.liang.choong@linux.intel.com>, Kunihiko Hayashi
+ <hayashi.kunihiko@socionext.com>, Vinicius Costa Gomes
+ <vinicius.gomes@intel.com>, intel-wired-lan@lists.osuosl.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH iwl-next v5 1/9] net: ethtool: mm: extract stmmac
+ verification logic into common library
+Message-ID: <20250223133947.00002f06@gmail.com>
+In-Reply-To: <20250220025349.3007793-2-faizal.abdul.rahim@linux.intel.com>
+References: <20250220025349.3007793-1-faizal.abdul.rahim@linux.intel.com>
+	<20250220025349.3007793-2-faizal.abdul.rahim@linux.intel.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250219081333.56378-2-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Jason,
+On Wed, 19 Feb 2025 21:53:41 -0500, Faizal Rahim <faizal.abdul.rahim@linux.intel.com> wrote:
 
-kernel test robot noticed the following build errors:
+> @@ -1258,23 +1236,8 @@ static int stmmac_set_mm(struct net_device *ndev, struct ethtool_mm_cfg *cfg,
+>  	if (err)
+>  		return err;
+>  
+> -	/* Wait for the verification that's currently in progress to finish */
+> -	timer_shutdown_sync(&fpe_cfg->verify_timer);
+> -
+> -	spin_lock_irqsave(&fpe_cfg->lock, flags);
+> -
+> -	fpe_cfg->verify_enabled = cfg->verify_enabled;
+> -	fpe_cfg->pmac_enabled = cfg->pmac_enabled;
+> -	fpe_cfg->verify_time = cfg->verify_time;
+> -	fpe_cfg->tx_enabled = cfg->tx_enabled;
+> -
+> -	if (!cfg->verify_enabled)
+> -		fpe_cfg->status = ETHTOOL_MM_VERIFY_STATUS_DISABLED;
+> -
+> +	ethtool_mmsv_set_mm(&priv->fpe_cfg.mmsv, cfg);
+>  	stmmac_fpe_set_add_frag_size(priv, frag_size);
+> -	stmmac_fpe_apply(priv);
 
-[auto build test ERROR on bpf-next/master]
+Well, I would prefer keeping stmmac_fpe_set_add_frag_size() before
+ethtool_mmsv_set_mm(), but not after, the VERIFY process should be
+triggered after all the parameters are set.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jason-Xing/bpf-support-TCP_RTO_MAX_MS-for-bpf_setsockopt/20250219-161637
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250219081333.56378-2-kerneljasonxing%40gmail.com
-patch subject: [PATCH bpf-next v3 1/2] bpf: support TCP_RTO_MAX_MS for bpf_setsockopt
-config: i386-buildonly-randconfig-004-20250220 (https://download.01.org/0day-ci/archive/20250223/202502230656.sZc7duhR-lkp@intel.com/config)
-compiler: clang version 19.1.3 (https://github.com/llvm/llvm-project ab51eccf88f5321e7c60591c5546b254b6afab99)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250223/202502230656.sZc7duhR-lkp@intel.com/reproduce)
+> -
+> -	spin_unlock_irqrestore(&fpe_cfg->lock, flags);
+>  
+>  	return 0;
+>  }
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202502230656.sZc7duhR-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   net/core/filter.c:1726:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    1726 |         .arg3_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:2041:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    2041 |         .arg1_type      = ARG_PTR_TO_MEM | PTR_MAYBE_NULL | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
-   net/core/filter.c:2043:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    2043 |         .arg3_type      = ARG_PTR_TO_MEM | PTR_MAYBE_NULL | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
-   net/core/filter.c:2580:35: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    2580 |         .arg2_type      = ARG_PTR_TO_MEM | PTR_MAYBE_NULL | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
-   net/core/filter.c:4649:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    4649 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:4663:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    4663 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:4863:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    4863 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:4891:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    4891 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:5063:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    5063 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:5077:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    5077 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:5126:45: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    5126 |         .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON | PTR_MAYBE_NULL,
-         |                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
->> net/core/filter.c:5385:7: error: use of undeclared identifier 'TCP_RTO_MAX_MS'; did you mean 'TCA_RED_MAX_P'?
-    5385 |         case TCP_RTO_MAX_MS:
-         |              ^~~~~~~~~~~~~~
-         |              TCA_RED_MAX_P
-   include/uapi/linux/pkt_sched.h:258:2: note: 'TCA_RED_MAX_P' declared here
-     258 |         TCA_RED_MAX_P,
-         |         ^
-   net/core/filter.c:5562:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    5562 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:5596:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    5596 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:5630:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    5630 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:5664:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    5664 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:5839:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    5839 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:6376:46: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    6376 |         .arg3_type      = ARG_PTR_TO_FIXED_SIZE_MEM | MEM_WRITE | MEM_ALIGNED,
-         |                           ~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
-   net/core/filter.c:6388:46: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    6388 |         .arg3_type      = ARG_PTR_TO_FIXED_SIZE_MEM | MEM_WRITE | MEM_ALIGNED,
-         |                           ~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
-   net/core/filter.c:6474:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    6474 |         .arg3_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   net/core/filter.c:6484:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
-    6484 |         .arg3_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
-         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
-   20 warnings and 1 error generated.
-
-
-vim +5385 net/core/filter.c
-
-  5365	
-  5366	static int sol_tcp_sockopt(struct sock *sk, int optname,
-  5367				   char *optval, int *optlen,
-  5368				   bool getopt)
-  5369	{
-  5370		if (sk->sk_protocol != IPPROTO_TCP)
-  5371			return -EINVAL;
-  5372	
-  5373		switch (optname) {
-  5374		case TCP_NODELAY:
-  5375		case TCP_MAXSEG:
-  5376		case TCP_KEEPIDLE:
-  5377		case TCP_KEEPINTVL:
-  5378		case TCP_KEEPCNT:
-  5379		case TCP_SYNCNT:
-  5380		case TCP_WINDOW_CLAMP:
-  5381		case TCP_THIN_LINEAR_TIMEOUTS:
-  5382		case TCP_USER_TIMEOUT:
-  5383		case TCP_NOTSENT_LOWAT:
-  5384		case TCP_SAVE_SYN:
-> 5385		case TCP_RTO_MAX_MS:
-  5386			if (*optlen != sizeof(int))
-  5387				return -EINVAL;
-  5388			break;
-  5389		case TCP_CONGESTION:
-  5390			return sol_tcp_sockopt_congestion(sk, optval, optlen, getopt);
-  5391		case TCP_SAVED_SYN:
-  5392			if (*optlen < 1)
-  5393				return -EINVAL;
-  5394			break;
-  5395		case TCP_BPF_SOCK_OPS_CB_FLAGS:
-  5396			if (*optlen != sizeof(int))
-  5397				return -EINVAL;
-  5398			if (getopt) {
-  5399				struct tcp_sock *tp = tcp_sk(sk);
-  5400				int cb_flags = tp->bpf_sock_ops_cb_flags;
-  5401	
-  5402				memcpy(optval, &cb_flags, *optlen);
-  5403				return 0;
-  5404			}
-  5405			return bpf_sol_tcp_setsockopt(sk, optname, optval, *optlen);
-  5406		default:
-  5407			if (getopt)
-  5408				return -EINVAL;
-  5409			return bpf_sol_tcp_setsockopt(sk, optname, optval, *optlen);
-  5410		}
-  5411	
-  5412		if (getopt) {
-  5413			if (optname == TCP_SAVED_SYN) {
-  5414				struct tcp_sock *tp = tcp_sk(sk);
-  5415	
-  5416				if (!tp->saved_syn ||
-  5417				    *optlen > tcp_saved_syn_len(tp->saved_syn))
-  5418					return -EINVAL;
-  5419				memcpy(optval, tp->saved_syn->data, *optlen);
-  5420				/* It cannot free tp->saved_syn here because it
-  5421				 * does not know if the user space still needs it.
-  5422				 */
-  5423				return 0;
-  5424			}
-  5425	
-  5426			return do_tcp_getsockopt(sk, SOL_TCP, optname,
-  5427						 KERNEL_SOCKPTR(optval),
-  5428						 KERNEL_SOCKPTR(optlen));
-  5429		}
-  5430	
-  5431		return do_tcp_setsockopt(sk, SOL_TCP, optname,
-  5432					 KERNEL_SOCKPTR(optval), *optlen);
-  5433	}
-  5434	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
