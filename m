@@ -1,147 +1,138 @@
-Return-Path: <bpf+bounces-52262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E92E8A40CDC
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 06:40:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B984FA40CF3
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 07:27:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB34117C855
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 05:40:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1910D1898470
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 06:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA251D7E4A;
-	Sun, 23 Feb 2025 05:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B151D7E47;
+	Sun, 23 Feb 2025 06:27:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bb8cRfOI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kvnS/cHU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 945852AE97;
-	Sun, 23 Feb 2025 05:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D1B481A3;
+	Sun, 23 Feb 2025 06:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740289206; cv=none; b=nZ0XCYtUbr3duyG6WA8YzcJdMuHK3v2hJh2Qcz7BPX0ejQLPsSYXteu5KDLFYTWxlmpP6a/Vc9dw2xp5SFLUE/qaAP1dTFLdefdJgZYqfpix8V26GLdBde8f1l9LyH9qU7v0hNPSVDlJtH8UbHKf5h/N2nfDnf4gQIJKkxBQqLI=
+	t=1740292071; cv=none; b=Ip8Q6AA3Y1siQPyJHMV+i65HRgw78egAZz1UE4SxQpf3J+Renr0sM3c1WlB9ALoHb25dqGLG2YE1ZnBJvcuEaoSI8WJdk5RuRal+ajBCV/EyAWbw1+sdsC5AaVcqjKFzoIPgBlg3k/6ZnyNos5izuErGm9wFLqpe65/EVBIaTXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740289206; c=relaxed/simple;
-	bh=GWnXskB+Vnogo6jwBuCS8eCJI1+64mIPToLBsPkUOtc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MvVIGzbkdCJ4hYIIb6ZrhKEQlSvK9Q4q6VdzGO1Na1Cg7kyxvKfBSlnf3X9C3Oh0iKncJ6wTy3AQRUiM/0f5RKr8VAkyn6W0IRr/9JB6z1CtMWxXxU6vSfSaPAsgJZSyjO+jPqIzyjCv/ZAg5KhIswznkvvq4gX9oxZ+0jLgEUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bb8cRfOI; arc=none smtp.client-ip=209.85.216.47
+	s=arc-20240116; t=1740292071; c=relaxed/simple;
+	bh=34+Kj0pCYupbe5FnIaNBsFhcirzueAWu05iXRUJLFCI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=F2b41bi0EnM9xfJ/5OEVlVYqtFfG5qlsShx/jH2btB0TNV1Hx4z06boJ/WtAJXsrjdLQr8iYVL6x5TKb1eMwjQYVc0MXicMcl23cXdIrzswKD9+yTR10tfxpJCa5dVFpLVAZ+6C5Fotbzy1/zRt2RKSN0BYT5YqplMe4DDosEN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kvnS/cHU; arc=none smtp.client-ip=209.85.216.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2fbfe16cc39so6908280a91.3;
-        Sat, 22 Feb 2025 21:40:04 -0800 (PST)
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2fa8ada6662so6964541a91.1;
+        Sat, 22 Feb 2025 22:27:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740289204; x=1740894004; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BfvuWvSB4FrYuL3Q9W8pUmNF8XrVHM6syd74IbIbqmI=;
-        b=bb8cRfOIDBvRVwrkc9TaYxxGtTt+onBQv/sYuOod8yGAkMJYKmvTU9pXIURG2Rlltc
-         fr0XdS1tgECDQxtQ0iyDi8P/uxdhqItpiaNxVbwXLIhMX0gioC8y0oq4f8o7xS8gDvs9
-         1FX/IrQcPjGHzA2RRLnT0XkYZBbmVDm/obzWO7nOdQZHu284Dj4ATSyOrhhUXQYekUjT
-         d89daMHeSySrTnSa5KG9jZZbhUuqk4LYQ9FHtUNilHZ8ZTbrdgBW+Hm1nYK8l99PkZRL
-         TytJvcEHRdhgRSe2k512oVSCjUWbLQ5LFc4szZH5BiWBiWmVFvXYMvXMKABdBuHE3Ko8
-         KaYg==
+        d=gmail.com; s=20230601; t=1740292069; x=1740896869; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d43WQ4KuUrq/KmTXmMr4T3J9Doo9C9jfnt2R44K/1Bc=;
+        b=kvnS/cHUEBKKNtHhRrwY98G1QVK8T/NK67PjiEO+FpJLT0PIKRUEu4i5Ngxbo1A19e
+         jJiFReMGaoB04C8JMrU2EdXNiDyu6++DNaAn1Ak6X3+LfjpzfOu7jK7Vfj/ZcqlHWAGu
+         FGKDVdlbMe1fIywNZw0GHWMjwXUOIQAbvdtPnpnovIcDInEMfQq8tpjXCVKyd9KNddZc
+         F2x4BGw4Yo6ritgdxI90S1uwuf0Zp6sHdaCzRCRElAMGXW1ZpYsDdVdVXNWTun7c60zv
+         lBLVTFT7Ogc6D5TUHAaDrbAGB2YPvuKoSb4CQxFpmWbZbD4JG9Pyoj/abeSX8NLx4i93
+         eYmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740289204; x=1740894004;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BfvuWvSB4FrYuL3Q9W8pUmNF8XrVHM6syd74IbIbqmI=;
-        b=oAZu5paSMBx3dEiX4JCrHWrqNQt4MWB2fBIwC/8yeZuimINvPX8U6eoaBo0yes3eVq
-         t1m0vsCi6l09RwFiFY5Aygx2RnYzlN6B2O5TDN4Ediv+ZqKzRqI9xNmZlDne3ZYROxZa
-         fB+sX1iLESgy0vEV6IdMCY6h5MXWWKCkobWb6kGhOUtoSKmNgSjoNvbLLBk2JTm+eIWC
-         /ZTNlRo2IUm5wD9sBVO69m/reLgCrhlaiF7tODz5YKPtc/tIAOPg32Hq7hANNyZ4thHu
-         WRHtC2ZUcYn/rMrrkMlTDhy1ZQxSG7R5PO8EyLaAw2HunYU9z4pCiwwkgW7ldI9dWejY
-         B3hw==
-X-Forwarded-Encrypted: i=1; AJvYcCUDeSUCbGq/Xb/DiHb9YOf33AC+Z28GLKtCpZdiyaSDbu1cGtAZGeF1ktTKgExzWD3JRv4WvfEg@vger.kernel.org, AJvYcCWM6jsqKq7Z6hKQ7lB3QJ6hiyqO1SdFuGnlq0+jPuNfaMsTFW9vJ1M43nLdjyCvttrAL8YAKh9AL2Px1NXF@vger.kernel.org, AJvYcCXQ0Y0KNZf+Hmh0Oexb1EZPgkXYgFsiJq14pz0n/BTzSX+hRicKXylHCTbTOBPzJIA5zzM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUi7aczZQcm/364mgozTY01aj28TxnbuxBKEBrE555UiQ6APP5
-	fQVtw9Bs1oAWwld5MxEujwDf+s8hYi8ZgIM328pV9SDNSNqFy4od
-X-Gm-Gg: ASbGncuX1T9NmlQAeXz9ylfHGMADYDGXFd51N+rHuN90UMp150at/RWDwBk9+ykt83T
-	j0jyWUo7qpCj/IE2wAGbI8emo/h6ftZcPr+O7lVJM0dd3X0eImjRgS0reVY7oBLJl1gyCZgUvyj
-	VyhRlIwc46Y5bP9eNqGpBIaN9cRfRtxnwZiBODSfdr1m2C4/7hmctSOd1ghdqI7aYM4azit54Nv
-	UcgoOqZ76/hnTd+DkCciAGw7Ub9nfM6mm21sWBWC69/2bMLNG7Owyp9ckUbio6rkTai4aOnzcWX
-	kxAInh0HVnv+rRs9hhp8S8Y=
-X-Google-Smtp-Source: AGHT+IEsyitKBEB+TjtOIJ7j0ghQQ1PUySgYsjd6ENH+ooYHWDcum4IoJa9MuHEv9g0sOVIJCIQYCA==
-X-Received: by 2002:a05:6a20:8403:b0:1ee:efa5:6573 with SMTP id adf61e73a8af0-1eef52c9981mr17773167637.8.1740289203622;
-        Sat, 22 Feb 2025 21:40:03 -0800 (PST)
-Received: from localhost ([129.146.253.192])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73261ca7831sm15022814b3a.104.2025.02.22.21.39.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Feb 2025 21:40:03 -0800 (PST)
-Date: Sun, 23 Feb 2025 13:39:47 +0800
-From: Furong Xu <0x1207@gmail.com>
-To: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Maxime
- Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Simon Horman <horms@kernel.org>, Russell
- King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Russell King
- <rmk+kernel@armlinux.org.uk>, Vladimir Oltean <vladimir.oltean@nxp.com>,
- Serge Semin <fancer.lancer@gmail.com>, Xiaolei Wang
- <xiaolei.wang@windriver.com>, Suraj Jaiswal <quic_jsuraj@quicinc.com>, Kory
- Maincent <kory.maincent@bootlin.com>, Gal Pressman <gal@nvidia.com>, Jesper
- Nilsson <jesper.nilsson@axis.com>, Andrew Halaney <ahalaney@redhat.com>,
- Choong Yong Liang <yong.liang.choong@linux.intel.com>, Kunihiko Hayashi
- <hayashi.kunihiko@socionext.com>, Vinicius Costa Gomes
- <vinicius.gomes@intel.com>, intel-wired-lan@lists.osuosl.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [PATCH iwl-next v5 1/9] net: ethtool: mm: extract stmmac
- verification logic into common library
-Message-ID: <20250223133947.00002f06@gmail.com>
-In-Reply-To: <20250220025349.3007793-2-faizal.abdul.rahim@linux.intel.com>
-References: <20250220025349.3007793-1-faizal.abdul.rahim@linux.intel.com>
-	<20250220025349.3007793-2-faizal.abdul.rahim@linux.intel.com>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
+        d=1e100.net; s=20230601; t=1740292069; x=1740896869;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d43WQ4KuUrq/KmTXmMr4T3J9Doo9C9jfnt2R44K/1Bc=;
+        b=r5NVtKjBIgeDbFe9UBkd/GApxpN13Hk+kgnu5ABSXL9F++rb0aoY+dEQn9mes9y2LK
+         gKXMPGGVZWdzIL9JmWAISaNm1hUepxJIszfXuDgcR/6pgRKlBylw47urrMP/+1bMNboG
+         48SljDE7X0RsMY/nO7fv/3OuZq2WiRcNLpy908Bkw39QY+6O7UtaponJ73ZNOiFPtqTT
+         RuWuCjUtdEaJIUwmErS+Gri0teIagyP3FP+loNjO1jnLMqKh8guRc243okKQLzqcPCKN
+         zS+CVFB86XwRDuIItWPWfy1So/MZ/zitGn9IyDmSjldu9wVpgb32YeaZlmVcdmcLYaeS
+         nIGw==
+X-Forwarded-Encrypted: i=1; AJvYcCW/kMCPF280km4znAeuN5K8ZL7PtAcilaJS4XrIf4SpF/aFvPasFB1BWwlQepXi7+Ntc3XYuhMo195KrZA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwRtpDQy7dQ4PyUPDllZCsMDRn+qg9YsGp4aa4Q75ggPiEaiBOa
+	g/uVzNN9UvNw/ili9ypuX+uHBDjkRPVOHMt3gcUq+qtGRaVmSxig
+X-Gm-Gg: ASbGncsDtkEo227V5f5P23sF7NPppTSScE8bCYuzA9tG+mZL/3BKmoiU+tWBUmkXgXi
+	KdgjbtM+kfk61KBZwmRCvHfgObT7HjXAiZ+BVEibRbf/0ahD98wteD0UM8MXfB1WIAwYiNWvY7X
+	n8doaxZbkVN2frHKp+XIZNKpuikBo8lmziPgNv1ZJhbdYz70HmGkpRE6B7hSgADWEaibq2VANou
+	H51sOfSchOKcXIBMkNDzQh6+G7260n/fWzVAPNTM2VIfGrQBARiZNDiYbvITkdDxLsYkvd8hUuz
+	DLd3+91fj6gUpParzXS5o9uZafuSkOhht3/FUwoEV45mWST+XuM=
+X-Google-Smtp-Source: AGHT+IEa05i0QQpMNhepACEnwcadkQdmRtq3OE3C4Ae3LadAi+GmdtQJfFuXZ55hT3stycAVznzypA==
+X-Received: by 2002:a05:6a21:3a93:b0:1ee:d687:c39b with SMTP id adf61e73a8af0-1eef52c9910mr16640164637.7.1740292069442;
+        Sat, 22 Feb 2025 22:27:49 -0800 (PST)
+Received: from localhost.localdomain ([39.144.244.105])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-732521b82b3sm16693128b3a.92.2025.02.22.22.27.41
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sat, 22 Feb 2025 22:27:48 -0800 (PST)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	jpoimboe@kernel.org,
+	peterz@infradead.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v2 bpf-next 0/3] bpf: Reject attaching fexit to __noreturn functions
+Date: Sun, 23 Feb 2025 14:27:32 +0800
+Message-Id: <20250223062735.3341-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Wed, 19 Feb 2025 21:53:41 -0500, Faizal Rahim <faizal.abdul.rahim@linux.intel.com> wrote:
+Attaching fexit probes to functions marked with __noreturn may lead to
+unpredictable behavior. To avoid this, we will reject attaching probes to
+such functions. Currently, there is no ideal solution, so we will hardcode
+a check for all __noreturn functions. Since objtool already handles
+this, we will leverage its implementation.
 
-> @@ -1258,23 +1236,8 @@ static int stmmac_set_mm(struct net_device *ndev, struct ethtool_mm_cfg *cfg,
->  	if (err)
->  		return err;
->  
-> -	/* Wait for the verification that's currently in progress to finish */
-> -	timer_shutdown_sync(&fpe_cfg->verify_timer);
-> -
-> -	spin_lock_irqsave(&fpe_cfg->lock, flags);
-> -
-> -	fpe_cfg->verify_enabled = cfg->verify_enabled;
-> -	fpe_cfg->pmac_enabled = cfg->pmac_enabled;
-> -	fpe_cfg->verify_time = cfg->verify_time;
-> -	fpe_cfg->tx_enabled = cfg->tx_enabled;
-> -
-> -	if (!cfg->verify_enabled)
-> -		fpe_cfg->status = ETHTOOL_MM_VERIFY_STATUS_DISABLED;
-> -
-> +	ethtool_mmsv_set_mm(&priv->fpe_cfg.mmsv, cfg);
->  	stmmac_fpe_set_add_frag_size(priv, frag_size);
-> -	stmmac_fpe_apply(priv);
+Once a more robust solution is found, this workaround can be removed.
 
-Well, I would prefer keeping stmmac_fpe_set_add_frag_size() before
-ethtool_mmsv_set_mm(), but not after, the VERIFY process should be
-triggered after all the parameters are set.
+v1->v2:
+- keep tools/objtool/noreturns.h as is (Josh)
+- Add noreturns.h to objtool/sync-check.sh (Josh)
+- Add verbose for the reject and simplify the test case (Song)
 
-> -
-> -	spin_unlock_irqrestore(&fpe_cfg->lock, flags);
->  
->  	return 0;
->  }
+v1: https://lore.kernel.org/bpf/20250211023359.1570-1-laoar.shao@gmail.com/
+
+Yafang Shao (3):
+  objtool: Copy noreturns.h to include/linux
+  bpf: Reject attaching fexit to functions annotated with __noreturn
+  selftests/bpf: Add selftest for attaching fexit to __noreturn
+    functions
+
+ include/linux/noreturns.h                     | 52 +++++++++++++++++++
+ kernel/bpf/verifier.c                         | 11 ++++
+ tools/objtool/Documentation/objtool.txt       |  3 +-
+ tools/objtool/sync-check.sh                   |  2 +
+ .../bpf/prog_tests/fexit_noreturns.c          |  9 ++++
+ .../selftests/bpf/progs/fexit_noreturns.c     | 15 ++++++
+ 6 files changed, 91 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/noreturns.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fexit_noreturns.c
+
+-- 
+2.43.5
 
 
