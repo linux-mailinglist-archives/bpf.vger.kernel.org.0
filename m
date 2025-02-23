@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-52264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3C12A40CF6
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 07:28:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDCABA40CFA
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 07:30:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B4F23BC2F6
-	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 06:28:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38D06178318
+	for <lists+bpf@lfdr.de>; Sun, 23 Feb 2025 06:28:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9397D1DC9AF;
-	Sun, 23 Feb 2025 06:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F8DA1DC99C;
+	Sun, 23 Feb 2025 06:28:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Se1m/x1u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZYI+QlWf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A853213C81B;
-	Sun, 23 Feb 2025 06:27:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAD2713C81B;
+	Sun, 23 Feb 2025 06:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740292080; cv=none; b=hpQA/LyQP3xJHNEULVWMPdaCA/tqMX+TlspLfC4p7+PB+xzVASUFmqX+vzKXQrgIvGo5NTYtJ9Wr4KK0xkckTE26Cii2VVW1B6U1NAWZZKJk+3NBwQgnEuY3DMbeQmLZf2brnroYUQdQt46w3c45OV9cSfbqns9/7RxDmVJaKVk=
+	t=1740292088; cv=none; b=Nulxj5+oaFV0dTpUKX+Zcr++zY5t4X+T1Nwuk+hzrLGWuddFo2QUp/4FZiLh+VXpdsCGtkAwGHN8sTLiLXPhnJ5ln9LqLwS78HwLcXWujm2TRoipeYMqY+fQ08gDWnpjGFIBsM0O2DJ1mwxEp1NvkyvaynGzKz+l5AdUWwmMZ6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740292080; c=relaxed/simple;
-	bh=mfKnlYQ6h+CAGEvlf3+X0qv7vJYe8FoqOuLp2ezsbNU=;
+	s=arc-20240116; t=1740292088; c=relaxed/simple;
+	bh=W1uoJUFLNS5GVMa7NKovUsgkcndyHlQTOW+TrQ+u8CY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fewZ0rsnf2O9Zm+2WuNAp4gaumZd0XYoIovOlJ1Bmm7EJxEW/2m21bLfR8GpMDSQLx//VnQx5H4I9wYyigwTbs3s/Gi/xl1gcyvw641Z/8iaQvGBoXdqPwn26/tRw66QS8uS27wEitN6Nq8qOQUFSe3/t1rkYhaPh97gn7xqscg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Se1m/x1u; arc=none smtp.client-ip=209.85.214.180
+	 MIME-Version; b=tL3Wc2EkzDoGJTqbc/ObSyDYnmkm5TIgA3CfP0Gz3682VRd9vC8C3Lv1oFENdr7ALT0SFBvCK5Z6t6EMrnN2IPVo7kQ/VGo9BQNkkDBI6bMa1YctWqLmz4DjGgz/Bt1kCD5g30YRxZV8M/dyBpWFBHaYpfBuabVas7zl4wJoI2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZYI+QlWf; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-220d39a5627so51325525ad.1;
-        Sat, 22 Feb 2025 22:27:58 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-220c8eb195aso75073695ad.0;
+        Sat, 22 Feb 2025 22:28:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740292078; x=1740896878; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740292086; x=1740896886; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XtD7K/ok3N2f0SQcigiS/DoIRtdegc5aEVvlfFavEeg=;
-        b=Se1m/x1uJEhmVgXoIM8EFLrgtV2LnZBt9seuZ5kcksErr3Jf82zp9MXcUACrkqKd3+
-         kZBjw3OaINmO3omrgFl5LGH7JWHFjHix4OG65PnETlShs/FPAosO9lbm7vJmc08vZ2UR
-         RCsA9cEaVlzzA2TjiK/l2mMUXGWjW3rZAOaxvgc66FgpqCGkx0GfGD8KYn7OeuN1f9VH
-         a7oXRDmB/I1R9b5PGoj4Qv6nh0hvKqiVV+t2vYUAxe+2RCEw2wmcwllzVPhF1Qj4ZQLS
-         RrESwvdMuqbTe3Spw5Wl+sbEOa6PP/gF8zwTH/XUGtUggR4ZIhLL8zB9lJYjpYFglaJR
-         pg9Q==
+        bh=EwVFyQdfu6h3TLQXNFRRbzSXRYiI40nRpz0C8SZPokU=;
+        b=ZYI+QlWfTwoC4e47UT65j5KkbGzF4pi/eqzQZFaFannV+0efbwe/CYc+tUgUw5wq0V
+         Y+FqJMl3xoySpfJvoRXKpkAW62KAu1HF54jiMsex7VkSIFVzoWEAExzy04258IKfJfLB
+         JpdwigAL0zBF3f7dahUQqt6kTsokgEz/J/0uK/e1+cfrRmk8pOWFLR5iPmhtoUALcxw4
+         /n+4hs5xZZK9iGssIvAwJgWLioVFB998BRcyuMsT9vCGPwTle+wbwzvcvueFHxMLE+TN
+         fMzSnLFq+Mz1wWXMVHFQDCFo6GJxLfDB/Mx1h8Mhns5Wdi3BTtHcW4dwv1BB9yTcjN7G
+         6axA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740292078; x=1740896878;
+        d=1e100.net; s=20230601; t=1740292086; x=1740896886;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XtD7K/ok3N2f0SQcigiS/DoIRtdegc5aEVvlfFavEeg=;
-        b=NMkAhlXRmC6StoN8mPKLdcyeihbVfrNnnjcBolryGlvdxKBRhweIoa/145tuJCbKWT
-         vgteTREly52dniWwvNiUBcWZjuAh03OzH/f/1jwXXJKnOmk2anAL8jc/3AilykU/YTcU
-         R/V6z68BIMSUkSKmvHx2BjECBXUcs2ZuC6j9Dlvih2R8tLF/VfxMZRK7FD6y7/Jdkihk
-         e4/7BXQHNoBt2Oex3mHhJcDnB2tAv3eWssUXvLuWhvQE5G85DyRdOGQ8Wi1dm1Ir97uf
-         K5z2ncg2+9Ei3OxTrEDspfaMmhtIybE4kcgOTSKo9Hx4fJCyGfIBGtZ6/EmbARShayvz
-         HJzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1u8p8RTr2SdQ53+nxX771UH/T1q0n8q6u8CoBm+jij54BjmQQzPMCHdVHHI2Asp7Y8KLxzw+LALz1OGU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyoBitFkEeOrYkXM/yH6vAtPuw8+cNeKUry2WNeKYOFHZ9zXL7z
-	3h2I8QmMw6eCcemzT29U8bxeYg3E2LvtIdcPolMj++Dx66pBJlCbahwWLzVJ+6g=
-X-Gm-Gg: ASbGncs7mvCNa4gnph2o1Sk+iReLGFExkBtH6SO+Xwq2L9KOhNMqEq56OLnjMIYTPBu
-	pJ0Gl25loIgr+lzYL8nH7rw1Sa6w1Fk3PgVdzBEnimnxOwA87h6cqajwqkV/KDo+tHH8hfexw6S
-	hwu3rv+rC6vPFysUNXyhHrRvYHbkxoWj4PIi+kLyrSpSMwe/3yqKlfkscR23KBofpqLrvMqaJQa
-	OeKGcsT+YIK5bkeEAhmktuNZxJWXMWislMVxXEfLYgs21Q6lA2xrADSJ+PzV0iVrLo2ecDik8W1
-	shHU3FIzjipi5IvSxeS8Rge1STnjjtHT9phoDDXjFRH2VVVV6L8=
-X-Google-Smtp-Source: AGHT+IEdj074QAlc4Pw1jVN7n1yq03rDf0CORBHg6vJxQmqbmoQJnRBESmH/HgioTDRKk2b4/AZFRQ==
-X-Received: by 2002:a05:6a20:c891:b0:1ee:db10:a4e1 with SMTP id adf61e73a8af0-1eef3c56738mr14443340637.9.1740292077801;
-        Sat, 22 Feb 2025 22:27:57 -0800 (PST)
+        bh=EwVFyQdfu6h3TLQXNFRRbzSXRYiI40nRpz0C8SZPokU=;
+        b=tNVapy8JEHkjrvw/MBZiD4JU3St0loFGWuMhoLf/oNIPnQfY5FGNMxZ23KGfLdbjXZ
+         vwp5YiDDJOi2vouKr60UbTb/vmm49NHv0OaCGVh/+eOEPSi7bWrWTab21MdX/69z6Ng2
+         ecvdBynb7rFXnhz0gOR5KW3QRqyGK1zLnouCFl3lyTqr0iGAxC5JS1gjiegolg6d9hRy
+         dL1cDD25sHE+hKhHxizGarG2INuOGDG0w+sV5+qi/TcA0Cs/Um1xQAtSLMpGF/t8L0Ky
+         ZE1au7g5GBy0j1MDi4n0OaJ3Wo9/LfZHRhO1WCI2ftFkdMGLVqL7mb+XFHskCk7t7vMT
+         qrkA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTaV1Z3Po7DBGc30cpJV3KWeSXTZf9PTKX0lLomhbCRX+Vv/fuTEWW6AYpNSireF7uEE3H90KhTzpiBys=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwuxGZnv3cidbAPhZL9HYNZRHpox1Cm8j0ch/3EoTPtlCBf6J11
+	yTkOynwrPUATAxYLrFdQI8LuiJGi/hLOAD2WxxEXFm1MossLYZIs
+X-Gm-Gg: ASbGncsow00K+S9uMJMjLIAxWWVI2aWHDKbCZXft/KUrbRqL0w0tNg79Um9ei8Xl9g5
+	enQTl/NNm2xKTdKxdjHleV4cUmhPPrDclLvLGvjQN5Ne0dTP+OHfrEPhzT2Vbbd04+Q4yc/mRC2
+	qbZXY18C27d8tSOyCT4T9789J8QSmNRjHISQnNmmYDA4/ciPqn9inlX8diBSNTFoP5aczUxrcGp
+	pY4+zXl7XRjaZJxsBJCsF/WsA/AERilsdYXacJZCAEZBWwz+jGKqy118z0AQaKIRrO63zPt3dTz
+	pGDNNFbVp5oKa4dAszkk+To/4+wxejACBK9UYGLx71URCayHDrM=
+X-Google-Smtp-Source: AGHT+IFZ3F9psOq0wIOAJv1eDPZp9Rbu8InvBB/8FO3r5fqlb01Xdoum2RfbIm6naFLdFhrhFZB6sA==
+X-Received: by 2002:a05:6a00:4fc4:b0:730:7771:39c6 with SMTP id d2e1a72fcca58-73426cab09emr17922937b3a.8.1740292085980;
+        Sat, 22 Feb 2025 22:28:05 -0800 (PST)
 Received: from localhost.localdomain ([39.144.244.105])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-732521b82b3sm16693128b3a.92.2025.02.22.22.27.49
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-732521b82b3sm16693128b3a.92.2025.02.22.22.27.58
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 22 Feb 2025 22:27:57 -0800 (PST)
+        Sat, 22 Feb 2025 22:28:05 -0800 (PST)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -90,9 +90,9 @@ To: ast@kernel.org,
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v2 bpf-next 1/3] objtool: Copy noreturns.h to include/linux
-Date: Sun, 23 Feb 2025 14:27:33 +0800
-Message-Id: <20250223062735.3341-2-laoar.shao@gmail.com>
+Subject: [PATCH v2 bpf-next 2/3] bpf: Reject attaching fexit to functions annotated with __noreturn
+Date: Sun, 23 Feb 2025 14:27:34 +0800
+Message-Id: <20250223062735.3341-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20250223062735.3341-1-laoar.shao@gmail.com>
 References: <20250223062735.3341-1-laoar.shao@gmail.com>
@@ -104,109 +104,70 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It will used by bpf to reject attaching fexit prog to functions
-annotated with __noreturn.
+If we attach fexit to a function annotated with __noreturn, it will
+cause an issue that the bpf trampoline image will be left over even if
+the bpf link has been destroyed. Take attaching do_exit() for example. The
+fexit works as follows,
+
+  bpf_trampoline
+  + __bpf_tramp_enter
+    + percpu_ref_get(&tr->pcref);
+
+  + call do_exit()
+
+  + __bpf_tramp_exit
+    + percpu_ref_put(&tr->pcref);
+
+Since do_exit() never returns, the refcnt of the trampoline image is
+never decremented, preventing it from being freed. That can be verified
+with as follows,
+
+  $ bpftool link show                                   <<<< nothing output
+  $ grep "bpf_trampoline_[0-9]" /proc/kallsyms
+  ffffffffc04cb000 t bpf_trampoline_6442526459    [bpf] <<<< leftover
+
+With this change, attaching fexit probes to functions like do_exit() will
+be rejected.
+
+$ ./fexit
+libbpf: prog 'fexit': BPF program load failed: -EINVAL
+libbpf: prog 'fexit': -- BEGIN PROG LOAD LOG --
+Attaching fexit to __noreturn functions is rejected.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/noreturns.h               | 52 +++++++++++++++++++++++++
- tools/objtool/Documentation/objtool.txt |  3 +-
- tools/objtool/sync-check.sh             |  2 +
- 3 files changed, 56 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/noreturns.h
+ kernel/bpf/verifier.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/include/linux/noreturns.h b/include/linux/noreturns.h
-new file mode 100644
-index 000000000000..b2174894f9f7
---- /dev/null
-+++ b/include/linux/noreturns.h
-@@ -0,0 +1,52 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 9971c03adfd5..329af451c936 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -22841,6 +22841,13 @@ BTF_ID(func, __rcu_read_unlock)
+ #endif
+ BTF_SET_END(btf_id_deny)
+ 
++/* The functions annotated with __noreturn are denied. */
++BTF_SET_START(fexit_deny)
++#define NORETURN(fn) BTF_ID(func, fn)
++#include <linux/noreturns.h>
++#undef NORETURN
++BTF_SET_END(fexit_deny)
 +
-+/*
-+ * This is a (sorted!) list of all known __noreturn functions in the kernel.
-+ * It's needed for objtool to properly reverse-engineer the control flow graph.
-+ *
-+ * Yes, this is unfortunate.  A better solution is in the works.
-+ */
-+NORETURN(__fortify_panic)
-+NORETURN(__ia32_sys_exit)
-+NORETURN(__ia32_sys_exit_group)
-+NORETURN(__kunit_abort)
-+NORETURN(__module_put_and_kthread_exit)
-+NORETURN(__stack_chk_fail)
-+NORETURN(__tdx_hypercall_failed)
-+NORETURN(__ubsan_handle_builtin_unreachable)
-+NORETURN(__x64_sys_exit)
-+NORETURN(__x64_sys_exit_group)
-+NORETURN(arch_cpu_idle_dead)
-+NORETURN(bch2_trans_in_restart_error)
-+NORETURN(bch2_trans_restart_error)
-+NORETURN(bch2_trans_unlocked_error)
-+NORETURN(cpu_bringup_and_idle)
-+NORETURN(cpu_startup_entry)
-+NORETURN(do_exit)
-+NORETURN(do_group_exit)
-+NORETURN(do_task_dead)
-+NORETURN(ex_handler_msr_mce)
-+NORETURN(hlt_play_dead)
-+NORETURN(hv_ghcb_terminate)
-+NORETURN(kthread_complete_and_exit)
-+NORETURN(kthread_exit)
-+NORETURN(kunit_try_catch_throw)
-+NORETURN(machine_real_restart)
-+NORETURN(make_task_dead)
-+NORETURN(mpt_halt_firmware)
-+NORETURN(nmi_panic_self_stop)
-+NORETURN(panic)
-+NORETURN(panic_smp_self_stop)
-+NORETURN(rest_init)
-+NORETURN(rewind_stack_and_make_dead)
-+NORETURN(rust_begin_unwind)
-+NORETURN(rust_helper_BUG)
-+NORETURN(sev_es_terminate)
-+NORETURN(snp_abort)
-+NORETURN(start_kernel)
-+NORETURN(stop_this_cpu)
-+NORETURN(usercopy_abort)
-+NORETURN(x86_64_start_kernel)
-+NORETURN(x86_64_start_reservations)
-+NORETURN(xen_cpu_bringup_again)
-+NORETURN(xen_start_kernel)
-diff --git a/tools/objtool/Documentation/objtool.txt b/tools/objtool/Documentation/objtool.txt
-index 7c3ee959b63c..70a878e4dc36 100644
---- a/tools/objtool/Documentation/objtool.txt
-+++ b/tools/objtool/Documentation/objtool.txt
-@@ -326,7 +326,8 @@ the objtool maintainers.
+ static bool can_be_sleepable(struct bpf_prog *prog)
+ {
+ 	if (prog->type == BPF_PROG_TYPE_TRACING) {
+@@ -22929,6 +22936,10 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 	} else if (prog->type == BPF_PROG_TYPE_TRACING &&
+ 		   btf_id_set_contains(&btf_id_deny, btf_id)) {
+ 		return -EINVAL;
++	} else if (prog->expected_attach_type == BPF_TRACE_FEXIT &&
++		   btf_id_set_contains(&fexit_deny, btf_id)) {
++		verbose(env, "Attaching fexit to __noreturn functions is rejected.\n");
++		return -EINVAL;
+ 	}
  
-    The call from foo() to bar() doesn't return, but bar() is missing the
-    __noreturn annotation.  NOTE: In addition to annotating the function
--   with __noreturn, please also add it to tools/objtool/noreturns.h.
-+   with __noreturn, please also add it to tools/objtool/noreturns.h and
-+   include/linux/noreturns.h.
- 
- 4. file.o: warning: objtool: func(): can't find starting instruction
-    or
-diff --git a/tools/objtool/sync-check.sh b/tools/objtool/sync-check.sh
-index 81d120d05442..23b9813cd5e9 100755
---- a/tools/objtool/sync-check.sh
-+++ b/tools/objtool/sync-check.sh
-@@ -17,6 +17,7 @@ arch/x86/include/asm/emulate_prefix.h
- arch/x86/lib/x86-opcode-map.txt
- arch/x86/tools/gen-insn-attr-x86.awk
- include/linux/static_call_types.h
-+tools/objtool/noreturns.h
- "
- 
- SYNC_CHECK_FILES='
-@@ -24,6 +25,7 @@ arch/x86/include/asm/inat.h
- arch/x86/include/asm/insn.h
- arch/x86/lib/inat.c
- arch/x86/lib/insn.c
-+include/linux/noreturns.h
- '
- fi
- 
+ 	key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
 -- 
 2.43.5
 
