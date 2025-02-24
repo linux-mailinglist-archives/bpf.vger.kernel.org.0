@@ -1,160 +1,153 @@
-Return-Path: <bpf+bounces-52409-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52415-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28FAFA42BEC
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 19:47:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA744A42C0B
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 19:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D0DA17AFE9
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:47:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8AD23A2CAA
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B70263F59;
-	Mon, 24 Feb 2025 18:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BECBF266B63;
+	Mon, 24 Feb 2025 18:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MPR75QMw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e1NinDUi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918C6198A38
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 18:47:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8232266B4A;
+	Mon, 24 Feb 2025 18:51:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740422826; cv=none; b=l4QjCo5peB7TSR0vNQf9Izi+Efz7zllrQwUVkgAgY11GSJPyM8cGdJ80IG/FRgJIjSSxxlTyJn/7mZ1e/QSsVDcDxqoH27oT1NwjMkHpr3ZhF9HTpKGEjvyWsS3izpJqvgYDYs/gjyR7wswEY99nnKLswTHB2qIAN38kFs3VfD8=
+	t=1740423113; cv=none; b=U2cPF3VMy8u1DrSW/FzOnZkadZMG9DvcPgA5BgD+IKbZB2DWikTpw45H7JiDZ60TXTTLIQwP1vKDcljdyBVyisfJ1P39mZ0babEOrEMlapZjqykDMWFxQ3iB3n4Gat8qEaaiXJGkueCgwt4uinVtlz46recNkQhTFwp5M01Xt1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740422826; c=relaxed/simple;
-	bh=P8wIH/9ecutcrHu56mM8k9urk+HpnwlChUuGdoA7U4s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iq0lhPiUNq02Y4B8vDMI7aJw96fW2Og5Gu9cJ+elR51hZ2yNtBvnhdlMrvpOwdjDMJH6sEo2sL/6mL7NT7IgnczxtU1ojUtbGZ0QzrcalcQ3TBTxc1yahoJRVdmj8IaO6kvvvDxhKKWreog0XJPbi71whc6R+fyR9jyNG5CzEsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MPR75QMw; arc=none smtp.client-ip=209.85.221.41
+	s=arc-20240116; t=1740423113; c=relaxed/simple;
+	bh=TUEqaIXpwI/RfqdyMieJkO4fzyFhGbd9bZvDzL0LVtg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=apph5K5wSIqAxM3D0friY3jcOJuUhThqf2lDs+7+a7DuYowtDODXkV322I6XaU3sFwLjpxHqzbln/0UOjUsrZQRO86/hgjDe/g1z3721KI64Ok/jmOfeG+ghv6v7C4esI0fiqrEHdwwJoDz5vkjIcQ0STVj4GUTj37hSm8lmIZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e1NinDUi; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-38f22fe889aso4249160f8f.3
-        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 10:47:04 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2fc4418c0b9so7309770a91.0;
+        Mon, 24 Feb 2025 10:51:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740422823; x=1741027623; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jjer69476fXdQgjvSYyLKClwSOlF5QTqcGFir0xEKFA=;
-        b=MPR75QMwO8wldKLYyaTRlaOah1bVntI3w6+6fne+bYYLJchxgwA0xjFbu1CuzbIsEK
-         Y4pyPcL2Z52qhF74HHLWFYAU8Hrfyz8Ci1MIXcyyg1WtUVQ0ZnjlVW19wqp8J4GCF7st
-         anuudJaXXcGegMCehKsqkvZz2Fqsy1fFXacJ0XyPjd9GVC/2FVUfSPxpdZSXairECFD+
-         e23hQciMHPzBLi4i2OZspXlfhTsYiN9iwbII7lo4DSxsRhkwI8o5+J5QF14fC5pKBxbd
-         /kFWsOoGeFbjXSnrQqR7Y4SbZYRddR77K9Jd23OQXOiNBeBspHgV//TF+HZ/l9NfRYkJ
-         qgNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740422823; x=1741027623;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1740423111; x=1741027911; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Jjer69476fXdQgjvSYyLKClwSOlF5QTqcGFir0xEKFA=;
-        b=nGJSEGfYRqaSDfcSiz9zik18NjOGG/60yduDEqwzPses1vbeapb6RMz9JBncSDVSM9
-         szZtiCtn2wlkL21WrOvB0xjqYvKh5HX52HiYQo1WDF3yHhiTjbtHBoYV89xY+07OlYk7
-         v4cXljiLDZDMmQcpM5tjhngzZYxkodGVswwptzlfSVOGpOUY7WAet0AtF/CAm36bWKfF
-         96UPk6NBT/DLEWYLC2lRbqKF1Pkz9gNQ1R9TF3Ux6/i/Cvm9xErVZBluN+tD3DIyjgok
-         LmFnKtwrM0hSN//Gnx2TxsH8uun5Gh/WvlgsJCAueSHmbhXz+kmH78kc7LKJmIS06A+H
-         Bm+A==
-X-Forwarded-Encrypted: i=1; AJvYcCX5guJCZn0ulyXapeQXLBAYVcE3W4+VHFznJkLy2QvEUOusFmNRo/rg/GR24EGQrmPGuCw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxG8EBaCXvEh28fKJ/hKsRxA0syFKf3SYJfb+ZXGBp2yaokcU32
-	vnaM3w5Q6mGEIK4YWr+Osrjr3smd+sqg+fcHoiAPUNcJnRSs4WFO
-X-Gm-Gg: ASbGncvfQltk2WloQlQeVof2W0LRecN36PHeHlduxKOf06jTyBVkzXl7vtEa/GahNu1
-	nTCHxQ9f26ylj8nA01WHNk8+WlLBxKLqA7HDmyriMu7Kyr+bpBdGx2UqaT2Znpo78ngE5OfHg0z
-	Avh85vSkk6k/QLXfwfvGiXdnnRaeOYozN0gQjO8ZcBSIyaDdexNRGbKloSghsme3aCGZTJ+B/lU
-	LT4br1RtTB2EdUmSvCgmdTpg4fd7kYLUwj9bTEd91t26fLyc86A5j50xD91DuvkKX/VBXQkcpIv
-	QByL7s/iTxqH5SrxVtg8E1b2CdbXwXQoIrbc7bU=
-X-Google-Smtp-Source: AGHT+IGnp79TGzLNiybv1beS4iybyAIWQwYxtQalhUZGS2LAtsCjXk7zs8CElagRTdFr3J3b2Scq6w==
-X-Received: by 2002:a05:6000:18ad:b0:38f:32ab:d4f4 with SMTP id ffacd0b85a97d-390cc5f58admr194748f8f.4.1740422822613;
-        Mon, 24 Feb 2025 10:47:02 -0800 (PST)
-Received: from f (cst-prg-14-58.cust.vodafone.cz. [46.135.14.58])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abed205728esm3920766b.144.2025.02.24.10.46.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2025 10:47:01 -0800 (PST)
-Date: Mon, 24 Feb 2025 19:46:52 +0100
-From: Mateusz Guzik <mjguzik@gmail.com>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Vlastimil Babka <vbabka@suse.cz>, lsf-pc@lists.linux-foundation.org, 
-	linux-mm@kvack.org, bpf <bpf@vger.kernel.org>, Christoph Lameter <cl@linux.com>, 
-	David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	"Uladzislau Rezki (Sony)" <urezki@gmail.com>, Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [LSF/MM/BPF TOPIC] SLUB allocator, mainly the sheaves caching
- layer
-Message-ID: <svy4dxxdgbt4mnapfrqod7c2imufgb4daao7id3j5p7tgeok4j@jtknbmybpqsg>
-References: <14422cf1-4a63-4115-87cb-92685e7dd91b@suse.cz>
- <e2fz26kcbni37rp2rdqvac7mljvrglvtzmkivfpsnibubu3g3t@blz27xo4honn>
+        bh=TUEqaIXpwI/RfqdyMieJkO4fzyFhGbd9bZvDzL0LVtg=;
+        b=e1NinDUiIBwWKB75/J8RGZ3Egic/V/HYS01tcHTqEV24KffFTQt+e9JSrcdWkV2+rc
+         TWVHQBYWXdEn3434GizAUDoIf+mBFUHiijPWuE2hvDn1c85hXV9AIJtWiGhy7EZMkTdL
+         NzwuzBV9WevNfTj9Olweo01Y6YtoWiat4aCawuX1s9NzS9S7R5+m0t7AS60puFNEBC1s
+         zip4CLI9tK8mevOgsTHS+1mEnIjkMA4xm665Rpd2lGxyCua0ORDVolU3iqQ9xc/6uXil
+         ARrxczAii0lNtFMrS2y5GOlVNMdV56i7bE7xWL7eonrMApnz3x/GcfI3G2NNkZDWOZE1
+         2zCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740423111; x=1741027911;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TUEqaIXpwI/RfqdyMieJkO4fzyFhGbd9bZvDzL0LVtg=;
+        b=w1WbvQpFweZgDiSptST2sCBKFmDal1f5/xfvyGHnRd4uLYIjhsrOt0bjzAfmZUdejX
+         Uuzg1p0dTX+XaH3IZiIKzE5bqbbvwL3RFVboBKsNgCAgsbS7rtOun3xu4cTMTPP2dfB8
+         WGn7TM+Tx1QJfWCaog6NoZL8OOXdkT/0XZLalsqHm8lUbOPuul7ijgwhbtfyArAl14QY
+         dCQapjGITO32I9KZtqYEfiY8zWq80of0f5PMAK2Ils8S479/B3R+Hqhdloxz0fsGwcVn
+         H4Pc9ftJ8l2Yl4OMxUHPiA986GUYnY9yWYFc6USdeqPOtpnfEWz5F1cfLV9GZv5fo2DO
+         Ilxw==
+X-Forwarded-Encrypted: i=1; AJvYcCUJjDccSUEqMJvusfMlQ2HQj0y9RBSo84JlR+7XiY8QJPtzMYis/EJ+B52Ua3lZRU8gOVwD1FIDU3E62g==@vger.kernel.org, AJvYcCV1MjxSFx8Qr+9qUxnuLgVQQU1tYN3jrQcoef0iVu1Fe8N8R6IycZ80QtwqNVG8LGQu8M7ezo9Fz5PORLPvxv2i@vger.kernel.org, AJvYcCVxtp7w6YnuPgPWuF1D5zwAr91A+mO6Pf5IpliHfVfqJHrdAKdkp3b9j/qK7v6YH0xEDDG71mJxI2nPQWYE@vger.kernel.org, AJvYcCW20q4jPYzxeNiVdZ9PnR9sZrs/O1IXrA8Z9en8Tsr1F3EUXxZpThCP+Q2P36RGgzW5W28=@vger.kernel.org, AJvYcCX5aXtCYqyP5rhnjtzGF6ObMGWkxRgBoLGheKZkfHwhMrqozye7dqIJwdgmGthGg7RNVlJguL0xRjrGd9ox@vger.kernel.org
+X-Gm-Message-State: AOJu0YwRhJoiYE5M/u1C15iGHFA/K1HCjn7HB4yr1KrzILqftw2aP81V
+	rtkXUOA7CPgqOvShEC/zsOM94kk77ugegQgtKWd1mI0i/AsPkZ/TbNH9w5gKT7v1Imw0y4EYTl0
+	a8KfYpNrNHmAcnuVgnTYb51MW/bk=
+X-Gm-Gg: ASbGnctyOcIbs3nmayznqSybb+QQSBvA8MWf0uh7TpFr5QUB0ezzlm74f3FuFWC/iji
+	/IepP6VXqSbak+5TXaQCFJjWaoUBFviQ1UgKfen8FFzaGUVx1gXIWh+HHQePjqwuXJx/AKdLr9+
+	/+o2tr8D3tKNFJShd8xWfbxvE=
+X-Google-Smtp-Source: AGHT+IEM92T52Wzy74biCjdt13zNava/7AlYK1wNiCPPQTiFKurSCN5AvJp5hFsbNvAbAeL2dN9RyVPPvrf75/LQ5Wo=
+X-Received: by 2002:a17:90b:1344:b0:2fc:a3b7:10a2 with SMTP id
+ 98e67ed59e1d1-2fce78cb879mr27572269a91.17.1740423110927; Mon, 24 Feb 2025
+ 10:51:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e2fz26kcbni37rp2rdqvac7mljvrglvtzmkivfpsnibubu3g3t@blz27xo4honn>
+References: <20250207012045.2129841-1-stephen.s.brennan@oracle.com>
+ <20250207012045.2129841-2-stephen.s.brennan@oracle.com> <CAK7LNAQokoST0FnByeWywaghTMP2aG7hQaV1T=TcQ=1v4ZLQrg@mail.gmail.com>
+In-Reply-To: <CAK7LNAQokoST0FnByeWywaghTMP2aG7hQaV1T=TcQ=1v4ZLQrg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 24 Feb 2025 10:51:38 -0800
+X-Gm-Features: AWEUYZlWebfCB8ebdoh-Z8K_EKpop-kMh4XUx8JTAFtvrkByBiikkkZM8iT5dTo
+Message-ID: <CAEf4Bzb9rYHTVkuxxSuoW=0P84M7UPkBr-4991KiMnFsv10hjA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kallsyms: output rodata to ".kallsyms_rodata"
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Stephen Brennan <stephen.s.brennan@oracle.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Andrii Nakryiko <andrii@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Kees Cook <kees@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Sami Tolvanen <samitolvanen@google.com>, Eduard Zingerman <eddyz87@gmail.com>, linux-arch@vger.kernel.org, 
+	Stanislav Fomichev <sdf@fomichev.me>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	Pasha Tatashin <pasha.tatashin@soleen.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Jann Horn <jannh@google.com>, 
+	Ard Biesheuvel <ardb@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Hao Luo <haoluo@google.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kbuild@vger.kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, Nathan Chancellor <nathan@kernel.org>, 
+	linux-debuggers@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Song Liu <song@kernel.org>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 24, 2025 at 10:02:09AM -0800, Shakeel Butt wrote:
-> What about pre-memcg-charged sheaves? We had to disable memcg charging
-> of some kernel allocations and I think sheaves can help in reenabling
-> it.
+On Sat, Feb 15, 2025 at 6:21=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+>
+> On Fri, Feb 7, 2025 at 10:21=E2=80=AFAM Stephen Brennan
+> <stephen.s.brennan@oracle.com> wrote:
+> >
+> > When vmlinux is linked, the rodata from kallsyms is placed arbitrarily
+> > within the .rodata section. The linking process is repeated several
+> > times, since the kallsyms data size changes, which shifts symbols,
+> > requiring re-generating the data and re-linking.
+> >
+> > BTF is generated during the first link only. For variables, BTF include=
+s
+> > a BTF_K_DATASEC for each data section that may contain a variable, whic=
+h
+> > includes the variable's name, type, and offset within the data section.
+> > Because the size of kallsyms data changes during later links, the
+> > offsets of variables placed after it in .rodata will change. This means
+> > that BTF_K_DATASEC information for those variables becomes inaccurate.
+> >
+> > This is not currently a problem, because BTF currently only generates
+> > variable data for percpu variables. However, the next commit will add
+> > support for generating BTF for all global variables, including for the
+> > .rodata section.
+> >
+> > We could re-generate BTF each time vmlinux is linked, but this is quite
+> > expensive, and should be avoided at all costs. Further as each chunk of
+> > data (BTF and kallsyms) are re-generated, there's no guarantee that
+> > their sizes will converge anyway.
+> >
+> > Instead, we can take advantage of the fact that BTF only cares to store
+> > the offset of variables from the start of their section. Therefore, so
+> > long as the kallsyms data is stored last in the .rodata section, no
+> > offsets will be affected. Adjust kallsyms to output to .rodata.kallsyms=
+,
+> > and update the linker script to include this at the end of .rodata.
+> >
+> > Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+> > ---
+>
+> I am fine if this is helpful for BTF.
 
-It has been several months since last I looked at memcg, so details are
-fuzzy and I don't have time to refresh everything.
+This seems like a useful change all by itself even while the main
+feature of this patch set is still being developed and reviewed.
+Should we land just this .kallsyms_rodata change?
 
-However, if memory serves right the primary problem was the irq on/off
-trip associated with them (sometimes happening twice, second time with
-refill_obj_stock()).
-
-I think the real fix(tm) would recognize only some allocations need
-interrupt safety -- as in some slabs should not be allowed to be used
-outside of the process context. This is somewhat what sheaves is doing,
-but can be applied without fronting the current kmem caching mechanism.
-This may be a tough sell and even then it plays whackamole with patching
-up all consumers.
-
-Suppose it is not an option.
-
-Then there are 2 ways that I considered.
-
-The easiest splits memcg accounting for irq and process level -- similar
-to what localtry thing is doing. this would only cost preemption off/on
-trip in the common case and a branch on the current state. But suppose
-this is a no-go as well.
-
-My primary idea was using hand-rolled sequence counters and local 8-byte
-cmpxchg (*without* the lock prefix, also not to be confused with 16-byte
-used by the current slub fast path). Should this work, it would be
-significantly faster than irq trips. 
-
-The irq thing is there only to facilitate several fields being updated
-or memcg itself getting replaced in an atomic manner for process vs
-interrupt context.
-
-The observation is that all values which are getting updated are 4
-bytes. Then perhaps an additional counter can be added next to each one
-so that an 8-byte cmpxchg is going to fail should an irq swoop in and
-change stuff from under us.
-
-The percpu state would have a sequence counter associated with the
-assigned memcg_stock_pcp. The memcg_stock_pcp object would have the same
-value replicated inside for every var which can be updated in the fast
-path.
-
-Then the fast path would only succeed if the value read off from per-cpu
-did not change vs what's in the stock thing.
-
-Any change to memcg_stock_pcp (e.g., rolling up bytes after passing the
-page size threshold) would disable interrupts and modify all these
-counters.
-
-There is some more work needed to make sure the stock obj can be safely
-swapped out for a new one and not accidentally have a value which lines
-up with the prevoius one, I don't remember what I had for that (and yes,
-I recognize a 4 byte value will invariably roll over and *in principle*
-a conflict will be possible).
-
-This is a rough outline since Vlasta keeps prodding me about it.
-
-That said, maybe someone will have a better idea. The above is up for
-grabs if someone wants to do it, I can't commit to looking at it.
+>
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
 
