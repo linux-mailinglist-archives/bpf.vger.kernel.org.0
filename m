@@ -1,295 +1,137 @@
-Return-Path: <bpf+bounces-52429-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52430-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52FCBA42E4C
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 21:52:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29832A42E50
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 21:53:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F14F174D78
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 20:52:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA2ED1897723
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 20:53:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8943E25485E;
-	Mon, 24 Feb 2025 20:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AACD25A347;
+	Mon, 24 Feb 2025 20:53:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="q/KaE+t0"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GJ/xwPJe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [131.188.11.21])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6B91A5B8B;
-	Mon, 24 Feb 2025 20:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1683B2A0
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 20:52:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740430349; cv=none; b=eIPgud9A+IijrbIIO2bUx2hL+ZeQEGPubTpnsv5XpTzweYrBi1h6MqMHBkp/BxRLBw2R0nmaT2Gd4vlVpvh0H+iIxavLzpRQN4JGfiHsbEoHbe2r09prK9kWm+doL3ncBdA1IvOP2mhw3c7jO+bDHvN1YhxBn0a8FOu8AKfe/nc=
+	t=1740430381; cv=none; b=AAjDbrS5l4xNy+tkVYTKGn2RLDc9IU0jsVpYANK38idgvKInbpYkHW2sqxI4IfEiLYh9EReTh7rmmSUSWiEWDnrVXsE1jTnJ1V7mY8aLvVSOCClLfwvRv90zOx2TY4NGBSdafBd6fBdkdjwqjDgQNlN9m2YYyVwMcU5f4vpsCkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740430349; c=relaxed/simple;
-	bh=OXn3Uu+gQ9c3RLQAujMg7ZAmlHllThbNbBycDxf6u/o=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fteMkQ++27NHYbq2ReFrKTgBhCxIVVl8Tmle4VNm6DH594Rj8iC9M3fJlNrspWnerhfwM8+1OMNFezsdbRTS2HXdiOUHiDlpHrUWw7SxoUFIV5mIVDg+yh5X1JqakqgMmUOUNVwbLc26rlPllTyzMuKJiroJ3j+8fSa/AAnNZTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=q/KaE+t0; arc=none smtp.client-ip=131.188.11.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Z1tGJ5njHzPk3T;
-	Mon, 24 Feb 2025 21:52:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1740430344; bh=OiuNKiAS+hTR+fhJp6x108vWgctpUrLzfl7kMtExH6o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From:To:CC:
-	 Subject;
-	b=q/KaE+t00/Gft3eo2t/VfHs/88XfbCborQ4GQjPmsCuB50ItFoDnIPUOhT7RngcFt
-	 T2FQfbyk0wHWXedfXb9bNRd7Kc7csnajBUD8DvOZw5rogaI/gKHQvOZxesCroABspt
-	 5QHhD4VMYM86PUloy8UrAnTXcotN3UArdrzNOGwM226zVIic0+I9vQyFltpsWBgdnQ
-	 qxCJwPJpD2cOxr9+SbEIXsd88OnHWVsgqDsZMcmcfzgi9YFII9Ia8rmjyriOfmsVAK
-	 r0yyi/6f4TNQVSJ14BCirHbT8NQZUaP9zdi2VycxntDEn/3dDicZoB88DdWy0g0qpK
-	 U0SOjfbGtZY5g==
-X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:9e8:362e:e00:55a6:11d5:2473:17a9
-Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:362e:e00:55a6:11d5:2473:17a9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX1+BBC75IbyzFS0BDN4tVWKxiHYwgF5BobA=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Z1tGF4LgJzPk3N;
-	Mon, 24 Feb 2025 21:52:21 +0100 (CET)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Luis Gerhorst <luis.gerhorst@fau.de>,
-	Henriette Herzog <henriette.herzog@rub.de>,
-	Cupertino Miranda <cupertino.miranda@oracle.com>,
-	Matan Shachnai <m.shachnai@gmail.com>,
-	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: Maximilian Ott <ott@cs.fau.de>,
-	Milan Stephan <milan.stephan@fau.de>
-Subject: [RFC PATCH 7/9] bpf: Refactor push_stack to return error code
-Date: Mon, 24 Feb 2025 21:52:06 +0100
-Message-ID: <20250224205206.607052-1-luis.gerhorst@fau.de>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250224203619.594724-1-luis.gerhorst@fau.de>
-References: <20250224203619.594724-1-luis.gerhorst@fau.de>
+	s=arc-20240116; t=1740430381; c=relaxed/simple;
+	bh=ISY5TErpMbBWybP6vz/g0eLIWMJosjFxnWWmQkQe6WA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u3XKa5K0m6zid4l7NRqSBvoe5dyGP14qcUq4hhlBmCjvpmxg3PcdNmO7gr516pPowrN9JJ1Wg48hbJAEhZB9j4OBV0TsNhE1tiDYdKfzjH6G76WAH+J7CN1az5CV7Vo2dL14OI4noILHnAOtSHgDe5u2Khnx6kdfxnRe8420P/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GJ/xwPJe; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 24 Feb 2025 12:52:53 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740430377;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZxMpDa0xMnH1ZIMUjjLgz553O/WGtdR5AKi8JCJQOAI=;
+	b=GJ/xwPJelPfSC8eMwZ4zP4uLV5EZKY9maAjtWDIju3E4ZgxCkkfhgwnM/X8n/F0F73DOBY
+	HUSo4gttew5+DYUQ2sGM1SMLCtGfv6UFLQ2uVU3Sys/Yf8KFB6WRW9tz1IOkzAaagTaFnn
+	Ud1R1Q9olhOGRFjFsONi4tBtjoYH3Ho=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: lsf-pc@lists.linux-foundation.org, linux-mm@kvack.org, 
+	bpf <bpf@vger.kernel.org>, Christoph Lameter <cl@linux.com>, 
+	David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	"Uladzislau Rezki (Sony)" <urezki@gmail.com>, Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [LSF/MM/BPF TOPIC] SLUB allocator, mainly the sheaves caching
+ layer
+Message-ID: <tjujhf3jewd2d5gn7myyscbnfr7oie53ff6ibmy3ockxyf5zb4@pbabk5h2slpq>
+References: <14422cf1-4a63-4115-87cb-92685e7dd91b@suse.cz>
+ <e2fz26kcbni37rp2rdqvac7mljvrglvtzmkivfpsnibubu3g3t@blz27xo4honn>
+ <704ba4a7-37ec-4c6b-9de4-0c662e5c5ce1@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <704ba4a7-37ec-4c6b-9de4-0c662e5c5ce1@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-Main reason is, that it will later allow us to fall back to a nospec for
-certain errors in push_stack().
+On Mon, Feb 24, 2025 at 07:15:16PM +0100, Vlastimil Babka wrote:
+> On 2/24/25 19:02, Shakeel Butt wrote:
+> > On Mon, Feb 24, 2025 at 05:13:25PM +0100, Vlastimil Babka wrote:
+> >> Hi,
+> >> 
+> >> I'd like to propose a session about the SLUB allocator.
+> >> 
+> >> Mainly I would like to discuss the addition of the sheaves caching layer,
+> >> the latest RFC posted at [1].
+> >> 
+> >> The goals of that work is to:
+> >> 
+> >> - Reduce fastpath overhead. The current freeing fastpath only can be used if
+> >> the same target slab is still the cpu slab, which can be only expected for a
+> >> very short term allocations. Further improvements should come from the new
+> >> local_trylock_t primitive.
+> >> 
+> >> - Improve efficiency of users such as like maple tree, thanks to more
+> >> efficient preallocations, and kfree_rcu batching/reusal
+> >> 
+> >> - Hopefully also facilitate further changes needed for bpf allocations, also
+> >> via local_trylock_t, that could possibly extend to the other parts of the
+> >> implementation as needed.
+> >> 
+> >> The controversial discussion points I expect about this approach are:
+> >> 
+> >> - Either sheaves will not support NUMA restrictions (as in current RFC), or
+> >> bring back the alien cache flushing issues of SLAB (or there's a better idea?)
+> >> 
+> >> - Will it be possible to eventually have sheaves enabled for every cache and
+> >> replace the current slub's fastpaths with it? Arguably these are also not
+> >> very efficient when NUMA-restricted allocations are requested for varying
+> >> NUMA nodes (cpu slab is flushed if it's from a wrong node, to load a slab
+> >> from the requested node).
+> >> 
+> >> Besides sheaves, I'd like to summarize recent kfree_rcu() changes and we
+> >> could discuss further improvements to that.
+> >> 
+> >> Also we can discuss what's needed to support bpf allocations. I've talked
+> >> about it last year, but then focused on other things, so Alexei has been
+> >> driving that recently (so far in the page allocator).
+> > 
+> > What about pre-memcg-charged sheaves? We had to disable memcg charging
+> > of some kernel allocations
+> 
+> You mean due to bad performance? Which ones for example? Was the overhead
+> due to accounting of how much is charged, or due to the associating memcgs
+> with objects?
+> 
 
-This has the side effect of changing the sanitization-case to returning
-ENOMEM. However, I believe this is more fitting as I undestand EFAULT to
-indicate a verifier-internal bug.
+I know of the following two cases but we do hear frequently that kmemcg
+accounting is not cheap.
 
-Downside is, that it requires us to introduce an output parameter for
-the state.
+3754707bcc3e ("Revert "memcg: enable accounting for file lock caches"")
+0bcfe68b8767 ("Revert "memcg: enable accounting for pollfd and select
+bits arrays"")
 
-Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-Acked-by: Henriette Herzog <henriette.herzog@rub.de>
-Cc: Maximilian Ott <ott@cs.fau.de>
-Cc: Milan Stephan <milan.stephan@fau.de>
----
- kernel/bpf/verifier.c | 71 +++++++++++++++++++++++++------------------
- 1 file changed, 42 insertions(+), 29 deletions(-)
+> > and I think sheaves can help in reenabling
+> > it.
+> 
+> You mean by mean having separate sheaves per memcg? Wouldn't that mean
+> risking that too many objects could be cached in them, we'd have to flush
+> eventually e.g. the least recently used ones, etc? Or do you mean some other
+> scheme?
+> 
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 06c2f929d602..406294bcd5ce 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1934,8 +1934,10 @@ static struct bpf_verifier_state *push_stack(struct bpf_verifier_env *env,
- 	int err;
- 
- 	elem = kzalloc(sizeof(struct bpf_verifier_stack_elem), GFP_KERNEL);
--	if (!elem)
--		goto err;
-+	if (!elem) {
-+		err = -ENOMEM;
-+		goto unrecoverable_err;
-+	}
- 
- 	elem->insn_idx = insn_idx;
- 	elem->prev_insn_idx = prev_insn_idx;
-@@ -1945,12 +1947,18 @@ static struct bpf_verifier_state *push_stack(struct bpf_verifier_env *env,
- 	env->stack_size++;
- 	err = copy_verifier_state(&elem->st, cur);
- 	if (err)
--		goto err;
-+		goto unrecoverable_err;
- 	elem->st.speculative |= speculative;
- 	if (env->stack_size > BPF_COMPLEXITY_LIMIT_JMP_SEQ) {
- 		verbose(env, "The sequence of %d jumps is too complex.\n",
- 			env->stack_size);
--		goto err;
-+		/* Do not return -EINVAL to signal to the main loop that this
-+		 * can likely not be recovered-from by inserting a nospec if we
-+		 * are on a speculative path. If it was tried anyway, we would
-+		 * encounter it again shortly anyway.
-+		 */
-+		err = -ENOMEM;
-+		goto unrecoverable_err;
- 	}
- 	if (elem->st.parent) {
- 		++elem->st.parent->branches;
-@@ -1965,12 +1973,14 @@ static struct bpf_verifier_state *push_stack(struct bpf_verifier_env *env,
- 		 */
- 	}
- 	return &elem->st;
--err:
-+unrecoverable_err:
- 	free_verifier_state(env->cur_state, true);
- 	env->cur_state = NULL;
- 	/* pop all elements and return */
- 	while (!pop_stack(env, NULL, NULL, false));
--	return NULL;
-+	WARN_ON_ONCE(err >= 0);
-+	WARN_ON_ONCE(error_recoverable_with_nospec(err));
-+	return ERR_PTR(err);
- }
- 
- #define CALLER_SAVED_REGS 6
-@@ -8630,8 +8640,8 @@ static int process_iter_next_call(struct bpf_verifier_env *env, int insn_idx,
- 		prev_st = find_prev_entry(env, cur_st->parent, insn_idx);
- 		/* branch out active iter state */
- 		queued_st = push_stack(env, insn_idx + 1, insn_idx, false);
--		if (!queued_st)
--			return -ENOMEM;
-+		if (IS_ERR(queued_st))
-+			return PTR_ERR(queued_st);
- 
- 		queued_iter = get_iter_from_state(queued_st, meta);
- 		queued_iter->iter.state = BPF_ITER_STATE_ACTIVE;
-@@ -10214,8 +10224,8 @@ static int push_callback_call(struct bpf_verifier_env *env, struct bpf_insn *ins
- 	 * proceed with next instruction within current frame.
- 	 */
- 	callback_state = push_stack(env, env->subprog_info[subprog].start, insn_idx, false);
--	if (!callback_state)
--		return -ENOMEM;
-+	if (IS_ERR(callback_state))
-+		return PTR_ERR(callback_state);
- 
- 	err = setup_func_entry(env, subprog, insn_idx, set_callee_state_cb,
- 			       callback_state);
-@@ -13654,7 +13664,7 @@ sanitize_speculative_path(struct bpf_verifier_env *env,
- 	struct bpf_reg_state *regs;
- 
- 	branch = push_stack(env, next_idx, curr_idx, true);
--	if (branch && insn) {
-+	if (!IS_ERR(branch) && insn) {
- 		regs = branch->frame[branch->curframe]->regs;
- 		if (BPF_SRC(insn->code) == BPF_K) {
- 			mark_reg_unknown(env, regs, insn->dst_reg);
-@@ -13682,7 +13692,7 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 	u8 opcode = BPF_OP(insn->code);
- 	u32 alu_state, alu_limit;
- 	struct bpf_reg_state tmp;
--	bool ret;
-+	struct bpf_verifier_state *branch;
- 	int err;
- 
- 	if (can_skip_alu_sanitation(env, insn))
-@@ -13755,11 +13765,11 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 		tmp = *dst_reg;
- 		copy_register_state(dst_reg, ptr_reg);
- 	}
--	ret = sanitize_speculative_path(env, NULL, env->insn_idx + 1,
--					env->insn_idx);
--	if (!ptr_is_dst_reg && ret)
-+	branch = sanitize_speculative_path(env, NULL, env->insn_idx + 1,
-+					   env->insn_idx);
-+	if (!ptr_is_dst_reg && !IS_ERR(branch))
- 		*dst_reg = tmp;
--	return !ret ? REASON_STACK : 0;
-+	return IS_ERR(branch) ? REASON_STACK : 0;
- }
- 
- static void sanitize_mark_insn_seen(struct bpf_verifier_env *env)
-@@ -16008,8 +16018,8 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 
- 		/* branch out 'fallthrough' insn as a new state to explore */
- 		queued_st = push_stack(env, idx + 1, idx, false);
--		if (!queued_st)
--			return -ENOMEM;
-+		if (IS_ERR(queued_st))
-+			return PTR_ERR(queued_st);
- 
- 		queued_st->may_goto_depth++;
- 		if (prev_st)
-@@ -16073,10 +16083,12 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 		 * the fall-through branch for simulation under speculative
- 		 * execution.
- 		 */
--		if (!env->bypass_spec_v1 &&
--		    !sanitize_speculative_path(env, insn, *insn_idx + 1,
--					       *insn_idx))
--			return -EFAULT;
-+		if (!env->bypass_spec_v1) {
-+			struct bpf_verifier_state *branch = sanitize_speculative_path(
-+				env, insn, *insn_idx + 1, *insn_idx);
-+			if (IS_ERR(branch))
-+				return PTR_ERR(branch);
-+		}
- 		if (env->log.level & BPF_LOG_LEVEL)
- 			print_insn_state(env, this_branch, this_branch->curframe);
- 		*insn_idx += insn->off;
-@@ -16086,11 +16098,12 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 		 * program will go. If needed, push the goto branch for
- 		 * simulation under speculative execution.
- 		 */
--		if (!env->bypass_spec_v1 &&
--		    !sanitize_speculative_path(env, insn,
--					       *insn_idx + insn->off + 1,
--					       *insn_idx))
--			return -EFAULT;
-+		if (!env->bypass_spec_v1) {
-+			struct bpf_verifier_state *branch = sanitize_speculative_path(
-+				env, insn, *insn_idx + insn->off + 1, *insn_idx);
-+			if (IS_ERR(branch))
-+				return PTR_ERR(branch);
-+		}
- 		if (env->log.level & BPF_LOG_LEVEL)
- 			print_insn_state(env, this_branch, this_branch->curframe);
- 		return 0;
-@@ -16113,8 +16126,8 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 
- 	other_branch = push_stack(env, *insn_idx + insn->off + 1, *insn_idx,
- 				  false);
--	if (!other_branch)
--		return -EFAULT;
-+	if (IS_ERR(other_branch))
-+		return PTR_ERR(other_branch);
- 	other_branch_regs = other_branch->frame[other_branch->curframe]->regs;
- 
- 	if (BPF_SRC(insn->code) == BPF_X) {
--- 
-2.48.1
-
+As you pointed out a simple scheme of separate sheaves per memcg might
+not work. Maybe targeting specific kmem caches or allocation sites would
+be a first step. I will need to think more on this.
 
