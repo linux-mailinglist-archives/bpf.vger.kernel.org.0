@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-52391-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52392-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77D4BA428FA
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:10:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FFEEA428FC
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:10:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76E6B19C1CF4
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 17:06:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55C5519C23B7
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 17:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4672673AB;
-	Mon, 24 Feb 2025 17:02:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A8182676CB;
+	Mon, 24 Feb 2025 17:02:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lKSG3ALO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Lz0y26a5"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E8152673A3
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 17:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EFDE2673B7
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 17:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740416555; cv=none; b=lSPO6kWIp++BQH1TgeER7mBGIX9gB2+0gO/ubWDe3Vc1/1tNlPQ5lbdBgBr5nvy9JxwaMjkDvVCph6KFS30Uo4megs+TZ3vhUFVxCHNkuxXe+iCQ9BV0jUPKA/SW9kB7TMBKPMzFketscxVpX8n+85pk4108o+pg86ubXxFS1GY=
+	t=1740416563; cv=none; b=NWiRItlWCAEbjy4bhu9wByQf9uYJLfsvRMqAjluKjSReRpu9W8+HZJ72uY31cD5UKJbehlBFNT7V+POhXbnHImtTSHr+7BvWfdZkbZUbeySsFMGk7SHi1145sWi6rT9tsTEypRWD0n7SsysZsR70WcR+GkveM+zOP8+5RWtB12A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740416555; c=relaxed/simple;
-	bh=aG8o/kahVF1tm5V+3pDDlV1oJXm/dksJNGytP15/dhA=;
+	s=arc-20240116; t=1740416563; c=relaxed/simple;
+	bh=pWXtRo6gHo4DEJYISY33x6GfcFgrTWBD7e3ZWdUBELE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=S18s6P8rR5k1o+fgUGlybUtc7lbOif4ZmwDfWdTBFXzh2rsmeIzDnx2HZJ3MUhZdGb90xEkIFLQJZNlLAM3GvxlLfqJ5ZEP8dbxZAslcAt+LJz8G4tDs7kUlHrH0yGGJDny05SIp+IGb9HQHmyz/4COsiXsedzrUqnWNGdwGfZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lKSG3ALO; arc=none smtp.client-ip=95.215.58.175
+	 MIME-Version; b=ecjuh8sqFx9YUUKHHEravgxHFgR2kCeNs5IbA1yQP1dFHX67DnjB1jgFYqPgJgHbpzNjw27wJqYSKI5cuZGI9r6OXah2/vYGlXRT9SXK9+P5766ST1AxWJnj5yYryIOD1+ZWz5CouKHNdNYVSro6P4iCCtwwVUDgVvBTMHu1fng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Lz0y26a5; arc=none smtp.client-ip=91.218.175.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740416552;
+	t=1740416558;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7PGzrKBqkUWVbwyFTBIov9XC7SmgDrzD5PuL2n2Yx4M=;
-	b=lKSG3ALOVcqBH1KgzjTr1euc/9OJwGCjz5RM3AN/1TuYVq8tQBSbRo91P3booy2s4BDbiU
-	HtOhUDXeT3cwhignhs5lYMWWfo5Q480JdYieUP+7uIT13jyqEVFRJ6eoTBjA8PuAixSfnZ
-	Ikp/S5ya+lttt1/bBwv6sOpVkVxg1mc=
+	bh=vB83pcYOlAu6TvcgZccjSdqVZZ3UtGjDlwpT4jeGmb0=;
+	b=Lz0y26a5V7KXg7FX07XUJ2txVeZf0Oz3QlBlyTSo404fe1maCZJbVz66PGD3I6E2K9ObMD
+	T+PHStGd/jMyzcSRV7u5WYp5qsip6Hx+i2LHL+RabM+jWtrVBTi5D2b8DseZySobBBnAZ9
+	VR7W8OTO/0uXWb0PURAxHFWaOJUNWOY=
 From: Tao Chen <chen.dylane@linux.dev>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -55,9 +55,9 @@ Cc: bpf@vger.kernel.org,
 	chen.dylane@gmail.com,
 	Tao Chen <chen.dylane@linux.dev>,
 	Tao Chen <dylane.chen@didiglobal.com>
-Subject: [PATCH bpf-next v8 2/5] libbpf: Init fd_array when prog probe load
-Date: Tue, 25 Feb 2025 00:59:09 +0800
-Message-Id: <20250224165912.599068-3-chen.dylane@linux.dev>
+Subject: [PATCH bpf-next v8 3/5] libbpf: Add libbpf_probe_bpf_kfunc API
+Date: Tue, 25 Feb 2025 00:59:10 +0800
+Message-Id: <20250224165912.599068-4-chen.dylane@linux.dev>
 In-Reply-To: <20250224165912.599068-1-chen.dylane@linux.dev>
 References: <20250224165912.599068-1-chen.dylane@linux.dev>
 Precedence: bulk
@@ -69,54 +69,122 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-fd_array used to store module btf fd, which will
-be used for kfunc probe in module btf.
+Similarly to libbpf_probe_bpf_helper, the libbpf_probe_bpf_kfunc
+used to test the availability of the different eBPF kfuncs on the
+current system.
 
 Cc: Tao Chen <dylane.chen@didiglobal.com>
 Reviewed-by: Jiri Olsa <jolsa@kernel.org>
 Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Tao Chen <chen.dylane@linux.dev>
 ---
- tools/lib/bpf/libbpf_probes.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/lib/bpf/libbpf.h        | 19 ++++++++++++-
+ tools/lib/bpf/libbpf.map      |  1 +
+ tools/lib/bpf/libbpf_probes.c | 51 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 70 insertions(+), 1 deletion(-)
 
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 3020ee45303a..c79b4475b956 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -1680,7 +1680,24 @@ LIBBPF_API int libbpf_probe_bpf_map_type(enum bpf_map_type map_type, const void
+  */
+ LIBBPF_API int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type,
+ 				       enum bpf_func_id helper_id, const void *opts);
+-
++/**
++ * @brief **libbpf_probe_bpf_kfunc()** detects if host kernel supports the
++ * use of a given BPF kfunc from specified BPF program type.
++ * @param prog_type BPF program type used to check the support of BPF kfunc
++ * @param kfunc_id The btf ID of BPF kfunc to check support for
++ * @param btf_fd The module BTF FD, if kfunc is defined in kernel module,
++ * btf_fd is used to point to module's BTF, which is >= 0, and < 0 means kfunc
++ * defined in vmlinux.
++ * @param opts reserved for future extensibility, should be NULL
++ * @return 1, if given combination of program type and kfunc is supported; 0,
++ * if the combination is not supported; negative error code if feature
++ * detection for provided input arguments failed or can't be performed
++ *
++ * Make sure the process has required set of CAP_* permissions (or runs as
++ * root) when performing feature checking.
++ */
++LIBBPF_API int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type,
++				      int kfunc_id, int btf_fd, const void *opts);
+ /**
+  * @brief **libbpf_num_possible_cpus()** is a helper function to get the
+  * number of possible CPUs that the host kernel supports and expects.
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index b5a838de6f47..3bbfe13aeb6a 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -438,4 +438,5 @@ LIBBPF_1.6.0 {
+ 		bpf_linker__new_fd;
+ 		btf__add_decl_attr;
+ 		btf__add_type_attr;
++		libbpf_probe_bpf_kfunc;
+ } LIBBPF_1.5.0;
 diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-index a48a557314f6..de2b1205b436 100644
+index de2b1205b436..8efebc18a215 100644
 --- a/tools/lib/bpf/libbpf_probes.c
 +++ b/tools/lib/bpf/libbpf_probes.c
-@@ -102,12 +102,13 @@ __u32 get_kernel_version(void)
- 
- static int probe_prog_load(enum bpf_prog_type prog_type,
- 			   const struct bpf_insn *insns, size_t insns_cnt,
--			   char *log_buf, size_t log_buf_sz)
-+			   int *fd_array, char *log_buf, size_t log_buf_sz)
- {
- 	LIBBPF_OPTS(bpf_prog_load_opts, opts,
- 		.log_buf = log_buf,
- 		.log_size = log_buf_sz,
- 		.log_level = log_buf ? 1 : 0,
-+		.fd_array = fd_array,
- 	);
- 	int fd, err, exp_err = 0;
- 	const char *exp_msg = NULL;
-@@ -214,7 +215,7 @@ int libbpf_probe_bpf_prog_type(enum bpf_prog_type prog_type, const void *opts)
- 	if (opts)
- 		return libbpf_err(-EINVAL);
- 
--	ret = probe_prog_load(prog_type, insns, insn_cnt, NULL, 0);
-+	ret = probe_prog_load(prog_type, insns, insn_cnt, NULL, NULL, 0);
- 	return libbpf_err(ret);
+@@ -431,6 +431,57 @@ static bool can_probe_prog_type(enum bpf_prog_type prog_type)
+ 	return true;
  }
  
-@@ -448,7 +449,7 @@ int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_id helpe
- 		return libbpf_err(-EOPNOTSUPP);
- 
- 	buf[0] = '\0';
--	ret = probe_prog_load(prog_type, insns, insn_cnt, buf, sizeof(buf));
-+	ret = probe_prog_load(prog_type, insns, insn_cnt, NULL, buf, sizeof(buf));
- 	if (ret < 0)
- 		return libbpf_err(ret);
- 
++int libbpf_probe_bpf_kfunc(enum bpf_prog_type prog_type, int kfunc_id, int btf_fd,
++			   const void *opts)
++{
++	struct bpf_insn insns[] = {
++		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 1, kfunc_id),
++		BPF_EXIT_INSN(),
++	};
++	const size_t insn_cnt = ARRAY_SIZE(insns);
++	char buf[4096];
++	int fd_array[2] = {-1};
++	int ret;
++
++	if (opts)
++		return libbpf_err(-EINVAL);
++
++	if (!can_probe_prog_type(prog_type))
++		return libbpf_err(-EOPNOTSUPP);
++
++	if (btf_fd >= 0)
++		fd_array[1] = btf_fd;
++	else
++		/* insn.off = 0, means vmlinux btf */
++		insns[0].off = 0;
++
++	buf[0] = '\0';
++	ret = probe_prog_load(prog_type, insns, insn_cnt, btf_fd >= 0 ? fd_array : NULL,
++			      buf, sizeof(buf));
++	if (ret < 0)
++		return libbpf_err(ret);
++
++	if (ret > 0)
++		return 1; /* assume supported */
++
++	/* If BPF verifier recognizes BPF kfunc but it's not supported for
++	 * given BPF program type, it will emit "calling kernel function
++	 * <name> is not allowed". If the kfunc id is invalid,
++	 * it will emit "kernel btf_id <id> is not a function". If BTF fd
++	 * invalid in module BTF, it will emit "invalid module BTF fd specified" or
++	 * "negative offset disallowed for kernel module function call". If
++	 * kfunc prog not dev buound, it will emit "metadata kfuncs require
++	 * device-bound program".
++	 */
++	if (strstr(buf, "not allowed") || strstr(buf, "not a function") ||
++	   strstr(buf, "invalid module BTF fd") ||
++	   strstr(buf, "negative offset disallowed") ||
++	   strstr(buf, "device-bound program"))
++		return 0;
++
++	return 1;
++}
++
+ int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_id helper_id,
+ 			    const void *opts)
+ {
 -- 
 2.43.0
 
