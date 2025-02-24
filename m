@@ -1,208 +1,118 @@
-Return-Path: <bpf+bounces-52394-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52390-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BEF1A42915
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:15:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 123FFA428EF
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52E203B2BDB
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 17:06:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1CA51897B4B
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 17:04:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2387D26771B;
-	Mon, 24 Feb 2025 17:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A2B226659D;
+	Mon, 24 Feb 2025 17:00:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lpDm5H4s"
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="GAfWaG1X"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB93264A7B
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 17:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3407B26658F
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 17:00:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740416577; cv=none; b=PTKmgRr5wqRGbf2zcjdmgW3p/TGp+QwcJ3IINuhkktnZpweXGkLe97UDiiWm7AI/EUuV8eVhBGV6sFYH5liFiKJHkec5KToF+mNONyARBJXlr7J419xxRaFZsVUQV/4fw5/1PWAl0JHY8IntpFPHypCsyKksRZ1h7OV3b7lU2dA=
+	t=1740416408; cv=none; b=ffIYmZrfMTSRJi8+kYFQU6H6RSfP84BDGzs9HiiOrqm0HnsI7xUd9UoPY4BQNBwhmhSiC1FXdkTMLtEYThbHGPIbdUyCUKrnjAy0W3yni9OX6iePDWeWBlvmeBuKTLXeTH6o9P5EYlBTj4j8+ZGk1FDA0FA+3J2meDyvNQ9QbDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740416577; c=relaxed/simple;
-	bh=e1HU03QaEH/WJqwMrSHwDYP8oWlp/FRk7I/D+9cATTo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=anxNUEGVZL/kse+IrteziPjAHBRpyWytHcAi2Ealcb8MPCuZz1jfvLfcsl5uhgExYlslW0xsoi1uyhuiqF4q2ADY4ILiBZuFLp/YaRU+I7jQnTzoO99szVOLZx6NO5jH4ESQ9lw7as2fZrwwo3nlH/njZaU3tMcrOunss5CZhSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lpDm5H4s; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740416573;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qiQKTOacPogCTZt2sF84QiGnZvXEsGlrdkRpybzF4+0=;
-	b=lpDm5H4sJdnzN0FVGveCI+7jrxzFfbnhmXhpxW3Nnuhh6TdXNlMAdIcXDFOXlU/7+yYqRC
-	kg744NhFn8Epzua9iaUK3upeY8Ab4LxungmSXp5/ewmkDWRmAHr4VDpyOQurVCcO/LyXAP
-	P5CH5gjfz8nr0fvspiPu0PQ08IjrGzs=
-From: Tao Chen <chen.dylane@linux.dev>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	qmo@kernel.org
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	chen.dylane@gmail.com,
-	Tao Chen <chen.dylane@linux.dev>,
-	Tao Chen <dylane.chen@didiglobal.com>
-Subject: [PATCH bpf-next v8 5/5] selftests/bpf: Add libbpf_probe_bpf_kfunc API selftests
-Date: Tue, 25 Feb 2025 00:59:12 +0800
-Message-Id: <20250224165912.599068-6-chen.dylane@linux.dev>
-In-Reply-To: <20250224165912.599068-1-chen.dylane@linux.dev>
-References: <20250224165912.599068-1-chen.dylane@linux.dev>
+	s=arc-20240116; t=1740416408; c=relaxed/simple;
+	bh=H/eMT60CoAji4F4FxwCqPtUx6hQMzPO26wSo7Scx9oE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dwy2QfiFw4m6Wb42eG/BaKdexVLA4mxsRK3H/At5+0DWpzMo4v8rEnIae3epI2JDpdJIyNyIEIAJNdoD5R0on3X6Ahtb91K1sHnUct7pgnxeHzB3mrCATyB4FSchkbajF82FmEML5pZamifT8Wp4TqMiVWV9SfP4RRqv6FtTCeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=GAfWaG1X; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5dca468c5e4so8335897a12.1
+        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 09:00:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1740416404; x=1741021204; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NNWih9tGwSww/JPegbyk7ztiO19aEjAHfJHbiibWT5Y=;
+        b=GAfWaG1XraXegzjXe6MF5r/F9scDCaRIdSXos9sfgXrP6/xv0o9mv5rCO/E76k9E4Y
+         lIVHazip91fCEj/n1sGbIblqSh096MBLsY0sAN+jYRF5fR3NEcezIO/Q09GmOgGxEpnJ
+         HIqx20UNLqhTvcILJKzF644XYkMfu+sXfGpqA9Xm60klM1eRxSuBbUOVPbcrMJiaOroK
+         0Hm82Fx11mnnC3KvrpMVR0z1016zM6eJ/kmrWtvmgw6xS+0Faa9/xEABpESAMFU661wa
+         +vx3Z1eXfZ1XFSBv8CJEMoKsTeSSTdg1U0StRk0PXjBQQD/SwVDGh2kzSIlO3SGbNM5r
+         PFFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740416404; x=1741021204;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NNWih9tGwSww/JPegbyk7ztiO19aEjAHfJHbiibWT5Y=;
+        b=TLpTWHTqvSyKK3a4ST5rI+nkQcOsC8uUcKhOtYmNM2KaPAuF6PdIkVtSGmStd7ygm6
+         cd1O/Z4WwRreedyRogrmj6B0nAV6IEj8tOEK/iCi22J8OkrZB+W696k7l8fjf6PK7Ssa
+         byIUHLjLtyk6BLU0QIfTnF9Z9F1rH5nH0hixhOQf8GByFR2OyB4FsOrHJmG4jmlRwzN2
+         zGmeWxoz745d0T2iVQGqU6R5zRRC6vm50SsMhWGKfQ9QXoS4/4CZY8qvQzC4kfIPZRIw
+         deR9MIGOHw9oakHfivudCo6y453Sq3kKOJfAgkmg/KIJVIa8OLA/wmu2as+6HhiP6eWZ
+         USuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUfqbrOgEeMKj2afTvdrKXbIMI7c+RwoohXHjltSdgzORsK+izMndxnKG/AE9kr1erxof4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyl91DDKG5jSsgBHr5KFOR3tgTnkB4nDI/BHQZD57ITe8d6JhGj
+	I53vlwWZ8blqiYJlun1+YIuutQAIpObNGrRgMh5YkjKHKhpOFqBRKKQhueWtjsc=
+X-Gm-Gg: ASbGncsZSPkyIWYnKI6v16aJIA1l58PmqShDSfdVMqWtgKFEVUiDPIxp90V41V6E3R6
+	RZpKXyvYvJPkBvyD1rpV9kkTsr1o49nXo2Xv+dO3oPUXN6Dwvv8AWNV5ENLoJ7vTvG2ruf9Qqqd
+	xrnjmf8gOVoykKOcFWWK8EAKRGtVNGj3j0Z9oxioKbgIlvH6ZT6f8nsyojJvmifzVSEHR//F3XD
+	QpgK6jBr7Ey5LDaPypXEojvz3NJsOLQp8V8ETTva7Bhb88eqeAX2Wvc1/BeFsVPOltIr578JO03
+	GGVMRARxV09qkgyL+KFuemv2+gKS9uMiY/YOhUhelv0R41AI9DDbFqQqew==
+X-Google-Smtp-Source: AGHT+IEwsqOsw++yT+0bFX5SCBK/HWfbV4FpqmVLjfqG5YZq6RgAGIJsGwljpC8gwz0YwsGCV5s/DQ==
+X-Received: by 2002:a17:907:6095:b0:ab7:e73a:f2c8 with SMTP id a640c23a62f3a-abc09a97a2cmr1333363866b.26.1740416404255;
+        Mon, 24 Feb 2025 09:00:04 -0800 (PST)
+Received: from [192.168.0.205] (78-154-15-142.ip.btc-net.bg. [78.154.15.142])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abbc9ff4fcdsm1213817766b.87.2025.02.24.09.00.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Feb 2025 09:00:03 -0800 (PST)
+Message-ID: <e8b6465a-3b32-4ec1-907a-414a6e5a10c1@blackwall.org>
+Date: Mon, 24 Feb 2025 19:00:02 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iproute2-next v2] ip: link: netkit: Support scrub options
+To: Jordan Rife <jordan@jrife.io>, Daniel Borkmann <daniel@iogearbox.net>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, stephen@networkplumber.org,
+ dsahern@kernel.org
+References: <20250224164903.138865-1-jordan@jrife.io>
+Content-Language: en-US
+From: Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20250224164903.138865-1-jordan@jrife.io>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add selftests for prog_kfunc feature probing.
+On 2/24/25 18:49, Jordan Rife wrote:
+> Add "scrub" option to configure IFLA_NETKIT_SCRUB and
+> IFLA_NETKIT_PEER_SCRUB when setting up a link. Add "scrub" and
+> "peer scrub" to device details as well when printing.
+> 
+> $ sudo ./ip/ip link add jordan type netkit scrub default peer scrub none
+> $ ./ip/ip -details link show jordan
+> 43: jordan@nk0: <BROADCAST,MULTICAST,NOARP,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>     link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff promiscuity 0 allmulti 0 minmtu 68 maxmtu 65535
+>     netkit mode l3 type primary policy forward peer policy forward scrub default peer scrub none numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536
+> 
+> v1->v2: Added some spaces around "scrub SCRUB" in the help message.
+> 
+> Link: https://lore.kernel.org/netdev/20241004101335.117711-1-daniel@iogearbox.net/
+> 
+> Signed-off-by: Jordan Rife <jordan@jrife.io>
+> ---
+>  ip/iplink_netkit.c | 46 +++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 45 insertions(+), 1 deletion(-)
+> 
 
- ./test_progs -t libbpf_probe_kfuncs
- #153     libbpf_probe_kfuncs:OK
- Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Cc: Tao Chen <dylane.chen@didiglobal.com>
-Reviewed-by: Jiri Olsa <jolsa@kernel.org>
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- .../selftests/bpf/prog_tests/libbpf_probes.c  | 111 ++++++++++++++++++
- 1 file changed, 111 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-index 4ed46ed58a7b..d8f5475a94ce 100644
---- a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-+++ b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-@@ -126,3 +126,114 @@ void test_libbpf_probe_helpers(void)
- 		ASSERT_EQ(res, d->supported, buf);
- 	}
- }
-+
-+static int module_btf_fd(char *module)
-+{
-+	int fd, err;
-+	__u32 id = 0, len;
-+	struct bpf_btf_info info;
-+	char name[64];
-+
-+	while (true) {
-+		err = bpf_btf_get_next_id(id, &id);
-+		if (err)
-+			return -1;
-+
-+		fd = bpf_btf_get_fd_by_id(id);
-+		if (fd < 0) {
-+			if (errno == ENOENT)
-+				continue;
-+			return -1;
-+		}
-+		len = sizeof(info);
-+		memset(&info, 0, sizeof(info));
-+		info.name = ptr_to_u64(name);
-+		info.name_len = sizeof(name);
-+		err = bpf_btf_get_info_by_fd(fd, &info, &len);
-+		if (err) {
-+			close(fd);
-+			return -1;
-+		}
-+		/* find target module BTF */
-+		if (!strcmp(name, module))
-+			break;
-+
-+		close(fd);
-+	}
-+
-+	return fd;
-+}
-+
-+void test_libbpf_probe_kfuncs(void)
-+{
-+	int ret, kfunc_id, fd;
-+	char *kfunc = "bpf_cpumask_create";
-+	struct btf *vmlinux_btf = NULL;
-+	struct btf *module_btf = NULL;
-+
-+	vmlinux_btf = btf__parse("/sys/kernel/btf/vmlinux", NULL);
-+	if (!ASSERT_OK_PTR(vmlinux_btf, "btf_parse"))
-+		return;
-+
-+	kfunc_id = btf__find_by_name_kind(vmlinux_btf, kfunc, BTF_KIND_FUNC);
-+	if (!ASSERT_GT(kfunc_id, 0, kfunc))
-+		goto cleanup;
-+
-+	/* prog BPF_PROG_TYPE_SYSCALL supports kfunc bpf_cpumask_create */
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_SYSCALL, kfunc_id, -1, NULL);
-+	if (!ASSERT_EQ(ret, 1, "kfunc in vmlinux support"))
-+		goto cleanup;
-+
-+	/* prog BPF_PROG_TYPE_KPROBE does not support kfunc bpf_cpumask_create */
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_KPROBE, kfunc_id, -1, NULL);
-+	if (!ASSERT_EQ(ret, 0, "kfunc in vmlinux not suuport"))
-+		goto cleanup;
-+
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_KPROBE, -1, -1, NULL);
-+	if (!ASSERT_EQ(ret, 0, "invalid kfunc id:-1"))
-+		goto cleanup;
-+
-+	ret = libbpf_probe_bpf_kfunc(100000, kfunc_id, -1, NULL);
-+	if (!ASSERT_ERR(ret, "invalid prog type:100000"))
-+		goto cleanup;
-+
-+	if (!env.has_testmod)
-+		goto cleanup;
-+
-+	module_btf = btf__load_module_btf("bpf_testmod", vmlinux_btf);
-+	if (!ASSERT_OK_PTR(module_btf, "load module BTF"))
-+		goto cleanup;
-+
-+	kfunc_id = btf__find_by_name(module_btf, "bpf_kfunc_call_test1");
-+	if (!ASSERT_GT(kfunc_id, 0, "func not found"))
-+		goto cleanup;
-+
-+	fd = module_btf_fd("bpf_testmod");
-+	if (!ASSERT_GE(fd, 0, "module BTF fd"))
-+		goto cleanup;
-+
-+	/* prog BPF_PROG_TYPE_SYSCALL supports kfunc bpf_kfunc_call_test1 in bpf_testmod */
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_SYSCALL, kfunc_id, fd, NULL);
-+	if (!ASSERT_EQ(ret, 1, "kfunc in module BTF support"))
-+		goto cleanup_fd;
-+
-+	/* prog BPF_PROG_TYPE_KPROBE does not support kfunc bpf_kfunc_call_test1
-+	 * in bpf_testmod
-+	 */
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_KPROBE, kfunc_id, fd, NULL);
-+	if (!ASSERT_EQ(ret, 0, "kfunc in module BTF not support"))
-+		goto cleanup_fd;
-+
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_SYSCALL, -1, fd, NULL);
-+	if (!ASSERT_EQ(ret, 0, "invalid kfunc id in module BTF"))
-+		goto cleanup_fd;
-+
-+	ret = libbpf_probe_bpf_kfunc(BPF_PROG_TYPE_SYSCALL, kfunc_id, 100, NULL);
-+	ASSERT_EQ(ret, 0, "invalid BTF fd in module BTF");
-+
-+cleanup_fd:
-+	close(fd);
-+cleanup:
-+	btf__free(vmlinux_btf);
-+	btf__free(module_btf);
-+}
--- 
-2.43.0
+Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
 
 
