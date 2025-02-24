@@ -1,119 +1,125 @@
-Return-Path: <bpf+bounces-52419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3CB8A42CE1
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 20:41:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C32C4A42D01
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 20:48:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD957177999
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 19:41:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5720818976BB
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 19:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A6E204F9B;
-	Mon, 24 Feb 2025 19:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68EEE1EA7CF;
+	Mon, 24 Feb 2025 19:47:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HGJveXz4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TMq4ivB4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDAB71F3D45
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 19:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411F62571CC
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 19:47:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740426094; cv=none; b=OHXWFW6iiiH7LItNaqiN8X6D8oulxG094Ai1gA/6W0NbUMj/aQAjo3nIsT9a3y79ZnRMovQBJn+nzjoo3IG04Rf4qUxwVwqdqVNEdehkAIVuTtpSrOxjPFGw/1bg2EjNxJS1r1tL0ylmUVtoEfHP4Kyi6HGOL0IHeYcyt9P/gU0=
+	t=1740426479; cv=none; b=EM0y0gf33uv8rq4mwknzK1NZyTtRBcs15qFGPogvlqCcuVwSbwXDOKNzg9VvKY/9LO2Q6AyzljiJUYiyxWqSldpHQdUFvC3bIjnBlUDXjSliarcVtAuVqtZyaCJjOydSnsc+qBBuxl8zvqNfWSsD0p0iHR7pCvIaPh94yaxBUMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740426094; c=relaxed/simple;
-	bh=e9wZUaMsThqXA5Psm5TQAGgpxXYXehCMn/PsCVL/Jys=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I3iLrAv4IJozMH/txK02ROrrI69+mWHZbnnfo/AjkK51dH+drg0/3MPXY5lELqEa8HdR3it//3amXUnVdHC/4cshlQkX735n1ExmvVrz1O2Z2D23jyy/d5IGCJt+fCCDplM/bo8snKOtiGQqnIbYp4rlLh0dFmsuwi9mbljFXC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HGJveXz4; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-38f1e8efe82so5085412f8f.0
-        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 11:41:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740426091; x=1741030891; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cc5l4UFmBL3LDHJS2eZwaejbWuDpDuxA/29lD2jIyuM=;
-        b=HGJveXz4Pzbs+B/5ar0G4mOfqzMfSJpv27djDrjh8wf3WBXZkL+GArcAUq4E8eYrCe
-         3vNvKwOUwbaPVxQpgfQSZaYe6E0F8D2M4WuDIZ2TWH5hq/WVkTscBhi/jGPD0dNUvp4m
-         F7D7HZXHN2S4KVutcdSSNE7k64/Y1QMHliak6J2feMP7JpTG+HfuTi4b4jXttuQtNYfl
-         amraZXn4RRqtUuamCu5zfKsoN90DpoldWuoOAUKuTZwIyj6vF8VxwSsrea+eDBKvSwK6
-         Vo4vMyjSsCP2OoY1GRbeQuU31bnqgkoQe7J0wVNE37mVBaA0geDZ+BhS4yXCWFFkFrD5
-         mogA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740426091; x=1741030891;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cc5l4UFmBL3LDHJS2eZwaejbWuDpDuxA/29lD2jIyuM=;
-        b=eG6c+9Iydpo13uB7XpaQyGyGh0jvwOn+dssuLGh5iQKJ0eCUQ3jBZ+BNTkQa9rZ1uP
-         yYYjVL9EXrEmtQOxIRTQjJYTxp+PkQbxA1BNJnZLkbdzjjLBxVzVMWshchjMKNLlgyN1
-         ajZvB5vJBcnCe1A4mYwlT1KPi8MXH/L+HELZhWnoue539CqVoIEWFdvzRa53ZfQ4CgVe
-         pGNBXxsOHC7gaicrwUl3lbY4RWuChn/b/bkp3y2RucnUVUz3/ZTGweAQScapRi4mpMp3
-         cxhJPClzRsp2/My4HWcVqJUrOB373+CqIJsRB6gkczRBqLkk3qYkHa0rgX6QZcwqizP/
-         x5kQ==
-X-Gm-Message-State: AOJu0YzetVTG8gg1WiGMeHdNyYugJc5/U7qd5DKsD8P7GpmyefK1pNCI
-	IKBE5IoIUQcdSmg0Z7CHTRvflF8wkZXfptUzg87xn4S5ZgozZAVo3nGojKB6yfh3Axjob0lJUv+
-	hN5hpYh0joqLL5pFYI6Qbg0gsVhxMxrfo
-X-Gm-Gg: ASbGncszFw8yJ7Xe+tRkMTXYdCnfPfbfGfpeiGjfbtc4tvPO6wKHXckwVfGD1BjXDOw
-	IdIp1VVbXD1ENyc3wt0LuB2PIZObQAvBnqWredNP78Y87B1gCO21a/m4zrOkXESoez/8T+oLm19
-	FqbbeSWX3S/KWIVqlEDhHArdY=
-X-Google-Smtp-Source: AGHT+IFWKGniNzqJbRyQdd99kLN5oLYNkOvIAwlznTeSMArpbX7mdgvET3TnUxfxJ7INhnfxdUe0eyrvdZwiJOKN0Vo=
-X-Received: by 2002:a5d:64e2:0:b0:38f:4244:68cb with SMTP id
- ffacd0b85a97d-390cc604087mr364295f8f.12.1740426090868; Mon, 24 Feb 2025
- 11:41:30 -0800 (PST)
+	s=arc-20240116; t=1740426479; c=relaxed/simple;
+	bh=k1j1TxXiLFPKo9IcYBdCCwwk/S72wAR6K+LEV4qdv2k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BGPG/0wM38AKA74IaXlTyFZvpmNAXSJPzr51JRc1Q/eiFQ4/d1witMP/yhhYX8gTyzs4VJt22K7rr+cpfszAwCZaHW6B5U0OdcaKk3UspJXeETrkDaLQmYysTudbBq0lGMFLLdnEpkIZTwYJ843FltM6cjXnDfdthGdju1Il+D0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TMq4ivB4; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b3d9f618-5d7e-41bb-ba50-474ba3b8cfd7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740426474;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LfHnf8t0+ykXnaETy2HqtZyceh6blUQ28pANW1Fb+yU=;
+	b=TMq4ivB4QyHRTATaMDH+rU6DuNhGtEZFUlGgUibbzAlhKPR95kp72inEDDfGEnKyAgEclB
+	e7FKKomlWQJp47SrUKsWmmSX8rgw2Oxpq015rdJE4Jog7nr+Jkqr2+TtTDs1ea/Tcw2grC
+	oR3xm2rFmSXDrnAE1dqVNmPzhT0HvSE=
+Date: Mon, 24 Feb 2025 11:47:45 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250224153352.64689-1-leon.hwang@linux.dev> <20250224153352.64689-3-leon.hwang@linux.dev>
-In-Reply-To: <20250224153352.64689-3-leon.hwang@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 24 Feb 2025 11:41:19 -0800
-X-Gm-Features: AWEUYZmKpG9LBKZQFx__YcP2LC4TmbOBEsHC6gPM-JQquoih6_t6RK6YLMFPlFM
-Message-ID: <CAADnVQKOeKfxL_3tCw1xWNS1CpXz-6pVUG-1UWhZwpPjRy+32A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/4] bpf: Improve error reporting for freplace
- attachment failure
-To: Leon Hwang <leon.hwang@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Manjusaka <me@manjusaka.me>, kernel-patches-bot@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next] bpf: Fix kmemleak warnings for percpu hashmap
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>, Vlad Poenaru <thevlad@meta.com>
+References: <20250224175514.2207227-1-yonghong.song@linux.dev>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250224175514.2207227-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Feb 24, 2025 at 7:34=E2=80=AFAM Leon Hwang <leon.hwang@linux.dev> w=
-rote:
->
-> @@ -3539,7 +3540,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog =
-*prog,
->                  */
->                 struct bpf_attach_target_info tgt_info =3D {};
->
-> -               err =3D bpf_check_attach_target(NULL, prog, tgt_prog, btf=
-_id,
-> +               err =3D bpf_check_attach_target(log, prog, tgt_prog, btf_=
-id,
->                                               &tgt_info);
+On 2/24/25 9:55 AM, Yonghong Song wrote:
+> Vlad Poenaru from Meta reported the following kmemleak issues:
+> 
+>    ...
+>    unreferenced object 0x606fd7c44ac8 (size 32):
+>      comm "floodgate_agent", pid 5077, jiffies 4294746072
+>      hex dump (first 32 bytes on cpu 32):
+>        00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>        00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>      backtrace (crc 0):
+>        pcpu_alloc_noprof+0x730/0xeb0
+>        bpf_map_alloc_percpu+0x69/0xc0
+>        prealloc_init+0x9d/0x1b0
+>        htab_map_alloc+0x363/0x510
+>        map_create+0x215/0x3a0
+>        __sys_bpf+0x16b/0x3e0
+>        __x64_sys_bpf+0x18/0x20
+>        do_syscall_64+0x7b/0x150
+>        entry_SYSCALL_64_after_hwframe+0x4b/0x53
+>    unreferenced object 0x606fd7c44ae8 (size 32):
+>      comm "floodgate_agent", pid 5077, jiffies 4294746072
+>      hex dump (first 32 bytes on cpu 32):
+>        d3 08 00 00 00 00 00 00 d3 08 00 00 00 00 00 00  ................
+>        00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>      backtrace (crc d197b0fe):
+>        pcpu_alloc_noprof+0x730/0xeb0
+>        bpf_map_alloc_percpu+0x69/0xc0
+>        prealloc_init+0x9d/0x1b0
+>        htab_map_alloc+0x363/0x510
+>        map_create+0x215/0x3a0
+>        __sys_bpf+0x16b/0x3e0
+>        __x64_sys_bpf+0x18/0x20
+>        do_syscall_64+0x7b/0x150
+>        entry_SYSCALL_64_after_hwframe+0x4b/0x53
+>    ...
+> 
+> Further investigation shows the reason is due to not 8-byte aligned
+> store of percpu pointer in htab_elem_set_ptr():
+>    *(void __percpu **)(l->key + key_size) = pptr;
+> 
+> Note that the whole htab_elem alignment is 8 (for x86_64). If the key_size
+> is 4, that means pptr is stored in a location which is 4 byte aligned but
+> not 8 byte aligned. In mm/kmemleak.c, scan_block() scans the memory based
+> on 8 byte stride, so it won't detect above pptr, hence reporting the memory
+> leak.
+> 
+> In htab_map_alloc(), we already have
+> 
+>          htab->elem_size = sizeof(struct htab_elem) +
+>                            round_up(htab->map.key_size, 8);
+>          if (percpu)
+>                  htab->elem_size += sizeof(void *);
+>          else
+>                  htab->elem_size += round_up(htab->map.value_size, 8);
+> 
+> So storing pptr with 8-byte alignment won't cause any problem and can fix
+> kmemleak too.
 
-I still don't like this uapi addition.
-
-It only helps a rare corner case of freplace usage:
-                /* If there is no saved target, or the specified target is
-                 * different from the destination specified at load time, w=
-e
-                 * need a new trampoline and a check for compatibility
-                 */
-
-If it was useful in more than one case we could consider it,
-but uapi addition for a single rare use, is imo wrong trade off.
-
-pw-bot: cr
+Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
 
