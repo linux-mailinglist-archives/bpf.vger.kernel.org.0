@@ -1,445 +1,338 @@
-Return-Path: <bpf+bounces-52406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52407-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70673A42B38
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 19:25:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C891A42BD1
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 19:42:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B33103B88C1
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:25:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 460D517A552
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDDD7265630;
-	Mon, 24 Feb 2025 18:25:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA57144304;
+	Mon, 24 Feb 2025 18:42:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="I1JBiy/H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sw830aYa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9C4144304
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 18:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C85C5B211
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 18:42:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740421547; cv=none; b=lREHEkxDU1XrgUaOze624vZ4CM8u3V8HiZW0lJBGtgOFTjFDZBICDVB1Pu94+WF4QhXGIMpxepzuCscSmGVv1pEJV67kKGa6Yf+9nDavTSUpig9h26HMMCC/ZajhSczfgDuw/6caW2sUHjbHuseWlVoVsbWcbg0Ra9nvN/VJroM=
+	t=1740422533; cv=none; b=ArXsibAnPi9+/l+faMX+Oe5HEXZ8nNQslHxyr5nFIDPgByhQZQ1GhI9dqNs+E/Q6HOdRf+0w48uspoLxwzapkpncuMCWep0zTrTXFIla81OMEz3U0mixb3lxY8iZ4PUYz5wyeiv+1fuLv1gnyjh/8bATCtI202MI3qQIdZrxNEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740421547; c=relaxed/simple;
-	bh=3+C2XFdM+MiYotwwfZEDFJk1wvC+PN5AwApJ/krQf7I=;
+	s=arc-20240116; t=1740422533; c=relaxed/simple;
+	bh=lFTK4JO1fQOItvAJbGLm1lx3crl2PO6oYAwJrOjjOIM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S1VQT5aY9CVUy/wAnyKjeGpx0R8eMz4e8xH8sT/fpsVb7uuj/o5Er1r3Qo5JIiMTki+pJ1oC3d3D8S58Tagjx7UmpATdyVBq8qsQylfVGJ8NIEoo2FgWQyI2FY7Ze4q38HpW1oYbDuJzHx4mw06ztRoQmI1K+rh88hqKid/RC3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=I1JBiy/H; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5ded51d31f1so8354587a12.3
-        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 10:25:44 -0800 (PST)
+	 To:Cc:Content-Type; b=h+/mfs/5YfWoNwsfKfyf5xH82T61FHiYIBpVDZSwWHv4hisaTpb7u+2Chk0pJqOxEfkCGdMF4yvmL6uvhC/JyopBwIe9Y9N7OZZFIf+ku6QppUjazitHGQTsRT//mk7WUPZvVljMGAPhtN7UMLpWztGApN1L8lQ7NKqYAXp3LSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sw830aYa; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2fa8ac56891so7672257a91.2
+        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 10:42:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1740421543; x=1741026343; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740422531; x=1741027331; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GQ13OakhDUivH0BDgUnrZutLZIWGOFNbCv3bleOX4H4=;
-        b=I1JBiy/HwmcdZayxK19EtnljJ9UjYjNtIPn9y4diMi92zMhZSu44hOEKCjxxR8cGmD
-         QB3nos4bjX8kwdXviqj8fE9G2X2x+BhwINKKyXcpRGkMGGNiM2bt+kw/XXkk2iiWwjVy
-         nuLuwu6bbUg46SwESN81F8RCKPVWW20KD+kM7IXUMT+0vyTzJcVlNkQ337lOBtQ+dMv/
-         dwjQqIJ3q6cByVcsAs7PWnjh53Ov2We95mGawKAD4IbjJ4P5sHoshm4a4ePDahNve1Wb
-         iRUuykxhMyUBMzADJoUrWnPhXgFZfMH11bM22L9faW1sW+nqocvsNeMI4+UONisSPMno
-         ZCug==
+        bh=NRiBIHJgP6nI5gN/Mby01kB5ttTFTyPC+PhC7ewxwRU=;
+        b=Sw830aYafC0jbPlqM6TF/NIc+t+6c+YOr4XQDgH0cmxW5uAfUmqwTfRGkmkE4mlGcj
+         a+Z1vuEuUM+zrsmX0L/Qe6buPjU1HMqpYpv+wPy1MK75xOUuLagg+aok0TGXv5k1jW9v
+         GcYHuO4EE1AXLli1tVpfBXP8o/s41jib0G7bU053eRevyeEZ1BXJiysOJUrt1JZ1jSqL
+         55cPd0NQhWJ9QK7+EJPh2COr4rqiRGOfWfyEmMhwYyIoPSAxEOp1pVyMZh6lyEdSddhd
+         s20dG0UEllLXAewXsR5LE+MzH6FctGUZVNSCWQw+9kwXtNHYcZQIAV6r4aV4g32AzbJo
+         GikA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740421543; x=1741026343;
+        d=1e100.net; s=20230601; t=1740422531; x=1741027331;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GQ13OakhDUivH0BDgUnrZutLZIWGOFNbCv3bleOX4H4=;
-        b=lnqOWVSBuhhEtIsNnLSnl/n6lWCjFSi+UjMIyUIjppNn1bLwkxXp09ml7UVkP3QYBc
-         HzD8sWr1JSEn7zPGAF61YrSsd5mnNKIfetbNDPd3DwB39tdQBq6iGu2sUIYXytfMzI0B
-         WveG1OvZFpIEEWpaooc4s2DOR+QPVIc0Ze1Mx8psxqxdIp5itIgjV7QO6srtRfTq++oY
-         YugC8g0OAYOIgCCSuDMsg9LGF+LjN2Rs5Qgjz9+iGxZxuLQlWhezlki+OlZQijPF3JMx
-         P4pQMshOtsreaot22QXakIWtRsXuAVw8vAMIUpoaOtmxLhAV5Bq5rz/Tw/ibogsazzoo
-         Ny3g==
-X-Forwarded-Encrypted: i=1; AJvYcCXRv7Mv1fkZkysY7ZGoNhq4Vb7l3fTRGHd01LKsBn03jCT7xEFhxGqgn5xzj+yJmFROBo8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzeMa1MMJbnGwqcrJQOINn0FsnyVk8DwkGXBatB7wxTAJwX8tnx
-	tpG/EaNDyJjFkCWkfCWy+Xc/a99F2GHzOXQpKfpnW1+t6Y1zNYa6ZpbPz2Y+dtbf+xbdOSvb3pM
-	b+E5OmrcWGURZmuMDwui0NOUHUsSID2tFFUXk
-X-Gm-Gg: ASbGncvt4TmqZ03FPKKoCFJr2SO7dCZJBwoLAXIxrQGW/Qbb1VmUeKSEHplT3NthWs6
-	TO4VxzIrkzaUtTmzS/JD9VZOz2/LG52ehk07XfZfWx8LGU+i/r/3HJC5lxw2y5OvqgD7yT13XnR
-	R3aQFDEF5ucXmK7+476Vaa8+ZUrBKz2rH/KfDTtjs=
-X-Google-Smtp-Source: AGHT+IEo6+baBz3VcUCA7Q2SFKGdLj5HZA/OctDZcIALo2lnD7bq8eH0kgZ+waVoSvj87h7QqRl3hxkZJEe1GU67+tk=
-X-Received: by 2002:a17:907:6ea1:b0:abe:c11e:29d8 with SMTP id
- a640c23a62f3a-abec11e2a27mr302759266b.33.1740421542774; Mon, 24 Feb 2025
- 10:25:42 -0800 (PST)
+        bh=NRiBIHJgP6nI5gN/Mby01kB5ttTFTyPC+PhC7ewxwRU=;
+        b=ro0YJ9ovUnXcjEZWGwdUnETcAc2MCQT09Ju1JeMD+/LnIZgJG+02DAeOAGd0RcG5V2
+         m1h3p8GYfKbejrbEO5mEIy+aqnOGpErHKy1+JoWlTKSVEiZt8/879w4SBhTWCyn5BxVh
+         WNwDBPNEIMCY5lavmq4IKspgJ2fL6UZvD/QE2L2StylMVgL7VEbVrZ04e4iV/IwzGuvl
+         LDPfUr/oJJ0k7AJjjC8nHH0qfk5u5W+Gn9gmoce8i/XKMrEu3PDpc9SdXvW2Fr9S1U1W
+         fzwllxxyHWFBJ/DTf/0Lgh48uaZhALMZI06/rNXmc4HdcsnYfwA7E31y4QS9zr5u0DKn
+         WJVw==
+X-Gm-Message-State: AOJu0Yw+/mDf7P5/nCQGH+7dnyumCsd+1c4kvmDTqIfi36MGpWnRL3rb
+	8AjswAqbm1gjfWiiVcQcDynXvDEQ5AdnWtltwLrIEhFkJR+VrYVHuEkRBk0bRze6VE0jmPRuyZ6
+	oEz0679E8uNe0gFQBIOAPKOs7yOo=
+X-Gm-Gg: ASbGncsZBhlUES6xfnN4SRLZ81Lhb+uOUNcamZMmZLkB3nw9xjYDmV9Xl/hkgFQwWL/
+	sTfO/wDeosAFIM+ZGoWizZL9J0LiySwQAVbcrMZMGrzN59aKzXnX9OGIY7g7SE9UyOI/i0EkuQm
+	JSgIogRrA0n8OmXdiFyjWXX60=
+X-Google-Smtp-Source: AGHT+IG8Bs7QtNrpo1s4Af/so1r5b0v3WyUxO+Zau0YznN6s3hl6epICP2VJ5tZ/8WXuQAsf2PTur6csTvWbw0UdacQ=
+X-Received: by 2002:a17:90a:d2d0:b0:2ee:b6c5:1def with SMTP id
+ 98e67ed59e1d1-2fe68ad9ef3mr319794a91.8.1740422530778; Mon, 24 Feb 2025
+ 10:42:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250219214400.3317548-1-ctshao@google.com> <20250219214400.3317548-3-ctshao@google.com>
- <Z7ghWIq8wXCJ2Y8T@google.com>
-In-Reply-To: <Z7ghWIq8wXCJ2Y8T@google.com>
-From: Chun-Tse Shao <ctshao@google.com>
-Date: Mon, 24 Feb 2025 10:25:30 -0800
-X-Gm-Features: AWEUYZkaqFbzyjKWs6DYYjfrLZ0yUlTWGqSBzwl0SUsjfGyEQSozOobzwp4K6dY
-Message-ID: <CAJpZYjUj1un3pnxQWp1r3fS235WnCHZU94agiV3FCs5Ph8uJWw@mail.gmail.com>
-Subject: Re: [PATCH v6 2/4] perf lock: Retrieve owner callstack in bpf program
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com, 
-	acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
-	kan.liang@linux.intel.com, nick.forrington@arm.com, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+References: <20250213164812.2668578-1-yonghong.song@linux.dev>
+In-Reply-To: <20250213164812.2668578-1-yonghong.song@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 24 Feb 2025 10:41:58 -0800
+X-Gm-Features: AWEUYZlFV6hY0qssOr6dw16Bl8SW2njZkpTq2iGr1MIWuz1uZe2C7q31PtMJf28
+Message-ID: <CAEf4Bza-Wz6Tsi=h9hwFg1TGbjsYMBi4BDGEnqtMjSj_GpOFNQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Allow pre-ordering for bpf cgroup progs
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
+	Martin KaFai Lau <martin.lau@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Thank you for your review, Namhyung.
-
-On Thu, Feb 20, 2025 at 10:46=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
+On Thu, Feb 13, 2025 at 8:48=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
 >
-> On Wed, Feb 19, 2025 at 01:40:01PM -0800, Chun-Tse Shao wrote:
-> > This implements per-callstack aggregation of lock owners in addition to
-> > per-thread.  The owner callstack is captured using `bpf_get_task_stack(=
-)`
-> > at `contention_begin()` and it also adds a custom stackid function for =
-the
-> > owner stacks to be compared easily.
-> >
-> > The owner info is kept in a hash map using lock addr as a key to handle
-> > multiple waiters for the same lock.  At `contention_end()`, it updates =
-the
-> > owner lock stat based on the info that was saved at `contention_begin()=
-`.
-> > If there are more waiters, it'd update the owner pid to itself as
-> > `contention_end()` means it gets the lock now.  But it also needs to ch=
-eck
-> > the return value of the lock function in case task was killed by a sign=
-al
-> > or something.
-> >
-> > Signed-off-by: Chun-Tse Shao <ctshao@google.com>
-> > ---
-> >  .../perf/util/bpf_skel/lock_contention.bpf.c  | 218 +++++++++++++++++-
-> >  1 file changed, 209 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/per=
-f/util/bpf_skel/lock_contention.bpf.c
-> > index 23fe9cc980ae..e8b113d5802a 100644
-> > --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> > @@ -197,6 +197,9 @@ int data_fail;
-> >  int task_map_full;
-> >  int data_map_full;
-> >
-> > +struct task_struct *bpf_task_from_pid(s32 pid) __ksym __weak;
-> > +void bpf_task_release(struct task_struct *p) __ksym __weak;
-> > +
-> >  static inline __u64 get_current_cgroup_id(void)
-> >  {
-> >       struct task_struct *task;
-> > @@ -420,6 +423,61 @@ static inline struct tstamp_data *get_tstamp_elem(=
-__u32 flags)
-> >       return pelem;
-> >  }
-> >
-> > +static inline s32 get_owner_stack_id(u64 *stacktrace)
-> > +{
-> > +     s32 *id, new_id;
-> > +     static s64 id_gen =3D 1;
-> > +
-> > +     id =3D bpf_map_lookup_elem(&owner_stacks, stacktrace);
-> > +     if (id)
-> > +             return *id;
-> > +
-> > +     new_id =3D (s32)__sync_fetch_and_add(&id_gen, 1);
-> > +
-> > +     bpf_map_update_elem(&owner_stacks, stacktrace, &new_id, BPF_NOEXI=
-ST);
-> > +
-> > +     id =3D bpf_map_lookup_elem(&owner_stacks, stacktrace);
-> > +     if (id)
-> > +             return *id;
-> > +
-> > +     return -1;
-> > +}
-> > +
-> > +static inline void update_contention_data(struct contention_data *data=
-, u64 duration, u32 count)
-> > +{
-> > +     __sync_fetch_and_add(&data->total_time, duration);
-> > +     __sync_fetch_and_add(&data->count, count);
-> > +
-> > +     /* FIXME: need atomic operations */
-> > +     if (data->max_time < duration)
-> > +             data->max_time =3D duration;
-> > +     if (data->min_time > duration)
-> > +             data->min_time =3D duration;
-> > +}
-> > +
-> > +static inline void update_owner_stat(u32 id, u64 duration, u32 flags)
-> > +{
-> > +     struct contention_key key =3D {
-> > +             .stack_id =3D id,
-> > +             .pid =3D 0,
-> > +             .lock_addr_or_cgroup =3D 0,
-> > +     };
-> > +     struct contention_data *data =3D bpf_map_lookup_elem(&owner_stat,=
- &key);
-> > +
-> > +     if (!data) {
-> > +             struct contention_data first =3D {
-> > +                     .total_time =3D duration,
-> > +                     .max_time =3D duration,
-> > +                     .min_time =3D duration,
-> > +                     .count =3D 1,
-> > +                     .flags =3D flags,
-> > +             };
-> > +             bpf_map_update_elem(&owner_stat, &key, &first, BPF_NOEXIS=
-T);
-> > +     } else {
-> > +             update_contention_data(data, duration, 1);
-> > +     }
-> > +}
-> > +
-> >  SEC("tp_btf/contention_begin")
-> >  int contention_begin(u64 *ctx)
-> >  {
-> > @@ -437,6 +495,72 @@ int contention_begin(u64 *ctx)
-> >       pelem->flags =3D (__u32)ctx[1];
-> >
-> >       if (needs_callstack) {
-> > +             u32 i =3D 0;
-> > +             u32 id =3D 0;
-> > +             int owner_pid;
-> > +             u64 *buf;
-> > +             struct task_struct *task;
-> > +             struct owner_tracing_data *otdata;
-> > +
-> > +             if (!lock_owner)
-> > +                     goto skip_owner;
-> > +
-> > +             task =3D get_lock_owner(pelem->lock, pelem->flags);
-> > +             if (!task)
-> > +                     goto skip_owner;
-> > +
-> > +             owner_pid =3D BPF_CORE_READ(task, pid);
-> > +
-> > +             buf =3D bpf_map_lookup_elem(&stack_buf, &i);
-> > +             if (!buf)
-> > +                     goto skip_owner;
-> > +             for (i =3D 0; i < max_stack; i++)
-> > +                     buf[i] =3D 0x0;
-> > +
-> > +             if (!bpf_task_from_pid)
-> > +                     goto skip_owner;
-> > +
-> > +             task =3D bpf_task_from_pid(owner_pid);
-> > +             if (!task)
-> > +                     goto skip_owner;
-> > +
-> > +             bpf_get_task_stack(task, buf, max_stack * sizeof(unsigned=
- long), 0);
-> > +             bpf_task_release(task);
-> > +
-> > +             otdata =3D bpf_map_lookup_elem(&owner_data, &pelem->lock)=
+> Currently for bpf progs in a cgroup hierarchy, the effective prog array
+> is computed from bottom cgroup to upper cgroups (post-ordering). For
+> example, the following cgroup hierarchy
+>     root cgroup: p1, p2
+>         subcgroup: p3, p4
+> have BPF_F_ALLOW_MULTI for both cgroup levels.
+> The effective cgroup array ordering looks like
+>     p3 p4 p1 p2
+> and at run time, progs will execute based on that order.
+>
+> But in some cases, it is desirable to have root prog executes earlier tha=
+n
+> children progs (pre-ordering). For example,
+>   - prog p1 intends to collect original pkt dest addresses.
+>   - prog p3 will modify original pkt dest addresses to a proxy address fo=
+r
+>     security reason.
+> The end result is that prog p1 gets proxy address which is not what it
+> wants. Putting p1 to every child cgroup is not desirable either as it
+> will duplicate itself in many child cgroups. And this is exactly a use ca=
+se
+> we are encountering in Meta.
+>
+> To fix this issue, let us introduce a flag BPF_F_PREORDER. If the flag
+> is specified at attachment time, the prog has higher priority and the
+> ordering with that flag will be from top to bottom (pre-ordering).
+> For example, in the above example,
+>     root cgroup: p1, p2
+>         subcgroup: p3, p4
+> Let us say p2 and p4 are marked with BPF_F_PREORDER. The final
+> effective array ordering will be
+>     p2 p4 p3 p1
+>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  include/linux/bpf-cgroup.h     |  1 +
+>  include/uapi/linux/bpf.h       |  1 +
+>  kernel/bpf/cgroup.c            | 33 +++++++++++++++++++++++++--------
+>  kernel/bpf/syscall.c           |  3 ++-
+>  tools/include/uapi/linux/bpf.h |  1 +
+>  5 files changed, 30 insertions(+), 9 deletions(-)
+>
+
+LGTM, see one suggestion below, but it doesn't change the essence
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+> index 7fc69083e745..9de7adb68294 100644
+> --- a/include/linux/bpf-cgroup.h
+> +++ b/include/linux/bpf-cgroup.h
+> @@ -111,6 +111,7 @@ struct bpf_prog_list {
+>         struct bpf_prog *prog;
+>         struct bpf_cgroup_link *link;
+>         struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE];
+> +       u32 flags;
+>  };
+>
+>  int cgroup_bpf_inherit(struct cgroup *cgrp);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index fff6cdb8d11a..beac5cdf2d2c 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1207,6 +1207,7 @@ enum bpf_perf_event_type {
+>  #define BPF_F_BEFORE           (1U << 3)
+>  #define BPF_F_AFTER            (1U << 4)
+>  #define BPF_F_ID               (1U << 5)
+> +#define BPF_F_PREORDER         (1U << 6)
+>  #define BPF_F_LINK             BPF_F_LINK /* 1 << 13 */
+>
+>  /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> index 46e5db65dbc8..31d33058174c 100644
+> --- a/kernel/bpf/cgroup.c
+> +++ b/kernel/bpf/cgroup.c
+> @@ -369,7 +369,7 @@ static struct bpf_prog *prog_list_prog(struct bpf_pro=
+g_list *pl)
+>  /* count number of elements in the list.
+>   * it's slow but the list cannot be long
+>   */
+> -static u32 prog_list_length(struct hlist_head *head)
+> +static u32 prog_list_length(struct hlist_head *head, int *preorder_cnt)
+>  {
+>         struct bpf_prog_list *pl;
+>         u32 cnt =3D 0;
+> @@ -377,6 +377,8 @@ static u32 prog_list_length(struct hlist_head *head)
+>         hlist_for_each_entry(pl, head, node) {
+>                 if (!prog_list_prog(pl))
+>                         continue;
+> +               if (preorder_cnt && (pl->flags & BPF_F_PREORDER))
+> +                       (*preorder_cnt)++;
+>                 cnt++;
+>         }
+>         return cnt;
+> @@ -400,7 +402,7 @@ static bool hierarchy_allows_attach(struct cgroup *cg=
+rp,
+>
+>                 if (flags & BPF_F_ALLOW_MULTI)
+>                         return true;
+> -               cnt =3D prog_list_length(&p->bpf.progs[atype]);
+> +               cnt =3D prog_list_length(&p->bpf.progs[atype], NULL);
+>                 WARN_ON_ONCE(cnt > 1);
+>                 if (cnt =3D=3D 1)
+>                         return !!(flags & BPF_F_ALLOW_OVERRIDE);
+> @@ -423,12 +425,12 @@ static int compute_effective_progs(struct cgroup *c=
+grp,
+>         struct bpf_prog_array *progs;
+>         struct bpf_prog_list *pl;
+>         struct cgroup *p =3D cgrp;
+> -       int cnt =3D 0;
+> +       int i, cnt =3D 0, preorder_cnt =3D 0, fstart, bstart, init_bstart=
 ;
-> > +             id =3D get_owner_stack_id(buf);
-> > +
-> > +             /*
-> > +              * Contention just happens, or corner case `lock` is owne=
-d by process not
-> > +              * `owner_pid`. For the corner case we treat it as unexpe=
-cted internal error and
-> > +              * just ignore the precvious tracing record.
-> > +              */
-> > +             if (!otdata || otdata->pid !=3D owner_pid) {
-> > +                     struct owner_tracing_data first =3D {
-> > +                             .pid =3D owner_pid,
-> > +                             .timestamp =3D pelem->timestamp,
-> > +                             .count =3D 1,
-> > +                             .stack_id =3D id,
-> > +                     };
-> > +                     bpf_map_update_elem(&owner_data, &pelem->lock, &f=
-irst, BPF_ANY);
-> > +             }
-> > +             /* Contention is ongoing and new waiter joins */
-> > +             else {
-> > +                     __sync_fetch_and_add(&otdata->count, 1);
-> > +
-> > +                     /*
-> > +                      * The owner is the same, but stacktrace might be=
- changed. In this case we
-> > +                      * store/update `owner_stat` based on current own=
-er stack id.
-> > +                      */
-> > +                     if (id !=3D otdata->stack_id) {
-> > +                             update_owner_stat(id, pelem->timestamp - =
-otdata->timestamp,
-> > +                                               pelem->flags);
-> > +
-> > +                             otdata->timestamp =3D pelem->timestamp;
-> > +                             otdata->stack_id =3D id;
-> > +                     }
-> > +             }
-> > +skip_owner:
-> >               pelem->stack_id =3D bpf_get_stackid(ctx, &stacks,
-> >                                                 BPF_F_FAST_STACK_CMP | =
-stack_skip);
-> >               if (pelem->stack_id < 0)
-> > @@ -473,6 +597,7 @@ int contention_end(u64 *ctx)
-> >       struct tstamp_data *pelem;
-> >       struct contention_key key =3D {};
-> >       struct contention_data *data;
-> > +     __u64 timestamp;
-> >       __u64 duration;
-> >       bool need_delete =3D false;
-> >
-> > @@ -500,12 +625,94 @@ int contention_end(u64 *ctx)
-> >               need_delete =3D true;
-> >       }
-> >
-> > -     duration =3D bpf_ktime_get_ns() - pelem->timestamp;
-> > +     timestamp =3D bpf_ktime_get_ns();
-> > +     duration =3D timestamp - pelem->timestamp;
-> >       if ((__s64)duration < 0) {
-> >               __sync_fetch_and_add(&time_fail, 1);
-> >               goto out;
-> >       }
-> >
-> > +     if (needs_callstack && lock_owner) {
-> > +             struct owner_tracing_data *otdata =3D bpf_map_lookup_elem=
-(&owner_data, &pelem->lock);
-> > +
-> > +             if (!otdata)
-> > +                     goto skip_owner;
-> > +
-> > +             /* Update `owner_stat` */
-> > +             update_owner_stat(otdata->stack_id, timestamp - otdata->t=
-imestamp, pelem->flags);
-> > +
-> > +             /* No contention is occurring, delete `lock` entry in `ow=
-ner_data` */
-> > +             if (otdata->count <=3D 1)
-> > +                     bpf_map_delete_elem(&owner_data, &pelem->lock);
-> > +             /*
-> > +              * Contention is still ongoing, with a new owner (current=
- task). `owner_data`
-> > +              * should be updated accordingly.
-> > +              */
-> > +             else {
-> > +                     u32 i =3D 0;
-> > +                     s32 ret =3D (s32)ctx[1];
-> > +                     u64 *buf;
-> > +
-> > +                     __sync_fetch_and_add(&otdata->count, -1);
-> > +
-> > +                     buf =3D bpf_map_lookup_elem(&stack_buf, &i);
-> > +                     if (!buf)
-> > +                             goto skip_owner;
-> > +                     for (i =3D 0; i < (u32)max_stack; i++)
-> > +                             buf[i] =3D 0x0;
-> > +
-> > +                     /*
-> > +                      * `ret` has the return code of the lock function=
-.
-> > +                      * If `ret` is negative, the current task termina=
-tes lock waiting without
-> > +                      * acquiring it. Owner is not changed, but we sti=
-ll need to update the owner
-> > +                      * stack.
-> > +                      */
-> > +                     if (ret < 0) {
-> > +                             s32 id =3D 0;
-> > +                             struct task_struct *task;
-> > +
-> > +                             if (!bpf_task_from_pid)
-> > +                                     goto skip_owner;
-> > +
-> > +                             task =3D bpf_task_from_pid(otdata->pid);
-> > +                             if (!task)
-> > +                                     goto skip_owner;
-> > +
-> > +                             bpf_get_task_stack(task, buf,
-> > +                                                max_stack * sizeof(uns=
-igned long), 0);
-> > +                             bpf_task_release(task);
-> > +
-> > +                             id =3D get_owner_stack_id(buf);
-> > +
-> > +                             /*
-> > +                              * If owner stack is changed, update `own=
-er_data` and `owner_stat`
-> > +                              * accordingly.
-> > +                              */
-> > +                             if (id !=3D otdata->stack_id) {
-> > +                                     update_owner_stat(id, pelem->time=
-stamp - otdata->timestamp,
 >
-> Shouldn't it be 'timestamp' instead of 'pelem->timestamp'?
+>         /* count number of effective programs by walking parents */
+>         do {
+>                 if (cnt =3D=3D 0 || (p->bpf.flags[atype] & BPF_F_ALLOW_MU=
+LTI))
+> -                       cnt +=3D prog_list_length(&p->bpf.progs[atype]);
+> +                       cnt +=3D prog_list_length(&p->bpf.progs[atype], &=
+preorder_cnt);
+>                 p =3D cgroup_parent(p);
+>         } while (p);
+>
+> @@ -439,20 +441,34 @@ static int compute_effective_progs(struct cgroup *c=
+grp,
+>         /* populate the array with effective progs */
+>         cnt =3D 0;
+>         p =3D cgrp;
+> +       fstart =3D preorder_cnt;
+> +       bstart =3D preorder_cnt - 1;
+>         do {
+>                 if (cnt > 0 && !(p->bpf.flags[atype] & BPF_F_ALLOW_MULTI)=
+)
+>                         continue;
+>
+> +               init_bstart =3D bstart;
+>                 hlist_for_each_entry(pl, &p->bpf.progs[atype], node) {
+>                         if (!prog_list_prog(pl))
+>                                 continue;
+>
+> -                       item =3D &progs->items[cnt];
+> +                       if (pl->flags & BPF_F_PREORDER) {
+> +                               item =3D &progs->items[bstart];
+> +                               bstart--;
+> +                       } else {
+> +                               item =3D &progs->items[fstart];
+> +                               fstart++;
+> +                       }
+>                         item->prog =3D prog_list_prog(pl);
+>                         bpf_cgroup_storages_assign(item->cgroup_storage,
+>                                                    pl->storage);
+>                         cnt++;
+>                 }
+> +
+> +               /* reverse pre-ordering progs at this cgroup level */
+> +               for (i =3D 0; i < (init_bstart - bstart)/2; i++)
+> +                       swap(progs->items[init_bstart - i], progs->items[=
+bstart + 1 + i]);
 
-I just realized that `update_owner_stat` is unnecessary. The previous
-contention duration, `timestamp - otdata->timestamp`, belongs to
-`otdata->stack_id` and is already recorded in the code above. Here we
-are retrieving the current stack and updating `otdata->stack_id` for
-future tracing, but not the previous contention duration. I will
-submit a new patchset with this change.
+nit: this is a bit mind-bending to read and verify, let's do it a bit
+more bullet-proof way:
 
+for (i =3D bstart + 1, j =3D init_bstart; i < j; i++, j--)
+    swap(progs->items[i], progs->items[j]);
+
+?
+
+> +
+>         } while ((p =3D cgroup_parent(p)));
 >
+>         *array =3D progs;
+> @@ -663,7 +679,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+>                  */
+>                 return -EPERM;
 >
-> > +                                                       pelem->flags);
-> > +
-> > +                                     otdata->timestamp =3D pelem->time=
-stamp;
+> -       if (prog_list_length(progs) >=3D BPF_CGROUP_MAX_PROGS)
+> +       if (prog_list_length(progs, NULL) >=3D BPF_CGROUP_MAX_PROGS)
+>                 return -E2BIG;
 >
-> Ditto.
+>         pl =3D find_attach_entry(progs, prog, link, replace_prog,
+> @@ -698,6 +714,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
 >
-> Thanks,
-> Namhyung
+>         pl->prog =3D prog;
+>         pl->link =3D link;
+> +       pl->flags =3D flags;
+>         bpf_cgroup_storages_assign(pl->storage, storage);
+>         cgrp->bpf.flags[atype] =3D saved_flags;
 >
+> @@ -1073,7 +1090,7 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, =
+const union bpf_attr *attr,
+>                                                               lockdep_is_=
+held(&cgroup_mutex));
+>                         total_cnt +=3D bpf_prog_array_length(effective);
+>                 } else {
+> -                       total_cnt +=3D prog_list_length(&cgrp->bpf.progs[=
+atype]);
+> +                       total_cnt +=3D prog_list_length(&cgrp->bpf.progs[=
+atype], NULL);
+>                 }
+>         }
 >
-> > +                                     otdata->stack_id =3D id;
-> > +                             }
-> > +                     }
-> > +                     /*
-> > +                      * Otherwise, update tracing data with the curren=
-t task, which is the new
-> > +                      * owner.
-> > +                      */
-> > +                     else {
-> > +                             otdata->pid =3D pid;
-> > +                             otdata->timestamp =3D timestamp;
-> > +                             /*
-> > +                              * We don't want to retrieve callstack he=
-re, since it is where the
-> > +                              * current task acquires the lock and pro=
-vides no additional
-> > +                              * information. We simply assign -1 to in=
-validate it.
-> > +                              */
-> > +                             otdata->stack_id =3D -1;
-> > +                     }
-> > +             }
-> > +     }
-> > +skip_owner:
-> >       switch (aggr_mode) {
-> >       case LOCK_AGGR_CALLER:
-> >               key.stack_id =3D pelem->stack_id;
-> > @@ -589,14 +796,7 @@ int contention_end(u64 *ctx)
-> >       }
-> >
-> >  found:
-> > -     __sync_fetch_and_add(&data->total_time, duration);
-> > -     __sync_fetch_and_add(&data->count, 1);
-> > -
-> > -     /* FIXME: need atomic operations */
-> > -     if (data->max_time < duration)
-> > -             data->max_time =3D duration;
-> > -     if (data->min_time > duration)
-> > -             data->min_time =3D duration;
-> > +     update_contention_data(data, duration, 1);
-> >
-> >  out:
-> >       pelem->lock =3D 0;
-> > --
-> > 2.48.1.601.g30ceb7b040-goog
-> >
+> @@ -1105,7 +1122,7 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, =
+const union bpf_attr *attr,
+>                         u32 id;
+>
+>                         progs =3D &cgrp->bpf.progs[atype];
+> -                       cnt =3D min_t(int, prog_list_length(progs), total=
+_cnt);
+> +                       cnt =3D min_t(int, prog_list_length(progs, NULL),=
+ total_cnt);
+>                         i =3D 0;
+>                         hlist_for_each_entry(pl, progs, node) {
+>                                 prog =3D prog_list_prog(pl);
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index c420edbfb7c8..18de4d301368 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -4168,7 +4168,8 @@ static int bpf_prog_attach_check_attach_type(const =
+struct bpf_prog *prog,
+>  #define BPF_F_ATTACH_MASK_BASE \
+>         (BPF_F_ALLOW_OVERRIDE | \
+>          BPF_F_ALLOW_MULTI |    \
+> -        BPF_F_REPLACE)
+> +        BPF_F_REPLACE |        \
+> +        BPF_F_PREORDER)
+>
+>  #define BPF_F_ATTACH_MASK_MPROG        \
+>         (BPF_F_REPLACE |        \
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index fff6cdb8d11a..beac5cdf2d2c 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1207,6 +1207,7 @@ enum bpf_perf_event_type {
+>  #define BPF_F_BEFORE           (1U << 3)
+>  #define BPF_F_AFTER            (1U << 4)
+>  #define BPF_F_ID               (1U << 5)
+> +#define BPF_F_PREORDER         (1U << 6)
+>  #define BPF_F_LINK             BPF_F_LINK /* 1 << 13 */
+>
+>  /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+> --
+> 2.43.5
+>
 
