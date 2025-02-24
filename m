@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-52349-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52350-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D633A4228B
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:12:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91EBCA42268
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:07:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E95F417B0BC
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 14:03:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0253C189DA6C
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 14:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3980F1553BC;
-	Mon, 24 Feb 2025 14:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89EF878F4E;
+	Mon, 24 Feb 2025 14:03:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ITDLs+Zy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="crLC4KtJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D24154430;
-	Mon, 24 Feb 2025 14:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE0F8770FE;
+	Mon, 24 Feb 2025 14:03:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740405784; cv=none; b=KxFic1iwvGHdkFRRtXj9W4zvgzdH3bnVVris8J7aifRqVtYuOvMcQWgpaoo15LB2ms7vAOMAgUi0td9amLFDnDcX0IjKSrWio3MBukeDR08vqRwIvRjuKJpYS/a/sZqRJmozO3tK8TY8GMOYifJebT5vk+JuqMewVuGmkP84s28=
+	t=1740405796; cv=none; b=cAu8J57EYzhaCW4v/sOaPyz670zQE0z/Ahm7pIoEKcU1bk+YuGBHZxCrwgMuIIke1l7Ls3DVzj+xvY7oe+oOE9vAFWdQSL9VczRxsCW1jQhkZIQkNfD3gOShun5gtuzl1/J2i+WaSfLbtUp2NrHNHd1KJPvaBqFgbKGXLcJkyXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740405784; c=relaxed/simple;
-	bh=QWCeB0t4biaaSmaCS4hAy6KgGL7EGSZY8hy6jheG62U=;
+	s=arc-20240116; t=1740405796; c=relaxed/simple;
+	bh=gXStF15mrWuB86Dc5JXJRxTckI8b4HGElcV+Wws69jI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mJQwEO35rDsOBm2pb+LzTJCIY9RqLWYs03cVs/cTiwbj6LRgEmkqm0I0OGfiz+THUmb1pOryH+1VjVfINpreAmwxMooZXRMvuOuNp9J3nDuk+j6qKmBnSPORVtTkugLNEa3aVs5kZVIwCuxejCsKr+p9zvQ9Mvdi3cGinEfuz4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ITDLs+Zy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67E7EC4CED6;
-	Mon, 24 Feb 2025 14:03:00 +0000 (UTC)
+	 MIME-Version; b=uyuqv9+IbGvQ0Ph2MMz9nPQP0OQgSqhO6CqdZimVkaw/mlvFR8wr6QP2Ct57ynE4We+75Az7iwsuP5RSdi5zWmFpiRWY7CCBEwWY/rm1LeflV795BxzDDUO5fqbFfEi4LQPDW+NCIoFgyD1R0OZ/caMewgCYIRLstCaHJT+vxFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=crLC4KtJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93FBCC4CED6;
+	Mon, 24 Feb 2025 14:03:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740405784;
-	bh=QWCeB0t4biaaSmaCS4hAy6KgGL7EGSZY8hy6jheG62U=;
+	s=k20201202; t=1740405795;
+	bh=gXStF15mrWuB86Dc5JXJRxTckI8b4HGElcV+Wws69jI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ITDLs+Zy6eG7E6igcaJmRdwB1zbJ1pCGI56OhyzOz/8h2mcAZGHiWyITXSZT4FVL/
-	 8ZOBvGynedhfLGY37RuzvOc3Q6ptiKlXlAZZIq7l1JktLxtofTRYXcw+cmmaDyicU0
-	 TfeEOA0rJNlr1/uk6U3ZI13G8D+g48crIOZavVrVMbtPtIdb6MgzFN0IfcRqyYXR9I
-	 0pcxZ/q3xb+AAETbMBdRxJHojrxahchD99VJl1fRsGPgGhMFUqjbZv+RdiUbSIzhWa
-	 tofRrUCNLi7d3VVJ1BzbPiR3AfdKsk3FnmngaHa7JWoSdUEtqj4oAJAYV8O/HGHE+L
-	 Nm9Gpv4xt1Zzg==
+	b=crLC4KtJsmcEG1ukwai5/PDQHN3AznkvD4svx0WXZ48Hrfl94vBXne0kBy2wsNC4L
+	 QWge4ax1zQlOMZ7FHHxb3xjSNhMCB+50j2rgmuraRhhd66XddSdNtS3hgGY80xUt6E
+	 GQwb7YcDPbrdM7w//pl6w+ISa4m20wg1vDrPiahqXrUoiVa+hGZKjewKIC6NybHKn6
+	 P+VP6o/m1PxinekmwqfaA8D6zthmEePAFwzX/ZSGhILdRhxhHzJr1YHb4bbrsyfHng
+	 X4WWKfjBRNECoHbN+1Uvb2rYSjGIqfLN51eTui81EBFZSoEgBB119KijvtLIqy2SQ3
+	 8mcpjb26/KF8w==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -58,9 +58,9 @@ Cc: bpf@vger.kernel.org,
 	Alan Maguire <alan.maguire@oracle.com>,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-Subject: [PATCH RFCv2 06/18] uprobes: Add orig argument to uprobe_write and uprobe_write_opcode
-Date: Mon, 24 Feb 2025 15:01:38 +0100
-Message-ID: <20250224140151.667679-7-jolsa@kernel.org>
+Subject: [PATCH RFCv2 07/18] uprobes: Add swbp argument to arch_uretprobe_hijack_return_addr
+Date: Mon, 24 Feb 2025 15:01:39 +0100
+Message-ID: <20250224140151.667679-8-jolsa@kernel.org>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250224140151.667679-1-jolsa@kernel.org>
 References: <20250224140151.667679-1-jolsa@kernel.org>
@@ -72,133 +72,219 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The uprobe_write has special path to restore the original page when
-we write original instruction back.
-
-This happens when uprobe_write detects that we want to write anything
-else but breakpoint instruction.
-
-In following changes we want to use uprobe_write function for multiple
-updates, so adding new function argument to denote that this is the
-original instruction update. This way uprobe_write can make appropriate
-checks and restore the original page when possible.
+Adding swbp argument to arch_uretprobe_hijack_return_addr, that
+is passed all the way from handle_swbp function, so we can add
+extra logic when it's called from syscall in following changes.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/arm/probes/uprobes/core.c |  2 +-
- include/linux/uprobes.h        |  5 +++--
- kernel/events/uprobes.c        | 22 ++++++++++------------
- 3 files changed, 14 insertions(+), 15 deletions(-)
+ arch/arm/probes/uprobes/core.c     |  2 +-
+ arch/arm64/kernel/probes/uprobes.c |  2 +-
+ arch/csky/kernel/probes/uprobes.c  |  2 +-
+ arch/loongarch/kernel/uprobes.c    |  2 +-
+ arch/mips/kernel/uprobes.c         |  2 +-
+ arch/powerpc/kernel/uprobes.c      |  2 +-
+ arch/riscv/kernel/probes/uprobes.c |  2 +-
+ arch/s390/kernel/uprobes.c         |  2 +-
+ arch/sparc/kernel/uprobes.c        |  2 +-
+ arch/x86/kernel/uprobes.c          |  2 +-
+ include/linux/uprobes.h            |  3 ++-
+ kernel/events/uprobes.c            | 10 +++++-----
+ 12 files changed, 17 insertions(+), 16 deletions(-)
 
 diff --git a/arch/arm/probes/uprobes/core.c b/arch/arm/probes/uprobes/core.c
-index f5f790c6e5f8..54a90b565285 100644
+index 54a90b565285..4d854a310155 100644
 --- a/arch/arm/probes/uprobes/core.c
 +++ b/arch/arm/probes/uprobes/core.c
-@@ -30,7 +30,7 @@ int set_swbp(struct arch_uprobe *auprobe, struct mm_struct *mm,
- 	     unsigned long vaddr)
+@@ -59,7 +59,7 @@ bool arch_uprobe_skip_sstep(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ 
+ unsigned long
+ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr,
+-				  struct pt_regs *regs)
++				  struct pt_regs *regs, bool swbp)
  {
- 	return uprobe_write_opcode(auprobe, mm, vaddr,
--		   __opcode_to_mem_arm(auprobe->bpinsn));
-+		   __opcode_to_mem_arm(auprobe->bpinsn), false);
+ 	unsigned long orig_ret_vaddr;
+ 
+diff --git a/arch/arm64/kernel/probes/uprobes.c b/arch/arm64/kernel/probes/uprobes.c
+index cb3d05af36e3..a38bf900bca1 100644
+--- a/arch/arm64/kernel/probes/uprobes.c
++++ b/arch/arm64/kernel/probes/uprobes.c
+@@ -156,7 +156,7 @@ bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check ctx,
+ 
+ unsigned long
+ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr,
+-				  struct pt_regs *regs)
++				  struct pt_regs *regs, bool swbp)
+ {
+ 	unsigned long orig_ret_vaddr;
+ 
+diff --git a/arch/csky/kernel/probes/uprobes.c b/arch/csky/kernel/probes/uprobes.c
+index 936bea6fd32d..81a950a73cb6 100644
+--- a/arch/csky/kernel/probes/uprobes.c
++++ b/arch/csky/kernel/probes/uprobes.c
+@@ -124,7 +124,7 @@ bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check ctx,
+ 
+ unsigned long
+ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr,
+-				  struct pt_regs *regs)
++				  struct pt_regs *regs, bool swbp)
+ {
+ 	unsigned long ra;
+ 
+diff --git a/arch/loongarch/kernel/uprobes.c b/arch/loongarch/kernel/uprobes.c
+index 87abc7137b73..d8b221fafb71 100644
+--- a/arch/loongarch/kernel/uprobes.c
++++ b/arch/loongarch/kernel/uprobes.c
+@@ -96,7 +96,7 @@ bool arch_uprobe_skip_sstep(struct arch_uprobe *auprobe, struct pt_regs *regs)
  }
  
- bool arch_uprobe_ignore(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ unsigned long arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr,
+-						struct pt_regs *regs)
++						struct pt_regs *regs, bool swbp)
+ {
+ 	unsigned long ra = regs->regs[1];
+ 
+diff --git a/arch/mips/kernel/uprobes.c b/arch/mips/kernel/uprobes.c
+index 401b148f8917..2727bcfd5331 100644
+--- a/arch/mips/kernel/uprobes.c
++++ b/arch/mips/kernel/uprobes.c
+@@ -196,7 +196,7 @@ void arch_uprobe_abort_xol(struct arch_uprobe *aup,
+ }
+ 
+ unsigned long arch_uretprobe_hijack_return_addr(
+-	unsigned long trampoline_vaddr, struct pt_regs *regs)
++	unsigned long trampoline_vaddr, struct pt_regs *regs, bool swbp)
+ {
+ 	unsigned long ra;
+ 
+diff --git a/arch/powerpc/kernel/uprobes.c b/arch/powerpc/kernel/uprobes.c
+index 95a41ae9dfa7..f3b3feb44586 100644
+--- a/arch/powerpc/kernel/uprobes.c
++++ b/arch/powerpc/kernel/uprobes.c
+@@ -195,7 +195,7 @@ bool arch_uprobe_skip_sstep(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ }
+ 
+ unsigned long
+-arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs *regs)
++arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs *regs, bool swbp)
+ {
+ 	unsigned long orig_ret_vaddr;
+ 
+diff --git a/arch/riscv/kernel/probes/uprobes.c b/arch/riscv/kernel/probes/uprobes.c
+index 4b3dc8beaf77..ef8bc1f6a04e 100644
+--- a/arch/riscv/kernel/probes/uprobes.c
++++ b/arch/riscv/kernel/probes/uprobes.c
+@@ -128,7 +128,7 @@ bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check ctx,
+ 
+ unsigned long
+ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr,
+-				  struct pt_regs *regs)
++				  struct pt_regs *regs, bool swbp)
+ {
+ 	unsigned long ra;
+ 
+diff --git a/arch/s390/kernel/uprobes.c b/arch/s390/kernel/uprobes.c
+index 5b0633ea8d93..48f79d9a25e9 100644
+--- a/arch/s390/kernel/uprobes.c
++++ b/arch/s390/kernel/uprobes.c
+@@ -141,7 +141,7 @@ void arch_uprobe_abort_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ }
+ 
+ unsigned long arch_uretprobe_hijack_return_addr(unsigned long trampoline,
+-						struct pt_regs *regs)
++						struct pt_regs *regs, bool swbp)
+ {
+ 	unsigned long orig;
+ 
+diff --git a/arch/sparc/kernel/uprobes.c b/arch/sparc/kernel/uprobes.c
+index 305017bec164..aef4e0ff38f0 100644
+--- a/arch/sparc/kernel/uprobes.c
++++ b/arch/sparc/kernel/uprobes.c
+@@ -310,7 +310,7 @@ bool arch_uprobe_xol_was_trapped(struct task_struct *t)
+ 
+ unsigned long
+ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr,
+-				  struct pt_regs *regs)
++				  struct pt_regs *regs, bool swbp)
+ {
+ 	unsigned long orig_ret_vaddr = regs->u_regs[UREG_I7];
+ 
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 22a17c149a55..b06f3cd7551a 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -1180,7 +1180,7 @@ bool arch_uprobe_skip_sstep(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ }
+ 
+ unsigned long
+-arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs *regs)
++arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs *regs, bool swbp)
+ {
+ 	int rasize = sizeof_long(regs), nleft;
+ 	unsigned long orig_ret_vaddr = 0; /* clear high bits for 32-bit apps */
 diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index 8867b6a168b2..1abcae9cde48 100644
+index 1abcae9cde48..6c3c90a0d110 100644
 --- a/include/linux/uprobes.h
 +++ b/include/linux/uprobes.h
-@@ -194,9 +194,10 @@ extern bool is_swbp_insn(uprobe_opcode_t *insn);
- extern bool is_trap_insn(uprobe_opcode_t *insn);
- extern unsigned long uprobe_get_swbp_addr(struct pt_regs *regs);
- extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
--extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr, uprobe_opcode_t);
-+extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr,
-+			       uprobe_opcode_t, bool);
- extern int uprobe_write(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr,
--			uprobe_opcode_t *insn, int nbytes, uprobe_write_verify_t verify);
-+			uprobe_opcode_t *insn, int nbytes, uprobe_write_verify_t verify, bool orig);
- extern struct uprobe *uprobe_register(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
- extern int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool);
- extern void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc);
+@@ -221,7 +221,8 @@ extern int  arch_uprobe_post_xol(struct arch_uprobe *aup, struct pt_regs *regs);
+ extern bool arch_uprobe_xol_was_trapped(struct task_struct *tsk);
+ extern int  arch_uprobe_exception_notify(struct notifier_block *self, unsigned long val, void *data);
+ extern void arch_uprobe_abort_xol(struct arch_uprobe *aup, struct pt_regs *regs);
+-extern unsigned long arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs *regs);
++extern unsigned long arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs *regs,
++						       bool swbp);
+ extern bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check ctx, struct pt_regs *regs);
+ extern bool arch_uprobe_ignore(struct arch_uprobe *aup, struct pt_regs *regs);
+ extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index ad5879fc2d26..2b542043089e 100644
+index 2b542043089e..cfcde7295e15 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -471,25 +471,23 @@ static int update_ref_ctr(struct uprobe *uprobe, struct mm_struct *mm,
-  * Return 0 (success) or a negative errno.
-  */
- int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm,
--			unsigned long vaddr, uprobe_opcode_t opcode)
-+			unsigned long vaddr, uprobe_opcode_t opcode, bool orig)
- {
--	return uprobe_write(auprobe, mm, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE, verify_opcode);
-+	return uprobe_write(auprobe, mm, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE, verify_opcode, orig);
+@@ -2207,7 +2207,7 @@ static void cleanup_return_instances(struct uprobe_task *utask, bool chained,
  }
  
- int uprobe_write(struct arch_uprobe *auprobe, struct mm_struct *mm,
- 		 unsigned long vaddr, uprobe_opcode_t *insn,
--		 int nbytes, uprobe_write_verify_t verify)
-+		 int nbytes, uprobe_write_verify_t verify, bool orig)
+ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs,
+-			      struct return_instance *ri)
++			      struct return_instance *ri, bool swbp)
  {
- 	struct page *old_page, *new_page;
- 	struct vm_area_struct *vma;
--	int ret, is_register;
-+	int ret;
- 	bool orig_page_huge = false;
- 	unsigned int gup_flags = FOLL_FORCE;
- 
--	is_register = is_swbp_insn(insn);
--
- retry:
--	if (is_register)
-+	if (!orig)
- 		gup_flags |= FOLL_SPLIT_PMD;
- 	/* Read the page with vaddr into memory */
- 	old_page = get_user_page_vma_remote(mm, vaddr, gup_flags, &vma);
-@@ -500,14 +498,14 @@ int uprobe_write(struct arch_uprobe *auprobe, struct mm_struct *mm,
- 	if (ret <= 0)
- 		goto put_old;
- 
--	if (WARN(!is_register && PageCompound(old_page),
-+	if (WARN(orig && PageCompound(old_page),
- 		 "uprobe unregister should never work on compound page\n")) {
- 		ret = -EINVAL;
- 		goto put_old;
+ 	struct uprobe_task *utask = current->utask;
+ 	unsigned long orig_ret_vaddr, trampoline_vaddr;
+@@ -2225,7 +2225,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs,
  	}
  
- 	ret = 0;
--	if (!is_register && !PageAnon(old_page))
-+	if (orig && !PageAnon(old_page))
- 		goto put_old;
+ 	trampoline_vaddr = uprobe_get_trampoline_vaddr();
+-	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
++	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs, swbp);
+ 	if (orig_ret_vaddr == -1)
+ 		goto free;
  
- 	ret = anon_vma_prepare(vma);
-@@ -523,7 +521,7 @@ int uprobe_write(struct arch_uprobe *auprobe, struct mm_struct *mm,
- 	copy_highpage(new_page, old_page);
- 	uprobe_copy_to_page(new_page, vaddr, insn, nbytes);
- 
--	if (!is_register) {
-+	if (orig) {
- 		struct page *orig_page;
- 		pgoff_t index;
- 
-@@ -574,7 +572,7 @@ int uprobe_write(struct arch_uprobe *auprobe, struct mm_struct *mm,
-  */
- int __weak set_swbp(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr)
- {
--	return uprobe_write_opcode(auprobe, mm, vaddr, UPROBE_SWBP_INSN);
-+	return uprobe_write_opcode(auprobe, mm, vaddr, UPROBE_SWBP_INSN, false);
+@@ -2503,7 +2503,7 @@ static bool ignore_ret_handler(int rc)
+ 	return rc == UPROBE_HANDLER_REMOVE || rc == UPROBE_HANDLER_IGNORE;
  }
  
- static int set_swbp_refctr(struct uprobe *uprobe, struct mm_struct *mm, unsigned long vaddr)
-@@ -609,7 +607,7 @@ int __weak
- set_orig_insn(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr)
+-static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
++static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs, bool swbp)
  {
- 	return uprobe_write_opcode(auprobe, mm, vaddr,
--			*(uprobe_opcode_t *)&auprobe->insn);
-+			*(uprobe_opcode_t *)&auprobe->insn, true);
- }
+ 	struct uprobe_consumer *uc;
+ 	bool has_consumers = false, remove = true;
+@@ -2538,7 +2538,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+ 	utask->auprobe = NULL;
  
- static int set_orig_refctr(struct uprobe *uprobe, struct mm_struct *mm, unsigned long vaddr)
+ 	if (!ZERO_OR_NULL_PTR(ri))
+-		prepare_uretprobe(uprobe, regs, ri);
++		prepare_uretprobe(uprobe, regs, ri, swbp);
+ 
+ 	if (remove && has_consumers) {
+ 		down_read(&uprobe->register_rwsem);
+@@ -2720,7 +2720,7 @@ static void handle_swbp(struct pt_regs *regs)
+ 	if (arch_uprobe_ignore(&uprobe->arch, regs))
+ 		goto out;
+ 
+-	handler_chain(uprobe, regs);
++	handler_chain(uprobe, regs, true);
+ 
+ 	if (arch_uprobe_skip_sstep(&uprobe->arch, regs))
+ 		goto out;
 -- 
 2.48.1
 
