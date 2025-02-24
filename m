@@ -1,139 +1,132 @@
-Return-Path: <bpf+bounces-52397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A2C1A4293F
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:18:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 846F4A42916
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:15:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F56916E529
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 17:14:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 814297A56E2
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 17:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FE8E263F4D;
-	Mon, 24 Feb 2025 17:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605E22641F0;
+	Mon, 24 Feb 2025 17:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X40eBgM0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FCNY/Mzv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E023263C72;
-	Mon, 24 Feb 2025 17:14:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA49262D37;
+	Mon, 24 Feb 2025 17:14:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740417249; cv=none; b=ogegyzvW3epTI1MjnEJ5EZdsJdloN9smFdeuSqNjAzymRLAXi/ogPJH9kW1/J5RMAFfmLjz6I7z8Lb3Iw+zMtJzDu/LVuajM/omIZDTJiU6s/uKrN4+Af334O4q6ABOienvlJY/S5GQMDBsV3Ir8gPtK3JOd8+WHs8oiNmuY+TU=
+	t=1740417286; cv=none; b=c/ih9EhxYzEa3lMjRaoDccseF4BFmbjoQ8PHxC1g0ZJe478QveVZhS+YS84DpQrzZTkwv9A+QpBqaTwZbfsDCvHnpY2Z7V8QB8CDowsde0kiQtKMr1/44ENlMUlSswmtFuDItlwsrWc9UTH3k0fkaaCqH2fNoQmnQniYQoWdLpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740417249; c=relaxed/simple;
-	bh=vgv2L1XM0VItTqS2y29EnL1yRFDsRL1SRD8nHEhksHA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cE7CyV/VdgJKYNe2vQOK76wMuTUNgVT4uMeqtY+BpHJpYrpDyPlnlcZ+7DkYUn8t5786RIxTwUKGCvYGf498nRLTRFwf8iB2D63IMlzerVlqdeQn3YIVAGIIgc2mGMj7D/uNB5Cgnp8Ar2AnDrnjz6Z4D9R5m6Bz8wLKpxxxtV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X40eBgM0; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1740417286; c=relaxed/simple;
+	bh=gZ/60pQGfPHcDbNWoh9hwuZHc1QKAlEJbSSImLK0ISU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WK9oG9JzawNfrcVqKPtNM6AHVtkkWy81W7CdEJQUFAgo3XEqsSlM9lNV5iLfhmk2mxU/6S9+yrHAAXPs4QmLFIU3hUw/SH4ioIeNITXVXfCrhqYS7Hj5yscEef+REGi8bfKwXBwmuAuGjbdaNHhofeDoOo2EQtQbVIjOwun3v2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FCNY/Mzv; arc=none smtp.client-ip=209.85.222.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-220d28c215eso72104285ad.1;
-        Mon, 24 Feb 2025 09:14:07 -0800 (PST)
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7be6fdeee35so907913685a.1;
+        Mon, 24 Feb 2025 09:14:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740417247; x=1741022047; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NzHQZGUN2fiNxujdzGVV5v8tk/eLdGbSbAneE7HkW1s=;
-        b=X40eBgM0HJym2XKcjN6EVJ+k9B6/+B8wTt/GUvNjIXAEog85nm5460s8PLFw358sYd
-         bAD1ZmSWmfEP/puQW0O1G7aW4Oc3nQqX3YAmYa2kQp65G0D6wIjYnM8wMnjaJbShVq1Q
-         TeYHbMWKXUXQ6jR/beNTuQA0OGjyBM3sqd1oAF3jlwDysOdx23rP030Ypi5wilLW4Qks
-         EAFqPusPGrULnHe6SF4/7HnjIvQo/VIeBk8d7HTFskA4xGbctBb/ZLLtb2r82izr/Y4W
-         3Mi28JRdV06iPVJI1yLjDlzQWczwBuwhDVBsAF3jTGmRAW/8LAstMJN82u47DEXWXYPY
-         S3Ig==
+        d=gmail.com; s=20230601; t=1740417284; x=1741022084; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NJFv2sRe5sNDuKfZTnRa+Yu9FtU3aInI73rlmPJFCkQ=;
+        b=FCNY/Mzv6qc3AP1xWnlItDyCor3bn1w1s4epKaJ5z7LHIliYmjeGvRkFlbdvxZxnGH
+         t699Lz2dNqBpM6G8pQsbF4wpQ9f02cxkcFq8Yte9VcV9JdrYuAW84wKE9tJiyk12rBVY
+         1Eg0WrFCHS6oSPaH1vH8CfwSCnvMXJqTehRX2tRFDjGYWSHGqhBp/T3NnkpCqHStSnl4
+         EzN4iLxrhwmiGackhMiEVF669yAbWOXmTyugL9rq/2iLkTluQnoiVhvuX1EgP4Z56R/3
+         uxccTyT0pLLGD/mLBfYG2EgWOHTP8lA5yjhrpkTF9cWI2q/NIdDavPtaaL0CMdFCWnD1
+         vwFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740417247; x=1741022047;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NzHQZGUN2fiNxujdzGVV5v8tk/eLdGbSbAneE7HkW1s=;
-        b=WExzHYPDYyLecp75qbE2d7yqfnmR+xRN3dotpqvXzNArNPHDpESMFkS9wb6x4dzJX5
-         AGeprPSchTcX54LgoN7B/M6EBM/PiiZvHAn1lWfIEKFXT6G+rmpJWASJUJIz/Q7gDT5D
-         UmzmWD8vFJaMpNkaZ/AJ5hUOKQGUNVyZUZZqMTuziH/OgDTvbF+77HIb6o0dBarRfexK
-         Cp60TtK7Yv26lnjX2Xp0TWugicAwUy3U2OoFNsLGMSSnLdsq0KMjgOixpUEAvsxT0dki
-         xd4tb+eJ7x3HBh5n+EGML2bmOmnHETTibFghWVDGyqXoXpI7VV3vwOCx6EccySX9dLCX
-         j5Ag==
-X-Forwarded-Encrypted: i=1; AJvYcCUyJncXL2m1+nbq57Y7OC/uXu7yzzGeviYU/fcOACTXd8XeBaQ+67Eku57N/1UwP0KrQdszyfANZXwOIIW0P4bX@vger.kernel.org, AJvYcCVyook9Gw7TAe0PW4bKUnzbh2UOWcK7u+MSklcxEGP8k+8ONfwFwlN54WChlm9rG/QtLIc=@vger.kernel.org, AJvYcCXm6j9CIcDnX7RIgZOndiaKcGnsy23+xObSWcHmhdHFmxIqfoCrULD5bLuTiEuu02EjSHBCxo9yDpgk1Qlp@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJ4nNNPEOTIxrmE7DBWlA13fx8RieuBVwEPjZYXYRh9CD38ILs
-	WWvPkJuhGSNbTvZaZEWkBaN8MiM7msaKak/HF2CsjsXeQ3RcQq4=
-X-Gm-Gg: ASbGnctyZrYyzuLn4NmD2n8GmhQkA6obtaBI5k/oLgLGb63WcGsEgdh1R5Qj7fMwjKy
-	X9lHXoc9lxiYecpt1m6Hp6kU8sA1Wo/v7RdLh583lPe45aLyAmQ20VIdIYl8YU4w8Hjvnz7VULB
-	EvZOkMTU9nGb5w0RFSkJZ40ZfE7dXBGnZsMpq3sCfjnBMSI/KGDz4CIqwa2gCRyUQnSr/9lxhID
-	UNcFtM9A+SvwdDVw2cOzB2w7hLIBSoISj6antzER51afE0F7KvDV7qR0hVyNr44/OzQw7dW+NdE
-	hM9HKYyf5dPImmtW+MeeR/V7xg==
-X-Google-Smtp-Source: AGHT+IGdVW9Fy1iMbTYlSp8BZQCLFel4XTMelcidD8YM5VWNEbAMfbnpTrSJwlcjAULZeJNJTuiTeQ==
-X-Received: by 2002:a05:6a00:228c:b0:730:8ad5:90c1 with SMTP id d2e1a72fcca58-73479101286mr6595b3a.14.1740417246712;
-        Mon, 24 Feb 2025 09:14:06 -0800 (PST)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-73242568146sm20955384b3a.47.2025.02.24.09.14.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2025 09:14:06 -0800 (PST)
-Date: Mon, 24 Feb 2025 09:14:05 -0800
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, andrii@kernel.org,
-	eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
-	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, shuah@kernel.org, hawk@kernel.org
-Subject: Re: [PATCH bpf-next v3 5/6] selftests/bpf: add test for XDP metadata
- support in tun driver
-Message-ID: <Z7yo3VfHofK-W7EY@mini-arch>
-References: <20250224152909.3911544-1-marcus.wichelmann@hetzner-cloud.de>
- <20250224152909.3911544-6-marcus.wichelmann@hetzner-cloud.de>
+        d=1e100.net; s=20230601; t=1740417284; x=1741022084;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NJFv2sRe5sNDuKfZTnRa+Yu9FtU3aInI73rlmPJFCkQ=;
+        b=knfILxwEztIe962SbKJcBAHCpalVY3Sv9u0VJ52wlvIyBNBGB9u/sUEk5khawlcvC+
+         rlkZaTKRP79GcwXXUI0ygCoABnP0Nwb+VUuQrTT9qo6kMo6JHu5WtrHISlkZTl9CSng5
+         dtqw2b7ezY+rlFMgVtKZAAZ4GX3TgjeQp5RKjHAfaJo2sOsnSy/nfYOUwcXXzbkz/ioV
+         igR6gnnO1fzuUHnUAWpXLliJGpJY3jpeZEwL5R1mkuZ4q1bClzbE8Bw/h0Md8R5o8TBd
+         DA8U9pVmduO3hN3PidDIuQ4umuQbm6nLKvZuxTiwfNAgQnsavkadSt52Bn5djQDL6HM5
+         y9ew==
+X-Forwarded-Encrypted: i=1; AJvYcCUXy5LUOGlSZmNFXcGK7nMvcjaJBoyUpqDQXzUKXw6xdoHFZUshmJf0ITQeVANmm5ULJZ8=@vger.kernel.org, AJvYcCV4hWDA+uEeHqLKWwJs5iFrH1F+3aDCPaKf2gn8Q8ZaLPHbnGvEPEOUH8Zqcm31zgC8LcdwYbATdXtWoHEq@vger.kernel.org, AJvYcCXt9/I6gdAuUTIqdV6bg6rH5CxNfTKsJEG7CwnqhgIXMnEY7RY2WMX6SXOE1ooJ3+kJcEPzhS/q@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyLW/n4t2lfxPzjPJu0uoluaCaSdZVLm3AlyLF+08/H2NgOlo3
+	gr7NqWQK+7khdOfk4y7a27Eu8uurvrC1rDeQ9bIJ87DDovfLgaaYaOWnIIf0WTHpkZrZkg1vFcY
+	k+MQ0dXDiX9IWZwlkyXTGJxoqf2A=
+X-Gm-Gg: ASbGncvI+aIR8SB4Cj6gcXSRi/AXmk24iLIhpJQHNvzHgb+mdPXzIpQQG5ICI5YKdFF
+	OvA3HQL7KM3NKAC+MmUj4nbBwsEBQzke92y45tfQAvA7sK9DBsyxb9bO/MvsNkNbO/ObgMfmxeA
+	XEoMG9fqLQTg==
+X-Google-Smtp-Source: AGHT+IH/Xed1bhDry9SC0hcfGPFO3s0go6hZSqTqhwLcMNUSsf5ZuwLICj++B+Yj1hmx4K/qqdzZ/phnn4riUyrQ2vA=
+X-Received: by 2002:a05:620a:4143:b0:7c0:ab74:eefd with SMTP id
+ af79cd13be357-7c0cef0b343mr1863584785a.31.1740417284105; Mon, 24 Feb 2025
+ 09:14:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250224152909.3911544-6-marcus.wichelmann@hetzner-cloud.de>
+References: <20250222093007.3607691-1-wangliang74@huawei.com>
+ <CAJ8uoz1fZ3zYVKergPn-QYRQEpPfC_jNgtY3wzoxxJWFF22LKA@mail.gmail.com> <Z7yXhHezJTgYh76T@mini-arch>
+In-Reply-To: <Z7yXhHezJTgYh76T@mini-arch>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Mon, 24 Feb 2025 18:14:33 +0100
+X-Gm-Features: AWEUYZmZmVfLSXv628Ijcc-OVmT7wr2Z7KMdXDQdb9K-axbmTon1GMe_HQAfX5Q
+Message-ID: <CAJ8uoz12bmCPsr_LFwCDypiwzmH+U7TeLqqykgRhp=8vKX4nQw@mail.gmail.com>
+Subject: Re: [PATCH net] xsk: fix __xsk_generic_xmit() error code when cq is full
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Wang Liang <wangliang74@huawei.com>, bjorn@kernel.org, magnus.karlsson@intel.com, 
+	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, 
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
+	john.fastabend@gmail.com, yuehaibing@huawei.com, zhangchangzhong@huawei.com, 
+	netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 02/24, Marcus Wichelmann wrote:
-> Add a selftest that creates a tap device, attaches XDP and TC programs,
-> writes a packet with a test payload into the tap device and checks the
-> test result. This test ensures that the XDP metadata support in the tun
-> driver is enabled and that the metadata size is correctly passed to the
-> skb.
-> 
-> See the previous commit ("selftests/bpf: refactor xdp_context_functional
-> test and bpf program") for details about the test design.
-> 
-> Signed-off-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-> ---
->  .../bpf/prog_tests/xdp_context_test_run.c     | 64 +++++++++++++++++++
->  1 file changed, 64 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
-> index 4043f220d7c0..60aad6bd8882 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
-> @@ -8,6 +8,7 @@
->  #define TX_NAME "veth1"
->  #define TX_NETNS "xdp_context_tx"
->  #define RX_NETNS "xdp_context_rx"
-> +#define TAP_NAME "tap0"
->  
->  #define TEST_PAYLOAD_LEN 32
->  static const __u8 test_payload[TEST_PAYLOAD_LEN] = {
-> @@ -251,3 +252,66 @@ void test_xdp_context_veth(void)
->  	netns_free(tx_ns);
->  }
->  
-> +void test_xdp_context_tuntap(void)
+On Mon, 24 Feb 2025 at 17:00, Stanislav Fomichev <stfomichev@gmail.com> wrote:
+>
+> On 02/24, Magnus Karlsson wrote:
+> > On Sat, 22 Feb 2025 at 10:18, Wang Liang <wangliang74@huawei.com> wrote:
+> > >
+> > > When the cq reservation is failed, the error code is not set which is
+> > > initialized to zero in __xsk_generic_xmit(). That means the packet is not
+> > > send successfully but sendto() return ok.
+> > >
+> > > Set the error code and make xskq_prod_reserve_addr()/xskq_prod_reserve()
+> > > return values more meaningful when the queue is full.
+> >
+> > Hi Wang,
+> >
+> > I agree that this would have been a really good idea if it was
+> > implemented from day one, but now I do not dare to change this since
+> > it would be changing the uapi. Let us say you have the following quite
+> > common code snippet for sending a packet with AF_XDP in skb mode:
+> >
+> > err = sendmsg();
+> > if (err && err != -EAGAIN && err != -EBUSY)
+> >     goto die_due_to_error;
+> > continue with code
+> >
+> > This code would with your change go and die suddenly when the
+> > completion ring is full instead of working. Maybe there is a piece of
+> > code that cleans the completion ring after these lines of code and
+> > next time sendmsg() is called, the packet will get sent, so the
+> > application used to work.
+> >
+> > So I say: let us not do this. But if anyone has another opinion, please share.
+>
+> Can we return -EBUSY from this 'if (xsk_cq_reserve_addr_locked())' case as
+> well?
 
-tap0 is already used by lwt tests, so there is a chance this new test
-will clash with it? Should we run your new test in a net namespace
-to be safe? Bastien recently added a change where you can make
-your test run in a net ns by naming the function test_ns_xxx.
+That is a good idea! Though I would return -EAGAIN. When -EBUSY is
+returned, the buffer was consumed but not sent. But -EAGAIN means that
+the user just has to perform then sendmsg() again and that is exactly
+what the user has to do here too.
 
