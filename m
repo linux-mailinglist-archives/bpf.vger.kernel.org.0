@@ -1,181 +1,261 @@
-Return-Path: <bpf+bounces-52457-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52458-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93361A43025
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 23:31:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE99AA43075
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 00:01:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7731E189EAF6
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 22:30:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16D153B72D7
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 23:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC4F20B1FA;
-	Mon, 24 Feb 2025 22:30:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ALDr1FWS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 867F417B4FF;
+	Mon, 24 Feb 2025 23:01:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3682054E7;
-	Mon, 24 Feb 2025 22:30:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E2F4430
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 23:01:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740436213; cv=none; b=tw955Mt8NmwkRYe2+KqV0vOc3KxeIZeBU0gZkMYib6WVKQ07iXHVE0FoFAHojr9q1Z7wQoR1FzDuD9YjZ74C7soaPxO56QQQa7AlYS4UcGpVvtdKb+CC8MF5DFbPKvmBRP9/YXzUlsmugTDp+r5fF+oISgFSoSQ40xCOv2GZbMo=
+	t=1740438098; cv=none; b=FrWJ+Cs65wPlu9Uj7uBL8+kYM4uw9NNf1i0z95+Pz2nuaEWQcNnE857aC6eli0abIVNRLYtrJ6+mr/JLMTE4g8KINLqwzFzX6eC0wE6ojYULJW5e1nlQHWmTVRpxIHfrdRAmHweyFXDkNjt7Z5Gwjjj7H4BupJvDett3pF5Z8ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740436213; c=relaxed/simple;
-	bh=EBRZfjLcwg5g2rsoSMmRqbsYdSeJMfXkKTCLAauJNJE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fXlYo+3VWnHp4HWfSDQhlhIgd7PfdsCKOqixHwW/J6BG6P4AHLeq70zzDV4vVUrO81I7knsdtokh5ZG3+PnvcoYiYq6T28k3pgMl0uquzYxbP8LD9oNVIcoH0GF+rRP8CsdKRnZhmQWGzr+J479MAHK/e83mSdbDY19a9eLu+dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ALDr1FWS; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-220d398bea9so78500525ad.3;
-        Mon, 24 Feb 2025 14:30:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740436211; x=1741041011; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8Me2tClMPt10g2IbqRw63NkEwXox0kTNxKyczDkCN+Y=;
-        b=ALDr1FWSwzNPx25YKPUPh6lWHjNEy//M98/2ftHtYDEPhJxUrYVlaHR3PoPbRubQmd
-         QhoLAliczh35GvXTAbpYRi6b877nH8bjawZPsuShz+OaaOep4VYnAJddufWHBntfx4Vm
-         KxJCdEQ8OJHF81Fp+Hebkorjkfk6wmradOnD/DcnSJbndE4US/hHbqAwntMhmRJh5J6l
-         9F4LXkg2rw3YBD76k2D/5cq0jXAIOeOX59xGDQNPCmZ3rRBS9QFiAhaSI9m9STU8o0SP
-         VkoiAkgOGRYxMZAswLz2wpFusSOm+rNodpt9n538JcK7NKSgdZBbEJRb3T7DiQRR7fVm
-         Yp0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740436211; x=1741041011;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Me2tClMPt10g2IbqRw63NkEwXox0kTNxKyczDkCN+Y=;
-        b=lcQ+sHa1mqm2Zb8wcazwW3ADx2xwrmpfB5XOUfkkssJ45xpX57GBXjDU9klc2D0TvJ
-         J6bVdvrwhtBnlkEC0Gz71PnW9pBJj+WDvokKuWgjtCkZwtRwrmwwjRDoJYMOzKyMGj0U
-         +jHPQLcgOfYGHeMgCNr2QMjLSmmksz+XBgr1AspmkjVb8k4D1y/DggrhnCgVQy7OFQ6i
-         BEFfnE6fOudtNG6FnxykDH3XFuSuIuac8U//zfk8OWSaQHj+hqkjc91zNuR8ykzFcvLT
-         rZgdY8BlrVQ0qUSRyKfNduJ1Gc5z0gR4r97Ojxi7d96ECnYeLS1qSYCecnYWa2TAZOWr
-         672Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVKrgAjNK7cJjM3vyDR+o3XsEm+2gB/Osf6FRFp29yen7F6B3Yy5gjYPRLL7flutfpF/0PCsyMvaqBHlXc=@vger.kernel.org, AJvYcCW4EQQrzcImDgNXT0C/zmDLLKrgl4gxxxDUeuH/SGRfohhKFWr/tFK1S9RjJGzICHwHTcvI2X8Q@vger.kernel.org, AJvYcCWwUessm6H77O27EoOes5mH6IF/35urqtSy2GjJUz8e0ot8vj4K9vFycY7yUIDQVyTgbxw=@vger.kernel.org, AJvYcCXBaJIOCDHKV4p7KwXaoEiwa25JdGddbJuudriTImnzut5rQCy6Lx6MzVpGsH32yP4wkZ5FxervgYRwfEA=@vger.kernel.org, AJvYcCXdvd7ZpG//htgS2ZQiKodSSeVlZzBCuj1KCxNcWAE25Fxzb2iwVYWL5BtoxRtGSkkJBvc1besTDeGXc9Ic@vger.kernel.org, AJvYcCXeRb9tfKeqhtvMxMDgyazFkJY+onzJJUMeeQlVCSW7Z2NDAipRKuVe2R9LfDLyAA8t+EWlb74I0Aq4Xxk2sos=@vger.kernel.org, AJvYcCXowpaAjkzGdWdzbCAuR+5e2X6QxLC4MQnEatK5nvX0ebo2IZ6b0VIIuCJC5oxXa8nTwozPVPh9FFt7pWB0@vger.kernel.org
-X-Gm-Message-State: AOJu0Yykdhq1zMJVbAictdxsnkefoSJHCPcRnd28Scm/j132ggNzq8Lq
-	XO6mLvmUNHxu+iQF6JKi772ow9DrZN0VCzGJ6Oj1s528hTGezdP8
-X-Gm-Gg: ASbGnct8AgQmehe2sEf6a6gvJoQMLM5t5FvniL5qXGisPYvWEi/qeFoHQpbggulhepr
-	z/tUkSOLIh/wnwT3dua0EooAvmrzqalDO5aU/KEokyd+8quWZZnnOzchyUTSlWNKeOZxqpdeXpB
-	dluSKbFbM9Iz6LHLQ+dfTIEMXmGJgz0MUbKITxeQiOWQlGANcjhUDaaMFL1CJCZPJYRkzBMq9HD
-	r54QXs7jHCYiGdjfowGW9BHz8yEdKBGCziYVqOULRCygOkGLQYpoNdNtXaJlVnCc+fNp3lWmQ5O
-	AIjGxx1JMLoO4yeoIO/G3NpV9MPIJY9rMLejBVByvlI0xP3Bbg==
-X-Google-Smtp-Source: AGHT+IHSWZzc6ZuJ7NuejlOnvhXRMbFaz5+ejvmVe/JbcFGg9XTfI3FePFDJqFfvVera5WJ+OS97IQ==
-X-Received: by 2002:a17:902:e542:b0:220:ff3f:6cc0 with SMTP id d9443c01a7336-221a1191974mr248692865ad.38.1740436210908;
-        Mon, 24 Feb 2025 14:30:10 -0800 (PST)
-Received: from localhost (maglev-oncall.nvidia.com. [216.228.125.128])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2230a092fc9sm1130585ad.126.2025.02.24.14.30.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2025 14:30:10 -0800 (PST)
-Date: Mon, 24 Feb 2025 17:30:08 -0500
-From: Yury Norov <yury.norov@gmail.com>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Uros Bizjak <ubizjak@gmail.com>, Kuan-Wei Chiu <visitorckw@gmail.com>,
-	tglx@linutronix.de, Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
-	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org, rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-	dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, akpm@linux-foundation.org, mingo@kernel.org,
-	alistair@popple.id.au, linux@rasmusvillemoes.dk,
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-	jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH 03/17] x86: Replace open-coded parity calculation with
- parity8()
-Message-ID: <Z7zy8AOpAo4JQu8W@thinkpad>
-References: <20250223164217.2139331-1-visitorckw@gmail.com>
- <20250223164217.2139331-4-visitorckw@gmail.com>
- <d080a2d6-9ec7-1c86-4cf4-536400221f68@gmail.com>
- <e0b1c299-7f19-4453-a1ce-676068601213@zytor.com>
- <Z7zv-c4A76jeMAKf@thinkpad>
- <68F1ED19-B0C2-4E78-B504-2F7C040ACC0A@zytor.com>
+	s=arc-20240116; t=1740438098; c=relaxed/simple;
+	bh=Xysqaq9szONXRtVupRuxzfLjySfwAQ3drwc3UKjbI+8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=WDTaZFhPG3CqATspoYOuTEm4Btp8mFMv6p6oSO/ZesrBRv3uyCarvLP5MyK/vzaa8nkMmmq6ToWKopGfrRImTJHAWjfTVRkoRnTESyjwMHX5c2Yf8SZKleeOsEEdjjkCd7YUbj2wXWuRWxS3lMO/3leHY/rUoh2xUfddxXqkDeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id 9BB751CD7C3D; Mon, 24 Feb 2025 15:01:21 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v4 2/2] selftests/bpf: Add selftests allowing cgroup prog pre-ordering
+Date: Mon, 24 Feb 2025 15:01:21 -0800
+Message-ID: <20250224230121.283601-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.5
+In-Reply-To: <20250224230116.283071-1-yonghong.song@linux.dev>
+References: <20250224230116.283071-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <68F1ED19-B0C2-4E78-B504-2F7C040ACC0A@zytor.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 24, 2025 at 02:21:13PM -0800, H. Peter Anvin wrote:
-> On February 24, 2025 2:17:29 PM PST, Yury Norov <yury.norov@gmail.com> wrote:
-> >On Mon, Feb 24, 2025 at 01:55:28PM -0800, H. Peter Anvin wrote:
-> >> On 2/24/25 07:24, Uros Bizjak wrote:
-> >> > 
-> >> > 
-> >> > On 23. 02. 25 17:42, Kuan-Wei Chiu wrote:
-> >> > > Refactor parity calculations to use the standard parity8() helper. This
-> >> > > change eliminates redundant implementations and improves code
-> >> > > efficiency.
-> >> > 
-> >> > The patch improves parity assembly code in bootflag.o from:
-> >> > 
-> >> >    58:    89 de                    mov    %ebx,%esi
-> >> >    5a:    b9 08 00 00 00           mov    $0x8,%ecx
-> >> >    5f:    31 d2                    xor    %edx,%edx
-> >> >    61:    89 f0                    mov    %esi,%eax
-> >> >    63:    89 d7                    mov    %edx,%edi
-> >> >    65:    40 d0 ee                 shr    %sil
-> >> >    68:    83 e0 01                 and    $0x1,%eax
-> >> >    6b:    31 c2                    xor    %eax,%edx
-> >> >    6d:    83 e9 01                 sub    $0x1,%ecx
-> >> >    70:    75 ef                    jne    61 <sbf_init+0x51>
-> >> >    72:    39 c7                    cmp    %eax,%edi
-> >> >    74:    74 7f                    je     f5 <sbf_init+0xe5>
-> >> >    76:
-> >> > 
-> >> > to:
-> >> > 
-> >> >    54:    89 d8                    mov    %ebx,%eax
-> >> >    56:    ba 96 69 00 00           mov    $0x6996,%edx
-> >> >    5b:    c0 e8 04                 shr    $0x4,%al
-> >> >    5e:    31 d8                    xor    %ebx,%eax
-> >> >    60:    83 e0 0f                 and    $0xf,%eax
-> >> >    63:    0f a3 c2                 bt     %eax,%edx
-> >> >    66:    73 64                    jae    cc <sbf_init+0xbc>
-> >> >    68:
-> >> > 
-> >> > which is faster and smaller (-10 bytes) code.
-> >> > 
-> >> 
-> >> Of course, on x86, parity8() and parity16() can be implemented very simply:
-> >> 
-> >> (Also, the parity functions really ought to return bool, and be flagged
-> >> __attribute_const__.)
-> >
-> >There was a discussion regarding return type when parity8() was added.
-> >The integer type was taken over bool with a sort of consideration that
-> >bool should be returned as an answer to some question, like parity_odd().
-> >
-> >To me it's not a big deal. We can switch to boolean and describe in
-> >comment what the 'true' means for the parity() function.
-> 
-> Bool is really the single-bit type, and gives the compiler more information. You could argue that the function really should be called parity_odd*() in general, but that's kind of excessive IMO.
+Add a few selftests with cgroup prog pre-ordering.
 
-Yes, I could, but I will not. :) I also feel like bool looks more
-natural here.
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ .../bpf/prog_tests/cgroup_preorder.c          | 128 ++++++++++++++++++
+ .../selftests/bpf/progs/cgroup_preorder.c     |  41 ++++++
+ 2 files changed, 169 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_preorde=
+r.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_preorder.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_preorder.c b/t=
+ools/testing/selftests/bpf/prog_tests/cgroup_preorder.c
+new file mode 100644
+index 000000000000..d4d583872fa2
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_preorder.c
+@@ -0,0 +1,128 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++#include <test_progs.h>
++#include "cgroup_helpers.h"
++#include "cgroup_preorder.skel.h"
++
++static int run_getsockopt_test(int cg_parent, int cg_child, int sock_fd,=
+ bool all_preorder)
++{
++	LIBBPF_OPTS(bpf_prog_attach_opts, opts);
++	enum bpf_attach_type prog_c_atype, prog_c2_atype, prog_p_atype, prog_p2=
+_atype;
++	int prog_c_fd, prog_c2_fd, prog_p_fd, prog_p2_fd;
++	struct cgroup_preorder *skel =3D NULL;
++	struct bpf_program *prog;
++	__u8 *result, buf;
++	socklen_t optlen;
++	int err =3D 0;
++
++	skel =3D cgroup_preorder__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "cgroup_preorder__open_and_load"))
++		return 0;
++
++	buf =3D 0x00;
++	err =3D setsockopt(sock_fd, SOL_IP, IP_TOS, &buf, 1);
++	if (!ASSERT_OK(err, "setsockopt"))
++		goto close_skel;
++
++	opts.flags =3D BPF_F_ALLOW_MULTI;
++	if (all_preorder)
++		opts.flags |=3D BPF_F_PREORDER;
++	prog =3D skel->progs.child;
++	prog_c_fd =3D bpf_program__fd(prog);
++	prog_c_atype =3D bpf_program__expected_attach_type(prog);
++	err =3D bpf_prog_attach_opts(prog_c_fd, cg_child, prog_c_atype, &opts);
++	if (!ASSERT_OK(err, "bpf_prog_attach_opts-child"))
++		goto close_skel;
++
++	opts.flags =3D BPF_F_ALLOW_MULTI | BPF_F_PREORDER;
++	prog =3D skel->progs.child_2;
++	prog_c2_fd =3D bpf_program__fd(prog);
++	prog_c2_atype =3D bpf_program__expected_attach_type(prog);
++	err =3D bpf_prog_attach_opts(prog_c2_fd, cg_child, prog_c2_atype, &opts=
+);
++	if (!ASSERT_OK(err, "bpf_prog_attach_opts-child_2"))
++		goto detach_child;
++
++	optlen =3D 1;
++	err =3D getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
++	if (!ASSERT_OK(err, "getsockopt"))
++		goto detach_child_2;
++
++	result =3D skel->bss->result;
++	if (all_preorder)
++		ASSERT_TRUE(result[0] =3D=3D 1 && result[1] =3D=3D 2, "child only");
++	else
++		ASSERT_TRUE(result[0] =3D=3D 2 && result[1] =3D=3D 1, "child only");
++
++	skel->bss->idx =3D 0;
++	memset(result, 0, 4);
++
++	opts.flags =3D BPF_F_ALLOW_MULTI;
++	if (all_preorder)
++		opts.flags |=3D BPF_F_PREORDER;
++	prog =3D skel->progs.parent;
++	prog_p_fd =3D bpf_program__fd(prog);
++	prog_p_atype =3D bpf_program__expected_attach_type(prog);
++	err =3D bpf_prog_attach_opts(prog_p_fd, cg_parent, prog_p_atype, &opts)=
+;
++	if (!ASSERT_OK(err, "bpf_prog_attach_opts-parent"))
++		goto detach_child_2;
++
++	opts.flags =3D BPF_F_ALLOW_MULTI | BPF_F_PREORDER;
++	prog =3D skel->progs.parent_2;
++	prog_p2_fd =3D bpf_program__fd(prog);
++	prog_p2_atype =3D bpf_program__expected_attach_type(prog);
++	err =3D bpf_prog_attach_opts(prog_p2_fd, cg_parent, prog_p2_atype, &opt=
+s);
++	if (!ASSERT_OK(err, "bpf_prog_attach_opts-parent_2"))
++		goto detach_parent;
++
++	err =3D getsockopt(sock_fd, SOL_IP, IP_TOS, &buf, &optlen);
++	if (!ASSERT_OK(err, "getsockopt"))
++		goto detach_parent_2;
++
++	if (all_preorder)
++		ASSERT_TRUE(result[0] =3D=3D 3 && result[1] =3D=3D 4 && result[2] =3D=3D=
+ 1 && result[3] =3D=3D 2,
++			    "parent and child");
++	else
++		ASSERT_TRUE(result[0] =3D=3D 4 && result[1] =3D=3D 2 && result[2] =3D=3D=
+ 1 && result[3] =3D=3D 3,
++			    "parent and child");
++
++detach_parent_2:
++	ASSERT_OK(bpf_prog_detach2(prog_p2_fd, cg_parent, prog_p2_atype),
++		  "bpf_prog_detach2-parent_2");
++detach_parent:
++	ASSERT_OK(bpf_prog_detach2(prog_p_fd, cg_parent, prog_p_atype),
++		  "bpf_prog_detach2-parent");
++detach_child_2:
++	ASSERT_OK(bpf_prog_detach2(prog_c2_fd, cg_child, prog_c2_atype),
++		  "bpf_prog_detach2-child_2");
++detach_child:
++	ASSERT_OK(bpf_prog_detach2(prog_c_fd, cg_child, prog_c_atype),
++		  "bpf_prog_detach2-child");
++close_skel:
++	cgroup_preorder__destroy(skel);
++	return err;
++}
++
++void test_cgroup_preorder(void)
++{
++	int cg_parent =3D -1, cg_child =3D -1, sock_fd =3D -1;
++
++	cg_parent =3D test__join_cgroup("/parent");
++	if (!ASSERT_GE(cg_parent, 0, "join_cgroup /parent"))
++		goto out;
++
++	cg_child =3D test__join_cgroup("/parent/child");
++	if (!ASSERT_GE(cg_child, 0, "join_cgroup /parent/child"))
++		goto out;
++
++	sock_fd =3D socket(AF_INET, SOCK_STREAM, 0);
++	if (!ASSERT_GE(sock_fd, 0, "socket"))
++		goto out;
++
++	ASSERT_OK(run_getsockopt_test(cg_parent, cg_child, sock_fd, false), "ge=
+tsockopt_test_1");
++	ASSERT_OK(run_getsockopt_test(cg_parent, cg_child, sock_fd, true), "get=
+sockopt_test_2");
++
++out:
++	close(sock_fd);
++	close(cg_child);
++	close(cg_parent);
++}
+diff --git a/tools/testing/selftests/bpf/progs/cgroup_preorder.c b/tools/=
+testing/selftests/bpf/progs/cgroup_preorder.c
+new file mode 100644
+index 000000000000..4ef6202baa0a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/cgroup_preorder.c
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++
++char _license[] SEC("license") =3D "GPL";
++
++unsigned int idx;
++__u8 result[4];
++
++SEC("cgroup/getsockopt")
++int child(struct bpf_sockopt *ctx)
++{
++	if (idx < 4)
++		result[idx++] =3D 1;
++	return 1;
++}
++
++SEC("cgroup/getsockopt")
++int child_2(struct bpf_sockopt *ctx)
++{
++	if (idx < 4)
++		result[idx++] =3D 2;
++	return 1;
++}
++
++SEC("cgroup/getsockopt")
++int parent(struct bpf_sockopt *ctx)
++{
++	if (idx < 4)
++		result[idx++] =3D 3;
++	return 1;
++}
++
++SEC("cgroup/getsockopt")
++int parent_2(struct bpf_sockopt *ctx)
++{
++	if (idx < 4)
++		result[idx++] =3D 4;
++	return 1;
++}
+--=20
+2.43.5
+
 
