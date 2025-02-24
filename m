@@ -1,80 +1,52 @@
-Return-Path: <bpf+bounces-52321-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52322-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3340A417E2
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 09:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 53F9CA41925
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 10:32:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66558170287
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 08:55:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA681166E8D
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 09:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8BE7241CA2;
-	Mon, 24 Feb 2025 08:55:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D088424BC13;
+	Mon, 24 Feb 2025 09:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="TLHOAF1E"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="TR+l/N2h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833C223C8CF
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 08:55:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5D03245027;
+	Mon, 24 Feb 2025 09:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740387309; cv=none; b=FrbmYlSFUJJpewf9s8BXAXWXayk/qS/mTuUT8eP1gfHYRD+kZF69yINjlgeTcxZwrIxlpPfYKPAXzcyn6TbbNVgDZsXsGyoLZAQ+IOSfFHlu5vc5529n9AibqWazVOc+6PKX44h/K00JKK8+j+xXJA7wsTBArByjyuQ6pCyomek=
+	t=1740389265; cv=none; b=p8MOq4L54wuQ/LA0DAjUfzWGRQZGgQ9kfaZWFQivX2TD9x1A7vROBhBi9CKlHYGSZMUqZZjGa/N4iK9JJqIKoVzeG3H9/We2+0f+JbeFMxpglPoT6lzN8sVl0qXqDYMiC3iRHSPRVRn6xKwF/NolnylG+8C1bb4cCS2G5y44COs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740387309; c=relaxed/simple;
-	bh=1GgqBPyBTFlKCgi0PwPjLYZrEEzQFrvP4PexcY6r2dM=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=tmsM0djmSOrjJbl3Mnr7tuE8OInm+hAsAyShtvL3xWUPd+NeYsSx7Ihi7lJZxrcSsKbGQ5tjaTZhUvvB3FBnR/HMjEElgRvLuOmNi5HWnshlm5xXDnR8zzcz14qbbC3DnX9zlKfErSOPhsHuUr3sI2WMfyE9x1QefK2IDOqu7o4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=TLHOAF1E; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-abba1b74586so618476466b.2
-        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 00:55:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1740387306; x=1740992106; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QO+xMkuYp+Md7PtJmgu3Mx03+LhiNMwmbB5jOoWRdDo=;
-        b=TLHOAF1EUERyT5gmg6oFpsACOR2JV1qcireA6IO0bBO+NX6AxAmsFdzhjY2I/qzKz9
-         zOOFikz7tnbKysc1zGWFTG4dKs9U/dM3AS92DXaJU/r/hsf9c0aJ9k13QfP3/AlHMigL
-         XAApyXvAt/F0OAhczVdP2aC0QVWpv1vw+MLJDfrpW+2rTeqbzLR8Fw38gLH2Az0JWEib
-         o/l4o9AYhijxjBpdr74kH7aGJK8o1zMC9s0slNsYvsJHgxdImfDAJzfwU4Gx9xF/fAWq
-         HN4VTm1bb+rVEIASGQ0FsNkfm3SK/vsJWrZdZfv0sfYBmn3FcuOaY8NPZgGn0I2d4dOr
-         CZJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740387306; x=1740992106;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QO+xMkuYp+Md7PtJmgu3Mx03+LhiNMwmbB5jOoWRdDo=;
-        b=TU7ztNR8YrpBX5IjAmC+5vaUNoIyjBWkVTS6RvOBm29klpP0Es6kUXqo2mGBXWpLoo
-         nri5oA16wey3wMp7ck2Xpz5CoVKM86zD/kLyP6VPf0yGA7Kucf86Dj8CNwAsGVTxgRa3
-         QWGLqig9j48e8sXLsBLTCj5x3/h8CeX813gViuxnjM6PhWsmukASVBiacObHSNg902jS
-         3oj9rniPpQVT4x4ycvN/Rjj8ABz0CO2e/BMN742Sd6P52bYIkRN+/2XreEN64ZJGDflC
-         s0QmwLP+Ln0Iis466mbSLYs59Qr2rcfUzraUpqgwjCYjSjOXiIxRukSMrLteVGjJfVpF
-         V+kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUSJzhzZO4LT3poQloiC8QygjnNBuKU4JOVXwCw91JNf8HnGmUF5Qj64Lj8AFZMdb3KCBM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxw7+pM6GZ5caCdgGNGeK6kdvtwGsN47QyqjZBUdCv8oKqpLUM4
-	/6E5IcuPrwp7EGXVPfM0sOQm/Q0pjrypimomrnW7h3jY5QHORC64V6r8pWuLnVSBq0qMrbkRP1a
-	O
-X-Gm-Gg: ASbGncuJEi0csxMwQeo6qxU6vht3qVQeXwLpueEV3l2X3xXWKa2TSb+PIdkw9wHLr2s
-	tTK7vMMGzsPgXoKi05VtupDAA838I6ZxseHbbx53/IMuWRr5aHtFLxT/dRtne6kZroWuvO/23Ee
-	sFf3hbtPrxqnWzgF4KcWgdB7SifdX3Cjkv2qj4Fgz6uGv7EMkvj0e1eYKckAoMUvZS7/1A8WMFU
-	Avc1DA24/Qm2L77A84ipSB9qzZkZ4HNIDdUx7hdMNqlLB56QR8nMBqibv44beel4qbXYG7e3gI7
-	AgpHpI33XYGXExIi8VRRGo4lenhfVTl90CDOeapBGtkRGVXXUNjHGc9pJQ==
-X-Google-Smtp-Source: AGHT+IH9CYcouR6wSGj8Me5I7gLdm8lODFGLx/dNc4PMI3z/SgqUIEeLqeDKb91xDS6hqr1+z+Zq/A==
-X-Received: by 2002:a17:907:7214:b0:ab7:d801:86a7 with SMTP id a640c23a62f3a-abc099b847amr1224459866b.3.1740387305528;
-        Mon, 24 Feb 2025 00:55:05 -0800 (PST)
-Received: from [192.168.0.205] (78-154-15-142.ip.btc-net.bg. [78.154.15.142])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abb4d3ef3c0sm1841360366b.41.2025.02.24.00.55.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Feb 2025 00:55:05 -0800 (PST)
-Message-ID: <ce7053c5-b06c-45e2-b0f0-eb1a33131853@blackwall.org>
-Date: Mon, 24 Feb 2025 10:55:04 +0200
+	s=arc-20240116; t=1740389265; c=relaxed/simple;
+	bh=xtPJ+9TPcQnIoTApT2qVmDx4XC/2epsxSLv0GCkiSg4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j6wxrIW+Yo3clv5k0Suw2zYWxrQwKCLrWYu9fbvB0rHrtHjr1FNfVkEfXo/z8OotuKAJhYIxLrG8SwoPIKmyb4O/hHtaWFtaMp55noxUQIQOo/A1szeWXmkVopkvBx6/uy93PAl9728h+F1PIQt9/EGuQEM5uMPct9Vn0hOQcm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=TR+l/N2h; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 56299433F8;
+	Mon, 24 Feb 2025 09:27:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1740389259;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bv9esbM3X3XFxLbrYON0o0vsKE/aVAnt/YyaYFae7xk=;
+	b=TR+l/N2hF7PDXRr6GdLqFUHz4pzP3rrdAMLp9Fd8O7SLWvARUubTLB8RON9mdUxDC7Pmdp
+	4TfRCP7DzbIf0gRofSK86Hj0EHJrAehc8USbBKCJ0Fu4f/+skggRj281kRW9Z+dMRMSNdP
+	Pljh70F0KT7m8e3YrCXONvSk2F3fy21YLeK0hXf/xyC/9BY9CjZ3GArRlHFPj51qn+vcL3
+	trc1MnIn3Rg/0nN78UwGsAjZW1/XD73s/kC9ZwPE6RPBCPoz4LAlKJr1lh4zYYWYL/i5Qf
+	4S7iNp39MdMwdfeOork7R7Rj5sUa1fEGUfpthSJaQ6uD1VDV71rqs8vtNmxq/g==
+Message-ID: <4c39f9cf-a9cb-493b-b44f-b9ac264019c6@bootlin.com>
+Date: Mon, 24 Feb 2025 10:27:37 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,50 +54,257 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iproute2] ip: link: netkit: Support scrub options
-From: Nikolay Aleksandrov <razor@blackwall.org>
-To: Jordan Rife <jordan@jrife.io>, Daniel Borkmann <daniel@iogearbox.net>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, stephen@networkplumber.org,
- dsahern@kernel.org
-References: <20250222204151.1145706-1-jordan@jrife.io>
- <1cb55499-f560-4296-a44c-e5af7a3d1758@blackwall.org>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Migrate test_xdp_vlan.sh into
+ test_progs
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Shuah Khan <shuah@kernel.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250221-xdp_vlan-v1-0-7d29847169af@bootlin.com>
+ <20250221-xdp_vlan-v1-2-7d29847169af@bootlin.com>
+ <Z7imfH-Adq5qUUsB@mini-arch>
 Content-Language: en-US
-In-Reply-To: <1cb55499-f560-4296-a44c-e5af7a3d1758@blackwall.org>
-Content-Type: text/plain; charset=UTF-8
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+In-Reply-To: <Z7imfH-Adq5qUUsB@mini-arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdejkeegvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpeeurghsthhivghnucevuhhruhhttghhvghtuceosggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhephfehgefgteffkeehveeuvdekvddvueefgeejvefgleevveevteffveefgfehieejnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopegludelvddrudeikedrtddrudegngdpmhgrihhlfhhrohhmpegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedvgedprhgtphhtthhopehsthhfohhmihgthhgvvhesghhmrghilhdrtghomhdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegurghvvghmsegurghvvghmlhhofhhtrdhnvghtpdhrtghpthhtohepkhhusggrsehkvghrnhgvlhdrohhrghdprhgtphhtt
+ hhopehhrgifkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrgh
+X-GND-Sasl: bastien.curutchet@bootlin.com
 
-On 2/24/25 10:51, Nikolay Aleksandrov wrote:
-> On 2/22/25 22:41, Jordan Rife wrote:
->> Add "scrub" option to configure IFLA_NETKIT_SCRUB and
->> IFLA_NETKIT_PEER_SCRUB when setting up a link. Add "scrub" and
->> "peer scrub" to device details as well when printing.
+Hi Stanislav,
+
+On 2/21/25 5:14 PM, Stanislav Fomichev wrote:
+> On 02/21, Bastien Curutchet (eBPF Foundation) wrote:
+>> test_xdp_vlan.sh isn't used by the BPF CI.
 >>
->> $ sudo ./ip/ip link add jordan type netkit scrub default peer scrub none
->> $ ./ip/ip -details link show jordan
->> 43: jordan@nk0: <BROADCAST,MULTICAST,NOARP,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
->>     link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff promiscuity 0 allmulti 0 minmtu 68 maxmtu 65535
->>     netkit mode l3 type primary policy forward peer policy forward scrub default peer scrub none numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536
+>> Migrate test_xdp_vlan.sh in prog_tests/xdp_vlan.c.
+>> It uses the same BPF programs located in progs/test_xdp_vlan.c and the
+>> same network topology.
+>> Remove test_xdp_vlan*.sh and their Makefile entries.
 >>
->> Link: https://lore.kernel.org/netdev/20241004101335.117711-1-daniel@iogearbox.net/
->>
->> Signed-off-by: Jordan Rife <jordan@jrife.io>
+>> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
 >> ---
->>  ip/iplink_netkit.c | 46 +++++++++++++++++++++++++++++++++++++++++++++-
->>  1 file changed, 45 insertions(+), 1 deletion(-)
+>>   tools/testing/selftests/bpf/Makefile               |   4 +-
+>>   tools/testing/selftests/bpf/prog_tests/xdp_vlan.c  | 175 ++++++++++++++++
+>>   tools/testing/selftests/bpf/test_xdp_vlan.sh       | 233 ---------------------
+>>   .../selftests/bpf/test_xdp_vlan_mode_generic.sh    |   9 -
+>>   .../selftests/bpf/test_xdp_vlan_mode_native.sh     |   9 -
+>>   5 files changed, 176 insertions(+), 254 deletions(-)
 >>
+>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+>> index 5dc9c84ed30f6e5a46572a9e428f692a79623469..09c1f731b8280696c729e3c87020ef749fee9dcb 100644
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -103,8 +103,6 @@ TEST_PROGS := test_kmod.sh \
+>>   	test_tunnel.sh \
+>>   	test_lwt_seg6local.sh \
+>>   	test_lirc_mode2.sh \
+>> -	test_xdp_vlan_mode_generic.sh \
+>> -	test_xdp_vlan_mode_native.sh \
+>>   	test_lwt_ip_encap.sh \
+>>   	test_tc_tunnel.sh \
+>>   	test_tc_edt.sh \
+>> @@ -118,7 +116,7 @@ TEST_PROGS := test_kmod.sh \
+>>   
+>>   TEST_PROGS_EXTENDED := \
+>>   	ima_setup.sh verify_sig_setup.sh \
+>> -	test_xdp_vlan.sh test_bpftool.py
+>> +	test_bpftool.py
+>>   
+>>   TEST_KMODS := bpf_testmod.ko bpf_test_no_cfi.ko bpf_test_modorder_x.ko \
+>>   	bpf_test_modorder_y.ko
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_vlan.c b/tools/testing/selftests/bpf/prog_tests/xdp_vlan.c
+>> new file mode 100644
+>> index 0000000000000000000000000000000000000000..18dd25344de768aa83a162a0c091f28a4e5f505e
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_vlan.c
+>> @@ -0,0 +1,175 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +
+>> +/*
+>> + * Network topology:
+>> + *  -----------        -----------
+>> + *  |  NS1    |        |   NS2   |
+>> + *  | veth0  -|--------|- veth0  |
+>> + *  -----------        -----------
+>> + *
+>> + */
+>> +
+>> +#define _GNU_SOURCE
+>> +#include <net/if.h>
+>> +#include <uapi/linux/if_link.h>
+>> +
+>> +#include "network_helpers.h"
+>> +#include "test_progs.h"
+>> +#include "test_xdp_vlan.skel.h"
+>> +
+>> +
+>> +#define VETH_NAME	"veth0"
+>> +#define NS_MAX_SIZE	32
+>> +#define NS1_NAME	"ns-xdp-vlan-1-"
+>> +#define NS2_NAME	"ns-xdp-vlan-2-"
+>> +#define NS1_IP_ADDR	"100.64.10.1"
+>> +#define NS2_IP_ADDR	"100.64.10.2"
+>> +#define VLAN_ID		4011
+>> +
+>> +static int setup_network(char *ns1, char *ns2)
+>> +{
+>> +	if (!ASSERT_OK(append_tid(ns1, NS_MAX_SIZE), "create ns1 name"))
+>> +		goto fail;
+>> +	if (!ASSERT_OK(append_tid(ns2, NS_MAX_SIZE), "create ns2 name"))
+>> +		goto fail;
+>> +
 > 
-> Patch looks good to me, since this is a new feature perhaps it should
-> target iproute2-next. Thanks!
+> [..]
 > 
-> Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
+>> +	SYS(fail, "ip netns add %s", ns1);
+>> +	SYS(fail, "ip netns add %s", ns2);
+> 
+> Will replacing these with open_netns work? Or we don't setup up enough
+> state to cooperate with 'ip' tool? (same for cleanup_network if it
+> works)
 > 
 
-Aargh, just noticed one minor nit:
-"Usage: ... %s [ mode MODE ] [ POLICY ] [scrub SCRUB] [ peer [ POLICY <options> ] ]\n"
+Yes, it will work. Initially I planned to use it but it isn't very 
+convenient in this case because struct netns_obj is defined in 
+test_progs.c, not in the header. This means you can't access ns->nsname 
+to get the namespace name and as I use append_tid() this name is 
+dynamic. So using netns_new / close_netns / netns_free would require 
+keeping both the namespace names (for further ip commands / open_netns) 
+and the netns_objs objects (for netns_free) whereas here I only keep the 
+namespace name.
 
-The other options are surrounded by spaces but scrub isn't. If you're going to send v2
-please add spaces for scrub as well.
+I can send a V2 using netns_* helpers if you prefer, though. Maybe I can 
+also either move the netns_obj definition in test_progs.h or create a 
+'get_nsname()' helper ?
 
-Thanks.
+>> +	SYS(fail, "ip -n %s link add %s type veth peer name %s netns %s",
+>> +	    ns1, VETH_NAME, VETH_NAME, ns2);
+>> +
+>> +	/* NOTICE: XDP require VLAN header inside packet payload
+>> +	 *  - Thus, disable VLAN offloading driver features
+>> +	 */
+>> +	SYS(fail, "ip netns exec %s ethtool -K %s rxvlan off txvlan off", ns1, VETH_NAME);
+>> +	SYS(fail, "ip netns exec %s ethtool -K %s rxvlan off txvlan off", ns2, VETH_NAME);
+>> +
+>> +	/* NS1 configuration */
+>> +	SYS(fail, "ip -n %s addr add %s/24 dev %s", ns1, NS1_IP_ADDR, VETH_NAME);
+>> +	SYS(fail, "ip -n %s link set %s up", ns1, VETH_NAME);
+>> +
+>> +	/* NS2 configuration */
+>> +	SYS(fail, "ip -n %s link add link %s name %s.%d type vlan id %d",
+>> +	    ns2, VETH_NAME, VETH_NAME, VLAN_ID, VLAN_ID);
+>> +	SYS(fail, "ip -n %s addr add %s/24 dev %s.%d", ns2, NS2_IP_ADDR, VETH_NAME, VLAN_ID);
+>> +	SYS(fail, "ip -n %s link set %s up", ns2, VETH_NAME);
+>> +	SYS(fail, "ip -n %s link set %s.%d up", ns2, VETH_NAME, VLAN_ID);
+>> +
+>> +	/* At this point ping should fail because VLAN tags are only used by NS2 */
+>> +	return !SYS_NOFAIL("ip netns exec %s ping -W 1 -c1 %s", ns2, NS1_IP_ADDR);
+>> +
+>> +fail:
+>> +	return -1;
+>> +}
+>> +
+>> +static void cleanup_network(const char *ns1, const char *ns2)
+>> +{
+>> +	SYS_NOFAIL("ip netns del %s", ns1);
+>> +	SYS_NOFAIL("ip netns del %s", ns2);
+>> +}
+>> +
+>> +static void xdp_vlan(struct bpf_program *xdp, struct bpf_program *tc, u32 flags)
+>> +{
+>> +	LIBBPF_OPTS(bpf_tc_hook, tc_hook, .attach_point = BPF_TC_EGRESS);
+>> +	LIBBPF_OPTS(bpf_tc_opts, tc_opts, .handle = 1, .priority = 1);
+>> +	char ns1[NS_MAX_SIZE] = NS1_NAME;
+>> +	char ns2[NS_MAX_SIZE] = NS2_NAME;
+>> +	struct nstoken *nstoken = NULL;
+>> +	int interface;
+>> +	int ret;
+>> +
+>> +	if (!ASSERT_OK(setup_network(ns1, ns2), "setup network"))
+>> +		goto cleanup;
+>> +
+>> +	nstoken = open_netns(ns1);
+>> +	if (!ASSERT_OK_PTR(nstoken, "open NS1"))
+>> +		goto cleanup;
+>> +
+>> +	interface = if_nametoindex(VETH_NAME);
+>> +	if (!ASSERT_NEQ(interface, 0, "get interface index"))
+>> +		goto cleanup;
+>> +
+>> +	ret = bpf_xdp_attach(interface, bpf_program__fd(xdp), flags, NULL);
+>> +	if (!ASSERT_OK(ret, "attach xdp_vlan_change"))
+>> +		goto cleanup;
+>> +
+>> +	tc_hook.ifindex = interface;
+>> +	ret = bpf_tc_hook_create(&tc_hook);
+>> +	if (!ASSERT_OK(ret, "bpf_tc_hook_create"))
+>> +		goto detach_xdp;
+>> +
+>> +	/* Now we'll use BPF programs to pop/push the VLAN tags */
+>> +	tc_opts.prog_fd = bpf_program__fd(tc);
+>> +	ret = bpf_tc_attach(&tc_hook, &tc_opts);
+>> +	if (!ASSERT_OK(ret, "bpf_tc_attach"))
+>> +		goto detach_xdp;
+>> +
+>> +	close_netns(nstoken);
+>> +	nstoken = NULL;
+>> +
+>> +	/* Now the namespaces can reach each-other, test with pings */
+>> +	SYS(detach_tc, "ip netns exec %s ping -i 0.2 -W 2 -c 2 %s > /dev/null", ns1, NS2_IP_ADDR);
+>> +	SYS(detach_tc, "ip netns exec %s ping -i 0.2 -W 2 -c 2 %s > /dev/null", ns2, NS1_IP_ADDR);
+>> +
+>> +
+>> +detach_tc:
+>> +	bpf_tc_detach(&tc_hook, &tc_opts);
+>> +detach_xdp:
+>> +	bpf_xdp_detach(interface, flags, NULL);
+>> +cleanup:
+>> +	close_netns(nstoken);
+>> +	cleanup_network(ns1, ns2);
+>> +}
+>> +
+>> +/* First test: Remove VLAN by setting VLAN ID 0, using "xdp_vlan_change"
+>> + * egress use TC to add back VLAN tag 4011
+>> + */
+>> +void test_xdp_vlan_change(void)
+>> +{
+>> +	struct test_xdp_vlan *skel;
+>> +
+>> +	skel = test_xdp_vlan__open_and_load();
+>> +	if (!ASSERT_OK_PTR(skel, "xdp_vlan__open_and_load"))
+>> +		return;
+>> +
+> 
+> [..]
+> 
+>> +	if (test__start_subtest("0"))
+>> +		xdp_vlan(skel->progs.xdp_vlan_change, skel->progs.tc_vlan_push, 0);
+> 
+> Does the original test also test with flags=0? What is the purpose?
 
+The original test allows testing the 'xdp', 'xdpgeneric' and 'xdpdrv' 
+modes. My understanding is that flags=0 is the 'xdp' equivalent. IIRC, 
+there are fallbacks that will set these flags to SKB or DRV mode at some 
+point but, since it's allowed by the bpf_xdp_attach API, I thought it 
+was worth testing. This way, if the fallbacks stop working at some 
+point, we'll be noticed.
+
+Best regards,
+Bastien
 
