@@ -1,118 +1,174 @@
-Return-Path: <bpf+bounces-52390-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52395-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 123FFA428EF
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:09:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4709A42922
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:16:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1CA51897B4B
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 17:04:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 814D1188D6E7
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 17:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A2B226659D;
-	Mon, 24 Feb 2025 17:00:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AEC8263F39;
+	Mon, 24 Feb 2025 17:12:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="GAfWaG1X"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LAxOmcAC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3407B26658F
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 17:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59AF7260A5E;
+	Mon, 24 Feb 2025 17:12:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740416408; cv=none; b=ffIYmZrfMTSRJi8+kYFQU6H6RSfP84BDGzs9HiiOrqm0HnsI7xUd9UoPY4BQNBwhmhSiC1FXdkTMLtEYThbHGPIbdUyCUKrnjAy0W3yni9OX6iePDWeWBlvmeBuKTLXeTH6o9P5EYlBTj4j8+ZGk1FDA0FA+3J2meDyvNQ9QbDo=
+	t=1740417154; cv=none; b=lHJXOo+y6IqHhnF6gIOEjady0B0G/hHJLsGLUGCm7FNxyXwWlvrkNe7wwPYaLcl3XNwOmdgW4JaNd4tCTNKKe7wMx73ycyvo6wdKrfaCvzWTRKh+dGUZvGKkrACoggqmlNQynCUtzQxDrOccy2q2D7ziXnartOuGpF3PW+4wiF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740416408; c=relaxed/simple;
-	bh=H/eMT60CoAji4F4FxwCqPtUx6hQMzPO26wSo7Scx9oE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dwy2QfiFw4m6Wb42eG/BaKdexVLA4mxsRK3H/At5+0DWpzMo4v8rEnIae3epI2JDpdJIyNyIEIAJNdoD5R0on3X6Ahtb91K1sHnUct7pgnxeHzB3mrCATyB4FSchkbajF82FmEML5pZamifT8Wp4TqMiVWV9SfP4RRqv6FtTCeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=GAfWaG1X; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5dca468c5e4so8335897a12.1
-        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 09:00:05 -0800 (PST)
+	s=arc-20240116; t=1740417154; c=relaxed/simple;
+	bh=INCTVpEiHnc/oIKx9E4dIa9hFE2BQCY6HgP+mcwRRT0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W0j9NcViaISwKirVf5i9+jT0QV58paFjJTzK1sQNV1iKD1lUaPTEItJlVY848DwHgQxS2tPkn8lrPP3ax7PjSOLlFU7WWLu/e38517Hm3gQaUahbpgJO5MOF1cRisFZc6yhNXXtpWkWvz72adQNNw7HLWuUrwSUPL6oYUx8hJV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LAxOmcAC; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-220c8cf98bbso11563205ad.1;
+        Mon, 24 Feb 2025 09:12:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1740416404; x=1741021204; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NNWih9tGwSww/JPegbyk7ztiO19aEjAHfJHbiibWT5Y=;
-        b=GAfWaG1XraXegzjXe6MF5r/F9scDCaRIdSXos9sfgXrP6/xv0o9mv5rCO/E76k9E4Y
-         lIVHazip91fCEj/n1sGbIblqSh096MBLsY0sAN+jYRF5fR3NEcezIO/Q09GmOgGxEpnJ
-         HIqx20UNLqhTvcILJKzF644XYkMfu+sXfGpqA9Xm60klM1eRxSuBbUOVPbcrMJiaOroK
-         0Hm82Fx11mnnC3KvrpMVR0z1016zM6eJ/kmrWtvmgw6xS+0Faa9/xEABpESAMFU661wa
-         +vx3Z1eXfZ1XFSBv8CJEMoKsTeSSTdg1U0StRk0PXjBQQD/SwVDGh2kzSIlO3SGbNM5r
-         PFFA==
+        d=gmail.com; s=20230601; t=1740417152; x=1741021952; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TlqcvofmGggiBiv0CE7G1YH/4SRW4duxvdw0TO81nSE=;
+        b=LAxOmcACcMgm6BQWO9ZvIyHVb5WSurpcb554CHYiV0Bluz0tqxeIifj3C7gG4f9Vpw
+         VN0vYlN5mSVcZxrCdI16vklZHc7/6xDoCvL+I+EgWKfW8SYyewkFDpJwFxcx+2S2b4x3
+         P8oQqJZbHCoHeXGmQxv8aiGEZtazJXn0ZPWm1Q/bizyasPHtE28Nkw1h77rsJgJboKQ4
+         36wa2+9GzXimb69s0H/Z61nO/7TrNdl48hxKvoqInBDYDhU1f07YgF88deDOTLbM7sqf
+         fVb513sQ5uKfD519tXDM6MI5z4Em8ofa1zNs/GI22jJqu+uffYg2bIMNrKjsfBn/LiC4
+         GRMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740416404; x=1741021204;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NNWih9tGwSww/JPegbyk7ztiO19aEjAHfJHbiibWT5Y=;
-        b=TLpTWHTqvSyKK3a4ST5rI+nkQcOsC8uUcKhOtYmNM2KaPAuF6PdIkVtSGmStd7ygm6
-         cd1O/Z4WwRreedyRogrmj6B0nAV6IEj8tOEK/iCi22J8OkrZB+W696k7l8fjf6PK7Ssa
-         byIUHLjLtyk6BLU0QIfTnF9Z9F1rH5nH0hixhOQf8GByFR2OyB4FsOrHJmG4jmlRwzN2
-         zGmeWxoz745d0T2iVQGqU6R5zRRC6vm50SsMhWGKfQ9QXoS4/4CZY8qvQzC4kfIPZRIw
-         deR9MIGOHw9oakHfivudCo6y453Sq3kKOJfAgkmg/KIJVIa8OLA/wmu2as+6HhiP6eWZ
-         USuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUfqbrOgEeMKj2afTvdrKXbIMI7c+RwoohXHjltSdgzORsK+izMndxnKG/AE9kr1erxof4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyl91DDKG5jSsgBHr5KFOR3tgTnkB4nDI/BHQZD57ITe8d6JhGj
-	I53vlwWZ8blqiYJlun1+YIuutQAIpObNGrRgMh5YkjKHKhpOFqBRKKQhueWtjsc=
-X-Gm-Gg: ASbGncsZSPkyIWYnKI6v16aJIA1l58PmqShDSfdVMqWtgKFEVUiDPIxp90V41V6E3R6
-	RZpKXyvYvJPkBvyD1rpV9kkTsr1o49nXo2Xv+dO3oPUXN6Dwvv8AWNV5ENLoJ7vTvG2ruf9Qqqd
-	xrnjmf8gOVoykKOcFWWK8EAKRGtVNGj3j0Z9oxioKbgIlvH6ZT6f8nsyojJvmifzVSEHR//F3XD
-	QpgK6jBr7Ey5LDaPypXEojvz3NJsOLQp8V8ETTva7Bhb88eqeAX2Wvc1/BeFsVPOltIr578JO03
-	GGVMRARxV09qkgyL+KFuemv2+gKS9uMiY/YOhUhelv0R41AI9DDbFqQqew==
-X-Google-Smtp-Source: AGHT+IEwsqOsw++yT+0bFX5SCBK/HWfbV4FpqmVLjfqG5YZq6RgAGIJsGwljpC8gwz0YwsGCV5s/DQ==
-X-Received: by 2002:a17:907:6095:b0:ab7:e73a:f2c8 with SMTP id a640c23a62f3a-abc09a97a2cmr1333363866b.26.1740416404255;
-        Mon, 24 Feb 2025 09:00:04 -0800 (PST)
-Received: from [192.168.0.205] (78-154-15-142.ip.btc-net.bg. [78.154.15.142])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abbc9ff4fcdsm1213817766b.87.2025.02.24.09.00.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Feb 2025 09:00:03 -0800 (PST)
-Message-ID: <e8b6465a-3b32-4ec1-907a-414a6e5a10c1@blackwall.org>
-Date: Mon, 24 Feb 2025 19:00:02 +0200
+        d=1e100.net; s=20230601; t=1740417152; x=1741021952;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TlqcvofmGggiBiv0CE7G1YH/4SRW4duxvdw0TO81nSE=;
+        b=Q06WDhIogxl+pYFdIDvEjEB5tUJFMzEVlTrQTvhkBIvB6m+FSAKPJlsDyT5wYndbvP
+         gMRVHeuDMueChyeBgZ/rt3SX+K7dAc2QqnC7eFEPKf+PndmKfM5w+aPUEVJdftkXhW6A
+         b/GZlTzBxBlvQVdfxzDtuT1sNoyJkkHu8aNBUnHj52O0Dl4/jZZgKFuS67py/T0k5Jjl
+         lSxnjwW32cg+dABaRbpDm5186/M6CdCak+7xQ3Ufcw/ofZFSXxgv8SxxXn+XbGb+lBQ/
+         F8DDi7dS3Z9/kCgQWDxn80YyXN1wYwi+cB7EqKgrzBsw1ldi8e1lQICk96RM9d/kS23R
+         5udA==
+X-Forwarded-Encrypted: i=1; AJvYcCU+ZzC0o63Dp6WFsY+oVfSo4kov7LAe5kZbEurbW9VgNX2PiyJTYV7WnNYewkWFuZDHj5I=@vger.kernel.org, AJvYcCWGWtWI9+VXWUBqyf/CioCO+uwT8L/pGpUHG49C6UVgwMaKWLKf88ZVRZuneHSm/SUSvf+qOoj2qLN/xkX/xWZy@vger.kernel.org, AJvYcCWYlO3vaB8037KFUTeo0PZ3bbmO9sieFLkyuHlpZpqnr6Jfzyga2MT07ID1AvppO4eoRwAFIfoeX04efCDJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrQ11CnJiGJb0diZ8tYN+Y2ExMdBmpFLzFuTzs3Qpt2KIIAWzu
+	M4Ur4tFnyxv/nBGPc1GGETd7YrBny/Y2nyebFVWxXgWkf97yqgE=
+X-Gm-Gg: ASbGncv2cKhhbpCqrltexjUOW/j+mdGXYsNZzDzuT8h+Iljf9TFayR8cLMIIXzpCUaN
+	/2ghu4Xncq6ytIkLaz9okn95FNeAjOdnKqwlu88+gJ9YkdhvLfU7tDTQJRpFz8fvwhqiDoT1CHv
+	PXezLDTKz4g7E5hKKc0CD3CVtG153w5jDA7Abe7+3G6k/YZcVqUhGF8ypjbf58eS1pzcmb5n69v
+	sZLMC2PJBpJlvh49rqMVum/OKsnxZlVnPSB+nsuuCBXpycLrVKBqXunPwA7/P9QJwCdDLAtg8c1
+	CtddmFeujaTR1l+W5X6WT9wz6A==
+X-Google-Smtp-Source: AGHT+IEn9JgospvuGafyt2PK7wawjv6RYzjXoajKoNOMWXmzMfR7NyYhQJKwd1T2G5qAEYY1RFGtgA==
+X-Received: by 2002:a17:902:e88d:b0:21d:dfae:300b with SMTP id d9443c01a7336-221a0ec46ffmr231562035ad.10.1740417152537;
+        Mon, 24 Feb 2025 09:12:32 -0800 (PST)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-220d53490c2sm184364335ad.47.2025.02.24.09.12.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Feb 2025 09:12:32 -0800 (PST)
+Date: Mon, 24 Feb 2025 09:12:31 -0800
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
+	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, andrii@kernel.org,
+	eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	jolsa@kernel.org, shuah@kernel.org, hawk@kernel.org
+Subject: Re: [PATCH bpf-next v3 4/6] selftests/bpf: refactor
+ xdp_context_functional test and bpf program
+Message-ID: <Z7yof3pafRsMwBrf@mini-arch>
+References: <20250224152909.3911544-1-marcus.wichelmann@hetzner-cloud.de>
+ <20250224152909.3911544-5-marcus.wichelmann@hetzner-cloud.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iproute2-next v2] ip: link: netkit: Support scrub options
-To: Jordan Rife <jordan@jrife.io>, Daniel Borkmann <daniel@iogearbox.net>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, stephen@networkplumber.org,
- dsahern@kernel.org
-References: <20250224164903.138865-1-jordan@jrife.io>
-Content-Language: en-US
-From: Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <20250224164903.138865-1-jordan@jrife.io>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250224152909.3911544-5-marcus.wichelmann@hetzner-cloud.de>
 
-On 2/24/25 18:49, Jordan Rife wrote:
-> Add "scrub" option to configure IFLA_NETKIT_SCRUB and
-> IFLA_NETKIT_PEER_SCRUB when setting up a link. Add "scrub" and
-> "peer scrub" to device details as well when printing.
+On 02/24, Marcus Wichelmann wrote:
+> The existing XDP metadata test works by creating a veth pair and
+> attaching XDP & TC programs that drop the packet when the condition of
+> the test isn't fulfilled. The test then pings through the veth pair and
+> succeeds when the ping comes through.
 > 
-> $ sudo ./ip/ip link add jordan type netkit scrub default peer scrub none
-> $ ./ip/ip -details link show jordan
-> 43: jordan@nk0: <BROADCAST,MULTICAST,NOARP,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
->     link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff promiscuity 0 allmulti 0 minmtu 68 maxmtu 65535
->     netkit mode l3 type primary policy forward peer policy forward scrub default peer scrub none numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536
+> While this test works great for a veth pair, it is hard to replicate for
+> tap devices to test the XDP metadata support of them. A similar test for
+> the tun driver would either involve logic to reply to the ping request,
+> or would have to capture the packet to check if it was dropped or not.
 > 
-> v1->v2: Added some spaces around "scrub SCRUB" in the help message.
+> To make the testing of other drivers easier while still maximizing code
+> reuse, this commit refactors the existing xdp_context_functional test to
+> use a test_result map. Instead of conditionally passing or dropping the
+> packet, the TC program is changed to copy the received metadata into the
+> value of that single-entry array map. Tests can then verify that the map
+> value matches the expectation.
 > 
-> Link: https://lore.kernel.org/netdev/20241004101335.117711-1-daniel@iogearbox.net/
+> This testing logic is easy to adapt to other network drivers as the only
+> remaining requirement is that there is some way to send a custom
+> Ethernet packet through it that triggers the XDP & TC programs.
 > 
-> Signed-off-by: Jordan Rife <jordan@jrife.io>
+> The payload of the Ethernet packet is used as the test data that is
+> expected to be passed as metadata from the XDP to the TC program and
+> written to the map. It has a fixed size of 32 bytes which is a
+> reasonalbe size that should be supported by both drivers. Additional
+> packet headers are not necessary for the test and were therefore skipped
+> to keep the testing code short.
+> 
+> Signed-off-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
 > ---
->  ip/iplink_netkit.c | 46 +++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 45 insertions(+), 1 deletion(-)
+>  .../bpf/prog_tests/xdp_context_test_run.c     | 99 +++++++++++++++----
+>  .../selftests/bpf/progs/test_xdp_meta.c       | 56 ++++++-----
+>  2 files changed, 112 insertions(+), 43 deletions(-)
 > 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+> index 937da9b7532a..4043f220d7c0 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+> @@ -4,13 +4,19 @@
+>  #include "test_xdp_context_test_run.skel.h"
+>  #include "test_xdp_meta.skel.h"
+>  
+> -#define TX_ADDR "10.0.0.1"
+> -#define RX_ADDR "10.0.0.2"
+>  #define RX_NAME "veth0"
+>  #define TX_NAME "veth1"
+>  #define TX_NETNS "xdp_context_tx"
+>  #define RX_NETNS "xdp_context_rx"
+>  
+> +#define TEST_PAYLOAD_LEN 32
+> +static const __u8 test_payload[TEST_PAYLOAD_LEN] = {
+> +	0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+> +	0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+> +	0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
+> +	0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38,
+> +};
+> +
+>  void test_xdp_context_error(int prog_fd, struct bpf_test_run_opts opts,
+>  			    __u32 data_meta, __u32 data, __u32 data_end,
+>  			    __u32 ingress_ifindex, __u32 rx_queue_index,
+> @@ -112,15 +118,66 @@ void test_xdp_context_test_run(void)
+>  	test_xdp_context_test_run__destroy(skel);
+>  }
+>  
+> -void test_xdp_context_functional(void)
 
-Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
+[..]
 
+> +int send_test_packet(int ifindex)
+
+nit: static? same for assert_test_result below
 
