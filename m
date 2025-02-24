@@ -1,45 +1,47 @@
-Return-Path: <bpf+bounces-52388-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52389-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46D3DA428FF
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:10:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AF6CA428EE
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:09:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A5CC17EAAF
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 17:04:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71DBA18975F1
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 17:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE86266569;
-	Mon, 24 Feb 2025 16:59:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBD9726658D;
+	Mon, 24 Feb 2025 17:00:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oTSPNlY5"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VRQ7d5UD"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D7E262D37
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 16:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717C2266584
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 17:00:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740416382; cv=none; b=E6MA5GZc2aOOCEF4WvIfUYiAE5sVwWt8IwwtBvrfXFNiXjbHOwbSUpQBqwUP6+o2+jenI2BBIoo5WJYxQ8cEk2kX4R3pZbkPD0P1x2e+XmGGE+2YcLKhqM6d1fqBFTHvhiWUV9UdA+0JTn9uxX/iq/PxN7KENqzmOsIqXwqPwes=
+	t=1740416403; cv=none; b=QZw+oastG5+8vyf3ngHiUBk4zfhmKMSb3z+Man1wdKK5fDxpo5nR5JykY1Qq64AznLYzIgCJqQACHiDvj2CSnqN0ein3U/xZvo0auuYTOaLItRDEVR8nx9k2iRe98/IFQLGuFTu0z8l2r4j3/+W6m+OGER5oKqvWN5Ql3NduZKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740416382; c=relaxed/simple;
-	bh=QFtYzMCtAYvcjsT5gslas8Q1j/fnKz+V951oSzETkRw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UxQKwyNfxOduhLhxtBsyHzeTopUw9kGzCnJyNn1Dwedx95+uSupedCYKfCarbAFBOSsL1e5B6Ioqj/MhZdBS1HRLr1dyoCT6kA06ZHlI3cQsjMXkbzyjDNcbpWe6ya+WdY0efpSLzwDAa4Oma3wSLQPH9SP569gH/AbDv1H9ilM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oTSPNlY5; arc=none smtp.client-ip=91.218.175.180
+	s=arc-20240116; t=1740416403; c=relaxed/simple;
+	bh=jm9V/uGdHxg5OBS/aN+olvdgGrxxL3p39+/oZgyyRrw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=AN1CFp0x0icGTIZvaq07xjqx7ljCf1NxjPdT1p8ar0w8ipzrTH9xkeOP+noCbuTaBYMhaAt2pkYCbimoTcccRJDqkx/nEepWbruWWeDK0ofadxOO6WPfx4dQaPPcxirCXBqZF8B/p978MEaa5HQVVcWuoNLEMjKXIpxJ5GilkLw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VRQ7d5UD; arc=none smtp.client-ip=95.215.58.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740416377;
+	t=1740416399;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Pgnmm2PNiYrAIIAl+3GQWPSNpgnW+rz9YHyx1c8UIUs=;
-	b=oTSPNlY543OZWNcJuWtYK79ariWYF+R34FXKcOL5a5NHo3dO2k+lLeY+agqIuue0UBmuFe
-	3l69Ybp5dZ8bgM2HdOuVw/Q1ob7FQ+j7i+hazjttl1Ku+u9w4/v8D3S/aJG9yeLgoYRBlH
-	F5IaDKyk+mOUByyuByk4wo13PM/vtx4=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sXImHF+AatB2zWehHEZzkP3DgCbk67G0CTnxuxdEVxE=;
+	b=VRQ7d5UDZQ1lPbaD4QY3raHMG/CkJGI/nZfTYxApXF6OrKHQmK48OXXrKmvPgzvdYXI1p4
+	Y8+Q7CoALwE6/jjdTZzmW+QWELQVwm0QjdIJlgFTjRqaXIxo9c5EmE2ubWNA1pl/HGOmpR
+	KcwJSvVpL3KJkZJ+HVK9i5AvoqMmKDg=
 From: Tao Chen <chen.dylane@linux.dev>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -51,10 +53,13 @@ To: ast@kernel.org,
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	chen.dylane@gmail.com,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next v8 0/5] Add prog_kfunc feature probe
-Date: Tue, 25 Feb 2025 00:59:07 +0800
-Message-Id: <20250224165912.599068-1-chen.dylane@linux.dev>
+	Tao Chen <chen.dylane@linux.dev>,
+	Tao Chen <dylane.chen@didiglobal.com>
+Subject: [PATCH bpf-next v8 1/5] libbpf: Extract prog load type check from libbpf_probe_bpf_helper
+Date: Tue, 25 Feb 2025 00:59:08 +0800
+Message-Id: <20250224165912.599068-2-chen.dylane@linux.dev>
+In-Reply-To: <20250224165912.599068-1-chen.dylane@linux.dev>
+References: <20250224165912.599068-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,73 +69,67 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-More and more kfunc functions are being added to the kernel.
-Different prog types have different restrictions when using kfunc.
-Therefore, prog_kfunc probe is added to check whether it is supported,
-and the use of this api will be added to bpftool later.
+Extract prog load type check part from libbpf_probe_bpf_helper
+suggested by Andrii, which will be used in both
+libbpf_probe_bpf_{helper, kfunc}.
 
-Change list:
-- v7 -> v8:
-  - fix "kfuncs require device-bound" verifier info
-  - init expected_attach_type for kprobe prog type
-  - patchset Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
-- v7
-  https://lore.kernel.org/bpf/20250212153912.24116-1-chen.dylane@gmail.com/  
+Cc: Tao Chen <dylane.chen@didiglobal.com>
+Reviewed-by: Jiri Olsa <jolsa@kernel.org>
+Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+---
+ tools/lib/bpf/libbpf_probes.c | 31 +++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
-- v6 -> v7:
-  - wrap err with libbpf_err
-  - comments fix
-  - handle btf_fd < 0 as vmlinux
-  - patchset Reviewed-by: Jiri Olsa <jolsa@kernel.org>
-- v6
-  https://lore.kernel.org/bpf/20250211111859.6029-1-chen.dylane@gmail.com
-
-- v5 -> v6:
-  - remove fd_array_cnt
-  - test case clean code
-- v5
-  https://lore.kernel.org/bpf/20250210055945.27192-1-chen.dylane@gmail.com
-
-- v4 -> v5:
-  - use fd_array on stack
-  - declare the scope of use of btf_fd
-- v4
-  https://lore.kernel.org/bpf/20250206051557.27913-1-chen.dylane@gmail.com/
-
-- v3 -> v4:
-  - add fd_array init for kfunc in mod btf
-  - add test case for kfunc in mod btf
-  - refactor common part as prog load type check for
-    libbpf_probe_bpf_{helper,kfunc}
-- v3
-  https://lore.kernel.org/bpf/20250124144411.13468-1-chen.dylane@gmail.com
-
-- v2 -> v3:
-  - rename parameter off with btf_fd
-  - extract the common part for libbpf_probe_bpf_{helper,kfunc}
-- v2
-  https://lore.kernel.org/bpf/20250123170555.291896-1-chen.dylane@gmail.com
-
-- v1 -> v2:
-  - check unsupported prog type like probe_bpf_helper
-  - add off parameter for module btf
-  - check verifier info when kfunc id invalid
-- v1
-  https://lore.kernel.org/bpf/20250122171359.232791-1-chen.dylane@gmail.com
-
-Tao Chen (5):
-  libbpf: Extract prog load type check from libbpf_probe_bpf_helper
-  libbpf: Init fd_array when prog probe load
-  libbpf: Add libbpf_probe_bpf_kfunc API
-  libbpf: Init kprobe prog expected_attach_type for kfunc probe
-  selftests/bpf: Add libbpf_probe_bpf_kfunc API selftests
-
- tools/lib/bpf/libbpf.h                        |  19 ++-
- tools/lib/bpf/libbpf.map                      |   1 +
- tools/lib/bpf/libbpf_probes.c                 |  90 +++++++++++---
- .../selftests/bpf/prog_tests/libbpf_probes.c  | 111 ++++++++++++++++++
- 4 files changed, 205 insertions(+), 16 deletions(-)
-
+diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+index 9dfbe7750f56..a48a557314f6 100644
+--- a/tools/lib/bpf/libbpf_probes.c
++++ b/tools/lib/bpf/libbpf_probes.c
+@@ -413,6 +413,23 @@ int libbpf_probe_bpf_map_type(enum bpf_map_type map_type, const void *opts)
+ 	return libbpf_err(ret);
+ }
+ 
++static bool can_probe_prog_type(enum bpf_prog_type prog_type)
++{
++	/* we can't successfully load all prog types to check for BPF helper
++	 * and kfunc support.
++	 */
++	switch (prog_type) {
++	case BPF_PROG_TYPE_TRACING:
++	case BPF_PROG_TYPE_EXT:
++	case BPF_PROG_TYPE_LSM:
++	case BPF_PROG_TYPE_STRUCT_OPS:
++		return false;
++	default:
++		break;
++	}
++	return true;
++}
++
+ int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_id helper_id,
+ 			    const void *opts)
+ {
+@@ -427,18 +444,8 @@ int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_func_id helpe
+ 	if (opts)
+ 		return libbpf_err(-EINVAL);
+ 
+-	/* we can't successfully load all prog types to check for BPF helper
+-	 * support, so bail out with -EOPNOTSUPP error
+-	 */
+-	switch (prog_type) {
+-	case BPF_PROG_TYPE_TRACING:
+-	case BPF_PROG_TYPE_EXT:
+-	case BPF_PROG_TYPE_LSM:
+-	case BPF_PROG_TYPE_STRUCT_OPS:
+-		return -EOPNOTSUPP;
+-	default:
+-		break;
+-	}
++	if (!can_probe_prog_type(prog_type))
++		return libbpf_err(-EOPNOTSUPP);
+ 
+ 	buf[0] = '\0';
+ 	ret = probe_prog_load(prog_type, insns, insn_cnt, buf, sizeof(buf));
 -- 
 2.43.0
 
