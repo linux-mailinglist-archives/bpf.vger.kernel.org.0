@@ -1,169 +1,141 @@
-Return-Path: <bpf+bounces-52339-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52340-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCA3AA41FB7
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 13:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 719C5A41FC7
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 14:00:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A37A189509C
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 12:56:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E63131897469
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 13:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F273923BD0D;
-	Mon, 24 Feb 2025 12:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1B8923BCF6;
+	Mon, 24 Feb 2025 13:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ElaJ2LDS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EjqkHba0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF15E23BCF0;
-	Mon, 24 Feb 2025 12:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609A0205AAF;
+	Mon, 24 Feb 2025 13:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740401755; cv=none; b=NkCj2yc2ustfN1HJKg7kRYixISDh5EB2886DOpK8pDeE/KydDjiHXPDfrTi/igTOE75odmhqk3rVNzZFAYDFle04bUauT3wnvzGz4uzaljQWcG0yJMkJsKgHVk6+aTl2mlHMIs0jd2VM0Pu6x8o8BvVkm/LB+8oAq8ZHyaCBgqk=
+	t=1740402024; cv=none; b=T6WYaI/iZT7ysQJuhmAnq00HuOuOUcosMqeR224TUZdYoVOqdnz5fQ00sfDWfdXspCnrXqEizQtPqFtbSBawNanfZAkInuNuf6Rx5lPpQ4lpOB/Vfs+sAML5bZQuehxsM9vuBriEBe63HEr0E3b97oWG7Qa9XN5VDuqlQ60jAIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740401755; c=relaxed/simple;
-	bh=/+dAyFbe/EZV9gREohszPIrB1NCJkdIU9nLWKVgW5kc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P+0yddQyK+W+KmIanUcXpJeqNtuhpZf3F+l3s0h1ptLKggR7S2Kdxe4bqTfaz0vXTFauV4y6t2f4UJyT12oVeGZ5lhO1O1S8Dg7B4p8+vqFlNuyJogIWjVDQeMDzXvP2O/noUNg9DCjGGv5P/50qp468h+1JBsEGRS/EqCMHLHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ElaJ2LDS; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6dd1962a75bso34115376d6.3;
-        Mon, 24 Feb 2025 04:55:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740401753; x=1741006553; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hlCwVJRIkzYP82V74TPg/P0Ovf6zeJdXyQovpILIffQ=;
-        b=ElaJ2LDSBA4HWfxDfaWowcvczwmdA/lsrImIQ1f6vyWPcV3zqDJCwmyh05c62Scjty
-         1ZGP0/ffhTUFVfghzbxSWyJaUFxJQrrbLRaO9ZZXBFHoMrGXghBl0W8HNoeeNEKNJ2OX
-         zykC3Ny6t3inkZwf73P6iFKU93vB5TTPID8PfWXvCI5HW/+2CM6B8WxxROHZ1TIVbeA+
-         5LeMaq9GrYlG0G8QcdBd+1L4IbwGhTBbPyAJshhsz2zsqOIUoG45xjB2MXD4YUhKaCkO
-         muEQdoyOxAlqEharzj3h6h/Mjp83lOgJczmS4DXECv4QxKDTAgsaXG1F86qEH9Hn6isS
-         KTPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740401753; x=1741006553;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hlCwVJRIkzYP82V74TPg/P0Ovf6zeJdXyQovpILIffQ=;
-        b=fZb7jD4VUgjgQQ+mhwIwDRZxem6GzJSnc5wBicKlKz6bwBjo9HMS3y3c8AgBahq2zi
-         Ay4Gkl+UelOhauDKfKsXoLT3QgHXVweIuha2DioBsKmc+KSz0YXZaHLFohMh6zVLvXda
-         rX5/EzassFaAajvdGgQUnsZGaRgmElt3fHHv2qgA9wOHQyA097TmLYMt0ef48u6Z3H1W
-         m92sPnDo5/0u79alWm83dApcN6L/mmCVnh0nI6tkWPJ27AxFHWNTCkOlB2OvEvGcEoJj
-         0f9ZU4Aao+W+o0O+RkTmssRvXqdIflbIS7JTaTcrX+GNafiCuthTm7UgJKzLYspoj8SB
-         Ywcg==
-X-Forwarded-Encrypted: i=1; AJvYcCUtTRAVYZayR6j3U5UEOHH2CK/LhNavOhBYLj9xmYRWSeaFhFgNREi2ZzRYh+08TXSd28YJ743ZGN7BVs9n@vger.kernel.org, AJvYcCWorRfpgHeds0zEBfQMiAd9Yy+0AgJxHo9e/Ax1Mcipi5PKx7WawKPVjWDOrLRhAHYks4U=@vger.kernel.org, AJvYcCXwQNRRNXTrkfutALV5u6oEOvT/MT5SIQaBtVwHdOlAxOS4uGBMgf09WhwjlOKCBfASgyNEqUZ3@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz7edT+7XwzjP2yPrrCSkGJKG4ks/ZecQNlkp49SUGh4atwAEok
-	d6FExBFybItyGa5SVuvAn7zeg4IGNLWHHVpyr5YiNXtGF+MrRdWWvcAdX91+SfcXbn27cO9JkfR
-	VvpCxBKW09OuDTDBwwRNki/+znC1DqI3s
-X-Gm-Gg: ASbGncvUllnMAmp7fsCXTIfOsZsV4RlD34Vy1V4JbRSmvq8UY6BVBIY9YMNi/CKvx2+
-	4LzksOs8GF1bxCJkm2mc8Kot/QPcXmeglO3ylYcuKgyJT6lc2eJFEzPg8sCVBUqvcTLStf1FilX
-	OC6UhWHTqu/g==
-X-Google-Smtp-Source: AGHT+IFyWii/yvBJT6eTZb9Cpicq6Z7cyz4y67RfqGfGpbFd5HzqlUWgsNDmqvn2DGZC0WaSG4XorHDcqtm2ZoT8jko=
-X-Received: by 2002:ad4:5766:0:b0:6d1:9f29:2e3b with SMTP id
- 6a1803df08f44-6e6b0085d50mr152224426d6.13.1740401752800; Mon, 24 Feb 2025
- 04:55:52 -0800 (PST)
+	s=arc-20240116; t=1740402024; c=relaxed/simple;
+	bh=ZkYg8riK3g+YIJUhasp+/tnIiDVINYAMP80vM8syvUI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mH9durmViLEP2a9VXD5Py1EUHFnZR4+VvGSviFaJAwJOar78BGTKhHpu2gNQ18k8PqRbETISABD8tR9kKAjXIpKgqMd9Pg7YVvJBcieHJm4KE8oXlRLoqku6joLaa4P5JsdarbETIv9VAY51f90tw+Izr8P07rpbcYp8FZe+G7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EjqkHba0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7240DC4CED6;
+	Mon, 24 Feb 2025 13:00:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740402023;
+	bh=ZkYg8riK3g+YIJUhasp+/tnIiDVINYAMP80vM8syvUI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=EjqkHba0WU1jmT/H2NcmNT7qlZFOYr+PgMuGNJ6cSz7SGMl+qqQSfu5/be83sOU5l
+	 J5c1alTfOsnp8FAFII+rCxK2HJsUJcWF8FtXbUcHYjvDRXZZwbFGCMnTmJkf9UDVZH
+	 coiCFAWI49hV8N0X0TmjlvKPktaMXY4dIZm3o0M8pcxowUUZYWZBQKGoGTIB5xhmy5
+	 ppB3ta5CtIA/t7Se2zAZPKni3Q/0Fl589D4zIe6Fpj0kqVP9w1TpZ18Tk8VJw9uJeE
+	 Y7L8bxn36NecDspSKFIosnqLOSwe9mthHWu0lWWP2MrdNScZt25Z0k+pDXsL2ZR6ID
+	 49lrz6VYXWMaA==
+Message-ID: <870ae0a7-dc04-4ae2-8485-df9db23db697@kernel.org>
+Date: Mon, 24 Feb 2025 15:00:17 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250222093007.3607691-1-wangliang74@huawei.com>
-In-Reply-To: <20250222093007.3607691-1-wangliang74@huawei.com>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Mon, 24 Feb 2025 13:55:41 +0100
-X-Gm-Features: AWEUYZmEuvp99OJ3DefogbEA6RgrIXcywUwi-Hle99k3LGA5Lc_uakDBRkTKIDA
-Message-ID: <CAJ8uoz1fZ3zYVKergPn-QYRQEpPfC_jNgtY3wzoxxJWFF22LKA@mail.gmail.com>
-Subject: Re: [PATCH net] xsk: fix __xsk_generic_xmit() error code when cq is full
-To: Wang Liang <wangliang74@huawei.com>
-Cc: bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
-	jonathan.lemon@gmail.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
-	yuehaibing@huawei.com, zhangchangzhong@huawei.com, netdev@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 4/5] net: ethernet: ti: am65_cpsw: move
+ am65_cpsw_put_page() out of am65_cpsw_run_xdp()
+To: Simon Horman <horms@kernel.org>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Siddharth Vadapalli <s-vadapalli@ti.com>,
+ Md Danish Anwar <danishanwar@ti.com>, srk@ti.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250217-am65-cpsw-zc-prep-v1-0-ce450a62d64f@kernel.org>
+ <20250217-am65-cpsw-zc-prep-v1-4-ce450a62d64f@kernel.org>
+ <20250218180340.GF1615191@kernel.org>
+Content-Language: en-US
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20250218180340.GF1615191@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, 22 Feb 2025 at 10:18, Wang Liang <wangliang74@huawei.com> wrote:
->
-> When the cq reservation is failed, the error code is not set which is
-> initialized to zero in __xsk_generic_xmit(). That means the packet is not
-> send successfully but sendto() return ok.
->
-> Set the error code and make xskq_prod_reserve_addr()/xskq_prod_reserve()
-> return values more meaningful when the queue is full.
 
-Hi Wang,
 
-I agree that this would have been a really good idea if it was
-implemented from day one, but now I do not dare to change this since
-it would be changing the uapi. Let us say you have the following quite
-common code snippet for sending a packet with AF_XDP in skb mode:
-
-err = sendmsg();
-if (err && err != -EAGAIN && err != -EBUSY)
-    goto die_due_to_error;
-continue with code
-
-This code would with your change go and die suddenly when the
-completion ring is full instead of working. Maybe there is a piece of
-code that cleans the completion ring after these lines of code and
-next time sendmsg() is called, the packet will get sent, so the
-application used to work.
-
-So I say: let us not do this. But if anyone has another opinion, please share.
-
-Thanks for the report: Magnus
-
-> Signed-off-by: Wang Liang <wangliang74@huawei.com>
-> ---
->  net/xdp/xsk.c       | 3 ++-
->  net/xdp/xsk_queue.h | 4 ++--
->  2 files changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 89d2bef96469..7d0d2f40ca57 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -802,7 +802,8 @@ static int __xsk_generic_xmit(struct sock *sk)
->                  * if there is space in it. This avoids having to implement
->                  * any buffering in the Tx path.
->                  */
-> -               if (xsk_cq_reserve_addr_locked(xs->pool, desc.addr))
-> +               err = xsk_cq_reserve_addr_locked(xs->pool, desc.addr);
-> +               if (err)
->                         goto out;
->
->                 skb = xsk_build_skb(xs, &desc);
-> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> index 46d87e961ad6..ac90b7fcc027 100644
-> --- a/net/xdp/xsk_queue.h
-> +++ b/net/xdp/xsk_queue.h
-> @@ -371,7 +371,7 @@ static inline void xskq_prod_cancel_n(struct xsk_queue *q, u32 cnt)
->  static inline int xskq_prod_reserve(struct xsk_queue *q)
+On 18/02/2025 20:03, Simon Horman wrote:
+> On Mon, Feb 17, 2025 at 09:31:49AM +0200, Roger Quadros wrote:
+>> This allows us to re-use am65_cpsw_run_xdp() for zero copy
+>> case. Add AM65_CPSW_XDP_TX case for successful XDP_TX so we don't
+>> free the page while in flight.
+>>
+>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> 
+> Reviewed-by: Simon Horman <horms@kernel.org>
+> 
+>> ---
+>>  drivers/net/ethernet/ti/am65-cpsw-nuss.c | 13 ++++++++-----
+>>  1 file changed, 8 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> 
+> ...
+> 
+>> @@ -1230,9 +1230,6 @@ static int am65_cpsw_run_xdp(struct am65_cpsw_rx_flow *flow,
+>>  		ndev->stats.rx_dropped++;
+>>  	}
+>>  
+>> -	page = virt_to_head_page(xdp->data);
+>> -	am65_cpsw_put_page(flow, page, true);
+>> -
+>>  	return ret;
+> 
+> It seems that before and after this patch ret is always initialised to
+> AM65_CPSW_XDP_CONSUMED and never changed. So it can be removed.
+> 
+> Given that with this patch the function only returns after the switch
+> statement, I think this would be a nice follow-up.
+> 
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> index 20a4fc3e579f..4052c9153632 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> @@ -1172,7 +1172,6 @@ static int am65_cpsw_run_xdp(struct am65_cpsw_rx_flow *flow,
 >  {
->         if (xskq_prod_is_full(q))
-> -               return -ENOSPC;
-> +               return -ENOBUFS;
->
->         /* A, matches D */
->         q->cached_prod++;
-> @@ -383,7 +383,7 @@ static inline int xskq_prod_reserve_addr(struct xsk_queue *q, u64 addr)
->         struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
->
->         if (xskq_prod_is_full(q))
-> -               return -ENOSPC;
-> +               return -ENOBUFS;
->
->         /* A, matches D */
->         ring->desc[q->cached_prod++ & q->ring_mask] = addr;
-> --
-> 2.34.1
->
->
+>  	struct am65_cpsw_common *common = flow->common;
+>  	struct net_device *ndev = port->ndev;
+> -	int ret = AM65_CPSW_XDP_CONSUMED;
+>  	struct am65_cpsw_tx_chn *tx_chn;
+>  	struct netdev_queue *netif_txq;
+>  	int cpu = smp_processor_id();
+> @@ -1228,9 +1227,8 @@ static int am65_cpsw_run_xdp(struct am65_cpsw_rx_flow *flow,
+>  		fallthrough;
+>  	case XDP_DROP:
+>  		ndev->stats.rx_dropped++;
+> +		return AM65_CPSW_XDP_CONSUMED;
+>  	}
+> -
+> -	return ret;
+>  }
+>  
+>  /* RX psdata[2] word format - checksum information */
+> 
+> ...
+
+Thank you for this suggestion. I will add this cleanup in my next set of patches.
+
+-- 
+cheers,
+-roger
+
 
