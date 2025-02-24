@@ -1,125 +1,133 @@
-Return-Path: <bpf+bounces-52420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C32C4A42D01
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 20:48:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A05C7A42D5A
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 21:06:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5720818976BB
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 19:48:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39F3C3AC3A2
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 20:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68EEE1EA7CF;
-	Mon, 24 Feb 2025 19:47:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C02207A3A;
+	Mon, 24 Feb 2025 20:06:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TMq4ivB4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F5PSnbYP"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411F62571CC
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 19:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC4F1A5BA1;
+	Mon, 24 Feb 2025 20:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740426479; cv=none; b=EM0y0gf33uv8rq4mwknzK1NZyTtRBcs15qFGPogvlqCcuVwSbwXDOKNzg9VvKY/9LO2Q6AyzljiJUYiyxWqSldpHQdUFvC3bIjnBlUDXjSliarcVtAuVqtZyaCJjOydSnsc+qBBuxl8zvqNfWSsD0p0iHR7pCvIaPh94yaxBUMY=
+	t=1740427596; cv=none; b=BmAzkFSq9akBxZUzsqFUxr81ajoi5PpJ6ULLAq8OJ7irqFdmIEXEVnSxT72k8ku2jptJxzfygMEL9hQFnyvMRGnMNKLFJ4rfMSkpLpfR7M7HIKPpDaxpt69WxBGchLjtsbLoR4LBOxyIo037OlRN7+ks8wIHY6a3z7W2aK22n2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740426479; c=relaxed/simple;
-	bh=k1j1TxXiLFPKo9IcYBdCCwwk/S72wAR6K+LEV4qdv2k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BGPG/0wM38AKA74IaXlTyFZvpmNAXSJPzr51JRc1Q/eiFQ4/d1witMP/yhhYX8gTyzs4VJt22K7rr+cpfszAwCZaHW6B5U0OdcaKk3UspJXeETrkDaLQmYysTudbBq0lGMFLLdnEpkIZTwYJ843FltM6cjXnDfdthGdju1Il+D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TMq4ivB4; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b3d9f618-5d7e-41bb-ba50-474ba3b8cfd7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740426474;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LfHnf8t0+ykXnaETy2HqtZyceh6blUQ28pANW1Fb+yU=;
-	b=TMq4ivB4QyHRTATaMDH+rU6DuNhGtEZFUlGgUibbzAlhKPR95kp72inEDDfGEnKyAgEclB
-	e7FKKomlWQJp47SrUKsWmmSX8rgw2Oxpq015rdJE4Jog7nr+Jkqr2+TtTDs1ea/Tcw2grC
-	oR3xm2rFmSXDrnAE1dqVNmPzhT0HvSE=
-Date: Mon, 24 Feb 2025 11:47:45 -0800
+	s=arc-20240116; t=1740427596; c=relaxed/simple;
+	bh=MQRG0wCElGkAgnXGUfFa/phfVU4AAiqsQ2KYJcjrJs8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pnfO3+wUHOoghFfBabr/K1aBTXc8eHCdJ/ysEzFlTpN3y5XhW6PiIyFYssMrj+Ap8fvF6Z5sFs9sUETNhDWYfg9fweARCxlGvCbj3VEx0ygJsJIct9n/uu/bqSHdCChRXQ00U9UhFwG6k8fuGctfZmJJw8tFrfwZCgUaGx+Cveo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F5PSnbYP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D92A4C4CED6;
+	Mon, 24 Feb 2025 20:06:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740427595;
+	bh=MQRG0wCElGkAgnXGUfFa/phfVU4AAiqsQ2KYJcjrJs8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F5PSnbYP4YgwsftEmZ8YZ825gzDSojyh/8X2Q6bWNmKvJU/Gs+oWMwashqIOOBqgk
+	 UX18EdBSEGTcVGe6M95Pc/nRJ+Ne9x95agmGRhCS0+A4oDBluqiYzjRVfVrw7ptYrt
+	 ihkDswwM1AGmZQw5+5d8TTbmsZopkjNKjOX7avQocLHqWQOiSxsD4R1h5MeNxVEmwL
+	 JsunjM8s8RUSDEUUIKJiAxnBeCcbLFgx0wO7HGi51S9UqgTzmWKMT4csXhinjLDaIo
+	 Lhkg2kKDJi8B3cv2pHQrKJV213a8MFaqNkvy8kt4KWNiuTZOkEldGxNH5oICFMA9lR
+	 Tyv9VTeskbPxg==
+Date: Mon, 24 Feb 2025 20:06:28 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-kbuild@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Zheng Yejian <zhengyejian1@huawei.com>,
+	Martin Kelly <martin.kelly@crowdstrike.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Josh Poimboeuf <jpoimboe@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>
+Subject: Re: [PATCH v5 4/6] scripts/sorttable: Zero out weak functions in
+ mcount_loc table
+Message-ID: <5225b07b-a9b2-4558-9d5f-aa60b19f6317@sirena.org.uk>
+References: <20250218195918.255228630@goodmis.org>
+ <20250218200022.883095980@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: Fix kmemleak warnings for percpu hashmap
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>, Vlad Poenaru <thevlad@meta.com>
-References: <20250224175514.2207227-1-yonghong.song@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250224175514.2207227-1-yonghong.song@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="y1RTCqJAl8VZ6A/p"
+Content-Disposition: inline
+In-Reply-To: <20250218200022.883095980@goodmis.org>
+X-Cookie: Do not flush.
 
-On 2/24/25 9:55 AM, Yonghong Song wrote:
-> Vlad Poenaru from Meta reported the following kmemleak issues:
-> 
->    ...
->    unreferenced object 0x606fd7c44ac8 (size 32):
->      comm "floodgate_agent", pid 5077, jiffies 4294746072
->      hex dump (first 32 bytes on cpu 32):
->        00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->        00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->      backtrace (crc 0):
->        pcpu_alloc_noprof+0x730/0xeb0
->        bpf_map_alloc_percpu+0x69/0xc0
->        prealloc_init+0x9d/0x1b0
->        htab_map_alloc+0x363/0x510
->        map_create+0x215/0x3a0
->        __sys_bpf+0x16b/0x3e0
->        __x64_sys_bpf+0x18/0x20
->        do_syscall_64+0x7b/0x150
->        entry_SYSCALL_64_after_hwframe+0x4b/0x53
->    unreferenced object 0x606fd7c44ae8 (size 32):
->      comm "floodgate_agent", pid 5077, jiffies 4294746072
->      hex dump (first 32 bytes on cpu 32):
->        d3 08 00 00 00 00 00 00 d3 08 00 00 00 00 00 00  ................
->        00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->      backtrace (crc d197b0fe):
->        pcpu_alloc_noprof+0x730/0xeb0
->        bpf_map_alloc_percpu+0x69/0xc0
->        prealloc_init+0x9d/0x1b0
->        htab_map_alloc+0x363/0x510
->        map_create+0x215/0x3a0
->        __sys_bpf+0x16b/0x3e0
->        __x64_sys_bpf+0x18/0x20
->        do_syscall_64+0x7b/0x150
->        entry_SYSCALL_64_after_hwframe+0x4b/0x53
->    ...
-> 
-> Further investigation shows the reason is due to not 8-byte aligned
-> store of percpu pointer in htab_elem_set_ptr():
->    *(void __percpu **)(l->key + key_size) = pptr;
-> 
-> Note that the whole htab_elem alignment is 8 (for x86_64). If the key_size
-> is 4, that means pptr is stored in a location which is 4 byte aligned but
-> not 8 byte aligned. In mm/kmemleak.c, scan_block() scans the memory based
-> on 8 byte stride, so it won't detect above pptr, hence reporting the memory
-> leak.
-> 
-> In htab_map_alloc(), we already have
-> 
->          htab->elem_size = sizeof(struct htab_elem) +
->                            round_up(htab->map.key_size, 8);
->          if (percpu)
->                  htab->elem_size += sizeof(void *);
->          else
->                  htab->elem_size += round_up(htab->map.value_size, 8);
-> 
-> So storing pptr with 8-byte alignment won't cause any problem and can fix
-> kmemleak too.
 
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
+--y1RTCqJAl8VZ6A/p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Feb 18, 2025 at 02:59:22PM -0500, Steven Rostedt wrote:
+> From: Steven Rostedt <rostedt@goodmis.org>
+>=20
+> When a function is annotated as "weak" and is overridden, the code is not
+> removed. If it is traced, the fentry/mcount location in the weak function
+> will be referenced by the "__mcount_loc" section. This will then be added
+> to the available_filter_functions list. Since only the address of the
+> functions are listed, to find the name to show, a search of kallsyms is
+> used.
+
+This breaks builds with ftrace on architectures without KASLR, one
+affected configuration is bcm2835_defconfig:
+
+/home/broonie/git/bisect/kernel/trace/ftrace.c: In function 'ftrace_process=
+_locs':
+/home/broonie/git/bisect/kernel/trace/ftrace.c:7057:24: error: implicit dec=
+laration of function 'kaslr_offset' [-Werror=3Dimplicit-function-declaratio=
+n]
+ 7057 |         kaslr =3D !mod ? kaslr_offset() : 0;
+      |                        ^~~~~~~~~~~~
+
+since that happens to enable CONFIG_FUNCTION_TRACER but doesn't have
+KASLR, we don't have stubs for KASLR on architectures that don't have
+it.  It also looks like from a quick glance at least RISC-V will fail to
+link since it only provides kaslr_offset() with RANDOMIZE_BASE enabled.
+This all feels a bit footgunish.
+
+--y1RTCqJAl8VZ6A/p
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAme80UMACgkQJNaLcl1U
+h9D0kQf+LOWnc5+uG7Nh+lw1IM17Kz4TpwJ61yMifGEeuryxBvycLlVXCTeHEAIq
+c7HSB66JzXtv5G9t9gzAkbeVmqYDVAtbhytC3F6yo8X/qpPncogEWepaMByDvprX
+HCCFf0oSdJlk2RPmofn2aVfzCcuAomhv2d96jBz73PlJ44WSxY8LdHmAgCoYcFvd
+LL5HefmNAKADaNA5Kp6zLspUNtUAsuwMH/ki69FVNctvN19ZkyiL7m/+nsV5uPCv
+41qzmSbcqPcNVsCqNocD4fefEk2HZARIqg8TGX0QhliWO0vQkrW+7z97xs1o8zcM
+o9EInP1vqJLx6DQQ0u2h3xxeLNEekA==
+=pRxx
+-----END PGP SIGNATURE-----
+
+--y1RTCqJAl8VZ6A/p--
 
