@@ -1,128 +1,132 @@
-Return-Path: <bpf+bounces-52379-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52380-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1E43A42698
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 16:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 546CDA4273F
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 17:05:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D869188FC50
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:36:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DCCB18896C3
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 16:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B7C3254861;
-	Mon, 24 Feb 2025 15:36:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DC95261568;
+	Mon, 24 Feb 2025 16:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CTSbhAxR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JgpVRP+J"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84E615E90;
-	Mon, 24 Feb 2025 15:36:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22468261392;
+	Mon, 24 Feb 2025 16:00:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740411362; cv=none; b=IFuS2J5ulD8S7afYs2pJjS7QCr5kd8cv154XnhkX+mBCa+tKpRRD8RK/1h3iTRvkZEvW00iHn26jBTI1dDmLt66bcJ0MNyp4R4v1djS8sgdGAhEPatA6ZV39NPg8iUDW7isc1rSO6khI+Tu2LKvIf9KxcwwXNHpJCONzl4gDeiQ=
+	t=1740412809; cv=none; b=eTOO+rajlfwpTYexoIduexXDSBHHyxnjCaW1fvgf5US4BsSRBJ2kufiyIGmJU7pJ8fVB/LvGtPEYfiyZTXQSTiYYKPz3ABQzJz+5RuXbAmkiu5SgMBXmQx+IqNv2Ey/FDEtwlhTR6zxTLNMpH2JYeFj91M6v24/BqHwR0ULR8x4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740411362; c=relaxed/simple;
-	bh=f8eRj/AuYAHUZhC8jvYuxxDYnuW5TL83F7ZoXDKXJ9Q=;
+	s=arc-20240116; t=1740412809; c=relaxed/simple;
+	bh=ppEdmYP18PRG+dGtFmSiXSQicDUWD6N3dqE1/BkXmyg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LfRo7rTec28h2SeL1u5kTkk34df6P9yKPNm44BEULT4PieIaI1K4+Wu7NGi25Y+YGMzBiXC1dELQ3LqrtpssTsNa+agw4rPwtmw+kRfG1FUZEZODX6K2GYtt6bGO7cQR16P2z6Sgoatiphk2VK+4kWtQr6wrhxz3b8IqLb596q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CTSbhAxR; arc=none smtp.client-ip=209.85.214.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=EuKVckYi2w+yDI9Hc/k61YsNkewm5i2JtCypbJPl35qsAJlVOCnqW1P1kS9Ep/wtxRdQOnj2dFvm6Yt+J3gbgCx6IBuV5zm9g8wGMDQUtsxOONgx+z5Xqbv8rB5RSTb1lsnE1tHErT5UfbAM5wU8oAnydCWxNkPUmdDlXf5TIBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JgpVRP+J; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-220ec47991aso61789775ad.1;
-        Mon, 24 Feb 2025 07:36:00 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-22128b7d587so88260485ad.3;
+        Mon, 24 Feb 2025 08:00:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740411360; x=1741016160; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740412807; x=1741017607; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TvUBzAQsQhizjRbALhklVYcHMIlUUFNb0lUUZGXIVX0=;
-        b=CTSbhAxR00BOGQqfN4/XJySA6tKQwjjV+i2Gn+giHm7lfAJO1JHiWGTBhh/H46SkSW
-         nPQBS1yyzUxdlDjUW1NIzhrApizN8AARhqbWflNizp1QdvR1IOshLZ0kaa/pI+tMGoKM
-         Q3kD4s7CYZldwTAIRWc1VS7vz33Xw+hVQrZDlWpRR51NiZ1z4r7cqs6IjXyHnTfycmTS
-         3NGrwHHktUVi4NrSE3JsKR8k2aDF5AtGtFfD4VZzJaSNGtWTl7QbOQxhudFflPo3aDLw
-         3Q+vT1/ipJ9+bNhErVoMWAyHCOd/NuXwPdkXqh2KZKALjZsDJqDh6JfpdKfgVw0a+CGk
-         ZyZg==
+        bh=WJSyJJHLWe5L0dnjVOukO5eRCR7RyAx2z7yzwd10tbE=;
+        b=JgpVRP+JGb8hhomczVBoR7pFQb0PzSswgPRWJHx+mYiZ9Ijd5ywtiB8dqIZS0XN2yc
+         Zowo+ZEqoAIOoNaPvE0PQ7SwNvZLycAoRxAgLR2lwHjiDFAB1AwQIrK7H+yVvL88mLYH
+         A/0OUklkLBdzY3ytCwqL7T+UR/t506WMUR1p6gXZ4Oe0DL/kXTcyuWRI7uPFg4vk/QGs
+         CAv6yTBmC+KMz2beiWTfjuzoqqJTkgjzSHdCUbfc/uu0QzwhTA1MzruNZL0aEER8SoPR
+         +zG8luyR9POsyix4dpjAybaS6FbjVPh1PSjoR4TwEHdCeeAN0leRveTwy2um3Qe/ahzE
+         tBdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740411360; x=1741016160;
+        d=1e100.net; s=20230601; t=1740412807; x=1741017607;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TvUBzAQsQhizjRbALhklVYcHMIlUUFNb0lUUZGXIVX0=;
-        b=aZWSiaqTwcfqwNsddP0SPOBecRzFJy+26sMjKyhQ4lTB8fZ0KcKcgbKHZ6gDUpNzKK
-         OQ3VfzzcWEVitn8ER+ZpVH+v5CIQetBhhz04ieoAqtS0T6PfvLyA9CrOERYUkBEOYJyl
-         Q+MhCRDSRXVGvJA4RT4Tp32FNCV4tkI4ClE0Ag7faqjWvDFyq7O4ZdsmvTa2sIowveut
-         2Wae7/Do3eu2T+GqaMKqelZthDH9S53lUKa2gN7jKQFA76cvUiu4/Zuk77gtkN3Rl+Pk
-         72Y6Fl/Bkhw9DIt41hFulZSiw5sWC9Vzl2gJMrXGT1PrBq8mus+P9bAN1AcQ7lQT6eqb
-         tDJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU88iHQ1AROnpOQh0y1vD6H3KlufijjX48TIh/gbVQKv2fJCoC2MEgXQxvcb5Rt1cy1pA0TwJtu@vger.kernel.org, AJvYcCUgpAQanoVvBxBweNkIZB3kvlwgR2EYfZA94Ch3msGpdhQ/Y4AoOmzFpjGYQu6wUXFTqJ+RA+X394s4md8=@vger.kernel.org, AJvYcCVJlouplWNbSR2DNuxCSYD2Js0mAxDg6UEYVTV1P/am+oVBXWMKYkVO/kS0pib8b1UADXU+5kbsXsEH21jtTpU=@vger.kernel.org, AJvYcCVPle4znU+I/ALLrhH7xQcGJGbFy/4E9YMN4no/doE4SyI/2xMaMEbArmnvpN+AUV20ZkIVj0zZdmO6xZA=@vger.kernel.org, AJvYcCW79pyE9jv6BnMMTbt7sSIMwd7sPKK73lAR0VEaNm83eBISdUaM8uyzhkncB/6uO4SGdEdYhPJp8s9uSgQI@vger.kernel.org, AJvYcCWqQQPj4G+DVuDQDZoreWROvhcMAz+wcR9E5i68obka7i99SJZDgW6kApVodIJ2Tr3A59RrLmFVpE+ruSqY@vger.kernel.org, AJvYcCXuaRXJZX3GvfljtLKoXFTR+mhARZTc3TC8MHV7qyzaUW6PcEihYiuWrnshGJaf888By3w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaKFwHo3cOdTBICifcMgserbxve+fqFkBp6WtAACxUuXDOZSgq
-	tlR1W+wDTIAqGB2rmzrmoZWcCBuqlU4xZ6nbIlScQ7tFB0EkOsHn
-X-Gm-Gg: ASbGncvQ03OVf/mkX9PQOy9eyW8VDO9p0pjRtt08Ccv+F+cc2AIJUvwaI4HWHZ+0VDJ
-	h877HJAG/sclgHzHhLovgxbJrfQBQF28SYklcHBT4ullzmi5XJ+Z91DDve6tdfTMdYs1rGLRrfe
-	+mL7/+oJ4XyRLkmmogsYJMN7s3oqGXxm80RVRGR8Ub+2RyNdXrDix/SbPBkBfZN31KobhnTauTX
-	htMU0C5O/2VEBPrfNu2QUCQX7OqLTOmH74eYJKMeXJ/Gw57ZbZ0mXCHETKacCUfoaGCc8kdIQIp
-	TTjioiqKIdRc3YYSsGYP/LfDfoya
-X-Google-Smtp-Source: AGHT+IHd2msCEkxFy+eTP0g8bXm0gN1PJPrXpracR00S9KkpiQvppU+iNHJWil/lk2n6JQBTakl5Tg==
-X-Received: by 2002:a17:902:f706:b0:220:faa2:c917 with SMTP id d9443c01a7336-2219ffa74demr245408665ad.34.1740411359935;
-        Mon, 24 Feb 2025 07:35:59 -0800 (PST)
-Received: from eleanor-wkdl ([140.116.96.203])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d5348f29sm181794265ad.37.2025.02.24.07.35.50
+        bh=WJSyJJHLWe5L0dnjVOukO5eRCR7RyAx2z7yzwd10tbE=;
+        b=ZjO1V2TKPnNALa3d1P18stN0u2WbYIT4rk6ysmGxf76Fkf4yMJWCWyDD4auO37aBKC
+         qMnzdzl2q6ObivPMo+lWMaMOJt3djXgYIpdCHA7+2Ca2l2CuVg+Q0FNDJpJGsg5kwMTf
+         xlTFahg+VYm68cp6xcC5RxxU92b0lssoJHuJSis+w6lQzQBh5fUC62QlIH+TYYZCIIx8
+         n1GlTV/5OA68VXl/mb0wMVJx8quJOfUKaj7JPGWZlPJHpmvQsvXsSQC2TC6ywTOgbK+Y
+         EDRQBK4o44SLwBJzyZ0tweCWseeau1eZBtQVVRoDKGjd8MVmdrfIJCNrRdEPBnUlK0hh
+         3rMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVq3oun6JgwYxMlCPRUrTv0vQnkjPA5T1yXJM9JNJbRgIC+77oH/8JQANK5kpnhW4qznrM=@vger.kernel.org, AJvYcCWqQaZWx2ukEBGCHw5y2yzuCLi6ndiB5KujCWnV8fX5YoJNdSHNA3kTWgRCC2kyHdHEIeAp1EiA@vger.kernel.org, AJvYcCX6zQsySyRFYP6gAen2qqL+jUq3xjDRdpu5ZNHjOhHpe2pa1gMLjcZXskAVnvzJaMIGP2O1YZRaZqhoAQ0Z@vger.kernel.org
+X-Gm-Message-State: AOJu0YwaQHI+vL8C1avFt/OvvR//LZa4GQ0VzL8mMRfLH7NrRhfJ5wnF
+	+lF/igyO88UQZUTjdeKqhTmXkuJXrjkvkk+T7YvjuMG29uilr6ocFVT9
+X-Gm-Gg: ASbGncuuKSKfQcH6jbPc7FPIrmqLYDTZuF8xXQ2lkhuPmeEp/PyVcSce0hHK/B6/mUO
+	He5nJPONJRH7J9xwpLAwB2SIcom4FF/Mlvc5oyxGPzG6nPDrUgpy3AoYOD39cmVezUbwmgeQDti
+	i9RV0Y33JnUZKZfMtnU5y4mhVwX+Ff0RDcM5GzPujSK6eLVNc+icNzQkOpawruNMpgtXsUmr1V6
+	XX2Ji4eb6Blc4yQ6ZAegEJyZCK1DDNe7MeBMiekg9AZEiYQ9sjVNMqAQf6AuEFH81KJ+HI8MOPd
+	dbtUaD7K1fp8sDKVDUg7g+txqQ==
+X-Google-Smtp-Source: AGHT+IGOcR/OrIIpcSGp09qJ+wMTXvY1EEIfwdy+SXIugvE/nOGnXjJstK2HBNEnI0W6I/4mejx+6A==
+X-Received: by 2002:a17:903:191:b0:220:c2a8:6fbc with SMTP id d9443c01a7336-2219ffd21afmr253042135ad.34.1740412805689;
+        Mon, 24 Feb 2025 08:00:05 -0800 (PST)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-220d545d016sm179712775ad.146.2025.02.24.08.00.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2025 07:35:59 -0800 (PST)
-Date: Mon, 24 Feb 2025 23:35:48 +0800
-From: Yu-Chun Lin <eleanor15x@gmail.com>
-To: Jeremy Kerr <jk@ozlabs.org>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	x86@kernel.org, joel@jms.id.au, eajames@linux.ibm.com,
-	andrzej.hajda@intel.com, neil.armstrong@linaro.org,
-	rfoss@kernel.org, maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-	simona@ffwll.ch, dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, yury.norov@gmail.com,
-	akpm@linux-foundation.org, hpa@zytor.com, alistair@popple.id.au,
-	linux@rasmusvillemoes.dk, Laurent.pinchart@ideasonboard.com,
-	jonas@kwiboo.se, jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw
-Subject: Re: [PATCH 00/17] Introduce and use generic parity32/64 helper
-Message-ID: <Z7yR1C4nC1UTrX5e@eleanor-wkdl>
-References: <20250223164217.2139331-1-visitorckw@gmail.com>
- <1cebfebb9c205a1ebc5722ca7e3b87339ceb3c79.camel@ozlabs.org>
+        Mon, 24 Feb 2025 08:00:05 -0800 (PST)
+Date: Mon, 24 Feb 2025 08:00:04 -0800
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc: Wang Liang <wangliang74@huawei.com>, bjorn@kernel.org,
+	magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+	john.fastabend@gmail.com, yuehaibing@huawei.com,
+	zhangchangzhong@huawei.com, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] xsk: fix __xsk_generic_xmit() error code when cq is
+ full
+Message-ID: <Z7yXhHezJTgYh76T@mini-arch>
+References: <20250222093007.3607691-1-wangliang74@huawei.com>
+ <CAJ8uoz1fZ3zYVKergPn-QYRQEpPfC_jNgtY3wzoxxJWFF22LKA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1cebfebb9c205a1ebc5722ca7e3b87339ceb3c79.camel@ozlabs.org>
+In-Reply-To: <CAJ8uoz1fZ3zYVKergPn-QYRQEpPfC_jNgtY3wzoxxJWFF22LKA@mail.gmail.com>
 
-On Mon, Feb 24, 2025 at 03:58:49PM +0800, Jeremy Kerr wrote:
-> More so than __builtin_parity() ?
+On 02/24, Magnus Karlsson wrote:
+> On Sat, 22 Feb 2025 at 10:18, Wang Liang <wangliang74@huawei.com> wrote:
+> >
+> > When the cq reservation is failed, the error code is not set which is
+> > initialized to zero in __xsk_generic_xmit(). That means the packet is not
+> > send successfully but sendto() return ok.
+> >
+> > Set the error code and make xskq_prod_reserve_addr()/xskq_prod_reserve()
+> > return values more meaningful when the queue is full.
 > 
-> I'm all for reducing the duplication, but the compiler may well have a
-> better parity approach than the xor-folding implementation here. Looks
-> like we can get this to two instructions on powerpc64, for example.
+> Hi Wang,
+> 
+> I agree that this would have been a really good idea if it was
+> implemented from day one, but now I do not dare to change this since
+> it would be changing the uapi. Let us say you have the following quite
+> common code snippet for sending a packet with AF_XDP in skb mode:
+> 
+> err = sendmsg();
+> if (err && err != -EAGAIN && err != -EBUSY)
+>     goto die_due_to_error;
+> continue with code
+> 
+> This code would with your change go and die suddenly when the
+> completion ring is full instead of working. Maybe there is a piece of
+> code that cleans the completion ring after these lines of code and
+> next time sendmsg() is called, the packet will get sent, so the
+> application used to work.
+> 
+> So I say: let us not do this. But if anyone has another opinion, please share.
 
-Hi Jeremy,
-
-Thank for your input. We will do that in V2.
-
-Best regards,
-Yu-Chun Lin
+Can we return -EBUSY from this 'if (xsk_cq_reserve_addr_locked())' case as
+well?
 
