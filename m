@@ -1,177 +1,162 @@
-Return-Path: <bpf+bounces-52452-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52454-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D57F9A42FFF
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 23:24:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9C7CA4300A
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 23:25:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F171F7A578D
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 22:23:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 310C81899EFD
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 22:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED62204F63;
-	Mon, 24 Feb 2025 22:24:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD59205502;
+	Mon, 24 Feb 2025 22:24:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KhoUI8Co"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KzewT5pn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618411C84B2;
-	Mon, 24 Feb 2025 22:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A01D1FFC7F
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 22:24:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740435845; cv=none; b=jw//SbyX+maoBuZioddCCCVbCOwHAa8KFJUCd3meX8eF4XUXRsKT7ittWtwZtIegB4UJqQywo9gqmK/9/sH0gx2gscYjFG2GEXyTGobTC54pysStQfu08rLSJkR7m0j192USGKyDcJWZZ5CXmjtaq/D8LP0XQUemDdfv55gBfJk=
+	t=1740435896; cv=none; b=dXsj2J+EnUn3yyui1V8bqs3t6sfVlBvA23TezqKRaFfwCIVi8ABKLh+cxrBTexeU9Ma/gABPR4w1JHUuXVjLwJa5iIOsswpT730xV8y2LMZshLh42K22o4iP8Lh3vlnzl6R51HCZW3tm9jZmVxNwvN0Z14IZSwTni4CKp1tNCi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740435845; c=relaxed/simple;
-	bh=RleCzBh8U7CWXchF6M/strmw5lVX4woIgA5/3lEkHY4=;
+	s=arc-20240116; t=1740435896; c=relaxed/simple;
+	bh=2hOIMx0YHyPBMMszN05lP00pXRkB5dnS8qkzV3CloeE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ozemN+/vfbQwF6oqAuWTBnfB3NTPHsnkWb2WjrrL1gWLqaF7zfgzUfYMZmGu8yi5+MfOXQy1GhGAoGJ5yjP9VsT9PNXoE+Pe00l5uLGjzrI790zQsY85557l7pR6frCI7orOqeS+vc9BXlD0GFRTeC5Zr10GCcJKaCTH+Yx6lnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KhoUI8Co; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=LJ7en8F0ynY2ocHGsVSSAQ770hDtXUm3pMoBuLZ6FPVR7ZTiimY5NanWgbVkHHlslayzD+EknBQlTkxKJP6UaFGCfq7YEGbjnkqn2H86rsA8JkKMCuyrUZ6525Cv3lMGffkbRqjplJBWKJ1gNZGsI4p9VX8rO8EjOQtyg4lQXqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KzewT5pn; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2fc4418c0b9so7565859a91.0;
-        Mon, 24 Feb 2025 14:24:04 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-220d39a5627so75810785ad.1
+        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 14:24:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740435843; x=1741040643; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740435893; x=1741040693; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MfHCBXHfDYNvL2XmQthYrd9nOUEVpQRM5+FexNDF7vk=;
-        b=KhoUI8CobUWxs5RzeEu1n/8l+a/MLDKkJdydRMLJdcD00CP2hCDXa/sxd68zeaA+Ud
-         HvVI/P0oJ4pvCnQ4ZYiybje8e39+mZGYtSdvY1PKcYGocjQ1F9Xx5SSOkDb9vNdqtFoz
-         xkA6MDPXZ5fNnycfY0VRESw8iPpRK0fkl2yi7W15wvvuJSPO5T6Haf2Nrwjh9Qn+mPNe
-         tE1I9XSJrCVJA8EfnNBAWeLza1HqGVKmqYNJtoACJdoK2O3nEvh1byUH+WEixsokgbEE
-         mjqes3hZFDUq7uA+K5hNQP+oj7iOKUZBtI//AgyR4OqqA6FA79I+jieRl7nlXLJXw5Jr
-         7f9w==
+        bh=tOjfXKHDxcuwJhHm4kiw0BtSS6O6QVSRcZtlOfD9NrM=;
+        b=KzewT5pnE/WBB8k4f8vkGUvOUVtiJEFOEU3khAUIWDXHhkyBG01vt+pNQMF14OfIY7
+         TPxlCJNZrREXW0AUgvwizR7/sE6BfYEjLlOaLVYVb++UG1Y03MriGuVqjLA+t9pW3oVY
+         pbwNwKKQZWJMgdwQGhXbrOeTnlkR1ci/I+RhZtuiPCohk3dfsNeLouMGL6AHiBZWIoPU
+         +yyA5a6hxO45IHLXAcjBfr5Jw/Fu9ll8kAYMS1FD2kvGvdfzXQBkpA73kZ7o/a5MRCMN
+         KcctsFXOdMNiwrzIbPgdKt8LThRgEHpPKI+GmzwRjyJmmYYZ42y/lvh6OYhpzq7+OPjj
+         5cXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740435843; x=1741040643;
+        d=1e100.net; s=20230601; t=1740435893; x=1741040693;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MfHCBXHfDYNvL2XmQthYrd9nOUEVpQRM5+FexNDF7vk=;
-        b=QHRCk81zkZEE+uXVkIyG3DEpCFQvLqowf9QCikZdefQvnyHREav7w5KPlo6JxRu4rX
-         EUqOxcqry+fS/woGm8i8KgsJzdlQ0E2aYMy9NxD5/b/4I1jCuXxAstZ6jCakhr9my9Cw
-         azMFk4OC1tKatS9a/IWWr4/yB8zzShdt0IdeXoYxuSd2ni/yKOXwB64a3UATjTiA523V
-         AePAHkcOt18/+GMB6kkxYNjMZuNDWCyzHi8G14r2WvGuVrm8bPO0qbG5j+rEluWvKrId
-         Xej74db09va4h6Fpw/PEcuzDBQqAirQ+wLVA5ewGKVouo4Th/Jq2UuBX3MjR0rCyK3Ha
-         KUDw==
-X-Forwarded-Encrypted: i=1; AJvYcCUAqaE+A+oI4Zgp/z4xV3bC6AHLe4cde6hJ9crNH5DRNfvJ4Ad0Y1OwQA0kHe1GfN8CVusTPuEFU7W528RC@vger.kernel.org, AJvYcCUYSAVuWgm06m0QmRx5Xj7LC1Bdf2C09Emzl5ghBnlRHSEJV0xg7Pfj9v5WJqNeiQQbWd0=@vger.kernel.org, AJvYcCXTHg17qdgf+TC2AnUFYJyuHn2je5JqHeqk+jdlaBOB1GQDeWP0N0bIfbWqKoCrSjYbd4e73HiByVLF1xFPln1LWlh8@vger.kernel.org
-X-Gm-Message-State: AOJu0YykDFOgpfXyQn82oUvfZIWW1HoJ4CqeU+6lg6mQ58EEo/1Ddgmm
-	xvuP65Bxtwf//apGRBaYpGZFwppmaZYq/Q1itp3NjWfK84jb3F3Lg5L5wMK6rxgmIL4jV9lQ6uN
-	KxtM2s3luTAhTYuX7TYHFGNu5OgE=
-X-Gm-Gg: ASbGnctowCXj57SRw4atLFwimUgn3w7YhiuX4bwtlWYmdTucfvOKlEQTJAkneD1PA4N
-	YqFCYNKpK7f5czW4H9R8Q4m5zIzn+YAqT6o5KmOK8KHzaJKrz6hfS6dr9t2ExXaoX/SCF4kGT15
-	vmwWudbQYrdUWONaVk8ZGxx6w=
-X-Google-Smtp-Source: AGHT+IHsSKy0T7sdcs4I2FEkuaNkK7bILTKkVn2wt0nhnlEcx+SvEXfJ4UMs9iDgKxGsLFd8VjPkE5dVXO8KtBx5rUk=
-X-Received: by 2002:a17:90b:2b8f:b0:2ee:d63f:d8f with SMTP id
- 98e67ed59e1d1-2fce78abc52mr24475660a91.13.1740435843616; Mon, 24 Feb 2025
- 14:24:03 -0800 (PST)
+        bh=tOjfXKHDxcuwJhHm4kiw0BtSS6O6QVSRcZtlOfD9NrM=;
+        b=RywlcE3FjRS4GVRjQDyT2aP+lNy3j6u9sm8XwQnJlYX+ima0Lo/DL1D647iH8lYzn5
+         qc/ORrMJ2um1KsJoiw1yYIyuVhOgxmiVUIHKfG7fMz//fuZPCGn+HVlVBdFQ1ogd8RWY
+         kWd9xAhRy1RZy+wBLpPWgdSwQiPIQ0TdBKm6mausB3e7LTHoq8saVka5MX9ZN1ZoAOa6
+         aYMmNo23bYDKAN6gj2ntYEFr6WWPF4912lUhe83lEPRj29j0/TF7NWy0YkUMbwMi3rrW
+         9H9wlBDtq5jF3pXhzZNXnc+lnaizk8tW82eHpnylL40gMsK+Ok2dtJS60jmVTyi1I0dO
+         VXyA==
+X-Forwarded-Encrypted: i=1; AJvYcCW6iqI4h0kSrUjrA4JsKbmwwHSDuf5yMkp0IMk7Rlu2XTEgH1tDkxv3AfU50i8D1nSsffs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwCXFgrq9/ILnQ2zEWn5iAmiTWU1iVrzMZlvdsP0COfSjxL63/M
+	Zgem/GPfPTvUPpdGaiYcjKPLCoAhuStkmHOXhqNKX08ZwchYF1YRSy0E1gQ7hlZhiZ4TePFQxAn
+	rcB30kw7VLpaqKODoCgZNoOaVL74=
+X-Gm-Gg: ASbGncs8a5EXEAPdywfD4Tlqy2zwfvjoZOeghHMW7/Z8NVMX5LS1tHvcBqroF41VhgK
+	5JQygIQOELyPY7e8Pv3Qgdsi4qlgmusPl6jUIN1Z4fDZUs+6PfyfpEf9OTQ5s5r91KngGfP//Pi
+	k8X17Dx3qvaauvomNT6HIb2bE=
+X-Google-Smtp-Source: AGHT+IHPPngTvL/qI7e3PIt6e+2qWCbHNW9Ux73ZDD6J41EAQfAZ5fQGVKUs3dGojknAD17I0RivosRWmeOW9NOyWTU=
+X-Received: by 2002:a17:90b:3806:b0:2ea:7fd8:9dc1 with SMTP id
+ 98e67ed59e1d1-2fce78b972emr28238268a91.18.1740435891245; Mon, 24 Feb 2025
+ 14:24:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241024044159.3156646-1-andrii@kernel.org> <20241024044159.3156646-3-andrii@kernel.org>
- <20250224-impressive-onyx-boa-36e85d@leitao>
-In-Reply-To: <20250224-impressive-onyx-boa-36e85d@leitao>
+References: <20250219063113.706600-1-pulehui@huaweicloud.com>
+ <CAEf4BzYJLKZpuEsbU-A1s7wtpG0YQKUHG3QDaQoDH8B+VY0oSQ@mail.gmail.com> <abf6baeb-ac7a-44da-8c00-a0bb409760df@huawei.com>
+In-Reply-To: <abf6baeb-ac7a-44da-8c00-a0bb409760df@huawei.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 24 Feb 2025 14:23:51 -0800
-X-Gm-Features: AQ5f1JpfI7abF10iTCDj7j_zg8l0eSl_hAPcLgNgy53Fx-Uv0srnK7x4gcTeuPk
-Message-ID: <CAEf4BzbupJe10k0MROG5iZq6cYu6PRoN3sHhNK=L7eDLOULvNQ@mail.gmail.com>
-Subject: Re: [PATCH v3 tip/perf/core 2/2] uprobes: SRCU-protect uretprobe
- lifetime (with timeout)
-To: Breno Leitao <leitao@debian.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	peterz@infradead.org, oleg@redhat.com, rostedt@goodmis.org, 
-	mhiramat@kernel.org, mingo@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org
+Date: Mon, 24 Feb 2025 14:24:39 -0800
+X-Gm-Features: AQ5f1JqKWt6Amu6xD-6mTcnmCeMYKMBXwYQq1bFIjhNpn5CmeMTwXIA32oHojgg
+Message-ID: <CAEf4BzaZRq+x3C=s3cFw2NH=E=e3xdv844Uk_UWVxxFZAOCzDQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] kbuild, bpf: Correct pahole version that
+ supports distilled base btf feature
+To: Pu Lehui <pulehui@huawei.com>
+Cc: Pu Lehui <pulehui@huaweicloud.com>, Alan Maguire <alan.maguire@oracle.com>, 
+	bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 24, 2025 at 4:23=E2=80=AFAM Breno Leitao <leitao@debian.org> wr=
-ote:
+On Mon, Feb 24, 2025 at 4:16=E2=80=AFAM Pu Lehui <pulehui@huawei.com> wrote=
+:
 >
-> Hello Andrii,
 >
-> On Wed, Oct 23, 2024 at 09:41:59PM -0700, Andrii Nakryiko wrote:
+>
+> On 2025/2/21 8:30, Andrii Nakryiko wrote:
+> > On Tue, Feb 18, 2025 at 10:29=E2=80=AFPM Pu Lehui <pulehui@huaweicloud.=
+com> wrote:
+> >>
+> >> From: Pu Lehui <pulehui@huawei.com>
+> >>
+> >> pahole commit [0] of supporting distilled base btf feature released on
+> >> pahole v1.28 rather than v1.26. So let's correct this.
+> >>
+> >> Link: https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?i=
+d=3Dc7b1f6a29ba1 [0]
+> >> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> >> ---
+> >>   scripts/Makefile.btf | 2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+> >> index c3cbeb13de50..fbaaec2187e5 100644
+> >> --- a/scripts/Makefile.btf
+> >> +++ b/scripts/Makefile.btf
+> >> @@ -24,7 +24,7 @@ else
+> >>   pahole-flags-$(call test-ge, $(pahole-ver), 126)  =3D -j$(JOBS) --bt=
+f_features=3Dencode_force,var,float,enum64,decl_tag,type_tag,optimized_func=
+,consistent_func,decl_tag_kfuncs
+> >>
+> >>   ifneq ($(KBUILD_EXTMOD),)
+> >> -module-pahole-flags-$(call test-ge, $(pahole-ver), 126) +=3D --btf_fe=
+atures=3Ddistilled_base
+> >> +module-pahole-flags-$(call test-ge, $(pahole-ver), 128) +=3D --btf_fe=
+atures=3Ddistilled_base
+> >>   endif
 > >
-> > +static struct uprobe* hprobe_expire(struct hprobe *hprobe, bool get)
-> > +{
-> > +     enum hprobe_state hstate;
-> > +
-> > +     /*
-> > +      * return_instance's hprobe is protected by RCU.
-> > +      * Underlying uprobe is itself protected from reuse by SRCU.
-> > +      */
-> > +     lockdep_assert(rcu_read_lock_held() && srcu_read_lock_held(&uretp=
-robes_srcu));
+> > Alan,
+> >
+> > Is this correct? Can you please check and ack? Thanks!
 >
-> I am hitting this warning in d082ecbc71e9e ("Linux 6.14-rc4") on
-> aarch64. I suppose this might happen on x86 as well, but I haven't
-> tested.
+> Maybe Alan doesn't have time to reply at the moment. We can use the
+> following command to check that in pahole.git:
 >
->         WARNING: CPU: 28 PID: 158906 at kernel/events/uprobes.c:768 hprob=
-e_expire (kernel/events/uprobes.c:825)
->
->         Call trace:
->         hprobe_expire (kernel/events/uprobes.c:825) (P)
->         uprobe_copy_process (kernel/events/uprobes.c:691 kernel/events/up=
-robes.c:2103 kernel/events/uprobes.c:2142)
->         copy_process (kernel/fork.c:2636)
->         kernel_clone (kernel/fork.c:2815)
->         __arm64_sys_clone (kernel/fork.c:? kernel/fork.c:2926 kernel/fork=
-.c:2926)
->         invoke_syscall (arch/arm64/kernel/syscall.c:35 arch/arm64/kernel/=
-syscall.c:49)
->         do_el0_svc (arch/arm64/kernel/syscall.c:139 arch/arm64/kernel/sys=
-call.c:151)
->         el0_svc (arch/arm64/kernel/entry-common.c:165 arch/arm64/kernel/e=
-ntry-common.c:178 arch/arm64/kernel/entry-common.c:745)
->         el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:797)
->         el0t_64_sync (arch/arm64/kernel/entry.S:600)
->
-> I broke down that warning, and the problem is on related to
-> rcu_read_lock_held(), since RCU read lock does not seem to be held in
-> this path.
->
-> Reading this code, RCU read lock seems to protect old hprobe, which
-> doesn't seem so.
->
-> I am wondering if we need to protect it properly, something as:
->
->         @@ -2089,7 +2092,9 @@ static int dup_utask(struct task_struct *t,=
- struct uprobe_task *o_utask)
->                                 return -ENOMEM;
->
->                         /* if uprobe is non-NULL, we'll have an extra ref=
-count for uprobe */
->         +               rcu_read_lock();
->                         uprobe =3D hprobe_expire(&o->hprobe, true);
->         +               rcu_write_lock();
->
+> $ git name-rev c7b1f6a29ba1
+> c7b1f6a29ba1 tags/v1.28~73
 
-I think this is not good enough. rcu_read_lock/unlock should be around
-the entire for loop, because, technically, that return_instance can be
-freed before we even get to hprobe_expire.
 
-So, just like we have guard(srcu)(&uretprobes_srcu); we should have
-guard(rcu)();
+yep, I was a bit lazy to search for specific commit ;)
 
-Except, there is that kmemdup() hidden inside dup_return_instance(),
-so we can't really do that.
+I like this command, though:
 
-So that leaves us with an option to split memory allocation and
-initialization. Number of return instances can't grow (but can
-shrink), so we can first count them, allocate memory. Then do another
-iteration to do hprobe_expire().
+$ git tag --contains c7b1f6a29ba1
+v1.28
+v1.29
 
-I'll try to send a patch some time in the next day or two, but maybe
-someone has some better ideas meanwhile.
+regardless, applied to bpf-next, thanks
 
->                         /*
->                         * New utask will have stable properly refcounted =
-uprobe or
+>
+> >
+> >>
+> >>   endif
+> >> --
+> >> 2.34.1
+> >>
 
