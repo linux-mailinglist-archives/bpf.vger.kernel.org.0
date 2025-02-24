@@ -1,157 +1,96 @@
-Return-Path: <bpf+bounces-52451-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52447-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78109A42FF9
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 23:21:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63989A42FEB
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 23:20:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6021C17AF2D
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 22:21:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACF7717A341
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 22:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DDB3205519;
-	Mon, 24 Feb 2025 22:21:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C50E1FFC7F;
+	Mon, 24 Feb 2025 22:20:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="LBCMVcF1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sHInztJZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A2217BEBF;
-	Mon, 24 Feb 2025 22:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23CB41DF242
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 22:20:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740435704; cv=none; b=ApmMSTs03OD8WXnZ07mP6W/3NdLCf02oTZddxQJFYlzuOOXYsKv15Nv7tZfMhugydw7YUE/szIvtbDH9OmIkhu/JkePrWxw+gqlu+ErAXfiWZ8Pj6WXtVgyRAa6vdgpAHL3j5tIzWneA2Kk+MvZRwDveG/1Uw4gT1U3jHYhFWuI=
+	t=1740435602; cv=none; b=Xlwzr2Wu5qQ+xLgBblFlH9h1jBPfHIuemzCUZmXe4OMgbIpm1KP+mJqFgtDtPx0FzPwxe6CoSNo1cZP6DV9ANZA9ASMISjoIWPl2qRDY1tV/kUdej1Ff4APVFH85yC7s1N0xhMTbat+mb5GD8ZdAJFKDyKWiW4EaimvDJhcI59c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740435704; c=relaxed/simple;
-	bh=e+uzfqSHYhHZcuzfPhk6HcqcLJmcDZSMxuGGONwFE44=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=cwAtEdS8Qn+RUTbkEK9lccKZtwLakJBvxZ8ri7Hx8HhBbQg0a8CGkqHeYcBS8gyAvwsumbggYOXzpoKqcaMMA6Aqpo+fa2HmDqJD+Qk1HtTBJrkLxCNVlG99wNFcvOYFOxNPt3CvO5naNHyZoSMRKhBNqyRCqIA24smFa3LBBDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=LBCMVcF1; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 51OMIJ9V935362
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Mon, 24 Feb 2025 14:18:19 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 51OMIJ9V935362
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025021701; t=1740435502;
-	bh=QVRdF3EAXIHa/WOpzueNrjkWna1IYk5vm0KLQKRBt1g=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=LBCMVcF1JBUzSpFQa0NclgZSN1lbJ6R8l4P7gV/GP3OfWksuvJSk8UFAnCLrz2stD
-	 zfBgNKQ/2LRfu2C7llD7zbNpCRWed6pOnPU5J/rmByu17lskqRa2z1Rn4bMzv0Gtrp
-	 RsTWuEFZFH9XaV0gR9XSqUCDQaZHojh1ozgY06ibIOO0Yqru+WPUEv+njgn02D+BSb
-	 AxrPR7FbBtmmBrmKcGPInLjOvNUJ+QE9Q87mz2O2DxJyDTSANU+Lg2qd0d24d46W8Q
-	 acNifs2uoGssEaapuK60oCfTN5FpL6SRf+yCzsC/DVfUihJLjByLPlr8GNKX3Z4pU9
-	 0NfLcLSzqxqfw==
-Date: Mon, 24 Feb 2025 14:18:17 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Uros Bizjak <ubizjak@gmail.com>
-CC: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
-        joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
-        neil.armstrong@linaro.org, rfoss@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-        dmitry.torokhov@gmail.com, mchehab@kernel.org, awalls@md.metrocast.net,
-        hverkuil@xs4all.nl, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, louis.peens@corigine.com, andrew+netdev@lunn.ch,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-        johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, yury.norov@gmail.com, akpm@linux-foundation.org,
-        mingo@kernel.org, alistair@popple.id.au, linux@rasmusvillemoes.dk,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-        oss-drivers@corigine.com, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-        brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-        bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
-        Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_03/17=5D_x86=3A_Replace_open-c?=
- =?US-ASCII?Q?oded_parity_calculation_with_parity8=28=29?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAFULd4a_AnP4iqgQs7a6xAsnUFL8oZXxFcAWLmZFMm6MPF_zDQ@mail.gmail.com>
-References: <20250223164217.2139331-1-visitorckw@gmail.com> <20250223164217.2139331-4-visitorckw@gmail.com> <d080a2d6-9ec7-1c86-4cf4-536400221f68@gmail.com> <e0b1c299-7f19-4453-a1ce-676068601213@zytor.com> <CAFULd4a_AnP4iqgQs7a6xAsnUFL8oZXxFcAWLmZFMm6MPF_zDQ@mail.gmail.com>
-Message-ID: <B5E017BC-8BE4-482A-B1A2-3F3074968B56@zytor.com>
+	s=arc-20240116; t=1740435602; c=relaxed/simple;
+	bh=1BVcSK8vY8PnNHHajgC8aXrLQelVQUrZoT27RDC8o+g=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=jyrBPz5eGfKxo3kjrbQz+2Z3aC1u1YQcpdUpJ2It15vDVOMtndxzr5+PbNpRkEki8JXfs76yzuUkGekL4SkcPLQR+qBJyzVXME45/j670hwiwe5qdWZf3VGV+HFyRZ3CTW/kQUmADa1Gkhywtjc0gRZKuc83liBc9osYaIw4RHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sHInztJZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A304C4CED6;
+	Mon, 24 Feb 2025 22:20:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740435601;
+	bh=1BVcSK8vY8PnNHHajgC8aXrLQelVQUrZoT27RDC8o+g=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=sHInztJZZkziOJlyu0l22HkkQlIOPO6eMYnnzw17Fn4Rxx1JBH6zeVoxXN27q8UBE
+	 tcueK8+TWowPI8SW1NMjPhYQqyO/KZVsJCtTAJzelyDI0RIFe1m9YGUa/9/bwrIacO
+	 5QbSowh8ce5GFt9RzgbF81f8Pm/ItSRTkNV1RjdaZsMU16KhTNLE4Q42Ly47hqDuur
+	 lwn+CyXZdoBgGkgwlan1rBoppZo/AUYokeX/wkuidhI2n8Aq53InMse+PKsUDZDlGV
+	 XQ+2SsQjRZriyefq6UhMx2r0ZAzfFIkCwFNFcdZepkmNpRDY6+5EMDr3nKc6IVa3bZ
+	 A0QXeiesgfrkg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33DC0380CEDD;
+	Mon, 24 Feb 2025 22:20:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] kbuild,
+ bpf: Correct pahole version that supports distilled base btf feature
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174043563304.3628285.11966484526881480198.git-patchwork-notify@kernel.org>
+Date: Mon, 24 Feb 2025 22:20:33 +0000
+References: <20250219063113.706600-1-pulehui@huaweicloud.com>
+In-Reply-To: <20250219063113.706600-1-pulehui@huaweicloud.com>
+To: Pu Lehui <pulehui@huaweicloud.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ alan.maguire@oracle.com, pulehui@huawei.com
 
-On February 24, 2025 2:08:05 PM PST, Uros Bizjak <ubizjak@gmail=2Ecom> wrot=
-e:
->On Mon, Feb 24, 2025 at 10:56=E2=80=AFPM H=2E Peter Anvin <hpa@zytor=2Eco=
-m> wrote:
->>
->> On 2/24/25 07:24, Uros Bizjak wrote:
->> >
->> >
->> > On 23=2E 02=2E 25 17:42, Kuan-Wei Chiu wrote:
->> >> Refactor parity calculations to use the standard parity8() helper=2E=
- This
->> >> change eliminates redundant implementations and improves code
->> >> efficiency=2E
->> >
->> > The patch improves parity assembly code in bootflag=2Eo from:
->> >
->> >    58:    89 de                    mov    %ebx,%esi
->> >    5a:    b9 08 00 00 00           mov    $0x8,%ecx
->> >    5f:    31 d2                    xor    %edx,%edx
->> >    61:    89 f0                    mov    %esi,%eax
->> >    63:    89 d7                    mov    %edx,%edi
->> >    65:    40 d0 ee                 shr    %sil
->> >    68:    83 e0 01                 and    $0x1,%eax
->> >    6b:    31 c2                    xor    %eax,%edx
->> >    6d:    83 e9 01                 sub    $0x1,%ecx
->> >    70:    75 ef                    jne    61 <sbf_init+0x51>
->> >    72:    39 c7                    cmp    %eax,%edi
->> >    74:    74 7f                    je     f5 <sbf_init+0xe5>
->> >    76:
->> >
->> > to:
->> >
->> >    54:    89 d8                    mov    %ebx,%eax
->> >    56:    ba 96 69 00 00           mov    $0x6996,%edx
->> >    5b:    c0 e8 04                 shr    $0x4,%al
->> >    5e:    31 d8                    xor    %ebx,%eax
->> >    60:    83 e0 0f                 and    $0xf,%eax
->> >    63:    0f a3 c2                 bt     %eax,%edx
->> >    66:    73 64                    jae    cc <sbf_init+0xbc>
->> >    68:
->> >
->> > which is faster and smaller (-10 bytes) code=2E
->> >
->>
->> Of course, on x86, parity8() and parity16() can be implemented very sim=
-ply:
->>
->> (Also, the parity functions really ought to return bool, and be flagged
->> __attribute_const__=2E)
->>
->> static inline __attribute_const__ bool _arch_parity8(u8 val)
->> {
->>         bool parity;
->>         asm("and %0,%0" : "=3D@ccnp" (parity) : "q" (val));
->
->asm("test %0,%0" : "=3D@ccnp" (parity) : "q" (val));
->
->because we are interested only in flags=2E
->
->Uros=2E
->
+Hello:
 
-Same thing, really, but yes, using test is cleaner=2E
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Wed, 19 Feb 2025 06:31:13 +0000 you wrote:
+> From: Pu Lehui <pulehui@huawei.com>
+> 
+> pahole commit [0] of supporting distilled base btf feature released on
+> pahole v1.28 rather than v1.26. So let's correct this.
+> 
+> Link: https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=c7b1f6a29ba1 [0]
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] kbuild, bpf: Correct pahole version that supports distilled base btf feature
+    https://git.kernel.org/bpf/bpf-next/c/1ffe30efd2f2
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
