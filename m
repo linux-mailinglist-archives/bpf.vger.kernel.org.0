@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-52352-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52353-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9A4EA422A2
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:15:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 098BBA42273
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:09:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 960173B84E1
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 14:05:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C3EB19C06B5
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 14:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1AA191F66;
-	Mon, 24 Feb 2025 14:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87A3148314;
+	Mon, 24 Feb 2025 14:03:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uNmFB7p+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="da8+Ils4"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F346513959D;
-	Mon, 24 Feb 2025 14:03:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A2F78F2D;
+	Mon, 24 Feb 2025 14:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740405818; cv=none; b=ReuftbMtXBF73bAd7Y2LGnMXn2OK0A1bfl+LaTeiKQjNiSacx2XYd3mEQTF4q3JvDf3u4F3uiiJxPoxHBrJPI5NRIpgd4yFhZFLm8E/H4CFgI2gzc5ed7Tiu3gZkusdLh0vR99xPTIFRLeVzNkjTIYjmw50UYxE1vzvN9YMIuU0=
+	t=1740405829; cv=none; b=ZtzZojUFeTatlajYeJ5MylHDJmHl+NvRrr0Ryus0tZRbvELvQesDeUS4xfvdqbJ5maRf8ayPlGc/hKnrtlI/FKsjJcNFFlYSzie52Yrwiao779fl2MR/ygVrpJCseBs8bI06l0l00U4b3VEANxG6ml6594dkKLEU3EQoX1zDBc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740405818; c=relaxed/simple;
-	bh=gaBUnD359lHvmKY4GJ5G0ocHaeuA7D+Evm11YnUR/ng=;
+	s=arc-20240116; t=1740405829; c=relaxed/simple;
+	bh=DI3+wxJCXVEI4vdD0jGCmR1QuUB76PhVpEYPnlewXeg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mcQfFVhN/fDmMjmyB0el+ebEPwK0DQnbX4lRsWjV0S/yTHXgsTVVqiLLzZBbOdTLVpO12KwHhLo+BczLJRL6bTwinjb3qUhEKKPA6m3GFv2Wi15bGx/I/dfwGY26WUaCuzOAmG1hi0ec/rFwe0wOh7KM0Cff39T/N1s0RDHapHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uNmFB7p+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71B08C4CEE6;
-	Mon, 24 Feb 2025 14:03:33 +0000 (UTC)
+	 MIME-Version; b=aL9XIZ7y6W77UmsDeyideE9mXU7NDE+2jHuxX5Z0MtXwF98A4aXUkGvTktmtU3Zb33pr8qRPNtZ5I8GR+H5gNXFQO4F5YlmRvyyFZHj63lkO6lFLj0XkqD2YtTSsjcjUuxkayRBDVZAEO94xNetowxEi3qKGeP4mQ7QVPy2u+L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=da8+Ils4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA0DBC4CED6;
+	Mon, 24 Feb 2025 14:03:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740405817;
-	bh=gaBUnD359lHvmKY4GJ5G0ocHaeuA7D+Evm11YnUR/ng=;
+	s=k20201202; t=1740405828;
+	bh=DI3+wxJCXVEI4vdD0jGCmR1QuUB76PhVpEYPnlewXeg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uNmFB7p+Gyd8mXTS06VRc16N16mCmwflcbQAa3VlOhtNVfeCXPksOYIwH9gncRtOd
-	 7pYv7ys95ikYtOMOkD3ZoGBwJcCaJ8KLvr8Gx0r6I9P5AHEKBPxz/tDKoEKkt1SSu4
-	 Y0hF7GSjME4GEIbw+UNmV/Hgu3ootFjucDcZ5LC/qys1F7FdSxoCQLGzIjOiGRO+ll
-	 EzBqKSSv1qpQb7OGfhskDsWyw/luOVYsECpMLKJwtPC6NJC+BSDH4YuXKQ9uyLYOwa
-	 ilUntT2v8HZZwcc6QoVxvX/Lj+hjM6JG16v2sJANKfwaNULeyJ7A5by1TiZ5pKV1bu
-	 08EG/XYO4/f8w==
+	b=da8+Ils4Toea8BLFEaAvErA+BOwkQ1Cv8cIz099sWdIRts0MPH4HDJWAJMao96t/v
+	 4IB+imO7fM1Jffeek0Vm3CK3LwkqD4j83GTTw3WNhH1VyWU2ljPvfSGROccqYe61sC
+	 i5R02bONG4KnAEqhBDrMnElxDQuC+8nAq/NTLISSLcu4DUevtoWPDeQygzrzi9bIIZ
+	 CXA+3sJBuUN3JMHslJ3jNdKAEj2xCFsXiVCV3DuQTCHCy8i9GtctZ+2FtN3b/bFB9F
+	 9JNwPn9qP5/A3Y9ocGpFrmcWdHkBzGr3QlBU6bUu2B7YB77yzepff+oYGRVcxHog4l
+	 WCiFntaTnhuiA==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -58,9 +58,9 @@ Cc: bpf@vger.kernel.org,
 	Alan Maguire <alan.maguire@oracle.com>,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-Subject: [PATCH RFCv2 09/18] uprobes/x86: Add mapping for optimized uprobe trampolines
-Date: Mon, 24 Feb 2025 15:01:41 +0100
-Message-ID: <20250224140151.667679-10-jolsa@kernel.org>
+Subject: [PATCH RFCv2 10/18] uprobes/x86: Add mm_uprobe objects to track uprobes within mm
+Date: Mon, 24 Feb 2025 15:01:42 +0100
+Message-ID: <20250224140151.667679-11-jolsa@kernel.org>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250224140151.667679-1-jolsa@kernel.org>
 References: <20250224140151.667679-1-jolsa@kernel.org>
@@ -72,236 +72,179 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding support to add special mapping for for user space trampoline
-with following functions:
+We keep track of global uprobe instances, because with just 2 types
+of update - writing breakpoint or original opcode - we don't need to
+track the state of the specific uprobe state for mm_struct.
 
-  uprobe_trampoline_get - find or add related uprobe_trampoline
-  uprobe_trampoline_put - remove ref or destroy uprobe_trampoline
+With optimized uprobe support we will need to make several instructions
+updates and make sure we keep the state of the update per mm_struct.
 
-The user space trampoline is exported as architecture specific user space
-special mapping, which is provided by arch_uprobe_trampoline_mapping
-function.
+Adding the mm_uprobe object to keep track of installed uprobes per
+mm_struct. It's kept in rb_tree for fast lookups and the tree is
+cleaned up when the breakpoint is uninstalled or the mm_struct is
+released.
 
-The uprobe trampoline needs to be callable/reachable from the probe address,
-so while searching for available address we use uprobe_is_callable function
-to decide if the uprobe trampoline is callable from the probe address.
-
-All uprobe_trampoline objects are stored in uprobes_state object and are
-cleaned up when the process mm_struct goes down. Adding new arch hooks
-for that, because this change is x86_64 specific.
-
-Locking is provided by callers in following changes.
+The key is uprobe object's address together with virtual address of
+the breakpoint. The reason for the adding the latter to the key is
+that we can have multiple virtual addresses for single uprobe,
+because the code (for given offset) can be loaded multiple times.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/kernel/uprobes.c | 121 ++++++++++++++++++++++++++++++++++++++
- include/linux/uprobes.h   |   6 ++
- kernel/events/uprobes.c   |  10 ++++
- kernel/fork.c             |   1 +
- 4 files changed, 138 insertions(+)
+ arch/x86/kernel/uprobes.c | 115 ++++++++++++++++++++++++++++++++++++++
+ include/linux/uprobes.h   |   1 +
+ 2 files changed, 116 insertions(+)
 
 diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 3ea682dbeb39..e0c3fb01a43c 100644
+index e0c3fb01a43c..8d4eb8133221 100644
 --- a/arch/x86/kernel/uprobes.c
 +++ b/arch/x86/kernel/uprobes.c
-@@ -691,6 +691,127 @@ static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
- 		*sr = utask->autask.saved_scratch_register;
- 	}
+@@ -798,19 +798,134 @@ static __maybe_unused void uprobe_trampoline_put(struct uprobe_trampoline *tramp
+ 		destroy_uprobe_trampoline(tramp);
  }
-+
-+struct uprobe_trampoline {
-+	struct hlist_node	node;
-+	unsigned long		vaddr;
-+	atomic64_t		ref;
+ 
++struct mm_uprobe {
++	struct rb_node rb_node;
++	unsigned long auprobe;
++	unsigned long vaddr;
 +};
 +
-+static bool is_reachable_by_call(unsigned long vtramp, unsigned long vaddr)
++#define __node_2_mm_uprobe(node) rb_entry((node), struct mm_uprobe, rb_node)
++
++struct __mm_uprobe_key {
++	unsigned long auprobe;
++	unsigned long vaddr;
++};
++
++static inline int mm_uprobe_cmp(unsigned long l_auprobe, unsigned long l_vaddr,
++				const struct mm_uprobe *r_mmu)
 +{
-+	long delta = (long)(vaddr + 5 - vtramp);
-+
-+	return delta >= INT_MIN && delta <= INT_MAX;
-+}
-+
-+static unsigned long find_nearest_page(unsigned long vaddr)
-+{
-+	struct vm_area_struct *vma, *prev = NULL;
-+	unsigned long prev_vm_end = PAGE_SIZE;
-+	VMA_ITERATOR(vmi, current->mm, 0);
-+
-+	vma = vma_next(&vmi);
-+	while (vma) {
-+		if (prev)
-+			prev_vm_end = prev->vm_end;
-+		if (vma->vm_start - prev_vm_end  >= PAGE_SIZE) {
-+			if (is_reachable_by_call(prev_vm_end, vaddr))
-+				return prev_vm_end;
-+			if (is_reachable_by_call(vma->vm_start - PAGE_SIZE, vaddr))
-+				return vma->vm_start - PAGE_SIZE;
-+		}
-+		prev = vma;
-+		vma = vma_next(&vmi);
-+	}
++	if (l_auprobe < r_mmu->auprobe)
++		return -1;
++	if (l_auprobe > r_mmu->auprobe)
++		return 1;
++	if (l_vaddr < r_mmu->vaddr)
++		return -1;
++	if (l_vaddr > r_mmu->vaddr)
++		return 1;
 +
 +	return 0;
 +}
 +
-+static struct uprobe_trampoline *create_uprobe_trampoline(unsigned long vaddr)
++static inline int __mm_uprobe_cmp(struct rb_node *a, const struct rb_node *b)
 +{
-+	struct pt_regs *regs = task_pt_regs(current);
-+	const struct vm_special_mapping *mapping;
-+	struct mm_struct *mm = current->mm;
-+	struct vm_area_struct *vma;
-+	struct uprobe_trampoline *tramp;
++	struct mm_uprobe *mmu_a = __node_2_mm_uprobe(a);
 +
-+	mapping = user_64bit_mode(regs) ? &tramp_mapping : NULL;
-+	if (!mapping)
-+		return NULL;
-+
-+	vaddr = find_nearest_page(vaddr);
-+	if (!vaddr)
-+		return NULL;
-+
-+	tramp = kzalloc(sizeof(*tramp), GFP_KERNEL);
-+	if (unlikely(!tramp))
-+		return NULL;
-+
-+	atomic64_set(&tramp->ref, 1);
-+	tramp->vaddr = vaddr;
-+
-+	vma = _install_special_mapping(mm, tramp->vaddr, PAGE_SIZE,
-+				VM_READ|VM_EXEC|VM_MAYEXEC|VM_MAYREAD|VM_DONTCOPY|VM_IO,
-+				mapping);
-+	if (IS_ERR(vma))
-+		goto free_area;
-+	return tramp;
-+
-+ free_area:
-+	kfree(tramp);
-+	return NULL;
++	return mm_uprobe_cmp(mmu_a->auprobe, mmu_a->vaddr, __node_2_mm_uprobe(b));
 +}
 +
-+static __maybe_unused struct uprobe_trampoline *uprobe_trampoline_get(unsigned long vaddr)
++static inline bool __mm_uprobe_less(struct rb_node *a, const struct rb_node *b)
 +{
-+	struct uprobes_state *state = &current->mm->uprobes_state;
-+	struct uprobe_trampoline *tramp = NULL;
++	struct mm_uprobe *mmu_a = __node_2_mm_uprobe(a);
 +
-+	hlist_for_each_entry(tramp, &state->head_tramps, node) {
-+		if (is_reachable_by_call(tramp->vaddr, vaddr)) {
-+			atomic64_inc(&tramp->ref);
-+			return tramp;
-+		}
++	return mm_uprobe_cmp(mmu_a->auprobe, mmu_a->vaddr, __node_2_mm_uprobe(b)) < 0;
++}
++
++static inline int __mm_uprobe_cmp_key(const void *key, const struct rb_node *b)
++{
++	const struct __mm_uprobe_key *a = key;
++
++	return mm_uprobe_cmp(a->auprobe, a->vaddr, __node_2_mm_uprobe(b));
++}
++
++static struct mm_uprobe *find_mm_uprobe(struct mm_struct *mm, struct arch_uprobe *auprobe,
++					unsigned long vaddr)
++{
++	struct __mm_uprobe_key key = {
++		.auprobe = (unsigned long) auprobe,
++		.vaddr = vaddr,
++	};
++	struct rb_node *node;
++
++	node = rb_find(&key, &mm->uprobes_state.root_uprobes, __mm_uprobe_cmp_key);
++	return node ? __node_2_mm_uprobe(node) : NULL;
++}
++
++static struct mm_uprobe *insert_mm_uprobe(struct mm_struct *mm, struct arch_uprobe *auprobe,
++					  unsigned long vaddr)
++{
++	struct mm_uprobe *mmu;
++
++	mmu = kmalloc(sizeof(*mmu), GFP_KERNEL);
++	if (mmu) {
++		mmu->auprobe = (unsigned long) auprobe;
++		mmu->vaddr = vaddr;
++		RB_CLEAR_NODE(&mmu->rb_node);
++		rb_add(&mmu->rb_node, &mm->uprobes_state.root_uprobes, __mm_uprobe_less);
 +	}
-+
-+	tramp = create_uprobe_trampoline(vaddr);
-+	if (!tramp)
-+		return NULL;
-+
-+	hlist_add_head(&tramp->node, &state->head_tramps);
-+	return tramp;
++	return mmu;
 +}
 +
-+static void destroy_uprobe_trampoline(struct uprobe_trampoline *tramp)
++static void destroy_mm_uprobe(struct mm_uprobe *mmu, struct rb_root *root)
 +{
-+	hlist_del(&tramp->node);
-+	kfree(tramp);
++	rb_erase(&mmu->rb_node, root);
++	kfree(mmu);
 +}
 +
-+static __maybe_unused void uprobe_trampoline_put(struct uprobe_trampoline *tramp)
++int set_swbp(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr)
 +{
-+	if (tramp == NULL)
-+		return;
++	struct mm_uprobe *mmu;
 +
-+	if (atomic64_dec_and_test(&tramp->ref))
-+		destroy_uprobe_trampoline(tramp);
++	if (find_mm_uprobe(mm, auprobe, vaddr))
++		return 0;
++	mmu = insert_mm_uprobe(mm, auprobe, vaddr);
++	if (!mmu)
++		return -ENOMEM;
++	return uprobe_write_opcode(auprobe, mm, vaddr, UPROBE_SWBP_INSN, false);
 +}
 +
-+void arch_uprobe_init_state(struct mm_struct *mm)
++int set_orig_insn(struct arch_uprobe *auprobe, struct mm_struct *mm, unsigned long vaddr)
 +{
-+	INIT_HLIST_HEAD(&mm->uprobes_state.head_tramps);
++	struct mm_uprobe *mmu;
++
++	mmu = find_mm_uprobe(mm, auprobe, vaddr);
++	if (!mmu)
++		return 0;
++	destroy_mm_uprobe(mmu, &mm->uprobes_state.root_uprobes);
++	return uprobe_write_opcode(auprobe, mm, vaddr, *(uprobe_opcode_t *)&auprobe->insn, true);
 +}
 +
-+void arch_uprobe_clear_state(struct mm_struct *mm)
-+{
-+	struct uprobes_state *state = &mm->uprobes_state;
-+	struct uprobe_trampoline *tramp;
-+	struct hlist_node *n;
+ void arch_uprobe_init_state(struct mm_struct *mm)
+ {
+ 	INIT_HLIST_HEAD(&mm->uprobes_state.head_tramps);
++	mm->uprobes_state.root_uprobes = RB_ROOT;
+ }
+ 
+ void arch_uprobe_clear_state(struct mm_struct *mm)
+ {
+ 	struct uprobes_state *state = &mm->uprobes_state;
+ 	struct uprobe_trampoline *tramp;
++	struct rb_node *node, *next;
+ 	struct hlist_node *n;
+ 
+ 	hlist_for_each_entry_safe(tramp, n, &state->head_tramps, node)
+ 		destroy_uprobe_trampoline(tramp);
 +
-+	hlist_for_each_entry_safe(tramp, n, &state->head_tramps, node)
-+		destroy_uprobe_trampoline(tramp);
-+}
++	node = rb_first(&state->root_uprobes);
++	while (node) {
++		next = rb_next(node);
++		destroy_mm_uprobe(__node_2_mm_uprobe(node), &state->root_uprobes);
++		node = next;
++	}
+ }
  #else /* 32-bit: */
  /*
-  * No RIP-relative addressing on 32-bit
 diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index de3631ae1746..05a156750e8d 100644
+index 05a156750e8d..bd726daa4428 100644
 --- a/include/linux/uprobes.h
 +++ b/include/linux/uprobes.h
-@@ -17,6 +17,7 @@
- #include <linux/wait.h>
- #include <linux/timer.h>
- #include <linux/seqlock.h>
-+#include <linux/mutex.h>
- 
- struct uprobe;
- struct vm_area_struct;
-@@ -183,6 +184,9 @@ struct xol_area;
- 
- struct uprobes_state {
+@@ -186,6 +186,7 @@ struct uprobes_state {
  	struct xol_area		*xol_area;
-+#ifdef CONFIG_X86_64
-+	struct hlist_head	head_tramps;
-+#endif
- };
- 
- typedef int (*uprobe_write_verify_t)(struct page *page, unsigned long vaddr, uprobe_opcode_t *opcode, int nbytes);
-@@ -232,6 +236,8 @@ extern void *arch_uretprobe_trampoline(unsigned long *psize);
- extern unsigned long uprobe_get_trampoline_vaddr(void);
- extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len);
- extern void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp_vaddr);
-+extern void arch_uprobe_clear_state(struct mm_struct *mm);
-+extern void arch_uprobe_init_state(struct mm_struct *mm);
- #else /* !CONFIG_UPROBES */
- struct uprobes_state {
- };
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 6ac691fe5682..c690cde4442c 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -1784,6 +1784,14 @@ static struct xol_area *get_xol_area(void)
- 	return area;
- }
- 
-+void __weak arch_uprobe_clear_state(struct mm_struct *mm)
-+{
-+}
-+
-+void __weak arch_uprobe_init_state(struct mm_struct *mm)
-+{
-+}
-+
- /*
-  * uprobe_clear_state - Free the area allocated for slots.
-  */
-@@ -1795,6 +1803,8 @@ void uprobe_clear_state(struct mm_struct *mm)
- 	delayed_uprobe_remove(NULL, mm);
- 	mutex_unlock(&delayed_uprobe_lock);
- 
-+	arch_uprobe_clear_state(mm);
-+
- 	if (!area)
- 		return;
- 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 735405a9c5f3..e79baa6dcce6 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1260,6 +1260,7 @@ static void mm_init_uprobes_state(struct mm_struct *mm)
- {
- #ifdef CONFIG_UPROBES
- 	mm->uprobes_state.xol_area = NULL;
-+	arch_uprobe_init_state(mm);
+ #ifdef CONFIG_X86_64
+ 	struct hlist_head	head_tramps;
++	struct rb_root		root_uprobes;
  #endif
- }
+ };
  
 -- 
 2.48.1
