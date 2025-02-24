@@ -1,138 +1,61 @@
-Return-Path: <bpf+bounces-52312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8EC5A4138E
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 03:29:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACF81A413E9
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 04:12:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD5383ABECC
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 02:27:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08A833A7018
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 03:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3826724292E;
-	Mon, 24 Feb 2025 02:22:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UTIdZnLC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6FB1A3160;
+	Mon, 24 Feb 2025 03:12:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C06F241C87;
-	Mon, 24 Feb 2025 02:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B09F4E2;
+	Mon, 24 Feb 2025 03:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740363769; cv=none; b=i9D3NoZk1FrM7o/PtsdPN9RuN+k6PYGYiM2X3gcxe5uqs8KWu6m0D/6RZ68PmcDZIITdz9gFl0TwkIgtb7DwCuV4ccFNaj0vnxbtbXeGLYiTt5bm5Wtpi78EYIlUOoBvbhamUCecT/E5rb8aeOaBcPL9YHO+6CRJa+qFoNg9FnA=
+	t=1740366732; cv=none; b=JBq/EyQuXLSmkxKU1TNP4i8sT1dg79LV9vPSfC7gDD+P7O23eiUNQGRnqtSbwhP+17ivpQ7iWLnJ0/uS/j4KNvQ23GFGQiMrUxbb23UWQwaMBqXsc6ZTTcCtaOhzH3EKHND2vXNXoATXY/n205GM96+J0dniZFZqh8qNnfs4X84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740363769; c=relaxed/simple;
-	bh=Z7wcVTQ2PMbca+VamTK60Bfots1ruiWDLXTJSx+zoDc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DRTRyZMb1krESw/GuSAbqsndk2fl0cAlweIjuj9p6XKtHVPoKgWHb1XGMzUR3Kf8p+jAWpnNTsG64IbEDSIUtEMbTwOSGAe9YKES9jXdBbM6bPy/tW7LMwRJaWDKliYmcvYJief5dBti/G/Wz/cBiYAZmOGfr+Jpc+wci64me1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UTIdZnLC; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-47210ab1283so57654981cf.1;
-        Sun, 23 Feb 2025 18:22:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740363767; x=1740968567; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Meuv+MydLFL2FaXVwlNSjl8ifFrRUaf5oa8eloYWNAY=;
-        b=UTIdZnLC/We+kcPwiP+quF3DmhU7+nqO6mZukeiFLr/z0iFRtVbn8yd1MHijbCSxcj
-         EDxrxCfWN8rNocFsx4xt06RT+34A1t0EeoA+PDp4tPiN1hBK1P86ZNUK9Tclu3W9pAQZ
-         1nIyzFNG2Y3V6fBmMedi8pvBcPCqNAnRBQl2Eobnt6nMul63IaydXeI4gV2r8ViCE1RO
-         1AIjLR8MUBLDS2AXE+jvS2lWqGxA8/i68rF5QdZiTAbtYjs0ZEF70yBGAuawzuxQbYgA
-         jiY8mOfxJhujYHpoa2fNetkSeirlMuY/1bgHg7CmZ6XWmFw5i0CdusBg3m1l/CiLh15X
-         iudA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740363767; x=1740968567;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Meuv+MydLFL2FaXVwlNSjl8ifFrRUaf5oa8eloYWNAY=;
-        b=BoemCvro8iGuVbkte5zGSW4mLaTpJJvqZBXQUaWDOQEd3uTe5NYbfkVLYcBekVdofz
-         ovtbhSSbP+VQH3FPMHwRi56onZIsNWajGqMRhp+8LR+37/LeTduDo0ZopZsbNQ5NGC8c
-         PgV0PefAd1zegVR8DWFVg/QrX2F1dxqz5eH10JAFm08c2e1b7Ia0hr00Eg9e2leuSUCe
-         noP5DZxkIN+MvO8rVniHHo6tVtBFA00jRyWsOOPPs2HoUDEwppD5DxyY2grL4pmJN2XH
-         tKrfOY4AaI5CPbtkFh+cDWkoBh4rxQjM2cV65otETw3V9LIu467mWJSlVBl3XcBaUISW
-         SEPg==
-X-Forwarded-Encrypted: i=1; AJvYcCU9nohnHBZH8xsO5AyH6umHDefn6FRH0Eo17QAs6M1kq7QaieJBfKXMYWLYBbQEj2K9fUg=@vger.kernel.org, AJvYcCUGywl/xdpWZmvl/G32A7kNc6iqpAjGNHc5lrK1KA2yHVulytKP3QcYqV+gkeZ1No8A9IbCYq5IdTSDG45yng2p@vger.kernel.org, AJvYcCXsnEDSpVA6W0NBvNxITCtIeMuiIY1HRsy0fKvtXpdJDCY06GvsHpfFERuyAbNEkgofRDMpDOAjPCI+Vfmm@vger.kernel.org
-X-Gm-Message-State: AOJu0YyNrfqKPNF95weA39UXJlbmZ3qYLkZfAJ5CoprvPhkcgTIzSDdm
-	QuNn05tdGf5w+70kXSVGe37GDT5LTqfL1SvNwco4VlzupcuYJmCU
-X-Gm-Gg: ASbGnctVTHvrE2GE706rYrp+LlRPNE0GFG3fN7g45tytpv0cUvpFLHQy4a+hY6/AOsp
-	cYejlhe8//T31lNDC0Qb3BMWDOn8eFigXJSN69fHOUCYLzyVJ8rxD7Y0REPAdZdd3hIFfrd0E7I
-	hS+VSLWnfvG0gZ5LouRbWSOmZf0PHU1nzACgBe66IBlBe8GYLiKOeFFc4BZp6Mj2diRtBgqN66n
-	tmSElMaZrFceAOghW1afa1YHTucr9o7yq1+Ti9QbGVLlpzGOSMD4RpGIobhqEBBk8QBkU71mon1
-	eH6QjAB4SnrXT/JAUZXJRiyVPaabJGP9YR+wWTFZGZfBfPo5TtSed7fBxdbgBA14JfkiomSrKPY
-	rLPkGSSDOScL5beOm
-X-Google-Smtp-Source: AGHT+IFiS5JCKSf9kpXYqQvd4C20SO9WeFyiqD0ODJRSs4FwlxUKUEaIQb+jwmPk1FCG3Lz3izvoTA==
-X-Received: by 2002:ac8:5804:0:b0:472:9ea:887b with SMTP id d75a77b69052e-472228b3738mr106238181cf.10.1740363766868;
-        Sun, 23 Feb 2025 18:22:46 -0800 (PST)
-Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4720b1fe010sm59942551cf.60.2025.02.23.18.22.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Feb 2025 18:22:46 -0800 (PST)
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfauth.phl.internal (Postfix) with ESMTP id F0E6C1200043;
-	Sun, 23 Feb 2025 21:22:45 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-08.internal (MEProxy); Sun, 23 Feb 2025 21:22:45 -0500
-X-ME-Sender: <xms:9de7Z12BqK5IrljMNDM7sTYH_Ov-Mww0KRbBZNpXNcXYe2sixSc4Nw>
-    <xme:9de7Z8G-qvGv8OFLGT1xSM_yo7VoNRI1lqWthXCu_elKjrvM1MbdgwWV1ZT8FwcsE
-    INA5mhUMhtxRgjJOg>
-X-ME-Received: <xmr:9de7Z172YHx5a9dFi1P9kIMyg__JoT0EW5US61bLg9k1E5zNbifIeKdVBg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdejjeehgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddt
-    necuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilh
-    drtghomheqnecuggftrfgrthhtvghrnhepgeeljeeitdehvdehgefgjeevfeejjeekgfev
-    ffeiueejhfeuiefggeeuheeggefgnecuvehluhhsthgvrhfuihiivgepieenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
-    ihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepgh
-    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopedukedpmhho
-    uggvpehsmhhtphhouhhtpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopehjihgrnhhgshhhrghnlhgrihesghhmrghilhdrtghomhdprhgt
-    phhtthhopehprghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohhshh
-    esjhhoshhhthhrihhplhgvthhtrdhorhhgpdhrtghpthhtoheprhhoshhtvgguthesghho
-    ohgumhhishdrohhrghdprhgtphhtthhopehmrghthhhivghurdguvghsnhhohigvrhhsse
-    gvfhhfihgtihhoshdrtghomhdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghl
-    rdhorhhgpdhrtghpthhtohepnhgvvghrrghjrdhuphgrughhhigrhieskhgvrhhnvghlrd
-    horhhgpdhrtghpthhtohepjhhovghlsehjohgvlhhfvghrnhgrnhguvghsrdhorhhg
-X-ME-Proxy: <xmx:9de7Zy3GLPromVxSeDY5Lh-a-P5jsYXhNoBFXNXnDIbnrGbNmfVwXg>
-    <xmx:9de7Z4GT3LJg4lyWowvF-2v_j7BTp-GaC7geaE9dQ1arq78N8ydZjQ>
-    <xmx:9de7Zz9QQ6750j2DHLsB5q1NhQ-4fj0Hxy0xfRdNsj6TTPfL0MgGSQ>
-    <xmx:9de7Z1lWc7tQ8cSD1v95A1jLM6Zez9iuQQagy29AJK-rVZWDNZoLxw>
-    <xmx:9de7Z8GGbECcBovdM_fDdAnqeRoHdZ0NVNRe8QhUbsOaN6eKlN-UFM-t>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 23 Feb 2025 21:22:45 -0500 (EST)
-From: Boqun Feng <boqun.feng@gmail.com>
-To: rcu@vger.kernel.org
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH rcu 20/20] srcu: Make SRCU-fast also be NMI-safe
-Date: Sun, 23 Feb 2025 18:22:14 -0800
-Message-Id: <20250224022214.12037-21-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250224022214.12037-1-boqun.feng@gmail.com>
-References: <20250224022214.12037-1-boqun.feng@gmail.com>
+	s=arc-20240116; t=1740366732; c=relaxed/simple;
+	bh=XWJMx12NbsBM+EgAyV5Uqf9FJjuPIfxva8iem+oY5tQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iQlEKt2PAlOoRdu+FD5vPwIgGd0hqO/uqD6iNz/Cp67F7kXxBmzCwrtuXB1H14TAItAAMQEvikJGNPrz5MRVJFnngONj360uTZLLMhIJr/ewD+iyyNQIwzj224NEddB+Y9T2Gs+zCNeziTdg9bs5Siy2+vslsMxuo/v4eleCoNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Z1Qfn4TKxzCs7B;
+	Mon, 24 Feb 2025 11:08:33 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id 426EE1402E2;
+	Mon, 24 Feb 2025 11:11:59 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 24 Feb 2025 11:11:57 +0800
+From: Tong Tiangen <tongtiangen@huawei.com>
+To: David Hildenbrand <david@redhat.com>, Oleg Nesterov <oleg@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra
+	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
+ Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
+	<mark.rutland@arm.com>, Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Peter Xu
+	<peterx@redhat.com>, Ian Rogers <irogers@google.com>, Adrian Hunter
+	<adrian.hunter@intel.com>, "Liang, Kan" <kan.liang@linux.intel.com>, Masami
+ Hiramatsu <mhiramat@kernel.org>
+CC: <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-trace-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>, Tong Tiangen <tongtiangen@huawei.com>,
+	<wangkefeng.wang@huawei.com>, Guohanjun <guohanjun@huawei.com>
+Subject: [PATCH -next v3] uprobes: reject the share zeropage in uprobe_write_opcode()
+Date: Mon, 24 Feb 2025 11:11:49 +0800
+Message-ID: <20250224031149.1598949-1-tongtiangen@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -140,93 +63,104 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+We triggered the following error logs in syzkaller test:
 
-BPF uses rcu_read_lock_trace() in NMI context, so srcu_read_lock_fast()
-must be NMI-safe if it is to have any chance of addressing RCU Tasks
-Trace use cases.  This commit therefore causes srcu_read_lock_fast()
-and srcu_read_unlock_fast() to use atomic_long_inc() instead of
-this_cpu_inc() on architectures that support NMIs but do not have
-NMI-safe implementations of this_cpu_inc().  Note that both x86 and
-arm64 have NMI-safe implementations of this_cpu_inc(), and thus do not
-pay the performance penalty inherent in atomic_inc_long().
+  BUG: Bad page state in process syz.7.38  pfn:1eff3
+  page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1eff3
+  flags: 0x3fffff00004004(referenced|reserved|node=0|zone=1|lastcpupid=0x1fffff)
+  raw: 003fffff00004004 ffffe6c6c07bfcc8 ffffe6c6c07bfcc8 0000000000000000
+  raw: 0000000000000000 0000000000000000 00000000fffffffe 0000000000000000
+  page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x32/0x50
+   bad_page+0x69/0xf0
+   free_unref_page_prepare+0x401/0x500
+   free_unref_page+0x6d/0x1b0
+   uprobe_write_opcode+0x460/0x8e0
+   install_breakpoint.part.0+0x51/0x80
+   register_for_each_vma+0x1d9/0x2b0
+   __uprobe_register+0x245/0x300
+   bpf_uprobe_multi_link_attach+0x29b/0x4f0
+   link_create+0x1e2/0x280
+   __sys_bpf+0x75f/0xac0
+   __x64_sys_bpf+0x1a/0x30
+   do_syscall_64+0x56/0x100
+   entry_SYSCALL_64_after_hwframe+0x78/0xe2
 
-It is tempting to use this trick to fold srcu_read_lock_nmisafe()
-into srcu_read_lock(), but this would need careful thought, review,
-and performance analysis.  Though those smp_mb() calls might well make
-performance a non-issue.
+   BUG: Bad rss-counter state mm:00000000452453e0 type:MM_FILEPAGES val:-1
 
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+The following syzkaller test case can be used to reproduce:
+
+  r2 = creat(&(0x7f0000000000)='./file0\x00', 0x8)
+  write$nbd(r2, &(0x7f0000000580)=ANY=[], 0x10)
+  r4 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x42, 0x0)
+  mmap$IORING_OFF_SQ_RING(&(0x7f0000ffd000/0x3000)=nil, 0x3000, 0x0, 0x12, r4, 0x0)
+  r5 = userfaultfd(0x80801)
+  ioctl$UFFDIO_API(r5, 0xc018aa3f, &(0x7f0000000040)={0xaa, 0x20})
+  r6 = userfaultfd(0x80801)
+  ioctl$UFFDIO_API(r6, 0xc018aa3f, &(0x7f0000000140))
+  ioctl$UFFDIO_REGISTER(r6, 0xc020aa00, &(0x7f0000000100)={{&(0x7f0000ffc000/0x4000)=nil, 0x4000}, 0x2})
+  ioctl$UFFDIO_ZEROPAGE(r5, 0xc020aa04, &(0x7f0000000000)={{&(0x7f0000ffd000/0x1000)=nil, 0x1000}})
+  r7 = bpf$PROG_LOAD(0x5, &(0x7f0000000140)={0x2, 0x3, &(0x7f0000000200)=ANY=[@ANYBLOB="1800000000120000000000000000000095"], &(0x7f0000000000)='GPL\x00', 0x7, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, @fallback=0x30, 0xffffffffffffffff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x10, 0x0, @void, @value}, 0x94)
+  bpf$BPF_LINK_CREATE_XDP(0x1c, &(0x7f0000000040)={r7, 0x0, 0x30, 0x1e, @val=@uprobe_multi={&(0x7f0000000080)='./file0\x00', &(0x7f0000000100)=[0x2], 0x0, 0x0, 0x1}}, 0x40)
+
+The cause is that zero pfn is set to the pte without increasing the rss
+count in mfill_atomic_pte_zeropage() and the refcount of zero folio does
+not increase accordingly. Then, the operation on the same pfn is performed
+in uprobe_write_opcode()->__replace_page() to unconditional decrease the
+rss count and old_folio's refcount.
+
+Therefore, two bugs are introduced:
+1. The rss count is incorrect, when process exit, the check_mm() report
+   error "Bad rss-count".
+2. The reserved folio (zero folio) is freed when folio->refcount is zero,
+   then free_pages_prepare->free_page_is_bad() report error
+   "Bad page state".
+
+There is more, the following warn could also theoretically be triggered:
+  __replace_page()
+    -> ...
+      -> folio_remove_rmap_pte()
+        -> VM_WARN_ON_FOLIO(is_zero_folio(folio), folio)
+
+Considering that uprobe hit the zero folio is a very rare scene, just
+reject zero old folio immediately after get_user_page_vma_remote().
+
+Fixes: 7396fa818d62 ("uprobes/core: Make background page replacement logic account for rss_stat counters")
+Fixes: 2b1444983508 ("uprobes, mm, x86: Add the ability to install and remove uprobes breakpoints")
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 ---
- include/linux/srcutree.h | 34 ++++++++++++++++++++++++----------
- 1 file changed, 24 insertions(+), 10 deletions(-)
+v3: update the subject/changelog as David suggests.
+v2: Modified according to the comments of David and Oleg.
+---
+ kernel/events/uprobes.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index bdc467efce3a..8bed7e6cc4c1 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -231,17 +231,24 @@ static inline struct srcu_ctr __percpu *__srcu_ctr_to_ptr(struct srcu_struct *ss
-  * srcu_struct.  Returns a pointer that must be passed to the matching
-  * srcu_read_unlock_fast().
-  *
-- * Note that this_cpu_inc() is an RCU read-side critical section either
-- * because it disables interrupts, because it is a single instruction,
-- * or because it is a read-modify-write atomic operation, depending on
-- * the whims of the architecture.
-+ * Note that both this_cpu_inc() and atomic_long_inc() are RCU read-side
-+ * critical sections either because they disables interrupts, because they
-+ * are a single instruction, or because they are a read-modify-write atomic
-+ * operation, depending on the whims of the architecture.
-+ *
-+ * This means that __srcu_read_lock_fast() is not all that fast
-+ * on architectures that support NMIs but do not supply NMI-safe
-+ * implementations of this_cpu_inc().
-  */
- static inline struct srcu_ctr __percpu *__srcu_read_lock_fast(struct srcu_struct *ssp)
- {
- 	struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 9372bfd0e8fc..ca1879c74158 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -506,6 +506,11 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm,
+ 	if (ret <= 0)
+ 		goto put_old;
  
- 	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_fast().");
--	this_cpu_inc(scp->srcu_locks.counter); /* Y */
-+	if (!IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
-+		this_cpu_inc(scp->srcu_locks.counter); /* Y */
-+	else
-+		atomic_long_inc(raw_cpu_ptr(&scp->srcu_locks));  /* Z */
- 	barrier(); /* Avoid leaking the critical section. */
- 	return scp;
- }
-@@ -252,15 +259,22 @@ static inline struct srcu_ctr __percpu *__srcu_read_lock_fast(struct srcu_struct
-  * different CPU than that which was incremented by the corresponding
-  * srcu_read_lock_fast(), but it must be within the same task.
-  *
-- * Note that this_cpu_inc() is an RCU read-side critical section either
-- * because it disables interrupts, because it is a single instruction,
-- * or because it is a read-modify-write atomic operation, depending on
-- * the whims of the architecture.
-+ * Note that both this_cpu_inc() and atomic_long_inc() are RCU read-side
-+ * critical sections either because they disables interrupts, because they
-+ * are a single instruction, or because they are a read-modify-write atomic
-+ * operation, depending on the whims of the architecture.
-+ *
-+ * This means that __srcu_read_unlock_fast() is not all that fast
-+ * on architectures that support NMIs but do not supply NMI-safe
-+ * implementations of this_cpu_inc().
-  */
- static inline void __srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ctr __percpu *scp)
- {
- 	barrier();  /* Avoid leaking the critical section. */
--	this_cpu_inc(scp->srcu_unlocks.counter);  /* Z */
-+	if (!IS_ENABLED(CONFIG_NEED_SRCU_NMI_SAFE))
-+		this_cpu_inc(scp->srcu_unlocks.counter);  /* Z */
-+	else
-+		atomic_long_inc(raw_cpu_ptr(&scp->srcu_unlocks));  /* Z */
- 	RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_fast().");
- }
- 
++	if (is_zero_page(old_page)) {
++		ret = -EINVAL;
++		goto put_old;
++	}
++
+ 	if (WARN(!is_register && PageCompound(old_page),
+ 		 "uprobe unregister should never work on compound page\n")) {
+ 		ret = -EINVAL;
 -- 
-2.39.5 (Apple Git-154)
+2.25.1
 
 
