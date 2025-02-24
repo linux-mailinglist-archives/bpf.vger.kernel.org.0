@@ -1,60 +1,71 @@
-Return-Path: <bpf+bounces-52332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52333-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0099FA41CD6
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 12:32:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87C65A41CF4
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 12:35:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21BB0189973C
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 11:30:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6E8F3BC7A1
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 11:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA21268C46;
-	Mon, 24 Feb 2025 11:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0342E268C6D;
+	Mon, 24 Feb 2025 11:19:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CrUijrKu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TH4kNSzu"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA9C25E453;
-	Mon, 24 Feb 2025 11:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7109E268C5C;
+	Mon, 24 Feb 2025 11:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740395957; cv=none; b=rZANBzeMMn6FYeN4BqYjp87FtLgLqMZdPS+WRPOif/zYEtq4qj5mvGa4en53IfGWmQYEHcGq3eb5493mJFCilzOy1l3x6pyB2xypDYMRmEfO5mnEfJW/YIBVtoeAeAb0/UNvpWBMjZ8x4BoJ6ehnp5LZHl9Zo+Kpox3eZc/DqaY=
+	t=1740395960; cv=none; b=rq8y7+HLrUHAha1pK2JK/vnxHl1QZG9zXtgyHBNO87xuU/ckEBGRIq8fmEc45RgJ5vafJZlRJA+gjIlQ3Y5kfjf4tb1uJLBq8yabzIKOLhIElTpYzOuuO2uvVUU2/+8goyPWUWZKBXqg2k2n3ZJfTnxnykmiHqvam4xFdhkdlUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740395957; c=relaxed/simple;
-	bh=C3waVzTqbQGaq2xcqAuoxu6j+d1pP0AJ/3lxZ8a9tD4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VP/aEoZP6rgp0a420Dso18vX3Tsb69kCX1LDSuYqDQgdgFW7o9O3eGptCs0L6xVxQzMFfyNTu7nscy3hT/tYMZ+8WnfUXmTMmy+M6vtfynXzW+aUtYaiHdgaFRPhVq7J128y+y5anC0bTSt+Kn1OPFHnaeYDTRhJPrrZCkjK4/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CrUijrKu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9867CC4CEE8;
-	Mon, 24 Feb 2025 11:19:15 +0000 (UTC)
+	s=arc-20240116; t=1740395960; c=relaxed/simple;
+	bh=qxxf968N+YHWwiFWN2ZPiACTLdep0AVpOc00263JmUw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=PxO2sR/OFIxhGKjNyfy4zcdEqif3HYn3gIqGSLRHrqccDnc2kk00TVYK/jtJJ2H2NtmKS3fU+Sw5SLDZduy21hRYl+CUvxYgB3A9hx4Wf8/ZfqWfpztF+VCMMtuCDNm+5P4/JnuSmn0Y7GZdcm2SW2gc3x1rfN9Sl+dcqNeCY4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TH4kNSzu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17133C4CEE6;
+	Mon, 24 Feb 2025 11:19:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740395956;
-	bh=C3waVzTqbQGaq2xcqAuoxu6j+d1pP0AJ/3lxZ8a9tD4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=CrUijrKuFtNm40KL2YobmaTPyyue2cjkBJmIz7zR5R6MdXNwkREFlCHwMoXTavlmI
-	 wzStcnNq5i2pqBeQNACbyX9etz80pceUTzF0VYZJx/e+2VkzRehy/NQUceFYvUkNYM
-	 ZW7BKKoEfYjIdoqqNYLB3A7d1YO+rXMZeRS0fkzcA7VwHRLxhdcafpJ4aKtQqctrIa
-	 eDN2dY9Pda6tpOK4Oja6XggH5c9QEptUygMksF9rbBnSOo+T+eSyW3+wRYiG5UbfMh
-	 CoSKnM2heXadqvr5zi7pE9fbb2DJj0aw3TvD+QB57y8QLT2/kwcanOmCMGss3VSS9l
-	 FhF4pui1+mIJQ==
+	s=k20201202; t=1740395959;
+	bh=qxxf968N+YHWwiFWN2ZPiACTLdep0AVpOc00263JmUw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=TH4kNSzuuHLwzXhL4QodPHOCTaxgWToHe1WcTrKKUF71MbPvNat2KqZXtDhsO5L9x
+	 peyz6E9/jExJclsffn12KxrU9+KDmWs5LbC4IsPmzT2tzKWfoptovzcmKu0EEJgl9W
+	 MZ/KmXtbkccxWsnnH3eMpXCIR3H3/ylvAQxwhJzG21AMhTOszVbaQRPuRpWcQ/eS0i
+	 F2jrfM39v08XbweJPL4Db9DiYRehe3E2FMHL53HF5xvxC+ihL3GuKlg+x7I0gkzSPb
+	 wdq3nIOYNpK2UqgXyk8l8HvHdAWKibgmdhybLO7G7tC96zpi2Q5TLZ75G0hxtLNfhS
+	 aVLiGE68kcVsg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Jann Horn <jannh@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Jiayuan Chen <mrpre@163.com>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	John Fastabend <john.fastabend@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	ast@kernel.org,
 	daniel@iogearbox.net,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 01/20] bpf: unify VM_WRITE vs VM_MAYWRITE use in BPF map mmaping logic
-Date: Mon, 24 Feb 2025 06:18:54 -0500
-Message-Id: <20250224111914.2214326-1-sashal@kernel.org>
+	shuah@kernel.org,
+	mhal@rbox.co,
+	sgarzare@redhat.com,
+	yonghong.song@linux.dev,
+	cong.wang@bytedance.com,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 02/20] selftests/bpf: Fix invalid flag of recv()
+Date: Mon, 24 Feb 2025 06:18:55 -0500
+Message-Id: <20250224111914.2214326-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250224111914.2214326-1-sashal@kernel.org>
+References: <20250224111914.2214326-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,109 +77,47 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.79
 Content-Transfer-Encoding: 8bit
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Jiayuan Chen <mrpre@163.com>
 
-[ Upstream commit 98671a0fd1f14e4a518ee06b19037c20014900eb ]
+[ Upstream commit a0c11149509aa905aeec10cf9998091443472b0b ]
 
-For all BPF maps we ensure that VM_MAYWRITE is cleared when
-memory-mapping BPF map contents as initially read-only VMA. This is
-because in some cases BPF verifier relies on the underlying data to not
-be modified afterwards by user space, so once something is mapped
-read-only, it shouldn't be re-mmap'ed as read-write.
+SOCK_NONBLOCK flag is only effective during socket creation, not during
+recv. Use MSG_DONTWAIT instead.
 
-As such, it's not necessary to check VM_MAYWRITE in bpf_map_mmap() and
-map->ops->map_mmap() callbacks: VM_WRITE should be consistently set for
-read-write mappings, and if VM_WRITE is not set, there is no way for
-user space to upgrade read-only mapping to read-write one.
-
-This patch cleans up this VM_WRITE vs VM_MAYWRITE handling within
-bpf_map_mmap(), which is an entry point for any BPF map mmap()-ing
-logic. We also drop unnecessary sanitization of VM_MAYWRITE in BPF
-ringbuf's map_mmap() callback implementation, as it is already performed
-by common code in bpf_map_mmap().
-
-Note, though, that in bpf_map_mmap_{open,close}() callbacks we can't
-drop VM_MAYWRITE use, because it's possible (and is outside of
-subsystem's control) to have initially read-write memory mapping, which
-is subsequently dropped to read-only by user space through mprotect().
-In such case, from BPF verifier POV it's read-write data throughout the
-lifetime of BPF map, and is counted as "active writer".
-
-But its VMAs will start out as VM_WRITE|VM_MAYWRITE, then mprotect() can
-change it to just VM_MAYWRITE (and no VM_WRITE), so when its finally
-munmap()'ed and bpf_map_mmap_close() is called, vm_flags will be just
-VM_MAYWRITE, but we still need to decrement active writer count with
-bpf_map_write_active_dec() as it's still considered to be a read-write
-mapping by the rest of BPF subsystem.
-
-Similar reasoning applies to bpf_map_mmap_open(), which is called
-whenever mmap(), munmap(), and/or mprotect() forces mm subsystem to
-split original VMA into multiple discontiguous VMAs.
-
-Memory-mapping handling is a bit tricky, yes.
-
-Cc: Jann Horn <jannh@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/r/20250129012246.1515826-1-andrii@kernel.org
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Jiayuan Chen <mrpre@163.com>
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://patch.msgid.link/20250122100917.49845-5-mrpre@163.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/ringbuf.c |  4 ----
- kernel/bpf/syscall.c | 10 ++++++++--
- 2 files changed, 8 insertions(+), 6 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/sockmap_basic.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index 246559c3e93d0..528f4d6342262 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -268,8 +268,6 @@ static int ringbuf_map_mmap_kern(struct bpf_map *map, struct vm_area_struct *vma
- 		/* allow writable mapping for the consumer_pos only */
- 		if (vma->vm_pgoff != 0 || vma->vm_end - vma->vm_start != PAGE_SIZE)
- 			return -EPERM;
--	} else {
--		vm_flags_clear(vma, VM_MAYWRITE);
- 	}
- 	/* remap_vmalloc_range() checks size and offset constraints */
- 	return remap_vmalloc_range(vma, rb_map->rb,
-@@ -289,8 +287,6 @@ static int ringbuf_map_mmap_user(struct bpf_map *map, struct vm_area_struct *vma
- 			 * position, and the ring buffer data itself.
- 			 */
- 			return -EPERM;
--	} else {
--		vm_flags_clear(vma, VM_MAYWRITE);
- 	}
- 	/* remap_vmalloc_range() checks size and offset constraints */
- 	return remap_vmalloc_range(vma, rb_map->rb, vma->vm_pgoff + RINGBUF_PGOFF);
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index ba38c08a9a059..98d7558e2f2be 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -912,15 +912,21 @@ static int bpf_map_mmap(struct file *filp, struct vm_area_struct *vma)
- 	vma->vm_ops = &bpf_map_default_vmops;
- 	vma->vm_private_data = map;
- 	vm_flags_clear(vma, VM_MAYEXEC);
-+	/* If mapping is read-only, then disallow potentially re-mapping with
-+	 * PROT_WRITE by dropping VM_MAYWRITE flag. This VM_MAYWRITE clearing
-+	 * means that as far as BPF map's memory-mapped VMAs are concerned,
-+	 * VM_WRITE and VM_MAYWRITE and equivalent, if one of them is set,
-+	 * both should be set, so we can forget about VM_MAYWRITE and always
-+	 * check just VM_WRITE
-+	 */
- 	if (!(vma->vm_flags & VM_WRITE))
--		/* disallow re-mapping with PROT_WRITE */
- 		vm_flags_clear(vma, VM_MAYWRITE);
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+index dda7060e86a09..b16d765a153a9 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+@@ -402,8 +402,8 @@ static void test_sockmap_skb_verdict_shutdown(void)
+ 	if (!ASSERT_EQ(err, 1, "epoll_wait(fd)"))
+ 		goto out_close;
  
- 	err = map->ops->map_mmap(map, vma);
- 	if (err)
- 		goto out;
+-	n = recv(c1, &b, 1, SOCK_NONBLOCK);
+-	ASSERT_EQ(n, 0, "recv_timeout(fin)");
++	n = recv(c1, &b, 1, MSG_DONTWAIT);
++	ASSERT_EQ(n, 0, "recv(fin)");
+ out_close:
+ 	close(c1);
+ 	close(p1);
+@@ -459,7 +459,7 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
+ 	ASSERT_EQ(avail, expected, "ioctl(FIONREAD)");
+ 	/* On DROP test there will be no data to read */
+ 	if (pass_prog) {
+-		recvd = recv_timeout(c1, &buf, sizeof(buf), SOCK_NONBLOCK, IO_TIMEOUT_SEC);
++		recvd = recv_timeout(c1, &buf, sizeof(buf), MSG_DONTWAIT, IO_TIMEOUT_SEC);
+ 		ASSERT_EQ(recvd, sizeof(buf), "recv_timeout(c0)");
+ 	}
  
--	if (vma->vm_flags & VM_MAYWRITE)
-+	if (vma->vm_flags & VM_WRITE)
- 		bpf_map_write_active_inc(map);
- out:
- 	mutex_unlock(&map->freeze_mutex);
 -- 
 2.39.5
 
