@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-52376-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52377-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25063A4266B
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 16:37:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25222A42671
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 16:38:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FED1168A32
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:34:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15BA516153B
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:35:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2EA2221F30;
-	Mon, 24 Feb 2025 15:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F06023BCE1;
+	Mon, 24 Feb 2025 15:34:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IV1KvXkn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GN/y/Fdu"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B39C191484
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 15:34:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D2BA191484
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 15:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740411290; cv=none; b=FkNh3ukuscpQ+1r5Mi6u1prGxUrU0H9HACLTqeD5q7xtuhxGCJrVeFp3pcL2h7DSyLs/BZ4WCqfST5RyGEF/fT+85nm8gvAQd4BTI+Bv+siPxynRruyUpE2tTA3tX2sOo5EsR/XC/Q8YdpqoOuwilJZ6cbSV+d16hJAt1UlaMVA=
+	t=1740411295; cv=none; b=JqNYxf8Vum/Du4M2q2tfcCPxM/2WrqxemTsVRaIplkE0wZr6DG1TdMh/Jk39yFw5wegPil2yQpgXnsftGVjJWpgpm2PJ9r8PzIkFMocB6/UvHmW6TKTEIbGBluMXxPkJt17VpzbcsSXEqw9hyFSJKi34NPTk1tAXSztmx6zYzbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740411290; c=relaxed/simple;
-	bh=3j2Ge06g7vmDpT4J8rqhC2MqQRq/mNXaI3BBvzLfUG4=;
+	s=arc-20240116; t=1740411295; c=relaxed/simple;
+	bh=fO9FKDyQsGIpCW2ukJsHabWhQKIz1LgxYbqwqzd643w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=THG64XBRfzLun3hN7zDoEpIW4CMvUYw1N6GA4YsPTWCpsp6BaxL7fEB44d3huPLzPdKGJ0SLKQSAQQ1b3FucGV0T27v51v7oFMi2seFtUXjt4YmkD9MF36x4fggp+Xa+tc6L38TVjvHFdEqRl0yrh1pkIN8YZ20504k6U1KM8eA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IV1KvXkn; arc=none smtp.client-ip=95.215.58.185
+	 MIME-Version; b=RGoM2XoDD8NYASM81QCN8fj8KScs2UvaIGN6cRO+xMVFmOt4Xhvxa3o8ZfJvlvZ+kFsSEcv3WpNYy3ZUUE+HgLdOqqyXgQDJ63NUNQZ3B23EaGDGqd8STAWPrQOKp2X7At+h3LYUsxDkGLtC5L7wt+15jbQviW/s/NKQxPfKbbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GN/y/Fdu; arc=none smtp.client-ip=95.215.58.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740411286;
+	t=1740411291;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WKor3duIi2GsVBpdZNgItpDXCRmR+DTy0aE2tdyOhBc=;
-	b=IV1KvXknqscN2ZOHObQwAxMQPuAeJCbHH0UMcnjYqqRR6aimq2ucVw9oqPwFhm8pXrF/dM
-	ubD2khgikTF0NHarbzzDrgoyApE9spkO6UQbv1mOIrIwjvYRgNQofbcKZ2L33trGnTi78c
-	GbHyqLgWJp/zQ3P0iqkYoGa8LJWJzts=
+	bh=+8fcTgD5LO6+bcE+SbfGH4RpabVsyxmBruYFLbBTnUk=;
+	b=GN/y/FduqAgF5kkAKeiF7jjLC/Uox3Xladuuoak3Uy+wu4fiPO5LFpG+VfgIfswG7HtK1T
+	F6XB+j+db3an3fJI+wSLK8KQy+DHmVDrxgihapRQ0IGdXb53B+PQiUUFL1VgBMvPW8RnG0
+	AfE5JZQKhdCWsFxvCYQ/C660ELRxexk=
 From: Leon Hwang <leon.hwang@linux.dev>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -53,9 +53,9 @@ Cc: ast@kernel.org,
 	me@manjusaka.me,
 	leon.hwang@linux.dev,
 	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next v4 2/4] bpf: Improve error reporting for freplace attachment failure
-Date: Mon, 24 Feb 2025 23:33:50 +0800
-Message-ID: <20250224153352.64689-3-leon.hwang@linux.dev>
+Subject: [PATCH bpf-next v4 3/4] bpf, libbpf: Capture error message of freplace attachment failure
+Date: Mon, 24 Feb 2025 23:33:51 +0800
+Message-ID: <20250224153352.64689-4-leon.hwang@linux.dev>
 In-Reply-To: <20250224153352.64689-1-leon.hwang@linux.dev>
 References: <20250224153352.64689-1-leon.hwang@linux.dev>
 Precedence: bulk
@@ -67,30 +67,34 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-When a freplace program fails to attach to a target, the error message
-lacks details, making debugging difficult. This patch enhances error
-reporting by providing a log that explains why the attachment failed.
+To improve debugging, this patch captures the log of
+bpf_check_attach_target() when a freplace program fails to attach. Users
+can supply a buffer to receive the log.
 
 Changes:
 
-* Added verifier log to capture the log of freplace attachment failure.
-* Updated bpf_tracing_prog_attach() to accept verifier log.
-* Extended struct bpf_attr with a user-supplied log buffer for tracing
-  programs.
+* Extended bpf_attr and bpf_link_create_opts to include a log buffer for
+  tracing.
+* Updated bpf_link_create() to handle log buffer properly.
+* Add bpf_program__attach_freplace_opts() to use users' supplied log
+  buffer.
 
-This improves debugging by giving clear feedback when a freplace
-attachment fails.
+This helps diagnose freplace attachment failures more efficiently.
 
 Signed-off-by: Leon Hwang <leon.hwang@linux.dev>
 ---
- include/uapi/linux/bpf.h |  2 ++
- kernel/bpf/syscall.c     | 51 +++++++++++++++++++++++++++++++++-------
- 2 files changed, 45 insertions(+), 8 deletions(-)
+ tools/include/uapi/linux/bpf.h |  2 ++
+ tools/lib/bpf/bpf.c            |  6 +++++-
+ tools/lib/bpf/bpf.h            |  2 ++
+ tools/lib/bpf/libbpf.c         | 29 +++++++++++++++++++++++++----
+ tools/lib/bpf/libbpf.h         | 14 ++++++++++++++
+ tools/lib/bpf/libbpf.map       |  1 +
+ 6 files changed, 49 insertions(+), 5 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
 index fff6cdb8d11a2..bea4d802d4463 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
 @@ -1759,6 +1759,8 @@ union bpf_attr {
  				 * accessible through bpf_get_attach_cookie() BPF helper
  				 */
@@ -100,129 +104,140 @@ index fff6cdb8d11a2..bea4d802d4463 100644
  			} tracing;
  			struct {
  				__u32		pf;
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index dbd89c13dd328..970018ada1209 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3414,7 +3414,8 @@ static const struct bpf_link_ops bpf_tracing_link_lops = {
- static int bpf_tracing_prog_attach(struct bpf_prog *prog,
- 				   int tgt_prog_fd,
- 				   u32 btf_id,
--				   u64 bpf_cookie)
-+				   u64 bpf_cookie,
-+				   struct bpf_verifier_log *log)
- {
- 	struct bpf_link_primer link_primer;
- 	struct bpf_prog *tgt_prog = NULL;
-@@ -3539,7 +3540,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
- 		 */
- 		struct bpf_attach_target_info tgt_info = {};
- 
--		err = bpf_check_attach_target(NULL, prog, tgt_prog, btf_id,
-+		err = bpf_check_attach_target(log, prog, tgt_prog, btf_id,
- 					      &tgt_info);
- 		if (err)
- 			goto out_unlock;
-@@ -3951,7 +3952,7 @@ static int bpf_raw_tp_link_attach(struct bpf_prog *prog,
- 			tp_name = prog->aux->attach_func_name;
- 			break;
- 		}
--		return bpf_tracing_prog_attach(prog, 0, 0, 0);
-+		return bpf_tracing_prog_attach(prog, 0, 0, 0, NULL);
- 	case BPF_PROG_TYPE_RAW_TRACEPOINT:
- 	case BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE:
- 		if (strncpy_from_user(buf, user_tp_name, sizeof(buf) - 1) < 0)
-@@ -5313,9 +5314,13 @@ static int bpf_map_do_batch(const union bpf_attr *attr,
- }
- 
- #define BPF_LINK_CREATE_LAST_FIELD link_create.uprobe_multi.pid
--static int link_create(union bpf_attr *attr, bpfptr_t uattr)
-+static int link_create(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
- {
-+	struct bpf_verifier_log *log;
-+	u32 log_true_size, log_size;
- 	struct bpf_prog *prog;
-+	__aligned_u64 log_buf;
-+	bool use_log;
- 	int ret;
- 
- 	if (CHECK_ATTR(BPF_LINK_CREATE))
-@@ -5328,10 +5333,33 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
- 	if (IS_ERR(prog))
- 		return PTR_ERR(prog);
- 
-+	switch (prog->type) {
-+	case BPF_PROG_TYPE_EXT:
-+		log_buf = attr->link_create.tracing.log_buf;
-+		log_size = attr->link_create.tracing.log_size;
-+		use_log = true;
-+		break;
-+	default:
-+		use_log = false;
-+	}
-+
-+	if (use_log) {
-+		log = kvzalloc(sizeof(*log), GFP_KERNEL);
-+		if (!log) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		ret = bpf_vlog_init(log, BPF_LOG_FIXED,
-+				    (char __user *) (unsigned long) log_buf,
-+				    log_size);
-+		if (ret)
-+			goto out_free_log;
-+	}
-+
- 	ret = bpf_prog_attach_check_attach_type(prog,
- 						attr->link_create.attach_type);
- 	if (ret)
--		goto out;
-+		goto out_free_log;
- 
- 	switch (prog->type) {
- 	case BPF_PROG_TYPE_CGROUP_SKB:
-@@ -5347,7 +5375,8 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
- 		ret = bpf_tracing_prog_attach(prog,
- 					      attr->link_create.target_fd,
- 					      attr->link_create.target_btf_id,
--					      attr->link_create.tracing.cookie);
-+					      attr->link_create.tracing.cookie,
-+					      log);
- 		break;
- 	case BPF_PROG_TYPE_LSM:
- 	case BPF_PROG_TYPE_TRACING:
-@@ -5365,7 +5394,8 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
- 			ret = bpf_tracing_prog_attach(prog,
- 						      attr->link_create.target_fd,
- 						      attr->link_create.target_btf_id,
--						      attr->link_create.tracing.cookie);
-+						      attr->link_create.tracing.cookie,
-+						      NULL);
- 		break;
- 	case BPF_PROG_TYPE_FLOW_DISSECTOR:
- 	case BPF_PROG_TYPE_SK_LOOKUP:
-@@ -5408,6 +5438,11 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
- 		ret = -EINVAL;
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 359f73ead6137..cd422ecd53ae2 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -741,7 +741,7 @@ int bpf_link_create(int prog_fd, int target_fd,
+ 	if (iter_info_len || target_btf_id) {
+ 		if (iter_info_len && target_btf_id)
+ 			return libbpf_err(-EINVAL);
+-		if (!OPTS_ZEROED(opts, target_btf_id))
++		if (!OPTS_ZEROED(opts, tracing))
+ 			return libbpf_err(-EINVAL);
  	}
  
-+	if (ret < 0 && use_log)
-+		(void) bpf_vlog_finalize(log, &log_true_size);
-+out_free_log:
-+	if (use_log)
-+		kvfree(log);
- out:
- 	if (ret < 0)
- 		bpf_prog_put(prog);
-@@ -5863,7 +5898,7 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
- 		err = bpf_map_do_batch(&attr, uattr.user, BPF_MAP_DELETE_BATCH);
+@@ -753,6 +753,8 @@ int bpf_link_create(int prog_fd, int target_fd,
+ 
+ 	if (target_btf_id) {
+ 		attr.link_create.target_btf_id = target_btf_id;
++		attr.link_create.tracing.log_buf = ptr_to_u64(OPTS_GET(opts, tracing.log_buf, 0));
++		attr.link_create.tracing.log_size = OPTS_GET(opts, tracing.log_size, 0);
+ 		goto proceed;
+ 	}
+ 
+@@ -794,6 +796,8 @@ int bpf_link_create(int prog_fd, int target_fd,
+ 	case BPF_MODIFY_RETURN:
+ 	case BPF_LSM_MAC:
+ 		attr.link_create.tracing.cookie = OPTS_GET(opts, tracing.cookie, 0);
++		attr.link_create.tracing.log_buf = 0;
++		attr.link_create.tracing.log_size = 0;
+ 		if (!OPTS_ZEROED(opts, tracing))
+ 			return libbpf_err(-EINVAL);
  		break;
- 	case BPF_LINK_CREATE:
--		err = link_create(&attr, uattr);
-+		err = link_create(&attr, uattr, size);
- 		break;
- 	case BPF_LINK_UPDATE:
- 		err = link_update(&attr);
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 435da95d20589..c76222617c18c 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -421,6 +421,8 @@ struct bpf_link_create_opts {
+ 		} uprobe_multi;
+ 		struct {
+ 			__u64 cookie;
++			const char *log_buf;
++			size_t log_size;
+ 		} tracing;
+ 		struct {
+ 			__u32 pf;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6df258912e1ec..f0c42669ec1e1 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -12837,10 +12837,11 @@ bpf_program__attach_netkit(const struct bpf_program *prog, int ifindex,
+ 	return bpf_program_attach_fd(prog, ifindex, "netkit", &link_create_opts);
+ }
+ 
+-struct bpf_link *bpf_program__attach_freplace(const struct bpf_program *prog,
+-					      int target_fd,
+-					      const char *attach_func_name)
++static struct bpf_link *bpf_program_attach_freplace(const struct bpf_freplace_opts *opts)
+ {
++	const char *attach_func_name = opts->attach_func_name;
++	const struct bpf_program *prog = opts->prog;
++	int target_fd = opts->target_prog_fd;
+ 	int btf_id;
+ 
+ 	if (!!target_fd != !!attach_func_name) {
+@@ -12863,7 +12864,8 @@ struct bpf_link *bpf_program__attach_freplace(const struct bpf_program *prog,
+ 			return libbpf_err_ptr(btf_id);
+ 
+ 		target_opts.target_btf_id = btf_id;
+-
++		target_opts.tracing.log_buf = opts->log_buf;
++		target_opts.tracing.log_size = opts->log_buf_size;
+ 		return bpf_program_attach_fd(prog, target_fd, "freplace",
+ 					     &target_opts);
+ 	} else {
+@@ -12874,6 +12876,25 @@ struct bpf_link *bpf_program__attach_freplace(const struct bpf_program *prog,
+ 	}
+ }
+ 
++struct bpf_link *bpf_program__attach_freplace(const struct bpf_program *prog,
++					      int target_fd,
++					      const char *attach_func_name)
++{
++	LIBBPF_OPTS(bpf_freplace_opts, opts,
++		    .prog = prog,
++		    .target_prog_fd = target_fd,
++		    .attach_func_name = attach_func_name,
++	);
++
++	return bpf_program_attach_freplace(&opts);
++}
++
++struct bpf_link *
++bpf_program__attach_freplace_opts(const struct bpf_freplace_opts *opts)
++{
++	return bpf_program_attach_freplace(opts);
++}
++
+ struct bpf_link *
+ bpf_program__attach_iter(const struct bpf_program *prog,
+ 			 const struct bpf_iter_attach_opts *opts)
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 3020ee45303a0..8de595da7e7d7 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -819,6 +819,20 @@ LIBBPF_API struct bpf_link *
+ bpf_program__attach_freplace(const struct bpf_program *prog,
+ 			     int target_fd, const char *attach_func_name);
+ 
++struct bpf_freplace_opts {
++	size_t sz; /* size of this struct for forward/backward compatibility */
++
++	/* freplace bpf prog */
++	const struct bpf_program *prog;
++	int target_prog_fd;
++	const char *attach_func_name;
++	/* buffer to receive error message when fail to bpf_check_attach_target */
++	const char *log_buf;
++	size_t log_buf_size;
++};
++LIBBPF_API struct bpf_link *
++bpf_program__attach_freplace_opts(const struct bpf_freplace_opts *opts);
++
+ struct bpf_netfilter_opts {
+ 	/* size of this struct, for forward/backward compatibility */
+ 	size_t sz;
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index b5a838de6f47c..5088f8af51dd6 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -438,4 +438,5 @@ LIBBPF_1.6.0 {
+ 		bpf_linker__new_fd;
+ 		btf__add_decl_attr;
+ 		btf__add_type_attr;
++		bpf_program__attach_freplace_opts;
+ } LIBBPF_1.5.0;
 -- 
 2.47.1
 
