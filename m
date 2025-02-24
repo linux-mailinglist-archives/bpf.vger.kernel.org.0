@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-52351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49BA4A4226C
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:08:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9A4EA422A2
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E41D6188DA9E
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 14:04:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 960173B84E1
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 14:05:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B33B16F288;
-	Mon, 24 Feb 2025 14:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1AA191F66;
+	Mon, 24 Feb 2025 14:03:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OaOsGk/B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uNmFB7p+"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0134C770FE;
-	Mon, 24 Feb 2025 14:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F346513959D;
+	Mon, 24 Feb 2025 14:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740405807; cv=none; b=s+fgDPJJi7UlpvtYoddJYpsdL7EJ4Fr9G4znbumhQ7iRG1GQKhBGUTVrZX9QgUxEKxhKTxoZHCBIyhs4TcqGWpab1J0B+maq7SA5jbfxrl10yyq3KYEayIAAgyqlXwDirdfv9gzfviMn4RsMqPabGuTtf+hogpOsJP/1DRILhZc=
+	t=1740405818; cv=none; b=ReuftbMtXBF73bAd7Y2LGnMXn2OK0A1bfl+LaTeiKQjNiSacx2XYd3mEQTF4q3JvDf3u4F3uiiJxPoxHBrJPI5NRIpgd4yFhZFLm8E/H4CFgI2gzc5ed7Tiu3gZkusdLh0vR99xPTIFRLeVzNkjTIYjmw50UYxE1vzvN9YMIuU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740405807; c=relaxed/simple;
-	bh=3ymEFKK4a1qn/AIglmbrAJ8uCQ2CSQdIEgw7gp+H4nY=;
+	s=arc-20240116; t=1740405818; c=relaxed/simple;
+	bh=gaBUnD359lHvmKY4GJ5G0ocHaeuA7D+Evm11YnUR/ng=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t3W1k1gPKs8jn4DWLkirsq9FPBkE17ZWHXCeoCYd/IB1hngypGkzdtTWGtsJfmzRDyxw/zqTm//6CIroQiJGAdZEBuw9k/bE5ZtYSNm+CxtYgyhop9f9tvCLQ9RLIffeFN48kMP/6voGiDqnas4c6YnOPqCvidxLLz3pTT2sq0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OaOsGk/B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AD37C4CED6;
-	Mon, 24 Feb 2025 14:03:22 +0000 (UTC)
+	 MIME-Version; b=mcQfFVhN/fDmMjmyB0el+ebEPwK0DQnbX4lRsWjV0S/yTHXgsTVVqiLLzZBbOdTLVpO12KwHhLo+BczLJRL6bTwinjb3qUhEKKPA6m3GFv2Wi15bGx/I/dfwGY26WUaCuzOAmG1hi0ec/rFwe0wOh7KM0Cff39T/N1s0RDHapHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uNmFB7p+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71B08C4CEE6;
+	Mon, 24 Feb 2025 14:03:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740405806;
-	bh=3ymEFKK4a1qn/AIglmbrAJ8uCQ2CSQdIEgw7gp+H4nY=;
+	s=k20201202; t=1740405817;
+	bh=gaBUnD359lHvmKY4GJ5G0ocHaeuA7D+Evm11YnUR/ng=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OaOsGk/B/R9kFeXmdbfvaElDfQRwg5fH2Jclr2uK8MQ1AbrqtZvrpROpJHqrzTMOD
-	 6+YlDgwx8IGgGFH/LgQNzWdKqDZk3i48XiKRDl5LqB5gFqUGfqMpWpnk1tq3sihS27
-	 JmmUx61VJfaMzuKcTsj/G2hnXQlVyHqofQ9fOXbSOkhLC3kh8AKEUXRDQz3rHRZ1Qr
-	 c3/SQgDQ2YbNQtEmOH8hhS0ZEZlu69r9R/AryhPFBBiQsWF0DkYoKSv95Sr4yAJCdf
-	 /5D13BMqf8Ocsaa/thHhOwQTRUnUv+BuuPPKgk409M9ZJYAMsrbuLjlUzcSYsznyhA
-	 Zd57wjo4OKIUw==
+	b=uNmFB7p+Gyd8mXTS06VRc16N16mCmwflcbQAa3VlOhtNVfeCXPksOYIwH9gncRtOd
+	 7pYv7ys95ikYtOMOkD3ZoGBwJcCaJ8KLvr8Gx0r6I9P5AHEKBPxz/tDKoEKkt1SSu4
+	 Y0hF7GSjME4GEIbw+UNmV/Hgu3ootFjucDcZ5LC/qys1F7FdSxoCQLGzIjOiGRO+ll
+	 EzBqKSSv1qpQb7OGfhskDsWyw/luOVYsECpMLKJwtPC6NJC+BSDH4YuXKQ9uyLYOwa
+	 ilUntT2v8HZZwcc6QoVxvX/Lj+hjM6JG16v2sJANKfwaNULeyJ7A5by1TiZ5pKV1bu
+	 08EG/XYO4/f8w==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -58,9 +58,9 @@ Cc: bpf@vger.kernel.org,
 	Alan Maguire <alan.maguire@oracle.com>,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-Subject: [PATCH RFCv2 08/18] uprobes/x86: Add uprobe syscall to speed up uprobe
-Date: Mon, 24 Feb 2025 15:01:40 +0100
-Message-ID: <20250224140151.667679-9-jolsa@kernel.org>
+Subject: [PATCH RFCv2 09/18] uprobes/x86: Add mapping for optimized uprobe trampolines
+Date: Mon, 24 Feb 2025 15:01:41 +0100
+Message-ID: <20250224140151.667679-10-jolsa@kernel.org>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250224140151.667679-1-jolsa@kernel.org>
 References: <20250224140151.667679-1-jolsa@kernel.org>
@@ -72,211 +72,237 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding new uprobe syscall that calls uprobe handlers for given
-'breakpoint' address.
+Adding support to add special mapping for for user space trampoline
+with following functions:
 
-The idea is that the 'breakpoint' address calls the user space
-trampoline which executes the uprobe syscall.
+  uprobe_trampoline_get - find or add related uprobe_trampoline
+  uprobe_trampoline_put - remove ref or destroy uprobe_trampoline
 
-The syscall handler reads the return address of the initial call
-to retrieve the original 'breakpoint' address. With this address
-we find the related uprobe object and call its consumers.
+The user space trampoline is exported as architecture specific user space
+special mapping, which is provided by arch_uprobe_trampoline_mapping
+function.
 
-Adding the arch_uprobe_trampoline_mapping function that provides
-uprobe trampoline mapping. This mapping is backed with one global
-page initialized at __init time and shared by the all the mapping
-instances.
+The uprobe trampoline needs to be callable/reachable from the probe address,
+so while searching for available address we use uprobe_is_callable function
+to decide if the uprobe trampoline is callable from the probe address.
 
-We do not allow to execute uprobe syscall if the caller is not
-from uprobe trampoline mapping.
+All uprobe_trampoline objects are stored in uprobes_state object and are
+cleaned up when the process mm_struct goes down. Adding new arch hooks
+for that, because this change is x86_64 specific.
+
+Locking is provided by callers in following changes.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/entry/syscalls/syscall_64.tbl |  1 +
- arch/x86/kernel/uprobes.c              | 87 ++++++++++++++++++++++++++
- include/linux/syscalls.h               |  2 +
- include/linux/uprobes.h                |  1 +
- kernel/events/uprobes.c                | 22 +++++++
- kernel/sys_ni.c                        |  1 +
- 6 files changed, 114 insertions(+)
+ arch/x86/kernel/uprobes.c | 121 ++++++++++++++++++++++++++++++++++++++
+ include/linux/uprobes.h   |   6 ++
+ kernel/events/uprobes.c   |  10 ++++
+ kernel/fork.c             |   1 +
+ 4 files changed, 138 insertions(+)
 
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index 5eb708bff1c7..88e388c7675b 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -345,6 +345,7 @@
- 333	common	io_pgetevents		sys_io_pgetevents
- 334	common	rseq			sys_rseq
- 335	common	uretprobe		sys_uretprobe
-+336	common	uprobe			sys_uprobe
- # don't use numbers 387 through 423, add new calls after the last
- # 'common' entry
- 424	common	pidfd_send_signal	sys_pidfd_send_signal
 diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index b06f3cd7551a..3ea682dbeb39 100644
+index 3ea682dbeb39..e0c3fb01a43c 100644
 --- a/arch/x86/kernel/uprobes.c
 +++ b/arch/x86/kernel/uprobes.c
-@@ -425,6 +425,93 @@ SYSCALL_DEFINE0(uretprobe)
- 	return -1;
+@@ -691,6 +691,127 @@ static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ 		*sr = utask->autask.saved_scratch_register;
+ 	}
  }
- 
-+static int tramp_mremap(const struct vm_special_mapping *sm, struct vm_area_struct *new_vma)
-+{
-+	return -EPERM;
-+}
 +
-+static struct page *tramp_mapping_pages[2] __ro_after_init;
-+
-+static struct vm_special_mapping tramp_mapping = {
-+	.name   = "[uprobes-trampoline]",
-+	.mremap = tramp_mremap,
-+	.pages  = tramp_mapping_pages,
++struct uprobe_trampoline {
++	struct hlist_node	node;
++	unsigned long		vaddr;
++	atomic64_t		ref;
 +};
 +
-+static bool in_uprobe_trampoline(unsigned long ip)
++static bool is_reachable_by_call(unsigned long vtramp, unsigned long vaddr)
 +{
-+	struct mm_struct *mm = current->mm;
-+	struct vm_area_struct *vma;
-+	bool found, retry = true;
-+	unsigned int seq;
++	long delta = (long)(vaddr + 5 - vtramp);
 +
-+	rcu_read_lock();
-+	if (mmap_lock_speculate_try_begin(mm, &seq)) {
-+		vma = vma_lookup(current->mm, ip);
-+		found = vma && vma_is_special_mapping(vma, &tramp_mapping);
-+		retry = mmap_lock_speculate_retry(mm, seq);
-+	}
-+	rcu_read_unlock();
-+
-+	if (retry) {
-+		mmap_read_lock(mm);
-+		vma = vma_lookup(current->mm, ip);
-+		found = vma && vma_is_special_mapping(vma, &tramp_mapping);
-+		mmap_read_unlock(mm);
-+	}
-+	return found;
++	return delta >= INT_MIN && delta <= INT_MAX;
 +}
 +
-+SYSCALL_DEFINE0(uprobe)
++static unsigned long find_nearest_page(unsigned long vaddr)
++{
++	struct vm_area_struct *vma, *prev = NULL;
++	unsigned long prev_vm_end = PAGE_SIZE;
++	VMA_ITERATOR(vmi, current->mm, 0);
++
++	vma = vma_next(&vmi);
++	while (vma) {
++		if (prev)
++			prev_vm_end = prev->vm_end;
++		if (vma->vm_start - prev_vm_end  >= PAGE_SIZE) {
++			if (is_reachable_by_call(prev_vm_end, vaddr))
++				return prev_vm_end;
++			if (is_reachable_by_call(vma->vm_start - PAGE_SIZE, vaddr))
++				return vma->vm_start - PAGE_SIZE;
++		}
++		prev = vma;
++		vma = vma_next(&vmi);
++	}
++
++	return 0;
++}
++
++static struct uprobe_trampoline *create_uprobe_trampoline(unsigned long vaddr)
 +{
 +	struct pt_regs *regs = task_pt_regs(current);
-+	unsigned long bp_vaddr;
-+	int err;
++	const struct vm_special_mapping *mapping;
++	struct mm_struct *mm = current->mm;
++	struct vm_area_struct *vma;
++	struct uprobe_trampoline *tramp;
 +
-+	err = copy_from_user(&bp_vaddr, (void __user *)regs->sp + 3*8, sizeof(bp_vaddr));
-+	if (err) {
-+		force_sig(SIGILL);
-+		return -1;
-+	}
++	mapping = user_64bit_mode(regs) ? &tramp_mapping : NULL;
++	if (!mapping)
++		return NULL;
 +
-+	/* Allow execution only from uprobe trampolines. */
-+	if (!in_uprobe_trampoline(regs->ip)) {
-+		force_sig(SIGILL);
-+		return -1;
-+	}
++	vaddr = find_nearest_page(vaddr);
++	if (!vaddr)
++		return NULL;
 +
-+	handle_syscall_uprobe(regs, bp_vaddr - 5);
-+	return 0;
++	tramp = kzalloc(sizeof(*tramp), GFP_KERNEL);
++	if (unlikely(!tramp))
++		return NULL;
++
++	atomic64_set(&tramp->ref, 1);
++	tramp->vaddr = vaddr;
++
++	vma = _install_special_mapping(mm, tramp->vaddr, PAGE_SIZE,
++				VM_READ|VM_EXEC|VM_MAYEXEC|VM_MAYREAD|VM_DONTCOPY|VM_IO,
++				mapping);
++	if (IS_ERR(vma))
++		goto free_area;
++	return tramp;
++
++ free_area:
++	kfree(tramp);
++	return NULL;
 +}
 +
-+asm (
-+	".pushsection .rodata\n"
-+	".balign " __stringify(PAGE_SIZE) "\n"
-+	"uprobe_trampoline_entry:\n"
-+	"endbr64\n"
-+	"push %rcx\n"
-+	"push %r11\n"
-+	"push %rax\n"
-+	"movq $" __stringify(__NR_uprobe) ", %rax\n"
-+	"syscall\n"
-+	"pop %rax\n"
-+	"pop %r11\n"
-+	"pop %rcx\n"
-+	"ret\n"
-+	".balign " __stringify(PAGE_SIZE) "\n"
-+	".popsection\n"
-+);
-+
-+extern u8 uprobe_trampoline_entry[];
-+
-+static int __init arch_uprobes_init(void)
++static __maybe_unused struct uprobe_trampoline *uprobe_trampoline_get(unsigned long vaddr)
 +{
-+	tramp_mapping_pages[0] = virt_to_page(uprobe_trampoline_entry);
-+	return 0;
++	struct uprobes_state *state = &current->mm->uprobes_state;
++	struct uprobe_trampoline *tramp = NULL;
++
++	hlist_for_each_entry(tramp, &state->head_tramps, node) {
++		if (is_reachable_by_call(tramp->vaddr, vaddr)) {
++			atomic64_inc(&tramp->ref);
++			return tramp;
++		}
++	}
++
++	tramp = create_uprobe_trampoline(vaddr);
++	if (!tramp)
++		return NULL;
++
++	hlist_add_head(&tramp->node, &state->head_tramps);
++	return tramp;
 +}
 +
-+late_initcall(arch_uprobes_init);
++static void destroy_uprobe_trampoline(struct uprobe_trampoline *tramp)
++{
++	hlist_del(&tramp->node);
++	kfree(tramp);
++}
 +
++static __maybe_unused void uprobe_trampoline_put(struct uprobe_trampoline *tramp)
++{
++	if (tramp == NULL)
++		return;
++
++	if (atomic64_dec_and_test(&tramp->ref))
++		destroy_uprobe_trampoline(tramp);
++}
++
++void arch_uprobe_init_state(struct mm_struct *mm)
++{
++	INIT_HLIST_HEAD(&mm->uprobes_state.head_tramps);
++}
++
++void arch_uprobe_clear_state(struct mm_struct *mm)
++{
++	struct uprobes_state *state = &mm->uprobes_state;
++	struct uprobe_trampoline *tramp;
++	struct hlist_node *n;
++
++	hlist_for_each_entry_safe(tramp, n, &state->head_tramps, node)
++		destroy_uprobe_trampoline(tramp);
++}
+ #else /* 32-bit: */
  /*
-  * If arch_uprobe->insn doesn't use rip-relative addressing, return
-  * immediately.  Otherwise, rewrite the instruction so that it accesses
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index c6333204d451..002f4e1debe5 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -994,6 +994,8 @@ asmlinkage long sys_ioperm(unsigned long from, unsigned long num, int on);
- 
- asmlinkage long sys_uretprobe(void);
- 
-+asmlinkage long sys_uprobe(void);
-+
- /* pciconfig: alpha, arm, arm64, ia64, sparc */
- asmlinkage long sys_pciconfig_read(unsigned long bus, unsigned long dfn,
- 				unsigned long off, unsigned long len,
+  * No RIP-relative addressing on 32-bit
 diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index 6c3c90a0d110..de3631ae1746 100644
+index de3631ae1746..05a156750e8d 100644
 --- a/include/linux/uprobes.h
 +++ b/include/linux/uprobes.h
-@@ -231,6 +231,7 @@ extern void uprobe_handle_trampoline(struct pt_regs *regs);
- extern void *arch_uretprobe_trampoline(unsigned long *psize);
+@@ -17,6 +17,7 @@
+ #include <linux/wait.h>
+ #include <linux/timer.h>
+ #include <linux/seqlock.h>
++#include <linux/mutex.h>
+ 
+ struct uprobe;
+ struct vm_area_struct;
+@@ -183,6 +184,9 @@ struct xol_area;
+ 
+ struct uprobes_state {
+ 	struct xol_area		*xol_area;
++#ifdef CONFIG_X86_64
++	struct hlist_head	head_tramps;
++#endif
+ };
+ 
+ typedef int (*uprobe_write_verify_t)(struct page *page, unsigned long vaddr, uprobe_opcode_t *opcode, int nbytes);
+@@ -232,6 +236,8 @@ extern void *arch_uretprobe_trampoline(unsigned long *psize);
  extern unsigned long uprobe_get_trampoline_vaddr(void);
  extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len);
-+extern void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp_vaddr);
+ extern void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp_vaddr);
++extern void arch_uprobe_clear_state(struct mm_struct *mm);
++extern void arch_uprobe_init_state(struct mm_struct *mm);
  #else /* !CONFIG_UPROBES */
  struct uprobes_state {
  };
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index cfcde7295e15..6ac691fe5682 100644
+index 6ac691fe5682..c690cde4442c 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -2733,6 +2733,28 @@ static void handle_swbp(struct pt_regs *regs)
- 	rcu_read_unlock_trace();
+@@ -1784,6 +1784,14 @@ static struct xol_area *get_xol_area(void)
+ 	return area;
  }
  
-+void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp_vaddr)
++void __weak arch_uprobe_clear_state(struct mm_struct *mm)
 +{
-+	struct uprobe *uprobe;
-+	int is_swbp;
++}
 +
-+	rcu_read_lock_trace();
-+	uprobe = find_active_uprobe_rcu(bp_vaddr, &is_swbp);
-+	if (!uprobe)
-+		goto unlock;
-+
-+	if (!get_utask())
-+		goto unlock;
-+
-+	if (arch_uprobe_ignore(&uprobe->arch, regs))
-+		goto unlock;
-+
-+	handler_chain(uprobe, regs, false);
-+
-+ unlock:
-+	rcu_read_unlock_trace();
++void __weak arch_uprobe_init_state(struct mm_struct *mm)
++{
 +}
 +
  /*
-  * Perform required fix-ups and disable singlestep.
-  * Allow pending signals to take effect.
-diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
-index c00a86931f8c..bf5d05c635ff 100644
---- a/kernel/sys_ni.c
-+++ b/kernel/sys_ni.c
-@@ -392,3 +392,4 @@ COND_SYSCALL(setuid16);
- COND_SYSCALL(rseq);
+  * uprobe_clear_state - Free the area allocated for slots.
+  */
+@@ -1795,6 +1803,8 @@ void uprobe_clear_state(struct mm_struct *mm)
+ 	delayed_uprobe_remove(NULL, mm);
+ 	mutex_unlock(&delayed_uprobe_lock);
  
- COND_SYSCALL(uretprobe);
-+COND_SYSCALL(uprobe);
++	arch_uprobe_clear_state(mm);
++
+ 	if (!area)
+ 		return;
+ 
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 735405a9c5f3..e79baa6dcce6 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1260,6 +1260,7 @@ static void mm_init_uprobes_state(struct mm_struct *mm)
+ {
+ #ifdef CONFIG_UPROBES
+ 	mm->uprobes_state.xol_area = NULL;
++	arch_uprobe_init_state(mm);
+ #endif
+ }
+ 
 -- 
 2.48.1
 
