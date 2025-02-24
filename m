@@ -1,188 +1,94 @@
-Return-Path: <bpf+bounces-52342-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52363-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 949C7A42100
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 14:41:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABB21A42329
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:35:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70D5A3B2622
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 13:34:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08BA7167DC4
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 14:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B1124889C;
-	Mon, 24 Feb 2025 13:34:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2385E152E12;
+	Mon, 24 Feb 2025 14:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b3Vnd94C"
+	dkim=pass (2048-bit key) header.d=siemens.com header.i=diogo.ivo@siemens.com header.b="SqKLFB7Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mta-64-226.siemens.flowmailer.net (mta-64-226.siemens.flowmailer.net [185.136.64.226])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95DAD2192EB;
-	Mon, 24 Feb 2025 13:34:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBFB1386B4
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 14:26:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.64.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740404079; cv=none; b=D61tis13biS1TpE05nLBy9dEs5CXrIiGtlZ+RB6lDOiF2t0HlGAzcvbeiVVGVU2CCGejA628nYJJoCFFlVCsg+DgkinHf+6Eq242eDtu/ECVSStIxb/bWA+3TiOtzpWs5P18PG4hHyS2UCzNFiPfVwVofqaAvl8cyBYdjw4eE2o=
+	t=1740407182; cv=none; b=cn3zxVu7DUx9P7KzpEUsd3c+Fe80+2yLN0aBq5/WyTXRRC3ctzpYBWwqnN1U+n7WtBzCmGsPAuZZs58I931/3FMLRtcxsi9M7LWP5i/U622rYD5ZnKfbfgTkQ8cniiGjgz2++7QtUXDu2gr/HYHJuc8jQnJnv0fSEC3uKkndnOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740404079; c=relaxed/simple;
-	bh=qKTv7i9UlJGQGohAN6G2hXNKurAdQm5fSABB4QmmjxI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IF/24xrDwahvUNO1mHuVVWMecjjBORmBCjLZDpM31m0nWcmBV830caIJ574+HABb1v/h8zQ77R9BL7/g2uCT3iSlYmAXV2ClBVyWY7BDzKEj2mm8AVb9cMAiv6kWSU0GRsIBjrDkFIPaO80o5yqfx7wB40gpv3YvbT5BraGuCjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b3Vnd94C; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-388cae9eb9fso2261532f8f.3;
-        Mon, 24 Feb 2025 05:34:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740404076; x=1741008876; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OAg+3nWpCX28gp0yop3cTi7eprtgpHgYieQoEXp/Zxw=;
-        b=b3Vnd94Czp22iPPbmF1QjAipNC/mjrMwD0kY/y1TN9tkLtO545t+gXG6bkecLBW3YV
-         X+oDZlaP6Xl5R6b9DWG903WYIw1CPl7l+TSzM2uisR+yNB1iP0PQAQRJoMU6B0nN2HKH
-         J/tfQ0el5pOnj1G4UCDCOkHar23j3z5sVjZixuZSQWPMeSJENfAsLuygifsEUxD5YlQH
-         srNUC+fEpKmlLEQXS5vTZEZU/jHvyShwtg9j124Gs2uSpmtCoR8SpxtOlFF+007WZAK9
-         uqC2ygnjY/ZG8hz7N6Ch4yi2gor/VV8T6e3tJv+Ph2J6mxXIuewSWzdoTEL/7nl5M0Uq
-         ugag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740404076; x=1741008876;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OAg+3nWpCX28gp0yop3cTi7eprtgpHgYieQoEXp/Zxw=;
-        b=e7cKMhGpwcE+ZC+iJioT9judghM38yENB+tI2zRs0ywJ3yVuoZuDsZhlneRho6Q7wz
-         8+5CzdPPWjVby35SJNAu0BPMqQfVDZtfqFsRp83AyqJxdQK9V9S6vjR8TNWfJTa4MlWS
-         Vtuq2g3gcybgQcFWQbvMJGrUkvEMQZP5Mb7+G/QXdrlIwDX7wvlwYgYYjZy4HGoe+jHq
-         PGwq2f8c6aayDJaHS9D3arcZ/M9sSBVOPjrqasPHn1moGV5pDINkF8I1l4KbM8a6KLat
-         AeMSb9hMYGgekWt0E/V7Zu62Pk2vpoV6Fqv4B4jc5Udj3eNQ5u1lhFdzQtiRocXqJr3l
-         NF9w==
-X-Forwarded-Encrypted: i=1; AJvYcCUSZHMamAxdObwlu+553UP0KoAx7qxf2HCtPF3WXXIlucsY75TLUYwIradYXlznVATN5TPKJIfX@vger.kernel.org, AJvYcCUVUpYCVCWR5y0LWZKmtP5yLuJ6FOk8M7kpqlJ1sU6TLR7c/i/sMs25qKXmOS/OeqqBrSwEpxVmGHoeYCY=@vger.kernel.org, AJvYcCV0WvZdj+PhPEl3168XSO0ERTZLZLmi3jK8JH7N+QRlA3xQUSVI3OmU+1bbuQ/5VzgPFZDTt4mJhStelrc=@vger.kernel.org, AJvYcCVTiw83QFXvut+KB0EEZ+ElPZk/tPiCeUrOlgW9jIj2hBTCHiF0nIyte3DuZcS0fCQzCz5ssXZmK+Z5CyCQ@vger.kernel.org, AJvYcCVtZPuaHfEcTEKkKI+0jQyDK1Bkg/GHrJ/S1EyBY1oLRDN0e5BQ+Bq6EAawWjUGmygPDBjlUgY+M3rBYtnduDs=@vger.kernel.org, AJvYcCWS6FaGPdavjkXGQIo5JeOxFxiY1a1T5Iy3MWlRjDitY/fkalmRDKfQI8OUONbyoN8Xn5eZyhadjnC1YGFm@vger.kernel.org, AJvYcCWj5D78JXhBDANAVeQrJgSmEEO72bhG2TYl3JM6RrySaED8574udSkyVliMu/gbFG/y2vA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx60hqBGYKOnp+F+DK9f19+6OCEDNpvBy0vFBmyujKLHd/mJIUV
-	WmOf7Ll7qSQ0ZScbclUcclZxPEaHOo09G+Ivnsnwhs7iCrMklbxy
-X-Gm-Gg: ASbGncvya1YKaExg/UFr4ZM/sC2A6TyckrL/HnHbyqjZw4h5Wd1D+RB/81+LoEt/Cx/
-	h0GaoqsxIff7GsoN6L/ijoiZ88O27GFaAfJUsXA0fhSa9a2mFfnVFYDDQmlyOcAPWlZvyREd9Po
-	jfp9+NIC0biKjrHBJG6fmFWALDdGgQCmCSL3YDJuucg8JJIf5HRJ+dURKfAs0tjDPqdfz9u/+2o
-	eybWR5zEeZ3KhLcUiJLzgWOjXqP4Fno8gVFlzYq8ueXuhpvYu+3lLq/NpXdku3Wm4xMPI3jayZ4
-	nxiB9KnCHvy+Z4eKjZo8wCBo/pV1Osha5t89Q6x86d9oo4p4YkRSKzK4PZtkRZ4T
-X-Google-Smtp-Source: AGHT+IHAk3Wvwyk1vqkRenvO3RPC8nmIGBVFBN9gj/vKmwdIoVhq2/WUUPGNh8lDJR1/QVDS5j7zIQ==
-X-Received: by 2002:a05:6000:144a:b0:38f:4d40:358 with SMTP id ffacd0b85a97d-38f6e7587c5mr11099286f8f.9.1740404075459;
-        Mon, 24 Feb 2025 05:34:35 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38f74817cbdsm9492882f8f.68.2025.02.24.05.34.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2025 05:34:35 -0800 (PST)
-Date: Mon, 24 Feb 2025 13:34:31 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
- x86@kernel.org, jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
- andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
- mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com,
- parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
- johannes@sipsolutions.net, gregkh@linuxfoundation.org,
- yury.norov@gmail.com, akpm@linux-foundation.org, hpa@zytor.com,
- alistair@popple.id.au, linux@rasmusvillemoes.dk,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
- linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
- Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH 02/17] bitops: Add generic parity calculation for u64
-Message-ID: <20250224133431.2c38213f@pumpkin>
-In-Reply-To: <bde62fee-4617-4db7-b92c-59fb958c4ca6@kernel.org>
-References: <20250223164217.2139331-1-visitorckw@gmail.com>
-	<20250223164217.2139331-3-visitorckw@gmail.com>
-	<bde62fee-4617-4db7-b92c-59fb958c4ca6@kernel.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1740407182; c=relaxed/simple;
+	bh=YJn3woxK99j/HYFR7SrHcTgr8jkuAijYmO7yf5S97V8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AeO3+yPQSD+Ji4CDctwl8a4Go2ppDjLkApE+5YVM1ZyHE678yw5qaUXHquUqMcF+PD+uB3zsp4YfIjmzlvq1TgDs1VSpk+J9nbNk+IE2zJtEZ1F8Deg+uffwlGURwSBjNSZmiuwAhXTJrgsoq0mPmiZ5BGK0lp4swL3RITDqCU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (2048-bit key) header.d=siemens.com header.i=diogo.ivo@siemens.com header.b=SqKLFB7Y; arc=none smtp.client-ip=185.136.64.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
+Received: by mta-64-226.siemens.flowmailer.net with ESMTPSA id 202502241335168baa8ea9cb7d547078
+        for <bpf@vger.kernel.org>;
+        Mon, 24 Feb 2025 15:26:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
+ d=siemens.com; i=diogo.ivo@siemens.com;
+ h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
+ bh=R1EHSTzEQ92GkWe5nywbq1cueM9EbdwXB/DLHyzBjiE=;
+ b=SqKLFB7YwFbWWuEhr1MCqeKYnEQSz2VXFg7KrCFXnKFuDZY7mSc5YJYSAjU1wQvwlMMJCt
+ fNUnP2QSV6I9EUzxZMEvc5SC3itYYCVA322Y0yr0He0gd13YDjKUYKUVfBI9wU3Gar9Jmkd/
+ shcYOKByKL5tTG/tyK94Pr3Fe/6dmoIUIdMZWFabYfQPz2xhL4ksBMwnVwlTidc9jdC2M7Rc
+ 5w1/rq+g/gke1Wu0E8PBPBaKrgDfjFls5heEdYK9QE1dialj0BEepPoRtGhqcZzfFiWN3lVu
+ AVGC7tefTMsEt9u5fWy2SjZtn268N3cIykNwJOv4uwyE0uNaJniZiucg==;
+Message-ID: <b437f359-912f-4b9f-8de1-9c1122fee26e@siemens.com>
+Date: Mon, 24 Feb 2025 13:35:14 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH net-next v3 0/3] net: ti: icssg-prueth: Add native mode
+ XDP support
+To: Meghana Malladi <m-malladi@ti.com>, rogerq@kernel.org,
+ danishanwar@ti.com, pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
+ davem@davemloft.net, andrew+netdev@lunn.ch
+Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ u.kleine-koenig@baylibre.com, matthias.schiffer@ew.tq-group.com,
+ dan.carpenter@linaro.org, schnelle@linux.ibm.com, glaroque@baylibre.com,
+ macro@orcam.me.uk, john.fastabend@gmail.com, hawk@kernel.org,
+ daniel@iogearbox.net, ast@kernel.org, srk@ti.com,
+ Vignesh Raghavendra <vigneshr@ti.com>
+References: <20250224110102.1528552-1-m-malladi@ti.com>
+Content-Language: en-US
+From: Diogo Ivo <diogo.ivo@siemens.com>
+In-Reply-To: <20250224110102.1528552-1-m-malladi@ti.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Flowmailer-Platform: Siemens
+Feedback-ID: 519:519-1328357:519-21489:flowmailer
 
-On Mon, 24 Feb 2025 08:09:43 +0100
-Jiri Slaby <jirislaby@kernel.org> wrote:
+Hi Meghana,
 
-> On 23. 02. 25, 17:42, Kuan-Wei Chiu wrote:
-> > Several parts of the kernel open-code parity calculations using
-> > different methods. Add a generic parity64() helper implemented with the
-> > same efficient approach as parity8().
-> > 
-> > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > ---
-> >   include/linux/bitops.h | 22 ++++++++++++++++++++++
-> >   1 file changed, 22 insertions(+)
-> > 
-> > diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-> > index fb13dedad7aa..67677057f5e2 100644
-> > --- a/include/linux/bitops.h
-> > +++ b/include/linux/bitops.h
-> > @@ -281,6 +281,28 @@ static inline int parity32(u32 val)
-> >   	return (0x6996 >> (val & 0xf)) & 1;
-> >   }
-> >   
-> > +/**
-> > + * parity64 - get the parity of an u64 value
-> > + * @value: the value to be examined
-> > + *
-> > + * Determine the parity of the u64 argument.
-> > + *
-> > + * Returns:
-> > + * 0 for even parity, 1 for odd parity
-> > + */
-> > +static inline int parity64(u64 val)
-> > +{
-> > +	/*
-> > +	 * One explanation of this algorithm:
-> > +	 * https://funloop.org/codex/problem/parity/README.html
-> > +	 */
-> > +	val ^= val >> 32;  
+On 2/24/25 11:00 AM, Meghana Malladi wrote:
+> This series adds native XDP support using page_pool.
+> XDP zero copy support is not included in this patch series.
 > 
-> Do we need all these implementations? Can't we simply use parity64() for 
-> any 8, 16 and 32-bit values too? I.e. have one parity().
-
-I'm not sure you can guarantee that the compiler will optimise away
-the unnecessary operations.
-
-But:
-static inline int parity64(u64 val)
-{
-	return parity32(val ^ (val >> 32))
-}
-
-should be ok.
-It will also work on x86-32 where parity32() can just check the parity flag.
-Although you are unlikely to manage to use the the PF the xor sets.
-
-	David
-
+> Patch 1/3: Replaces skb with page pool for Rx buffer allocation
+> Patch 2/3: Adds prueth_swdata struct for SWDATA for all swdata cases
+> Patch 3/3: Introduces native mode XDP support
 > 
-> > +	val ^= val >> 16;
-> > +	val ^= val >> 8;
-> > +	val ^= val >> 4;
-> > +	return (0x6996 >> (val & 0xf)) & 1;
-> > +}
-> > +
-> >   /**
-> >    * __ffs64 - find first set bit in a 64 bit word
-> >    * @word: The 64 bit word  
-> 
+> v2: https://lore.kernel.org/all/20250210103352.541052-1-m-malladi@ti.com/
 > 
 
+Just wanted to let you know that while I don't have access to the SR1.0
+devices at the moment I will have access to them later this week, so I
+will test these changes then.
+
+Best regards,
+Diogo
 
