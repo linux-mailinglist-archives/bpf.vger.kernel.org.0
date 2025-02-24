@@ -1,94 +1,170 @@
-Return-Path: <bpf+bounces-52363-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52343-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABB21A42329
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E77AA4226E
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 15:08:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08BA7167DC4
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 14:26:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3BAA1706EC
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 14:02:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2385E152E12;
-	Mon, 24 Feb 2025 14:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33C078F2D;
+	Mon, 24 Feb 2025 14:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=siemens.com header.i=diogo.ivo@siemens.com header.b="SqKLFB7Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lYXkNJbp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mta-64-226.siemens.flowmailer.net (mta-64-226.siemens.flowmailer.net [185.136.64.226])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBFB1386B4
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 14:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.64.226
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 211021A29A;
+	Mon, 24 Feb 2025 14:01:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740407182; cv=none; b=cn3zxVu7DUx9P7KzpEUsd3c+Fe80+2yLN0aBq5/WyTXRRC3ctzpYBWwqnN1U+n7WtBzCmGsPAuZZs58I931/3FMLRtcxsi9M7LWP5i/U622rYD5ZnKfbfgTkQ8cniiGjgz2++7QtUXDu2gr/HYHJuc8jQnJnv0fSEC3uKkndnOA=
+	t=1740405718; cv=none; b=h4bXzDiavAS03kykrCU4WxxBKprOwen3lDqHneQPRanNCq/Qby6Fw2aqN5+/A8vgCbPEi9TY8RuLpGfMKD9lhjJD8fBzQENSBlIeSrq3N6ven9ORu4r+bZuUFaiq6z5JiXZ99qr8NCV4xNgAvI8c3HZFN9qZc00r7i2HglpfqF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740407182; c=relaxed/simple;
-	bh=YJn3woxK99j/HYFR7SrHcTgr8jkuAijYmO7yf5S97V8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AeO3+yPQSD+Ji4CDctwl8a4Go2ppDjLkApE+5YVM1ZyHE678yw5qaUXHquUqMcF+PD+uB3zsp4YfIjmzlvq1TgDs1VSpk+J9nbNk+IE2zJtEZ1F8Deg+uffwlGURwSBjNSZmiuwAhXTJrgsoq0mPmiZ5BGK0lp4swL3RITDqCU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (2048-bit key) header.d=siemens.com header.i=diogo.ivo@siemens.com header.b=SqKLFB7Y; arc=none smtp.client-ip=185.136.64.226
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
-Received: by mta-64-226.siemens.flowmailer.net with ESMTPSA id 202502241335168baa8ea9cb7d547078
-        for <bpf@vger.kernel.org>;
-        Mon, 24 Feb 2025 15:26:11 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=diogo.ivo@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=R1EHSTzEQ92GkWe5nywbq1cueM9EbdwXB/DLHyzBjiE=;
- b=SqKLFB7YwFbWWuEhr1MCqeKYnEQSz2VXFg7KrCFXnKFuDZY7mSc5YJYSAjU1wQvwlMMJCt
- fNUnP2QSV6I9EUzxZMEvc5SC3itYYCVA322Y0yr0He0gd13YDjKUYKUVfBI9wU3Gar9Jmkd/
- shcYOKByKL5tTG/tyK94Pr3Fe/6dmoIUIdMZWFabYfQPz2xhL4ksBMwnVwlTidc9jdC2M7Rc
- 5w1/rq+g/gke1Wu0E8PBPBaKrgDfjFls5heEdYK9QE1dialj0BEepPoRtGhqcZzfFiWN3lVu
- AVGC7tefTMsEt9u5fWy2SjZtn268N3cIykNwJOv4uwyE0uNaJniZiucg==;
-Message-ID: <b437f359-912f-4b9f-8de1-9c1122fee26e@siemens.com>
-Date: Mon, 24 Feb 2025 13:35:14 +0000
+	s=arc-20240116; t=1740405718; c=relaxed/simple;
+	bh=XpLkgpXiELKYDF5SxtkwlqDt74f1mFK/7OQcFGFEGXU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GYd5G/lS8ajonA7wBKBsobDresUhujBHyqw1UfPO6iLF9Lk0Qxnft5vREwKgHuRTPwaK6IMNqQknMGghVTwhmPejTAdalzeudOkbKYRgEiIu7fj+rH/qQZ9YIo0wQcZh0Oj5REumF0rXsc+TUAk9NYkOQ08zDwdnd3PJQxkHugc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lYXkNJbp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A66E9C4CED6;
+	Mon, 24 Feb 2025 14:01:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740405717;
+	bh=XpLkgpXiELKYDF5SxtkwlqDt74f1mFK/7OQcFGFEGXU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=lYXkNJbpmdYak0n71ruHvVVAKdFDI8TB2d6m+zAiq8acBEoZCzJIyImTOCSy37sfU
+	 zYpSf1sRVyqABIszvEbLpniyKTIZo0rE8cbdcK+gYauaInF9Q5WrXb53B5sC5r1tWs
+	 sokznkCri8ApSZJooF9DMteKFPRue4GwGdTMh16u4NFJDqjrIOO65SgzrkU3k4ZTP5
+	 4qWIqcXKkky40Fb4kXenN5P2SLXxqkhzBNaVsxYTSmCHR/bmupreugggO3JbhjH2Ul
+	 vfF+JhGMNIhlnmesKtIZXXVVa8bhoiOEW0B7bENGFK6tKIn3grwWyjHEzc/ab12jm9
+	 7KMYR0v1KM5Kg==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	David Laight <David.Laight@ACULAB.COM>,
+	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+Subject: [PATCH RFCv2 00/18] uprobes: Add support to optimize usdt probes on x86_64
+Date: Mon, 24 Feb 2025 15:01:32 +0100
+Message-ID: <20250224140151.667679-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v3 0/3] net: ti: icssg-prueth: Add native mode
- XDP support
-To: Meghana Malladi <m-malladi@ti.com>, rogerq@kernel.org,
- danishanwar@ti.com, pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
- davem@davemloft.net, andrew+netdev@lunn.ch
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- u.kleine-koenig@baylibre.com, matthias.schiffer@ew.tq-group.com,
- dan.carpenter@linaro.org, schnelle@linux.ibm.com, glaroque@baylibre.com,
- macro@orcam.me.uk, john.fastabend@gmail.com, hawk@kernel.org,
- daniel@iogearbox.net, ast@kernel.org, srk@ti.com,
- Vignesh Raghavendra <vigneshr@ti.com>
-References: <20250224110102.1528552-1-m-malladi@ti.com>
-Content-Language: en-US
-From: Diogo Ivo <diogo.ivo@siemens.com>
-In-Reply-To: <20250224110102.1528552-1-m-malladi@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-1328357:519-21489:flowmailer
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Meghana,
+hi,
+this patchset adds support to optimize usdt probes on top of 5-byte
+nop instruction.
 
-On 2/24/25 11:00 AM, Meghana Malladi wrote:
-> This series adds native XDP support using page_pool.
-> XDP zero copy support is not included in this patch series.
-> 
-> Patch 1/3: Replaces skb with page pool for Rx buffer allocation
-> Patch 2/3: Adds prueth_swdata struct for SWDATA for all swdata cases
-> Patch 3/3: Introduces native mode XDP support
-> 
-> v2: https://lore.kernel.org/all/20250210103352.541052-1-m-malladi@ti.com/
-> 
+The generic approach (optimize all uprobes) is hard due to emulating
+possible multiple original instructions and its related issues. The
+usdt case, which stores 5-byte nop seems much easier, so starting
+with that.
 
-Just wanted to let you know that while I don't have access to the SR1.0
-devices at the moment I will have access to them later this week, so I
-will test these changes then.
+The basic idea is to replace breakpoint exception with syscall which
+is faster on x86_64. For more details please see changelog of patch 8.
 
-Best regards,
-Diogo
+The run_bench_uprobes.sh benchmark triggers uprobe (on top of different
+original instructions) in a loop and counts how many of those happened
+per second (the unit below is million loops).
+
+There's big speed up if you consider current usdt implementation
+(uprobe-nop) compared to proposed usdt (uprobe-nop5):
+
+  # ./benchs/run_bench_uprobes.sh 
+
+          usermode-count :  818.386 ± 1.886M/s
+          syscall-count  :    8.923 ± 0.003M/s
+  -->     uprobe-nop     :    3.086 ± 0.005M/s
+          uprobe-push    :    2.751 ± 0.001M/s
+          uprobe-ret     :    1.481 ± 0.000M/s
+  -->     uprobe-nop5    :    4.016 ± 0.002M/s
+          uretprobe-nop  :    1.712 ± 0.008M/s
+          uretprobe-push :    1.616 ± 0.001M/s
+          uretprobe-ret  :    1.052 ± 0.000M/s
+          uretprobe-nop5 :    2.015 ± 0.000M/s
+
+
+rfc v2 changes:
+- make uretprobe work properly with optimized uprobe
+- make the uprobe optimized code x86_64 specific [Peter]
+- rework the verify function logic, using it now as callback
+- fix find_nearest_page to include [PAGE_SIZE, ... ] area [Andrii]
+- try lockless vma lookup in in_uprobe_trampoline [Peter]
+- do per partes instructions update using int3 like in text_poke_bp_batch [David]
+- map uprobe trampoline via single global page [Thomas]
+- keep track of uprobes per mm_struct
+
+pending todo (follow ups):
+- use PROCMAP_QUERY in tests
+- alloc 'struct uprobes_state' for mm_struct only when needed [Andrii]
+- seccomp change for new uprobe syscall (same as for uretprobe)
+
+thanks,
+jirka
+
+
+---
+Jiri Olsa (18):
+      uprobes: Rename arch_uretprobe_trampoline function
+      uprobes: Make copy_from_page global
+      uprobes: Move ref_ctr_offset update out of uprobe_write_opcode
+      uprobes: Add uprobe_write function
+      uprobes: Add nbytes argument to uprobe_write_opcode
+      uprobes: Add orig argument to uprobe_write and uprobe_write_opcode
+      uprobes: Add swbp argument to arch_uretprobe_hijack_return_addr
+      uprobes/x86: Add uprobe syscall to speed up uprobe
+      uprobes/x86: Add mapping for optimized uprobe trampolines
+      uprobes/x86: Add mm_uprobe objects to track uprobes within mm
+      uprobes/x86: Add support to emulate nop5 instruction
+      uprobes/x86: Add support to optimize uprobes
+      selftests/bpf: Reorg the uprobe_syscall test function
+      selftests/bpf: Use 5-byte nop for x86 usdt probes
+      selftests/bpf: Add uprobe/usdt syscall tests
+      selftests/bpf: Add hit/attach/detach race optimized uprobe test
+      selftests/bpf: Add uprobe syscall sigill signal test
+      selftests/bpf: Add 5-byte nop uprobe trigger bench
+
+ arch/arm/probes/uprobes/core.c                              |   4 +-
+ arch/arm64/kernel/probes/uprobes.c                          |   2 +-
+ arch/csky/kernel/probes/uprobes.c                           |   2 +-
+ arch/loongarch/kernel/uprobes.c                             |   2 +-
+ arch/mips/kernel/uprobes.c                                  |   2 +-
+ arch/powerpc/kernel/uprobes.c                               |   2 +-
+ arch/riscv/kernel/probes/uprobes.c                          |   2 +-
+ arch/s390/kernel/uprobes.c                                  |   2 +-
+ arch/sparc/kernel/uprobes.c                                 |   2 +-
+ arch/x86/entry/syscalls/syscall_64.tbl                      |   1 +
+ arch/x86/include/asm/uprobes.h                              |   6 ++
+ arch/x86/kernel/uprobes.c                                   | 530 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ include/linux/syscalls.h                                    |   2 +
+ include/linux/uprobes.h                                     |  23 +++-
+ kernel/events/uprobes.c                                     | 147 +++++++++++++++++--------
+ kernel/fork.c                                               |   1 +
+ kernel/sys_ni.c                                             |   1 +
+ tools/testing/selftests/bpf/bench.c                         |  12 +++
+ tools/testing/selftests/bpf/benchs/bench_trigger.c          |  42 ++++++++
+ tools/testing/selftests/bpf/benchs/run_bench_uprobes.sh     |   2 +-
+ tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c     | 342 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c |  34 +++++-
+ tools/testing/selftests/bpf/sdt.h                           |   9 +-
+ 23 files changed, 1093 insertions(+), 79 deletions(-)
 
