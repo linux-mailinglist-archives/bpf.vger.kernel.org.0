@@ -1,271 +1,274 @@
-Return-Path: <bpf+bounces-52460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52459-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CC53A4308C
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 00:11:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0433A4307F
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 00:06:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C71EE3A82AC
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 23:11:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F960189D9EA
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 23:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6030E20ADE6;
-	Mon, 24 Feb 2025 23:11:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b="lUII6+B4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB3720B7EE;
+	Mon, 24 Feb 2025 23:04:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0847314A4E9;
-	Mon, 24 Feb 2025 23:11:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA3F20B1F3
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 23:03:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740438702; cv=none; b=cEE3tkK1QnDPQlhB2pHHMObjJY6BB2+r6WOm5ckwLsFFUrjWIIZAiXJVem1Vq7b5eZco8fU0jHrY0UIXDCZYDxCFeYLiLsW+PoRlO9osEZ/nJD9Y7kEvDroTW1jEbQoEA/ir9yjcMOQl1fACOz8A8P7kxnXc+5+dXGv6VbplPwg=
+	t=1740438240; cv=none; b=QIGzZQ9sh3Zch43AT88K3osRkCia6GEulIqB7doDZB7vdMF2pTiQOQBw8H9U4McC0sKphQoeF8LSlaGgp1ui9mdGMK3OWorpSzKTXVpQv4AhPuCAC8DrMEFBz1xiz+Qmknh/5tGN6HGZVW0NwOXj8Rg+TYPQvvqkbyOmiWTl0u4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740438702; c=relaxed/simple;
-	bh=QB3x1KLY18hKY7BMC1ZYeA7ozRdbCUZbm8o5J+y2roU=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=nZ7dGDhPtqa1wb3ywlZe9uihS3KJGdCpn9wOegmrqTNTWFLsj4o+ZHse/M0qhVkIpiyzFXV2KpcbmGVNWnTAIJ5otZzWvukahkGj/gmpzi0XWW7JetztxO2PLbBav/QBq6/xp2JMZjvxeyBjPdewBz3ZwxZyy6fFnRjjz0uROgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com; spf=pass smtp.mailfrom=crowdstrike.com; dkim=pass (2048-bit key) header.d=crowdstrike.com header.i=@crowdstrike.com header.b=lUII6+B4; arc=none smtp.client-ip=148.163.148.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=crowdstrike.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crowdstrike.com
-Received: from pps.filterd (m0354652.ppops.net [127.0.0.1])
-	by mx0a-00206402.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51OLiSBZ020171;
-	Mon, 24 Feb 2025 22:42:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=cc:content-id:content-transfer-encoding:content-type:date
-	:from:message-id:mime-version:subject:to; s=default; bh=QB3x1KLY
-	18hKY7BMC1ZYeA7ozRdbCUZbm8o5J+y2roU=; b=lUII6+B4LeTJnToc0cMYgfCL
-	9vfRl6gHomx0EB9Vayh6oxE84CEosiXiA6qVumpWk+KsCLhGXUFU2ZvHGMxA1mLs
-	HIDVlZ34G7Zvo5U/yZf/10evcRCsqLUxDkUciKtFekc7G7fax0a6avj3AdVNgTfu
-	U+HoBACihYuq73751L8pCyeVtyNkq0GSXVVb2Jx/PHkcO9xQ5wUv+C5GKgMdnxvm
-	9sGhqf5pFx5464NAs7Nuxft3vu+uEZjebIeOUKlGF/WF38x2bEJMUUF8v5pe8rcT
-	IrInZqPLiyHtwMZ+NgmAzXp4Gmpz85w2sDDjHEysgz7uttQ/mN+U9snK+aZCZA==
-Received: from mail.crowdstrike.com (dragosx.crowdstrike.com [208.42.231.60] (may be forged))
-	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 450uds9gar-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 24 Feb 2025 22:42:19 +0000 (GMT)
-Received: from 04WPEXCH007.crowdstrike.sys (10.100.11.74) by
- 04WPEXCH009.crowdstrike.sys (10.100.11.79) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 24 Feb 2025 22:42:18 +0000
-Received: from 04WPEXCH007.crowdstrike.sys ([fe80::71b0:3fd9:97e2:1b60]) by
- 04WPEXCH007.crowdstrike.sys ([fe80::71b0:3fd9:97e2:1b60%17]) with mapi id
- 15.02.1544.009; Mon, 24 Feb 2025 22:42:18 +0000
-From: Slava Imameev <slava.imameev@crowdstrike.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Martin Kelly
-	<martin.kelly@crowdstrike.com>
-CC: "mykolal@fb.com" <mykolal@fb.com>, "shuah@kernel.org" <shuah@kernel.org>,
-        "eddyz87@gmail.com" <eddyz87@gmail.com>,
-        "song@kernel.org" <song@kernel.org>,
-        Mark Fontana <mark.fontana@crowdstrike.com>,
-        "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>,
-        "yonghong.song@linux.dev"
-	<yonghong.song@linux.dev>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "martin.lau@linux.dev"
-	<martin.lau@linux.dev>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "sdf@fomichev.me"
-	<sdf@fomichev.me>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "haoluo@google.com"
-	<haoluo@google.com>
-Subject: Re: Re: Re: Re: Re: [PATCH 2/2] libbpf: BPF programs dynamic loading
- and attaching
-Thread-Topic: Re: Re: Re: Re: [PATCH 2/2] libbpf: BPF programs dynamic loading
- and attaching
-Thread-Index: AQHbhw1bjtPoKV3r702RMPzMHyrqIQ==
-Date: Mon, 24 Feb 2025 22:42:18 +0000
-Message-ID: <D680CE9F-138C-46AC-AC6A-E39A017F85B5@crowdstrike.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-disclaimer: USA
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <84615FE15813DB488910B519C8E6E223@crowdstrike.sys>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1740438240; c=relaxed/simple;
+	bh=jtW5r/UgQ4lX0B6cXPY1tciNM42M74+rYh/j0tgmJuE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hX88dDAKb8mgJD5PpAm5VLbmaYURSfFvfibH5cecz2HQwGQQ2WW/V+dI1DibkpHfyusbx03yWUZ9bMpx+hd0R9l9tEY9QuXmrm883BiNfX2D7S9o70lQXNh2mpENs0/dtqs4P7SxCD4DPhUKvOOQytk92E3UP2TBDWCHnJKmoNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id 87BC31CD7C0E; Mon, 24 Feb 2025 15:01:16 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v4 1/2] bpf: Allow pre-ordering for bpf cgroup progs
+Date: Mon, 24 Feb 2025 15:01:16 -0800
+Message-ID: <20250224230116.283071-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-ORIG-GUID: edFoCAYu03h1KNlcbw4vZx9DakPsxFqh
-X-Proofpoint-GUID: edFoCAYu03h1KNlcbw4vZx9DakPsxFqh
-X-Authority-Analysis: v=2.4 cv=MJ2amNZl c=1 sm=1 tr=0 ts=67bcf5cb cx=c_pps a=1d8vc5iZWYKGYgMGCdbIRA==:117 a=1d8vc5iZWYKGYgMGCdbIRA==:17 a=xqWC_Br6kY4A:10 a=EjBHVkixTFsA:10 a=IkcTkHD0fZMA:10 a=T2h4t0Lz3GQA:10 a=uherdBYGAAAA:8 a=P-IC7800AAAA:8
- a=Sp80ZMMvcLK7cHnEBosA:9 a=QEXdDO2ut3YA:10 a=d3PnA9EDa4IxuAV0gXij:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-24_11,2025-02-24_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- suspectscore=0 lowpriorityscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 adultscore=0 phishscore=0 mlxlogscore=999
- malwarescore=0 bulkscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2502100000
- definitions=main-2502240144
+Content-Transfer-Encoding: quoted-printable
 
-PiA+ID4gT24gTW9uLCAyMDI1LTAyLTEwIGF0IDE2OjA2IC0wODAwLCBBbmRyaWkgTmFrcnlpa28g
-d3JvdGU6DQo+ID4gPiA+IFRyYWNraW5nIGFzc29jaWF0ZWQgbWFwcyBmb3IgYSBwcm9ncmFtIGlz
-IG5vdCBuZWNlc3NhcnkuIEFzIGxvbmcgYXMNCj4gPiA+ID4gdGhlIGxhc3QgQlBGIHByb2dyYW0g
-dXNpbmcgdGhlIEJQRiBtYXAgaXMgdW5sb2FkZWQsIHRoZSBrZXJuZWwgd2lsbA0KPiA+ID4gPiBh
-dXRvbWF0aWNhbGx5IGZyZWUgbm90LWFueW1vcmUtcmVmZXJlbmNlZCBCUEYgbWFwLiBOb3RlIHRo
-YXQNCj4gPiA+ID4gYnBmX29iamVjdCBpdHNlbGYgd2lsbCBrZWVwIEZEcyBmb3IgQlBGIG1hcHMs
-IHNvIHlvdSdkIG5lZWQgdG8gbWFrZQ0KPiA+ID4gPiBzdXJlIHRvIGRvIGJwZl9vYmplY3RfX2Ns
-b3NlKCkgdG8gcmVsZWFzZSB0aG9zZSByZWZlcmVuY2VzLg0KPiA+ID4gPg0KPiA+ID4gPiBCdXQg
-aWYgeW91IGFyZSBnb2luZyB0byBhc2sgdG8gcmUtY3JlYXRlIEJQRiBtYXBzIG5leHQgdGltZSBC
-UEYNCj4gPiA+ID4gcHJvZ3JhbSBpcyBsb2FkZWQuLi4gV2VsbCwgSSdsbCBzYXkgeW91IGFyZSBh
-c2tpbmcgZm9yIGEgYml0IHRvbyA+DQo+ID4gPiA+IG11Y2gsDQo+ID4gPiA+IHRiaC4gSWYgeW91
-IHdhbnQgdG8gYmUgKnRoYXQqIHNvcGhpc3RpY2F0ZWQsIGl0IHNob3VsZG4ndCBiZSB0b28NCj4g
-PiA+ID4gaGFyZA0KPiA+ID4gPiBmb3IgeW91IHRvIGdldCBhbGwgdGhpcyBpbmZvcm1hdGlvbiBm
-cm9tIEJQRiBwcm9ncmFtJ3MNCj4gPiA+ID4gaW5zdHJ1Y3Rpb25zLg0KPiA+ID4gPg0KPiA+DQo+
-ID4gV2UgcmVhbGx5IGFyZSB0aGF0IHNvcGhpc3RpY2F0ZWQgKHNlZSBiZWxvdyBmb3IgbW9yZSBk
-ZXRhaWxzKS4gV2UgY291bGQNCj4gPiBzY2FuIHByb2dyYW0gaW5zdHJ1Y3Rpb25zLCBidXQgd2Un
-ZCB0aGVuIHRpZSBvdXIgbG9naWMgdG8gQlBGDQo+ID4gaW1wbGVtZW50YXRpb24gZGV0YWlscyBh
-bmQgZHVwbGljYXRlIGxvZ2ljIGFscmVhZHkgcHJlc2VudCBpbiBsaWJicGYNCj4gPiAoaHR0cHM6
-Ly91cmxkZWZlbnNlLmNvbS92My9fX2h0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y2
-LjEzLjIvc291cmNlL3Rvb2xzL2xpYi9icGYvbGliYnBmLmMgPGh0dHBzOi8vdXJsZGVmZW5zZS5j
-b20vdjMvX19odHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC92Ni4xMy4yL3NvdXJjZS90
-b29scy9saWIvYnBmL2xpYmJwZi5jPipMNjA4N19fO0l3ISFCbWR6UzNfbFY5SGRLRzghMzg0aGlS
-Y3BtWU9qTVUza1QtMW00R3hXcDVYeHdIajlJQ3JEdElVS0NtQ2J4TFZBeGVtYzZVTjY0Y0UzTWt0
-dV96NGYySmhlb0ttNlJCWVFkYy1NaVBieWV4azYtUm40OEEkDQo+ID4gKS4gT2J2aW91c2x5IHRo
-aXMgKmNhbiogYmUgZG9uZSBidXQgaXQncyBub3QgYXQgYWxsIGlkZWFsIGZyb20gYW4NCj4gPiBh
-cHBsaWNhdGlvbiBwZXJzcGVjdGl2ZS4NCj4gPg0KPg0KPg0KPiBJIGFncmVlIGl0J3Mgbm90IGlk
-ZWFsLCBidXQgaXQncyBhbHNvIG5vdCBzb21lIGNvbXBsaWNhdGVkIGFuZA0KPiBib3VuZC10by1i
-ZS1jaGFuZ2VkIGxvZ2ljLiBXaGF0IHlvdSBwb2ludCBvdXQgaW4gbGliYnBmIHNvdXJjZSBjb2Rl
-IGlzDQo+IGEgYml0IGRpZmZlcmVudCB0aGluZywgcmVhbGl0eSBpcyBtdWNoIHNpbXBsZXIuIE9u
-bHkgc28tY2FsbGVkIGxkaW1tNjQNCj4gaW5zdHJ1Y3Rpb24gKEJQRl9MRCB8IEJQRl9JTU0gfCBC
-UEZfRFcgb3Bjb2RlKSBjYW4gYmUgcmVmZXJlbmNpbmcgbWFwDQo+IEZELCBzbyBhbmFseXNpbmcg
-dGhpcyBpcyBib3JkZXJsaW5lIHRyaXZpYWwuIEFuZCB0aGlzIGlzIHBhcnQgb2YgQlBGDQo+IElT
-QSwgc28gbm90IGdvaW5nIHRvIGNoYW5nZS4NCg0KDQpPdXIgYXBwcm9hY2ggaXMgdG8gYXNzb2Np
-YXRlIGFuIGFycmF5IG9mIG1hcHMgYXMgYSBwcm9wZXJ0eSB3aXRoIGVhY2gNCkJQRiBwcm9ncmFt
-LCB0aGlzIHByb3BlcnR5IGlzIGluaXRpYWxpc2VkIGF0IHRoZSByZWxvY2F0aW9uIHN0YWdlLg0K
-U28sIHdlIGRvIG5vdCBuZWVkIHRvIHBhcnNlIEJQRiBwcm9ncmFtIGluc3RydWN0aW9ucy4gSW5z
-dGVhZCwgd2UgcmVseSBvbg0KcmVjb3JkZWQgcmVsb2NhdGlvbnMuIEkgdGhpbmsgdGhpcyBpcyBh
-IG1vcmUgcm9idXN0IGFuZCBjbGVhbiBzb2x1dGlvbiB3aXRoDQphZHZhbnRhZ2Ugb2YgYWxsIGNv
-ZGUgaW4gdGhlIHNhbWUgcGxhY2UgYW5kIGJlaW5nIGF0IHRoZSBoaWdoZXIgbGV2ZWwgb2YNCmFi
-c3RyYWN0aW9uIHdpdGggYSByZWxvY2F0aW9uIHRhYmxlLg0KDQpUaGUgbWFpbmxpbmUgbGliYnBm
-IGtlZXBzIGFycmF5IG9mIG1hcHMgZm9yIGEgYnBmX29iamVjdCwgd2UgZXh0ZW5kZWQNCnRoaXMg
-YnkgYWRkaW5nIGFuIGFycmF5IG9mIG1hcHMgYXNzb2NpYXRlZCB3aXRoIGVhY2ggYnBmX3Byb2dy
-YW0uDQoNCkZvciBleGFtcGxlLCBhIGNvZGUgZXhjZXJwdCwgZnJvbSBvdXIgZGV2ZWxvcG1lbnQg
-YnJhbmNoLCB3aGljaCBhc3NvY2lhdGVzDQphIG1hcCB3aXRoIGJwZl9wcm9ncmFtIGF0IHJlbG9j
-YXRpb24gcGhhc2U6DQoNCiAgICAgaW5zblswXS5zcmNfcmVnID0gQlBGX1BTRVVET19NQVBfRkQ7
-DQogICAgIGluc25bMF0uaW1tID0gbWFwLT5mZDsNCiAgICAgZXJyID0gYnBmX3Byb2dyYW1fX2Fk
-ZF9tYXAocHJvZywgbWFwKTsNCg0KDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiBicGZfb2JqZWN0IGlz
-IHRoZSB1bml0IG9mIGNvaGVyZW5jZSBpbiBsaWJicGYsIHNvIEkgZG9uJ3Qgc2VlIHVzDQo+ID4g
-PiA+IHJlZmNvdW50aW5nIG1hcHMgYmV0d2VlbiBicGZfb2JqZWN0cy4gS2VybmVsIGlzIGRvaW5n
-IHJlZmNvdW50aW5nDQo+ID4gPiA+IGJhc2VkIG9uIEZEcywgc28gc2VlIGlmIHlvdSBjYW4gdXNl
-IHRoYXQuDQo+ID4gPiA+DQo+ID4NCj4gPiBJIGNhbiB1bmRlcnN0YW5kIHRoYXQuIFRoYXQgc2Fp
-ZCwgSSB0aGluayBpZiB0aGVyZSdzIG5vIGxvZ2ljIGFjcm9zcw0KPiA+IG9iamVjdHMsIGFuZCBi
-cGZfb2JqZWN0IGFjY2VzcyBpcyBub3QgdGhyZWFkLXNhZmUsIGl0IHB1dHMgdXMgaW50byBhDQo+
-ID4gdG91Z2ggc2l0dWF0aW9uOg0KPiA+IC0gQ29tcGxleCByZWZjb3VudGluZywgY29kZSBzY2Fu
-bmluZywgZXRjIHRvIGtlZXAgY29uc2lzdGVuY3kgd2hlbg0KPiA+IG1hbmlwdWxhdGluZyBtYXBz
-IHVzZWQgYnkgbXVsdGlwbGUgcHJvZ3JhbXMuDQo+ID4gLSBQYXJhbGxlbCBsb2FkaW5nIG5vdCBi
-ZWluZyB3ZWxsLWJhbGFuY2VkLCBpZiB3ZSBzcGxpdCBwcm9ncmFtcyBhY3Jvc3MNCj4gPiBvYmpl
-Y3RzLg0KPiA+DQo+ID4gV2UgY291bGQgYWx0ZXJuYXRpdmVseSB3cml0ZSBvdXIgb3duIGN1c3Rv
-bSBsb2FkZXIsIGJ1dCB0aGVuIHdl4oCZZCBoYXZlDQo+ID4gdG8gZHVwbGljYXRlIG11Y2ggb2Yg
-dGhlIHVzZWZ1bCBsb2dpYyB0aGF0IGxpYmJwZiBhbHJlYWR5IGltcGxlbWVudHM6DQo+ID4gc2tl
-bGV0b24gZ2VuZXJhdGlvbiwgbWFwL3Byb2dyYW0gYXNzb2NpYXRpb24sIGVtYmVkZGluZyBwcm9n
-cmFtcyBpbnRvDQo+ID4gRUxGcywgbG9hZGluZyBsb2dpYyBhbmQga2VybmVsIHByb2JpbmcsIGV0
-Yy4gV2XigJlkIGxpa2Ugc29tZSB3YXkgdG8NCj4gPiBoYW5kbGUgZHluYW1pYy9wYXJhbGxlbCBs
-b2FkaW5nIHdpdGhvdXQgaGF2aW5nIHRvIHJlcGxpY2F0ZSBhbGwgdGhlDQo+ID4gYWR2YW50YWdl
-cyBsaWJicGYgZ3JhbnRzIHVzLg0KPiA+DQo+DQo+DQo+IFllYWgsIEkgY2FuIHVuZGVyc3RhbmQg
-dGhhdCBhcyB3ZWxsLCBidXQgYnBmX29iamVjdCdzIHNpbmdsZS10aHJlYWRlZA0KPiBkZXNpZ24g
-YW5kIHRoZSBmYWN0IHRoYXQgYnBmX29iamVjdF9fbG9hZCBpcyBraW5kIG9mIHRoZSBmaW5hbCBz
-dGVwDQo+IHdoZXJlIHByb2dyYW1zIGFyZSBsb2FkZWQgKG9yIG5vdCkgaXMgcHJldHR5IGJhY2tl
-ZCBpbi4gSSBkb24ndCBzZWUNCj4gYnBmX29iamVjdCBiZWNvbWluZyBtdWx0aS10aHJlYWRlZC4N
-Cg0KDQpXZSB1bmRlcnN0b29kIHRoaXMsIGJ1dCB0aGUgY3VycmVudCBicGZfb2JqZWN0IGRlc2ln
-biBhbGxvd2VkIHVzIHRvIHVzZQ0KaXQgaW4gYSBtdWx0aXRocmVhZGVkIGVudmlyb25tZW50IHdp
-dGggbWlub3IgbW9kaWZpY2F0aW9uIGZvciBicGZfcHJvZ3JhbQ0KbG9hZC4NCg0KV2UgdW5kZXJz
-dGFuZCB0aGF0IHRoZSBkZXNpZ24gY2hvaWNlIG9mIGxpYmJwZiBiZWluZyBzaW5nbGUgdGhyZWFk
-ZWQNCmlzIHVubGlrZWx5IHRvIGJlIHJlY29uc2lkZXJlZC4NCg0KDQo+ID4gPiA+ID4gPg0KPiA+
-ID4gPiBicGZfb2JqZWN0IGlzIHRoZSB1bml0IG9mIGNvaGVyZW5jZSBpbiBsaWJicGYsIHNvIEkg
-ZG9uJ3Qgc2VlIHVzDQo+ID4gPiA+IHJlZmNvdW50aW5nIG1hcHMgYmV0d2VlbiBicGZfb2JqZWN0
-cy4gS2VybmVsIGlzIGRvaW5nIHJlZmNvdW50aW5nDQo+ID4gPiA+IGJhc2VkIG9uIEZEcywgc28g
-c2VlIGlmIHlvdSBjYW4gdXNlIHRoYXQuDQo+ID4gPiA+DQo+ID4NCj4gPiBJIGNhbiB1bmRlcnN0
-YW5kIHRoYXQuIFRoYXQgc2FpZCwgSSB0aGluayBpZiB0aGVyZSdzIG5vIGxvZ2ljIGFjcm9zcw0K
-PiA+IG9iamVjdHMsIGFuZCBicGZfb2JqZWN0IGFjY2VzcyBpcyBub3QgdGhyZWFkLXNhZmUsIGl0
-IHB1dHMgdXMgaW50byBhDQo+ID4gdG91Z2ggc2l0dWF0aW9uOg0KPiA+IC0gQ29tcGxleCByZWZj
-b3VudGluZywgY29kZSBzY2FubmluZywgZXRjIHRvIGtlZXAgY29uc2lzdGVuY3kgd2hlbg0KPiA+
-IG1hbmlwdWxhdGluZyBtYXBzIHVzZWQgYnkgbXVsdGlwbGUgcHJvZ3JhbXMuDQo+ID4gLSBQYXJh
-bGxlbCBsb2FkaW5nIG5vdCBiZWluZyB3ZWxsLWJhbGFuY2VkLCBpZiB3ZSBzcGxpdCBwcm9ncmFt
-cyBhY3Jvc3MNCj4gPiBvYmplY3RzLg0KPiA+DQo+ID4gV2UgY291bGQgYWx0ZXJuYXRpdmVseSB3
-cml0ZSBvdXIgb3duIGN1c3RvbSBsb2FkZXIsIGJ1dCB0aGVuIHdl4oCZZCBoYXZlDQo+ID4gdG8g
-ZHVwbGljYXRlIG11Y2ggb2YgdGhlIHVzZWZ1bCBsb2dpYyB0aGF0IGxpYmJwZiBhbHJlYWR5IGlt
-cGxlbWVudHM6DQo+ID4gc2tlbGV0b24gZ2VuZXJhdGlvbiwgbWFwL3Byb2dyYW0gYXNzb2NpYXRp
-b24sIGVtYmVkZGluZyBwcm9ncmFtcyBpbnRvDQo+ID4gRUxGcywgbG9hZGluZyBsb2dpYyBhbmQg
-a2VybmVsIHByb2JpbmcsIGV0Yy4gV2XigJlkIGxpa2Ugc29tZSB3YXkgdG8NCj4gPiBoYW5kbGUg
-ZHluYW1pYy9wYXJhbGxlbCBsb2FkaW5nIHdpdGhvdXQgaGF2aW5nIHRvIHJlcGxpY2F0ZSBhbGwg
-dGhlDQo+ID4gYWR2YW50YWdlcyBsaWJicGYgZ3JhbnRzIHVzLg0KPiA+DQo+DQo+DQo+IFllYWgs
-IEkgY2FuIHVuZGVyc3RhbmQgdGhhdCBhcyB3ZWxsLCBidXQgYnBmX29iamVjdCdzIHNpbmdsZS10
-aHJlYWRlZA0KPiBkZXNpZ24gYW5kIHRoZSBmYWN0IHRoYXQgYnBmX29iamVjdF9fbG9hZCBpcyBr
-aW5kIG9mIHRoZSBmaW5hbCBzdGVwDQo+IHdoZXJlIHByb2dyYW1zIGFyZSBsb2FkZWQgKG9yIG5v
-dCkgaXMgcHJldHR5IGJhY2tlZCBpbi4gSSBkb24ndCBzZWUNCj4gYnBmX29iamVjdCBiZWNvbWlu
-ZyBtdWx0aS10aHJlYWRlZC4gVGhlIGR5bmFtaWMgcHJvZ3JhbQ0KPiBsb2FkaW5nL3VubG9hZGlu
-Zy9sb2FkaW5nIGFnYWluIGlzIHNvbWV0aGluZyB0aGF0IEkgY2FuJ3QgeWV0IGp1c3RpZnksDQo+
-IHRiaC4NCj4NCj4NCj4gU28gdGhlIGJlc3QgSSBjYW4gcHJvcG9zZSB5b3UgaXMgdG8gdXNlIGxp
-YmJwZidzIHNrZWxldG9uIGFuZA0KPiBicGZfb2JqZWN0IGNvbmNlcHQgZm9yLCBlZmZlY3RpdmVs
-eSwgRUxGIGhhbmRsaW5nLCByZWxvY2F0aW9ucywgYWxsDQo+IHRoZSBwcmVwYXJhdGlvbnMgdXAg
-dG8gbG9hZGluZyBCUEYgcHJvZ3JhbXMuIEFuZCBhZnRlciB0aGF0IHlvdSBjYW4NCj4gdGFrZSBv
-dmVyIGxvYWRpbmcgYW5kIGhhbmRsaW5nIHByb2dyYW0gbGlmZXRpbWUgb3V0c2lkZSBvZiBicGZf
-b2JqZWN0Lg0KPg0KPg0KPiBEeW5hbWljIG1hcCBjcmVhdGlvbiBhZnRlciBicGZfb2JqZWN0X19s
-b2FkKCkgSSB0aGluayBpcyBjb21wbGV0ZWx5DQo+IG91dHNpZGUgb2YgdGhlIHNjb3BlIGFuZCB5
-b3UnbGwgaGF2ZSB0byBzb2x2ZSB0aGlzIHByb2JsZW0gZm9yDQo+IHlvdXJzZWxmLiBJIHdvdWxk
-IHBvaW50IG91dCwgdGhvdWdoLCB0aGF0IGludGVybmFsbHkgbGliYnBmIGFscmVhZHkNCj4gc3dp
-dGNoZWQgdG8gc29ydC1vZiBwcmUtY3JlYXRpbmcgc3RhYmxlIEZEcyBmb3IgbWFwcyBiZWZvcmUg
-dGhleSBhcmUNCj4gYWN0dWFsbHkgY3JlYXRlZCBpbiB0aGUga2VybmVsLiBTbyBpdCdzIGNvbmNl
-aXZhYmxlIHRoYXQgd2UgY2FuIGhhdmUNCj4gbW9yZSBncmFudWxhcml0eSBpbiBicGZfb2JqZWN0
-IHByZXBhcmF0aW9uLiBJLmUuLCBmaXJzdCBzdGVwIHdvdWxkIGJlDQo+IHRvIHBhcnNlIEVMRiBh
-bmQgaGFuZGxlIHJlbG9jYXRpb25zLCBwcmVwYXJlIGV2ZXJ5dGhpbmcuIEFmdGVyIHRoYXQgd2UN
-Cj4gY2FuIGhhdmUgYSBzdGVwIHRvIGNyZWF0ZSBtYXBzLCBhbmQgdGhlbiBhbm90aGVyIG9uZSB0
-byBjcmVhdGUNCj4gcHJvZ3JhbXMuIFVzdWFsbHkgcGVvcGxlIHdvdWxkIGRvIGFsbCB0aGF0LCBi
-dXQgeW91IGNhbiBzdG9wIHJpZ2h0DQo+IGJlZm9yZSBtYXBzIGNyZWF0aW9uIG9yIGJlZm9yZSBw
-cm9ncmFtIGNyZWF0aW9uLCB3aGF0ZXZlciBmaXRzIHlvdXINCj4gdXNlIGNhc2UgYmV0dGVyLg0K
-Pg0KPg0KPiBUaGUga2V5IGlzIHRoYXQgcHJvZ3JhbSBpbnN0cnVjdGlvbnMgd2lsbCBiZSBmaW5h
-bCBhbmQgd29uJ3QgbmVlZA0KPiBhZGp1c3RtZW50cyByZWdhcmRsZXNzIG9mIG1hcHMgYWN0dWFs
-bHkgYmVpbmcgY3JlYXRlZCBvciBub3QuIEZEcywgYXMNCj4gSSBtZW50aW9uZWQsIGFyZSBzdGFi
-bGUgcmVnYXJkbGVzcy4NCg0KDQpXZSB1c2VkIHRoaXMgaW4gb3VyIGRlc2lnbiwgc28gd2UgZGlk
-IG5vdCBuZWVkIHRvIHNjYW4gQlBGIHByb2dyYW0NCmluc3RydWN0aW9ucyB0byBmaXggbWFwJ3Mg
-ZmRzIHJlZmVyZW5jZWQgYnkgaW5zdHJ1Y3Rpb25zIGZyb20gYSBkeW5hbWljYWxseQ0KbG9hZGVk
-IGJwZl9wcm9ncmFtIHdpdGggZHluYW1pY2FsbHkgY3JlYXRlZCBtYXBzLg0KDQoNCj4gPg0KPiA+
-IFRoZSB1c2UgY2FzZSBoZXJlIGlzIHRoYXQgb3VyIHNlY3VyaXR5IG1vbml0b3JpbmcgYWdlbnQg
-bGV2ZXJhZ2VzIGVCUEYNCj4gPiBhcyBpdHMgZm91bmRhdGlvbmFsIHRlY2hub2xvZ3kgdG8gZ2F0
-aGVyIHRlbGVtZXRyeSBmcm9tIHRoZSBrZXJuZWwuIEFzDQo+ID4gcGFydCBvZiB0aGF0LCB3ZSBo
-b29rIG1hbnkgZGlmZmVyZW50IGtlcm5lbCBzdWJzeXN0ZW1zIChwcm9jZXNzLA0KPiA+IG1lbW9y
-eSwgZmlsZXN5c3RlbSwgbmV0d29yaywgZXRjKSwgdHlpbmcgdGhlbSB0b2dldGhlciBhbmQgdHJh
-Y2tpbmcNCj4gPiB3aXRoIG1hcHMuIFNvIHdlIGxlZ2l0aW1hdGVseSBoYXZlIGEgdmVyeSBsYXJn
-ZSBudW1iZXIgb2YgcHJvZ3JhbXMgYWxsDQo+ID4gZG9pbmcgZGlmZmVyZW50IHdvcmsuIEZvciBw
-cm9kdWN0cyBvZiB0aGlzIHNjYWxlLCBpdCBpbmNyZWFzZXMgc2VjdXJpdHkNCj4gPiBhbmQgcGVy
-Zm9ybWFuY2UgdG8gbG9hZCB0aGlzIHNldCBvZiBwcm9ncmFtcyBhbmQgdGhlaXIgbWFwcyBpbiBh
-bg0KPiA+IG9wdGltaXplZCwgcGFyYWxsZWwgZmFzaGlvbiBhbmQgc3Vic2VxdWVudGx5IGNoYW5n
-ZSB0aGUgbG9hZGVkIHNldCBvZg0KPiA+IHByb2dyYW1zIGFuZCBtYXBzIGR5bmFtaWNhbGx5IHdp
-dGhvdXQgZGlzdHVyYmluZyB0aGUgcmVzdCBvZiB0aGUNCj4gPiBhcHBsaWNhdGlvbi4NCj4NCj4N
-Cj4gWWVzLCBtYWtlcyBzZW5zZS4gWW91J2xsIG5lZWQgdG8gZGVjaWRlIGZvciB5b3Vyc2VsZiBp
-ZiBpdCdzIGFjdHVhbGx5DQo+IG1vcmUgbWVhbmluZ2Z1bCB0byBzcGxpdCB0aG9zZSAyMDAgcHJv
-Z3JhbXMgaW50byBpbmRlcGVuZGVudA0KPiBicGZfb2JqZWN0cyBieSBmZWF0dXJlcywgYW5kIGJl
-IHJpZ29yb3VzIGFib3V0IHNoYXJpbmcgc3RhdGUgKG1hcHMpDQo+IHRocm91Z2ggYnBmX21hcF9f
-cmV1c2VfZmQoKSwgd2hpY2ggd291bGQgYWxsb3cgdG8gcGFyYWxsZWxpemUgbG9hZGluZw0KPiB3
-aXRoaW4gY29uZmluZXMgb2YgZXhpc3RpbmcgbGliYnBmIEFQSXMuIE9yIHlvdSBjYW4gYmUgYSBi
-aXQgbW9yZQ0KPiBsb3ctbGV2ZWwgd2l0aCBwcm9ncmFtIGxvYWRpbmcgb3V0c2lkZSBvZiBicGZf
-b2JqZWN0IEFQSSwgYXMgSQ0KPiBkZXNjcmliZWQgYWJvdmUuDQoNClllcywgdGhpcyBjYW4gYmUg
-b25lIG9mIHRoZSB3YXlzIHRvIHNoYXJlIGJwZiBtYXBzIGFjcm9zcyBtdWx0aXBsZSBicGZfb2Jq
-ZWN0cw0KYW5kIHVzZSBleGlzdGluZyBsaWJicGYgZm9yIHBhcmFsbGVsIGJwcyBwcm9ncmFtcyBs
-b2FkaW5nLCBpZiB3ZSB3YW50IHRvIGtlZXANCmEgZnVsbCBsaWJicGYgY29tcGF0aWJpbGl0eSwg
-YnV0IGF0IGEgY29zdCBvZiBjb21wbGljYXRpbmcgZGVzaWduLCBhcyB3ZSBuZWVkIHRvDQpjb252
-ZXJ0IGEgc2luZ2xlIGJwZl9vYmplY3QgbW9kZWwgdG8gbXVsdGlwbGUgYnBmX29iamVjdHMgd2l0
-aCBhIG5ldyBsYXllcg0KdGhhdCBtYW5hZ2VzIHRoZXNlIGJwZl9vYmplY3RzLg0KDQpJbiBvdXIg
-Y2FzZSwgYXMgYSBicGZfcHJvZ3JhbSBjYW4gbWFwIHRvIG11bHRpcGxlIGZlYXR1cmVzLCB3aGlj
-aCBjYW4gYmUNCm1vZGlmaWVkIGluZGVwZW5kZW50bHksIGFuZCB0byBhY2hpZXZlIGFuIGV2ZW4g
-bG9hZCBiYWxhbmNpbmcgYWNyb3NzIG11bHRpcGxlDQp0aHJlYWRzLCBpdCB3b3VsZCBiZSBwcm9i
-YWJseSBvbmUgYnBmX3Byb2dyYW0gZm9yIGEgYnBmX29iamVjdC4NCg0KDQoNCg==
+Currently for bpf progs in a cgroup hierarchy, the effective prog array
+is computed from bottom cgroup to upper cgroups (post-ordering). For
+example, the following cgroup hierarchy
+    root cgroup: p1, p2
+        subcgroup: p3, p4
+have BPF_F_ALLOW_MULTI for both cgroup levels.
+The effective cgroup array ordering looks like
+    p3 p4 p1 p2
+and at run time, progs will execute based on that order.
+
+But in some cases, it is desirable to have root prog executes earlier tha=
+n
+children progs (pre-ordering). For example,
+  - prog p1 intends to collect original pkt dest addresses.
+  - prog p3 will modify original pkt dest addresses to a proxy address fo=
+r
+    security reason.
+The end result is that prog p1 gets proxy address which is not what it
+wants. Putting p1 to every child cgroup is not desirable either as it
+will duplicate itself in many child cgroups. And this is exactly a use ca=
+se
+we are encountering in Meta.
+
+To fix this issue, let us introduce a flag BPF_F_PREORDER. If the flag
+is specified at attachment time, the prog has higher priority and the
+ordering with that flag will be from top to bottom (pre-ordering).
+For example, in the above example,
+    root cgroup: p1, p2
+        subcgroup: p3, p4
+Let us say p2 and p4 are marked with BPF_F_PREORDER. The final
+effective array ordering will be
+    p2 p4 p3 p1
+
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ include/linux/bpf-cgroup.h     |  1 +
+ include/uapi/linux/bpf.h       |  1 +
+ kernel/bpf/cgroup.c            | 33 +++++++++++++++++++++++++--------
+ kernel/bpf/syscall.c           |  3 ++-
+ tools/include/uapi/linux/bpf.h |  1 +
+ 5 files changed, 30 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 7fc69083e745..9de7adb68294 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -111,6 +111,7 @@ struct bpf_prog_list {
+ 	struct bpf_prog *prog;
+ 	struct bpf_cgroup_link *link;
+ 	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE];
++	u32 flags;
+ };
+=20
+ int cgroup_bpf_inherit(struct cgroup *cgrp);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index fff6cdb8d11a..beac5cdf2d2c 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1207,6 +1207,7 @@ enum bpf_perf_event_type {
+ #define BPF_F_BEFORE		(1U << 3)
+ #define BPF_F_AFTER		(1U << 4)
+ #define BPF_F_ID		(1U << 5)
++#define BPF_F_PREORDER		(1U << 6)
+ #define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
+=20
+ /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 46e5db65dbc8..84f58f3d028a 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -369,7 +369,7 @@ static struct bpf_prog *prog_list_prog(struct bpf_pro=
+g_list *pl)
+ /* count number of elements in the list.
+  * it's slow but the list cannot be long
+  */
+-static u32 prog_list_length(struct hlist_head *head)
++static u32 prog_list_length(struct hlist_head *head, int *preorder_cnt)
+ {
+ 	struct bpf_prog_list *pl;
+ 	u32 cnt =3D 0;
+@@ -377,6 +377,8 @@ static u32 prog_list_length(struct hlist_head *head)
+ 	hlist_for_each_entry(pl, head, node) {
+ 		if (!prog_list_prog(pl))
+ 			continue;
++		if (preorder_cnt && (pl->flags & BPF_F_PREORDER))
++			(*preorder_cnt)++;
+ 		cnt++;
+ 	}
+ 	return cnt;
+@@ -400,7 +402,7 @@ static bool hierarchy_allows_attach(struct cgroup *cg=
+rp,
+=20
+ 		if (flags & BPF_F_ALLOW_MULTI)
+ 			return true;
+-		cnt =3D prog_list_length(&p->bpf.progs[atype]);
++		cnt =3D prog_list_length(&p->bpf.progs[atype], NULL);
+ 		WARN_ON_ONCE(cnt > 1);
+ 		if (cnt =3D=3D 1)
+ 			return !!(flags & BPF_F_ALLOW_OVERRIDE);
+@@ -423,12 +425,12 @@ static int compute_effective_progs(struct cgroup *c=
+grp,
+ 	struct bpf_prog_array *progs;
+ 	struct bpf_prog_list *pl;
+ 	struct cgroup *p =3D cgrp;
+-	int cnt =3D 0;
++	int i, j, cnt =3D 0, preorder_cnt =3D 0, fstart, bstart, init_bstart;
+=20
+ 	/* count number of effective programs by walking parents */
+ 	do {
+ 		if (cnt =3D=3D 0 || (p->bpf.flags[atype] & BPF_F_ALLOW_MULTI))
+-			cnt +=3D prog_list_length(&p->bpf.progs[atype]);
++			cnt +=3D prog_list_length(&p->bpf.progs[atype], &preorder_cnt);
+ 		p =3D cgroup_parent(p);
+ 	} while (p);
+=20
+@@ -439,20 +441,34 @@ static int compute_effective_progs(struct cgroup *c=
+grp,
+ 	/* populate the array with effective progs */
+ 	cnt =3D 0;
+ 	p =3D cgrp;
++	fstart =3D preorder_cnt;
++	bstart =3D preorder_cnt - 1;
+ 	do {
+ 		if (cnt > 0 && !(p->bpf.flags[atype] & BPF_F_ALLOW_MULTI))
+ 			continue;
+=20
++		init_bstart =3D bstart;
+ 		hlist_for_each_entry(pl, &p->bpf.progs[atype], node) {
+ 			if (!prog_list_prog(pl))
+ 				continue;
+=20
+-			item =3D &progs->items[cnt];
++			if (pl->flags & BPF_F_PREORDER) {
++				item =3D &progs->items[bstart];
++				bstart--;
++			} else {
++				item =3D &progs->items[fstart];
++				fstart++;
++			}
+ 			item->prog =3D prog_list_prog(pl);
+ 			bpf_cgroup_storages_assign(item->cgroup_storage,
+ 						   pl->storage);
+ 			cnt++;
+ 		}
++
++		/* reverse pre-ordering progs at this cgroup level */
++		for (i =3D bstart + 1, j =3D init_bstart; i < j; i++, j--)
++			swap(progs->items[i], progs->items[j]);
++
+ 	} while ((p =3D cgroup_parent(p)));
+=20
+ 	*array =3D progs;
+@@ -663,7 +679,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+ 		 */
+ 		return -EPERM;
+=20
+-	if (prog_list_length(progs) >=3D BPF_CGROUP_MAX_PROGS)
++	if (prog_list_length(progs, NULL) >=3D BPF_CGROUP_MAX_PROGS)
+ 		return -E2BIG;
+=20
+ 	pl =3D find_attach_entry(progs, prog, link, replace_prog,
+@@ -698,6 +714,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+=20
+ 	pl->prog =3D prog;
+ 	pl->link =3D link;
++	pl->flags =3D flags;
+ 	bpf_cgroup_storages_assign(pl->storage, storage);
+ 	cgrp->bpf.flags[atype] =3D saved_flags;
+=20
+@@ -1073,7 +1090,7 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, =
+const union bpf_attr *attr,
+ 							      lockdep_is_held(&cgroup_mutex));
+ 			total_cnt +=3D bpf_prog_array_length(effective);
+ 		} else {
+-			total_cnt +=3D prog_list_length(&cgrp->bpf.progs[atype]);
++			total_cnt +=3D prog_list_length(&cgrp->bpf.progs[atype], NULL);
+ 		}
+ 	}
+=20
+@@ -1105,7 +1122,7 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, =
+const union bpf_attr *attr,
+ 			u32 id;
+=20
+ 			progs =3D &cgrp->bpf.progs[atype];
+-			cnt =3D min_t(int, prog_list_length(progs), total_cnt);
++			cnt =3D min_t(int, prog_list_length(progs, NULL), total_cnt);
+ 			i =3D 0;
+ 			hlist_for_each_entry(pl, progs, node) {
+ 				prog =3D prog_list_prog(pl);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index dbd89c13dd32..d799fe8f568e 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -4170,7 +4170,8 @@ static int bpf_prog_attach_check_attach_type(const =
+struct bpf_prog *prog,
+ #define BPF_F_ATTACH_MASK_BASE	\
+ 	(BPF_F_ALLOW_OVERRIDE |	\
+ 	 BPF_F_ALLOW_MULTI |	\
+-	 BPF_F_REPLACE)
++	 BPF_F_REPLACE |	\
++	 BPF_F_PREORDER)
+=20
+ #define BPF_F_ATTACH_MASK_MPROG	\
+ 	(BPF_F_REPLACE |	\
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index fff6cdb8d11a..beac5cdf2d2c 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1207,6 +1207,7 @@ enum bpf_perf_event_type {
+ #define BPF_F_BEFORE		(1U << 3)
+ #define BPF_F_AFTER		(1U << 4)
+ #define BPF_F_ID		(1U << 5)
++#define BPF_F_PREORDER		(1U << 6)
+ #define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
+=20
+ /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+--=20
+2.43.5
+
 
