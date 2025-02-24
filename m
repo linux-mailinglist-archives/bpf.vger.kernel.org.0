@@ -1,629 +1,248 @@
-Return-Path: <bpf+bounces-52403-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52405-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8A73A42ADF
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 19:15:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6BE2A42AF5
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 19:18:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 474A0175F78
-	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:14:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16E573B801D
+	for <lists+bpf@lfdr.de>; Mon, 24 Feb 2025 18:18:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79AD221F0D;
-	Mon, 24 Feb 2025 18:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E1D263C8A;
+	Mon, 24 Feb 2025 18:18:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="C0DGjSDz"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Li+7Oa/n";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0yGRLsnO";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="k/xS/ekK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hwADte08"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41992265637
-	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 18:13:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E557214012
+	for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 18:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740420815; cv=none; b=BwDdIJQNDO9k0/7Aoi7k5/j4UFAgkI91TvY+608kCVtYG4atabvpyHF0/zB8gI87wQlg4XDlO8dO1QAVcfkqmUtKCkAFmbBc6Xf0Lli5ItQFt2o77dLXQ5l08axUyFV67tIGNnN5F7v/C7mynPNqwwuCBpEh944X4s84SxAqANc=
+	t=1740421130; cv=none; b=rZ7CiyXB9JWV/8auMOKcq5dUXbHAg3Yupw7xwwJ2FoQUWsUmEzgtT5FEHmZeWZW3R5CR7+wAYkaKtSz4ZzvXqyIxekRQSFQ/yjR14FAXN5T/YGyTCpq0VW5EPj/L2sQzE77u9PsjrFaSR9MZ4Hpazmi4rDSCMLZkwNHXfJp2Uj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740420815; c=relaxed/simple;
-	bh=Vva0gzDw0iH8+ImkgkgxkXdoRo2SxYnKyaNh7g98WLI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o8pB1qVmkogftexv5sCiFpgt2cLoxS1Ohd5c7eZpbFf+F5Uny7NjhY/5idicnk7vfcsNpk5TXS8AUf7/crc1GGUxsVP0TgKQpTQ8SpjIui0ThH81d7PJv+lPiCdaiAr2z2fBYCdWIBiw+Ecr1YUbl55jwydGtkP0TuED+wbjduM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=C0DGjSDz; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-221ac1f849fso10375ad.1
-        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 10:13:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1740420812; x=1741025612; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XJP1u571wc7y91n+9H/dCgpjrHhOi9K3FW2vJzstGH4=;
-        b=C0DGjSDz2x8YkV5WzbguK1x4Kdj/HsyXxEETRalcPBc+jf5hhv684B0YJumvRb7QNC
-         cCUmooxKYRouVsCINharn9kCbEHoN5tngbsqZVuTdJFsZZzgo8Me9F0kQLBFI8bdH6u+
-         WZPF+OqvV2TGSyT9XOVTCDBJP9oHoclfBjCyj3LaU7TWw4XE66YqBQmrVY6DoBtLeDs9
-         t/P2rXs7rXQlNllULzjbHgX/7+iQ3jwa6cPmzpNg7ZYmxUUjiopGegv95amd8OLV3awx
-         7k6uWZZ7iCi/Rq2H8vYOiEYJIL+Qjg1ZYxe/+VJslNbo36FWwcXnGS5baUsm7F4fVKy0
-         cj5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740420812; x=1741025612;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XJP1u571wc7y91n+9H/dCgpjrHhOi9K3FW2vJzstGH4=;
-        b=xCJWQ+OqICJ3HA5+f/ORV0Xdfb3T6TY6dE7FAhcLZYpMsYBQakEU2hikU5bEGWVsNX
-         ttst5sBl2xaAHy5+mO/3xc4b3KtTGKiRuCIZ6SSLx0J82Tc2nHy0USzLnMch61PPOMKA
-         HvOuElwOFyb4NbiRJTTSZsOzJNC1O7H3CqvE7v8OJFO59Q+m6R9z1eVfyfFcnEOx3LkW
-         zi8g0F2VZHIXHAxryeTDAmJYBwVF4nweRRKHZiyspqvO0lZNDi2aE+0Qaz98t0QiE8fW
-         cdJ14WzaiMnGNDRG37Gcofj1OotiI9WBnTAhuSdCzxX4CO6JmuNTI0oem4EQic0R+tH/
-         3HNw==
-X-Forwarded-Encrypted: i=1; AJvYcCUzb3/pJrBsLPCcrYEgltQObcZ83uf21561MzeboqJa1RxXubiBiEELT4hfp4QeEseQR7o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzYUIHMOKD4PEdgZYSEYcpmZ/LZhu9/ndcSECO/8Smld6LOpq0U
-	hCjcW7TTp69kc9p5/ZEwi2yXU94s58djm16DrMaDmPmragyFQ99XaSOSwNNPcjF44E0qEyDbudv
-	Wo+o6liOVW1Uj0+RP4L05htKnRI6EP8RNmxhbp9WYoZhenlocTsKr
-X-Gm-Gg: ASbGnct6aChyoH158Guk+YuS/a+/YPPWoNNj49BlZoGlk4BurwoP85aTBas6bCUPF+S
-	HEBtd/b1Zd9+an09ws3JsX9Z+DD7Kwd4li5g/qgb+2k9aJDj59tEHIc1jz9CcI540mzR7H7i253
-	maJ9znspD6PXaERaGN5abPgDDlJz4I2FYh7Bo=
-X-Google-Smtp-Source: AGHT+IEUzHbN5XEUn9fWFMhbYYPycbCrT/jGixYA/e4Nkv2DOeutYm8bHQUjE5V7hJ+Q0f6vJ0rQlu0Z9Xv2H06MXck=
-X-Received: by 2002:a17:902:da84:b0:216:6dab:803b with SMTP id
- d9443c01a7336-22307a97489mr272495ad.18.1740420811918; Mon, 24 Feb 2025
- 10:13:31 -0800 (PST)
+	s=arc-20240116; t=1740421130; c=relaxed/simple;
+	bh=F3c+kWqnGwQ1D+TAQtfGfyYR4esHq9k/RPQE/IMNOyY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nrg550JANeuwG3wTKP/TlXK3iH34ERKNqiI/BjFNa1RtUI+NxbIdsp7aVl1h9rbpMwUKor+tIx8sicew4uwMYQ5zmrvJfaHRYC2TVc8t46VmMTsvgIu54tupQ+x/We9Ut89cpkbFGUKKjBXE4n4r0OMImGN7Hi9RwoLbxfgdR+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Li+7Oa/n; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0yGRLsnO; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=k/xS/ekK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hwADte08; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3D7FC1F449;
+	Mon, 24 Feb 2025 18:15:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1740420918; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=M3Ef04I0Xna9Ma2aqsawRhgvFUFn8LFOS7cvkTxcg5w=;
+	b=Li+7Oa/ngGPYp6ATBEO0/IcG3Z494t0kRvp1P24RV6v4C7JGLkeeEgncwPSZBVGhnCPG8X
+	9xx9X8IRE2Og8+kD5vCQZeWfQXKaZaADV9lYWdRXklQ57vSfaCoHVZg/jCTWp+PW3TSGsw
+	+XmuWHqamxVzSdpyzu7YAL27b31QdDU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1740420918;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=M3Ef04I0Xna9Ma2aqsawRhgvFUFn8LFOS7cvkTxcg5w=;
+	b=0yGRLsnOu99CO21ds0vhmyffNA2oPayH2JHp/dNIyYNWRvaIXV3gVqDvyLMwhDvFaviXEw
+	RGtkgTY+0GYhbSBQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="k/xS/ekK";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hwADte08
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1740420917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=M3Ef04I0Xna9Ma2aqsawRhgvFUFn8LFOS7cvkTxcg5w=;
+	b=k/xS/ekKFcyPN6TVmKeANcHwWrAmq6D6CaOfNHxRli4DWZzM3B5Q8YM1MqfGNd0rGs0b5J
+	7TrshSpEPreH07F8LzPpl3usyg+/e66CJiXJ0GbrKtwTRnpnqA/fLHSLmhCR/poVtGDaoj
+	Zqqsfba1a4ponLXCRBZMjVbKiW0qJ8w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1740420917;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=M3Ef04I0Xna9Ma2aqsawRhgvFUFn8LFOS7cvkTxcg5w=;
+	b=hwADte08Ngot5RBluIGTqFYA+GmOn4VpZwlzAT/m+xBAVdc6Jc2dWRzyFr55q78J/vTGrI
+	xvCy4A0EEI8GLCCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 20DE113707;
+	Mon, 24 Feb 2025 18:15:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id j6TwBjW3vGdEEgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 24 Feb 2025 18:15:17 +0000
+Message-ID: <704ba4a7-37ec-4c6b-9de4-0c662e5c5ce1@suse.cz>
+Date: Mon, 24 Feb 2025 19:15:16 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250221183207.560262-1-namhyung@kernel.org>
-In-Reply-To: <20250221183207.560262-1-namhyung@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 24 Feb 2025 10:13:20 -0800
-X-Gm-Features: AWEUYZkyYGOXPbBX8Yyox1pvnVFqjinS1a6sEMlHkGGfP0d-T4r7jneliTwD6kc
-Message-ID: <CAP-5=fVegzVTkir=p94u0eHN-FGN18F18j4AfbtdbnGw+EMD1A@mail.gmail.com>
-Subject: Re: [PATCH] perf trace: Implement syscall summary in BPF
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Kan Liang <kan.liang@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org, Song Liu <song@kernel.org>, Howard Chu <howardchu95@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [LSF/MM/BPF TOPIC] SLUB allocator, mainly the sheaves caching
+ layer
+Content-Language: en-US
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: lsf-pc@lists.linux-foundation.org, linux-mm@kvack.org,
+ bpf <bpf@vger.kernel.org>, Christoph Lameter <cl@linux.com>,
+ David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+ "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>
+References: <14422cf1-4a63-4115-87cb-92685e7dd91b@suse.cz>
+ <e2fz26kcbni37rp2rdqvac7mljvrglvtzmkivfpsnibubu3g3t@blz27xo4honn>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <e2fz26kcbni37rp2rdqvac7mljvrglvtzmkivfpsnibubu3g3t@blz27xo4honn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 3D7FC1F449
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[lists.linux-foundation.org,kvack.org,vger.kernel.org,linux.com,google.com,gmail.com,kernel.org];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	TAGGED_RCPT(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:mid]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
+X-Spam-Flag: NO
 
-On Fri, Feb 21, 2025 at 10:32=E2=80=AFAM Namhyung Kim <namhyung@kernel.org>=
- wrote:
->
-> When --summary-only option is used, it doesn't need (augmented) arguments
-> of syscalls.  Let's skip the augmentation and load another small BPF
-> program to collect the statistics in the kernel instead of copying the
-> data to the ring-buffer to calculate the stats in userspace.  This will
-> be much more light-weight than the existing approach and remove any lost
-> events.
->
-> For simplicity, it's only activated with --summary-mode=3Dtotal in system=
--
-> wide mode.  And it also skips to calculate stddev as doing it atomically
-> would add more overheads (i.e. requiring a spinlock).  It can be extended
-> to cover more use cases later, if needed.
->
-> Cc: Howard Chu <howardchu95@gmail.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/Makefile.perf                      |   2 +-
->  tools/perf/builtin-trace.c                    |  41 ++++--
->  tools/perf/util/Build                         |   1 +
->  tools/perf/util/bpf-trace-summary.c           | 117 ++++++++++++++++++
->  .../perf/util/bpf_skel/syscall_summary.bpf.c  | 109 ++++++++++++++++
->  tools/perf/util/bpf_skel/syscall_summary.h    |  18 +++
->  tools/perf/util/trace.h                       |  31 +++++
->  7 files changed, 311 insertions(+), 8 deletions(-)
->  create mode 100644 tools/perf/util/bpf-trace-summary.c
->  create mode 100644 tools/perf/util/bpf_skel/syscall_summary.bpf.c
->  create mode 100644 tools/perf/util/bpf_skel/syscall_summary.h
->  create mode 100644 tools/perf/util/trace.h
->
-> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> index 55d6ce9ea52fb2a5..3b68a57682ca991d 100644
-> --- a/tools/perf/Makefile.perf
-> +++ b/tools/perf/Makefile.perf
-> @@ -1198,7 +1198,7 @@ SKELETONS +=3D $(SKEL_OUT)/bperf_leader.skel.h $(SK=
-EL_OUT)/bperf_follower.skel.h
->  SKELETONS +=3D $(SKEL_OUT)/bperf_cgroup.skel.h $(SKEL_OUT)/func_latency.=
-skel.h
->  SKELETONS +=3D $(SKEL_OUT)/off_cpu.skel.h $(SKEL_OUT)/lock_contention.sk=
-el.h
->  SKELETONS +=3D $(SKEL_OUT)/kwork_trace.skel.h $(SKEL_OUT)/sample_filter.=
-skel.h
-> -SKELETONS +=3D $(SKEL_OUT)/kwork_top.skel.h
-> +SKELETONS +=3D $(SKEL_OUT)/kwork_top.skel.h $(SKEL_OUT)/syscall_summary.=
-skel.h
->  SKELETONS +=3D $(SKEL_OUT)/bench_uprobe.skel.h
->  SKELETONS +=3D $(SKEL_OUT)/augmented_raw_syscalls.skel.h
->
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index f55a8a6481f27f99..1c7af7583bc560c4 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -55,6 +55,7 @@
->  #include "util/thread_map.h"
->  #include "util/stat.h"
->  #include "util/tool.h"
-> +#include "util/trace.h"
->  #include "util/util.h"
->  #include "trace/beauty/beauty.h"
->  #include "trace-event.h"
-> @@ -222,6 +223,7 @@ struct trace {
->         bool                    force;
->         bool                    vfs_getname;
->         bool                    force_btf;
-> +       bool                    summary_bpf;
->         int                     trace_pgfaults;
->         char                    *perfconfig_events;
->         struct {
-> @@ -4276,6 +4278,13 @@ static int trace__run(struct trace *trace, int arg=
-c, const char **argv)
->
->         trace->live =3D true;
->
-> +       if (trace->summary_bpf) {
-> +               if (trace_prepare_bpf_summary() < 0)
-> +                       goto out_delete_evlist;
-> +
-> +               goto create_maps;
-> +       }
-> +
->         if (!trace->raw_augmented_syscalls) {
->                 if (trace->trace_syscalls && trace__add_syscall_newtp(tra=
-ce))
->                         goto out_error_raw_syscalls;
-> @@ -4334,6 +4343,7 @@ static int trace__run(struct trace *trace, int argc=
-, const char **argv)
->         if (trace->cgroup)
->                 evlist__set_default_cgroup(trace->evlist, trace->cgroup);
->
-> +create_maps:
->         err =3D evlist__create_maps(evlist, &trace->opts.target);
->         if (err < 0) {
->                 fprintf(trace->output, "Problems parsing the target to tr=
-ace, check your options!\n");
-> @@ -4426,9 +4436,11 @@ static int trace__run(struct trace *trace, int arg=
-c, const char **argv)
->         if (err < 0)
->                 goto out_error_apply_filters;
->
-> -       err =3D evlist__mmap(evlist, trace->opts.mmap_pages);
-> -       if (err < 0)
-> -               goto out_error_mmap;
-> +       if (!trace->summary_bpf) {
-> +               err =3D evlist__mmap(evlist, trace->opts.mmap_pages);
-> +               if (err < 0)
-> +                       goto out_error_mmap;
-> +       }
->
->         if (!target__none(&trace->opts.target) && !trace->opts.target.ini=
-tial_delay)
->                 evlist__enable(evlist);
-> @@ -4441,6 +4453,9 @@ static int trace__run(struct trace *trace, int argc=
-, const char **argv)
->                 evlist__enable(evlist);
->         }
->
-> +       if (trace->summary_bpf)
-> +               trace_start_bpf_summary();
-> +
->         trace->multiple_threads =3D perf_thread_map__pid(evlist->core.thr=
-eads, 0) =3D=3D -1 ||
->                 perf_thread_map__nr(evlist->core.threads) > 1 ||
->                 evlist__first(evlist)->core.attr.inherit;
-> @@ -4508,12 +4523,17 @@ static int trace__run(struct trace *trace, int ar=
-gc, const char **argv)
->
->         evlist__disable(evlist);
->
-> +       if (trace->summary_bpf)
-> +               trace_end_bpf_summary();
-> +
->         if (trace->sort_events)
->                 ordered_events__flush(&trace->oe.data, OE_FLUSH__FINAL);
->
->         if (!err) {
->                 if (trace->summary) {
-> -                       if (trace->summary_mode =3D=3D SUMMARY__BY_TOTAL)
-> +                       if (trace->summary_bpf)
-> +                               trace_print_bpf_summary(trace->sctbl, tra=
-ce->output);
-> +                       else if (trace->summary_mode =3D=3D SUMMARY__BY_T=
-OTAL)
->                                 trace__fprintf_total_summary(trace, trace=
-->output);
->                         else
->                                 trace__fprintf_thread_summary(trace, trac=
-e->output);
-> @@ -4529,6 +4549,7 @@ static int trace__run(struct trace *trace, int argc=
-, const char **argv)
->         }
->
->  out_delete_evlist:
-> +       trace_cleanup_bpf_summary();
->         delete_syscall_stats(trace->syscall_stats);
->         trace__symbols__exit(trace);
->         evlist__free_syscall_tp_fields(evlist);
-> @@ -5446,6 +5467,15 @@ int cmd_trace(int argc, const char **argv)
->                 goto skip_augmentation;
->         }
->
-> +       if (!argc && target__none(&trace.opts.target))
-> +               trace.opts.target.system_wide =3D true;
-> +
-> +       if (trace.summary_only && trace.opts.target.system_wide &&
-> +           trace.summary_mode =3D=3D SUMMARY__BY_TOTAL && !trace.trace_p=
-gfaults) {
-> +               trace.summary_bpf =3D true;
-> +               goto skip_augmentation;
-> +       }
-> +
->         trace.skel =3D augmented_raw_syscalls_bpf__open();
->         if (!trace.skel) {
->                 pr_debug("Failed to open augmented syscalls BPF skeleton"=
-);
-> @@ -5649,9 +5679,6 @@ int cmd_trace(int argc, const char **argv)
->                 goto out_close;
->         }
->
-> -       if (!argc && target__none(&trace.opts.target))
-> -               trace.opts.target.system_wide =3D true;
-> -
->         if (input_name)
->                 err =3D trace__replay(&trace);
->         else
-> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> index 034a6603d5a8e8b0..ba4201a6f3c69753 100644
-> --- a/tools/perf/util/Build
-> +++ b/tools/perf/util/Build
-> @@ -171,6 +171,7 @@ perf-util-$(CONFIG_PERF_BPF_SKEL) +=3D bpf_off_cpu.o
->  perf-util-$(CONFIG_PERF_BPF_SKEL) +=3D bpf-filter.o
->  perf-util-$(CONFIG_PERF_BPF_SKEL) +=3D bpf-filter-flex.o
->  perf-util-$(CONFIG_PERF_BPF_SKEL) +=3D bpf-filter-bison.o
-> +perf-util-$(CONFIG_PERF_BPF_SKEL) +=3D bpf-trace-summary.o
->  perf-util-$(CONFIG_PERF_BPF_SKEL) +=3D btf.o
->
->  ifeq ($(CONFIG_LIBTRACEEVENT),y)
-> diff --git a/tools/perf/util/bpf-trace-summary.c b/tools/perf/util/bpf-tr=
-ace-summary.c
-> new file mode 100644
-> index 0000000000000000..7e8b1c9b3faeee4f
-> --- /dev/null
-> +++ b/tools/perf/util/bpf-trace-summary.c
-> @@ -0,0 +1,117 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#include <inttypes.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +
-> +#include "syscalltbl.h"
-> +#include "util/trace.h"
-> +#include "util/util.h"
-> +#include <bpf/bpf.h>
-> +#include <linux/time64.h>
-> +
-> +#include "bpf_skel/syscall_summary.h"
-> +#include "bpf_skel/syscall_summary.skel.h"
-> +
-> +
-> +static struct syscall_summary_bpf *skel;
-> +
-> +int trace_prepare_bpf_summary(void)
-> +{
-> +       skel =3D syscall_summary_bpf__open_and_load();
-> +       if (skel =3D=3D NULL) {
-> +               fprintf(stderr, "failed to load syscall summary bpf skele=
-ton\n");
-> +               return -1;
-> +       }
-> +
-> +       if (syscall_summary_bpf__attach(skel) < 0) {
-> +               fprintf(stderr, "failed to attach syscall summary bpf ske=
-leton\n");
-> +               return -1;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +void trace_start_bpf_summary(void)
-> +{
-> +       skel->bss->enabled =3D 1;
-> +}
-> +
-> +void trace_end_bpf_summary(void)
-> +{
-> +       skel->bss->enabled =3D 0;
-> +}
-> +
-> +struct syscall_data {
-> +       int syscall_nr;
-> +       struct syscall_stats stats;
-> +};
-> +
-> +static int datacmp(const void *a, const void *b)
-> +{
-> +       const struct syscall_data *sa =3D a;
-> +       const struct syscall_data *sb =3D b;
-> +
-> +       return sa->stats.total_time > sb->stats.total_time ? -1 : 1;
-> +}
-> +
-> +int trace_print_bpf_summary(struct syscalltbl *sctbl, FILE *fp)
-> +{
-> +       struct syscall_key *prev_key, key;
-> +       struct syscall_data *data =3D NULL;
-> +       struct bpf_map *map =3D skel->maps.syscall_stats_map;
-> +       int nr_data =3D 0;
-> +       int printed =3D 0;
-> +
-> +       /* get stats from the bpf map */
-> +       prev_key =3D NULL;
-> +       while (!bpf_map__get_next_key(map, prev_key, &key, sizeof(key))) =
-{
-> +               struct syscall_stats stat;
-> +
-> +               if (!bpf_map__lookup_elem(map, &key, sizeof(key), &stat, =
-sizeof(stat), 0)) {
-> +                       struct syscall_data *tmp, *pos;
-> +
-> +                       tmp =3D realloc(data, sizeof(*data) * (nr_data + =
-1));
-> +                       if (tmp =3D=3D NULL)
-> +                               break;
-> +
-> +                       data =3D tmp;
-> +                       pos =3D &data[nr_data++];
-> +
-> +                       pos->syscall_nr =3D key.nr;
-> +                       memcpy(&pos->stats, &stat, sizeof(stat));
-> +               }
-> +
-> +               prev_key =3D &key;
-> +       }
-> +
-> +       qsort(data, nr_data, sizeof(*data), datacmp);
-> +
-> +       printed +=3D fprintf(fp, "\n");
-> +
-> +       printed +=3D fprintf(fp, "   syscall            calls  errors  to=
-tal       min       avg       max       stddev\n");
-> +       printed +=3D fprintf(fp, "                                     (m=
-sec)    (msec)    (msec)    (msec)        (%%)\n");
-> +       printed +=3D fprintf(fp, "   --------------- --------  ------ ---=
------ --------- --------- ---------     ------\n");
-> +
-> +       for (int i =3D 0; i < nr_data; i++) {
-> +               struct syscall_data *pos =3D &data[i];
-> +               double total =3D (double)(pos->stats.total_time) / NSEC_P=
-ER_MSEC;
-> +               double min =3D (double)(pos->stats.min_time) / NSEC_PER_M=
-SEC;
-> +               double max =3D (double)(pos->stats.max_time) / NSEC_PER_M=
-SEC;
-> +               double avg =3D total / pos->stats.count;
-> +
-> +               printed +=3D fprintf(fp, "   %-15s", syscalltbl__name(sct=
-bl, pos->syscall_nr));
-> +               printed +=3D fprintf(fp, " %8u %6u %9.3f %9.3f %9.3f %9.3=
-f %9.2f%%\n",
-> +                                  pos->stats.count, pos->stats.error, to=
-tal, min, avg, max,
-> +                                  /*stddev=3D*/0.0);
-> +       }
+On 2/24/25 19:02, Shakeel Butt wrote:
+> On Mon, Feb 24, 2025 at 05:13:25PM +0100, Vlastimil Babka wrote:
+>> Hi,
+>> 
+>> I'd like to propose a session about the SLUB allocator.
+>> 
+>> Mainly I would like to discuss the addition of the sheaves caching layer,
+>> the latest RFC posted at [1].
+>> 
+>> The goals of that work is to:
+>> 
+>> - Reduce fastpath overhead. The current freeing fastpath only can be used if
+>> the same target slab is still the cpu slab, which can be only expected for a
+>> very short term allocations. Further improvements should come from the new
+>> local_trylock_t primitive.
+>> 
+>> - Improve efficiency of users such as like maple tree, thanks to more
+>> efficient preallocations, and kfree_rcu batching/reusal
+>> 
+>> - Hopefully also facilitate further changes needed for bpf allocations, also
+>> via local_trylock_t, that could possibly extend to the other parts of the
+>> implementation as needed.
+>> 
+>> The controversial discussion points I expect about this approach are:
+>> 
+>> - Either sheaves will not support NUMA restrictions (as in current RFC), or
+>> bring back the alien cache flushing issues of SLAB (or there's a better idea?)
+>> 
+>> - Will it be possible to eventually have sheaves enabled for every cache and
+>> replace the current slub's fastpaths with it? Arguably these are also not
+>> very efficient when NUMA-restricted allocations are requested for varying
+>> NUMA nodes (cpu slab is flushed if it's from a wrong node, to load a slab
+>> from the requested node).
+>> 
+>> Besides sheaves, I'd like to summarize recent kfree_rcu() changes and we
+>> could discuss further improvements to that.
+>> 
+>> Also we can discuss what's needed to support bpf allocations. I've talked
+>> about it last year, but then focused on other things, so Alexei has been
+>> driving that recently (so far in the page allocator).
+> 
+> What about pre-memcg-charged sheaves? We had to disable memcg charging
+> of some kernel allocations
 
-What is the behavior here if there is greater than 1 type of system
-call ABI happening? For example, if you run a 32-bit and 64-bit binary
-simultaneously while tracing system wide. Perhaps the BPF doing the
-stats on the kernel side means this just works. Perhaps the system
-call names are going to be messed up.
+You mean due to bad performance? Which ones for example? Was the overhead
+due to accounting of how much is charged, or due to the associating memcgs
+with objects?
 
-Ideally I'd like:
-https://lore.kernel.org/lkml/20250219185657.280286-1-irogers@google.com/
-merged to avoid a rebase on this, and trying to tackle any issues this
-change introduces for that series.
+> and I think sheaves can help in reenabling
+> it.
 
-Thanks,
-Ian
+You mean by mean having separate sheaves per memcg? Wouldn't that mean
+risking that too many objects could be cached in them, we'd have to flush
+eventually e.g. the least recently used ones, etc? Or do you mean some other
+scheme?
 
-> +
-> +       printed +=3D fprintf(fp, "\n\n");
-> +       free(data);
-> +
-> +       return printed;
-> +}
-> +
-> +void trace_cleanup_bpf_summary(void)
-> +{
-> +       syscall_summary_bpf__destroy(skel);
-> +}
-> diff --git a/tools/perf/util/bpf_skel/syscall_summary.bpf.c b/tools/perf/=
-util/bpf_skel/syscall_summary.bpf.c
-> new file mode 100644
-> index 0000000000000000..e573ce39de73eaf3
-> --- /dev/null
-> +++ b/tools/perf/util/bpf_skel/syscall_summary.bpf.c
-> @@ -0,0 +1,109 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Trace raw_syscalls tracepoints to collect system call statistics.
-> + */
-> +
-> +#include "vmlinux.h"
-> +#include "syscall_summary.h"
-> +
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +/* This is to calculate a delta between sys-enter and sys-exit for each =
-thread */
-> +struct syscall_trace {
-> +       int nr; /* syscall number is only available at sys-enter */
-> +       int unused;
-> +       u64 timestamp;
-> +};
-> +
-> +#define MAX_ENTRIES    (16 * 1024)
-> +
-> +struct syscall_trace_map {
-> +       __uint(type, BPF_MAP_TYPE_HASH);
-> +       __type(key, int); /* tid */
-> +       __type(value, struct syscall_trace);
-> +       __uint(max_entries, MAX_ENTRIES);
-> +} syscall_trace_map SEC(".maps");
-> +
-> +struct syscall_stats_map {
-> +       __uint(type, BPF_MAP_TYPE_HASH);
-> +       __type(key, struct syscall_key);
-> +       __type(value, struct syscall_stats);
-> +       __uint(max_entries, MAX_ENTRIES);
-> +} syscall_stats_map SEC(".maps");
-> +
-> +int enabled; /* controlled from userspace */
-> +
-> +static void update_stats(int nr, s64 duration, long ret)
-> +{
-> +       struct syscall_key key =3D { .nr =3D nr, };
-> +       struct syscall_stats *stats;
-> +
-> +       stats =3D bpf_map_lookup_elem(&syscall_stats_map, &key);
-> +       if (stats =3D=3D NULL) {
-> +               struct syscall_stats zero =3D {};
-> +
-> +               bpf_map_update_elem(&syscall_stats_map, &key, &zero, BPF_=
-NOEXIST);
-> +               stats =3D bpf_map_lookup_elem(&syscall_stats_map, &key);
-> +               if (stats =3D=3D NULL)
-> +                       return;
-> +       }
-> +
-> +       __sync_fetch_and_add(&stats->count, 1);
-> +       if (ret < 0)
-> +               __sync_fetch_and_add(&stats->error, 1);
-> +
-> +       if (duration > 0) {
-> +               __sync_fetch_and_add(&stats->total_time, duration);
-> +               if (stats->max_time < duration)
-> +                       stats->max_time =3D duration;
-> +               if (stats->min_time > duration || stats->min_time =3D=3D =
-0)
-> +                       stats->min_time =3D duration;
-> +       }
-> +
-> +       return;
-> +}
-> +
-> +SEC("tp_btf/sys_enter")
-> +int sys_enter(u64 *ctx)
-> +{
-> +       int tid;
-> +       struct syscall_trace st;
-> +
-> +       if (!enabled)
-> +               return 0;
-> +
-> +       st.nr =3D ctx[1]; /* syscall number */
-> +       st.unused =3D 0;
-> +       st.timestamp =3D bpf_ktime_get_ns();
-> +
-> +       tid =3D bpf_get_current_pid_tgid();
-> +       bpf_map_update_elem(&syscall_trace_map, &tid, &st, BPF_ANY);
-> +
-> +       return 0;
-> +}
-> +
-> +SEC("tp_btf/sys_exit")
-> +int sys_exit(u64 *ctx)
-> +{
-> +       int tid;
-> +       long ret =3D ctx[1]; /* return value of the syscall */
-> +       struct syscall_trace *st;
-> +       s64 delta;
-> +
-> +       if (!enabled)
-> +               return 0;
-> +
-> +       tid =3D bpf_get_current_pid_tgid();
-> +       st =3D bpf_map_lookup_elem(&syscall_trace_map, &tid);
-> +       if (st =3D=3D NULL)
-> +               return 0;
-> +
-> +       delta =3D bpf_ktime_get_ns() - st->timestamp;
-> +       update_stats(st->nr, delta, ret);
-> +
-> +       bpf_map_delete_elem(&syscall_trace_map, &tid);
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> diff --git a/tools/perf/util/bpf_skel/syscall_summary.h b/tools/perf/util=
-/bpf_skel/syscall_summary.h
-> new file mode 100644
-> index 0000000000000000..644dc7049377147e
-> --- /dev/null
-> +++ b/tools/perf/util/bpf_skel/syscall_summary.h
-> @@ -0,0 +1,18 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +/* Data structures shared between BPF and tools. */
-> +#ifndef UTIL_BPF_SKEL_SYSCALL_SUMMARY_H
-> +#define UTIL_BPF_SKEL_SYSCALL_SUMMARY_H
-> +
-> +struct syscall_key {
-> +       int nr;
-> +};
-> +
-> +struct syscall_stats {
-> +       u64 total_time;
-> +       u64 max_time;
-> +       u64 min_time;
-> +       u32 count;
-> +       u32 error;
-> +};
-> +
-> +#endif /* UTIL_BPF_SKEL_SYSCALL_SUMMARY_H */
-> diff --git a/tools/perf/util/trace.h b/tools/perf/util/trace.h
-> new file mode 100644
-> index 0000000000000000..4d7a7c4544d94caf
-> --- /dev/null
-> +++ b/tools/perf/util/trace.h
-> @@ -0,0 +1,31 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef UTIL_TRACE_H
-> +#define UTIL_TRACE_H
-> +
-> +#include <stdio.h>  /* for FILE */
-> +
-> +struct syscalltbl;
-> +
-> +#ifdef HAVE_BPF_SKEL
-> +
-> +int trace_prepare_bpf_summary(void);
-> +void trace_start_bpf_summary(void);
-> +void trace_end_bpf_summary(void);
-> +int trace_print_bpf_summary(struct syscalltbl *sctbl, FILE *fp);
-> +void trace_cleanup_bpf_summary(void);
-> +
-> +#else /* !HAVE_BPF_SKEL */
-> +
-> +static inline int trace_prepare_bpf_summary(void) { return -1; }
-> +static inline void trace_start_bpf_summary(void) {}
-> +static inline void trace_end_bpf_summary(void) {}
-> +static inline int trace_print_bpf_summary(struct syscalltbl *sctbl __may=
-be_unused,
-> +                                         FILE *fp __maybe_unused)
-> +{
-> +       return 0;
-> +}
-> +static inline void trace_cleanup_bpf_summary(void) {}
-> +
-> +#endif /* HAVE_BPF_SKEL */
-> +
-> +#endif /* UTIL_TRACE_H */
-> --
-> 2.48.1.601.g30ceb7b040-goog
->
+Thanks, Vlastimil
 
