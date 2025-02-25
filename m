@@ -1,145 +1,160 @@
-Return-Path: <bpf+bounces-52498-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52499-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C956A43C5C
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 11:56:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91F62A43E2A
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 12:48:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF2CF1778DC
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 10:56:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA044188514D
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 11:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A9332676C9;
-	Tue, 25 Feb 2025 10:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="llW/+8+M"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998472690F9;
+	Tue, 25 Feb 2025 11:47:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx.ssi.bg (mx.ssi.bg [193.238.174.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74113266EFA;
-	Tue, 25 Feb 2025 10:56:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82015268C64;
+	Tue, 25 Feb 2025 11:46:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740480976; cv=none; b=ttfdHO+hUiqNcQ12KbTT25DA+vSmJz97AyWynAxrZsKhpxjKwQNN5ph789SoY0p3muW/Ciits19nqv879xVUGyGl5u/Prj8i1D9S9sfJ+8bANXu9uczZgM3wDVnHJGVC3vyoV3GS74J7cWgBKNJUBb+PQbFctBx5+7oyOlCQ0iY=
+	t=1740484020; cv=none; b=PJAHCKT9aUmxHh4LbIXTNbzo2F0hVP4R7ldZgYm8qRUoZ9bqws53JHi5DPIWNZotT/mxrhIXRFuWI0uyGaey430qQw4uKpYQXIMcavDDggoIH9cGzepcV+l3tbRRJpjVChnRZUkFaxPxBuEl22+BVqDgE2Nh5hCZnvdZl/11yJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740480976; c=relaxed/simple;
-	bh=qk5AiaQz6PdkbWGnVQkm4jx/jLxIyHU0t509oubQRbY=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=TMrnvnLAub4XbYELnE0cYremmnQqDnlhWOUCkk+sFGSE48Q8BR7L+ATjFpRXSfyCTtEfgEKRDhofXBdv7EJ0UYdklChIsDPKUZYGrZaw6k24NfXo5ul+g/6ib5S/Tey6j2aeXToWr3Wvun9Ds/16nESzpwSukG108/8dMucPloI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (4096-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=llW/+8+M; arc=none smtp.client-ip=193.238.174.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ssi.bg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
-Received: from mx.ssi.bg (localhost [127.0.0.1])
-	by mx.ssi.bg (Potsfix) with ESMTP id 4D3D023481;
-	Tue, 25 Feb 2025 12:56:04 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ssi.bg; h=cc:cc
-	:content-type:content-type:date:from:from:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=ssi;
-	 bh=TipT1tkO6RZzYUIkmyaB+EXc3EJaKclBzOrQySYWfSE=; b=llW/+8+M/+l1
-	+TXSWE8GrBA8ZI1xe5YEwHI8hAT8ywfSUfgmt2cdETi3wH+H+ceCHyQ55stwa2Ks
-	xE71Q5YPcKf+T251DYi6puxgn7bTZDgBpjsi1v/P++ItfQHAPqbdBKqXbpfBPQhL
-	LeFHH4GCD2jx+AhQAqneSC+zBR4mVaNQqXW4NA/TAsulXmIjzcCH+xoGhUlbjM5q
-	08tMYiKspFKUz9kjNk1CasyfMyd/Ffgg4RaZ0UA3Yl6FoufpMlukU/mMd1GHy+mX
-	grBZ0THRTC9aB8RvvfZ1nGJXh8d8QzoTjOfmc+AGKI/IEZK0CJ5ELTL7vxb+uK8Q
-	zi8+B7r5m0oDK+8gm9d/MJyrj3p0IoawPVQ1aQt7GMUkp77ce/0Cr29APFHeJUlV
-	L33fKDQUv00VQb6ejcSGACISXkKgJ2xshIb5YrxTTTU/nw5xlUsrUa/IfgJvoQZC
-	zGOkg8xgd887ORdaimnJNBMjMC5zfozklbd7ZeLqWOQKTxL7muWon2zivcFAMcba
-	qGThLux1Qk/EyRctBthZ8ibwtGl0pyTg0Jgu6LX428Pjpdggx4UC4uVGgUk90I3B
-	wT+YAEZhUMhfIUj6C18J7itG2ksH+dQodILiZqd5+sN/AAr5wgF0vzJqbOSNHCzX
-	VZdYr7hrIw6HDkPVNWXOKiVeh50d560=
-Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
-	by mx.ssi.bg (Potsfix) with ESMTPS;
-	Tue, 25 Feb 2025 12:56:03 +0200 (EET)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by ink.ssi.bg (Postfix) with ESMTPSA id C2AC11709E;
-	Tue, 25 Feb 2025 12:55:52 +0200 (EET)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.18.1/8.17.1) with ESMTP id 51PAte3H025739;
-	Tue, 25 Feb 2025 12:55:42 +0200
-Date: Tue, 25 Feb 2025 12:55:40 +0200 (EET)
-From: Julian Anastasov <ja@ssi.bg>
-To: Philo Lu <lulie@linux.alibaba.com>
-cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
-        asml.silence@gmail.com, willemb@google.com, almasrymina@google.com,
-        chopps@labn.net, aleksander.lobakin@intel.com,
-        nicolas.dichtel@6wind.com, dust.li@linux.alibaba.com,
-        hustcat@gmail.com, horms@verge.net.au, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 net] ipvs: Always clear ipvs_property flag in
- skb_scrub_packet()
-In-Reply-To: <20250222033518.126087-1-lulie@linux.alibaba.com>
-Message-ID: <61a40de5-3b11-e84b-90a5-fefd8da3bb23@ssi.bg>
-References: <20250222033518.126087-1-lulie@linux.alibaba.com>
+	s=arc-20240116; t=1740484020; c=relaxed/simple;
+	bh=0AVg+PqMZwCn6ffLSDS5fWOyG7qaHKlj438PbjbBKUY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K8oU7WQTpPS5o8tJ1/AVLdgj8vnv9q1eBxFJwysUZKAslWnrofXgbkHpDbz5N29BmseHSRm2QtP/AjeRF2xubudVNx4/fp1MXsNpUG2fYvEgl97aVCXI0n1TRUnjSFEFQQJ/dtOCiS/1lwBbzBwdp7SVXi4ZHgx312G7CyyerYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5ded368fcd9so7906641a12.1;
+        Tue, 25 Feb 2025 03:46:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740484017; x=1741088817;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WnmpmMtgyV/RpBxxJNHh9adjrFRxaDmV/HVToi6KENU=;
+        b=Kp2TseC4bx0lAIlzhqMVxjEgtg5EkQwiHbndVuG+RFxbzrspvodpERuU36rlKXazdh
+         4bPtm1zBC+p2ekFAgf8jvIpG9VGJ4ivL9awf3gpA8Rr3hCkA3GjDMZudSiBR46Rhoh09
+         jIOYzwJkoIFIJNcvrdsCUlyD/9H/AX9XyUjJpLxWtYhO635n2G3MINYPA11FH6mOFk2P
+         4hYSWfcEt9N5axzLliaHCG8Xs+YeZuvd0284Z1G4WV0ez33r1c0qaaUtS5BKyI1xwM1L
+         lSDKXw/LfJFdXZDtHOrWgdJuSYClZvSJAVpY+Rvr9wgChGW/qCqgAkp2hHoNxeA+7QCW
+         8esg==
+X-Forwarded-Encrypted: i=1; AJvYcCUCaTs8mHHebYMuVV8qdwr9xtZBUDIBuTB8tRxi9BYfNJEafxViaPer3t3Edfz1H2GXtSI/wbovtzR3Zo5e@vger.kernel.org, AJvYcCUPyTiJa2xLF5hn3ce5gTUgFqsXw8BzhamcJruVogy6kMK3b6mxBPNBUlF3v7cgzVfZ1uNWJW2RkVIINIsRDdA89BIF@vger.kernel.org, AJvYcCVcIJdp+ERMGsntCURR9Y5xZ4Qj2Ir7HEvUsBge8PI/IZ9DXniMqS3+7G0mpEhbu7bIiFs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwjAX+tn9t1vxRriVP38Emr1oBZPenbWG/rwxLulXfWq529M1e
+	fLcd1kpx+lnvX57ZmBSl90SaWVJkjPBYZ6rEGg5araNRWuKpXMDzbLPv0A==
+X-Gm-Gg: ASbGncsV/ACbAV3IMM8WlU2u9VM0LH/rA+figvYEOc1mdL5n7zaBX+NtvQvwttB31iu
+	RDr2yyN4hl/QnvkMT5yO76D+W2cDipaQUjoan89qX7ZmWm1qROCR+Y5EZ4+l65ue9FUR9agRJbI
+	+4g2QUhjqMR0KOO8oOGNcZhYh84YQORe51sO5pwf67mwRZU2qatNyewD9iqPP7ieUeoT3oZF/I/
+	CRFnMoL1oXhBGr7vDBdv9iL5GzSDL+jjIRFu2hP4yK3mMzn4Rv/M+Qcxy/Y+ZAHUCcL/gH/+R1K
+	CEcgsSCsd6DaF2bp
+X-Google-Smtp-Source: AGHT+IH/rGv667ezHBwpRbWaGnx2NOPOuCNeGDXskfDoS9UGlpsfrLje1MDh0pGnfrPTeCMlekZVhw==
+X-Received: by 2002:a05:6402:13d2:b0:5de:c9d0:673b with SMTP id 4fb4d7f45d1cf-5e0b70b6f86mr16417676a12.1.1740484016465;
+        Tue, 25 Feb 2025 03:46:56 -0800 (PST)
+Received: from gmail.com ([2a03:2880:30ff:7::])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e45ab9866csm1086076a12.32.2025.02.25.03.46.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Feb 2025 03:46:55 -0800 (PST)
+Date: Tue, 25 Feb 2025 03:46:53 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+	peterz@infradead.org, oleg@redhat.com, rostedt@goodmis.org,
+	mhiramat@kernel.org, mingo@kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jolsa@kernel.org, paulmck@kernel.org
+Subject: Re: [PATCH v3 tip/perf/core 2/2] uprobes: SRCU-protect uretprobe
+ lifetime (with timeout)
+Message-ID: <20250225-transparent-bronze-cobra-bafff4@leitao>
+References: <20241024044159.3156646-1-andrii@kernel.org>
+ <20241024044159.3156646-3-andrii@kernel.org>
+ <20250224-impressive-onyx-boa-36e85d@leitao>
+ <CAEf4BzbupJe10k0MROG5iZq6cYu6PRoN3sHhNK=L7eDLOULvNQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbupJe10k0MROG5iZq6cYu6PRoN3sHhNK=L7eDLOULvNQ@mail.gmail.com>
 
+Hello Andrii,
 
-	Hello,
-
-On Sat, 22 Feb 2025, Philo Lu wrote:
-
-> We found an issue when using bpf_redirect with ipvs NAT mode after
-> commit ff70202b2d1a ("dev_forward_skb: do not scrub skb mark within
-> the same name space"). Particularly, we use bpf_redirect to return
-> the skb directly back to the netif it comes from, i.e., xnet is
-> false in skb_scrub_packet(), and then ipvs_property is preserved
-> and SNAT is skipped in the rx path.
+On Mon, Feb 24, 2025 at 02:23:51PM -0800, Andrii Nakryiko wrote:
+> On Mon, Feb 24, 2025 at 4:23 AM Breno Leitao <leitao@debian.org> wrote:
+> >
+> > Hello Andrii,
+> >
+> > On Wed, Oct 23, 2024 at 09:41:59PM -0700, Andrii Nakryiko wrote:
+> > >
+> > > +static struct uprobe* hprobe_expire(struct hprobe *hprobe, bool get)
+> > > +{
+> > > +     enum hprobe_state hstate;
+> > > +
+> > > +     /*
+> > > +      * return_instance's hprobe is protected by RCU.
+> > > +      * Underlying uprobe is itself protected from reuse by SRCU.
+> > > +      */
+> > > +     lockdep_assert(rcu_read_lock_held() && srcu_read_lock_held(&uretprobes_srcu));
+> >
+> > I am hitting this warning in d082ecbc71e9e ("Linux 6.14-rc4") on
+> > aarch64. I suppose this might happen on x86 as well, but I haven't
+> > tested.
+> >
+> >         WARNING: CPU: 28 PID: 158906 at kernel/events/uprobes.c:768 hprobe_expire (kernel/events/uprobes.c:825)
+> >
+> >         Call trace:
+> >         hprobe_expire (kernel/events/uprobes.c:825) (P)
+> >         uprobe_copy_process (kernel/events/uprobes.c:691 kernel/events/uprobes.c:2103 kernel/events/uprobes.c:2142)
+> >         copy_process (kernel/fork.c:2636)
+> >         kernel_clone (kernel/fork.c:2815)
+> >         __arm64_sys_clone (kernel/fork.c:? kernel/fork.c:2926 kernel/fork.c:2926)
+> >         invoke_syscall (arch/arm64/kernel/syscall.c:35 arch/arm64/kernel/syscall.c:49)
+> >         do_el0_svc (arch/arm64/kernel/syscall.c:139 arch/arm64/kernel/syscall.c:151)
+> >         el0_svc (arch/arm64/kernel/entry-common.c:165 arch/arm64/kernel/entry-common.c:178 arch/arm64/kernel/entry-common.c:745)
+> >         el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:797)
+> >         el0t_64_sync (arch/arm64/kernel/entry.S:600)
+> >
+> > I broke down that warning, and the problem is on related to
+> > rcu_read_lock_held(), since RCU read lock does not seem to be held in
+> > this path.
+> >
+> > Reading this code, RCU read lock seems to protect old hprobe, which
+> > doesn't seem so.
+> >
+> > I am wondering if we need to protect it properly, something as:
+> >
+> >         @@ -2089,7 +2092,9 @@ static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
+> >                                 return -ENOMEM;
+> >
+> >                         /* if uprobe is non-NULL, we'll have an extra refcount for uprobe */
+> >         +               rcu_read_lock();
+> >                         uprobe = hprobe_expire(&o->hprobe, true);
+> >         +               rcu_write_lock();
+> >
 > 
-> ipvs_property has been already cleared when netns is changed in
-> commit 2b5ec1a5f973 ("netfilter/ipvs: clear ipvs_property flag when
-> SKB net namespace changed"). This patch just clears it in spite of
-> netns.
+> I think this is not good enough. rcu_read_lock/unlock should be around
+> the entire for loop, because, technically, that return_instance can be
+> freed before we even get to hprobe_expire.
+
+re you suggesting that we should use an RCU read lock to protect the
+"traversal" of return_instances? In other words, is it currently being
+traversed unsafely, given that return_instance can be freed at any time?
+
+> So, just like we have guard(srcu)(&uretprobes_srcu); we should have
+> guard(rcu)();
 > 
-> Fixes: 2b5ec1a5f973 ("netfilter/ipvs: clear ipvs_property flag when SKB net namespace changed")
-> Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
+> Except, there is that kmemdup() hidden inside dup_return_instance(),
+> so we can't really do that.
 
-	Looks good to me, thanks!
+Right. kmemdup() is using GFP_KERNEL, which might sleep, so, it cannot
+be called using rcu read lock.
 
-Acked-by: Julian Anastasov <ja@ssi.bg>
-
-	It was safer to reset the flag when netns changes but
-it has role only before output device is reached or while
-packet is looped over lo device. New tunnel headers should
-be safe to reset it because nf ct and dst are dropped too.
-
-> ---
-> v1 -> v2:
->  - Add Fixes tag as suggested by Julian Anastasov
-> ---
->  net/core/skbuff.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 7b03b64fdcb2..b1c81687e9d8 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -6033,11 +6033,11 @@ void skb_scrub_packet(struct sk_buff *skb, bool xnet)
->  	skb->offload_fwd_mark = 0;
->  	skb->offload_l3_fwd_mark = 0;
->  #endif
-> +	ipvs_reset(skb);
->  
->  	if (!xnet)
->  		return;
->  
-> -	ipvs_reset(skb);
->  	skb->mark = 0;
->  	skb_clear_tstamp(skb);
->  }
-> -- 
-> 2.32.0.3.g01195cf9f
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
-
+Thanks
+--breno
 
