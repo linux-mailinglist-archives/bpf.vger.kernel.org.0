@@ -1,200 +1,109 @@
-Return-Path: <bpf+bounces-52507-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 530AEA440F9
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 14:37:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E2C8A4414D
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 14:51:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30CF37A6B34
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 13:34:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E0E53B591D
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 13:50:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53145269830;
-	Tue, 25 Feb 2025 13:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C753C26988C;
+	Tue, 25 Feb 2025 13:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c45E3FOn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fT3K2jTe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B27026772D;
-	Tue, 25 Feb 2025 13:35:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD782AF11
+	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 13:50:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740490544; cv=none; b=nu+9S6+yCPW/4pg/DLunl4Tdxy7raZQL54rKeqoaJdHw9bgtcfaipsgtWNTmr5JUbgMlY8ZD7oHnYkrRud5nPHZM3Fbt/GZtqWvgTysfb5hfRBdDy8bZeW80jX4PwkTqtgPmkpR+Xs4T9Au0pFHJkwVgLSaBetg1o8AvazH+juQ=
+	t=1740491434; cv=none; b=AdTngp62Cy0FA0AsZZhB5B5mbZdxXfsSfgmLdVQDvGQZk5A9K9Y5TS2MEvbuUIcbkp8+tQEoHfQNaZDGoEqMzfsRR4so1J6Hqk9MO27Bk3gAl4b8Fi1zCSqH7QLoWkCaa74mPNNNCAdTBzNI8Lc2w8f4cAxZ499qBjDarXksTVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740490544; c=relaxed/simple;
-	bh=ucXOOXen6EfBi1st8qEzQiNdZQ9t1hTv+Day5P0J/ko=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y3XoDrau+bMdkWIbEoqaBJPiFurHElEg4zvIvf3QfiZx5ETJePY1uwcDI1Zi66I2mc1xPPmSsiUcG0CLvORgwXKuyEaf3pvskPLwUA7cbXPxyU5jJ1/bSbiBpnHqeo6qdaow2BqyPh71k0r7ArPNs+yszdnYDv+YGE0azCihyLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c45E3FOn; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-38f2b7ce2f3so4058609f8f.0;
-        Tue, 25 Feb 2025 05:35:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740490540; x=1741095340; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tnPmEicx+PRAtzm6pe4Eno9ZF32qRgxFaSmqT4meCGw=;
-        b=c45E3FOn7uIwmzIAun9trZ3S+jvnEcc5Yt0tc5++jIknqFnCQSyQUxTiF176WYfXAg
-         kTYAjAKsckLHMuJASup+Cvtc/cu9H+mrNgWZDZPGCq0eEvOjAqCHr2KLzGXt3FITHquY
-         G2/fRJhp5XTrFX5szkcP3cg3csnQl5b6kT7hoe6iYMwREvOFA0F8xdUPMYVRdT2CNvmH
-         hIvUMNyQ0k5sWw1tzrMF2g67gdkWz4JeijesSOCbOrEtSn6MLU4bb4huEqSu3LWo0Elf
-         rSsoQPtDkZLF0zsrWlVFEDGetzPyO+td82OhmCmInxwHco8ZZWNQSGqFRpf44cGvuXFm
-         KHCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740490540; x=1741095340;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tnPmEicx+PRAtzm6pe4Eno9ZF32qRgxFaSmqT4meCGw=;
-        b=ZyJq/PeOexZMCUmr3HWdtLf8YbTJbp5LqO11Ez/2vh1pT+KEqvjlLry9PgfwXtA2jO
-         IpdgdOA/Cm2gmp9cG5CeGuBT16T6AgBWeHNHi4gfhTr6/4Pfq0IVfEEjZwH7w6KZR7w8
-         bocGCshzKPC1Ffj6eecv8aKBYrFcEDpk2m8Zc9tjfJcKKypUizzlzyh6U4ktJMj7QBKT
-         iYKUOMYcnNjNbkfQcu5buModQpiWqrv/5k5mqgCHyRx+8tT9mWDWCq5sA/D9wyhNd6RY
-         l8KG4aozHWP/8rT22KprARinmpqe3tg3m8j8Sj18RJNv9ADlRICs8s0NuRcMUlqe7LQ2
-         wPEg==
-X-Forwarded-Encrypted: i=1; AJvYcCUmA7AHSkxuwjCYIGBsghL9ejM+Z03G5nSkqkbt8jl91Wn1C5f4htVro+BhWDR+TNx4nPs=@vger.kernel.org, AJvYcCVyJQvnXVyQY58RFcMp/rfQ/LKO6BHRhSKvCMJWXpwvGZe5Yi4g5vabXKDImKIz4+aNdjJO/2Wg060n0wPv@vger.kernel.org, AJvYcCX3LHig6HX84PwxddqatUW6u4oo4Dsc5PIUjlf72OlqI4LsDikn5iRmYBfmH4X88FRXAwTNtpHZqgq4SoeUyqzoE4bR@vger.kernel.org
-X-Gm-Message-State: AOJu0YxftJHv2DEye53ZCv77rS+f+PDVln7i6peyGcYla5DanzSC+kTO
-	67EjvcXdVjn1POz1MJKMPt82I77Q7hoejgFmjlJlG9oUZz+/rIff
-X-Gm-Gg: ASbGncueQ1ulaxMQxMiMQGhZEgDR0d7sI6lMO76UfMSZqwRPh/Oj0sHa4CJ//y+a9MC
-	2EETSGcK/Ey6t/FQQhucZ0QbF9LTd3gddKZntF2a24xJac8l/gIQCCG1453v9M82VTO3rcqrhWv
-	TpFmRGjl6cmdAhmfl+6Z0kIo0p9ocjlhX0FkIUH4So5syErmwGJK8dsRvHw71iv4uz1TO+SNg2e
-	UR5t1dsgfHrDW2wfC9wytQJZk3dJoqi4d/VFNoFUCSUWUCLyWkDTyO1q2/ms7MKsWEA1kqmpoqC
-	PzFIoe6qXqotGkkr6Qs=
-X-Google-Smtp-Source: AGHT+IHycTtTcXq7MrkPyPlqMfLwfA3JqA0emRZEu9JW7bvsTOpXwu9WBSiB5eInJrlK4691Xip5Mg==
-X-Received: by 2002:a5d:6d8f:0:b0:38f:2111:f5ac with SMTP id ffacd0b85a97d-38f707b0941mr14871078f8f.31.1740490539972;
-        Tue, 25 Feb 2025 05:35:39 -0800 (PST)
-Received: from krava ([2a00:102a:5013:7b7d:132e:7dd4:845b:548e])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390cd86c992sm2294723f8f.27.2025.02.25.05.35.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Feb 2025 05:35:39 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 25 Feb 2025 14:35:36 +0100
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
-	X86 ML <x86@kernel.org>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
-Subject: Re: [PATCH RFCv2 08/18] uprobes/x86: Add uprobe syscall to speed up
- uprobe
-Message-ID: <Z73HDU5IZ5NV3BtM@krava>
-References: <20250224140151.667679-1-jolsa@kernel.org>
- <20250224140151.667679-9-jolsa@kernel.org>
- <CAADnVQJ_-7cB3OaeFWaupcq0fRPh3uP62HBGxq0QbyZsx3aHqA@mail.gmail.com>
+	s=arc-20240116; t=1740491434; c=relaxed/simple;
+	bh=vX46K+jCKSxOvIyi+hwWuxW2QdvD0i5rBgsDOn+4Qzc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EAfGuMzZ5NJrybbpyyIlM1cj8DSHg+AbXVbk48bpSG+X+xx7k4T9XRW8dVBq4JFtk+qIDnGRHkeLLPuprJTmpK+wjxshNLTAnKLrhubboBcSOJ18b8CPe2CR0ab6XOfTahZFJYI6nC1bCgr2kkms+1E2lI52vOn9KBfCm5G5BVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fT3K2jTe; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ebc973a9-2e61-4e3a-89e0-492823ded721@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740491430;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M/k8N0CQ0BerQ+X2864fL0JTRVq99i+a5ih7MzAWffQ=;
+	b=fT3K2jTeArShfJHozi8eN3Fjeq4uEvxpmEG2ZidNQWOL8duGzcTkfuX6GMfCsUEvhYHh/c
+	XJFKGsPJmz1+coiXn/+IW/RfUqu/Eub0yc+mxoxQrli28EptLSpFFYZyAsIcn3aLTpv9St
+	sF4WV5ys2v2LwspOW+i2dcdpQIMSTQA=
+Date: Tue, 25 Feb 2025 21:50:17 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH bpf-next v4 2/4] bpf: Improve error reporting for freplace
+ attachment failure
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>,
+ Eddy Z <eddyz87@gmail.com>, Manjusaka <me@manjusaka.me>,
+ kernel-patches-bot@fb.com
+References: <20250224153352.64689-1-leon.hwang@linux.dev>
+ <20250224153352.64689-3-leon.hwang@linux.dev>
+ <CAADnVQKOeKfxL_3tCw1xWNS1CpXz-6pVUG-1UWhZwpPjRy+32A@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leon Hwang <leon.hwang@linux.dev>
+In-Reply-To: <CAADnVQKOeKfxL_3tCw1xWNS1CpXz-6pVUG-1UWhZwpPjRy+32A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJ_-7cB3OaeFWaupcq0fRPh3uP62HBGxq0QbyZsx3aHqA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Feb 24, 2025 at 11:22:42AM -0800, Alexei Starovoitov wrote:
-> On Mon, Feb 24, 2025 at 6:08 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > +SYSCALL_DEFINE0(uprobe)
-> > +{
-> > +       struct pt_regs *regs = task_pt_regs(current);
-> > +       unsigned long bp_vaddr;
-> > +       int err;
-> > +
-> > +       err = copy_from_user(&bp_vaddr, (void __user *)regs->sp + 3*8, sizeof(bp_vaddr));
-> > +       if (err) {
-> > +               force_sig(SIGILL);
-> > +               return -1;
-> > +       }
-> > +
-> > +       /* Allow execution only from uprobe trampolines. */
-> > +       if (!in_uprobe_trampoline(regs->ip)) {
-> > +               force_sig(SIGILL);
-> > +               return -1;
-> > +       }
-> > +
-> > +       handle_syscall_uprobe(regs, bp_vaddr - 5);
-> > +       return 0;
-> > +}
-> > +
-> > +asm (
-> > +       ".pushsection .rodata\n"
-> > +       ".balign " __stringify(PAGE_SIZE) "\n"
-> > +       "uprobe_trampoline_entry:\n"
-> > +       "endbr64\n"
+
+
+On 2025/2/25 03:41, Alexei Starovoitov wrote:
+> On Mon, Feb 24, 2025 at 7:34 AM Leon Hwang <leon.hwang@linux.dev> wrote:
+>>
+>> @@ -3539,7 +3540,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>>                  */
+>>                 struct bpf_attach_target_info tgt_info = {};
+>>
+>> -               err = bpf_check_attach_target(NULL, prog, tgt_prog, btf_id,
+>> +               err = bpf_check_attach_target(log, prog, tgt_prog, btf_id,
+>>                                               &tgt_info);
 > 
-> why endbr is there?
-> The trampoline is called with a direct call.
-
-ok, that's wrong, will remove that
-
+> I still don't like this uapi addition.
 > 
-> > +       "push %rcx\n"
-> > +       "push %r11\n"
-> > +       "push %rax\n"
-> > +       "movq $" __stringify(__NR_uprobe) ", %rax\n"
+> It only helps a rare corner case of freplace usage:
+>                 /* If there is no saved target, or the specified target is
+>                  * different from the destination specified at load time, we
+>                  * need a new trampoline and a check for compatibility
+>                  */
 > 
-> To avoid introducing a new syscall for a very similar operation
-> can we disambiguate uprobe vs uretprobe via %rdi or
-> some other way?
-> imo not too late to change uretprobe api.
-> Maybe it was discussed already.
-
-yes, I recall discussing that early during uretprobe work with the decision to
-have separate syscalls for each uprobe and uretprobe.. however wrt recent seccomp
-changes, it might be easier just to add argument to uretprobe syscall to handle
-uprobe
-
-too bad it's not the other way around.. uprobe syscall with argument to do uretprobe
-would sound better
-
+> If it was useful in more than one case we could consider it,
+> but uapi addition for a single rare use, is imo wrong trade off.
 > 
-> > +       "syscall\n"
-> > +       "pop %rax\n"
-> > +       "pop %r11\n"
-> > +       "pop %rcx\n"
-> > +       "ret\n"
-> 
-> In later patches I see nop5 is replaced with a call to
-> uprobe_trampoline_entry, but which part saves
-> rdi and other regs?
-> Compiler doesn't automatically spill/fill around USDT's nop/nop5.
-> Selftest is doing:
-> +__naked noinline void uprobe_test(void)
-> so just lucky ?
 
-if you mean registers that would carry usdt arguments, ebpf programs
-access those based on assembler operand string stored in usdt record:
+Got it.
 
-  stapsdt              0x00000048       NT_STAPSDT (SystemTap probe descriptors)
-    Provider: test
-    Name: usdt3
-    Location: 0x0000000000712f2f, Base: 0x0000000002f516b0, Semaphore: 0x0000000003348ec2
-->  Arguments: -4@-1192(%rbp) -8@-1200(%rbp) 8@%rax
+I'm planning to implement a restrict version of
+"bpf: make tracing program support multi-link"[0]. With log buffer, it
+will be helpful to report the reason for declining attaching, especially
+to report the tracee info that causes the attachment failure.
 
-it's up to bpf program to know which register(+offset) to access, libbpf have all
-this logic hidden behind usdt_manager_attach_usdt and bpf_usdt_arg bpf call
+[0]
+https://lore.kernel.org/bpf/20240311093526.1010158-1-dongmenglong.8@bytedance.com/
 
-the trampoline only saves rcx/r11/rax, because they are changed by syscall instruction
+Thanks,
+Leon
 
-but actually I forgot to load these saved values (of rcx/r11/rax) and rsp into regs that
-are passed to ebpf program, (like we do in uretprobe syscall) will fix that in next version
-
-I'll add tests for optimized usdt with more arguments
-
-thanks,
-jirka
 
