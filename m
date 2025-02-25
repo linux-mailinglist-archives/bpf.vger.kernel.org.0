@@ -1,487 +1,210 @@
-Return-Path: <bpf+bounces-52535-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52536-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8F04A44701
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 17:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 766C7A44731
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 18:02:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01A718657AC
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 16:47:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4DA4865387
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 16:54:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9DA20D4F0;
-	Tue, 25 Feb 2025 16:44:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57248199938;
+	Tue, 25 Feb 2025 16:52:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HBrg/oT0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WPCW5Cqq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57CF920AF63
-	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 16:44:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E8DF1922E0
+	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 16:52:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740501883; cv=none; b=HvFZ3pOOgl0P1YxnPL1U9YTomYNENKeltc36F4A4zr4yjQZzJTTDsH15Ul95nfDYs+e2C6bKTPdMb0ugFdSYR41mg4JQAFhCIqb2TWobUgZECFbVwcZClptoaDKkfr99Y7SetRXPU9oSExuKH4tFE39F9dJb9hqXIJA4RTp6sTg=
+	t=1740502330; cv=none; b=A1OFaOhn/6LPIUWJ/6lvPCU0VVdl4oGks/f1hnauN0Rd1iSbrseGVOKtnqybe2Wmd3c5EdQtK1O6P221yNYzBaYvOVhX7nH7wAdhzZwckRbF2SzTiDSjV8C5KFvh9n4lAcBQjtS7/U3nGaoWKdVFYGSn3SxdcsmFrkFrsVeKIYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740501883; c=relaxed/simple;
-	bh=kJnD+0JaTLrFOyAxLZ70o0LwwXfWT6yvIZpu36g0Tjo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IU0bxjGCFAwQLM4yRwcoLa64vuibkOqLP35jmLcNWqhRsrGQtCt0J/FzEIGFb/3Xn+jtaTnmZHu5Yz8eYHoBmVjuQLRj1R9E4RfEysOWshhhxBYoNUjyqYK6p+jrkJok0ZxS5m8YDYOm6L1VoqK0+NuYVWAH4anrMYWBrbxcu4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HBrg/oT0; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-22117c396baso194115ad.1
-        for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 08:44:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1740501879; x=1741106679; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mGSs/JSI8SEUQCLYMu6kZkdG6dALsaStwDncGnOsLsM=;
-        b=HBrg/oT0SRysqSvBRimUWhHwWVeun7nUjcmMyBTrC4j1aXoLOTdnFPmISo7sSUZKMi
-         lULcj3dM/oTs6oPbFCoWg7Iunf6D/EMxaszNz0cDEEjmCnkTAEoj1g7R34E+lb7phOJt
-         5+L961ZDBABc/8AltUI4a/RsfLb6nV+Eg/U0/FMAoSQ7w1WeyEhB7a9x35Tkt4xSCDrW
-         IX7nortNx6hOyuVOC9ykRf5NILqL1yNIejiGSbDoIFB6kjpvd6A9Lhw6C0KBp1IivCbz
-         9szwvn16X6KH3VaEv9dI1KA0jtKNWRIZyQ+JLGpQzhzkkAPgjJHlk9pTw3eXkQPQrRAP
-         5rSQ==
+	s=arc-20240116; t=1740502330; c=relaxed/simple;
+	bh=WaOTSX/dac2eYQwFP2L+z/TxJ6Ld6Ufuk4bJoVQCwhQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cw48ZZmQl04qJi8RO4Ej/nT1PJl7hVdrxwSqaKJEEhJnjmI42RqcjdxS6dQKOsDvY8z0h7Kxk75GxxNGv17z5VypXvtb79g3pmll/cp+qhZNx4HMMBBKqMwqv+XOEx0Pdn9mD7sAzB6Ao20OqWA91w+Pjok+nrBKmXnFNQtXguw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WPCW5Cqq; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1740502328;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=bKG3lJ6XGxJL0ANA6UtDs0mGh93vIobyGu7CLp3uIcI=;
+	b=WPCW5CqqC/UPlG45J+OwuUrAbXsBqZT+qRKt8cGXMiDO4rTkochfzMj5GIkimNAjpFZ7PY
+	l19nl/Nd/vQjXY+GJpzi1M/NL5cJYYXmOaFaUBE7Wb6xJSRzT7Bcqk9wB9H0QJ4RwQG3Sj
+	hZqWhpZf4btyOJKrTFxgs7H7fOrABHk=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-516-tOnUHzKAOY2dP8b6yfU1bA-1; Tue, 25 Feb 2025 11:52:06 -0500
+X-MC-Unique: tOnUHzKAOY2dP8b6yfU1bA-1
+X-Mimecast-MFC-AGG-ID: tOnUHzKAOY2dP8b6yfU1bA_1740502325
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-439a0e28cfaso32344295e9.2
+        for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 08:52:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740501879; x=1741106679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mGSs/JSI8SEUQCLYMu6kZkdG6dALsaStwDncGnOsLsM=;
-        b=Jo19okO/+amExdQ7XWdZjY//NdVu+NbKphVlXgz7viJ+90R3LSUfpespqZvxextRCM
-         1kcOnDXkG/5t0C5Fb4FFu7h8acdpuKNXX6ZwIRYSPGFhh9zOG2AuH6TfmoNwVAsomTnG
-         yJTjJ+P5J87hHJ5Q7uI28URN/Ho7XSOzEpVobDg+9S//V36MS4zFizQmAYngW/yto48H
-         hmxEK4JAkviIYz4nChvaRCzzvD50juNrDo9NjzOo+ER19NNzP97bmRdk1mCGwA1l5FZ4
-         tUMvVEc20tl5fisnjGimbYt+75AG8uklNm4j9+vCpDCQwW/W/SRrdDDgNpEGSFaXgmZi
-         CTqA==
-X-Forwarded-Encrypted: i=1; AJvYcCV5vcN4t1Dvq/H+DMULFtcle7Wsf7r0e4E8/eHVlN2Q5nR9nIwoIxFd3BEW2haH0xqj1bQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2xeF3cO/w6yX2GTKo4HJT2xfXYSniVP7ESmQz9ZF1v2R3LJ9q
-	GZXtAYfiZDUpnWoQY46GLWPRSAuPwdZhNtf0LdNu4uz3JqDQo/Hkn2dHwM2a7nWBl8sh63iq8wb
-	shRP22PgMNniMCjs004Mt8KpMD15Pknt54uRX
-X-Gm-Gg: ASbGncs0wCxpR4qVvOTyf9+vWTUv6/lVPDWpkBIg2jGp1GyjN7DlkAYKOiWcspVrDdn
-	5AqaQM4xU3jC6cdv3t3vNhzEIeQ7WWgy7M93ccIvftvC219hoSgLJENrnGbH6d5sN86K18ssiZs
-	WkqAieB8roqDj4WAUZQ0p8Xqj61Zb9+Weuq1Y=
-X-Google-Smtp-Source: AGHT+IHfLN0CJT0NjsZF0SbQ2PniysFKbdfeS7mbnxQfY/V/txeRKepNOzJvQ9J1WAoiISRI3YrpMOYOm7/Kcuc34Hg=
-X-Received: by 2002:a17:902:db10:b0:21f:2306:e453 with SMTP id
- d9443c01a7336-22307a3d994mr3582995ad.7.1740501877848; Tue, 25 Feb 2025
- 08:44:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740502325; x=1741107125;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bKG3lJ6XGxJL0ANA6UtDs0mGh93vIobyGu7CLp3uIcI=;
+        b=qz7lhfRC68nXl26oT+G+mNHIWHVO+tZKlQTtV9cPKSdbU2svGNdKXskg6e4nUD1/qg
+         mBHEaw3HLSKIfdLo9LSW5hZCzxvcHxGcWg2J4lbB80AgbVW31QUfekRe4d04452zu/nG
+         oGQSIWBOUUaBt2YtUTSfOQm5CmX+TPnt30md31rCQ3mZangePXn5TcN//UFcN4HfA/L8
+         fXvsriaRG/7462oTsrb7goRmuP924kTrtrzdMokC9dAproryK2yDY7DpHIUaK6vweaQV
+         y11zBevdd1T6XPCu9N541E/YKyHP13UlOWCf3GWXVJ2z0ELJiqiV5jCnp+Hk2F3EBXD0
+         wXIw==
+X-Forwarded-Encrypted: i=1; AJvYcCXtQxYS0cXi43fpFDqbnNGS1kNvFlGZT4quluqLOIeuFxAF7ilH8vB5z/XRnc1/lD6WXSY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzvdOVxSIe09ozAigK/YLLM16TGTsAKezZUYQoUuV5F5br4OAe
+	w1xnjE0RYkF3RkBrUymGWAW3/DPwlJmPAEOo1L+YraflhJeXEsK3/lWmUp6v2E1lvgQzMgJB2Bt
+	zEbvkt023a78lExFDo9RKdRbfOKtkEoLeMApWpY9bIYYlrWo72Q==
+X-Gm-Gg: ASbGncvyoswBu6D5t+5crJn4GuuuyJy7Am7SpAia04i5Zbtd+uQSTC5fIy0N2zeOLAr
+	7q8g0oheFlR238VRR4SDW6beOS2vplsmGoyFW1cb9/ik5TIYy8v8RxnyQDTM/GBobpeSqqVZnyI
+	xYRwXFaSIwcEMy1VitXFGo6jZg6sTc/gctrSq5A25D8Yj5I4lmpKuA0jiEOoJk7h4DVthzpXkCQ
+	2UN69GVNVKuxqGDGNS+8RXBukFW9k1F81AwdqkUoJZZBic95MD+cqRXHGO9vfI8Gyx628y0k9et
+	eVMJWnG0gqaDsuQBSiCU3JwPYYhDkcm7BEWhZI00ZiBDN+ofPvNuYGfhf8YBUM0hckuabKmxIeN
+	vbvtp8+C86+TAXqgp4CNu60FqzPNibpNQ0RCdE4g7fMk=
+X-Received: by 2002:a05:600c:35cb:b0:439:942c:c1cd with SMTP id 5b1f17b1804b1-43ab0f41698mr37867435e9.15.1740502325383;
+        Tue, 25 Feb 2025 08:52:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHljYM5LDB+6z8VmxkY/Ka0ybiTSVXRSDwfAnYs6o4Obsa+n4MgVzk0kq9a5L9+j1Zaxe0fDA==
+X-Received: by 2002:a05:600c:35cb:b0:439:942c:c1cd with SMTP id 5b1f17b1804b1-43ab0f41698mr37867195e9.15.1740502324957;
+        Tue, 25 Feb 2025 08:52:04 -0800 (PST)
+Received: from ?IPV6:2003:cb:c73e:aa00:c9db:441d:a65e:6999? (p200300cbc73eaa00c9db441da65e6999.dip0.t-ipconnect.de. [2003:cb:c73e:aa00:c9db:441d:a65e:6999])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43ab153a3f9sm31936415e9.11.2025.02.25.08.52.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Feb 2025 08:52:04 -0800 (PST)
+Message-ID: <3dc4bb80-0beb-4bbb-bfd8-47fc096f70e9@redhat.com>
+Date: Tue, 25 Feb 2025 17:52:02 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250225075929.900995-1-namhyung@kernel.org>
-In-Reply-To: <20250225075929.900995-1-namhyung@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 25 Feb 2025 08:44:26 -0800
-X-Gm-Features: AWEUYZlyy0R7OVA4dyKqHRMJGSB5LQ4A4TKH9eQBnOo-S1n7wGoFbXKFQtvfQ8M
-Message-ID: <CAP-5=fW+48MMa13weoC2FE7Vt1UTVEO7uza5Kyi_NHZKDfZ9vA@mail.gmail.com>
-Subject: Re: [RFC/PATCH] perf lock contention: Add -J/--inject-delay option
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: emery@cs.umass.edu, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>, bpf@vger.kernel.org, 
-	Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 01/12] mm: introduce AS_NO_DIRECT_MAP
+To: Patrick Roy <roypat@amazon.co.uk>, rppt@kernel.org, seanjc@google.com
+Cc: pbonzini@redhat.com, corbet@lwn.net, willy@infradead.org,
+ akpm@linux-foundation.org, song@kernel.org, jolsa@kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, Liam.Howlett@oracle.com, lorenzo.stoakes@oracle.com,
+ vbabka@suse.cz, jannh@google.com, shuah@kernel.org, kvm@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, tabba@google.com, jgowans@amazon.com,
+ graf@amazon.com, kalyazin@amazon.com, xmarcalx@amazon.com,
+ derekmn@amazon.com, jthoughton@google.com
+References: <20250221160728.1584559-1-roypat@amazon.co.uk>
+ <20250221160728.1584559-2-roypat@amazon.co.uk>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20250221160728.1584559-2-roypat@amazon.co.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 24, 2025 at 11:59=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
->
-> This is to slow down lock acquistion (on contention locks) deliberately.
-> A possible use case is to estimate impact on application performance by
-> optimization of kernel locking behavior.  By delaying the lock it can
-> simulate the worse condition as a control group, and then compare with
-> the current behavior as a optimized condition.
-
-This is great! There are similarities to me with coz (Emery Berger
-cc-ed for a headsup and possible input):
-https://github.com/plasma-umass/coz
-
-> The syntax is 'time@function' and the time can have unit suffix like
-> "us" and "ms".  For example, I ran a simple test like below.
->
->   $ sudo perf lock con -abl -L tasklist_lock -- \
->     sh -c 'for i in $(seq 1000); do sleep 1 & done; wait'
->    contended   total wait     max wait     avg wait            address   =
-symbol
->
->           92      1.18 ms    199.54 us     12.79 us   ffffffff8a806080   =
-tasklist_lock (rwlock)
->
-> The contention count was 92 and the average wait time was around 10 us.
-> But if I add 100 usec of delay to the tasklist_lock,
->
->   $ sudo perf lock con -abl -L tasklist_lock -J 100us@tasklist_lock -- \
->     sh -c 'for i in $(seq 1000); do sleep 1 & done; wait'
->    contended   total wait     max wait     avg wait            address   =
-symbol
->
->          190     15.67 ms    230.10 us     82.46 us   ffffffff8a806080   =
-tasklist_lock (rwlock)
->
-> The contention count increased and the average wait time was up closed
-> to 100 usec.  If I increase the delay even more,
->
->   $ sudo perf lock con -abl -L tasklist_lock -J 1ms@tasklist_lock -- \
->     sh -c 'for i in $(seq 1000); do sleep 1 & done; wait'
->    contended   total wait     max wait     avg wait            address   =
-symbol
->
->         1002      2.80 s       3.01 ms      2.80 ms   ffffffff8a806080   =
-tasklist_lock (rwlock)
->
-> Now every sleep process had contention and the wait time was more than 1
-> msec.  This is on my 4 CPU laptop so I guess one CPU has the lock while
-> other 3 are waiting for it mostly.
->
-> For simplicity, it only supports global locks for now.
->
-> Suggested-by: Stephane Eranian <eranian@google.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On 21.02.25 17:07, Patrick Roy wrote:
+> Add AS_NO_DIRECT_MAP for mappings where direct map entries of folios are
+> set to not present . Currently, mappings that match this description are
+> secretmem mappings (memfd_secret()). Later, some guest_memfd
+> configurations will also fall into this category.
+> 
+> Reject this new type of mappings in all locations that currently reject
+> secretmem mappings, on the assumption that if secretmem mappings are
+> rejected somewhere, it is precisely because of an inability to deal with
+> folios without direct map entries.
+> 
+> Use a new flag instead of overloading AS_INACCESSIBLE (which is already
+> set by guest_memfd) because not all guest_memfd mappings will end up
+> being direct map removed (e.g. in pKVM setups, parts of guest_memfd that
+> can be mapped to userspace should also be GUP-able, and generally not
+> have restrictions on who can access it).
+> 
+> Signed-off-by: Patrick Roy <roypat@amazon.co.uk>
 > ---
->  tools/perf/Documentation/perf-lock.txt        | 11 +++
->  tools/perf/builtin-lock.c                     | 74 +++++++++++++++++++
->  tools/perf/util/bpf_lock_contention.c         | 28 +++++++
->  .../perf/util/bpf_skel/lock_contention.bpf.c  | 43 +++++++++++
->  tools/perf/util/lock-contention.h             |  8 ++
->  5 files changed, 164 insertions(+)
->
-> diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Document=
-ation/perf-lock.txt
-> index d3793054f7d35626..151fc837587b216e 100644
-> --- a/tools/perf/Documentation/perf-lock.txt
-> +++ b/tools/perf/Documentation/perf-lock.txt
-> @@ -215,6 +215,17 @@ CONTENTION OPTIONS
->  --cgroup-filter=3D<value>::
->         Show lock contention only in the given cgroups (comma separated l=
-ist).
->
-> +-J::
-> +--inject-delay=3D<time@function>::
-> +       Add delays to the given lock.  It's added to the contention-end p=
-art so
-> +       that the (new) owner of the lock will be delayed.  But by slowing=
- down
-> +       the owner, the waiters will also be delayed as well.  This is wor=
-king
-> +       only with -b/--use-bpf.
-> +
-> +       The 'time' is specified in nsec but it can have a unit suffix.  A=
-vailable
-> +       units are "ms" and "us".  Note that it will busy-wait after it ge=
-ts the
-> +       lock.  Please use it at your own risk.
-> +
->
->  SEE ALSO
->  --------
-> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> index 5d405cd8e696d21b..3ef452d5d9f5679d 100644
-> --- a/tools/perf/builtin-lock.c
-> +++ b/tools/perf/builtin-lock.c
-> @@ -62,6 +62,8 @@ static const char *output_name =3D NULL;
->  static FILE *lock_output;
->
->  static struct lock_filter filters;
-> +static struct lock_delay *delays;
-> +static int nr_delays;
->
->  static enum lock_aggr_mode aggr_mode =3D LOCK_AGGR_ADDR;
->
-> @@ -1971,6 +1973,8 @@ static int __cmd_contention(int argc, const char **=
-argv)
->                 .max_stack =3D max_stack_depth,
->                 .stack_skip =3D stack_skip,
->                 .filters =3D &filters,
-> +               .delays =3D delays,
-> +               .nr_delays =3D nr_delays,
->                 .save_callstack =3D needs_callstack(),
->                 .owner =3D show_lock_owner,
->                 .cgroups =3D RB_ROOT,
-> @@ -2474,6 +2478,74 @@ static int parse_cgroup_filter(const struct option=
- *opt __maybe_unused, const ch
->         return ret;
->  }
->
-> +static bool add_lock_delay(char *spec)
-> +{
-> +       char *at, *pos;
-> +       struct lock_delay *tmp;
-> +       unsigned long duration;
-> +
-> +       at =3D strchr(spec, '@');
-> +       if (at =3D=3D NULL) {
-> +               pr_err("lock delay should have '@' sign: %s\n", spec);
-> +               return false;
-> +       }
-> +       if (at =3D=3D spec) {
-> +               pr_err("lock delay should have time before '@': %s\n", sp=
-ec);
-> +               return false;
-> +       }
-> +
-> +       *at =3D '\0';
-> +       duration =3D strtoul(spec, &pos, 0);
-> +       if (!strcmp(pos, "ns"))
-> +               duration *=3D 1;
-> +       else if (!strcmp(pos, "us"))
-> +               duration *=3D 1000;
-> +       else if (!strcmp(pos, "ms"))
-> +               duration *=3D 1000 * 1000;
-> +       else if (*pos) {
-> +               pr_err("invalid delay time: %s@%s\n", spec, at + 1);
-> +               return false;
-> +       }
-> +
-> +       tmp =3D realloc(delays, (nr_delays + 1) * sizeof(*delays));
-> +       if (tmp =3D=3D NULL) {
-> +               pr_err("Memory allocation failure\n");
-> +               return false;
-> +       }
-> +       delays =3D tmp;
-> +
-> +       delays[nr_delays].sym =3D strdup(at + 1);
-> +       if (delays[nr_delays].sym =3D=3D NULL) {
-> +               pr_err("Memory allocation failure\n");
-> +               return false;
-> +       }
-> +       delays[nr_delays].time =3D duration;
-> +
-> +       nr_delays++;
-> +       return true;
-> +}
-> +
-> +static int parse_lock_delay(const struct option *opt __maybe_unused, con=
-st char *str,
-> +                           int unset __maybe_unused)
-> +{
-> +       char *s, *tmp, *tok;
-> +       int ret =3D 0;
-> +
-> +       s =3D strdup(str);
-> +       if (s =3D=3D NULL)
-> +               return -1;
-> +
-> +       for (tok =3D strtok_r(s, ", ", &tmp); tok; tok =3D strtok_r(NULL,=
- ", ", &tmp)) {
-> +               if (!add_lock_delay(tok)) {
-> +                       ret =3D -1;
-> +                       break;
-> +               }
-> +       }
-> +
-> +       free(s);
-> +       return ret;
-> +}
-> +
->  int cmd_lock(int argc, const char **argv)
->  {
->         const struct option lock_options[] =3D {
-> @@ -2550,6 +2622,8 @@ int cmd_lock(int argc, const char **argv)
->         OPT_BOOLEAN(0, "lock-cgroup", &show_lock_cgroups, "show lock stat=
-s by cgroup"),
->         OPT_CALLBACK('G', "cgroup-filter", NULL, "CGROUPS",
->                      "Filter specific cgroups", parse_cgroup_filter),
-> +       OPT_CALLBACK('J', "inject-delay", NULL, "TIME@FUNC",
-> +                    "Inject delays to specific locks", parse_lock_delay)=
-,
->         OPT_PARENT(lock_options)
->         };
->
-> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_=
-lock_contention.c
-> index fc8666222399c995..99b64f303e761cbc 100644
-> --- a/tools/perf/util/bpf_lock_contention.c
-> +++ b/tools/perf/util/bpf_lock_contention.c
-> @@ -183,6 +183,27 @@ int lock_contention_prepare(struct lock_contention *=
-con)
->                 skel->rodata->has_addr =3D 1;
->         }
->
-> +       /* resolve lock name in delays */
-> +       if (con->nr_delays) {
-> +               struct symbol *sym;
-> +               struct map *kmap;
-> +
-> +               for (i =3D 0; i < con->nr_delays; i++) {
-> +                       sym =3D machine__find_kernel_symbol_by_name(con->=
-machine,
-> +                                                                 con->de=
-lays[i].sym,
-> +                                                                 &kmap);
-> +                       if (sym =3D=3D NULL) {
-> +                               pr_warning("ignore unknown symbol: %s\n",
-> +                                          con->delays[i].sym);
-> +                               continue;
-> +                       }
-> +
-> +                       con->delays[i].addr =3D map__unmap_ip(kmap, sym->=
-start);
-> +               }
-> +               skel->rodata->lock_delay =3D 1;
-> +               bpf_map__set_max_entries(skel->maps.lock_delays, con->nr_=
-delays);
-> +       }
-> +
->         bpf_map__set_max_entries(skel->maps.cpu_filter, ncpus);
->         bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
->         bpf_map__set_max_entries(skel->maps.type_filter, ntypes);
-> @@ -272,6 +293,13 @@ int lock_contention_prepare(struct lock_contention *=
-con)
->                         bpf_map_update_elem(fd, &con->filters->cgrps[i], =
-&val, BPF_ANY);
->         }
->
-> +       if (con->nr_delays) {
-> +               fd =3D bpf_map__fd(skel->maps.lock_delays);
-> +
-> +               for (i =3D 0; i < con->nr_delays; i++)
-> +                       bpf_map_update_elem(fd, &con->delays[i].addr, &co=
-n->delays[i].time, BPF_ANY);
-> +       }
-> +
->         if (con->aggr_mode =3D=3D LOCK_AGGR_CGROUP)
->                 read_all_cgroups(&con->cgroups);
->
-> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/=
-util/bpf_skel/lock_contention.bpf.c
-> index 6533ea9b044c71d1..0ac9ae2f1711a129 100644
-> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> @@ -11,6 +11,9 @@
->  /* for collect_lock_syms().  4096 was rejected by the verifier */
->  #define MAX_CPUS  1024
->
-> +/* for do_lock_delay().  Arbitrarily set to 1 million. */
-> +#define MAX_LOOP  (1U << 20)
-> +
->  /* lock contention flags from include/trace/events/lock.h */
->  #define LCB_F_SPIN     (1U << 0)
->  #define LCB_F_READ     (1U << 1)
-> @@ -114,6 +117,13 @@ struct {
->         __uint(max_entries, 1);
->  } slab_caches SEC(".maps");
->
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_HASH);
-> +       __uint(key_size, sizeof(__u64));
-> +       __uint(value_size, sizeof(__u64));
-> +       __uint(max_entries, 1);
-> +} lock_delays SEC(".maps");
-> +
->  struct rw_semaphore___old {
->         struct task_struct *owner;
->  } __attribute__((preserve_access_index));
-> @@ -143,6 +153,7 @@ const volatile int needs_callstack;
->  const volatile int stack_skip;
->  const volatile int lock_owner;
->  const volatile int use_cgroup_v2;
-> +const volatile int lock_delay;
->
->  /* determine the key of lock stat */
->  const volatile int aggr_mode;
-> @@ -348,6 +359,35 @@ static inline __u32 check_lock_type(__u64 lock, __u3=
-2 flags)
->         return 0;
->  }
->
-> +static inline long delay_callback(__u64 idx, void *arg)
-> +{
-> +       __u64 target =3D *(__u64 *)arg;
-> +
-> +       if (target <=3D bpf_ktime_get_ns())
-> +               return 1;
-> +
-> +       /* just to kill time */
-> +       (void)bpf_get_prandom_u32();
-> +
-> +       return 0;
-> +}
-> +
-> +static inline void do_lock_delay(__u64 duration)
-> +{
-> +       __u64 target =3D bpf_ktime_get_ns() + duration;
-> +
-> +       bpf_loop(MAX_LOOP, delay_callback, &target, /*flags=3D*/0);
-> +}
-> +
-> +static inline void check_lock_delay(__u64 lock)
-> +{
-> +       __u64 *delay;
-> +
-> +       delay =3D bpf_map_lookup_elem(&lock_delays, &lock);
-> +       if (delay)
-> +               do_lock_delay(*delay);
-> +}
-> +
->  static inline struct tstamp_data *get_tstamp_elem(__u32 flags)
->  {
->         __u32 pid;
-> @@ -566,6 +606,9 @@ int contention_end(u64 *ctx)
->                 data->min_time =3D duration;
->
->  out:
-> +       if (lock_delay)
-> +               check_lock_delay(pelem->lock);
-> +
 
-So the delay happens when a lock is coming out of contending, ideally
-I think the code should slow releasing the lock as you are trying to
-see how different tasks are impacted (how sensitive they are) to the
-critical sections done when a lock is held. I don't believe there is a
-way to do this with a regular kernel and BPF due to not having
-tracepoints on the lock fast paths, it may be possible if the LOCKDEP
-build option has been enabled for the kernel. Perhaps this work can
-motivate the tracepoints on the fast paths.
+...
 
-Thanks,
-Ian
+>   static inline gfp_t mapping_gfp_mask(struct address_space * mapping)
+>   {
+>   	return mapping->gfp_mask;
+> diff --git a/lib/buildid.c b/lib/buildid.c
+> index c4b0f376fb34..80b5d805067f 100644
+> --- a/lib/buildid.c
+> +++ b/lib/buildid.c
+> @@ -65,8 +65,8 @@ static int freader_get_folio(struct freader *r, loff_t file_off)
+>   
+>   	freader_put_folio(r);
+>   
+> -	/* reject secretmem folios created with memfd_secret() */
+> -	if (secretmem_mapping(r->file->f_mapping))
+> +	/* reject secretmem folios created with memfd_secret() or guest_memfd() */
+> +	if (secretmem_mapping(r->file->f_mapping) || mapping_no_direct_map(r->file->f_mapping))
+>   		return -EFAULT;
 
->         pelem->lock =3D 0;
->         if (need_delete)
->                 bpf_map_delete_elem(&tstamp, &pid);
-> diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-con=
-tention.h
-> index a09f7fe877df8184..12f6cb789ada1bc7 100644
-> --- a/tools/perf/util/lock-contention.h
-> +++ b/tools/perf/util/lock-contention.h
-> @@ -18,6 +18,12 @@ struct lock_filter {
->         char                    **slabs;
->  };
->
-> +struct lock_delay {
-> +       char                    *sym;
-> +       unsigned long           addr;
-> +       unsigned long           time;
-> +};
-> +
->  struct lock_stat {
->         struct hlist_node       hash_entry;
->         struct rb_node          rb;             /* used for sorting */
-> @@ -140,6 +146,7 @@ struct lock_contention {
->         struct machine *machine;
->         struct hlist_head *result;
->         struct lock_filter *filters;
-> +       struct lock_delay *delays;
->         struct lock_contention_fails fails;
->         struct rb_root cgroups;
->         unsigned long map_nr_entries;
-> @@ -148,6 +155,7 @@ struct lock_contention {
->         int aggr_mode;
->         int owner;
->         int nr_filtered;
-> +       int nr_delays;
->         bool save_callstack;
->  };
->
-> --
-> 2.48.1.658.g4767266eb4-goog
->
+Maybe I'm missing it, but why do we have to special-case secretmem with 
+that at all anymore?
+
+Couldn't we just let secretmem set AS_NO_DIRECT_MAP as well, and convert 
+all/most secretmem specific stuff to check AS_NO_DIRECT_MAP as well?
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
