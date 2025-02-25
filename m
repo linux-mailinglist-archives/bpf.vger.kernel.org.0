@@ -1,117 +1,144 @@
-Return-Path: <bpf+bounces-52566-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52567-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCAE3A44AC2
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 19:43:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76311A44AB1
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 19:39:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 002BC3BE680
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 18:35:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5AF216C71A
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 18:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA1E140E3C;
-	Tue, 25 Feb 2025 18:35:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06FAC198831;
+	Tue, 25 Feb 2025 18:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="COlcqOY8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UcUpqPht"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FAA319AD90
-	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 18:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E74B418DB3F
+	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 18:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740508526; cv=none; b=UtBxMc56M5V1IlGSZmlTTmSC7fqYcTCUxAG/fybl5xfchnIAgG+JpipRo73euLWjqEBzERl/8pZYDgntQ44hD0C/7U6m9y4JP9YsRg/0ToevSu/k9l44w9UuDX9QQARB47CoZ9BnnFpYpYmQNwd0OiGf/IMCDthEbY4poD/ZEcY=
+	t=1740508788; cv=none; b=EL4EyGaycwJUlamlyDexQLlFhMrw47BlcKd1Ltd157Qs6FjR82aHbZyifJ6CK9VRS65jZEfm600vTSeMXoTjCC4HlR64rGXn9fpHy+RZOhDxt2qOccB5mNV2+lbgIrqFAuqTUaaUx+C9vb37KsQIpUCX6y4c0Y4Nsy0Kz8JXYqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740508526; c=relaxed/simple;
-	bh=W8m5MRc3Px1cvdc2w85DmWymy0XRT4cehafLIHwHz14=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pOgix6tQDc+06sjYpLbeSk1TAJXxD7D+5exujH+8k1tWwrNILTEUT81kS7eCUAw/2JY7scBl5f6K/rdl8wPJkXeuIV1lqH+9PLfIOvFtdV3i1tfMzszs7TCpsDIydChDx3DOXBLa0q9RWvGzoBZCXrMb3esPDlWtDO1suDbzdSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=COlcqOY8; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1740508788; c=relaxed/simple;
+	bh=XRReKA+k2SXdffrztygbiQ7OICeS15lfpOAzcHoaRW4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dyLfCLSAUUobM1Zz4QvzV2WtnVbDoXI3rSRii36Yhvm5mGxqC0rQ31T5BbLLJCkVVlbn7Zoeq49GgF5z/F2Bo++dsv8JxOTKx/LTkG8J4T2IZhhwLnlkpKeB4zJV0UG4M+aj6gBUwkFRhZ1IOm/8p1Pgo+r+r5/4jxArUAXCyMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UcUpqPht; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2211cd4463cso121969295ad.2
-        for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 10:35:24 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-38f1e8efef5so3553493f8f.1
+        for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 10:39:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740508524; x=1741113324; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gh19GdKibxMUNgOj7+4ajRpIsJuUQNwik7bOXyIqgis=;
-        b=COlcqOY8KiQLpFNJUhr5vjz0kqtaW1pTKYwrxCnxIgsumzCVi6ErQ0jhPQt0Gyh1pG
-         zDLgv1BtvRrhKJqq45QuatenoLNOsSlgAFZyEdbnb8hm2C8sr+BNRnzfo08o9zO5Ahku
-         T1Od14w0ccnIfAAmLZOV3oGBAsUoz79Fy+/n+g1/5aCuH3T1X5eoTKh0qPtXDl5DaUI8
-         Zg8JBIYAou+0lUiLkkUg1JLGOyq7Mqzv00qA8EUf6pdptF6i44l6kB0RjJCu62wp+Z5i
-         8vNjlaHR6BlbZrE9/W470nNaTccWjGHl0fcvSz3bBH1M3rXiEj3gexp3hHSU0EjbWRrM
-         8e6g==
+        d=gmail.com; s=20230601; t=1740508785; x=1741113585; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yYqa1+wcqNSXEbPyPwibRsEKzR32TvJUpCBy/bf53lc=;
+        b=UcUpqPhtA2bMCZj6L0se3Y37TTL4YJ3xY++crcRyqJTNQ9YnKcAAaGW+dggFUbzFCV
+         UpaEzTZ5o4qV/n6n5DUsIQ6z8sPir/44ya+SQTiidCobabgnDYqbxXg3kogeQIWkzwxK
+         BwFXlqgeOFiKcjpNazyH1leH9Hto8eS3T/9pgqRpUbdSVf9j/pMaanrNkZ8OTwkU5g8p
+         ie7Ye9bH2zBzfZpymw1pRaggOiC+hzGF83bbyQO76N4NK+s2kAFkKOZKVk3fCdxd2Ose
+         XuRtM7yUpgskLfmvkhdQ2dW8PebQ5Kex/Jj0ahag8rSCysvEl6j9Rfwhcr414wsGxM+1
+         uLOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740508524; x=1741113324;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gh19GdKibxMUNgOj7+4ajRpIsJuUQNwik7bOXyIqgis=;
-        b=TXNG10q/Tmp/CHMiIxZFHkzGGTE4ezONeCQviy48UXQu4FOtG9Vf58GvS1qsSFkrvf
-         Z0BJsm3VlBFxk2DsAcuw92P0ZKFycAU/8mG6/dHZ30bIC5Ot/MZkQfTDh754zumi0Qfp
-         ds/ZaAsgYCehPB48GeUmE8HgF/jEVhFRjaXZBMP6hvL8LSuMLxzZUqjYJ98EEUJ9Xit2
-         8Ab4YRLJOPtPnRJFADo3EknoWoO8fU28L7eh2WBpgu3KKxwh5avQAndFNzCRjmyVATrd
-         CKfPlI/TUb6lZBP4aK8KFzAugGUXJ49cmGm+V/uJbXFSXkMY5d+GuD37DzMP5/HtL3Uu
-         dTTg==
-X-Gm-Message-State: AOJu0Yz7SjUHzbSp6hb2rRcLHuUccU048LsUJKg7alPlBeRceBq8sjXt
-	/LihmOTaDLEaawM4OeWTQd9w8+IKgQRcI9V6uW/1yy6xPbznZ4MiN/U/jw==
-X-Gm-Gg: ASbGncsy0aERK6cORdo1RefEWlK65/69kbbr+ugAhDmyRsKS6UYzt2kvMGjtqRMEdNH
-	tJGoFXcxZZv/JhI47C/pULqqpwFahU5V2eROrXLWzGZlDRO3XpZhIuxYP9C8rD2W2H7PqkkltJz
-	dPRRG57+aW6mE93pk7Nxel6hvz8T9aA5t7nn0YjC+d3zmTMTxo9NuNQsFoUnKNbl/MEEHID4UIV
-	uWOzYo3+bxp3SkjPTkzupi99KK/hcjuDaEqYH6kGoiB1GqRSGJzxYkcGFOfzeTxc/nYMUfTPBbA
-	6ECo/sR7CWIL38QIOziWII4=
-X-Google-Smtp-Source: AGHT+IGFfzhL8vSkiUdObikq9ziIQLsH7dUDBPxrzXsV6hjCY1X6F1UPPrvkIVFlASzqDdypC9f5ew==
-X-Received: by 2002:a17:903:191:b0:21f:6a36:7bf3 with SMTP id d9443c01a7336-22307b4bd13mr65594795ad.12.1740508524301;
-        Tue, 25 Feb 2025 10:35:24 -0800 (PST)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2230a0007dcsm17711055ad.1.2025.02.25.10.35.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Feb 2025 10:35:23 -0800 (PST)
-Message-ID: <e7c836f169930381942deb5d0d4c7e42fcb95423.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/2] selftests/bpf: implement setting global
- variables in veristat
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Mykyta Yatsenko
-	 <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, 	kafai@meta.com, kernel-team@meta.com, Mykyta
- Yatsenko <yatsenko@meta.com>
-Date: Tue, 25 Feb 2025 10:35:19 -0800
-In-Reply-To: <CAEf4Bza=-MJc8wAcG6_i9OOQEFs09OaAnEi1v5pFEntmFxTquA@mail.gmail.com>
-References: <20250221223259.677471-1-mykyta.yatsenko5@gmail.com>
-	 <20250221223259.677471-2-mykyta.yatsenko5@gmail.com>
-	 <CAEf4Bza=-MJc8wAcG6_i9OOQEFs09OaAnEi1v5pFEntmFxTquA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+        d=1e100.net; s=20230601; t=1740508785; x=1741113585;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yYqa1+wcqNSXEbPyPwibRsEKzR32TvJUpCBy/bf53lc=;
+        b=N+par8zGEZGp1iah8J4JYXSXoLyE46wSQVDDTlQIBXAgk5t67lQaIdFdKxYJcmaPRE
+         603pOkXnmOyvibbdJrxQCY64811X82l6owckmMu6T7ZFKB+rMHzQPjhDrrDnZAVFZhiP
+         2/tuz1ORVBgh2xmRnw1JQ1TRYjBbNRlRlkpkZstxG+tGPeK44alyCuTar/yjBmnbc94C
+         vjWjOJca/Qt1N5xvquNuqi8Tv+C8GZ0EKA4bO2/t2uJxbu1WJH5RjC8x2u55qoEnxldQ
+         zd3QaXp0qXk/u3k3+/OLJMYjx/q7gspLiKpAfvQGXU8pCCQICx5hRQboSXcMU+y/UI27
+         zXbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVQYEzWH6ubO+xLO6kqKQ1peMoRH7tWh9+ZYjroggYRqNHzAy6mgjxtgBFSkq8lvg3mKKo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwR5JATyt74zLZ2yYH4GM9osYxhFLZoH2rHDnZFGyf4vtVhhKJh
+	7ug+a628C9uZdz3wo4BP660TlF6VRpq98/GJoMitM6S+GGMM86jvtDHxGMGK54lvUdsrhFG7Xwc
+	J5jmS4IS1/lpRB94t0bCi8lxJnBA=
+X-Gm-Gg: ASbGncuQIO2qAvcDY9I5a0bH8d0PvZWrbU/gZK+vAGxxn9tuVzzxQ8YaJ+S2NZT6Kyo
+	rc7RXbTgtgwcjCujMVss8Cx3FZAS7Wcjg1m3A5LZCWTGyuASyVBTfAGz+YvVib6uAN4OK7sx+tg
+	vLskt2/MNDf0gTxiGrhxEMse4=
+X-Google-Smtp-Source: AGHT+IHPILCkYLPOC97ZeiA2HC/0g0GlziaqQOwvBXy1rsBdXD/VOZwjHzMI5l5iqCnYibojrODQOGhd+Dee3Uumo8o=
+X-Received: by 2002:adf:f744:0:b0:38f:32ac:7e70 with SMTP id
+ ffacd0b85a97d-390cc638c19mr2903482f8f.49.1740508785073; Tue, 25 Feb 2025
+ 10:39:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250224114606.3500-1-laoar.shao@gmail.com> <20250224114606.3500-2-laoar.shao@gmail.com>
+ <CAADnVQKUYP8e_u5QWGHK_fi_LKyOO3voFkHyRLCuw9-qKiFmDQ@mail.gmail.com> <CALOAHbCM_9NotV3UqeOiK-s_Cd-HAUS+1L834Di1Pw75iyTCOA@mail.gmail.com>
+In-Reply-To: <CALOAHbCM_9NotV3UqeOiK-s_Cd-HAUS+1L834Di1Pw75iyTCOA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 25 Feb 2025 10:39:31 -0800
+X-Gm-Features: AQ5f1JoE8BAeWH30pVhmmX58K_lDAhdJCx6ELrnvWIY6JObEuHJqhrO24YwS4Lg
+Message-ID: <CAADnVQK12yzwC=10yxoYUs02iCpkH+tZe881Dnc2_8j3cxsFdQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] bpf: Reject attaching fexit to functions annotated
+ with __noreturn
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2025-02-24 at 16:38 -0800, Andrii Nakryiko wrote:
+On Mon, Feb 24, 2025 at 11:35=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
+ wrote:
+>
+> On Tue, Feb 25, 2025 at 1:30=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Feb 24, 2025 at 3:46=E2=80=AFAM Yafang Shao <laoar.shao@gmail.c=
+om> wrote:
+> > >
+> > > +       } else if (prog->expected_attach_type =3D=3D BPF_TRACE_FEXIT =
+&&
+> > > +                  btf_id_set_contains(&fexit_deny, btf_id)) {
+> > > +               verbose(env, "Attaching fexit to __noreturn functions=
+ is rejected.\n");
+> > > +               return -EINVAL;
+> >
+> > Just realized that this needs to include
+> > prog->expected_attach_type =3D=3D BPF_MODIFY_RETURN
+> > since it's doing __bpf_tramp_enter() too.
+>
+> I will add it.
+>
+> >
+> > Also the list must only contain existing functions.
+> > Otherwise there are plenty of build warns:
+> >   BTFIDS  vmlinux
+> > WARN: resolve_btfids: unresolved symbol xen_start_kernel
+> > WARN: resolve_btfids: unresolved symbol xen_cpu_bringup_again
+> > WARN: resolve_btfids: unresolved symbol usercopy_abort
+> > WARN: resolve_btfids: unresolved symbol snp_abort
+> > WARN: resolve_btfids: unresolved symbol sev_es_terminate
+> > WARN: resolve_btfids: unresolved symbol rust_helper_BUG
+> > ...
+>
+> I missed these warnings.
+> It looks like we need to add "#ifdef XXXX" to each function.
+> Alternatively, could we just compare the function name with
+> prog->aux->attach_func_name instead?
 
-[...]
-
-> > +       } else if (*val =3D=3D '-' || isdigit(*val)) {
->=20
-> instead of doing this detection based on characters, why not try to
-> parse a number (and I'd use sscanf("%lli") which will handle 1234 and
-> 0x1234 transparently)? And you can use %n to check that all characters
-> were parsed (i.e., you have exact match)
->=20
-> it's probably fine for starters, but it kind of sucks that 0x1234
-> isn't supported
-
-(Nit: {strtoull,strtoll}(val, NULL, 0) supports decimal and hexadecimal not=
-ations).
-
-[...]
-
+Strings are much less efficient than btf_ids.
+Especially comparing across many strings.
+To minimize ifdef-s lets remove all functions that bpf cannot
+attach anyway (that are not in available_filter_functions).
+Then drop all that call panic/BUG equivalent,
+since refcnt on trampoline is irrelevant at that point.
+That will remove even more functions.
+At the end the list will be short with few ifdef-s.
+This is a temporary workaround anyway, so let's not get too creative.
 
