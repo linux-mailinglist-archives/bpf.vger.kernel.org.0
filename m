@@ -1,133 +1,151 @@
-Return-Path: <bpf+bounces-52517-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52518-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C4B3A44403
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 16:11:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DFFDA4440D
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 16:14:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6B3F860BBE
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 15:07:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D08C87A6897
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 15:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B19A26B093;
-	Tue, 25 Feb 2025 15:07:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A463F26B0B8;
+	Tue, 25 Feb 2025 15:13:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JwIcd9sh"
 X-Original-To: bpf@vger.kernel.org
-Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5EA1C6FF3;
-	Tue, 25 Feb 2025 15:07:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231A921ABDD;
+	Tue, 25 Feb 2025 15:13:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740496067; cv=none; b=DDLp0PJF8vdmdqmbbnilnH2RBTXxs4iAZhMpqVhH79t1Ikz9cKtyl1L4BCcQz7KxAd51NRCl/NMgegSE2BJfQBhpo850dBZBUY+JlnTpNoUaHQUGx8XsyKOdr5QPEbaHmQOSThKqGC36Yg7BvMr+1GmUJkwmWY99xwXMwj50CcM=
+	t=1740496437; cv=none; b=A6hz0/LOCHWEqnTh0OZVrXNSgA0y1QwKBN/Y5QpWKe1n4pFS+Ig2BgA+lvi97QImXzi83rXU71PWflIx0zQHBbaqFcQ9PXqIlYBUEQbl128LDJSZIRFkZDKh+KJTxpwOQcG+dAExg4uNCTTtJWFYjqBi+ue6zEM+h+Jy6JAmeSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740496067; c=relaxed/simple;
-	bh=bhmQGmo6H06KAaOwOt7dtvkEEcgzxnb3as45HbNo+/4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=etPgfD9+oyclSCzwwv+B7u7cszRInnVsnBb7QwLhknqWqSGEIlRbr7P7Apbg7Ef+9ywSz01E64Tka26H5KQXlisMK6cAYsBQOHASULMGyQOIllspvFq3f99+K7wD9VMFHn2edgaYKYRUtHK5T1X7sUaJ7KpJkBd62lj/catzo2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1tmwWw-00098H-UI; Tue, 25 Feb 2025 16:07:30 +0100
-Received: from [2a0d:3344:1523:1f10:f118:b2d4:edbb:54af]
-	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1tmwWx-000Mo3-0R;
-	Tue, 25 Feb 2025 16:07:30 +0100
-Message-ID: <efcc6e11-2d3a-489e-80bc-cbc3f72f7afa@hetzner-cloud.de>
-Date: Tue, 25 Feb 2025 16:07:27 +0100
+	s=arc-20240116; t=1740496437; c=relaxed/simple;
+	bh=a2YZv/1QZDn3VN6AQmlt6Nog70dPk30yV5obHPkUik8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c3K6rRWCDUk/GuwcHfatQ7t1a1r9VBKSgF0cMW0ZFW8El2ZyzcEFweKL2hswyMt+lcaD7g+OJ3jOHZvQeMyWVYqiez/+lKb38ttTWILfY0Qa/ztrFYvgYKjISPyBwlHiOxbq/99CUluiUtH8L9Errp0/azVkyTs1BWwMR23m434=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JwIcd9sh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91295C4CEDD;
+	Tue, 25 Feb 2025 15:13:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740496435;
+	bh=a2YZv/1QZDn3VN6AQmlt6Nog70dPk30yV5obHPkUik8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=JwIcd9shT229Zf7eHqLfNmMHL93VVQ49C4O2/2FIi3+Mc2/YffA30OMpjpDJLBwTY
+	 qQWIsxaRPwJdEQR2zAwmci8W/KWGXInSc/R+5pfH42u9gp5o33THLjG8NNna8a39Y2
+	 cvztAGYJJpGRtU6+P4w3EqVR8T25BQwcNJosZJvmQ73v998XHMkIiTWUo7Y0GdFxRY
+	 yHruwZorfELM2lQX2ipRQGCilnjzF5M/6Je5F+Sqi7JBoIZJgFldQTWvYBESzbZ6rs
+	 255tD60EwQ6dgEqMmdD/SzNs5W+n+pCBW5FcgsU/5tl3p2vs2KAzF9Il+cB2LV/Bvs
+	 Py+XHS9W37xyQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 2B455CE045A; Tue, 25 Feb 2025 07:13:55 -0800 (PST)
+Date: Tue, 25 Feb 2025 07:13:55 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
+	oleg@redhat.com, rostedt@goodmis.org, mhiramat@kernel.org,
+	mingo@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	jolsa@kernel.org
+Subject: Re: [PATCH v3 tip/perf/core 2/2] uprobes: SRCU-protect uretprobe
+ lifetime (with timeout)
+Message-ID: <04598803-a22b-4663-b79a-4c79de480838@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20241024044159.3156646-1-andrii@kernel.org>
+ <20241024044159.3156646-3-andrii@kernel.org>
+ <20250224-impressive-onyx-boa-36e85d@leitao>
+ <CAEf4BzbupJe10k0MROG5iZq6cYu6PRoN3sHhNK=L7eDLOULvNQ@mail.gmail.com>
+ <20250225-transparent-bronze-cobra-bafff4@leitao>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 4/6] selftests/bpf: refactor
- xdp_context_functional test and bpf program
-To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc: willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, andrii@kernel.org, eddyz87@gmail.com,
- mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- shuah@kernel.org, hawk@kernel.org
-References: <20250224152909.3911544-1-marcus.wichelmann@hetzner-cloud.de>
- <20250224152909.3911544-5-marcus.wichelmann@hetzner-cloud.de>
-Content-Language: en-US
-From: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Autocrypt: addr=marcus.wichelmann@hetzner-cloud.de; keydata=
- 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
- wySmewx3h/yfMh0aFxHhvLPxrO2IEQ==
-In-Reply-To: <20250224152909.3911544-5-marcus.wichelmann@hetzner-cloud.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: marcus.wichelmann@hetzner-cloud.de
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27560/Tue Feb 25 10:44:40 2025)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250225-transparent-bronze-cobra-bafff4@leitao>
 
-Am 24.02.25 um 16:29 schrieb Marcus Wichelmann:
-> [...]
-> +	/* By default, Linux sends IPv6 multicast listener reports which
-> +	 * interfere with this test. Set the IFF_NOARP flag to ensure
-> +	 * silence on the interface.
-> +	 */
-> +	SYS(close, "ip link set dev " RX_NAME " arp off");
->   	SYS(close, "ip link set dev " RX_NAME " up");
+On Tue, Feb 25, 2025 at 03:46:53AM -0800, Breno Leitao wrote:
+> Hello Andrii,
+> 
+> On Mon, Feb 24, 2025 at 02:23:51PM -0800, Andrii Nakryiko wrote:
+> > On Mon, Feb 24, 2025 at 4:23 AM Breno Leitao <leitao@debian.org> wrote:
+> > >
+> > > Hello Andrii,
+> > >
+> > > On Wed, Oct 23, 2024 at 09:41:59PM -0700, Andrii Nakryiko wrote:
+> > > >
+> > > > +static struct uprobe* hprobe_expire(struct hprobe *hprobe, bool get)
+> > > > +{
+> > > > +     enum hprobe_state hstate;
+> > > > +
+> > > > +     /*
+> > > > +      * return_instance's hprobe is protected by RCU.
+> > > > +      * Underlying uprobe is itself protected from reuse by SRCU.
+> > > > +      */
+> > > > +     lockdep_assert(rcu_read_lock_held() && srcu_read_lock_held(&uretprobes_srcu));
+> > >
+> > > I am hitting this warning in d082ecbc71e9e ("Linux 6.14-rc4") on
+> > > aarch64. I suppose this might happen on x86 as well, but I haven't
+> > > tested.
+> > >
+> > >         WARNING: CPU: 28 PID: 158906 at kernel/events/uprobes.c:768 hprobe_expire (kernel/events/uprobes.c:825)
+> > >
+> > >         Call trace:
+> > >         hprobe_expire (kernel/events/uprobes.c:825) (P)
+> > >         uprobe_copy_process (kernel/events/uprobes.c:691 kernel/events/uprobes.c:2103 kernel/events/uprobes.c:2142)
+> > >         copy_process (kernel/fork.c:2636)
+> > >         kernel_clone (kernel/fork.c:2815)
+> > >         __arm64_sys_clone (kernel/fork.c:? kernel/fork.c:2926 kernel/fork.c:2926)
+> > >         invoke_syscall (arch/arm64/kernel/syscall.c:35 arch/arm64/kernel/syscall.c:49)
+> > >         do_el0_svc (arch/arm64/kernel/syscall.c:139 arch/arm64/kernel/syscall.c:151)
+> > >         el0_svc (arch/arm64/kernel/entry-common.c:165 arch/arm64/kernel/entry-common.c:178 arch/arm64/kernel/entry-common.c:745)
+> > >         el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:797)
+> > >         el0t_64_sync (arch/arm64/kernel/entry.S:600)
+> > >
+> > > I broke down that warning, and the problem is on related to
+> > > rcu_read_lock_held(), since RCU read lock does not seem to be held in
+> > > this path.
+> > >
+> > > Reading this code, RCU read lock seems to protect old hprobe, which
+> > > doesn't seem so.
+> > >
+> > > I am wondering if we need to protect it properly, something as:
+> > >
+> > >         @@ -2089,7 +2092,9 @@ static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
+> > >                                 return -ENOMEM;
+> > >
+> > >                         /* if uprobe is non-NULL, we'll have an extra refcount for uprobe */
+> > >         +               rcu_read_lock();
+> > >                         uprobe = hprobe_expire(&o->hprobe, true);
+> > >         +               rcu_write_lock();
+> > >
+> > 
+> > I think this is not good enough. rcu_read_lock/unlock should be around
+> > the entire for loop, because, technically, that return_instance can be
+> > freed before we even get to hprobe_expire.
+> 
+> re you suggesting that we should use an RCU read lock to protect the
+> "traversal" of return_instances? In other words, is it currently being
+> traversed unsafely, given that return_instance can be freed at any time?
+> 
+> > So, just like we have guard(srcu)(&uretprobes_srcu); we should have
+> > guard(rcu)();
+> > 
+> > Except, there is that kmemdup() hidden inside dup_return_instance(),
+> > so we can't really do that.
+> 
+> Right. kmemdup() is using GFP_KERNEL, which might sleep, so, it cannot
+> be called using rcu read lock.
 
-Hm, setting the NOARP flag seems to have not been sufficient to fix the flaky
-test:
-https://github.com/kernel-patches/bpf/actions/runs/13507111620/job/37739614229
+There is always SRCU?
 
-I was not able to reproduce it locally or with my own CI runs unfortunately, but
-I'll try something else in the next patch version which should definitely stop
-IPv6 multicast listener report packets from messing with the tests.
+							Thanx, Paul
 
