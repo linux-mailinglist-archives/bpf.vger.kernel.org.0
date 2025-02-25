@@ -1,195 +1,96 @@
-Return-Path: <bpf+bounces-52500-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52501-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8782A43F60
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 13:26:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 672A2A43F68
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 13:30:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 491973B961E
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 12:26:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AC9E19C093B
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 12:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F252686B1;
-	Tue, 25 Feb 2025 12:26:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E90502686AE;
+	Tue, 25 Feb 2025 12:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QeeQTGRN"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28527264A7C
-	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 12:26:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647E4267F79;
+	Tue, 25 Feb 2025 12:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740486391; cv=none; b=C+PE2CvLL82uNUdpKBjSbot7TLo8LX9Lhrscp/DlrXLS18cL51ej9TglvWyblot7cV3T4VtOC/jHXYib8Rcs7tQwSGOIZwNEtDRErffvgPBOvp1Xzef05zc5eKuP9TPYzyiMzH4g4yMx9uUKN9IMqEpIsxzdtO1hOKS9eAojR5Q=
+	t=1740486601; cv=none; b=loi6IOZQbjet8rZ9FS8rt/IxHxjGr9t0vP2OcTGyfckwFXFTZuHLdeR12H9D5ZB5GbdJ3rjA8fa2vlxWt6CqsT8f6RG3eprOBrrpSFDjeKtC9T5/xS/lb90BoB+etqU0psfr4k7ylegi6pld12HnWRbWkhBH+RMSHOiwxt1Kx18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740486391; c=relaxed/simple;
-	bh=TGc7xH2HX6AVaXCQ/cpE3kPXi4xRPw//JyynBqaIkkg=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=feM54oE2eLz7XHFuomsPw2XA9Rg3XaZvDQmDvhQgxW4lDKgeAde+zgYLCxI+bQA+Pmi27liULA0F8KTwlVIi/YaFq0THrdrnNJHFbfp4TCY7tuDe6SmDm+mAc4OXnE3Mf6KsHZNCk7/TA2+MEZ4EiMdsHjHVQN0GgDrmVmY7Jbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Z2GzW2hwGz4f3jrs
-	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 20:25:59 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 311271A111D
-	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 20:26:21 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgD3p3jptr1n+p4vEw--.8744S2;
-	Tue, 25 Feb 2025 20:26:21 +0800 (CST)
-Subject: Re: [PATCH] bpf: fix possible endless loop in BPF map iteration
-To: Martin KaFai Lau <martin.lau@linux.dev>,
- Brandon Kammerdiener <brandon.kammerdiener@intel.com>
-Cc: bpf@vger.kernel.org
-References: <Z7zsLsjrldJAISJY@bkammerd-mobl>
- <ed150c6e-7987-4729-8a6b-e1e9e38823cb@linux.dev>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <c19ee119-a463-f4bb-d15d-b7fae0a1ff4a@huaweicloud.com>
-Date: Tue, 25 Feb 2025 20:26:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1740486601; c=relaxed/simple;
+	bh=XW++pQBAsxBSIdf5lR6Pzeu7mCFc5KfkHsVWatPr7xY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=AVyFFPXbM36ThFQQUGdi0MN//NUm2za5+dyoDrfslBdTX1MMOatFL+BnbWzWEtFaEcfSzGxJmY9/RQEoiRC7Iti5ip7aOLTvxFKtmsKoEC8/gUl7qXzl7QXnrp2OOdBoawpQMIzV7cblBMuWGK0Ekvkc9DHcwl4HHFtqTxYlqdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QeeQTGRN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D661AC4CEE6;
+	Tue, 25 Feb 2025 12:30:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740486600;
+	bh=XW++pQBAsxBSIdf5lR6Pzeu7mCFc5KfkHsVWatPr7xY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=QeeQTGRNf8ilQEL/BUq6EgWqHOHZbEGh+/gMGjZOjkwVlHz/Y7uhEcpsXa/qAxYIL
+	 /KuhjjGoyjw+H26qgwk2v/rGZHYVrKufYRgKaoIC/8N3kY6GP43YhPMbmMABqiOEKc
+	 X+sI4O1IYvMwCNMc0WBMm++4CgvqnFv/AQ8b3MSXFCQlN/q5BbOmyaR+3dnqzWjLob
+	 30SaHquotf2hRdfufJccdJkG2jD+da/51hRN9XmTImqzilg/1EJ9sQdm7M6JWdGnIL
+	 tjL0hDWudGjHEvLsqcRd1bgOGDu3W+zClB4pKvaqv7XSDeg8tVfXILzDhMNRmb1IpJ
+	 RPIelKAGbkcCw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADD60380CEDC;
+	Tue, 25 Feb 2025 12:30:33 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ed150c6e-7987-4729-8a6b-e1e9e38823cb@linux.dev>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgD3p3jptr1n+p4vEw--.8744S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw1UJFW7GFW5Cw4kGw1xKrg_yoWrtFyxpF
-	4kKFyUJry5Jrn7Xr1UJr18JryUJr15Jw1UJryDJFyUJr4UJr1jqr1UXr1jgr1UAr48Jr18
-	tr1jqr13Zr1UGrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-	k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-	xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Subject: Re: [PATCHv2 net] ipvs: Always clear ipvs_property flag in
+ skb_scrub_packet()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174048663224.4155054.13422794267665315194.git-patchwork-notify@kernel.org>
+Date: Tue, 25 Feb 2025 12:30:32 +0000
+References: <20250222033518.126087-1-lulie@linux.alibaba.com>
+In-Reply-To: <20250222033518.126087-1-lulie@linux.alibaba.com>
+To: Philo Lu <lulie@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, asml.silence@gmail.com,
+ willemb@google.com, almasrymina@google.com, chopps@labn.net,
+ aleksander.lobakin@intel.com, nicolas.dichtel@6wind.com,
+ dust.li@linux.alibaba.com, hustcat@gmail.com, ja@ssi.bg, horms@verge.net.au,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hi,
+Hello:
 
-On 2/25/2025 3:13 PM, Martin KaFai Lau wrote:
-> On 2/24/25 2:01 PM, Brandon Kammerdiener wrote:
->> This patch fixes an endless loop condition that can occur in
->> bpf_for_each_hash_elem, causing the core to softlock. My
->> understanding is
->> that a combination of RCU list deletion and insertion introduces the new
->> element after the iteration cursor and that there is a chance that an
->> RCU
->
-> new element is added to the head of the bucket, so the first thought
-> is it should not extend the list beyond the current iteration point...
->
->> reader may in fact use this new element in iteration. The patch uses a
->> _safe variant of the macro which gets the next element to iterate before
->> executing the loop body for the current element. The following simple
->> BPF
->> program can be used to reproduce the issue:
->>
->>      #include "vmlinux.h"
->>      #include <bpf/bpf_helpers.h>
->>      #include <bpf/bpf_tracing.h>
->>
->>      #define N (64)
->>
->>      struct {
->>          __uint(type,        BPF_MAP_TYPE_HASH);
->>          __uint(max_entries, N);
->>          __type(key,         __u64);
->>          __type(value,       __u64);
->>      } map SEC(".maps");
->>
->>      static int cb(struct bpf_map *map, __u64 *key, __u64 *value,
->> void *arg) {
->>          bpf_map_delete_elem(map, key);
->>          bpf_map_update_elem(map, &key, &val, 0);
->
-> I suspect what happened in this reproducer is,
-> there is a bucket with more than one elem(s) and the deleted elem gets
-> immediately added back to the bucket->head.
-> Something like this, '[ ]' as the current elem.
->
-> 1st iteration     (follow bucket->head.first): [elem_1] ->  elem_2
->                                   delete_elem:  elem_2
->                                   update_elem: [elem_1] ->  elem_2
-> 2nd iteration (follow elem_1->hash_node.next):  elem_1  -> [elem_2]
->                                   delete_elem:  elem_1
->                                   update_elem: [elem_2] -> elem_1
-> 3rd iteration (follow elem_2->hash_node.next):  elem_2  -> [elem_1]
->                   loop.......
->
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Yes. The above procedure is exactly the test case tries to do (except
-the &key and &val typos).
+On Sat, 22 Feb 2025 11:35:18 +0800 you wrote:
+> We found an issue when using bpf_redirect with ipvs NAT mode after
+> commit ff70202b2d1a ("dev_forward_skb: do not scrub skb mark within
+> the same name space"). Particularly, we use bpf_redirect to return
+> the skb directly back to the netif it comes from, i.e., xnet is
+> false in skb_scrub_packet(), and then ipvs_property is preserved
+> and SNAT is skipped in the rx path.
+> 
+> [...]
 
-> don't think "_safe" covers all cases though. "_safe" may solve this
-> particular reproducer which is shooting itself in the foot by deleting
-> and adding itself when iterating a bucket.
+Here is the summary with links:
+  - [PATCHv2,net] ipvs: Always clear ipvs_property flag in skb_scrub_packet()
+    https://git.kernel.org/netdev/net/c/de2c211868b9
 
-Yes, if the bpf prog could delete and re-add the saved next entry, there
-will be dead loop as well. It seems __htab_map_lookup_elem() may suffer
-from the same problem just as bpf_for_each_hash_elem(). The problem is
-mainly due to the immediate reuse of deleted element. Maybe we need to
-add a seqlock to the htab_elem and retry the traversal if the seqlock is
-not stable.
->
-> [ btw, I don't think the test code can work as is. At least the "&key"
-> arg of the bpf_map_update_elem looks wrong. ]
->
->>          return 0;
->>      }
->>
->>      SEC("uprobe//proc/self/exe:test")
->>      int BPF_PROG(test) {
->>          __u64 i;
->>
->>          bpf_for(i, 0, N) {
->>              bpf_map_update_elem(&map, &i, &i, 0);
->>          }
->>
->>          bpf_for_each_map_elem(&map, cb, NULL, 0);
->>
->>          return 0;
->>      }
->>
->>      char LICENSE[] SEC("license") = "GPL";
->>
->> Signed-off-by: Brandon Kammerdiener <brandon.kammerdiener@intel.com>
->>
->> ---
->>   kernel/bpf/hashtab.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
->> index 4a9eeb7aef85..43574b0495c3 100644
->> --- a/kernel/bpf/hashtab.c
->> +++ b/kernel/bpf/hashtab.c
->> @@ -2224,7 +2224,7 @@ static long bpf_for_each_hash_elem(struct
->> bpf_map *map, bpf_callback_t callback_
->>           b = &htab->buckets[i];
->>           rcu_read_lock();
->>           head = &b->head;
->> -        hlist_nulls_for_each_entry_rcu(elem, n, head, hash_node) {
->> +        hlist_nulls_for_each_entry_safe(elem, n, head, hash_node) {
->>               key = elem->key;
->>               if (is_percpu) {
->>                   /* current cpu value for percpu map */
->> -- 
->> 2.48.1
->>
->
->
-> .
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
