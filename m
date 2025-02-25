@@ -1,182 +1,175 @@
-Return-Path: <bpf+bounces-52540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52541-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 108BFA4473B
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 18:02:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D84BDA44733
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 18:02:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 523C716D294
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 17:00:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D84A189738F
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 17:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8D9194A44;
-	Tue, 25 Feb 2025 17:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D7018DB10;
+	Tue, 25 Feb 2025 17:02:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B7UDOO39"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xmiizzf/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9752B1922E0;
-	Tue, 25 Feb 2025 17:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03960154449;
+	Tue, 25 Feb 2025 17:02:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740502812; cv=none; b=o5p2BbCucyoC0jv+MniVfcXKot1VEBOXRjeXm1Gvk/cIsGx4ebIWFuTyJ9/9kqRVG/KPJ65LXrq+JSFQDbFB5xixzO6frPRUW0le8vsC03Mbifn1ZZSK6Zby48oSzZqDtovgx1RMxefITZISow5TY04khDTL7myZ3Jq6Nc0JsZE=
+	t=1740502922; cv=none; b=pk2qhI2jBqKnE0va9r7STOXfVVastbhRHr4BLb0J6YUkhCKkelemHDG7p/G77mDHNk/z3mDK/whqvzCMzy/a4YVOW6mE90vGqAZjZAIqa9X71ll60T5Ds9BJL2Xy3uwwlXE8Ixl/V6xCk820ghu5Gt6xcW+uawKb3AztJOSz4lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740502812; c=relaxed/simple;
-	bh=zGSOvI3eokZTCm8J4P/eTT839Us8R/hog2lZsbFk+hU=;
+	s=arc-20240116; t=1740502922; c=relaxed/simple;
+	bh=1XKPLKXieZqVO6U2+kaiBJjTQv8Cc4ryBlaA1fZmkRE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n8sDg1U+DFc+aWp/OLsD/bEmr+h+1fGuIrGai43pC1yoc4or+h5p7JYSCKunQ2VDBXaT0cEFWKwTBw0gV6zrUQFauKrfC5cC0d5+nbSw3f1mjXcfUC5MEkxrTrkDnvMm3ULohWoTYJpOcaNylZBfFqWamE8N2VOxJhKFN7J2DbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B7UDOO39; arc=none smtp.client-ip=209.85.216.46
+	 To:Cc:Content-Type; b=hzeem4C50zrgtqYU+XLyaz9bqkpC4EFjSgcasK9hTlW9/leXzhjdeWzzUbvm3H4J7uEm3HJjeCSzPmIgxhQbVT8gK808IhgTUpxAeRCaHDXZIHvPWRsbBuZZTQlhL3lgCf6O3keIE4w5eeGHu77/tRvZxPGNBnz+voPntLzr5Ds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xmiizzf/; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2fcb6c42c47so9161494a91.1;
-        Tue, 25 Feb 2025 09:00:10 -0800 (PST)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2fcc99efe9bso9118247a91.2;
+        Tue, 25 Feb 2025 09:02:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740502810; x=1741107610; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740502920; x=1741107720; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zGSOvI3eokZTCm8J4P/eTT839Us8R/hog2lZsbFk+hU=;
-        b=B7UDOO39sm6KY2KbFodq2tgW4Y9J03JDMgI1iRcB7lDiCVcONCGc2VDYiYyAIsA172
-         GHujYXxtQshW/o1RKls9fD8qijzeyb5S+EA8VD3Gi+ABD2RL+m6W84OHbOQWdNqsxj1d
-         Xq7R0Cm9SkUCNaifnubZzeL3gfsPeFtnXQ8lOeYNROa/j3u0vbzymEFR+xrBeTZL/DnX
-         VZpU0PES12MCA445jdjcJmLMD9EAkWbDhy1FNQlRimTrzVn8uQJQQxZDhvT2iStY2SJc
-         L4pQr9G94M1d86h7s6ibvFMnS6zWunCKFPBprObIzfQ4Zp4is4c0FDhwhLdeytMPEPr8
-         Y04w==
+        bh=NRHXRyZ3W2PAcFwsCJB47bwsyJQ62xezF8ymu4F7sao=;
+        b=Xmiizzf/Mkadp8R2E1skOZUHvB7ELVN6B7ISDfwnvqIaOUZGFB8j+RlVzDNOMhgMfB
+         1GK3e/w7vYjP1m+X2/B/jzC8PLjD0pxkHJSkYT/zU4BTz3ucSZD3IGNZvd2sXiLabjXC
+         xqc8pC4ItDDB2sgT0AcGP9qsN6il+YBj4xpoUp3/h8ptAGWDZqkyheO4m7hQ1CcnJ+LS
+         D6xfhHqyi0MmK9fqj7zm5hB6GUmQE0H9nDuEqJt7GosgJjLx6HdWx8oSMnmuTVkyhymk
+         2uGFJqnBs99M2CCYVe3pfyxW9qbz/zJvGiezIGxIH0W92svlR6ioMC1VD2I5CjRoPKaD
+         yL6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740502810; x=1741107610;
+        d=1e100.net; s=20230601; t=1740502920; x=1741107720;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zGSOvI3eokZTCm8J4P/eTT839Us8R/hog2lZsbFk+hU=;
-        b=cG6OUbbPbqw6zP32mIU5jhSRsMFHyz8wfOtInGV2cuL5LzLV/JHMC0kLVMy4fQJXDB
-         V9mSsYC1FW1Wxwm7dcgOcVst5Lk0swphTntsYIgB+OZKOde9H8cHp+/VBmMQAhEojdJD
-         ZzrdHZfxnVu97RbiWdjQyfDKZvE4VuWKCavJDCX7g9ULHvEys96uYMj7z+uw31Sa8Bnu
-         7J3XNNfo7w1yoQygWGxwn3+0WgTE5MTdv6WHZM8dilX0Q6HIBVHpX58kmshWWwAocfmW
-         cw4dlwDERp1lxh+xe48NrHvaYoPPUdxRReCd28djbEGeMwwRhKaAtCQXOfAh9rKlGO0v
-         60Hw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+Z4RcegwOUORhB26ENUVvMKoc5sfL6eOBp2kfWi0q4MLvbeJJrCNJRp/trInwrMcrIWJk78+5/eFvY/3Y@vger.kernel.org, AJvYcCVxF4rFmnL9469JLQFIcjKZqa0yblqUJDsHBn3lPOOGZcO3G4kguWlHWqUg5OFmY2/a7KucVDooT7wKLg==@vger.kernel.org, AJvYcCWcp1bt869Wl55LdEqJjvU9IkbBL4xpO9dA6LVThpdLcVpS0kILIETblLxSZu5O1zCP//k=@vger.kernel.org, AJvYcCWf0f98lgCWn9Rf8hqUPI+Wq1KIfDiHLJmiciv8ZYBzKn0WeUVDCq16sVhbB5ZZi+IOw+JICAKpyf8+OnKQ@vger.kernel.org, AJvYcCXCtJgG55d6QU2sNwMW5HyH0BmkbnyTnr9z7K6c8HHLerWZHyX/ztYhoVZgPb9MrDnMUHCYWZYGcqsAG2q5rS4j@vger.kernel.org
-X-Gm-Message-State: AOJu0YwOdJsx7TyLu8cLtg6jfOJvZu9uPpv3RndVPqUzbvZ+KYQ7SK6E
-	xWIXVbgCMe8o9d2/mvPBWiduWI+VJc6bSrjKAExoI4qNaRbRMFrY3H9loZ9rzgWGsWGEHLCWJo5
-	lQWn1NULbcClUvotnhvteJ6HpbLM=
-X-Gm-Gg: ASbGnctIHi1wHaVEbtMBRqEkICT9PKKGncAHidipL6ScQp84A52in3fpC/BlHAmCtGe
-	UZkoM5ABrzwHnt9KfPafqA4tFZfkZdZqJ8sEBCMP+rUk9/xXNkKMuEMbnxAlfogdbGWqs7OJCs0
-	YBRQuIWoOLk9gUMg3/NjyKNt8=
-X-Google-Smtp-Source: AGHT+IEqGX/0s3L9HOzk4Sz5iomAqtCqwfcqNvGFpgeCqLV+ITRzR2oQPU+QlnRFoROJ8TnyuhJGLs8Sn0eBQ85lycM=
-X-Received: by 2002:a17:90b:6c4:b0:2fa:1a23:c01d with SMTP id
- 98e67ed59e1d1-2fe68ae3f9dmr5490807a91.21.1740502807682; Tue, 25 Feb 2025
- 09:00:07 -0800 (PST)
+        bh=NRHXRyZ3W2PAcFwsCJB47bwsyJQ62xezF8ymu4F7sao=;
+        b=qUlvseAZWpAzw87gwcAKemaTqSmYhy9FbpY7TbfsMqUL+DuPL+y9/jAJEmTVWzqep+
+         woidWytL8O7oH67PkkZiptUaSJuBVVmrYOYfnluJQSEx+/WTLc+BcN8w/9G0vlB7LC6J
+         a5gUXzindEEBizJqCSIAQ8QK84bn4NsZI7epF2JVyb+0V+XXKqTRISmEyHoVuogdv3rJ
+         ks+evT219xzJEcqhjsuimDSil+kn7db7s8xqCgnFLoSA8X8+LfFHfR2IV0qG7x8w/BB+
+         2sHlGqgMtKiyleFYXTByVWF+rb2Hcy1GOVIKUK5CJ9bhy/J/azuU65lxGJSeRv6uCdjx
+         nwWg==
+X-Forwarded-Encrypted: i=1; AJvYcCW67KwcpQnFzYJadmVmIIbWW+eh1NHeDYntrQhM7Ug6Hw77ju3W/bE1MtUKJZFl47hzFSI=@vger.kernel.org, AJvYcCWK7NAvpFj26eIwslcMGwC2gfF3n6yStUm7Nqd+ycovTxw2swJ+2jbTVAuRCNHJUjmSS+2NT7/LpxHpO5ws@vger.kernel.org
+X-Gm-Message-State: AOJu0YzypuzNNi14dqyFqVWw6ywMHplczbzpfDKof4JpgGdiCdPNWJgq
+	tdmLBUtUSrZOrZcHzCkAtOgIjMwAZdiShfkVOZ0J0t+EsLLd4z76BsR+wlkNhqB81O41vA+hAab
+	e5p0XGspoRjPsAVcQYq76BajwtKo=
+X-Gm-Gg: ASbGnctigPvZhADFzv/JvBsyCQ37t+UyTCPwDxxj5t47a7lrUygH3WscrrUtWKMt2V/
+	84t4w4/KqjP4puG2S6pV5AM7FtZfIgs+oQU78nKlYSfY6GuIv49t/1hbDjk4u7iVOznJhXN14X7
+	vhPTwc3CyEbyPQa1qPtItam5g=
+X-Google-Smtp-Source: AGHT+IGuKUU80V7/RqdSWiD1gVldkH+8Q41Ea7DXCHadDImi2rnlHnzU9m8HZdmqyjWrsElFRb+79VS5qgDJJF9t890=
+X-Received: by 2002:a17:90b:3e8a:b0:2f1:4715:5987 with SMTP id
+ 98e67ed59e1d1-2fce86ae503mr31188653a91.9.1740502920194; Tue, 25 Feb 2025
+ 09:02:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250207012045.2129841-1-stephen.s.brennan@oracle.com>
- <20250207012045.2129841-2-stephen.s.brennan@oracle.com> <CAK7LNAQokoST0FnByeWywaghTMP2aG7hQaV1T=TcQ=1v4ZLQrg@mail.gmail.com>
- <CAEf4Bzb9rYHTVkuxxSuoW=0P84M7UPkBr-4991KiMnFsv10hjA@mail.gmail.com> <87eczm6ckn.fsf@oracle.com>
-In-Reply-To: <87eczm6ckn.fsf@oracle.com>
+References: <20250224165912.599068-1-chen.dylane@linux.dev>
+ <20250224165912.599068-4-chen.dylane@linux.dev> <CAEf4BzYr9WzYbmyq8=nVETDqYvmYmObhD6x+_TQYpSUWxxGLLg@mail.gmail.com>
+ <edec731d-3370-46b8-baad-b8bf181bcce3@linux.dev>
+In-Reply-To: <edec731d-3370-46b8-baad-b8bf181bcce3@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 25 Feb 2025 08:59:54 -0800
-X-Gm-Features: AWEUYZm71T4KvCmI2nwm6g0nvCi2k88IvtzTenbxtSBKIzvf9AgIN9hu_viY36I
-Message-ID: <CAEf4BzZnQmjWLijCZdsNvFTmrAM+ioDW3YygmOZRHqadCg1_rw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kallsyms: output rodata to ".kallsyms_rodata"
-To: Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Andrii Nakryiko <andrii@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Kees Cook <kees@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Sami Tolvanen <samitolvanen@google.com>, Eduard Zingerman <eddyz87@gmail.com>, linux-arch@vger.kernel.org, 
-	Stanislav Fomichev <sdf@fomichev.me>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	Pasha Tatashin <pasha.tatashin@soleen.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Jann Horn <jannh@google.com>, 
-	Ard Biesheuvel <ardb@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, Hao Luo <haoluo@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-kbuild@vger.kernel.org, 
-	Daniel Borkmann <daniel@iogearbox.net>, Nathan Chancellor <nathan@kernel.org>, 
-	linux-debuggers@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Song Liu <song@kernel.org>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Date: Tue, 25 Feb 2025 09:01:48 -0800
+X-Gm-Features: AWEUYZlDayhglWM-oFpbbZoJ5MjHSy8YzMkPUfkQQJOY5jTnB4r_XVM2tRI4PNE
+Message-ID: <CAEf4Bzb1Epj9QdSeA02hAypqcbu3a_Nx9Gvj_o-RjukeNrWWeA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 3/5] libbpf: Add libbpf_probe_bpf_kfunc API
+To: Tao Chen <chen.dylane@linux.dev>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, 
+	haoluo@google.com, jolsa@kernel.org, qmo@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, chen.dylane@gmail.com, 
+	Tao Chen <dylane.chen@didiglobal.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 24, 2025 at 5:24=E2=80=AFPM Stephen Brennan
-<stephen.s.brennan@oracle.com> wrote:
+On Mon, Feb 24, 2025 at 9:47=E2=80=AFPM Tao Chen <chen.dylane@linux.dev> wr=
+ote:
 >
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-> > On Sat, Feb 15, 2025 at 6:21=E2=80=AFAM Masahiro Yamada <masahiroy@kern=
-el.org> wrote:
+> =E5=9C=A8 2025/2/25 09:15, Andrii Nakryiko =E5=86=99=E9=81=93:
+> > On Mon, Feb 24, 2025 at 9:02=E2=80=AFAM Tao Chen <chen.dylane@linux.dev=
+> wrote:
 > >>
-> >> On Fri, Feb 7, 2025 at 10:21=E2=80=AFAM Stephen Brennan
-> >> <stephen.s.brennan@oracle.com> wrote:
-> >> >
-> >> > When vmlinux is linked, the rodata from kallsyms is placed arbitrari=
-ly
-> >> > within the .rodata section. The linking process is repeated several
-> >> > times, since the kallsyms data size changes, which shifts symbols,
-> >> > requiring re-generating the data and re-linking.
-> >> >
-> >> > BTF is generated during the first link only. For variables, BTF incl=
-udes
-> >> > a BTF_K_DATASEC for each data section that may contain a variable, w=
-hich
-> >> > includes the variable's name, type, and offset within the data secti=
-on.
-> >> > Because the size of kallsyms data changes during later links, the
-> >> > offsets of variables placed after it in .rodata will change. This me=
-ans
-> >> > that BTF_K_DATASEC information for those variables becomes inaccurat=
-e.
-> >> >
-> >> > This is not currently a problem, because BTF currently only generate=
-s
-> >> > variable data for percpu variables. However, the next commit will ad=
-d
-> >> > support for generating BTF for all global variables, including for t=
-he
-> >> > .rodata section.
-> >> >
-> >> > We could re-generate BTF each time vmlinux is linked, but this is qu=
-ite
-> >> > expensive, and should be avoided at all costs. Further as each chunk=
- of
-> >> > data (BTF and kallsyms) are re-generated, there's no guarantee that
-> >> > their sizes will converge anyway.
-> >> >
-> >> > Instead, we can take advantage of the fact that BTF only cares to st=
-ore
-> >> > the offset of variables from the start of their section. Therefore, =
-so
-> >> > long as the kallsyms data is stored last in the .rodata section, no
-> >> > offsets will be affected. Adjust kallsyms to output to .rodata.kalls=
-yms,
-> >> > and update the linker script to include this at the end of .rodata.
-> >> >
-> >> > Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
-> >> > ---
+> >> Similarly to libbpf_probe_bpf_helper, the libbpf_probe_bpf_kfunc
+> >> used to test the availability of the different eBPF kfuncs on the
+> >> current system.
 > >>
-> >> I am fine if this is helpful for BTF.
+> >> Cc: Tao Chen <dylane.chen@didiglobal.com>
+> >> Reviewed-by: Jiri Olsa <jolsa@kernel.org>
+> >> Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+> >> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> >> ---
+> >>   tools/lib/bpf/libbpf.h        | 19 ++++++++++++-
+> >>   tools/lib/bpf/libbpf.map      |  1 +
+> >>   tools/lib/bpf/libbpf_probes.c | 51 +++++++++++++++++++++++++++++++++=
+++
+> >>   3 files changed, 70 insertions(+), 1 deletion(-)
+> >>
 > >
-> > This seems like a useful change all by itself even while the main
-> > feature of this patch set is still being developed and reviewed.
-> > Should we land just this .kallsyms_rodata change?
+> > [...]
+> >
+> >> +       buf[0] =3D '\0';
+> >> +       ret =3D probe_prog_load(prog_type, insns, insn_cnt, btf_fd >=
+=3D 0 ? fd_array : NULL,
+> >> +                             buf, sizeof(buf));
+> >> +       if (ret < 0)
+> >> +               return libbpf_err(ret);
+> >> +
+> >> +       if (ret > 0)
+> >> +               return 1; /* assume supported */
+> >> +
+> >> +       /* If BPF verifier recognizes BPF kfunc but it's not supported=
+ for
+> >> +        * given BPF program type, it will emit "calling kernel functi=
+on
+> >> +        * <name> is not allowed". If the kfunc id is invalid,
+> >> +        * it will emit "kernel btf_id <id> is not a function". If BTF=
+ fd
+> >> +        * invalid in module BTF, it will emit "invalid module BTF fd =
+specified" or
+> >> +        * "negative offset disallowed for kernel module function call=
+". If
+> >> +        * kfunc prog not dev buound, it will emit "metadata kfuncs re=
+quire
+> >> +        * device-bound program".
+> >> +        */
+> >> +       if (strstr(buf, "not allowed") || strstr(buf, "not a function"=
+) ||
+> >> +          strstr(buf, "invalid module BTF fd") ||
+> >
+> > why is invalid module BTF FD not an error (negative return)?
+> >
+> >> +          strstr(buf, "negative offset disallowed") ||
+> >> +          strstr(buf, "device-bound program"))
+> >> +               return 0;
+> >> +
+> >> +       return 1;
+> >> +}
+> >> +
+> >>   int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type, enum bpf_f=
+unc_id helper_id,
+> >>                              const void *opts)
+> >>   {
+> >> --
+> >> 2.43.0
+> >>
 >
-> I would be happy to see it merged now.
->
-> I don't think it would help anything other than BTF, because most other
-> things (e.g. kallsyms) refer to symbols via an absolute address. Using
-> the section offset seems pretty uncommon.
->
-> But it still is a nice cleanup anyway.
+> In probe_prog_load, err will be checked and converted into either 0 or 1.
 
-I was thinking about possible use cases of some tooling wanting to
-access kallsyms data from vmlinux (instead of from /proc/kallsyms).
-But, frankly, having a separate section doesn't help all that much
-even there. We either way seem to have ELF symbols pointing to
-relevant pieces of information, so it's not hard to get it even if
-it's part of .rodata. So I guess we don't have to rush landing this
-patch separately.
+I guess what I was getting at is that providing invalid module BTF FD
+is not a "not supported" case, it's an error case (and so should
+result in negative return)
 
 >
-> Thanks,
-> Stephen
+> --
+> Best Regards
+> Tao Chen
 
