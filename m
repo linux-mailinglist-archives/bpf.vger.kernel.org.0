@@ -1,200 +1,180 @@
-Return-Path: <bpf+bounces-52582-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52584-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94773A44F90
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 23:12:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5821EA45016
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 23:30:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C8793B06E6
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 22:12:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EA9519C43FD
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 22:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9634F212FAF;
-	Tue, 25 Feb 2025 22:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LSfLN1xG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07DD4215F65;
+	Tue, 25 Feb 2025 22:26:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7979E15198B;
-	Tue, 25 Feb 2025 22:12:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A45E5214803;
+	Tue, 25 Feb 2025 22:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740521553; cv=none; b=aIIKI8mICNJlXRJaZwr1xSzTAZfZfNfaseAUZSII8+GSO2cdNhPXDR9bHXufBAV/4Y0FxXIZ8b6URaEQVN+SpkCH9zU3NBPw9KSriLI2OrhPnt1Lgcyjii6raKzubzlSBa9RKPuj9Klcul6FCcYS7SzDSepikUICpVML0j6+u78=
+	t=1740522374; cv=none; b=Ju+yCuVXI99nJesJcbnISHkaSBRlZGtvNvov3/xDiX0ZL7tWwZhPDVlU104nhdmjSmoQPrk1xQY0uMrxn1mW1uEK4fuu2yoz6JH5AoJ3BmTY7YiopAeslwP5O7LH28t2FZ5Lq6v6d5NUMms1XfHrn/ab8E13zaK8nUC9PXtI4as=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740521553; c=relaxed/simple;
-	bh=jtMwaO560WLi7NX65M/ckoRUUXA/FxAknpJWCBMwbhM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jKs1vRc+y3vPLhuPRb3hohIYwHf+cF+PX2eMLK3Dn7NvEcKKfclGOGg7BaA5eSlDM7YjU6YHJb9T++ELpyronbNfqkYm3hbpyXKNFHPdh6A1sZaJlkHY7DL9kpDv9XHlnrBrBnLA7bEg4nKZStnrr1uwzm/2BCygCCb6JVkzOj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LSfLN1xG; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-38f29a1a93bso4928281f8f.1;
-        Tue, 25 Feb 2025 14:12:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740521550; x=1741126350; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SXXB4/JXMAoDs/dDMHkFtAYVpOJ69UXZRAkDQh72S8Q=;
-        b=LSfLN1xGMXhHOU5AFTN66EM2MoKT5Z5dRS98GRipUbTcHMHklK2rqmCc2x6Ej1tiTN
-         U2PlO0wKWgWzhrBYCDXKg0UQVRxr3udbBQWZn04PQa6tybzYkPISs58Qmd+a+HTlztM9
-         z6DJRRaimIRtNUH05j6edCsyHxzAag6edO9qO6MrtG3mnZCxuwT/pXyfrKu5gbIOr2Ft
-         U4XdJBzzdejaDsf1LGdJgU5Pyf6vb1cDy6rJYp5V0n4jUxWdJOh3db/f3OQFCD3DUT2s
-         SzxOfI6KfQPf2x+8U7KjNvSit5pf53Mh3N51giusaVswObkx9Li83cBVkvi6gHFcwSQB
-         PPfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740521550; x=1741126350;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SXXB4/JXMAoDs/dDMHkFtAYVpOJ69UXZRAkDQh72S8Q=;
-        b=M1p71IJAZnqPndB9di2A//HTuI8XmGvR/YbcxiMCAi71AdSOha+DcQUtNBkH8WvZtk
-         wSgbQxsB9MKp1o7l2dVvKCohbsG2kr9DTnxnHPjREDJd4KMfX6Lpl4uQO+XPANQDEiwx
-         Z5V+QRSfJHuqMdZ0IxGr0Sa/GdM5hIgccdwqqwht9KFq2suY/jRKZvJ2rJXtz4rvY1Ci
-         yBoCXBTM+s8zdocbo/b+jp6Nk3WpvCA8rvIW4ey6e5/HD9cmWywGX/PuBjCiyZ6uLXYd
-         eLhlP5qzpnCUqx0qTRqarXuO/KxaEP94c0KsYN83SHPBUcHPGwUwKh2jurWpU6j2ttCw
-         nSNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU2e47JAfCbG+YrivyELJGRN48B7lAwnLJ6l1Ia0NfAcGr2VzNPM6LyQn1ckmJdxsJQHDU=@vger.kernel.org, AJvYcCV0d1ZIXGTcrsXkD/useTcXbXNDqkXBxoQLsjmEugSEAOwokEa61pxt4+4Iec7zihGa5+WPYmjpio8pXyGX@vger.kernel.org
-X-Gm-Message-State: AOJu0YzHaqfXyuR3F6MxH27Lyi2QNXoHllnv0lQl07V85qU0RvjndzES
-	xWiZPjRQEqAj2e2EE4pfIqqrElwMKHMg4iSUim2M4etod4bzRzM8Fz/Y6/2Exe5kxdw7iGxo5fi
-	vpmI5KrUqM60PijyWfgSMGYF0oXM=
-X-Gm-Gg: ASbGncv0+6j3iK3zj/tIxWu53F/kPYGtOwZg1i8/pW/eJnVVdlGjRHDmpljwkw2AvtA
-	GX8XKTTNzavfe2uCp8YcBxCnn1UrmSdV4TTAh92BTXSNgepg5CROuTfVifOyzzuriJHX7VPFtHK
-	YOToFr4wtXbEGWDEO2gQGUysc=
-X-Google-Smtp-Source: AGHT+IH00vgcbsozIfKojmhfU1AUU1j6OChnUu1jJ43Kfc47+DoIIDzZgEVzUlCbOboNzdSViig/neF1ooanGVJD3ow=
-X-Received: by 2002:a5d:64c4:0:b0:38f:2a44:8079 with SMTP id
- ffacd0b85a97d-390d4f4d2a1mr628128f8f.32.1740521549493; Tue, 25 Feb 2025
- 14:12:29 -0800 (PST)
+	s=arc-20240116; t=1740522374; c=relaxed/simple;
+	bh=hWweZgKdfZikXRAiePO+25+q5jfijM1HiOLlPaRwrjg=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=TO5AYx3jKzEOasYT+L8KwXYhsNMuQR7Ab7mb6KUa2+03jmY8DLzdxzZMjS0vVFcLqDS8lCrWoI20WCs3gLpMNyeo03gEqPQp8GksRcCzj9d80uhtYkEHHv9gmKkAmd+/k3bWG67rGW34Vc968Z/TWtqC9a6hlIiRwamabOadjb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39890C4CEDD;
+	Tue, 25 Feb 2025 22:26:14 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.98)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1tn3O9-00000009CIB-2Clv;
+	Tue, 25 Feb 2025 17:26:53 -0500
+Message-ID: <20250225222601.423129938@goodmis.org>
+User-Agent: quilt/0.68
+Date: Tue, 25 Feb 2025 17:26:01 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ Guo Ren <guoren@kernel.org>,
+ Donglin Peng <dolinux.peng@gmail.com>,
+ Zheng Yejian <zhengyejian@huaweicloud.com>,
+ bpf@vger.kernel.org
+Subject: [PATCH v3 0/4] ftrace: Add function arguments to function tracers
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <AM6PR03MB5080513BFAEB54A93CC70D4399FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB5080FFF4113C70F7862AAA5D99FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB5080FFF4113C70F7862AAA5D99FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 25 Feb 2025 14:12:16 -0800
-X-Gm-Features: AWEUYZnc16-rvZFBgv2kcFhs_t4uU2yOO4lAtsxgxdjkF4UxyLzkE0xJz-7qNXg
-Message-ID: <CAADnVQLR0=L7xwh1SpDfcxRUhVE18k_L8g3Kx+Ykidt7f+=UhQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 4/6] bpf: Add bpf runtime hooks for tracking
- runtime acquire/release
-To: Juntong Deng <juntong.deng@outlook.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 13, 2025 at 4:36=E2=80=AFPM Juntong Deng <juntong.deng@outlook.=
-com> wrote:
->
-> +void *bpf_runtime_acquire_hook(void *arg1, void *arg2, void *arg3,
-> +                              void *arg4, void *arg5, void *arg6 /* kfun=
-c addr */)
-> +{
-> +       struct btf_struct_kfunc *struct_kfunc, dummy_key;
-> +       struct btf_struct_kfunc_tab *tab;
-> +       struct bpf_run_ctx *bpf_ctx;
-> +       struct bpf_ref_node *node;
-> +       bpf_kfunc_t kfunc;
-> +       struct btf *btf;
-> +       void *kfunc_ret;
-> +
-> +       kfunc =3D (bpf_kfunc_t)arg6;
-> +       kfunc_ret =3D kfunc(arg1, arg2, arg3, arg4, arg5);
-> +
-> +       if (!kfunc_ret)
-> +               return kfunc_ret;
-> +
-> +       bpf_ctx =3D current->bpf_ctx;
-> +       btf =3D bpf_get_btf_vmlinux();
-> +
-> +       tab =3D btf->acquire_kfunc_tab;
-> +       if (!tab)
-> +               return kfunc_ret;
-> +
-> +       dummy_key.kfunc_addr =3D (unsigned long)arg6;
-> +       struct_kfunc =3D bsearch(&dummy_key, tab->set, tab->cnt,
-> +                              sizeof(struct btf_struct_kfunc),
-> +                              btf_kfunc_addr_cmp_func);
-> +
-> +       node =3D list_first_entry(&bpf_ctx->free_ref_list, struct bpf_ref=
-_node, lnode);
-> +       node->obj_addr =3D (unsigned long)kfunc_ret;
-> +       node->struct_btf_id =3D struct_kfunc->struct_btf_id;
-> +
-> +       list_del(&node->lnode);
-> +       hash_add(bpf_ctx->active_ref_list, &node->hnode, node->obj_addr);
-> +
-> +       pr_info("bpf prog acquire obj addr =3D %lx, btf id =3D %d\n",
-> +               node->obj_addr, node->struct_btf_id);
-> +       print_bpf_active_refs();
-> +
-> +       return kfunc_ret;
-> +}
-> +
-> +void bpf_runtime_release_hook(void *arg1, void *arg2, void *arg3,
-> +                             void *arg4, void *arg5, void *arg6 /* kfunc=
- addr */)
-> +{
-> +       struct bpf_run_ctx *bpf_ctx;
-> +       struct bpf_ref_node *node;
-> +       bpf_kfunc_t kfunc;
-> +
-> +       kfunc =3D (bpf_kfunc_t)arg6;
-> +       kfunc(arg1, arg2, arg3, arg4, arg5);
-> +
-> +       bpf_ctx =3D current->bpf_ctx;
-> +
-> +       hash_for_each_possible(bpf_ctx->active_ref_list, node, hnode, (un=
-signed long)arg1) {
-> +               if (node->obj_addr =3D=3D (unsigned long)arg1) {
-> +                       hash_del(&node->hnode);
-> +                       list_add(&node->lnode, &bpf_ctx->free_ref_list);
-> +
-> +                       pr_info("bpf prog release obj addr =3D %lx, btf i=
-d =3D %d\n",
-> +                               node->obj_addr, node->struct_btf_id);
-> +               }
-> +       }
-> +
-> +       print_bpf_active_refs();
-> +}
 
-So for every acq/rel the above two function will be called
-and you call this:
-"
-perhaps we can use some low overhead runtime solution first as a
-not too bad alternative
-"
+These patches add support for printing function arguments in ftrace.
 
-low overhead ?!
+Example usage:
 
-acq/rel kfuncs can be very hot.
-To the level that single atomic_inc() is a noticeable overhead.
-Doing above is an obvious no-go in any production setup.
+function tracer:
 
-> Before the bpf program actually runs, we can allocate the maximum
-> possible number of reference nodes to record reference information.
+ ~# cd /sys/kernel/tracing/
+ ~# echo icmp_rcv >set_ftrace_filter
+ ~# echo function >current_tracer
+ ~# echo 1 >options/func-args
+ ~# ping -c 10 127.0.0.1
+[..]
+ ~# cat trace
+[..]
+            ping-1277    [030] ..s1.    39.120939: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    39.120946: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    40.179724: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    40.179730: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    41.219700: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    41.219706: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    42.259717: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    42.259725: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    43.299735: icmp_rcv(skb=0xa0ecab00) <-ip_protocol_deliver_rcu
+            ping-1277    [030] ..s1.    43.299742: icmp_rcv(skb=0xa0ecac00) <-ip_protocol_deliver_rcu
 
-This is an incorrect assumption.
-Look at register_btf_id_dtor_kfuncs()
-that patch 1 is sort-of trying to reinvent.
-Acquired objects can be stashed with single xchg instruction and
-people are not happy with performance either.
-An acquire kfunc plus inlined bpf_kptr_xchg is too slow in some cases.
-A bunch of bpf progs operate under constraints where nanoseconds count.
-That's why we rely on static verification where possible.
-Everytime we introduce run-time safety checks (like bpf_arena) we
-sacrifice some use cases.
-So, no, this proposal is not a solution.
+function graph:
+
+ ~# cd /sys/kernel/tracing
+ ~# echo icmp_rcv >set_graph_function
+ ~# echo function_graph >current_tracer
+ ~# echo 1 >options/funcgraph-args
+
+ ~# ping -c 1 127.0.0.1
+
+ ~# cat trace
+
+ 30)               |  icmp_rcv(skb=0xa0ecab00) {
+ 30)               |    __skb_checksum_complete(skb=0xa0ecab00) {
+ 30)               |      skb_checksum(skb=0xa0ecab00, offset=0, len=64, csum=0) {
+ 30)               |        __skb_checksum(skb=0xa0ecab00, offset=0, len=64, csum=0, ops=0x232e0327a88) {
+ 30)   0.418 us    |          csum_partial(buff=0xa0d20924, len=64, sum=0)
+ 30)   0.985 us    |        }
+ 30)   1.463 us    |      }
+ 30)   2.039 us    |    }
+[..]
+
+This was last posted by Sven Schnelle here:
+
+  https://lore.kernel.org/all/20240904065908.1009086-1-svens@linux.ibm.com/
+
+As Sven hasn't worked on it since, I decided to continue to push it
+through. I'm keeping Sven as original author and added myself as
+"Co-developed-by".
+
+Changes since v2: https://lore.kernel.org/linux-trace-kernel/20241223201347.609298489@goodmis.org/
+
+- Removed unneeded headers
+
+- Put back removed '\n' that was accidentally erased.
+
+- Do not use bpf_get_btf_vmlinux() to get btf element as
+  btf_find_func_proto() will handle that.
+
+- Fixed how structures are printed
+
+Changes since Sven's work:
+
+- Made the kconfig option unconditional if all the dependencies are set.
+
+- Not save ftrace_regs in the ring buffer, as that is an abstract
+  descriptor defined by the architectures and should remain opaque from
+  generic code. Instead, the args are read at the time they are recorded
+  (with the ftrace_regs passed to the callback function), and saved into
+  the ring buffer. Then the print function only takes an array of elements.
+
+  This could allow archs to retrieve arguments that are on the stack where
+  as, post processing ftrace_regs could cause undesirable results.
+
+- Made the function and function graph entry events dynamically sized
+  to allow the arguments to be appended to the event in the ring buffer.
+  The print function only looks to see if the event saved in the ring
+  buffer is big enough to hold all the arguments defined by the new
+  FTRACE_REGS_MAX_ARGS macro and if so, it will assume there are arguments
+  there and print them. This also means user space will not break on
+  reading these events as arguments will simply be ignored.
+
+- The printing of the arguments has some more data when things are not
+  processed by BPF. Any unsupported argument will have the type printed
+  out in the ring buffer. 
+
+- Also removed the spaces around the '=' as that's more in line to how
+  trace events show their fields.
+
+- One new patch I added to convert function graph tracing over to using
+  args as soon as the user sets the option even if function graph tracing
+  is enabled. Function tracer did this already by default.
+
+
+Steven Rostedt (1):
+      ftrace: Have funcgraph-args take affect during tracing
+
+Sven Schnelle (3):
+      ftrace: Add print_function_args()
+      ftrace: Add support for function argument to graph tracer
+      ftrace: Add arguments to function tracer
+
+----
+ include/linux/ftrace_regs.h          |   5 ++
+ kernel/trace/Kconfig                 |  12 +++
+ kernel/trace/trace.c                 |  12 ++-
+ kernel/trace/trace.h                 |   4 +-
+ kernel/trace/trace_entries.h         |  12 +--
+ kernel/trace/trace_functions.c       |  46 ++++++++--
+ kernel/trace/trace_functions_graph.c | 170 ++++++++++++++++++++++++++++-------
+ kernel/trace/trace_irqsoff.c         |   4 +-
+ kernel/trace/trace_output.c          | 103 ++++++++++++++++++++-
+ kernel/trace/trace_output.h          |   9 ++
+ kernel/trace/trace_sched_wakeup.c    |   4 +-
+ 11 files changed, 328 insertions(+), 53 deletions(-)
 
