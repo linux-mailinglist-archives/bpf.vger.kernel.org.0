@@ -1,144 +1,177 @@
-Return-Path: <bpf+bounces-52567-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52568-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76311A44AB1
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 19:39:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81392A44B04
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 20:04:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5AF216C71A
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 18:39:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9A1A3B3364
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 19:04:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06FAC198831;
-	Tue, 25 Feb 2025 18:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142C719E7E2;
+	Tue, 25 Feb 2025 19:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UcUpqPht"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mhKLkJyB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E74B418DB3F
-	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 18:39:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CECA199396
+	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 19:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740508788; cv=none; b=EL4EyGaycwJUlamlyDexQLlFhMrw47BlcKd1Ltd157Qs6FjR82aHbZyifJ6CK9VRS65jZEfm600vTSeMXoTjCC4HlR64rGXn9fpHy+RZOhDxt2qOccB5mNV2+lbgIrqFAuqTUaaUx+C9vb37KsQIpUCX6y4c0Y4Nsy0Kz8JXYqM=
+	t=1740510273; cv=none; b=cNUnhj3nd0YEFvl9iY4JTm0zsEk09DALXZnmQyN03GQigeDOgPuWZsdaawSYWwHCPd88uHkKlkgnV5dqS7waxXeyCtUc19wPtI95wsv0kAAokhmPT59HMfoN50AY4pzAsK+bteOyDkdRPlx/ve8Z30PgtTNTMCohhllVpnykZqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740508788; c=relaxed/simple;
-	bh=XRReKA+k2SXdffrztygbiQ7OICeS15lfpOAzcHoaRW4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dyLfCLSAUUobM1Zz4QvzV2WtnVbDoXI3rSRii36Yhvm5mGxqC0rQ31T5BbLLJCkVVlbn7Zoeq49GgF5z/F2Bo++dsv8JxOTKx/LTkG8J4T2IZhhwLnlkpKeB4zJV0UG4M+aj6gBUwkFRhZ1IOm/8p1Pgo+r+r5/4jxArUAXCyMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UcUpqPht; arc=none smtp.client-ip=209.85.221.49
+	s=arc-20240116; t=1740510273; c=relaxed/simple;
+	bh=EgZksElEEOclC4ymeMmOiSimG/m78rZcLFTrrZQtJvQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=dkAhaNrP/xzZW4uvd0TMHyHmoo4ivYrwkPPQM+aVS3/Hw8NcmB5TLGbhx4TV4MLsO/I/RjflJ0te9gYAnHCBnEO2HLmvuS+VoTfTsKmXAyXX3LOSGJ1qrLnBdw/KZav2HDbVf73FbUT7jQLGNYyHxX8Ct8KKJAHuVo3z8cCb/Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mhKLkJyB; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-38f1e8efef5so3553493f8f.1
-        for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 10:39:46 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-22128b7d587so117706575ad.3
+        for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 11:04:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740508785; x=1741113585; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yYqa1+wcqNSXEbPyPwibRsEKzR32TvJUpCBy/bf53lc=;
-        b=UcUpqPhtA2bMCZj6L0se3Y37TTL4YJ3xY++crcRyqJTNQ9YnKcAAaGW+dggFUbzFCV
-         UpaEzTZ5o4qV/n6n5DUsIQ6z8sPir/44ya+SQTiidCobabgnDYqbxXg3kogeQIWkzwxK
-         BwFXlqgeOFiKcjpNazyH1leH9Hto8eS3T/9pgqRpUbdSVf9j/pMaanrNkZ8OTwkU5g8p
-         ie7Ye9bH2zBzfZpymw1pRaggOiC+hzGF83bbyQO76N4NK+s2kAFkKOZKVk3fCdxd2Ose
-         XuRtM7yUpgskLfmvkhdQ2dW8PebQ5Kex/Jj0ahag8rSCysvEl6j9Rfwhcr414wsGxM+1
-         uLOw==
+        d=gmail.com; s=20230601; t=1740510271; x=1741115071; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BQCTOkjcwv4oVIbCFdUX6WhUysS2AHLq+fvfoVW8PGg=;
+        b=mhKLkJyBxQGe9lnRz6oyP/CyTiAuP6sjKvvZh0ACk69KwS6TlqVqPJNjHPLVMHluom
+         oA9OX/n+AoxdMp4cTDeu15YfETf/M22w50j0sPL02YH0At8y6yuablzV/xzdjOiLCrEE
+         XZrIEi13v3Pgs4hzGSHeb953P3e54ZB7VJFWI64mZJmdLyrSdh7VPd5vxEv1rMHrOOUa
+         E0T4+erkTdtn7LYXSt6XdQMR0kgWLp7+lDaHSXPpc0dU3l3xsUzae+mzkPR8gzwCFKNf
+         nKOvVMa7A+cDbV8X/ebY1Hsjp7EDSQAXWviS7sOsgaVYUl/98G3UToCMhAAVwnRzNeol
+         DUjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740508785; x=1741113585;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yYqa1+wcqNSXEbPyPwibRsEKzR32TvJUpCBy/bf53lc=;
-        b=N+par8zGEZGp1iah8J4JYXSXoLyE46wSQVDDTlQIBXAgk5t67lQaIdFdKxYJcmaPRE
-         603pOkXnmOyvibbdJrxQCY64811X82l6owckmMu6T7ZFKB+rMHzQPjhDrrDnZAVFZhiP
-         2/tuz1ORVBgh2xmRnw1JQ1TRYjBbNRlRlkpkZstxG+tGPeK44alyCuTar/yjBmnbc94C
-         vjWjOJca/Qt1N5xvquNuqi8Tv+C8GZ0EKA4bO2/t2uJxbu1WJH5RjC8x2u55qoEnxldQ
-         zd3QaXp0qXk/u3k3+/OLJMYjx/q7gspLiKpAfvQGXU8pCCQICx5hRQboSXcMU+y/UI27
-         zXbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVQYEzWH6ubO+xLO6kqKQ1peMoRH7tWh9+ZYjroggYRqNHzAy6mgjxtgBFSkq8lvg3mKKo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwR5JATyt74zLZ2yYH4GM9osYxhFLZoH2rHDnZFGyf4vtVhhKJh
-	7ug+a628C9uZdz3wo4BP660TlF6VRpq98/GJoMitM6S+GGMM86jvtDHxGMGK54lvUdsrhFG7Xwc
-	J5jmS4IS1/lpRB94t0bCi8lxJnBA=
-X-Gm-Gg: ASbGncuQIO2qAvcDY9I5a0bH8d0PvZWrbU/gZK+vAGxxn9tuVzzxQ8YaJ+S2NZT6Kyo
-	rc7RXbTgtgwcjCujMVss8Cx3FZAS7Wcjg1m3A5LZCWTGyuASyVBTfAGz+YvVib6uAN4OK7sx+tg
-	vLskt2/MNDf0gTxiGrhxEMse4=
-X-Google-Smtp-Source: AGHT+IHPILCkYLPOC97ZeiA2HC/0g0GlziaqQOwvBXy1rsBdXD/VOZwjHzMI5l5iqCnYibojrODQOGhd+Dee3Uumo8o=
-X-Received: by 2002:adf:f744:0:b0:38f:32ac:7e70 with SMTP id
- ffacd0b85a97d-390cc638c19mr2903482f8f.49.1740508785073; Tue, 25 Feb 2025
- 10:39:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740510271; x=1741115071;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BQCTOkjcwv4oVIbCFdUX6WhUysS2AHLq+fvfoVW8PGg=;
+        b=qRooLcLS85dhQ42SslD+6aXCJ0rBPPg8IGHrS9USDT6zwq2c7k6ldbLw7ERdG45dw6
+         mSuL+gmxfWicAQRbJlO9irmVTL/FiQRfzgIpRbu0h4SxfdfZr63c9N4gTPqP5nj5QpvT
+         341XN6fdplLRpKyoFYT+oRfduuCAK21NZbPs5m49slZ2b8AZl0J9OEarlwU05ygCjpm8
+         0dj4VefS4Fi/HqPLSMPBikl2Op5i04GKvIlWRJZdwUqHDCkrK+js5/Md97W/+YQQkcN9
+         YNox8PpPNWWi/KtkgVTEjhRky/ff1VVn6qTO0y3Vgo23gmeUS4ifkCKkvDD7Yzw47426
+         OnXA==
+X-Forwarded-Encrypted: i=1; AJvYcCV+j+bspHEZEb1pRXcr08a3tBUBoLlURLjFDFshCJBvSZKTapWSpLHfO2yknen8qlpp+M8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4M7wjRVf8TXyVWmb6EQE5yfXRontX0WWTfLYFbFzD53iAoe0Y
+	fpKKfEefbILx/N/uYX9/7U9JdHah6sEvq9WxkUXHRuBV2+e99gsl
+X-Gm-Gg: ASbGncuGGhDSp0aE2wiXFgvYH4THAWs8SwWJom9Lg2ggVmyN9yh5L2hLZBrfoLtmRgO
+	qQ9eN1UpkEbLV3E9R8j6r4Y46oJwEQqgfyBT+GFiTlFfiGaSl51WCpK1Ylpl/p4957N9JvQtN1C
+	fWv3TW5IOMPEq/S/WBCE7iDR5yEtR7QspT6gWwNVcrv+lHPfXPDb0I15WBGdByG6REfv7RoApbx
+	7v6GBfNa6xhgdLHRSQ+5TLjkj1v+lp+xSGeg4BOZKcualwTR/ZWn9rCbsT7/S6HFCPUr4B0Qwzz
+	X7xnepnnW7gZUHf6lvOqkgc=
+X-Google-Smtp-Source: AGHT+IEqmu8Zyx7MUf0PAxJR6X5pTZPVv6aKiDF4jXz3JxEV66Uzs6JRZR4kmRCPi9CNnRfka4DuEQ==
+X-Received: by 2002:a05:6a00:3e0c:b0:730:7d3f:8c71 with SMTP id d2e1a72fcca58-7348be2c98cmr646233b3a.19.1740510271330;
+        Tue, 25 Feb 2025 11:04:31 -0800 (PST)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7347a72f4c7sm1869180b3a.79.2025.02.25.11.04.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Feb 2025 11:04:30 -0800 (PST)
+Message-ID: <b8b36cfa2700a753e85468591ac3ec458b3a5fa5.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/2] selftests/bpf: implement setting global
+ variables in veristat
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Date: Tue, 25 Feb 2025 11:04:26 -0800
+In-Reply-To: <20250225163101.121043-2-mykyta.yatsenko5@gmail.com>
+References: <20250225163101.121043-1-mykyta.yatsenko5@gmail.com>
+	 <20250225163101.121043-2-mykyta.yatsenko5@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250224114606.3500-1-laoar.shao@gmail.com> <20250224114606.3500-2-laoar.shao@gmail.com>
- <CAADnVQKUYP8e_u5QWGHK_fi_LKyOO3voFkHyRLCuw9-qKiFmDQ@mail.gmail.com> <CALOAHbCM_9NotV3UqeOiK-s_Cd-HAUS+1L834Di1Pw75iyTCOA@mail.gmail.com>
-In-Reply-To: <CALOAHbCM_9NotV3UqeOiK-s_Cd-HAUS+1L834Di1Pw75iyTCOA@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 25 Feb 2025 10:39:31 -0800
-X-Gm-Features: AQ5f1JoE8BAeWH30pVhmmX58K_lDAhdJCx6ELrnvWIY6JObEuHJqhrO24YwS4Lg
-Message-ID: <CAADnVQK12yzwC=10yxoYUs02iCpkH+tZe881Dnc2_8j3cxsFdQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] bpf: Reject attaching fexit to functions annotated
- with __noreturn
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 24, 2025 at 11:35=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
- wrote:
->
-> On Tue, Feb 25, 2025 at 1:30=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Feb 24, 2025 at 3:46=E2=80=AFAM Yafang Shao <laoar.shao@gmail.c=
-om> wrote:
-> > >
-> > > +       } else if (prog->expected_attach_type =3D=3D BPF_TRACE_FEXIT =
-&&
-> > > +                  btf_id_set_contains(&fexit_deny, btf_id)) {
-> > > +               verbose(env, "Attaching fexit to __noreturn functions=
- is rejected.\n");
-> > > +               return -EINVAL;
-> >
-> > Just realized that this needs to include
-> > prog->expected_attach_type =3D=3D BPF_MODIFY_RETURN
-> > since it's doing __bpf_tramp_enter() too.
->
-> I will add it.
->
-> >
-> > Also the list must only contain existing functions.
-> > Otherwise there are plenty of build warns:
-> >   BTFIDS  vmlinux
-> > WARN: resolve_btfids: unresolved symbol xen_start_kernel
-> > WARN: resolve_btfids: unresolved symbol xen_cpu_bringup_again
-> > WARN: resolve_btfids: unresolved symbol usercopy_abort
-> > WARN: resolve_btfids: unresolved symbol snp_abort
-> > WARN: resolve_btfids: unresolved symbol sev_es_terminate
-> > WARN: resolve_btfids: unresolved symbol rust_helper_BUG
-> > ...
->
-> I missed these warnings.
-> It looks like we need to add "#ifdef XXXX" to each function.
-> Alternatively, could we just compare the function name with
-> prog->aux->attach_func_name instead?
+On Tue, 2025-02-25 at 16:31 +0000, Mykyta Yatsenko wrote:
 
-Strings are much less efficient than btf_ids.
-Especially comparing across many strings.
-To minimize ifdef-s lets remove all functions that bpf cannot
-attach anyway (that are not in available_filter_functions).
-Then drop all that call panic/BUG equivalent,
-since refcnt on trampoline is irrelevant at that point.
-That will remove even more functions.
-At the end the list will be short with few ifdef-s.
-This is a temporary workaround anyway, so let's not get too creative.
+New warning for trying to set non-enums from enumerators works fine.
+This still can be abused if numeric value outside of the supported
+range is specified, but that's fine, I think.
+
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+
+[...]
+
+> @@ -1292,6 +1320,268 @@ static int process_prog(const char *filename, str=
+uct bpf_object *obj, struct bpf
+>  	return 0;
+>  };
+> =20
+> +static int append_var_preset(struct var_preset **presets, int *cnt, cons=
+t char *expr)
+> +{
+> +	void *tmp;
+> +	struct var_preset *cur;
+> +	char var[256], val[256];
+> +	long long value;
+> +	int r, n, val_len;
+> +
+> +	tmp =3D realloc(*presets, (*cnt + 1) * sizeof(**presets));
+> +	if (!tmp)
+> +		return -ENOMEM;
+> +	*presets =3D tmp;
+> +	cur =3D &(*presets)[*cnt];
+> +	cur->applied =3D false;
+> +
+> +	if (sscanf(expr, "%s =3D %s\n", var, val) !=3D 2) {
+> +		fprintf(stderr, "Could not parse expression %s\n", expr);
+> +		return -EINVAL;
+> +	}
+> +
+> +	val_len =3D strlen(val);
+> +	errno =3D 0;
+> +	r =3D sscanf(val, "%lli %n", &value, &n);
+> +	if (r =3D=3D 1 && n =3D=3D val_len) {
+> +		if (errno =3D=3D ERANGE) {
+> +			/* Try parsing as unsigned */
+> +			errno =3D 0;
+> +			r =3D sscanf(val, "%llu %n", &value, &n);
+> +			/* Try hex if not all chars consumed */
+> +			if (n !=3D val_len) {
+> +				errno =3D 0;
+> +				r =3D sscanf(val, "%llx %n", &value, &n);
+
+The discrepancy between %lli accepting 0x but %llu not accepting 0x is
+annoying unfortunate. Does not look simpler then before, but let's
+merge this already.
+
+> +			}
+> +		}
+> +		if (errno || r !=3D 1 || n !=3D val_len) {
+> +			fprintf(stderr, "Could not parse value %s\n", val);
+> +			return -EINVAL;
+> +		}
+> +		cur->ivalue =3D value;
+> +		cur->type =3D INTEGRAL;
+> +	} else {
+> +		/* If not a number, consider it enum value */
+> +		cur->svalue =3D strdup(val);
+> +		if (!cur->svalue)
+> +			return -ENOMEM;
+> +
+> +		cur->type =3D ENUMERATOR;
+> +	}
+> +
+> +	cur->name =3D strdup(var);
+> +	if (!cur->name)
+> +		return -ENOMEM;
+> +
+> +	(*cnt)++;
+> +	return 0;
+> +}
+
+[...]
+
 
