@@ -1,73 +1,75 @@
-Return-Path: <bpf+bounces-52502-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52503-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19193A43FAF
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 13:51:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8DB5A43FB0
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 13:51:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B7303AD5BA
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 12:50:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0927F1772FA
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 12:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC80268C42;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38CF268C5A;
 	Tue, 25 Feb 2025 12:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GsutDUls"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b2tAHPgI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 494D720F076
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C5D267F62
 	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 12:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740487857; cv=none; b=bUqWec8nEfRm/NgoAUg2IFes7mrk4vbhA8EJ9RsOyjOHPzeeAIiS7uC/zEoG1Id1NoUCvN+3x7tAcKzBzqkWGsWEFDHCMxfUDnV0evSPX7+uk05+L/DlJypEBtU/HncJYgh1Py1J+q6WWzrG38+Ub6eOF++swAYjyFO6SEGlm7g=
+	t=1740487858; cv=none; b=MqIpiGTeUzApe0FZ0yzsMRng6OeY4DW0IlLRauZ3UBZSPio98sR8pb7ZvZg3rDzD/rdxZy+TdGhSEVfIBWYOZvdXh+7dwdX3Hht6pBTySc0y/AXjROqvnBObnFMcViQasFR3YEkyKKeWuqsOOhec9OriMbvTkIvplo42ZIowyXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740487857; c=relaxed/simple;
-	bh=zuuaeT7k7ObWA72KwJ6gla10Lt3QEmlpIldiUMnKii0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L/nwQ6jnDE1C7Nr+hhfMeR++l7FtzJNul/rYsan/uVqDLDAJlXdwHPayrzNeFhKaPLvFvs3dMDz5ii7TeNPaswYXBqKpFQZMTyZJvMeSSGUfGRdKgoZvY4xs8ZQreO8dEqqMIIcc6xlbM176hWKA9Y9PLL7SEOr5/3pQTOhaKZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GsutDUls; arc=none smtp.client-ip=209.85.128.45
+	s=arc-20240116; t=1740487858; c=relaxed/simple;
+	bh=w2VDTZKgosHrBADgJ7K6NtMsV8whOrzUHimMApriL5c=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=HxTcm6Q7xGCjSRLYbIA8HrfdHmJZwHsA1kLg1uEImyu73tVqyKqvp0EANMvGpuJoui2Ve0Ii7ajk9g0icrK06XLZdo7kpPmwKFwGLtRQjt7H7McioCyEBke2lKiWVpP4SPhX1WZbWYgMPr4L0sp6PE7Dq9sX0r36s+sQWALbVes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b2tAHPgI; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-43996e95114so36445865e9.3
-        for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 04:50:55 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-38f504f087eso4365774f8f.1
+        for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 04:50:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740487854; x=1741092654; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cWiQyK4ZdwKcFeHK3xe7qcRy9uI1f2Soyvje88uIM70=;
-        b=GsutDUlsu2MDEfK0Y7jmjVlzhOpKRMkJhFQRZlSBBamvmAukrUXQ1Lg97HsHjO4dNy
-         waCm6A1shbJH6BSTv5xRTSkN+7bWNhFi7GUodN9HVIre3Sjrnw0fecPGusu/EEv7orX1
-         HWfDQvzxqWi4ZFKCJInTb8pjOHucgIieLuAm0vj8nusMoxFs2mbrkYe8z9j+eOXkfHmN
-         c4ms+6UJvnNJXr5cXy7tXvIFH7ymGexO49Zd8umrY7oK9raExwUQVhOeMmvP1Vl3zJnE
-         CpgFFeItV5cVjLZQkDsdMlFI/wgbGPCEtWfygCmVgz15YvqAIMKgpIFpDJzELJuvyxKa
-         uFrw==
+        d=gmail.com; s=20230601; t=1740487855; x=1741092655; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jVlAZ/3eLH7YAGDTd7s2pnGjibHGsmeFO5jJjUGJuF0=;
+        b=b2tAHPgIXJGW81VreEAcEb/KIO64SCc4460jlIEK9EICT0+ooGeRZBqO54k0t2mAsh
+         7aXCWa6fVJS+vDMOu2wcfakTkOc/q2tdeNIEPIkzA0iRgyDIltUW7uCmm9Pmt/0KRMkV
+         X+SWnmhJhGriTZozT7IIMw2FwR3GTkA71dFQa55mBJzM3LysD8d/24bAu3o+T/kVoQoG
+         fBwS6eOtCuBEKT7QDlbK65HiqsxD5hfpqelsXXgK1JOBKGvFFjNDWBRVxXK8jDAJ81kM
+         +TQ+x4zarbrqr94Y6O5WLm1sZ9UmB6ioNgDaMg/CtG4IQVNq5dlCKZigaHXJEDJ/rPCX
+         hO0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740487854; x=1741092654;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cWiQyK4ZdwKcFeHK3xe7qcRy9uI1f2Soyvje88uIM70=;
-        b=fYMB52PStfdHkupWSqoLWpHGk47XGeUYEouFShI2mTGKL923dHBVOa2Y1cu7xKk/5J
-         fLYBLbUamIe3+XqsyVgmeD3SOH8Dyd3YDjArpeWvgPq5BpIwCQTaVyI/2PgFZgsdOhzn
-         SgTtv6YKHxjKWv7aZOlk3yV5OIpJZTPNMacImHtWU4BiBY50jMv2Ytvk2nMtAlO26N9t
-         BC6AGj/DX5iQXQUnYSepr524iLC/ZntJu1fLo0WlWjW0QgbqIokXsew9zgFLgWSdsyLw
-         vMyVYeWQ2jECEVtre2YA4XCqSlVqkOUhWgH7Vt7bB/KPeF0AwOtcQP0Q2Pz+R97NVxdj
-         tI1Q==
-X-Gm-Message-State: AOJu0YyZDdwrEmZS8OwIyznD0OF1CNUuQU3iuXkAMd70jW6XMvaBVxY5
-	0+MTZxybkU43/TIuxDUnWu2R6JynjUtPYQfTTWQ4NDjECxBRqslqwgRwILIj4bs=
-X-Gm-Gg: ASbGncv5HNy1DxTvFgUlWAmb+45V43DOfHeLBf4D/Z8NNUWQtDK6P/KrxaWDhlEkzr9
-	Tvpxf4yKLn9SPDVt5M5jZou/j/vCdiZ9Ri+se4viKPsEGKadZ6KpaHSF2cxa6yB036MtvoPmOQ2
-	Uuz/mbZQbef7g+3/iY/CxAwRG+/voA82Cpu7Ntb0/A3yvbrrdl4zz/E+XthFrexJDo2EKGrQkEO
-	qmF7T5a+FDhaC5QBAsc1eFp9RU1d7JQix/U84qchCypiMuWyiFfO8sOO+C3bUM6Z36iIPVu081p
-	SNFceb7VSC7j5RoZgWuZUSGrURDpUP20dijT9DLxcEQoupX7/j03XhAPdzRNje/7MgqS5OdzXBJ
-	ey7oAap45WCMKJ4uaLd+jPTaZlykUWO8yhZKjjQ==
-X-Google-Smtp-Source: AGHT+IFHq0dhfv/2LPMUG/Lj0wRNDmma2H/iehc5wKPYFHgonkoL0Gb5v4jdznXSTZnjMkeuLp/7jg==
-X-Received: by 2002:a5d:648d:0:b0:38d:d701:419c with SMTP id ffacd0b85a97d-38f708279c3mr14740390f8f.41.1740487854387;
+        d=1e100.net; s=20230601; t=1740487855; x=1741092655;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jVlAZ/3eLH7YAGDTd7s2pnGjibHGsmeFO5jJjUGJuF0=;
+        b=lDpcLyNDrJMc3cRmvfItwNySrCdvUEV2YHsjF+qmyn/pWUPz2wxJmnWGxO9vQoIt/6
+         I+8QoHaua5n8FBOZ/ml8k/thGj4KcdXft3pXdjeR5XhN5ir33RzzivfidCvJl/5wcjUt
+         AnW8ylLKZBFZu8eyycs5Wz/LRQYdp1oAEGKjlnOvkC1cm/QKZRLbNgHbSy5PGtfcR+eW
+         6pgcUKrI68aY/6lIhJQOI8k/vVJG39AU/Y6+1jgjigetkVpMQWJ2+xFBJUzScuinxr3X
+         oqcDSfvHsW/xeDIVV/UPMAxphFfW94MLDaFHXNHJsD8TGzO3JtXp6sZLR0TnVuo6gHxJ
+         KfzA==
+X-Gm-Message-State: AOJu0YzSs4chpoNcmUzQ+IHEtMOmGxxiB2FFeLiW1sbF2OsjMH9WKnzm
+	RkAHalMC1JsbBN4L0pBPcVblKar5/y+8hBDKq6kziq6kNS+03LGbRcVZ6xhH7ec=
+X-Gm-Gg: ASbGncsDO7RkLacxVbvN5AgfRucb/W2GTG5SEoHunH6hzvU2mCkeAJpZt0w+vfNMzJN
+	JkUikEC+h4ye6qOfpiQnnbwHTlGMaBoHwjo+pKSl2LHOnII3649drzL8p3T/geC4ik5NOHwO4i3
+	90zJtf9NNha1ZI6kry53lDkQjSwsksm4LCpH4SL+T45FHzc666YnuM02n3PRbYJBYtI9TJBOvsT
+	tUcAPszopBX9OLLoStfcBVOi1a09q82mrviGkg/Dk4fcAkIMfm43djkQFez/tysjGUZ/T2z6EA5
+	Hc5ppzD2Q6+Ve7hgiXMWtrsrwrC/trPZnF5cCyh1lphFsQBLziXOvQFBh6yFVekKJliViCKJ1QD
+	1wqopidUHde9yoJo5Y4cqsjyAnDRtGRMQp3+N4Q==
+X-Google-Smtp-Source: AGHT+IGDjaSSUhkdTNE7pUYhX5oDc0uxmpZLH30KAwGOQH7av5KG6G9ecglKBdpvqUAbvTGdm3WrDQ==
+X-Received: by 2002:a05:6000:1546:b0:38f:3c8a:4bf4 with SMTP id ffacd0b85a97d-38f6e7561cdmr13806131f8f.6.1740487854874;
         Tue, 25 Feb 2025 04:50:54 -0800 (PST)
 Received: from mtardy-friendly-lvh-runner.c.cilium-dev.internal (72.253.76.34.bc.googleusercontent.com. [34.76.253.72])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-390cd8e7165sm2194754f8f.73.2025.02.25.04.50.53
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-390cd8e7165sm2194754f8f.73.2025.02.25.04.50.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 25 Feb 2025 04:50:54 -0800 (PST)
 From: Mahe Tardy <mahe.tardy@gmail.com>
@@ -78,10 +80,12 @@ Cc: martin.lau@linux.dev,
 	ast@kernel.org,
 	andrii@kernel.org,
 	Mahe Tardy <mahe.tardy@gmail.com>
-Subject: [PATCH bpf-next 1/2] bpf: add get_netns_cookie helper to cgroup_skb programs
-Date: Tue, 25 Feb 2025 12:50:30 +0000
-Message-Id: <20250225125031.258740-1-mahe.tardy@gmail.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: add cgroup_skb netns cookie tests
+Date: Tue, 25 Feb 2025 12:50:31 +0000
+Message-Id: <20250225125031.258740-2-mahe.tardy@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250225125031.258740-1-mahe.tardy@gmail.com>
+References: <20250225125031.258740-1-mahe.tardy@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,28 +94,96 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is needed in the context of Cilium and Tetragon to retrieve netns
-cookie from hostns when traffic leaves Pod, so that we can correlate
-skb->sk's netns cookie.
+Add netns cookie test that verifies the helper is now supported and work
+in the context of cgroup_skb programs.
 
 Signed-off-by: Mahe Tardy <mahe.tardy@gmail.com>
 ---
- net/core/filter.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../selftests/bpf/prog_tests/netns_cookie.c   | 21 ++++++++++++-------
+ .../selftests/bpf/progs/netns_cookie_prog.c   |  9 ++++++++
+ 2 files changed, 23 insertions(+), 7 deletions(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 2ec162dd83c4..827108c6dad9 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -8075,6 +8075,8 @@ sk_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_skb_load_bytes_relative_proto;
- 	case BPF_FUNC_get_socket_cookie:
- 		return &bpf_get_socket_cookie_proto;
-+	case BPF_FUNC_get_netns_cookie:
-+		return &bpf_get_netns_cookie_proto;
- 	case BPF_FUNC_get_socket_uid:
- 		return &bpf_get_socket_uid_proto;
- 	case BPF_FUNC_perf_event_output:
+diff --git a/tools/testing/selftests/bpf/prog_tests/netns_cookie.c b/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
+index ac3c3c097c0e..e00cd34586dd 100644
+--- a/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
++++ b/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
+@@ -33,20 +33,25 @@ void test_netns_cookie(void)
+
+ 	skel->links.get_netns_cookie_sockops = bpf_program__attach_cgroup(
+ 		skel->progs.get_netns_cookie_sockops, cgroup_fd);
+-	if (!ASSERT_OK_PTR(skel->links.get_netns_cookie_sockops, "prog_attach"))
++	if (!ASSERT_OK_PTR(skel->links.get_netns_cookie_sockops, "prog_attach_sockops"))
+ 		goto done;
+
+ 	verdict = bpf_program__fd(skel->progs.get_netns_cookie_sk_msg);
+ 	map = bpf_map__fd(skel->maps.sock_map);
+ 	err = bpf_prog_attach(verdict, map, BPF_SK_MSG_VERDICT, 0);
+-	if (!ASSERT_OK(err, "prog_attach"))
++	if (!ASSERT_OK(err, "prog_attach_sk_msg"))
+ 		goto done;
+
+ 	tc_fd = bpf_program__fd(skel->progs.get_netns_cookie_tcx);
+ 	err = bpf_prog_attach_opts(tc_fd, loopback, BPF_TCX_INGRESS, &opta);
+-	if (!ASSERT_OK(err, "prog_attach"))
++	if (!ASSERT_OK(err, "prog_attach_tcx"))
+ 		goto done;
+
++	skel->links.get_netns_cookie_cgroup_skb = bpf_program__attach_cgroup(
++		skel->progs.get_netns_cookie_cgroup_skb, cgroup_fd);
++	if (!ASSERT_OK_PTR(skel->links.get_netns_cookie_cgroup_skb, "prog_attach_cgroup_skb"))
++		goto cleanup_tc;
++
+ 	server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
+ 	if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
+ 		goto cleanup_tc;
+@@ -69,16 +74,18 @@ void test_netns_cookie(void)
+ 	if (!ASSERT_OK(err, "getsockopt"))
+ 		goto cleanup_tc;
+
+-	ASSERT_EQ(val, cookie_expected_value, "cookie_value");
++	ASSERT_EQ(val, cookie_expected_value, "cookie_value_sockops");
+
+ 	err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.sk_msg_netns_cookies),
+ 				  &client_fd, &val);
+ 	if (!ASSERT_OK(err, "map_lookup(sk_msg_netns_cookies)"))
+ 		goto cleanup_tc;
+
+-	ASSERT_EQ(val, cookie_expected_value, "cookie_value");
+-	ASSERT_EQ(skel->bss->tcx_init_netns_cookie, cookie_expected_value, "cookie_value");
+-	ASSERT_EQ(skel->bss->tcx_netns_cookie, cookie_expected_value, "cookie_value");
++	ASSERT_EQ(val, cookie_expected_value, "cookie_value_sk_msg");
++	ASSERT_EQ(skel->bss->tcx_init_netns_cookie, cookie_expected_value, "cookie_value_init_tcx");
++	ASSERT_EQ(skel->bss->tcx_netns_cookie, cookie_expected_value, "cookie_value_tcx");
++	ASSERT_EQ(skel->bss->cgroup_skb_init_netns_cookie, cookie_expected_value, "cookie_value_init_cgroup_skb");
++	ASSERT_EQ(skel->bss->cgroup_skb_netns_cookie, cookie_expected_value, "cookie_value_cgroup_skb");
+
+ cleanup_tc:
+ 	err = bpf_prog_detach_opts(tc_fd, loopback, BPF_TCX_INGRESS, &optd);
+diff --git a/tools/testing/selftests/bpf/progs/netns_cookie_prog.c b/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
+index c6edf8dbefeb..94040714af18 100644
+--- a/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
++++ b/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
+@@ -28,6 +28,7 @@ struct {
+ } sock_map SEC(".maps");
+
+ int tcx_init_netns_cookie, tcx_netns_cookie;
++int cgroup_skb_init_netns_cookie, cgroup_skb_netns_cookie;
+
+ SEC("sockops")
+ int get_netns_cookie_sockops(struct bpf_sock_ops *ctx)
+@@ -91,4 +92,12 @@ int get_netns_cookie_tcx(struct __sk_buff *skb)
+ 	return TCX_PASS;
+ }
+
++SEC("cgroup_skb/ingress")
++int get_netns_cookie_cgroup_skb(struct __sk_buff *skb)
++{
++	cgroup_skb_init_netns_cookie = bpf_get_netns_cookie(NULL);
++	cgroup_skb_netns_cookie = bpf_get_netns_cookie(skb);
++	return SK_PASS;
++}
++
+ char _license[] SEC("license") = "GPL";
 --
 2.34.1
 
