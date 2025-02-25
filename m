@@ -1,189 +1,183 @@
-Return-Path: <bpf+bounces-52479-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52480-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D79AA432B3
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 02:56:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A32ADA432C2
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 03:05:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C15B17A90CE
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 01:55:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E93533ABC62
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 02:05:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F9E80BFF;
-	Tue, 25 Feb 2025 01:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E373E13A41F;
+	Tue, 25 Feb 2025 02:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nZziCC+8"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="f71w1cVH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A094450FE
-	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 01:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6890A3CF58
+	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 02:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740448599; cv=none; b=qwVVDfb0oYx07blRFVQIQVJxEmp6v/6QFkakrS5/5dX2UxPZnNDrphniPcXQC/2Kn5ad3zJi0sv9fe5TAEE6fYycv2YWf/Oby4l+PjwdgFKRCotOjMhv4hpIZHDVpHyMbqUpo7zR+JWikpL69pIZ6aoDPsapVu/L3sPG36z4M1I=
+	t=1740449112; cv=none; b=PuDVvCYrCRMsroJDT1tTKTkFnZltznjVM8hEl7+AIPrPrPbusY3cGCJ0izrDCB+6Rjl/LbGaFfr9vF0/KbPtoVXJh/hC4zrEMgTrH1wCu4qq0Bli4G1PJ73xmcI4SphseZ7nV33N7rfNol6tiCefHhwbHeld+0O3R2sP5P+A+B4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740448599; c=relaxed/simple;
-	bh=j+6aTMl2rNUjG/vgGurN8eRqCNBphB+pjXyAUFD9oy8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nioGvZpASCaJfE+gfF/7l0RJo4cwz5cHwUfHLe8OlqPWn2Fz/yS9fXnFFF1xj+qAgsr4rpPD8DQBprwxuPS9zFWgwjMkWZo6RE8HF4e7qt9novKGMZwlgalYcboxKVqrroX+jPoRi2a/hpScVQu1FnRJGR9KDJLmicyU3lPTQek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nZziCC+8; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-38f5fc33602so2838712f8f.0
-        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 17:56:37 -0800 (PST)
+	s=arc-20240116; t=1740449112; c=relaxed/simple;
+	bh=kHOkHvRodwcD3NttIpuOtmg3zPEBcl94jQ+MNSiumRM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WvCo9aCbWvI0kS0/c6pvg4p1bsL+haU2AvGnaeK2/r1ESrraq+WWDJZDcqX2CO+yEe1iHF+PXJSyAwe8nNW60d3oo3AwtHWkUSHSeBZH0vtu4MKw8iLL99yF/n+gLo+///KBdYX2gCS5OPNef4wIdz6SANZu5Izx3GrAC03zdHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=f71w1cVH; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-22113560c57so17677055ad.2
+        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 18:05:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740448596; x=1741053396; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=trWE/oOnA5Co0JUBGiH/9efp3t7/0zNk4bvEJQafcGA=;
-        b=nZziCC+8O/Mvok/xvUzlPQRH3+jc4NvndBjEtEmKrR+NyzVn9voXZb76a02v3jV1Gs
-         3MJ/jT9l2ylNfwTbTedFVRZlIju9/RGdj5Q7k78HPqurMuQcRLzmPNk34I1wF1DYBob/
-         JzWwt84ZFW1Qdb7xfv4k0I4p/UlFvD1MAfmW8O432fDFnnL1vQH06ee+rv5nwiOpvkz2
-         +QNcGznrKQSi1UF463uen615k7hbuuqz7D87vdB4+rdB0S5NzG/yfxAVyu72dHyH17yr
-         ChFkICm71lmUdCYNwadPFLzEXYW63F8XS07KirvtpKhJgp5eZ8HM306FbpbtQQYmec1k
-         cMpQ==
+        d=fastly.com; s=google; t=1740449110; x=1741053910; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZrEz6DL7nanR7o+Md6nJONj+JBnYNeVaOFzve6JT0bE=;
+        b=f71w1cVHG2A1vTGvGyni8RdEnNB8WIpar2RRQ8vbusQFylCgM8LFqB12lQGOviaUyx
+         eLKYRhKn7PXR0chAQJ6z+aXCNvMMvwmO+XAn3dDLms5T3JtGADNhph+av0G4t7XANn7p
+         n2ijiqYnGkGFFY7bEwUUkNDKNZESif8WOQhfg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740448596; x=1741053396;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=trWE/oOnA5Co0JUBGiH/9efp3t7/0zNk4bvEJQafcGA=;
-        b=KvoJlMfDgH919KwKHqV0WI8Htw3l/qfr1sQ5bVIs9JrsR/wJjQv0ZUGtnk9zdN3Cnr
-         y3j4KIjvLckhFYtOsWH7KRpKY2CDqDohY8LH+whJF8cYMhTfyvAQoWRimSjRJtceXeNQ
-         EwooHDvJJStzg0m73sEFZI+fJlOUqy8FgeP2gyoaDDhSUMtYnEtpBrti1hiTRuT7VvQL
-         +aD4ifF4WlcUUpv3hMiIa1SRP48FZmfL/dL9PjzF9UirDJyUdRxY6A9ZhUWdVNr0YCIW
-         fdDd4GkwT6aIvfsbKUWUbnfKc1FvQfTYkAewj3Kuh65FGYoCxIf+tpng+enzVCvN2+ed
-         LoBw==
-X-Gm-Message-State: AOJu0YyhghU3fCcgHQiSM/Z8ZbaTuEr7PKTmDerACVHOUviboMLZGy2d
-	7Mv1JWDbHip9MjNTXFza+Q4BJNxdaldiQsf8alzcTLYg+pnvDMO51ztn/VGurQQs/HrQtzMfXIH
-	jvPN4JLXEi9IcYuju0RE0DhcuSa4=
-X-Gm-Gg: ASbGncvQOvMRhIC4pxchFhn78poLXUJVrRMFjb7hVZYGYxtW2JIhE01G0ToQxG8DSWl
-	J3DOnKlq3JG8y73MQYtTeQ80/wudqtr3R9EYlGXsMEAdkpqhU9BECEFfBIl/PNcBO7dAQONnNwH
-	D17506BTe4UAHvIhrSvMGjlPU=
-X-Google-Smtp-Source: AGHT+IFc/2qKc1UWdHnqRH9XLaKsmsJZ/UbhIV6MfvW8+G0y1wahHA0wgvwy868PJlbbhWvW0Cciyxhjg+sI+wnohrA=
-X-Received: by 2002:a5d:64a7:0:b0:38b:f4e6:21aa with SMTP id
- ffacd0b85a97d-38f6f3c50b0mr9415081f8f.5.1740448596145; Mon, 24 Feb 2025
- 17:56:36 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740449110; x=1741053910;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZrEz6DL7nanR7o+Md6nJONj+JBnYNeVaOFzve6JT0bE=;
+        b=E7RmShHGSy5GdXYjiGZcsKwmcqDArRZq5KsfBQMXkdyeAW+KnwKjUoHM8lVavN/M6r
+         TPyVo0z4jZjdJ/KM7iuyjVchaG2XJHNiCAcrbvC8dC9nFrocUTVvRPZZ7XfgAMLyiu/I
+         1GdYq+VvrA+YbDI5UdpFcJAXekMVbnJGiqWfTOelsTf1xKyx/1ajFX2lrogckqsa5Llc
+         YB9smGpc1u6JPdFe+oAdb8tivpWFl3AEzTuyF0TmHkrstmgnF3m+lhjZX58yXoaWYbte
+         hZfkhJ67+rqVgRVCCrBzgdyPBb8MiY4QPRNePY3iSc7BY8j+lq3mNz10QpF5a3+Pk4cr
+         ztFg==
+X-Forwarded-Encrypted: i=1; AJvYcCU57+SjLiATouZy6tfQ6rpgTY6ujxXhDqKYuc9dR1VP83IW0qhmmghOv7VxoBj2ZUpMcMU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwqJpbtkZmBz6a7Ew146hKhCkSuq2QQ9h0C/IyCMOZjEZULgxYx
+	zLZ+TF0qyOEFjgD08/z1pY8275653lgHQJmsTKEuRg2nqIV1+jnrx2tJrzT5f2Q=
+X-Gm-Gg: ASbGncuo8Zs85T7n1Ahcnw/anPOYFMCP7gG7T9BqSlBjDVP6ax0RL3Iu7tjBGeIs7xd
+	Y8RiQOUP6v0rOMPUbgbFxwl31DSpCWTrMEuzaauUpcCPXwJ/GfvHZlpiPhohywBkU+/DPSRwtHN
+	UiPXkBRO2T+EdUn/MPvslIN9KO19gRQ1fpaSC7QeCGK+vUZjH/FtjFe/HgHqfT0TZ4ZNq7s/owe
+	qtNyOxJs5k/tkHkFFK/4c6wjnmQ4uhWCqUs45rYgClnuXs9gMME/hg0IElm0Chpwajlen6TkX+e
+	UqOIwc04aQUnFxw9wnnXHWAqlDBAoLDZ9w==
+X-Google-Smtp-Source: AGHT+IGWw8VZRuhBkwJIhpvAEi5veGPj66DpJjrWgGvII/XhNJTIzi7tYlWN7e+HTUnHvLTljSfU5Q==
+X-Received: by 2002:a17:902:f712:b0:220:ef79:ac95 with SMTP id d9443c01a7336-221a1148b7bmr231152995ad.37.1740449109648;
+        Mon, 24 Feb 2025 18:05:09 -0800 (PST)
+Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2230a021909sm2926985ad.94.2025.02.24.18.05.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Feb 2025 18:05:09 -0800 (PST)
+From: Joe Damato <jdamato@fastly.com>
+To: netdev@vger.kernel.org
+Cc: mkarsten@uwaterloo.ca,
+	gerhard@engleder-embedded.com,
+	jasowang@redhat.com,
+	xuanzhuo@linux.alibaba.com,
+	kuba@kernel.org,
+	Joe Damato <jdamato@fastly.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	bpf@vger.kernel.org (open list:XDP (eXpress Data Path):Keyword:(?:\b|_)xdp(?:\b|_)),
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-kernel@vger.kernel.org (open list),
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	virtualization@lists.linux.dev (open list:VIRTIO CORE AND NET DRIVERS)
+Subject: [PATCH net-next v4 0/4] virtio-net: Link queues to NAPIs
+Date: Tue, 25 Feb 2025 02:04:47 +0000
+Message-ID: <20250225020455.212895-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250224221637.4780-1-alexei.starovoitov@gmail.com> <CAEf4BzZ1GHkBBu73aeyBRQ3MZ9Lp0ar7FKBrk5F-fAOJXxDhEg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ1GHkBBu73aeyBRQ3MZ9Lp0ar7FKBrk5F-fAOJXxDhEg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 24 Feb 2025 17:56:25 -0800
-X-Gm-Features: AQ5f1Jo8EdAhNGmSZDtu6rAUGiKmlSJRxOHtVLfG4I5YN3I1ckIPSI0CGEqq3cg
-Message-ID: <CAADnVQ+zsg5BXJyUtVCcon2-t_RLxez_D42+-ZRGwOzd0TQWBQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix deadlock between rcu_tasks_trace and event_mutex.
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 24, 2025 at 5:06=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Feb 24, 2025 at 2:16=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > Fix the following deadlock:
-> > CPU A
-> > _free_event()
-> >   perf_kprobe_destroy()
-> >     mutex_lock(&event_mutex)
-> >       perf_trace_event_unreg()
-> >         synchronize_rcu_tasks_trace()
-> >
-> > There are several paths where _free_event() grabs event_mutex
-> > and calls sync_rcu_tasks_trace. Above is one such case.
-> >
-> > CPU B
-> > bpf_prog_test_run_syscall()
-> >   rcu_read_lock_trace()
-> >     bpf_prog_run_pin_on_cpu()
-> >       bpf_prog_load()
-> >         bpf_tracing_func_proto()
-> >           trace_set_clr_event()
-> >             mutex_lock(&event_mutex)
-> >
-> > Delegate trace_set_clr_event() to workqueue to avoid
-> > such lock dependency.
-> >
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > ---
-> >  kernel/trace/bpf_trace.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> >
->
-> There is a tiny chance that bpf_printk() might not produce data (for a
-> little bit) if the time between program verification and its
-> triggering right after that is shorter than workqueue delay, right?
+Greetings:
 
-yeah, but also see the comment in __set_printk_clr_event().
-Unfortunately users can enable/disable this event at any time
-just like other ftrace events.
-The trace_bpf_trace_printk is fragile and racy.
-In addition, trace_pipe can be configured in weird ways.
-cat /sys/kernel/tracing/trace_pipe
-will look nothing like normal.
-All existing footgun warnings apply.
+Welcome to v4.
 
-With Kumar we started discussing a new debug/printk mechanism.
-So that arena faults, res_spin_lock timeous can be printed there
-and consumed per program instead of global trace_pipe.
+Jakub recently commented [1] that I should not hold this series on
+virtio-net linking queues to NAPIs behind other important work that is
+on-going and suggested I re-spin, so here we are :)
 
-> It's probably negligible in practice, so lgtm
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index a612f6f182e5..13bef2462e94 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -392,7 +392,7 @@ static const struct bpf_func_proto bpf_trace_printk=
-_proto =3D {
-> >         .arg2_type      =3D ARG_CONST_SIZE,
-> >  };
-> >
-> > -static void __set_printk_clr_event(void)
-> > +static void __set_printk_clr_event(struct work_struct *work)
-> >  {
-> >         /*
-> >          * This program might be calling bpf_trace_printk,
-> > @@ -405,10 +405,11 @@ static void __set_printk_clr_event(void)
-> >         if (trace_set_clr_event("bpf_trace", "bpf_trace_printk", 1))
-> >                 pr_warn_ratelimited("could not enable bpf_trace_printk =
-events");
-> >  }
-> > +static DECLARE_WORK(set_printk_work, __set_printk_clr_event);
-> >
-> >  const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
-> >  {
-> > -       __set_printk_clr_event();
-> > +       schedule_work(&set_printk_work);
-> >         return &bpf_trace_printk_proto;
-> >  }
-> >
-> > @@ -451,7 +452,7 @@ static const struct bpf_func_proto bpf_trace_vprint=
-k_proto =3D {
-> >
-> >  const struct bpf_func_proto *bpf_get_trace_vprintk_proto(void)
-> >  {
-> > -       __set_printk_clr_event();
-> > +       schedule_work(&set_printk_work);
-> >         return &bpf_trace_vprintk_proto;
-> >  }
-> >
-> > --
-> > 2.43.5
-> >
+This is a significant refactor from the rfcv3 and as such I've dropped
+almost all of the tags from reviewers except for patch 4 (sorry Gerhard
+and Jason; the changes are significant so I think patches 1-3 need to be
+re-reviewed).
+
+As per the discussion on the v3 [2], now both RX and TX NAPIs use the
+API to link queues to NAPIs. Since TX-only NAPIs don't have a NAPI ID,
+commit 6597e8d35851 ("netdev-genl: Elide napi_id when not present") now
+correctly elides the TX-only NAPIs (instead of printing zero) when the
+queues and NAPIs are linked.
+
+See the commit message of patch 3 for an example of how to get the NAPI
+to queue mapping information.
+
+See the commit message of patch 4 for an example of how NAPI IDs are
+persistent despite queue count changes.
+
+Thanks,
+Joe
+
+v4:
+  - Dropped Jakub's patch (previously patch 1).
+  - Significant refactor from v3 affecting patches 1-3.
+  - Patch 4 added tags from Jason and Gerhard.
+
+rfcv3: https://lore.kernel.org/netdev/20250121191047.269844-1-jdamato@fastly.com/
+  - patch 3:
+    - Removed the xdp checks completely, as Gerhard Engleder pointed
+      out, they are likely not necessary.
+
+  - patch 4:
+    - Added Xuan Zhuo's Reviewed-by.
+
+v2: https://lore.kernel.org/netdev/20250116055302.14308-1-jdamato@fastly.com/
+  - patch 1:
+    - New in the v2 from Jakub.
+
+  - patch 2:
+    - Previously patch 1, unchanged from v1.
+    - Added Gerhard Engleder's Reviewed-by.
+    - Added Lei Yang's Tested-by.
+
+  - patch 3:
+    - Introduced virtnet_napi_disable to eliminate duplicated code
+      in virtnet_xdp_set, virtnet_rx_pause, virtnet_disable_queue_pair,
+      refill_work as suggested by Jason Wang.
+    - As a result of the above refactor, dropped Reviewed-by and
+      Tested-by from patch 3.
+
+  - patch 4:
+    - New in v2. Adds persistent NAPI configuration. See commit message
+      for more details.
+
+v1: https://lore.kernel.org/netdev/20250110202605.429475-1-jdamato@fastly.com/
+
+[1]: https://lore.kernel.org/netdev/20250221142650.3c74dcac@kernel.org/
+[2]: https://lore.kernel.org/netdev/20250127142400.24eca319@kernel.org/
+
+Joe Damato (4):
+  virtio-net: Refactor napi_enable paths
+  virtio-net: Refactor napi_disable paths
+  virtio-net: Map NAPIs to queues
+  virtio_net: Use persistent NAPI config
+
+ drivers/net/virtio_net.c | 100 ++++++++++++++++++++++++++++-----------
+ 1 file changed, 73 insertions(+), 27 deletions(-)
+
+
+base-commit: 7183877d6853801258b7a8d3b51b415982e5097e
+-- 
+2.45.2
+
 
