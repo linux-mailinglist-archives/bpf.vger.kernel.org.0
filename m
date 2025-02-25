@@ -1,198 +1,284 @@
-Return-Path: <bpf+bounces-52590-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52591-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18C62A45073
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 23:46:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63160A45097
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 23:58:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69ED01895D33
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 22:46:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2EE3189CED2
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 22:58:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C772309B1;
-	Tue, 25 Feb 2025 22:46:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IUcU74Do"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0F1233156;
+	Tue, 25 Feb 2025 22:58:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27D8B22FF3A;
-	Tue, 25 Feb 2025 22:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53147204F9B
+	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 22:57:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740523589; cv=none; b=iwuvOuCru/NhDnyCbs8XISwXHUW3b8qIMGZ0pFrIfICQdekBccHeYHVNKFhgO1icncsHQ7pnRVbDvz5imu54AIk3nomWSJQXwcXiyMpskNZ6+xEvbu1TdF+yu6mU/L/z7iGReXLniOM1IZSPzIXC30bclW1GxtAwuTYna2+2ByE=
+	t=1740524280; cv=none; b=i1wKQXMSgSRa7QweWzEvK9z0/u4yB7tbtQqd639Q/Wr7STr1O+irvQtxs1ViJkGZ5wgRq2gDinSrw3fhUP0yuBXKrU4eGBti9Z6Ehv2sPwPoQQNoat6+7h7CWtA4TmppzWyuNFM7t+Z1T9DpppT5hnlBSY2F3kUBn7jJdPiNFwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740523589; c=relaxed/simple;
-	bh=hDdsaKuLGPPO2QMEwawtpGkH8Byraw3yse7aBvdGdaw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kjnqrcmVOByK9mAtJZFKSxXPyL1DrhuqyzT709/JyaqfDID9bCSsI3BNxxwEaGRf6pYyGxDsjKhDEAzUvqnfPtJENrjteKOfgaNpjCsCHObKU6HDnn0Sr2TTd1vY02HQ1AUWBeQKn1B5sVQr5qMOq7Kew0eme1kJvsVudw00Twg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IUcU74Do; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4398e839cd4so1710225e9.0;
-        Tue, 25 Feb 2025 14:46:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740523586; x=1741128386; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3xEzm5a7MvJg/wvZ+Z8+F/9tGDPPJZX+eI/HEgAntBA=;
-        b=IUcU74DoHKoBFhqHqPpR5SQggee6J36UZ4NL0eZTB51wogpIgFfTaYaQmoMUX73S+W
-         GIGnZyyQch8RlMP2+aWkw8z9gtDj+SkMnOAU3QdZdgcNmskGUpLHqZQ26PZGpTO/9suV
-         DKLXPzdO88LBf6oe+cWPeGPgYX7fUUTzCrDssHWP+pOy8cf2VCpuBz0BB51inAxXuoTu
-         BVmSxG6ZtxjhY9a3/1sJL8tC0I6Km09/eQ2O2gEcLjpxygtMO3z42WhWS7lwXDKK3Wwh
-         T6Q2tf0XjG78mopihuebjDmZJ2R+tvWEGth/a/NAe5MeCAX7xqG1SjKX1q7/W0WX6Yaz
-         3Nqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740523586; x=1741128386;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3xEzm5a7MvJg/wvZ+Z8+F/9tGDPPJZX+eI/HEgAntBA=;
-        b=kJzv/PnasdCF9hx4KALki2q+ZRShawgrDQIVC7HXzLi0rAsoHEcTSVqZARLZxgojvM
-         XqgpzenpK0/Gvbl9oaoAbd4MHz/cK2iQmd2sqSUilRq+oDRf7qVbZKnbMs5uK0dhJfrq
-         uHC9KARaijowWK1K6Ubf4Nr91xWzjLYEgyjCje2kxivSpU44VT5ugBJCV+f9iV9rg+Mk
-         bdf6XejXnTz0i9WpYYtu24WczX3GBSUpO6WETBWlYa20jN+G2z944f4ifqWMS5qk/7pL
-         lPnOsG0+BzxYlqMLA9pWBy642EZcoEJow6H2Uk0yX75X2hD9KjS7dupCDJBpotI2Uryb
-         iM7g==
-X-Forwarded-Encrypted: i=1; AJvYcCVJF4nxrj6rsUgdeQo7ypN9E7cNSDhU2Ch9y0kavM508oRHnv9zqlm7CqTSmo+CPMGIb8c1+z0AM7RX7LR3@vger.kernel.org, AJvYcCWAnQil3ZMe5OwYmJd5zeQnS5p4a5XD9rYvI1sXduLBMUr6a2JQfvlCiOmtmhnytgPDismBecfHsrBiOtc=@vger.kernel.org, AJvYcCWuHIeeNNNEE8s2BxZpyEFew4Dq/dmjmQn8X8pqM4GBRkSfNsbi4wfaCnI7jie4cIXNDlqEnH5c@vger.kernel.org, AJvYcCX2cm8RJpTTUWr96GYqVxsVk7e38Wr0doLb779AfeWS9KUXLQVSUrOw5cYPwDayE6hx8PBglKb4+xub+AI=@vger.kernel.org, AJvYcCX32993tip4Wk+R1NVWEymsz5fL1oWPepAUmaueHIpI8ikdl9LSJkOIQKE8q65ZqNVRGMS+pyZW5fwmjdef@vger.kernel.org, AJvYcCX6c9M6BvnWv0Np7/MaLPokGIgMuhd/xoL3BN2eII5KXYz+bnjd9WL7WOkK+eG8YGof1VI41wpOnUKrfica75k=@vger.kernel.org, AJvYcCXCO/dX/I0Ax0KErb1V2SZet1QHNdpwdD1CmfJ+0qb1ir0wWm5j2dfg2oIM6DjlzrzS3AY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzzWFRIH4+hD/+cBPeTvpiTRDdwWjaqVGuY7zZzmkxAbqvYdh9i
-	qzwuiWYC0MvVBXJlsXnNYQLkF/Z9aHTvqGed8Oc+Nz+EB6W+uOhe
-X-Gm-Gg: ASbGncu9hgNjwDor857YjeUfzzuAXzA4TCMlkxvcITLv9plqxosY7pTMbQ3AaC2izzd
-	bdZdCGnoJHsaAfozyIpOX1FHOvG3ndtF3lkbYmJoGYjB18stMolGltDd6xvBif/dfPSSC4L1xz0
-	pDUfUIAvynf30q1INtXOSNpBsI+WxqhebmOpEu8tPRpbqSKptcOW4uRa+Ab2SGsXdHwhxC7N6pE
-	KiGSBf6nmjf6MuTi0ekNOPV5v5feJ6skhv96iY7CvGTHw6Sq9u32sufYoA2txEyvBP0rorONVMI
-	Z/RXx7cqXBaN7ngFDdUaDerBjWywTbrJreicCK9oCdDjygGTka+8vF6PJMigibVC
-X-Google-Smtp-Source: AGHT+IFjrInluoqnbFjbjbGFkCsa4TCd0YMAhHctzgy+ODQ6ToD9u7urtlYhpUHFZQok7JnATsU7Wg==
-X-Received: by 2002:a05:6000:144d:b0:38f:4f17:ee29 with SMTP id ffacd0b85a97d-38f6f3dca7amr14183257f8f.17.1740523586194;
-        Tue, 25 Feb 2025 14:46:26 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390cd88295dsm3621054f8f.45.2025.02.25.14.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Feb 2025 14:46:25 -0800 (PST)
-Date: Tue, 25 Feb 2025 22:46:23 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Uros Bizjak <ubizjak@gmail.com>, Kuan-Wei Chiu <visitorckw@gmail.com>,
- tglx@linutronix.de, Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org, joel@jms.id.au,
- eajames@linux.ibm.com, andrzej.hajda@intel.com, neil.armstrong@linaro.org,
- rfoss@kernel.org, maarten.lankhorst@linux.intel.com, mripard@kernel.org,
- tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
- dmitry.torokhov@gmail.com, mchehab@kernel.org, awalls@md.metrocast.net,
- hverkuil@xs4all.nl, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, louis.peens@corigine.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
- johannes@sipsolutions.net, gregkh@linuxfoundation.org,
- jirislaby@kernel.org, yury.norov@gmail.com, akpm@linux-foundation.org,
- mingo@kernel.org, alistair@popple.id.au, linux@rasmusvillemoes.dk,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
- linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
- Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH 03/17] x86: Replace open-coded parity calculation with
- parity8()
-Message-ID: <20250225224623.6edaaaa9@pumpkin>
-In-Reply-To: <e0b1c299-7f19-4453-a1ce-676068601213@zytor.com>
-References: <20250223164217.2139331-1-visitorckw@gmail.com>
-	<20250223164217.2139331-4-visitorckw@gmail.com>
-	<d080a2d6-9ec7-1c86-4cf4-536400221f68@gmail.com>
-	<e0b1c299-7f19-4453-a1ce-676068601213@zytor.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1740524280; c=relaxed/simple;
+	bh=PoTlQ4385s5DrEh/kQ0+befiVswqZC276gg7tyJP8fs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=afM2fg3VJ00ZGH8cQWGKsHp/ixeC+ux29UD78Yj6bTXIL87TrVVx98TdVSggbK+Gs1lnjDW3xOPz/2TK8U2CoHQOw3FOLMSw0lXOKjTWdr97b81IjoyzH3WleW/ROOoVdQT84bQJLUZkZtfzZCvPTS0nXyMSbRt7sQP0bPl2WXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1tn3s4-0000tz-9u; Tue, 25 Feb 2025 23:57:48 +0100
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1tn3s3-002qjR-2f;
+	Tue, 25 Feb 2025 23:57:47 +0100
+Received: from pengutronix.de (p5b164285.dip0.t-ipconnect.de [91.22.66.133])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 808E33CBDC8;
+	Tue, 25 Feb 2025 22:57:47 +0000 (UTC)
+Date: Tue, 25 Feb 2025 23:57:47 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Chris Ward <tjcw01@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	linux-kernel@vger.kernel.org, Chris Ward <tjcw@uk.ibm.com>, bpf@vger.kernel.org
+Subject: Re: eBPF verifier does not load libxdp dispatcher eBPF program
+Message-ID: <20250225-radical-piquant-tench-4d2588-mkl@pengutronix.de>
+References: <CAC=wTOhhyaoyCcAbX1xuBf5v-D=oPjjo1RLUmit=Uj9y0-3jrw@mail.gmail.com>
+ <CAC=wTOgrEP3g3sKxBfGXqTEyMR2-D74sK2gsCmPS2+H-wBH6QA@mail.gmail.com>
+ <20250225-gay-awesome-copperhead-502cd2-mkl@pengutronix.de>
+ <397970e484d2d0c1e0649d78cc723fbe3ad2ad5f.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4eimhjfg3mx4uc63"
+Content-Disposition: inline
+In-Reply-To: <397970e484d2d0c1e0649d78cc723fbe3ad2ad5f.camel@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: bpf@vger.kernel.org
 
-On Mon, 24 Feb 2025 13:55:28 -0800
-"H. Peter Anvin" <hpa@zytor.com> wrote:
 
-> On 2/24/25 07:24, Uros Bizjak wrote:
-> > 
-> > 
-> > On 23. 02. 25 17:42, Kuan-Wei Chiu wrote:  
-> >> Refactor parity calculations to use the standard parity8() helper. This
-> >> change eliminates redundant implementations and improves code
-> >> efficiency.  
-...
-> Of course, on x86, parity8() and parity16() can be implemented very simply:
-> 
-> (Also, the parity functions really ought to return bool, and be flagged 
-> __attribute_const__.)
-> 
-> static inline __attribute_const__ bool _arch_parity8(u8 val)
-> {
-> 	bool parity;
-> 	asm("and %0,%0" : "=@ccnp" (parity) : "q" (val));
-> 	return parity;
-> }
-> 
-> static inline __attribute_const__ bool _arch_parity16(u16 val)
-> {
-> 	bool parity;
-> 	asm("xor %h0,%b0" : "=@ccnp" (parity), "+Q" (val));
-> 	return parity;
-> }
+--4eimhjfg3mx4uc63
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: eBPF verifier does not load libxdp dispatcher eBPF program
+MIME-Version: 1.0
 
-The same (with fixes) can be done for parity64() on 32bit.
+On 25.02.2025 10:21:11, Eduard Zingerman wrote:
+> On Tue, 2025-02-25 at 16:55 +0100, Marc Kleine-Budde wrote:
+> > On 23.01.2023 12:35:41, Chris Ward wrote:
+> > > The 5.15.0 kernel (built by 'git checkout v5.15' from the kernel.org
+> > > torvalds tree) fails in the same way that the 6.2.0-rc5+ kernel fails.
+> > > So it seems that something Canonical did for the Ubuntu 20.04 kernel
+> > > causes eBPF to work correctly.
+> > >
+> > > On Mon, 23 Jan 2023 at 11:06, Chris Ward <tjcw01@gmail.com> wrote:
+> > > >
+> > > > I am trying to use the 'bleeding edge' kernel to determine whether a
+> > > > problem I see has already been fixed, but with this kernel the eBPF
+> > > > verifier will not load the dispatcher program that is contained wit=
+hin
+> > > > libxdp. I am testing kernel commit hash 2475bf0 which fails, and the
+> > > > kernel in Ubuntu 22.04 (5.15.0-58-generic) works properly. I am
+> > > > running the test case from
+> > > > https://github.com/tjcw/bpf-examples/tree/tjcw-explore-sameeth ; to
+> > > > build it go to the AF_XDP-filter directory and type 'make', and to =
+run
+> > > > it go to the AF_XDP-filter/runscripts/iperf3-namespace directory and
+> > > > type 'sudo FILTER=3Daf_xdp_kern PORT=3D50000 ./run.sh' .
+> > > > The lines from the run output indicating the failure are
+> > > > libbpf: prog 'xdp_dispatcher': BPF program load failed: Invalid arg=
+ument
+> > > > libbpf: prog 'xdp_dispatcher': -- BEGIN PROG LOAD LOG --
+> > > > Func#11 is safe for any args that match its prototype
+> > > > btf_vmlinux is malformed
+> > > > reg type unsupported for arg#0 function xdp_dispatcher#29
+> > > > 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+> > > > ; int xdp_dispatcher(struct xdp_md *ctx)
+> > > > 0: (bf) r6 =3D r1                       ; R1=3Dctx(off=3D0,imm=3D0)
+> > > > R6_w=3Dctx(off=3D0,imm=3D0)
+> > > > 1: (b7) r0 =3D 2                        ; R0_w=3D2
+> > > > ; __u8 num_progs_enabled =3D conf.num_progs_enabled;
+> > > > 2: (18) r8 =3D 0xffffb2f6c06d8000       ; R8_w=3Dmap_value(off=3D0,=
+ks=3D4,vs=3D84,imm=3D0)
+> > > > 4: (71) r7 =3D *(u8 *)(r8 +0)           ; R7=3D1
+> > > > R8=3Dmap_value(off=3D0,ks=3D4,vs=3D84,imm=3D0)
+> > > > ; if (num_progs_enabled < 1)
+> > > > 5: (15) if r7 =3D=3D 0x0 goto pc+141      ; R7=3D1
+> > > > ; ret =3D prog0(ctx);
+> > > > 6: (bf) r1 =3D r6                       ; R1_w=3Dctx(off=3D0,imm=3D=
+0)
+> > > > R6=3Dctx(off=3D0,imm=3D0)
+> > > > 7: (85) call pc+140
+> > > > btf_vmlinux is malformed
+> > > > R1 type=3Dctx expected=3Dfp
+> > > > Caller passes invalid args into func#1
+> > > > processed 84 insns (limit 1000000) max_states_per_insn 0 total_stat=
+es
+> > > > 9 peak_states 9 mark_read 1
+> > > > -- END PROG LOAD LOG --
+> > > > libbpf: prog 'xdp_dispatcher': failed to load: -22
+> > > > libbpf: failed to load object 'xdp-dispatcher.o'
+> > > > libxdp: Failed to load dispatcher: Invalid argument
+> > > > libxdp: Falling back to loading single prog without dispatcher
+> > > >
+> > > > Can this regression be fixed before kernel 6.2 ships ?
+> >
+> > I'm seeing the same failure on 32 bit ARM on v6.13.
+> >
+> > Have you found a solution?
 
-> 
-> In the generic algorithm, you probably should implement parity16() in 
-> terms of parity8(), parity32() in terms of parity16() and so on:
-> 
-> static inline __attribute_const__ bool parity16(u16 val)
-> {
-> #ifdef ARCH_HAS_PARITY16
-> 	if (!__builtin_const_p(val))
-> 		return _arch_parity16(val);
-> #endif
-> 	return parity8(val ^ (val >> 8));
-> }
-> 
-> This picks up the architectural versions when available.
+> When I try the link from the discussion:
+> https://github.com/tjcw/bpf-examples/tree/tjcw-explore-sameeth
+> I get a 404 error from github.
 
-Not the best way to do that.
-Make the name in the #ifdef the same as the function and define
-a default one if the architecture doesn't define one.
-So:
+I'm have the same error as Chris Ward wrote in their original mail. But
+I'm using the xdp-tutorial's [1] basic01-xdp-pass/xdp_pass_user example.
 
-static inline parity16(u16 val)
-{
-	return __builtin_const_p(val) ? _parity_const(val) : _parity16(val);
-}
+[1] https://github.com/xdp-project/xdp-tutorial.git
 
-#ifndef _parity16
-static inline _parity16(u15 val)
-{
-	return _parity8(val ^ (val >> 8));
-}
-#endif
+This is my error message.
 
-You only need one _parity_const().
+| sudo ./xdp_pass_user -d lan0
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| libbpf: prog 'xdp_dispatcher': BPF program load failed: Invalid argument
+| libbpf: prog 'xdp_dispatcher': -- BEGIN PROG LOAD LOG --
+| btf_vmlinux is malformed
+  ^^^^^^^^^^^^^^^^^^^^^^^^
 
-> 
-> Furthermore, if a popcnt instruction is known to exist, then the parity 
-> is simply popcnt(x) & 1.
+Now I understand, what this error message wants to tell me. I should
+recompile my kernel with CONFIG_DEBUG_INFO_BTF=3Dy.
 
-Beware that some popcnt instructions are slow.
+| 0: R1=3Dctx() R10=3Dfp0
+| ; int xdp_dispatcher(struct xdp_md *ctx) @ xdp-dispatcher.c:118
+| 0: (bf) r6 =3D r1                       ; R1=3Dctx() R6_w=3Dctx()
+| ; __u8 num_progs_enabled =3D conf.num_progs_enabled; @ xdp-dispatcher.c:1=
+20
+| 1: (18) r8 =3D 0xc3b45cc8               ; R8_w=3Dmap_value(map=3Dxdp_disp=
+=2Erodata,ks=3D4,vs=3D124)
+| 3: (71) r7 =3D *(u8 *)(r8 +2)           ; R7_w=3D1 R8_w=3Dmap_value(map=
+=3Dxdp_disp.rodata,ks=3D4,vs=3D124)
+| 4: (b7) r0 =3D 2                        ; R0_w=3D2
+| ; if (num_progs_enabled < 1) @ xdp-dispatcher.c:123
+| 5: (15) if r7 =3D=3D 0x0 goto pc+136      ; R7_w=3D1
+| ; ret =3D prog0(ctx); @ xdp-dispatcher.c:125
+| 6: (bf) r1 =3D r6                       ; R1_w=3Dctx() R6_w=3Dctx()
+| 7: (85) call pc+135
+| btf_vmlinux is malformed
+| R1 type=3Dctx expected=3Dfp
+| Caller passes invalid args into func#1 ('prog0')
+| processed 7 insns (limit 1000000) max_states_per_insn 0 total_states 0 pe=
+ak_states 0 mark_read 0
+| -- END PROG LOAD LOG --
+| libbpf: prog 'xdp_dispatcher': failed to load: -22
+| libbpf: failed to load object 'xdp-dispatcher.o'
+| libxdp: Failed to load dispatcher: Invalid argument
+| libxdp: Falling back to loading single prog without dispatcher
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| Success: Loading XDP prog name:xdp_prog_simple(id:118) on device:lan0(ifi=
+ndex:4)
 
-	David
 
-> 
-> 	-hpa
-> 
-> 
+With the CONFIG_DEBUG_INFO_BTF=3Dy kernel the verifier seems to be more
+happy. Now it fails with "-22":
 
+| sudo ./xdp_pass_user -d lan0
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| libbpf: prog 'xdp_pass': BPF program load failed: Invalid argument
+| libbpf: prog 'xdp_pass': -- BEGIN PROG LOAD LOG --
+| Extension programs should be JITed
+| processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 pe=
+ak_states 0 mark_read 0
+| -- END PROG LOAD LOG --
+| libbpf: prog 'xdp_pass': failed to load: -22
+| libbpf: failed to load object 'xdp-dispatcher.o'
+| libxdp: Compatibility check for dispatcher program failed: Invalid argume=
+nt
+| libxdp: Falling back to loading single prog without dispatcher
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| Success: Loading XDP prog name:xdp_prog_simple(id:20) on device:lan0(ifin=
+dex:4)
+
+
+After unloading and enabling the JIT...
+
+| =E2=9E=9C (pts/0) frogger@riot:xdp-tutorial/basic01-xdp-pass (main=E2=9C=
+=97) echo 1 |sudo tee /proc/sys/net/core/bpf_jit_enable                    =
+              =20
+
+=2E.. the dispatcher fails to load with "524". Yes, the number is
+positive.
+
+| =E2=9E=9C (pts/0) frogger@riot:xdp-tutorial/basic01-xdp-pass (main=E2=9C=
+=97) sudo ./xdp_pass_user -d lan0 --unload-all
+| Success: Unloading XDP prog name: xdp_prog_simple
+| =E2=9E=9C (pts/0) frogger@riot:xdp-tutorial/basic01-xdp-pass (main=E2=9C=
+=97) sudo ./xdp_pass_user -d lan0            =20
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| libxdp: Compatibility check for dispatcher program failed: Unknown error =
+524
+| libxdp: Falling back to loading single prog without dispatcher
+| libbpf: elf: skipping unrecognized data section(7) xdp_metadata
+| Success: Loading XDP prog name:xdp_prog_simple(id:48) on device:lan0(ifin=
+dex:4)
+
+strace indicates this syscalls fails:
+
+| bpf(BPF_RAW_TRACEPOINT_OPEN, {raw_tracepoint=3D{name=3DNULL, prog_fd=3D17=
+}}, 16) =3D -1 ENOTSUPP (Unknown error 524)
+
+I'm on a armv7l, i.e. a 32 bit ARM system. Maybe I'm missing some kernel
+option or BPF_RAW_TRACEPOINT_OPEN is not supported on armv7l. Will look
+deeper into the kernel config options tomorrow.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--4eimhjfg3mx4uc63
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEn/sM2K9nqF/8FWzzDHRl3/mQkZwFAme+SugACgkQDHRl3/mQ
+kZym9QgAhImQR2nv2LbKQCYUtfl8kx4lC3rP4M/Zf4YR9P9qBIqShfyAMDBEMDrx
+m4c3OUPTugMDtYO6JLQM7A+SgCSn0lPkrj+yaygZb0f8YSvCNy8Z4PALaMm2R6wO
+dnY+DL0ysv1ECc0e3F0fhZSqxda1Dzxfi4KPOVHAfhLrij6ET+fQBggpKes567Kv
+5qruYFCqxj67v6e0qINB59Q/qFi280cUO9KmcXYe1aqgp2e1I36eqKkgMD6FQc/p
+PDjImetj6Gp92p3KXQW7oU3EW7EDSqNAHewyy9rH6+AcaTfmwDVD76fZJ5Y+ocm3
+5uvddOsEquEz9AAACpR4ZRCllCYuNg==
+=AB+9
+-----END PGP SIGNATURE-----
+
+--4eimhjfg3mx4uc63--
 
