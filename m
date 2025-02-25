@@ -1,125 +1,136 @@
-Return-Path: <bpf+bounces-52470-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52471-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13450A431ED
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 01:39:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F985A4323A
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 02:04:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52B353B1924
-	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 00:38:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B47616F026
+	for <lists+bpf@lfdr.de>; Tue, 25 Feb 2025 01:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5032F2571AE;
-	Tue, 25 Feb 2025 00:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 871C015E96;
+	Tue, 25 Feb 2025 01:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nq+kEDFm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ApBjI4dQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821AA23AD
-	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 00:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA82978F45
+	for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 01:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740443942; cv=none; b=RNTy02MNmBG73qIjd9ayTlY1qqrf2YKsPGAYD3cVZ34jXIPVEplWRgMLin44eQ0qgR7SEsufpFt2xLxq+NqNi0XcK5tfMIqX6U3iaj1Lyfk2gw/FjHWe43joPVK3crl/nV0zBO+INwHeZW1ddgGY30wTuay9Ihr9d+IJ1Ddd5Xk=
+	t=1740445450; cv=none; b=iYZTAUt5kZYCN4Hdf5+VVzh4vPeZfU5VB522pn2dN95B7EUbNnutnzDbrAEapkOn6BZfy+9yL07KgTcmgQdR6s/adcwHf15SocVHVLDTLSFbwdrCbfsyttpBqkUqQHE5m3OojFkE+OxowM78qhABPjPBDYBQ0Sip+7AA5AUdONg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740443942; c=relaxed/simple;
-	bh=LO1TeCKl7P0QVfwNRPlqP87j+EBZKjaw+fTLe45kVic=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MXnowvsWKvyqFSWUpR9pBcjyCUCoFvAEMgSE6EXeo8wwtDER1VAiMLf1F1qk9Sk9bWxLkqyuxqHFDfFMWSsWe3cwH+YLmmjz+rerroqEtG+fzYt2Ajr8G5w43JZ8J1isnI/ZpKVru3pMefeKnrjmtZWsmdpejsaSWkEgShwLACo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nq+kEDFm; arc=none smtp.client-ip=209.85.214.170
+	s=arc-20240116; t=1740445450; c=relaxed/simple;
+	bh=sA9qxMGfft8asaBiBLeKwN1m/XArVRSyWnuemql+Krs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hjnoCiBTYHNRxVDa87yCT0o3d7Gaw5568ibSS4eHN5gRhe7jC5uRN9tM+PzfKYFKOxGKn9lNOrXe6d3qb7bWQEUkcED1LJCAx23H3M+zkDB5RVjfGUepvZXFPM4CKmXHtUDfoQoUuB1CNE+R3/GltKan0v/Bch3ZgJKF+auH76s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ApBjI4dQ; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-220c92c857aso85696325ad.0
-        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 16:39:01 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2fc20e0f0ceso7685129a91.3
+        for <bpf@vger.kernel.org>; Mon, 24 Feb 2025 17:04:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740443940; x=1741048740; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6RIsgIlZ1ZLbXsvqQx6woCPvjywNjcDN1nfG2SzFGwE=;
-        b=nq+kEDFmnheOLQJkVOKOqfZ+fIwHiE7h4SIIJWTWoFyePqWutHaDALuW/ZHa0MEzsu
-         ASlYhFt40Yjlis7qcwPnRFUb0+RkZ0PbO6VpYykq0IzatwY/h5QDtkw+lQNB8curd5gc
-         Q/EZouWetOu9/EtZgEfIklpoHi/70t3WrFW3wEj+RUie2DxLBfqvexuC/J0nQlPvaCFU
-         GvdyNxJsRumeB6eQLaCpMRIlQ+YWoT5mMPfoTFg7TJWkJE6RjFH7Ooxpg1CfDyniOkAW
-         kBKk/3VZBrCxcm2YN35GbMSaNp1dLzqv37trpYEf57JvVItJ32E6CoMbFpF9nxVrnIMx
-         N24A==
+        d=gmail.com; s=20230601; t=1740445448; x=1741050248; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xu2p90DGFVlepmbpDO8IFYTqTzx8qavHR+MblmdPsy4=;
+        b=ApBjI4dQAWrTe3FYMY934N3uVofp2kPNgMv07ld+MpJZsk8WQCXjfOz6b5AFYq0laS
+         jyYl78ppQ1eSiRTrMCKSxgsT/4LT0yIediXg3u/VXW5TfcY5DiR9eY7fAIzkm5o5nCtx
+         WjFM6yU19NRt2AG6Jcl1S0XQInTikCTzxJFp2RyLZp/0iJjdnV7ts6kNOnWQ+4YyxMJq
+         cEnAG/LZu2SIQP32Dh6uGxe37NBZFXSnsZVlEQD8cRrfzGZ4bgZ26NuT1S2EyicdKe7n
+         MPwP8TJt+fN65txNnz3PtdKcCsC4mK1gBP3VOWv0UfdZE9ku6tQBrUvur/7UZVApaMUv
+         VR4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740443940; x=1741048740;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6RIsgIlZ1ZLbXsvqQx6woCPvjywNjcDN1nfG2SzFGwE=;
-        b=B13V5L8j1zztyjUqLxqmeOoYHnTOnpYTjco9qvt4rfo/niyrO+O7ZvRs+sTxqUPF7s
-         XWhvgLlDo4LP05wJICm8dzi+lBP4ANk+DcZ1J4SXNGW/DKIbg2E9O9MYf9Y/WKIYAN0Z
-         HtyMMVT/YM4bi9GmYoomtvLRCzWwKS+PIqAmLU7XtKXs2mjzy8J4i/c3N2W8f7tZB69o
-         hGuKgj8hoXERafGVezVlTEYLnCjaqLEGGScde/h/6yDlIaFR1MdoEm+4MywG8SmItZQH
-         NqCYyOBNcvFQgwzspteB8KtxY5Zl5mTwC05YcM4oH2hcEUe6WslU4MfcNN4ifWdq3lgN
-         F1qg==
-X-Gm-Message-State: AOJu0YykkMWWfaaSPuB9PU1EZ2VBlGCvTTu/c8dXj0uDox1GsTZMqGhH
-	aE1WjEZGh9JIe3G0OqGT6L8UMAcSoE4vl8tYmSNdSH8GD2X+dXJEoEZfzQ==
-X-Gm-Gg: ASbGncsZja9zEjZTnM9qpEF9V0u5ArVssRIS7cy6CsxUmqhXk0W7v33nXyAfD9ipV4S
-	99fXCPWxRVHV9XqSIIinldUrgABghHvHSo4JSZw9yWnLnxWf6iLX8JnEEZpH4eI1OfxnLdaYKdV
-	WlH+xbNnqB23Hp5hChiZ9KPPZWLHlTXuM3YSYaTnePZOZWzdJJabsLzvuxnixj8ay5JJDgEODgo
-	XnlmQjTL7r7+hCJKpw6q/WgPeqla8bxmPyJG4li0dEi0LywmMAHhFTXamnWrkAdqY/mQ1Wkj4eL
-	bDFIU+nKdwEDre1LElc1zA==
-X-Google-Smtp-Source: AGHT+IH6dx36ooqV2NGu0S8faZwA04falmrxn7IEyuRGQEwwiIIc55Ob/6HsTRARhmyZjBajvtJC0Q==
-X-Received: by 2002:a17:903:2446:b0:215:58be:334e with SMTP id d9443c01a7336-2219ff89cafmr236325495ad.10.1740443940433;
-        Mon, 24 Feb 2025 16:39:00 -0800 (PST)
-Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2230a01fc47sm2180975ad.93.2025.02.24.16.38.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2025 16:39:00 -0800 (PST)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH bpf-next v1] bpf: abort verification if env->cur_state->loop_entry != NULL
-Date: Mon, 24 Feb 2025 16:38:38 -0800
-Message-ID: <20250225003838.135319-1-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.48.1
+        d=1e100.net; s=20230601; t=1740445448; x=1741050248;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xu2p90DGFVlepmbpDO8IFYTqTzx8qavHR+MblmdPsy4=;
+        b=BEAWBFl38CMWX3VdYV3LQnzfsgP4Af58VCmkHzQhW7racmO2MdyLofkCIyeniRpJEd
+         Xlf06wt6JiaTLKdbHI92m1qvpXagBhyJR4imNZ7lKeRUlBDfijDptw9okQvd3sO118fD
+         eh7X3NJdpdkClRq9T62pHz31e3d+IoXLnk41ToaciT/T0b6+7rjf9DodhAcEwl8xsbfY
+         NUtc3ZDgALwSS29oOELIVV9cWcqGiTFv/28NFU2kuJt5bQqT00/ZFpTEy+SbZCygu/Lk
+         vd0ffr01U5QSXRd9KfOaVooBdvNq38o/5672Y4Vwbho2DNKLU6mn9TyGeT+bxxyE4ope
+         tRCg==
+X-Gm-Message-State: AOJu0YwZmo+ReRGeiQcC1W2uSelGOVi/E2MfhZAlZtSmSnEW0KXJQb4K
+	HTTW1gmXKTFUZ6QatndwdwLFL+tsadeWcPz0HeZydE8MRZ6Kc4Bi6D/eWnu3aJJSqTEArjplDyX
+	mHkTIBeDrOrMq/hRnfqGkj6aVuPD3d7pS
+X-Gm-Gg: ASbGnctam+6I2p2HDEYsXCmbXKT6fqmBxHn6XUuqTOndkB19vCTdidHneVoDh0CwjcC
+	LSjAy0IHOuazS/mNlFVkAYqGyNNwkcV7SnxVlF8+hgkk+jaV+59D4LCN9xErcE5qbbRuSyE2+Nx
+	x0q4foirNsY6PrXPyw5CzvniE=
+X-Google-Smtp-Source: AGHT+IEAisVGiCHlV0cLQCxcbSYefdC5rWSZLYrFpGCpIq5uUFrlyAzoZRCzXeU0vaIC1yc2v/VAiDSlP+Tg9x0A58E=
+X-Received: by 2002:a17:90b:1b44:b0:2f2:3efd:96da with SMTP id
+ 98e67ed59e1d1-2fce7b1129fmr27458686a91.24.1740445447745; Mon, 24 Feb 2025
+ 17:04:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250225003838.135319-1-eddyz87@gmail.com>
+In-Reply-To: <20250225003838.135319-1-eddyz87@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 24 Feb 2025 17:03:55 -0800
+X-Gm-Features: AQ5f1Jr_CtIoxkRlThVI7Ek-R1CD-O7isBmxsXQ5RknCqPPfZJKZ1-wYBsSyw30
+Message-ID: <CAEf4BzYC9-w6HvRfkkC_kLpizfNTYJLgVTh84ptOO7ncS3QRwA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] bpf: abort verification if
+ env->cur_state->loop_entry != NULL
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In addition to warning abort verification with -EFAULT.
-If env->cur_state->loop_entry != NULL something is irrecoverably
-buggy.
+On Mon, Feb 24, 2025 at 4:39=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> In addition to warning abort verification with -EFAULT.
+> If env->cur_state->loop_entry !=3D NULL something is irrecoverably
+> buggy.
+>
+> Fixes: bbbc02b7445e ("bpf: copy_verifier_state() should copy 'loop_entry'=
+ field")
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
 
-Fixes: bbbc02b7445e ("bpf: copy_verifier_state() should copy 'loop_entry' field")
-Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- kernel/bpf/verifier.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+that works as well, thanks
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5c9b7464ec2c..942c0d2df258 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -19340,8 +19340,10 @@ static int do_check(struct bpf_verifier_env *env)
- 						return err;
- 					break;
- 				} else {
--					if (WARN_ON_ONCE(env->cur_state->loop_entry))
--						env->cur_state->loop_entry = NULL;
-+					if (WARN_ON_ONCE(env->cur_state->loop_entry)) {
-+						verbose(env, "verifier bug: env->cur_state->loop_entry != NULL\n");
-+						return -EFAULT;
-+					}
- 					do_print_state = true;
- 					continue;
- 				}
--- 
-2.48.1
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 5c9b7464ec2c..942c0d2df258 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -19340,8 +19340,10 @@ static int do_check(struct bpf_verifier_env *env=
+)
+>                                                 return err;
+>                                         break;
+>                                 } else {
+> -                                       if (WARN_ON_ONCE(env->cur_state->=
+loop_entry))
+> -                                               env->cur_state->loop_entr=
+y =3D NULL;
+> +                                       if (WARN_ON_ONCE(env->cur_state->=
+loop_entry)) {
+> +                                               verbose(env, "verifier bu=
+g: env->cur_state->loop_entry !=3D NULL\n");
+> +                                               return -EFAULT;
+> +                                       }
+>                                         do_print_state =3D true;
+>                                         continue;
+>                                 }
+> --
+> 2.48.1
+>
 
