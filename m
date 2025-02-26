@@ -1,98 +1,158 @@
-Return-Path: <bpf+bounces-52683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37B7FA46A25
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 19:50:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9E78A46A87
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 20:01:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0631D16CCCC
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 18:50:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A28637A1A56
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 19:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37974236425;
-	Wed, 26 Feb 2025 18:50:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A640238D2E;
+	Wed, 26 Feb 2025 19:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bWbccPZX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PQ0TftWJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B083E22B8C2
-	for <bpf@vger.kernel.org>; Wed, 26 Feb 2025 18:49:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C1916F288;
+	Wed, 26 Feb 2025 19:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740595799; cv=none; b=bqSjF01h+TOVcwtdJ2KLZjJ9Q/KQgiSFrVx+bWnbR/vcfZdC4h1oqbgS+QgvgJTbb56mC8PBxgBDa9dHLgV0dOrSXE2WWXcOjlpHBaIxuP+at0yNYT0wlExyjw6h1LjggI2FBmeladOoAMmugQH1ssDfbi7YEOugcYpaXKfNf6k=
+	t=1740596440; cv=none; b=j8qkpMYM75vbafzhyzYufV1XpqGehhAzfmx+eA7mUJbqytEIyyX8phdYbSzaDA5Uba24hh2LBe197so75qZyoeZ7j3AjPC+D7RXFPcPIWucCvCilnyXUXhG6lCNIw20W5IB5gPBnT0tOkZoe4ULDcoQgZBq2xQJUyNEUbS9Omu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740595799; c=relaxed/simple;
-	bh=xMQDGGY3BkM3SWdC0WenXnT2urcwBfyYp+E8zSksba4=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=svaN0dAjkoCckjeaY/KHdlK/YnGmOlCN3wJHGCuuiD1OLmHqGq7pJffHe3zXB5lPAUIR+ZCeMVRT+FbcZIz6cjEtSsVLlZuYPQv+wDICZdXqF/6wBjjmhdcxhToaSaKXCZdLWooTANVFLCtYdNlDT4BuQCUrgTYIG4ipGkVwznY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bWbccPZX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F954C4CED6;
-	Wed, 26 Feb 2025 18:49:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740595799;
-	bh=xMQDGGY3BkM3SWdC0WenXnT2urcwBfyYp+E8zSksba4=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=bWbccPZXex03mDwuKY8KI0MfmNJ+cnLFvcwftin0GkW9HJqL87LJe729lsiRuXr0W
-	 3W2859rSDoBFiiTnknqSsKCNA3PI49j4QnQWwE/H7oUpSir3gs55VCTuBnBudQx+ad
-	 XreX/gW1pajNkeEYW7hdtSnDBuBcnNGnLNHGrAL8uMVYaM2m8dESazQa8ixUVvrnLC
-	 y9CqqFvdCfA4h5J7ynncTR5BS8SyqYSFZSwCivZklkazmIzrcu5oKD1Q/ctnSxnEmB
-	 tgbvl9dLOWetLgbLVzxLz6SqjJ8aoM0qZrnrsYXFcFqENVy2MK3NvPJzNVrxVo+4dA
-	 3nZbuD6zWFVyw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33C78380CFE5;
-	Wed, 26 Feb 2025 18:50:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1740596440; c=relaxed/simple;
+	bh=ilnvCzetpSwt81QzijU6ZPwvYZCY439qILLVWdJZsMY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=URtiZWEKTD/cqON43XjZgCMnbXZ91Go8wPj9tkPfPJwsQFIryJJg+rjeMyyrmxduGh9k6g3KMl7TQ8vAk+ZN+Q8tjI3NlQMpgSECrWMdsiyWnQA7FI7GAQjq8PhQSD7tt3TL8FkhM1qBn8p5sRPOOmNZCQk+WxGhg0+bcds1IjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PQ0TftWJ; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-22349bb8605so2039595ad.0;
+        Wed, 26 Feb 2025 11:00:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740596438; x=1741201238; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=um3PjvaV3xemkSrnVeoxOKPhFWkje/02DmmZTZ1Ij9w=;
+        b=PQ0TftWJZmmrneq5j4aC/U7kDi/qc+iPH+01jFLexMX8+SpwmG5wcvNwDPRC5amn/y
+         ErY9ZUxqyy9u8nb66adfwl0xtjVRg7Ef7xPG+VO9ZcoFXmDFheZEtN6lELPFC26apwBe
+         Ltk51wgVFPGOZJJSBlUZlCVelCKhDcd9KI/oVfbH0pxtxTT2B3LvnbFTJbMmmSGKDagr
+         BW/Hdk0DVjDwPQj6H4VO+aBSpxJJS/0LxPSa1APzZDiKUU0rJR27RhdAliwtG5J2zgB3
+         YpPqkG/enk17ZC3cmDv84bHNDWVe5NKVFSRuuvSHWsA6HASpoJiQPsSocJ7TFjyWe3yD
+         MHLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740596438; x=1741201238;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=um3PjvaV3xemkSrnVeoxOKPhFWkje/02DmmZTZ1Ij9w=;
+        b=WIZxjLmwCuBWnugpBLtZw6yd6ZnLB62Tbagr8ZE2d2+nXJISlsLFn/EqKNCZKNinB4
+         tAK1A2yuwZKX9d/l4/q4afgMNhRu3K7xAsgTDb1FBf5c1yzsUiiDYEnUq9c502TtCLsY
+         8klm4Sbwa26c1EKOqsHDhtPHNFdaF7q3dhugAWI4L+K0lI/Htihq4H07jdCPKAUD2LPa
+         IvsSGHieFpREfGA1wdrlD9xijs398iUT6+L8DWYu01uNEVBAGKLLP1pUYJednQrvshe4
+         m2+gyRRVhn/S6uERWuRK2/ckNbSc70q6u0J2nDauON2E5PjoZG0T/jonvtTNgbKKRKrc
+         Fe0A==
+X-Forwarded-Encrypted: i=1; AJvYcCUs3sQyyHsIPdwaKMhMeXQtgcUw7LDW/BCZMnHXI+d/EipUlqLfJC3iUsMUyfhuuiCyXkZagVoMYcvNndn/A0WO@vger.kernel.org, AJvYcCVvUOPZIDdWQ+c54wBj0cCyujb1K6pyLuNeuVExXkLsdtNmgcwaJNf9gac1y4pN2PfQdb3vHtlsFk25YjSR@vger.kernel.org, AJvYcCXbJPhowuz+J7BL8rfKdxBPhsV9cQWcrFE8B9FiivGFbJOQN+axK+5cUB62cBSCtz7ZTbw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGKxZGzQm9kZ4G62bleFKlHIa3p0H+4prxHjCjUuhQplG0kCge
+	wp5hUB7PeBXgSp9yi0qreM+kCFwyIsx2iLC0dC2cTnj6JvNTg0g=
+X-Gm-Gg: ASbGnctZIJ1hmYBeWn5ygNWfH+FPjOkILpJYuyTEq0fLv8v6e2rk4Z+FMtLhKAdnSbM
+	g+c6d21wsODLvQPfeIZzQM39f8j41QoqOUQXNeQ4SxmyrZiskAkn+oF2fqMR+MSisFiUTEdyd8Q
+	An5dSQno6rmoPtIuDp9W4BuHu6fC72nZTgRElz8IvVKsRc3TKYuNkhHyuiRPP1Ibfldb3mfikDC
+	7lWK2F/gkAuRNl5IyH1pnLRTduaqThkSeWjXQafTWUxItzAS6rk6aTZrqHsaTfAAjsINdXsBO1x
+	ShU/Hpk9GviFhzjn1G5HhBmMvQ==
+X-Google-Smtp-Source: AGHT+IEXTCiiX7hd+vmSbpzizYEK0rijev1ZKtdKEhTs2LivmWOC4sXPFuIrmEnAwtEyjJANS3y/rg==
+X-Received: by 2002:a05:6a00:99c:b0:730:949d:2d3f with SMTP id d2e1a72fcca58-734790c8cadmr13431917b3a.7.1740596436989;
+        Wed, 26 Feb 2025 11:00:36 -0800 (PST)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-7347a81c57esm3969843b3a.136.2025.02.26.11.00.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Feb 2025 11:00:36 -0800 (PST)
+Date: Wed, 26 Feb 2025 11:00:34 -0800
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
+	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, andrii@kernel.org,
+	eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	jolsa@kernel.org, shuah@kernel.org, hawk@kernel.org
+Subject: Re: [PATCH bpf-next v3 5/6] selftests/bpf: add test for XDP metadata
+ support in tun driver
+Message-ID: <Z79k0vKn39XsZ-j7@mini-arch>
+References: <20250224152909.3911544-1-marcus.wichelmann@hetzner-cloud.de>
+ <20250224152909.3911544-6-marcus.wichelmann@hetzner-cloud.de>
+ <Z7yo3VfHofK-W7EY@mini-arch>
+ <165bbf6e-ca06-4eac-a9a2-2033314aa027@hetzner-cloud.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v5 0/2] selftests/bpf: implement setting global
- variables in veristat
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174059583101.808966.411903542330887067.git-patchwork-notify@kernel.org>
-Date: Wed, 26 Feb 2025 18:50:31 +0000
-References: <20250225163101.121043-1-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20250225163101.121043-1-mykyta.yatsenko5@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
- eddyz87@gmail.com, yatsenko@meta.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <165bbf6e-ca06-4eac-a9a2-2033314aa027@hetzner-cloud.de>
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Tue, 25 Feb 2025 16:30:59 +0000 you wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
+On 02/26, Marcus Wichelmann wrote:
+> Am 24.02.25 um 18:14 schrieb Stanislav Fomichev:
+> > On 02/24, Marcus Wichelmann wrote:
+> > > Add a selftest that creates a tap device, attaches XDP and TC programs,
+> > > writes a packet with a test payload into the tap device and checks the
+> > > test result. This test ensures that the XDP metadata support in the tun
+> > > driver is enabled and that the metadata size is correctly passed to the
+> > > skb.
+> > > 
+> > > See the previous commit ("selftests/bpf: refactor xdp_context_functional
+> > > test and bpf program") for details about the test design.
+> > > 
+> > > Signed-off-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
+> > > ---
+> > >   .../bpf/prog_tests/xdp_context_test_run.c     | 64 +++++++++++++++++++
+> > >   1 file changed, 64 insertions(+)
+> > > 
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+> > > index 4043f220d7c0..60aad6bd8882 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+> > > @@ -8,6 +8,7 @@
+> > >   #define TX_NAME "veth1"
+> > >   #define TX_NETNS "xdp_context_tx"
+> > >   #define RX_NETNS "xdp_context_rx"
+> > > +#define TAP_NAME "tap0"
+> > >   #define TEST_PAYLOAD_LEN 32
+> > >   static const __u8 test_payload[TEST_PAYLOAD_LEN] = {
+> > > @@ -251,3 +252,66 @@ void test_xdp_context_veth(void)
+> > >   	netns_free(tx_ns);
+> > >   }
+> > > +void test_xdp_context_tuntap(void)
+> > 
+> > tap0 is already used by lwt tests, so there is a chance this new test
+> > will clash with it? Should we run your new test in a net namespace
+> > to be safe? Bastien recently added a change where you can make
+> > your test run in a net ns by naming the function test_ns_xxx.
+> > 
 > 
-> To better verify some complex BPF programs by veristat, it would be useful
-> to preset global variables. This patch set implements this functionality
-> and introduces tests for veristat.
+> Ah, cool, I didn't know of that feature.
 > 
-> v4->v5
->   * Rework parsing to use sscanf for integers
->   * Addressing nits
-> 
-> [...]
+> For reference, you probably mean this one?
+> commit c047e0e0e435 ("selftests/bpf: Optionally open a dedicated namespace to run test in it")
 
-Here is the summary with links:
-  - [bpf-next,v5,1/2] selftests/bpf: implement setting global variables in veristat
-    https://git.kernel.org/bpf/bpf-next/c/e3c9abd0d14b
-  - [bpf-next,v5,2/2] selftests/bpf: introduce veristat test
-    https://git.kernel.org/bpf/bpf-next/c/3d1033caf056
+Yes.
+ 
+> As long as the tests are not run in parallel, the test function SHOULD
+> clean up well enough behind itself that no conflicts should occur.
+> But having that bit of extra safety won't hurt.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+The test you're adding is gonna be running in parallel with most of the
+other test cases. If you want it to be executed in a serial fashion
+(which I don't think you do, running in parallel in a ns is a better
+option), the function as to be called serial_test_xxx.
 
