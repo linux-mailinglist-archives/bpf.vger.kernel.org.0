@@ -1,351 +1,197 @@
-Return-Path: <bpf+bounces-52674-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52675-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 800FBA4684D
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 18:42:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBAE7A468C1
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 19:00:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 278E87A3F9F
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 17:41:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B20433AEF39
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 17:59:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5648225408;
-	Wed, 26 Feb 2025 17:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2417E22A7E6;
+	Wed, 26 Feb 2025 17:59:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qJtRG5K5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="STKhS2iH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43DA021CC6A;
-	Wed, 26 Feb 2025 17:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE142A8C1;
+	Wed, 26 Feb 2025 17:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740591747; cv=none; b=GrG7mYKzb+Aplqqn4B7QR1Fxhpzl7a714j2acHs2eH2Edxu5pNuQGpj9qkjQzMDxdFp1j/I8c2GpkNrmv5cQgvrbqJ0gCYiTgOudmE03jX48Ung+MVScR9cBGoh4eVvR4LpaQV9I8nBY/6YKUdZCpzVLYepIDItc6ljTLelP3Ao=
+	t=1740592797; cv=none; b=Ip1Vx9dU1WA+Ai5aIOSPPVyCXKqgQWX4tDqNQpBNuR9ROQw4FqtKArMXyiDOaaErCrkC4wNGlDD34SlgP3zV3dQgIIYPHSquAqzIFuny0Nlma6Jkbapv1piEwRh70kATsZv79P1kpqIZAk2/MIvUTv2uSjsmzPR6z3/lVvmmIhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740591747; c=relaxed/simple;
-	bh=ids+q8yuoCUoITZzkHwCFqezTLqWL9xDF1fa3noQ4ik=;
+	s=arc-20240116; t=1740592797; c=relaxed/simple;
+	bh=NgL7kzU8DCxs2aqncslIBjrb2AeIRzc4rI9CzlkoJnw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s/et55VD7fE/gI/YXlKwjHbrt7k3IWgIATwpVdfX1zEb97UsmIe50WYIJv8lUy2ncpR/VUNRwz1chhalQFNBn2PuDukyy0oqAM8h9D50OJH1g8mHHTalV9x0oPDCp+5go9AMewL9a7rR85VXj2cWVo+GUx9uBXYTwp3lBmgQN9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qJtRG5K5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ECD7C4CED6;
-	Wed, 26 Feb 2025 17:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740591746;
-	bh=ids+q8yuoCUoITZzkHwCFqezTLqWL9xDF1fa3noQ4ik=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qJtRG5K5rya4ElwvSDPPTfiN0ZW85QnjkU7L3cvGWGGOHWklON8me9gmLaqb9NpEv
-	 zuxS6uRtg0ZYH+hAkvP9E/UdjJ0Ni8FP3kyJDg3PLv8Q8GKQrI1hhA2sy5zARTBnSp
-	 clmPYyliRXQ1KSI/MgRWFp4YbnITnqpvvIpcAcfhF8ZiQhC5+wTXobvJykTpvep5h5
-	 dLofq/edUywHLSGRczYaG8gc3H2vyUhK89ReNxzkYpniK1qaQjdVtKCGSLOFhmcUYM
-	 y077SuXYWVpE5K01xJb3nmAXE0MuIQXxQkMZhV3+ShuS9Z5dDMcJEHHe0YKSbaw3RZ
-	 KCM1ilqUj2/xw==
-Date: Wed, 26 Feb 2025 09:42:24 -0800
-From: Namhyung Kim <namhyung@kernel.org>
-To: Athira Rajeev <atrajeev@linux.ibm.com>
-Cc: Chun-Tse Shao <ctshao@google.com>,
-	"open list:PERFORMANCE EVENTS SUBSYSTEM" <linux-kernel@vger.kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>, nick.forrington@arm.com,
-	"open list:PERFORMANCE EVENTS SUBSYSTEM" <linux-perf-users@vger.kernel.org>,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v7 4/4] perf lock: Report owner stack in usermode
-Message-ID: <Z79SgFChhckow6Jf@google.com>
-References: <20250224184742.4144931-1-ctshao@google.com>
- <20250224184742.4144931-5-ctshao@google.com>
- <838FC998-5E85-4511-BA65-B32ADD1B817C@linux.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JhMuEReKCO3skQuUK5XriM1CQFkBK7WxSmL7gee5rVzI3FpDwRYIE10ZaobqlB9ToZi7yLxvueCpmLdkU332UdxHxVnle6Edfaz+RQ0GPm/jHVFWoOISshnuyW66Cf8+w7SVFG0JRHQBJNU3naQFPvIbu818966X0KF4jOdhvHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=STKhS2iH; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-220e83d65e5so623085ad.1;
+        Wed, 26 Feb 2025 09:59:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740592795; x=1741197595; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aLZRzBzitap92yZk251lvU9DytAtAlhsYa/CQwhvV8Q=;
+        b=STKhS2iHxgaS1szjmMC1mTeWJNsONfdDL581017gu22tcyyt6/pp98x+LxU5sC+Sti
+         ApQcwWfvuSGIJXAELy8JSaLK+rGLk9IlIJB9LWzC4QMPxQX63mEmxVZ57C1ADkgp5rJV
+         t7miUx8BoPH+OqJ0G/lnoXsfLE962k5o2ia0mIZdqGsQQ8cICnvMFJXr5y9hQ0kEiQNv
+         RwrQ0PgZlBPiVD7ZIpWCehCGp08qDGmqmjtJwENzTryrRBlkp1PDAEdeCJ9eBVEKFqqM
+         JwROLBvRJ4oTDfj0rVD4E3dFf+fcpBvoMnmoudRSaB5bPTwOJZUtK4dO0By5l5DIe0+A
+         Pmlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740592795; x=1741197595;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aLZRzBzitap92yZk251lvU9DytAtAlhsYa/CQwhvV8Q=;
+        b=exEe3HS7wDS2+mCAGN3cC8xcapyR8OYeyd8dsGoMet96ohBS9gBCQmpHz1hGZKTaIq
+         saIx4kpevpUHolDoRvnM4CHjeNNZXTJKBwJ4OtQ11Bo3/yQp2NLXCM8Lswa5y3EYx/eo
+         p+alN9x7wy1hWmoRX2NI6m4YmG3iVU04mN9RJXhCAExCbC37HkV7Z1F9rKpswwLha/hL
+         gKfwnhCarTQ0UvItS3Th9KGgWpAeG3OqPCBlAGky0gC3EMO/PhuQwr/JJjZgnIouOeJ9
+         fiS1TzhPZZ1zm+cy63ZFIOQfVWRu2uTxnlPvCKj4cfKD0Hsii0J2VC+5bsEhB5ktbUho
+         n4EQ==
+X-Forwarded-Encrypted: i=1; AJvYcCULRgjwXSuT2OYBCtx1z6f7dCT6UrjMKx/mSe4c604u10y3Od3tWfkBUoKLt0sd/sEySSLSDvtWfmN6ZrK+@vger.kernel.org, AJvYcCUYkpZJLUpFFiRxT+rj7LmpyE6LyXGenlANFZbRUx4RcYbsgvymibpSQulpwNYQsY/NvrY=@vger.kernel.org, AJvYcCUm3wcStNywyUZJ/3etPZwh0UwnPAbULmh3/Qk0IYMGowykySe6Z5hbKE9YGtE9AWj4eNC40aSvMvRqpA6ZoM0=@vger.kernel.org, AJvYcCUmKDn27OzRO56WcVx6ulKUOZ7iJKbCq1VhRIbxxaHZMm8RRgUXOeUcjF79XubT30Z6RLUrq6l1RYH+B9OE@vger.kernel.org, AJvYcCVjetR3QUCIUBQUkDIy6UNITur4t37hqXa7Pg/yxzVoWosWeFlIWBDXiM2KZT2xOPwdJMq63njP@vger.kernel.org, AJvYcCWKPuOq1tVS4KJUzR1bti82mmJigDRoRQgJB4RJ1/Hn8zFVSx0GkM64PlE/6ybmDlmDwYR66uXh5OGaUxs=@vger.kernel.org, AJvYcCXsG0iIQtQGdfB2KLZCXLgr0Nnff/a3iTew7JQZjpVsPIEbOn/pShV2BPMpwnSG5mOvGDD/Y8Sa0aRDXkc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzf2nWMXe36z8Arjt5pAHCA96iuAbgEi4kls9wIECMYKxAxNLPs
+	lloDQKWgH7Qn9oEXOZ5gpjhS1v2amw2+iTTDeWB1TgWG3YPMm+xU
+X-Gm-Gg: ASbGnctqVgNRmO//Jb768n8lrIpykAnJPjIjWn8GdWk9oLqAZA9rMkCMayKV0tuluTe
+	3k3i0RuhhHIDAGVQNy5ZbnZH1UqktlT3PsvsvdRzVma5fd1yIJUObwfRLvN+at5fp0y/HzL25ja
+	7cdXsr8ZmW3/JB/h7qCJcsdX3VIB8tvISEo11S4vtZxkd+EsvQHRvtfTAyD6koKJw2Wp3A6sCmg
+	O4E8bOGoFjSGCHDcD98RuHlh9LebUXIrGkL/wTW6jvaupjEo/yxWwT2/3dHQcFeOTy0vAPk6ZLs
+	5m1K49BszDaDvwCSmYva19f/J7w5ZdkmzvjITSEikY6pKiSoBOEIkg==
+X-Google-Smtp-Source: AGHT+IFPX6/YemPi/DqumfrbMAfmVM+yJTxaN3xhdxU4AjgnAZPzxKGRLUd3gIiPdvk59fs7FScnAQ==
+X-Received: by 2002:a05:6a21:600c:b0:1ee:c74c:2436 with SMTP id adf61e73a8af0-1f10ae2ec90mr8029040637.34.1740592795469;
+        Wed, 26 Feb 2025 09:59:55 -0800 (PST)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-aedaab2e8fbsm3541850a12.64.2025.02.26.09.59.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Feb 2025 09:59:54 -0800 (PST)
+Date: Thu, 27 Feb 2025 01:59:44 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Yury Norov <yury.norov@gmail.com>, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
+	andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+	rfoss@kernel.org, maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
+	simona@ffwll.ch, dmitry.torokhov@gmail.com, mchehab@kernel.org,
+	awalls@md.metrocast.net, hverkuil@xs4all.nl,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	louis.peens@corigine.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+	akpm@linux-foundation.org, hpa@zytor.com, alistair@popple.id.au,
+	linux@rasmusvillemoes.dk, Laurent.pinchart@ideasonboard.com,
+	jonas@kwiboo.se, jernej.skrabec@gmail.com, kuba@kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
+	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	oss-drivers@corigine.com, netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
+	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+	Yu-Chun Lin <eleanor15x@gmail.com>
+Subject: Re: [PATCH 02/17] bitops: Add generic parity calculation for u64
+Message-ID: <Z79WkNp6p06fV/f9@visitorckw-System-Product-Name>
+References: <20250223164217.2139331-1-visitorckw@gmail.com>
+ <20250223164217.2139331-3-visitorckw@gmail.com>
+ <Z7zIBwH4aUA7G9MY@thinkpad>
+ <Z73FxIv353lbXO3A@visitorckw-System-Product-Name>
+ <b5236ae4-7ebe-4a88-bbc9-3b9b3374de53@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <838FC998-5E85-4511-BA65-B32ADD1B817C@linux.ibm.com>
+In-Reply-To: <b5236ae4-7ebe-4a88-bbc9-3b9b3374de53@kernel.org>
 
-Hello,
+Hi Jiri,
 
-On Wed, Feb 26, 2025 at 03:27:41PM +0530, Athira Rajeev wrote:
+On Wed, Feb 26, 2025 at 08:14:14AM +0100, Jiri Slaby wrote:
+> On 25. 02. 25, 14:29, Kuan-Wei Chiu wrote:
+> > > +#define parity(val)					\
+> > > +({							\
+> > > +	u64 __v = (val);				\
+> > > +	int __ret;					\
+> > > +	switch (BITS_PER_TYPE(val)) {			\
+> > > +	case 64:					\
+> > > +		__v ^= __v >> 32;			\
+> > > +		fallthrough;				\
+> > > +	case 32:					\
+> > > +		__v ^= __v >> 16;			\
+> > > +		fallthrough;				\
+> > > +	case 16:					\
+> > > +		__v ^= __v >> 8;			\
+> > > +		fallthrough;				\
+> > > +	case 8:						\
+> > > +		__v ^= __v >> 4;			\
+> > > +		__ret =  (0x6996 >> (__v & 0xf)) & 1;	\
+> > > +		break;					\
+> > > +	default:					\
+> > > +		BUILD_BUG();				\
+> > > +	}						\
+> > > +	__ret;						\
+> > > +})
+> > > +
+> > > +#define parity8(val)	parity((u8)(val))
+> > > +#define parity32(val)	parity((u32)(val))
+> > > +#define parity64(val)	parity((u64)(val))
+> > What do you think about using these inline functions instead of macros?
+> > Except for parity8(), each function is a single line and follows the
+> > same logic. I find inline functions more readable, and coding-style.rst
+> > also recommends them over macros.
 > 
+> Not in cases where macros are inevitable. I mean, do we need parityXX() for
+> XX in (8, 16, 32, 64) at all? Isn't the parity() above enough for everybody?
+> And if not, you can have all those parityXX() as inlines as you suggest, but
+> also provide a macro such as the above to call (optimized) parityXX() as per
+> datatype len.
 > 
-> > On 25 Feb 2025, at 12:12 AM, Chun-Tse Shao <ctshao@google.com> wrote:
-> > 
-> > This patch parses `owner_lock_stat` into a RB tree, enabling ordered
-> > reporting of owner lock statistics with stack traces. It also updates
-> > the documentation for the `-o` option in contention mode, decouples `-o`
-> > from `-t`, and issues a warning to inform users about the new behavior
-> > of `-ov`.
-> > 
-> > Example output:
-> >  $ sudo ~/linux/tools/perf/perf lock con -abvo -Y mutex-spin -E3 perf bench sched pipe
-> >  ...
-> >   contended   total wait     max wait     avg wait         type   caller
-> > 
-> >         171      1.55 ms     20.26 us      9.06 us        mutex   pipe_read+0x57
-> >                          0xffffffffac6318e7  pipe_read+0x57
-> >                          0xffffffffac623862  vfs_read+0x332
-> >                          0xffffffffac62434b  ksys_read+0xbb
-> >                          0xfffffffface604b2  do_syscall_64+0x82
-> >                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
-> >          36    193.71 us     15.27 us      5.38 us        mutex   pipe_write+0x50
-> >                          0xffffffffac631ee0  pipe_write+0x50
-> >                          0xffffffffac6241db  vfs_write+0x3bb
-> >                          0xffffffffac6244ab  ksys_write+0xbb
-> >                          0xfffffffface604b2  do_syscall_64+0x82
-> >                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
-> >           4     51.22 us     16.47 us     12.80 us        mutex   do_epoll_wait+0x24d
-> >                          0xffffffffac691f0d  do_epoll_wait+0x24d
-> >                          0xffffffffac69249b  do_epoll_pwait.part.0+0xb
-> >                          0xffffffffac693ba5  __x64_sys_epoll_pwait+0x95
-> >                          0xfffffffface604b2  do_syscall_64+0x82
-> >                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
-> > 
-> >  === owner stack trace ===
-> > 
-> >           3     31.24 us     15.27 us     10.41 us        mutex   pipe_read+0x348
-> >                          0xffffffffac631bd8  pipe_read+0x348
-> >                          0xffffffffac623862  vfs_read+0x332
-> >                          0xffffffffac62434b  ksys_read+0xbb
-> >                          0xfffffffface604b2  do_syscall_64+0x82
-> >                          0xffffffffad00012f  entry_SYSCALL_64_after_hwframe+0x76
-> >  ...
-> > 
-> > Signed-off-by: Chun-Tse Shao <ctshao@google.com>
-> > ---
-> > tools/perf/Documentation/perf-lock.txt |  5 ++-
-> > tools/perf/builtin-lock.c              | 22 +++++++++-
-> > tools/perf/util/bpf_lock_contention.c  | 57 ++++++++++++++++++++++++++
-> > tools/perf/util/lock-contention.h      |  7 ++++
-> > 4 files changed, 87 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/tools/perf/Documentation/perf-lock.txt b/tools/perf/Documentation/perf-lock.txt
-> > index d3793054f7d3..859dc11a7372 100644
-> > --- a/tools/perf/Documentation/perf-lock.txt
-> > +++ b/tools/perf/Documentation/perf-lock.txt
-> > @@ -179,8 +179,9 @@ CONTENTION OPTIONS
-> > 
-> > -o::
-> > --lock-owner::
-> > - Show lock contention stat by owners.  Implies --threads and
-> > - requires --use-bpf.
-> > + Show lock contention stat by owners. This option can be combined with -t,
-> > + which shows owner's per thread lock stats, or -v, which shows owner's
-> > + stacktrace. Requires --use-bpf.
-> > 
-> > -Y::
-> > --type-filter=<value>::
-> > diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> > index 9bebc186286f..05e7bc30488a 100644
-> > --- a/tools/perf/builtin-lock.c
-> > +++ b/tools/perf/builtin-lock.c
-> > @@ -1817,6 +1817,22 @@ static void print_contention_result(struct lock_contention *con)
-> > break;
-> > }
-> > 
-> > + if (con->owner && con->save_callstack && verbose > 0) {
-> > + struct rb_root root = RB_ROOT;
-> > +
-> > + if (symbol_conf.field_sep)
-> > + fprintf(lock_output, "# owner stack trace:\n");
-> > + else
-> > + fprintf(lock_output, "\n=== owner stack trace ===\n\n");
-> > + while ((st = pop_owner_stack_trace(con)))
-> > + insert_to(&root, st, compare);
-> > +
-> > + while ((st = pop_from(&root))) {
-> > + print_lock_stat(con, st);
-> > + free(st);
-> > + }
-> > + }
-> > +
-> > if (print_nr_entries) {
-> > /* update the total/bad stats */
-> > while ((st = pop_from_result())) {
-> > @@ -1962,8 +1978,10 @@ static int check_lock_contention_options(const struct option *options,
-> > }
-> > }
-> > 
-> > - if (show_lock_owner)
-> > - show_thread_stats = true;
-> > + if (show_lock_owner && !show_thread_stats) {
-> > + pr_warning("Now -o try to show owner's callstack instead of pid and comm.\n");
-> > + pr_warning("Please use -t option too to keep the old behavior.\n");
-> > + }
-> > 
-> > return 0;
-> > }
-> > diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-> > index 76542b86e83f..16f4deba69ec 100644
-> > --- a/tools/perf/util/bpf_lock_contention.c
-> > +++ b/tools/perf/util/bpf_lock_contention.c
-> > @@ -549,6 +549,63 @@ static const char *lock_contention_get_name(struct lock_contention *con,
-> > return name_buf;
-> > }
-> > 
-> > +struct lock_stat *pop_owner_stack_trace(struct lock_contention *con)
-> > +{
-> > + int stacks_fd, stat_fd;
-> > + u64 *stack_trace = NULL;
-> > + s32 stack_id;
-> > + struct contention_key ckey = {};
-> > + struct contention_data cdata = {};
-> > + size_t stack_size = con->max_stack * sizeof(*stack_trace);
-> > + struct lock_stat *st = NULL;
-> > +
-> > + stacks_fd = bpf_map__fd(skel->maps.owner_stacks);
-> > + stat_fd = bpf_map__fd(skel->maps.owner_stat);
-> > + if (!stacks_fd || !stat_fd)
-> > + goto out_err;
-> > +
-> > + stack_trace = zalloc(stack_size);
-> > + if (stack_trace == NULL)
-> > + goto out_err;
-> > +
-> > + if (bpf_map_get_next_key(stacks_fd, NULL, stack_trace))
-> > + goto out_err;
-> > +
-> > + bpf_map_lookup_elem(stacks_fd, stack_trace, &stack_id);
-> > + ckey.stack_id = stack_id;
-> > + bpf_map_lookup_elem(stat_fd, &ckey, &cdata);
-> > +
-> > + st = zalloc(sizeof(struct lock_stat));
-> > + if (!st)
-> > + goto out_err;
-> > +
-> > + st->name = strdup(stack_trace[0] ? lock_contention_get_name(con, NULL, stack_trace, 0) :
-> > +   "unknown");
-> 
-> Hi,
-> 
-> I am hitting a compilation issue with this change. Sorry for responding late. I tried with change from tmp.perf-tools-next and hit below issue:
-> 
-> 
->   CC      util/bpf_lock_contention.o
-> util/bpf_lock_contention.c: In function ‘lock_contention_get_name’:
-> cc1: error: function may return address of local variable [-Werror=return-local-addr]
-> util/bpf_lock_contention.c:470:45: note: declared here
->   470 |                 struct contention_task_data task;
->       |                                             ^~~~
-> cc1: all warnings being treated as errors
-> make[4]: *** [/root/perf-tools-next/tools/build/Makefile.build:85: util/bpf_lock_contention.o] Error 1
-> make[4]: *** Waiting for unfinished jobs....
->   LD      perf-in.o
-> make[3]: *** [/root/perf-tools-next/tools/build/Makefile.build:138: util] Error 2
-> make[2]: *** [Makefile.perf:822: perf-util-in.o] Error 2
-> make[1]: *** [Makefile.perf:321: sub-make] Error 2
-> make: *** [Makefile:76: all] Error 2
+I agree that we can add a macro to call parity8/16/32/64 based on the
+data type size. However, I think we should still keep parity8/16/32/64.
+As Peter and David discussed, the x86-specific implementations of
+parity8() and parity16() might use different instructions instead of
+just XORing and calling another function, as in the generic version.
 
-Thanks for the report.  I've noticed that and also found this error:
+My current idea is to follow David's suggestion and use
+__builtin_parity when there is no architecture-specific implementation.
+In lib/, we can provide a generic weak function implementation of
+__parity[sdt]i2.
 
-  In file included from util/lock-contention.c:4:0:                               
-  util/lock-contention.h:192:19: error: no previous prototype for 'pop_owner_stack_trace' [-Werror=missing-prototypes]
-   struct lock_stat *pop_owner_stack_trace(struct lock_contention *con)           
-                     ^~~~~~~~~~~~~~~~~~~~~                                        
-  util/lock-contention.h: In function 'pop_owner_stack_trace':                    
-  util/lock-contention.h:192:65: error: unused parameter 'con' [-Werror=unused-parameter]
-   struct lock_stat *pop_owner_stack_trace(struct lock_contention *con)           
-                                                                   ^~~
+Any comments or suggestions are welcome!
 
-Removed this series from tmp.perf-tools-next.
+Regards,
+Kuan-Wei
 
-Thanks,
-Namhyung
+static inline parity32(u32 val)
+{
+    return __builtin_const_p(val) ? _parity_const(val) : _parity32(val);
+}
 
-> 
-> 
-> Code snippet:
-> 
-> if (con->aggr_mode == LOCK_AGGR_TASK) {
->                 struct contention_task_data task;
->                 int pid = key->pid;
->                 int task_fd = bpf_map__fd(skel->maps.task_data);
-> 
->                 /* do not update idle comm which contains CPU number */
->                 if (pid) {
->                         struct thread *t = machine__findnew_thread(machine, /*pid=*/-1, pid);
-> 
->                         if (t == NULL)
->                                 return name;
->                         if (!bpf_map_lookup_elem(task_fd, &pid, &task) &&
->                             thread__set_comm(t, task.comm, /*timestamp=*/0))
->                                 name = task.comm;
->                 }
->                 return name;
->         }
-> 
-> 
-> We are calling lock_contention_get_name with second argument as NULL .
-> Though error above points to “contention_task_data”, I think the local variable here is for “name” ?
-> 
-> 
-> Thanks
-> Athira
-> 
-> > + if (!st->name)
-> > + goto out_err;
-> > +
-> > + st->flags = cdata.flags;
-> > + st->nr_contended = cdata.count;
-> > + st->wait_time_total = cdata.total_time;
-> > + st->wait_time_max = cdata.max_time;
-> > + st->wait_time_min = cdata.min_time;
-> > + st->callstack = stack_trace;
-> > +
-> > + if (cdata.count)
-> > + st->avg_wait_time = cdata.total_time / cdata.count;
-> > +
-> > + bpf_map_delete_elem(stacks_fd, stack_trace);
-> > + bpf_map_delete_elem(stat_fd, &ckey);
-> > +
-> > + return st;
-> > +
-> > +out_err:
-> > + free(stack_trace);
-> > + free(st);
-> > +
-> > + return NULL;
-> > +}
-> > +
-> > int lock_contention_read(struct lock_contention *con)
-> > {
-> > int fd, stack, err = 0;
-> > diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
-> > index a09f7fe877df..97fd33c57f17 100644
-> > --- a/tools/perf/util/lock-contention.h
-> > +++ b/tools/perf/util/lock-contention.h
-> > @@ -168,6 +168,8 @@ int lock_contention_stop(void);
-> > int lock_contention_read(struct lock_contention *con);
-> > int lock_contention_finish(struct lock_contention *con);
-> > 
-> > +struct lock_stat *pop_owner_stack_trace(struct lock_contention *con);
-> > +
-> > #else  /* !HAVE_BPF_SKEL */
-> > 
-> > static inline int lock_contention_prepare(struct lock_contention *con __maybe_unused)
-> > @@ -187,6 +189,11 @@ static inline int lock_contention_read(struct lock_contention *con __maybe_unuse
-> > return 0;
-> > }
-> > 
-> > +struct lock_stat *pop_owner_stack_trace(struct lock_contention *con)
-> > +{
-> > + return NULL;
-> > +}
-> > +
-> > #endif  /* HAVE_BPF_SKEL */
-> > 
-> > #endif  /* PERF_LOCK_CONTENTION_H */
-> > -- 
-> > 2.48.1.658.g4767266eb4-goog
-> > 
-> > 
-> 
+#ifndef _parity32
+static inline _parity32(u32 val)
+{
+    return __builtin_parity(val);
+}
+#endif
+
+int __weak __paritysi2(u32 val);
+int __weak __paritysi2(u32 val)
+{
+    val ^= val >> 16;
+    val ^= val >> 8;
+    val ^= val >> 4;
+    return (0x6996 >> (val & 0xf)) & 1;
+}
+EXPORT_SYMBOL(__paritysi2);
 
