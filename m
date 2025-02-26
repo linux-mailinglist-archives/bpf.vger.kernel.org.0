@@ -1,106 +1,152 @@
-Return-Path: <bpf+bounces-52601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52599-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F15DAA45250
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 02:41:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D99AA4523D
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 02:37:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 829EC17632C
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 01:39:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA1C53B0CF3
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 01:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E38619DF40;
-	Wed, 26 Feb 2025 01:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61BAB198A36;
+	Wed, 26 Feb 2025 01:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="DSr0p5U6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NO4exobS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ADA8199EBB;
-	Wed, 26 Feb 2025 01:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A8019580F
+	for <bpf@vger.kernel.org>; Wed, 26 Feb 2025 01:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740533965; cv=none; b=dOS7CTBjYzn+yCHcmpCBbAEWgHwdDiut8P9lzBSIdmKIRhE3Jcw1vBhOyyWdThHRE3Di2qQBT2ogsddVZN8E1OLjo7QxV4L14cw6WjK4VEOBKhhh+rhmaA6/NmeJ+vb+UvrEjlKEJqEcml8/RIfTViOEWDb9KolQJmQVYnvzsbY=
+	t=1740533841; cv=none; b=VtduINJ6PiqYDKG7ap6Re2Dy4iqxQwz8lb73cn1oJMatndon4v7/F1aX7yZHdKlkZq5fCfcWy+ad+txKvgqttDaFsChULlunMwHP3v29plegW97MUiNrhJehNFvdq9IeRPd+Or4S9Dew/kiRp7eq2zEbldkv2UQNnhA5QgfUUMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740533965; c=relaxed/simple;
-	bh=T0pKCclIvHKyDRUHCJs7P4mfoEs4SIcJGp6SSmwXCZc=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=l8J0kNGUdlNTI1ROnga+P6ZKjzmHhtm58VmT54d4SFKrvZU49bRDqNtemU45s5igZsN4W+2YCm/fWU+ZQxWPJkU6w+BBhKfe2BTTNqpbEch4mrZ3A8HI2hHEkvprDT9dTgg/v+rb7mZXyzYdNsH8WteQCCz82zAavl5g4EZDm0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=DSr0p5U6; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 51Q1ZSdu1502812
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Tue, 25 Feb 2025 17:35:29 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 51Q1ZSdu1502812
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025021701; t=1740533740;
-	bh=T0pKCclIvHKyDRUHCJs7P4mfoEs4SIcJGp6SSmwXCZc=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=DSr0p5U6PuFacB2sJlJBShpK+caegDMEmn8OYplTp/ukKNtEFfrkn97ga+OT2dXpz
-	 K/n5OJZ9p7wF026A4N5Ms8I4Ha7wXxIE31o+eevCv66LWleUk5egaKa/T1wzR+OiP5
-	 pBftNRMbRUke7ubIKWI6Trw88YIoPJ//UlgWSqbBalJrMQ6XLeWdsBqjIBFJ2BqBTU
-	 NxN3soIqU4psmCdpeI68cUVCZ/T8YSni/GX+FUYtyTt8DqQzRz5FBJx8rRSkQsq+0n
-	 LFOV9xO0DwzRQLOdgcR413cBdNqea/GHzmtBr2NpUvBJ8KgVfK7MCUU4fZDlrEdXny
-	 PWA/+ls6AlysA==
-Date: Tue, 25 Feb 2025 17:35:26 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Andrew Cooper <andrew.cooper3@citrix.com>
-CC: Laurent.pinchart@ideasonboard.com, airlied@gmail.com,
-        akpm@linux-foundation.org, alistair@popple.id.au,
-        andrew+netdev@lunn.ch, andrzej.hajda@intel.com,
-        arend.vanspriel@broadcom.com, awalls@md.metrocast.net, bp@alien8.de,
-        bpf@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211@lists.linux.dev, dave.hansen@linux.intel.com,
-        davem@davemloft.net, david.laight.linux@gmail.com,
-        dmitry.torokhov@gmail.com, dri-devel@lists.freedesktop.org,
-        eajames@linux.ibm.com, edumazet@google.com, eleanor15x@gmail.com,
-        gregkh@linuxfoundation.org, hverkuil@xs4all.nl,
-        jernej.skrabec@gmail.com, jirislaby@kernel.org, jk@ozlabs.org,
-        joel@jms.id.au, johannes@sipsolutions.net, jonas@kwiboo.se,
-        jserv@ccns.ncku.edu.tw, kuba@kernel.org, linux-fsi@lists.ozlabs.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-serial@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux@rasmusvillemoes.dk, louis.peens@corigine.com,
-        maarten.lankhorst@linux.intel.com, mchehab@kernel.org,
-        mingo@redhat.com, miquel.raynal@bootlin.com, mripard@kernel.org,
-        neil.armstrong@linaro.org, netdev@vger.kernel.org,
-        oss-drivers@corigine.com, pabeni@redhat.com,
-        parthiban.veerasooran@microchip.com, rfoss@kernel.org, richard@nod.at,
-        simona@ffwll.ch, tglx@linutronix.de, tzimmermann@suse.de,
-        vigneshr@ti.com, visitorckw@gmail.com, x86@kernel.org,
-        yury.norov@gmail.com
-Subject: Re: [PATCH 02/17] bitops: Add generic parity calculation for u64
-User-Agent: K-9 Mail for Android
-In-Reply-To: <8052b316-9f72-42c7-9e11-e23e690d80c4@citrix.com>
-References: <3BC57C78-1DFF-4B83-85AA-A908DBF2B958@zytor.com> <8052b316-9f72-42c7-9e11-e23e690d80c4@citrix.com>
-Message-ID: <4259A207-7B5F-4D25-A8AE-144D24554201@zytor.com>
+	s=arc-20240116; t=1740533841; c=relaxed/simple;
+	bh=pWLi/cRUToxxNb51JEO6p2om4iOrqMuG74fCRXLuWCk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iNs8qAjUC48JXC+bL5gcZsQ7pPimBD4txHhDvr29vUYHY2jRbTngW4akz1Jp69272cLIcbYRjHkomETR93uVfJpHl3hUInrRkXbLEEHR6Pwz2NGej/uB/5NZThe7UrtCRrhYs2KJ4DKUC9be/PCDhAbFm6WmZxkXBJ4y0XJXgpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NO4exobS; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740533831;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=s295qGQLRanetfRp1+riy2tr6YHsuQfJtgNgq/spYuM=;
+	b=NO4exobSUUDSYN2ZQoqYSMcfgza31co3/eSnhxv0dCsgDWOzdDo9EeIEyqQNQLout4IKM1
+	dCSb6LBkF5md2tgIu+slVuBmrhIy0ujSpJFeDun/jzQBimgjY3k+7xYgWZSIDwmCLTz9R3
+	a8xOV6MmVjWVDY8ydJuXqR6qJCJs+1Q=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: horms@kernel.org,
+	kuba@kernel.org
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	ricardo@marliere.net,
+	viro@zeniv.linux.org.uk,
+	dmantipov@yandex.ru,
+	aleksander.lobakin@intel.com,
+	linux-ppp@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mrpre@163.com,
+	Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Paul Mackerras <paulus@samba.org>
+Subject: [PATCH net-next v4 0/1] ppp: Fix KMSAN uninit-value warning with bpf
+Date: Wed, 26 Feb 2025 09:36:57 +0800
+Message-ID: <20250226013658.891214-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On February 25, 2025 1:43:27 PM PST, Andrew Cooper <andrew=2Ecooper3@citrix=
-=2Ecom> wrote:
->> Incidentally, in all of this, didn't anyone notice __builtin_parity()?
->
->Yes=2E=C2=A0 It it has done sane for a decade on x86, yet does things suc=
-h as
->emitting a library call on other architectures=2E
->
->https://godbolt=2Eorg/z/6qG3noebq
->
->~Andrew
+Syzbot caught an "KMSAN: uninit-value" warning [1], which is caused by the
+ppp driver not initializing a 2-byte header when using socket filters.
 
-And not even a smart one at that=2E
+Here's a detailed explanation:
+
+The following code can generate a PPP filter BPF program:
+'''
+struct bpf_program fp;
+pcap_t *handle;
+handle = pcap_open_dead(DLT_PPP_PPPD, 65535);
+pcap_compile(handle, &fp, "ip and outbound", 0, 0);
+bpf_dump(&fp, 1);
+'''
+Its output is:
+'''
+(000) ldh [2]
+(001) jeq #0x21 jt 2 jf 5
+(002) ldb [0]
+(003) jeq #0x1 jt 4 jf 5
+(004) ret #65535
+(005) ret #0
+'''
+
+wen can find similar code at the following link:
+https://github.com/ppp-project/ppp/blob/master/pppd/options.c#L1680
+The maintainer of this code repository is also the original maintainer
+of the ppp driver.
+
+
+3. Current problem
+The problem is that the skb->data generated by ppp_write() starts from the
+'Protocol' field.
+
+But the BPF program skips 2 bytes of data and then reads the 'Protocol'
+field to determine if it's an IP packet just like the comment in
+'drivers/net/ppp/ppp_generic.c':
+/* the filter instructions are constructed assuming
+   a four-byte PPP header on each packet */
+
+In the current PPP driver implementation, to correctly use the BPF filter
+program, a 2-byte header is added, after running the socket filter, it's
+restored:
+'''
+1768 *(u8 *)skb_push(skb, 2) = 1;
+1770 bpf_prog_run()
+1782 skb_pull(skb, 2);
+'''
+
+The issue is that only the first byte indicating direction is initialized,
+while the second byte is not initialized. For normal BPF programs
+generated by libpcap, uninitialized data won't be used, so it's not a
+problem.
+
+However, for carefully crafted BPF programs, such as those generated by
+syzkaller [2], which start reading from offset 0, the uninitialized data
+will be used and caught by KMSAN.
+
+4. Fix
+The fix is simple: initialize the entire 2-byte header.
+
+Cc: Paul Mackerras <paulus@samba.org>
+
+[1] https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
+[2] https://syzkaller.appspot.com/text?tag=ReproC&x=11994913980000
+
+---
+v3 -> v4:
+Use macro instead.
+Use __be16 to suppress compilation warnings.
+
+Jiayuan Chen (1):
+  ppp: Fix KMSAN warning by initializing 2-byte header
+
+ drivers/net/ppp/ppp_generic.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+-- 
+2.47.1
+
 
