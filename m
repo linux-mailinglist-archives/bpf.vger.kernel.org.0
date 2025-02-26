@@ -1,173 +1,106 @@
-Return-Path: <bpf+bounces-52634-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52635-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAF91A45CD2
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 12:13:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD8CDA45D2F
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 12:31:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09FE53AD517
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 11:13:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0047D3AA839
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 11:31:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55F01214803;
-	Wed, 26 Feb 2025 11:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9962221885A;
+	Wed, 26 Feb 2025 11:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DVdemwKX"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cakw7c84"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 258D2212FB0;
-	Wed, 26 Feb 2025 11:12:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B98F2185B1
+	for <bpf@vger.kernel.org>; Wed, 26 Feb 2025 11:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740568369; cv=none; b=aFzV4IPfAgEV/WKuETn+dZJDFEelfUUpzoLYUMoXGHdN/A97rqT8UT+vV8xG95kbYuFoMzXdSM5GBGH1D6+DM+l44glOqWBVEqzk/NeyMO6ntV0A4mwFQAvKPOyiFXAAibf1HKRM/0Vm1sQGa4So5vf9vLPj7fb+dqfA2KTFiJE=
+	t=1740569454; cv=none; b=V1Se1/QShSBs2m2BgcqdwSMYF1edMsMvtNyqC3ukOyeCrLScelt69cS39aNV43uzdnM34BGMoZp45knRu5R+R4YbTv20M6A8IbUxAoIZrC99y89gElpgdePixQRfL9MXu+8t1pcVDauj64LmUbPBr8ywIroos8Kp3l9Kgy1KnRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740568369; c=relaxed/simple;
-	bh=0UlUDFrQTjxR5+TiaNCyX/ilCZ98LfsN6ADmFlOi+lI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ji8kQ+POMFghXJOununu4Sf93J3EPS46uRlEbSA4jOokQ7Sd9/L4fwccnQ4rLJNJNZXbccWVBJuUIb4u4CJix4MkFEGWHVhqx6p7v03x8jP9nLsLkXXLEJHrwpBVuOznuzYO4MUlIczpq7oaQZ/O1joeJ3vNSi4yqKuEC702Ysk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DVdemwKX; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-abb7520028bso898635266b.3;
-        Wed, 26 Feb 2025 03:12:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740568366; x=1741173166; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=HSX1gchtdLPsHJVZW3liHqT5F/QQ11+VlmXYOeh0zFY=;
-        b=DVdemwKXeW/W/sQLj2J/v2CRufUJI+LzzODfgBMy2rZ5YmMGooPiQUY8NoKEansU5K
-         PImt+I4aXKB0Slmc+dkZrCURbu+0F5uZnL2jkf0x7ltGsM83gK44KXKVIbSXUIh9DPFH
-         IeA/cBO/MI3jGJYHT02MN3Vnr0o9rbtw2MDuMzFZC9XLHj/Q9JfrLWW+PEYiu/7zshiy
-         Umn/x4rpj7DvaSSpV3LI+BZLXsyLBRto50s158x8weF8cQT6o1hJ5U7w9TlNtDbJl/ND
-         FybW2INDbh1cfrzPjK/SKARZ3gTFXtLocbdQDNxWVI+X4gNnnV08J/Fmr9A6Nv92BwFO
-         g6Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740568366; x=1741173166;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HSX1gchtdLPsHJVZW3liHqT5F/QQ11+VlmXYOeh0zFY=;
-        b=UKEZbfl84vuzIdAKewf0J2cZ1cJUdMqstGWl7X4zXgkDs7IQd4ZJQXB+Xw8l3KhFBA
-         I8tQPhriFx6YSk0SqGvdGLxrtyVHTlWsW7vkuf+e3md/TvY9aie4MHT3diY6XowOPHE7
-         AE3XToU1u7p0M3UanHkGkDLWwyoSfOeCfL+yN3JGDKEhF1kig3XkwjmHcpICubenwVDT
-         b7OIVQ6JrLJikYFnwkQ2aDKYo/nYmlIc/oK6ZV0VykaKR1Uqjj2Nsz5+V+mqUPnh8g5b
-         Y7fUqStAEPY2EQYBBScyP27jsLSvDy+VCyO+2N2xbTRvkx5V7D0tNLJPcOiMeqXOAXvP
-         fvSw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJk9tHUJP9RaNXYzpKZOgFUYmSpImsfBREAJ8LDCfvmeJtbKMYa4uzgW1qHGbgen6dN6+dW1861PsMvB6j@vger.kernel.org, AJvYcCWfJ0Ci/g7ZXbdVo/JewzRVhMbefcT3lRSvgxlm3TOOd4OTdzNmCTOM1/BGZSCYLyQddKc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzDThznxkNgF5qnLrXihcgNSdY+L498hD4dOb7fDDE0nmGOJkr/
-	rIK/xUji/F8mU9jolxNOOs7xa4aSwLouvVJUDLvPIq2Jqf551RMu
-X-Gm-Gg: ASbGncug2qv3B6cpQQ1v1bhsq/HwlpfXaHvLVAlexcoPPyiklLscYZanjk3tYj7d80L
-	6aFJj4J1AOPkB6N+aU5dWm/dnv0hKvgFu06Ag4nN/KmdmRES+Y4VbIVNfSHuF3k5eoWK9qDoth5
-	BUZCmpA7I+73deJc2y2c+L4cK6qHU3FuGLhq1oE7fsTBu98rzoNp4di8pEQ6AWuIdm/Tj9WJRJX
-	huax4TQPAYfRpGbCw04hOWnY6IQtYu1juo2i3I+oEruSM0fK/JmlVorQCR27vcPEk45O3hkOlMk
-	03iqijwI91Vh
-X-Google-Smtp-Source: AGHT+IFuag5Hh8iCN/4J2NNLM8BFpJbCM7MdvAPaAId6Hc9uWb70DG+3MrrwrflsCiucQcaMVkjZxA==
-X-Received: by 2002:a17:907:72d4:b0:ab7:b6cb:b633 with SMTP id a640c23a62f3a-abeeee40310mr343858566b.34.1740568366130;
-        Wed, 26 Feb 2025 03:12:46 -0800 (PST)
-Received: from krava ([173.38.220.53])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abed1cd5629sm305686566b.8.2025.02.26.03.12.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Feb 2025 03:12:45 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 26 Feb 2025 12:12:43 +0100
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Tao Chen <chen.dylane@linux.dev>, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, eddyz87@gmail.com, haoluo@google.com,
-	qmo@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	chen.dylane@gmail.com
-Subject: Re: [PATCH bpf-next v8 4/5] libbpf: Init kprobe prog
- expected_attach_type for kfunc probe
-Message-ID: <Z773KxMF0N1nEFsH@krava>
-References: <20250224165912.599068-1-chen.dylane@linux.dev>
- <20250224165912.599068-5-chen.dylane@linux.dev>
- <CAEf4BzYz9_0Po-JLU+Z4kB7L5snuh2KFSTO0X9KK00GKSq91Sw@mail.gmail.com>
- <d25b468f-0a84-45c9-b48e-9fd3b9f65b54@linux.dev>
- <CAEf4BzY85DmfwRruD4tnTj+UiRTk64k1N5vO69cdL1T7H+QTXw@mail.gmail.com>
+	s=arc-20240116; t=1740569454; c=relaxed/simple;
+	bh=FO6z9XAnbl99r5mAf5xNI8wGp7r/Mn9K4KKIHeLztyM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JYpy3WKpfRFhRspJGTqRLcTNRoP2nix2yshDizxbprF+V5hT3mk85WIZpGU4ZSJLNr13ls+kFH/P1XftqhuW+wdASLcd9c7FRzYZTjAL1uypfDIR3djt+nFS2dZifvk00gwNzmGeZBrbAV/zEHD7/g4+pFPREahpFQ/+TN4ku8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cakw7c84; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1740569451;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zMbwlR55IsYFkSNbcLoRNPldNYhmk+s65IhIsLBnOf8=;
+	b=cakw7c84W21ZOtsafY1/wWft7hKiVvSkZIBoPYoB8XgElI5aqAN2hMIjBdSYR/ZtkVmxYi
+	9aUScC+jHABFEXtslpVDihlO7Q/CS4nal54+ayYLTKLWnlWvFkLPhiK0q6WBKaFNhLEGSo
+	8kL8I03IYZixYbbipXo1ZTipF2vUoNw=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-81-6-MOq10sPNaHoK_XgBLyrA-1; Wed,
+ 26 Feb 2025 06:30:45 -0500
+X-MC-Unique: 6-MOq10sPNaHoK_XgBLyrA-1
+X-Mimecast-MFC-AGG-ID: 6-MOq10sPNaHoK_XgBLyrA_1740569444
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 09A6818EB2C9;
+	Wed, 26 Feb 2025 11:30:44 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.247])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 8411C180087F;
+	Wed, 26 Feb 2025 11:30:40 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 26 Feb 2025 12:30:13 +0100 (CET)
+Date: Wed, 26 Feb 2025 12:30:09 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
+	mingo@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	jolsa@kernel.org, kernel-team@meta.com,
+	Breno Leitao <leitao@debian.org>
+Subject: Re: [PATCH perf/core] uprobes: remove too strict lockdep_assert()
+ condition in hprobe_expire()
+Message-ID: <20250226113008.GA8995@redhat.com>
+References: <20250225223214.2970740-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzY85DmfwRruD4tnTj+UiRTk64k1N5vO69cdL1T7H+QTXw@mail.gmail.com>
+In-Reply-To: <20250225223214.2970740-1-andrii@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-On Tue, Feb 25, 2025 at 09:04:58AM -0800, Andrii Nakryiko wrote:
-> On Mon, Feb 24, 2025 at 9:44 PM Tao Chen <chen.dylane@linux.dev> wrote:
-> >
-> > 在 2025/2/25 09:15, Andrii Nakryiko 写道:
-> > > On Mon, Feb 24, 2025 at 9:03 AM Tao Chen <chen.dylane@linux.dev> wrote:
-> > >>
-> > >> Kprobe prog type kfuncs like bpf_session_is_return and
-> > >> bpf_session_cookie will check the expected_attach_type,
-> > >> so init the expected_attach_type here.
-> > >>
-> > >> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
-> > >> ---
-> > >>   tools/lib/bpf/libbpf_probes.c | 1 +
-> > >>   1 file changed, 1 insertion(+)
-> > >>
-> > >> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-> > >> index 8efebc18a215..bb5b457ddc80 100644
-> > >> --- a/tools/lib/bpf/libbpf_probes.c
-> > >> +++ b/tools/lib/bpf/libbpf_probes.c
-> > >> @@ -126,6 +126,7 @@ static int probe_prog_load(enum bpf_prog_type prog_type,
-> > >>                  break;
-> > >>          case BPF_PROG_TYPE_KPROBE:
-> > >>                  opts.kern_version = get_kernel_version();
-> > >> +               opts.expected_attach_type = BPF_TRACE_KPROBE_SESSION;
-> > >
-> > > so KPROBE_SESSION is relative recent feature, if we unconditionally
-> > > specify this, we'll regress some feature probes for old kernels where
-> > > KPROBE_SESSION isn't supported, no?
-> > >
-> >
-> > Yeah, maybe we can detect the kernel version first, will fix it.
-> 
-> Hold on. I think the entire probing API is kind of unfortunately
-> inadequate. Just the fact that we randomly pick some specific
-> expected_attach_type to do helpers/kfunc compatibility detection is
-> telling. expected_attach_type can change a set of available helpers,
-> and yet it's not even an input parameter for either
-> libbpf_probe_bpf_helper() or kfunc variant you are trying to add.
+On 02/25, Andrii Nakryiko wrote:
+>
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -762,10 +762,14 @@ static struct uprobe *hprobe_expire(struct hprobe *hprobe, bool get)
+>  	enum hprobe_state hstate;
+>
+>  	/*
+> -	 * return_instance's hprobe is protected by RCU.
+> -	 * Underlying uprobe is itself protected from reuse by SRCU.
+> +	 * Caller should guarantee that return_instance is not going to be
+> +	 * freed from under us. This can be achieved either through holding
+> +	 * rcu_read_lock() or by owning return_instance in the first place.
+> +	 *
+> +	 * Underlying uprobe is itself protected from reuse by SRCU, so ensure
+> +	 * SRCU lock is held properly.
+>  	 */
+> -	lockdep_assert(rcu_read_lock_held() && srcu_read_lock_held(&uretprobes_srcu));
+> +	lockdep_assert(srcu_read_lock_held(&uretprobes_srcu));
 
-could we use the libbpf_probe_bpf_kfunc opts argument and
-allow to specify and override expected_attach_type?
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
-jirka
-
-> 
-> Basically, I'm questioning the validity of even adding this API to
-> libbpf. It feels like this kind of detection is simple enough for
-> application to do on its own.
-> 
-> >
-> > +               if (opts.kern_version >= KERNEL_VERSION(6, 12, 0))
-> > +                       opts.expected_attach_type =BPF_TRACE_KPROBE_SESSION;
-> 
-> no, we shouldn't hard-code kernel version for feature detection (but
-> also see above, I'm not sure this API should be added in the first
-> place)
-> 
-> >
-> > > pw-bot: cr
-> > >
-> > >>                  break;
-> > >>          case BPF_PROG_TYPE_LIRC_MODE2:
-> > >>                  opts.expected_attach_type = BPF_LIRC_MODE2;
-> > >> --
-> > >> 2.43.0
-> > >>
-> >
-> >
-> > --
-> > Best Regards
-> > Tao Chen
 
