@@ -1,152 +1,174 @@
-Return-Path: <bpf+bounces-52615-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52616-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40274A454DC
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 06:24:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53F06A454F0
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 06:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F45018978A1
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 05:24:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E57F63A70C0
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 05:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 586C522F383;
-	Wed, 26 Feb 2025 05:24:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAEDF25E452;
+	Wed, 26 Feb 2025 05:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PHUKbaGX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CP6L4w+7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49FCA27702;
-	Wed, 26 Feb 2025 05:24:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C02A21531E8;
+	Wed, 26 Feb 2025 05:42:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740547482; cv=none; b=u5rFYhXpN4Ksy4+lAVP/kt38ymkm0fMJQ4T0sors18sWRQmhUNCMxH0bD9d8dLZF2Q+oIxPQb15QaK9iW1T7YpCLQQHvTNC/QkhghZT1Tff7QRaZiG/SU/uFOneLP3lDv8Q2vTkS4kbF6wtxo/pexg+pOziCaJWgLnDZJtj0kXo=
+	t=1740548569; cv=none; b=KWwK8IvudGdVIPfNJp/OJ9psZG1FXWEnk0DZhozznmnF3WogZx2kOcccCS5QPqthxFGvPuikKc5MF1qpw3YVh06TXh4Nm8UEfmkhHiSW8I5q4Xu3VHy6tnqb74CYS5m9ZJiQAX4MqRFgwrSn/LrZ0gxR+Da31X9ld998f/yGXyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740547482; c=relaxed/simple;
-	bh=G90pOcWX1Z+SzDLPl0A42IQphLvwAP2qZb1GAd5q7v4=;
+	s=arc-20240116; t=1740548569; c=relaxed/simple;
+	bh=qgwn/5gHrE2jyzZRW6bmAicNqyZrpWmfrBL9qb4fBeA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rlHtILmEelA8ckViIuWDktTJ3eXoLqII3pqQ11xTL5tBng2jcRM/3DDANBV5JGQmwb1pLhSE8ciodhvbMMvUuY0sVITOs4QZuDzmopZosUvqxnw2qwYp1w0SpmBkPzHc44mWEij3nmvUUjRWlvuiTO6Fci7Ctjk+A6noJIqh1UE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PHUKbaGX; arc=none smtp.client-ip=209.85.128.48
+	 To:Cc:Content-Type; b=taiPAkktbKyQAS9Gj9aJqvuVusSpK6j79fVdKMhJnZqXYuZmkVhpPcWsLaskD5NduwvG7QamxQUFfJv1JBRPdmCoUcUJFOHWTlm763+FEt3h57i3C2nnnqdtThb4ce3FKbnoH87GKZHosJG8ZRJ42846dXgiJBq48utZJYS5h9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CP6L4w+7; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-438a39e659cso42010015e9.2;
-        Tue, 25 Feb 2025 21:24:39 -0800 (PST)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-38f2b7ce2f3so4550739f8f.0;
+        Tue, 25 Feb 2025 21:42:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740547478; x=1741152278; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740548566; x=1741153366; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Fi1ogS3Az0I6GJStO1RYp2yegcWsiDecxnayl6kiJM8=;
-        b=PHUKbaGXF6KuEYjSMmbo0kwwOkOJ2EgBjpZYreoPZy1/+tsKgjJYMo/Y3gGkEcYcWK
-         uLwDlTiIzpTkzBqi23PH02liHDYNjQ4QrAwYtxqqjHaBKlK4eeSsj4Hdp6g+XpOcto9j
-         Z0nup7BiNvozus0G9BhwZgjkxNfbny3hFqXUP76xU2FyzYnPt8F0a7XgvVl7XtlCzvNm
-         Xs26pcMvCYg7rF+whNcuEjl3ojPLOytGUb9d9P2I0WFvj3JkgdXVm9YCN6br7f8uV4E3
-         mhvauxeA1nBRL3HyH46k8EhEmMzLOqzoR+MzLvYdSN18nTC0SkYUwPFgU8cSdyZJuAu3
-         34Dg==
+        bh=qgwn/5gHrE2jyzZRW6bmAicNqyZrpWmfrBL9qb4fBeA=;
+        b=CP6L4w+7s2o76Aps7WND6FiHfRFlVE7tyGt/IsDq0aYeVBR46ei4LdTcHai/HAt+LJ
+         GSsTqA1JUhVaaQGjxW5Knsm1lUdJRxQz5IrlwU/LyD4JAj1KZDMBv+1o9zY4hpRDwqU/
+         sSmbXM1zEMG1Jni2nrQWuKpFDpYXpeQgSVOdRcOGz81cZhmhFbmtnQcwTjYrNA6oyVy3
+         odui4/MJ5kg4IdgxnuvJK6yFkdt+HbhPuwscBHqCpNdAfj6Uv+i8Osx5YLTSgeYBcqFb
+         WzmvJIrlCgF1ZwVncxHk490wtjH5HJS4It5w8H/MM3Yj/IRkFIkw0/L/tLDM9g6iPdTM
+         NQZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740547478; x=1741152278;
+        d=1e100.net; s=20230601; t=1740548566; x=1741153366;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Fi1ogS3Az0I6GJStO1RYp2yegcWsiDecxnayl6kiJM8=;
-        b=mmub+RHzWO03wpE908nwJZPNFsNPzFvxhDO3ZYRpicT+2rKoyRQy3G8tK/fKas5mlu
-         TE8UB4ezZB0rWkpp63dRk8t1sa9WqAcrgsvK6vzuvUfGnnp6osARMNKF8jvjgRptgyLv
-         42eWI8Sl7qBGL5oeeSytQuQ45aQE3dqrPIKldZztXmprlkY1nWx0NP/gt2VLGlgo2NXk
-         PKaBCQ/8duFdv6rao+OhTUWQWvePSwdBZKss5Bmnti/mtMv+yw8IXHPZkcDbZKExov4S
-         z1UBYcLju9Ourhqu8l35pUOHgyHsBtdaTVVBidU8vlutOaJAri22EpQeyLI/byGnxUZw
-         qaAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU44qhZ+V+pRlXmV3/VH0OHQao7fw/EeDPV+QRsWyzcB9O2zmpL7xQLrn+KsAe7Zniyn+A=@vger.kernel.org, AJvYcCWh3cPpfmAUHhj273WznDFV+rtmFEscWdbJPhLLKtWmg4R55TNaxl3wgWUHb7gGW2VMaLwEkWbjYESorEDO@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxl/o09pAgLos6IbUBlWHPj7UETFHVpl0vTYQN9vlBIL6ZXkcUG
-	9T5BWN/tPu2ZXBHORMedD0fPzStOxVsLlSOaPMTZ7zDsexURoktr+9ymBnuI7qdEyABPHxR73c3
-	fgWOiFfJuUUWMb6yriKcvefRltGs=
-X-Gm-Gg: ASbGnctK00lNWFHXzKhoSc6IpF01E563CDM1ORJE3tCIBXjjdxmYyWOcCErjUriqUIp
-	CFYM5NAq2spAzfpStzVJxfc5cArge+TMfn52cgmGEmURkS3t9NPqZrDRI8GyQzyyAEUhHrF/ucb
-	XQHAm+OSql0zau5Xp41goPP9I=
-X-Google-Smtp-Source: AGHT+IH/wvoBjrtKyvFZospHbq6cBCwFLwpGP8TtU9MZ512+kxHDitWtBKTVcRhrgza9XtFLNJNwnKv1O5Z1gysZJ3A=
-X-Received: by 2002:a05:6000:381:b0:390:d82d:6d51 with SMTP id
- ffacd0b85a97d-390d82d7242mr320054f8f.29.1740547478410; Tue, 25 Feb 2025
- 21:24:38 -0800 (PST)
+        bh=qgwn/5gHrE2jyzZRW6bmAicNqyZrpWmfrBL9qb4fBeA=;
+        b=ge3BAAcgzjnkbGqV1EVDpZ1rXpmZ/UlcKEwuSuIdM+fCiNS0qEHsto3fqd6rMJP/F4
+         /DMGcuw9jQX67/nLu8s4Vze8d2hwgKMqgU7qfv4EzEDyoPnTvGpVtv3PuFcSKtLHcbzv
+         Y4/s8O0UuqXFHB6aRwM9ZRtTodNvKG4U7urnjj8fhjQhNyCt8fcNqr1vIKD3S2MhuO7g
+         hFCGQdkkG3tCBhi32r2SDLRLyixk4sB0TToz+pUw9JzHrkNMDPGweO957+t/Nx2jVgXF
+         IdnFpx8FEwWfDhiNHu0B5Bzar+89VR/pgZnkppQrjhuYcr3ZwaDQtsu/NSuKGrSbQKWD
+         KzJg==
+X-Forwarded-Encrypted: i=1; AJvYcCUwL3g5JsQV948QDjYb+YASGbScGDW54DJ7J2EVZJbymoZpriknzhqDXP9FGrKiqmpIKmQ=@vger.kernel.org, AJvYcCW+NzZlODhjojqHIlCmgtVWPM/33C32dXDWMRbSzwX0H6P3gIp8e01gJSmBkdE1p8Cfp2ID8aL1GeFbGKdr@vger.kernel.org, AJvYcCXvIb272EGir/Zt8ufnjvRZ3Xq38DZHmfcsaDlZhROV/YT+obzGU2y7aSosiXj51NGYePnO@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbB0m0l6JoL2YPGhQX7BQRWdw87Ip7QLspCec1N4tEuDNPyebD
+	JBTv1XKiYsqcWWkyGqockGJ/SNRefgpl9VqieZKXDkEivJohz0fw+bAOXd7Y5471+ScBPE5gmxF
+	8faLKaIAwHHl+RGs4VaowtAnBS5M=
+X-Gm-Gg: ASbGncuCMIJZB/+QEguG9tq30tiC4HdvDWlu9bXBRvWVZIimNgD+QyuYp9F8tIFNfK7
+	9V4GRlRK5ye353HDvBx16+XVxJ5lLeCRp2JG3h6YVRIxEnby5TUTcVnNsXqRvjxAN0gQ8+knr7U
+	QFfE6kUuSRPW8eFgeXjupxKBg=
+X-Google-Smtp-Source: AGHT+IGJ7kKSE9Klc2Pk10yZQs5vQ/oeFEoz2dII3HbyhmfLav6YXGB6DB5PetIU24Eu8QrsIzvJESpzNLNcomiDBdY=
+X-Received: by 2002:a5d:5f94:0:b0:38e:6cd0:f973 with SMTP id
+ ffacd0b85a97d-38f7079a39emr16785278f8f.21.1740548565859; Tue, 25 Feb 2025
+ 21:42:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <AM6PR03MB5080855B90C3FE9B6C4243B099FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB5080D59AD7DD5B59E1FB14E599FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB5080D59AD7DD5B59E1FB14E599FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+References: <20250204082848.13471-1-hotforest@gmail.com> <20250204082848.13471-3-hotforest@gmail.com>
+ <cca6daf2-48f4-57b9-59a9-75578bb755b9@huaweicloud.com> <8734gr3yht.fsf@toke.dk>
+ <d191084a-4ab4-8269-640f-1ecf269418a6@huaweicloud.com> <CAADnVQKD94q-G4N=w9PJU+k6gPhM8GmUYcyfj=33B_mKX6Qbjw@mail.gmail.com>
+ <6a84a878-0728-0a19-73d2-b5871e10e120@huaweicloud.com>
+In-Reply-To: <6a84a878-0728-0a19-73d2-b5871e10e120@huaweicloud.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 25 Feb 2025 21:24:27 -0800
-X-Gm-Features: AQ5f1Jr2UIURRp1Lti-ppy57RX2Us7w0EeeDal7_mR6RAGvM0IXB54MGpg9AtXM
-Message-ID: <CAADnVQKnJCdW5OCs338W4ts_mn6JVw7fD5U6w5o6dtc4DSJQrA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 3/5] sched_ext: Add scx_kfunc_ids_ops_context
- for unified filtering of context-sensitive SCX kfuncs
-To: Juntong Deng <juntong.deng@outlook.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>, 
-	Andrea Righi <arighi@nvidia.com>, Changwoo Min <changwoo@igalia.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
+Date: Tue, 25 Feb 2025 21:42:34 -0800
+X-Gm-Features: AQ5f1JrKFHxryEEBl1o8lc_G6EKvZ6s53yPq_lKQmFG77O2pmmULv0mgtif1f4U
+Message-ID: <CAADnVQLrJBOSXP41iO+-FtH+XC9AmuOne7xHzvgXop3DUC5KjQ@mail.gmail.com>
+Subject: Re: [RESEND] [PATCH bpf-next 2/3] bpf: Overwrite the element in hash
+ map atomically
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, rcu@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, "Paul E . McKenney" <paulmck@kernel.org>, Cody Haas <chaas@riotgames.com>, 
+	Hou Tao <hotforest@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 14, 2025 at 12:13=E2=80=AFPM Juntong Deng <juntong.deng@outlook=
-.com> wrote:
-> +static int scx_kfunc_ids_ops_context_filter(const struct bpf_prog *prog,=
- u32 kfunc_id)
-> +{
-> +       u32 moff, flags;
-> +
-> +       if (!btf_id_set8_contains(&scx_kfunc_ids_ops_context, kfunc_id))
-> +               return 0;
-> +
-> +       if (prog->type =3D=3D BPF_PROG_TYPE_SYSCALL &&
-> +           btf_id_set8_contains(&scx_kfunc_ids_unlocked, kfunc_id))
-> +               return 0;
-> +
-> +       if (prog->type =3D=3D BPF_PROG_TYPE_STRUCT_OPS &&
-> +           prog->aux->st_ops !=3D &bpf_sched_ext_ops)
-> +               return 0;
-> +
-> +       /* prog->type =3D=3D BPF_PROG_TYPE_STRUCT_OPS && prog->aux->st_op=
-s =3D=3D &bpf_sched_ext_ops*/
-> +
-> +       moff =3D prog->aux->attach_st_ops_member_off;
-> +       flags =3D scx_ops_context_flags[SCX_MOFF_IDX(moff)];
-> +
-> +       if ((flags & SCX_OPS_KF_UNLOCKED) &&
-> +           btf_id_set8_contains(&scx_kfunc_ids_unlocked, kfunc_id))
-> +               return 0;
-> +
-> +       if ((flags & SCX_OPS_KF_CPU_RELEASE) &&
-> +           btf_id_set8_contains(&scx_kfunc_ids_cpu_release, kfunc_id))
-> +               return 0;
-> +
-> +       if ((flags & SCX_OPS_KF_DISPATCH) &&
-> +           btf_id_set8_contains(&scx_kfunc_ids_dispatch, kfunc_id))
-> +               return 0;
-> +
-> +       if ((flags & SCX_OPS_KF_ENQUEUE) &&
-> +           btf_id_set8_contains(&scx_kfunc_ids_enqueue_dispatch, kfunc_i=
-d))
-> +               return 0;
-> +
-> +       if ((flags & SCX_OPS_KF_SELECT_CPU) &&
-> +           btf_id_set8_contains(&scx_kfunc_ids_select_cpu, kfunc_id))
-> +               return 0;
-> +
-> +       return -EACCES;
-> +}
+On Tue, Feb 25, 2025 at 8:05=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
+>
+> Hi,
+>
+> On 2/26/2025 11:24 AM, Alexei Starovoitov wrote:
+> > On Sat, Feb 8, 2025 at 2:17=E2=80=AFAM Hou Tao <houtao@huaweicloud.com>=
+ wrote:
+> >> Hi Toke,
+> >>
+> >> On 2/6/2025 11:05 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >>> Hou Tao <houtao@huaweicloud.com> writes:
+> >>>
+> >>>> +cc Cody Haas
+> >>>>
+> >>>> Sorry for the resend. I sent the reply in the HTML format.
+> >>>>
+> >>>> On 2/4/2025 4:28 PM, Hou Tao wrote:
+> >>>>> Currently, the update of existing element in hash map involves two
+> >>>>> steps:
+> >>>>> 1) insert the new element at the head of the hash list
+> >>>>> 2) remove the old element
+> >>>>>
+> >>>>> It is possible that the concurrent lookup operation may fail to fin=
+d
+> >>>>> either the old element or the new element if the lookup operation s=
+tarts
+> >>>>> before the addition and continues after the removal.
+> >>>>>
+> >>>>> Therefore, replacing the two-step update with an atomic update. Aft=
+er
+> >>>>> the change, the update will be atomic in the perspective of the loo=
+kup
+> >>>>> operation: it will either find the old element or the new element.
+> > I'm missing the point.
+> > This "atomic" replacement doesn't really solve anything.
+> > lookup will see one element.
+> > That element could be deleted by another thread.
+> > bucket lock and either two step update or single step
+> > don't change anything from the pov of bpf prog doing lookup.
+>
+> The point is that overwriting an existed element may lead to concurrent
+> lookups return ENOENT as demonstrated by the added selftest and the
+> patch tried to "fix" that. However, it seems using
+> hlist_nulls_replace_rcu() for the overwriting update is still not
+> enough. Because when the lookup procedure found the old element, the old
+> element may be reusing, the comparison of the map key may fail, and the
+> lookup procedure may still return ENOENT.
 
-This looks great.
-Very good cleanup and run-time speed up.
-Please resend without RFC tag, so sched-ext folks can review.
+you mean l_old =3D=3D l_new ? I don't think it's possible
+within htab_map_update_elem(),
+but htab_map_delete_elem() doing hlist_nulls_del_rcu()
+then free_htab_elem, htab_map_update_elem, alloc, hlist_nulls_add_head_rcu
+and just deleted elem is reused to be inserted
+into another bucket.
 
-From bpf pov, pls add my Ack to patch 1 when you respin.
-The set can probably target sched-ext tree too.
+I'm not sure whether this new hlist_nulls_replace_rcu()
+primitive works with nulls logic.
+
+So back to the problem statement..
+Are you saying that adding new to a head while lookup is in the middle
+is causing it to miss an element that
+is supposed to be updated assuming atomicity of the update?
+While now update_elem() is more like a sequence of delete + insert?
+
+Hmm.
+
+> I see. In v2 I will fallback to the original idea: adding a standalone
+> update procedure for htab of maps in which it will atomically overwrite
+> the map_ptr just like array of maps does.
+
+hold on. is this only for hash-of-maps ?
+How that non-atomic update manifested in real production?
 
