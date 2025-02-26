@@ -1,154 +1,197 @@
-Return-Path: <bpf+bounces-52612-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52613-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F6BA45431
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 04:56:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBDEA45442
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 05:06:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34AB21897E90
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 03:56:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B05CF16D049
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 04:05:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9F9B25C714;
-	Wed, 26 Feb 2025 03:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IAnkyHq/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66FA4253F05;
+	Wed, 26 Feb 2025 04:05:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BD7253F05
-	for <bpf@vger.kernel.org>; Wed, 26 Feb 2025 03:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29AC233DF;
+	Wed, 26 Feb 2025 04:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740542197; cv=none; b=uH4f5QiXyCW1lhF6QPNPrsffvzUl4TvU/znnurxIeHZPPnIZxHnF6agKuqBR8JLHejaHx6mJvmCntlaeVoRF2c+fMX/GbVS2LttrgblU1zOWdQVJ643ByaBe8QozkK7RNlXpPlT5PtJ/mz22V5FKSNUGF0jdSiax725Ol88DWFw=
+	t=1740542753; cv=none; b=B7Tt2MSk3xlBtSG0Q4YXmMs4ljntQpxsuwL+VGyWyDFl+tqUVYbOEFMkI6kc/3Z5OZLfeu4sxE3hXMiYSleEvdZstEro3bBzDjQ8vsniowkKhAGXFO+MC/iwJW2j2USHOmgKrPihofqvotxJi/bqhueKGagDRRDhtFmoIa49IDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740542197; c=relaxed/simple;
-	bh=zmDrXf5FJ1ilXdzQbkDkVlJQNEDCNsx0a24i+Uh3khs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TbV6V2P4MCZ3uvJfP8CeP4yp7g5wRJwR5IFJ+y7gKvkzzDd10xJxUDpZZCUMTPb4n0mb49UuHR///qzVNmh4bD5nEw7sRlq7r2pT+AVpVtBvGPTljsksWbO1+jMkiPmpqoALdTFjRiXuJStGk0dv3iOt1sc5gJSUolSYTsfgf2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IAnkyHq/; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-471f257f763so63248821cf.0
-        for <bpf@vger.kernel.org>; Tue, 25 Feb 2025 19:56:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740542195; x=1741146995; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4KuNgRIoNBTJwRNpRb9yYUnDtY02TqKCSg1ljb+1scM=;
-        b=IAnkyHq/LFQDYSloZfRenfFiGvz/46rlxJw2wotYnPtJHKzOSUiQ/JYLmwDblefpuZ
-         khzUV8VCmSvluATwRYl6fwRgkRWjqX3AGfI6lQvmY/Mf1iP2JoMbALVKjvEvEIviyosh
-         pC8NkUexuZYAteQPzHvnwultPS7KdnamlUtzM2SOSwzKF6iPtZ8vx1FrIRvzbRgSavKB
-         FDDM5Dji0zQdEMf/j5cjyaN3hcRt3U2xLatMwCthC0l1DPDkpz75cpCA/G5dd28LrQDQ
-         iOpUZOoVeQsgCre5o19qzWIkafs0APdsJbHsptxIzF0D44+Lh1eNDiOM+SHDwO5WXpnd
-         MIug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740542195; x=1741146995;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4KuNgRIoNBTJwRNpRb9yYUnDtY02TqKCSg1ljb+1scM=;
-        b=PaTiP+kN215RV2fXo9KQrO2c4GR3SX62b9kLyu/Z/DwjOt41D5Ow7ssN+Lzc/6OlD7
-         ob5hN/pGmDA2XbheSW6n1yAp39F+FYXZYV6VvaKadDlvlTIQx3PquLyW7X/0OioWluS9
-         Ofd6Czlld8b3p4Tx6XlD6qOzeK+GZCIEHomyja6wcQzl4L3sD/HWuNNQRCj66tZ+rzbA
-         I3HHHNhxMm1U/hMVaf0YxFR6KXbn7k+Dq9KbtX1Z7k6nCyAq7ilUW/bSBVnSwGbqDMsR
-         FupA0akhK+z93jJXRXc3dYeRyW3hkdB92KFEtyuWR5g+71nJdSpeuXYcDS1zIoHqPiOY
-         gJ6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUfbu8P/8DicRxuxPIEGuKf0oDfpLuet3R+5oS/c5If/buBY9kQaHSkAymk3wVnCeWhOso=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1mf5b7ULNeNRZ0Cc15inK8P8PqZyJAWv8yg+eKQlj80GgLr+o
-	yJrPFkVvwGNiQeVZ9JoASDpn/vd9u8tE94Yd7WB9pDvEKhkgl/JXd45H/u05IJ8q95s1MZiAqem
-	EfjY8d2H8dOuYyHC4DAWNMzDqDlk6CNhfSzbV8A==
-X-Gm-Gg: ASbGncuRaHD8QHiilXZLQweXKvCF4RiH/LjKip7M3ceUp9c19W14laK91nOXc8IszD1
-	ns9z4zQ9u6lvdldib86EtIfI1kA2edL/MWfW/24fgUxzz92h/Ac4gBQrbxWKx8L6KnleVQBRcHA
-	rzUD8Bazlv
-X-Google-Smtp-Source: AGHT+IETRCGRWKND8HX9jJkH2w2Rm7OCx/yxKCJR7aY1Ve/SafHk8TPPxc32EmO8Uiede3dYetHuNsiSyF0/oUx2FK0=
-X-Received: by 2002:ad4:5f8b:0:b0:6e6:64e8:28e7 with SMTP id
- 6a1803df08f44-6e6ae7f7d4cmr254099656d6.15.1740542194719; Tue, 25 Feb 2025
- 19:56:34 -0800 (PST)
+	s=arc-20240116; t=1740542753; c=relaxed/simple;
+	bh=dXlDjg2pNVnOI7c52EzxCpiStSzswa9gIBOFh2fPjwk=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=YWamOf5Gr5K7QmmujTk04DJ3qId8lGFnNe3CCFAZrmcrwuqi9eMknpNVqS+qeSowG0TCwB8DHyvtDnNbycFVVSHiERLGfDpuVK4u0nPnXsyPwQVyreUTTeZY+p0vUB+/EeIHEEB/peJQrBC8lxgWdBHaxpPOAbC656eShjuiaxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Z2gqL2wzFz4f3jrs;
+	Wed, 26 Feb 2025 12:05:18 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 3B45A1A10B0;
+	Wed, 26 Feb 2025 12:05:40 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgDXOV4Nk75nguOvEw--.31068S2;
+	Wed, 26 Feb 2025 12:05:37 +0800 (CST)
+Subject: Re: [RESEND] [PATCH bpf-next 2/3] bpf: Overwrite the element in hash
+ map atomically
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@kernel.org>,
+ bpf <bpf@vger.kernel.org>, rcu@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, "Paul E . McKenney" <paulmck@kernel.org>,
+ Cody Haas <chaas@riotgames.com>, Hou Tao <hotforest@gmail.com>
+References: <20250204082848.13471-1-hotforest@gmail.com>
+ <20250204082848.13471-3-hotforest@gmail.com>
+ <cca6daf2-48f4-57b9-59a9-75578bb755b9@huaweicloud.com>
+ <8734gr3yht.fsf@toke.dk>
+ <d191084a-4ab4-8269-640f-1ecf269418a6@huaweicloud.com>
+ <CAADnVQKD94q-G4N=w9PJU+k6gPhM8GmUYcyfj=33B_mKX6Qbjw@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <6a84a878-0728-0a19-73d2-b5871e10e120@huaweicloud.com>
+Date: Wed, 26 Feb 2025 12:05:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250224114606.3500-1-laoar.shao@gmail.com> <20250224114606.3500-2-laoar.shao@gmail.com>
- <CAADnVQKUYP8e_u5QWGHK_fi_LKyOO3voFkHyRLCuw9-qKiFmDQ@mail.gmail.com>
- <CALOAHbCM_9NotV3UqeOiK-s_Cd-HAUS+1L834Di1Pw75iyTCOA@mail.gmail.com> <CAADnVQK12yzwC=10yxoYUs02iCpkH+tZe881Dnc2_8j3cxsFdQ@mail.gmail.com>
-In-Reply-To: <CAADnVQK12yzwC=10yxoYUs02iCpkH+tZe881Dnc2_8j3cxsFdQ@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 26 Feb 2025 11:55:58 +0800
-X-Gm-Features: AQ5f1JqDcmtuM0SeZrsqshKb5Kyaqu2qLiejK06-ETlaRy2glCjoa9EaJNmoz88
-Message-ID: <CALOAHbBE7MxYqW5PcVpda_DHmmDuG6vvQxjYi4jh5kua32CpkA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] bpf: Reject attaching fexit to functions annotated
- with __noreturn
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAADnVQKD94q-G4N=w9PJU+k6gPhM8GmUYcyfj=33B_mKX6Qbjw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgDXOV4Nk75nguOvEw--.31068S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWF4xWrW8GFyfGF4xKFyDJrb_yoWrtFy3pr
+	WrKF1jyF4DJa4j9wn2ywnruFWayrs3t3y8Xr1Dtry5Arn8Krn3Ar4Ika109ryrAr1rGr1Y
+	qw1jqrZIkayjkFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCY1x0262kKe7AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
+	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+	MI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
+	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+	BIdaVFxhVjvjDU0xZFpf9x07jIksgUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Wed, Feb 26, 2025 at 2:39=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+Hi,
+
+On 2/26/2025 11:24 AM, Alexei Starovoitov wrote:
+> On Sat, Feb 8, 2025 at 2:17 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Hi Toke,
+>>
+>> On 2/6/2025 11:05 PM, Toke Høiland-Jørgensen wrote:
+>>> Hou Tao <houtao@huaweicloud.com> writes:
+>>>
+>>>> +cc Cody Haas
+>>>>
+>>>> Sorry for the resend. I sent the reply in the HTML format.
+>>>>
+>>>> On 2/4/2025 4:28 PM, Hou Tao wrote:
+>>>>> Currently, the update of existing element in hash map involves two
+>>>>> steps:
+>>>>> 1) insert the new element at the head of the hash list
+>>>>> 2) remove the old element
+>>>>>
+>>>>> It is possible that the concurrent lookup operation may fail to find
+>>>>> either the old element or the new element if the lookup operation starts
+>>>>> before the addition and continues after the removal.
+>>>>>
+>>>>> Therefore, replacing the two-step update with an atomic update. After
+>>>>> the change, the update will be atomic in the perspective of the lookup
+>>>>> operation: it will either find the old element or the new element.
+> I'm missing the point.
+> This "atomic" replacement doesn't really solve anything.
+> lookup will see one element.
+> That element could be deleted by another thread.
+> bucket lock and either two step update or single step
+> don't change anything from the pov of bpf prog doing lookup.
+
+The point is that overwriting an existed element may lead to concurrent
+lookups return ENOENT as demonstrated by the added selftest and the
+patch tried to "fix" that. However, it seems using
+hlist_nulls_replace_rcu() for the overwriting update is still not
+enough. Because when the lookup procedure found the old element, the old
+element may be reusing, the comparison of the map key may fail, and the
+lookup procedure may still return ENOENT.
 >
-> On Mon, Feb 24, 2025 at 11:35=E2=80=AFPM Yafang Shao <laoar.shao@gmail.co=
-m> wrote:
-> >
-> > On Tue, Feb 25, 2025 at 1:30=E2=80=AFAM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Feb 24, 2025 at 3:46=E2=80=AFAM Yafang Shao <laoar.shao@gmail=
-.com> wrote:
-> > > >
-> > > > +       } else if (prog->expected_attach_type =3D=3D BPF_TRACE_FEXI=
-T &&
-> > > > +                  btf_id_set_contains(&fexit_deny, btf_id)) {
-> > > > +               verbose(env, "Attaching fexit to __noreturn functio=
-ns is rejected.\n");
-> > > > +               return -EINVAL;
-> > >
-> > > Just realized that this needs to include
-> > > prog->expected_attach_type =3D=3D BPF_MODIFY_RETURN
-> > > since it's doing __bpf_tramp_enter() too.
-> >
-> > I will add it.
-> >
-> > >
-> > > Also the list must only contain existing functions.
-> > > Otherwise there are plenty of build warns:
-> > >   BTFIDS  vmlinux
-> > > WARN: resolve_btfids: unresolved symbol xen_start_kernel
-> > > WARN: resolve_btfids: unresolved symbol xen_cpu_bringup_again
-> > > WARN: resolve_btfids: unresolved symbol usercopy_abort
-> > > WARN: resolve_btfids: unresolved symbol snp_abort
-> > > WARN: resolve_btfids: unresolved symbol sev_es_terminate
-> > > WARN: resolve_btfids: unresolved symbol rust_helper_BUG
-> > > ...
-> >
-> > I missed these warnings.
-> > It looks like we need to add "#ifdef XXXX" to each function.
-> > Alternatively, could we just compare the function name with
-> > prog->aux->attach_func_name instead?
->
-> Strings are much less efficient than btf_ids.
-> Especially comparing across many strings.
-> To minimize ifdef-s lets remove all functions that bpf cannot
-> attach anyway (that are not in available_filter_functions).
-> Then drop all that call panic/BUG equivalent,
-> since refcnt on trampoline is irrelevant at that point.
-> That will remove even more functions.
-> At the end the list will be short with few ifdef-s.
-> This is a temporary workaround anyway, so let's not get too creative.
+>>>>> Signed-off-by: Hou Tao <hotforest@gmail.com>
+>>>>> ---
+>>>>>  kernel/bpf/hashtab.c | 14 ++++++++------
+>>>>>  1 file changed, 8 insertions(+), 6 deletions(-)
+>>>>>
+>>>>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+>>>>> index 4a9eeb7aef85..a28b11ce74c6 100644
+>>>>> --- a/kernel/bpf/hashtab.c
+>>>>> +++ b/kernel/bpf/hashtab.c
+>>>>> @@ -1179,12 +1179,14 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+>>>>>             goto err;
+>>>>>     }
+>>>>>
+>>>>> -   /* add new element to the head of the list, so that
+>>>>> -    * concurrent search will find it before old elem
+>>>>> -    */
+>>>>> -   hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+>>>>> -   if (l_old) {
+>>>>> -           hlist_nulls_del_rcu(&l_old->hash_node);
+>>>>> +   if (!l_old) {
+>>>>> +           hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+>>>>> +   } else {
+>>>>> +           /* Replace the old element atomically, so that
+>>>>> +            * concurrent search will find either the new element or
+>>>>> +            * the old element.
+>>>>> +            */
+>>>>> +           hlist_nulls_replace_rcu(&l_new->hash_node, &l_old->hash_node);
+>>>>>
+>>>>>             /* l_old has already been stashed in htab->extra_elems, free
+>>>>>              * its special fields before it is available for reuse. Also
+>>>>>
+>>>> After thinking about it the second time, the atomic list replacement on
+>>>> the update side is enough to make lookup operation always find the
+>>>> existing element. However, due to the immediate reuse, the lookup may
+>>>> find an unexpected value. Maybe we should disable the immediate reuse
+>>>> for specific map (e.g., htab of maps).
+>>> Hmm, in an RCU-protected data structure, reusing the memory before an
+>>> RCU grace period has elapsed is just as wrong as freeing it, isn't it?
+>>> I.e., the reuse logic should have some kind of call_rcu redirection to
+>>> be completely correct?
+>> Not for all cases. There is SLAB_TYPESAFE_BY_RCU-typed slab. For hash
+>> map, the reuse is also tricky (e.g., the goto again case in
+>> lookup_nulls_elem_raw), however it can not prevent the lookup procedure
+>> from returning unexpected value. I had post a patch set [1] to "fix"
+>> that, but Alexei said it is "a known quirk". Here I am not sure about
+>> whether it is reasonable to disable the reuse for htab of maps only. I
+>> will post a v2 for the patch set.
+>>
+>> [1]:
+>> https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.com/
+> yes. we still have to keep prealloc as default for now :(
+> Eventually bpf_mem_alloc is replaced with fully re-entrant
+> and safe kmalloc, then we can do fully re-entrant and safe
+> kfree_rcu. Then we can talk about closing this quirk.
+> Until then the prog has to deal with immediate reuse.
+> That was the case for a decade already.
 
-Understood
+I see. In v2 I will fallback to the original idea: adding a standalone
+update procedure for htab of maps in which it will atomically overwrite
+the map_ptr just like array of maps does.
 
---=20
-Regards
-Yafang
 
