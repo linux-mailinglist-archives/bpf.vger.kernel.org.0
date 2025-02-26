@@ -1,130 +1,235 @@
-Return-Path: <bpf+bounces-52600-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BAEBA45241
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 02:37:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EAECA45282
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 02:59:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EAAF3A53E1
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 01:37:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66586179EBA
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 01:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82DB119995D;
-	Wed, 26 Feb 2025 01:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511B71AAA0F;
+	Wed, 26 Feb 2025 01:58:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kp7NLbUb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WzdcF+nP"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D991197556
-	for <bpf@vger.kernel.org>; Wed, 26 Feb 2025 01:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D351A9B52;
+	Wed, 26 Feb 2025 01:58:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740533845; cv=none; b=RYa/JftAYsdOdK2xaitYrEoSHdXunoTrLEjySnxyeckBPxTHKxpAGz2IUyKQqbxL1uN1DcI19PTBOWX6sD0aXYkYKJIhhks6la2GojLjK3T69abplNO+gCNHvZM/VOVz4SgfLV2XOc5Qg9gIFkOqL1TCW4pcQBtuSO4svDO+KyM=
+	t=1740535082; cv=none; b=ro8Up6aAk30ojoO3vYp59i+ljV4OKgG5ii39Gki0gt/YwE5mOYJAUmvJZX3uGLGSHqWBb7M0hYR2v7qKgpyGaXXUx2M1cuJ1cuCgGqSaPTs4BGawm9ipSmQ7RZr6nZIud7a0UGVV/78uydGiLoyE1XLCeRtg63qeW2xronKAfHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740533845; c=relaxed/simple;
-	bh=6jMqSHCB1b/d3tIPznfvnPv5y2TPzXfyEbziUHnLOwg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eNabKdTNoeQ+9YD5UaJ/P/Aos0duZiQJXcUpBp9lYBIItK3qWA1PtbKOtk+nvCXDclJcOqjt5hDgCYmfsOySZcxYLZeYbXEAAv1GNMCIdp1+6kdBe2Kj6R6AhtyO6/YnMSm1H1M+T9cOp5TM9kNJHXvLfpyV4fyvbIZXoYB6mEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kp7NLbUb; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740533840;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c6lV2O/MV07x2xCD5gRyXKU/naKq49lc8wVecRpyzJY=;
-	b=kp7NLbUbFkijnU8Nd3tRXnRzRt88xeE3r6qyYDNVsdcLu//PHlllllF9cw62u2LxU+5zBp
-	ECjKglKSRLHKZdKCdpmRA7RKSee9ZF81DFTevlbWlk7M0DsneewFBlbRtrXhJhTBYJ1e9j
-	Gyr3tKio/MAG0NQGh5i0tQCoI+cqNus=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: horms@kernel.org,
-	kuba@kernel.org
-Cc: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	ricardo@marliere.net,
-	viro@zeniv.linux.org.uk,
-	dmantipov@yandex.ru,
-	aleksander.lobakin@intel.com,
-	linux-ppp@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	mrpre@163.com,
-	Jiayuan Chen <jiayuan.chen@linux.dev>,
-	syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
-Subject: [PATCH net-next v4 1/1] ppp: Fix KMSAN warning by initializing 2-byte header
-Date: Wed, 26 Feb 2025 09:36:58 +0800
-Message-ID: <20250226013658.891214-2-jiayuan.chen@linux.dev>
-In-Reply-To: <20250226013658.891214-1-jiayuan.chen@linux.dev>
-References: <20250226013658.891214-1-jiayuan.chen@linux.dev>
+	s=arc-20240116; t=1740535082; c=relaxed/simple;
+	bh=wdN1jaQODGwx5/NgvAuOzU3s+ziBsjzTgRgg3aLVOjM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=od1OvJDomZ1VXGyRR3E3jgs58eD4Vvyjf+QHdCWYZZx2cTYTZlE+p2Efiqtlsuj/IjB1+bW6IpC6jAfN5q6wy87GDQc4kafEmXgHI8PsEqeAjSPZNGUempJlxL5grfUHz0cTyxe3AZ3+h72ZuTQEcNi33g6qH7RtPbCeZaD5E90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WzdcF+nP; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-439946a49e1so40011155e9.0;
+        Tue, 25 Feb 2025 17:58:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740535079; x=1741139879; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lHzaes6TH6B7hJXqk1Wlg42S/TR2u3UC1epvW9tSF1I=;
+        b=WzdcF+nPZZwsSgG4Jwl9Gm2i6qdLRH8VGFJN4j96fUmiU0MbDfgy7L6nSx513hbsbZ
+         Y+2t9YLYS2vPk7r9BgyRM80oXQs9sKp6QQ2A+K3QAVhvNgWzbQNDQ46mPuBmiYNuopJF
+         kyCRzGmmI7v0Iy28SfSD+aft2W/CKxgPtjUHrnA8g2afCrTHdt4jALBoIik23zxVk/RD
+         4kJmS/HKjhDS8X6ysxdsAEtyHSfEelVsJBxOT8c3tVZszikspXx3u40995rSbi9zqrxr
+         sk7O+btogpFNT2f6NLZJxRcTvIVOKZdEFtBSnB0qjN0UmvFIsWs8gxz+4qs3oQTOVStr
+         ivvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740535079; x=1741139879;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lHzaes6TH6B7hJXqk1Wlg42S/TR2u3UC1epvW9tSF1I=;
+        b=foZ5jN77/yoHBpainZrmzbi8oRVlwq1Ax9whzCU3g6MggaOn1TUC9iKjxUDVSDyZD2
+         +P6/md/fCpVDj8/+2lqKIqIAYRl6vJzaxISvugHCe6+Fp0JORkeRtok1xF/mzptHqYm4
+         1mWnqj2RMjDCsR2qtTbHTyEOWYaXA0boWB1h6SLgGIHHcAkviUFIk/MgVZ86T/etVRyO
+         iJfBexwnY2XcLpVNJp4BiKDLCWLtJ80qN3r/PKo5BdZ+ParnoCRWgOqt06nvm9k3O00J
+         Sk82VnKdip2R1czn9HWCoOjtC7wKbKX8jsUuKlVbgorgjhnYvjsCodF4ehewT96Zba8O
+         65vw==
+X-Forwarded-Encrypted: i=1; AJvYcCV1brfLxmm6TVdi9gbu48Jw04fggVBxNrtt9tw22SatH8Rjp02Q/BoI7LoV7nEfBVUoNKI=@vger.kernel.org, AJvYcCVSukvfaTIRQyizBU+MGQ2Z4IpNVQlvGQizEMFe/Ry3TAAJ4niOQv89uoz7W4MjZ4LE8X2HUUvmVk4+buYe@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywf8ordNZ81wptuz0AyidRBKSEYcrQRtIogPFaSKh/SNvrT69Hs
+	5pmztOd88DOXMw1mHugLpYKwS3MKrOReuGwcR21tPjp/7zGf8vyKhtodeEpd/d1Ye2JG4ohcUwu
+	Yyazwc4qjPrPcrdE6Re4WbQfB588=
+X-Gm-Gg: ASbGncsmMMsSVPpoOUDkbC8ebuSw0pIKtmC63+coCHrsxLYYc4p5Gg92r5k2i75idcY
+	aVCpoJBg7OqahxRcpH+k53ITfb7ks57LAyesCj+bevHdjI0TrcDE4FYsX1JjGvpS5bxWFGTQdhq
+	m7Sq14D8EC/p1ecP0zdveqogo=
+X-Google-Smtp-Source: AGHT+IFO6/dJyoTf/Xa1UP3OB5XVQqcvDm13BIuavJhyPluLlJK5clgZ3kqtohjqlYYhjC8zaIwj8uhogoYr6zzuyzo=
+X-Received: by 2002:a05:600c:450c:b0:434:fb65:ebbb with SMTP id
+ 5b1f17b1804b1-43ab8fe995amr12456765e9.17.1740535078910; Tue, 25 Feb 2025
+ 17:57:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <AM6PR03MB5080513BFAEB54A93CC70D4399FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB5080FFF4113C70F7862AAA5D99FE2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <CAADnVQLR0=L7xwh1SpDfcxRUhVE18k_L8g3Kx+Ykidt7f+=UhQ@mail.gmail.com> <AM6PR03MB50802FB7A70353605235806E99C32@AM6PR03MB5080.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB50802FB7A70353605235806E99C32@AM6PR03MB5080.eurprd03.prod.outlook.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 25 Feb 2025 17:57:47 -0800
+X-Gm-Features: AQ5f1Jo_CUowQ4QBm9bjekRCzahCOwBtZ3wBGebmjJg5fbjCMlLjByLydrkMYYM
+Message-ID: <CAADnVQ+TzLc=Z_Rp-UC6s9gg5hB1byd_w7oT807z44NuKC_TxA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 4/6] bpf: Add bpf runtime hooks for tracking
+ runtime acquire/release
+To: Juntong Deng <juntong.deng@outlook.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, snorcht@gmail.com, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The PPP driver adds an extra 2-byte header to enable socket filters to run
-correctly. However, the driver only initializes the first byte, which
-indicates the direction. For normal BPF programs, this is not a problem
-since they only read the first byte.
+On Tue, Feb 25, 2025 at 3:34=E2=80=AFPM Juntong Deng <juntong.deng@outlook.=
+com> wrote:
+>
+> On 2025/2/25 22:12, Alexei Starovoitov wrote:
+> > On Thu, Feb 13, 2025 at 4:36=E2=80=AFPM Juntong Deng <juntong.deng@outl=
+ook.com> wrote:
+> >>
+> >> +void *bpf_runtime_acquire_hook(void *arg1, void *arg2, void *arg3,
+> >> +                              void *arg4, void *arg5, void *arg6 /* k=
+func addr */)
+> >> +{
+> >> +       struct btf_struct_kfunc *struct_kfunc, dummy_key;
+> >> +       struct btf_struct_kfunc_tab *tab;
+> >> +       struct bpf_run_ctx *bpf_ctx;
+> >> +       struct bpf_ref_node *node;
+> >> +       bpf_kfunc_t kfunc;
+> >> +       struct btf *btf;
+> >> +       void *kfunc_ret;
+> >> +
+> >> +       kfunc =3D (bpf_kfunc_t)arg6;
+> >> +       kfunc_ret =3D kfunc(arg1, arg2, arg3, arg4, arg5);
+> >> +
+> >> +       if (!kfunc_ret)
+> >> +               return kfunc_ret;
+> >> +
+> >> +       bpf_ctx =3D current->bpf_ctx;
+> >> +       btf =3D bpf_get_btf_vmlinux();
+> >> +
+> >> +       tab =3D btf->acquire_kfunc_tab;
+> >> +       if (!tab)
+> >> +               return kfunc_ret;
+> >> +
+> >> +       dummy_key.kfunc_addr =3D (unsigned long)arg6;
+> >> +       struct_kfunc =3D bsearch(&dummy_key, tab->set, tab->cnt,
+> >> +                              sizeof(struct btf_struct_kfunc),
+> >> +                              btf_kfunc_addr_cmp_func);
+> >> +
+> >> +       node =3D list_first_entry(&bpf_ctx->free_ref_list, struct bpf_=
+ref_node, lnode);
+> >> +       node->obj_addr =3D (unsigned long)kfunc_ret;
+> >> +       node->struct_btf_id =3D struct_kfunc->struct_btf_id;
+> >> +
+> >> +       list_del(&node->lnode);
+> >> +       hash_add(bpf_ctx->active_ref_list, &node->hnode, node->obj_add=
+r);
+> >> +
+> >> +       pr_info("bpf prog acquire obj addr =3D %lx, btf id =3D %d\n",
+> >> +               node->obj_addr, node->struct_btf_id);
+> >> +       print_bpf_active_refs();
+> >> +
+> >> +       return kfunc_ret;
+> >> +}
+> >> +
+> >> +void bpf_runtime_release_hook(void *arg1, void *arg2, void *arg3,
+> >> +                             void *arg4, void *arg5, void *arg6 /* kf=
+unc addr */)
+> >> +{
+> >> +       struct bpf_run_ctx *bpf_ctx;
+> >> +       struct bpf_ref_node *node;
+> >> +       bpf_kfunc_t kfunc;
+> >> +
+> >> +       kfunc =3D (bpf_kfunc_t)arg6;
+> >> +       kfunc(arg1, arg2, arg3, arg4, arg5);
+> >> +
+> >> +       bpf_ctx =3D current->bpf_ctx;
+> >> +
+> >> +       hash_for_each_possible(bpf_ctx->active_ref_list, node, hnode, =
+(unsigned long)arg1) {
+> >> +               if (node->obj_addr =3D=3D (unsigned long)arg1) {
+> >> +                       hash_del(&node->hnode);
+> >> +                       list_add(&node->lnode, &bpf_ctx->free_ref_list=
+);
+> >> +
+> >> +                       pr_info("bpf prog release obj addr =3D %lx, bt=
+f id =3D %d\n",
+> >> +                               node->obj_addr, node->struct_btf_id);
+> >> +               }
+> >> +       }
+> >> +
+> >> +       print_bpf_active_refs();
+> >> +}
+> >
+> > So for every acq/rel the above two function will be called
+> > and you call this:
+> > "
+> > perhaps we can use some low overhead runtime solution first as a
+> > not too bad alternative
+> > "
+> >
+> > low overhead ?!
+> >
+> > acq/rel kfuncs can be very hot.
+> > To the level that single atomic_inc() is a noticeable overhead.
+> > Doing above is an obvious no-go in any production setup.
+> >
+> >> Before the bpf program actually runs, we can allocate the maximum
+> >> possible number of reference nodes to record reference information.
+> >
+> > This is an incorrect assumption.
+> > Look at register_btf_id_dtor_kfuncs()
+> > that patch 1 is sort-of trying to reinvent.
+> > Acquired objects can be stashed with single xchg instruction and
+> > people are not happy with performance either.
+> > An acquire kfunc plus inlined bpf_kptr_xchg is too slow in some cases.
+> > A bunch of bpf progs operate under constraints where nanoseconds count.
+> > That's why we rely on static verification where possible.
+> > Everytime we introduce run-time safety checks (like bpf_arena) we
+> > sacrifice some use cases.
+> > So, no, this proposal is not a solution.
+>
+> OK, I agree, if single atomic_inc() is a noticeable overhead, then any
+> runtime solution is not applicable.
+>
+> (I had thought about using btf id as another argument to further
+> eliminate the O(log n) overhead of binary search, but now it is
+> obviously not enough)
+>
+>
+> I am not sure, BPF runtime hooks seem to be a general feature, maybe it
+> can be used in other scenarios?
+>
+> Do you think there would be value in non-intrusive bpf program behavior
+> tracking if it is only enabled in certain modes?
+>
+> For example, to help us debug/diagnose bpf programs.
 
-Nevertheless, for carefully crafted BPF programs, if they read the second
-byte, this will trigger a KMSAN warning for reading uninitialized data.
-
-Reported-by: syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/bpf/000000000000dea025060d6bc3bc@google.com/
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
----
- drivers/net/ppp/ppp_generic.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
-index 4583e15ad03a..b4433badf03c 100644
---- a/drivers/net/ppp/ppp_generic.c
-+++ b/drivers/net/ppp/ppp_generic.c
-@@ -72,6 +72,10 @@
- #define PPP_PROTO_LEN	2
- #define PPP_LCP_HDRLEN	4
- 
-+/* These are fields recognized by libpcap */
-+#define PPP_FILTER_OUTBOUND_TAG 0x0100
-+#define PPP_FILTER_INBOUND_TAG  0x0000
-+
- /*
-  * An instance of /dev/ppp can be associated with either a ppp
-  * interface unit or a ppp channel.  In both cases, file->private_data
-@@ -1762,10 +1766,15 @@ ppp_send_frame(struct ppp *ppp, struct sk_buff *skb)
- 
- 	if (proto < 0x8000) {
- #ifdef CONFIG_PPP_FILTER
--		/* check if we should pass this packet */
--		/* the filter instructions are constructed assuming
--		   a four-byte PPP header on each packet */
--		*(u8 *)skb_push(skb, 2) = 1;
-+		/* Check if we should pass this packet.
-+		 * The filter instructions are constructed assuming
-+		 * a four-byte PPP header on each packet. The first byte
-+		 * indicates the direction, and the second byte is meaningless,
-+		 * but we still need to initialize it to prevent crafted BPF
-+		 * programs from reading them which would cause reading of
-+		 * uninitialized data.
-+		 */
-+		*(__be16 *)skb_push(skb, 2) = htons(PPP_FILTER_OUTBOUND_TAG);
- 		if (ppp->pass_filter &&
- 		    bpf_prog_run(ppp->pass_filter, skb) == 0) {
- 			if (ppp->debug & 1)
--- 
-2.47.1
-
+Unlikely. In general we don't add debug code to the kernel.
+There are exceptions like lockdep and kasan that are there to
+debug the kernel itself and they're not enabled in prod.
+I don't see a use case for "let's replace all kfuncs with a wrapper".
+perf record/report works on bpf progs, so profiling/perf analysis
+part of bpf prog is solved.
+Debugging of bpf prog for correctness is a different story.
+It's an interesting challenge on its own, but
+wrapping kfuncs won't help.
+Debugging bpf prog is not much different than debugging normal kernel code.
+Sprinkle printk is typically the answer.
 
