@@ -1,326 +1,180 @@
-Return-Path: <bpf+bounces-52680-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A55AA469D4
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 19:32:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B785DA469D9
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 19:33:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15F311883759
-	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 18:32:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 996617AAC57
+	for <lists+bpf@lfdr.de>; Wed, 26 Feb 2025 18:32:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3265235341;
-	Wed, 26 Feb 2025 18:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 410142343C9;
+	Wed, 26 Feb 2025 18:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="khTMT7w/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EpawnAZq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E7F23496B
-	for <bpf@vger.kernel.org>; Wed, 26 Feb 2025 18:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 628D121CC53;
+	Wed, 26 Feb 2025 18:33:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740594740; cv=none; b=FMGyiInQL29I7GpQ5reyTKNHT59+GbsOH/1Da/Lf+/9v3HSg11lxYu2YhhTZMWEA7igJFMK7LD3S//GK8qwmT26UcEbaSM84pt6z9eNeN2ZM2+HgdmuhSuAvwwdKzulI/lHpbmVKp+bYuH7X5tqdiW+TZWIyqYMe+SkPpT5TjEE=
+	t=1740594803; cv=none; b=S4QcQLqenvCMIsGbD88oYeeQkQIxjX5ynvei6QvwPoTvQSQ28ZQkfucZzkwzjmwBd9lnUV/ByRsLqKsChpMghrEXiCDce8ZFEoHYE0/wmmd2zY/AAyRejm2i4ObQP7qH4oIaZ6/f1TTco1Zjfl/1NZuZYbTDocuW7o7xGimGtSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740594740; c=relaxed/simple;
-	bh=HzEUYH7qb1iWXRnDyo68KhiI31qeyT99Mz7m3Iyjw5w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M2491s02hT0VYMY/YLBQJE0+cFomNptlkvbmv4hmQDXck+ZlKOy000emweZyuDP5E64LvpgpIU9ypgumc4DskZzlZ234Bt2SmqVv9lpSfoYGxpxVX5J1qlFkOTWb9Z6stf2AMCcCuT82J7CuDUvoHYR+zOxQDsVdS5FaxXucAx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=khTMT7w/; arc=none smtp.client-ip=209.85.128.51
+	s=arc-20240116; t=1740594803; c=relaxed/simple;
+	bh=06Bx46w4WKqnLcEDcMImX2Rgvc4s7Az8+qGa2ZiH2i0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K38H0bpA7GUHZm+YgoSnrBVQWzcsdFAMJkRgQKd4lJWwfLmRhqQnh6Vmr8wZ8hBN7GLT/yirWstq6yPjd9m16u78NyvG6TG0X9XA+mcDlxQoJ9zdcn/BszewItxfDTlk1OZiu1O+eKHf9GYNSkGJ7gW+gfbTPs4LHb8/UKz1kXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EpawnAZq; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4394345e4d5so1088725e9.0
-        for <bpf@vger.kernel.org>; Wed, 26 Feb 2025 10:32:17 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-22114b800f7so1069885ad.2;
+        Wed, 26 Feb 2025 10:33:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740594735; x=1741199535; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EofGUMdmxWitNR/1EFa3t6bpHugE1KAAwnzD29BQtG4=;
-        b=khTMT7w//+ZqYglYBpfV6zp7oLO3+7LegPTq02U7La6m8o8UwtcEOZ8lJ/tX9c/3/a
-         bWvwXIrQXKTKCTxVMxt19DE/JWY3aiTAuKDxSmxR4GiB4xusphLKiZSk6AbTjH4VS9xr
-         TvBGwFMB+w23zKodsMhnhL7uS6HWLux0m6Gm/QdWLL9vXv4Wcheah2pPN6KHzgZGhwCN
-         tJxYh8PRBN+HTvX2pk330HzNQHzavrC4fFvPwhAX1i8qeKZXDiXYL82LfKg6K2vEwXal
-         7smn8LpIdgh0Jf+ZOAqlxSW0ax5Qoh94FKm/MDyk2T4Wd/FbexWY5pxxSC6pzNG0iH+t
-         OeqQ==
+        d=gmail.com; s=20230601; t=1740594801; x=1741199601; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8NV8NW5Mq8hnlsfnK7VYLX7Lb9iIPf134td0bPOEzZY=;
+        b=EpawnAZq/kdSM+6C3tHt1DTf10h9jzDh+WY2mSN4+gpboVFRDEHryGA/0t+fFgfAta
+         yReRXzJB3JR+0vbRVUObb2ma49Z8CYIZmE2vyOlM6zlCAHObPMls0CzJCQwnOwy9//6h
+         QbTqMa9Lww7VGBAtrnZHZX5PGwvL7Ray5MwuuOxeGYPVmSLn8fzJJY3Td9KdkomhHoaZ
+         sZMpdDqgfL92HWT+a+Gs3UofhtamlGm/aglfBOjfC80zOLnfvqhX+wIVySV9I3IeZjkS
+         8QlHXRuEG1vzmkuNqgvtH8kONxqCOvxHHd07TjqBHF8Ebur2rNX+cbn9bq50R+IZ2Ztw
+         xEjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740594735; x=1741199535;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EofGUMdmxWitNR/1EFa3t6bpHugE1KAAwnzD29BQtG4=;
-        b=bxe22ssQKOYOAspTpftfHtGoJHsesMV6zXdnc+3LgOTqD+VauOxBeaC+UPcrxlI35q
-         jvL2G7prE3NSLX51ANM7CtlignKtjwuZxt06QX70UwYGBq+t3rMO7ssXGkISwY459OwH
-         l2j6nnvX/Ghllr/RM08G6On9BCLw6HkeGV4cuoyyhzAkW1b9IB1w6Lb4SdSZ7uguZVRZ
-         nuYOMiMwLnh1qWvnghaPkFKy8Tu525VCuurDJrU4B6y6WtRJCooU13u8PCFDcoDeUVX8
-         OKMVLEhjtgiAtKwbyAgPsSawnBX6apHAIHxyQqETwClY36pk3xjto4gCdrjnFZt4HvcQ
-         80Iw==
-X-Gm-Message-State: AOJu0Yx6efW0Cj+IbB0ajB2q4sQGD0WHVpfOzJicRO1hZJ8pUm+DaZCV
-	QjaqGtcmBEs3UOJg16ItjHdvL2Efbrqf9UHlDllMgBNGmy6ezer6uDugOg==
-X-Gm-Gg: ASbGnct7Cd1+vxxoGstS5wtZSwQTcammdKAWbPx7BnZZD58NJ8tF6fndFLteJZ/D72g
-	q72h959l+7W8MzV+93t9IhS/puIIWq3tB14zXZXIKAo2VPBotCO2sSaHcFfFx6F0NGq1TorW1v5
-	LJNUdhGrYeIXgkZjvKFOYvMpdddN0w6Qg2zttb7UtEhqAj6EBh8aFgpioixFZ3P0jMNnqR1iIuv
-	C5dw8N7/00mI0juFdeDRcDkkmSpap1mSqbYmCyCKISUunkD8h2mAM52a1ylE7X27vdZ2svzQmAz
-	5rhCoba+RrNtiUZvN1YOWBSA6lCCUvNkbYftqdpO/cpqjkB/1hB5TS3YrHxO7hIfFY/XZs4A6ON
-	C6Mz51iHIhAYwGI1S6irNtWMKlvaMyk0=
-X-Google-Smtp-Source: AGHT+IF5bHtAtR0nSrNNlQn7nlN55v/RWnyp96JBTG9S5k3vznqRUzmDlJLSG6HggG8oUcvL447upA==
-X-Received: by 2002:a5d:59a7:0:b0:38d:e304:7478 with SMTP id ffacd0b85a97d-38f7082b185mr23949448f8f.38.1740594735539;
-        Wed, 26 Feb 2025 10:32:15 -0800 (PST)
-Received: from localhost.localdomain (cpc158789-hari22-2-0-cust468.20-2.cable.virginm.net. [86.26.115.213])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390cd866afesm6520531f8f.18.2025.02.26.10.32.14
+        d=1e100.net; s=20230601; t=1740594801; x=1741199601;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8NV8NW5Mq8hnlsfnK7VYLX7Lb9iIPf134td0bPOEzZY=;
+        b=fa9Ky0jHC9BUNbJBYy171n8rC65LzlHvMMvK+s1wX+V0DsDyWjfepLwBptn1GNHtBw
+         3LeCEuDSlB4jnkAJqPJk3Q02Y9duQvHUQEI0JVgp1KlG7J9H+Ef8FRFc4dlWv32Ro/ib
+         6N3BIQDIZIfRkMrTIMAcuR20CUtp2cikehLg6jrKaDxA74im74uozY0l8L3MIIksR30m
+         nzdoBeeIK220QqUmZXiT3JtpbHpqtgh/sq2kpFGN+Ozd+UGTUYs2Z1ul4UNc+WB32NyO
+         kXdOY5pBkRNi3rLliJt9fNMDcAebPzIRqox3MTJMEN2J35ynTGf3LSDNd7Lrghe5PHzY
+         aBgw==
+X-Forwarded-Encrypted: i=1; AJvYcCU0HR1bgjQ8Jyr5IP3uaBHLHzWwGs5PgG2kstM3RITbLhLMOXa1IHoAuoY34JBTDGx4nx0=@vger.kernel.org, AJvYcCUOyJVXqU2p58b+PlLtWzqCm9M7IcWbxOpxxS07h8hn3hATQabj7vsVsjcIXNr2pUoNQYXMDAaEwB9+AkWm@vger.kernel.org, AJvYcCV0zPjq/B65QolHTSI3DwKfyUBJSbz6joMd8o0Iuol4krTiPHUYaL4JXGubdsJzGVB0GdLLuiXb9PT4Ix0=@vger.kernel.org, AJvYcCVwO1LPwYgrSVboCtdkOXZRiQgrk8Pv5snhpd7jc4VCwoZX5wiAFRLFEaCL87KbPnsADApvFYNoevjxgFGQ@vger.kernel.org, AJvYcCWIvHtg+wax6vXltb+6Q+st1agfA7oVs6RCnYIBLCKhxUpaf/NUkYYbkG0tsYQZ5UKoAZZKk2bDiCuRbys=@vger.kernel.org, AJvYcCXRB0QfiC7YSWTWesOIGgv6oEQccDVfW54p8ZnfHg5lMbQStWn1TT5Hk7YC5w0LI7vc8aVx9bntTqPhHeyu+qE=@vger.kernel.org, AJvYcCXUWnioz6RMKjH4TKMAUMuaBajfGMnSxoyPdfsQQXMGFqak9N5dFqHnZOWT2u3GwoJkN7H7M4HU@vger.kernel.org
+X-Gm-Message-State: AOJu0YwydCMtNCDxOgNk6fUwcbNc/2Rc3Y/wqwRCgZxrAlUOh3VqtBUp
+	kF+p/lUZM8X61dBCgpNOtOuMkU9RQ142YXQgxbuVqno25YYr3+YV
+X-Gm-Gg: ASbGnct5PvI/yq/DSrzSRNbuHzzfjZhdj6VpJYHouEWBeROBIar8BxS1E7W17sAUfS6
+	McZvsNqC5MZVA4LckJwjsQWNAESpux4P2dGYd3n6TPIyuB594JyIQaPgo/hTbnf4rLXYwmKg1ap
+	bvLFLUg/bgxEYjdyMh4ZbsURp+xqoZlqaeEY66Me03JdiSL5bJJsRMCg39JlR8Lf09ECx2u/y1N
+	FJBSXBp7ohcQz/aLyc8aEO8ybQbxoa1Oawv5rPCAGj0LDsnfWWTxykUZoXCSaSRDJmnur01iksG
+	az2dMhbM4tSeMhdDPt1rAa2ejDEvE0kKQ8EFaeWAKAZxfZpFMw==
+X-Google-Smtp-Source: AGHT+IEhO/8zynHAj/XQ8CfYcqOsDet7/XXIGYhA3zqO2mHTqzuioBsUax6Pz3NWu+JgRkwDnM6ajg==
+X-Received: by 2002:a17:90b:2d88:b0:2ee:c918:cd60 with SMTP id 98e67ed59e1d1-2fe7e33d442mr6780868a91.20.1740594801403;
+        Wed, 26 Feb 2025 10:33:21 -0800 (PST)
+Received: from localhost (maglev-oncall.nvidia.com. [216.228.125.128])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fe825eb82fsm1917776a91.32.2025.02.26.10.33.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Feb 2025 10:32:15 -0800 (PST)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v3 3/3] selftests/bpf: add tests for bpf_dynptr_copy
-Date: Wed, 26 Feb 2025 18:32:01 +0000
-Message-ID: <20250226183201.332713-4-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250226183201.332713-1-mykyta.yatsenko5@gmail.com>
-References: <20250226183201.332713-1-mykyta.yatsenko5@gmail.com>
+        Wed, 26 Feb 2025 10:33:20 -0800 (PST)
+Date: Wed, 26 Feb 2025 13:33:18 -0500
+From: Yury Norov <yury.norov@gmail.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org, jk@ozlabs.org, joel@jms.id.au,
+	eajames@linux.ibm.com, andrzej.hajda@intel.com,
+	neil.armstrong@linaro.org, rfoss@kernel.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
+	dmitry.torokhov@gmail.com, mchehab@kernel.org,
+	awalls@md.metrocast.net, hverkuil@xs4all.nl,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	louis.peens@corigine.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+	akpm@linux-foundation.org, hpa@zytor.com, alistair@popple.id.au,
+	linux@rasmusvillemoes.dk, Laurent.pinchart@ideasonboard.com,
+	jonas@kwiboo.se, jernej.skrabec@gmail.com, kuba@kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
+	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	oss-drivers@corigine.com, netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
+	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+	Yu-Chun Lin <eleanor15x@gmail.com>
+Subject: Re: [PATCH 02/17] bitops: Add generic parity calculation for u64
+Message-ID: <Z79ebv630yuNOJKV@thinkpad>
+References: <20250223164217.2139331-1-visitorckw@gmail.com>
+ <20250223164217.2139331-3-visitorckw@gmail.com>
+ <Z7zIBwH4aUA7G9MY@thinkpad>
+ <Z73FxIv353lbXO3A@visitorckw-System-Product-Name>
+ <b5236ae4-7ebe-4a88-bbc9-3b9b3374de53@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b5236ae4-7ebe-4a88-bbc9-3b9b3374de53@kernel.org>
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+On Wed, Feb 26, 2025 at 08:14:14AM +0100, Jiri Slaby wrote:
+> On 25. 02. 25, 14:29, Kuan-Wei Chiu wrote:
+> > > +#define parity(val)					\
+> > > +({							\
+> > > +	u64 __v = (val);				\
+> > > +	int __ret;					\
+> > > +	switch (BITS_PER_TYPE(val)) {			\
+> > > +	case 64:					\
+> > > +		__v ^= __v >> 32;			\
+> > > +		fallthrough;				\
+> > > +	case 32:					\
+> > > +		__v ^= __v >> 16;			\
+> > > +		fallthrough;				\
+> > > +	case 16:					\
+> > > +		__v ^= __v >> 8;			\
+> > > +		fallthrough;				\
+> > > +	case 8:						\
+> > > +		__v ^= __v >> 4;			\
+> > > +		__ret =  (0x6996 >> (__v & 0xf)) & 1;	\
+> > > +		break;					\
+> > > +	default:					\
+> > > +		BUILD_BUG();				\
+> > > +	}						\
+> > > +	__ret;						\
+> > > +})
+> > > +
+> > > +#define parity8(val)	parity((u8)(val))
+> > > +#define parity32(val)	parity((u32)(val))
+> > > +#define parity64(val)	parity((u64)(val))
+> > What do you think about using these inline functions instead of macros?
+> > Except for parity8(), each function is a single line and follows the
+> > same logic. I find inline functions more readable, and coding-style.rst
+> > also recommends them over macros.
+>
+> Not in cases where macros are inevitable. I mean, do we need parityXX() for
+> XX in (8, 16, 32, 64) at all? Isn't the parity() above enough for everybody?
 
-Add XDP setup type for dynptr tests, enabling testing for
-non-contiguous buffer.
-Add 2 tests:
- - test_dynptr_copy - verify correctness for the fast (contiguous
- buffer) code path.
- - test_dynptr_copy_xdp - verifies code paths that handle
- non-contiguous buffer.
+The existing codebase has something like:
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- .../testing/selftests/bpf/prog_tests/dynptr.c |  21 +++
- .../selftests/bpf/progs/dynptr_success.c      | 123 +++++++++++++++++-
- 2 files changed, 139 insertions(+), 5 deletions(-)
+        int ret;
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-index b614a5272dfd..e29cc16124c2 100644
---- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-@@ -10,6 +10,7 @@ enum test_setup_type {
- 	SETUP_SYSCALL_SLEEP,
- 	SETUP_SKB_PROG,
- 	SETUP_SKB_PROG_TP,
-+	SETUP_XDP_PROG,
- };
- 
- static struct {
-@@ -18,6 +19,8 @@ static struct {
- } success_tests[] = {
- 	{"test_read_write", SETUP_SYSCALL_SLEEP},
- 	{"test_dynptr_data", SETUP_SYSCALL_SLEEP},
-+	{"test_dynptr_copy", SETUP_SYSCALL_SLEEP},
-+	{"test_dynptr_copy_xdp", SETUP_XDP_PROG},
- 	{"test_ringbuf", SETUP_SYSCALL_SLEEP},
- 	{"test_skb_readonly", SETUP_SKB_PROG},
- 	{"test_dynptr_skb_data", SETUP_SKB_PROG},
-@@ -120,6 +123,24 @@ static void verify_success(const char *prog_name, enum test_setup_type setup_typ
- 
- 		break;
- 	}
-+	case SETUP_XDP_PROG:
-+	{
-+		char data[5000];
-+		int err, prog_fd;
-+		LIBBPF_OPTS(bpf_test_run_opts, opts,
-+			    .data_in = &data,
-+			    .data_size_in = sizeof(data),
-+			    .repeat = 1,
-+		);
-+
-+		prog_fd = bpf_program__fd(prog);
-+		err = bpf_prog_test_run_opts(prog_fd, &opts);
-+
-+		if (!ASSERT_OK(err, "test_run"))
-+			goto cleanup;
-+
-+		break;
-+	}
- 	}
- 
- 	ASSERT_EQ(skel->bss->err, 0, "err");
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/testing/selftests/bpf/progs/dynptr_success.c
-index bfcc85686cf0..e1fba28e4a86 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_success.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
-@@ -1,20 +1,19 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2022 Facebook */
- 
-+#include <vmlinux.h>
- #include <string.h>
- #include <stdbool.h>
--#include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- #include "bpf_misc.h"
--#include "bpf_kfuncs.h"
- #include "errno.h"
- 
- char _license[] SEC("license") = "GPL";
- 
- int pid, err, val;
- 
--struct sample {
-+struct ringbuf_sample {
- 	int pid;
- 	int seq;
- 	long value;
-@@ -121,7 +120,7 @@ int test_dynptr_data(void *ctx)
- 
- static int ringbuf_callback(__u32 index, void *data)
- {
--	struct sample *sample;
-+	struct ringbuf_sample *sample;
- 
- 	struct bpf_dynptr *ptr = (struct bpf_dynptr *)data;
- 
-@@ -138,7 +137,7 @@ SEC("?tp/syscalls/sys_enter_nanosleep")
- int test_ringbuf(void *ctx)
- {
- 	struct bpf_dynptr ptr;
--	struct sample *sample;
-+	struct ringbuf_sample *sample;
- 
- 	if (bpf_get_current_pid_tgid() >> 32 != pid)
- 		return 0;
-@@ -567,3 +566,117 @@ int BPF_PROG(test_dynptr_skb_tp_btf, void *skb, void *location)
- 
- 	return 1;
- }
-+
-+static inline int bpf_memcmp(const char *a, const char *b, u32 size)
-+{
-+	int i;
-+
-+	bpf_for(i, 0, size) {
-+		if (a[i] != b[i])
-+			return a[i] < b[i] ? -1 : 1;
-+	}
-+	return 0;
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int test_dynptr_copy(void *ctx)
-+{
-+	char data[] = "hello there, world!!";
-+	char buf[32] = {'\0'};
-+	__u32 sz = sizeof(data);
-+	struct bpf_dynptr src, dst;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sz, 0, &src);
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sz, 0, &dst);
-+
-+	/* Test basic case of copying contiguous memory backed dynptrs */
-+	err = bpf_dynptr_write(&src, 0, data, sz, 0);
-+	err = err ?: bpf_dynptr_copy(&dst, 0, &src, 0, sz);
-+	err = err ?: bpf_dynptr_read(buf, sz, &dst, 0, 0);
-+	err = err ?: bpf_memcmp(data, buf, sz);
-+
-+	/* Test that offsets are handled correctly */
-+	err = err ?: bpf_dynptr_copy(&dst, 3, &src, 5, sz - 5);
-+	err = err ?: bpf_dynptr_read(buf, sz - 5, &dst, 3, 0);
-+	err = err ?: bpf_memcmp(data + 5, buf, sz - 5);
-+
-+	bpf_ringbuf_discard_dynptr(&src, 0);
-+	bpf_ringbuf_discard_dynptr(&dst, 0);
-+	return 0;
-+}
-+
-+SEC("xdp")
-+int test_dynptr_copy_xdp(struct xdp_md *xdp)
-+{
-+	struct bpf_dynptr ptr_buf, ptr_xdp;
-+	char data[] = "qwertyuiopasdfghjkl";
-+	char buf[32] = {'\0'};
-+	__u32 len = sizeof(data);
-+	int i, chunks = 200;
-+
-+	/* ptr_xdp is backed by non-contiguous memory */
-+	bpf_dynptr_from_xdp(xdp, 0, &ptr_xdp);
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, len * chunks, 0, &ptr_buf);
-+
-+	/* Destination dynptr is backed by non-contiguous memory */
-+	bpf_for(i, 0, chunks) {
-+		err = bpf_dynptr_write(&ptr_buf, i * len, data, len, 0);
-+		if (err)
-+			goto out;
-+	}
-+
-+	err = bpf_dynptr_copy(&ptr_xdp, 0, &ptr_buf, 0, len * chunks);
-+	if (err)
-+		goto out;
-+
-+	bpf_for(i, 0, chunks) {
-+		__builtin_memset(buf, 0, sizeof(buf));
-+		err = bpf_dynptr_read(&buf, len, &ptr_xdp, i * len, 0);
-+		if (err)
-+			goto out;
-+		if (bpf_memcmp(data, buf, len) != 0)
-+			goto out;
-+	}
-+
-+	/* Source dynptr is backed by non-contiguous memory */
-+	__builtin_memset(buf, 0, sizeof(buf));
-+	bpf_for(i, 0, chunks) {
-+		err = bpf_dynptr_write(&ptr_buf, i * len, buf, len, 0);
-+		if (err)
-+			goto out;
-+	}
-+
-+	err = bpf_dynptr_copy(&ptr_buf, 0, &ptr_xdp, 0, len * chunks);
-+	if (err)
-+		goto out;
-+
-+	bpf_for(i, 0, chunks) {
-+		__builtin_memset(buf, 0, sizeof(buf));
-+		err = bpf_dynptr_read(&buf, len, &ptr_buf, i * len, 0);
-+		if (err)
-+			goto out;
-+		if (bpf_memcmp(data, buf, len) != 0)
-+			goto out;
-+	}
-+
-+	/* Both source and destination dynptrs are backed by non-contiguous memory */
-+	err = bpf_dynptr_copy(&ptr_xdp, 2, &ptr_xdp, len, len * (chunks - 1));
-+	if (err)
-+		goto out;
-+
-+	bpf_for(i, 0, chunks - 1) {
-+		__builtin_memset(buf, 0, sizeof(buf));
-+		err = bpf_dynptr_read(&buf, len, &ptr_xdp, 2 + i * len, 0);
-+		if (err)
-+			goto out;
-+		if (bpf_memcmp(data, buf, len) != 0)
-+			goto out;
-+	}
-+
-+	if (bpf_dynptr_copy(&ptr_xdp, 2000, &ptr_xdp, 0, len * chunks) != -E2BIG)
-+		err = 1;
-+
-+out:
-+	bpf_ringbuf_discard_dynptr(&ptr_buf, 0);
-+	return XDP_DROP;
-+}
--- 
-2.48.1
+        ret = i3c_master_get_free_addr(m, last_addr + 1);
+        ret |= parity8(ret) ? 0 : BIT(7)
 
+So if we'll switch it to a macro like one above, it will become a
+32-bit parity. It wouldn't be an error because i3c_master_get_free_addr()
+returns an u8 or -ENOMEM, and the error code is checked explicitly. 
+
+But if we decide to go with parity() only, some users will have to
+call it like parity((u8)val) explicitly. Which is not bad actually.
+
+> And if not, you can have all those parityXX() as inlines as you suggest, but
+> also provide a macro such as the above to call (optimized) parityXX() as per
+> datatype len.
+
+Yes, if we need fixed-type parity's, they should all be one-liners
+calling the same macro. Macros or inline functions - no preference for
+me.
+
+Thanks,
+Yury
 
