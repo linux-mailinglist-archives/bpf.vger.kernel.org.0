@@ -1,113 +1,84 @@
-Return-Path: <bpf+bounces-52779-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52780-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A68B5A486D0
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 18:37:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2481A486FB
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 18:49:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C656618892C2
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 17:37:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A19D1885953
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 17:49:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0A71E8330;
-	Thu, 27 Feb 2025 17:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E1F1EFF91;
+	Thu, 27 Feb 2025 17:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k2CPtnoX"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eRC9CMEb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B5C1DDC29;
-	Thu, 27 Feb 2025 17:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172341E51E7;
+	Thu, 27 Feb 2025 17:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740677828; cv=none; b=AR7wnk5c7f5o3Bjl2LIZjcz9dZUsLwuhSv1GPJbV6vNm5abTB0epkSduUZhg7ofTw936rF1Z7lLqxUxBlfhYbbcDK4yN9BbdpIvHBRjOg7Vzw16pdplOytspWD0GZYDsbmnfZIfoK8pQzK+dazbtRvVZczNRiM+Knlfq9xsUEh0=
+	t=1740678558; cv=none; b=QGaj5ucAGRtch3CA68hs/y+yhA6mqCxv4uxtaWn9ZpQUZJtiy+Kfh9w9/x2+tPp808McHzVN6pv93d1IA9g3XZACkGHTUWsbTadUjYQzQ+Y+KviyVYeykdieIq7fA0Q5v2R5C6F7XU+ywyeV2lp24O+S2LHBexTfe8qcf5BWlfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740677828; c=relaxed/simple;
-	bh=3VhhTqGt87a5LXVZ8xAbJKCD+r0MSBo9AvP4EXdhZvc=;
+	s=arc-20240116; t=1740678558; c=relaxed/simple;
+	bh=hbOcWRR965qL+r3t+KOoQIZ6pqo51J3oCtyYdu/MbP8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ezwsb0trh6xyZeC+AoW6+B+ljnMChTreoH31oFLGPbRllrsMUlUjfhGqF33Ol1UH0l2W94vCQxc6AW+5+flmKmwHXo2VWkYwpm8GeT0u4ZqoF2IVVKy4ZqlYyE+00iA9tSHrrIPMbw0iejaa7+kzwWEDMDSwR68BAlLu+ShxVzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k2CPtnoX; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-223378e2b0dso20452605ad.0;
-        Thu, 27 Feb 2025 09:37:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740677826; x=1741282626; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VUAFuA6WyxlqIwMao9P+DyP+C2TxjteBYJ1MyyDLQfw=;
-        b=k2CPtnoXP+Nu/D9591DpLIaKIB63ulgvz8LnuAS0Gvpy9tT7B2X8uSVT7amvEwHYN5
-         xVS9I4r+3RVO5D94QO85PqOFY6Zp3qgx98bOkOWLt4Wiu4tiG3UvwEUzcWqicEPZg3wW
-         DrpkJcct3mPAd/teLAglXvpBIOZv2OhEqbg7BVLvTD4piL1wskgOYWI2OFLey43KQVwz
-         JujPkxDVtkSPoC9Y01eeNxNLX06GizP3MKRHs/aT0whflsBfOXPBPxHEMdx10HKEdUdm
-         nHuxJQeCsYqKcBCUaLS1TSAkaUoK/66c657XNZ7MzdvTOdCV8F7+j+hc7+9LtJ8CFncw
-         YQlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740677826; x=1741282626;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VUAFuA6WyxlqIwMao9P+DyP+C2TxjteBYJ1MyyDLQfw=;
-        b=CBW51xVRP/LaIIU1A6CZ4OkqZgrUu7nfhjFZxIgfGDo1MHeLTMhoBk9ls9aSHnsDEJ
-         Hq+I/rEhi3ZvI+LTdwCfGZPul2qRFflSFwVypc9sxMGK/73EaXD81gNmJRO0ZxnRshjC
-         7byUXeIDC5XhpRRdk/keR4/Vqaj2Sj0ftemu+0NRgC7BFGizWLQ1wt1UjWNHW1fnLBHZ
-         hBc+KIaV2cj5yQ7MPhgs3lgClVUJC0CF+Nfh7gwYi28ihhiy7Ar+Vi5sw+vXQ/R8/cB4
-         vZNw/Bb2hoblNmV89dDBLZrPAHpgzRpiI9+tsCit7EyEDhQ7BOiCMi9O+FIj2ZOp5UCx
-         nSBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU9j0q98O9kyB9dWy5+b/tCfcMULttjt2DdRUxvfMxTLipKIVPbXk36nnKn8ofIZXzKtnv5o5EW8XCJzfM2@vger.kernel.org, AJvYcCUU6DzcBdtZZlq0E1+Y65cMvM5A/vA56hExKka8pqUJSXol/OIszuzTLD7LRf8m3msgoow=@vger.kernel.org, AJvYcCUWoy5TgbRAMHlO22hv3NOK7IdgC4Dqz/uXeEKAGFFb9bQuPI97kIfvolb6QfhpcjBc5CtbcUB/iRGVdqj1Gf0=@vger.kernel.org, AJvYcCVYyDkiB2aBGstAzk7mXzYSeUUTbes3GGJGZGd7CCnrhDl1n3r5rSSQJf5eVYm6EFMZ+GdoGX19igFjUuk=@vger.kernel.org, AJvYcCVlFQZSDXAlsbdAdSwO1zAj04bh4oPZ6xPbwX22YjTub52352CSEKLD7CiQJjZrQp2E8tAUgrr4@vger.kernel.org, AJvYcCWOtFmG0JEQTKrqkgsWR/0Jav2B60EvClk8mWib2+01meIMohoVedGCHepPH//u4qoj5PIzSpZ0IxR9GjhB@vger.kernel.org, AJvYcCX1xVA7bQ90BxTYRQOzgeZ8GmLaqz5Ju20K54lixDEkIlByWx1apZHF9TG2jT8v5/Uayny7RHf4pqeUhPc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzKRHiQFsKxRA/aOoRfrGExObZRfbhIy6eAK1GbCUQvo3xvzOUH
-	3M6UBSB0EaoN1bNAwSbbAuGw2bfeZfCy/gR4LMK0dymuk5b6Uu7C
-X-Gm-Gg: ASbGncs53cL6ikyZG4g3aeg9EySDog3pal+DI2I48LU8w6YCk+ekeaiHRf1K53mh2y3
-	+BhxobvZ76YBn+DXHMq12bFe97eX0jQCyuuMCYylHw/Yl/UWSsJL7WF44n/xXJwCHvhQO3q69oK
-	PQEoouzvrFevT7/yAsIhAfYkD4XLbcRjcDMf9yazm7xeSU+LjSo/YWFwTqWWODEmrdwY+0WHVjl
-	kowOZGonIYgf+9GfkpJfBDRu880K4DuM4v/Di256mKI0+MTK6v6SiD+1ohubIjOVNmk3ePSNKRL
-	mggknlz/2No67vWDjkJj+nM45VuFkp/IJl9vmpaBeLYcQM2g9w==
-X-Google-Smtp-Source: AGHT+IGK2yvXxMwGzFuS4qAPXT9dc4oLUeTze+y8wAtciDVfBiItiQouqHwlR4imml9fxjD4qYJfDg==
-X-Received: by 2002:a05:6a20:9146:b0:1ee:d6da:b651 with SMTP id adf61e73a8af0-1f0fc993ffdmr22305716637.35.1740677825727;
-        Thu, 27 Feb 2025 09:37:05 -0800 (PST)
-Received: from localhost (maglev-oncall.nvidia.com. [216.228.125.128])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-aee7de19d3fsm1745501a12.18.2025.02.27.09.37.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Feb 2025 09:37:05 -0800 (PST)
-Date: Thu, 27 Feb 2025 12:37:02 -0500
-From: Yury Norov <yury.norov@gmail.com>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	x86@kernel.org, jk@ozlabs.org, joel@jms.id.au,
-	eajames@linux.ibm.com, andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org, rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-	dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-	akpm@linux-foundation.org, hpa@zytor.com, alistair@popple.id.au,
-	linux@rasmusvillemoes.dk, Laurent.pinchart@ideasonboard.com,
-	jonas@kwiboo.se, jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH 02/17] bitops: Add generic parity calculation for u64
-Message-ID: <Z8Civv0QaBzmFPTq@thinkpad>
-References: <20250223164217.2139331-1-visitorckw@gmail.com>
- <20250223164217.2139331-3-visitorckw@gmail.com>
- <Z7zIBwH4aUA7G9MY@thinkpad>
- <Z73FxIv353lbXO3A@visitorckw-System-Product-Name>
- <b5236ae4-7ebe-4a88-bbc9-3b9b3374de53@kernel.org>
- <Z79ebv630yuNOJKV@thinkpad>
- <a8c29dec-6178-4f8f-80f5-aece636c410b@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fm/S2S+gpk9FDG8Q/qvhmLc6wRELUjZQNT6uySP69qUtLClVVEDwbkiAO1rKzBnxw2rP+4xT2UJiTozszqFlRdciM+UqQfrxYM1pDHXlbo/tVBC8ZPaLWP47lOBshktWrt9io//cu+Gb7PQn/ov+6k67Hy8NLVffS5ATDnc018U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eRC9CMEb; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1740678556; x=1772214556;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hbOcWRR965qL+r3t+KOoQIZ6pqo51J3oCtyYdu/MbP8=;
+  b=eRC9CMEbSw91m9MKdtFIALTXHdePzXEhMRanjuPXzLktTxSKsx0FQ/IG
+   0it4Neh5y9184DEnohQxRgyMOgrlM0pQVIQ2zXoFlv4CddpjaI7d592Qs
+   nAEiDKfu7yUWRHS9Xbw5pd5eYq2sCX5RDLn835kJYy7i0SnQDzefRbt4h
+   c3eyZdDACbMftHZKBFfGyYJkD3Gbdz96aH6OjUdOYSNH+QcNe5XWYqoiC
+   W4Exqf9xCbygpsY3PzpDCpNxsQjK5EVtX4ep3ZXrWMx3VSPMdyGJtDPa8
+   g7dzEit1XaGm3REFAc5jUhTTrEBvyHL5vqzlWIP6n+mwyhi5PBp9d/7k+
+   g==;
+X-CSE-ConnectionGUID: XLGVswL3Rfa16ts4q2dg7g==
+X-CSE-MsgGUID: ahRYtFKqR0qSZtSFKP117g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11358"; a="41503217"
+X-IronPort-AV: E=Sophos;i="6.13,320,1732608000"; 
+   d="scan'208";a="41503217"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2025 09:49:16 -0800
+X-CSE-ConnectionGUID: od8b3YkhQHOqc5lLH407AA==
+X-CSE-MsgGUID: qM2gFwLiQoGeQ9Pbh3oF7w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,320,1732608000"; 
+   d="scan'208";a="117753696"
+Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
+  by fmviesa009.fm.intel.com with ESMTP; 27 Feb 2025 09:49:09 -0800
+Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tni0R-000DnH-0q;
+	Thu, 27 Feb 2025 17:49:07 +0000
+Date: Fri, 28 Feb 2025 01:48:52 +0800
+From: kernel test robot <lkp@intel.com>
+To: Menglong Dong <menglong8.dong@gmail.com>, rostedt@goodmis.org,
+	mark.rutland@arm.com, alexei.starovoitov@gmail.com
+Cc: oe-kbuild-all@lists.linux.dev, catalin.marinas@arm.com, will@kernel.org,
+	mhiramat@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	hpa@zytor.com, mathieu.desnoyers@efficios.com, nathan@kernel.org,
+	ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
+	dongml2@chinatelecom.cn, akpm@linux-foundation.org, rppt@kernel.org,
+	graf@amazon.com, dan.j.williams@intel.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: Re: [PATCH bpf-next v2] add function metadata support
+Message-ID: <202502280123.BNaCYT2A-lkp@intel.com>
+References: <20250226121537.752241-1-dongml2@chinatelecom.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -116,38 +87,141 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a8c29dec-6178-4f8f-80f5-aece636c410b@kernel.org>
+In-Reply-To: <20250226121537.752241-1-dongml2@chinatelecom.cn>
 
-On Thu, Feb 27, 2025 at 07:38:58AM +0100, Jiri Slaby wrote:
-> On 26. 02. 25, 19:33, Yury Norov wrote:
-> > > Not in cases where macros are inevitable. I mean, do we need parityXX() for
-> > > XX in (8, 16, 32, 64) at all? Isn't the parity() above enough for everybody?
-> > 
-> > The existing codebase has something like:
-> > 
-> >          int ret;
-> > 
-> >          ret = i3c_master_get_free_addr(m, last_addr + 1);
-> >          ret |= parity8(ret) ? 0 : BIT(7)
-> > 
-> > So if we'll switch it to a macro like one above, it will become a
-> > 32-bit parity. It wouldn't be an error because i3c_master_get_free_addr()
-> > returns an u8 or -ENOMEM, and the error code is checked explicitly.
-> > 
-> > But if we decide to go with parity() only, some users will have to
-> > call it like parity((u8)val) explicitly. Which is not bad actually.
-> 
-> That cast looks ugly -- we apparently need parityXX(). (In this particular
-> case we could do parity8(last_addr), but I assume there are more cases like
-> this.) Thanks for looking up the case for this.
+Hi Menglong,
 
-This parity8() is used in just 2 drivers - i3c and hwmon/spd5118. The hwmon
-driver looks good. I3C, yeah, makes this implied typecast, which is nasty
-regardless.
+kernel test robot noticed the following build warnings:
 
-This is the new code, and I think if we all agree that generic parity()
-would be a better API, it's a good time to convert existing users now.
+[auto build test WARNING on bpf-next/master]
 
-Thanks,
-Yury
+url:    https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/add-function-metadata-support/20250226-202312
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20250226121537.752241-1-dongml2%40chinatelecom.cn
+patch subject: [PATCH bpf-next v2] add function metadata support
+config: i386-randconfig-062-20250227 (https://download.01.org/0day-ci/archive/20250228/202502280123.BNaCYT2A-lkp@intel.com/config)
+compiler: clang version 19.1.7 (https://github.com/llvm/llvm-project cd708029e0b2869e80abe31ddb175f7c35361f90)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250228/202502280123.BNaCYT2A-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202502280123.BNaCYT2A-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   kernel/trace/kfunc_md.c:12:23: sparse: sparse: symbol 'kfunc_mds' redeclared with different type (different address spaces):
+   kernel/trace/kfunc_md.c:12:23: sparse:    struct kfunc_md [noderef] __rcu *[addressable] [toplevel] kfunc_mds
+   kernel/trace/kfunc_md.c: note: in included file:
+   include/linux/kfunc_md.h:16:24: sparse: note: previously declared as:
+   include/linux/kfunc_md.h:16:24: sparse:    struct kfunc_md *extern [addressable] [toplevel] kfunc_mds
+   kernel/trace/kfunc_md.c:186:20: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct kfunc_md *md @@     got struct kfunc_md [noderef] __rcu * @@
+   kernel/trace/kfunc_md.c:186:20: sparse:     expected struct kfunc_md *md
+   kernel/trace/kfunc_md.c:186:20: sparse:     got struct kfunc_md [noderef] __rcu *
+>> kernel/trace/kfunc_md.c:98:25: sparse: sparse: non size-preserving pointer to integer cast
+
+vim +98 kernel/trace/kfunc_md.c
+
+    10	
+    11	static u32 kfunc_md_count = ENTRIES_PER_PAGE, kfunc_md_used;
+  > 12	struct kfunc_md __rcu *kfunc_mds;
+    13	EXPORT_SYMBOL_GPL(kfunc_mds);
+    14	
+    15	static DEFINE_MUTEX(kfunc_md_mutex);
+    16	
+    17	
+    18	void kfunc_md_unlock(void)
+    19	{
+    20		mutex_unlock(&kfunc_md_mutex);
+    21	}
+    22	EXPORT_SYMBOL_GPL(kfunc_md_unlock);
+    23	
+    24	void kfunc_md_lock(void)
+    25	{
+    26		mutex_lock(&kfunc_md_mutex);
+    27	}
+    28	EXPORT_SYMBOL_GPL(kfunc_md_lock);
+    29	
+    30	static u32 kfunc_md_get_index(void *ip)
+    31	{
+    32		return *(u32 *)(ip - KFUNC_MD_DATA_OFFSET);
+    33	}
+    34	
+    35	static void kfunc_md_init(struct kfunc_md *mds, u32 start, u32 end)
+    36	{
+    37		u32 i;
+    38	
+    39		for (i = start; i < end; i++)
+    40			mds[i].users = 0;
+    41	}
+    42	
+    43	static int kfunc_md_page_order(void)
+    44	{
+    45		return fls(DIV_ROUND_UP(kfunc_md_count, ENTRIES_PER_PAGE)) - 1;
+    46	}
+    47	
+    48	/* Get next usable function metadata. On success, return the usable
+    49	 * kfunc_md and store the index of it to *index. If no usable kfunc_md is
+    50	 * found in kfunc_mds, a larger array will be allocated.
+    51	 */
+    52	static struct kfunc_md *kfunc_md_get_next(u32 *index)
+    53	{
+    54		struct kfunc_md *new_mds, *mds;
+    55		u32 i, order;
+    56	
+    57		mds = rcu_dereference(kfunc_mds);
+    58		if (mds == NULL) {
+    59			order = kfunc_md_page_order();
+    60			new_mds = (void *)__get_free_pages(GFP_KERNEL, order);
+    61			if (!new_mds)
+    62				return NULL;
+    63			kfunc_md_init(new_mds, 0, kfunc_md_count);
+    64			/* The first time to initialize kfunc_mds, so it is not
+    65			 * used anywhere yet, and we can update it directly.
+    66			 */
+    67			rcu_assign_pointer(kfunc_mds, new_mds);
+    68			mds = new_mds;
+    69		}
+    70	
+    71		if (likely(kfunc_md_used < kfunc_md_count)) {
+    72			/* maybe we can manage the used function metadata entry
+    73			 * with a bit map ?
+    74			 */
+    75			for (i = 0; i < kfunc_md_count; i++) {
+    76				if (!mds[i].users) {
+    77					kfunc_md_used++;
+    78					*index = i;
+    79					mds[i].users++;
+    80					return mds + i;
+    81				}
+    82			}
+    83		}
+    84	
+    85		order = kfunc_md_page_order();
+    86		/* no available function metadata, so allocate a bigger function
+    87		 * metadata array.
+    88		 */
+    89		new_mds = (void *)__get_free_pages(GFP_KERNEL, order + 1);
+    90		if (!new_mds)
+    91			return NULL;
+    92	
+    93		memcpy(new_mds, mds, kfunc_md_count * sizeof(*new_mds));
+    94		kfunc_md_init(new_mds, kfunc_md_count, kfunc_md_count * 2);
+    95	
+    96		rcu_assign_pointer(kfunc_mds, new_mds);
+    97		synchronize_rcu();
+  > 98		free_pages((u64)mds, order);
+    99	
+   100		mds = new_mds + kfunc_md_count;
+   101		*index = kfunc_md_count;
+   102		kfunc_md_count <<= 1;
+   103		kfunc_md_used++;
+   104		mds->users++;
+   105	
+   106		return mds;
+   107	}
+   108	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
