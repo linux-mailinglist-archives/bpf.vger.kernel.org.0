@@ -1,108 +1,105 @@
-Return-Path: <bpf+bounces-52768-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52769-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9CA5A484C3
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 17:23:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 729E8A484DF
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 17:27:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DA843B83CC
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 16:18:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E676C1881FFD
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 16:20:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 864BA1B21B7;
-	Thu, 27 Feb 2025 16:18:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CECCE1ADFE4;
+	Thu, 27 Feb 2025 16:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="klDz57CM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CMtq2638"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6710E1A9B48;
-	Thu, 27 Feb 2025 16:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442FF198823;
+	Thu, 27 Feb 2025 16:19:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740673080; cv=none; b=sLpVXKR2bp9hPwePLZrZaMAQsBi+jsTy/iFwiISIXjJImNSALGT764yby9aPsO4hh8//3YVYd3Liq01QZgW+WW3tLTiiULlbHbEoqGBjsesLttWicS9t1dOYrt/Ytkfi78J3TODg1uECmUPgY9g/k8Ya5My7NLhcmR35wVeSSzs=
+	t=1740673200; cv=none; b=Fc7La2vdDInJ1yxx42zbBF/mMyS90P+uq+JVUbU+mJ254wmEt5UW3N9EKCPa+GYAIXoMxcRLBMF9pHTvrRcE7CWJYcA9QIVksIl5x2DiYUtLoxzrQe1nVHoso7AlOEAss2C50OuWueWkhxXJuvT2AqdFoCK7WXh3PK7Q6BE4dEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740673080; c=relaxed/simple;
-	bh=1z+Hzt1PdwAxUZ8iMiUW2/Zzstu2gNJqEwovAfe5vR8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NExPi+bo7pFQYt+iAlirfFeAwpKSG6gjeNMqK/slRMaMvgWGB67W5s2Jlz623tlCbk6oIu/BTfJClid5OL8my4K43nUOuDUAeL+y6kZDwVbE8LljCKs8MO52ogoLim/ZksI4Nr/xPOY7MRi2+lrz0/RWm94cBJtsiTTgebMWqi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=klDz57CM; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-439846bc7eeso7913565e9.3;
-        Thu, 27 Feb 2025 08:17:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740673076; x=1741277876; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1z+Hzt1PdwAxUZ8iMiUW2/Zzstu2gNJqEwovAfe5vR8=;
-        b=klDz57CMM71P+vzU02Fc92Yi+B9/BjTBnuQDylraUwGok2JWKN714hB76Pt/qBTti8
-         4G0igqwk6agg+HTSnrSxe0E9b+fiJqsdHCyO2GYWWBNapqk9qmCsRZTyzXkaAg3OPMre
-         xdZvPJqA5jZDQ4K2TVBbilOK2xJT6coZdAS5iJggVteb9ZNHfsTvft15tRcgW18M9kwA
-         zLwxiCRNq94a84EnrnK2D+P/F6nGdlm0fjOx3kty/RTk9OFzXee1c3Rx2YEOdBv1RdG5
-         mE234dskEfljTJiOEIEeM8a+YOPsx1iG1fmBg/D61KBA37F6YndKGHBxsJ6JtDKS3PmP
-         Q4pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740673076; x=1741277876;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1z+Hzt1PdwAxUZ8iMiUW2/Zzstu2gNJqEwovAfe5vR8=;
-        b=vJZ+LbJLU0jMYilcCQP3O6I5Ang7CoNo0bT7GuPe1MbxCefpwF02DHRvqvrT8pWqRP
-         cKWIDzs6iE2Mp4yW4A3HpPb6pCIWfwTkfCiSbimixuSk2qiUGhVduok3Ky9c5TIfP+1S
-         S8FNhGlguCeTWruIdwl8kp0hRvPKWAJwFgNIKIn8yfriU9YBv5YWemIMnuzVueVfwNc4
-         DEUZqHfXkBjzIWKA8KOfep8K43S/UqXJ8p/bNa1bIa94cZNGtRlQBQI6S63Q4F3pAtZb
-         rGl5mL9XwPneKuihm2m8ie9cLfdHHCfegIYZLdrbc74y2QdBj2FnWVjHFudCwiINGNqO
-         ckKw==
-X-Forwarded-Encrypted: i=1; AJvYcCUlvzpkO3RBJjtBvhXssXsMeq1alfDA2thBASNTpSRCTpo34Y7766aXZUEtlVkBbzsMHxzUfXMicm0/TLg=@vger.kernel.org, AJvYcCWaBn9OuZls+/HL7h3VAT3LSn07Q5AGXKqmyjOB4oJXHyKnAFzBdJW7NP3/oNcJFscYkmfXw+ww@vger.kernel.org, AJvYcCX4k149Pocx3NAnEratj9ykAkvIsYymcQ5PnKE0XTaeWIs0oRA/StmChXumn30WlUnYMvck2sSsScovo8Kd4ULH@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmBp0bX1useeYoDPeo/LH4XBlyLboxGUGUiCdQLAwKkmi1FAia
-	f8uTMSYe1cV5nnnHNS9+p2dddN3BF35zWMZjXtW+KPVJjQu89s/baK61yJG/pkCWzfxnfRnfjEO
-	Tyt/S5lQgFIsoX8FIYGEqjPnuh2Y=
-X-Gm-Gg: ASbGncuj1afKuMpNxO4lUM7080E/rV7jfDxT/9Y8AlwoopJERyvMljPaqdHcP3jdc0X
-	F0RqLI9vViDQVo2eK724o8cBrICzJv7dz+d52WAUMrWW6zLJLxDNnfG4r9zKYLiSCQRv4fthG//
-	DW+cdY+vHb61TW3oy2Dy2rycA=
-X-Google-Smtp-Source: AGHT+IFfZgVBIMgHAS60gtqUMMB4iTwPuyRrt1xAWu0l2Q1D0A1APbfAlQQkVv12JtGzFFt1nyjl7SNYomywmovKPak=
-X-Received: by 2002:a05:6000:1a85:b0:38f:2403:8e98 with SMTP id
- ffacd0b85a97d-390d4f3c49cmr6921059f8f.20.1740673076346; Thu, 27 Feb 2025
- 08:17:56 -0800 (PST)
+	s=arc-20240116; t=1740673200; c=relaxed/simple;
+	bh=y/2Nr36NXLKaDCoN5EX8Qk/6K0dQTdt6rNcVkgwm6DI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=mogavSuZky0wVMMD0zmk88A8OXsTOIeoGWprEQkiTOoOJuTap6pFzT08HjwlkLaEQuO7pjV6+ijhXTcrGRm7o+yS9KpiALwoQe6ZKFUFsGg7AzzyjQaGFaQXEb7qTwdrXQkVq3EY7PeqlqlMJo0X3MmuYdGcndnr9s9xc46mv8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CMtq2638; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B89D2C4CEDD;
+	Thu, 27 Feb 2025 16:19:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740673199;
+	bh=y/2Nr36NXLKaDCoN5EX8Qk/6K0dQTdt6rNcVkgwm6DI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=CMtq2638oo+hngEcmTw3lpKtE1Ao9udiTyUaYD9Fk5U1zOMK5CPffOxsoWZomLbN6
+	 MIGAVVskGyLKqBo0tlL+PFtDfie2igvMcG6T/n+tflYep44X8yx4EAQc9gXHmkAq8Q
+	 muFLchyyZzpgQ9CFlfGwsv5Ls5xC6rywQk6DGTT4qDBPczWu3stHax7JUH0svMuHQV
+	 am+raCymkOcyWstED+Aoa2XGsZuUyjvH6xhtJ+iUWMrDdRsHHTLwUAIGg5kdyS/F4t
+	 utQ1WTHBeN5Ev7tFujrhHS0fKDvTgwEezxL6klihaZx7r8hsP2aJjXa9DKiPYoz7kP
+	 +zEqm9zUpo6Ng==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB3FA380AACB;
+	Thu, 27 Feb 2025 16:20:32 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v1 0/3] Optimize bpf selftest to increase CI success
+ rate
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174067323175.1484560.1369764651554494631.git-patchwork-notify@kernel.org>
+Date: Thu, 27 Feb 2025 16:20:31 +0000
 References: <20250227142646.59711-1-jiayuan.chen@linux.dev>
 In-Reply-To: <20250227142646.59711-1-jiayuan.chen@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 27 Feb 2025 08:17:45 -0800
-X-Gm-Features: AQ5f1Jr3aoT8fcBBvu8cqSZiaY9ghCmWDcM2Gyb-jL8U3D9wTjYLu2PPC3eSYtk
-Message-ID: <CAADnVQLW1G7xA2X2_rB8iG47_5_7LHXve2aXVwXDvSmbUzkbtQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 0/3] Optimize bpf selftest to increase CI
- success rate
 To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Jiayuan Chen <mrpre@163.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: bpf@vger.kernel.org, john.fastabend@gmail.com, davem@davemloft.net,
+ kuba@kernel.org, andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com,
+ ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, hawk@kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, mrpre@163.com
 
-On Thu, Feb 27, 2025 at 6:27=E2=80=AFAM Jiayuan Chen <jiayuan.chen@linux.de=
-v> wrote:
->
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Thu, 27 Feb 2025 22:26:43 +0800 you wrote:
 > 1. Optimized some static bound port selftests to avoid port occupation
 > when running test_progs -j.
 > 2. Optimized the retry logic for test_maps.
+> 
+> Some Failed CI:
+> https://github.com/kernel-patches/bpf/actions/runs/13275542359/job/37064974076
+> https://github.com/kernel-patches/bpf/actions/runs/13549227497/job/37868926343
+> https://github.com/kernel-patches/bpf/actions/runs/13548089029/job/37865812030
+> https://github.com/kernel-patches/bpf/actions/runs/13553536268/job/37883329296
+> (Perhaps it's due to the large number of pull requests requiring CI runs?)
+> 
+> [...]
 
-Looks great. Applied.
-Thank you for fixing them.
+Here is the summary with links:
+  - [bpf-next,v1,1/3] selftests/bpf: Allow auto port binding for cgroup connect
+    https://git.kernel.org/bpf/bpf-next/c/27e3162a0364
+  - [bpf-next,v1,2/3] selftests/bpf: Allow auto port binding for bpf nf
+    https://git.kernel.org/bpf/bpf-next/c/dbe7d46ed109
+  - [bpf-next,v1,3/3] selftests/bpf: Fixes for test_maps test
+    https://git.kernel.org/bpf/bpf-next/c/09de329523c8
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
