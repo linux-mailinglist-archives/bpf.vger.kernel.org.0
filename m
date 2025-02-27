@@ -1,182 +1,108 @@
-Return-Path: <bpf+bounces-52767-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52768-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80053A48476
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 17:14:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9CA5A484C3
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 17:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CA9D7A0FF7
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 16:13:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DA843B83CC
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 16:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC88A1BD03F;
-	Thu, 27 Feb 2025 16:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 864BA1B21B7;
+	Thu, 27 Feb 2025 16:18:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="bBnWSgf2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="klDz57CM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A15C1B3950;
-	Thu, 27 Feb 2025 16:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6710E1A9B48;
+	Thu, 27 Feb 2025 16:17:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740672483; cv=none; b=kTxZxy+4148zgOkISEAk+FoKwph6rCriIGZ5oHykr45/aff3HiuALa4NwsGMRYrNhaAuigjShXKia/7XCe5BSuBQeVMu2iD2CXfP70nSOon0V4ftilRlJK+y+GfzTXjVUPFdHMWwt7C6GlfgmpTZyYo9vMvpIt8QQrMqtO5e2kU=
+	t=1740673080; cv=none; b=sLpVXKR2bp9hPwePLZrZaMAQsBi+jsTy/iFwiISIXjJImNSALGT764yby9aPsO4hh8//3YVYd3Liq01QZgW+WW3tLTiiULlbHbEoqGBjsesLttWicS9t1dOYrt/Ytkfi78J3TODg1uECmUPgY9g/k8Ya5My7NLhcmR35wVeSSzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740672483; c=relaxed/simple;
-	bh=N7+PIP/u/EXnsYW1te2ETYmSDhz1b3A22sY96b93gQs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cCaxuxyaLuihGHeYxNZlx87heTBYDi7O7aEjcdW5LbBtPOx6uCLHAhDCs/RTCba5lG34jgNKwy9feLKiTpuFQpWS1K4982CqFmRlxsQMTxSZy0kPXDnSyh1p/X2bG3qUifI6wU20mgphyDdNADTMj/kCYbHnijlmVcNbzXwReJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=bBnWSgf2; arc=none smtp.client-ip=131.188.11.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Z3bpb3VrFz8srK;
-	Thu, 27 Feb 2025 17:07:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1740672471; bh=1ZhNgcCn5cZnUuzeMSL8VZ2F71Q+VzQTBJcd0+1+j1o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From:To:CC:
-	 Subject;
-	b=bBnWSgf2rQDw0eQmbPQOGBqE+dif5J/EtcnklD8jOSWYiNFw53zbUkG0Zna5udkgL
-	 C2Q/GiKEq6PNkyCJRReUGY6xiCVFlSp7c3rDGGhXljMuB6RO8u8GR5PH1SgYFPEIQW
-	 rpMk0HV4yPJvu9GMfVfd/zErRXXE8M6DMTii+rC2h6MJyZa4/w+p9/pboVf19pYfQx
-	 c0S0b7pUbQ/pQiYh7Qzs8dDgOjHuspheIfC5qzZ2SHs7eNHCgGiLEVEeV6oolqCmqM
-	 ziDFbYCl7vIgXdnPFLribmG6A2OY0BwyiuzRWcqhCHtU4H3TMcTouCeRzQkIvIBQva
-	 Er4gB2fFkIkdw==
-X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 91.57.235.199
-Received: from [192.168.212.208] (p5b39ebc7.dip0.t-ipconnect.de [91.57.235.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX18yIGrez3keadnnnZZCFhsb+TdVPKW3B3A=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Z3bpW05Kjz8sc4;
-	Thu, 27 Feb 2025 17:07:46 +0100 (CET)
-Message-ID: <e8041b56-396b-427f-b9cb-d51004a40f57@fau.de>
-Date: Thu, 27 Feb 2025 17:07:43 +0100
+	s=arc-20240116; t=1740673080; c=relaxed/simple;
+	bh=1z+Hzt1PdwAxUZ8iMiUW2/Zzstu2gNJqEwovAfe5vR8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NExPi+bo7pFQYt+iAlirfFeAwpKSG6gjeNMqK/slRMaMvgWGB67W5s2Jlz623tlCbk6oIu/BTfJClid5OL8my4K43nUOuDUAeL+y6kZDwVbE8LljCKs8MO52ogoLim/ZksI4Nr/xPOY7MRi2+lrz0/RWm94cBJtsiTTgebMWqi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=klDz57CM; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-439846bc7eeso7913565e9.3;
+        Thu, 27 Feb 2025 08:17:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740673076; x=1741277876; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1z+Hzt1PdwAxUZ8iMiUW2/Zzstu2gNJqEwovAfe5vR8=;
+        b=klDz57CMM71P+vzU02Fc92Yi+B9/BjTBnuQDylraUwGok2JWKN714hB76Pt/qBTti8
+         4G0igqwk6agg+HTSnrSxe0E9b+fiJqsdHCyO2GYWWBNapqk9qmCsRZTyzXkaAg3OPMre
+         xdZvPJqA5jZDQ4K2TVBbilOK2xJT6coZdAS5iJggVteb9ZNHfsTvft15tRcgW18M9kwA
+         zLwxiCRNq94a84EnrnK2D+P/F6nGdlm0fjOx3kty/RTk9OFzXee1c3Rx2YEOdBv1RdG5
+         mE234dskEfljTJiOEIEeM8a+YOPsx1iG1fmBg/D61KBA37F6YndKGHBxsJ6JtDKS3PmP
+         Q4pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740673076; x=1741277876;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1z+Hzt1PdwAxUZ8iMiUW2/Zzstu2gNJqEwovAfe5vR8=;
+        b=vJZ+LbJLU0jMYilcCQP3O6I5Ang7CoNo0bT7GuPe1MbxCefpwF02DHRvqvrT8pWqRP
+         cKWIDzs6iE2Mp4yW4A3HpPb6pCIWfwTkfCiSbimixuSk2qiUGhVduok3Ky9c5TIfP+1S
+         S8FNhGlguCeTWruIdwl8kp0hRvPKWAJwFgNIKIn8yfriU9YBv5YWemIMnuzVueVfwNc4
+         DEUZqHfXkBjzIWKA8KOfep8K43S/UqXJ8p/bNa1bIa94cZNGtRlQBQI6S63Q4F3pAtZb
+         rGl5mL9XwPneKuihm2m8ie9cLfdHHCfegIYZLdrbc74y2QdBj2FnWVjHFudCwiINGNqO
+         ckKw==
+X-Forwarded-Encrypted: i=1; AJvYcCUlvzpkO3RBJjtBvhXssXsMeq1alfDA2thBASNTpSRCTpo34Y7766aXZUEtlVkBbzsMHxzUfXMicm0/TLg=@vger.kernel.org, AJvYcCWaBn9OuZls+/HL7h3VAT3LSn07Q5AGXKqmyjOB4oJXHyKnAFzBdJW7NP3/oNcJFscYkmfXw+ww@vger.kernel.org, AJvYcCX4k149Pocx3NAnEratj9ykAkvIsYymcQ5PnKE0XTaeWIs0oRA/StmChXumn30WlUnYMvck2sSsScovo8Kd4ULH@vger.kernel.org
+X-Gm-Message-State: AOJu0YxmBp0bX1useeYoDPeo/LH4XBlyLboxGUGUiCdQLAwKkmi1FAia
+	f8uTMSYe1cV5nnnHNS9+p2dddN3BF35zWMZjXtW+KPVJjQu89s/baK61yJG/pkCWzfxnfRnfjEO
+	Tyt/S5lQgFIsoX8FIYGEqjPnuh2Y=
+X-Gm-Gg: ASbGncuj1afKuMpNxO4lUM7080E/rV7jfDxT/9Y8AlwoopJERyvMljPaqdHcP3jdc0X
+	F0RqLI9vViDQVo2eK724o8cBrICzJv7dz+d52WAUMrWW6zLJLxDNnfG4r9zKYLiSCQRv4fthG//
+	DW+cdY+vHb61TW3oy2Dy2rycA=
+X-Google-Smtp-Source: AGHT+IFfZgVBIMgHAS60gtqUMMB4iTwPuyRrt1xAWu0l2Q1D0A1APbfAlQQkVv12JtGzFFt1nyjl7SNYomywmovKPak=
+X-Received: by 2002:a05:6000:1a85:b0:38f:2403:8e98 with SMTP id
+ ffacd0b85a97d-390d4f3c49cmr6921059f8f.20.1740673076346; Thu, 27 Feb 2025
+ 08:17:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/9] bpf: Fall back to nospec if v1 verification fails
-To: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>,
- Xu Kuohai <xukuohai@huaweicloud.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- Henriette Herzog <henriette.herzog@rub.de>,
- Cupertino Miranda <cupertino.miranda@oracle.com>,
- Matan Shachnai <m.shachnai@gmail.com>,
- Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
- Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>,
- bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc: Maximilian Ott <ott@cs.fau.de>, Milan Stephan <milan.stephan@fau.de>
-References: <20250224203619.594724-1-luis.gerhorst@fau.de>
- <20250224204744.599963-1-luis.gerhorst@fau.de>
-Content-Language: en-US, de-DE
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-Autocrypt: addr=luis.gerhorst@fau.de; keydata=
- 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
- Bjq2LIJlJ8czDxmxpGv0CjsHjGkXwBgsoeAK9A==
-Organization: I4
-In-Reply-To: <20250224204744.599963-1-luis.gerhorst@fau.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20250227142646.59711-1-jiayuan.chen@linux.dev>
+In-Reply-To: <20250227142646.59711-1-jiayuan.chen@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 27 Feb 2025 08:17:45 -0800
+X-Gm-Features: AQ5f1Jr3aoT8fcBBvu8cqSZiaY9ghCmWDcM2Gyb-jL8U3D9wTjYLu2PPC3eSYtk
+Message-ID: <CAADnVQLW1G7xA2X2_rB8iG47_5_7LHXve2aXVwXDvSmbUzkbtQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 0/3] Optimize bpf selftest to increase CI
+ success rate
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Jiayuan Chen <mrpre@163.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 24/02/2025 21:47, Luis Gerhorst wrote:
-> +		} else if (error_recoverable_with_nospec(err) && state->speculative) 
-> {
-> +			WARN_ON_ONCE(env->bypass_spec_v1);
-> +			WARN_ON_ONCE(env->cur_state != state);
-> +
-> +			/* Prevent this speculative path from ever reaching the
-> +			 * insn that would have been unsafe to execute.
-> +			 */
-> +			cur_aux(env)->nospec = true;
+On Thu, Feb 27, 2025 at 6:27=E2=80=AFAM Jiayuan Chen <jiayuan.chen@linux.de=
+v> wrote:
+>
+> 1. Optimized some static bound port selftests to avoid port occupation
+> when running test_progs -j.
+> 2. Optimized the retry logic for test_maps.
 
-This allows us to accept more programs, but it has the downside that 
-Spectre v1 mitigation now requires BPF_NOSPEC to be emitted by every JIT 
-for archs vulnerable to Spectre v1. This currently is not the case, and 
-this patch therefore may regress BPF's security.
-
-The regression is limited to systems vulnerable to Spectre v1, have 
-unprivileged BPF enabled, and do NOT emit insns for BPF_NOSPEC. The 
-latter is not the case for x86 64- and 32-bit, arm64, and powerpc 64-bit 
-and they are therefore not affected by the regression. According to [1], 
-LoongArch and mips are not vulnerable to Spectre v1 and therefore also 
-not affected by the regression.
-
-Also, if any of those regressed systems is also vulnerable to Spectre 
-v4, the system was already vulnerable to Spectre v4 attacks based on 
-unpriv BPF before this patch and the impact is therefore further 
-limited.
-
-As far as I am aware, it is unclear which other architectures (besides 
-x86 64- and 32-bit, arm64, powerpc 64-bit, LoongArch, and mips) 
-supported by the kernel are vulnerable to Spectre v1 but not to Spectre 
-v4. Also, I am not sure if barriers are available on these 
-architectures. Implementing BPF_NOSPEC on these architectures therefore 
-appears non-trivial (probably impossible) to me. Searching gcc / the 
-kernel for speculation barrier implementations for these architectures 
-yielded no result. Any input is very welcome.
-
-As an alternative, one could still reject programs if the architecture 
-does not emit BPF_NOSPEC (e.g., by removing the empty BPF_NOSPEC-case 
-from all JITs except for LoongArch and mips where they appear 
-justified). However, this will cause rejections on these archs and some 
-may have to re-add the empty case. Even if this happens, some may not do 
-it and only rejecting the programs on some archs might complicate BPF 
-selftests.
-
-Do you think the potential regression is acceptable or should we err on 
-the side of caution?
-
-[1] a6f6a95f25803500079513780d11a911ce551d76 ("LoongArch, bpf: Fix jit 
-to skip speculation barrier opcode")
+Looks great. Applied.
+Thank you for fixing them.
 
