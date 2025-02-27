@@ -1,137 +1,253 @@
-Return-Path: <bpf+bounces-52723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52724-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 812C0A4799E
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 10:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DD3CCA47B9F
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 12:15:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 614E81889655
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 09:54:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 053941892F48
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 11:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A785D228CBA;
-	Thu, 27 Feb 2025 09:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A207A22FF30;
+	Thu, 27 Feb 2025 11:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="QJyrWn3X"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="QC2IN5rY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753C3227EA1
-	for <bpf@vger.kernel.org>; Thu, 27 Feb 2025 09:53:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C44C22FAE1;
+	Thu, 27 Feb 2025 11:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740650039; cv=none; b=dPZ8p40qfWeoaMlUe2ofcm/ZIWO9n4V8ttvIvxSNrlU7DeC5VBaS7tIA5JQZFQwh/r4Eg1AG9Zd9Np/H4BNmzcZJiYwNTCptTUgjzfYmDDS0I+NpEaUkTUwpJQUSvCEGyJccRCvUrpYb/6fGCQi2JEO9U8Z2agn5cbXMfCdhhPY=
+	t=1740654732; cv=none; b=tL2Pln2jiBiJKGy9jNcJ/67DEPNDr67qfqM4xNrIfsJI8daH7IyN4xa3rGzUEn8bGKhJB/oL+dp2k/cwjJSPv/yihuMiyyGcD5DiZaXZdQKzBKw778/F9Xn34Jrn3iu38Z2+5+33DMdx4vwZjlpHuOYXSekjmA8G8h18R20rJ6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740650039; c=relaxed/simple;
-	bh=cqlRr5ojGAieyydCsb1/xug57pPEpHK4ZXmBIZ1KQgc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=VuuVQOlkJ7Lkw8PVAu1VrrNAPtU8PEpdej9GUXAZ9/2KLR/rNs3zQgBEzpOJCob7LNR/27HZ68pyDk9fKh1abero2iv6I5xHX41B1LmLiolZClGNe/XBMHNidRgMiux1ewesiSCcYIllcSmDR2t3+7NFYKC1MO7w/Dai3s4N/PE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=QJyrWn3X; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5dedae49c63so1215594a12.0
-        for <bpf@vger.kernel.org>; Thu, 27 Feb 2025 01:53:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1740650036; x=1741254836; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8To84FkdGIxaZ8ja4fPLSV1vzDgsMI1kjx5dHp2GFYU=;
-        b=QJyrWn3XtSIMdwL2IeZvBdhfOM4m4phOqLPriHEPsBjYyXupwJjTrx7OSzZo6bJZmk
-         rmJIqtImGfqV7kfki37zeDLL1XzzQot0bV9GvPVeC6UlBHuulfzQwuxwhtU3hbx66C6Y
-         kzv2m99Z0kl0g/57G2ymKz1jCgSA0b/0LHUUFQvrSeZ/8Ak/NkhcT6m2k3nL+vnbfv6H
-         PwmEXozwrzrr63fN8E+TKoS96ITK/eCDqjNZxv0684ZVDQf7JkDeoeBVr7bUb1GEXPl5
-         o4okjzESrQpNEK/66LO6BI7dIiG1eQ28fUNkf08rkBe+KR/1OyTCaK2pRbhg1aX9wo1l
-         z1tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740650036; x=1741254836;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8To84FkdGIxaZ8ja4fPLSV1vzDgsMI1kjx5dHp2GFYU=;
-        b=GCfAfJ2qFgRq6abdF0FyfHmgz0M+z/GoXKc3q/ooHOg6q2fsN1S+ac3SgRl5tqcj3s
-         3y/Umr6deW87NFPw77U53fBxtMJGUPrY123SQUJi51ffkDj58NvdFIj3RWnIF14iK4xf
-         lk+A5vqY0n1pDGyGfXvH//oxUNsXMxNsT4FHC0z3rPSd7xNItzD6dxtOCsMYN0nrfsHy
-         wnvfDXnO4nSxZG9teVLcIeMyO8d0Q9smF/KZeOp4QVd/UD9/xUrLt4jVrgRF5asnfa/D
-         xsbJO2re1N/NcwLU59SiXas55xnKr1ztaY9jguL7j2DEdgMeKi9Tapa3jyFZ+WGGXnKI
-         33BQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVSy5VmChHySTyOeZcETDlhT/cZMT43eUnp3frdFFosB0hunKcfn/KN7Ite8Mb815MxSl8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzrWd0hULkqend5aWuyZHQ4zW+DZUdoKkdV7rrKBUiqa8Gihcoq
-	DKIEyWEs9QcLUqShXwjXeLe1fEGiwopx1pwoYiVCuKa2lePLwDbFeAd4HJFNLmk=
-X-Gm-Gg: ASbGncteHf/nKDYt7p82k8XCLPhF0BBqYm7CdlS+C8d3478t7W4+t0hfi7aPc6S8wGr
-	yw7CPutNW9SNVuhg7SYuu67TJZq0xcCqK5zlLrWg7ly88svz9iCpY1OGKASgWHXJvrLxay4levY
-	c8r5duS8FoWmo3shhUdK6lXPYsylOHohMWFmnKXZ2HRPBR/wQGh4KahzSDMHIzpXU0/W6Hz6JdV
-	zdsMp4xn17aJgydRMn62PdGTEcVROPtOI2moHL0he/UJHcFvMizKNr2BSnj2AbyoydJcpt3BFxe
-	qI8EAsDYqQZoi4VH
-X-Google-Smtp-Source: AGHT+IEvb+pBrV9uVzJjDkG4ZS9tPPbvylZOXC8K+43fLUECBRm2cHWiyPLaTwE9nAUdw6WM/yVelA==
-X-Received: by 2002:a05:6402:27cc:b0:5dc:1289:7f1c with SMTP id 4fb4d7f45d1cf-5e0b72546e9mr26148993a12.29.1740650035690;
-        Thu, 27 Feb 2025 01:53:55 -0800 (PST)
-Received: from cloudflare.com ([2a09:bac5:506a:2dc::49:df])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e4c3fb58f7sm826692a12.57.2025.02.27.01.53.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Feb 2025 01:53:54 -0800 (PST)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: netdev@vger.kernel.org,  bpf@vger.kernel.org,  john.fastabend@gmail.com,
-  zhoufeng.zf@bytedance.com,  zijianzhang@bytedance.com,  Cong Wang
- <cong.wang@bytedance.com>
-Subject: Re: [Patch bpf-next 3/4] skmsg: use bitfields for struct sk_psock
-In-Reply-To: <Z7+UAA83/n9XgIdU@pop-os.localdomain> (Cong Wang's message of
-	"Wed, 26 Feb 2025 14:21:52 -0800")
-References: <20250222183057.800800-1-xiyou.wangcong@gmail.com>
-	<20250222183057.800800-4-xiyou.wangcong@gmail.com>
-	<87ldtsu882.fsf@cloudflare.com> <Z7+UAA83/n9XgIdU@pop-os.localdomain>
-Date: Thu, 27 Feb 2025 10:53:53 +0100
-Message-ID: <87eczju30u.fsf@cloudflare.com>
+	s=arc-20240116; t=1740654732; c=relaxed/simple;
+	bh=BAp6IZkgiyRD/RzyQXKxlsI0RKC6IU3pJOvuO9xE6Gk=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=Sm5aNK8J+DUfwmy/yZQL3wopzAywtq2gNFJ0+grQkaX0+scA6kVYTnpbbN/djhL6/NUJPlr1ntYDNwSzZHGnhahfcsAB5tGiasG+JmVmiqJY0H6DIpCuzFEC/sHupdhbQXZ8tV5ZVbkXWBdJjo1EmuSU7fbID3IHRJQGL7GzQHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=QC2IN5rY; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51R9VR8O014508;
+	Thu, 27 Feb 2025 11:11:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=VBvqaX
+	UQxcsvpwV2aX/7sxnJGxIeXk+ZIcUf4CT2b9Y=; b=QC2IN5rYDDWFE2ABCxRtcT
+	lFMnnHt/aIvwCyrOIz6oK2aHc/ktvSAQTyFS+39vqRypN8ohXp/kXsauhGhZC+hI
+	Evddbqs4+0a43bltlrgbf1OwzI07GgAxlrw1o/fUsyPy/nvB4Bfzl+tqn9cKpWbu
+	uyRUBcoOO1YV2CiMrwp25avbOmnVLnJP3NtRgkNmb2LFNJfbHpsmr2YL7BNJ0FRQ
+	juy2MjVe2TdsjoSh89m20XMQbzx0yt2B7qF264cMiFonhs/KctASCg9rXQjuFrwV
+	DQ707TUtl/MBaFI9EFmq35oAT/a1SqbRivnRU/2ZEudNB2paFuqhc4xqiaxyoBJg
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 452c3a2wp1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 27 Feb 2025 11:11:51 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 51RBBpnR013432;
+	Thu, 27 Feb 2025 11:11:51 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 452c3a2wnx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 27 Feb 2025 11:11:50 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 51RAjVR7002570;
+	Thu, 27 Feb 2025 11:11:50 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 44yu4jyxhd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 27 Feb 2025 11:11:49 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 51RBBmVw17695162
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 27 Feb 2025 11:11:48 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4767E20043;
+	Thu, 27 Feb 2025 11:11:48 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2D1E920040;
+	Thu, 27 Feb 2025 11:11:42 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.61.240.191])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 27 Feb 2025 11:11:41 +0000 (GMT)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
+Subject: Re: [PATCH v8 0/4] Tracing contention lock owner call stack
+From: Athira Rajeev <atrajeev@linux.ibm.com>
+In-Reply-To: <20250227003359.732948-1-ctshao@google.com>
+Date: Thu, 27 Feb 2025 16:41:28 +0530
+Cc: "open list:PERFORMANCE EVENTS SUBSYSTEM" <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>, nick.forrington@arm.com,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" <linux-perf-users@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <EB79B75A-896E-42B6-B206-314BA137E257@linux.ibm.com>
+References: <20250227003359.732948-1-ctshao@google.com>
+To: Chun-Tse Shao <ctshao@google.com>
+X-Mailer: Apple Mail (2.3776.700.51)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: p3SUz25bm8BfibT94Qp1_itJ50ZotSFB
+X-Proofpoint-ORIG-GUID: xiDBKbydrwc80UQK6-AB1YvcbBUicya8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-27_05,2025-02-27_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1015 adultscore=0 spamscore=0 lowpriorityscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2502270083
 
-On Wed, Feb 26, 2025 at 02:21 PM -08, Cong Wang wrote:
-> On Wed, Feb 26, 2025 at 02:49:17PM +0100, Jakub Sitnicki wrote:
->> On Sat, Feb 22, 2025 at 10:30 AM -08, Cong Wang wrote:
->> > From: Cong Wang <cong.wang@bytedance.com>
->> >
->> > psock->eval can only have 4 possible values, make it 8-bit is
->> > sufficient.
->> >
->> > psock->redir_ingress is just a boolean, using 1 bit is enough.
->> >
->> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
->> > ---
->> >  include/linux/skmsg.h | 4 ++--
->> >  1 file changed, 2 insertions(+), 2 deletions(-)
->> >
->> > diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
->> > index bf28ce9b5fdb..beaf79b2b68b 100644
->> > --- a/include/linux/skmsg.h
->> > +++ b/include/linux/skmsg.h
->> > @@ -85,8 +85,8 @@ struct sk_psock {
->> >  	struct sock			*sk_redir;
->> >  	u32				apply_bytes;
->> >  	u32				cork_bytes;
->> > -	u32				eval;
->> > -	bool				redir_ingress; /* undefined if sk_redir is null */
->> > +	unsigned int			eval : 8;
->> > +	unsigned int			redir_ingress : 1; /* undefined if sk_redir is null */
->> >  	struct sk_msg			*cork;
->> >  	struct sk_psock_progs		progs;
->> >  #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
->> 
->> Are you doing this bit packing to create a hole big enough to fit
->> another u32 introduced in the next patch?
->
-> Kinda, or at least trying to save some space for the next patch. I am
-> not yet trying to reorder them to make it more packed, because it can
-> be a separate patch.
 
-OK. Asking because the intention is not expressed in the description.
 
-Nit: Why the switch to an implicitly sized integer type?
-It feels a bit silly when you can just declare an `u8 eval`.
+> On 27 Feb 2025, at 5:58=E2=80=AFAM, Chun-Tse Shao <ctshao@google.com> =
+wrote:
+>=20
+> For perf lock contention, the current owner tracking (-o option) only
+> works with per-thread mode (-t option). Enabling call stack mode for
+> owner can be useful for diagnosing why a system running slow in
+> lock contention.
+>=20
+> Example output:
+>  $ sudo ~/linux/tools/perf/perf lock con -abvo -Y mutex -E16 perf =
+bench sched pipe
+>   ...
+>   contended   total wait     max wait     avg wait         type   =
+caller
+>=20
+>         171      1.55 ms     20.26 us      9.06 us        mutex   =
+pipe_read+0x57
+>                          0xffffffffac6318e7  pipe_read+0x57
+>                          0xffffffffac623862  vfs_read+0x332
+>                          0xffffffffac62434b  ksys_read+0xbb
+>                          0xfffffffface604b2  do_syscall_64+0x82
+>                          0xffffffffad00012f  =
+entry_SYSCALL_64_after_hwframe+0x76
+>          36    193.71 us     15.27 us      5.38 us        mutex   =
+pipe_write+0x50
+>                          0xffffffffac631ee0  pipe_write+0x50
+>                          0xffffffffac6241db  vfs_write+0x3bb
+>                          0xffffffffac6244ab  ksys_write+0xbb
+>                          0xfffffffface604b2  do_syscall_64+0x82
+>                          0xffffffffad00012f  =
+entry_SYSCALL_64_after_hwframe+0x76
+>           4     51.22 us     16.47 us     12.80 us        mutex   =
+do_epoll_wait+0x24d
+>                          0xffffffffac691f0d  do_epoll_wait+0x24d
+>                          0xffffffffac69249b  do_epoll_pwait.part.0+0xb
+>                          0xffffffffac693ba5  =
+__x64_sys_epoll_pwait+0x95
+>                          0xfffffffface604b2  do_syscall_64+0x82
+>                          0xffffffffad00012f  =
+entry_SYSCALL_64_after_hwframe+0x76
+>           2     20.88 us     11.95 us     10.44 us        mutex   =
+do_epoll_wait+0x24d
+>                          0xffffffffac691f0d  do_epoll_wait+0x24d
+>                          0xffffffffac693943  __x64_sys_epoll_wait+0x73
+>                          0xfffffffface604b2  do_syscall_64+0x82
+>                          0xffffffffad00012f  =
+entry_SYSCALL_64_after_hwframe+0x76
+>           1      7.33 us      7.33 us      7.33 us        mutex   =
+do_epoll_ctl+0x6c1
+>                          0xffffffffac692e01  do_epoll_ctl+0x6c1
+>                          0xffffffffac6937e0  __x64_sys_epoll_ctl+0x70
+>                          0xfffffffface604b2  do_syscall_64+0x82
+>                          0xffffffffad00012f  =
+entry_SYSCALL_64_after_hwframe+0x76
+>           1      6.64 us      6.64 us      6.64 us        mutex   =
+do_epoll_ctl+0x3d4
+>                          0xffffffffac692b14  do_epoll_ctl+0x3d4
+>                          0xffffffffac6937e0  __x64_sys_epoll_ctl+0x70
+>                          0xfffffffface604b2  do_syscall_64+0x82
+>                          0xffffffffad00012f  =
+entry_SYSCALL_64_after_hwframe+0x76
+>=20
+>  =3D=3D=3D owner stack trace =3D=3D=3D
+>=20
+>           3     31.24 us     15.27 us     10.41 us        mutex   =
+pipe_read+0x348
+>                          0xffffffffac631bd8  pipe_read+0x348
+>                          0xffffffffac623862  vfs_read+0x332
+>                          0xffffffffac62434b  ksys_read+0xbb
+>                          0xfffffffface604b2  do_syscall_64+0x82
+>                          0xffffffffad00012f  =
+entry_SYSCALL_64_after_hwframe+0x76
+>  ...
+>=20
+> v8:
+>  Fix compilation error found by Athira Rajeev and Namhyung Kim.
+
+Tested with v8 and compiles fine, thanks for addressing the issue.
+
+Tested-by: Athira Rajeev <atrajeev@linux.ibm.com>
+
+>=20
+> v7: lore.kernel.org/20250224184742.4144931-1-ctshao@google.com
+>  Remove duplicate contention records.
+>=20
+> v6: lore.kernel.org/20250219214400.3317548-1-ctshao@google.com
+>  Free allocated memory in error patch.
+>  Add description in man page.
+>=20
+> v5: lore.kernel.org/20250212222859.2086080-1-ctshao@google.com
+>  Move duplicated code into function.
+>  Remove code to retrieve undesired callstack at the end of =
+`contention_end()`.
+>  Other minor fix based on Namhyung's review.
+>=20
+> v4: lore.kernel.org/20250130052510.860318-1-ctshao@google.com
+>  Use `__sync_fetch_and_add()` to generate owner stackid automatically.
+>  Use `__sync_fetch_and_add(..., -1)` to workaround compiler error from
+>    `__sync_fetch_and_sub()`
+>  Remove unnecessary include headers.
+>  Dedicate on C-style comment.
+>  Other minor fix based on Namhyung's review.
+>=20
+> v3: lore.kernel.org/20250129001905.619859-1-ctshao@google.com
+>  Rename/shorten multiple variables.
+>  Implement owner stackid.
+>  Add description for lock function return code in `contention_end()`.
+>  Other minor fix based on Namhyung's review.
+>=20
+> v2: lore.kernel.org/20250113052220.2105645-1-ctshao@google.com
+>  Fix logic deficit in v1 patch 2/4.
+>=20
+> v1: lore.kernel.org/20250110051346.1507178-1-ctshao@google.com
+>=20
+> Chun-Tse Shao (4):
+>  perf lock: Add bpf maps for owner stack tracing
+>  perf lock: Retrieve owner callstack in bpf program
+>  perf lock: Make rb_tree helper functions generic
+>  perf lock: Report owner stack in usermode
+>=20
+> tools/perf/Documentation/perf-lock.txt        |   5 +-
+> tools/perf/builtin-lock.c                     |  56 +++-
+> tools/perf/util/bpf_lock_contention.c         |  85 +++++-
+> .../perf/util/bpf_skel/lock_contention.bpf.c  | 245 +++++++++++++++++-
+> tools/perf/util/bpf_skel/lock_data.h          |   7 +
+> tools/perf/util/lock-contention.h             |   7 +
+> 6 files changed, 372 insertions(+), 33 deletions(-)
+>=20
+> --
+> 2.48.1.658.g4767266eb4-goog
+>=20
+>=20
 
 
