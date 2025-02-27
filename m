@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-52741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F65DA4809D
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 15:11:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E03FA480A4
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 15:12:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF5A616C0BA
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 14:03:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50D231726F3
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 14:03:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89F3233D85;
-	Thu, 27 Feb 2025 14:02:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62899214222;
+	Thu, 27 Feb 2025 14:02:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vx13hn50"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OuW2JB6v"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6291233155;
-	Thu, 27 Feb 2025 14:02:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80EDE230D1E;
+	Thu, 27 Feb 2025 14:02:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740664964; cv=none; b=WxvMpKT4wIDHSdKNHffB0tnkpaHI+0ZLz+/xeUkye5DAvm6tZzrkIc+cLDWaVzElIvO7B7k3ACoWs0ywhJYE0SO4QGLf+CRzHDr4luESzxNKR/6eQv8/RDzx3DB+rC6Hr7F5PsN8RrH3g8jwgvD9v1f21/5uQ+ZMnB+nd8mCf2Q=
+	t=1740664971; cv=none; b=CMZ2n2JQMsKxsaY5fA1X9TVLNk8Kcf0zB1qnxzkKLQeuVuQ2qqYNZsMkF4GdtNT5jj+gil0KBJ6ryMckJOrop/D3Ua4shejL/iOQN+SqEUKby2tzSYC6iHhy2fAqsncd0YfJa+ZV66QGmBWiFTmEjijm8y6Fd5ZxxNvqJSzMmFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740664964; c=relaxed/simple;
-	bh=y/vg46vRn1lgg6h2OUWs7r6Zp75W28a+qluOoO9J7Nk=;
+	s=arc-20240116; t=1740664971; c=relaxed/simple;
+	bh=0OdUdx+lahN2+LUJ2jOFDFj83SCLzyn+8zKWv0oeisM=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Tl3jJpuLIw6bs4fQi9ZYIKE22dUmqza0xDhuzR8mT1ZQgbg6ZkS2+kY9YLTJGZfdGU5tpLV+4m5SPPzUO9Bt4ajLw6M8zOrOIOh1MIxOUlfVFG+POvgWdleCRvs8UYiNMr70EKPE/3NwP0aDNPmB14yK0zKOu7TSZ9reab18BWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vx13hn50; arc=none smtp.client-ip=198.175.65.18
+	 MIME-Version; b=J+dfPPlq895XsZbKZloPGlfzp/AdOpOcKwExqWworMClF6FHgp0fZOotQIf2ExEXrWXFnaibXBP8xWm4Ae7rZpoPPfCnrAlhJ4j8RoBETUnnQ1Z+RHGW3nhEjEbZrvzFf5GP0SEhUWJRqqEersQOnw8taLo/qNRomUMOfvShvmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OuW2JB6v; arc=none smtp.client-ip=198.175.65.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740664963; x=1772200963;
+  t=1740664970; x=1772200970;
   h=from:to:subject:date:message-id:in-reply-to:references:
    mime-version:content-transfer-encoding;
-  bh=y/vg46vRn1lgg6h2OUWs7r6Zp75W28a+qluOoO9J7Nk=;
-  b=Vx13hn50fCIUToIhcP0c5NfBMha+j55QnKFjNhASrYNhgS9JnnLLz+pT
-   Z1BPYHOqSCW8OY/zgPEK08t+mp3JRRm4p1DJ6f1gyWOph0MnbYWboxLEF
-   t1dEDNnp1AtHgSAIooo9INHyU5DvM4D9jLTuF1i3gvlezix3lspa7WINu
-   Gz+HQb1hf2lHZdHHr5OQBvIVS66DEn8h9gcbrwUKBRNavBRniuz+gVOaY
-   Gnh32ZTD2EvYO+Jo7PDawbbulYEgMhaxgCd3NKAhM22Lc5Viz9SN5yJQk
-   4lz86Rv2x1fK8s9+noTY+qyUlPG8kdc/ruj9sP6i2Oc+pTj3TpqRYefa+
-   Q==;
-X-CSE-ConnectionGUID: werPZxneQtGfvJggyZuRuQ==
-X-CSE-MsgGUID: i7FpeNYgQ4qShUKpg9u6Tw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11314"; a="41752313"
+  bh=0OdUdx+lahN2+LUJ2jOFDFj83SCLzyn+8zKWv0oeisM=;
+  b=OuW2JB6vD4zyN62b2xPm+csn0dCUfJoQM/7Xuu27NkvKVY13iHNVsN/A
+   KhlREXAkRg/VjreNKHvMXpWdssS6sCpXv33b+G/p3VOvVScxnYTytCzmt
+   9tgovkeQ1kvCsAC0pRzZqz2i+ll383oCZp7iXTryjzo/PcyyPBh+PClvC
+   TwnBQw2aE6CYiv2ae227jq7KZHg53f57aud29+Ajnvq1dh6/ktWWqe98k
+   7hsZUZ7juLOMpOxBGQOLPd7j/cC87grvZ1XYL9WcfzdlUBb9AaYrMcjha
+   FCt6QfId31UmZdzI7ITZDnBRd0Cp/e4Hrk6u+MVa8mBC3l09C5z2v7Ndv
+   A==;
+X-CSE-ConnectionGUID: uIZQ/QftTW6OdxU3vr2kbw==
+X-CSE-MsgGUID: Cnt5yaHHS9aRDndtmh0C6Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11314"; a="41752328"
 X-IronPort-AV: E=Sophos;i="6.12,310,1728975600"; 
-   d="scan'208";a="41752313"
+   d="scan'208";a="41752328"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2025 06:02:42 -0800
-X-CSE-ConnectionGUID: NhBMIehdRk6BeJsHKOXElA==
-X-CSE-MsgGUID: QueMaA3QToyFdCn831cvsQ==
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2025 06:02:49 -0800
+X-CSE-ConnectionGUID: /An33bfsTTy/8puwMb1LIg==
+X-CSE-MsgGUID: +ZEo5sdYTtCLjtEH2P+fjA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.13,319,1732608000"; 
-   d="scan'208";a="122149471"
+   d="scan'208";a="122149522"
 Received: from mohdfai2-ilbpg12-1.png.intel.com ([10.88.227.73])
-  by fmviesa004.fm.intel.com with ESMTP; 27 Feb 2025 06:02:34 -0800
+  by fmviesa004.fm.intel.com with ESMTP; 27 Feb 2025 06:02:42 -0800
 From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 To: Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
@@ -94,9 +94,9 @@ To: Tony Nguyen <anthony.l.nguyen@intel.com>,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org,
 	bpf@vger.kernel.org
-Subject: [PATCH iwl-next v6 2/9] igc: Rename xdp_get_tx_ring() for non-xdp usage
-Date: Thu, 27 Feb 2025 09:01:50 -0500
-Message-Id: <20250227140158.2129988-3-faizal.abdul.rahim@linux.intel.com>
+Subject: [PATCH iwl-next v6 3/9] igc: Optimize the TX packet buffer utilization
+Date: Thu, 27 Feb 2025 09:01:51 -0500
+Message-Id: <20250227140158.2129988-4-faizal.abdul.rahim@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250227140158.2129988-1-faizal.abdul.rahim@linux.intel.com>
 References: <20250227140158.2129988-1-faizal.abdul.rahim@linux.intel.com>
@@ -108,70 +108,30 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Renamed xdp_get_tx_ring() function to a more generic name for use in
-upcoming frame preemption patches.
+Packet buffers (RX + TX) total 64KB. Neither RX or TX buffers can be
+larger than 34KB. So divide the buffer equally, 32KB for each.
 
+Co-developed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 ---
- drivers/net/ethernet/intel/igc/igc.h      |  2 +-
- drivers/net/ethernet/intel/igc/igc_main.c | 10 +++++-----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/intel/igc/igc_defines.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-index b8111ad9a9a8..22ecdac26cf4 100644
---- a/drivers/net/ethernet/intel/igc/igc.h
-+++ b/drivers/net/ethernet/intel/igc/igc.h
-@@ -736,7 +736,7 @@ struct igc_nfc_rule *igc_get_nfc_rule(struct igc_adapter *adapter,
- 				      u32 location);
- int igc_add_nfc_rule(struct igc_adapter *adapter, struct igc_nfc_rule *rule);
- void igc_del_nfc_rule(struct igc_adapter *adapter, struct igc_nfc_rule *rule);
--
-+struct igc_ring *igc_get_tx_ring(struct igc_adapter *adapter, int cpu);
- void igc_ptp_init(struct igc_adapter *adapter);
- void igc_ptp_reset(struct igc_adapter *adapter);
- void igc_ptp_suspend(struct igc_adapter *adapter);
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 56a35d58e7a6..44e4f925491f 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -2444,8 +2444,8 @@ static int igc_xdp_init_tx_descriptor(struct igc_ring *ring,
- 	return -ENOMEM;
- }
+diff --git a/drivers/net/ethernet/intel/igc/igc_defines.h b/drivers/net/ethernet/intel/igc/igc_defines.h
+index 8e449904aa7d..516ef70c98e9 100644
+--- a/drivers/net/ethernet/intel/igc/igc_defines.h
++++ b/drivers/net/ethernet/intel/igc/igc_defines.h
+@@ -400,7 +400,8 @@
+ #define I225_TXPBSIZE_DEFAULT	0x04000014 /* TXPBSIZE default */
+ #define IGC_RXPBS_CFG_TS_EN	0x80000000 /* Timestamp in Rx buffer */
  
--static struct igc_ring *igc_xdp_get_tx_ring(struct igc_adapter *adapter,
--					    int cpu)
-+struct igc_ring *igc_get_tx_ring(struct igc_adapter *adapter,
-+				 int cpu)
- {
- 	int index = cpu;
+-#define IGC_TXPBSIZE_TSN	0x04145145 /* 5k bytes buffer for each queue */
++ /* 7KB bytes buffer for each tx queue (total 4 queues) + 4KB for BMC*/
++#define IGC_TXPBSIZE_TSN	0x041c71c7
  
-@@ -2469,7 +2469,7 @@ static int igc_xdp_xmit_back(struct igc_adapter *adapter, struct xdp_buff *xdp)
- 	if (unlikely(!xdpf))
- 		return -EFAULT;
- 
--	ring = igc_xdp_get_tx_ring(adapter, cpu);
-+	ring = igc_get_tx_ring(adapter, cpu);
- 	nq = txring_txq(ring);
- 
- 	__netif_tx_lock(nq, cpu);
-@@ -2546,7 +2546,7 @@ static void igc_finalize_xdp(struct igc_adapter *adapter, int status)
- 	struct igc_ring *ring;
- 
- 	if (status & IGC_XDP_TX) {
--		ring = igc_xdp_get_tx_ring(adapter, cpu);
-+		ring = igc_get_tx_ring(adapter, cpu);
- 		nq = txring_txq(ring);
- 
- 		__netif_tx_lock(nq, cpu);
-@@ -6699,7 +6699,7 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
- 		return -EINVAL;
- 
--	ring = igc_xdp_get_tx_ring(adapter, cpu);
-+	ring = igc_get_tx_ring(adapter, cpu);
- 	nq = txring_txq(ring);
- 
- 	__netif_tx_lock(nq, cpu);
+ #define IGC_DTXMXPKTSZ_TSN	0x19 /* 1600 bytes of max TX DMA packet size */
+ #define IGC_DTXMXPKTSZ_DEFAULT	0x98 /* 9728-byte Jumbo frames */
 -- 
 2.34.1
 
