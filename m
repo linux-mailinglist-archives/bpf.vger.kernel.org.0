@@ -1,162 +1,182 @@
-Return-Path: <bpf+bounces-52766-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52767-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70462A4840F
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 17:02:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80053A48476
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 17:14:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93EA43A4639
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 16:02:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CA9D7A0FF7
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 16:13:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E421DAC9C;
-	Thu, 27 Feb 2025 15:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC88A1BD03F;
+	Thu, 27 Feb 2025 16:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nXCZmz8w"
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="bBnWSgf2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794D919C57C;
-	Thu, 27 Feb 2025 15:58:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A15C1B3950;
+	Thu, 27 Feb 2025 16:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740671900; cv=none; b=DWJVZPKAouxdsjgGN1QnYxeqGn2PVDnMRfo0LajKK/zoj1tP+N3/3dppao6SLeI/HZyWlZ5jaqqs/jBlogcQf/NwhhUIuoCx+vSiQ6zOV08ifY4L6SRL54VC5MkGWBd3V8tTwTuuJCx429n1+0w3nZCjG/0piCKcV/7oiMb/4Gg=
+	t=1740672483; cv=none; b=kTxZxy+4148zgOkISEAk+FoKwph6rCriIGZ5oHykr45/aff3HiuALa4NwsGMRYrNhaAuigjShXKia/7XCe5BSuBQeVMu2iD2CXfP70nSOon0V4ftilRlJK+y+GfzTXjVUPFdHMWwt7C6GlfgmpTZyYo9vMvpIt8QQrMqtO5e2kU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740671900; c=relaxed/simple;
-	bh=Z6YiEjRVHODaGAdVVq9S52FfmC0WacWfcyRNTiRjD1A=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=tskan+xa2Eg53Dsh8Hsvj/Q1++Zm/WJcPWYvqbkF2V4Iwg5swzdlY/BdJ+NqqmOXAwHNRyPj1p47fEllnlbW6mSSINAuPsTJis1PO+oEjdTBcpZmvkpnXuriEtcJtsbhVhLRHvwgIVHxUeiHTNO6I1ssZJqqCxY/rCaZe8CYFfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nXCZmz8w; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6e41e18137bso8630986d6.1;
-        Thu, 27 Feb 2025 07:58:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740671896; x=1741276696; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cLIVNI5v7jbwPgcz2HSm7WBrSE9jCi+ARbr++cHhcfk=;
-        b=nXCZmz8wIUPNC/lGQs2QnUOapFyhKkGRMXqZVApMIoJpJbV/lLDwmO4Itf2iyIU+HJ
-         VkmJIpO5QDbMebItxm4b9c/DdVMmO12H+n5mnbV/30QOZY3oVD5TBT3158FBFGpOY+tb
-         buzvtpJJDIQGzv45V7pW7SWLk2z60SrrznNqs84qNdLgJQLT0LHT6EkiHo4rQVBJj5gB
-         IJHq6biy2IeWe6DNmS4PRCkt41fBhN1rn0t4ceQlpOzUqZHCWvS1qTYxlKl/oM9XasMn
-         zRuJqCJpQPO+eBVA9TT5nP1FPLR2x9xsEqft4fG2o+pJp5Zrnr5Jpt1Ovd9aAVUzRtGx
-         eobA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740671896; x=1741276696;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cLIVNI5v7jbwPgcz2HSm7WBrSE9jCi+ARbr++cHhcfk=;
-        b=jbviurO32WmfwQmE0eM53Ej0egegkL3swajqyFQkg/CxBbK/mc0aAunL1xkUn12/+A
-         H72HxkQAiNZg0losEH/kowc1TyYPwmmjAurU+Wvm38HAhB46VczNxVvS7UHhHygHszyK
-         JzWOy7y2+p4h7oN0CaClWibtFLnteTYUc9Jek7eIVZgWI6LC2tkFfJJyKLyVNhj/euFS
-         1nuc6qY+MBefRLCiMwPCMN5j5MyzZCplGOVdfa3UAT7cTUGM8IHIdfWu2bGGhVOfiY8J
-         THg3aG30eINkQukQl8p6iua/dijvhsof/1iBGsYQ5DdRJ9tTNzUwY9Ma/DE7+3VcGvDP
-         Pc5A==
-X-Forwarded-Encrypted: i=1; AJvYcCV2T+Jtq+tiQ+zDF9FskflYLIQ82d6yFYPkCtdQSDrnMYzuzy8u2k65boLQwcmWR6eTc07YcjkgLZ1XFbjfDdT0@vger.kernel.org, AJvYcCVBDtIO01uAk8gys6xBxy3E4NSFkS3vUbqX1mkf2wtmWfRIyOKoFLuHz3MJpf4/mUg3j+U=@vger.kernel.org, AJvYcCVhtpYywqlVo+IebCHV0nF391nVlUD7Q1n9M+IF0LtXIEONaV68Qzskze9dKA2veaPgJ5bipd3j@vger.kernel.org, AJvYcCWvgNjc6R4EC7ZU3admqiNRwfvYS/cBhKJfbtWCDgFfCUlmQkAyiTnTLEutYOqtDXsFxXq4kWPlA6G/4Wv+@vger.kernel.org
-X-Gm-Message-State: AOJu0YymPFYqfXi1ELqJEtoCy0ULsGa+BMrUYNGdcnt98ezsQjIiyjEo
-	Z0Jy3E9+WYJ2IoP3VaN9OxdLNUh4yfPnZ0YDyW/tQGEiu/f6yoDE
-X-Gm-Gg: ASbGncs02iBJTDFyozR4kkG4FnTgV6iOY/RK0kzosfSbZxjzamH8tcbNgguoDmiIgP8
-	Ni+rvrPNfxthHFyNri3+t0A26ZmhthNEWj1ABRYSvuxr4IttWaxLKLaKeX2i3l1R0J72uGi52DW
-	aMhaY+7CleM2obkJNDSr1hlIQghR69ruZOTWarfF0QI5y8aFv4SZHCP1jfEIyUFKVSflV/hnD0e
-	JMY6LzD90D1e3NkJqZMn+hRinykQj2UrwrX/4WNPwtJLgAXr66zNST09ojgs7K+LtRAC72TImKS
-	X717jcVny929yvtwC1qLyJOdB+/rw9nljajmieIW56VQEQOPelkXrehQsc3kXI0IpCDWM+xfxOx
-	jE1E=
-X-Google-Smtp-Source: AGHT+IF3piGfoREI1ClipfUhAb9zibppog3A3EluGLFdr9tFdlwjUC4NyFScj1tA+K5uVqcdMTZW0A==
-X-Received: by 2002:a05:6214:1d28:b0:6e6:6ca6:b702 with SMTP id 6a1803df08f44-6e8a0c0426bmr38416d6.0.1740671896026;
-        Thu, 27 Feb 2025 07:58:16 -0800 (PST)
-Received: from localhost (234.207.85.34.bc.googleusercontent.com. [34.85.207.234])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e8976534c0sm11179116d6.40.2025.02.27.07.58.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Feb 2025 07:58:15 -0800 (PST)
-Date: Thu, 27 Feb 2025 10:58:14 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Cc: willemdebruijn.kernel@gmail.com, 
- jasowang@redhat.com, 
- andrew+netdev@lunn.ch, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- martin.lau@linux.dev, 
- eddyz87@gmail.com, 
- song@kernel.org, 
- yonghong.song@linux.dev, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@fomichev.me, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- mykolal@fb.com, 
- shuah@kernel.org, 
- hawk@kernel.org, 
- marcus.wichelmann@hetzner-cloud.de
-Message-ID: <67c08b96d1f88_37f929294af@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20250227142330.1605996-5-marcus.wichelmann@hetzner-cloud.de>
-References: <20250227142330.1605996-1-marcus.wichelmann@hetzner-cloud.de>
- <20250227142330.1605996-5-marcus.wichelmann@hetzner-cloud.de>
-Subject: Re: [PATCH bpf-next v4 4/6] selftests/bpf: refactor
- xdp_context_functional test and bpf program
+	s=arc-20240116; t=1740672483; c=relaxed/simple;
+	bh=N7+PIP/u/EXnsYW1te2ETYmSDhz1b3A22sY96b93gQs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cCaxuxyaLuihGHeYxNZlx87heTBYDi7O7aEjcdW5LbBtPOx6uCLHAhDCs/RTCba5lG34jgNKwy9feLKiTpuFQpWS1K4982CqFmRlxsQMTxSZy0kPXDnSyh1p/X2bG3qUifI6wU20mgphyDdNADTMj/kCYbHnijlmVcNbzXwReJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=bBnWSgf2; arc=none smtp.client-ip=131.188.11.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Z3bpb3VrFz8srK;
+	Thu, 27 Feb 2025 17:07:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1740672471; bh=1ZhNgcCn5cZnUuzeMSL8VZ2F71Q+VzQTBJcd0+1+j1o=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From:To:CC:
+	 Subject;
+	b=bBnWSgf2rQDw0eQmbPQOGBqE+dif5J/EtcnklD8jOSWYiNFw53zbUkG0Zna5udkgL
+	 C2Q/GiKEq6PNkyCJRReUGY6xiCVFlSp7c3rDGGhXljMuB6RO8u8GR5PH1SgYFPEIQW
+	 rpMk0HV4yPJvu9GMfVfd/zErRXXE8M6DMTii+rC2h6MJyZa4/w+p9/pboVf19pYfQx
+	 c0S0b7pUbQ/pQiYh7Qzs8dDgOjHuspheIfC5qzZ2SHs7eNHCgGiLEVEeV6oolqCmqM
+	 ziDFbYCl7vIgXdnPFLribmG6A2OY0BwyiuzRWcqhCHtU4H3TMcTouCeRzQkIvIBQva
+	 Er4gB2fFkIkdw==
+X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 91.57.235.199
+Received: from [192.168.212.208] (p5b39ebc7.dip0.t-ipconnect.de [91.57.235.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX18yIGrez3keadnnnZZCFhsb+TdVPKW3B3A=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Z3bpW05Kjz8sc4;
+	Thu, 27 Feb 2025 17:07:46 +0100 (CET)
+Message-ID: <e8041b56-396b-427f-b9cb-d51004a40f57@fau.de>
+Date: Thu, 27 Feb 2025 17:07:43 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 5/9] bpf: Fall back to nospec if v1 verification fails
+To: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>,
+ Xu Kuohai <xukuohai@huaweicloud.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ Henriette Herzog <henriette.herzog@rub.de>,
+ Cupertino Miranda <cupertino.miranda@oracle.com>,
+ Matan Shachnai <m.shachnai@gmail.com>,
+ Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
+ Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>,
+ bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc: Maximilian Ott <ott@cs.fau.de>, Milan Stephan <milan.stephan@fau.de>
+References: <20250224203619.594724-1-luis.gerhorst@fau.de>
+ <20250224204744.599963-1-luis.gerhorst@fau.de>
+Content-Language: en-US, de-DE
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+Autocrypt: addr=luis.gerhorst@fau.de; keydata=
+ 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
+ Bjq2LIJlJ8czDxmxpGv0CjsHjGkXwBgsoeAK9A==
+Organization: I4
+In-Reply-To: <20250224204744.599963-1-luis.gerhorst@fau.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Marcus Wichelmann wrote:
-> The existing XDP metadata test works by creating a veth pair and
-> attaching XDP & TC programs that drop the packet when the condition of
-> the test isn't fulfilled. The test then pings through the veth pair and
-> succeeds when the ping comes through.
-> 
-> While this test works great for a veth pair, it is hard to replicate for
-> tap devices to test the XDP metadata support of them. A similar test for
-> the tun driver would either involve logic to reply to the ping request,
-> or would have to capture the packet to check if it was dropped or not.
-> 
-> To make the testing of other drivers easier while still maximizing code
-> reuse, this commit refactors the existing xdp_context_functional test to
-> use a test_result map. Instead of conditionally passing or dropping the
-> packet, the TC program is changed to copy the received metadata into the
-> value of that single-entry array map. Tests can then verify that the map
-> value matches the expectation.
-> 
-> This testing logic is easy to adapt to other network drivers as the only
-> remaining requirement is that there is some way to send a custom
-> Ethernet packet through it that triggers the XDP & TC programs.
-> 
-> The Ethernet header of that custom packet is all-zero, because it is not
-> required to be valid for the test to work. The zero ethertype also helps
-> to filter out packets that are not related to the test and would
-> otherwise interfere with it.
-> 
-> The payload of the Ethernet packet is used as the test data that is
-> expected to be passed as metadata from the XDP to the TC program and
-> written to the map. It has a fixed size of 32 bytes which is a
-> reasonable size that should be supported by both drivers. Additional
-> packet headers are not necessary for the test and were therefore skipped
-> to keep the testing code short.
-> 
-> This new testing methodology no longer requires the veth interfaces to
-> have IP addresses assigned, therefore these were removed.
-> 
-> Signed-off-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
+On 24/02/2025 21:47, Luis Gerhorst wrote:
+> +		} else if (error_recoverable_with_nospec(err) && state->speculative) 
+> {
+> +			WARN_ON_ONCE(env->bypass_spec_v1);
+> +			WARN_ON_ONCE(env->cur_state != state);
+> +
+> +			/* Prevent this speculative path from ever reaching the
+> +			 * insn that would have been unsafe to execute.
+> +			 */
+> +			cur_aux(env)->nospec = true;
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+This allows us to accept more programs, but it has the downside that 
+Spectre v1 mitigation now requires BPF_NOSPEC to be emitted by every JIT 
+for archs vulnerable to Spectre v1. This currently is not the case, and 
+this patch therefore may regress BPF's security.
+
+The regression is limited to systems vulnerable to Spectre v1, have 
+unprivileged BPF enabled, and do NOT emit insns for BPF_NOSPEC. The 
+latter is not the case for x86 64- and 32-bit, arm64, and powerpc 64-bit 
+and they are therefore not affected by the regression. According to [1], 
+LoongArch and mips are not vulnerable to Spectre v1 and therefore also 
+not affected by the regression.
+
+Also, if any of those regressed systems is also vulnerable to Spectre 
+v4, the system was already vulnerable to Spectre v4 attacks based on 
+unpriv BPF before this patch and the impact is therefore further 
+limited.
+
+As far as I am aware, it is unclear which other architectures (besides 
+x86 64- and 32-bit, arm64, powerpc 64-bit, LoongArch, and mips) 
+supported by the kernel are vulnerable to Spectre v1 but not to Spectre 
+v4. Also, I am not sure if barriers are available on these 
+architectures. Implementing BPF_NOSPEC on these architectures therefore 
+appears non-trivial (probably impossible) to me. Searching gcc / the 
+kernel for speculation barrier implementations for these architectures 
+yielded no result. Any input is very welcome.
+
+As an alternative, one could still reject programs if the architecture 
+does not emit BPF_NOSPEC (e.g., by removing the empty BPF_NOSPEC-case 
+from all JITs except for LoongArch and mips where they appear 
+justified). However, this will cause rejections on these archs and some 
+may have to re-add the empty case. Even if this happens, some may not do 
+it and only rejecting the programs on some archs might complicate BPF 
+selftests.
+
+Do you think the potential regression is acceptable or should we err on 
+the side of caution?
+
+[1] a6f6a95f25803500079513780d11a911ce551d76 ("LoongArch, bpf: Fix jit 
+to skip speculation barrier opcode")
 
