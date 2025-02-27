@@ -1,96 +1,125 @@
-Return-Path: <bpf+bounces-52777-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52778-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8259A485C8
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 17:54:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE53A48667
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 18:18:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 028773AEBF7
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 16:53:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 831681881956
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 17:18:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7AF1B4151;
-	Thu, 27 Feb 2025 16:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1381C8FB4;
+	Thu, 27 Feb 2025 17:18:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KOKkPpZu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nHAh/GR8"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C7E61A9B5B;
-	Thu, 27 Feb 2025 16:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E924E14BF8F
+	for <bpf@vger.kernel.org>; Thu, 27 Feb 2025 17:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740675206; cv=none; b=VuGCVzSeRGi1rB+DjxOO0pldP2up2lBif0YKyk9MXLUuJ5jHadEfWZH7XRNxRwNWenetOcSW5Uh7M4QutMwAI7uRam8Ikc7Mp92EHQC0w56QnM6fitpHzUsn8fgqylmd5NUBC4ECngt73mBpznobFi24OXyu6Ia3NTgwm7TSFEY=
+	t=1740676692; cv=none; b=oDr6Z4JMEYh0nBdkzyGW08SO+r9rV5vxARoqGql1uuPBi5HFtJ9vfZIbStEWnYnHdTMYPhAfQ1O3Chm4QIaewtNUTA96EFaQGlsRPmOrl/QppxDMR/ESKQeQYigRD9Cxyr+zJbTEzplGZBEioF3srUtyuyYqw4m1VLvTCs4+mMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740675206; c=relaxed/simple;
-	bh=ngUTo6dF9F0tDXaqjupgRaWwtDiAGw55L4O6aivUeE4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I2koa+k8fwEVFpPlCUxy3YIxuFe8McvWKIxPDvRgVFXsZ0HGpiX/FPOpj/RoW7l6yZrwEo1S0VKYA04WO0yNIKd+LLt5tzv7JlH9xbvwJ7l5K6peZvT+rIgLSIt4vJ6DoJ7ONT5qMEht5QJ4i9JyEu/NyLk8bgMgtPfRt8a72XI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KOKkPpZu; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=2Ov/y1t7Dpez9RlDMwDLU2+3BKfoWfwxweNJ4MdRL9s=; b=KOKkPpZuy4OXVvkiO0Y5M/4QeT
-	Ks24n3qwEAVTlfVNX9rIPgeZAVBnlpuRscpDSDp5Pj7ScbGAADOXp0BWLAVdsQEUX6O5vJteeLrYA
-	jmmpodsZCsX4IuJBMihq4CGBHHX9s8eJ0IpP/cr2aDP5gTKY7I1tQPdD4cBILLtr5OyyJve1RNWST
-	5Uw9/bKbqgRQHCmbxkDcc86/cMIXfboUu97s5MXDT4fdDrWsz4SfDfXEGsYxNsxlpuJyq4D87KP8v
-	eLljZ6rbbsQLn94dCsPVtry5o5ejVT3fH7Q4HjXZtajayh+M0F0BvcUVmU01ol21kyaBB/EVusWGP
-	LfllOMDg==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnh8B-00000003pRG-0nbx;
-	Thu, 27 Feb 2025 16:53:03 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 42319300472; Thu, 27 Feb 2025 17:53:02 +0100 (CET)
-Date: Thu, 27 Feb 2025 17:53:02 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: rostedt@goodmis.org, mark.rutland@arm.com, alexei.starovoitov@gmail.com,
-	catalin.marinas@arm.com, will@kernel.org, mhiramat@kernel.org,
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-	mathieu.desnoyers@efficios.com, nathan@kernel.org,
-	ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
-	dongml2@chinatelecom.cn, akpm@linux-foundation.org, rppt@kernel.org,
-	graf@amazon.com, dan.j.williams@intel.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH bpf-next v2] add function metadata support
-Message-ID: <20250227165302.GB5880@noisy.programming.kicks-ass.net>
-References: <20250226121537.752241-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1740676692; c=relaxed/simple;
+	bh=TopmRCmQUMCvVMIixXtDxEFjsxClfrFqqb6lkGGPs14=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p1lVI9dvaBOuwgado/kaXe6JVPe4AJvvUut4Fg6w54zD3z7y/IMCBiNLHR4a0lNmlLNd14BxodPGItjkUE+V1RkI5cJf2CrH2pMQf7DY7/MkfXjv27zPIhoEvLtG/hwGXe0C9bbm37cg83ZdrFM+glz+h+WZON9C+joEmqqXcyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nHAh/GR8; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-439946a49e1so8555765e9.0
+        for <bpf@vger.kernel.org>; Thu, 27 Feb 2025 09:18:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740676689; x=1741281489; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TopmRCmQUMCvVMIixXtDxEFjsxClfrFqqb6lkGGPs14=;
+        b=nHAh/GR8Lnqc1OjYva5DhIei88Ja46RI48RhhpIoE2xMKAZEZcI6ycWErAVVyrfiYy
+         NC3ArMLqAY/QAvRLxgt+kyU47oSbSjZPOPT5aCxnEWJPYeQN4m1PoY5auvm2KEzVRWaJ
+         6Su+hFUhU5E8OW818qn3hshmEIthnSPEYM3F6zkssQha0qtUAYBntDkZsoYn150eeKC6
+         yKRO10bPnnnLbuaUJy7HfjbRARIk/rX2h+81tMYWhzYtX+iztKkPMkrkqFV249FJrJic
+         8nBDSXpaxUAT0G9r3oxxmEyCBcUmnNwuSeF9ytLzm+cu/EIDHEUenbxtlIyMZKpLyWkQ
+         huIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740676689; x=1741281489;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TopmRCmQUMCvVMIixXtDxEFjsxClfrFqqb6lkGGPs14=;
+        b=jzkic0Sw2IHZ/GL1Sw0+XdxD/imyvo7UKM0E8OTufafz6NLmaJbdqUqx94v2uCuu6g
+         g5ysAF6dI6Nxqmpu59gcFrxdGjXgBVjaoQK0k9hUt06QImIeJRm0zteq073WO/PqGG0/
+         uu/EExRTG4epFen1tq/NKMD/Vc8rxsiZ3CYyq5XhyTBKqeVGOP/ztkKxxlDOx0TnPxZM
+         MhVlEJEA5XQAavM4q0weXxu2bf3W1nig5wWxvJgY9l9FcgstGdkXwkNtkCRV9P2y0uSK
+         tUFvwIRoY3UE0W6rHcPcOXha6iPLTKTWBuRZoQz2eylfTQLU/xSyfwoeHiPYeV2PrdWj
+         3Qmg==
+X-Forwarded-Encrypted: i=1; AJvYcCUuh/0emZEuymyalUHigIuZRZRmMvDuEj5K0mkDm5Iok3/1p1f13Na30la8dG8bH1OuRr8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzAJcgVWfKIL4ePA5f8y369hXWOrt8+0VPnWJpKJU3efq+OBKhu
+	dPEC1quO2NswSzJmC3mKyoNlzRE0BDcwnuhPyu037pbTrqrlhlQFRCP3y528+9DsPQfT+0SkPzc
+	od0ah0WH4Uk4koc1JzFjC5FT3REStlA==
+X-Gm-Gg: ASbGncvPnXBJO14nS7iSW5d1pI2qNQExntpe559zyyqOOVcNKroXHLH4iQz9H6sQt60
+	vWMQ+4dxOi8qk4HakUgWH5UKO4eehqmT8zjJ5om//KmBOZyZ0zCTbILG6M3rqHimoAky5aEIUBI
+	Fzjabf49uJn6O2/GCSLTv4dJE=
+X-Google-Smtp-Source: AGHT+IGaAzSv0YKXw2y2F8gVHanhXPzi5HV17i426ALuWCXW0NF9Om06OJJ4ldeqEyA9APRuuoft9ueZNK3JPuUOsVU=
+X-Received: by 2002:adf:e7cc:0:b0:38f:4916:fc21 with SMTP id
+ ffacd0b85a97d-390d4f9d0f2mr4570112f8f.52.1740676689019; Thu, 27 Feb 2025
+ 09:18:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250226121537.752241-1-dongml2@chinatelecom.cn>
+References: <cover.1727329823.git.vmalik@redhat.com> <bc06e1f4bef09ba3d431d7a7236303746a7adb57.1727329823.git.vmalik@redhat.com>
+ <CAEf4Bzas4ZxiyJp7h7N5OGmPSMRfZDgPUgEAdTmir3n-4cx-xg@mail.gmail.com>
+ <adaa47618f2b71c2803195749cedd4a5b468cffa.camel@gmail.com>
+ <CAADnVQLCk+VNpN8WfCbSbT-FBcHBuMXpk-hBOLB7HX3BrURp8w@mail.gmail.com>
+ <CAEf4BzZSFuXyUbwN8_VvbR6Uk_qHAKWNLkCZfdo-58WC_RYYag@mail.gmail.com>
+ <CAADnVQLsnhsL2i_RnOBUSebO--yx_5Az1Ydr9QPb5WZCkmYQJg@mail.gmail.com>
+ <CAEf4BzYt42A73kmg5=HWRiHj0H1Dr0WPQosmQLkBhgkkiw0HQA@mail.gmail.com>
+ <c831b42e-30ba-4a19-bc0d-5346c8388892@redhat.com> <CAADnVQLhr+xOF58ppaySOjb6cMdsWEYhr_4ZLvQ-XDWXHBMgBA@mail.gmail.com>
+ <e4bfbee4-ca5f-4496-98ed-60d24e402046@redhat.com> <CAADnVQKmEOLp+7p+YV0gS1z8ed+cLHK+BjMgt+rvhdUdJxPRGg@mail.gmail.com>
+ <ce2f1357-7e89-4caa-8027-559b0d7ebf43@redhat.com> <CAADnVQKJr_Gmf1SjTpmVLSWaPi=0irza365_Jb2-3kOKhKULdg@mail.gmail.com>
+ <CAADnVQLOq835yg2przDwvNfPNiJf4BW2Pczbj_Bf7Lfy1JP2ag@mail.gmail.com> <74dcffa5-9407-48fa-b91d-73cc7b588367@redhat.com>
+In-Reply-To: <74dcffa5-9407-48fa-b91d-73cc7b588367@redhat.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 27 Feb 2025 09:17:57 -0800
+X-Gm-Features: AQ5f1JrIouF3ch79UB9L5IAac5KmhkcX0STgu1uu4xAuWBOmUxGvTm69bSTOSXc
+Message-ID: <CAADnVQKiuLO8Faz6OA7y9nC7cvRUjvc3KJcoA+w5av3hmddUdw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add kfuncs for read-only string operations
+To: Viktor Malik <vmalik@redhat.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 26, 2025 at 08:15:37PM +0800, Menglong Dong wrote:
+On Thu, Feb 27, 2025 at 8:36=E2=80=AFAM Viktor Malik <vmalik@redhat.com> wr=
+ote:
+>
+> On 2/27/25 17:24, Alexei Starovoitov wrote:
+> > Viktor,
+> >
+> > Are you still planning to work on string kfuncs ?
+> >
+> > I think we more or less converged on requirements.
+> > So only a small matter of programming is left ? :)
+> >
+> > If you're busy with other things we can take over.
+>
+> Hi Alexei,
+>
+> this slipped off my radar due to other priorities recently but I should
+> be able to get to it in the upcoming weeks. As you say, it shouldn't be
+> much work so I hope to get back with a v2 soon.
 
-> In x86, we need 5-bytes to prepend a "mov %eax xxx" insn, which can hold
-> a 4-bytes index. So we have following logic:
-> 
-> 1. use the head 5-bytes if CFI_CLANG is not enabled
-> 2. use the tail 5-bytes if MITIGATION_CALL_DEPTH_TRACKING is not enabled
-> 3. compile the kernel with extra 5-bytes padding if
->    MITIGATION_CALL_DEPTH_TRACKING and CFI_CLANG are both enabled.
-
-3) would result in 16+5 bytes padding, what does that do for alignment?
-
-Functions should be 16 byte aligned.
-
-Also, did you make sure all the code in arch/x86/kernel/alternative.c
-still works? Because adding extra padding in the CFI_CLANG case moves
-where the CFI bytes are emitted and all the CFI rewriting code goes
-sideways.
-
+Great. Thanks!
 
