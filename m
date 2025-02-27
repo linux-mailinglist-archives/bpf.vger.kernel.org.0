@@ -1,252 +1,205 @@
-Return-Path: <bpf+bounces-52710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C31B1A471E4
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 03:01:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3158A471EF
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 03:07:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C97D77AD65F
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 01:59:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA6B016467A
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 02:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEDEB1465AB;
-	Thu, 27 Feb 2025 01:59:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9294D54670;
+	Thu, 27 Feb 2025 02:07:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SFine1U6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IwBjn93x"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B577E0E4;
-	Thu, 27 Feb 2025 01:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 739394683
+	for <bpf@vger.kernel.org>; Thu, 27 Feb 2025 02:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740621593; cv=none; b=KXdn8kPLAcUtRUvEVb5/Idojn1Zm/a1SXN5ltOP0X9fpyOmKgUl/VRdOAKxvi0LhqqnQr9GJfqxF3cisBtG/sQJjfiOd4w3ITVLC5X1fLfYrxOkSjuRchgOkaQslL/v59wS5n0L0AWacsVWvJ3z7+qrgVwz8IvlAHZsoEnc+voc=
+	t=1740622067; cv=none; b=MJ5LXomXDlJM7pdutdewK0SZPNnD41X7/vk49h20NkMJSNJXOmjIWM87LjdV8iO5SFZ+qvjEUD+mykP21j68ivNXcMAM367WN469P42FoYeqYW2nwrVZTZC5otqP/UehRVG5IEhzyA/8/krf9qyOCCYP4SLYN9u742XLYJXokHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740621593; c=relaxed/simple;
-	bh=f0Z5kRx+dR4soY3vCbMiYydu9e/yMavT0U1XWdNsNXg=;
+	s=arc-20240116; t=1740622067; c=relaxed/simple;
+	bh=argCNlVnOk+Y0c53jVwAIJoBOFJW3ju5xKDbJbMd8Cw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pgeJHa3a7pnbiTP9sGeK+oeCW8Fs1xxIDApR3CIkiuwQ5WBwyN8s5Q+Qq4s+9UYm5ypJB2o20l5X2H5/8Qr1marE4501+yBpO7tN7jzQKbPMsrmSU0bv1xjjup1whSFiDDi3P7yQE73L1mluUOVvbUUNDBeqStJkREYmq9hfQE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SFine1U6; arc=none smtp.client-ip=209.85.128.48
+	 To:Cc:Content-Type; b=YEufzogH1iSzRzK9gB5Lx36orovD0Xj8slGC9AQwWJbq9uWhNbXfPfvU76Xste8afN7hJrkkSgHiYcCp+I9XaZVumuQ7JdhDTRzizaVfJ9qO8MtdpGGFCa/nIDSz0oiPaZ95+0Ciixg/AFVDhutyYT9goeG/0yNWdrUJL9H4LIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IwBjn93x; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-439ac3216dcso2841575e9.1;
-        Wed, 26 Feb 2025 17:59:51 -0800 (PST)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4397dff185fso3949715e9.2
+        for <bpf@vger.kernel.org>; Wed, 26 Feb 2025 18:07:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740621590; x=1741226390; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740622064; x=1741226864; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yqwvNkA3NWkjysaFqna5rqnzFyhX/oYcK1gAr6tgHOk=;
-        b=SFine1U6VtHiLB/HVVQJaA3Ba3zmBNrsafDo44Tfu3D0Yu4Mcc1vsUTNMVlbShcFzV
-         nwCFtWjacDocDnFQwKXyw8N31kSR4xAML/Tv3znuY5+j9LHOnG2Syy6eKmzWoOemuuRF
-         3LCqVxgNF0fJhToYspJu+HudNGEXnBQLgGNnn7Du89H2hqi/NRPZwSL+hc4g1ZMARspA
-         t7+DBanC+M+6gBXJOQb/8p6cIjxyBIsAGUtyWtgiGq3NYavMIgVzdIawC73tS48XB4P6
-         jmwD0cPDZ1eBqjqEc7Ao6w4bIZbynuJXry4J64YV4OlkFb8cCLnOSMHKysgyxIjCIhew
-         NO+g==
+        bh=gCSmeF9tLwr/pqUZcK0GbEP66MYsnW4eQxFP9ntC94Y=;
+        b=IwBjn93xV2REcEEKrYb7sMk1nW3+vActRmOkMnq9Xo9WyqeLNQswHddN772va7JHxa
+         nSWpgoJC6ZWmcFlBDWBLUNeqtWG4wVuI6AZorE3rXsEINOtYc5UApxibH0y1tO3rIQ26
+         rPXE2ZJWfktgWx6G1ypSLGUQ14v7NDYyQBe+kDisCwY+9nACBKO7c9P/EY61QBFnZYK6
+         Od6fMHkqr8PSyAVfINgAVNcrcuoPlQkGCyGUFxu8gHTZ9l62OSpZKrsXyGv+xuyVa49v
+         2s+lRI+mFbbiHa5ie5S4q7cJb4VggVm9Fxq33Hsb6uFCELciESGr4IuCa4A0n/MQiae/
+         /KTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740621590; x=1741226390;
+        d=1e100.net; s=20230601; t=1740622064; x=1741226864;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yqwvNkA3NWkjysaFqna5rqnzFyhX/oYcK1gAr6tgHOk=;
-        b=KGlUCMu1AW0mWLS2XrH8nEDL439HDu6GfvdDR59Z+c80sczZhTeoGKSQTdhhRfmLdq
-         XGtOA3VToXDebyVUtXzu3JQtzpZ9Kei6cdAB3e7JDxHjxpfKYS2RkL4f0TmA0do500gR
-         sepcVE56msBlqUgiat8xPm+MFeNpeV+1AUKVhtYzvfC6MsVNGODYMyZk+L2MkfhlLEXH
-         6MgzR76NlDuI/Aag2hgm8rJc44HG0z++EH7/HdXWr5X/TVP3nI322DlqTL9xqr0/YN8V
-         DNye7hdkA/llc5DNTFZsHxbqrgk2nG22we+zDVy6LGHb8lEmPT1a2/XmMa3ek08nUXH0
-         o/Mw==
-X-Forwarded-Encrypted: i=1; AJvYcCWdxnBS7NbdOpSq6YOa4vp7TBjgmzvITDVyT1RZm7QE0coYJeMCNCSdLxA71o7ZwxGx47K3@vger.kernel.org, AJvYcCX8LZrRWZPBZ6AsI+z/S+5PzjtaVW5/bnDbmMaRlZ/fQbVOwPnG71dnbBxzG/y8e4BKIxqNJP3nAx/T4uRy@vger.kernel.org, AJvYcCXgz6iXZRN3hv9Fss1nALUBVo0jhgZ5/7JoLFQcRvbameIfQJ+nMgGV4+XU2KDmX7HYLws=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwvRfzKR7ZpGRuU3ArDwK4bVOhHhDJc7X43P4c1x00LW6bl2FRV
-	CFqWEBmQNkPSookNuBMpr2jeOx7lhxZ2qqmmyKMjGnAzK2opkuKpehx/iHcvPToQEbEymlAfLeW
-	LBCaS53qHwiPVVKwpU8XRaD2X7a3/Pger
-X-Gm-Gg: ASbGncvJb4dO4VJUIxXblGlN21Bbn5gVdIGvgFENnEKl1RpHTpu+6yD8F2TQypv8rw2
-	j06uRZ0j+khz5AFQzET/MJPW8sRaJarM5I3T2Voj5eJKq1kGHnSy8Dugbds1WZ1TVtR36Lg/LRd
-	0vxWOFtgp6Kq7/AMLy10JKuHI=
-X-Google-Smtp-Source: AGHT+IG+rtsSCV3WwzXwUaqCz1Qu9gUmgxusmLrBia8mvrVBQVfM6F0oN7T2bQb+eJJ0g9Uc0Bw6f8Z/K8uOajf3xoU=
-X-Received: by 2002:a05:600c:1383:b0:439:8a44:1e65 with SMTP id
- 5b1f17b1804b1-439aeafaa00mr201026955e9.7.1740621589446; Wed, 26 Feb 2025
- 17:59:49 -0800 (PST)
+        bh=gCSmeF9tLwr/pqUZcK0GbEP66MYsnW4eQxFP9ntC94Y=;
+        b=CtZjvhXdkiiKJ7wVrk6BY0r9bt3ZJMEi9hqSRvKlZ8yHr+HkK4SdBUX85T/Afzjhei
+         pqBHe4i/mudjLFKG9TFYZ/QTrR7hknPINLr3XKN95hHbnJzrqqvxpWzmFl7gIQ/HPhxw
+         Fk2iEn6sGPD4M2lcBwQ0VNacRild/m77zCGOdm9MhDMLIejS82ZiMPRvk6direz9y0AS
+         C4D2spRM7CTz+re0lItzfWO218qmq4v+z+UGce+jOo6EspwqeBhVG6BSOfQvjKOknC8T
+         MHc2cIJXYkGpnlF5fMmUA/qgTZmclTtlqq2SvR4qxO/BhWLFhvMrjAY+mozBbB1cGlSm
+         qCww==
+X-Forwarded-Encrypted: i=1; AJvYcCUCDn1l2IkkR/Au4ivDCh0as/dingfSdKB/ecaBAFpHCx1zudv/G0T6e5cX27MnJe6+Le8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywer5Fkpx4d6jJCLpvJATxTtrv1FuzpEMi4MGSLQSv1pbgw9YYb
+	rwcIWYIFih2ZH0hwHJ/pltSBPe5u7qxevhOvpHgl0mt//DnIipzKG6GuSXgbJjqFKsKkUbbiT+3
+	qh6cawAgzoAGD8Nh9pYVbQaHd3pg=
+X-Gm-Gg: ASbGnctXiekDf7RHp2zdIUjD6k4ScmgJXAR55rKIZcX1b4YcfX70gE5bhmf7YDWQRq3
+	SVj5whZxeMudkuON0XWjbffKGbnAtUjb+3Zde2tQmphENKn9Put9RZyhXWNbt9zf2pccIc/K/07
+	JD2xFD8PDp69orgYwwuzbDxVg=
+X-Google-Smtp-Source: AGHT+IGYPoUhqHzJ1757HWv7fSCcFfr0WoX2tS9iJiEpcRvkdnGLVjKDeZrby77hKWM3i/46R5+Qr2Pg1D4U9rfwvcU=
+X-Received: by 2002:a5d:5f4e:0:b0:38f:4a0b:e764 with SMTP id
+ ffacd0b85a97d-390d4f4306cmr4933878f8f.28.1740622063655; Wed, 26 Feb 2025
+ 18:07:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250204082848.13471-1-hotforest@gmail.com> <20250204082848.13471-3-hotforest@gmail.com>
- <cca6daf2-48f4-57b9-59a9-75578bb755b9@huaweicloud.com> <8734gr3yht.fsf@toke.dk>
- <d191084a-4ab4-8269-640f-1ecf269418a6@huaweicloud.com> <CAADnVQKD94q-G4N=w9PJU+k6gPhM8GmUYcyfj=33B_mKX6Qbjw@mail.gmail.com>
- <6a84a878-0728-0a19-73d2-b5871e10e120@huaweicloud.com> <CAADnVQLrJBOSXP41iO+-FtH+XC9AmuOne7xHzvgXop3DUC5KjQ@mail.gmail.com>
- <CAC1LvL0ntdrWh_1y0EcVR6C1_WyqOQ15EhihfQRs=ai7pcE-Sw@mail.gmail.com> <7e614d80-b45b-e2f9-5a39-39086c2392dc@huaweicloud.com>
-In-Reply-To: <7e614d80-b45b-e2f9-5a39-39086c2392dc@huaweicloud.com>
+References: <Z7zsLsjrldJAISJY@bkammerd-mobl> <ed150c6e-7987-4729-8a6b-e1e9e38823cb@linux.dev>
+ <c19ee119-a463-f4bb-d15d-b7fae0a1ff4a@huaweicloud.com> <Z73svxvnH4dW9PZH@bkammerd-mobl>
+ <07491b89-cf95-b467-e670-dddd470bd572@huaweicloud.com>
+In-Reply-To: <07491b89-cf95-b467-e670-dddd470bd572@huaweicloud.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 26 Feb 2025 17:59:38 -0800
-X-Gm-Features: AQ5f1JrtDlHPcrwBLDwNsRZeFDc4x5hD9HvSyCtZKrQ1g-q1TNCxTEiwMqcqRMI
-Message-ID: <CAADnVQJU9OWAWFk89P6i1RK6vXkuee5s76suHjF+uP+V4iepqQ@mail.gmail.com>
-Subject: Re: [RESEND] [PATCH bpf-next 2/3] bpf: Overwrite the element in hash
- map atomically
+Date: Wed, 26 Feb 2025 18:07:31 -0800
+X-Gm-Features: AQ5f1Jomn41-ovfzsk6p6NpaYs40INcRf6c3B-_m6ltOEbNy1xwej73wVbjRgMY
+Message-ID: <CAADnVQLSgTDyddxANS76M0ctf_gSz-pGCCZhqfM9v32GGtUh6A@mail.gmail.com>
+Subject: Re: [PATCH] bpf: fix possible endless loop in BPF map iteration
 To: Hou Tao <houtao@huaweicloud.com>
-Cc: Zvi Effron <zeffron@riotgames.com>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, rcu@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, "Paul E . McKenney" <paulmck@kernel.org>, Cody Haas <chaas@riotgames.com>, 
-	Hou Tao <hotforest@gmail.com>
+Cc: Brandon Kammerdiener <brandon.kammerdiener@intel.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 26, 2025 at 5:48=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
+On Wed, Feb 26, 2025 at 5:45=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
 ote:
 >
 > Hi,
 >
-> On 2/27/2025 7:17 AM, Zvi Effron wrote:
-> > On Tue, Feb 25, 2025 at 9:42=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> >> On Tue, Feb 25, 2025 at 8:05=E2=80=AFPM Hou Tao <houtao@huaweicloud.co=
-m> wrote:
-> >>> Hi,
+> On 2/26/2025 12:15 AM, Brandon Kammerdiener wrote:
+> > On Tue, Feb 25, 2025 at 08:26:17PM +0800, Hou Tao wrote:
+> >> Hi,
+> >>
+> >> On 2/25/2025 3:13 PM, Martin KaFai Lau wrote:
+> >>> On 2/24/25 2:01 PM, Brandon Kammerdiener wrote:
+> >>>> This patch fixes an endless loop condition that can occur in
+> >>>> bpf_for_each_hash_elem, causing the core to softlock. My
+> >>>> understanding is
+> >>>> that a combination of RCU list deletion and insertion introduces the=
+ new
+> >>>> element after the iteration cursor and that there is a chance that a=
+n
+> >>>> RCU
+> >>> new element is added to the head of the bucket, so the first thought
+> >>> is it should not extend the list beyond the current iteration point..=
+.
 > >>>
-> >>> On 2/26/2025 11:24 AM, Alexei Starovoitov wrote:
-> >>>> On Sat, Feb 8, 2025 at 2:17=E2=80=AFAM Hou Tao <houtao@huaweicloud.c=
-om> wrote:
-> >>>>> Hi Toke,
-> >>>>>
-> >>>>> On 2/6/2025 11:05 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >>>>>> Hou Tao <houtao@huaweicloud.com> writes:
-> >>>>>>
-> >>>>>>> +cc Cody Haas
-> >>>>>>>
-> >>>>>>> Sorry for the resend. I sent the reply in the HTML format.
-> >>>>>>>
-> >>>>>>> On 2/4/2025 4:28 PM, Hou Tao wrote:
-> >>>>>>>> Currently, the update of existing element in hash map involves t=
-wo
-> >>>>>>>> steps:
-> >>>>>>>> 1) insert the new element at the head of the hash list
-> >>>>>>>> 2) remove the old element
-> >>>>>>>>
-> >>>>>>>> It is possible that the concurrent lookup operation may fail to =
-find
-> >>>>>>>> either the old element or the new element if the lookup operatio=
-n starts
-> >>>>>>>> before the addition and continues after the removal.
-> >>>>>>>>
-> >>>>>>>> Therefore, replacing the two-step update with an atomic update. =
-After
-> >>>>>>>> the change, the update will be atomic in the perspective of the =
-lookup
-> >>>>>>>> operation: it will either find the old element or the new elemen=
-t.
-> >>>> I'm missing the point.
-> >>>> This "atomic" replacement doesn't really solve anything.
-> >>>> lookup will see one element.
-> >>>> That element could be deleted by another thread.
-> >>>> bucket lock and either two step update or single step
-> >>>> don't change anything from the pov of bpf prog doing lookup.
-> >>> The point is that overwriting an existed element may lead to concurre=
-nt
-> >>> lookups return ENOENT as demonstrated by the added selftest and the
-> >>> patch tried to "fix" that. However, it seems using
-> >>> hlist_nulls_replace_rcu() for the overwriting update is still not
-> >>> enough. Because when the lookup procedure found the old element, the =
-old
-> >>> element may be reusing, the comparison of the map key may fail, and t=
-he
-> >>> lookup procedure may still return ENOENT.
-> >> you mean l_old =3D=3D l_new ? I don't think it's possible
-> >> within htab_map_update_elem(),
-> >> but htab_map_delete_elem() doing hlist_nulls_del_rcu()
-> >> then free_htab_elem, htab_map_update_elem, alloc, hlist_nulls_add_head=
-_rcu
-> >> and just deleted elem is reused to be inserted
-> >> into another bucket.
->
-> No. I mean the following procedure in which the lookup procedure finds
-> the old element and tries to match its key, one update procedure has
-> already deleted the old element, and another update procedure is reusing
-> the old element:
->
-> lookup procedure A
-> A: find the old element (instead of the new old)
->
->               update procedure B
->               B: delete the old element
->               update procedure C on the same CPU:
->               C: reuse the old element (overwrite its key and insert in
-> the same bucket)
->
-> A: the key is mismatched and return -ENOENT.
-
-This is fine. It's just normal reuse.
-Orthogonal to 'update as insert+delete' issue.
-
-> It can be reproduced by increasing ctx.loop in the selftest.
-> >>
-> >> I'm not sure whether this new hlist_nulls_replace_rcu()
-> >> primitive works with nulls logic.
-> >>
-> >> So back to the problem statement..
-> >> Are you saying that adding new to a head while lookup is in the middle
-> >> is causing it to miss an element that
-> >> is supposed to be updated assuming atomicity of the update?
-> >> While now update_elem() is more like a sequence of delete + insert?
-> >>
-> >> Hmm.
-> > Yes, exactly that. Because update_elem is actually a delete + insert (a=
-ctually
-> > an insert + delete, I think?), it is possible for a concurrent lookup t=
-o see no
-> > element instead of either the old or new value.
->
-> Yep.
-> >
-> >>> I see. In v2 I will fallback to the original idea: adding a standalon=
+> >>>> reader may in fact use this new element in iteration. The patch uses=
+ a
+> >>>> _safe variant of the macro which gets the next element to iterate be=
+fore
+> >>>> executing the loop body for the current element. The following simpl=
 e
-> >>> update procedure for htab of maps in which it will atomically overwri=
-te
-> >>> the map_ptr just like array of maps does.
-> >> hold on. is this only for hash-of-maps ?
-> > I believe this was also replicated for hash as well as hash-of-maps. Co=
-dy can
-> > confirm, or use the reproducer he has to test that case.
+> >>>> BPF
+> >>>> program can be used to reproduce the issue:
+> >>>>
+> >>>>      #include "vmlinux.h"
+> >>>>      #include <bpf/bpf_helpers.h>
+> >>>>      #include <bpf/bpf_tracing.h>
+> >>>>
+> >>>>      #define N (64)
+> >>>>
+> >>>>      struct {
+> >>>>          __uint(type,        BPF_MAP_TYPE_HASH);
+> >>>>          __uint(max_entries, N);
+> >>>>          __type(key,         __u64);
+> >>>>          __type(value,       __u64);
+> >>>>      } map SEC(".maps");
+> >>>>
+> >>>>      static int cb(struct bpf_map *map, __u64 *key, __u64 *value,
+> >>>> void *arg) {
+> >>>>          bpf_map_delete_elem(map, key);
+> >>>>          bpf_map_update_elem(map, &key, &val, 0);
+> >>> I suspect what happened in this reproducer is,
+> >>> there is a bucket with more than one elem(s) and the deleted elem get=
+s
+> >>> immediately added back to the bucket->head.
+> >>> Something like this, '[ ]' as the current elem.
+> >>>
+> >>> 1st iteration     (follow bucket->head.first): [elem_1] ->  elem_2
+> >>>                                   delete_elem:  elem_2
+> >>>                                   update_elem: [elem_1] ->  elem_2
+> >>> 2nd iteration (follow elem_1->hash_node.next):  elem_1  -> [elem_2]
+> >>>                                   delete_elem:  elem_1
+> >>>                                   update_elem: [elem_2] -> elem_1
+> >>> 3rd iteration (follow elem_2->hash_node.next):  elem_2  -> [elem_1]
+> >>>                   loop.......
+> >>>
+> >> Yes. The above procedure is exactly the test case tries to do (except
+> >> the &key and &val typos).
+> > Yes, apologies for the typos I must have introduced when minifying the
+> > example. Should just use key and val sans the &.
 >
-> The fix for hash-of-maps will be much simpler and the returned map
-> pointer will be correct. For other types of hash map, beside switching
-> to hlist_nulls_replace_rcu(),
-
-It's been a long time since I looked into rcu_nulls details.
-Pls help me understand that this new replace_rcu_nulls()
-is correct from nulls pov,
-If it is then this patch set may be the right answer to non-atomic update.
-
-And for the future, please please focus on "why" part in
-the cover letter and commit logs instead of "what".
-
-Since the only thing I got from the log was:
-"Currently, the update is not atomic
-because the overwrite of existing element happens in a two-steps way,
-but the support of atomic update is feasible".
-
-"is feasible" doesn't explain "why".
-
-Link to xdp-newbie question is nice for additional context,
-but reviewers should not need to go and read some thread somewhere
-to understand "why" part.
-All of it should be in the commit log.
-
-> map may still be incorrect (as shown long time ago [1]), so I think
-> maybe for other types of map, the atomic update doesn't matter too much.
+> OK
+> >
+> >>> don't think "_safe" covers all cases though. "_safe" may solve this
+> >>> particular reproducer which is shooting itself in the foot by deletin=
+g
+> >>> and adding itself when iterating a bucket.
+> >> Yes, if the bpf prog could delete and re-add the saved next entry, the=
+re
+> >> will be dead loop as well. It seems __htab_map_lookup_elem() may suffe=
+r
+> >> from the same problem just as bpf_for_each_hash_elem(). The problem is
+> >> mainly due to the immediate reuse of deleted element. Maybe we need to
+> >> add a seqlock to the htab_elem and retry the traversal if the seqlock =
+is
+> >> not stable.
 >
-> [1]:
-> https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.c=
-om/
+> The seqlock + restart traversal way doesn't work, because the seq-count
+> for each element will add 2 after the re-insert and the loop will always
+> try to restart the traversal. I have another idea: how about add an
+> per-bucket incremental id for each element in the bucket and during the
+> traversal, the traversal will ignore the element with id greater than
+> the id of current element, so it will ignore the newly-added element.
+> For example, there are three elements in a bucket list: head -> A [id=3D3=
+]
+> -> B[id=3D2] -> C[id=3D1]
+>
+> (1) pass A to cb
+> current id =3D 3
+> cb deletes A and inserts A again
+> head -> A[4] -> B[2] -> C[1]
+>
+> (2) pass B to cb
+> current id=3D2
+> cb deletes B and inserts B again
+> head -> B[5] -> A[4] -> C[1]
+>
+> the id of A is greater than current id, so it is skipped.
 
-A thread from 3 years ago ?! Sorry, it's not helpful to ask
-people to page-in such an old context with lots of follow ups
-that may or may not be relevant today.
+This looks like unnecessary overhead that attempts
+to reinvent nulls logic.
+
+At present I'm not convinced that lookup_nulls_elem_raw() is broken.
+The only issue with bpf_for_each_hash_elem() that loops forever
+in this convoluted case and _safe() is the right fix for it.
 
