@@ -1,115 +1,123 @@
-Return-Path: <bpf+bounces-52727-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52728-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C7F7A47EE6
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 14:21:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51E35A47EF9
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 14:24:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 236BE1896D8A
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 13:20:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51DA03A67C7
+	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 13:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A67230997;
-	Thu, 27 Feb 2025 13:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 046A222FF25;
+	Thu, 27 Feb 2025 13:24:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hgr5WQkK"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VQMF8q3H"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D8A22FE13;
-	Thu, 27 Feb 2025 13:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28D6922FAFD;
+	Thu, 27 Feb 2025 13:24:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740662401; cv=none; b=IGDR4TWCEhTfa8ww6aoa/gVDtKOeaawaFDcjTUURIdCplo8vfES9G+2F/+w5hMtPugmIeNeV4xP00jNxm+SZyUVWA8petDdzl7kQW1ZEufJGmA+GtUFj2fb49iRA5qPZDcl1UILtHJtNWunpsmhd//avDEy6JgOoONk9mtBDx5Y=
+	t=1740662670; cv=none; b=ZVT2TBWTJt5qIrs4aU+B1pbRA9CR01ExvMXIPRFnuZJlAoHchHH6kvNNIIadpnyqmtosABCEC6RBzEOU9plqLcZHNdGrp6uRwQu1moV0wn6zzh/G+kaMYLIUs8wXQtUMM7Wlp/uMZwRwhJPgduMnoreTdJGASRQvZ/qzo978X4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740662401; c=relaxed/simple;
-	bh=fx/Vom5mqh1leEZgG1aXz67lV8T/4Prd0jnHr4TXuX8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=j8g5f0DdUowvb49CtE3ByEfrcAFRNrCKz3xg9lu8wnUoddkuplauRrIsMesk8PQl8S6XnJyPj46DzvwjU3nGhlWiIs5HUae16YvzoY/DbIFk9gUNFQu2+f9uIcufZl0k3EPtEhio9zz3fQq42G2XO09jMASPJYTG08d3kKydlk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hgr5WQkK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBD9AC4AF0B;
-	Thu, 27 Feb 2025 13:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740662400;
-	bh=fx/Vom5mqh1leEZgG1aXz67lV8T/4Prd0jnHr4TXuX8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hgr5WQkK6hpAwtpX4s8FDd0cwNjE5K3Xkf/iPiZxefwYhyMLVqUHnnv5Wpsl4uURb
-	 4ENKT1yriatYXcREFBFv8sM91bcjBERPpqMv3jrFYge7z3gPnLPfqbw6lbYvXWb5ur
-	 z49h2fkQFGGKYb3sVSS4dDHFjbupGWJWZX9yWDqdJ7vKcj+GONP5DoIYHsG+fdg7m1
-	 8MLncX2Wc1ORiSRg99UK9LiDHYVTew5IIqRL+Z6oybSl/eXgRPnS0jn/1xp1UAvtUN
-	 VyvIfsNzlt7R89/NR3E+xB+RxnUgQCG7t0SJc89jgFVcPigbBQXzlbuLsNvAP1zf69
-	 uwl6KLGw4123Q==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAD66380AA7F;
-	Thu, 27 Feb 2025 13:20:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1740662670; c=relaxed/simple;
+	bh=q78T31r8ZzsIZ6l2LVv9q89HNLhFvW4dCxCXOTAfIlg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Yekp5CQCdbsm6rI2BDwLVIhxsb20mqx5G2uZe9RXMQCs/m6qxivKjmAss/455eyzzRB3eVMXeq5K4JMsLdU+4w3jyWp+ozUYQTX7bDbRRVpjgc0Ht4sJ6+g1I2/vAQwfF+XGGdZlIZKWPD0V7a5B/drSZxq8yYsxBx3GJs/3LVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=VQMF8q3H; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 29EA8441D1;
+	Thu, 27 Feb 2025 13:24:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1740662665;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ev6fUAp7eyoqQUZCt0Ye0W7Edj16g7jXZKrOMsCZZGg=;
+	b=VQMF8q3HE+DIsj1Zg1fXthpCf00GO5tNsure50nQNxcZjft8eRwKR/YwLIWS2GRr2XsUq4
+	SsmvOGdmsL2fHE9YbE+Cs1dxgSQx89mzJaKMpACDAnD2jB8zSynSqlgaVdC5uJDTkl8rX0
+	aKUnYDsmHvQbS9YJ3NvX4L2mltEtaFqSCOEkYTOoF49/cXs9/aTd3+TrsT4he3ugFvDQ2Y
+	657tIWMNIEuW2VcXg0oZaGOVH2+nbzwUIuL1W3a7T0LJjXy1EVp1RDVxvaRePMUVmYeSMy
+	fuIH8mD0vFfiokG+f0ufImxjhRwzIEV4DoGbNSlmI/9spDPuEC4562AVF/NLVQ==
+From: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+Subject: [PATCH bpf-next 00/10] selftests/bpf: Migrate test_tunnel.sh to
+ test_progs
+Date: Thu, 27 Feb 2025 14:24:15 +0100
+Message-Id: <20250227-tunnels-v1-0-33df5c30aa04@bootlin.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v5 0/8] bpf: cpumap: enable GRO for XDP_PASS frames
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174066243275.1425284.11463138682186483898.git-patchwork-notify@kernel.org>
-Date: Thu, 27 Feb 2025 13:20:32 +0000
-References: <20250225171751.2268401-1-aleksander.lobakin@intel.com>
-In-Reply-To: <20250225171751.2268401-1-aleksander.lobakin@intel.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, lorenzo@kernel.org, dxu@dxuuu.xyz,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- john.fastabend@gmail.com, toke@kernel.org, hawk@kernel.org,
- martin.lau@linux.dev, netdev@vger.kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAH9nwGcC/x3MSwqAMAwA0atI1hYaf6BXERetphqQKI2KIN7d4
+ vLBMA8oRSaFLnsg0sXKmyRgnsG4OJnJ8JQMhS1qiyWa4xShVU3d+qZCcmVAC6neIwW+/1MPfg9
+ G6D5geN8PNauVM2MAAAA=
+X-Change-ID: 20250131-tunnels-59b641ea3f10
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Alexis Lothore <alexis.lothore@bootlin.com>, bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+X-Mailer: b4 0.14.2
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdekjeehkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffufffkgggtgffvvefosehtjeertdertdejnecuhfhrohhmpedfuegrshhtihgvnhcuvehurhhuthgthhgvthculdgvuefrhfcuhfhouhhnuggrthhiohhnmddfuceosggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhepkedtkefgtedtgeekhfdujeevfefhvdetgfduudeifedvhfdvgfefteehhfdvvefhnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopegludelvddrudeikedrtddrudegngdpmhgrihhlfhhrohhmpegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedvtddprhgtphhtthhopehkphhsihhnghhhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtohephhgrohhluhhosehgohhoghhlvgdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqk
+ hgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhmpdhrtghpthhtohepshhhuhgrhheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhg
+X-GND-Sasl: bastien.curutchet@bootlin.com
 
-Hello:
+Hi all,
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+This patch series continues the work to migrate the *.sh tests into
+prog_tests framework.
 
-On Tue, 25 Feb 2025 18:17:42 +0100 you wrote:
-> Several months ago, I had been looking through my old XDP hints tree[0]
-> to check whether some patches not directly related to hints can be sent
-> standalone. Roughly at the same time, Daniel appeared and asked[1] about
-> GRO for cpumap from that tree.
-> 
-> Currently, cpumap uses its own kthread which processes cpumap-redirected
-> frames by batches of 8, without any weighting (but with rescheduling
-> points). The resulting skbs get passed to the stack via
-> netif_receive_skb_list(), which means no GRO happens.
-> Even though we can't currently pass checksum status from the drivers,
-> in many cases GRO performs better than the listified Rx without the
-> aggregation, confirmed by tests.
-> 
-> [...]
+The test_tunnel.sh script has already been partly migrated to
+test_progs in prog_tests/test_tunnel.c so I add my work to it.
 
-Here is the summary with links:
-  - [net-next,v5,1/8] net: gro: decouple GRO from the NAPI layer
-    (no matching commit)
-  - [net-next,v5,2/8] net: gro: expose GRO init/cleanup to use outside of NAPI
-    https://git.kernel.org/netdev/net-next/c/388d31417ce0
-  - [net-next,v5,3/8] bpf: cpumap: switch to GRO from netif_receive_skb_list()
-    https://git.kernel.org/netdev/net-next/c/4f8ab26a034f
-  - [net-next,v5,4/8] bpf: cpumap: reuse skb array instead of a linked list to chain skbs
-    https://git.kernel.org/netdev/net-next/c/57efe762cd3c
-  - [net-next,v5,5/8] net: skbuff: introduce napi_skb_cache_get_bulk()
-    https://git.kernel.org/netdev/net-next/c/859d6acd94cc
-  - [net-next,v5,6/8] bpf: cpumap: switch to napi_skb_cache_get_bulk()
-    (no matching commit)
-  - [net-next,v5,7/8] veth: use napi_skb_cache_get_bulk() instead of xdp_alloc_skb_bulk()
-    https://git.kernel.org/netdev/net-next/c/1c5bf4de975d
-  - [net-next,v5,8/8] xdp: remove xdp_alloc_skb_bulk()
-    https://git.kernel.org/netdev/net-next/c/b696d289c07d
+PATCH 1 & 2 create some helpers to avoid code duplication and ease the
+migration in the following patches.
+PATCH 3 to 9 migrate the tests of gre, ip6gre, erspan, ip6erspan,
+geneve, ip6geneve and ip6tnl tunnels.
+PATCH 10 removes test_tunnel.sh
 
-You are awesome, thank you!
+Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+---
+Bastien Curutchet (eBPF Foundation) (10):
+      selftests/bpf: test_tunnel: Add generic_attach* helpers
+      selftests/bpf: test_tunnel: Add ping helpers
+      selftests/bpf: test_tunnel: Move gre tunnel test to test_progs
+      selftests/bpf: test_tunnel: Move ip6gre tunnel test to test_progs
+      selftests/bpf: test_tunnel: Move erspan tunnel tests to test_progs
+      selftests/bpf: test_tunnel: Move ip6erspan tunnel test to test_progs
+      selftests/bpf: test_tunnel: Move geneve tunnel test to test_progs
+      selftests/bpf: test_tunnel: Move ip6geneve tunnel test to test_progs
+      selftests/bpf: test_tunnel: Move ip6tnl tunnel tests to test_progs
+      selftests/bpf: test_tunnel: Remove test_tunnel.sh
+
+ tools/testing/selftests/bpf/Makefile               |   1 -
+ .../testing/selftests/bpf/prog_tests/test_tunnel.c | 627 +++++++++++++++++---
+ tools/testing/selftests/bpf/test_tunnel.sh         | 645 ---------------------
+ 3 files changed, 532 insertions(+), 741 deletions(-)
+---
+base-commit: 16566afa71143757b49fc4b2a331639f487d105a
+change-id: 20250131-tunnels-59b641ea3f10
+
+Best regards,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
 
 
