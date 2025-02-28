@@ -1,131 +1,112 @@
-Return-Path: <bpf+bounces-52910-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52911-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BABBAA4A460
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 21:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 917D2A4A4BA
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 22:15:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97E003B5788
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 20:48:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4F293B796A
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 21:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 904CA146593;
-	Fri, 28 Feb 2025 20:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C811D61B1;
+	Fri, 28 Feb 2025 21:14:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XBb+8o1I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cheX9VB2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8097F23CB
-	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 20:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF5523F396;
+	Fri, 28 Feb 2025 21:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740775692; cv=none; b=CmMkrTmu0IznPgQLk386ihVQXwl+TEjsy8Qed3QMrW6/AyHytdY8Wmsq9H2z4WJg/Berk96aUrHfAG3RUMxPWxejhCr15iImpvQpBHDmjBV1/3C8w/GltTfiFr6BQ4BQXAyYhYQdH9l6pbQJP2Dwv6abKeAKUhWevViOKro8mg0=
+	t=1740777298; cv=none; b=cMCE//O40tZc8P0ELer5drX0avZqJfVyLvZP3IAdA57Dhnj/yoU+aXHjmMW7xIXT+WBe+3vUZC1fw4MGtis0Gli3pxN/uiHxZ649qHadoplBLLjx/Twe5Qnb70kzqnJngj5wcWGcOxGub9mWFnhDV7mByY7Pg3xsgqRMDEDia6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740775692; c=relaxed/simple;
-	bh=8lqgA1UDMEac0vJ39MticibOiAICALzBu8WKALXHp/w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UQ9OTcQPfrL13IOgzzSGYl6+IQmv04PuKiZVGrV1P9DDDGL+mCXOd/15kMpCXKZrMCO6oYRJWj9kcmlY4Mf+Sx/VgoKMp+NgNIEqvOAAiYZtrGEfbF7ppcRkB9cEnVMZiK9Dhs0LXaJbAr4TtrCgt/ZxAUqJkzElucQP0YqaocU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XBb+8o1I; arc=none smtp.client-ip=209.85.208.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-5e0373c7f55so3772520a12.0
-        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 12:48:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740775689; x=1741380489; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8lqgA1UDMEac0vJ39MticibOiAICALzBu8WKALXHp/w=;
-        b=XBb+8o1IVVWMn8Bybq8nDeDwL0KOaIN/dN3AjgYdox/bEYxQKy9jYRUjQkcQM8j8dy
-         sJXTtQKx8iovq7AMRlXzVN6UCiniFWYQkv0FAUseYTLZMlu8goWz2gnxUI9yDBsDNBze
-         rYJ4paZLCDj2nGETKCSxCM468wWgSLu5OLMXC/X7q7vxbWWv647sQBIN9NIdYZzshbcQ
-         jRSQJy1U2Q46vN2eSsZnPBOniO+Lt1ntKqB0FjoBIiWfdKKCCHHxZwoJZGNXm4BaC/xy
-         I/9KwFRiVfTLh3isBYuG0woODEtbrAEohtcSQraBbIkTsB3IxNzKo/T0b9vcnOYkbOpw
-         D4UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740775689; x=1741380489;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8lqgA1UDMEac0vJ39MticibOiAICALzBu8WKALXHp/w=;
-        b=crgPAwv/2eT8RqjKewETVd1IpdLMYlKH5cB2RW7Q3O0FVDnS0Wfh7hKmlsr/8divII
-         h2ZEd/fAaTIan+7AiD9HjY1xQXFh59rtK36birpErDtU+iBRiUAd4g3/juVI+LqX2NuI
-         Pmxr8jOM5PGRAIics4pMVqf2uYRwO2sejJFzUVbtazqrbua88l/9FasbTU1jd/j+8zP5
-         gpLlQdKc53q/sZ0BBxLca8pZf4+to+EK2xvjftHLepinwkVz8l34l2C6jMXCQkUyjZtL
-         C4p2DEvTU0GC110Op8EgCK2KWZG+xRpr1kDxf+uSelfcca7lhT/1rMWbfvUvKH2fqCpY
-         7e3Q==
-X-Gm-Message-State: AOJu0YxewHIDOuEQ531yM80/C4ERRBDoR8ivLfga7H3AhMB33NmS5Cld
-	SLpM6ZgPcIqA6Jx0U5/xb1y3+ENMR5Eqmvr+JaxS+ED6rCsAQGL3JuttlOjbnQnEe6oBz9jbSmO
-	vH6CgvBR/sN/kb58sVV2a2xwsinI=
-X-Gm-Gg: ASbGncvGqmCRmlPUCSPgPB1EUP6GmZo3wj5klFfCr2uir+E0Xln6PRexUr1h4tVLKwa
-	rGSADtGQX8jhfSjPYsKwTbJaB9LymVuRxrRHF0CZzpxnZ4B4hhy68xsjerFC1hfHV/etnvXs60H
-	U5X8FStWI/Ia5bvUqPzm7u62jtTDg=
-X-Google-Smtp-Source: AGHT+IGpIZ+rJjXadc0/iZrhgVBzFODSXpr4/k9gA3gPWiDiFth9kO4G1qiqBJ51qbCKD1dBDn77s+jc0W/HaVGCOcc=
-X-Received: by 2002:a05:6402:239a:b0:5e5:552:32b7 with SMTP id
- 4fb4d7f45d1cf-5e505523a61mr2290591a12.16.1740775688427; Fri, 28 Feb 2025
- 12:48:08 -0800 (PST)
+	s=arc-20240116; t=1740777298; c=relaxed/simple;
+	bh=0XgvGcjUrAwi1kFAHtODcTmPecLThdWEAGMsndHtRX8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uFgkF65ZFE4mtoLem7K+YCGf3jKbiK3f9teTx83soBg0sL64VjnMG8uP+0ZuV9aNFn/zOedrBD5XE3K5jcM40REK/GLyc38KHrtjF4BUTZjGB5j4997PlTmKw3Yj8v4u5sEQw4WErTruoWyJiVv+A3GWtkQ3SMtVnjxko5q9rSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cheX9VB2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA09CC4CED6;
+	Fri, 28 Feb 2025 21:14:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740777298;
+	bh=0XgvGcjUrAwi1kFAHtODcTmPecLThdWEAGMsndHtRX8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cheX9VB2F3cFfRmd1Gl4lfeCdap+/XacJavAsuSIa7b6/C/97Zs6/73MrYyujhUP2
+	 1/s18H/+T2RML+Qv+ZeQseAuPFo2DDH06MYebP5r0U/+zfcw1vU+qdv0dQjsJCI6kh
+	 2EMwywYjZ3cVDURu1+JKp5h/5Bfe7Okha0HVf2e9gVuCPULwBHf+4TK0gaCib5bQGJ
+	 haysqSwmm6uY0+gOxm2F72qzHCjKYU2dl6IRPW44OYEKIZ7Cjp5IJpEgC2tnD0bkCq
+	 KqfM4lEm4+ZKOLAe8PTlcIjuvgeI6x2jCGiBqEnu9lWoG2yIT+08mSSqahe+N4Kt6N
+	 JVFZaZCoqpg4w==
+Date: Fri, 28 Feb 2025 11:14:56 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Juntong Deng <juntong.deng@outlook.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>,
+	Changwoo Min <changwoo@igalia.com>, bpf <bpf@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH sched_ext/for-6.15 v3 3/5] sched_ext: Add
+ scx_kfunc_ids_ops_context_sensitive for unified filtering of
+ context-sensitive SCX kfuncs
+Message-ID: <Z8InUDxSbSR_d3kk@slm.duckdns.org>
+References: <AM6PR03MB50806070E3D56208DDB8131699C22@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB5080648369E8A4508220133E99C22@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <Z8DKSgzZB5HZgYN8@slm.duckdns.org>
+ <AM6PR03MB5080C1F0E0F10BCE67101F6F99CD2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <CAADnVQK1bekF9XH7EHCciXeyiB_W_jXBO9+tJoL17X0YtmGjng@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250228162858.1073529-1-memxor@gmail.com> <20250228162858.1073529-2-memxor@gmail.com>
- <be5c35ce48592380e4edfabac2866bfc4f822cac.camel@gmail.com>
-In-Reply-To: <be5c35ce48592380e4edfabac2866bfc4f822cac.camel@gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 28 Feb 2025 21:47:31 +0100
-X-Gm-Features: AQ5f1Jq9UN83IuoJXlW73dT7cI0ZO6_6K_mRsI7WlDG-kkEKSkzbkzkegZ3rYJM
-Message-ID: <CAP01T75M-mA6w5rPr_gJ425ZRt0LTzFRvpsq5iAdV16O6hTOsA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: Summarize sleepable global subprogs
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, kkd@meta.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQK1bekF9XH7EHCciXeyiB_W_jXBO9+tJoL17X0YtmGjng@mail.gmail.com>
 
-On Fri, 28 Feb 2025 at 21:42, Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> On Fri, 2025-02-28 at 08:28 -0800, Kumar Kartikeya Dwivedi wrote:
-> > The verifier currently does not permit global subprog calls when a lock
-> > is held, preemption is disabled, or when IRQs are disabled. This is
-> > because we don't know whether the global subprog calls sleepable
-> > functions or not.
-> >
-> > In case of locks, there's an additional reason: functions called by the
-> > global subprog may hold additional locks etc. The verifier won't know
-> > while verifying the global subprog whether it was called in context
-> > where a spin lock is already held by the program.
-> >
-> > Perform summarization of the sleepable nature of a global subprog just
-> > like changes_pkt_data and then allow calls to global subprogs for
-> > non-sleepable ones from atomic context.
-> >
-> > While making this change, I noticed that RCU read sections had no
-> > protection against sleepable global subprog calls, include it in the
-> > checks and fix this while we're at it.
-> >
-> > Care needs to be taken to not allow global subprog calls when regular
-> > bpf_spin_lock is held. When resilient spin locks is held, we want to
-> > potentially have this check relaxed, but not for now.
-> >
-> > Tests are included in the next patch to handle all special conditions.
-> >
-> > Fixes: 9bb00b2895cb ("bpf: Add kfunc bpf_rcu_read_lock/unlock()")
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
->
-> I think this change also has to deal with freplace for sleepable
-> sub-programs, e.g. see verifier.c:bpf_check_attach_target(),
-> part dealing with `tgt_changes_pkt_data`.
->
-> Other than that the logic seems ok.
+Hello,
 
-Ah, good catch. Let me fix that and add a test to check it.
+On Thu, Feb 27, 2025 at 06:38:32PM -0800, Alexei Starovoitov wrote:
+...
+> > > Not from this change but these can probably be allowed from TRACING too.
+> > >
+> >
+> > Not sure if it is safe to make these kfuncs available in TRACING.
+> > If Alexei sees this email, could you please leave a comment?
+> 
+> Hold on, you want to enable all of scx_kfunc_ids_unlocked[] set
+> to all of TRACING ? What is the use case ?
 
->
-> [...]
->
+I thought it may be useful to be able to iterate DSQs and trigger
+dispatching from there but
+
+> Maybe it's safe, but without in-depth analysis we shouldn't.
+> Currently sched-ext allows scx_kfunc_set_any[] for tracing.
+> I would stick to that in this patch set.
+
+I haven't thought through about safety at all and was mostly naively
+thinking that if _any is safe _unlocked should too. Right now, unlocked has
+two groups of kfuncs - the ones that should be able to sleep and the ones
+that can be called from within scx_dsq_iter iterations. The former is
+excluded from TRACING through KF_SLEEPABLE, I think. I don't know whether
+dsq iteration is allowed in TRACING.
+
+Anyways, not a real issue either way.
+
+Thanks.
+
+-- 
+tejun
 
