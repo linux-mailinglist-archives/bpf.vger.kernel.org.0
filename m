@@ -1,108 +1,93 @@
-Return-Path: <bpf+bounces-52907-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52908-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 452B7A4A318
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 20:53:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF4A3A4A3BD
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 21:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA3DA7A3761
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 19:52:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 588ED189030D
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 20:14:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA25230BE5;
-	Fri, 28 Feb 2025 19:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492E527D77F;
+	Fri, 28 Feb 2025 20:08:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aj14BI2S"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Iee3yVRM"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AAFB1B87FB
-	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 19:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9C526FDB4
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 20:08:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740772389; cv=none; b=igsIN0VytTG1+oBkBWqUdgHYC4t5rQCZyT5I9SkOry+1kgGZIacfhF3mzW3ESxf18Tsc/dFsuAabPRA3IL6HzvxK5TKDwoDXs+DJSFlN9dhqgyEfjGT8+/S2nD6KroeOhQ8whNlHFv0bdPo4m4O8HWXxwb+aHlOhYOtmp6mIISI=
+	t=1740773311; cv=none; b=Kq+LpzOVvINv6O4ZNBWqRm/wkG+93zBchghYA7D/s9YNeU6DFTz9UsCIIthi5Jqcffcpos1wuKIVn4KRGliVRKnuR9S8QkwBsGJidPm6IhC0hZsWhSZHH5JBuq/fnPOWY8pTp0hNLrCXfP+sV3QaaUhWeEDvGx3aBGv+X4SXDl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740772389; c=relaxed/simple;
-	bh=EcsZpfGSPX/X9HBka4cd3H7PGSNQLBokC3svgTbthC0=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=PrJlFiYLcieNiuZ7y6EpedRowV6T1QvHcePYna+oDSh04h1sglUQS3SMQ4b26qB/bJ8tnQ4cdSEeK8SRVfHwFxYRrgEb7gtUvA9plUuq+rAAEa3qg63sTGnM/+gAMM70Yc/tyDvNupZlsfoH9DAfFZZ4xMWegXPmAVT91lyrPe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aj14BI2S; arc=none smtp.client-ip=91.218.175.174
+	s=arc-20240116; t=1740773311; c=relaxed/simple;
+	bh=dN5erVEOdVNv3oiWJXPSnonCC/q7xzUNqwNCyBAEI3A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Hb+anhw0nJUTFVfMUg38Jw647uUgKGhLBr8eCvXYMJtL6Q+szr4z7Z9upEwFL/2Fma9oaxdLLf5Y758TCle7RwZ/ZnP38RYMndECtvDwQwjUa1G20F5WT50EWu0dtb9CczPOGk+hxCqJIyyCILg4Osc0YaNbe5XtGNx8Vq7t/aY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Iee3yVRM; arc=none smtp.client-ip=95.215.58.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5ef054b4-3340-4b0e-9ba6-7b7409f9eb71@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740773305;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AUG1i0ZL+wix5b2+TFEt5FV9JDKNxVcCuHH6kCyEvFM=;
+	b=Iee3yVRM9G4Kqlw+8+wbdMX2GaTOnlnea8Slk0svUu1qmw1YouBr6SZsANz4314sMTIoTp
+	9dEbz6DBjunvK69It02uhBvXu3ni7oBeseTGcz6qj6mZTYEAuUTXeSEPQZuFI0ypRhHFC6
+	ksjX9h/XWWy6RwsiOVhMoZ10MPzgJYQ=
+Date: Fri, 28 Feb 2025 12:08:18 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740772385;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/7Wwe498qsEAnlbwQpLpWflELriewcuLcBq0HraIf3k=;
-	b=aj14BI2SsGLjfilBNOPl0UI3kt9KeT6QLAHn1XEwu5HJ02H+3EYXwpp1G8Tc8FiFEvJJYa
-	rsQt1hd5rD+DAmzAx4w3FzXcQIpiQ75J1LjTB9WK1nJajXA+COrByCcvqwgXOJwzZ+gpKW
-	6rJ8KRYq6Det1Q8NghokqTND58kyeBc=
-Date: Fri, 28 Feb 2025 19:53:04 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v4 0/2] Introduced to support the ULP to get or
+ set sockets
+To: zhangmingyi <zhangmingyi5@huawei.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
+ yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yanan@huawei.com, wuchangye@huawei.com,
+ xiesongyang@huawei.com, liuxin350@huawei.com, liwei883@huawei.com,
+ tianmuyang@huawei.com, Network Development <netdev@vger.kernel.org>
+References: <20250228085340.3219391-1-zhangmingyi5@huawei.com>
+Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Ihor Solodrai" <ihor.solodrai@linux.dev>
-Message-ID: <050b81d2c82f57f3e97b27c59198a08b1c8d7f7b@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH dwarves v4 2/6] btf_encoder: use __weak declarations of
- version-dependent libbpf API
-To: dwarves@vger.kernel.org, bpf@vger.kernel.org
-Cc: acme@kernel.org, alan.maguire@oracle.com, ast@kernel.org,
- andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com,
- kernel-team@meta.com
-In-Reply-To: <20250228194654.1022535-3-ihor.solodrai@linux.dev>
-References: <20250228194654.1022535-1-ihor.solodrai@linux.dev>
- <20250228194654.1022535-3-ihor.solodrai@linux.dev>
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250228085340.3219391-1-zhangmingyi5@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-On 2/28/25 11:46 AM, Ihor Solodrai wrote:
-> Instead of compile-time checks for libbpf version, use __weak
-> declarations of the required API functions and do runtime checks at
-> the call sites. This will help with compatibility when libbpf is
-> dynamically linked to pahole [1].
->
-> [1] https://lore.kernel.org/dwarves/deff78f8-1f99-4c79-a302-cff8dce4d80=
-3@oracle.com/
->
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> ---
->  btf_encoder.c | 48 +++++++++++++++++++-----------------------------
->  dwarves.h     | 11 ++++++++++-
->  pahole.c      |  2 --
->  3 files changed, 29 insertions(+), 32 deletions(-)
->
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 2bea5ee..12a040f 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -34,6 +34,7 @@
->  #include <search.h> /* for tsearch(), tfind() and tdestroy() */
->  #include <pthread.h>
->=20=20
->=20+#define BTF_BASE_ELF_SEC	".BTF.base"
->  #define BTF_IDS_SECTION		".BTF_ids"
->  #define BTF_ID_FUNC_PFX		"__BTF_ID__func__"
->  #define BTF_ID_SET8_PFX		"__BTF_ID__set8__"
-> @@ -625,29 +626,6 @@ static int32_t btf_encoder__add_struct(struct btf_=
-encoder *encoder, uint8_t kind
->  	return id;
->  }
->=20=20
->=20-#if LIBBPF_MAJOR_VERSION < 1
+On 2/28/25 12:53 AM, zhangmingyi wrote:
+> From: Mingyi Zhang <zhangmingyi5@huawei.com>
+> 
+> We want call bpf_setsockopt to replace the kernel module in the TCP_ULP
+> case. The purpose is to customize the behavior in connect and sendmsg
+> after the user-defined ko file is loaded. We have an open source
+> community project kmesh (kmesh.net). Based on this, we refer to some
+> processes of tcp fastopen to implement delayed connet and perform HTTP
+> DNAT when sendmsg.In this case, we need to parse HTTP packets in the
+> bpf program and set TCP_ULP for the specified socket.
+> 
+> Note that tcp_getsockopt and tcp_setsockopt support TCP_ULP, while
+> bpf_getsockopt and bpf_setsockopt do not support TCP_ULP.
+> I'm not sure why there is such a difference, but I noticed that
+> tcp_setsockopt is called in bpf_setsockopt.I think we can add the
+> handling of this case.
 
-There is an identical condition in btf_loader.c, however it guards
-static functions, for example btf_enum64(). I decided to leave it as
-is, although I find it unlikely that someone would use libbpf < 1.0.
+Please stop sending multiple new versions while the earlier raised questions
+still have not been replied [1]. Also, netdev is still not cc-ed.
 
-> [...]
+[1]: https://lore.kernel.org/all/44668201-cf8b-49c1-9dd0-90e0e5a95457@linux.dev/
+
+pw-bot: cr
 
