@@ -1,253 +1,128 @@
-Return-Path: <bpf+bounces-52886-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52887-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDEF7A4A0ED
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 18:53:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90033A4A160
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 19:24:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAF40189A7A9
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 17:53:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FC961890131
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 18:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9312E27426C;
-	Fri, 28 Feb 2025 17:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0F6D27602F;
+	Fri, 28 Feb 2025 18:24:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UFMXFP7j"
+	dkim=pass (2048-bit key) header.d=web.de header.i=michaelestner@web.de header.b="L3dReFgQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE6D27127A
-	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 17:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A63E2755E3;
+	Fri, 28 Feb 2025 18:24:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740765189; cv=none; b=JWMUsOsQWjzp7HwSA8n+KAvwvMl9GYIddf99U1v0kmL2JeUiNV8UgB1YuDDacLMKXW82m5tYknqWmvQ2J+zPTHjQWiCJLPU6KVsSl4Jwrxue/4tMWXfqKzStGLlg7RRiPhkL4nbZBAqQec00ocHvibK4Lt8b9yrvkBZvFVfHKNA=
+	t=1740767072; cv=none; b=gwtTOTeO1TUQWLf9uLsJVjyMrhDuGItGvWTlcU9vIAN/qt7j/QliITHuqegU2d+lwzE28nv5zQHHau8Vlf0FF7s1af2jOIqLl81S5tMQr9Y6Y3PCHv0/45pUQgOC4UToTc121LAnzI1jB0zWm7HeCa30FmvoV0hXZz6kZoxzybQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740765189; c=relaxed/simple;
-	bh=5GBOo3r62X/N9yzGkYPhUoSYkiTGhWgxkwe8JrQbfAM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S6dbhk/LynoEKrIYwWHz11bi7jCf2pc1NmqCA+P6Qoqz5ZpBF2mCvXnNk0ctACJqDkVbmiU4Nc3CAXXnnjiUeblNPjD4qGiUFCLD9yVPnxXkVKXjf10AmCnYxwFFdcjk3ZbFw0yJ62AVntgBB2gxDEtzIfs7K1xya3fCNDJbC48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UFMXFP7j; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-439a1e8ba83so23239595e9.3
-        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 09:53:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740765185; x=1741369985; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2p4whArfH9IPn6ptyYPuMDThnFelGkYZfeRUPHSq5NE=;
-        b=UFMXFP7jAZ7O0ZUnU3nXb/WXER0aRd+tEpW9RZ8NUR3NEuEzw2nv80FpXbowQmQb1x
-         /+FMvy/soHxTWCtQHvZR2hysEroXF5zDqHNvmGrVJm2PZt1Wxex2J46Be3jcvaw+4AXY
-         e8Cii2pSo0V94AtogI8RbtsGeX8cdMQpu4Kqj5sVrEgFc42nA7Lmx4BYgvJHsmGL6szV
-         J09DpZgtp9HZ1mAEcsmPAAf3bLy8PysGfM1vI97PEg/7ZyW84pkFxrnu5xKI962iF7If
-         xQKyHTlI7+Wig4PbUEeEDZWTpv+rr81R8O7dmbplC9tYZVWjeHgj1bh6TlDkGnPsQ6BK
-         nObA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740765185; x=1741369985;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2p4whArfH9IPn6ptyYPuMDThnFelGkYZfeRUPHSq5NE=;
-        b=TZso+qRgVfztIizIiRzGBKz9wdrmW43Pa2qddQCHUnorUORiTlNfKkhSDmUyM6sTdd
-         s0GmCj6gCcJG5rdDb924jQpKTT3g0C0GS0Xjm+27gf6822SeJFrLGE+ydiwOGng79osH
-         enYyAzVfUaJYqU59J9smwy8sz46C1s46oM/ohx43HX/mev743qaYvE++Av5UDR994PyV
-         bKgR+g123CMDqHkqZb4w6GpEMlL5T9s8MPulbiYu9Fz613CeSF+86nLhTHdCR+bUCFJu
-         vt9814rLwSDHJe1RKnlfT+FsTbfPaKWdifnOIOQItGJ3d6+7w9+gJo4m2LzzUnGRu+EE
-         R3GA==
-X-Gm-Message-State: AOJu0Yyvnpl31Ic6LCF5q8D8lVCp8qsZxDNVNOpYpp9q2PAJbrCkAl7C
-	iX2pIfsrLflPchjSqklpet2pgUxAPX+SMlBEk8RVGFLd/xpF4eKHdvf/bQ==
-X-Gm-Gg: ASbGnctlBbPeZbWrxZL+14Kh7pVP1I695nz7QEBYSFeWGTUDADUFMOoKvPu4oKBE+GZ
-	boH+XOCrkaoJPBblONPgXRmdbsaiZZZ1yDBe4pup907dkfqS57a8hIsuZG7sT7fbt2+VEdvyoFq
-	G6CmJ/jUTK9UJiqH/wxgLmI1u4Ak0hyeIk0sArssQzMgfV42b7YMJkFHVJ6DUfSK7phdf4vI21C
-	7Rnaq06Hu2poG4l15YIK7/eWLNV+DgBok6f1cLTdKzAEKwXf5Ix28IdKKPQ4Yrf5hsVABwQHqFV
-	feVzKsXMCOS9YRUYWdYdm10NzseoshWRMDAzyrQRHOiRtdr5DDkbefY4ZcCwcWG28y7A7kumuUo
-	WN0okNqYaJht3c3BTkCPi9p+csFjISoU=
-X-Google-Smtp-Source: AGHT+IHYLvP2tDKFA2jGzJ2JfOWtNtw/kSHH62jefQTwxh3S9dAUVFJv2ZbSZE1RB5IM5yOmqBsPAA==
-X-Received: by 2002:a05:600c:4444:b0:439:92ca:f01b with SMTP id 5b1f17b1804b1-43ba6708bd2mr38879455e9.13.1740765185305;
-        Fri, 28 Feb 2025 09:53:05 -0800 (PST)
-Received: from localhost.localdomain (cpc158789-hari22-2-0-cust468.20-2.cable.virginm.net. [86.26.115.213])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e47a7b88sm5861664f8f.40.2025.02.28.09.53.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Feb 2025 09:53:04 -0800 (PST)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
+	s=arc-20240116; t=1740767072; c=relaxed/simple;
+	bh=ulEoNTWX2ai/i1e+m4dRcAUEVFZP1m1dYHYLPjm/u9Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VQd2zzwVt/EJlGHd22M6/MLQyu5SU0ch6uVY4Ta25XZBl0FIjocjY589UtQ0Hkbgvhhk6pktNLMW3MV8PNf/L9jwSLaVnjxYDPhEbIW6bs3bpEmvBK+CJcrzoRQtXjxq59G3+4K/w1bdjTnCCVpH6qMxbyhFXq1Y1vpIn9qMCrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=michaelestner@web.de header.b=L3dReFgQ; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1740767064; x=1741371864; i=michaelestner@web.de;
+	bh=Hm2gsSINyxASyXm+O82PUycRhtyQCwm+OL7u80TaOZI=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-Id:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=L3dReFgQIiuBskn8vKITtOJKhi9FsY/9XfNr0xxfgYdPEmFYWVZAKirXxWgB4YyE
+	 BF42hFcgNe1Qxxq4XRJOjkhipvE2uN0P76OXAbn2+gOZ1JKykQw1E20eobYYGUIdn
+	 9WqcaYBYg8mnIKSQqGnNPv2sYWMGMTbcom/9U4w3tggCp0uTMgcSh4gX9y/Q96HjV
+	 eMyHi3blIKJ5Mo8ppyfAWo8D3cyRdPozx1b0CC/C+EaG1m6BUHT5xX2DgfLI8entm
+	 XIvTYH9rpWlCKVYWjGwRn/fF+Dk2lSF/3Fc/NOiYzBxNDY7mXKUZjUVShy3zVioNO
+	 V8ZhfnNxHGY+VTRO+g==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from del01453.ebgroup.elektrobit.com ([87.150.19.59]) by smtp.web.de
+ (mrweb005 [213.165.67.108]) with ESMTPSA (Nemesis) id
+ 1Mty5w-1t0Mbh3nCu-00zaaT; Fri, 28 Feb 2025 19:18:45 +0100
+From: Michael Estner <michaelestner@web.de>
+To: qmo@kernel.org,
 	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: add tests for bpf_object__prepare
-Date: Fri, 28 Feb 2025 17:52:55 +0000
-Message-ID: <20250228175255.254009-4-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250228175255.254009-1-mykyta.yatsenko5@gmail.com>
-References: <20250228175255.254009-1-mykyta.yatsenko5@gmail.com>
+	daniel@iogearbox.net
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Michael Estner <michaelestner@web.de>
+Subject: [PATCH] bpftool: Replace strncpy with strscpy
+Date: Fri, 28 Feb 2025 19:18:27 +0100
+Message-Id: <20250228181827.90436-1-michaelestner@web.de>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dTJ1bEHopl8bQxzT6+oHnNYmgNuyVP6QWCwbZ70KhlIHpIGhism
+ t6XRtAPQPR9OgLHxesMCbqnjAu2gXKzbHQa2ud4f2HYxW5zp/e7SMQXG/u39h8upXtE781K
+ Xz6RVrVFl4GT88mKMQ5V6Dn/i8U8+erchfHaUmPXzIyzlmvkfRYMkoPE3eX5by/SU/9+bBV
+ T+8tj66PSMBszC+4NsXnw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ErGF/CS68pI=;ttSUjnhCdosvNWlTyoPbi2gETk/
+ acYvPgpENAlDADA5d7IhgBma9c+wc8LY0ZX+dng/Cvox9rYurQPGolUtLviVU2fJLfOBX1WdB
+ Sa21/o3v7EeDK5vuoWDiRRtcwTzvYw2Jw4JDJZEBz07MXnG2ymNDm4IF4pNyxguS8U57G1AAZ
+ O4x1ZmMveqQe8zKBIqGhZjIFZqgqqwH7cVxsXg8Ll+nv+QMp+yfZLEXj5XI6DO0fJgAuwSPN5
+ 7ZRdvGGgUV4FRPLajP6oXYj+2GKWA8gfffUd3gLkoSG9Bueg7I2WgTNxc3VAqpa6wg4/Hy/cj
+ +j8YVX3QDRriBOGgeNXEFKI/RHKKoAbZutMwfXUwkDMoV4LPQ1lg4Ibagt7gmZgHiAZnvtoAn
+ PGzNeSz8rjjQuWnTAJRsc+R0FidoDRXL32sS1Ls3yQ5dSihHvmgQhtRgKeZNJWRHlTc3oUMzr
+ 8COA3fjrwoOv+s7NkrL8dG7ifDpaT2NmIH8dO/EMN4EvGFuUiCLPvZlrhhtzgTnpnQS2lM66U
+ ad5Ju/ZHdjCmdGca3w9Bgx9GDPaTA0QSc4YEnEF8nnRsQdNEsXhR7b50ZffoTjqok+lv0oRvo
+ 4s5Sv69kyKMDEnCcGs4/SMM4m9rLGxKzIck2S3HmWDQ+NvFfTz/NkRXEKVrESrP+8jDb9bdoP
+ pp2XadOtw1hCLzUbhxCjDvg2Vhw85NSlCqYkv3Q+t2kcVWcXaa8FCK0RHYLnzF6KgQSgQra46
+ 39nVwzKEhOz0CH49wHih9yGo0fBXydWtKmajY3Z5znSd3P7nKgyZ8oi4EiNe96L9gWYiPD7sI
+ w0/BehX8roluPcVtH2g5EBNLUpI/bO6DdwycdDbdmNAo+T4M59IowTHRDjE/r2+UBZYtOydJS
+ 4yqHdUjPpNNZZE34LLwxGUMXjbwCXT3KFdp0E1ehNt/nhVdTNgjx8Yv2GJJzKfWLV+fv8+4nM
+ KkmulHCATdut8lr/LBq9vSn5Gx+9XspIm7ruRYHpn0cAdoa7wCwn/gB9xQXON0GZbdu2UN3Qt
+ N40UB+rRK6IpRJ9/STTM5spJcj6UmOkiJZSjKa76NQWCnPkiapvsToqSeFJaDT97hoCi0oZJh
+ ynvk7/wQB5yOWJRNks23LGNSL/bi49SJ5MMI41cL4wFAYlvgL5smcBnhrXKhpoirGNADIQ4/Z
+ PVbMpwpNBM/q+u77zKwNgczFoFfblI1RuDHfx4QTMoo5BokIeomf827f/7VWu3n7HuG0P7sFl
+ 5vgNyoRfynJGXMA8Ci56E9DI1hDkbgTmV89ud3wfXKWWP4ppIZWDa9ktAaLKrmXWJOVrvgHH+
+ rRLI2Oi/RISc4+bnJe8X9q7fC+mnKjdWAKHMR5zBfkW59QWpraRPXoZbcC3gezqROHvtfr/rM
+ 3ew7DY7ggjsfwD/lYiMDVmzUHdLgTamk/rztfaBg98e4IJDlGYT9qg9UgolZqzGqDGw/bjnrx
+ tiN3aloIS/vKIPCla5wD8Am40GHg=
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+strncpy() is deprecated for NUL-terminated destination buffers. Use
+strscpy() instead and remove the manual NUL-termination.
 
-Add selftests, checking that running bpf_object__prepare successfully
-creates maps before load step.
+Compile-tested only.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- .../selftests/bpf/prog_tests/prepare.c        | 99 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/prepare.c   | 28 ++++++
- 2 files changed, 127 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/prepare.c
- create mode 100644 tools/testing/selftests/bpf/progs/prepare.c
+Link: https://github.com/KSPP/linux/issues/90
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/prepare.c b/tools/testing/selftests/bpf/prog_tests/prepare.c
-new file mode 100644
-index 000000000000..fb5cdad97116
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/prepare.c
-@@ -0,0 +1,99 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta */
-+
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include "prepare.skel.h"
-+
-+static bool check_prepared(struct bpf_object *obj)
-+{
-+	bool is_prepared = true;
-+	const struct bpf_map *map;
-+
-+	bpf_object__for_each_map(map, obj) {
-+		if (bpf_map__fd(map) < 0)
-+			is_prepared = false;
-+	}
-+
-+	return is_prepared;
-+}
-+
-+static void test_prepare_no_load(void)
-+{
-+	struct prepare *skel;
-+	int err;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		    .data_in = &pkt_v4,
-+		    .data_size_in = sizeof(pkt_v4),
-+	);
-+
-+	skel = prepare__open();
-+	if (!ASSERT_OK_PTR(skel, "prepare__open"))
-+		return;
-+
-+	if (!ASSERT_FALSE(check_prepared(skel->obj), "not check_prepared"))
-+		goto cleanup;
-+
-+	err = bpf_object__prepare(skel->obj);
-+
-+	if (!ASSERT_TRUE(check_prepared(skel->obj), "check_prepared"))
-+		goto cleanup;
-+
-+	if (!ASSERT_OK(err, "bpf_object__prepare"))
-+		goto cleanup;
-+
-+cleanup:
-+	prepare__destroy(skel);
-+}
-+
-+static void test_prepare_load(void)
-+{
-+	struct prepare *skel;
-+	int err, prog_fd;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		    .data_in = &pkt_v4,
-+		    .data_size_in = sizeof(pkt_v4),
-+	);
-+
-+	skel = prepare__open();
-+	if (!ASSERT_OK_PTR(skel, "prepare__open"))
-+		return;
-+
-+	if (!ASSERT_FALSE(check_prepared(skel->obj), "not check_prepared"))
-+		goto cleanup;
-+
-+	err = bpf_object__prepare(skel->obj);
-+	if (!ASSERT_OK(err, "bpf_object__prepare"))
-+		goto cleanup;
-+
-+	err = prepare__load(skel);
-+	if (!ASSERT_OK(err, "prepare__load"))
-+		goto cleanup;
-+
-+	if (!ASSERT_TRUE(check_prepared(skel->obj), "check_prepared"))
-+		goto cleanup;
-+
-+	prog_fd = bpf_program__fd(skel->progs.program);
-+	if (!ASSERT_GE(prog_fd, 0, "prog_fd"))
-+		goto cleanup;
-+
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	if (!ASSERT_OK(err, "test_run_opts err"))
-+		goto cleanup;
-+
-+	if (!ASSERT_OK(topts.retval, "test_run_opts retval"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->err, 0, "err");
-+
-+cleanup:
-+	prepare__destroy(skel);
-+}
-+
-+void test_prepare(void)
-+{
-+	if (test__start_subtest("prepare_load"))
-+		test_prepare_load();
-+	if (test__start_subtest("prepare_no_load"))
-+		test_prepare_no_load();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/prepare.c b/tools/testing/selftests/bpf/progs/prepare.c
-new file mode 100644
-index 000000000000..1f1dd547e4ee
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/prepare.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta */
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+//#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int err;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, 4096);
-+} ringbuf SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} array_map SEC(".maps");
-+
-+SEC("cgroup_skb/egress")
-+int program(struct __sk_buff *skb)
-+{
-+	err = 0;
-+	return 0;
-+}
--- 
-2.48.1
+Signed-off-by: Michael Estner <michaelestner@web.de>
+=2D--
+ tools/bpf/bpftool/xlated_dumper.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_=
+dumper.c
+index d0094345fb2b..60dbe48a91a3 100644
+=2D-- a/tools/bpf/bpftool/xlated_dumper.c
++++ b/tools/bpf/bpftool/xlated_dumper.c
+@@ -135,8 +135,7 @@ print_insn_json(void *private_data, const char *fmt, .=
+..)
+
+ 	va_start(args, fmt);
+ 	if (l > 0) {
+-		strncpy(chomped_fmt, fmt, l - 1);
+-		chomped_fmt[l - 1] =3D '\0';
++		strscpy(chomped_fmt, fmt);
+ 	}
+ 	jsonw_vprintf_enquote(json_wtr, chomped_fmt, args);
+ 	va_end(args);
+=2D-
+2.25.1
 
 
