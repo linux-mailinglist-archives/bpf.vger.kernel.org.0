@@ -1,155 +1,150 @@
-Return-Path: <bpf+bounces-52930-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52931-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46738A4A682
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 00:07:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70921A4A685
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 00:11:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46EB97AAC68
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 23:05:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3808516C976
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 23:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEB771DED69;
-	Fri, 28 Feb 2025 23:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA751DED66;
+	Fri, 28 Feb 2025 23:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H3OgbYOC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DLM035EC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D111CAA64;
-	Fri, 28 Feb 2025 23:06:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4508123F370
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 23:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740784007; cv=none; b=kZdwfD2U2s/9E8zPRtlYeyWNgPrsFIpVPlDKdp8dxr0gDiu/jeNAd8mzIQipLgN4r5ezl7HxMy9RQNqDHyf9+rAzLv9XqClNCGgNe00UVV2G6VrP3u5G2GmNntVXfXjntLTYXFiLl0sKaE5VGEdDo45awR1aD9SE79/c5yf2ibo=
+	t=1740784264; cv=none; b=drEIZkPGOYYF7DfB3LCd4gVWodzWOpdlSDqWySU//zKYf1grhAWra6p4clJCdqBsAMQJ9ZEPHiBzYXYA08jGXSKjUpOKD6Qfx4GTvljWgiFLnec2y/YGgO/qcMO8mtar5T6nP5uLLKTPseLrp/LTtj9nJ2DMPPW0+uLsevKRAiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740784007; c=relaxed/simple;
-	bh=ha9Lqc9uu2OiYFwfdXlhHPoBzpGPSxKHTionUtjg+QU=;
+	s=arc-20240116; t=1740784264; c=relaxed/simple;
+	bh=34fodB78wSV2CNz/HIEAE3kbnVrtuLnrVd3gNYbyj2A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lUg20qtfOJc82A9quiVzLgpjuu1OmMVFlYuz6UzCMpeXq1Fw6qTpswwczz3PcuP5RuB4RGB7HRA4PVzUuPFlQMuHMveAiSL8PAM5xSh2e8xxV697rdAIhDJaQDPtTvEyNTTTSOPtvZDXAwQmF8i81CouVJjgNTpmSX33Y/Jf+nQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H3OgbYOC; arc=none smtp.client-ip=209.85.221.46
+	 To:Cc:Content-Type; b=MYCbu4scKTM1waMDAgWPvSwhI+kDLiV4vOPmBphsV8W2lLalvNzHE+dpk6hgI8GQSPMpDk9ZEEjUFsxxVnxM+O2HaRGpu+EdFA3BOC9wat+4a+83yZFEndHF2eu3vDTN18JsyvY3HKqFgkPYOdHbo1OJ7KDgnmzZOZDilNd/swI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DLM035EC; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-38f1e8efe82so3094115f8f.0;
-        Fri, 28 Feb 2025 15:06:45 -0800 (PST)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2feb9076a1cso3350035a91.0
+        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 15:11:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740784004; x=1741388804; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740784262; x=1741389062; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QcXFzlXi0nNGqFNVWBVnchEgBVXyNmXQMOEcMJisjfs=;
-        b=H3OgbYOCnCfazkiERITtxDZ/Dko4s03h77OEtoNcUjGydcZt19qSoOzwOmcqAV4u7y
-         4WQvtpHeno7qW1NwYvcbpzyxXVzIVnU9AWWltRd4+LM7hs7qDeMW8WpNO7PEPoQr+t1x
-         p/+DJ+rPcYevWYOV+o1wQyVefnW6mxkPbO0m+WAKpgeKRrRChwBA9j/Vq7H3fZjSsabd
-         Dt05QBYYjXNsfkweNZwutyE5UvVi+I/iqzYhNfbTgMhjF21vSQzRZgwjB08/wOQTdzdd
-         5Fj2iOu2CsP94QxTf3RwbC+lxkWnUhKdQsMqhlFy5eqZA1s0s2fBrS1PZZ70U7wfErVk
-         U45w==
+        bh=BKisjdAt8/JiacTyz7UbTqzhxHyoJReWjFgCWGdiQ98=;
+        b=DLM035EC1p53dPOeFNfaz+S+7jqKGTuO98bUowxuT6kq1qYcgAQN2ynM5eMkMKWuoe
+         tU59b3wAW+QS7agi4u3ReH7mZBROcnMvSEe/j3EPoplVNPgXQ7LCaloYokD/37aiIrdE
+         GluUM4iLatmRzdxo+a0YFoREE1w7WfiviY0AWcOlUiMHXIEDw2lBPyEeOwU+3gUgxbbB
+         WNb3Q/gSHpbJMZOVKzdDGJezuj7LtnP4icsoCPuAoXbee6HeG+Hoad/BZt4XHgyd+aL9
+         wP6tP9qoSuvU9xoN5PQJ05IYSKeXXQVrHUyQV44Ba5T2BlZV281+pBTcjG/3YMkZM56y
+         nMkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740784004; x=1741388804;
+        d=1e100.net; s=20230601; t=1740784262; x=1741389062;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QcXFzlXi0nNGqFNVWBVnchEgBVXyNmXQMOEcMJisjfs=;
-        b=XM6ozCKVOHLR3PLasHmhgOObfb6+Ds3ucJQJha8BvoXNDX4CcIYoHElHSRYl8SBhjG
-         t31XQq9UOjeqx02JO5CZn4Jg2HYQg8EkSFvpdVDI7HNRdWOwNIUa3tkm7mGFCCmzRZjk
-         Zg7orHOKYDWDx1nG+QN6+ShykvlZBadhFe8yOocEiQC8toGHvCc7rJ8oyb/0uFN524vS
-         pKhTV1t/AzWuFhnV4SVrrf1jZKRS5O8cZMHwRp2Pt5mGYchWpSKTiZjkx6CSOq7p7cnd
-         4pF6e2D5L/WrI3arGF650pHcyB/YQQrmRtkriDjec/+o8IAKQ0lY11aUyOjZSBbsk9KC
-         Lijw==
-X-Forwarded-Encrypted: i=1; AJvYcCUw16btX+vinpTnD8DwqS6ayWD22ALN/WJjqYSbT1sLxoPybSeyiCPJsMCpeRtq9Liln+8=@vger.kernel.org, AJvYcCXdGDGF++me8V5cucq0OjE4xQKTq5f+AABPyliBZvN59MLe/ChQ/Y/7p589vT/oBVWcvTFdkz9FVaAaEEk5@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQg7q9iQomJhN3M9k6ShVzHfUwM+1dL8E6/U1tyat1cKu+4Mea
-	EeZk/Ze3QDtJ4MN3Eo0JekoYm/xOAu7Ue4VvN9CB7tyALVATL4YJauTatFMwdwyM8tCCz3r7FSA
-	bD9WaiRZPBTpgmnzz2rlXzh0aMkU=
-X-Gm-Gg: ASbGnctqRLYV7QWyjkR8RqNQF6AheUFcHlgvfQ1H29zp6ew4rb6cV/ifCMAo2eed2S2
-	C1yAY1HpUD5QQ5+HAuEqjoA4QsbI2r7L48Sj5a4Svyx8GMMZAICPRxAkNub21xEqFHiQSLtYQ3v
-	MkSDeGsQ9+rULkRijKNIlrc5dgrIj7tK4FIELUv+GbQ10kIc10gG68hfnweg==
-X-Google-Smtp-Source: AGHT+IGQBscwxZSd8a5RobKJ9o7dODcG2nH0kmu6hVFa9SDrJeh8zV30kK7XWJkB6dCJwG+sNLbB2sJAwsjkJicieBs=
-X-Received: by 2002:a5d:47c3:0:b0:38d:d371:e01d with SMTP id
- ffacd0b85a97d-390eca25f7fmr4821747f8f.49.1740784003714; Fri, 28 Feb 2025
- 15:06:43 -0800 (PST)
+        bh=BKisjdAt8/JiacTyz7UbTqzhxHyoJReWjFgCWGdiQ98=;
+        b=uhkAIsYRXzltMNmAfdMXBKTznrqffcq1gD7Qf+0FFZpooLkaX+aui5oMNzNihxmqRf
+         7KFVxbTJxVqI/UYRx4aYhrqy3TnqRax+gtNgRU77NBc+SOav6btEuwn1s39qOPQ7l0C2
+         EVKqMZALNJQGak0nvcdgq7cXOLyMLTSBtIcy+6JOotj6POAAJAAy7r0HjNiILyNO3gyV
+         bXQPgNJFJNQTKYbFjA3wRMOthJsjINku/nUYD5IUgh9g5zVMOijiOEWOBNL7JmvrR4YP
+         FAZS/jRnvy+G2mgr+0KXm9OgiCNvHEisi1oP3m2OzB5TF4e5PwvKeI0IoFzVX2z2Ttac
+         Le8w==
+X-Gm-Message-State: AOJu0YwUc6aruoBv1Rf3Bld8cAiqDLFohyq7V1PwZiZDhM40IsEwX7Du
+	Ok4bTtDsuZMalLIIQ3MzWrSgqGIHmabrkza5rYgQm4jknTxNRIRxQU5d/rCBXuHFsKTrmj530uI
+	BqaFV2wbV7bNG4V/deZG7YrLDhzvTYA==
+X-Gm-Gg: ASbGnctU4oYk8+5ZheAUY5nLn050noa7oyvuQmaur87CGdqRK1QlnGMvTvUDbpNudCj
+	an6RCXqqRPDW3AAQS2zKGEV37N174onyZdi/uyoG4uahc46Wo6K1tj0EYigYOcNGhgpzwFHkW0+
+	0pQIK6aGdb/aTrbJDZVE/2cfzw+raHiHoG7l30Gv577g==
+X-Google-Smtp-Source: AGHT+IHoonLscVLWMH+9fY24Lbg0ZyzW5tx+6ek604bBcAE3Ou6hgDjKk9kjsdOhppW38Cp0zWdAOwhH9RskUMQEESg=
+X-Received: by 2002:a17:90a:d605:b0:2ef:2f49:7d7f with SMTP id
+ 98e67ed59e1d1-2febab744e0mr9629900a91.18.1740784262483; Fri, 28 Feb 2025
+ 15:11:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <AM6PR03MB50806070E3D56208DDB8131699C22@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB5080648369E8A4508220133E99C22@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <Z8DKSgzZB5HZgYN8@slm.duckdns.org> <AM6PR03MB5080C1F0E0F10BCE67101F6F99CD2@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <Z8DZ9pqlWim8EIwk@slm.duckdns.org> <CAADnVQ+bXk3qTekjVZ7NU0TpCh4zNg1GNFL-zdW++f2=t_BT8Q@mail.gmail.com>
- <Z8IrGagRhkHlUejz@slm.duckdns.org>
-In-Reply-To: <Z8IrGagRhkHlUejz@slm.duckdns.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 28 Feb 2025 15:06:32 -0800
-X-Gm-Features: AQ5f1Jqncos-iHCLYHCuP9wYmyWCo0iBWXaI2EA8M47pPRENSjJX80JHhbSCMDs
-Message-ID: <CAADnVQLkzX8dN9+Uk34idgxcD1rK639hnd8aZsz=0HJibpAwag@mail.gmail.com>
-Subject: Re: [PATCH sched_ext/for-6.15 v3 3/5] sched_ext: Add
- scx_kfunc_ids_ops_context_sensitive for unified filtering of
- context-sensitive SCX kfuncs
-To: Tejun Heo <tj@kernel.org>
-Cc: Juntong Deng <juntong.deng@outlook.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>, 
-	Changwoo Min <changwoo@igalia.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
+References: <20250228191220.1488438-1-eddyz87@gmail.com> <CAEf4BzY77xkTjKvNE-T0emQWWMuNN-Z6uq16BWs1Waxzx-i-7w@mail.gmail.com>
+ <72b29dccf20ac55e2c1652f9a3ca917719eefdce.camel@gmail.com>
+In-Reply-To: <72b29dccf20ac55e2c1652f9a3ca917719eefdce.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 28 Feb 2025 15:10:50 -0800
+X-Gm-Features: AQ5f1JoC9CmRyxjYAyhrMeLQdu_DyJjMIeKuUDKA5VtByMz8LxnXWjMLFlSc5ug
+Message-ID: <CAEf4BzZEmwQhCSt6quycRKnCzVAQpxDfd4c06uCsk+ZwPqb0jA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 0/3] veristat: @files-list.txt notation for
+ object files list
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 28, 2025 at 1:31=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+On Fri, Feb 28, 2025 at 3:00=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> Hello,
->
-> On Thu, Feb 27, 2025 at 06:34:37PM -0800, Alexei Starovoitov wrote:
-> > > Hmm... would that mean a non-sched_ext bpf prog would be able to call=
- e.g.
-> > > scx_bpf_dsq_insert()?
+> On Fri, 2025-02-28 at 14:47 -0800, Andrii Nakryiko wrote:
+> > On Fri, Feb 28, 2025 at 11:13=E2=80=AFAM Eduard Zingerman <eddyz87@gmai=
+l.com> wrote:
+> > >
+> > > A few small veristat improvements:
+> > > - It is possible to hit command line parameters number limit,
+> > >   e.g. when running veristat for all object files generated for
+> > >   test_progs. This patch-set adds an option to read objects files lis=
+t
+> > >   from a file.
+> > > - Correct usage of strerror() function.
+> > > - Avoid printing log lines to CSV output.
+> > >
 > >
-> > Not as far as I can tell.
-> > scx_kfunc_ids_unlocked[] doesn't include scx_bpf_dsq_insert.
-> > It's part of scx_kfunc_ids_enqueue_dispatch[].
+> > All makes sense, and superficially LGTM, but I'd like Mykyta to take a
+> > look when he gets a chance, as he's been working with veristat quite a
+> > lot recently.
+>
+> Thanks. I'll wait for Mykytas comments before sending v2 with -err.
+>
+> > One thing I wanted to propose/ask. Do you think it would be useful to
+> > allow <object>:<program> pattern to be specified to allow picking just
+> > one program out of the object file? I normally do `veristat <object>
+> > -f<program>` for this, but being able to do `veristat <obj1>:<prog1>
+> > <obj2>:<prog2> ...` seems useful, no? (-f<program> would apply to all
+> > objects, btw, which isn't a big problem in practice, but still). Oh,
+> > and we could allow globbing in `veristat <obj>:<blah*>`.
 > >
-> > So this bit in patch 3 enables it:
-> > +       if ((flags & SCX_OPS_KF_ENQUEUE) &&
-> > +           btf_id_set8_contains(&scx_kfunc_ids_enqueue_dispatch, kfunc=
-_id))
-> >
-> > and in patch 2:
-> > +       [SCX_OP_IDX(enqueue)]                   =3D SCX_OPS_KF_ENQUEUE,
-> >
-> > So scx_bpf_dsq_insert() kfunc can only be called out
-> > of enqueue() sched-ext hook.
-> >
-> > So the restriction is still the same. afaict.
+> > Thoughts?
 >
-> Hmm... maybe I'm missing something:
+> Tbh I don't remember myself ever needing this, -f was sufficient.
+> Every time I used -f, it was to do <object>:<program> for a single progra=
+m.
+> On the other hand, this looks like a nice generalization.
+> This does not seem to be too complicated, so I'd say lets add it,
+> the use case will find us eventually.
 >
->   static int scx_kfunc_ids_ops_context_sensitive_filter(const struct bpf_=
-prog *prog, u32 kfunc_id)
->   {
->          u32 moff, flags;
+> One thing I do want is multi-threading.
+> E.g. it takes about 2 minutes to process all .bpf.o from
+> selftests/bpf/cpuv4/, and it can be slashed to 10s of seconds.
+> Per-object this should be straightforward.
+> Per-program this would need to wait for Mykyta's work on prepare object,
+> as far as I understand.
+> I can add the per-object version over the weekend if you are ok with
+> such granularity.
 >
->          // allow non-context sensitive kfuncs
->          if (!btf_id_set8_contains(&scx_kfunc_ids_ops_context_sensitive, =
-kfunc_id))
->                  return 0;
->
->          // allow unlocked to be called form all SYSCALL progs
->          if (prog->type =3D=3D BPF_PROG_TYPE_SYSCALL &&
->              btf_id_set8_contains(&scx_kfunc_ids_unlocked, kfunc_id))
->                  return 0;
->
->          // *** HERE, allow if the prog is not SCX ***
->          if (prog->type =3D=3D BPF_PROG_TYPE_STRUCT_OPS &&
->              prog->aux->st_ops !=3D &bpf_sched_ext_ops)
 
-Ohh. You're right. My bad.
-Here it probably needs
-&& !!btf_id_set8_contains(&scx_kfunc_ids_ops_context_sensitive
-
-since later scx_kfunc_set_ops_context_sensitive
-is registered for all of struct-ops.
+Yeah, I was hoping for bpf_object__prepare() to be used by veristat to
+speed up mass-processing. I think it's fine to parallelize, but this
+will be awkward with verbose/error logging, so think how you'll handle
+that, ok? Ideally we'll parallelize at program level, so you can start
+with per-object parallelism, but just anticipate that it will actually
+be prepared object + bpf_program eventually. Just write it in the way
+that would accommodate that easily, once we have all the pieces in
+libbpf.
 
