@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-52879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD1BAA49EC5
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 17:29:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBE01A49EC6
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 17:29:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CE3A7AA3D8
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 16:28:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BEE3189A4FC
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 16:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F5B274242;
-	Fri, 28 Feb 2025 16:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F244427424F;
+	Fri, 28 Feb 2025 16:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c2Ap1TPm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ns3alpPx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
+Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com [209.85.221.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0E727291F
-	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 16:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A21EF26A0DB
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 16:29:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740760146; cv=none; b=LvL9cItAOhvEYHIRX828Y6dh7fWOVDEV2pYUP8mFcLCRLKOfsNBtU+ACw+pbxdkXkO38knJ6Znvg/TEWbllfu+AckAK/t5ZOh17mYLpD3IigTGHY/m81+tIohEGB6kyw5MpF+KwPMuWj2A+d5DaU3Ugssr16M++cs6jaljX6zyQ=
+	t=1740760147; cv=none; b=DkILsvKhtKCPCnjiJ8xcel00zMUVRxX66erSy4FU/TUAYOZrKaF0MreXIfLk7sBHMKkZFfticw1BKGQed+4H1jVoot1khDUQBEH1BsyBD/up88pAoTbqnPlfPJFV9dvqDA9Be0HZs0Nn0/KtxpkLCz+/zCT+251TF/VeCpgq6iU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740760146; c=relaxed/simple;
-	bh=TsPl7cBUMKFlkTxgPp6Ox+3X35CUnWdqofM9x22/D1c=;
+	s=arc-20240116; t=1740760147; c=relaxed/simple;
+	bh=AG0zxT0Y+bM+xTx0wPhj/IAXI28+jmTxN5e/JFSct1s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iN0cKTmdQZtktH2Qoxyv23tzrx0gHssnNPL5iMGfss79QY2q1WIOsxAggtf0/oumPkolMkHMtOJxld8UhpL6Pj9KPoUSeEtATQSpT8Mrk/ssQJ5Xns3huL+jXRACz9LGp0pJozQOPRwrSVL7zHXu+6ryacyaixh/RfVD+Pd4U1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c2Ap1TPm; arc=none smtp.client-ip=209.85.128.67
+	 MIME-Version; b=RlwIUKZ5XhtmqowDSIx/nnV537B8SeX/w5vG3AK/31uOe9UkWwMKg55GterdeTTqnI501MXsvmiW/afpwRDTxkimWR/U+D4gQBIXwszRhlYyPpzyEMIUD1+3Lu3IxeX/lJlM6gXu1WnKBUlrJZWTZ/LgroewNXzJ2+luyWT+gGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ns3alpPx; arc=none smtp.client-ip=209.85.221.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-43b5859d1f1so14759335e9.3
-        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 08:29:04 -0800 (PST)
+Received: by mail-wr1-f66.google.com with SMTP id ffacd0b85a97d-390df0138beso1333074f8f.0
+        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 08:29:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740760142; x=1741364942; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740760144; x=1741364944; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2HzgkemgUagp18Wcv/m4R4SWM5ikppz6yO4v4M0kr70=;
-        b=c2Ap1TPmc48LzY3Lck8L06YTy4E+4SLd8lzGhpvnxgnJiIg17gwGdm8qOb4jtKohUX
-         ia8OLpzrLQX4cygKzD+n1MaI/W00QNRsua9DBHOUat5fJ9k8vcjIMwF5zCbhv8hyr/rH
-         a//gYWLQMrqvSuaEFjXR/Ks7hhxxdpFwH1f9bSWp6DcjDBjPSclVRYWmYGJiRZwBQZPG
-         iGz1/iXF15sxvBNeqS6kcdlAstsKk3gxKeYnm5oOwj3JdiNlUhED5TbP/Kbz5PBcW4nh
-         zFfxSqVhP89OSJw7Kg18L5WN3Bpw1qw1zbc0odnGgT7ZUzaSyakiorRdWzFKeRf4GF9F
-         sMNg==
+        bh=9sR0LCwQAT6BfH0Ja8fuTKM4sTupUtoZqymFDS0oD0g=;
+        b=Ns3alpPxrtJ+3eXeo1arJAPEMyoUNHD1VBQb3IwBiQ9gOqCfKlvGiu3GK3oCWKqIO2
+         BUJkN+RMCBJVzbt+7nNNP7hVTWJc1pSQMGWF4+OohDx1SB7r/nyLfH6QAKfmkLvM/ICw
+         E1CJkQzI+8zxYPpZ3wOU3pXYMUTN7lYggFgP1qG3jmlR8TJ33YHLi2R1RenK9SEnk5Vv
+         gWElZadMMebaXfMXR+xwAmWkF6Upl+yNJUGQPV0rLcwmqtJOcpSJtcbDxl/QOJwVybcV
+         DFCt7KLU6H7QmgyNNEJOYMJ3ZL54tCyz0kiKuycdpM7RfyEA6RjfyXdXbOqB35ydnfu+
+         MeGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740760142; x=1741364942;
+        d=1e100.net; s=20230601; t=1740760144; x=1741364944;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2HzgkemgUagp18Wcv/m4R4SWM5ikppz6yO4v4M0kr70=;
-        b=mxOc9sRs/8bXC3s/SkAIpjjKzJskFDtVqo14aIyuodEfsWBwKFnpdOu2W2gkJRSpKv
-         7Bg2j04VW2dPb0EM0dnMB+dr9P+QcyHulTgeuo6cGoeM99ZF3zbVtxcNYyi6t9A7EJ1v
-         qQ0ytLGRAW3V3qxhJPP6nlzk5lkhDZ51WMzdtMHjCAo1/Q+MdTlLtS/iq1HBFCgmc6O2
-         /Qqmle1HRcNVBpCIqvrM9lBM2gzN4DQYLv7gPQ/DwY5qGlr6Ie72DzHunW2Vwq6epKvx
-         wLHog8SIQOICVEeUkiH+eNjW+lOFKPNp8IrAAD2n1SxxCHjPlIFLww75t5sNNJxqUYgC
-         3b0Q==
-X-Gm-Message-State: AOJu0Yz02JcLsVWinSMSgOSLpeSK1bpw11BzkjArCdG4hja7eZxKR/d0
-	OUOEPcN9nlvFgNVNzTiFG6BFRe7Gmc4jchbCvf6I6OSL9S0DarpYctSmfRcpy4U=
-X-Gm-Gg: ASbGncub2jitGnsGdAGeA+R7P+htIygGDjFl3pn8LYXsylxmLPNTPm94+yPb3/Bu8eY
-	8HOVSzHA2+oHnnVxyoPY5YGoV7eLuOEB60Fa34JmL5Fu5tMRB/mH5CA7b6d2VPUwn1puOdDgPjS
-	TfEjdzFJwSXKVoCie3jprT4zO7SHJJQp9jp/lX1v3NXwQSZnrxlA+9VJ9be6RZyvAyOnmGVNK+5
-	KIJZbeV+JwtyF/+wXufC+mhbsCGqwW99nLRShEHTqyjX8B5aORUvSpgtpKTfAZjd3O5+NVikbnd
-	pU+x2JkKbdJHg7Cr
-X-Google-Smtp-Source: AGHT+IFJ3lGK1N9LKbbpcX9Pk/2dRTUTvv+6pW0EXC5b6Mhi2jAHKF+A5gDducxnTXW38A9zCZlTEA==
-X-Received: by 2002:a5d:5f84:0:b0:385:ee40:2d88 with SMTP id ffacd0b85a97d-390ec7c6a3bmr3799611f8f.3.1740760141663;
-        Fri, 28 Feb 2025 08:29:01 -0800 (PST)
-Received: from localhost ([2a03:2880:31ff:71::])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e485dbe7sm5713537f8f.93.2025.02.28.08.29.00
+        bh=9sR0LCwQAT6BfH0Ja8fuTKM4sTupUtoZqymFDS0oD0g=;
+        b=RGiA39X419kvKKoEp7jBGh/C1dpoIFy+a5grIF0BOUpy9J15QBi4Blh9EhAbdzFSbM
+         ebi8aXBvVC81LcaGqjtOTg/azp7bJ+vMAd/rOzNZOONIW361eY+X05m9RFHBRxjyk1Gy
+         m910b/m2DVnKYf8qmvqakNiaPUYkXQWF47f/BNYzacfP1PbZmGSCYX2+R+/+jXWbNMHH
+         DAJHHthEyFqAkpOq+5A3w4g+fQnpm/w3DLf+iy9JQePAcYbo3y2XvJYrijWIGK+KIvjN
+         uOCLsGlwHvSCiAX1RxmQgnrdncly9zibP7AcwOfWHCoQCoGYeu1y3ebcCQthq6kfqrGH
+         CoNg==
+X-Gm-Message-State: AOJu0YwSC1YgUR9UoXJHlyW/ZhCOiiFzvxdQaz5BUPWlak0AjT6LZ5Tc
+	JFCWTB2PCw9YHJU4MUzMRc6RfUrdUI+1jFUNlBIy3v1b1rptRcz2pWfCmrZSmuc=
+X-Gm-Gg: ASbGnctHk/3GrC7HipUuYoEW/vmu9tV3Vs8u8Gob5bSsItY8TUBhySv+oHbxfp5BXWT
+	tOz6vlkhptakLeHSpPv8IADg3liktaYr5eQf5zrJV8bzufC6Sg2wmmoiMpuChDyX51lFhfl5kkS
+	j/bnpZISPtvZsJ3JJVtBUauIiDNsz3ow2dLH8efZvy+gB8HJzP+xoe+TEATvLxItpEyNfvh2w4H
+	dS/drR9h8Fjza6Kv6HDl3j4t+nj2WhfIueB5BPS8BibW+1beBfpznVvlsygTxR26Dgf+DrSjvqE
+	UsNtSk3M8Ffh/aXj
+X-Google-Smtp-Source: AGHT+IGme5Dz5PwBNjoKPcO6BAyq+fc7LP8UGoK4W/eluu7FCfQ5WShj+TOMuavU7cJwBpFoXZVmzQ==
+X-Received: by 2002:a05:6000:1849:b0:390:f698:ecd0 with SMTP id ffacd0b85a97d-390f698ed13mr702877f8f.11.1740760143418;
+        Fri, 28 Feb 2025 08:29:03 -0800 (PST)
+Received: from localhost ([2a03:2880:31ff:72::])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e47965ddsm5826099f8f.18.2025.02.28.08.29.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Feb 2025 08:29:00 -0800 (PST)
+        Fri, 28 Feb 2025 08:29:02 -0800 (PST)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -80,9 +80,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v1 1/2] bpf: Summarize sleepable global subprogs
-Date: Fri, 28 Feb 2025 08:28:57 -0800
-Message-ID: <20250228162858.1073529-2-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 2/2] selftests/bpf: Test sleepable global subprogs in atomic contexts
+Date: Fri, 28 Feb 2025 08:28:58 -0800
+Message-ID: <20250228162858.1073529-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20250228162858.1073529-1-memxor@gmail.com>
 References: <20250228162858.1073529-1-memxor@gmail.com>
@@ -92,148 +92,280 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5782; h=from:subject; bh=TsPl7cBUMKFlkTxgPp6Ox+3X35CUnWdqofM9x22/D1c=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnwePuLGsi5hIF1OuTZcaWssouYwPV5EjVti04VR6w 3SkPWnKJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ8Hj7gAKCRBM4MiGSL8RyuznD/ 0ZGZU3B4Ha/bBkoj5WQxDocZvW7HsdUtSga1wqTC1c3TdNicQdeuZq91giVB/TMcKLz+qygT7G2EqJ aDaHVRLQufCMRnBR1iiNzotTXw6TD67AJEXg91uBGyj1yHIqVSR1uvvllwEgSriSVNgJnbY0NMAGtl CELUWZM335/SVbE9lFIizC1XTotVoV13GeI+8dnCh3T4OFRpxCCz5QvtBOtwyGETlWNQdrszibxGFR tCMQkq2S/do8Jdnc3N8CDEO5QnO+ajoXAG5R4zadr7GrTlcF0HDlscrRMGx4Fgaf1JLNvyth6v3iv6 OlNcXXfX7G2N++n6nHDFuWWM/canbLZ0eY2WLkzMtDgc6RVEnlD22TAqYKZERUG7vblqincstGjn5J mxGX0sN5GSpip9xMOO2ik+lXT/LkPme1tjEtR3N78cRSVIZlPIq9A33Dqf7w3y2EcKK4KhRdnfWbwQ AgP2paks8UHIq65oxb0qBsLlFmgjTwIZ3Ogtl2s9MtF/Ykre+D7+4zZbMhXGYUFdRfqji4wI2nLFvV Qbx2UO5qpFUJ277S+HcNn8ykqxHFWt89HHmwME5aY3/ckkBBGpmwxWB48HgFvsn3iunIwDdDAus+f7 xLWN9sR+EY/yGOQcgyKoPEKG5bFQDjeH3vd8cN34QMJ+J2sPnjTxRN1QmIdQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8125; h=from:subject; bh=AG0zxT0Y+bM+xTx0wPhj/IAXI28+jmTxN5e/JFSct1s=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnwePvO4WYpHu+4wzob+3WUHJ8lb/xvyY8VjRTuqqw R3+c9lqJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ8Hj7wAKCRBM4MiGSL8RykXjD/ 9FwjcQ11YWYkvwO212GisiPHOG/wuM01Wd2MZ34gNnNlY+HBceWL7T5GZ0uf+ImCA32L2yXxCPlPzW vPzTowg/VS1H6nBo9bN8CHqvEY+6fCdSmvpCwh6Gc74Vsdjvycu3c/2rGPV2hOHgVEvvbsnHPbmTBO 1XF/gXfNOUyhbY62p+04Z67ii3gpcjBVSc7hmNsFWeE2af95m87i2ZZJFpanUvne8jZ8j1y0ODFDGV rZYWZYOkVLK+LOrcdhK4alFNrTBrz60m+SdCBTzc8tNHaVJzN7mrn44VMaPJDHCOEW+y//FT2DQmOG 4zmCy5K9p712YZ8ZIjR/DtNNJCUHrWkxOShBcSAizvVRM4yDjX4lGxj/gBO7smQSMrrYrvOcpqu2vB lwAAW9DUb6FfOWr9XcLauf8XzQ5p4/vcgnpAK0eVUYl7lY+AixWN/doVjsHqAV4bhboAHJragrmZHK OtWMqSvXuiFLtPTXNWZK/PrXjI+JQvDTybCjXUdJBAooDFg7ZHzg9mQnhdKWOetf+v4snVOHe3Q9SA 69yLbeqcCOzuGicnQCnkhKln8hsI2x8nu2gRyH9qyr5YUvDfggawDkL5cHOo8uTAiT7whkvPOdCXIt 130TeqM8SDK9MdIDIOAr94BugzUep5h45jWDlot44kHhtobe/oV6oI1/UhQQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-The verifier currently does not permit global subprog calls when a lock
-is held, preemption is disabled, or when IRQs are disabled. This is
-because we don't know whether the global subprog calls sleepable
-functions or not.
+Add tests for rejecting sleepable and accepting non-sleepable global
+function calls in atomic contexts. For spin locks, we still reject
+all global function calls. Once resilient spin locks land, we will
+carefully lift in cases where we deem it safe.
 
-In case of locks, there's an additional reason: functions called by the
-global subprog may hold additional locks etc. The verifier won't know
-while verifying the global subprog whether it was called in context
-where a spin lock is already held by the program.
-
-Perform summarization of the sleepable nature of a global subprog just
-like changes_pkt_data and then allow calls to global subprogs for
-non-sleepable ones from atomic context.
-
-While making this change, I noticed that RCU read sections had no
-protection against sleepable global subprog calls, include it in the
-checks and fix this while we're at it.
-
-Care needs to be taken to not allow global subprog calls when regular
-bpf_spin_lock is held. When resilient spin locks is held, we want to
-potentially have this check relaxed, but not for now.
-
-Tests are included in the next patch to handle all special conditions.
-
-Fixes: 9bb00b2895cb ("bpf: Add kfunc bpf_rcu_read_lock/unlock()")
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf_verifier.h |  1 +
- kernel/bpf/verifier.c        | 50 ++++++++++++++++++++++++++----------
- 2 files changed, 37 insertions(+), 14 deletions(-)
+ .../selftests/bpf/prog_tests/rcu_read_lock.c  |  2 +
+ .../selftests/bpf/prog_tests/spin_lock.c      |  2 +
+ tools/testing/selftests/bpf/progs/irq.c       | 62 ++++++++++++++++++-
+ .../selftests/bpf/progs/preempt_lock.c        | 40 +++++++++++-
+ .../selftests/bpf/progs/rcu_read_lock.c       | 38 ++++++++++++
+ .../selftests/bpf/progs/test_spin_lock_fail.c | 40 ++++++++++++
+ 6 files changed, 182 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index bbd013c38ff9..1b3cfa6cb720 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -667,6 +667,7 @@ struct bpf_subprog_info {
- 	/* true if bpf_fastcall stack region is used by functions that can't be inlined */
- 	bool keep_fastcall_stack: 1;
- 	bool changes_pkt_data: 1;
-+	bool sleepable: 1;
+diff --git a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c b/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
+index ebe0c12b5536..2a2e3a3b4c20 100644
+--- a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
++++ b/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
+@@ -81,6 +81,8 @@ static const char * const inproper_region_tests[] = {
+ 	"nested_rcu_region",
+ 	"rcu_read_lock_global_subprog_lock",
+ 	"rcu_read_lock_global_subprog_unlock",
++	"rcu_read_lock_sleepable_helper_global_subprog",
++	"rcu_read_lock_sleepable_kfunc_global_subprog",
+ };
  
- 	enum priv_stack_mode priv_stack_mode;
- 	u8 arg_cnt;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index dcd0da4e62fc..e3560d19d513 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10317,23 +10317,18 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 	if (subprog_is_global(env, subprog)) {
- 		const char *sub_name = subprog_name(env, subprog);
+ static void test_inproper_region(void)
+diff --git a/tools/testing/selftests/bpf/prog_tests/spin_lock.c b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
+index 2b0068742ef9..4652c44a0346 100644
+--- a/tools/testing/selftests/bpf/prog_tests/spin_lock.c
++++ b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
+@@ -50,6 +50,8 @@ static struct {
+ 	{ "lock_id_mismatch_innermapval_mapval", "bpf_spin_unlock of different lock" },
+ 	{ "lock_global_subprog_call1", "global function calls are not allowed while holding a lock" },
+ 	{ "lock_global_subprog_call2", "global function calls are not allowed while holding a lock" },
++	{ "lock_global_sleepable_helper_subprog", "global function calls are not allowed while holding a lock" },
++	{ "lock_global_sleepable_kfunc_subprog", "global function calls are not allowed while holding a lock" },
+ };
  
--		/* Only global subprogs cannot be called with a lock held. */
- 		if (env->cur_state->active_locks) {
- 			verbose(env, "global function calls are not allowed while holding a lock,\n"
- 				     "use static function instead\n");
- 			return -EINVAL;
- 		}
- 
--		/* Only global subprogs cannot be called with preemption disabled. */
--		if (env->cur_state->active_preempt_locks) {
--			verbose(env, "global function calls are not allowed with preemption disabled,\n"
--				     "use static function instead\n");
--			return -EINVAL;
--		}
--
--		if (env->cur_state->active_irq_id) {
--			verbose(env, "global function calls are not allowed with IRQs disabled,\n"
--				     "use static function instead\n");
-+		if (env->subprog_info[subprog].sleepable &&
-+		    (env->cur_state->active_rcu_lock || env->cur_state->active_preempt_locks ||
-+		     env->cur_state->active_irq_id || !in_sleepable(env))) {
-+			verbose(env, "global functions that may sleep are not allowed in non-sleepable context,\n"
-+				     "i.e., in a RCU/IRQ/preempt-disabled section, or in\n"
-+				     "a non-sleepable BPF program context\n");
- 			return -EINVAL;
- 		}
- 
-@@ -16703,6 +16698,14 @@ static void mark_subprog_changes_pkt_data(struct bpf_verifier_env *env, int off)
- 	subprog->changes_pkt_data = true;
+ static int match_regex(const char *pattern, const char *string)
+diff --git a/tools/testing/selftests/bpf/progs/irq.c b/tools/testing/selftests/bpf/progs/irq.c
+index b0b53d980964..e5e19f96faa0 100644
+--- a/tools/testing/selftests/bpf/progs/irq.c
++++ b/tools/testing/selftests/bpf/progs/irq.c
+@@ -222,7 +222,7 @@ int __noinline global_local_irq_balance(void)
  }
  
-+static void mark_subprog_sleepable(struct bpf_verifier_env *env, int off)
+ SEC("?tc")
+-__failure __msg("global function calls are not allowed with IRQs disabled")
++__success
+ int irq_global_subprog(struct __sk_buff *ctx)
+ {
+ 	unsigned long flags;
+@@ -441,4 +441,64 @@ int irq_ooo_refs_array(struct __sk_buff *ctx)
+ 	return 0;
+ }
+ 
++int __noinline
++global_sleepable_helper_subprog(int i)
 +{
-+	struct bpf_subprog_info *subprog;
-+
-+	subprog = find_containing_subprog(env, off);
-+	subprog->sleepable = true;
++	if (i)
++		bpf_copy_from_user(&i, sizeof(i), NULL);
++	return i;
 +}
 +
- /* 't' is an index of a call-site.
-  * 'w' is a callee entry point.
-  * Eventually this function would be called when env->cfg.insn_state[w] == EXPLORED.
-@@ -16716,6 +16719,7 @@ static void merge_callee_effects(struct bpf_verifier_env *env, int t, int w)
- 	caller = find_containing_subprog(env, t);
- 	callee = find_containing_subprog(env, w);
- 	caller->changes_pkt_data |= callee->changes_pkt_data;
-+	caller->sleepable |= callee->sleepable;
++int __noinline
++global_sleepable_kfunc_subprog(int i)
++{
++	if (i)
++		bpf_copy_from_user_str(&i, sizeof(i), NULL, 0);
++	return i;
++}
++
++int __noinline
++global_subprog(int i)
++{
++	if (i)
++		bpf_printk("%p", &i);
++	return i;
++}
++
++SEC("?syscall")
++__success
++int irq_non_sleepable_global_subprog(void *ctx)
++{
++	unsigned long flags;
++
++	bpf_local_irq_save(&flags);
++	global_subprog(0);
++	bpf_local_irq_restore(&flags);
++	return 0;
++}
++
++SEC("?syscall")
++__failure __msg("global functions that may sleep are not allowed in non-sleepable context")
++int irq_sleepable_helper_global_subprog(void *ctx)
++{
++	unsigned long flags;
++
++	bpf_local_irq_save(&flags);
++	global_sleepable_helper_subprog(0);
++	bpf_local_irq_restore(&flags);
++	return 0;
++}
++
++SEC("?syscall")
++__failure __msg("global functions that may sleep are not allowed in non-sleepable context")
++int irq_sleepable_kfunc_global_subprog(void *ctx)
++{
++	unsigned long flags;
++
++	bpf_local_irq_save(&flags);
++	global_sleepable_kfunc_subprog(0);
++	bpf_local_irq_restore(&flags);
++	return 0;
++}
++
+ char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/preempt_lock.c b/tools/testing/selftests/bpf/progs/preempt_lock.c
+index 6c5797bf0ead..c3bb7918442e 100644
+--- a/tools/testing/selftests/bpf/progs/preempt_lock.c
++++ b/tools/testing/selftests/bpf/progs/preempt_lock.c
+@@ -134,7 +134,7 @@ int __noinline preempt_global_subprog(void)
  }
  
- /* non-recursive DFS pseudo code
-@@ -17183,9 +17187,20 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
- 			mark_prune_point(env, t);
- 			mark_jmp_point(env, t);
- 		}
--		if (bpf_helper_call(insn) && bpf_helper_changes_pkt_data(insn->imm))
--			mark_subprog_changes_pkt_data(env, t);
--		if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
-+		if (bpf_helper_call(insn)) {
-+			const struct bpf_func_proto *fp;
+ SEC("?tc")
+-__failure __msg("global function calls are not allowed with preemption disabled")
++__success
+ int preempt_global_subprog_test(struct __sk_buff *ctx)
+ {
+ 	preempt_disable();
+@@ -143,4 +143,42 @@ int preempt_global_subprog_test(struct __sk_buff *ctx)
+ 	return 0;
+ }
+ 
++int __noinline
++global_sleepable_helper_subprog(int i)
++{
++	if (i)
++		bpf_copy_from_user(&i, sizeof(i), NULL);
++	return i;
++}
 +
-+			ret = get_helper_proto(env, insn->imm, &fp);
-+			/* If called in a non-sleepable context program will be
-+			 * rejected anyway, so we should end up with precise
-+			 * sleepable marks on subprogs, except for dead code
-+			 * elimination.
-+			 */
-+			if (ret == 0 && fp->might_sleep)
-+				mark_subprog_sleepable(env, t);
-+			if (bpf_helper_changes_pkt_data(insn->imm))
-+				mark_subprog_changes_pkt_data(env, t);
-+		} else if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
- 			struct bpf_kfunc_call_arg_meta meta;
++int __noinline
++global_sleepable_kfunc_subprog(int i)
++{
++	if (i)
++		bpf_copy_from_user_str(&i, sizeof(i), NULL, 0);
++	return i;
++}
++
++SEC("?syscall")
++__failure __msg("global functions that may sleep are not allowed in non-sleepable context")
++int preempt_global_sleepable_helper_subprog(struct __sk_buff *ctx)
++{
++	preempt_disable();
++	if (ctx->mark)
++		global_sleepable_helper_subprog(ctx->mark);
++	preempt_enable();
++	return 0;
++}
++
++SEC("?syscall")
++__failure __msg("global functions that may sleep are not allowed in non-sleepable context")
++int preempt_global_sleepable_kfunc_subprog(struct __sk_buff *ctx)
++{
++	preempt_disable();
++	if (ctx->mark)
++		global_sleepable_kfunc_subprog(ctx->mark);
++	preempt_enable();
++	return 0;
++}
++
+ char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/rcu_read_lock.c b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
+index ab3a532b7dd6..f7d2bdaed612 100644
+--- a/tools/testing/selftests/bpf/progs/rcu_read_lock.c
++++ b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
+@@ -439,3 +439,41 @@ int rcu_read_lock_global_subprog_unlock(void *ctx)
+ 	ret += global_subprog_unlock(ret);
+ 	return 0;
+ }
++
++int __noinline
++global_sleepable_helper_subprog(int i)
++{
++	if (i)
++		bpf_copy_from_user(&i, sizeof(i), NULL);
++	return i;
++}
++
++int __noinline
++global_sleepable_kfunc_subprog(int i)
++{
++	if (i)
++		bpf_copy_from_user_str(&i, sizeof(i), NULL, 0);
++	return i;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int rcu_read_lock_sleepable_helper_global_subprog(void *ctx)
++{
++	volatile int ret = 0;
++
++	bpf_rcu_read_lock();
++	ret += global_sleepable_helper_subprog(ret);
++	bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
++int rcu_read_lock_sleepable_kfunc_global_subprog(void *ctx)
++{
++	volatile int ret = 0;
++
++	bpf_rcu_read_lock();
++	ret += global_sleepable_kfunc_subprog(ret);
++	bpf_rcu_read_unlock();
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c b/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
+index 1c8b678e2e9a..278ce14e3470 100644
+--- a/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
++++ b/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
+@@ -245,4 +245,44 @@ int lock_global_subprog_call2(struct __sk_buff *ctx)
+ 	return ret;
+ }
  
- 			ret = fetch_kfunc_meta(env, insn, &meta, NULL);
-@@ -17204,6 +17219,13 @@ static int visit_insn(int t, struct bpf_verifier_env *env)
- 				 */
- 				mark_force_checkpoint(env, t);
- 			}
-+			/* Same as helpers, if called in a non-sleepable context
-+			 * program will be rejected anyway, so we should end up
-+			 * with precise sleepable marks on subprogs, except for
-+			 * dead code elimination.
-+			 */
-+			if (ret == 0 && is_kfunc_sleepable(&meta))
-+				mark_subprog_sleepable(env, t);
- 		}
- 		return visit_func_call_insn(t, insns, env, insn->src_reg == BPF_PSEUDO_CALL);
- 
++int __noinline
++global_sleepable_helper_subprog(int i)
++{
++	if (i)
++		bpf_copy_from_user(&i, sizeof(i), NULL);
++	return i;
++}
++
++int __noinline
++global_sleepable_kfunc_subprog(int i)
++{
++	if (i)
++		bpf_copy_from_user_str(&i, sizeof(i), NULL, 0);
++	return i;
++}
++
++SEC("?syscall")
++int lock_global_sleepable_helper_subprog(struct __sk_buff *ctx)
++{
++	int ret = 0;
++
++	bpf_spin_lock(&lockA);
++	if (ctx->mark == 42)
++		ret = global_sleepable_helper_subprog(ctx->mark);
++	bpf_spin_unlock(&lockA);
++	return ret;
++}
++
++SEC("?syscall")
++int lock_global_sleepable_kfunc_subprog(struct __sk_buff *ctx)
++{
++	int ret = 0;
++
++	bpf_spin_lock(&lockA);
++	if (ctx->mark == 42)
++		ret = global_sleepable_kfunc_subprog(ctx->mark);
++	bpf_spin_unlock(&lockA);
++	return ret;
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.43.5
 
