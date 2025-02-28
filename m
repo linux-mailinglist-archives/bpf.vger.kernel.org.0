@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-52897-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52898-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4C79A4A284
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 20:13:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D68AA4A283
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 20:13:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E1511675A1
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 19:13:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E807E189A656
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 19:13:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5481F8742;
-	Fri, 28 Feb 2025 19:13:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256301F8735;
+	Fri, 28 Feb 2025 19:13:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kwBPscDq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B3/f4zux"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D6A1F872F
-	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 19:13:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D10F1F8738
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 19:13:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740769994; cv=none; b=iX130XGh9XLjXZOQrTqiztUSaxXMfDSvLBtUMzJdSkFIJxqOeK3/9rC5N7tlACYlnr2eGj+V2FmEBeMNbQXrWmrDkQ/PBP3JWltELwmak2vcRX+XycuvF1ALy8BwxkcMc0laEEs/cD94Iy9IUxRVNNAu8ey+TYj3Y+XtMPSATa0=
+	t=1740769994; cv=none; b=fileNJmHCD/R2MG+WP4rIuA4+5RcTKt239HEoy9/aRM3Qt0flNOoTIx8+dprMdnsf3bfAXoYpMNFbu/nQzmfYGSfRDhPofr7j7E8mhglgFNQrwK9HFSJzjGvu77+iJn2mj16JEaN9A1nbC1qc3/8o3Am+tYRt6/g3Ke3vF9ZDBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1740769994; c=relaxed/simple;
-	bh=bSNL6W+oslJnsbUQZrpbZ2b8gNdI4HP3KLxTzQXDROo=;
+	bh=osCYEAlbfSRxqqNILnuDLFHNygE3ovjFH5MJtvBfvGA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LmZeiiBsmsFW808aGcnGncS/hxBXbVZLgokNKAojvBwt4z6cvzGqekDu1JdoE9y87gm+tOt6ov7/wiIsPRA8kPalv3wUTFrFJv8Tafbs1dHR0DKsy9MXBIbVk5LwKnGQOHyttrt6blyan78Rf2Mr+aaUMyZSfKsn/sx7Kf+hPO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kwBPscDq; arc=none smtp.client-ip=209.85.214.173
+	 MIME-Version; b=KmBnPrGHFlWBg8g/+rcF1zMUeHlA+sserMjWZ54I9L2Fz4iesHp49r/zwY8CCJ+9PHNdLn9RSevBi5oZx9I0S/wbrg8CX6WhIx6HtfG1ksR0k2nNgoBLco4iMiXI69fNmIJFim53XE2VdPMWPI9/ZJ0uNcqyVliIKc3jfy1594Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B3/f4zux; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2234daaf269so1678025ad.3
-        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 11:13:12 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-22359001f1aso53764025ad.3
+        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 11:13:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1740769992; x=1741374792; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oda+1kcL1h0ggZQHubZyyeyWtntJD2ws9F9PynPUyvs=;
-        b=kwBPscDqI1Aft3bUNptqHMlO6zKiCZkiEPOpZ+/Tn94rnNirW9afb7S+0BQaGIKKGk
-         HLGYdGQU7bVZa3z5AKrI3AKKoqLfIe3dUX+x+sLHt+mCyAuQDNnkrFrQmQE67D+SMRxA
-         SwWO20AewDA1N0H45/fwfHhGfVdJF4vfmonRLcZkTXWt3xxnk/QjtEy5kKmBreN4Ag3m
-         rDamHvlDA3xXSRxdFJkPDCBsGjAUkci5MReID34xGXOfzNe0vMBO6xkAsaV06o1OgTnF
-         GPd9J1yxw+D+3qsbD9P2c6ngpZenjiZSAQb/Lzs+xlsnqK4aIGDuF4FDa3sf8fLenWbt
-         Bx/g==
+        bh=RC0Ai0+M/0I/N4+fX5lpWGqrY3EYZEaa1GcWjqaM41E=;
+        b=B3/f4zuxSVfUmd5UiD6NbQ9uIBV704g3BeNK0BPgD1FQsdoWGsah9l9UGDiwBvoNoz
+         9BGiy29qsy24uii0Pou/c9ta767xQa5aD5s48nVlD/19BoLQwBMY2CuXCBHu4+yW6wgD
+         Dl4knC3wEijnYeQJ2tdysVqzMFlQbxIVX3XHheB8YxhgxXbgdiYOVV/p01u+3gIW3cWQ
+         Ze+4h+fhjJHiFOGEQD8H6dEP6WWkaV7f5kpaTDakVDUZXrR+8C/7ngcQpx1bUiaEy8XG
+         PnTti82AzUIdHZUiBrfySz5SBteg3J+xYsRENyB8vpNKaTd5vG+h8PFoC/Pk7XmJ7HPX
+         I/6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1740769992; x=1741374792;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oda+1kcL1h0ggZQHubZyyeyWtntJD2ws9F9PynPUyvs=;
-        b=XnFtN0qbN9x9/DLPWNFVhZBiOD+ZVU09GUPOar/iiIMzof82lfM/HZ5kr608GWu1ap
-         odIAuwWfwEZtPqHzHCTU8enfoyCc3qwAyfAWQncKB8xYZCekCHCSOjNkciFtZ+wAEglb
-         TzpbnPNcEOeZcgU1V06gBFkS/aTgG2ScL5vtw+ihBt+lhZBJpBdG3vHd5WvIdogjB8WX
-         Al6AGH9ytY1yKs5MfID/m9j3DrlfDJ+9Yit1TTVJn3ZaJZqGxB3WGDO0mlHji0GRvDh4
-         hie+eQ2x8u05UCqfj89lSwxwSiRZDmuhMwc6TCocXIunZDNnGyrJ0bI6zgZDiph/samy
-         vnqA==
-X-Gm-Message-State: AOJu0YwGLM0/IdNOEqU2PzJSvPTzckdTL1sF3BCqTRtrZ8vCqNonYoyB
-	tIFFApjX9nzhxSt+4JToTxEzMd4929WMbs67SpvPPZwvs+ZXJfi5mRprJA==
-X-Gm-Gg: ASbGncv0XAhJtewh0jdQTBDWltxyCVryqx6elYkpUgmK4rFQoPo8IKqfn/wXmT1N9Bt
-	oPs9JCCsYmmi2IgLawdqDAqZIuSJaZ/K7pOJseqikNE3+Ji3knmemmIlLgmfs9ScNvpLYndoAsp
-	zjQYNO0azhxHfdAGzvPHCLl89V0DQudNhR/Dl58k7M4oq2LrRbnVb/GlRKgWIDmspe1hbnhByq6
-	K/3yrx5xs453pkaqqS5LK2VZt78m2p+aTYoUOyyX6MTL/hr4zGfOKVW7pxL6RH0Mr4hFr3mZnkf
-	mL+845mix6YwF4JHg9C6xg==
-X-Google-Smtp-Source: AGHT+IFD+KT2Bpz82h8YOtXSHL+XzJ9mgPUiCwEt1S5oXiQ/AcVnTD9N+KfR/JeaE5s2GLj8E6Rruw==
-X-Received: by 2002:a05:6a00:ad0:b0:730:8a0a:9f09 with SMTP id d2e1a72fcca58-734ac3f3155mr7810198b3a.18.1740769991558;
-        Fri, 28 Feb 2025 11:13:11 -0800 (PST)
+        bh=RC0Ai0+M/0I/N4+fX5lpWGqrY3EYZEaa1GcWjqaM41E=;
+        b=nSmAkVcjyZq2qbcZ1CPsqZGEbLg9YhDMRdwJXXVwnMpPc1Frr8RJ1rJVFfd4j3963d
+         9Xhnu+OcIhB9Fld206SoZkaMm4vfhqJua6u8W8NaRzKt6NsjdGVe1/8sM3HHwKEpq01D
+         GRAkAfp8mBgyT8FzNK+rqCFqj+oHSnkowfyP9muVmINYtoqsb4ojsNmtuaCThi3H0RfI
+         hgDjkmlOohWI9QH6HrcWaWlk5Xm2hyeQ+3DyXbe9yqkzaV7f5PUy1D9TYQDP8hhav17N
+         4RGnF5qbXvvcKCxo/AHMnuWjDa6EKasQs3blW5tteZsFKOVFkWvii9bBv0MLPo+nU1VT
+         xxKg==
+X-Gm-Message-State: AOJu0Yzz+MCalYTAexFjrbie82TO6/XmdRZfL4qNUmNbQ0K/98ZvKbyn
+	lpQx+DOx450fUc4CVg2TKJceDMTktQSU/gBbhVhjDyhbI7Oacrom6rcrDw==
+X-Gm-Gg: ASbGncuzC9jAltRNpPXHL2m8uuUAdT2YTc7El9R446CIyk6xZrzdyiUmAzhcpkShpXP
+	LM3q3LAJUFWoTYjedOWC9BkHWTvw7unTwHrqrQXdCS2B4GDuWknvM1dU04f6FmejhESeDeHYQDN
+	iAjy/4cML9sxauGkzz98Ri4UI0Hw1MjbTE7M3wQf/q8hXqIeFT4+Lu4g0R82xHHKFsNGMmbPD1L
+	yGazW567lS7qCgBUcx6ZHy0WMGDtJEBT1EUnQ0zzykeXOhhRsBlEvZOuPuZLxXOx/J5UKw3MXZ5
+	tf+UVgdVJQauhbFEZbgFrw==
+X-Google-Smtp-Source: AGHT+IFwONeJ5vKsBmKq1J/beotiKCscCBI4WVIy9Vq/n8f8nNQMut6ICfLdToRGbRaGAcho6rzW+w==
+X-Received: by 2002:a05:6a00:2e11:b0:730:8768:76d1 with SMTP id d2e1a72fcca58-734ac3d443emr8296033b3a.19.1740769992435;
+        Fri, 28 Feb 2025 11:13:12 -0800 (PST)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7349fe48865sm4228799b3a.50.2025.02.28.11.13.10
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7349fe48865sm4228799b3a.50.2025.02.28.11.13.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Feb 2025 11:13:11 -0800 (PST)
+        Fri, 28 Feb 2025 11:13:12 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -80,9 +80,9 @@ Cc: andrii@kernel.org,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v1 2/3] veristat: strerror expects positive number (errno)
-Date: Fri, 28 Feb 2025 11:12:19 -0800
-Message-ID: <20250228191220.1488438-3-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 3/3] veristat: report program type guess results to sdterr
+Date: Fri, 28 Feb 2025 11:12:20 -0800
+Message-ID: <20250228191220.1488438-4-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250228191220.1488438-1-eddyz87@gmail.com>
 References: <20250228191220.1488438-1-eddyz87@gmail.com>
@@ -94,17 +94,11 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Before:
+In order not to pollute CSV output, e.g.:
 
-  ./veristat -G @foobar iters.bpf.o
-  Failed to open presets in 'foobar': Unknown error -2
-  ...
-
-After:
-
-  ./veristat -G @foobar iters.bpf.o
-  Failed to open presets in 'foobar': No such file or directory
-  ...
+  $ ./veristat -o csv exceptions_ext.bpf.o > test.csv
+  Using guessed program type 'sched_cls' for exceptions_ext.bpf.o/extension...
+  Using guessed program type 'sched_cls' for exceptions_ext.bpf.o/throwing_extension...
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
@@ -112,27 +106,25 @@ Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index 8bc462299290..7d13b9234d2c 100644
+index 7d13b9234d2c..3a9cfc2bfae5 100644
 --- a/tools/testing/selftests/bpf/veristat.c
 +++ b/tools/testing/selftests/bpf/veristat.c
-@@ -660,7 +660,7 @@ static int append_filter_file(const char *path)
- 	f = fopen(path, "r");
- 	if (!f) {
- 		err = -errno;
--		fprintf(stderr, "Failed to open filters in '%s': %s\n", path, strerror(err));
-+		fprintf(stderr, "Failed to open filters in '%s': %s\n", path, strerror(errno));
- 		return err;
- 	}
+@@ -1234,13 +1234,13 @@ static void fixup_obj(struct bpf_object *obj, struct bpf_program *prog, const ch
+ 			bpf_program__set_expected_attach_type(prog, attach_type);
  
-@@ -1422,7 +1422,7 @@ static int append_var_preset_file(const char *filename)
- 	f = fopen(filename, "rt");
- 	if (!f) {
- 		err = -errno;
--		fprintf(stderr, "Failed to open presets in '%s': %s\n", filename, strerror(err));
-+		fprintf(stderr, "Failed to open presets in '%s': %s\n", filename, strerror(errno));
- 		return -EINVAL;
- 	}
- 
+ 			if (!env.quiet) {
+-				printf("Using guessed program type '%s' for %s/%s...\n",
++				fprintf(stderr, "Using guessed program type '%s' for %s/%s...\n",
+ 					libbpf_bpf_prog_type_str(prog_type),
+ 					filename, prog_name);
+ 			}
+ 		} else {
+ 			if (!env.quiet) {
+-				printf("Failed to guess program type for freplace program with context type name '%s' for %s/%s. Consider using canonical type names to help veristat...\n",
++				fprintf(stderr, "Failed to guess program type for freplace program with context type name '%s' for %s/%s. Consider using canonical type names to help veristat...\n",
+ 					ctx_name, filename, prog_name);
+ 			}
+ 		}
 -- 
 2.48.1
 
