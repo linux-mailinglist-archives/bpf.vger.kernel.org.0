@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-52900-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52901-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8C75A4A2EB
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 20:47:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A5EEA4A2ED
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 20:47:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A20A3A1430
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 19:47:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DCB23A941A
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 19:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51787230BD0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95323230BD8;
 	Fri, 28 Feb 2025 19:47:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TDhtt8m+"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wj8UZ4Gg"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4193F27702F
-	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 19:47:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BBF1C5D6F
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 19:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740772029; cv=none; b=OZnbcz4mEXIeTS2WQPtUPUGE47mOwZ4nCAjKsw3zf0iv6hDRNYHBCe8LRhoZ+6hy/k0e9FDWe66JswPHhl/UIkIBbkyFxO1dzMeJmWcgN0q40rqlzn4M9cGNCYImsZ5hDyIppYTvQ4vl7bXDCqZzmGTIdOpUY2HJyuPEskq+o5A=
+	t=1740772030; cv=none; b=O3IGlBewK+dQ/iHJUQerkOmOfK6f2siPI7UO6FKQfaqcp/fOPYcoXS9rd2h3ehLUKVnVjUNoklq0M8BEf1yfSoyDfkiWFRdw/ZzDha8xp1rvHjs4flxf3a3qyrWOyG8NfeuMF32Ek0P93V7SCmaej9eDRC3dARLobJa+p9M9b9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740772029; c=relaxed/simple;
-	bh=qLHgGhwBEwacMuYSNyCqUY96Diq8gRExKcI49kXbwPI=;
+	s=arc-20240116; t=1740772030; c=relaxed/simple;
+	bh=yg4TS8CTbNo80yad+WoWpwmsPOTfOkmeeVz0XWQX4HA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uZiilFTh5vSRFmXw5WTEcmzGB4BydqUaWpH78kMaCMSDAhlV0MLzFok+F3ZhSY1jR/hmVfcCF+BaEdYNy9pfyo569oIYA5YO/6rs0w9Jf/ziRf4xb/7Ceaqe4d8j1jL5VqdHdZCSY/hpnn/UNM9UvsvQPj96gLci7DwB2N8renM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TDhtt8m+; arc=none smtp.client-ip=91.218.175.174
+	 MIME-Version; b=pm2MQLgJ/t71wDFIO7Wr3bLZpSWVN+tX4H4UICMQlM0/blZqUnfDQ9dRAOfz0ZFhgOIk9V+fHBjnV9sONRNUQcn3XOdfoYplPeA9rb9dmxKogjG/9Ztac9UTtHUgdDJznTqAjA0keIb9MOyd0X+vBeUVymD+j3Ou60cQ2c6XI+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wj8UZ4Gg; arc=none smtp.client-ip=91.218.175.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740772024;
+	t=1740772026;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fkxGYcxN0+BcmdBXN6OKPpltu0VWJVCQetbVHuPgcw8=;
-	b=TDhtt8m+2zkzKJMXSB2+VIVozopl2yMEIOwa+IGEGI7JEz0g0A2du1VHICxnEm4Xfmi1Ah
-	n4GdwdOLweQKrg3R57r0stIcjCEvPKE/C/l56FFSO6QXBSg8CwLHQcVmxSXdvE85tZTRIG
-	2Tt2XUfdnqm+Iy/YOn/UAkWLe/iMu5M=
+	bh=yfiz40Gklwc36IRc6D5RB8RYTiwqicDOMzbsToXd8BQ=;
+	b=wj8UZ4GgvJN30mfG8peXCS8yU+3GlX8QYgk+MtSYB5CVvadUrne3AGISnXf77W/aP/EJC/
+	zhYvTRro0dgmqWZC24hwub0mVHFMLnmJFIH1QqozJAhT9eB0vDylfRIQASq4fc7oEW2ZKp
+	EeOnQKnVQaDn72k2S3sOscCqYnJvqEc=
 From: Ihor Solodrai <ihor.solodrai@linux.dev>
 To: dwarves@vger.kernel.org,
 	bpf@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: acme@kernel.org,
 	eddyz87@gmail.com,
 	mykolal@fb.com,
 	kernel-team@meta.com
-Subject: [PATCH dwarves v4 1/6] btf_encoder: refactor btf_encoder__tag_kfuncs()
-Date: Fri, 28 Feb 2025 11:46:49 -0800
-Message-ID: <20250228194654.1022535-2-ihor.solodrai@linux.dev>
+Subject: [PATCH dwarves v4 2/6] btf_encoder: use __weak declarations of version-dependent libbpf API
+Date: Fri, 28 Feb 2025 11:46:50 -0800
+Message-ID: <20250228194654.1022535-3-ihor.solodrai@linux.dev>
 In-Reply-To: <20250228194654.1022535-1-ihor.solodrai@linux.dev>
 References: <20250228194654.1022535-1-ihor.solodrai@linux.dev>
 Precedence: bulk
@@ -66,324 +66,168 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-btf_encoder__tag_kfuncs() is a post-processing step of BTF encoding,
-executed right before BTF is deduped and dumped to the output.
+Instead of compile-time checks for libbpf version, use __weak
+declarations of the required API functions and do runtime checks at
+the call sites. This will help with compatibility when libbpf is
+dynamically linked to pahole [1].
 
-Rewrite btf_encoder__tag_kfuncs() into btf_encoder__collect_kfuncs().
-Now it only reads the .BTF_ids section of the ELF, collecting kfunc
-information and adding it to corresponding elf_function structs. It is
-executed in btf_encoder__new() if tag_kfuncs flag is set. This way
-kfunc information is available within entire lifetime of the
-btf_encoder.
+[1] https://lore.kernel.org/dwarves/deff78f8-1f99-4c79-a302-cff8dce4d803@oracle.com/
 
-BTF decl tags for kfuncs are added immediately after the function is
-added to BTF in btf_encoder__add_func(). It's done by btf__tag_kfunc()
-factored out from the btf_encoder__tag_kfunc().
-
-As a result btf_encoder__collect_btf_funcs(), struct btf_func type and
-other relevant code are deleted, as they are no longer necessary.
-
-Link: https://lore.kernel.org/dwarves/3782640a577e6945c86d6330bc8a05018a1e5c52.camel@gmail.com/
-
-Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-Reviewed-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- btf_encoder.c | 189 +++++++++++++++-----------------------------------
- 1 file changed, 54 insertions(+), 135 deletions(-)
+ btf_encoder.c | 48 +++++++++++++++++++-----------------------------
+ dwarves.h     | 11 ++++++++++-
+ pahole.c      |  2 --
+ 3 files changed, 29 insertions(+), 32 deletions(-)
 
 diff --git a/btf_encoder.c b/btf_encoder.c
-index 511c1ea..2bea5ee 100644
+index 2bea5ee..12a040f 100644
 --- a/btf_encoder.c
 +++ b/btf_encoder.c
-@@ -89,6 +89,8 @@ struct elf_function {
- 	const char	*name;
- 	char		*alias;
- 	size_t		prefixlen;
-+	bool		kfunc;
-+	uint32_t	kfunc_flags;
- };
+@@ -34,6 +34,7 @@
+ #include <search.h> /* for tsearch(), tfind() and tdestroy() */
+ #include <pthread.h>
  
- struct elf_secinfo {
-@@ -145,11 +147,6 @@ struct btf_encoder {
- 	struct list_head elf_functions_list;
- };
- 
--struct btf_func {
--	const char *name;
--	int	    type_id;
--};
--
- /* Half open interval representing range of addresses containing kfuncs */
- struct btf_kfunc_set_range {
- 	uint64_t start;
-@@ -1178,6 +1175,39 @@ out:
- 	return err;
++#define BTF_BASE_ELF_SEC	".BTF.base"
+ #define BTF_IDS_SECTION		".BTF_ids"
+ #define BTF_ID_FUNC_PFX		"__BTF_ID__func__"
+ #define BTF_ID_SET8_PFX		"__BTF_ID__set8__"
+@@ -625,29 +626,6 @@ static int32_t btf_encoder__add_struct(struct btf_encoder *encoder, uint8_t kind
+ 	return id;
  }
  
-+static int btf__add_kfunc_decl_tag(struct btf *btf, const char *tag, __u32 id, const char *kfunc)
-+{
-+	int err = btf__add_decl_tag(btf, tag, id, -1);
-+
-+	if (err < 0) {
-+		fprintf(stderr, "%s: failed to insert kfunc decl tag for '%s': %d\n",
-+			__func__, kfunc, err);
-+		return err;
-+	}
-+	return 0;
-+}
-+
-+static int btf__tag_kfunc(struct btf *btf, struct elf_function *kfunc, __u32 btf_fn_id)
-+{
-+	int err;
-+
-+	/* Note we are unconditionally adding the btf_decl_tag even
-+	 * though vmlinux may already contain btf_decl_tags for kfuncs.
-+	 * We are ok to do this b/c we will later btf__dedup() to remove
-+	 * any duplicates.
-+	 */
-+	err = btf__add_kfunc_decl_tag(btf, BTF_KFUNC_TYPE_TAG, btf_fn_id, kfunc->name);
-+	if (err < 0)
-+		return err;
-+
-+	if (kfunc->kfunc_flags & KF_FASTCALL) {
-+		err = btf__add_kfunc_decl_tag(btf, BTF_FASTCALL_TAG, btf_fn_id, kfunc->name);
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+
- static int32_t btf_encoder__add_func(struct btf_encoder *encoder,
- 				     struct btf_encoder_func_state *state)
+-#if LIBBPF_MAJOR_VERSION < 1
+-static inline int libbpf_err(int ret)
+-{
+-        if (ret < 0)
+-                errno = -ret;
+-        return ret;
+-}
+-
+-static
+-int btf__add_enum64(struct btf *btf __maybe_unused, const char *name __maybe_unused,
+-		    __u32 byte_sz __maybe_unused, bool is_signed __maybe_unused)
+-{
+-	return  libbpf_err(-ENOTSUP);
+-}
+-
+-static
+-int btf__add_enum64_value(struct btf *btf __maybe_unused, const char *name __maybe_unused,
+-			  __u64 value __maybe_unused)
+-{
+-	return  libbpf_err(-ENOTSUP);
+-}
+-#endif
+-
+ static int32_t btf_encoder__add_enum(struct btf_encoder *encoder, const char *name, struct type *etype,
+ 				     struct conf_load *conf_load)
  {
-@@ -1188,6 +1218,7 @@ static int32_t btf_encoder__add_func(struct btf_encoder *encoder,
- 	const char *value;
- 	char tmp_value[KSYM_NAME_LEN];
- 	uint16_t idx;
-+	int err;
- 
- 	btf_fnproto_id = btf_encoder__add_func_proto(encoder, NULL, state);
- 	name = func->alias ?: func->name;
-@@ -1199,6 +1230,13 @@ static int32_t btf_encoder__add_func(struct btf_encoder *encoder,
- 		       name, btf_fnproto_id < 0 ? "proto" : "func");
- 		return -1;
- 	}
-+
-+	if (func->kfunc && encoder->tag_kfuncs && !encoder->skip_encoding_decl_tag) {
-+		err = btf__tag_kfunc(encoder->btf, func, btf_fn_id);
-+		if (err < 0)
-+			return err;
+@@ -660,8 +638,13 @@ static int32_t btf_encoder__add_enum(struct btf_encoder *encoder, const char *na
+ 	is_enum32 = size <= 4 || conf_load->skip_encoding_btf_enum64;
+ 	if (is_enum32)
+ 		id = btf__add_enum(btf, name, size);
+-	else
++	else if (btf__add_enum64)
+ 		id = btf__add_enum64(btf, name, size, etype->is_signed_enum);
++	else {
++		fprintf(stderr, "btf__add_enum64 is not available, is libbpf < 1.0?\n");
++		return -ENOTSUP;
 +	}
 +
- 	if (state->nr_annots == 0)
- 		return 0;
+ 	if (id > 0) {
+ 		t = btf__type_by_id(btf, id);
+ 		btf_encoder__log_type(encoder, t, false, true, "size=%u", t->size);
+@@ -684,10 +667,14 @@ static int btf_encoder__add_enum_val(struct btf_encoder *encoder, const char *na
+ 	 */
+ 	if (conf_load->skip_encoding_btf_enum64)
+ 		err = btf__add_enum_value(encoder->btf, name, (uint32_t)value);
+-	else if (etype->size > 32)
+-		err = btf__add_enum64_value(encoder->btf, name, value);
+-	else
++	else if (etype->size <= 32)
+ 		err = btf__add_enum_value(encoder->btf, name, value);
++	else if (btf__add_enum64_value)
++		err = btf__add_enum64_value(encoder->btf, name, value);
++	else {
++		fprintf(stderr, "btf__add_enum64_value is not available, is libbpf < 1.0?\n");
++		return -ENOTSUP;
++	}
  
-@@ -1771,116 +1809,10 @@ static char *get_func_name(const char *sym)
- 	return func;
- }
+ 	if (!err) {
+ 		if (encoder->verbose) {
+@@ -2035,10 +2022,14 @@ int btf_encoder__encode(struct btf_encoder *encoder, struct conf_load *conf)
+ 		 * silently ignore the feature request if libbpf does not
+ 		 * support it.
+ 		 */
+-#if LIBBPF_MAJOR_VERSION >= 1 && LIBBPF_MINOR_VERSION >= 5
+ 		if (encoder->gen_distilled_base) {
+ 			struct btf *btf = NULL, *distilled_base = NULL;
  
--static int btf_func_cmp(const void *_a, const void *_b)
--{
--	const struct btf_func *a = _a;
--	const struct btf_func *b = _b;
--
--	return strcmp(a->name, b->name);
--}
--
--/*
-- * Collects all functions described in BTF.
-- * Returns non-zero on error.
-- */
--static int btf_encoder__collect_btf_funcs(struct btf_encoder *encoder, struct gobuffer *funcs)
--{
--	struct btf *btf = encoder->btf;
--	int nr_types, type_id;
--	int err = -1;
--
--	/* First collect all the func entries into an array */
--	nr_types = btf__type_cnt(btf);
--	for (type_id = 1; type_id < nr_types; type_id++) {
--		const struct btf_type *type;
--		struct btf_func func = {};
--		const char *name;
--
--		type = btf__type_by_id(btf, type_id);
--		if (!type) {
--			fprintf(stderr, "%s: malformed BTF, can't resolve type for ID %d\n",
--				__func__, type_id);
--			err = -EINVAL;
--			goto out;
--		}
--
--		if (!btf_is_func(type))
--			continue;
--
--		name = btf__name_by_offset(btf, type->name_off);
--		if (!name) {
--			fprintf(stderr, "%s: malformed BTF, can't resolve name for ID %d\n",
--				__func__, type_id);
--			err = -EINVAL;
--			goto out;
--		}
--
--		func.name = name;
--		func.type_id = type_id;
--		err = gobuffer__add(funcs, &func, sizeof(func));
--		if (err < 0)
--			goto out;
--	}
--
--	/* Now that we've collected funcs, sort them by name */
--	gobuffer__sort(funcs, sizeof(struct btf_func), btf_func_cmp);
--
--	err = 0;
--out:
--	return err;
--}
--
--static int btf__add_kfunc_decl_tag(struct btf *btf, const char *tag, __u32 id, const char *kfunc)
--{
--	int err = btf__add_decl_tag(btf, tag, id, -1);
--
--	if (err < 0) {
--		fprintf(stderr, "%s: failed to insert kfunc decl tag for '%s': %d\n",
--			__func__, kfunc, err);
--		return err;
--	}
--	return 0;
--}
--
--static int btf_encoder__tag_kfunc(struct btf_encoder *encoder, struct gobuffer *funcs, const char *kfunc, __u32 flags)
--{
--	struct btf_func key = { .name = kfunc };
--	struct btf *btf = encoder->btf;
--	struct btf_func *target;
--	const void *base;
--	unsigned int cnt;
--	int err;
--
--	base = gobuffer__entries(funcs);
--	cnt = gobuffer__nr_entries(funcs);
--	target = bsearch(&key, base, cnt, sizeof(key), btf_func_cmp);
--	if (!target) {
--		fprintf(stderr, "%s: failed to find kfunc '%s' in BTF\n", __func__, kfunc);
--		return -1;
--	}
--
--	/* Note we are unconditionally adding the btf_decl_tag even
--	 * though vmlinux may already contain btf_decl_tags for kfuncs.
--	 * We are ok to do this b/c we will later btf__dedup() to remove
--	 * any duplicates.
--	 */
--	err = btf__add_kfunc_decl_tag(btf, BTF_KFUNC_TYPE_TAG, target->type_id, kfunc);
--	if (err < 0)
--		return err;
--	if (flags & KF_FASTCALL) {
--		err = btf__add_kfunc_decl_tag(btf, BTF_FASTCALL_TAG, target->type_id, kfunc);
--		if (err < 0)
--			return err;
--	}
--
--	return 0;
--}
--
--static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
-+static int btf_encoder__collect_kfuncs(struct btf_encoder *encoder)
- {
- 	const char *filename = encoder->source_filename;
- 	struct gobuffer btf_kfunc_ranges = {};
--	struct gobuffer btf_funcs = {};
- 	Elf_Data *symbols = NULL;
- 	Elf_Data *idlist = NULL;
- 	Elf_Scn *symscn = NULL;
-@@ -1977,12 +1909,6 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
- 	}
- 	nr_syms = shdr.sh_size / shdr.sh_entsize;
- 
--	err = btf_encoder__collect_btf_funcs(encoder, &btf_funcs);
--	if (err) {
--		fprintf(stderr, "%s: failed to collect BTF funcs\n", __func__);
--		goto out;
--	}
--
- 	/* First collect all kfunc set ranges.
- 	 *
- 	 * Note we choose not to sort these ranges and accept a linear
-@@ -2015,12 +1941,12 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
- 	for (i = 0; i < nr_syms; i++) {
- 		const struct btf_kfunc_set_range *ranges;
- 		const struct btf_id_and_flag *pair;
-+		struct elf_function *elf_fn;
- 		unsigned int ranges_cnt;
- 		char *func, *name;
- 		ptrdiff_t off;
- 		GElf_Sym sym;
- 		bool found;
--		int err;
- 		int j;
- 
- 		if (!gelf_getsym(symbols, i, &sym)) {
-@@ -2061,18 +1987,16 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
- 			continue;
++			if (!btf__distill_base) {
++				fprintf(stderr, "btf__distill_base is not available, is libbpf < 1.5?\n");
++				return -ENOTSUP;
++			}
++
+ 			if (btf__distill_base(encoder->btf, &distilled_base, &btf) < 0) {
+ 				fprintf(stderr, "could not generate distilled base BTF: %s\n",
+ 					strerror(errno));
+@@ -2051,7 +2042,6 @@ int btf_encoder__encode(struct btf_encoder *encoder, struct conf_load *conf)
+ 			btf__free(distilled_base);
+ 			return err;
  		}
- 
--		err = btf_encoder__tag_kfunc(encoder, &btf_funcs, func, pair->flags);
--		if (err) {
--			fprintf(stderr, "%s: failed to tag kfunc '%s'\n", __func__, func);
--			free(func);
--			goto out;
-+		elf_fn = btf_encoder__find_function(encoder, func, 0);
-+		if (elf_fn) {
-+			elf_fn->kfunc = true;
-+			elf_fn->kfunc_flags = pair->flags;
- 		}
- 		free(func);
+-#endif
+ 		err = btf_encoder__write_elf(encoder, encoder->btf, BTF_ELF_SEC);
  	}
  
- 	err = 0;
- out:
--	__gobuffer__delete(&btf_funcs);
- 	__gobuffer__delete(&btf_kfunc_ranges);
- 	if (elf)
- 		elf_end(elf);
-@@ -2083,7 +2007,6 @@ out:
+diff --git a/dwarves.h b/dwarves.h
+index 8234e1a..ab32204 100644
+--- a/dwarves.h
++++ b/dwarves.h
+@@ -14,6 +14,7 @@
+ #include <obstack.h>
+ #include <dwarf.h>
+ #include <elfutils/libdwfl.h>
++#include <linux/types.h>
+ #include <sys/types.h>
  
- int btf_encoder__encode(struct btf_encoder *encoder, struct conf_load *conf)
- {
--	bool should_tag_kfuncs;
- 	int err;
- 	size_t shndx;
+ #include "dutil.h"
+@@ -44,13 +45,21 @@ enum load_steal_kind {
+ 	LSK__STOP_LOADING,
+ };
  
-@@ -2099,15 +2022,6 @@ int btf_encoder__encode(struct btf_encoder *encoder, struct conf_load *conf)
- 	if (btf__type_cnt(encoder->btf) == 1)
- 		return 0;
- 
--	/* Note vmlinux may already contain btf_decl_tag's for kfuncs. So
--	 * take care to call this before btf_dedup().
--	 */
--	should_tag_kfuncs = encoder->tag_kfuncs && !encoder->skip_encoding_decl_tag;
--	if (should_tag_kfuncs && btf_encoder__tag_kfuncs(encoder)) {
--		fprintf(stderr, "%s: failed to tag kfuncs!\n", __func__);
--		return -1;
--	}
--
- 	if (btf__dedup(encoder->btf, NULL)) {
- 		fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
- 		return -1;
-@@ -2496,6 +2410,11 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
- 		if (!found_percpu && encoder->verbose)
- 			printf("%s: '%s' doesn't have '%s' section\n", __func__, cu->filename, PERCPU_SECTION);
- 
-+		if (encoder->tag_kfuncs) {
-+			if (btf_encoder__collect_kfuncs(encoder))
-+				goto out_delete;
-+		}
++/*
++ * Weak declarations of libbpf APIs that are version-dependent
++ */
++#define __weak __attribute__((weak))
++struct btf;
++__weak extern int btf__add_enum64(struct btf *btf, const char *name, __u32 byte_sz, bool is_signed);
++__weak extern int btf__add_enum64_value(struct btf *btf, const char *name, __u64 value);
++__weak extern int btf__distill_base(const struct btf *src_btf, struct btf **new_base_btf, struct btf **new_split_btf);
 +
- 		if (encoder->verbose)
- 			printf("File %s:\n", cu->filename);
- 	}
+ /*
+  * BTF combines all the types into one big CU using btf_dedup(), so for something
+  * like a allyesconfig vmlinux kernel we can get over 65535 types.
+  */
+ typedef uint32_t type_id_t;
+ 
+-struct btf;
+ struct conf_fprintf;
+ 
+ /** struct conf_load - load configuration
+diff --git a/pahole.c b/pahole.c
+index af3e1cf..09aed1c 100644
+--- a/pahole.c
++++ b/pahole.c
+@@ -1206,9 +1206,7 @@ struct btf_feature {
+ 	BTF_DEFAULT_FEATURE(consistent_func, skip_encoding_btf_inconsistent_proto, false),
+ 	BTF_DEFAULT_FEATURE(decl_tag_kfuncs, btf_decl_tag_kfuncs, false),
+ 	BTF_NON_DEFAULT_FEATURE(reproducible_build, reproducible_build, false),
+-#if LIBBPF_MAJOR_VERSION >= 1 && LIBBPF_MINOR_VERSION >= 5
+ 	BTF_NON_DEFAULT_FEATURE(distilled_base, btf_gen_distilled_base, false),
+-#endif
+ 	BTF_NON_DEFAULT_FEATURE(global_var, encode_btf_global_vars, false),
+ };
+ 
 -- 
 2.48.1
 
