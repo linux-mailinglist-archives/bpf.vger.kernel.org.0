@@ -1,280 +1,276 @@
-Return-Path: <bpf+bounces-52933-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52934-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 525D0A4A691
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 00:18:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9CCA4A693
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 00:19:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32D74174907
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 23:18:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 192F23B9B74
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 23:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EFE01DE8A0;
-	Fri, 28 Feb 2025 23:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A78181DE8AB;
+	Fri, 28 Feb 2025 23:18:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IGl+4Npj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JOc5N44u"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDB123F37F;
-	Fri, 28 Feb 2025 23:18:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97D51DE4F3
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 23:18:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740784708; cv=none; b=d1JkEcvAChzLmpJFOxCumpkPGFhtbusCk5Ed6BjnTn+4LVxQQkpGLX6LjZjw3dFH+AUAwm0OPFTpsqR+GyhIeWoV+aEu1+/6hgibsf6xyQT08d9WMPimst9hHTHYTWTeMNsyoEO9okfm4Q5hkUSwX+3511WqsjnWKIUundUwh88=
+	t=1740784736; cv=none; b=F/Wwv8MUOgkY6W4xX9Lkc/Bs6CyVuIMXh0foXSsyOlqVNLIBVS1jP0inN+OL+Nxxl2JHAxI88+2NP36CkQzrLK6OLS3odStR1ZcykrCmjos4u66My2LWp9ixtG0ZT9MTXxUcvlWXjpJPiLGfjAF/2rFfrJtDWORs83ZNnvWr7BI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740784708; c=relaxed/simple;
-	bh=+BMXF9BBc0Ge1Y2INp/F+Rk0FdDnlJNYvpBu27ojcf8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kIzrbXKUQO+l5Cy8BvUOHUYmm0ho3/3msUh0B4WbPP1Xou1se2EPj+QWZTrND7osd22Si2IKtIk31NGHH+YlZaE81sGKEk7n/F/Wm4Gl6xiTnroqYi3kN0SwqF37+4lDK7fSogNZkir0ddPouRYGVxY1aVAN3ZWs1Gjt2QXVYnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IGl+4Npj; arc=none smtp.client-ip=209.85.128.43
+	s=arc-20240116; t=1740784736; c=relaxed/simple;
+	bh=+0j/VDq5yMKOUZ3L5pmZTm1/1JwFAR5DFIc32kGtIeI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cpJaPJzoqIMy1LEShKFmPqzKjyli6PLAM0KBNXPFn634WoW6qJZiop6pe4oZxwDFhXCn78L2yZqyWDhQnobbUA9VquGs32b1lJSM91VZ5wN/eW+j6Xj6Ue6r9kv6UXSYw8vhLT6e4Aq5EM+bC2pD2KfSXWKTDQoyLrFzfUaKiKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JOc5N44u; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-439a4dec9d5so28134945e9.0;
-        Fri, 28 Feb 2025 15:18:26 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2f83a8afcbbso4818097a91.1
+        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 15:18:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740784705; x=1741389505; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tJ1hJrZ+M0WzXNIpCGzfvE3p3WTOK6YAFfB/BVpfB5Q=;
-        b=IGl+4NpjutODkb318mse1MG2JqCyx+NdJ/cGJyD5eugXxHfpUvJhDfO3vJgv391dRv
-         D7QoxCZhZJdYFhI7Qu7NTjdPK/ZZhvtg/V3IUGJ8goH4maSadL5r9aihuGfR6yB/HvR6
-         0sSiSy4BbZYQ9dwr+QmiLT+axm49mVQlWALjjv0yHNip2rk46RwNCowSuN6lpEn5+hZR
-         KJnPgyl5RbFrU5MR++wbH6eF7OVcVuBuLbLGNx12L4mwE3x/klJZ/CR3ofuOcx9GJly8
-         uLb8UtISxn/jzmOxrE3rIN+whT4gkVjnA0mlUE2X+K4To8VmrB/BPFKvXmjEoSRX0Os6
-         Hlog==
+        d=gmail.com; s=20230601; t=1740784734; x=1741389534; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zam8dK8wkfrnIDGfEnkxEuzwT3S14Xe18txrKm97jSg=;
+        b=JOc5N44uAC/4zz53oOG+ptuRnhtvMVVikYJJk+xZyJsiZR89IzC2V9DmwwaDxoPs6o
+         p9EUBgVCZ9SUQVbTo8E4V7XR68jE5a/yfBZ/sbWEVBLDKKdY0zf0uEoAQqNZ0+BoYjvc
+         ktDiTev/4UgIAJSVn63rdcSs1Ddhg5118grd/9XUB2DlnzHFUiThE5apCQxQtKVmRQ4g
+         awg/baQ/Do5Mh9rcTeB9LVe+39zU3xoTBfpQJ3HmyWfkphX8rCAAH4GiiShKCtNi6D1H
+         +Xcx6H7XCpf+oJxeHHhLIyGbqfBnlEnUY567Ez+e78pD1z3XI6z4L8W+nyaiu0i7UB/C
+         Pi7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740784705; x=1741389505;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tJ1hJrZ+M0WzXNIpCGzfvE3p3WTOK6YAFfB/BVpfB5Q=;
-        b=si+VIwqh00emadyI7GiYfo6TyWPwAOUx4GNGaQvkDKrTcocDT8Il7JaPOYvFCUfGf+
-         o79NHr1dpN0siFIzaEe1Nxe09fkeCmoHgbqhBgFdT7H/1a6lnUj+NrB6M8S9r/t1sJ7n
-         7YhgackloIt9cPNUacOyv0DdSopkp1bMTg4NVOn8HWEz19YxYyvO4dQutct+JDiM7qgX
-         5Ow61E9GhwstceeBBYD8TYT3+UzXQI2tibNAPnp98P9aEi2LZRURHL9VWgJNfO0tG7tH
-         WFW054oseh3F6Wd9uz+iw7FrOA6DHV8x2ZCUQl4OaTFipMglYCfNGXAFVsgX3X9nxdv8
-         TIJA==
-X-Forwarded-Encrypted: i=1; AJvYcCVCfs7PY1Snpzhj8V1pMYiwRcpU4I80DVJHTSuB15qALb9gSvc49kKtcLm+PsGqDDQCR5k=@vger.kernel.org, AJvYcCW93JpdeX/v/glRJxEjrlG1CAo0tmwELbTQuMbIHPYm3cxFAoEuN/q7LIV67H5oCropsqVNI9FWFCSruBIq@vger.kernel.org, AJvYcCXC+Z+11m4LbRdfXvYdX4xsSTKiOXZmnlIZuRgLsDXLiZHpPVFxEcQo6qmKqLzVQTI//X4f7cih+TbgXWGVUmAbfS3b@vger.kernel.org
-X-Gm-Message-State: AOJu0YzswOL7udzkBPYNHBJcPnAHeY4xlroT5Kot10MzS4tBEFh8F8Li
-	9HHIfheG5bzzTUgHjnOAEAqzh1SKagSVDlUbW7M18Jf/c/E37VGb
-X-Gm-Gg: ASbGncusEjJ/0lXsAI0Z+hFS0oLhFEARBI2yU5aWUDyVtGG8HfXC1uAzgCoa/7IL5W3
-	wVtRmmYgSd9ZnVJ3SyGeT4IudyjiUpgnQkajKlhzroB6pKvAgYCy5uDi+j2J1Rys1dOLfwIUOaB
-	bG17OFQncyr47N8kaMBsn4ggxokb4YxB/c2jVIRchvgBXINwDrDyk76kOd5bdlhUE1bDlijmshC
-	x3BH15cECkzWthQFP5n/Acr5cRRETYumescsG90AqlvA0jkIXQiinJ+XfKz+Dl/SrCOgWeRydbb
-	pbpdOtB9IZkkwEH/dGZYq/U1MogJJYvOw0QUOgsuQ3OKHLK97p4=
-X-Google-Smtp-Source: AGHT+IEzlON1WdKbTm2j2bH/vMONmhDuE+LjjHOaFd8Jkv3sZdwKFAxklyr8k11MsS5p7zZ1nZqLHw==
-X-Received: by 2002:a05:600c:1c8c:b0:439:9f97:7d5b with SMTP id 5b1f17b1804b1-43ba674cb46mr50344425e9.23.1740784705054;
-        Fri, 28 Feb 2025 15:18:25 -0800 (PST)
-Received: from krava (85-193-35-41.rib.o2.cz. [85.193.35.41])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43b7a28bf64sm69954855e9.39.2025.02.28.15.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Feb 2025 15:18:23 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 1 Mar 2025 00:18:21 +0100
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
-Subject: Re: [PATCH RFCv2 12/18] uprobes/x86: Add support to optimize uprobes
-Message-ID: <Z8JEPdAHkkEL4x7k@krava>
-References: <20250224140151.667679-1-jolsa@kernel.org>
- <20250224140151.667679-13-jolsa@kernel.org>
- <CAEf4BzbE1dhqZWpLYhZFo7cuuK04t9iM+1ykHA5_PbM_xdb1PQ@mail.gmail.com>
- <Z8I-24x1FHoBOQ6N@krava>
- <CAEf4BzbxLMB8RJWWZjtg6NkumHHZA=vhWZfHqZBf90O=aJVC+A@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1740784734; x=1741389534;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zam8dK8wkfrnIDGfEnkxEuzwT3S14Xe18txrKm97jSg=;
+        b=erwaj+PAcDZSOWekZKqRUm7Xp9bTGm9vE4TuHuceqqichrDjEee6RlMmmO7LQOzbt6
+         4myG7VvEcGcclV/J6Xu1b4F0vuehCbWKYsU+BG+0jXeJ0MdCdMPe1YsmT277PN8O1UVv
+         mvCiXcyRuaEC9lMDEp9+EGgqVDeUaOVLr1BCbMkLb3X4NunfBqozn/d2aHFw+myYToY3
+         kQ+dKHNDljz8SEFfTb5N1ZOdZHjok2bMR2rI1UiuN+wDyJ8qoFBW3YqhYRSKfx/lT7kY
+         AD5UGXqn/aNnKFyl8zrTwVHZgA3m4hRL8rzEh/PgZsd+fRot85LmZc6fDHNGlceOX7KN
+         We8Q==
+X-Gm-Message-State: AOJu0Ywu4Ldo7MsonwNav1nmVui0+eItZdFnJZCpiyLX8aIusWmO/jxU
+	AhU9OCVqWXpibm77wusZBv00G8q8dmCGHI3eU0F5xbeiSO/RRRsCQK1+P7m5W1ShUY5uNtKRXHQ
+	+m8Los7zPph3X6XsYG1Dtj6V2ArI=
+X-Gm-Gg: ASbGncuyKJ3rKKIxPGZBBh4CRH9X8IUfrD8WPZvaZJILkF8e6hzU9ADoY5+jSCfsChC
+	/w/ZjJlVO4Re/bldYTZXjJkqE1N23zD9PcLayZv6einxuEllbjmqtRyeKQQfHPNoi7/YjSP3bMO
+	pDS+4QGkRIyO/wopeyDIyhuQnNI9QepvbXWUYdvSl1Dg==
+X-Google-Smtp-Source: AGHT+IHROYAxieSOuEtVlkaSl07/w7yC13DXAzitgomMggiAZ5EpVDSb7GqKmf0E6LfLu5FYK8yJiZf9NIvh7TURXpI=
+X-Received: by 2002:a17:90b:2247:b0:2ee:ee77:226d with SMTP id
+ 98e67ed59e1d1-2feba5cecd5mr8688868a91.4.1740784733811; Fri, 28 Feb 2025
+ 15:18:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbxLMB8RJWWZjtg6NkumHHZA=vhWZfHqZBf90O=aJVC+A@mail.gmail.com>
+References: <20250228162858.1073529-1-memxor@gmail.com> <20250228162858.1073529-2-memxor@gmail.com>
+In-Reply-To: <20250228162858.1073529-2-memxor@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 28 Feb 2025 15:18:42 -0800
+X-Gm-Features: AQ5f1JrgmZS6FOiEwlEt-Ccf7WxE_lpCGLxcpAnO5ahMRZLB8pm5MPCKZn-Sxy4
+Message-ID: <CAEf4BzZ_UQVtOhE3SRvHBE3NyCwfdFCxmiAPPNbLArZVQT6oZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: Summarize sleepable global subprogs
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 28, 2025 at 03:00:22PM -0800, Andrii Nakryiko wrote:
-> On Fri, Feb 28, 2025 at 2:55 PM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Fri, Feb 28, 2025 at 10:55:24AM -0800, Andrii Nakryiko wrote:
-> > > On Mon, Feb 24, 2025 at 6:04 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > >
-> > > > Putting together all the previously added pieces to support optimized
-> > > > uprobes on top of 5-byte nop instruction.
-> > > >
-> > > > The current uprobe execution goes through following:
-> > > >   - installs breakpoint instruction over original instruction
-> > > >   - exception handler hit and calls related uprobe consumers
-> > > >   - and either simulates original instruction or does out of line single step
-> > > >     execution of it
-> > > >   - returns to user space
-> > > >
-> > > > The optimized uprobe path
-> > > >
-> > > >   - checks the original instruction is 5-byte nop (plus other checks)
-> > > >   - adds (or uses existing) user space trampoline and overwrites original
-> > > >     instruction (5-byte nop) with call to user space trampoline
-> > > >   - the user space trampoline executes uprobe syscall that calls related uprobe
-> > > >     consumers
-> > > >   - trampoline returns back to next instruction
-> > > >
-> > > > This approach won't speed up all uprobes as it's limited to using nop5 as
-> > > > original instruction, but we could use nop5 as USDT probe instruction (which
-> > > > uses single byte nop ATM) and speed up the USDT probes.
-> > > >
-> > > > This patch overloads related arch functions in uprobe_write_opcode and
-> > > > set_orig_insn so they can install call instruction if needed.
-> > > >
-> > > > The arch_uprobe_optimize triggers the uprobe optimization and is called after
-> > > > first uprobe hit. I originally had it called on uprobe installation but then
-> > > > it clashed with elf loader, because the user space trampoline was added in a
-> > > > place where loader might need to put elf segments, so I decided to do it after
-> > > > first uprobe hit when loading is done.
-> > > >
-> > > > We do not unmap and release uprobe trampoline when it's no longer needed,
-> > > > because there's no easy way to make sure none of the threads is still
-> > > > inside the trampoline. But we do not waste memory, because there's just
-> > > > single page for all the uprobe trampoline mappings.
-> > > >
-> > > > We do waste frmae on page mapping for every 4GB by keeping the uprobe
-> > > > trampoline page mapped, but that seems ok.
-> > > >
-> > > > Attaching the speed up from benchs/run_bench_uprobes.sh script:
-> > > >
-> > > > current:
-> > > >         usermode-count :  818.836 ± 2.842M/s
-> > > >         syscall-count  :    8.917 ± 0.003M/s
-> > > >         uprobe-nop     :    3.056 ± 0.013M/s
-> > > >         uprobe-push    :    2.903 ± 0.002M/s
-> > > >         uprobe-ret     :    1.533 ± 0.001M/s
-> > > > -->     uprobe-nop5    :    1.492 ± 0.000M/s
-> > > >         uretprobe-nop  :    1.783 ± 0.000M/s
-> > > >         uretprobe-push :    1.672 ± 0.001M/s
-> > > >         uretprobe-ret  :    1.067 ± 0.002M/s
-> > > > -->     uretprobe-nop5 :    1.052 ± 0.000M/s
-> > > >
-> > > > after the change:
-> > > >
-> > > >         usermode-count :  818.386 ± 1.886M/s
-> > > >         syscall-count  :    8.923 ± 0.003M/s
-> > > >         uprobe-nop     :    3.086 ± 0.005M/s
-> > > >         uprobe-push    :    2.751 ± 0.001M/s
-> > > >         uprobe-ret     :    1.481 ± 0.000M/s
-> > > > -->     uprobe-nop5    :    4.016 ± 0.002M/s
-> > > >         uretprobe-nop  :    1.712 ± 0.008M/s
-> > > >         uretprobe-push :    1.616 ± 0.001M/s
-> > > >         uretprobe-ret  :    1.052 ± 0.000M/s
-> > > > -->     uretprobe-nop5 :    2.015 ± 0.000M/s
-> > > >
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >  arch/x86/include/asm/uprobes.h |   6 ++
-> > > >  arch/x86/kernel/uprobes.c      | 191 ++++++++++++++++++++++++++++++++-
-> > > >  include/linux/uprobes.h        |   6 +-
-> > > >  kernel/events/uprobes.c        |  16 ++-
-> > > >  4 files changed, 209 insertions(+), 10 deletions(-)
-> > > >
-> > > > diff --git a/arch/x86/include/asm/uprobes.h b/arch/x86/include/asm/uprobes.h
-> > > > index 678fb546f0a7..7d4df920bb59 100644
-> > > > --- a/arch/x86/include/asm/uprobes.h
-> > > > +++ b/arch/x86/include/asm/uprobes.h
-> > > > @@ -20,6 +20,10 @@ typedef u8 uprobe_opcode_t;
-> > > >  #define UPROBE_SWBP_INSN               0xcc
-> > > >  #define UPROBE_SWBP_INSN_SIZE             1
-> > > >
-> > > > +enum {
-> > > > +       ARCH_UPROBE_FLAG_CAN_OPTIMIZE   = 0,
-> > > > +};
-> > > > +
-> > > >  struct uprobe_xol_ops;
-> > > >
-> > > >  struct arch_uprobe {
-> > > > @@ -45,6 +49,8 @@ struct arch_uprobe {
-> > > >                         u8      ilen;
-> > > >                 }                       push;
-> > > >         };
-> > > > +
-> > > > +       unsigned long flags;
-> > > >  };
-> > > >
-> > > >  struct arch_uprobe_task {
-> > > > diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-> > > > index e8aebbda83bc..73ddff823904 100644
-> > > > --- a/arch/x86/kernel/uprobes.c
-> > > > +++ b/arch/x86/kernel/uprobes.c
-> > > > @@ -18,6 +18,7 @@
-> > > >  #include <asm/processor.h>
-> > > >  #include <asm/insn.h>
-> > > >  #include <asm/mmu_context.h>
-> > > > +#include <asm/nops.h>
-> > > >
-> > > >  /* Post-execution fixups. */
-> > > >
-> > > > @@ -768,7 +769,7 @@ static struct uprobe_trampoline *create_uprobe_trampoline(unsigned long vaddr)
-> > > >         return NULL;
-> > > >  }
-> > > >
-> > > > -static __maybe_unused struct uprobe_trampoline *uprobe_trampoline_get(unsigned long vaddr)
-> > > > +static struct uprobe_trampoline *uprobe_trampoline_get(unsigned long vaddr)
-> > > >  {
-> > > >         struct uprobes_state *state = &current->mm->uprobes_state;
-> > > >         struct uprobe_trampoline *tramp = NULL;
-> > > > @@ -794,7 +795,7 @@ static void destroy_uprobe_trampoline(struct uprobe_trampoline *tramp)
-> > > >         kfree(tramp);
-> > > >  }
-> > > >
-> > > > -static __maybe_unused void uprobe_trampoline_put(struct uprobe_trampoline *tramp)
-> > > > +static void uprobe_trampoline_put(struct uprobe_trampoline *tramp)
-> > > >  {
-> > > >         if (tramp == NULL)
-> > > >                 return;
-> > > > @@ -807,6 +808,7 @@ struct mm_uprobe {
-> > > >         struct rb_node rb_node;
-> > > >         unsigned long auprobe;
-> > > >         unsigned long vaddr;
-> > > > +       bool optimized;
-> > > >  };
-> > > >
-> > >
-> > > I'm trying to understand if this RB-tree based mm_uprobe is strictly
-> > > necessary. Is it? Sure we keep optimized flag, but that's more for
-> > > defensive checks, no? Is there any other reason we need this separate
-> > > look up data structure?
-> >
-> > so the call instruction update is done in 2 locked steps:
-> >  - first we write breakpoint as part of normal uprobe registration
-> >  - then uprobe is hit, we overwrite breakpoint with call instruction
-> >
-> > in between we could race with another thread that could either unregister the
-> > uprobe or try to optimize the uprobe as well
-> >
-> > I think we either need to keep the state of the uprobe per process (mm_struct),
-> > or we would need to read the probed instruction each time when we need to make
-> > decision based on what state are we at (nop5,breakpoint,call)
-> 
-> This decision is only done in "slow path", right? Only when
-> registering/unregistering. And those operations are done under lock.
-> So reading those 5 bytes every time we register/unregister seems
-> completely acceptable, rather than now *also* having a per-mm uprobe
-> lookup tree.
+On Fri, Feb 28, 2025 at 8:29=E2=80=AFAM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> The verifier currently does not permit global subprog calls when a lock
+> is held, preemption is disabled, or when IRQs are disabled. This is
+> because we don't know whether the global subprog calls sleepable
+> functions or not.
+>
+> In case of locks, there's an additional reason: functions called by the
+> global subprog may hold additional locks etc. The verifier won't know
+> while verifying the global subprog whether it was called in context
+> where a spin lock is already held by the program.
+>
+> Perform summarization of the sleepable nature of a global subprog just
+> like changes_pkt_data and then allow calls to global subprogs for
+> non-sleepable ones from atomic context.
+>
+> While making this change, I noticed that RCU read sections had no
+> protection against sleepable global subprog calls, include it in the
+> checks and fix this while we're at it.
+>
+> Care needs to be taken to not allow global subprog calls when regular
+> bpf_spin_lock is held. When resilient spin locks is held, we want to
+> potentially have this check relaxed, but not for now.
+>
+> Tests are included in the next patch to handle all special conditions.
+>
+> Fixes: 9bb00b2895cb ("bpf: Add kfunc bpf_rcu_read_lock/unlock()")
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf_verifier.h |  1 +
+>  kernel/bpf/verifier.c        | 50 ++++++++++++++++++++++++++----------
+>  2 files changed, 37 insertions(+), 14 deletions(-)
+>
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index bbd013c38ff9..1b3cfa6cb720 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -667,6 +667,7 @@ struct bpf_subprog_info {
+>         /* true if bpf_fastcall stack region is used by functions that ca=
+n't be inlined */
+>         bool keep_fastcall_stack: 1;
+>         bool changes_pkt_data: 1;
+> +       bool sleepable: 1;
+>
+>         enum priv_stack_mode priv_stack_mode;
+>         u8 arg_cnt;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index dcd0da4e62fc..e3560d19d513 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -10317,23 +10317,18 @@ static int check_func_call(struct bpf_verifier_=
+env *env, struct bpf_insn *insn,
+>         if (subprog_is_global(env, subprog)) {
+>                 const char *sub_name =3D subprog_name(env, subprog);
+>
+> -               /* Only global subprogs cannot be called with a lock held=
+. */
+>                 if (env->cur_state->active_locks) {
+>                         verbose(env, "global function calls are not allow=
+ed while holding a lock,\n"
+>                                      "use static function instead\n");
+>                         return -EINVAL;
+>                 }
+>
+> -               /* Only global subprogs cannot be called with preemption =
+disabled. */
+> -               if (env->cur_state->active_preempt_locks) {
+> -                       verbose(env, "global function calls are not allow=
+ed with preemption disabled,\n"
+> -                                    "use static function instead\n");
+> -                       return -EINVAL;
+> -               }
+> -
+> -               if (env->cur_state->active_irq_id) {
+> -                       verbose(env, "global function calls are not allow=
+ed with IRQs disabled,\n"
+> -                                    "use static function instead\n");
+> +               if (env->subprog_info[subprog].sleepable &&
+> +                   (env->cur_state->active_rcu_lock || env->cur_state->a=
+ctive_preempt_locks ||
+> +                    env->cur_state->active_irq_id || !in_sleepable(env))=
+) {
+> +                       verbose(env, "global functions that may sleep are=
+ not allowed in non-sleepable context,\n"
+> +                                    "i.e., in a RCU/IRQ/preempt-disabled=
+ section, or in\n"
+> +                                    "a non-sleepable BPF program context=
+\n");
+>                         return -EINVAL;
+>                 }
+>
+> @@ -16703,6 +16698,14 @@ static void mark_subprog_changes_pkt_data(struct=
+ bpf_verifier_env *env, int off)
+>         subprog->changes_pkt_data =3D true;
+>  }
+>
+> +static void mark_subprog_sleepable(struct bpf_verifier_env *env, int off=
+)
+> +{
+> +       struct bpf_subprog_info *subprog;
+> +
+> +       subprog =3D find_containing_subprog(env, off);
+> +       subprog->sleepable =3D true;
+> +}
+> +
+>  /* 't' is an index of a call-site.
+>   * 'w' is a callee entry point.
+>   * Eventually this function would be called when env->cfg.insn_state[w] =
+=3D=3D EXPLORED.
+> @@ -16716,6 +16719,7 @@ static void merge_callee_effects(struct bpf_verif=
+ier_env *env, int t, int w)
+>         caller =3D find_containing_subprog(env, t);
+>         callee =3D find_containing_subprog(env, w);
+>         caller->changes_pkt_data |=3D callee->changes_pkt_data;
+> +       caller->sleepable |=3D callee->sleepable;
+>  }
+>
+>  /* non-recursive DFS pseudo code
+> @@ -17183,9 +17187,20 @@ static int visit_insn(int t, struct bpf_verifier=
+_env *env)
+>                         mark_prune_point(env, t);
+>                         mark_jmp_point(env, t);
+>                 }
+> -               if (bpf_helper_call(insn) && bpf_helper_changes_pkt_data(=
+insn->imm))
+> -                       mark_subprog_changes_pkt_data(env, t);
+> -               if (insn->src_reg =3D=3D BPF_PSEUDO_KFUNC_CALL) {
+> +               if (bpf_helper_call(insn)) {
+> +                       const struct bpf_func_proto *fp;
+> +
+> +                       ret =3D get_helper_proto(env, insn->imm, &fp);
+> +                       /* If called in a non-sleepable context program w=
+ill be
+> +                        * rejected anyway, so we should end up with prec=
+ise
+> +                        * sleepable marks on subprogs, except for dead c=
+ode
+> +                        * elimination.
 
-true.. I was also thinking about having another flag in that tree for
-when we fail to optimize the uprobe for other reason than it being on
-page alignment.. without such flag we'd need to read the 5 bytes each
-time we hit that uprobe .. but that might be rare case
+TBH, I'm worried that we are regressing to doing all these side effect
+analyses disregarding dead code elimination. It's not something
+hypothetical to have an .rodata variable controlling whether, say, to
+do bpf_probe_read_user() (non-sleepable) vs bpf_copy_from_user()
+(sleepable) inside global subprog, depending on some outside
+configuration (e.g., whether we'll be doing SEC("iter.s/task") or it's
+actually profiler logic called inside SEC("perf_event"), all
+controlled by user-space). We do have use cases like this in
+production already, and this dead code elimination is important in
+such cases. Probably can be worked around with more global functions
+and stuff like that, but still, it's worrying we are giving up on such
+an important part of the BPF CO-RE approach - disabling parts of code
+"dynamically" before loading BPF programs.
 
-jirka
+> +                        */
+> +                       if (ret =3D=3D 0 && fp->might_sleep)
+> +                               mark_subprog_sleepable(env, t);
+> +                       if (bpf_helper_changes_pkt_data(insn->imm))
+> +                               mark_subprog_changes_pkt_data(env, t);
+> +               } else if (insn->src_reg =3D=3D BPF_PSEUDO_KFUNC_CALL) {
+>                         struct bpf_kfunc_call_arg_meta meta;
+>
+>                         ret =3D fetch_kfunc_meta(env, insn, &meta, NULL);
+> @@ -17204,6 +17219,13 @@ static int visit_insn(int t, struct bpf_verifier=
+_env *env)
+>                                  */
+>                                 mark_force_checkpoint(env, t);
+>                         }
+> +                       /* Same as helpers, if called in a non-sleepable =
+context
+> +                        * program will be rejected anyway, so we should =
+end up
+> +                        * with precise sleepable marks on subprogs, exce=
+pt for
+> +                        * dead code elimination.
+> +                        */
+> +                       if (ret =3D=3D 0 && is_kfunc_sleepable(&meta))
+> +                               mark_subprog_sleepable(env, t);
+>                 }
+>                 return visit_func_call_insn(t, insns, env, insn->src_reg =
+=3D=3D BPF_PSEUDO_CALL);
+>
+> --
+> 2.43.5
+>
 
