@@ -1,193 +1,151 @@
-Return-Path: <bpf+bounces-52831-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52833-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B155A48D81
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 01:44:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98C57A48E07
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 02:37:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6079716DD6E
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 00:44:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D4A87A30B8
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 01:36:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF5C849C;
-	Fri, 28 Feb 2025 00:44:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q1aXp4Su"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8505C2628C;
+	Fri, 28 Feb 2025 01:36:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02FBC211C;
-	Fri, 28 Feb 2025 00:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43571276D11
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 01:36:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740703446; cv=none; b=r4ceSurpjahqJBaHirVwzKG1V3jHu0g5XK+2sZUxUekKLA2JvonB1KJ+5Yw3V4HArwdP6+ju8GHM2nFlYMhRGSn6PAUPE+mkEnVtWvVDUfGz2tVb+pjISlIZU6fe0CFdOvnBPZKdnhw/XNzOaKIb3apInQFVVNxzSKAaT8C0dOM=
+	t=1740706614; cv=none; b=dZq4ixe/yXc8h0KO5oCnOBzP0dbWZPT/pWextq+PkHrf6SKXA2TgGoJ03vRqSeT3Bp05YI2bNIP91iroBdfGFFLUcRlc/X4mZXPlj7f1P2EnOCkX3bhF76BhyGXsGtfBmVxMC1vqutmKhWlbidqDVOtKzP0Tnf6Q3itLbyzKiW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740703446; c=relaxed/simple;
-	bh=eLeJvveqOt8R8zNm/BD89sPpR/xN6v9RWVXKbMNVdSw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=keopDDFIMxI/0coiB1LxP4d17nUfc3uu23rdCCQUQRj5/y/ujOgD8lf6OIQSrscCZAIOni1T05HRVexK0lteNwNTGdy741hcEVgdPeozR2iPo6hk82y7A+lRAA1isBxKsjAkwCVSEMu40nmRIrh21IOeaqe16EtB8v2pfzLFfCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q1aXp4Su; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740703445; x=1772239445;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=eLeJvveqOt8R8zNm/BD89sPpR/xN6v9RWVXKbMNVdSw=;
-  b=Q1aXp4SuVPVe+2lljuaQMTlRP5jBe67Qj9Q2ASbTlUR2xkW7nLpuVDCE
-   FGyEw20bS95LRtJYFa6sozVPNFE9ZxcuPuZg5QDTJbRgDDVHSTtqJ2A25
-   B95HCQioBlADJH1IAlB3F9EnUYAX91SIomdHGvDjkoCuAfjSvQpbx24i0
-   GZh/3iM7SWE/xvDgfJBOYIHRq9gtBldNV36fxGC4bwtx6neqWd6If2OxS
-   oFrOZl/jsYzrnDevo9ydlz2M/PxKSsvW4oq9nTnTMtDi8SW6ymTDQotGL
-   50jvt51t4zmdxsdD9g6RlGysAEC0kbBdH8JgGEFgvGuGYyGTR1sRKVGPy
-   Q==;
-X-CSE-ConnectionGUID: VmBGSBWsQra8S3aRo5OvbA==
-X-CSE-MsgGUID: zElCPIsDROmKpmX9mD99kA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11358"; a="45402598"
-X-IronPort-AV: E=Sophos;i="6.13,320,1732608000"; 
-   d="scan'208";a="45402598"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2025 16:43:52 -0800
-X-CSE-ConnectionGUID: byxxMEs1TTiX2LpHkc1grg==
-X-CSE-MsgGUID: jshEyU3CSAGftBCl95s7dA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,320,1732608000"; 
-   d="scan'208";a="122313669"
-Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
-  by fmviesa004.fm.intel.com with ESMTP; 27 Feb 2025 16:43:45 -0800
-Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tnoTe-000EFG-2u;
-	Fri, 28 Feb 2025 00:43:42 +0000
-Date: Fri, 28 Feb 2025 08:43:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: Menglong Dong <menglong8.dong@gmail.com>, rostedt@goodmis.org,
-	mark.rutland@arm.com, alexei.starovoitov@gmail.com
-Cc: oe-kbuild-all@lists.linux.dev, catalin.marinas@arm.com, will@kernel.org,
-	mhiramat@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com, mathieu.desnoyers@efficios.com, nathan@kernel.org,
-	ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
-	dongml2@chinatelecom.cn, akpm@linux-foundation.org, rppt@kernel.org,
-	graf@amazon.com, dan.j.williams@intel.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH bpf-next v2] add function metadata support
-Message-ID: <202502280842.nI3PwNwz-lkp@intel.com>
-References: <20250226121537.752241-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1740706614; c=relaxed/simple;
+	bh=RbzbMWGVly78V4pUuZUnqdXRPb9Ap5sUfz/pP5jq93Q=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=aCGjH8ANzPxYuy7oz2+DcF8mJmZOCEbJqxMybFlldFrxzgmOYiX4RQQIPsuVwcQ4jhNPmTlIh49FSbIEAu9ieEJoyBMXY2ZYd9PERjDDpQTEauiRwLZxgKfFy4Yg7gPUxIM46Dva+9nICoic0QYDjUr42bSsplieEKaFsubwgHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Z3qZh15RZz4f3nTw
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 08:58:20 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 7FAE41A14AB
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 08:58:43 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgBXu3s_CsFnohshFA--.16502S2;
+	Fri, 28 Feb 2025 08:58:43 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2 06/20] bpf: Set BPF_INT_F_DYNPTR_IN_KEY
+ conditionally
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Dan Carpenter <dan.carpenter@linaro.org>, Hou Tao <houtao1@huawei.com>,
+ Xu Kuohai <xukuohai@huawei.com>
+References: <20250125111109.732718-1-houtao@huaweicloud.com>
+ <20250125111109.732718-7-houtao@huaweicloud.com>
+ <CAADnVQL+866m69rv+PC_V1y1-PjL4=w3obTwqLPgW3=kA_BjEg@mail.gmail.com>
+ <6223b1f5-b491-fcec-b50c-222f1075f952@huaweicloud.com>
+ <CAADnVQ+G9YQyj8-Q7UFT9y26tD1Rud_AgRu-D-s1LruYE03NZQ@mail.gmail.com>
+ <01e5b3ca-86d3-46a9-742a-3b69f378d141@huaweicloud.com>
+ <012917a0-e707-0527-f1f2-bb3f38464c7e@huaweicloud.com>
+ <CAADnVQ+ng5wPns+tbFAumWLoZzNnho8pRVaorKGBA=6h9NsYhw@mail.gmail.com>
+ <CAADnVQ+o=2XQ2Wo-Roe35ahq=zgHjC19ptsbRJa1DVir5umqxw@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <dac0c127-1876-b936-5d59-bfd29e11c687@huaweicloud.com>
+Date: Fri, 28 Feb 2025 08:58:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250226121537.752241-1-dongml2@chinatelecom.cn>
+In-Reply-To: <CAADnVQ+o=2XQ2Wo-Roe35ahq=zgHjC19ptsbRJa1DVir5umqxw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgBXu3s_CsFnohshFA--.16502S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw13Kw48CF4kKw1kAw4ruFg_yoW8ur4fpF
+	WrGFyagws2k34xtw1xt3WDJayjyr4FgrW7Arn3XryUA345XrsxWryrA3W5urn3Cr98t343
+	XF4jya4fuayruaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi Menglong,
+Hi,
 
-kernel test robot noticed the following build warnings:
+On 2/28/2025 5:10 AM, Alexei Starovoitov wrote:
+> On Fri, Feb 14, 2025 at 9:30 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>> On Thu, Feb 13, 2025 at 11:25 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>> Hi,
+>>>
 
-[auto build test WARNING on bpf-next/master]
+SNIP
+>>>
+>>> 3) ->map_check_btf()
+>>>
+>>> In ->map_check_btf() callback, check whether the created map is
+>>> mismatched with the dynptr key. If it is, let map_create() destroys the map.
+>> map_check_btf() itself can have the code to filter out unsupported maps
+>> like it does already:
+>>                         case BPF_WORKQUEUE:
+>>                                 if (map->map_type != BPF_MAP_TYPE_HASH &&
+>>                                     map->map_type != BPF_MAP_TYPE_LRU_HASH &&
+>>                                     map->map_type != BPF_MAP_TYPE_ARRAY) {
+>>                                         ret = -EOPNOTSUPP;
+>>
+>> I don't mind moving map_check_btf() before ->map_alloc_check()
+>> since it doesn't really need 'map' pointer.
+>> I objected to partial move where btf_get_by_fd() is done early
+>> while the rest after map allocation.
+>> Either all map types do map_check_btf() before alloc or
+>> all map types do it after.
+>>
+>> If we move map_check_btf() before alloc
+>> then the final map->ops->map_check_btf() should probably
+>> stay after alloc.
+>> Otherwise this is too much churn.
+>>
+>> So I think it's better to try to keep the whole map_check_btf() after
+>> as it is right now.
+>> I don't see yet why dynptr-in-key has to have it before.
+>> So far map_extra limitation was the only special condition,
+>> but even if we have to keep (which I doubt) it can be done in
+>> map->ops->map_check_btf().
+> Any update on this ?
+> Two weeks have passed.
+> iirc above was the only thing left to resolve.
+Er, I started adding bpffs seq-file and batched operation support
+recently.  I need to ask whether it is OK to complete these todo items
+shown below in the following patch-set. As noted in the cover letter,
+the following things have not been supported yet:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Menglong-Dong/add-function-metadata-support/20250226-202312
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250226121537.752241-1-dongml2%40chinatelecom.cn
-patch subject: [PATCH bpf-next v2] add function metadata support
-config: i386-buildonly-randconfig-002-20250227 (https://download.01.org/0day-ci/archive/20250228/202502280842.nI3PwNwz-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250228/202502280842.nI3PwNwz-lkp@intel.com/reproduce)
+1) batched map operation through bpf syscall
+2) the memory accounting for dynptr (aka .htab_map_mem_usage)
+3) btf print for the dynptr in map key
+4) bpftool support
+5) the iteration of elements through bpf program
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202502280842.nI3PwNwz-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   kernel/trace/kfunc_md.c: In function 'kfunc_md_get_next':
->> kernel/trace/kfunc_md.c:98:20: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-      98 |         free_pages((u64)mds, order);
-         |                    ^
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for CALL_PADDING
-   Depends on [n]: CC_HAS_ENTRY_PADDING [=y] && OBJTOOL [=n]
-   Selected by [y]:
-   - FUNCTION_METADATA [=y]
-
-
-vim +98 kernel/trace/kfunc_md.c
-
-    47	
-    48	/* Get next usable function metadata. On success, return the usable
-    49	 * kfunc_md and store the index of it to *index. If no usable kfunc_md is
-    50	 * found in kfunc_mds, a larger array will be allocated.
-    51	 */
-    52	static struct kfunc_md *kfunc_md_get_next(u32 *index)
-    53	{
-    54		struct kfunc_md *new_mds, *mds;
-    55		u32 i, order;
-    56	
-    57		mds = rcu_dereference(kfunc_mds);
-    58		if (mds == NULL) {
-    59			order = kfunc_md_page_order();
-    60			new_mds = (void *)__get_free_pages(GFP_KERNEL, order);
-    61			if (!new_mds)
-    62				return NULL;
-    63			kfunc_md_init(new_mds, 0, kfunc_md_count);
-    64			/* The first time to initialize kfunc_mds, so it is not
-    65			 * used anywhere yet, and we can update it directly.
-    66			 */
-    67			rcu_assign_pointer(kfunc_mds, new_mds);
-    68			mds = new_mds;
-    69		}
-    70	
-    71		if (likely(kfunc_md_used < kfunc_md_count)) {
-    72			/* maybe we can manage the used function metadata entry
-    73			 * with a bit map ?
-    74			 */
-    75			for (i = 0; i < kfunc_md_count; i++) {
-    76				if (!mds[i].users) {
-    77					kfunc_md_used++;
-    78					*index = i;
-    79					mds[i].users++;
-    80					return mds + i;
-    81				}
-    82			}
-    83		}
-    84	
-    85		order = kfunc_md_page_order();
-    86		/* no available function metadata, so allocate a bigger function
-    87		 * metadata array.
-    88		 */
-    89		new_mds = (void *)__get_free_pages(GFP_KERNEL, order + 1);
-    90		if (!new_mds)
-    91			return NULL;
-    92	
-    93		memcpy(new_mds, mds, kfunc_md_count * sizeof(*new_mds));
-    94		kfunc_md_init(new_mds, kfunc_md_count, kfunc_md_count * 2);
-    95	
-    96		rcu_assign_pointer(kfunc_mds, new_mds);
-    97		synchronize_rcu();
-  > 98		free_pages((u64)mds, order);
-    99	
-   100		mds = new_mds + kfunc_md_count;
-   101		*index = kfunc_md_count;
-   102		kfunc_md_count <<= 1;
-   103		kfunc_md_used++;
-   104		mds->users++;
-   105	
-   106		return mds;
-   107	}
-   108	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
