@@ -1,91 +1,118 @@
-Return-Path: <bpf+bounces-52827-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52829-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 378B8A48C58
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 00:05:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 822C7A48D75
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 01:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94EDD7A6EBB
-	for <lists+bpf@lfdr.de>; Thu, 27 Feb 2025 23:04:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADEBB188738A
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 00:34:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5488A23E34F;
-	Thu, 27 Feb 2025 23:04:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C03C5BA45;
+	Fri, 28 Feb 2025 00:33:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TmKxl2ev"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="hV57Cfm9"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1948C22A1E6
-	for <bpf@vger.kernel.org>; Thu, 27 Feb 2025 23:04:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5450A9460
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 00:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740697490; cv=none; b=shQIPTk8SDnHSY35mTnQpn5bgnNMA1wx7Nve1BN5fOARtlQvn1aXVhkvY7gn43CsKnGGMuEZm2/skEGau+f30K4kP2mg5lgPrlQmfpquD5roADlZfW8OEyImMmX4lgHoIvrCGjYcacBt+OpVxiJucf+hwsGvJI8ptNKjpduEYx0=
+	t=1740702826; cv=none; b=et4C8QYi70Ri7407N671Xs6jAhGRyVcNn5Q8Ma8iLXCUXT/JHIzCvg2hkutlygMBqJE/VAsMRhpQTj/D0TkmoxsXG/4gfoggqLVUS2FUtuJspPjSMtly8BlbWTDQW8OU0w356TguIT1kWgGFgzIzFb3zrwe966gRCeC3rkvpK74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740697490; c=relaxed/simple;
-	bh=KQnDSWfCyG4GFZ8z+w71H8Ba87KJiLSAkaj1oH1XyiI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NSPEhX7Vk3ZSz3CWJ1nXz0OFB/u5JFP785C2DShUrdCkHDBMYIfl4ELot8jfh1DSfnuEQ8lH+bwiLVfah7/w9jgebSQyWWd+j/RcfD+r/S6cOi6GUY4/Yh8FEyUoreRKa543kNT2DeYwPXNv+PqcPHl8p7XsRNL1KSnPwtUWsHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TmKxl2ev; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <84f25c32-1aa6-42d6-a5b1-efce822bfcd6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740697477;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s53PsMsT+VnZgU2wt1QKLZK3VWcUDg2UEoFqQhBbfUs=;
-	b=TmKxl2ev/7M/7kekUDzsyg4xu4/zQ0gcoHcFm9HW//fxbejxAifn9SEiGLWsOsWJSLpks8
-	9sFT6ChRjHvb2hmy8pvRw9ui4rDdewvIDBIXcYaZ8f/afR5jSwHJsiA1aEh3uknP90Kn91
-	3NaCKozg+PAo/v7rQIHf28cPHu5sE3Y=
-Date: Thu, 27 Feb 2025 15:04:26 -0800
+	s=arc-20240116; t=1740702826; c=relaxed/simple;
+	bh=v8UXISOpH4QYYjcEfXhSuMcvwplUFU2z4jz+kxU0W5o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UMl50e3mVslBI0fxmDd6RvGIs3ak+9oyH0M01V2ZVUjk3DeO5LTiFJKJCmzk6hycd+Bs80g7CQ9oxB580+x8y0XiH7V7cRFpBNKeMu4V6bpom/z3wRpM8k68WXeT+YI2wiwmixrkFVRHw1z8k5WIjEU3X/q5CFtNI7C+dVXkUAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=hV57Cfm9; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6e897847086so10200026d6.3
+        for <bpf@vger.kernel.org>; Thu, 27 Feb 2025 16:33:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1740702822; x=1741307622; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PG99W7/RkwGJQ8fVB6VmmaS/Xph0Sguzb1wRFExTYpw=;
+        b=hV57Cfm9sW7l3fAweGfSnoJfy8+ZrKOjNh524TrWduNlX/smJy25VdlsXKo6KMkwtg
+         RheR2xgGpLsh2NSSWAadil3IPx/cL4Rj9mirwIqm0FlWQFDVP/rtIl+ZJO6nsNxRC7F0
+         9YmWrhDLNTJKIB96Vp/FoU4YtMTGzsDBuU+4MYC4sf8/JCxFNrapRbQfYnaz7fuGuRMD
+         EyqU+ybNOug6wWG0bGcbpxjaFOLf2Y4cUKKZ8TyuFR21Ew832WYZoN+hMSW3LrHPOGXo
+         n7I9WyyMNHXtkjEg23XIc5Cheyf1kOU8OjJaUGjzOVHv/Tros0sByQh4k//NFvJk01ce
+         dJpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740702822; x=1741307622;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PG99W7/RkwGJQ8fVB6VmmaS/Xph0Sguzb1wRFExTYpw=;
+        b=DjABQfmNOKqNAtayGMSF1RFvAI5Rnt89tT2rAslEQ+1m+rP0aiqVlTwqBwX9wwX/97
+         xHGVat5HHlamF2u+HY5iGXTLPGTMBiyRFuAVA37iQj8451EOWjgtjapZkSdlD13qJ8X1
+         67v3iJBlrLv8CrDYjPdgDc02sjJWlCH7mUlOL4RbIIwEpGpob8A5qyxmkpuwPwTgS/a3
+         DcJvfrDxMSUxr7+grca+ojafW1TILYI031Bo6TSGGnXtL7QmdMjTOvI94/2b8i8LMV7/
+         Pv+KHA+SAW7Xzp1Lgm6ckY4LkOUkZqe9XkEiKPiaSNEzDhnz+MkfI5h/AP+XD0yy8P+x
+         26AQ==
+X-Gm-Message-State: AOJu0Yxc6mDv5i2eYBTeHOwydFDoQB1yedU01JGBYV7B3RryJxfhkuNQ
+	K40TPqlLw3M05mhSruThpnR+LnKw1K95X6jOzwAd4J4JNkzLY/2i+eiAu3WaNpu3L3Iv1Nl0JHs
+	9gFNoxQ==
+X-Gm-Gg: ASbGncsrbawDqEHzDVlbUyXMn+XNeZBeTnu2oDrJlNkNzLkNVwGsIJXu8mPO4452/5m
+	aFOoUkRiRgNPv7ltTmGRHrdwUmYCT5txeY4Vvmzn9m5VsWaWONjzebCnytHPIP+c3orUpcy2yDq
+	Gv4+9fet7cpPM40gQ7hc1Pg8Rym+Bw0/j3ir7VRi6AcK6D6nsRX77jea+DD0WtjbaWvfNaAy8AP
+	Y4JM/jgEWXiXMsxPecGVrwmI8IN2IUuJSWAJR9Bu17tVQyVNzWuetGGbFsBLDr2Qh/1V55nmrJ6
+	cQeVqK4EfB3GFL7mZ8qOSD0=
+X-Google-Smtp-Source: AGHT+IHCA3HAZTApkM20IO1GiD9MxIkltE09Qisi2tIcLx/Bn87Ey9Txlxzf0VJEeP8wW9D46XeCkA==
+X-Received: by 2002:a05:6214:2aad:b0:6e8:9ac9:55ad with SMTP id 6a1803df08f44-6e8a0d94f85mr26913736d6.37.1740702821960;
+        Thu, 27 Feb 2025 16:33:41 -0800 (PST)
+Received: from boreas.. ([140.174.215.88])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c36fef5beesm174769085a.32.2025.02.27.16.33.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Feb 2025 16:33:41 -0800 (PST)
+From: Emil Tsalapatis <emil@etsalapatis.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.de,
+	eddyz87@gmail.com,
+	yonghong.song@linux.dev,
+	Emil Tsalapatis <emil@etsalapatis.com>
+Subject: [PATCH 0/2] bpf: introduce helper for populating bpf_cpumask
+Date: Thu, 27 Feb 2025 19:33:19 -0500
+Message-ID: <20250228003321.1409285-1-emil@etsalapatis.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 1/3] bpf, sockmap: avoid using sk_socket after
- free
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: cong.wang@bytedance.com, john.fastabend@gmail.com, jakub@cloudflare.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, horms@kernel.org, andrii@kernel.org, eddyz87@gmail.com,
- mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, mhal@rbox.co,
- sgarzare@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- mrpre@163.com, syzbot+dd90a702f518e0eac072@syzkaller.appspotmail.com
-References: <20250226132242.52663-1-jiayuan.chen@linux.dev>
- <20250226132242.52663-2-jiayuan.chen@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20250226132242.52663-2-jiayuan.chen@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 2/26/25 5:22 AM, Jiayuan Chen wrote:
-> Use RCU lock to protect sk_socket, preventing concurrent close and release
-> by another thread.
-> 
-> Because TCP/UDP are already within a relatively large critical section:
-> '''
-> ip_local_deliver_finish
->    rcu_read_lock
->    ip_protocol_deliver_rcu
->        tcp_rcv/udp_rcv
->    rcu_read_unlock
-> '''
-> 
-> Adding rcu_read_{un}lock() at the entrance and exit of sk_data_ready
-> will not increase performance overhead.
+Some BPF programs like scx schedulers have their own internal CPU mask types, 
+mask types, which they must transform into struct bpf_cpumask instances
+before passing them to scheduling-related kfuncs. There is currently no
+way to efficiently populate the bitfield of a bpf_cpumask from BPF memory, 
+and programs must use multiple bpf_cpumask_[set, clear] calls to do so. 
+Introduce a kfunc helper to populate the bitfield of a bpf_cpumask from valid 
+BPF memory with a single call.
 
-Can it use a Fixes tag?
+Signed-off-by: Emil Tsalapatis (Meta) <emil@etsalapatis.com>
+
+Emil Tsalapatis (2):
+  bpf: add kfunc for populating cpumask bits
+  selftests: bpf: add bpf_cpumask_fill selftests
+
+ kernel/bpf/cpumask.c                          | 21 +++++
+ .../selftests/bpf/prog_tests/verifier.c       |  2 +
+ .../selftests/bpf/progs/cpumask_success.c     | 23 ++++++
+ .../selftests/bpf/progs/verifier_cpumask.c    | 77 +++++++++++++++++++
+ 4 files changed, 123 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_cpumask.c
+
+-- 
+2.47.1
+
 
