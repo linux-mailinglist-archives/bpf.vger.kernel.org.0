@@ -1,283 +1,124 @@
-Return-Path: <bpf+bounces-52877-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52878-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F701A49E5E
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 17:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C84CA49EC3
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 17:29:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 651F53B1614
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 16:08:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C37B03A5BBB
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 16:28:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6909270EC9;
-	Fri, 28 Feb 2025 16:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 803A3272904;
+	Fri, 28 Feb 2025 16:29:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z9AmGAEX"
 X-Original-To: bpf@vger.kernel.org
-Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB86188CCA;
-	Fri, 28 Feb 2025 16:08:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FCB26A0DB
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 16:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740758920; cv=none; b=OwFAyR1TPJI9yaZl+iNUvycR3DHv74AvWc15eeycrrPRy6AqwpWDKv0RgfBTyKExn2qGdyWRJnxZDq+0vWY+QkCzFxSNJl61xA7LJeQfK9RaBd6ut5j4Tj5e59hvFU0uTpXc/IxHtgAb9eCku6cHJONg2j01BpfPX5H1GG/uJrg=
+	t=1740760144; cv=none; b=OnpHCdjNmrlzRjPdpgxGJPXZ936v+YVoAalrxPzvzYmNMm2nQRXGYbx2JfiPSADk9+NCsErvf12Rh0VRUiBNZJZekKJLXYd1o8lSfmUnebpxSsMYyoZvYaQftHejtwlHflzWaTxn8yUo1yTcMx8o3txtkDt4VoqxIqVILrhMbi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740758920; c=relaxed/simple;
-	bh=GBGR7fAnoa1MrE+FTmswdxLhjH6N3U8RXuA8gE9Y/gg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IdpyF6sYLMgtrB9W3sxQq8P0HC76mIiHaEUlcexqs1ADfBAUvBnd/xY2nlbs0zRfZ6XiEle4Kl4MHGru3k6gMcvRjLP8J9nt2C8KwjZq7Q7GO3JhSlnAU1ZrX+0gUfrNZpGBUG3FuTXee52Xq4znsfii24o6jFbbmYBP4WyE0gQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1to2uT-000093-7O; Fri, 28 Feb 2025 17:08:21 +0100
-Received: from [2a0d:3344:1523:1f10:f118:b2d4:edbb:54af]
-	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1to2uT-000GWU-2G;
-	Fri, 28 Feb 2025 17:08:20 +0100
-Message-ID: <d46f5f84-41a4-40ab-bcf4-f604ea3199c9@hetzner-cloud.de>
-Date: Fri, 28 Feb 2025 17:08:18 +0100
+	s=arc-20240116; t=1740760144; c=relaxed/simple;
+	bh=RYzPVMA10WxTuVpfT+ffml8CnQHKjdy62WcB3NE1Cgg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gigkCiGfDh6sC7wXYMlIcd27+Ijyv4mstZZTA1MIyQb+amQYadrpy4mNdtsNW61LzbzecH+Brh/wG3kOCkcCbvd46I1CGpHAGj2RaYTEX+OwH1dgTk05DIqdxUsgAt0KtmXjgmTP1mifQLpbhbhfda96SsmoHBMBMPcIYBdzdkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z9AmGAEX; arc=none smtp.client-ip=209.85.128.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-4393dc02b78so15629555e9.3
+        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 08:29:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740760140; x=1741364940; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FF2tNNrUV8Hj9tn35Hb6zIFN/4UY+5zBfgKFRgiCg3k=;
+        b=Z9AmGAEX5COJd7FexKk53ln6NP97iwnqHO2b2am/2YqPvM/21ubUNTTP1cpxRcD/fp
+         hJO4l2+6vtQAsDjxee47gYbvhmITOL8z12hrSp/AnkLe2YpG8g4NaW4+1XkRSNvmQCU/
+         ERFOLM0gI9Gxf2bYapK2Xd684pweJ18OhuF1wsBVNY11mF7Z4kBxjZ4s8Oi9cu/w42y6
+         7wWz19MlUwlnWKBEhVSJXdAknNctRzWMW5rbyraHazjd0HJeV3UrmDZEe3pUNny/g588
+         aIEnYSAaKqytvavxcYsg7yiXI3lpR4tEHGJqq/NNWXVO9wS+7ndvRfwuwzA2on/ZRNaX
+         V8Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740760140; x=1741364940;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FF2tNNrUV8Hj9tn35Hb6zIFN/4UY+5zBfgKFRgiCg3k=;
+        b=OiIh1WX/UrvVm8lWaZqLuLdEdKmK5iK/jVo+EFCZNYzwYjiEeck0mTE1UUv6eWfLLl
+         UsSPBkvMe3W/C84zk54g6lzejeg2TQbCa1J70RWgXVO8PByxJ5l5+3qcwfjtYE+B3lve
+         X44sZDeD6Wdl1MZLPfce+mAPQQiYb8nW37/nhNKJ906dtkgkUKDSrygvC/T7Nxg6+Qye
+         hF2DNyjM22fgrC3NH4GGW109iyUiqrA77mwq5VEGoUCAYmrWbB532eQJC7V1mbwl63yj
+         OCyf84GNvUcr74K297Y4PAzog9j7uoo3oh1+jZldZTpDQbR0Ake+aY02sXzTSxmoUOCu
+         bJRg==
+X-Gm-Message-State: AOJu0YyRsQ1etoYtcVlA+F/nw0SwBecjLtkPVztoJpwYCmtpl/pc4hWs
+	5XxZ2l7uHSwB6R7v89pkjqWKcnq5fAUqjD0l9gFmPah3v/sdb9SwAHFr1JxPKwM=
+X-Gm-Gg: ASbGnctNsgsEIm1ZD4HXix+2zRblBcrTcE9YTcD6MPbXWk3geA5qk+GJe5WS2tK3vqO
+	7TLtmrI1pnM2RcU2S5AFSu4DFL63VhhKIMMpBHtdRXRuzQDu3Sh5WHRnGl2hfItPAAgTR8Kxkqt
+	d7XFh1gl1Mad0nXUAOAWmu15pulRe3TpuR+xRNu+crI+mYvuZUAySwm/TZkSiNSjYAYWKAPBgsl
+	HZr33/4ibSG6re7Ln0cODyTpCDqheHjXKl5X4mjFdpHrgQAqMmZr4t2TnsD4NgifEYxbofUAByA
+	Ck91y4Wp1cqyrPRm
+X-Google-Smtp-Source: AGHT+IFWX6yQs3InHwt+iP1YTGyxHefGKdNoOehZms471wCi08t3QwnlRTQRLLXuVfJq/MsmMD9QuQ==
+X-Received: by 2002:a05:600c:190a:b0:434:a4b3:5ebe with SMTP id 5b1f17b1804b1-43ba675830emr28332545e9.24.1740760140136;
+        Fri, 28 Feb 2025 08:29:00 -0800 (PST)
+Received: from localhost ([2a03:2880:31ff:46::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43aba5710c2sm91515925e9.32.2025.02.28.08.28.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Feb 2025 08:28:59 -0800 (PST)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v1 0/2] Global subprogs in RCU/{preempt,irq}-disabled sections
+Date: Fri, 28 Feb 2025 08:28:56 -0800
+Message-ID: <20250228162858.1073529-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4 0/6] XDP metadata support for tun driver
-To: Lei Yang <leiyang@redhat.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- willemdebruijn.kernel@gmail.com, jasowang@redhat.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, hawk@kernel.org
-References: <20250227142330.1605996-1-marcus.wichelmann@hetzner-cloud.de>
- <CAPpAL=wLk0Z3jfg9eY75c3ZFhH-3w7H--WqFuaGMcCJ+Bm5q+g@mail.gmail.com>
-Content-Language: en-US
-From: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Autocrypt: addr=marcus.wichelmann@hetzner-cloud.de; keydata=
- xsFNBGJGrHIBEADXeHfBzzMvCfipCSW1oRhksIillcss321wYAvXrQ03a9VN2XJAzwDB/7Sa
- N2Oqs6JJv4u5uOhaNp1Sx8JlhN6Oippc6MecXuQu5uOmN+DHmSLObKVQNC9I8PqEF2fq87zO
- DCDViJ7VbYod/X9zUHQrGd35SB0PcDkXE5QaPX3dpz77mXFFWs/TvP6IvM6XVKZce3gitJ98
- JO4pQ1gZniqaX4OSmgpHzHmaLCWZ2iU+Kn2M0KD1+/ozr/2bFhRkOwXSMYIdhmOXx96zjqFV
- vIHa1vBguEt/Ax8+Pi7D83gdMCpyRCQ5AsKVyxVjVml0e/FcocrSb9j8hfrMFplv+Y43DIKu
- kPVbE6pjHS+rqHf4vnxKBi8yQrfIpQqhgB/fgomBpIJAflu0Phj1nin/QIqKfQatoz5sRJb0
- khSnRz8bxVM6Dr/T9i+7Y3suQGNXZQlxmRJmw4CYI/4zPVcjWkZyydq+wKqm39SOo4T512Nw
- fuHmT6SV9DBD6WWevt2VYKMYSmAXLMcCp7I2EM7aYBEBvn5WbdqkamgZ36tISHBDhJl/k7pz
- OlXOT+AOh12GCBiuPomnPkyyIGOf6wP/DW+vX6v5416MWiJaUmyH9h8UlhlehkWpEYqw1iCA
- Wn6TcTXSILx+Nh5smWIel6scvxho84qSZplpCSzZGaidHZRytwARAQABzTZNYXJjdXMgV2lj
- aGVsbWFubiA8bWFyY3VzLndpY2hlbG1hbm5AaGV0em5lci1jbG91ZC5kZT7CwZgEEwEIAEIW
- IQQVqNeGYUnoSODnU2dJ0we/n6xHDgUCYkascgIbAwUJEswDAAULCQgHAgMiAgEGFQoJCAsC
- BBYCAwECHgcCF4AACgkQSdMHv5+sRw4BNxAAlfufPZnHm+WKbvxcPVn6CJyexfuE7E2UkJQl
- s/JXI+OGRhyqtguFGbQS6j7I06dJs/whj9fOhOBAHxFfMG2UkraqgAOlRUk/YjA98Wm9FvcQ
- RGZe5DhAekI5Q9I9fBuhxdoAmhhKc/g7E5y/TcS1s2Cs6gnBR5lEKKVcIb0nFzB9bc+oMzfV
- caStg+PejetxR/lMmcuBYi3s51laUQVCXV52bhnv0ROk0fdSwGwmoi2BDXljGBZl5i5n9wuQ
- eHMp9hc5FoDF0PHNgr+1y9RsLRJ7sKGabDY6VRGp0MxQP0EDPNWlM5RwuErJThu+i9kU6D0e
- HAPyJ6i4K7PsjGVE2ZcvOpzEr5e46bhIMKyfWzyMXwRVFuwE7erxvvNrSoM3SzbCUmgwC3P3
- Wy30X7NS5xGOCa36p2AtqcY64ZwwoGKlNZX8wM0khaVjPttsynMlwpLcmOulqABwaUpdluUg
- soqKCqyijBOXCeRSCZ/KAbA1FOvs3NnC9nVqeyCHtkKfuNDzqGY3uiAoD67EM/R9N4QM5w0X
- HpxgyDk7EC1sCqdnd0N07BBQrnGZACOmz8pAQC2D2coje/nlnZm1xVK1tk18n6fkpYfR5Dnj
- QvZYxO8MxP6wXamq2H5TRIzfLN1C2ddRsPv4wr9AqmbC9nIvfIQSvPMBx661kznCacANAP/O
- wU0EYkascgEQAK15Hd7arsIkP7knH885NNcqmeNnhckmu0MoVd11KIO+SSCBXGFfGJ2/a/8M
- y86SM4iL2774YYMWePscqtGNMPqa8Uk0NU76ojMbWG58gow2dLIyajXj20sQYd9RbNDiQqWp
- RNmnp0o8K8lof3XgrqjwlSAJbo6JjgdZkun9ZQBQFDkeJtffIv6LFGap9UV7Y3OhU+4ZTWDM
- XH76ne9u2ipTDu1pm9WeejgJIl6A7Z/7rRVpp6Qlq4Nm39C/ReNvXQIMT2l302wm0xaFQMfK
- jAhXV/2/8VAAgDzlqxuRGdA8eGfWujAq68hWTP4FzRvk97L4cTu5Tq8WIBMpkjznRahyTzk8
- 7oev+W5xBhGe03hfvog+pA9rsQIWF5R1meNZgtxR+GBj9bhHV+CUD6Fp+M0ffaevmI5Untyl
- AqXYdwfuOORcD9wHxw+XX7T/Slxq/Z0CKhfYJ4YlHV2UnjIvEI7EhV2fPhE4WZf0uiFOWw8X
- XcvPA8u0P1al3EbgeHMBhWLBjh8+Y3/pm0hSOZksKRdNR6PpCksa52ioD+8Z/giTIDuFDCHo
- p4QMLrv05kA490cNAkwkI/yRjrKL3eGg26FCBh2tQKoUw2H5pJ0TW67/Mn2mXNXjen9hDhAG
- 7gU40lS90ehhnpJxZC/73j2HjIxSiUkRpkCVKru2pPXx+zDzABEBAAHCwXwEGAEIACYWIQQV
- qNeGYUnoSODnU2dJ0we/n6xHDgUCYkascgIbDAUJEswDAAAKCRBJ0we/n6xHDsmpD/9/4+pV
- IsnYMClwfnDXNIU+x6VXTT/8HKiRiotIRFDIeI2skfWAaNgGBWU7iK7FkF/58ys8jKM3EykO
- D5lvLbGfI/jrTcJVIm9bXX0F1pTiu3SyzOy7EdJur8Cp6CpCrkD+GwkWppNHP51u7da2zah9
- CQx6E1NDGM0gSLlCJTciDi6doAkJ14aIX58O7dVeMqmabRAv6Ut45eWqOLvgjzBvdn1SArZm
- 7AQtxT7KZCz1yYLUgA6TG39bhwkXjtcfT0J4967LuXTgyoKCc969TzmwAT+pX3luMmbXOBl3
- mAkwjD782F9sP8D/9h8tQmTAKzi/ON+DXBHjjqGrb8+rCocx2mdWLenDK9sNNsvyLb9oKJoE
- DdXuCrEQpa3U79RGc7wjXT9h/8VsXmA48LSxhRKn2uOmkf0nCr9W4YmrP+g0RGeCKo3yvFxS
- +2r2hEb/H7ZTP5PWyJM8We/4ttx32S5ues5+qjlqGhWSzmCcPrwKviErSiBCr4PtcioTBZcW
- VUssNEOhjUERfkdnHNeuNBWfiABIb1Yn7QC2BUmwOvN2DsqsChyfyuknCbiyQGjAmj8mvfi/
- 18FxnhXRoPx3wr7PqGVWgTJD1pscTrbKnoI1jI1/pBCMun+q9v6E7JCgWY181WjxgKSnen0n
- wySmewx3h/yfMh0aFxHhvLPxrO2IEQ==
-In-Reply-To: <CAPpAL=wLk0Z3jfg9eY75c3ZFhH-3w7H--WqFuaGMcCJ+Bm5q+g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Authenticated-Sender: marcus.wichelmann@hetzner-cloud.de
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27563/Fri Feb 28 11:01:44 2025)
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1172; h=from:subject; bh=RYzPVMA10WxTuVpfT+ffml8CnQHKjdy62WcB3NE1Cgg=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnwePuAQzZSZpvuy7CZ2GXa5cl07BsWlksOkm0gpqu zICcPMeJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ8Hj7gAKCRBM4MiGSL8Rys61D/ 9fQ3WbYGdOJeiamgw2NTff3EZ62rqWIq1D5lP7m+TdTNfPW93Nh7IwLVDnAx0AnKtPo5MIaUp8q0j5 h1J9RlRdRM+kRbwbrLgxINqyHcjzf+SvQ7q2cjUF6uruzl4E34wIdYWohehDGbYd2NdPzXrogW1KkR onDkm2rjXao91SYUVl7qREtv6rhudMgO1ZsWnmPIRCncwBb1qDkT7hmDNm6gF2yKaLY8BaO3Vt8gFA zSntHWxzLqe/FzXYSRpE4JuWrj65xR/irI+pBLdA2XWXbhPC+XQg9wUAub4T180cdOMXy4RubKE4Dz 88u6FNYUqOCRt80zsLwTMg8mun1A8XMDsgtSDlsjlyiVDl/FOY1L39oWd/w6+KfECK0TJeccXFSDQ8 5Yibg7XtzwnzqJsYOfM8yyAIESApSyZ7Md5CCYZKjbGhpVMbqOOce/gEH6QkQNsKHMJRaXiF8wMYnH 5/Pwj3syoX7iQY8bABrnbUpSifRzbs0mC9rKdIgGbyTM2/2Dhn02c9CdS5lkxF+oxJCviIr5eTyaw3 2/LUzGYC5VmcZSquJ1FpjlQKTnsnoFqzHoDAfy4Kua+8zK8vejp9HLKPirzDRgdWxRHKrpBmdy4rQ7 IuNQOQgJLbV/bd86tvniqNVGFZfoML3/CLC3mKaWRLAkPig8zoq0qzW78y4g==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 
-Am 28.02.25 um 06:43 schrieb Lei Yang:
-> Hi Marcus
->=20
-> Since your patches are about the virtual network, I'd like to test it,
-> but it conflicts (Please review the attachment to review more details)
-> when I apply it to the master branch.
-> My test based on this commit:
-> commit 1e15510b71c99c6e49134d756df91069f7d18141 (origin/master, origin/=
-HEAD)
-> Merge: f09d694cf799 54e1b4becf5e
-> Author: Linus Torvalds <torvalds@linux-foundation.org>
-> Date:   Thu Feb 27 09:32:42 2025 -0800
->=20
->     Merge tag 'net-6.14-rc5' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net
->=20
->     Pull networking fixes from Jakub Kicinski:
->      "Including fixes from bluetooth.
->=20
+Small change to allow non-sleepable global subprogs in
+RCU, preempt-disabled, and irq-disabled sections. For
+now, we don't lift the limitation for locks as it requires
+more analysis, and will do this one resilient spin locks
+land.
 
-Hi,
+This surfaced a bug where sleepable global subprogs were
+allowed in RCU read sections, that has been fixed. Tests
+have been added to cover various cases.
 
-thank you for including it in your tests.
+Kumar Kartikeya Dwivedi (2):
+  bpf: Summarize sleepable global subprogs
+  selftests/bpf: Test sleepable global subprogs in atomic contexts
 
-The mentioned commit is not yet in bpf-next, but I rebased my patch on
-latest mainline and attached the updated patch for the conflicting
-commit (now with proper formatting, hopefully).
+ include/linux/bpf_verifier.h                  |  1 +
+ kernel/bpf/verifier.c                         | 50 ++++++++++-----
+ .../selftests/bpf/prog_tests/rcu_read_lock.c  |  2 +
+ .../selftests/bpf/prog_tests/spin_lock.c      |  2 +
+ tools/testing/selftests/bpf/progs/irq.c       | 62 ++++++++++++++++++-
+ .../selftests/bpf/progs/preempt_lock.c        | 40 +++++++++++-
+ .../selftests/bpf/progs/rcu_read_lock.c       | 38 ++++++++++++
+ .../selftests/bpf/progs/test_spin_lock_fail.c | 40 ++++++++++++
+ 8 files changed, 219 insertions(+), 16 deletions(-)
 
-The conflict was just about a section that was removed right below
-my added line in network_helpers.h, so no functional change.
 
----
-
-=46rom c7182e5a4d21696b9e8cd25f92e64e28129e2c6e Mon Sep 17 00:00:00 2001
-From: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Date: Thu, 13 Feb 2025 16:28:19 +0000
-Subject: [PATCH] selftests/bpf: move open_tuntap to network helpers
-
-To test the XDP metadata functionality of the tun driver, it's necessary
-to create a new tap device first. A helper function for this already
-exists in lwt_helpers.h. Move it to the common network helpers header,
-so it can be reused in other tests.
-
-Signed-off-by: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- tools/testing/selftests/bpf/network_helpers.c | 28 ++++++++++++++++++
- tools/testing/selftests/bpf/network_helpers.h |  3 ++
- .../selftests/bpf/prog_tests/lwt_helpers.h    | 29 -------------------
- 3 files changed, 31 insertions(+), 29 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testin=
-g/selftests/bpf/network_helpers.c
-index 80844a5fb1fe..fcee2c4a637a 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -548,6 +548,34 @@ void close_netns(struct nstoken *token)
- 	free(token);
- }
-=20
-+int open_tuntap(const char *dev_name, bool need_mac)
-+{
-+	int err =3D 0;
-+	struct ifreq ifr;
-+	int fd =3D open("/dev/net/tun", O_RDWR);
-+
-+	if (!ASSERT_GT(fd, 0, "open(/dev/net/tun)"))
-+		return -1;
-+
-+	ifr.ifr_flags =3D IFF_NO_PI | (need_mac ? IFF_TAP : IFF_TUN);
-+	strncpy(ifr.ifr_name, dev_name, IFNAMSIZ - 1);
-+	ifr.ifr_name[IFNAMSIZ - 1] =3D '\0';
-+
-+	err =3D ioctl(fd, TUNSETIFF, &ifr);
-+	if (!ASSERT_OK(err, "ioctl(TUNSETIFF)")) {
-+		close(fd);
-+		return -1;
-+	}
-+
-+	err =3D fcntl(fd, F_SETFL, O_NONBLOCK);
-+	if (!ASSERT_OK(err, "fcntl(O_NONBLOCK)")) {
-+		close(fd);
-+		return -1;
-+	}
-+
-+	return fd;
-+}
-+
- int get_socket_local_port(int sock_fd)
- {
- 	struct sockaddr_storage addr;
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testin=
-g/selftests/bpf/network_helpers.h
-index ebec8a8d6f81..175dd547849f 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -8,6 +8,7 @@
- typedef __u16 __sum16;
- #include <linux/if_ether.h>
- #include <linux/if_packet.h>
-+#include <linux/if_tun.h>
- #include <linux/ip.h>
- #include <linux/ipv6.h>
- #include <linux/ethtool.h>
-@@ -98,6 +99,8 @@ int send_recv_data(int lfd, int fd, uint32_t total_byte=
-s);
- int make_netns(const char *name);
- int remove_netns(const char *name);
-=20
-+int open_tuntap(const char *dev_name, bool need_mac);
-+
- static __u16 csum_fold(__u32 csum)
- {
- 	csum =3D (csum & 0xffff) + (csum >> 16);
-diff --git a/tools/testing/selftests/bpf/prog_tests/lwt_helpers.h b/tools=
-/testing/selftests/bpf/prog_tests/lwt_helpers.h
-index fb1eb8c67361..ccec0fcdabc1 100644
---- a/tools/testing/selftests/bpf/prog_tests/lwt_helpers.h
-+++ b/tools/testing/selftests/bpf/prog_tests/lwt_helpers.h
-@@ -5,7 +5,6 @@
-=20
- #include <time.h>
- #include <net/if.h>
--#include <linux/if_tun.h>
- #include <linux/icmp.h>
-=20
- #include "test_progs.h"
-@@ -37,34 +36,6 @@ static inline int netns_delete(void)
- 	return system("ip netns del " NETNS ">/dev/null 2>&1");
- }
-=20
--static int open_tuntap(const char *dev_name, bool need_mac)
--{
--	int err =3D 0;
--	struct ifreq ifr;
--	int fd =3D open("/dev/net/tun", O_RDWR);
--
--	if (!ASSERT_GT(fd, 0, "open(/dev/net/tun)"))
--		return -1;
--
--	ifr.ifr_flags =3D IFF_NO_PI | (need_mac ? IFF_TAP : IFF_TUN);
--	strncpy(ifr.ifr_name, dev_name, IFNAMSIZ - 1);
--	ifr.ifr_name[IFNAMSIZ - 1] =3D '\0';
--
--	err =3D ioctl(fd, TUNSETIFF, &ifr);
--	if (!ASSERT_OK(err, "ioctl(TUNSETIFF)")) {
--		close(fd);
--		return -1;
--	}
--
--	err =3D fcntl(fd, F_SETFL, O_NONBLOCK);
--	if (!ASSERT_OK(err, "fcntl(O_NONBLOCK)")) {
--		close(fd);
--		return -1;
--	}
--
--	return fd;
--}
--
- #define ICMP_PAYLOAD_SIZE     100
-=20
- /* Match an ICMP packet with payload len ICMP_PAYLOAD_SIZE */
---=20
-2.43.0
+base-commit: 0b9363131daf4227d5ae11ee677acdcfff06e938
+-- 
+2.43.5
 
 
