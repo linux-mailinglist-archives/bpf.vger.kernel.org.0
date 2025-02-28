@@ -1,83 +1,88 @@
-Return-Path: <bpf+bounces-52850-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52851-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E57BCA49129
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 06:53:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CA1FA49147
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 07:01:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A2217A429C
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 05:51:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E62F13B6F55
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 06:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3631C1C6FE3;
-	Fri, 28 Feb 2025 05:52:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FA21C1ADB;
+	Fri, 28 Feb 2025 06:00:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y7m3280f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i/qRqXIv"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 020FA1BD9C7
-	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 05:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48EDC1BC099
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 06:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740721928; cv=none; b=PYfNtt0EVc/TJ7BZmjANtG203rXxbTQAGYtkuy4eAjAbnwuKTSHZqOYEDQ0aIDHj0ucajZs29bmh5IdLINmnlm04Bwav6NwnEUtZjpMzhaPA0u7k1c680N6rDw96W4lPBGeFEdVlF37yWDj3ywT82zKkE6w9ZtBhrGdF7yVHaCU=
+	t=1740722458; cv=none; b=hdV9BI7PlL5sYN1ECgg9w5DHiFWj6PQsf1fOqU/35imipXy7eYK+YJBdAiWVx2yBYG+L1pe1PrKcueM7pm58ORcMEDkumQ1d5MUSWNmGMjqK51GT5pk57NO5razFvNIlaXRuxQp4A1oo3PiAQ6xhlG+2KUgAdbwCZOJmlBDmJtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740721928; c=relaxed/simple;
-	bh=YGlwgS0iclU1RDdEcGSrlFCzWJuaWzjnvf9QGAvqufs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G6u7xLEKZz9Sps7Z3ThekMwzQwrhGZt0/9hxChERcKpEneDt7i1uAMLZ673H+CHAIkZfzuKMDk6G69wgRplSkS70Q4XRzmzfUi0laDf4O/xXmgDswyNEqoEgzdB6GO55FNjwa8BKJnZ6sde8zb3wgTJcZmYl6ZFlCs2fblAj2xU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y7m3280f; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740721925;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tWGoD/LIkFY1aSDCo/cUvHFAtxAXhzMCTXmZy5rY90A=;
-	b=Y7m3280fbmzlK5sg9jqyV8uHt5j+GOfL8RREEvLRMJvzsIPmEFxHlqb3GaBgP/RilZeQpZ
-	ViOZRQwZ31HDvL/EriQcQPmI5hBYruD5NR4u430guZBWhonh7gb6fqVwmfVfcOmYC4Al0E
-	rA0bS4Yy1ajuyHooeWEYz3buZQRq1sg=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: xiyou.wangcong@gmail.com,
-	john.fastabend@gmail.com,
-	jakub@cloudflare.com,
-	martin.lau@linux.dev
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	mykolal@fb.com,
-	ast@kernel.org,
+	s=arc-20240116; t=1740722458; c=relaxed/simple;
+	bh=/hVBpMKLh7MjSInrbYvHDTBA3SIOj0lhfAVVuOcw/bM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iLoTz2dLtKZohgVAAUjk8+Tb+EeCIP6QuW4UTcWctr00SNP4JPRgPRhKJMD6nj0HDTQ+1Q6wzxA8hBXVxX1HL4iEKuoHsumzSx1PSQXSZ+5XceskOrZKSAfAp/VwU0RHDq1A0D+DAUGxa+o7IGEUnhwnjlHSLaTUSangjeIJb3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i/qRqXIv; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-22355618fd9so26954295ad.3
+        for <bpf@vger.kernel.org>; Thu, 27 Feb 2025 22:00:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740722456; x=1741327256; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gm+sjl3J9u3kbhVA84uM+yNYLfvVrXUtdXHiqBrDYII=;
+        b=i/qRqXIvx50iDq91ToDBuTO3daw5Cqh+kHkW2KI5YePfmN4t+gqKp/iIc8dDK3mbvb
+         6GasFc7Lxd50zm7t7Piq3TY1CNuWw94n46v/yMaE5VkJrp8N1D2B3M9gttHxjwIFqD3O
+         FafRh2cQ91Bb2n+doYaewodFULE3nUXEUDL24l8D3mo/tEE8NC3LygovUc7W5mQFxaJb
+         vCrq+MG2Bihoot5HN3WNzcubIKYTxsPtUry7pXBEtyrAxaCcD91M86ZssEPc0zE7v1ev
+         zGXrw/qnZgNcNJTftdcxtTUEeSGmDTDYFxO3G0a8vScf4IQxbCWX0iv8At5YqetNTAz2
+         Kl0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740722456; x=1741327256;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gm+sjl3J9u3kbhVA84uM+yNYLfvVrXUtdXHiqBrDYII=;
+        b=oPF7HmLBNzW18rBcG9OrTdspiD7YkIJy+r8ysRCnY+/1GdHtIPSWvRsxxJag57yXJH
+         sgJRSgMBg11aPO1jYZgfOLsRs06QWJxH0L9DLYFc4mrPc+NLAsEfzJWGY4rDtSUMrWxQ
+         Pi7fkz0vX/X5akUW+9fI0Xubeinf6Hq4q7kHBmldc0RN/4cAAIiPinLK3VpMe/WYAUdm
+         Ms6mWaqnVhYuATg0Y8gNI6lo0Knpm1t+nEVR8vaeUEqdUMIHz98i5BCU4lSIc3YQIPXt
+         /Vx4G+rG9BW3A4okfUtwnfzSLxPrA2UIqxcizUWsa47V3iyldy3de6lmi1a0Z51WkVVQ
+         5EYw==
+X-Gm-Message-State: AOJu0YznYPRK8zodJlRHl25s5I+DEaKvj1Ry2MJ8YvxUE0RYEwcWjTO0
+	1ByB6ZTRYNLXyl8JAvqvzFJisDJchxH3scwKxbkXsddmfPNXnpUkbgkJOg==
+X-Gm-Gg: ASbGncuBlJj8gCLdU2l00i3seyLk1sg/tHPOcJwlUC/kSE8R4c2RBJXxef8mFO52KOj
+	rzT8xRShr+zbls914fGvWEncSfkv/MINE/+8oLIJlPIzgx5dXZqDwL97Zk6W5OyimqdVyLckCuZ
+	yjes75Buy2ZRAY3pKeW4qY04L3hLOBp1oV7m31ZaGXiSVNGSMpJ7wITQ6Bppmwv0D44zCx9WZsw
+	cwtMyBlXvQEN7WbSUFYQp8woy+XLF5qKCmvRCLwwc+kOtRRoQy9e4atgZs+DprgVpceHhqhWoI5
+	M49ByseDBbBGoVfPSoZaXA==
+X-Google-Smtp-Source: AGHT+IEIHHfLAevjUVSLnkTdVN+AKdzkLYf63GMgtS9J9WECUOfKqR+pMKXa/lhN5SGDemjxG2yFEw==
+X-Received: by 2002:a05:6a00:a8d:b0:730:949d:2d32 with SMTP id d2e1a72fcca58-734ac35dbc6mr3739789b3a.6.1740722456170;
+        Thu, 27 Feb 2025 22:00:56 -0800 (PST)
+Received: from honey-badger.. ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-734a003eb97sm2927018b3a.148.2025.02.27.22.00.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Feb 2025 22:00:55 -0800 (PST)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
 	daniel@iogearbox.net,
-	song@kernel.org,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
 	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	mhal@rbox.co,
-	jiayuan.chen@linux.dev,
-	sgarzare@redhat.com,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	mrpre@163.com,
-	cong.wang@bytedance.com
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Add edge case tests for sockmap
-Date: Fri, 28 Feb 2025 13:51:06 +0800
-Message-ID: <20250228055106.58071-4-jiayuan.chen@linux.dev>
-In-Reply-To: <20250228055106.58071-1-jiayuan.chen@linux.dev>
-References: <20250228055106.58071-1-jiayuan.chen@linux.dev>
+	tj@kernel.org,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1 0/3] bpf: simple DFA-based live registers analysis
+Date: Thu, 27 Feb 2025 22:00:29 -0800
+Message-ID: <20250228060032.1425870-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,92 +90,57 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Add edge case tests for sockmap.
+This patch set introduces a simple live register DFA analysis.
+The analysis is performed as a separate step before the main
+verification pass, and results are stored in `env->insn_aux_data` for
+each instruction.
 
-Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 59 +++++++++++++++++++
- 1 file changed, 59 insertions(+)
+This change improves handling of iterator/callback-based loops, as
+regular register liveness marks are not finalized while loops are
+being processed. See veristat results for selftests and sched_ext in
+patch #2.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 1e3e4392dcca..ad8bb085baf2 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -1042,6 +1042,59 @@ static void test_sockmap_vsock_unconnected(void)
- 	xclose(map);
- }
- 
-+void *close_thread(void *arg)
-+{
-+	int *fd = (int *)arg;
-+
-+	sleep(1);
-+	close(*fd);
-+	*fd = -1;
-+	return NULL;
-+}
-+
-+void test_sockmap_with_close_on_write(int family, int sotype)
-+{
-+	struct test_sockmap_pass_prog *skel;
-+	int err, map, verdict;
-+	pthread_t tid;
-+	int zero = 0;
-+	int c = -1, p = -1;
-+
-+	skel = test_sockmap_pass_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-+	map = bpf_map__fd(skel->maps.sock_map_rx);
-+
-+	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach"))
-+		goto out;
-+
-+	err = create_pair(family, sotype, &c, &p);
-+	if (!ASSERT_OK(err, "create_pair"))
-+		goto out;
-+
-+	err = bpf_map_update_elem(map, &zero, &p, BPF_ANY);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem"))
-+		goto out;
-+
-+	err = pthread_create(&tid, 0, close_thread, &p);
-+	if (!ASSERT_OK(err, "pthread_create"))
-+		goto out;
-+
-+	while (p > 0)
-+		send(c, "a", 1, MSG_NOSIGNAL);
-+
-+	pthread_join(tid, NULL);
-+out:
-+	if (c > 0)
-+		close(c);
-+	if (p > 0)
-+		close(p);
-+	test_sockmap_pass_prog__destroy(skel);
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -1108,4 +1161,10 @@ void test_sockmap_basic(void)
- 		test_sockmap_skb_verdict_vsock_poll();
- 	if (test__start_subtest("sockmap vsock unconnected"))
- 		test_sockmap_vsock_unconnected();
-+	if (test__start_subtest("sockmap with write on close")) {
-+		test_sockmap_with_close_on_write(AF_UNIX, SOCK_STREAM);
-+		test_sockmap_with_close_on_write(AF_UNIX, SOCK_DGRAM);
-+		test_sockmap_with_close_on_write(AF_INET, SOCK_STREAM);
-+		test_sockmap_with_close_on_write(AF_INET, SOCK_DGRAM);
-+	}
- }
+The patch set was tested in branch [1] by disabling the current
+register parentage chain liveness computation, using DFA-based
+liveness for registers while assuming all stack slots as live.
+No notable regressions were found in test_progs-based tests.
+
+Note: For regular subprogram calls, the analysis conservatively
+assumes that registers r1-r5 are used and that r0 is used at each
+`exit` instruction. Experiments in [1] show that adding precise
+handling for these cases has no impact on verification performance for
+selftests and sched_ext.
+
+This was previously shared as RFC [2].
+Changes since RFC:
+- The parameter count for helpers and kfuncs is now taken into
+  account.
+- The analysis is now enabled only in privileged mode (Alexei);
+- The `copy_verifier_state()` bug fix was merged separately and is no
+  longer a part of this patch set.
+
+[1] https://github.com/eddyz87/bpf/tree/liveregs-dfa-std-liveregs-off
+[2] https://lore.kernel.org/bpf/20250122120442.3536298-1-eddyz87@gmail.com/
+
+Eduard Zingerman (3):
+  bpf: simple DFA-based live registers analysis
+  bpf: use register liveness information for func_states_equal
+  selftests/bpf: test cases for compute_live_registers()
+
+ include/linux/bpf_verifier.h                  |   7 +
+ kernel/bpf/verifier.c                         | 394 +++++++++++++++--
+ .../testing/selftests/bpf/prog_tests/align.c  |  11 +-
+ .../bpf/prog_tests/compute_live_registers.c   |   9 +
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |  12 +
+ .../bpf/progs/compute_live_registers.c        | 397 ++++++++++++++++++
+ .../selftests/bpf/progs/verifier_gotol.c      |   6 +-
+ .../bpf/progs/verifier_iterating_callbacks.c  |   6 +-
+ 8 files changed, 804 insertions(+), 38 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/compute_live_registers.c
+ create mode 100644 tools/testing/selftests/bpf/progs/compute_live_registers.c
+
 -- 
-2.47.1
+2.48.1
 
 
