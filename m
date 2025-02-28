@@ -1,145 +1,126 @@
-Return-Path: <bpf+bounces-52860-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52861-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5703A49325
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 09:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 76757A49420
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 09:56:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BCAE188E97B
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 08:15:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 265C7189499D
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 08:57:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560D422DFAF;
-	Fri, 28 Feb 2025 08:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="P4+3jflR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF4E92561B2;
+	Fri, 28 Feb 2025 08:56:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B17D22CBCB;
-	Fri, 28 Feb 2025 08:15:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B3432561A8;
+	Fri, 28 Feb 2025 08:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740730544; cv=none; b=U+65TI5vdI4PfMzxbL6LgGqGgqkWm4bFRrlhEt8QjzYjYUaDi0XXCpWj5uhJuSgi+cN+tc5EMXvdWkBsklroSmm+2xXm4EVJGy1d/7QuizI6AIar8BDuFxZpnMmVeJGJnACYy/48c0A37ZON6LAP1eQT2geV0ZwJrjE9dQTaCoI=
+	t=1740732994; cv=none; b=gb9b1+3hDg0nE12Ih5MZMwuZbQ8Dze9ukj+5aUmrexh40Rc/Z7qqWy3xmiSVXhDQZR5WsBMthnF4J1SzWILytdlEw0IlfLVHSy8RvipziQNyWne57V3jOP8fsikVdrBZDQk7IS2xefN5zlfXGnTAum9iJtb2cRajVy1egi3X+d0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740730544; c=relaxed/simple;
-	bh=WvAzpXYuDStbIgKgevXS4PEedZ9dOlJ+/Y44X6oyEF0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MXLSj76pEr+HXmP9XiNmnQWdrF29x25nob/Ew5eSTSB1GQ6zaPrehLoVS2Lnx+CR+Je4Pw9rm4NJw+oNtdK9BGpBmAsmZh+PIoeEkxBlt+B2IdL6ybxrNNle928ukZPODlIQ1nkD+igLRJfeN3U0ROX21Btcfka7s/m5dLgoqwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=P4+3jflR; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C61E944432;
-	Fri, 28 Feb 2025 08:15:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1740730533;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1iuifuyC6NwdJO1A+Y1ARBqJ7aQn+uQXOyq27YtuDWY=;
-	b=P4+3jflRxGg/jV135L0ycaPLhy0wFGWV7b4xHnid2vIQ4EWylqaSqoDPc/Mv0xqhG0RF/4
-	bXgBQ9zXbuKck7zg+NcVqYBYSvXMmP+z+mRwEG7KgGNbkTJ4yD7A5FRDMZ+LWcskgcZ0ur
-	U85N9738IWlHE/ypWDJe7IA20sZP+H7/C2AsWAwEGY/GvUr7G7t5okLPnupvntT/QXks/f
-	e2oWQU037PNB84V3g0e028iWOgUa2pdP7XxGHgrncwwXYY6J/QGRVcL9tmh3Uvy+JhiPnM
-	4lU7K0Z25QchE2OoSH06FC/B4VNbhVR0/5Kv/qCW7cIRMR4s/N3JSXsgF8Olhw==
-Message-ID: <d95c15b7-3641-4334-a42b-b56067e5e0f0@bootlin.com>
-Date: Fri, 28 Feb 2025 09:15:32 +0100
+	s=arc-20240116; t=1740732994; c=relaxed/simple;
+	bh=hSjEqASt/a6itvpgkX6eFp32ZkKUAg9F2uRWSCt8/Dg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=r0rwP4VKVapdlSlPKu8QOvdx2LgwpWBzUFpX/m4CBdmZJw0fEcWQbFERTKHrGTxaU7UFZP96jCCPF7eTePdsXhpYL47GjUdp462X3XqjV+LCbL0FPEttpyl1aVgmd1KrVY/HUJjjfU12BXV7FtE/oipfqn8g94lSNbNiWPWtGlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Z42641pjSzvWrq;
+	Fri, 28 Feb 2025 16:52:44 +0800 (CST)
+Received: from dggemv703-chm.china.huawei.com (unknown [10.3.19.46])
+	by mail.maildlp.com (Postfix) with ESMTPS id 826E7140257;
+	Fri, 28 Feb 2025 16:56:29 +0800 (CST)
+Received: from kwepemn200003.china.huawei.com (7.202.194.126) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Fri, 28 Feb 2025 16:56:29 +0800
+Received: from localhost.localdomain (10.175.101.6) by
+ kwepemn200003.china.huawei.com (7.202.194.126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 28 Feb 2025 16:56:27 +0800
+From: zhangmingyi <zhangmingyi5@huawei.com>
+To: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+	<haoluo@google.com>, <jolsa@kernel.org>
+CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <yanan@huawei.com>,
+	<wuchangye@huawei.com>, <xiesongyang@huawei.com>, <liuxin350@huawei.com>,
+	<liwei883@huawei.com>, <tianmuyang@huawei.com>, <zhangmingyi5@huawei.com>
+Subject: [PATCH bpf-next v4 0/2] Introduced to support the ULP to get or set sockets
+Date: Fri, 28 Feb 2025 16:53:38 +0800
+Message-ID: <20250228085340.3219391-1-zhangmingyi5@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 04/10] selftests/bpf: test_tunnel: Move ip6gre
- tunnel test to test_progs
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Alexis Lothore <alexis.lothore@bootlin.com>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250227-tunnels-v1-0-33df5c30aa04@bootlin.com>
- <20250227-tunnels-v1-4-33df5c30aa04@bootlin.com> <Z8DkxXy9ZAbASXCk@mini-arch>
-Content-Language: en-US
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-In-Reply-To: <Z8DkxXy9ZAbASXCk@mini-arch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdekleekkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpeeurghsthhivghnucevuhhruhhttghhvghtuceosggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhephfehgefgteffkeehveeuvdekvddvueefgeejvefgleevveevteffveefgfehieejnecukfhppeeltddrkeelrdduieefrdduvdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdekledrudeifedruddvjedphhgvlhhopegludelvddrudeikedrtddrudegngdpmhgrihhlfhhrohhmpegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedvtddprhgtphhtthhopehsthhfohhmihgthhgvvhesghhmrghilhdrtghomhdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrt
- ghpthhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidruggvvh
-X-GND-Sasl: bastien.curutchet@bootlin.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemn200003.china.huawei.com (7.202.194.126)
 
-Hi Stanislav
+From: Mingyi Zhang <zhangmingyi5@huawei.com>
 
-On 2/27/25 11:18 PM, Stanislav Fomichev wrote:
-> On 02/27, Bastien Curutchet (eBPF Foundation) wrote:
->> ip6gre tunnels are tested in the test_tunnel.sh but not in the test_progs
->> framework.
->>
->> Add a new test in test_progs to test ip6gre tunnels. It uses the same
->> network topology and the same BPF programs than the script. Disable the
->> IPv6 DAD feature because it can take lot of time and cause some tests to
->> fail depending on the environment they're run on.
->> Remove test_ip6gre() and test_ip6gretap() from the script.
->>
->> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
->> ---
->>   .../testing/selftests/bpf/prog_tests/test_tunnel.c | 110 +++++++++++++++++++++
->>   tools/testing/selftests/bpf/test_tunnel.sh         |  95 ------------------
->>   2 files changed, 110 insertions(+), 95 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
->> index bd1410b90b94773ba9bc1fa378bb7139f8d4670a..f00727aedee0c283002c55a45a04a96013d39a5d 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
->> @@ -71,6 +71,8 @@
->>   #define IP4_ADDR2_VETH1 "172.16.1.20"
->>   #define IP4_ADDR_TUNL_DEV0 "10.1.1.100"
->>   #define IP4_ADDR_TUNL_DEV1 "10.1.1.200"
->> +#define IP6_ADDR_TUNL_DEV0 "fc80::100"
->> +#define IP6_ADDR_TUNL_DEV1 "fc80::200"
->>   
->>   #define IP6_ADDR_VETH0 "::11"
->>   #define IP6_ADDR1_VETH1 "::22"
->> @@ -101,11 +103,21 @@
->>   #define GRE_TUNL_DEV0 "gre00"
->>   #define GRE_TUNL_DEV1 "gre11"
->>   
->> +#define IP6GRE_TUNL_DEV0 "ip6gre00"
->> +#define IP6GRE_TUNL_DEV1 "ip6gre11"
->> +
->>   #define PING_ARGS "-i 0.01 -c 3 -w 10 -q"
->>   
->>   static int config_device(void)
->>   {
->>   	SYS(fail, "ip netns add at_ns0");
-> 
-> [..]
-> 
->> +	/* disable IPv6 DAD because it might take too long and fail tests */
->> +	SYS(fail, "ip netns exec at_ns0 sysctl -wq net.ipv6.conf.default.accept_dad=0");
->> +	SYS(fail, "ip netns exec at_ns0 sysctl -wq net.ipv6.conf.all.accept_dad=0");
->> +	SYS(fail, "sysctl -wq net.ipv6.conf.default.accept_dad=0");
->> +	SYS(fail, "sysctl -wq net.ipv6.conf.all.accept_dad=0");
-> 
-> `ip addr add ... nodad` should be a less invasive alternative?
+We want call bpf_setsockopt to replace the kernel module in the TCP_ULP
+case. The purpose is to customize the behavior in connect and sendmsg
+after the user-defined ko file is loaded. We have an open source
+community project kmesh (kmesh.net). Based on this, we refer to some
+processes of tcp fastopen to implement delayed connet and perform HTTP
+DNAT when sendmsg.In this case, we need to parse HTTP packets in the
+bpf program and set TCP_ULP for the specified socket.
 
-I didn't know I could do it through `ip addr`, I'll try this !
+Note that tcp_getsockopt and tcp_setsockopt support TCP_ULP, while
+bpf_getsockopt and bpf_setsockopt do not support TCP_ULP.
+I'm not sure why there is such a difference, but I noticed that
+tcp_setsockopt is called in bpf_setsockopt.I think we can add the
+handling of this case.
 
+Change list:
+- v3 -> v4:
+  - fixed selftest compilation issues in kernel ci
 
-Best regards,
-Bastien
+- v2 -> v3:
+  - fixed some compilation issues and added TCP_ULP macro
+  - Move __tcp_set_ulp outside rcu_read_unlock
+
+- v1 -> v2:
+  - modified the do_tcp_setsockopt(TCP_ULP) process by referring to
+  section do_tcp_setsockopt(TCP_CONGESTION), avoid sleep
+  - The selftest case is modified. An independent file is selected
+  for the test to avoid affecting the original file in setget_sockopt.c
+  - fixed some formatting errors, such as Signed and Subject
+
+Revisions:
+- v1
+  https://lore.kernel.org/bpf/20250127090724.3168791-1-zhangmingyi5@huawei.com/
+
+- v2
+  https://lore.kernel.org/bpf/20250210134550.3189616-1-zhangmingyi5@huawei.com/
+
+- v3
+  https://lore.kernel.org/bpf/20250228070628.3219087-1-zhangmingyi5@huawei.com/
+
+Mingyi Zhang (2):
+  Introduced to support the ULP to get or set sockets
+  selftest for TCP_ULP in bpf_setsockopt
+
+ include/net/tcp.h                             |  2 +-
+ net/core/filter.c                             |  1 +
+ net/ipv4/tcp.c                                |  2 +-
+ net/ipv4/tcp_ulp.c                            | 28 ++++++++--------
+ net/mptcp/subflow.c                           |  2 +-
+ .../selftests/bpf/prog_tests/setget_sockopt.c | 32 +++++++++++++++++++
+ .../selftests/bpf/progs/bpf_tracing_net.h     |  1 +
+ .../selftests/bpf/progs/setget_sockopt.c      | 24 ++++++++++++++
+ 8 files changed, 76 insertions(+), 16 deletions(-)
+
+-- 
+2.43.0
+
 
