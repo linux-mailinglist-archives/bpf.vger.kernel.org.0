@@ -1,219 +1,182 @@
-Return-Path: <bpf+bounces-52873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 728B9A49B1A
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 14:56:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 908E3A49BB1
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 15:17:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AB6A1893589
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 13:56:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 692913BE096
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 14:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E6326D5D1;
-	Fri, 28 Feb 2025 13:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7D226F478;
+	Fri, 28 Feb 2025 14:15:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NnH7vM73"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Lp3Khf6/"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D412421CC78;
-	Fri, 28 Feb 2025 13:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C6A26B942
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 14:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740750969; cv=none; b=i3ZA7u5qGFXFqImrXcwZhgkRdygoahWewRCp3kmvRLRa0a/AfyrzBuXb0dYoWE1OoDe2z7jcglcGDs5BLtZnDlVxMJIyHya3eVQQKc4rugXPjCf6GhWorEIsUwqQxxHDJFBbcizIR3L+8DYTFM6iBbfFUSng/N00/faENalvPsc=
+	t=1740752102; cv=none; b=CGJPz4Iz+fUKxOIyXM4TLY+0Js3IrM+QlsEIV6pIzSsQ7BYyEoh8M/xciI6ej4cY+80Aw8dF/vnuxx29KWi+Jkd/h5YgJMSAcjvq5l7jucEVlo/jg2P1H9muxpuTEc16BkKLLq7HcH8Nl8eeDIOrYH2i2rB/uMw2bgAOgxg8RDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740750969; c=relaxed/simple;
-	bh=1IRowyiOxlD3aJXg1mzDgOLSKDvuTpO5rwTj3G6RUt0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NDUf7dgdsLvApRgi4adzflRd2ttTE6DtiDWHFNcAd0Ga7cM60nVOcQ6MDf0PTBNPgScIpK3dQXHHX1iwjbD405+PCgQEj7ajwRgDAV7iaSnRrAD9FF+659PXNIzCt+zL8aW7KG/9vIB9JS16QJHRw7Kd4CfAXTKe5KEXtLtzJow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NnH7vM73; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8EA8C4CEE2;
-	Fri, 28 Feb 2025 13:55:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740750968;
-	bh=1IRowyiOxlD3aJXg1mzDgOLSKDvuTpO5rwTj3G6RUt0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NnH7vM73Zjpr8yZOH5QgfgQiSw0pmBWJwyV6oH4lnUx6KcNNLgBYYJulfb/SOKw4i
-	 Zkm3msW661FidfCoi/ar4s+MKouda8UuOKQJVozVEXvAvSibmI7k9WxUPFNYkImrpm
-	 nMJqrfmWsggXRbny/dSvcLd6O/w5mYI7U35gabE5OMAnP119A+B9Z9gcS1udwYaPDT
-	 haSivt5w98I2lC6hpiCjEl3HQRzpovHqj3M+6AQ/d9NOf1QW57gfgkHOWFS4Y8Iwt4
-	 dVExS2M99VzccMzDPnxcN2Fshmin/V/WHUi6c8awMapcLOMc4QlOWwdQMyM3HZ2OR4
-	 n0uklzJCb+JTQ==
-Date: Fri, 28 Feb 2025 15:55:38 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>, Dev Jain <dev.jain@arm.com>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v7 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <Z8HAWu4zQFeg19KR@kernel.org>
-References: <20241023162711.2579610-1-rppt@kernel.org>
- <20241023162711.2579610-8-rppt@kernel.org>
- <16863478-2195-435e-a899-559df097bc59@arm.com>
+	s=arc-20240116; t=1740752102; c=relaxed/simple;
+	bh=quiR16689GxKD0zMbG7akYA4bL0qENBpHq/iOV0l6G4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QrFfXRWnJF85Y0Vh3ZdMORq7SaJYtjP0Ahnxu+RoY2DaclzjhAnGjnK+/vcwq9wJu1kDRNe1jLiIfMWx5FwPLnCg5irhWPIpexOTtAVPUqlLJcydKVO64B2Y8iK3zorNxec0Gob/yZpBjV+epDBbEVQlOy3Emms9OtbYLlUVXdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Lp3Khf6/; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740752088;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wRV6mcPluzpyEsyiWY9Lu/xX/hlkANEaDVySV+3Bifk=;
+	b=Lp3Khf6/5IRYZ1u1KG+iVCEuwSEmIiuPmFyHMKNUZCZg9a35PlRiIR4Jl1YQx5sScto8kY
+	xfOUBuSfBSz51sSzZ2fDfZpLHbabzEun/joZvOGwKcyvPDWsdtEo8QNu7Jfbop1EQ8YPcv
+	rrpE4q3OEPmmnp4cAmRhgLZm+0KH/Cc=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: horms@kernel.org,
+	kuba@kernel.org
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	ricardo@marliere.net,
+	viro@zeniv.linux.org.uk,
+	dmantipov@yandex.ru,
+	aleksander.lobakin@intel.com,
+	linux-ppp@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mrpre@163.com,
+	Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Paul Mackerras <paulus@samba.org>,
+	syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
+Subject: [PATCH net-next v5] ppp: Fix KMSAN uninit-value warning with bpf
+Date: Fri, 28 Feb 2025 22:14:08 +0800
+Message-ID: <20250228141408.393864-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16863478-2195-435e-a899-559df097bc59@arm.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Ryan,
+Syzbot caught an "KMSAN: uninit-value" warning [1], which is caused by the
+ppp driver not initializing a 2-byte header when using socket filter.
 
-On Thu, Feb 27, 2025 at 11:13:29AM +0000, Ryan Roberts wrote:
-> Hi Mike,
-> 
-> Drive by review comments below...
-> 
-> 
-> On 23/10/2024 17:27, Mike Rapoport wrote:
-> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> > 
-> > Using large pages to map text areas reduces iTLB pressure and improves
-> > performance.
-> > 
-> > Extend execmem_alloc() with an ability to use huge pages with ROX
-> > permissions as a cache for smaller allocations.
-> > 
-> > To populate the cache, a writable large page is allocated from vmalloc with
-> > VM_ALLOW_HUGE_VMAP, filled with invalid instructions and then remapped as
-> > ROX.
-> > 
-> > The direct map alias of that large page is exculded from the direct map.
-> > 
-> > Portions of that large page are handed out to execmem_alloc() callers
-> > without any changes to the permissions.
-> > 
-> > When the memory is freed with execmem_free() it is invalidated again so
-> > that it won't contain stale instructions.
-> > 
-> > An architecture has to implement execmem_fill_trapping_insns() callback
-> > and select ARCH_HAS_EXECMEM_ROX configuration option to be able to use
-> > the ROX cache.
-> > 
-> > The cache is enabled on per-range basis when an architecture sets
-> > EXECMEM_ROX_CACHE flag in definition of an execmem_range.
-> > 
-> > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> > Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-> > Tested-by: kdevops <kdevops@lists.linux.dev>
-> > ---
-> 
-> [...]
-> 
-> > +
-> > +static int execmem_cache_populate(struct execmem_range *range, size_t size)
-> > +{
-> > +	unsigned long vm_flags = VM_ALLOW_HUGE_VMAP;
-> > +	unsigned long start, end;
-> > +	struct vm_struct *vm;
-> > +	size_t alloc_size;
-> > +	int err = -ENOMEM;
-> > +	void *p;
-> > +
-> > +	alloc_size = round_up(size, PMD_SIZE);
-> > +	p = execmem_vmalloc(range, alloc_size, PAGE_KERNEL, vm_flags);
-> 
-> Shouldn't this be passing PAGE_KERNEL_ROX? Otherwise I don't see how the
-> allocated memory is ROX? I don't see any call below where you change the permission.
+The following code can generate a PPP filter BPF program:
+'''
+struct bpf_program fp;
+pcap_t *handle;
+handle = pcap_open_dead(DLT_PPP_PPPD, 65535);
+pcap_compile(handle, &fp, "ip and outbound", 0, 0);
+bpf_dump(&fp, 1);
+'''
+Its output is:
+'''
+(000) ldh [2]
+(001) jeq #0x21 jt 2 jf 5
+(002) ldb [0]
+(003) jeq #0x1 jt 4 jf 5
+(004) ret #65535
+(005) ret #0
+'''
+Wen can find similar code at the following link:
+https://github.com/ppp-project/ppp/blob/master/pppd/options.c#L1680
+The maintainer of this code repository is also the original maintainer
+of the ppp driver.
 
-The memory is allocated RW, filled with invalid instructions, unammped in
-vmalloc space, removed from the direct map and then mapped as ROX in
-vmalloc address space.
+As you can see the BPF program skips 2 bytes of data and then reads the
+'Protocol' field to determine if it's an IP packet. Then it read the first
+byte of the first 2 bytes to determine the direction.
+
+The issue is that only the first byte indicating direction is initialized
+in current ppp driver code while the second byte is not initialized.
+
+For normal BPF programs generated by libpcap, uninitialized data won't be
+used, so it's not a problem. However, for carefully crafted BPF programs,
+such as those generated by syzkaller [2], which start reading from offset
+0, the uninitialized data will be used and caught by KMSAN.
+
+[1] https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
+[2] https://syzkaller.appspot.com/text?tag=ReproC&x=11994913980000
+
+Cc: Paul Mackerras <paulus@samba.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/bpf/000000000000dea025060d6bc3bc@google.com/
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+---
+ drivers/net/ppp/ppp_generic.c | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
+index 4583e15ad03a..1420c4efa48e 100644
+--- a/drivers/net/ppp/ppp_generic.c
++++ b/drivers/net/ppp/ppp_generic.c
+@@ -72,6 +72,17 @@
+ #define PPP_PROTO_LEN	2
+ #define PPP_LCP_HDRLEN	4
  
-> Given the range has the pgprot in it, you could just drop passing the pgprot
-> explicitly here and have execmem_vmalloc() use range->pgprot directly?
-
-Here range->prprot and the prot passed to vmalloc are different.
++/* The filter instructions generated by libpcap are constructed
++ * assuming a four-byte PPP header on each packet, where the last
++ * 2 bytes are the protocol field defined in the RFC and the first
++ * byte of the first 2 bytes indicates the direction.
++ * The second byte is currently unused, but we still need to initialize
++ * it to prevent crafted BPF programs from reading them which would
++ * cause reading of uninitialized data.
++ */
++#define PPP_FILTER_OUTBOUND_TAG 0x0100
++#define PPP_FILTER_INBOUND_TAG  0x0000
++
+ /*
+  * An instance of /dev/ppp can be associated with either a ppp
+  * interface unit or a ppp channel.  In both cases, file->private_data
+@@ -1762,10 +1773,10 @@ ppp_send_frame(struct ppp *ppp, struct sk_buff *skb)
  
-> Thanks,
-> Ryan
-> 
-> > +	if (!p)
-> > +		return err;
-> > +
-> > +	vm = find_vm_area(p);
-> > +	if (!vm)
-> > +		goto err_free_mem;
-> > +
-> > +	/* fill memory with instructions that will trap */
-> > +	execmem_fill_trapping_insns(p, alloc_size, /* writable = */ true);
-> > +
-> > +	start = (unsigned long)p;
-> > +	end = start + alloc_size;
-> > +
-> > +	vunmap_range(start, end);
-> > +
-> > +	err = execmem_set_direct_map_valid(vm, false);
-> > +	if (err)
-> > +		goto err_free_mem;
-> > +
-> > +	err = vmap_pages_range_noflush(start, end, range->pgprot, vm->pages,
-> > +				       PMD_SHIFT);
-> > +	if (err)
-> > +		goto err_free_mem;
-> > +
-> > +	err = execmem_cache_add(p, alloc_size);
-> > +	if (err)
-> > +		goto err_free_mem;
-> > +
-> > +	return 0;
-> > +
-> > +err_free_mem:
-> > +	vfree(p);
-> > +	return err;
-> > +}
-> 
-> [...]
-> 
-
+ 	if (proto < 0x8000) {
+ #ifdef CONFIG_PPP_FILTER
+-		/* check if we should pass this packet */
+-		/* the filter instructions are constructed assuming
+-		   a four-byte PPP header on each packet */
+-		*(u8 *)skb_push(skb, 2) = 1;
++		/* check if the packet passes the pass and active filters.
++		 * See comment for PPP_FILTER_OUTBOUND_TAG above.
++		 */
++		*(__be16 *)skb_push(skb, 2) = htons(PPP_FILTER_OUTBOUND_TAG);
+ 		if (ppp->pass_filter &&
+ 		    bpf_prog_run(ppp->pass_filter, skb) == 0) {
+ 			if (ppp->debug & 1)
+@@ -2482,14 +2493,13 @@ ppp_receive_nonmp_frame(struct ppp *ppp, struct sk_buff *skb)
+ 		/* network protocol frame - give it to the kernel */
+ 
+ #ifdef CONFIG_PPP_FILTER
+-		/* check if the packet passes the pass and active filters */
+-		/* the filter instructions are constructed assuming
+-		   a four-byte PPP header on each packet */
+ 		if (ppp->pass_filter || ppp->active_filter) {
+ 			if (skb_unclone(skb, GFP_ATOMIC))
+ 				goto err;
+-
+-			*(u8 *)skb_push(skb, 2) = 0;
++			/* Check if the packet passes the pass and active filters.
++			 * See comment for PPP_FILTER_INBOUND_TAG above.
++			 */
++			*(__be16 *)skb_push(skb, 2) = htons(PPP_FILTER_INBOUND_TAG);
+ 			if (ppp->pass_filter &&
+ 			    bpf_prog_run(ppp->pass_filter, skb) == 0) {
+ 				if (ppp->debug & 1)
 -- 
-Sincerely yours,
-Mike.
+2.47.1
+
 
