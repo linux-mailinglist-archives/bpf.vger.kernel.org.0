@@ -1,182 +1,215 @@
-Return-Path: <bpf+bounces-52874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 908E3A49BB1
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 15:17:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6193AA49C43
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 15:41:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 692913BE096
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 14:15:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 072E87A1586
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 14:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7D226F478;
-	Fri, 28 Feb 2025 14:15:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 368D4270EA1;
+	Fri, 28 Feb 2025 14:40:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Lp3Khf6/"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gVcn6z3J"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C6A26B942
-	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 14:14:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FCD2702C1
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 14:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740752102; cv=none; b=CGJPz4Iz+fUKxOIyXM4TLY+0Js3IrM+QlsEIV6pIzSsQ7BYyEoh8M/xciI6ej4cY+80Aw8dF/vnuxx29KWi+Jkd/h5YgJMSAcjvq5l7jucEVlo/jg2P1H9muxpuTEc16BkKLLq7HcH8Nl8eeDIOrYH2i2rB/uMw2bgAOgxg8RDU=
+	t=1740753635; cv=none; b=c36kF9N9cbQUD8y2OqvlVbmcsguMbeC4RdjWnHTJKy7keK4OarqkwBmheTxDDYgyhQtZlbr1jry0uoHG6Bak5sCcX0UUeR47XnclWdyyDhhJgL+6nNOtyorUNql2/PsvdAhiVO1PltycZ62DJ6WVNCcbLaPu/HOP7vIBuZA5Oyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740752102; c=relaxed/simple;
-	bh=quiR16689GxKD0zMbG7akYA4bL0qENBpHq/iOV0l6G4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QrFfXRWnJF85Y0Vh3ZdMORq7SaJYtjP0Ahnxu+RoY2DaclzjhAnGjnK+/vcwq9wJu1kDRNe1jLiIfMWx5FwPLnCg5irhWPIpexOTtAVPUqlLJcydKVO64B2Y8iK3zorNxec0Gob/yZpBjV+epDBbEVQlOy3Emms9OtbYLlUVXdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Lp3Khf6/; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740752088;
+	s=arc-20240116; t=1740753635; c=relaxed/simple;
+	bh=vvamKXaXonTikm8G6IDKp730/CDhnoJ0Mk8W9T1Ok3A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XNHtlwfG/ovyH9Z4XSBbO5/xDCm1ckjGo//5SRG30I9Qn+NqzM1SZ/hcn+8paSqOIvTs7YquYMaMZitzR9B2mvS3rvM1aNc9F+oqgpsYA7Y0J6YNk9jqp0YZlza5VQ5m/ftl4Xd0/WEV7iNA1gMn1UmI5Tz+3WrlyTODyFWRNIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gVcn6z3J; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1740753629;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=wRV6mcPluzpyEsyiWY9Lu/xX/hlkANEaDVySV+3Bifk=;
-	b=Lp3Khf6/5IRYZ1u1KG+iVCEuwSEmIiuPmFyHMKNUZCZg9a35PlRiIR4Jl1YQx5sScto8kY
-	xfOUBuSfBSz51sSzZ2fDfZpLHbabzEun/joZvOGwKcyvPDWsdtEo8QNu7Jfbop1EQ8YPcv
-	rrpE4q3OEPmmnp4cAmRhgLZm+0KH/Cc=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: horms@kernel.org,
-	kuba@kernel.org
-Cc: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	ricardo@marliere.net,
-	viro@zeniv.linux.org.uk,
-	dmantipov@yandex.ru,
-	aleksander.lobakin@intel.com,
-	linux-ppp@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	mrpre@163.com,
-	Jiayuan Chen <jiayuan.chen@linux.dev>,
-	Paul Mackerras <paulus@samba.org>,
-	syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
-Subject: [PATCH net-next v5] ppp: Fix KMSAN uninit-value warning with bpf
-Date: Fri, 28 Feb 2025 22:14:08 +0800
-Message-ID: <20250228141408.393864-1-jiayuan.chen@linux.dev>
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=roUwxiS7ulymLcFa2pyWvjdc3Ih5JRuvNyvUztd1mhM=;
+	b=gVcn6z3JcRZWRskEt7X1f5GOFAnIJ37MARcvvtH2FJQNg8NfyXf1HQksltonaPNyiGeIsz
+	9qTF5Dfu5cbtw9vD9XJmSvycBW+jkcQf9xWtKRMGul6K5jx0G6adM/0HMdJE6QJySrh6mg
+	xb9+i8KjIZoUKFXjbjVeqE6XbVFvXI4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-398-fTuS9RMIMxCMLqMe4PUnBw-1; Fri, 28 Feb 2025 09:40:28 -0500
+X-MC-Unique: fTuS9RMIMxCMLqMe4PUnBw-1
+X-Mimecast-MFC-AGG-ID: fTuS9RMIMxCMLqMe4PUnBw_1740753627
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-ab7f6f6cd96so242633066b.2
+        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 06:40:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740753627; x=1741358427;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=roUwxiS7ulymLcFa2pyWvjdc3Ih5JRuvNyvUztd1mhM=;
+        b=o3sgiZiJJrxuAxQzC2EsXaNqIQ8W/rmQt61lP50oEO+c2s6bpYhtFEFqfblk8dHDrK
+         kxKGLIcj188p0oOOz81/gMpf+tWmlsW7h8b6aFBMEpPM3rUJPKTkVeWVbV+VNMU48NV8
+         j12ZXpidAIqscsFU9Vue1EUpYMt39RRTdr+5dt6LaUJZsu6/15tsKbFz8Y8ioQbJ5UE2
+         6i8x50Ogo80oO2DPqTyyG+RqGi01Y5hlBVmxzBTbe1pUSFnWatCaGdggC8u63pohGFjA
+         GeT2QRoUBAKRcQNXVzb0UF8epj/pvKh+BUl1qdGTvMQO91k9AZQ7jaPkQKH+BlfwAZrx
+         1sbw==
+X-Forwarded-Encrypted: i=1; AJvYcCUVC6BGrojp1wR6iXRaDJ1VS5+vOupxhwIOXb7cJWL1vsX+AoxCmBKQIkFQpSXVY2xa8To=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzbw+yzYTfvuWftK8XPui2BB9cNqDmFtcd35hraftiYWkrNTzu5
+	dsKmcleG03HaQRlZzibAoJT9rY+vmediIbZQjL2qC0UDKc5Mz12O6p85CCsT6txGmXvOsWqnpas
+	vOyv5yhrDaNkETlElWdNTcAgqgnm/qwor2xAFvMeobyAVMLvx0pp39gm2dEGDvKB2C2TfKsSNJk
+	KV/3fP4cNnFYUSvrBcoWrsTcV4
+X-Gm-Gg: ASbGncvTKcT3oHk2O0GL2/a9BzekFt9OdMtvuIAxet24STJrmaXGmmEAyRp2M7AgWJv
+	Sge1LFr5uXIPSGBf+naoFuaDlZKWOnD27QyjIEBnDv1CF6OnWlzAX77OF8SSjfxc9BroQ+AUpMw
+	==
+X-Received: by 2002:a17:907:3fa8:b0:ab7:e16:aab7 with SMTP id a640c23a62f3a-abf25fb677fmr319207366b.13.1740753626994;
+        Fri, 28 Feb 2025 06:40:26 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFPegDg6tPejCUZgBS9Oz611YYT0gOXJGrHO0Mf3Y3+5jBs88zw4q+EJl75v4x09O8dKVdC8oCD4tipkFYJN9I=
+X-Received: by 2002:a17:907:3fa8:b0:ab7:e16:aab7 with SMTP id
+ a640c23a62f3a-abf25fb677fmr319205966b.13.1740753626613; Fri, 28 Feb 2025
+ 06:40:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250227185017.206785-1-jdamato@fastly.com>
+In-Reply-To: <20250227185017.206785-1-jdamato@fastly.com>
+From: Lei Yang <leiyang@redhat.com>
+Date: Fri, 28 Feb 2025 22:39:47 +0800
+X-Gm-Features: AQ5f1Jri6SSnIUB3TA8bZTF7aUJK_L13tJvV7_Fad3fng_j3YX1IbMDftxVWDPk
+Message-ID: <CAPpAL=xpdFVfFMzU7qQM=YGJvEyhSPyUDfrt2FyWx61BJgHjMQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 0/4] virtio-net: Link queues to NAPIs
+To: Joe Damato <jdamato@fastly.com>
+Cc: netdev@vger.kernel.org, mkarsten@uwaterloo.ca, 
+	gerhard@engleder-embedded.com, jasowang@redhat.com, 
+	xuanzhuo@linux.alibaba.com, kuba@kernel.org, mst@redhat.com, 
+	Alexei Starovoitov <ast@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"open list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)" <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	open list <linux-kernel@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"open list:VIRTIO CORE AND NET DRIVERS" <virtualization@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Syzbot caught an "KMSAN: uninit-value" warning [1], which is caused by the
-ppp driver not initializing a 2-byte header when using socket filter.
+I also tested this series of patches v5 with virtio-net regression
+tests, everything works fine.
 
-The following code can generate a PPP filter BPF program:
-'''
-struct bpf_program fp;
-pcap_t *handle;
-handle = pcap_open_dead(DLT_PPP_PPPD, 65535);
-pcap_compile(handle, &fp, "ip and outbound", 0, 0);
-bpf_dump(&fp, 1);
-'''
-Its output is:
-'''
-(000) ldh [2]
-(001) jeq #0x21 jt 2 jf 5
-(002) ldb [0]
-(003) jeq #0x1 jt 4 jf 5
-(004) ret #65535
-(005) ret #0
-'''
-Wen can find similar code at the following link:
-https://github.com/ppp-project/ppp/blob/master/pppd/options.c#L1680
-The maintainer of this code repository is also the original maintainer
-of the ppp driver.
+Tested-by: Lei Yang <leiyang@redhat.com>
 
-As you can see the BPF program skips 2 bytes of data and then reads the
-'Protocol' field to determine if it's an IP packet. Then it read the first
-byte of the first 2 bytes to determine the direction.
-
-The issue is that only the first byte indicating direction is initialized
-in current ppp driver code while the second byte is not initialized.
-
-For normal BPF programs generated by libpcap, uninitialized data won't be
-used, so it's not a problem. However, for carefully crafted BPF programs,
-such as those generated by syzkaller [2], which start reading from offset
-0, the uninitialized data will be used and caught by KMSAN.
-
-[1] https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
-[2] https://syzkaller.appspot.com/text?tag=ReproC&x=11994913980000
-
-Cc: Paul Mackerras <paulus@samba.org>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/bpf/000000000000dea025060d6bc3bc@google.com/
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
----
- drivers/net/ppp/ppp_generic.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
-index 4583e15ad03a..1420c4efa48e 100644
---- a/drivers/net/ppp/ppp_generic.c
-+++ b/drivers/net/ppp/ppp_generic.c
-@@ -72,6 +72,17 @@
- #define PPP_PROTO_LEN	2
- #define PPP_LCP_HDRLEN	4
- 
-+/* The filter instructions generated by libpcap are constructed
-+ * assuming a four-byte PPP header on each packet, where the last
-+ * 2 bytes are the protocol field defined in the RFC and the first
-+ * byte of the first 2 bytes indicates the direction.
-+ * The second byte is currently unused, but we still need to initialize
-+ * it to prevent crafted BPF programs from reading them which would
-+ * cause reading of uninitialized data.
-+ */
-+#define PPP_FILTER_OUTBOUND_TAG 0x0100
-+#define PPP_FILTER_INBOUND_TAG  0x0000
-+
- /*
-  * An instance of /dev/ppp can be associated with either a ppp
-  * interface unit or a ppp channel.  In both cases, file->private_data
-@@ -1762,10 +1773,10 @@ ppp_send_frame(struct ppp *ppp, struct sk_buff *skb)
- 
- 	if (proto < 0x8000) {
- #ifdef CONFIG_PPP_FILTER
--		/* check if we should pass this packet */
--		/* the filter instructions are constructed assuming
--		   a four-byte PPP header on each packet */
--		*(u8 *)skb_push(skb, 2) = 1;
-+		/* check if the packet passes the pass and active filters.
-+		 * See comment for PPP_FILTER_OUTBOUND_TAG above.
-+		 */
-+		*(__be16 *)skb_push(skb, 2) = htons(PPP_FILTER_OUTBOUND_TAG);
- 		if (ppp->pass_filter &&
- 		    bpf_prog_run(ppp->pass_filter, skb) == 0) {
- 			if (ppp->debug & 1)
-@@ -2482,14 +2493,13 @@ ppp_receive_nonmp_frame(struct ppp *ppp, struct sk_buff *skb)
- 		/* network protocol frame - give it to the kernel */
- 
- #ifdef CONFIG_PPP_FILTER
--		/* check if the packet passes the pass and active filters */
--		/* the filter instructions are constructed assuming
--		   a four-byte PPP header on each packet */
- 		if (ppp->pass_filter || ppp->active_filter) {
- 			if (skb_unclone(skb, GFP_ATOMIC))
- 				goto err;
--
--			*(u8 *)skb_push(skb, 2) = 0;
-+			/* Check if the packet passes the pass and active filters.
-+			 * See comment for PPP_FILTER_INBOUND_TAG above.
-+			 */
-+			*(__be16 *)skb_push(skb, 2) = htons(PPP_FILTER_INBOUND_TAG);
- 			if (ppp->pass_filter &&
- 			    bpf_prog_run(ppp->pass_filter, skb) == 0) {
- 				if (ppp->debug & 1)
--- 
-2.47.1
+On Fri, Feb 28, 2025 at 2:50=E2=80=AFAM Joe Damato <jdamato@fastly.com> wro=
+te:
+>
+> Greetings:
+>
+> Welcome to v5. Patches 1, 2, and 4 have no functional changes only
+> updated tags. Patch 3 was refactored as requested by Jason. See the
+> changelog below and the commit message for details.
+>
+> Jakub recently commented [1] that I should not hold this series on
+> virtio-net linking queues to NAPIs behind other important work that is
+> on-going and suggested I re-spin, so here we are :)
+>
+> As per the discussion on the v3 [2], now both RX and TX NAPIs use the
+> API to link queues to NAPIs. Since TX-only NAPIs don't have a NAPI ID,
+> commit 6597e8d35851 ("netdev-genl: Elide napi_id when not present") now
+> correctly elides the TX-only NAPIs (instead of printing zero) when the
+> queues and NAPIs are linked.
+>
+> As per the discussion on the v4 [3], patch 3 has been refactored to hold
+> RTNL only in the specific locations which need it as Jason requested.
+>
+> See the commit message of patch 3 for an example of how to get the NAPI
+> to queue mapping information.
+>
+> See the commit message of patch 4 for an example of how NAPI IDs are
+> persistent despite queue count changes.
+>
+> Thanks,
+> Joe
+>
+> [1]: https://lore.kernel.org/netdev/20250221142650.3c74dcac@kernel.org/
+> [2]: https://lore.kernel.org/netdev/20250127142400.24eca319@kernel.org/
+> [3]: https://lore.kernel.org/netdev/CACGkMEv=3DejJnOWDnAu7eULLvrqXjkMkTL4=
+cbi-uCTUhCpKN_GA@mail.gmail.com/
+>
+> v5:
+>   - Patch 1 added Acked-by's from Michael and Jason. Added Tested-by
+>     from Lei. No functional changes.
+>   - Patch 2 added Acked-by's from Michael and Jason. Added Tested-by
+>     from Lei. No functional changes.
+>   - Patch 3:
+>     - Refactored as Jason requested, eliminating the
+>       virtnet_queue_set_napi helper entirely, and explicitly holding
+>       RTNL in the 3 locations where needed (refill_work, freeze, and
+>       restore).
+>     - Commit message updated to outline the known paths at the time the
+>       commit was written.
+>   - Patch 4 added Acked-by from Michael. Added Tested-by from Lei. No
+>     functional changes.
+>
+> v4: https://lore.kernel.org/lkml/20250225020455.212895-1-jdamato@fastly.c=
+om/
+>   - Dropped Jakub's patch (previously patch 1).
+>   - Significant refactor from v3 affecting patches 1-3.
+>   - Patch 4 added tags from Jason and Gerhard.
+>
+> rfcv3: https://lore.kernel.org/netdev/20250121191047.269844-1-jdamato@fas=
+tly.com/
+>   - patch 3:
+>     - Removed the xdp checks completely, as Gerhard Engleder pointed
+>       out, they are likely not necessary.
+>
+>   - patch 4:
+>     - Added Xuan Zhuo's Reviewed-by.
+>
+> v2: https://lore.kernel.org/netdev/20250116055302.14308-1-jdamato@fastly.=
+com/
+>   - patch 1:
+>     - New in the v2 from Jakub.
+>
+>   - patch 2:
+>     - Previously patch 1, unchanged from v1.
+>     - Added Gerhard Engleder's Reviewed-by.
+>     - Added Lei Yang's Tested-by.
+>
+>   - patch 3:
+>     - Introduced virtnet_napi_disable to eliminate duplicated code
+>       in virtnet_xdp_set, virtnet_rx_pause, virtnet_disable_queue_pair,
+>       refill_work as suggested by Jason Wang.
+>     - As a result of the above refactor, dropped Reviewed-by and
+>       Tested-by from patch 3.
+>
+>   - patch 4:
+>     - New in v2. Adds persistent NAPI configuration. See commit message
+>       for more details.
+>
+> v1: https://lore.kernel.org/netdev/20250110202605.429475-1-jdamato@fastly=
+.com/
+>
+> Joe Damato (4):
+>   virtio-net: Refactor napi_enable paths
+>   virtio-net: Refactor napi_disable paths
+>   virtio-net: Map NAPIs to queues
+>   virtio_net: Use persistent NAPI config
+>
+>  drivers/net/virtio_net.c | 95 ++++++++++++++++++++++++++++------------
+>  1 file changed, 67 insertions(+), 28 deletions(-)
+>
+>
+> base-commit: 7fe0353606d77a32c4c7f2814833dd1c043ebdd2
+> --
+> 2.45.2
+>
 
 
