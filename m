@@ -1,134 +1,295 @@
-Return-Path: <bpf+bounces-52870-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52871-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A478A49752
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 11:30:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FE55A4985B
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 12:34:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02E5018970D2
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 10:30:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2140C3AC218
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 11:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB2F25DCF5;
-	Fri, 28 Feb 2025 10:29:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5199025F79A;
+	Fri, 28 Feb 2025 11:34:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="A977MKLp"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="UoObaZf5"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015C91FE451;
-	Fri, 28 Feb 2025 10:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9D81C3BE3;
+	Fri, 28 Feb 2025 11:34:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740738596; cv=none; b=mW3NBZA3s2OkuEHyRKpJ3Qqi16GUC/3PAP0dstML7jClOD2bio7ZkiS5zUrQMW7+Kc2PDugb4c738qC52Ezx4Ol8jSd736lnV3YrxAvm1IbqIsOVYPwlY3N41OkVnWj6Z+TQpqOAPDbW+MAiKyxc7Hqg9QAiW32/VSapDvfoSyQ=
+	t=1740742445; cv=none; b=C41TpsTUfaO7hnxeqIHxkTciLUWL6EVBhLVoJjJLdWQlPMoNxbtumMjdaJPcdsMp2xOeQo0bp0VFkXciQdH3t9VeI22PbfqwvZd5m8K73uuoH8uj5rQhHZSvMmhSp2FvHlR8oc2NIqZNR1+ePy+cgW+Mc/FB+bMJA4XTLM6+GQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740738596; c=relaxed/simple;
-	bh=Tziz2U7REJaUQT9szYJ+pjVyOgCIf3IwB5QcbGxgaWE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n0YoTW/a6P68zFZgFpgrYrIsJtEtpazT0dfhLczSHfE9wwziQlVaaenJDsBhpXec9NuI4oTgrAkWfVAg0S7fUQ4cqn9AX3neZ34yzoYyAgQ9CcpIn00xf15sX2Lf9bNDDTYkxWFWHBiQ1lxkJqfXc/H8vnp/G9wo0fPJjmWDpKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=A977MKLp; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ht7ZbMwfV+utVkqPlmDB+z3+2vIA7uWpPnlzueknb74=; b=A977MKLp8As/l9zJTJHg41iGfQ
-	125R3PcMRlqReyzxem0p2D/9Y5E1pOHy+vt77I5lHaozgtYpfhRDt/YrYOUxZPFhDLGv67eMAqoYp
-	kmeGtsKh54ngtP8lV1LWjzKre3i6vOWW2tumWhnDzBIz49ogvT7L34BoJW/QT0nSH6h1RDDcbsNX4
-	+mNsqnEMerPGw/8NErqU28i5XWJmgTERh+Vu4Oqvi/7IPPbbih388NtU5ZC/Tg/d4y/vbePN0zz4c
-	TEvDofTVvCFK5/WqOTJk5gbzVJyRrHWpYrmDpJvGiL8Ejp6VRLmL+Ie4Edc7+wjxFSa2aKYwqTqz9
-	rqzWw3bg==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnxce-00000003x53-2kvA;
-	Fri, 28 Feb 2025 10:29:36 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 84C9E300780; Fri, 28 Feb 2025 11:29:35 +0100 (CET)
-Date: Fri, 28 Feb 2025 11:29:35 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: rostedt@goodmis.org, mark.rutland@arm.com, alexei.starovoitov@gmail.com,
-	catalin.marinas@arm.com, will@kernel.org, mhiramat@kernel.org,
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-	mathieu.desnoyers@efficios.com, nathan@kernel.org,
-	ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
-	dongml2@chinatelecom.cn, akpm@linux-foundation.org, rppt@kernel.org,
-	graf@amazon.com, dan.j.williams@intel.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH bpf-next v2] add function metadata support
-Message-ID: <20250228102935.GM31462@noisy.programming.kicks-ass.net>
-References: <20250226121537.752241-1-dongml2@chinatelecom.cn>
- <20250227165302.GB5880@noisy.programming.kicks-ass.net>
- <CADxym3YCZ5dqXMFesNaAF_Z2EWWCj0bJyKQ+BnNw2c=g39CRFA@mail.gmail.com>
- <20250228102646.GW11590@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1740742445; c=relaxed/simple;
+	bh=+ooH810v2Blnl06gBk8VGSH/EQNPRumC/0B28lSVPfM=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=p0tTSofeig+wK8Y9pfv6clSn84qHnevnKw1kMx/fStp3n12fwSGtpZXDFNY9Fs5o8dnO7mAuGh+H5j5tQ9zcL8K7dIqupdib8En23j3fKi0SfE/PXaoMWTRt3Icb+uzsFtpxizIhOqpCgGLcruAIJfEZaK7viDPJiCjl17RYr30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=UoObaZf5; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51SAcxxM012173;
+	Fri, 28 Feb 2025 11:33:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=sy22I2
+	QlpySMqXVInfw3InidJMO5UXmG9SzBQFajTLo=; b=UoObaZf5nzgXkCaHac1ZFP
+	/8DVIpyRY0iYgRVU9mm2qguRSzZw6SZ4Kv9+ba2k8ekuc3l5NCb+txg7M5iEw9Iw
+	uXFuubx1WWmTa8x8l7E89bbeuwTiV0kwtdaU4o36ao2emLpKgHrtVLKv/QW0CI8n
+	bTdxWVE7D1usTdbhjGxhdt7U9VLFI2KxKceekxyElNevMuWbOHTXpg+jKuV1tSvn
+	5jkSP+4GQX/D11/Ll1CK/8YPcnr2ma9eoZnxp4Z3zCypIP931xERcalNrzaSk+Wz
+	9L2GkwH3VXMwoUzDYL6hnYzKmqe9htw44osy/LTGTJyi4T9OcX5SQDZ6WtTxX0BQ
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45337ajnk6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 28 Feb 2025 11:33:26 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 51SBPi6w010851;
+	Fri, 28 Feb 2025 11:33:26 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45337ajnk0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 28 Feb 2025 11:33:25 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 51S9EXWG012522;
+	Fri, 28 Feb 2025 11:33:24 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 44ys9yxe0y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 28 Feb 2025 11:33:24 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 51SBXM1S47579632
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 28 Feb 2025 11:33:22 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9FCCD20040;
+	Fri, 28 Feb 2025 11:33:22 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 644EB2004B;
+	Fri, 28 Feb 2025 11:33:17 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.61.241.152])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 28 Feb 2025 11:33:16 +0000 (GMT)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250228102646.GW11590@noisy.programming.kicks-ass.net>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
+Subject: Re: [PATCH 1/3] perf ftrace: Fix latency stats with BPF
+From: Athira Rajeev <atrajeev@linux.ibm.com>
+In-Reply-To: <20250227191223.1288473-1-namhyung@kernel.org>
+Date: Fri, 28 Feb 2025 17:03:03 +0530
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" <linux-perf-users@vger.kernel.org>,
+        bpf@vger.kernel.org, Gabriele Monaco <gmonaco@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <3946D74A-64EA-4D9E-826F-ECACC6487083@linux.ibm.com>
+References: <20250227191223.1288473-1-namhyung@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+X-Mailer: Apple Mail (2.3776.700.51)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: lDI89ePHIRn4bxUzb9PBUpRYBA32iUKP
+X-Proofpoint-GUID: tfGqt6fuzijannxJF8MB-E7opk4XnEBD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-28_02,2025-02-27_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ priorityscore=1501 impostorscore=0 bulkscore=0 malwarescore=0
+ suspectscore=0 spamscore=0 mlxscore=0 phishscore=0 clxscore=1011
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2502280083
 
-On Fri, Feb 28, 2025 at 11:26:46AM +0100, Peter Zijlstra wrote:
-> On Fri, Feb 28, 2025 at 05:53:07PM +0800, Menglong Dong wrote:
-> 
-> > I tested it a little by enabling CFI_CLANG and the extra 5-bytes
-> > padding. It works fine, as mostly CFI_CLANG use
-> > CONFIG_FUNCTION_PADDING_BYTES to find the tags. I'll
-> > do more testing on CFI_CLANG to make sure everything goes
-> > well.
-> 
-> I don't think you understand; please read:
-> 
-> arch/x86/kernel/alternative.c:__apply_fineibt() 
-> 
-> and all the code involved with patching FineIBT. I think you'll find it
-> very broken if you change anything here.
-> 
-> Can you post an actual function preamble from a kernel with
-> CONFIG_FINEIBT=y with your changes on?
-> 
-> Ex.
-> 
-> $ objdump -wdr build/kernel/futex/core.o
-> 
-> Disassembly of section .text:
-> 
-> 0000000000000000 <__cfi_futex_hash>:
->        0:       b9 93 0c f9 ad          mov    $0xadf90c93,%ecx
-> 
-> 0000000000000005 <.Ltmp0>:
->        5:       90                      nop
->        6:       90                      nop
->        7:       90                      nop
->        8:       90                      nop
->        9:       90                      nop
->        a:       90                      nop
->        b:       90                      nop
->        c:       90                      nop
->        d:       90                      nop
->        e:       90                      nop
->        f:       90                      nop
-> 
-> 0000000000000010 <futex_hash>:
->       10:       f3 0f 1e fa             endbr64
->       14:       e8 00 00 00 00          call   19 <futex_hash+0x9>      15: R_X86_64_PLT32      __fentry__-0x4
->       19:       8b 47 10                mov    0x10(%rdi),%eax
-> 
-> 
-> Any change to the layout here *WILL* break the FineIBT code.
-> 
-> 
-> If you want to test, make sure your build has FINEIBT=y and boot on an
-> Intel CPU that has CET-IBT (alderlake and later).
 
-Oh, wait, not true, tigerlake also has IBT.
+
+> On 28 Feb 2025, at 12:42=E2=80=AFAM, Namhyung Kim =
+<namhyung@kernel.org> wrote:
+>=20
+> When BPF collects the stats for the latency in usec, it first divides
+> the time by 1000.  But that means it would have 0 if the delta is =
+small
+> and won't update the total time properly.
+>=20
+> Let's keep the stats in nsec always and adjust to usec before =
+printing.
+>=20
+> Before:
+>=20
+>  $ sudo ./perf ftrace latency -ab -T mutex_lock --hide-empty -- sleep =
+0.1
+>  #   DURATION     |      COUNT | GRAPH                                 =
+         |
+>       0 -    1 us |        765 | =
+#############################################  |
+>       1 -    2 us |         10 |                                       =
+         |
+>       2 -    4 us |          2 |                                       =
+         |
+>       4 -    8 us |          5 |                                       =
+         |
+>=20
+>  # statistics  (in usec)
+>    total time:                    0    <<<--- (here)
+>      avg time:                    0
+>      max time:                    6
+>      min time:                    0
+>         count:                  782
+>=20
+> After:
+>=20
+>  $ sudo ./perf ftrace latency -ab -T mutex_lock --hide-empty -- sleep =
+0.1
+>  #   DURATION     |      COUNT | GRAPH                                 =
+         |
+>       0 -    1 us |        880 | =
+############################################   |
+>       1 -    2 us |         13 |                                       =
+         |
+>       2 -    4 us |          8 |                                       =
+         |
+>       4 -    8 us |          3 |                                       =
+         |
+>=20
+>  # statistics  (in usec)
+>    total time:                  268    <<<--- (here)
+>      avg time:                    0
+>      max time:                    6
+>      min time:                    0
+>         count:                  904
+>=20
+
+Tested in powerpc for the total time change in usec before and after the =
+patch.
+After the patch, shows non-zero in total time.
+
+# ./perf ftrace latency -ab -T mutex_lock --hide-empty -- sleep 0.1
+#   DURATION     |      COUNT | GRAPH                                    =
+      |
+     0 -    1 us |         38 | ##############################           =
+      |
+     1 -    2 us |         19 | ###############                          =
+      |
+     2 -    4 us |          1 |                                          =
+      |
+
+# statistics  (in usec)
+  total time:                   53
+    avg time:                    1
+    max time:                    2
+    min time:                    0
+       count:                   58
+
+Tested-by: Athira Rajeev <atrajeev@linux.ibm.com>
+
+> Cc: Gabriele Monaco <gmonaco@redhat.com>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+> tools/perf/util/bpf_ftrace.c                |  8 +++++++-
+> tools/perf/util/bpf_skel/func_latency.bpf.c | 20 ++++++++------------
+> 2 files changed, 15 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/tools/perf/util/bpf_ftrace.c =
+b/tools/perf/util/bpf_ftrace.c
+> index 51f407a782d6c58a..7324668cc83e747e 100644
+> --- a/tools/perf/util/bpf_ftrace.c
+> +++ b/tools/perf/util/bpf_ftrace.c
+> @@ -128,7 +128,7 @@ int perf_ftrace__latency_stop_bpf(struct =
+perf_ftrace *ftrace __maybe_unused)
+> return 0;
+> }
+>=20
+> -int perf_ftrace__latency_read_bpf(struct perf_ftrace *ftrace =
+__maybe_unused,
+> +int perf_ftrace__latency_read_bpf(struct perf_ftrace *ftrace,
+>  int buckets[], struct stats *stats)
+> {
+> int i, fd, err;
+> @@ -158,6 +158,12 @@ int perf_ftrace__latency_read_bpf(struct =
+perf_ftrace *ftrace __maybe_unused,
+> stats->n =3D skel->bss->count;
+> stats->max =3D skel->bss->max;
+> stats->min =3D skel->bss->min;
+> +
+> + if (!ftrace->use_nsec) {
+> + stats->mean /=3D 1000;
+> + stats->max /=3D 1000;
+> + stats->min /=3D 1000;
+> + }
+> }
+>=20
+> free(hist);
+> diff --git a/tools/perf/util/bpf_skel/func_latency.bpf.c =
+b/tools/perf/util/bpf_skel/func_latency.bpf.c
+> index 09e70d40a0f4d855..3d3d9f427c20876e 100644
+> --- a/tools/perf/util/bpf_skel/func_latency.bpf.c
+> +++ b/tools/perf/util/bpf_skel/func_latency.bpf.c
+> @@ -102,6 +102,7 @@ int BPF_PROG(func_end)
+> start =3D bpf_map_lookup_elem(&functime, &tid);
+> if (start) {
+> __s64 delta =3D bpf_ktime_get_ns() - *start;
+> + __u64 val =3D delta;
+> __u32 key =3D 0;
+> __u64 *hist;
+>=20
+> @@ -111,26 +112,24 @@ int BPF_PROG(func_end)
+> return 0;
+>=20
+> if (bucket_range !=3D 0) {
+> - delta /=3D cmp_base;
+> + val =3D delta / cmp_base;
+>=20
+> if (min_latency > 0) {
+> - if (delta > min_latency)
+> - delta -=3D min_latency;
+> + if (val > min_latency)
+> + val -=3D min_latency;
+> else
+> goto do_lookup;
+> }
+>=20
+> // Less than 1 unit (ms or ns), or, in the future,
+> // than the min latency desired.
+> - if (delta > 0) { // 1st entry: [ 1 unit .. bucket_range units )
+> - // clang 12 doesn't like s64 / u32 division
+> - key =3D (__u64)delta / bucket_range + 1;
+> + if (val > 0) { // 1st entry: [ 1 unit .. bucket_range units )
+> + key =3D val / bucket_range + 1;
+> if (key >=3D bucket_num ||
+> - delta >=3D max_latency - min_latency)
+> + val >=3D max_latency - min_latency)
+> key =3D bucket_num - 1;
+> }
+>=20
+> - delta +=3D min_latency;
+> goto do_lookup;
+> }
+> // calculate index using delta
+> @@ -146,10 +145,7 @@ int BPF_PROG(func_end)
+>=20
+> *hist +=3D 1;
+>=20
+> - if (bucket_range =3D=3D 0)
+> - delta /=3D cmp_base;
+> -
+> - __sync_fetch_and_add(&total, delta);
+> + __sync_fetch_and_add(&total, delta); // always in nsec
+> __sync_fetch_and_add(&count, 1);
+>=20
+> if (delta > max)
+> --=20
+> 2.48.1.711.g2feabab25a-goog
+>=20
+>=20
+
 
