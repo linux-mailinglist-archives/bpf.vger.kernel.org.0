@@ -1,128 +1,172 @@
-Return-Path: <bpf+bounces-52839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 474E0A48EB3
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 03:38:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14B53A48ED1
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 03:44:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FABC188C12F
-	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 02:39:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49F803B7347
+	for <lists+bpf@lfdr.de>; Fri, 28 Feb 2025 02:44:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8959213213E;
-	Fri, 28 Feb 2025 02:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8F813DDB9;
+	Fri, 28 Feb 2025 02:44:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AO1oQo0w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LcQXvaYo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815333F9C5;
-	Fri, 28 Feb 2025 02:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C981618C31
+	for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 02:44:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740710327; cv=none; b=GYLJNA2fUvvKwZ23ZtvkJzq51yYp+xjejhfQ4Zy90SJjKWk/Yq3X99ybv5HYsaErAQ3wFuP01XdYS1LdwnB0UhdOkuMnrjrgmz7+sNrq98aIoj2MNX70vgGbqnPyEcvNdY4TkjditIIZuCnkOgCvcqryGKV53NsdKJ89FkUNicA=
+	t=1740710653; cv=none; b=qVqrrISFhEeMEKAOB/NboxjcfWFkNnQd57htf/dgTJGf2CB6v/yTZ3uVtJ/ajzpB8gCInRe1Xpyca7qPvGG2MfAO4kSESg2zyZKjOoevG4+dgCjusQlcV6Lj/7hdUEge/7mwEuGbffYnV02tKQ4daTFatAVIJr2HPhDUnh3lvEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740710327; c=relaxed/simple;
-	bh=wTl+6suWfVWNjI2QDtKlaLtgW+3UnSdIn2Bvqd3KqzI=;
+	s=arc-20240116; t=1740710653; c=relaxed/simple;
+	bh=ssRB05EeIH+WKCPBXwX7ouCRCqWAX9tj/TLrvVqZF7U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RFgxb3lRZvHN9Jowt5o2H/QqkH2py7hR4CnHSFxzAHSYieL/fCofi2i+/6CeZPC/O8vj1bDxra6euyNa1yzqqaPMmcAaeqJ2FJiA8zK7BprMK+EMWpDvNdJK0x5rwoud96qq9pIc+REWIXDTWLOwdpsSMJZybtdcS6ev3bdlRAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AO1oQo0w; arc=none smtp.client-ip=209.85.221.50
+	 To:Cc:Content-Type; b=Z7ddfk/MsWCR90ru8EOcElCxp7v3aFoDZ3a/xu8kI7ThTjySAAyvLFVlmL2tdsYQ1iF2EhHo4uFANjPySw8xuFt9WMazX9k3aJ7rDuRGGFRAj6NhZdYo528j/+IqzXW6Q++874vfe2bdl8AGeShzhA349Pdvl4Y/9z+v8sAMeTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LcQXvaYo; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-38f6475f747so784163f8f.3;
-        Thu, 27 Feb 2025 18:38:45 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43948f77f1aso10938215e9.0
+        for <bpf@vger.kernel.org>; Thu, 27 Feb 2025 18:44:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740710324; x=1741315124; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740710650; x=1741315450; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FoBqsBD3ysLcM4e3KRNWw21mQNnLhpprTefQSLdSqQY=;
-        b=AO1oQo0wfKIX3JrTGdtaoTWBUYO4Xq/yhJUkSSz+flECjmslzGX7I3lOEaiMafJhaR
-         /IDsf2HiFcBBEvt3JY0mUwi8KadchvlFxxkLRxPvKx2vxGPwyDQ0hxCVEOohSwpujf0J
-         ECiPliJJqOB+y6bmfQ6iCgHtISghKN9nuArBMgAXSPzI5YH8NhG9sGhvR4MvSNLRMv4H
-         Yxkn4oaqbZcMv/l6ZIzjP5b+3RUeSxbohdCWQXitYkdcYS3CDf33IELHRxKCFUtwD/5w
-         imbIrf6Bu31PGyozoNCIGZIJQkiHI9KdR0agdlQexdRkYIXYsPEznvUsWmGdNIHVN4uF
-         yNjg==
+        bh=c4g5bD1iwtCcAcdxwzgr3cvfpwNY6CIPmCrs8gYxoZc=;
+        b=LcQXvaYoei+Q3Rj83pDFHC9AxAtkgSqwBKOXabBClNeCfqGqo6XzrK78n8pUBVQJIC
+         4T5jjKdAfmXnJH8qo33U7j1Ut28q+aaG8x+77T73RHB4+iE4SYZ9zx7Nsb3aEwX76ibi
+         mKEUvs2I3mhqP7x96pmd+Nry0P7Qf6qMlnFmhXNBH9ud2njKpJEb93Vkv+vpJmHdzY6P
+         h1DUZt61H97ePVwNa8R6Y7/GwpvW0v4f0lHpPnx11ZnG58SNs8i/16Ip8L0+9pK2D+AB
+         Ppe2dm66LhrRQugyC/nCWANjFVTppIYZiJAwEEj7EqG18+ozlcvAWP8yDwqKyNfOoW/Y
+         SWhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740710324; x=1741315124;
+        d=1e100.net; s=20230601; t=1740710650; x=1741315450;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FoBqsBD3ysLcM4e3KRNWw21mQNnLhpprTefQSLdSqQY=;
-        b=Gd4+iDp5tUhkZEMcbzzMRa2pLb4vcDBoW+VdwPWp+vEcNn+8qlMUTI/voyjkP+Io2w
-         6LY/CuojfPpgz2kyNSy2NUE3noqySQP7oQtv1xzXytJ1aLaL2y+Dg1YaYvF/uCUBu0/h
-         F77c9TYIl6ACgKsZXSei04fyCaeGrE8Lvg+o6XII1iKauZLDRGUG2u399eLPzOQpwmC9
-         y9JAb5zSl8rbighX4LA4rLK5g657FHCoovVxX2YtP0QnqCKlyseVa4CWzDHj4K1E46sk
-         mbItUeMQ5jx9MBWYr1uu8V5q80zzz5RJHmwPWCm3S5DK7wFD2NVvGCq6JyOam191Btyz
-         /icg==
-X-Forwarded-Encrypted: i=1; AJvYcCVNuAoOEL3TRg9qPiWE/uycdSgb/VzfyrOeQW3PevV42YXUX2t/kxo1wSNvQCX/GrX9kNU=@vger.kernel.org, AJvYcCX+T7jYhDa5fZtMXoqB9efgyZLhxNK3Q//7opfny6Xcgy3IhizH7KzsCAM89/xrNa41Eyy+chUwO6K1xxoB@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJmrbK2qFPaEJnXjSB4MYcvsO0Z6rhX9BkeAF0ARpBmVI/t+TN
-	f+cWwD9hYruTAE9kTzPguOCD+RkqiHi3xwccLdw380/nI+BbDEBOxGW9eXwx5/gL41+xjQPChjY
-	OSgEEw+Gxs3PntbsgCLDj8KYq5yo=
-X-Gm-Gg: ASbGncuSvXWtaIw0mMdG2YX+SQ+SwqvH7QknlCaG0Dok/WTvWDs7TsX2HoGQ5p8yAYL
-	BWY5sQveDeQweBLW9e7QMAbvUXt2waYPPZljPzXZEDt2jJlCf6DTY+Pu/rZxgM4k40HRbV6dlhG
-	6MvOh4gtS61SZG057Dx1PjlkAfucVo56QzhTN9PBw=
-X-Google-Smtp-Source: AGHT+IHHUVN8pdOLxPiHueTU0QLajCkPg25IcTRmNfN13XZ3nQFOqe3EiK/BvDtPzD7FNCGs9sWOqXCxNOLyezYVOn0=
-X-Received: by 2002:a5d:6c63:0:b0:38d:cbc2:29f6 with SMTP id
- ffacd0b85a97d-390ec7ccfa9mr1056754f8f.17.1740710323747; Thu, 27 Feb 2025
- 18:38:43 -0800 (PST)
+        bh=c4g5bD1iwtCcAcdxwzgr3cvfpwNY6CIPmCrs8gYxoZc=;
+        b=aRTXArJiUtOxnQSW96WvcZKuJMwmKHugOkdJKWFiWMML2kQAPficGwhwc+17tTNa3k
+         AghrHJKNu1edBbcGOhETmKUicC9oSWOWETPMLyntVWSnHaxGyJumQrTeHkiIFOl9g7N/
+         +myjF6x5M4mX9Lrg4zuddy/Q1ExJfGKSRX5fZ+Ez97I/Ig8BvIWgF+eNvsP/eq/4JrWY
+         u0mHPOHQdV3VVa71lFZqGzuVUW6mIiPOA9oqvjKmJCPRfKWYFyNfaDP3iK4vgqqufuXN
+         yKGqqgJnigsIYTC6CleLz33mSPiZgjJx6pzLcwJcdtvVJ7MObQx84GHGXq1mW7H+UVj/
+         AI1Q==
+X-Gm-Message-State: AOJu0YxJiRU/ZZS2iq1Xj92YRvhWqUS0lnnVbzUUYcNkqg5n+qOjIOyB
+	NLaELwxa129ZUs0JIUlOf72PIykckgiav9+IdJTXJJeMyNyKGpOzi8AMfs05vbEoJDNPB8WufGF
+	z7023SjiNDclO+Pzcc4pDrENK27Y=
+X-Gm-Gg: ASbGncsi2IVB7CgIvsyPfa35ipG7bgEscaJpgu31bkUbSCmW5SN9/q6cC1wweoQc4AZ
+	zia43Nz8jNJSmcRssXQSOCyO8JOO5X9kocI0PZ8GPgmCZnAxWmCPw53uLd57rQW0p24bnqrYXWR
+	vvYm9ErlAaJns+vFPeULN1E0+tXHUBe4Wc8cvU8xw=
+X-Google-Smtp-Source: AGHT+IFD8bfhdX/iiqYqUwIsSAOuZQhGQwXzlkxKaCo5nPkatQnyh0KU1hbPtoi1jPy61Sqrtb3lIoux4WiwNhfUXrw=
+X-Received: by 2002:a05:6000:188c:b0:38f:3224:65ff with SMTP id
+ ffacd0b85a97d-390ec7c6a8emr938993f8f.5.1740710650079; Thu, 27 Feb 2025
+ 18:44:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <AM6PR03MB50806070E3D56208DDB8131699C22@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <AM6PR03MB5080648369E8A4508220133E99C22@AM6PR03MB5080.eurprd03.prod.outlook.com>
- <Z8DKSgzZB5HZgYN8@slm.duckdns.org> <AM6PR03MB5080C1F0E0F10BCE67101F6F99CD2@AM6PR03MB5080.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB5080C1F0E0F10BCE67101F6F99CD2@AM6PR03MB5080.eurprd03.prod.outlook.com>
+References: <20250125111109.732718-1-houtao@huaweicloud.com>
+ <20250125111109.732718-7-houtao@huaweicloud.com> <CAADnVQL+866m69rv+PC_V1y1-PjL4=w3obTwqLPgW3=kA_BjEg@mail.gmail.com>
+ <6223b1f5-b491-fcec-b50c-222f1075f952@huaweicloud.com> <CAADnVQ+G9YQyj8-Q7UFT9y26tD1Rud_AgRu-D-s1LruYE03NZQ@mail.gmail.com>
+ <01e5b3ca-86d3-46a9-742a-3b69f378d141@huaweicloud.com> <012917a0-e707-0527-f1f2-bb3f38464c7e@huaweicloud.com>
+ <CAADnVQ+ng5wPns+tbFAumWLoZzNnho8pRVaorKGBA=6h9NsYhw@mail.gmail.com>
+ <CAADnVQ+o=2XQ2Wo-Roe35ahq=zgHjC19ptsbRJa1DVir5umqxw@mail.gmail.com> <dac0c127-1876-b936-5d59-bfd29e11c687@huaweicloud.com>
+In-Reply-To: <dac0c127-1876-b936-5d59-bfd29e11c687@huaweicloud.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 27 Feb 2025 18:38:32 -0800
-X-Gm-Features: AQ5f1Jp8U-Bmf7p8ZlWNM4BemWGGrzKJMXHZIaLw2Adsg_t2xas0lQsBC715yCw
-Message-ID: <CAADnVQK1bekF9XH7EHCciXeyiB_W_jXBO9+tJoL17X0YtmGjng@mail.gmail.com>
-Subject: Re: [PATCH sched_ext/for-6.15 v3 3/5] sched_ext: Add
- scx_kfunc_ids_ops_context_sensitive for unified filtering of
- context-sensitive SCX kfuncs
-To: Juntong Deng <juntong.deng@outlook.com>
-Cc: Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>, 
-	Changwoo Min <changwoo@igalia.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
+Date: Thu, 27 Feb 2025 18:43:59 -0800
+X-Gm-Features: AQ5f1JrAEAi9Psq7phjsof3yuIKGV5K9id5iO2M08pAlUFBoduJJCqSjRuW6EM4
+Message-ID: <CAADnVQJB=jCwYcaXXAPOibNgKdSqtGDtVNPQQ_rwWB5W2064Dg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 06/20] bpf: Set BPF_INT_F_DYNPTR_IN_KEY conditionally
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Hou Tao <houtao1@huawei.com>, Xu Kuohai <xukuohai@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 27, 2025 at 1:23=E2=80=AFPM Juntong Deng <juntong.deng@outlook.=
-com> wrote:
+On Thu, Feb 27, 2025 at 5:16=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
 >
-> >> +static int scx_kfunc_ids_ops_context_sensitive_filter(const struct bp=
-f_prog *prog, u32 kfunc_id)
-> >> +{
-> >> +    u32 moff, flags;
-> >> +
-> >> +    if (!btf_id_set8_contains(&scx_kfunc_ids_ops_context_sensitive, k=
-func_id))
-> >> +            return 0;
-> >> +
-> >> +    if (prog->type =3D=3D BPF_PROG_TYPE_SYSCALL &&
-> >> +        btf_id_set8_contains(&scx_kfunc_ids_unlocked, kfunc_id))
-> >> +            return 0;
-> >
-> > Not from this change but these can probably be allowed from TRACING too=
-.
-> >
+> Hi,
 >
-> Not sure if it is safe to make these kfuncs available in TRACING.
-> If Alexei sees this email, could you please leave a comment?
+> On 2/28/2025 5:10 AM, Alexei Starovoitov wrote:
+> > On Fri, Feb 14, 2025 at 9:30=E2=80=AFAM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >> On Thu, Feb 13, 2025 at 11:25=E2=80=AFPM Hou Tao <houtao@huaweicloud.c=
+om> wrote:
+> >>> Hi,
+> >>>
+>
+> SNIP
+> >>>
+> >>> 3) ->map_check_btf()
+> >>>
+> >>> In ->map_check_btf() callback, check whether the created map is
+> >>> mismatched with the dynptr key. If it is, let map_create() destroys t=
+he map.
+> >> map_check_btf() itself can have the code to filter out unsupported map=
+s
+> >> like it does already:
+> >>                         case BPF_WORKQUEUE:
+> >>                                 if (map->map_type !=3D BPF_MAP_TYPE_HA=
+SH &&
+> >>                                     map->map_type !=3D BPF_MAP_TYPE_LR=
+U_HASH &&
+> >>                                     map->map_type !=3D BPF_MAP_TYPE_AR=
+RAY) {
+> >>                                         ret =3D -EOPNOTSUPP;
+> >>
+> >> I don't mind moving map_check_btf() before ->map_alloc_check()
+> >> since it doesn't really need 'map' pointer.
+> >> I objected to partial move where btf_get_by_fd() is done early
+> >> while the rest after map allocation.
+> >> Either all map types do map_check_btf() before alloc or
+> >> all map types do it after.
+> >>
+> >> If we move map_check_btf() before alloc
+> >> then the final map->ops->map_check_btf() should probably
+> >> stay after alloc.
+> >> Otherwise this is too much churn.
+> >>
+> >> So I think it's better to try to keep the whole map_check_btf() after
+> >> as it is right now.
+> >> I don't see yet why dynptr-in-key has to have it before.
+> >> So far map_extra limitation was the only special condition,
+> >> but even if we have to keep (which I doubt) it can be done in
+> >> map->ops->map_check_btf().
+> > Any update on this ?
+> > Two weeks have passed.
+> > iirc above was the only thing left to resolve.
+> Er, I started adding bpffs seq-file and batched operation support
+> recently.  I need to ask whether it is OK to complete these todo items
+> shown below in the following patch-set. As noted in the cover letter,
+> the following things have not been supported yet:
+>
+> 1) batched map operation through bpf syscall
+> 2) the memory accounting for dynptr (aka .htab_map_mem_usage)
+> 3) btf print for the dynptr in map key
+> 4) bpftool support
+> 5) the iteration of elements through bpf program
 
-Hold on, you want to enable all of scx_kfunc_ids_unlocked[] set
-to all of TRACING ? What is the use case ?
-Maybe it's safe, but without in-depth analysis we shouldn't.
-Currently sched-ext allows scx_kfunc_set_any[] for tracing.
-I would stick to that in this patch set.
+All these things would be nice to add, but the patch set
+needs to stay review-able.
+It's 20 patches already which is too high.
+v1 was done many months ago and not only complexity of the feature
+makes it slow to land, but the size of the set too.
+Keep it small. Incremental work is preferred.
+Better to land the core feature first and then gradually
+add 5,2,3,4.
+Batched ops aka 1 can be delayed for some time.
 
