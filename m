@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-52958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7E1FA4A836
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 04:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF7F5A4A837
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 04:02:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F0D01897D65
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 03:02:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0F73189815C
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 03:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BAA1A7264;
-	Sat,  1 Mar 2025 03:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 387301ADC69;
+	Sat,  1 Mar 2025 03:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZD+S94OY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FgwgqRr8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3527715ECD7
-	for <bpf@vger.kernel.org>; Sat,  1 Mar 2025 03:02:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FE11CA84
+	for <bpf@vger.kernel.org>; Sat,  1 Mar 2025 03:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740798138; cv=none; b=fhTTVW7Bs9ouokZzQgDqKRAjXEaNYq/k8sVI3tiopYFb4KuIRPCm5ZWsYdEErAlcjL/M+A0sTYYq1L1H7VZEj90/KltBufaGqauTrokfDFCVhkUnM0ywY+TlVT6QqAaq38UYQamBBYp/kDwJms6iVlst0+ZVYuKqJxayy0kAhUw=
+	t=1740798139; cv=none; b=c5ybrmYHaOte7yFSSob40EXa06KRom7AEH8/0K3cRUDQiJ4Z/Rom9sAHlFm2WPGDopVfz1GVcBPuna6Apf5GBPI1K+WrIGS5e/Y5NcHRl1Czl9nhnqmWNrE58xLV8MK2+GQhIFtKS2eJfOs1qCW5ohHwuZ6uutXbcgrwPr1o4qE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740798138; c=relaxed/simple;
-	bh=y+sHsLEqdew+DfOuBOU9KArsJMmccspgbdU2aqyaCd4=;
+	s=arc-20240116; t=1740798139; c=relaxed/simple;
+	bh=xtnwzGz8N+rP2QXagom8tXWjNGA2I4BEXiqL+8BnRFo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nLnhXIAdjDPASMR2kjBEmMoLc9eMMDbJHMyktHgQ70GNI5cogQoFwIQYVa18uFgck83uK1Zm7gLDAQ0aVaNosvl1ozXW2ZkccLJsGxNtGqqN2G4gabKY5R9QdQiuoUJbDKVbvf3O4QiX3ksbTxGILYYwQ/UfHigFeXPfREdKSy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZD+S94OY; arc=none smtp.client-ip=209.85.221.67
+	 MIME-Version; b=ileXDe7Ig9bBiP3IZHPm0f4jEDD3obtpEkWNZjv5KaN/+O82DWvja83DxW19N03M7PHeMqMhyCtn+7b50/kAl65GpVu0zW8MUyOXiYV2c+hClt0+W0UDxJnsNiSS+irV5kSZddtyOIwG2FhJGmTuYNA/+E0CScSBr6sTadLt5xM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FgwgqRr8; arc=none smtp.client-ip=209.85.128.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-38f6475f747so1363824f8f.3
-        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 19:02:14 -0800 (PST)
+Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-43aac0390e8so17717725e9.2
+        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 19:02:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740798133; x=1741402933; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740798134; x=1741402934; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5ErwRhf6FvDxB2tk+JTbXqp+BUu3Yb98sxSMDVeInZk=;
-        b=ZD+S94OYaYLGWr3itRIAM3L18fZ5RwXoqOU+q8ytXxdtp1xisvEcydsYinhnla5fMw
-         CCIKnIu19fCLiuZB7LcmqDYMaTR/VB2n5NWpJCQEBNQuN89rF404emusdh1t0V9ZJ5xo
-         UpX7qyAkgtd9qG8JwqWZ+nUEvPs5HNUGmksMkGoJeHr7yexfzviWG2Y5FUrKhP7S5wVu
-         TLcs9boHCALuaEydXsm8HRqnxR1cNq/QfbbhcBFqmdFaKSgy0I+8qi/jwIg/qfVfl5Ij
-         Rze4RcQl0V43uPS0yMbPjKuiw4n07OpAr5VF6smR595+wKuNcJAZqP/+8rKZ+tAyAxuz
-         JaJA==
+        bh=GYBIgSDdjCsi6kW+edufKKreTkO/TuPvwk2aqVo4MjQ=;
+        b=FgwgqRr8s+rTSnSjMborEHGTV8lPU4knORv9vfU1Y0TzWZ4TvbO2pvBSoQ2IMuA7sT
+         Ec1xifsyyR0C9KNFmwoHnwgdbdzAnfrYka6Tjo6aLyW4W3BI7xdwM2Kmrw9ttxymCTWk
+         QuTZSWBChuwEhCs8BGgbPruXPTqufT2a5URtM96F7NqgWJCmQS75ao5g3UQM+a8r4aBE
+         WtbrKo5TkISpOGGOTI+9UXukEqM5YhqJfxGXNY6roDZcXbIqqKeqMrBo5vKJzuVqNCE9
+         KTA/QxVW178szvLuREoorlrIskfpFAKubnLntW9n2TWVsLXQjLyJko6VDqjgwrBzirI6
+         42eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740798133; x=1741402933;
+        d=1e100.net; s=20230601; t=1740798134; x=1741402934;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5ErwRhf6FvDxB2tk+JTbXqp+BUu3Yb98sxSMDVeInZk=;
-        b=FeMfjaRVErrYhvwUIRPIq5Z3cF+NR+eYwKx5Um0tWvbsOQjtA0fqVzcwaj+BOq8Ete
-         +wLcl4jvDV5UYJ29bAyRreJ36V2LINCcfza5LDjbhkjicZLqPISp39AqexfYPYmZVpJu
-         VZLgQN2VBcWyJED1p11kCaLYKRUB+wOwez3eV1RD1Sv3X40dxKyc4TxqCUeheIirVk6x
-         JXGdbDJFg5XTjQ42VyMqA/gXXWFS+RMoyotqJlXHRLRpLwt23IFvMonIizd7MCP2Dghr
-         T3yeMJbJz2DWJWJltqqVff2LZVG3EcggSMbg+buumwjgdE++FMv8BZvBVl07JeRDovLe
-         KT5A==
-X-Gm-Message-State: AOJu0Yw88UUDiQuomoPq4OL/jacbMTKUDGUQkfFrTlqF/YOWQlOpfXeP
-	HWQJh/pixsgqCQeNQ5y0Ew0fOZMWft6LJMgYMBYIgKzq5czVnzprezQR1b2GkHg=
-X-Gm-Gg: ASbGncug6Z0i7bfkhj3kW++B2k1rBXOmZ+NTAKq3xEyI8VR/GNOkfQ3BZuRThyRqIBr
-	lpIqc7ZkGE6fUYCu9YnrWsdtlDp5uJyX5/+DbW2jYTuKd8zd2wjqWNsjgmO4X7M+LJjT5prj8rS
-	kaIGpZIn9uJYFzmppFCTrTXHJT0OJcM0Ko2IJLlFBMiYdE9rv0wuqfcR+Z/yZJe2NbpfrK+LZVu
-	iRl9+zCBa52RC1V9CCaCwkWW0dkJqEcW1HUob0GIxYF7vhMeChIVCbEMrdLzA7VqgC2nguLLGGz
-	JXB39JaWkNN3okF5tkhQ9daryWioxI4=
-X-Google-Smtp-Source: AGHT+IFXvNegqS9lVKQHqGTXpAf0nm/MCxfEWfzVEpacmC0LjbydWuC9oS7eNxe/V5/NwrLkUepcnw==
-X-Received: by 2002:a05:6000:2ce:b0:390:f9d0:5e3 with SMTP id ffacd0b85a97d-390f9d0075cmr340248f8f.1.1740798132978;
-        Fri, 28 Feb 2025 19:02:12 -0800 (PST)
-Received: from localhost ([2a03:2880:31ff::])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e4796600sm6852616f8f.20.2025.02.28.19.02.12
+        bh=GYBIgSDdjCsi6kW+edufKKreTkO/TuPvwk2aqVo4MjQ=;
+        b=VbCH6qZAc6EQNeGRfzBmoMOC3CpS3avlFTszqTI+KvfxV874ta6zojAhx1vk/Z6dTs
+         5NEZ/hlpAB7RAoS59drnN0JrIFpEluOUSVU+wGFlOx5heIDzjTG8Qp6WFABSQC1DBEYg
+         43Nu17MGNYWGDwHNiRkocF3JxTC98fLtkCOGEGn3fMlepEfTRgPSWRAGvLx0nZEtx7DF
+         m235qoLOFmaYXk8tm/iCC85GPUswos6dl+fbqtrNLq/nODmF7ZQV1M/a2V2Q0rr8ZN+/
+         D/c+yEEuog2Dst6Nl2IodfmPELXvpKd4vezGDJsM4vPx44eaE5NBPb4XYIWbMqlsd0b5
+         133g==
+X-Gm-Message-State: AOJu0Ywbhrc9+QyRWQxWbF/BRqEvvHXK1fnZ7aF/EITCSdlspWpZAuXU
+	/dpXm89Xw+tdZThrzZybIUoulOrugRd4SSS02hzorj66xx1gAO7i3avM4Vdq9MI=
+X-Gm-Gg: ASbGnctzgb+QCp1veDJmrFFMqKRHBOunYVaoVrU45/nzyqU5qiy4N+QH+l5DrXNvEHF
+	2HxZkRvevxmyZS8V1M1VpxFM8crMJamk0ZNVsGBZJIQWpD86NxWQeucfgfTaeWXzupk5d1GqfpP
+	AaEJ+0IySkfRm/AhIEse4xgFByiYVzSBOMayWPE5dlb5MNDq3KyDoPZoWq9F6UtHZN0ve0qEHKV
+	ZmVwefXAOIhIE51Crcl580/IQdFRTdGBVMTUxOyW3oxeF9hp4oswax/9EivMV5/uetsCaNeu6VG
+	Q+4gK/KmnQbTa+blWjo/tkk+7eGYf00lDKI=
+X-Google-Smtp-Source: AGHT+IG5tIhlmlslQzYMLDIc/YD/Qmpsyy2XZDtsQl3bPGCXGdJLQ7LFB//gM50MxByK5wv1ap9Hng==
+X-Received: by 2002:a05:6000:1447:b0:38f:2350:7f70 with SMTP id ffacd0b85a97d-390ec7d25ddmr4858726f8f.24.1740798134401;
+        Fri, 28 Feb 2025 19:02:14 -0800 (PST)
+Received: from localhost ([2a03:2880:31ff:71::])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e47a72d5sm7065918f8f.31.2025.02.28.19.02.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Feb 2025 19:02:12 -0800 (PST)
+        Fri, 28 Feb 2025 19:02:13 -0800 (PST)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -80,9 +80,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v2 2/3] selftests/bpf: Test sleepable global subprogs in atomic contexts
-Date: Fri, 28 Feb 2025 19:02:04 -0800
-Message-ID: <20250301030205.1221223-3-memxor@gmail.com>
+Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Add tests for extending sleepable global subprogs
+Date: Fri, 28 Feb 2025 19:02:05 -0800
+Message-ID: <20250301030205.1221223-4-memxor@gmail.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20250301030205.1221223-1-memxor@gmail.com>
 References: <20250301030205.1221223-1-memxor@gmail.com>
@@ -92,365 +92,372 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10038; h=from:subject; bh=y+sHsLEqdew+DfOuBOU9KArsJMmccspgbdU2aqyaCd4=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnwnVALKOHjfLJChnSeMHFb6wygHu2qIeh/03QGtK5 /KZs9+SJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ8J1QAAKCRBM4MiGSL8Ryi5GD/ 9oUPRj7MVngil40eTjNQQHO28/bQT2R0poyjvDOnVx5oipqDM461im1uWcalz0A/PT7AmPRVTeKpgN O2tHlwEhA65BO2oKkbblTwrO4AQSluEQGs3xY/OvYb7MCCWe+IWODZToNb7RMmV+5hiir3i2CifhV0 fBpCNnPm/8+O2SFHSFW9/fRRpiEvtdMnW7CoLN0/GpZE79vE9R0c1N+Qk5bvT3tw3bOGDUG+/LeSSj eqiNc0aKHEO/9FNw8F3PU87864Zl3Ae3Lw/khfaRtHlk0qqCESjhKXMHfzX44NSYtR5UD2KtEAt1Bc XKqbBMPw50TyznlK4ER9iWjkZYh8O2LYZzT0mIhFy5y1woHjOFW8gYKOgJ7vzrIr6f3XzsvSM+B7vW 16dQgFyq5jH7pzO9rW8I+oDx0QDNcgewajXPYPuz6SwqB5l7SamF4r/11bfK0Kg0SVrlUyILOaHhIv 8iNy8cQJBDKIOT8X6AEo4DqE6+mmDI3CdktAWhpMCf4kvNJOXjxCznRP4M9Bo3GZJ19sozayiR8M+i 90g6LTlR/QJfhDc30BmZ/mpTHZr1jnCox2juL5wFzIQpLc8KD7iQ+r8H1x/9YuU1EdUgetw4YOK9ej 9aK15AVosyEYVN8bENaR46tMV1qh+ofCFOTQo9OLsLldJ9siIPFFgZHVDQSw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=12699; h=from:subject; bh=xtnwzGz8N+rP2QXagom8tXWjNGA2I4BEXiqL+8BnRFo=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnwnVAuehVdKdpJEWaFWhD6N7FL970EGk/Zj3QbKyF l76FmliJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ8J1QAAKCRBM4MiGSL8RyoUfD/ 4unS4dt4IC8AD5CrhI+3lRAKVywZRL2Rl396JgypEz0oJVXFhG31z3OX4Qc8ZEjkI61fUUjfO1Qvxt X+kcHGaqwfwsXbQMAG/0RsGQKY0wosghffVDEFRdLp+EiQVo/m5rhMOERjItKJlAtLzyeUD3nMaoNd /UzUSDVh9Uw2uEwqBkB2TzVp1V/+CxZ5pOhosCWmxWmh62lZAU7Gs7G3IMi0pk8bjgfOjLDV6R1k4a hzzCwcwWguL9M+GZPZxOlmP7EyCiz3H+s3u5NXAiTqoRBOg84lY00G5XqlFB8gjtGQOGT3yFNL+AgR 6EPP0VMZxbSib5FahcD1TbGkijWvtBeHOIg7PrzsQUQxCxtjCIN+WePYrPCMNzjHVmgbwGpqUKDFwf gGsuBV1AL0Ldj5ziJ4Jvq3iGwdJw4oS0H7ZeJ2vjE4lRC+DAaT79Niz86arM2acapob9H7GBmIJ8l4 +atm7XHjX80vJJJZeLEXsp/yofDrP04tMLVjt67+TndZ3FqZKhYYpOPopeiU7H72dSwZm3PTGRBTjC FbZlFonQG7ZqLRCc247cpSN0abK+JaBoyYF4rNvcaKQh+mvfebXIxB9jF9mNQnclp0iOVAIA+046Dg Lnhh1uDQe4NKtSy0EfXzXVSWo1yKGOZpH/omYDlB6iqJ/QuM0J5vEg6xOd0w==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Add tests for rejecting sleepable and accepting non-sleepable global
-function calls in atomic contexts. For spin locks, we still reject
-all global function calls. Once resilient spin locks land, we will
-carefully lift in cases where we deem it safe.
+Add tests for freplace behavior with the combination of sleepable
+and non-sleepable global subprogs. The changes_pkt_data selftest
+did all the hardwork, so simply rename it and include new support
+for more summarization tests for might_sleep bit.
+
+Sleepable extensions don't work yet, so add support but disable it for
+now, allow support to be tested once it's enabled (and ensure we will
+complain then).
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- .../selftests/bpf/prog_tests/rcu_read_lock.c  |  3 +
- .../selftests/bpf/prog_tests/spin_lock.c      |  3 +
- tools/testing/selftests/bpf/progs/irq.c       | 71 ++++++++++++++++++-
- .../selftests/bpf/progs/preempt_lock.c        | 68 +++++++++++++++++-
- .../selftests/bpf/progs/rcu_read_lock.c       | 58 +++++++++++++++
- .../selftests/bpf/progs/test_spin_lock_fail.c | 69 ++++++++++++++++++
- 6 files changed, 270 insertions(+), 2 deletions(-)
+ .../bpf/prog_tests/changes_pkt_data.c         | 107 -------------
+ .../selftests/bpf/prog_tests/summarization.c  | 143 ++++++++++++++++++
+ .../{changes_pkt_data.c => summarization.c}   |  38 ++++-
+ ...ta_freplace.c => summarization_freplace.c} |  13 ++
+ 4 files changed, 193 insertions(+), 108 deletions(-)
+ delete mode 100644 tools/testing/selftests/bpf/prog_tests/changes_pkt_data.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/summarization.c
+ rename tools/testing/selftests/bpf/progs/{changes_pkt_data.c => summarization.c} (52%)
+ rename tools/testing/selftests/bpf/progs/{changes_pkt_data_freplace.c => summarization_freplace.c} (66%)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c b/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
-index ebe0c12b5536..c9f855e5da24 100644
---- a/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/rcu_read_lock.c
-@@ -81,6 +81,9 @@ static const char * const inproper_region_tests[] = {
- 	"nested_rcu_region",
- 	"rcu_read_lock_global_subprog_lock",
- 	"rcu_read_lock_global_subprog_unlock",
-+	"rcu_read_lock_sleepable_helper_global_subprog",
-+	"rcu_read_lock_sleepable_kfunc_global_subprog",
-+	"rcu_read_lock_sleepable_global_subprog_indirect",
- };
- 
- static void test_inproper_region(void)
-diff --git a/tools/testing/selftests/bpf/prog_tests/spin_lock.c b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-index 2b0068742ef9..e3ea5dc2f697 100644
---- a/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-@@ -50,6 +50,9 @@ static struct {
- 	{ "lock_id_mismatch_innermapval_mapval", "bpf_spin_unlock of different lock" },
- 	{ "lock_global_subprog_call1", "global function calls are not allowed while holding a lock" },
- 	{ "lock_global_subprog_call2", "global function calls are not allowed while holding a lock" },
-+	{ "lock_global_sleepable_helper_subprog", "global function calls are not allowed while holding a lock" },
-+	{ "lock_global_sleepable_kfunc_subprog", "global function calls are not allowed while holding a lock" },
-+	{ "lock_global_sleepable_subprog_indirect", "global function calls are not allowed while holding a lock" },
- };
- 
- static int match_regex(const char *pattern, const char *string)
-diff --git a/tools/testing/selftests/bpf/progs/irq.c b/tools/testing/selftests/bpf/progs/irq.c
-index b0b53d980964..298d48d7886d 100644
---- a/tools/testing/selftests/bpf/progs/irq.c
-+++ b/tools/testing/selftests/bpf/progs/irq.c
-@@ -222,7 +222,7 @@ int __noinline global_local_irq_balance(void)
+diff --git a/tools/testing/selftests/bpf/prog_tests/changes_pkt_data.c b/tools/testing/selftests/bpf/prog_tests/changes_pkt_data.c
+deleted file mode 100644
+index 7526de379081..000000000000
+--- a/tools/testing/selftests/bpf/prog_tests/changes_pkt_data.c
++++ /dev/null
+@@ -1,107 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include "bpf/libbpf.h"
+-#include "changes_pkt_data_freplace.skel.h"
+-#include "changes_pkt_data.skel.h"
+-#include <test_progs.h>
+-
+-static void print_verifier_log(const char *log)
+-{
+-	if (env.verbosity >= VERBOSE_VERY)
+-		fprintf(stdout, "VERIFIER LOG:\n=============\n%s=============\n", log);
+-}
+-
+-static void test_aux(const char *main_prog_name,
+-		     const char *to_be_replaced,
+-		     const char *replacement,
+-		     bool expect_load)
+-{
+-	struct changes_pkt_data_freplace *freplace = NULL;
+-	struct bpf_program *freplace_prog = NULL;
+-	struct bpf_program *main_prog = NULL;
+-	LIBBPF_OPTS(bpf_object_open_opts, opts);
+-	struct changes_pkt_data *main = NULL;
+-	char log[16*1024];
+-	int err;
+-
+-	opts.kernel_log_buf = log;
+-	opts.kernel_log_size = sizeof(log);
+-	if (env.verbosity >= VERBOSE_SUPER)
+-		opts.kernel_log_level = 1 | 2 | 4;
+-	main = changes_pkt_data__open_opts(&opts);
+-	if (!ASSERT_OK_PTR(main, "changes_pkt_data__open"))
+-		goto out;
+-	main_prog = bpf_object__find_program_by_name(main->obj, main_prog_name);
+-	if (!ASSERT_OK_PTR(main_prog, "main_prog"))
+-		goto out;
+-	bpf_program__set_autoload(main_prog, true);
+-	err = changes_pkt_data__load(main);
+-	print_verifier_log(log);
+-	if (!ASSERT_OK(err, "changes_pkt_data__load"))
+-		goto out;
+-	freplace = changes_pkt_data_freplace__open_opts(&opts);
+-	if (!ASSERT_OK_PTR(freplace, "changes_pkt_data_freplace__open"))
+-		goto out;
+-	freplace_prog = bpf_object__find_program_by_name(freplace->obj, replacement);
+-	if (!ASSERT_OK_PTR(freplace_prog, "freplace_prog"))
+-		goto out;
+-	bpf_program__set_autoload(freplace_prog, true);
+-	bpf_program__set_autoattach(freplace_prog, true);
+-	bpf_program__set_attach_target(freplace_prog,
+-				       bpf_program__fd(main_prog),
+-				       to_be_replaced);
+-	err = changes_pkt_data_freplace__load(freplace);
+-	print_verifier_log(log);
+-	if (expect_load) {
+-		ASSERT_OK(err, "changes_pkt_data_freplace__load");
+-	} else {
+-		ASSERT_ERR(err, "changes_pkt_data_freplace__load");
+-		ASSERT_HAS_SUBSTR(log, "Extension program changes packet data", "error log");
+-	}
+-
+-out:
+-	changes_pkt_data_freplace__destroy(freplace);
+-	changes_pkt_data__destroy(main);
+-}
+-
+-/* There are two global subprograms in both changes_pkt_data.skel.h:
+- * - one changes packet data;
+- * - another does not.
+- * It is ok to freplace subprograms that change packet data with those
+- * that either do or do not. It is only ok to freplace subprograms
+- * that do not change packet data with those that do not as well.
+- * The below tests check outcomes for each combination of such freplace.
+- * Also test a case when main subprogram itself is replaced and is a single
+- * subprogram in a program.
+- */
+-void test_changes_pkt_data_freplace(void)
+-{
+-	struct {
+-		const char *main;
+-		const char *to_be_replaced;
+-		bool changes;
+-	} mains[] = {
+-		{ "main_with_subprogs",   "changes_pkt_data",         true },
+-		{ "main_with_subprogs",   "does_not_change_pkt_data", false },
+-		{ "main_changes",         "main_changes",             true },
+-		{ "main_does_not_change", "main_does_not_change",     false },
+-	};
+-	struct {
+-		const char *func;
+-		bool changes;
+-	} replacements[] = {
+-		{ "changes_pkt_data",         true },
+-		{ "does_not_change_pkt_data", false }
+-	};
+-	char buf[64];
+-
+-	for (int i = 0; i < ARRAY_SIZE(mains); ++i) {
+-		for (int j = 0; j < ARRAY_SIZE(replacements); ++j) {
+-			snprintf(buf, sizeof(buf), "%s_with_%s",
+-				 mains[i].to_be_replaced, replacements[j].func);
+-			if (!test__start_subtest(buf))
+-				continue;
+-			test_aux(mains[i].main, mains[i].to_be_replaced, replacements[j].func,
+-				 mains[i].changes || !replacements[j].changes);
+-		}
+-	}
+-}
+diff --git a/tools/testing/selftests/bpf/prog_tests/summarization.c b/tools/testing/selftests/bpf/prog_tests/summarization.c
+new file mode 100644
+index 000000000000..ee7517b2a606
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/summarization.c
+@@ -0,0 +1,143 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "bpf/libbpf.h"
++#include "summarization_freplace.skel.h"
++#include "summarization.skel.h"
++#include <test_progs.h>
++
++static void print_verifier_log(const char *log)
++{
++	if (env.verbosity >= VERBOSE_VERY)
++		fprintf(stdout, "VERIFIER LOG:\n=============\n%s=============\n", log);
++}
++
++static void test_aux(const char *main_prog_name,
++		     const char *to_be_replaced,
++		     const char *replacement,
++		     bool expect_load,
++		     const char *err_msg)
++{
++	struct summarization_freplace *freplace = NULL;
++	struct bpf_program *freplace_prog = NULL;
++	struct bpf_program *main_prog = NULL;
++	LIBBPF_OPTS(bpf_object_open_opts, opts);
++	struct summarization *main = NULL;
++	char log[16*1024];
++	int err;
++
++	opts.kernel_log_buf = log;
++	opts.kernel_log_size = sizeof(log);
++	if (env.verbosity >= VERBOSE_SUPER)
++		opts.kernel_log_level = 1 | 2 | 4;
++	main = summarization__open_opts(&opts);
++	if (!ASSERT_OK_PTR(main, "summarization__open"))
++		goto out;
++	main_prog = bpf_object__find_program_by_name(main->obj, main_prog_name);
++	if (!ASSERT_OK_PTR(main_prog, "main_prog"))
++		goto out;
++	bpf_program__set_autoload(main_prog, true);
++	err = summarization__load(main);
++	print_verifier_log(log);
++	if (!ASSERT_OK(err, "summarization__load"))
++		goto out;
++	freplace = summarization_freplace__open_opts(&opts);
++	if (!ASSERT_OK_PTR(freplace, "summarization_freplace__open"))
++		goto out;
++	freplace_prog = bpf_object__find_program_by_name(freplace->obj, replacement);
++	if (!ASSERT_OK_PTR(freplace_prog, "freplace_prog"))
++		goto out;
++	bpf_program__set_autoload(freplace_prog, true);
++	bpf_program__set_autoattach(freplace_prog, true);
++	bpf_program__set_attach_target(freplace_prog,
++				       bpf_program__fd(main_prog),
++				       to_be_replaced);
++	err = summarization_freplace__load(freplace);
++	print_verifier_log(log);
++
++	/* Sleepable extension prog doesn't work yet, but make sure we catch
++	 * this condition and activate the error below in case it becomes
++	 * supported, as we would need to test this condition then.
++	 */
++	if (!strcmp("might_sleep", replacement)) {
++		ASSERT_EQ(err, -EINVAL, "might_sleep load must fail");
++		test__skip();
++		goto out;
++	}
++
++	if (expect_load) {
++		ASSERT_OK(err, "summarization_freplace__load");
++	} else {
++		ASSERT_ERR(err, "summarization_freplace__load");
++		ASSERT_HAS_SUBSTR(log, err_msg, "error log");
++	}
++
++out:
++	summarization_freplace__destroy(freplace);
++	summarization__destroy(main);
++}
++
++/* There are two global subprograms in both summarization.skel.h:
++ * - one changes packet data;
++ * - another does not.
++ * It is ok to freplace subprograms that change packet data with those
++ * that either do or do not. It is only ok to freplace subprograms
++ * that do not change packet data with those that do not as well.
++ * The below tests check outcomes for each combination of such freplace.
++ * Also test a case when main subprogram itself is replaced and is a single
++ * subprogram in a program.
++ *
++ * This holds for might_sleep programs. It is ok to replace might_sleep with
++ * might_sleep and with does_not_sleep, but does_not_sleep cannot be replaced
++ * with might_sleep.
++ */
++void test_summarization_freplace(void)
++{
++	struct {
++		const char *main;
++		const char *to_be_replaced;
++		bool has_side_effect;
++	} mains[2][4] = {
++		{
++			{ "main_changes_with_subprogs",		"changes_pkt_data",	    true },
++			{ "main_changes_with_subprogs",		"does_not_change_pkt_data", false },
++			{ "main_changes",			"main_changes",             true },
++			{ "main_does_not_change",		"main_does_not_change",     false },
++		},
++		{
++			{ "main_might_sleep_with_subprogs",	"might_sleep",		    true },
++			{ "main_might_sleep_with_subprogs",	"does_not_sleep",	    false },
++			{ "main_might_sleep",			"might_sleep",		    true },
++			{ "main_does_not_sleep",		"does_not_sleep",	    false },
++		},
++	};
++	const char *pkt_err = "Extension program changes packet data";
++	const char *slp_err = "Extension program may sleep";
++	struct {
++		const char *func;
++		bool has_side_effect;
++		const char *err_msg;
++	} replacements[2][2] = {
++		{
++			{ "changes_pkt_data",	      true,	pkt_err },
++			{ "does_not_change_pkt_data", false,	pkt_err },
++		},
++		{
++			{ "might_sleep",	      true,	slp_err },
++			{ "does_not_sleep",	      false,	slp_err },
++		},
++	};
++	char buf[64];
++
++	for (int t = 0; t < 2; t++) {
++		for (int i = 0; i < ARRAY_SIZE(mains); ++i) {
++			for (int j = 0; j < ARRAY_SIZE(replacements); ++j) {
++				snprintf(buf, sizeof(buf), "%s_with_%s",
++					 mains[t][i].to_be_replaced, replacements[t][j].func);
++				if (!test__start_subtest(buf))
++					continue;
++				test_aux(mains[t][i].main, mains[t][i].to_be_replaced, replacements[t][j].func,
++					 mains[t][i].has_side_effect || !replacements[t][j].has_side_effect,
++					 replacements[t][j].err_msg);
++			}
++		}
++	}
++}
+diff --git a/tools/testing/selftests/bpf/progs/changes_pkt_data.c b/tools/testing/selftests/bpf/progs/summarization.c
+similarity index 52%
+rename from tools/testing/selftests/bpf/progs/changes_pkt_data.c
+rename to tools/testing/selftests/bpf/progs/summarization.c
+index 43cada48b28a..730342f7b37c 100644
+--- a/tools/testing/selftests/bpf/progs/changes_pkt_data.c
++++ b/tools/testing/selftests/bpf/progs/summarization.c
+@@ -16,7 +16,7 @@ long does_not_change_pkt_data(struct __sk_buff *sk)
  }
  
  SEC("?tc")
--__failure __msg("global function calls are not allowed with IRQs disabled")
-+__success
- int irq_global_subprog(struct __sk_buff *ctx)
+-int main_with_subprogs(struct __sk_buff *sk)
++int main_changes_with_subprogs(struct __sk_buff *sk)
  {
- 	unsigned long flags;
-@@ -441,4 +441,73 @@ int irq_ooo_refs_array(struct __sk_buff *ctx)
+ 	changes_pkt_data(sk);
+ 	does_not_change_pkt_data(sk);
+@@ -36,4 +36,40 @@ int main_does_not_change(struct __sk_buff *sk)
  	return 0;
  }
  
-+int __noinline
-+global_subprog(int i)
++__noinline
++long might_sleep(int i)
 +{
-+	if (i)
-+		bpf_printk("%p", &i);
++	bpf_copy_from_user(&i, sizeof(i), NULL);
 +	return i;
 +}
 +
-+int __noinline
-+global_sleepable_helper_subprog(int i)
++__noinline __weak
++long does_not_sleep(int i)
 +{
-+	if (i)
-+		bpf_copy_from_user(&i, sizeof(i), NULL);
-+	return i;
-+}
-+
-+int __noinline
-+global_sleepable_kfunc_subprog(int i)
-+{
-+	if (i)
-+		bpf_copy_from_user_str(&i, sizeof(i), NULL, 0);
-+	global_subprog(i);
-+	return i;
-+}
-+
-+int __noinline
-+global_subprog_calling_sleepable_global(int i)
-+{
-+	if (!i)
-+		global_sleepable_kfunc_subprog(i);
-+	return i;
-+}
-+
-+SEC("?syscall")
-+__success
-+int irq_non_sleepable_global_subprog(void *ctx)
-+{
-+	unsigned long flags;
-+
-+	bpf_local_irq_save(&flags);
-+	global_subprog(0);
-+	bpf_local_irq_restore(&flags);
 +	return 0;
 +}
 +
 +SEC("?syscall")
-+__failure __msg("global functions that may sleep are not allowed in non-sleepable context")
-+int irq_sleepable_helper_global_subprog(void *ctx)
++int main_might_sleep_with_subprogs(void *ctx)
 +{
-+	unsigned long flags;
-+
-+	bpf_local_irq_save(&flags);
-+	global_sleepable_helper_subprog(0);
-+	bpf_local_irq_restore(&flags);
++	might_sleep(0);
++	does_not_sleep(0);
 +	return 0;
 +}
 +
 +SEC("?syscall")
-+__failure __msg("global functions that may sleep are not allowed in non-sleepable context")
-+int irq_sleepable_global_subprog_indirect(void *ctx)
++int main_might_sleep(void *ctx)
 +{
-+	unsigned long flags;
++	int i;
 +
-+	bpf_local_irq_save(&flags);
-+	global_subprog_calling_sleepable_global(0);
-+	bpf_local_irq_restore(&flags);
++	bpf_copy_from_user(&i, sizeof(i), NULL);
++	return i;
++}
++
++SEC("?syscall")
++int main_does_not_sleep(void *sk)
++{
 +	return 0;
 +}
 +
  char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/preempt_lock.c b/tools/testing/selftests/bpf/progs/preempt_lock.c
-index 6c5797bf0ead..7d04254e61f1 100644
---- a/tools/testing/selftests/bpf/progs/preempt_lock.c
-+++ b/tools/testing/selftests/bpf/progs/preempt_lock.c
-@@ -134,7 +134,7 @@ int __noinline preempt_global_subprog(void)
- }
- 
- SEC("?tc")
--__failure __msg("global function calls are not allowed with preemption disabled")
-+__success
- int preempt_global_subprog_test(struct __sk_buff *ctx)
- {
- 	preempt_disable();
-@@ -143,4 +143,70 @@ int preempt_global_subprog_test(struct __sk_buff *ctx)
+diff --git a/tools/testing/selftests/bpf/progs/changes_pkt_data_freplace.c b/tools/testing/selftests/bpf/progs/summarization_freplace.c
+similarity index 66%
+rename from tools/testing/selftests/bpf/progs/changes_pkt_data_freplace.c
+rename to tools/testing/selftests/bpf/progs/summarization_freplace.c
+index f9a622705f1b..c813b1278138 100644
+--- a/tools/testing/selftests/bpf/progs/changes_pkt_data_freplace.c
++++ b/tools/testing/selftests/bpf/progs/summarization_freplace.c
+@@ -15,4 +15,17 @@ long does_not_change_pkt_data(struct __sk_buff *sk)
  	return 0;
  }
  
-+int __noinline
-+global_subprog(int i)
++SEC("?freplace")
++long might_sleep(int i)
 +{
-+	if (i)
-+		bpf_printk("%p", &i);
++	bpf_copy_from_user(&i, sizeof(i), NULL);
 +	return i;
 +}
 +
-+int __noinline
-+global_sleepable_helper_subprog(int i)
++SEC("?freplace")
++long does_not_sleep(int i)
 +{
-+	if (i)
-+		bpf_copy_from_user(&i, sizeof(i), NULL);
-+	return i;
-+}
-+
-+int __noinline
-+global_sleepable_kfunc_subprog(int i)
-+{
-+	if (i)
-+		bpf_copy_from_user_str(&i, sizeof(i), NULL, 0);
-+	global_subprog(i);
-+	return i;
-+}
-+
-+int __noinline
-+global_subprog_calling_sleepable_global(int i)
-+{
-+	if (!i)
-+		global_sleepable_kfunc_subprog(i);
-+	return i;
-+}
-+
-+SEC("?syscall")
-+__failure __msg("global functions that may sleep are not allowed in non-sleepable context")
-+int preempt_global_sleepable_helper_subprog(struct __sk_buff *ctx)
-+{
-+	preempt_disable();
-+	if (ctx->mark)
-+		global_sleepable_helper_subprog(ctx->mark);
-+	preempt_enable();
 +	return 0;
-+}
-+
-+SEC("?syscall")
-+__failure __msg("global functions that may sleep are not allowed in non-sleepable context")
-+int preempt_global_sleepable_kfunc_subprog(struct __sk_buff *ctx)
-+{
-+	preempt_disable();
-+	if (ctx->mark)
-+		global_sleepable_kfunc_subprog(ctx->mark);
-+	preempt_enable();
-+	return 0;
-+}
-+
-+SEC("?syscall")
-+__failure __msg("global functions that may sleep are not allowed in non-sleepable context")
-+int preempt_global_sleepable_subprog_indirect(struct __sk_buff *ctx)
-+{
-+	preempt_disable();
-+	if (ctx->mark)
-+		global_subprog_calling_sleepable_global(ctx->mark);
-+	preempt_enable();
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/rcu_read_lock.c b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-index ab3a532b7dd6..5cf1ae637ec7 100644
---- a/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-+++ b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-@@ -439,3 +439,61 @@ int rcu_read_lock_global_subprog_unlock(void *ctx)
- 	ret += global_subprog_unlock(ret);
- 	return 0;
- }
-+
-+int __noinline
-+global_sleepable_helper_subprog(int i)
-+{
-+	if (i)
-+		bpf_copy_from_user(&i, sizeof(i), NULL);
-+	return i;
-+}
-+
-+int __noinline
-+global_sleepable_kfunc_subprog(int i)
-+{
-+	if (i)
-+		bpf_copy_from_user_str(&i, sizeof(i), NULL, 0);
-+	global_subprog(i);
-+	return i;
-+}
-+
-+int __noinline
-+global_subprog_calling_sleepable_global(int i)
-+{
-+	if (!i)
-+		global_sleepable_kfunc_subprog(i);
-+	return i;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int rcu_read_lock_sleepable_helper_global_subprog(void *ctx)
-+{
-+	volatile int ret = 0;
-+
-+	bpf_rcu_read_lock();
-+	ret += global_sleepable_helper_subprog(ret);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int rcu_read_lock_sleepable_kfunc_global_subprog(void *ctx)
-+{
-+	volatile int ret = 0;
-+
-+	bpf_rcu_read_lock();
-+	ret += global_sleepable_kfunc_subprog(ret);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int rcu_read_lock_sleepable_global_subprog_indirect(void *ctx)
-+{
-+	volatile int ret = 0;
-+
-+	bpf_rcu_read_lock();
-+	ret += global_subprog_calling_sleepable_global(ret);
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c b/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
-index 1c8b678e2e9a..f678ee6bd7ea 100644
---- a/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
-+++ b/tools/testing/selftests/bpf/progs/test_spin_lock_fail.c
-@@ -245,4 +245,73 @@ int lock_global_subprog_call2(struct __sk_buff *ctx)
- 	return ret;
- }
- 
-+int __noinline
-+global_subprog_int(int i)
-+{
-+	if (i)
-+		bpf_printk("%p", &i);
-+	return i;
-+}
-+
-+int __noinline
-+global_sleepable_helper_subprog(int i)
-+{
-+	if (i)
-+		bpf_copy_from_user(&i, sizeof(i), NULL);
-+	return i;
-+}
-+
-+int __noinline
-+global_sleepable_kfunc_subprog(int i)
-+{
-+	if (i)
-+		bpf_copy_from_user_str(&i, sizeof(i), NULL, 0);
-+	global_subprog_int(i);
-+	return i;
-+}
-+
-+int __noinline
-+global_subprog_calling_sleepable_global(int i)
-+{
-+	if (!i)
-+		global_sleepable_kfunc_subprog(i);
-+	return i;
-+}
-+
-+SEC("?syscall")
-+int lock_global_sleepable_helper_subprog(struct __sk_buff *ctx)
-+{
-+	int ret = 0;
-+
-+	bpf_spin_lock(&lockA);
-+	if (ctx->mark == 42)
-+		ret = global_sleepable_helper_subprog(ctx->mark);
-+	bpf_spin_unlock(&lockA);
-+	return ret;
-+}
-+
-+SEC("?syscall")
-+int lock_global_sleepable_kfunc_subprog(struct __sk_buff *ctx)
-+{
-+	int ret = 0;
-+
-+	bpf_spin_lock(&lockA);
-+	if (ctx->mark == 42)
-+		ret = global_sleepable_kfunc_subprog(ctx->mark);
-+	bpf_spin_unlock(&lockA);
-+	return ret;
-+}
-+
-+SEC("?syscall")
-+int lock_global_sleepable_subprog_indirect(struct __sk_buff *ctx)
-+{
-+	int ret = 0;
-+
-+	bpf_spin_lock(&lockA);
-+	if (ctx->mark == 42)
-+		ret = global_subprog_calling_sleepable_global(ctx->mark);
-+	bpf_spin_unlock(&lockA);
-+	return ret;
 +}
 +
  char _license[] SEC("license") = "GPL";
