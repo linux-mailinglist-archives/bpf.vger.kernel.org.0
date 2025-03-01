@@ -1,321 +1,133 @@
-Return-Path: <bpf+bounces-52946-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52947-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 400EEA4A6DF
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 01:11:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A322A4A713
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 01:37:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63685189CCBF
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 00:11:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 201C71735EF
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 00:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E20610FD;
-	Sat,  1 Mar 2025 00:11:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F83217BB6;
+	Sat,  1 Mar 2025 00:37:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m9J3Brj5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C3Bkb1oP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7DA635
-	for <bpf@vger.kernel.org>; Sat,  1 Mar 2025 00:11:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED5922EE4;
+	Sat,  1 Mar 2025 00:37:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740787867; cv=none; b=qJrvvhJa9xUSGSCKIyhvj0MSMqc3JliHjWTzEAi3s2vcYSb0IS0c9sHJVjcD/GPw/FvnZR0s4nRtRsjnuLblL3tgtBvf64OTt5eTq85Uf+DT4y6wT/Sf1VSd/6zQMYq9Zzg8DmdkaOieL2vUdODFoJa3XOQZZkZOSH+be2lFbDU=
+	t=1740789461; cv=none; b=t0ZmMZce8bXpDnDoewDBi7TAHZF/kimq6wKbJjCw/pjiEUy++RcdA3dQGCnIlJs2x/L/5nNBfRuXOtJdcLd9Zf3amkzr/hRZL6bEcHOJH3U7zOP2f4Lbq1Q3bGv9XwgEMtXQ7g+FWzD1hXdBfS2+vS/XuGd1vbE8DxU+CMYuXak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740787867; c=relaxed/simple;
-	bh=wCI/fLJ/js5si3AZU6eBHuF2jBzTHpV/Ga69xUzQrRw=;
+	s=arc-20240116; t=1740789461; c=relaxed/simple;
+	bh=jwfc1ahgCiuzX7wkEu5HLzWqIBHpgdtoIiFrmHSt8/s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z5Ykr6HFR26KefnlL5uW6FM+avOFzQP/DnUAKEaZqzIJSbExEvD9ypNdRV7ARb0HJev3oTzIm4JEmN4NrZmzLKtRcLKRgvwtsqo0itRnUsAKCqC19jxUS/tcsOeeCbEEwUcJW4innDgEKU3BFUu09H7EJ9JdewzFY32CrL62p9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m9J3Brj5; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6fd4dcf2df7so10158937b3.0
-        for <bpf@vger.kernel.org>; Fri, 28 Feb 2025 16:11:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740787865; x=1741392665; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zExPPOYo7ewGG6sx0vm/h/xblISg1sq86nRoloFFxK4=;
-        b=m9J3Brj5INVNIKPIabkZGFxxEz/YTDPTqnvx4Y5RxbkZrsyoj+uby2JXBL8IvrwXcV
-         jUPJ8x00dDNzf0GbgcplKiqyuuGQLjMen3hFaD1Ko9AOJwW2j+ibIf9cDOXuSy+Y0zBR
-         4+fbE5othx84hzJJ952ahNX7YudX2wBYilpjDPRnYF0mDJuHu/CvsgquxJ6yyYf1fU16
-         umSyeLlVkiKPVFloKKDnMpfIW3PAuqtONMydUTyP79KaRnbmaXEhFOBoaFXulMYbef+s
-         apV96ZP5+vhyksKvvcA6qPrrTgscxi9eqmB6oQ+eK9sW6Ia0Ai1wPls7e733t/0RfXt0
-         OPAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740787865; x=1741392665;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zExPPOYo7ewGG6sx0vm/h/xblISg1sq86nRoloFFxK4=;
-        b=BfrQRVLK2ZcfyAsI6CJJyU0tvmUbKm7F8d4TenIu13Wy2/KYXjoa5IB7k0OsFV+Zzk
-         w85464beh/xZioATK56Lw91yDfwoZPTdmaPpxoNfIY6zBTKS9TQc7hM7zHLgHJYKDVxh
-         iztSc5RYaOKYw7sww4T1p45cp/UOpicWzb8ZzzLF/xyIeInpHrjaFds9rwpJ9PF7+FrQ
-         dSTYezuNRcx+bI26YEaoN/YfxuPoOySj+rR0L55H9WoPKSerzYYAleSnwl6iQxYMQYPg
-         yxgUmAFtxKvo4FoG4xjcR7I/okDY9mua2lTzRhTXinEFY0H2Z2OHPol5lS6Jh0jOnT9u
-         Qz/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXSwMhnLVNEdBWF5YUEGLKX0HXkp0ljLj9fYc3LB0dLdttiE3V1uPYNyJ5c2pA3bqDsfqA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyqXlipExZVUsxg+toPvqSpM87l5lMlAr6SfJytU7ds+QPH8gad
-	l03VLKnMKtOZ89970xf5z24ISJyZ/F9liNzwFtDeWa9ycXmDeS4RZlJpreZX0/X1WhiuDJ6whYi
-	b28tKLeMwHF+P4QV7A2/gLMMTv5I=
-X-Gm-Gg: ASbGncuuMlUl5wNbY04fMdwLnCSUar9F2/I7gXIn2P5EKHVa8/eeH4GTWTZp5qSKlWR
-	SBlRJPe+VE38zYaPsrQon44Fej1Wh/uhxPeeBHXNcrmSvucvSnCbps2jvreC8BEPGRk8RsaoWmu
-	i+82bP5AI0RbCgl6V6utmoN/wcvg==
-X-Google-Smtp-Source: AGHT+IGPbekE0Jk8hU0Uc5RC3jOaavc3hYzL69H2Xx5yUsJh4YEds9haei6HD2/g5LeR55mPqP1oePz1b/8GEVKjXfM=
-X-Received: by 2002:a05:690c:4801:b0:6f7:5a46:fe5f with SMTP id
- 00721157ae682-6fd4a03af9fmr74763877b3.1.1740787864893; Fri, 28 Feb 2025
- 16:11:04 -0800 (PST)
+	 To:Cc:Content-Type; b=Qh0MI5xRXfJP3kUsWC9VW9yDL28HBhOyNJPqIlW0QbTPVF+9aSEBCvOO4K4xNDAquB7V1sm8A60+lnp6EPwW0hbPWaIakdn5Havn0JNwLsG4YdwmJDqSTfjBJ0kFiD5Z1+Ng1QPOnd7v9iexjfB+3k/pxeHHa2z2wm2SF7/w8Nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C3Bkb1oP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21B95C4CEE7;
+	Sat,  1 Mar 2025 00:37:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740789461;
+	bh=jwfc1ahgCiuzX7wkEu5HLzWqIBHpgdtoIiFrmHSt8/s=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=C3Bkb1oP8uqqMvX/ckArxbGIfZ8FywegE9C0lfYY9zPtWyff5LmUA7XsVzqS2dE2u
+	 ry7m1s+d7yPr/D5/fbw+i81XvmyzmuRTaYhf30Bv/XkzBCdv057EqrlakZlrP3ZHSi
+	 WqbUhe5bNZG7eyZKlbXD7XTwUUd7zbVJMFBVUtC9fkvrAVLkn8BRSHOesUUL8jhyCh
+	 aaYK5X56L1i3AdLABEqxog3HRrn1e1+D/KCtO56oNS/ifHrGMiP+Q82nk6b8qLLedm
+	 8foNToR4b5dGvZispxL5aijpJlAnUeeQIZt8UTY5Bo+LEl+NAdQyx/2gAs8OqqXKmp
+	 xHPVCbIMLjQ+g==
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-3d2b3811513so11712505ab.1;
+        Fri, 28 Feb 2025 16:37:41 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU+5Qqs0B79Q0niGY8JONPuk46Y9bTmLhCNVDpcNYQX6CErj7mKN60O8fAFNAM1bLCPC9E=@vger.kernel.org, AJvYcCWBj1QL8ziINBbn6KSmyRuZGs5FmFLJmcPHWenTOp1Nt9+vujqBvIbeIp01zQX1+HGn0IV2E416x31lfhV3@vger.kernel.org, AJvYcCX5IWIlORUjNiMJ+kdXGjLEm3Orjnhc3BCcryCYBMvBbErwg2xSdwRJB30wqrCt6Sp1LaWkL7Y6Zw==@vger.kernel.org, AJvYcCXoDQQmldPSaVNoth8URxGxNKkn91idRenGJeQgPsUhr+ejLmVNP8ubailWy1uOSer0LYMlqv5wPxpx8CL7yOzyNkLeEPE8@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXDdnos9gVvzg/4+vWnQRwfnALxzQ1/buEmes+Gbn8faQKEKTF
+	tsC72Sr/ZRtdVmAPe7m5ZNv8b0OQvXsFOmesOMFVdVMOcZ17wRSaVDk6ShsrtB/8sVaoRotSITH
+	wbx8aa3FQylClM5xYBDRmyP9+7I8=
+X-Google-Smtp-Source: AGHT+IEvAO8t6XcTK7ehgVX1Cb5AI/CSDL/k9ZfYTeArTEPsP00ZZVVzFUSsiBhttHJf01azIqdBs3Jb+2eedTxZHVA=
+X-Received: by 2002:a05:6e02:1a09:b0:3d1:84ad:165e with SMTP id
+ e9e14a558f8ab-3d3dd2d3a29mr102153535ab.7.1740789460403; Fri, 28 Feb 2025
+ 16:37:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250227222336.2236460-1-ameryhung@gmail.com> <96e57b71-169e-4534-b3af-d44df2b54a0b@linux.dev>
-In-Reply-To: <96e57b71-169e-4534-b3af-d44df2b54a0b@linux.dev>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Fri, 28 Feb 2025 16:10:54 -0800
-X-Gm-Features: AQ5f1Jo2gBzVlJ2rnjgbJ5f3-7uQNFuoVn3NM5Jz2dWxgkOv3MGUg2IlKtiOeBw
-Message-ID: <CAMB2axOB1Q50g3avDKU1u=gw0TeGJtZ9yFP807EYT=S1igC4QQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/1] selftests/bpf: Fix dangling stdout seen
- by traffic monitor thread
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: daniel@iogearbox.net, andrii@kernel.org, alexei.starovoitov@gmail.com, 
-	martin.lau@kernel.org, kernel-team@meta.com, bpf@vger.kernel.org
+References: <20250228165322.3121535-1-bboscaccy@linux.microsoft.com> <20250228165322.3121535-2-bboscaccy@linux.microsoft.com>
+In-Reply-To: <20250228165322.3121535-2-bboscaccy@linux.microsoft.com>
+From: Song Liu <song@kernel.org>
+Date: Fri, 28 Feb 2025 16:37:29 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4bsiD56PivQRLs6jrWGpiWt+4vfcdQ4YA-KWONxLYv9g@mail.gmail.com>
+X-Gm-Features: AQ5f1JpfUDxDNGOOtYDiDeO6Tz4qbi76Krj7-XIzmH3zU3hT980dijVDfbDRf_Q
+Message-ID: <CAPhsuW4bsiD56PivQRLs6jrWGpiWt+4vfcdQ4YA-KWONxLYv9g@mail.gmail.com>
+Subject: Re: [PATCH 1/1] security: Propagate caller information in bpf hooks
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Cc: Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, linux-security-module@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, selinux@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 28, 2025 at 3:30=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On Fri, Feb 28, 2025 at 8:53=E2=80=AFAM Blaise Boscaccy
+<bboscaccy@linux.microsoft.com> wrote:
 >
-> On 2/27/25 2:23 PM, Amery Hung wrote:
-> > Traffic monitor thread may see dangling stdout as the main thread close=
-s
-> > and reassigns stdout without protection. This happens when the main thr=
-ead
-> > finishes one subtest and moves to another one in the same netns_new()
-> > scope. Fix it by first consolidating stdout assignment into
-> > stdio_restore_cleanup() and then protecting the use/close/reassignment =
-of
-> > stdout with a lock. The locking in the main thread is always performed
-> > regradless of whether traffic monitor is running or not for simplicity.
-> > It won't have any side-effect.
-> >
-> > The issue can be reproduced by running test_progs repeatedly with traff=
-ic
-> > monitor enabled:
-> >
-> > for ((i=3D1;i<=3D100;i++)); do
-> >     ./test_progs -a flow_dissector_skb* -m '*'
-> > done
-> >
-> > Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> > ---
-> >   tools/testing/selftests/bpf/network_helpers.c |  8 ++++-
-> >   tools/testing/selftests/bpf/network_helpers.h |  6 ++--
-> >   tools/testing/selftests/bpf/test_progs.c      | 29 +++++++++++++-----=
--
-> >   3 files changed, 31 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/test=
-ing/selftests/bpf/network_helpers.c
-> > index 737a952dcf80..5014fd063d67 100644
-> > --- a/tools/testing/selftests/bpf/network_helpers.c
-> > +++ b/tools/testing/selftests/bpf/network_helpers.c
-> > @@ -743,6 +743,7 @@ struct tmonitor_ctx {
-> >       pcap_t *pcap;
-> >       pcap_dumper_t *dumper;
-> >       pthread_t thread;
-> > +     pthread_mutex_t *stdout_lock;
-> >       int wake_fd;
-> >
-> >       volatile bool done;
-> > @@ -953,6 +954,7 @@ static void *traffic_monitor_thread(void *arg)
-> >               ifindex =3D ntohl(ifindex);
-> >               ptype =3D packet[10];
-> >
-> > +             pthread_mutex_lock(ctx->stdout_lock);
-> >               if (proto =3D=3D ETH_P_IPV6) {
-> >                       show_ipv6_packet(payload, ifindex, ptype);
-> >               } else if (proto =3D=3D ETH_P_IP) {
-> > @@ -967,6 +969,7 @@ static void *traffic_monitor_thread(void *arg)
-> >                       printf("%-7s %-3s Unknown network protocol type 0=
-x%x\n",
-> >                              ifname, pkt_type_str(ptype), proto);
-> >               }
-> > +             pthread_mutex_unlock(ctx->stdout_lock);
-> >       }
-> >
-> >       return NULL;
-> > @@ -1055,7 +1058,8 @@ static void encode_test_name(char *buf, size_t le=
-n, const char *test_name, const
-> >    * in the give network namespace.
-> >    */
-> >   struct tmonitor_ctx *traffic_monitor_start(const char *netns, const c=
-har *test_name,
-> > -                                        const char *subtest_name)
-> > +                                        const char *subtest_name,
-> > +                                        pthread_mutex_t *stdout_lock)
+> Certain bpf syscall subcommands are available for usage from both
+> userspace and the kernel. LSM modules or eBPF gatekeeper programs may
+> need to take a different course of action depending on whether or not
+> a BPF syscall originated from the kernel or userspace.
 >
-> Thinking out loud here and see if the following will be better than passi=
-ng a
-> pthread_mutex_t.
+> Additionally, some of the bpf_attr struct fields contain pointers to
+> arbitrary memory. Currently the functionality to determine whether or
+> not a pointer refers to kernel memory or userspace memory is exposed
+> to the bpf verifier, but that information is missing from various LSM
+> hooks.
 >
-> How about passing a print function pointer instead and this function can =
-do what
-> is needed before printf(), i.e. lock mutex here. Something like the
-> "libbpf_print_fn_t __libbpf_pr" in libbpf.c.
+> Here we augment the LSM hooks to provide this data, by simply passing
+> a boolean flag indicating whether or not the call originated in the
+> kernel, in any hook that contains a bpf_attr struct that corresponds
+> to a subcommand that may be called from the kernel.
 >
-> May be the test_progs.c can set it once by calling tm_set_print (similar =
-to
-> libbpf_set_print) instead of passing as an arg during every traffic_monit=
-or_start().
->
-> wdyt?
->
+> Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+> ---
+>  include/linux/lsm_hook_defs.h |  6 +++---
+>  include/linux/security.h      | 12 ++++++------
+>  kernel/bpf/syscall.c          | 10 +++++-----
+>  security/security.c           | 17 ++++++++++-------
+>  security/selinux/hooks.c      |  6 +++---
+>  5 files changed, 27 insertions(+), 24 deletions(-)
 
-I think that will be cleaner. Especially explicit
-pthread_mutext_lock/unlock() can then be removed from traffic monitor.
-I will change to passing a print function pointer from test_progs.c to
-traffic monitor.
+tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
+has a BPF program for security_bpf(), please also update it.
 
-> >   {
-> >       struct nstoken *nstoken =3D NULL;
-> >       struct tmonitor_ctx *ctx;
-> > @@ -1109,6 +1113,8 @@ struct tmonitor_ctx *traffic_monitor_start(const =
-char *netns, const char *test_n
-> >               goto fail_eventfd;
-> >       }
-> >
-> > +     ctx->stdout_lock =3D stdout_lock;
-> > +
-> >       r =3D pthread_create(&ctx->thread, NULL, traffic_monitor_thread, =
-ctx);
-> >       if (r) {
-> >               log_err("Failed to create thread");
-> > diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/test=
-ing/selftests/bpf/network_helpers.h
-> > index 9f6e05d886c5..b80954eab8d8 100644
-> > --- a/tools/testing/selftests/bpf/network_helpers.h
-> > +++ b/tools/testing/selftests/bpf/network_helpers.h
-> > @@ -251,11 +251,13 @@ struct tmonitor_ctx;
-> >
-> >   #ifdef TRAFFIC_MONITOR
-> >   struct tmonitor_ctx *traffic_monitor_start(const char *netns, const c=
-har *test_name,
-> > -                                        const char *subtest_name);
-> > +                                        const char *subtest_name,
-> > +                                        pthread_mutex_t *stdout_lock);
-> >   void traffic_monitor_stop(struct tmonitor_ctx *ctx);
-> >   #else
-> >   static inline struct tmonitor_ctx *traffic_monitor_start(const char *=
-netns, const char *test_name,
-> > -                                                      const char *subt=
-est_name)
-> > +                                                      const char *subt=
-est_name,
-> > +                                                      pthread_mutex_t =
-*stdout_lock)
-> >   {
-> >       return NULL;
-> >   }
-> > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/s=
-elftests/bpf/test_progs.c
-> > index 0cb759632225..db9ea69e8ba1 100644
-> > --- a/tools/testing/selftests/bpf/test_progs.c
-> > +++ b/tools/testing/selftests/bpf/test_progs.c
-> > @@ -88,7 +88,9 @@ static void stdio_hijack(char **log_buf, size_t *log_=
-cnt)
-> >   #endif
-> >   }
-> >
-> > -static void stdio_restore_cleanup(void)
-> > +static pthread_mutex_t stdout_lock =3D PTHREAD_MUTEX_INITIALIZER;
-> > +
-> > +static void stdio_restore_cleanup(bool restore_default)
-> >   {
-> >   #ifdef __GLIBC__
-> >       if (verbose() && env.worker_id =3D=3D -1) {
-> > @@ -98,15 +100,25 @@ static void stdio_restore_cleanup(void)
-> >
-> >       fflush(stdout);
-> >
-> > +     pthread_mutex_lock(&stdout_lock);
-> > +
-> >       if (env.subtest_state) {
-> >               fclose(env.subtest_state->stdout_saved);
-> >               env.subtest_state->stdout_saved =3D NULL;
-> > -             stdout =3D env.test_state->stdout_saved;
-> > -             stderr =3D env.test_state->stdout_saved;
-> >       } else {
-> >               fclose(env.test_state->stdout_saved);
-> >               env.test_state->stdout_saved =3D NULL;
-> >       }
-> > +
-> > +     if (restore_default) {
 >
-> Why a new "bool restore_default" is needed? Testing env.subtest_state is =
-not enough?
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.=
+h
+> index e2f1ce37c41ef..25f4e74c173be 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -426,14 +426,14 @@ LSM_HOOK(void, LSM_RET_VOID, audit_rule_free, void =
+*lsmrule)
+>  #endif /* CONFIG_AUDIT */
 >
+>  #ifdef CONFIG_BPF_SYSCALL
+> -LSM_HOOK(int, 0, bpf, int cmd, union bpf_attr *attr, unsigned int size)
+> +LSM_HOOK(int, 0, bpf, int cmd, union bpf_attr *attr, bool is_kernel, uns=
+igned int size)
 
-If a crash happens during a subtest, env.subtest_state will still be
-set and stdout and stderr will not be restored to the default ones.
+I think we should add is_kernel to the end of the argument list. This will =
+cause
+fewer issues for existing users.
 
 Thanks,
-Amery
-
-> Thanks for debugging this.
->
-> > +             stdout =3D env.stdout_saved;
-> > +             stderr =3D env.stderr_saved;
-> > +     } else if (env.subtest_state) {
-> > +             stdout =3D env.test_state->stdout_saved;
-> > +             stderr =3D env.test_state->stdout_saved;
-> > +     }
-> > +
-> > +     pthread_mutex_unlock(&stdout_lock);
-> >   #endif
-> >   }
-> >
-> > @@ -121,10 +133,7 @@ static void stdio_restore(void)
-> >       if (stdout =3D=3D env.stdout_saved)
-> >               return;
-> >
-> > -     stdio_restore_cleanup();
-> > -
-> > -     stdout =3D env.stdout_saved;
-> > -     stderr =3D env.stderr_saved;
-> > +     stdio_restore_cleanup(true);
-> >   #endif
-> >   }
-> >
-> > @@ -541,7 +550,8 @@ void test__end_subtest(void)
-> >                                  test_result(subtest_state->error_cnt,
-> >                                              subtest_state->skipped));
-> >
-> > -     stdio_restore_cleanup();
-> > +     stdio_restore_cleanup(false);
-> > +
-> >       env.subtest_state =3D NULL;
-> >   }
-> >
-> > @@ -779,7 +789,8 @@ struct netns_obj *netns_new(const char *nsname, boo=
-l open)
-> >           (env.subtest_state && env.subtest_state->should_tmon)) {
-> >               test_name =3D env.test->test_name;
-> >               subtest_name =3D env.subtest_state ? env.subtest_state->n=
-ame : NULL;
-> > -             netns_obj->tmon =3D traffic_monitor_start(nsname, test_na=
-me, subtest_name);
-> > +             netns_obj->tmon =3D traffic_monitor_start(nsname, test_na=
-me, subtest_name,
-> > +                                                     &stdout_lock);
-> >               if (!netns_obj->tmon) {
-> >                       fprintf(stderr, "Failed to start traffic monitor =
-for %s\n", nsname);
-> >                       goto fail;
->
+Song
 
