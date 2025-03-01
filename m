@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-52970-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52971-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33E45A4ABF6
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 15:29:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07437A4ABFA
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 15:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71C3C3BAB7E
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 14:28:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE02D1895A08
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 14:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4731EA7C6;
-	Sat,  1 Mar 2025 14:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E781EB19B;
+	Sat,  1 Mar 2025 14:26:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XDkziE3I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I0Iidb9K"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7FF21E0E0D;
-	Sat,  1 Mar 2025 14:26:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 017851DED5B;
+	Sat,  1 Mar 2025 14:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740839189; cv=none; b=fVSuUrshaoaa2bETxesUi1Naf1Rrhb6HO73a8MZCgEtHOSlWmbDtlnvtYesL93at28gy8LY+y5Wnz/3MmWPxgcJocF/5WBqt+Ib98kh6XoHbshIg9uGdB+tFPczYVs/U/8SDT9rd5fsVhuLUeuszkEc3RJcy4RoloiRGIYh4fiI=
+	t=1740839201; cv=none; b=C1xOYj+C0tDLxUDqwAcKIYOH77KiVo9O1ADXV/rakAPeOj65qZq0OrRqSzVPRmnjAdBORmS8E6Am7MUawrDnXoUpOTyN8xKWh7+IYK7WKhWUUfW/aoa4myZaOeAQUGHyDFCZ0kzopqXFAjZM57uPRFZ45uoLHo0CcQLN62KtyFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740839189; c=relaxed/simple;
-	bh=fpYEQHVmom7fh6D/Q1MDqtnrl6Xu5v8oqKaAQat+kYI=;
+	s=arc-20240116; t=1740839201; c=relaxed/simple;
+	bh=HKAn3f+7sbHTTp+UNFXBUa/TbF/WrljtWVRMW4BZHbw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nGZDiBHcor02l3yiXYy2zCRF6WXhLFvZoat/ELshWUCNsNcDG21p0DpjlpxVaRqQEKhTCMq8Ot+MvJQBDoa/tHyh/W9Ehlzm2Rhy+kD1+V7XW5xgAgm3A/2fXv/vvQhDId9eTdh0E4DKCfJx8p0GdeZ629Iuk5HbzLtX2Q6ROGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XDkziE3I; arc=none smtp.client-ip=209.85.214.181
+	 MIME-Version; b=nhLhi06F6Qo+D/m0eyseYg7qO880H0Jyx6+ESBe+BtdvQEhVwuQWK9Z66N2pckvGBu+dGrowuubxG40yiWal4QiXV1sjIE86Sc7IHJBB28UWB8vKIO8A25cr+IWLX3rR5Uxnun/D+z368ibQoabzez2w2/l8llVZ6Qtym1f/56A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I0Iidb9K; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-223594b3c6dso51918675ad.2;
-        Sat, 01 Mar 2025 06:26:27 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2238e884f72so4222005ad.3;
+        Sat, 01 Mar 2025 06:26:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740839187; x=1741443987; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740839199; x=1741443999; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hp3kGqc16FF01of4e/8WmkeqsdCblTk7qrBu9qHKlh8=;
-        b=XDkziE3IP4A6E64xMhr765g/non2Ln+M5KjDeulP2jUAEdwTi2V/apuQyL5IZ7rRjX
-         je1pgVKz7D4zoUJcbUhcdZDgNvbkB2SLYFwLZ3pxuc93vhcTdUsKMU/lzuokTHZDsY2w
-         3/hYCpjXBppFP/4O9n/tTc1kGbDTK5bKh+EsjO5fUV4LxnsXNsQTzZQhHEZ4szRreVh9
-         8Ke+WtLnH5p0Q6cxk3mL7ivDtbGBbzEC27IWajiQlgf7Duo5+BtWvccL9h48ZPlgyIHO
-         rePmYS4hoFmgYgx6EjMC4C3rcuM4sk0jQzJDz/zmG0obQzU3TlWs0hRjterF39Z7WS9v
-         GMdA==
+        bh=EcXJ496C/2+0qa2GsfTbiscKGioWO59ZW48/kJd6oSs=;
+        b=I0Iidb9KjngxCJQSWvqtZqpGbi/kE43cy60oXRYsmeNQSt/ptsOiUOa3TfTVsxj5pj
+         dyPQSeN7dTWvOIClu0BELxJA1AbR+9GVVg6/aWbFVTPm+7TWdhz/i/VjFt7h48/PlcbK
+         Dbk9exEhatxv468OQAk+wFhDu8aE9T0D6p3KVcQ9WoCOHj91QLzBo1zIZTun1q2xCuiR
+         wVHxonlxbKpdpdWsa0gFrA+kT7jbAtPPh9YWvVXtpLMy0HHga3iytDZGbvgTEgTAMskh
+         b1awLUrXHygEhlZNL5F49v/B7rpYPrr7Yi2yTC8sU5A4/RSki8l40cVuSoRJPyNQ/Ld+
+         UqwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740839187; x=1741443987;
+        d=1e100.net; s=20230601; t=1740839199; x=1741443999;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hp3kGqc16FF01of4e/8WmkeqsdCblTk7qrBu9qHKlh8=;
-        b=aecsUtuVl3rkJwBP/Gcle1cpsLHuRsoDR+/8fyflYSBtPU8OMQFGLiYPM1dKu2VT5x
-         qZhZyi4dvgj4fHGSIja79pCxfxirEohQ+wbktGeLf7LDhGdrYSbab6UXFksccXoDWPrE
-         cMMai61ZgjCivbhCVTPhI6+03uLyGTHxx2Cxpf51Nprsfz11FUBOzFWB136y8mkwGPE+
-         lXX4RxacWGW90om2roGJ0Le8Zvq0YcnNZXgElh5KK/tXIuKFW8yuf5TYuD4C6MMQVscv
-         jzZM4u1Jcax8n8K0zw3zpY2W/SpoV4+W7DgpSkqEaMFRfWyiyBE6L+GfYEBeBz2OG9b6
-         Ib8A==
-X-Forwarded-Encrypted: i=1; AJvYcCU71szTG6jnxFkT5EBQaOdCiZHLLN7LLc7Ii+mjwyxN8oc+ywzvDST7kYkt4EGhd0MyuhSHgAlkoYQF9e04@vger.kernel.org, AJvYcCVAtR1PBBoFhC507j2wBMkYOWms+z94V6wtqqNXBKIgjzGaq1Hm7qsDxRnOuN/GhtnryMGXnLSS20lHscJYZgM=@vger.kernel.org, AJvYcCWXQaVtRutCNAc+a118rVFGsYwqOUXoRnmgO+w1yvxhL8qXcOxIEsQOXNSIPAMufva1VRI=@vger.kernel.org, AJvYcCX57v38CWyptd/G2op6swXdhOiiNkcBezDlCKfEoChibCSH43abbLX1ki7NhJaxkHNTzRTyPhok@vger.kernel.org, AJvYcCX5NyWUtEaIn4JzkEjcji9fyvCUphPEtrPmgYxqfcp8BDmVUp2TLWuD4mbSHIEzaEz9BHvtUJ70RgvR1G0=@vger.kernel.org, AJvYcCXCwaLsTtjQNco9Zxv/ZCnFsFHQ/6+kSuEOksHYtzuefOVMNmnJpuhoHTW8lQ470c06AWZezwccXkD7WjQK@vger.kernel.org, AJvYcCXReJHVcrfUHL9CaL3qLAYFwuDly+QDzkIGV8+EnmzGXsQdVdJz4w6othP4vLcymSHkZg2n1EvJVcKrFZE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzktQrzboXZ0PmbLSgSR9I6xb+u7WYoKYWioqjh16BqUr7I53N0
-	dgtLe7Tycud+oSRs3YRPIjWyHTTOPnioYmpk4UYJt52TxjMSG8s3
-X-Gm-Gg: ASbGncszr7xph+POQgLi9Mj6kus7tHhtnChONsdwIq4a35BBrXZbm1Ax7VlNtAkR/Rd
-	z5wznhoYuaTlnXUD5xcIGVIfjdWLyCqHyaDftKFuO443kTkZXS6O2snXH62ldys8LOA+cfRRV6+
-	eUKCJG6S4shRVQufOeeLimbvJt6weM4dZrN4qR2WwX3/bWBbfS1jc5ccaM2kmLAzEgKY9W+h0+I
-	DjxY6f9bYAlSLvmt7kLyJ606+BMWLuClS9cGYywQ5T8vbaeCxNW9PYZ/eFEhTskjS5la/meDbhw
-	SRrvD5ytXTjSSkaE/Fmn6FdUJ4twmXIq8OrVX7VcLtpBYMvx9N6ocFcJhllF5sYg0X/ao1pPW44
+        bh=EcXJ496C/2+0qa2GsfTbiscKGioWO59ZW48/kJd6oSs=;
+        b=fOVjZ9E0Wb9myRNzV4hYTen5J6nTwywRm8f3TkfaSEsVRwh0VNZCpDwG6iUYOU4Cf3
+         HaLwEK2qtfB7o4ukOzv+VLcybuQ4t5FeHg0J9cyuY/B2Bk+29IZwu2/0GWh9i84IPJMJ
+         ZXK8aB6+DhXzblDClQuRm7k5vKZuHLwO0PgqyNVDFHA7/uVlGQfrLafLxC0zE7qUZBrU
+         c1v6P28qI7+0TD4jnxDePEbpYBuDPAlX/5vb25sfPyaCODI6LuKgcJk6abKNFXgAil4C
+         vyILbehsQNiWzT+LWTrlA0Rhggsg5Z1CHBSqHCq7PCqfKIs58n3/HaJjoZUxUbO2wJQr
+         RSRA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnmGKFLL4t2KwIfdcXNCdTRGegOy/4u8HkEhG4YIaXqP6m8bd4l7hU6YmCjb6H5DaBbo2LoyAVWfOmNuU=@vger.kernel.org, AJvYcCV/cMOEDcN6YeNx3fWJk9HVh5vfPQJB5iTrsxSvQBh+aItTzWxrkQu/Ztfm8P5bKz2iApdmIYjy@vger.kernel.org, AJvYcCVTo9XQbYnvA2vcsJcQHVUivT2ba3qhFfpHgeRmeYapU+OhLvqVhPFIJPolHelb5D7V5blj7we4rfFx2NFg@vger.kernel.org, AJvYcCVhoHNSdN8ZzH+3Ge7k253wUsNRccJlyYble3ghE59ko+213fGb7tP+EPnfFilCpXL1b9RU06tdfE0+VOt4@vger.kernel.org, AJvYcCViaS7aNsGJliWJyXExeVNlb6X7hlr1bZsNpxb3MgMqxLSuNeqgqwTMqcoRpiRE77oQ5bq8MxE9eWNsNQdVSh4=@vger.kernel.org, AJvYcCX4oRZJKNuMXVYU7gIEQTi8Rvrjaz2Xwq7aLvz3jSxXXBGxnMePEjKQJ8yAMocSvZKjfi49j0V9zH78W1Q=@vger.kernel.org, AJvYcCXQ4+CiK7R43Zl5jnsfYDAqdG3DIdiUcC/fbsQ+ej0v9yG19XnMJ+/Kh/OrnaWLSXeUG/k=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yymd5D05Irb5jBuIerdteVQtgvJAFleyZ1idZcML118eL7F69/p
+	k8LZvdhatVU8HotgEUfhykDVqqLogYhIQFVEg5DbQ4kZ2ae19L3D
+X-Gm-Gg: ASbGncv1/D2mm9RJ+iq1NvepQqnuwGniga6kUsdcQAHQD3hClbvHRyU2Xye+1KI2wZ+
+	iwGZEwdx0bWmjfUzduc0Gz0LvttNKQWs1MYbxn3LO//Vx6xT0gJ2dCW2bdLYgQydVnwarut96Ih
+	c74kjmQ7EEG17ixop+yUGLDxr3KQQGjpCqkC6ThrN8RGot6dVVXUNk3I/RxvhvHwd+fyJO/C26L
+	wQiyvEZrAbdqenzU6rymEeKUqsCRqyAynOVePfm5nGh+cF7U4tRQS+iQi4fvCZtEUzHukJNz+qP
+	hQ8b+H21KlFAwEc7VhoGSLJXbyEj/9u0YsqBK6+IYbweiTRLuJEGe0Kqd4UhRJbdeVgX/Hft+7I
 	=
-X-Google-Smtp-Source: AGHT+IGHEYprq9u4C7FchZ9I6Y/Ibnse4qNPj1GVk/AdnINX25zgN7NgXyYUydYVyaa9stUlYFgdnA==
-X-Received: by 2002:a17:903:198c:b0:220:e1e6:4457 with SMTP id d9443c01a7336-22368fc987fmr121177295ad.26.1740839187181;
-        Sat, 01 Mar 2025 06:26:27 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF0PsFOHNYq2JTljPhmrhYVkAKjdgh1XZeXstNsMDq6/4mtC72Fp39DdqLibOGQ7FEZk2iiHA==
+X-Received: by 2002:a17:902:da8d:b0:215:9bc2:42ec with SMTP id d9443c01a7336-22369260956mr94926455ad.47.1740839199131;
+        Sat, 01 Mar 2025 06:26:39 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.26.18
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.26.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Mar 2025 06:26:26 -0800 (PST)
+        Sat, 01 Mar 2025 06:26:38 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -134,9 +134,9 @@ Cc: hpa@zytor.com,
 	andrew.cooper3@citrix.com,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v2 07/18] serial: max3100: Replace open-coded parity calculation with parity8()
-Date: Sat,  1 Mar 2025 22:23:58 +0800
-Message-Id: <20250301142409.2513835-8-visitorckw@gmail.com>
+Subject: [PATCH v2 08/18] lib/bch: Replace open-coded parity calculation with parity32()
+Date: Sat,  1 Mar 2025 22:23:59 +0800
+Message-Id: <20250301142409.2513835-9-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250301142409.2513835-1-visitorckw@gmail.com>
 References: <20250301142409.2513835-1-visitorckw@gmail.com>
@@ -148,38 +148,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Refactor parity calculations to use the standard parity8() helper. This
-change eliminates redundant implementations and improves code
+Refactor parity calculations to use the standard parity32() helper.
+This change eliminates redundant implementations and improves code
 efficiency.
 
 Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- drivers/tty/serial/max3100.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ lib/bch.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-diff --git a/drivers/tty/serial/max3100.c b/drivers/tty/serial/max3100.c
-index cde5f1c86353..3b05ed113a67 100644
---- a/drivers/tty/serial/max3100.c
-+++ b/drivers/tty/serial/max3100.c
-@@ -16,6 +16,7 @@
- /* 4 MAX3100s should be enough for everyone */
- #define MAX_MAX3100 4
- 
-+#include <linux/bitops.h>
- #include <linux/container_of.h>
- #include <linux/delay.h>
- #include <linux/device.h>
-@@ -133,7 +134,7 @@ static int max3100_do_parity(struct max3100_port *s, u16 c)
- 	else
- 		c &= 0xff;
- 
--	parity = parity ^ (hweight8(c) & 1);
-+	parity = parity ^ parity8(c);
- 	return parity;
+diff --git a/lib/bch.c b/lib/bch.c
+index 1c0cb07cdfeb..769459749982 100644
+--- a/lib/bch.c
++++ b/lib/bch.c
+@@ -311,18 +311,6 @@ static inline int deg(unsigned int poly)
+ 	return fls(poly)-1;
  }
  
+-static inline int parity(unsigned int x)
+-{
+-	/*
+-	 * public domain code snippet, lifted from
+-	 * http://www-graphics.stanford.edu/~seander/bithacks.html
+-	 */
+-	x ^= x >> 1;
+-	x ^= x >> 2;
+-	x = (x & 0x11111111U) * 0x11111111U;
+-	return (x >> 28) & 1;
+-}
+-
+ /* Galois field basic operations: multiply, divide, inverse, etc. */
+ 
+ static inline unsigned int gf_mul(struct bch_control *bch, unsigned int a,
+@@ -524,7 +512,7 @@ static int solve_linear_system(struct bch_control *bch, unsigned int *rows,
+ 		tmp = 0;
+ 		for (r = m-1; r >= 0; r--) {
+ 			mask = rows[r] & (tmp|1);
+-			tmp |= parity(mask) << (m-r);
++			tmp |= parity32(mask) << (m-r);
+ 		}
+ 		sol[p] = tmp >> 1;
+ 	}
 -- 
 2.34.1
 
