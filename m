@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-52973-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52974-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A0BDA4AC10
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 15:31:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D3BFA4AC17
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 15:32:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A78333A1435
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 14:30:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B89423BB335
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 14:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D50A1EDA0B;
-	Sat,  1 Mar 2025 14:27:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED99B1EE7A9;
+	Sat,  1 Mar 2025 14:27:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jZJlecBM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PR8b4VAe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4816F1E0B66;
-	Sat,  1 Mar 2025 14:27:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B8D1E1A33;
+	Sat,  1 Mar 2025 14:27:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740839221; cv=none; b=n1ARHgxbOjz39FsHrkekHVtt7Nti5OeiiswJoYEKgcE/XXkGVRZE9HhaOPbBYV40PQhDOvWgk3QZHmXIKLZrZ7yOuh9fJCHyvG2Z6pvrVQFZRt9P43vOPvUQIiM3l8Biskpul32Rdr6wAKOiprcq/dIpFTJv17BUxSmZfYNKgkc=
+	t=1740839231; cv=none; b=GITxkXFBA1ZkTEgLiQ4ywCWPriUzawHGwkSgqpkprfPX6jjDWw06QnGPoool4Zjd907N0sG+Fkg4OELbCUiGhPtV0P3CeO4523t64/KYRTX4DKKVh37XY4iy8j15yCXllzDdVO99xi3b/QVQdB0by/i1d9gwVsO4/XRjEUIJbso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740839221; c=relaxed/simple;
-	bh=WDPrYaKj7s26kse115+qww0IFHKFhkIMhznNoEr7JrI=;
+	s=arc-20240116; t=1740839231; c=relaxed/simple;
+	bh=LKQP83Z0dDVRvLCdrMNAz3pPTpKO+Di7Zsh2SQ1o/Vg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mi+Jf01wRHJDwmF5JcGp3fNxkmLbfa7TAEq9MjpIDSpDMb5kjsrkRkFiZUr1enNIYrgzXRZWz3EJXmAO/b8MI6GkUTQ3hGRyj+iqC+v4TkRO68hglxFgIcbqUfg9iSSYA7OHB/+DCIFCFvfdpJ3buH74d8OwY/gRzIcwX1F56Qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jZJlecBM; arc=none smtp.client-ip=209.85.214.174
+	 MIME-Version; b=h1lVMlL3OOa/z2n+cn2Z8rbFHELp/mzZr38gipMrHJoac/10x2+unEbL8jJ/wppxNX7GV4l36nR3bR08ye8Z74IDcO3YKEuR2JCe9dtY1JXC7FbSy2vAk4Bl0vJwRamnMBzXuOT6slC3uVV731fwDmJC3aEBul0E8HcB/v/fSHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PR8b4VAe; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2234e4b079cso57664785ad.1;
-        Sat, 01 Mar 2025 06:27:00 -0800 (PST)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-22374f56453so33974835ad.0;
+        Sat, 01 Mar 2025 06:27:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740839219; x=1741444019; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740839229; x=1741444029; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OqxvpgZHoGiLr6YH8sD6RZa4e3r1mx+K51Pz7JFmQwA=;
-        b=jZJlecBMPhcFdsyXTB/kS7QI6XQBhULerc10Oe6PdaOjsKgqZwuLklR0QHy8PgeIou
-         SQ4CYs3XFcYg/hxMsDKwliQ75mUN7IK0okU1l5ajtrmqgcgSbFLpo9vPjHQCTIsCXRwh
-         yUYQ+0BQ9V3LULMwNCRLm55+kdfydBX8sLqv1ms963PspEg6tlpLsO61/lKWhw5v5RYy
-         uwRLrMP0hd7eTenhchMMzNvvfZlUVA4/IXiwFkRizNQCRUi4X0Wh1DTBlR5+gjneds1j
-         DVA2DoVZ0tTHEY9QfiLzc1BLvlf3JwS1FNdaB6HF5OCuCa5KptZ03KZxKZueCCiyLusy
-         vb7Q==
+        bh=Ih00TRqmhmd1Mh0sl7zFiAmpBAeBPMq/8Nno4TrvKu8=;
+        b=PR8b4VAebPDKEvNlDYHQGwovki8tyqWlMq8etsH4lo5bnVGwRDPwnU0KUSKpiLo7/5
+         Gd8h9tO6w9lCX8FVk2CEQ2qkM8lV27UzMeMVeQcL+bpmGvlGdE+Y49+Zama9uXsYWzmc
+         ICp07UMhpLuabfvpATZ0eDxzXljO7bMq/2H6Wv1lXsTB4ZeODxD+iFaLT7l29gb7rGUP
+         VdAfauYlBvL6PiFpH1zMo0EijoybafDoqyI7k1SqcZ7wurWr8uuc7psXpKcnZjeN9MJH
+         PIeF3i4DFO+LhfLeQFCtXQIpwZ1HcJS8zuJPu2pGlX+SUq/AjVopz5a6Ax6rzfQhPNVW
+         UKMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740839219; x=1741444019;
+        d=1e100.net; s=20230601; t=1740839229; x=1741444029;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OqxvpgZHoGiLr6YH8sD6RZa4e3r1mx+K51Pz7JFmQwA=;
-        b=AicBfBSS2ANEdV7h/XhZoWi4e5fiTQ4G5UoDOkWzOxhlZv0AjaY56KFXbsZPnzGNdz
-         hWEj2x+IAgN7s8fyf8yI60fe7oHqGraOVLweGN4Od6EgU0AnDK/36cI3y5TY5aYdtkzJ
-         yK0OphMPwvS0oQWrEj1eji60/juIxB4a3I6+7FZnyoWZdfTsubWdyJeMR3AbNI/ihh6M
-         4qZYjxYOrXsxNcC27Jikuzeo2gh+5JBY+dENL1tA58YSCeXVoaZvMQ7hm3vi8FBVtXJ1
-         5xzR+hkUm8Rn7Bd5YfsuAUzjpSJI8D06jSUQu64KB4g7xOVssLWw09o6XTNvedSC2WWR
-         5g4w==
-X-Forwarded-Encrypted: i=1; AJvYcCU3N+2phYllVrFnPJMP0kLSRw3QdUHrqCpOUUcpPfwFALAWlTp89PLsvWKLMT06ej0Ly4QL+k5PlhfnqGpYdFU=@vger.kernel.org, AJvYcCUxP25ZilagEnNYRF1UrC5nWL8N7sBwX59Cr7thq9RzHRatqZF8pndjQ/TutIqpgcxoTAo=@vger.kernel.org, AJvYcCV+MKcJJF8wn+7N5dCW0sLKuVqK7/RKuTBIC384tEMwwNaJy208+a8HxjHDYsbyhX2J5wKXRau06AXMFVYw@vger.kernel.org, AJvYcCW8pnXEYKbWOGEOxfihCUqkbChnVoLAUUqcFcSGd0GpwMB/+U8ZdVIKX2HwMx9kjShHGBq2vjJw@vger.kernel.org, AJvYcCWH5YJghYh98R7C2DbKqSKX7x1QDtupPzIWpBp4YOqEP9H6OwkE9jcV8ibJQhO/MtH51uJGGW17WjTHpN+q@vger.kernel.org, AJvYcCWSgnt9CWgg1AfvKPAjaRNNs8jEiY5PjH3D/OgAcezPlfiBhu8VBReNsIGavMBmlMcfMY66jgbzYViQif4=@vger.kernel.org, AJvYcCXk+NHwgSATFOikPHxlvBuOxtv0TmJ6mZzHNMJO5KeH8KtJlxMCs2HU+4XVwrFOW1vjaaKxGbxVFF0/UN4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyv37HU4LDnSwM7jJEfR0bf73Kw1Nj54i0HjeGjQnMONIt6MBPG
-	VI6uh4GJ+inLd8Z5/dOScQ/Zo76Kt8idQrqq0aK0/egGDqUtpr4b
-X-Gm-Gg: ASbGncu+/2I74YihVQmPlRd006vLUQ1hs5amVAVhEtcOdyAFvqQujk4Q3XCjVFzPRFB
-	W7bUm90Lzf0K7yUCOmtyJ15cjQhq16uXcyO/HA2Sd3+NypPmnt7OPm5CWjEZ2NXnbJNe09KMBou
-	MNhx79jh6sTb2AjtNET7hsDHbn810sDjTrki11LE9dHQnpI5dRxW29UbevVyN9CIsJrVtLG27gg
-	Z4PHWdQL8OyBx4TQ1pMztsQArC84GEJ2/k4hBZsUGudKuRKU3r3SuROiSDJ7sfMVyWZgD9aZjzv
-	mTgbU+XClwxoviNX9ZoozX+6VsvZSDQQbLOkVjajQOV/WYvRh3kj+dIJf/Mxt5Vimr8csI7sUuQ
+        bh=Ih00TRqmhmd1Mh0sl7zFiAmpBAeBPMq/8Nno4TrvKu8=;
+        b=pa7JybYWKj+OGHUlmd1J76JJPZCTjJrUf2WIrZsU0TZG7eMPV00K1jQviDwccjaysh
+         FA21yodnlFsQ21H6igwTBEUF/KRNARf/jMTWMGGa2EOuh3dk7tozE4kNEHL0PH/VsPyT
+         gr0cj5DVCgHecS1o42cOou4Nsn9OUtVpiPLvVfSMLI61wcdOb2K+fuWYmPYhUTEStgWM
+         WvrjVUV2H/SePFp8qOkr99IjYZp47yuhzAgj/N2UipqNN64wFluaA73uuZyiRehilykP
+         wr9dMn2hkEr/UVFZZsr/l2l/y3C6DC05YgfC/SAoj287nWa9bQqUJFNx2E/Nm0H6fMjM
+         TN3A==
+X-Forwarded-Encrypted: i=1; AJvYcCU/NVypNLE6YrkzE87RCrj3CDgBZBwUVBBTkDiB2lvMFCtbkG9bRncOhuybDdojksxuv4/lDnO5q8pprYr+@vger.kernel.org, AJvYcCUeHTQAn1F9XD7UFBml9JsDMQi6yzSRhKuECkXpeUgW7OdzGa031cw02eABcS8vtoxDxQEBWV6arK/GjO//Ao8=@vger.kernel.org, AJvYcCUxUEWpMzeXv/Va5dtTPmehP8JWRZgf2wZ+C7oD8iMxi/XspXC81mkqhr03KT/fD9sYqyINBnQ4JXizvKk=@vger.kernel.org, AJvYcCUxa031uqT1KDQ9wXi+jhx1fNLAFzjcK5KkdMaSoz9lNXGzXKdKsfS61pfC4iop0wNDg2acIBUu@vger.kernel.org, AJvYcCW7snzzMx3/S6Bi3JudCOZScCbvrtAnd/K1GCs0j/9g7BFo6fLMrdxivJdX/trtqVcejzrm3jt1LViduxU=@vger.kernel.org, AJvYcCX9lk4/OfZdlhPZNb2+hiDT1KOqFVbuZOMZsJbBDsRWT9qnIVb16Jkb8Qj4qAo63KIKqtdgehekwRWi5PXG@vger.kernel.org, AJvYcCXCdUVXrdNLweZsSmXKiijtkjZ+/jXrM2AWNsvG6hsnAUcRkKKVSwCQvBfJwP6V1/OZlZ8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjTNgg9TOY3DpNE+qnuLGPAZieVg05RlXZT3vuZhnsIRH0Hvg1
+	RLaaAsIY7VYKXp2G8qz+70ArIkFtRO/E3uO06ohDQuoKG+yGccxE
+X-Gm-Gg: ASbGncsCetTFNJ7GvGq8CNX/OxiqHnLsWHrTfrh5ox4hWr7HRlIYsnNKWQjlQpjN1eV
+	1uP0obh8KcvdlI5l8xmr/14fMjA8swPD8W1IArDMCdmXSw5CSrmixAjPsdfzGxkFrj0RVjKBEY8
+	89r9zwX3RUa8ZzQ6c40OEzibZp+ePwx4cWguJxB75BY3YpmlI3IEwTbRXe3GmIg459o09ppf+5r
+	OTC1v2DzwJpzxEB57fCXX5SCjQRJ3+y2VLoLfFvQp493AMvtBdBysoA0JeqIrbfE+lDdwqP0X4E
+	5oiHWxYI3hBl4LZL99+Aiyhw6EdwnbhDVJRwSqNHtEybhqg/E3HIvQenyN9YEQDdL8JHezSH33Q
 	=
-X-Google-Smtp-Source: AGHT+IGwTX1zwhWAXU1AZVXFy1OzhL7kB0zYwA4xHDy3bfQBeELXGyOD8jSe52YiMtbVSQB6FlE4Fg==
-X-Received: by 2002:a17:902:ce0d:b0:223:4b8d:32f7 with SMTP id d9443c01a7336-22368fa9062mr110269565ad.19.1740839219506;
-        Sat, 01 Mar 2025 06:26:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEWIU2a96xKy97Vw2OZbiqRo6ZsV5By1mOyMKGEerXJ25OnWhIdagB26u20PcByLRXKVw2xEw==
+X-Received: by 2002:a17:903:32c8:b0:223:2744:cb32 with SMTP id d9443c01a7336-22368f732b3mr142906935ad.5.1740839229452;
+        Sat, 01 Mar 2025 06:27:09 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.26.50
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.27.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Mar 2025 06:26:58 -0800 (PST)
+        Sat, 01 Mar 2025 06:27:08 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -134,9 +134,9 @@ Cc: hpa@zytor.com,
 	andrew.cooper3@citrix.com,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v2 10/18] net: ethernet: oa_tc6: Replace open-coded parity calculation with parity32()
-Date: Sat,  1 Mar 2025 22:24:01 +0800
-Message-Id: <20250301142409.2513835-11-visitorckw@gmail.com>
+Subject: [PATCH v2 11/18] wifi: brcm80211: Replace open-coded parity calculation with parity32()
+Date: Sat,  1 Mar 2025 22:24:02 +0800
+Message-Id: <20250301142409.2513835-12-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250301142409.2513835-1-visitorckw@gmail.com>
 References: <20250301142409.2513835-1-visitorckw@gmail.com>
@@ -155,61 +155,45 @@ efficiency.
 Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
 ---
- drivers/net/ethernet/oa_tc6.c | 19 +++----------------
- 1 file changed, 3 insertions(+), 16 deletions(-)
+ .../wireless/broadcom/brcm80211/brcmsmac/dma.c   | 16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
 
-diff --git a/drivers/net/ethernet/oa_tc6.c b/drivers/net/ethernet/oa_tc6.c
-index db200e4ec284..f02dba7b89a1 100644
---- a/drivers/net/ethernet/oa_tc6.c
-+++ b/drivers/net/ethernet/oa_tc6.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <linux/bitfield.h>
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
+index 80c35027787a..d1a1ecd97d42 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
+@@ -17,6 +17,7 @@
+ #include <linux/slab.h>
+ #include <linux/delay.h>
+ #include <linux/pci.h>
 +#include <linux/bitops.h>
- #include <linux/iopoll.h>
- #include <linux/mdio.h>
- #include <linux/phy.h>
-@@ -177,19 +178,6 @@ static int oa_tc6_spi_transfer(struct oa_tc6 *tc6,
- 	return spi_sync(tc6->spi, &msg);
- }
+ #include <net/cfg80211.h>
+ #include <net/mac80211.h>
  
--static int oa_tc6_get_parity(u32 p)
+@@ -283,21 +284,6 @@ struct dma_info {
+ 	bool aligndesc_4k;
+ };
+ 
+-/* Check for odd number of 1's */
+-static u32 parity32(__le32 data)
 -{
--	/* Public domain code snippet, lifted from
--	 * http://www-graphics.stanford.edu/~seander/bithacks.html
--	 */
--	p ^= p >> 1;
--	p ^= p >> 2;
--	p = (p & 0x11111111U) * 0x11111111U;
+-	/* no swap needed for counting 1's */
+-	u32 par_data = *(u32 *)&data;
 -
--	/* Odd parity is used here */
--	return !((p >> 28) & 1);
+-	par_data ^= par_data >> 16;
+-	par_data ^= par_data >> 8;
+-	par_data ^= par_data >> 4;
+-	par_data ^= par_data >> 2;
+-	par_data ^= par_data >> 1;
+-
+-	return par_data & 1;
 -}
 -
- static __be32 oa_tc6_prepare_ctrl_header(u32 addr, u8 length,
- 					 enum oa_tc6_register_op reg_op)
+ static bool dma64_dd_parity(struct dma64desc *dd)
  {
-@@ -202,7 +190,7 @@ static __be32 oa_tc6_prepare_ctrl_header(u32 addr, u8 length,
- 		 FIELD_PREP(OA_TC6_CTRL_HEADER_ADDR, addr) |
- 		 FIELD_PREP(OA_TC6_CTRL_HEADER_LENGTH, length - 1);
- 	header |= FIELD_PREP(OA_TC6_CTRL_HEADER_PARITY,
--			     oa_tc6_get_parity(header));
-+			     !parity32(header));
- 
- 	return cpu_to_be32(header);
- }
-@@ -940,8 +928,7 @@ static __be32 oa_tc6_prepare_data_header(bool data_valid, bool start_valid,
- 		     FIELD_PREP(OA_TC6_DATA_HEADER_END_BYTE_OFFSET,
- 				end_byte_offset);
- 
--	header |= FIELD_PREP(OA_TC6_DATA_HEADER_PARITY,
--			     oa_tc6_get_parity(header));
-+	header |= FIELD_PREP(OA_TC6_DATA_HEADER_PARITY, !parity32(header));
- 
- 	return cpu_to_be32(header);
- }
+ 	return parity32(dd->addrlow ^ dd->addrhigh ^ dd->ctrl1 ^ dd->ctrl2);
 -- 
 2.34.1
 
