@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-52978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-52979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74D51A4AC28
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 15:33:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D5DCA4AC2F
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 15:33:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D063F7A8E7F
-	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 14:32:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C75F1899507
+	for <lists+bpf@lfdr.de>; Sat,  1 Mar 2025 14:33:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBACB1F0E23;
-	Sat,  1 Mar 2025 14:27:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 783A81F12F1;
+	Sat,  1 Mar 2025 14:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QvVkLMEv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FBWNO6Sn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEF71E5018;
-	Sat,  1 Mar 2025 14:27:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 790641E25F2;
+	Sat,  1 Mar 2025 14:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740839274; cv=none; b=CYP9VECH9bl7336rPnLI02Q45gDNlAZxPzlPCVHBaLcYP32L3jOIQqFu9/dDRl/02zRhYqDIPsdQT8UMqAOwsY2Y2FTz/TNdLRarb1L1guPGvGbunWnv7BXX+NQWCW8au18FKA/+hb72+ZzpKjU2umvaCQZXu+dSq1MjEEecUCA=
+	t=1740839284; cv=none; b=YbjkIALbT7cOa5BdB3AIdQMiDi1haQvmYK8/i8Q8598FIQvg8DoW2rkWw14QAGaxwran+e8ai1Le25svcnD61Q5U4IW4+h5uxjVW+iKZxRdriswXCznQ9MlwUhsi+Yvcz3qApNP3zuyAh3zK3UBkM/h75OW+0NA+ALbEKoAp3lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740839274; c=relaxed/simple;
-	bh=9MLeZfNC/T6rZivDo76ukvYaafOdf3Bq52OJ1FPtYmo=;
+	s=arc-20240116; t=1740839284; c=relaxed/simple;
+	bh=AY7VWX2z+11go+VbveW5z1yOms0/k4EYUoJbq8u7HBw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EZwkU5IxOKJvuoIMPXqcSe4u2d75uI3z7P8L3hFYF0F/dm21g4+aTw45rhtR+u053hTPq4eU19QGymq7q75iMZqV5/JzF467uUh9vJFFve0jD8Czi1T4Z6UHeRMHY+wj+LDY7LMRbKDX9a5QWa7pBiOp7aCQxLTLqERLc9q+d3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QvVkLMEv; arc=none smtp.client-ip=209.85.214.172
+	 MIME-Version; b=kmV5xQsF4zZG0fCcEY76Zt/ibVpBfr4hTm0VJXBAWq2gEGzpiGQj2nqEQMT8tlDtImJfJAKDOoJFK1a9hrjPF01il4mGFn8ahBUfGGyjXss6WU1Fv207YP+BlE6I6qCgBmyY4wa2241gSaK3vMApArLHyT9hEymlnymc/N5Tbbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FBWNO6Sn; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2232aead377so58833485ad.0;
-        Sat, 01 Mar 2025 06:27:52 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2234bec7192so28697235ad.2;
+        Sat, 01 Mar 2025 06:28:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740839272; x=1741444072; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740839282; x=1741444082; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=H92cNXD8ivdLBJu7PZvS/WlFHsCPSxa0jaZByFXEmx4=;
-        b=QvVkLMEvgJlyLtx3shCr6LLrRTsJbCBYR4G8EmZtrChZe4cgb4oslHhp9s/UjTBRlQ
-         fTmDJK0vY/9HvdZcaGrwwUthXhid9T49IYFLwVuyXtO95wZxy3BUVU9JayIvMgrBa9tL
-         TWFASl/XznOsjbnAz8hEZHwH/AQ0wL5/3x32JWx3Jj0I971Fp1RK6yFI8yJOgjXjlt4o
-         RaW04JX1f+b4ABJ3Y4gfNVt54v+u+Hov3O2hBlh/ChgpvGJSjG9uGsoZ/UO99fRauAa2
-         Vbe3BtKNrH0tzRM97mc2Iyw9Z2sqk7sx6Xabs8Bp9XXdCNAlAtMGkC+4QQqaWDVZQZ83
-         o3jQ==
+        bh=rykqQnwPkGRFwR5KILLeuUxXhWjh1d/Lo2VO4W9LQtQ=;
+        b=FBWNO6Snx1vvsry+rVvOfIyQbzzZnOjmni9i+glnNRpdJvh33Mjk+Y+RTU07G29bxj
+         N/5TG565se8UPSfjkXAxBlaH6jERY+A0S3YMyTrC4z2BO+CC9gS96Uf5fhMJbcG7rQ+T
+         US3DPw51Gl0TtMp9hnXltNiNMasrDzM4B+Pb2ppPAdPZOuKEryuIv/c0EH6iMUVXp4Hl
+         dlOJ831EOP/mAikyGv946yjNJsXlVaVO/mWjGUxEsJvvXVqKVPwaTxM1gi/Py/loXY3t
+         XN29wYhzq0HRp75ZZzNfgYKhaLK4J23fF6h5YqSXUtQyatt6/uquLYW+LoNyAP66RnOi
+         DQQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740839272; x=1741444072;
+        d=1e100.net; s=20230601; t=1740839282; x=1741444082;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=H92cNXD8ivdLBJu7PZvS/WlFHsCPSxa0jaZByFXEmx4=;
-        b=h/SIfdWMPLqPVW8ji/eQgpbsGbw82PcnMQzmZyaw4UiMK2ooLWFxGHLO9zZSZbMqpC
-         6OCmN/g89uOF2IvPD07wqZ8fv6Z/0SNzhawN1NxHc0YD6L3eXUNFK1Y/U6D3SYPIWJin
-         0f1+0jNBaqeo3+UJCWX14oiMzpjgnqJR531r18cc3qbuJ7/wh/a+Bgx0lhUvw6oRNHrl
-         PQROkcpI5omGwTKYCBph+EQ8muJIV6rzPmcs/dyP6xjePlXywpWv3n+v+Aoj/lpgZC4U
-         +sh5sO9k0h9fU/QY/Xg+DQjiRbmYgJ5c1ATrOTH5G0K3DKcdGHrEoZHNnecJ0i90Cgt/
-         /5hg==
-X-Forwarded-Encrypted: i=1; AJvYcCVal4iWnpU5gzCL8Pv6qeiB7ISxo5AKVI2oCKgBo6xBBj/FUYFNrTiCnTCiC9JQmOa+1RoF/3x/EZauGPY=@vger.kernel.org, AJvYcCWrVHarMCHD58cPLlq+BokPHua2oJyFLohsDCDyUVeRT64ZLabJsbF4gXbAJvgHq+eCJTqMxXSXWSGPkPGJ@vger.kernel.org, AJvYcCX5xCkWd2ZK5dvd8MOww3kAHkcjbPbQ5qW/wtCgDDgCZW7gXYByMJqjnBdlf0JOC4KGFaVZ2T/R@vger.kernel.org, AJvYcCXMC+rFarXTlwGEGaSoSDNDGYdWjZPM1+dHiisIR8kliY8akWCx3vogjHh+esXkPJo457UTGliak+xMyPVCnHI=@vger.kernel.org, AJvYcCXSzIQfqnKmrpZggmSDyK9QVYNvse2Lw8ULvOmiJrfGEnCdiiZiXtWFwa1PIppMn5U084KerEyro0NnlfAo@vger.kernel.org, AJvYcCXV1r+4geeBLkEYET42QxMjjbsH9BycydvROu++7wbhWFh4x23kGXkbirEtTb/asiNBYy8=@vger.kernel.org, AJvYcCXhdF4vVq3Msw+EVYcPyFknH+mZlQrM/RyMWlUFOoI5+U+pLbcBQOeL56jfbapw1tsjahtuu3iCx/c15WM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyPcUNB5tp0/GBBRi7HXCNrIw573XSmoUfBrXomYSCJ27rs7C2B
-	RwHWYlA40VbXAAcuWhHkasyqJIuvqcxCOvOeWP6snLX5cPBKqrHz
-X-Gm-Gg: ASbGncvlsyv68J0dvPUxgluqsdGjR9DwBv8qMQ6jOP0bR2xMdHiGR3bbE8yC8bves+C
-	c+vCfQKiIapOh1VyZZQHS+un5mcrw1fAjC/eKNEHQPVV/q3aE+WcWlUyJl7fwsEJE7TQaevM91h
-	3111X3D6qMnB/W/txGTgcLanRdXQ254vbb7/1QyNn8cXbk/PZSMpGoFT89fKseGkeLt0NMmMK2H
-	25bGp3v5m2kr2G315xEcAUTijnDjbAP93dtxpVoy2ZAvjXQVKJ8Z+YsM0VS9A2YRC7RlLepaQ7s
-	E3Sk/sJMF2WSA8Aka52+J9nYr5ysKACJQnTNZYm2gQncEOtnwGLKEOFMPrqe7ICkJesq7L2OexI
+        bh=rykqQnwPkGRFwR5KILLeuUxXhWjh1d/Lo2VO4W9LQtQ=;
+        b=GVsmuhk8V67ujAiIuG/rS92kBmiZJfdZkX2lrMKbI5ahZxX/Ug6n0Br/Zl/+SCSspQ
+         rf5ftFJlZcqOkA6gWMxNn1nS0P331cthb2fwIIiDrUs8mBfVIeI3FlqApEwrzJiIoqjE
+         yHoI8Nvkgtu8aTrt7wjfvmei9/bPriixCBKhFHWu7NVtVdsNlukAab4QZztXWdKRlOCr
+         9/yTPSF4arllqDw2xnbnTYiyE2zDHrpxSsy0GXfpLFdX5JetTWu6aBFe8SVJ48Ve4DV8
+         Yhq5LD8Pmmx7P4KhjGQuG9iXto9CHHu7P4b7mh7veDAhg0O/bDrCFhAmtWVr7jrQHYEl
+         eiYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVPz/qKndcWnW41ckcQVGG4uC1rPclfChvMMihHeW8q1NXBPvsiryrCLCqhRqP3AZs4gCbGWbbVPe1qZD4=@vger.kernel.org, AJvYcCVXLJUNy5kUKbeUxiHDayJwlHCqfRAzvvJqhnGZ7SyCdjtgidUa7CLREKQ9eRc2TEWWiHP2Sry1HDwoZ+OA@vger.kernel.org, AJvYcCVxM0J62c3AVclPOWPRHOPg+SYR+HDZ0Ly89ld4Qr1lcFbw+TX3aTUhJRNX6k9R2yY7/IQ=@vger.kernel.org, AJvYcCW9F59PgRnCSplwJYv5XekjI4k2VpM+98VpKud4lXj1Pq3dNFBIAOp1a2WamGoy7SGKS1gftUho@vger.kernel.org, AJvYcCXAetSclNVb9C79IUUyUDSYYWsOsfeke9pYn621yIIlZrExYKbzW6mL0IlQC2Fl8Ifwqqe6qlUaB3TyW4jd@vger.kernel.org, AJvYcCXUfBsi2vVWD3YBAqcniEUwgDF6N6Ui5xb2Evu3C480Et1I+QqMYIGy2/ADY7JRXvYnJdTmmfnCbR/zrAq9PZU=@vger.kernel.org, AJvYcCXzF4BPjaHCkeQR+J2qodKuCpgsJshiuPm9qkrSAHXefhdp4kFfydVUNH1ee25Lk5btKtZGtRxERQYi/BQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYwys9yZVcUWSOxDUpe8EyShdlsNrPH4hkX58T/LAPC5ZwDIRH
+	l9uaDJFOkBxjRNCXeT1i8L1IVaQcCkI20h+AYNbWv1f/r2KUR5Mv
+X-Gm-Gg: ASbGncsHhXXVrkwgbc7kUUygyzwHuHHAi2I4POhNjQMfjEesTDdtHzX3+IOcpnrZwyn
+	4k5PqXkGO1wAVM76TcTo30BOdgiTwtAmYtmHLEl/s0hcL0ggma+4vKA6G+9JIxja5wuucU+vWX2
+	qo4x9aPHL+Oh8M7gT1sWEqGmgR/hEhkBc+0r6b2KzAn6zzsQeSudqMJswRVfnOOjufMk/Arv7rT
+	nKpovdZtjLVr3q24kky2uEPwLlFSA+iYdzl9CDcMV1UoO+EXL7pVlBkPPjH5ZRG/veSHv2a+x5N
+	XVcRHYKKG1ntoaLpEhqaZ0XtNhDGHTFzc1D47FL9B8jbptywSbFm/2QhYH9QwqgQOPNz1LopY04
 	=
-X-Google-Smtp-Source: AGHT+IFJ7v56//ubfe5SZfIgarRaf2kt414B71bZC0lL5Jm/hhEy1S8FPvdkgRl1jpN6UW8NLO4j1Q==
-X-Received: by 2002:a17:902:e5ca:b0:223:894e:4376 with SMTP id d9443c01a7336-223894e454dmr21360135ad.43.1740839272112;
-        Sat, 01 Mar 2025 06:27:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE6Wlnx/zKBNSK8vHDH90VpNnFUcC/6AIsKwE//R5+rZAZsk6Mdwf+K5eJJM57bLHOOu0BXag==
+X-Received: by 2002:a17:903:f86:b0:223:536d:f67b with SMTP id d9443c01a7336-2236920780dmr123851985ad.38.1740839281880;
+        Sat, 01 Mar 2025 06:28:01 -0800 (PST)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.27.43
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223501fa8f1sm49231965ad.90.2025.03.01.06.27.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 01 Mar 2025 06:27:51 -0800 (PST)
+        Sat, 01 Mar 2025 06:28:01 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -134,9 +134,9 @@ Cc: hpa@zytor.com,
 	andrew.cooper3@citrix.com,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v2 15/18] fsi: i2cr: Replace open-coded parity calculation with parity64()
-Date: Sat,  1 Mar 2025 22:24:06 +0800
-Message-Id: <20250301142409.2513835-16-visitorckw@gmail.com>
+Subject: [PATCH v2 16/18] Input: joystick - Replace open-coded parity calculation with parity64()
+Date: Sat,  1 Mar 2025 22:24:07 +0800
+Message-Id: <20250301142409.2513835-17-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250301142409.2513835-1-visitorckw@gmail.com>
 References: <20250301142409.2513835-1-visitorckw@gmail.com>
@@ -156,30 +156,79 @@ Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- drivers/fsi/fsi-master-i2cr.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/input/joystick/sidewinder.c | 24 +++++-------------------
+ 1 file changed, 5 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/fsi/fsi-master-i2cr.c b/drivers/fsi/fsi-master-i2cr.c
-index 8212b99ab2f9..8f558b7c6dbc 100644
---- a/drivers/fsi/fsi-master-i2cr.c
-+++ b/drivers/fsi/fsi-master-i2cr.c
-@@ -44,15 +44,9 @@ static bool i2cr_check_parity32(u32 v, bool parity)
+diff --git a/drivers/input/joystick/sidewinder.c b/drivers/input/joystick/sidewinder.c
+index 3a5873e5fcb3..9fe980096f70 100644
+--- a/drivers/input/joystick/sidewinder.c
++++ b/drivers/input/joystick/sidewinder.c
+@@ -7,6 +7,7 @@
+  * Microsoft SideWinder joystick family driver for Linux
+  */
  
- static bool i2cr_check_parity64(u64 v)
- {
--	u32 i;
- 	bool parity = I2CR_INITIAL_PARITY;
- 
--	for (i = 0; i < 64; ++i) {
--		if (v & (1llu << i))
--			parity = !parity;
--	}
--
--	return parity;
-+	return parity ^ parity64(v);
++#include <linux/bitops.h>
+ #include <linux/delay.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+@@ -240,21 +241,6 @@ static void sw_init_digital(struct gameport *gameport)
+ 	local_irq_restore(flags);
  }
  
- static u32 i2cr_get_command(u32 address, bool parity)
+-/*
+- * sw_parity() computes parity of __u64
+- */
+-
+-static int sw_parity(__u64 t)
+-{
+-	int x = t ^ (t >> 32);
+-
+-	x ^= x >> 16;
+-	x ^= x >> 8;
+-	x ^= x >> 4;
+-	x ^= x >> 2;
+-	x ^= x >> 1;
+-	return x & 1;
+-}
+ 
+ /*
+  * sw_ccheck() checks synchronization bits and computes checksum of nibbles.
+@@ -316,7 +302,7 @@ static int sw_parse(unsigned char *buf, struct sw *sw)
+ 
+ 			for (i = 0; i < sw->number; i ++) {
+ 
+-				if (sw_parity(GB(i*15,15)))
++				if (parity64(GB(i*15,15)))
+ 					return -1;
+ 
+ 				input_report_abs(sw->dev[i], ABS_X, GB(i*15+3,1) - GB(i*15+2,1));
+@@ -333,7 +319,7 @@ static int sw_parse(unsigned char *buf, struct sw *sw)
+ 		case SW_ID_PP:
+ 		case SW_ID_FFP:
+ 
+-			if (!sw_parity(GB(0,48)) || (hat = GB(42,4)) > 8)
++			if (!parity64(GB(0,48)) || (hat = GB(42,4)) > 8)
+ 				return -1;
+ 
+ 			dev = sw->dev[0];
+@@ -354,7 +340,7 @@ static int sw_parse(unsigned char *buf, struct sw *sw)
+ 
+ 		case SW_ID_FSP:
+ 
+-			if (!sw_parity(GB(0,43)) || (hat = GB(28,4)) > 8)
++			if (!parity64(GB(0,43)) || (hat = GB(28,4)) > 8)
+ 				return -1;
+ 
+ 			dev = sw->dev[0];
+@@ -379,7 +365,7 @@ static int sw_parse(unsigned char *buf, struct sw *sw)
+ 
+ 		case SW_ID_FFW:
+ 
+-			if (!sw_parity(GB(0,33)))
++			if (!parity64(GB(0,33)))
+ 				return -1;
+ 
+ 			dev = sw->dev[0];
 -- 
 2.34.1
 
