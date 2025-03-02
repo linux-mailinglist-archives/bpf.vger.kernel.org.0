@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-52999-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53000-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74B44A4B4A3
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 464DAA4B4A2
 	for <lists+bpf@lfdr.de>; Sun,  2 Mar 2025 21:14:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F5097A5FE7
-	for <lists+bpf@lfdr.de>; Sun,  2 Mar 2025 20:13:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D17016C9E3
+	for <lists+bpf@lfdr.de>; Sun,  2 Mar 2025 20:14:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C2D1EDA0B;
-	Sun,  2 Mar 2025 20:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E3A1EDA28;
+	Sun,  2 Mar 2025 20:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BpBijcBk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A4rQtyaS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE51FC0E
-	for <bpf@vger.kernel.org>; Sun,  2 Mar 2025 20:13:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736D31EDA11
+	for <bpf@vger.kernel.org>; Sun,  2 Mar 2025 20:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740946439; cv=none; b=pPcOji5ZFPNVf+SBZ8XUt2Plut7aToEx/HBtGI5tlNw00557LKYAON9ST7tUgHzu/edBi64nLSQNFoqfUKJcjH1A5hiSYuhquzIaaTcdcV56is/TtOZHtiu056of5a9ApAjjvm8ktL/uxvPHbiksWSBQ5fRKgWNe5rDlrlhsUaM=
+	t=1740946441; cv=none; b=XVjwvmYzPpzdl0DHKlP/CJeu8dVXL34aWLb5DRvHkA9thiOKcv8+nhxr6TA49FH6Nf++sKfWnW17rszm45QMJv2BOB+rAbaE83ycDVGuzMOjci25nsehPiblVH5YT7xkEwcnhR+cVOL2yLQHSdVX1Ql4u4G5qBtcdHjlgRqIvbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740946439; c=relaxed/simple;
-	bh=gsK26vUkifuDYo7clrLXLQExH/TS/FyKlHScGPRSAWo=;
+	s=arc-20240116; t=1740946441; c=relaxed/simple;
+	bh=BpThu9YEyK8ELgHxAjpc5AHU0SdHE8WoCJpNtk/b5hc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O3TI16vka8TWIyNT89MzNcqTr5jWQ/cW9+gDf4++hmAsrRc4u0aHg7hpLAECtdAQOI2EF6kVwIfZUskY4UDzA8raQD1+mIDVmI1wW+HzZWVBV+5puWwf+EqfO+BTU0msGQe23qCCv3x4qlAXZnR/iKKlGRMrMIfoZNGSfPsRg+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BpBijcBk; arc=none smtp.client-ip=209.85.221.65
+	 MIME-Version; b=lPqGequxdrmrobl0uqzP5EsltcHvXNApR9+dS/1Tn8P76nK4YPYmFFjc82VopXhvAl0vTdADhCA61KLNKfbw0pRDwV5XflD3EWCXVO2SKQJ/iQy1eJ/X1T3xuc7fSIvGsfhWH9Rm5PyM5sazfv/PS7A8pdyh3V6NrgEhQsSc8BY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A4rQtyaS; arc=none smtp.client-ip=209.85.128.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-390e6ac844fso3341507f8f.3
-        for <bpf@vger.kernel.org>; Sun, 02 Mar 2025 12:13:56 -0800 (PST)
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-43996e95114so25382515e9.3
+        for <bpf@vger.kernel.org>; Sun, 02 Mar 2025 12:13:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740946435; x=1741551235; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740946436; x=1741551236; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+sadJdTy41RWbz6HTttqvIc+q2VC9ST+YLa62Y+t9bk=;
-        b=BpBijcBkoSnw7sJ2LEUyBCQLzAYLlPQIoPSRjUAN+LWWQ0Zs6bSIkX2IpY1CxIXFuh
-         YE8WPu+K2xVSY/TVTC9m0q+4nB3j8B+1IVtGqdlo7u7jtlcG3PKMYmtjevhqEPwVtVmV
-         nTeZJfc/7PSlxxKl/ZQXsYo12hAeE+PUU2sA/+EFJZfeLqlTJJ3B9+XoDjUD1o9KmpzV
-         RwAJe6eS4JfJmYg4JYUgG773jyopUXx8isbkco1VaM6uaQoYQsazOKmIBMM0CrdCl7g6
-         mHpOef9Qv4pihsErP4SauxRBbF+doIzZnZmAg0q5W1p9EdrEz840Q9ki/QimjpA2vcTN
-         +Q/Q==
+        bh=wPaJiTRgHSYRKB4KuNqOKHe41VKxkig5Z9cneGFrPjo=;
+        b=A4rQtyaSBvq/BH2XclU38lEH1eeKLJRjnpJ3dF11xpnjh0U9qc36cpBmxrypnNIeR7
+         2Bg3kQmbvQZmJ1eBIk2KbO/PUdaqTZHlf39vanJjypd0D95fCaAVNTyxOIuvJGonZ/mt
+         ysROF7pA4wplGHdLtAKjXk6hfCr0WvGf1c6yVP59jl7D/nTNm+ATKlzM3hVVFXiUNfI/
+         rr8wzmFArLtv3wXdW/UTPYXcAsPxPiFpe29fvpQjSkx5CbZHzbbPLV8koIHeSMFPDrm7
+         nYzwkmWLrcYFHgW02cdRqGCXEXGeD693/oD2CDXHdvSSE8p7lxk1PM9/3kssVUHYPdQo
+         ekQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740946435; x=1741551235;
+        d=1e100.net; s=20230601; t=1740946436; x=1741551236;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+sadJdTy41RWbz6HTttqvIc+q2VC9ST+YLa62Y+t9bk=;
-        b=MpgnY0N2cnkK5yZgniVTnTL3kn+deniBMBXrJ+jpzZz/bIY3iJiVa7uC6taKwd0hcL
-         CySxeNuf6XW75gbE47h5RWIlHjg2sWO2BNow9e6mWTRUh2ouye8160fzrygYOdexTQvg
-         l//SB7abuJKyVFW8gLjnmJ+cY1mf44swURt5qSuieJCaH/7WDUwmQtDD6JQrEEH5kGAp
-         ByNaFPefk+wMLgDdrU2uud7U5GfwPDYDWGycdcYSncfqj+jA8gP4rUT02vjeiE+D7bRU
-         WYR5GH6U1qVR79f2oZD4YUm+Vv3Vt9vycfUI8k0aZSHdzkilkBJXmpOUqWJV4StWm4AB
-         8ucw==
-X-Gm-Message-State: AOJu0Yw4M0IFh6Z9F3c1tdoYqmOuSaIuCnLD4Y9IMkkNue6i4D3di3qn
-	VZA3LY1Tp1xsSw6SY6PG3vlVFnF4A8olUfqtlnMNMWYWbEXv+JCujNvBHuzNisw=
-X-Gm-Gg: ASbGnct+AuKXNjuiVMIC55htBvrmynD3wOLEPBNroo0cSErrUGlfu/jzMads5Anewbk
-	3ReSyFus3jJFn3F4ObveO4K0EkFP488tP8pCYVB2z0QQRVS2dgmZmRGNYdEnpaxCuiQzy/qrTk1
-	KIAuXUY8Vorsv1eXyKH4qun7n+VwdA/j3fnaTko6q2xuVAOB0qKnpFi7QxtLYn+a70iU3OK9gxI
-	jvKL6zMoZfCt0dIQRQyqdURjCCOnoCe2IhY+Nz36f1GFCvcHspLiQEYG24qjsEurdWe10PzN5Nt
-	mqA14rHGayiPMP4Q/bP277GXa7XfUttZBA==
-X-Google-Smtp-Source: AGHT+IHYh7EwA3sEAnYpDHz0SNjAfO/nvb2HJQIoFp38P811zNPMND5Tc1azUVxWAjYg/1aniFYfpg==
-X-Received: by 2002:a05:6000:2a02:b0:390:f412:dd41 with SMTP id ffacd0b85a97d-390f412e13bmr5166192f8f.53.1740946434694;
-        Sun, 02 Mar 2025 12:13:54 -0800 (PST)
-Received: from localhost ([2a03:2880:31ff:1::])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e4796051sm12446487f8f.12.2025.03.02.12.13.53
+        bh=wPaJiTRgHSYRKB4KuNqOKHe41VKxkig5Z9cneGFrPjo=;
+        b=QY7oe4i+rL0RNlmwJU8hF5TAUsa57AEDKv9CyTdfhql8y69juFihdILNB0+lHrhgd+
+         DQQT6bYMLL2D1WeKGylB/e24Taozq5wWtR/KGbxWoO/RVwd0VCdn2uFR63yxZxF0v4C2
+         TVBGzqe7jxqv9C4bBLlI7En3BIChNYFacPW3+v+4oIr9zsbjAPSwfLYxPpwfD+K7yGyF
+         K0a4NIWdVAJDCTtOBzdpPkbo//H9ZeS23BborfnuD+SOrxWD0NBi7WiQ/Kdqqx/rU86x
+         O0PHlXkVpiJB3TOTmHbH6OnzwalAVkR1ur3Br0I/sm8q/1bx1sR9EB7emhCHnpFEJYpl
+         PdOw==
+X-Gm-Message-State: AOJu0YzqCoDmZ/xZHEP6U2IoBmiBoLABTqp+StQ+JylRyUcP7JrdQhVK
+	bdkFWS/ELkH84VwxSXvIBQUlzfBwQiHbMYv0Fs1efYb8Eya3cYADQ/AF9GGTsio=
+X-Gm-Gg: ASbGncumkeqVp3gRINV6RRBkNc2NjbFTVK8fUYt0UJr7vKEtOCCnBClpSOUy9CczUsh
+	EbQHRvl0UXfBh6NBPGUS7feqOJvYn4008p2HYde9rS+r4YBeWB1C46PDrHjenq519DkWQcTvYib
+	Gya1EtqGORN+Xx7XnH1oy6h8jlXgnkbK2dc1Y+G+bklISgabEWfCkW6w1EIznJvY8CnTcjgr9bj
+	DLqklDu9tiZx0rWO4ev3JWgRyFInohYCAzq4LNTLrYu7krRGLg8j3LmGAqtMt/co2l896Y/fWgr
+	06TQfG+9Y6LzdvDvBt1s3TRa7+fpttdwtRA=
+X-Google-Smtp-Source: AGHT+IEU73Eq4TMZYCZXMof8m/DxeMZNVry7xAERXk3ibvdqeCDOAK6j4eD2M2yJGEeoHDqOtS4J9g==
+X-Received: by 2002:a05:600c:468e:b0:439:8e3e:b0d6 with SMTP id 5b1f17b1804b1-43ba67045femr91791985e9.13.1740946436090;
+        Sun, 02 Mar 2025 12:13:56 -0800 (PST)
+Received: from localhost ([2a03:2880:31ff:4e::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43b7a28b285sm135396195e9.33.2025.03.02.12.13.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Mar 2025 12:13:53 -0800 (PST)
+        Sun, 02 Mar 2025 12:13:55 -0800 (PST)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -85,9 +85,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Dohyun Kim <dohyunkim@google.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v1 1/2] bpf: Add verifier support for timed may_goto
-Date: Sun,  2 Mar 2025 12:13:47 -0800
-Message-ID: <20250302201348.940234-2-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 2/2] bpf, x86: Add x86 JIT support for timed may_goto
+Date: Sun,  2 Mar 2025 12:13:48 -0800
+Message-ID: <20250302201348.940234-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20250302201348.940234-1-memxor@gmail.com>
 References: <20250302201348.940234-1-memxor@gmail.com>
@@ -97,244 +97,238 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9436; h=from:subject; bh=gsK26vUkifuDYo7clrLXLQExH/TS/FyKlHScGPRSAWo=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnxLhM+CDAqq0Ken5W/O8cKLwTZczKb3Zi//dq2sAY V2JQDUKJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ8S4TAAKCRBM4MiGSL8RylFgD/ sFEUrnM800ayQkGre8MagV97Ra7DZmVjn/LGZqY61jhgSpaM1VUodsY0qrSZbq+Cd2HJARzWLWkJiW +Bl4ChuplN4iT2yScE5vD4+cgN6M5leCpjgQDVGnAbnD3lXVSS7T7SjrEH7TGmoGOYLxVaJbEENGqL zKhv23ZCry951mOvwFShmGEdjpa23qcCuKVXmjxuQOskUsQC1BRrdHjbJVM386g21OJvTLj4IyzoT9 tDtTLTLyrj2AlxztUrcT4kiPGqS7NUjUfi6zZXYw7/VqDN91ZvkW1+AkiURJbY6BWAjGr8bA5m+oij lU5Tq5yespOsSl5b4EjXO2f0QD7F2BCZBJ/A6jB313NdQ1fZ/McYgO/knMJ/rsdwyzfPByUKkvmo9L gKpxot1vZl/aJdyyHpJQYIgygbpFCPo/Lw1tanFMXJISZHqvSmqm2Qyb9EdJsJ+xNvc3TPCuP1sFFv xYIsZVehdcU8fjL3e9GypQEOPkDQAJSdB1E8v2gCsmmzgEaW3PQYZR1JgX26FAOVJ3MlooNz2DZqPA DMZLnQK2S7GAOuYik6SH+PLIwsVzmqaqSPfixOio0e293ZB5pZQiQbSgKxjZel6JwNWMXpeMYBOIYk UcnADcVVho0Jq8KiSUvBH/v3Y4mBA9LMXDLlo0CQOGFpYGHOmwWU/QwuM6Mg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7361; h=from:subject; bh=BpThu9YEyK8ELgHxAjpc5AHU0SdHE8WoCJpNtk/b5hc=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnxLhMNgnqz+TsTt4STyL1kTCgF+Z7qN7sAyxwgwaD kf/n/4CJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ8S4TAAKCRBM4MiGSL8RysYfD/ 44O03jt4b3V6aF98nLVDTkareaHk2Mt0VXRL4/IX5DcN3jYmhKqQKcHqbtqhjYB1m7zCXwIpPnpPuM 2cZbm4BRkgnA0pJ5QbCjKkQ4w0hK4wSlj+2w6dSXkqSPRbXMaBitA9JZCQ1X7RcbKk3y/9qZBDe5SW W7t8HKSUOg1zXmM539hR6bih/nx4mDHu/yRffHlCL5KXmLibN5/YYanUy8Q3Xd9fs+HyPZz4Uhp+mM u0ZzIBNdMHuHDRY6tCUg/JwT7Jruxp8L7Ok6qpeYMq1w9HKOY+uTPhblFJ47h1pojuZoAuFPD85vLo MEPi13/ZLjslGmv2HxsRjfv1h2Fo0M0leIZQ2Ta8sV0/ZmlAg9Nl/bmL9Cvzp4cLbM9N61vcKqGazW e0qjUxmdLQ2RP+SXLJyHTqbLZ6IaUK4iyroA92DUrLZVDbkWmPg/e6Pg71qXhNmWPBPqYcSIydRxt9 QcTVdbJ3fBzWTOtKV5iLQyvlno5xfA5caLCghuiI+4JE/odSUPjHzoTk66nhEtMT0Q0CxyGhyTVTXK 8IE1RDvylukMh438iXMHtgSHDi2AiXjNqCb1Ih0gWmvePhLTHZyfPpTZUAhOAFEBNlH0Bo5Whqh9uA wAwmvZedY0EsiAInoj9ZGiA9m8+wLKYS0UUHRKn7QGSe9qPv0uHEV8AIYHmg==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Implement support in the verifier for replacing may_goto implementation
-from a counter-based approach to one which samples time on the local CPU
-to have a bigger loop bound.
+Implement the arch_bpf_timed_may_goto function using inline assembly to
+have control over which registers are spilled, and use our special
+protocol of using BPF_REG_AX as an argument into the function, and as
+the return value when going back.
 
-We implement it by maintaining 16-bytes per-stack frame, and using 8
-bytes for maintaining the count for amortizing time sampling, and 8
-bytes for the starting timestamp. To minimize overhead, we need to avoid
-spilling and filling of registers around this sequence, so we push this
-cost into the time sampling function 'arch_bpf_timed_may_goto'. This is
-a JIT-specific wrapper around bpf_check_timed_may_goto which returns us
-the count to store into the stack through BPF_REG_AX. All caller-saved
-registers (r0-r5) are guaranteed to remain untouched.
+Emit call depth accounting for the call made from this stub, and ensure
+we don't have naked returns (when rethunk mitigations are enabled) by
+falling back to the RET macro (instead of retq). After popping all saved
+registers, the return address into the BPF program should be on top of
+the stack.
 
-The loop can be broken by returning count as 0, otherwise we dispatch
-into the function when the count becomes 1, and the runtime chooses to
-refresh it (by returning count as BPF_MAX_TIMED_LOOPS) or returning 0
-and aborting it.
-
-Since the check for 0 is done right after loading the count from the
-stack, all subsequent cond_break sequences should immediately break as
-well.
-
-We pass in the stack_depth of the count (and thus the timestamp, by
-adding 8 to it) to the arch_bpf_timed_may_goto call so that it can be
-passed in to bpf_check_timed_may_goto as an argument after r1 is saved,
-by adding the offset to r10/fp. This adjustment will be arch specific,
-and the next patch will introduce support for x86.
-
-Note that depending on loop complexity, time spent in the loop can be
-more than the current limit (250 ms), but imposing an upper bound on
-program runtime is an orthogonal problem which will be addressed when
-program cancellations are supported.
-
-The current time afforded by cond_break may not be enough for cases
-where BPF programs want to implement locking algorithms inline, and use
-cond_break as a promise to the verifier that they will eventually
-terminate.
-
-Below are some benchmarking numbers on the time taken per-iteration for
-an empty loop that counts the number of iterations until cond_break
-fires. For comparison, we compare it against bpf_for/bpf_repeat which is
-another way to achieve the same number of spins (BPF_MAX_LOOPS).  The
-hardware used for benchmarking was a Saphire Rapids Intel server with
-performance governor enabled.
-
-+-----------------------------+--------------+--------------+------------------+
-| Loop type                   | Iterations   |  Time (ms)   |   Time/iter (ns) |
-+-----------------------------|--------------+--------------+------------------+
-| may_goto                    | 8388608      |  3           |   0.36           |
-| timed_may_goto (count=65535)| 589674932    |  250         |   0.42           |
-| bpf_for                     | 8388608      |  10          |   1.19           |
-+-----------------------------+--------------+--------------+------------------+
-
-This gives a good approximation at low overhead while staying close to
-the current implementation.
+Since the JIT support is now enabled, ensure selftests which are
+checking the produced may_goto sequences do not break by adjusting them.
+Make sure we still test the old may_goto sequence on other
+architectures, while testing the new sequence on x86_64.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h    |  1 +
- include/linux/filter.h |  8 +++++++
- kernel/bpf/core.c      | 31 +++++++++++++++++++++++++
- kernel/bpf/verifier.c  | 52 +++++++++++++++++++++++++++++++++++-------
- 4 files changed, 84 insertions(+), 8 deletions(-)
+ arch/x86/net/Makefile                         |  2 +-
+ arch/x86/net/bpf_jit_comp.c                   |  5 ++
+ arch/x86/net/bpf_timed_may_goto.S             | 43 ++++++++++++++
+ .../bpf/progs/verifier_bpf_fastcall.c         | 58 +++++++++++++++----
+ .../selftests/bpf/progs/verifier_may_goto_1.c | 34 ++++++++++-
+ 5 files changed, 129 insertions(+), 13 deletions(-)
+ create mode 100644 arch/x86/net/bpf_timed_may_goto.S
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index aec102868b93..788f6ca374e9 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1986,6 +1986,7 @@ struct bpf_array {
-  */
- enum {
- 	BPF_MAX_LOOPS = 8 * 1024 * 1024,
-+	BPF_MAX_TIMED_LOOPS = 0xffff,
- };
- 
- #define BPF_F_ACCESS_MASK	(BPF_F_RDONLY |		\
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 3ed6eb9e7c73..02dda5c53d91 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -669,6 +669,11 @@ struct bpf_prog_stats {
- 	struct u64_stats_sync syncp;
- } __aligned(2 * sizeof(u64));
- 
-+struct bpf_timed_may_goto {
-+	u64 count;
-+	u64 timestamp;
-+};
-+
- struct sk_filter {
- 	refcount_t	refcnt;
- 	struct rcu_head	rcu;
-@@ -1130,8 +1135,11 @@ bool bpf_jit_supports_ptr_xchg(void);
- bool bpf_jit_supports_arena(void);
- bool bpf_jit_supports_insn(struct bpf_insn *insn, bool in_arena);
- bool bpf_jit_supports_private_stack(void);
-+bool bpf_jit_supports_timed_may_goto(void);
- u64 bpf_arch_uaddress_limit(void);
- void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
-+u64 arch_bpf_timed_may_goto(void);
-+u64 bpf_check_timed_may_goto(struct bpf_timed_may_goto *);
- bool bpf_helper_changes_pkt_data(enum bpf_func_id func_id);
- 
- static inline bool bpf_dump_raw_ok(const struct cred *cred)
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index a0200fbbace9..b3f7c7bd08d3 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -3069,6 +3069,37 @@ void __weak arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp,
+diff --git a/arch/x86/net/Makefile b/arch/x86/net/Makefile
+index 383c87300b0d..dddbefc0f439 100644
+--- a/arch/x86/net/Makefile
++++ b/arch/x86/net/Makefile
+@@ -6,5 +6,5 @@
+ ifeq ($(CONFIG_X86_32),y)
+         obj-$(CONFIG_BPF_JIT) += bpf_jit_comp32.o
+ else
+-        obj-$(CONFIG_BPF_JIT) += bpf_jit_comp.o
++        obj-$(CONFIG_BPF_JIT) += bpf_jit_comp.o bpf_timed_may_goto.o
+ endif
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index a43fc5af973d..f3e9ef6b5329 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -3791,3 +3791,8 @@ u64 bpf_arch_uaddress_limit(void)
  {
+ 	return 0;
+ }
++
++bool bpf_jit_supports_timed_may_goto(void)
++{
++	return true;
++}
+diff --git a/arch/x86/net/bpf_timed_may_goto.S b/arch/x86/net/bpf_timed_may_goto.S
+new file mode 100644
+index 000000000000..c35e00b93ac6
+--- /dev/null
++++ b/arch/x86/net/bpf_timed_may_goto.S
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++
++#include <linux/export.h>
++#include <linux/linkage.h>
++#include <asm/nospec-branch.h>
++
++	.code64
++	.section .text, "ax"
++
++SYM_FUNC_START(arch_bpf_timed_may_goto)
++	ANNOTATE_NOENDBR
++
++	/* Save r0-r5 */
++	pushq %rax
++	pushq %rdi
++	pushq %rsi
++	pushq %rdx
++	pushq %rcx
++	pushq %r8
++
++	/* r10 passes us stack depth, load the pointer to count and timestamp as
++	 * first argument to the call below.
++	 */
++	leaq (%rbp, %r10, 1), %rdi
++
++	/* Emit call depth accounting for call below */
++	CALL_DEPTH_ACCOUNT
++	call bpf_check_timed_may_goto
++
++	/* BPF_REG_AX=r10 will be stored into count, so move return value to it */
++	movq %rax, %r10
++
++	/* Restore r5-r0 */
++	popq %r8
++	popq %rcx
++	popq %rdx
++	popq %rsi
++	popq %rdi
++	popq %rax
++
++	RET
++SYM_FUNC_END(arch_bpf_timed_may_goto)
+diff --git a/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c b/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
+index 5094c288cfd7..67e6980cd722 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
++++ b/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
+@@ -620,23 +620,61 @@ __naked void helper_call_does_not_prevent_bpf_fastcall(void)
+ 
+ SEC("raw_tp")
+ __arch_x86_64
++__log_level(4) __msg("stack depth 24")
++/* may_goto counter at -24 */
++__xlated("0: *(u64 *)(r10 -24) =")
++/* may_goto timestamp at -16 */
++__xlated("1: *(u64 *)(r10 -16) =")
++__xlated("2: r1 = 1")
++__xlated("...")
++__xlated("4: r0 = &(void __percpu *)(r0)")
++__xlated("...")
++/* may_goto expansion starts */
++__xlated("6: r11 = *(u64 *)(r10 -24)")
++__xlated("7: if r11 == 0x0 goto pc+6")
++__xlated("8: r11 -= 1")
++__xlated("9: if r11 != 0x1 goto pc+2")
++__xlated("10: r11 = -24")
++__xlated("11: call unknown")
++__xlated("12: *(u64 *)(r10 -24) = r11")
++/* may_goto expansion ends */
++__xlated("13: *(u64 *)(r10 -8) = r1")
++__xlated("14: exit")
++__success
++__naked void may_goto_interaction_x86_64(void)
++{
++	asm volatile (
++	"r1 = 1;"
++	"*(u64 *)(r10 - 16) = r1;"
++	"call %[bpf_get_smp_processor_id];"
++	"r1 = *(u64 *)(r10 - 16);"
++	".8byte %[may_goto];"
++	/* just touch some stack at -8 */
++	"*(u64 *)(r10 - 8) = r1;"
++	"exit;"
++	:
++	: __imm(bpf_get_smp_processor_id),
++	  __imm_insn(may_goto, BPF_RAW_INSN(BPF_JMP | BPF_JCOND, 0, 0, +1 /* offset */, 0))
++	: __clobber_all);
++}
++
++SEC("raw_tp")
++__arch_arm64
+ __log_level(4) __msg("stack depth 16")
+ /* may_goto counter at -16 */
+ __xlated("0: *(u64 *)(r10 -16) =")
+ __xlated("1: r1 = 1")
+-__xlated("...")
+-__xlated("3: r0 = &(void __percpu *)(r0)")
+-__xlated("...")
++__xlated("2: call bpf_get_smp_processor_id")
+ /* may_goto expansion starts */
+-__xlated("5: r11 = *(u64 *)(r10 -16)")
+-__xlated("6: if r11 == 0x0 goto pc+3")
+-__xlated("7: r11 -= 1")
+-__xlated("8: *(u64 *)(r10 -16) = r11")
++__xlated("3: r11 = *(u64 *)(r10 -16)")
++__xlated("4: if r11 == 0x0 goto pc+3")
++__xlated("5: r11 -= 1")
++__xlated("6: *(u64 *)(r10 -16) = r11")
+ /* may_goto expansion ends */
+-__xlated("9: *(u64 *)(r10 -8) = r1")
+-__xlated("10: exit")
++__xlated("7: *(u64 *)(r10 -8) = r1")
++__xlated("8: exit")
+ __success
+-__naked void may_goto_interaction(void)
++__naked void may_goto_interaction_arm64(void)
+ {
+ 	asm volatile (
+ 	"r1 = 1;"
+diff --git a/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c b/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c
+index e81097c96fe2..b75548a52658 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c
++++ b/tools/testing/selftests/bpf/progs/verifier_may_goto_1.c
+@@ -69,8 +69,38 @@ __naked void may_goto_batch_1(void)
  }
  
-+bool __weak bpf_jit_supports_timed_may_goto(void)
+ SEC("raw_tp")
+-__description("may_goto batch with offsets 2/0")
++__description("may_goto batch with offsets 2/0 - x86_64")
+ __arch_x86_64
++__xlated("0: *(u64 *)(r10 -16) = 65535")
++__xlated("1: *(u64 *)(r10 -8) = 0")
++__xlated("2: r11 = *(u64 *)(r10 -16)")
++__xlated("3: if r11 == 0x0 goto pc+6")
++__xlated("4: r11 -= 1")
++__xlated("5: if r11 != 0x1 goto pc+2")
++__xlated("6: r11 = -16")
++__xlated("7: call unknown")
++__xlated("8: *(u64 *)(r10 -16) = r11")
++__xlated("9: r0 = 1")
++__xlated("10: r0 = 2")
++__xlated("11: exit")
++__success
++__naked void may_goto_batch_2_x86_64(void)
 +{
-+	return false;
++	asm volatile (
++	".8byte %[may_goto1];"
++	".8byte %[may_goto3];"
++	"r0 = 1;"
++	"r0 = 2;"
++	"exit;"
++	:
++	: __imm_insn(may_goto1, BPF_RAW_INSN(BPF_JMP | BPF_JCOND, 0, 0, 2 /* offset */, 0)),
++	  __imm_insn(may_goto3, BPF_RAW_INSN(BPF_JMP | BPF_JCOND, 0, 0, 0 /* offset */, 0))
++	: __clobber_all);
 +}
 +
-+u64 __weak arch_bpf_timed_may_goto(void)
-+{
-+	return 0;
-+}
-+
-+u64 bpf_check_timed_may_goto(struct bpf_timed_may_goto *p)
-+{
-+	u64 time = ktime_get_mono_fast_ns();
-+
-+	/* If the count is zero, we've already broken a prior loop in this stack
-+	 * frame, let's just exit quickly.
-+	 */
-+	if (!p->count)
-+		return 0;
-+	/* Populate the timestamp for this stack frame. */
-+	if (!p->timestamp) {
-+		p->timestamp = time;
-+		return BPF_MAX_TIMED_LOOPS;
-+	}
-+	/* Check if we've exhausted our time slice. */
-+	if (time - p->timestamp >= (NSEC_PER_SEC / 4))
-+		return 0;
-+	/* Refresh the count for the stack frame. */
-+	return BPF_MAX_TIMED_LOOPS;
-+}
-+
- /* for configs without MMU or 32-bit */
- __weak const struct bpf_map_ops arena_map_ops;
- __weak u64 bpf_arena_get_user_vm_start(struct bpf_arena *arena)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index dcd0da4e62fc..79bfb1932f40 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -21503,7 +21503,34 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			goto next_insn;
- 		}
- 
--		if (is_may_goto_insn(insn)) {
-+		if (is_may_goto_insn(insn) && bpf_jit_supports_timed_may_goto()) {
-+			int stack_off_cnt = -stack_depth - 16;
-+
-+			/* Two 8 byte slots, depth-16 stores the count, and
-+			 * depth-8 stores the start timestamp of the loop.
-+			 */
-+			stack_depth_extra = 16;
-+			insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_AX, BPF_REG_10, stack_off_cnt);
-+			if (insn->off >= 0)
-+				insn_buf[1] = BPF_JMP_IMM(BPF_JEQ, BPF_REG_AX, 0, insn->off + 5);
-+			else
-+				insn_buf[1] = BPF_JMP_IMM(BPF_JEQ, BPF_REG_AX, 0, insn->off - 1);
-+			insn_buf[2] = BPF_ALU64_IMM(BPF_SUB, BPF_REG_AX, 1);
-+			insn_buf[3] = BPF_JMP_IMM(BPF_JNE, BPF_REG_AX, 1, 2);
-+			insn_buf[4] = BPF_MOV64_IMM(BPF_REG_AX, stack_off_cnt);
-+			insn_buf[5] = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_CALL_IMM(arch_bpf_timed_may_goto));
-+			insn_buf[6] = BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_AX, stack_off_cnt);
-+			cnt = 7;
-+
-+			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
-+			if (!new_prog)
-+				return -ENOMEM;
-+
-+			delta += cnt - 1;
-+			env->prog = prog = new_prog;
-+			insn = new_prog->insnsi + i + delta;
-+			goto next_insn;
-+		} else if (is_may_goto_insn(insn)) {
- 			int stack_off = -stack_depth - 8;
- 
- 			stack_depth_extra = 8;
-@@ -22044,23 +22071,32 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 
- 	env->prog->aux->stack_depth = subprogs[0].stack_depth;
- 	for (i = 0; i < env->subprog_cnt; i++) {
-+		int delta = bpf_jit_supports_timed_may_goto() ? 2 : 1;
- 		int subprog_start = subprogs[i].start;
- 		int stack_slots = subprogs[i].stack_extra / 8;
-+		int slots = delta, cnt = 0;
- 
- 		if (!stack_slots)
- 			continue;
--		if (stack_slots > 1) {
-+		/* We need two in case timed may_goto is supported. */
-+		if (stack_slots > slots) {
- 			verbose(env, "verifier bug: stack_slots supports may_goto only\n");
- 			return -EFAULT;
- 		}
- 
--		/* Add ST insn to subprog prologue to init extra stack */
--		insn_buf[0] = BPF_ST_MEM(BPF_DW, BPF_REG_FP,
--					 -subprogs[i].stack_depth, BPF_MAX_LOOPS);
-+		if (bpf_jit_supports_timed_may_goto()) {
-+			insn_buf[cnt++] = BPF_ST_MEM(BPF_DW, BPF_REG_FP, -subprogs[i].stack_depth,
-+						     BPF_MAX_TIMED_LOOPS);
-+			insn_buf[cnt++] = BPF_ST_MEM(BPF_DW, BPF_REG_FP, -subprogs[i].stack_depth + 8, 0);
-+		} else {
-+			/* Add ST insn to subprog prologue to init extra stack */
-+			insn_buf[cnt++] = BPF_ST_MEM(BPF_DW, BPF_REG_FP, -subprogs[i].stack_depth,
-+						     BPF_MAX_LOOPS);
-+		}
- 		/* Copy first actual insn to preserve it */
--		insn_buf[1] = env->prog->insnsi[subprog_start];
-+		insn_buf[cnt++] = env->prog->insnsi[subprog_start];
- 
--		new_prog = bpf_patch_insn_data(env, subprog_start, insn_buf, 2);
-+		new_prog = bpf_patch_insn_data(env, subprog_start, insn_buf, cnt);
- 		if (!new_prog)
- 			return -ENOMEM;
- 		env->prog = prog = new_prog;
-@@ -22070,7 +22106,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 		 * to insn after BPF_ST that inits may_goto count.
- 		 * Adjustment will succeed because bpf_patch_insn_data() didn't fail.
- 		 */
--		WARN_ON(adjust_jmp_off(env->prog, subprog_start, 1));
-+		WARN_ON(adjust_jmp_off(env->prog, subprog_start, delta));
- 	}
- 
- 	/* Since poke tab is now finalized, publish aux to tracker. */
++SEC("raw_tp")
++__description("may_goto batch with offsets 2/0 - arm64")
++__arch_arm64
+ __xlated("0: *(u64 *)(r10 -8) = 8388608")
+ __xlated("1: r11 = *(u64 *)(r10 -8)")
+ __xlated("2: if r11 == 0x0 goto pc+3")
+@@ -80,7 +110,7 @@ __xlated("5: r0 = 1")
+ __xlated("6: r0 = 2")
+ __xlated("7: exit")
+ __success
+-__naked void may_goto_batch_2(void)
++__naked void may_goto_batch_2_arm64(void)
+ {
+ 	asm volatile (
+ 	".8byte %[may_goto1];"
 -- 
 2.43.5
 
