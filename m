@@ -1,117 +1,120 @@
-Return-Path: <bpf+bounces-53105-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53106-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93CA6A4CB61
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 19:54:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE34AA4CB7B
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 20:00:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F79417626F
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 18:54:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC9683ABF90
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 18:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF56E22FDEA;
-	Mon,  3 Mar 2025 18:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F30F22FAC3;
+	Mon,  3 Mar 2025 18:59:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KVC+M59Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q5M2YMHe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2831E285A;
-	Mon,  3 Mar 2025 18:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 966E5217F54;
+	Mon,  3 Mar 2025 18:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741027944; cv=none; b=Lxar4a1v6rGptHwvluw48N5iraDkWRKvqNQVE+F/F6UThxp14YHOQAe8PDn7V1IT4XJ1Xh0eTSYxqOFhees6emE+jXQVnAQsPZo3kM6kuNcgl0TL+qIdavryf2QIg7gHNJy9MAQ6ChnkDkEmlv1JKABK7Qn8ZsfF+iEWZJ9SMJg=
+	t=1741028398; cv=none; b=K5NDuc++8N+w0fxk/qPU4PY7YLKHL8uibB0IS8jeDhILKj8/axQC8NvbaOZ3KoSOykckxVUhCcAsjXM6jlu2XHt5xA3e/YW9e7lgAnNUTpw+yIHI5Z5Pe7g/MSmDKhEr/aWT9vrQxjrZLV5QnLgd2NXQfsokaaN4gDya6lkUpRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741027944; c=relaxed/simple;
-	bh=ri1EvwoJRI57B9+2tq6b4mnjbxt0riaIa9Jm/Y9S2xc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nYPnQkXVl3WKk80MYQN5RDBf/eFhiTgyDBKNDVbF3bBrjWIp+98dpE/vHlEz3+A9MQt1SQ8Scph5aGwRUm1wpzyovQArTeajn4xW5G4tLJQGbedd6wBWyPSyKrNPpX5YfxdmET5w2wWHw9rq3ZYt3KVKjpdM1elIBvgxetLqJdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KVC+M59Q; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-390ec7c2cd8so2273486f8f.1;
-        Mon, 03 Mar 2025 10:52:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741027941; x=1741632741; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tb5V6oxMTc5Lgs5t3WuZtNTHjuiR0TEmQLLvfX9+d/M=;
-        b=KVC+M59QVSwLAFedWvIVHYYdM8OiOXBMlPnlcK2hzvRw+f1qokWtJU9LHopxdqh/fr
-         D4Ez147tC2j9dCLXMrfOgvMBCfZn45LkU3xIm5tpy0UgZEEubfpXNxiEuTgg0xHfkKbi
-         pWaM0yFnKWSNCHoqLJ5TS30h42GYQG0kk8D6OwTNd3rXiTujQvOVS2QyvvisRC8HN0kc
-         O04S8GOGnE6BAadEmr1mMu5zD2DN6SW9oQhyw0LuRjcymRUcVEUvxO40zwiTaL+DnB60
-         Mxg0cyBodpfpEj+8mxYPx82A7ztC6tf4G0tCUFsUHaThbrqQT8kIBhVXWD0K70EE0NOa
-         RGuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741027941; x=1741632741;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tb5V6oxMTc5Lgs5t3WuZtNTHjuiR0TEmQLLvfX9+d/M=;
-        b=FPXwd4pynUaiYTdxH1QmKinPCkfiVr518kfX63mMZIv4MHAVZIF/pn7GKqSKab2/iu
-         dGrwONQcnS+XY1cFcZDy3WzxVAnlHDJs8vfWgjuq0c9+v6A0Dk9ZdzbRVubu03gXjeuG
-         c4M6QkZE5ltVIHRNXyf7H6XevaFiJV8L/NvjDT3IO6RcJ9lnvw3Zq2QkkXmjbSvs18Ef
-         PqDZq3GrwM64jfgGWK9AMszDOtvw6DBnZjFCeRF8W5yv9mrK+94ceotFiIEUM03A+jn0
-         O37Dll+sFDs2Vwkpr0ZLrhpuok4yaNpfNmS8kXAnk4ww4FfwMEQWLW2wKVRKLBrP/LlD
-         tj9A==
-X-Forwarded-Encrypted: i=1; AJvYcCWmIzE5hoqzrYfq3WtwslYcHYbdjkSKvgpwwbApba8D/XK7+IXSGbBjlrNmC86gHC6XXH7J1Mh38mZ7wZg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9cR1rZZLqHwDO9WeJtqPTi7+X7+dUGNdZJ44RR3s8U0nJu7yZ
-	b/pnMTfosLWiAAXmlbQbEuS9wSq+Wt2+Gq74ieR8PCTADoaZzFzj7tU+vDF7lkkc2qaczY/r+D/
-	m6OR6bapVfmFWjTq/aQ69BpeyiK8=
-X-Gm-Gg: ASbGnct+ygpL5/X0ltp9CClmRkXlbkC6emoo/Np7UBuZeSibKlecRDXqXRDLyu8oDNU
-	C/SbXSBX2X+doDMvdU+xEo22iE1KRt+/Y9DyB1TNj5TIgBeKI0VYRS8+7Pkf9bUb5L9exFzHqHu
-	5wTejB8tcE8FQZa1JimIbkW/5tz/FmjP2iHOcvEDHNaA==
-X-Google-Smtp-Source: AGHT+IHnZBbHX4QElW1DWMreZTHhDpaQknBh51JcyUMZfBlOP/B0HyGo9KEmQZFrsra49723GFGoT6jKhOTVwWemjok=
-X-Received: by 2002:a05:6000:1f8d:b0:390:fb37:1bd with SMTP id
- ffacd0b85a97d-390fb370470mr6928710f8f.46.1741027940749; Mon, 03 Mar 2025
- 10:52:20 -0800 (PST)
+	s=arc-20240116; t=1741028398; c=relaxed/simple;
+	bh=Gp5b4c1zf97/draGEaY8yH71AhQTNUbCkCfT2p04Ckc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=FYMyl0mkiu/UkChYsj5I4/hCUdyuHI4iLVgmJfWYhfqiWm78OZcOodYd7MaWePsz1OhHwpdoLU5wxsV05bZrFK0NEp7qhM/bGU7UCivbnNQ0eX8DKuEAyrn9Qz4hSVYMYuhs4MBr+UlKxJc/PolSPhKg6p9C+M6neO83Ttx6xQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q5M2YMHe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 128A5C4CED6;
+	Mon,  3 Mar 2025 18:59:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741028398;
+	bh=Gp5b4c1zf97/draGEaY8yH71AhQTNUbCkCfT2p04Ckc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Q5M2YMHe2LJCMAbfg7cXsul2vfgCw+jK6xbaoDHy22zAQaeRbjIZEptLtF5zMYf2C
+	 NI7lQsAuXzCRPPtzU7mkqF8IW3uvEJUESZyhXBOQnhz7bu+jsMeTL/Vuau/sq4Qy4J
+	 n6h2XyRXx/tOQNduulh93PuocfF1B2AgiKHgtrSI05RAhObY7hep2TIxQ9Vc6Kv6C7
+	 GGKJmVYricZwzhj/TFjAKEaZWiRoHfV2MYIOnPnciB6l8WrlNMfYhjvV6m6uyFXySN
+	 pjF4vfPXj87/eo0t/8HnVzmsCUBpPMRXg/WAHewjVtACWEjqKC+yrXBDgXwMySrGMP
+	 EspRmDXAUFzYQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAEF23809A8F;
+	Mon,  3 Mar 2025 19:00:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1740978603.git.yepeilin@google.com> <8b39c94eac2bb7389ff12392ca666f939124ec4f.1740978603.git.yepeilin@google.com>
-In-Reply-To: <8b39c94eac2bb7389ff12392ca666f939124ec4f.1740978603.git.yepeilin@google.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 3 Mar 2025 10:52:08 -0800
-X-Gm-Features: AQ5f1JpXrd_zfB7BE28u8dY7mQWsRaJQVmXworXNHuBlKbek7ljLtxiaGy0Y8Kw
-Message-ID: <CAADnVQKyMx64_mP+u+rmnRGyzVoBs4rViTHeE4_0Rr+Kf3R5Tg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 03/10] bpf/verifier: Factor out
- check_load_mem() and check_store_reg()
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v4 00/10] Introduce load-acquire and store-release
+ BPF instructions
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174102843076.3686766.17440507185363251083.git-patchwork-notify@kernel.org>
+Date: Mon, 03 Mar 2025 19:00:30 +0000
+References: <cover.1740978603.git.yepeilin@google.com>
+In-Reply-To: <cover.1740978603.git.yepeilin@google.com>
 To: Peilin Ye <yepeilin@google.com>
-Cc: bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, bpf@ietf.org, 
-	Alexei Starovoitov <ast@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
-	Eduard Zingerman <eddyz87@gmail.com>, David Vernet <void@manifault.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long <longyingchi24s@ict.ac.cn>, 
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>, 
-	Benjamin Segall <bsegall@google.com>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, bpf@ietf.org,
+ ast@kernel.org, xukuohai@huaweicloud.com, eddyz87@gmail.com,
+ void@manifault.com, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, corbet@lwn.net, paulmck@kernel.org,
+ puranjay@kernel.org, iii@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+ catalin.marinas@arm.com, will@kernel.org, qmo@kernel.org, mykolal@fb.com,
+ shuah@kernel.org, ihor.solodrai@linux.dev, longyingchi24s@ict.ac.cn,
+ joshdon@google.com, brho@google.com, neelnatu@google.com, bsegall@google.com,
+ linux-kernel@vger.kernel.org
 
-On Sun, Mar 2, 2025 at 9:37=E2=80=AFPM Peilin Ye <yepeilin@google.com> wrot=
-e:
->
-> Extract BPF_LDX and most non-ATOMIC BPF_STX instruction handling logic
-> in do_check() into helper functions to be used later.  While we are
-> here, make that comment about "reserved fields" more specific.
->
-> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> Signed-off-by: Peilin Ye <yepeilin@google.com>
+Hello:
 
-Applied the first 3 patches.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Mon,  3 Mar 2025 05:36:27 +0000 you wrote:
+> Hi all!
+> 
+> This patchset adds kernel support for BPF load-acquire and store-release
+> instructions (for background, please see [1]), including core/verifier,
+> arm64/x86-64 JIT compiler and Documentation/ changes, as well as
+> selftests.  riscv64 is also planned to be supported.  The corresponding
+> LLVM changes can be found at:
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v4,01/10] bpf/verifier: Factor out atomic_ptr_type_ok()
+    https://git.kernel.org/bpf/bpf-next/c/b2d9ef71d4c9
+  - [bpf-next,v4,02/10] bpf/verifier: Factor out check_atomic_rmw()
+    https://git.kernel.org/bpf/bpf-next/c/d430c46c7580
+  - [bpf-next,v4,03/10] bpf/verifier: Factor out check_load_mem() and check_store_reg()
+    https://git.kernel.org/bpf/bpf-next/c/d38ad248fb7a
+  - [bpf-next,v4,04/10] bpf: Introduce load-acquire and store-release instructions
+    (no matching commit)
+  - [bpf-next,v4,05/10] arm64: insn: Add BIT(23) to {load,store}_ex's mask
+    (no matching commit)
+  - [bpf-next,v4,06/10] arm64: insn: Add load-acquire and store-release instructions
+    (no matching commit)
+  - [bpf-next,v4,07/10] bpf, arm64: Support load-acquire and store-release instructions
+    (no matching commit)
+  - [bpf-next,v4,08/10] bpf, x86: Support load-acquire and store-release instructions
+    (no matching commit)
+  - [bpf-next,v4,09/10] selftests/bpf: Add selftests for load-acquire and store-release instructions
+    (no matching commit)
+  - [bpf-next,v4,10/10] bpf, docs: Update instruction-set.rst for load-acquire and store-release instructions
+    (no matching commit)
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
