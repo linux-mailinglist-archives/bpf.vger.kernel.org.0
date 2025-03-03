@@ -1,252 +1,133 @@
-Return-Path: <bpf+bounces-53065-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F4E7A4C29D
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 14:58:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52F5AA4C2E1
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 15:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 119D818956FE
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 13:58:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DC9E1668B2
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 14:08:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C511F3BAF;
-	Mon,  3 Mar 2025 13:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31AA22135B8;
+	Mon,  3 Mar 2025 14:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R2Cin/Ey"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cIZsQbqb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12DD6212FB3
-	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 13:58:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68531F17E5
+	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 14:08:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741010285; cv=none; b=WqD/6Ov/ocVkeGOy7XKTsx4/uTvaYlPqHyrWJ2eOB1Dr1UKVda7yeub8rXuWL/IzyHizxak8yu0/JPmvJSCngX3+oNpv1g5adomM8sDtaR+NoP5IBvxcWkLKKEjUfdyr51s3oj8AE1IuUYWdE0qr9QBG6sumf2qoCudmClfDkUc=
+	t=1741010912; cv=none; b=iQpOL9BfasSWUsmJvU2aD1SL26YWu7aGhodAeZLMmhwIQvLOH/hI0DSfmhvT8rPD/R1SyVslo5X5nv6VOARZJNsRCqCvIhccnaqA6Fpt8Ao3iSqDmva2weyASmcCzsYFCbJP1dkhvVY+X/TUEeIEZn3OvhjZN5sqcF3xWGvOAVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741010285; c=relaxed/simple;
-	bh=5GBOo3r62X/N9yzGkYPhUoSYkiTGhWgxkwe8JrQbfAM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mzfSCG/CH+8cAVp7ngOeU9U6S27jwl/z1YH7xJsKjQ8N9rij2GMoTAWg1yB8RynP6ao6w8qJacB2rQ8xFMm6q36uUv6UcFJ+I//hDY2Rb2lyha4wDoGuIkJC13DkCGDMJrvrmf+Di9BDWBJU9SFRfEgwFmcxcgchVGS2pawHz7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R2Cin/Ey; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-abf4d756135so347455766b.1
-        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 05:58:03 -0800 (PST)
+	s=arc-20240116; t=1741010912; c=relaxed/simple;
+	bh=ytI7C1/3ZEID73/zWyUm81QF+dDrxTFq69/STGHo3ng=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X5/IptB/S9a8uTfJvHMYoluyWftI9qvjSAEswmU08AjLJXiqELw0KtZHOZ61ho6S1tuO7/OXPWJLQUJmwoVUnPEXW2azNHnlGg980xE6b9Gm3QBAbDhDLC8hIgZgtVE6rzITcseJ2y7SROOlf8++ck/5lluBJ64h2m3RtDuzsos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cIZsQbqb; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5e04064af07so8123058a12.0
+        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 06:08:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741010282; x=1741615082; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2p4whArfH9IPn6ptyYPuMDThnFelGkYZfeRUPHSq5NE=;
-        b=R2Cin/Ey2HULD4cJSMSuL7OR7OyxkC9i6qiVgBMn5IIhWabxUNL6m9UzWLvPXsKfhe
-         46Ywc6li8Bg31oOq1XwUaC9TtWUpjzCK1Xe/aaphM1teBwGRMldJIQ8mFkvjYRG1q3HJ
-         82Ru3AzhsZDez5l7uIWy71ukzTq1rTTe7iSpKXsg2MrZCfHL0rAqFMGIxmsgtaxe/U/N
-         84ghPmSynXfhHSJhVpyu+Qg0oTqT9L6VfKf4fj9C5zgbH3sh+7/7fFs3VRNI4Gi1vn5x
-         /NmDxIo+uO78D50Bvc6E9MqFvfDVVMakXXSCoQhD2SwHON+nNljLLZyIdW9qYMSZNPPW
-         NVZQ==
+        d=linaro.org; s=google; t=1741010909; x=1741615709; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lgzkQxaW5CHf86x7AWE8k6IimMEmNVMADmlp1s0496M=;
+        b=cIZsQbqbHwOqHTpVNlVJmp/qUA0P6bzXkzoQ5+WQ0LSsOGBIBGnbm6iBZr7A5rOu+g
+         MUjwqAz7yTm9FcVjaCrgIjWfvrNj2EWLSJwv/aGmUdb3Cxugm8dzKBYwxqrO58cOnepE
+         zVnk0CwaWUm+E0JxsAgwBR6cRSny4okwyNQ0bZ1SoXEE0KhVV/EQkDd4s/EMKBSoO8vb
+         TMMLGIVkD/yHQ0TGZcI5GPeG5jQc7da3FYy79FzRKTElHdqRhfiV4d1dDX1EHMVDgr2S
+         cYzM72tLEEf53zbdXG2I8RfFdA3QyHMgA0KSBQeBuLL+/SogXmNOify1uAgNo9L9NwQt
+         GUcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741010282; x=1741615082;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2p4whArfH9IPn6ptyYPuMDThnFelGkYZfeRUPHSq5NE=;
-        b=qKcVOtLJEoX6rOUBEUM92lR1a6DBxFj5SzIsxmdSt6oQnfnfS/vUNrwio65RSDQ15D
-         Y+WNf6mAhchUZ8N7AL3eYHmIXwrDNPMxfDX6VHl/HtSe+npT2Q/EezNLH9bsQsxrMTB3
-         tLPWbGdXyMip+7KCbECt/6zAC9kA45E77LIMTAUz5250zgiG9L1mMbWqTOGhmCIk88y+
-         vSQnd2kcpgGSrVnzn1CC45ZBcvEivhTWqqF0klvsm7ZP3Y+uYDz3N6PjYf4xBU86k0Sv
-         rvziFnWIteOHE6H1JAxwDyKmHKgW9PMnAg9RgoTAIR0rUMGRhwjZ8ZZGL3lWeu2wMgqW
-         rG5w==
-X-Gm-Message-State: AOJu0YwU7y1H7oivFuSZyig7cHBM2fIBSaNKCJ+TKYYj9N3J1S/Yy0C/
-	DHJYwLc9Px9Y2ewCH2d5vRDYcrXjRVFCmbhbKERRhAHXTyvX1YGRV3RqIg==
-X-Gm-Gg: ASbGnct9nCCz7bsEHY+LxfP7Tvgj3n0I/crW4dn9JvlPjrmr873WpiUqAGg+FaqDK4M
-	+lVJ4NoWuyIU+f/uMWv5afngha8ro5UcD91UPNlPPeQ0tugXWJ9qExaRvvukMGc4wFVXpxa/x/I
-	MQNmknHptcdL3KDYo5gqr+xk9bXGDGaOhJBqL0bgbdBklHDF4aXSHd6hpIkDvlw9cGSGL776CQ0
-	6uQP5hwdTDE1BOXr5LRibeITA0WPk8sMGNFcarqPoMTWTrl18HQNsDBS53Ji9Cx0oB0A8ns6IQh
-	KltDUrsCTcznemgehHadoYRDh0Vpp2jxtfk1w80FlzvIsu9xeIKaZ2jc66Q=
-X-Google-Smtp-Source: AGHT+IERwLCtWdP+51e5ob+JxnTfMdUwQguN9EAlPA0BaFti5nIwnY1jez4d0ZDMR720FyBweturgA==
-X-Received: by 2002:a17:906:f5aa:b0:abf:733f:5c42 with SMTP id a640c23a62f3a-abf733f5e0fmr425669266b.8.1741010282012;
-        Mon, 03 Mar 2025 05:58:02 -0800 (PST)
-Received: from msi-laptop.thefacebook.com ([2620:10d:c092:500::6:7e2d])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abf0c75bfd7sm817975366b.148.2025.03.03.05.58.01
+        d=1e100.net; s=20230601; t=1741010909; x=1741615709;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lgzkQxaW5CHf86x7AWE8k6IimMEmNVMADmlp1s0496M=;
+        b=A9dJcWNDXGdE8CPRo9/qKry3CWWktsjC+8BC/0puCqigjwVLS6GzN+TpdXLDn9aQwm
+         yMtLTVgwcWqUfvM3vw31CKIPb0ZlNsxbC4fyXdPAXFX3ueHJntTpaYXSB+1CtwssKpY0
+         VIgILt01PLQ87X5aVGh7Ytuv/5mN70R6MA0sPjIUw+nYYPQzBRFkCPYMGSt/9pZvpA9W
+         z1pJUCkn1Azft8JlH8ramQDtubI6yK7hEaiA/UDTbdl3ty8Ig2QJTaQbXBUQl86VjIay
+         ySRzmNRw7aW8P/0l9EzjnCqrk2IBCMpX164+Immk2sQrueAE1NoScoXOAUwiIU8XF3pY
+         bwvw==
+X-Forwarded-Encrypted: i=1; AJvYcCX7iFaqU3Igrw7eiSve9cXMxhzfT+OYk83gT3vPmh6ExEf2ygANKHjrMYC89c1JJ6CVgIY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyoo5wTrs5NFg5fXsyxV0dk8RX5c6TTiFoD1aTXygaC4qWkdku+
+	QKj9OMpcKyQsS1yQgbdGvHhc/j2CpNgNi3aZW4RNXysfp+FKSv/86Xpg1TrnRpw=
+X-Gm-Gg: ASbGnctByY/bm91S1M4sKQgNFvN3hz+xPUr0QK3mqhxD84IoRkSC4r+8hs4IWCmCIqh
+	gxKMoEhE7tm6/P01tAJEKPzqjhg+APWqa2LAuE1FmqegFI9mfjOpkwOZ1ZSR2oZN+RADLqtNNCz
+	MNDOd8YNFss3Lw89o8mVBg7ibn4Hjuz89KCQnwE0moFAi/u7/+/4hpJXpJPOhsacyoWQ/yN1beT
+	YLPWqRqjBf1cHTpxMznjuU+0HguOi2GEAKlYXiUSrOnQCyElgMxftZQykpKqwk7SHKKZEC0O8CH
+	iJc5WEadD3ZhEjBjT3Z7JaaOlKpWnXs2+iXZ9hJoSU+JmIMbDA==
+X-Google-Smtp-Source: AGHT+IHJ5i4TB4355RRCPxNtJcPV4cOTfWRTwaLU4Fbde0vdGgTcEizoadd+Cioo6PFzj9W+C1LyBQ==
+X-Received: by 2002:a17:906:1199:b0:abf:287d:ccdb with SMTP id a640c23a62f3a-abf287dce9emr1376223066b.27.1741010909214;
+        Mon, 03 Mar 2025 06:08:29 -0800 (PST)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-ac1db69942bsm112475066b.76.2025.03.03.06.08.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Mar 2025 05:58:01 -0800 (PST)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v2 4/4] selftests/bpf: add tests for bpf_object__prepare
-Date: Mon,  3 Mar 2025 13:57:52 +0000
-Message-ID: <20250303135752.158343-5-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250303135752.158343-1-mykyta.yatsenko5@gmail.com>
-References: <20250303135752.158343-1-mykyta.yatsenko5@gmail.com>
+        Mon, 03 Mar 2025 06:08:28 -0800 (PST)
+Date: Mon, 3 Mar 2025 17:08:24 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: "Malladi, Meghana" <m-malladi@ti.com>
+Cc: rogerq@kernel.org, danishanwar@ti.com, pabeni@redhat.com,
+	kuba@kernel.org, edumazet@google.com, davem@davemloft.net,
+	andrew+netdev@lunn.ch, bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, u.kleine-koenig@baylibre.com,
+	matthias.schiffer@ew.tq-group.com, schnelle@linux.ibm.com,
+	diogo.ivo@siemens.com, glaroque@baylibre.com, macro@orcam.me.uk,
+	john.fastabend@gmail.com, hawk@kernel.org, daniel@iogearbox.net,
+	ast@kernel.org, srk@ti.com, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [EXTERNAL] Re: [PATCH net-next v3 3/3] net: ti: icssg-prueth:
+ Add XDP support
+Message-ID: <61117a07-35b5-48c0-93d9-f97db8e15503@stanley.mountain>
+References: <20250224110102.1528552-1-m-malladi@ti.com>
+ <20250224110102.1528552-4-m-malladi@ti.com>
+ <d362a527-88cf-4cd5-a22f-7eeb938d4469@stanley.mountain>
+ <21f21dfb-264b-4e01-9cb3-8d0133b5b31b@ti.com>
+ <2c0c1a4f-95d4-40c9-9ede-6f92b173f05d@stanley.mountain>
+ <40ce8ed3-b36c-4d5f-b75a-7e0409beb713@ti.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <40ce8ed3-b36c-4d5f-b75a-7e0409beb713@ti.com>
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+What I mean is just compile the .o file with and without the unlikely().
 
-Add selftests, checking that running bpf_object__prepare successfully
-creates maps before load step.
+$ md5sum drivers/net/ethernet/ti/icssg/icssg_common.o*
+2de875935222b9ecd8483e61848c4fc9  drivers/net/ethernet/ti/icssg/icssg_common.o.annotation
+2de875935222b9ecd8483e61848c4fc9  drivers/net/ethernet/ti/icssg/icssg_common.o.no_anotation
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- .../selftests/bpf/prog_tests/prepare.c        | 99 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/prepare.c   | 28 ++++++
- 2 files changed, 127 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/prepare.c
- create mode 100644 tools/testing/selftests/bpf/progs/prepare.c
+Generally the rule is that you should leave likely/unlikely() annotations
+out unless it's going to make a difference on a benchmark.  I'm not going
+to jump down people's throat about this, and if you want to leave it,
+it's fine.  But it just struct me as weird so that's why I commented on
+it.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/prepare.c b/tools/testing/selftests/bpf/prog_tests/prepare.c
-new file mode 100644
-index 000000000000..fb5cdad97116
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/prepare.c
-@@ -0,0 +1,99 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta */
-+
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include "prepare.skel.h"
-+
-+static bool check_prepared(struct bpf_object *obj)
-+{
-+	bool is_prepared = true;
-+	const struct bpf_map *map;
-+
-+	bpf_object__for_each_map(map, obj) {
-+		if (bpf_map__fd(map) < 0)
-+			is_prepared = false;
-+	}
-+
-+	return is_prepared;
-+}
-+
-+static void test_prepare_no_load(void)
-+{
-+	struct prepare *skel;
-+	int err;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		    .data_in = &pkt_v4,
-+		    .data_size_in = sizeof(pkt_v4),
-+	);
-+
-+	skel = prepare__open();
-+	if (!ASSERT_OK_PTR(skel, "prepare__open"))
-+		return;
-+
-+	if (!ASSERT_FALSE(check_prepared(skel->obj), "not check_prepared"))
-+		goto cleanup;
-+
-+	err = bpf_object__prepare(skel->obj);
-+
-+	if (!ASSERT_TRUE(check_prepared(skel->obj), "check_prepared"))
-+		goto cleanup;
-+
-+	if (!ASSERT_OK(err, "bpf_object__prepare"))
-+		goto cleanup;
-+
-+cleanup:
-+	prepare__destroy(skel);
-+}
-+
-+static void test_prepare_load(void)
-+{
-+	struct prepare *skel;
-+	int err, prog_fd;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		    .data_in = &pkt_v4,
-+		    .data_size_in = sizeof(pkt_v4),
-+	);
-+
-+	skel = prepare__open();
-+	if (!ASSERT_OK_PTR(skel, "prepare__open"))
-+		return;
-+
-+	if (!ASSERT_FALSE(check_prepared(skel->obj), "not check_prepared"))
-+		goto cleanup;
-+
-+	err = bpf_object__prepare(skel->obj);
-+	if (!ASSERT_OK(err, "bpf_object__prepare"))
-+		goto cleanup;
-+
-+	err = prepare__load(skel);
-+	if (!ASSERT_OK(err, "prepare__load"))
-+		goto cleanup;
-+
-+	if (!ASSERT_TRUE(check_prepared(skel->obj), "check_prepared"))
-+		goto cleanup;
-+
-+	prog_fd = bpf_program__fd(skel->progs.program);
-+	if (!ASSERT_GE(prog_fd, 0, "prog_fd"))
-+		goto cleanup;
-+
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	if (!ASSERT_OK(err, "test_run_opts err"))
-+		goto cleanup;
-+
-+	if (!ASSERT_OK(topts.retval, "test_run_opts retval"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->err, 0, "err");
-+
-+cleanup:
-+	prepare__destroy(skel);
-+}
-+
-+void test_prepare(void)
-+{
-+	if (test__start_subtest("prepare_load"))
-+		test_prepare_load();
-+	if (test__start_subtest("prepare_no_load"))
-+		test_prepare_no_load();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/prepare.c b/tools/testing/selftests/bpf/progs/prepare.c
-new file mode 100644
-index 000000000000..1f1dd547e4ee
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/prepare.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta */
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+//#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int err;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, 4096);
-+} ringbuf SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} array_map SEC(".maps");
-+
-+SEC("cgroup_skb/egress")
-+int program(struct __sk_buff *skb)
-+{
-+	err = 0;
-+	return 0;
-+}
--- 
-2.48.1
+regards,
+dan carpenter
 
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
+index 34d16e00c2ec..3db5bae44e61 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_common.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_common.c
+@@ -672,7 +672,7 @@ static int emac_run_xdp(struct prueth_emac *emac, struct xdp_buff *xdp,
+ 	case XDP_TX:
+ 		/* Send packet to TX ring for immediate transmission */
+ 		xdpf = xdp_convert_buff_to_frame(xdp);
+-		if (unlikely(!xdpf))
++		if (!xdpf)
+ 			goto drop;
+ 
+ 		q_idx = smp_processor_id() % emac->tx_ch_num;
 
