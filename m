@@ -1,445 +1,336 @@
-Return-Path: <bpf+bounces-53122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 490D7A4CE41
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 23:25:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0525A4CE43
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 23:26:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 654CE173AEC
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 22:25:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A60301886F5F
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 22:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14D9B23AE7B;
-	Mon,  3 Mar 2025 22:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F2A1F0E5B;
+	Mon,  3 Mar 2025 22:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="r7ZwGl0h"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f86n/eIP"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5FF523A98C;
-	Mon,  3 Mar 2025 22:24:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A1CE11CA9
+	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 22:26:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741040688; cv=none; b=nTNyClK/glQ3kR/ta1HBiPLumZl1LbOBpJI7HVaqva/RWEHeRUGOhhnQvl8Nm52fudxv5beRDcAVDyZVr7uSZ8DVLh2bKiij/99fnyUYHLfGW23ZHSi1RgQCgj5QFUrPW6TolqTRI/6BbH0C6m6R3jQ0kie4JX5v85vXKhSOqp8=
+	t=1741040779; cv=none; b=szKRMapfoMHRA5+KQ1pIwaYr5yv6FcsEbUyAWto+ijfGdCwRQCU9SpFBb+38HbCGFfUwmS1Epa7eC4g73u/Nx9Sgozlx7PqjtjPETv5yttnnvn4CCPqvE47q8rzegdurc/LW3wzQtqpYtC1hYTA7NVBWBxjuU2DvZysSfn1B6Ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741040688; c=relaxed/simple;
-	bh=W68ZZFnQV2MVJCAy9ofKEBmVL8q/Nx/FFX8Y9Tya9cQ=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ylio58Jckzoso6ZA6upNaXboysTAWb407xQPYr8/K9PGh33ljuSx4jXe25rSjxJhjKPT+Za5oW2G6gnT9YovWGmns9QQXFHVAaMMXJbStFeLz8L94n5CbhllWK7bj/QE6koU3EAvYcpLEwEdKQ/BheRgiWrBzlS0z+s4PpWD9Jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=r7ZwGl0h; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia.corp.microsoft.com (unknown [167.220.2.28])
-	by linux.microsoft.com (Postfix) with ESMTPSA id AD62E2110488;
-	Mon,  3 Mar 2025 14:24:36 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AD62E2110488
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1741040686;
-	bh=sWBNa3yhA3VuwGvBLNPW1wVYoTstMiDYaHOlIQkyp5k=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=r7ZwGl0hxXbw1NSBmXyUd5KOfbz1Fg3N8t3cizss9+4d6f1F6YJDxlih4TFx4o4AB
-	 Fh1HhI7B5wt47gaTLLszRVWdtsAOTi04w9qTnyYR1VDXtFN3gtsL7Tuu59DT5Gj2eW
-	 04kHI5qxY1iBe2Cjds4l4v4fpJiZC7Ne05K3C1R8=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	linux-security-module@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	selinux@vger.kernel.org,
-	bboscaccy@linux.microsoft.com
-Subject: [PATCH 1/1] security: Propagate caller information in bpf hooks
-Date: Mon,  3 Mar 2025 14:24:04 -0800
-Message-ID: <20250303222416.3909228-2-bboscaccy@linux.microsoft.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250303222416.3909228-1-bboscaccy@linux.microsoft.com>
-References: <20250303222416.3909228-1-bboscaccy@linux.microsoft.com>
+	s=arc-20240116; t=1741040779; c=relaxed/simple;
+	bh=X4Jf9to7dKrXAPsFukJcvUf2XI9iyIYSOROGpka1q4U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=atthhRCYxe7wG2NlI65HQwH94VqRIQUh2GNCWIuin4wXpxQWovgiRSJMYO9/xaVrrTefDqL2q4XJukH4/mYmJr6P58tL6j6pKCtl74tkswT+7b6PcmshtoNMB+OBA5rINkHQ5Z+a3YtBZtuPKPWjkJ/I9o7WwT2ed3NcAVGVlGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f86n/eIP; arc=none smtp.client-ip=209.85.208.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-5e0373c7f55so7642647a12.0
+        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 14:26:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741040776; x=1741645576; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3bHE2Frbqa6XDGSNV6trXktVlblWMPTe3w+P+xMwZ7M=;
+        b=f86n/eIPFIuLFEArgKdhO4i2SlouCRElzgREGYsrrj2pf4fxE6D5C/DMeJfbzlsvqS
+         vANBd8m+py07ugspq/8zTgGr4AvXPK6cOXu+iEOX1MQP45pILEcFEJcDicPmQkmMnwSq
+         YF1UAqrJJYkL2EyFCaC+K6bdZOqt+nk5VAXWwJXokVm6+N2ZEX4gSxF0xnk/dO+hfTil
+         cHP+z0k4NmmPBA9gkUnK+QLWloHlPox0VtcNxQCtCxfB/DNsRZKd/upB/G4ewjnXOTLl
+         qLii68+1+4Os8NdEck2lJEK6iajxoPtfTHrTVD00fPTTPsV68FB/ekWD6v8ZDQw92g30
+         /eRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741040776; x=1741645576;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3bHE2Frbqa6XDGSNV6trXktVlblWMPTe3w+P+xMwZ7M=;
+        b=BWnh5Ua2zfEcU956f8L81zKRG/MfJkSBRUIgocV3Wef/iqnWAD9IOU/0W0GPq8h5zh
+         sFazkAPfb3q4uThfqwlJ0LIQHedwMdg+VFTMirifuJminkfbL+BZfPFvDNFkbbhA5RZF
+         x/SYoPKIoQI7mAHS5N2/lTpTdxvHD+xUwV2GQC2sgyXzm19B5tnPGD9nooXXpnS8XUE0
+         2Xj5t3X77NR4c6DnotmHLOyE+DKpw9Jws+GCuCrJlC/JQY+IrNI5LwMvp/DwrFUYb5/A
+         hvgtFuQ1v5sDynho8XEWcLyidWHA3jcYhYym+S2Blj0ooRT1jmogiknAnA7ny+EF5REO
+         nPMA==
+X-Gm-Message-State: AOJu0YzUzJ8Z9ICxvNqfbdlybieR+JdG2LWgKdYyCHUb8ueI0rMhBiFx
+	EDJBfLVHldDeg5bBG4VO6KcuQubnqfe1NY8g3keJVUeDe5bhvJBBfcvPItBYzmmLThFtUfLsSEE
+	4q2OqHwDW7Am3Qj2krDPZEf5l6fg=
+X-Gm-Gg: ASbGncujQDm0CVT23VQLBYN3BSJdmc5Xn/r17/0ElrQXs8zyUczL0VhjWZB7+YKiXLU
+	onRrfp6VJyq+2ip/56NQvnhDQdOWF3VPA5kg+E1ntP8m9h89yjAo/9LzJ+0/r1Pmei4osLFCDm5
+	Enzp2YfgK/UsqDs702+j2O4M1sW5dBbRN4u+hZtidU90s0p5o=
+X-Google-Smtp-Source: AGHT+IGaFHxyXglrUg5RrVJhRQz2R8bm1E4SWppH0gSDT/93HkZfX0M+ch7wQzt5ZOd5wST6I3/jWf2c4L5+8gjwscw=
+X-Received: by 2002:a05:6402:270f:b0:5e4:ce6e:3885 with SMTP id
+ 4fb4d7f45d1cf-5e4d6ad469emr17095511a12.2.1741040775304; Mon, 03 Mar 2025
+ 14:26:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250302201348.940234-1-memxor@gmail.com> <20250302201348.940234-2-memxor@gmail.com>
+ <CAADnVQJsW1Nk_yhz=fiAtuDsx-V0vPWZHzVyx25cbVpX+SvOiA@mail.gmail.com>
+In-Reply-To: <CAADnVQJsW1Nk_yhz=fiAtuDsx-V0vPWZHzVyx25cbVpX+SvOiA@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Mon, 3 Mar 2025 23:25:38 +0100
+X-Gm-Features: AQ5f1JoR3Dj-jUBcRx36PnHm_tOBAK8GjkrTLT9a0AOgtogclRxDJkuZc9vSOq0
+Message-ID: <CAP01T744+9NQEPhjY=4oSB88r-DiL0-SV9Fa_JsOWbJmhA94EA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: Add verifier support for timed may_goto
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>, 
+	Emil Tsalapatis <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>, 
+	Dohyun Kim <dohyunkim@google.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Certain bpf syscall subcommands are available for usage from both
-userspace and the kernel. LSM modules or eBPF gatekeeper programs may
-need to take a different course of action depending on whether or not
-a BPF syscall originated from the kernel or userspace.
+On Mon, 3 Mar 2025 at 22:59, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sun, Mar 2, 2025 at 12:13=E2=80=AFPM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > Implement support in the verifier for replacing may_goto implementation
+> > from a counter-based approach to one which samples time on the local CP=
+U
+> > to have a bigger loop bound.
+> >
+> > We implement it by maintaining 16-bytes per-stack frame, and using 8
+> > bytes for maintaining the count for amortizing time sampling, and 8
+> > bytes for the starting timestamp. To minimize overhead, we need to avoi=
+d
+> > spilling and filling of registers around this sequence, so we push this
+> > cost into the time sampling function 'arch_bpf_timed_may_goto'. This is
+> > a JIT-specific wrapper around bpf_check_timed_may_goto which returns us
+> > the count to store into the stack through BPF_REG_AX. All caller-saved
+> > registers (r0-r5) are guaranteed to remain untouched.
+> >
+> > The loop can be broken by returning count as 0, otherwise we dispatch
+> > into the function when the count becomes 1, and the runtime chooses to
+> > refresh it (by returning count as BPF_MAX_TIMED_LOOPS) or returning 0
+> > and aborting it.
+> >
+> > Since the check for 0 is done right after loading the count from the
+> > stack, all subsequent cond_break sequences should immediately break as
+> > well.
+> >
+> > We pass in the stack_depth of the count (and thus the timestamp, by
+> > adding 8 to it) to the arch_bpf_timed_may_goto call so that it can be
+> > passed in to bpf_check_timed_may_goto as an argument after r1 is saved,
+> > by adding the offset to r10/fp. This adjustment will be arch specific,
+> > and the next patch will introduce support for x86.
+> >
+> > Note that depending on loop complexity, time spent in the loop can be
+> > more than the current limit (250 ms), but imposing an upper bound on
+> > program runtime is an orthogonal problem which will be addressed when
+> > program cancellations are supported.
+> >
+> > The current time afforded by cond_break may not be enough for cases
+> > where BPF programs want to implement locking algorithms inline, and use
+> > cond_break as a promise to the verifier that they will eventually
+> > terminate.
+> >
+> > Below are some benchmarking numbers on the time taken per-iteration for
+> > an empty loop that counts the number of iterations until cond_break
+> > fires. For comparison, we compare it against bpf_for/bpf_repeat which i=
+s
+> > another way to achieve the same number of spins (BPF_MAX_LOOPS).  The
+> > hardware used for benchmarking was a Saphire Rapids Intel server with
+> > performance governor enabled.
+> >
+> > +-----------------------------+--------------+--------------+----------=
+--------+
+> > | Loop type                   | Iterations   |  Time (ms)   |   Time/it=
+er (ns) |
+> > +-----------------------------|--------------+--------------+----------=
+--------+
+> > | may_goto                    | 8388608      |  3           |   0.36   =
+        |
+> > | timed_may_goto (count=3D65535)| 589674932    |  250         |   0.42 =
+          |
+> > | bpf_for                     | 8388608      |  10          |   1.19   =
+        |
+> > +-----------------------------+--------------+--------------+----------=
+--------+
+> >
+> > This gives a good approximation at low overhead while staying close to
+> > the current implementation.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  include/linux/bpf.h    |  1 +
+> >  include/linux/filter.h |  8 +++++++
+> >  kernel/bpf/core.c      | 31 +++++++++++++++++++++++++
+> >  kernel/bpf/verifier.c  | 52 +++++++++++++++++++++++++++++++++++-------
+> >  4 files changed, 84 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index aec102868b93..788f6ca374e9 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1986,6 +1986,7 @@ struct bpf_array {
+> >   */
+> >  enum {
+> >         BPF_MAX_LOOPS =3D 8 * 1024 * 1024,
+> > +       BPF_MAX_TIMED_LOOPS =3D 0xffff,
+> >  };
+> >
+> >  #define BPF_F_ACCESS_MASK      (BPF_F_RDONLY |         \
+> > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > index 3ed6eb9e7c73..02dda5c53d91 100644
+> > --- a/include/linux/filter.h
+> > +++ b/include/linux/filter.h
+> > @@ -669,6 +669,11 @@ struct bpf_prog_stats {
+> >         struct u64_stats_sync syncp;
+> >  } __aligned(2 * sizeof(u64));
+> >
+> > +struct bpf_timed_may_goto {
+> > +       u64 count;
+> > +       u64 timestamp;
+> > +};
+> > +
+> >  struct sk_filter {
+> >         refcount_t      refcnt;
+> >         struct rcu_head rcu;
+> > @@ -1130,8 +1135,11 @@ bool bpf_jit_supports_ptr_xchg(void);
+> >  bool bpf_jit_supports_arena(void);
+> >  bool bpf_jit_supports_insn(struct bpf_insn *insn, bool in_arena);
+> >  bool bpf_jit_supports_private_stack(void);
+> > +bool bpf_jit_supports_timed_may_goto(void);
+> >  u64 bpf_arch_uaddress_limit(void);
+> >  void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 =
+sp, u64 bp), void *cookie);
+> > +u64 arch_bpf_timed_may_goto(void);
+> > +u64 bpf_check_timed_may_goto(struct bpf_timed_may_goto *);
+> >  bool bpf_helper_changes_pkt_data(enum bpf_func_id func_id);
+> >
+> >  static inline bool bpf_dump_raw_ok(const struct cred *cred)
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index a0200fbbace9..b3f7c7bd08d3 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -3069,6 +3069,37 @@ void __weak arch_bpf_stack_walk(bool (*consume_f=
+n)(void *cookie, u64 ip, u64 sp,
+> >  {
+> >  }
+> >
+> > +bool __weak bpf_jit_supports_timed_may_goto(void)
+> > +{
+> > +       return false;
+> > +}
+> > +
+> > +u64 __weak arch_bpf_timed_may_goto(void)
+> > +{
+> > +       return 0;
+> > +}
+> > +
+> > +u64 bpf_check_timed_may_goto(struct bpf_timed_may_goto *p)
+> > +{
+> > +       u64 time =3D ktime_get_mono_fast_ns();
+>
+> let's move the call after !p->count check to avoid unused work.
+>
 
-Additionally, some of the bpf_attr struct fields contain pointers to
-arbitrary memory. Currently the functionality to determine whether or
-not a pointer refers to kernel memory or userspace memory is exposed
-to the bpf verifier, but that information is missing from various LSM
-hooks.
+Ok.
 
-Here we augment the LSM hooks to provide this data, by simply passing
-a boolean flag indicating whether or not the call originated in the
-kernel, in any hook that contains a bpf_attr struct that corresponds
-to a subcommand that may be called from the kernel.
+> > +
+> > +       /* If the count is zero, we've already broken a prior loop in t=
+his stack
+> > +        * frame, let's just exit quickly.
+> > +        */
+>
+> Let's use normal kernel comment style in all new code.
+> I think even netdev folks allow both styles now.
+>
 
-Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
----
- include/linux/lsm_hook_defs.h                     |  6 +++---
- include/linux/security.h                          | 12 ++++++------
- kernel/bpf/syscall.c                              | 10 +++++-----
- security/security.c                               | 15 +++++++++------
- security/selinux/hooks.c                          |  6 +++---
- tools/testing/selftests/bpf/progs/rcu_read_lock.c |  3 ++-
- .../selftests/bpf/progs/test_cgroup1_hierarchy.c  |  4 ++--
- .../selftests/bpf/progs/test_kfunc_dynptr_param.c |  6 +++---
- .../testing/selftests/bpf/progs/test_lookup_key.c |  2 +-
- .../selftests/bpf/progs/test_ptr_untrusted.c      |  2 +-
- .../selftests/bpf/progs/test_task_under_cgroup.c  |  2 +-
- .../selftests/bpf/progs/test_verify_pkcs7_sig.c   |  2 +-
- 12 files changed, 37 insertions(+), 33 deletions(-)
+Ack.
 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index e2f1ce37c41ef..c5f045019456f 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -426,14 +426,14 @@ LSM_HOOK(void, LSM_RET_VOID, audit_rule_free, void *lsmrule)
- #endif /* CONFIG_AUDIT */
- 
- #ifdef CONFIG_BPF_SYSCALL
--LSM_HOOK(int, 0, bpf, int cmd, union bpf_attr *attr, unsigned int size)
-+LSM_HOOK(int, 0, bpf, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- LSM_HOOK(int, 0, bpf_map, struct bpf_map *map, fmode_t fmode)
- LSM_HOOK(int, 0, bpf_prog, struct bpf_prog *prog)
- LSM_HOOK(int, 0, bpf_map_create, struct bpf_map *map, union bpf_attr *attr,
--	 struct bpf_token *token)
-+	 struct bpf_token *token, bool is_kernel)
- LSM_HOOK(void, LSM_RET_VOID, bpf_map_free, struct bpf_map *map)
- LSM_HOOK(int, 0, bpf_prog_load, struct bpf_prog *prog, union bpf_attr *attr,
--	 struct bpf_token *token)
-+	 struct bpf_token *token, bool is_kernel)
- LSM_HOOK(void, LSM_RET_VOID, bpf_prog_free, struct bpf_prog *prog)
- LSM_HOOK(int, 0, bpf_token_create, struct bpf_token *token, union bpf_attr *attr,
- 	 const struct path *path)
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 980b6c207cade..7e3e58030777c 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -2249,14 +2249,14 @@ struct bpf_map;
- struct bpf_prog;
- struct bpf_token;
- #ifdef CONFIG_SECURITY
--extern int security_bpf(int cmd, union bpf_attr *attr, unsigned int size);
-+extern int security_bpf(int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel);
- extern int security_bpf_map(struct bpf_map *map, fmode_t fmode);
- extern int security_bpf_prog(struct bpf_prog *prog);
- extern int security_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
--				   struct bpf_token *token);
-+				   struct bpf_token *token, bool is_kernel);
- extern void security_bpf_map_free(struct bpf_map *map);
- extern int security_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
--				  struct bpf_token *token);
-+				  struct bpf_token *token, bool is_kernel);
- extern void security_bpf_prog_free(struct bpf_prog *prog);
- extern int security_bpf_token_create(struct bpf_token *token, union bpf_attr *attr,
- 				     const struct path *path);
-@@ -2265,7 +2265,7 @@ extern int security_bpf_token_cmd(const struct bpf_token *token, enum bpf_cmd cm
- extern int security_bpf_token_capable(const struct bpf_token *token, int cap);
- #else
- static inline int security_bpf(int cmd, union bpf_attr *attr,
--					     unsigned int size)
-+			       unsigned int size, bool is_kernel)
- {
- 	return 0;
- }
-@@ -2281,7 +2281,7 @@ static inline int security_bpf_prog(struct bpf_prog *prog)
- }
- 
- static inline int security_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
--					  struct bpf_token *token)
-+					  struct bpf_token *token, bool is_kernel)
- {
- 	return 0;
- }
-@@ -2290,7 +2290,7 @@ static inline void security_bpf_map_free(struct bpf_map *map)
- { }
- 
- static inline int security_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
--					 struct bpf_token *token)
-+					 struct bpf_token *token, bool is_kernel)
- {
- 	return 0;
- }
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 694a675769a60..fc51737b9e3dc 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1306,7 +1306,7 @@ static bool bpf_net_capable(void)
- 
- #define BPF_MAP_CREATE_LAST_FIELD map_token_fd
- /* called via syscall */
--static int map_create(union bpf_attr *attr)
-+static int map_create(union bpf_attr *attr, bool is_kernel)
- {
- 	const struct bpf_map_ops *ops;
- 	struct bpf_token *token = NULL;
-@@ -1498,7 +1498,7 @@ static int map_create(union bpf_attr *attr)
- 			attr->btf_vmlinux_value_type_id;
- 	}
- 
--	err = security_bpf_map_create(map, attr, token);
-+	err = security_bpf_map_create(map, attr, token, is_kernel);
- 	if (err)
- 		goto free_map_sec;
- 
-@@ -2947,7 +2947,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
- 	if (err < 0)
- 		goto free_prog;
- 
--	err = security_bpf_prog_load(prog, attr, token);
-+	err = security_bpf_prog_load(prog, attr, token, uattr.is_kernel);
- 	if (err)
- 		goto free_prog_sec;
- 
-@@ -5776,13 +5776,13 @@ static int __sys_bpf(enum bpf_cmd cmd, bpfptr_t uattr, unsigned int size)
- 	if (copy_from_bpfptr(&attr, uattr, size) != 0)
- 		return -EFAULT;
- 
--	err = security_bpf(cmd, &attr, size);
-+	err = security_bpf(cmd, &attr, size, uattr.is_kernel);
- 	if (err < 0)
- 		return err;
- 
- 	switch (cmd) {
- 	case BPF_MAP_CREATE:
--		err = map_create(&attr);
-+		err = map_create(&attr, uattr.is_kernel);
- 		break;
- 	case BPF_MAP_LOOKUP_ELEM:
- 		err = map_lookup_elem(&attr);
-diff --git a/security/security.c b/security/security.c
-index 143561ebc3e89..38c977091a7fd 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -5627,6 +5627,7 @@ int security_audit_rule_match(struct lsm_prop *prop, u32 field, u32 op,
-  * @cmd: command
-  * @attr: bpf attribute
-  * @size: size
-+ * @is_kernel: whether or not call originated from kernel
-  *
-  * Do a initial check for all bpf syscalls after the attribute is copied into
-  * the kernel. The actual security module can implement their own rules to
-@@ -5634,9 +5635,9 @@ int security_audit_rule_match(struct lsm_prop *prop, u32 field, u32 op,
-  *
-  * Return: Returns 0 if permission is granted.
-  */
--int security_bpf(int cmd, union bpf_attr *attr, unsigned int size)
-+int security_bpf(int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
--	return call_int_hook(bpf, cmd, attr, size);
-+	return call_int_hook(bpf, cmd, attr, size, is_kernel);
- }
- 
- /**
-@@ -5673,6 +5674,7 @@ int security_bpf_prog(struct bpf_prog *prog)
-  * @map: BPF map object
-  * @attr: BPF syscall attributes used to create BPF map
-  * @token: BPF token used to grant user access
-+ * @is_kernel: whether or not call originated from kernel
-  *
-  * Do a check when the kernel creates a new BPF map. This is also the
-  * point where LSM blob is allocated for LSMs that need them.
-@@ -5680,9 +5682,9 @@ int security_bpf_prog(struct bpf_prog *prog)
-  * Return: Returns 0 on success, error on failure.
-  */
- int security_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
--			    struct bpf_token *token)
-+			    struct bpf_token *token, bool is_kernel)
- {
--	return call_int_hook(bpf_map_create, map, attr, token);
-+	return call_int_hook(bpf_map_create, map, attr, token, is_kernel);
- }
- 
- /**
-@@ -5690,6 +5692,7 @@ int security_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
-  * @prog: BPF program object
-  * @attr: BPF syscall attributes used to create BPF program
-  * @token: BPF token used to grant user access to BPF subsystem
-+ * @is_kernel: whether or not call originated from kernel
-  *
-  * Perform an access control check when the kernel loads a BPF program and
-  * allocates associated BPF program object. This hook is also responsible for
-@@ -5698,9 +5701,9 @@ int security_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
-  * Return: Returns 0 on success, error on failure.
-  */
- int security_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
--			   struct bpf_token *token)
-+			   struct bpf_token *token, bool is_kernel)
- {
--	return call_int_hook(bpf_prog_load, prog, attr, token);
-+	return call_int_hook(bpf_prog_load, prog, attr, token, is_kernel);
- }
- 
- /**
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 7b867dfec88ba..5a5ce26c51900 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -6866,7 +6866,7 @@ static int selinux_ib_alloc_security(void *ib_sec)
- 
- #ifdef CONFIG_BPF_SYSCALL
- static int selinux_bpf(int cmd, union bpf_attr *attr,
--				     unsigned int size)
-+		       unsigned int size, bool is_kernel)
- {
- 	u32 sid = current_sid();
- 	int ret;
-@@ -6953,7 +6953,7 @@ static int selinux_bpf_prog(struct bpf_prog *prog)
- }
- 
- static int selinux_bpf_map_create(struct bpf_map *map, union bpf_attr *attr,
--				  struct bpf_token *token)
-+				  struct bpf_token *token, bool is_kernel)
- {
- 	struct bpf_security_struct *bpfsec;
- 
-@@ -6976,7 +6976,7 @@ static void selinux_bpf_map_free(struct bpf_map *map)
- }
- 
- static int selinux_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
--				 struct bpf_token *token)
-+				 struct bpf_token *token, bool is_kernel)
- {
- 	struct bpf_security_struct *bpfsec;
- 
-diff --git a/tools/testing/selftests/bpf/progs/rcu_read_lock.c b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-index ab3a532b7dd6d..f85d0e282f2ae 100644
---- a/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-+++ b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-@@ -242,7 +242,8 @@ int inproper_sleepable_helper(void *ctx)
- }
- 
- SEC("?lsm.s/bpf")
--int BPF_PROG(inproper_sleepable_kfunc, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(inproper_sleepable_kfunc, int cmd, union bpf_attr *attr, unsigned int size,
-+	     bool is_kernel)
- {
- 	struct bpf_key *bkey;
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c b/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
-index 44628865fe1d4..0e741262138f2 100644
---- a/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
-+++ b/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
-@@ -51,13 +51,13 @@ static int bpf_link_create_verify(int cmd)
- }
- 
- SEC("lsm/bpf")
--int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	return bpf_link_create_verify(cmd);
- }
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(lsm_s_run, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(lsm_s_run, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	return bpf_link_create_verify(cmd);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-index cd4d752bd089c..ce36a55ba5b8b 100644
---- a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-+++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-@@ -36,7 +36,7 @@ char _license[] SEC("license") = "GPL";
- 
- SEC("?lsm.s/bpf")
- __failure __msg("cannot pass in dynptr at an offset=-8")
--int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	unsigned long val;
- 
-@@ -46,7 +46,7 @@ int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned int size)
- 
- SEC("?lsm.s/bpf")
- __failure __msg("arg#0 expected pointer to stack or const struct bpf_dynptr")
--int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	unsigned long val = 0;
- 
-@@ -55,7 +55,7 @@ int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned int size)
- }
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(dynptr_data_null, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(dynptr_data_null, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	struct bpf_key *trusted_keyring;
- 	struct bpf_dynptr ptr;
-diff --git a/tools/testing/selftests/bpf/progs/test_lookup_key.c b/tools/testing/selftests/bpf/progs/test_lookup_key.c
-index c73776990ae30..c46077e01a4ca 100644
---- a/tools/testing/selftests/bpf/progs/test_lookup_key.c
-+++ b/tools/testing/selftests/bpf/progs/test_lookup_key.c
-@@ -23,7 +23,7 @@ extern struct bpf_key *bpf_lookup_system_key(__u64 id) __ksym;
- extern void bpf_key_put(struct bpf_key *key) __ksym;
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(bpf, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(bpf, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	struct bpf_key *bkey;
- 	__u32 pid;
-diff --git a/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c b/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c
-index 2fdc44e766248..21fce1108a21d 100644
---- a/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c
-+++ b/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c
-@@ -7,7 +7,7 @@
- char tp_name[128];
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	switch (cmd) {
- 	case BPF_RAW_TRACEPOINT_OPEN:
-diff --git a/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c b/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-index 7e750309ce274..18ad24a851c6c 100644
---- a/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-+++ b/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-@@ -49,7 +49,7 @@ int BPF_PROG(tp_btf_run, struct task_struct *task, u64 clone_flags)
- }
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	struct cgroup *cgrp = NULL;
- 	struct task_struct *task;
-diff --git a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-index 12034a73ee2d2..135665f011c7e 100644
---- a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-+++ b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-@@ -37,7 +37,7 @@ struct {
- char _license[] SEC("license") = "GPL";
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(bpf, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(bpf, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	struct bpf_dynptr data_ptr, sig_ptr;
- 	struct data *data_val;
--- 
-2.48.1
+> > +       if (!p->count)
+> > +               return 0;
+> > +       /* Populate the timestamp for this stack frame. */
+> > +       if (!p->timestamp) {
+> > +               p->timestamp =3D time;
+> > +               return BPF_MAX_TIMED_LOOPS;
+> > +       }
+> > +       /* Check if we've exhausted our time slice. */
+> > +       if (time - p->timestamp >=3D (NSEC_PER_SEC / 4))
+> > +               return 0;
+> > +       /* Refresh the count for the stack frame. */
+> > +       return BPF_MAX_TIMED_LOOPS;
+> > +}
+> > +
+> >  /* for configs without MMU or 32-bit */
+> >  __weak const struct bpf_map_ops arena_map_ops;
+> >  __weak u64 bpf_arena_get_user_vm_start(struct bpf_arena *arena)
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index dcd0da4e62fc..79bfb1932f40 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -21503,7 +21503,34 @@ static int do_misc_fixups(struct bpf_verifier_=
+env *env)
+> >                         goto next_insn;
+> >                 }
+> >
+> > -               if (is_may_goto_insn(insn)) {
+> > +               if (is_may_goto_insn(insn) && bpf_jit_supports_timed_ma=
+y_goto()) {
+> > +                       int stack_off_cnt =3D -stack_depth - 16;
+> > +
+> > +                       /* Two 8 byte slots, depth-16 stores the count,=
+ and
+> > +                        * depth-8 stores the start timestamp of the lo=
+op.
+> > +                        */
+> > +                       stack_depth_extra =3D 16;
+> > +                       insn_buf[0] =3D BPF_LDX_MEM(BPF_DW, BPF_REG_AX,=
+ BPF_REG_10, stack_off_cnt);
+> > +                       if (insn->off >=3D 0)
+> > +                               insn_buf[1] =3D BPF_JMP_IMM(BPF_JEQ, BP=
+F_REG_AX, 0, insn->off + 5);
+> > +                       else
+> > +                               insn_buf[1] =3D BPF_JMP_IMM(BPF_JEQ, BP=
+F_REG_AX, 0, insn->off - 1);
+> > +                       insn_buf[2] =3D BPF_ALU64_IMM(BPF_SUB, BPF_REG_=
+AX, 1);
+> > +                       insn_buf[3] =3D BPF_JMP_IMM(BPF_JNE, BPF_REG_AX=
+, 1, 2);
+>
+> Maybe !=3D 0 instead ?
+> Otherwise it's off by 1.
 
+We'll never do the sub with AX=3D0, we'll always break out in that case.
+It starts at 0xffff, so when it's 2 in stack, and 1 on subtraction, we
+will do the call.
+This resets it to 0xffff or 0.
+
+But it's late and I could be missing something.
+
+>
+> > +                       insn_buf[4] =3D BPF_MOV64_IMM(BPF_REG_AX, stack=
+_off_cnt);
+>
+> Please add a comment that BPF_REG_AX is used as an argument
+> register and contains return value too.
+
+Ok, will do.
+
+>
+> I looked at a couple other non-x86 JITs and I think this calling
+> convention should work for them too.
+>
+> > +                       insn_buf[5] =3D BPF_RAW_INSN(BPF_JMP | BPF_CALL=
+, 0, 0, 0, BPF_CALL_IMM(arch_bpf_timed_may_goto));
+>
+> Use BPF_EMIT_CALL() instead?
+>
+
+Ack.
+
+> > [...]
 
