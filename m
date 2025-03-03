@@ -1,112 +1,110 @@
-Return-Path: <bpf+bounces-53214-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53224-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6561A4E833
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 18:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43EAFA4EB18
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 19:19:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EADDA19C7206
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 17:10:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A100C1894C5E
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 18:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81392853E5;
-	Tue,  4 Mar 2025 16:49:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 027D7277020;
+	Tue,  4 Mar 2025 17:55:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ib8K1KKm"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c/cUNq7O"
 X-Original-To: bpf@vger.kernel.org
 Received: from beeline1.cc.itu.edu.tr (beeline1.cc.itu.edu.tr [160.75.25.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C6527C848
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 16:49:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE2AF24EA93
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 17:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=160.75.25.115
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741106945; cv=fail; b=Z61R9NatltXN1Gi4EV/JknSpkk1qHFPeTnbgl075/bokrbDS2Z0RbwiaVdu7NSmKG5k8avVOJ1k8NCofTeIFyPaolq3sHmEptEeOQYWUGm7IDr6y8Jg8GLqYiPi2AaULJnLJhY5feZ7A5swObpS0rN4GaP38lDU3PSaQYHbQbHw=
+	t=1741110957; cv=fail; b=DR2/1SUxNl6B6nP4OOmYVQH7fLlbdLpK0GQeW5F0Lcv0fyoM8XGKIfa/9MDOwLjbAOhslvtReg9Hug7YBhkzPN2XyoZEWxv6xXNvpUiZ4NZuL61laMgMUQy+JKSGK3f2YJEFssOgOOxogoAVOx9c/EWv6nC6/4CGElUPiBuJki8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741106945; c=relaxed/simple;
-	bh=31dsmnPT6dM4lwcrRJT/5/1wZCTVJeKe9rO3DrwJZWw=;
+	s=arc-20240116; t=1741110957; c=relaxed/simple;
+	bh=CGEcvGW5UxIBOBlHpmZcGgsIR6pcCHCtB6h3nxJt264=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XtHZ5EMN2AG8dw7j9WHTScj6y8v7oz+TLZE01Ubql/pnPr+36HtQVfpRAog2oKYSu/5HgVL0vWvDLaCJGP+F9ROSdP6lhllokIjlszwGu5zDl8woQrlZqrvX3yra1DT5tiuucDZE2k8FEyxCrEK8Dqmt9YZeu3p6aHJUgk+bJFQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=cc.itu.edu.tr; dkim=fail (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ib8K1KKm reason="signature verification failed"; arc=none smtp.client-ip=198.175.65.9; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; arc=fail smtp.client-ip=160.75.25.115
+	 MIME-Version; b=iN/veitmhOkMnK2VUIkTwnkBXiCssHchR6aOLbYCLKspDEezrhBZ3QRGF0Yg4kKnEvOIKLnsuaK8TPrTA0aHQx94E4SAdSvGZbE852xVdG1VkLj8dGyVQVcCidAycTLqpkbLJBq6N46T6+G6b6VmD4GxnF9KLbjNphArOiJ8jYo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=cc.itu.edu.tr; dkim=fail (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c/cUNq7O reason="signature verification failed"; arc=none smtp.client-ip=198.175.65.9; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; arc=fail smtp.client-ip=160.75.25.115
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cc.itu.edu.tr
-Received: from lesvatest1.cc.itu.edu.tr (unknown [10.146.128.1])
+Received: from lesvatest1.cc.itu.edu.tr (lesvatest1.cc.itu.edu.tr [10.146.128.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by beeline1.cc.itu.edu.tr (Postfix) with ESMTPS id 4543B40D9758
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 19:49:02 +0300 (+03)
+	by beeline1.cc.itu.edu.tr (Postfix) with ESMTPS id 20FEC40D9768
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 20:55:54 +0300 (+03)
 X-Envelope-From: <root@cc.itu.edu.tr>
-Authentication-Results: lesvatest1.cc.itu.edu.tr;
-	dkim=fail reason="signature verification failed" (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=ib8K1KKm
 Received: from lesva1.cc.itu.edu.tr (unknown [160.75.70.79])
-	by lesvatest1.cc.itu.edu.tr (Postfix) with ESMTP id 4Z6hRc1sPszG42l
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 19:47:08 +0300 (+03)
+	by lesvatest1.cc.itu.edu.tr (Postfix) with ESMTP id 4Z6dnf56kXzFxXG
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 17:47:34 +0300 (+03)
 Received: by le1 (Postfix, from userid 0)
-	id 6A69D4274E; Tue,  4 Mar 2025 19:46:52 +0300 (+03)
+	id 12AC842720; Tue,  4 Mar 2025 17:47:34 +0300 (+03)
 Authentication-Results: lesva1.cc.itu.edu.tr;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ib8K1KKm
-X-Envelope-From: <linux-kernel+bounces-541373-bozkiru=itu.edu.tr@vger.kernel.org>
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c/cUNq7O
+X-Envelope-From: <linux-kernel+bounces-541374-bozkiru=itu.edu.tr@vger.kernel.org>
 Authentication-Results: lesva2.cc.itu.edu.tr;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ib8K1KKm
-Received: from fgw1.itu.edu.tr (fgw1.itu.edu.tr [160.75.25.103])
-	by le2 (Postfix) with ESMTP id F1B434327A
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 13:31:50 +0300 (+03)
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by fgw1.itu.edu.tr (Postfix) with SMTP id 822DB3063EFC
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 13:31:50 +0300 (+03)
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c/cUNq7O
+Received: from fgw2.itu.edu.tr (fgw2.itu.edu.tr [160.75.25.104])
+	by le2 (Postfix) with ESMTP id 3349B43668
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 13:30:58 +0300 (+03)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by fgw2.itu.edu.tr (Postfix) with SMTP id DF36F2DCE4
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 13:30:57 +0300 (+03)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2FEC3B167E
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 10:30:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4504170220
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 10:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054631F4612;
-	Mon,  3 Mar 2025 10:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F64F1F4735;
+	Mon,  3 Mar 2025 10:28:35 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3481F2380;
-	Mon,  3 Mar 2025 10:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC6A1F2380;
+	Mon,  3 Mar 2025 10:28:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740997704; cv=none; b=SrR5oDy9KEHZoRBJvfq3erxrZvzyjJOenzkrujxKhN1R8B2qJRImQmYwhhZuoQbm0Upkb+VKOjI+ATKQ76+DiGY+J4R//KOQygmHcA698KOwn7aphSEFBsAeO1BAiHzfTpoz/ha+Ywm6Fddb41XlzZ/Q1RPyZo7CzkmDPP2ydtg=
+	t=1740997712; cv=none; b=tXdatXpvgAzxuMj0Ls8wcG5NuhvwLJwwArOKLASURJe/MVwmWKXMR6p7DguSp45aptrbOVRXPtdZ4lTU1fSmZqS+9fQny9usow3Zpc528MqT8ls8nFMbBa2OIJlY83GvKIeCi4Kz5o4omX3hbm7evpWur66VS31UWaxmMoSx4m8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740997704; c=relaxed/simple;
-	bh=naH9KspwalUC4SIxcxcdhcuCdSPyeBw7+LL7ZKcyavQ=;
+	s=arc-20240116; t=1740997712; c=relaxed/simple;
+	bh=P6ccI5F2+0bACe0n0NkpiYH116w0AVZ4cwwt/aKfPE0=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CtS+hN0Akl3QMHnlz9I/CEMWEQ5+MMeX+adDksvl4xOqW5CDuoE1hb+lQJX9BiNA7V329vaW2z8X8mtA3tZv4tW8LP6xbD2P8nUl6KzOnSnc6+hFTPOv3war/YbWAmkre+z5OhJrl9jhUOViTENdWGcVYVuyok59/V0EUm0zIhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ib8K1KKm; arc=none smtp.client-ip=198.175.65.9
+	 MIME-Version; b=paO1VDeRtUeXcEQWW3vOsI4o3nzhuXkfNG2VC+HTMIW0kQZDF9ecIxg4cGf4tUkyb/UC7zkCfdot1ak5WYSpTkQ9j+T7Zh0ZddcAJ9n5INXixkJLZaem4PvDbNbLJnfZQO737GEqEHpy2s3xRoOs2h+uvEyXfshFKDco2X+dCgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c/cUNq7O; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740997703; x=1772533703;
+  t=1740997711; x=1772533711;
   h=from:to:subject:date:message-id:in-reply-to:references:
    mime-version:content-transfer-encoding;
-  bh=naH9KspwalUC4SIxcxcdhcuCdSPyeBw7+LL7ZKcyavQ=;
-  b=ib8K1KKmZHBkCl8J4dcdi0vDFYoFdmwD7535Z8CoHYHgqiIaHknlLu1Z
-   jee3/IwNpgJStDmrf3kSQyCMuCGPhUBsh0LsTfO9UFejgIoySJvj3xMfV
-   cbSB6qqhtlP0nJBcF72JrFormj7WMhYgkGrsqIVcnCJcdeTEA4UW+SyKD
-   t9b5ZmY/s7RmBkdU8IZ4CvKZ4oTGWzmxLQ2+2yPTXyXLuE5/0JfbEOBwk
-   xby8NVA+LoZ0vGP+DkO30hWaUS/wJBmqVplMl69CdIDhRHKQ/c5SS3wql
-   EUMPHjz8tHSnJEwQIOVFe5KUurrj588ofCRvXc3aev8/3dAcGl6qwYLdV
-   w==;
-X-CSE-ConnectionGUID: GLlEkOCuSe2ShOnFc6/21A==
-X-CSE-MsgGUID: BsGU7BGyRH+fAJ/ZpVkN9g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11361"; a="64310253"
+  bh=P6ccI5F2+0bACe0n0NkpiYH116w0AVZ4cwwt/aKfPE0=;
+  b=c/cUNq7OYD6Grb58TR65YS8XR/qxDeaaWaoo/F70P+bKUEDcbc/lmL6E
+   4SKT8oGd+hsYGRmmbXV+z4iFoyoOCrwIjSUJLtSt7HxxCuWzSPYfHbH5S
+   mnhAO4n2booLNAQ/henIX3LSxMYwZL4dioPG+3o+6QkxyxVcXy5Uskpfv
+   mzczzdjDNfe/CeBE775zA7VH9d8thAYSb7Cb+QFYopIVg8fWRhGx9L4vi
+   IfFDtYR3EwvDV43GD7lSLZ8eIcEjSqZP/pLzn7Rim2++OEBphbgUDE2cc
+   Nu3AC6Ak+WOz8Jd31bNBQrDeyBx5Nx7eDWvsRLvc87qrr9DtDJd7Q9hUC
+   g==;
+X-CSE-ConnectionGUID: /zaUF2XsSKiqJeKsU3+GcA==
+X-CSE-MsgGUID: 7HpBJq95SaW2RR+4zH2ZiA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11361"; a="64310294"
 X-IronPort-AV: E=Sophos;i="6.13,329,1732608000"; 
-   d="scan'208";a="64310253"
+   d="scan'208";a="64310294"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2025 02:28:23 -0800
-X-CSE-ConnectionGUID: w4pCy+ifSdmjYRxSLDAKCw==
-X-CSE-MsgGUID: WMXFEbW1SyugSAw2veHtzw==
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2025 02:28:30 -0800
+X-CSE-ConnectionGUID: IJ+J0UlmS3KRsMbMevFqAA==
+X-CSE-MsgGUID: cS//+fnETaSB4iJW+tt0zQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.13,329,1732608000"; 
-   d="scan'208";a="122569912"
+   d="scan'208";a="122569920"
 Received: from mohdfai2-ilbpg12-1.png.intel.com ([10.88.227.73])
-  by fmviesa005.fm.intel.com with ESMTP; 03 Mar 2025 02:28:15 -0800
+  by fmviesa005.fm.intel.com with ESMTP; 03 Mar 2025 02:28:23 -0800
 From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 To: Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
@@ -143,9 +141,9 @@ To: Tony Nguyen <anthony.l.nguyen@intel.com>,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org,
 	bpf@vger.kernel.org
-Subject: [PATCH iwl-next v7 7/9] igc: Block setting preemptible traffic class in taprio
-Date: Mon,  3 Mar 2025 05:26:56 -0500
-Message-Id: <20250303102658.3580232-8-faizal.abdul.rahim@linux.intel.com>
+Subject: [PATCH iwl-next v7 8/9] igc: Add support to get MAC Merge data via ethtool
+Date: Mon,  3 Mar 2025 05:26:57 -0500
+Message-Id: <20250303102658.3580232-9-faizal.abdul.rahim@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250303102658.3580232-1-faizal.abdul.rahim@linux.intel.com>
 References: <20250303102658.3580232-1-faizal.abdul.rahim@linux.intel.com>
@@ -158,37 +156,83 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-ITU-Libra-ESVA-Information: Please contact Istanbul Teknik Universitesi for more information
-X-ITU-Libra-ESVA-ID: 4Z6hRc1sPszG42l
+X-ITU-Libra-ESVA-ID: 4Z6dnf56kXzFxXG
 X-ITU-Libra-ESVA: No virus found
 X-ITU-Libra-ESVA-From: root@cc.itu.edu.tr
-X-ITU-Libra-ESVA-Watermark: 1741711631.9349@WxzLCAAJzDU6bkjzMtxZOA
+X-ITU-Libra-ESVA-Watermark: 1741715637.41655@QWv80yZFP1ec6olzewIg0A
 X-ITU-MailScanner-SpamCheck: not spam
 
-Since preemptible tc implementation is not ready yet, block it from being
-set in taprio. The existing code already blocks it in mqprio.
+Implement "ethtool --show-mm" callback for IGC.
+
+Tested with command:
+$ ethtool --show-mm enp1s0.
+  MAC Merge layer state for enp1s0:
+  pMAC enabled: on
+  TX enabled: on
+  TX active: on
+  TX minimum fragment size: 64
+  RX minimum fragment size: 60
+  Verify enabled: on
+  Verify time: 128
+  Max verify time: 128
+  Verification status: SUCCEEDED
+
+Verified that the fields value are retrieved correctly.
 
 Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 ---
- drivers/net/ethernet/intel/igc/igc_main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/intel/igc/igc_ethtool.c | 14 ++++++++++++++
+ drivers/net/ethernet/intel/igc/igc_tsn.h     |  1 +
+ 2 files changed, 15 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethe=
-rnet/intel/igc/igc_main.c
-index fc086919387c..319eeb5b0a54 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -6407,6 +6407,10 @@ static int igc_save_qbv_schedule(struct igc_adapte=
-r *adapter,
- 	if (!validate_schedule(adapter, qopt))
- 		return -EINVAL;
+diff --git a/drivers/net/ethernet/intel/igc/igc_ethtool.c b/drivers/net/e=
+thernet/intel/igc/igc_ethtool.c
+index 529654ccd83f..fd4b4b332309 100644
+--- a/drivers/net/ethernet/intel/igc/igc_ethtool.c
++++ b/drivers/net/ethernet/intel/igc/igc_ethtool.c
+@@ -1782,6 +1782,19 @@ static int igc_ethtool_set_eee(struct net_device *=
+netdev,
+ 	return 0;
+ }
 =20
-+	/* preemptible isn't supported yet */
-+	if (qopt->mqprio.preemptible_tcs)
-+		return -EOPNOTSUPP;
++static int igc_ethtool_get_mm(struct net_device *netdev,
++			      struct ethtool_mm_state *cmd)
++{
++	struct igc_adapter *adapter =3D netdev_priv(netdev);
++	struct igc_fpe_t *fpe =3D &adapter->fpe;
 +
- 	igc_ptp_read(adapter, &now);
++	ethtool_mmsv_get_mm(&fpe->mmsv, cmd);
++	cmd->tx_min_frag_size =3D fpe->tx_min_frag_size;
++	cmd->rx_min_frag_size =3D IGC_RX_MIN_FRAG_SIZE;
++
++	return 0;
++}
++
+ static int igc_ethtool_set_mm(struct net_device *netdev,
+ 			      struct ethtool_mm_cfg *cmd,
+ 			      struct netlink_ext_ack *extack)
+@@ -2101,6 +2114,7 @@ static const struct ethtool_ops igc_ethtool_ops =3D=
+ {
+ 	.get_link_ksettings	=3D igc_ethtool_get_link_ksettings,
+ 	.set_link_ksettings	=3D igc_ethtool_set_link_ksettings,
+ 	.self_test		=3D igc_ethtool_diag_test,
++	.get_mm			=3D igc_ethtool_get_mm,
+ 	.set_mm			=3D igc_ethtool_set_mm,
+ };
 =20
- 	if (igc_tsn_is_taprio_activated_by_user(adapter) &&
+diff --git a/drivers/net/ethernet/intel/igc/igc_tsn.h b/drivers/net/ether=
+net/intel/igc/igc_tsn.h
+index 6b48e0ed4341..a00dc1d80e12 100644
+--- a/drivers/net/ethernet/intel/igc/igc_tsn.h
++++ b/drivers/net/ethernet/intel/igc/igc_tsn.h
+@@ -4,6 +4,7 @@
+ #ifndef _IGC_TSN_H_
+ #define _IGC_TSN_H_
+=20
++#define IGC_RX_MIN_FRAG_SIZE		60
+ #define SMD_FRAME_SIZE			60
+=20
+ enum igc_txd_popts_type {
 --=20
 2.34.1
 
