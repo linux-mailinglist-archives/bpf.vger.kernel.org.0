@@ -1,333 +1,242 @@
-Return-Path: <bpf+bounces-53111-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53112-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED4EFA4CC10
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 20:38:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26CCFA4CD55
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 22:13:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 146F5173E32
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 19:38:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71B3D1895927
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 21:13:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F67233120;
-	Mon,  3 Mar 2025 19:37:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C971B237180;
+	Mon,  3 Mar 2025 21:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ffQO1ly4"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="THy/mLfN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02olkn2102.outbound.protection.outlook.com [40.92.50.102])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265DE1C8604;
-	Mon,  3 Mar 2025 19:37:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741030668; cv=none; b=pehBhgYXA4lUe4DQBsVXgb62l2bZovaHz7r6ajFTuvPCwNgdVOF/S4Izz5SzNeT2l1fRiMGO7RDV3EUI/Z0OjtCygHnHYy1M+EElS4CiQe1DBlqmJT3C+vQlngGTg3XAdJew/wcgs+aEmMi0FkJirGAPkwSu41Ff8sSXuwMM62U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741030668; c=relaxed/simple;
-	bh=1sKM3HmGmZ4XNV0R3wDe7YhC6/n+JJn0dGFKTpsVn9M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i1Z5AXP/wPjjWBNzOADLHpbZOpGX7jeqQT6Z4muYooehwII88bsoDrR3etUE7sB4wbfZ+HgjjbZC5jbjjjRPtREpiiEDyLmZmxHXW4BqRQBkec56znWqhuK1NiZVhxBC0WRXAv9H/C2l7tS9x13z6barhR+xp5NzaJ1ZxHDKO1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ffQO1ly4; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43bc31227ecso8529525e9.1;
-        Mon, 03 Mar 2025 11:37:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741030662; x=1741635462; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LVBrsQeXraVCp2D/HwIHQkHOOS8UoeEI0fbbAugf/mo=;
-        b=ffQO1ly43exgN9SDz4qmffmr29hTGvWd5bY448F/maMRvI/VaDwiwoGfWgAWyFwnak
-         GM5RdO10zyqqj71DlIGhJ3bv34ka9inKiyOBcD108E3ZcbI0vyoE887cvP+Uu6nUeyh1
-         VHN3MA5StaOT2mQTBpsplrBuH8csKFtsCH79HGRoL4oTjQmStMK5XYVEJ3obuVUoKS0U
-         6af9S+Uc40xgCJj+cwpPPk9oq7JwH/jBBFhDHsI881mv6Xp458B6kU2wPCojkDBbQNXN
-         wthQ8aU/j/fIUm7Jx3+kVqqeyJ+X5V+f7P2w3MfN4xH30AlUY4tvVzwLJX+r+jdNGr6Q
-         STpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741030662; x=1741635462;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LVBrsQeXraVCp2D/HwIHQkHOOS8UoeEI0fbbAugf/mo=;
-        b=RPqDuRV8CuI07C9eUi/j4Cel/GjSuzie9byR48m63N39/WEZTA2Wv9yg5LNlP5egko
-         RFYVS4Z9C/RkxPG4Lw0OjDuomix6yBqU91MPR0u08nRONzzWCQW9Fpv6B0ZRUo6UFp+J
-         sVis8/7YCuuh/sW3Msa+l5dXu8OQ5lDA+4q7GJnYOaiGjaYU7f5bKiAE/arcNgRs0Ah/
-         0mrPfaF9kMVajBaYw4sqMoDDZ52GrJ9TBG0thSlhX571boi+SGd0wJ4LfKqpcksLm1n9
-         D6w5mDo/XVRGFX+KI4nOGa3igcDZBxN7MiDdoFB+mytfTINKvqtuylgryYFFDQhn8K7I
-         Qt4g==
-X-Forwarded-Encrypted: i=1; AJvYcCUfkWjWrS69QxH8gmkIswi6Gt+FO4rHgzf+hX1Gbryloz5oajVSWqXLoiT05Us6DnRRMhFlnerb@vger.kernel.org, AJvYcCUrQPrQgkSc3H76tPl8I3K5ULZe8jrmcYJKvFMBStPx5fZHT/HYAxaOWOf2TMONXbulLYI=@vger.kernel.org, AJvYcCUrojQdevuCIr2s/Ggmjq6D98+Yswvewp5hdHHQifXP21Z8KkXkH7v86zvs+J/9UeIZHZfvQpiOo5HI2u1t@vger.kernel.org, AJvYcCWMHq2W1gRHGlcZ2tvq5kdTy9VPFNH6GKx8ufp2F9nLB7d9u8KXsX+vsfsDrKYxbjvwtAme2wAd/nAKzI4=@vger.kernel.org, AJvYcCXD6FOIRZ5vrY1NJDX8GeoJF15ytyWg0uRPY5BeYo6OtJgmF2i97JVDK9XA9giHz7CapYev7wCjCEbVy9ujAps=@vger.kernel.org, AJvYcCXPKseUdbVuWyGVGGbVQ6Aqgd2LToWjyt49Ufa/zG4qLxBnTS7K5Hiz6z4K2B7Np3rbzRfghz3NyUWMyXk=@vger.kernel.org, AJvYcCXo2uecsV2Xkq2Ey2MOnkcRxAGayT7P2lVSsNpPoPeDyOqxFKBgXbEsw7dP8NBR40KvkVjkz1PZ8KbtXw0w@vger.kernel.org
-X-Gm-Message-State: AOJu0YwR/P/6/+1YsXjiBPpAYIfIo32JUPy6g7yVaLplrtwezx6uAUnc
-	O5T49efZjGEjacJMNnmscWyiNa2qnqYTRueMoblrCwp92yMhLH4z
-X-Gm-Gg: ASbGncs1ZqwvTUgpB+1r3IVOAdd2QOrbLdNdjMAVpWEhiLJxmtIdWubtP97BM9eX0zI
-	XgnehtYYNuT0Q2ahXgC6P6G1GeV+wc3ioQqOydZY0NuLH9bpQYcwUVaHQ59XT9FhZ+jIA4I8Ytv
-	mWkByv1v2XOcWjWnm33Hd2kIrKz7LXSd0nEMffxV6rGkalqFh9Ng9ERlubb1RQf7CJ3ThNfjdOk
-	j79Szw+fTp4tCVP5jnCdS+isPee5yO0Fb4EasmPjPSHANyxfO9L76GBgLKtx66iBeyZAT77+/+z
-	G/9nCBmFSF75YLfi4fsJPWmzbw11+j5tsRUpsCUrOlbrw9IAjx6CWbt3E5fy8XREJOmdOhgjc3C
-	ys2Nuy6w=
-X-Google-Smtp-Source: AGHT+IE5SsMAFxGhtu6mLXRY5Pge6T5PIIN9j46P3NC9S6x1AuYKxmDUwUSvWRO/DaRfnfW/d1a6Iw==
-X-Received: by 2002:a05:600c:1548:b0:439:685e:d4c8 with SMTP id 5b1f17b1804b1-43ba66fec18mr136187305e9.15.1741030662069;
-        Mon, 03 Mar 2025 11:37:42 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-390e47b7a73sm15704508f8f.50.2025.03.03.11.37.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Mar 2025 11:37:41 -0800 (PST)
-Date: Mon, 3 Mar 2025 19:37:39 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
- x86@kernel.org, jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
- andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
- mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com,
- parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
- johannes@sipsolutions.net, gregkh@linuxfoundation.org,
- jirislaby@kernel.org, akpm@linux-foundation.org, hpa@zytor.com,
- alistair@popple.id.au, linux@rasmusvillemoes.dk,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
- linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
- andrew.cooper3@citrix.com, Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v2 01/18] lib/parity: Add __builtin_parity() fallback
- implementations
-Message-ID: <20250303193739.2a9cdc42@pumpkin>
-In-Reply-To: <Z8XHnToOV03hiQKu@thinkpad>
-References: <20250301142409.2513835-1-visitorckw@gmail.com>
-	<20250301142409.2513835-2-visitorckw@gmail.com>
-	<Z8PMHLYHOkCZJpOh@thinkpad>
-	<Z8QUsgpCB0m2qKJR@visitorckw-System-Product-Name>
-	<Z8SBBM_81wyHfvC0@thinkpad>
-	<Z8SVb4xD4tTiMEpL@visitorckw-System-Product-Name>
-	<Z8XHnToOV03hiQKu@thinkpad>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FE501E9B3D;
+	Mon,  3 Mar 2025 21:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.50.102
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741036378; cv=fail; b=jSi43rOFaA2Ry+AXJhy8+ij8dAu1slccJEkRgHT08RCHuVnxBseUT7MII14pC354xRyzPY1WppWtCSvd3iPWNsWWFQv4AW/xc9O+5PTgiBtJpSSphI2jW3mOFz72YmwBg5liCZyzzRDZBH9OW8tE8KOT4KkuBfhi3u/5FggKhEg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741036378; c=relaxed/simple;
+	bh=OevsSB1mpboG64JtamGjBb/ct0RedgahdqiUvWw3OOM=;
+	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ucqY62cNKYjUQfbjjx2kM2+KovYtZBby2l1HxJx28e9a2nlRxPWdmJJ7sSbsVyLN86Qw31zfnjcpgSVCJSxcY6C3fDYzhUk3dhp7sSbZlmEHhgJVtqRznVmCaH7+7uNon3n0z7qb1NgZq9v1a0R2HJHjqziuYFJSUPS2hvb9X0A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=THy/mLfN; arc=fail smtp.client-ip=40.92.50.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=rVRIV03o7Hbs0QoIF9f6hoCeLdIxQIRXVV2eYL2AGCP5i6uFi1B9UsOgxVNH+os+Gavw7p384jLNaiATNlAKfFYrhJ7pcqCxAJidXLp9k+PO3feMGwFBUjEZxZZtbtDbeQyDs1IrjbETLO2LyCjX6mISupt55GyGNzUvkB0uS3j7p2ufSvJpOwyB/NeLezpjWIB03BzYyo0dVfFJQM5yRNF5RNiitDLAag1l1xIbTve5CqXe8pQ1xL36DIOYgHTMn9/evGtzyiyke1FZzoqNv9SSce2+RtqP38ows0SCxglHtN7m6U6PJ/uc3LLMqhb90fq1Gz7nAfOu5O8GCzPJIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hzTj++itutZzhT7Mnw7r6wy6qqUJfLqOYT1oAEszqBo=;
+ b=qgwRIYEeIHVc2/HcRfaM/HVkPjIf7zftd0F2Pksh17hvUlf+NHojnyyv9bSk6pToOA2bHLRB9UVdqFklEZf9k8VwWXNjT9RPsoUvc+AdfevbJ9QGVikRtL/4QkUEAevyIY3l96x91oeE8GZZcRWCwcBhCs6ooLr9iKI94fbgQs9NBWGgD7tDmIMHOP33C7VpEdHA3yuvp43NBnwf7VyibelxxOTSZsFSQBI7dn7PAcSIqDGh7h8fhlQihv7T6ntSAf1jC9d2fgZMbPXpFzbKrc9kcdZ590HfDper9nDy4yCvKe5j8Epm5iHCXv3rwnPnzB9cFuTPgYB4W3JllkJSug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hzTj++itutZzhT7Mnw7r6wy6qqUJfLqOYT1oAEszqBo=;
+ b=THy/mLfNCgKW1/Fgq521wjZGE1ykjCXEsqEAvyi8bQM55dKSS9iSC5zblJGqUTumMYxUU/n+1exQaU3zXNUWW49+jW6EmRdTrskDDbLsaxZF4lBHXz2ehQnO11a44BabjemmGBgJz8WxNZa17nIROP0T4tB2CI6Lz8+CKEwPgUbhH3NftpONrW71a6UM9r5CWZv304sdFkMRI5CYDanOArnff/jZWT4AjUnqwgRl0ssxU5hmMsX/vvl0SYN6opCVWCArdKRIrn6zNkrckv1hzCUyTWpoTQZ/dWTQKVVGyoUeAiM2PjlwDlKfRkgCYFqxDYwDJyaPpPAo+Jj5GGdyew==
+Received: from AM6PR03MB5080.eurprd03.prod.outlook.com (2603:10a6:20b:90::20)
+ by AM7PR03MB6149.eurprd03.prod.outlook.com (2603:10a6:20b:140::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.27; Mon, 3 Mar
+ 2025 21:12:54 +0000
+Received: from AM6PR03MB5080.eurprd03.prod.outlook.com
+ ([fe80::a16:9eb8:6868:f6d8]) by AM6PR03MB5080.eurprd03.prod.outlook.com
+ ([fe80::a16:9eb8:6868:f6d8%5]) with mapi id 15.20.8489.025; Mon, 3 Mar 2025
+ 21:12:54 +0000
+Message-ID:
+ <AM6PR03MB50802468907B621471E451DF99C92@AM6PR03MB5080.eurprd03.prod.outlook.com>
+Date: Mon, 3 Mar 2025 21:12:52 +0000
+User-Agent: Mozilla Thunderbird
+From: Juntong Deng <juntong.deng@outlook.com>
+Subject: Re: [PATCH sched_ext/for-6.15 v3 2/5] sched_ext: Declare
+ context-sensitive kfunc groups that can be used by different SCX operations
+To: Tejun Heo <tj@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, memxor@gmail.com, void@manifault.com,
+ arighi@nvidia.com, changwoo@igalia.com, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <AM6PR03MB50806070E3D56208DDB8131699C22@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <AM6PR03MB508018ABBD34FBAA089DD9F799C22@AM6PR03MB5080.eurprd03.prod.outlook.com>
+ <Z8IxQy9bvanaiFq6@slm.duckdns.org>
+Content-Language: en-US
+In-Reply-To: <Z8IxQy9bvanaiFq6@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0462.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1aa::17) To AM6PR03MB5080.eurprd03.prod.outlook.com
+ (2603:10a6:20b:90::20)
+X-Microsoft-Original-Message-ID:
+ <d278bee7-6914-4509-ae96-297dae5caa75@outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5080:EE_|AM7PR03MB6149:EE_
+X-MS-Office365-Filtering-Correlation-Id: a5e4b06c-1669-4498-cb2c-08dd5a98299f
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|461199028|6090799003|15080799006|19110799003|5072599009|8060799006|440099028|3412199025|13041999003|56899033|41001999003;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?V1h5QmVESVFzWExlRW1GZVM0T00wcGlvcjNEODBIQWRSZVNnRjUyejY0MjhL?=
+ =?utf-8?B?bkVSV0ZmMVJHdHVCWjRKenJkQmRmdTFLTXdtSThoQUU0MlduODhQMU1VaE93?=
+ =?utf-8?B?a0RIcTNlSTZPdFg0L3hMR0FKRCtibkJEN29NZTZTaVQ0R3IrT2tQakEwWDQy?=
+ =?utf-8?B?QnppdFN5L2d4bnJDcUduTWdQRk5kVWdpRXBXUkorVWhLRHptTlZtMm9KYWkz?=
+ =?utf-8?B?dHBRb2lialFZbU5TNktsK3dBMlJURVNBYjc4a1oxb05jWEI2Qk5KcTgrb3Q5?=
+ =?utf-8?B?dWdCaXJseklOTmdlbVlYaDR2WkhHMzR6N0kwazFENm9oTms3Y3pDNERiV24z?=
+ =?utf-8?B?L3FvWFFERkJKdEtWNHhYZk5PTU8rUm96alhOUnRxQ3ZnZkVjeHlOV3hLTGky?=
+ =?utf-8?B?N3RoNU43WEdzYi9hS2F5QW84UFJub2RFZHVLNWtoVytzNGNURWhlOG05Tkds?=
+ =?utf-8?B?ZlpPdmREUHcvczExUUUweEtMbC9UdFpJMTByYUQrRllEYlE3bVdvQTg2akw3?=
+ =?utf-8?B?RUM2M2w4Y0Y0VGVwVDdkQTlxVUlGUUM2NFNLRmNBVVFuMWtJUmlBc29jeFFY?=
+ =?utf-8?B?VGgybll0SG5LRkJlTkZ4U0MvQkE5L0VscllGZFVTK0NZNVduRTRtaUVJVWdE?=
+ =?utf-8?B?bVJISllPWmZXV0V1TVIwbko1TWdpWFhBSURVc0swaEViVmlMNXhNeFY2alZv?=
+ =?utf-8?B?Rko5d3FxUWs1NUZKZlNOZVl2U0tTQUc0d0VTcndWQTVCNmMyVWI5bEtSV05s?=
+ =?utf-8?B?b0pORUU5MnU0NjUrTGU5MXgveGFkWmlDU2tnM1oxcm9xVVhPWnRQVVdPMFN1?=
+ =?utf-8?B?dXk1Y1o3TFdtR01HZXVkY09Uc0tLVXQrNjRoVEhOQmZNS0VXcnZCUW5ubUNO?=
+ =?utf-8?B?VEFRcHUzMmpHM01VOG5aeXhtUTdYTU9sZmJWR3lLdys2b3MwNk53Wk42bnpw?=
+ =?utf-8?B?WHBWcHB4S1NiOWNjMk9QOVp5Z0loNlFaZk5NLzR6ZEJweUF5NmJMWXB3V1Fo?=
+ =?utf-8?B?S0tLRHNLbUhYeFZZT050VC9kcXVjWkJHM2x1QTA0QmJBUXBzZEwvaEhhQTBI?=
+ =?utf-8?B?YjVTbEJad1FhcVNrU2FMTSt4dzFKVFRhajhoNWZKSG5mMXlhRUwrdmdYSGts?=
+ =?utf-8?B?THFPVEs0Q2UySU82VXBPemNaZk8wZnNicnpuU3RGMndkOU15d0p6RnZhdzFW?=
+ =?utf-8?B?cXBDa0Z0UktsL3Y4WlhGbTRGWXFwaXdtM3k0TWpkY3c4c3dYVm1iQ051NFYw?=
+ =?utf-8?B?bGN2ZWVjeDRzRUl5SzFyakpoajB1alJKb3dMbjNrajV1eVBPbDQzckRuSnd0?=
+ =?utf-8?B?MkxjUWJ5c2tGSXFxMTNuK0VYUVdDZm9lWmRyRUhjTy8yRHJmS0hSOVA1ZjV3?=
+ =?utf-8?B?YnAyajNVd29pNWh6dVFDM1Z1UTJnV0EzOEJzcFFQeUl0LzhDSXcrU0hrYXFv?=
+ =?utf-8?B?NFZ2R3FaRUp5VnlIZUtCckpnTVhHUDdZMDlmN2RtODZxUUpjTnJsTDBJUUxJ?=
+ =?utf-8?B?bUhVVVNrL0t2b3JLV2RIdCtkK1JZWVQ0TFlRdFdxWXZQdVl6cmNaZXdTWU9G?=
+ =?utf-8?B?S0x4dz09?=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?OXZ5cWtsSkkxWW9hL3VxYlZ6emlwQ3RvNitYUWJCQ1ZleXlyMWlNMGlBRkpT?=
+ =?utf-8?B?UFEvdUphYlM2b0twWGx1UytBbVRRWDkxRTdsMWgxUDgydHRhSFJSVWhuWWVo?=
+ =?utf-8?B?RjYrN3lwaW42anhvaE42VmMzR3IvNGFnZXdVS2paS0gyWG9PUE1rVEQ1MWsx?=
+ =?utf-8?B?V0syWVV5S1liUjV0RHlYamRQRlBuNWNJUHlONEpuR1FITGtRQkN0Z3pwS01P?=
+ =?utf-8?B?ZEpwTGhJdEhGWGNzRFVmV0xrbWhmUDV6b1YvaENJWEZhcFU5c1h6b0ZOR0Jh?=
+ =?utf-8?B?RjIwVUV0U2NJK0IxQXladGtqNTlPTk8xNzlLNUlQZGtpNnlQb1E0WkZQclE1?=
+ =?utf-8?B?NU9QbTdIZHNJQlhCU1ZyT1ArUHZtamhCR0JmeDN4cW9DdUtFM05QdmxUTTlv?=
+ =?utf-8?B?MktTbFZFMUFlV2I5b25TTHNwUzVSOENlallLMXdzNWdXMU0renliZmJ1V3FY?=
+ =?utf-8?B?YmtiUUpZMi92K3VCb2o4N1dYd2tvQldqdnhaZEtLbys0cEpWb2lweHVKY21C?=
+ =?utf-8?B?RHFxM3VCaGdHdWh0c2Rjak5QeUdGVGJ0UmJVK0VMbHQvK1VUSGVXT0llYzR6?=
+ =?utf-8?B?WFIyajkvc0NPTGh1WllzbE5FSmpoeWFZTDRlNkRKUG8yNUh3M3BXSmZWYjdL?=
+ =?utf-8?B?ZXEvMnRPR3BVbWdjNnVuRENPVW5rNi9ZTXBJOGxnRlRFcSs5WURvTGR3OFpM?=
+ =?utf-8?B?YnVyWUJ6SDNBL1FZK2FZQXpVRlBqUFF5SWhSalVCRXU2OU9nUE0xNWt3Z3lU?=
+ =?utf-8?B?SERocUU4V2tKL1RQOEVIQ3pxYVpzWkxOTndOUEdFU0tSOXExaGJRMldoVC94?=
+ =?utf-8?B?TWFuOE5zdUFSUVZlbVluVERDV2lveGFmaHZmS09uQi93YUVzK21WUEw5QmR2?=
+ =?utf-8?B?a3VZN3J4SXV1TzhGWnpWWUJyVnpBWnBxYnhlMkxIT1lJTlloNUpiNlVGTDg1?=
+ =?utf-8?B?K2xoT3gvc2l3NDVpSWJhU1p2bnlZc3E0d0JabGlnZk90SDBwcjR2UTcxU2dM?=
+ =?utf-8?B?Zm41TUwvUE84dmp0eEZveXJCMWpjOHBLcmpKaHp0bXpOaUw5V0pPVWNDZWNa?=
+ =?utf-8?B?Tm5EN1lzR0tBZFY1NnA1dHdjZTh3RUtYL1BtRzNYWkdTOW4zbnFQWTM2eTVU?=
+ =?utf-8?B?UzJtWU5oTHZ6eDd3ZWk3dXdlSzJkek1PeVhIUVp1L3lJOENFb1JENE5iVzZI?=
+ =?utf-8?B?bERPYTl5SGhzWCtYV3Nqb3g3cVA3aTZpNHJ2SUZIMDluUnE1WlZUWHdRQnFI?=
+ =?utf-8?B?dzVpUzZDVGtQRHJpcDc4eW1ZTGgrVzkvbUZHVEFOdHBhMGpkTEZyMkdGMldx?=
+ =?utf-8?B?dnllL3ZSWVZRbVI1dkFseTdGSy9NbFZTTzJncU9Sa2JDUUNJUmFkd1c2b2xW?=
+ =?utf-8?B?eVJhVlRCcHNKNzRUU081NXpDSjg0TDRjR09EL2FZRk5oQ3VoOEo2SjBiK0RZ?=
+ =?utf-8?B?N0FXTW5oVThjRU5zbll5UnBpSEowWnlQWjEzWExDU1pydzZoS3hkemFFRWEy?=
+ =?utf-8?B?TUZQTytZbXJTbDc0MFVtWklIL0VUVyt3eEQ4RUxqUG01a3BZbXRnYUdNVk9Y?=
+ =?utf-8?B?Snp4M2VCUjJwczdlcG82RXNKOWxOTXZWVGpzdHB0d3k1V2ZTTmdBQVVKajds?=
+ =?utf-8?B?V0lsQWNPOFpWN3JSL1M4czJ2TStSbXI5a1BiRDBwVm1vOG5nVlJXMGp2cmla?=
+ =?utf-8?Q?QfJrjJMt+iYNcqnIBBcd?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5e4b06c-1669-4498-cb2c-08dd5a98299f
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5080.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2025 21:12:54.0686
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR03MB6149
 
-On Mon, 3 Mar 2025 10:15:41 -0500
-Yury Norov <yury.norov@gmail.com> wrote:
+On 2025/2/28 21:57, Tejun Heo wrote:
 
-> On Mon, Mar 03, 2025 at 01:29:19AM +0800, Kuan-Wei Chiu wrote:
-> > Hi Yury,
-> > 
-> > On Sun, Mar 02, 2025 at 11:02:12AM -0500, Yury Norov wrote:  
-> > > On Sun, Mar 02, 2025 at 04:20:02PM +0800, Kuan-Wei Chiu wrote:  
-> > > > Hi Yury,
-> > > > 
-> > > > On Sat, Mar 01, 2025 at 10:10:20PM -0500, Yury Norov wrote:  
-> > > > > On Sat, Mar 01, 2025 at 10:23:52PM +0800, Kuan-Wei Chiu wrote:  
-> > > > > > Add generic C implementations of __paritysi2(), __paritydi2(), and
-> > > > > > __parityti2() as fallback functions in lib/parity.c. These functions
-> > > > > > compute the parity of a given integer using a bitwise approach and are
-> > > > > > marked with __weak, allowing architecture-specific implementations to
-> > > > > > override them.
-> > > > > > 
-> > > > > > This patch serves as preparation for using __builtin_parity() by
-> > > > > > ensuring a fallback mechanism is available when the compiler does not
-> > > > > > inline the __builtin_parity().
-> > > > > > 
-> > > > > > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > > > > > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > > > > > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > > > > > ---
-> > > > > >  lib/Makefile |  2 +-
-> > > > > >  lib/parity.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
-> > > > > >  2 files changed, 49 insertions(+), 1 deletion(-)
-> > > > > >  create mode 100644 lib/parity.c
-> > > > > > 
-> > > > > > diff --git a/lib/Makefile b/lib/Makefile
-> > > > > > index 7bab71e59019..45affad85ee4 100644
-> > > > > > --- a/lib/Makefile
-> > > > > > +++ b/lib/Makefile
-> > > > > > @@ -51,7 +51,7 @@ obj-y += bcd.o sort.o parser.o debug_locks.o random32.o \
-> > > > > >  	 bsearch.o find_bit.o llist.o lwq.o memweight.o kfifo.o \
-> > > > > >  	 percpu-refcount.o rhashtable.o base64.o \
-> > > > > >  	 once.o refcount.o rcuref.o usercopy.o errseq.o bucket_locks.o \
-> > > > > > -	 generic-radix-tree.o bitmap-str.o
-> > > > > > +	 generic-radix-tree.o bitmap-str.o parity.o
-> > > > > >  obj-y += string_helpers.o
-> > > > > >  obj-y += hexdump.o
-> > > > > >  obj-$(CONFIG_TEST_HEXDUMP) += test_hexdump.o
-> > > > > > diff --git a/lib/parity.c b/lib/parity.c
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..a83ff8d96778
-> > > > > > --- /dev/null
-> > > > > > +++ b/lib/parity.c
-> > > > > > @@ -0,0 +1,48 @@
-> > > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > > +/*
-> > > > > > + * lib/parity.c
-> > > > > > + *
-> > > > > > + * Copyright (C) 2025 Kuan-Wei Chiu <visitorckw@gmail.com>
-> > > > > > + * Copyright (C) 2025 Yu-Chun Lin <eleanor15x@gmail.com>
-> > > > > > + *
-> > > > > > + * __parity[sdt]i2 can be overridden by linking arch-specific versions.
-> > > > > > + */
-> > > > > > +
-> > > > > > +#include <linux/export.h>
-> > > > > > +#include <linux/kernel.h>
-> > > > > > +
-> > > > > > +/*
-> > > > > > + * One explanation of this algorithm:
-> > > > > > + * https://funloop.org/codex/problem/parity/README.html  
-> > > > > 
-> > > > > I already asked you not to spread this link. Is there any reason to
-> > > > > ignore it?
-> > > > >   
-> > > > In v2, this algorithm was removed from bitops.h, so I moved the link
-> > > > here instead. I'm sorry if it seemed like I ignored your comment.  
-> > > 
-> > > Yes, it is.
-> > >    
-> > > > In v1, I used the same approach as parity8() because I couldn't justify
-> > > > the performance impact in a specific driver or subsystem. However,
-> > > > multiple people commented on using __builtin_parity or an x86 assembly
-> > > > implementation. I'm not ignoring their feedback-I want to address these  
-> > > 
-> > > Please ask those multiple people: are they ready to maintain all that
-> > > zoo of macros, weak implementations, arch implementations and stubs
-> > > for no clear benefit? Performance is always worth it, but again I see
-> > > not even a hint that the drivers care about performance. You don't
-> > > measure it, so don't care as well. Right?
-> > >   
-> > > > comments. Before submitting, I sent an email explaining my current
-> > > > approach: using David's suggested method along with __builtin_parity,
-> > > > but no one responded. So, I decided to submit v2 for discussion
-> > > > instead.  
-> > > 
-> > > For discussion use tag RFC.
-> > >   
-> > > > 
-> > > > To avoid mistakes in v3, I want to confirm the following changes before
-> > > > sending it:
-> > > > 
-> > > > (a) Change the return type from int to bool.
-> > > > (b) Avoid __builtin_parity and use the same approach as parity8().
-> > > > (c) Implement parity16/32/64() as single-line inline functions that
-> > > >     call the next smaller variant after xor.
-> > > > (d) Add a parity() macro that selects the appropriate parityXX() based
-> > > >     on type size.
-> > > > (e) Update users to use this parity() macro.
-> > > > 
-> > > > However, (d) may require a patch affecting multiple subsystems at once
-> > > > since some places that already include bitops.h have functions named
-> > > > parity(), causing conflicts. Unless we decide not to add this macro in
-> > > > the end.
-> > > > 
-> > > > As for checkpatch.pl warnings, they are mostly pre-existing coding
-> > > > style issues in this series. I've kept them as-is, but if preferred,
-> > > > I'm fine with fixing them.  
-> > > 
-> > > Checkpatch only complains on new lines. Particularly this patch should
-> > > trigger checkpatch warning because it adds a new file but doesn't touch
-> > > MAINTAINERS. 
-> > >   
-> > For example, the following warning:
-> > 
-> > ERROR: space required after that ',' (ctx:VxV)
-> > #84: FILE: drivers/input/joystick/sidewinder.c:368:
-> > +                       if (!parity64(GB(0,33)))
-> >                                           ^
-> > 
-> > This issue already existed before this series, and I'm keeping its
-> > style unchanged for now.
-> >   
-> > > > If anything is incorrect or if there are concerns, please let me know.
-> > > > 
-> > > > Regards,
-> > > > Kuan-Wei
-> > > > 
-> > > > diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-> > > > index c1cb53cf2f0f..47b7eca8d3b7 100644
-> > > > --- a/include/linux/bitops.h
-> > > > +++ b/include/linux/bitops.h
-> > > > @@ -260,6 +260,43 @@ static inline int parity8(u8 val)
-> > > >  	return (0x6996 >> (val & 0xf)) & 1;
-> > > >  }
-> > > > 
-> > > > +static inline bool parity16(u16 val)
-> > > > +{
-> > > > +	return parity8(val ^ (val >> 8));
-> > > > +}
-> > > > +
-> > > > +static inline bool parity32(u32 val)
-> > > > +{
-> > > > +	return parity16(val ^ (val >> 16));
-> > > > +}
-> > > > +
-> > > > +static inline bool parity64(u64 val)
-> > > > +{
-> > > > +	return parity32(val ^ (val >> 32));
-> > > > +}  
-> > > 
-> > > That was discussed between Jiri and me in v2. Fixed types functions
-> > > are needed only in a few very specific cases. With the exception of
-> > > I3C driver (which doesn't look good for both Jiri and me), all the
-> > > drivers have the type of variable passed to the parityXX() matching 
-> > > the actual variable length. It means that fixed-type versions of the
-> > > parity() are simply not needed. So if we don't need them, please don't
-> > > introduce it.
-> > >  
-> > So, I should add the following parity() macro in v3, remove parity8(),
-> > and update all current parity8() users to use this macro, right?  
+> On Fri, Feb 28, 2025 at 06:42:11PM +0000, Juntong Deng wrote:
+> > > > Return 0 means allowed. So kfuncs in scx_kfunc_ids_unlocked can be
+> > > > called by other struct_ops programs.
+> >
+> > > Hmm... would that mean a non-sched_ext bpf prog would be able to call e.g.
+> > > scx_bpf_dsq_insert()?
+> >
+> > For other struct_ops programs, yes, in the current logic,
+> > when prog->aux->st_ops != &bpf_sched_ext_ops, all calls are allowed.
+> >
+> > This may seem a bit weird, but the reason I did it is that in other
+> > struct_ops programs, the meaning of member_off changes, so the logic
+> > that follows makes no sense at all.
+> >
+> > Of course, we can change this, and ideally there would be some groupings
+> > (kfunc id set) that declare which kfunc can be called by other
+> > struct_ops programs and which cannot.
+
+> Other than any and unlocked, I don't think other bpf struct ops should be
+> able to call SCX kfuncs. They all assume rq lock to be held which wouldn't
+> be true for other struct_ops after all.
+
+Ok, I will allow only any and unlocked to be called by other struct_ops
+programs in the next version.
+
+> ...
+> > > I see, scx_dsq_move_*() are in both groups, so it should be fine. I'm not
+> > > fully sure the groupings are the actually implemented filtering are in sync.
+> > > They are intended to be but the grouping didn't really matter in the
+> > > previous implementation. So, they need to be carefully audited.
+> >
+> > After you audit the current groupings of scx kfuncs, please tell me how
+> > you would like to change the current groupings.
+
+> Yeah, I'll go over them but after all, we need to ensure that the behavior
+> currently implemented by scx_kf_allowed*() matches what the new code does,
+> so I'd appreciate if you can go over with that in mind too. This is kinda
+> confusing so we can definitely use more eyes.
+
+Yes, I will use more eyes and be more careful on consistency.
+
+> On Wed, Feb 26, 2025 at 07:28:17PM +0000, Juntong Deng wrote:
+>> This patch declare context-sensitive kfunc groups that can be used by
+>> different SCX operations.
+>>
+>> In SCX, some kfuncs are context-sensitive and can only be used in
+>> specific SCX operations.
+>>
+>> Currently context-sensitive kfuncs can be grouped into UNLOCKED,
+>> CPU_RELEASE, DISPATCH, ENQUEUE, SELECT_CPU.
+>>
+>> In this patch enum scx_ops_kf_flags was added to represent these groups,
+>> which is based on scx_kf_mask.
+>>
+>> SCX_OPS_KF_ANY is a special value that indicates kfuncs can be used in
+>> any context.
+>>
+>> scx_ops_context_flags is used to declare the groups of kfuncs that can
+>> be used by each SCX operation. An SCX operation can use multiple groups
+>> of kfuncs.
+>>
 > 
-> If you go with macro, please apply my patch and modify it in-place
-> with this __auto_type thing and GCC hack. Feel free to add your
-> co-developed-by, or tested, or whatever.
+> Can you merge this into the next patch? I don't think separating this out
+> helps with reviewing.
 > 
-> > I changed u64 to __auto_type and applied David's suggestion to replace
-> > the >> 32 with >> 16 >> 16 to avoid compiler warnings.
-> > 
-> > Regards,
-> > Kuan-Wei
-> > 
-> > #define parity(val)					\
-> > ({							\
-> > 	__auto_type __v = (val);			\
-> > 	bool __ret;					\
-> > 	switch (BITS_PER_TYPE(val)) {			\
-> > 	case 64:					\
-> > 		__v ^= __v >> 16 >> 16;			\
-> > 		fallthrough;				\  
+
+Yes, I can merge them in the next version.
+
+I am not sure, but it seems to me that the two patches are doing
+different things?
+
+> Thanks.
 > 
-> This hack should be GCC-only, and well documented.
-> For clang it should be 
->  		__v ^= __v >> 32;			\
-
-There is no point doing a conditional - it just obscures things.
-
-
-> 
-> > 	case 32:					\
-> > 		__v ^= __v >> 16;			\
-> > 		fallthrough;				\
-> > 	case 16:					\
-> > 		__v ^= __v >> 8;			\
-> > 		fallthrough;				\
-> > 	case 8:						\
-> > 		__v ^= __v >> 4;			\
-> > 		__ret =  (0x6996 >> (__v & 0xf)) & 1;	\
-> > 		break;					\
-> > 	default:					\
-> > 		BUILD_BUG();				\
-> > 	}						\
-> > 	__ret;						\
-> > })  
 
 
