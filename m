@@ -1,151 +1,217 @@
-Return-Path: <bpf+bounces-53053-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07FDBA4C061
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 13:31:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94D96A4C085
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 13:41:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12F777A8E55
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 12:30:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9088D1893F7A
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 12:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B1E1D5CD9;
-	Mon,  3 Mar 2025 12:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA28B20FA96;
+	Mon,  3 Mar 2025 12:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hJOLw+Is"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BCh0EpN5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEAEDAD27
-	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 12:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8AF51E5B78;
+	Mon,  3 Mar 2025 12:41:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741005073; cv=none; b=AmnYaf6UEZ1PPT5kXhxaFdTj4AISXDMUaPwFD6DQQzf3EKnTjya/3BSqz+xOtIigw+fV5GkZdklghQ5bojtzrmm7dNxoT/jbEDo7eO/sBWldyDAtz0Vts57PbSVNls+JwGjCUzDoOfDPTXdky0LlCKekFGxF1M0eAgIEJtNA6to=
+	t=1741005694; cv=none; b=Dw0ibGYs2XtKDMioWiHlDZjEC5HIcQHs9h3zvZIkiWteCqdQ+f/06n0c/imzNfriB/ykPnWz0GRMJIOUYNq75ufyKFQ8xRa8miaTL7zGKvedw3Yst6hZqphfZfnBxuTgsihhVNmR7iEECvV41HPkGiaHH3CP/GN5vV1KzYlu/XE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741005073; c=relaxed/simple;
-	bh=hvzCGzLHJ5+9mefdTG+as7ckHiF0aJJCrB7QfXjbYhs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NMkWGiwLadL9uvZz3CbwbBL8K3qX/RD62wDJCOrJFjf0VlU4AzG0jJ52EqbKNvJgI2Aqd3TV0yaUjV9fBJWbuyrBmL34F5oe/VhvMIcsOQbcjo25Y9oTqI49zWdIVarOczQLEY80GryutBELHVuVtNrkoANAZkRj2W3u2GhkzCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hJOLw+Is; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-abf64aa2a80so273124866b.0
-        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 04:31:11 -0800 (PST)
+	s=arc-20240116; t=1741005694; c=relaxed/simple;
+	bh=tieKiWfa1sevnfvQv3qDEqr93B2c4NJALDpA5GWbCFY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=I9tw+JZF2rscdkWaVqj47IzotWLifJ5COseuJi0T2opfmhcM3jYrSjr16GW6NQbkBSl3rHxt4xyU3EMLYYzO6LJQ+P7Y8ahqqKSYuLnGvFOHxvFmqqfGeHYsL9RtLjIky4+/X0lwvAdr/EbBQn5vvF6DY0WToKUna7HiBjts2kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BCh0EpN5; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5e538388dd1so1593547a12.1;
+        Mon, 03 Mar 2025 04:41:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1741005070; x=1741609870; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QSJJX56zDhVqdKCOO7Zb5p+mglB7JczLAGdABH1H3qk=;
-        b=hJOLw+IsUrNnZTKYKUm1ijs5+5uPMjfxS8edDvmQIpJTOjIw+T14b79nXT7cdX64Tg
-         rdAmCnl/j7jd77m4d9EGxYgyv9Pyfc3+KT1iWGACekt8lk+361i64fWdhKd4W6/pyXr1
-         9k75YqhiQJyJHmWAqSc1wxxqUsPSRsVDcWsJww+kExmvaORG8oRGSQyWR94vWfhcaB7n
-         WvIx9apzWKzsff2JHp80YFDqM6o3X0xX2oO0plk6z3gEaigJNpMjVy65oSRlW+i4k358
-         jItD+Ki2sA9mlbzqxAHFczfPdlmadddt7Mz8pPIXQ1Frk1GubqzogvrP/FDPed7dzPGt
-         xXJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741005070; x=1741609870;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1741005691; x=1741610491; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QSJJX56zDhVqdKCOO7Zb5p+mglB7JczLAGdABH1H3qk=;
-        b=PapozMmNDNOc9ZlqbHZ7tWFnzBi995uBR2NJWHvXspT+2Pi9eSgmGlx0WdpTnSSWMs
-         ZKmqL2g4dWVlKRbYJeR+s3OpVq+P+okJvj8GePHJ6dUrCHil7zb/ZiHSXxe+kzEM9fj2
-         ltwf3qHoQjBK49UGsiA1LLcF4y2HLhR9YLOd+eGHsYA0/dB0ygYpR14beS5RWMW0Ql7t
-         AIoeQJXoHp+jkfr06jBgZy8kpwsFkyRnBW9qIbFvrsnxXhrB6dcGXoiIQt1V4I7f3S9W
-         gAURKZWijDSh7GrolxZqx7V08EOA3RZsnbjJuR7Dh9nEw/HUTT4rVMvZQsxCPpTkStgM
-         Zsww==
-X-Forwarded-Encrypted: i=1; AJvYcCWejj5AObDs7EV1mqRfdaSh+ynn2KhDug4ZzLqwsLz2j6Ker9xLokChRCq66DoKbfsro9g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxbBfTTvczvVoYIXob9zVvtRgQmw8+jix8qj0kVKuYHbQ/fBoDI
-	0Y2+W0RpReDghgujtRePbjVMxdWCQqnAZkLucg91E8QaS6diz8rhKrBHSFWcuWI=
-X-Gm-Gg: ASbGnctVjn5z2YRdjsZ6ckIDTCIZZFKIONEqNUw3f9CTSsQIRA0/dmAYpDC3e7GBCGg
-	Zc7TH1+7B3p3jAWVNIh5gF5CjSSwgMQYZY1BllW2TPsR/MoZDhneELQMG1Ygc7G4UqfAkp27cXI
-	Z2WBHugj0FBgwNzE1sx+LYNB2jZExFv0rTQTq8O7Z3SMXuMw+p4ur/Fvdhps+/UEWIR/9mMS18f
-	huPSeSPaXgfuo/J2k8nImeotnib5wHnJrgWfADQQ5KE9ewAeoSdZ6FyTZR7Qr8oFJ7uw0w238HB
-	dRChjXM7HTE0hRrK7XlAJK/uVanQIvBTnzURknABasgwRWmZrw==
-X-Google-Smtp-Source: AGHT+IHKV3lYMhfvx47Xr6aO9kD/bZ1DuA4juAnVEFf9awkbWhcDx/dzkyGXXFqyty1Heield7dhvg==
-X-Received: by 2002:a17:907:3e21:b0:abf:5e61:cde with SMTP id a640c23a62f3a-abf5e610f47mr976414466b.46.1741005070029;
-        Mon, 03 Mar 2025 04:31:10 -0800 (PST)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-abf17fa4a4asm762647466b.92.2025.03.03.04.31.09
+        bh=kLW0AYaLwkO6JC1piDU5qS15yDYOQslsP1SvNrbEZfE=;
+        b=BCh0EpN5tIK1oBLaioFtekgI+vxaIGegQHb4FLsuNTy7QlQAmJ1LupdH20WO/5g9+f
+         fNkEhCCgSvAl5AgpflQmlc61Wvh1ajd2aUrEcA3kizps54FP7N/geoZ1GuvbK9Y+XJN6
+         MiHj5VbDeUb+HbY2YswCcaL3BJ8b294jxoE1JEjItqpytK/MDPAqtDJ35RM6iZjm5INa
+         ICAfeCmpZy/PoTsbRFSIupNcnkYCNkQOkcA7rCD5Sk70wOBwH/NgV/pKSznzTx3kB6r1
+         UcjV6S1bDfoLb3cKblFpxulvNurwjMRdRxuWBFcQM/gK01tGkH6wEEpcucgR2F01o/nB
+         j9eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741005691; x=1741610491;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kLW0AYaLwkO6JC1piDU5qS15yDYOQslsP1SvNrbEZfE=;
+        b=pgujbgtbMAMF+CHR4wOsKyno5jVrvWWBdLmc7FcvWPLNzzr01hr/MvZ297NAAhmxlO
+         yF3IULHLF9KeS88JYyzPggDFJvAzihbmU+v6waqL5Fs2enjsYpFX0RTqcvWWWyZY8GZ8
+         O/mxHIj24io2GQBh8778AmyZItPm5owngLLCmpBovxwfcCflZRV46IwFR3U6XuZgRdx2
+         GPjP4eOvy58YehIwdR5gvH72/iZRqzWwPk78AMAjA81+eX/Cqo3FmWjb2y+dyges5Mkq
+         Djqcs3ts/CzTT/dYcy07NuGSGMdWOLtclYlQx58qtEgvoCgRH6TGgiUW9YO6qHNeHOH/
+         jVcA==
+X-Forwarded-Encrypted: i=1; AJvYcCUCr0hV2nZoej47LtHdw2SxV5dg56c0Tc7nvkTDoZMDyaIAt4KpTYclumZY4sI4AE4iRpi86TxXU79RWnE=@vger.kernel.org, AJvYcCUpIUzvpFGNeHJZi3m8X1HFZhMVBsOa27P3jRjdX8kwA6gI5KQzxcRptQyYrv7dNlHOuwwlWCDlVzjPZmMK@vger.kernel.org, AJvYcCV1qr0F+utL90FsmZkKo+zQu/o6RwEAwGOeM9hmMXJxNodGW+ASqTqwABlXxPPaV/5W+JrDlLrUMcXgRIfhY2U=@vger.kernel.org, AJvYcCW38iV904+Lt0CpE+AKGpvJo5B4tHgDDXnF/FWj7azbcOseBzKfzpRcY/axlvKNzlZl4BVsKPqbDJEWAPNA@vger.kernel.org, AJvYcCWSE4cuRW8QWqsh2MdxaPKQc72nAy3FYO8JT9qE8b2aO1qPe5NZ/TbvA11I1LdSwlvn04Db847sd3yn61s=@vger.kernel.org, AJvYcCWSF2SZ2kWxhNh3j5OBrj8GeWgyA3s8FCWu9MsuxsfULvQi56LIxwQq3rXKEBjNoxe0AdWmEpqD@vger.kernel.org, AJvYcCWvN5oOleyvgMaVZvjx9gpyfoafFJOXG5ZLZyRVKUKqKd02b57B3ns8dX5BHyP2YhU3uXA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxpXdOPRgDv5ltNkdlpqMTfpweyQ/twLowJfO6DKU9anmxnL43q
+	pzOc/fUFjXu1X6QpDJ5qwCyZF/g9NC3aSosfLGp4CkR1tdDtKe84
+X-Gm-Gg: ASbGnctkqxAryEx+16m4xz25P4L2oTOP2KyycrntiiR67FD1CaPB/SskqofVe1wWXs8
+	yvcN8XTDxjEGdTiqMa/124Mgg07cpDYQE5Vw2Ntpw0YTtX6tyi1ZvAUKoBmShe5pab8t/L1LFeA
+	eWKPDSht3DqI09XZPWI2F3A8GhZvmM6wxF26xurgxiMV2Z919fI5890LEDMMMG/nT5nUJpqRg+/
+	/M3MiKxAguSyKmGwC7HIjvfFjAuj7HXx3wDNFUZNleh4xYP0DtC0Qjhvf4A3bW7KK6xYgdK/ljH
+	UKfUP9epbYmIOig1tZCX5h1lYXslYOqf1QMAfvS9uQDvZ5v+bX1nsI5ijSHF4YCy/VOzamv4Ucb
+	wJugEqNk=
+X-Google-Smtp-Source: AGHT+IGmsdmZpDuU64/zBFVRQ3e/o9vGnleqAFoX6F+q7Lw2p71TWS5SPeiWtsRpxGv/SLlt+kfa+w==
+X-Received: by 2002:a05:6402:2808:b0:5e4:d2d4:b4f3 with SMTP id 4fb4d7f45d1cf-5e4d6af1582mr13492784a12.14.1741005688031;
+        Mon, 03 Mar 2025 04:41:28 -0800 (PST)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e4c3fb4384sm6903702a12.49.2025.03.03.04.41.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Mar 2025 04:31:09 -0800 (PST)
-Date: Mon, 3 Mar 2025 15:31:05 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Malladi, Meghana" <m-malladi@ti.com>
-Cc: rogerq@kernel.org, danishanwar@ti.com, pabeni@redhat.com,
-	kuba@kernel.org, edumazet@google.com, davem@davemloft.net,
-	andrew+netdev@lunn.ch, bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, u.kleine-koenig@baylibre.com,
-	matthias.schiffer@ew.tq-group.com, schnelle@linux.ibm.com,
-	diogo.ivo@siemens.com, glaroque@baylibre.com, macro@orcam.me.uk,
-	john.fastabend@gmail.com, hawk@kernel.org, daniel@iogearbox.net,
-	ast@kernel.org, srk@ti.com, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [EXTERNAL] Re: [PATCH net-next v3 3/3] net: ti: icssg-prueth:
- Add XDP support
-Message-ID: <2c0c1a4f-95d4-40c9-9ede-6f92b173f05d@stanley.mountain>
-References: <20250224110102.1528552-1-m-malladi@ti.com>
- <20250224110102.1528552-4-m-malladi@ti.com>
- <d362a527-88cf-4cd5-a22f-7eeb938d4469@stanley.mountain>
- <21f21dfb-264b-4e01-9cb3-8d0133b5b31b@ti.com>
+        Mon, 03 Mar 2025 04:41:27 -0800 (PST)
+Date: Mon, 3 Mar 2025 12:41:25 +0000
+From: David Laight <david.laight.linux@gmail.com>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: Yury Norov <yury.norov@gmail.com>, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
+ joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
+ neil.armstrong@linaro.org, rfoss@kernel.org,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
+ airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
+ mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com,
+ parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+ johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+ jirislaby@kernel.org, akpm@linux-foundation.org, hpa@zytor.com,
+ alistair@popple.id.au, linux@rasmusvillemoes.dk,
+ Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+ jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
+ netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+ brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+ linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+ andrew.cooper3@citrix.com, Yu-Chun Lin <eleanor15x@gmail.com>
+Subject: Re: [PATCH v2 01/18] lib/parity: Add __builtin_parity() fallback
+ implementations
+Message-ID: <20250303124125.4975afdc@pumpkin>
+In-Reply-To: <Z8UYOD2tyjS25gIc@visitorckw-System-Product-Name>
+References: <20250301142409.2513835-1-visitorckw@gmail.com>
+	<20250301142409.2513835-2-visitorckw@gmail.com>
+	<Z8PMHLYHOkCZJpOh@thinkpad>
+	<Z8QUsgpCB0m2qKJR@visitorckw-System-Product-Name>
+	<Z8SBBM_81wyHfvC0@thinkpad>
+	<Z8SVb4xD4tTiMEpL@visitorckw-System-Product-Name>
+	<20250302190954.2d7e068f@pumpkin>
+	<Z8UYOD2tyjS25gIc@visitorckw-System-Product-Name>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <21f21dfb-264b-4e01-9cb3-8d0133b5b31b@ti.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 03, 2025 at 05:36:41PM +0530, Malladi, Meghana wrote:
-> > > +static int emac_run_xdp(struct prueth_emac *emac, struct xdp_buff *xdp,
-> > > +			struct page *page)
-> > > +{
-> > > +	struct net_device *ndev = emac->ndev;
-> > > +	int err, result = ICSSG_XDP_PASS;
-> > > +	struct bpf_prog *xdp_prog;
-> > > +	struct xdp_frame *xdpf;
-> > > +	int q_idx;
-> > > +	u32 act;
-> > > +
-> > > +	xdp_prog = READ_ONCE(emac->xdp_prog);
-> > > +	act = bpf_prog_run_xdp(xdp_prog, xdp);
-> > > +	switch (act) {
-> > > +	case XDP_PASS:
-> > > +		break;
-> > > +	case XDP_TX:
-> > > +		/* Send packet to TX ring for immediate transmission */
-> > > +		xdpf = xdp_convert_buff_to_frame(xdp);
-> > > +		if (unlikely(!xdpf))
+On Mon, 3 Mar 2025 10:47:20 +0800
+Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+
+> On Sun, Mar 02, 2025 at 07:09:54PM +0000, David Laight wrote:
+> > On Mon, 3 Mar 2025 01:29:19 +0800
+> > Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+> >   
+> > > Hi Yury,
+> > > 
+...
+> > > #define parity(val)					\
+> > > ({							\
+> > > 	__auto_type __v = (val);			\
+> > > 	bool __ret;					\
+> > > 	switch (BITS_PER_TYPE(val)) {			\
+> > > 	case 64:					\
+> > > 		__v ^= __v >> 16 >> 16;			\
+> > > 		fallthrough;				\
+> > > 	case 32:					\
+> > > 		__v ^= __v >> 16;			\
+> > > 		fallthrough;				\
+> > > 	case 16:					\
+> > > 		__v ^= __v >> 8;			\
+> > > 		fallthrough;				\
+> > > 	case 8:						\
+> > > 		__v ^= __v >> 4;			\
+> > > 		__ret =  (0x6996 >> (__v & 0xf)) & 1;	\
+> > > 		break;					\
+> > > 	default:					\
+> > > 		BUILD_BUG();				\
+> > > 	}						\
+> > > 	__ret;						\
+> > > })  
 > > 
-> > This is the second unlikely() macro which is added in this patchset.
-> > The rule with likely/unlikely() is that it should only be added if it
-> > likely makes a difference in benchmarking.  Quite often the compiler
-> > is able to predict that valid pointers are more likely than NULL
-> > pointers so often these types of annotations don't make any difference
-> > at all to the compiled code.  But it depends on the compiler and the -O2
-> > options.
+> > I'm seeing double-register shifts for 64bit values on 32bit systems.
+> > And gcc is doing 64bit double-register maths all the way down.
 > > 
+> > That is fixed by changing the top of the define to
+> > #define parity(val)					\
+> > ({							\
+> > 	unsigned int __v = (val);			\
+> > 	bool __ret;					\
+> > 	switch (BITS_PER_TYPE(val)) {			\
+> > 	case 64:					\
+> > 		__v ^= val >> 16 >> 16;			\
+> > 		fallthrough;				\
+> > 
+> > But it's need changing to only expand 'val' once.
+> > Perhaps:
+> > 	auto_type _val = (val);
+> > 	u32 __ret = val;
+> > and (mostly) s/__v/__ret/g
+> >  
+> I'm happy to make this change, though I'm a bit confused about how much
+> we care about the code generated by gcc. So this is the macro expected
+> in v3:
+
+There is 'good', 'bad' and 'ugly' - it was in the 'bad' to 'ugly' area.
+
 > 
-> Do correct me if I am wrong, but from my understanding, XDP feature depends
-> alot of performance and benchmarking and having unlikely does make a
-> difference. Atleast in all the other drivers I see this being used for XDP.
-> 
+> #define parity(val)					\
+> ({							\
+> 	__auto_type __v = (val);			\
+> 	u32 __ret = val;				\
+> 	switch (BITS_PER_TYPE(val)) {			\
+> 	case 64:					\
+>                 __ret ^= __v >> 16 >> 16;		\
+> 		fallthrough;				\
+> 	case 32:					\
+> 		__ret ^= __ret >> 16;			\
+> 		fallthrough;				\
+> 	case 16:					\
+> 		__ret ^= __ret >> 8;			\
+> 		fallthrough;				\
+> 	case 8:						\
+> 		__ret ^= __ret >> 4;			\
+> 		__ret = (0x6996 >> (__ret & 0xf)) & 1;	\
+> 		break;					\
+> 	default:					\
+> 		BUILD_BUG();				\
+> 	}						\
+> 	__ret;						\
+> })
 
-Which compiler are you on when you say that "having unlikely does make a
-difference"?
+That looks like it will avoid double-register shifts on 32bit archs.
+arm64 can do slightly better (a couple of instructions) because of its
+barrel shifter.
+x86 can do a lot better because of the cpu 'parity' flag.
+But maybe it is never used anywhere that really matters.
 
-I'm on gcc version 14.2.0 (Debian 14.2.0-16) and it doesn't make a
-difference to the compiled code.  This matches what one would expect from
-a compiler.  Valid pointers are fast path and NULL pointers are slow path.
+	David
 
-Adding an unlikely() is a micro optimization.  There are so many other
-things you can do to speed up the code.  I wouldn't start with that.
-
-regards,
-dan
 
 
