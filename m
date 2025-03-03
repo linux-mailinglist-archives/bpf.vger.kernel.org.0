@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-53129-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53130-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFB67A4CF54
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 00:38:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AF2BA4CF58
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 00:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07DE41897A64
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 23:38:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99B053AC7B2
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 23:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C8023BCE1;
-	Mon,  3 Mar 2025 23:35:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B32A23C8CB;
+	Mon,  3 Mar 2025 23:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lEaWfM8P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G0u23X7R"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC321F461C
-	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 23:35:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C1823C8A7;
+	Mon,  3 Mar 2025 23:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741044933; cv=none; b=kQI+y9XARde8TbViKoJQJor9/Vr/52PiwPrH2B+YsTW9rr9/ITp+/WgTR4rjydNCScIFBO+/anSCu+ugW1NcJ5p6GshtiVtIjPh5UKERcmM27CgNI6GVsBcUYOkG9moz3k3VCcyxhGu18VYnGU+Q658VuhhpXaJU8qGo/n+6Bn0=
+	t=1741044935; cv=none; b=bkED4EMefg3JM4tN0j9hizWXrdOXwGhXxZU0Efy9bxH1B3wGhJ79XH1NLOwAkKgR1zOmtrgHPlLb4Lq5kuqlLgXCoRFps3AVBl8kdsEoLuxzQaM1UzTBIOcktIT3PIGXLfH7LKUtlhJhLLq2czzEBQIt1NFYE8yk7wlQ9oNIipY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741044933; c=relaxed/simple;
-	bh=KBiRCIGt8Swb8YhcsRuD4d70afy1z7icyWbUhAEw+4I=;
+	s=arc-20240116; t=1741044935; c=relaxed/simple;
+	bh=MTmdEmC2+ZdM+IJliZV8YI/e9ZZJr5Z5GvKKUbvgs60=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=b8hbzFXyUsIJTSxvG3rd7oM7PuYXVLojyUKjQUmJE1HgeO8yg2m/jlVQoi0ABAi/1/+U6bhIXDaJWCu992sUCzh37EpK+0RC62OiWo1HRJiOWE56+xc1MSTjMQDhkslJcUwrecsqGktCIEo3srP+DFYyUkwhRYk+osO0yzcFd94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lEaWfM8P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC614C4CEE8;
-	Mon,  3 Mar 2025 23:35:32 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=QNGekilWbA6cbBiXakzkiNpkysnp211BsnZE8zFldzQm5n5JgahVuVo25z2I8jtBP+6ou7luLN1LjTwS2lj8bPcGyT6BEm71c1qtuF2vzJ1K1cLF0OUnVzJRM2OMckYisPf/lIZf8180SAlTVT3MQ3aJB8wdBMGUtXhuDH4fm8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G0u23X7R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BE13C4CEF1;
+	Mon,  3 Mar 2025 23:35:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741044933;
-	bh=KBiRCIGt8Swb8YhcsRuD4d70afy1z7icyWbUhAEw+4I=;
+	s=k20201202; t=1741044934;
+	bh=MTmdEmC2+ZdM+IJliZV8YI/e9ZZJr5Z5GvKKUbvgs60=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=lEaWfM8PTK/R1sv4scoToBlJ9tGAo+Z9wLf8Ww6QhngEn545ZbeJlthFHBxI4KWrO
-	 97RxHTzH90tYQjZSPlK6b68X3H0lCZ6YbxeKB6iq9IdVo7gC6ahgHGh5b1XOmuVIjv
-	 AyHcweovn6fVaZ1j0xygb5fJvc+YCb7Fcxkb8cgNvhI9bn8lBKFtPCtXGbjmyHDQpy
-	 3WAhSAmxEQxI30PoQfexJpoCfYMlBdjWRFr5PiHumzn4Kux9rWC8cdE2i1LVrjMs3h
-	 5QVlbeyFgzN3bZX4Qy+ZJ73X5rBj8os7dvLRT6iVwX1gwJ3dPWyPWfO1ttBY57j40K
-	 pcnh+LiK0DX5A==
+	b=G0u23X7RywBCMWPmzl/9T6PQM4Idad3rEnrNMzlviKJ63ZNCfkqIjKkfmEof7MIjR
+	 DgPrXWjRUQDMJCiIoC4wB0bqqcRFGajJICH402uv0mmoLl/pvh+4dzWn3syOqUJ2be
+	 KzKEpXtmXHuEsYK5gDZc6+QvQhc35XuRbZ94puOxiMK9fR4FYxZ7L6fl6GMAoQD7zV
+	 K8R+aebVBWM0FQjAimNVopODNH+2+/HGZOvyw7DKk+lHDlaj2z5Fi3Zwg1Uf5EwLRt
+	 oIrwVYJIvp2u+e2TdDzY2P33MeWVl92cV5HPu7oh3u0ggowSiG5mFtpJGjAJYTeXQr
+	 lB+i2qvHVmq5w==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAEF73809A8F;
-	Mon,  3 Mar 2025 23:36:06 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70CE93809A8F;
+	Mon,  3 Mar 2025 23:36:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,44 +52,41 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/4] Introduce bpf_object__prepare
+Subject: Re: [PATCH net-next] net: filter: Avoid shadowing variable in
+ bpf_convert_ctx_access()
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <174104496548.3745415.10380206773751586157.git-patchwork-notify@kernel.org>
-Date: Mon, 03 Mar 2025 23:36:05 +0000
-References: <20250303135752.158343-1-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20250303135752.158343-1-mykyta.yatsenko5@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
- eddyz87@gmail.com, yatsenko@meta.com
+ <174104496699.3745415.15179484349437262281.git-patchwork-notify@kernel.org>
+Date: Mon, 03 Mar 2025 23:36:06 +0000
+References: <20250228-fix_filter-v1-1-ce13eae66fe9@debian.org>
+In-Reply-To: <20250228-fix_filter-v1-1-ce13eae66fe9@debian.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: martin.lau@linux.dev, daniel@iogearbox.net, john.fastabend@gmail.com,
+ ast@kernel.org, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
+ haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+This patch was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-On Mon,  3 Mar 2025 13:57:48 +0000 you wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
+On Fri, 28 Feb 2025 10:43:34 -0800 you wrote:
+> Rename the local variable 'off' to 'offset' to avoid shadowing the existing
+> 'off' variable that is declared as an `int` in the outer scope of
+> bpf_convert_ctx_access().
 > 
-> We are introducing a new function in the libbpf API, bpf_object__prepare,
-> which provides more granular control over the process of loading a
-> bpf_object. bpf_object__prepare performs ELF processing, relocations,
-> prepares final state of BPF program instructions (accessible with
-> bpf_program__insns()), creates and potentially pins maps, and stops short
-> of loading BPF programs.
+> This fixes a compiler warning:
+> 
+>  net/core/filter.c:9679:8: warning: declaration shadows a local variable [-Wshadow]
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v2,1/4] libbpf: use map_is_created helper in map setters
-    https://git.kernel.org/bpf/bpf-next/c/7218ff1f322d
-  - [bpf-next,v2,2/4] libbpf: introduce more granular state for bpf_object
-    https://git.kernel.org/bpf/bpf-next/c/8ca8f6d1a2b4
-  - [bpf-next,v2,3/4] libbpf: split bpf object load into prepare/load
-    https://git.kernel.org/bpf/bpf-next/c/da755540c6f8
-  - [bpf-next,v2,4/4] selftests/bpf: add tests for bpf_object__prepare
-    https://git.kernel.org/bpf/bpf-next/c/68b61a823aab
+  - [net-next] net: filter: Avoid shadowing variable in bpf_convert_ctx_access()
+    https://git.kernel.org/bpf/bpf-next/c/122f1fd14f44
 
 You are awesome, thank you!
 -- 
