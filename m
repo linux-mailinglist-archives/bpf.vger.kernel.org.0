@@ -1,217 +1,195 @@
-Return-Path: <bpf+bounces-53054-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53055-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94D96A4C085
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 13:41:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70838A4C1E9
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 14:30:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9088D1893F7A
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 12:41:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8105116F93C
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 13:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA28B20FA96;
-	Mon,  3 Mar 2025 12:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC946212D8B;
+	Mon,  3 Mar 2025 13:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BCh0EpN5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d6YGDhyn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8AF51E5B78;
-	Mon,  3 Mar 2025 12:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD65D212B15;
+	Mon,  3 Mar 2025 13:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741005694; cv=none; b=Dw0ibGYs2XtKDMioWiHlDZjEC5HIcQHs9h3zvZIkiWteCqdQ+f/06n0c/imzNfriB/ykPnWz0GRMJIOUYNq75ufyKFQ8xRa8miaTL7zGKvedw3Yst6hZqphfZfnBxuTgsihhVNmR7iEECvV41HPkGiaHH3CP/GN5vV1KzYlu/XE=
+	t=1741008631; cv=none; b=hnCw1DRHlIluVcfqY0dMSjrvWjFzAzQUHyjYcmGb8xEK+X+FtNMB05fzcAzBpyKzo+5VwxE+GdEueRnfpnscmXBZy5OV/AW+xp6I0lv2WJ937Kp24BNRtfYa2wslj1k5n5zDtewb3OV5TQwCDwOF8HCh4uz/v4bbYwDRzz0Df/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741005694; c=relaxed/simple;
-	bh=tieKiWfa1sevnfvQv3qDEqr93B2c4NJALDpA5GWbCFY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=I9tw+JZF2rscdkWaVqj47IzotWLifJ5COseuJi0T2opfmhcM3jYrSjr16GW6NQbkBSl3rHxt4xyU3EMLYYzO6LJQ+P7Y8ahqqKSYuLnGvFOHxvFmqqfGeHYsL9RtLjIky4+/X0lwvAdr/EbBQn5vvF6DY0WToKUna7HiBjts2kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BCh0EpN5; arc=none smtp.client-ip=209.85.208.43
+	s=arc-20240116; t=1741008631; c=relaxed/simple;
+	bh=bWdVzLVWRtavYw5+TVc3lHNfvzogIph6bEYfLtcnLfk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rLxlE0FKI0UZCVe4rSz/zBWC85ETV6C+cG92ObCN9i+A1lPPTh6nc6rxw7e1V2ptWKr6E79XUKCeUPCYfwkQrcC0A7pgjGGDpGD4G15Jy+tOSvBMylHLqJjPmelMFYpSplHx/YjS87XVGKYvBn4FDoZ3cqIh+l/DSlYKNtYkCU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d6YGDhyn; arc=none smtp.client-ip=209.85.214.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5e538388dd1so1593547a12.1;
-        Mon, 03 Mar 2025 04:41:32 -0800 (PST)
+Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-22349dc31bcso75967265ad.3;
+        Mon, 03 Mar 2025 05:30:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741005691; x=1741610491; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kLW0AYaLwkO6JC1piDU5qS15yDYOQslsP1SvNrbEZfE=;
-        b=BCh0EpN5tIK1oBLaioFtekgI+vxaIGegQHb4FLsuNTy7QlQAmJ1LupdH20WO/5g9+f
-         fNkEhCCgSvAl5AgpflQmlc61Wvh1ajd2aUrEcA3kizps54FP7N/geoZ1GuvbK9Y+XJN6
-         MiHj5VbDeUb+HbY2YswCcaL3BJ8b294jxoE1JEjItqpytK/MDPAqtDJ35RM6iZjm5INa
-         ICAfeCmpZy/PoTsbRFSIupNcnkYCNkQOkcA7rCD5Sk70wOBwH/NgV/pKSznzTx3kB6r1
-         UcjV6S1bDfoLb3cKblFpxulvNurwjMRdRxuWBFcQM/gK01tGkH6wEEpcucgR2F01o/nB
-         j9eA==
+        d=gmail.com; s=20230601; t=1741008629; x=1741613429; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gNjkZXsFxPWFMyK2OgocbrFn2IS3HWHLODQTFVqVxX4=;
+        b=d6YGDhynFBYCicMoJndNUn2iixQPihBeBsSdb/DJN1CNomZ2FH99sTpeP+iEHBMTA8
+         A728yazUhWaMq+ZhxgG893WPHcJNdwOEL2ovzCD+T7WLI+mw+2xp8PX5k+MmNbK7R9fH
+         BJuiY/8AL76Q/pYvU1XpLqNkm4flQDMox/LFT+lJTXd5ZOSAoFRAekdPif1pbq21ZVBq
+         KVymGAETuXMP3dJhQ3aMpwR4RB7tPS+69KoFMOxlALpspheu47zl8HmoO/YgMeI6ALuA
+         Q2/QbsDMEjExw/+mzOCywZg45WfBtgBofoNx/pPqOZe174wiJ9rSkEox7Z8sKuLzNGBh
+         4JXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741005691; x=1741610491;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kLW0AYaLwkO6JC1piDU5qS15yDYOQslsP1SvNrbEZfE=;
-        b=pgujbgtbMAMF+CHR4wOsKyno5jVrvWWBdLmc7FcvWPLNzzr01hr/MvZ297NAAhmxlO
-         yF3IULHLF9KeS88JYyzPggDFJvAzihbmU+v6waqL5Fs2enjsYpFX0RTqcvWWWyZY8GZ8
-         O/mxHIj24io2GQBh8778AmyZItPm5owngLLCmpBovxwfcCflZRV46IwFR3U6XuZgRdx2
-         GPjP4eOvy58YehIwdR5gvH72/iZRqzWwPk78AMAjA81+eX/Cqo3FmWjb2y+dyges5Mkq
-         Djqcs3ts/CzTT/dYcy07NuGSGMdWOLtclYlQx58qtEgvoCgRH6TGgiUW9YO6qHNeHOH/
-         jVcA==
-X-Forwarded-Encrypted: i=1; AJvYcCUCr0hV2nZoej47LtHdw2SxV5dg56c0Tc7nvkTDoZMDyaIAt4KpTYclumZY4sI4AE4iRpi86TxXU79RWnE=@vger.kernel.org, AJvYcCUpIUzvpFGNeHJZi3m8X1HFZhMVBsOa27P3jRjdX8kwA6gI5KQzxcRptQyYrv7dNlHOuwwlWCDlVzjPZmMK@vger.kernel.org, AJvYcCV1qr0F+utL90FsmZkKo+zQu/o6RwEAwGOeM9hmMXJxNodGW+ASqTqwABlXxPPaV/5W+JrDlLrUMcXgRIfhY2U=@vger.kernel.org, AJvYcCW38iV904+Lt0CpE+AKGpvJo5B4tHgDDXnF/FWj7azbcOseBzKfzpRcY/axlvKNzlZl4BVsKPqbDJEWAPNA@vger.kernel.org, AJvYcCWSE4cuRW8QWqsh2MdxaPKQc72nAy3FYO8JT9qE8b2aO1qPe5NZ/TbvA11I1LdSwlvn04Db847sd3yn61s=@vger.kernel.org, AJvYcCWSF2SZ2kWxhNh3j5OBrj8GeWgyA3s8FCWu9MsuxsfULvQi56LIxwQq3rXKEBjNoxe0AdWmEpqD@vger.kernel.org, AJvYcCWvN5oOleyvgMaVZvjx9gpyfoafFJOXG5ZLZyRVKUKqKd02b57B3ns8dX5BHyP2YhU3uXA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxpXdOPRgDv5ltNkdlpqMTfpweyQ/twLowJfO6DKU9anmxnL43q
-	pzOc/fUFjXu1X6QpDJ5qwCyZF/g9NC3aSosfLGp4CkR1tdDtKe84
-X-Gm-Gg: ASbGnctkqxAryEx+16m4xz25P4L2oTOP2KyycrntiiR67FD1CaPB/SskqofVe1wWXs8
-	yvcN8XTDxjEGdTiqMa/124Mgg07cpDYQE5Vw2Ntpw0YTtX6tyi1ZvAUKoBmShe5pab8t/L1LFeA
-	eWKPDSht3DqI09XZPWI2F3A8GhZvmM6wxF26xurgxiMV2Z919fI5890LEDMMMG/nT5nUJpqRg+/
-	/M3MiKxAguSyKmGwC7HIjvfFjAuj7HXx3wDNFUZNleh4xYP0DtC0Qjhvf4A3bW7KK6xYgdK/ljH
-	UKfUP9epbYmIOig1tZCX5h1lYXslYOqf1QMAfvS9uQDvZ5v+bX1nsI5ijSHF4YCy/VOzamv4Ucb
-	wJugEqNk=
-X-Google-Smtp-Source: AGHT+IGmsdmZpDuU64/zBFVRQ3e/o9vGnleqAFoX6F+q7Lw2p71TWS5SPeiWtsRpxGv/SLlt+kfa+w==
-X-Received: by 2002:a05:6402:2808:b0:5e4:d2d4:b4f3 with SMTP id 4fb4d7f45d1cf-5e4d6af1582mr13492784a12.14.1741005688031;
-        Mon, 03 Mar 2025 04:41:28 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e4c3fb4384sm6903702a12.49.2025.03.03.04.41.26
+        d=1e100.net; s=20230601; t=1741008629; x=1741613429;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gNjkZXsFxPWFMyK2OgocbrFn2IS3HWHLODQTFVqVxX4=;
+        b=BR5oil1o6p3zHVOpWcn3VI4JqV2+CjszXRFAN9kJ7yomvj5GBrGp807ZG6R+dHgObj
+         c25gOX9XWKAHirpm/nyoQtPXB4KtxZpBf9BzmfxEmim07mlbiRnZpFQJEoKt1srcmyyn
+         0l9QaTcLS7n3slVzsL5H5upsuP6cu9MyJvSNIWg8pPA88D5tPFz1R1VAgyYkA643TPGJ
+         WXRhr+IG0AUrNCtoETvIlIBpYdVW69Kw3RGlpZETmAfIB08MQMnkF5rPBOzzEAvqj5ZU
+         eYK2NhdejFAb1XIG0uJMxlTDJcIzURbFmOWiDgOHHyk4Ci869wDHMkEoVDRW5OUuh6MV
+         +CqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUVm8V8DUDEFQjHzlaV290r+8RFaaZVL7m8Ar6AHoeH/qX+5WHh+kms7EBFLfThwcEQoBkwNQTr@vger.kernel.org, AJvYcCUk52hOLiQJB4Fz38zVW4feBblOUzBQ70VcvCdmwhfOGM9T4dRj798dwL4BJrsROg44frY=@vger.kernel.org, AJvYcCVD9byp5ywtSQd63k099HP+ZFihNqGAolk8xLy+4CeOe/6uCf64HKuEgj+Ih28EsZ3hqDpkomM7F+V9h34L@vger.kernel.org, AJvYcCVX3xjOOPtde6JaM9bpSzZP/hk3sKVgkr6KXJ39o0eVJDx+UpkmgXpHtTtoFGpwNiikllsOlTxf0YdTm3BTwFQk5umm@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx9BA9XQx4s/Wa+96WArzM109k7opCqOkgRJbmbwvEhh5xLujWj
+	9fWvEI2sp1C78u6jJw/KesQK6rtZsqBzafxR9F32YN3rR3k/hKtD
+X-Gm-Gg: ASbGnctv1w4XHYBz92amDn3fs6NpK4eNaumxU3SUCxibAWbTT3EOT7Hl4D3j83CU4XS
+	nWZ2Zbb7yL8iLSJu6ZzeCxMDahqzgDlDYDDqK3QyD3+SPSkO2kXWq6MWDTVMn7+yhrGRwDPud0w
+	ildBKy2UBKfz+McXjUJYMkPkN2C08sdp1QpbCRZSWuWjii1Iq+2xd00poBTGLVPyFY/MTuM4JlJ
+	KTlanD8TXPVgZfcp+0WFhRlY+iXdheRZUNqr46pvDiCO77C8LFVdY9PE8e9I6u+vd9FDrtR82c1
+	g1N+IicJJZ1w3aG21Pc3C0ShN4BrKdsK3k9Pl7WVl1u3AvgP3jJAlZA4Jqefdw==
+X-Google-Smtp-Source: AGHT+IGzwQpz8i9IoNIFYRlZqYmQzdkErFQv2wnbEGpUy1JVrV1T6QdikCneYnb/qYuevmlNGOS4BA==
+X-Received: by 2002:a17:903:244d:b0:210:fce4:11ec with SMTP id d9443c01a7336-22368f6a5f1mr188695035ad.1.1741008628736;
+        Mon, 03 Mar 2025 05:30:28 -0800 (PST)
+Received: from localhost.localdomain ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223505359b8sm77297035ad.253.2025.03.03.05.30.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Mar 2025 04:41:27 -0800 (PST)
-Date: Mon, 3 Mar 2025 12:41:25 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: Yury Norov <yury.norov@gmail.com>, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
- joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
- neil.armstrong@linaro.org, rfoss@kernel.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
- mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com,
- parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
- johannes@sipsolutions.net, gregkh@linuxfoundation.org,
- jirislaby@kernel.org, akpm@linux-foundation.org, hpa@zytor.com,
- alistair@popple.id.au, linux@rasmusvillemoes.dk,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
- linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
- andrew.cooper3@citrix.com, Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v2 01/18] lib/parity: Add __builtin_parity() fallback
- implementations
-Message-ID: <20250303124125.4975afdc@pumpkin>
-In-Reply-To: <Z8UYOD2tyjS25gIc@visitorckw-System-Product-Name>
-References: <20250301142409.2513835-1-visitorckw@gmail.com>
-	<20250301142409.2513835-2-visitorckw@gmail.com>
-	<Z8PMHLYHOkCZJpOh@thinkpad>
-	<Z8QUsgpCB0m2qKJR@visitorckw-System-Product-Name>
-	<Z8SBBM_81wyHfvC0@thinkpad>
-	<Z8SVb4xD4tTiMEpL@visitorckw-System-Product-Name>
-	<20250302190954.2d7e068f@pumpkin>
-	<Z8UYOD2tyjS25gIc@visitorckw-System-Product-Name>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        Mon, 03 Mar 2025 05:30:28 -0800 (PST)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: peterz@infradead.org,
+	rostedt@goodmis.org,
+	mark.rutland@arm.com,
+	alexei.starovoitov@gmail.com
+Cc: catalin.marinas@arm.com,
+	will@kernel.org,
+	mhiramat@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	jolsa@kernel.org,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	nathan@kernel.org,
+	nick.desaulniers+lkml@gmail.com,
+	morbo@google.com,
+	samitolvanen@google.com,
+	kees@kernel.org,
+	dongml2@chinatelecom.cn,
+	akpm@linux-foundation.org,
+	riel@surriel.com,
+	rppt@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH v4 0/4] per-function storage support
+Date: Mon,  3 Mar 2025 21:28:33 +0800
+Message-Id: <20250303132837.498938-1-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Mon, 3 Mar 2025 10:47:20 +0800
-Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+For now, there isn't a way to set and get per-function metadata with
+a low overhead, which is not convenient for some situations. Take
+BPF trampoline for example, we need to create a trampoline for each
+kernel function, as we have to store some information of the function
+to the trampoline, such as BPF progs, function arg count, etc. The
+performance overhead and memory consumption can be higher to create
+these trampolines. With the supporting of per-function metadata storage,
+we can store these information to the metadata, and create a global BPF
+trampoline for all the kernel functions. In the global trampoline, we
+get the information that we need from the function metadata through the
+ip (function address) with almost no overhead.
 
-> On Sun, Mar 02, 2025 at 07:09:54PM +0000, David Laight wrote:
-> > On Mon, 3 Mar 2025 01:29:19 +0800
-> > Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
-> >   
-> > > Hi Yury,
-> > > 
-...
-> > > #define parity(val)					\
-> > > ({							\
-> > > 	__auto_type __v = (val);			\
-> > > 	bool __ret;					\
-> > > 	switch (BITS_PER_TYPE(val)) {			\
-> > > 	case 64:					\
-> > > 		__v ^= __v >> 16 >> 16;			\
-> > > 		fallthrough;				\
-> > > 	case 32:					\
-> > > 		__v ^= __v >> 16;			\
-> > > 		fallthrough;				\
-> > > 	case 16:					\
-> > > 		__v ^= __v >> 8;			\
-> > > 		fallthrough;				\
-> > > 	case 8:						\
-> > > 		__v ^= __v >> 4;			\
-> > > 		__ret =  (0x6996 >> (__v & 0xf)) & 1;	\
-> > > 		break;					\
-> > > 	default:					\
-> > > 		BUILD_BUG();				\
-> > > 	}						\
-> > > 	__ret;						\
-> > > })  
-> > 
-> > I'm seeing double-register shifts for 64bit values on 32bit systems.
-> > And gcc is doing 64bit double-register maths all the way down.
-> > 
-> > That is fixed by changing the top of the define to
-> > #define parity(val)					\
-> > ({							\
-> > 	unsigned int __v = (val);			\
-> > 	bool __ret;					\
-> > 	switch (BITS_PER_TYPE(val)) {			\
-> > 	case 64:					\
-> > 		__v ^= val >> 16 >> 16;			\
-> > 		fallthrough;				\
-> > 
-> > But it's need changing to only expand 'val' once.
-> > Perhaps:
-> > 	auto_type _val = (val);
-> > 	u32 __ret = val;
-> > and (mostly) s/__v/__ret/g
-> >  
-> I'm happy to make this change, though I'm a bit confused about how much
-> we care about the code generated by gcc. So this is the macro expected
-> in v3:
+Another beneficiary can be ftrace. For now, all the kernel functions that
+are enabled by dynamic ftrace will be added to a filter hash if there are
+more than one callbacks. And hash lookup will happen when the traced
+functions are called, which has an impact on the performance, see
+__ftrace_ops_list_func() -> ftrace_ops_test(). With the per-function
+metadata supporting, we can store the information that if the callback is
+enabled on the kernel function to the metadata.
 
-There is 'good', 'bad' and 'ugly' - it was in the 'bad' to 'ugly' area.
+In the 1st patch, we factor out FINEIBT_INSN_OFFSET and CFI_INSN_OFFSET to
+make fineibt works when the kernel function is 32-bytes aligned.
 
-> 
-> #define parity(val)					\
-> ({							\
-> 	__auto_type __v = (val);			\
-> 	u32 __ret = val;				\
-> 	switch (BITS_PER_TYPE(val)) {			\
-> 	case 64:					\
->                 __ret ^= __v >> 16 >> 16;		\
-> 		fallthrough;				\
-> 	case 32:					\
-> 		__ret ^= __ret >> 16;			\
-> 		fallthrough;				\
-> 	case 16:					\
-> 		__ret ^= __ret >> 8;			\
-> 		fallthrough;				\
-> 	case 8:						\
-> 		__ret ^= __ret >> 4;			\
-> 		__ret = (0x6996 >> (__ret & 0xf)) & 1;	\
-> 		break;					\
-> 	default:					\
-> 		BUILD_BUG();				\
-> 	}						\
-> 	__ret;						\
-> })
+In the 2nd patch, we implement the per-function metadata storage by
+storing the index of the metadata to the function padding space.
 
-That looks like it will avoid double-register shifts on 32bit archs.
-arm64 can do slightly better (a couple of instructions) because of its
-barrel shifter.
-x86 can do a lot better because of the cpu 'parity' flag.
-But maybe it is never used anywhere that really matters.
+In the 3rd and 4th patch, we implement the per-function metadata storage
+for x86 and arm64. And in the feature, we can support more arch.
 
-	David
+Changes since V3:
+- rebase to the newest tip/x86/core, the fineibt has some updating
 
+Changes since V2:
+- split the patch into a series.
+- considering the effect to cfi and fineibt and introduce the 1st patch.
+
+Changes since V1:
+- add supporting for arm64
+- split out arch relevant code
+- refactor the commit log
+
+Menglong Dong (4):
+  x86/ibt: factor out cfi and fineibt offset
+  add per-function metadata storage support
+  x86: implement per-function metadata storage for x86
+  arm64: implement per-function metadata storage for arm64
+
+ arch/arm64/Kconfig              |  15 ++
+ arch/arm64/Makefile             |  23 ++-
+ arch/arm64/include/asm/ftrace.h |  34 +++++
+ arch/arm64/kernel/ftrace.c      |  13 +-
+ arch/x86/Kconfig                |  18 +++
+ arch/x86/include/asm/cfi.h      |  13 +-
+ arch/x86/include/asm/ftrace.h   |  54 ++++++++
+ arch/x86/kernel/alternative.c   |  18 ++-
+ arch/x86/net/bpf_jit_comp.c     |  22 +--
+ include/linux/kfunc_md.h        |  25 ++++
+ kernel/Makefile                 |   1 +
+ kernel/trace/Makefile           |   1 +
+ kernel/trace/kfunc_md.c         | 239 ++++++++++++++++++++++++++++++++
+ 13 files changed, 450 insertions(+), 26 deletions(-)
+ create mode 100644 include/linux/kfunc_md.h
+ create mode 100644 kernel/trace/kfunc_md.c
+
+-- 
+2.39.5
 
 
