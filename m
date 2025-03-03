@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-53063-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53064-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C09FA4C29C
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 14:58:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 200F4A4C29E
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 14:58:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31A15189542C
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 13:58:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32A2216E780
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 13:58:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBD97213255;
-	Mon,  3 Mar 2025 13:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56041212FBF;
+	Mon,  3 Mar 2025 13:58:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LsxN5HDq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JSEhgN7I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4061F3BAF
-	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 13:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF4A4211A28
+	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 13:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741010283; cv=none; b=av3PO04kzu75Lb5J/Bx0grAB6JfLQOFZNZ8VlUo4AsvkMfogXKcjuNVVGNn6tFCWkFdk3weHhJK9DAXKpJyKrowIHqzWvwgUfPY4v+fLoByMvsD20kMdj0c7ZVZ4meDViXiwF8kdNeLJ+KG31zrqxlhiBmlJQZQfM7Zs58d2yuQ=
+	t=1741010284; cv=none; b=AeQEUyIuaIZTJGdoBfX4QD5MNA7K9URNRvE3TGbwH2wUeRUDDl94bcueekoaHR2oQFXVG6Y3SpS/SRGIOhPvwiC4iaBhTTHp8czns/9F9MG6UXZZeVcPl9x30BSH3OotxN+8LROTEakMMmTcXlZ2/+YXzv26rQaXnDOHcw6ZOEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741010283; c=relaxed/simple;
-	bh=NMW2u+kcVB/LyLy8ep1beAzmPIky9dgtUYyaW5tTf5E=;
+	s=arc-20240116; t=1741010284; c=relaxed/simple;
+	bh=0jo7M4rSr5Ve3pPIg6I/1uIsUuMWzbOnN6CmFpnle8M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CbgX0aUxSXO3oIaRiCOmfn2Sc9JleJryJn0HOo5vjHs9SKgetVX+e+l6C+Yy/PAYo9MHZbdivqefSomXoR6+8L0K20qKT0YwN3iXdlRYn3DyDlV3qu3o0Njhbkh9sg3AxXS/1VtOYLy2aYRQkNxqowAIq7yqeu2ZkeTqMiSbVUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LsxN5HDq; arc=none smtp.client-ip=209.85.218.49
+	 MIME-Version; b=bkXK/Rc9heo4IH5zBOKW3jTvu0YOL0RZr3g0j4reO6UDEmDIJVFm2uF9rAtJeE8T6pj8+eeJdCLGljcowkKyfiqtGBNa+xSJELcYVdAL8F3IEwWhRBSBFYGyvQXRJszcVzX3aci/ifPEPet6Z7RF3KNfK+q0YKzAKBxcLZ+/Brs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JSEhgN7I; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-aaf0f1adef8so873697466b.3
-        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 05:58:01 -0800 (PST)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-ac0b6e8d96cso134513966b.0
+        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 05:58:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741010280; x=1741615080; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741010281; x=1741615081; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aeYw/PPRWQMXg+ZpGL0OGe8xjmVd2opVwf5zi+vKUjs=;
-        b=LsxN5HDqcMqbEWvpe1rBqduADMZz1AOUueIv9jGmiwm+TZ0TDd+TOzlFwW9oCTUXcj
-         s4lO4rKmuvr23v7TPfs5rPktKihsRElgggCQFUPqZTWevyg/Q30aduyq9IbFoHSRpGdf
-         ejAEI8NHAfP8dN6X1NTvSpWEI8pqYBDfX0MwZ0D7MBOIHBArBefOc8q3RvIVKqWG3vnx
-         dGMK276XNfV8yMfgk2NDMLBUNSQ6Vf4473EAsQnuxNrcUkML7Z3KRc7SKumUR+kyyiVR
-         AnEneDjt0hMjPCHCO4SC7O3TkNyR9KtFfTMab7GPgGwxszm7vA7JH172HeU3v95Ojh16
-         APAw==
+        bh=rgIkqmM6sTy1iHkuowBFRpR0FbFG7wc/sN+n0hQbrAk=;
+        b=JSEhgN7IooLrSy+PzrMn/6swjBaQzP8AMUQ0eQUr5+zh0LqdntBHstRwFOv9xyVMKT
+         QScrymgX3uG2R47IpCqvUZBHljmCsAP/mFir2Vs0OLSgrhRdFsghhmGbxCgGkg5JfXlD
+         ThucRLgNyB5xYSbpWBxmdFxSqSbkI78ovPIpqM2OgkKi4xjoqzOhncEQP//nAZ+98uXv
+         YgT4XyvUUxAY3dY9njhFmu6xviFDauf1jZAEtiDVX/FcN+Ey2NA55EVRfksjc6pTlNvM
+         2cpnyJmJAN7VF064fVxzKEA8nh813olzQQXEmBtnvmS5wBwnc/I7WdkMZaFKpI1rJ+Fn
+         LTcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741010280; x=1741615080;
+        d=1e100.net; s=20230601; t=1741010281; x=1741615081;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aeYw/PPRWQMXg+ZpGL0OGe8xjmVd2opVwf5zi+vKUjs=;
-        b=qrTSHjhmh0yaTlXGIdhRrXICWuwYuyp8I+pRQSvihmHgrPwpPp6KEe0pexZJJ64SSk
-         GOyp1DCJ+/nFBVcHIxBDRyPilv/VUCE/fw66RKUdwBgJuf4/u2sw9uDEDqjP3O46OUt9
-         gYJh5CJBx1CuldnJSJwLrU51N2LdRbS1fnyjqkIbm1t8RSL0B3+i19DDm205KQS6p0IA
-         hdEClei2nhQHI+hUcGaAcR/VH57jq7CPuh0az9Y5mN6mHkOOK/C3lyTsL/6XM1hOFKo6
-         gA5TuWXRzKi+v1cQ9aFW0UDZMHDmwtGpx8rjLSBExZA7g4vUBW+8q9rpdaXZyCyDTNOU
-         TSgg==
-X-Gm-Message-State: AOJu0Yxm/MYkTZkoh02HzrGgCXtnQaO4urjPbyt8e77PWes/H+4ny4ww
-	/Av5KIv2KkiuSAiJMCwW/4183aEJ5ug8tGLl2xXqTniWazUwYSIxBKB8yw==
-X-Gm-Gg: ASbGncv3N38etAAPIGv6sCPIlGqT1DoxxXpQBk/N80gzZPTkErTe+1D5jBSXp1LzYbp
-	wr6d3PrXwC491EFlIE/cPiUevRlAIgkDmeBDt4rZBjbJiI+ME5Jr+ruOAGCO5Pz90XOMqhJeXqe
-	4eQvwtVzU63x98hmytvVlnLCX0qNnFqdNt+QxM6MMhVLBXB8bGwTQ5Giq3Z0lBevN5zr0NFcpgo
-	jCywZytUMSq0fIldy9Wn03FzNOUU4EBuezpaIyqjLhqsHBE2dzT8B3S/meboPeVRVMCcJ8k1ula
-	syF4moLYq9ut3SAeioEUcjezdg/riukHpeGLwGB6+JC3JpRcfbn7BEH7Fhg=
-X-Google-Smtp-Source: AGHT+IHjuwNV6peA31YPj9lX2SxzxuqjImZH+wMHcg0QQ4o09bpTVs4jSMhyfrJScuz0eaZb+KJ39A==
-X-Received: by 2002:a17:907:6090:b0:abe:fa1a:4eab with SMTP id a640c23a62f3a-abf260d496dmr1784538966b.25.1741010279423;
-        Mon, 03 Mar 2025 05:57:59 -0800 (PST)
+        bh=rgIkqmM6sTy1iHkuowBFRpR0FbFG7wc/sN+n0hQbrAk=;
+        b=lzibptx2Ti4M16YAYbikMv6jBpS/mwJK1RPVSRIv+TKTZfgfZg1rozZW0yqixh91K9
+         MPAeIKWBPer3r2TLEbZoytQlx32LSMdtwipHCm+gSAPl5z4aoZgB4JPFceg2nBf6QoM9
+         Rp4BQitxN845ZuwQkaAEtIkeOVLTwWDDYlYBjazzn8kfA/Nzsfln+1ms18CYHB7Ez0rg
+         HZEpjI6maFo/FWJ7zJShwgI5iazm/q/WDjMUruJUil8GzSuq4e1nh2ttvrXL0nmctf/q
+         w5eQrKBqfWaXEvKpVwLhHjTUWU/LDzj2uQYeUPZBz3UQol7dhj7qS/lSmlF/7WgsOeFU
+         uD8Q==
+X-Gm-Message-State: AOJu0YxjIfbBT5pGYhM5XV017C09qumGvkn+8Rt7gGu9w6KfZ8Xd10NG
+	0GBDFjsdJ+UwRcRekZ6pcJu9si5Gp5lgUY8Sr8SKQp67NYlaHA2ifasz2A==
+X-Gm-Gg: ASbGncsdy1SYd9+2fBWQHdsetKFCtdfuRfGsfNKAk+W5l7fsYfIEXKr/mMx3J11cbXU
+	xdHDuYrvLuAzi0DCNcBfVIk1tjOfRmGzp2XuAhK3aEwlqty1csJtVk1p0OCZx7KMQxe9vcr0Nvk
+	H4QymFbe0a5yjkfVYf8/ah9fcc0xQT0/AVlw+MLX9YRre5Oa1NSzEM1UNF+G/q32jlQU9fOkxWo
+	MJgx6kM5QmUpxyC51vwkneRc3bb3llc4YyNpfQ5IYjdO2HxnQGqYqzRXWgkL9O0gSPNHJATZ9dv
+	T1vLQg+FqxHTV7gJQcV6a9Xa+bzGZvL8/KovISmrqSGtw2UVbelyjO06wU8=
+X-Google-Smtp-Source: AGHT+IHoXEH25I/Zw+khVLrGx7H9Sgt3N1XwCYdCN/OTpMEPzT3SDDQ6fqXV9W9bDZHRI9DgAiQmuw==
+X-Received: by 2002:a17:907:97c1:b0:ac1:ea6e:ad64 with SMTP id a640c23a62f3a-ac1ea6ff060mr76661566b.28.1741010280782;
+        Mon, 03 Mar 2025 05:58:00 -0800 (PST)
 Received: from msi-laptop.thefacebook.com ([2620:10d:c092:500::6:7e2d])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abf0c75bfd7sm817975366b.148.2025.03.03.05.57.58
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abf0c75bfd7sm817975366b.148.2025.03.03.05.58.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Mar 2025 05:57:59 -0800 (PST)
+        Mon, 03 Mar 2025 05:58:00 -0800 (PST)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -80,9 +80,9 @@ To: bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	eddyz87@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v2 2/4] libbpf: introduce more granular state for bpf_object
-Date: Mon,  3 Mar 2025 13:57:50 +0000
-Message-ID: <20250303135752.158343-3-mykyta.yatsenko5@gmail.com>
+Subject: [PATCH bpf-next v2 3/4] libbpf: split bpf object load into prepare/load
+Date: Mon,  3 Mar 2025 13:57:51 +0000
+Message-ID: <20250303135752.158343-4-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250303135752.158343-1-mykyta.yatsenko5@gmail.com>
 References: <20250303135752.158343-1-mykyta.yatsenko5@gmail.com>
@@ -96,184 +96,258 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-We are going to split bpf_object loading into 2 stages: preparation and
-loading. This will increase flexibility when working with bpf_object
-and unlock some optimizations and use cases.
-This patch substitutes a boolean flag (loaded) by more finely-grained
-state for bpf_object.
+Introduce bpf_object__prepare API: additional intermediate preparation
+step that performs ELF processing, relocations, prepares final state of
+BPF program instructions (accessible with bpf_program__insns()), creates
+and (potentially) pins maps, and stops short of loading BPF programs.
+
+We anticipate few use cases for this API, such as:
+* Use prepare to initialize bpf_token, without loading freplace
+programs, unlocking possibility to lookup BTF of other programs.
+* Execute prepare to obtain finalized BPF program instructions without
+loading programs, enabling tools like veristat to process one program at
+a time, without incurring cost of ELF parsing and processing.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- tools/lib/bpf/libbpf.c | 39 ++++++++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 17 deletions(-)
+ tools/lib/bpf/libbpf.c   | 144 +++++++++++++++++++++++++++------------
+ tools/lib/bpf/libbpf.h   |  13 ++++
+ tools/lib/bpf/libbpf.map |   1 +
+ 3 files changed, 115 insertions(+), 43 deletions(-)
 
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 4895c7ae6422..7210278ecdcf 100644
+index 7210278ecdcf..80ed6d380584 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -670,11 +670,18 @@ struct elf_state {
+@@ -7901,13 +7901,6 @@ bpf_object__load_progs(struct bpf_object *obj, int log_level)
+ 	size_t i;
+ 	int err;
  
- struct usdt_manager;
- 
-+enum bpf_object_state {
-+	OBJ_OPEN,
-+	OBJ_PREPARED,
-+	OBJ_LOADED,
-+};
-+
- struct bpf_object {
- 	char name[BPF_OBJ_NAME_LEN];
- 	char license[64];
- 	__u32 kern_version;
- 
-+	enum bpf_object_state state;
- 	struct bpf_program *programs;
- 	size_t nr_programs;
- 	struct bpf_map *maps;
-@@ -686,7 +693,6 @@ struct bpf_object {
- 	int nr_extern;
- 	int kconfig_map_idx;
- 
--	bool loaded;
- 	bool has_subcalls;
- 	bool has_rodata;
- 
-@@ -1511,7 +1517,7 @@ static struct bpf_object *bpf_object__new(const char *path,
- 	obj->kconfig_map_idx = -1;
- 
- 	obj->kern_version = get_kernel_version();
--	obj->loaded = false;
-+	obj->state  = OBJ_OPEN;
- 
- 	return obj;
- }
-@@ -4847,7 +4853,7 @@ static int bpf_get_map_info_from_fdinfo(int fd, struct bpf_map_info *info)
- 
- static bool map_is_created(const struct bpf_map *map)
- {
--	return map->obj->loaded || map->reused;
-+	return map->obj->state >= OBJ_PREPARED || map->reused;
- }
- 
- bool bpf_map__autocreate(const struct bpf_map *map)
-@@ -8550,7 +8556,7 @@ static int bpf_object_load(struct bpf_object *obj, int extra_log_level, const ch
- 	if (!obj)
- 		return libbpf_err(-EINVAL);
- 
--	if (obj->loaded) {
-+	if (obj->state >= OBJ_LOADED) {
- 		pr_warn("object '%s': load can't be attempted twice\n", obj->name);
- 		return libbpf_err(-EINVAL);
- 	}
-@@ -8602,8 +8608,7 @@ static int bpf_object_load(struct bpf_object *obj, int extra_log_level, const ch
- 	btf__free(obj->btf_vmlinux);
- 	obj->btf_vmlinux = NULL;
- 
--	obj->loaded = true; /* doesn't matter if successfully or not */
+-	for (i = 0; i < obj->nr_programs; i++) {
+-		prog = &obj->programs[i];
+-		err = bpf_object__sanitize_prog(obj, prog);
+-		if (err)
+-			return err;
+-	}
 -
-+	obj->state = OBJ_LOADED; /* doesn't matter if successfully or not */
- 	if (err)
- 		goto out;
+ 	for (i = 0; i < obj->nr_programs; i++) {
+ 		prog = &obj->programs[i];
+ 		if (prog_is_subprog(obj, prog))
+@@ -7933,6 +7926,21 @@ bpf_object__load_progs(struct bpf_object *obj, int log_level)
+ 	return 0;
+ }
  
-@@ -8866,7 +8871,7 @@ int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
++static int bpf_object_prepare_progs(struct bpf_object *obj)
++{
++	struct bpf_program *prog;
++	size_t i;
++	int err;
++
++	for (i = 0; i < obj->nr_programs; i++) {
++		prog = &obj->programs[i];
++		err = bpf_object__sanitize_prog(obj, prog);
++		if (err)
++			return err;
++	}
++	return 0;
++}
++
+ static const struct bpf_sec_def *find_sec_def(const char *sec_name);
+ 
+ static int bpf_object_init_progs(struct bpf_object *obj, const struct bpf_object_open_opts *opts)
+@@ -8549,9 +8557,70 @@ static int bpf_object_prepare_struct_ops(struct bpf_object *obj)
+ 	return 0;
+ }
+ 
++static void bpf_object_unpin(struct bpf_object *obj)
++{
++	int i;
++
++	/* unpin any maps that were auto-pinned during load */
++	for (i = 0; i < obj->nr_maps; i++)
++		if (obj->maps[i].pinned && !obj->maps[i].reused)
++			bpf_map__unpin(&obj->maps[i], NULL);
++}
++
++static void bpf_object_post_load_cleanup(struct bpf_object *obj)
++{
++	int i;
++
++	/* clean up fd_array */
++	zfree(&obj->fd_array);
++
++	/* clean up module BTFs */
++	for (i = 0; i < obj->btf_module_cnt; i++) {
++		close(obj->btf_modules[i].fd);
++		btf__free(obj->btf_modules[i].btf);
++		free(obj->btf_modules[i].name);
++	}
++	obj->btf_module_cnt = 0;
++	zfree(&obj->btf_modules);
++
++	/* clean up vmlinux BTF */
++	btf__free(obj->btf_vmlinux);
++	obj->btf_vmlinux = NULL;
++}
++
++static int bpf_object_prepare(struct bpf_object *obj, const char *target_btf_path)
++{
++	int err;
++
++	if (obj->state >= OBJ_PREPARED) {
++		pr_warn("object '%s': prepare loading can't be attempted twice\n", obj->name);
++		return -EINVAL;
++	}
++
++	err = bpf_object_prepare_token(obj);
++	err = err ? : bpf_object__probe_loading(obj);
++	err = err ? : bpf_object__load_vmlinux_btf(obj, false);
++	err = err ? : bpf_object__resolve_externs(obj, obj->kconfig);
++	err = err ? : bpf_object__sanitize_maps(obj);
++	err = err ? : bpf_object__init_kern_struct_ops_maps(obj);
++	err = err ? : bpf_object_adjust_struct_ops_autoload(obj);
++	err = err ? : bpf_object__relocate(obj, obj->btf_custom_path ? : target_btf_path);
++	err = err ? : bpf_object__sanitize_and_load_btf(obj);
++	err = err ? : bpf_object__create_maps(obj);
++	err = err ? : bpf_object_prepare_progs(obj);
++	obj->state = OBJ_PREPARED;
++
++	if (err) {
++		bpf_object_unpin(obj);
++		bpf_object_unload(obj);
++		return err;
++	}
++	return 0;
++}
++
+ static int bpf_object_load(struct bpf_object *obj, int extra_log_level, const char *target_btf_path)
+ {
+-	int err, i;
++	int err;
+ 
  	if (!obj)
- 		return libbpf_err(-ENOENT);
+ 		return libbpf_err(-EINVAL);
+@@ -8571,17 +8640,12 @@ static int bpf_object_load(struct bpf_object *obj, int extra_log_level, const ch
+ 		return libbpf_err(-LIBBPF_ERRNO__ENDIAN);
+ 	}
  
--	if (!obj->loaded) {
+-	err = bpf_object_prepare_token(obj);
+-	err = err ? : bpf_object__probe_loading(obj);
+-	err = err ? : bpf_object__load_vmlinux_btf(obj, false);
+-	err = err ? : bpf_object__resolve_externs(obj, obj->kconfig);
+-	err = err ? : bpf_object__sanitize_maps(obj);
+-	err = err ? : bpf_object__init_kern_struct_ops_maps(obj);
+-	err = err ? : bpf_object_adjust_struct_ops_autoload(obj);
+-	err = err ? : bpf_object__relocate(obj, obj->btf_custom_path ? : target_btf_path);
+-	err = err ? : bpf_object__sanitize_and_load_btf(obj);
+-	err = err ? : bpf_object__create_maps(obj);
+-	err = err ? : bpf_object__load_progs(obj, extra_log_level);
 +	if (obj->state < OBJ_PREPARED) {
- 		pr_warn("object not yet loaded; load it first\n");
- 		return libbpf_err(-ENOENT);
++		err = bpf_object_prepare(obj, target_btf_path);
++		if (err)
++			return libbpf_err(err);
++	}
++	err = bpf_object__load_progs(obj, extra_log_level);
+ 	err = err ? : bpf_object_init_prog_arrays(obj);
+ 	err = err ? : bpf_object_prepare_struct_ops(obj);
+ 
+@@ -8593,35 +8657,22 @@ static int bpf_object_load(struct bpf_object *obj, int extra_log_level, const ch
+ 			err = bpf_gen__finish(obj->gen_loader, obj->nr_programs, obj->nr_maps);
  	}
-@@ -8945,7 +8950,7 @@ int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
- 	if (!obj)
- 		return libbpf_err(-ENOENT);
  
--	if (!obj->loaded) {
-+	if (obj->state < OBJ_LOADED) {
- 		pr_warn("object not yet loaded; load it first\n");
- 		return libbpf_err(-ENOENT);
+-	/* clean up fd_array */
+-	zfree(&obj->fd_array);
++	bpf_object_post_load_cleanup(obj);
++	obj->state = OBJ_LOADED; /* doesn't matter if successfully or not */
+ 
+-	/* clean up module BTFs */
+-	for (i = 0; i < obj->btf_module_cnt; i++) {
+-		close(obj->btf_modules[i].fd);
+-		btf__free(obj->btf_modules[i].btf);
+-		free(obj->btf_modules[i].name);
++	if (err) {
++		bpf_object_unpin(obj);
++		bpf_object_unload(obj);
++		pr_warn("failed to load object '%s'\n", obj->path);
++		return libbpf_err(err);
  	}
-@@ -9132,7 +9137,7 @@ int bpf_object__btf_fd(const struct bpf_object *obj)
+-	free(obj->btf_modules);
+-
+-	/* clean up vmlinux BTF */
+-	btf__free(obj->btf_vmlinux);
+-	obj->btf_vmlinux = NULL;
+-
+-	obj->state = OBJ_LOADED; /* doesn't matter if successfully or not */
+-	if (err)
+-		goto out;
  
- int bpf_object__set_kversion(struct bpf_object *obj, __u32 kern_version)
- {
--	if (obj->loaded)
-+	if (obj->state >= OBJ_LOADED)
- 		return libbpf_err(-EINVAL);
+ 	return 0;
+-out:
+-	/* unpin any maps that were auto-pinned during load */
+-	for (i = 0; i < obj->nr_maps; i++)
+-		if (obj->maps[i].pinned && !obj->maps[i].reused)
+-			bpf_map__unpin(&obj->maps[i], NULL);
++}
  
- 	obj->kern_version = kern_version;
-@@ -9229,7 +9234,7 @@ bool bpf_program__autoload(const struct bpf_program *prog)
+-	bpf_object_unload(obj);
+-	pr_warn("failed to load object '%s'\n", obj->path);
+-	return libbpf_err(err);
++int bpf_object__prepare(struct bpf_object *obj)
++{
++	return libbpf_err(bpf_object_prepare(obj, NULL));
+ }
  
- int bpf_program__set_autoload(struct bpf_program *prog, bool autoload)
- {
--	if (prog->obj->loaded)
-+	if (prog->obj->state >= OBJ_LOADED)
- 		return libbpf_err(-EINVAL);
+ int bpf_object__load(struct bpf_object *obj)
+@@ -9069,6 +9120,13 @@ void bpf_object__close(struct bpf_object *obj)
+ 	if (IS_ERR_OR_NULL(obj))
+ 		return;
  
- 	prog->autoload = autoload;
-@@ -9261,7 +9266,7 @@ int bpf_program__set_insns(struct bpf_program *prog,
- {
- 	struct bpf_insn *insns;
++	/*
++	 * if user called bpf_object__prepare() without ever getting to
++	 * bpf_object__load(), we need to clean up stuff that is normally
++	 * cleaned up at the end of loading step
++	 */
++	bpf_object_post_load_cleanup(obj);
++
+ 	usdt_manager_free(obj->usdt_man);
+ 	obj->usdt_man = NULL;
  
--	if (prog->obj->loaded)
-+	if (prog->obj->state >= OBJ_LOADED)
- 		return libbpf_err(-EBUSY);
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 3020ee45303a..e0605403f977 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -241,6 +241,19 @@ LIBBPF_API struct bpf_object *
+ bpf_object__open_mem(const void *obj_buf, size_t obj_buf_sz,
+ 		     const struct bpf_object_open_opts *opts);
  
- 	insns = libbpf_reallocarray(prog->insns, new_insn_cnt, sizeof(*insns));
-@@ -9304,7 +9309,7 @@ static int last_custom_sec_def_handler_id;
- 
- int bpf_program__set_type(struct bpf_program *prog, enum bpf_prog_type type)
- {
--	if (prog->obj->loaded)
-+	if (prog->obj->state >= OBJ_LOADED)
- 		return libbpf_err(-EBUSY);
- 
- 	/* if type is not changed, do nothing */
-@@ -9335,7 +9340,7 @@ enum bpf_attach_type bpf_program__expected_attach_type(const struct bpf_program
- int bpf_program__set_expected_attach_type(struct bpf_program *prog,
- 					   enum bpf_attach_type type)
- {
--	if (prog->obj->loaded)
-+	if (prog->obj->state >= OBJ_LOADED)
- 		return libbpf_err(-EBUSY);
- 
- 	prog->expected_attach_type = type;
-@@ -9349,7 +9354,7 @@ __u32 bpf_program__flags(const struct bpf_program *prog)
- 
- int bpf_program__set_flags(struct bpf_program *prog, __u32 flags)
- {
--	if (prog->obj->loaded)
-+	if (prog->obj->state >= OBJ_LOADED)
- 		return libbpf_err(-EBUSY);
- 
- 	prog->prog_flags = flags;
-@@ -9363,7 +9368,7 @@ __u32 bpf_program__log_level(const struct bpf_program *prog)
- 
- int bpf_program__set_log_level(struct bpf_program *prog, __u32 log_level)
- {
--	if (prog->obj->loaded)
-+	if (prog->obj->state >= OBJ_LOADED)
- 		return libbpf_err(-EBUSY);
- 
- 	prog->log_level = log_level;
-@@ -9382,7 +9387,7 @@ int bpf_program__set_log_buf(struct bpf_program *prog, char *log_buf, size_t log
- 		return libbpf_err(-EINVAL);
- 	if (prog->log_size > UINT_MAX)
- 		return libbpf_err(-EINVAL);
--	if (prog->obj->loaded)
-+	if (prog->obj->state >= OBJ_LOADED)
- 		return libbpf_err(-EBUSY);
- 
- 	prog->log_buf = log_buf;
-@@ -13666,7 +13671,7 @@ int bpf_program__set_attach_target(struct bpf_program *prog,
- 	if (!prog || attach_prog_fd < 0)
- 		return libbpf_err(-EINVAL);
- 
--	if (prog->obj->loaded)
-+	if (prog->obj->state >= OBJ_LOADED)
- 		return libbpf_err(-EINVAL);
- 
- 	if (attach_prog_fd && !attach_func_name) {
++/**
++ * @brief **bpf_object__prepare()** prepares BPF object for loading:
++ * performs ELF processing, relocations, prepares final state of BPF program
++ * instructions (accessible with bpf_program__insns()), creates and
++ * (potentially) pins maps. Leaves BPF object in the state ready for program
++ * loading.
++ * @param obj Pointer to a valid BPF object instance returned by
++ * **bpf_object__open*()** API
++ * @return 0, on success; negative error code, otherwise, error code is
++ * stored in errno
++ */
++int bpf_object__prepare(struct bpf_object *obj);
++
+ /**
+  * @brief **bpf_object__load()** loads BPF object into kernel.
+  * @param obj Pointer to a valid BPF object instance returned by
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index b5a838de6f47..d8b71f22f197 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -436,6 +436,7 @@ LIBBPF_1.6.0 {
+ 		bpf_linker__add_buf;
+ 		bpf_linker__add_fd;
+ 		bpf_linker__new_fd;
++		bpf_object__prepare;
+ 		btf__add_decl_attr;
+ 		btf__add_type_attr;
+ } LIBBPF_1.5.0;
 -- 
 2.48.1
 
