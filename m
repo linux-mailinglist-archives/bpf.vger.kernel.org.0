@@ -1,170 +1,134 @@
-Return-Path: <bpf+bounces-53060-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53061-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9BC6A4C222
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 14:38:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293DDA4C294
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 14:58:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC806189613B
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 13:37:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46B367A75EE
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 13:57:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF795212B2B;
-	Mon,  3 Mar 2025 13:37:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD23212FAB;
+	Mon,  3 Mar 2025 13:58:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="AThAQGHZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KEGw2Bvp"
 X-Original-To: bpf@vger.kernel.org
-Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380B7212F83;
-	Mon,  3 Mar 2025 13:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F47B211479
+	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 13:57:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741009029; cv=none; b=RcAlzUABSD+qCd44KsxxjlOCt6CQw6R2c5RGGUhutFVwJ71LKBSDrlM/49LsI4a7iSLtpOz8q40lkb7G3ywguMYV2Em48OWdPrHUKbCAiNzoewGg5XRvk0vSFqJNfLoZDN4rBz/dPdhkIbG+LLJ/zN0uwalLMJYNvF0xtw+AMao=
+	t=1741010280; cv=none; b=tMmNqvS94dvHtZr2MV7bze9MGq5w31oagrqkSFGxv+3gijyFU34h6lQ1JneRJnD3LQo80r8xTVeT64g1z67eKaYOyk8tSsUYIK54jWsP9XJrnkAG4h9VJcw2JR93Guyv7w2vP12gt23xRVkQPN6ggc+3CLkEnc2mUmHtg4rVuBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741009029; c=relaxed/simple;
-	bh=Xn1k7B4WleaLurRItO3p71bGSf1i/m3KCkUgXG8UOWA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=G+JHW47s+grGTjYvWpLxr9AYBn6lUH9guaq9jKyb8SSd/qCNLwWQaXCBNUmSYl6oacP+gdx7alN0B9vdZDE8Z5GANFubKTPpYbrT8AVPuUEpbfMxtRP7GGJu3y5ZQjso7BcN1WdkBiQO5Fuvgf43FLrNNCjZhxrJo8aRJ9j12U8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=AThAQGHZ; arc=none smtp.client-ip=198.47.19.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 523DaFOx2693754
-	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Mon, 3 Mar 2025 07:36:15 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1741008975;
-	bh=YsrLgmhopKk68gcwDTV/NQFgsX6Svsgvrj64ryk9wwg=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=AThAQGHZNeEI4KCqBCVdeJJtIRwBAEZYQVgkKje9cHHogVrGS+9oqS4lW9ujZYEKM
-	 tlCNdOtsVejDrivOD6u9N4titcuS2lPfiSiAc9ZeD4fZ5e1D8Tp8oq0gh0NwvSqM42
-	 bCyGzWrzn8Yu3jsljDGwILtjFXOmOMjoqb6uS81o=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTP id 523DaFPo086963;
-	Mon, 3 Mar 2025 07:36:15 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 3
- Mar 2025 07:36:15 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 3 Mar 2025 07:36:15 -0600
-Received: from [172.24.21.156] (lt9560gk3.dhcp.ti.com [172.24.21.156])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 523Da8cj073172;
-	Mon, 3 Mar 2025 07:36:09 -0600
-Message-ID: <40ce8ed3-b36c-4d5f-b75a-7e0409beb713@ti.com>
-Date: Mon, 3 Mar 2025 19:06:07 +0530
+	s=arc-20240116; t=1741010280; c=relaxed/simple;
+	bh=iNZjbbY5WqoDM0UnocvRYq2B5rApJe7KMoiB2LyXZgw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WnMJtFSvpIw7TBiiuP9TCcdTtOaHOsCQaP+6aQ59du+yagQPUUuzV4ifuXXRSCt9GuYxdqtXLsaW6fCaHcEhkO2cXX+Q+wnTIpxds1a9QSG0mvWS6vXa0xFSG6FiZOj58NjbBC6S7PAG/hRCXnkNs8ebVNbGZ2PNsX2lRg00/UY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KEGw2Bvp; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ab771575040so988548766b.1
+        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 05:57:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741010277; x=1741615077; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HkHKs1Cp2mNFjO4aavN7jPJ8WhoT9cnMli3zWPmr3/I=;
+        b=KEGw2Bvp/d/AbM4MKDbOw6UWOBtGRbXEQLmE4RKnPj3Uz5i/fQroUQtMVYX7rfL4Ed
+         WkFn/gM/nJ6p8Cw1x4ddkOfCNZu/hLwRckfAi3NYayCoW3NBftfIeI013AdHm6RQ3vKS
+         j32gQ1WHC6qnezicgFNGbZ7euxTE0vSVhsW3rJrgvl70vFptTdaSuhbioOxYF/W41iVt
+         FUibSfY2P4j9LgrCcTvezaWtqUXUjTsEcu9SSkfdK6Ott5DTMc4kIek3/LlpiUx8S6Ea
+         WZWIkY5Gpk22Na7+tWBzp0mmnfBBF78jxzxn+rpHir8z1ssgw+oLNKKJ8sAmmz2JQDKz
+         hN/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741010277; x=1741615077;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HkHKs1Cp2mNFjO4aavN7jPJ8WhoT9cnMli3zWPmr3/I=;
+        b=TCs24SOJ6zwtLBrHmhU90q7GJ0YOeDJI+mURtkt6zKSf+ikv3zwG/VR25qso/QIpTz
+         +TSb7bARXsQVUirGK+vXH+3QVWXfzGFe2wqD/ToiZqs/5PMSuYIxs9ByFoSgSHcsJXda
+         sQuNOQPS94QvT/bo+hTgVbX89zB4/vLqpVCQgifOrgtmzUA7GL/bVsw37silWMEOFAeO
+         xG9HZYfJ0RPjfrvfCO7tU9g+GQZRHLm7J3/Wt0Nw7ld95BhUbrjxwOYCKK+v77oQY5IV
+         3ef2dmGkR0aDl+MSVkLeBQRBHlTSCd7vMatVS/8DjCgoebAXpDBN17aMqIOYroUfIAq4
+         jUKg==
+X-Gm-Message-State: AOJu0Yw9bpcliSp20O4sFXMDXnR/fiqBGH4HsBaK80xCZGAz5K2g9I1Q
+	/UqHscjggUX5CAcRXLIIjCUtagCbsO5Zmqa4HVVQjHTowc+OU5EfZjVZDQ==
+X-Gm-Gg: ASbGncs+8pC634qYW87ub/YFqCmtk/ifDrpH7sBqiAyb4tF/b5kpzeyOMir93hewhGg
+	HIYtVaJqc9ESa8Ly6VRj75dEryJi6mB8PC05bHmOY3+0YD5ty2h+JT40Qa7T7RFc2Mljdan3Etq
+	w+QSUL7WaFng3sndxA4cmOKqgqI2upPx2Km2T2mqb3RLTYerkyqlPQO2G9l7D3XrivyFZivW/vK
+	50LIaATaG/7txKjKTmOQmC8EjUmSRxeD2sdx36p3xvnX8nhljR5SphdzJguCWaYhJj/Pb07fNRe
+	6NktsEUoF+Kj68Ax5U+XPCH/yBXHQ3AzaGiiLLW4IUN++GiUiG/KuTZCPxo=
+X-Google-Smtp-Source: AGHT+IEHr8Rl5IBwW9/b/eXPrvSv816iy+5+cJaucDW+4cxxDJn4DOTx9fSyrkkMJO1t0iRkHIyP5Q==
+X-Received: by 2002:a17:907:7f89:b0:abf:7776:7e17 with SMTP id a640c23a62f3a-abf7776893bmr366127966b.19.1741010276483;
+        Mon, 03 Mar 2025 05:57:56 -0800 (PST)
+Received: from msi-laptop.thefacebook.com ([2620:10d:c092:500::6:7e2d])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abf0c75bfd7sm817975366b.148.2025.03.03.05.57.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Mar 2025 05:57:56 -0800 (PST)
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com,
+	eddyz87@gmail.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next v2 0/4] Introduce bpf_object__prepare
+Date: Mon,  3 Mar 2025 13:57:48 +0000
+Message-ID: <20250303135752.158343-1-mykyta.yatsenko5@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXTERNAL] Re: [PATCH net-next v3 3/3] net: ti: icssg-prueth: Add
- XDP support
-To: Dan Carpenter <dan.carpenter@linaro.org>
-CC: <rogerq@kernel.org>, <danishanwar@ti.com>, <pabeni@redhat.com>,
-        <kuba@kernel.org>, <edumazet@google.com>, <davem@davemloft.net>,
-        <andrew+netdev@lunn.ch>, <bpf@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <u.kleine-koenig@baylibre.com>,
-        <matthias.schiffer@ew.tq-group.com>, <schnelle@linux.ibm.com>,
-        <diogo.ivo@siemens.com>, <glaroque@baylibre.com>, <macro@orcam.me.uk>,
-        <john.fastabend@gmail.com>, <hawk@kernel.org>, <daniel@iogearbox.net>,
-        <ast@kernel.org>, <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>
-References: <20250224110102.1528552-1-m-malladi@ti.com>
- <20250224110102.1528552-4-m-malladi@ti.com>
- <d362a527-88cf-4cd5-a22f-7eeb938d4469@stanley.mountain>
- <21f21dfb-264b-4e01-9cb3-8d0133b5b31b@ti.com>
- <2c0c1a4f-95d4-40c9-9ede-6f92b173f05d@stanley.mountain>
-Content-Language: en-US
-From: "Malladi, Meghana" <m-malladi@ti.com>
-In-Reply-To: <2c0c1a4f-95d4-40c9-9ede-6f92b173f05d@stanley.mountain>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
+We are introducing a new function in the libbpf API, bpf_object__prepare,
+which provides more granular control over the process of loading a
+bpf_object. bpf_object__prepare performs ELF processing, relocations,
+prepares final state of BPF program instructions (accessible with
+bpf_program__insns()), creates and potentially pins maps, and stops short
+of loading BPF programs.
 
-On 3/3/2025 6:01 PM, Dan Carpenter wrote:
-> On Mon, Mar 03, 2025 at 05: 36: 41PM +0530, Malladi, Meghana wrote: > > 
->  > +static int emac_run_xdp(struct prueth_emac *emac, struct xdp_buff 
-> *xdp, > > > + struct page *page) > > > +{ > > > + struct net_device
-> ZjQcmQRYFpfptBannerStart
-> This message was sent from outside of Texas Instruments.
-> Do not click links or open attachments unless you recognize the source 
-> of this email and know the content is safe.
-> Report Suspicious
-> <https://us-phishalarm-ewt.proofpoint.com/EWT/v1/G3vK! 
-> uldqV3eFFkc7oMXFHHkDX4AFLVsE3ldskf6bPMMFmxDOsNtMfZjUscGelUkBFpAeybNre38L_c2LiiUb7AZxLvAeqSk9ifgbPE1AYFU$>
-> ZjQcmQRYFpfptBannerEnd
-> 
-> On Mon, Mar 03, 2025 at 05:36:41PM +0530, Malladi, Meghana wrote:
->> > > +static int emac_run_xdp(struct prueth_emac *emac, struct xdp_buff *xdp,
->> > > +			struct page *page)
->> > > +{
->> > > +	struct net_device *ndev = emac->ndev;
->> > > +	int err, result = ICSSG_XDP_PASS;
->> > > +	struct bpf_prog *xdp_prog;
->> > > +	struct xdp_frame *xdpf;
->> > > +	int q_idx;
->> > > +	u32 act;
->> > > +
->> > > +	xdp_prog = READ_ONCE(emac->xdp_prog);
->> > > +	act = bpf_prog_run_xdp(xdp_prog, xdp);
->> > > +	switch (act) {
->> > > +	case XDP_PASS:
->> > > +		break;
->> > > +	case XDP_TX:
->> > > +		/* Send packet to TX ring for immediate transmission */
->> > > +		xdpf = xdp_convert_buff_to_frame(xdp);
->> > > +		if (unlikely(!xdpf))
->> > 
->> > This is the second unlikely() macro which is added in this patchset.
->> > The rule with likely/unlikely() is that it should only be added if it
->> > likely makes a difference in benchmarking.  Quite often the compiler
->> > is able to predict that valid pointers are more likely than NULL
->> > pointers so often these types of annotations don't make any difference
->> > at all to the compiled code.  But it depends on the compiler and the -O2
->> > options.
->> > 
->> 
->> Do correct me if I am wrong, but from my understanding, XDP feature depends
->> alot of performance and benchmarking and having unlikely does make a
->> difference. Atleast in all the other drivers I see this being used for XDP.
->> 
-> 
-> Which compiler are you on when you say that "having unlikely does make a
-> difference"?
+There are couple of anticipated usecases for this API:
+* Use BPF token for freplace programs that might need to lookup BTF of
+other programs (BPF token creation can't be moved to open step, as open
+step is "no privilege assumption" step so that tools like bpftool can
+generate skeleton, discover the structure of BPF object, etc).
+* Stopping at prepare gives users finalized BPF program
+instructions (with subprogs appended, everything relocated and
+finalized, etc). And that property can be taken advantage of by
+veristat (and similar tools) that might want to process one program at
+a time, but would like to avoid relatively slow ELF parsing and
+processing; and even BPF selftests itself (RUN_TESTS part of it at
+least) would benefit from this by eliminating waste of re-processing
+ELF many times.
 
-I'm on gcc version 10.3.1.
+Mykyta Yatsenko (4):
+  libbpf: use map_is_created helper in map setters
+  libbpf: introduce more granular state for bpf_object
+  libbpf: split bpf object load into prepare/load
+  selftests/bpf: add tests for bpf_object__prepare
 
-> 
-> I'm on gcc version 14.2.0 (Debian 14.2.0-16) and it doesn't make a
-> difference to the compiled code.  This matches what one would expect from
-> a compiler.  Valid pointers are fast path and NULL pointers are slow path.
-> 
+ tools/lib/bpf/libbpf.c                        | 197 ++++++++++++------
+ tools/lib/bpf/libbpf.h                        |  13 ++
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/prepare.c        |  99 +++++++++
+ tools/testing/selftests/bpf/progs/prepare.c   |  28 +++
+ 5 files changed, 271 insertions(+), 67 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/prepare.c
+ create mode 100644 tools/testing/selftests/bpf/progs/prepare.c
 
-Can you tell me how did you verify this? I actually don't know what 
-level of optimization to expect from a compiler. I said so, because I 
-have checked with other drivers which implemented XDP and everywhere 
-unlikely is used. But now I understand its not the driver but the 
-compiler that plays the major role in defining the optimization.
-
-> Adding an unlikely() is a micro optimization.  There are so many other
-> things you can do to speed up the code.  I wouldn't start with that.
->
-
-Ok, if you believe that unlikely is doing more harm than good, I am ok 
-with dropping them off.
-
-> regards,
-> dan
-> 
+-- 
+2.48.1
 
 
