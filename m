@@ -1,173 +1,99 @@
-Return-Path: <bpf+bounces-53182-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53200-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66BBAA4E2A3
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 16:15:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FF52A4E61E
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 17:35:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9121317FF70
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 15:09:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C94017E7BF
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 16:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57E4727F4F0;
-	Tue,  4 Mar 2025 15:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F232BE7A8;
+	Tue,  4 Mar 2025 16:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nMHT7yf0"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UJN6nX7O"
 X-Original-To: bpf@vger.kernel.org
-Received: from beeline2.cc.itu.edu.tr (beeline2.cc.itu.edu.tr [160.75.25.116])
+Received: from beeline1.cc.itu.edu.tr (beeline1.cc.itu.edu.tr [160.75.25.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19AF27F4F2
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 15:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=160.75.25.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3ABA294EF3
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 16:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=160.75.25.115
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741100649; cv=fail; b=bRbnmhMQs3AOBvgaSXQH+0WfwE+cdyYcvKgeD/HVRtwxh+kTz7GDc0Wopma0UhkbwW63Brjo4E5pBGOscwSqtgUKsGS/JMy4iMYZKErUqy6C00SJkw/e4jeB+ANxXyVktLxmO8pmYRcAarieTFnLR+Quu+eUm1CEU3ekXs94DgU=
+	t=1741104440; cv=pass; b=ezgTNCChvYmKsK3zV79P9N/G7Y110pmPjcyj6HUUcUDgC0EYeIJ5Sl7U5iRCdUmG+7qR7nmu5t6Wc/k6uX8G5uWqSy9UPawCbNMdP8bPV+6E1yNlmCh/qH2DMEts+acKw1H4AfznMUK0O0O8XEkEJL6t1/7dhyQYcylP/LJjE6c=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741100649; c=relaxed/simple;
-	bh=uc8YibK4BEiim5VXC8kvxRFxKontNFEJxhuF6oIl0oQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bI5W8show8DR8rvPcDEB06O0fxOg3YPB7MAim6qbt/C9S7aGkqpcQ7JQDNMsurxnM+vDP465UJB1B9W80YiMki2B6evB6D4qiz1Xfyytjk67LFHw07kYiYLT5BbH6ZTjDQ0u6rZLJg9EnSqCTyGoIK+Q8nHT0/YvDB0z73IAdB0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=none smtp.mailfrom=cc.itu.edu.tr; dkim=fail (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nMHT7yf0 reason="signature verification failed"; arc=none smtp.client-ip=209.85.216.67; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; arc=fail smtp.client-ip=160.75.25.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1741104440; c=relaxed/simple;
+	bh=VmzpT3xQVyvpJRwyRzfT67E539eO66WnD2nAargeggQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=J91IqUeoI5Y/1utgRmPPJtu3jNPiSkzN6v0r0aJB3gXNZahbWhdcuYRMr7yrX8X4iDOfh2yTcWRduGpc7B10/s1tbNaK6rBCFb5g8JfDjKCkFhxmjt6ByuyfkrmbumTZN9kxkzS76n+9s5b4gRFgb/M2R3eVp+WHKBEMr7ivuz4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=none smtp.mailfrom=cc.itu.edu.tr; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UJN6nX7O; arc=none smtp.client-ip=217.70.183.200; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; arc=pass smtp.client-ip=160.75.25.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cc.itu.edu.tr
-Received: from lesvatest1.cc.itu.edu.tr (lesvatest1.cc.itu.edu.tr [10.146.128.1])
+Received: from lesvatest1.cc.itu.edu.tr (unknown [10.146.128.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by beeline2.cc.itu.edu.tr (Postfix) with ESMTPS id 4716D40F1CE9
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 18:04:06 +0300 (+03)
+	by beeline1.cc.itu.edu.tr (Postfix) with ESMTPS id 25C5540D974C
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 19:07:17 +0300 (+03)
 X-Envelope-From: <root@cc.itu.edu.tr>
 Received: from lesva1.cc.itu.edu.tr (unknown [160.75.70.79])
-	by lesvatest1.cc.itu.edu.tr (Postfix) with ESMTP id 4Z6f6M114DzFyDW
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 18:02:03 +0300 (+03)
+	by lesvatest1.cc.itu.edu.tr (Postfix) with ESMTP id 4Z6gWy5zMczG20c
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 19:05:50 +0300 (+03)
 Received: by le1 (Postfix, from userid 0)
-	id DAB8042722; Tue,  4 Mar 2025 18:01:44 +0300 (+03)
+	id C324341898; Tue,  4 Mar 2025 19:05:33 +0300 (+03)
 Authentication-Results: lesva1.cc.itu.edu.tr;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nMHT7yf0
-X-Envelope-From: <linux-kernel+bounces-541066-bozkiru=itu.edu.tr@vger.kernel.org>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UJN6nX7O
+X-Envelope-From: <linux-kernel+bounces-541135-bozkiru=itu.edu.tr@vger.kernel.org>
 Authentication-Results: lesva2.cc.itu.edu.tr;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nMHT7yf0
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UJN6nX7O
 Received: from fgw2.itu.edu.tr (fgw2.itu.edu.tr [160.75.25.104])
-	by le2 (Postfix) with ESMTP id 4A67A41A49
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 09:56:58 +0300 (+03)
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by fgw2.itu.edu.tr (Postfix) with SMTP id 23DAE2DCE4
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 09:56:58 +0300 (+03)
+	by le2 (Postfix) with ESMTP id B0BD842BD2
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 11:23:46 +0300 (+03)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by fgw2.itu.edu.tr (Postfix) with SMTP id 4D6342DCF0
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 11:23:46 +0300 (+03)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C9EF18904AE
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 06:56:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77E183ADD38
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 08:23:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CEE1EBFFC;
-	Mon,  3 Mar 2025 06:56:04 +0000 (UTC)
-Received: from mail-pj1-f67.google.com (mail-pj1-f67.google.com [209.85.216.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F3D1EFFB6;
+	Mon,  3 Mar 2025 08:23:00 +0000 (UTC)
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B58F41E5701;
-	Mon,  3 Mar 2025 06:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA6023F36D;
+	Mon,  3 Mar 2025 08:22:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740984959; cv=none; b=ga0XXXdTmCawMAOTbGZf71IBfzm4edkk9dIYwMOwgpugAue78KRl2qJRE0Y8cSuYnsPTHR9V5oMNRTSqQLPhwTP7NkbuiBTIvYQab5F93yTmhmunfYAfVhdIjSc/JvxT+S5wCU9Tislq3K2FMHVWYv1Nk2qKSelqjUlEMxitiLw=
+	t=1740990177; cv=none; b=aQbPY7uXB/CNf4SYSiphRsaHKazbT0fiZ50tgluqoFSCqfbFUydctuBmAk5bfANKDLkjmysYUmLCc+kuj83AxrLOfb/VH6XJyMJ7YKnvzITPN86oR3Rx/yDqB/6h5hVwhkQVb1CYbWerjtzwCSfKqLK6K+jveAV+U+W/WAdd/1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740984959; c=relaxed/simple;
-	bh=/mOskEeuSOoI6Ik4GZTrnIyvVE91D9OQfL2ePFfqnyY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=t/fp31aBhpPtR4uCfcVhou+b/shG3hPMjjmlRPc7eQTxQcSVN0ky5d3feFZWupxrfXyz569cNJ58G4gH55OygJcRDQA8cXBIj5Mif3R19df+EElfoW8xAOyTr3RawXwnfUnM7HSf6yC07FS89lDr5LozLgPdFfvGYsloQCTYNV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nMHT7yf0; arc=none smtp.client-ip=209.85.216.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f67.google.com with SMTP id 98e67ed59e1d1-2fe848040b1so8486159a91.3;
-        Sun, 02 Mar 2025 22:55:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740984957; x=1741589757; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g+TPvgOYa0/i6hWJUb51m5UVXTU1tbJahC/+FJNQh8Y=;
-        b=nMHT7yf0JSBuKVUPVDM0n2rvnQRbtXnVHvDEHVZ7QUoe0Gsk9REU15zU1AUaZ2CvaJ
-         NnfBPFlsyS2PlTm8U5m9zy9RBIYjEuH+K4eRFVHik4Ii2rUWXD4m3dgjyQ++TyqVe4rC
-         HkOgOhQ4f5XJ7KFI73Rfhu3JiK2ibMK3KcSv/AwaDXecHuC+lUEn4cQNesacM60KfTBi
-         lJAnRi62yvdGkpnfl1Nf/OQDVLf7xlJpVW7zkrIUnDSTAQMSnUVUwyTgd3CooGNlF4uB
-         NaKpzz2t/kyR5CpZJi43ATuhoqh5T2cG6AO3XSDxfMw2hkSnrZT9aRyFOom0WLgGdPPV
-         2Bog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740984957; x=1741589757;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g+TPvgOYa0/i6hWJUb51m5UVXTU1tbJahC/+FJNQh8Y=;
-        b=X6ZOkvo9V2kycllh6Qn5o9MzbUJQpY4W3tHL1cARCeBWIdFHuzWsbsxpjNief5judS
-         52ezlrlbzNy5L/GhOv+W2tXTAJf35KrZ8q810aprVyrSHN3TwxANBzo1LJ0p8GNbJiwK
-         RjXs/iPmCOlE9/LVvxTUDCvBu/YBwlRY2ciSbPefYca4Zi6A4j79ePWMEYn0D35XTiU4
-         LVyN4KY6K3gV01oO4d3P+uV/0cLKyiV4qTifoegHJtBihMxWSTAz9Q2S2ffJANdNTMPF
-         zSga25L9P+z8M5LT6uNXgSJtX7uSC6sl+AUBR4wY0o3ulcXcRT7xVlHCDuvA2tWtFG/e
-         bojw==
-X-Forwarded-Encrypted: i=1; AJvYcCU8AT66V1i88rl74t44bh/ooXQKLMrjDM0CkwQauKnenhj1KoMT0f1FyhrksFVXyUeYlI5qartG@vger.kernel.org, AJvYcCVClG7VO1mk8CG9ipeLXGLT+i2mDnimiFHFCO5pPTrpgj2e16ox7VW5FuRnFdpf+PmyNUg=@vger.kernel.org, AJvYcCVjSijtfIJgraPwu8m3NuPmfo40A9WIg+fywbpg04eiWSE7xbgxZcJuDSheDFcLF04KyBQdGDYcfUD0tsUq@vger.kernel.org, AJvYcCXOXCOb/HX6KLAFacyAjmo4p0oXcOp0L+zwaAM3uJHulaHUY9zrCNtdqopXCyrBziHb9b89QjaVatyOuiJKgj9xKzX2@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy99xJo930iYZcSin16wy507WQL497UjdSiHTegBYI1xx+Z9Nsi
-	fWd6vRC/S38wBmZ0l9JH03IySfmOnzIUGHY1WUMdHXSZTe5BAN4w
-X-Gm-Gg: ASbGncsWjhrIKsJxNzMSEqBp9BCSOzwlcwhDImK5JMtVMnfqUjS8xnNC7t63Rcv1Dk3
-	foWemDiq2S/gwouOk6ARxa35YJAzwU1vhaZ/1QJJ/qk7QCbk6egurVZ22g4s9WtSNDu6Y/nGVY/
-	yJdmyqWWdfjGXz4a6GC21+WNIro5cD4moufybCiSpduvOwrIzDGm63g4RtMEjmoVF/batvHHHRI
-	y/VTHg/X0T8tATEQYrVO3i1WaEa0SJFIhvHUVOm7CWgHf0o/duDazvjwNHiAaFyRmeZL/PadP6y
-	qdp1DEGwm6IcbgNCutGesRgdUXFOzEfw7r0HwRxkxJqXtKeRhaALsbHsykr3sg==
-X-Google-Smtp-Source: AGHT+IGrORT4INWtpUNjluDwXHOnFxXU+/PjylHNkD+c6r6BnZ0CyNVYuiS0gySDL2RRjqIVNqAxlA==
-X-Received: by 2002:a17:90b:3c88:b0:2ee:ee77:2263 with SMTP id 98e67ed59e1d1-2febab2ecd6mr20664608a91.7.1740984956958;
-        Sun, 02 Mar 2025 22:55:56 -0800 (PST)
-Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fea6769ad2sm8139575a91.11.2025.03.02.22.55.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Mar 2025 22:55:56 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: peterz@infradead.org,
-	rostedt@goodmis.org,
-	mark.rutland@arm.com,
-	alexei.starovoitov@gmail.com
-Cc: catalin.marinas@arm.com,
-	will@kernel.org,
-	mhiramat@kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	jolsa@kernel.org,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	nathan@kernel.org,
-	nick.desaulniers+lkml@gmail.com,
-	morbo@google.com,
-	samitolvanen@google.com,
-	kees@kernel.org,
-	dongml2@chinatelecom.cn,
-	akpm@linux-foundation.org,
-	riel@surriel.com,
-	rppt@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH bpf-next v3 2/4] add per-function metadata storage support
-Date: Mon,  3 Mar 2025 14:53:43 +0800
-Message-Id: <20250303065345.229298-3-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250303065345.229298-1-dongml2@chinatelecom.cn>
-References: <20250303065345.229298-1-dongml2@chinatelecom.cn>
+	s=arc-20240116; t=1740990177; c=relaxed/simple;
+	bh=VmzpT3xQVyvpJRwyRzfT67E539eO66WnD2nAargeggQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Zi6ZPjnZAFIIUK/Gh6/VKQiOsnqxUZYiXpgVMsprn7sdAHtNDEPES4u3Fx26kAngi6bz35u2apZMdqPtVUycouWZb8gksG8gg43rQBPjbbYSRE7/61yXryMCTFxj7bdqZOz4K3Ce/S4lT+iaxeQwI92Y6PGXKNsuS8Z6zWVC+t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UJN6nX7O; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4539D44352;
+	Mon,  3 Mar 2025 08:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1740990172;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=jqlu8eOJiZMNZm/+Mkhpb1rlBXN5YMdMX15PMY6me0M=;
+	b=UJN6nX7Om5ZXdA8i/wrHFqWm6b317tIL/moZqP5+5o5ASSr7cSh2+yxB/WjLoJ7J08sfqZ
+	WKYEHGB/H5mygk56iHVN5h5Dj6IZkjzQbbsveiaU4LrIjn+TA8YKle0MhMWB4em8OdqPEQ
+	2Wc08R0Yt9IepEnIgHKbMuKtKcSuzM2jg0BVuUkktweDxkBlHesTNjISSOb08xdCEsI0AO
+	G/GeqpBaREnV+RPgnaJ/hJ5U0VbSC+RC2luhN9vU6x7lvhEPXmpzf0Dv9l7zgdb4UMbtQR
+	VySb5FV5iyJk/UMW945XW5i07SzcolBZWrD0HqxrniWetntDG0E8TcOw9pqWjw==
+From: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+Subject: [PATCH bpf-next v2 00/10] selftests/bpf: Migrate test_tunnel.sh to
+ test_progs
+Date: Mon, 03 Mar 2025 09:22:48 +0100
+Message-Id: <20250303-tunnels-v2-0-8329f38f0678@bootlin.com>
 Precedence: bulk
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -175,374 +101,84 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANhmxWcC/z2Nyw7CIBBFf6WZtRgeRaMr/8N0Ae1gJ6nQAJKap
+ v8uYeHy5Nycu0PCSJjg3u0QsVCi4CvIUwfjbPwLGU2VQXKpuVCC5Y/3uCSmb/bSCzTKCQ51vUZ
+ 0tLXSE+zqmMctw1DNTCmH+G0XRTTfalJe/7UiGGdKTU6PihvD+4cNIS/kz2N4w3Acxw99YJm5q
+ gAAAA==
+X-Change-ID: 20250131-tunnels-59b641ea3f10
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Alexis Lothore <alexis.lothore@bootlin.com>, bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+X-Mailer: b4 0.14.2
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdelkeeifecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffufffkgggtgffvvefosehtjeertdertdejnecuhfhrohhmpedfuegrshhtihgvnhcuvehurhhuthgthhgvthculdgvuefrhfcuhfhouhhnuggrthhiohhnmddfuceosggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomheqnecuggftrfgrthhtvghrnhephffgheekudehgeduiedufeevtdejjedvffekffetudejiefgkefgieeuheeftdejnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplgduledvrdduieekrddtrddugegnpdhmrghilhhfrhhomhepsggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepvddtpdhrtghpthhtoheplhhinhhugidqkhhsvghlfhhtvghsthesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehshhhurghhsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomhdpr
+ hgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtohepshhonhhgsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmhihkohhlrghlsehfsgdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhg
+X-GND-Sasl: bastien.curutchet@bootlin.com
 X-ITU-Libra-ESVA-Information: Please contact Istanbul Teknik Universitesi for more information
-X-ITU-Libra-ESVA-ID: 4Z6f6M114DzFyDW
+X-ITU-Libra-ESVA-ID: 4Z6gWy5zMczG20c
 X-ITU-Libra-ESVA: No virus found
 X-ITU-Libra-ESVA-From: root@cc.itu.edu.tr
-X-ITU-Libra-ESVA-Watermark: 1741705348.64583@E4BxANqjRL0GuX858nm/ig
+X-ITU-Libra-ESVA-Watermark: 1741709162.00833@7FhGoUJ4mr+ARAG7WRmI0w
 X-ITU-MailScanner-SpamCheck: not spam
 
-For now, there isn't a way to set and get per-function metadata with
-a low overhead, which is not convenient for some situations. Take
-BPF trampoline for example, we need to create a trampoline for each
-kernel function, as we have to store some information of the function
-to the trampoline, such as BPF progs, function arg count, etc. The
-performance overhead and memory consumption can be higher to create
-these trampolines. With the supporting of per-function metadata storage,
-we can store these information to the metadata, and create a global BPF
-trampoline for all the kernel functions. In the global trampoline, we
-get the information that we need from the function metadata through the
-ip (function address) with almost no overhead.
+Hi all,
 
-Another beneficiary can be ftrace. For now, all the kernel functions that
-are enabled by dynamic ftrace will be added to a filter hash if there are
-more than one callbacks. And hash lookup will happen when the traced
-functions are called, which has an impact on the performance, see
-__ftrace_ops_list_func() -> ftrace_ops_test(). With the per-function
-metadata supporting, we can store the information that if the callback is
-enabled on the kernel function to the metadata.
+This patch series continues the work to migrate the *.sh tests into
+prog_tests framework.
 
-Support per-function metadata storage in the function padding, and
-previous discussion can be found in [1]. Generally speaking, we have two
-way to implement this feature:
+The test_tunnel.sh script has already been partly migrated to
+test_progs in prog_tests/test_tunnel.c so I add my work to it.
 
-1. Create a function metadata array, and prepend a insn which can hold
-the index of the function metadata in the array. And store the insn to
-the function padding.
+PATCH 1 & 2 create some helpers to avoid code duplication and ease the
+migration in the following patches.
+PATCH 3 to 9 migrate the tests of gre, ip6gre, erspan, ip6erspan,
+geneve, ip6geneve and ip6tnl tunnels.
+PATCH 10 removes test_tunnel.sh
 
-2. Allocate the function metadata with kmalloc(), and prepend a insn whic=
-h
-hold the pointer of the metadata. And store the insn to the function
-padding.
-
-Compared with way 2, way 1 consume less space, but we need to do more wor=
-k
-on the global function metadata array. And we implement this function in
-the way 1.
-
-Link: https://lore.kernel.org/bpf/CADxym3anLzM6cAkn_z71GDd_VeKiqqk1ts=3Dx=
-uiP7pr4PO6USPA@mail.gmail.com/ [1]
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
+Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
 ---
-v2:
-- add supporting for arm64
-- split out arch relevant code
-- refactor the commit log
----
- include/linux/kfunc_md.h |  25 ++++
- kernel/Makefile          |   1 +
- kernel/trace/Makefile    |   1 +
- kernel/trace/kfunc_md.c  | 239 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 266 insertions(+)
- create mode 100644 include/linux/kfunc_md.h
- create mode 100644 kernel/trace/kfunc_md.c
+Changes in v2:
+- PATCH 1: Move tc_hook definition to attatch_tc_prog()
+- PATCH 4: Disable DAD through `ip addr`
+- Link to v1: https://lore.kernel.org/r/20250227-tunnels-v1-0-33df5c30aa04@bootlin.com
 
-diff --git a/include/linux/kfunc_md.h b/include/linux/kfunc_md.h
-new file mode 100644
-index 000000000000..df616f0fcb36
---- /dev/null
-+++ b/include/linux/kfunc_md.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_KFUNC_MD_H
-+#define _LINUX_KFUNC_MD_H
-+
-+#include <linux/kernel.h>
-+
-+struct kfunc_md {
-+	int users;
-+	/* we can use this field later, make sure it is 8-bytes aligned
-+	 * for now.
-+	 */
-+	int pad0;
-+	void *func;
-+};
-+
-+extern struct kfunc_md *kfunc_mds;
-+
-+struct kfunc_md *kfunc_md_find(void *ip);
-+struct kfunc_md *kfunc_md_get(void *ip);
-+void kfunc_md_put(struct kfunc_md *meta);
-+void kfunc_md_put_by_ip(void *ip);
-+void kfunc_md_lock(void);
-+void kfunc_md_unlock(void);
-+
-+#endif
-diff --git a/kernel/Makefile b/kernel/Makefile
-index 87866b037fbe..7435674d5da3 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -108,6 +108,7 @@ obj-$(CONFIG_TRACE_CLOCK) +=3D trace/
- obj-$(CONFIG_RING_BUFFER) +=3D trace/
- obj-$(CONFIG_TRACEPOINTS) +=3D trace/
- obj-$(CONFIG_RETHOOK) +=3D trace/
-+obj-$(CONFIG_FUNCTION_METADATA) +=3D trace/
- obj-$(CONFIG_IRQ_WORK) +=3D irq_work.o
- obj-$(CONFIG_CPU_PM) +=3D cpu_pm.o
- obj-$(CONFIG_BPF) +=3D bpf/
-diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-index 057cd975d014..9780ee3f8d8d 100644
---- a/kernel/trace/Makefile
-+++ b/kernel/trace/Makefile
-@@ -106,6 +106,7 @@ obj-$(CONFIG_FTRACE_RECORD_RECURSION) +=3D trace_recu=
-rsion_record.o
- obj-$(CONFIG_FPROBE) +=3D fprobe.o
- obj-$(CONFIG_RETHOOK) +=3D rethook.o
- obj-$(CONFIG_FPROBE_EVENTS) +=3D trace_fprobe.o
-+obj-$(CONFIG_FUNCTION_METADATA) +=3D kfunc_md.o
-=20
- obj-$(CONFIG_TRACEPOINT_BENCHMARK) +=3D trace_benchmark.o
- obj-$(CONFIG_RV) +=3D rv/
-diff --git a/kernel/trace/kfunc_md.c b/kernel/trace/kfunc_md.c
-new file mode 100644
-index 000000000000..7ec25bcf778d
---- /dev/null
-+++ b/kernel/trace/kfunc_md.c
-@@ -0,0 +1,239 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/slab.h>
-+#include <linux/memory.h>
-+#include <linux/rcupdate.h>
-+#include <linux/ftrace.h>
-+#include <linux/kfunc_md.h>
-+
-+#define ENTRIES_PER_PAGE (PAGE_SIZE / sizeof(struct kfunc_md))
-+
-+static u32 kfunc_md_count =3D ENTRIES_PER_PAGE, kfunc_md_used;
-+struct kfunc_md __rcu *kfunc_mds;
-+EXPORT_SYMBOL_GPL(kfunc_mds);
-+
-+static DEFINE_MUTEX(kfunc_md_mutex);
-+
-+
-+void kfunc_md_unlock(void)
-+{
-+	mutex_unlock(&kfunc_md_mutex);
-+}
-+EXPORT_SYMBOL_GPL(kfunc_md_unlock);
-+
-+void kfunc_md_lock(void)
-+{
-+	mutex_lock(&kfunc_md_mutex);
-+}
-+EXPORT_SYMBOL_GPL(kfunc_md_lock);
-+
-+static u32 kfunc_md_get_index(void *ip)
-+{
-+	return *(u32 *)(ip - KFUNC_MD_DATA_OFFSET);
-+}
-+
-+static void kfunc_md_init(struct kfunc_md *mds, u32 start, u32 end)
-+{
-+	u32 i;
-+
-+	for (i =3D start; i < end; i++)
-+		mds[i].users =3D 0;
-+}
-+
-+static int kfunc_md_page_order(void)
-+{
-+	return fls(DIV_ROUND_UP(kfunc_md_count, ENTRIES_PER_PAGE)) - 1;
-+}
-+
-+/* Get next usable function metadata. On success, return the usable
-+ * kfunc_md and store the index of it to *index. If no usable kfunc_md i=
-s
-+ * found in kfunc_mds, a larger array will be allocated.
-+ */
-+static struct kfunc_md *kfunc_md_get_next(u32 *index)
-+{
-+	struct kfunc_md *new_mds, *mds;
-+	u32 i, order;
-+
-+	mds =3D rcu_dereference(kfunc_mds);
-+	if (mds =3D=3D NULL) {
-+		order =3D kfunc_md_page_order();
-+		new_mds =3D (void *)__get_free_pages(GFP_KERNEL, order);
-+		if (!new_mds)
-+			return NULL;
-+		kfunc_md_init(new_mds, 0, kfunc_md_count);
-+		/* The first time to initialize kfunc_mds, so it is not
-+		 * used anywhere yet, and we can update it directly.
-+		 */
-+		rcu_assign_pointer(kfunc_mds, new_mds);
-+		mds =3D new_mds;
-+	}
-+
-+	if (likely(kfunc_md_used < kfunc_md_count)) {
-+		/* maybe we can manage the used function metadata entry
-+		 * with a bit map ?
-+		 */
-+		for (i =3D 0; i < kfunc_md_count; i++) {
-+			if (!mds[i].users) {
-+				kfunc_md_used++;
-+				*index =3D i;
-+				mds[i].users++;
-+				return mds + i;
-+			}
-+		}
-+	}
-+
-+	order =3D kfunc_md_page_order();
-+	/* no available function metadata, so allocate a bigger function
-+	 * metadata array.
-+	 */
-+	new_mds =3D (void *)__get_free_pages(GFP_KERNEL, order + 1);
-+	if (!new_mds)
-+		return NULL;
-+
-+	memcpy(new_mds, mds, kfunc_md_count * sizeof(*new_mds));
-+	kfunc_md_init(new_mds, kfunc_md_count, kfunc_md_count * 2);
-+
-+	rcu_assign_pointer(kfunc_mds, new_mds);
-+	synchronize_rcu();
-+	free_pages((u64)mds, order);
-+
-+	mds =3D new_mds + kfunc_md_count;
-+	*index =3D kfunc_md_count;
-+	kfunc_md_count <<=3D 1;
-+	kfunc_md_used++;
-+	mds->users++;
-+
-+	return mds;
-+}
-+
-+static int kfunc_md_text_poke(void *ip, void *insn, void *nop)
-+{
-+	void *target;
-+	int ret =3D 0;
-+	u8 *prog;
-+
-+	target =3D ip - KFUNC_MD_INSN_OFFSET;
-+	mutex_lock(&text_mutex);
-+	if (insn) {
-+		if (!memcmp(target, insn, KFUNC_MD_INSN_SIZE))
-+			goto out;
-+
-+		if (memcmp(target, nop, KFUNC_MD_INSN_SIZE)) {
-+			ret =3D -EBUSY;
-+			goto out;
-+		}
-+		prog =3D insn;
-+	} else {
-+		if (!memcmp(target, nop, KFUNC_MD_INSN_SIZE))
-+			goto out;
-+		prog =3D nop;
-+	}
-+
-+	ret =3D kfunc_md_arch_poke(target, prog);
-+out:
-+	mutex_unlock(&text_mutex);
-+	return ret;
-+}
-+
-+static bool __kfunc_md_put(struct kfunc_md *md)
-+{
-+	u8 nop_insn[KFUNC_MD_INSN_SIZE];
-+
-+	if (WARN_ON_ONCE(md->users <=3D 0))
-+		return false;
-+
-+	md->users--;
-+	if (md->users > 0)
-+		return false;
-+
-+	if (!kfunc_md_arch_exist(md->func))
-+		return false;
-+
-+	kfunc_md_arch_nops(nop_insn);
-+	/* release the metadata by recovering the function padding to NOPS */
-+	kfunc_md_text_poke(md->func, NULL, nop_insn);
-+	/* TODO: we need a way to shrink the array "kfunc_mds" */
-+	kfunc_md_used--;
-+
-+	return true;
-+}
-+
-+/* Decrease the reference of the md, release it if "md->users <=3D 0" */
-+void kfunc_md_put(struct kfunc_md *md)
-+{
-+	mutex_lock(&kfunc_md_mutex);
-+	__kfunc_md_put(md);
-+	mutex_unlock(&kfunc_md_mutex);
-+}
-+EXPORT_SYMBOL_GPL(kfunc_md_put);
-+
-+/* Get a exist metadata by the function address, and NULL will be return=
-ed
-+ * if not exist.
-+ *
-+ * NOTE: rcu lock should be held during reading the metadata, and
-+ * kfunc_md_lock should be held if writing happens.
-+ */
-+struct kfunc_md *kfunc_md_find(void *ip)
-+{
-+	struct kfunc_md *md;
-+	u32 index;
-+
-+	if (kfunc_md_arch_exist(ip)) {
-+		index =3D kfunc_md_get_index(ip);
-+		if (WARN_ON_ONCE(index >=3D kfunc_md_count))
-+			return NULL;
-+
-+		md =3D rcu_dereference(kfunc_mds) + index;
-+		return md;
-+	}
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(kfunc_md_find);
-+
-+void kfunc_md_put_by_ip(void *ip)
-+{
-+	struct kfunc_md *md;
-+
-+	mutex_lock(&kfunc_md_mutex);
-+	md =3D kfunc_md_find(ip);
-+	if (md)
-+		__kfunc_md_put(md);
-+	mutex_unlock(&kfunc_md_mutex);
-+}
-+EXPORT_SYMBOL_GPL(kfunc_md_put_by_ip);
-+
-+/* Get a exist metadata by the function address, and create one if not
-+ * exist. Reference of the metadata will increase 1.
-+ *
-+ * NOTE: always call this function with kfunc_md_lock held, and all
-+ * updating to metadata should also hold the kfunc_md_lock.
-+ */
-+struct kfunc_md *kfunc_md_get(void *ip)
-+{
-+	u8 nop_insn[KFUNC_MD_INSN_SIZE], insn[KFUNC_MD_INSN_SIZE];
-+	struct kfunc_md *md;
-+	u32 index;
-+
-+	md =3D kfunc_md_find(ip);
-+	if (md) {
-+		md->users++;
-+		return md;
-+	}
-+
-+	md =3D kfunc_md_get_next(&index);
-+	if (!md)
-+		return NULL;
-+
-+	kfunc_md_arch_pretend(insn, index);
-+	kfunc_md_arch_nops(nop_insn);
-+
-+	if (kfunc_md_text_poke(ip, insn, nop_insn)) {
-+		kfunc_md_used--;
-+		md->users =3D 0;
-+		return NULL;
-+	}
-+	md->func =3D ip;
-+
-+	return md;
-+}
-+EXPORT_SYMBOL_GPL(kfunc_md_get);
---=20
-2.39.5
+---
+Bastien Curutchet (eBPF Foundation) (10):
+      selftests/bpf: test_tunnel: Add generic_attach* helpers
+      selftests/bpf: test_tunnel: Add ping helpers
+      selftests/bpf: test_tunnel: Move gre tunnel test to test_progs
+      selftests/bpf: test_tunnel: Move ip6gre tunnel test to test_progs
+      selftests/bpf: test_tunnel: Move erspan tunnel tests to test_progs
+      selftests/bpf: test_tunnel: Move ip6erspan tunnel test to test_progs
+      selftests/bpf: test_tunnel: Move geneve tunnel test to test_progs
+      selftests/bpf: test_tunnel: Move ip6geneve tunnel test to test_progs
+      selftests/bpf: test_tunnel: Move ip6tnl tunnel tests to test_progs
+      selftests/bpf: test_tunnel: Remove test_tunnel.sh
+
+ tools/testing/selftests/bpf/Makefile               |   1 -
+ .../testing/selftests/bpf/prog_tests/test_tunnel.c | 633 ++++++++++++++++----
+ tools/testing/selftests/bpf/test_tunnel.sh         | 645 ---------------------
+ 3 files changed, 530 insertions(+), 749 deletions(-)
+---
+base-commit: 97b4501198b918f1d0adeb8205004d64f780e472
+change-id: 20250131-tunnels-59b641ea3f10
+
+Best regards,
+-- 
+Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
 
 
 
