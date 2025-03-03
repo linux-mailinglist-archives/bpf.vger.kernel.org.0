@@ -1,137 +1,365 @@
-Return-Path: <bpf+bounces-53177-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53180-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28DF7A4DC5D
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 12:22:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9109A4E1A8
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 15:49:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60668178F8E
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 11:19:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D19A188B01B
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 14:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75C961C2BD;
-	Tue,  4 Mar 2025 11:18:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC7E25DAE1;
+	Tue,  4 Mar 2025 14:41:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="kCC5ov3+"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kdI1CMsm"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BEB8200BBD
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 11:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+Received: from beeline3.cc.itu.edu.tr (beeline3.cc.itu.edu.tr [160.75.25.117])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021BD2063E0
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 14:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=160.75.25.117
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741099278; cv=fail; b=e00UeGb6+YcunjU3WRt8D+qQiDdwkJ0WXTcdOX2yrzPVdN40AqreHHHjb+qZP9J8M72cs0XIQ1YMTffTYu5/Q0d8yBQI0ZLxRY9/O0jd7oy5EGYhqjuQ7VoPpYitgLrwryejmXPs2AV4o0QVR9i+hrEsPkstOt43913UUGtBsWw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741099278; c=relaxed/simple;
+	bh=AXnk7lLgH2/5lgOLQ215kKh4iSCtSaXd5JSjyKhdwI8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=uoo1ZKaKQBIBI52PVR8hiQ3q+ZlKgNZHMeuQAbCrztXAc1pI7RfE5cfB1FAIPhXU4Ybqbd85CYQtDZj1j/q+PGKpiYoQiZXEad207/15UJEdovia2loinFjjc3ZLxfhmPrrpjjc9ErDu31zBn5bM1TKs/lltf8Jgjtnzw3OM8oM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=none smtp.mailfrom=cc.itu.edu.tr; dkim=fail (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kdI1CMsm reason="signature verification failed"; arc=none smtp.client-ip=209.85.216.67; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; arc=fail smtp.client-ip=160.75.25.117
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cc.itu.edu.tr
+Received: from lesvatest1.cc.itu.edu.tr (lesvatest1.cc.itu.edu.tr [10.146.128.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by beeline3.cc.itu.edu.tr (Postfix) with ESMTPS id 3CE2540CF12A
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 17:41:15 +0300 (+03)
+X-Envelope-From: <root@cc.itu.edu.tr>
+Received: from lesva1.cc.itu.edu.tr (unknown [160.75.70.79])
+	by lesvatest1.cc.itu.edu.tr (Postfix) with ESMTP id 4Z6dcD2lpfzFxGQ
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 17:39:24 +0300 (+03)
+Received: by le1 (Postfix, from userid 0)
+	id B040141898; Tue,  4 Mar 2025 17:39:13 +0300 (+03)
+Authentication-Results: lesva1.cc.itu.edu.tr;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kdI1CMsm
+X-Envelope-From: <linux-kernel+bounces-541067-bozkiru=itu.edu.tr@vger.kernel.org>
+Authentication-Results: lesva2.cc.itu.edu.tr;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kdI1CMsm
+Received: from fgw1.itu.edu.tr (fgw1.itu.edu.tr [160.75.25.103])
+	by le2 (Postfix) with ESMTP id 261D441A5E
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 09:57:20 +0300 (+03)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by fgw1.itu.edu.tr (Postfix) with SMTP id D897D3063EFE
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 09:57:19 +0300 (+03)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C02D16D61B
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 06:57:02 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6481EEA27;
+	Mon,  3 Mar 2025 06:56:10 +0000 (UTC)
+Received: from mail-pj1-f67.google.com (mail-pj1-f67.google.com [209.85.216.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5679B1E990E;
+	Mon,  3 Mar 2025 06:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741087120; cv=none; b=ayRgKcatEu4Q1S7pruQyqGxjgAnmsKsiDKDmTZR14KqkNlr4Rl+0/P+KUEkNPGPlkkZnbmsTq31FdsFioGZakzIhAOhfriqKkP4W17Hg5jkWQOe/XVH6eaxTHBDtqzyyNXr+InJeX0hDZWnMDG8A5YzNPArCmrZesqd2/FfJ/t0=
+	t=1740984966; cv=none; b=NNBNThPn3JgjuM5Oux+OCBivLr/QgTB9iFkzq4jMionXQQI5R8IPltKigR93EOussqQ3pU+PKXlCTO8rxTqsKkJmpZ26MxsvlkqfC63qs1W9F8Mkq2kMnvD97s17StJ27VYPjm/csftzjabYsxOeSEJRtyEbqeV+aM+pDj7R8Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741087120; c=relaxed/simple;
-	bh=bY3Pyv8IyngQpQZW1FDRI6OBdwZmQ1FyLStF/Wv+3HA=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=bLnjF4ynm0YX7w1ILmDKpFbQsaxhukXM7Anc5KiPRmx/zW7JdrOD5PP/6GwwUrvWdxLoMDygl1cxkpAw0ZHwzWuMvjMptX7sTodIjPdR1aumX8fUkeuPwx7g7IBoUX5dX6cyGQ8LfO6Th+NiKHEKqGWrnQ7/G2ug7qrDo5sC5F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=kCC5ov3+; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=i2rJue+0leagCNJnLF
-	BTd3RRx5jlJ2ahCVIyhwC10BY=; b=kCC5ov3+h3CpQpf/iqJjyOOPVeIVUugnm+
-	OaEiw9ijplpg7GK+un3Cq582E5Q6GLzpgZio8OuOVLhORaKTtkAl8ncojuRddG0E
-	loF3muFBF5Kw9VKHATxaiZi03XQmxjcKnc8XGaEj7K2bZX58/QYyzhCOw1myvG1r
-	ruFKRCmHk=
-Received: from yang-Virtual-Machine.mshome.net (unknown [])
-	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wCHH1pe4cZnShbHQA--.50058S2;
-	Tue, 04 Mar 2025 19:17:51 +0800 (CST)
-From: Feng Yang <yangfeng59949@163.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
+	s=arc-20240116; t=1740984966; c=relaxed/simple;
+	bh=r1n1Uafjg9Tb7hAw9aZTOW4QZemIa+WVQ6XY0cn91Fo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=AVv+LB20bW0XqYva+Z2tkgWlXz6baMT8T8KyF6AMn6WIpUIjxB/zxzCA0I9RzaNJYty+vIEUe8E6bfJbTuyft+W6QeprXdicgw8qYW2V+n/EDDSEmYu+BbeAFp8ZRN4xd118oyvoU9UQQCdrFtKzxWeESmHTQwStLEdffAJrqUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kdI1CMsm; arc=none smtp.client-ip=209.85.216.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f67.google.com with SMTP id 98e67ed59e1d1-2feb1d7a68fso6904604a91.1;
+        Sun, 02 Mar 2025 22:56:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740984964; x=1741589764; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DMU16H6izdRqPTzQSvNq/kwALVMPh8dWr5JstZVUeSQ=;
+        b=kdI1CMsm+eYdqtJF2xiIN+YGJiENl+/zDMtKCNX1P85MHnzPtpWbQSvvIlYPY5bBUg
+         SbqZ+h5Yug+j8BbUJVdbztqpzLWAuzaFgby3KAx/mcXW2F8q3dKX+xwzI52fgdDpkJ8g
+         pLskVHUsKfE46pN3gjY+/SmUPeJbDyr9nt6zq0WQvYDiRvNYbzjhOGEoLZdj0xKX5vXL
+         rYYLlFFUEKMrsGimr0C6lw/WOAZGRwGPgsOw4or6jwdMDp6bqb5KUpcBfUEX142hKHsi
+         usFMs8rGt8SY01utQLtMfUufksmKsv+zk3SM9ca8IOC24cXgxDhKd8LO8WS7sETTPNlz
+         BtzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740984964; x=1741589764;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DMU16H6izdRqPTzQSvNq/kwALVMPh8dWr5JstZVUeSQ=;
+        b=Vu5fYokXqREgChPs43E4dXiX30rg428dRvFT6OpLA3AUp/jrChKrzr0bsmmQo0LUIF
+         TUuHL/bjJ5QbwPpNdqOp4WGLTe+XhcJ5D5eqzKpkizhkXTeQ4+X0gFKot2nnQ6GhUjNA
+         Ybee003/ikPQHtjCOfDKBTo9fAmV46br16+VMGGDIUxwUYIL4i7paKuC8RxEnTqUp62U
+         QBNj7fWdr12RNZ9a7xfegiYRLCkM+DnJ/tVBhqvo/l1a4q7e/vB4RABtq/oQlWV6bvnM
+         Ek4MBH1VuQCwr3+gk7M+H3jV7uMTubohBbiZLjWlGcrs64xzPNRicuarNxsYOeIzb2Zb
+         ZLgw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+I6Yc8ND2d+iGz+a4ZbEKIHx0OUrOTOABULCaCG+avhzhwhRq4FJDshTdgRNMk4q7O4Nl/kjA@vger.kernel.org, AJvYcCVZgoPGvYXnbsEpi8iuXNPbUf8bepag0YcKQW32UCxYYY9ns4fdEnd4rpfHuOqsgIs7J+o=@vger.kernel.org, AJvYcCXn8CpcngO90mZua7c/hQY9O8KZFSOc0aKN6+DGQa/6Vx2V5HvADYc1gVNaluUGHIGMOyjYliD0bZC6kWz/@vger.kernel.org, AJvYcCXrG0NDnIekdLBqsQ86SixsfUiQneEDaPj4isj7DJGEdyMmMLpr4t7cUFLZpE85ZcmNqHXLeYI+YrlyBm0ibIf16fsx@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCqSpjFFAGonO4fO2qnWEt2OPtcHAw2qQ+iBSMdRjt+0Pa9OGF
+	ESbNcY4PTzk35yLpXO1NlWEhLnKPwoahcVRi158X4ijFw9eTl9OK
+X-Gm-Gg: ASbGncv+t/1KiLruVf39lWOSHJvJhF9ysrKbujCyJ7TVRngay56xrVFLzUPM/L9gQ+O
+	Ko1BuWsMJMrHRg0O6PPoqBfvJn/dWZENfgeZl1aHvSIuRRPoWfaWArf6wSXh+GCaqnTLt1cvsFs
+	8N7+LqpvZM8ZONPpwWz4ZRLqdsCjyV7f7yj6FJSGDzu+bChSJAGsyzjS9siQ2brIL55suRpQ+Q0
+	6PbtTKSHQLE04PqoDkNX7ugvxNhA6IB6LMqnGy2HcL7ISfcOdHW/MiG4fK/DxnNlSOXBJ5zN8oO
+	VvAzPesalGBC9uu/84aIktQpqB6AyT9I0bodaH0ZzKO59Z54wimKE9pQBUE40g==
+X-Google-Smtp-Source: AGHT+IGyBy5lAIgE9/BJFGPHKWL9IGQJbSt/AMZr+VvaZ6EhLBWcU/x/8umKGWf6iOEq1B7Odhyfkg==
+X-Received: by 2002:a17:90b:1845:b0:2ee:d193:f3d5 with SMTP id 98e67ed59e1d1-2febab2ecbfmr20898385a91.7.1740984964540;
+        Sun, 02 Mar 2025 22:56:04 -0800 (PST)
+Received: from localhost.localdomain ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fea6769ad2sm8139575a91.11.2025.03.02.22.55.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Mar 2025 22:56:04 -0800 (PST)
+From: Menglong Dong <menglong8.dong@gmail.com>
+X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
+To: peterz@infradead.org,
+	rostedt@goodmis.org,
+	mark.rutland@arm.com,
+	alexei.starovoitov@gmail.com
+Cc: catalin.marinas@arm.com,
+	will@kernel.org,
+	mhiramat@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	ast@kernel.org,
 	daniel@iogearbox.net,
+	andrii@kernel.org,
 	martin.lau@linux.dev,
-	kernel-team@fb.com,
+	eddyz87@gmail.com,
 	yonghong.song@linux.dev,
-	Feng Yang <yangfeng@kylinos.cn>
-Subject: [PATCH] selftests/bpf: Strerror expects positive number
-Date: Tue,  4 Mar 2025 19:17:22 +0800
-Message-Id: <20250304111722.7694-1-yangfeng59949@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:_____wCHH1pe4cZnShbHQA--.50058S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWr4UWr4kWFWxAF13Jr1rXrb_yoW5Wr4Dpr
-	48J3sxtF1ftF43Xr17Aayj9FW8XwnYvrWUt340qw1rAF18Jr92qFs3KFWYgFn8C392qwn5
-	Za4v9FZ5Cw1kt3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jo2NtUUUUU=
-X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiwh4GeGfG3P5n5QABsi
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	jolsa@kernel.org,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	nathan@kernel.org,
+	nick.desaulniers+lkml@gmail.com,
+	morbo@google.com,
+	samitolvanen@google.com,
+	kees@kernel.org,
+	dongml2@chinatelecom.cn,
+	akpm@linux-foundation.org,
+	riel@surriel.com,
+	rppt@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH bpf-next v3 3/4] x86: implement per-function metadata storage for x86
+Date: Mon,  3 Mar 2025 14:53:44 +0800
+Message-Id: <20250303065345.229298-4-dongml2@chinatelecom.cn>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20250303065345.229298-1-dongml2@chinatelecom.cn>
+References: <20250303065345.229298-1-dongml2@chinatelecom.cn>
+Precedence: bulk
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-ITU-Libra-ESVA-Information: Please contact Istanbul Teknik Universitesi for more information
+X-ITU-Libra-ESVA-ID: 4Z6dcD2lpfzFxGQ
+X-ITU-Libra-ESVA: No virus found
+X-ITU-Libra-ESVA-From: root@cc.itu.edu.tr
+X-ITU-Libra-ESVA-Watermark: 1741703988.71603@GhxCxQLY/WG2vsd8Xlj2tg
+X-ITU-MailScanner-SpamCheck: not spam
 
-From: Feng Yang <yangfeng@kylinos.cn>
+With CONFIG_CALL_PADDING enabled, there will be 16-bytes padding space
+before all the kernel functions. And some kernel features can use it,
+such as MITIGATION_CALL_DEPTH_TRACKING, CFI_CLANG, FINEIBT, etc.
 
-Before:
-  failed to restore CAP_SYS_ADMIN: -1, Unknown error -1
-  ...
+In my research, MITIGATION_CALL_DEPTH_TRACKING will consume the tail
+9-bytes in the function padding, CFI_CLANG will consume the head 5-bytes,
+and FINEIBT will consume all the 16 bytes if it is enabled. So there will
+be no space for us if MITIGATION_CALL_DEPTH_TRACKING and CFI_CLANG are
+both enabled, or FINEIBT is enabled.
 
-After:
-  failed to restore CAP_SYS_ADMIN: -1, Operation not permitted
-  ...
+In x86, we need 5-bytes to prepend a "mov %eax xxx" insn, which can hold
+a 4-bytes index. So we have following logic:
 
-Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+1. use the head 5-bytes if CFI_CLANG is not enabled
+2. use the tail 5-bytes if MITIGATION_CALL_DEPTH_TRACKING and FINEIBT are
+   not enabled
+3. compile the kernel with FUNCTION_ALIGNMENT_32B otherwise
+
+In the third case, we make the kernel function 32 bytes aligned, and ther=
+e
+will be 32 bytes padding before the functions. According to my testing,
+the text size didn't increase on this case, which is weird.
+
+With 16-bytes padding:
+
+-rwxr-xr-x 1 401190688  x86-dev/vmlinux*
+-rw-r--r-- 1    251068  x86-dev/vmlinux.a
+-rw-r--r-- 1 851892992  x86-dev/vmlinux.o
+-rw-r--r-- 1  12395008  x86-dev/arch/x86/boot/bzImage
+
+With 32-bytes padding:
+
+-rwxr-xr-x 1 401318128 x86-dev/vmlinux*
+-rw-r--r-- 1    251154 x86-dev/vmlinux.a
+-rw-r--r-- 1 853636704 x86-dev/vmlinux.o
+-rw-r--r-- 1  12509696 x86-dev/arch/x86/boot/bzImage
+
+The way I tested should be right, and this is a good news for us. On the
+third case, the layout of the padding space will be like this if fineibt
+is enabled:
+
+__cfi_func:
+	mov	--	5	-- cfi, not used anymore
+	nop
+	nop
+	nop
+	mov	--	5	-- function metadata
+	nop
+	nop
+	nop
+	fineibt	--	16	-- fineibt
+func:
+	nopw	--	4
+	......
+
+I tested the fineibt with "cfi=3Dfineibt" cmdline, and it works well
+together with FUNCTION_METADATA enabled. And I also tested the
+performance of this function by setting metadata for all the kernel
+function, and it consumes 0.7s for 70k+ functions, not bad :/
+
+I can't find a machine that support IBT, so I didn't test the IBT. I'd
+appreciate it if someone can do this testing for me :/
+
+Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
 ---
- tools/testing/selftests/bpf/prog_tests/verifier.c | 4 ++--
- tools/testing/selftests/bpf/test_loader.c         | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+v3:
+- select FUNCTION_ALIGNMENT_32B on case3, instead of extra 5-bytes
+---
+ arch/x86/Kconfig              | 18 ++++++++++++
+ arch/x86/include/asm/ftrace.h | 54 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 72 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 8a0e1ff8a2dc..ecc320e04551 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -121,7 +121,7 @@ static void run_tests_aux(const char *skel_name,
- 	/* test_verifier tests are executed w/o CAP_SYS_ADMIN, do the same here */
- 	err = cap_disable_effective(1ULL << CAP_SYS_ADMIN, &old_caps);
- 	if (err) {
--		PRINT_FAIL("failed to drop CAP_SYS_ADMIN: %i, %s\n", err, strerror(err));
-+		PRINT_FAIL("failed to drop CAP_SYS_ADMIN: %i, %s\n", err, strerror(-err));
- 		return;
- 	}
- 
-@@ -131,7 +131,7 @@ static void run_tests_aux(const char *skel_name,
- 
- 	err = cap_enable_effective(old_caps, NULL);
- 	if (err)
--		PRINT_FAIL("failed to restore CAP_SYS_ADMIN: %i, %s\n", err, strerror(err));
-+		PRINT_FAIL("failed to restore CAP_SYS_ADMIN: %i, %s\n", err, strerror(-err));
- }
- 
- #define RUN(skel) run_tests_aux(#skel, skel##__elf_bytes, NULL)
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index 53b06647cf57..8a403e5aa314 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -773,7 +773,7 @@ static int drop_capabilities(struct cap_state *caps)
- 
- 	err = cap_disable_effective(caps_to_drop, &caps->old_caps);
- 	if (err) {
--		PRINT_FAIL("failed to drop capabilities: %i, %s\n", err, strerror(err));
-+		PRINT_FAIL("failed to drop capabilities: %i, %s\n", err, strerror(-err));
- 		return err;
- 	}
- 
-@@ -790,7 +790,7 @@ static int restore_capabilities(struct cap_state *caps)
- 
- 	err = cap_enable_effective(caps->old_caps, NULL);
- 	if (err)
--		PRINT_FAIL("failed to restore capabilities: %i, %s\n", err, strerror(err));
-+		PRINT_FAIL("failed to restore capabilities: %i, %s\n", err, strerror(-err));
- 	caps->initialized = false;
- 	return err;
- }
-@@ -959,7 +959,7 @@ void run_subtest(struct test_loader *tester,
- 		if (subspec->caps) {
- 			err = cap_enable_effective(subspec->caps, NULL);
- 			if (err) {
--				PRINT_FAIL("failed to set capabilities: %i, %s\n", err, strerror(err));
-+				PRINT_FAIL("failed to set capabilities: %i, %s\n", err, strerror(-err));
- 				goto subtest_cleanup;
- 			}
- 		}
--- 
-2.25.1
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index be2c311f5118..fe5a98401135 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2509,6 +2509,24 @@ config PREFIX_SYMBOLS
+ 	def_bool y
+ 	depends on CALL_PADDING && !CFI_CLANG
+=20
++config FUNCTION_METADATA
++	bool "Per-function metadata storage support"
++	default y
++	depends on CC_HAS_ENTRY_PADDING && OBJTOOL
++	select CALL_PADDING
++	select FUNCTION_ALIGNMENT_32B if ((CFI_CLANG && CALL_THUNKS) || FINEIBT=
+)
++	help
++	  Support per-function metadata storage for kernel functions, and
++	  get the metadata of the function by its address with almost no
++	  overhead.
++
++	  The index of the metadata will be stored in the function padding
++	  and consumes 5-bytes. FUNCTION_ALIGNMENT_32B will be selected if
++	  "(CFI_CLANG && CALL_THUNKS) || FINEIBT" to make sure there is
++	  enough available padding space for this function. However, it
++	  seems that the text size almost don't change, compare with
++	  FUNCTION_ALIGNMENT_16B.
++
+ menuconfig CPU_MITIGATIONS
+ 	bool "Mitigations for CPU vulnerabilities"
+ 	default y
+diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.=
+h
+index f9cb4d07df58..d5cbb8e18fd7 100644
+--- a/arch/x86/include/asm/ftrace.h
++++ b/arch/x86/include/asm/ftrace.h
+@@ -4,6 +4,28 @@
+=20
+ #include <asm/ptrace.h>
+=20
++#ifdef CONFIG_FUNCTION_METADATA
++#if (defined(CONFIG_CFI_CLANG) && defined(CONFIG_CALL_THUNKS)) || (defin=
+ed(CONFIG_FINEIBT))
++  /* the CONFIG_FUNCTION_PADDING_BYTES is 32 in this case, use the
++   * range: [align + 8, align + 13].
++   */
++  #define KFUNC_MD_INSN_OFFSET		(CONFIG_FUNCTION_PADDING_BYTES - 8)
++  #define KFUNC_MD_DATA_OFFSET		(CONFIG_FUNCTION_PADDING_BYTES - 9)
++#else
++  #ifdef CONFIG_CFI_CLANG
++    /* use the space that CALL_THUNKS suppose to use */
++    #define KFUNC_MD_INSN_OFFSET	(5)
++    #define KFUNC_MD_DATA_OFFSET	(4)
++  #else
++    /* use the space that CFI_CLANG suppose to use */
++    #define KFUNC_MD_INSN_OFFSET	(CONFIG_FUNCTION_PADDING_BYTES)
++    #define KFUNC_MD_DATA_OFFSET	(CONFIG_FUNCTION_PADDING_BYTES - 1)
++  #endif
++#endif
++
++#define KFUNC_MD_INSN_SIZE		(5)
++#endif
++
+ #ifdef CONFIG_FUNCTION_TRACER
+ #ifndef CC_USING_FENTRY
+ # error Compiler does not support fentry?
+@@ -168,4 +190,36 @@ static inline bool arch_trace_is_compat_syscall(stru=
+ct pt_regs *regs)
+ #endif /* !COMPILE_OFFSETS */
+ #endif /* !__ASSEMBLY__ */
+=20
++#if !defined(__ASSEMBLY__) && defined(CONFIG_FUNCTION_METADATA)
++#include <asm/text-patching.h>
++
++static inline bool kfunc_md_arch_exist(void *ip)
++{
++	return *(u8 *)(ip - KFUNC_MD_INSN_OFFSET) =3D=3D 0xB8;
++}
++
++static inline void kfunc_md_arch_pretend(u8 *insn, u32 index)
++{
++	*insn =3D 0xB8;
++	*(u32 *)(insn + 1) =3D index;
++}
++
++static inline void kfunc_md_arch_nops(u8 *insn)
++{
++	*(insn++) =3D BYTES_NOP1;
++	*(insn++) =3D BYTES_NOP1;
++	*(insn++) =3D BYTES_NOP1;
++	*(insn++) =3D BYTES_NOP1;
++	*(insn++) =3D BYTES_NOP1;
++}
++
++static inline int kfunc_md_arch_poke(void *ip, u8 *insn)
++{
++	text_poke(ip, insn, KFUNC_MD_INSN_SIZE);
++	text_poke_sync();
++	return 0;
++}
++
++#endif
++
+ #endif /* _ASM_X86_FTRACE_H */
+--=20
+2.39.5
+
 
 
