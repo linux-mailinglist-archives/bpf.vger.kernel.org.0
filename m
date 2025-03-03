@@ -1,90 +1,90 @@
-Return-Path: <bpf+bounces-53104-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53105-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7087FA4CB27
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 19:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 93CA6A4CB61
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 19:54:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FA91175179
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 18:43:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F79417626F
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 18:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0584022AE6B;
-	Mon,  3 Mar 2025 18:43:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF56E22FDEA;
+	Mon,  3 Mar 2025 18:52:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OOlwAX7i"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KVC+M59Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE71021638E
-	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 18:43:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2831E285A;
+	Mon,  3 Mar 2025 18:52:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741027403; cv=none; b=CvaaXu+U6FAR+hO+oaOTc1XualzjQGBGlvAGmV3dHwzSCFDhQLKZfHBCtZgVEDkRjrMKcf17whV8FsAO1mERrFah9R/s6GjBsh4IH5GnOqsfPWUGA1yUumyi6mSFQQ+eqatiMdaI3YbryqNmyX+HxOnXlWxcrhqAsUAHuAjZshw=
+	t=1741027944; cv=none; b=Lxar4a1v6rGptHwvluw48N5iraDkWRKvqNQVE+F/F6UThxp14YHOQAe8PDn7V1IT4XJ1Xh0eTSYxqOFhees6emE+jXQVnAQsPZo3kM6kuNcgl0TL+qIdavryf2QIg7gHNJy9MAQ6ChnkDkEmlv1JKABK7Qn8ZsfF+iEWZJ9SMJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741027403; c=relaxed/simple;
-	bh=T3tAXzw45yILnfI7CfOutrgJFUSDJ1BtL6o/yGwTbk4=;
+	s=arc-20240116; t=1741027944; c=relaxed/simple;
+	bh=ri1EvwoJRI57B9+2tq6b4mnjbxt0riaIa9Jm/Y9S2xc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KjtIWKxClKQGb3zoJtXSUQ20bKdTeW3oBFszGFQiQpDvEAhgplJNFEKnpyHfKjmZgJmbKFbqbQzAPJWP6efvDXpCXaFTJ3OyK73Xwin9mTunQQRESpyA3TUID/LvoCoDWOv9tARAaX15FNfxykRc1qXrOi3KnTL4mf/SHDH4p9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OOlwAX7i; arc=none smtp.client-ip=209.85.221.50
+	 To:Cc:Content-Type; b=nYPnQkXVl3WKk80MYQN5RDBf/eFhiTgyDBKNDVbF3bBrjWIp+98dpE/vHlEz3+A9MQt1SQ8Scph5aGwRUm1wpzyovQArTeajn4xW5G4tLJQGbedd6wBWyPSyKrNPpX5YfxdmET5w2wWHw9rq3ZYt3KVKjpdM1elIBvgxetLqJdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KVC+M59Q; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-390effd3e85so3473344f8f.0
-        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 10:43:21 -0800 (PST)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-390ec7c2cd8so2273486f8f.1;
+        Mon, 03 Mar 2025 10:52:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741027400; x=1741632200; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741027941; x=1741632741; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=C0Qj2do2lKjHM4up5hNRdCkie5ZUt4A6ZgQ1FxVoTq8=;
-        b=OOlwAX7i7GXuiwm2y+K9xTC0h1bFd69tn9PUj2M3cCtV9T8vceh6bQgxufAEykNPgW
-         M4X9hQxlYMpvSduWsGI8DXAv6Tl25Ku0ZBftZe+LVYz6fEBz99imXxTev6VK5IK7KwyJ
-         CaqXaTSTaphgPhw8yfq7sioTw0iY9LpQivMIthAECsnTHx04pkF/Mnr9ESk6vdcxW/QJ
-         Kgb/ya748p2O2bJvgAoej9VQ5uHLV4TY6qIkOJYdncMbh9HQaVaIofInUoH5vZeiF1fw
-         k/4V9/ikWZznz9FYz4HjYBUF52AIxpJFzliZy37QNa160I4L9lgo2/TuEtaLOvwyhmY6
-         iTqg==
+        bh=tb5V6oxMTc5Lgs5t3WuZtNTHjuiR0TEmQLLvfX9+d/M=;
+        b=KVC+M59QVSwLAFedWvIVHYYdM8OiOXBMlPnlcK2hzvRw+f1qokWtJU9LHopxdqh/fr
+         D4Ez147tC2j9dCLXMrfOgvMBCfZn45LkU3xIm5tpy0UgZEEubfpXNxiEuTgg0xHfkKbi
+         pWaM0yFnKWSNCHoqLJ5TS30h42GYQG0kk8D6OwTNd3rXiTujQvOVS2QyvvisRC8HN0kc
+         O04S8GOGnE6BAadEmr1mMu5zD2DN6SW9oQhyw0LuRjcymRUcVEUvxO40zwiTaL+DnB60
+         Mxg0cyBodpfpEj+8mxYPx82A7ztC6tf4G0tCUFsUHaThbrqQT8kIBhVXWD0K70EE0NOa
+         RGuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741027400; x=1741632200;
+        d=1e100.net; s=20230601; t=1741027941; x=1741632741;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=C0Qj2do2lKjHM4up5hNRdCkie5ZUt4A6ZgQ1FxVoTq8=;
-        b=iC5Au8rmS7iU2C53KbE68BVYhaDsq5Zf7lbsR9bsCgI6DH+QpdWik+BRLDWVvnunSR
-         PY5vVwP7S4FABLPEkyDsdKTQcKf6PpFvWHWllNhGLlRW94EdR9ACGLRRBxKhjgVe43fB
-         lNURR0EsaJpk/wAuRrPOog5PH4bjhlMbrV9uG5ZW8KkIR6tLX3obyBPYUeal7bgjzHoN
-         Ng/an5HTcguiusNkEXx3ul4MMAvgjFoAavmD39cOISnSqfG/pPvzL1XnRtDArZ4CQbTQ
-         AgydzdZIS4wK26CYg0GYTcqrDHzYXCEmYfheWThEqXFgzxb0tKbpUv9D7CnOjlOk0ER2
-         A5iw==
-X-Gm-Message-State: AOJu0YxyRStOwQ8YjQdXZiNyyJespb5bUCFdvmjiC9ST1xJiggRUoRUn
-	e42hxyXZxBqClQyFH6HHx+//FUbNYAgpCFwMVkmO9hF7BrS6wCeQNJOhqlI6KDCPBJh3WVL38dj
-	FmDLdWcWNYsOdgjBKB9G+KdGCInE=
-X-Gm-Gg: ASbGncsMVlmPmYIjy3pwtGE1m/bOaazkklldjBzLUa+Y5WAcAJJIUPbDuXSn3f/DK+7
-	qiAjM5y5RrIgJ6e7az67p0SymNvNdwQWnxbOXwcepkYsdtmxtYcD0rCBOSTAhLbI20Ldc4Xt1vL
-	SEaFYG7RAnqGcvyP7mmvqTTqi/euMZs9swVqbd1DM6eg==
-X-Google-Smtp-Source: AGHT+IGDDnMZt3CWNMZ4/sQPWl3Fx2tgxAa5xRzjOQ98uGHkSButjm55wGRCRQL9ya4vSsAelL2gDCTl1KIzjuqQ0EM=
-X-Received: by 2002:a05:6000:156d:b0:391:901:311c with SMTP id
- ffacd0b85a97d-391090131camr3764566f8f.32.1741027398340; Mon, 03 Mar 2025
- 10:43:18 -0800 (PST)
+        bh=tb5V6oxMTc5Lgs5t3WuZtNTHjuiR0TEmQLLvfX9+d/M=;
+        b=FPXwd4pynUaiYTdxH1QmKinPCkfiVr518kfX63mMZIv4MHAVZIF/pn7GKqSKab2/iu
+         dGrwONQcnS+XY1cFcZDy3WzxVAnlHDJs8vfWgjuq0c9+v6A0Dk9ZdzbRVubu03gXjeuG
+         c4M6QkZE5ltVIHRNXyf7H6XevaFiJV8L/NvjDT3IO6RcJ9lnvw3Zq2QkkXmjbSvs18Ef
+         PqDZq3GrwM64jfgGWK9AMszDOtvw6DBnZjFCeRF8W5yv9mrK+94ceotFiIEUM03A+jn0
+         O37Dll+sFDs2Vwkpr0ZLrhpuok4yaNpfNmS8kXAnk4ww4FfwMEQWLW2wKVRKLBrP/LlD
+         tj9A==
+X-Forwarded-Encrypted: i=1; AJvYcCWmIzE5hoqzrYfq3WtwslYcHYbdjkSKvgpwwbApba8D/XK7+IXSGbBjlrNmC86gHC6XXH7J1Mh38mZ7wZg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9cR1rZZLqHwDO9WeJtqPTi7+X7+dUGNdZJ44RR3s8U0nJu7yZ
+	b/pnMTfosLWiAAXmlbQbEuS9wSq+Wt2+Gq74ieR8PCTADoaZzFzj7tU+vDF7lkkc2qaczY/r+D/
+	m6OR6bapVfmFWjTq/aQ69BpeyiK8=
+X-Gm-Gg: ASbGnct+ygpL5/X0ltp9CClmRkXlbkC6emoo/Np7UBuZeSibKlecRDXqXRDLyu8oDNU
+	C/SbXSBX2X+doDMvdU+xEo22iE1KRt+/Y9DyB1TNj5TIgBeKI0VYRS8+7Pkf9bUb5L9exFzHqHu
+	5wTejB8tcE8FQZa1JimIbkW/5tz/FmjP2iHOcvEDHNaA==
+X-Google-Smtp-Source: AGHT+IHnZBbHX4QElW1DWMreZTHhDpaQknBh51JcyUMZfBlOP/B0HyGo9KEmQZFrsra49723GFGoT6jKhOTVwWemjok=
+X-Received: by 2002:a05:6000:1f8d:b0:390:fb37:1bd with SMTP id
+ ffacd0b85a97d-390fb370470mr6928710f8f.46.1741027940749; Mon, 03 Mar 2025
+ 10:52:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2c82b29f3530b961b41f94a4942e490ab35a31c8.1740978603.git.yepeilin@google.com>
- <202503031631.OeUhVRHz-lkp@intel.com>
-In-Reply-To: <202503031631.OeUhVRHz-lkp@intel.com>
+References: <cover.1740978603.git.yepeilin@google.com> <8b39c94eac2bb7389ff12392ca666f939124ec4f.1740978603.git.yepeilin@google.com>
+In-Reply-To: <8b39c94eac2bb7389ff12392ca666f939124ec4f.1740978603.git.yepeilin@google.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 3 Mar 2025 10:43:07 -0800
-X-Gm-Features: AQ5f1JoRxo3CAzV2ykcVy66gZAUbFkQeh9Ko6yETGexZgoB5dBAptBGoLyQICIg
-Message-ID: <CAADnVQLLhNRmpjwDYHB0-59TDrGcgXzqSkop+-5eHYsG-Ws08Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 04/10] bpf: Introduce load-acquire and
- store-release instructions
+Date: Mon, 3 Mar 2025 10:52:08 -0800
+X-Gm-Features: AQ5f1JpXrd_zfB7BE28u8dY7mQWsRaJQVmXworXNHuBlKbek7ljLtxiaGy0Y8Kw
+Message-ID: <CAADnVQKyMx64_mP+u+rmnRGyzVoBs4rViTHeE4_0Rr+Kf3R5Tg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 03/10] bpf/verifier: Factor out
+ check_load_mem() and check_store_reg()
 To: Peilin Ye <yepeilin@google.com>
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	oe-kbuild-all@lists.linux.dev, bpf@ietf.org, 
+Cc: bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, bpf@ietf.org, 
 	Alexei Starovoitov <ast@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
 	Eduard Zingerman <eddyz87@gmail.com>, David Vernet <void@manifault.com>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
@@ -95,43 +95,23 @@ Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
 	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
 	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>
+	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long <longyingchi24s@ict.ac.cn>, 
+	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>, 
+	Benjamin Segall <bsegall@google.com>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 3, 2025 at 12:55=E2=80=AFAM kernel test robot <lkp@intel.com> w=
-rote:
+On Sun, Mar 2, 2025 at 9:37=E2=80=AFPM Peilin Ye <yepeilin@google.com> wrot=
+e:
 >
-> Hi Peilin,
+> Extract BPF_LDX and most non-ATOMIC BPF_STX instruction handling logic
+> in do_check() into helper functions to be used later.  While we are
+> here, make that comment about "reserved fields" more specific.
 >
-> kernel test robot noticed the following build errors:
->
-> [auto build test ERROR on bpf-next/master]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Peilin-Ye/bpf-veri=
-fier-Factor-out-atomic_ptr_type_ok/20250303-134110
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git =
-master
-> patch link:    https://lore.kernel.org/r/2c82b29f3530b961b41f94a4942e490a=
-b35a31c8.1740978603.git.yepeilin%40google.com
-> patch subject: [PATCH bpf-next v4 04/10] bpf: Introduce load-acquire and =
-store-release instructions
-> config: arc-randconfig-002-20250303 (https://download.01.org/0day-ci/arch=
-ive/20250303/202503031631.OeUhVRHz-lkp@intel.com/config)
-> compiler: arc-elf-gcc (GCC) 13.2.0
+> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Peilin Ye <yepeilin@google.com>
 
-...
-
->    kernel/bpf/core.c:2228:25: note: in expansion of macro 'LOAD_ACQUIRE'
->     2228 |                         LOAD_ACQUIRE(DW, u64)
->          |                         ^~~~~~~~~~~~
-
-Peilin,
-
-how do you plan on fixing this?
-So far I could only think of making compilation conditional for CONFIG_64BI=
-T
-and let the verifier reject these insns on 32-bit arches.
-Other ideas?
+Applied the first 3 patches.
 
