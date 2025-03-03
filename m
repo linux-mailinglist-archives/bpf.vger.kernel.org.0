@@ -1,154 +1,152 @@
-Return-Path: <bpf+bounces-53213-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53218-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 187D4A4E850
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 18:18:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFB42A4E9FD
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 18:53:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7426422D23
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 17:10:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD26D8A1434
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 17:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F5C279349;
-	Tue,  4 Mar 2025 16:48:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 231B12803E0;
+	Tue,  4 Mar 2025 17:24:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="suFG/FlY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="B8FprFIt";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="suFG/FlY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="B8FprFIt"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Atf7+ptv"
 X-Original-To: bpf@vger.kernel.org
-Received: from beeline2.cc.itu.edu.tr (beeline2.cc.itu.edu.tr [160.75.25.116])
+Received: from beeline1.cc.itu.edu.tr (beeline1.cc.itu.edu.tr [160.75.25.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4787F27816C
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 16:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=160.75.25.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD8331F2380
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 17:24:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=160.75.25.115
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741106938; cv=pass; b=mT4cT1lOQu/E4GoOxryUwGdTshBZXG9EtOSIkDmW7w7cd8ObsLQWdK+RqjMmU95f0/zSA1RDvTnKfEZqs6zjHIOnhF7fLTIVVarL9/XUkOVSbUBozuGQZZ8s//809Jpxy0t6xciViXTnrl8p/UsWVejgGFrv7m2PchEaCTm2cD0=
+	t=1741109049; cv=fail; b=uqVF59ccX/wR4tutwdBBr9Rpn+W0cfvzbqnId/EjRMf+hKYlXR0hcv/iJ3Gk1kVLz3ZbWyvNy2rk6D3S+dmzoSPxoP1H9s5efCo7nGTJzhbJfoZQMzzVYww9qD+WBxbVscbzHZFpETVRN66TXLq1WnYB3OnmmFeWxDzVNlmUTkU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741106938; c=relaxed/simple;
-	bh=9Cbkt6zSkkx3XsqzbnzOWO/5wx0/MMZJ8cnKPDT1DwI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GOWP8fjzO3XZdYxMN9uUljV/YeOnZaArMZKgpXBMg8XmFGtVDv5imaLKxwlbaJxI5vcbPj+ZkYOdwR6VMpHRybE4lbVMJmF/w5R66401nF+sSznMdAf/hMlGnkWx0FaFLjEm2ysJxAiNOENxsgDBa6dn7BoWWBl/OdTWF7n67sU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=none smtp.mailfrom=cc.itu.edu.tr; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=suFG/FlY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B8FprFIt; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=suFG/FlY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B8FprFIt; arc=none smtp.client-ip=195.135.223.130; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=pass smtp.client-ip=160.75.25.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+	s=arc-20240116; t=1741109049; c=relaxed/simple;
+	bh=wgwvUzcv9WZS9kUxNOhraSZ9ZOWP+CJ0pKU7K/uc37g=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=r2aASy/zHooUoaZDIeDOYD7WkGVxoNQq91eNT9O1sjCV7OhEfodzhqiKkJybm/eS4CLrDZO7R27EoLDvP+rUaiYdE0bq6JPaxjlP7CuAVsWytFIY9oIDd4YyG0oW9gBdk9oX+RX4VVsKfuXXt5Py+F15W734ZXrPg8psimRjvbg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=cc.itu.edu.tr; dkim=fail (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Atf7+ptv reason="signature verification failed"; arc=none smtp.client-ip=198.175.65.9; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; arc=fail smtp.client-ip=160.75.25.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cc.itu.edu.tr
-Received: from lesvatest1.cc.itu.edu.tr (unknown [10.146.128.1])
+Received: from lesvatest1.cc.itu.edu.tr (lesvatest1.cc.itu.edu.tr [10.146.128.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by beeline2.cc.itu.edu.tr (Postfix) with ESMTPS id 8E39440894F3
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 19:48:54 +0300 (+03)
+	by beeline1.cc.itu.edu.tr (Postfix) with ESMTPS id 117DA408B642
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 20:24:05 +0300 (+03)
 X-Envelope-From: <root@cc.itu.edu.tr>
-Authentication-Results: lesvatest1.cc.itu.edu.tr;
-	dkim=pass (1024-bit key, unprotected) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=suFG/FlY;
-	dkim=temperror header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=B8FprFIt;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.a=rsa-sha256 header.s=susede2_rsa header.b=suFG/FlY;
-	dkim=neutral header.d=suse.cz header.i=@suse.cz header.a=ed25519-sha256 header.s=susede2_ed25519 header.b=B8FprFIt
 Received: from lesva1.cc.itu.edu.tr (unknown [160.75.70.79])
-	by lesvatest1.cc.itu.edu.tr (Postfix) with ESMTP id 4Z6hRm1SgLzG4Gt
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 19:47:16 +0300 (+03)
+	by lesvatest1.cc.itu.edu.tr (Postfix) with ESMTP id 4Z6dMt2F8HzFwlD
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 17:28:42 +0300 (+03)
 Received: by le1 (Postfix, from userid 0)
-	id 0BD7542747; Tue,  4 Mar 2025 19:47:13 +0300 (+03)
+	id 7188C42731; Tue,  4 Mar 2025 17:28:33 +0300 (+03)
 Authentication-Results: lesva1.cc.itu.edu.tr;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=suFG/FlYmMKcbVomcogtNbITCCy7ix5NnqSD8V5LAedrCCBP3DdQx3zv7/xkvsVYY6jb15FdmtwEdXsAfuIHBitriasDfW6qpNs1WV9ryqfIlojgg3tqme5wsyvAZUlvx6JP/xG4F8dmIp7SNiKvp3zfo+eOgpcrOV2hvOsGpTU=;
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B8FprFItVpmkhESKHSrsJp0b4ojWcAjtS0PIkiIuktfOgQyT3sWPlR9cur7f30G2Tfl9UOM9L7EPWLwk0fyoDg==;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=suFG/FlYmMKcbVomcogtNbITCCy7ix5NnqSD8V5LAedrCCBP3DdQx3zv7/xkvsVYY6jb15FdmtwEdXsAfuIHBitriasDfW6qpNs1WV9ryqfIlojgg3tqme5wsyvAZUlvx6JP/xG4F8dmIp7SNiKvp3zfo+eOgpcrOV2hvOsGpTU=;
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B8FprFItVpmkhESKHSrsJp0b4ojWcAjtS0PIkiIuktfOgQyT3sWPlR9cur7f30G2Tfl9UOM9L7EPWLwk0fyoDg==
-X-Envelope-From: <linux-kernel+bounces-541274-bozkiru=itu.edu.tr@vger.kernel.org>
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Atf7+ptv
+X-Envelope-From: <linux-kernel+bounces-541370-bozkiru=itu.edu.tr@vger.kernel.org>
 Authentication-Results: lesva2.cc.itu.edu.tr;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=suFG/FlYmMKcbVomcogtNbITCCy7ix5NnqSD8V5LAedrCCBP3DdQx3zv7/xkvsVYY6jb15FdmtwEdXsAfuIHBitriasDfW6qpNs1WV9ryqfIlojgg3tqme5wsyvAZUlvx6JP/xG4F8dmIp7SNiKvp3zfo+eOgpcrOV2hvOsGpTU=;
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B8FprFItVpmkhESKHSrsJp0b4ojWcAjtS0PIkiIuktfOgQyT3sWPlR9cur7f30G2Tfl9UOM9L7EPWLwk0fyoDg==;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=suFG/FlYmMKcbVomcogtNbITCCy7ix5NnqSD8V5LAedrCCBP3DdQx3zv7/xkvsVYY6jb15FdmtwEdXsAfuIHBitriasDfW6qpNs1WV9ryqfIlojgg3tqme5wsyvAZUlvx6JP/xG4F8dmIp7SNiKvp3zfo+eOgpcrOV2hvOsGpTU=;
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B8FprFItVpmkhESKHSrsJp0b4ojWcAjtS0PIkiIuktfOgQyT3sWPlR9cur7f30G2Tfl9UOM9L7EPWLwk0fyoDg==
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Atf7+ptv
 Received: from fgw1.itu.edu.tr (fgw1.itu.edu.tr [160.75.25.103])
-	by le2 (Postfix) with ESMTP id F22864233E
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 12:30:26 +0300 (+03)
+	by le2 (Postfix) with ESMTP id 15AF1434E4
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 13:30:17 +0300 (+03)
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by fgw1.itu.edu.tr (Postfix) with SMTP id 5E1D53063EFC
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 12:30:26 +0300 (+03)
+	by fgw1.itu.edu.tr (Postfix) with SMTP id A74C43064C0E
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 13:30:16 +0300 (+03)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68E723A8026
-	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 09:30:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C59E3B4022
+	for <bozkiru@itu.edu.tr>; Mon,  3 Mar 2025 10:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F18491F0E50;
-	Mon,  3 Mar 2025 09:29:44 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43CF1F417D;
+	Mon,  3 Mar 2025 10:28:05 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF9F1F0E4F
-	for <linux-kernel@vger.kernel.org>; Mon,  3 Mar 2025 09:29:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 559DA1F1531;
+	Mon,  3 Mar 2025 10:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740994181; cv=none; b=DBZZPNS8heXUz8IRP3PPCpm3Hi3H72ji36jhP8oa6stFBXROx7vl6dkuvUUoxfsU8zkeSh60zcsccp+lfzY4uPPpuharO3oQVHTH60wmy96h5xnXo9BernhvCl2bx2GUtvtyE4cfvpo3KepqsD3pjEoO+6rtNQHJJ9eAXju9pos=
+	t=1740997682; cv=none; b=J3EFh39Ksro3i2hphp1EYlPeWxb7FHZpEJ2pjMHpWy7Z9xvVRxWZcqsVISgIETaYwQKPfi6KqA7SZwmgvV5uX9pm5l8U81NsFcwkx6dAQ+UBhatcaBbrBHVTNAWH3/kIYYNeSVLKSCysgGaRrxCXLcZLSlUa8SzqnkJgZHg/4Ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740994181; c=relaxed/simple;
-	bh=9Cbkt6zSkkx3XsqzbnzOWO/5wx0/MMZJ8cnKPDT1DwI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WusFN2xAskNM2j8ggE7lU80xQn4hfeNfMbqbOhYdrJvVJJTKIWkA1bRKWAP/WGuvhwPRi3tQJD5bW4vj/Y1Tf33hZ/GAqitT3tw927+eTHWZhu/uen1lUQcMxeiEWlZm+164pJ5TIsaQL9YMSutaxNtEvahBUS/6Rvz+01oSElo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=suFG/FlY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B8FprFIt; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=suFG/FlY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B8FprFIt; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9737A2116B;
-	Mon,  3 Mar 2025 09:29:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1740994175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=k20e0qHL6dXusoDcwpaKQhA8JbIFxFlDyPMo74Hll8Y=;
-	b=suFG/FlYmMKcbVomcogtNbITCCy7ix5NnqSD8V5LAedrCCBP3DdQx3zv7/xkvsVYY6jb15
-	FdmtwEdXsAfuIHBitriasDfW6qpNs1WV9ryqfIlojgg3tqme5wsyvAZUlvx6JP/xG4F8dm
-	Ip7SNiKvp3zfo+eOgpcrOV2hvOsGpTU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1740994175;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=k20e0qHL6dXusoDcwpaKQhA8JbIFxFlDyPMo74Hll8Y=;
-	b=B8FprFItVpmkhESKHSrsJp0b4ojWcAjtS0PIkiIuktfOgQyT3sWPlR9cur7f30G2Tfl9UO
-	M9L7EPWLwk0fyoDg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="suFG/FlY";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=B8FprFIt
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1740994175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=k20e0qHL6dXusoDcwpaKQhA8JbIFxFlDyPMo74Hll8Y=;
-	b=suFG/FlYmMKcbVomcogtNbITCCy7ix5NnqSD8V5LAedrCCBP3DdQx3zv7/xkvsVYY6jb15
-	FdmtwEdXsAfuIHBitriasDfW6qpNs1WV9ryqfIlojgg3tqme5wsyvAZUlvx6JP/xG4F8dm
-	Ip7SNiKvp3zfo+eOgpcrOV2hvOsGpTU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1740994175;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=k20e0qHL6dXusoDcwpaKQhA8JbIFxFlDyPMo74Hll8Y=;
-	b=B8FprFItVpmkhESKHSrsJp0b4ojWcAjtS0PIkiIuktfOgQyT3sWPlR9cur7f30G2Tfl9UO
-	M9L7EPWLwk0fyoDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 43C9613A61;
-	Mon,  3 Mar 2025 09:29:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ML9YD392xWc1BQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 03 Mar 2025 09:29:35 +0000
-Message-ID: <12b82997-0129-4fef-afc0-e925e542be88@suse.cz>
-Date: Mon, 3 Mar 2025 10:29:34 +0100
+	s=arc-20240116; t=1740997682; c=relaxed/simple;
+	bh=2Msp7YoBmanu425m0MXmljH1/c1Or8M2lkzZSA8x+50=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=gwFL7HifRZ31pXnXgm3LCxleNcgXmlY0m7lLUK3xNokOZlMQFHRE4I2/gu6XED9xVqdzR76sBe35GuNpHgNn+t1Dkfb5KsPla5FkUZQuVmvVSrby6pfF9FDFQ5m9RLnuyekrTVFlpfAjseFJ6otX8BKn6p3nfcdeeubcOeXGxYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Atf7+ptv; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1740997681; x=1772533681;
+  h=from:to:subject:date:message-id:in-reply-to:references:
+   mime-version:content-transfer-encoding;
+  bh=2Msp7YoBmanu425m0MXmljH1/c1Or8M2lkzZSA8x+50=;
+  b=Atf7+ptv8dTGijcC4Y2ByFOWVgMvl16sgYfwDZeuSpxjsGwPTAfVwEOL
+   hAsv9w8r6qXw+A99LJQbL8U3aJx5MWhGuH+wFP+m6RicTowSZ+BuzPPBJ
+   FHfGLgfGAsCQ2TRrEeB3O+VoAZ0M8WOdoJvT1onD3gHGydHx4s0T0LRp/
+   JPNolp4zpFUpbV1sVF5VnH/hoxTKJmD688FapwgWfbmwP9TgFnUDYOTyo
+   o825lFYxO5q/7BdELdeQFWSygIJeQOJc96AMXdyqkf/WmXh+gJOeF1aaN
+   TQJR0InVlpsg/Dn+KfSuxwoOoPn5QvTQnkhJnyPnXh2AmZ8Pv4tVzI84q
+   A==;
+X-CSE-ConnectionGUID: USuXoOE4SMm7+bg5rJ8cnw==
+X-CSE-MsgGUID: HzMTCOLxTdOGRmFPo6mRMQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11361"; a="64310149"
+X-IronPort-AV: E=Sophos;i="6.13,329,1732608000"; 
+   d="scan'208";a="64310149"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2025 02:28:00 -0800
+X-CSE-ConnectionGUID: t9zZnSvsR46o8m5nS2uR3g==
+X-CSE-MsgGUID: DkMFzS4QTBm8OGTiacD7eQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,329,1732608000"; 
+   d="scan'208";a="122569880"
+Received: from mohdfai2-ilbpg12-1.png.intel.com ([10.88.227.73])
+  by fmviesa005.fm.intel.com with ESMTP; 03 Mar 2025 02:27:53 -0800
+From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Simon Horman <horms@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Furong Xu <0x1207@gmail.com>,
+	Russell King <rmk+kernel@armlinux.org.uk>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Xiaolei Wang <xiaolei.wang@windriver.com>,
+	Suraj Jaiswal <quic_jsuraj@quicinc.com>,
+	Kory Maincent <kory.maincent@bootlin.com>,
+	Gal Pressman <gal@nvidia.com>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+	Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	bpf@vger.kernel.org
+Subject: [PATCH iwl-next v7 4/9] igc: Set the RX packet buffer size for TSN mode
+Date: Mon,  3 Mar 2025 05:26:53 -0500
+Message-Id: <20250303102658.3580232-5-faizal.abdul.rahim@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250303102658.3580232-1-faizal.abdul.rahim@linux.intel.com>
+References: <20250303102658.3580232-1-faizal.abdul.rahim@linux.intel.com>
 Precedence: bulk
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -156,159 +154,93 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 01/12] mm: introduce AS_NO_DIRECT_MAP
-Content-Language: en-US
-To: David Hildenbrand <david@redhat.com>, Patrick Roy <roypat@amazon.co.uk>,
- rppt@kernel.org, seanjc@google.com
-Cc: pbonzini@redhat.com, corbet@lwn.net, willy@infradead.org,
- akpm@linux-foundation.org, song@kernel.org, jolsa@kernel.org,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, Liam.Howlett@oracle.com, lorenzo.stoakes@oracle.com,
- jannh@google.com, shuah@kernel.org, kvm@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, tabba@google.com, jgowans@amazon.com,
- graf@amazon.com, kalyazin@amazon.com, xmarcalx@amazon.com,
- derekmn@amazon.com, jthoughton@google.com
-References: <20250221160728.1584559-1-roypat@amazon.co.uk>
- <20250221160728.1584559-2-roypat@amazon.co.uk>
- <3dc4bb80-0beb-4bbb-bfd8-47fc096f70e9@redhat.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
- KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
- 87tMFA+u+L4Z5xAzIimfLD5EKC56kJ1CsXlM8S/LHcmdD9Ctkn3trYDNnat0eoAcfPIP2OZ+
- 9oe9IF/R28zmh0ifLXyJQQz5ofdj4bPf8ecEW0rhcqHfTD8k4yK0xxt3xW+6Exqp9n9bydiy
- tcSAw/TahjW6yrA+6JhSBv1v2tIm+itQc073zjSX8OFL51qQVzRFr7H2UQG33lw2QrvHRXqD
- Ot7ViKam7v0Ho9wEWiQOOZlHItOOXFphWb2yq3nzrKe45oWoSgkxKb97MVsQ+q2SYjJRBBH4
- 8qKhphADYxkIP6yut/eaj9ImvRUZZRi0DTc8xfnvHGTjKbJzC2xpFcY0DQbZzuwsIZ8OPJCc
- LM4S7mT25NE5kUTG/TKQCk922vRdGVMoLA7dIQrgXnRXtyT61sg8PG4wcfOnuWf8577aXP1x
- 6mzw3/jh3F+oSBHb/GcLC7mvWreJifUL2gEdssGfXhGWBo6zLS3qhgtwjay0Jl+kza1lo+Cv
- BB2T79D4WGdDuVa4eOrQ02TxqGN7G0Biz5ZLRSFzQSQwLn8fbwARAQABzSBWbGFzdGltaWwg
- QmFia2EgPHZiYWJrYUBzdXNlLmN6PsLBlAQTAQoAPgIbAwULCQgHAwUVCgkICwUWAgMBAAIe
- AQIXgBYhBKlA1DSZLC6OmRA9UCJPp+fMgqZkBQJkBREIBQkRadznAAoJECJPp+fMgqZkNxIQ
- ALZRqwdUGzqL2aeSavbum/VF/+td+nZfuH0xeWiO2w8mG0+nPd5j9ujYeHcUP1edE7uQrjOC
- Gs9sm8+W1xYnbClMJTsXiAV88D2btFUdU1mCXURAL9wWZ8Jsmz5ZH2V6AUszvNezsS/VIT87
- AmTtj31TLDGwdxaZTSYLwAOOOtyqafOEq+gJB30RxTRE3h3G1zpO7OM9K6ysLdAlwAGYWgJJ
- V4JqGsQ/lyEtxxFpUCjb5Pztp7cQxhlkil0oBYHkudiG8j1U3DG8iC6rnB4yJaLphKx57NuQ
- PIY0Bccg+r9gIQ4XeSK2PQhdXdy3UWBr913ZQ9AI2usid3s5vabo4iBvpJNFLgUmxFnr73SJ
- KsRh/2OBsg1XXF/wRQGBO9vRuJUAbnaIVcmGOUogdBVS9Sun/Sy4GNA++KtFZK95U7J417/J
- Hub2xV6Ehc7UGW6fIvIQmzJ3zaTEfuriU1P8ayfddrAgZb25JnOW7L1zdYL8rXiezOyYZ8Fm
- ZyXjzWdO0RpxcUEp6GsJr11Bc4F3aae9OZtwtLL/jxc7y6pUugB00PodgnQ6CMcfR/HjXlae
- h2VS3zl9+tQWHu6s1R58t5BuMS2FNA58wU/IazImc/ZQA+slDBfhRDGYlExjg19UXWe/gMcl
- De3P1kxYPgZdGE2eZpRLIbt+rYnqQKy8UxlszsBNBFsZNTUBCACfQfpSsWJZyi+SHoRdVyX5
- J6rI7okc4+b571a7RXD5UhS9dlVRVVAtrU9ANSLqPTQKGVxHrqD39XSw8hxK61pw8p90pg4G
- /N3iuWEvyt+t0SxDDkClnGsDyRhlUyEWYFEoBrrCizbmahOUwqkJbNMfzj5Y7n7OIJOxNRkB
- IBOjPdF26dMP69BwePQao1M8Acrrex9sAHYjQGyVmReRjVEtv9iG4DoTsnIR3amKVk6si4Ea
- X/mrapJqSCcBUVYUFH8M7bsm4CSxier5ofy8jTEa/CfvkqpKThTMCQPNZKY7hke5qEq1CBk2
- wxhX48ZrJEFf1v3NuV3OimgsF2odzieNABEBAAHCwXwEGAEKACYCGwwWIQSpQNQ0mSwujpkQ
- PVAiT6fnzIKmZAUCZAUSmwUJDK5EZgAKCRAiT6fnzIKmZOJGEACOKABgo9wJXsbWhGWYO7mD
- 8R8mUyJHqbvaz+yTLnvRwfe/VwafFfDMx5GYVYzMY9TWpA8psFTKTUIIQmx2scYsRBUwm5VI
- EurRWKqENcDRjyo+ol59j0FViYysjQQeobXBDDE31t5SBg++veI6tXfpco/UiKEsDswL1WAr
- tEAZaruo7254TyH+gydURl2wJuzo/aZ7Y7PpqaODbYv727Dvm5eX64HCyyAH0s6sOCyGF5/p
- eIhrOn24oBf67KtdAN3H9JoFNUVTYJc1VJU3R1JtVdgwEdr+NEciEfYl0O19VpLE/PZxP4wX
- PWnhf5WjdoNI1Xec+RcJ5p/pSel0jnvBX8L2cmniYnmI883NhtGZsEWj++wyKiS4NranDFlA
- HdDM3b4lUth1pTtABKQ1YuTvehj7EfoWD3bv9kuGZGPrAeFNiHPdOT7DaXKeHpW9homgtBxj
- 8aX/UkSvEGJKUEbFL9cVa5tzyialGkSiZJNkWgeHe+jEcfRT6pJZOJidSCdzvJpbdJmm+eED
- w9XOLH1IIWh7RURU7G1iOfEfmImFeC3cbbS73LQEFGe1urxvIH5K/7vX+FkNcr9ujwWuPE9b
- 1C2o4i/yZPLXIVy387EjA6GZMqvQUFuSTs/GeBcv0NjIQi8867H3uLjz+mQy63fAitsDwLmR
- EP+ylKVEKb0Q2A==
-In-Reply-To: <3dc4bb80-0beb-4bbb-bfd8-47fc096f70e9@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 9737A2116B
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_TWELVE(0.00)[38];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[redhat.com,lwn.net,infradead.org,linux-foundation.org,kernel.org,iogearbox.net,linux.dev,gmail.com,fomichev.me,google.com,oracle.com,vger.kernel.org,kvack.org,amazon.com];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	R_RATELIMIT(0.00)[to_ip_from(RLo3k5aap4ysuunujcz1d3qjj5)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Transfer-Encoding: quoted-printable
 X-ITU-Libra-ESVA-Information: Please contact Istanbul Teknik Universitesi for more information
-X-ITU-Libra-ESVA-ID: 4Z6hRm1SgLzG4Gt
+X-ITU-Libra-ESVA-ID: 4Z6dMt2F8HzFwlD
 X-ITU-Libra-ESVA: No virus found
 X-ITU-Libra-ESVA-From: root@cc.itu.edu.tr
-X-ITU-Libra-ESVA-Watermark: 1741711664.61931@7hteFDu3WvFS7YKIwZiX0w
+X-ITU-Libra-ESVA-Watermark: 1741713755.68967@QqU3pCdgwT5w2bRW2Bp6UA
 X-ITU-MailScanner-SpamCheck: not spam
 
-On 2/25/25 17:52, David Hildenbrand wrote:
-> On 21.02.25 17:07, Patrick Roy wrote:
->> Add AS_NO_DIRECT_MAP for mappings where direct map entries of folios are
->> set to not present . Currently, mappings that match this description are
->> secretmem mappings (memfd_secret()). Later, some guest_memfd
->> configurations will also fall into this category.
->> 
->> Reject this new type of mappings in all locations that currently reject
->> secretmem mappings, on the assumption that if secretmem mappings are
->> rejected somewhere, it is precisely because of an inability to deal with
->> folios without direct map entries.
->> 
->> Use a new flag instead of overloading AS_INACCESSIBLE (which is already
->> set by guest_memfd) because not all guest_memfd mappings will end up
->> being direct map removed (e.g. in pKVM setups, parts of guest_memfd that
->> can be mapped to userspace should also be GUP-able, and generally not
->> have restrictions on who can access it).
->> 
->> Signed-off-by: Patrick Roy <roypat@amazon.co.uk>
->> ---
-> 
-> ...
-> 
->>   static inline gfp_t mapping_gfp_mask(struct address_space * mapping)
->>   {
->>   	return mapping->gfp_mask;
->> diff --git a/lib/buildid.c b/lib/buildid.c
->> index c4b0f376fb34..80b5d805067f 100644
->> --- a/lib/buildid.c
->> +++ b/lib/buildid.c
->> @@ -65,8 +65,8 @@ static int freader_get_folio(struct freader *r, loff_t file_off)
->>   
->>   	freader_put_folio(r);
->>   
->> -	/* reject secretmem folios created with memfd_secret() */
->> -	if (secretmem_mapping(r->file->f_mapping))
->> +	/* reject secretmem folios created with memfd_secret() or guest_memfd() */
->> +	if (secretmem_mapping(r->file->f_mapping) || mapping_no_direct_map(r->file->f_mapping))
->>   		return -EFAULT;
-> 
-> Maybe I'm missing it, but why do we have to special-case secretmem with 
-> that at all anymore?
-> 
-> Couldn't we just let secretmem set AS_NO_DIRECT_MAP as well, and convert 
-> all/most secretmem specific stuff to check AS_NO_DIRECT_MAP as well?
+In preparation for supporting frame preemption, when entering TSN mode
+set the receive packet buffer to 16KB for the Express MAC, 16KB for
+the Preemptible MAC and 2KB for the BMC, according to the datasheet
+section 7.1.3.2.
 
-That's done in patch 02. But yeah, squashing them together would reduce some
-churn. I guess because it removes some !IS_ENABLED(CONFIG_SECRETMEM)
-optimizations, a separate change for review was preferred.
+Co-developed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+---
+ drivers/net/ethernet/intel/igc/igc_defines.h |  3 +++
+ drivers/net/ethernet/intel/igc/igc_tsn.c     | 13 +++++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/ethernet/intel/igc/igc_defines.h b/drivers/net/e=
+thernet/intel/igc/igc_defines.h
+index 516ef70c98e9..b19ac6f30dac 100644
+--- a/drivers/net/ethernet/intel/igc/igc_defines.h
++++ b/drivers/net/ethernet/intel/igc/igc_defines.h
+@@ -402,6 +402,9 @@
+=20
+  /* 7KB bytes buffer for each tx queue (total 4 queues) + 4KB for BMC*/
+ #define IGC_TXPBSIZE_TSN	0x041c71c7
++/* 15KB for EXP + 15KB for BE + 2KB for BMC */
++#define IGC_RXPBSIZE_TSN	0x0000f08f
++#define IGC_RXPBSIZE_SIZE_MASK	0x0001FFFF
+=20
+ #define IGC_DTXMXPKTSZ_TSN	0x19 /* 1600 bytes of max TX DMA packet size =
+*/
+ #define IGC_DTXMXPKTSZ_DEFAULT	0x98 /* 9728-byte Jumbo frames */
+diff --git a/drivers/net/ethernet/intel/igc/igc_tsn.c b/drivers/net/ether=
+net/intel/igc/igc_tsn.c
+index 1e44374ca1ff..f0213cfce07d 100644
+--- a/drivers/net/ethernet/intel/igc/igc_tsn.c
++++ b/drivers/net/ethernet/intel/igc/igc_tsn.c
+@@ -132,13 +132,17 @@ static int igc_tsn_disable_offload(struct igc_adapt=
+er *adapter)
+ {
+ 	u16 queue_per_tc[4] =3D { 3, 2, 1, 0 };
+ 	struct igc_hw *hw =3D &adapter->hw;
+-	u32 tqavctrl;
++	u32 tqavctrl, rxpbs;
+ 	int i;
+=20
+ 	wr32(IGC_GTXOFFSET, 0);
+ 	wr32(IGC_TXPBS, I225_TXPBSIZE_DEFAULT);
+ 	wr32(IGC_DTXMXPKTSZ, IGC_DTXMXPKTSZ_DEFAULT);
+=20
++	rxpbs =3D rd32(IGC_RXPBS) & ~IGC_RXPBSIZE_SIZE_MASK;
++	rxpbs |=3D I225_RXPBSIZE_DEFAULT;
++	wr32(IGC_RXPBS, rxpbs);
++
+ 	if (igc_is_device_id_i226(hw))
+ 		igc_tsn_restore_retx_default(adapter);
+=20
+@@ -194,7 +198,7 @@ static int igc_tsn_enable_offload(struct igc_adapter =
+*adapter)
+ {
+ 	struct igc_hw *hw =3D &adapter->hw;
+ 	u32 tqavctrl, baset_l, baset_h;
+-	u32 sec, nsec, cycle;
++	u32 sec, nsec, cycle, rxpbs;
+ 	ktime_t base_time, systim;
+ 	int i;
+=20
+@@ -202,6 +206,11 @@ static int igc_tsn_enable_offload(struct igc_adapter=
+ *adapter)
+ 	wr32(IGC_DTXMXPKTSZ, IGC_DTXMXPKTSZ_TSN);
+ 	wr32(IGC_TXPBS, IGC_TXPBSIZE_TSN);
+=20
++	rxpbs =3D rd32(IGC_RXPBS) & ~IGC_RXPBSIZE_SIZE_MASK;
++	rxpbs |=3D IGC_RXPBSIZE_TSN;
++
++	wr32(IGC_RXPBS, rxpbs);
++
+ 	if (igc_is_device_id_i226(hw))
+ 		igc_tsn_set_retx_qbvfullthreshold(adapter);
+=20
+--=20
+2.34.1
 
 
 
