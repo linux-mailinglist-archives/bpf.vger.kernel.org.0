@@ -1,141 +1,136 @@
-Return-Path: <bpf+bounces-53114-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53115-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16CB9A4CD94
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 22:39:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4DB3A4CD99
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 22:41:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F6921719A4
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 21:39:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 852947A8004
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 21:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 048CD235345;
-	Mon,  3 Mar 2025 21:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9AFD230277;
+	Mon,  3 Mar 2025 21:40:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UDzmxeXi"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NjTUyC4t"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21311F03EE
-	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 21:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E4F1E9B3D
+	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 21:40:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741037950; cv=none; b=II5JZK2lfHffpDct0gdjmcCeEfdGCYqQDkgRXrfmXBDr+d4Ii/0Twiz8uw/V16rjRYxBufDMlHcEyS3Az1Y89HHpUGdp5VXe9eO/43+HFmpP5K5cAN6BXovzCnOxe85cGOII581aJKpKQWhEwlswQhsk60kwxTaBS0jAg/XzIlM=
+	t=1741038056; cv=none; b=s3yZeR5cqBkwcG8nxi65xAnndjkACr54dkqOMZp83zLd5QP+x3dDmjETPgXOlfvi0XScDeIQu97Tey6eC+TLC2NoGIPdWgwPeHNoFT3H0J9/XkenBEjBa6JVhqECyf1ou3DRgGkOzHGBh820RmcspfpT/4dDi/W/Gw9tJegKkeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741037950; c=relaxed/simple;
-	bh=9gL/0Vth5MPu6/iOXbLT7SkM+qvHkm0JMJrwlya60Cw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N+pl9IIqPhuoiZMfucegqR6gGZJIYlPQAZ3ffLrqhVwUT3j3D/gvPCIwFql6KrPanvCuCiUj47djEexWzcoHYwPM5VFjl1NNt/+b5qbustanJSyVgBa0fW73rkBZj3PS/VG/S70fpnluQYlnkQJV68qoVtN6TFtbZAuVeOh0BjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UDzmxeXi; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-abf6f3b836aso283700566b.3
-        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 13:39:08 -0800 (PST)
+	s=arc-20240116; t=1741038056; c=relaxed/simple;
+	bh=t48prv4ltqZBgmpiT8R/ZTVb9z8qZJulguu49one7U4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IE4NgKq36k9wfG2UUuLjMPev7mEFwxsT+Prfqs1hbD51p25K1/yUiSt2UJb0hbejrIpPZBXssLsmBvjdYWB8l/4NHJmVY1OCTR87EH+8Vj+DlJO3awrz3cLf+NNEVQM7e06thL8/TOi31Ov8q5XHKmsgvpYmTQjXp5NMnHqheG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NjTUyC4t; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-223a0da61easo51035ad.0
+        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 13:40:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741037947; x=1741642747; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w0FinuGHiBCGDC8j9R5yALA+vqb1hOfcXDLD1oyMnOg=;
-        b=UDzmxeXiYv9rPUx76AfhxzbwrDMls0EJdLP8ZcFJMkS0jFfWuSisF1f23o4m7v9Fgt
-         E20SNHmzsXnFY2ralSBVlr9Zzx6rV1eQIt0lipKObAZrgZn6XBSWIGt2r6OLqoctJmQa
-         1hOn7qJa9oaEIVyp6G/iY6Gd9kXpJWCbh2+cdPQY49AO7JswzSvdhyOmKwUoc6tUj2O+
-         EiSSaT1d0yi+NxZU/4e3l8U9AkBbhM2nhrpr0e9b1mxyLMDcpmFcMoerfBW383B87t6d
-         uMlpXfkmF21JDIwCdMaZV6YmA3xY5ciHbNNY58Lhw10/0oDHXtNNx7qDLMqXr7ahy1DN
-         mQHw==
+        d=google.com; s=20230601; t=1741038054; x=1741642854; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=//CA4dP1gRO/1RNRixCqJrbqKaw0YXw5wU7J/MVaxKg=;
+        b=NjTUyC4tnMMbS2ZkzEQu+tumClDu5ho6F4m5Q+WN1K2Va0/uPSgzO5AEhDDBekPa6L
+         Dah8MBZnU/1mxnVqV0WmA7JTbWKPXkxxuMDFW7tVBm/Rv+0nTucILMzPqN4JE2iRI66r
+         +QfJWlBg/iWxfeOt9MT/kyRgayw+yR3ksBXyZ42ySyZmAx9NbTgZpxiDDqpcDfJrJBVU
+         wRyC6H1r76w+vpTCeIcOHPjg23ND8SxN8dqGGN/A4YGaHlmdZmPvi/BRk5Xk+u3sklBz
+         efiGFYH6bQMtDebloPlYoTJbhviL+fdn5Uoet5qVvEjdHuvAGQGiU4Bv74Py3P9tdmK8
+         XUmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741037947; x=1741642747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w0FinuGHiBCGDC8j9R5yALA+vqb1hOfcXDLD1oyMnOg=;
-        b=Yl6perzPYuFj4Kq90ErRXRc3aWTa+XFWhKmUjdegDW572wApuhKuHd5nmjfr+KHRuU
-         3hninAKHE4mlWX4dMGNHOPYYNABY+Jgoy7PGq63eEdrsM7hulKu+oeylOQMd0e50nQqQ
-         /cHRMqbWPI1RrAm52sfc7Pr2clNXECjjBJsuvgLMCgaWGaJITe3mrmCuWKFCcyuo8RTc
-         1XwCtoTXSsJ8VfBv5QXqiaMHVdL2COmM/eMWCibK78RL0VsiEyZ8HrA4bsXeWCHq6OMu
-         69eSzaWrdEOXUmm60YEkGe6iM0rqEzjhFdIic/QesdVdIF9oyzCKukGPIdGPTv29kGCh
-         DMvw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQ0FA58XqaAwfWYXZcfloM4TIowkDvFTEPexHQ+Ds6WzHRARChOYv6sR67c4s9MzXb3U8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz2vmkeHKt3l5pz2VLFsNmjNBGqJM6I/J+Rc40cMacEUSXceJ5D
-	eEvGEKGLCoUxbevzJ8XX2YmN21nD1k4tCM3xXm75R0SXFVtqnISZPOYKn91NCW9xAbX9ybzpgla
-	f2kRTOOjHKylW16TQt//KGZ4/whY=
-X-Gm-Gg: ASbGnctDWzMCuQga9h7znmFPme2/I+QM32WshRxaa8iq59Q2id4plF+p/PHmiimEBHn
-	FnhNOcEIviOGjs0IV8HN3SiJg/z789uEuF/o+f6NnXHhX72LhHOFhzKvTrutk9eGNvASf2F14id
-	nBd7qdrQ6cYJTVDQQXgyOWQ0cm
-X-Google-Smtp-Source: AGHT+IFqJ6FCwbYJxKutmhRrAbRR0pXosxvDeaCxD0OaVaOtQpR6c1nUiK/0xp4PyT3cviIkICfQPCMxCXaRrzPxSPc=
-X-Received: by 2002:a17:906:4788:b0:ac1:ed96:56d9 with SMTP id
- a640c23a62f3a-ac1ed966efdmr167742666b.40.1741037946709; Mon, 03 Mar 2025
- 13:39:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1741038054; x=1741642854;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=//CA4dP1gRO/1RNRixCqJrbqKaw0YXw5wU7J/MVaxKg=;
+        b=rQN8cIgKaOT/sT5VdqKiDoGcMd4MC7oq0pF6rIoR99McVOaWxdJpaaas3+zhr+NnvR
+         gF0ZKKPJuy8akpLa+cORi+3L0BEZmrZhe3OufGlaLp36bCQkNOToObxRLJQ9AtpjlqPP
+         4mOGA/3+SLkg3KPviUn3YdP2uOZB1IHiTGVGv/YVJM1ScJCxQTtvsU1HBgudktDUeRpC
+         0L4yWPBsVa4XFtvP1SLaqIQN4rZ7EzHDU8id/MGp2XLbo0VYh4vQhtpIN7/1IcoeL4yV
+         KLDJfNAjuPneczQB7d0U20W146nOCyi5zag1ErxfnNeFAnDoWwUd8pXKXxB/xav13q9q
+         TsuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWDaNF1G+V5KbChnEGf6oiJYgkzU/ldhBxNC1Zh6phHQ5EnOkQwkwu3N83nwN7FUMFNhKw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yytz4N4Y3NaOQ0TTp8OQ4HBdbcRRKVhY6MnuApnyHVLn9ImuZJ+
+	DeF58r9e22/Dv49Y55nOkPVZudHl9iOVSWXnDFkHStTdffNow46JXTLA3Zp2nQ==
+X-Gm-Gg: ASbGncuDOilzcn/mCMWMa4MMINqSry9AB8tIDf7fpnE4dlVU/M0w4HseaVrhdTR9SpF
+	AZzadHNg2Z9XxxUSJ5Q2uOQxg8uRYi/gReZrhvDPzoXuAr5pBQt/zm8CQyNthdy5XmDi6sGCOyo
+	JP6tvQ0j+DTqQm43pLT0+Rw8l/kZFh7kDdh09ax3Uy0ENgXoaQ+bHXATI9Qw/43TI8TAOa32iaE
+	hjlhoWYGWRQs48lDtd9rZ2uTtb+tV+WrskxjtT2M6ckHC1hNxPvTP5gz7LYy4trL/7ul8Dsb9K8
+	yftdzzTSU/PX0uQ1GIChuLfjHZMSJ7Fv8c/nDz4UGoMp9kiMGHWM7HAmnirolDZh0lKsKVHbehe
+	NZQFHvJLHeiVJlNo=
+X-Google-Smtp-Source: AGHT+IEwj6zn3l1n1mEvrRIOd0S1KGWs/bgL/3cFaL+tQsr/6cABYrLinWLfgT7M2GWCtuDNAUdgLA==
+X-Received: by 2002:a17:903:2592:b0:223:2630:6b86 with SMTP id d9443c01a7336-223db3fdecdmr77895ad.7.1741038053846;
+        Mon, 03 Mar 2025 13:40:53 -0800 (PST)
+Received: from google.com (227.180.227.35.bc.googleusercontent.com. [35.227.180.227])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7349fe514besm9424721b3a.71.2025.03.03.13.40.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Mar 2025 13:40:53 -0800 (PST)
+Date: Mon, 3 Mar 2025 21:40:48 +0000
+From: Sami Tolvanen <samitolvanen@google.com>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: peterz@infradead.org, rostedt@goodmis.org, mark.rutland@arm.com,
+	alexei.starovoitov@gmail.com, catalin.marinas@arm.com,
+	will@kernel.org, mhiramat@kernel.org, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@fomichev.me, jolsa@kernel.org,
+	davem@davemloft.net, dsahern@kernel.org,
+	mathieu.desnoyers@efficios.com, nathan@kernel.org,
+	nick.desaulniers+lkml@gmail.com, morbo@google.com, kees@kernel.org,
+	dongml2@chinatelecom.cn, akpm@linux-foundation.org,
+	riel@surriel.com, rppt@kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v4 4/4] arm64: implement per-function metadata storage
+ for arm64
+Message-ID: <20250303214048.GA570570@google.com>
+References: <20250303132837.498938-1-dongml2@chinatelecom.cn>
+ <20250303132837.498938-5-dongml2@chinatelecom.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250228175255.254009-1-mykyta.yatsenko5@gmail.com>
- <20250228175255.254009-3-mykyta.yatsenko5@gmail.com> <5d7fb7202625b999cb77a1e010ba6f7099dbb561.camel@gmail.com>
- <00e385df-7ffc-4fd9-aad8-60dddef300af@gmail.com>
-In-Reply-To: <00e385df-7ffc-4fd9-aad8-60dddef300af@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 3 Mar 2025 13:38:24 -0800
-X-Gm-Features: AQ5f1JrgUyWmP8tvPuoEEg9oUdx95cvwBlRZYzKy_mh1zcAw1RumjI5Jjqll3jU
-Message-ID: <CAEf4Bzat3grecmd_PkmLpN9gAfkuGhmO4o4HmgZWE4sJ9BL+fw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] libbpf: split bpf object load into prepare/load
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250303132837.498938-5-dongml2@chinatelecom.cn>
 
-On Sat, Mar 1, 2025 at 1:45=E2=80=AFPM Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
->
-> On 01/03/2025 08:12, Eduard Zingerman wrote:
-> > On Fri, 2025-02-28 at 17:52 +0000, Mykyta Yatsenko wrote:
-> >
-> > [...]
-> >
-> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> >> index 9ced1ce2334c..dd2f64903c3b 100644
-> >> --- a/tools/lib/bpf/libbpf.c
-> >> +++ b/tools/lib/bpf/libbpf.c
-> >> @@ -4858,7 +4858,7 @@ bool bpf_map__autocreate(const struct bpf_map *m=
-ap)
-> >>
-> >>   int bpf_map__set_autocreate(struct bpf_map *map, bool autocreate)
-> >>   {
-> >> -    if (map->obj->state >=3D OBJ_LOADED)
-> >> +    if (map->obj->state >=3D OBJ_PREPARED)
-> >>              return libbpf_err(-EBUSY);
-> > I looked through logic in patches #1 and #2 and changes look correct.
-> > Running tests under valgrind does not show issues with this feature.
-> > The only ask from my side is to consider doing =3D=3D/!=3D comparisons =
-in
-> > cases like above. E.g. it seems that `map->obj->state !=3D OBJ_OPENED`
-> > is a bit simpler to understand when reading condition above.
-> > Or maybe that's just me.
-> I'm not sure about this one.  >=3D or < checks for state relative to
-> operand more
-> flexibly,for example `map->obj->state >=3D OBJ_PREPARED` is read as
-> "is the object in at least PREPARED state". Perhaps, if we add more state=
-s,
-> these >,< checks will not require any changes, while =3D=3D, !=3D may.
-> I guess this also depends on what we actually want to check here, is it t=
-hat
-> state at least PREPARED or the state is not initial OPENED.
-> Not a strong opinion, though, happy to flip code to =3D=3D, !=3D.
+On Mon, Mar 03, 2025 at 09:28:37PM +0800, Menglong Dong wrote:
+> The per-function metadata storage is already used by ftrace if
+> CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS is enabled, and it store the pointer
+> of the callback directly to the function padding, which consume 8-bytes,
+> in the commit
+> baaf553d3bc3 ("arm64: Implement HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS").
+> So we can directly store the index to the function padding too, without
+> a prepending. With CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS enabled, the
+> function is 8-bytes aligned, and we will compile the kernel with extra
+> 8-bytes (2 NOPS) padding space. Otherwise, the function is 4-bytes
+> aligned, and only extra 4-bytes (1 NOPS) is needed.
+> 
+> However, we have the same problem with Mark in the commit above: we can't
+> use the function padding together with CFI_CLANG, which can make the clang
+> compiles a wrong offset to the pre-function type hash. He said that he was
+> working with others on this problem 2 years ago. Hi Mark, is there any
+> progress on this problem?
 
-Those steps are logically ordered, so >=3D and <=3D makes more sense. If
-we ever add one extra step somewhere in between existing steps, most
-checks will stay correct, while with equality a lot of them might need
-to be adjusted to multiple equalities.
+I don't think there's been much progress since the previous
+discussion a couple of years ago. The conclusion seemed to be
+that adding a section parameter to -fpatchable-function-entry
+would allow us to identify notrace functions while keeping a
+consistent layout for functions:
 
-> >
-> >>      map->autocreate =3D autocreate;
-> > [...]
-> >
->
+https://lore.kernel.org/lkml/Y1QEzk%2FA41PKLEPe@hirez.programming.kicks-ass.net/
+
+Sami
 
