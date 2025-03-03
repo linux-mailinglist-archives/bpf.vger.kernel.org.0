@@ -1,245 +1,141 @@
-Return-Path: <bpf+bounces-53014-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53015-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 268D4A4B7B0
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 06:39:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64159A4B7B6
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 06:46:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECF503B0E7B
-	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 05:39:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74A851890BD1
+	for <lists+bpf@lfdr.de>; Mon,  3 Mar 2025 05:46:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A2DC1E98E0;
-	Mon,  3 Mar 2025 05:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F151E0DE3;
+	Mon,  3 Mar 2025 05:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SICV0Q5x"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yGgSwXB5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875FF1DED52
-	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 05:38:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4DEB14F121
+	for <bpf@vger.kernel.org>; Mon,  3 Mar 2025 05:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740980319; cv=none; b=EyUEejuwr0/AqdeSa0LLPT0Mi5/L7UXmJRkPxFRICq8QtukG4xPnerieCbV5g/2edEew+yiinnBtHXZo3fSVGmhWzEOiyzduX1RFHiyqjwlHpBTpMV4JQ3CAnzzL4KG6ZuC1iG0vKMwS2ukZjnmqmFvzNcxm+JD/pGiVLjsoArQ=
+	t=1740980779; cv=none; b=WXnaviNdgwxXyLfuWMS8IbNYyM7dIy1SGuOAlieFYHmXoksWeZdRs9LvwaCOnBrV4ETqnftelsLeZez9lFs3IFZEljBlcVMEX0ttU//AfLWUY/8jHHDnd+QsIk9/YT7zplz6CTkvyheLmg4OC3En4yER07JcRRdZJRr9OTbujRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740980319; c=relaxed/simple;
-	bh=Rxxup+Tv98QPQYKKPXDiM+/qq07KKlfXEu4t+pf9j/Y=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=h4p5H7NUE3rRnsVe3b2CMgPm9czHLjzLvCUvUFTlmulnfYnOuZTET3upiR3XxjsZgHShCCveDPyTUzPSOxOwiawy3RTlpDmzxN87zqtkoyxISYFZ+wgwvZIvic06fCZ9erLpvZM7yyPK+WiUAQvxU/Fvk13S9OfWWrOYd9imKeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SICV0Q5x; arc=none smtp.client-ip=209.85.214.202
+	s=arc-20240116; t=1740980779; c=relaxed/simple;
+	bh=kFywK/ACq8d8QY2b87w30M3VzLAGE4vSEdG8FS6u2Ek=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QjpEECJv0sXbWPggmw2UXE1/xn7R1IH89HP3swfkOg/xtuRn9V0/dJx+J221kS6JMjjz7I+W9ezwmY8jZjRQzmL3Jdl7jdXbBWmT9YdY3r8lOiFdbC2z+FLKU7pgWPhXG+s0CVF1c8G8y+YClk9fRs2JFAxzqRMBxy+VszICls0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yGgSwXB5; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yepeilin.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-21f6cb3097bso112473805ad.3
-        for <bpf@vger.kernel.org>; Sun, 02 Mar 2025 21:38:37 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-223a0da61easo124485ad.0
+        for <bpf@vger.kernel.org>; Sun, 02 Mar 2025 21:46:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1740980317; x=1741585117; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bdFMJ3eJb2l/jj7P1Me0JuhIKyhrXbqRhtqcohr3hSo=;
-        b=SICV0Q5x1S0HmhzQ93zonrrIRI6w8RYXe7spuPMKVmRhpGW+Ys0Vj+Z1h77PaRPkgu
-         YMGltynesWbGi3xJLtqypF+7FyB1uodLGC0h+NM52xRHWpJvT3lSWJMQ5EO5SmmqDs2a
-         /WJJh0HQNp0hYilS0p3WAUmjr6cMt2d4NO7qh6eV+7hs+FKtOafWH+3W+3uYK2P0WGXv
-         f5awJd0tZg3aA+cb4ibItnkn4SRiwUGeBAdhnv8hIofQ+yalTfh3DcAdV16S2NVUFC+Y
-         JLXDVJhRJXqBg5vK74IZYby1zMq7ve8dTxRqacVLgWLZ5zGy/gYBksv/kXtyp9IPdYSt
-         WIKQ==
+        d=google.com; s=20230601; t=1740980777; x=1741585577; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LWZczVLGJa1y4XReahdUAMxIiZ2gtlx/faB4w9x6vag=;
+        b=yGgSwXB5hM3gv3yGEdhsTm0mRnqprQl2Aw7dv1Ghq8tNIef9S0bGq//SGA6NdX19KC
+         MrGgFGAOVZalwoM8dwy/0cHBzE8Y/glcCLvEnrf2a9KOfdVWMXnjzRaMTcAESKoiZVG/
+         l4rdLAZPwvEx4inICpx9hgDE80s5urDx669foXqSc8xLBCN1xyAkFWhOrJkthwFguyDW
+         m5FPnneZfKNEVHoi4iqhBnuS3zDzrLHMEx4KKkDGg6cIQhvEmoNL5PdhFx8oSclbT6o0
+         IOypmY/WHBNDRZCwfdA7h9xrljhZKLxkPl+YL0gZkFDe1rCcB6wtx/LvvkGNkyTz95B2
+         CFUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740980317; x=1741585117;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bdFMJ3eJb2l/jj7P1Me0JuhIKyhrXbqRhtqcohr3hSo=;
-        b=E/ik83YLBX95Esbr/gH3zkp9o+ArI1xefdohQkyL9DBjAx0VG8bQ/3pIufWf1A/Klf
-         nVv1UeyesbHOo92w73v95VZ7t0PmOp1n8mB49Azy5uYehgcnfWZ9ebAFYTy1vBEP7yPk
-         vwKBUl7Rgi30Q4V2R9UlWhpQ0f+RrzIXxo2ZHp17lbxmwe5PnB1GxHQZ1aZPH7j7Ihio
-         G3UO7OYPfg+/1ePUsrUd4c7VI2Ciliql6aQwTExV/4yfTN7tUzxgXGHj9KXC7jzkGCeq
-         uNA4gw8SNDrwF5E3jokmqBWcSJeXqxKexEmWDcQ3W348SqAaICH4a3O0xU3c4KZ0jHFJ
-         3SBA==
-X-Gm-Message-State: AOJu0YwSD0x/WbElIiNhi5V3JUBPl2m5MTfyRC5VVEqZ+NQbubbKRKgh
-	jI+MBwoERepplUhH5s066utduMQQo3i6WNNsf0a6uKGebB44Slig4cktHSjpgvjH/g1YBDDef85
-	e68QLW8ibhqOEHFZwwNbEWuvZY72SM6lRFB6TrN35Hg7+QQVEprhX66bsyDlM+Lagkz2Sabay0/
-	R/wx5yT0Ws0+bp9D4EstTyjlk/SR5U6luxiWXcY38=
-X-Google-Smtp-Source: AGHT+IG8yh55rFOhOTZMMGs/yTblMQoM/f6tZY3/AfjWMjgR3Y/YqigzRqn2h1ts0C33WfA1yC4VrhUHSjzCMg==
-X-Received: from pfhm17.prod.google.com ([2002:a62:f211:0:b0:734:c237:abe7])
- (user=yepeilin job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a00:3d4c:b0:736:6043:69f9 with SMTP id d2e1a72fcca58-73660437d47mr1216182b3a.19.1740980316852;
- Sun, 02 Mar 2025 21:38:36 -0800 (PST)
-Date: Mon,  3 Mar 2025 05:38:29 +0000
-In-Reply-To: <cover.1740978603.git.yepeilin@google.com>
+        d=1e100.net; s=20230601; t=1740980777; x=1741585577;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LWZczVLGJa1y4XReahdUAMxIiZ2gtlx/faB4w9x6vag=;
+        b=gKjYpY/B2Fk3jIkynooFAaLTpP0U7Sfd3GZyHLWCvkPlWalI3g9c8Ae6RgeLoyJIy7
+         W7bxu7ixQk0h724B2QSuJyHEoOWv2oAwniGiX/OGBGoq7Rq5hkRI4iGzSGBjQ4rOwQWB
+         w840CSF7dAcIPzU1SpLYmzFHfHSmFS0Vctlvq2cZ/T8grGNrkjCE9Vral78lM9l1oRV9
+         18h7K1ZRb3+Vf+Lj7CXBzjSaiYq8lH+0f6G4tirfWBm6x+9AELDnD0noUwe0aRND9PEQ
+         iDO+eWCs7PujtXtTI8RoKC7Ly/NGk79TG+bDYUPjqtAqMrGwKoyLQeOxfGqS6NJUx24g
+         rpXw==
+X-Gm-Message-State: AOJu0YzqYPkeWU3umUDYjtUN/2k1hweeDBMrmM7Q9+3YRgSFnGM365nO
+	bkeqVU6mwtlealM9efu9gVDAaPOGvzE/+186acoXbk28cHQl7sA7TUlYB+zZaLwjbsPjXM1rTZ1
+	T1g==
+X-Gm-Gg: ASbGncsi6NR4ikbE3WlUy9jJ8O1zBoAuJgsMXjIEa3umEKHx70G+E5iF0RXSj/wnndT
+	+UkQB+QkIrFZwj1GMa4sIp/6B5fsNCxcTiKefAttK1rRVHckjGxSBTEChuNYJM8OLTGeozXJb+N
+	Pk+HyMM964xRY1jcqAmfTOeSCn8UsDag604fB7mSUYp4q13/vfMxlm8wGr38JLE8zNX5sF7x1jv
+	qz5WTAOKgHmcAQ5qxUfuhqSvqrpSJHEB6fWwe8MO4bbqzLcxy4/jLrPnLxvAtk/lO2WLJDJdjON
+	xeXJdDMkKRVk0k6IdL7r7XrSyGzL8+etj27JbrgOjLDHkK+HlsszUr7/7WWznBb98ZI9ECXBeR1
+	2knGX+qY=
+X-Google-Smtp-Source: AGHT+IGR9sIbs4GODDlDVazb4ZHmmL3k8nYNXhdZXtHYDL05wSLBQV8yxY07hQVWXU5lra6HhADNPw==
+X-Received: by 2002:a17:902:c947:b0:21f:56e5:daee with SMTP id d9443c01a7336-223826bd593mr2964695ad.6.1740980776552;
+        Sun, 02 Mar 2025 21:46:16 -0800 (PST)
+Received: from google.com (147.141.16.34.bc.googleusercontent.com. [34.16.141.147])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-734a0024c04sm8210373b3a.105.2025.03.02.21.46.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Mar 2025 21:46:16 -0800 (PST)
+Date: Mon, 3 Mar 2025 05:46:10 +0000
+From: Peilin Ye <yepeilin@google.com>
+To: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Alexei Starovoitov <ast@kernel.org>
+Cc: bpf@ietf.org, Alexei Starovoitov <ast@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	David Vernet <void@manifault.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Quentin Monnet <qmo@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Ihor Solodrai <ihor.solodrai@linux.dev>,
+	Yingchi Long <longyingchi24s@ict.ac.cn>,
+	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>,
+	Neel Natu <neelnatu@google.com>,
+	Benjamin Segall <bsegall@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 08/10] bpf, x86: Support load-acquire and
+ store-release instructions
+Message-ID: <Z8VCIrnJ10uBj0yN@google.com>
+References: <cover.1740978603.git.yepeilin@google.com>
+ <ea2754510513dce17a1d8f4fcab07d9d769e7b08.1740978603.git.yepeilin@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1740978603.git.yepeilin@google.com>
-X-Mailer: git-send-email 2.48.1.711.g2feabab25a-goog
-Message-ID: <c835515c35ec4ed59232adc3c02e1e90aa8ed8be.1740978603.git.yepeilin@google.com>
-Subject: [PATCH bpf-next v4 10/10] bpf, docs: Update instruction-set.rst for
- load-acquire and store-release instructions
-From: Peilin Ye <yepeilin@google.com>
-To: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Peilin Ye <yepeilin@google.com>, bpf@ietf.org, Alexei Starovoitov <ast@kernel.org>, 
-	Xu Kuohai <xukuohai@huaweicloud.com>, Eduard Zingerman <eddyz87@gmail.com>, 
-	David Vernet <void@manifault.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Quentin Monnet <qmo@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>, Yingchi Long <longyingchi24s@ict.ac.cn>, 
-	Josh Don <joshdon@google.com>, Barret Rhoden <brho@google.com>, Neel Natu <neelnatu@google.com>, 
-	Benjamin Segall <bsegall@google.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ea2754510513dce17a1d8f4fcab07d9d769e7b08.1740978603.git.yepeilin@google.com>
 
-Update documentation for the new load-acquire and store-release
-instructions.  Rename existing atomic operations as "atomic
-read-modify-write (RMW) operations".
+Hi Alexei,
 
-Following RFC 9669, section 7.3. "Adding Instructions", create new
-conformance groups "atomic32v2" and "atomic64v2", where:
+On Mon, Mar 03, 2025 at 05:38:07AM +0000, Peilin Ye wrote:
+> Recently we introduced BPF load-acquire (BPF_LOAD_ACQ) and store-release
+> (BPF_STORE_REL) instructions.  For x86-64, simply implement them as
+> regular BPF_LDX/BPF_STX loads and stores.  The verifier always rejects
+> misaligned load-acquires/store-releases (even if BPF_F_ANY_ALIGNMENT is
+> set), so emitted MOV* instructions are guaranteed to be atomic.
+> 
+> Arena accesses are supported.  8- and 16-bit load-acquires are
+> zero-extending (i.e., MOVZBQ, MOVZWQ).
+> 
+> Rename emit_atomic{,_index}() to emit_atomic_rmw{,_index}() to make it
+> clear that they only handle read-modify-write atomics, and extend their
+> @atomic_op parameter from u8 to u32, since we are starting to use more
+> than the lowest 8 bits of the 'imm' field.
 
-  * atomic32v2: includes all instructions in "atomic32", plus the new
-                8-bit, 16-bit and 32-bit atomic load-acquire and
-                store-release instructions
+For x86-64, v4 PATCH 08/10 implements ld_acq/st_rel as regular LDX/STX
+(aligned) loads/stores.  Please take another look.  Thanks!
 
-  * atomic64v2: includes all instructions in "atomic64" and
-                "atomic32v2", plus the new 64-bit atomic load-acquire
-                and store-release instructions
-
-Cc: bpf@ietf.org
-Signed-off-by: Peilin Ye <yepeilin@google.com>
----
- .../bpf/standardization/instruction-set.rst   | 78 +++++++++++++++----
- 1 file changed, 62 insertions(+), 16 deletions(-)
-
-diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
-index fbe975585236..1bed27572bca 100644
---- a/Documentation/bpf/standardization/instruction-set.rst
-+++ b/Documentation/bpf/standardization/instruction-set.rst
-@@ -139,8 +139,14 @@ This document defines the following conformance groups:
-   specification unless otherwise noted.
- * base64: includes base32, plus instructions explicitly noted
-   as being in the base64 conformance group.
--* atomic32: includes 32-bit atomic operation instructions (see `Atomic operations`_).
--* atomic64: includes atomic32, plus 64-bit atomic operation instructions.
-+* atomic32: includes 32-bit atomic read-modify-write instructions (see
-+  `Atomic operations`_).
-+* atomic32v2: includes atomic32, plus 8-bit, 16-bit and 32-bit atomic
-+  load-acquire and store-release instructions.
-+* atomic64: includes atomic32, plus 64-bit atomic read-modify-write
-+  instructions.
-+* atomic64v2: unifies atomic32v2 and atomic64, plus 64-bit atomic load-acquire
-+  and store-release instructions.
- * divmul32: includes 32-bit division, multiplication, and modulo instructions.
- * divmul64: includes divmul32, plus 64-bit division, multiplication,
-   and modulo instructions.
-@@ -661,20 +667,29 @@ Atomic operations are operations that operate on memory and can not be
- interrupted or corrupted by other access to the same memory region
- by other BPF programs or means outside of this specification.
- 
--All atomic operations supported by BPF are encoded as store operations
--that use the ``ATOMIC`` mode modifier as follows:
-+All atomic operations supported by BPF are encoded as ``STX`` instructions
-+that use the ``ATOMIC`` mode modifier, with the 'imm' field encoding the
-+actual atomic operation.  These operations fall into two categories, as
-+described in the following sections:
- 
--* ``{ATOMIC, W, STX}`` for 32-bit operations, which are
-+* `Atomic read-modify-write operations`_
-+* `Atomic load and store operations`_
-+
-+Atomic read-modify-write operations
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+The atomic read-modify-write (RMW) operations are encoded as follows:
-+
-+* ``{ATOMIC, W, STX}`` for 32-bit RMW operations, which are
-   part of the "atomic32" conformance group.
--* ``{ATOMIC, DW, STX}`` for 64-bit operations, which are
-+* ``{ATOMIC, DW, STX}`` for 64-bit RMW operations, which are
-   part of the "atomic64" conformance group.
--* 8-bit and 16-bit wide atomic operations are not supported.
-+* 8-bit and 16-bit wide atomic RMW operations are not supported.
- 
--The 'imm' field is used to encode the actual atomic operation.
--Simple atomic operation use a subset of the values defined to encode
--arithmetic operations in the 'imm' field to encode the atomic operation:
-+Simple atomic RMW operation use a subset of the values defined to encode
-+arithmetic operations in the 'imm' field to encode the atomic RMW operation:
- 
--.. table:: Simple atomic operations
-+.. table:: Simple atomic read-modify-write operations
- 
-   ========  =====  ===========
-   imm       value  description
-@@ -694,10 +709,10 @@ arithmetic operations in the 'imm' field to encode the atomic operation:
- 
-   *(u64 *)(dst + offset) += src
- 
--In addition to the simple atomic operations, there also is a modifier and
--two complex atomic operations:
-+In addition to the simple atomic RMW operations, there also is a modifier and
-+two complex atomic RMW operations:
- 
--.. table:: Complex atomic operations
-+.. table:: Complex atomic read-modify-write operations
- 
-   ===========  ================  ===========================
-   imm          value             description
-@@ -707,8 +722,8 @@ two complex atomic operations:
-   CMPXCHG      0xf0 | FETCH      atomic compare and exchange
-   ===========  ================  ===========================
- 
--The ``FETCH`` modifier is optional for simple atomic operations, and
--always set for the complex atomic operations.  If the ``FETCH`` flag
-+The ``FETCH`` modifier is optional for simple atomic RMW operations, and
-+always set for the complex atomic RMW operations.  If the ``FETCH`` flag
- is set, then the operation also overwrites ``src`` with the value that
- was in memory before it was modified.
- 
-@@ -721,6 +736,37 @@ The ``CMPXCHG`` operation atomically compares the value addressed by
- value that was at ``dst + offset`` before the operation is zero-extended
- and loaded back to ``R0``.
- 
-+Atomic load and store operations
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+To encode an atomic load or store operation, the 'imm' field is one of:
-+
-+.. table:: Atomic load and store operations
-+
-+  ========= =====  ====================
-+  imm       value  description
-+  ========= =====  ====================
-+  LOAD_ACQ  0x100  atomic load-acquire
-+  STORE_REL 0x110  atomic store-release
-+  ========= =====  ====================
-+
-+``{ATOMIC, <size>, STX}`` with 'imm' = LOAD_ACQ means::
-+
-+  dst = load_acquire((unsigned size *)(src + offset))
-+
-+``{ATOMIC, <size>, STX}`` with 'imm' = STORE_REL means::
-+
-+  store_release((unsigned size *)(dst + offset), src)
-+
-+Where '<size>' is one of: ``B``, ``H``, ``W``, or ``DW``, and 'unsigned size'
-+is one of: u8, u16, u32, or u64.
-+
-+8-bit, 16-bit and 32-bit atomic load-acquire and store-release instructions
-+are part of the "atomic32v2" conformance group.
-+
-+64-bit atomic load-acquire and store-release instructions are part of the
-+"atomic64v2" conformance group.
-+
- 64-bit immediate instructions
- -----------------------------
- 
--- 
-2.48.1.711.g2feabab25a-goog
+Peilin Ye
 
 
