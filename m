@@ -1,188 +1,183 @@
-Return-Path: <bpf+bounces-53246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ACBBA4EFA8
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 22:57:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC753A4EFF5
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 23:17:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8DA416F215
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 21:57:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1111F3A547E
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 22:16:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4287526FDAB;
-	Tue,  4 Mar 2025 21:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 986131F55FA;
+	Tue,  4 Mar 2025 22:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="qrI6QoXU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jFjwgtN5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA111DB125
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 21:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DCE33998
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 22:16:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741125470; cv=none; b=H8yKLlbTMsHZihQc9FjK5n2tdJu5plxS29iVzsam8X6Pf344riTCN6AdXt6240Xf2gxe4s9ZmjuCJQ/+kB0YEh/TOp7Bz+5XTtNFt52v9yE7LneUV/UglyjQmZhEfFlYsg5IoEzRPlgpCsmMr7wg5NZZonN2pUK8defLbH+4dvk=
+	t=1741126616; cv=none; b=g0u0HAR7dY2j31+rgG8Nh6YI+92Zm9lCosvTodVU7sNljTNgwabdSoTb5NuUyLCN7HG+9KVbiFgO2LGUZ3iFhxGjFw1bEMMdfsFXts9Ci3tNY6VXIihJL8z+SXbwwnogUo2gTiNj0PftcA7VJwjmJ+Gal+UsjplUqqSK2trEpeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741125470; c=relaxed/simple;
-	bh=ZprjjAv4of4DheT9e4BmvdWosaz/33jNZe54sPsErFE=;
+	s=arc-20240116; t=1741126616; c=relaxed/simple;
+	bh=5I4fzVa8NmYq1zu6tyPG6S9e8DomNX5u7N5KffUIE9c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gimzc2AiFlOJuDgpN5SWFX+Y0fxE7+ympb71HO6hjKs4Q+DAT/hzQMTgYd/dpeC8c3bW6EzV5C+T6SQaDrCbWtnE3igiD3Ycd/NT2fdsp2OFnd+DfJ9VaUaK633kzTLEZFbMtNWThE+PderVacD9xjGPVupeQZ0UclsM9/TG7K4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=qrI6QoXU; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6fd719f9e0dso24594517b3.1
-        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 13:57:48 -0800 (PST)
+	 To:Cc:Content-Type; b=dNpcCUjbx3m6XK6j4r8k5GG0aASgqDfDIX1rMvjiH2v1kCK2cLMIF5SqVDGrcG7yxrvUUpQ4oNk10XptwDW8KY5FSfldt2DklhyybP2lgoiTTILd7W5pQDBBDuwgmtlWbC2MjEQu6PtZvaM6ZDHEqWwuXtJaOdU+gb+lg5+NXC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jFjwgtN5; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-22359001f1aso138809335ad.3
+        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 14:16:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1741125467; x=1741730267; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741126614; x=1741731414; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CE2rgjTCJRuRdeYpKDhzY3yjxL0HL58E11vVouz4olw=;
-        b=qrI6QoXUscItWC3uDlffAg25MnM/i2sjbHhy57KGQZal9pcPMllWnFKQLQ29J/uKbL
-         jbPHd2+NL5dCMx64imTNToTXU2CsNMc1s2DlJigKCHEg14EDGEgJEhYmi88OnyxZqiqS
-         DO0YbWFn0VPs4YDE9IoA7x0jej/eFUjY7ksiz2YfwBeAxZzdx+Aa/pgDCBB7gtmaV650
-         ngnPCLi2BQJvGNSNvSNA2Vc23Zh565/mDw4hcUGJZFzuC19EjsBU/OP/tePeGItuNwxb
-         J68IPl/oZhb5YTw+qaqOh5ZaNAvvb3vhELiUnKzrWmaUFYqYcH5JpaoxDvUttu37zKWW
-         9YCg==
+        bh=hBxsisAI2Eec10Ls415KNkkE1/XEsrmCAc9iTe7Cc3w=;
+        b=jFjwgtN5au5JTu3MYS7jh2dOmf2kDhX+p5VEQsltuICvRPfVF0lm7L8/I2hYvRBSnb
+         i7SZd7Np1IfHdntRyWFev05266eHfl8aQXXYMHBlKPMULT9G85TX9F5NHIxIKZPW7jo4
+         DkvUMQSp2y6BfDHbrWIpVB3AQD3efQLjkJwZrw2ae7LBUt/ful3rne+7jQHKLjfAHO8/
+         FVrjcNOKbtvD9Nmi2D9SrhXFSAjbJE4FApGssE3JaCnEQ94JLz/iGdLQJHpC4lPI5odq
+         tqK4ZxF4gpGTexA9W7YmQyJtcH4x6oteOzBoYGIbzM1Y9ID2yrFkh8BfSOPby8R9a+rg
+         4VtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741125467; x=1741730267;
+        d=1e100.net; s=20230601; t=1741126614; x=1741731414;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CE2rgjTCJRuRdeYpKDhzY3yjxL0HL58E11vVouz4olw=;
-        b=l85Tm2HmgvhmYB1t0OSeZkgBaUIrYTMb7nfF3x0kATSDQrG/gRst5rbar3fyJ5kPd3
-         DcJOYsWkIhinpOs09MTdLuZ+U5EGFIM6QXG/OX4CeMnes0+iz0nUBMbavHTOpBcgDWlk
-         ON/EareriMW0jD8tty7FNMC5KY7+moN9bxLuSN2ETFB5wy1vXOlVsB+ZyJGaxLoxyjoJ
-         8BV9BvTF1nkVEey+BEAKj0D3I+Na5bVh4wc91ICpXmb3DT/xm32rkwW5M22RDZ3wyqpj
-         61AF0mzR9ifHaMqam7J19s5trcZpfa/VxnssSqlAyfoW53NfpecjV8ZEDv721ljYweH+
-         wRPw==
-X-Gm-Message-State: AOJu0Yxssi3DOwLL/aLPcGl4kgh/wJ1bcYZwuhX4Kx40Q6wBCFIAIQin
-	EPVkFB+cikWofA/gcSo8qok6LqIy58Hg2Tn3rrm6YVlx4bRTms65SRk6NPimc5/zlLF6WGiuxLM
-	Y3e45yYQXnNbuhSiu25iDGJdFw9sVK9MCUPRucJbGYQ3qMKR8zWfUqQ==
-X-Gm-Gg: ASbGncvZkRebF+B78l2AQMaHLkwvbrjxr2mcCzkWhpAM+5+ZzQEAoLNE0eDZGnbXTIG
-	YnyZjkNJvXBgDHf6grqFT9sFY0akh4ooPFwFLAY4xa4zrkE8nWKhBXtf7xZ1wdtWsC6YpQrLVOk
-	gdwByt9HFTCi2aEecMhVnKIxMPJFY=
-X-Google-Smtp-Source: AGHT+IFJu7I3rlvbHgJjIXTOpIjctsZVXGoWVaWMecwrdxHNpmLyaS+sEvN9EVVke6QDb6Iowqfo66025T8K3vj9/VA=
-X-Received: by 2002:a05:690c:6988:b0:6fd:2062:c8a2 with SMTP id
- 00721157ae682-6fda2f432b7mr17147967b3.11.1741125467191; Tue, 04 Mar 2025
- 13:57:47 -0800 (PST)
+        bh=hBxsisAI2Eec10Ls415KNkkE1/XEsrmCAc9iTe7Cc3w=;
+        b=WemGe2tUuUDlltGQnGPd61HQvokzYfmDILTz2VuNL/D2yPiy+p4I0m9hrBOWuNFJoS
+         vfguNuss6uxXqXGQ9yw7WWnKggCCQ9wyfmFWbd5f0uPbmkr0mDtTPXYYvRLLSSXoMlE4
+         txB440Ozgc7tK+DEZ27TfirgQyOdJS9dzWZVmm5SI/MepYsmTrjz6SDnbBJdsVrczN8U
+         3ubHLwSNb29feFKZiSRvuR3Y0lWk47f7ZMCImBHSzPZjPJSyJdHuvU6xOg7dkF3DKYpv
+         H/qNP9BY0H/e17zQfjAPMumGHC6Z2kuT0dMWvgQ091E7EM009Ev7A/JEjj4aIH/9IKv9
+         2/lw==
+X-Gm-Message-State: AOJu0YzjnvvSxEEIRCRyYpKX+wrJ6Tbp4hxcIewcnxJrkAwTAP15hO4T
+	F1LfzTMtcr71FM8lalFPS9jCh6eUj1dwMxSGU7+MBvXwkgY6P+k9m7QUg9AzRdSINSni1eVIZfJ
+	yFcyhikMt3peH/gGA+7FdQAo+gKo=
+X-Gm-Gg: ASbGnctNDVM6dgBdRp0VYV4Y0wDW9h2WMvbMHnEm56GiZwBKYSxfPM2XZjrFyI/GAzv
+	QXDlOeC5VjlAFtWYuzlzFA34RaWXa1wSXsk7czKBidzbQ1Fe1yR1L5x3wqA2v7v9YLOdQY/iHeY
+	E5MbaIjyhd5gwumyocI/zFHFjFsJag3/aVFmX1cgTK1g==
+X-Google-Smtp-Source: AGHT+IGrdZqddvvOeV89oDZTgyRifmXZ37tMIrAO3rckrw9J3aYOgZd3EqpzmBgGRHJQXoztZj81dxQ9Kv/xQXqfQQE=
+X-Received: by 2002:a05:6a00:2e9f:b0:736:6d4d:ffa6 with SMTP id
+ d2e1a72fcca58-73682c52f85mr861012b3a.15.1741126613861; Tue, 04 Mar 2025
+ 14:16:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250228003321.1409285-1-emil@etsalapatis.com>
- <20250228003321.1409285-2-emil@etsalapatis.com> <9c51ec81-d7e3-679e-055d-8f82a73766ef@huaweicloud.com>
- <CABFh=a7U8ut-YE1kc=P60sqrG4ySXMcXKewpoKzAvpQoQz8pgg@mail.gmail.com> <c6725ecc-ffb5-9626-ca4f-146ab80b2070@huaweicloud.com>
-In-Reply-To: <c6725ecc-ffb5-9626-ca4f-146ab80b2070@huaweicloud.com>
-From: Emil Tsalapatis <emil@etsalapatis.com>
-Date: Tue, 4 Mar 2025 16:57:36 -0500
-X-Gm-Features: AQ5f1JpGbCFy1tVuYzWp5f5DkXZ7ZmchzmCLx9Ar2EIXC_0xG2JQxeHBPdJzhVo
-Message-ID: <CABFh=a6A2wo-kR1qsF2w41f1tXv+oG84_C-TVrKwL0QQzvDRhg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] bpf: add kfunc for populating cpumask bits
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.de, eddyz87@gmail.com, 
-	yonghong.song@linux.dev
+References: <20250304211500.213073-1-mykyta.yatsenko5@gmail.com> <20250304211500.213073-2-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250304211500.213073-2-mykyta.yatsenko5@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 4 Mar 2025 14:16:42 -0800
+X-Gm-Features: AQ5f1JpH-50C-AVJ7d2jC1tl6c4lVFdDjseeDf4GvvtCyDxjptSQRgrP7KY4RFI
+Message-ID: <CAEf4BzYRLGgESZfstAz7FWcC2BSTLtQwU97Fo8+Xo_Gkby_Tmg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: BPF token support for BPF_BTF_GET_FD_BY_ID
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-
-On Tue, Mar 4, 2025 at 9:04=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wro=
-te:
+On Tue, Mar 4, 2025 at 1:15=E2=80=AFPM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
 >
-> Hi,
+> From: Mykyta Yatsenko <yatsenko@meta.com>
 >
-> On 3/4/2025 11:18 AM, Emil Tsalapatis wrote:
-> > Hi,
-> >
-> > On Fri, Feb 28, 2025 at 7:56=E2=80=AFPM Hou Tao <houtao@huaweicloud.com=
-> wrote:
-> >> Hi,
-> >>
-> >> On 2/28/2025 8:33 AM, Emil Tsalapatis wrote:
-> >>> Add a helper kfunc that sets the bitmap of a bpf_cpumask from BPF
-> >>> memory.
-> >>>
-> >>> Signed-off-by: Emil Tsalapatis (Meta) <emil@etsalapatis.com>
-> >>> ---
-> >>>  kernel/bpf/cpumask.c | 21 +++++++++++++++++++++
-> >>>  1 file changed, 21 insertions(+)
-> >>>
-> >>> diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-> >>> index cfa1c18e3a48..a13839b3595f 100644
-> >>> --- a/kernel/bpf/cpumask.c
-> >>> +++ b/kernel/bpf/cpumask.c
-> >>> @@ -420,6 +420,26 @@ __bpf_kfunc u32 bpf_cpumask_weight(const struct =
-cpumask *cpumask)
-> >>>       return cpumask_weight(cpumask);
-> >>>  }
-> >>>
-> >>> +/**
-> >>> + * bpf_cpumask_fill() - Populate the CPU mask from the contents of
-> >>> + * a BPF memory region.
-> >>> + *
-> >>> + * @cpumask: The cpumask being populated.
-> >>> + * @src: The BPF memory holding the bit pattern.
-> >>> + * @src__sz: Length of the BPF memory region in bytes.
-> >>> + *
-> >>> + */
-> >>> +__bpf_kfunc int bpf_cpumask_fill(struct cpumask *cpumask, void *src,=
- size_t src__sz)
-> >>> +{
-> >>> +     /* The memory region must be large enough to populate the entir=
-e CPU mask. */
-> >>> +     if (src__sz < BITS_TO_BYTES(nr_cpu_ids))
-> >>> +             return -EACCES;
-> >>> +
-> >>> +     bitmap_copy(cpumask_bits(cpumask), src, nr_cpu_ids);
-> >> Should we use src__sz < bitmap_size(nr_cpu_ids) instead ? Because in
-> >> bitmap_copy(), it assumes the size of src should be bitmap_size(nr_cpu=
-_ids).
-> > This is a great catch, thank you. Comparing with
-> > BITS_TO_BYTES(nr_cpu_ids) allows byte-aligned
-> > masks through, even though bitmap_copy assumes all masks are long-align=
-ed.
+> Currently BPF_BTF_GET_FD_BY_ID requires CAP_SYS_ADMIN, which does not
+> allow running it from user namespace. This creates a problem when
+> freplace program running from user namespace needs to query target
+> program BTF.
+> This patch relaxes capable check from CAP_SYS_ADMIN to CAP_BPF and adds
+> support for BPF token that can be passed in attributes to syscall.
 >
-> Er, the long-aligned assumption raises another problem. Do we need to
-> make the src pointer be long-aligned because bitmap_copy() may use "*dst
-> =3D *src" to dereference the src pointer ? Or would it be better to use
-> memcpy() to copy the cpumask directly ?
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  include/uapi/linux/bpf.h |  1 +
+>  kernel/bpf/syscall.c     | 12 ++++++++----
+>  2 files changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index bb37897c0393..73c23daacabf 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1652,6 +1652,7 @@ union bpf_attr {
+>                 };
+>                 __u32           next_id;
+>                 __u32           open_flags;
+> +               __s32           token_fd;
+>         };
+>
+>         struct { /* anonymous struct used by BPF_OBJ_GET_INFO_BY_FD */
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 57a438706215..487054cb4704 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -4750,6 +4750,9 @@ static int bpf_prog_get_info_by_fd(struct file *fil=
+e,
+>
+>         info.verified_insns =3D prog->aux->verified_insns;
+>
+> +       if (prog->aux->btf)
+> +               info.btf_id =3D btf_obj_id(prog->aux->btf);
+> +
 
-I would be fine with either, IMO the former is preferable. We are
-rounding up the
-size of the BPF-side CPU mask to the nearest long anyway, so it makes
-sense for the
-memory region to be long-aligned. The alternative would make the copy
-slightly slower
-on machines with nr_cpu_ids <=3D 64, though at least for sched_ext this
-function should
-be rare enough that the performance impact is be minimal.
+please split this change into its own patch
 
-If that makes sense, I will add an alignment check and an associated selfte=
-st.
+>         if (!bpf_capable()) {
+>                 info.jited_prog_len =3D 0;
+>                 info.xlated_prog_len =3D 0;
+> @@ -4895,8 +4898,6 @@ static int bpf_prog_get_info_by_fd(struct file *fil=
+e,
+>                 }
+>         }
+>
+> -       if (prog->aux->btf)
+> -               info.btf_id =3D btf_obj_id(prog->aux->btf);
+>         info.attach_btf_id =3D prog->aux->attach_btf_id;
+>         if (attach_btf)
+>                 info.attach_btf_obj_id =3D btf_obj_id(attach_btf);
+> @@ -5137,14 +5138,17 @@ static int bpf_btf_load(const union bpf_attr *att=
+r, bpfptr_t uattr, __u32 uattr_
+>         return btf_new_fd(attr, uattr, uattr_size);
+>  }
+>
+> -#define BPF_BTF_GET_FD_BY_ID_LAST_FIELD btf_id
+> +#define BPF_BTF_GET_FD_BY_ID_LAST_FIELD token_fd
+>
+>  static int bpf_btf_get_fd_by_id(const union bpf_attr *attr)
+>  {
+> +       struct bpf_token *token;
+> +
+>         if (CHECK_ATTR(BPF_BTF_GET_FD_BY_ID))
+>                 return -EINVAL;
+>
+> -       if (!capable(CAP_SYS_ADMIN))
+> +       token =3D attr->token_fd ? bpf_token_get_from_fd(attr->token_fd) =
+: NULL;
 
+see how we use BPF_F_TOKEN_FD flag in other places, we should do the same h=
+ere
 
+pw-bot: cr
 
+> +       if (!bpf_token_capable(token, CAP_BPF))
 
-> >>> +
-> >>> +     return 0;
-> >>> +}
-> >>> +
-> >>>  __bpf_kfunc_end_defs();
-> >>>
-> >>>  BTF_KFUNCS_START(cpumask_kfunc_btf_ids)
-> >>> @@ -448,6 +468,7 @@ BTF_ID_FLAGS(func, bpf_cpumask_copy, KF_RCU)
-> >>>  BTF_ID_FLAGS(func, bpf_cpumask_any_distribute, KF_RCU)
-> >>>  BTF_ID_FLAGS(func, bpf_cpumask_any_and_distribute, KF_RCU)
-> >>>  BTF_ID_FLAGS(func, bpf_cpumask_weight, KF_RCU)
-> >>> +BTF_ID_FLAGS(func, bpf_cpumask_fill, KF_RCU)
-> >>>  BTF_KFUNCS_END(cpumask_kfunc_btf_ids)
-> >>>
-> >>>  static const struct btf_kfunc_id_set cpumask_kfunc_set =3D {
+we probably should keep it CAP_SYS_ADMIN, just do
+s/capable/bpf_token_capable/ change
+
+>                 return -EPERM;
+>
+>         return btf_get_fd_by_id(attr->btf_id);
+> --
+> 2.48.1
 >
 
