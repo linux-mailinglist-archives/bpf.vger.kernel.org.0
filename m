@@ -1,74 +1,76 @@
-Return-Path: <bpf+bounces-53240-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53241-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BA1CA4EF45
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 22:15:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33148A4EF48
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 22:15:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7308F3A9CC5
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 21:15:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FBF73AA4EE
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 21:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA1A42AAF;
-	Tue,  4 Mar 2025 21:15:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D2DE202F8D;
+	Tue,  4 Mar 2025 21:15:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ieT0dC94"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LvU7Rpm/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C5612641F4
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 21:15:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2898B2780FD
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 21:15:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741122908; cv=none; b=kknEmGaOwCAihRFNXmMFC7aIhvv+RKzsw8ein7DnoCs5nbE0gYDTEAaQl+ztj1bMe2Xfu5jWNQ9Vq6pZsRzWTPf3Q8cQPO2E2XCLBVKdybYqNCYaJtp4Y1uR0sdFcOHs/NT13K4ETgz+aMZVCWRtpvYAjC3qJCzUUWasZq88uZ8=
+	t=1741122912; cv=none; b=HcBHwQmW0kXlREBPejcBxWj/TXjTjUPcs1QBIgi1F0K4Ve8VqT8FQKXNxa9LEi5qNMRGy6veNNQ7zY8Rq2AYr6w0s4NhxXXl9r9hOIlFESjrteBp12FTonIyZv2XUOQIBKpJLtOKJki6u9LtltydrbitS6Xc/ukv9q3h/DrLtrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741122908; c=relaxed/simple;
-	bh=quuvr/azkf81dV09kQxkFtk4ixAQoRD1Chb0odI5nIc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z6SpZfxJMPDyzyiFqcV7S6zzKsMap1vuCUh95GyWjs/DlWjuIwUYYj3Nyj/XUpdsoyXUaJxLqgnGxXp8oDfM+SR91Rc5/cOAyCZ2ai+IGnI9PO4lzhNHU+kBP3Prrz/THL8ldhULVVwSPVVM8Dgv/RVZxysrJv+rUWgd4XQ2pGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ieT0dC94; arc=none smtp.client-ip=209.85.208.44
+	s=arc-20240116; t=1741122912; c=relaxed/simple;
+	bh=d2Fyhu6Pc8Ik4orVYIzGuBcJXOI29XYPBGaFVNOF1DI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cjIt5NpKU4PDoKWLECMiKw8MUspc24DuRrHFNSmm3KFeeBTsiiaIVO1CiwtgaY9fuXC39UyLANazmU0vDmcGwzcvQwT7h+ukPv+ayxoM1s58d4ugZmEpn/8X536b0Rkl0YZnMzIUx+ClL759Oy/OVPOXVRA46OxCjcrAbEp+R3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LvU7Rpm/; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5e4bed34bccso8591457a12.3
-        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 13:15:06 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5e51e3274f1so6809076a12.0
+        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 13:15:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741122904; x=1741727704; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6kp1l6lc9BxNq70JGkT8+ZDrkvslzoEBGxYT1IsXlHU=;
-        b=ieT0dC94Sj3HYqE+3q+RnGHU3LiVQe0LLK6HnkcKRfuE3gErL91xV9Ko+I9EPyrQkz
-         k4BJpVwWPKGkuSqVP2+lktqwuiC1HkFB6KdkBivAUi/og1+5s4qDhP6z0A1xfA2/1c/Y
-         +QZ4FYgYEmEFbs/6XQsFva71WY0gduFAIPB6PWh0qE6k1ERgKkiFDyo6ppzCbzYUx+0e
-         Ic/9IjdHT8vKhdgjkt2YH8tYEItEsQ26rOT3ZGeUVL3IdphSWXMvSVVGRZmkE2ovAIEl
-         fEF2zQsF2oy1I6NgoBYqog8fQpsGh4hW5of3bMqvr9sS0UGFoDjw/msKpPmhLNl1ZrzP
-         yJoQ==
+        d=gmail.com; s=20230601; t=1741122908; x=1741727708; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ugg3o7/X+1DbH4quhJHJqvvIhh3oQhh/cMzqBkork24=;
+        b=LvU7Rpm/Cbie9yY+s7sjC/pv3xtL6MG8/b2V6SoGhmj/naRl/s4JvHUsSPZ6ML30xt
+         C8c055Xr78UznZCCOyHnyeREtqgtkNMKtedCc1bGGV0wrTOkBeH9m67hHtOc3fzAWVaV
+         Zf1Uq/v2EJXI76BVf30SrfPKeXwQRb3guyqIgBNqjtimsV4zLuFXCY63rrlldq0GMdAJ
+         +2+stnKDhec1uNWsAYuMtNVPhXqpD2mrSwk1je2uHlSCwIMBDuIgXRzEc7xe/KejMXnw
+         owm0Ot04mMRtPVr3kgSopHSBmMZ3B/u5cVDN8Y54OashH+rxXVN281CLuRQy30GgBSO9
+         qMZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741122904; x=1741727704;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6kp1l6lc9BxNq70JGkT8+ZDrkvslzoEBGxYT1IsXlHU=;
-        b=WDgaStwhYh0C2E1CGpxBtk2RREU371m+rUPL9wbi/2/T8kKPQqpT5dSi216V6UwZWu
-         5nJe1hPmnNZ+R1TT9GEKwqSWgXa3t8ASL9AxySGvwLN+Uc49IaRVckCUNoR5RLs83zaE
-         v5t1r9yPgEYjKkDqTd93oriEefduPVR25kY6CXR1VUc2uuKZL9Y/pOXh73JSEvbG/j5f
-         gUc/6ISZ6f0qMKsAzqv1p/VxL73UKuYmQiRI+DN9xqbmqwJ/OBW7YXYd7MHol6JK6EqX
-         AwbCT04NPFML6yHXEf+CaydKmumqq4jeGV57rN468P9AaDAw1u18tmcBLiq+WMZLtED9
-         14xg==
-X-Gm-Message-State: AOJu0YwrdUhsClft+zR0zYM2l+8E5HrzWGnPD+CSyW/tJA2d/i5RmaQt
-	cPYmWm4DENDiZDKPXzLhBVk3uzCPzeCFaKQrL5dGyK9bSnkAFyi3mBXrtw==
-X-Gm-Gg: ASbGnctQDdIqFoy5huFVKqs2GGCJlA+WUJlAyWKElMauj0hq4xOfyjJOLjkjaBR8Rsj
-	9JbOhDj/lp+9U7aYhSLXrFD6Qb48RA+ztPOI1+Te4z+4xs3ogMZWIgvoG0oVap08ymBHwxkKgaI
-	WDQpQoePqiWz6ogO7tkY6hsa1Kj2KDESjJSWpO4H+DIN2B9qqqrMpQnhTWlbPK411plsVozu0MO
-	KGM5dyzpbsKq0lTwG7iJ+bOrsNNm9AHZpRD7SOtDhT2UMoPyoFgpVURSZFxYxbJFSdfXeRkdsa4
-	5BKaixmtBZmFVmfP3wYOoeCHP4T4rbAMBeZ+oa8Vhi6LLfBNt4/BLKhcuzE=
-X-Google-Smtp-Source: AGHT+IHY4wg4WtJCon5UX3j/ZtVPuPFaIEG0AfK/Jn5Nnfxd604zHVz0y0+tMDAYQkIVUwnqmEt3lQ==
-X-Received: by 2002:a05:6402:268b:b0:5de:e02a:89c1 with SMTP id 4fb4d7f45d1cf-5e59f4c726bmr492620a12.26.1741122904352;
-        Tue, 04 Mar 2025 13:15:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1741122908; x=1741727708;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ugg3o7/X+1DbH4quhJHJqvvIhh3oQhh/cMzqBkork24=;
+        b=dKzZJQzTnuyx/mluw0oHOtithm6CzOC23ZJ4soIcL0MUgIGMs/VTvZJK1q9M/lVKXu
+         NWBsYtAQ//lDxnACCiySLLRZxfdiYYrLi0Yht7KECb8kEXz59w5aW+gnfKdMpIN6Li10
+         K/XDGTtcLvsYX0mbAM/noCgDtrpuKeAphWuXw9RLh5gClONpAUHrz6vFSU5JfebcHa4w
+         bAnYHZHEMt8U9LuKq/N8Lc5b26osTxzyUw9ZnIhIiCGA+AI3cwPaPy9/p39JDXKISKm6
+         JGesMPzdloVEh41uljWhOAj1PNpw5obvN2cMdNVcLWLbocTZDgHML9nnnbcO2J50xO3O
+         cr2Q==
+X-Gm-Message-State: AOJu0YwFj0FHfrBjxzmM8ZbCuptVEWLqk+g8YIxNYDEtaLuoWRBo2QkK
+	FXpolf9xkiACQV2qA/6vOpm3YaWTayU4mUMtXAkT9JznVCJOYLI0DAHwmg==
+X-Gm-Gg: ASbGnctCIDh8Ao5buXXVZXdX/h9wR/It4C4ZoBsYOXt3OWZ6GSH97YLp35iOc4r4vyJ
+	DJTYpAQ2XkjPdDhy1Vyv5XZahh6ljZOtdj2dYUN9NAHuCFX4T6Rrnjvclq0VdPAk6strLKR6sVi
+	/zPHnXoB2TTPh604LUV1QGAhTKfqUNKeK/RlyTFqOaMiSmJZJ+Mz7uc8dSRfbTdzdUVhDxCA6kx
+	/rXFeccvU+juxi/+RJ41PuPIR5AihU+7j7Td6ZSPJ0tVHPebsp5uuBCx5UfCQKMZZesQugsytRG
+	gwbTxEE6Yvu0ewewVL85LQ7jAR3gJ/Jy6B8ftc9n7hWn33hpqdYCe5k+jtI=
+X-Google-Smtp-Source: AGHT+IFoOXBLpTvCBgh9HKzFBV6SFUVLMDANmyHhJu9oad4PKdGxejwJhOw3gmL8fGgYT1ugSfP3hQ==
+X-Received: by 2002:a05:6402:3596:b0:5e0:7509:4543 with SMTP id 4fb4d7f45d1cf-5e59f48a5c3mr465130a12.32.1741122907765;
+        Tue, 04 Mar 2025 13:15:07 -0800 (PST)
 Received: from msi-laptop.thefacebook.com ([2620:10d:c092:500::6:8902])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e4c3b4ae60sm8582112a12.10.2025.03.04.13.15.02
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e4c3b4ae60sm8582112a12.10.2025.03.04.13.15.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Mar 2025 13:15:04 -0800 (PST)
+        Tue, 04 Mar 2025 13:15:06 -0800 (PST)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -78,10 +80,12 @@ To: bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	eddyz87@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next 0/3] Support freplace prog from user namespace
-Date: Tue,  4 Mar 2025 21:14:57 +0000
-Message-ID: <20250304211500.213073-1-mykyta.yatsenko5@gmail.com>
+Subject: [PATCH bpf-next 1/3] bpf: BPF token support for BPF_BTF_GET_FD_BY_ID
+Date: Tue,  4 Mar 2025 21:14:58 +0000
+Message-ID: <20250304211500.213073-2-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.48.1
+In-Reply-To: <20250304211500.213073-1-mykyta.yatsenko5@gmail.com>
+References: <20250304211500.213073-1-mykyta.yatsenko5@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,42 +96,74 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Freplace programs can't be loaded from user namespace, as
-bpf_program__set_attach_target() requires searching for target prog BTF,
-which is locked under CAP_SYS_ADMIN.
-This patch set enables this use case by:
-1. Relaxing capable check in bpf's BPF_BTF_GET_FD_BY_ID, check for CAP_BPF
-instead of CAP_SYS_ADMIN, support BPF token in attr argument.
-2. Pass BPF token around libbpf from bpf_program__set_attach_target() to
-bpf syscall where capable check is.
-3. Validate positive/negative scenarios in selftests
+Currently BPF_BTF_GET_FD_BY_ID requires CAP_SYS_ADMIN, which does not
+allow running it from user namespace. This creates a problem when
+freplace program running from user namespace needs to query target
+program BTF.
+This patch relaxes capable check from CAP_SYS_ADMIN to CAP_BPF and adds
+support for BPF token that can be passed in attributes to syscall.
 
-This patch set is enabled by the recent libbpf change[1], that
-introduced bpf_object__prepare() API. Calling bpf_object__prepare() for
-freplace program before bpf_program__set_attach_target() initializes BPF
-token, which is then passed to bpf syscall by libbpf.
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ include/uapi/linux/bpf.h |  1 +
+ kernel/bpf/syscall.c     | 12 ++++++++----
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-[1] https://lore.kernel.org/all/20250303135752.158343-1-mykyta.yatsenko5@gmail.com/
-
-Mykyta Yatsenko (3):
-  bpf: BPF token support for BPF_BTF_GET_FD_BY_ID
-  libbpf: pass BPF token from find_prog_btf_id to BPF_BTF_GET_FD_BY_ID
-  selftests/bpf: test freplace from user namespace
-
- include/uapi/linux/bpf.h                      |  1 +
- kernel/bpf/syscall.c                          | 12 ++-
- tools/include/uapi/linux/bpf.h                |  1 +
- tools/lib/bpf/bpf.c                           |  3 +-
- tools/lib/bpf/bpf.h                           |  4 +-
- tools/lib/bpf/btf.c                           | 10 +-
- tools/lib/bpf/libbpf.c                        | 10 +-
- tools/lib/bpf/libbpf_internal.h               |  1 +
- .../testing/selftests/bpf/prog_tests/token.c  | 94 +++++++++++++++++++
- .../selftests/bpf/progs/priv_freplace_prog.c  | 13 +++
- tools/testing/selftests/bpf/progs/priv_prog.c |  4 +-
- 11 files changed, 138 insertions(+), 15 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/priv_freplace_prog.c
-
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index bb37897c0393..73c23daacabf 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1652,6 +1652,7 @@ union bpf_attr {
+ 		};
+ 		__u32		next_id;
+ 		__u32		open_flags;
++		__s32		token_fd;
+ 	};
+ 
+ 	struct { /* anonymous struct used by BPF_OBJ_GET_INFO_BY_FD */
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 57a438706215..487054cb4704 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -4750,6 +4750,9 @@ static int bpf_prog_get_info_by_fd(struct file *file,
+ 
+ 	info.verified_insns = prog->aux->verified_insns;
+ 
++	if (prog->aux->btf)
++		info.btf_id = btf_obj_id(prog->aux->btf);
++
+ 	if (!bpf_capable()) {
+ 		info.jited_prog_len = 0;
+ 		info.xlated_prog_len = 0;
+@@ -4895,8 +4898,6 @@ static int bpf_prog_get_info_by_fd(struct file *file,
+ 		}
+ 	}
+ 
+-	if (prog->aux->btf)
+-		info.btf_id = btf_obj_id(prog->aux->btf);
+ 	info.attach_btf_id = prog->aux->attach_btf_id;
+ 	if (attach_btf)
+ 		info.attach_btf_obj_id = btf_obj_id(attach_btf);
+@@ -5137,14 +5138,17 @@ static int bpf_btf_load(const union bpf_attr *attr, bpfptr_t uattr, __u32 uattr_
+ 	return btf_new_fd(attr, uattr, uattr_size);
+ }
+ 
+-#define BPF_BTF_GET_FD_BY_ID_LAST_FIELD btf_id
++#define BPF_BTF_GET_FD_BY_ID_LAST_FIELD token_fd
+ 
+ static int bpf_btf_get_fd_by_id(const union bpf_attr *attr)
+ {
++	struct bpf_token *token;
++
+ 	if (CHECK_ATTR(BPF_BTF_GET_FD_BY_ID))
+ 		return -EINVAL;
+ 
+-	if (!capable(CAP_SYS_ADMIN))
++	token = attr->token_fd ? bpf_token_get_from_fd(attr->token_fd) : NULL;
++	if (!bpf_token_capable(token, CAP_BPF))
+ 		return -EPERM;
+ 
+ 	return btf_get_fd_by_id(attr->btf_id);
 -- 
 2.48.1
 
