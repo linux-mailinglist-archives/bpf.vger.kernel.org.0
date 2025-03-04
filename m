@@ -1,74 +1,76 @@
-Return-Path: <bpf+bounces-53166-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53167-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1FE8A4D528
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 08:45:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68739A4D537
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 08:46:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFE5A7A1845
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 07:44:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38EB1170E69
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 07:45:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1DC51F9A90;
-	Tue,  4 Mar 2025 07:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97BE513C67C;
+	Tue,  4 Mar 2025 07:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OXtYUbx7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R3sd9ITz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BDB01F7911
-	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 07:43:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB7C1F9A83
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 07:43:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741074220; cv=none; b=qn/KGi9YIzrS3mkdcYRqWoJidiUaPW5Ot7Xz0s70vONIrQWfxWcC4mbMcTJH22ia7Gy6d6REoQ+O1SYYtC7Ismh6kmyjHYDPBs2GBysNfXjAZ3kjIVA9t1tH/V9QrIEAE/QBk2RgjXBdIqMS0NV8CdmoTFoMRHQfrtmYN9wZXRc=
+	t=1741074221; cv=none; b=VQoue4nhha03GuJKJtFqRp+e3erqZVlaXDexB2FaxShtH7ZuHb2UXBfwyvXbKO3BvnV6I1CrrZMBfoVdCflLmL30caE6S5vdrSEWff5RzhRgcJo5yfcgiU/Bsx465dxKj1qyg8PWJ6Rhm4XaGGwVle6ZnGSYTIXsQALbE7X/DAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741074220; c=relaxed/simple;
-	bh=PCQdLRxjKvHFO1yqXwfCwogHxixDx6gynApK78++UsQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u8H/bPVuoc1tsUaX+0wci9t0l7/fNutPtJTg3AMQzQK7qMYgmAooZpTSUAJUypuj4M7OjlIY1gz5DtGivQ92fZfaphyQYIj1COHvVl1SOtorwDTD7blEp0CRfCXYb1rEkr0yL1yEtyDvgzqDSkIjOfY8a+hyEbCOPH/34MSRRwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OXtYUbx7; arc=none smtp.client-ip=209.85.214.172
+	s=arc-20240116; t=1741074221; c=relaxed/simple;
+	bh=G9kwgp1XYHzwS4zv9hmeFHnK+OlbyYCUY0IKzyg1f9o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=a0mjV+20L0q8seDh/xOex5rNQGoEc/PSd0a6Lk3ISW13xzb/uf02+2OKN7JDmVAh2EUimUeINM3E21V3DkVhftVId54D5bgxdvVj6OjgHzQzDKElaxiv1KWgy6GZz3A1ZTOCHSlT1CM+KopQagJDQ/zSPQlzc/LloOtDyJlHZCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R3sd9ITz; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2238e884f72so42817185ad.3
-        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 23:43:38 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2fef5c978ccso3275974a91.1
+        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 23:43:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741074218; x=1741679018; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V/0dbNPwpjW9vvj7nYaWsADN23DLvBd0w+nLTNBlLA0=;
-        b=OXtYUbx700Fjr7MIlf6/aPu0CVSsfnvjzqbwIGUxqkI7UPn78EXuPjedi2EMrFHRCY
-         vkdnn4n6wr75GpNh1nfzvHJx3kix4ZKLpe5lf+kXRwNMIF7LA5jYvZWXMZvLqoMAZX/r
-         Q8NRzIpweG+n136GeMwsY2TwrdFEA+/faNzrEMjfBoAydhCpJlyisyifEQlZRWy1bljp
-         M6aRU6OP7Q/i3DieiV5w51SW2aKhAW+ihlh6llehO/oXkI4X/GzsaMWWzl02W0FvflOJ
-         TX04tFLBFzrStYdFwUBp123JrcE3fCXFMOpuQbYqjsQRRx6Fv8EFAD5W1w+Q4ffN+Tzf
-         LmQA==
+        d=gmail.com; s=20230601; t=1741074219; x=1741679019; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lUKUKmhVLNzAt9Oxo2/kipJeEcV/Mmy5AU+trlWFn+c=;
+        b=R3sd9ITz1mzQZ4GZAS8aGIPE7TMr/2mY2DAj2Zn8OCzyBemNQl5ij1LnjpDDsuIDbp
+         TMnF+N9b3Kr2ZIESa8MTWnxwuDlbRmXQ9KnFqE9+EPa320qu75BDttahJM4RK30FgE6F
+         1YlBn2GBpLwdfzUGrPT2fgg/WeYYfa2Gij56BLBA0mM5HN+aRHwFw0BjDDqjpk19sHEX
+         MscK7rGM6X4UingvqDbipUsjUvysaRv2GzZJA7CvQxZQJ17jsfD/IPbjsDTcLM/b1zQH
+         +qNXD+apF1NG6XbZLiz545MPaUvxiCcXUsZbHyFzQ+wBXEVOieIx5/kvkrsY4Lp3kOHF
+         t/uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741074218; x=1741679018;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V/0dbNPwpjW9vvj7nYaWsADN23DLvBd0w+nLTNBlLA0=;
-        b=id+f9bi4aBWqHpi4xKUDNMdtKH76IIoHaNNM7u92oPYLcvF35ypGOjxcGb50nF+SAO
-         xDU+peV8lFFeqZlJ206w61B50wprV0tadm1PMdbrU7kTd01tZfQy60juMY3tSxgGcBxo
-         TVFj4pGlmZpxpi+44kZ/jpXN5JfRe+Yn5LK0jUacgUoTUHf/f1+4yX2CRBO+17v4cyqf
-         0bdWNue33n/C1mEF0DIc3t2PbTENuBq1aOw/GmJ5Z8E0aE8WYe/9Liqg6V9qzEc6GCKd
-         LEDSE8EQOJUMAoyBGt+Hjtbj23koulhXPAmIp6PCSwDdv3SUASqvXzoEfKSC5n0Gz4tf
-         lgHw==
-X-Gm-Message-State: AOJu0YyqzIPawM6G03FtnxHlQptIsVsJmjvyOz0rXnqELrO/VxSet9ok
-	t0usWnJ+zU7JScqr2vcg2PlXJoOGhDgqv853LOEM+7GZdrCZk9ViMBrqfg==
-X-Gm-Gg: ASbGncvtnBUK4rv24Cyxq0QIjWgvU0BoznzwsJbiYIQNc86bEBaMgegJSS4R5d8w3tU
-	sg0Z84mjf3i1Z0bmJSgGvC5NxAwr7ac1Hmf3AKnO1WTjzhloYaTu7A44C9aSDFh0GU+MpMaBS8Z
-	VMPXBQu9guheg3/HF5GFMcsN9UvLXDSQb5T5j2IKk1d1K/w96NZmg798+6EQRauWOyzk0Jfh5Hh
-	ahJzBAF4Dui6Bfky/OJen6XI5KvI1YPlHGXhlltXKsxS+SqvgcMrUdYW5lVsM0v0nK2Wb/26qeX
-	/uZrfrO5uUUJ8MQr08szd3Cy61NmkuXrwPGQm4wp
-X-Google-Smtp-Source: AGHT+IEmnRlyKpxHuzRODTU/Xvac97NvoC0WMoppKctv+WSaujOQobrKLeRn0+oI1I8S96jcK78hyg==
-X-Received: by 2002:a17:903:2ca:b0:220:c63b:d945 with SMTP id d9443c01a7336-22368f75627mr275044515ad.14.1741074218092;
+        d=1e100.net; s=20230601; t=1741074219; x=1741679019;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lUKUKmhVLNzAt9Oxo2/kipJeEcV/Mmy5AU+trlWFn+c=;
+        b=Ot98+VXYP6Bsq3INcTZ9JvC0G3DNEhAprj2/pRme0f6mnUtrtJDepf1QstkqasFFcV
+         fkhBePRzx4MgKIz0P1mJcvQwPxqDDuGjJR358iEP6hbLsBqtqCckNVIPRmskxQ7LkIBE
+         TmozQc5hvSxI7f5oY4ioAwVGzJ0AeMZZtxeC03j2qa9ifNABWgk509+iXu+zwQc3NwBk
+         81sPJebLv4nZqrZiYcpcXkD3Mruz8AXfeiudqjvYKE3f+12XbvuD+mmxwOlrMQXNcy33
+         6B003pqQwtER5YBBnLk4zlF2CVqMg0phDN0WOElwwyYKya7XJnYdweO88MYxK3Bcx3E+
+         MUhA==
+X-Gm-Message-State: AOJu0YzVSpkzHpGG28+UaiZ2atAGTg9V/yA/aY03tghUgkyH2IzkRlNa
+	5FHAJkqTxKGSG5PPOSJFs7racGtVHsYFkaqC+I8mAYC5FnSwu2hfibeVxQ==
+X-Gm-Gg: ASbGncvJjEUG4diUMGDHMGonR33knICyTg6aJtQ2zaV4bAIdbiXC3U9wQwgSDT3dwM3
+	t+Hp/eE2HSEvVFARtVkOwJ+BPkpCjMQB4i2Eyl9c/MsGEBEerp8jgxuD0DWN3s9cM5ITVkXonZU
+	VBPqFpapjSH+tfv0huM+r4sVrCS58+TCUn06lkvRhb7ohor1n/7ZuMv/eFpsJMqnn4JZsWvuqjZ
+	pKA8kD/Cs8uyUFiE1mDuwqm6/1ig+bYWzB49XJBFCYEo61wneoaoUQcLrjbWB6lSC4KpNRc3b4R
+	njJLY868k/RTdZHJqUgfV733NTYpaOJPmU432K5u
+X-Google-Smtp-Source: AGHT+IE+L2ZQ7KB+sInMsg2+47Q3R8k0qD6ZbExFkN1u2/MxJvhvAXELx4iUgF3JU3fkSgZNP4thOQ==
+X-Received: by 2002:a17:90b:3f50:b0:2ee:af31:a7bd with SMTP id 98e67ed59e1d1-2febab2bdcbmr23299422a91.5.1741074218831;
         Mon, 03 Mar 2025 23:43:38 -0800 (PST)
 Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2235050d7c1sm89545125ad.198.2025.03.03.23.43.37
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2235050d7c1sm89545125ad.198.2025.03.03.23.43.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Mar 2025 23:43:37 -0800 (PST)
+        Mon, 03 Mar 2025 23:43:38 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -79,10 +81,12 @@ Cc: andrii@kernel.org,
 	yonghong.song@linux.dev,
 	tj@kernel.org,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v2 0/5] bpf: simple DFA-based live registers analysis
-Date: Mon,  3 Mar 2025 23:42:34 -0800
-Message-ID: <20250304074239.2328752-1-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v2 1/5] bpf: jmp_offset() and verbose_insn() utility functions
+Date: Mon,  3 Mar 2025 23:42:35 -0800
+Message-ID: <20250304074239.2328752-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.48.1
+In-Reply-To: <20250304074239.2328752-1-eddyz87@gmail.com>
+References: <20250304074239.2328752-1-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,59 +95,113 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch-set introduces a simple live registers DFA analysis.
-Analysis is done as a separate step before main verification pass.
-Results are stored in the env->insn_aux_data for each instruction.
+Extract two utility functions:
+- One BPF jump instruction uses .imm field to encode jump offset,
+  while the rest use .off. Encapsulate this detail as jmp_offset()
+  function.
+- Avoid duplicating instruction printing callback definitions by
+  defining a verbose_insn() function, which disassembles an
+  instruction into the verifier log while hiding this detail.
 
-The change helps with iterator/callback based loops handling,
-as regular register liveness marks are not finalized while
-loops are processed. See veristat results in patch #2.
+These functions will be used in the next patch.
 
-Note: for regular subprogram calls analysis conservatively assumes
-that r1-r5 are used, and r0 is used at each 'exit' instruction.
-Experiments show that adding logic handling these cases precisely has
-no impact on verification performance.
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ kernel/bpf/verifier.c | 40 +++++++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 17 deletions(-)
 
-The patch set was tested by disabling the current register parentage
-chain liveness computation, using DFA-based liveness for registers
-while assuming all stack slots as live. See discussion in [1].
-
-Changes v1 -> v2:
-- added a refactoring commit extracting utility functions:
-  jmp_offset(), verbose_insn() (Alexei);
-- added a refactoring commit extracting utility function
-  get_call_summary() in order to share helper/kfunc related code with
-  mark_fastcall_pattern_for_call() (Alexei);
-- comment in the compute_insn_live_regs() extended (Alexei).
-
-Changes RFC -> v1:
-- parameter count for helpers and kfuncs is taken into account;
-- copy_verifier_state() bugfix had been merged as a separate
-  patch-set and is no longer a part of this patch set.
-
-RFC: https://lore.kernel.org/bpf/20250122120442.3536298-1-eddyz87@gmail.com/
-v1:  https://lore.kernel.org/bpf/20250228060032.1425870-1-eddyz87@gmail.com/
-[1]  https://lore.kernel.org/bpf/cc29975fbaf163d0c2ed904a9a4d6d9452177542.camel@gmail.com/
-
-Eduard Zingerman (5):
-  bpf: jmp_offset() and verbose_insn() utility functions
-  bpf: get_call_summary() utility function
-  bpf: simple DFA-based live registers analysis
-  bpf: use register liveness information for func_states_equal
-  selftests/bpf: test cases for compute_live_registers()
-
- include/linux/bpf_verifier.h                  |   6 +
- kernel/bpf/verifier.c                         | 484 ++++++++++++++----
- .../testing/selftests/bpf/prog_tests/align.c  |  11 +-
- .../bpf/prog_tests/compute_live_registers.c   |   9 +
- tools/testing/selftests/bpf/progs/bpf_misc.h  |  12 +
- .../bpf/progs/compute_live_registers.c        | 397 ++++++++++++++
- .../selftests/bpf/progs/verifier_gotol.c      |   6 +-
- .../bpf/progs/verifier_iterating_callbacks.c  |   6 +-
- 8 files changed, 829 insertions(+), 102 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/compute_live_registers.c
- create mode 100644 tools/testing/selftests/bpf/progs/compute_live_registers.c
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index b6664d0f6914..25910b740bbc 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3360,6 +3360,15 @@ static int add_subprog_and_kfunc(struct bpf_verifier_env *env)
+ 	return 0;
+ }
+ 
++static int jmp_offset(struct bpf_insn *insn)
++{
++	u8 code = insn->code;
++
++	if (code == (BPF_JMP32 | BPF_JA))
++		return insn->imm;
++	return insn->off;
++}
++
+ static int check_subprogs(struct bpf_verifier_env *env)
+ {
+ 	int i, subprog_start, subprog_end, off, cur_subprog = 0;
+@@ -3386,10 +3395,7 @@ static int check_subprogs(struct bpf_verifier_env *env)
+ 			goto next;
+ 		if (BPF_OP(code) == BPF_EXIT || BPF_OP(code) == BPF_CALL)
+ 			goto next;
+-		if (code == (BPF_JMP32 | BPF_JA))
+-			off = i + insn[i].imm + 1;
+-		else
+-			off = i + insn[i].off + 1;
++		off = i + jmp_offset(&insn[i]) + 1;
+ 		if (off < subprog_start || off >= subprog_end) {
+ 			verbose(env, "jump out of range from insn %d to %d\n", i, off);
+ 			return -EINVAL;
+@@ -3919,6 +3925,17 @@ static const char *disasm_kfunc_name(void *data, const struct bpf_insn *insn)
+ 	return btf_name_by_offset(desc_btf, func->name_off);
+ }
+ 
++static void verbose_insn(struct bpf_verifier_env *env, struct bpf_insn *insn)
++{
++	const struct bpf_insn_cbs cbs = {
++		.cb_call	= disasm_kfunc_name,
++		.cb_print	= verbose,
++		.private_data	= env,
++	};
++
++	print_bpf_insn(&cbs, insn, env->allow_ptr_leaks);
++}
++
+ static inline void bt_init(struct backtrack_state *bt, u32 frame)
+ {
+ 	bt->frame = frame;
+@@ -4119,11 +4136,6 @@ static bool calls_callback(struct bpf_verifier_env *env, int insn_idx);
+ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
+ 			  struct bpf_insn_hist_entry *hist, struct backtrack_state *bt)
+ {
+-	const struct bpf_insn_cbs cbs = {
+-		.cb_call	= disasm_kfunc_name,
+-		.cb_print	= verbose,
+-		.private_data	= env,
+-	};
+ 	struct bpf_insn *insn = env->prog->insnsi + idx;
+ 	u8 class = BPF_CLASS(insn->code);
+ 	u8 opcode = BPF_OP(insn->code);
+@@ -4141,7 +4153,7 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx, int subseq_idx,
+ 		fmt_stack_mask(env->tmp_str_buf, TMP_STR_BUF_LEN, bt_stack_mask(bt));
+ 		verbose(env, "stack=%s before ", env->tmp_str_buf);
+ 		verbose(env, "%d: ", idx);
+-		print_bpf_insn(&cbs, insn, env->allow_ptr_leaks);
++		verbose_insn(env, insn);
+ 	}
+ 
+ 	/* If there is a history record that some registers gained range at this insn,
+@@ -19273,19 +19285,13 @@ static int do_check(struct bpf_verifier_env *env)
+ 		}
+ 
+ 		if (env->log.level & BPF_LOG_LEVEL) {
+-			const struct bpf_insn_cbs cbs = {
+-				.cb_call	= disasm_kfunc_name,
+-				.cb_print	= verbose,
+-				.private_data	= env,
+-			};
+-
+ 			if (verifier_state_scratched(env))
+ 				print_insn_state(env, state, state->curframe);
+ 
+ 			verbose_linfo(env, env->insn_idx, "; ");
+ 			env->prev_log_pos = env->log.end_pos;
+ 			verbose(env, "%d: ", env->insn_idx);
+-			print_bpf_insn(&cbs, insn, env->allow_ptr_leaks);
++			verbose_insn(env, insn);
+ 			env->prev_insn_print_pos = env->log.end_pos - env->prev_log_pos;
+ 			env->prev_log_pos = env->log.end_pos;
+ 		}
 -- 
 2.48.1
 
