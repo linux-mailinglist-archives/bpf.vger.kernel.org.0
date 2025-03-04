@@ -1,146 +1,250 @@
-Return-Path: <bpf+bounces-53154-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53155-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4678EA4D0B2
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 02:23:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 075F1A4D161
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 03:04:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 512113AAAF3
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 01:22:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9185188D900
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 02:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3616312F399;
-	Tue,  4 Mar 2025 01:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89F354769;
+	Tue,  4 Mar 2025 02:04:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WBl1S94a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kAScqV+9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C14524B0;
-	Tue,  4 Mar 2025 01:22:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C6A2F46
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 02:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741051374; cv=none; b=CZ41YDSCeN1v2cZ2WXrsHHST2dEQ5boY/BJzZb67uvs6PveIrzCclkJhrLFw9Y/Wxwd+av9XsG/Gsqes4rRKbo5KwfqQWbrUP7nudbgjVmr6lUQP3RjiARtUsaSYbWQ6QUtUNiqGME5K8kEKcDGTu2g/lC3alVjSKBLNwFN1QpY=
+	t=1741053864; cv=none; b=VlCk92+Z8cNTpD/8OM2j1avaaqoah6srVQPdMtldGsvvNP5AdLcaBMnL4Tvi1o0Ct7dk4h4Uo5m7uLeVUGANWfvfm02atDR20HNU5NNzizLJlS+VxWfwlXN6im+ESS30MeFcF5vYOWmyTtmGdZI6NasHjPDkw1qchXcBHNMU9o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741051374; c=relaxed/simple;
-	bh=sj01G89WSKsFpjf/wy7aY/kOlbTksiMMzEm1e033JpE=;
+	s=arc-20240116; t=1741053864; c=relaxed/simple;
+	bh=DcCEF0yxb/7AX4q4xQ1zzGERbDf2MDmoQI/1iIg0j+g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P87NHfm2nSTb6lX11lpVl5pbrUdVRUBM6zb1zRfiVhjwJ2XwXIUWu9yE90ksnIxjo7Mru4aBFbfwg9rN1snM9+OIIGqB8TCJhpcFhLiFWc5ic4XcB+C2fGERTC83sYpVxDD/gdTpv2gnyyDDwuRtROALe9m1T54egTi1XygfNx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WBl1S94a; arc=none smtp.client-ip=209.85.128.193
+	 To:Cc:Content-Type; b=p7ZyT5ABQ04kIQ5BB4O1WV/lxx4T6fwp5pQOBOz5E067cKRrHkU9LMWtZWRQpY7TMTqNbFyuYtsMib6E2/9xhk7lkTS4V/N6KlLssRU0DbaWUsLruiIf5U2BpXVnGdidMh6FkwJ2OxLQYZFaNKme/QsBL3LsGSUXbuHqQ5uuk8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kAScqV+9; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-6fd6f7f8df9so16510637b3.1;
-        Mon, 03 Mar 2025 17:22:52 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-43bcbdf79cdso1123785e9.2
+        for <bpf@vger.kernel.org>; Mon, 03 Mar 2025 18:04:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741051372; x=1741656172; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741053861; x=1741658661; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sj01G89WSKsFpjf/wy7aY/kOlbTksiMMzEm1e033JpE=;
-        b=WBl1S94aUZlMnMpmbZBTghTGHozbnyoDSpF7Y+dt/Urh+TbZ8cV3Sjjs/mZCEMUSHQ
-         F2LFEpMsF87oLgzo7IK6tPES4whx+7alaHiFAhnd8HkuYkCKryQvHUOMa+cvnKSRb/uy
-         TF7iOlcJYScFMGGbLHz4Nu0IVKz4wtBgIP9etF4Cq3foNY5RP1Bd+Id88Kh3gDx4aHmT
-         5UNx9k1CsEwXMHDq8oEOy6tUwflZjUx4chHnukS8xVRPNIGe/TOJG67tyhTaK5V4n+1c
-         VXKoGlGtIEmgzhLM20cRQjughXORQelxmAC6Ex8f7MWP0XGNiviSo2+3x226Bnp+09fW
-         RQIw==
+        bh=GM/5QtMFkVh5ABgZJujkVIaPtGk15qyKScevaZ4FhK0=;
+        b=kAScqV+9fVkskgiAKFP1uta0Ggol6ZASsOuN0Q9D5ItbSqO2jq16S48ic5wXWF7pic
+         Kn8mstSjsTyfn6DvT5HJ22iqGQd+2mw2fxeatG4rVUCpCUJTZrVWovDmHI4yzqDO6IS1
+         mnSidvflw4/aQpo0WOHj3iTvlWq/itpZqA3h0Ocn7zVy97x1wPQv9dFqj1ppRDI7BLdr
+         SqnAcL5E/ew5qpFRs7kTkTJOHNSChgYuzyyu+P8oZChRX3NRINWud0Hbkre58kSvcn7h
+         SV/jXH6kq/cESbcEJowb0D3y1oSoQ2ZWabpSCoBRHMPbup4xGh8ipRR0uQcxNqKDpoNx
+         MueA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741051372; x=1741656172;
+        d=1e100.net; s=20230601; t=1741053861; x=1741658661;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sj01G89WSKsFpjf/wy7aY/kOlbTksiMMzEm1e033JpE=;
-        b=Td9h7J/a9yJMoJEzhwXOUq0pJtohenP+Aqy68ApufDGFNQIMZ8ZDoP9wHpmQ3k2tex
-         ctmc0o9UUi8fOOP49wswunCrG3xtG0aBlAyS+Lbf1FAjmkQMURwrKagKs8TgQeB4DzO3
-         xHUrZ82MumAJdhI8b/9J0Md4ViRKkBzwd7aUDUouqfh0bg0bb3DOyH28shp888NvmeKP
-         H9dHvWS5OJGiX2J//30pNL7rDVhfgXMIHZNHu9gy4hkiVw3OEgM6XPLqLE8y9Mlf+oIj
-         KqzWehrt4EUGKrcOOXzqLhq3e0yowFjtu/u5MoPw38WCrUKoW21JbbY/njeNyKptA3Fz
-         /bCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUxH/lkEGc28u7PIGZqbOsmox4Pq9kMzrGM45qduQ7/cgQTv9Mjlm6/m5uAb0yLuhGJ+VSvj2pE@vger.kernel.org, AJvYcCVoq8CLEP8ZoZcPj17zBxRKqQkC8KcvEXnAI2BBNdqaclgy/S7zWWF6TR4p+D+ukq3G7MEPKsXE/1fgcCkt@vger.kernel.org, AJvYcCWg4xQZb2ApGwLU8oMM+pTM7bsmcfKzetmRULOXObt29h66j1Edwgqs7eaOJ2UKBIq7SV6b/r2LxA4nrHwkJnx4Itg7@vger.kernel.org, AJvYcCXmQyzP5sPIroQanLn79JNfbVQiRUs7ZDTlRUUENf+Jgjgr2AynuBgplHRoRrudIY6GpBs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTtWWBNL7tffOdTtUAtYNGt00TB08QQn6NEvbs/h7EB7bYsbzU
-	/hrXy3O0KzktQGK1TeDU6Qy0q6u2ReGZP0fFiv0paf+q4DhOIn7vV6hNNzkpu+T4ZZvYG7LkNIY
-	yWhWDnf+0//Waci1ReHByXgBAA9Y=
-X-Gm-Gg: ASbGnctpm2m+AZ8NNotPO2hzLUy8PX0Gks/l9ivGBHAeqSyVHto5MEJTCJi6TOyZfAt
-	LsvIQMcsZC6qmiUVXt91SJRMhq6x2pbiBKl90MGqg6Ndfnpzn3qCUPzgcZUDdZDYzaXUkApW6qn
-	On2pozPgQzBvTRR7mee9QvQrKV8A==
-X-Google-Smtp-Source: AGHT+IElMAk21PoBw46zmvLTxOIKzrTm436wI79ItKGnS7B37hL1mh91tHN7JBEL3hC27FIUVigt3qCLJ8UVxsKzHIY=
-X-Received: by 2002:a05:690c:802:b0:6f9:5552:6b20 with SMTP id
- 00721157ae682-6fd93fe85c0mr16592127b3.0.1741051372144; Mon, 03 Mar 2025
- 17:22:52 -0800 (PST)
+        bh=GM/5QtMFkVh5ABgZJujkVIaPtGk15qyKScevaZ4FhK0=;
+        b=ljVnGP9BjFWaJE+g/dqZ43L6X9iNQBjMjWgiMrsnmdIHxlBrN+mxr8H9HktP2Xl480
+         O1AH/wc0F1n9JwbGERoRi9TT8ERgcsx4qseAWbSkD9mkx8UOOcEsOMMRNLfTmOSudPhk
+         kgy7vpm/mBOK+lffP8m5A6g9Zo7VhK5U2zk8NlDPLgoHu+3vDbBbETRmO2ZlCzXKCsoU
+         out58ZfLkBunGwvkeYeDV/2AXe1rvEIfKqRE8c+gFE6LuLVoJLELTCc+eNjwMt7shHf6
+         ufVAv35OWGu0HVp9RfEofxR6k4mF+Jg2tt7W3DXzALzXfDuUKRYGo99VxMahu03+F6d7
+         I0Ug==
+X-Gm-Message-State: AOJu0Yw4/pA0kjp/14DTNgudfLy3n7NIyMMAlXlrur30o0qs21HtdsKt
+	1FRHivBbNbUnDIiPmWLo13UlmEphMencLEY4fj8cTwHVZWzKtBkL2A3Kjd27axLrRbHo2F+X+9l
+	SCuX3IoYAK1U6usr9KvK9n/mmQrY=
+X-Gm-Gg: ASbGncu7k/FNFT+qv78AyjttnXa+GGbRFbEyNpRFXrJKwY6kWHblIMOFIaGOZNYNJnh
+	/i15zk13al/nFXjSnjdw87ShUks5dG0EJxWfPljif5Sm4TusRaBthUKqht6v/UDpCNeaHYTH7sR
+	USxNs0H5dZ/qEZtuQfuYXSdJsTLs6l3jU+0RdT3lay8w==
+X-Google-Smtp-Source: AGHT+IEvpbb60WU00jvyxXJwN+NHfqI+qai0zP/pMfMB57MrXtTkErZgYjWusn1Fhu6FA18eaG+dMAG0KwMJ2MMIb+0=
+X-Received: by 2002:a5d:6da3:0:b0:390:e76f:163 with SMTP id
+ ffacd0b85a97d-390eca52819mr14056647f8f.45.1741053860572; Mon, 03 Mar 2025
+ 18:04:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250303132837.498938-1-dongml2@chinatelecom.cn>
- <20250303132837.498938-5-dongml2@chinatelecom.cn> <20250303214048.GA570570@google.com>
-In-Reply-To: <20250303214048.GA570570@google.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Tue, 4 Mar 2025 09:21:15 +0800
-X-Gm-Features: AQ5f1JpZvyop7dLuEaHSyJ9xfDPdFhBsxp1mwPgCCs2RQqwOnwzgm0G2X_76n64
-Message-ID: <CADxym3Z76bm9wXPjX=9c95eZtWjODwz70xN1KUR92NuC6vzrwg@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] arm64: implement per-function metadata storage for arm64
-To: Sami Tolvanen <samitolvanen@google.com>
-Cc: peterz@infradead.org, rostedt@goodmis.org, mark.rutland@arm.com, 
-	alexei.starovoitov@gmail.com, catalin.marinas@arm.com, will@kernel.org, 
-	mhiramat@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, jolsa@kernel.org, davem@davemloft.net, 
-	dsahern@kernel.org, mathieu.desnoyers@efficios.com, nathan@kernel.org, 
-	nick.desaulniers+lkml@gmail.com, morbo@google.com, kees@kernel.org, 
-	dongml2@chinatelecom.cn, akpm@linux-foundation.org, riel@surriel.com, 
-	rppt@kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, llvm@lists.linux.dev
+References: <20250304003239.2390751-1-memxor@gmail.com> <20250304003239.2390751-2-memxor@gmail.com>
+In-Reply-To: <20250304003239.2390751-2-memxor@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 3 Mar 2025 18:04:09 -0800
+X-Gm-Features: AQ5f1JpNDUI8BLvzXsk9W5XpyXhu159CP95J7bCCS6TkrX4LwFhtZ1RLUF9NvK4
+Message-ID: <CAADnVQKioRtH8yKkx2yBPu8NMiU38qfgfXEjEaXayU77LMBssw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add verifier support for timed may_goto
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>, 
+	Emil Tsalapatis <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>, 
+	Dohyun Kim <dohyunkim@google.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 4, 2025 at 5:40=E2=80=AFAM Sami Tolvanen <samitolvanen@google.c=
-om> wrote:
+On Mon, Mar 3, 2025 at 4:32=E2=80=AFPM Kumar Kartikeya Dwivedi <memxor@gmai=
+l.com> wrote:
 >
-> On Mon, Mar 03, 2025 at 09:28:37PM +0800, Menglong Dong wrote:
-> > The per-function metadata storage is already used by ftrace if
-> > CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS is enabled, and it store the pointe=
-r
-> > of the callback directly to the function padding, which consume 8-bytes=
-,
-> > in the commit
-> > baaf553d3bc3 ("arm64: Implement HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS").
-> > So we can directly store the index to the function padding too, without
-> > a prepending. With CONFIG_DYNAMIC_FTRACE_WITH_CALL_OPS enabled, the
-> > function is 8-bytes aligned, and we will compile the kernel with extra
-> > 8-bytes (2 NOPS) padding space. Otherwise, the function is 4-bytes
-> > aligned, and only extra 4-bytes (1 NOPS) is needed.
-> >
-> > However, we have the same problem with Mark in the commit above: we can=
-'t
-> > use the function padding together with CFI_CLANG, which can make the cl=
-ang
-> > compiles a wrong offset to the pre-function type hash. He said that he =
-was
-> > working with others on this problem 2 years ago. Hi Mark, is there any
-> > progress on this problem?
->
-> I don't think there's been much progress since the previous
-> discussion a couple of years ago. The conclusion seemed to be
-> that adding a section parameter to -fpatchable-function-entry
-> would allow us to identify notrace functions while keeping a
-> consistent layout for functions:
->
-> https://lore.kernel.org/lkml/Y1QEzk%2FA41PKLEPe@hirez.programming.kicks-a=
-ss.net/
+> +u64 bpf_check_timed_may_goto(struct bpf_timed_may_goto *p)
+> +{
+> +       u64 time =3D ktime_get_mono_fast_ns();
+> +
+> +       /*
+> +        * Populate the timestamp for this stack frame, and refresh count=
+.
+> +        */
+> +       if (!p->timestamp) {
+> +               p->timestamp =3D time;
+> +               return BPF_MAX_TIMED_LOOPS;
+> +       }
+> +       /*
+> +        * Check if we've exhausted our time slice, and zero count.
+> +        */
+> +       if (time - p->timestamp >=3D (NSEC_PER_SEC / 4))
+> +               return 0;
+> +       /*
+> +        * Refresh the count for the stack frame.
+> +        */
 
-Thank you for your information, which helps me a lot.
-I'll dig deeper to find a way to keep CFI working together
-with this function.
+I converted the comments back to single line comments.
 
-Thanks!
-Menglong Dong
-
+> +       return BPF_MAX_TIMED_LOOPS;
+> +}
+> +
+>  /* for configs without MMU or 32-bit */
+>  __weak const struct bpf_map_ops arena_map_ops;
+>  __weak u64 bpf_arena_get_user_vm_start(struct bpf_arena *arena)
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 22c4edc8695c..f3e95d471fa3 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -21572,7 +21572,50 @@ static int do_misc_fixups(struct bpf_verifier_en=
+v *env)
+>                         goto next_insn;
+>                 }
 >
-> Sami
+> -               if (is_may_goto_insn(insn)) {
+> +               if (is_may_goto_insn(insn) && bpf_jit_supports_timed_may_=
+goto()) {
+> +                       int stack_off_cnt =3D -stack_depth - 16;
+> +
+> +                       /*
+> +                        * Two 8 byte slots, depth-16 stores the count, a=
+nd
+> +                        * depth-8 stores the start timestamp of the loop=
+.
+> +                        *
+> +                        * The starting value of count is BPF_MAX_TIMED_L=
+OOPS
+> +                        * (0xffff).  Every iteration loads it and subs i=
+t by 1,
+> +                        * until the value becomes 0 in AX (thus, 1 in st=
+ack),
+> +                        * after which we call arch_bpf_timed_may_goto, w=
+hich
+> +                        * either sets AX to 0xffff to keep looping, or t=
+o 0
+> +                        * upon timeout. AX is then stored into the stack=
+. In
+> +                        * the next iteration, we either see 0 and break =
+out, or
+> +                        * continue iterating until the next time value i=
+s 0
+> +                        * after subtraction, rinse and repeat.
+> +                        */
+> +                       stack_depth_extra =3D 16;
+> +                       insn_buf[0] =3D BPF_LDX_MEM(BPF_DW, BPF_REG_AX, B=
+PF_REG_10, stack_off_cnt);
+> +                       if (insn->off >=3D 0)
+> +                               insn_buf[1] =3D BPF_JMP_IMM(BPF_JEQ, BPF_=
+REG_AX, 0, insn->off + 5);
+> +                       else
+> +                               insn_buf[1] =3D BPF_JMP_IMM(BPF_JEQ, BPF_=
+REG_AX, 0, insn->off - 1);
+> +                       insn_buf[2] =3D BPF_ALU64_IMM(BPF_SUB, BPF_REG_AX=
+, 1);
+> +                       insn_buf[3] =3D BPF_JMP_IMM(BPF_JNE, BPF_REG_AX, =
+0, 2);
+> +                       /*
+> +                        * AX is used as an argument to pass in stack_off=
+_cnt
+> +                        * (to add to r10/fp), and also as the return val=
+ue of
+> +                        * the call to arch_bpf_timed_may_goto.
+> +                        */
+> +                       insn_buf[4] =3D BPF_MOV64_IMM(BPF_REG_AX, stack_o=
+ff_cnt);
+> +                       insn_buf[5] =3D BPF_EMIT_CALL(arch_bpf_timed_may_=
+goto);
+> +                       insn_buf[6] =3D BPF_STX_MEM(BPF_DW, BPF_REG_10, B=
+PF_REG_AX, stack_off_cnt);
+> +                       cnt =3D 7;
+> +
+> +                       new_prog =3D bpf_patch_insn_data(env, i + delta, =
+insn_buf, cnt);
+> +                       if (!new_prog)
+> +                               return -ENOMEM;
+> +
+> +                       delta +=3D cnt - 1;
+> +                       env->prog =3D prog =3D new_prog;
+> +                       insn =3D new_prog->insnsi + i + delta;
+> +                       goto next_insn;
+> +               } else if (is_may_goto_insn(insn)) {
+>                         int stack_off =3D -stack_depth - 8;
+>
+>                         stack_depth_extra =3D 8;
+> @@ -22113,23 +22156,34 @@ static int do_misc_fixups(struct bpf_verifier_e=
+nv *env)
+>
+>         env->prog->aux->stack_depth =3D subprogs[0].stack_depth;
+>         for (i =3D 0; i < env->subprog_cnt; i++) {
+> +               int delta =3D bpf_jit_supports_timed_may_goto() ? 2 : 1;
+>                 int subprog_start =3D subprogs[i].start;
+>                 int stack_slots =3D subprogs[i].stack_extra / 8;
+> +               int slots =3D delta, cnt =3D 0;
+>
+>                 if (!stack_slots)
+>                         continue;
+> -               if (stack_slots > 1) {
+> +               /*
+> +                * We need two slots in case timed may_goto is supported.
+> +                */
+> +               if (stack_slots > slots) {
+>                         verbose(env, "verifier bug: stack_slots supports =
+may_goto only\n");
+>                         return -EFAULT;
+>                 }
+>
+> -               /* Add ST insn to subprog prologue to init extra stack */
+> -               insn_buf[0] =3D BPF_ST_MEM(BPF_DW, BPF_REG_FP,
+> -                                        -subprogs[i].stack_depth, BPF_MA=
+X_LOOPS);
+
+and here added
+stack_depth =3D subprogs[i].stack_depth;
+to reduce copy paste in below lines...
+
+> +               if (bpf_jit_supports_timed_may_goto()) {
+> +                       insn_buf[cnt++] =3D BPF_ST_MEM(BPF_DW, BPF_REG_FP=
+, -subprogs[i].stack_depth,
+> +                                                    BPF_MAX_TIMED_LOOPS)=
+;
+> +                       insn_buf[cnt++] =3D BPF_ST_MEM(BPF_DW, BPF_REG_FP=
+, -subprogs[i].stack_depth + 8, 0);
+> +               } else {
+> +                       /* Add ST insn to subprog prologue to init extra =
+stack */
+> +                       insn_buf[cnt++] =3D BPF_ST_MEM(BPF_DW, BPF_REG_FP=
+, -subprogs[i].stack_depth,
+> +                                                    BPF_MAX_LOOPS);
+> +               }
+
+and applied.
 
