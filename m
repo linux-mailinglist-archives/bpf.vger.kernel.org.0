@@ -1,216 +1,112 @@
-Return-Path: <bpf+bounces-53236-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53237-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0548A4EE71
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 21:32:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0936EA4EEAC
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 21:45:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD662175280
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 20:32:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C42453AB2E9
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 20:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34C2B259C83;
-	Tue,  4 Mar 2025 20:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FEBC2571B0;
+	Tue,  4 Mar 2025 20:45:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="cA1kN4Fx"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="P9Phi7bb"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C7B2777F4;
-	Tue,  4 Mar 2025 20:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7890618C03B
+	for <bpf@vger.kernel.org>; Tue,  4 Mar 2025 20:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741120316; cv=none; b=aHy35+zr7y8tWjdSkE/COgcChOVHwE2nElgrjSXtp12LAiXHB76G7cCUrvcs3sqPUZILt4ji9qNIqF2ifM0Qx+a7iagTJ4cBvnKc/jEr4KUwlM2AEcYy5JlkSHGiALSclwLG6NulFNZaIOZhrtT0A5lbk6fMGN6GxUW7de3Ou9Q=
+	t=1741121129; cv=none; b=tSjxw3htYd7cYWKEMNTOUhK2CKPL52vMsexHcuGq0OoUW1/IF2OEtkjOVW/WQ5Dqmpcp5m/U76coDCCcmWAFUpR/J4onAQ/qCLULhuCDz7QMVPyOP6GqhaeGrFavaj93Gr/VAO9eT5zC2J/C3ENc58ZkEXRCf2XS0UKC9E2uF4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741120316; c=relaxed/simple;
-	bh=DbBCeYxwhU12Z1AD0LUBN11wkEtClumhwC6GKULbuYA=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mT75fs1iT0GHn1wIzr4xcqK/s25Mi8YI+UGqMv0QpRpytC7TJ+RrJPZAJwuEBV2SJIAia3oYYfBzOS0tRLfAiUybzXHpI6YxgoXH7aaxxiTwOAs3VuZPrXzuTn5SncVJB8tIjDSWVs9QOwEdPLmLTjM6FQrW/L9EOal9Zoryesg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=cA1kN4Fx; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia.corp.microsoft.com (unknown [167.220.2.28])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 96F6F210EAF6;
-	Tue,  4 Mar 2025 12:31:48 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 96F6F210EAF6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1741120314;
-	bh=1vDCsCYtHONRoZYBzDfIeYb+QcQ4PVYzhGi1zBWDUQQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=cA1kN4FxmKMgAWVVp692gzTIzK4nbbhDFOlYkrmAG/vCQDaI2yWnOJEUuqxcdYf2Q
-	 Kr4hLTofZvJJ1owLMbKJYAIiPpiOPbEaNabzjyEFpuPxWwXIHRaY0xGmchO3d39fgW
-	 YnukwzKEcT+A+KDwOplM2XT/xN7jk14SujVF1p8Q=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	linux-security-module@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	selinux@vger.kernel.org,
-	bboscaccy@linux.microsoft.com
-Subject: [PATCH v4 bpf-next 2/2] selftests/bpf: Add is_kernel parameter to LSM/bpf test programs
-Date: Tue,  4 Mar 2025 12:30:50 -0800
-Message-ID: <20250304203123.3935371-3-bboscaccy@linux.microsoft.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250304203123.3935371-1-bboscaccy@linux.microsoft.com>
-References: <20250304203123.3935371-1-bboscaccy@linux.microsoft.com>
+	s=arc-20240116; t=1741121129; c=relaxed/simple;
+	bh=GBTYcWM988+PKQB7e+LWCSDv1bTZ9jOTHc6PlHK11LA=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=TSo4vF2OiOvsFfUy8ghgSS+JTbhl9I9zxcHAALFKNkPbFSDzzGK8egAz4zmOKDuuvTrJ+hURI1OSbspmOZj9EuvXMz5kHmf6Dnyp5B9QhCgPe3OtLObNaxgvW6snxkUpyHz2d2uxjeE3qTlGhqSV3Sl9KdbmXQ/xy1shRnt3IKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=P9Phi7bb; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-2234bf13b47so115810135ad.0
+        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 12:45:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1741121126; x=1741725926; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=O/h3K1VAjVU+85Yct7CoBzw18CRZr0W5WJZ0048JDtU=;
+        b=P9Phi7bbhFM4EUHnYOBI5owmxpoPMASwmpEAEortBpeXyhguguVeo74oFZX32R0DFx
+         NZYokAQqSWjyAkjVNutE3quPraDyc83tLUxNKKuWUvVW7rTsHbuJmfexN2mvZSLoAd59
+         S4xNSB75SncT6uR8Z6VJ5AftCR+yiSS0tiiRBBbQ3dsVluysmuc6IUO+7qLHGDJNSc0P
+         W5jqD2nCV8Flts8qSfFkUOd/5fUqSpCvFMksjqSr68u8xcnjcUgJb3iP28+S8xwGN8UO
+         tsftjoh5zCrtD4HFeVPlttOphg8sJdCKnqmpb9Q+qu8mpDuBaTDhR0BkiDzKSWEbv9xT
+         88Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741121126; x=1741725926;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O/h3K1VAjVU+85Yct7CoBzw18CRZr0W5WJZ0048JDtU=;
+        b=B6J0VaNDaEL+2kMafjuosDjEOfGAIIOvKLA1IACp1Q6+tTVXq13PXiW5tDcgTvw/vI
+         vqLh+u4JlOErrtScEb4mr0fBYF+u84rUvyVEd9LcYckxRkrZpka+Ltz0O2WwlAJR/M05
+         NZWjBqgFpl/jm7D7Nk1b9PPEx5WiWkvZuMvzQRECgDEXQkKcqQfQaig/PngQR+haekDg
+         sJCdKaeUJHAH4usgJXzJ+xOuAqH6rp+1VsVm0kAwXo9rFUkAHrJigESMwJkKfR4cbA7z
+         X/JwZd3kk4iLAiedjZerwt+3Frs4iuQqmT0CNINVoAScefz6bOuOX7PoSXxYauiMTYUf
+         oIRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWic9niEmAWDkDLcb2rfRfLALvr4n0bc2SfictSgvF1ZzVYuuzrTMmaJ8dCvbPI8c0uEnE=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4DeDeqeclkeUZOHPt/xyaOOfManSc0V4aYk3c04bnqQUDwLMz
+	RaijbAEof1ZuLVDrydj1lgZQxbGyE6od3Fqsg3EoKFi4XaCzNJ2cyDlhtzwkqaAvXAz6xQOmap9
+	Mw8WCoFTOIPBgHg==
+X-Google-Smtp-Source: AGHT+IEvAad14fuI/QYpN+y45DYnXWvF1S16Js2zs5xq9qmOkzSmCsB9Vo4K4dzj+al9VXMxX9NcMQF4YzW17IM=
+X-Received: from pjbkl12.prod.google.com ([2002:a17:90b:498c:b0:2ef:7af4:5e8e])
+ (user=tjmercier job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:902:d50f:b0:223:5e76:637a with SMTP id d9443c01a7336-223f1c97445mr7020845ad.23.1741121125659;
+ Tue, 04 Mar 2025 12:45:25 -0800 (PST)
+Date: Tue,  4 Mar 2025 20:45:19 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.48.1.711.g2feabab25a-goog
+Message-ID: <20250304204520.201115-1-tjmercier@google.com>
+Subject: [PATCH] bpf, docs: Fix broken link to renamed bpf_iter_task_vmas.c
+From: "T.J. Mercier" <tjmercier@google.com>
+To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Dave Marchevsky <davemarchevsky@fb.com>
+Cc: "T.J. Mercier" <tjmercier@google.com>, bpf@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The security_bpf LSM hook now contains a boolean parameter specifying
-whether an invocation of the bpf syscall originated from within the
-kernel. Here, we update the function signature of relevant test
-programs to include that new parameter.
+This file was renamed from bpf_iter_task_vma.c.
 
-Signed-off-by: Blaise Boscaccy bboscaccy@linux.microsoft.com
+Fixes: 45b38941c81f ("selftests/bpf: Rename bpf_iter_task_vma.c to bpf_iter_task_vmas.c")
+Signed-off-by: T.J. Mercier <tjmercier@google.com>
 ---
- tools/testing/selftests/bpf/progs/rcu_read_lock.c           | 3 ++-
- tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c  | 4 ++--
- tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c | 6 +++---
- tools/testing/selftests/bpf/progs/test_lookup_key.c         | 2 +-
- tools/testing/selftests/bpf/progs/test_ptr_untrusted.c      | 2 +-
- tools/testing/selftests/bpf/progs/test_task_under_cgroup.c  | 2 +-
- tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c   | 2 +-
- 7 files changed, 11 insertions(+), 10 deletions(-)
+ Documentation/bpf/bpf_iterators.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/rcu_read_lock.c b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-index ab3a532b7dd6d..f85d0e282f2ae 100644
---- a/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-+++ b/tools/testing/selftests/bpf/progs/rcu_read_lock.c
-@@ -242,7 +242,8 @@ int inproper_sleepable_helper(void *ctx)
- }
+diff --git a/Documentation/bpf/bpf_iterators.rst b/Documentation/bpf/bpf_iterators.rst
+index 07433915aa41..7f514cb6b052 100644
+--- a/Documentation/bpf/bpf_iterators.rst
++++ b/Documentation/bpf/bpf_iterators.rst
+@@ -86,7 +86,7 @@ following steps:
+ The following are a few examples of selftest BPF iterator programs:
  
- SEC("?lsm.s/bpf")
--int BPF_PROG(inproper_sleepable_kfunc, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(inproper_sleepable_kfunc, int cmd, union bpf_attr *attr, unsigned int size,
-+	     bool is_kernel)
- {
- 	struct bpf_key *bkey;
+ * `bpf_iter_tcp4.c <https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c>`_
+-* `bpf_iter_task_vma.c <https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c>`_
++* `bpf_iter_task_vmas.c <https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/progs/bpf_iter_task_vmas.c>`_
+ * `bpf_iter_task_file.c <https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c>`_
  
-diff --git a/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c b/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
-index 44628865fe1d4..0e741262138f2 100644
---- a/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
-+++ b/tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c
-@@ -51,13 +51,13 @@ static int bpf_link_create_verify(int cmd)
- }
- 
- SEC("lsm/bpf")
--int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	return bpf_link_create_verify(cmd);
- }
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(lsm_s_run, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(lsm_s_run, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	return bpf_link_create_verify(cmd);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-index cd4d752bd089c..ce36a55ba5b8b 100644
---- a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-+++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-@@ -36,7 +36,7 @@ char _license[] SEC("license") = "GPL";
- 
- SEC("?lsm.s/bpf")
- __failure __msg("cannot pass in dynptr at an offset=-8")
--int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	unsigned long val;
- 
-@@ -46,7 +46,7 @@ int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned int size)
- 
- SEC("?lsm.s/bpf")
- __failure __msg("arg#0 expected pointer to stack or const struct bpf_dynptr")
--int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	unsigned long val = 0;
- 
-@@ -55,7 +55,7 @@ int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned int size)
- }
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(dynptr_data_null, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(dynptr_data_null, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	struct bpf_key *trusted_keyring;
- 	struct bpf_dynptr ptr;
-diff --git a/tools/testing/selftests/bpf/progs/test_lookup_key.c b/tools/testing/selftests/bpf/progs/test_lookup_key.c
-index c73776990ae30..c46077e01a4ca 100644
---- a/tools/testing/selftests/bpf/progs/test_lookup_key.c
-+++ b/tools/testing/selftests/bpf/progs/test_lookup_key.c
-@@ -23,7 +23,7 @@ extern struct bpf_key *bpf_lookup_system_key(__u64 id) __ksym;
- extern void bpf_key_put(struct bpf_key *key) __ksym;
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(bpf, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(bpf, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	struct bpf_key *bkey;
- 	__u32 pid;
-diff --git a/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c b/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c
-index 2fdc44e766248..21fce1108a21d 100644
---- a/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c
-+++ b/tools/testing/selftests/bpf/progs/test_ptr_untrusted.c
-@@ -7,7 +7,7 @@
- char tp_name[128];
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	switch (cmd) {
- 	case BPF_RAW_TRACEPOINT_OPEN:
-diff --git a/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c b/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-index 7e750309ce274..18ad24a851c6c 100644
---- a/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-+++ b/tools/testing/selftests/bpf/progs/test_task_under_cgroup.c
-@@ -49,7 +49,7 @@ int BPF_PROG(tp_btf_run, struct task_struct *task, u64 clone_flags)
- }
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(lsm_run, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	struct cgroup *cgrp = NULL;
- 	struct task_struct *task;
-diff --git a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-index 12034a73ee2d2..135665f011c7e 100644
---- a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-+++ b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-@@ -37,7 +37,7 @@ struct {
- char _license[] SEC("license") = "GPL";
- 
- SEC("lsm.s/bpf")
--int BPF_PROG(bpf, int cmd, union bpf_attr *attr, unsigned int size)
-+int BPF_PROG(bpf, int cmd, union bpf_attr *attr, unsigned int size, bool is_kernel)
- {
- 	struct bpf_dynptr data_ptr, sig_ptr;
- 	struct data *data_val;
+ Let us look at ``bpf_iter_task_file.c``, which runs in kernel space:
 -- 
-2.48.1
+2.48.1.711.g2feabab25a-goog
 
 
