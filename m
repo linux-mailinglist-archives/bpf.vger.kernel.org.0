@@ -1,116 +1,129 @@
-Return-Path: <bpf+bounces-53198-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53202-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2491EA4E4B2
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 17:02:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC934A4E68D
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 17:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25F517AB48B
-	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 16:00:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EEF8425440
+	for <lists+bpf@lfdr.de>; Tue,  4 Mar 2025 16:32:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48CD28F95F;
-	Tue,  4 Mar 2025 15:42:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mM6ty0yc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F3A2BD58A;
+	Tue,  4 Mar 2025 16:11:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40DBE28F94A;
-	Tue,  4 Mar 2025 15:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7381D29DB83;
+	Tue,  4 Mar 2025 16:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741102962; cv=none; b=UqwagCLRSCjC0joRrzztU8wNt2O9fGPvayHFaKthqVj2ZNMm0Tph2n8u7rj/LObjGLlb9soYjhDlOyLJpO2ceUlZ90UikTMg9Edx+byUmSx94zdQ2qQJbipkKPbRuKHIsAncHee8eqrVP4Z8961XopoRmnr1QR2Elj9W5Bw9g88=
+	t=1741104671; cv=none; b=GdqCnIHwF+tGKdtpHZOLLc7VmQEsDYd7UkHcA19CoXmvrcdzAJyq0NQYcgmeWY6zXb+7EmWC9fk4c2Y8H6cuVpFXKorMja5ZqHCfPGRopDOaasY1v6o1p1i3v/7bVunHT6a0l9FxkavGxZP+JAml7b7wi4j5BgNayK7aQnGtHcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741102962; c=relaxed/simple;
-	bh=54cw3ZsEsDqGaWMwifys1UxImGLZAucBvesS78YvsZc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YkRz9SrFBjXbekxrWjXsUJS3v20Lo1Puy+aoMkIOHvv87XRaHG9PYsD+oCFgovqtfQWzlR7vm53FPxpW6+RzEuYKocGGz7HmWhY/L6R7/z27JYguLAKstVJdJN0IIWYl9B5OQSI0tufMSj//J4AR2evU49y3xm0hQKJIv4dQhkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mM6ty0yc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 876A3C4CEE5;
-	Tue,  4 Mar 2025 15:42:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741102961;
-	bh=54cw3ZsEsDqGaWMwifys1UxImGLZAucBvesS78YvsZc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mM6ty0ycLjzDp5PBT5OUCIgMNa0sVGhucEz2xIftlfLjEbpsrB9SusnLojl6Mf3C8
-	 3mljRiSznlb9s6f9Dviq5oXD+21DG21o/uq0EsZIvFDmbAKb/PMCFdRlDIatBGJLkj
-	 kz91wnm0ybBJ10uYVD+Hi6iJ7w8wGNP8HqCrwyi0/d+B2vE+zjDvbdJk24I5JQ8gyh
-	 sC8xFqudDB35xlJA7leYqQMTOyVSgIPdr4wx1Ex48DN3ZW/mOFF36EHPlkcBU6AeEK
-	 LDj/UFxguLHGfrfUwNJHU6j9MlawV5d+PRjmRSg/oD/19F/91tBWd6wqJvCnJiyhOu
-	 qGEaKFu0g61Kg==
-Date: Tue, 4 Mar 2025 15:42:36 +0000
-From: Simon Horman <horms@kernel.org>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: kuba@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	pabeni@redhat.com, ricardo@marliere.net, viro@zeniv.linux.org.uk,
-	dmantipov@yandex.ru, aleksander.lobakin@intel.com,
-	linux-ppp@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mrpre@163.com, Paul Mackerras <paulus@samba.org>,
-	syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
-Subject: Re: [PATCH net-next v5] ppp: Fix KMSAN uninit-value warning with bpf
-Message-ID: <20250304154236.GE3666230@kernel.org>
-References: <20250228141408.393864-1-jiayuan.chen@linux.dev>
+	s=arc-20240116; t=1741104671; c=relaxed/simple;
+	bh=Q5OfRyL0oHBW1Tz9ez/ZaLR+7hn1+yu8saErb1C2CCw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ucC1SXYzZtf6XG58ox1tajIPtt3u/SWB6vNDA2JNo8BFQQk92VKhdkz7TDixd54xAMLVkcvMSLMlZsQYJuUx4lxNN0dOgmW7K4MgqWYsKy6I1hzj54r0tEUCuYuGzVi0JlpVEBGDacTWV7PQmLyLRqUxlEDmGQ5dsIGmCq+cF50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 157ECC4CEE5;
+	Tue,  4 Mar 2025 16:11:06 +0000 (UTC)
+Date: Tue, 4 Mar 2025 11:12:01 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
+ <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung
+ Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers
+ <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, Quentin
+ Monnet <qmo@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Daniel
+ Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Jiri Kosina
+ <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] tools: Remove redundant quiet setup
+Message-ID: <20250304111201.59ed8cc3@gandalf.local.home>
+In-Reply-To: <20250213-quiet_tools-v3-2-07de4482a581@rivosinc.com>
+References: <20250213-quiet_tools-v3-0-07de4482a581@rivosinc.com>
+	<20250213-quiet_tools-v3-2-07de4482a581@rivosinc.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250228141408.393864-1-jiayuan.chen@linux.dev>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 28, 2025 at 10:14:08PM +0800, Jiayuan Chen wrote:
-> Syzbot caught an "KMSAN: uninit-value" warning [1], which is caused by the
-> ppp driver not initializing a 2-byte header when using socket filter.
-> 
-> The following code can generate a PPP filter BPF program:
-> '''
-> struct bpf_program fp;
-> pcap_t *handle;
-> handle = pcap_open_dead(DLT_PPP_PPPD, 65535);
-> pcap_compile(handle, &fp, "ip and outbound", 0, 0);
-> bpf_dump(&fp, 1);
-> '''
-> Its output is:
-> '''
-> (000) ldh [2]
-> (001) jeq #0x21 jt 2 jf 5
-> (002) ldb [0]
-> (003) jeq #0x1 jt 4 jf 5
-> (004) ret #65535
-> (005) ret #0
-> '''
-> Wen can find similar code at the following link:
-> https://github.com/ppp-project/ppp/blob/master/pppd/options.c#L1680
-> The maintainer of this code repository is also the original maintainer
-> of the ppp driver.
-> 
-> As you can see the BPF program skips 2 bytes of data and then reads the
-> 'Protocol' field to determine if it's an IP packet. Then it read the first
-> byte of the first 2 bytes to determine the direction.
-> 
-> The issue is that only the first byte indicating direction is initialized
-> in current ppp driver code while the second byte is not initialized.
-> 
-> For normal BPF programs generated by libpcap, uninitialized data won't be
-> used, so it's not a problem. However, for carefully crafted BPF programs,
-> such as those generated by syzkaller [2], which start reading from offset
-> 0, the uninitialized data will be used and caught by KMSAN.
-> 
-> [1] https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
-> [2] https://syzkaller.appspot.com/text?tag=ReproC&x=11994913980000
-> 
-> Cc: Paul Mackerras <paulus@samba.org>
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Reported-by: syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/bpf/000000000000dea025060d6bc3bc@google.com/
-> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+On Thu, 13 Feb 2025 13:06:22 -0800
+Charlie Jenkins <charlie@rivosinc.com> wrote:
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+> diff --git a/tools/tracing/latency/Makefile b/tools/tracing/latency/Makefile
+> index 6518b03e05c71b4fa84498f9628adf81a38c9f56..257a56b1899f23837de533353e9c2cebdb6035bd 100644
+> --- a/tools/tracing/latency/Makefile
+> +++ b/tools/tracing/latency/Makefile
+> @@ -37,12 +37,6 @@ FEATURE_TESTS	+= libtracefs
+>  FEATURE_DISPLAY	:= libtraceevent
+>  FEATURE_DISPLAY	+= libtracefs
+>  
+> -ifeq ($(V),1)
+> -  Q 		=
+> -else
+> -  Q 		= @
+> -endif
+> -
+>  all: $(LATENCY-COLLECTOR)
+>  
+>  include $(srctree)/tools/build/Makefile.include
+> diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
+> index 8b5101457c70b48e9c720f1ba53293f1307c15a2..0b61208db604ec0754024c3007db6b2fe74a613c 100644
+> --- a/tools/tracing/rtla/Makefile
+> +++ b/tools/tracing/rtla/Makefile
+> @@ -37,12 +37,6 @@ FEATURE_DISPLAY	:= libtraceevent
+>  FEATURE_DISPLAY	+= libtracefs
+>  FEATURE_DISPLAY	+= libcpupower
+>  
+> -ifeq ($(V),1)
+> -  Q		=
+> -else
+> -  Q		= @
+> -endif
+> -
+>  all: $(RTLA)
+>  
+>  include $(srctree)/tools/build/Makefile.include
+> diff --git a/tools/verification/rv/Makefile b/tools/verification/rv/Makefile
+> index 411d62b3d8eb93abf85526ad33cafd783df86bc1..5b898360ba4818b12e8a16c27bd88c75d0076fb9 100644
+> --- a/tools/verification/rv/Makefile
+> +++ b/tools/verification/rv/Makefile
+> @@ -35,12 +35,6 @@ FEATURE_TESTS	+= libtracefs
+>  FEATURE_DISPLAY	:= libtraceevent
+>  FEATURE_DISPLAY	+= libtracefs
+>  
+> -ifeq ($(V),1)
+> -  Q		=
+> -else
+> -  Q		= @
+> -endif
+> -
+>  all: $(RV)
+>  
+>  include $(srctree)/tools/build/Makefile.include
+> 
 
+Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+
+-- Steve
 
