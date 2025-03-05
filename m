@@ -1,223 +1,199 @@
-Return-Path: <bpf+bounces-53292-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53293-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64395A4F6B6
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 06:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC65A4F8D9
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 09:31:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B2C0188C6BF
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 05:54:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FFC91892720
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 08:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 748AD1D7E42;
-	Wed,  5 Mar 2025 05:54:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E78781FC0F8;
+	Wed,  5 Mar 2025 08:31:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="LeiaTm3O"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744C419C55E
-	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 05:54:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09471D86F6;
+	Wed,  5 Mar 2025 08:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741154068; cv=none; b=nLnPr/v3Cnj5L71SbJi1u/SBBq6Hdjyy6lGyWe0qb36JKQtvB4b2Y2KaVI9AnJzVP4ADJxttMyBe0TJTN3oNg3rGAvHbXKQjZHilegcVL4BW6xhAnEYH/E3GcIAfLqAxdfF0esy4QYvi1/lczGyPzn/3zrbTfGYQA+MTg3uZO6c=
+	t=1741163498; cv=none; b=a4Eps+8N7fPDSrMglk6UlV9zSQKvGdGBtPaVRg1g6w6pAuknGF8qXvuzaNEFmpRhaux8yvj+F/11WWEIJmOVZL0W4+M0KA5wopn6gP+fwGqKD7ovqnccbdUmf9TcrDGob8Xe0XeUyJAvSAOieVM0ju/kdpRyI9A5+UldpvFrNjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741154068; c=relaxed/simple;
-	bh=LaAntkE8kADInbFez1tYr4UgDOC9fiPwbJFcVkbTmVk=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=cYRkbcEeDCCeLIoSkDjCOulaDDLx5Qxp7rYCfIkQGYH+EHKFSkRXMAvMVIVS+xfx7k+A4qY2HOJOQgiQueSf7xTRNPy9ogDlZPw9wTtWOO4/amoXxZkZcoa027JsYpCB/j0l1iynzA17gZFA5f1z0XbiFAKaz9XJ6oRhy5DDdBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3ce843b51c3so145899425ab.0
-        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 21:54:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741154065; x=1741758865;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JTa6ANGjulTOYXkBQuLvCQ5G8ZTr11Jh5hb4hDDIvvw=;
-        b=Ri5Tf1Pq+eU2E6R0810erPwiBwyiFOWcj4d2KeyPYOI2z1lwLd5XgOORYS6WuIpW5u
-         zjYgUEjG2biByK0OGPIX53rQ0R0n0KMOxKa+3k08Pp/eFQHNtjj5tQ41eMa4CNHSbNFl
-         ci0VLSsDRJLIeyRqu16qqzO47e/r627xUk7NDQqaZKJV2GtLYNV78qsyxU2AEJB55YFv
-         lHgZnxBmEJure8ItC63oBs+gHlFFDgpnzvxKZjEDXEXKwQD3S7cv+vb3FpWXb/Um5Jyx
-         r5ms0+1ylmQBVpRwGhzeGIKCcwSSvgSZplsm2w7P0B5ZGoEEVyb3F6ZKOlfh4IVF3XMW
-         Xg6A==
-X-Forwarded-Encrypted: i=1; AJvYcCX5Wfc43YlPOYZsuiCceEEXNCzmlOlGzQJ9XbhyxCvHLn4SZf46bFHyKbW6/Qaa6mVHn8w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxCJJU+p530zKeozLVxcSXFqsaxpbdwinFRAfydCLedxnSLnY5o
-	MV1C7BEmLTL/pcylVkw5/WQ0oUoUDwvNmRRwUwRPAuI2OLQ7r8ulPWy8gD6PU+LMO59j0e+ouqM
-	gDe+ymYwIN061G4+QYh0DQuCvtIOcibkNna/ZO5ov4Gctnr8vzCFvkFQ=
-X-Google-Smtp-Source: AGHT+IHsTwIzki3hN8M1gz3aj4zL7mqjiNOOW2ftwWjjXxaIYdDjaMmDaEeJdvdAudBjJ9/Lwp7LcIF3wZlkzjCobtZMqm6aOlJi
+	s=arc-20240116; t=1741163498; c=relaxed/simple;
+	bh=iX8irvHRcmV+psqnPxftJmyB2TWBumGfxW6KaDH4gjQ=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=ULoJJunvE21Wzx7viv337PHg2HGwsgAEesT1VuvDc9de/xTOaW1SW1aaSLR/U/mRmonlb/wQhDO3kRUZ+ncoCsD6Oste+0bTK5cBj/WqOKcOoF0qpUkWDJiJaU3MZfiV4+j7I1YzEL5Fu9z1gq6BfdL0uRAp8ThcnnFsknX2D/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=LeiaTm3O; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 5258Tkoa3044543
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 5 Mar 2025 00:29:47 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 5258Tkoa3044543
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025021701; t=1741163391;
+	bh=blf/TiOtbprpDLJNtfD3y4oyxoUcu4XFE3PfFSXAZMQ=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=LeiaTm3OcHAce14jA4D/ZHWqu+UtBIS5XG4gqHwgcoOzbl/wq6Da6xdHQoGGKCoxT
+	 T3qpHmrxIpG0bcDA6I70X/yc4/N2vxII+WdUGNdZqtRjvI+DwoW4wIIWyunlZACq+G
+	 9zquu1aXuKa6nsC3gKEAsy4i71ZUY+DTROhGW5AYNx4DreuQOIzGdPJNEiIRvbGpuV
+	 C+3uxcYgR6B4fnB9aO/wFsSNYbYXIadCnKQOFmN9g3/aC7I+zXDFaKe/7holtL9Fw4
+	 4+ZYAI0WXO0BHMrZZISHmKY8LvwpM+KHvgo+hRJpKGyYlaRf75sjCoxIsvE+fa85Cy
+	 VPWyvOwVfENvg==
+Date: Wed, 05 Mar 2025 00:29:45 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Menglong Dong <menglong8.dong@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC: rostedt@goodmis.org, mark.rutland@arm.com, alexei.starovoitov@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, mhiramat@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        eddyz87@gmail.com, yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@fomichev.me, jolsa@kernel.org,
+        davem@davemloft.net, dsahern@kernel.org,
+        mathieu.desnoyers@efficios.com, nathan@kernel.org,
+        nick.desaulniers+lkml@gmail.com, morbo@google.com,
+        samitolvanen@google.com, kees@kernel.org, dongml2@chinatelecom.cn,
+        akpm@linux-foundation.org, riel@surriel.com, rppt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v4 1/4] x86/ibt: factor out cfi and fineibt offset
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CADxym3busXZKtX=+FY_xnYw7e1CKp5AiHSasZGjVJTdeCZao-g@mail.gmail.com>
+References: <20250303132837.498938-1-dongml2@chinatelecom.cn> <20250303132837.498938-2-dongml2@chinatelecom.cn> <20250303165454.GB11590@noisy.programming.kicks-ass.net> <CADxym3aVtKx_mh7aZyZfk27gEiA_TX6VSAvtK+YDNBtuk_HigA@mail.gmail.com> <20250304053853.GA7099@noisy.programming.kicks-ass.net> <20250304061635.GA29480@noisy.programming.kicks-ass.net> <CADxym3bS_6jpGC3vLAAyD20GsR+QZofQw0_GgKT8nN3c-HqG-g@mail.gmail.com> <20250304094220.GC11590@noisy.programming.kicks-ass.net> <6F9EF5C3-4CAE-4C5E-B70E-F73462AC7CA0@zytor.com> <CADxym3busXZKtX=+FY_xnYw7e1CKp5AiHSasZGjVJTdeCZao-g@mail.gmail.com>
+Message-ID: <694E52E0-C9E5-49D2-A677-09A5EE442590@zytor.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2196:b0:3d3:f6ee:cc4c with SMTP id
- e9e14a558f8ab-3d42b75000cmr24850835ab.0.1741154065560; Tue, 04 Mar 2025
- 21:54:25 -0800 (PST)
-Date: Tue, 04 Mar 2025 21:54:25 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67c7e711.050a0220.15b4b9.001f.GAE@google.com>
-Subject: [syzbot] [bpf?] [bcachefs?] BUG: unable to handle kernel paging
- request in handle_softirqs
-From: syzbot <syzbot+c32100a0bb8cae0c3dde@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kent.overstreet@linux.dev, 
-	kpsingh@kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On March 4, 2025 5:19:09 PM PST, Menglong Dong <menglong8=2Edong@gmail=2Eco=
+m> wrote:
+>On Tue, Mar 4, 2025 at 10:53=E2=80=AFPM H=2E Peter Anvin <hpa@zytor=2Ecom=
+> wrote:
+>>
+>> On March 4, 2025 1:42:20 AM PST, Peter Zijlstra <peterz@infradead=2Eorg=
+> wrote:
+>> >On Tue, Mar 04, 2025 at 03:47:45PM +0800, Menglong Dong wrote:
+>> >> We don't have to select FUNCTION_ALIGNMENT_32B, so the
+>> >> worst case is to increase ~2=2E2%=2E
+>> >>
+>> >> What do you think?
+>> >
+>> >Well, since I don't understand what you need this for at all, I'm firm=
+ly
+>> >on the side of not doing this=2E
+>> >
+>> >What actual problem is being solved with this meta data nonsense? Why =
+is
+>> >it worth blowing up our I$ footprint over=2E
+>> >
+>> >Also note, that if you're going to be explaining this, start from
+>> >scratch, as I have absolutely 0 clues about BPF and such=2E
+>>
+>> I would appreciate such information as well=2E The idea seems dubious o=
+n the surface=2E
+>
+>Ok, let me explain it from the beginning=2E (My English is not good,
+>but I'll try to describe it as clear as possible :/)
+>
+>Many BPF program types need to depend on the BPF trampoline,
+>such as BPF_PROG_TYPE_TRACING, BPF_PROG_TYPE_EXT,
+>BPF_PROG_TYPE_LSM, etc=2E BPF trampoline is a bridge between
+>the kernel (or bpf) function and BPF program, and it acts just like the
+>trampoline that ftrace uses=2E
+>
+>Generally speaking, it is used to hook a function, just like what ftrace
+>do:
+>
+>foo:
+>    endbr
+>    nop5  -->  call trampoline_foo
+>    xxxx
+>
+>In short, the trampoline_foo can be this:
+>
+>trampoline_foo:
+>    prepare a array and store the args of foo to the array
+>    call fentry_bpf1
+>    call fentry_bpf2
+>    =2E=2E=2E=2E=2E=2E
+>    call foo+4 (origin call)
+>    save the return value of foo
+>    call fexit_bpf1 (this bpf can get the return value of foo)
+>    call fexit_bpf2
+>    =2E=2E=2E=2E=2E=2E=2E
+>    return to the caller of foo
+>
+>We can see that the trampoline_foo can be only used for
+>the function foo, as different kernel function can be attached
+>different BPF programs, and have different argument count,
+>etc=2E Therefore, we have to create 1000 BPF trampolines if
+>we want to attach a BPF program to 1000 kernel functions=2E
+>
+>The creation of the BPF trampoline is expensive=2E According to
+>my testing, It will spend more than 1 second to create 100 bpf
+>trampoline=2E What's more, it consumes more memory=2E
+>
+>If we have the per-function metadata supporting, then we can
+>create a global BPF trampoline, like this:
+>
+>trampoline_global:
+>    prepare a array and store the args of foo to the array
+>    get the metadata by the ip
+>    call metadata=2Efentry_bpf1
+>    call metadata=2Efentry_bpf2
+>    =2E=2E=2E=2E
+>    call foo+4 (origin call)
+>    save the return value of foo
+>    call metadata=2Efexit_bpf1 (this bpf can get the return value of foo)
+>    call metadata=2Efexit_bpf2
+>    =2E=2E=2E=2E=2E=2E=2E
+>    return to the caller of foo
+>
+>(The metadata holds more information for the global trampoline than
+>I described=2E)
+>
+>Then, we don't need to create a trampoline for every kernel function
+>anymore=2E
+>
+>Another beneficiary can be ftrace=2E For now, all the kernel functions th=
+at
+>are enabled by dynamic ftrace will be added to a filter hash if there are
+>more than one callbacks=2E And hash lookup will happen when the traced
+>functions are called, which has an impact on the performance, see
+>__ftrace_ops_list_func() -> ftrace_ops_test()=2E With the per-function
+>metadata supporting, we can store the information that if the callback is
+>enabled on the kernel function to the metadata, which can make the perfor=
+mance
+>much better=2E
+>
+>The per-function metadata storage is a basic function, and I think there
+>may be other functions that can use it for better performance in the feat=
+ure
+>too=2E
+>
+>(Hope that I'm describing it clearly :/)
+>
+>Thanks!
+>Menglong Dong
+>
 
-syzbot found the following issue on:
-
-HEAD commit:    276f98efb64a Merge tag 'block-6.14-20250228' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16614864580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5b4c41bdaeea1964
-dashboard link: https://syzkaller.appspot.com/bug?extid=c32100a0bb8cae0c3dde
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11614864580000
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-276f98ef.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5a036150d62e/vmlinux-276f98ef.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f0b6c8e5972f/bzImage-276f98ef.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/65413c368879/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c32100a0bb8cae0c3dde@syzkaller.appspotmail.com
-
-kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
-BUG: unable to handle page fault for address: ffff8880316c0000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0011) - permissions violation
-PGD 1ac01067 P4D 1ac01067 PUD 1ac02067 PMD 1c3d0063 PTE 80000000316c0163
-Oops: Oops: 0011 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 7082 Comm: syz.2.568 Not tainted 6.14.0-rc4-syzkaller-00212-g276f98efb64a #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:0xffff8880316c0000
-Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00> 20 6e 31 80 88 ff ff 00 40 eb 30 80 88 ff ff 08 00 00 00 0c 00
-RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 1ffff1100840de14 RCX: ffff888000a5af28
-RDX: dffffc0000000000 RSI: ffffffff8c2ab700 RDI: ffff88804206f098
-RBP: ffffc90000007e10 R08: ffffffff9454985f R09: 1ffffffff28a930b
-R10: dffffc0000000000 R11: ffff8880316c0000 R12: ffffffff81a8d7d7
-R13: ffff88804206f0a0 R14: ffff8880316c0000 R15: ffff88804206f098
-FS:  00007ff346e2f6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff8880316c0000 CR3: 0000000042300000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- handle_softirqs+0x2d4/0x9b0 kernel/softirq.c:561
- __do_softirq kernel/softirq.c:595 [inline]
- invoke_softirq kernel/softirq.c:435 [inline]
- __irq_exit_rcu+0xf7/0x220 kernel/softirq.c:662
- irq_exit_rcu+0x9/0x30 kernel/softirq.c:678
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 [inline]
- sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1049
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-RIP: 0010:lock_acquire+0x264/0x550 kernel/locking/lockdep.c:5855
-Code: 2b 00 74 08 4c 89 f7 e8 3a 45 8c 00 f6 44 24 61 02 0f 85 85 01 00 00 41 f7 c7 00 02 00 00 74 01 fb 48 c7 44 24 40 0e 36 e0 45 <4b> c7 44 25 00 00 00 00 00 43 c7 44 25 09 00 00 00 00 43 c7 44 25
-RSP: 0018:ffffc9000260f040 EFLAGS: 00000206
-RAX: 0000000000000001 RBX: 1ffff920004c1e14 RCX: ffff888000a5af28
-RDX: dffffc0000000000 RSI: ffffffff8c2ab700 RDI: ffffffff8c80f060
-RBP: ffffc9000260f190 R08: ffffffff94549847 R09: 1ffffffff28a9308
-R10: dffffc0000000000 R11: fffffbfff28a9309 R12: 1ffff920004c1e10
-R13: dffffc0000000000 R14: ffffc9000260f0a0 R15: 0000000000000246
- rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- rcu_read_lock include/linux/rcupdate.h:849 [inline]
- is_bpf_text_address+0x46/0x2a0 kernel/bpf/core.c:772
- kernel_text_address+0xa7/0xe0 kernel/extable.c:125
- __kernel_text_address+0xd/0x40 kernel/extable.c:79
- unwind_get_return_address+0x4d/0x90 arch/x86/kernel/unwind_orc.c:369
- arch_stack_walk+0xfd/0x150 arch/x86/kernel/stacktrace.c:26
- stack_trace_save+0x118/0x1d0 kernel/stacktrace.c:122
- save_stack+0xfb/0x1f0 mm/page_owner.c:156
- __reset_page_owner+0x76/0x430 mm/page_owner.c:297
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1127 [inline]
- free_unref_folios+0xe40/0x18b0 mm/page_alloc.c:2707
- folios_put_refs+0x76c/0x860 mm/swap.c:994
- folio_batch_release include/linux/pagevec.h:101 [inline]
- shmem_undo_range+0x593/0x1820 mm/shmem.c:1112
- shmem_truncate_range mm/shmem.c:1224 [inline]
- shmem_evict_inode+0x29b/0xa80 mm/shmem.c:1352
- evict+0x4e8/0x9a0 fs/inode.c:796
- __dentry_kill+0x20d/0x630 fs/dcache.c:643
- dput+0x19f/0x2b0 fs/dcache.c:885
- __fput+0x60b/0x9f0 fs/file_table.c:472
- __do_sys_close fs/open.c:1580 [inline]
- __se_sys_close fs/open.c:1565 [inline]
- __x64_sys_close+0x7f/0x110 fs/open.c:1565
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7ff345f8bdca
-Code: 48 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c 24 0c e8 43 91 02 00 8b 7c 24 0c 89 c2 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 36 89 d7 89 44 24 0c e8 a3 91 02 00 8b 44 24
-RSP: 002b:00007ff346e2ee00 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007ff345f8bdca
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 0000000000000002 R08: 0000000000000000 R09: 000000000000590c
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000003
-R13: 00007ff346e2eef0 R14: 00007ff346e2eeb0 R15: 00007ff33cc00000
- </TASK>
-Modules linked in:
-CR2: ffff8880316c0000
----[ end trace 0000000000000000 ]---
-RIP: 0010:0xffff8880316c0000
-Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00> 20 6e 31 80 88 ff ff 00 40 eb 30 80 88 ff ff 08 00 00 00 0c 00
-RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 1ffff1100840de14 RCX: ffff888000a5af28
-RDX: dffffc0000000000 RSI: ffffffff8c2ab700 RDI: ffff88804206f098
-RBP: ffffc90000007e10 R08: ffffffff9454985f R09: 1ffffffff28a930b
-R10: dffffc0000000000 R11: ffff8880316c0000 R12: ffffffff81a8d7d7
-R13: ffff88804206f0a0 R14: ffff8880316c0000 R15: ffff88804206f098
-FS:  00007ff346e2f6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff8880316c0000 CR3: 0000000042300000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-  28:	00 00                	add    %al,(%rax)
-* 2a:	00 20                	add    %ah,(%rax) <-- trapping instruction
-  2c:	6e                   	outsb  %ds:(%rsi),(%dx)
-  2d:	31 80 88 ff ff 00    	xor    %eax,0xffff88(%rax)
-  33:	40 eb 30             	rex jmp 0x66
-  36:	80 88 ff ff 08 00 00 	orb    $0x0,0x8ffff(%rax)
-  3d:	00 0c 00             	add    %cl,(%rax,%rax,1)
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+This is way too cursory=2E For one thing, you need to start by explaining =
+why you are asking to put this *inline* with the code, which is something t=
+hat normally would be avoided at all cost=2E
 
