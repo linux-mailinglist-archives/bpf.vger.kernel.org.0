@@ -1,243 +1,227 @@
-Return-Path: <bpf+bounces-53317-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53318-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC13AA4FF9E
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 14:08:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFA45A50088
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 14:28:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D218175DF6
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 13:06:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BE901894AFB
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 13:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049C92512ED;
-	Wed,  5 Mar 2025 13:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74FC424887F;
+	Wed,  5 Mar 2025 13:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fNvOgfiF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mU8M+p4Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C128248873;
-	Wed,  5 Mar 2025 13:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0AD2E3396;
+	Wed,  5 Mar 2025 13:28:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741179744; cv=none; b=NKz1zUV/ESlG6N0a3fCLHNs1tGCwGlFNyyXlhVbTNRfGmjDU8rG9iECQCBYFvuKjroxpWbuTMyn9WKI3Fs9c8dSFwpL/BvCs/fLGsnEtxtEkzcgr+X3ke8wOAl4hJORSEFKuHAO3IreuE/zaY5dcThU42/DSU2zuvNFRUFbqms8=
+	t=1741181312; cv=none; b=Wwm450X1vvnfBLE48zk+5YII70A6CFhHbsXsmg/lMn1xxwR+6K/YC8KPIc7Ey4W9fY+LaHJ3GT0zJFn45SfKoXN2z+WEiQEXnEvhOewv3zMz22R/++7DJhZZrk3nfbQxW4Q7QhpCdnCI4be/d672OX33wB2j4VRJeLCQyGHNG0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741179744; c=relaxed/simple;
-	bh=BrHOVPMRx5IUbt2TfaXsmHGE8YIjSq6KxkHt4pHZzf0=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=aXneI+cJ+3JIgCs8AIp7HKyIRBIHgRO5Q4snS056LCD8AOmbS1PJkh+aAYwDThH/Z0qLwCXPUTyNUcbUh1ECQGO7TYCbvshE0fXW3mX9xWoR4a84UarqoNBcqE/FpskQZ+aWJA5fcwQcS9luS3XhcOVWOW8jS6fcZJcR2O+kwR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fNvOgfiF; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741179744; x=1772715744;
-  h=from:to:subject:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding;
-  bh=BrHOVPMRx5IUbt2TfaXsmHGE8YIjSq6KxkHt4pHZzf0=;
-  b=fNvOgfiFPQgZaruMNOEcoBew5bZhoKZhWnV3+dYjGuw891PMH/mnSapQ
-   Ix0HKwkCCPupAZldLVWv3B4GaBGsLKPvejTvCNHM2T5rx3MTUon4bbfP+
-   WCDOILiRdEOZBnQFBcNg6MUILsajqgTpXREbhV6OjwUGG2YZiTF/0AX3E
-   I7/XChl48aXofQm+eGKJ7oVKVAebuT82SHz/W5OQhTVF29tz9qbtJAGaN
-   1gn88hFMLF9Rf4CkyBtqet2ijQEouBo9iamt3KkhZGsIoR7MXykIaN3Wa
-   6izDhnB21gqYCH/LfqrtMsTflLWlg+xQoHWm/7iJ0BHqiIVLsGfi+8ZkJ
-   Q==;
-X-CSE-ConnectionGUID: ZdKbe75+RASfQXqxtKrqtA==
-X-CSE-MsgGUID: MzjNP+ZwS1awLDM0G6a58g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11363"; a="45795236"
-X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
-   d="scan'208";a="45795236"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 05:02:23 -0800
-X-CSE-ConnectionGUID: i6Ozl++kSluBMOfRFUTQ5g==
-X-CSE-MsgGUID: arsaetUXQceVXXNA1GH2IA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
-   d="scan'208";a="123277236"
-Received: from mohdfai2-ilbpg12-1.png.intel.com ([10.88.227.73])
-  by fmviesa005.fm.intel.com with ESMTP; 05 Mar 2025 05:02:15 -0800
-From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
-To: Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Simon Horman <horms@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Furong Xu <0x1207@gmail.com>,
-	Russell King <rmk+kernel@armlinux.org.uk>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Xiaolei Wang <xiaolei.wang@windriver.com>,
-	Suraj Jaiswal <quic_jsuraj@quicinc.com>,
-	Kory Maincent <kory.maincent@bootlin.com>,
-	Gal Pressman <gal@nvidia.com>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Choong Yong Liang <yong.liang.choong@linux.intel.com>,
-	Chwee-Lin Choong <chwee.lin.choong@intel.com>,
-	Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	bpf@vger.kernel.org
-Subject: [PATCH iwl-next v8 11/11] igc: add support to get frame preemption statistics via ethtool
-Date: Wed,  5 Mar 2025 08:00:26 -0500
-Message-Id: <20250305130026.642219-12-faizal.abdul.rahim@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250305130026.642219-1-faizal.abdul.rahim@linux.intel.com>
-References: <20250305130026.642219-1-faizal.abdul.rahim@linux.intel.com>
+	s=arc-20240116; t=1741181312; c=relaxed/simple;
+	bh=rGBj7dVt1RavRkxRS63LNUf7YDov3xjEg/AcTR1w6FI=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=hd0O7GFZ0DnNvCOt+gxrkbtuv2iacF8iM0VuFk74zSRmEWzY4XxMEuqj4SdnjqSlsz4cGmK1AzA/QW6FgqXBCBQcdajKl2tGHmS72LSRxU3wkDqD0Y5SkVb6A2GKmwVkplhsx7dpcGYySSKNaqe0x5RpDFemQW+V1k0molf7S68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mU8M+p4Y; arc=none smtp.client-ip=209.85.160.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-2b8e26063e4so3476285fac.3;
+        Wed, 05 Mar 2025 05:28:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741181309; x=1741786109; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=I+wI51ktHcqEkDfOx1x2HQqCQFm9fi/Gjngxq8wZXFI=;
+        b=mU8M+p4YFJL/Qmd2MKp78lfvdvABpeWaGMWYNCCeB+bgz7yV0HvloHTUOWMhL9e4kA
+         mQAxcjX3Pft04F9SODkGoERR7xBzd52Gc7qjr0aSae7HyFZo6e6KpkY85t3csbi7+elQ
+         yUk/gMX2hDJiq95obfboifYiim9Cp9P1Nx1Be0/QalOZfBRvcQBetUwoehREFTT24u48
+         XViV34ny6Pj2g+33CDlCxCVNnuqWbbosU9jX+LSTpZQ9i5u6hC+C+E7W8UTNwK1VN8SC
+         mOOEVuIShD+2wtQk7TBXEf+/1wWp6Afk1Rs1FOVCLcVf47RxI0JZ06hDvdX/LJI1EHUI
+         LVRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741181309; x=1741786109;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I+wI51ktHcqEkDfOx1x2HQqCQFm9fi/Gjngxq8wZXFI=;
+        b=r4CEydemXqJorv65TcCkjwnuXgkRSU5usa3Xt14nCuV8f3JUfUm89LfI3N6ypvLUBy
+         QIB0LbuHsBM49RTuwJIXwj2+0wI4YhLd/tiVPcyo2pC1CduJePya8Umrei54IRsCdzNI
+         F22lQG0Rd/saW2RWNalAwqB5KZVpnX9LgkQRH/X1bEZL0JffQtxALzVmk8Ifhe8JFiZ6
+         ypCXPH+BatNRe6w9IInqmME9vrdCf4r0jka8cef+4kJ9AOpWyw/abcGPhKd+fswQAvMM
+         fkHZ+6knXU3VQJ2i6Ddvd87HqTmQeeJrtu/6ZPuTeB2lwik0+OHXevs5Ztb/IN/gy6bj
+         m1mg==
+X-Forwarded-Encrypted: i=1; AJvYcCVKZn2C0ofhHk+cKaPTeJtgDmy8ZOFrnB8u2mK9vRTp6ndAuZ/XY7Mmd43DyBkLpZzCvVWEh2DU59IYQ7Gb@vger.kernel.org, AJvYcCVrdzrw4b4DD1zOPIwBeUrAgoloUuFxhvMklLw6ahRcoJmiKdIUc1LTRU/tXaXUXw6Magw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwrhxzFTisiT+WRp27PECFtB9Uo6P3oCqDeBoytPmSp/HsT6e9W
+	qPlYILqycH1TXMRQfPBcVd2QQi5vaBcRhc9za+ZProF8vFkeCpaskN9U23FRinfWvXJL3EEFeaj
+	ZBzYv4HalTn8kN7aPT3vg8Loyv3Y=
+X-Gm-Gg: ASbGncueblSZ+HkirJ51gO2wEt4dvSpVY0Ij+HM9iGfem/EFNhTorQzUqQ51ZjkVfXq
+	g59GmMcesRTVYIMdeOzEONAYZopNLcqrwoAQUiEFWFFO1EHUkmVpcUfas/USi4BXDp+1i8KKxeN
+	Wcczih2yXf6FffeKkZfsHpW09NMQ==
+X-Google-Smtp-Source: AGHT+IH7Nt1CQ0iMhn63GtgT65QKf4iagQkRDjyWf7VmXU3pa/zuehd9xh31N3d1H/7+79SeQ9iCKL7VfAN+rJlnos4=
+X-Received: by 2002:a05:6870:d186:b0:2bc:9197:3508 with SMTP id
+ 586e51a60fabf-2c21ce437c4mr1776731fac.34.1741181309225; Wed, 05 Mar 2025
+ 05:28:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Strforexc yn <strforexc@gmail.com>
+Date: Wed, 5 Mar 2025 21:28:18 +0800
+X-Gm-Features: AQ5f1JoH5OoaXA590z8B2G25EL7HVufkT02Ea02mEzBuP0tewUQxl_KsV2GBpbc
+Message-ID: <CA+HokZqeQsYkLeyrwaJK-T8ngXDO207_QuuZX2G8AbWFuvYG-A@mail.gmail.com>
+Subject: =?UTF-8?Q?=5BBUG=5D_list_corruption_in_=5F=5Fbpf=5Flru=5Fnode=5Fmove_=28=29_=E3=80=90_?=
+	=?UTF-8?Q?bug_found_and_suggestions_for_fixing_it=E3=80=91?=
+To: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Implemented "ethtool --include-statistics --show-mm" callback for IGC.
+Hi Maintainers,
 
-Tested preemption scenario to check preemption statistics:
-1) Trigger verification handshake on both boards:
-    $ sudo ethtool --set-mm enp1s0 pmac-enabled on
-    $ sudo ethtool --set-mm enp1s0 tx-enabled on
-    $ sudo ethtool --set-mm enp1s0 verify-enabled on
-2) Set preemptible or express queue in taprio for tx board:
-    $ sudo tc qdisc replace dev enp1s0 parent root handle 100 taprio \
-      num_tc 4 map 3 2 1 0 3 3 3 3 3 3 3 3 3 3 3 3 \
-      queues 1@0 1@1 1@2 1@3 base-time 0 sched-entry S F 100000 \
-      fp E E P P
-3) Send large size packets on preemptible queue
-4) Send small size packets on express queue to preempt packets in
-   preemptible queue
-5) Show preemption statistics on the receiving board:
-   $ ethtool --include-statistics --show-mm enp1s0
-     MAC Merge layer state for enp1s0:
-     pMAC enabled: on
-     TX enabled: on
-     TX active: on
-     TX minimum fragment size: 64
-     RX minimum fragment size: 60
-     Verify enabled: on
-     Verify time: 128
-     Max verify time: 128
-     Verification status: SUCCEEDED
-     Statistics:
-      MACMergeFrameAssErrorCount: 0
-      MACMergeFrameSmdErrorCount: 0
-      MACMergeFrameAssOkCount: 511
-      MACMergeFragCountRx: 764
-      MACMergeFragCountTx: 0
-      MACMergeHoldCount: 0
+When using our customized Syzkaller to fuzz the latest Linux kernel,
+the following crash was triggered.
+Kernel Config : https://github.com/Strforexc/LinuxKernelbug/blob/main/.conf=
+ig
 
-Co-developed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Co-developed-by: Chwee-Lin Choong <chwee.lin.choong@intel.com>
-Signed-off-by: Chwee-Lin Choong <chwee.lin.choong@intel.com>
-Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
----
- drivers/net/ethernet/intel/igc/igc_ethtool.c | 39 ++++++++++++++++++++
- drivers/net/ethernet/intel/igc/igc_regs.h    | 16 ++++++++
- 2 files changed, 55 insertions(+)
+A kernel BUG was reported due to list corruption during BPF LRU node moveme=
+nt.
+The issue occurs when the node being moved is the sole element in its list =
+and
+also the next_inactive_rotation candidate. After moving, the list became em=
+pty,
+but next_inactive_rotation incorrectly pointed to the moved node, causing l=
+ater
+operations to corrupt the list.
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_ethtool.c b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-index fd4b4b332309..1ed08a3fa78b 100644
---- a/drivers/net/ethernet/intel/igc/igc_ethtool.c
-+++ b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-@@ -1819,6 +1819,44 @@ static int igc_ethtool_set_mm(struct net_device *netdev,
- 	return igc_tsn_offload_apply(adapter);
+Here is my fix suggestion:
+The fix checks if the node was the only element before adjusting
+next_inactive_rotation. If so, it sets the pointer to NULL, preventing inva=
+lid
+access.
+
+diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
+index XXXXXXX..XXXXXXX 100644
+--- a/kernel/bpf/bpf_lru_list.c
++++ b/kernel/bpf/bpf_lru_list.c
+@@ -119,8 +119,13 @@ static void __bpf_lru_node_move(struct bpf_lru_list *l=
+,
+  * move the next_inactive_rotation pointer also.
+  */
+  if (&node->list =3D=3D l->next_inactive_rotation)
+- l->next_inactive_rotation =3D l->next_inactive_rotation->prev;
+-
++ {
++ if (l->next_inactive_rotation->prev =3D=3D &node->list) {
++ l->next_inactive_rotation =3D NULL;
++ } else {
++ l->next_inactive_rotation =3D l->next_inactive_rotation->prev;
++ }
++ }
+  list_move(&node->list, &l->lists[tgt_type]);
  }
- 
-+/**
-+ * igc_ethtool_get_frame_ass_error - Get the frame assembly error count.
-+ * @reg_value: Register value for IGC_PRMEXCPRCNT
-+ * Return: The count of frame assembly errors.
-+ */
-+static u64 igc_ethtool_get_frame_ass_error(u32 reg_value)
-+{
-+	u32 ooo_frame_cnt, ooo_frag_cnt; /* Out of order statistics */
-+	u32 miss_frame_frag_cnt;
-+
-+	ooo_frame_cnt = FIELD_GET(IGC_PRMEXCPRCNT_OOO_FRAME_CNT, reg_value);
-+	ooo_frag_cnt = FIELD_GET(IGC_PRMEXCPRCNT_OOO_FRAG_CNT, reg_value);
-+	miss_frame_frag_cnt = FIELD_GET(IGC_PRMEXCPRCNT_MISS_FRAME_FRAG_CNT, reg_value);
-+
-+	return ooo_frame_cnt + ooo_frag_cnt + miss_frame_frag_cnt;
-+}
-+
-+static u64 igc_ethtool_get_frame_smd_error(u32 reg_value)
-+{
-+	return FIELD_GET(IGC_PRMEXCPRCNT_OOO_SMDC, reg_value);
-+}
-+
-+static void igc_ethtool_get_mm_stats(struct net_device *dev,
-+				     struct ethtool_mm_stats *stats)
-+{
-+	struct igc_adapter *adapter = netdev_priv(dev);
-+	struct igc_hw *hw = &adapter->hw;
-+	u32 reg_value;
-+
-+	reg_value = rd32(IGC_PRMEXCPRCNT);
-+
-+	stats->MACMergeFrameAssErrorCount = igc_ethtool_get_frame_ass_error(reg_value);
-+	stats->MACMergeFrameSmdErrorCount = igc_ethtool_get_frame_smd_error(reg_value);
-+	stats->MACMergeFrameAssOkCount = rd32(IGC_PRMPTDRCNT);
-+	stats->MACMergeFragCountRx = rd32(IGC_PRMEVNTRCNT);
-+	stats->MACMergeFragCountTx = rd32(IGC_PRMEVNTTCNT);
-+}
-+
- static int igc_ethtool_get_link_ksettings(struct net_device *netdev,
- 					  struct ethtool_link_ksettings *cmd)
- {
-@@ -2116,6 +2154,7 @@ static const struct ethtool_ops igc_ethtool_ops = {
- 	.self_test		= igc_ethtool_diag_test,
- 	.get_mm			= igc_ethtool_get_mm,
- 	.set_mm			= igc_ethtool_set_mm,
-+	.get_mm_stats		= igc_ethtool_get_mm_stats,
- };
- 
- void igc_ethtool_set_ops(struct net_device *netdev)
-diff --git a/drivers/net/ethernet/intel/igc/igc_regs.h b/drivers/net/ethernet/intel/igc/igc_regs.h
-index 12ddc5793651..f343c6bfc6be 100644
---- a/drivers/net/ethernet/intel/igc/igc_regs.h
-+++ b/drivers/net/ethernet/intel/igc/igc_regs.h
-@@ -222,6 +222,22 @@
- 
- #define IGC_FTQF(_n)	(0x059E0 + (4 * (_n)))  /* 5-tuple Queue Fltr */
- 
-+/* Time sync registers - preemption statistics */
-+#define IGC_PRMPTDRCNT		0x04284	/* Good RX Preempted Packets */
-+#define IGC_PRMEVNTTCNT		0x04298	/* TX Preemption event counter */
-+#define IGC_PRMEVNTRCNT		0x0429C	/* RX Preemption event counter */
-+
-+ /* Preemption Exception Counter */
-+ #define IGC_PRMEXCPRCNT				0x42A0
-+/* Received out of order packets with SMD-C */
-+#define IGC_PRMEXCPRCNT_OOO_SMDC			0x000000FF
-+/* Received out of order packets with SMD-C and wrong Frame CNT */
-+#define IGC_PRMEXCPRCNT_OOO_FRAME_CNT			0x0000FF00
-+/* Received out of order packets with SMD-C and wrong Frag CNT */
-+#define IGC_PRMEXCPRCNT_OOO_FRAG_CNT			0x00FF0000
-+/* Received packets with SMD-S and wrong Frag CNT and Frame CNT */
-+#define IGC_PRMEXCPRCNT_MISS_FRAME_FRAG_CNT		0xFF000000
-+
- /* Transmit Scheduling Registers */
- #define IGC_TQAVCTRL		0x3570
- #define IGC_TXQCTL(_n)		(0x3344 + 0x4 * (_n))
--- 
+
+--=20
 2.34.1
 
+Our knowledge of the kernel is somewhat limited, and we'd appreciate
+it if you could determine if there is such an issue. If this issue
+doesn't have an impact, please ignore it =E2=98=BA.
+
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Zhizhuo Tang strforexctzzchange@foxmail.com, Jianzhou
+Zhao xnxc22xnxc22@qq.com, Haoran Liu <cherest_san@163.com>
+
+Last is my report=EF=BC=9A
+
+ vmalloc memory
+list_add corruption. next->prev should be prev (ffffe8ffac433e40), but
+was 50ffffe8ffac433e. (next=3Dffffe8ffac433e41).
+------------[ cut here ]------------
+kernel BUG at lib/list_debug.c:29!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 UID: 0 PID: 14524 Comm: syz.0.285 Not tainted
+6.14.0-rc5-00013-g99fa936e8e4f #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/=
+2014
+RIP: 0010:__list_add_valid_or_report+0xfc/0x1a0 lib/list_debug.c:29
+Code: 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 a6 00 00 00
+49 8b 54 24 08 4c 89 e1 48 c7 c7 c0 1f f2 8b e8 55 54 d3 fc 90 <0f> 0b
+48 89 f7 48 89 34 24 e8 16 54 33 fd 48 8b 34 24 48 b8 00 00
+RSP: 0018:ffffc900033779b0 EFLAGS: 00010046
+RAX: 0000000000000075 RBX: ffffc900035777c8 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffe8ffac433e40 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffe8ffac433e41
+R13: ffffc900035777c8 R14: ffffe8ffac433e49 R15: ffffe8ffac433e50
+FS:  00007fef15ddd640(0000) GS:ffff88802b600000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd53abb238 CR3: 00000000296f4000 CR4: 00000000000006f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __list_add_valid include/linux/list.h:88 [inline]
+ __list_add include/linux/list.h:150 [inline]
+ list_add include/linux/list.h:169 [inline]
+ list_move include/linux/list.h:299 [inline]
+ __bpf_lru_node_move+0x21a/0x480 kernel/bpf/bpf_lru_list.c:126
+ __bpf_lru_list_rotate_inactive+0x20f/0x310 kernel/bpf/bpf_lru_list.c:196
+ __bpf_lru_list_rotate kernel/bpf/bpf_lru_list.c:247 [inline]
+ bpf_percpu_lru_pop_free kernel/bpf/bpf_lru_list.c:417 [inline]
+ bpf_lru_pop_free+0x157/0x370 kernel/bpf/bpf_lru_list.c:502
+ prealloc_lru_pop+0x23/0xf0 kernel/bpf/hashtab.c:308
+ htab_lru_map_update_elem+0x14c/0xbe0 kernel/bpf/hashtab.c:1251
+ bpf_map_update_value+0x675/0xf50 kernel/bpf/syscall.c:289
+ generic_map_update_batch+0x44a/0x5f0 kernel/bpf/syscall.c:1963
+ bpf_map_do_batch+0x4be/0x610 kernel/bpf/syscall.c:5303
+ __sys_bpf+0x1002/0x1630 kernel/bpf/syscall.c:5859
+ __do_sys_bpf kernel/bpf/syscall.c:5902 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5900 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5900
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcb/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fef14fb85ad
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fef15ddcf98 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fef15245fa0 RCX: 00007fef14fb85ad
+RDX: 0000000000000038 RSI: 0000400000000000 RDI: 000000000000001a
+RBP: 00007fef1506a8d6 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fef15245fa0 R15: 00007fef15dbd000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__list_add_valid_or_report+0xfc/0x1a0 lib/list_debug.c:29
+Code: 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 a6 00 00 00
+49 8b 54 24 08 4c 89 e1 48 c7 c7 c0 1f f2 8b e8 55 54 d3 fc 90 <0f> 0b
+48 89 f7 48 89 34 24 e8 16 54 33 fd 48 8b 34 24 48 b8 00 00
+RSP: 0018:ffffc900033779b0 EFLAGS: 00010046
+RAX: 0000000000000075 RBX: ffffc900035777c8 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffe8ffac433e40 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffe8ffac433e41
+R13: ffffc900035777c8 R14: ffffe8ffac433e49 R15: ffffe8ffac433e50
+FS:  00007fef15ddd640(0000) GS:ffff88802b600000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd53abb238 CR3: 00000000296f4000 CR4: 00000000000006f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Regards,
+Strforexc
 
