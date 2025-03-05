@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-53328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6E3FA5021E
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 15:35:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D614FA5021C
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 15:35:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 635F43B1BCD
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 14:34:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B02FD7A8966
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 14:33:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2CF2500CF;
-	Wed,  5 Mar 2025 14:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF082505B4;
+	Wed,  5 Mar 2025 14:33:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="uU6UodM0";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ugSko2eY"
+	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="cKr1s9UP";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="T8GsC2r5"
 X-Original-To: bpf@vger.kernel.org
 Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 892CB24FC0A;
-	Wed,  5 Mar 2025 14:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D90F1632EF;
+	Wed,  5 Mar 2025 14:33:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741185214; cv=none; b=nSajZp2PYiWJdUTHkFoRCxYomxwk6SxKqEVeVM5+EvuF/t/RlZFgVzHOxhASUGDvuQyQJLP5GRBvmOzjRsapcqyE+wdr3ybOmQk5TyUtuCLiL+hLZk9ZWiwxf5q9xtMfuHrWPDzbaVfcVsOhS2zb7Mny7XjDFvWzbiJrateFIUE=
+	t=1741185215; cv=none; b=sSbF0RByW/NYGn9FQyZbL39n5daxyTjpv+meQgPqiIScylUx9I52tsiyvWHeh4BAEWMQIOjI35Wt/5EwYIAuOWXhEjLMmRNkbDaWv87Bvxu1zvNAvphkFzMQ1RPSfcp8Jt3HDyuzS/C5sZLa/40Sopp/id03yq6/C6na5s3Oyzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741185214; c=relaxed/simple;
-	bh=mfUsoO14IQldAwz5DqUWP3X3/mCdwxyhS+11WgRQ2tY=;
+	s=arc-20240116; t=1741185215; c=relaxed/simple;
+	bh=88EbAv9wA20xdpCHpwGY7DA8RnfPSAiZ3mf1GSiOwp8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=oS7dSZmfUwzbnkEVvsOmnpN/EBiG/TCPlCWlpMEFGUX19oMh8NOw61zwhYb6rwz/IW9I/YVgmsuVAL6IxLSFHRLjw1J7Uwwf3jmDLoBpEIchCcXugOEbU/VB1Dp2vzZZy/8zrXdwRw9uqEOeOXG7RIFY/TqyiMyWtM/4RCaQG0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=uU6UodM0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ugSko2eY; arc=none smtp.client-ip=103.168.172.145
+	 In-Reply-To:To:Cc; b=rCSsAfPQGH5BZuIjh3hL2090asfxwbLmuQb2mNSz2PlYZnfbaNd/QdBQgYt7U/1Hq/hRuK3mZLS3Lw0At1AvTvzWYC6l1sTUww8Mwf5VkQm79uKQoCB0TG0ZbXIaPlpmm2v9XAt+iDm1CLu9MDpZa3bmMp6+ujFJKpe0ZJpqCf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=cKr1s9UP; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=T8GsC2r5; arc=none smtp.client-ip=103.168.172.145
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arthurfabre.com
-Received: from phl-compute-13.internal (phl-compute-13.phl.internal [10.202.2.53])
-	by mailfout.phl.internal (Postfix) with ESMTP id 8E08913826DD;
-	Wed,  5 Mar 2025 09:33:31 -0500 (EST)
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
+	by mailfout.phl.internal (Postfix) with ESMTP id 4B66C13826A7;
+	Wed,  5 Mar 2025 09:33:33 -0500 (EST)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-13.internal (MEProxy); Wed, 05 Mar 2025 09:33:31 -0500
+  by phl-compute-06.internal (MEProxy); Wed, 05 Mar 2025 09:33:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arthurfabre.com;
 	 h=cc:cc:content-transfer-encoding:content-type:content-type
 	:date:date:from:from:in-reply-to:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
-	 t=1741185211; x=1741271611; bh=+eymztBpYrvjHP3XdFqYJYpwv+edl3BS
-	3I768fbcNog=; b=uU6UodM03rWydn7xtKs6ywIw/TsLldGy+LHIegx3kEJhUmyH
-	CQ7Is4o/AfDzlgL8WaEncB+Tcaej8qFgD9xkGwmRyD8H+3HM79sZaMlJD3duidZ7
-	4qbCSvLwTtmkT3qDJqoVXrT/qI+gebrCz4AlJuYX4KwttI/GIW+FKfkXmKsUgZra
-	jY3D9gtVgq9f6/2Jq9XIfAhgur5unZhz3hCmIvDxaslpKxJh8JXu+G7DmRrX2LGc
-	edSXgDT7Fuvh7+CJc23Dzs3xG2mVOGxmBGS29coxPz9ZoLAC797QhG7j62b9uJ6R
-	f1U6F+F1t5a6idtHlFsRqgO7TZvicBYjDGAdcg==
+	 t=1741185213; x=1741271613; bh=nAdEtDrkHqUTwsOjy7M1AaSyH7jAnptn
+	4P9ellHBC8A=; b=cKr1s9UPWvzfrMh7rHnucKeA3GoZl93s8iWZVTze0pmQyHFi
+	9butLGG+/MtmIdAhamX2UZOGJuCVTyQ2gnx3650o8FtulYGOW0F3qwVfM01Rzn7b
+	0LtExYNZGCd3NC2r63z9oEYmuS5uHvV332OS58JRMUQ/oNIJ4KCX9mw5HmDAXw99
+	kBjqP8bvOrDpAYbN8Me1JBPvyL8Q0JjoRy9XlQtcUlXFYlxxxL6XB6qcZKB4z5BQ
+	EWw6j13JhB9a4IYYL3248pOvEyR/df6EMC/Th8S2zAbCh5ImnXgTxF3nSGcG0fGz
+	u371yIfTD3iToWNG3dcl5QJQHScpOsTnUpXZcQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1741185211; x=
-	1741271611; bh=+eymztBpYrvjHP3XdFqYJYpwv+edl3BS3I768fbcNog=; b=u
-	gSko2eYyNIs7gdt2C8sLhjMQB6v3gfuWXUwuothMtQMz4ligJCM0+RSfjeDSdG7/
-	wlOS8zsGF+pGXnZQmFXDD/H84h+UA9v+pyq6w+C7KRDrLinAMVmVfZhOsn4f1c91
-	h9V7U8iw/8/ztkoBzbPuU/hrxH7sjlbRsCxAkJwAZIsU9FEwZ5Wpwzfaba2go7PR
-	nQYd7YRuwSk/55s7WkqsygtIUmYu70uXOgSsq4PVy8USn5SDzl8DrIi1bdcy+9bp
-	Fukf04Oh/i2A/QNOEN0hAToXM1qzLq6myHA8NFIKBmIkj6TUSIgyCaxoyHUhM2o8
-	pnuAubSqXmcbzlfsKsZow==
-X-ME-Sender: <xms:u2DIZzaIriH4R49D2moBj63VKBXi4gtTb7vBxVGyZwGH0_p3OI4imA>
-    <xme:u2DIZyafbtOWhPaHjMK4imgYi-y1qblVZXL0sGGFgu-Qnt1F4W-sLMkzyCas8v5cE
-    XdkrwdpF6qHZmeGjZg>
-X-ME-Received: <xmr:u2DIZ18_fgvJtHmPvQBOaK7GZE_RawIATlcLYFHXEVkNzGFc8tvR0FUluyRHb0xVSoxxuxNQStyfQfzG9oM>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1741185213; x=
+	1741271613; bh=nAdEtDrkHqUTwsOjy7M1AaSyH7jAnptn4P9ellHBC8A=; b=T
+	8GsC2r5hQTPsgg2HdqDv8yR97mO9Un8Wm5Ls8pmDyQJl6F0sTGeMzjjkf1YktoDD
+	zUlLCRhPTs4C9JOPbDxwvdR8/f1+ki07x4wmglGZh3/h0d5Uy7W+yJYDPWAaSdgn
+	Ob0091JqRSLAHH8N/XXf5A+KO65Xpb+fxfepRJ1BfakFtye6HYX2vZPuzWedBUpB
+	McO4vNLKhyve2pYdbspr62/VzyPrixifya3b+e9aN/cVapvPsHqtOn1nawNo6cJd
+	PfSop1eIPpsOxbVvQiAS7PH2w4fzOrN+kR3jzL07GR9cl4v50YqfphECjSJfW+VF
+	75b6r5CW2udoJvX57H41Q==
+X-ME-Sender: <xms:vWDIZ-sILCWCvN3EdR2_dR5TgyXfY5UUAgSHg5Q5m2HJdX_kroZylg>
+    <xme:vWDIZzcKXa5R7xqqnXi_0mDWBIXFVNdVU2-VlUxVLS8Zqmg0gvhjfeC4-owEqfV8s
+    7uYQQVcNINqvsLD1O4>
+X-ME-Received: <xmr:vWDIZ5wb3-ipru__pQo1hfk7nNYvLT8QRxBQ2NPfo18KEjPU3iE9JDBDIceAxyYHPR56rOAo0AenC1bNJns>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutdehtdejucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
     pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
     gvnhhtshculddquddttddmnecujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertder
     tdejnecuhfhrohhmpegrrhhthhhurhesrghrthhhuhhrfhgrsghrvgdrtghomhenucggtf
     frrghtthgvrhhnpeffueehtddtkeetgfelteejledvjeekgeduleffjeetfeekveeggffh
-    fefhvdegffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    fefhvdegffenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhroh
     hmpegrrhhthhhurhesrghrthhhuhhrfhgrsghrvgdrtghomhdpnhgspghrtghpthhtohep
     ledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepthhhohhilhgrnhgusehrvgguhh
     grthdrtghomhdprhgtphhtthhopehlsghirghntghonhesrhgvughhrghtrdgtohhmpdhr
@@ -81,18 +81,17 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutdehtdejucetufdote
     dprhgtphhtthhopeihrghnsegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopehn
     vghtuggvvhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehjsghrrghnug
     gvsghurhhgsegtlhhouhgufhhlrghrvgdrtghomh
-X-ME-Proxy: <xmx:u2DIZ5rBJ2RxvhKr-jbbH7BerxDvWWcEn55HSWsm3uR9S0bJ3gJA_Q>
-    <xmx:u2DIZ-qOGZ9gn-COq2r4tVxTGh5khyqhQP0UPSClOi3wPDUurTOAkQ>
-    <xmx:u2DIZ_Sx5uBhjUEpEXbUYCvYnrMaz-_bvR6prReK2h5hUZBQryTN_w>
-    <xmx:u2DIZ2qOqB2bdgVnyUhY5fBG0Y2JuZWGfkQInL1_D2mSJS2__Sa_pQ>
-    <xmx:u2DIZ918eFQ5qQ6m-5baoOAPeOhBEActxp9riwpwAOdkSaNybRcQYQzf>
+X-ME-Proxy: <xmx:vWDIZ5NVgJoPfKbyBHnvpU16OA7YgpDZ-b0lplfzVml4JGZb6SY0vw>
+    <xmx:vWDIZ-9FTq8VFXyv8X8mXOtRy0Y_4bcWzprdVg30uOMhwkJpm2uxCw>
+    <xmx:vWDIZxUdYzIYDe1J-TpcHFKxQAZgm7ckWY5NHc7aNz5jV01KlbKPpw>
+    <xmx:vWDIZ3fRTfgmyPnjHCpVFz3YeVyLN8WkpTt7CsvNelfji4eSB2LY6g>
+    <xmx:vWDIZxYB8j59V7jVATp68am_7m8Tj1B67LRsBlgwInc87J-HAxS8LW-W>
 Feedback-ID: i25f1493c:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Mar 2025 09:33:29 -0500 (EST)
+ 5 Mar 2025 09:33:31 -0500 (EST)
 From: arthur@arthurfabre.com
-Date: Wed, 05 Mar 2025 15:32:05 +0100
-Subject: [PATCH RFC bpf-next 08/20] trait: Propagate presence of traits to
- sk_buff
+Date: Wed, 05 Mar 2025 15:32:06 +0100
+Subject: [PATCH RFC bpf-next 09/20] bnxt: Propagate trait presence to skb
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,7 +100,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250305-afabre-traits-010-rfc2-v1-8-d0ecfb869797@cloudflare.com>
+Message-Id: <20250305-afabre-traits-010-rfc2-v1-9-d0ecfb869797@cloudflare.com>
 References: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com>
 In-Reply-To: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com>
 To: netdev@vger.kernel.org, bpf@vger.kernel.org
@@ -112,80 +111,28 @@ X-Mailer: b4 0.14.2
 
 From: Arthur Fabre <afabre@cloudflare.com>
 
-Use a bit in sk_buff to track whether or not an skb stores traits in
-it's headroom.
-
-It's tempting to store it in skb_shared_info like the XDP metadata,
-but storing it in the skb allows us to more easily handle cases such as
-skb clones in a few patches.
-
-(I couldn't find an existing hole to use in sk_buff, so this makes a 4
-byte hole... any pointers to a free bit?)
-
-The following patches add support for handful of drivers, in the final
-form we'd like to cover all drivers that currently support XDP metadata.
+Call the common xdp_buff_update_skb() helper.
 
 Signed-off-by: Arthur Fabre <afabre@cloudflare.com>
 ---
- include/linux/skbuff.h |  7 +++++++
- include/net/xdp.h      | 12 ++++++++++++
- 2 files changed, 19 insertions(+)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 03553c2200ab1c3750b799edb94fa3b94e11a5f1..d7dfee152ebd26ce87a230222e94076aca793adc 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -725,6 +725,12 @@ enum skb_tstamp_type {
- 	__SKB_CLOCK_MAX = SKB_CLOCK_TAI,
- };
- 
-+enum skb_traits_type {
-+	SKB_TRAITS_NONE,
-+	/* Trait store in headroom, offset by sizeof(struct xdp_frame) */
-+	SKB_TRAITS_AFTER_XDP,
-+};
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 7b8b5b39c7bbe8885543a7c612567f7ff55a4fca..7e22804ba09b5a12384a0f8125db42f79b187d42 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -2273,6 +2273,10 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
+ 			}
+ 		}
+ 	}
 +
- /**
-  * DOC: Basic sk_buff geometry
-  *
-@@ -1023,6 +1029,7 @@ struct sk_buff {
- 	__u8			csum_not_inet:1;
- #endif
- 	__u8			unreadable:1;
-+	__u8			traits_type:1;	/* See enum skb_traits_type */
- #if defined(CONFIG_NET_SCHED) || defined(CONFIG_NET_XGRESS)
- 	__u16			tc_index;	/* traffic control index */
- #endif
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 84afe07d09efdb2ab0cb78b904f02cb74f9a56b6..e2e7c270efa3cbd11bddd234010b91daee5009a2 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -119,6 +119,12 @@ static __always_inline void xdp_buff_set_frag_pfmemalloc(struct xdp_buff *xdp)
- static bool xdp_data_meta_unsupported(const struct xdp_buff *xdp);
- static void xdp_set_data_meta_invalid(struct xdp_buff *xdp);
- 
-+static __always_inline void xdp_buff_update_skb(struct xdp_buff *xdp, struct sk_buff *skb)
-+{
-+	if (!xdp_data_meta_unsupported(xdp))
-+		skb->traits_type = SKB_TRAITS_AFTER_XDP;
-+}
++	if (xdp_active)
++		xdp_buff_update_skb(&xdp, skb);
 +
- static __always_inline void *xdp_buff_traits(const struct xdp_buff *xdp)
- {
- 	return xdp->data_hard_start + _XDP_FRAME_SIZE;
-@@ -298,6 +304,12 @@ xdp_frame_is_frag_pfmemalloc(const struct xdp_frame *frame)
- 	return !!(frame->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
- }
+ 	bnxt_deliver_skb(bp, bnapi, skb);
+ 	rc = 1;
  
-+static __always_inline void xdp_frame_update_skb(struct xdp_frame *frame, struct sk_buff *skb)
-+{
-+	if (!frame->meta_unsupported)
-+		skb->traits_type = SKB_TRAITS_AFTER_XDP;
-+}
-+
- #define XDP_BULK_QUEUE_SIZE	16
- struct xdp_frame_bulk {
- 	int count;
 
 -- 
 2.43.0
