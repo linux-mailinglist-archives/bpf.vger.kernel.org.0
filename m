@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-53339-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53340-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44070A5024C
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 15:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A0D56A5024E
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 15:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 149BA18971B2
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 14:36:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1360B189A967
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 14:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F9C924EA94;
-	Wed,  5 Mar 2025 14:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F21B252914;
+	Wed,  5 Mar 2025 14:33:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="NEw5t0hH";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="8Pci5FnV"
+	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="I2MnrdAO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Bo0nl3QL"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
+Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E5B524EA91;
-	Wed,  5 Mar 2025 14:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2382C252903;
+	Wed,  5 Mar 2025 14:33:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741185233; cv=none; b=UkQv2/7ewKebOuIuP4O0Y5cp6gHzkVHzLIigtyhtBqXZrIbBhEcu+FQXzT3HhhaWnh7AXMJsI7HfNG1k/wNPz+zDqSG09lpSPICFngIlSBQlYUGahPz51NRohOzXfu2e+YHL61KhmpYUMztFWZyICuy2qDYk65IYGS9bTdDsKwU=
+	t=1741185234; cv=none; b=k/kwlzZAXODwRYwQGvcx9lyipvzcj3nVVjH5c/LBu+oa8V9aiYfSVEg9gIcHvyM6vhuPrpcvDa9bqk0TkYDgdjpTFAnUJ7Tf3EZeZV4o4b2ysNFIZO4NFHxCr35XuDmGXAcvU1hdZ+ceTyH9qU75Gf79ePvpNdE0MO82SAIxuc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741185233; c=relaxed/simple;
-	bh=ALNDmKMBD9mXTWg2ZSDgD5TqaU58kfSRMxImvMs65hA=;
+	s=arc-20240116; t=1741185234; c=relaxed/simple;
+	bh=UyzCQ+1TEf63QXbFVHZfqRUApOl37dvhkdRu2DAyPbM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=aJxkzVVxjMmGMrvFO91ATpGCGebpphmc9ijkJEez3G/rWGbHMT5WS60lvS2bpO++6x0yI3AywJDWEcNMpcWZPhkuh3XioVbS+mGTyX5BUJdQ2HudQX8kp7shLIOsEBaZUarSO4a0XTfj+gWt/jPchwtjU2gQ/7hVGYdPII5x1og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=NEw5t0hH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=8Pci5FnV; arc=none smtp.client-ip=103.168.172.145
+	 In-Reply-To:To:Cc; b=dQ4iRbG/dtliojw2cVcMjKbpVRgiBNkxWCh0bWmD54atAcmiWCzh04ywXcyj6xd0hcNTZr7Llg5OR66sxSsviM+miV6ttlTLMr7R1kGSwuW8E/eQoRt6vmM9DcjV8n6Z0L0kzH1ciOcIAO1NcLltO4/etWIQe/N4PANoqLh3L24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=I2MnrdAO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Bo0nl3QL; arc=none smtp.client-ip=103.168.172.155
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arthurfabre.com
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfout.phl.internal (Postfix) with ESMTP id 9182413826F7;
-	Wed,  5 Mar 2025 09:33:50 -0500 (EST)
+Received: from phl-compute-13.internal (phl-compute-13.phl.internal [10.202.2.53])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 3E76B1140252;
+	Wed,  5 Mar 2025 09:33:52 -0500 (EST)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-08.internal (MEProxy); Wed, 05 Mar 2025 09:33:50 -0500
+  by phl-compute-13.internal (MEProxy); Wed, 05 Mar 2025 09:33:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arthurfabre.com;
 	 h=cc:cc:content-transfer-encoding:content-type:content-type
 	:date:date:from:from:in-reply-to:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
-	 t=1741185230; x=1741271630; bh=NE5bh1kmLcgI9x0jYIzVg9x+KrpOUoIj
-	lroPwL9ii4A=; b=NEw5t0hHy4BO1ftm2Qvb7lPBIzBT82yXQa9VCZv71Xfn3cAv
-	DGWrPpB0CGngj5Wo6+y5TBWeQX7Y8hfMRyp+3ZiYyqkzOKGRsXMG7zmKqt/IIwk4
-	568CaZy6Y/RjjwgV5lGhcbGno4IWF7m7EDIpnKulDyzT7li3RtwZOieUkgFO1a17
-	ScgSjrT77BV/zE3SlewiDlz+gF2bR+pNvSoaOedAd931TVcEG5/uJ9lnLB5vM0H7
-	ggMvSaQCDZQ13DL5WzNROmvU2S1WjN8xAswxR2Bwj7MW8jhheoCTcETerc3E39hM
-	4g+35XvYAj3UViACmdkcjOeh34jN/OmAhbOfGg==
+	 t=1741185232; x=1741271632; bh=k1YGAnSYA9FoYxracqWXHS34OxsoexW0
+	9UyZ0uIaTJ8=; b=I2MnrdAOZkZaNH/iUnOV4F55V1G2OXXm5GUBNHQ6mX4rk3Ye
+	VynOd2PPBNDRnEQfE3vtWwwTuKaDj/qs4U56SZDnZ8ipZO4TM9ECDlIp1I2I5FB9
+	2zOoXLIrtN4feG3VVcjOQJH9jFIzLuc2abLILsLcfmwN30atvHjFPTGyFgXGolWO
+	+slZ9/vqu0ZxNMIBGsbPaU1okhfvVQGEkcwF6p6J/YpOdoVKwEP50XwI4IJHjtxp
+	Ft26UZrUmkUqmZBlHwtZAV9LbakPKe/s92VaZRERHbeKVHntDTKB4ONflbq36Zh3
+	doTJufMdV3qVWdmWdJcDnadQoiW87llH+T4nag==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1741185230; x=
-	1741271630; bh=NE5bh1kmLcgI9x0jYIzVg9x+KrpOUoIjlroPwL9ii4A=; b=8
-	Pci5FnVGMmjC7SOzLD4smYLolqas6nkjEuJwWiooFm80rG4Wwx/P9b4roNKxGNRf
-	68SAedXjtEXIPUjzQWfJfSc0oMt5THRdj2lHJ2P+q7aE9RsJFkoZvN30u718DJYB
-	3zdoExiK7aFNsjJnS+0/3BfIiiG1tKwZqaJEsoEnR9nJ7mkBnqRvStQeZs29P1St
-	sUtcv5xvU/Ij3rxu5LNQh26PjWjXnmganAG4muAmYNICx1hK7N5OBcXz1o3qxdov
-	DyIqWS4Htjb4ZhdhVDxqEpukf7DHYmJMUfSY9E360AEQDaVo1KCAKWxQi3ZjNXEx
-	uGnPiPOycfgFRBA2A9Bxw==
-X-ME-Sender: <xms:zmDIZ0dr-kfIrBMZTmyRaqIckJYMf3E2Cce2d6d-dAd9AsihOE-bCg>
-    <xme:zmDIZ2OTa2EERuky2Z4egB6ttKrvy4PLL3f99-lujv_R5jaLWGzjCmqhx5KQJGAAp
-    ce97y1Dv2KKV41pDfc>
-X-ME-Received: <xmr:zmDIZ1gL3dHKuSP0DLczPDKmFiw7KBtbMRx3o7B2RU7lsAjGTwzY8r6ENYP2sCJ0C1XwAavZUtOZKpLLqVs>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1741185232; x=
+	1741271632; bh=k1YGAnSYA9FoYxracqWXHS34OxsoexW09UyZ0uIaTJ8=; b=B
+	o0nl3QLVpVkTz5M4HklP6ZI0WywbMyLM6mJP7T8DorZ0cUJP6YTOUwrf+wTfVPpV
+	RyY6/Y44vmwk5yO4KPu+3W+AVVsxFjPyYDYN0Lss2iIwHj6vjiY+DIaCRxsgEoRH
+	BqouuuvCOvDlQtXgWLQEYCNKgOUFTm77S3jTvf3NhfCAAM4iIxAnlt5n1eVVeP6/
+	LIMRfDNigzGPiUAW1ve6jA8XizruXOH5myHjEZHT07BkMtvfUc65eZ0FuCVEqhwf
+	QBrZkbSIo7zU9do/y1KYgrCaiMTIDzCvPjGfUnQ8wSRD9WCmZS8Qb/+0npKA23oE
+	y4mLu6W4RjWzEQBgjOmCA==
+X-ME-Sender: <xms:0GDIZ8IleFasAdU7bJETo2lkazQb1AnImwopgD3maMEYDBIcQ_nF3g>
+    <xme:0GDIZ8J74hWrAAw1UUgHMn6Hw_0jRimIX1HCce4MTKr2C2j3mjGOnChEQnjCcpYil
+    Ym_YPK7xAa_YwWQVWA>
+X-ME-Received: <xmr:0GDIZ8tV1xaeGOsKJE5PAN3h-3fkWmUNcBo_vtrFq9smXkcOK_T1EO1x2exHgb7_vD0GaAUzJfc7saMUzuw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutdehtdejucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
     pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
     gvnhhtshculddquddttddmnecujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertder
     tdejnecuhfhrohhmpegrrhhthhhurhesrghrthhhuhhrfhgrsghrvgdrtghomhenucggtf
     frrghtthgvrhhnpeffueehtddtkeetgfelteejledvjeekgeduleffjeetfeekveeggffh
-    fefhvdegffenucevlhhushhtvghrufhiiigvpeefnecurfgrrhgrmhepmhgrihhlfhhroh
+    fefhvdegffenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhroh
     hmpegrrhhthhhurhesrghrthhhuhhrfhgrsghrvgdrtghomhdpnhgspghrtghpthhtohep
     ledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepthhhohhilhgrnhgusehrvgguhh
     grthdrtghomhdprhgtphhtthhopehlsghirghntghonhesrhgvughhrghtrdgtohhmpdhr
@@ -81,18 +81,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutdehtdejucetufdote
     dprhgtphhtthhopeihrghnsegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopehn
     vghtuggvvhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehjsghrrghnug
     gvsghurhhgsegtlhhouhgufhhlrghrvgdrtghomh
-X-ME-Proxy: <xmx:zmDIZ59QUv2fOia28vdeD9MONjvjveoM1bO1WbQRCsPgNunp5YTmUw>
-    <xmx:zmDIZwvyUkHsrQeWO1jB5YZayATKnjPGE8wgMhg8ryV5TBVmI9FFKg>
-    <xmx:zmDIZwGN0YKhvOqPjPNegYrpfZXIGbmC6RaJCWxnoqMG99-CNfIRow>
-    <xmx:zmDIZ_OAcUU_u55HBB-q-YtqrCeKdiNSK3d0greD62F7YmQAgPvAbw>
-    <xmx:zmDIZyLXqDux_b1ANSo5K9O5MPvRdPUWjayvxJPD-w_tg-jamexYj8xf>
+X-ME-Proxy: <xmx:0GDIZ5ZVy5bhhtYC5WWIjN1m9SyGyMVwVyu0BGzd7RMDzCu4WyHt_A>
+    <xmx:0GDIZzb5AxrZFEphmDTVAMcwxtVfTrY_vAoDi38K2QpwEmM0_2abWQ>
+    <xmx:0GDIZ1A8Rrj4taycqaJpL1qj9wXFRJW83QL4Zb7_IDUptrz6Q49m2Q>
+    <xmx:0GDIZ5YfdfyUW14e_ZUX0lvJKy6M5Mnf1uG302JUgp6axfXclDmqpw>
+    <xmx:0GDIZ9kHWQXv2Nea2yeymym1OmJQkOEonxFqB-hxgn31ImpzAi7tsJ92>
 Feedback-ID: i25f1493c:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Mar 2025 09:33:49 -0500 (EST)
+ 5 Mar 2025 09:33:50 -0500 (EST)
 From: arthur@arthurfabre.com
-Date: Wed, 05 Mar 2025 15:32:16 +0100
-Subject: [PATCH RFC bpf-next 19/20] trait: Sync linux/bpf.h to tools/ for
- trait registration
+Date: Wed, 05 Mar 2025 15:32:17 +0100
+Subject: [PATCH RFC bpf-next 20/20] trait: register traits in benchmarks
+ and tests
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,7 +101,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250305-afabre-traits-010-rfc2-v1-19-d0ecfb869797@cloudflare.com>
+Message-Id: <20250305-afabre-traits-010-rfc2-v1-20-d0ecfb869797@cloudflare.com>
 References: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com>
 In-Reply-To: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com>
 To: netdev@vger.kernel.org, bpf@vger.kernel.org
@@ -112,65 +112,148 @@ X-Mailer: b4 0.14.2
 
 From: Arthur Fabre <afabre@cloudflare.com>
 
-Now that traits are required to be registered, the benchmarks and
-selftests will need to register them.
+Otherwise the verifier rejects the programs now.
 
 Signed-off-by: Arthur Fabre <afabre@cloudflare.com>
 ---
- tools/include/uapi/linux/bpf.h | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ tools/testing/selftests/bpf/bench.c                |  3 ++
+ tools/testing/selftests/bpf/bench.h                |  1 +
+ .../selftests/bpf/benchs/bench_xdp_traits.c        | 33 +++++++++++++++++++++-
+ .../testing/selftests/bpf/prog_tests/xdp_traits.c  | 18 +++++++++++-
+ 4 files changed, 53 insertions(+), 2 deletions(-)
 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index bb37897c039398dd3568cd007586d9b088ddeb32..748ab5a1cbe0d29d890b874aacfc4ee66b082058 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -906,6 +906,21 @@ union bpf_iter_link_info {
-  *		A new file descriptor (a nonnegative integer), or -1 if an
-  *		error occurred (in which case, *errno* is set appropriately).
-  *
-+ * BPF_REGISTER_TRAIT
-+ *	Description
-+ *		Register a trait. Docs to make bpf_doc.py not error out.
-+ *	Return
-+ *		Registered trait key.
-+ *
-+ * BPF_UNREGISTER_TRAIT
-+ *	Description
-+ *		Unregister a trait. Needed so services registering traits
-+ *		can restart.
-+ *		But what happens if a trait is currently being used?
-+ *		And to in flight packets?
-+ *	Return
-+ *		-1 if an error occurred.
-+ *
-  * NOTES
-  *	eBPF objects (maps and programs) can be shared between processes.
-  *
-@@ -961,6 +976,8 @@ enum bpf_cmd {
- 	BPF_LINK_DETACH,
- 	BPF_PROG_BIND_MAP,
- 	BPF_TOKEN_CREATE,
-+	BPF_REGISTER_TRAIT,
-+	BPF_UNREGISTER_TRAIT,
- 	__MAX_BPF_CMD,
+diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
+index 4678b928fc6ad2f0a870a25d9b10c75a1f6d77ba..0961cb71ddf1d682ca61e512e9f4b2df3606747c 100644
+--- a/tools/testing/selftests/bpf/bench.c
++++ b/tools/testing/selftests/bpf/bench.c
+@@ -752,5 +752,8 @@ int main(int argc, char **argv)
+ 		bench->report_final(state.results + env.warmup_sec,
+ 				    state.res_cnt - env.warmup_sec);
+ 
++	if (bench->cleanup)
++		bench->cleanup();
++
+ 	return 0;
+ }
+diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftests/bpf/bench.h
+index 005c401b3e2275030d1d489cd77423cb1fb652ad..6a94af31df17e7cc35bb1432c4b205eb96b631f2 100644
+--- a/tools/testing/selftests/bpf/bench.h
++++ b/tools/testing/selftests/bpf/bench.h
+@@ -58,6 +58,7 @@ struct bench {
+ 	void (*measure)(struct bench_res* res);
+ 	void (*report_progress)(int iter, struct bench_res* res, long delta_ns);
+ 	void (*report_final)(struct bench_res res[], int res_cnt);
++	void (*cleanup)(void);
  };
  
-@@ -1841,6 +1858,15 @@ union bpf_attr {
- 		__u32		bpffs_fd;
- 	} token_create;
+ struct counter {
+diff --git a/tools/testing/selftests/bpf/benchs/bench_xdp_traits.c b/tools/testing/selftests/bpf/benchs/bench_xdp_traits.c
+index 0fbcd49edd825f53e6957319d3f05efc218dfb02..b6fa2d8f2504dd9c35f8fb9dc1f1099b55a55ac6 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_xdp_traits.c
++++ b/tools/testing/selftests/bpf/benchs/bench_xdp_traits.c
+@@ -57,7 +57,18 @@ static void trait_validate(void)
  
-+	struct { /* struct used by BPF_REGISTER_TRAIT command */
-+		char		name[BPF_OBJ_NAME_LEN];
-+		__u32		flags;
-+	} register_trait;
+ static void trait_setup(void)
+ {
+-	int err;
++	int err, i, key;
++	union bpf_attr attr;
 +
-+	struct { /* struct used by BPF_UNREGISTER_TRAIT command */
-+		__u64		trait;
-+	} unregister_trait;
-+
- } __attribute__((aligned(8)));
++	/* Register all keys so we can use them all. */
++	bzero(&attr, sizeof(attr));
++	for (i = 0; i < 64; i++) {
++		key = syscall(__NR_bpf, BPF_REGISTER_TRAIT, &attr, sizeof(attr));
++		if (key < 0) {
++			fprintf(stderr, "couldn't register trait: %d\n", key);
++			exit(1);
++		}
++	}
  
- /* The description below is an attempt at providing documentation to eBPF
+ 	setup_libbpf();
+ 
+@@ -77,6 +88,23 @@ static void trait_setup(void)
+ 	}
+ }
+ 
++static void trait_cleanup(void)
++{
++	int err, i;
++	union bpf_attr attr;
++
++	/* Unregister all keys so we can run again. */
++	bzero(&attr, sizeof(attr));
++	for (i = 0; i < 64; i++) {
++		attr.unregister_trait.trait = i;
++		err = syscall(__NR_bpf, BPF_UNREGISTER_TRAIT, &attr, sizeof(attr));
++		if (err < 0) {
++			fprintf(stderr, "couldn't unregister trait %d: %d\n", i, err);
++			exit(1);
++		}
++	}
++}
++
+ static void trait_get_setup(void)
+ {
+ 	trait_setup();
+@@ -135,6 +163,7 @@ const struct bench bench_xdp_trait_get = {
+ 	.measure = trait_measure,
+ 	.report_progress = ops_report_progress,
+ 	.report_final = ops_report_final,
++	.cleanup = trait_cleanup,
+ };
+ 
+ const struct bench bench_xdp_trait_set = {
+@@ -146,6 +175,7 @@ const struct bench bench_xdp_trait_set = {
+ 	.measure = trait_measure,
+ 	.report_progress = ops_report_progress,
+ 	.report_final = ops_report_final,
++	.cleanup = trait_cleanup,
+ };
+ 
+ const struct bench bench_xdp_trait_move = {
+@@ -157,4 +187,5 @@ const struct bench bench_xdp_trait_move = {
+ 	.measure = trait_measure,
+ 	.report_progress = ops_report_progress,
+ 	.report_final = ops_report_final,
++	.cleanup = trait_cleanup,
+ };
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_traits.c b/tools/testing/selftests/bpf/prog_tests/xdp_traits.c
+index 4175b28d45e91e82435e646e5edd783980d5fe70..1c1eff235a6159d377a5e8b9e0a4d956c4540e8e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_traits.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_traits.c
+@@ -6,8 +6,16 @@ static void _test_xdp_traits(void)
+ {
+ 	const char *file = "./test_xdp_traits.bpf.o";
+ 	struct bpf_object *obj;
+-	int err, prog_fd;
++	int err, prog_fd, i, key;
+ 	char buf[128];
++	union bpf_attr attr;
++
++	/* Register all keys so we can use them all. */
++	bzero(&attr, sizeof(attr));
++	for (i = 0; i < 64; i++) {
++		key = syscall(__NR_bpf, BPF_REGISTER_TRAIT, &attr, sizeof(attr));
++		ASSERT_OK_FD(key, "test_xdp_traits");
++	}
+ 
+ 	LIBBPF_OPTS(bpf_test_run_opts, topts,
+ 		.data_in = &pkt_v4,
+@@ -26,6 +34,14 @@ static void _test_xdp_traits(void)
+ 	ASSERT_EQ(topts.retval, XDP_PASS, "retval");
+ 
+ 	bpf_object__close(obj);
++
++	/* Unregister all keys so we can run again. */
++	bzero(&attr, sizeof(attr));
++	for (i = 0; i < 64; i++) {
++		attr.unregister_trait.trait = i;
++		err = syscall(__NR_bpf, BPF_UNREGISTER_TRAIT, &attr, sizeof(attr));
++		ASSERT_OK(err, "test_xdp_traits");
++	}
+ }
+ 
+ void test_xdp_traits(void)
 
 -- 
 2.43.0
