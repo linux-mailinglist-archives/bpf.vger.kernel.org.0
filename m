@@ -1,135 +1,125 @@
-Return-Path: <bpf+bounces-53379-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53380-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79D98A506CE
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 18:50:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C807BA50735
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 18:55:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC13D3A633A
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 17:50:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74F3016CC71
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 17:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61748250BFB;
-	Wed,  5 Mar 2025 17:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B672512D9;
+	Wed,  5 Mar 2025 17:54:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M3y39j1K"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="yf7Qjgdj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB021946C7
-	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 17:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532266ADD;
+	Wed,  5 Mar 2025 17:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741197030; cv=none; b=O1OPZrwXFUMIZmtJlyH9x2A1dVnGl1Fy6QNYbNd/pkDR05sjDQbQlT7TrFGFBqtbobwL5uNvT/M19MNBoQQZKfYSZ4736FvusJyd1+KpTzr7pb1M1jFkikgqO60TSfV0ecY0Jznu1jMB0bjTJ9O4HfVPQdNFerwwUyvtXh+IFUk=
+	t=1741197288; cv=none; b=ipPb9boJSqjo8YB5IuHjOeG45npG606tztbFHq2giw+BrI14+vTugBLLkpWHvEXsx6mdPrIwnGhu/akjAEBgcJyPrQZYIN+0Doe6Q2Tygwd5S+zq1CE9HWLWi9+EyQVbny8pjVWN6St64uYzojUY0AIXHl2Ych2zYTHdRizC+xE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741197030; c=relaxed/simple;
-	bh=wNsPDBiwlBT1VFa7KonhouT7ZMhtXdlxyjkPz0UWd4Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ruVCcvWJJo7xSN60Ti7ilV0Fg1nSx0c+38FnVnbidQdMpM1tfLuC94dyaavdSK3BEpTS469IxxUZWV3g6YXcMJ1E4UIykDnjWPz7xeREvwqAYupjBLDL99XqHSTSB67NYHpqeHxILgMsd7uWrteIJ6Tr4p2ZoGTFaEXJJy9gEiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M3y39j1K; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-390e88caa4dso3618482f8f.1
-        for <bpf@vger.kernel.org>; Wed, 05 Mar 2025 09:50:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741197027; x=1741801827; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uJZNjqx8UzQVaqIkOfHbwCvh5Ldz+sHmJlXKnkDPEcM=;
-        b=M3y39j1KkSryOqwBn2G1zxOE39S5a+gSY/nijv05a3KVKFawQfrRJmgzoIZrLM3pSL
-         tswHLFisaJm5yp1bJQm1OL7bZWKZJkwVTHsN8mVJYSc322Kuohr6SfP8zFKL+TSxyRo3
-         JZp4OeerSmkw7T4ImgaLH+NLJbvq8urUxbQgIIcQ7k0Zew3KJTHasZuKE67sbjIKftfZ
-         hD0Sab1hQUq2IJsdAUKK1z6Cmbb+HGZEJ6G/3++JB5xSB4Jf1sL9QppeH9/5hCkkPrY4
-         5vtZqN7/+9bCgEOKsjTIyQONNLbX/Acgox6xBTfnzE8HbDFfEsoYm5ivfGS7k/r7+YXK
-         Vang==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741197027; x=1741801827;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uJZNjqx8UzQVaqIkOfHbwCvh5Ldz+sHmJlXKnkDPEcM=;
-        b=AHamUeBs9smjO8E4C2iaJMvGNvRVVcQA5aoEtINqQLTBAJoDSjokU0mjW9TposuMH2
-         d06b+XnNgvJlBlo3SRAdO48RO5tuAk8N2GXlRW2uS0w++mqIdiKftmgOXqBYPcc9Icy6
-         j/cnU+niMHftGKQI0mQTB6Z9ADaufpE7ERipdmeIWberWL5qOQYGTxKOds4k+xsue4wB
-         9YuiQPLGBa4JTl7TUPeuTHQu9ZBsoSlR7745wJnwea4KFSk/hKlmPvPgVmEuR3kCTGWU
-         oL2DsRbkIMfQgpurEAZefeQLBZDaeHl/6U4Aq0IFoEyqMLhIEGqXFnrHqo/Vgrl6GT4l
-         ASnQ==
-X-Gm-Message-State: AOJu0YzgdDclEgQ076l0QKvncArDuKO9yWE/eFOEuf2FGwa7C+RNGHq2
-	TFCzvcUwc/A0fJrf5tzOO2iL16KFj7RRurLrTMGf2pZyXgQjnMLR00j3HfkUYiCGQnk43NQwZ/e
-	MrGzh1X6yPBvWNm5UvACidMdKMnk=
-X-Gm-Gg: ASbGncsRjQTlu1EI3IA+y62KmAR30C3WVSO0fPfDLeH1kLGWU0gCI5Uetruliy1gI6Y
-	nL49ArPWKdQbY3D/Wq+4fF6i/OtVwpOX4MLoAZ5L7TlTJOd9tvz8jZQxZvioaxH8e6Dl6m1r7pU
-	mc5anamUSa9dehVvY2I0feJH/9wFl1yYvbIQ83dP83dA==
-X-Google-Smtp-Source: AGHT+IGQv4RZAuv2/9l8Rn0sgTmSmwJcOP5nJClypjF2HaCuXbcfrD9TSYy3Rpjx/YXBN6yfHOiUl/8bw3P9xcA8SkE=
-X-Received: by 2002:a05:6000:23c4:b0:390:fe13:e0bb with SMTP id
- ffacd0b85a97d-3911f7c6292mr2427404f8f.51.1741197027230; Wed, 05 Mar 2025
- 09:50:27 -0800 (PST)
+	s=arc-20240116; t=1741197288; c=relaxed/simple;
+	bh=lDhhrcuwhKZxvU612Bz2zcu6/x4mEjg/YMHMPeZ9wLc=;
+	h=From:To:Cc:Subject:MIME-Version:Content-Disposition:Content-Type:
+	 Message-Id:Date; b=EpnED/tcI1sw6ttGYmfPEw98MWJRwHKlFpxvrbJNboBTwNR0UChOsThUrsmb4eDi/oiyk5gFzYYys9OWwJJYFhss9RH0Htxekz5vJzPlD68jLmq20pH5luNnhuzldj+saJ6MBh16xy76ZaHvEfOwxvm6ANUxsvnmUOl4oQs+dXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=yf7Qjgdj; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:Reply-To:Content-ID
+	:Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+	Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=6yp8ly4CoZ1xK5KOd2D0Pg5wxYPtdg+xF05sqpTsePU=; b=yf7Qjgdjp3HkjKaQyBca+vXFbG
+	8yZxvvj1OYBOYrsvUVFJEqgaUMQxD5j4bIXG9e4lmHgs4H4MbxPkckwmG+6gt6iRk2tQO0veVV7uQ
+	0aWe1BlD3pnOmqhKidvwBOAbsGByafmP2lDbLTfXuTpdSetQcNrYGJetZFiD6s8KXFMMiUIzkE2vH
+	/utGOC8ie450eBha+tSDsV8OxtdHGdw7v0BjvvTF93hBoDAaVpzgHxQo1HxBbAxctuRptgDu47PHa
+	GMRBLovr1Y+LPtJYp+eMV3cOxfOtxbx36rKXMe3dDQJVZ3ssO/bLj3wTLj8EYpysbfBiKY++1RO88
+	efiijohQ==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:34082 helo=rmk-PC.armlinux.org.uk)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <rmk@armlinux.org.uk>)
+	id 1tpsx2-0004fX-34;
+	Wed, 05 Mar 2025 17:54:36 +0000
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
+	id 1tpswi-005U6C-Py; Wed, 05 Mar 2025 17:54:16 +0000
+From: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+To: Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH net-next] net: stmmac: avoid shadowing global buf_sz
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250305161327.203396-1-emil@etsalapatis.com> <20250305161327.203396-2-emil@etsalapatis.com>
-In-Reply-To: <20250305161327.203396-2-emil@etsalapatis.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 5 Mar 2025 09:50:16 -0800
-X-Gm-Features: AQ5f1JpYmvnL4TQk4yQksiA-PfDPwjWmOkQ1gWx1YNN-ZK1Btp-28R7RRhJKypo
-Message-ID: <CAADnVQ+M2KoAvbkWpxfxcbbEEUqkyMAcC0YOYEQ2gMfrwa869Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] bpf: add kfunc for populating cpumask bits
-To: Emil Tsalapatis <emil@etsalapatis.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Tejun Heo <tj@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Hou Tao <houtao@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <E1tpswi-005U6C-Py@rmk-PC.armlinux.org.uk>
+Sender: Russell King <rmk@armlinux.org.uk>
+Date: Wed, 05 Mar 2025 17:54:16 +0000
 
-On Wed, Mar 5, 2025 at 8:13=E2=80=AFAM Emil Tsalapatis <emil@etsalapatis.co=
-m> wrote:
->
-> Add a helper kfunc that sets the bitmap of a bpf_cpumask from BPF memory.
->
-> Signed-off-by: Emil Tsalapatis (Meta) <emil@etsalapatis.com>
-> ---
->  kernel/bpf/cpumask.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
->
-> diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-> index cfa1c18e3a48..2a0770544fc3 100644
-> --- a/kernel/bpf/cpumask.c
-> +++ b/kernel/bpf/cpumask.c
-> @@ -420,6 +420,33 @@ __bpf_kfunc u32 bpf_cpumask_weight(const struct cpum=
-ask *cpumask)
->         return cpumask_weight(cpumask);
->  }
->
-> +/**
-> + * bpf_cpumask_fill() - Populate the CPU mask from the contents of
-> + * a BPF memory region.
-> + *
-> + * @cpumask: The cpumask being populated.
-> + * @src: The BPF memory holding the bit pattern.
-> + * @src__sz: Length of the BPF memory region in bytes.
-> + *
-> + */
+stmmac_rx() declares a local variable named "buf_sz" but there is also
+a global variable for a module parameter which is called the same. To
+avoid confusion, rename the local variable.
 
-Since you're adding kdoc, make it complete.
-Otherwise there is a warn during the build:
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> kernel/bpf/cpumask.c:433: warning: No description found for return value =
-of 'bpf_cpumask_fill'
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 334d41b8fa70..cb5099caecd0 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -5475,10 +5475,10 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ 	struct sk_buff *skb = NULL;
+ 	struct stmmac_xdp_buff ctx;
+ 	int xdp_status = 0;
+-	int buf_sz;
++	int bufsz;
+ 
+ 	dma_dir = page_pool_get_dma_dir(rx_q->page_pool);
+-	buf_sz = DIV_ROUND_UP(priv->dma_conf.dma_buf_sz, PAGE_SIZE) * PAGE_SIZE;
++	bufsz = DIV_ROUND_UP(priv->dma_conf.dma_buf_sz, PAGE_SIZE) * PAGE_SIZE;
+ 	limit = min(priv->dma_conf.dma_rx_size - 1, (unsigned int)limit);
+ 
+ 	if (netif_msg_rx_status(priv)) {
+@@ -5591,7 +5591,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
+ 			net_prefetch(page_address(buf->page) +
+ 				     buf->page_offset);
+ 
+-			xdp_init_buff(&ctx.xdp, buf_sz, &rx_q->xdp_rxq);
++			xdp_init_buff(&ctx.xdp, bufsz, &rx_q->xdp_rxq);
+ 			xdp_prepare_buff(&ctx.xdp, page_address(buf->page),
+ 					 buf->page_offset, buf1_len, true);
+ 
+-- 
+2.30.2
 
-and while at it, could you fix it for other kfuncs?
-
-kernel/bpf/cpumask.c:50: warning: No description found for return
-value of 'bpf_cpumask_create'
-kernel/bpf/cpumask.c:76: warning: No description found for return
-value of 'bpf_cpumask_acquire'
-
-Thanks!
 
