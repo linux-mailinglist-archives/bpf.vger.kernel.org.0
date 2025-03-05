@@ -1,141 +1,167 @@
-Return-Path: <bpf+bounces-53351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DBCEA50472
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 17:20:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACF1AA50486
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 17:22:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9DBB188858B
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 16:21:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 070453A4EDC
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 16:22:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F6718CBEC;
-	Wed,  5 Mar 2025 16:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99B318CBEC;
+	Wed,  5 Mar 2025 16:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mk4MLJl+"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kNPSttgD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E948567D;
-	Wed,  5 Mar 2025 16:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BAD118A6B5;
+	Wed,  5 Mar 2025 16:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741191644; cv=none; b=KpQl7BBkCF+oDE1fuo4cCvIm9PXgHBzZTGKp3W2vk6yHQFxJizgAzRgZV+RNmssbxGsYfheOkLPtyx0Sx1+kbmkk9A9gpTp6Z9gCPudap3KgjKIAxQnasmFfy/wWJROIqN1RXTd1JiBBIpa4LtYlvvr7h/snLtpkCJlwQvmyibk=
+	t=1741191738; cv=none; b=hac9IUiyaxRCYJ6MHj5Dq//37ZonFRHFYxBYKjRK5dgSNOVlWh3zHB+tPVoZrDEVxrCc+ck8gwqyFqJFFe043epYSVtN/HDPmiuF/WoAegr3TL0wScttm8qBaFGbImDcuSTzedS16hfk3nKTimTkhBnFixVkEaQh6FJIXb1Or/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741191644; c=relaxed/simple;
-	bh=HWjA/54qT1T38UrU9K3wIAlo9/R2j+5fLIVn8dgqyXI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BAQ75573B6daZTl6FOtAy8Zv+jcPmddFlLX7RLypSMXCBJOEHZ4qtoPsLwI7uwML0kGY14+U9zdpaQsPJcs6b8bFxDL897WmclY0aPxO4wAiOi3FXo2Vx4FdQ9dmWbJPIIUfy3re5ohAEubeWIOnbFTPkNoY5xfkGMLXK5vyqoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mk4MLJl+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B3DAC4CED1;
-	Wed,  5 Mar 2025 16:20:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741191643;
-	bh=HWjA/54qT1T38UrU9K3wIAlo9/R2j+5fLIVn8dgqyXI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Mk4MLJl+uuKL2Nffx6CigEQOKXqD4rQShmjlajABN45BiRggskUECk5yxrAhgRVpj
-	 NLku0mu9r4Ml+HRtk6VvXyPE0BTWlsTGYPa0FSX6WLr0elpiX7VVIFiCJImpKoE9Pr
-	 muGYG6bMan4XsqT/uRRFfWYINWUYKibRmUJ+jrQ2Wv9IoEzkZcPP/R0XzweUyCPUwW
-	 56wHr3athTy9mo3UFevOvmznabo1v+K94IYcUPClc9e3WRPykNyZ8hcKh/16tE4TNW
-	 59zSeG4YlSZ77m/4+KZ1jCk0zx/r9hSFpJrW8Rdd82qeCwvVXCTpFXulUDSJCVx7Ey
-	 2gtltonjeWO/w==
-Date: Wed, 5 Mar 2025 16:20:31 +0000
-From: Simon Horman <horms@kernel.org>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
-	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org, rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-	dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, yury.norov@gmail.com,
-	akpm@linux-foundation.org, hpa@zytor.com, alistair@popple.id.au,
-	linux@rasmusvillemoes.dk, Laurent.pinchart@ideasonboard.com,
-	jonas@kwiboo.se, jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
-	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v2 03/18] bitops: Add parity16(), parity32(), and
- parity64() helpers
-Message-ID: <20250305162031.GO3666230@kernel.org>
-References: <20250301142409.2513835-1-visitorckw@gmail.com>
- <20250301142409.2513835-4-visitorckw@gmail.com>
+	s=arc-20240116; t=1741191738; c=relaxed/simple;
+	bh=v13//dhbWZHhDVaFI/IbNE+FzNKUL+cXelUKHDL/Wds=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xv09D8iJSQlabZMnfyZ/bXYWeNB0PE5LB6MAfDcGGDE4P0uveU4UOTqz4BbFk05Ba7YE9UkvQ9GKgPyb+SautgD46E9zzCigN0kgMH5NLgl0P1YFYI1cSgQmH60hthI+gvmDRpTXTcR8YiyaO4bdgl5dYMf37W6k65j7T44j9Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kNPSttgD; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741191736; x=1772727736;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=v13//dhbWZHhDVaFI/IbNE+FzNKUL+cXelUKHDL/Wds=;
+  b=kNPSttgDq/cTkHnJOosh0mYt752OZw3zgOuJydfCvVlAdXSi+xTjwEtQ
+   sqN5FlSdcsurk2NJAV2VLlhMp/pyw0lJ7d57/t3NC73T+OSlLCHoFdpBX
+   UTr8eBnMmyV4T/etVPOSmiwk0IvAPc4sPskCN6rKg7rsgPeN5u5tui1eH
+   SdkBe0mouIkh8ex5w273fn6yTiVSCnN2606N3mV6IWF8kEjoN+e/hnWK1
+   PnR178QdEsXm/HrPBhjOnVbevT5ADvgWD41/7R5MFj+EJlaOO2gbDQdwL
+   3k5Ek4f6aQGB8uzg6FzeK8IiyqKJ67ND07cbXHXwsyWnW81Gx+6BWrf3s
+   w==;
+X-CSE-ConnectionGUID: Fx+U+SCfR4aeIIksELeHWw==
+X-CSE-MsgGUID: AYKM9jKMR5eLyVuPbgm1FA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11363"; a="42026361"
+X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
+   d="scan'208";a="42026361"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 08:22:15 -0800
+X-CSE-ConnectionGUID: mMOOr5OgRUKBjXWggRPiRQ==
+X-CSE-MsgGUID: 1jGkdLoVSI6dWxok8TQhew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
+   d="scan'208";a="123832845"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by fmviesa004.fm.intel.com with ESMTP; 05 Mar 2025 08:22:10 -0800
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: intel-wired-lan@lists.osuosl.org
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Michal Kubiak <michal.kubiak@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Simon Horman <horms@kernel.org>,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 00/16] idpf: add XDP support
+Date: Wed,  5 Mar 2025 17:21:16 +0100
+Message-ID: <20250305162132.1106080-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250301142409.2513835-4-visitorckw@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Mar 01, 2025 at 10:23:54PM +0800, Kuan-Wei Chiu wrote:
-> Introduce parity16(), parity32(), and parity64() functions for
-> computing parity on 16-bit, 32-bit, and 64-bit integers, respectively.
-> These functions use __builtin_parity() or __builtin_parityll() when
-> available, ensuring efficient computation. If the input is a
-> compile-time constant, they expand using the _parity_const() macro to
-> allow constant folding.
-> 
-> These additions provide parity computation helpers for larger integer
-> types, ensuring consistency and performance across different
-> bit-widths.
-> 
-> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> ---
->  include/linux/bitops.h | 63 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 63 insertions(+)
-> 
-> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-> index 4c307d9c1545..41e9e7fb894b 100644
-> --- a/include/linux/bitops.h
-> +++ b/include/linux/bitops.h
-> @@ -276,6 +276,69 @@ static inline __attribute_const__ int parity8(u8 val)
->  	return __builtin_constant_p(val) ? _parity_const(val) : _parity8(val);
->  }
->  
-> +#ifndef _parity16
-> +static inline __attribute_const__ int _parity16(u16 val)
-> +{
-> +	return __builtin_parity(val);
-> +}
-> +#endif
-> +
-> +/**
-> + * parity16 - get the parity of an u16 value
-> + * @value: the value to be examined
+Add XDP support (w/o XSk yet) to the idpf driver using the libeth_xdp
+sublib, which will be then reused in at least iavf and ice.
 
-nit: This really ought to be @val to match the function signature.
-     Likewise for parity8, parity32, and parity64.
+In general, nothing outstanding comparing to ice, except performance --
+let's say, up to 2x for .ndo_xdp_xmit() on certain platforms and
+scenarios. libeth_xdp doesn't reinvent the wheel, mostly just
+accumulates and optimizes what was already done before to stop copying
+that wheel and the bugs over and over again.
+idpf doesn't support VLAN Rx offload, so only the hash hint is present
+for now.
 
-> + *
-> + * Determine the parity of the u16 argument.
-> + *
-> + * Returns:
-> + * 0 for even parity, 1 for odd parity
-> + */
-> +static inline __attribute_const__ int parity16(u16 val)
-> +{
-> +	return __builtin_constant_p(val) ? _parity_const(val) : _parity16(val);
-> +}
+Alexander Lobakin (12):
+  libeth: convert to netmem
+  libeth: support native XDP and register memory model
+  libeth: add a couple of XDP helpers (libeth_xdp)
+  libeth: add XSk helpers
+  idpf: fix Rx descriptor ready check barrier in splitq
+  idpf: a use saner limit for default number of queues to allocate
+  idpf: link NAPIs to queues
+  idpf: add support for nointerrupt queues
+  idpf: use generic functions to build xdp_buff and skb
+  idpf: add support for XDP on Rx
+  idpf: add support for .ndo_xdp_xmit()
+  idpf: add XDP RSS hash hint
 
-...
+Michal Kubiak (4):
+  idpf: make complq cleaning dependent on scheduling mode
+  idpf: remove SW marker handling from NAPI
+  idpf: prepare structures to support XDP
+  idpf: implement XDP_SETUP_PROG in ndo_bpf for splitq
+
+ drivers/net/ethernet/intel/idpf/Kconfig       |    2 +-
+ drivers/net/ethernet/intel/libeth/Kconfig     |   10 +-
+ drivers/net/ethernet/intel/idpf/Makefile      |    2 +
+ drivers/net/ethernet/intel/libeth/Makefile    |    8 +-
+ include/net/libeth/types.h                    |  106 +-
+ drivers/net/ethernet/intel/idpf/idpf.h        |   35 +-
+ .../net/ethernet/intel/idpf/idpf_lan_txrx.h   |    6 +-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.h   |  126 +-
+ drivers/net/ethernet/intel/idpf/xdp.h         |  180 ++
+ drivers/net/ethernet/intel/libeth/priv.h      |   37 +
+ include/net/libeth/rx.h                       |   28 +-
+ include/net/libeth/tx.h                       |   36 +-
+ include/net/libeth/xdp.h                      | 1869 +++++++++++++++++
+ include/net/libeth/xsk.h                      |  685 ++++++
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   |   14 +-
+ drivers/net/ethernet/intel/idpf/idpf_dev.c    |   11 +-
+ .../net/ethernet/intel/idpf/idpf_ethtool.c    |    6 +-
+ drivers/net/ethernet/intel/idpf/idpf_lib.c    |   29 +-
+ drivers/net/ethernet/intel/idpf/idpf_main.c   |    1 +
+ .../ethernet/intel/idpf/idpf_singleq_txrx.c   |  111 +-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c   |  678 +++---
+ drivers/net/ethernet/intel/idpf/idpf_vf_dev.c |   11 +-
+ .../net/ethernet/intel/idpf/idpf_virtchnl.c   |  113 +-
+ drivers/net/ethernet/intel/idpf/xdp.c         |  509 +++++
+ drivers/net/ethernet/intel/libeth/rx.c        |   40 +-
+ drivers/net/ethernet/intel/libeth/tx.c        |   41 +
+ drivers/net/ethernet/intel/libeth/xdp.c       |  449 ++++
+ drivers/net/ethernet/intel/libeth/xsk.c       |  269 +++
+ 28 files changed, 4925 insertions(+), 487 deletions(-)
+ create mode 100644 drivers/net/ethernet/intel/idpf/xdp.h
+ create mode 100644 drivers/net/ethernet/intel/libeth/priv.h
+ create mode 100644 include/net/libeth/xdp.h
+ create mode 100644 include/net/libeth/xsk.h
+ create mode 100644 drivers/net/ethernet/intel/idpf/xdp.c
+ create mode 100644 drivers/net/ethernet/intel/libeth/tx.c
+ create mode 100644 drivers/net/ethernet/intel/libeth/xdp.c
+ create mode 100644 drivers/net/ethernet/intel/libeth/xsk.c
+
+---
+Sending in one batch to introduce/show both the lib and the user.
+Let me know if I'd better split.
+-- 
+2.48.1
+
 
