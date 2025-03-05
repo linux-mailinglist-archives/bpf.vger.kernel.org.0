@@ -1,125 +1,94 @@
-Return-Path: <bpf+bounces-53380-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53381-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C807BA50735
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 18:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37A9EA507BF
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 19:00:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74F3016CC71
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 17:54:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 754AF16BDC3
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 18:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B672512D9;
-	Wed,  5 Mar 2025 17:54:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEAD8251798;
+	Wed,  5 Mar 2025 18:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="yf7Qjgdj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BIGufrcs"
 X-Original-To: bpf@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532266ADD;
-	Wed,  5 Mar 2025 17:54:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1D6250C1C;
+	Wed,  5 Mar 2025 18:00:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741197288; cv=none; b=ipPb9boJSqjo8YB5IuHjOeG45npG606tztbFHq2giw+BrI14+vTugBLLkpWHvEXsx6mdPrIwnGhu/akjAEBgcJyPrQZYIN+0Doe6Q2Tygwd5S+zq1CE9HWLWi9+EyQVbny8pjVWN6St64uYzojUY0AIXHl2Ych2zYTHdRizC+xE=
+	t=1741197601; cv=none; b=uG6nDswIF+/gmTmTClWCLP6Aeq01eiiU+8a/89Ibygk6hrHF35yB2jrFsqPILbUhLB5M3j2t+kDUJw2aF+ZbzppRFL1lfnLPjKb4WfChq7vlZ6buOjPvj9UAf0f1aSn6GlkGm/D32R5+zEfSjTwF/R7RiPr2H8UdtQ73zzRpV8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741197288; c=relaxed/simple;
-	bh=lDhhrcuwhKZxvU612Bz2zcu6/x4mEjg/YMHMPeZ9wLc=;
-	h=From:To:Cc:Subject:MIME-Version:Content-Disposition:Content-Type:
-	 Message-Id:Date; b=EpnED/tcI1sw6ttGYmfPEw98MWJRwHKlFpxvrbJNboBTwNR0UChOsThUrsmb4eDi/oiyk5gFzYYys9OWwJJYFhss9RH0Htxekz5vJzPlD68jLmq20pH5luNnhuzldj+saJ6MBh16xy76ZaHvEfOwxvm6ANUxsvnmUOl4oQs+dXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=yf7Qjgdj; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
-	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:Reply-To:Content-ID
-	:Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-	Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=6yp8ly4CoZ1xK5KOd2D0Pg5wxYPtdg+xF05sqpTsePU=; b=yf7Qjgdjp3HkjKaQyBca+vXFbG
-	8yZxvvj1OYBOYrsvUVFJEqgaUMQxD5j4bIXG9e4lmHgs4H4MbxPkckwmG+6gt6iRk2tQO0veVV7uQ
-	0aWe1BlD3pnOmqhKidvwBOAbsGByafmP2lDbLTfXuTpdSetQcNrYGJetZFiD6s8KXFMMiUIzkE2vH
-	/utGOC8ie450eBha+tSDsV8OxtdHGdw7v0BjvvTF93hBoDAaVpzgHxQo1HxBbAxctuRptgDu47PHa
-	GMRBLovr1Y+LPtJYp+eMV3cOxfOtxbx36rKXMe3dDQJVZ3ssO/bLj3wTLj8EYpysbfBiKY++1RO88
-	efiijohQ==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:34082 helo=rmk-PC.armlinux.org.uk)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <rmk@armlinux.org.uk>)
-	id 1tpsx2-0004fX-34;
-	Wed, 05 Mar 2025 17:54:36 +0000
-Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-	id 1tpswi-005U6C-Py; Wed, 05 Mar 2025 17:54:16 +0000
-From: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-To: Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH net-next] net: stmmac: avoid shadowing global buf_sz
+	s=arc-20240116; t=1741197601; c=relaxed/simple;
+	bh=RZp4U+jYLynv07h7676ER25Ev/Yq9pXQYjKGxCn7CVs=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=cDAArSdvlYEc+iQ3Q7RLoOXf36DZfZ2YayXrcWKQkaxtAacR1CGLKC0MVV14P+SuVyYn37SUmElfaM5Mv3Zpd8js18CO67AEhZ92YtFKnCV3jkAmiFGMM8DbG14gy13/iMBtu/DmPzxLGpnSVdz9mHOw3QmDU+TF7ALsrHssyPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BIGufrcs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A03BC4CED1;
+	Wed,  5 Mar 2025 18:00:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741197601;
+	bh=RZp4U+jYLynv07h7676ER25Ev/Yq9pXQYjKGxCn7CVs=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=BIGufrcs//TMH4PTu3EkXj3cMUNNZsutpQiIVzX2HwCAHnm5gfV2FyIw4S5TpMnB3
+	 88QEWwb1L/m1RZHXKSRYEZxkVfi8ZIaQnXg6DEQFKYbuZJYaml9HdWRFAbzL5NKNk/
+	 eWxWLc05E9TMNcrqK6P6QjIhdb6cXMuj65M6zv45wfnpEYzEQieplL+2WBVgjmijyy
+	 DRtcUsM1Ccm9bpLOu4wLJf+lXCPB3nxmbVTnF1twI2joVABXft2We0xgOWtsB+jmfh
+	 n3lUrKHcEg1dk0/eXqVkO7BgNEXnBXX8/LqJ/PGh3DHS0PNsAE6huXZb2OMWB0keLH
+	 +h8TX8rnhM0QA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70EE7380CEDD;
+	Wed,  5 Mar 2025 18:00:35 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1tpswi-005U6C-Py@rmk-PC.armlinux.org.uk>
-Sender: Russell King <rmk@armlinux.org.uk>
-Date: Wed, 05 Mar 2025 17:54:16 +0000
+Subject: Re: [PATCH] bpf, docs: Fix broken link to renamed bpf_iter_task_vmas.c
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174119763411.970160.4101069434619256136.git-patchwork-notify@kernel.org>
+Date: Wed, 05 Mar 2025 18:00:34 +0000
+References: <20250304204520.201115-1-tjmercier@google.com>
+In-Reply-To: <20250304204520.201115-1-tjmercier@google.com>
+To: T.J. Mercier <tjmercier@google.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, corbet@lwn.net,
+ davemarchevsky@fb.com, bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-stmmac_rx() declares a local variable named "buf_sz" but there is also
-a global variable for a module parameter which is called the same. To
-avoid confusion, rename the local variable.
+Hello:
 
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 334d41b8fa70..cb5099caecd0 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -5475,10 +5475,10 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
- 	struct sk_buff *skb = NULL;
- 	struct stmmac_xdp_buff ctx;
- 	int xdp_status = 0;
--	int buf_sz;
-+	int bufsz;
- 
- 	dma_dir = page_pool_get_dma_dir(rx_q->page_pool);
--	buf_sz = DIV_ROUND_UP(priv->dma_conf.dma_buf_sz, PAGE_SIZE) * PAGE_SIZE;
-+	bufsz = DIV_ROUND_UP(priv->dma_conf.dma_buf_sz, PAGE_SIZE) * PAGE_SIZE;
- 	limit = min(priv->dma_conf.dma_rx_size - 1, (unsigned int)limit);
- 
- 	if (netif_msg_rx_status(priv)) {
-@@ -5591,7 +5591,7 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
- 			net_prefetch(page_address(buf->page) +
- 				     buf->page_offset);
- 
--			xdp_init_buff(&ctx.xdp, buf_sz, &rx_q->xdp_rxq);
-+			xdp_init_buff(&ctx.xdp, bufsz, &rx_q->xdp_rxq);
- 			xdp_prepare_buff(&ctx.xdp, page_address(buf->page),
- 					 buf->page_offset, buf1_len, true);
- 
+On Tue,  4 Mar 2025 20:45:19 +0000 you wrote:
+> This file was renamed from bpf_iter_task_vma.c.
+> 
+> Fixes: 45b38941c81f ("selftests/bpf: Rename bpf_iter_task_vma.c to bpf_iter_task_vmas.c")
+> Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> ---
+>  Documentation/bpf/bpf_iterators.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Here is the summary with links:
+  - bpf, docs: Fix broken link to renamed bpf_iter_task_vmas.c
+    https://git.kernel.org/bpf/bpf-next/c/7781fd0ddeb4
+
+You are awesome, thank you!
 -- 
-2.30.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
