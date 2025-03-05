@@ -1,232 +1,137 @@
-Return-Path: <bpf+bounces-53294-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53295-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43E8EA4F927
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 09:51:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C288AA4F93B
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 09:54:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B3483A6EDD
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 08:51:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F15E9165D05
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 08:54:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B3D1FDA7E;
-	Wed,  5 Mar 2025 08:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1A61FDA63;
+	Wed,  5 Mar 2025 08:54:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PTht5iVc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FmO3Q8vO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f194.google.com (mail-yw1-f194.google.com [209.85.128.194])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E4BE155342;
-	Wed,  5 Mar 2025 08:51:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0541F5850
+	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 08:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741164687; cv=none; b=uroCXQ6ZcB30dZRbsWdNSgE7GihFroHlOpE6RTxideOlyV5lSduBnmKZ350Q1e7kCnVs4o1To3SRWDOyLwjreumjB3l27oo/J0UDPgHETK0KxYDZ27kh7X4WpDuPYEpovDb8wg4O/ooqPc8NnZ6t8h05XSDRcGvvfkMEdeXBxnE=
+	t=1741164893; cv=none; b=PfBneDgrU9ioGjSUx12Lro9rnd55DrrJ9h0bQlRxap3MSsNsNFS6xHj6Vwj+JfVpJsa2vV+3VRyaGzgBFfASbqVjv2qObKD3lPnol4goaKEhjnHOEagzO5OYzRUHnRMeCDL/vUNacymr55T/DUbiL6DT5icHw0vmX51Vg5e7qrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741164687; c=relaxed/simple;
-	bh=Cn0cFNTAZkpwSEDVzdYgVrdTOxR6wqjxB47H6BWXgbg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SbuS4mFdL/semVLlTWGtQfDeOnbYHsTTjd/3TLAEeqDPLpSMgdtidUIztxsxKgy/IZ7CsxIx0gXmjQvVZsWn6ylcXPE6tzkUjfbHnMAM7F/QwWPBmlPFc7r634V2/lAs/iy47rUmOCQ22DW/ApPhq1Eg1id55fNoVJTJHLCPNzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PTht5iVc; arc=none smtp.client-ip=209.85.128.194
+	s=arc-20240116; t=1741164893; c=relaxed/simple;
+	bh=lFX8YiDKKigB+P/DtWHh+WXI5zUO6hvlw/dHF/zKh1s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GgQDL3BTo+8NtrKI8CFU261mDbpJKmkZECmfTS/c7/F7FuVWbVNFBYdRv26jg2SvAPPb3d16iHFY8+eLg+dWGsgpfFa1qBs0iVF6ImsWmRI2jx1eBj+6DxJhb9bK//xwEOKpZz25A6y/HAaVp84ULv7n4B+b8FrCqarAztSBp8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FmO3Q8vO; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f194.google.com with SMTP id 00721157ae682-6fd47dfe76cso49120807b3.3;
-        Wed, 05 Mar 2025 00:51:25 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2237cf6a45dso66300405ad.2
+        for <bpf@vger.kernel.org>; Wed, 05 Mar 2025 00:54:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741164685; x=1741769485; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DQXKjZHa5r4213wcOvfbsp5orLWVfyC4Oxpcslkw+cY=;
-        b=PTht5iVcGGIxtI0Pl8tUHXs2adhL7j2hIOkWxghVyzJAMQdkdtPISeUWOeRa5N0bH+
-         iTfBTDFLv80f/v71g+9gLFErLPSrdOhrF1bIxjRhJ45G1ZabL0pr7i3nFPOkveWukILv
-         4lDIyuzSPHjiYSKb2vcaU7LWXUl2i6mcHQIVC0W6rOEpu0OYOm8yBKpkGYaKaNCTYk6f
-         KW7UHjNiNStP4iUMNm+RngvEYkdBPl+YhulY3PYWyGZpnwYErt4IbTjO3MRqh8wmPovj
-         cgp9UnfgyqpcjdICbZAomHztLpjVPZyooQ29UdYRTAGaROexxoapNsB0f84oAPXtHwrT
-         q0MQ==
+        d=gmail.com; s=20230601; t=1741164891; x=1741769691; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gLhKFSnuTwI1/bERxwY0NNbfGff9M3abeUujP6PZPfs=;
+        b=FmO3Q8vO5qdRZCJ0bU/ffOZOkOxop+ZXZgx29MeRU6o+dbj9ySVbX5BCrbpLsKC+zz
+         R9v5abWOKP+xZUpzaunkMEBTObgMhNPKZQbkkLNPTO2b4eebnFLYr5I2XbcN7WMRjsjJ
+         nclLq3fAq+cyfvLVEahCRUDpVJ2KFhAxxEWeOj8214zIa8ZqmMrFmI8q2cZC2nSSC2Is
+         9OCzULBTICl0luqoPN2T60V965gZ4OA3wqoVxf7BW8STHPhvEnaBFDG6UlVAHtVExRV4
+         BxZqj1tExwxAggEUMwlkUEQyIoLq+uBJr2Sxjf/p84hEfBEn70Je9MdAQaYwQkZZ1GSl
+         JuOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741164685; x=1741769485;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DQXKjZHa5r4213wcOvfbsp5orLWVfyC4Oxpcslkw+cY=;
-        b=GUlUtmyWHgGMYPxkHHM2s545tyxO6pjlJ6lF9L/vD9cEgyyqd47EFDllpBHSygrlIP
-         aamgyUldXhfpw9PFXIPDyvV1zTl/oAKiq41uTHh243YiSn7DVWWNJxoTd7B8b8QYFKZm
-         bC5ujS6Ljj/Z0hJDKut+7IOkMz3tuIoXKJNMiU4g4yqcYx3RwIuZ3BT+TZ88H/HtC68N
-         8MSqrpRy9oso/DfZnO5WleIS7uMBlJATcEaJh2TsEi6v4jNahMhkfygf49pdZmAobRxW
-         Z1VxFvWGk1OlxqPpEdrCy5YYSHUdTgJPSdszpYngeHDHx6IMjSBE7xmD9oZ86riOw++J
-         Kf7w==
-X-Forwarded-Encrypted: i=1; AJvYcCUZsDx5YNTarkSNfm4SDNv3dvxSP4J61Kfz+ULpRonTw7mPw4GTK9+Gq/g77PEn4e3BihIvqSfYobhDq8YoZftXL36G@vger.kernel.org, AJvYcCWEv26YWeFImkuF6MjeFZVHtRebJoobstcpTXnrjogf9qtGS2cy8cmw3i23VD4PMupbegCyJy4ierfPgCtv@vger.kernel.org, AJvYcCWi2Z1dzwAsfK+kxn5iUvtvfRhPzHr7SS82J/KoNKUPWLkL37nnNViRUX+6TIJRIim5+OQ=@vger.kernel.org, AJvYcCXyJtqrg83P2nGyX2Oo/fWPP5dmOAAqF8THZAGhgOrVjOwdGSrHrJgPTWImG0m56aQ3QreWwZwS@vger.kernel.org
-X-Gm-Message-State: AOJu0YyesAm3ZJIdFgOcOMMSsU+OW+1tNLHxeY0BEsf5gQ5S9n1idOE2
-	MFw8Qz1nu6BVC2C/IDJj+BmidV/iN2GcHvRhlQ4OKxN+BFYKuXGLzpnU7cIiguM8Ic8jfC25FyJ
-	NEwXYRVudY0q67KBCKRCuGbgVVqA=
-X-Gm-Gg: ASbGncsKwPmZrHiOrlz5uqmu3bMapUEJ1rrUyjuftydXHgQobnhKP/EW7BpmEN7+ccs
-	eBOD/OXqcYG4DWcExzP52BVSPTGIXs3hgJNtf6lFURoJ0gJbNSsiodpBr8buBCCHyCTLBxU0hl/
-	YmYwAokO2bmII/N9/oVkR+Wg+6ag==
-X-Google-Smtp-Source: AGHT+IHJHBBsGtFfE4z2mPAk21mETs2dOEwyYu6mGke3XwoXSNX7h5iKIMLg2OfM/L0feLDcyFXEy1rx6kLoqIY81uk=
-X-Received: by 2002:a05:690c:6c82:b0:6ea:5da9:34cc with SMTP id
- 00721157ae682-6fda2f6ae73mr31701457b3.7.1741164685004; Wed, 05 Mar 2025
- 00:51:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1741164891; x=1741769691;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gLhKFSnuTwI1/bERxwY0NNbfGff9M3abeUujP6PZPfs=;
+        b=b1VY1OO4AqfcvQJ0VL/eYbXYx0YXnQCoXeN139oHJC75g/Mq5QvwlmBJKfY4NdJ/nY
+         L9iyXhxXe5iveCeFcIMRzsOMqPn+5bQSTcO6jyjA/HjO5lH34FjMkHxzx1fYwletW+QU
+         5evFaaudLd+R4n39U72Tvps/5gqW499FVKDtlumWdQOoMdYsX/LToORyLyTlBlfjLTWC
+         GBr5LFVKGSHYy9BGdrSddVWsBzi8GPhsBu5yT9sXSS6Gr1VlmWsL8OozkW86F2odK7Mr
+         VD8HptAIZ/xIQ79Im+B3GmnEEexKJkntC3kmpXJb4xo9SiFpG9Z9Hq/gR+zt1p9ttiuf
+         t1Ng==
+X-Gm-Message-State: AOJu0Yzmz48x6nabALZXZyX4lvHIS1v+3t/A3LhBWt12lsKhfqHPWUod
+	1Q8IFpx9j7hp4soh8Mvh0zqC6kZyd4pqZ5rsOTQ0ESQoe3G5BjbGuL4ELw==
+X-Gm-Gg: ASbGncu4u2Gskm3pi7Vk0SBjUJiA1m65OehXMbOVB5XfEQkNY0fAUxmRLyNW0MlbGiN
+	obgUjcjumVDH6/nPqKWxz1lDb3N0yUxh+GsQUoJYt/F3EdrYFw8YoGudOM33ZCVEydTpeUcPzPT
+	0widR/HA3fXRGAULayiMzyhsvvTFY+EJvt5LJGKnAscPOaGk4yUoy5FyMZaULMYin5wH1huAA/x
+	nU9GavYa8SJvCIxkWCZqDvu/JwGPXQKfVN4AmUR3Y///Aqqqf6U3LpH538QBaSoGu6tbV3ZQB4Z
+	zQJwfYLWF8hBDs2QzAVZaDgK/Nh8bBEir1E+9zTX
+X-Google-Smtp-Source: AGHT+IHizDkgvQCrnndo0r91AOtVIFbq3yb6I00LGbEjlM/nJbjPILhlMYaYacAZw8uvVkad1bEedA==
+X-Received: by 2002:a05:6a20:244f:b0:1f3:484e:c551 with SMTP id adf61e73a8af0-1f3494e354fmr4165193637.18.1741164891438;
+        Wed, 05 Mar 2025 00:54:51 -0800 (PST)
+Received: from honey-badger.. ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af234b133d3sm5112888a12.41.2025.03.05.00.54.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Mar 2025 00:54:51 -0800 (PST)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org
+Cc: andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	kernel-team@fb.com,
+	yonghong.song@linux.dev,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next v1] bpf: correct use/def for may_goto instruction
+Date: Wed,  5 Mar 2025 00:54:36 -0800
+Message-ID: <20250305085436.2731464-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250303132837.498938-1-dongml2@chinatelecom.cn>
- <20250303132837.498938-2-dongml2@chinatelecom.cn> <20250303165454.GB11590@noisy.programming.kicks-ass.net>
- <CADxym3aVtKx_mh7aZyZfk27gEiA_TX6VSAvtK+YDNBtuk_HigA@mail.gmail.com>
- <20250304053853.GA7099@noisy.programming.kicks-ass.net> <20250304061635.GA29480@noisy.programming.kicks-ass.net>
- <CADxym3bS_6jpGC3vLAAyD20GsR+QZofQw0_GgKT8nN3c-HqG-g@mail.gmail.com>
- <20250304094220.GC11590@noisy.programming.kicks-ass.net> <6F9EF5C3-4CAE-4C5E-B70E-F73462AC7CA0@zytor.com>
- <CADxym3busXZKtX=+FY_xnYw7e1CKp5AiHSasZGjVJTdeCZao-g@mail.gmail.com> <694E52E0-C9E5-49D2-A677-09A5EE442590@zytor.com>
-In-Reply-To: <694E52E0-C9E5-49D2-A677-09A5EE442590@zytor.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Wed, 5 Mar 2025 16:49:47 +0800
-X-Gm-Features: AQ5f1JpDhhwKYSzWqZc9I3K1CFCu-n4ujPK1HFEHMI_ufAKecdbRxf_kS4Jud7Q
-Message-ID: <CADxym3Zu1u1xF0k+N4gZ50jHtZ9iRRQ0ZTtt_koG8Ta+B0DPJg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] x86/ibt: factor out cfi and fineibt offset
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, rostedt@goodmis.org, mark.rutland@arm.com, 
-	alexei.starovoitov@gmail.com, catalin.marinas@arm.com, will@kernel.org, 
-	mhiramat@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@fomichev.me, jolsa@kernel.org, davem@davemloft.net, 
-	dsahern@kernel.org, mathieu.desnoyers@efficios.com, nathan@kernel.org, 
-	nick.desaulniers+lkml@gmail.com, morbo@google.com, samitolvanen@google.com, 
-	kees@kernel.org, dongml2@chinatelecom.cn, akpm@linux-foundation.org, 
-	riel@surriel.com, rppt@kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 5, 2025 at 4:30=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> wrote=
-:
->
-> On March 4, 2025 5:19:09 PM PST, Menglong Dong <menglong8.dong@gmail.com>=
- wrote:
-> >On Tue, Mar 4, 2025 at 10:53=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> w=
-rote:
-> >>
-> >> On March 4, 2025 1:42:20 AM PST, Peter Zijlstra <peterz@infradead.org>=
- wrote:
-> >> >On Tue, Mar 04, 2025 at 03:47:45PM +0800, Menglong Dong wrote:
-> >> >> We don't have to select FUNCTION_ALIGNMENT_32B, so the
-> >> >> worst case is to increase ~2.2%.
-> >> >>
-> >> >> What do you think?
-> >> >
-> >> >Well, since I don't understand what you need this for at all, I'm fir=
-mly
-> >> >on the side of not doing this.
-> >> >
-> >> >What actual problem is being solved with this meta data nonsense? Why=
- is
-> >> >it worth blowing up our I$ footprint over.
-> >> >
-> >> >Also note, that if you're going to be explaining this, start from
-> >> >scratch, as I have absolutely 0 clues about BPF and such.
-> >>
-> >> I would appreciate such information as well. The idea seems dubious on=
- the surface.
-> >
-> >Ok, let me explain it from the beginning. (My English is not good,
-> >but I'll try to describe it as clear as possible :/)
-> >
-> >Many BPF program types need to depend on the BPF trampoline,
-> >such as BPF_PROG_TYPE_TRACING, BPF_PROG_TYPE_EXT,
-> >BPF_PROG_TYPE_LSM, etc. BPF trampoline is a bridge between
-> >the kernel (or bpf) function and BPF program, and it acts just like the
-> >trampoline that ftrace uses.
-> >
-> >Generally speaking, it is used to hook a function, just like what ftrace
-> >do:
-> >
-> >foo:
-> >    endbr
-> >    nop5  -->  call trampoline_foo
-> >    xxxx
-> >
-> >In short, the trampoline_foo can be this:
-> >
-> >trampoline_foo:
-> >    prepare a array and store the args of foo to the array
-> >    call fentry_bpf1
-> >    call fentry_bpf2
-> >    ......
-> >    call foo+4 (origin call)
-> >    save the return value of foo
-> >    call fexit_bpf1 (this bpf can get the return value of foo)
-> >    call fexit_bpf2
-> >    .......
-> >    return to the caller of foo
-> >
-> >We can see that the trampoline_foo can be only used for
-> >the function foo, as different kernel function can be attached
-> >different BPF programs, and have different argument count,
-> >etc. Therefore, we have to create 1000 BPF trampolines if
-> >we want to attach a BPF program to 1000 kernel functions.
-> >
-> >The creation of the BPF trampoline is expensive. According to
-> >my testing, It will spend more than 1 second to create 100 bpf
-> >trampoline. What's more, it consumes more memory.
-> >
-> >If we have the per-function metadata supporting, then we can
-> >create a global BPF trampoline, like this:
-> >
-> >trampoline_global:
-> >    prepare a array and store the args of foo to the array
-> >    get the metadata by the ip
-> >    call metadata.fentry_bpf1
-> >    call metadata.fentry_bpf2
-> >    ....
-> >    call foo+4 (origin call)
-> >    save the return value of foo
-> >    call metadata.fexit_bpf1 (this bpf can get the return value of foo)
-> >    call metadata.fexit_bpf2
-> >    .......
-> >    return to the caller of foo
-> >
-> >(The metadata holds more information for the global trampoline than
-> >I described.)
-> >
-> >Then, we don't need to create a trampoline for every kernel function
-> >anymore.
-> >
-> >Another beneficiary can be ftrace. For now, all the kernel functions tha=
-t
-> >are enabled by dynamic ftrace will be added to a filter hash if there ar=
-e
-> >more than one callbacks. And hash lookup will happen when the traced
-> >functions are called, which has an impact on the performance, see
-> >__ftrace_ops_list_func() -> ftrace_ops_test(). With the per-function
-> >metadata supporting, we can store the information that if the callback i=
-s
-> >enabled on the kernel function to the metadata, which can make the perfo=
-rmance
-> >much better.
-> >
-> >The per-function metadata storage is a basic function, and I think there
-> >may be other functions that can use it for better performance in the fea=
-ture
-> >too.
-> >
-> >(Hope that I'm describing it clearly :/)
-> >
-> >Thanks!
-> >Menglong Dong
-> >
->
-> This is way too cursory. For one thing, you need to start by explaining w=
-hy you are asking to put this *inline* with the code, which is something th=
-at normally would be avoided at all cost.
+may_goto instruction does not use any registers,
+but in compute_insn_live_regs() it was treated as a regular
+conditional jump of kind BPF_K with r0 as source register.
+Thus unnecessarily marking r0 as used.
 
-Hi,
+Fixes: 7dad03653567 ("bpf: simple DFA-based live registers analysis")
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ kernel/bpf/verifier.c                                      | 1 +
+ tools/testing/selftests/bpf/progs/compute_live_registers.c | 6 +++---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-Sorry that I don't understand the *inline* here, do you mean
-why puting the metadata in the function padding?
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 4edb2db0f889..3303a3605ee8 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -23567,6 +23567,7 @@ static void compute_insn_live_regs(struct bpf_verifier_env *env,
+ 	case BPF_JMP32:
+ 		switch (code) {
+ 		case BPF_JA:
++		case BPF_JCOND:
+ 			def = 0;
+ 			use = 0;
+ 			break;
+diff --git a/tools/testing/selftests/bpf/progs/compute_live_registers.c b/tools/testing/selftests/bpf/progs/compute_live_registers.c
+index 14df92949e81..f3d79aecbf93 100644
+--- a/tools/testing/selftests/bpf/progs/compute_live_registers.c
++++ b/tools/testing/selftests/bpf/progs/compute_live_registers.c
+@@ -294,9 +294,9 @@ __naked void gotol(void)
+ 
+ SEC("socket")
+ __log_level(2)
+-__msg("0: 0......... (b7) r1 = 1")
+-__msg("1: 01........ (e5) may_goto pc+1")
+-__msg("2: 0......... (05) goto pc-3")
++__msg("0: .......... (b7) r1 = 1")
++__msg("1: .1........ (e5) may_goto pc+1")
++__msg("2: .......... (05) goto pc-3")
+ __msg("3: .1........ (bf) r0 = r1")
+ __msg("4: 0......... (95) exit")
+ __naked void may_goto(void)
+-- 
+2.48.1
+
 
