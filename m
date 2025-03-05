@@ -1,55 +1,80 @@
-Return-Path: <bpf+bounces-53319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FDCCA50142
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 15:03:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECEB4A502B8
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 15:52:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3537B189226E
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 14:03:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E82A1188EE86
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 14:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4172B24113C;
-	Wed,  5 Mar 2025 14:02:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DD1248885;
+	Wed,  5 Mar 2025 14:46:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ROnFcmmv"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B769E2E3396;
-	Wed,  5 Mar 2025 14:02:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39563594C;
+	Wed,  5 Mar 2025 14:46:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741183376; cv=none; b=B++t/eIVI/gtre+c9TZyznknBARy3znmCY/1WU8Nrj8vTmjaZRa0SHOwQjhxNOrLrwWJnbl88ARKhgHQgOVas92fdpBUiFVCmD6B2qPJtnT87SzI2mIrjoSYXXLy5lVxiA/mmrw/apbGqcRzcaBGtDOzLJnPn+yzsc8kNizQbDY=
+	t=1741185998; cv=none; b=lqm4yRbQVuKKuAjxIsl6W1TDXkGdqfwB5OCmY/6SSLa92rndtvC0C/BcgRVun75U7Fqs50cYMJT2r5HBOzVjETkxxfEXFPtMkR1iQ0p0DvD7Hpo607j+Kgv2P6fL6zudLvGcc3s1hFquSX2IYjeRAWfHp5lNP/nxT/vBt3LxVVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741183376; c=relaxed/simple;
-	bh=AY+NuMNR5CWph1/BQWdAvt2+Lc3CjLK2QGXJEeGaN+s=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YyKx73vW7FaP/H6wFY3JzINF50AM4sIfC+LqlWQyGh+AiPxGYEwLGahXrz0EKuwPMGmoaUaGf2bSX85Sd/J7PiOCHc5BxgqyAR3NKPm9qZrHDcEfh/5wEBXldQn2SlcCHLssu37ki4R9bP/7PPhAlsS5tqDco5HI65821tiJY/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Z7Djh2ryhzpbV3;
-	Wed,  5 Mar 2025 22:01:12 +0800 (CST)
-Received: from kwepemd100023.china.huawei.com (unknown [7.221.188.33])
-	by mail.maildlp.com (Postfix) with ESMTPS id 041C318009E;
-	Wed,  5 Mar 2025 22:02:43 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- kwepemd100023.china.huawei.com (7.221.188.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 5 Mar 2025 22:02:41 +0800
-From: Dong Chenchen <dongchenchen2@huawei.com>
-To: <edumazet@google.com>, <kuniyu@amazon.com>, <pabeni@redhat.com>,
-	<willemb@google.com>, <john.fastabend@gmail.com>, <jakub@cloudflare.com>,
-	<davem@davemloft.net>, <kuba@kernel.org>, <horms@kernel.org>,
-	<daniel@iogearbox.net>
-CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<zhangchangzhong@huawei.com>, <weiyongjun1@huawei.com>, Dong Chenchen
-	<dongchenchen2@huawei.com>
-Subject: [PATCH net] bpf, sockmap: Restore sk_prot ops when psock is removed from sockmap
-Date: Wed, 5 Mar 2025 22:02:34 +0800
-Message-ID: <20250305140234.2082644-1-dongchenchen2@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1741185998; c=relaxed/simple;
+	bh=UNQnrk7ea2qjUTxEYudX1sfMK1ZpSwuAnn5ETANGDms=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mY+Hxu/ZaTvAVRbf3VeVaTFagIk96ewaQUONGnUa09NLsLB2jajymKMrXiChveUP2Ory65EgKH3+ZrIG51+1pXG/yEGEa6NVrUtQncZ9np/uePSLbOKblWc4IsMkrYeUGl4U5AIporUrZ3jckdCVBXaNuet2gAxoPF4N9giaFzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ROnFcmmv; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741185997; x=1772721997;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=UNQnrk7ea2qjUTxEYudX1sfMK1ZpSwuAnn5ETANGDms=;
+  b=ROnFcmmvnAgnfLNkNQ4ab7GAJwbq6NdIiFcMAu1Yjpegc9AJFkqIIqMk
+   otMtYbxMAQ09a5jYRtpbR17lSMcHg9qwQITdEJGRQYS8ywb6S3EiB2a/l
+   Xy7MxbF+HB2cbMmP594yDORVSfc3WMs57Eq5y+p9nrKtTN0wWOEgJpJGh
+   6pl69+9yKJsPEPly2kwHOSsH7bWDuYgDc4Z6aXwyj+n+JRShzeuExX4XJ
+   nbYA5cuRHbeFoaTZajmUqLbQQmDstLCLnDvr2OPfduq0DkHLoionzdWk/
+   y3jt8G6c7yZtwZMeM8Lv+b9xBGKV6brGr9+HQ97RqTIPR96MMpF2xQjwU
+   Q==;
+X-CSE-ConnectionGUID: TfTo2LXyTCeeCcVXduVKnQ==
+X-CSE-MsgGUID: yo8bHt+5R6iN7KaN4lgtKw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11363"; a="52355897"
+X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
+   d="scan'208";a="52355897"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 06:46:36 -0800
+X-CSE-ConnectionGUID: p8lwS4tDSHyq62YldatsFw==
+X-CSE-MsgGUID: sj0NcocZQvixdZxT7/WTXw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
+   d="scan'208";a="123296897"
+Received: from brc05.iind.intel.com (HELO brc05..) ([10.190.162.156])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 06:46:33 -0800
+From: Tushar Vyavahare <tushar.vyavahare@intel.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	tirthendu.sarkar@intel.com,
+	tushar.vyavahare@intel.com
+Subject: [PATCH bpf-next v3 0/2] selftests/xsk: Add tests for XDP tail adjustment in AF_XDP
+Date: Wed,  5 Mar 2025 14:18:11 +0000
+Message-Id: <20250305141813.286906-1-tushar.vyavahare@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,65 +82,52 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemd100023.china.huawei.com (7.221.188.33)
 
-WARNING: CPU: 0 PID: 6558 at net/core/sock_map.c:1703 sock_map_close+0x3c4/0x480
-Modules linked in:
-CPU: 0 UID: 0 PID: 6558 Comm: syz-executor.14 Not tainted 6.14.0-rc5+ #238
-RIP: 0010:sock_map_close+0x3c4/0x480
-Call Trace:
- <TASK>
- inet_release+0x144/0x280
- __sock_release+0xb8/0x270
- sock_close+0x1e/0x30
- __fput+0x3c6/0xb30
- __fput_sync+0x7b/0x90
- __x64_sys_close+0x90/0x120
- do_syscall_64+0x5d/0x170
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
+This patch series adds tests to validate the XDP tail adjustment
+functionality, focusing on its use within the AF_XDP context. The tests
+verify dynamic packet size manipulation using the bpf_xdp_adjust_tail()
+helper function, covering both single and multi-buffer scenarios.
 
-The root cause is:
-sock_hash_update_common
-  sock_map_unref
-    sock_map_del_link
-      psock->psock_update_sk_prot(sk, psock, false);
-	//false won't restore proto
-    sk_psock_put
-       rcu_assign_sk_user_data(sk, NULL);
-inet_release
-  sk->sk_prot->close
-    sock_map_close
-      WARN(sk->sk_prot->close == sock_map_close)
+v1 -> v2:
+1. Retain and extend stream replacement: Keep `pkt_stream_replace`
+   unchanged. Add `pkt_stream_replace_ifobject` for targeted ifobject
+   handling.
 
-When psock is removed from sockmap, sock_map_del_link() still set
-sk->sk_prot to bpf proto instead of restore it (for incorrect restore
-value). sock release will triger warning of sock_map_close() for
-recurse after psock drop.
+2. Consolidate patches: Merge patches 2 to 6 for tail adjustment tests and
+   check.
 
-Set restore param of psock_update_sk_prot to true to fix the problem.
+v2 -> v3:
+1. Introduce `adjust_value` to replace `count` for clearer communication
+   with userspace.
 
-Fixes: c0d95d3380ee ("bpf, sockmap: Re-evaluate proto ops when psock is removed from sockmap")
-Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
 ---
- net/core/sock_map.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Patch Summary:
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 82a14f131d00..10bc185ef103 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -171,7 +171,7 @@ static void sock_map_del_link(struct sock *sk,
- 			sk_psock_stop_verdict(sk, psock);
- 
- 		if (psock->psock_update_sk_prot)
--			psock->psock_update_sk_prot(sk, psock, false);
-+			psock->psock_update_sk_prot(sk, psock, true);
- 		write_unlock_bh(&sk->sk_callback_lock);
- 	}
- }
+1. Packet stream replacement: Add `pkt_stream_replace_ifobject` to manage
+   packet streams efficiently.
+
+2. Tail adjustment tests and support check: Implement dynamic packet
+   resizing in xskxceiver by adding `xsk_xdp_adjust_tail` and extend this
+   functionality to userspace with `testapp_xdp_adjust_tail` for
+   validation. Ensure support by adding `is_adjust_tail_supported` to
+   verify the availability of `bpf_xdp_adjust_tail()`. Introduce tests for
+   shrinking and growing packets using `bpf_xdp_adjust_tail()`, covering
+   both single and multi-buffer scenarios when used with AF_XDP.
+---
+
+Tushar Vyavahare (2):
+  selftests/xsk: Add packet stream replacement function
+  selftests/xsk: Add tail adjustment tests and support check
+
+Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
+
+ .../selftests/bpf/progs/xsk_xdp_progs.c       |  49 +++++++
+ tools/testing/selftests/bpf/xsk_xdp_common.h  |   1 +
+ tools/testing/selftests/bpf/xskxceiver.c      | 120 ++++++++++++++++--
+ tools/testing/selftests/bpf/xskxceiver.h      |   2 +
+ 4 files changed, 164 insertions(+), 8 deletions(-)
+
 -- 
-2.25.1
+2.34.1
 
 
