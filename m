@@ -1,261 +1,396 @@
-Return-Path: <bpf+bounces-53340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0D56A5024E
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 15:39:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F5DDA50277
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 15:44:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1360B189A967
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 14:36:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C1543A9C61
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 14:42:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F21B252914;
-	Wed,  5 Mar 2025 14:33:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 904CF24E4A0;
+	Wed,  5 Mar 2025 14:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="I2MnrdAO";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Bo0nl3QL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WRIdbv5r"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2382C252903;
-	Wed,  5 Mar 2025 14:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741185234; cv=none; b=k/kwlzZAXODwRYwQGvcx9lyipvzcj3nVVjH5c/LBu+oa8V9aiYfSVEg9gIcHvyM6vhuPrpcvDa9bqk0TkYDgdjpTFAnUJ7Tf3EZeZV4o4b2ysNFIZO4NFHxCr35XuDmGXAcvU1hdZ+ceTyH9qU75Gf79ePvpNdE0MO82SAIxuc4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741185234; c=relaxed/simple;
-	bh=UyzCQ+1TEf63QXbFVHZfqRUApOl37dvhkdRu2DAyPbM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=dQ4iRbG/dtliojw2cVcMjKbpVRgiBNkxWCh0bWmD54atAcmiWCzh04ywXcyj6xd0hcNTZr7Llg5OR66sxSsviM+miV6ttlTLMr7R1kGSwuW8E/eQoRt6vmM9DcjV8n6Z0L0kzH1ciOcIAO1NcLltO4/etWIQe/N4PANoqLh3L24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=I2MnrdAO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Bo0nl3QL; arc=none smtp.client-ip=103.168.172.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arthurfabre.com
-Received: from phl-compute-13.internal (phl-compute-13.phl.internal [10.202.2.53])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 3E76B1140252;
-	Wed,  5 Mar 2025 09:33:52 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-13.internal (MEProxy); Wed, 05 Mar 2025 09:33:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arthurfabre.com;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
-	 t=1741185232; x=1741271632; bh=k1YGAnSYA9FoYxracqWXHS34OxsoexW0
-	9UyZ0uIaTJ8=; b=I2MnrdAOZkZaNH/iUnOV4F55V1G2OXXm5GUBNHQ6mX4rk3Ye
-	VynOd2PPBNDRnEQfE3vtWwwTuKaDj/qs4U56SZDnZ8ipZO4TM9ECDlIp1I2I5FB9
-	2zOoXLIrtN4feG3VVcjOQJH9jFIzLuc2abLILsLcfmwN30atvHjFPTGyFgXGolWO
-	+slZ9/vqu0ZxNMIBGsbPaU1okhfvVQGEkcwF6p6J/YpOdoVKwEP50XwI4IJHjtxp
-	Ft26UZrUmkUqmZBlHwtZAV9LbakPKe/s92VaZRERHbeKVHntDTKB4ONflbq36Zh3
-	doTJufMdV3qVWdmWdJcDnadQoiW87llH+T4nag==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1741185232; x=
-	1741271632; bh=k1YGAnSYA9FoYxracqWXHS34OxsoexW09UyZ0uIaTJ8=; b=B
-	o0nl3QLVpVkTz5M4HklP6ZI0WywbMyLM6mJP7T8DorZ0cUJP6YTOUwrf+wTfVPpV
-	RyY6/Y44vmwk5yO4KPu+3W+AVVsxFjPyYDYN0Lss2iIwHj6vjiY+DIaCRxsgEoRH
-	BqouuuvCOvDlQtXgWLQEYCNKgOUFTm77S3jTvf3NhfCAAM4iIxAnlt5n1eVVeP6/
-	LIMRfDNigzGPiUAW1ve6jA8XizruXOH5myHjEZHT07BkMtvfUc65eZ0FuCVEqhwf
-	QBrZkbSIo7zU9do/y1KYgrCaiMTIDzCvPjGfUnQ8wSRD9WCmZS8Qb/+0npKA23oE
-	y4mLu6W4RjWzEQBgjOmCA==
-X-ME-Sender: <xms:0GDIZ8IleFasAdU7bJETo2lkazQb1AnImwopgD3maMEYDBIcQ_nF3g>
-    <xme:0GDIZ8J74hWrAAw1UUgHMn6Hw_0jRimIX1HCce4MTKr2C2j3mjGOnChEQnjCcpYil
-    Ym_YPK7xAa_YwWQVWA>
-X-ME-Received: <xmr:0GDIZ8tV1xaeGOsKJE5PAN3h-3fkWmUNcBo_vtrFq9smXkcOK_T1EO1x2exHgb7_vD0GaAUzJfc7saMUzuw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutdehtdejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertder
-    tdejnecuhfhrohhmpegrrhhthhhurhesrghrthhhuhhrfhgrsghrvgdrtghomhenucggtf
-    frrghtthgvrhhnpeffueehtddtkeetgfelteejledvjeekgeduleffjeetfeekveeggffh
-    fefhvdegffenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrrhhthhhurhesrghrthhhuhhrfhgrsghrvgdrtghomhdpnhgspghrtghpthhtohep
-    ledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepthhhohhilhgrnhgusehrvgguhh
-    grthdrtghomhdprhgtphhtthhopehlsghirghntghonhesrhgvughhrghtrdgtohhmpdhr
-    tghpthhtohephhgrfihksehkvghrnhgvlhdrohhrghdprhgtphhtthhopegsphhfsehvgh
-    gvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghfrggsrhgvsegtlhhouhgufhhl
-    rghrvgdrtghomhdprhgtphhtthhopehjrghkuhgssegtlhhouhgufhhlrghrvgdrtghomh
-    dprhgtphhtthhopeihrghnsegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopehn
-    vghtuggvvhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehjsghrrghnug
-    gvsghurhhgsegtlhhouhgufhhlrghrvgdrtghomh
-X-ME-Proxy: <xmx:0GDIZ5ZVy5bhhtYC5WWIjN1m9SyGyMVwVyu0BGzd7RMDzCu4WyHt_A>
-    <xmx:0GDIZzb5AxrZFEphmDTVAMcwxtVfTrY_vAoDi38K2QpwEmM0_2abWQ>
-    <xmx:0GDIZ1A8Rrj4taycqaJpL1qj9wXFRJW83QL4Zb7_IDUptrz6Q49m2Q>
-    <xmx:0GDIZ5YfdfyUW14e_ZUX0lvJKy6M5Mnf1uG302JUgp6axfXclDmqpw>
-    <xmx:0GDIZ9kHWQXv2Nea2yeymym1OmJQkOEonxFqB-hxgn31ImpzAi7tsJ92>
-Feedback-ID: i25f1493c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 5 Mar 2025 09:33:50 -0500 (EST)
-From: arthur@arthurfabre.com
-Date: Wed, 05 Mar 2025 15:32:17 +0100
-Subject: [PATCH RFC bpf-next 20/20] trait: register traits in benchmarks
- and tests
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0328A1EDA2D;
+	Wed,  5 Mar 2025 14:42:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741185723; cv=fail; b=k1qqpfvpirWjc3XmEBwmw/SaCxaetDkErGptkG5mp69YJHwW41o7WlEl5uMD9VHIjkUNHlkynjr2vTpLLofo9MNocKy5r5DQAZFdPcebXdbuvORvIuL2pzYHnEorhQiz2AXGySx71CgKdg3z3oQ8uv1DngD14KGZgWUgzw8JF5M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741185723; c=relaxed/simple;
+	bh=vtAkRuhA5jaU/gNLYSGQyXiH0FSxLte1YuyK33AfRjs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=XoabIG3rP4ql1yNgfgMpfued3xL0VqSV3tKNYd0GJmxoNuTthAg0Swe0LVoaBCXIZre3ScWgZmQ6M52I5xvZ9anQXQ69QorOuMxyfar9QyvY58cYW5wVM1RkOP6UH6JnjxXFKF1TjmepfhFkywuU1B9r0Qx8cJ9ZobgFOrMx0eI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WRIdbv5r; arc=fail smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741185721; x=1772721721;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=vtAkRuhA5jaU/gNLYSGQyXiH0FSxLte1YuyK33AfRjs=;
+  b=WRIdbv5rkPoYDm5NhTs83roNvjFyqec0FDqI2nYBlw5JkRFFVEmK4u5r
+   WcwnVHNZ60HJWJssq1Owo6+FTEtJy61kmnb0lbQupDYJmhYy7YShQZrO8
+   NFrSOyNBjrh9CAt8b2KFAZhh62JDVUnJ0i9JlqG9cpUZ9Fj+JLBltD5P0
+   srqfOtU1rVTSOt7mNwYwoeWtnd7jKTD1ihGRbGEwrpjxYg+lgI4B1Bx3n
+   XexGu3XZRUogGn6leoAAFZVxeOdM4UM4WxXYZiLf+OaEpjeeRsyNgdzgW
+   Vvp2Ca8nL/c6m5cjReK2qr52qaNglx6B4C2ushQEUy0jGTVvPk2bNQoPf
+   A==;
+X-CSE-ConnectionGUID: IPlhSwBzQYe1otG76UZe/A==
+X-CSE-MsgGUID: TaMDv23qQ1WhEMdUx1A8sw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11363"; a="53563914"
+X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
+   d="scan'208";a="53563914"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 06:41:26 -0800
+X-CSE-ConnectionGUID: dHOlXnKfQwaE9uGsBmXQfA==
+X-CSE-MsgGUID: oD28kzuRQ5GmevDw48tMsg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
+   d="scan'208";a="118528217"
+Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 06:41:24 -0800
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Wed, 5 Mar 2025 06:41:23 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Wed, 5 Mar 2025 06:41:23 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.49) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Wed, 5 Mar 2025 06:41:21 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=SkcKv3/2odI+ba/N1bVC9dKNDabY0Z3NH+t34MvHznzNQ1SLMOTDS3pa7zwosu6wZ9r4MdVAC9x/90hoA/UPW9zct6Djd0u9u9sktLdVaah4XEuUvKv8BsljwrK9ej6lKskYylA+noZYNQTQCIAH3roVsDJL0EJCqMrEtrbrUcd0An9tWo4Ckh/kyxh2b43IO/odR5dBz5I4AlSJT+1CFSytHFnI5eihqrlixrxiICPhbT4JcCCeWR2FJAkU+QxY/en33FjOHrLnXNDcdF/ATJslE/gZPPcn9uEEHBAaRNPmBttNWAWHkyqI3N7plq0AQ7ZrMvDnTtSkg25UJsBHnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=abwcSNczI85/Bq+sxEJlTUByh9M/KK+bKwOeUyibaLg=;
+ b=CyB+ixPYBAnl6Aazi8sIcENnn/SmKVSuDyGKnSjqRGL7u9JdVDQBd0OXknMYvIMd/MbhXU6TCRYN1a7TVp4Czb6JBP0dVUuwojcRFiD8YiL6Ga9wv2dZe/9tFEPA2Pno5tOJFb7uaWXPGMY2lxi/6MPCCVD8XYuO9YYVJ7vl+FYdouj9kLRs3jNEiBDUrLFTlM/FXBjHXNUcYL/lh+uKnXYArwVeIKVcrvslY/BBw0QS4kRTV1UJs/UAFZxjLjKbmj6CdUlbLowzta4nk3Zhgp9Nn6+qTINXlb02UulGHrPCB8fOZT1vcT4JqrClMn8hucbjPTjcKJPHGbUky0lfiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from IA1PR11MB6514.namprd11.prod.outlook.com (2603:10b6:208:3a2::16)
+ by PH0PR11MB7493.namprd11.prod.outlook.com (2603:10b6:510:284::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.26; Wed, 5 Mar
+ 2025 14:40:33 +0000
+Received: from IA1PR11MB6514.namprd11.prod.outlook.com
+ ([fe80::c633:7053:e247:2bef]) by IA1PR11MB6514.namprd11.prod.outlook.com
+ ([fe80::c633:7053:e247:2bef%4]) with mapi id 15.20.8489.025; Wed, 5 Mar 2025
+ 14:40:33 +0000
+From: "Vyavahare, Tushar" <tushar.vyavahare@intel.com>
+To: "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
+CC: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "bjorn@kernel.org" <bjorn@kernel.org>, "Karlsson,
+ Magnus" <magnus.karlsson@intel.com>, "jonathan.lemon@gmail.com"
+	<jonathan.lemon@gmail.com>, "davem@davemloft.net" <davem@davemloft.net>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
+	<daniel@iogearbox.net>, "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>
+Subject: RE: [PATCH bpf-next v2 2/2] selftests/xsk: Add tail adjustment tests
+ and support check
+Thread-Topic: [PATCH bpf-next v2 2/2] selftests/xsk: Add tail adjustment tests
+ and support check
+Thread-Index: AQHbiSfBClADKJ+qnUOZXYXidi1MJ7NbdpyAgAEBbdCABSSHgIADChMA
+Date: Wed, 5 Mar 2025 14:40:33 +0000
+Message-ID: <IA1PR11MB6514E55C4AF5D92919A1383A8FCB2@IA1PR11MB6514.namprd11.prod.outlook.com>
+References: <20250227142737.165268-1-tushar.vyavahare@intel.com>
+ <20250227142737.165268-3-tushar.vyavahare@intel.com> <Z8CtO2enntB/lrnp@boxer>
+ <IA1PR11MB6514D321A1123B8C280875018FCC2@IA1PR11MB6514.namprd11.prod.outlook.com>
+ <Z8XVj9XESLIYSwaT@boxer>
+In-Reply-To: <Z8XVj9XESLIYSwaT@boxer>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA1PR11MB6514:EE_|PH0PR11MB7493:EE_
+x-ms-office365-filtering-correlation-id: c6244e08-ae43-4181-2751-08dd5bf3af84
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|366016|1800799024|376014|38070700018|7053199007;
+x-microsoft-antispam-message-info: =?us-ascii?Q?fOZH5MHUUgmFipPGd+FUCih16GZ4UK1hohNUj15NobBMpn1fonnNtrZOty1f?=
+ =?us-ascii?Q?+11bIYNeiYOGxE3MTJWyHvAaGCuQdz7/eozNRjj4uDB+erANVpafQji1dMiJ?=
+ =?us-ascii?Q?D7N+vhRxAj9R9Z2+ZFc9adjYAryNVOkVZtR5BxoyeIvBi48EyPCFqhCK8Ko1?=
+ =?us-ascii?Q?GFt3e1kuDTvllevxhCmW5n35Cs/eNQIJVblLccmO3P53RDoGahq5rf5PXtpM?=
+ =?us-ascii?Q?TgnnYOtVvjEIhhg6RrwJOdfG8seSfI6MHFr35qAiY8oiHv1r6VfNYHOLn/Yi?=
+ =?us-ascii?Q?rOwEYcDXxHU2wBmeQ94MAx4XWW0LfO4BrBCk7HjxNbVbf2aX2x84z3mP3qAU?=
+ =?us-ascii?Q?tnRyXnQXTFnX9bisShQ/MjpmAr/xuWFeKTr3d+eWbNGj+OWpOqmWCjdPHDiY?=
+ =?us-ascii?Q?NNeR3JPeT8MeSHotPvbrQFlaU5P/oJb5Fh6AB9vltzD1yTyWOPIRz5Ki3l+0?=
+ =?us-ascii?Q?ESQI0b7BSu1I7eXq2oCTVcj99OlWtVhoxqBpBkBXu29CUg99QUM89+g2jQVN?=
+ =?us-ascii?Q?9xx3rDZxQnHJs4857KckSyG/72swA3jh5B3E5ZJS5Hmtlx4adWsT4YAOUzEu?=
+ =?us-ascii?Q?kSK7EbDY1scpTXF1dDreQE/499LP09v3/jcAY0407FYJXE4WTxUBNVjIk+m0?=
+ =?us-ascii?Q?JcXYenwV+ezgBSuDdSZa4uXbAhaXUyvW+93jPal/zNYHr8v+vOxAPpPIYPqm?=
+ =?us-ascii?Q?NpX84p5Jw3IqaAZXGCkgugNAyK3Cg1+7qhd2/5M/rwePa2Sy996JAkzB9O5L?=
+ =?us-ascii?Q?5ovUsC3X3DpNXARmgHwPtWc1ULDVOTiyx0C2ceAd/iWo+D18VMTVXodZeygd?=
+ =?us-ascii?Q?MzVhoZ3kDnFLS8+x65Kq7x/oQZPDq4s9MZ+6DnjD3xcJ0slbd7shwZEQFTe6?=
+ =?us-ascii?Q?JKrYpvCTPIz9cMUlv10MdP1/WuTTpXFcCAmcYJlvOj++8b7arZt4reBubAtn?=
+ =?us-ascii?Q?tRRPNNeCXFvfC8ef2jMAJWzlWwS4CT5QnsYSZZlqWAqoIoXjzQw/ShCO9M9C?=
+ =?us-ascii?Q?C1oUz43EfsLWhGCcTk2Z7SJcyXRLFXJjVahhmCYBv2lSJ2MEJI8QbdgvKLq2?=
+ =?us-ascii?Q?GSgmSHr4IR5qqvax8BGf4lmMp8yuWhiLlLpg49zgPhp7h6jpMXR3BsnjMztk?=
+ =?us-ascii?Q?LKgD43dvq6jlXo9N8kBQzWBMnE3pNrNxOEnnhZvdebkDrXQRSWQAyZsRxg6R?=
+ =?us-ascii?Q?Tba14wrhpAK5SmWSgCdrt1N8OBLvaexjLzoFqkiOQNhy7RCHcWykZMbHTTvt?=
+ =?us-ascii?Q?QhzyphcS497DARQFeitw27F8v7kDpHSUW66K1IXHgeQkt35EtLUZlouRrkUg?=
+ =?us-ascii?Q?9p0zx0kUbdIoC6lb0ieFPtoUuz9yXGl2RXCFggevIyEPNyGRu0ZL4BilmZYb?=
+ =?us-ascii?Q?YuF4z9HRH1Pot9NpoCSY4gjTdHdaO+HIhmk1HAC3Yq0unzMw7E1WuPJCuvvW?=
+ =?us-ascii?Q?Tc6ozeCFeJ07O+PaNUzIXKirtvTCqZ8Q?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6514.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(38070700018)(7053199007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?U0i2iqSQ8OuY5c353TPjvpwvPq5aDgMLuSKLOXJwWyjWXZTY7sqvJcWM2OkR?=
+ =?us-ascii?Q?BYAgQRLvWy/IsVrvlI9jtwvl6pM3YgJ8EnTImU6sfgk7CLBkz1zjMmqxjJEG?=
+ =?us-ascii?Q?CLNF/++5JyyQDJrA+pbwhBB5/gYLAMyEEPLwuHhpdfPBUwAWwvCFpUF3b/NO?=
+ =?us-ascii?Q?mVX6CjrXcbMkP7CFfLJ8kBrSbjQ2Jr2cpmVRmrkKPtAiaywx0vI9jwtDvvy6?=
+ =?us-ascii?Q?fCvXrlW+1184HUoov79qvqo/WhEsyoLi7GLc/qnPhDf+Y0I5oi4TJBrbFNAY?=
+ =?us-ascii?Q?TZtY2NWCImtpc30Sgks/tbgn7nOYuM+qyxrp0y9jbXYuunwcoLpWbn4og+5A?=
+ =?us-ascii?Q?t89xKf+A4vM0ptq7KZcoIE7cwZaQ4sMPYOMydkvgOMc+qVEjKHVNAe5W+Of+?=
+ =?us-ascii?Q?Dc5a0nJG3yI/JJFUybdFJ3EiY6xCm7SXCXAI+9Uk2bGrnIFvtszCEVjQAlhk?=
+ =?us-ascii?Q?pFv/u4Tpi33OQCIMQ3hRIgnyhcduZNWUn7SPhqAkWn7QtnHEOJ0QaMXNw+z+?=
+ =?us-ascii?Q?67d47tOPloa7me0BlRx+D29+kdLF9zaPzRSFI7ZH3L4ZR3cYk1Z9QULAPINK?=
+ =?us-ascii?Q?xZFdfEqJy+IQIbx8PQbslPOdZFiaat49dlPt/yh3Fp4Q/SicCQ0ITAc1d8zp?=
+ =?us-ascii?Q?h0lhY44UzIfeB5I9pw3Y0Q2+K1NjHTeU5ypnDlBEzxqW8SiQxRUt7tdixQnw?=
+ =?us-ascii?Q?focblM4zAPNgcdtcKXNbQC68mXrCxnRDr+342kHcCXNuRoNGoaLg2YnlH822?=
+ =?us-ascii?Q?WWhMNz8/WdUMb9rbH51xfuepvDkZiB9g4tYuBcNDjhorbnqezBcb/aJ558d7?=
+ =?us-ascii?Q?CJDKD9hAK+X5/s69V0kYUUf7yKkqvTWAiaemxl5hM0VXjTkIWoWns8ubJ+3o?=
+ =?us-ascii?Q?KhObA50aS5iv1NqAgNYjnwmM2b1PA8y4woveAeRYHiKp/NZF/nIX5vNkLvf2?=
+ =?us-ascii?Q?ekC2gDsQUCIaTgAnhGazHJRKVwrGuJGCt1OyU5/qoAI6jRFc9fjpxgWCrYA9?=
+ =?us-ascii?Q?faBkUeBYO8Q2HummPR2kp8YQa8nWcS2P1Y24BYA5xaqlRzjYBixLjU4U1Fy6?=
+ =?us-ascii?Q?78z56Wd6cEqbYz9tNl8cAKzlVBfO8g3xEa0GoKLLZm+vMI0PyjnNzvvOD+hQ?=
+ =?us-ascii?Q?/PDto98OSVEtP/t/q7SxxBeXzYXb/s8hR6hXnIVNqOzoezdxuOesMXBqvXg+?=
+ =?us-ascii?Q?HAMJOd7V/V4FbitpakJybcmz2IYmJdWDJmZ/SANtCZM/YSBXeBRTfM3cKG2A?=
+ =?us-ascii?Q?a4kHp+rVD1ztLyLo57HOiWRPaLWCxiEG4oq0cjl5Iy3GDr0d9okX/BTpqRKX?=
+ =?us-ascii?Q?+Y6HhZg4c5VUJ6RphA9NYSpBDyLcC32bRaTGffJ5XwaXx47GxKtCaOM0gD4y?=
+ =?us-ascii?Q?RY5qm16V4vNYmhNnvqT9LEoYRTKyqtK3jTqh5NpAekeLdZz9cpR9rn13sFNn?=
+ =?us-ascii?Q?vrF51oc203610VQKiSpDdkyLdCPziz8PD7oK05t4WimlRL3kNsuCRBWvIe9z?=
+ =?us-ascii?Q?Seep41MuvsnWx/5nS51JaA8rjOm1mXHjLOTv3eYJudUasrrLfmdb5TEtJ2FC?=
+ =?us-ascii?Q?xS4R9Uo9NUscm9zcHxfaLMqiTZJ8tHuqCn60aPusrKhr4VyA0/HLfd8mfVVC?=
+ =?us-ascii?Q?7g=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250305-afabre-traits-010-rfc2-v1-20-d0ecfb869797@cloudflare.com>
-References: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com>
-In-Reply-To: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com>
-To: netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc: jakub@cloudflare.com, hawk@kernel.org, yan@cloudflare.com, 
- jbrandeburg@cloudflare.com, thoiland@redhat.com, lbiancon@redhat.com, 
- Arthur Fabre <afabre@cloudflare.com>
-X-Mailer: b4 0.14.2
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6514.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6244e08-ae43-4181-2751-08dd5bf3af84
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2025 14:40:33.6109
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ctABrBPl8osG+1roJ8fQQeG+LHuGIvb6fz20Ws6gnCGEKJ0PqOaMuQyNfmCfKvoYXs0unX/dFVg6cXfvXTRps/vUvqMMJQPScmtc+Mu8RZ8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7493
+X-OriginatorOrg: intel.com
 
-From: Arthur Fabre <afabre@cloudflare.com>
 
-Otherwise the verifier rejects the programs now.
 
-Signed-off-by: Arthur Fabre <afabre@cloudflare.com>
----
- tools/testing/selftests/bpf/bench.c                |  3 ++
- tools/testing/selftests/bpf/bench.h                |  1 +
- .../selftests/bpf/benchs/bench_xdp_traits.c        | 33 +++++++++++++++++++++-
- .../testing/selftests/bpf/prog_tests/xdp_traits.c  | 18 +++++++++++-
- 4 files changed, 53 insertions(+), 2 deletions(-)
+> -----Original Message-----
+> From: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
+> Sent: Monday, March 3, 2025 9:45 PM
+> To: Vyavahare, Tushar <tushar.vyavahare@intel.com>
+> Cc: bpf@vger.kernel.org; netdev@vger.kernel.org; bjorn@kernel.org; Karlss=
+on,
+> Magnus <magnus.karlsson@intel.com>; jonathan.lemon@gmail.com;
+> davem@davemloft.net; kuba@kernel.org; pabeni@redhat.com;
+> ast@kernel.org; daniel@iogearbox.net; Sarkar, Tirthendu
+> <tirthendu.sarkar@intel.com>
+> Subject: Re: [PATCH bpf-next v2 2/2] selftests/xsk: Add tail adjustment t=
+ests
+> and support check
+>=20
+> On Fri, Feb 28, 2025 at 10:56:19AM +0100, Vyavahare, Tushar wrote:
+> >
+> >
+> > > -----Original Message-----
+> > > From: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
+> > > Sent: Thursday, February 27, 2025 11:52 PM
+> > > To: Vyavahare, Tushar <tushar.vyavahare@intel.com>
+> > > Cc: bpf@vger.kernel.org; netdev@vger.kernel.org; bjorn@kernel.org;
+> > > Karlsson, Magnus <magnus.karlsson@intel.com>;
+> > > jonathan.lemon@gmail.com; davem@davemloft.net; kuba@kernel.org;
+> > > pabeni@redhat.com; ast@kernel.org; daniel@iogearbox.net; Sarkar,
+> > > Tirthendu <tirthendu.sarkar@intel.com>
+> > > Subject: Re: [PATCH bpf-next v2 2/2] selftests/xsk: Add tail
+> > > adjustment tests and support check
+> > >
+> > > On Thu, Feb 27, 2025 at 02:27:37PM +0000, Tushar Vyavahare wrote:
+> > > > Introduce tail adjustment functionality in xskxceiver using
+> > > > bpf_xdp_adjust_tail(). Add `xsk_xdp_adjust_tail` to modify packet
+> > > > sizes and drop unmodified packets. Implement
+> > > > `is_adjust_tail_supported` to check helper availability. Develop
+> > > > packet resizing tests, including shrinking and growing scenarios,
+> > > > with functions for both single-buffer and multi-buffer cases.
+> > > > Update the test framework to handle various scenarios and adjust MT=
+U
+> settings.
+> > > > These changes enhance the testing of packet tail adjustments,
+> > > > improving
+> > > AF_XDP framework reliability.
+> > > >
+> > > > Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
+> > > > ---
+> > > >  .../selftests/bpf/progs/xsk_xdp_progs.c       |  48 +++++++
+> > > >  tools/testing/selftests/bpf/xsk_xdp_common.h  |   1 +
+> > > >  tools/testing/selftests/bpf/xskxceiver.c      | 118 ++++++++++++++=
++++-
+> > > >  tools/testing/selftests/bpf/xskxceiver.h      |   2 +
+> > > >  4 files changed, 167 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
+> > > > b/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
+> > > > index ccde6a4c6319..2e8e2faf17e0 100644
+> > > > --- a/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
+> > > > +++ b/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
+> > > > @@ -4,6 +4,8 @@
+> > > >  #include <linux/bpf.h>
+> > > >  #include <bpf/bpf_helpers.h>
+> > > >  #include <linux/if_ether.h>
+> > > > +#include <linux/ip.h>
+> > > > +#include <linux/errno.h>
+> > > >  #include "xsk_xdp_common.h"
+> > > >
+> > > >  struct {
+> > > > @@ -70,4 +72,50 @@ SEC("xdp") int xsk_xdp_shared_umem(struct
+> > > > xdp_md
+> > > *xdp)
+> > > >  	return bpf_redirect_map(&xsk, idx, XDP_DROP);  }
+> > > >
+> > > > +SEC("xdp.frags") int xsk_xdp_adjust_tail(struct xdp_md *xdp) {
+> > > > +	__u32 buff_len, curr_buff_len;
+> > > > +	int ret;
+> > > > +
+> > > > +	buff_len =3D bpf_xdp_get_buff_len(xdp);
+> > > > +	if (buff_len =3D=3D 0)
+> > > > +		return XDP_DROP;
+> > > > +
+> > > > +	ret =3D bpf_xdp_adjust_tail(xdp, count);
+> > > > +	if (ret < 0) {
+> > > > +		/* Handle unsupported cases */
+> > > > +		if (ret =3D=3D -EOPNOTSUPP) {
+> > > > +			/* Set count to -EOPNOTSUPP to indicate to userspace
+> > > that this case is
+> > > > +			 * unsupported
+> > > > +			 */
+> > > > +			count =3D -EOPNOTSUPP;
+> > > > +			return bpf_redirect_map(&xsk, 0, XDP_DROP);
+> > >
+> > > is this whole eopnotsupp dance worth the hassle?
+> > >
+> > > this basically breaks down to underlying driver not supporting xdp
+> > > multi- buffer. we already store this state in ifobj->multi_buff_supp.
+> > >
+> > > could we just check for that and skip the test case instead of using
+> > > the count global variable to store the error code which is counter in=
+tuitive?
+> > >
+> >
+> > Thanks, Multi-buff is supported it might be that growing is not
+> > supported but shrinking is supported. We have difference in result for
+> > shrinking and growing tests. We are handling these cases with the exist=
+ing
+> 'count'
+> > variable instead of introducing another variable to indicate or access
+> > in userspace.
+>=20
+> These tests were supposed to exercise bugs against tail adjustment in mul=
+ti-
+> buffer scenarios, hence my comment to base this on this setting.
+>=20
+> I won't insist on simplifying it if you decide to keep this but please us=
+e
+> different variable for communication with user space. We're not short on
+> resources and count =3D -EOPNOTSUPP looks awkward.
+>=20
 
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-index 4678b928fc6ad2f0a870a25d9b10c75a1f6d77ba..0961cb71ddf1d682ca61e512e9f4b2df3606747c 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -752,5 +752,8 @@ int main(int argc, char **argv)
- 		bench->report_final(state.results + env.warmup_sec,
- 				    state.res_cnt - env.warmup_sec);
- 
-+	if (bench->cleanup)
-+		bench->cleanup();
-+
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftests/bpf/bench.h
-index 005c401b3e2275030d1d489cd77423cb1fb652ad..6a94af31df17e7cc35bb1432c4b205eb96b631f2 100644
---- a/tools/testing/selftests/bpf/bench.h
-+++ b/tools/testing/selftests/bpf/bench.h
-@@ -58,6 +58,7 @@ struct bench {
- 	void (*measure)(struct bench_res* res);
- 	void (*report_progress)(int iter, struct bench_res* res, long delta_ns);
- 	void (*report_final)(struct bench_res res[], int res_cnt);
-+	void (*cleanup)(void);
- };
- 
- struct counter {
-diff --git a/tools/testing/selftests/bpf/benchs/bench_xdp_traits.c b/tools/testing/selftests/bpf/benchs/bench_xdp_traits.c
-index 0fbcd49edd825f53e6957319d3f05efc218dfb02..b6fa2d8f2504dd9c35f8fb9dc1f1099b55a55ac6 100644
---- a/tools/testing/selftests/bpf/benchs/bench_xdp_traits.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_xdp_traits.c
-@@ -57,7 +57,18 @@ static void trait_validate(void)
- 
- static void trait_setup(void)
- {
--	int err;
-+	int err, i, key;
-+	union bpf_attr attr;
-+
-+	/* Register all keys so we can use them all. */
-+	bzero(&attr, sizeof(attr));
-+	for (i = 0; i < 64; i++) {
-+		key = syscall(__NR_bpf, BPF_REGISTER_TRAIT, &attr, sizeof(attr));
-+		if (key < 0) {
-+			fprintf(stderr, "couldn't register trait: %d\n", key);
-+			exit(1);
-+		}
-+	}
- 
- 	setup_libbpf();
- 
-@@ -77,6 +88,23 @@ static void trait_setup(void)
- 	}
- }
- 
-+static void trait_cleanup(void)
-+{
-+	int err, i;
-+	union bpf_attr attr;
-+
-+	/* Unregister all keys so we can run again. */
-+	bzero(&attr, sizeof(attr));
-+	for (i = 0; i < 64; i++) {
-+		attr.unregister_trait.trait = i;
-+		err = syscall(__NR_bpf, BPF_UNREGISTER_TRAIT, &attr, sizeof(attr));
-+		if (err < 0) {
-+			fprintf(stderr, "couldn't unregister trait %d: %d\n", i, err);
-+			exit(1);
-+		}
-+	}
-+}
-+
- static void trait_get_setup(void)
- {
- 	trait_setup();
-@@ -135,6 +163,7 @@ const struct bench bench_xdp_trait_get = {
- 	.measure = trait_measure,
- 	.report_progress = ops_report_progress,
- 	.report_final = ops_report_final,
-+	.cleanup = trait_cleanup,
- };
- 
- const struct bench bench_xdp_trait_set = {
-@@ -146,6 +175,7 @@ const struct bench bench_xdp_trait_set = {
- 	.measure = trait_measure,
- 	.report_progress = ops_report_progress,
- 	.report_final = ops_report_final,
-+	.cleanup = trait_cleanup,
- };
- 
- const struct bench bench_xdp_trait_move = {
-@@ -157,4 +187,5 @@ const struct bench bench_xdp_trait_move = {
- 	.measure = trait_measure,
- 	.report_progress = ops_report_progress,
- 	.report_final = ops_report_final,
-+	.cleanup = trait_cleanup,
- };
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_traits.c b/tools/testing/selftests/bpf/prog_tests/xdp_traits.c
-index 4175b28d45e91e82435e646e5edd783980d5fe70..1c1eff235a6159d377a5e8b9e0a4d956c4540e8e 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_traits.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_traits.c
-@@ -6,8 +6,16 @@ static void _test_xdp_traits(void)
- {
- 	const char *file = "./test_xdp_traits.bpf.o";
- 	struct bpf_object *obj;
--	int err, prog_fd;
-+	int err, prog_fd, i, key;
- 	char buf[128];
-+	union bpf_attr attr;
-+
-+	/* Register all keys so we can use them all. */
-+	bzero(&attr, sizeof(attr));
-+	for (i = 0; i < 64; i++) {
-+		key = syscall(__NR_bpf, BPF_REGISTER_TRAIT, &attr, sizeof(attr));
-+		ASSERT_OK_FD(key, "test_xdp_traits");
-+	}
- 
- 	LIBBPF_OPTS(bpf_test_run_opts, topts,
- 		.data_in = &pkt_v4,
-@@ -26,6 +34,14 @@ static void _test_xdp_traits(void)
- 	ASSERT_EQ(topts.retval, XDP_PASS, "retval");
- 
- 	bpf_object__close(obj);
-+
-+	/* Unregister all keys so we can run again. */
-+	bzero(&attr, sizeof(attr));
-+	for (i = 0; i < 64; i++) {
-+		attr.unregister_trait.trait = i;
-+		err = syscall(__NR_bpf, BPF_UNREGISTER_TRAIT, &attr, sizeof(attr));
-+		ASSERT_OK(err, "test_xdp_traits");
-+	}
- }
- 
- void test_xdp_traits(void)
+I'll address the variable naming and include the changes in the v3 patchset=
+.
 
--- 
-2.43.0
-
+> >
+> > Here's the result matrix:
+> > Driver/Mode	XDP_ADJUST_TAIL_SHRINK
+> 	XDP_ADJUST_TAIL_SHRINK_MULTI_BUFF	XDP_ADJUST_TAIL_GROW
+> 	XDP_ADJUST_TAIL_GROW_MULTI_BUFF
+> > virt-eth DRV		PASS					PASS
+> 				FAIL(EINNVAL)			SKIP
+> (EOPNOTSUPP)
+> > virt-eth SKB		PASS					PASS
+> 				FAIL(EINNVAL)			SKIP
+> (EOPNOTSUPP)
+> > i40e SKB		PASS					PASS
+> 				FAIL(EINNVAL)			SKIP
+> (EOPNOTSUPP)
+> > i40e DRV		PASS					PASS
+> 				PASS				PASS
+> > i40e ZC			PASS					PASS
+> 					PASS				PASS
+> > i40e SKB BUSY-POLL	PASS					PASS
+> 				FAIL(EINNVAL)			SKIP (Not
+> supported)
+> > i40e DRV BUSY-POLL	PASS					PASS
+> 				PASS				PASS
+> > i40e ZC BUSY-POLL	PASS					PASS
+> 				PASS				PASS
+> > ice SKB			PASS					PASS
+> 					FAIL(EINNVAL)			SKIP
+> (Not supported)
+> > ice DRV			PASS					PASS
+> 					PASS				PASS
+> > ice ZC			PASS					PASS
+> 				PASS				PASS
+> > ice SKB BUSY-POLL	PASS					PASS
+> 				FAIL(EINNVAL)			SKIP (Not
+> supported)
+> > ice DRV BUSY-POLL	PASS					PASS
+> 				PASS				PASS
+> > ice ZC BUSY-POLL	PASS					PASS
+> 				PASS				PASS
+> >
+> > > > +		}
+> > > > +
+> > > > +		return XDP_DROP;
+> > > > +	}
+> > > > +
+> > > > +	curr_buff_len =3D bpf_xdp_get_buff_len(xdp);
+> > > > +	if (curr_buff_len !=3D buff_len + count)
+> > > > +		return XDP_DROP;
+> > > > +
+> > > > +	if (curr_buff_len > buff_len) {
+> > > > +		__u32 *pkt_data =3D (void *)(long)xdp->data;
+> > > > +		__u32 len, words_to_end, seq_num;
+> > > > +
+> > > > +		len =3D curr_buff_len - PKT_HDR_ALIGN;
+> > > > +		words_to_end =3D len / sizeof(*pkt_data) - 1;
+> > > > +		seq_num =3D words_to_end;
+> > > > +
+> > > > +		/* Convert sequence number to network byte order. Store this
+> > > in the last 4 bytes of
+> > > > +		 * the packet. Use 'count' to determine the position at the end
+> > > of the packet for
+> > > > +		 * storing the sequence number.
+> > > > +		 */
+> > > > +		seq_num =3D __constant_htonl(words_to_end);
+> > > > +		bpf_xdp_store_bytes(xdp, curr_buff_len - count, &seq_num,
+> > > sizeof(seq_num));
+> > > > +	}
+> > > > +
+> > > > +	return bpf_redirect_map(&xsk, 0, XDP_DROP); }
+> > > > +
+> > > >  char _license[] SEC("license") =3D "GPL"; diff --git
+>=20
+> (...)
 
