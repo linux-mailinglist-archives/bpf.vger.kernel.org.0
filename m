@@ -1,137 +1,191 @@
-Return-Path: <bpf+bounces-53383-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53384-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CE0FA508F4
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 19:13:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9885A509EB
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 19:26:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32E0216CA20
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 18:12:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61BB9189851B
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 18:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13372528E0;
-	Wed,  5 Mar 2025 18:12:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B30F6230BC6;
+	Wed,  5 Mar 2025 18:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dE7/sBHi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YTKa+7mv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00DD819C542;
-	Wed,  5 Mar 2025 18:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB18E14884C
+	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 18:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741198367; cv=none; b=Zl24zFa5qe83ebPj7Yj+v6fjYCCc0mXP9jv/JhCyGFVI0H4Uh0kAk1uv6EAPjCJEg0QALJk3r9f1yFjeGYb2KOLdzTxFggSIF17Y0EyET6REJ88Z0FCtu3ZQTybRi8m8VnZ53S20L9aCF2ep7QacQB76Zg8zi1Zr2YxyZc0WY4U=
+	t=1741198869; cv=none; b=lUyvl8FXasuk4uOwkynvlFQWFKo907nNvzDKMYqpiYlL+2ao4lYLWveD5l3PbLVr7TXx0Te/bDd44tFD64+0KV+EgruOko71XsICK8vlptDGffGRb7slr+97OUG+WI7iUrQvp/gneQBrLOjzf9/pCwdTi/voooFO+UTv74MjM6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741198367; c=relaxed/simple;
-	bh=hLSosc8ZGSMqBJmpjG+Zcp45IeQYgadpHS+5+HJNY54=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o4djamZfJ8W+wPldakfznybSSFRjCAPCBcQWiqaKMrmGN+UPSD64MAyJ1ijyPU3LFDueV+S9RyyD8albazvtehY8hU9IeFHelfeFHyEt9k1B1R2OXFZd2J3nOYGU3KJ3dY+2Rr9K5LVJXXJ8wY1IJ/RG5W2QtKRX/e2RNkEYzz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dE7/sBHi; arc=none smtp.client-ip=209.85.216.54
+	s=arc-20240116; t=1741198869; c=relaxed/simple;
+	bh=ozd2pbdY4UqD27aHF3OixPXX87oOHxQkVxVuTPD+0Fc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fx0xqkOzW6VGd79CE3WNcO83uynVEcEPirJAOpFFw35takvCrMBQ37oovT7xgncbWB8gQbotJyTyoZ9jd7FL1wzd2+FmvdaNU2GgKBEPYUNKV6Frex0a6fmoHCH5QGybk8ENTMNNS/NVCZi+BB0xBNmDFWqtspxwc9zjRoX75CA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YTKa+7mv; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2febaaf175fso9552679a91.3;
-        Wed, 05 Mar 2025 10:12:45 -0800 (PST)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2feb91a25bdso9896960a91.1
+        for <bpf@vger.kernel.org>; Wed, 05 Mar 2025 10:21:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741198365; x=1741803165; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rxfu5Pa3zywwY6F0O+b5hEcYgMdoVIsyRsVhe+haQdo=;
-        b=dE7/sBHiEOhROs28aVyiqQ/Bkc+CYQ5iZpyaYwf0FsErG7OXIzh142qsreacY56GUo
-         zbhY6wz+GJktsAzNpzwbunZljAsSc3AjBL0Epfd2Qkcf0zv5cDx9zVfTKvjgJb74v5PM
-         XfZ4BuFLrWIw2ouS5C2JTQB8ERGUlcqsDAa6e/k98k0Tl6wODsFVFq7gfTq4CudbnTkm
-         uEQ8ZBRNzvFSD3JKvHcTPn0TvOZG6NC1jH4TLwnnx9zrVQ3+nw8fXBc68EDFLuIDrM/d
-         4sn/Om3Y2ASThlekFQ0J1w1fpNcXqrj8LzZ+CYudQMskvg9tN6o2fAn62DxTKml4ULse
-         QUcw==
+        d=gmail.com; s=20230601; t=1741198867; x=1741803667; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8z4EG64PEenANta4+uVbSSODk00f9kYQBdcZkCg7FQQ=;
+        b=YTKa+7mv6Hrpyicxrc93JIKtbwGsAO8uWRqcUJzYdVeGvSFjVXJ4zXWI1j+6HI3JwM
+         16qoj6t/cyPbOXq/OV2X3UE22uAghiIkQ93ZVQojBr6oNiFzxtEBeOWld8cWIl7Xwb+c
+         rcMPgLN7OizpmVHfMpcd7Xew1LHAaa1BsDPLhIg2dNEkajCRlXNjYj7A77HonvnVTBHs
+         HTbWYXqwsMKERIHGLlluKW2ZqMN91ZFRyey9zuupZlIbs9iNg6qPaoyn0FmHl0l6o5gZ
+         d8bpnodv8vyqFxbgX0Txn3f64O/ITCq9+Dc72wqbVqE/Y6VOD7XgD49NFQfgHuUqRjDf
+         DE9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741198365; x=1741803165;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rxfu5Pa3zywwY6F0O+b5hEcYgMdoVIsyRsVhe+haQdo=;
-        b=oo6o/JagPaC0Z4eoI9DLFd3Cr4Qsya0ftUkoZHMQUgFxE7HTrKzQMMyAXc0xz4rz3s
-         d4/OfDF0yuW8vTAZAl86HXoYV9y278fT2pP6DiquoBJTqHsC/Qhy+vMn35LBA9EE/h2t
-         YsssyTFnVn1ODkR+x0BXGJOjPVL5eYgbnMCuxSfIMM/GolxXFfxwaV+xjoPPhDOnNHQb
-         THzvkMpyZFxizRrD52qQ2+IBo72ZgeBWrtVJ2MJtFQ7/Jojgg2mKwInW0e+BWg2olcCl
-         jSILkU3E9COebKBxEIRmtnJtds8L4028EO/d36zCfvbh5xDH+Q2/uI/s7VP9kidCPJ82
-         bpTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUVOjGVSUPKt5vR/Zs9/crm3q/Aoh2xidwFizyBSjV+Sd1JzTS/4tpJFSccna66xyn9kNK1dxV+@vger.kernel.org, AJvYcCWE1NEXM5xC3z4hdROVuzP8SBnVHyEx7x29GZmQ/na4s2io9V+OHChGceXZphpyk0H6PUI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCGO3CuGcEz++BQaCNdqSf2rrIZ4JweVem10GlvJ8wZ1hDqcBw
-	0OunBA/Ltccd5/C2U7YK6p/Zio9gbsjUjsAiP4iWSgGxGPJ7nTk1
-X-Gm-Gg: ASbGncvu1jRSWo5/gx+KGE0q4msfZen+HDVeSVeD377K/6LzKrvxW6YYV7EQfJq6RdO
-	2hlrBGZblVknYYeXtBsNbTYHZ9VDK6IaXRN4eOzgDuqBm8PalMqgk0qE2Eb+Qzemb6bxYmxToWM
-	8Rn6bEMplJh6d689QT4VZ4ADiXfkozimcpFLnUQQndXbKebDVRHB55krpo9TMu/142ZleXt8W2P
-	ip8LvP4dBaqfnS/iRWwbUzD6HbxiRqPGOmX/EyqI3j1mwJJ8NT2J7lSrDidUhp51c04ew/490C7
-	OQoSkZrMx+wOupFrIhgsHhxpxM8bRyUWKU2BRWdZnniduOBl
-X-Google-Smtp-Source: AGHT+IFQZfgQX0YU6/unP7FdjSfq4UkGfCIq09eCJhs2cmYHBhhx/wUthBK9Wcx33K3kaI5ub8EJ2w==
-X-Received: by 2002:a05:6a20:734e:b0:1f3:2a1e:f6d3 with SMTP id adf61e73a8af0-1f3495c2795mr7695535637.41.1741198365159;
-        Wed, 05 Mar 2025 10:12:45 -0800 (PST)
-Received: from localhost ([129.210.115.104])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-aee7ddf29f4sm12166147a12.11.2025.03.05.10.12.44
+        d=1e100.net; s=20230601; t=1741198867; x=1741803667;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8z4EG64PEenANta4+uVbSSODk00f9kYQBdcZkCg7FQQ=;
+        b=ZBtJKczdjJOV4yaYg/ex07dTW/VJmSxydYzYlr0KDyvCmFd3w4NC6sCpcKrvnk7s5B
+         /G8AAoiQ9ulz4atzeTwg0sfh+kGhrsTKhUfvMvfSJ4BnZhlvJaGhVCS94gYNrvvozue+
+         to6zMHf+hzImnGuSAZ+75hoM2r1c/DoV/I+xXpvsZ/pFkwGNNimDxbT8KjBecJG8tyhW
+         zpOtl1znQw7GY4ILg1wR3eE5vVxcjp9kZAJxbpnjPoZdHyiy5MZ8VZUy/xBDfw6zTiwC
+         A+kEU8+Kam4M1ChSUiVmE1LK4eyvraROs2gOVRgLwEq1fHTNZ4w33YdeDSLMUNsVIvwu
+         3jWw==
+X-Gm-Message-State: AOJu0YwsdTKaM/CqMpjMFgkNE3ZD0ZaF7VYk2LTXPJgCUCPfPBPlihXS
+	j7yG/lSA0R67YbOdyAoC8aR0YxK/+KWx2G0uGr3ZipE1gXaKLow7yiivkA==
+X-Gm-Gg: ASbGncsq2i6wAxtorJ4fXdQdfUGYX6ve7Qdd+hNkimw+/ICDjqbT0/9tBW+jH3ATWpq
+	QQpWmW72vCF7m1Vle3ciN+gYInJCJ1YtT+vgNc0l9lTN0SVG558Lb9l86araAzOen7bKywz+Qq1
+	BfCv3vqj0mIyZH2GPlsG33BK9OdHbkeL6h+GES2w1Uk9E7dazYpvm+fS+r2vxwKweV377WhqT5D
+	IhXUbQd93POTptxVnvjnG+0Syjd/CVk1zx4KXS2deCYxYM7+Ik/v1PTAp6uA/rMMBqbkB8AU6h8
+	d5WCP58YCTp2tEj+sem+a8gcxorSG5mjwGakXsxgNZ0hrVHgILv1Zbo4z4aCT4JCizxJQvqDN9Z
+	2rVguUrmAWwTS8fGm7ko=
+X-Google-Smtp-Source: AGHT+IEQCEoYxEm/wIT6rifSwoWsYLYOw5szJZwxnCJ72foKR++krivfIUBi25bK6sv3AQGGgGKu0g==
+X-Received: by 2002:a17:90b:38d2:b0:2fe:8217:2da6 with SMTP id 98e67ed59e1d1-2ff4979950cmr5949717a91.22.1741198866816;
+        Wed, 05 Mar 2025 10:21:06 -0800 (PST)
+Received: from localhost.localdomain (c-76-146-13-146.hsd1.wa.comcast.net. [76.146.13.146])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff4e8253acsm1650399a91.49.2025.03.05.10.21.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Mar 2025 10:12:44 -0800 (PST)
-Date: Wed, 5 Mar 2025 10:12:43 -0800
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Dong Chenchen <dongchenchen2@huawei.com>
-Cc: edumazet@google.com, kuniyu@amazon.com, pabeni@redhat.com,
-	willemb@google.com, john.fastabend@gmail.com, jakub@cloudflare.com,
-	davem@davemloft.net, kuba@kernel.org, horms@kernel.org,
-	daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-	zhangchangzhong@huawei.com, weiyongjun1@huawei.com
-Subject: Re: [PATCH net] bpf, sockmap: Restore sk_prot ops when psock is
- removed from sockmap
-Message-ID: <Z8iUG8aTF9Kww09z@pop-os.localdomain>
-References: <20250305140234.2082644-1-dongchenchen2@huawei.com>
+        Wed, 05 Mar 2025 10:21:06 -0800 (PST)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: daniel@iogearbox.net,
+	andrii@kernel.org,
+	alexei.starovoitov@gmail.com,
+	martin.lau@kernel.org,
+	eddyz87@gmail.com,
+	ameryhung@gmail.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v5 1/3] selftests/bpf: Clean up call sites of stdio_restore()
+Date: Wed,  5 Mar 2025 10:20:55 -0800
+Message-ID: <20250305182057.2802606-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250305140234.2082644-1-dongchenchen2@huawei.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 05, 2025 at 10:02:34PM +0800, Dong Chenchen wrote:
-> WARNING: CPU: 0 PID: 6558 at net/core/sock_map.c:1703 sock_map_close+0x3c4/0x480
-> Modules linked in:
-> CPU: 0 UID: 0 PID: 6558 Comm: syz-executor.14 Not tainted 6.14.0-rc5+ #238
-> RIP: 0010:sock_map_close+0x3c4/0x480
-> Call Trace:
->  <TASK>
->  inet_release+0x144/0x280
->  __sock_release+0xb8/0x270
->  sock_close+0x1e/0x30
->  __fput+0x3c6/0xb30
->  __fput_sync+0x7b/0x90
->  __x64_sys_close+0x90/0x120
->  do_syscall_64+0x5d/0x170
->  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> 
-> The root cause is:
-> sock_hash_update_common
->   sock_map_unref
->     sock_map_del_link
->       psock->psock_update_sk_prot(sk, psock, false);
-> 	//false won't restore proto
->     sk_psock_put
->        rcu_assign_sk_user_data(sk, NULL);
-> inet_release
->   sk->sk_prot->close
->     sock_map_close
->       WARN(sk->sk_prot->close == sock_map_close)
-> 
-> When psock is removed from sockmap, sock_map_del_link() still set
-> sk->sk_prot to bpf proto instead of restore it (for incorrect restore
-> value). sock release will triger warning of sock_map_close() for
-> recurse after psock drop.
+reset_affinity() and save_ns() are only called in run_one_test(). There is
+no need to call stdio_restore() in reset_affinity() and save_ns() if
+stdio_restore() is moved right after a test finishes in run_one_test().
 
-But sk_psock_drop() restores it with sk_psock_restore_proto() after the
-psock reference count goes to zero. So how could the above happen?
+Also remove an unnecessary check of env.stdout_saved in crash_handler()
+by moving env.stdout_saved assignment to the beginning of main().
 
-By the way, it would be perfect if you could add a test case for it 
-together with this patch (a followup patch is fine too).
+Signed-off-by: Amery Hung <ameryhung@gmail.com>
+---
+ tools/testing/selftests/bpf/test_progs.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
-Thanks!
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 0cb759632225..ab0f2fed3c58 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -474,8 +474,6 @@ static void dump_test_log(const struct prog_test_def *test,
+ 	print_test_result(test, test_state);
+ }
+ 
+-static void stdio_restore(void);
+-
+ /* A bunch of tests set custom affinity per-thread and/or per-process. Reset
+  * it after each test/sub-test.
+  */
+@@ -490,13 +488,11 @@ static void reset_affinity(void)
+ 
+ 	err = sched_setaffinity(0, sizeof(cpuset), &cpuset);
+ 	if (err < 0) {
+-		stdio_restore();
+ 		fprintf(stderr, "Failed to reset process affinity: %d!\n", err);
+ 		exit(EXIT_ERR_SETUP_INFRA);
+ 	}
+ 	err = pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset);
+ 	if (err < 0) {
+-		stdio_restore();
+ 		fprintf(stderr, "Failed to reset thread affinity: %d!\n", err);
+ 		exit(EXIT_ERR_SETUP_INFRA);
+ 	}
+@@ -514,7 +510,6 @@ static void save_netns(void)
+ static void restore_netns(void)
+ {
+ 	if (setns(env.saved_netns_fd, CLONE_NEWNET) == -1) {
+-		stdio_restore();
+ 		perror("setns(CLONE_NEWNS)");
+ 		exit(EXIT_ERR_SETUP_INFRA);
+ 	}
+@@ -1270,8 +1265,7 @@ void crash_handler(int signum)
+ 
+ 	sz = backtrace(bt, ARRAY_SIZE(bt));
+ 
+-	if (env.stdout_saved)
+-		stdio_restore();
++	stdio_restore();
+ 	if (env.test) {
+ 		env.test_state->error_cnt++;
+ 		dump_test_log(env.test, env.test_state, true, false, NULL);
+@@ -1400,6 +1394,8 @@ static void run_one_test(int test_num)
+ 
+ 	state->tested = true;
+ 
++	stdio_restore();
++
+ 	if (verbose() && env.worker_id == -1)
+ 		print_test_result(test, state);
+ 
+@@ -1408,7 +1404,6 @@ static void run_one_test(int test_num)
+ 	if (test->need_cgroup_cleanup)
+ 		cleanup_cgroup_environment();
+ 
+-	stdio_restore();
+ 	free(stop_libbpf_log_capture());
+ 
+ 	dump_test_log(test, state, false, false, NULL);
+@@ -1943,6 +1938,9 @@ int main(int argc, char **argv)
+ 
+ 	sigaction(SIGSEGV, &sigact, NULL);
+ 
++	env.stdout_saved = stdout;
++	env.stderr_saved = stderr;
++
+ 	env.secs_till_notify = 10;
+ 	env.secs_till_kill = 120;
+ 	err = argp_parse(&argp, argc, argv, 0, NULL, &env);
+@@ -1969,9 +1967,6 @@ int main(int argc, char **argv)
+ 		return -1;
+ 	}
+ 
+-	env.stdout_saved = stdout;
+-	env.stderr_saved = stderr;
+-
+ 	env.has_testmod = true;
+ 	if (!env.list_test_names) {
+ 		/* ensure previous instance of the module is unloaded */
+-- 
+2.47.1
+
 
