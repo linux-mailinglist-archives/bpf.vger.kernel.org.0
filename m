@@ -1,149 +1,327 @@
-Return-Path: <bpf+bounces-53276-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53277-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDC89A4F47C
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 03:14:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16EE6A4F480
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 03:15:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDCDA16D66A
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 02:14:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28EE6188FDE3
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 02:15:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4665D155743;
-	Wed,  5 Mar 2025 02:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F981459F6;
+	Wed,  5 Mar 2025 02:15:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="HvgnQkLF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y8efMz2E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4669214D28C
-	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 02:14:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FF0DF5C
+	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 02:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741140891; cv=none; b=umkh4xa41sXzT8AGkD/4j6lBD9W57NJLxgyY1c8BpBBpZpHyUdiArVIfF7fGRkNZJKJ1awbSkltBEQrH7YycKe0mJrb1mF4OtiRFtb6byaWfv0+OIIUCpmNdJsm4+llt0tOnK06k7uaiVCiLGDi5KD+icPql2uFeKqitgCnv+cA=
+	t=1741140939; cv=none; b=G7b102fZMs2U/V3k3oUk+k1xn/BDKa3CBgl7ZC9FZ2JNa1s7EvjVqkehaRqF+38W/+gmXWNjvT5/+AYkqzv39pZOGlhpYyh9m0jKQncUGzbOEv73j8DhNAXWI8L9lFVnN9SudFh7TkBEcwavzXJPPIdiwPDy/gtpKIby6aKNWxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741140891; c=relaxed/simple;
-	bh=qQ7kaU1aXWa368p5QkZafRlvPh4Fd0DUTFztungHHGM=;
+	s=arc-20240116; t=1741140939; c=relaxed/simple;
+	bh=NlZHdSCdxAEwIwe+z+i7gRmXGjnf5/15MR4L48UbrMk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FMRyt6GTDgSQRoxzu1Ax7TxkWDPw1WPouj4JXHLH4ZiAY9qmBhVRABtXkV0nz1U0MiILTFujgZY4xgn/SUwvMtlRY+RtBmGlfjfVv/9Fucpno+KjbjXmgjwaqExUO9TwDBv0KNh+rkemoZHidblWVvP/I9HZbFlDeuaWsrboSbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=HvgnQkLF; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-e53c9035003so4817401276.2
-        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 18:14:49 -0800 (PST)
+	 To:Cc:Content-Type; b=fXhPsUYgf0CbkKVPybc1dEBGj+Cfg5z9+52pb+mRgReWhz4XQx5+iPV/X3LLDbpbM1dxKt9AZq8qhnwz5Vvv5u/Sf/KZaxnP0COXkL6/XIOrPupeGXoT+1U3lxg7gmBpoeoyjqbj6eVHOqrhFvQEWs8Kj2frkzY9jgyavWFzlOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y8efMz2E; arc=none smtp.client-ip=209.85.218.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-abfe7b5fbe8so389539866b.0
+        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 18:15:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1741140889; x=1741745689; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741140935; x=1741745735; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UdHvaBKg4GleexXjKKoUyEO9pX5GSxnW4KE6dqvkU54=;
-        b=HvgnQkLFwLcFLN4ZPi2E9d9WKKyDc6LC+vLKHcTJjkm4MgWYNtfSRnmZvkZ+ONpDog
-         zSI6yu69Lul/YwLMxM82+pJ9XhQnJsbzF29fGYrTvf78PCci05yYK5z3rczvgGFtC1AP
-         XJTbPZXmlOMgHxvRXsUlEyXZlCWlSG4yX0d94YypbUjbJUNsorCJnIPR/XQWrOdvuIZ5
-         eufCuoFmoepsQGlDuHfAcARmPP+r2OIqiQQBbrzPj1JKmk1skk9Bl/YVsnU5Pa8TwsWu
-         5G5N/rDRqNe9Hz15dFNo4GobJjW1vuiy4Ij94xzOJv+iMNWx78QRt9jdtjmHbNyEjIGH
-         aRZA==
+        bh=aodQkwg0VUlVbmedTEzkx7iBTKFtb/sL1zHY1ds70pQ=;
+        b=Y8efMz2E9qeFeAcYWn++6IcAsGrDbuqLcq57IJ1xoYQmtNZj9L5xRMwz9JdxgLRouR
+         cZ2kmbL43FCjFIyFk6L9v1kotkJnlSHiRboTLihFPgWrEuYo6XAeAylZVgZnGH6bbMPb
+         X1AgPeVq9epFO8FrsIuLZ/ZS6Le0ShVWp1Oxephbe2D3gAK8fnkTde8J6ShGoxuI4rrr
+         gq8Ta3HTWj3l6sNSXpLoDLtg+LYtOHpw19//z+OHusqKHrIKO2oki7B+nCL2lHPjWtDP
+         hywnoNFTGa/7M8Ql444LpSSb9Ov3d+EQg+MIWYPj+UZstwTnrfTwdPzCWR87vGQbq+iS
+         Ya5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741140889; x=1741745689;
+        d=1e100.net; s=20230601; t=1741140935; x=1741745735;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UdHvaBKg4GleexXjKKoUyEO9pX5GSxnW4KE6dqvkU54=;
-        b=qb3mpeUse6I8QmzlUpkNsD2HPS5ryiQpKx8rwuntCtYPKlJ/aIo+mfcmAw0Yb2N4t7
-         ywaiU1UL2voxvRbfmb7p88dyImOxWuUed3bNJhrrUMZFI+SznVMUrWuBo01hZqkIDusY
-         T+XEKT5aBM7PF/BSxRyu9dLgGsPldEeeHaOfo3eJTj7GWpjDJK0LBisX7dp02StyWwL/
-         70rG5C+FQKWHr0yHg1ZEeFuaGJd6tZ4p4Gf6yVSQpHB6weZNWJLlgofAljxc1PQ6ev9t
-         C9Sd+gxdYZi4jpyEK416SHpSuzv7HhUX2I/sXCwvrYAwFE1cy2qtwdDa7HdYUPWwevSF
-         BL+w==
-X-Forwarded-Encrypted: i=1; AJvYcCUrLi3eTM0ft+o+iMG7hXiwFtxi1j2tHYCTEswUpnlRnLuSKKt3jEwUDnm+aMrcZCTmfm8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLj6BArYjCVWroaQG8uz04+rRGg8oLCOy3ltBcxI441Z6Z1Bkx
-	w+VH1kgkXmtP4l+/Gg+lVBKx8xtW45ch9UqIsOTufNn+ouKznQGyunFV0oEVMpiN5nc66k6I0Lv
-	5fMu3GnbicYrpKt8ZNt4LAH4/NPLPUEdCmFle
-X-Gm-Gg: ASbGncuRscjY0K3LD4+baBGrVzBVcYryXay3ADS0tDjR/p864O1in/H61ROruhRqXsv
-	RqHikDTKd0qkqktDRc2Xe1LyaudRmWr7xDIdmRj01sRgH0UtCwPd8TkvQsBSegFyiytDe7TqrqQ
-	ATqtWKU0naF2Br5fmHC+IpbSIlNg==
-X-Google-Smtp-Source: AGHT+IFJme71+h5rqacVhXNFVVflQX6fN8c82oiacs7z+wy8sz5kKm1uZj7SdqykCNgwPKPqL++9yJVZA6PUA9xV/X8=
-X-Received: by 2002:a05:6902:120b:b0:e60:93c5:9b1f with SMTP id
- 3f1490d57ef6-e611e19a06fmr1861920276.6.1741140889157; Tue, 04 Mar 2025
- 18:14:49 -0800 (PST)
+        bh=aodQkwg0VUlVbmedTEzkx7iBTKFtb/sL1zHY1ds70pQ=;
+        b=Rq07U2KyF/vv5tpkONCVY3wpNhe+n004+ULbapaGv3r7M9PrQa9LKWvusOhSi98VL/
+         2pmY8m1pTqppmFtZ3PtzdHNeqMZd33JO4JCKcmsXd2e3zUKVUKbaoMp1gbdTUfvkZnBX
+         mVlTNsenAVkhX7V0esboYo9+EL+pd99HgvEvhRU3CYOaCzufSJtwWEErAu7372ezSzvF
+         mO8uqm+PtlT0eatyfnBCzsN3L/F6sRVG5MV7eFMqg5KCFTK1kZylafS5kHzckf/eEuON
+         D94GqVdvBjsBlnWnqjXIf+vDT+A3DF6z0G+APftFu2p6m7oGnZATfzVRN5kKq27AecqE
+         6Ifw==
+X-Gm-Message-State: AOJu0YyvfMl0yXGcrtY7c4O2jbV1nVBmRfF0ZX6KM8fxrnTzNtfCh1m3
+	uXLXBRtINkpVwDTSn8dMTy+kl+OPjpUzUSetM6PFNe0FwCB8YJYuLKjttWwmZ8F4nJ9loo818vW
+	NxBuklVoCt/+SMC2qhkX21ZLxrpTTkcT3ZS4=
+X-Gm-Gg: ASbGnctd10ydKHUvjeKBFnIQM619ba7b35eb8HlAgEnumPSOKxIC4PdtHbpa7F63rnb
+	lDg17DTOJh5dOyvtv7fNiOCEA1ATBKbI8x5dndw3gFksq3XdE02z3XJypP6YNmFH7J8os1wxXLl
+	Qdbnlp6cHmSgQLqzfffqpBlPw31eKVK+o2Mnq6EEcIcQFJCt4=
+X-Google-Smtp-Source: AGHT+IE4qQYCCDvOGKh7/4Fia+zI9yler1wFFwgDHzM4ZEHPrpSxI0AEyptR5TggmzBH5cArRyjr/Sb/qFaRDAnIuto=
+X-Received: by 2002:a05:6402:2714:b0:5dc:6e27:e6e8 with SMTP id
+ 4fb4d7f45d1cf-5e59f47ced8mr2342497a12.24.1741140935348; Tue, 04 Mar 2025
+ 18:15:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250304203123.3935371-1-bboscaccy@linux.microsoft.com>
- <20250304203123.3935371-3-bboscaccy@linux.microsoft.com> <CAHC9VhS5Gnj98K4fBCq3hDXjmj1Zt9WWqoOiTrwH85CDSTGEYA@mail.gmail.com>
- <877c54jmjl.fsf@microsoft.com>
-In-Reply-To: <877c54jmjl.fsf@microsoft.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 4 Mar 2025 21:14:38 -0500
-X-Gm-Features: AQ5f1JphmYgOBnsZGxupPq2rhiEO06B4bjDitVWyy9PS-JrQ5h-eCAMlWkvCD6Y
-Message-ID: <CAHC9VhQO_CVeg0sU_prvQ_Z8c9pSB02K3E5s84pngYN1RcxXGQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 2/2] selftests/bpf: Add is_kernel parameter to
- LSM/bpf test programs
-To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-Cc: James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, selinux@vger.kernel.org
+References: <20250305011849.1168917-1-memxor@gmail.com> <20250305011849.1168917-4-memxor@gmail.com>
+ <CAADnVQ+6snJwWne8ub+Fht1zinDxJZhDxfsfAvPz0Ezfe3dSHg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+6snJwWne8ub+Fht1zinDxJZhDxfsfAvPz0Ezfe3dSHg@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 5 Mar 2025 03:14:59 +0100
+X-Gm-Features: AQ5f1JonKzp9nc9P9XH_Abb4gsklqsm7UaJsEhRhtLYfVu0ccN5ggb-ShAU6ZBI
+Message-ID: <CAP01T76BgwiWDs-PxW3jrU3Op877oLyVRyrTP96dzNZGUnRquA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] selftests/bpf: Add tests for arena spin lock
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>, 
+	Emil Tsalapatis <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>, 
+	Dohyun Kim <dohyunkim@google.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 4, 2025 at 8:26=E2=80=AFPM Blaise Boscaccy
-<bboscaccy@linux.microsoft.com> wrote:
-> Paul Moore <paul@paul-moore.com> writes:
-> > On Tue, Mar 4, 2025 at 3:31=E2=80=AFPM Blaise Boscaccy
-> > <bboscaccy@linux.microsoft.com> wrote:
-> >>
-> >> The security_bpf LSM hook now contains a boolean parameter specifying
-> >> whether an invocation of the bpf syscall originated from within the
-> >> kernel. Here, we update the function signature of relevant test
-> >> programs to include that new parameter.
-> >>
-> >> Signed-off-by: Blaise Boscaccy bboscaccy@linux.microsoft.com
-> >> ---
-> >>  tools/testing/selftests/bpf/progs/rcu_read_lock.c           | 3 ++-
-> >>  tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c  | 4 ++--
-> >>  tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c | 6 +++--=
--
-> >>  tools/testing/selftests/bpf/progs/test_lookup_key.c         | 2 +-
-> >>  tools/testing/selftests/bpf/progs/test_ptr_untrusted.c      | 2 +-
-> >>  tools/testing/selftests/bpf/progs/test_task_under_cgroup.c  | 2 +-
-> >>  tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c   | 2 +-
-> >>  7 files changed, 11 insertions(+), 10 deletions(-)
-> >
-> > I see that Song requested that the changes in this patch be split out
-> > back in the v3 revision, will that cause git bisect issues if patch
-> > 1/2 is applied but patch 2/2 is not, or is there some BPF magic that
-> > ensures that the selftests will still run properly?
-> >
+On Wed, 5 Mar 2025 at 03:04, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> So there isn't any type checking in the bpf program's function
-> arguments against the LSM hook definitions, so it shouldn't cause any
-> build issues. To the best of my knowledge, the new is_kernel boolean
-> flag will end up living in r3. None of the current tests reference
-> that parameter, so if we bisected and ended up on the previous commit,
-> the bpf test programs would in a worst-case scenario simply clobber that
-> register, which shouldn't effect any test outcomes unless a test program
-> was somehow dependent on an uninitialized value in a scratch register.
+> On Tue, Mar 4, 2025 at 5:18=E2=80=AFPM Kumar Kartikeya Dwivedi <memxor@gm=
+ail.com> wrote:
+> >
+> > Add some basic selftests for qspinlock built over BPF arena using
+> > cond_break_label macro.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  .../bpf/prog_tests/arena_spin_lock.c          | 102 ++++++++++++++++++
+> >  .../selftests/bpf/progs/arena_spin_lock.c     |  51 +++++++++
+> >  2 files changed, 153 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/arena_spin_l=
+ock.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/arena_spin_lock.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c b=
+/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
+> > new file mode 100644
+> > index 000000000000..2cc078ed1ddb
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
+> > @@ -0,0 +1,102 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+> > +#include <test_progs.h>
+> > +#include <network_helpers.h>
+> > +#include <sys/sysinfo.h>
+> > +
+> > +struct qspinlock { int val; };
+> > +typedef struct qspinlock arena_spinlock_t;
+> > +
+> > +struct arena_qnode {
+> > +       unsigned long next;
+> > +       int count;
+> > +       int locked;
+> > +};
+> > +
+> > +#include "arena_spin_lock.skel.h"
+> > +
+> > +static long cpu;
+> > +int *counter;
+> > +
+> > +static void *spin_lock_thread(void *arg)
+> > +{
+> > +       int err, prog_fd =3D *(u32 *)arg;
+> > +       LIBBPF_OPTS(bpf_test_run_opts, topts,
+> > +               .data_in =3D &pkt_v4,
+> > +               .data_size_in =3D sizeof(pkt_v4),
+> > +               .repeat =3D 1,
+> > +       );
+>
+> Why bother with 'tc' prog type?
+> Pick syscall type, and above will be shorter:
+> LIBBPF_OPTS(bpf_test_run_opts, opts);
+>
 
-Esh.  With that in mind, I'd argue that the two patches really should
-just be one patch as you did before.  The patches are both pretty
-small and obviously related so it really shouldn't be an issue.
+Ack.
 
-However, since we need this patchset in order to properly implement
-BPF signature verification I'm not going to make a fuss if Song feels
-strongly that the selftest changes should be split into their own
-patch.
+> > +       cpu_set_t cpuset;
+> > +
+> > +       CPU_ZERO(&cpuset);
+> > +       CPU_SET(__sync_fetch_and_add(&cpu, 1), &cpuset);
+> > +       ASSERT_OK(pthread_setaffinity_np(pthread_self(), sizeof(cpuset)=
+, &cpuset), "cpu affinity");
+> > +
+> > +       while (*READ_ONCE(counter) <=3D 1000) {
+>
+> READ_ONCE(*counter) ?
+>
+> but why add this user->kernel switch overhead.
+> Use .repeat =3D 1000
+> one bpf_prog_test_run_opts()
+> and check at the end that *counter =3D=3D 1000 ?
 
---=20
-paul-moore.com
+Ok.
+
+>
+> > +               err =3D bpf_prog_test_run_opts(prog_fd, &topts);
+> > +               if (!ASSERT_OK(err, "test_run err"))
+> > +                       break;
+> > +               if (!ASSERT_EQ((int)topts.retval, 0, "test_run retval")=
+)
+> > +                       break;
+> > +       }
+> > +       pthread_exit(arg);
+> > +}
+> > +
+> > +static void test_arena_spin_lock_size(int size)
+> > +{
+> > +       LIBBPF_OPTS(bpf_test_run_opts, topts);
+> > +       struct arena_spin_lock *skel;
+> > +       pthread_t thread_id[16];
+> > +       int prog_fd, i, err;
+> > +       void *ret;
+> > +
+> > +       if (get_nprocs() < 2) {
+> > +               test__skip();
+> > +               return;
+> > +       }
+> > +
+> > +       skel =3D arena_spin_lock__open_and_load();
+> > +       if (!ASSERT_OK_PTR(skel, "arena_spin_lock__open_and_load"))
+> > +               return;
+> > +       if (skel->data->test_skip =3D=3D 2) {
+> > +               test__skip();
+> > +               goto end;
+> > +       }
+> > +       counter =3D &skel->bss->counter;
+> > +       skel->bss->cs_count =3D size;
+> > +
+> > +       prog_fd =3D bpf_program__fd(skel->progs.prog);
+> > +       for (i =3D 0; i < 16; i++) {
+> > +               err =3D pthread_create(&thread_id[i], NULL, &spin_lock_=
+thread, &prog_fd);
+> > +               if (!ASSERT_OK(err, "pthread_create"))
+> > +                       goto end;
+> > +       }
+> > +
+> > +       for (i =3D 0; i < 16; i++) {
+> > +               if (!ASSERT_OK(pthread_join(thread_id[i], &ret), "pthre=
+ad_join"))
+> > +                       goto end;
+> > +               if (!ASSERT_EQ(ret, &prog_fd, "ret =3D=3D prog_fd"))
+> > +                       goto end;
+> > +       }
+> > +end:
+> > +       arena_spin_lock__destroy(skel);
+> > +       return;
+> > +}
+> > +
+> > +void test_arena_spin_lock(void)
+> > +{
+> > +       if (test__start_subtest("arena_spin_lock_1"))
+> > +               test_arena_spin_lock_size(1);
+> > +       cpu =3D 0;
+> > +       if (test__start_subtest("arena_spin_lock_1000"))
+> > +               test_arena_spin_lock_size(1000);
+> > +       cpu =3D 0;
+> > +       if (test__start_subtest("arena_spin_lock_10000"))
+> > +               test_arena_spin_lock_size(10000);
+> > +       cpu =3D 0;
+> > +       if (test__start_subtest("arena_spin_lock_100000"))
+> > +               test_arena_spin_lock_size(100000);
+> > +       cpu =3D 0;
+> > +       if (test__start_subtest("arena_spin_lock_500000"))
+> > +               test_arena_spin_lock_size(500000);
+>
+> Do 10k and 500k make a difference?
+> I suspect 1, 1k and 100k would cover the interesting range.
+
+They do make a difference inside a VM, but not on bare-metal.
+I can stick to three sizes though.
+
+>
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/arena_spin_lock.c b/tool=
+s/testing/selftests/bpf/progs/arena_spin_lock.c
+> > new file mode 100644
+> > index 000000000000..3e8ce807e028
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
+> > @@ -0,0 +1,51 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+> > +#include <vmlinux.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include "bpf_misc.h"
+> > +#include "bpf_arena_spin_lock.h"
+> > +
+> > +struct {
+> > +       __uint(type, BPF_MAP_TYPE_ARENA);
+> > +       __uint(map_flags, BPF_F_MMAPABLE);
+> > +       __uint(max_entries, 100); /* number of pages */
+> > +#ifdef __TARGET_ARCH_arm64
+> > +       __ulong(map_extra, 0x1ull << 32); /* start of mmap() region */
+> > +#else
+> > +       __ulong(map_extra, 0x1ull << 44); /* start of mmap() region */
+> > +#endif
+> > +} arena SEC(".maps");
+> > +
+> > +int cs_count;
+> > +
+> > +#if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_=
+CAST)
+> > +arena_spinlock_t __arena lock;
+> > +void *ptr;
+> > +int test_skip =3D 1;
+> > +#else
+> > +int test_skip =3D 2;
+> > +#endif
+> > +
+> > +int counter;
+> > +
+> > +SEC("tc")
+> > +int prog(void *ctx)
+> > +{
+> > +       int ret =3D -2;
+> > +
+> > +#if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_=
+CAST)
+> > +       unsigned long flags;
+> > +
+> > +       ptr =3D &arena;
+>
+> Is it really necessary?
+
+Probably a remnant from previous versions, but sometimes if you don't do th=
+is
+it gives you an error saying addr_space_cast cannot be used in a
+program with no associated arena.
+
+Probably if it never sees the arena map reference anywhere in the
+program. This is a way to do that.
+But in this case I dropped it and it works.
+
+>
+> > +       if ((ret =3D arena_spin_lock_irqsave(&lock, flags)))
+> > +               return ret;
+> > +       WRITE_ONCE(counter, READ_ONCE(counter) + 1);
+> > +       bpf_repeat(cs_count);
+> > +       ret =3D 0;
+> > +       arena_spin_unlock_irqrestore(&lock, flags);
+> > +#endif
+> > +       return ret;
+> > +}
+> > +
+> > +char _license[] SEC("license") =3D "GPL";
+> > --
+> > 2.47.1
+> >
 
