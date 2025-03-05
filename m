@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-53365-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53366-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BAB9A504BD
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 17:28:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4372A504C0
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 17:28:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BA463B0E94
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 16:26:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AD7E176EDA
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 16:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 128B0190063;
-	Wed,  5 Mar 2025 16:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985D92561DF;
+	Wed,  5 Mar 2025 16:23:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NTWsQLbg"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nVbNdI7+"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9666C19B5A7;
-	Wed,  5 Mar 2025 16:23:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373182561B9;
+	Wed,  5 Mar 2025 16:23:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741191792; cv=none; b=HXvzc2/1rEa1EUksdsZKSPu4MrmtDgffHsvng9spSNe7gibO4eDKc5G46kaj34/leohdQSuCqfVH7kqhe/LDodD5cNJo2mWLZgMB4qGRo8OFoAkOZe93xgRUjNMxZv7SGJuwDjC09vUk7kgGfJr7f5J6ZqxyUv+4c/Q9yqmzYgo=
+	t=1741191797; cv=none; b=UqQrkV3XnxOPXYSAnaYNmVYdqcLuOSD43ee2+PWDKH2AKpYxhyx5nIY1S3lffRV7g7Rty3FI0ZqAr/rSgrClrGmr1DjiMRtgLdR+LGnx0INeOO0g3u76Ji9HJNwHQiNXpmvhU4Egxajj4PkkJ9TP3jCBFdVZUs0kqvDOFNh8CnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741191792; c=relaxed/simple;
-	bh=gGgKTbnFjmUcyRaJpwkVxDwTtRyzyTr2iOzoUHoaBm8=;
+	s=arc-20240116; t=1741191797; c=relaxed/simple;
+	bh=jH3/aFW3p54Wrswk5tybuWj5Zwto0J/wsivgfC94QW0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VBMixpCHsWa3S/HqXQ9g73ePGOyyV3d6yVVe/btBuHaz+fXwUfq5yAGRixnmP3OGX53q2blK5BUbW3Y4acq85C3/+sx3oXpun+M0bgDvBFAAxwdVM/37KxFzgmtIK1sYCpoMByc0jLNvfscEa4/8kAw4I6ommv5O3xAxTEodX1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NTWsQLbg; arc=none smtp.client-ip=198.175.65.19
+	 MIME-Version; b=tYhM8mzH9e2l2ZbjWceRaVjBUTeNcf9dBTXiD8j7KcVTxy1DxRmHeshma4kfy9VUz6RsRfOapiyP0qBeJYZ74ZHEMZwItRI1r9Z/xhvBC7161bgd/Ru05/YpzFGNqWKMvR0ZnUH0ExPGm9vAYINIx0R6Xdc8MSsOV7gsRhAPL5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nVbNdI7+; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741191791; x=1772727791;
+  t=1741191796; x=1772727796;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=gGgKTbnFjmUcyRaJpwkVxDwTtRyzyTr2iOzoUHoaBm8=;
-  b=NTWsQLbgIuXEUvwpORCycgU0oASXT0dfJvscbUHxmnjrIu4wuBPffm5q
-   FiYZ/Ggupq37dbt4dVdBWvI0bKf1rdcsyDp2NzkGePF5qEX8vYNa1mgK4
-   NGVvHRRuzG2NVccKVdhnGOZK4DdK2ow6CWktfPHFHwbm9T1vYrgFA0l9Q
-   xaYCbHxPz2pFpbcR6jXZWUKdQa5h+/bvwXQFo2sYlLMG63HgB7gQkyczW
-   l+pDGYecZhIjfBx+pVCvn7edCYyjz2X1Jj7bNliPLZ2bnVTC/Zqg4TdC9
-   SDzVSRC1cqhLUWhFdT7izer35rPDJvq3kXHqPwxIlRZ/bND7X/Ep9KdsU
-   w==;
-X-CSE-ConnectionGUID: fpJUA1tUSdK/mF+nXjiBbQ==
-X-CSE-MsgGUID: +O59rJwcQGG9vzYuyXIv4A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11363"; a="42026595"
+  bh=jH3/aFW3p54Wrswk5tybuWj5Zwto0J/wsivgfC94QW0=;
+  b=nVbNdI7+r5IU3VPIVaSt9AlKYcmQaXgKVmlLW3LG8buCGRR20rS8AlTf
+   hrL4ufhbRmREJSPALsavDlx7BCJE02HKW6x5Cie9nJrQeO0cPZx67vA22
+   MqufLgYxAOrIjiNZ4mNj+yDFT5VWX7SlgxAPBF5ol6RrQppBe8q4S1Jgv
+   15OI/S5nuJAA2EZdmLA9Fh3L5PDQg+96aVoKUNTHVYako2aeFloux01S3
+   OcdGQbEH8zRnz93m+DJjNvbw8Nce18yAMxLgvULbOovcsSX4s+qFtOb8l
+   kT7V8RT8VgsDy20DMFq5nR1HuBxa0Yk1ATKoVkWpfY36fND1YYkz7XbPP
+   A==;
+X-CSE-ConnectionGUID: ozuTzIqAR/OxrS0gdujQ6Q==
+X-CSE-MsgGUID: JZV+0aBPQEuTr2PRdzKo9w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11363"; a="42026614"
 X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
-   d="scan'208";a="42026595"
+   d="scan'208";a="42026614"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 08:23:11 -0800
-X-CSE-ConnectionGUID: 1AvidtLuSvOTVTN+d+tR9A==
-X-CSE-MsgGUID: 3U3PdZiRRk22MHvHtvFQRw==
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 08:23:15 -0800
+X-CSE-ConnectionGUID: fPnzIwIaQR29ad9kt53nJA==
+X-CSE-MsgGUID: bMqy4WiSRaWrj93bftuRXg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
-   d="scan'208";a="123832988"
+   d="scan'208";a="123833006"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa004.fm.intel.com with ESMTP; 05 Mar 2025 08:23:06 -0800
+  by fmviesa004.fm.intel.com with ESMTP; 05 Mar 2025 08:23:10 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: intel-wired-lan@lists.osuosl.org
 Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -78,9 +78,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 13/16] idpf: use generic functions to build xdp_buff and skb
-Date: Wed,  5 Mar 2025 17:21:29 +0100
-Message-ID: <20250305162132.1106080-14-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next 14/16] idpf: add support for XDP on Rx
+Date: Wed,  5 Mar 2025 17:21:30 +0100
+Message-ID: <20250305162132.1106080-15-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250305162132.1106080-1-aleksander.lobakin@intel.com>
 References: <20250305162132.1106080-1-aleksander.lobakin@intel.com>
@@ -92,497 +92,430 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In preparation of XDP support, move from having skb as the main frame
-container during the Rx polling to &xdp_buff.
-This allows to use generic and libeth helpers for building an XDP
-buffer and changes the logics: now we try to allocate an skb only
-when we processed all the descriptors related to the frame.
-Store &libeth_xdp_stash instead of the skb pointer on the Rx queue.
-It's only 8 bytes wider, but contains everything we may need.
+Use libeth XDP infra to support running XDP program on Rx polling.
+This includes all of the possible verdicts/actions.
+XDP Tx queues are cleaned only in "lazy" mode when there are less than
+1/4 free descriptors left on the ring. libeth helper macros to define
+driver-specific XDP functions make sure the compiler could uninline
+them when needed.
+Use __LIBETH_WORD_ACCESS to parse descriptors more efficiently when
+applicable. It really gives some good boosts and code size reduction
+on x86_64.
 
+Co-developed-by: Michal Kubiak <michal.kubiak@intel.com>
+Signed-off-by: Michal Kubiak <michal.kubiak@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- drivers/net/ethernet/intel/idpf/idpf_txrx.h   |  17 +-
- .../ethernet/intel/idpf/idpf_singleq_txrx.c   | 103 ++++++-------
- drivers/net/ethernet/intel/idpf/idpf_txrx.c   | 145 +++++-------------
- 3 files changed, 90 insertions(+), 175 deletions(-)
+ drivers/net/ethernet/intel/idpf/idpf_txrx.h |   4 +-
+ drivers/net/ethernet/intel/idpf/xdp.h       | 100 ++++++++++++-
+ drivers/net/ethernet/intel/idpf/idpf_lib.c  |   2 +
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c |  23 +--
+ drivers/net/ethernet/intel/idpf/xdp.c       | 155 +++++++++++++++++++-
+ 5 files changed, 264 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.h b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
-index 38ef0db08133..e36c55baf23f 100644
+index e36c55baf23f..5d62074c94b1 100644
 --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.h
 +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
-@@ -502,7 +502,7 @@ struct idpf_txq_stash {
-  * @next_to_use: Next descriptor to use
-  * @next_to_clean: Next descriptor to clean
-  * @next_to_alloc: RX buffer to allocate at
-- * @skb: Pointer to the skb
-+ * @xdp: XDP buffer with the current frame
-  * @stats_sync: See struct u64_stats_sync
-  * @q_stats: See union idpf_rx_queue_stats
-  * @q_id: Queue id
-@@ -553,11 +553,11 @@ struct idpf_rx_queue {
+@@ -684,8 +684,8 @@ struct idpf_tx_queue {
  	__cacheline_group_end_aligned(read_mostly);
  
  	__cacheline_group_begin_aligned(read_write);
 -	u16 next_to_use;
 -	u16 next_to_clean;
--	u16 next_to_alloc;
 +	u32 next_to_use;
 +	u32 next_to_clean;
-+	u32 next_to_alloc;
  
--	struct sk_buff *skb;
-+	struct libeth_xdp_buff_stash xdp;
+ 	union {
+ 		struct {
+diff --git a/drivers/net/ethernet/intel/idpf/xdp.h b/drivers/net/ethernet/intel/idpf/xdp.h
+index a72a7638a6ea..fde85528a315 100644
+--- a/drivers/net/ethernet/intel/idpf/xdp.h
++++ b/drivers/net/ethernet/intel/idpf/xdp.h
+@@ -4,12 +4,9 @@
+ #ifndef _IDPF_XDP_H_
+ #define _IDPF_XDP_H_
  
- 	struct u64_stats_sync stats_sync;
- 	struct idpf_rx_queue_stats q_stats;
-@@ -579,8 +579,8 @@ struct idpf_rx_queue {
- libeth_cacheline_set_assert(struct idpf_rx_queue,
- 			    ALIGN(64, __alignof(struct xdp_rxq_info)) +
- 			    sizeof(struct xdp_rxq_info),
--			    72 + offsetof(struct idpf_rx_queue, q_stats) -
--			    offsetofend(struct idpf_rx_queue, skb),
-+			    88 + offsetof(struct idpf_rx_queue, q_stats) -
-+			    offsetofend(struct idpf_rx_queue, xdp),
- 			    32);
+-#include <linux/types.h>
++#include <net/libeth/xdp.h>
  
- /**
-@@ -1071,9 +1071,6 @@ int idpf_config_rss(struct idpf_vport *vport);
- int idpf_init_rss(struct idpf_vport *vport);
- void idpf_deinit_rss(struct idpf_vport *vport);
- int idpf_rx_bufs_init_all(struct idpf_vport *vport);
--void idpf_rx_add_frag(struct idpf_rx_buf *rx_buf, struct sk_buff *skb,
--		      unsigned int size);
--struct sk_buff *idpf_rx_build_skb(const struct libeth_fqe *buf, u32 size);
- void idpf_tx_buf_hw_update(struct idpf_tx_queue *tx_q, u32 val,
- 			   bool xmit_more);
- unsigned int idpf_size_to_txd_count(unsigned int size);
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c
-index c81065b4fb24..544fe113265b 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c
-@@ -1,8 +1,7 @@
+-struct bpf_prog;
+-struct idpf_vport;
+-struct net_device;
+-struct netdev_bpf;
++#include "idpf_txrx.h"
+ 
+ int idpf_xdp_rxq_info_init_all(const struct idpf_vport *vport);
+ void idpf_xdp_rxq_info_deinit_all(const struct idpf_vport *vport);
+@@ -19,6 +16,99 @@ void idpf_copy_xdp_prog_to_qs(const struct idpf_vport *vport,
+ int idpf_vport_xdpq_get(const struct idpf_vport *vport);
+ void idpf_vport_xdpq_put(const struct idpf_vport *vport);
+ 
++bool idpf_xdp_tx_flush_bulk(struct libeth_xdp_tx_bulk *bq, u32 flags);
++
++/**
++ * idpf_xdp_tx_xmit - produce a single HW Tx descriptor out of XDP desc
++ * @desc: XDP descriptor to pull the DMA address and length from
++ * @i: descriptor index on the queue to fill
++ * @sq: XDP queue to produce the HW Tx descriptor on
++ * @priv: &xsk_tx_metadata_ops on XSk xmit or %NULL
++ */
++static inline void idpf_xdp_tx_xmit(struct libeth_xdp_tx_desc desc, u32 i,
++				    const struct libeth_xdpsq *sq, u64 priv)
++{
++	struct idpf_flex_tx_desc *tx_desc = sq->descs;
++	u32 cmd;
++
++	cmd = FIELD_PREP(IDPF_FLEX_TXD_QW1_DTYPE_M,
++			 IDPF_TX_DESC_DTYPE_FLEX_L2TAG1_L2TAG2);
++	if (desc.flags & LIBETH_XDP_TX_LAST)
++		cmd |= FIELD_PREP(IDPF_FLEX_TXD_QW1_CMD_M,
++				  IDPF_TX_DESC_CMD_EOP);
++	if (priv && (desc.flags & LIBETH_XDP_TX_CSUM))
++		cmd |= FIELD_PREP(IDPF_FLEX_TXD_QW1_CMD_M,
++				  IDPF_TX_FLEX_DESC_CMD_CS_EN);
++
++	tx_desc = &tx_desc[i];
++	tx_desc->buf_addr = cpu_to_le64(desc.addr);
++#ifdef __LIBETH_WORD_ACCESS
++	*(u64 *)&tx_desc->qw1 = ((u64)desc.len << 48) | cmd;
++#else
++	tx_desc->qw1.buf_size = cpu_to_le16(desc.len);
++	tx_desc->qw1.cmd_dtype = cpu_to_le16(cmd);
++#endif
++}
++
++/**
++ * idpf_set_rs_bit - set RS bit on last produced descriptor
++ * @xdpq: XDP queue to produce the HW Tx descriptors on
++ */
++static inline void idpf_set_rs_bit(const struct idpf_tx_queue *xdpq)
++{
++	u32 ntu, cmd;
++
++	ntu = xdpq->next_to_use;
++	if (unlikely(!ntu))
++		ntu = xdpq->desc_count;
++
++	cmd = FIELD_PREP(IDPF_FLEX_TXD_QW1_CMD_M, IDPF_TX_DESC_CMD_RS);
++#ifdef __LIBETH_WORD_ACCESS
++	*(u64 *)&xdpq->flex_tx[ntu - 1].q.qw1 |= cmd;
++#else
++	xdpq->flex_tx[ntu - 1].q.qw1.cmd_dtype |= cpu_to_le16(cmd);
++#endif
++}
++
++/**
++ * idpf_xdpq_update_tail - update the XDP Tx queue tail register
++ * @xdpq: XDP Tx queue
++ */
++static inline void idpf_xdpq_update_tail(const struct idpf_tx_queue *xdpq)
++{
++	dma_wmb();
++	writel_relaxed(xdpq->next_to_use, xdpq->tail);
++}
++
++/**
++ * idpf_xdp_tx_finalize - Update RS bit and bump XDP Tx tail
++ * @_xdpq: XDP Tx queue
++ * @sent: whether any frames were sent
++ * @flush: whether to update RS bit and the tail register
++ *
++ * This function bumps XDP Tx tail and should be called when a batch of packets
++ * has been processed in the napi loop.
++ */
++static inline void idpf_xdp_tx_finalize(void *_xdpq, bool sent, bool flush)
++{
++	struct idpf_tx_queue *xdpq = _xdpq;
++
++	if ((!flush || unlikely(!sent)) &&
++	    likely(xdpq->desc_count != xdpq->pending))
++		return;
++
++	libeth_xdpsq_lock(&xdpq->xdp_lock);
++
++	idpf_set_rs_bit(xdpq);
++	idpf_xdpq_update_tail(xdpq);
++
++	libeth_xdpsq_queue_timer(xdpq->timer);
++
++	libeth_xdpsq_unlock(&xdpq->xdp_lock);
++}
++
++void idpf_xdp_set_features(const struct idpf_vport *vport);
++
+ int idpf_xdp(struct net_device *dev, struct netdev_bpf *xdp);
+ 
+ #endif /* _IDPF_XDP_H_ */
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_lib.c b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+index 84ca8c08bd56..2d1efcb854be 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_lib.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+@@ -814,6 +814,8 @@ static int idpf_cfg_netdev(struct idpf_vport *vport)
+ 	netdev->features |= dflt_features;
+ 	netdev->hw_features |= dflt_features | offloads;
+ 	netdev->hw_enc_features |= dflt_features | offloads;
++	idpf_xdp_set_features(vport);
++
+ 	idpf_set_ethtool_ops(netdev);
+ 	netif_set_affinity_auto(netdev);
+ 	SET_NETDEV_DEV(netdev, &adapter->pdev->dev);
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+index f25c50d8947b..cddcc5fc291f 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+@@ -1,8 +1,6 @@
  // SPDX-License-Identifier: GPL-2.0-only
  /* Copyright (C) 2023 Intel Corporation */
  
--#include <net/libeth/rx.h>
--#include <net/libeth/tx.h>
-+#include <net/libeth/xdp.h>
- 
+-#include <net/libeth/xdp.h>
+-
  #include "idpf.h"
- 
-@@ -780,7 +779,7 @@ static void idpf_rx_singleq_flex_hash(struct idpf_rx_queue *rx_q,
+ #include "idpf_virtchnl.h"
+ #include "xdp.h"
+@@ -3247,14 +3245,12 @@ static bool idpf_rx_process_skb_fields(struct sk_buff *skb,
+ 	return !__idpf_rx_process_skb_fields(rxq, skb, xdp->desc);
  }
  
- /**
-- * idpf_rx_singleq_process_skb_fields - Populate skb header fields from Rx
-+ * __idpf_rx_singleq_process_skb_fields - Populate skb header fields from Rx
-  * descriptor
-  * @rx_q: Rx ring being processed
-  * @skb: pointer to current skb being populated
-@@ -792,17 +791,14 @@ static void idpf_rx_singleq_flex_hash(struct idpf_rx_queue *rx_q,
-  * other fields within the skb.
-  */
- static void
--idpf_rx_singleq_process_skb_fields(struct idpf_rx_queue *rx_q,
--				   struct sk_buff *skb,
--				   const union virtchnl2_rx_desc *rx_desc,
--				   u16 ptype)
-+__idpf_rx_singleq_process_skb_fields(struct idpf_rx_queue *rx_q,
-+				     struct sk_buff *skb,
-+				     const union virtchnl2_rx_desc *rx_desc,
-+				     u16 ptype)
- {
- 	struct libeth_rx_pt decoded = rx_q->rx_ptype_lkup[ptype];
- 	struct libeth_rx_csum csum_bits;
- 
--	/* modifies the skb - consumes the enet header */
--	skb->protocol = eth_type_trans(skb, rx_q->xdp_rxq.dev);
--
- 	/* Check if we're using base mode descriptor IDs */
- 	if (rx_q->rxdids == VIRTCHNL2_RXDID_1_32B_BASE_M) {
- 		idpf_rx_singleq_base_hash(rx_q, skb, rx_desc, decoded);
-@@ -813,7 +809,6 @@ idpf_rx_singleq_process_skb_fields(struct idpf_rx_queue *rx_q,
- 	}
- 
- 	idpf_rx_singleq_csum(rx_q, skb, csum_bits, decoded);
--	skb_record_rx_queue(skb, rx_q->idx);
- }
- 
- /**
-@@ -952,6 +947,32 @@ idpf_rx_singleq_extract_fields(const struct idpf_rx_queue *rx_q,
- 		idpf_rx_singleq_extract_flex_fields(rx_desc, fields, ptype);
- }
- 
-+static bool
-+idpf_rx_singleq_process_skb_fields(struct sk_buff *skb,
-+				   const struct libeth_xdp_buff *xdp,
-+				   struct libeth_rq_napi_stats *rs)
-+{
-+	struct libeth_rqe_info fields;
-+	struct idpf_rx_queue *rxq;
-+	u32 ptype;
-+
-+	rxq = libeth_xdp_buff_to_rq(xdp, typeof(*rxq), xdp_rxq);
-+
-+	idpf_rx_singleq_extract_fields(rxq, xdp->desc, &fields, &ptype);
-+	__idpf_rx_singleq_process_skb_fields(rxq, skb, xdp->desc, ptype);
-+
-+	return true;
-+}
-+
-+static void idpf_xdp_run_pass(struct libeth_xdp_buff *xdp,
-+			      struct napi_struct *napi,
-+			      struct libeth_rq_napi_stats *rs,
-+			      const union virtchnl2_rx_desc *desc)
-+{
-+	libeth_xdp_run_pass(xdp, NULL, napi, rs, desc, NULL,
-+			    idpf_rx_singleq_process_skb_fields);
-+}
-+
- /**
-  * idpf_rx_singleq_clean - Reclaim resources after receive completes
-  * @rx_q: rx queue to clean
-@@ -961,14 +982,15 @@ idpf_rx_singleq_extract_fields(const struct idpf_rx_queue *rx_q,
-  */
- static int idpf_rx_singleq_clean(struct idpf_rx_queue *rx_q, int budget)
- {
--	unsigned int total_rx_bytes = 0, total_rx_pkts = 0;
--	struct sk_buff *skb = rx_q->skb;
-+	struct libeth_rq_napi_stats rs = { };
- 	u16 ntc = rx_q->next_to_clean;
-+	LIBETH_XDP_ONSTACK_BUFF(xdp);
- 	u16 cleaned_count = 0;
--	bool failure = false;
-+
-+	libeth_xdp_init_buff(xdp, &rx_q->xdp, &rx_q->xdp_rxq);
- 
- 	/* Process Rx packets bounded by budget */
--	while (likely(total_rx_pkts < (unsigned int)budget)) {
-+	while (likely(rs.packets < budget)) {
- 		struct libeth_rqe_info fields = { };
- 		union virtchnl2_rx_desc *rx_desc;
- 		struct idpf_rx_buf *rx_buf;
-@@ -996,72 +1018,41 @@ static int idpf_rx_singleq_clean(struct idpf_rx_queue *rx_q, int budget)
- 		idpf_rx_singleq_extract_fields(rx_q, rx_desc, &fields, &ptype);
- 
- 		rx_buf = &rx_q->rx_buf[ntc];
--		if (!libeth_rx_sync_for_cpu(rx_buf, fields.len))
--			goto skip_data;
--
--		if (skb)
--			idpf_rx_add_frag(rx_buf, skb, fields.len);
--		else
--			skb = idpf_rx_build_skb(rx_buf, fields.len);
--
--		/* exit if we failed to retrieve a buffer */
--		if (!skb)
--			break;
--
--skip_data:
-+		libeth_xdp_process_buff(xdp, rx_buf, fields.len);
- 		rx_buf->netmem = 0;
- 
- 		IDPF_SINGLEQ_BUMP_RING_IDX(rx_q, ntc);
- 		cleaned_count++;
- 
- 		/* skip if it is non EOP desc */
--		if (idpf_rx_singleq_is_non_eop(rx_desc) || unlikely(!skb))
-+		if (idpf_rx_singleq_is_non_eop(rx_desc) ||
-+		    unlikely(!xdp->data))
- 			continue;
- 
- #define IDPF_RXD_ERR_S FIELD_PREP(VIRTCHNL2_RX_BASE_DESC_QW1_ERROR_M, \
- 				  VIRTCHNL2_RX_BASE_DESC_ERROR_RXE_M)
- 		if (unlikely(idpf_rx_singleq_test_staterr(rx_desc,
- 							  IDPF_RXD_ERR_S))) {
--			dev_kfree_skb_any(skb);
--			skb = NULL;
--			continue;
--		}
--
--		/* pad skb if needed (to make valid ethernet frame) */
--		if (eth_skb_pad(skb)) {
--			skb = NULL;
-+			libeth_xdp_return_buff_slow(xdp);
- 			continue;
- 		}
- 
--		/* probably a little skewed due to removing CRC */
--		total_rx_bytes += skb->len;
--
--		/* protocol */
--		idpf_rx_singleq_process_skb_fields(rx_q, skb, rx_desc, ptype);
--
--		/* send completed skb up the stack */
--		napi_gro_receive(rx_q->pp->p.napi, skb);
--		skb = NULL;
--
--		/* update budget accounting */
--		total_rx_pkts++;
-+		idpf_xdp_run_pass(xdp, rx_q->pp->p.napi, &rs, rx_desc);
- 	}
- 
--	rx_q->skb = skb;
--
- 	rx_q->next_to_clean = ntc;
-+	libeth_xdp_save_buff(&rx_q->xdp, xdp);
- 
- 	page_pool_nid_changed(rx_q->pp, numa_mem_id());
- 	if (cleaned_count)
--		failure = idpf_rx_singleq_buf_hw_alloc_all(rx_q, cleaned_count);
-+		idpf_rx_singleq_buf_hw_alloc_all(rx_q, cleaned_count);
- 
- 	u64_stats_update_begin(&rx_q->stats_sync);
--	u64_stats_add(&rx_q->q_stats.packets, total_rx_pkts);
--	u64_stats_add(&rx_q->q_stats.bytes, total_rx_bytes);
-+	u64_stats_add(&rx_q->q_stats.packets, rs.packets);
-+	u64_stats_add(&rx_q->q_stats.bytes, rs.bytes);
- 	u64_stats_update_end(&rx_q->stats_sync);
- 
--	/* guarantee a trip back through this routine if there was a failure */
--	return failure ? budget : (int)total_rx_pkts;
-+	return rs.packets;
- }
- 
- /**
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-index e152fbe4ebe3..f25c50d8947b 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-@@ -486,10 +486,7 @@ static void idpf_rx_desc_rel(struct idpf_rx_queue *rxq, struct device *dev,
- 	if (!rxq)
- 		return;
- 
--	if (rxq->skb) {
--		dev_kfree_skb_any(rxq->skb);
--		rxq->skb = NULL;
--	}
-+	libeth_xdp_return_stash(&rxq->xdp);
- 
- 	if (!idpf_is_queue_model_split(model))
- 		idpf_rx_buf_rel_all(rxq);
-@@ -3205,7 +3202,7 @@ static int idpf_rx_rsc(struct idpf_rx_queue *rxq, struct sk_buff *skb,
- }
- 
- /**
-- * idpf_rx_process_skb_fields - Populate skb header fields from Rx descriptor
-+ * __idpf_rx_process_skb_fields - Populate skb header fields from Rx descriptor
-  * @rxq: Rx descriptor ring packet is being transacted on
-  * @skb: pointer to current skb being populated
-  * @rx_desc: Receive descriptor
-@@ -3215,8 +3212,8 @@ static int idpf_rx_rsc(struct idpf_rx_queue *rxq, struct sk_buff *skb,
-  * other fields within the skb.
-  */
- static int
--idpf_rx_process_skb_fields(struct idpf_rx_queue *rxq, struct sk_buff *skb,
--			   const struct virtchnl2_rx_flex_desc_adv_nic_3 *rx_desc)
-+__idpf_rx_process_skb_fields(struct idpf_rx_queue *rxq, struct sk_buff *skb,
-+			     const struct virtchnl2_rx_flex_desc_adv_nic_3 *rx_desc)
- {
- 	struct libeth_rx_csum csum_bits;
- 	struct libeth_rx_pt decoded;
-@@ -3229,9 +3226,6 @@ idpf_rx_process_skb_fields(struct idpf_rx_queue *rxq, struct sk_buff *skb,
- 	/* process RSS/hash */
- 	idpf_rx_hash(rxq, skb, rx_desc, decoded);
- 
--	skb->protocol = eth_type_trans(skb, rxq->xdp_rxq.dev);
--	skb_record_rx_queue(skb, rxq->idx);
--
- 	if (le16_get_bits(rx_desc->hdrlen_flags,
- 			  VIRTCHNL2_RX_FLEX_DESC_ADV_RSC_M))
- 		return idpf_rx_rsc(rxq, skb, rx_desc, decoded);
-@@ -3242,23 +3236,24 @@ idpf_rx_process_skb_fields(struct idpf_rx_queue *rxq, struct sk_buff *skb,
- 	return 0;
- }
- 
--/**
-- * idpf_rx_add_frag - Add contents of Rx buffer to sk_buff as a frag
-- * @rx_buf: buffer containing page to add
-- * @skb: sk_buff to place the data into
-- * @size: packet length from rx_desc
-- *
-- * This function will add the data contained in rx_buf->page to the skb.
-- * It will just attach the page as a frag to the skb.
-- * The function will then update the page offset.
-- */
--void idpf_rx_add_frag(struct idpf_rx_buf *rx_buf, struct sk_buff *skb,
--		      unsigned int size)
-+static bool idpf_rx_process_skb_fields(struct sk_buff *skb,
-+				       const struct libeth_xdp_buff *xdp,
-+				       struct libeth_rq_napi_stats *rs)
- {
--	u32 hr = netmem_get_pp(rx_buf->netmem)->p.offset;
-+	struct idpf_rx_queue *rxq;
-+
-+	rxq = libeth_xdp_buff_to_rq(xdp, typeof(*rxq), xdp_rxq);
- 
--	skb_add_rx_frag_netmem(skb, skb_shinfo(skb)->nr_frags, rx_buf->netmem,
--			       rx_buf->offset + hr, size, rx_buf->truesize);
-+	return !__idpf_rx_process_skb_fields(rxq, skb, xdp->desc);
-+}
-+
-+static void
-+idpf_xdp_run_pass(struct libeth_xdp_buff *xdp, struct napi_struct *napi,
-+		  struct libeth_rq_napi_stats *ss,
-+		  const struct virtchnl2_rx_flex_desc_adv_nic_3 *desc)
-+{
-+	libeth_xdp_run_pass(xdp, NULL, napi, ss, desc, NULL,
-+			    idpf_rx_process_skb_fields);
- }
- 
- /**
-@@ -3300,36 +3295,6 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
- 	return copy;
- }
- 
--/**
-- * idpf_rx_build_skb - Allocate skb and populate it from header buffer
-- * @buf: Rx buffer to pull data from
-- * @size: the length of the packet
-- *
-- * This function allocates an skb. It then populates it with the page data from
-- * the current receive descriptor, taking care to set up the skb correctly.
-- */
--struct sk_buff *idpf_rx_build_skb(const struct libeth_fqe *buf, u32 size)
+-static void
+-idpf_xdp_run_pass(struct libeth_xdp_buff *xdp, struct napi_struct *napi,
+-		  struct libeth_rq_napi_stats *ss,
+-		  const struct virtchnl2_rx_flex_desc_adv_nic_3 *desc)
 -{
--	struct page *buf_page = __netmem_to_page(buf->netmem);
--	u32 hr = buf_page->pp->p.offset;
--	struct sk_buff *skb;
--	void *va;
--
--	va = page_address(buf_page) + buf->offset;
--	prefetch(va + hr);
--
--	skb = napi_build_skb(va, buf->truesize);
--	if (unlikely(!skb))
--		return NULL;
--
--	skb_mark_for_recycle(skb);
--
--	skb_reserve(skb, hr);
--	__skb_put(skb, size);
--
--	return skb;
+-	libeth_xdp_run_pass(xdp, NULL, napi, ss, desc, NULL,
+-			    idpf_rx_process_skb_fields);
 -}
--
++LIBETH_XDP_DEFINE_START();
++LIBETH_XDP_DEFINE_RUN(static idpf_xdp_run_pass, idpf_xdp_run_prog,
++		      idpf_xdp_tx_flush_bulk, idpf_rx_process_skb_fields);
++LIBETH_XDP_DEFINE_FINALIZE(static idpf_xdp_finalize_rx, idpf_xdp_tx_flush_bulk,
++			   idpf_xdp_tx_finalize);
++LIBETH_XDP_DEFINE_END();
+ 
  /**
-  * idpf_rx_splitq_test_staterr - tests bits in Rx descriptor
-  * status and error fields
-@@ -3371,13 +3336,15 @@ static bool idpf_rx_splitq_is_eop(struct virtchnl2_rx_flex_desc_adv_nic_3 *rx_de
-  */
- static int idpf_rx_splitq_clean(struct idpf_rx_queue *rxq, int budget)
+  * idpf_rx_hsplit_wa - handle header buffer overflows and split errors
+@@ -3338,9 +3334,12 @@ static int idpf_rx_splitq_clean(struct idpf_rx_queue *rxq, int budget)
  {
--	int total_rx_bytes = 0, total_rx_pkts = 0;
  	struct idpf_buf_queue *rx_bufq = NULL;
--	struct sk_buff *skb = rxq->skb;
-+	struct libeth_rq_napi_stats rs = { };
-+	LIBETH_XDP_ONSTACK_BUFF(xdp);
+ 	struct libeth_rq_napi_stats rs = { };
++	struct libeth_xdp_tx_bulk bq;
+ 	LIBETH_XDP_ONSTACK_BUFF(xdp);
  	u16 ntc = rxq->next_to_clean;
  
-+	libeth_xdp_init_buff(xdp, &rxq->xdp, &rxq->xdp_rxq);
-+
++	libeth_xdp_tx_init_bulk(&bq, rxq->xdp_prog, rxq->xdp_rxq.dev,
++				rxq->xdpqs, rxq->num_xdp_txq);
+ 	libeth_xdp_init_buff(xdp, &rxq->xdp, &rxq->xdp_rxq);
+ 
  	/* Process Rx packets bounded by budget */
--	while (likely(total_rx_pkts < budget)) {
-+	while (likely(rs.packets < budget)) {
- 		struct virtchnl2_rx_flex_desc_adv_nic_3 *rx_desc;
- 		struct libeth_fqe *hdr, *rx_buf = NULL;
- 		struct idpf_sw_queue *refillq = NULL;
-@@ -3443,7 +3410,7 @@ static int idpf_rx_splitq_clean(struct idpf_rx_queue *rxq, int budget)
- 
- 		hdr = &rx_bufq->hdr_buf[buf_id];
- 
--		if (unlikely(!hdr_len && !skb)) {
-+		if (unlikely(!hdr_len && !xdp->data)) {
- 			hdr_len = idpf_rx_hsplit_wa(hdr, rx_buf, pkt_len);
- 			pkt_len -= hdr_len;
- 
-@@ -3452,75 +3419,35 @@ static int idpf_rx_splitq_clean(struct idpf_rx_queue *rxq, int budget)
- 			u64_stats_update_end(&rxq->stats_sync);
- 		}
- 
--		if (libeth_rx_sync_for_cpu(hdr, hdr_len)) {
--			skb = idpf_rx_build_skb(hdr, hdr_len);
--			if (!skb)
--				break;
--
--			u64_stats_update_begin(&rxq->stats_sync);
--			u64_stats_inc(&rxq->q_stats.hsplit_pkts);
--			u64_stats_update_end(&rxq->stats_sync);
--		}
-+		if (libeth_xdp_process_buff(xdp, hdr, hdr_len))
-+			rs.hsplit++;
- 
- 		hdr->netmem = 0;
- 
- payload:
--		if (!libeth_rx_sync_for_cpu(rx_buf, pkt_len))
--			goto skip_data;
--
--		if (skb)
--			idpf_rx_add_frag(rx_buf, skb, pkt_len);
--		else
--			skb = idpf_rx_build_skb(rx_buf, pkt_len);
--
--		/* exit if we failed to retrieve a buffer */
--		if (!skb)
--			break;
--
--skip_data:
-+		libeth_xdp_process_buff(xdp, rx_buf, pkt_len);
- 		rx_buf->netmem = 0;
- 
- 		idpf_rx_post_buf_refill(refillq, buf_id);
- 		IDPF_RX_BUMP_NTC(rxq, ntc);
- 
- 		/* skip if it is non EOP desc */
--		if (!idpf_rx_splitq_is_eop(rx_desc) || unlikely(!skb))
--			continue;
--
--		/* pad skb if needed (to make valid ethernet frame) */
--		if (eth_skb_pad(skb)) {
--			skb = NULL;
--			continue;
--		}
--
--		/* probably a little skewed due to removing CRC */
--		total_rx_bytes += skb->len;
--
--		/* protocol */
--		if (unlikely(idpf_rx_process_skb_fields(rxq, skb, rx_desc))) {
--			dev_kfree_skb_any(skb);
--			skb = NULL;
-+		if (!idpf_rx_splitq_is_eop(rx_desc) || unlikely(!xdp->data))
+@@ -3435,11 +3434,13 @@ static int idpf_rx_splitq_clean(struct idpf_rx_queue *rxq, int budget)
+ 		if (!idpf_rx_splitq_is_eop(rx_desc) || unlikely(!xdp->data))
  			continue;
--		}
  
--		/* send completed skb up the stack */
--		napi_gro_receive(rxq->napi, skb);
--		skb = NULL;
--
--		/* update budget accounting */
--		total_rx_pkts++;
-+		idpf_xdp_run_pass(xdp, rxq->napi, &rs, rx_desc);
+-		idpf_xdp_run_pass(xdp, rxq->napi, &rs, rx_desc);
++		idpf_xdp_run_pass(xdp, &bq, rxq->napi, &rs, rx_desc);
  	}
  
  	rxq->next_to_clean = ntc;
-+	libeth_xdp_save_buff(&rxq->xdp, xdp);
++
+ 	libeth_xdp_save_buff(&rxq->xdp, xdp);
++	idpf_xdp_finalize_rx(&bq);
  
--	rxq->skb = skb;
  	u64_stats_update_begin(&rxq->stats_sync);
--	u64_stats_add(&rxq->q_stats.packets, total_rx_pkts);
--	u64_stats_add(&rxq->q_stats.bytes, total_rx_bytes);
-+	u64_stats_add(&rxq->q_stats.packets, rs.packets);
-+	u64_stats_add(&rxq->q_stats.bytes, rs.bytes);
-+	u64_stats_add(&rxq->q_stats.hsplit_pkts, rs.hsplit);
- 	u64_stats_update_end(&rxq->stats_sync);
+ 	u64_stats_add(&rxq->q_stats.packets, rs.packets);
+diff --git a/drivers/net/ethernet/intel/idpf/xdp.c b/drivers/net/ethernet/intel/idpf/xdp.c
+index c0322fa7bfee..abf75e840c0a 100644
+--- a/drivers/net/ethernet/intel/idpf/xdp.c
++++ b/drivers/net/ethernet/intel/idpf/xdp.c
+@@ -1,8 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /* Copyright (C) 2024 Intel Corporation */
  
--	/* guarantee a trip back through this routine if there was a failure */
--	return total_rx_pkts;
-+	return rs.packets;
+-#include <net/libeth/xdp.h>
+-
+ #include "idpf.h"
+ #include "idpf_virtchnl.h"
+ #include "xdp.h"
+@@ -143,6 +141,8 @@ void idpf_copy_xdp_prog_to_qs(const struct idpf_vport *vport,
+ 	idpf_rxq_for_each(vport, idpf_xdp_rxq_assign_prog, xdp_prog);
  }
  
++static void idpf_xdp_tx_timer(struct work_struct *work);
++
+ int idpf_vport_xdpq_get(const struct idpf_vport *vport)
+ {
+ 	struct libeth_xdpsq_timer **timers __free(kvfree) = NULL;
+@@ -183,6 +183,8 @@ int idpf_vport_xdpq_get(const struct idpf_vport *vport)
+ 
+ 		xdpq->timer = timers[i - sqs];
+ 		libeth_xdpsq_get(&xdpq->xdp_lock, dev, vport->xdpq_share);
++		libeth_xdpsq_init_timer(xdpq->timer, xdpq, &xdpq->xdp_lock,
++					idpf_xdp_tx_timer);
+ 
+ 		xdpq->pending = 0;
+ 		xdpq->xdp_tx = 0;
+@@ -209,6 +211,7 @@ void idpf_vport_xdpq_put(const struct idpf_vport *vport)
+ 		if (!idpf_queue_has_clear(XDP, xdpq))
+ 			continue;
+ 
++		libeth_xdpsq_deinit_timer(xdpq->timer);
+ 		libeth_xdpsq_put(&xdpq->xdp_lock, dev);
+ 
+ 		kfree(xdpq->timer);
+@@ -216,6 +219,154 @@ void idpf_vport_xdpq_put(const struct idpf_vport *vport)
+ 	}
+ }
+ 
++static int
++idpf_xdp_parse_compl_desc(const struct idpf_splitq_4b_tx_compl_desc *desc,
++			  bool gen)
++{
++	u32 val;
++
++#ifdef __LIBETH_WORD_ACCESS
++	val = *(const u32 *)desc;
++#else
++	val = ((u32)le16_to_cpu(desc->q_head_compl_tag.q_head) << 16) |
++	      le16_to_cpu(desc->qid_comptype_gen);
++#endif
++	if (!!(val & IDPF_TXD_COMPLQ_GEN_M) != gen)
++		return -ENODATA;
++
++	if (unlikely((val & GENMASK(IDPF_TXD_COMPLQ_GEN_S - 1, 0)) !=
++		     FIELD_PREP(IDPF_TXD_COMPLQ_COMPL_TYPE_M,
++				IDPF_TXD_COMPLT_RS)))
++		return -EINVAL;
++
++	return upper_16_bits(val);
++}
++
++static u32 idpf_xdpsq_poll(struct idpf_tx_queue *xdpsq, u32 budget)
++{
++	struct idpf_compl_queue *cq = xdpsq->complq;
++	u32 tx_ntc = xdpsq->next_to_clean;
++	u32 tx_cnt = xdpsq->desc_count;
++	u32 ntc = cq->next_to_clean;
++	u32 cnt = cq->desc_count;
++	u32 done_frames;
++	bool gen;
++
++	gen = idpf_queue_has(GEN_CHK, cq);
++
++	for (done_frames = 0; done_frames < budget; ) {
++		int ret;
++
++		ret = idpf_xdp_parse_compl_desc(&cq->comp_4b[ntc], gen);
++		if (ret >= 0) {
++			done_frames = ret > tx_ntc ? ret - tx_ntc :
++						     ret + tx_cnt - tx_ntc;
++			goto next;
++		}
++
++		switch (ret) {
++		case -ENODATA:
++			goto out;
++		case -EINVAL:
++			break;
++		}
++
++next:
++		if (unlikely(++ntc == cnt)) {
++			ntc = 0;
++			gen = !gen;
++			idpf_queue_change(GEN_CHK, cq);
++		}
++	}
++
++out:
++	cq->next_to_clean = ntc;
++
++	return done_frames;
++}
++
++/**
++ * idpf_clean_xdp_irq - Reclaim a batch of TX resources from completed XDP_TX
++ * @_xdpq: XDP Tx queue
++ * @budget: maximum number of descriptors to clean
++ *
++ * Returns number of cleaned descriptors.
++ */
++static u32 idpf_clean_xdp_irq(void *_xdpq, u32 budget)
++{
++	struct libeth_xdpsq_napi_stats ss = { };
++	struct idpf_tx_queue *xdpq = _xdpq;
++	u32 tx_ntc = xdpq->next_to_clean;
++	u32 tx_cnt = xdpq->desc_count;
++	struct xdp_frame_bulk bq;
++	struct libeth_cq_pp cp = {
++		.dev	= xdpq->dev,
++		.bq	= &bq,
++		.xss	= &ss,
++		.napi	= true,
++	};
++	u32 done_frames;
++
++	done_frames = idpf_xdpsq_poll(xdpq, budget);
++	if (unlikely(!done_frames))
++		return 0;
++
++	xdp_frame_bulk_init(&bq);
++
++	for (u32 i = 0; likely(i < done_frames); i++) {
++		libeth_xdp_complete_tx(&xdpq->tx_buf[tx_ntc], &cp);
++
++		if (unlikely(++tx_ntc == tx_cnt))
++			tx_ntc = 0;
++	}
++
++	xdp_flush_frame_bulk(&bq);
++
++	xdpq->next_to_clean = tx_ntc;
++	xdpq->pending -= done_frames;
++	xdpq->xdp_tx -= cp.xdp_tx;
++
++	return done_frames;
++}
++
++static u32 idpf_xdp_tx_prep(void *_xdpq, struct libeth_xdpsq *sq)
++{
++	struct idpf_tx_queue *xdpq = _xdpq;
++	u32 free;
++
++	libeth_xdpsq_lock(&xdpq->xdp_lock);
++
++	free = xdpq->desc_count - xdpq->pending;
++	if (free <= xdpq->thresh)
++		free += idpf_clean_xdp_irq(xdpq, xdpq->thresh);
++
++	*sq = (struct libeth_xdpsq){
++		.sqes		= xdpq->tx_buf,
++		.descs		= xdpq->desc_ring,
++		.count		= xdpq->desc_count,
++		.lock		= &xdpq->xdp_lock,
++		.ntu		= &xdpq->next_to_use,
++		.pending	= &xdpq->pending,
++		.xdp_tx		= &xdpq->xdp_tx,
++	};
++
++	return free;
++}
++
++LIBETH_XDP_DEFINE_START();
++LIBETH_XDP_DEFINE_TIMER(static idpf_xdp_tx_timer, idpf_clean_xdp_irq);
++LIBETH_XDP_DEFINE_FLUSH_TX(idpf_xdp_tx_flush_bulk, idpf_xdp_tx_prep,
++			   idpf_xdp_tx_xmit);
++LIBETH_XDP_DEFINE_END();
++
++void idpf_xdp_set_features(const struct idpf_vport *vport)
++{
++	if (!idpf_is_queue_model_split(vport->rxq_model))
++		return;
++
++	libeth_xdp_set_features_noredir(vport->netdev);
++}
++
  /**
+  * idpf_xdp_setup_prog - handle XDP program install/remove requests
+  * @vport: vport to configure
 -- 
 2.48.1
 
