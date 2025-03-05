@@ -1,132 +1,139 @@
-Return-Path: <bpf+bounces-53347-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53348-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F2EAA50443
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 17:12:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 971CCA5044C
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 17:13:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF1DF3A5737
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 16:12:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60AC716A214
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 16:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B24250C14;
-	Wed,  5 Mar 2025 16:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E67250BF6;
+	Wed,  5 Mar 2025 16:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="GRCmUsk+"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="s2rO94re"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D111724E4B5
-	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 16:12:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA4B24FC1A
+	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 16:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741191141; cv=none; b=IZ8Yn+3e/k08nK7lxISRR+4b37vrDfT1z2jF4DsIv90bycxeEF6Q4fu87aXz9qipvfMk5ocSRdW4rHEyZv7g8t7f9X67ccByInswwV2eDngvQZfLR0yjR5Fdoi8kL6FZOC5vJYHz0XpQGJrrKZgGTqygTVmFPmt0yNJLGe6uNn0=
+	t=1741191214; cv=none; b=puiuf0+qzJiM2RJ3zE4PKmTLlFz8TlqhVfNwAy5Nq6SzZuip+qDFBDC0+BkDQ7pQeTWLj8H5QPwlcd6m/ODP6J+9I2yRwAwozNbVY+OmeQk9SC7uhODQnKwVZVn2BFzFK3NYiUmGLmQjpsGTDuSKxkWv0Lkf9T9aeMclHSfVo8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741191141; c=relaxed/simple;
-	bh=2q39nFob89uGjhIZ3SJiCBavEHz6XphRtukgeM+fPHU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fKm/D71b6hUH8F3xT9hGG3ASG43nv9hNStmpok5Nimwg8HmVaGOLoqvB+/+ynIDaG2YjoUOj5xOLN4UE/K9RaA4qn1xcNo30evHGYGV4/egl5tZObnFP7j2t9qXCNoer4rtnIBXo/IOM0VbMDGMZIAoLqalziVVlkvGuM9cYgKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=GRCmUsk+; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-e6119fc5e9bso1090150276.0
-        for <bpf@vger.kernel.org>; Wed, 05 Mar 2025 08:12:18 -0800 (PST)
+	s=arc-20240116; t=1741191214; c=relaxed/simple;
+	bh=8DXrmhzUVLapt/X0tl1IhkTmUx8PBCtfmCEHNi7P/+k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KFSrkfCw++tGdN1m0CziQ/HJojOtKxpTCj75zHlBVdsAF6Dz0uAYqsyLIafH1utD1bvRaN0mIysmyP2ppZn1NUdumkvbPkg3cuLWAm9y7U6U6ARQ3CnO9jLW2GmYbw4+STVdxKLDeU5DoAX0WRpIgEBbD1gQ8HhbFXK5n5BZjkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=s2rO94re; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7c089b2e239so91837185a.0
+        for <bpf@vger.kernel.org>; Wed, 05 Mar 2025 08:13:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1741191138; x=1741795938; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HR6v/qJNcz2018VPIy19J59hCQI20OhNaLeBeMvMyms=;
-        b=GRCmUsk+KxmEFI1arAP0wyX/T/tWMTzc9ZJ+oF37MOw5vKZfVPQfE3GS0AImNbqEV1
-         t/WJ2kUcsQ5FaifEqil2ms5vhwPJQ+hEC63dbLxWoLgBqQ6trVqZ7E+zSPAJrxuxa0g7
-         MW+oYixfDflRvccCzn4GSy30B9Ya+nS/f8qDuQuD0CxpbB+bWLdykfDgr9KVSQkJljrN
-         l1y0PRKxER4TdC3RI1kd3hAyKXX42y6Qa+rcMX4VXy1WjHKFMx0rfPllrQhKasdPcE9S
-         9TSKHrYxV5yE1TujVK03fCfYDAsz+IqXT49919qukuVWrrwcJqugFSc1Lpg4PPv5OeQF
-         fEsw==
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1741191211; x=1741796011; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NFtW2zuQqbQDp8xEgMN2yFXEVKLAN3g2b6YyBhZKE94=;
+        b=s2rO94refDbEuA4O5ArQJvx2Ji5/lidqeJbEN6m4/YZyYE6c5ROEOgg1j9+taM+7HF
+         ZwOXhzVvfO1KbWvyd6VHjJdnYF0LcDctdC+LsLlX1rgI7cYXuz2yLAGO5HNhV/MOCvNm
+         JIFiel+sY7kIa1ajRCzz7fSlHEqt1V7xlNmh/P/IVw0HboaWufrwMplws21INFz0sr0c
+         LxZMzQ4uJQP7zZckWigDTAY5PAABpUbSWdzaRAJ1PV6/TCXWXIt5yQYNP8z22yLVUHeF
+         QsqnE0FwK1OczFmYZ0MpSzI/fguUeiGLnQIWmcD5U11d1KT6a5Kl/l3NCMVymw8F9DP3
+         4ATw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741191138; x=1741795938;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HR6v/qJNcz2018VPIy19J59hCQI20OhNaLeBeMvMyms=;
-        b=At6N/+Hs8vCLIVIayWgbegZjzUybhhS2HoYtn4GZA7SDKCaIDOz+i295Nyq/w1Cjbd
-         A9kpsGCtLbSGDvgXiw+m6j2yEnQCJx8o8qZeq2beU9+Oy9LLUWxb5N+ZVSsSF/viaJVl
-         a4+o55XnYQcY3kjIY/G8z5r5rYF99XWyJ8JkDGYtQgBFk/Pecg4M8MJiuXKmJlCde/PU
-         ccTvZ3qcqU8RJ0rnDGm+FfqDfdzcfgSunZjjySTGaJCZWC9jrk+dLu/N59r+uM0kXz/P
-         2ZF7Uqg/7jPORFk/hUs3BqWzPWwIvJCL1W/wdZspTL6CL6FzpB4Fn+DxYIRrNYYRIvDD
-         jfaA==
-X-Forwarded-Encrypted: i=1; AJvYcCWg2L2q1j0rjDiX+cPzr15zsq9Iu7ET7frEeYacQxbViHb/T5aXIOsZntDrVffiX8A8RE0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxppqNhmUpluCsSV70ySNphHmnGI1HKySy94/P63pV1GKLPi3O2
-	2rKK7Ac1M/GKqdkXinoScxteroSd8EiRy1KRqu6OCjGXrdUvBiKdk45XND8htPza1hDbMErorK4
-	dRMdmwelIuZokbrlvOCW3iyCdQtntCKBRPbGB
-X-Gm-Gg: ASbGncsOEMeSflHfIScwuL2ujSSxP14BrVQ5q+MhbvLSUyP+GqB8fuBZUjl3NJfaIcj
-	WvSx6zGcmFcVsncZu2ycV5YqovDFUgJ7FFZuBpU+IZn3MvJfJUAxt/p9lkx36LGCMLDxwUA8RWT
-	sGC2Xo1D4jt1+kDkHMYP8AZ1GkrA==
-X-Google-Smtp-Source: AGHT+IG2+ri9TiG/+pR3y5KkKxoz0d2KVOY8e3WkmBgUHc2qC5BioAV59fgj/NVLtTUT4F32NzzVt7ytF05Eu8bmAsg=
-X-Received: by 2002:a05:6902:1583:b0:e61:1be5:d0ae with SMTP id
- 3f1490d57ef6-e611e196a54mr5413376276.5.1741191137730; Wed, 05 Mar 2025
- 08:12:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1741191211; x=1741796011;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NFtW2zuQqbQDp8xEgMN2yFXEVKLAN3g2b6YyBhZKE94=;
+        b=qlUAc1ynwQ4Zlz+MDLFn157C+NO6M3VUgXzspf2KwS5PbMVqIDIWO98vRcV+Rg06PJ
+         o/kjM5sN58gbO6YSahjx7WQUZq993vSkUaPXD20iAaaEfMLoy2vQj8EVOVjo8gZJrFK/
+         4jgyhZ0p/RTrneZQ37oT5GOFQWO3adl5UhqIx3hnImWc6SM0SZsWJVaWQD0QLWZ3BhxN
+         t4sf+jCYussFBpBkdy7/SeQNplDG/A8vlQhcKQi1Fx742bLwjBaehV1uolhRlDdFyXz7
+         i9HFi9RmyJj0ATJZH0vHOELWRH4EU6jLBCSvclErnPi+a9dze8v/E5ge3fZ26WBmxFdh
+         aCYQ==
+X-Gm-Message-State: AOJu0YyZc5v1Tn8nnaafon0+kpKcJLPFHo9f+ExKFOvDTsJtjfamzgMo
+	6nQ+WryevaT9Vjj1XVCiLt8/W+kBYs6JqqCakRRJ1wFrA//d5vnQfra4ZVXl8FUXCeumvEXaa2A
+	/DDwK/A==
+X-Gm-Gg: ASbGncvP7HA0gSPJxxnFCO3zpYNJMFiZN+jP1+c4JtE7ZVS4PDQ5j4Nn4NN18pM7WbB
+	7e8FSBMa0WLh54b1Htcr1qtMHf8RhiaQa02evGoMuezyxTZ9Abgw5mMm2D/4r0evB/W1cWRMTdK
+	Fh9rPbKlfJSQPYfIy5aysgTWEyexyGQs6fr26og9masMhzj1q/2csdpQGtBSCQ70ROqMhABL6LS
+	d5xxkg/wVO9GqSaryr1c6v+QhQG0VnAGsC/1EoAhIvzH5epOrug5bytokQXpfItAXbHMTgCo1wK
+	89BufXmvhj+jC9La02AtJdCXripysW68xTAd0Y8qKQ==
+X-Google-Smtp-Source: AGHT+IFz0Yv8vIlAgG0PCnvFbtClpX7BRGAs8cPr4vMKXbXp20iaplY3kak5SPs0gqAtFNevkIQxTg==
+X-Received: by 2002:a05:620a:1d03:b0:7c0:9fab:bee with SMTP id af79cd13be357-7c3d917552cmr505274985a.10.1741191210878;
+        Wed, 05 Mar 2025 08:13:30 -0800 (PST)
+Received: from boreas.. ([140.174.215.88])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c3c32aa5c6sm368393085a.48.2025.03.05.08.13.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Mar 2025 08:13:30 -0800 (PST)
+From: Emil Tsalapatis <emil@etsalapatis.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	yonghong.song@linux.dev,
+	tj@kernel.org,
+	memxor@gmail.com,
+	houtao@huaweicloud.com,
+	Emil Tsalapatis <emil@etsalapatis.com>
+Subject: [PATCH v3 0/2] bpf: introduce helper for populating bpf_cpumask
+Date: Wed,  5 Mar 2025 11:13:25 -0500
+Message-ID: <20250305161327.203396-1-emil@etsalapatis.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250304203123.3935371-1-bboscaccy@linux.microsoft.com>
- <20250304203123.3935371-3-bboscaccy@linux.microsoft.com> <CAHC9VhS5Gnj98K4fBCq3hDXjmj1Zt9WWqoOiTrwH85CDSTGEYA@mail.gmail.com>
- <877c54jmjl.fsf@microsoft.com> <CAHC9VhQO_CVeg0sU_prvQ_Z8c9pSB02K3E5s84pngYN1RcxXGQ@mail.gmail.com>
- <CAPhsuW6RrUiXaQe1HBYOvwUx2GFaA-RKx22955A2StsP2erTeA@mail.gmail.com>
-In-Reply-To: <CAPhsuW6RrUiXaQe1HBYOvwUx2GFaA-RKx22955A2StsP2erTeA@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 5 Mar 2025 11:12:07 -0500
-X-Gm-Features: AQ5f1Jpzk8xNhqaDNcdEV_2AlQwGfaf4RmRxkPjJlwjeTek1OtX3R3sL0LkAbEc
-Message-ID: <CAHC9VhQ1BHXfQSxMMbFtGDb2yVtBvuLD0b34=eSrCAKEtFq=OQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 2/2] selftests/bpf: Add is_kernel parameter to
- LSM/bpf test programs
-To: Song Liu <song@kernel.org>
-Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
-	Ondrej Mosnacek <omosnace@redhat.com>, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 4, 2025 at 10:32=E2=80=AFPM Song Liu <song@kernel.org> wrote:
-> On Tue, Mar 4, 2025 at 6:14=E2=80=AFPM Paul Moore <paul@paul-moore.com> w=
-rote:
-> > On Tue, Mar 4, 2025 at 8:26=E2=80=AFPM Blaise Boscaccy
-> > <bboscaccy@linux.microsoft.com> wrote:
-> > > Paul Moore <paul@paul-moore.com> writes:
-> > > > On Tue, Mar 4, 2025 at 3:31=E2=80=AFPM Blaise Boscaccy
-> > > > <bboscaccy@linux.microsoft.com> wrote:
+Some BPF programs like scx schedulers have their own internal CPU mask types, 
+mask types, which they must transform into struct bpf_cpumask instances
+before passing them to scheduling-related kfuncs. There is currently no
+way to efficiently populate the bitfield of a bpf_cpumask from BPF memory, 
+and programs must use multiple bpf_cpumask_[set, clear] calls to do so. 
+Introduce a kfunc helper to populate the bitfield of a bpf_cpumask from valid 
+BPF memory with a single call.
 
-...
+Changelog :
+-----------
+v2->v3
+v2: https://lore.kernel.org/bpf/20250305021020.1004858-1-emil@etsalapatis.com/
 
-> Do we need this in the LSM tree before the upcoming merge window?
-> If not, we would prefer to carry it in bpf-next.
+Addressed feedback by Alexei Starovoitov:
+	* Added back patch descriptions dropped from v1->v2
+	* Elide the alignment check for archs with efficient
+	  unaligned accesses
 
-As long as we can send this up to Linus during the upcoming merge
-window I'll be happy; if you feel strongly and want to take it via the
-BPF tree, that's fine by me.  I'm currently helping someone draft a
-patchset to implement the LSM/SELinux access control LSM callbacks for
-the BPF tokens and I'm also working on a fix for the LSM framework
-initialization code, both efforts may land in a development tree
-during the next dev cycle and may cause a merge conflict with Blaise's
-changes.  Not that a merge conflict is a terrible thing that we can't
-work around, but if we can avoid it I'd be much happier :)
+v1->v2
+v1: https://lore.kernel.org/bpf/20250228003321.1409285-1-emil@etsalapatis.com/
 
-Please do make the /is_kernel/kernel/ change I mentioned in patch 1/2,
-and feel free to keep my ACK from this patchset revision.
+Addressed feedback by Hou Tao:
+	* Add check that the input buffer is aligned to sizeof(long)
+	* Adjust input buffer size check to use bitmap_size()
+	* Add selftest for checking the bit pattern of the bpf_cpumask
+	* Moved all selftests into existing files
 
-Thanks everyone!
+Signed-off-by: Emil Tsalapatis (Meta) <emil@etsalapatis.com>
 
---=20
-paul-moore.com
+Emil Tsalapatis (2):
+  bpf: add kfunc for populating cpumask bits
+  selftests: bpf: add bpf_cpumask_fill selftests
+
+ kernel/bpf/cpumask.c                          |  28 +++++
+ .../selftests/bpf/prog_tests/cpumask.c        |   3 +
+ .../selftests/bpf/progs/cpumask_failure.c     |  38 ++++++
+ .../selftests/bpf/progs/cpumask_success.c     | 114 ++++++++++++++++++
+ 4 files changed, 183 insertions(+)
+
+-- 
+2.47.1
+
 
