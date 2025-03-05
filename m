@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-53267-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53266-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61EA6A4F35C
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 02:19:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CFEDA4F35B
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 02:19:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0F8A16F52D
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 01:19:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83E9D3A6DD7
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 01:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9F713BC02;
-	Wed,  5 Mar 2025 01:19:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5494661FFE;
+	Wed,  5 Mar 2025 01:19:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l13yKmsS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CjcDhr/L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D3013A244
-	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 01:18:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1247222338
+	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 01:18:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741137541; cv=none; b=gEzG/Y0Bg6aHBvyfuvTLY6t36ATzcmk4T26n4VKawxWI4vM6u15oPyzB4ggtV5fstriRTkx9A7JfbvVBwl+Kf2l1GVnMG9qFmcWuO/0pznPno+oIYfcSdcqsBxLVGqeIYOs0unAhIeGHt3mY0ANxVzykm0sT9NJ14IbIEXl+Rmk=
+	t=1741137539; cv=none; b=tALnrlu/wg5G48tfQEjF8NOXwtLHBrGoJuAJH+qySNaHD45o0UrDamYOD+pPzn4bXAYjhps8qvTi1SxrmYctGFigMhS4wPlZ86pclE21SKxSonY1mOte95QDbu6o7W2dDGTPNuuml6tQdS5tdSiTAtnH1hLUcQmyX6rqDFMvOog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741137541; c=relaxed/simple;
-	bh=fuRAPXXWNXY9P79EZsVYgtdQRcsCPkjZ2HuppsyrE+Y=;
+	s=arc-20240116; t=1741137539; c=relaxed/simple;
+	bh=AroAmV2UBkVo+WlznhFvO42yG+sNDlz0XWG8UpcuWpk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PmNaNamibrQQKtmph2J3czCPGoLpe5lEDjsXB6SZaeOkuUDynrDx7CUWErsRFr0pIqVeptZHkRzvDsrxKZuEC44+lUjTitqtLZyNvDnjyqhx/r/F0cRjUzsDJDHiGBgl3EyVB8FwtAMOri5OK1qU2+UwFSTU2Jor2vCYjdYMMZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l13yKmsS; arc=none smtp.client-ip=209.85.128.65
+	 MIME-Version; b=tYbuJVVANX7ExDGrIJJjF/WRheKnGzG4qk5Ug6kfRijICyJYZE7nNfrTmii5g3PykCmgyij4WvuesuboiRnJ3fnLiWqHVeZYDJXavDkdKEnC94Wr6wVeIzFc/KjSRlgbM+Yfhxq/srA59lMrA3ihJEZkPyXpNmS6IPTWpM87+CA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CjcDhr/L; arc=none smtp.client-ip=209.85.128.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-43bcb1a9890so1898715e9.0
-        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 17:18:58 -0800 (PST)
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-43bcb1a9890so1898685e9.0
+        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 17:18:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1741137535; x=1741742335; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8wP1lc6rees1v2rT2245Jyl5J9y/lNQ0xlPc5qIGeP0=;
-        b=l13yKmsS8ubau4S6X2ig4wyRkNjvEgMPe6+0Gvxc+xYlUpnK63+6wWpOfSDvAEu+TT
-         vQHjJf85GdyZ9v120+hfGEBU63w9InVcVpiyLhLHA2yYErds/snRLtZRJ3Vn+KMe+lY9
-         mAJnKxigimbDW0HOm4twhQelr4zQ1qXYpN0C3fx0Dgi3HL1BBipDhZM1fhe0QqGBAcvO
-         rG5UoiXXUMNanD09+7Q8ZzXq17+K7FbHtrAVcOGpXTlwvGN1eWbEz2rGHxvS+Ug9EO+J
-         0jJh5vn12sKizDCuRXwjGoQv024YRRzSBNuF0fnfs2lpZdlPvQHYoPEF9JuepWAQk5Yi
-         6U4A==
+        bh=Sd7CJq8HxV9MAWgO7GVWaB4lzcuPwgxmq34hTfIGUuk=;
+        b=CjcDhr/LZS2AmFFypR5G6Ub5UsjrPGtscrxhkU7PaoLoKEmPAdjmhz4y1kS8fSPXem
+         vm9WEO23VHcNKht0IswJiENOZa+qjMhdrg5pifLTGr5T62sDHCAb3lsvsP/J3cuwS4Kt
+         rp5k6EonS19oA/LJt0j79/4HGuoH5lwRNu0BbgXbSQYWhw1iBQTnISSY905o+uU0XQMC
+         x/XJcehbUHa4mFQjvh4EpqAUceJaqjqa95sP1hLJ3U2SQEQgyFb3rLrev0E/ZyhksUt5
+         5Vof6ZJNSD9grhC3CxzP6pboGxJuyx5pwOj2QMqbI5IbzpH/zC1QPfpafS9b7ZrGn9Az
+         QCxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1741137535; x=1741742335;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8wP1lc6rees1v2rT2245Jyl5J9y/lNQ0xlPc5qIGeP0=;
-        b=JZLfCkNyMnoYpyav5tovegPbCmDuCUNRNcYkBd/en9bXa39PCGHKNGDp1TaCmzp5JD
-         5EkjqvtVcSodJ4gSA9FgfNdQHDNa4ewaGZGSS8lcHEFD2SWynSEkCU6DuHB4Y906vljz
-         UERuk6e6IJXkqef8EUdLs2AP1v+/v9aBsZ8CYumFZ1p2IBJzFSkPJZXFi2qcSH0jFFAN
-         BioIvQmaXYZvodNTPQKivDsBFvzGty3J8uvzufBlqbDMHUcEG18ao8AixPao5dyls/Vd
-         agT6aPWRJmtaiUVB8vIReINubWK+a5G79FSz7S3cea7fhoSZsrvDNb/5ppkS7xeNj1O3
-         xBuQ==
-X-Gm-Message-State: AOJu0YxZKQ/Q3E0IeuNWFA5oytKvFJt8A7JAitgbduLoHDa4sCAftR+R
-	5DsSxDm/LuAbycD3Q8tnVpPRo/N5jzPsv+e5NBIYt7NSn/ECd5/CKQYM7fx41LA=
-X-Gm-Gg: ASbGnctx/iflGWqp3zGcXbdC+eJzmHmF09ZVSuClMUfforsHyxzPZwAMu9SkJ2/iqG7
-	B0K2paR4Z/bdXSlcp109+nLpGBBzAblKZBfrVgeaLTv9J3DqOUHNUPD7arq2TgFGqKDYcMgb70+
-	+8aUvgZWZ0YsjlxDL55KtuapTmGWqkaXctzEfU//gAktit5tnR300LW/lZPnGfV+HcuPt3c9HqC
-	kxIcO0gseCqD9FtXCyDPP+r1yhLcE9iqHFgwW05A8iOvF/QmcEoR5jM1glFcU+i3eX2537EYxQm
-	sS5qaFs/DTcg5UGQPXv+r23uh/NCYpoVIoE=
-X-Google-Smtp-Source: AGHT+IHtgCRg3cEC9ynCP8b9BrTpfWWisGdP5Lqy6poWA2choOHpYjzRsQlfJowyG+t+SfAeDFpVgw==
-X-Received: by 2002:a05:600c:1d1d:b0:439:873a:1114 with SMTP id 5b1f17b1804b1-43bd20b4d27mr7565305e9.6.1741137533781;
-        Tue, 04 Mar 2025 17:18:53 -0800 (PST)
-Received: from localhost ([2a03:2880:31ff:44::])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bd435cd8csm1759255e9.40.2025.03.04.17.18.53
+        bh=Sd7CJq8HxV9MAWgO7GVWaB4lzcuPwgxmq34hTfIGUuk=;
+        b=S/Kg9/ZXqCXcg/5zSTYGVCw6LNJdj0g53entJ0hLdUejkQbRx7LSDZh1PzwALdxe1M
+         neuOXCG0mWwl7vqj8PG2m6TBBKH3aGb0/k6b8iJYib/W9lFwjPgC4kHOAMICOCiwWFcA
+         alt46Kaud9COod0VW0aCPDlxVcZsjw0Vb+toNS9UKStCnlo75JGLsadbmWwHK6fb4c6y
+         5OU8SdQ/mgltQ1CmHK1zVCQJiGIvAbgja4EMeNl6Su/OSmCNqh9ecQJwnqcTr8452fn7
+         0tG3f9U955SlxOGuu1yCexgBSe6psIfC4BjUJKExzJj/tsv+nYO6aenkqdLV5Yp4+6UF
+         06Mw==
+X-Gm-Message-State: AOJu0YwkXZCHtnnzeqwy35tP9k6gbFTVJa18Y3uBfxbKhCQwMbt8/5Sx
+	gOTuk97AoGYOJahpJxz8m0HYfR7FMpfg2UUtzZXaY07w/IKLsNqqy7jSaSTUzJ0=
+X-Gm-Gg: ASbGncsSsfKHK79nKK9MgcQ1gIZb6InulP7tGaWZnKO3lv7+a3Gbg6nzmocR5qfe9Im
+	ZnvY1jo7fYHPeYFSJEOdJ/rMIN866f84rHc67/njtB3wjFASZUSVzxlhcELmX6tuEsuxi9QmT1z
+	0jHlYu0PQav9ayreWftl4Xw8yi/9/07l02+8oF0kL1gWTwhU+2WRN3pfuT4VpVB9JjXKe2kZtnR
+	UvVejRtOdx+uvVpFmZIIAguSPWdIZ0UVgQxvdMZMzKBrtYe75l2zDNiL1dqfth7ydYrF5NVjHqS
+	X1hcDscjgfPbXItQH+U3Oq64m/mXpSlYeg==
+X-Google-Smtp-Source: AGHT+IHaCf+8JROeT5x9gIelpfad9AcwgNGeOtgkNvCYSW6UDFN7F9cnFqFwPhVJcDfsUnUywG72Gw==
+X-Received: by 2002:a05:600c:310d:b0:439:9737:675b with SMTP id 5b1f17b1804b1-43bd20b5147mr8523875e9.7.1741137535216;
+        Tue, 04 Mar 2025 17:18:55 -0800 (PST)
+Received: from localhost ([2a03:2880:31ff:2::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bd4352ec1sm1763305e9.25.2025.03.04.17.18.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Mar 2025 17:18:53 -0800 (PST)
+        Tue, 04 Mar 2025 17:18:54 -0800 (PST)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -85,9 +85,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Dohyun Kim <dohyunkim@google.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v3 2/3] selftests/bpf: Introduce arena spin lock
-Date: Tue,  4 Mar 2025 17:18:48 -0800
-Message-ID: <20250305011849.1168917-3-memxor@gmail.com>
+Subject: [PATCH bpf-next v3 3/3] selftests/bpf: Add tests for arena spin lock
+Date: Tue,  4 Mar 2025 17:18:49 -0800
+Message-ID: <20250305011849.1168917-4-memxor@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250305011849.1168917-1-memxor@gmail.com>
 References: <20250305011849.1168917-1-memxor@gmail.com>
@@ -97,700 +97,186 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=21945; h=from:subject; bh=fuRAPXXWNXY9P79EZsVYgtdQRcsCPkjZ2HuppsyrE+Y=; b=owEBbAKT/ZANAwAIAUzgyIZIvxHKAcsmYgBnx6ZyICAxR7bfpA8ilXpQBLN8bIaUsVtgEmJwvU8d pUDG0qOJAjIEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ8emcgAKCRBM4MiGSL8RyjJpD/ jBJC1q979pCXF1SqVL6F34UZ9iOkL4msgZY0NDgsVylYPvtSYqxgSR9U3m3JfFiIfDCO0KuhP7GkIz OzED0mOfqDLs1afC+d+J7ClcidtzlDeSZisSoJrTIXX6j4M08gN/AWHtkB2bMu1eMI7Y16ZVAcs/Q+ ernSoqzJUYNkc4mBrBXq4/EtNE5s1Ez+ioqpzV69VsfLHpV+SQ6129l1GhvS0d4PIV6pD4gQl3FK3c mnQGkUcl/SC0okkQFczC9it0TMMz1xujy5YxvoW0ZcZHjOkp9DuYyqMLstfeiy3CCs8c8PYAFk2T1F ftLaMonhOh3oMTSwJzRUEW5xiLQOnLUT4NIgrBc4+7VsvypQSepL0U9vH9q372R7imgvh3uvyJhOIa UkrrfvmgSCwkzEUtZayGHuXFRdc25BG4xUt6bvTo6nBOhVfmGFBg+jupnsvIjhYlH54EDVUPcmgL48 5nO5MMse0/5KbtnQetPLZuJ4NWRepy3e3ock9qjzsESfRpbpdJQT85L1zYxUEbAxKDe3ciNpTpuLjD FmBRoztVk9J5Tq4P/LeM95+j7lxpeKWd9l6+16auvOEAM3QxpekDIaSDrgTEiUgDdriTvnxYWV8cK0 ahhTDBOZ+9XWY3RNeKcukFj6w81d+gnbMf/as3mefntPiGRtnSFemCn7IA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4934; h=from:subject; bh=AroAmV2UBkVo+WlznhFvO42yG+sNDlz0XWG8UpcuWpk=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnx6ZypoX98KdqybNh7KGzTwL0h2nK3zJ2w/LJ2dDM xhBf1w6JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ8emcgAKCRBM4MiGSL8RygdzD/ 0TsXj9b86orEAZibAOrVf0WdF/iMMs0jLNpfkMGNbiM1CQjwaC3fPHPqPR3ZLMxlbK6733K386enLg VgOIb+C1vwn7WvXsdPABs/7etwythcGotTA0HK79X92VGPmYRiXV3FvZ61icLYr6Nv2LDk9BxqGfdE uSngAh+GunwBERzHf1x2qE8Uu5fsoUlq9jc8yN/ZtKef9K5aIN0ksSzyA0mPFMEhaVV2PWCI34DUhd 3iOh7FFuUqfNrpn747dufx/BiVY2WInngSdunQF4d989reySE3ijxQPidChlKcae8wo/oBxcpM3aL5 Mn8ygANK+eckdBjZDCLGqBi1NEsNYUna5QO3CbujHmN8+xGVfhdVyhbcj1I7Ed+PFTnaeym1WrocPZ S1TROd3HYgPcrtRYdvzNrNkkX4RXI2Kejj5zuMy4c89IFtVpapJZv5GxNqaQ3RZthCPpT7DK+DgABG 6rw287wfEXeKRZl83kX1v/TyrAUfUUwLFD9rTJYVmHnWPBBRL1TIIMfxeoRMe1AAXVKIloZVrX3hkB Ijd3EPGhZPgTWoyOII4GAdJCSK5V8h64GW2xK6gSqnf1o2Mb/mLsRpL9+uQsWLs92JAojEoRxlRDly au3wb6STnRI8EJyMXdq1j1UTwZQNOqP25YSCqvoXDDfpZLFQu1oVV114tbLQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Implement queued spin lock algorithm as BPF program for lock words
-living in BPF arena.
-
-The algorithm is copied from kernel/locking/qspinlock.c and adapted for
-BPF use.
-
-We first implement abstract helpers for portable atomics and
-acquire/release load instructions, by relying on X86_64 presence to
-elide expensive barriers and rely on implementation details of the JIT,
-and fall back to slow but correct implementations elsewhere. When
-support for acquire/release load/stores lands, we can improve this
-state.
-
-Then, the qspinlock algorithm is adapted to remove dependence on
-multi-word atomics due to lack of support in BPF ISA. For instance,
-xchg_tail cannot use 16-bit xchg, and needs to be a implemented as a
-32-bit try_cmpxchg loop.
-
-Loops which are seemingly infinite from verifier PoV are annotated with
-cond_break_label macro to return an error. Only 1024 NR_CPUs are
-supported.
-
-We need to allocate 1025 qnodes, one more than NR_CPUs, since if libbpf
-maps the qnode global variable starting at the first page of the arena,
-and the lower 32-bits are zeroed for the base address, the first node
-for CPU 0 will become indistinguishable from a NULL pointer, leading to
-spurious timeouts and failures.
-
-Note that the slow path is a global function, hence the verifier doesn't
-know the return value's precision. The recommended way of usage is to
-always test against zero for success, and not ret < 0 for error, as the
-verifier would assume ret > 0 has not been accounted for.
+Add some basic selftests for qspinlock built over BPF arena using
+cond_break_label macro.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- .../selftests/bpf/bpf_arena_spin_lock.h       | 505 ++++++++++++++++++
- tools/testing/selftests/bpf/bpf_atomic.h      | 132 +++++
- 2 files changed, 637 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/bpf_arena_spin_lock.h
- create mode 100644 tools/testing/selftests/bpf/bpf_atomic.h
+ .../bpf/prog_tests/arena_spin_lock.c          | 102 ++++++++++++++++++
+ .../selftests/bpf/progs/arena_spin_lock.c     |  51 +++++++++
+ 2 files changed, 153 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
+ create mode 100644 tools/testing/selftests/bpf/progs/arena_spin_lock.c
 
-diff --git a/tools/testing/selftests/bpf/bpf_arena_spin_lock.h b/tools/testing/selftests/bpf/bpf_arena_spin_lock.h
+diff --git a/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
 new file mode 100644
-index 000000000000..cc7de78e0373
+index 000000000000..2cc078ed1ddb
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/bpf_arena_spin_lock.h
-@@ -0,0 +1,505 @@
++++ b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
+@@ -0,0 +1,102 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#ifndef BPF_ARENA_SPIN_LOCK_H
-+#define BPF_ARENA_SPIN_LOCK_H
++#include <test_progs.h>
++#include <network_helpers.h>
++#include <sys/sysinfo.h>
 +
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_atomic.h"
-+
-+#define arch_mcs_spin_lock_contended_label(l, label) smp_cond_load_acquire_label(l, VAL, label)
-+#define arch_mcs_spin_unlock_contended(l) smp_store_release((l), 1)
-+
-+#if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+
-+#define EBUSY 16
-+#define EOPNOTSUPP 95
-+#define ETIMEDOUT 110
-+
-+#ifndef __arena
-+#define __arena __attribute__((address_space(1)))
-+#endif
-+
-+extern unsigned long CONFIG_NR_CPUS __kconfig;
-+
-+#define arena_spinlock_t struct qspinlock
-+/* FIXME: Using typedef causes CO-RE relocation error */
-+/* typedef struct qspinlock arena_spinlock_t; */
-+
-+struct arena_mcs_spinlock {
-+	struct arena_mcs_spinlock __arena *next;
-+	int locked;
-+	int count;
-+};
++struct qspinlock { int val; };
++typedef struct qspinlock arena_spinlock_t;
 +
 +struct arena_qnode {
-+	struct arena_mcs_spinlock mcs;
++	unsigned long next;
++	int count;
++	int locked;
 +};
 +
-+#define _Q_MAX_NODES		4
-+#define _Q_PENDING_LOOPS	1
++#include "arena_spin_lock.skel.h"
 +
-+/*
-+ * Bitfields in the atomic value:
-+ *
-+ *  0- 7: locked byte
-+ *     8: pending
-+ *  9-15: not used
-+ * 16-17: tail index
-+ * 18-31: tail cpu (+1)
-+ */
-+#define _Q_MAX_CPUS		1024
++static long cpu;
++int *counter;
 +
-+#define	_Q_SET_MASK(type)	(((1U << _Q_ ## type ## _BITS) - 1)\
-+				      << _Q_ ## type ## _OFFSET)
-+#define _Q_LOCKED_OFFSET	0
-+#define _Q_LOCKED_BITS		8
-+#define _Q_LOCKED_MASK		_Q_SET_MASK(LOCKED)
-+
-+#define _Q_PENDING_OFFSET	(_Q_LOCKED_OFFSET + _Q_LOCKED_BITS)
-+#define _Q_PENDING_BITS		8
-+#define _Q_PENDING_MASK		_Q_SET_MASK(PENDING)
-+
-+#define _Q_TAIL_IDX_OFFSET	(_Q_PENDING_OFFSET + _Q_PENDING_BITS)
-+#define _Q_TAIL_IDX_BITS	2
-+#define _Q_TAIL_IDX_MASK	_Q_SET_MASK(TAIL_IDX)
-+
-+#define _Q_TAIL_CPU_OFFSET	(_Q_TAIL_IDX_OFFSET + _Q_TAIL_IDX_BITS)
-+#define _Q_TAIL_CPU_BITS	(32 - _Q_TAIL_CPU_OFFSET)
-+#define _Q_TAIL_CPU_MASK	_Q_SET_MASK(TAIL_CPU)
-+
-+#define _Q_TAIL_OFFSET		_Q_TAIL_IDX_OFFSET
-+#define _Q_TAIL_MASK		(_Q_TAIL_IDX_MASK | _Q_TAIL_CPU_MASK)
-+
-+#define _Q_LOCKED_VAL		(1U << _Q_LOCKED_OFFSET)
-+#define _Q_PENDING_VAL		(1U << _Q_PENDING_OFFSET)
-+
-+#define likely(x) __builtin_expect(!!(x), 1)
-+#define unlikely(x) __builtin_expect(!!(x), 0)
-+
-+/*
-+ * We always index with + 1, in case we unfortunately place the qnodes at
-+ * pg_offset=0 and then CPU 0's qnodes is indistinguishable from NULL if lower
-+ * 32-bits of the node pointer are 0.
-+ */
-+struct arena_qnode __arena qnodes[_Q_MAX_CPUS + 1][_Q_MAX_NODES];
-+
-+static inline u32 encode_tail(int cpu, int idx)
++static void *spin_lock_thread(void *arg)
 +{
-+	u32 tail;
++	int err, prog_fd = *(u32 *)arg;
++	LIBBPF_OPTS(bpf_test_run_opts, topts,
++		.data_in = &pkt_v4,
++		.data_size_in = sizeof(pkt_v4),
++		.repeat = 1,
++	);
++	cpu_set_t cpuset;
 +
-+	tail  = (cpu + 1) << _Q_TAIL_CPU_OFFSET;
-+	tail |= idx << _Q_TAIL_IDX_OFFSET; /* assume < 4 */
++	CPU_ZERO(&cpuset);
++	CPU_SET(__sync_fetch_and_add(&cpu, 1), &cpuset);
++	ASSERT_OK(pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset), "cpu affinity");
 +
-+	return tail;
++	while (*READ_ONCE(counter) <= 1000) {
++		err = bpf_prog_test_run_opts(prog_fd, &topts);
++		if (!ASSERT_OK(err, "test_run err"))
++			break;
++		if (!ASSERT_EQ((int)topts.retval, 0, "test_run retval"))
++			break;
++	}
++	pthread_exit(arg);
 +}
 +
-+static inline struct arena_mcs_spinlock __arena *decode_tail(u32 tail)
++static void test_arena_spin_lock_size(int size)
 +{
-+	u32 cpu = (tail >> _Q_TAIL_CPU_OFFSET) - 1;
-+	u32 idx = (tail &  _Q_TAIL_IDX_MASK) >> _Q_TAIL_IDX_OFFSET;
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++	struct arena_spin_lock *skel;
++	pthread_t thread_id[16];
++	int prog_fd, i, err;
++	void *ret;
 +
-+	/* See comments over definition of qnodes for the + 1. */
-+	if (likely(idx < _Q_MAX_NODES && cpu < _Q_MAX_CPUS))
-+		return &qnodes[cpu + 1][idx].mcs;
-+	bpf_printk("RUNTIME ERROR: %s idx=%u and cpu=%u are out-of-bounds!!!", __func__, idx, cpu);
-+	return NULL;
-+}
-+
-+static inline
-+struct arena_mcs_spinlock __arena *grab_mcs_node(struct arena_mcs_spinlock __arena *base, int idx)
-+{
-+	return &((struct arena_qnode __arena *)base + idx)->mcs;
-+}
-+
-+#define _Q_LOCKED_PENDING_MASK (_Q_LOCKED_MASK | _Q_PENDING_MASK)
-+
-+/**
-+ * xchg_tail - Put in the new queue tail code word & retrieve previous one
-+ * @lock : Pointer to queued spinlock structure
-+ * @tail : The new queue tail code word
-+ * Return: The previous queue tail code word
-+ *
-+ * xchg(lock, tail)
-+ *
-+ * p,*,* -> n,*,* ; prev = xchg(lock, node)
-+ */
-+static __always_inline u32 xchg_tail(arena_spinlock_t __arena *lock, u32 tail)
-+{
-+	u32 old, new;
-+
-+	old = atomic_read(&lock->val);
-+	do {
-+		new = (old & _Q_LOCKED_PENDING_MASK) | tail;
-+		/*
-+		 * We can use relaxed semantics since the caller ensures that
-+		 * the MCS node is properly initialized before updating the
-+		 * tail.
-+		 */
-+		/* These loops are not expected to stall, but we still need to
-+		 * prove to the verifier they will terminate eventually.
-+		 */
-+		cond_break_label(out);
-+	} while (!atomic_try_cmpxchg_relaxed(&lock->val, &old, new));
-+
-+	return old;
-+out:
-+	bpf_printk("RUNTIME ERROR: %s unexpected cond_break exit!!!", __func__);
-+	return old;
-+}
-+
-+/**
-+ * clear_pending - clear the pending bit.
-+ * @lock: Pointer to queued spinlock structure
-+ *
-+ * *,1,* -> *,0,*
-+ */
-+static __always_inline void clear_pending(arena_spinlock_t __arena *lock)
-+{
-+	WRITE_ONCE(lock->pending, 0);
-+}
-+
-+/**
-+ * clear_pending_set_locked - take ownership and clear the pending bit.
-+ * @lock: Pointer to queued spinlock structure
-+ *
-+ * *,1,0 -> *,0,1
-+ *
-+ * Lock stealing is not allowed if this function is used.
-+ */
-+static __always_inline void clear_pending_set_locked(arena_spinlock_t __arena *lock)
-+{
-+	WRITE_ONCE(lock->locked_pending, _Q_LOCKED_VAL);
-+}
-+
-+/**
-+ * set_locked - Set the lock bit and own the lock
-+ * @lock: Pointer to queued spinlock structure
-+ *
-+ * *,*,0 -> *,0,1
-+ */
-+static __always_inline void set_locked(arena_spinlock_t __arena *lock)
-+{
-+	WRITE_ONCE(lock->locked, _Q_LOCKED_VAL);
-+}
-+
-+static __always_inline
-+u32 arena_fetch_set_pending_acquire(arena_spinlock_t __arena *lock)
-+{
-+	u32 old, new;
-+
-+	old = atomic_read(&lock->val);
-+	do {
-+		new = old | _Q_PENDING_VAL;
-+		/*
-+		 * These loops are not expected to stall, but we still need to
-+		 * prove to the verifier they will terminate eventually.
-+		 */
-+		cond_break_label(out);
-+	} while (!atomic_try_cmpxchg_acquire(&lock->val, &old, new));
-+
-+	return old;
-+out:
-+	bpf_printk("RUNTIME ERROR: %s unexpected cond_break exit!!!", __func__);
-+	return old;
-+}
-+
-+/**
-+ * arena_spin_trylock - try to acquire the queued spinlock
-+ * @lock : Pointer to queued spinlock structure
-+ * Return: 1 if lock acquired, 0 if failed
-+ */
-+static __always_inline int arena_spin_trylock(arena_spinlock_t __arena *lock)
-+{
-+	int val = atomic_read(&lock->val);
-+
-+	if (unlikely(val))
-+		return 0;
-+
-+	return likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL));
-+}
-+
-+__noinline
-+int arena_spin_lock_slowpath(arena_spinlock_t __arena __arg_arena *lock, u32 val)
-+{
-+	struct arena_mcs_spinlock __arena *prev, *next, *node0, *node;
-+	int ret = -ETIMEDOUT;
-+	u32 old, tail;
-+	int idx;
-+
-+	/*
-+	 * Wait for in-progress pending->locked hand-overs with a bounded
-+	 * number of spins so that we guarantee forward progress.
-+	 *
-+	 * 0,1,0 -> 0,0,1
-+	 */
-+	if (val == _Q_PENDING_VAL) {
-+		int cnt = _Q_PENDING_LOOPS;
-+		val = atomic_cond_read_relaxed_label(&lock->val,
-+						     (VAL != _Q_PENDING_VAL) || !cnt--,
-+						     release_err);
++	if (get_nprocs() < 2) {
++		test__skip();
++		return;
 +	}
 +
-+	/*
-+	 * If we observe any contention; queue.
-+	 */
-+	if (val & ~_Q_LOCKED_MASK)
-+		goto queue;
++	skel = arena_spin_lock__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "arena_spin_lock__open_and_load"))
++		return;
++	if (skel->data->test_skip == 2) {
++		test__skip();
++		goto end;
++	}
++	counter = &skel->bss->counter;
++	skel->bss->cs_count = size;
 +
-+	/*
-+	 * trylock || pending
-+	 *
-+	 * 0,0,* -> 0,1,* -> 0,0,1 pending, trylock
-+	 */
-+	val = arena_fetch_set_pending_acquire(lock);
-+
-+	/*
-+	 * If we observe contention, there is a concurrent locker.
-+	 *
-+	 * Undo and queue; our setting of PENDING might have made the
-+	 * n,0,0 -> 0,0,0 transition fail and it will now be waiting
-+	 * on @next to become !NULL.
-+	 */
-+	if (unlikely(val & ~_Q_LOCKED_MASK)) {
-+
-+		/* Undo PENDING if we set it. */
-+		if (!(val & _Q_PENDING_MASK))
-+			clear_pending(lock);
-+
-+		goto queue;
++	prog_fd = bpf_program__fd(skel->progs.prog);
++	for (i = 0; i < 16; i++) {
++		err = pthread_create(&thread_id[i], NULL, &spin_lock_thread, &prog_fd);
++		if (!ASSERT_OK(err, "pthread_create"))
++			goto end;
 +	}
 +
-+	/*
-+	 * We're pending, wait for the owner to go away.
-+	 *
-+	 * 0,1,1 -> *,1,0
-+	 *
-+	 * this wait loop must be a load-acquire such that we match the
-+	 * store-release that clears the locked bit and create lock
-+	 * sequentiality; this is because not all
-+	 * clear_pending_set_locked() implementations imply full
-+	 * barriers.
-+	 */
-+	if (val & _Q_LOCKED_MASK)
-+		smp_cond_load_acquire_label(&lock->locked, !VAL, release_err);
-+
-+	/*
-+	 * take ownership and clear the pending bit.
-+	 *
-+	 * 0,1,0 -> 0,0,1
-+	 */
-+	clear_pending_set_locked(lock);
-+	return 0;
-+
-+	/*
-+	 * End of pending bit optimistic spinning and beginning of MCS
-+	 * queuing.
-+	 */
-+queue:
-+	/* See comments over definition of qnodes for the + 1. */
-+	node0 = &(qnodes[bpf_get_smp_processor_id() + 1])[0].mcs;
-+	idx = node0->count++;
-+	tail = encode_tail(bpf_get_smp_processor_id(), idx);
-+
-+	/*
-+	 * 4 nodes are allocated based on the assumption that there will not be
-+	 * nested NMIs taking spinlocks. That may not be true in some
-+	 * architectures even though the chance of needing more than 4 nodes
-+	 * will still be extremely unlikely. When that happens, we simply return
-+	 * an error. Original qspinlock has a trylock fallback in this case.
-+	 */
-+	if (unlikely(idx >= _Q_MAX_NODES)) {
-+		ret = -EBUSY;
-+		goto release_node_err;
++	for (i = 0; i < 16; i++) {
++		if (!ASSERT_OK(pthread_join(thread_id[i], &ret), "pthread_join"))
++			goto end;
++		if (!ASSERT_EQ(ret, &prog_fd, "ret == prog_fd"))
++			goto end;
 +	}
++end:
++	arena_spin_lock__destroy(skel);
++	return;
++}
 +
-+	node = grab_mcs_node(node0, idx);
++void test_arena_spin_lock(void)
++{
++	if (test__start_subtest("arena_spin_lock_1"))
++		test_arena_spin_lock_size(1);
++	cpu = 0;
++	if (test__start_subtest("arena_spin_lock_1000"))
++		test_arena_spin_lock_size(1000);
++	cpu = 0;
++	if (test__start_subtest("arena_spin_lock_10000"))
++		test_arena_spin_lock_size(10000);
++	cpu = 0;
++	if (test__start_subtest("arena_spin_lock_100000"))
++		test_arena_spin_lock_size(100000);
++	cpu = 0;
++	if (test__start_subtest("arena_spin_lock_500000"))
++		test_arena_spin_lock_size(500000);
++}
+diff --git a/tools/testing/selftests/bpf/progs/arena_spin_lock.c b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
+new file mode 100644
+index 000000000000..3e8ce807e028
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++#include "bpf_arena_spin_lock.h"
 +
-+	/*
-+	 * Ensure that we increment the head node->count before initialising
-+	 * the actual node. If the compiler is kind enough to reorder these
-+	 * stores, then an IRQ could overwrite our assignments.
-+	 */
-+	barrier();
++struct {
++	__uint(type, BPF_MAP_TYPE_ARENA);
++	__uint(map_flags, BPF_F_MMAPABLE);
++	__uint(max_entries, 100); /* number of pages */
++#ifdef __TARGET_ARCH_arm64
++	__ulong(map_extra, 0x1ull << 32); /* start of mmap() region */
++#else
++	__ulong(map_extra, 0x1ull << 44); /* start of mmap() region */
++#endif
++} arena SEC(".maps");
 +
-+	node->locked = 0;
-+	node->next = NULL;
++int cs_count;
 +
-+	/*
-+	 * We touched a (possibly) cold cacheline in the per-cpu queue node;
-+	 * attempt the trylock once more in the hope someone let go while we
-+	 * weren't watching.
-+	 */
-+	if (arena_spin_trylock(lock))
-+		goto release;
++#if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
++arena_spinlock_t __arena lock;
++void *ptr;
++int test_skip = 1;
++#else
++int test_skip = 2;
++#endif
 +
-+	/*
-+	 * Ensure that the initialisation of @node is complete before we
-+	 * publish the updated tail via xchg_tail() and potentially link
-+	 * @node into the waitqueue via WRITE_ONCE(prev->next, node) below.
-+	 */
-+	smp_wmb();
++int counter;
 +
-+	/*
-+	 * Publish the updated tail.
-+	 * We have already touched the queueing cacheline; don't bother with
-+	 * pending stuff.
-+	 *
-+	 * p,*,* -> n,*,*
-+	 */
-+	old = xchg_tail(lock, tail);
-+	next = NULL;
++SEC("tc")
++int prog(void *ctx)
++{
++	int ret = -2;
 +
-+	/*
-+	 * if there was a previous node; link it and wait until reaching the
-+	 * head of the waitqueue.
-+	 */
-+	if (old & _Q_TAIL_MASK) {
-+		prev = decode_tail(old);
++#if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
++	unsigned long flags;
 +
-+		/* Link @node into the waitqueue. */
-+		WRITE_ONCE(prev->next, node);
-+
-+		arch_mcs_spin_lock_contended_label(&node->locked, release_node_err);
-+
-+		/*
-+		 * While waiting for the MCS lock, the next pointer may have
-+		 * been set by another lock waiter. We cannot prefetch here
-+		 * due to lack of equivalent instruction in BPF ISA.
-+		 */
-+		next = READ_ONCE(node->next);
-+	}
-+
-+	/*
-+	 * we're at the head of the waitqueue, wait for the owner & pending to
-+	 * go away.
-+	 *
-+	 * *,x,y -> *,0,0
-+	 *
-+	 * this wait loop must use a load-acquire such that we match the
-+	 * store-release that clears the locked bit and create lock
-+	 * sequentiality; this is because the set_locked() function below
-+	 * does not imply a full barrier.
-+	 */
-+	val = atomic_cond_read_acquire_label(&lock->val, !(VAL & _Q_LOCKED_PENDING_MASK),
-+					     release_node_err);
-+
-+	/*
-+	 * claim the lock:
-+	 *
-+	 * n,0,0 -> 0,0,1 : lock, uncontended
-+	 * *,*,0 -> *,*,1 : lock, contended
-+	 *
-+	 * If the queue head is the only one in the queue (lock value == tail)
-+	 * and nobody is pending, clear the tail code and grab the lock.
-+	 * Otherwise, we only need to grab the lock.
-+	 */
-+
-+	/*
-+	 * In the PV case we might already have _Q_LOCKED_VAL set, because
-+	 * of lock stealing; therefore we must also allow:
-+	 *
-+	 * n,0,1 -> 0,0,1
-+	 *
-+	 * Note: at this point: (val & _Q_PENDING_MASK) == 0, because of the
-+	 *       above wait condition, therefore any concurrent setting of
-+	 *       PENDING will make the uncontended transition fail.
-+	 */
-+	if ((val & _Q_TAIL_MASK) == tail) {
-+		if (atomic_try_cmpxchg_relaxed(&lock->val, &val, _Q_LOCKED_VAL))
-+			goto release; /* No contention */
-+	}
-+
-+	/*
-+	 * Either somebody is queued behind us or _Q_PENDING_VAL got set
-+	 * which will then detect the remaining tail and queue behind us
-+	 * ensuring we'll see a @next.
-+	 */
-+	set_locked(lock);
-+
-+	/*
-+	 * contended path; wait for next if not observed yet, release.
-+	 */
-+	if (!next)
-+		next = smp_cond_load_relaxed_label(&node->next, (VAL), release_node_err);
-+
-+	arch_mcs_spin_unlock_contended(&next->locked);
-+
-+release:;
-+	/*
-+	 * release the node
-+	 *
-+	 * Doing a normal dec vs this_cpu_dec is fine. An upper context always
-+	 * decrements count it incremented before returning, thus we're fine.
-+	 * For contexts interrupting us, they either observe our dec or not.
-+	 * Just ensure the compiler doesn't reorder this statement, as a
-+	 * this_cpu_dec implicitly implied that.
-+	 */
-+	barrier();
-+	node0->count--;
-+	return 0;
-+release_node_err:
-+	barrier();
-+	node0->count--;
-+	goto release_err;
-+release_err:
++	ptr = &arena;
++	if ((ret = arena_spin_lock_irqsave(&lock, flags)))
++		return ret;
++	WRITE_ONCE(counter, READ_ONCE(counter) + 1);
++	bpf_repeat(cs_count);
++	ret = 0;
++	arena_spin_unlock_irqrestore(&lock, flags);
++#endif
 +	return ret;
 +}
 +
-+/**
-+ * arena_spin_lock - acquire a queued spinlock
-+ * @lock: Pointer to queued spinlock structure
-+ *
-+ * The return value _must_ be tested against zero for success.
-+ * On error, returned value will be negative.
-+ */
-+static __always_inline int arena_spin_lock(arena_spinlock_t __arena *lock)
-+{
-+	int val = 0;
-+
-+	if (CONFIG_NR_CPUS > 1024)
-+		return -EOPNOTSUPP;
-+
-+	bpf_preempt_disable();
-+	if (likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL)))
-+		return 0;
-+
-+	val = arena_spin_lock_slowpath(lock, val);
-+	/* FIXME: bpf_assert_range(-MAX_ERRNO, 0) once we have it working for all cases. */
-+	if (val)
-+		bpf_preempt_enable();
-+	return val;
-+}
-+
-+/**
-+ * arena_spin_unlock - release a queued spinlock
-+ * @lock : Pointer to queued spinlock structure
-+ */
-+static __always_inline void arena_spin_unlock(arena_spinlock_t __arena *lock)
-+{
-+	/*
-+	 * unlock() needs release semantics:
-+	 */
-+	smp_store_release(&lock->locked, 0);
-+	bpf_preempt_enable();
-+}
-+
-+#define arena_spin_lock_irqsave(lock, flags)             \
-+	({                                               \
-+		int __ret;                               \
-+		bpf_local_irq_save(&(flags));            \
-+		__ret = arena_spin_lock((lock));         \
-+		if (__ret)                               \
-+			bpf_local_irq_restore(&(flags)); \
-+		(__ret);                                 \
-+	})
-+
-+#define arena_spin_unlock_irqrestore(lock, flags) \
-+	({                                        \
-+		arena_spin_unlock((lock));        \
-+		bpf_local_irq_restore(&(flags));  \
-+	})
-+
-+#endif
-+
-+#endif /* BPF_ARENA_SPIN_LOCK_H */
-diff --git a/tools/testing/selftests/bpf/bpf_atomic.h b/tools/testing/selftests/bpf/bpf_atomic.h
-new file mode 100644
-index 000000000000..06defb9e050d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/bpf_atomic.h
-@@ -0,0 +1,132 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#ifndef BPF_ATOMIC_H
-+#define BPF_ATOMIC_H
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_experimental.h"
-+
-+extern bool CONFIG_X86_64 __kconfig __weak;
-+
-+#define __scalar_type_to_expr_cases(type) \
-+	unsigned type : (unsigned type)0, signed type : (signed type)0
-+/*
-+ * This is lifted from __unqual_scalar_typeof in the kernel (which is used to
-+ * lose const qualifier etc.), but adapted to also cover pointers. It is
-+ * necessary because we ascertain type to create local variables in macros
-+ * below, but for pointers with __arena tag, we'll ascertain the underlying type
-+ * with the tag, causing a compilation error (as local variables that are not
-+ * pointers may not have __arena tag). This trick allows losing the qualifier.
-+ */
-+#define __unqual_typeof(x)                              \
-+	typeof(_Generic((x),                            \
-+		char: (char)0,                          \
-+		__scalar_type_to_expr_cases(char),      \
-+		__scalar_type_to_expr_cases(short),     \
-+		__scalar_type_to_expr_cases(int),       \
-+		__scalar_type_to_expr_cases(long),      \
-+		__scalar_type_to_expr_cases(long long), \
-+		default: (void *)0))
-+
-+/* No-op for BPF */
-+#define cpu_relax() ({})
-+
-+#define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
-+
-+#define WRITE_ONCE(x, val) ((*(volatile typeof(x) *)&(x)) = (val))
-+
-+#define cmpxchg(p, old, new) __sync_val_compare_and_swap((p), old, new)
-+
-+#define try_cmpxchg(p, pold, new)                                 \
-+	({                                                        \
-+		__unqual_typeof(*(pold)) __o = *(pold);           \
-+		__unqual_typeof(*(p)) __r = cmpxchg(p, __o, new); \
-+		if (__r != __o)                                   \
-+			*(pold) = __r;                            \
-+		__r == __o;                                       \
-+	})
-+
-+#define try_cmpxchg_relaxed(p, pold, new) try_cmpxchg(p, pold, new)
-+
-+#define try_cmpxchg_acquire(p, pold, new) try_cmpxchg(p, pold, new)
-+
-+#define smp_mb()                                 \
-+	({                                       \
-+		unsigned long __val;             \
-+		__sync_fetch_and_add(&__val, 0); \
-+	})
-+
-+#define smp_rmb()                   \
-+	({                          \
-+		if (!CONFIG_X86_64) \
-+			smp_mb();   \
-+		else                \
-+			barrier();  \
-+	})
-+
-+#define smp_wmb()                   \
-+	({                          \
-+		if (!CONFIG_X86_64) \
-+			smp_mb();   \
-+		else                \
-+			barrier();  \
-+	})
-+
-+/* Control dependency provides LOAD->STORE, provide LOAD->LOAD */
-+#define smp_acquire__after_ctrl_dep() ({ smp_rmb(); })
-+
-+#define smp_load_acquire(p)                                  \
-+	({                                                   \
-+		__unqual_typeof(*(p)) __v = READ_ONCE(*(p)); \
-+		if (!CONFIG_X86_64)                          \
-+			smp_mb();                            \
-+		barrier();                                   \
-+		__v;                                         \
-+	})
-+
-+#define smp_store_release(p, val)      \
-+	({                             \
-+		if (!CONFIG_X86_64)    \
-+			smp_mb();      \
-+		barrier();             \
-+		WRITE_ONCE(*(p), val); \
-+	})
-+
-+#define smp_cond_load_relaxed_label(p, cond_expr, label)                \
-+	({                                                              \
-+		typeof(p) __ptr = (p);                                  \
-+		__unqual_typeof(*(p)) VAL;                              \
-+		for (;;) {                                              \
-+			VAL = (__unqual_typeof(*(p)))READ_ONCE(*__ptr); \
-+			if (cond_expr)                                  \
-+				break;                                  \
-+			cond_break_label(label);			\
-+			cpu_relax();                                    \
-+		}                                                       \
-+		(typeof(*(p)))VAL;                                      \
-+	})
-+
-+#define smp_cond_load_acquire_label(p, cond_expr, label)                  \
-+	({                                                                \
-+		__unqual_typeof(*p) __val =                               \
-+			smp_cond_load_relaxed_label(p, cond_expr, label); \
-+		smp_acquire__after_ctrl_dep();                            \
-+		(typeof(*(p)))__val;                                      \
-+	})
-+
-+#define atomic_read(p) READ_ONCE((p)->counter)
-+
-+#define atomic_cond_read_relaxed_label(p, cond_expr, label) \
-+	smp_cond_load_relaxed_label(&(p)->counter, cond_expr, label)
-+
-+#define atomic_cond_read_acquire_label(p, cond_expr, label) \
-+	smp_cond_load_acquire_label(&(p)->counter, cond_expr, label)
-+
-+#define atomic_try_cmpxchg_relaxed(p, pold, new) \
-+	try_cmpxchg_relaxed(&(p)->counter, pold, new)
-+
-+#define atomic_try_cmpxchg_acquire(p, pold, new) \
-+	try_cmpxchg_acquire(&(p)->counter, pold, new)
-+
-+#endif /* BPF_ATOMIC_H */
++char _license[] SEC("license") = "GPL";
 -- 
 2.47.1
 
