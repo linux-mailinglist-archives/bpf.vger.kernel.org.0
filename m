@@ -1,227 +1,187 @@
-Return-Path: <bpf+bounces-53368-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53369-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD3F4A504C6
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 17:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 65C7FA505AE
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 17:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8843C1772FE
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 16:27:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0A3B164C56
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 16:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A934257AC6;
-	Wed,  5 Mar 2025 16:23:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52CBE1991DB;
+	Wed,  5 Mar 2025 16:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f8U7fxvC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K/CqLe/I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646BB18DF64;
-	Wed,  5 Mar 2025 16:23:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486081917E4
+	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 16:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741191805; cv=none; b=MtShRvu50bMgOXDcKWBVaVDC6oEdJlIvvApoM9i3SCCw8GRJHIx05VxcEx1h7PbEjxQ3+ntUBi+HIV1M0rIpQbviGi+vxl4nEwYsb7w2j+I+URamPmXVU9EK4rkdKIUOvQeBhDuaQrcqWknoUTN5MT+ao8kUHmgMa0F1gXM2P8w=
+	t=1741193557; cv=none; b=UiV43q8E7LWPTjIQqYVnAZXaBNmDhzh0200mM/9DtdmeyBwOeX2C0i7ETsoWpZ7S/PGqOL7TTEJBsoaUhlK+5jkLOFPBpvehPJSSReBR0IwAP+Mh1CwieApX8zgkSQ/QLirLrmOsr1g38CFOSBUI/0TIj9rIef1UVJ/hg9e2A8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741191805; c=relaxed/simple;
-	bh=ZW51NgkeoNFGH21SSoAtIAD2UcPCUZ7Dkvt+E4gXwis=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IYX79HuzOG5UeG07XbwdGfjo4HbKs5xjuMj6Nc7+MECRGMd7640W8cJcdmfy5Mlm86fg0zAhKoIZETSnFQkZIcjvhdfBTMTcShC/lLO/haZnzA8QBCm4PCRXZZQjhRvQ7caQAJvLMUahS0iPSwiUit+U2VV5hxtwh1N6Ct8uYks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f8U7fxvC; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741191804; x=1772727804;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZW51NgkeoNFGH21SSoAtIAD2UcPCUZ7Dkvt+E4gXwis=;
-  b=f8U7fxvC93QbzufSw61uvtdZUzjQQrvIkFDH1KlRGvZjmNJRYO4vMnP/
-   51yOD2LHnzN+yVeyB+XxLdBBY9BZkBHkQFdso3HKZyIn5m6pa8HpmAhk6
-   skqUYNPhyq4TkBVFk/EAbmUJaS/URbhS3VAGsA3rXD4wW7pyTcBc7QNlm
-   2FG/gQ32SdyB6pMqqOm9fv+KopMxeKn4dTj6eNlso8LGLeI6i1MPk7f/D
-   alrrsTTsEeMCsphBH9SX9j7UuzGEhoB+TVyuAB8P9J4gN/+k2TScOhih7
-   IeinDSDSnk1CfsYuSiMWKKV2o0QdClZlmzoea+yOboqClQHb45cqGUL71
-   A==;
-X-CSE-ConnectionGUID: i1fgl1pZQKelYsoCeevOJA==
-X-CSE-MsgGUID: VhoqhELbSQuCEa2Ve7CFIg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11363"; a="42026649"
-X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
-   d="scan'208";a="42026649"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 08:23:23 -0800
-X-CSE-ConnectionGUID: EYnFiPUkSaOqE90dufVLMA==
-X-CSE-MsgGUID: jBtuLi88RbSkiBsbKsS9wg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
-   d="scan'208";a="123833046"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa004.fm.intel.com with ESMTP; 05 Mar 2025 08:23:19 -0800
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: intel-wired-lan@lists.osuosl.org
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Michal Kubiak <michal.kubiak@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Simon Horman <horms@kernel.org>,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 16/16] idpf: add XDP RSS hash hint
-Date: Wed,  5 Mar 2025 17:21:32 +0100
-Message-ID: <20250305162132.1106080-17-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250305162132.1106080-1-aleksander.lobakin@intel.com>
-References: <20250305162132.1106080-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1741193557; c=relaxed/simple;
+	bh=BV7qpD5KPgk/JFO/yZ7iRswMGIs9dZfui1Slp6rjcY0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bzhyTWMi0xdYCdZdcBQwuq/M28Ds42vGAQB960WgQjDYF6+75WuTeT0c9H4tCYGJbYDvHNZFFYU1k3nKkD6UnP9cX2bTq1JK9q4JBhnUeA7CYzW7Fh7jNkLCNz7i3hUyEEpLycBYjEbnBLXVUDDVgRyHAGZ0dZFch5/0UJhNWyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K/CqLe/I; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6fd4dcf2df7so44757737b3.0
+        for <bpf@vger.kernel.org>; Wed, 05 Mar 2025 08:52:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741193555; x=1741798355; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iAp6zKpf2lv69m6kvLUtccLZepzJlutx2efM15o/2rQ=;
+        b=K/CqLe/Ip+DxB4xkWVgQDXxZFtvdTCvTj7Ium9F3qPLKGX4YfVEEgOwIIey6v4xydB
+         /3C/x7/dKNX6Ly+dGD62NOv7conRNc8IypF3T/GamO0XTAi1IPYKlg6l0PTe2uTawPwr
+         fchpxWItLOWXJfGyzlthJWIx2MKE/ISZuPwyGny8ycUq/RL1/QIY8AksPVjPhqKt0yNM
+         FwSTpneexC7Ytwqe00R3JKlVpSdUqxVhCSAQg71Wsf+MAbTAmb0u8ajaZHStubWOczez
+         TGNgisx+elY+yvlyKsmlxs/eNXhcZGoDeAuyc70ZJuneeSsCTbmNwsjHDKVS/iBOtK4z
+         ddvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741193555; x=1741798355;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iAp6zKpf2lv69m6kvLUtccLZepzJlutx2efM15o/2rQ=;
+        b=xC4YHSBEbfJgkrTp94GjsIEGjdCiCcp/FTfnKhwRvVmhaN0CnTj+4Uh9BNl21xvTP2
+         NGkInkZ2pIkyjS6ofGib5G6zTY0L2jRP8whyI95dSav4IBQgxPlhD3phNuT87LUIaeEh
+         6IHA9zy66hccwrBaCtzjFHoU0tu++j/qg4CiD92GVoxfUFjOL7a2V7Gt4+0/8TQfx15R
+         ehLLHI1GiGX/DpIwfKo1naSpw49tw/cJAzUT9UMUJUPmjK5CJRd/M1IffZ9YSedWnqUQ
+         2pD6JimRcc3SkKi3agrFxHjAzjHNE1SUvUq7wDTn6w1NDuK8GUTpyCjSIZvnCVi7lw2E
+         BVKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU/mMOGfHH6i3xjdZLyPiNKt4IEye5EgUbfDakyeHK8S6lCJjPSKfPiZmYz+lYyh+bJ3fc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyqb+NTHGCvapVF4cWiIvE2D54xccQBdrXqyurGgGhm+m1/juEA
+	+67zHFiwvwDD/0c5f+vqmHzFDTdfmObJY/xNV2PG6OlE3iLFFFp2u/mKGFh44FDj//QWUlm2gKY
+	3effGLu0Pz8Chz/f7uoUOsg3qvrM=
+X-Gm-Gg: ASbGnctbTyMxYf2IGzoOKbAwNsOq06O4z8W6iuhg9sObxlQ9d4TFGkfb8MjbZXcx7ja
+	C/NCITtxP57h1SZDkzkXykWJs5/GcXMf+tqVnl6gy47yl8vVh/cPL8e6Qxs+OjMvqImI2mtbcHP
+	QDNH8lRF6DxWuojkPKC3qexfkn5w==
+X-Google-Smtp-Source: AGHT+IG4+/4Qs46e5f72H0nhWwII+lVZS2142yC0dlBgkLo0VL/ySLBm316F0vDFeo+pkj3aqt1xsRdz6qQ3ZhK9QYI=
+X-Received: by 2002:a05:690c:3589:b0:6f7:5a46:fe5f with SMTP id
+ 00721157ae682-6fda30379a6mr54949957b3.1.1741193555060; Wed, 05 Mar 2025
+ 08:52:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250304163626.1362031-1-ameryhung@gmail.com> <20250304163626.1362031-3-ameryhung@gmail.com>
+ <716c1a2d-f4fb-407f-b77d-03019e0dd2a5@linux.dev>
+In-Reply-To: <716c1a2d-f4fb-407f-b77d-03019e0dd2a5@linux.dev>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Wed, 5 Mar 2025 08:52:24 -0800
+X-Gm-Features: AQ5f1JqFkZQbKFf7ObkSAmf2J7ytxQrh_G0CbKXWJJQMy5_6I_tav2Av1vi4sY0
+Message-ID: <CAMB2axMPmTqz16nbVh5fk6gs0rmaMPL4uG73gAqyr+L5A=2Ggw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: Fix dangling stdout seen
+ by traffic monitor thread
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: daniel@iogearbox.net, andrii@kernel.org, alexei.starovoitov@gmail.com, 
+	martin.lau@kernel.org, kernel-team@meta.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add &xdp_metadata_ops with a callback to get RSS hash hint from the
-descriptor. Declare the splitq 32-byte descriptor as 4 u64s to parse
-them more efficiently when possible.
+On Tue, Mar 4, 2025 at 5:36=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.d=
+ev> wrote:
+>
+> On 3/4/25 8:36 AM, Amery Hung wrote:
+> > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/s=
+elftests/bpf/test_progs.c
+> > index ab0f2fed3c58..5b89f6ca5a0a 100644
+> > --- a/tools/testing/selftests/bpf/test_progs.c
+> > +++ b/tools/testing/selftests/bpf/test_progs.c
+> > @@ -88,7 +88,11 @@ static void stdio_hijack(char **log_buf, size_t *log=
+_cnt)
+> >   #endif
+> >   }
+> >
+> > -static void stdio_restore_cleanup(void)
+> > +static pthread_mutex_t stdout_lock =3D PTHREAD_MUTEX_INITIALIZER;
+> > +
+> > +static bool in_crash_handler(void);
+> > +
+> > +static void stdio_restore(void)
+> >   {
+> >   #ifdef __GLIBC__
+> >       if (verbose() && env.worker_id =3D=3D -1) {
+> > @@ -98,34 +102,34 @@ static void stdio_restore_cleanup(void)
+> >
+> >       fflush(stdout);
+> >
+> > -     if (env.subtest_state) {
+> > +     pthread_mutex_lock(&stdout_lock);
+> > +
+> > +     if (!env.subtest_state || in_crash_handler()) {
+>
+> Can the stdio restore be done in the crash_handler() itself instead of ha=
+ving a
+> special case here and adding another in_crash_handler()?
+>
+> Theoretically, the crash_handler() only needs to
+> fflush(stdout /* whatever the current stdout is */) and...
+>
+> > +             if (stdout =3D=3D env.stdout_saved)
+> > +                     goto out;
+> > +
+> > +             fclose(env.test_state->stdout_saved);
+> > +             env.test_state->stdout_saved =3D NULL;
+> > +             stdout =3D env.stdout_saved;
+> > +             stderr =3D env.stderr_saved;
+>
+> ... restore std{out,err} =3D env.std{out,err}_saved.
+>
+> At the crash point, it does not make a big difference to
+> fclose(evn.test_state->stdout_saved) or not?
+>
+> If the crash_handler() does not close the stdout that the traffic monitor=
+ might
+> potentially be using, then crash_handler() does not need to take mutex, r=
+ight?
+>
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- drivers/net/ethernet/intel/idpf/xdp.h | 64 +++++++++++++++++++++++++++
- drivers/net/ethernet/intel/idpf/xdp.c | 28 +++++++++++-
- 2 files changed, 91 insertions(+), 1 deletion(-)
+You are right. I think it is simpler to not let stdio_restore() handle
+the crash case, and just do the following in the crash handler.
 
-diff --git a/drivers/net/ethernet/intel/idpf/xdp.h b/drivers/net/ethernet/intel/idpf/xdp.h
-index a2ac1b2f334f..52783a5c8e0f 100644
---- a/drivers/net/ethernet/intel/idpf/xdp.h
-+++ b/drivers/net/ethernet/intel/idpf/xdp.h
-@@ -107,6 +107,70 @@ static inline void idpf_xdp_tx_finalize(void *_xdpq, bool sent, bool flush)
- 	libeth_xdpsq_unlock(&xdpq->xdp_lock);
- }
- 
-+struct idpf_xdp_rx_desc {
-+	aligned_u64		qw0;
-+#define IDPF_XDP_RX_BUFQ	BIT_ULL(47)
-+#define IDPF_XDP_RX_GEN		BIT_ULL(46)
-+#define IDPF_XDP_RX_LEN		GENMASK_ULL(45, 32)
-+#define IDPF_XDP_RX_PT		GENMASK_ULL(25, 16)
-+
-+	aligned_u64		qw1;
-+#define IDPF_XDP_RX_BUF		GENMASK_ULL(47, 32)
-+#define IDPF_XDP_RX_EOP		BIT_ULL(1)
-+
-+	aligned_u64		qw2;
-+#define IDPF_XDP_RX_HASH	GENMASK_ULL(31, 0)
-+
-+	aligned_u64		qw3;
-+} __aligned(4 * sizeof(u64));
-+static_assert(sizeof(struct idpf_xdp_rx_desc) ==
-+	      sizeof(struct virtchnl2_rx_flex_desc_adv_nic_3));
-+
-+#define idpf_xdp_rx_bufq(desc)	!!((desc)->qw0 & IDPF_XDP_RX_BUFQ)
-+#define idpf_xdp_rx_gen(desc)	!!((desc)->qw0 & IDPF_XDP_RX_GEN)
-+#define idpf_xdp_rx_len(desc)	FIELD_GET(IDPF_XDP_RX_LEN, (desc)->qw0)
-+#define idpf_xdp_rx_pt(desc)	FIELD_GET(IDPF_XDP_RX_PT, (desc)->qw0)
-+#define idpf_xdp_rx_buf(desc)	FIELD_GET(IDPF_XDP_RX_BUF, (desc)->qw1)
-+#define idpf_xdp_rx_eop(desc)	!!((desc)->qw1 & IDPF_XDP_RX_EOP)
-+#define idpf_xdp_rx_hash(desc)	FIELD_GET(IDPF_XDP_RX_HASH, (desc)->qw2)
-+
-+static inline void
-+idpf_xdp_get_qw0(struct idpf_xdp_rx_desc *desc,
-+		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
-+{
-+#ifdef __LIBETH_WORD_ACCESS
-+	desc->qw0 = ((const typeof(desc))rxd)->qw0;
-+#else
-+	desc->qw0 = ((u64)le16_to_cpu(rxd->pktlen_gen_bufq_id) << 32) |
-+		    ((u64)le16_to_cpu(rxd->ptype_err_fflags0) << 16);
-+#endif
-+}
-+
-+static inline void
-+idpf_xdp_get_qw1(struct idpf_xdp_rx_desc *desc,
-+		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
-+{
-+#ifdef __LIBETH_WORD_ACCESS
-+	desc->qw1 = ((const typeof(desc))rxd)->qw1;
-+#else
-+	desc->qw1 = ((u64)le16_to_cpu(rxd->buf_id) << 32) |
-+		    rxd->status_err0_qw1;
-+#endif
-+}
-+
-+static inline void
-+idpf_xdp_get_qw2(struct idpf_xdp_rx_desc *desc,
-+		 const struct virtchnl2_rx_flex_desc_adv_nic_3 *rxd)
-+{
-+#ifdef __LIBETH_WORD_ACCESS
-+	desc->qw2 = ((const typeof(desc))rxd)->qw2;
-+#else
-+	desc->qw2 = ((u64)rxd->hash3 << 24) |
-+		    ((u64)rxd->ff2_mirrid_hash2.hash2 << 16) |
-+		    le16_to_cpu(rxd->hash1);
-+#endif
-+}
-+
- void idpf_xdp_set_features(const struct idpf_vport *vport);
- 
- int idpf_xdp(struct net_device *dev, struct netdev_bpf *xdp);
-diff --git a/drivers/net/ethernet/intel/idpf/xdp.c b/drivers/net/ethernet/intel/idpf/xdp.c
-index 1834f217a07f..b0b4b785bf8e 100644
---- a/drivers/net/ethernet/intel/idpf/xdp.c
-+++ b/drivers/net/ethernet/intel/idpf/xdp.c
-@@ -386,12 +386,38 @@ int idpf_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 				       idpf_xdp_tx_finalize);
- }
- 
-+static int idpf_xdpmo_rx_hash(const struct xdp_md *ctx, u32 *hash,
-+			      enum xdp_rss_hash_type *rss_type)
-+{
-+	const struct libeth_xdp_buff *xdp = (typeof(xdp))ctx;
-+	const struct idpf_rx_queue *rxq;
-+	struct idpf_xdp_rx_desc desc;
-+	struct libeth_rx_pt pt;
-+
-+	rxq = libeth_xdp_buff_to_rq(xdp, typeof(*rxq), xdp_rxq);
-+
-+	idpf_xdp_get_qw0(&desc, xdp->desc);
-+
-+	pt = rxq->rx_ptype_lkup[idpf_xdp_rx_pt(&desc)];
-+	if (!libeth_rx_pt_has_hash(rxq->xdp_rxq.dev, pt))
-+		return -ENODATA;
-+
-+	idpf_xdp_get_qw2(&desc, xdp->desc);
-+
-+	return libeth_xdpmo_rx_hash(hash, rss_type, idpf_xdp_rx_hash(&desc),
-+				    pt);
-+}
-+
-+static const struct xdp_metadata_ops idpf_xdpmo = {
-+	.xmo_rx_hash		= idpf_xdpmo_rx_hash,
-+};
-+
- void idpf_xdp_set_features(const struct idpf_vport *vport)
- {
- 	if (!idpf_is_queue_model_split(vport->rxq_model))
- 		return;
- 
--	libeth_xdp_set_features_noredir(vport->netdev);
-+	libeth_xdp_set_features_noredir(vport->netdev, &idpf_xdpmo);
- }
- 
- /**
--- 
-2.48.1
+fflush(stdout);
+stdout =3D env.stdout_saved;
+stderr =3D env.stderr_saved;
 
+
+> > +     } else {
+> >               fclose(env.subtest_state->stdout_saved);
+> >               env.subtest_state->stdout_saved =3D NULL;
+> >               stdout =3D env.test_state->stdout_saved;
+> >               stderr =3D env.test_state->stdout_saved;
+> > -     } else {
+> > -             fclose(env.test_state->stdout_saved);
+> > -             env.test_state->stdout_saved =3D NULL;
+> >       }
+> > +out:
+> > +     pthread_mutex_unlock(&stdout_lock);
+> >   #endif
+> >   }
+> >
+>
+> [ ... ]
+>
+> > +static bool in_crash_handler(void)
+> > +{
+> > +     struct sigaction sigact;
+> > +
+> > +     /* sa_handler will be cleared if invoked since crash_handler is
+> > +      * registered with SA_RESETHAND
+> > +      */
+> > +     sigaction(SIGSEGV, NULL, &sigact);
+> > +
+> > +     return sigact.sa_handler !=3D crash_handler;
+> > +}
+> > +
 
