@@ -1,87 +1,87 @@
-Return-Path: <bpf+bounces-53261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90DB1A4F2DF
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 01:40:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E22FA4F2EE
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 01:47:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56CA03AAA9B
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 00:40:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F28483A9F31
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 00:47:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BFA2E336C;
-	Wed,  5 Mar 2025 00:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9C0770E2;
+	Wed,  5 Mar 2025 00:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="LYBkBoct"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="HXB4NY93"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F053527452
-	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 00:40:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495B01E50B
+	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 00:47:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741135217; cv=none; b=E7yK3xLlGS6jFxNSN8X7iGMZZ0w5BKBIf9X3OTFpddWDmEKPB+FXBAameYpUMOxRmcFSM01mBuTi6vEuOH6jhoj3+hS4zD310K9IS0whmqaCt6QNB4ky88ifognRmf2nc6DXHbF6yVisx5u3RTQWCyWre1JOhYY3NbOru9x+WBQ=
+	t=1741135635; cv=none; b=tdnwXSZ6abzBxGW7xznE4txGhJE8bT4kXJ8rglv4L0ihniZRTvItdhANTSZ1CgjqJiNQAH/0QN6LrDqUUF0qYBrH3Gb3vGVVmyjudKs+f3Cz1Tfs1wJnwyVwiJKa2jtnYX79OSc9Q1P7EBWLdUxL6SvOAwdN0pkBNiF1l6hBL7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741135217; c=relaxed/simple;
-	bh=8KEjXP08gAH9mtHlZwTSZJHkrRvWvyV0abRhH8806fM=;
+	s=arc-20240116; t=1741135635; c=relaxed/simple;
+	bh=KrZPhWHQh1C/FXJrXVtu/3D6Cl4fRehYGt6yzWML13w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gFzo3Mto9pXqihuYXz/J8dhI5E/hB5FFD3KOf0me4W/Pd1wKAyYo+MK6T+CVGxBUOOmSlmyX7EpQtEHeNqsFQHPmG5xm5CRiTO+DnG/EbzEseVwvezHv2iXLR5BncWICxpXihRLScUvp+xn9cmiIDu6vv9jgifnG3paOpsGISzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=LYBkBoct; arc=none smtp.client-ip=209.85.219.173
+	 To:Cc:Content-Type; b=mBuMwFBbnPABKxioubzikf+rOlmZhUOEdP9kMcSs/o/KrUebxI3Ikn0IJ/fLdQj07XzRm8hYihJJlDjnPAfqjXU6AAsJgCDOUIIi1UCVbE0517vLRrftA5Nqnnz96il61yJKIVoOCriXDBZcxPOJ/Jfct4YmK2gbFVwpp7GPewI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=HXB4NY93; arc=none smtp.client-ip=209.85.128.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e4930eca0d4so4559673276.3
-        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 16:40:15 -0800 (PST)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6fd6f7a8c84so28793517b3.2
+        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 16:47:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1741135215; x=1741740015; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1741135632; x=1741740432; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nLByKeK9jbAcIudXTB8h4/g+eKrBdZDjVDhHL4wGDkY=;
-        b=LYBkBoctszf5rC2eNNrABPFqPNlWLnGPtCrmPAusBquV+EryKb8A1dvWiljC9Rn+hV
-         kRELiQPMw/E8sYsPnvn/tSbrBuie6kxnJuZcSqtCmUaWbGtZWf/cj2EbZkgy6xfS2/D7
-         C1DiH52qG9CG6e7kDNY7x6zXDtzMMFfGcn9e4q69JHr1YHXLssTqTq5pHeg06ZFJuu4d
-         NyOC1FY4GBYEH/y0QDZ499MtiCdozx1VCrxY2HCyR1MZ3PnKwXaHDbBGnrL0KJzoYoIl
-         1rGlsDgmk2ZvKNd2rFtyCpqVNUodm7/LuMHlC7nK+x2mTie2SXOh7qHk3WNRQAhmJfA0
-         t08g==
+        bh=U0JWW3fTWBnh7K7+SqgqWW2WjvJa1HaPLK+y4schvYw=;
+        b=HXB4NY93Mv1adQF0nefzgX5in0YyUQcM/o+PkBcaO7bqYOxJV/KVJFxA+mvnP2H7bX
+         VbKy8zMjropMV2M/CPD5wR5DrGxGM/Wu3ZIleI2llwqDr1hz+mTSTmwAqEZgsfUGt6vN
+         uHb8/+P6o6TyY+jexQQgFVBWgfxCuU59AwEo6C5f5obqM/StUqEYlSsrxVIwhm5pQvXJ
+         xFbpa7Wb2BDwK/JrutICXsHbEnbUKUPWOhUoCg78SuLFB1GN02/Q+4wlN3MUiAEOs13D
+         ioHwP8xsFgI7jqstQXGv66HiJSczlVm8cOAXeP8fKGqAmLXcgYWuC5wE2q1wn73fTD5K
+         b/vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741135215; x=1741740015;
+        d=1e100.net; s=20230601; t=1741135632; x=1741740432;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nLByKeK9jbAcIudXTB8h4/g+eKrBdZDjVDhHL4wGDkY=;
-        b=ZgqnYTXsV53xhXX6w3+wTJs7AawFB+ZTkZu2cSKBd95WLwr3IdxOQXiBanUp1EF5OV
-         kekTJ22tc1Rv7YDOxWVV1DF0HIvbSDlkgBVRhX3SbmB8HwKVmkzvPUcTGYj7dofuqVLg
-         fL4CZTUOBqmMzKwlr7Qyem1cTswSGTY8MGjpbMJwVBgsEOIjwaWTENjuGZbmZmb5/epb
-         fygXyPGB4cQlhQYGEAArJo2tIWhJRImBXvjr6M3Pq+Q/kNOP4zxuiMqKccd2g7wrVP2b
-         9gpiVIkaU7pZhRL1sAc664M75WqMSLVjkR/U9zA+SMQnG4U2p4OPO24x4anny0jMjPgO
-         CYyg==
-X-Forwarded-Encrypted: i=1; AJvYcCVr0Hm2WGiMBlgFKw1q1UeHL55a3owG9vapZ+Q+pTqD9v2ydNyqvmAHt+BVoUO6/YRoWyA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzPJJPUZioUiiu9LViNS6TFWCrvLdne5bNJ/IJ6byN+m7JQIhpq
-	iOowqg2b73bAcUvwTs3c0kubq1gTqYrVJyDWVuf0Wpa+DsbsnR1kM75OcL8qIx0FYsRK84cpR0E
-	+z6oHhGdIyy8QwhEGPeOpZhST+F30RQo2yjf9
-X-Gm-Gg: ASbGnct9Mtgmh2E7CbPdT7ovysy8sz5yd86oaZKZ+e0dkHyb//kUMgQMvuOOFdkhtvk
-	Y2NiZfiI05T3sc8HRUnKqCEVMaA0s/6l+hskTQVz8ViksedUNfT389z38fM4pwSw4HS7zr5gBKh
-	9oXEy416QjU8X0wPVCclrMFNJdrQ==
-X-Google-Smtp-Source: AGHT+IEzmMWOQvRMnjDkFhghROqg9lxOvTBles4ByHr5bhpu3fcrvkVJICgDGQ2HmqiNLuH79Zde6tj1J0pYKTCXHas=
-X-Received: by 2002:a05:6902:2009:b0:e5d:92a5:9f79 with SMTP id
- 3f1490d57ef6-e611e35f307mr1471560276.34.1741135214898; Tue, 04 Mar 2025
- 16:40:14 -0800 (PST)
+        bh=U0JWW3fTWBnh7K7+SqgqWW2WjvJa1HaPLK+y4schvYw=;
+        b=KcwGu4oq2hivLQkYlZ0sTSJW3f9QfgzHQtiX6Dz7YgHGjZARx8nccUseFyeEDjaoMC
+         xknc0/iyyye+ssQD+jy2mBAVWRLFurwM2UApR7PiqUAZkiEFIzTyqN9WzUaxAfWx9kIj
+         nVKNuTGztIqSQaAHR4VuGcGpHYR9C/FGLwYG/+/iClxrKiJhQr6+D8OoGgZPmLZcd8HT
+         HMM9C8QRCJCNBgOilpBpU0k8W2ig9LfdAgGFA8884IglHU1IpPZnwcwsM6wPrsXQdsKw
+         /a3fSbhmkv9XOtzNiKYvMhD++cZn8peFCLtbWGInTQPoK/UYLNXH0qfHYk+1QiwRp69D
+         +8tw==
+X-Forwarded-Encrypted: i=1; AJvYcCVeiYUHfGYhBtbPYzyJSCCEVNSW38rI/dmnPqNp/SqmaTDXXoXWQMxRMqjqgCBtO8V+yLI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxLzN+jsXch6D7e2zGBpJiQt0x6jHGkNYfP/jpVxVoJvQZ1EbhN
+	9o7BSXVYWvLPaUGfA1YDHM7CAmEwiB4eN8hxxT/jkBAU3PTXE1SVOfF9nfb2eHJKEVbv2XTAP13
+	Q6xEAO7MMn/Xv0W1nr2AJ95RWdRxW9/HZ59DC
+X-Gm-Gg: ASbGnctNqaHAW3eh46XqWNf4p5WCysUdLl0I85aH8aB7/sxZ3cU6DVcOHNdZTAvVRoy
+	HIq4Tg4OOhPCSiryqEbJ20Q4r8gQeXYXzqhaD9LarIy/8zWFC8v8r8foQHjpVNZkszcZthHTROw
+	IMKmMTrGZ/Cu1CMNETi0mq/8vChA==
+X-Google-Smtp-Source: AGHT+IFsin2dnAoII47KpfiYxuCKNvaOHTWGt38UM0/AeWRCKVn6GpsI/Mpf2AghCcvXGb4Vk3GRSbaU2mFwSKGkBmg=
+X-Received: by 2002:a05:6902:124c:b0:e5b:248a:bf3a with SMTP id
+ 3f1490d57ef6-e611e305897mr1727393276.30.1741135629678; Tue, 04 Mar 2025
+ 16:47:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250304203123.3935371-1-bboscaccy@linux.microsoft.com> <20250304203123.3935371-3-bboscaccy@linux.microsoft.com>
-In-Reply-To: <20250304203123.3935371-3-bboscaccy@linux.microsoft.com>
+References: <20250304203123.3935371-1-bboscaccy@linux.microsoft.com> <20250304203123.3935371-2-bboscaccy@linux.microsoft.com>
+In-Reply-To: <20250304203123.3935371-2-bboscaccy@linux.microsoft.com>
 From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 4 Mar 2025 19:40:04 -0500
-X-Gm-Features: AQ5f1JqF5eg5kGEnn453gAfWw1axYxi2H7tbUtolXQD5gFiAWaVD4kDHxBozzFk
-Message-ID: <CAHC9VhS5Gnj98K4fBCq3hDXjmj1Zt9WWqoOiTrwH85CDSTGEYA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 2/2] selftests/bpf: Add is_kernel parameter to
- LSM/bpf test programs
+Date: Tue, 4 Mar 2025 19:46:58 -0500
+X-Gm-Features: AQ5f1JpLlLzJjcKMPOWcUJShk8j8ocFRlSTUH6_R8CutO6bLPL3P9GSwEAw9ZLk
+Message-ID: <CAHC9VhQ+R1nxsp6aPDqH9trjcPadb6yPsj+fEv47mYQqZ50yeQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 1/2] security: Propagate caller information in
+ bpf hooks
 To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
 Cc: James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -98,26 +98,56 @@ Content-Transfer-Encoding: quoted-printable
 On Tue, Mar 4, 2025 at 3:31=E2=80=AFPM Blaise Boscaccy
 <bboscaccy@linux.microsoft.com> wrote:
 >
-> The security_bpf LSM hook now contains a boolean parameter specifying
-> whether an invocation of the bpf syscall originated from within the
-> kernel. Here, we update the function signature of relevant test
-> programs to include that new parameter.
+> Certain bpf syscall subcommands are available for usage from both
+> userspace and the kernel. LSM modules or eBPF gatekeeper programs may
+> need to take a different course of action depending on whether or not
+> a BPF syscall originated from the kernel or userspace.
 >
-> Signed-off-by: Blaise Boscaccy bboscaccy@linux.microsoft.com
+> Additionally, some of the bpf_attr struct fields contain pointers to
+> arbitrary memory. Currently the functionality to determine whether or
+> not a pointer refers to kernel memory or userspace memory is exposed
+> to the bpf verifier, but that information is missing from various LSM
+> hooks.
+>
+> Here we augment the LSM hooks to provide this data, by simply passing
+> a boolean flag indicating whether or not the call originated in the
+> kernel, in any hook that contains a bpf_attr struct that corresponds
+> to a subcommand that may be called from the kernel.
+>
+> Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+> Acked-by: Song Liu <song@kernel.org>
 > ---
->  tools/testing/selftests/bpf/progs/rcu_read_lock.c           | 3 ++-
->  tools/testing/selftests/bpf/progs/test_cgroup1_hierarchy.c  | 4 ++--
->  tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c | 6 +++---
->  tools/testing/selftests/bpf/progs/test_lookup_key.c         | 2 +-
->  tools/testing/selftests/bpf/progs/test_ptr_untrusted.c      | 2 +-
->  tools/testing/selftests/bpf/progs/test_task_under_cgroup.c  | 2 +-
->  tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c   | 2 +-
->  7 files changed, 11 insertions(+), 10 deletions(-)
+>  include/linux/lsm_hook_defs.h |  6 +++---
+>  include/linux/security.h      | 12 ++++++------
+>  kernel/bpf/syscall.c          | 10 +++++-----
+>  security/security.c           | 15 +++++++++------
+>  security/selinux/hooks.c      |  6 +++---
+>  5 files changed, 26 insertions(+), 23 deletions(-)
 
-I see that Song requested that the changes in this patch be split out
-back in the v3 revision, will that cause git bisect issues if patch
-1/2 is applied but patch 2/2 is not, or is there some BPF magic that
-ensures that the selftests will still run properly?
+...
+
+> diff --git a/security/security.c b/security/security.c
+> index 143561ebc3e89..38c977091a7fd 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -5627,6 +5627,7 @@ int security_audit_rule_match(struct lsm_prop *prop=
+, u32 field, u32 op,
+>   * @cmd: command
+>   * @attr: bpf attribute
+>   * @size: size
+> + * @is_kernel: whether or not call originated from kernel
+
+This is really nitpicky so please only make this change if you are
+respinning the patchset for another reason (it looks like you may need
+to do so for other reasons, so I mentioning it), but please change
+"is_kernel" to just "kernel" in all the LSM hooks you're updating so
+it is more consistent with the other LSM hook boolean parameter flags.
+
+Regardless of the above, this looks good to me.  My ACK is below in
+case the BPF folks want to merge this, but I'm also happy to take this
+via the LSM tree once the selftest changes are resolved and ACK'd.
+
+Acked-by: Paul Moore <paul@paul-moore.com>
 
 --=20
 paul-moore.com
