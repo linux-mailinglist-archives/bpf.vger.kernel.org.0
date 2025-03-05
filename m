@@ -1,198 +1,170 @@
-Return-Path: <bpf+bounces-53287-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53288-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0572A4F611
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 05:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF713A4F630
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 05:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 002EC3AA121
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 04:29:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 140093AA5C9
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 04:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271A01C6FE2;
-	Wed,  5 Mar 2025 04:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F071A4F09;
+	Wed,  5 Mar 2025 04:51:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hN33eBPf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YOr/Qq6m"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0419611185
-	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 04:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E13F13C3F6
+	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 04:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741148953; cv=none; b=j5k4udcSPtzxRGFKjcGubm7Da70SjdHFiyWzKvqWWw9BwIvEyK1LCD/YlVsZIT3nCR08V3qewjqnEggG5jkcOKjRpCvuMBe3kini0RkdCkA49YA/wNrwfgKW5Mi0oOgJE+T/memlxJlBgPpm9huv+XRIF+plXgKHz4DAOlFHbms=
+	t=1741150306; cv=none; b=VV7ItPPcxLnOtNjHeEt27oQyFk0W747ThqN63bgc78gq6RE4paTbW3xUUsXZHJ+hzPWls8UEYnAw75ycDCUObobpVhTMR1E2QYs62beycMvenIg9S/VnzyeYU5nsb+4ZmEmkBCue25zFOuDMwEerNWwPqrebkd4zl3ZOVkwEwfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741148953; c=relaxed/simple;
-	bh=sxDYvsbL6lrzzQEy1IoAZ24lwrQwfG2C7ZJ+e2P8XiM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uTYz0NJhRl5uWiPSrAGleRmSBtmRveRx7T/OWW5Jr5q7rr0chZhKaC+eRNwYV+ntXPdetrAsJAuLanErH31NjhBPMTHT1LPEO6Ijq+IdcsAXJeKa8ZTSuqIGLYv3HGx4kvL4B5bIBuCM6AQ1fpx6vFGOWP37Wdx8Cp1LAuKkVd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hN33eBPf; arc=none smtp.client-ip=209.85.218.68
+	s=arc-20240116; t=1741150306; c=relaxed/simple;
+	bh=vr+VKWEmftiTx2FX8cd1i5DPryFE8T99DSgKkxB1fnE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uX3cN+nFjUZCPBz+BC9CBmg4V1IHuSTDVvgcGSq+rti4dT+7N+JgSo0hRUfspTw4pf/ExlHJHUVgJUhvfu/jSxquCiMZfsrpbudOJPJkzpfKw2nqW6SLKdsDk+JpcYyiHxw+zMO8Iqxf0gVcrk7mUNRJA0AaDuGgs9pJkTzBXZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YOr/Qq6m; arc=none smtp.client-ip=209.85.128.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-abf518748cbso701952066b.2
-        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 20:29:11 -0800 (PST)
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-43bd45e4d91so700775e9.1
+        for <bpf@vger.kernel.org>; Tue, 04 Mar 2025 20:51:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741148950; x=1741753750; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f5jeOzRyoOqdcyjx3tkw3kiYlhPMGsl2571q22Q3TXg=;
-        b=hN33eBPfV4cQMimeBCewOUSWeN5QahZEvVGgPYNhcXwM6SbpiWGbD4BbdU/yjsXbRz
-         bdBTz8Qe91ru2ydpgqhBbBRlNKHl3+GqqWJ4yP9Kd9zX0JSvnPFCi8ek45CWXnmSZoUl
-         lKBK7WjnjLIWTcSHth36IcnvJZikWibaQdkeRvtD0+q3Z2WPpDmF76KcTMbHxa8VDQK2
-         LfdJvle9euc3oYN/sAGnidpwTNweursMhGNr2aoL+z6GFB5QKOPa7X902/jqRqkKug8p
-         3CUmEQU/uTx9mcOJKkxwfpdGOot6/m6PYcDqTamGIRoP40It6+h2z6mgguoy49oW9Y6j
-         HcUw==
+        d=gmail.com; s=20230601; t=1741150302; x=1741755102; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q5ye/5AOE1VGkZRAHXY5Soe6Y59TlwJzqKfLA7jrpl8=;
+        b=YOr/Qq6mJmPqiXS7PHgF7E2aMIUSOXG7GnHTUNLInBqOt5PyZ6RR2qXDsa+kHXJEAG
+         bCaqfziWz6mhtS+VqKmVTZT8iVgyf3LobRARPjtdc9xQLYeKYVU7RqTZVo8DCN60sqsw
+         eedOl/RCDMh3Wvh4r3GW3iUHqeWIOUXkQgE+GKNvcsSeT4ATP+wvT1b2Ci0GNTsVUJA/
+         z4jQgpINyI3aanid0JoDPVscM6E6VaawShz1A7d3rnM0RP3XWFB6GCRMG6fp6c3JgmJt
+         u0xkgMWFIHfduEDwlkhDm3FuXuhRmABM06ZcuL4kxI/YVtiP17XOF/RsNTNaOm5XqF6M
+         /zUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741148950; x=1741753750;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f5jeOzRyoOqdcyjx3tkw3kiYlhPMGsl2571q22Q3TXg=;
-        b=Q5Cnxv3vLlMp7syO4cfY6t+mn5G+1dwpyi4w4VfFtoC3QacIn3KINT7g/tnt97Xh96
-         1monft2H+zNGICFydICqSDJ31TtsppAQtqHW8QOTXXkZ6AMuf46WYX2UQ/mCRIFNoj0O
-         l0C9KGnERiu/jIYBvC1KZJN0FYuLGZz8DaVjNpytIXIl8Pbu038B+48QJgDyKt4iHV+Q
-         yoIpPBsfZuSOTAqpT3ImZOhZM/k53E2VErjs0z7sHVxyrSfH1cgsxCPV9DuAmyfcRvUL
-         pAlgp31pRV2vQqpC+CsXh4dYnGzmuTygFnRqFZME2mBv/De05lA+WVwrFWXustKrwSfj
-         dOnw==
-X-Gm-Message-State: AOJu0YwgxM7LGnYHHCz28/7A2vyUtIXDI8o/NGf0wLcsE4Jjlg9XSfie
-	HFoIwmTlKnvVgwT3qcxgjGI7WjiwJAr0DK+pDazqPvlCiKt/MnLlJlrCD8AADB8CYjjg5tBi5gD
-	Vh0wZx6W1PxdwsFUP3Bsl12gf8hc=
-X-Gm-Gg: ASbGncsdr7NYLat8RXd8rb72Xo0FYrCdm+ulsaGCKkh5uAYQeVG/TjuSPNalFEoenVX
-	vV1nUgQb/FcaTvURf3Jl/m8MPmpMEtDkQA36baVmokDFasjqCTSVEyj+fx8IWXC+BoQoxdGTW3D
-	9btf7v/tr1KncBxwUGChBbLclMqS/iUqfKuHTzm0weSMGEeOc=
-X-Google-Smtp-Source: AGHT+IGE5Akac+9z7jMZo+xh1I2dDSlqESCM83JX+OV074CJjiqNWFf+O5OVLo0d9JGiIHu3bLK1BU4KKugIp3Jv5Qs=
-X-Received: by 2002:a17:906:6a0a:b0:abf:7a80:1a7b with SMTP id
- a640c23a62f3a-ac20d842a46mr154235866b.11.1741148949902; Tue, 04 Mar 2025
- 20:29:09 -0800 (PST)
+        d=1e100.net; s=20230601; t=1741150302; x=1741755102;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q5ye/5AOE1VGkZRAHXY5Soe6Y59TlwJzqKfLA7jrpl8=;
+        b=AmXqCTeV7bNdAAy3q7vSZmyi2JqtWYyJyLu45wy0U144RhfvDYl1W8klFjBNqRmfZC
+         Jjh31X0+2y52ZR5q0+mMrXQoS9MzeIOUp1wsvrX9YeKIgL9GSTDj77WQt+Ed7qXiYfDP
+         i09HSspbDi9iVUNYbCKb5kjrtjI6qIStG6WHEdtAlMWHwWtVDXynf7L1S6v1dK74kQQw
+         2HwC3nOQ6fhC9T3lM8/JjPBsrcuHUXi6lr8hPgCoyKL/4GKZguaM+OeSOdr05qulr+73
+         iEx6Xk+hmEe4RPeVXy7l+NU3lNpwH3l4f0eTOPDvDAJtGzXafMoafcBlsdrTZShejItY
+         4CCQ==
+X-Gm-Message-State: AOJu0YyVamFsALCcq/Xq+MtpnC6m3stfcDOeW5xsHY3DiOWk6abWk0C3
+	9dhR7MLqqKsbxbWeyjBsXx2mq/rDcVc5bxSBioWp4lAO0Afar2w62AianfKTj40=
+X-Gm-Gg: ASbGncsfb3VOp2UUQa20lNp2HsEFC0igtJf6Z0MjeZRUSs7MSdcNeWr/hRmLeaZKGO/
+	8G/QG9WTc+mfo8TXwoXkzioEjEDPSrUeITeaxbXxpA1Coxcl9rwbLUq+wV4nojUhGuRTCAzj5pG
+	6pCakCA7QaHqR3piIF+koudG1bINC4VX72uqMK9aFvFV35iVywvEaWwXvgu/bqLvLxn6E8vmOOW
+	xKwWUMLqPw4uVpx5BgXKEqxzXG+ioPHzd9ynec0EHWg9nqj7bv2F2DVFGiS1ialnvKvO8HqYyxn
+	JNtJOGLgbo1EGB3oULsUKLzeJ78mgprBtAs=
+X-Google-Smtp-Source: AGHT+IGGfW/61DkKQ2i7rEe3DAlpJWK0wwCchEEIsjQNUORlRhLjjT9KsrEpsK1xOTlzinoVLpZhmQ==
+X-Received: by 2002:a05:600c:54c2:b0:439:9536:fa6b with SMTP id 5b1f17b1804b1-43bcb04ef6fmr51480275e9.13.1741150302376;
+        Tue, 04 Mar 2025 20:51:42 -0800 (PST)
+Received: from localhost ([2a03:2880:31ff:49::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bd4293250sm5612085e9.16.2025.03.04.20.51.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Mar 2025 20:51:41 -0800 (PST)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Tejun Heo <tj@kernel.org>,
+	Emil Tsalapatis <emil@etsalapatis.com>,
+	Barret Rhoden <brho@google.com>,
+	Josh Don <joshdon@google.com>,
+	Dohyun Kim <dohyunkim@google.com>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v4 0/3] Arena Spin Lock
+Date: Tue,  4 Mar 2025 20:51:33 -0800
+Message-ID: <20250305045136.2614132-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250305011849.1168917-1-memxor@gmail.com> <20250305011849.1168917-3-memxor@gmail.com>
- <CAADnVQJQd9Lof1Qj4DWn0aFdY079gjcOsKo6XBBMKwnjXdw7eQ@mail.gmail.com>
- <CAP01T76LFhRogiSiPQ73pcYpt4TXfty0HLqg52L7dtz30Ono5A@mail.gmail.com> <CAADnVQ+QV=SQsgTDpRcsh=V8AHkirt4G3D3N2b-5oK=w-PMXdQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+QV=SQsgTDpRcsh=V8AHkirt4G3D3N2b-5oK=w-PMXdQ@mail.gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 5 Mar 2025 05:28:33 +0100
-X-Gm-Features: AQ5f1Jq-DqnKsf6vKlJfr-C3ZoHKwrWNaR2mCfuDXfCEfz--QmARX811WgPIRWk
-Message-ID: <CAP01T77GFjuupAA0thhuj5SppStE_bNXLRBmH8S5_KvifMrgbA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: Introduce arena spin lock
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Tejun Heo <tj@kernel.org>, 
-	Emil Tsalapatis <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>, Josh Don <joshdon@google.com>, 
-	Dohyun Kim <dohyunkim@google.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2870; h=from:subject; bh=vr+VKWEmftiTx2FX8cd1i5DPryFE8T99DSgKkxB1fnE=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnx9WfSS2hTSTvv4KAEJLm/RjBCWwSUrajzOTZMI4+ 8xUEWcaJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ8fVnwAKCRBM4MiGSL8RyuHoEA CxpXi8QBbfhgDkl0jbqk3B0NNDiD0g9VUAEAKo7YLtB6B+T5CriW1OS/ffmIUwBSCPV9pDDmWNkO// 5StUP7C/A516DirfqOG39NZHSSGA8/LXnHIr4Sv3cIlR5KDqpRipYh1wesvO+N0eujgqCilVY7/l0o S4nZ2Lg2+POl74hHJU0lId8ElV/sMgxVO4Hfq1E1a6hXd+MMioj+mZyrsK3JoIwX71/wB0QkQGdc3K pKuKIOB8vk1iy4F3Jc7xQRZoiS3H4RDt3eM0zqiYAdPz7MEhcKIq33olCoEOX8SGc/Z4ehu7dHhCCr YYgRz/9xqXmrfcwfKMzfuqH9ZpOugN5UGlfxEqtd6U9UA8rGtx70sOx3YITyG7VE22+sB8fBYu2LdQ 0ll8p99rX0B8NssOf8yeXIAKXzvGPAvyW9jrIO2+rMml0Oh4x+R6FU5r0g1rsZ8q8/czmJA9HdtmVj xFN+3kY2RGsuaoGTEYUoiUGcUGouYkWVwec+1eER28CIa+Ru7gDmf+uOa0KmdCfAfc7dbV9vYdRJiw 5MumSuIeT18ApY2OEv7/EGCedW9455e8p05BDqjkEWmHUCnkvTjdnCHkBJKiTLNCD3/MJi1QpVSfnj lr4mPq7u4WIRF91z4Pf6rspTUILIn37b2WS4+gskKGxKl7VqAHuwxPTKWDUQ==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 
-On Wed, 5 Mar 2025 at 04:41, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Mar 4, 2025 at 7:15=E2=80=AFPM Kumar Kartikeya Dwivedi <memxor@gm=
-ail.com> wrote:
-> >
-> > > which is doing:
-> > > __unqual_typeof(*(p)) VAL;
-> > > (__unqual_typeof(*(p)))READ_ONCE(*__ptr);
-> > >
-> > > and llvm will insert cast_kern() there,
-> >
-> > Yes, I do see a r1 =3D addr_space_cast(r2, 0x0, 0x1).
-> > r2 is node->next loaded from arena pointer 'node'.
-> >
-> > But I can't understand why that's a problem.
-> >
-> > If I do
-> > for (;;) {
-> >   next =3D READ_ONCE(node->next);
-> >   if (next)
-> >      break;
-> >   cond_break_label(...);
-> > }
-> >
-> > instead of the macro, everything works ok.
->
-> because the above doesn't have addr space casts.
->
-> > But that's because LLVM didn't insert a cast, and the verifier sees
-> > next as a scalar.
-> > So if next is 0x100000000000, it will see 0x100000000000.
-> > With cast_kern it only sees 0.
->
-> right.
->
-> > It will probably be casted once we try to write to next->locked later o=
-n.
->
-> not quite.
-> In a typical program llvm will emit bare minimum cast_user,
-> because all pointers are full 64-bit valid user space addresses all the t=
-ime.
-> The cast_kern() is needed for read/write through the pointer
-> if it's not a kernel pointer yet.
-> See list_add_head() in bpf_arena_list.h that has
-> a bunch of explicit cast_kern/user (with llvm there will be a fraction
-> of them), but they illustrate the idea:
->         cast_user(first);
->         cast_kern(n); // before writing into 'n' it has to be 'kern'
->         WRITE_ONCE(n->next, first); // first has to be full 64-bit
->         cast_kern(first); // ignore this one :) it's my mistake.
-> should be after 'if'
->         if (first) {
->                 tmp =3D &n->next;
->                 cast_user(tmp);
->                 WRITE_ONCE(first->pprev, tmp);
->         }
->         cast_user(n);
->         WRITE_ONCE(h->first, n);
->
-> > I would gather there's a lot of other cases where someone dereferences
-> > before doing some pointer equality comparison.
-> > In that case we might end up in the same situation.
-> > ptr =3D load_from_arena;
-> > x =3D ptr->xyz;
-> > if (ptr =3D=3D ptr2) { ... }
->
-> There shouldn't be any issues here.
-> The 'load from arena' will return full 64-bit and they should
-> be stored as full 64-bit in memory.
-> ptr->xyz (assuming xyz is another pointer) will read full 64-bit too.
->
-> > The extra cast_kern is certainly causing this to surface, but I am not
-> > sure whether it's something to fix in the macro.
->
-> I think it's a macro issue due to casting addr space off.
->
-> > > so if (VAL) always sees upper 32-bit as zero.
-> > >
-> > > So I suspect it's not a zero page issue.
-> > >
-> >
-> > When I bpf_printk the node address of the qnode of CPU 0, it is
-> > 0x100000000000 i.e. user_vm_start. This is the pointer that's misdetect=
-ed.
-> > So it appears to be on the first page.
->
-> yes and looks the addr passed into printk is correct full 64-bit
-> as it should be.
-> So this part:
->   return &qnodes[cpu + 1][idx].mcs;
-> is fine.
-> It's full 64-bit.
->   &((struct arena_qnode __arena *)base + idx)->mcs;
-> is also ok.
->
-> There are no addr space casts there.
-> But the macro is problematic.
+This set provides an implementation of queued spin lock for arena.
+There is no support for resiliency and recovering from deadlocks yet.
+We will wait for the rqspinlock patch set to land before incorporating
+support.
 
-Ok, makes sense. Pointer values should always be the full 64-bit equivalent=
-.
-I fixed up unqual_typeof to not cause the extra cast, as it won't be
-necessary in case of pointers anyway.
+One minor change compared to the qspinlock algorithm in the kernel is
+that we don't have the trylock fallback when nesting count exceeds 4.
+The maximum number of supported CPUs is 1024, but this can be increased
+in the future if necessary.
+
+The API supports returning an error, so resiliency support can be added
+in the future. Callers are still expected to check for and handle any
+potential errors.
+
+Errors are returned when the spin loops time out, when the number of
+CPUs is greater than 1024, or when the extreme edge case of NMI
+interrupting NMI interrupting HardIRQ interrupting SoftIRQ interrupting
+task, all of them simultaneously in slow path, occurs, which is
+unsupported.
+
+Changelog:
+----------
+v3 -> v4
+v3: https://lore.kernel.org/bpf/20250305011849.1168917-1-memxor@gmail.com
+
+ * Drop extra corruption handling case in decode_tail.
+ * Stick to 1, 1k, 100k critical section sizes.
+ * Fix unqual_typeof to not cast away arena tag for pointers.
+ * Remove hack to skip first qnode.
+ * Choose 100 as repeat count, 1000 is too much for 100k size.
+ * Use pthread_barrier in test.
+
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20250118162238.2621311-1-memxor@gmail.com
+
+ * Rename to arena_spin_lock
+ * Introduce cond_break_label macro to jump to label from cond_break.
+ * Drop trylock fallback when nesting count exceeds 4.
+ * Fix bug in try_cmpxchg implementation.
+ * Add tests with critical sections of varying lengths.
+ * Add comments for _Generic trick to drop __arena tag.
+ * Fix bug due to qnodes being placed on first page, leading to CPU 0's
+   node being indistinguishable from NULL.
+
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20250117223754.1020174-1-memxor@gmail.com
+
+ * Fix definition of lock in selftest
+
+Kumar Kartikeya Dwivedi (3):
+  selftests/bpf: Introduce cond_break_label
+  selftests/bpf: Introduce arena spin lock
+  selftests/bpf: Add tests for arena spin lock
+
+ .../selftests/bpf/bpf_arena_spin_lock.h       | 495 ++++++++++++++++++
+ tools/testing/selftests/bpf/bpf_atomic.h      | 133 +++++
+ .../testing/selftests/bpf/bpf_experimental.h  |  15 +-
+ .../bpf/prog_tests/arena_spin_lock.c          | 106 ++++
+ .../selftests/bpf/progs/arena_spin_lock.c     |  49 ++
+ 5 files changed, 792 insertions(+), 6 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bpf_arena_spin_lock.h
+ create mode 100644 tools/testing/selftests/bpf/bpf_atomic.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
+ create mode 100644 tools/testing/selftests/bpf/progs/arena_spin_lock.c
+
+
+base-commit: 42ba8a49d085e0c2ad50fb9a8ec954c9762b6e01
+-- 
+2.47.1
+
 
