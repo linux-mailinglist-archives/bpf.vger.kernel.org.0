@@ -1,95 +1,65 @@
-Return-Path: <bpf+bounces-53304-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53305-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 209B4A4FBD9
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 11:26:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50804A4FEA9
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 13:34:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 392711888A4B
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 10:26:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6FBD7A555E
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 12:33:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E619A2063D2;
-	Wed,  5 Mar 2025 10:26:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6514424502F;
+	Wed,  5 Mar 2025 12:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JZne7VvX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="I9qsyjbZ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JZne7VvX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="I9qsyjbZ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bLrVVClc"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA992063EC
-	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 10:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F073133987;
+	Wed,  5 Mar 2025 12:34:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741170384; cv=none; b=nrFoeY3O+U5T8hUwHZmhUO+Sc9WEL73sjaiOgPZl+OkaPTQp7uI8M2B5a4oe1u1wOObekPtyXIm5ay98pwPVI0clGj3YD8D4R8eyx9acP60kMRAhTpfS3xtr8yeIpRvbxb8UOL3LMlpZ3ZmJVq4Pj/xZa2FwlrPyWzaTdfOTsbw=
+	t=1741178047; cv=none; b=d8Cz9fsUcTCaWtTkQayrOFTbJrzL2MfkNwh+b8hP9XvrPb6RFQapIVgcuvASjjoLryAVmwb6T4XqIXY07EvgMRVT2buNmnmQzPB+lSYQseX4Ue4LJKxj7nfsnCyk9m9OAwR7VxCh7Kv4y4FHsNN+X7H2+KKUyj+6Ksu8VuNhn+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741170384; c=relaxed/simple;
-	bh=fL2x/cCMV7wEOQyMRFdQVMPDIXSyxxSsjlSy5LCvPLE=;
+	s=arc-20240116; t=1741178047; c=relaxed/simple;
+	bh=KXz7qN+UCvg/zXe/kDPAg/cy+msMPeJPVH/lqPdGHTo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dyBWd41Cp7FgXZsKhAb30uAo0q0nSm8euXGG12csIpBN5ZsH9L6FPK0aEKJn9NFi7TdizA2XqeP+fObB47FpfPVJHn1inbSm4g63aWYS1jjrFWgR+26yFQzq5kS+pkAKzU8MpFgHe1kQMXkFc3boNwSaL+7RmJpEkgBA0CHSphI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JZne7VvX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=I9qsyjbZ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JZne7VvX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=I9qsyjbZ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 036E31F393;
-	Wed,  5 Mar 2025 10:26:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741170381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fx3Hs2ab/mDkBUFq/ZI1BouZLIEyP0T4le/acD61ke0=;
-	b=JZne7VvXRZNHpUSWy/pZXn9rwx+1MlyhL4ZGRDWbW4KgEvTb1ITTMNQbjg3ju50ivyr4s8
-	r66gPbEDx0ysstFIjChbtYlKjAJj9dGsQO7xBxao6o1ieGBdyjEk8nElbbpeMY50GP84bF
-	H6HS8hc6glCDqLzC4lSbhCNYJ8hQ1C8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741170381;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fx3Hs2ab/mDkBUFq/ZI1BouZLIEyP0T4le/acD61ke0=;
-	b=I9qsyjbZDhnAF3q1+Wl5HGuomEfeILiImg6J33lbsTlcgV6xs6Ea/yoXmrcHyKu1fbeoLh
-	/NOXuZfiESm9LsDA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741170381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fx3Hs2ab/mDkBUFq/ZI1BouZLIEyP0T4le/acD61ke0=;
-	b=JZne7VvXRZNHpUSWy/pZXn9rwx+1MlyhL4ZGRDWbW4KgEvTb1ITTMNQbjg3ju50ivyr4s8
-	r66gPbEDx0ysstFIjChbtYlKjAJj9dGsQO7xBxao6o1ieGBdyjEk8nElbbpeMY50GP84bF
-	H6HS8hc6glCDqLzC4lSbhCNYJ8hQ1C8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741170381;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fx3Hs2ab/mDkBUFq/ZI1BouZLIEyP0T4le/acD61ke0=;
-	b=I9qsyjbZDhnAF3q1+Wl5HGuomEfeILiImg6J33lbsTlcgV6xs6Ea/yoXmrcHyKu1fbeoLh
-	/NOXuZfiESm9LsDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DFDE11366F;
-	Wed,  5 Mar 2025 10:26:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FlMkNswmyGcnfwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 05 Mar 2025 10:26:20 +0000
-Message-ID: <b7723e7c-7422-4b68-af39-6a4f77c7d52c@suse.cz>
-Date: Wed, 5 Mar 2025 11:26:20 +0100
+	 In-Reply-To:Content-Type; b=fQ55wi2Gm/t4nrSDsS78f2AdvWH+HoXQ5QRsh8xUt5Ly0Ynrrrw3N4xSWDzfdrKU/WbPfh2W1H4aVd8tSgpznRhZ9EN6oaNS6ZicjP7Zi7ivmEcpNjEbU9YyOhDQDwtZlTKbxe4b9BFwYeHhhVS0sIzTeypupJFvH7vBh0p9Pj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bLrVVClc; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741178046; x=1772714046;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=KXz7qN+UCvg/zXe/kDPAg/cy+msMPeJPVH/lqPdGHTo=;
+  b=bLrVVClcoy9z6vn3AvQfNDWHz6TlGLBX5Xi02/RIsj93kC7Cg80ZdtMJ
+   QRCRahzkmZ6E5sPNioVeJZNMh+cNyOeC4YPmmICGwlxXTK30a4xxBFdP0
+   Hvc6N6mnIgtvEKU2Z/IvPCaLkxc+jJhBFNVkfNk23eSG1XzwiagLpFGWe
+   EVCucO21LIypBMlGLFqXy/mS7SpcJGnX1ESYaznf9Lk74j0s0xYdzhpjr
+   cKEEyTMffiqUek0wrRx0bd9oog4yRd/AyxBN1L0g2Ez1pPepPH36EVSwC
+   cq8Q6+QsO2nQlJmeHGebnpTz29eBGBotOPB/2x9eTJLWLnDD/kBjXOwo4
+   w==;
+X-CSE-ConnectionGUID: GP1ghgVVSB6dFWu866pgpw==
+X-CSE-MsgGUID: THJlhIFHRze8D5E+f6Kgvw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11363"; a="46064865"
+X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
+   d="scan'208";a="46064865"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 04:34:05 -0800
+X-CSE-ConnectionGUID: N7Xoy4TzQJysW2kMb1XEUQ==
+X-CSE-MsgGUID: eBSnBMUbTKa2RR8mn5mMOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,223,1736841600"; 
+   d="scan'208";a="118829798"
+Received: from mohdfai2-mobl.gar.corp.intel.com (HELO [10.247.123.55]) ([10.247.123.55])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2025 04:33:58 -0800
+Message-ID: <4882bd5b-1a64-4ac7-ba51-66143d029e8a@linux.intel.com>
+Date: Wed, 5 Mar 2025 20:33:55 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,100 +67,73 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [LSF/MM/BPF TOPIC] SLUB allocator, mainly the sheaves caching
- layer
+Subject: Re: [PATCH iwl-next v7 5/9] igc: Add support for frame preemption
+ verification
+To: Vladimir Oltean <vladimir.oltean@nxp.com>, ",chwee.lin.choong"@intel.com
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S . Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Simon Horman <horms@kernel.org>, Russell King <linux@armlinux.org.uk>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Furong Xu <0x1207@gmail.com>,
+ Russell King <rmk+kernel@armlinux.org.uk>,
+ Serge Semin <fancer.lancer@gmail.com>,
+ Xiaolei Wang <xiaolei.wang@windriver.com>,
+ Suraj Jaiswal <quic_jsuraj@quicinc.com>,
+ Kory Maincent <kory.maincent@bootlin.com>, Gal Pressman <gal@nvidia.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>,
+ Andrew Halaney <ahalaney@redhat.com>,
+ Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+ intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+References: <20250303102658.3580232-1-faizal.abdul.rahim@linux.intel.com>
+ <20250303102658.3580232-6-faizal.abdul.rahim@linux.intel.com>
+ <20250304152644.y7j7eshr4qxhmxq2@skbuf>
 Content-Language: en-US
-To: "Christoph Lameter (Ampere)" <cl@gentwo.org>
-Cc: lsf-pc@lists.linux-foundation.org, linux-mm@kvack.org,
- bpf <bpf@vger.kernel.org>, David Rientjes <rientjes@google.com>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Kees Cook <keescook@chromium.org>
-References: <14422cf1-4a63-4115-87cb-92685e7dd91b@suse.cz>
- <ddcf9941-80c5-f2bd-1ef6-1336fe43272c@gentwo.org>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <ddcf9941-80c5-f2bd-1ef6-1336fe43272c@gentwo.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	ARC_NA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[lists.linux-foundation.org,kvack.org,vger.kernel.org,google.com,gmail.com,kernel.org,chromium.org];
-	MIME_TRACE(0.00)[0:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+From: "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
+In-Reply-To: <20250304152644.y7j7eshr4qxhmxq2@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 2/26/25 01:17, Christoph Lameter (Ampere) wrote:
+
+
+On 4/3/2025 11:26 pm, Vladimir Oltean wrote:
+> On Mon, Mar 03, 2025 at 05:26:54AM -0500, Faizal Rahim wrote:
+>> +static inline bool igc_fpe_is_verify_or_response(union igc_adv_rx_desc *rx_desc,
+>> +						 unsigned int size)
+>> +{
+>> +	u32 status_error = le32_to_cpu(rx_desc->wb.upper.status_error);
+>> +	int smd;
+>> +
+>> +	smd = FIELD_GET(IGC_RXDADV_STAT_SMD_TYPE_MASK, status_error);
+>> +
+>> +	return (smd == IGC_RXD_STAT_SMD_TYPE_V || smd == IGC_RXD_STAT_SMD_TYPE_R) &&
+>> +		size == SMD_FRAME_SIZE;
+>> +}
 > 
-> Let me just express my general concern. SLUB was written because SLAB
-> became a Byzantine mess with layer upon layer of debugging and queues
-
-I don't recall it having much debugging. IIRC it was behind some config that
-nobody enabled. SLUB's debugging that can be dynamically enabled on boot is
-so much better.
-
-> here and there and with "maintenance" for these queues going on every 2
-> seconds staggered on all processors. This caused a degree of OS noise that
-> caused HPC jobs (and today we see similar issues with AI jobs) to not be
-> able to accomplish a deterministic rendezvous. On some large machines
-
-Yeah, I don't want to reintroduce this, hence sheaves intentionally don't
-support NUMA restricted allocations so none of the flushed alien arrays are
-necessary.
-
-> we had ~10% of the whole memory vanish into one of the other queue on boot
-> up with  the customers being a bit upset were all the expensive memory
-> went.
+> The NIC should explicitly not respond to frames which have an SMD-V but
+> are not "verify" mPackets (7 octets of 0x55 + 1 octet SMD-V + 60 octets
+> of 0x00 + mCRC - as per 802.3 definitions). Similarly, it should only
+> treat SMD-R frames which contain 7 octets of 0x55 + 1 octet SMD-R + 60
+> octets of 0x00 + mCRC as "respond" mPackets, and only advance its
+> verification state machine based on those.
 > 
-> It seems that were have nearly recreated the old nightmare again.
+> Specifically, it doesn't look like you are ensuring the packet payload
+> contains 60 octets of zeroes. Is this something that the hardware
+> already does for you, or is it something that needs further validation
+> and differentiation in software?
 
-I don't see it that bleak.
-
-> I would suggest rewriting the whole allocator once again trying to
-> simplify things as much as possible and isolating specialized allocator
-> functionality needed for some subsystems into different APIs.
-
-Any specific suggestions? Some things are hard to isolate i.e. make them
-work on top of the core allocator because not interacting with the internals
-would not allow some useful functionality, or efficiency.
-
-> The main allocation / free path needs to be as simple and as efficient as
-> possible. It may not be possible to accomplish something like that given
-> all the special casing that we have been pushing into it. Also consider the
-
-I see some possibilities for simplification in not trying to support KASAN
-together with slab_debug anymore. KASAN should be superior for that purpose
-(of course you pay the extra cost) and it's tricky to not have it step on
-each other's toes with slab_debug.
-
-> runtime security measures and verification stuff that is on by default at
-> runtime as well.
-
-Yeah more and more hardening seems to be the current trend. But also not
-realistically possible to isolate away from the core. I at least tried to
-always compile all of it away completely when the respective CONFIG is not
-enabled. OTOH I'd like to see some of that to support boot parameters (via
-static keys etc) so it can be compiled in but not enabled. That would not
-completely eliminate the overhead of passing e.g. the bucket parameter or
-performing kmalloc random index evaluation, but would not allocate the
-separate caches if not enabled, so the memory overhead of that would not be
-imposed.
+The hardware doesn’t handle this, so the igc driver have to do it manually. 
+I missed this handling, and Chwee Lin also noticed the issue while testing 
+this patch series—it wasn’t rejecting SMD-V and SMD-R with a non-zero 
+payload. I’ll update this patch to include the fix that Chwee Lin 
+implemented and tested. Thanks.
 
