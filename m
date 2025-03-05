@@ -1,154 +1,137 @@
-Return-Path: <bpf+bounces-53382-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53383-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0042A508AB
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 19:10:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CE0FA508F4
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 19:13:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 610F417631D
-	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 18:09:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32E0216CA20
+	for <lists+bpf@lfdr.de>; Wed,  5 Mar 2025 18:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513BE25290B;
-	Wed,  5 Mar 2025 18:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13372528E0;
+	Wed,  5 Mar 2025 18:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="kuN8C7Vb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dE7/sBHi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D782512D6
-	for <bpf@vger.kernel.org>; Wed,  5 Mar 2025 18:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00DD819C542;
+	Wed,  5 Mar 2025 18:12:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741198152; cv=none; b=Tc2equs/BdhHkAqRGbcEpfoK7H1RpP/O7L1xvm03XY9kTmh22Ddo5w3Gdyo73UaTHjR0AohexL8v0Khi68nA+HtLdA2vFFUMKoKM87LVBvJ/OH1MmgiGAtZkQX4FdpNVl9FhdiiQsiPF/mGKBJqo2XDJgnVckarS0HJdaxBeZCc=
+	t=1741198367; cv=none; b=Zl24zFa5qe83ebPj7Yj+v6fjYCCc0mXP9jv/JhCyGFVI0H4Uh0kAk1uv6EAPjCJEg0QALJk3r9f1yFjeGYb2KOLdzTxFggSIF17Y0EyET6REJ88Z0FCtu3ZQTybRi8m8VnZ53S20L9aCF2ep7QacQB76Zg8zi1Zr2YxyZc0WY4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741198152; c=relaxed/simple;
-	bh=TMYJJlrCKSQZCcdMd1zXdYIHHKwYt61VvQSuzMKoqkY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OTqFr7iX73Y1fq3toZNdvWddVpxpdhdUy4Jim+iLvJBkKcWlisTi7gR+AXSc9dZKsFejQJdDbb1wOqs45VBXiUSUYQ4ObQcUgKoH+wMoplH0vBndZO6xny/sogRVnAAOTZcMvU/q4Uj+Z57paC6hrMPdwRerTPaLSUuh9s+7iJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=kuN8C7Vb; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-223594b3c6dso126648015ad.2
-        for <bpf@vger.kernel.org>; Wed, 05 Mar 2025 10:09:10 -0800 (PST)
+	s=arc-20240116; t=1741198367; c=relaxed/simple;
+	bh=hLSosc8ZGSMqBJmpjG+Zcp45IeQYgadpHS+5+HJNY54=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o4djamZfJ8W+wPldakfznybSSFRjCAPCBcQWiqaKMrmGN+UPSD64MAyJ1ijyPU3LFDueV+S9RyyD8albazvtehY8hU9IeFHelfeFHyEt9k1B1R2OXFZd2J3nOYGU3KJ3dY+2Rr9K5LVJXXJ8wY1IJ/RG5W2QtKRX/e2RNkEYzz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dE7/sBHi; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2febaaf175fso9552679a91.3;
+        Wed, 05 Mar 2025 10:12:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1741198150; x=1741802950; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/JDOLyKKadEy+ulLyQr89yMyXan48P03nG7aI65rkLw=;
-        b=kuN8C7VbJx+sE3kTFmgofOOZWfbslO5TMFe+od6O4DH3D+BUmyKhUGyxB+FmXGkifT
-         QBjmFW2U2+BEaTVFoGJuGlO3cSY6vsagyHm1HBF6HoHXvv1tPt/4o1RZN5GOEg83QiKL
-         n2zE+Y09Hx/Ngpk4z83H+4jVnjMIY+C1mcPX0=
+        d=gmail.com; s=20230601; t=1741198365; x=1741803165; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rxfu5Pa3zywwY6F0O+b5hEcYgMdoVIsyRsVhe+haQdo=;
+        b=dE7/sBHiEOhROs28aVyiqQ/Bkc+CYQ5iZpyaYwf0FsErG7OXIzh142qsreacY56GUo
+         zbhY6wz+GJktsAzNpzwbunZljAsSc3AjBL0Epfd2Qkcf0zv5cDx9zVfTKvjgJb74v5PM
+         XfZ4BuFLrWIw2ouS5C2JTQB8ERGUlcqsDAa6e/k98k0Tl6wODsFVFq7gfTq4CudbnTkm
+         uEQ8ZBRNzvFSD3JKvHcTPn0TvOZG6NC1jH4TLwnnx9zrVQ3+nw8fXBc68EDFLuIDrM/d
+         4sn/Om3Y2ASThlekFQ0J1w1fpNcXqrj8LzZ+CYudQMskvg9tN6o2fAn62DxTKml4ULse
+         QUcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741198150; x=1741802950;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/JDOLyKKadEy+ulLyQr89yMyXan48P03nG7aI65rkLw=;
-        b=Ms/jSTiqMn55yHmb4ldkTMlZEWOgwystWGhfUXgo7XqKtkkKpbvP3ria+Mbwc+1/Yc
-         ztwCn7yJxFMbBNu/v4P3DOVfr/3UedZGi2XRvMY3ib+rojzyTa/sTs1mqzhe6KmWbgIs
-         fAknzfHqeXC2m9xXu/4SctJS2+hyd66+ro0X/Kslci2fjEyr6iZuYV7CwSwGe4bHktnh
-         /ZFqFt4+z6VjCRPtmV2GjTYQDDQ0/6gafiIT1mU/TsZzHrv7P4jhQ+VDHZAPhd5pSvUa
-         IZ1qBOkr6FddRb2/ngOTdFUjJO0dfNuYvpP1Cwxq8W7Y3vESmoypgX4LBRHslsOepaQj
-         n05A==
-X-Forwarded-Encrypted: i=1; AJvYcCUbOVvXAScqceFt3DGI6H6zCOOoJ+O0AdcF2E8Fsb0AQvUUm/yBbK5VfvvQSohcVRa2ABU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy49MPUVsXvyo00Fx/pkTQlDd4iyUjVeRFZr7teChOrHstcAsDz
-	QO7iRhn6zk8mifVMWjLzKzKSJS+ceRY2VQL87QeWyJ952nVBEEaCNMn3kYVEkXs=
-X-Gm-Gg: ASbGncuVNqaNAAxTd9QCtzOU5+HD9cI1ryXnZUzzwOweo4bJnAVdXVHH1vuq/+FG2mg
-	6Aiyo1k/ystEhzsufdfdtKlsYcwF40+ZmheArRIxRDOycZ3Sz+CRGXOsP9NE5z8e7szfcJQgSbd
-	b/9eFSgoVnOpVO3fAk65/Y+xcFJDc9Sdu20d0YclzIyx/VOVvs53ygzMG5XHMNpPF86vNOzYU0j
-	28gzVfolz+Hn9yGtED1MKcc8aXjBWMrYDJDMOVv+Eb1nLxe5J8tyU+nVwATaB1IYFi2kxbUNGxh
-	QSP8XVu7TDCSUIXENIOofz3ILxQ33A+7CmiSogTB0SlOmGqkJzuX
-X-Google-Smtp-Source: AGHT+IHHP9qQRDNcIJ6SYkbk3gQTYwbtsOWJYWum8dEqxwJMevmC/aplCxv04Fpb3qqFTQ3JZrfYzA==
-X-Received: by 2002:a17:902:ec89:b0:224:76f:9e59 with SMTP id d9443c01a7336-224076fa0damr12749675ad.10.1741198149933;
-        Wed, 05 Mar 2025 10:09:09 -0800 (PST)
-Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-223504db77fsm115568055ad.162.2025.03.05.10.09.08
+        d=1e100.net; s=20230601; t=1741198365; x=1741803165;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rxfu5Pa3zywwY6F0O+b5hEcYgMdoVIsyRsVhe+haQdo=;
+        b=oo6o/JagPaC0Z4eoI9DLFd3Cr4Qsya0ftUkoZHMQUgFxE7HTrKzQMMyAXc0xz4rz3s
+         d4/OfDF0yuW8vTAZAl86HXoYV9y278fT2pP6DiquoBJTqHsC/Qhy+vMn35LBA9EE/h2t
+         YsssyTFnVn1ODkR+x0BXGJOjPVL5eYgbnMCuxSfIMM/GolxXFfxwaV+xjoPPhDOnNHQb
+         THzvkMpyZFxizRrD52qQ2+IBo72ZgeBWrtVJ2MJtFQ7/Jojgg2mKwInW0e+BWg2olcCl
+         jSILkU3E9COebKBxEIRmtnJtds8L4028EO/d36zCfvbh5xDH+Q2/uI/s7VP9kidCPJ82
+         bpTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUVOjGVSUPKt5vR/Zs9/crm3q/Aoh2xidwFizyBSjV+Sd1JzTS/4tpJFSccna66xyn9kNK1dxV+@vger.kernel.org, AJvYcCWE1NEXM5xC3z4hdROVuzP8SBnVHyEx7x29GZmQ/na4s2io9V+OHChGceXZphpyk0H6PUI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCGO3CuGcEz++BQaCNdqSf2rrIZ4JweVem10GlvJ8wZ1hDqcBw
+	0OunBA/Ltccd5/C2U7YK6p/Zio9gbsjUjsAiP4iWSgGxGPJ7nTk1
+X-Gm-Gg: ASbGncvu1jRSWo5/gx+KGE0q4msfZen+HDVeSVeD377K/6LzKrvxW6YYV7EQfJq6RdO
+	2hlrBGZblVknYYeXtBsNbTYHZ9VDK6IaXRN4eOzgDuqBm8PalMqgk0qE2Eb+Qzemb6bxYmxToWM
+	8Rn6bEMplJh6d689QT4VZ4ADiXfkozimcpFLnUQQndXbKebDVRHB55krpo9TMu/142ZleXt8W2P
+	ip8LvP4dBaqfnS/iRWwbUzD6HbxiRqPGOmX/EyqI3j1mwJJ8NT2J7lSrDidUhp51c04ew/490C7
+	OQoSkZrMx+wOupFrIhgsHhxpxM8bRyUWKU2BRWdZnniduOBl
+X-Google-Smtp-Source: AGHT+IFQZfgQX0YU6/unP7FdjSfq4UkGfCIq09eCJhs2cmYHBhhx/wUthBK9Wcx33K3kaI5ub8EJ2w==
+X-Received: by 2002:a05:6a20:734e:b0:1f3:2a1e:f6d3 with SMTP id adf61e73a8af0-1f3495c2795mr7695535637.41.1741198365159;
+        Wed, 05 Mar 2025 10:12:45 -0800 (PST)
+Received: from localhost ([129.210.115.104])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-aee7ddf29f4sm12166147a12.11.2025.03.05.10.12.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Mar 2025 10:09:09 -0800 (PST)
-From: Joe Damato <jdamato@fastly.com>
-To: netdev@vger.kernel.org
-Cc: vitaly.lifshits@intel.com,
-	avigailx.dahan@intel.com,
-	anthony.l.nguyen@intel.com,
-	Joe Damato <jdamato@fastly.com>,
-	stable@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	bpf@vger.kernel.org (open list:XDP (eXpress Data Path)),
-	intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH iwl-net] igc: Fix XSK queue NAPI ID mapping
-Date: Wed,  5 Mar 2025 18:09:00 +0000
-Message-ID: <20250305180901.128286-1-jdamato@fastly.com>
-X-Mailer: git-send-email 2.43.0
+        Wed, 05 Mar 2025 10:12:44 -0800 (PST)
+Date: Wed, 5 Mar 2025 10:12:43 -0800
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: Dong Chenchen <dongchenchen2@huawei.com>
+Cc: edumazet@google.com, kuniyu@amazon.com, pabeni@redhat.com,
+	willemb@google.com, john.fastabend@gmail.com, jakub@cloudflare.com,
+	davem@davemloft.net, kuba@kernel.org, horms@kernel.org,
+	daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+	zhangchangzhong@huawei.com, weiyongjun1@huawei.com
+Subject: Re: [PATCH net] bpf, sockmap: Restore sk_prot ops when psock is
+ removed from sockmap
+Message-ID: <Z8iUG8aTF9Kww09z@pop-os.localdomain>
+References: <20250305140234.2082644-1-dongchenchen2@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250305140234.2082644-1-dongchenchen2@huawei.com>
 
-In commit b65969856d4f ("igc: Link queues to NAPI instances"), the XSK
-queues were incorrectly unmapped from their NAPI instances. After
-discussion on the mailing list and the introduction of a test to codify
-the expected behavior, we can see that the unmapping causes the
-check_xsk test to fail:
+On Wed, Mar 05, 2025 at 10:02:34PM +0800, Dong Chenchen wrote:
+> WARNING: CPU: 0 PID: 6558 at net/core/sock_map.c:1703 sock_map_close+0x3c4/0x480
+> Modules linked in:
+> CPU: 0 UID: 0 PID: 6558 Comm: syz-executor.14 Not tainted 6.14.0-rc5+ #238
+> RIP: 0010:sock_map_close+0x3c4/0x480
+> Call Trace:
+>  <TASK>
+>  inet_release+0x144/0x280
+>  __sock_release+0xb8/0x270
+>  sock_close+0x1e/0x30
+>  __fput+0x3c6/0xb30
+>  __fput_sync+0x7b/0x90
+>  __x64_sys_close+0x90/0x120
+>  do_syscall_64+0x5d/0x170
+>  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> 
+> The root cause is:
+> sock_hash_update_common
+>   sock_map_unref
+>     sock_map_del_link
+>       psock->psock_update_sk_prot(sk, psock, false);
+> 	//false won't restore proto
+>     sk_psock_put
+>        rcu_assign_sk_user_data(sk, NULL);
+> inet_release
+>   sk->sk_prot->close
+>     sock_map_close
+>       WARN(sk->sk_prot->close == sock_map_close)
+> 
+> When psock is removed from sockmap, sock_map_del_link() still set
+> sk->sk_prot to bpf proto instead of restore it (for incorrect restore
+> value). sock release will triger warning of sock_map_close() for
+> recurse after psock drop.
 
-NETIF=enp86s0 ./tools/testing/selftests/drivers/net/queues.py
+But sk_psock_drop() restores it with sk_psock_restore_proto() after the
+psock reference count goes to zero. So how could the above happen?
 
-[...]
-  # Check|     ksft_eq(q.get('xsk', None), {},
-  # Check failed None != {} xsk attr on queue we configured
-  not ok 4 queues.check_xsk
+By the way, it would be perfect if you could add a test case for it 
+together with this patch (a followup patch is fine too).
 
-After this commit, the test passes:
-
-  ok 4 queues.check_xsk
-
-Note that the test itself is only in net-next, so I tested this change
-by applying it to my local net-next tree, booting, and running the test.
-
-Cc: stable@vger.kernel.org
-Fixes: b65969856d4f ("igc: Link queues to NAPI instances")
-Signed-off-by: Joe Damato <jdamato@fastly.com>
----
- drivers/net/ethernet/intel/igc/igc_xdp.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/igc/igc_xdp.c b/drivers/net/ethernet/intel/igc/igc_xdp.c
-index 13bbd3346e01..869815f48ac1 100644
---- a/drivers/net/ethernet/intel/igc/igc_xdp.c
-+++ b/drivers/net/ethernet/intel/igc/igc_xdp.c
-@@ -86,7 +86,6 @@ static int igc_xdp_enable_pool(struct igc_adapter *adapter,
- 		napi_disable(napi);
- 	}
- 
--	igc_set_queue_napi(adapter, queue_id, NULL);
- 	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
- 	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
- 
-@@ -136,7 +135,6 @@ static int igc_xdp_disable_pool(struct igc_adapter *adapter, u16 queue_id)
- 	xsk_pool_dma_unmap(pool, IGC_RX_DMA_ATTR);
- 	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
- 	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
--	igc_set_queue_napi(adapter, queue_id, napi);
- 
- 	if (needs_reset) {
- 		napi_enable(napi);
-
-base-commit: 3c9231ea6497dfc50ac0ef69fff484da27d0df66
--- 
-2.34.1
-
+Thanks!
 
