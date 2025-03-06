@@ -1,181 +1,145 @@
-Return-Path: <bpf+bounces-53509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04B7CA55906
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 22:44:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1E60A55937
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 23:02:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F03016A5FB
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 21:44:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5D33189A1AA
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 22:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90925275601;
-	Thu,  6 Mar 2025 21:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BC225C709;
+	Thu,  6 Mar 2025 22:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G92aS2D1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZdAd3301"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F97249E5
-	for <bpf@vger.kernel.org>; Thu,  6 Mar 2025 21:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782BE204F77;
+	Thu,  6 Mar 2025 22:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741297447; cv=none; b=CiiDPkDphMDMQIKRfP0RHbQqwDQA+ag7fC8p/Lvy4yheDOGiFCVCcmBLt26JB+7CRC2lK7Z8qKzVGzyaId/QPS59yoSvjDF4Y7SJWScvMP1LLnljeWEqX44Dv/Ei5Q2nOA47v3fQiRznCXCXVl1lgyLj+hlt7isgy33UqKs2kZ0=
+	t=1741298562; cv=none; b=tCl3YXjhedjy/GTpd4EUjKpmmaJqT7G/YGLRMeB4M3BKmscnjiNteaK7UdQNWFvm/56KzPtlSo8ts+8c8BA/bqD/PzhHrpWGFZc5SxcdHQZJLsg3zFkuBRV0xVu9nksmI32eEqiZad7hQqCM/SoFEMCBlKMKCNWnUMYwmBDVK6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741297447; c=relaxed/simple;
-	bh=7x44GD5W7k71Q0/s0g7nT2e9Q/utM6FPat8phadw7oc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eL9LMEZqkt8makhEeWGhXz0SEPv9NQATSl2PqEnveQhTZl5dY2zZL4OouovhFCkq57cY08rYsy+sDf5TJu4ucKXQSaPIsxU2MhKR5WyLdsdiaXdjUUis1hDeqF/f0k5YotQBwWDgL0bOsvC9rLzpiELtR/0pA5eDLsnDQlh2W/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G92aS2D1; arc=none smtp.client-ip=209.85.216.49
+	s=arc-20240116; t=1741298562; c=relaxed/simple;
+	bh=MQuAYbxGXl/dmzkeaQsZzB+kj4cLNaCQZObJwqQdmgo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=eQf3K811s/yyV2KiXHkSpNG40UHGL7mWLMpw2dQs0K/DSjdsTIpKXXAysUEHlcwDDEvuAgw79XqH9xzi9+Dv8p3V5JbdRCWP0Q2ljFHfZBD2/ePo8deelPJSnvjjFmR/qVCbEHavBcbnklpsFNz+XXLWwrP7PZcWGc6DcVYbZlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZdAd3301; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2fec13a4067so1934901a91.2
-        for <bpf@vger.kernel.org>; Thu, 06 Mar 2025 13:44:05 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-22409077c06so25849795ad.1;
+        Thu, 06 Mar 2025 14:02:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741297445; x=1741902245; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sKdlhywlhkpRZcjtwhZL6gJe07YJe+BGmuIsD+ZeB8g=;
-        b=G92aS2D17fgzOLU3TD1Pd8HJjjqDBKw+Ghh+OF5SAQOBELvPtD9C0woLVpqWfni3kU
-         F3kYqmbbjjURagKK2AOvXjsQxYa9pj+RmysrRegDjUG9QFJ+GHmTg4k2Vz62cwDS+qkF
-         xNHSRgK8PC4UkXm5fffM8I2Pgl3M06fXbQl91K591ifZEjAo1ij/wVRhd2xH5cd5Pm+n
-         aoewCdztZ+vJrXTJapCB4+lPrkSjybfYWnsQrUsYXqdmvBOV8OspLvztnQ7gCpx9INHU
-         7vwCZTK2Qyw+uMYj2MtERC3vSHygCr8Mep/gM8PbpH+buuvQr2vUo5jitC0GNCHYFukY
-         H9mg==
+        d=gmail.com; s=20230601; t=1741298560; x=1741903360; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YuABU6O0QsbK/YoApSCFVnXHyPcoP5Pvi0/ANUQw+mA=;
+        b=ZdAd3301/QvRp4rpZ2AUrkxRB4STWSP56WK5F1jDuLxTvxWkg1EchO5twp3rqSKB+W
+         iTOGLPTnV+KZ5Ea+aRG30/aoovLdjSSy7QS1Bq5Xk6xfYPMBJlrQeY0onWOHZl91IbZj
+         /TsVqjmmcq/QIAJB9Obhk84hJ2Zua64FRyQnm6ZgySwtstlQVpAJBnF7pdxaihWbhOTH
+         fKOGSTBty4w0jBJKNbMHnBmCquuxF619w1x51UEYEAILUfHVAYWfB9lKgWCePfP3PpAO
+         4HDNgzg/RhawfrTcqPddwprT77kHnMHKaVSU6EToOmMIHbPdHgNoroQxuL93p0iKq2K+
+         2Kcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741297445; x=1741902245;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sKdlhywlhkpRZcjtwhZL6gJe07YJe+BGmuIsD+ZeB8g=;
-        b=l3bxSol9rXXFlcWNKe2Y0Scd84uZIRZbMDna6kEHdnJvDm+88w5MqHZp7Uy1X9hJD3
-         P6107XzxpzO77GXkYtyhj9pVv6aeamiTJqHlJAKnVWOzu32KkX8wTG3BC7JFyu7yGON4
-         h5IuXY6e/+JunzuJT6HqKuEjan8vP7MEyow/+U3OVAIax1v0QJ7VOcWI14tuWy9WW5sm
-         gIC1+4j41qOvugza0o2zE9lOf0Z3wiGpSCK9XnA4t8PCOL1IPQPS60Bdk5l0TMk7IFQf
-         3LKOhV5CnTiSW6HmoJnaXFxkspUHpECYtbuXvzZw1S00HUQaS/2t8MVtKQAqTPs9jv05
-         8THg==
-X-Forwarded-Encrypted: i=1; AJvYcCUYxkVc/9nq2PtkBvn4N/x8vw6O66uVOeLdvcyCLZ8xxo9lCXBoh/3WlrnPbssno8x6Esg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCiuSce/H4+nMB10EtXLC3HAcng4+Km7XbObMlKSgpyoY+lZjs
-	54FD16+VkT4UMwQUECpeY747K19w+byh9LROr3FSGBYI3Y2/mjQo8HlMIQ==
-X-Gm-Gg: ASbGncsLDj+MitXnoxpbjGb/vvLz+gdsfqZLhXZs0m58vdxZPO5pAVk/CLCAlgfDKmW
-	+gYG/AdRI009yGZYRn73noWOP9WLOwLWtM2hQg8leqAVjHYKOgIYd3P5OagcTQ9/bzxubhd3GuS
-	h3lfCB4LwlABwMjeSzbROxvRYLLGGCkLC46Hz8a5Mt1vYZr4cTUsK5XU3Pu76w2OXv/1ikGy2DI
-	20FE2YMcbKk+u3rvEDNtC0ApJgDvq7rHie4KC8+FO8BpJPnzM64uZXAlSPK5BeGM/Y2nf549Evr
-	MeNCbiX5lyqePE5SLduKEeZqoQqfLkEzmNRfebcRKc/5OskH
-X-Google-Smtp-Source: AGHT+IEMH7X/G1c41kiMbCgDMMo1qN+V23Y+N4JvunUthBAZ4PQ3CUJIWNlJjKuZAzhdhZwHX8Ssdg==
-X-Received: by 2002:a17:90b:2d83:b0:2fc:3264:3666 with SMTP id 98e67ed59e1d1-2ff7cf317c3mr1154811a91.30.1741297444425;
-        Thu, 06 Mar 2025 13:44:04 -0800 (PST)
-Received: from localhost ([129.210.115.104])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693533f6sm1762019a91.18.2025.03.06.13.44.03
+        d=1e100.net; s=20230601; t=1741298560; x=1741903360;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YuABU6O0QsbK/YoApSCFVnXHyPcoP5Pvi0/ANUQw+mA=;
+        b=aeaPSV0Z/AMjBBTrXc2ccrzTny5O2uybys3pb7tcbES+7rl6WN6xjCP4Iam3R+9Pjn
+         5i37jiEtTTCk5CbWLbr9urTrPtBKOZ2xS0QwY1l3XhFaGq1/2h4ui5kgb8hGpsTHGH9C
+         fz1XVBMRRt1Sdx1ZZ/v6NfT25qDQhXy9JcFtW6GEY8FpuXUzwTQlaXbkXQS57beMnaG5
+         3lji/5hkU86m5wuJHhwPAX6IGvCnipOk8a/32Z3YEqsbdiy97CzYbIKoMBtwCWk2ru4B
+         zrrcU93zcmRojjIGJ1GY+u95acX7fn+cMS9AoEcmPU4qK2pH8JbdSHDY3DGEBvud4ZZX
+         o8zg==
+X-Gm-Message-State: AOJu0YxwnYHFlqEez6fxx/LOPsgb5mH2rHammpB4p1FH1uEzQKe/BKL/
+	b3u3wNWQMPoMbX9HRm07FV/P7K1R5IGQSQeBc07jj/CJnoUcoHqE82T4NA==
+X-Gm-Gg: ASbGncsbgLGMyLCTpAwy3ssehJv3WgAzNCPgpwb9Zr1OVFks6ztRmLghLYTqRubSr3V
+	SpEwGMLWm4eX/VMaDqQRUX/etLe9q3SMzHOmeGqLVEcoZFx+i4pUj0Ob8GWFd+OTyjTaIXf5RUa
+	W+5+cWw7e0hzUD0AQ/WYm6RQSvnbl63DDkEumVPIlGYQcHwqAlcZ7fJAM9qPyOI0whCel7sV30X
+	qbK2ND96JIiCw69HtYK/L9PyAfqZSFGErJPuoqLk0uLmx5dF2Gm9AdEh5O5IP1wzg1CETs/PrRY
+	Fpp69sEQjq9vNapbLFD4LyUQ4QugYSUVOt4atNSxKOoCrNL3/PRDlrc=
+X-Google-Smtp-Source: AGHT+IFwVVhkD5Ma6KzgKA99OfJj5oje73iC5xRGsFzTzMcpWC61DtvKkM1qgzukcY1EGVpmMhgHDQ==
+X-Received: by 2002:a17:903:40cb:b0:223:377f:9795 with SMTP id d9443c01a7336-22428504334mr16760995ad.0.1741298560173;
+        Thu, 06 Mar 2025 14:02:40 -0800 (PST)
+Received: from pop-os.scu.edu ([129.210.115.104])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-224109ddfa6sm17478775ad.33.2025.03.06.14.02.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Mar 2025 13:44:03 -0800 (PST)
-Date: Thu, 6 Mar 2025 13:44:02 -0800
+        Thu, 06 Mar 2025 14:02:39 -0800 (PST)
 From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Vincent Li <vincent.mc.li@gmail.com>
-Cc: oongarch@lists.linux.dev, bpf <bpf@vger.kernel.org>
-Subject: Re: [BUG?] loxilb tc BPF program cause Loongarch kernel hard lockup
-Message-ID: <Z8oXIhptXWhbCeCF@pop-os.localdomain>
-References: <CAK3+h2woEjG_N=-XzqEGaAeCmgu2eTCUc7p6bP4u8Q+DFHm-7g@mail.gmail.com>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	jakub@cloudflare.com,
+	john.fastabend@gmail.com,
+	zhoufeng.zf@bytedance.com,
+	Cong Wang <xiyou.wangcong@gmail.com>
+Subject: [Patch bpf-next v2 0/4] tcp_bpf: improve ingress redirection performance with message corking
+Date: Thu,  6 Mar 2025 14:02:01 -0800
+Message-Id: <20250306220205.53753-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK3+h2woEjG_N=-XzqEGaAeCmgu2eTCUc7p6bP4u8Q+DFHm-7g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 05, 2025 at 04:51:15PM -0800, Vincent Li wrote:
-> Hi,
-> 
-> I have an issue recorded here [0] with kernel call trace  when I start
-> loxilb, the loxilb tc BPF program seems to be loaded and attached to
-> the network interface, but immediately it causes a loongarch kernel
-> hard lockup, no keyboard response. Sometimes the panic call trace
-> shows up in the monitor screen after I disabled kernel panic reboot
-> (echo 0 > /proc/sys/kernel/panic) and started loxilb.
-> 
-> Background: I ported open source IPFire [1] to Loongarch CPU
-> architecture and enabled kernel BPF features, added loxilb as LFS
-> (Linux from scratch) addon software, loxilb 0.9.8.3 has libbpf 1.5.0
-> which has loongarch support [2]. The same loxilb addon runs fine on
-> x86 architecture. Any clue on this?
-> 
-> [0]: https://github.com/vincentmli/BPFire/issues/76
-> [1]: https://github.com/ipfire/ipfire-2.x
-> [2]: https://github.com/loxilb-io/loxilb/issues/972
-> 
+This patchset improves skmsg ingress redirection performance by a)
+sophisticated batching with kworker; b) skmsg allocation caching with
+kmem cache.
 
-Thanks for your report!
+As a result, our patches significantly outperforms the vanilla kernel
+in terms of throughput for almost all packet sizes. The percentage
+improvement in throughput ranges from 3.13% to 160.92%, with smaller
+packets showing the highest improvements.
 
-I have extracted the kernel crash log from your photo with AI so that
-people can easily interpret it.
+For latency, it induces slightly higher latency across most packet sizes
+compared to the vanilla, which is also expected since this is a natural
+side effect of batching.
 
-From a quick glance, it seems related to MIPS JIT. So it would be
-helpful if you could locate the eBPF program which triggered this and
-dump its JIT'ed BPF instructions.
+Please see the detailed benchmarks:
 
---------------------
++-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Throughput  | 64     | 128    | 256    | 512    | 1k     | 4k     | 16k    | 32k    | 64k    | 128k   | 256k   |
++-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+| Vanilla     | 0.17±0.02 | 0.36±0.01 | 0.72±0.02 | 1.37±0.05 | 2.60±0.12 | 8.24±0.44 | 22.38±2.02 | 25.49±1.28 | 43.07±1.36 | 66.87±4.14 | 73.70±7.15 |
+| Patched     | 0.41±0.01 | 0.82±0.02 | 1.62±0.05 | 3.33±0.01 | 6.45±0.02 | 21.50±0.08 | 46.22±0.31 | 50.20±1.12 | 45.39±1.29 | 68.96±1.12 | 78.35±1.49 |
+| Percentage  | 141.18%   | 127.78%   | 125.00%   | 143.07%   | 148.08%   | 160.92%   | 106.52%    | 97.00%     | 5.38%      | 3.13%      | 6.32%      |
++-------------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
 
-09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook2 prog tc_packet_func_slow
-09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook3 prog tc_packet_func_fw
-09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook4 prog tc_csum_func1
-09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook5 prog tc_csum_func2
-09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook6 prog tc_slow_path_func
-09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook7 prog tc_packet_func_map
-libbpf: Error in bpf_create_map_xattr(sh_map):Invalid argument(-22). Retrying without BTF.
-libbpf: Error in bpf_create_map_xattr:wq4t:Operation not supported(-95). Retrying without BTF.
-09:37:44 INFO  common_libbpf.c:294: tc: bpf attach OK for req8
-09:37:44 DEBUG loxilb_llbpf.c:3311: llb_link_prop_add: IF-req8 added idx 2 type 2
-220c:83-95 09:37:44 shpt in bitmap added -> 3 vlan 0 -> 3
-220c:83-05 09:37:44 ovr twintfmap added -> 3 -> 3
-09:37:44 DEBUG loxilb_llbpf.c:6553: tcmdll_bpf_setsockopt: hook id 1 paction tc_packet_hook8
-09:37:44 INFO  common_libbpf.c:124: tc: bpf attach start for 1018:8
-09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/xdp_main
-09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/qpm_tbl
-09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/intf_map
-09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/intf_stats_map
-09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/bd_stats_map
-09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/pkt_ring
-09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/cp_ring
-09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/ct_map
-09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/nat_ep_map
-09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/nat_cm_map
-09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/sess_cache
-09:37:44 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook8 prog tc_packet_func_map
-[70107.629723] S0?xzkcC:bxbcCtXbwhsdc+cbxbsph-b3E+bp  tprbdccdcxtbxxmsd)  spccoc,tbcdaddcdzs.Tx;  txddbdxm  tBxbXHX  b+.b.bXH,t  kbdbtX23.MXl  BXftPXFl  tbttttt
-(Hex dump and more binary data follows)
++-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+| Latency     | 64        | 128       | 256       | 512       | 1k        | 4k        | 16k       | 32k       | 63k       |
++-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
+| Vanilla     | 5.80±4.02 | 5.83±3.61 | 5.86±4.10 | 5.91±4.19 | 5.98±4.14 | 6.61±4.47 | 8.60±2.59 | 10.96±5.50| 15.02±6.78|
+| Patched     | 6.18±3.03 | 6.23±4.38 | 6.25±4.44 | 6.13±4.35 | 6.32±4.23 | 6.94±4.61 | 8.90±5.49 | 11.12±6.10| 14.88±6.55|
+| Percentage  | 6.55%     | 6.87%     | 6.66%     | 3.72%     | 5.68%     | 4.99%     | 3.49%     | 1.46%     |-0.93%     |
++-------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
 
-[70107.638086] Call Trace:
-[70107.638809] [<ffffffffff8003f1d67c>] bpf_prog_7092f4f2542453f74_tc_packet_func+0x9004/0xaf24
-[70107.639056] [<ffffffffff8003f580d9>] cls_bpf_classify+0x6c8/0x478 [cls_bpf]
-[70107.639368] [<0000000005535e82>] __tcf_classify+0xeep.18/0x3c4/0x408
-[70107.639570] [<0000000005549d80>] tcf_classify+0x88/0x28/0xd0
-[70107.639584] [<0000000005554cec>] tc_classify+0x4c/0x100
-[70107.639993] [<0000000055c7414>] __netif_receive_skb_core.constprop.0+0x5b4/0x1ba0
-[70107.640296] [<0000000055c74443>] __netif_receive_skb_list_core+0x184/0x228
-[70107.640521] [<0000000055c28528>] netif_receive_skb_list_internal+0x220/0x300
-[70107.640839] [<0000000055c28f48>] nepi_complete_done+0xd8/0x288
-[70107.641157] [<000000005524d0d2>] stmmac_napi_poll_rx+0x3f30/0x1208
-[70107.641470] [<000000005552e1ec>] __napi_poll+0x5c/0x230
-[70107.641801] [<000000005523b74>] net_rx_action+0x1e4/0x310
-[70107.642126] [<00000000343ec2d8>] handle_softirq+0x128/0x3d0
-[70107.642451] [<00000000343ecfb9>] irq_exit+0x3c/0xb0
-[70107.642782] [<000000005245e2c>] do_irq+0x6c/0xa0
-[70107.643125] [<000000005e4e1fd>] __ret_from_idle+0x20/0x24
-[70107.643361] [<000000005d47c88>] arch_cpu_idle+0x10/0x50
-[70107.643855] [<000000005047d9c>] default_idle_call+0x1c/0x110
-[70107.644158] [<00000000444df80>] do_idle+0x80/0x130
-[70107.644530] [<00000000444e298>] cpu_startup_entry+0x90/0x30
-[70107.644869] [<000000005d4824b>] kernel_entry_end+0xdc/0xa0
-[70107.645280] [<000000005b0e4c>] start_kernel+0x6f8/0x6f4
-[70107.645549] [<000000005b408f0>] kernel_entry+0xf8/0xf0
-[70107.645890]
-[70107.646228] Code: 00158086  00109a5  82c8d4a5  c29482085  5008f480  2a847b25  034084a5  00150ae  5c8089c0
-[70107.646591]
-[70107.646954] ---[ end trace 0000000000000000 ]---
+---
+v2: improved commit message of patch 3/4
+    changed to 'u8' for bitfields, as suggested by Jakub
+
+Cong Wang (2):
+  skmsg: rename sk_msg_alloc() to sk_msg_expand()
+  skmsg: save some space in struct sk_psock
+
+Zijian Zhang (2):
+  skmsg: implement slab allocator cache for sk_msg
+  tcp_bpf: improve ingress redirection performance with message corking
+
+ include/linux/skmsg.h |  48 +++++++---
+ net/core/skmsg.c      | 173 ++++++++++++++++++++++++++++++++---
+ net/ipv4/tcp_bpf.c    | 204 +++++++++++++++++++++++++++++++++++++++---
+ net/tls/tls_sw.c      |   6 +-
+ net/xfrm/espintcp.c   |   2 +-
+ 5 files changed, 394 insertions(+), 39 deletions(-)
+
+-- 
+2.34.1
 
 
