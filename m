@@ -1,138 +1,223 @@
-Return-Path: <bpf+bounces-53484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01DC3A5513A
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 17:35:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED806A551CC
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 17:49:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AE95175125
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 16:35:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCD0A3AFA78
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 16:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9655921E091;
-	Thu,  6 Mar 2025 16:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C342E257AED;
+	Thu,  6 Mar 2025 16:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="PZR3j/Eu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A0A21D3E7;
-	Thu,  6 Mar 2025 16:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC90B255250
+	for <bpf@vger.kernel.org>; Thu,  6 Mar 2025 16:45:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741278486; cv=none; b=sTzv2aFwv5rowEn00cauGoDnuYovzE8AlnKezS5q7WKtP0boBAqyxttJcSTlg/ArcYpSILjvdqSSlxovYM862rUpZLEUN1NFwxPujiB+tLWrlCrFqotoyYCgiXrfN7wzhmRqfF9MVIMOI6pV9qhugvVtLcaDX6k6SE4Tu5R/Q4g=
+	t=1741279547; cv=none; b=Dfxiy5xzWVBXDbEn85Ffx6aZT0Bl3Zg6laCXMqtTa4hXaadMpqa7nNj+iJ4VjR4eNdnz6FM8B2mPwMTmHSLFVAKzLhR0043vBh7R//wVWnzypJgcr+tpW0s5a0DrburKKD3z/G9y60ZdpoBtygj+yrmKk0ccZP2F+WM4b3iOx74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741278486; c=relaxed/simple;
-	bh=RieI6T8+GnLltjFdq+B3y0WTT5CK4xQkz/PyogGNpso=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=oaDwyM9oGuHU9cx/RPDwK9TIN0xk5C9CU9Nyji62vaO3jQrHb1sblDHpypTecixH8x61uQrnaUm4jUqqB458SJlWjYYoPnSGepJ2hrVOk9qaCu3+D0u1Q0ck30TnI3Lx2/ySWgg4c328CKu3mlwNodOYk+zKXK+CqN+Gq9GUpK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-aaec111762bso168363766b.2;
-        Thu, 06 Mar 2025 08:28:04 -0800 (PST)
+	s=arc-20240116; t=1741279547; c=relaxed/simple;
+	bh=QBbBN5q5jWmas5qLcxj17oZ+jdnLgvFe5h91P+f5FGE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P3SciihsleaebH7+hTKR0RzjhlxWr8c+KTOEcJTwetsfdLQ5Tzy00AiZ+Enjz4CGMLcTK71egETOW+OvFPRIgybVH58NZxjWA4dWiOzjOQlBenr39sZtj+f7EqdvcrBQVjzH88S+O0+hYKvYoMsomNvo6vsNSY4PBBgcjM4VW7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=PZR3j/Eu; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-22349bb8605so17533145ad.0
+        for <bpf@vger.kernel.org>; Thu, 06 Mar 2025 08:45:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1741279544; x=1741884344; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y1tVqjEsF9yz8as4gUEJSF7TOmyvcDOBt4MIJRvQkVI=;
+        b=PZR3j/EuVQYZWE21li6QoRQedCT7JnMnGf/od4wE6dyyVgekUliUg6eNTO1Im67f7T
+         /w5W4lng4T7Fuwpt9mhYaDaKe16zGXSM/Yya1x9A4GHojyvRMZHy/+ho6KQsSfdwNN3Q
+         icvWlv3Vbu6bLJ+CClchlUORc5/VBAeolG1EM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741278483; x=1741883283;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zWz3562ixpgOjZyLkTmlCW12K3CVuT3pKkHg+iSiURk=;
-        b=ky+gxJFj8A1EZWesaz7LmEXiy3Al80geBNWoJl0bsAtXOFcrVY7PkPEmloofxUBVJi
-         +fPuzvfRiNXotoUwBJCXGbCl02zUsIig+gs2KMPeG+0ai2+SdeZCm7rU2Kk3KJJ+vPfO
-         6AcB1sSj6dT0XEaaLUpu0/k5GnVGU0qrpieCaHOSJG2vaHQsPbxtPTbKAyGpwNxKbouv
-         fi5OEXtDMsH4zLWKK6UhPaC0PFcyY/y4lMTtpg8zV6oW9xBHI4e2Y/aCHQY7ZK7TgpDV
-         GwdaCWzq9FHr6K+bS1GPUAx7mhvFoaL9iFsdpvQFCxmBiBCLBKEdYZ2DdH7Tk1dL2R+P
-         4jJg==
-X-Forwarded-Encrypted: i=1; AJvYcCWvRY/CRnBGZeh/YFxJt7jewuPuOGirVbmKwvFZ3u2iMH/A591uEx5RomtPrYp3s37d2i0=@vger.kernel.org, AJvYcCXl7I1Zz0TbJCHdrLOt0Duwhyb8IROImD9JpIrdk07bks5sc4VzndG2ENPohH9HU65/vDy7CLUG3XyG1Qjj@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxMy1gcpiGHB2BBqJWDQFyP9GbDORSvqPwP4J2C5sTjSadhv6G
-	mMnW3RznsSfcm+fjIgoqxmgqWw8Bx7szonI6EcQPvjo/qH+fKPdP
-X-Gm-Gg: ASbGncu4ffDkAbLF01e4AuSp6/VDieSSjBIA190UEo0ACccl/oZrSzPHhE6W3i1mtX3
-	QuToHbN5cDOuYsTKtG0bW8Xgdx0EB60d80c+/CWYgTU8W4cka0bZ82JjlxB+1+/q3UoM22ia7Od
-	fPhW7gOk6MR2N+L9N+5+0Tcou5J4wH444ARKL9C6pIhhatjkZEWTRYkaU608X/U8iXAUTQsylYa
-	nD92WFPfCI3T1xIl3ZIfVQwphoJR1xKo1BTB4NsDBalh+uRj/vHSQV81gEqN4v/5C+FycakAHpT
-	FiRc4w0hYKfjeN9I3L6o6tLWDHyV7CzMIF7+
-X-Google-Smtp-Source: AGHT+IEJV2JOj1YXcWKWdKaU/xsu6mOtDGDJCcjrKsMH1t7e24mfeW+ZSvxc5C6UG8THTxQ2XKEKFg==
-X-Received: by 2002:a17:906:6290:b0:ac1:d878:f87d with SMTP id a640c23a62f3a-ac20db04e4bmr917411066b.56.1741278482515;
-        Thu, 06 Mar 2025 08:28:02 -0800 (PST)
-Received: from localhost ([2a03:2880:30ff:70::])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac23973a74bsm115734966b.123.2025.03.06.08.28.01
+        d=1e100.net; s=20230601; t=1741279544; x=1741884344;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y1tVqjEsF9yz8as4gUEJSF7TOmyvcDOBt4MIJRvQkVI=;
+        b=msr2yLXqpQdFemw6+9mtN+ijsHGxpBYBOrqpLFh3+9PhLzTFC43rLGzC5zEyhhD5S2
+         G7eIavtSWJpSa2DGWqH+GtdMetrN4pxIfiidrsSMpsL/i1dCgI4+XHkgrKgkg/5twAVd
+         yTR1JssiewXIRrtofRUeaV7apiLh4rcABM4Kc68TLISby+SzdU2QxdgAuZOkEgUP9wMI
+         f7y7fYQpQ97jH9i2VVCI5ueYdC+C6Dzxw0HN0a+eBBMwAJApL6RVHgtTYPOgqW9VBdIj
+         uGeERf72b4BbPf2EHqKK7tXfQoCymg2ZU6bzsSE0yPhv22ACDGzfH2MoWbFjcBeh3BY4
+         KYnw==
+X-Forwarded-Encrypted: i=1; AJvYcCU16KQ/d9F6xBuEcFi73EWyrHyIiDAH2QJmZFOtMThPO/6f8uI2DHrCzcddFzlmUt71jQs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7O2MVYKN9D76hG9Vy4bv7Wj4uYeEqRKXRQCoX0qcxmSsXoYes
+	s+Yk84L0G5dSu3zVNmvvPdANO5B6ULC8MXfd0qSo098are66Ik6VCnW7DUXrfM8=
+X-Gm-Gg: ASbGncshW6HMr7F68oLN9EcCiFUCAV1bwclFh9uP5uEYoWgSbKuAeRf2uLyEMrKs6zr
+	OBHXFkSMC9YYl8HTOxKRaMmir+1YrB5rhDCYceCKKUak9jZ107Vhwmmuwp1wlT5sruBd227hJ6j
+	LUrYCMMhIvOC7ehIUQUHgxGLcl2ISPH1gB6yGfi3fSZuXNOG5bKO7KMnx3BrhH+8uVQ81bk7ZGJ
+	tZl2If60eY8sagqclT30SaPAfAvqQCYXXba1pMkMlFTgMP9/8YOgO/12AxXeH7fGTT8aGkfQf1P
+	9apuepQzIKKJbu+h9hmiHu6BN4Y/nUp+6sxEXuxz5zXfOr3NDBR3bMpNDx7HmsNfC9N0v68iNv/
+	6i9jgrJZFmTk=
+X-Google-Smtp-Source: AGHT+IGQhJlPlmoVKTFjSwcpy61urGaNYqp80VZY41flaZiT4qOPtjFv0gmL/biTffVDgOSzy876LQ==
+X-Received: by 2002:a05:6a00:244f:b0:736:5c8e:bab8 with SMTP id d2e1a72fcca58-73682b5510amr13251516b3a.3.1741279543956;
+        Thu, 06 Mar 2025 08:45:43 -0800 (PST)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73698452a28sm1570365b3a.78.2025.03.06.08.45.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Mar 2025 08:28:01 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-Date: Thu, 06 Mar 2025 08:27:51 -0800
-Subject: [PATCH] block: Name the RQF flags enum
+        Thu, 06 Mar 2025 08:45:43 -0800 (PST)
+Date: Thu, 6 Mar 2025 08:45:40 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: florian@bezdeka.de
+Cc: netdev@vger.kernel.org, vitaly.lifshits@intel.com,
+	avigailx.dahan@intel.com, anthony.l.nguyen@intel.com,
+	stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH iwl-net] igc: Fix XSK queue NAPI ID mapping
+Message-ID: <Z8nRNJ7QmevZrKYZ@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>, florian@bezdeka.de,
+	netdev@vger.kernel.org, vitaly.lifshits@intel.com,
+	avigailx.dahan@intel.com, anthony.l.nguyen@intel.com,
+	stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+	linux-kernel@vger.kernel.org
+References: <20250305180901.128286-1-jdamato@fastly.com>
+ <796726995fe2c0e895188862321a0de8@bezdeka.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250306-rqf_flags-v1-1-bbd64918b406@debian.org>
-X-B4-Tracking: v=1; b=H4sIAAbNyWcC/x3MUQqAIBAFwKss7zvBjIK8SkRYrrUQVgoRhHcPm
- gPMi8xJOMPSi8S3ZDkiLNUVYdlcXFmJhyUYbVrd6E6lK0xhd2tWvfOzq72Z2QRUhDNxkOe/hrG
- UDyo4NfhbAAAA
-X-Change-ID: 20250306-rqf_flags-9adba1d2be2f
-To: Jens Axboe <axboe@kernel.dk>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, kernel-team@meta.com, 
- Yonghong Song <yonghong.song@linux.dev>, Breno Leitao <leitao@debian.org>
-X-Mailer: b4 0.15-dev-42535
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1399; i=leitao@debian.org;
- h=from:subject:message-id; bh=RieI6T8+GnLltjFdq+B3y0WTT5CK4xQkz/PyogGNpso=;
- b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBnyc0QW/hz0BGrRvx8XmUY7nab78lXrA0HoGbbN
- Jh8nRxPDEKJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCZ8nNEAAKCRA1o5Of/Hh3
- bdo4EACQnyP8l8apbcsGVhMgcyjKLgdrM9fPbwprHvM2TtW2qrmIm8Cy/g+R4EhQvNJ3erB0prR
- XyxKI4A91hNfQ5b/cEADyIwv8iXP5djZNhex+09TZLdCJuy7ujCz9DDuu6hf25wgPEHhHhXadBJ
- 9e7VxmRPEwFQZKO/miEAjkxPg9G5fMYxK9vHrKr+xYOqpg1gAVfHyhsTq/rZgR43YjG7h5idpR8
- 5FEGM2by5b/LQAL7H0cRTL1i5OXEBobjf5t16fA9d1ibijRhKVglbuvYr/XS/1qOxVf+bbwGwVp
- 1aukJqRge6lZOzdL0/LwrWQpDr1V2pT+55ayVDlkJ/v7EA3VEmhgQ/CV0yJ/4RSAbIx4712cQGq
- gMYNwGaK2s+5QLk6jwD6qYsYpwNZ22+U5Bqs2ZWvz4l2D28rbD9F3JPEGS+K2V+dfXGVRdWGJxt
- 9UKWf7nq09QIrkcxzOhNeGTmsNQTxbMGfn4DocdPQmnJqKnoAnWQ8ydIeNvlHtKWNWTFKdpeR/Z
- 29POjUD/cqUCJQUmXy1yR2UzAGUX5ZzU1RPDiyBFya5Ou5X1Fc/j8FGFLYImdu3Qp+1cvUK8DMN
- ArhsS2+GBBstUsrkbZ1xRXsxFaQXScsOh+r607Vz2ZPrW3IBXNuf+NeM2x71dIsc2oJQe0l6+JU
- CfBlPbHTIsQdxBw==
-X-Developer-Key: i=leitao@debian.org; a=openpgp;
- fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <796726995fe2c0e895188862321a0de8@bezdeka.de>
 
-Commit 5f89154e8e9e3445f9b59 ("block: Use enum to define RQF_x bit
-indexes") converted the RQF flags to an anonymous enum, which was
-a beneficial change. This patch goes one step further by naming the enum
-as "rqf_flags".
+On Thu, Mar 06, 2025 at 05:27:38PM +0100, florian@bezdeka.de wrote:
+> Hi Joe,
+> 
+> On 2025-03-05 19:09, Joe Damato wrote:
+> > In commit b65969856d4f ("igc: Link queues to NAPI instances"), the XSK
+> > queues were incorrectly unmapped from their NAPI instances. After
+> > discussion on the mailing list and the introduction of a test to codify
+> > the expected behavior, we can see that the unmapping causes the
+> > check_xsk test to fail:
+> > 
+> > NETIF=enp86s0 ./tools/testing/selftests/drivers/net/queues.py
+> > 
+> > [...]
+> >   # Check|     ksft_eq(q.get('xsk', None), {},
+> >   # Check failed None != {} xsk attr on queue we configured
+> >   not ok 4 queues.check_xsk
+> > 
+> > After this commit, the test passes:
+> > 
+> >   ok 4 queues.check_xsk
+> > 
+> > Note that the test itself is only in net-next, so I tested this change
+> > by applying it to my local net-next tree, booting, and running the test.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Fixes: b65969856d4f ("igc: Link queues to NAPI instances")
+> > Signed-off-by: Joe Damato <jdamato@fastly.com>
+> > ---
+> >  drivers/net/ethernet/intel/igc/igc_xdp.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/intel/igc/igc_xdp.c
+> > b/drivers/net/ethernet/intel/igc/igc_xdp.c
+> > index 13bbd3346e01..869815f48ac1 100644
+> > --- a/drivers/net/ethernet/intel/igc/igc_xdp.c
+> > +++ b/drivers/net/ethernet/intel/igc/igc_xdp.c
+> > @@ -86,7 +86,6 @@ static int igc_xdp_enable_pool(struct igc_adapter
+> > *adapter,
+> >  		napi_disable(napi);
+> >  	}
+> > 
+> > -	igc_set_queue_napi(adapter, queue_id, NULL);
+> >  	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
+> >  	set_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
+> > 
+> > @@ -136,7 +135,6 @@ static int igc_xdp_disable_pool(struct igc_adapter
+> > *adapter, u16 queue_id)
+> >  	xsk_pool_dma_unmap(pool, IGC_RX_DMA_ATTR);
+> >  	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &rx_ring->flags);
+> >  	clear_bit(IGC_RING_FLAG_AF_XDP_ZC, &tx_ring->flags);
+> > -	igc_set_queue_napi(adapter, queue_id, napi);
+> > 
+> >  	if (needs_reset) {
+> >  		napi_enable(napi);
+> 
+> That doesn't look correct to me. You removed both invocations of
+> igc_set_queue_napi() from igc_xdp.c. Where is the napi mapping now
+> done (in case XDP is enabled)?
 
-This naming enables exporting these flags to BPF clients, eliminating
-the need to duplicate these flags in BPF code. Instead, BPF clients can
-now access the same kernel-side values through CO:RE (Compile Once, Run
-Everywhere), as shown in this example:
+igc_set_queue_napi is called when the queues are created (igc_up,
+__igc_open). When the queues are created they'll be linked. Whether
+or not XDP is enabled does not affect the queues being linked.
 
-    rqf_stats = bpf_core_enum_value(enum rqf_flags, __RQF_STATS)
+The test added for this (which I mentioned in the commit message)
+confirms that this is the correct behavior, as does the
+documentation in Documentation/netlink/specs/netdev.yaml.
 
-Suggested-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- include/linux/blk-mq.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+See commit df524c8f5771 ("netdev-genl: Add an XSK attribute to
+queues").
 
-diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index fa2a76cc2f73d..71f4f0cc3dac6 100644
---- a/include/linux/blk-mq.h
-+++ b/include/linux/blk-mq.h
-@@ -28,7 +28,7 @@ typedef enum rq_end_io_ret (rq_end_io_fn)(struct request *, blk_status_t);
- typedef __u32 __bitwise req_flags_t;
- 
- /* Keep rqf_name[] in sync with the definitions below */
--enum {
-+enum rqf_flags {
- 	/* drive already may have started this one */
- 	__RQF_STARTED,
- 	/* request for flush sequence */
+> To me it seems flipped. igc_xdp_enable_pool() should do the mapping
+> (previously did the unmapping) and igc_xdp_disable_pool() should do
+> the unmapping (previously did the mapping). No?
 
----
-base-commit: c42048cee22435a6ea0de68cc02231cf359ca8b2
-change-id: 20250306-rqf_flags-9adba1d2be2f
+In igc, all queues get their NAPIs mapped in igc_up or __igc_open. I
+had mistakenly added code to remove the mapping for XDP because I
+was under the impression that NAPIs should not be mapped for XDP
+queues. See the commit under fixes.
 
-Best regards,
--- 
-Breno Leitao <leitao@debian.org>
+This was incorrect, so this commit removes the unmapping and
+corrects the behavior.
 
+With this change, all queues have their NAPIs mapped (whether or not
+they are used for AF_XDP) and is the agreed upon behavior based on
+prior conversations on the list and the documentation I mentioned
+above.
+
+> Btw: I got this patch via stable. It doesn't make sense to send it
+> to stable where this patch does not apply.
+
+Maybe I made a mistake, but as far as I can tell the commit under
+fixes is in 6.14-rc*:
+
+$ git tag --contains b65969856d4f
+v6.14-rc1
+v6.14-rc2
+v6.14-rc3
+v6.14-rc4
+
+So, I think this change is:
+  - Correct
+  - Definitely a "fixes" and should go to iwl-net
+  - But maybe does not need to CC stable ?
+
+If the Intel folks would like me to resend with some change please
+let me know.
 
