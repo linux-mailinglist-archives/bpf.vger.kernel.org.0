@@ -1,135 +1,181 @@
-Return-Path: <bpf+bounces-53508-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53509-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F6F1A5587B
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 22:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 04B7CA55906
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 22:44:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4826C1711CE
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 21:14:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F03016A5FB
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 21:44:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A698D214A61;
-	Thu,  6 Mar 2025 21:14:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90925275601;
+	Thu,  6 Mar 2025 21:44:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HivyfPwt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G92aS2D1"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB1821FFC47
-	for <bpf@vger.kernel.org>; Thu,  6 Mar 2025 21:14:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F97249E5
+	for <bpf@vger.kernel.org>; Thu,  6 Mar 2025 21:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741295677; cv=none; b=Qi1nEmid0E/oH8Baph4pMptHD7P9YgJskDQLWnIisxpwaqJqupWZ9Iz9xTFtyiNnWJxDRbYVkjLFkG23VzrVK9BuN+40WVBPlDc3D6udTy/4kvallnBnVLignY5EKPO5qHWAapmvbQQGpoS5wxEjg6Hy90hMoLPQIS+wtt9VG8M=
+	t=1741297447; cv=none; b=CiiDPkDphMDMQIKRfP0RHbQqwDQA+ag7fC8p/Lvy4yheDOGiFCVCcmBLt26JB+7CRC2lK7Z8qKzVGzyaId/QPS59yoSvjDF4Y7SJWScvMP1LLnljeWEqX44Dv/Ei5Q2nOA47v3fQiRznCXCXVl1lgyLj+hlt7isgy33UqKs2kZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741295677; c=relaxed/simple;
-	bh=Do9Yp6MWB2tMvG8iBKw9cCoG4aVdb76Gf+FNGCoqU00=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=okU/KtGHpPWzUSntAW7b8yZdWmPkF/onqRvBTxryH3j6mQ3zxiyiIn59GAZMYCxrPFSCGRDWX/wW/aZGB/MNXC6Pa3B5E2WNV39PRXwGkbfGGof4T1cXKGDlyBa1M0JqDmpdgmS3KqQsABSdSL1YX2W0+QXJZBtfakHYPupiWZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HivyfPwt; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1741297447; c=relaxed/simple;
+	bh=7x44GD5W7k71Q0/s0g7nT2e9Q/utM6FPat8phadw7oc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eL9LMEZqkt8makhEeWGhXz0SEPv9NQATSl2PqEnveQhTZl5dY2zZL4OouovhFCkq57cY08rYsy+sDf5TJu4ucKXQSaPIsxU2MhKR5WyLdsdiaXdjUUis1hDeqF/f0k5YotQBwWDgL0bOsvC9rLzpiELtR/0pA5eDLsnDQlh2W/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G92aS2D1; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2fec13a4067so1934901a91.2
+        for <bpf@vger.kernel.org>; Thu, 06 Mar 2025 13:44:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741297445; x=1741902245; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sKdlhywlhkpRZcjtwhZL6gJe07YJe+BGmuIsD+ZeB8g=;
+        b=G92aS2D17fgzOLU3TD1Pd8HJjjqDBKw+Ghh+OF5SAQOBELvPtD9C0woLVpqWfni3kU
+         F3kYqmbbjjURagKK2AOvXjsQxYa9pj+RmysrRegDjUG9QFJ+GHmTg4k2Vz62cwDS+qkF
+         xNHSRgK8PC4UkXm5fffM8I2Pgl3M06fXbQl91K591ifZEjAo1ij/wVRhd2xH5cd5Pm+n
+         aoewCdztZ+vJrXTJapCB4+lPrkSjybfYWnsQrUsYXqdmvBOV8OspLvztnQ7gCpx9INHU
+         7vwCZTK2Qyw+uMYj2MtERC3vSHygCr8Mep/gM8PbpH+buuvQr2vUo5jitC0GNCHYFukY
+         H9mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741297445; x=1741902245;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sKdlhywlhkpRZcjtwhZL6gJe07YJe+BGmuIsD+ZeB8g=;
+        b=l3bxSol9rXXFlcWNKe2Y0Scd84uZIRZbMDna6kEHdnJvDm+88w5MqHZp7Uy1X9hJD3
+         P6107XzxpzO77GXkYtyhj9pVv6aeamiTJqHlJAKnVWOzu32KkX8wTG3BC7JFyu7yGON4
+         h5IuXY6e/+JunzuJT6HqKuEjan8vP7MEyow/+U3OVAIax1v0QJ7VOcWI14tuWy9WW5sm
+         gIC1+4j41qOvugza0o2zE9lOf0Z3wiGpSCK9XnA4t8PCOL1IPQPS60Bdk5l0TMk7IFQf
+         3LKOhV5CnTiSW6HmoJnaXFxkspUHpECYtbuXvzZw1S00HUQaS/2t8MVtKQAqTPs9jv05
+         8THg==
+X-Forwarded-Encrypted: i=1; AJvYcCUYxkVc/9nq2PtkBvn4N/x8vw6O66uVOeLdvcyCLZ8xxo9lCXBoh/3WlrnPbssno8x6Esg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCiuSce/H4+nMB10EtXLC3HAcng4+Km7XbObMlKSgpyoY+lZjs
+	54FD16+VkT4UMwQUECpeY747K19w+byh9LROr3FSGBYI3Y2/mjQo8HlMIQ==
+X-Gm-Gg: ASbGncsLDj+MitXnoxpbjGb/vvLz+gdsfqZLhXZs0m58vdxZPO5pAVk/CLCAlgfDKmW
+	+gYG/AdRI009yGZYRn73noWOP9WLOwLWtM2hQg8leqAVjHYKOgIYd3P5OagcTQ9/bzxubhd3GuS
+	h3lfCB4LwlABwMjeSzbROxvRYLLGGCkLC46Hz8a5Mt1vYZr4cTUsK5XU3Pu76w2OXv/1ikGy2DI
+	20FE2YMcbKk+u3rvEDNtC0ApJgDvq7rHie4KC8+FO8BpJPnzM64uZXAlSPK5BeGM/Y2nf549Evr
+	MeNCbiX5lyqePE5SLduKEeZqoQqfLkEzmNRfebcRKc/5OskH
+X-Google-Smtp-Source: AGHT+IEMH7X/G1c41kiMbCgDMMo1qN+V23Y+N4JvunUthBAZ4PQ3CUJIWNlJjKuZAzhdhZwHX8Ssdg==
+X-Received: by 2002:a17:90b:2d83:b0:2fc:3264:3666 with SMTP id 98e67ed59e1d1-2ff7cf317c3mr1154811a91.30.1741297444425;
+        Thu, 06 Mar 2025 13:44:04 -0800 (PST)
+Received: from localhost ([129.210.115.104])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693533f6sm1762019a91.18.2025.03.06.13.44.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Mar 2025 13:44:03 -0800 (PST)
+Date: Thu, 6 Mar 2025 13:44:02 -0800
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: Vincent Li <vincent.mc.li@gmail.com>
+Cc: oongarch@lists.linux.dev, bpf <bpf@vger.kernel.org>
+Subject: Re: [BUG?] loxilb tc BPF program cause Loongarch kernel hard lockup
+Message-ID: <Z8oXIhptXWhbCeCF@pop-os.localdomain>
+References: <CAK3+h2woEjG_N=-XzqEGaAeCmgu2eTCUc7p6bP4u8Q+DFHm-7g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1741295673;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ovbZ6e9rkSA5FpW7VkCHel1WZ9KrE9pO07uaPpAtzb8=;
-	b=HivyfPwtMTopzQt6E4TNOg4DQm3TOYpUxOGV9yZpE6iCetie8K5ePDdXyd2XQDEJh50XYd
-	qCv6FcXPpfeD2pJKh2+rizx6sOHkZAqtN5XowpUm0EWV/dwZzGCOrHM8X7veDPQln3MPGr
-	M4VQojvnP4MyBasPkT/LH3ynClQ49JQ=
-Date: Thu, 06 Mar 2025 21:14:31 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Ihor Solodrai" <ihor.solodrai@linux.dev>
-Message-ID: <a469919eb5be205dc9c44ee40566ea1ae2bbc757@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH dwarves 0/2] dwarves: Introduce github actions for CI
-To: "Alan Maguire" <alan.maguire@oracle.com>, acme@kernel.org
-Cc: yonghong.song@linux.dev, dwarves@vger.kernel.org, ast@kernel.org,
- andrii@kernel.org, bpf@vger.kernel.org, song@kernel.org,
- eddyz87@gmail.com, olsajiri@gmail.com, "Alan Maguire"
- <alan.maguire@oracle.com>
-In-Reply-To: <20250306170455.2957229-1-alan.maguire@oracle.com>
-References: <20250306170455.2957229-1-alan.maguire@oracle.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK3+h2woEjG_N=-XzqEGaAeCmgu2eTCUc7p6bP4u8Q+DFHm-7g@mail.gmail.com>
 
-On 3/6/25 9:04 AM, Alan Maguire wrote:
-> libbpf and bpf kernel patch infrastructure have made great use
-> of github actions to provide continuous integration (CI) testing.
-> Here the libbpf CI is adapted to build pahole and run the associated
-> selftests.  Examples of what the action workflows look like are
-> at [1] and [2].
->
-> Details about the workflows can be found in patch 1.
->
-> Patch 2 fixes an issue exposed by the dwarves-build workflow -
-> a compilation error when building dwarves with clang.
->
->
-> [1] https://github.com/alan-maguire/dwarves/actions/runs/13588880188
-> [2] https://github.com/alan-maguire/dwarves/actions/runs/13588880200
+On Wed, Mar 05, 2025 at 04:51:15PM -0800, Vincent Li wrote:
+> Hi,
+> 
+> I have an issue recorded here [0] with kernel call trace  when I start
+> loxilb, the loxilb tc BPF program seems to be loaded and attached to
+> the network interface, but immediately it causes a loongarch kernel
+> hard lockup, no keyboard response. Sometimes the panic call trace
+> shows up in the monitor screen after I disabled kernel panic reboot
+> (echo 0 > /proc/sys/kernel/panic) and started loxilb.
+> 
+> Background: I ported open source IPFire [1] to Loongarch CPU
+> architecture and enabled kernel BPF features, added loxilb as LFS
+> (Linux from scratch) addon software, loxilb 0.9.8.3 has libbpf 1.5.0
+> which has loongarch support [2]. The same loxilb addon runs fine on
+> x86 architecture. Any clue on this?
+> 
+> [0]: https://github.com/vincentmli/BPFire/issues/76
+> [1]: https://github.com/ipfire/ipfire-2.x
+> [2]: https://github.com/loxilb-io/loxilb/issues/972
+> 
 
-Hi Alan. This is great! Glad to see you're working on it.
+Thanks for your report!
 
-I haven't read through the changes yet, but I already see that most of
-the CI code was copied from libbpf. Just want to note that you might
-not want to reproduce all the workflows from there in dwarves. And
-also there are inconveniences with local actions and ci/managers
-etc. I think it's worth it to try and eliminate as much of that code
-as possible, given you're starting from a blank slate.
+I have extracted the kernel crash log from your photo with AI so that
+people can easily interpret it.
 
-If you haven't done so already, you might want to check out "pahole
-staging" job that I tried on BPF CI infrastructure some time ago:
-https://github.com/kernel-patches/vmtest/pull/330/files
+From a quick glance, it seems related to MIPS JIT. So it would be
+helpful if you could locate the eBPF program which triggered this and
+dump its JIT'ed BPF instructions.
 
-It's a bit different from libbpf, as it reuses BPF CI workflows. But
-you might get some ideas there about simplifying dwarves CI.
+--------------------
 
-Another question is: are you sure about merging CI code upstream? Both
-for libbpf and kernel-patches/bpf the CI code lives independently of
-upstream and is synced from time to time on github. My guess is, it's
-because .github code is unlikely to get merged into the main Linux
-tree (which also makes sense).
+09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook2 prog tc_packet_func_slow
+09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook3 prog tc_packet_func_fw
+09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook4 prog tc_csum_func1
+09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook5 prog tc_csum_func2
+09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook6 prog tc_slow_path_func
+09:37:42 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook7 prog tc_packet_func_map
+libbpf: Error in bpf_create_map_xattr(sh_map):Invalid argument(-22). Retrying without BTF.
+libbpf: Error in bpf_create_map_xattr:wq4t:Operation not supported(-95). Retrying without BTF.
+09:37:44 INFO  common_libbpf.c:294: tc: bpf attach OK for req8
+09:37:44 DEBUG loxilb_llbpf.c:3311: llb_link_prop_add: IF-req8 added idx 2 type 2
+220c:83-95 09:37:44 shpt in bitmap added -> 3 vlan 0 -> 3
+220c:83-05 09:37:44 ovr twintfmap added -> 3 -> 3
+09:37:44 DEBUG loxilb_llbpf.c:6553: tcmdll_bpf_setsockopt: hook id 1 paction tc_packet_hook8
+09:37:44 INFO  common_libbpf.c:124: tc: bpf attach start for 1018:8
+09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/xdp_main
+09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/qpm_tbl
+09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/intf_map
+09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/intf_stats_map
+09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/bd_stats_map
+09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/pkt_ring
+09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/cp_ring
+09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/ct_map
+09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/nat_ep_map
+09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/nat_cm_map
+09:37:44 ERROR common_libbpf.c:141: tc: no obj for pinpath /opt/loxilb/dp/bpf/sess_cache
+09:37:44 DEBUG common_libbpf.c:161: tc: autoload sec tc_packet_hook8 prog tc_packet_func_map
+[70107.629723] S0?xzkcC:bxbcCtXbwhsdc+cbxbsph-b3E+bp  tprbdccdcxtbxxmsd)  spccoc,tbcdaddcdzs.Tx;  txddbdxm  tBxbXHX  b+.b.bXH,t  kbdbtX23.MXl  BXftPXFl  tbttttt
+(Hex dump and more binary data follows)
 
->
-> Alan Maguire (2):
->   dwarves: Add github actions to build, test
->   dwarves: Fix clang warning about unused variable
->
->  .github/actions/debian/action.yml | 16 ++++++
->  .github/actions/setup/action.yml  | 23 ++++++++
->  .github/workflows/build.yml       | 37 ++++++++++++
->  .github/workflows/codeql.yml      | 53 +++++++++++++++++
->  .github/workflows/coverity.yml    | 33 +++++++++++
->  .github/workflows/lint.yml        | 20 +++++++
->  .github/workflows/ondemand.yml    | 31 ++++++++++
->  .github/workflows/test.yml        | 36 ++++++++++++
->  .github/workflows/vmtest.yml      | 94 +++++++++++++++++++++++++++++++
->  ci/managers/debian.sh             | 88 +++++++++++++++++++++++++++++
->  ci/managers/travis_wait.bash      | 61 ++++++++++++++++++++
->  dwarves_fprintf.c                 |  2 +-
->  12 files changed, 493 insertions(+), 1 deletion(-)
->  create mode 100644 .github/actions/debian/action.yml
->  create mode 100644 .github/actions/setup/action.yml
->  create mode 100644 .github/workflows/build.yml
->  create mode 100644 .github/workflows/codeql.yml
->  create mode 100644 .github/workflows/coverity.yml
->  create mode 100644 .github/workflows/lint.yml
->  create mode 100644 .github/workflows/ondemand.yml
->  create mode 100644 .github/workflows/test.yml
->  create mode 100644 .github/workflows/vmtest.yml
->  create mode 100755 ci/managers/debian.sh
->  create mode 100644 ci/managers/travis_wait.bash
->
+[70107.638086] Call Trace:
+[70107.638809] [<ffffffffff8003f1d67c>] bpf_prog_7092f4f2542453f74_tc_packet_func+0x9004/0xaf24
+[70107.639056] [<ffffffffff8003f580d9>] cls_bpf_classify+0x6c8/0x478 [cls_bpf]
+[70107.639368] [<0000000005535e82>] __tcf_classify+0xeep.18/0x3c4/0x408
+[70107.639570] [<0000000005549d80>] tcf_classify+0x88/0x28/0xd0
+[70107.639584] [<0000000005554cec>] tc_classify+0x4c/0x100
+[70107.639993] [<0000000055c7414>] __netif_receive_skb_core.constprop.0+0x5b4/0x1ba0
+[70107.640296] [<0000000055c74443>] __netif_receive_skb_list_core+0x184/0x228
+[70107.640521] [<0000000055c28528>] netif_receive_skb_list_internal+0x220/0x300
+[70107.640839] [<0000000055c28f48>] nepi_complete_done+0xd8/0x288
+[70107.641157] [<000000005524d0d2>] stmmac_napi_poll_rx+0x3f30/0x1208
+[70107.641470] [<000000005552e1ec>] __napi_poll+0x5c/0x230
+[70107.641801] [<000000005523b74>] net_rx_action+0x1e4/0x310
+[70107.642126] [<00000000343ec2d8>] handle_softirq+0x128/0x3d0
+[70107.642451] [<00000000343ecfb9>] irq_exit+0x3c/0xb0
+[70107.642782] [<000000005245e2c>] do_irq+0x6c/0xa0
+[70107.643125] [<000000005e4e1fd>] __ret_from_idle+0x20/0x24
+[70107.643361] [<000000005d47c88>] arch_cpu_idle+0x10/0x50
+[70107.643855] [<000000005047d9c>] default_idle_call+0x1c/0x110
+[70107.644158] [<00000000444df80>] do_idle+0x80/0x130
+[70107.644530] [<00000000444e298>] cpu_startup_entry+0x90/0x30
+[70107.644869] [<000000005d4824b>] kernel_entry_end+0xdc/0xa0
+[70107.645280] [<000000005b0e4c>] start_kernel+0x6f8/0x6f4
+[70107.645549] [<000000005b408f0>] kernel_entry+0xf8/0xf0
+[70107.645890]
+[70107.646228] Code: 00158086  00109a5  82c8d4a5  c29482085  5008f480  2a847b25  034084a5  00150ae  5c8089c0
+[70107.646591]
+[70107.646954] ---[ end trace 0000000000000000 ]---
+
 
