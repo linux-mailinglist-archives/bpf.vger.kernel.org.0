@@ -1,285 +1,172 @@
-Return-Path: <bpf+bounces-53465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A5B7A5479F
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 11:23:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B143A54889
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 11:57:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 061B23ACFA9
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 10:23:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A6581732BA
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 10:57:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1961D200100;
-	Thu,  6 Mar 2025 10:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C64A204F6E;
+	Thu,  6 Mar 2025 10:57:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kspa7tyK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PmjxlUG6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D505417B50B;
-	Thu,  6 Mar 2025 10:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00ED8202984;
+	Thu,  6 Mar 2025 10:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741256586; cv=none; b=aHxSmF9p+ebA4/vBdt//JmJYyHHeYsB2PxP+LJWDR1PjEmo54Jb/CgH0a+CoeeAb0eB1Lk5k2ERm2lW/5aEOpI7CpJB1eyg5O8b6yDZ6jwlolbEWAeX/7XH0WsG+ZgLyLx6A5uFB8vnOf/KnBZhGM7UxAf9Db+0UzQTXBlaTDGc=
+	t=1741258640; cv=none; b=DJqGgOXvvbfyPydLnHE8JuyYD0PR9cq2EDIUBF0nhE4r0H5vPNSKRLtPccQLpLgEupIqiD4AdbG2uIKi4c8seqXB/8jwtIAK6Yv7Vs70V+L5S4n1Dp9ojvv1h5Vr2VadsnElM6KT17nIwEONqpb3Vhr6DN1PpqOpcH/99RoBvLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741256586; c=relaxed/simple;
-	bh=Fk+ptxHPo0zL9VKayPmWGSh7ru2griwlnIjrUJwnVzQ=;
-	h=From:Content-Type:Mime-Version:Subject:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=f7n6LNgwFblkReleBkwN7Je6soC0m4MGhmTdQCEh1cOyRZc9V36G7tKmWZT+O5bvflidqol2U84E+lJYwfh0WfEzPpYHF0Et1fltuGyFz56cHTBeWmBRv03gw5JHJu6kRdCRMurhxT9GVH0MqVK2lpuLTVrcp/FY2IKmq311m20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kspa7tyK; arc=none smtp.client-ip=209.85.208.51
+	s=arc-20240116; t=1741258640; c=relaxed/simple;
+	bh=I9pdTKoLaw+6AaESsv4LPJeCEfXkPMTSZEKG9PY9KuY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g2tpscL3q/9zV5OtjIJOKPigWmLbCNTlAh84qb2rwTIQSYwyFbF6Pw4+CKa++3dGsZFVbMXv/fWxFzDzXJ6yFTTwaoAmPUVcwEAKTziK0+ht43cfuCM69VVCbRQqSzOg2652Bsfh7eXNb3YVchJ7Es10on0dzUTqZPGpUKYik3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PmjxlUG6; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5dccaaca646so1031664a12.0;
-        Thu, 06 Mar 2025 02:23:04 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4394a823036so4252855e9.0;
+        Thu, 06 Mar 2025 02:57:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741256583; x=1741861383; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:subject:mime-version:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YSreNIH4adMVMjlthJ/Tlzvq8nw1Qi3pxgZbONEY0EE=;
-        b=Kspa7tyKYXS4GgjSfsmfXWAADS6XOrrpDzE2lLqxCtJlQ07wO1ktV7PlVHdB/MbdkR
-         +IVCgQg3EOB9KU4yLcxTq8/6hv2FjHYbAWZVjYHdbWFl0BX9+UROxG9MB/tOi84oyAqp
-         V1OqCW6LWD0pDv7Qa/dLLpfDAWn1IF4MrJGyovN33nxFx9pb2CXOQRLar7Udp/pvOBo0
-         BNUSUQ1uLkXRfZwNQ3Oo0xyJVJ4PbWs20GoQXEsEnqkmfbHNVTOk969M1iomaFC9d49m
-         s194JmOzROeCEGEebMIywYzDWwsLJkCGTazlTdENk/QxtWQ7guqPCMsxO3++zxeB1NoE
-         aYBg==
+        d=gmail.com; s=20230601; t=1741258637; x=1741863437; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lgkMBhBzFh4GMW6txcVgpWsBqFCCmiQ9SftChtsfc9M=;
+        b=PmjxlUG6VrJKmJPC6cd+uEun1KdKE+THkC4GWs67ZKj2jbJp/1g4JtGtXbsqEQmeZo
+         xa3NRg9xSZua+CuuTFilX3ZZj70RrSuwKLd6xEf+GeWD1VfSnMb7FdW7kLrOSg/LoykZ
+         2w8Rh8dbIebmg7XsXQ1nR8kMKK76/uQTMkQYjtlMC5TPrNqTzL/1418qAFJFTeUy3+Hy
+         UiF/XXAKb1hMM2SDXGs+7e7QleH0G2atTD4k/aZ7h+JyDKraohBWjZk73mfAedKx5toq
+         fSiOlHRm1Wx8Db4gFsxnyczi81ms358608cQYGQ1BtyZXODHeLlgGVEpK96hp7EZeida
+         +0dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741256583; x=1741861383;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:subject:mime-version:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YSreNIH4adMVMjlthJ/Tlzvq8nw1Qi3pxgZbONEY0EE=;
-        b=TsoqWzdzFH2GS5Bg3jnnKRpOzQobdV3N59yVgqy+jQjIwXSdWaWdOLFFN/ZBivxju1
-         R8R9GFXbcSxt6YAxa8Ir3ozlvH7X6YsfFlsDU6msIN4pRhbECgR5f/at1RLIMX4BTy25
-         HuAG3vE6lWMECQgpEp30+BPcb0inJwQRxdvExKhPm++85pTyDCj++j01OPmP9jWgExQO
-         y74EoLnq4tLZislH3cbipgyzPcVscdsqeniWnfA6wmcMCEieNeZkUqYkbt6BOQFtqBRo
-         4yFtNuqh/w1LChRNzmsU3jByp4mKWgA6PCdADGrgvDou73cLwkX6BHCZnnhnIHPBUmNw
-         Fj6g==
-X-Forwarded-Encrypted: i=1; AJvYcCVj04xPzp1Pu0M/wZ6jHuzTYMgE0+pp2tzijWohs4IymmLdbVDAVrxCQgN1+AGpjD2uQrsk@vger.kernel.org, AJvYcCW3h3ZDOBym01feVNZTp4pKgg8CZOkEbdGXDlTmS0MFq8yfH0dXEceYvcEKNEjp8rtFPGOHX72BVicXG1vg@vger.kernel.org, AJvYcCXkgAmJN5izOcF7cd90GyhStvq7dx970fY0RVH8XU0Zxqi9nPHoWaVnVzJvNWiLT6uXq2o=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy+jB9G5kGLGckkdOWGPVDw3BoPFraYGTUgW1Bt11/1/6ihNvMX
-	6nnP5UcmZT6MU5gLfAa/cLhXQVM2364mTTwLnstvk1WVDkE5FUfG
-X-Gm-Gg: ASbGncuveLWfu8TB7fUU43UH6yDxxMPA+6A3hpiX9aV0zrnyfmQ2pH0C+TvyDoeqRWi
-	E9s+CI7Gh46YjNvujNv7LH6nmkH61NKpwObS/XBFPP98fRa0p8la7UOknjqVpsXMKA1BB4O2l7Z
-	0n2k4gYFQ2bidcAPQ3yLT+ClV9fBCVuIJZ4RX2bXl215u222XxSud+mk95dkVJJ+c9KZq2hNd8y
-	tEuneWoa7hK6VwFFmprMczg6k7iJfafFLDDHBjOlCZ2x1akTW/oCiCnW0rn61xjSq/jT6DQ8YIs
-	oLxb9mxlokjPUMQKS/1Lfv7cLe8mQ9RR0GtmFd3tRTxXbkmk//zt640f6A==
-X-Google-Smtp-Source: AGHT+IFMBMMD1hiit+xZF2Scen4nqwH8NOgCkmQvow1VZWtTjkkHspCV+WaQcKHmLYtLT7YOayoUUw==
-X-Received: by 2002:a05:6402:3581:b0:5e0:8a34:3b5c with SMTP id 4fb4d7f45d1cf-5e5c1a7786emr2354367a12.0.1741256582607;
-        Thu, 06 Mar 2025 02:23:02 -0800 (PST)
-Received: from smtpclient.apple ([209.38.224.166])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e5c76913bbsm709630a12.78.2025.03.06.02.23.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 06 Mar 2025 02:23:01 -0800 (PST)
-From: Nick Zavaritsky <mejedi@gmail.com>
-X-Google-Original-From: Nick Zavaritsky <MeJedi@gmail.com>
-Content-Type: text/plain;
-	charset=utf-8
+        d=1e100.net; s=20230601; t=1741258637; x=1741863437;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lgkMBhBzFh4GMW6txcVgpWsBqFCCmiQ9SftChtsfc9M=;
+        b=DnmU+AmyGQUJvIQc43ZrWedLu8YVNK9IR4A0Vsbmi0hA5QZJbYt3LcsS7ke46ajTlc
+         8IHCFRWZEimj8N5O6rr0HJ57uVd9D3mi4XZgdfiOHw9aPG5e6343PeZBJhD77hfcN3Qt
+         zvU5rSSrXTthQDFHkVDHao0CJborEMP6o+MlQS3whJ3+tL47D8KXT0zKGfLzMoIzeSxF
+         7GEimLqRQ8thTr/BPy6sZiEx1uXsqeZJwkRorTZ0n/oJajEpTdvTptQof0qeLDZY3bFq
+         t73cgZBVUtiVRXXRQ2jCNFak8iy3eHfBd5Ha1b+gvaOvjwGAR08PYkOT3AB+UfV4Oy+M
+         lUPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUGGlg/GpDKulMPxPPZOmAhAi2kZFmO7RBSwXjYHCZlIJEWrG3AAQ9U5wy6S7F9f2bUtcEXWgXYqg4WF2V/@vger.kernel.org, AJvYcCUUY7hdyTI3q6ZNSmFmsyEhMdTOoys+7fXiuKTERsR8crdAz7hQLjUuSl6BcUPRsDvYkSZG1SOVIxWr@vger.kernel.org, AJvYcCVbJD9ckb7u53lcssV+yJrRPsBlwkWf9fm1/Lm9sKbxrvZPT3Y6O/kUyr8WAUJMS35IUrE=@vger.kernel.org, AJvYcCW0f4jWFDk/A+hgw9YIcmobkKkhdA4w41HRa+P7Kd/R7wVtox2hIvcrMB+AeMNd+J9+hW5nThci@vger.kernel.org, AJvYcCWdblM5mYu3Od982WBbTNg/c/KNToMio0epDMGyVi8t0WAWW81TuB/rnUOba6EE9J5+2MwRVLC71FtsmCrBfBPAGqFJ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyol0cm7lv0K1Av3qib7fXvRlSgpgyRJEIcOXcTYDYYbfYyXQkU
+	NSAzOBEQyk15M9907URiY8qmKTSWwu+SMlkmXSRjIKOUHbpfAcIadlX+wTaGHis=
+X-Gm-Gg: ASbGnctErop6Lcri2Leua4OkAor+I/vMrdmOn+Afky7YaADGvIiDekz+36KQeiDPm95
+	0dEWuVxvXPiKNr8tCZJs9LYYpa6YD1kMCcsECOAmqiIqq7THFj7ETWXhpDQgvYjMNsOI7Jk0UPd
+	nly83edHLcjBLhpr7BHQr5RCpgnX7Sn95rdPuVEpkw5/k4IfMzO3WfYDbjz8pFMsO2H8m3677ni
+	GDq8bEw8FiS2WqoluuLT0nYJVwJKATFesF7/FQQEg76rSo1cZ1DwSXu6fLAU9jcbwnhgPymvSyo
+	A0UHij5u+GvXXH440irrcZTvl+CxWORITxtuxQ==
+X-Google-Smtp-Source: AGHT+IGLhJA7BskK5ld+jvgOXMpsvckCM2ZvvuLBgJH2nBAC7Z74GOkDTinBbaMSWaLdw5nhhGwZtQ==
+X-Received: by 2002:a05:600c:3205:b0:439:969e:d80f with SMTP id 5b1f17b1804b1-43be1d8de13mr4102405e9.31.1741258636883;
+        Thu, 06 Mar 2025 02:57:16 -0800 (PST)
+Received: from krava ([2a00:102a:401e:9b3a:b228:9e66:580a:3bc8])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912bfb79adsm1674487f8f.7.2025.03.06.02.57.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Mar 2025 02:57:16 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 6 Mar 2025 11:57:14 +0100
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Andy Lutomirski <luto@kernel.org>, Kees Cook <kees@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eyal Birger <eyal.birger@gmail.com>, stable@vger.kernel.org,
+	Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	x86@kernel.org, bpf@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Deepak Gupta <debug@rivosinc.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCHv3 perf/core] uprobes: Harden uretprobe syscall trampoline
+ check
+Message-ID: <Z8l_ipCn8tBE1d9Q@krava>
+References: <20250212220433.3624297-1-jolsa@kernel.org>
+ <CALCETrVFdAFVinbpPK+q7pSQHo3=JgGxZSPZVz-y7oaG=xP3fA@mail.gmail.com>
+ <Z623ZcZj6Wsbnrhs@krava>
+ <CALCETrVt=N-QG3zGyPspNCF=8tA4icC75RVVe70-DvJfsh7Sww@mail.gmail.com>
+ <Z7MnB3yf2u9eR1yp@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.400.131.1.6\))
-Subject: Re: [RESEND] [PATCH bpf-next 2/3] bpf: Overwrite the element in hash
- map atomically
-In-Reply-To: <CAADnVQLev2V-ARjPc9EPYaSssCev_87Lc0NWkLvL-5tuy=3Veg@mail.gmail.com>
-Date: Thu, 6 Mar 2025 11:22:48 +0100
-Cc: Hou Tao <houtao@huaweicloud.com>,
- Zvi Effron <zeffron@riotgames.com>,
- =?utf-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
- bpf <bpf@vger.kernel.org>,
- rcu@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>,
- "Paul E . McKenney" <paulmck@kernel.org>,
- Cody Haas <chaas@riotgames.com>,
- Hou Tao <hotforest@gmail.com>,
- Charalampos Stylianopoulos <charalampos.stylianopoulos@emnify.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <4243FBB4-693E-4740-BECE-FDB32322BD97@gmail.com>
-References: <20250204082848.13471-1-hotforest@gmail.com>
- <20250204082848.13471-3-hotforest@gmail.com>
- <cca6daf2-48f4-57b9-59a9-75578bb755b9@huaweicloud.com>
- <8734gr3yht.fsf@toke.dk>
- <d191084a-4ab4-8269-640f-1ecf269418a6@huaweicloud.com>
- <CAADnVQKD94q-G4N=w9PJU+k6gPhM8GmUYcyfj=33B_mKX6Qbjw@mail.gmail.com>
- <6a84a878-0728-0a19-73d2-b5871e10e120@huaweicloud.com>
- <CAADnVQLrJBOSXP41iO+-FtH+XC9AmuOne7xHzvgXop3DUC5KjQ@mail.gmail.com>
- <CAC1LvL0ntdrWh_1y0EcVR6C1_WyqOQ15EhihfQRs=ai7pcE-Sw@mail.gmail.com>
- <7e614d80-b45b-e2f9-5a39-39086c2392dc@huaweicloud.com>
- <CAADnVQJU9OWAWFk89P6i1RK6vXkuee5s76suHjF+uP+V4iepqQ@mail.gmail.com>
- <e1b65f13-a426-d707-0319-f57e8b15575a@huaweicloud.com>
- <CAADnVQLev2V-ARjPc9EPYaSssCev_87Lc0NWkLvL-5tuy=3Veg@mail.gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-X-Mailer: Apple Mail (2.3826.400.131.1.6)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z7MnB3yf2u9eR1yp@krava>
 
+On Mon, Feb 17, 2025 at 01:09:43PM +0100, Jiri Olsa wrote:
+> On Thu, Feb 13, 2025 at 09:58:29AM -0800, Andy Lutomirski wrote:
+> > On Thu, Feb 13, 2025 at 1:16 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> > >
+> > > On Wed, Feb 12, 2025 at 05:37:11PM -0800, Andy Lutomirski wrote:
+> > > > On Wed, Feb 12, 2025 at 2:04 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > > >
+> > > > > Jann reported [1] possible issue when trampoline_check_ip returns
+> > > > > address near the bottom of the address space that is allowed to
+> > > > > call into the syscall if uretprobes are not set up.
+> > > > >
+> > > > > Though the mmap minimum address restrictions will typically prevent
+> > > > > creating mappings there, let's make sure uretprobe syscall checks
+> > > > > for that.
+> > > >
+> > > > It would be a layering violation, but we could perhaps do better here:
+> > > >
+> > > > > -       if (regs->ip != trampoline_check_ip())
+> > > > > +       /* Make sure the ip matches the only allowed sys_uretprobe caller. */
+> > > > > +       if (unlikely(regs->ip != trampoline_check_ip(tramp)))
+> > > > >                 goto sigill;
+> > > >
+> > > > Instead of SIGILL, perhaps this should do the seccomp action?  So the
+> > > > logic in seccomp would be (sketchily, with some real mode1 mess):
+> > > >
+> > > > if (is_a_real_uretprobe())
+> > > >     skip seccomp;
+> > >
+> > > IIUC you want to move the address check earlier to the seccomp path..
+> > > with the benefit that we would kill not allowed caller sooner?
+> > 
+> > The benefit would be that seccomp users that want to do something
+> > other than killing a process (returning an error code, getting
+> > notified, etc) could retain that functionality without the new
+> > automatic hole being poked for uretprobe() in cases where uprobes
+> > aren't in use or where the calling address doesn't match the uprobe
+> > trampoline.  IOW it would reduce the scope to which we're making
+> > seccomp behave unexpectedly.
+> 
+> Kees, any thoughts about this approach?
 
-> On 27. Feb 2025, at 04:17, Alexei Starovoitov =
-<alexei.starovoitov@gmail.com> wrote:
->=20
-> On Wed, Feb 26, 2025 at 6:43=E2=80=AFPM Hou Tao =
-<houtao@huaweicloud.com> wrote:
->>=20
->>>>=20
->>>> lookup procedure A
->>>> A: find the old element (instead of the new old)
->>>>=20
->>>>              update procedure B
->>>>              B: delete the old element
->>>>              update procedure C on the same CPU:
->>>>              C: reuse the old element (overwrite its key and insert =
-in
->>>> the same bucket)
->>>>=20
->>>> A: the key is mismatched and return -ENOENT.
->>> This is fine. It's just normal reuse.
->>> Orthogonal to 'update as insert+delete' issue.
->>=20
->> OK. However, it will break the lookup procedure because it expects it
->> will return an valid result instead of -ENOENT.
->=20
-> What do you mean 'breaks the lookup' ?
-> lookup_elem_raw() matches hash, and then it memcmp(key),
-> if the element is reused anything can happen.
-> Either it succeeds in memcmp() and returns an elem,
-> or miscompares in memcmp().
-> Both are expected, because elems are reused in place.
->=20
-> And this behavior is expected and not-broken,
-> because bpf prog that does lookup on one cpu and deletes
-> the same element on the other cpu is asking for trouble.
-> bpf infra guarantees the safety of the kernel.
-> It doesn't guarantee that bpf progs are sane.
->=20
->>> It's been a long time since I looked into rcu_nulls details.
->>> Pls help me understand that this new replace_rcu_nulls()
->>> is correct from nulls pov,
->>> If it is then this patch set may be the right answer to non-atomic =
-update.
->>=20
->> If I understand correctly, only the manipulations of ->first pointer =
-and
->> ->next pointer need to take care of nulls pointer.
->=20
-> hmm. I feel we're still talking past each other.
-> See if (get_nulls_value() =3D=3D ...) in lookup_nulls_elem_raw().
-> It's there because of reuse. The lookup can start in one bucket
-> and finish in another.
->=20
->>>=20
->>> And for the future, please please focus on "why" part in
->>> the cover letter and commit logs instead of "what".
->>>=20
->>> Since the only thing I got from the log was:
->>> "Currently, the update is not atomic
->>> because the overwrite of existing element happens in a two-steps =
-way,
->>> but the support of atomic update is feasible".
->>>=20
->>> "is feasible" doesn't explain "why".
->>>=20
->>> Link to xdp-newbie question is nice for additional context,
->>> but reviewers should not need to go and read some thread somewhere
->>> to understand "why" part.
->>> All of it should be in the commit log.
->>=20
->> OK. My original thought is that is a reported problem, so an extra =
-link
->> will be enough. Will try to add more context next time.
->>>=20
->>>> map may still be incorrect (as shown long time ago [1]), so I think
->>>> maybe for other types of map, the atomic update doesn't matter too =
-much.
->>>>=20
->>>> [1]:
->>>> =
-https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.co=
-m/
->>> A thread from 3 years ago ?! Sorry, it's not helpful to ask
->>> people to page-in such an old context with lots of follow ups
->>> that may or may not be relevant today.
->> Let me reuse part of the diagram above to explain how does the lookup
->> procedure may return a incorrect value:
->>=20
->> lookup procedure A
->> A: find the old element (instead of the new element)
->>=20
->>=20
->>              update procedure B
->>              B: delete the old element
->>              update procedure C on the same CPU:
->>=20
->>=20
->> A: the key is matched and return the value in the element
->>=20
->>              C: reuse the old element (overwrite its key and value)
->>=20
->> A: read the value (it is incorrect, because it has been reused and
->> overwritten)
->=20
-> ... and it's fine. It's by design. It's an element reuse behavior.
->=20
-> Long ago hashmap had two modes: prealloc (default) and
-> NO_PREALLOC (call_rcu + kfree)
->=20
-> The call_rcu part was there to make things safe.
-> The memory cannot be kfree-ed to the kernel until RCU GP.
-> With bpf_mem_alloc hashmap elements are freed back to bpf_ma
-> right away. Hashmap is doing bpf_mem_cache_free()
+ping, any idea?
 
-We (emnify.com) missed this change and kept writing code with an
-assumption that NO_PREALLOC implies rcu.
+thanks,
+jirka
 
-Is there something we can do as of today to reduce the likelihood of an
-item getting reused immediately? We are concerned with lookups yielding
-bogus results when racing with updates. Worse, a program could corrupt
-an unrelated item when writing via a pointer obtained from lookup.
-
-You wrote that "lookup on one cpu and deletes the same element on the
-other cpu is asking for trouble.=E2=80=9D It puzzles me since user space
-updating a map while (say) TC program is consulting the map to make a
-routing decision look like a supported and widespread use case.
-
-For us, implications vary in severity, e.g.:
- - 1-in-1e? packet mis-delivered (bogus lookup: LOW)
- - a tenant getting billed for a packet of another tenant delivered via
-   satellite and costing USD 0.10 (writing into unrelated item: LOW)
- - a network flow state corrupted (writing into unrelated item: MEDIUM)
-
-We need to audit our code to ensure that e.g. a flow state getting
-corrupted self-corrects and the damage doesn=E2=80=99t spread.
-
-It would be nice if we as eBPF users could decide whether we wish to
-live dangerously or prefer to trade speed for safety, on a case-by-case
-basis.
-
-> (instead of bpf_mem_cache_free_rcu()) because users need speed.
-> So since 2022 both prealloc and no_prealloc reuse elements.
-> We can consider a new flag for the hash map like F_REUSE_AFTER_RCU_GP
-> that will use _rcu() flavor of freeing into bpf_ma,
-> but it has to have a strong reason.
-> And soon as we add it the default with prealloc would need
-> to use call_rcu() too, right?
-> and that becomes nightmare, since bpf prog can easily DoS the system.
-> Even if we use bpf_mem_cache_free_rcu() only, the DoS is a concern.
-> Unlike new things like bpf_obj_new/obj_drop the hashmap
-> is unpriv, so concerns are drastically different.
-
-Would it be an option to gate F_REUSE_AFTER_RCU under CAP_BPF?
-
-It looks like sleepable programs would need to bpf_rcu_read_lock
-explicitly to reap the benefits, but why not.=
+> 
+> thanks,
+> jirka
+> 
+> 
+> > 
+> > >
+> > > jirka
+> > >
+> > > >
+> > > > where is_a_real_uretprobe() is only true if the nr and arch match
+> > > > uretprobe *and* the address is right.
+> > > >
+> > > > --Andy
+> > >
 
