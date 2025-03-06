@@ -1,97 +1,99 @@
-Return-Path: <bpf+bounces-53515-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53516-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F650A55992
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 23:20:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61075A559D1
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 23:33:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0096B3AF5FC
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 22:19:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7E6C1896778
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 22:33:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC01727602D;
-	Thu,  6 Mar 2025 22:19:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A0D2780E3;
+	Thu,  6 Mar 2025 22:33:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C/xZ67jG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KmPZuyvF"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656B01FCFFE
-	for <bpf@vger.kernel.org>; Thu,  6 Mar 2025 22:19:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702D91311AC
+	for <bpf@vger.kernel.org>; Thu,  6 Mar 2025 22:32:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741299599; cv=none; b=mmwYeNzlvrfrVfZI0LkDB/jVWv/KpXqOtLyczQ4UdQDiWgO6JYHrJEYiiJn0M/YLuFzVATAIbNoYVEUMywYmSGoGhlXthW0zScOYkSaryIKW7oWTGpHcFuwGP6/MZBYobKYkkM/mUF5y0tCpduHjSDSDIy9x9bbzUQwV94kkYB0=
+	t=1741300382; cv=none; b=GbFZIvuI8Js1BKTFin/hRmqQ6lY1CDKkjLS577Dw/p0Fen4k9wCjHFbimNPZmd9VApXvV+wU43QhI5yBDr4J6IilR4eG1qjDDsHXuOL9lIl+AFPdSvsHtf2jd9JYDIBra7jTjj0ITrQ15p47gJbifb2iuPRcLPxQ4P20bsKoHYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741299599; c=relaxed/simple;
-	bh=FHD5TMfjzHOosyl5kKPX44KXFnH1Bx0aUNgjKPK9xYU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=aQGlj5SqvqpLNfwmlXVAR9nKWZofwWUcmwDwocoFfVCGrWgXw4KkR+z0w1jG9fnCmjj8qU1qYiSmj/6m2IBb865RuhwQYJLk4YHoGeyL19+aHAOmJQOE1ENDOANdSM9RO8cH9z8a+zxeqPI0QIK/Y9W4xHI4NBKnmnDsI2euMTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C/xZ67jG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4F58C4CEE0;
-	Thu,  6 Mar 2025 22:19:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741299598;
-	bh=FHD5TMfjzHOosyl5kKPX44KXFnH1Bx0aUNgjKPK9xYU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=C/xZ67jGs0+4QdZ459j/ewfqFAX7E0vlRX4Al2LmcrYDQAPcR8kpmlJxZEQJ/kgKh
-	 uat0Trzd6co0QBgXspQ3T89hPWUBX2zyxseprZBWOTpFXx71x7DbgttjPdivCAsGA8
-	 Q63e5iUucyA9R/rTvBIM9kdwxDp6rSpVMCrbMpfGVFNpw3cA4+8ZpRdNSqIrMAR6q3
-	 Oam8/WjePACZFgodXkPzE++tQc4l9fBPtPXobllTvcFEKxxIW6TfLv1vlU+MhoSvZL
-	 UIRDFbSSPz0HBAeDkjvz9InS2E7U9pJcqHfplsrcjmpIpL5N9JNaPBYIrA7lTxBnNT
-	 Z3Y149w75wLlA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70D1C380CEE6;
-	Thu,  6 Mar 2025 22:20:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1741300382; c=relaxed/simple;
+	bh=WoE/ExMYkaH0wgUaPI7gKK9MlzU15elpkPjgeHxPstw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bPH0lGPO3ou+TG1eKnBFYvW7nx1wJn+Uq6XqrVfg9tGr+FtH49k3/RQUykBmOosifhtNN8/rwLqoolILKw2mJkuhA47xylPJO9EiTR2EBPoaRkSxiars5LJkTOAX9Gw2+JEwGy8XqHfsZukaoXmyYloVQay1azMJvZ0l28K3dIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KmPZuyvF; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d961af60-8e7f-4d72-9f22-a0ee8d2fac7e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1741300377;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Mgr2lm5EtMWj/o+U9w65HzFCQeYJpsoaGBIN19NfQbc=;
+	b=KmPZuyvFD+skPb7R6UwBBnY2vGGyGWNui4pxzxPVj2bE/1pvtZAfye0pofYBi8uWTdB30z
+	+65YmmVL6Js9dYnJCb+OpTEzAzvst9LNbmuIHhawdvfbVlYkrcQeIqd+VlxoQdiKmVu8ba
+	NqYCweiKe00Om4CQuYinAJAUOPz0wBg=
+Date: Thu, 6 Mar 2025 14:32:17 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v5 1/3] selftests/bpf: Clean up call sites of
- stdio_restore()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174129963226.1798157.3601232573248239109.git-patchwork-notify@kernel.org>
-Date: Thu, 06 Mar 2025 22:20:32 +0000
-References: <20250305182057.2802606-1-ameryhung@gmail.com>
-In-Reply-To: <20250305182057.2802606-1-ameryhung@gmail.com>
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- alexei.starovoitov@gmail.com, martin.lau@kernel.org, eddyz87@gmail.com,
- kernel-team@meta.com
+Subject: Re: [PATCH] selftests/bpf: Move test_lwt_ip_encap to test_progs
+To: "Bastien Curutchet (eBPF Foundation)" <bastien.curutchet@bootlin.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Alexis Lothore <alexis.lothore@bootlin.com>, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20250304-lwt_ip-v1-1-8fdeb9e79a56@bootlin.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250304-lwt_ip-v1-1-8fdeb9e79a56@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+On 3/4/25 1:24 AM, Bastien Curutchet (eBPF Foundation) wrote:
+> +int remove_routes_to_gredev(const char *ns1, const char *ns2, const char *vrf)
+> +{
+> +	SYS(fail, "ip -n %s route del %s dev veth5 %s", ns1, IP4_ADDR_GRE, vrf);
+> +	SYS(fail, "ip -n %s route del %s dev veth7 %s", ns2, IP4_ADDR_GRE, vrf);
+> +	SYS(fail, "ip -n %s -6 route del %s/128 dev veth5 %s", ns1, IP6_ADDR_GRE, vrf);
+> +	SYS(fail, "ip -n %s -6 route del %s/128 dev veth7 %s", ns2, IP6_ADDR_GRE, vrf);
+> +
+> +	return 0;
+> +fail:
+> +	return -1;
+> +}
+> +
+> +int add_unreachable_routes_to_gredev(const char *ns1, const char *ns2, const char *vrf)
+> +{
+> +	SYS(fail, "ip -n %s route add unreachable %s/32 %s", ns1, IP4_ADDR_GRE, vrf);
+> +	SYS(fail, "ip -n %s route add unreachable %s/32 %s", ns2, IP4_ADDR_GRE, vrf);
+> +	SYS(fail, "ip -n %s -6 route add unreachable %s/128 %s", ns1, IP6_ADDR_GRE, vrf);
+> +	SYS(fail, "ip -n %s -6 route add unreachable %s/128 %s", ns2, IP6_ADDR_GRE, vrf);
+> +
+> +	return 0;
+> +fail:
+> +	return -1;
+> +}
 
-This series was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Wed,  5 Mar 2025 10:20:55 -0800 you wrote:
-> reset_affinity() and save_ns() are only called in run_one_test(). There is
-> no need to call stdio_restore() in reset_affinity() and save_ns() if
-> stdio_restore() is moved right after a test finishes in run_one_test().
-> 
-> Also remove an unnecessary check of env.stdout_saved in crash_handler()
-> by moving env.stdout_saved assignment to the beginning of main().
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v5,1/3] selftests/bpf: Clean up call sites of stdio_restore()
-    https://git.kernel.org/bpf/bpf-next/c/5cb4077d3ae8
-  - [bpf-next,v5,2/3] selftests/bpf: Allow assigning traffic monitor print function
-    (no matching commit)
-  - [bpf-next,v5,3/3] selftests/bpf: Fix dangling stdout seen by traffic monitor thread
-    https://git.kernel.org/bpf/bpf-next/c/15bfc10814b8
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Added static to these two functions and applied. Thanks.
 
