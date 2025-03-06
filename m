@@ -1,153 +1,135 @@
-Return-Path: <bpf+bounces-53453-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53454-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AA31A541EA
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 06:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CCA1FA541EE
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 06:09:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D51787A7310
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 05:06:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D16C7A7417
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 05:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C03E319CC0C;
-	Thu,  6 Mar 2025 05:07:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26E2019D891;
+	Thu,  6 Mar 2025 05:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="PnZqaQi3"
+	dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b="tBPd+AZy"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20B7E7E9;
-	Thu,  6 Mar 2025 05:07:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAAD319CC3A;
+	Thu,  6 Mar 2025 05:08:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.243.244.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741237632; cv=none; b=EWE8AZZ5NrnX074Evqe/HM44UMVjn6JJ/cyugd5c6qOEIv/O36Nh/dmTTe4qmv0noE77jikIeB49dWTbl+rA8X8pVGTHUlauj4g1pk8QelHLLUkhKZV4IRzbKvu2htah749SjWU6tUp3OpRKJWSu8sZitJ2iQc3p7YR8Gzk/JaQ=
+	t=1741237738; cv=none; b=TLDHaDCdtVzO/IzC0YxZ+3eDbaPG8UuLR99pabONiDX7IT2mZWIMZf5tRqlnN3ksDhTx/3IVEMrDwnkdO0xU5vahoVx6YMEJlDeXrR+Fbtd2oGnMqGYq6t5mXsjoTUmQobCsNzXuPFAnfjUyWBKawyCtvegODg0ByxXP97eY+68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741237632; c=relaxed/simple;
-	bh=/PPhRFzrpmFZp2JOVjBtoaRYAfck4wy1OA0abEzrkPM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XLp8pvq/4/NwMrXX/TzN7FcZe0PHRXFa3TebdBQnGDYkZIspcnSkqxagXTjZRAiycN/E5gJ9z5VGM4iJCvII+cSxOKJ9E8eCYYHIdyhxOBqsCer3JVDl8J8aYxY9PN1n8LgNfVah+5lt+hU4hid+Inrox4fJ5a2Qf3sOSPjoawU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=PnZqaQi3; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=/p/yIsR0VNJP/SLkOWHis+551OQIlaMtljBwiPLa3rc=;
-	b=PnZqaQi3qQzw/vDpzioNDuo4P+rfjiJdZfzZSsSwax/k+cup0oaomQzGcmBLIT
-	D6sRen8XTYPDJCp8Ovy7EaJLibvBWrAeSekJ0cb/ZrSg5RJPLR4sZp8zojiGiIA3
-	YrWvnGPux8Cpv9ZCegRYU3lCycgv1BbEICa9slzjzTMEc=
-Received: from osx (unknown [])
-	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wAnIKM8LclnR8xMQw--.53729S2;
-	Thu, 06 Mar 2025 13:06:05 +0800 (CST)
-Date: Thu, 6 Mar 2025 13:06:04 +0800
-From: Jiayuan Chen <mrpre@163.com>
-To: Cong Wang <xiyou.wangcong@gmail.com>, dongchenchen2@huawei.com
-Cc: Dong Chenchen <dongchenchen2@huawei.com>, edumazet@google.com, 
-	kuniyu@amazon.com, pabeni@redhat.com, willemb@google.com, john.fastabend@gmail.com, 
-	jakub@cloudflare.com, davem@davemloft.net, kuba@kernel.org, horms@kernel.org, 
-	daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	zhangchangzhong@huawei.com, weiyongjun1@huawei.com
-Subject: Re: [PATCH net] bpf, sockmap: Restore sk_prot ops when psock is
- removed from sockmap
-Message-ID: <3jmiqsl2betwyceyrwwuc5hb4amh2olbdgwfhijkmyk3avp42g@f3jdm7wz7pno>
-References: <20250305140234.2082644-1-dongchenchen2@huawei.com>
- <Z8iUG8aTF9Kww09z@pop-os.localdomain>
+	s=arc-20240116; t=1741237738; c=relaxed/simple;
+	bh=r4cqq92u4QrOP26bPzQzQ44NQlShBXBS0KDKN4ZO3aE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jKJW+AAadzgKDn3bnulHoIcucNe0GjEXLEKXKP8a9pfxUMtFMUl7DNdbqJr96MsoRylftaYsWcttLUNXZy+GBJWmDCAXXehn3JtsJiCaP0RTcv+vYabHP1aKaqrFslD/qhHrKsoChH1LFDQxEJMUvmhqfOgzzJALfjLH7A0S8Ms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org; spf=none smtp.mailfrom=deepin.org; dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b=tBPd+AZy; arc=none smtp.client-ip=54.243.244.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=deepin.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=deepin.org;
+	s=ukjg2408; t=1741237663;
+	bh=gXGZGJxxTGiGEquhpVC2RxsSuokp9eU5juqlOjiyPCg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=tBPd+AZy769/Tgtp3Ygvvq16i/fcX4cALb17vjbjcp6WO/1wxCa9uLkEzG405jlkp
+	 ecn2MemzkdYlm5XRlCPQ9NYO87QHjqiEr3u3l05iiSokNg9yFJtliBipkn51O8bvCp
+	 i4prHl49KT1Y7ebdDDGcK85twKwAy8RFdPczVJzI=
+X-QQ-mid: bizesmtp88t1741237654ti749i3s
+X-QQ-Originating-IP: eUplNXEW/+zR+b+IrjvomDkK5HrJhM4U3n06ZpEZ/So=
+Received: from localhost.localdomain ( [113.57.152.160])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 06 Mar 2025 13:07:32 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 6009695757988680814
+From: Chen Linxuan <chenlinxuan@deepin.org>
+To: Sasha Levin <sashal@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Jann Horn <jannh@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	Chen Linxuan <chenlinxuan@deepin.org>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc: stable@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH] lib/buildid: Handle memfd_secret() files in build_id_parse()
+Date: Thu,  6 Mar 2025 13:06:58 +0800
+Message-ID: <0E394E84CB1C5456+20250306050701.314895-1-chenlinxuan@deepin.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z8iUG8aTF9Kww09z@pop-os.localdomain>
-X-CM-TRANSID:_____wAnIKM8LclnR8xMQw--.53729S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxGFW7Cry5AF15AFyxuryxAFb_yoW5WF4rpa
-	95Ka15A3WDJrW2vws3Jw4kXw18Kan3JF1YkF97Xry7Jw4xur1fWr47JayIvF1vyr93C348
-	X39rW3ykXay3ua7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UZ6pQUUUUU=
-X-CM-SenderInfo: xpus2vi6rwjhhfrp/xtbBDwwIp2fJIobgPwAAs5
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:deepin.org:qybglogicsvrgz:qybglogicsvrgz7a-0
+X-QQ-XMAILINFO: M+0YV038q5N1MIWhZIbdnp8w8lLWqZ5KrdpfI4F458ZrmhoYwgAnQbOR
+	PKEJFC7xq+KJJWoWfmJn5KEmihDSWO4461R0WBwXI6lp0ZYwr7YfXFI+sKqzLY2Hhx2ysxo
+	s0U1sqYsoK5iP3rRCxCrQRqUJN7iMUOavKLtxvFUQRA3qJ0xt/1RhhsIN1CNCYLOxgdXL2E
+	hdtr4yda9Fa9ATI0rxojhEOXVp0V1G3ViukYllNhPkn3up9uctLoH4Ww08+27CYqpKrMO9M
+	R+MSr4ZYe0Ay3Df1cJftMJYkyBty556aCPUk3+bpvISWLmDVejfENm0Q7OnueEUDy/ic8cH
+	7JM2L+flfdiq/t4L5s9zanCuHLdK+hIJVQguWGQQo+MpksFJQpEf5oK6Pru6yTwgn+iF2qk
+	XUpZUyJOgzJ+fuw7y6xvKQrxzZivR9GKlbyuMf9evMG7dEILFafuseprhWMqSVvwERj92vA
+	MAA20dQbENRhN9YyV7xEWI0ejQ3IOHIsX61/x89PNDPMVj7OpPmdXcrne+Y5N9+yluoOAfQ
+	mHEbxyxH2nyO3vNp9GVye+SKtdpIS6bt6qDPKIsJenBBF2FE9XRFLrA5Ryiz6D+3qbgl+W3
+	1pBk4AUPaGMqXeKOtrdNXCKNpt+Wa0L8MJWcyr3hpzwexP0ambFf/mwmPsmr3NBdGTqqvL5
+	MUltjNyuRGCmoaf2XlJtunU0a2423vWcwdEN66peBQLorfK3ShXvdn2AUX3MaJq0FXAyz7Z
+	O8m7pzY/nDhnfErgJ1rqiemY7b+5jt31WY8eZfnZXmGz7MGYv+r09JN9kOoBCSPPJjcnPNr
+	+hJuy6ACsicbM6mrRmN91AoDAzEFdNXck7C1nteCan/2rCMa7c73+A9kEuk4J3ucmzRABQ7
+	dUu8EzNl3/QpT93ki5Nk4RPM/iSqH2lK9TSyvUpxgpbE7D1lHw4zngze14dptgiMDFxXNW/
+	JsmZrazv99ykv38mZRhrBqrcAHt15XvqhSjO9iXYigB/qFA==
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+X-QQ-RECHKSPAM: 0
 
-On Wed, Mar 05, 2025 at 10:12:43AM +0800, Cong Wang wrote:
-> On Wed, Mar 05, 2025 at 10:02:34PM +0800, Dong Chenchen wrote:
-> > WARNING: CPU: 0 PID: 6558 at net/core/sock_map.c:1703 sock_map_close+0x3c4/0x480
-> > Modules linked in:
-> > CPU: 0 UID: 0 PID: 6558 Comm: syz-executor.14 Not tainted 6.14.0-rc5+ #238
-> > RIP: 0010:sock_map_close+0x3c4/0x480
-> > Call Trace:
-> >  <TASK>
-> >  inet_release+0x144/0x280
-> >  __sock_release+0xb8/0x270
-> >  sock_close+0x1e/0x30
-> >  __fput+0x3c6/0xb30
-> >  __fput_sync+0x7b/0x90
-> >  __x64_sys_close+0x90/0x120
-> >  do_syscall_64+0x5d/0x170
-> >  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> > 
-> > The root cause is:
-> > sock_hash_update_common
-> >   sock_map_unref
-> >     sock_map_del_link
-> >       psock->psock_update_sk_prot(sk, psock, false);
-> > 	//false won't restore proto
-> >     sk_psock_put
-> >        rcu_assign_sk_user_data(sk, NULL);
-> > inet_release
-> >   sk->sk_prot->close
-> >     sock_map_close
-> >       WARN(sk->sk_prot->close == sock_map_close)
-> > 
-> > When psock is removed from sockmap, sock_map_del_link() still set
-> > sk->sk_prot to bpf proto instead of restore it (for incorrect restore
-> > value). sock release will triger warning of sock_map_close() for
-> > recurse after psock drop.
-> 
-> But sk_psock_drop() restores it with sk_psock_restore_proto() after the
-> psock reference count goes to zero. So how could the above happen?
-> 
-> By the way, it would be perfect if you could add a test case for it 
-> together with this patch (a followup patch is fine too).
-> 
-> Thanks!
-I also have the same question as Cong, and I'll describe it in more detail
-here:
+Backport of a similar change from commit 5ac9b4e935df ("lib/buildid:
+Handle memfd_secret() files in build_id_parse()") to address an issue
+where accessing secret memfd contents through build_id_parse() would
+trigger faults.
 
-'psock->saved_close' is always tcp_close (if your socket is TCP) and will
-not change regardless of whether restore is executed or not. So when
-entering the function sock_map_close() and encountering
-WARN_ON_ONCE(saved_close == sock_map_close), 'saved_close' can only come
-from 'saved_close = READ_ONCE(sk->sk_prot)->close'. This means we obtain 
-sock through psock = sk_psock(sk) and then enter the branch code after
-judging it to be null.
-'''
-sock_map_close()
-{
-	psock = sk_psock(sk);
-	if (likely(psock)) {
-		saved_close = psock->saved_close;
-	} else {
-		saved_close = READ_ONCE(sk->sk_prot)->close;
-	}
-	WARN_ON_ONCE(saved_close == sock_map_close);
-}
-'''
-However, before psock becomes null, we have actually successfully executed
-the restore:
-'''
-void sk_psock_drop(struct sock *sk, struct sk_psock *psock)
-{
-    write_lock_bh(&sk->sk_callback_lock);
-    sk_psock_restore_proto(sk, psock); // restore correctly
-    rcu_assign_sk_user_data(sk, NULL); // set psock null
-   ...
-}
-'''
+Original report and repro can be found in [0].
 
-Passing false to psock_update_sk_prot may be problematic, but it shouldn't
-cause the issue described in the commit message.
-It may be necessary to provide more information on how sockmap is used to
-determine the issue. :)
+  [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation/
 
-Thanks.
+This repro will cause BUG: unable to handle kernel paging request in
+build_id_parse in 5.15/6.1/6.6.
+
+Some other discussions can be found in [1].
+
+  [1] https://lore.kernel.org/bpf/20241104175256.2327164-1-jolsa@kernel.org/T/#u
+
+Cc: stable@vger.kernel.org
+Fixes: 88a16a130933 ("perf: Add build id data in mmap2 event")
+Signed-off-by: Chen Linxuan <chenlinxuan@deepin.org>
+---
+ lib/buildid.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/lib/buildid.c b/lib/buildid.c
+index 9fc46366597e..b78d119ed1f7 100644
+--- a/lib/buildid.c
++++ b/lib/buildid.c
+@@ -157,6 +157,12 @@ int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
+ 	if (!vma->vm_file)
+ 		return -EINVAL;
+ 
++#ifdef CONFIG_SECRETMEM
++	/* reject secretmem folios created with memfd_secret() */
++	if (vma->vm_file->f_mapping->a_ops == &secretmem_aops)
++		return -EFAULT;
++#endif
++
+ 	page = find_get_page(vma->vm_file->f_mapping, 0);
+ 	if (!page)
+ 		return -EFAULT;	/* page not mapped */
+-- 
+2.48.1
 
 
