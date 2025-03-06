@@ -1,289 +1,187 @@
-Return-Path: <bpf+bounces-53450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53452-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 914EEA54176
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 04:55:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADC71A5419D
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 05:22:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEFB47A7479
-	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 03:54:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C738716D344
+	for <lists+bpf@lfdr.de>; Thu,  6 Mar 2025 04:22:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF3E19C574;
-	Thu,  6 Mar 2025 03:54:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F9619AD70;
+	Thu,  6 Mar 2025 04:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LJ7MAbx+"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="e52ri+gM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD2819C540
-	for <bpf@vger.kernel.org>; Thu,  6 Mar 2025 03:54:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E11718C337
+	for <bpf@vger.kernel.org>; Thu,  6 Mar 2025 04:21:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741233285; cv=none; b=T8pyapVvIJ95BrhhF9MSjrpywAoZBcBmlDz24anc9aQg4zrq+WAIxpFtZtdJvDgQzjStU9Fg9BVqv2vAYWryJ/TXi1/k6g9tjrF+xjCOUrIsIFUpVCH+kNk8fCKbrC7m3cTwTw3Pg9wH5jgSQiwcyXoimwEWyq7eg1wGt8BYXMg=
+	t=1741234919; cv=none; b=B8S7jmXAp9DuzRVSuPUCiS8aA8vOC2qEyD2vGHH6/vz9nyhda69dnNsPGz+7R1ZD0aiAeKVaUzNYTHEjniqUmppJu9Rj9E+/Lt53rEKmKaDwBqpOrxGtOiLU2xf3VXyZetdrikOjE8mnBlBMklEYiBf+GEXhaLkfBM50JbFSn1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741233285; c=relaxed/simple;
-	bh=ruwllVcxVR8hL7pZvqgC0ju7e3nf8kxM438AdoWXkZ8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YCt/pROd/TLwetZ0qsR1s1GCmX78locZSJg30GmADcJLZT7ISi/RXJkU/gtwGz3s41xYrVpWdtkR30nFdPSvP+sBaoV4x10Vn9aoDRNH7ElgjWVgacd3u/maYUrvxWgk4+vOP9dI3OKQVdDEgEsmckp+ugMb97NmdKRhWewUOMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LJ7MAbx+; arc=none smtp.client-ip=209.85.128.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-43bc31227ecso705945e9.1
-        for <bpf@vger.kernel.org>; Wed, 05 Mar 2025 19:54:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741233280; x=1741838080; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sz1udnkrVf7H1EVKSlcz18+3nTTqlgb9md15hm7hieg=;
-        b=LJ7MAbx+1mNNf20bnGYXugKa1kKpGXUNwTK6Vc6xwlO/hdGhs+lClV4AeR6SAItfZL
-         whVHe63LWdLMzGNaN/dqv+NxUt0a/DpaOD/Iedm2bUMs3ZU8AKuNwSyINux+PkKgzPxd
-         3fAx69KepoVw9lf8YnUuovTyxrPyTqy8Xl74UDUQqVV/B9DRm/s61qgm2lhSFHe8o2NJ
-         5Epf87+PmFgRrHudLA9UURKwD4Rv2n/BLrnuRKywD7A86hokMbPqZm/XEN4c5lf/gQwL
-         raZfDQylgjCSU2OA8DIZ+6OwG8nmDjOIQR7J2+//d2jbicklpRK8+ZrbmDBS8vB4z1xM
-         /v8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741233280; x=1741838080;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sz1udnkrVf7H1EVKSlcz18+3nTTqlgb9md15hm7hieg=;
-        b=OzyJT4xSy9HwpR6rnww0/Q0lZ8iT4NJUFg23WeYea4mshzryC0hI1g0PSbmo74Hlwj
-         7/gqVaM2Z7Oa/N1b9zPa84zKwiBzV5+v00ofcD2UZn2IBoXwlMm5QD8eIXggiuBQmlkK
-         BxSgLgyIFgJURHggemYNk/BUHGy9IXmBjingLKgcjgqSNgdgRmZKNccMFxVMxClFjJth
-         FWnSG39F1fq0ip5YXeEAwc/mrpMvECqg8KXlR1xMYbZxiORcafP2LmZrA5h4/GVbvgKW
-         ACRxvNu+BkewaKaOGS7SQfhQ5NUVFKYk67HIkdPm/T699BgaaRyPz6KaNi6RpEwLmd3H
-         h5mQ==
-X-Gm-Message-State: AOJu0YwecHpTp1H8pYeYZrVgct90/NGlZngr0XNhv2Hq0sU6CImTMrnM
-	DzXIjE93x4/hU4+EiS75PV8OZ3KkK+ysVQNt5CboOjNwUK/Eic0Vc+lU+5yTY1o=
-X-Gm-Gg: ASbGncvbwiUDgXjFH9iXkYeXdwI2vXQuKIseuEgL4DFe340Q2NpIun+AmiBUjol6qgz
-	v+fK2gszfiR8hGwIM0gE3JaAgYKcd1c/LkhPiUQUHDj+yJMu36cfqhx4EZOfUpIoc9RGesRA24z
-	TIFqM+AE82MT8MNaLrCE+wWjg45EHgzLVrhbgjOjRG5GtnNObTGkIVx+IjMw2S5wCgX/hF4QSrA
-	GqeNNQzEHfqbhIVaVA3yTVfYqlYMLzjKA5WboJJPEvbISNec2nVdZjdtM3mQdg7Z4gRFj9wuaxP
-	U/3+WMDw9DVnFXk6sxBsFDPnYLt2cUCw4Us=
-X-Google-Smtp-Source: AGHT+IH/m4LMrbzqGX+Wi+gEqFbYlpVHelphUQBPJddZQ0fnBxlJePuyLTGK47vPWGPH25es+sLwSA==
-X-Received: by 2002:a05:6000:2d0a:b0:390:e8d4:6517 with SMTP id ffacd0b85a97d-3911f740ccamr3653881f8f.21.1741233280036;
-        Wed, 05 Mar 2025 19:54:40 -0800 (PST)
-Received: from localhost ([2a03:2880:31ff:48::])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912c0e2b6asm556692f8f.66.2025.03.05.19.54.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Mar 2025 19:54:39 -0800 (PST)
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+	s=arc-20240116; t=1741234919; c=relaxed/simple;
+	bh=k1oeK3pvC1DWhYVUI/+gn5QuO8FyTWbVSdIBCg4KbDs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=elSiLSj6EnsOXxHMP+OjRZaJuAWtStGo3TxmSoKdObxRHSuRiFRgfj2XEmLNmXlV/LJMn7QDMsWSvofa0d86nUyU65vLxYYvjLgP+xGwU9JptiPH/sAYMJb9qYIQ028V2UTNnE7cLkmrISTxaJ2mxfIcFd7VZPJp3EtUmGj+70E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=e52ri+gM; arc=none smtp.client-ip=74.208.4.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1741234913; x=1741839713; i=linux@jordanrome.com;
+	bh=YSzjZsGurb7cFOuiOUaXQeLPSDmqRR5nIL4MOGPXFvk=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=e52ri+gMktIGTg6bFPaw+ktAcQ6GXL8GQx9q5K5QwAA7cUMk+qwThZD7BohnSxsv
+	 CKDKaiZ0UjRcLgFFKbdle5YJH59laHNH/grXYjYOP/qoCOvMlQJLyYajEb9Mtk1jR
+	 CIMzYgaB1reL957hh07Tq9zHJJ9WdjvMhi6mC8CPtggil6JBwlODtY2k80L/CC0/P
+	 MSyCfFxXQNaVykr+TW/QTnLZBXGDAotqzdFte2sNkChZ/Trbn7dOtgGFFz9DGNa3R
+	 sU2q4arL4NM2Ho1inGM9xgp/OSqzDDhoBmxPmqWqi27/5qnqpSoW5m/ynf9n370ZV
+	 50YiRODfUh7bGpck4g==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from localhost ([69.171.251.4]) by mrelay.perfora.net (mreueus003
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 0Lmae5-1tHFbj14pX-00ZLyd; Thu, 06 Mar
+ 2025 05:08:04 +0100
+From: Jordan Rome <linux@jordanrome.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Tejun Heo <tj@kernel.org>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
-	Barret Rhoden <brho@google.com>,
-	Josh Don <joshdon@google.com>,
-	Dohyun Kim <dohyunkim@google.com>,
-	kkd@meta.com,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next v5 3/3] selftests/bpf: Add tests for arena spin lock
-Date: Wed,  5 Mar 2025 19:54:31 -0800
-Message-ID: <20250306035431.2186189-4-memxor@gmail.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250306035431.2186189-1-memxor@gmail.com>
-References: <20250306035431.2186189-1-memxor@gmail.com>
+	Andrii Nakryiko <andrii@kernel.org>,
+	Kernel Team <kernel-team@fb.com>
+Subject: [bpf-next v2] bpf: adjust btf load error logging
+Date: Wed,  5 Mar 2025 20:07:56 -0800
+Message-ID: <20250306040756.3191271-1-linux@jordanrome.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5069; h=from:subject; bh=ruwllVcxVR8hL7pZvqgC0ju7e3nf8kxM438AdoWXkZ8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBnyRLAlOXcH90ljv5gtq6dUVqpXpdbfWdwl4gw0onq P9LtKZyJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ8kSwAAKCRBM4MiGSL8RysI/EA DB94Ih+0NetzrukimHRDdyBBiMWwt2b+iR2NHF4mCYvcVyGrBxv68JdhTHKBtrdYy8dFpk8L6v7y0w 69TPNz7LCXxzZ6FMcbryZppp96EslrQT7DmdoZ+KOQvEn3cJb0GtdMwAN2QXxIegSCjn41+q0KHYFU vOOtofTebB6Ig1n9ZPKrNpMhHfP+6bnJtr1+35M50zQa+xsSNmWna/fFPiCT3445O/Bbk2dpmWpCYq NIVspr81pTFZVOkrY0n8YPgXv9te715XxCWdgTHA2sCO/mOhUlMvAlcvjEWd5oBKlqxwq5igSRAG7A g18UkxaZ5R3EUhGxGcPHXCALg6tDBBgUbrKSrVks9NRbDv2qO4P/mlYb0AiF/2eX6a6+RjuwEi7Tsg /AilnkwlDu0jczfgCyPCmZXmlzv3TdkTY53a2R9SpRhtgzeEDjB3abEZ/gY/mLLZ9O1U5obro8LQe5 Scnj5KKw+rHjDPQZwofhFPYMrrE6wYzQg5EUfR8FtXucTu7X323lKWJIpAcJ3bN6eYWRTZ3K5akVdL HGCz3TkJTAXLR9SeiWv4k+Y1dbTvjQftOHueWSc6MO67OWdkMka8Ff0mwE/GK2Wfpt8GeghTX9gVtb +tSHkzKDdlaQd1gO8v0BRXxumr2OKLjVCc6Mq0N4V53mDROrvG3FZsXMB0cw==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:MStJzM0ffWVcN6c+22nRn701o15dKeSObrQBKUAZfxP5MsT7ZXC
+ QJwZOj+H/N6ELprX8Wlt1lhjqfKZfrMv0T+j3/Ep+QVvVeJ2chEnUediigdyA4Z8qq/sVYv
+ mCQf9e1wcb5VRNrz3j76vcnSYwVTZppaN8u26w1qQYkoItZoO6KhTkeyRj5Hqah8lZzCzWQ
+ WCBlqRoMJdP7ruwnFO9tg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:HSE4WlpFLHs=;fUgF6sOvURvpXud7Gcvj+yDiPEe
+ R6LMdK+7NDSI91khPoxoDfqBWtRlVBzU2u1cdrSv+qKHs9xyqXqYOGLC9aCguCy+fwRRl4K3X
+ /WCehBGvKaAiMIRoYDWpg2FtoNP7hyIotYUPUIHoJl05TluL8UFyposzbgObNaqWHxiqZRCGQ
+ EklnDY4YFIV+1TbJ/ikNuU+JVdHCVXjdfXwlTkMckyVmTivyt4DMLYlc5tqDvaINxkiXy5f6T
+ mVSOZDfZosI6U0qGxbFxfDJHltLd5i84tzgqkY3TMddpBL+UutMLuGoqHevilfCAmOo7W+cOn
+ oEKBtOt4JhCm+qemzSYwZpv7OTIqA7pXszs45Yc7CLRbPIIemz9UjF8ADVzAld2uSRqlR3fkH
+ WK/QGGoQqLjLa15UGJHRnM9LyzdMan4OlPkkhpF33CyK44I+TK1lsGdv10QuwoCtQytMbMlIb
+ tiMEJPLP4fabqD7XxxcGp9GR+wi/JqRpSu6HWw7nlfH36rz2wvbil0cdEcgCDOuJLj5CV3ua+
+ AUuwgHT9ZGkcqPOX1qvAlhd4jLEMt3ZmcaJaNxe1ckJQ+ot8svSuLzJW3dOHc9AUHMuzKj9sn
+ wJc2cliI6q7xR9P1XmntQsLHcamW8vth6uBul8pzkGKwf40dUZ8lMmpSjVh4p+WqMuerCSJ8r
+ fEe1Q+G8UNihcBH886Ab1lNJWLyuwI3YhPW+QACXNpf0ieZeq1Sm+3g6Sy+76JZiJQwtz2/Db
+ xsksuDCBqMD2T2MsNp5cYSBkpY9xbk/41WUayg3qAVZPx8WOJ/XjgDRtY2+lgET5lXy7GdI9o
+ lC7jPvsWXin84YfzBT172xIgFOd9wwqT+FviqaBSKLdpiOxvpHkjUxCzYcDt8Pe9KlAETez05
+ QjZmVC9DGvZZYkPD/lyucXJjh9jyENhhKxseSq9AGa3/6DU9BgLKU8GehyNPglfYuXW0JM4WQ
+ I2YPhpTz/0hkQC0oUf523HFBuPFParN2APGSZCrZajWy31s71egS9nTcnS5Muv/ryZatjmDHW
+ RF4jEi55i+V5WAtdcFDLuvaXgyDMGbDmp9M3Z8quVrqNEkGMzalA9jk8hptRfPJBzhCHXy8kA
+ eHYftkgX6SfjgmH9UZjqajGCVDyGZhnuoHo5UB/RM8kyIT+KDK+As2mwbNwHdPodKAhcOW9lR
+ BT03nMqJq9GXxTYBFheO7XDOz1tLTo+mDqu1G47JTt2QrNR6YwRnKPUNo6Mo0jl4xRpHldGI0
+ MjfiBBJFb80YoakAI3jg2rPXeyUuTFgN+OpJwAv0/Z9/XXRGrziHWjRyjZIS4Ue6O4pGxKyB6
+ 2ShoIc7CSBoJtARh49FLewq85w8NxPh6cFsnbBM5qyEa+0=
 
-Add some basic selftests for qspinlock built over BPF arena using
-cond_break_label macro.
+For kernels where btf is not mandatory
+we don't need to log btf loading errors
+if a log buf is not provided and the
+log_level is 0. This is unneeded noise.
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../bpf/prog_tests/arena_spin_lock.c          | 108 ++++++++++++++++++
- .../selftests/bpf/progs/arena_spin_lock.c     |  51 +++++++++
- 2 files changed, 159 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
- create mode 100644 tools/testing/selftests/bpf/progs/arena_spin_lock.c
+Signed-off-by: Jordan Rome <linux@jordanrome.com>
+=2D--
+ tools/lib/bpf/btf.c             | 11 ++++++-----
+ tools/lib/bpf/libbpf.c          |  3 ++-
+ tools/lib/bpf/libbpf_internal.h |  2 +-
+ 3 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
-new file mode 100644
-index 000000000000..bc3616ba891c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/arena_spin_lock.c
-@@ -0,0 +1,108 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include <sys/sysinfo.h>
-+
-+struct qspinlock { int val; };
-+typedef struct qspinlock arena_spinlock_t;
-+
-+struct arena_qnode {
-+	unsigned long next;
-+	int count;
-+	int locked;
-+};
-+
-+#include "arena_spin_lock.skel.h"
-+
-+static long cpu;
-+static int repeat;
-+
-+pthread_barrier_t barrier;
-+
-+static void *spin_lock_thread(void *arg)
-+{
-+	int err, prog_fd = *(u32 *)arg;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.repeat = repeat,
-+	);
-+	cpu_set_t cpuset;
-+
-+	CPU_ZERO(&cpuset);
-+	CPU_SET(__sync_fetch_and_add(&cpu, 1), &cpuset);
-+	ASSERT_OK(pthread_setaffinity_np(pthread_self(), sizeof(cpuset), &cpuset), "cpu affinity");
-+
-+	err = pthread_barrier_wait(&barrier);
-+	if (err != PTHREAD_BARRIER_SERIAL_THREAD && err != 0)
-+		ASSERT_FALSE(true, "pthread_barrier");
-+
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run err");
-+	ASSERT_EQ((int)topts.retval, 0, "test_run retval");
-+
-+	pthread_exit(arg);
-+}
-+
-+static void test_arena_spin_lock_size(int size)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+	struct arena_spin_lock *skel;
-+	pthread_t thread_id[16];
-+	int prog_fd, i, err;
-+	void *ret;
-+
-+	if (get_nprocs() < 2) {
-+		test__skip();
-+		return;
-+	}
-+
-+	skel = arena_spin_lock__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "arena_spin_lock__open_and_load"))
-+		return;
-+	if (skel->data->test_skip == 2) {
-+		test__skip();
-+		goto end;
-+	}
-+	skel->bss->cs_count = size;
-+	skel->bss->limit = repeat * 16;
-+
-+	ASSERT_OK(pthread_barrier_init(&barrier, NULL, 16), "barrier init");
-+
-+	prog_fd = bpf_program__fd(skel->progs.prog);
-+	for (i = 0; i < 16; i++) {
-+		err = pthread_create(&thread_id[i], NULL, &spin_lock_thread, &prog_fd);
-+		if (!ASSERT_OK(err, "pthread_create"))
-+			goto end_barrier;
-+	}
-+
-+	for (i = 0; i < 16; i++) {
-+		if (!ASSERT_OK(pthread_join(thread_id[i], &ret), "pthread_join"))
-+			goto end_barrier;
-+		if (!ASSERT_EQ(ret, &prog_fd, "ret == prog_fd"))
-+			goto end_barrier;
-+	}
-+
-+	ASSERT_EQ(skel->bss->counter, repeat * 16, "check counter value");
-+
-+end_barrier:
-+	pthread_barrier_destroy(&barrier);
-+end:
-+	arena_spin_lock__destroy(skel);
-+	return;
-+}
-+
-+void test_arena_spin_lock(void)
-+{
-+	repeat = 1000;
-+	if (test__start_subtest("arena_spin_lock_1"))
-+		test_arena_spin_lock_size(1);
-+	cpu = 0;
-+	if (test__start_subtest("arena_spin_lock_1000"))
-+		test_arena_spin_lock_size(1000);
-+	cpu = 0;
-+	repeat = 100;
-+	if (test__start_subtest("arena_spin_lock_50000"))
-+		test_arena_spin_lock_size(50000);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/arena_spin_lock.c b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
-new file mode 100644
-index 000000000000..c4500c37f85e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/arena_spin_lock.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+#include "bpf_arena_spin_lock.h"
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARENA);
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+	__uint(max_entries, 100); /* number of pages */
-+#ifdef __TARGET_ARCH_arm64
-+	__ulong(map_extra, 0x1ull << 32); /* start of mmap() region */
-+#else
-+	__ulong(map_extra, 0x1ull << 44); /* start of mmap() region */
-+#endif
-+} arena SEC(".maps");
-+
-+int cs_count;
-+
-+#if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+arena_spinlock_t __arena lock;
-+int test_skip = 1;
-+#else
-+int test_skip = 2;
-+#endif
-+
-+int counter;
-+int limit;
-+
-+SEC("tc")
-+int prog(void *ctx)
-+{
-+	int ret = -2;
-+
-+#if defined(ENABLE_ATOMICS_TESTS) && defined(__BPF_FEATURE_ADDR_SPACE_CAST)
-+	unsigned long flags;
-+
-+	if ((ret = arena_spin_lock_irqsave(&lock, flags)))
-+		return ret;
-+	if (counter != limit)
-+		counter++;
-+	bpf_repeat(cs_count);
-+	ret = 0;
-+	arena_spin_unlock_irqrestore(&lock, flags);
-+#endif
-+	return ret;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.47.1
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index eea99c766a20..64af279c36d9 100644
+=2D-- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -1379,7 +1379,7 @@ static void *btf_get_raw_data(const struct btf *btf,=
+ __u32 *size, bool swap_endi
+
+ int btf_load_into_kernel(struct btf *btf,
+ 			 char *log_buf, size_t log_sz, __u32 log_level,
+-			 int token_fd)
++			 int token_fd, bool btf_mandatory)
+ {
+ 	LIBBPF_OPTS(bpf_btf_load_opts, opts);
+ 	__u32 buf_sz =3D 0, raw_size;
+@@ -1436,7 +1436,7 @@ int btf_load_into_kernel(struct btf *btf,
+ 	btf->fd =3D bpf_btf_load(raw_data, raw_size, &opts);
+ 	if (btf->fd < 0) {
+ 		/* time to turn on verbose mode and try again */
+-		if (log_level =3D=3D 0) {
++		if (log_level =3D=3D 0 && btf_mandatory) {
+ 			log_level =3D 1;
+ 			goto retry_load;
+ 		}
+@@ -1447,10 +1447,11 @@ int btf_load_into_kernel(struct btf *btf,
+ 			goto retry_load;
+
+ 		err =3D -errno;
+-		pr_warn("BTF loading error: %s\n", errstr(err));
+ 		/* don't print out contents of custom log_buf */
+-		if (!log_buf && buf[0])
++		if (!log_buf && buf[0]) {
++			pr_warn("BTF loading error: %s\n", errstr(err));
+ 			pr_warn("-- BEGIN BTF LOAD LOG ---\n%s\n-- END BTF LOAD LOG --\n", buf=
+);
++		}
+ 	}
+
+ done:
+@@ -1460,7 +1461,7 @@ int btf_load_into_kernel(struct btf *btf,
+
+ int btf__load_into_kernel(struct btf *btf)
+ {
+-	return btf_load_into_kernel(btf, NULL, 0, 0, 0);
++	return btf_load_into_kernel(btf, NULL, 0, 0, 0, true);
+ }
+
+ int btf__fd(const struct btf *btf)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 8e32286854ef..2cb3f067a12e 100644
+=2D-- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3604,9 +3604,10 @@ static int bpf_object__sanitize_and_load_btf(struct=
+ bpf_object *obj)
+ 		 */
+ 		btf__set_fd(kern_btf, 0);
+ 	} else {
++		btf_mandatory =3D kernel_needs_btf(obj);
+ 		/* currently BPF_BTF_LOAD only supports log_level 1 */
+ 		err =3D btf_load_into_kernel(kern_btf, obj->log_buf, obj->log_size,
+-					   obj->log_level ? 1 : 0, obj->token_fd);
++					   obj->log_level ? 1 : 0, obj->token_fd, btf_mandatory);
+ 	}
+ 	if (sanitize) {
+ 		if (!err) {
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_intern=
+al.h
+index de498e2dd6b0..f1de2ba462c3 100644
+=2D-- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -408,7 +408,7 @@ int libbpf__load_raw_btf(const char *raw_types, size_t=
+ types_len,
+ 			 int token_fd);
+ int btf_load_into_kernel(struct btf *btf,
+ 			 char *log_buf, size_t log_sz, __u32 log_level,
+-			 int token_fd);
++			 int token_fd, bool btf_mandatory);
+
+ struct btf *btf_get_from_fd(int btf_fd, struct btf *base_btf);
+ void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
+=2D-
+2.43.5
 
 
