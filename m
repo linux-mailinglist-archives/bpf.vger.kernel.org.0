@@ -1,184 +1,148 @@
-Return-Path: <bpf+bounces-53562-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53563-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BEE7A5665F
-	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 12:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EE901A566AE
+	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 12:27:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC9821891C2B
-	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 11:14:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E611188AB5A
+	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 11:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96BCD2153EC;
-	Fri,  7 Mar 2025 11:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6945C218587;
+	Fri,  7 Mar 2025 11:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="GuRpm84s";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XT4LquRz"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZfT9wrkP"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a8-smtp.messagingengine.com (fhigh-a8-smtp.messagingengine.com [103.168.172.159])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75BF20ADF8;
-	Fri,  7 Mar 2025 11:14:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43862215197;
+	Fri,  7 Mar 2025 11:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741346065; cv=none; b=XonKUcrxCg6irLTp6N0mF+8XTuo+dZ31CM6RDFMvJv4VhhoESHPXt46irNrzksv60c8idcoy0A6HxUz7PCJyrkS7ePDofdG4PcwJfI/blE+gxe9BoJpmFk5NltAMS5/WK5NnIm7wVPnBIn8Zri3e8iL14EiSio1zGXJet5KaqGQ=
+	t=1741346779; cv=none; b=HHjWnkRB64hxc1Pm2jjOhi2mTaAizYXENtZvSig5rG65dqQqOikY3qL9RJL7iucJldJbI7LYI7fCKGGm2Qw4ZzA4Df/VyF1/kxK5GKHJELa55QcOoEvenJ0XCmUOsbo8Qm/Kl+SppX9fjocApfFdY6zROptpZFjI19jxV0wb8MY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741346065; c=relaxed/simple;
-	bh=qfwuaRi7jQfdY/tsJPohHR9MdAZm45tyyvJhRd0avUg=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=u+dBB3meGAmonbxbZQkS5uc/Jjop5rjeCMVgIiCsXiaUSNdc2zfLhzSzlJgotOXaTRU6PW/zO4P7zNsqTiPaAyj2iUVBECPHvMIGXX0k8JQIzDI+yAKpu1SH+WxkKOH7Rc9RPHIlCsqyJ5sYb2ru0N2zByDxlP6v9IRFW6PEn30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=GuRpm84s; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XT4LquRz; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arthurfabre.com
-Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id A53E31140151;
-	Fri,  7 Mar 2025 06:14:21 -0500 (EST)
-Received: from phl-imap-13 ([10.202.2.103])
-  by phl-compute-02.internal (MEProxy); Fri, 07 Mar 2025 06:14:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arthurfabre.com;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
-	 t=1741346061; x=1741432461; bh=EfCYmpAv0890CPAQyase3pDIXfpfpyZd
-	dxSR3YcnDrg=; b=GuRpm84svF4xfersuDdEpnketDmpHI37dVhrUHjL6IEnjG1U
-	g8o/6qyjUInBTQkKNs9kVM8kPkdvyWHk/5mt5WXsKAAfuRKuMpjNmFTUJ8CfCgtp
-	+8ItxDTPFUtxI3IZJtWi3gHpL1cRcOMV6+a05edrMnjdN94crAEjRzeYilmBQDGB
-	ogqo1nfcNlONmHFj0pnFKPMmdzcq5ysxEw0T37re9ybEIfrjLOR/NbfejGxzvGz9
-	Sfn2Duj2u7I35Uf35ew1Fs6EabSh7kIMXtFnrL0dktezCbs47i8slvyhSKVnDX90
-	YDk8kJXW1ydGfCZc0uwxXvY6ZUEE9vDzq5UVeA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1741346061; x=
-	1741432461; bh=EfCYmpAv0890CPAQyase3pDIXfpfpyZddxSR3YcnDrg=; b=X
-	T4LquRzsrsgZrxLe6WXGlDPJT3/MB7s23UumPIPxmad2JlCj6F4u+kNq2r3kNEUI
-	76mBPhZ7U6nMK0R644qpR2cmWsQXiGMvGZgeSTcLZqZz6foizUQ0bWUuizIRQ1za
-	BZWECyCEwkX1XG7GIZVlUsALIenxEpAoAjuPQkEbxreNnQTR2aEIvN/g7DfbfLRh
-	YsICyT/0S2XQPAO/ewTVnXaFuLHy5UlL6ntc7FtChBgxcR+qw6Su+s8qqvmc6hPo
-	Iq5omdDEkriaSfUHiG8mHevRXdhRQHc8BGRsuzTa22BtoDFxlKg+mjfAKdbuUNEi
-	o0y32GJwN04cVA4S2X/RA==
-X-ME-Sender: <xms:DdXKZwJgidbyK1Wxh-Wfkg60rMB-7wF8zDU9RgtAn5Xz1nTgf6Ucug>
-    <xme:DdXKZwLJjUpXxgdGDLaEox4_yXEf6UpSyGz00DlolS0Vg9NU7JylKrvqZHRnGgxvl
-    -IygnvBUuzDmORrofA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduuddtheduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepofgggfgtfffkvefuhffvofhfjgesthhqredt
-    redtjeenucfhrhhomhepfdetrhhthhhurhcuhfgrsghrvgdfuceorghrthhhuhhrsegrrh
-    hthhhurhhfrggsrhgvrdgtohhmqeenucggtffrrghtthgvrhhnpefhfeejgefhhffhveel
-    teehhfffheffvdettdelgfeltefhteelveeuffetfffgjeenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhthhhurhesrghrthhhuhhrfhgr
-    sghrvgdrtghomhdpnhgspghrtghpthhtohepuddtpdhmohguvgepshhmthhpohhuthdprh
-    gtphhtthhopegrfhgrsghrvgestghlohhuughflhgrrhgvrdgtohhmpdhrtghpthhtohep
-    jhgrkhhusgestghlohhuughflhgrrhgvrdgtohhmpdhrtghpthhtohepjhgsrhgrnhguvg
-    gsuhhrghestghlohhuughflhgrrhgvrdgtohhmpdhrtghpthhtohephigrnhestghlohhu
-    ughflhgrrhgvrdgtohhmpdhrtghpthhtoheprghlvgigvghirdhsthgrrhhovhhoihhtoh
-    hvsehgmhgrihhlrdgtohhmpdhrtghpthhtohephhgrfihksehkvghrnhgvlhdrohhrghdp
-    rhgtphhtthhopehlsghirghntghonhesrhgvughhrghtrdgtohhmpdhrtghpthhtohepth
-    hhohhilhgrnhgusehrvgguhhgrthdrtghomhdprhgtphhtthhopegsphhfsehvghgvrhdr
-    khgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:DdXKZwu6LiJBbw6dgmkblDUd333FNdMZmzrbA5-GRL8rBzZVcnuX9Q>
-    <xmx:DdXKZ9aEEtonO2SklVfwgUv7N7cR4KdqXUfGpvzbs9KHCug9NdrCOg>
-    <xmx:DdXKZ3aXxsLHv4ZZyvmniWvAKMEARHip6YXahTfZIHvFZSVyF4ymZQ>
-    <xmx:DdXKZ5AdUdAVBWmZtotiUUfn6YgHysjR9Db630NFctgttyNDOnyehg>
-    <xmx:DdXKZxmHyhHmIti5layRQmehAJzxrtuJxQ8Sv1gNrhiht76FLN_cdi0Y>
-Feedback-ID: i9179493c:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 600431F00072; Fri,  7 Mar 2025 06:14:21 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1741346779; c=relaxed/simple;
+	bh=IRGd/73/547JbPgxOPTPAv9MDN91O+zWBBkgec1T5PM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RV3jb9j4dq4OEfQ++/gJPOXeB/H119/sps9vo+ZXdgNZpoB/ALF4OzLBov1cpOUYK8LjnG1UAyC9q8pcK/9PYlfPxi7+EXrDmRurgZQ3hs1p48BbKoCKipQV99c0i+nRumSDa+RS4D4i8CfZyjW2B5ewlUAk7x0axFs783eeL9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZfT9wrkP; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741346778; x=1772882778;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=IRGd/73/547JbPgxOPTPAv9MDN91O+zWBBkgec1T5PM=;
+  b=ZfT9wrkP7yX8TH16Ym4ahcJ/BP5iWSetMCIK7Uf3qtoxyXFnZJ+R56g4
+   E93Gide/UGHNTF18fQWov90qYU62Q37FDzEI+cIV0qK8idhini/W5f3uB
+   qoLAAG3iqC6rxkuZnNldPq5h4ZBYwggONqpRnoSaooYt7ol6wD9H9juK4
+   JeNROQDgV6Nk05pfSWwIXuuvv8f2zy0J+XymV3gCVnLBLzEMDtrTa1bkw
+   ugT+WK5UMXiPjNtvgRaYgjwLD8t4exCk/xG/sQlsv/MaKQtlNnzjEIf1C
+   sFBDyJ9nk15KghGhkvm5L6OEttg2JeLhnC+hYUGgFYhXrWpFxaU3SvUf6
+   Q==;
+X-CSE-ConnectionGUID: YobadY4ITa2bLyH1scJmEA==
+X-CSE-MsgGUID: uBF00zRXTk2GoIhuGCt6MA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11365"; a="52598946"
+X-IronPort-AV: E=Sophos;i="6.14,229,1736841600"; 
+   d="scan'208";a="52598946"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2025 03:26:15 -0800
+X-CSE-ConnectionGUID: MhGzflfcR5uwjOmgTHfi1w==
+X-CSE-MsgGUID: RXDB3iloTN6BhM+AbCLNOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,229,1736841600"; 
+   d="scan'208";a="123891784"
+Received: from mohdfai2-mobl.gar.corp.intel.com (HELO [10.247.100.177]) ([10.247.100.177])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2025 03:26:08 -0800
+Message-ID: <152e48f6-e68d-4de4-8170-3f35df1ddd1d@linux.intel.com>
+Date: Fri, 7 Mar 2025 19:26:05 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 07 Mar 2025 12:14:20 +0100
-Message-Id: <D89ZNSJCPNUA.20V16A9FXJ54J@arthurfabre.com>
-Cc: "Network Development" <netdev@vger.kernel.org>, "bpf"
- <bpf@vger.kernel.org>, "Jakub Sitnicki" <jakub@cloudflare.com>, "Jesper
- Dangaard Brouer" <hawk@kernel.org>, "Yan Zhai" <yan@cloudflare.com>,
- <jbrandeburg@cloudflare.com>, =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
- <thoiland@redhat.com>, <lbiancon@redhat.com>, "Arthur Fabre"
- <afabre@cloudflare.com>
-Subject: Re: [PATCH RFC bpf-next 01/20] trait: limited KV store for packet
- metadata
-From: "Arthur Fabre" <arthur@arthurfabre.com>
-To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-X-Mailer: aerc 0.17.0
-References: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com> <20250305-afabre-traits-010-rfc2-v1-1-d0ecfb869797@cloudflare.com> <CAADnVQ+OShaA37-=B4-GWTQQ8p4yPw3TgYLPTkbHMJLYhr48kg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+OShaA37-=B4-GWTQQ8p4yPw3TgYLPTkbHMJLYhr48kg@mail.gmail.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iwl-next v8 08/11] igc: add support to set
+ tx-min-frag-size
+To: Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S . Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Simon Horman <horms@kernel.org>, Russell King <linux@armlinux.org.uk>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Furong Xu <0x1207@gmail.com>,
+ Russell King <rmk+kernel@armlinux.org.uk>,
+ Serge Semin <fancer.lancer@gmail.com>,
+ Xiaolei Wang <xiaolei.wang@windriver.com>,
+ Suraj Jaiswal <quic_jsuraj@quicinc.com>,
+ Kory Maincent <kory.maincent@bootlin.com>, Gal Pressman <gal@nvidia.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>,
+ Choong Yong Liang <yong.liang.choong@linux.intel.com>,
+ Chwee-Lin Choong <chwee.lin.choong@intel.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+ intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+References: <20250305130026.642219-1-faizal.abdul.rahim@linux.intel.com>
+ <20250305130026.642219-1-faizal.abdul.rahim@linux.intel.com>
+ <20250305130026.642219-9-faizal.abdul.rahim@linux.intel.com>
+ <20250305130026.642219-9-faizal.abdul.rahim@linux.intel.com>
+ <20250306004301.evw34gqoyll36mso@skbuf>
+Content-Language: en-US
+From: "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
+In-Reply-To: <20250306004301.evw34gqoyll36mso@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri Mar 7, 2025 at 7:36 AM CET, Alexei Starovoitov wrote:
-> On Wed, Mar 5, 2025 at 6:33=E2=80=AFAM <arthur@arthurfabre.com> wrote:
-> >
-> > +struct __trait_hdr {
-> > +       /* Values are stored ordered by key, immediately after the head=
-er.
-> > +        *
-> > +        * The size of each value set is stored in the header as two bi=
-ts:
-> > +        *  - 00: Not set.
-> > +        *  - 01: 2 bytes.
-> > +        *  - 10: 4 bytes.
-> > +        *  - 11: 8 bytes.
->
-> ...
->
-> > +        *  - hweight(low) + hweight(high)<<1 is offset.
->
-> the comment doesn't match the code
->
-> > +        */
-> > +       u64 high;
-> > +       u64 low;
->
-> ...
->
-> > +static __always_inline int __trait_total_length(struct __trait_hdr h)
-> > +{
-> > +       return (hweight64(h.low) << 1) + (hweight64(h.high) << 2)
-> > +               // For size 8, we only get 4+2=3D6. Add another 2 in.
-> > +               + (hweight64(h.high & h.low) << 1);
-> > +}
->
-> This is really cool idea, but 2 byte size doesn't feel that useful.
-> How about:
-> - 00: Not set.
-> - 01: 4 bytes.
-> - 10: 8 bytes.
-> - 11: 16 bytes.
->
-> 4 byte may be useful for ipv4, 16 for ipv6, and 8 is just a good number.
-> And compute the same way with 3 popcount with extra +1 to shifts.
 
-I chose the sizes arbitrarily, happy to change them.
 
-16 is also useful for UUIDs, for tracing.
+On 6/3/2025 8:43 am, Vladimir Oltean wrote:
+>> diff --git a/net/ethtool/mm.c b/net/ethtool/mm.c
+>> index ad9b40034003..4c395cd949ab 100644
+>> --- a/net/ethtool/mm.c
+>> +++ b/net/ethtool/mm.c
+>> @@ -153,7 +153,7 @@ const struct nla_policy ethnl_mm_set_policy[ETHTOOL_A_MM_MAX + 1] = {
+>>   	[ETHTOOL_A_MM_VERIFY_TIME]	= NLA_POLICY_RANGE(NLA_U32, 1, 128),
+>>   	[ETHTOOL_A_MM_TX_ENABLED]	= NLA_POLICY_MAX(NLA_U8, 1),
+>>   	[ETHTOOL_A_MM_PMAC_ENABLED]	= NLA_POLICY_MAX(NLA_U8, 1),
+>> -	[ETHTOOL_A_MM_TX_MIN_FRAG_SIZE]	= NLA_POLICY_RANGE(NLA_U32, 60, 252),
+>> +	[ETHTOOL_A_MM_TX_MIN_FRAG_SIZE]	= NLA_POLICY_RANGE(NLA_U32, 60, 256),
+> 
+> Please make this a separate patch with a reasonably convincing
+> justification for any reader, and also state why it is a change that
+> will not introduce regressions to the other drivers. It shows that
+> you've done the due dilligence of checking that they all use
+> ethtool_mm_frag_size_min_to_add(), which errors out on non-standard
+> values.
+> 
+> To be clear, extending the policy from 252 to 256 is just to suppress
+> the netlink warning which states that the driver rounds up the minimum
+> fragment size, correct? Because even if you pass 252 (the current
+> netlink maximum), the driver will still use 256.
+> 
+I originally changed 252 to 256 because our internal validation failed when 
+setting 256 via ethtool. The test case was based on our old kernel OOT 
+patches code, but this run was done on the upstreamed FPE framework plus 
+this series. After thinking about it, it doesn’t seem right to change this 
+just to accommodate the i226 quirk in a common layer when the IEEE standard 
+and other devices use 252.
 
-Size 0 could store bools / flags. Keys could be set without a value,=20
-and users could check if the key is set or not.
-That replaces single bits of the mark today, for example a
-"route locally" key.
+So, we’ll update our validation to use 252 instead. The driver already 
+rounds up to 256 anyway. I’ll drop this change in the next revision.
 
-That only leaves one other size, maybe 4 for smaller values?
+Also, noted your point about being cautious with changes that impact other 
+drivers.
 
-If we want more sizes, we could also:
-
-- Add another u64 word to the header, so we have 3 bits per key. It
-  uses more room, and we need more popcnts, but most modern x86 CPUs can
-  do 3 popcnts in parallel so it could be ok.
-
-- Let users set consecutive keys to one big value. Instead of supporting
-  size 16, we let them set two 8 byte KVs in one trait_set() call and
-  provide a 16 byte value. Eg:
-
-	trait_set_batch(u64 key_from, u64_key_to, size, ...);
-
-  It's easy to implement, but it makes the API more complicated.
+Thanks.
 
