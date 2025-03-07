@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-53619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CB3CA5739D
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CAEFA5739C
 	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 22:29:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33A787A694B
-	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 21:28:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59A7E16D726
+	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 21:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673AD2580D5;
-	Fri,  7 Mar 2025 21:29:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B1B22580DF;
+	Fri,  7 Mar 2025 21:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hLeYCZ2F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lndpvSEI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270E52580C7
-	for <bpf@vger.kernel.org>; Fri,  7 Mar 2025 21:29:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4BBB25523E
+	for <bpf@vger.kernel.org>; Fri,  7 Mar 2025 21:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741382988; cv=none; b=aV4FzWTrBRr793o36bn3qClQ4oNH5TyJXAKZ91mBYIEZJPc5P6kDhBsY6G8V37Y4b4zbkvyoTY+oKi8VkdUbAe8aKkk5ecapCIuSBfkaa5jGHVIUUKZ8w+lBta8cqtKTlqXet1fDXqc047KKx0L5elcrDJLxQ9AehE3zjcPepyY=
+	t=1741382990; cv=none; b=idUZryyNos789s0onOupkOgLyrFjXtIa6vLUPNlH4KWcTnQDtv75or6dJtGTJN0o6jx5dN0ezvNmRWuC0TzrnG4emC5+IRIp9Uvl9MI8hjnEUJNKq1DaXsJr9CWzMS4zYAN38Nwpwg8b/KRtybWv6lTNtMSRbqi3nBzIW7+LfwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741382988; c=relaxed/simple;
-	bh=pAH6DJM5WKTVlhQa1dSW67kEovIMWL4V2bwazD63tZ4=;
+	s=arc-20240116; t=1741382990; c=relaxed/simple;
+	bh=dioW0rtSUrFbWMOF5Sm4XUOjVd88CLtLSI7b2ywKPwQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oNH5Kz4avDcpSLpcUgOKKJHZ3DwF5wSoJBu4h99uMxonlkE2tqi1HYBPSg+hUZnkyd4XrqBkTntISPohTXEZ7ssoQJNS2nABnWQA6RyqGAnAaqfsj+ucu7JWndbQhALwFqafzcGyIMr5ScxQ7D+tgCvm4I3dQkZIrKP1Gb9N3f4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hLeYCZ2F; arc=none smtp.client-ip=209.85.221.47
+	 MIME-Version; b=XQSIq0dW5F5a9PdkfHzCQbYk0U9fuhPYc4pfLzEppQdjypnJVVwqQdvziSphX68cGcf0HZTi/D2gPNYZjKDNHhRG/svTbEU/HA/I09DOx7z+PxEfYTY3ZvBLTm7kMlKqFdpRq9N6dK3oNqrDUDx/KrwLO5uKTJJ6hlOxWvlxxto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lndpvSEI; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-390fdaf2897so2397266f8f.0
-        for <bpf@vger.kernel.org>; Fri, 07 Mar 2025 13:29:46 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-43bc4b16135so13931025e9.1
+        for <bpf@vger.kernel.org>; Fri, 07 Mar 2025 13:29:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741382985; x=1741987785; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741382987; x=1741987787; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZgEEAiOqgkfh9oPgNuZeeRzfgmXM/drUMjby4IjFxno=;
-        b=hLeYCZ2Ftp8O/96qPikivY7zwlCtnoarrhsw+SDJMJilzQInj3ToekPPrUGZRS2vMN
-         cxMyFh+yPLU5G1WCuHzUBTRuqbx6rWWrdsipu/39z7FfSxaj7FQ8af0FB56h3Z6nXlME
-         civfc5ZgPECZPGihlA9zUnTKczfK58N738IPevRQlXzddnZ+ZM9b6uoRQdOBKcxUIR2e
-         UWA79cCdS48HUnOxcu9r2fekA4zXv7axDGvBJb+E1xnOdcVpnQq7cDr93kHZLkZgdSSU
-         X6/fM5NStWCqoq6DaZJfpsCtldoqUtAM9ofkbnG8nhl1TGryflESx2298cQOwo1f76/O
-         pqnw==
+        bh=FCxVpM2Z70WedqRB/NM4NnXszCOJVduR87WYoAxhXFg=;
+        b=lndpvSEIbikB6RvmbH1Eg5+pgmxv6BFY8S/XiQQKc8qYaIj3Kn+HhYzJdPOHos0qNP
+         aE9iYsosyBwjFjyy7EkkFmSQLIawQDKhNTHuHHjxlLnALEQdnk2T/KUn/n8qRsnLHrI5
+         eZg9c20OMO/EMDlkzPHi60PtVoi6erxR4t14Prr3MdZpHflIzApSG8oN3i05uiyU7yst
+         Owb2xgvHahQR35iJUjgyICAejdzJUN9EsDH931+SAhs+e0bSD3f6AG15L/2/w4qeFZyV
+         24NZhII8CalyiDXSwJcnhUjitM8cZA2Yu5xp00iXGVMl9l9y3eSy12Rds5vpgi1Qjw9h
+         RLwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741382985; x=1741987785;
+        d=1e100.net; s=20230601; t=1741382987; x=1741987787;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZgEEAiOqgkfh9oPgNuZeeRzfgmXM/drUMjby4IjFxno=;
-        b=HlPsHWb4ZhUIVp0UGykUhgZzQ6doBskM2Rj87To4sq8Y0jy8HTQV0nnUAdm7nw4rGI
-         8FJppSvP0GUT+razC+ilRRRGKOgivxVLF3cAYfiWzPRx1A5XNNuMHx408Tm0PxX7hDpx
-         dlwW+OGdTb01i3CcYwsD/mTHkscE2WRK9cNhRcUll+J36OuFOVs7pTDAVKCTsNRbrW6a
-         dCFB0vNdDMHJHV9L8x0dXqPU7gAPLElHtIKcJCLGnnqCF6VkTAalp2ggAvujT/dg7GsE
-         WINeGRS0Jg4zVYx9L/Owtp+3Ekv+ufVlaZ3k3lDBmb3vlZ4TEPGxYvqyuB4NOCmpaEZ9
-         5Kng==
-X-Gm-Message-State: AOJu0YxUCJn/RxN8+NfQZaqBIk2YHANf/N9ErweA2O5RVt4AXjJ6dbjd
-	1DlEuq+ueoiWSnvMxTw4U/WGCN/ZGn91O2KgIR+Sdv1Lo9DTQIJicjHuYg==
-X-Gm-Gg: ASbGncuUpXLRxYQAGq4St7CnR2lxMAtZ9qhdQx3KlrUB4ZsbppEmJVPaaqIVnOq0FoX
-	BtuYfFg0EY4ENESuAo/RSr/Q0BpCu0X9WltGcGMRxz2qMoY2OfiWbuYTn24Tm9H/D5QllWvt7hN
-	Og2jMpxyUQNfm9KDd2BIJpfFvr/eqnvmQDNIS6nNHfp2cELMde0ti+LMGDSgEByF60X7HmL9fvf
-	lWGA4CQt1PYQh8Q2GjCw+V5zfKLUuiPkhaztA9CczNjVzqBNrr/kTj9T68cbS9M9STJyZ5jLbvn
-	UpLh3NJKngTTCqE9C9bAMjhxKuApiVlqMZGIGDI17UxNdgAMfAjPWwsq3DZI0d4zyVkaZPHJX5a
-	W9ber2Yeaenp7XeH6eDojUtCcoNFHU9lUfidVDgtikC/kVkj2Wg==
-X-Google-Smtp-Source: AGHT+IHm7FyITqeRMCNz/4hfVL/kwAl89pvHdaX09zVM+qe7eBcBQzWXwaZz3lRZTUGQ27uFY8Zt+g==
-X-Received: by 2002:a05:6000:18a4:b0:390:ffd0:4142 with SMTP id ffacd0b85a97d-39132d5a5d8mr4914624f8f.26.1741382985267;
-        Fri, 07 Mar 2025 13:29:45 -0800 (PST)
+        bh=FCxVpM2Z70WedqRB/NM4NnXszCOJVduR87WYoAxhXFg=;
+        b=WDbrF9JLGGQQIojRIX/p3vtydfV54Ew4wkf5Dxlv8z2cqB5I4tVhSlg9rj7xPMkhVd
+         vyr3/mZa86ZuIPOIwhqgEGXPYrzmJelE1i71av54swCK391FD3M9rGyHXd6wueLwPELf
+         XtV14L4jouesRnCHjqYwQHZOmumh4rUiFptFqmXPRbdobHqXwsNKizks8cBpnqM3RMPG
+         hJEt+UohpoU4hX1FQvDNP7mr68HZwG0LGQf4V/5mMETeGE9fCKn6xR9qxdfrOj2okM4u
+         Jb2rpZdERdYTmPgCyVYzNXU5Qhm7MCKuLzZxd9n9pM4qqeFh0A+Es8zdsW1DxuX9H3mM
+         kyfA==
+X-Gm-Message-State: AOJu0YwvHfZFT6/xekJUo5uz71J9DNs96vciSZ63Z7UMOY82sF3PoArc
+	xWtoBl8Yj4oHLX3hz+EMRBwebMRnp+CaPOdAI40+nZhALfM73m3/jRHubg==
+X-Gm-Gg: ASbGncu42AYA2cctOfqpXNND4wp4Wnj/DrndLlDE8JdaEhZw+A8waFF0ewWQCIKNTH6
+	RVGNo7UJSaf9bGg8nOeNqUlm4aTizinhAOnLidS0GEm5U7TIDXUxRulDug8SxfBsKCpbuIbqRnD
+	EACFIIhIAJg6hZPVhGd396m9ScpQCvC/OOPfRF5WrSN0cIQCd09sA+zQbIQQQA2f95YBtZdTFjo
+	71MLGz8q/8nAXivkUfqEZyUJg77Y1KPiDBKrgLR8mFgf8RNMhzdVHFsZcDEGozYXN42ELGkLX4q
+	81tUaQ+nXXrT6Cklfh7RnoNE8IDDPEs5arWtRNg0nvmjrQwXoHdIb9ZgxL1ixnfXYXmT6w44hIi
+	cX1QgU+lq5fgLW205SZLhYrMXKPSVkeI72Zi0JqjELJGw+CFc2w==
+X-Google-Smtp-Source: AGHT+IE6xn6g2r43GCVVO3vvZ3J9t9njIpNv+z/KNIRi7dkWP89VS+zvNHKGd+KwQ6ead/j+XTfvEg==
+X-Received: by 2002:a05:600c:35c9:b0:43b:c3af:32df with SMTP id 5b1f17b1804b1-43ce195575cmr14331935e9.26.1741382986997;
+        Fri, 07 Mar 2025 13:29:46 -0800 (PST)
 Received: from localhost.localdomain (cpc158789-hari22-2-0-cust468.20-2.cable.virginm.net. [86.26.115.213])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bd4352e29sm92203145e9.32.2025.03.07.13.29.44
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bd4352e29sm92203145e9.32.2025.03.07.13.29.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Mar 2025 13:29:44 -0800 (PST)
+        Fri, 07 Mar 2025 13:29:46 -0800 (PST)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -81,9 +81,9 @@ To: bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	eddyz87@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v3 3/4] libbpf: pass BPF token from find_prog_btf_id to BPF_BTF_GET_FD_BY_ID
-Date: Fri,  7 Mar 2025 21:29:33 +0000
-Message-ID: <20250307212934.181996-4-mykyta.yatsenko5@gmail.com>
+Subject: [PATCH bpf-next v3 4/4] selftests/bpf: test freplace from user namespace
+Date: Fri,  7 Mar 2025 21:29:34 +0000
+Message-ID: <20250307212934.181996-5-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250307212934.181996-1-mykyta.yatsenko5@gmail.com>
 References: <20250307212934.181996-1-mykyta.yatsenko5@gmail.com>
@@ -97,156 +97,184 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Pass BPF token from bpf_program__set_attach_target to
-BPF_BTF_GET_FD_BY_ID bpf command.
-When freplace program attaches to target program, it needs to look up
-for BTF of the target, this may require BPF token, if, for example,
-running from user namespace.
+Add selftests to verify that it is possible to load freplace program
+from user namespace if BPF token is initialized by bpf_object__prepare
+before calling bpf_program__set_attach_target.
+Negative test is added as well.
+
+Modified type of the priv_prog to xdp, as kprobe did not work on aarch64
+and s390x.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- tools/lib/bpf/bpf.c             |  3 ++-
- tools/lib/bpf/bpf.h             |  4 +++-
- tools/lib/bpf/btf.c             | 14 ++++++++++++--
- tools/lib/bpf/libbpf.c          | 10 +++++-----
- tools/lib/bpf/libbpf_internal.h |  1 +
- 5 files changed, 23 insertions(+), 9 deletions(-)
+ .../testing/selftests/bpf/prog_tests/token.c  | 97 ++++++++++++++++++-
+ .../selftests/bpf/progs/priv_freplace_prog.c  | 13 +++
+ tools/testing/selftests/bpf/progs/priv_prog.c |  6 +-
+ 3 files changed, 112 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/priv_freplace_prog.c
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 359f73ead613..783274172e56 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -1097,7 +1097,7 @@ int bpf_map_get_fd_by_id(__u32 id)
- int bpf_btf_get_fd_by_id_opts(__u32 id,
- 			      const struct bpf_get_fd_by_id_opts *opts)
- {
--	const size_t attr_sz = offsetofend(union bpf_attr, open_flags);
-+	const size_t attr_sz = offsetofend(union bpf_attr, token_fd);
- 	union bpf_attr attr;
- 	int fd;
+diff --git a/tools/testing/selftests/bpf/prog_tests/token.c b/tools/testing/selftests/bpf/prog_tests/token.c
+index c3ab9b6fb069..f9392df23f8a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/token.c
++++ b/tools/testing/selftests/bpf/prog_tests/token.c
+@@ -19,6 +19,7 @@
+ #include "priv_prog.skel.h"
+ #include "dummy_st_ops_success.skel.h"
+ #include "token_lsm.skel.h"
++#include "priv_freplace_prog.skel.h"
  
-@@ -1107,6 +1107,7 @@ int bpf_btf_get_fd_by_id_opts(__u32 id,
- 	memset(&attr, 0, attr_sz);
- 	attr.btf_id = id;
- 	attr.open_flags = OPTS_GET(opts, open_flags, 0);
-+	attr.token_fd = OPTS_GET(opts, token_fd, 0);
- 
- 	fd = sys_bpf_fd(BPF_BTF_GET_FD_BY_ID, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 435da95d2058..544215d7137c 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -487,9 +487,11 @@ LIBBPF_API int bpf_link_get_next_id(__u32 start_id, __u32 *next_id);
- struct bpf_get_fd_by_id_opts {
- 	size_t sz; /* size of this struct for forward/backward compatibility */
- 	__u32 open_flags; /* permissions requested for the operation on fd */
-+	__u32 token_fd;
- 	size_t :0;
- };
--#define bpf_get_fd_by_id_opts__last_field open_flags
-+
-+#define bpf_get_fd_by_id_opts__last_field token_fd
- 
- LIBBPF_API int bpf_prog_get_fd_by_id(__u32 id);
- LIBBPF_API int bpf_prog_get_fd_by_id_opts(__u32 id,
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index eea99c766a20..466336f16134 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -1619,12 +1619,17 @@ struct btf *btf_get_from_fd(int btf_fd, struct btf *base_btf)
- 	return btf;
+ static inline int sys_mount(const char *dev_name, const char *dir_name,
+ 			    const char *type, unsigned long flags,
+@@ -788,6 +789,84 @@ static int userns_obj_priv_prog(int mnt_fd, struct token_lsm *lsm_skel)
+ 	return 0;
  }
  
--struct btf *btf__load_from_kernel_by_id_split(__u32 id, struct btf *base_btf)
-+struct btf *btf_load_from_kernel(__u32 id, struct btf *base_btf, int token_fd)
- {
- 	struct btf *btf;
- 	int btf_fd;
-+	LIBBPF_OPTS(bpf_get_fd_by_id_opts, opts);
-+
-+	opts.token_fd = token_fd;
-+	if (token_fd)
-+		opts.open_flags |= BPF_F_TOKEN_FD;
- 
--	btf_fd = bpf_btf_get_fd_by_id(id);
-+	btf_fd = bpf_btf_get_fd_by_id_opts(id, &opts);
- 	if (btf_fd < 0)
- 		return libbpf_err_ptr(-errno);
- 
-@@ -1634,6 +1639,11 @@ struct btf *btf__load_from_kernel_by_id_split(__u32 id, struct btf *base_btf)
- 	return libbpf_ptr(btf);
- }
- 
-+struct btf *btf__load_from_kernel_by_id_split(__u32 id, struct btf *base_btf)
++static int userns_obj_priv_freplace_setup(int mnt_fd, struct priv_freplace_prog **fr_skel,
++					  struct priv_prog **skel, int *tgt_fd)
 +{
-+	return btf_load_from_kernel(id, base_btf, 0);
++	LIBBPF_OPTS(bpf_object_open_opts, opts);
++	int err;
++	char buf[256];
++
++	/* use bpf_token_path to provide BPF FS path */
++	snprintf(buf, sizeof(buf), "/proc/self/fd/%d", mnt_fd);
++	opts.bpf_token_path = buf;
++	*skel = priv_prog__open_opts(&opts);
++	if (!ASSERT_OK_PTR(*skel, "priv_prog__open_opts"))
++		return -EINVAL;
++	err = priv_prog__load(*skel);
++	if (!ASSERT_OK(err, "priv_prog__load"))
++		return -EINVAL;
++
++	*fr_skel = priv_freplace_prog__open_opts(&opts);
++	if (!ASSERT_OK_PTR(*skel, "priv_freplace_prog__open_opts"))
++		return -EINVAL;
++
++	*tgt_fd = bpf_program__fd((*skel)->progs.xdp_prog1);
++	return 0;
 +}
 +
- struct btf *btf__load_from_kernel_by_id(__u32 id)
- {
- 	return btf__load_from_kernel_by_id_split(id, NULL);
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 8e32286854ef..6b85060f07b3 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10024,7 +10024,7 @@ int libbpf_find_vmlinux_btf_id(const char *name,
- 	return libbpf_err(err);
- }
++/* Verify that freplace works from user namespace, because bpf token is loaded
++ * in bpf_object__prepare
++ */
++static int userns_obj_priv_freplace_prog(int mnt_fd, struct token_lsm *lsm_skel)
++{
++	struct priv_freplace_prog *fr_skel = NULL;
++	struct priv_prog *skel = NULL;
++	int err, tgt_fd;
++
++	err = userns_obj_priv_freplace_setup(mnt_fd, &fr_skel, &skel, &tgt_fd);
++	if (!ASSERT_OK(err, "setup"))
++		goto out;
++
++	err = bpf_object__prepare(fr_skel->obj);
++	if (!ASSERT_OK(err, "freplace__prepare"))
++		goto out;
++
++	err = bpf_program__set_attach_target(fr_skel->progs.new_xdp_prog2, tgt_fd, "xdp_prog1");
++	if (!ASSERT_OK(err, "set_attach_target"))
++		goto out;
++
++	err = priv_freplace_prog__load(fr_skel);
++	ASSERT_OK(err, "priv_freplace_prog__load");
++
++out:
++	priv_freplace_prog__destroy(fr_skel);
++	priv_prog__destroy(skel);
++	return err;
++}
++
++/* Verify that replace fails to set attach target from user namespace without bpf token */
++static int userns_obj_priv_freplace_prog_fail(int mnt_fd, struct token_lsm *lsm_skel)
++{
++	struct priv_freplace_prog *fr_skel = NULL;
++	struct priv_prog *skel = NULL;
++	int err, tgt_fd;
++
++	err = userns_obj_priv_freplace_setup(mnt_fd, &fr_skel, &skel, &tgt_fd);
++	if (!ASSERT_OK(err, "setup"))
++		goto out;
++
++	err = bpf_program__set_attach_target(fr_skel->progs.new_xdp_prog2, tgt_fd, "xdp_prog1");
++	if (ASSERT_ERR(err, "attach fails"))
++		err = 0;
++	else
++		err = -EINVAL;
++
++out:
++	priv_freplace_prog__destroy(fr_skel);
++	priv_prog__destroy(skel);
++	return err;
++}
++
+ /* this test is called with BPF FS that doesn't delegate BPF_BTF_LOAD command,
+  * which should cause struct_ops application to fail, as BTF won't be uploaded
+  * into the kernel, even if STRUCT_OPS programs themselves are allowed
+@@ -1004,12 +1083,28 @@ void test_token(void)
+ 	if (test__start_subtest("obj_priv_prog")) {
+ 		struct bpffs_opts opts = {
+ 			.cmds = bit(BPF_PROG_LOAD),
+-			.progs = bit(BPF_PROG_TYPE_KPROBE),
++			.progs = bit(BPF_PROG_TYPE_XDP),
+ 			.attachs = ~0ULL,
+ 		};
  
--static int libbpf_find_prog_btf_id(const char *name, __u32 attach_prog_fd)
-+static int libbpf_find_prog_btf_id(const char *name, __u32 attach_prog_fd, int token_fd)
- {
- 	struct bpf_prog_info info;
- 	__u32 info_len = sizeof(info);
-@@ -10044,7 +10044,7 @@ static int libbpf_find_prog_btf_id(const char *name, __u32 attach_prog_fd)
- 		pr_warn("The target program doesn't have BTF\n");
- 		goto out;
+ 		subtest_userns(&opts, userns_obj_priv_prog);
  	}
--	btf = btf__load_from_kernel_by_id(info.btf_id);
-+	btf = btf_load_from_kernel(info.btf_id, NULL, token_fd);
- 	err = libbpf_get_error(btf);
- 	if (err) {
- 		pr_warn("Failed to get BTF %d of the program: %s\n", info.btf_id, errstr(err));
-@@ -10127,7 +10127,7 @@ static int libbpf_find_attach_btf_id(struct bpf_program *prog, const char *attac
- 			pr_warn("prog '%s': attach program FD is not set\n", prog->name);
- 			return -EINVAL;
- 		}
--		err = libbpf_find_prog_btf_id(attach_name, attach_prog_fd);
-+		err = libbpf_find_prog_btf_id(attach_name, attach_prog_fd, prog->obj->token_fd);
- 		if (err < 0) {
- 			pr_warn("prog '%s': failed to find BPF program (FD %d) BTF ID for '%s': %s\n",
- 				prog->name, attach_prog_fd, attach_name, errstr(err));
-@@ -12923,7 +12923,7 @@ struct bpf_link *bpf_program__attach_freplace(const struct bpf_program *prog,
- 	if (target_fd) {
- 		LIBBPF_OPTS(bpf_link_create_opts, target_opts);
++	if (test__start_subtest("obj_priv_freplace_prog")) {
++		struct bpffs_opts opts = {
++			.cmds = bit(BPF_BTF_LOAD) | bit(BPF_PROG_LOAD) | bit(BPF_BTF_GET_FD_BY_ID),
++			.progs = bit(BPF_PROG_TYPE_EXT) | bit(BPF_PROG_TYPE_XDP),
++			.attachs = ~0ULL,
++		};
++		subtest_userns(&opts, userns_obj_priv_freplace_prog);
++	}
++	if (test__start_subtest("obj_priv_freplace_prog_fail")) {
++		struct bpffs_opts opts = {
++			.cmds = bit(BPF_BTF_LOAD) | bit(BPF_PROG_LOAD) | bit(BPF_BTF_GET_FD_BY_ID),
++			.progs = bit(BPF_PROG_TYPE_EXT) | bit(BPF_PROG_TYPE_XDP),
++			.attachs = ~0ULL,
++		};
++		subtest_userns(&opts, userns_obj_priv_freplace_prog_fail);
++	}
+ 	if (test__start_subtest("obj_priv_btf_fail")) {
+ 		struct bpffs_opts opts = {
+ 			/* disallow BTF loading */
+diff --git a/tools/testing/selftests/bpf/progs/priv_freplace_prog.c b/tools/testing/selftests/bpf/progs/priv_freplace_prog.c
+new file mode 100644
+index 000000000000..ccf1b04010ba
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/priv_freplace_prog.c
+@@ -0,0 +1,13 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++
++char _license[] SEC("license") = "GPL";
++
++SEC("freplace/xdp_prog1")
++int new_xdp_prog2(struct xdp_md *xd)
++{
++	return XDP_DROP;
++}
+diff --git a/tools/testing/selftests/bpf/progs/priv_prog.c b/tools/testing/selftests/bpf/progs/priv_prog.c
+index 3c7b2b618c8a..725e29595079 100644
+--- a/tools/testing/selftests/bpf/progs/priv_prog.c
++++ b/tools/testing/selftests/bpf/progs/priv_prog.c
+@@ -6,8 +6,8 @@
  
--		btf_id = libbpf_find_prog_btf_id(attach_func_name, target_fd);
-+		btf_id = libbpf_find_prog_btf_id(attach_func_name, target_fd, prog->obj->token_fd);
- 		if (btf_id < 0)
- 			return libbpf_err_ptr(btf_id);
+ char _license[] SEC("license") = "GPL";
  
-@@ -13744,7 +13744,7 @@ int bpf_program__set_attach_target(struct bpf_program *prog,
- 
- 	if (attach_prog_fd) {
- 		btf_id = libbpf_find_prog_btf_id(attach_func_name,
--						 attach_prog_fd);
-+						 attach_prog_fd, prog->obj->token_fd);
- 		if (btf_id < 0)
- 			return libbpf_err(btf_id);
- 	} else {
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index de498e2dd6b0..76669c73dcd1 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -409,6 +409,7 @@ int libbpf__load_raw_btf(const char *raw_types, size_t types_len,
- int btf_load_into_kernel(struct btf *btf,
- 			 char *log_buf, size_t log_sz, __u32 log_level,
- 			 int token_fd);
-+struct btf *btf_load_from_kernel(__u32 id, struct btf *base_btf, int token_fd);
- 
- struct btf *btf_get_from_fd(int btf_fd, struct btf *base_btf);
- void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
+-SEC("kprobe")
+-int kprobe_prog(void *ctx)
++SEC("xdp")
++int xdp_prog1(struct xdp_md *xdp)
+ {
+-	return 1;
++	return XDP_DROP;
+ }
 -- 
 2.48.1
 
