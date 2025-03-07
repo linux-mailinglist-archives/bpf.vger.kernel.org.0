@@ -1,124 +1,191 @@
-Return-Path: <bpf+bounces-53581-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53582-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB114A56A78
-	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 15:35:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0783A56B03
+	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 16:01:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BFD618985A8
-	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 14:35:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A5A53AB2C3
+	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 15:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E51121C18A;
-	Fri,  7 Mar 2025 14:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D531189B94;
+	Fri,  7 Mar 2025 15:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aFa1Dmuf"
+	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="HMdMZYi3"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC33521B1BC
-	for <bpf@vger.kernel.org>; Fri,  7 Mar 2025 14:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4FD42E3361
+	for <bpf@vger.kernel.org>; Fri,  7 Mar 2025 15:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741358121; cv=none; b=VlKR9g44JfUu4B2kRQZyAYUlEicuiLBfd2w0bsTP35/kTN3i5EaV4rKKmxjeHdMybj/9fc4PFQMFFukM4EV7zelnicp4UTmqD9eO7f+w5Xdj1lqu+73qag8U/HMmF3yKl6lxvXbOqASWQageWLC8Jux1yIzbsuJkzeYtxufPijo=
+	t=1741359657; cv=none; b=N4/K8Ob/bnQkS3tI+ZjD7U8p7br6eqqMNChXkMpMcOnYfYGlZQsnC24o7/lzztEk0Wa1AFgnzqSAMFBvYkl9r2brSpN5WdaM5EsUYWPeYnp2e3Hlfl0U3nJ81UC31EBkP7OZXAEHVYUbm04dW5fMT4aOVJoOnkCoZLlVuqrLLqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741358121; c=relaxed/simple;
-	bh=lXPuIqZpRsLXS7HTLdbt9BkY4/cOeXu6m2fmTRxBo4c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XOqdpdQNA0elGCBvjJWHcncF1jr7mNCMH3lRW83JLsuSRQDqkGBPQuoNEdIKXw1QxfSCLFxiGuVLYl2KdbeywGRk2AiP9AE71PGuO1tcWxR2tum1WjLuOVWnRTol/7fcKZl5DT9XdPZWeM58xHzajVjaYIO5VLib/Nvng1PM8zI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aFa1Dmuf; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741358118;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lXPuIqZpRsLXS7HTLdbt9BkY4/cOeXu6m2fmTRxBo4c=;
-	b=aFa1Dmufojueiakm1r7BYdlqlq1Dj7HByNaXIu9n+oGaSRXE21RX+dHhvSdkl9t8XrD9gr
-	wFAYV9Te/zKAAab0Wn75rdQppOAndkf1UBsOjnsI/flurMek/nKzEGLNP2l/ekHRQ6jmWe
-	jLXc9EEG10aa5XtE0LwUvXu/Ddz57LY=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-552-OffPLK7zNRepKbOybHcYbA-1; Fri, 07 Mar 2025 09:35:17 -0500
-X-MC-Unique: OffPLK7zNRepKbOybHcYbA-1
-X-Mimecast-MFC-AGG-ID: OffPLK7zNRepKbOybHcYbA_1741358116
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-ac254e4b515so109059866b.0
-        for <bpf@vger.kernel.org>; Fri, 07 Mar 2025 06:35:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741358116; x=1741962916;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lXPuIqZpRsLXS7HTLdbt9BkY4/cOeXu6m2fmTRxBo4c=;
-        b=qmQq5suAwEDo72Jq3na/rippCg626DYejkxhuh0RmcHxD9tunrfSZOE2Adho9nAYL1
-         k8WaCRI4Eud//asmS1WRJ4ek3QvNQIX2NKiCqWbPF7aCNyLJh+qTmlEOqhjwgXwtZMdX
-         Z5hNlVrN2EJ9+NNpsi4NOzeyFp58khMsN/4zEwxBSwBFKNSVbUBHEsh9Gy+upvB0re4l
-         GaaUT+n9auNzArmeVilvwk6edSMONF01rKhZY0iEV0yelByzD54jpBraEK2cWpXT2/2J
-         pnQ08HxzT5VlKZjQ5b1ul5Cnq06PAsgaXGiwHQiRnDJMgDaPQHYnscQ6ZdGzO7VjcMYn
-         IAIg==
-X-Forwarded-Encrypted: i=1; AJvYcCWnh8ZrfG0bw/8e5Himiy2znE+7CNxaLST+a63U4vrsffNDZePP6oN0Sncm/Rg5coccduQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwQLSlFN8OhRVmtAm6V2+n8lpwkyphH/zn7xuSJA4+xhTNxfcaG
-	DiSvBrcz1uFenyZteaph0mWYVU3EsiKzYqHOjCEA+bmJPRCjO5RcpJNMPgMSgbZOaOkkZdiUd+c
-	AI5Dvsrf6rultgwoSk1zq3A85EgYqahEUAhMHSHbAI1HRjYjkHA==
-X-Gm-Gg: ASbGncuvX4SP9+Zk9Hp+yZUJkpXMS//sexqrXjcb5GOrenzXwitGCyFvZJiioYrKZiW
-	dNOOVMNWwilOipyvfvd1REwhJMNzwx1MSsl+cyXoctuftxastlBsL7IBXei/JjWGOxbJakZwlWI
-	GkpRQMo0fmFqVowVXpM+t5deIcYbJtsBPBg/SlJFdZuKhFC1inw5I9VBJyOt2jwriQDrl9NIf0i
-	byAt4dCmshi+IKHj0T8MwxF6MOCPSLauUBmqUeogkFCKI53TE/S3zWeRh7JfTx52mPgzEJIfb2S
-	qaTXTvHNt8t9jR97bjjsesXEzgEb4IVMRYi1DQBqa6rAdCdD2iE7ICgujr/tjRzn
-X-Received: by 2002:a05:6402:4406:b0:5e4:a23c:cf60 with SMTP id 4fb4d7f45d1cf-5e5e0c75fd3mr3632025a12.15.1741358115882;
-        Fri, 07 Mar 2025 06:35:15 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE5XmRDSYw2pZ06YZPy8CJqObswYrJRUdc35TakQU/59g+VScncGbjG8qbB5bHHdK4wL/va0w==
-X-Received: by 2002:a05:6402:4406:b0:5e4:a23c:cf60 with SMTP id 4fb4d7f45d1cf-5e5e0c75fd3mr3631967a12.15.1741358114906;
-        Fri, 07 Mar 2025 06:35:14 -0800 (PST)
-Received: from sgarzare-redhat (host-79-46-200-29.retail.telecomitalia.it. [79.46.200.29])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e5c74a9315sm2646455a12.46.2025.03.07.06.35.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Mar 2025 06:35:14 -0800 (PST)
-Date: Fri, 7 Mar 2025 15:35:08 +0100
-From: Stefano Garzarella <sgarzare@redhat.com>
-To: Michal Luczaj <mhal@rbox.co>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Bobby Eshleman <bobby.eshleman@bytedance.com>, "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org, 
-	bpf@vger.kernel.org, leonardi@redhat.com
-Subject: Re: [PATCH net] vsock/bpf: Handle EINTR connect() racing against
- sockmap update
-Message-ID: <vhda4sdbp725w7mkhha72u2nt3xpgyv2i4dphdr6lw7745qpuu@7c3lrl4tbomv>
-References: <20250307-vsock-trans-signal-race-v1-1-3aca3f771fbd@rbox.co>
- <a96febaf-1d32-47d4-ad18-ce5d689b7bdb@rbox.co>
+	s=arc-20240116; t=1741359657; c=relaxed/simple;
+	bh=uDQO3fQsAuGPKCfS8NWyHcVhK0YIOtz2VT6gyjOJ/1c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ax024cL8pF4IjKB1r87Pm6E+4HbljJwXUvpbDkYT7pvmH2q6xlM65IdiKb7NDNcfI5a4Z/g/Wm197DE9zYhafV0a3nWCdGDJE9VznwinW6o6BRqW5l3tPO6LeKzZNel0ncECxjw6ayLt6FsjAYNPXITRe7FvAJw4te9G5h/w6f8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=HMdMZYi3; arc=none smtp.client-ip=74.208.4.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
+	s=s1-ionos; t=1741359627; x=1741964427; i=linux@jordanrome.com;
+	bh=Nl6k/aLK8bTJiEmSB8t02UDqYtST5P7nFa6wa0qTP+E=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=HMdMZYi3ZU03SlOeTmtZ0rxyA9Vpk9WMwTPsbgT3++47aUvF7m+v33lMz6OuSXHk
+	 XlSZsHIXpcCXPDbISitheA6sZIQgtsmgniVLK/2xuYHIpEm2Fq02w06n+LqGN8Jbf
+	 ALa3Q3rT86H9arfr0t2J05Wgk3Kw9dsMComRtlrwuDPoCK03rgHkrAcld/XejRmK6
+	 6voCtUzKriNp7812D1a0mDY2tClkrZM+sUHmMrI2mfYV2eGaKFcx3IjnqE8fWsSzy
+	 6JMRqt2x8Lg1FDCjWZVzRvqQ5WlSHiySQ5N8vyoymT634pgXyYhmTYVV6NKoRptGb
+	 niYPPNUtI1BMhOjdzw==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from localhost ([69.171.251.2]) by mrelay.perfora.net (mreueus004
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 1MgfCq-1tKosA3nWm-00b4ky; Fri, 07 Mar
+ 2025 16:00:27 +0100
+From: Jordan Rome <linux@jordanrome.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Kernel Team <kernel-team@fb.com>
+Subject: [bpf-next v3] bpf: adjust btf load error logging
+Date: Fri,  7 Mar 2025 07:00:16 -0800
+Message-ID: <20250307150016.2172675-1-linux@jordanrome.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <a96febaf-1d32-47d4-ad18-ce5d689b7bdb@rbox.co>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5LEo8N96GRk+fakROy+rbwExbL6UUFi6+6UGIlgPJGCOzc08CiV
+ F68SZblb8y00hKwUzKa8GlsDS6knIkUZW6yeZuIbFRB3Qw5OmhwD77NMpIhWR4h3EJ8yfjK
+ fwwpPfstO3Yn9ZSU8EeVFhG/KTE5W36HCIFw7Eq2XeZd9OZlhax+9L8MxC7ElJXiBnJfFXq
+ rtUotZM3IhkNnsz3rwHlA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:qFnP9+cb0oo=;zSW5F+7OTEHuEpaTNotJZA7MFwf
+ ltTRCllUeLwMcqQUdyDzbUQJUECZF6meZeiCCBmEfOMlT3pOdwOOOyghllc5tTKlOIuMVnmx5
+ WTgoMuSqeHZupdZVtQvJ6YLvMqcoy5o0NSoEH/dsWNYv9mnJkedRmu4r8lAmk+yc0o1xdPRLl
+ 9TNoJyHxXGSaRqH5gfGM2J5a9+hf/diMvhB/Ikf03e5317Cx0H3o3q6dp8OyfTB1srBrob6df
+ Jy7BAiqS8YmZwLpWfGR57tVDOpzuGvQjlo/pyB203zAvAtQMju6TWcnjCiu6FA61pTstG68TT
+ RUF0OkXG5ndyBbPE4fu3QlsdcY0ybd8V5+K0j7l+5AvYW4ycEvOQD/5S/izWfH5MoaHseth06
+ gMRRN8bmbkFs+k/gyuzR8UHQ+kMFZ+111jiB6fTMtlebRVFDJsYpdStobaW12Gx0eA5UDSJoA
+ zTpMPlcS+HWKQx3EDpeqzsLdiXaS1JgBmMXu0Tv0i2LTw90hLSVFkDNY1ssr8uMJGR21F9k4C
+ jRkspDWwdhl+4Nplgq5bKbbCphbOvWiotLwl58g/udDOq37mgCD8GyDbBRma0qQCVVyivW29m
+ kGV3OfoeiHTssMboCeH+hRIgC4/UQ5pgsiyFHMtCXh0iunVAm+bTXV6O7deyQrto8Fx+9QwZM
+ IQceBRLYXOwr1n95Ob0c/Ycw3yjg3XiBuCvhKXg6Zkof/VYLwIYOJhNs9maYcVQ31a9E7FzHq
+ FQ8NnvU+rDCR+jO1OyeHWN4dlW1RWSFAFVYW5AhWAaE8o2zT0uDPnGE/TEHxQy/xK+zWkyPrL
+ cUrv04MhsBA8iMclIh/XxyWE5hhQfxTFTv/5gt02UghZ8UQqKOwQL1f5f4XROynknr+Sn8QPK
+ B16VTyC2dGZXtbuzchtCSRnsQyY75CcAKFRwZnENVnJvQMPkCrCFcBxXrfIlS/TOkSOXJzQBj
+ dlmfLiqcL0lZmKb7JMusCdEL+8i18v5S18qqTSpbAp/5sFdgM/h/gtMCyNpXqhXR8OllbtUCv
+ 1uBlUyvIvUlN5J1hFcHhfu3X8rof7LG1JPaesp32CZnu6XN9KOWRQ00rNoizEnW5RqNivYoel
+ LiwSI2U0mx7PiswyDkavW9wpgBdhpguuw4XEOH9fKFZ0LqPU6zhOS44GN7REjI1A+yE5EsXSF
+ TVH9KknbS3Ny+qTkLtkiKaeerkuLd1p0BGA0VDVNhdrDMk3+nODb3/C2mDHVfKOCaS2283enV
+ UbfcmxcG234KWGrluf/0S45cULQvf1Bw2mXpkTeohTRmXw2mELAPv8CzI4/Vr0btPh+GuJQQQ
+ VubNel2uN19v33TEylrbzSuvtVWX6nm2L0fX14/y97K37dzkyoxy1WNqQBoEKdL7jzr
 
-On Fri, Mar 07, 2025 at 10:58:55AM +0100, Michal Luczaj wrote:
->> Signal delivered during connect() may result in a disconnect of an already
->> TCP_ESTABLISHED socket. Problem is that such established socket might have
->> been placed in a sockmap before the connection was closed. We end up with a
->> SS_UNCONNECTED vsock in a sockmap. And this, combined with the ability to
->> reassign (unconnected) vsock's transport to NULL, breaks the sockmap
->> contract. As manifested by WARN_ON_ONCE.
->
->Note that Luigi is currently working on a (vsock test suit) test[1] for a
->related bug, which could be neatly adapted to test this bug as well.
+For kernels where btf is not mandatory
+we should log loading errors with `pr_info`
+and not retry where we increase the log level
+as this is just added noise.
 
-Can you work with Luigi to include the changes in that series?
+Signed-off-by: Jordan Rome <linux@jordanrome.com>
+=2D--
+ tools/lib/bpf/btf.c             | 16 ++++++++++++----
+ tools/lib/bpf/libbpf.c          |  3 ++-
+ tools/lib/bpf/libbpf_internal.h |  2 +-
+ 3 files changed, 15 insertions(+), 6 deletions(-)
 
-Thanks
-Stefano
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index eea99c766a20..c8139c3bc9e0 100644
+=2D-- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -1379,7 +1379,7 @@ static void *btf_get_raw_data(const struct btf *btf,=
+ __u32 *size, bool swap_endi
 
->
->[1]: https://lore.kernel.org/netdev/20250306-test_vsock-v1-0-0320b5accf92@redhat.com/
->
+ int btf_load_into_kernel(struct btf *btf,
+ 			 char *log_buf, size_t log_sz, __u32 log_level,
+-			 int token_fd)
++			 int token_fd, bool btf_mandatory)
+ {
+ 	LIBBPF_OPTS(bpf_btf_load_opts, opts);
+ 	__u32 buf_sz =3D 0, raw_size;
+@@ -1435,6 +1435,15 @@ int btf_load_into_kernel(struct btf *btf,
+
+ 	btf->fd =3D bpf_btf_load(raw_data, raw_size, &opts);
+ 	if (btf->fd < 0) {
++		if (!btf_mandatory) {
++			err =3D -errno;
++			pr_info("BTF loading error: %s\n", errstr(err));
++
++			if (!log_buf && log_level)
++				pr_info("-- BEGIN BTF LOAD LOG ---\n%s\n-- END BTF LOAD LOG --\n", bu=
+f);
++			goto done;
++		}
++
+ 		/* time to turn on verbose mode and try again */
+ 		if (log_level =3D=3D 0) {
+ 			log_level =3D 1;
+@@ -1448,8 +1457,7 @@ int btf_load_into_kernel(struct btf *btf,
+
+ 		err =3D -errno;
+ 		pr_warn("BTF loading error: %s\n", errstr(err));
+-		/* don't print out contents of custom log_buf */
+-		if (!log_buf && buf[0])
++		if (!log_buf && log_level)
+ 			pr_warn("-- BEGIN BTF LOAD LOG ---\n%s\n-- END BTF LOAD LOG --\n", buf=
+);
+ 	}
+
+@@ -1460,7 +1468,7 @@ int btf_load_into_kernel(struct btf *btf,
+
+ int btf__load_into_kernel(struct btf *btf)
+ {
+-	return btf_load_into_kernel(btf, NULL, 0, 0, 0);
++	return btf_load_into_kernel(btf, NULL, 0, 0, 0, true);
+ }
+
+ int btf__fd(const struct btf *btf)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 8e32286854ef..2cb3f067a12e 100644
+=2D-- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3604,9 +3604,10 @@ static int bpf_object__sanitize_and_load_btf(struct=
+ bpf_object *obj)
+ 		 */
+ 		btf__set_fd(kern_btf, 0);
+ 	} else {
++		btf_mandatory =3D kernel_needs_btf(obj);
+ 		/* currently BPF_BTF_LOAD only supports log_level 1 */
+ 		err =3D btf_load_into_kernel(kern_btf, obj->log_buf, obj->log_size,
+-					   obj->log_level ? 1 : 0, obj->token_fd);
++					   obj->log_level ? 1 : 0, obj->token_fd, btf_mandatory);
+ 	}
+ 	if (sanitize) {
+ 		if (!err) {
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_intern=
+al.h
+index de498e2dd6b0..f1de2ba462c3 100644
+=2D-- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -408,7 +408,7 @@ int libbpf__load_raw_btf(const char *raw_types, size_t=
+ types_len,
+ 			 int token_fd);
+ int btf_load_into_kernel(struct btf *btf,
+ 			 char *log_buf, size_t log_sz, __u32 log_level,
+-			 int token_fd);
++			 int token_fd, bool btf_mandatory);
+
+ struct btf *btf_get_from_fd(int btf_fd, struct btf *base_btf);
+ void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
+=2D-
+2.43.5
 
 
