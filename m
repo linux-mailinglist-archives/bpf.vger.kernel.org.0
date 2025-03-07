@@ -1,133 +1,165 @@
-Return-Path: <bpf+bounces-53538-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53539-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 432ADA560FC
-	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 07:37:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69B2BA56122
+	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 07:48:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CE1B3B2ACF
-	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 06:36:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B7D8172568
+	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 06:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA8119E7FA;
-	Fri,  7 Mar 2025 06:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEEB71A2380;
+	Fri,  7 Mar 2025 06:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="elqfkVdR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DRMa6NMD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092BE2FB2;
-	Fri,  7 Mar 2025 06:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A961922C6;
+	Fri,  7 Mar 2025 06:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741329402; cv=none; b=Dm5utJKZ2LSh3W8W50z8O8nZGgtHlJ6TxWPWnNWF953Y29pChzC75clwfanMaf29yjSTIk1MchSE6JxYClIo+Vtmlppsv08i+3lA+MhlWFuTBCgLKWS8xKbzOh6U3cp2Rzf8Ue22HmF0Hs4HThgfyX6E/xMa6DHrV75G64ft/GY=
+	t=1741330118; cv=none; b=Z1rJt8UErR7PkzIgAnRQW/szddaB9GsKVVsKKeP7stqge9DSx6vz5SyZhwj2ldQFE50xokH6kOYTPGlOgCfnhquzgIuyKfKHM5+v7R97nv4kpFAHUEoxgggNXP7gcCnmS6jEr+yiG44yEsx5SsVz79QCMZUBbj8KVsFCPu4x6dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741329402; c=relaxed/simple;
-	bh=xUeBg7/aaB7+6NWpYZYBimJ5AYHYRrBGms2UlVJJomY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U5PsbaGWoh0oLRcxUksuzhhyNDwIBVpiB/lZnWwjF/3YbZPrIWFTlZplsHXBE0Ki7lWmdOzNwqkIpb4RVq90nAVOAhR5HN5Ki3U1/fCeKP+mhHxiueaDXjMCZpwZxOe9SFnzIALlGqeSIRZliutpU9SwFAPO7Tt73p+fZEy2K8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=elqfkVdR; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43bd87f7c2eso8224045e9.3;
-        Thu, 06 Mar 2025 22:36:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741329399; x=1741934199; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xnx0PoywwI0sGB1pc9lEvtY+76lGDZnKoDgNYWRCk0I=;
-        b=elqfkVdRqcpn9a9KISU6HgJwxaFMEjhGsLNMvdhwtktEQ6+vGooUvJAW9EExcVyaRi
-         yGrIQiYjOh1eChpa25W+XoVG1SIlM2cTrjxypuiZh9cR+0fyyMZ9rhfenjeIOcMLCnCf
-         039y4zoAPWdOIR/7Zdp/OCcVO3SGovUMC8yOtqDheXAc0dkD6VbUyu500OQOkNI6B3qP
-         jN54aIyvDXECPb+8wy9lbs7NAfg+D5gP8NJUUJbgf7BnPtxcZLLCspDHnIVT9f1LSW4v
-         Jql9re3VhsBhCrzT0shApg1RvKLYqKxo4FJgVlcvqP/7sSfyyfTOvMd105O9a/CAeyAg
-         BhNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741329399; x=1741934199;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xnx0PoywwI0sGB1pc9lEvtY+76lGDZnKoDgNYWRCk0I=;
-        b=KqgvMh9+67p5uVUaYqipH2VPKgtVqeQHt4uA1LwRO/4F6Pa+33josVVeBqmMqSeC5X
-         CvoM1QUTkGcwwx6Fbcf4gA71XX/FhDDCdVyuJ6zq+lHw6l/2x7QDnFhaVZ0RQa1fCheB
-         pSrysu06MqbKqPa+l9NPWzCgfOdXXEiSFC/77ZAb8Jle0QvBQDZrsFIdR9Lw6QdBts0K
-         SuLuDFwmk59wpr+4Nxc6FV6z4UmNxGEd0Blm6E0f2mLc574s/zHwEbM0lRXkFoUTHSSZ
-         SWevjCwMHrYJRRMrAl77vyn/vqaeyODHZhfrbq6m3woh5UOIiv4Tdw7JfHIWCOtnbElr
-         O0Hw==
-X-Forwarded-Encrypted: i=1; AJvYcCUbnGi0+DGgpsHFI6Tn9aexFV8clAwGLRwRQXpsceoKb9RdCAxm+Q8irBqW7ksGRk+2UQw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXmn77YykWRb9mJtgDrdpcW28cP4TLHB7+LUpkqYbzs3gCmzWU
-	0q6xkL3VZR3clQPejJljTFywGQGjNeWlVjTP4pQjr+56Gqy4nbAUhG4ViXyrrO0XbSG4UGpvrqe
-	sgqo7LMiZDoA38TCzR6XGqVAjlw0=
-X-Gm-Gg: ASbGncuBN1v35t7dH/Qa1BELWNRox3fMmJdKR6IYiBd5jyPSY1fhL/h3B6xr47Ja3hR
-	Wo7XVTj9tD4zPFw1cfmTdudZUMn7lN/yXIRAihyYlPz/zdjy7gAGUV05ciw/fdCdQ1NoIKojMVQ
-	/aea3QPoyhBYmbX/g7pKBXGXoCjZyKgSUmloenaWnQ4Q==
-X-Google-Smtp-Source: AGHT+IGm3T5E4n8fCXMc7JtKl8S87X2JTrJ5G0Is/HbIMrSioJOVu88Cszut6Fu5UeMw+DCDkpBPUElDIMK3kSoZxCg=
-X-Received: by 2002:a05:600c:198b:b0:43b:b32e:f429 with SMTP id
- 5b1f17b1804b1-43c5cf3da50mr12639915e9.27.1741329398995; Thu, 06 Mar 2025
- 22:36:38 -0800 (PST)
+	s=arc-20240116; t=1741330118; c=relaxed/simple;
+	bh=3Ib8MYJh6bNU4odaUUgpJSg3E2tCBLVn7f1PANBy1dg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sl9fdYV0GWdWDLiyY1iYeOF2cNcRSkYdU6p2XNKHSWf53+5kPIG+dW0iFQ9OHa09Rxi5iy8Ck18GiKGTSB3qyiiYeIxICEZi3WU6UfUrBOtlgp8aSv9WQNSGqWwB5CBQMuWMpfwG0Z7Y51XNdpJAlafD9t5jz/L66i32RS7eIK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DRMa6NMD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2A4FC4CED1;
+	Fri,  7 Mar 2025 06:48:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741330117;
+	bh=3Ib8MYJh6bNU4odaUUgpJSg3E2tCBLVn7f1PANBy1dg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=DRMa6NMDOr9VDIXDP/sMrYitH9dLI3U4sNzyvNtVdxc0KtVceuKqYh98oSiUGE/2V
+	 /2eafLS+5hJIFhnQB10Z8IfVX/KS2aCMQT4LXou+3YtmH2hnkUwOVn99J+vHBz6/Vy
+	 OI0IS8tgAQkepk9BlN3XhOsYjk6eqqXOx7ZWaQ5gPEmsTVZre4mqAZoF+RZnETwkoo
+	 BhC8ZvT2hPH7Se5Xhh3a18UfluVtKR/HK7UpTmROiL8mg+H7KtQYf9TXQergnEq/kz
+	 IFqdvMsR5Kw84BwRQz7wEJyl87JiMXQhTbz2nGo8Aj68ZgwkCLEqV1uKUIDyGElFK0
+	 qS65TRlyHJzJA==
+Message-ID: <9d4b77da-18c5-4551-ae94-a2b9fe78489a@kernel.org>
+Date: Fri, 7 Mar 2025 07:48:24 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com> <20250305-afabre-traits-010-rfc2-v1-1-d0ecfb869797@cloudflare.com>
-In-Reply-To: <20250305-afabre-traits-010-rfc2-v1-1-d0ecfb869797@cloudflare.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 6 Mar 2025 22:36:26 -0800
-X-Gm-Features: AQ5f1Jop9oStoAdkedpa50kX438xjEsQIXNE15U53sBFu0IVeAXcEzvrOr6dJqA
-Message-ID: <CAADnVQ+OShaA37-=B4-GWTQQ8p4yPw3TgYLPTkbHMJLYhr48kg@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 01/20] trait: limited KV store for packet metadata
-To: arthur@arthurfabre.com
-Cc: Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Jakub Sitnicki <jakub@cloudflare.com>, Jesper Dangaard Brouer <hawk@kernel.org>, Yan Zhai <yan@cloudflare.com>, 
-	jbrandeburg@cloudflare.com, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <thoiland@redhat.com>, 
-	lbiancon@redhat.com, Arthur Fabre <afabre@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 01/16] bitops: Change parity8() return type to bool
+To: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+ jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
+ andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
+ airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
+ mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, parthiban.veerasooran@microchip.com,
+ arend.vanspriel@broadcom.com, johannes@sipsolutions.net,
+ gregkh@linuxfoundation.org, yury.norov@gmail.com, akpm@linux-foundation.org
+Cc: hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
+ Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+ jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
+ netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+ brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+ linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
+ Yu-Chun Lin <eleanor15x@gmail.com>
+References: <20250306162541.2633025-1-visitorckw@gmail.com>
+ <20250306162541.2633025-2-visitorckw@gmail.com>
+Content-Language: en-US
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20250306162541.2633025-2-visitorckw@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 5, 2025 at 6:33=E2=80=AFAM <arthur@arthurfabre.com> wrote:
->
-> +struct __trait_hdr {
-> +       /* Values are stored ordered by key, immediately after the header=
-.
-> +        *
-> +        * The size of each value set is stored in the header as two bits=
-:
-> +        *  - 00: Not set.
-> +        *  - 01: 2 bytes.
-> +        *  - 10: 4 bytes.
-> +        *  - 11: 8 bytes.
+On 06. 03. 25, 17:25, Kuan-Wei Chiu wrote:
+> Change return type to bool for better clarity. Update the kernel doc
+> comment accordingly, including fixing "@value" to "@val" and adjusting
+> examples. Also mark the function with __attribute_const__ to allow
+> potential compiler optimizations.
+> 
+> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> ---
+>   include/linux/bitops.h | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+> index c1cb53cf2f0f..44e5765b8bec 100644
+> --- a/include/linux/bitops.h
+> +++ b/include/linux/bitops.h
+> @@ -231,26 +231,26 @@ static inline int get_count_order_long(unsigned long l)
+>   
+>   /**
+>    * parity8 - get the parity of an u8 value
+> - * @value: the value to be examined
+> + * @val: the value to be examined
+>    *
+>    * Determine the parity of the u8 argument.
+>    *
+>    * Returns:
+> - * 0 for even parity, 1 for odd parity
+> + * false for even parity, true for odd parity
 
-...
+This occurs somehow inverted to me. When something is in parity means 
+that it has equal number of 1s and 0s. I.e. return true for even 
+distribution. Dunno what others think? Or perhaps this should be dubbed 
+odd_parity() when bool is returned? Then you'd return true for odd.
 
-> +        *  - hweight(low) + hweight(high)<<1 is offset.
-
-the comment doesn't match the code
-
-> +        */
-> +       u64 high;
-> +       u64 low;
-
-...
-
-> +static __always_inline int __trait_total_length(struct __trait_hdr h)
-> +{
-> +       return (hweight64(h.low) << 1) + (hweight64(h.high) << 2)
-> +               // For size 8, we only get 4+2=3D6. Add another 2 in.
-> +               + (hweight64(h.high & h.low) << 1);
-> +}
-
-This is really cool idea, but 2 byte size doesn't feel that useful.
-How about:
-- 00: Not set.
-- 01: 4 bytes.
-- 10: 8 bytes.
-- 11: 16 bytes.
-
-4 byte may be useful for ipv4, 16 for ipv6, and 8 is just a good number.
-And compute the same way with 3 popcount with extra +1 to shifts.
+thanks,
+-- 
+js
+suse labs
 
