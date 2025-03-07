@@ -1,179 +1,271 @@
-Return-Path: <bpf+bounces-53567-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53568-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 126F6A566FB
-	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 12:43:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF1C1A56718
+	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 12:52:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C83CA17807D
-	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 11:43:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE1547A7571
+	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 11:51:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F065218599;
-	Fri,  7 Mar 2025 11:42:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cpj34aCT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA889218592;
+	Fri,  7 Mar 2025 11:51:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A222D20E713;
-	Fri,  7 Mar 2025 11:42:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A221218587
+	for <bpf@vger.kernel.org>; Fri,  7 Mar 2025 11:51:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741347774; cv=none; b=h4qJDsU2hhqwJXiQ04zUbgUWRCZI2Sj9Ia3L6cb7mOKMdU4M3s8RnISiNmNyQReuDn9LPiti7qq2jyqTUj5xs1EuQerBi50NBCwGQZFXfCUtW25byskupcrbq+AVXvW47wtHtk+D1uqu2lX5tgCSRqvrj299tZhQDFEIRREGcPk=
+	t=1741348314; cv=none; b=Oe/fLnmmII323pnUGeBzCHUZdd3w1mp6rAepV7TCs8iHxo9VsDXHBZqcAaKsG1TmROSlMlKgEnxjVsd3N3WzU9mLp1LhnMn/Kw/tzyI83exzJNntHsn+uFb6Mhjthes99Tfs1K8RRly1V/h4pZ8M4wj1Cia3pTtHulVBpW0+M50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741347774; c=relaxed/simple;
-	bh=H/SrTjRnssQjPOOBykePVbYa7ahHTCTrRBL2xnXgmvY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=THBr5XyAfs7fH/a7Npveov2EWf8ULPqN7a7BgDNasFBv/0ClJtgAc/2URK9NAqIpWUWD6H2+PYXNbUn4MYmUwWUumtDkj5o5qQw06rWebmQzcsHuqBhajuQv7uAnsrPNjfGDAW42SKRz/uAJB5jKKl2G+o5V8mIXylIVvZhUAyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cpj34aCT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6038BC4CED1;
-	Fri,  7 Mar 2025 11:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741347774;
-	bh=H/SrTjRnssQjPOOBykePVbYa7ahHTCTrRBL2xnXgmvY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cpj34aCTqXWP5rQZurpGY0couj+4e0eT6PhpquXc+a21r7Wds04FQWkwPu43bkkvC
-	 EHbP7rEbNCz5f7/7FTThMQ1UzIGQDuQfJa9IYMPYNzQNlPfFu6zD5q/X6BPwtlx1GT
-	 iUcgkdu94klL6I3RvI1W5Ddzm8ixwSsVRtNAeopeY6bMfE3nIDg0gcZ1OXUTod1a4I
-	 udmAw6p3K2cKwQbwlG7aDHHIti7tdUWXiSDNHM5Pe15h2OzYvzkou0BbNcwPAh1ubB
-	 J7vgpZ41BbnLAzGn/VkN++Yym7ckAfwoEIfePjdOyVkzgE3a8Nm+kyEx8wsx5tVGGO
-	 9rdDt3COcdHOQ==
-Message-ID: <a4040c78-8765-425e-a44e-c374dfc02a9c@kernel.org>
-Date: Fri, 7 Mar 2025 12:42:41 +0100
+	s=arc-20240116; t=1741348314; c=relaxed/simple;
+	bh=9zDpnJ/QCxBsgXxW2KKV5v+N/nLcR1t4N8TVQeXaVTs=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=F33Wo0LVBfc+m0CcxuJqARxfTnb7dWk93oJQXjYMJk03lO48oImNOFK42qrE3/8qOolE9ZdpOSkCQSXuvMSZoSqgv+zqOS5waNUS/o3REfOUfyZVP6hlTYpPZO6CZXJKqjwYJxgYVA/3RkcnAMPKmciMhgGAk3afk9lMX8t+Lao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Z8Pl12g1Kz4f3jMy
+	for <bpf@vger.kernel.org>; Fri,  7 Mar 2025 19:51:25 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 8F7551A1376
+	for <bpf@vger.kernel.org>; Fri,  7 Mar 2025 19:51:47 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgDnS2DP3cpnCWM2Fw--.31278S2;
+	Fri, 07 Mar 2025 19:51:47 +0800 (CST)
+Subject: Re: [PATCH v5 4/4] selftests: bpf: add missing cpumask test to runner
+ and annotate existing tests
+To: Emil Tsalapatis <emil@etsalapatis.com>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, yonghong.song@linux.dev,
+ tj@kernel.org, memxor@gmail.com
+References: <20250307041738.6665-1-emil@etsalapatis.com>
+ <20250307041738.6665-5-emil@etsalapatis.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <611d1891-f082-6743-efe1-bbbe1c83052d@huaweicloud.com>
+Date: Fri, 7 Mar 2025 19:51:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 01/16] bitops: Change parity8() return type to bool
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
- jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
- andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
- mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, parthiban.veerasooran@microchip.com,
- arend.vanspriel@broadcom.com, johannes@sipsolutions.net,
- gregkh@linuxfoundation.org, yury.norov@gmail.com, akpm@linux-foundation.org,
- hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
- linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
- Yu-Chun Lin <eleanor15x@gmail.com>
-References: <20250306162541.2633025-1-visitorckw@gmail.com>
- <20250306162541.2633025-2-visitorckw@gmail.com>
- <9d4b77da-18c5-4551-ae94-a2b9fe78489a@kernel.org>
- <Z8ra0s9uRoS35brb@gmail.com>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <Z8ra0s9uRoS35brb@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20250307041738.6665-5-emil@etsalapatis.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgDnS2DP3cpnCWM2Fw--.31278S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WF1xCFykur4rur1xWrW3Wrg_yoW3XFWkpa
+	97CayDKFZrJF4Fg34UZ39FkF1aqw1kAa1jkryrG3WayrW7tr48GF1jg3W7Ar1Ykr1v93Wf
+	Z34qgr13Ww1UWF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
+	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+	MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
+	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+	BIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On 07. 03. 25, 12:38, Ingo Molnar wrote:
-> 
-> * Jiri Slaby <jirislaby@kernel.org> wrote:
-> 
->> On 06. 03. 25, 17:25, Kuan-Wei Chiu wrote:
->>> Change return type to bool for better clarity. Update the kernel doc
->>> comment accordingly, including fixing "@value" to "@val" and adjusting
->>> examples. Also mark the function with __attribute_const__ to allow
->>> potential compiler optimizations.
->>>
->>> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
->>> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
->>> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
->>> ---
->>>    include/linux/bitops.h | 10 +++++-----
->>>    1 file changed, 5 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
->>> index c1cb53cf2f0f..44e5765b8bec 100644
->>> --- a/include/linux/bitops.h
->>> +++ b/include/linux/bitops.h
->>> @@ -231,26 +231,26 @@ static inline int get_count_order_long(unsigned long l)
->>>    /**
->>>     * parity8 - get the parity of an u8 value
->>> - * @value: the value to be examined
->>> + * @val: the value to be examined
->>>     *
->>>     * Determine the parity of the u8 argument.
->>>     *
->>>     * Returns:
->>> - * 0 for even parity, 1 for odd parity
->>> + * false for even parity, true for odd parity
->>
->> This occurs somehow inverted to me. When something is in parity means that
->> it has equal number of 1s and 0s. I.e. return true for even distribution.
->> Dunno what others think? Or perhaps this should be dubbed odd_parity() when
->> bool is returned? Then you'd return true for odd.
-> 
-> OTOH:
-> 
->   - '0' is an even number and is returned for even parity,
->   - '1' is an odd  number and is returned for odd  parity.
+Hi,
 
-Yes, that used to make sense for me. For bool/true/false, it no longer 
-does. But as I wrote, it might be only me...
+On 3/7/2025 12:17 PM, Emil Tsalapatis wrote:
+> The BPF cpumask selftests are supposed to be run twice, once to ensure
+> that they load properly and once to actually test their behavior. The
+> load test is triggered by annotating the tests with __success, while the
+> run test needs adding to tools/testing/selftests/bpf/prog_tests/cpumask.c
+> the name of the new test. However, most existing tests are missing the
+> __success annotation, and test_refcount_null_tracking is missing from the
+> main test file. Add the missing annotations and test name.
 
-thanks,
--- 
-js
-suse labs
+It seems I have misled you. There is no need to run these programs
+twice. __success() is used to annotate the test cases which will be run
+through RUN_TESTS() macros. RUN_TESTS() will run these programs directly
+through bpf_prog_test_run_opts(). However only specific program types
+support being run through bpf_prog_test_run_opts(), and tp_btf doesn't
+support being run through bpf_prog_test_run_opts(). Considering that
+multiple successful test cases use err to check whether there is any
+error during the running of program, I suggest only add
+test_refcount_null_tracking in cpumask_success_testcases and remove the
+__success annotation.
+>
+> Signed-off-by: Emil Tsalapatis (Meta) <emil@etsalapatis.com>
+> ---
+>  .../testing/selftests/bpf/prog_tests/cpumask.c |  1 +
+>  .../selftests/bpf/progs/cpumask_success.c      | 18 ++++++++++++++++++
+>  2 files changed, 19 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/cpumask.c b/tools/testing/selftests/bpf/prog_tests/cpumask.c
+> index 9b09beba988b..447a6e362fcd 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/cpumask.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/cpumask.c
+> @@ -25,6 +25,7 @@ static const char * const cpumask_success_testcases[] = {
+>  	"test_global_mask_nested_deep_rcu",
+>  	"test_global_mask_nested_deep_array_rcu",
+>  	"test_cpumask_weight",
+> +	"test_refcount_null_tracking",
+>  	"test_populate_reject_small_mask",
+>  	"test_populate_reject_unaligned",
+>  	"test_populate",
+> diff --git a/tools/testing/selftests/bpf/progs/cpumask_success.c b/tools/testing/selftests/bpf/progs/cpumask_success.c
+> index 51f3dcf8869f..8abae7a59f92 100644
+> --- a/tools/testing/selftests/bpf/progs/cpumask_success.c
+> +++ b/tools/testing/selftests/bpf/progs/cpumask_success.c
+> @@ -136,6 +136,7 @@ static bool create_cpumask_set(struct bpf_cpumask **out1,
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_alloc_free_cpumask, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *cpumask;
+> @@ -152,6 +153,7 @@ int BPF_PROG(test_alloc_free_cpumask, struct task_struct *task, u64 clone_flags)
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_set_clear_cpu, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *cpumask;
+> @@ -181,6 +183,7 @@ int BPF_PROG(test_set_clear_cpu, struct task_struct *task, u64 clone_flags)
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_setall_clear_cpu, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *cpumask;
+> @@ -210,6 +213,7 @@ int BPF_PROG(test_setall_clear_cpu, struct task_struct *task, u64 clone_flags)
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_first_firstzero_cpu, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *cpumask;
+> @@ -249,6 +253,7 @@ int BPF_PROG(test_first_firstzero_cpu, struct task_struct *task, u64 clone_flags
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_firstand_nocpu, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *mask1, *mask2;
+> @@ -281,6 +286,7 @@ int BPF_PROG(test_firstand_nocpu, struct task_struct *task, u64 clone_flags)
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_test_and_set_clear, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *cpumask;
+> @@ -313,6 +319,7 @@ int BPF_PROG(test_test_and_set_clear, struct task_struct *task, u64 clone_flags)
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_and_or_xor, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *mask1, *mask2, *dst1, *dst2;
+> @@ -360,6 +367,7 @@ int BPF_PROG(test_and_or_xor, struct task_struct *task, u64 clone_flags)
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_intersects_subset, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *mask1, *mask2, *dst1, *dst2;
+> @@ -402,6 +410,7 @@ int BPF_PROG(test_intersects_subset, struct task_struct *task, u64 clone_flags)
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_copy_any_anyand, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *mask1, *mask2, *dst1, *dst2;
+> @@ -456,6 +465,7 @@ int BPF_PROG(test_copy_any_anyand, struct task_struct *task, u64 clone_flags)
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_insert_leave, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *cpumask;
+> @@ -471,6 +481,7 @@ int BPF_PROG(test_insert_leave, struct task_struct *task, u64 clone_flags)
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_insert_remove_release, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *cpumask;
+> @@ -501,6 +512,7 @@ int BPF_PROG(test_insert_remove_release, struct task_struct *task, u64 clone_fla
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_global_mask_rcu, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *local, *prev;
+> @@ -534,6 +546,7 @@ int BPF_PROG(test_global_mask_rcu, struct task_struct *task, u64 clone_flags)
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_global_mask_array_one_rcu, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *local, *prev;
+> @@ -632,12 +645,14 @@ static int _global_mask_array_rcu(struct bpf_cpumask **mask0,
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_global_mask_array_rcu, struct task_struct *task, u64 clone_flags)
+>  {
+>  	return _global_mask_array_rcu(&global_mask_array[0], &global_mask_array[1]);
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_global_mask_array_l2_rcu, struct task_struct *task, u64 clone_flags)
+>  {
+>  	return _global_mask_array_rcu(&global_mask_array_l2[0][0], &global_mask_array_l2[1][0]);
+> @@ -670,6 +685,7 @@ int BPF_PROG(test_global_mask_nested_rcu, struct task_struct *task, u64 clone_fl
+>   * incorrect offset.
+>   */
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_global_mask_nested_deep_rcu, struct task_struct *task, u64 clone_flags)
+>  {
+>  	int r, i;
+> @@ -689,6 +705,7 @@ int BPF_PROG(test_global_mask_nested_deep_rcu, struct task_struct *task, u64 clo
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_global_mask_nested_deep_array_rcu, struct task_struct *task, u64 clone_flags)
+>  {
+>  	int i;
+> @@ -706,6 +723,7 @@ int BPF_PROG(test_global_mask_nested_deep_array_rcu, struct task_struct *task, u
+>  }
+>  
+>  SEC("tp_btf/task_newtask")
+> +__success
+>  int BPF_PROG(test_cpumask_weight, struct task_struct *task, u64 clone_flags)
+>  {
+>  	struct bpf_cpumask *local;
+
 
