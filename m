@@ -1,224 +1,144 @@
-Return-Path: <bpf+bounces-53592-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53593-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38214A56CEE
-	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 17:01:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8CCA56E61
+	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 17:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80343188841B
-	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 16:01:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67F4E3A8ACC
+	for <lists+bpf@lfdr.de>; Fri,  7 Mar 2025 16:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC687221DA5;
-	Fri,  7 Mar 2025 16:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5504B23A58F;
+	Fri,  7 Mar 2025 16:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="iAm6CnqF"
+	dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b="KP2/loS6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B8421D3DD
-	for <bpf@vger.kernel.org>; Fri,  7 Mar 2025 16:01:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B68622DF68
+	for <bpf@vger.kernel.org>; Fri,  7 Mar 2025 16:54:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741363288; cv=none; b=GBNe/qaFK/ONU2bmZRKPtFRRTMApkQiKUsotLM5GXU8+3+O1RnEXMksaurVE8CwLDcu608zIb/QBmjUdU0F3RuEx6aA501bEdhgX6jOII39/hRa5Yn6TSS4UtsAawXw4y75MqO18b6wkNuLx5au6ykxGZXYgPWsxQH1hbfWdNB4=
+	t=1741366448; cv=none; b=bXBc+gjvq0zATk2DQ0Xz6eEKEUNI5pmzcaJo9j6ax9aKe2DG/JqMkG5LDoH1Beksc7NudW4HGcA5ezYNuW1tHscaMgJBRbx+52zStOiuNTg6lbdWAd87rYaIxR5/Qb6MFbirr/m22Gz2UQS3P+8uFd5ltW0gJpISNqK0IJEijA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741363288; c=relaxed/simple;
-	bh=rJCOlxHbfvrNj286RJQKWtI23KRMVeSeYEa5wk1Uk4o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VB9vyynvDotj6aTmLRnhhwVwjVjOrzm7fL0HNoFCituC+q+Gev89UXWJtSu7pzneMPxrFHv1P0j8zTdqH1Coyy4Ngz18oiRmYGxj0Gfvc6vvjWyMZ8Y6xGPf8aooM01Qi41iGQ6U322HXJVRAFx9m9FFAIG3xrZHnV+vSYk9vF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=iAm6CnqF; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1tqa8V-003sx2-R5; Fri, 07 Mar 2025 17:01:19 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=YHcxyyCv9TxOQbcYy9LzpkVMgHzsBozwm3s+VLvgWts=; b=iAm6CnqFEgxAUYuRwSR6e3/OqK
-	Oyyn+IMuIfCZsWk7/CHZOooMjXCmnMhEhAjxZ4c4uuwpDpcSAlFdZ6z/yVn1FS8kRbcNJMmCRK3rf
-	FUWzOokan3TT/NMcmeLL7mnUkLZ1APCNKjS0GRBwIwVnZx/3bzHWlDMtfpd2CVki8ea3issArOT4Q
-	S75bQZxRkwGKA0BGttPh3duwBQRk+P2WfDQSjhhkzmaSNvULyXOyVPOM1F9diGYHEPO20C2PYVW7w
-	MBLisSJBqB9HPdJaCLhherPTmiA74PPitnNlOtLcV2uPpr/PLbalSqTwGrPMsSThAA+IWWdHxOtGN
-	cK1/WpJg==;
-Received: from [10.9.9.74] (helo=submission03.runbox)
-	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1tqa8U-0006nC-EY; Fri, 07 Mar 2025 17:01:19 +0100
-Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1tqa8P-008GEw-PN; Fri, 07 Mar 2025 17:01:13 +0100
-Message-ID: <032764f5-e462-4f42-bfdc-8e31b25ada27@rbox.co>
-Date: Fri, 7 Mar 2025 17:01:11 +0100
+	s=arc-20240116; t=1741366448; c=relaxed/simple;
+	bh=Mf26Qwc1/QuPy6FIlB9SaM+hKmbDWQ7zc8isLjuZ21w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eatTRX0CbI9MngxPY3CUdPxtpjqopnYFbZkOSRQ7O9RFRw+yQyQsU0Hh0u57qdOsniExBrh3N9zMbhVJRYXBrAtqjdm45uhMHwgojay8ApT+zFR7auhMkOnzmqIxFXX7dLECFKWy1tXUNcLh5xqiM7ILxS48TdKAKEMbcYEyzgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com; spf=pass smtp.mailfrom=etsalapatis.com; dkim=pass (2048-bit key) header.d=etsalapatis-com.20230601.gappssmtp.com header.i=@etsalapatis-com.20230601.gappssmtp.com header.b=KP2/loS6; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=etsalapatis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etsalapatis.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6feb229b716so19470837b3.3
+        for <bpf@vger.kernel.org>; Fri, 07 Mar 2025 08:54:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=etsalapatis-com.20230601.gappssmtp.com; s=20230601; t=1741366445; x=1741971245; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PlOVy80+/7qrBzCMDwFKpqD0bd+BiJTGr7ikU6+BX0Q=;
+        b=KP2/loS64sKRLuaqhDyiNR2QqC4q/qBqkZewjeQAewXOGwHk/OUS0vjtEJbrOX5H9m
+         unTlwccYwcCj1/SWIUG9Q7uhkfp+2YPzOecY5M5VlYLV4OZqnahqxnG35rNcEnPk8zzs
+         LLbRRJ1DsM8CBPnRMZJc8r2BYO6hZn6t4P/VsB975jcBwIJ7Llh1UpJIEvzkde2tKFN8
+         Tmgc8OlHoH7S+Nms93VE36lGrllg00OdJV7JiX0/saeE24RjM+w5A4TkSR4Ywyec7oN/
+         7OjKD7NKbD7Ftb7DDeDWt6ioHbXWYlQH3jUL8aCIYUB3gUkGYFwMCpj+pVGymfKrz9Md
+         htLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741366445; x=1741971245;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PlOVy80+/7qrBzCMDwFKpqD0bd+BiJTGr7ikU6+BX0Q=;
+        b=YcPWvRt5xvX8oQHgaeu+D3/OvrdHhe6zC9bObalRmubbcrjClGfuKFssSxOwspjCrp
+         v7Q4f6G1+WiosjS61m0H1iTG5q5LP1oItjOu5dewfGQtzOwJr43cPlVYvAFg6tY7Z79T
+         tbn+WN9ExnBgKMVehWxClmL9ditJNPIQ9VVy9IDPzwtjYbaiIOjNYoFBA6PJcSzBilOk
+         /F0IqKBNlzPYGbAQN4TQMxML8JFNOtNy7o/wkhihkmf4O7MlrpHUNGYqDcX9rlnWbV4z
+         118n8YbFp0Cwknz3JQijZ9qALNv+3EhIsjsztSWZ1FjePsw2Lali8w5Dobqf7WpbDS53
+         2O6g==
+X-Forwarded-Encrypted: i=1; AJvYcCXjpL16SkZ3REiAAV85dazKnYG8ocfiK/CbLMdFp+vEWNszDMaclkLHJA2vn9qyKniNaVw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwlG0dOuUrB2BtTuta6IYsKpbDwA9jPegOllTXHpg6WsFhnclt4
+	Z6R7fguVyuNv/I1G1R8RsLdtftC4B+IjeuBgbMYKQzrqoyaMwpKVixJevEWDZV68dTbA5+P7MnF
+	ITZOy40ybigBiogdXYL24Uzr9X4XbzTztxCg2FA==
+X-Gm-Gg: ASbGncuMUzVAKFrCXORxo45fUOJL/vWllBTFE/ryJDaLWzWeWVFACSi/cTw06Uzvlep
+	jwmo6h44Z4wpEGWFZiBxQrNjGJpVpI28Kus1ZUcRYFN0KEGYEbeofPIfE44+BVkg4z4k04on7yW
+	xB8bInOtERDmMcBhEX+tnvWypcbsg=
+X-Google-Smtp-Source: AGHT+IHRTcKrQA3L5FnqRlH3F7/q3LVNsjFPFTXeNsw+j0sxcXALOgBzlWln93E8cBUMbtMzN4PZeySxIZ4omkaMEbI=
+X-Received: by 2002:a05:690c:7441:b0:6fd:385d:5f10 with SMTP id
+ 00721157ae682-6febf3b354bmr58319857b3.35.1741366445490; Fri, 07 Mar 2025
+ 08:54:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] vsock/bpf: Handle EINTR connect() racing against
- sockmap update
-To: Stefano Garzarella <sgarzare@redhat.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, leonardi@redhat.com
-References: <20250307-vsock-trans-signal-race-v1-1-3aca3f771fbd@rbox.co>
- <a96febaf-1d32-47d4-ad18-ce5d689b7bdb@rbox.co>
- <vhda4sdbp725w7mkhha72u2nt3xpgyv2i4dphdr6lw7745qpuu@7c3lrl4tbomv>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <vhda4sdbp725w7mkhha72u2nt3xpgyv2i4dphdr6lw7745qpuu@7c3lrl4tbomv>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20250307153847.8530-1-emil@etsalapatis.com> <20250307153847.8530-2-emil@etsalapatis.com>
+ <Z8sVxBI8B7oga-zL@slm.duckdns.org> <CABFh=a63-=TooZ1s56=HqbNRUO5fWT3-+FSbK9U39HRVzY0i=A@mail.gmail.com>
+ <Z8sepWRKPbXvnMzf@slm.duckdns.org> <Z8seyEHwlT5mhi4n@slm.duckdns.org>
+In-Reply-To: <Z8seyEHwlT5mhi4n@slm.duckdns.org>
+From: Emil Tsalapatis <emil@etsalapatis.com>
+Date: Fri, 7 Mar 2025 11:53:54 -0500
+X-Gm-Features: AQ5f1Jrhhss6rdkiS8SO1npdXxFzrZ5VNeC1JyHlPiWFnPk-Uh0hPsVu5reBINU
+Message-ID: <CABFh=a5f0a1uEyd=QoG+Riks1QBOw01Rqr=jZ6wwzF3um+kCyQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] bpf: add kfunc for populating cpumask bits
+To: Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org
+Cc: ast@kernel.org, Eduard Zingerman <eddyz87@gmail.com>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, yonghong.song@linux.dev, andrii@kernel.org, 
+	Hou Tao <houtao@huaweicloud.com>, martin.lau@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/7/25 15:35, Stefano Garzarella wrote:
-> On Fri, Mar 07, 2025 at 10:58:55AM +0100, Michal Luczaj wrote:
->>> Signal delivered during connect() may result in a disconnect of an already
->>> TCP_ESTABLISHED socket. Problem is that such established socket might have
->>> been placed in a sockmap before the connection was closed. We end up with a
->>> SS_UNCONNECTED vsock in a sockmap. And this, combined with the ability to
->>> reassign (unconnected) vsock's transport to NULL, breaks the sockmap
->>> contract. As manifested by WARN_ON_ONCE.
->>
->> Note that Luigi is currently working on a (vsock test suit) test[1] for a
->> related bug, which could be neatly adapted to test this bug as well.
->> [1]: https://lore.kernel.org/netdev/20250306-test_vsock-v1-0-0320b5accf92@redhat.com/
-> 
-> Can you work with Luigi to include the changes in that series?
+On Fri, Mar 7, 2025 at 11:28=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> On Fri, Mar 07, 2025 at 06:28:21AM -1000, Tejun Heo wrote:
+> > Hello,
+> >
+> > On Fri, Mar 07, 2025 at 11:18:46AM -0500, Emil Tsalapatis wrote:
+> > > On Fri, Mar 7, 2025 at 10:50=E2=80=AFAM Tejun Heo <tj@kernel.org> wro=
+te:
+> > > >
+> > > > On Fri, Mar 07, 2025 at 10:38:44AM -0500, Emil Tsalapatis wrote:
+> > > > > Add a helper kfunc that sets the bitmap of a bpf_cpumask from BPF=
+ memory.
+> > > > >
+> > > > > Signed-off-by: Emil Tsalapatis (Meta) <emil@etsalapatis.com>
+> > > > > Acked-by: Hou Tao <houtao1@huawei.com>
+> > > >
+> > > > Would a kfunc to transfer it in the other direction be useful too? =
+If so,
+> > > > how would that function be named?
+> > > >
+> > >
+> > > We could add one, but it is not necessary because the BPF program can=
+ do the
+> > > copy itself by reading the struct cpumask e.g. like this:
+> > >
+> > > https://github.com/sched-ext/scx/blob/ecdba1f4d9d518bd6a58343cd303187=
+155a39bf3/scheds/rust/scx_wd40/src/bpf/cpumask.bpf.c#L184
+> >
+> > Ah, right.
+> >
+> > > If we added a function going bpf_cpumask -> BPF would
+> > > bpf_cpumask_into() work as a name?
+> >
+> > Yeah, was mostly thinking whether the _populate() name would look weird=
+ if
+> > we need something in the other direction. If we don't, the name is fine=
+:
+> >
+> >  Acked-by: Tejun Heo <tj@kernel.org>
+>
+> Oops, you dropped the cc list. Can you restore the cc list and quote the
+> whole exchange?
+>
 
-I was just going to wait for Luigi to finish his work (no rush, really) and
-then try to parametrize it.
+Ah sorry about that, I fat fingered the reply. Hopefully this properly
+restores the thread in lore.kernel.org.
 
-That is unless BPF/sockmap maintainers decide this thread's thing is a
-sockmap thing and should be in tools/testing/selftests/bpf.
-
-Below is a repro. If I'm not mistaken, it's basically what Luigi wrote,
-just sprinkled with map_update_elem() and recv().
-
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <pthread.h>
-#include <sys/wait.h>
-#include <sys/socket.h>
-#include <sys/syscall.h>
-#include <linux/bpf.h>
-#include <linux/vm_sockets.h>
-
-static void die(const char *msg)
-{
-	perror(msg);
-	exit(-1);
-}
-
-static int sockmap_create(void)
-{
-	union bpf_attr attr = {
-		.map_type = BPF_MAP_TYPE_SOCKMAP,
-		.key_size = sizeof(int),
-		.value_size = sizeof(int),
-		.max_entries = 1
-	};
-	int map;
-
-	map = syscall(SYS_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
-	if (map < 0)
-		die("map_create");
-
-	return map;
-}
-
-static void map_update_elem(int fd, int key, int value)
-{
-	union bpf_attr attr = {
-		.map_fd = fd,
-		.key = (uint64_t)&key,
-		.value = (uint64_t)&value,
-		.flags = BPF_ANY
-	};
-
-	(void)syscall(SYS_bpf, BPF_MAP_UPDATE_ELEM, &attr, sizeof(attr));
-}
-
-static void sighandler(int sig)
-{
-	/* nop */
-}
-
-static void *racer(void *c)
-{
-	int map = sockmap_create();
-
-	for (;;) {
-		map_update_elem(map, 0, *(int *)c);
- 		if (kill(0, SIGUSR1) < 0)
- 			die("kill");
- 	}
-}
-
-int main(void)
-{
-	struct sockaddr_vm addr = {
-		.svm_family = AF_VSOCK,
-		.svm_cid = VMADDR_CID_LOCAL,
-		.svm_port = VMADDR_PORT_ANY
-	};
-	socklen_t alen = sizeof(addr);
-	struct sockaddr_vm bad_addr;
-	pthread_t thread;
-	int s, c;
-
-	s = socket(AF_VSOCK, SOCK_SEQPACKET, 0);
-	if (s < 0)
-		die("socket s");
-
-	if (bind(s, (struct sockaddr *)&addr, alen))
-		die("bind");
-
-	if (listen(s, -1))
-		die("listen");
-
-	if (getsockname(s, (struct sockaddr *)&addr, &alen))
-		die("getsockname");
-
-	bad_addr = addr;
-	bad_addr.svm_cid = 0x42424242; /* non-existing */
-
-	if (signal(SIGUSR1, sighandler) == SIG_ERR)
-		die("signal");
-
-	if (pthread_create(&thread, 0, racer, &c))
-		die("pthread_create");
-
-	for (;;) {
-		c = socket(AF_VSOCK, SOCK_SEQPACKET, 0);
-		if (c < 0)
-			die("socket c");
-
-		if (!connect(c, (struct sockaddr *)&addr, alen) ||
-		    errno != EINTR)
-			goto outro;
-
-		if (!connect(c, (struct sockaddr *)&bad_addr, alen) ||
-		    errno != ESOCKTNOSUPPORT)
-			goto outro;
-
-		(void)recv(c, &(char){0}, 1, MSG_DONTWAIT);
-outro:
-		close(accept(s, NULL, NULL));
-		close(c);
-	}
-
-	return 0;
-}
-
+> Thanks.
+>
+> --
+> tejun
 
