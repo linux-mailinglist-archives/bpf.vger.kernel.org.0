@@ -1,362 +1,220 @@
-Return-Path: <bpf+bounces-53651-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53652-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22B8BA57A92
-	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 14:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37D26A57B21
+	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 15:41:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90C5F18957EB
-	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 13:39:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8008318941A4
+	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 14:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFE2C1D4356;
-	Sat,  8 Mar 2025 13:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686651DDC07;
+	Sat,  8 Mar 2025 14:41:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b7A3nL+b"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A431CEAC8
-	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 13:39:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDCB91A3035
+	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 14:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741441160; cv=none; b=lQaYuqybNPhrpll++YYZnJMNEGbcv8MEjpW2P0eNsnn/HNt/lWalt4+h4xtd3RQRxDcElnSEdxmsIWDIAhsj7cGulh0yNYQFc9aTnQ7jBGFCXx/qLAIFUEYAmvtsXyPOe8Jeadfje0yjBK91gazIeSIUZes3vfIKcDC8vwemERc=
+	t=1741444864; cv=none; b=i5Wr7MCtft0q4E31KEBk8KcgDyVBYfYymMAPWd8rdHsWQnudgErkqeixagcFwAJf2IQxfLMwyMTNgPCPRkeUDGOdQHd+hrzCnqGNncMBsarv7Cr/bNF2QURkRt5lna37YyE0F/s1Mmn+ZIa0BMWYIceZCrt706HFfur9xbDhWoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741441160; c=relaxed/simple;
-	bh=l5UYfsEA3zI4DlBCMA8prNw6DLYPp4X/SjSDeOb/mdg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=X0CpYxpOwPfu0ilmNMmIhL5TxYibrzPAj8oD8uRg9PlY/RDBgqzetfdl4SXBorPs+OsMJLIdGjXSCAZhgZ9bTjk7ulrvTmXYbVHxQMlnrRT14NWpDG9ps6vW31jbmdCM8D2dGrxw5CVtSkkPrX64ezzaXHec9hVNNeVC6fL7EoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Z944X4CKrz4f3jtq
-	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 21:38:52 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 776F31A07C0
-	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 21:39:09 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgDnSl91SMxn+YeeFw--.42876S10;
-	Sat, 08 Mar 2025 21:39:09 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
-	Zvi Effron <zeffron@riotgames.com>,
-	Cody Haas <chaas@riotgames.com>,
-	houtao1@huawei.com
-Subject: [PATCH bpf-next v2 6/6] selftests/bpf: Add test case for atomic update of fd htab
-Date: Sat,  8 Mar 2025 21:51:10 +0800
-Message-Id: <20250308135110.953269-7-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20250308135110.953269-1-houtao@huaweicloud.com>
-References: <20250308135110.953269-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1741444864; c=relaxed/simple;
+	bh=vynbLoaxWWTw6FcBux/dam6OzZjOEkedxpDbG+eoBos=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=VnDhJ8D6OLT/b7Awm+lVPo1CcPpjpa/GPqM4Q6NP/h/U1UgxCxFQ6GWChyKlZtj4x3HaaWjpV/7KEfdcw2RSyp24faV7QTHPtSRh5dGDKA/GWDY4ykZU1qfTDC9ezbw4femEVt9SvA8vS8DhkNte/tM4yKCa/ANNNK1JpjhN/pQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b7A3nL+b; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1741444861;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=USWTb6fbfs9ctXuLN/jteJwX39h1/6zKvhemZZrzqrc=;
+	b=b7A3nL+bJZlUkldZjeC2UNI+BNBkGednllIDBWoJV2Xbbf+yAtquqhEBI3THZmKbn0TOBY
+	VIreAKLqBQ+Xn8yZSBTZlgdMfmUAaIsLycVjhQWf1WEE9gk5lswYJwHkbCG/GGgAdAeIWh
+	DFYCQcZu9GmEqodDX5uN//J7UJtZLdE=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-199-JCmd8ox2MwKdWF-vxn6wOw-1; Sat, 08 Mar 2025 09:41:00 -0500
+X-MC-Unique: JCmd8ox2MwKdWF-vxn6wOw-1
+X-Mimecast-MFC-AGG-ID: JCmd8ox2MwKdWF-vxn6wOw_1741444859
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-ac27ea62032so22418866b.1
+        for <bpf@vger.kernel.org>; Sat, 08 Mar 2025 06:40:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741444859; x=1742049659;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=USWTb6fbfs9ctXuLN/jteJwX39h1/6zKvhemZZrzqrc=;
+        b=SbZWvITJi1YgTN6RIHS1xeCcF9jRAV/lXKKRPOislyuVtoEP+P6fRJgjaXVZh9CuCV
+         eE2kcXipLAJfAuENEsHubifGP/vap/aygAVVRLnWGbL5QlSo38wO/SL+ipWtyNpbFbkG
+         GWRX0ru1Su5GzOZsd7WpVUSaWKbr/cWAJBVOzbdn7BxmszcuhyAw49inKtuhPN7zMJv8
+         Poul9Adite1kg1UchkYMA6b2My9Bv+V93mlBdopZmedIUIr8WrXNux36etHw+2Ua9/J0
+         fP0Eeyed8uYx+nVE2UTTQeLvck+DcB8ENfh3N+9FCBChpyKE4wo4h2Bry8Obgo98nuZn
+         6dgw==
+X-Forwarded-Encrypted: i=1; AJvYcCV0TtGP+Ww777HjZnl4X2HZWrv/AafOVwqwmQZ2gWxENM+yA25dIg5pD9QLbTZ06oPFkYw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUGMzArvXeYkWXe/BfbfILssKY19hOH/L6j7yzO5xo0EoT/JCn
+	zPJjcyoHL97n8bicjREblYFWoz9qzLmN/jzN2+0vUtHnWufZ2nd/vI0cmyq9CnEOSXZGi5AtEXi
+	2DREQgrDpuQ1Z8swCcEZilRp3PF1HwUI7msWZ9GL/Dz6bUrdq3Q==
+X-Gm-Gg: ASbGncvDwxY4JtYypywrRdqisYhCPfoRHgIsSfI0fgQO3C///4384aW0PRMWRywUJok
+	k9PAxDxjtHgtSYI9bC7LnKq9oOE2YAe/F9Y1Qd2FVh1rv8CLW6QiSb9/3m3jfQTssUtshm8b/J0
+	2VZpqMhyDsP+uVpGZ8OkxvMjrv6LMj+l4IHYoGZrc+1dPOgDitBr7zVj2c0iSPW7Ekp+UyOBGsO
+	Tb1WIrE8UNPd2llxstx576QUEhSkakRscto5iluuX+HVHMZW0j7/9YR3/2PKsEfuv4g0wsfyO50
+	1AISMtxJJWX1
+X-Received: by 2002:a17:907:3e82:b0:abf:6f44:bffa with SMTP id a640c23a62f3a-ac252e9e7c4mr968100966b.36.1741444858735;
+        Sat, 08 Mar 2025 06:40:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH1kymkWxueuBLuXgFuW5FEYCy8fXWaTM8cfTQUCfcHK7lgqp5/vZPe/5nwj4qhwZPGfcHS0w==
+X-Received: by 2002:a17:907:3e82:b0:abf:6f44:bffa with SMTP id a640c23a62f3a-ac252e9e7c4mr968098366b.36.1741444858267;
+        Sat, 08 Mar 2025 06:40:58 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac2394859b2sm447048166b.69.2025.03.08.06.40.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 Mar 2025 06:40:57 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 69D1918FA096; Sat, 08 Mar 2025 15:40:51 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Yunsheng Lin <yunshenglin0825@gmail.com>, Yunsheng Lin
+ <linyunsheng@huawei.com>, davem@davemloft.net, kuba@kernel.org,
+ pabeni@redhat.com
+Cc: zhangkun09@huawei.com, liuyonglong@huawei.com, fanghaiqing@huawei.com,
+ Alexander Lobakin <aleksander.lobakin@intel.com>, Robin Murphy
+ <robin.murphy@arm.com>, Alexander Duyck <alexander.duyck@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Gaurav Batra
+ <gbatra@linux.ibm.com>, Matthew Rosato <mjrosato@linux.ibm.com>, IOMMU
+ <iommu@lists.linux.dev>, MM <linux-mm@kvack.org>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
+ intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH net-next v11 0/4] fix the DMA API misuse problem for
+ page_pool
+In-Reply-To: <40b33879-509a-4c4a-873b-b5d3573b6e14@gmail.com>
+References: <20250307092356.638242-1-linyunsheng@huawei.com>
+ <87v7slvsed.fsf@toke.dk> <40b33879-509a-4c4a-873b-b5d3573b6e14@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Sat, 08 Mar 2025 15:40:51 +0100
+Message-ID: <875xkj1t70.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDnSl91SMxn+YeeFw--.42876S10
-X-Coremail-Antispam: 1UD129KBjvJXoWxKry7WF4xKr4fArW5CrW5Awb_yoWxZw1xpa
-	yrGayUtFW8XrW7Xw1rtan7KFW5KFsYqr47Ar95Wry5AF18X3WSqF4xKFW5tFyfurZYqF4F
-	vw43tFW5u3y7XFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
-	AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
-	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-	v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuY
-	vjxUI-eODUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Hou Tao <houtao1@huawei.com>
+Yunsheng Lin <yunshenglin0825@gmail.com> writes:
 
-Add a test case to verify the atomic update of existing elements in the
-htab of maps. The test proceeds in three steps:
+> On 3/7/2025 10:15 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>
+> ...
+>
+>>=20
+>> You are making this incredibly complicated. You've basically implemented
+>> a whole new slab allocator for those page_pool_item objects, and you're
+>> tracking every page handed out by the page pool instead of just the ones
+>> that are DMA-mapped. None of this is needed.
+>  > > I took a stab at implementing the xarray-based tracking first sugges=
+ted
+>> by Mina[0]:
+>
+> I did discuss Mina' suggestion with Ilias below in case you didn't
+> notice:
+> https://lore.kernel.org/all/0ef315df-e8e9-41e8-9ba8-dcb69492c616@huawei.c=
+om/
 
-1) fill the outer map with keys in the range [0, 8]
-For each inner array map, the value of its first element is set as the
-key used to lookup the inner map.
+I didn't; thanks for the pointer. See below.
 
-2) create 16 threads to lookup these keys concurrently
-Each lookup thread first lookups the inner map, then it checks whether
-the first value of the inner array map is the same as the key used to
-lookup the inner map.
+> Anyway, It is great that you take the effort to actually implement
+> the idea to have some more concrete comparison here.
 
-3) create 8 threads to overwrite these keys concurrently
-Each update thread first creates an inner array, it sets the first value
-of the array to the key used to update the outer map, then it uses the
-key and the inner map to update the outer map.
+:)
 
-Without atomic update support, the lookup operation may return -ENOENT
-during the lookup of outer map, or return -EINVAL during the comparison
-of the first value in the inner map and the key used for inner map, and
-the test will fail. After the atomic update change, both the lookup and
-the comparison will succeed.
+>>=20
+>> https://git.kernel.org/toke/c/e87e0edf9520
+>>=20
+>> And, well, it's 50 lines of extra code, none of which are in the fast
+>> path.
+>
+> I wonder what is the overhead for the xarray idea regarding the
+> time_bench_page_pool03_slow() testcase before we begin to discuss
+> if xarray idea is indeed possible.
 
-Given that the update of outer map is slow, the test case sets the loop
-number for each thread as 5 to reduce the total running time. However,
-the loop number could also be adjusted through FD_HTAB_LOOP_NR
-environment variable.
+Well, just running that benchmark shows no impact:
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/fd_htab_lookup.c | 192 ++++++++++++++++++
- .../selftests/bpf/progs/fd_htab_lookup.c      |  25 +++
- 2 files changed, 217 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/fd_htab_lookup.c
- create mode 100644 tools/testing/selftests/bpf/progs/fd_htab_lookup.c
+|                               |      Baseline     |     xarray      |
+|                               |   Cycles |     ns | Cycles |     ns |
+|-------------------------------+----------+--------+--------+--------|
+| no-softirq-page_pool01        |       20 |  5.713 |     19 |  5.516 |
+| no-softirq-page_pool02        |       56 | 15.560 |     57 | 15.864 |
+| no-softirq-page_pool03        |      225 | 62.763 |    222 | 61.728 |
+| tasklet_page_pool01_fast_path |       19 |  5.399 |     19 |  5.505 |
+| tasklet_page_pool02_ptr_ring  |       54 | 15.090 |     54 | 15.018 |
+| tasklet_page_pool03_slow      |      238 | 66.134 |    239 | 66.498 |
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fd_htab_lookup.c b/tools/testing/selftests/bpf/prog_tests/fd_htab_lookup.c
-new file mode 100644
-index 0000000000000..ca46fdd6e1ae7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/fd_htab_lookup.c
-@@ -0,0 +1,192 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2025. Huawei Technologies Co., Ltd */
-+#define _GNU_SOURCE
-+#include <stdbool.h>
-+#include <test_progs.h>
-+#include "fd_htab_lookup.skel.h"
-+
-+struct htab_op_ctx {
-+	int fd;
-+	int loop;
-+	unsigned int entries;
-+	bool stop;
-+};
-+
-+#define ERR_TO_RETVAL(where, err) ((void *)(long)(((where) << 12) | (-err)))
-+
-+static void *htab_lookup_fn(void *arg)
-+{
-+	struct htab_op_ctx *ctx = arg;
-+	int i = 0;
-+
-+	while (i++ < ctx->loop && !ctx->stop) {
-+		unsigned int j;
-+
-+		for (j = 0; j < ctx->entries; j++) {
-+			unsigned int key = j, zero = 0, value;
-+			int inner_fd, err;
-+
-+			err = bpf_map_lookup_elem(ctx->fd, &key, &value);
-+			if (err) {
-+				ctx->stop = true;
-+				return ERR_TO_RETVAL(1, err);
-+			}
-+
-+			inner_fd = bpf_map_get_fd_by_id(value);
-+			if (inner_fd < 0) {
-+				/* The old map has been freed */
-+				if (inner_fd == -ENOENT)
-+					continue;
-+				ctx->stop = true;
-+				return ERR_TO_RETVAL(2, inner_fd);
-+			}
-+
-+			err = bpf_map_lookup_elem(inner_fd, &zero, &value);
-+			if (err) {
-+				close(inner_fd);
-+				ctx->stop = true;
-+				return ERR_TO_RETVAL(3, err);
-+			}
-+			close(inner_fd);
-+
-+			if (value != key) {
-+				ctx->stop = true;
-+				return ERR_TO_RETVAL(4, -EINVAL);
-+			}
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static void *htab_update_fn(void *arg)
-+{
-+	struct htab_op_ctx *ctx = arg;
-+	int i = 0;
-+
-+	while (i++ < ctx->loop && !ctx->stop) {
-+		unsigned int j;
-+
-+		for (j = 0; j < ctx->entries; j++) {
-+			unsigned int key = j, zero = 0;
-+			int inner_fd, err;
-+
-+			inner_fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, 4, 4, 1, NULL);
-+			if (inner_fd < 0) {
-+				ctx->stop = true;
-+				return ERR_TO_RETVAL(1, inner_fd);
-+			}
-+
-+			err = bpf_map_update_elem(inner_fd, &zero, &key, 0);
-+			if (err) {
-+				close(inner_fd);
-+				ctx->stop = true;
-+				return ERR_TO_RETVAL(2, err);
-+			}
-+
-+			err = bpf_map_update_elem(ctx->fd, &key, &inner_fd, BPF_EXIST);
-+			if (err) {
-+				close(inner_fd);
-+				ctx->stop = true;
-+				return ERR_TO_RETVAL(3, err);
-+			}
-+			close(inner_fd);
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static int setup_htab(int fd, unsigned int entries)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < entries; i++) {
-+		unsigned int key = i, zero = 0;
-+		int inner_fd, err;
-+
-+		inner_fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, 4, 4, 1, NULL);
-+		if (!ASSERT_OK_FD(inner_fd, "new array"))
-+			return -1;
-+
-+		err = bpf_map_update_elem(inner_fd, &zero, &key, 0);
-+		if (!ASSERT_OK(err, "init array")) {
-+			close(inner_fd);
-+			return -1;
-+		}
-+
-+		err = bpf_map_update_elem(fd, &key, &inner_fd, 0);
-+		if (!ASSERT_OK(err, "init outer")) {
-+			close(inner_fd);
-+			return -1;
-+		}
-+		close(inner_fd);
-+	}
-+
-+	return 0;
-+}
-+
-+static int get_int_from_env(const char *name, int dft)
-+{
-+	const char *value;
-+
-+	value = getenv(name);
-+	if (!value)
-+		return dft;
-+
-+	return atoi(value);
-+}
-+
-+void test_fd_htab_lookup(void)
-+{
-+	unsigned int i, wr_nr = 8, rd_nr = 16;
-+	pthread_t tids[wr_nr + rd_nr];
-+	struct fd_htab_lookup *skel;
-+	struct htab_op_ctx ctx;
-+	int err;
-+
-+	skel = fd_htab_lookup__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "fd_htab_lookup__open_and_load"))
-+		return;
-+
-+	ctx.fd = bpf_map__fd(skel->maps.outer_map);
-+	ctx.loop = get_int_from_env("FD_HTAB_LOOP_NR", 5);
-+	ctx.stop = false;
-+	ctx.entries = 8;
-+
-+	err = setup_htab(ctx.fd, ctx.entries);
-+	if (err)
-+		goto destroy;
-+
-+	memset(tids, 0, sizeof(tids));
-+	for (i = 0; i < wr_nr; i++) {
-+		err = pthread_create(&tids[i], NULL, htab_update_fn, &ctx);
-+		if (!ASSERT_OK(err, "pthread_create")) {
-+			ctx.stop = true;
-+			goto reap;
-+		}
-+	}
-+	for (i = 0; i < rd_nr; i++) {
-+		err = pthread_create(&tids[i + wr_nr], NULL, htab_lookup_fn, &ctx);
-+		if (!ASSERT_OK(err, "pthread_create")) {
-+			ctx.stop = true;
-+			goto reap;
-+		}
-+	}
-+
-+reap:
-+	for (i = 0; i < wr_nr + rd_nr; i++) {
-+		void *ret = NULL;
-+		char desc[32];
-+
-+		if (!tids[i])
-+			continue;
-+
-+		snprintf(desc, sizeof(desc), "thread %u", i + 1);
-+		err = pthread_join(tids[i], &ret);
-+		ASSERT_OK(err, desc);
-+		ASSERT_EQ(ret, NULL, desc);
-+	}
-+destroy:
-+	fd_htab_lookup__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/fd_htab_lookup.c b/tools/testing/selftests/bpf/progs/fd_htab_lookup.c
-new file mode 100644
-index 0000000000000..a4a9e1db626fc
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fd_htab_lookup.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2025. Huawei Technologies Co., Ltd */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct inner_map_type {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(key_size, 4);
-+	__uint(value_size, 4);
-+	__uint(max_entries, 1);
-+} inner_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
-+	__uint(max_entries, 64);
-+	__type(key, int);
-+	__type(value, int);
-+	__array(values, struct inner_map_type);
-+} outer_map SEC(".maps") = {
-+	.values = {
-+		[0] = &inner_map,
-+	},
-+};
--- 
-2.29.2
+...however, the benchmark doesn't actually do any DMA mapping, so it's
+not super surprising that it doesn't show any difference: it's not
+exercising any of the xarray code. Your series shows a difference on
+this benchmark only because it does the page_pool_item allocation
+regardless of whether DMA is used or not.
+
+I guess we should try to come up with a micro-benchmark that does
+exercise the DMA code. Or just hack up the xarray patch to do the
+tracking regardless, for benchmarking purposes.
+
+>> Jesper has kindly helped with testing that it works for normal packet
+>> processing, but I haven't yet verified that it resolves the original
+>> crash. Will post the patch to the list once I have verified this (help
+>> welcome!).
+>
+> RFC seems like a good way to show and discuss the basic idea.
+
+Sure, I can send it as an RFC straight away if you prefer. Note that I'm
+on my way to netdevconf, though, so will probably have limited time to
+pay attention to this for the next week or so.
+
+> I only took a glance at git code above, it seems reusing the
+> _pp_mapping_pad for pp_dma_index seems like a wrong direction
+> as mentioned in discussion with Ilias above as the field might
+> be used when a page is mmap'ed to user space, and reusing that
+> field in 'struct page' seems to disable the tcp_zerocopy feature,
+> see the below commit from Eric:
+> https://github.com/torvalds/linux/commit/577e4432f3ac810049cb7e6b71f4d96e=
+c7c6e894
+>
+> Also, I am not sure if a page_pool owned page can be spliced into the fs
+> subsystem yet, but if it does, I am not sure how is reusing the
+> page->mapping possible if that page is called in __filemap_add_folio()?
+>
+> https://elixir.bootlin.com/linux/v6.14-rc5/source/mm/filemap.c#L882
+
+Hmm, so I did look at the mapping field, but concluded using it wouldn't
+interfere with anything relevant as long as it's reset back to zero
+before the page is returned to the page allocator. However, I definitely
+missed the TCP zero-copy thing, and other things as well, it would seem
+(cf the discussion you referred to above).
+
+However, I did consider alternatives: AFAICT there should be space in
+the pp_magic field (used for the PP_SIGNATURE), so that with a bit of
+care we can stick an ID into the upper bits and still avoid ending up
+with a value that could look like a valid pointer.
+
+I didn't implement that initially because I wasn't sure it was
+necessary, but seeing as it is, I will take another look at it. I have
+one or two other ideas if this turns out not to pan out.
+
+-Toke
 
 
