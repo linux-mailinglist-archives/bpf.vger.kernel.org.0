@@ -1,92 +1,92 @@
-Return-Path: <bpf+bounces-53633-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53634-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C26AA577FC
-	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 04:41:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CA61A57828
+	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 04:52:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53AD0177DDF
-	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 03:41:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74C19189A782
+	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 03:52:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B4E18DB2F;
-	Sat,  8 Mar 2025 03:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB5617A31B;
+	Sat,  8 Mar 2025 03:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UeAntDnO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T5ucwuau"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D267188006;
-	Sat,  8 Mar 2025 03:40:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DDA7169AE6;
+	Sat,  8 Mar 2025 03:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741405217; cv=none; b=O+WAuVkbjVeu5Yt/MJHDOcAVOW/vdgnWEdexFO6ANH9MnGQMsPIYo/gIGE7FcaDPLZRaDKgeyoYAi0gqGHP0AILpRTZS+hoOP9/r+l1Gqy/oJmC2WxSnWwRDx/9KqnEKZmwH6EnnAMSNJI2lH5CUPr2bvOiZLdYAKfZCzzqRqZI=
+	t=1741405831; cv=none; b=rstn4bJuPvdN+BfN/9r6FrgiyWWCy/qDyps+BYJAuobBZhANsL9R4sj3pU8p9kNzjNtxnCpm35ooFNTBIBMDm9zChSCK5nFhlSYXpcitHZggv9QcsFULheN18cyG6n1xRXPOyS5gp3/XiMYKhjDHBsfVRBVdlbkpJOiSyca1vxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741405217; c=relaxed/simple;
-	bh=U/LYTdUiiTEHa6ZIs90C3mimTrjgdeBkNgGCyj30R+U=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=ktbYs1yP/+y9jFhxnT86S5inr5Oog+W1x8BGybR1s6dgmZSjGP76BMX88P/sBsWIsuSb6885XjRkUB9zRDMnLBQi26CawqOZI0whtFJKMRByQw5XmSYSPMR10+tVXHXHIKyoMwHVx+2BK7OVGU7wu9UHa8A/omto1QADxabVrK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UeAntDnO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D6C2C4CEE8;
-	Sat,  8 Mar 2025 03:40:17 +0000 (UTC)
+	s=arc-20240116; t=1741405831; c=relaxed/simple;
+	bh=thNru/J8O4N9hCvQBln45Ii9nJYq1lZSQziQYfLtouc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=o9bqEsXt+mS6n2jgAay/ZCJHf7pZzHFLPBqBGx7nO7pcdMICFrwVx9GmErz4HqqvPesiz1qDKu16yn9Nz6ebTl7Bk2xw4drQkBRxWwSms2mlrHdSAaVyvBOb5QpbnFA0ia/vi2cI8Z5sEEFSa/zR9ArLjCA8kz8Y7EGPwmgHQeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T5ucwuau; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 577DEC4CEE0;
+	Sat,  8 Mar 2025 03:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741405217;
-	bh=U/LYTdUiiTEHa6ZIs90C3mimTrjgdeBkNgGCyj30R+U=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=UeAntDnOWF92hVrFNFyCxfdC+y6/3ozsLCxIRrz0tlmShpjd/wT3E8Yqrq3H+k8Pq
-	 oHC0hfg77YRtaWSVZ3vG0RiLsAkv/R9kdRFoRm3Hn9VsIkONx7tnfjcaKOWcjyJtfM
-	 kP6BdIJMG5SfC4mY47NR+YtW3pJWugWlyfhNdJsDp04aGOTrjfE9b6JqtJiTZ2t08W
-	 LgShFHrjyVWCQ/ffvbdETo8wnZ8htHj3V4w30Fw5W7UxtcH2+kkQxo8ADesX5jhUSh
-	 LL0EYOYu6PkQ07w42c43L+1L8adkjtUSrGI6xNWOZJ+ccY90Ue9Zovi1nfi8w2WP50
-	 7GEMXtVGkSPvg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33B86380CFFB;
-	Sat,  8 Mar 2025 03:40:52 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1741405831;
+	bh=thNru/J8O4N9hCvQBln45Ii9nJYq1lZSQziQYfLtouc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=T5ucwuauqG1W/nrQFZDbIFfy7Pl86HpD+CcU99Kyipq4gMn1T3pPF+f4zA60B+zL/
+	 Qm36MeyVj0Qrr/18aii0vjRP6Jw4wu8Kt87paitKHx7t8Dsr0yUz+67y80AuU7Ejvt
+	 zwJxD+2dScZV3H2nnvmzKIYug4Q9fzhGB9mzjwNGV0/8GAJ0kEdAfDlRQxo2s9hg8q
+	 up1ppFMrfTP5B4bfyv4U8BoeaY8YuV0ewCHXlJuI5PyYq0i+Gpq36/dssFBifEjylw
+	 aTMGo1tkZxpIatqGzPM2uAI9yl4k9LO1oGAO3EJr8TJJ+pjGdbYnEUbGMAZCsJY378
+	 hMeLhM/JuF1uw==
+Date: Fri, 7 Mar 2025 19:50:29 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
+ paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+ davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
+ pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
+ ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
+ daniel@iogearbox.net, john.fastabend@gmail.com, bpf@vger.kernel.org,
+ ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
+ shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Subject: Re: [PATCH net] net: mana: Support holes in device list reply msg
+Message-ID: <20250307195029.1dc74f8e@kernel.org>
+In-Reply-To: <1741211181-6990-1-git-send-email-haiyangz@microsoft.com>
+References: <1741211181-6990-1-git-send-email-haiyangz@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf-next 2025-03-06
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174140525073.2565853.8563625669606759758.git-patchwork-notify@kernel.org>
-Date: Sat, 08 Mar 2025 03:40:50 +0000
-References: <20250307055335.441298-1-martin.lau@linux.dev>
-In-Reply-To: <20250307055335.441298-1-martin.lau@linux.dev>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
- pabeni@redhat.com, ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Wed,  5 Mar 2025 13:46:21 -0800 Haiyang Zhang wrote:
+> -	for (i = 0; i < max_num_devs; i++) {
+> +	for (i = 0; i < GDMA_DEV_LIST_SIZE &&
+> +		found_dev < resp.num_of_devs; i++) {
 
-This pull request was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+unfortunate mis-indent here, it blend with the code.
+checkpatch is right that it should be aligned with opening bracket
 
-On Thu,  6 Mar 2025 21:53:35 -0800 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
-> 
-> The following pull-request contains BPF updates for your *net-next* tree.
-> 
-> We've added 6 non-merge commits during the last 13 day(s) which contain
-> a total of 6 files changed, 230 insertions(+), 56 deletions(-).
-> 
-> [...]
+>  		dev = resp.devs[i];
+>  		dev_type = dev.type;
+>  
+> +		/* Skip empty devices */
+> +		if (dev.as_uint32 == 0)
+> +			continue;
+> +
+> +		found_dev++;
+> +		dev_info(gc->dev, "Got devidx:%u, type:%u, instance:%u\n", i,
+> +			 dev.type, dev.instance);
 
-Here is the summary with links:
-  - pull-request: bpf-next 2025-03-06
-    https://git.kernel.org/netdev/net-next/c/93b1e055174b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Are you sure you want to print this info message for each device,
+each time it's probed? Seems pretty noisy. We generally recommend
+printing about _unusual_ things.
 
