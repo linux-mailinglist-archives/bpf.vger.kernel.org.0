@@ -1,151 +1,145 @@
-Return-Path: <bpf+bounces-53640-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53641-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F650A578BC
-	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 07:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AAE0A578D0
+	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 07:48:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D96A23B329A
-	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 06:17:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AD913B011B
+	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 06:48:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F1D17A317;
-	Sat,  8 Mar 2025 06:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C6118FC84;
+	Sat,  8 Mar 2025 06:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i+h3hCZ3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LRFbn7Yj"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86758BFF
-	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 06:17:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC97E184540
+	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 06:48:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741414675; cv=none; b=SFyTNZ8QkgCzIjM26vepain7sVo4KJL3YpXDagdjPLtKaEAC+GlvU1XcMhDERAeedCCx8rsGA6jVx/rmK9mAs2lliLqNa34ugKLUCVBFsB7NfdfLZTK5xU3/GV4O0c6tTqHpnTuAXSuzEzhoOro4tYsT8mSBKGQqDRR0psThJws=
+	t=1741416518; cv=none; b=ED0W2sXmQ+Lb8DHEUznmKyOgltxoZgSymtQBvMftiTzaPFpeOQAhbg2q5d6u2qRWnOrZywXi1yvX5XrpmwAna4WT3BZakSWXpZuVuY1bf9JhMa9RBLsjFBeXtxs+GkS8DcxocqA/9B3xZ6nHQX8MmoS/t7jkA2675t0RdT7NUKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741414675; c=relaxed/simple;
-	bh=W9Zpsk4va65XjOKJQ4BZsvpT+YEceRpv1MtKhh31Shk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GsxDBkkCiTxcSy2Ri5To/TmMI/5VMmbBx3KRGdL1lRSFpUsBevLM8bPeX+nU/fr6Cl44K7G2JCoamsObJ5mzDBfDuBMBXPvnaQc7YcX34aMJ+Nq//qymR51yvMq4melgXIT9poBpxoNN8a0z2F2Foij5Or1ixaiEg5DzIaxzqy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i+h3hCZ3; arc=none smtp.client-ip=91.218.175.170
+	s=arc-20240116; t=1741416518; c=relaxed/simple;
+	bh=8jukEC0EudsYjwC02rHInMECXXNwK3YBr4+9H9xlMdI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=APe4hJCwMG4JJPuJSV9Qj+2JhSm4aNJqB91hCyocomLmZcrAZCfBJ4t5ft7wECA68h2KLSqa+MTUjPDbTL5xpkWPrqK7QqtUx0X1y0nGCpHMGHgPStj+9/6U0IfV+EhgcWRoM/sLl6TrI0acUcAqNYjO9g97LH28xxX8RufU6WA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LRFbn7Yj; arc=none smtp.client-ip=95.215.58.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <908c6a63-3049-4dd2-859a-215b31e5d1ea@linux.dev>
+Message-ID: <10239917-2cbe-434e-adc5-69c3f3e66e36@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1741414669;
+	t=1741416514;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0GmX1LESwc5JByLp69e4e/sfrIhlf3MfMRPUw8cGdoA=;
-	b=i+h3hCZ32v6BKcv0iDEvAWb5Z7bbh34KxRYTPxLWbfCHYu7GRpsAe2D7Hw0bBepOMDjBVY
-	HfEzzjGXgDjY234aywVaHYFfmF/HCC+z/emQVbSs0iLwE5eKtljxOnU3B86YyZAqr7nKkj
-	jwyHvjwRuhJilO6plQYb7ozVp9W8qAw=
-Date: Fri, 7 Mar 2025 22:17:44 -0800
+	bh=fITP1K5VcspxKICkRPgUCuZyykwQHgzN9i0lzuFRk3A=;
+	b=LRFbn7YjkHBRLyZIWjGODrUhE3JqUL/k1xkvSKuQMr5ZCFKlW/TTIeD3AvvsWlLdcQqcq+
+	0jOEB+lo98ouk2S/UYh+q3GQMcvgzke0SomaBM0SpXTHrdbK9MC3hmP/N7aN2EnwYzoK1c
+	EfF1jD3gRGsq1OXvdP5AhjFzw4S3cf0=
+Date: Fri, 7 Mar 2025 22:48:21 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: add get_netns_cookie helper to tracing
- programs
+Subject: Re: [PATCH] libbpf: Fix uprobe offset calculation
 Content-Language: en-GB
-To: Martin KaFai Lau <martin.lau@linux.dev>, Mahe Tardy <mahe.tardy@gmail.com>
-Cc: daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org,
- andrii@kernel.org, jolsa@kernel.org, bpf@vger.kernel.org,
- Network Development <netdev@vger.kernel.org>
-References: <20250227182830.90863-1-mahe.tardy@gmail.com>
- <96dbd7df-1fa7-4caa-a52c-372d696e0f38@linux.dev>
- <Z8WBIR72Zu5x50N9@MTARDY-M-GJC6>
- <36637c9d-b6bc-4b8c-a2fd-9800c5a7a6dc@linux.dev>
- <Z8nVRtg7XwkOHjuv@MTARDY-M-GJC6>
- <a66af5a8-1aa4-481a-b57e-b3076cc520b0@linux.dev>
+To: Hengqi Chen <hengqi.chen@gmail.com>, bpf@vger.kernel.org,
+ andrii@kernel.org, eddyz87@gmail.com, deso@posteo.net
+References: <20250307140120.1261890-1-hengqi.chen@gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <a66af5a8-1aa4-481a-b57e-b3076cc520b0@linux.dev>
+In-Reply-To: <20250307140120.1261890-1-hengqi.chen@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
 
-On 3/7/25 3:06 PM, Martin KaFai Lau wrote:
-> On 3/6/25 9:03 AM, Mahe Tardy wrote:
->>>>> The immediate question is whether sock_net(sk) must be non-NULL 
->>>>> for tracing.
->>>> We discussed this offline with Daniel Borkmann and we think that it
->>>> might not be the question. The get_netns_cookie(NULL) call allows 
->>>> us to
->>>> compare against get_netns_cookie(sock) to see whether the sock's netns
->>>> is equal to the init netns and thus dispatch different logic.
->>> bpf_get_netns_cookie(NULL) should be fine.
->>>
->>> I meant to ask if sock_net(sk) may return NULL for a non NULL sk. 
->>> Please check.
->> Oh sorry for the confusion, I investigated with my humble kernel
->> knowledge: essentially sock_net(sk) is doing sk->sk_net->net, retrieving
->> the net struct representing the network namespace, to later extract the
->> cookie, and thus dereference the returned pointer (here is the concern).
->> The sk_net intermediary (in reality __sk_common.skc_net) is here because
->> of the possibility of switching on/off network namespaces via
->> CONFIG_NET_NS. It's a possible_net_t type containing (or not) the struct
->> net pointer, explaining why we use write/read_pnet to no-op or return
->> the global net ns.
->>
->> Now by adding this helper to tracing progs, it allows to call this
->> function in any function entry or function exit, but unlike kprobes,
->> it's not possible to just hook at an obvious arbitrary point in the code
->> where the net ns would be NULL in the sock struct. With that in mind, I
->> failed to crash the kernel tracing a function (some candidates were
->> inlined). I mostly grepped for sock_net_set, but I lack the knowledge to
+On 3/7/25 6:01 AM, Hengqi Chen wrote:
+> As reported on libbpf-rs issue([0]), the current implementation
+> may resolve symbol to a wrong offset and thus missing uprobe
+> event. Calculate the symbol offset from program header instead.
+> See the BCC implementation (which in turn used by bpftrace) and
+> the spec ([1]) for references.
 >
-> Thanks for checking.
+>    [0]: https://github.com/libbpf/libbpf-rs/issues/1110
+>    [1]: https://refspecs.linuxfoundation.org/elf/
 >
-> I took a quick look at the callers of sock_net_set. I suspect 
-> "fentry/sk_prot_alloc" and "lsm/sk_alloc" could have a NULL?
->
->> guarantee that this could not happen right now or in the future. Maybe
->> that would be just safer to add a check and return 0 in that case if
->> that's ok? Not sure since the helper returns an 8-byte long opaque
->> number which thus includes 0 as a valid value.
->
-> I assume net_cookie 0 is invalid, but then it leaks the implementation 
-> details of what is a valid cookie in a uapi helper
->
->  * u64 bpf_get_netns_cookie(void *ctx)
->  * ...
->  *      Return
->  *              A 8-byte long opaque number
->
-> Note that, the tracing program can already read most fields of the sk, 
-> including sk->sk_net.net->net_cookie. Therefore, what this patch aims 
-> to achieve has already been supported in tracing. It can also save a 
-> helper call.
->
-> The only thing that may be missing in your use case is determining the 
-> init_net. I don't think reading a global kernel variable has been 
-> supported yet. Not sure if init_net must have net_cookie 1. Otherwise, 
-> we could consider to add a kfunc to return &init_net, which could be 
-> used to compare with sk->sk_net.net. Having a pointer to &init_net 
-> might be more useful for other tracing use cases in general.
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 
-There is the workaround for this tracing use case.
+Hengqi,
 
-1. Declare a global variable in the bpf program, e.g.
-    struct net *init_net;
+There are some test failures in the CI. For example,
+   https://github.com/kernel-patches/bpf/actions/runs/13725803997/job/38392284640?pr=8631
 
-2. After skel_open and before skel_load, find init_net address (from /proc/kallsyms) and
-    assign the address to skel->bss->init_net.
+Please take a look.
+Your below elf_sym_offset change matches some bcc implementation, but
+maybe maybe this is only under certain condition?
 
-3. In the prog, do
-    struct net *netns = bpf_rdonly_cast(init_net, bpf_core_type_id_kernel(struct net));
-    bpf_printk("%u\n", netns->net_cookie);
+Also, it would be great if you can add detailed description in commit message
+about what is the problem and why a different approach is necessary to
+fix the issue.
 
-There is an effort to add global variables to BTF.
-See https://lore.kernel.org/bpf/20250207012045.2129841-1-stephen.s.brennan@oracle.com/
-The recommended way is to put these global variables in a module to avoid consume
-too much kernel memory unconditionally.
+> ---
+>   tools/lib/bpf/elf.c | 32 ++++++++++++++++++++++++--------
+>   1 file changed, 24 insertions(+), 8 deletions(-)
+>
+> diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
+> index 823f83ad819c..9b561c8d1eec 100644
+> --- a/tools/lib/bpf/elf.c
+> +++ b/tools/lib/bpf/elf.c
+> @@ -260,13 +260,29 @@ static bool symbol_match(struct elf_sym_iter *iter, int sh_type, struct elf_sym
+>    * for shared libs) into file offset, which is what kernel is expecting
+>    * for uprobe/uretprobe attachment.
+>    * See Documentation/trace/uprobetracer.rst for more details. This is done
+> - * by looking up symbol's containing section's header and using iter's virtual
+> - * address (sh_addr) and corresponding file offset (sh_offset) to transform
+> + * by looking up symbol's containing program header and using its virtual
+> + * address (p_vaddr) and corresponding file offset (p_offset) to transform
+>    * sym.st_value (virtual address) into desired final file offset.
+>    */
+> -static unsigned long elf_sym_offset(struct elf_sym *sym)
+> +static unsigned long elf_sym_offset(Elf *elf, struct elf_sym *sym)
+>   {
+> -	return sym->sym.st_value - sym->sh.sh_addr + sym->sh.sh_offset;
+> +	size_t nhdrs, i;
+> +	GElf_Phdr phdr;
+> +
+> +	if (elf_getphdrnum(elf, &nhdrs))
+> +		return -1;
+> +
+> +	for (i = 0; i < nhdrs; i++) {
+> +		if (!gelf_getphdr(elf, (int)i, &phdr))
+> +			continue;
+> +		if (phdr.p_type != PT_LOAD || !(phdr.p_flags & PF_X))
+> +			continue;
+> +		if (sym->sym.st_value >= phdr.p_vaddr &&
+> +		    sym->sym.st_value < (phdr.p_vaddr + phdr.p_memsz))
+> +			return sym->sym.st_value - phdr.p_vaddr + phdr.p_offset;
+> +	}
+> +
+> +	return -1;
+>   }
+>   
+>   /* Find offset of function name in the provided ELF object. "binary_path" is
+> @@ -329,7 +345,7 @@ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
+>   
+>   			if (ret > 0) {
+>   				/* handle multiple matches */
+> -				if (elf_sym_offset(sym) == ret) {
+> +				if (elf_sym_offset(elf, sym) == ret) {
+>   					/* same offset, no problem */
+>   					continue;
+>   				} else if (last_bind != STB_WEAK && cur_bind != STB_WEAK) {
+
+[...]
 
 
