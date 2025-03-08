@@ -1,173 +1,130 @@
-Return-Path: <bpf+bounces-53644-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53645-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 011FDA57A2E
-	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 13:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 20ED7A57A8C
+	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 14:39:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C9133B0F2F
-	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 12:33:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B1F33B3403
+	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 13:39:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A6BE1BEF87;
-	Sat,  8 Mar 2025 12:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RGArCf+v"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE72C1CAA6A;
+	Sat,  8 Mar 2025 13:39:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A18196;
-	Sat,  8 Mar 2025 12:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1309A1C6FED
+	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 13:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741437237; cv=none; b=TMDHy0X8FXWVPrRGd8OIrtZPVMWKxNeobQgHIehF3Gn2VY69to+iIt1NZfzzGNTBPoa3cPyr7ROzxL5w6OKkQ1sCpgFSnIG3vFf6DmyUVJtdDTFtDdCNG1x+Azv+NwNF5o/W/ceuNVjwf5zlk61aHC9ZIhtrrWYVrhOdt/LF21o=
+	t=1741441157; cv=none; b=UwS800y78zyhLWfZh5QOzvRex/CsBPhvs2Ld7DjWM7MWfZU2JWNXy8dkm2R8Sok9S/X9dd7ukkO4yQloX387+lz27Eb0yCeKzN0p5qKE0F1zoCuVzxyHUHcOpSVJCRDTkbnaV9L3MYKrleFgkkYEFCI1W/ImB3NVI0Lcm+DLWUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741437237; c=relaxed/simple;
-	bh=V/0SqlQacp+h4g7KCVIboICK9m0VGNB0L46HL+T24OU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TU2fEbREngKlSXnmYHcR5q+xP+PeQVcFxts/9ykwc3ZREiq94KA4Rv1dNNmLkEe/NtU1FbuCt5SUCrfYShZy6QrnWfsuninIEOs11uu61EpRzNsF6r5wZ4Y04yrgP/1QBrZuaX769+HDrpv6k9UH01lgazrbamcKQHH1Mv5aF9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RGArCf+v; arc=none smtp.client-ip=209.85.214.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-22185cddbffso70967205ad.1;
-        Sat, 08 Mar 2025 04:33:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741437236; x=1742042036; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xrHqPe4qI/nAbruW3F2vRPvWp4Qoww7mexetKwU+H74=;
-        b=RGArCf+vP48/eTM3H0kN2UIShrS7ZAoIfiqLXWFdqyq2f9CHfelbGZ9GLdMUn8KU54
-         ZEh3VD4zAY+iPQaZ5PXtBh1VgGhmitNdctEVB1ObKAJqhf9nZr39AC3vb0XrCQT2D1HT
-         0mCRf06JboEZ3Y6qPKjbbQ+9aS12Bd7+KGc6NDuyLwJarBSEifeP0d/LL1NNA2WX/O8I
-         PY8fC8RAL6waPAEX27j0wvwF22rPigHJwu1V5XbAXMx1X7ryETiKzThNZYfaZcoBALRj
-         EoEjq2bh66rRbbx0lNFYRj4/EmeM4JOLd5c4xYfhjdlld7vIgnwQgrtRM6JI22FXJpCZ
-         Eutg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741437236; x=1742042036;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xrHqPe4qI/nAbruW3F2vRPvWp4Qoww7mexetKwU+H74=;
-        b=k5l6RZem/NhjP/plbhVjRYgfvr0bkC1rY1wRmUmOn4xvBXOZ40F9gXQHsrELQxrbAB
-         nuAvuVLUI5joxY5SFz7/wSDASMv7SQZS55cGtoG5secCm4CjEyR+4fQ0WT2B6zvwRhNf
-         FvTjASTHsxZjHgueTFJAE1EDbSFRNkAvieNYpAhStsgLjpQcmyLR6scVcI1PfUsY95xX
-         f+mqKi7/FPewgbR05e7xmFzAXAeyQ590xG8Ogu8vgSmCkvgx63XXFSaigihK6ZvU/fHz
-         Zp8td73dZHP7OMjM9LlnRyaFAPfGKBsTwe0ZzwTR5UiY2dRlYGr9QwkBkQvoRiugfmcU
-         q1OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUX+52y23PSHUrDSj9Ig5g8DL7V/DPbVfAclqYd9TmgJ4FR2GyYtjwvlcP4Vgx0fSiMQttuv+hpABpKHENb@vger.kernel.org, AJvYcCVmfnRw9Drqkeu2cqS+TvKpju5Ulc36ZhGuefeThZNLMkjCLqY7wD21FChmw+bbXckQk5wUg9xv@vger.kernel.org, AJvYcCWxj84Hz/UMR/ED2g3LmQK9t/hIBOtjZ5xYX9XtQF/4SkNYlW+kLwcjrd0ZijARBU/ZPuA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmxL/EPzHxv9CZj+IPi0TDRtUxKYgI9emyJ3Bl3f6V4yt6UdiR
-	RvyU4JxJrFu/Br9gik3/wb+bm9U9FV12u7HNe/u2ftmGz1psO5tZ
-X-Gm-Gg: ASbGncuMH7JKlV5w5zMdJQsaGfQ/4J1yxgVQz9zeuwU+bbrbXFBWsu6gONeTYKUhsXk
-	uOFle+3jKJbXPLlqC/ISi1GVzWzj2qoA6JOwRu8m+rmejJ1jqjpCFHHVrtmulgYq5O84AHyOu7d
-	7j1D2oMsTULJw4hF91eQwCt38fTQ1UZc6RGE4VF5aVyqT+sjpE33cPPOzSzjgf7u1x4aQWoMiSa
-	y2WpJV8ZH1KIThvkL+bu79Ne9aTjV37P2VpCTwfZBLVj9dDLPw9rfSSq6c/X/Yljvif/aNa93x0
-	E703DUUOLKzV8fsUTdNMrd1bhZDEfvGyFfWq45usnQNO/NIDRFJ/aYRl9pirZGLnSAbNK+ANwYM
-	MkDiPChwc58UVcg4tuLzG51RMb8Cgl6Rf
-X-Google-Smtp-Source: AGHT+IEq4oVqwhl+HcBlEEt5O5mLwczA0MCHU/VL6TVKG4WcVGMzJn/E2qe19p7uaCmDiiGmZcFF6w==
-X-Received: by 2002:a05:6a00:816:b0:736:aea8:c9b7 with SMTP id d2e1a72fcca58-736bbf4af5dmr6123665b3a.2.1741437235636;
-        Sat, 08 Mar 2025 04:33:55 -0800 (PST)
-Received: from ?IPV6:2409:8a55:301b:e120:9c19:1482:d401:437c? ([2409:8a55:301b:e120:9c19:1482:d401:437c])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73698450244sm4918282b3a.80.2025.03.08.04.33.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 08 Mar 2025 04:33:55 -0800 (PST)
-Message-ID: <40b33879-509a-4c4a-873b-b5d3573b6e14@gmail.com>
-Date: Sat, 8 Mar 2025 20:33:44 +0800
+	s=arc-20240116; t=1741441157; c=relaxed/simple;
+	bh=v3iW8C83mYC7j1QkyleEzH8asJ9feXIubUtMbx+pBMs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W8dlRJOhpWwsGesk6LbIw85b9R6wNPeCKC2CKiaUM83iOXHNG/VSWOm2fyjZeTYbD18dF/ZTwBDYWn3lXEEaCXwrf7U/ciFZP3c2XChMw5JlZlI6LA1iKq13lz4h6/POIwyuMbYdI+bReNXAXvAm0m/gRb/1MtScqsg+MKaY60Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Z944K6fZVz4f3mHH
+	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 21:38:41 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 9CD0A1A1587
+	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 21:39:05 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP4 (Coremail) with SMTP id gCh0CgDnSl91SMxn+YeeFw--.42876S4;
+	Sat, 08 Mar 2025 21:39:03 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
+	Zvi Effron <zeffron@riotgames.com>,
+	Cody Haas <chaas@riotgames.com>,
+	houtao1@huawei.com
+Subject: [PATCH bpf-next v2 0/6] bpf: Support atomic update for htab of maps
+Date: Sat,  8 Mar 2025 21:51:04 +0800
+Message-Id: <20250308135110.953269-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v11 0/4] fix the DMA API misuse problem for
- page_pool
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net, kuba@kernel.org,
- pabeni@redhat.com
-Cc: zhangkun09@huawei.com, liuyonglong@huawei.com, fanghaiqing@huawei.com,
- Alexander Lobakin <aleksander.lobakin@intel.com>,
- Robin Murphy <robin.murphy@arm.com>,
- Alexander Duyck <alexander.duyck@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Gaurav Batra <gbatra@linux.ibm.com>, Matthew Rosato
- <mjrosato@linux.ibm.com>, IOMMU <iommu@lists.linux.dev>,
- MM <linux-mm@kvack.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- Eric Dumazet <edumazet@google.com>
-References: <20250307092356.638242-1-linyunsheng@huawei.com>
- <87v7slvsed.fsf@toke.dk>
-Content-Language: en-US
-From: Yunsheng Lin <yunshenglin0825@gmail.com>
-In-Reply-To: <87v7slvsed.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDnSl91SMxn+YeeFw--.42876S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZF4DZr1UWw1xuw4fKF47CFg_yoW8ArWUpa
+	yI9F43Kr18tFnFqw1fGw42ga1rJ3Z7tw18C3ZFqr15C348tryxXr1xKF4a9r93A34ruryF
+	vr13trZxW34kZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAa
+	w2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+	xUIa0PDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On 3/7/2025 10:15 PM, Toke Høiland-Jørgensen wrote:
+From: Hou Tao <houtao1@huawei.com>
 
-...
+Hi,
 
-> 
-> You are making this incredibly complicated. You've basically implemented
-> a whole new slab allocator for those page_pool_item objects, and you're
-> tracking every page handed out by the page pool instead of just the ones
-> that are DMA-mapped. None of this is needed.
- > > I took a stab at implementing the xarray-based tracking first suggested
-> by Mina[0]:
+The motivation for the patch set comes from the question raised by Cody
+Haas [1]. When trying to concurrently lookup and update an existing
+element in a htab of maps, the lookup procedure may return -ENOENT
+unexpectedly. The first revision of the patch set tried to resolve the
+problem by making the insertion of the new element and the deletion of
+the old element being atomic from the perspective of the lookup process.
+While the solution would benefit all hash maps, it does not fully
+resolved the problem due to the immediate reuse issue. Therefore, in v2
+of the patch set, it only fixes the problem for fd htab.
 
-I did discuss Mina' suggestion with Ilias below in case you didn't
-notice:
-https://lore.kernel.org/all/0ef315df-e8e9-41e8-9ba8-dcb69492c616@huawei.com/
+Please see individual patches for details. Comments are always welcome.
 
-Anyway, It is great that you take the effort to actually implement
-the idea to have some more concrete comparison here.
+v2:
+  * only support atomic update for fd htab
 
-> 
-> https://git.kernel.org/toke/c/e87e0edf9520
-> 
-> And, well, it's 50 lines of extra code, none of which are in the fast
-> path.
+v1: https://lore.kernel.org/bpf/20250204082848.13471-1-hotforest@gmail.com
 
-I wonder what is the overhead for the xarray idea regarding the
-time_bench_page_pool03_slow() testcase before we begin to discuss
-if xarray idea is indeed possible.
+[1]: https://lore.kernel.org/xdp-newbies/CAH7f-ULFTwKdoH_t2SFc5rWCVYLEg-14d1fBYWH2eekudsnTRg@mail.gmail.com/
 
-> 
-> Jesper has kindly helped with testing that it works for normal packet
-> processing, but I haven't yet verified that it resolves the original
-> crash. Will post the patch to the list once I have verified this (help
-> welcome!).
+Hou Tao (6):
+  bpf: Factor out htab_elem_value helper()
+  bpf: Rename __htab_percpu_map_update_elem to
+    htab_map_update_elem_in_place
+  bpf: Support atomic update for htab of maps
+  bpf: Add is_fd_htab() helper
+  bpf: Don't allocate per-cpu extra_elems for fd htab
+  selftests/bpf: Add test case for atomic update of fd htab
 
-RFC seems like a good way to show and discuss the basic idea.
+ kernel/bpf/hashtab.c                          | 148 +++++++-------
+ .../selftests/bpf/prog_tests/fd_htab_lookup.c | 192 ++++++++++++++++++
+ .../selftests/bpf/progs/fd_htab_lookup.c      |  25 +++
+ 3 files changed, 289 insertions(+), 76 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fd_htab_lookup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fd_htab_lookup.c
 
-I only took a glance at git code above, it seems reusing the
-_pp_mapping_pad for pp_dma_index seems like a wrong direction
-as mentioned in discussion with Ilias above as the field might
-be used when a page is mmap'ed to user space, and reusing that
-field in 'struct page' seems to disable the tcp_zerocopy feature,
-see the below commit from Eric:
-https://github.com/torvalds/linux/commit/577e4432f3ac810049cb7e6b71f4d96ec7c6e894
-
-Also, I am not sure if a page_pool owned page can be spliced into the fs
-subsystem yet, but if it does, I am not sure how is reusing the
-page->mapping possible if that page is called in __filemap_add_folio()?
-
-https://elixir.bootlin.com/linux/v6.14-rc5/source/mm/filemap.c#L882
-
-> 
-> -Toke
-> 
-> [0] https://lore.kernel.org/all/CAHS8izPg7B5DwKfSuzz-iOop_YRbk3Sd6Y4rX7KBG9DcVJcyWg@mail.gmail.com/
-> 
-> 
+-- 
+2.29.2
 
 
