@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-53648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53650-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B701FA57A90
-	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 14:39:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 309AEA57A91
+	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 14:39:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD259189565F
-	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 13:39:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 258217A7BEA
+	for <lists+bpf@lfdr.de>; Sat,  8 Mar 2025 13:38:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298F31D5AD8;
-	Sat,  8 Mar 2025 13:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD921D63CC;
+	Sat,  8 Mar 2025 13:39:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3C02CAB
-	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 13:39:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 778C31D4356
+	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 13:39:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741441158; cv=none; b=RM6h+nCasBp2/yXf6pF7ehyFqBKuSVuVT6m2gZIuldom2y711GcnbIF0NpWNMk9GLLwXolbGUBDGGenaKbO7xSaJr1SXqdKpt1+rkBDRHgNbzjhl2hRo+CvZ9qUJ7WJvpaBdVd9Z1LiiJde2Mqa9o3I8IvYfv09FNI2zBEXLJ5A=
+	t=1741441160; cv=none; b=Ey91gQZrO3TO+R2K9c/V2on1OCMBgz+2uPcjK7FOEW46RSKwN4cHxfN2skLGuOZb0eT5aCYCuHcU50IVsoqySkhN8y2S8JCZjns3+KaIB/CGOwKUUbI9xG6f+82Z9yR9m6BNd8cVcpetmZXvVFmY9+Oy9T3ggj0gMUOifWUCbMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741441158; c=relaxed/simple;
-	bh=uKSLhWFHfca0L3faSnUmjdx/11JeUrbp9n10WvPc8gA=;
+	s=arc-20240116; t=1741441160; c=relaxed/simple;
+	bh=PSvj8NYvKDkdKdSd3BU+wXtKc18r/YYLWvDRWjE9no8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IAJs9AjM6zKx45KFnCcWkPVZPhqS4DMimisIz+gF/A2OE/czA2lPuw56Bamj18VHgXxD6TMhQ3SGBDxpI2I8/CkNkpaufhBZig3mm/BWFr92S2q1PKNKVYztAlnEDNwo2DiPdZfjYd7JnzZy3kxf5fyxAk7QOfmVKXZhaDglSMk=
+	 MIME-Version; b=ClQ2RV/FQ/uC8i66MoiVjIJoF6UbF9K/6aEUwjFUoAc1g+FZxD5aHAWn7hHkOusmoWwKV3aaQlObH8WJWOfbjZij67LosEtASaZxL4lLav+IPitO7E9fQMGYrqBCnFi7bdhsbactlgeiIeR0I90W2S0TKjXzPMGcajSTmkLwRu0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Z944P6qT8z4f3jd8
-	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 21:38:45 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Z944Q4F3Qz4f3jd9
+	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 21:38:46 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 3256D1A06D7
+	by mail.maildlp.com (Postfix) with ESMTP id CE58E1A058E
 	for <bpf@vger.kernel.org>; Sat,  8 Mar 2025 21:39:08 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgDnSl91SMxn+YeeFw--.42876S8;
-	Sat, 08 Mar 2025 21:39:07 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgDnSl91SMxn+YeeFw--.42876S9;
+	Sat, 08 Mar 2025 21:39:08 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -56,9 +56,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Zvi Effron <zeffron@riotgames.com>,
 	Cody Haas <chaas@riotgames.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf-next v2 4/6] bpf: Add is_fd_htab() helper
-Date: Sat,  8 Mar 2025 21:51:08 +0800
-Message-Id: <20250308135110.953269-5-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v2 5/6] bpf: Don't allocate per-cpu extra_elems for fd htab
+Date: Sat,  8 Mar 2025 21:51:09 +0800
+Message-Id: <20250308135110.953269-6-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20250308135110.953269-1-houtao@huaweicloud.com>
 References: <20250308135110.953269-1-houtao@huaweicloud.com>
@@ -69,11 +69,11 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDnSl91SMxn+YeeFw--.42876S8
-X-Coremail-Antispam: 1UD129KBjvJXoW7CFWxKF4xGFW7AFyrJryfXrb_yoW8XF48pr
-	W8GrW2ka18ZFZFvay8Ja1vk398tr1vyw17uFWrJ34FyF1Y9rZxX3WDCa4xtF93AFy0yFn3
-	Ar4aqFySqw4rCrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPqb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:gCh0CgDnSl91SMxn+YeeFw--.42876S9
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr18tr4rAFWfCw4UWF1Dtrb_yoW8ZryDpF
+	4xGF129r1rXrs2gws8JanFkrWYvr1xtFyUCa90q34Fva4UZws2gr17Aa1I9FyFkryxtw1f
+	XrySva4Svay8ZrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
 	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
@@ -83,56 +83,62 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7CFWxKF4xGFW7AFyrJryfXrb_yoW8XF48pr
 	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
 	AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
 	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
-	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
-	0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x
-	07jIPfQUUUUU=
+	W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF
+	7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
+	v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuY
+	vjxUI-eODUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Add is_fd_htab() helper to check whether the map is htab of maps.
+The update of element in fd htab is in-place now, therefore, there is no
+need to allocate per-cpu extra_elems, just remove it.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/hashtab.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ kernel/bpf/hashtab.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 909639fe4df25..d0c10a899beb8 100644
+index d0c10a899beb8..36236d806bac7 100644
 --- a/kernel/bpf/hashtab.c
 +++ b/kernel/bpf/hashtab.c
-@@ -195,6 +195,11 @@ static bool htab_is_percpu(const struct bpf_htab *htab)
- 		htab->map.map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH;
+@@ -226,9 +226,13 @@ static struct htab_elem *get_htab_elem(struct bpf_htab *htab, int i)
+ 	return (struct htab_elem *) (htab->elems + i * (u64)htab->elem_size);
  }
  
-+static inline bool is_fd_htab(const struct bpf_htab *htab)
-+{
-+	return htab->map.map_type == BPF_MAP_TYPE_HASH_OF_MAPS;
-+}
-+
- static inline void *htab_elem_value(struct htab_elem *l, u32 key_size)
++/* Both percpu and fd htab support in-place update, so no need for
++ * extra elem. LRU itself can remove the least used element, so
++ * there is no need for an extra elem during map_update.
++ */
+ static bool htab_has_extra_elems(struct bpf_htab *htab)
  {
- 	return l->key + round_up(key_size, 8);
-@@ -1005,8 +1010,7 @@ static void pcpu_init_value(struct bpf_htab *htab, void __percpu *pptr,
- 
- static bool fd_htab_map_needs_adjust(const struct bpf_htab *htab)
- {
--	return htab->map.map_type == BPF_MAP_TYPE_HASH_OF_MAPS &&
--	       BITS_PER_LONG == 64;
-+	return is_fd_htab(htab) && BITS_PER_LONG == 64;
+-	return !htab_is_percpu(htab) && !htab_is_lru(htab);
++	return !htab_is_percpu(htab) && !htab_is_lru(htab) && !is_fd_htab(htab);
  }
  
- static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
-@@ -1845,7 +1849,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 			}
- 		} else {
- 			value = htab_elem_value(l, key_size);
--			if (map->map_type == BPF_MAP_TYPE_HASH_OF_MAPS) {
-+			if (is_fd_htab(htab)) {
- 				struct bpf_map **inner_map = value;
+ static void htab_free_prealloced_timers_and_wq(struct bpf_htab *htab)
+@@ -484,8 +488,6 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ {
+ 	bool percpu = (attr->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
+ 		       attr->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH);
+-	bool lru = (attr->map_type == BPF_MAP_TYPE_LRU_HASH ||
+-		    attr->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH);
+ 	/* percpu_lru means each cpu has its own LRU list.
+ 	 * it is different from BPF_MAP_TYPE_PERCPU_HASH where
+ 	 * the map's value itself is percpu.  percpu_lru has
+@@ -591,10 +593,7 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ 		if (err)
+ 			goto free_map_locked;
  
- 				 /* Actual value is the id of the inner map */
+-		if (!percpu && !lru) {
+-			/* lru itself can remove the least used element, so
+-			 * there is no need for an extra elem during map_update.
+-			 */
++		if (htab_has_extra_elems(htab)) {
+ 			err = alloc_extra_elems(htab);
+ 			if (err)
+ 				goto free_prealloc;
 -- 
 2.29.2
 
