@@ -1,105 +1,104 @@
-Return-Path: <bpf+bounces-53679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53680-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E60EA58384
-	for <lists+bpf@lfdr.de>; Sun,  9 Mar 2025 11:52:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3CB6A58409
+	for <lists+bpf@lfdr.de>; Sun,  9 Mar 2025 13:30:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07BD21896805
-	for <lists+bpf@lfdr.de>; Sun,  9 Mar 2025 10:52:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA534165F3B
+	for <lists+bpf@lfdr.de>; Sun,  9 Mar 2025 12:30:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1351D8E10;
-	Sun,  9 Mar 2025 10:49:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C4B1CCEDB;
+	Sun,  9 Mar 2025 12:30:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e6Rfz9ae"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QjCfz7ga"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AAE11D8DFE;
-	Sun,  9 Mar 2025 10:49:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC037482;
+	Sun,  9 Mar 2025 12:30:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741517357; cv=none; b=mhaZmTbncPoiVKbhdjROEBegJRg4Tlo8UKXZqMxJ9KXPen8VtsQcZeOYjDiwLx7IE6EQzRgHjavJ0ExhjicmCa6QscdoR3kqrFYtWsYee3GYnP38zvwevf7mWuvL+KWATCnD2qR85udwK4Log3jqiemvvXX73econeNbGb+q9sg=
+	t=1741523438; cv=none; b=HNB2thsSj3EYFLElZXRxf68NUzPXkhPJiExlUgwj2kBm0I439tE5pZYDTtLh4uc2jUoOW7PcPtPqeYxpY9bd+a2obXBOIiek/l0HNlo7V81ZjR6nO5lrZ1vimI6RLVVg66uCNxIL2O1GCmc9aeyo5TY40gyxE2xx6fCSxhn9N3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741517357; c=relaxed/simple;
-	bh=/Rpt0g7Ks3pkE+tta5B9MFjJotESPE0HD7Oeoam8bfk=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZxpWj6NU6oLEesx/4mJZCNpvnYpxdlExnYIiBsZIf0kuxEnhj8NH+ScwtcFdgXnlBjbnoyA+BTX+wkh+fWwWGwnlgYPlfhH+SiMIThvmtmsxUKTu6Au8Vb3TuT0iKtfT2uVew3PC0pKMcye1djNrsKgM7TXoQusAD+I4n6zV6Do=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e6Rfz9ae; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741517357; x=1773053357;
-  h=from:to:subject:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding;
-  bh=/Rpt0g7Ks3pkE+tta5B9MFjJotESPE0HD7Oeoam8bfk=;
-  b=e6Rfz9aeCr5E6/bs1gMK0QBuOLx1GTVLvAtAoIf9o0lnnXFcN8HX8Npe
-   sOFje9CbqRkNvzKbpX4Or9EHtqzHjUibo8+1LqhnFs9QubLpuoygbAI9M
-   vNnE+3PVpi4Vl8jtRwNMexkUXhvO7CpyLqCz1tMpDFJus3q3alZ7e8hrQ
-   MCJpikF1iqrpWYTApSHAKkTIuXjFKyXdnSUxV5l8iyT3gItz39UIVWgdz
-   aGJ8cA2s/Htm0IO41k3mrU21VUGpJQ8gWFwrgieDFph2uZZS4jdYJj/r+
-   rlcG+hOwsxo0ug8tn7Czzv233NZXzfUBpZx7gQOAgpMXMzHX1MNICoYIz
-   Q==;
-X-CSE-ConnectionGUID: 562Ox31gQvmgEC4SpEVxRw==
-X-CSE-MsgGUID: MfZ+2dpdRDKm02aiDh5EEg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11367"; a="42636274"
-X-IronPort-AV: E=Sophos;i="6.14,234,1736841600"; 
-   d="scan'208";a="42636274"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2025 03:49:16 -0700
-X-CSE-ConnectionGUID: pfGT78KETYqlpzGtVGbcyg==
-X-CSE-MsgGUID: Vkjkd0PTT1Gr0ZqdnB9BuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,234,1736841600"; 
-   d="scan'208";a="124655188"
-Received: from mohdfai2-ilbpg12-1.png.intel.com ([10.88.227.73])
-  by orviesa003.jf.intel.com with ESMTP; 09 Mar 2025 03:49:08 -0700
-From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
-To: Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Simon Horman <horms@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Furong Xu <0x1207@gmail.com>,
-	Russell King <rmk+kernel@armlinux.org.uk>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Xiaolei Wang <xiaolei.wang@windriver.com>,
-	Suraj Jaiswal <quic_jsuraj@quicinc.com>,
-	Kory Maincent <kory.maincent@bootlin.com>,
-	Gal Pressman <gal@nvidia.com>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Choong Yong Liang <yong.liang.choong@linux.intel.com>,
-	Chwee-Lin Choong <chwee.lin.choong@intel.com>,
-	Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	intel-wired-lan@lists.osuosl.org,
+	s=arc-20240116; t=1741523438; c=relaxed/simple;
+	bh=wZJjxwV42JCd91jTROSSilGqdgGCZDLMNi4KCRgR/8o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SdpB3a6fVPhocGtedRTTA7g/M7JdjG5LHHV5GPtOF3KoJ59Loq3hs21VSgB+KcDrKoM00iS+DLMg1zzTEJ68o+YMrm8zhJBr7gLB2puvAhC9DCOLcIpeLiqTDksInT8LRuTbbIafxiLZkv8dWL8vsnGaay99YnvYuTD2ey8N/ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QjCfz7ga; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-abf64aa2a80so639921366b.0;
+        Sun, 09 Mar 2025 05:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741523435; x=1742128235; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pqj3TJjhabGigKmi0ouKSehitIwTHPlDh+RYxcgOvx4=;
+        b=QjCfz7gad4bkJ5m8dd6L2evyrfVS1Q00kGn6WzwXSyvaOBPBEdqxFvuIutNBpqkieW
+         qmEZUEyHrc28GXBuJbXDiIus1cdOZO3WQnYfcA2hWugzDw2hZEJPURd8bVM1oyBm7d91
+         p4qzfKD2dotI93P3OanJsC/+aLgHqJw7zrYye767BuCusT2/9IIzUames3aH+QPjBzVJ
+         CGoBTVsfBpL7NavZjF23aec2nsSDANF9YuN6yqHoLEUVrUJBzALz2E6923ceYENoztar
+         YEr7fuJaFmhsSTqn56hBgp/uqZgnqfIYNQ4Dums55FrFtumLokWWKnjX8zMlNtmVPOW/
+         R+7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741523435; x=1742128235;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pqj3TJjhabGigKmi0ouKSehitIwTHPlDh+RYxcgOvx4=;
+        b=q6IHD09PYL1YE5KRsaDQSJx43u5bpprLIncgjA2kpvz3655r81gjY7kHLIUue8Snh0
+         vncnIArjAYAVLDCAhULs/kUQaPM60YDoZ9A6Vu9wT31OR9JcJJXtqK2pNXHi1cWEI8v4
+         nhNwvU0w9Wqfa8nfJ7encCaPqoF3DlvQeMpG4bjXUZQXEHWfR47sTSGuuR8eQGllhae5
+         zr9fwpu67wgcQn7LI0XroDjv3YwUYBhO4mg4Ua7JMOjh9ltM437z+qHl2rSgEg1HTMBA
+         323F2d0SubfC3PoQMAda1SYWPfo/6V39cCXNaD4rHVTU2C/Dirg4kLXJOoUTvi1gzDZZ
+         HodQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX8vWRSl0eZGgKuqhzJTXXWzk+npB9SJLoG8xQfyyfuUzHgweJHLOeQmTGoev4mHk8m3qdQM7k=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/fKFt7jlFaOneMKPVe5SnbvNHfalLHf0oc7QN62jFjJmE7JeD
+	yceFbFh5N0PljroldTMHa+YjMmHeG+qXZEqFn83jpEwLpqJKTIvQ
+X-Gm-Gg: ASbGncuPCudlg7T4JhtDSysPJaLVArwAgKv1D80EFrZwr4iCpvftiuBfRJod1Kr2Yps
+	67dqSbTEQR32GmYRQl9FYoyQoP88cpGst+I8AWEy2VR0J/GHqB158R5+M0bHlzz4pA66DFrU3o5
+	mfYy247zh5OOKxCP6/fJBYEPDLMRHEhlLbpfgh2Ne1PDjs6m8Wni4awK5jzAc26bx8E3Hkzeve8
+	CrR017Ec7V0tD1eX+HJ4feHMvLxgyOJPxjxbNLPkGgkMcotHmcGBU6V74xWTHYVpc5QoTzzK9ud
+	FeeI5oeJjxJmIKHQi8CCMsFQg0afu0TgN/bAhgvrM0MO3TlvI0o5bzvoG/S0pIzZf2gNy+Un00q
+	vchncOQ==
+X-Google-Smtp-Source: AGHT+IHKfjhv2KRqi72m86osn1kaV3bKVHiKIXa/2VcOYqS87Xn4ksZV0pNDz8lCjbtDG+Db5af31Q==
+X-Received: by 2002:a17:907:3f9b:b0:ac1:ddaa:2c11 with SMTP id a640c23a62f3a-ac25210ff7emr1172106766b.0.1741523434773;
+        Sun, 09 Mar 2025 05:30:34 -0700 (PDT)
+Received: from KERNELXING-MC1.tencent.com ([213.147.98.98])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac29c19603dsm39144066b.38.2025.03.09.05.30.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Mar 2025 05:30:34 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	dsahern@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	horms@kernel.org,
+	kuniyu@amazon.com,
+	ncardwell@google.com
+Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	bpf@vger.kernel.org
-Subject: [PATCH iwl-next v9 14/14] igc: add support to get frame preemption statistics via ethtool
-Date: Sun,  9 Mar 2025 06:46:48 -0400
-Message-Id: <20250309104648.3895551-15-faizal.abdul.rahim@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250309104648.3895551-1-faizal.abdul.rahim@linux.intel.com>
-References: <20250309104648.3895551-1-faizal.abdul.rahim@linux.intel.com>
+	Jason Xing <kerneljasonxing@gmail.com>
+Subject: [PATCH net-next 0/5] tcp: add some RTO MIN and DELACK MAX
+Date: Sun,  9 Mar 2025 13:29:59 +0100
+Message-Id: <20250309123004.85612-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -108,137 +107,30 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implemented "ethtool --include-statistics --show-mm" callback for IGC.
+Add bpf_getsockopt for RTO MIN and DELACK MAX.
 
-Tested preemption scenario to check preemption statistics:
-1) Trigger verification handshake on both boards:
-    $ sudo ethtool --set-mm enp1s0 pmac-enabled on
-    $ sudo ethtool --set-mm enp1s0 tx-enabled on
-    $ sudo ethtool --set-mm enp1s0 verify-enabled on
-2) Set preemptible or express queue in taprio for tx board:
-    $ sudo tc qdisc replace dev enp1s0 parent root handle 100 taprio \
-      num_tc 4 map 3 2 1 0 3 3 3 3 3 3 3 3 3 3 3 3 \
-      queues 1@0 1@1 1@2 1@3 base-time 0 sched-entry S F 100000 \
-      fp E E P P
-3) Send large size packets on preemptible queue
-4) Send small size packets on express queue to preempt packets in
-   preemptible queue
-5) Show preemption statistics on the receiving board:
-   $ ethtool --include-statistics --show-mm enp1s0
-     MAC Merge layer state for enp1s0:
-     pMAC enabled: on
-     TX enabled: on
-     TX active: on
-     TX minimum fragment size: 64
-     RX minimum fragment size: 60
-     Verify enabled: on
-     Verify time: 128
-     Max verify time: 128
-     Verification status: SUCCEEDED
-     Statistics:
-      MACMergeFrameAssErrorCount: 0
-      MACMergeFrameSmdErrorCount: 0
-      MACMergeFrameAssOkCount: 511
-      MACMergeFragCountRx: 764
-      MACMergeFragCountTx: 0
-      MACMergeHoldCount: 0
+Add setsockopt/getsockopt for RTO MIN and DELACK MAX.
 
-Co-developed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Co-developed-by: Chwee-Lin Choong <chwee.lin.choong@intel.com>
-Signed-off-by: Chwee-Lin Choong <chwee.lin.choong@intel.com>
-Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
----
- drivers/net/ethernet/intel/igc/igc_ethtool.c | 40 ++++++++++++++++++++
- drivers/net/ethernet/intel/igc/igc_regs.h    | 16 ++++++++
- 2 files changed, 56 insertions(+)
+Add corresponding selftests for bpf.
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_ethtool.c b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-index fd4b4b332309..324a27a5bef9 100644
---- a/drivers/net/ethernet/intel/igc/igc_ethtool.c
-+++ b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-@@ -1819,6 +1819,45 @@ static int igc_ethtool_set_mm(struct net_device *netdev,
- 	return igc_tsn_offload_apply(adapter);
- }
- 
-+/**
-+ * igc_ethtool_get_frame_ass_error - Get the frame assembly error count.
-+ * @reg_value: Register value for IGC_PRMEXCPRCNT
-+ * Return: The count of frame assembly errors.
-+ */
-+static u64 igc_ethtool_get_frame_ass_error(u32 reg_value)
-+{
-+	/* Out of order statistics */
-+	u32 ooo_frame_cnt, ooo_frag_cnt;
-+	u32 miss_frame_frag_cnt;
-+
-+	ooo_frame_cnt = FIELD_GET(IGC_PRMEXCPRCNT_OOO_FRAME_CNT, reg_value);
-+	ooo_frag_cnt = FIELD_GET(IGC_PRMEXCPRCNT_OOO_FRAG_CNT, reg_value);
-+	miss_frame_frag_cnt = FIELD_GET(IGC_PRMEXCPRCNT_MISS_FRAME_FRAG_CNT, reg_value);
-+
-+	return ooo_frame_cnt + ooo_frag_cnt + miss_frame_frag_cnt;
-+}
-+
-+static u64 igc_ethtool_get_frame_smd_error(u32 reg_value)
-+{
-+	return FIELD_GET(IGC_PRMEXCPRCNT_OOO_SMDC, reg_value);
-+}
-+
-+static void igc_ethtool_get_mm_stats(struct net_device *dev,
-+				     struct ethtool_mm_stats *stats)
-+{
-+	struct igc_adapter *adapter = netdev_priv(dev);
-+	struct igc_hw *hw = &adapter->hw;
-+	u32 reg_value;
-+
-+	reg_value = rd32(IGC_PRMEXCPRCNT);
-+
-+	stats->MACMergeFrameAssErrorCount = igc_ethtool_get_frame_ass_error(reg_value);
-+	stats->MACMergeFrameSmdErrorCount = igc_ethtool_get_frame_smd_error(reg_value);
-+	stats->MACMergeFrameAssOkCount = rd32(IGC_PRMPTDRCNT);
-+	stats->MACMergeFragCountRx = rd32(IGC_PRMEVNTRCNT);
-+	stats->MACMergeFragCountTx = rd32(IGC_PRMEVNTTCNT);
-+}
-+
- static int igc_ethtool_get_link_ksettings(struct net_device *netdev,
- 					  struct ethtool_link_ksettings *cmd)
- {
-@@ -2115,6 +2154,7 @@ static const struct ethtool_ops igc_ethtool_ops = {
- 	.set_link_ksettings	= igc_ethtool_set_link_ksettings,
- 	.self_test		= igc_ethtool_diag_test,
- 	.get_mm			= igc_ethtool_get_mm,
-+	.get_mm_stats		= igc_ethtool_get_mm_stats,
- 	.set_mm			= igc_ethtool_set_mm,
- };
- 
-diff --git a/drivers/net/ethernet/intel/igc/igc_regs.h b/drivers/net/ethernet/intel/igc/igc_regs.h
-index 12ddc5793651..f343c6bfc6be 100644
---- a/drivers/net/ethernet/intel/igc/igc_regs.h
-+++ b/drivers/net/ethernet/intel/igc/igc_regs.h
-@@ -222,6 +222,22 @@
- 
- #define IGC_FTQF(_n)	(0x059E0 + (4 * (_n)))  /* 5-tuple Queue Fltr */
- 
-+/* Time sync registers - preemption statistics */
-+#define IGC_PRMPTDRCNT		0x04284	/* Good RX Preempted Packets */
-+#define IGC_PRMEVNTTCNT		0x04298	/* TX Preemption event counter */
-+#define IGC_PRMEVNTRCNT		0x0429C	/* RX Preemption event counter */
-+
-+ /* Preemption Exception Counter */
-+ #define IGC_PRMEXCPRCNT				0x42A0
-+/* Received out of order packets with SMD-C */
-+#define IGC_PRMEXCPRCNT_OOO_SMDC			0x000000FF
-+/* Received out of order packets with SMD-C and wrong Frame CNT */
-+#define IGC_PRMEXCPRCNT_OOO_FRAME_CNT			0x0000FF00
-+/* Received out of order packets with SMD-C and wrong Frag CNT */
-+#define IGC_PRMEXCPRCNT_OOO_FRAG_CNT			0x00FF0000
-+/* Received packets with SMD-S and wrong Frag CNT and Frame CNT */
-+#define IGC_PRMEXCPRCNT_MISS_FRAME_FRAG_CNT		0xFF000000
-+
- /* Transmit Scheduling Registers */
- #define IGC_TQAVCTRL		0x3570
- #define IGC_TXQCTL(_n)		(0x3344 + 0x4 * (_n))
+Jason Xing (5):
+  tcp: bpf: support bpf_getsockopt for TCP_BPF_RTO_MIN
+  tcp: bpf: support bpf_getsockopt for TCP_BPF_DELACK_MAX
+  tcp: support TCP_RTO_MIN_US for set/getsockopt use
+  tcp: support TCP_DELACK_MAX_US for set/getsockopt use
+  selftests: add bpf_set/getsockopt() for TCP_BPF_DELACK_MAX and
+    TCP_BPF_RTO_MIN
+
+ Documentation/networking/ip-sysctl.rst        |  4 +--
+ include/net/tcp.h                             |  2 +-
+ include/uapi/linux/tcp.h                      |  2 ++
+ net/core/filter.c                             | 22 +++++++++++++
+ net/ipv4/tcp.c                                | 32 +++++++++++++++++--
+ net/ipv4/tcp_output.c                         |  2 +-
+ .../selftests/bpf/progs/setget_sockopt.c      |  2 ++
+ 7 files changed, 60 insertions(+), 6 deletions(-)
+
 -- 
-2.34.1
+2.43.5
 
 
