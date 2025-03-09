@@ -1,212 +1,187 @@
-Return-Path: <bpf+bounces-53687-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53688-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 688BDA5856B
-	for <lists+bpf@lfdr.de>; Sun,  9 Mar 2025 16:40:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A233A5857E
+	for <lists+bpf@lfdr.de>; Sun,  9 Mar 2025 16:48:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FBFE3AA741
-	for <lists+bpf@lfdr.de>; Sun,  9 Mar 2025 15:39:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 031DC169F8D
+	for <lists+bpf@lfdr.de>; Sun,  9 Mar 2025 15:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1291DE4EB;
-	Sun,  9 Mar 2025 15:39:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30ECC1DF24A;
+	Sun,  9 Mar 2025 15:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="brEcDF0Z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mb023g5+"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2066.outbound.protection.outlook.com [40.107.93.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33AD2F2A;
-	Sun,  9 Mar 2025 15:39:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741534795; cv=fail; b=P672SyqTHxyaa4qyMYt27YQgCaSY1dCaDwBO12WgRhq4D8Th9hfR2e7nu9c0RGKmJZ/QWQmKXmdnFze3/Eu3H7eMufPANOLTVjm9W7NHnPCWi+ycuA4x/Hfa8egIjn5JAs5QhFehN3lNkzZXYPxzVymWfbnn2m8mCPvTrNsfkcs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741534795; c=relaxed/simple;
-	bh=b72F3WP6uVmC36N7acs60IUhIebFtEfkHaZMW58hFz4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=lVQgaCDgJnUa40h4w/RFdUPLT/fp9iXf0u5dr1Jj1L4n7Ng57Icy6RoY+VKE1HE+RaVrhsI8eU/bUBbt1AGBk2I8cIa0nJe0g1QP9+EuNcN3RpMzKFnd+fX/zLEv66wKwTNC4VL1Kn8vVFXiRookI3+etHdnO1DFYt3q+1HQYHg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=brEcDF0Z; arc=fail smtp.client-ip=40.107.93.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ZkdnFrn1+EhNjrBlB9n548nQhNl9NRU2xhGHPjsO7YpEhBd+1p4HPSMkdXPenmVKuf8ANpG8ksttVHs65fVyjnxBgGPTvjHo6m2pvHb9LJuYhaaxzqwzJxLuxPwk6ru9UOeAH+/eMmwGFkjrKzMMNOjx7atRIczUHto2ls4zt1nZj4RbBjC25R/bMHcDfISBdfm9aNSfwkRMxMMvCxF5U4wDwpiA2o1wgYDqqA3O5MBHQur0+BjhpjeYWKJkGT3Z0wzU+O+leq/u+PlJJkTLuq2AEztleFpQfXs89A+XHawjoL0BafikXA79Ap7xh+LekLkfKayzRzylueS1bAVWdw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W21EOus61kqzIvUJhfWak0Zuwguspx3S7AldD3oY9pA=;
- b=hLbJ444Dtlgqw9y1ugqZorCsYSCVkuTGe7oWy8bKyXQDlVtzI+IhLScScYRpjnuIn2WlFQdy0RdoUR+/KlS6jh2naOnwX0tZXZ7oFv7oXsKdtvaHVgOf8RzMiULX8jHIhVU+puHExfvzKDZ20E0Uv9KHpYgzo/VpYVpQ7F/dOxPbG1q9+awh6E3mYguRY3SaS9Gn1NsGl+TS3o75tV4qQzAk4W4N340cp+/svv2pS+ZQfcQLvyRkW7Vdj1MzhgrHX4t8w0Bor8aDwRvNoLtA5yYTJRJN9aNCWNI1AkCj/ePMEZyIBZne2WJRLeD9CzdUNXNTRPHhZps1Lv6/qXfWDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W21EOus61kqzIvUJhfWak0Zuwguspx3S7AldD3oY9pA=;
- b=brEcDF0ZDLtFb50Tgd8N26cF9QNdLcMhokwgY+mh345zm9EGkhKyz76xqN+H4cI0kj3MR38eI7raIsFDmMETNm6JvIWU+LneH7+dCmwxpOfNBaaWREPuCLla43e4ffnzIevp4GSCwhL1rq3cqGJALML6U4Z4ha8YPrXcjUyWLGb6kHpPqQmIaxf+XdUPyy2C8Et8zCf1A/tCCX6kY3tx8YSNu3vSrnQiC/GRfl1pPjWpTpIPnPLUTF2PxOCzgbY9JME31KOB+NEyI95IXKJRmMyNnq1upEN/iB4O9TT9FmF1EVZF+dnE75boU3sGJ69h87UJ+4TYVpskqGPZ1DapVQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
- by PH7PR12MB6787.namprd12.prod.outlook.com (2603:10b6:510:1ad::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8511.26; Sun, 9 Mar
- 2025 15:39:49 +0000
-Received: from CY5PR12MB6405.namprd12.prod.outlook.com
- ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
- ([fe80::2119:c96c:b455:53b5%5]) with mapi id 15.20.8511.025; Sun, 9 Mar 2025
- 15:39:48 +0000
-Date: Sun, 9 Mar 2025 16:39:40 +0100
-From: Andrea Righi <arighi@nvidia.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: David Vernet <void@manifault.com>, Changwoo Min <changwoo@igalia.com>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] sched_ext: idle: Introduce the concept of allowed
- CPUs
-Message-ID: <Z822PGZLYl1Vima4@gpd3>
-References: <20250307200502.253867-1-arighi@nvidia.com>
- <20250307200502.253867-4-arighi@nvidia.com>
- <Z8twc3pc7I9SyIMC@slm.duckdns.org>
- <Z8voSv70QuxuZa5Z@gpd3>
- <Z82sImYF7jOgPGbL@slm.duckdns.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z82sImYF7jOgPGbL@slm.duckdns.org>
-X-ClientProxiedBy: MI0P293CA0009.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:44::6) To CY5PR12MB6405.namprd12.prod.outlook.com
- (2603:10b6:930:3e::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B9C187553;
+	Sun,  9 Mar 2025 15:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741535318; cv=none; b=X9EU2rh3s0wHOsdD1fq3cHXUVcp/4oydQw9wglR6kRuwR64RPuWgLuxCzzYpPHCidhdTWEKA91ENMjdiBm5ACp+A92/FAuZhYAU1KjERzwxUo5J0eZna4RaKZ7OS6tUV4PRaaIbEqyI/fCw8jiaYYEFl8Q+FIECd8slFBfhtQ8Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741535318; c=relaxed/simple;
+	bh=MZaV5bFfAdIoZnKuA7bGyEoUvV44zXeyNZF1dEi9Wnc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Afl7PP/hCpyWrJgbFMT/jI6XnAU8QLUW7F2KRxQdtkQNlQmuL0uv4z0UeHsNj7XltLH+t9/jKtqqpyMMWnwk02pIXDaOVZ1kPhlb1/6WPLVKSdQbTPg+HeX08FZxRYyHmrvLPssAO1kfC4EceIaaWYziiGLqFl3gfrqRgYDzWYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mb023g5+; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-22548a28d0cso26716505ad.3;
+        Sun, 09 Mar 2025 08:48:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741535316; x=1742140116; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DgWYE3yJh/lyMxOG1Kh3pm47EvZJ8tal8TpSNO72h98=;
+        b=Mb023g5+uVOcu8JaHTjZGuYc8dQUGb/wVTs/U1G88XEsEtxBx7/Wj8Ty8CkC8yVT+J
+         BdZ6fnkLlURrUwJRX4rC7jQPp6DmtY4+jAicwx4UMVJfJjBjTe1ezo1EVM8m/9wLUmKJ
+         ee+Dr6TyGw04l4wbO/w4cXpr7LAd3lW5Fh8bSdzdDKeDmCQ+S9+SRjvXzCq6wcJI/7za
+         AnAkh/gdqPrCRLLrxkI1rMfSPE5JS3EHGdlV+RyYk7x1vZ3VVOHE3OEg/eY7atDN7mup
+         QAw0oG4pelFc3Maw7Sf615ybYZioblJ8156NJ4utRyHG6fajLC04GkydO9bQwbFTyvnI
+         hIkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741535316; x=1742140116;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DgWYE3yJh/lyMxOG1Kh3pm47EvZJ8tal8TpSNO72h98=;
+        b=Pqv3uRiGlV3ev4ZcwEF+WcwN8B4Hp8juSQT7spaHUAKBgzAuUyitasnLhzaESIHjWw
+         eUgfCeYoq2hyhJtgI0TyjobVqI1uFtFe8iOvyGKl37uqGT7NcovOlC2LO9hTyvV4FTA5
+         3MgDDF7KAAQyDvOscQpebyVcqjAR6R6ZARjUgH5s7nkF5pHF7NH+z8iBoaC9JKLiZge8
+         LV7CXI4uneecMIbvSrjviMgmtz/asp11zRGmxU++gNA+0C44p2k53Tv5CZu0OfseXk8j
+         1JnwDdqVJhk7pt84iF1UCUl0qcSbgGZfXxWCS2lipKL8Bu2WgoDx40om39Co/uewXAW4
+         Yh2A==
+X-Forwarded-Encrypted: i=1; AJvYcCU2AyOYYGPHyuCtEvToDyTh++J5CGi1PAJOuvquBZ5d2TblOsc9bntLZ8YbvE+/djtz3j8=@vger.kernel.org, AJvYcCU4pg3pNI7VHUVHVgW2RKUa/fC9c1vtfHJlIDzHFQjl+jK5+71dY3ZyOY1LUXf64Yee26PK+/D4AQSZMRg=@vger.kernel.org, AJvYcCVJMUgq74EXFJ/VwSIPwRpytXRtj75iItGP0PyCngj5oSH8geGV6nw+LTGyCqWooef3XfwjRuLsY37E0tHZ@vger.kernel.org, AJvYcCVoKoie5ul0b6aPB4wgHhZ2b3FeRUruXSxo2lm+8impw6ZYLD1Zu/oeM3JyawAf9CsWnWJpeXNT1JGt8f67cHw=@vger.kernel.org, AJvYcCWHaRiWhpd/2y51eN0MJta1AnNGXlia1FjTG3VcbzIErarf0bNemBs9yGi9aiYF+RODTpHfZBTh@vger.kernel.org, AJvYcCWP9Ru2tIayFmZ5dmlEyPexnMjZY6f7IIUb3226Tm6C9y2+FqfZZ/0p3Fcxlm27x90J7kTWdiY9csubW7GZ@vger.kernel.org, AJvYcCXj496AsOOfUgOODYdVPyaMuvdsBfdH5CV6K1mRsdRMyzPmbjN3h9aO6tjKEINuTipMxERJDD6h0KKIMqw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxgDKdpiGpXBu3SOZFqr+G2hQ9rCQT0d38bEx96xcpPcQPqjXWk
+	/WGWkYoMe1swKYli1/7Q/MdtRBIrQnksnGYO5F18JZtT5zH6KdyI
+X-Gm-Gg: ASbGnctgNXMqR6S07sqK/jkbaSWOD0riZjOuMBT7txahX53pwMeiIyLHvOy9KBu4942
+	WbEZtfs0oHzVWdFZj6PhWFro01rX1kuGjpLrz2ynzCWKcpLOcNiY3XKpwNVn8fFtzVpUUMwpTNp
+	LfWdE/Y9e4efXxLA/TfcegRpygZ/FQYZcGoe4J/9PIkMI1yy8E2on/coDaqFPczpccjLQ+sBsBz
+	L2kh118ZeQghJSO/n/wUGBA7LKOno++S6sKdaQ0qBisDrGT28F7D+4E8IofOo54LJd0S4iMJLve
+	5XuTIeQrNhQ9SLXEfDbt5CpAKUGoNhakQ+IHXaF6rkKwggLKopjPx0JXINoRZ9GFQaEhy+K+
+X-Google-Smtp-Source: AGHT+IEkPjdlZsP28acQWQx0Qye7i9usm3kNOW0i6DfYwW0Xas+u0oor8hXm2eg176ewgjMSRnRBqg==
+X-Received: by 2002:a05:6a20:4328:b0:1f3:4661:d19e with SMTP id adf61e73a8af0-1f544acd6ffmr16482561637.9.1741535316400;
+        Sun, 09 Mar 2025 08:48:36 -0700 (PDT)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af2894e3cdasm5384249a12.24.2025.03.09.08.48.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Mar 2025 08:48:35 -0700 (PDT)
+Date: Sun, 9 Mar 2025 23:48:26 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: David Laight <david.laight.linux@gmail.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Laurent.pinchart@ideasonboard.com, airlied@gmail.com,
+	akpm@linux-foundation.org, alistair@popple.id.au,
+	andrew+netdev@lunn.ch, andrzej.hajda@intel.com,
+	arend.vanspriel@broadcom.com, awalls@md.metrocast.net, bp@alien8.de,
+	bpf@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
+	brcm80211@lists.linux.dev, dave.hansen@linux.intel.com,
+	davem@davemloft.net, dmitry.torokhov@gmail.com,
+	dri-devel@lists.freedesktop.org, eajames@linux.ibm.com,
+	edumazet@google.com, eleanor15x@gmail.com,
+	gregkh@linuxfoundation.org, hverkuil@xs4all.nl,
+	jernej.skrabec@gmail.com, jirislaby@kernel.org, jk@ozlabs.org,
+	joel@jms.id.au, johannes@sipsolutions.net, jonas@kwiboo.se,
+	jserv@ccns.ncku.edu.tw, kuba@kernel.org, linux-fsi@lists.ozlabs.org,
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-serial@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linux@rasmusvillemoes.dk, louis.peens@corigine.com,
+	maarten.lankhorst@linux.intel.com, mchehab@kernel.org,
+	mingo@redhat.com, miquel.raynal@bootlin.com, mripard@kernel.org,
+	neil.armstrong@linaro.org, netdev@vger.kernel.org,
+	oss-drivers@corigine.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, rfoss@kernel.org,
+	richard@nod.at, simona@ffwll.ch, tglx@linutronix.de,
+	tzimmermann@suse.de, vigneshr@ti.com, x86@kernel.org,
+	yury.norov@gmail.com
+Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
+Message-ID: <Z824SgB9Dt5zdWYc@visitorckw-System-Product-Name>
+References: <4732F6F6-1D41-4E3F-BE24-E54489BC699C@zytor.com>
+ <efc2ee9d-5382-457f-b471-f3c44b81a190@citrix.com>
+ <5A790652-1B22-4D13-AAC5-5D9931E90903@zytor.com>
+ <20250307195310.58abff8c@pumpkin>
+ <EB85C3C1-8A0D-4CB9-B501-BFEABDF3E977@zytor.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|PH7PR12MB6787:EE_
-X-MS-Office365-Filtering-Correlation-Id: 80547edd-2c67-4a8d-2205-08dd5f209fdc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?PhH9SMlSXQxvVHkREu5kX29gpGeLGAI6JDH7BuPksQLQ7dvszQ00c2YHG9VZ?=
- =?us-ascii?Q?+B7hvAkl2PQTsHQxhIcP/ZbW4Z/ZVPPNnEU+r+5JpiXl4CY9NaMEi8+w1WNM?=
- =?us-ascii?Q?bTtjgV8WZZZReo++bceezYkw/rkTaECgKmpQT30vztt33EHjR3wgUCHYILkX?=
- =?us-ascii?Q?ltcjMdG6eXYoyfAavkD5+5T6euLAwFxKBCflB89a9/U0/2uSTrfXHc6+M9WL?=
- =?us-ascii?Q?74S1qaKweZShNv56ndPCNOLHHps7sNF37Kef3UFOrtTATj9oi3Kw715BC4En?=
- =?us-ascii?Q?OI22mTg/D6hV4djdctF/VFqt/rDKS0aY/4E2T9zzN7/+2oVWbClHg1C9oNhd?=
- =?us-ascii?Q?lBWm43HFN6/Lx3UVwr6B4KnwSg5SK67VJ651ybRhaWwDBusiFQ964o+nGb9W?=
- =?us-ascii?Q?iR2Wsqh1tZqlkc2vRWAK5VHjKTrlk02Q11J7dCxRls1pqN93yOdG8GSKcEhR?=
- =?us-ascii?Q?ryWj5V08lLEUfLRMQtB1s0L3EQRAugbjFider2ss19s0QBFOnjcfOSSSj6kg?=
- =?us-ascii?Q?KEZjYMjH9ZUY4w377ZOQXafL7qRzZoRacu0YhhOFJP5bymZdJb38aPcm1Z8S?=
- =?us-ascii?Q?gl8KO7fnxzRbA/hw0qtjg362OJNiPnp4sFpdVtYQaWk5pzvmeRZPZHPY9+M8?=
- =?us-ascii?Q?hXRMlo2tACXleAtXs2TJ/CM38V2WfvC46Ns2ubujU7PnAKiV/m+KsU0qKJhb?=
- =?us-ascii?Q?Vuqi+e4aA2BOvXJKdInJ8guTBVC5pkaivxL4FUmvSlP34+VHRCyd8KawKl20?=
- =?us-ascii?Q?IZjbPVQVUaKUZ3WbBf2MEdWT0k933FC26wIquTtGaUOuPXIgD5UFtUey4RIn?=
- =?us-ascii?Q?YC0aJo4q78+bRDwfTpL9ErVMDW+m1g7cILUtYJUoHev8MSAhxUB+a1DsTwNB?=
- =?us-ascii?Q?kr8wREJNR/kY9YM95pPp9+67GuycHVofFlK0ACHapefziq07b6RFn4kO4Z6h?=
- =?us-ascii?Q?cfH68sh+U0AJYcKe2aoBj83IXAZal3FtoB2sb4SDUzu8c9PbJm5CTYKNJOMT?=
- =?us-ascii?Q?bbjo5V1snqftu8L1rrzMXvX36C25xOxSEr3ZP1rvBWDGfsdPDb/rfvQuAMNi?=
- =?us-ascii?Q?5Exwx3iGmgQEZAtsHn/uhNfCv4t7MHLzmPpcfHms2Z2PeQWilREdFL6QgQo/?=
- =?us-ascii?Q?/dzFvMBLyN1p9R1q1yRRwppnn7gXXlHscwQu9qp0TW62HftYtpqfMTwVmALn?=
- =?us-ascii?Q?4ZBd13iQYoXGfhrONzGp1Usxfpc2Fsqs424ctXIC+PZIbJ8Doi8b5+lj5dXN?=
- =?us-ascii?Q?HrDQ6RdyYERc0ciDQxrckxMj4YcDSyiy29bHq4jh8StCi/qY+DWVGZOv9Din?=
- =?us-ascii?Q?2uyeexU7qVCnM/baSXBtS/KUkFcGJoE5jqS0rywiR7lT3qpwjWyaCLQL/YZJ?=
- =?us-ascii?Q?gYdl++HMUCSCLuKD3V3xUMVLEdbM?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?pbcjpMoO6OsYDGqavmazitm6RCaWJhWwI/PZRCyVwrgECayNE2xqPkxDuBUn?=
- =?us-ascii?Q?fVQI3mhCrFrIB1gAxBHMwNw/BKPhKh0l0QuHVjCZnCpeRnAz1gk5x8Lqyyzu?=
- =?us-ascii?Q?9Pt47WkYQHl9QI2DjHA2evZ/zEJ9f/b2puJMYfFiOmYe65K2Q7a9hLVjylJJ?=
- =?us-ascii?Q?tmUU1LGsSlN3B11sVNJzLGpnicyxZGvWGdxe2CMLKcuVBlw3Nzu5+aKDdNDt?=
- =?us-ascii?Q?qqtoNnkqxi9uPC3O0qpqZzzD+wBFGqJXTN4pyF8sLNbRsYent5HzZf9DKlE+?=
- =?us-ascii?Q?ZHLZ5yRkGy/u04jfPam3/cDx2T+AE4TPaTCCHIyxmtdTsuG4Pbaj/IAh1bP4?=
- =?us-ascii?Q?77ORsGrbnPpBxztbGA2e0d5vEU4cv4hkusMLvfBUAWLYczJJGPgKSAqz6v82?=
- =?us-ascii?Q?3eRWCZ37g+vx/3CyAfUTOE3fbpuPx1+tVW1RMN4G6QNJr0i52q8mcQZwR94d?=
- =?us-ascii?Q?UUPb9dBMnlXIyAUL/rYWc1/cYMDGcN77nXRI5XQ5d8IZAhjdetEdnB98D8qw?=
- =?us-ascii?Q?gcHPnxJlx5Aexjftwh+QrVhCpeL02YU7z+BcHsTrNRNh2YALuZmmPjBWSwTo?=
- =?us-ascii?Q?4Bynki+9hxUKcWzRIDU7+haGxIpRFJRTc5MnrRrs7O0dBDkoiZs+PneLaOev?=
- =?us-ascii?Q?TCzLsBo5b3lOsBOXXg5UDJ96Sa6qBhAjDXqSjknLE5vofTAomCOP1zfqr0nl?=
- =?us-ascii?Q?4SRzDI7XS2p2Det6520GAI7tN2eHNxykFGZl8oQUQIWKhybt+oKMxeZzIUsP?=
- =?us-ascii?Q?vCWJzhfaScT3gcbVQAi7ydNHiC5sjMmRFfuXh+Y7BgvJ4duozoZGvvGMav5p?=
- =?us-ascii?Q?DL9+PmQffTKdJRJ46e1NCJ92WkQj9YMrp4i3XsSzF4rSPxHUVY8QNDLehj3e?=
- =?us-ascii?Q?rzSNnXa9HaSIUAqHEuulBiGSCI030qhQNBLGl6cziYqLf08AWUgu+5cs/moK?=
- =?us-ascii?Q?OWSBVGDPMu8rtS0k7hf2AYN/XOLdRkvL1EW9sJWBJovObCGd9yQd0dya8yz9?=
- =?us-ascii?Q?KwEd/1rVvJ0/2rPVNK+QrmvGdHjz0VfBB6bTGZPkOeSVenRKw+NolOzlrhmP?=
- =?us-ascii?Q?pnmD0arZgqPUsGZLZNXGtmg93OvgQK2i44P+vCh0v8kHSOoJnBWw+QIV3bX0?=
- =?us-ascii?Q?BlgcG8Q0JIXckM8V4RR4FIFci5RabjdLIeohi/8HiSCfRlI+dHgH061+6f3E?=
- =?us-ascii?Q?Un2HnWnwujE9BCgNMYyPgpnG7evXNBagDLkrOWNro5K/apG4z1bQhLLAoJoC?=
- =?us-ascii?Q?FSlAxIp17Ue5VYF4iTySfb0Gawt0aA9GGJZ3H3kVaD1agkBMrd8LSEy2uYQI?=
- =?us-ascii?Q?aSLGs3s6gUlmtWGrUjfa16Q/C6bxGoQpP86e+rnZVDA7WalENiLlCrmPZa52?=
- =?us-ascii?Q?H1O77g/4THBVXm6MDyGpV68vRpnthSnVu0pA3xCY8zl/RKZzZ79uZ2ltIlSb?=
- =?us-ascii?Q?tnstHTVofAv088fBC9BYw2DXtwgFp7icEpJB19Py+YYAQ7TlPwP0DcKgnd9f?=
- =?us-ascii?Q?BZQwWXQ6EnUClYI1RyK6qV+zXIjzmP4ODzpOlaLvEFajL+IFWQTS03GkGdqs?=
- =?us-ascii?Q?micNWzetTvYpnxc4PMpGQnUYSZfsK8PIh+J4uzCM?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80547edd-2c67-4a8d-2205-08dd5f209fdc
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2025 15:39:48.3375
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yVsDGHnAzQ4EX6qEnUugmGEq6mwdygbp4o41fZKAnbb5FnjASafRdc8CKqA1HwigTZeU1FMOPK4NEVfpo/YiYQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6787
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <EB85C3C1-8A0D-4CB9-B501-BFEABDF3E977@zytor.com>
 
-On Sun, Mar 09, 2025 at 04:56:34AM -1000, Tejun Heo wrote:
-> Hello,
+On Fri, Mar 07, 2025 at 12:07:02PM -0800, H. Peter Anvin wrote:
+> On March 7, 2025 11:53:10 AM PST, David Laight <david.laight.linux@gmail.com> wrote:
+> >On Fri, 07 Mar 2025 11:30:35 -0800
+> >"H. Peter Anvin" <hpa@zytor.com> wrote:
+> >
+> >> On March 7, 2025 10:49:56 AM PST, Andrew Cooper <andrew.cooper3@citrix.com> wrote:
+> >> >> (int)true most definitely is guaranteed to be 1.  
+> >> >
+> >> >That's not technically correct any more.
+> >> >
+> >> >GCC has introduced hardened bools that intentionally have bit patterns
+> >> >other than 0 and 1.
+> >> >
+> >> >https://gcc.gnu.org/gcc-14/changes.html
+> >> >
+> >> >~Andrew  
+> >> 
+> >> Bit patterns in memory maybe (not that I can see the Linux kernel using them) but
+> >> for compiler-generated conversations that's still a given, or the manager isn't C
+> >> or anything even remotely like it.
+> >> 
+> >
+> >The whole idea of 'bool' is pretty much broken by design.
+> >The underlying problem is that values other than 'true' and 'false' can
+> >always get into 'bool' variables.
+> >
+> >Once that has happened it is all fubar.
+> >
+> >Trying to sanitise a value with (say):
+> >int f(bool v)
+> >{
+> >	return (int)v & 1;
+> >}    
+> >just doesn't work (see https://www.godbolt.org/z/MEndP3q9j)
+> >
+> >I really don't see how using (say) 0xaa and 0x55 helps.
+> >What happens if the value is wrong? a trap or exception?, good luck recovering
+> >from that.
+> >
+> >	David
 > 
-> On Sat, Mar 08, 2025 at 07:48:42AM +0100, Andrea Righi wrote:
-> > > > With this concept the idle CPU selection policy becomes the following:
-> > > >  - always prioritize CPUs from fully idle SMT cores (if SMT is enabled),
-> > > >  - select the same CPU if it's idle and in the allowed domain,
-> > > >  - select an idle CPU within the same LLC domain, if the LLC domain is a
-> > > >    subset of the allowed domain,
-> > > 
-> > > Why not select from the intersection of the same LLC domain and the cpumask?
-> > 
-> > We could do that, but to guarantee the intersection we need to introduce
-> > other temporary cpumasks (one for the LLC intersection and another for the
-> > NUMA), which is not a big problem, but it can introduce overhead. And most
-> > of the time the LLC group is either a subset of the allowed CPUs or
-> > vice-versa, so in this case the current logic already works.
-> > 
-> > The extra cpumask work is needed only when the allowed cpumask spans
-> > multiple partial LLCs, which should be rare. So maybe in such cases, we
-> > could tolerate the additional overhead of updating an additional temporary
-> > cpumask to ensure proper hierarchical semantics (maintaining consistency
-> > with the topology hierarchy). WDYT?
-> 
-> Would just using a pre-allocated cpumask to do pre-and on @cpus_allowed
-> work? This won't only be used for topology support (e.g. soft partitioning
-> in scx_layered and scx_mitosis may want to use multi-topology-unit spanning
-> subsets) and I'm not sure assuming and optimizing for that is a good idea
-> for generic API.
+> Did you just discover GIGO?
 
-We can pre-allocate two additional (per-cpu) cpumasks to do:
- - cpumask_and(numa_cpus, numa_span(cpu), cpus_allowed)
- - cpumask_and(llc_cpus, llc_span(cpu), cpus_allowed)
+Thanks for all the suggestions.
 
-And update/use them only when it's needed. In this way the API would be
-generic without making any implicit assumption about @cpus_allowed.
+I don't have a strong opinion on the naming or return type. I'm still a
+bit confused about whether I can assume that casting bool to int always
+results in 0 or 1.
 
-If you don't see any issues, I'll go ahead with this approach.
+If that's the case, since most people prefer bool over int as the
+return type and some are against introducing u1, my current plan is to
+use the following in the next version:
 
-> 
-> We can do something simple now. Note that if we want to optimize it, we can
-> introduce cpumask_any_and_and_distribute(). There already is
-> cpumask_first_and_and(), so the pattern isn't new and the only extra bitops
-> we need to add is find_next_and_and_bit_wrap(). There's already
-> find_first_and_and_bit(), so I don't think it will be all that difficult to
-> add.
+bool parity_odd(u64 val);
 
-Yes, it'd be really nice to have cpumask_any_and_and_distribute(), but I
-agree that we can start simple and provide this as a separate improvement
-later on. Looks like a good plan.
+This keeps the bool return type, renames the function for better
+clarity, and avoids extra maintenance burden by having just one
+function.
 
-Thanks,
--Andrea
+If I can't assume that casting bool to int always results in 0 or 1,
+would it be acceptable to keep the return type as int?
+
+Would this work for everyone?
+
+Regards,
+Kuan-Wei
 
