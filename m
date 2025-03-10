@@ -1,276 +1,183 @@
-Return-Path: <bpf+bounces-53718-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53719-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B01BBA5924E
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 12:10:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D54F2A5927F
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 12:16:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6BD616BAE8
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 11:10:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E5737A5778
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 11:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65C0A226D18;
-	Mon, 10 Mar 2025 11:10:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86590192B71;
+	Mon, 10 Mar 2025 11:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ir5/tmEI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T4AfpEz3"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B77C1B4138
-	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 11:10:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50BFB14F11E
+	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 11:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741605050; cv=none; b=U1OuuXHI4Y5VnwnkepEX1i5mIo5zurLUaNzlep+siFYQqly/CaQAHNLwZv4qF1r/I9fNcHxcA10k9PvQsImfdOFu8bhX/jCU5+kEY2IvAebbWoPas2/duKvTIXCUGKJtyUd63hwYaEViYZxr6lBb2Jid8v4IQpOZd+120EsvHAc=
+	t=1741605321; cv=none; b=K9HK0IZ/X/1AyncwbgsVFrm6DnpFMZkuPHhibDVJfjV8O4F4GCKgnOS2KotVwya6jxH5Psrp/9N3OmPlsZ70LO/of/rHLHChN55kgrYe+PWa+qKYO246j43ZI26J5oVFGrnGgHeLo/9/KqZgke+rl7xCQkqKwm1C8LyCJbboDiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741605050; c=relaxed/simple;
-	bh=DUGY4RyTyyLtGebb4mM1O6agnYPAK8XjRLZ4xWFyKiE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a6Ge3g+jASQXeaeVvEZchrVA50+qBBu3hJMVuBLVNL+Hwx/EvTffDA+laNhcf4mC9L9iMh2WT96mGltPBljFTWl4dclt8q/eQBv8huEUGcHyTBMqALSF/8woIz4pH0kuA0TVXDKWXI7kOUhRrODt+7uly3/WIn6t9x9S0jgXXmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ir5/tmEI; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741605047;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7jWsvyVdHh4CdZ3fxBfjm7tC0neUuEN9Dv7lVimkztQ=;
-	b=Ir5/tmEIndysYNvT8hHFxZ91irWao47ueoWVCdGN92DuSetv98fQ/VlpbFJ6TUPKp5CQik
-	epc9LUyFczRGHpCFWrpn60qAiSr8M+cSJF0EaUPUlzn2aCz8uUXLtXr0y5uTZFcSrOj4Wy
-	576XCQyC5iGnT9NkREB4P8Mugd4dsA0=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-152-B9U_oP88Ng29OBznR627UQ-1; Mon, 10 Mar 2025 07:10:43 -0400
-X-MC-Unique: B9U_oP88Ng29OBznR627UQ-1
-X-Mimecast-MFC-AGG-ID: B9U_oP88Ng29OBznR627UQ_1741605043
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-43cebfa08ccso10485515e9.2
-        for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 04:10:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741605042; x=1742209842;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1741605321; c=relaxed/simple;
+	bh=sBdmbN/998ap3n2jOAKx9O4bek1KhiHg72aW+UT4uns=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=Q7O0Z0DBfLf7+gSWgKa1/yLDCnYWYlgDxln2DQjNHaqsyDzXuqWs8qbjwxrxGg4DyDUCx2qR9TXewb1CY4j3lq67UuNBsiW5JwDhOtYntvbOhuasgcZ8O8uuZbqBmNrl/Iwog2EVkCuAKnv+402U/QZvgvN0eZbOeJOyJavxYec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T4AfpEz3; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3912fdddf8fso1938298f8f.1
+        for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 04:15:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741605317; x=1742210117; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7jWsvyVdHh4CdZ3fxBfjm7tC0neUuEN9Dv7lVimkztQ=;
-        b=stnzcRk7Fj85DzqqOqv6PkDxdWDz1u2Uel3qVfMPGLgjmIDhOOeFdNSm4083skJHFZ
-         EehouUr3TgQv96VCII/ZXW0zQW56fJF+PvZURzqwgEXyQKfwUijZ+gSilizi3Wb7yOqy
-         yx1HG1sxjb//T5mCL13MQvmgEaLX0VcjRrSkEJ/dx38BstZBGIvVoHRRxQcr9OYwo/W6
-         q7/RZmfGrCq6F8j7rrWpVT1OFWRwImpwidLKpZtpJCvExTm4cnBgYYu1cKfWqV0gItIo
-         L9iV9f89VxeETE40pe05/SOhGH+5KGP7W4LrB1LQmWSy6RMW+5P/ajjygcVjvXEqjU75
-         1gbg==
-X-Forwarded-Encrypted: i=1; AJvYcCUQu0+JwhDMLllBBlO5dZrEer2/l/f8j1vWQLz8CxlJX6pz4afgOssP7hBJKPaZQK9LbQc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKEkq+nW9pBupN9fok+IYHZyxiHsu1Uk4s1dAFxUH+K77GL/mB
-	3WZ1H9dzudqizb8Plag57MqqbbO2sfmCgkoYkeJ/I5s1Ogs1Syg+BUuynyHGlx/ETm7WMY7j1Ee
-	of4DZoBSVar76f2GVGaDqV32bV8W0Tl6VVw4hPXh3kXIop1UmsQ==
-X-Gm-Gg: ASbGncsvJv+KFe0YAfc8SaRD5obR3MnX6dAuFB5tp11wHdyLeK7cULOYnHy9qiWh+gE
-	hbFjkZYliqkqTBbXwjTwwQGfnt41lczgiVUoReJPelMUsqBgzV1or2/9bycK+bPf3M9IWzb3W81
-	FBIHnVvrZSIjXsYqSNmcSjYpnpUqYK4a5IRO9OnJske8jFDvR7Yz7v7yi73YqTB+YDHYZZRAeNk
-	k2XtrvaZuUnYmdPx6aF67LzxIZmEidVIm9n05jEjnPMjmnZQ6oaSo8Wl5I/uucm3XEa+ITMkpr3
-	1QTiVHLYmN0e5wjGp1iMiEWE9YgElgTjXBjig1x5IOuMaqJeLDLCZzs8VrwmhZg=
-X-Received: by 2002:a05:600c:198d:b0:43c:fdbe:4398 with SMTP id 5b1f17b1804b1-43cfdbe4493mr8051365e9.6.1741605042525;
-        Mon, 10 Mar 2025 04:10:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHxQKAfcGbfVbc7RudCGgbeyKyDopEFEZ7+6RTPv/GSQ7F2awFFsus6B9IaNk9E9lRJ5njVvw==
-X-Received: by 2002:a05:600c:198d:b0:43c:fdbe:4398 with SMTP id 5b1f17b1804b1-43cfdbe4493mr8051125e9.6.1741605042048;
-        Mon, 10 Mar 2025 04:10:42 -0700 (PDT)
-Received: from localhost (net-93-146-37-148.cust.vodafonedsl.it. [93.146.37.148])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43cea4619e9sm57800125e9.1.2025.03.10.04.10.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Mar 2025 04:10:41 -0700 (PDT)
-Date: Mon, 10 Mar 2025 12:10:40 +0100
-From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Arthur Fabre <arthur@arthurfabre.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	netdev@vger.kernel.org, bpf@vger.kernel.org, jakub@cloudflare.com,
-	yan@cloudflare.com, jbrandeburg@cloudflare.com, thoiland@redhat.com,
-	lbiancon@redhat.com, Arthur Fabre <afabre@cloudflare.com>
-Subject: Re: [PATCH RFC bpf-next 07/20] xdp: Track if metadata is supported
- in xdp_frame <> xdp_buff conversions
-Message-ID: <Z87IsCfNrjEKCHz0@lore-desk>
-References: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com>
- <20250305-afabre-traits-010-rfc2-v1-7-d0ecfb869797@cloudflare.com>
- <bc356c91-5bff-454a-8f87-7415cb7e82b4@intel.com>
- <D88HSZ3GZZNN.160YSWHX1HIO2@arthurfabre.com>
- <45522396-0fad-406e-ba53-0bb4aee53e67@kernel.org>
+        bh=4IdtA8mjTgKs6nOqmBdEZzYPPRcKOdGQsmzJkUAwOVk=;
+        b=T4AfpEz3muFNiZYu8HB29qh0IVS8wqr4QvmEiEA82EDVzIu3SKu/WkKx4QcmYroO5k
+         Fqw3Bpcv6NKG8rnzAGzzOVV1Zoyr+hcKqHd0CCwpZOgwRosLtmBzPCNg0FYvui9/Kabz
+         xKpLRnSE8e5UqfpPg3X/PRC5Q4gx6H47sMbDHJFRZLBZsjKghjz56d5/DLS+BpErH2v6
+         +aVk0HYTnASH8c+nHaqTcIK2aX/DsszvYpr/vK2IeCv2vSFTJDFtXyzT5g95psI/H/VG
+         QdjpBVT8wZNk0aoj92LnIeK0rCH9bTNA/S60Sb0N8yTUCz197e7i1mbS4oCLkC1nn4JC
+         GXBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741605317; x=1742210117;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4IdtA8mjTgKs6nOqmBdEZzYPPRcKOdGQsmzJkUAwOVk=;
+        b=UUzwPS1HPB3NQRB6HUd2mNoukoTQJ+KFW7IlGv1VimovHSlcm+8/XGOBK6fLAWDByb
+         GrIAQt9b4fTAxAwFvJ8sBFItzgj6Fb9himnsuyuXXQKNjKSTOvhLUO//Bgz0yJnT8Ief
+         TerBc3WlLWmEhkMDVz4azWT0rtCUyhEhUJqng7HCzzDyq+iMlICoJyt1HAGa0I+BY1v+
+         eBqOr5fDs2FzdsNN3kXtaxdsYB99+kvdtp4mmx6unl0SYFxSGo7ZJSo56LjkbFF6FFor
+         TozVaUJKqHITGGZeuNWoy5ICmaQXI0JPHoEOa6luKDNI54mj9rFqlcO9YkpLj1RKIsm8
+         5AOA==
+X-Gm-Message-State: AOJu0Ywc3FcAAdamR9aJaUieM7SRqgU/RdAPA51BUdTFpLc51FKg5Ee1
+	YZrzc5/Bj8FOZ8UR1tVPBrIfXe1yJReMG98q6cAgGa3IdwGrwFvyBZ2aACj9XjMUgCRbFHaMXFm
+	BZWEU0G9HN/d4p4dOJpZM0oT62IF/Z4D68xg=
+X-Gm-Gg: ASbGncvx/UATAiyQ9bQGqYMt1/OFqyTkCCrKZSKtQRhnLpC0EFlsG2HLUKXhZrcJJrQ
+	sr1BdkDrqxGAMhDkko4aU0Fbf+MykYRxRznKlLxXDr/ov5WUy0FViK6BYbTjuP3iVa+/hOUMjkE
+	p7sxPIUQ2qv2eqHBfQA/7L2smS3w==
+X-Google-Smtp-Source: AGHT+IHzKwAKw3QRJam9KfyWHL0zVdIKBI9yWnAgcz2z8kiXyFQYdVjXaib2JsDh+QHNYhUIOX5EsM9t/lkj2JdiBIM=
+X-Received: by 2002:a05:6000:1a8b:b0:38d:e3da:8b4f with SMTP id
+ ffacd0b85a97d-3913ae6c6f1mr5382346f8f.0.1741605315864; Mon, 10 Mar 2025
+ 04:15:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="JtkONm/S2nFS2F49"
-Content-Disposition: inline
-In-Reply-To: <45522396-0fad-406e-ba53-0bb4aee53e67@kernel.org>
-
-
---JtkONm/S2nFS2F49
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <202503101254.cfd454df-lkp@intel.com> <7c41d8d7-7d5a-4c3d-97b3-23642e376ff9@suse.cz>
+ <CAADnVQ+NKZtNxS+jBW=tMnmca18S2jfuGCR+ap1bPHYyhxy6HQ@mail.gmail.com>
+ <a30e2c60-e01b-4eac-8a40-e7a73abebfd3@suse.cz> <CAADnVQ+g=VN6cOVzhF2ory0isXEc52W8fKx4KdwpYfOMvk372A@mail.gmail.com>
+ <9d8f5f92-5f4b-4732-af48-3ecaa41af81a@suse.cz>
+In-Reply-To: <9d8f5f92-5f4b-4732-af48-3ecaa41af81a@suse.cz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 10 Mar 2025 12:15:03 +0100
+X-Gm-Features: AQ5f1Jrkx5ROU2CxIAnqsPNE1dP9c4mCzA6UP2LWU-mF3O-jdk_UCXXi1Iv8njk
+Message-ID: <CAADnVQ+MCxQsrVWC_DmQfwBxwv8pUw_9gXFJmO54Syybwwp6oQ@mail.gmail.com>
+Subject: Fwd: [linux-next:master] [memcg] 01d37228d3: netperf.Throughput_Mbps
+ 37.9% regression
+To: bpf <bpf@vger.kernel.org>, Vlastimil Babka <vbabka@suse.cz>, 
+	Shakeel Butt <shakeel.butt@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-[...]
-> > >=20
->=20
-> I'm fairly sure that all drivers support XDP_REDIRECT.
-> Except didn't Lorenzo add a feature bit for this?
-> (so, some drivers might explicitly not-support this)
+fwd to bpf list for BPF CI to pick it up.
 
-I think most of the drivers support XDP_REDIRECT. IIRC just some vf
-implementations (e.g. ixgbevf or thunder/nicvf do not support XDP_REDIRECT).
-Maybe nfp is a special case.
+---------- Forwarded message ---------
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Mon, Mar 10, 2025 at 12:03=E2=80=AFPM
+Subject: Re: [linux-next:master] [memcg] 01d37228d3:
+netperf.Throughput_Mbps 37.9% regression
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: kernel test robot <oliver.sang@intel.com>, Alexei Starovoitov
+<ast@kernel.org>, <oe-lkp@lists.linux.dev>, kbuild test robot
+<lkp@intel.com>, Michal Hocko <mhocko@suse.com>, Shakeel Butt
+<shakeel.butt@linux.dev>, open list:CONTROL GROUP (CGROUP)
+<cgroups@vger.kernel.org>, linux-mm <linux-mm@kvack.org>
 
-Regards,
-Lorenzo
 
->=20
-> > > So maybe we need to fix those drivers first, if there are any.
-> >=20
-> > Most drivers don't support metadata unfortunately:
-> >=20
-> > > rg -U "xdp_prepare_buff\([^)]*false\);" drivers/net/
-> > drivers/net/tun.c
-> > 1712:		xdp_prepare_buff(&xdp, buf, pad, len, false);
-> >=20
-> > drivers/net/ethernet/microsoft/mana/mana_bpf.c
-> > 94:	xdp_prepare_buff(xdp, buf_va, XDP_PACKET_HEADROOM, pkt_len, false);
-> >=20
-> > drivers/net/ethernet/marvell/mvneta.c
-> > 2344:	xdp_prepare_buff(xdp, data, pp->rx_offset_correction + MVNETA_MH_=
-SIZE,
-> > 2345:			 data_len, false);
-> >=20
-> > drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> > 1436:	xdp_prepare_buff(&xdp, hard_start, OTX2_HEAD_ROOM,
-> > 1437:			 cqe->sg.seg_size, false);
-> >=20
-> > drivers/net/ethernet/socionext/netsec.c
-> > 1021:		xdp_prepare_buff(&xdp, desc->addr, NETSEC_RXBUF_HEADROOM,
-> > 1022:				 pkt_len, false);
-> >=20
-> > drivers/net/ethernet/google/gve/gve_rx.c
-> > 740:	xdp_prepare_buff(&new, frame, headroom, len, false);
-> > 859:		xdp_prepare_buff(&xdp, page_info->page_address +
-> > 860:				 page_info->page_offset, GVE_RX_PAD,
-> > 861:				 len, false);
-> >=20
-> > drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> > 3984:			xdp_prepare_buff(&xdp, data,
-> > 3985:					 MVPP2_MH_SIZE + MVPP2_SKB_HEADROOM,
-> > 3986:					 rx_bytes, false);
-> >=20
-> > drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-> > 794:		xdp_prepare_buff(&xdp, hard_start, rx_ring->page_offset,
-> > 795:				 buff->len, false);
-> >=20
-> > drivers/net/ethernet/cavium/thunder/nicvf_main.c
-> > 554:	xdp_prepare_buff(&xdp, hard_start, data - hard_start, len, false);
-> >=20
-> > drivers/net/ethernet/ti/cpsw_new.c
-> > 348:		xdp_prepare_buff(&xdp, pa, headroom, size, false);
-> >=20
-> > drivers/net/ethernet/freescale/enetc/enetc.c
-> > 1710:	xdp_prepare_buff(xdp_buff, hard_start - rx_ring->buffer_offset,
-> > 1711:			 rx_ring->buffer_offset, size, false);
-> >=20
-> > drivers/net/ethernet/ti/am65-cpsw-nuss.c
-> > 1335:		xdp_prepare_buff(&xdp, page_addr, AM65_CPSW_HEADROOM,
-> > 1336:				 pkt_len, false);
-> >=20
-> > drivers/net/ethernet/ti/cpsw.c
-> > 403:		xdp_prepare_buff(&xdp, pa, headroom, size, false);
-> >=20
-> > drivers/net/ethernet/sfc/rx.c
-> > 289:	xdp_prepare_buff(&xdp, *ehp - EFX_XDP_HEADROOM, EFX_XDP_HEADROOM,
-> > 290:			 rx_buf->len, false);
-> >=20
-> > drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> > 2097:			xdp_prepare_buff(&xdp, data, MTK_PP_HEADROOM, pktlen,
-> > 2098:					 false);
-> >=20
-> > drivers/net/ethernet/sfc/siena/rx.c
-> > 291:	xdp_prepare_buff(&xdp, *ehp - EFX_XDP_HEADROOM, EFX_XDP_HEADROOM,
-> > 292:			 rx_buf->len, false)
-> >=20
-> > I don't know if it's just because no one has added calls to
-> > skb_metadata_set() in yet, or if there's a more fundamental reason.
-> >=20
->=20
-> I simply think driver developers have been lazy.
->=20
-> If someone want some easy kernel commits, these drivers should be fairly
-> easy to fix...
->=20
-> > I think they all reserve some amount of headroom, but not always the
-> > full XDP_PACKET_HEADROOM. Eg sfc:
-> >=20
->=20
-> The Intel drivers use 192 (AFAIK if that is still true). The API ended
-> up supporting non-standard XDP_PACKET_HEADROOM, due to the Intel
-> drivers, when XDP support was added to those (which is a long time ago no=
-w).
->=20
-> > drivers/net/ethernet/sfc/net_driver.h:
-> > /* Non-standard XDP_PACKET_HEADROOM and tailroom to satisfy XDP_REDIREC=
-T and
-> >   * still fit two standard MTU size packets into a single 4K page.
-> >   */
-> > #define EFX_XDP_HEADROOM	128
-> >=20
->=20
-> This is smaller than most drivers, but still have enough headroom for
-> xdp_frame + traits.
->=20
-> > If it's just because skb_metadata_set() is missing, I can take the
-> > patches from this series that adds a "generic" XDP -> skb hook ("trait:
-> > Propagate presence of traits to sk_buff"), have it call
-> > skb_metadata_set(), and try to add it to all the drivers in a separate
-> > series.
-> >=20
->=20
-> I think someone should cleanup those drivers and add support.
->=20
-> --Jesper
->=20
-> > > >   	/* Lifetime of xdp_rxq_info is limited to NAPI/enqueue time,
-> > > >   	 * while mem_type is valid on remote CPU.
-> > > >   	 */
-> > > > @@ -369,6 +374,8 @@ void xdp_convert_frame_to_buff(const struct xdp=
-_frame *frame,
-> > > >   	xdp->data =3D frame->data;
-> > > >   	xdp->data_end =3D frame->data + frame->len;
-> > > >   	xdp->data_meta =3D frame->data - frame->metasize;
-> > > > +	if (frame->meta_unsupported)
-> > > > +		xdp_set_data_meta_invalid(xdp);
-> > > >   	xdp->frame_sz =3D frame->frame_sz;
-> > > >   	xdp->flags =3D frame->flags;
-> > > >   }
-> > > > @@ -396,6 +403,7 @@ int xdp_update_frame_from_buff(const struct xdp=
-_buff *xdp,
-> > > >   	xdp_frame->len  =3D xdp->data_end - xdp->data;
-> > > >   	xdp_frame->headroom =3D headroom - sizeof(*xdp_frame);
-> > > >   	xdp_frame->metasize =3D metasize;
-> > > > +	xdp_frame->meta_unsupported =3D xdp_data_meta_unsupported(xdp);
-> > > >   	xdp_frame->frame_sz =3D xdp->frame_sz;
-> > > >   	xdp_frame->flags =3D xdp->flags;
-> > >=20
-> > > Thanks,
-> > > Olek
->=20
+On 3/10/25 11:56, Alexei Starovoitov wrote:
+> On Mon, Mar 10, 2025 at 11:34=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz>=
+ wrote:
+>>
+>> On 3/10/25 11:18, Alexei Starovoitov wrote:
+>> >> because this will affect the refill even if consume_stock() fails not=
+ due to
+>> >> a trylock failure (which should not be happening), but also just beca=
+use the
+>> >> stock was of a wrong memcg or depleted. So in the nowait context we d=
+eny the
+>> >> refill even if we have the memory. Attached patch could be used to se=
+e if it
+>> >> if fixes things. I'm not sure about the testcases where it doesn't lo=
+ok like
+>> >> nowait context would be used though, let's see.
+>> >
+>> > Not quite.
+>> > GFP_NOWAIT includes __GFP_KSWAPD_RECLAIM,
+>> > so gfpflags_allow_spinning() will return true.
+>>
+>> Uh right, it's the new gfpflags_allow_spinning(), not the
+>> gfpflags_allow_blocking() I'm used to and implicitly assumed, sorry.
+>>
+>> But then it's very simple because it has a bug:
+>> gfpflags_allow_spinning() does
+>>
+>> return !(gfp_flags & __GFP_RECLAIM);
+>>
+>> should be !!
+>
+> Ouch.
+> So I accidentally exposed the whole linux-next to this stress testing
+> of new trylock facilities :(
+> But the silver lining is that this is the only thing that blew up :)
+> Could you send a patch or I will do it later today.
 
---JtkONm/S2nFS2F49
-Content-Type: application/pgp-signature; name="signature.asc"
+OK
+----8<----
+From 69b3d1631645c82d9d88f17fb01184d24034df2b Mon Sep 17 00:00:00 2001
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Mon, 10 Mar 2025 11:57:52 +0100
+Subject: [PATCH] mm: Fix the flipped condition in gfpflags_allow_spinning()
 
------BEGIN PGP SIGNATURE-----
+The function gfpflags_allow_spinning() has a bug that makes it return
+the opposite result than intended. This could contribute to deadlocks as
+usage profilerates, for now it was noticed as a performance regression
+due to try_charge_memcg() not refilling memcg stock when it could. Fix
+the flipped condition.
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZ87IsAAKCRA6cBh0uS2t
-rK6DAQD8r1mxdVzGu3go8xjrg+CDLC/xqM32YU4Lm0ICfcuq3AD/ZtDKNq13aynZ
-k34lgXcO45VmQl+CqVUCjXsiFrZgmAw=
-=7cKB
------END PGP SIGNATURE-----
+Fixes: 97769a53f117 ("mm, bpf: Introduce try_alloc_pages() for
+opportunistic page allocation")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202503101254.cfd454df-lkp@intel.com
 
---JtkONm/S2nFS2F49--
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+ include/linux/gfp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index ceb226c2e25c..c9fa6309c903 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -55,7 +55,7 @@ static inline bool gfpflags_allow_spinning(const
+gfp_t gfp_flags)
+         * regular page allocator doesn't fully support this
+         * allocation mode.
+         */
+-       return !(gfp_flags & __GFP_RECLAIM);
++       return !!(gfp_flags & __GFP_RECLAIM);
+ }
+
+ #ifdef CONFIG_HIGHMEM
+--
+2.48.1
 
