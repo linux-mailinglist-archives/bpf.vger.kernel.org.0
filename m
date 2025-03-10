@@ -1,183 +1,193 @@
-Return-Path: <bpf+bounces-53719-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53720-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54F2A5927F
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 12:16:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 027EAA592D2
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 12:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E5737A5778
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 11:14:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 796DA188E514
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 11:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86590192B71;
-	Mon, 10 Mar 2025 11:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 861E022171A;
+	Mon, 10 Mar 2025 11:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T4AfpEz3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JfCtcZ40"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50BFB14F11E
-	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 11:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD9228EA
+	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 11:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741605321; cv=none; b=K9HK0IZ/X/1AyncwbgsVFrm6DnpFMZkuPHhibDVJfjV8O4F4GCKgnOS2KotVwya6jxH5Psrp/9N3OmPlsZ70LO/of/rHLHChN55kgrYe+PWa+qKYO246j43ZI26J5oVFGrnGgHeLo/9/KqZgke+rl7xCQkqKwm1C8LyCJbboDiA=
+	t=1741606621; cv=none; b=R8S/OIYabFTC8p1cCZqcS/GuQ12V0lqKl38NigwkNMTI8qgzFM4cv0EwygidoUwn7h2m1aqu4cbR/QWqYP+cbJYwqz3dU8ylFeFzjGV6AliHk5mk1iZ9qoOvI0dnbTgYt9qNB32mB5vHqilXj1Y9wktEKCq34u4z9mU8Eb0+4No=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741605321; c=relaxed/simple;
-	bh=sBdmbN/998ap3n2jOAKx9O4bek1KhiHg72aW+UT4uns=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=Q7O0Z0DBfLf7+gSWgKa1/yLDCnYWYlgDxln2DQjNHaqsyDzXuqWs8qbjwxrxGg4DyDUCx2qR9TXewb1CY4j3lq67UuNBsiW5JwDhOtYntvbOhuasgcZ8O8uuZbqBmNrl/Iwog2EVkCuAKnv+402U/QZvgvN0eZbOeJOyJavxYec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T4AfpEz3; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3912fdddf8fso1938298f8f.1
-        for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 04:15:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741605317; x=1742210117; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4IdtA8mjTgKs6nOqmBdEZzYPPRcKOdGQsmzJkUAwOVk=;
-        b=T4AfpEz3muFNiZYu8HB29qh0IVS8wqr4QvmEiEA82EDVzIu3SKu/WkKx4QcmYroO5k
-         Fqw3Bpcv6NKG8rnzAGzzOVV1Zoyr+hcKqHd0CCwpZOgwRosLtmBzPCNg0FYvui9/Kabz
-         xKpLRnSE8e5UqfpPg3X/PRC5Q4gx6H47sMbDHJFRZLBZsjKghjz56d5/DLS+BpErH2v6
-         +aVk0HYTnASH8c+nHaqTcIK2aX/DsszvYpr/vK2IeCv2vSFTJDFtXyzT5g95psI/H/VG
-         QdjpBVT8wZNk0aoj92LnIeK0rCH9bTNA/S60Sb0N8yTUCz197e7i1mbS4oCLkC1nn4JC
-         GXBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741605317; x=1742210117;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4IdtA8mjTgKs6nOqmBdEZzYPPRcKOdGQsmzJkUAwOVk=;
-        b=UUzwPS1HPB3NQRB6HUd2mNoukoTQJ+KFW7IlGv1VimovHSlcm+8/XGOBK6fLAWDByb
-         GrIAQt9b4fTAxAwFvJ8sBFItzgj6Fb9himnsuyuXXQKNjKSTOvhLUO//Bgz0yJnT8Ief
-         TerBc3WlLWmEhkMDVz4azWT0rtCUyhEhUJqng7HCzzDyq+iMlICoJyt1HAGa0I+BY1v+
-         eBqOr5fDs2FzdsNN3kXtaxdsYB99+kvdtp4mmx6unl0SYFxSGo7ZJSo56LjkbFF6FFor
-         TozVaUJKqHITGGZeuNWoy5ICmaQXI0JPHoEOa6luKDNI54mj9rFqlcO9YkpLj1RKIsm8
-         5AOA==
-X-Gm-Message-State: AOJu0Ywc3FcAAdamR9aJaUieM7SRqgU/RdAPA51BUdTFpLc51FKg5Ee1
-	YZrzc5/Bj8FOZ8UR1tVPBrIfXe1yJReMG98q6cAgGa3IdwGrwFvyBZ2aACj9XjMUgCRbFHaMXFm
-	BZWEU0G9HN/d4p4dOJpZM0oT62IF/Z4D68xg=
-X-Gm-Gg: ASbGncvx/UATAiyQ9bQGqYMt1/OFqyTkCCrKZSKtQRhnLpC0EFlsG2HLUKXhZrcJJrQ
-	sr1BdkDrqxGAMhDkko4aU0Fbf+MykYRxRznKlLxXDr/ov5WUy0FViK6BYbTjuP3iVa+/hOUMjkE
-	p7sxPIUQ2qv2eqHBfQA/7L2smS3w==
-X-Google-Smtp-Source: AGHT+IHzKwAKw3QRJam9KfyWHL0zVdIKBI9yWnAgcz2z8kiXyFQYdVjXaib2JsDh+QHNYhUIOX5EsM9t/lkj2JdiBIM=
-X-Received: by 2002:a05:6000:1a8b:b0:38d:e3da:8b4f with SMTP id
- ffacd0b85a97d-3913ae6c6f1mr5382346f8f.0.1741605315864; Mon, 10 Mar 2025
- 04:15:15 -0700 (PDT)
+	s=arc-20240116; t=1741606621; c=relaxed/simple;
+	bh=JaApZ7d/+Ggz2krnVT3vjrpaonIRlghHFizWVFRNLkQ=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=flcKlyDinxk1RB2RhnkSMjdkVf9N8gdPn5bYXc5gS/6O3rdCwbWk82vMd6AZtGPNy/McLqrHu5JLR2/qjB5gnNJtp2LqN44+8k2bicpZyMOKuTV+FE4Fkhz/hWg+Ay8UrajN4YD6nLj124XKoziO64znq4886GQfErjnB+G2RE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JfCtcZ40; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202503101254.cfd454df-lkp@intel.com> <7c41d8d7-7d5a-4c3d-97b3-23642e376ff9@suse.cz>
- <CAADnVQ+NKZtNxS+jBW=tMnmca18S2jfuGCR+ap1bPHYyhxy6HQ@mail.gmail.com>
- <a30e2c60-e01b-4eac-8a40-e7a73abebfd3@suse.cz> <CAADnVQ+g=VN6cOVzhF2ory0isXEc52W8fKx4KdwpYfOMvk372A@mail.gmail.com>
- <9d8f5f92-5f4b-4732-af48-3ecaa41af81a@suse.cz>
-In-Reply-To: <9d8f5f92-5f4b-4732-af48-3ecaa41af81a@suse.cz>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 10 Mar 2025 12:15:03 +0100
-X-Gm-Features: AQ5f1Jrkx5ROU2CxIAnqsPNE1dP9c4mCzA6UP2LWU-mF3O-jdk_UCXXi1Iv8njk
-Message-ID: <CAADnVQ+MCxQsrVWC_DmQfwBxwv8pUw_9gXFJmO54Syybwwp6oQ@mail.gmail.com>
-Subject: Fwd: [linux-next:master] [memcg] 01d37228d3: netperf.Throughput_Mbps
- 37.9% regression
-To: bpf <bpf@vger.kernel.org>, Vlastimil Babka <vbabka@suse.cz>, 
-	Shakeel Butt <shakeel.butt@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1741606607;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oLn3thOLc+VOfKHEltzpNOv/oUESIWK0aGZgVBXpS9g=;
+	b=JfCtcZ40G8NAGBVTYfKtZMCkqctg29fSlsTpEKq0K19h1yqX9qJAQSBSXkrtqusCPMPCmR
+	M4kbtzO/BR1Azsg8Y/n42rgEcUZNono4emHKB0bj4EkSBKGBRoComjlNFEgwYo4LbbvNGZ
+	dJZrZIFA/MyzEHs2Wmxv29knOKuC7Hg=
+Date: Mon, 10 Mar 2025 11:36:44 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <78ee737400721758fa67b4f285e8ba61dc6b893b@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH bpf-next v2 1/3] bpf, sockmap: avoid using sk_socket
+ after free
+To: "Michal Luczaj" <mhal@rbox.co>, xiyou.wangcong@gmail.com,
+ john.fastabend@gmail.com, jakub@cloudflare.com, martin.lau@linux.dev
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, horms@kernel.org, andrii@kernel.org,
+ eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
+ song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
+ sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ sgarzare@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ mrpre@163.com, cong.wang@bytedance.com,
+ syzbot+dd90a702f518e0eac072@syzkaller.appspotmail.com
+In-Reply-To: <baeca627-e6f1-4d0a-aea5-fa31689edc4d@rbox.co>
+References: <20250228055106.58071-1-jiayuan.chen@linux.dev>
+ <20250228055106.58071-2-jiayuan.chen@linux.dev>
+ <baeca627-e6f1-4d0a-aea5-fa31689edc4d@rbox.co>
+X-Migadu-Flow: FLOW_OUT
 
-fwd to bpf list for BPF CI to pick it up.
+March 7, 2025 at 5:45 PM, "Michal Luczaj" <mhal@rbox.co> wrote:
 
----------- Forwarded message ---------
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Mon, Mar 10, 2025 at 12:03=E2=80=AFPM
-Subject: Re: [linux-next:master] [memcg] 01d37228d3:
-netperf.Throughput_Mbps 37.9% regression
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: kernel test robot <oliver.sang@intel.com>, Alexei Starovoitov
-<ast@kernel.org>, <oe-lkp@lists.linux.dev>, kbuild test robot
-<lkp@intel.com>, Michal Hocko <mhocko@suse.com>, Shakeel Butt
-<shakeel.butt@linux.dev>, open list:CONTROL GROUP (CGROUP)
-<cgroups@vger.kernel.org>, linux-mm <linux-mm@kvack.org>
+>=20
+>=20On 2/28/25 06:51, Jiayuan Chen wrote:
+>=20
+>=20>=20
+>=20> ...
+> >=20
+>=20>  static void sk_psock_verdict_data_ready(struct sock *sk)
+> >=20
+>=20>  {
+> >=20
+>=20>  - struct socket *sock =3D sk->sk_socket;
+> >=20
+>=20>  + struct socket *sock;
+> >=20
+>=20>  const struct proto_ops *ops;
+> >=20
+>=20>  int copied;
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  trace_sk_data_ready(sk);
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  + /* We need RCU to prevent the sk_socket from being released.
+> >=20
+>=20>  + * Especially for Unix sockets, we are currently in the process
+> >=20
+>=20>  + * context and do not have RCU protection.
+> >=20
+>=20>  + */
+> >=20
+>=20>  + rcu_read_lock();
+> >=20
+>=20>  + sock =3D sk->sk_socket;
+> >=20
+>=20>  if (unlikely(!sock))
+> >=20
+>=20>  - return;
+> >=20
+>=20>  + goto unlock;
+> >=20
+>=20>  +
+> >=20
+>=20>  ops =3D READ_ONCE(sock->ops);
+> >=20
+>=20>  if (!ops || !ops->read_skb)
+> >=20
+>=20>  - return;
+> >=20
+>=20>  + goto unlock;
+> >=20
+>=20>  +
+> >=20
+>=20>  copied =3D ops->read_skb(sk, sk_psock_verdict_recv);
+> >=20
+>=20>  if (copied >=3D 0) {
+> >=20
+>=20>  struct sk_psock *psock;
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  - rcu_read_lock();
+> >=20
+>=20>  psock =3D sk_psock(sk);
+> >=20
+>=20>  if (psock)
+> >=20
+>=20>  sk_psock_data_ready(sk, psock);
+> >=20
+>=20>  - rcu_read_unlock();
+> >=20
+>=20>  }
+> >=20
+>=20>  +unlock:
+> >=20
+>=20>  + rcu_read_unlock();
+> >=20
+>=20>  }
+> >=20
+>=20
+> Hi,
+>=20
+>=20Doesn't sk_psock_handle_skb() (!ingress path) have the same `struct s=
+ocket`
+>=20
+>=20release race issue? Any plans on fixing that one, too?
 
+Yes, the send path logic also has similar issues, and after some hacking,
+I was able to reproduce it. Thanks for providing this information.
+I can fix these together in the next revision of this patchset, anyway,
+this patchset still needs further confirmation from the maintainer.
 
-On 3/10/25 11:56, Alexei Starovoitov wrote:
-> On Mon, Mar 10, 2025 at 11:34=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz>=
- wrote:
->>
->> On 3/10/25 11:18, Alexei Starovoitov wrote:
->> >> because this will affect the refill even if consume_stock() fails not=
- due to
->> >> a trylock failure (which should not be happening), but also just beca=
-use the
->> >> stock was of a wrong memcg or depleted. So in the nowait context we d=
-eny the
->> >> refill even if we have the memory. Attached patch could be used to se=
-e if it
->> >> if fixes things. I'm not sure about the testcases where it doesn't lo=
-ok like
->> >> nowait context would be used though, let's see.
->> >
->> > Not quite.
->> > GFP_NOWAIT includes __GFP_KSWAPD_RECLAIM,
->> > so gfpflags_allow_spinning() will return true.
->>
->> Uh right, it's the new gfpflags_allow_spinning(), not the
->> gfpflags_allow_blocking() I'm used to and implicitly assumed, sorry.
->>
->> But then it's very simple because it has a bug:
->> gfpflags_allow_spinning() does
->>
->> return !(gfp_flags & __GFP_RECLAIM);
->>
->> should be !!
+>=20
+>=20BTW, lockdep (CONFIG_LOCKDEP=3Dy) complains about calling AF_UNIX's
+>=20
+>=20read_skb() under RCU read lock.
+>=20
+>=20Thanks,
+>=20
+>=20Michal
 >
-> Ouch.
-> So I accidentally exposed the whole linux-next to this stress testing
-> of new trylock facilities :(
-> But the silver lining is that this is the only thing that blew up :)
-> Could you send a patch or I will do it later today.
+My environment also has LOCKDEP enabled, but I didn't see similar
+warnings.
+Moreover, RCU assertions are typically written as:
 
-OK
-----8<----
-From 69b3d1631645c82d9d88f17fb01184d24034df2b Mon Sep 17 00:00:00 2001
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Mon, 10 Mar 2025 11:57:52 +0100
-Subject: [PATCH] mm: Fix the flipped condition in gfpflags_allow_spinning()
+WARN_ON_ONCE(!rcu_read_lock_held())
 
-The function gfpflags_allow_spinning() has a bug that makes it return
-the opposite result than intended. This could contribute to deadlocks as
-usage profilerates, for now it was noticed as a performance regression
-due to try_charge_memcg() not refilling memcg stock when it could. Fix
-the flipped condition.
+And when LOCKDEP is not enabled, rcu_read_lock_held() defaults to
+returning 1. So, it's unlikely to trigger a warning due to an RCU lock
+being held.
 
-Fixes: 97769a53f117 ("mm, bpf: Introduce try_alloc_pages() for
-opportunistic page allocation")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202503101254.cfd454df-lkp@intel.com
+Could you provide more of the call stack?
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- include/linux/gfp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index ceb226c2e25c..c9fa6309c903 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -55,7 +55,7 @@ static inline bool gfpflags_allow_spinning(const
-gfp_t gfp_flags)
-         * regular page allocator doesn't fully support this
-         * allocation mode.
-         */
--       return !(gfp_flags & __GFP_RECLAIM);
-+       return !!(gfp_flags & __GFP_RECLAIM);
- }
-
- #ifdef CONFIG_HIGHMEM
---
-2.48.1
+Thanks.
 
