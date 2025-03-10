@@ -1,289 +1,136 @@
-Return-Path: <bpf+bounces-53721-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53722-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A78A592F4
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 12:45:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2082AA593EB
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 13:13:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AB9118874F6
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 11:45:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5717116E1ED
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 12:13:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2963721E0BE;
-	Mon, 10 Mar 2025 11:45:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832A522AE59;
+	Mon, 10 Mar 2025 12:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JQEVtXuq"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Uc2kSMaJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98EFC22155C
-	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 11:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3DC22A7E0;
+	Mon, 10 Mar 2025 12:11:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741607113; cv=none; b=r0L2xNJl6PSkGc+5hQiiwCK5ZJsAtqUYhdgAsTZ7aXuMWUJ30xLsDG7OoKVXWCEPdDaDEtFYtWbvM23C2JzaOdHQWPKB0qDe0nVt1t6ec5LOySZGWDJatqvz0qSjNdV4K5fo1zJG7XAd7YEC6xZcJPxXQ8lyVobWm9RrLG/XwTY=
+	t=1741608697; cv=none; b=FBMkM1xrxk1cEX3oGM67Hm0i6leNRaPbmm3rymIoNqKYEjJ31Zgpug1FlXqqqFJG2sBlZvEe7SOdPx7lFMHDoq4fHFbZCgFwDRE/oQVIdw3owBoaqW5YcIy+6VdrSOWBDht0EZ0nTNf3ZnGF205HFype8DZLDcU9XthaPy0SaGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741607113; c=relaxed/simple;
-	bh=x+WFX7olKDjTcMQvhmFJ+JyUfPsBQ7itCk14a2w6bAc=;
+	s=arc-20240116; t=1741608697; c=relaxed/simple;
+	bh=B/Zi8tRRc/t7099IxweCQ9wmr8LBRpEjxc54n0VCEzQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cIyyPrCNRelqQEJbl01Xhk1nUuvU9frioxFc9ftxRDmx67poHtmxAUF67BZoqzii8y8xBa19xIjtkz97FRXa/MHcg7LPZ8SBp45dLoQCpUb4sEiPJzE9oVZ9eCEndqnivjF0upol25lcinPH6c94skHIvhggK22XhsjrSc2ywOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JQEVtXuq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741607110;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1QfU9xYM0tace1BiK8/7PTtQnMWCzi3j/O4vQ34r5aI=;
-	b=JQEVtXuqhJxnQe9kK58JTtUyw5h9m+b2pnxOuhmraLhSpm1uOW+j8oWaRRgf/PlGE7ET/1
-	eeyzZLdCFBfZfy5Zfz+KB1gyEvOL4W8bGkIPtOzVdcqEX0phmRzSxeiC3rU5BQhEOxuwr+
-	phFdlyl3JDlVHnnNn8q1NQUJwYP9x8c=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-624-f0xjIyvxNfafPoUeFhK9Ug-1; Mon, 10 Mar 2025 07:45:07 -0400
-X-MC-Unique: f0xjIyvxNfafPoUeFhK9Ug-1
-X-Mimecast-MFC-AGG-ID: f0xjIyvxNfafPoUeFhK9Ug_1741607106
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-43ab5baf62cso27514545e9.0
-        for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 04:45:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741607106; x=1742211906;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1QfU9xYM0tace1BiK8/7PTtQnMWCzi3j/O4vQ34r5aI=;
-        b=pbiiJWIhfI+pJkaZh2w/2l87LrXUGqpyNRVcNOOdrNvKbclnvr3bsH9f4cIdQuIRHk
-         8/n0Aa2zbASGtCzGjUXzdqHuedcB/4KH99ds4MQafnYbWX1ePvohDFRNBEpOXW1p1wpk
-         YJi5zsNI/GYNmKCvnclnV7aHvXsx794NdF5T6UxWOJuHOJB+Vi9IO0XtEY97EQ6dmgHz
-         lMp883x4RC/OOeBI48BbzuS07cFm6cjXdupVIGwkObKaZ2pUrUEjRH9MR8lL07bsWiUy
-         XwEntGQVDm8Fyq5C+EbDCOTJS3nbc53VDx7x5yiGr8A5LEQbN+/eoOVxMRf+KNWhSsAl
-         SGoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWlAkLFyTRiKR39+tpZO9I26HUCTg6RsQR2F0knhlXN64nf+9bWzuGip2pVMYCHcSIc/eY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKLqxuvVe5HRx25QlMN9szPWp2rnUZRg/pEHLynEbmxiRvqgrx
-	LfsWCt4i9fpPjdHuB5LP4mHg0eorQ/IbQ340R3Rf7LhYKB7yeEgd9qmi1KjG7hmYdW5s54CxhO9
-	tqXy1k/IjBu6XnvzZ8P116WMbJNIuW9zhUU0OOAawudEQbt4opw==
-X-Gm-Gg: ASbGncsF5xW1OKbRTe0BJZ4tsWjkcwOMs2N9p34cX8/zbZkagPnSpDF8eEYuD0ZnmTj
-	pvwpHfoYR6Wtrd0ID8lpgChkaK9HkAusTkev8G6tucdNHWuFoXdOfStJOunGyLqDV9Z+NOQ0Igt
-	NZtzZO8VOkvD82P6w+clXLxlT2an5NMvCstclmuCSK52PGbJst4C7XrqoLz/91C24E9f0L2HnuY
-	mBDIWWZfnmow9+p90tAHm5ok+G3scuU38ijl+Yzw1+CWwqmJRjre1FN46T1X1W+Yugv1jfYMQr4
-	IbEFBNe2+e5LIZC8O2RdPZK5FnFrv5EeJEOP4BO1XNZHIoJsj8fxdD4dOvgnBH0=
-X-Received: by 2002:a05:600c:3592:b0:43c:fdbe:439b with SMTP id 5b1f17b1804b1-43cfdbe44femr9279735e9.4.1741607105618;
-        Mon, 10 Mar 2025 04:45:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFntvyjQYUVUh6Y39qXZJ0Lrweu9SVC2j94JbuIrpaWU6W9u+hEflQeu8um6b92DvHRXziOTQ==
-X-Received: by 2002:a05:600c:3592:b0:43c:fdbe:439b with SMTP id 5b1f17b1804b1-43cfdbe44femr9279245e9.4.1741607105113;
-        Mon, 10 Mar 2025 04:45:05 -0700 (PDT)
-Received: from localhost (net-93-146-37-148.cust.vodafonedsl.it. [93.146.37.148])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43ce8a493d0sm81060755e9.1.2025.03.10.04.45.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Mar 2025 04:45:04 -0700 (PDT)
-Date: Mon, 10 Mar 2025 12:45:03 +0100
-From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To: arthur@arthurfabre.com
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, jakub@cloudflare.com,
-	hawk@kernel.org, yan@cloudflare.com, jbrandeburg@cloudflare.com,
-	thoiland@redhat.com, lbiancon@redhat.com,
-	Arthur Fabre <afabre@cloudflare.com>
-Subject: Re: [PATCH RFC bpf-next 16/20] trait: Support sk_buffs
-Message-ID: <Z87Qv2Jf3p3MeXRC@lore-desk>
-References: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com>
- <20250305-afabre-traits-010-rfc2-v1-16-d0ecfb869797@cloudflare.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EHt6UeBru2JrCUHnZyT3FNnyt3RobX7MyTLgCnGeqvuzb47VIq6YmqDNJ4S/rFfw2f7Gyg2SENTXCHJDrMGoZ8zxMeIg6BLutB6arQkbYEunhlk45VB3YABLh8+Cppg0PO5Vwe3LZLpVQjGMlGhK5ogtIf5JGBRCvgAKf3bKIeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Uc2kSMaJ; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id BAD8B2111421; Mon, 10 Mar 2025 05:11:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BAD8B2111421
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1741608694;
+	bh=wGlVDMVI7jB0uTeQswp0J7PSuFA8+H1jZy79IJtAwJA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Uc2kSMaJZ2d9mRqMGI9uVePTC1T6zyoq47PuXm1KAkLHEGlSFLadmxyf4t7EhXYgc
+	 qJPXVqjZQYPIo2xrAnGCsPXWyKYE9mxrGdN9iUPi4kEpIJvw3IuVpiQ2eLOYX89j/w
+	 NaqXKPle32JCMKpmqeqjhSGIpPlBxgMUGEnOafQU=
+Date: Mon, 10 Mar 2025 05:11:34 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"stephen@networkplumber.org" <stephen@networkplumber.org>,
+	KY Srinivasan <kys@microsoft.com>,
+	Paul Rosswurm <paulros@microsoft.com>,
+	"olaf@aepfle.de" <olaf@aepfle.de>,
+	"vkuznets@redhat.com" <vkuznets@redhat.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	"leon@kernel.org" <leon@kernel.org>, Long Li <longli@microsoft.com>,
+	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"ast@kernel.org" <ast@kernel.org>,
+	"hawk@kernel.org" <hawk@kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH net] net: mana: Support holes in device
+ list reply msg
+Message-ID: <20250310121134.GA12177@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1741211181-6990-1-git-send-email-haiyangz@microsoft.com>
+ <20250307195029.1dc74f8e@kernel.org>
+ <MN0PR21MB3437F80F3AD98C82870A9173CAD72@MN0PR21MB3437.namprd21.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="DfAkXsiRZSBUgOma"
-Content-Disposition: inline
-In-Reply-To: <20250305-afabre-traits-010-rfc2-v1-16-d0ecfb869797@cloudflare.com>
-
-
---DfAkXsiRZSBUgOma
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <MN0PR21MB3437F80F3AD98C82870A9173CAD72@MN0PR21MB3437.namprd21.prod.outlook.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-> From: Arthur Fabre <afabre@cloudflare.com>
->=20
-> Hide the space used by traits from skb_headroom(): that space isn't
-> actually usable.
->=20
-> Preserve the trait store in pskb_expand_head() by copying it ahead of
-> the new headroom. The struct xdp_frame at the start of the headroom
-> isn't needed anymore, so we can overwrite it with traits, and introduce
-> a new flag to indicate traits are stored at the start of the headroom.
->=20
-> Cloned skbs share the same packet data and headroom as the original skb,
-> so changes to traits in one would be reflected in the other.
-> Is that ok?
-> Are there cases where we would want a clone to have different traits?
-> For now, prevent clones from using traits.
->=20
-> Signed-off-by: Arthur Fabre <afabre@cloudflare.com>
-> ---
->  include/linux/skbuff.h | 25 +++++++++++++++++++++++--
->  net/core/skbuff.c      | 25 +++++++++++++++++++++++--
->  2 files changed, 46 insertions(+), 4 deletions(-)
->=20
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index d7dfee152ebd26ce87a230222e94076aca793adc..886537508789202339c925b56=
-13574de67b7e43c 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -39,6 +39,7 @@
->  #include <net/net_debug.h>
->  #include <net/dropreason-core.h>
->  #include <net/netmem.h>
-> +#include <net/trait.h>
-> =20
->  /**
->   * DOC: skb checksums
-> @@ -729,6 +730,8 @@ enum skb_traits_type {
->  	SKB_TRAITS_NONE,
->  	/* Trait store in headroom, offset by sizeof(struct xdp_frame) */
->  	SKB_TRAITS_AFTER_XDP,
-> +	/* Trait store at start of headroom */
-> +	SKB_TRAITS_AT_HEAD,
->  };
-> =20
->  /**
-> @@ -1029,7 +1032,7 @@ struct sk_buff {
->  	__u8			csum_not_inet:1;
->  #endif
->  	__u8			unreadable:1;
-> -	__u8			traits_type:1;	/* See enum skb_traits_type */
-> +	__u8			traits_type:2;	/* See enum skb_traits_type */
->  #if defined(CONFIG_NET_SCHED) || defined(CONFIG_NET_XGRESS)
->  	__u16			tc_index;	/* traffic control index */
->  #endif
-> @@ -2836,6 +2839,18 @@ static inline void *pskb_pull(struct sk_buff *skb,=
- unsigned int len)
-> =20
->  void skb_condense(struct sk_buff *skb);
-> =20
-> +static inline void *skb_traits(const struct sk_buff *skb)
-> +{
-> +	switch (skb->traits_type) {
-> +	case SKB_TRAITS_AFTER_XDP:
-> +		return skb->head + _XDP_FRAME_SIZE;
-> +	case SKB_TRAITS_AT_HEAD:
-> +		return skb->head;
-> +	default:
-> +		return NULL;
-> +	}
-> +}
-> +
->  /**
->   *	skb_headroom - bytes at buffer head
->   *	@skb: buffer to check
-> @@ -2844,7 +2859,13 @@ void skb_condense(struct sk_buff *skb);
->   */
->  static inline unsigned int skb_headroom(const struct sk_buff *skb)
->  {
-> -	return skb->data - skb->head;
-> +	int trait_size =3D 0;
-> +	void *traits =3D skb_traits(skb);
-> +
-> +	if (traits)
-> +		trait_size =3D traits_size(traits);
-> +
-> +	return skb->data - skb->head - trait_size;
-
-I am not fully aware of all possible use-cases, but do we really need to
-store hw medata traits (e.g. hw rx checksum or hw rx hash) in the skb
-headroom when we convert the xdp_frame/xdp_buff in the skb? All of these
-fields already have dedicated fields in the skb struct. Moreover, we need
-to set them in order to have a real performance improvements when we execute
-XDP_PASS. Something like:
-
-https://lore.kernel.org/bpf/01ce17910fdd7b693c23132663fa884d5ec7f440.172693=
-5917.git.lorenzo@kernel.org/
-
-Regards,
-Lorenzo
-
->  }
-> =20
->  /**
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 7b03b64fdcb276f68ce881d1d8da8e4c6b897efc..83f58517738e8ff12990c28b0=
-9336ed44f4be32a 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -1515,6 +1515,19 @@ static struct sk_buff *__skb_clone(struct sk_buff =
-*n, struct sk_buff *skb)
->  	atomic_inc(&(skb_shinfo(skb)->dataref));
->  	skb->cloned =3D 1;
-> =20
-> +	/* traits would end up shared with the clone,
-> +	 * and edits would be reflected there.
-> +	 *
-> +	 * Is that ok? What if the original skb and the clone take different pa=
-ths?
-> +	 * Does that even happen?
-> +	 *
-> +	 * If that's not ok, we could copy the traits and store them in an exte=
-nsion header
-> +	 * for clones.
-> +	 *
-> +	 * For now, pretend the clone doesn't have any traits.
-> +	 */
-> +	skb->traits_type =3D SKB_TRAITS_NONE;
-> +
->  	return n;
->  #undef C
->  }
-> @@ -2170,7 +2183,7 @@ int pskb_expand_head(struct sk_buff *skb, int nhead=
-, int ntail,
->  	unsigned int osize =3D skb_end_offset(skb);
->  	unsigned int size =3D osize + nhead + ntail;
->  	long off;
-> -	u8 *data;
-> +	u8 *data, *head;
->  	int i;
-> =20
->  	BUG_ON(nhead < 0);
-> @@ -2187,10 +2200,18 @@ int pskb_expand_head(struct sk_buff *skb, int nhe=
-ad, int ntail,
->  		goto nodata;
->  	size =3D SKB_WITH_OVERHEAD(size);
-> =20
-> +	head =3D skb->head;
-> +	if (skb->traits_type !=3D SKB_TRAITS_NONE) {
-> +		head =3D skb_traits(skb) + traits_size(skb_traits(skb));
-> +		/* struct xdp_frame isn't needed in the headroom, drop it */
-> +		memcpy(data, skb_traits(skb), traits_size(skb_traits(skb)));
-> +		skb->traits_type =3D SKB_TRAITS_AT_HEAD;
-> +	}
-> +
->  	/* Copy only real data... and, alas, header. This should be
->  	 * optimized for the cases when header is void.
->  	 */
-> -	memcpy(data + nhead, skb->head, skb_tail_pointer(skb) - skb->head);
-> +	memcpy(data + nhead, head, skb_tail_pointer(skb) - head);
-> =20
->  	memcpy((struct skb_shared_info *)(data + size),
->  	       skb_shinfo(skb),
->=20
-> --=20
-> 2.43.0
->=20
->=20
-
---DfAkXsiRZSBUgOma
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZ87QvwAKCRA6cBh0uS2t
-rOitAQDaUArc6o9q/HqK0/8om4aTm1nmL9iwOsBvkO0dCfMj/QEA7BPhuOjnrmiN
-8084+hmr3sbXUZMHUKF+CnqcWAzuIgw=
-=SlS4
------END PGP SIGNATURE-----
-
---DfAkXsiRZSBUgOma--
-
+On Sun, Mar 09, 2025 at 10:01:33PM +0000, Haiyang Zhang wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Jakub Kicinski <kuba@kernel.org>
+> > Sent: Friday, March 7, 2025 10:50 PM
+> > To: Haiyang Zhang <haiyangz@microsoft.com>
+> > Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
+> > <decui@microsoft.com>; stephen@networkplumber.org; KY Srinivasan
+> > <kys@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>;
+> > olaf@aepfle.de; vkuznets@redhat.com; davem@davemloft.net;
+> > wei.liu@kernel.org; edumazet@google.com; pabeni@redhat.com;
+> > leon@kernel.org; Long Li <longli@microsoft.com>;
+> > ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
+> > daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
+> > ast@kernel.org; hawk@kernel.org; tglx@linutronix.de;
+> > shradhagupta@linux.microsoft.com; linux-kernel@vger.kernel.org;
+> > stable@vger.kernel.org
+> > Subject: [EXTERNAL] Re: [PATCH net] net: mana: Support holes in device
+> > list reply msg
+> > 
+> > On Wed,  5 Mar 2025 13:46:21 -0800 Haiyang Zhang wrote:
+> > > -	for (i = 0; i < max_num_devs; i++) {
+> > > +	for (i = 0; i < GDMA_DEV_LIST_SIZE &&
+> > > +		found_dev < resp.num_of_devs; i++) {
+> > 
+> > unfortunate mis-indent here, it blend with the code.
+> > checkpatch is right that it should be aligned with opening bracket
+> Will fix it.
+> 
+> > 
+> > >  		dev = resp.devs[i];
+> > >  		dev_type = dev.type;
+> > >
+> > > +		/* Skip empty devices */
+> > > +		if (dev.as_uint32 == 0)
+> > > +			continue;
+> > > +
+> > > +		found_dev++;
+> > > +		dev_info(gc->dev, "Got devidx:%u, type:%u, instance:%u\n", i,
+> > > +			 dev.type, dev.instance);
+> > 
+> > Are you sure you want to print this info message for each device,
+> > each time it's probed? Seems pretty noisy. We generally recommend
+> > printing about _unusual_ things.
+> Ok. I can remove it.
+How about a dev_dbg instead?
+> 
+> Thanks,
+> - Haiyang
 
