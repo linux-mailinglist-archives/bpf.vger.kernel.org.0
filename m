@@ -1,59 +1,48 @@
-Return-Path: <bpf+bounces-53725-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53726-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 293D0A5959A
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 14:08:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D25CDA59644
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 14:28:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED23416ACF6
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 13:08:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BDFC18883F3
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 13:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7518A229B05;
-	Mon, 10 Mar 2025 13:08:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD5F322A4FD;
+	Mon, 10 Mar 2025 13:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="A8BFc6kb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K8HvQ0cb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAA53178395;
-	Mon, 10 Mar 2025 13:08:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D9B229B23;
+	Mon, 10 Mar 2025 13:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741612125; cv=none; b=Gq6Ny6K/dwcNunEqnLiKIfng7ICPIYrAJ67qUZTczSnLrx2imaj3PxHidj2qpQZ6qs+5euadKPUOZLNSf6c11cLDpfW/K3LQsIDPflqro0oFMp5Wc+u8+tsk3mCzKPOdsTciYKtVxhDHYgfiNxRr5zKahG4lggumEq046+Bh6p0=
+	t=1741613300; cv=none; b=SfUwQy+gWAEmkIsLaHAOGbg1VFfXqrPvSPlu9BBTV8uM9kuCTvMKPQCZJECcFRLgTQmMo63joN4Yzp4ttTB/GSh8TBxZ56gKDSa2ZgjhEeSTdC54fl+O7H2qAys4/IJwM49Ebd+veqxi6xN5ayl8qdQeC+Jp2ZoWPBXneR+sSjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741612125; c=relaxed/simple;
-	bh=rdAP5tZXO/e6X0g9/aj7v6Q8fYYTM/HQGTEow6hWTxU=;
+	s=arc-20240116; t=1741613300; c=relaxed/simple;
+	bh=nFQwviuFLEUXVD+O9mQqYEB6Xvy0zQX1YL6lxlu9H3o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VoLzK/8EJqrMOisRfZeYIlsAmotcvhAQQ2NhGnx3dUVEQFcVbumNuklJDgxr8NygfFGbzrx6YvjypMtf/yiQ6HM85pDrhvbYlYp9zzItG/Ajk1BlsDHTuVkUY3ysrMZwsoPUUeKORsYpTbgTWRp6K0Og3xVq29Lp1iYWnfRZSAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=A8BFc6kb; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1trcrp-00ByIO-7S; Mon, 10 Mar 2025 14:08:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=YMtG22Pqun0Tp+q9j4j91l8TFa4W5ET+k4wRnt7+fP0=; b=A8BFc6kbFm87pNoML1HwqDmRTf
-	UJA/GzevYwKdN5F5BZrgi//pgOyudJoiTj1cK1jqvTlnhZursG3xtzsBooyMMx4vLOx+Py6kxhz8u
-	hIEVjCM4oc8/5KNIerC9JWvKACQGvBa3WFWLxq6inZH8tyNEnNemy3BsVbvmoAWRn+/snlLvSHaXk
-	ddO8bi7iUrcF5CFLUzM58GA01OsGXH138lYeRHo1EjItfLMyknx62msIBc85WDunVEuay4pTlM87c
-	oHaOor4nkaHnadScKgfH3p4cxyNGqYOaGlUCpKQVr2CTHSgJL4J7b442qLYS5+VhMNWyP9iroaqxJ
-	2zf7qkeA==;
-Received: from [10.9.9.74] (helo=submission03.runbox)
-	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1trcrc-0006oZ-M9; Mon, 10 Mar 2025 14:08:13 +0100
-Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1trcrZ-007B3j-Vc; Mon, 10 Mar 2025 14:08:10 +0100
-Message-ID: <d2d3eff9-23df-4098-87cc-d0ad5fde6e1e@rbox.co>
-Date: Mon, 10 Mar 2025 14:08:07 +0100
+	 In-Reply-To:Content-Type; b=DWOgZ8C6eRh6i3HsSUu+wnDE1VdPxMIkE4+hh7ocrNumvInk6et4qQJhg/fM/wiUU3Fko6+NzF1mwsWtdjiv8ho1kn7x58I8E+LkXPZk6RFAdtpueKGZmhgWOK1lWpVAduKx7oH3Vdk9j7RkwYn4AAaEs/xcWxuI057f0lw566Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K8HvQ0cb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3054C4CEE5;
+	Mon, 10 Mar 2025 13:28:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741613300;
+	bh=nFQwviuFLEUXVD+O9mQqYEB6Xvy0zQX1YL6lxlu9H3o=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=K8HvQ0cb0DZX+8lfGqS9AkInhopSbA2mtcQD1LQmSsE0PDIWkzni571GZvs+4AAsP
+	 Zqn+2awCsTjb+C5jR+pbbwu9bkCQniSLWOvOUN5SjIE1q2p8noJDYnjxBuY0FPyn1S
+	 nQBVO60XbxEjQAbrRkdcktUM7JZwZuexS4wD3Uz320sJ44Ls7mG5bvKopLGrX6sn/E
+	 WkN63/g6sXpdJ6ChNJo8tIsF6p4SlUc8qSnbQITkcybLm0Rw3wGWx5o1j3+cF1YrB0
+	 PLL1WDOhVdx3i0SiyRjR1KNDPWnAeAo19H6c/R/OilV1MKlbLRL8fylM63bTznc4iq
+	 fxfD+hdoXxrxw==
+Message-ID: <40064e3d-e8c6-42ee-80e9-a87f4140ecc0@kernel.org>
+Date: Mon, 10 Mar 2025 13:28:16 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,72 +50,61 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 1/3] bpf, sockmap: avoid using sk_socket after
- free
-To: Jiayuan Chen <jiayuan.chen@linux.dev>, xiyou.wangcong@gmail.com,
- john.fastabend@gmail.com, jakub@cloudflare.com, martin.lau@linux.dev
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, horms@kernel.org, andrii@kernel.org, eddyz87@gmail.com,
- mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@fomichev.me,
- haoluo@google.com, jolsa@kernel.org, shuah@kernel.org, sgarzare@redhat.com,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, mrpre@163.com, cong.wang@bytedance.com,
- syzbot+dd90a702f518e0eac072@syzkaller.appspotmail.com
-References: <20250228055106.58071-1-jiayuan.chen@linux.dev>
- <20250228055106.58071-2-jiayuan.chen@linux.dev>
- <baeca627-e6f1-4d0a-aea5-fa31689edc4d@rbox.co>
- <78ee737400721758fa67b4f285e8ba61dc6b893b@linux.dev>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <78ee737400721758fa67b4f285e8ba61dc6b893b@linux.dev>
+Subject: Re: [PATCH] bpf: bpftool: Setting error code in do_loader()
+To: nswon <swnam0729@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250310052555.53483-1-swnam0729@gmail.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20250310052555.53483-1-swnam0729@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 3/10/25 12:36, Jiayuan Chen wrote:
-> March 7, 2025 at 5:45 PM, "Michal Luczaj" <mhal@rbox.co> wrote:
-> ...
->> BTW, lockdep (CONFIG_LOCKDEP=y) complains about calling AF_UNIX's
->> read_skb() under RCU read lock.
->>
-> My environment also has LOCKDEP enabled, but I didn't see similar
-> warnings.
-> Moreover, RCU assertions are typically written as:
+2025-03-10 14:25 UTC+0900 ~ nswon <swnam0729@gmail.com>
+> missing error code in do_loader()
+> bpf_object__open_file() failed, but return 0
+> This means the command's exit status code was successful, so make sure to return the correct error code.
 > 
-> WARN_ON_ONCE(!rcu_read_lock_held())
+> Link: https://lore.kernel.org/bpf/d3b5b4b4-19bb-4619-b4dd-86c958c4a367@stanley.mountain/t/#u
+> Closes: https://github.com/libbpf/bpftool/issues/156
+> Signed-off-by: nswon <swnam0729@gmail.com>
+
+
+Thanks for this!
+
+Others may correct me if I'm wrong, but I think you should sign off with
+your full name here (although it doesn't strictly have to be a full
+name, the patch submission docs mention in should be a "known identity"
+so I'm not sure whether a GitHub handle, for example, is acceptable).
+
+
+> ---
+>  tools/bpf/bpftool/prog.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> And when LOCKDEP is not enabled, rcu_read_lock_held() defaults to
-> returning 1. So, it's unlikely to trigger a warning due to an RCU lock
-> being held.
-> 
-> Could you provide more of the call stack?
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index e71be67f1d86..641802e308f4 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1928,6 +1928,7 @@ static int do_loader(int argc, char **argv)
+>  
+>  	obj = bpf_object__open_file(file, &open_opts);
+>  	if (!obj) {
+> +		err = libbpf_get_error(obj);
 
-Sure, bpf-next with this series applied, test_progs -t sockmap_basic:
 
-=============================
-[ BUG: Invalid wait context ]
-6.14.0-rc3+ #111 Tainted: G           OE
------------------------------
-test_progs/37755 is trying to lock:
-ffff88810d9bc3c0 (&u->iolock){+.+.}-{4:4}, at: unix_stream_read_skb+0x30/0x120
-other info that might help us debug this:
-context-{5:5}
-1 lock held by test_progs/37755:
- #0: ffffffff833700e0 (rcu_read_lock){....}-{1:3}, at: sk_psock_verdict_data_ready+0x3e/0x2a0
-stack backtrace:
-CPU: 13 UID: 0 PID: 37755 Comm: test_progs Tainted: G           OE      6.14.0-rc3+ #111
-Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
-Call Trace:
- dump_stack_lvl+0x68/0x90
- lock_acquire+0xcf/0x2e0
- __mutex_lock+0x9c/0xcc0
- unix_stream_read_skb+0x30/0x120
- sk_psock_verdict_data_ready+0x8d/0x2a0
- unix_stream_sendmsg+0x232/0x640
- __sys_sendto+0x1cd/0x1e0
- __x64_sys_sendto+0x20/0x30
- do_syscall_64+0x93/0x180
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
+This is the correct way to retrieve the error code, but given that
+bpftool does nothing with this error code, could we instead simply
+return -1 to remain consistent with the other locations where we call
+bpf_object__open_file() in the tool, please?
 
+Thanks,
+Quentin
 
