@@ -1,169 +1,120 @@
-Return-Path: <bpf+bounces-53773-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53774-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 718E1A5A736
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 23:32:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40F44A5AB10
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 00:07:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 183883A9A0B
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 22:31:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E58B11892D7C
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 23:07:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 027431D9A50;
-	Mon, 10 Mar 2025 22:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B908E2206B9;
+	Mon, 10 Mar 2025 23:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZbcVbJDc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HC4R/bVg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A3A40BF5
-	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 22:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29605215178;
+	Mon, 10 Mar 2025 23:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741645917; cv=none; b=jz9gxFg2QSgGFZ3GTAFRA7W6y40kKflewYCxVQEcdObWB3lvYGH/W3qsLXgaug5FEjA3OY4Y0pdGeD8KsBaT02nT/orB6VAmMm981eH/aK+/PoS7j36JGhSaoGTD1i8cHPUVaAFrJPJZzW3Jb2VNFINexCe8omjIJ4XzHaebGFI=
+	t=1741648036; cv=none; b=lq58Lsi5YrdP/YYexMsfofgz7B4G4wbfdSUn82ubf20q3nugRws4b5Q3NeZj3wNgbtKC98IjkyWn3TRBOGwpP5ux7xpg+VtwMVbhlA56dFPGtf5ml3IvJZ1uz97dpT4HPgwBDgmZMehEUqPRZaRkfbheqvnVfuGRqDk3tmt41pQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741645917; c=relaxed/simple;
-	bh=FViW56UXS+wiX8x/Td//iht1TACl5GFoovMzlLaeMhY=;
+	s=arc-20240116; t=1741648036; c=relaxed/simple;
+	bh=JzhS4McBCXjeRJuYeYTZgfxnWCyjSgVLpimnfD+mmyE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B0MWqlCWUkLFeymT5HS054raUcZq8Ya2Bjx/LLnVtaecJXgTjTwzcpmTPmeWd1WkECZdNtIU39fkUzis1V1PQEOeQX5lB2Z2s1XX8yGplafupxKMcgpCFpgcLL5/sxjEeUwWsVpgWbLgDzRYqIs4jrbq6bR5RNXCGAG3m7YjM5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZbcVbJDc; arc=none smtp.client-ip=209.85.160.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-47509ac80cbso21908401cf.0
-        for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 15:31:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741645915; x=1742250715; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yIg9XMQmzEvJno/MgkMxBzd1jni7htg+2SxEd9/4hrs=;
-        b=ZbcVbJDcv14YeVv5B6ABZ/sDs45JFh2EHPDmXvuPZ3jiv9c2UtRUWNGwTLX62vkR7G
-         4zCPiOfdMOIg4snWNLo2SV8WCadSRzKD2usizUllaFx2V+Qq6ySv5d7djFP6W8uJzyS1
-         86N6/cBZebx1sfIh/WIkdnkDSJGxR1Zzv3eJyYm3OkUl8jCoGeicpL8JPr2blZ3CUQWA
-         q7PK4/SZbgY7xxpyjeOxo8q1gAC4zYm1I542izS2nXL2DE1hLA214AvwnIBcURGFP7DL
-         lM/0YhLKeBX2TeR1v1qSbWYbCn5uAjCpTiY2kvxFISN8DCSlpJeJyMh8mOym3WCZeCuG
-         n/fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741645915; x=1742250715;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yIg9XMQmzEvJno/MgkMxBzd1jni7htg+2SxEd9/4hrs=;
-        b=evZ+IDP57JzwIJ2X42YRO4VQ2TqL9psOIWcntoqN0V/vuGhkChzd3+zFJyMoKBeMrg
-         cpXAZXsgtLXfmo4QDUKnMBt0Ky8mJNN6UyMTtUNMO4fZEbd1L5enQFFmoRikzj9UC1aX
-         pzwhytYPilRclS+vflb9rb6QUguXv0VvdBgbNeNqeYMW4eumcZ8Hm4gVUwLqRKf9KFN6
-         /yv2OrcZgHA0lybo7Kv6KpCx5SeY4xqRxNgPeQpiwio+Imkp1+KhSBm81E6rr8bfeyeN
-         vj8UQdLYMloVPjjxBrBLIM1XzN8dafBMCeFOxUa3KN1+S3xaawNvIGEreNrDD6o4nPq4
-         l0WA==
-X-Gm-Message-State: AOJu0YyrgSWFkbBRbeKWdc6rnmp+a8sjcwlQCUynZB2PaPqBclfQNg5r
-	RNLP3sBoXjyN++y2owQv4ki3A74dwT86C9IDrVWGV6jxeHwFITOR2M6DycTjO5pHvWayNcrANUJ
-	dC9PXOCzT3iIEN+oXpQXJrd8srkE=
-X-Gm-Gg: ASbGnct+tDjyWfJV4h+HYA83zeoetd7MVZX3f6/ArjhF9+IqBrxSDP1W6WnOQdb3B0H
-	DY4jgei4dQZv4x1gckzX6T6zLdcm0c2Zq8frhXbSpLiRl0cbuPPlL80tBsVn52tUpzjWcwNUUkk
-	xOnKQ9VTSa0nktkvc4L6RWgc8jL3zhk+o18XM8tiWejz4zSz45r0bLcp6m3WE=
-X-Google-Smtp-Source: AGHT+IFAVB9oy0OIFjeT9qgsp6CC85ZuOnHurnQxP1FeCilKwO46cHbQ0Bpabv7i96uhr/XXGAHafas8A4XALHy0b34=
-X-Received: by 2002:ac8:7f56:0:b0:474:fa6e:ff4a with SMTP id
- d75a77b69052e-47618aeffefmr235409741cf.44.1741645914471; Mon, 10 Mar 2025
- 15:31:54 -0700 (PDT)
+	 To:Cc:Content-Type; b=bZYH012fFrljRxBz95dKYfZeYM40Dh4PS44R4iHwM7Q6ozgixt1ugXj7ZZ89ObQXwRXHirtlpKmKQCpoRIVIgbccEaohVtE+RKoZx/yR28GwH4H4DDtbxhe9LZ6/cQUgJo3w7muJwNcghc409ahJIXHMbhdbXvf0PcRWyjt1lf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HC4R/bVg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DE7FC4CEEE;
+	Mon, 10 Mar 2025 23:07:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741648035;
+	bh=JzhS4McBCXjeRJuYeYTZgfxnWCyjSgVLpimnfD+mmyE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=HC4R/bVgS04ua943xHOA3HnT1R36+PVPLwCxfIJ/A2Qa4uUpf/lcl8O4Fh/9ofcwt
+	 lEtXgTCbZRzVc8P6/OmDCikU1PJMvs1EKJCrIAkUuk7wvl71xRnn8wc3p5C/zKdN3z
+	 SO2Oj5eqNdEZIWAxGLV2oqJ07h1BGZj0IgnMqFFxRRnOAtOmZsuFvU5jAw1Oe4/iHU
+	 smHhU3vmFG5OpKlBNPw5nBvQ+9VX/ryY+IPkTAtEAUXDIH/tX0L18L3pnoEt18PyMl
+	 y/MKiHyFttCrWCJ5uWhKvyAE8E+prNN7airBvfEpM9gSZZ7SUmJfj2yUlLGWdaI87s
+	 HHEunfdnj3FXA==
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3ce886a2d5bso37033675ab.1;
+        Mon, 10 Mar 2025 16:07:15 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV//8YCSuoc0E6flup9mbWe19qesP+WVFDnVit7xUNH0in+5oN1GPZsjmYBGLyVFToavtZmOU9d9GQ8b46u@vger.kernel.org, AJvYcCVVLLu1ND1EjLXVKKnCpE6gDkYNSFhRiFXCsTTzfblxYBP8VFp+LvF/35A3zxKV3kSAFS45Xr5S+v5i3ZDzL4f/@vger.kernel.org, AJvYcCW5h26k5NhnumwAgvuLGBDeSMRItXwy6KTc7cgajgwpBKcMSo6VAXig2gidYwbORtxOc87CXNf8sA==@vger.kernel.org, AJvYcCWEHJhPO/l2AKMTtELbgPC36Bnd/xVHHwQB0R0LiJ6mOU0Sp4u1dlJlTuHzItqwiWz5e6A=@vger.kernel.org, AJvYcCXrSCTfYllbnOZIWtxZNdPu3Or8nJlyqvv2Py+GWRqQPomFsWvX7WQmYU0Obadb4+IaWlqDwuYkP2P1EEqrfJWrWcqLvyvh@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx5qbPGzL8DnMpJPEwa+AVR9mfXXN7sVU3PR3dI82faf6BfLIko
+	9AgfE+0sO8Vqxm8cBofilW9fWPQ/7W8CB95AUQjX+rXaQhccQhZFlxP/F64057MMxojgaBt1FNA
+	DZ7oZzQFEPYFfTXw3QrIOi5Y/81Q=
+X-Google-Smtp-Source: AGHT+IFrFz33eGKzI6s8UK47W59xeivzvMS0xnZMkw/8Y5TyTKHEvMj13/Tm3Rsh4y/BtKJnusgx8XmIFiJNB7O3RjI=
+X-Received: by 2002:a05:6e02:219c:b0:3d0:10a6:99aa with SMTP id
+ e9e14a558f8ab-3d44187c249mr177397255ab.4.1741648034716; Mon, 10 Mar 2025
+ 16:07:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAK3+h2woEjG_N=-XzqEGaAeCmgu2eTCUc7p6bP4u8Q+DFHm-7g@mail.gmail.com>
- <Z8oXIhptXWhbCeCF@pop-os.localdomain> <CAK3+h2ys8ivcnnd=em7QZRWqqmtSuqy4xEiDoV6+9ccOzJHu4w@mail.gmail.com>
- <Z89c+5k3sRX8Al1I@pop-os.localdomain>
-In-Reply-To: <Z89c+5k3sRX8Al1I@pop-os.localdomain>
-From: Vincent Li <vincent.mc.li@gmail.com>
-Date: Mon, 10 Mar 2025 15:31:43 -0700
-X-Gm-Features: AQ5f1JqQT2z2xC7GiMqgHWdwkj8qNYWL5UzhnRpR3ZvyTHRZAdOvsb_gEHYCpP4
-Message-ID: <CAK3+h2zi+xKb3mqZeUm2jjiBzgq86F8jMDz4g3GRyQDk+U5p=Q@mail.gmail.com>
-Subject: Re: [BUG?] loxilb tc BPF program cause Loongarch kernel hard lockup
-To: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, loongarch@lists.linux.dev
+References: <20250310221737.821889-1-bboscaccy@linux.microsoft.com> <20250310221737.821889-3-bboscaccy@linux.microsoft.com>
+In-Reply-To: <20250310221737.821889-3-bboscaccy@linux.microsoft.com>
+From: Song Liu <song@kernel.org>
+Date: Mon, 10 Mar 2025 16:07:03 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4cCkWGnJfxJvBd498iTd3-hMXLg=s7S68vdgPVhdtqCA@mail.gmail.com>
+X-Gm-Features: AQ5f1JpWun0dhnGTqBIlLHHy-G5NiP7iX2I9xNN_D-pdziA3qrPPEBFmfrg3y98
+Message-ID: <CAPhsuW4cCkWGnJfxJvBd498iTd3-hMXLg=s7S68vdgPVhdtqCA@mail.gmail.com>
+Subject: Re: [PATCH v7 bpf-next 2/2] selftests/bpf: Add a kernel flag test for
+ LSM bpf hook
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Cc: Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Xu Kuohai <xukuohai@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 10, 2025 at 2:43=E2=80=AFPM Cong Wang <xiyou.wangcong@gmail.com=
-> wrote:
+On Mon, Mar 10, 2025 at 3:18=E2=80=AFPM Blaise Boscaccy
+<bboscaccy@linux.microsoft.com> wrote:
 >
-> On Thu, Mar 06, 2025 at 08:04:14PM -0800, Vincent Li wrote:
-> > Sorry I had a type error on the loongarch mailing list address, correct=
-ed it.
-> >
-> > On Thu, Mar 6, 2025 at 1:44=E2=80=AFPM Cong Wang <xiyou.wangcong@gmail.=
-com> wrote:
-> > >
-> > > On Wed, Mar 05, 2025 at 04:51:15PM -0800, Vincent Li wrote:
-> > > > Hi,
-> > > >
-> > > > I have an issue recorded here [0] with kernel call trace  when I st=
-art
-> > > > loxilb, the loxilb tc BPF program seems to be loaded and attached t=
-o
-> > > > the network interface, but immediately it causes a loongarch kernel
-> > > > hard lockup, no keyboard response. Sometimes the panic call trace
-> > > > shows up in the monitor screen after I disabled kernel panic reboot
-> > > > (echo 0 > /proc/sys/kernel/panic) and started loxilb.
-> > > >
-> > > > Background: I ported open source IPFire [1] to Loongarch CPU
-> > > > architecture and enabled kernel BPF features, added loxilb as LFS
-> > > > (Linux from scratch) addon software, loxilb 0.9.8.3 has libbpf 1.5.=
-0
-> > > > which has loongarch support [2]. The same loxilb addon runs fine on
-> > > > x86 architecture. Any clue on this?
-> > > >
-> > > > [0]: https://github.com/vincentmli/BPFire/issues/76
-> > > > [1]: https://github.com/ipfire/ipfire-2.x
-> > > > [2]: https://github.com/loxilb-io/loxilb/issues/972
-> > > >
-> > >
-> > > Thanks for your report!
-> > >
-> > > I have extracted the kernel crash log from your photo with AI so that
-> > > people can easily interpret it.
-> > >
-> >
-> > Nice to know AI could do that :)
-> >
-> > > From a quick glance, it seems related to MIPS JIT. So it would be
-> > > helpful if you could locate the eBPF program which triggered this and
-> > > dump its JIT'ed BPF instructions.
-> > >
-> >
-> > This is call trace from Loongarch CPU so related to Loongarch BPF JIT.
-> > the kernel seems to lockup immediately right after attaching to the
-> > network interface. to dump the JIT'ed BPF instructions, maybe just
-> > load the BPF program, but not attach it so I can dump the BPF
-> > instructions?
+> This test exercises the kernel flag added to security_bpf by
+> effectively blocking light-skeletons from loading while allowing
+> normal skeletons to function as-is. Since this should work with any
+> arbitrary BPF program, an existing program from LSKELS_EXTRA was
+> used as a test payload.
 >
-> Yes!
->
-> You can load the eBPF program which triggered the crash manually without
-> attaching it, using commands similar to the following:
->
-> # Load the program without attaching it
-> sudo bpftool prog load hello.o /sys/fs/bpf/hello
->
-> # List programs to find its ID
-> sudo bpftool prog list
->
-> # Dump JIT instructions (replace 123 with your actual program ID)
-> sudo bpftool prog dump jited id 123
->
->
-> Thanks.
+> Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+[...]
+> +
+> +       /* Test with skel. This should pass the gatekeeper */
+> +       skel =3D kfunc_call_test__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel"))
+> +               goto close_prog;
+> +
+> +       /* Test with lskel. This should fail due to blocking kernel-based=
+ bpf() invocations */
+> +       lskel =3D kfunc_call_test_lskel__open_and_load();
+> +       if (!ASSERT_ERR_PTR(lskel, "lskel"))
+> +               goto close_prog;
 
-I got it, with the help of LoxiLB maintainer, I am able to only load
-the tc BPF program without attaching to the interface when starting
-the loxilb process, the kernel call trace shows bpf program
-tc_packet_func, I assume that is the program to cause the lockup, here
-is the jited tc_packet_func link [0] which has 13064 lines, not sure
-it is going to be helpful
+This goto is not necessary. But I don't think we need v8 just for this.
 
-[0] https://github.com/user-attachments/files/19171378/tc_packet_func-jited=
-.txt
+Acked-by: Song Liu <song@kernel.org>
+
+> +
+> +close_prog:
+> +       if (skel)
+> +               kfunc_call_test__destroy(skel);
+> +       if (lskel)
+> +               kfunc_call_test_lskel__destroy(lskel);
+
+[...]
 
