@@ -1,84 +1,118 @@
-Return-Path: <bpf+bounces-53737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF84FA59A3F
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 16:43:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89289A59A57
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 16:49:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A872E16C578
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 15:43:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD9421649B1
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 15:49:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5D222D7A4;
-	Mon, 10 Mar 2025 15:43:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443BD22CBD5;
+	Mon, 10 Mar 2025 15:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RsyyEyvq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M7MqfMJ0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0621185B62
-	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 15:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99EE221565;
+	Mon, 10 Mar 2025 15:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741621399; cv=none; b=VphJzNsZG69PIafSSRdYGvr/FGTjlCpuLCOPzChhOzTYBXqepnYSowgARfFoDP5hBtUaw5dGTZurtMyD7BHkwWXmHeGq7Yxyqp4qbkvPNNH0cJnDR+FTgxgxGYWUkHaDPLg14B3E9e/zw61GqsKsvtvbRP1F18+HxLd4mpTK6HE=
+	t=1741621751; cv=none; b=PI3IBYiPRDH8la4wDhCucjHUUyzGoCQ/WF2fG0hnzHELgmJMOoWw8+FbG/ECZNtDLKXP97uRLlrgMSqJSKfm7/KZo70o8DEjY82gskRQZciqYEP9ll4zXvjTfuAiC41JgET6B4ptuiP5/hW0RdGl6s5RRcfdBQ36A7+chAES/eU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741621399; c=relaxed/simple;
-	bh=ozkvDiye+37e3JvU4yKG+Hkm16iaOL9zB6G8mgGzq7g=;
+	s=arc-20240116; t=1741621751; c=relaxed/simple;
+	bh=PBHeZEmt3D4fKXPbB6mRfqMmP+pG7/eCXydjxzPsKYo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BCeuDlN/XKKbRp9mP3eaKMVICcLOOSg4mHlRPJzInvumWeP5k0gHXaSddLjdNXFlMfeuqgtPojpPEyFzu4iSUmT/wgrq1lXvh64V9S6O8p3PpJwxvQqQH4t+aRSW+nJLKJ/1oC9TVNvPjYNcMAMN2Uf5pg9enjL5xzA3b+UIrnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RsyyEyvq; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <9cd7728c-c422-4d2b-a629-795ca10b18c1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1741621395;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ozkvDiye+37e3JvU4yKG+Hkm16iaOL9zB6G8mgGzq7g=;
-	b=RsyyEyvqZ+CFApKrR7VaS72TFQgPoFZowg1ICGrWYeL5ZcPkgaVMd+qwIduHiMtyVzJNDd
-	5Ay7HoLMRODuo/mbN9NveHAxvmHy40myH5gmuZRnoX/Y8hiI20UDaZpv92eh6U7tlBVsT+
-	SbHBQ7n0qZ4Qb2l/tUNksC9Jr+UwgOU=
-Date: Mon, 10 Mar 2025 08:43:07 -0700
+	 In-Reply-To:Content-Type; b=ETAN2riLQ+mhseBzD/o4yyb4U+2zAi3BoXAPQ3YGNWo8LSH80FeKA8O5Qydpinkslq4Cn4lA9uABfUP+IqzERC0CR/gAp6jBL9K5cDP0ITwS3WhR5+lrJl5E7l0i9LEytT3nymEwVcD5PSyhhzhgZMDX91IrdpLCaergGq+rPhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M7MqfMJ0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4404BC4CEE5;
+	Mon, 10 Mar 2025 15:49:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741621751;
+	bh=PBHeZEmt3D4fKXPbB6mRfqMmP+pG7/eCXydjxzPsKYo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=M7MqfMJ02HNk6Dy3sZgBoQuQ+ogQQCCjuck1sGRQYzal+X25DBWQRsxhTK28eOiDH
+	 +2PXFzGXTXfVrAG6Y/pUI4N43cBPNLT/gI/mkvhhjOl+dlO4eKXpDIXzjiI5r/SCjd
+	 rJWy7haKO/ywHhiSQp0NQ0dLdHky+nQg1ndIe+rCDEyN58IGeaz+t06q+4ZvxHBcwT
+	 V+wJFXuRQf93rh0AuKV8S6vNxCU3i8d33EFmsAjrwiJfT1Rq67WM6KMFW9Lg6fuG4o
+	 qyYVVhkz6Iy46011305ThenUmfg5ugyozU2NUJL2qEKPMV6aSiXm64pboxHp5g+KDa
+	 7Av2L0eIjrp3w==
+Message-ID: <654713e8-f4ce-4742-8165-f73838ea8d16@kernel.org>
+Date: Mon, 10 Mar 2025 15:49:05 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 1/4] bpf: BPF token support for
- BPF_BTF_GET_FD_BY_ID
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v1 1/2] bpftool: Add -Wformat-signedness flag to
+ detect format errors
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, bpf@vger.kernel.org
+Cc: daniel@iogearbox.net, linux-kernel@vger.kernel.org, ast@kernel.org,
+ davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+ john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
+ mrpre@163.com, Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <20250310142037.45932-1-jiayuan.chen@linux.dev>
+ <20250310142037.45932-2-jiayuan.chen@linux.dev>
+From: Quentin Monnet <qmo@kernel.org>
 Content-Language: en-GB
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org,
- ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com,
- kernel-team@meta.com, eddyz87@gmail.com, olsajiri@gmail.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-References: <20250310001319.41393-1-mykyta.yatsenko5@gmail.com>
- <20250310001319.41393-2-mykyta.yatsenko5@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20250310001319.41393-2-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20250310142037.45932-2-jiayuan.chen@linux.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+
+2025-03-10 22:20 UTC+0800 ~ Jiayuan Chen <jiayuan.chen@linux.dev>
+> This commit adds the -Wformat-signedness compiler flag to detect and
+> prevent printf format errors, where signed or unsigned types are
+> mismatched with format specifiers. This helps to catch potential issues at
+> compile-time, ensuring that our code is more robust and reliable. With
+> this flag, the compiler will now warn about incorrect format strings, such
+> as using %d with unsigned types or %u with signed types.
+> 
+> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
 
 
+Acked-by: Quentin Monnet <qmo@kernel.org>
 
-On 3/9/25 5:13 PM, Mykyta Yatsenko wrote:
-> From: Mykyta Yatsenko <yatsenko@meta.com>
->
-> Currently BPF_BTF_GET_FD_BY_ID requires CAP_SYS_ADMIN, which does not
-> allow running it from user namespace. This creates a problem when
-> freplace program running from user namespace needs to query target
-> program BTF.
-> This patch relaxes capable check from CAP_SYS_ADMIN to CAP_BPF and adds
-> support for BPF token that can be passed in attributes to syscall.
->
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+Thanks for that. Have you looked into enabling the flag along with the
+other EXTRA_WARNINGS in tools/scripts/Makefile.include? It would be
+ideal to have it there, but I suppose it raises too many warnings across
+tools/? (I didn't try myself.) No objection to taking it in bpftool only.
 
-Acked-by: Yonghong Song<yonghong.song@linux.dev>
+
+> ---
+>  tools/bpf/bpftool/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index dd9f3ec84201..d9f3eb51a48f 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -71,7 +71,7 @@ prefix ?= /usr/local
+>  bash_compdir ?= /usr/share/bash-completion/completions
+>  
+>  CFLAGS += -O2
+> -CFLAGS += -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
+> +CFLAGS += -W -Wall -Wextra -Wformat-signedness -Wno-unused-parameter -Wno-missing-field-initializers
+
+
+Nit: This line is becoming long enough that I'd consider moving each
+flag to its own line, for better reading:
+
+	CFLAGS += -W
+	CFLAGS += -Wall
+	CFLAGS += -Wextra
+	CFLAGS += -Wformat-signedness
+	...
+
+>  CFLAGS += $(filter-out -Wswitch-enum -Wnested-externs,$(EXTRA_WARNINGS))
+>  CFLAGS += -DPACKAGE='"bpftool"' -D__EXPORTED_HEADERS__ \
+>  	-I$(or $(OUTPUT),.) \
 
 
