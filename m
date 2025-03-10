@@ -1,128 +1,494 @@
-Return-Path: <bpf+bounces-53711-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53712-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3654A58BAA
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 06:26:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 565D1A58CF2
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 08:32:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0658F167928
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 05:26:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A32A2188C457
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 07:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 483D31C5D6F;
-	Mon, 10 Mar 2025 05:26:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE81207A06;
+	Mon, 10 Mar 2025 07:32:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SgI5vxqO"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="n2vvaeV1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8EF170826;
-	Mon, 10 Mar 2025 05:26:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B23B17BA5;
+	Mon, 10 Mar 2025 07:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741584368; cv=none; b=ToMFgvm72XZLpwJqPgdGVv+XIQNgQ3nCHlaNdFeK9MenyvkARVZhcx8+y+Q/TYICWyp6JoHl2UN+dyjS5Tj83Bhg9DIAp1l5eHlBiVd1mn08MTIo3Mv3ND7CnfOeEUazM7ffobQpO+0lPaunCWKKdiHWhaHhPsHxX9pzabK7qz4=
+	t=1741591924; cv=none; b=A08AqSOSmv+0GWLYrkYciW+FtP2Gc3soMpjaf6JRJRXsCdGh2QHeT+Qwqcyd+xJ2rZohQ9qbw16puamUT1oYho+okMj51FDFrFHgyYk9PnOneUBYLHaCeuilFWNJc+uk+bjYEMZ06F6De7CqUDVuSGZ4Fj58MncmMNFBcZipxSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741584368; c=relaxed/simple;
-	bh=d9HI141t+tngtuQsWIvkBlJv10xKsxqAz75LMzjXzmI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SBeLV18e+XpNvXnysVsefSAMZDqU4D3tLyAc/QiIEK+3NA8B58TK7qPLS+AX/45L1YQfNkHkSQK8kL7zSZQR1uYZaVhDOyeWSf6t3DrBCUceziJ4UvZt0Liqn8/uJBrinQMlXXWjZ2DDyVTtJnfWrPIyZU4aiaipj1iFBrZDjOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SgI5vxqO; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-22355618fd9so66831285ad.3;
-        Sun, 09 Mar 2025 22:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741584366; x=1742189166; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PGnLrTOtHeLoMe//QnihHUCvulpg4585SlVvplaBcPM=;
-        b=SgI5vxqOgcPH/4ws9LeJmeN4nCRWAMq9N7dOAoYT+A1ntCnr9HNJ6L7hm9EXaI1ODZ
-         2YDSdRQDMbgGBWABFHhkdWP1082jzjUN1XJMw4zqSgVZyZYlTRkSyTM4qEaoFE2MrsYF
-         ipr/L6Iw6clWa7zNjZId7byuKdY01L3FPH/REC8DPQagM6ko1rwC8dT/2o+UiP3vF+ry
-         DIFw4P2jjNyPC16KSGnniG6jS6gEv8iEeeK6U4paFjia0tl52WkBlnnlhhzL2XtMGI/p
-         ItE6AmUY6qKnkgErZ/4cqk3/2Od/khk5iFOGo59TfkRdBR8YShBRvjqEwHRagDxvLDCq
-         EuuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741584366; x=1742189166;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PGnLrTOtHeLoMe//QnihHUCvulpg4585SlVvplaBcPM=;
-        b=X/2PZKTcpzplWWEy7z0MXbpFjISP/eQyAd848M6RPCtetnFAgK/lXHFgitovLhWhTE
-         RSmundfPuXKUV7C2WtJR81dn5AwJ9aKFdIRkhRTvSD43kyjDfVd/nPp5CT7xCYZ9bgJF
-         O5rPCKkRaWo+c3nYykoxm+o6cweMyqolWULKme+kHW0dgv14kzCsxSy5Ms9S2FZKUfer
-         JYvPpXfpINZn5sr1JMoPzfDlc8VOisMqDfI7/j9l8WI8RB9tn3w/GuY4qeEUmcoeJ4aF
-         j0BiFB0DkEDoI7Knz3ll27Je5vLs3bOR4mQrwGC8ts6R1djNhSxLYSJaeiSv/3n3dma1
-         Px6g==
-X-Forwarded-Encrypted: i=1; AJvYcCU17DGeBLZ6flSZU8ozai01rezGCxC29M6CYQZmi6pqvqnnB6xiWD8dUeTddP6flbszsrIxWtO4JsRegdPz@vger.kernel.org, AJvYcCVNKyXny2dgORWU3/septdGOcIV1t4LPR3xCY9iCjJMJSVldGuYZsRXVp2/8lDh3mJTmgg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDf1Iv3e2MyCcisZLdLe0tQul9pdV0byXgeAIEHnYfBBzVIck0
-	IkScsz3/y9oXhowHkbOPkgXXAUm07u1e75wOm1CSNm+vLJYougXKeoriYYru
-X-Gm-Gg: ASbGncv5fWugskfFIx2JKxKrw7AKk3VQILEq/6j3jpLBagoc8Cu3a0rkTtumJQ7knsp
-	wxfDK8WcPJOikbvloYEOhCwCakEOGlvy2BeujX5l+Xftfa7RMJgb/t4eSBLmFs9Eifa+bbhAg2x
-	mfh6CaJFfTZIMfPzA1VjgohajT7m/14gqgSygNZXWQwfPwwJ5mXDOqfJln3EdW6LxRVw5DeD0L1
-	QU61mqs+fa/oxyxQMpbEKhAceUdtgY7jzWUkKOyHOgpxrDLX6Iv+kre2+YGaTEqL1ricCXtNrel
-	DiAavs3RJ6ZavfoyRXZFM7xGtnAnZOWAK9vBnY68Al5lJfa1nHIaZwzPH0chBAml2zB7uQ==
-X-Google-Smtp-Source: AGHT+IFLuVJSNluyOHys4pNFQ2zYh2B7JExbD0EFn5UvMaA/KQjCmTKHzWP5Tl0sIFuvjlAmGJBQ0g==
-X-Received: by 2002:a17:903:19c4:b0:224:26fd:82e5 with SMTP id d9443c01a7336-22428bf6d24mr224360065ad.48.1741584365696;
-        Sun, 09 Mar 2025 22:26:05 -0700 (PDT)
-Received: from localhost.localdomain ([112.169.118.157])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22410a91bdesm68417555ad.176.2025.03.09.22.26.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Mar 2025 22:26:05 -0700 (PDT)
-From: nswon <swnam0729@gmail.com>
-To: Quentin Monnet <qmo@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: nswon <swnam0729@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: bpftool: Setting error code in do_loader()
-Date: Mon, 10 Mar 2025 14:25:55 +0900
-Message-Id: <20250310052555.53483-1-swnam0729@gmail.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+	s=arc-20240116; t=1741591924; c=relaxed/simple;
+	bh=rKsTO5LX47N0+ZZyAveJWZ55BWBDvvRdlTC6FQa6dnk=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=S4InB5dFfI90ZreamrnGzE1cVQLJUV8B36RGBmq/7+HG2iCox4OvwvboYWuhGfnQ1y4etU+hIvKWU+elycxLYzVmonlkFkTsT9uliSuHhh2X3hpwl4zMosnqks7gHLVsc0rH80iJixDJrdQKBTv+IAnHvkQDrYicNt0uOqokUmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=n2vvaeV1; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 529LFX1T026003;
+	Mon, 10 Mar 2025 07:31:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=pp1; bh=uZxD9vKXfhIO75YxNDUEG9t741O9
+	MbHpkNRh0TDPByw=; b=n2vvaeV19ytY+VGFTXa7RQrOHEspHyDktDBv+qRza0Yi
+	jBcHbpU1pEb4u3Ea4Eu/IB8h40m5AvN8dcldC0wkw85nvaLmuDWIXu0dwxRMO3ZX
+	I6lD3W8FRrhBuYtqrLTaiJCKDBtRf4L1DJq9e154D2rRBJ5AC/2NWUEzYwzY6f9z
+	ToY3EVdT7VH5aZS31SY3dxsFzusbwCPq9gj6/EX+qtdYV2jjILHB856IHIBr+WNl
+	ALNn2Vn0qSi+VvM3LZ3c8wGhGLTUQDrh5bi1kl+Xa8ySfcIoUrreAwF0bvV6s8pK
+	S9ul3PgpaLfaLzvTjLRAq0DN9Yy814ZTSYubj8VASw==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 459cdnjv1k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 10 Mar 2025 07:31:51 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 52A7Vbqp006037;
+	Mon, 10 Mar 2025 07:31:51 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 459cdnjv1h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 10 Mar 2025 07:31:51 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52A46qdu013990;
+	Mon, 10 Mar 2025 07:31:50 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4592x1n0kn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 10 Mar 2025 07:31:50 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52A7Vnu531392414
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 10 Mar 2025 07:31:49 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 795915805E;
+	Mon, 10 Mar 2025 07:31:49 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 49D0A58060;
+	Mon, 10 Mar 2025 07:31:47 +0000 (GMT)
+Received: from [9.61.254.32] (unknown [9.61.254.32])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 10 Mar 2025 07:31:46 +0000 (GMT)
+Message-ID: <7bc80a3b-d708-4735-aa3b-6a8c21720f9d@linux.ibm.com>
+Date: Mon, 10 Mar 2025 13:01:45 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-GB
+To: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Saket Kumar Bhaskar <skb99@linux.ibm.com>, ast@kernel.org,
+        memxor@gmail.com
+From: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Subject: [bpf-next] selftests/bpf fails to compile
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: jo3-rS4YfojS6bY2T7XFAWHVLUtJdrhn
+X-Proofpoint-ORIG-GUID: RvtFME1iZ08Je-BohEbWF9OPFIAdHB7H
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-10_02,2025-03-07_03,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 spamscore=0 phishscore=0 mlxlogscore=687
+ priorityscore=1501 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ mlxscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2503100057
 
-missing error code in do_loader()
-bpf_object__open_file() failed, but return 0
-This means the command's exit status code was successful, so make sure to return the correct error code.
+Greetings!!!
 
-Link: https://lore.kernel.org/bpf/d3b5b4b4-19bb-4619-b4dd-86c958c4a367@stanley.mountain/t/#u
-Closes: https://github.com/libbpf/bpftool/issues/156
-Signed-off-by: nswon <swnam0729@gmail.com>
----
- tools/bpf/bpftool/prog.c | 1 +
- 1 file changed, 1 insertion(+)
+selftests/bpf fails to compile with below error on bpf-next repo with 
+commit head: f28214603dc6c09b3b5e67b1ebd5ca83ad943ce3
 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index e71be67f1d86..641802e308f4 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1928,6 +1928,7 @@ static int do_loader(int argc, char **argv)
- 
- 	obj = bpf_object__open_file(file, &open_opts);
- 	if (!obj) {
-+		err = libbpf_get_error(obj);
- 		p_err("failed to open object file");
- 		goto err_close_obj;
- 	}
--- 
-2.39.3 (Apple Git-146)
+Repo link: 
+https://web.git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/
+
+Reverting below commit resolves the issue.
+
+Commit ID: 48b3be8d7f82bea6affe6b9f11ee67380b55ede8
+
+
+Errors:
+
+make
+
+   CLNG-BPF [test_progs] arena_spin_lock.bpf.o
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:122:8: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   122 |         old = atomic_read(&lock->val);
+       |               ^~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:126:37: note: 
+expanded from macro 'atomic_read'
+   126 | #define atomic_read(p) READ_ONCE((p)->counter)
+       |                        ~~~~~~~~~~~~~^~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:43:41: note: 
+expanded from macro 'READ_ONCE'
+    43 | #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+       |                                         ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:122:8: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   122 |         old = atomic_read(&lock->val);
+       |               ^~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:126:37: note: 
+expanded from macro 'atomic_read'
+   126 | #define atomic_read(p) READ_ONCE((p)->counter)
+       |                        ~~~~~~~~~~~~~^~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:43:48: note: 
+expanded from macro 'READ_ONCE'
+    43 | #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+       |                                                ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:134:12: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   134 |         } while (!atomic_try_cmpxchg_relaxed(&lock->val, &old, 
+new));
+       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:135:26: note: 
+expanded from macro 'atomic_try_cmpxchg_relaxed'
+   135 |         try_cmpxchg_relaxed(&(p)->counter, pold, new)
+       |         ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:58:55: note: 
+expanded from macro 'try_cmpxchg_relaxed'
+    58 | #define try_cmpxchg_relaxed(p, pold, new) try_cmpxchg(p, pold, new)
+       | ~~~~~~~~~~~~^~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:52:21: note: 
+expanded from macro 'try_cmpxchg'
+    52 |                 __unqual_typeof(*(p)) __r = cmpxchg(p, __o, new); \
+       |                 ~~~~~~~~~~~~~~~~~~^~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:31:19: note: 
+expanded from macro '__unqual_typeof'
+    31 |         typeof(_Generic((x),                            \
+       |                          ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:134:12: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   134 |         } while (!atomic_try_cmpxchg_relaxed(&lock->val, &old, 
+new));
+       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:135:26: note: 
+expanded from macro 'atomic_try_cmpxchg_relaxed'
+   135 |         try_cmpxchg_relaxed(&(p)->counter, pold, new)
+       |         ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:58:55: note: 
+expanded from macro 'try_cmpxchg_relaxed'
+    58 | #define try_cmpxchg_relaxed(p, pold, new) try_cmpxchg(p, pold, new)
+       | ~~~~~~~~~~~~^~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:52:21: note: 
+expanded from macro 'try_cmpxchg'
+    52 |                 __unqual_typeof(*(p)) __r = cmpxchg(p, __o, new); \
+       |                 ~~~~~~~~~~~~~~~~~~^~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:38:20: note: 
+expanded from macro '__unqual_typeof'
+    38 |                 default: (typeof(x))0))
+       |                                  ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:134:12: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   134 |         } while (!atomic_try_cmpxchg_relaxed(&lock->val, &old, 
+new));
+       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:135:26: note: 
+expanded from macro 'atomic_try_cmpxchg_relaxed'
+   135 |         try_cmpxchg_relaxed(&(p)->counter, pold, new)
+       |         ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:58:55: note: 
+expanded from macro 'try_cmpxchg_relaxed'
+    58 | #define try_cmpxchg_relaxed(p, pold, new) try_cmpxchg(p, pold, new)
+       | ~~~~~~~~~~~~^~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:52:39: note: 
+expanded from macro 'try_cmpxchg'
+    52 |                 __unqual_typeof(*(p)) __r = cmpxchg(p, __o, new); \
+       | ~~~~~~~~^~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:47:59: note: 
+expanded from macro 'cmpxchg'
+    47 | #define cmpxchg(p, old, new) __sync_val_compare_and_swap((p), 
+old, new)
+       | ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:150:19: 
+error: no member named 'pending' in 'struct qspinlock'
+   150 |         WRITE_ONCE(lock->pending, 0);
+       |                    ~~~~  ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:45:48: note: 
+expanded from macro 'WRITE_ONCE'
+    45 | #define WRITE_ONCE(x, val) ((*(volatile typeof(x) *)&(x)) = (val))
+       |                                                ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:150:19: 
+error: no member named 'pending' in 'struct qspinlock'
+   150 |         WRITE_ONCE(lock->pending, 0);
+       |                    ~~~~  ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:45:55: note: 
+expanded from macro 'WRITE_ONCE'
+    45 | #define WRITE_ONCE(x, val) ((*(volatile typeof(x) *)&(x)) = (val))
+       |                                                       ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:163:19: 
+error: no member named 'locked_pending' in 'struct qspinlock'
+   163 |         WRITE_ONCE(lock->locked_pending, _Q_LOCKED_VAL);
+       |                    ~~~~  ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:45:48: note: 
+expanded from macro 'WRITE_ONCE'
+    45 | #define WRITE_ONCE(x, val) ((*(volatile typeof(x) *)&(x)) = (val))
+       |                                                ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:163:19: 
+error: no member named 'locked_pending' in 'struct qspinlock'
+   163 |         WRITE_ONCE(lock->locked_pending, _Q_LOCKED_VAL);
+       |                    ~~~~  ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:45:55: note: 
+expanded from macro 'WRITE_ONCE'
+    45 | #define WRITE_ONCE(x, val) ((*(volatile typeof(x) *)&(x)) = (val))
+       |                                                       ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:182:8: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   182 |         old = atomic_read(&lock->val);
+       |               ^~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:126:37: note: 
+expanded from macro 'atomic_read'
+   126 | #define atomic_read(p) READ_ONCE((p)->counter)
+       |                        ~~~~~~~~~~~~~^~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:43:41: note: 
+expanded from macro 'READ_ONCE'
+    43 | #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+       |                                         ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:182:8: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   182 |         old = atomic_read(&lock->val);
+       |               ^~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:126:37: note: 
+expanded from macro 'atomic_read'
+   126 | #define atomic_read(p) READ_ONCE((p)->counter)
+       |                        ~~~~~~~~~~~~~^~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:43:48: note: 
+expanded from macro 'READ_ONCE'
+    43 | #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+       |                                                ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:190:12: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   190 |         } while (!atomic_try_cmpxchg_acquire(&lock->val, &old, 
+new));
+       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:138:26: note: 
+expanded from macro 'atomic_try_cmpxchg_acquire'
+   138 |         try_cmpxchg_acquire(&(p)->counter, pold, new)
+       |         ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:60:55: note: 
+expanded from macro 'try_cmpxchg_acquire'
+    60 | #define try_cmpxchg_acquire(p, pold, new) try_cmpxchg(p, pold, new)
+       | ~~~~~~~~~~~~^~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:52:21: note: 
+expanded from macro 'try_cmpxchg'
+    52 |                 __unqual_typeof(*(p)) __r = cmpxchg(p, __o, new); \
+       |                 ~~~~~~~~~~~~~~~~~~^~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:31:19: note: 
+expanded from macro '__unqual_typeof'
+    31 |         typeof(_Generic((x),                            \
+       |                          ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:190:12: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   190 |         } while (!atomic_try_cmpxchg_acquire(&lock->val, &old, 
+new));
+       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:138:26: note: 
+expanded from macro 'atomic_try_cmpxchg_acquire'
+   138 |         try_cmpxchg_acquire(&(p)->counter, pold, new)
+       |         ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:60:55: note: 
+expanded from macro 'try_cmpxchg_acquire'
+    60 | #define try_cmpxchg_acquire(p, pold, new) try_cmpxchg(p, pold, new)
+       | ~~~~~~~~~~~~^~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:52:21: note: 
+expanded from macro 'try_cmpxchg'
+    52 |                 __unqual_typeof(*(p)) __r = cmpxchg(p, __o, new); \
+       |                 ~~~~~~~~~~~~~~~~~~^~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:38:20: note: 
+expanded from macro '__unqual_typeof'
+    38 |                 default: (typeof(x))0))
+       |                                  ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:190:12: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   190 |         } while (!atomic_try_cmpxchg_acquire(&lock->val, &old, 
+new));
+       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:138:26: note: 
+expanded from macro 'atomic_try_cmpxchg_acquire'
+   138 |         try_cmpxchg_acquire(&(p)->counter, pold, new)
+       |         ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:60:55: note: 
+expanded from macro 'try_cmpxchg_acquire'
+    60 | #define try_cmpxchg_acquire(p, pold, new) try_cmpxchg(p, pold, new)
+       | ~~~~~~~~~~~~^~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:52:39: note: 
+expanded from macro 'try_cmpxchg'
+    52 |                 __unqual_typeof(*(p)) __r = cmpxchg(p, __o, new); \
+       | ~~~~~~~~^~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:47:59: note: 
+expanded from macro 'cmpxchg'
+    47 | #define cmpxchg(p, old, new) __sync_val_compare_and_swap((p), 
+old, new)
+       | ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:205:12: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   205 |         int val = atomic_read(&lock->val);
+       |                   ^~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:126:37: note: 
+expanded from macro 'atomic_read'
+   126 | #define atomic_read(p) READ_ONCE((p)->counter)
+       |                        ~~~~~~~~~~~~~^~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:43:41: note: 
+expanded from macro 'READ_ONCE'
+    43 | #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+       |                                         ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:205:12: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   205 |         int val = atomic_read(&lock->val);
+       |                   ^~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:126:37: note: 
+expanded from macro 'atomic_read'
+   126 | #define atomic_read(p) READ_ONCE((p)->counter)
+       |                        ~~~~~~~~~~~~~^~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:43:48: note: 
+expanded from macro 'READ_ONCE'
+    43 | #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+       |                                                ^
+In file included from progs/arena_spin_lock.c:7:
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:210:16: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   210 |         return likely(atomic_try_cmpxchg_acquire(&lock->val, 
+&val, _Q_LOCKED_VAL));
+       | ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:138:26: note: 
+expanded from macro 'atomic_try_cmpxchg_acquire'
+   138 |         try_cmpxchg_acquire(&(p)->counter, pold, new)
+       |                                 ^ ~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:60:55: note: 
+expanded from macro 'try_cmpxchg_acquire'
+    60 | #define try_cmpxchg_acquire(p, pold, new) try_cmpxchg(p, pold, new)
+       |                                                       ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:52:21: note: 
+expanded from macro 'try_cmpxchg'
+    52 |                 __unqual_typeof(*(p)) __r = cmpxchg(p, __o, new); \
+       |                                   ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:31:19: note: 
+expanded from macro '__unqual_typeof'
+    31 |         typeof(_Generic((x),                            \
+       |                          ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:77:39: 
+note: expanded from macro 'likely'
+    77 | #define likely(x) __builtin_expect(!!(x), 1)
+       |                                       ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:210:16: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   210 |         return likely(atomic_try_cmpxchg_acquire(&lock->val, 
+&val, _Q_LOCKED_VAL));
+       | ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:138:26: note: 
+expanded from macro 'atomic_try_cmpxchg_acquire'
+   138 |         try_cmpxchg_acquire(&(p)->counter, pold, new)
+       |                                 ^ ~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:60:55: note: 
+expanded from macro 'try_cmpxchg_acquire'
+    60 | #define try_cmpxchg_acquire(p, pold, new) try_cmpxchg(p, pold, new)
+       |                                                       ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:52:21: note: 
+expanded from macro 'try_cmpxchg'
+    52 |                 __unqual_typeof(*(p)) __r = cmpxchg(p, __o, new); \
+       |                                   ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:38:20: note: 
+expanded from macro '__unqual_typeof'
+    38 |                 default: (typeof(x))0))
+       |                                  ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:77:39: 
+note: expanded from macro 'likely'
+    77 | #define likely(x) __builtin_expect(!!(x), 1)
+       |                                       ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:210:16: 
+error: member reference base type '__attribute__((address_space(1))) 
+u32' (aka '__attribute__((address_space(1))) unsigned int') is not a 
+structure or union
+   210 |         return likely(atomic_try_cmpxchg_acquire(&lock->val, 
+&val, _Q_LOCKED_VAL));
+       | ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:138:26: note: 
+expanded from macro 'atomic_try_cmpxchg_acquire'
+   138 |         try_cmpxchg_acquire(&(p)->counter, pold, new)
+       |                                 ^ ~~~~~~~
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:60:55: note: 
+expanded from macro 'try_cmpxchg_acquire'
+    60 | #define try_cmpxchg_acquire(p, pold, new) try_cmpxchg(p, pold, new)
+       |                                                       ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:52:39: note: 
+expanded from macro 'try_cmpxchg'
+    52 |                 __unqual_typeof(*(p)) __r = cmpxchg(p, __o, new); \
+       |                                                     ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_atomic.h:47:59: note: 
+expanded from macro 'cmpxchg'
+    47 | #define cmpxchg(p, old, new) __sync_val_compare_and_swap((p), 
+old, new)
+       | ^
+/root/bpf-next/tools/testing/selftests/bpf/bpf_arena_spin_lock.h:77:39: 
+note: expanded from macro 'likely'
+    77 | #define likely(x) __builtin_expect(!!(x), 1)
+       |                                       ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+make: *** [Makefile:731: 
+/root/bpf-next/tools/testing/selftests/bpf/arena_spin_lock.bpf.o] Error 1
+
+
+If you happen to fix the issue, please add below tag.
+
+Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+
+
+Regards,
+
+Venkat.
 
 
