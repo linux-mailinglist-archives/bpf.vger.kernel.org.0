@@ -1,132 +1,255 @@
-Return-Path: <bpf+bounces-53733-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53734-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF6DFA5980B
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 15:47:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86262A59863
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 15:54:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A29C16757F
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 14:47:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F21C18853A7
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 14:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BB11AB52D;
-	Mon, 10 Mar 2025 14:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A35622F3A8;
+	Mon, 10 Mar 2025 14:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="idzPK3ts"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UgSqzrmj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81AB199239
-	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 14:47:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F00F22F3B8
+	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 14:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741618035; cv=none; b=ll0PD2SZBv4d4hTv/WONmKu+P4LE5mmNY9RRbPIi4azoK58D5aUr93LIvRMn2tOEOuhJ/SyLOYPcELp2ILHh2vk+3u4aynU6SyLD26Qxn/dM9l/BmcB0AqN3IR7I9cG8k3jnbnu2g9ihJ9BA2+DDCTxMWBEOJqSUONr+/Y6Rrx8=
+	t=1741618370; cv=none; b=M/51gVwA7ApRz6t4FUgj3ZJMOZQTL6lVLHd0GELkEvpt5XmzT7DzydIiyR5c8BdvgZiq83plgY9aJnsF3lmxGhPIYoGM+sp5FVN6ggde2bAB83QER47om5NGShYqHBEwC/7cuAy8Z1M8pljoFF+5kC+AhZbK/TiweLlJ2ZxjhTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741618035; c=relaxed/simple;
-	bh=SB/+iG0weGCOLzaqKc9uSk7WYKna1frSYOJuNDj+n+4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h7Zxjpc4/d39sOYMrwCBZ5O3xo5la+j6aRpbD8YqhGDAZb4BSi13nMlRAhP/828Q0Gr7btWTpS0SIMOFaZpeZhEnWNsmICCUY3cVERjvtpozbO/2hBL2e/8kZW/uC1WI5W9q72/CoS8phT+AsWy8IbEAZnyp6LlOM1kZkRdOIM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=idzPK3ts; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43cec5cd73bso10358445e9.3
-        for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 07:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1741618032; x=1742222832; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sRdLlqQu7W7PLePcyJaXA4f8x3IBBJVcU95cq3MPXak=;
-        b=idzPK3tsIlcJU4cIgyvA6eGCMwHuDefX9pFeLYoLqlJcbwHcD28rd6vY+x9ejhs2IX
-         FY4l0swmMD4+GcuGpY82dlYCSsXbTrQ3yOKm65nwRejSMd0NJ/H2MwJh4oW8Ie9nOEt5
-         Jq0PWzWF/JbbOIAXAEWyB0k5NF5W46G0JN7wN/ErhI76luyDJwedhqzSYpx+8N9OgkAq
-         UnpkkHeghMHpg85+N4WTnLMY12w88U+yMGNduIpIze4neclkCeU5/rRQyhrnACzm7JW+
-         V7vpZZkD/TyZenH/b/6ufp0OkajBGiWmHab5rtCqCPx8K58gtBJjUxoR8nbexIm5rvKC
-         F4DQ==
+	s=arc-20240116; t=1741618370; c=relaxed/simple;
+	bh=qrGb5lSwU6d/BiTcGEDE0iGBrg7QsIVsQ08BYads/bw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nrSE8KJZBqn+KNfr2GrkgiinYGhh5dohgTzFm1/cN/VkgSWfmYRAVwefXmV8/YJGurjaV6WQLeVik5YjnmCCLjzqPCqKv14Owebhci92KClQaEBwblDh2eZlYLa6oVMfxbz6n5cpflMoyKg7v8FqWec4SMe4R6XQl6Id5qAZAFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UgSqzrmj; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1741618367;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tD8i+D5CkT0SBWrgEsAcKH9liSWprjwzpOukP8c/+ok=;
+	b=UgSqzrmj5MOFFlMD2adbssh161Yv4+racXkh8EKXX9UiLjEiOGtrGmtkMwQ/gsZuVjzvfT
+	v3J0Wx8LDZeTz9wbEXBhb1b3IBoZ+BMsexMMTeHGwA5jVVJvUR2x/qnN6O2o7VWRsxVQjZ
+	1rJ1cud4Y8a3PuMHdlPSMfQbOyJ+xSc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-341-5FX4_I1JP66s1Ab1P8FGPw-1; Mon, 10 Mar 2025 10:52:45 -0400
+X-MC-Unique: 5FX4_I1JP66s1Ab1P8FGPw-1
+X-Mimecast-MFC-AGG-ID: 5FX4_I1JP66s1Ab1P8FGPw_1741618364
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-39134c762ebso1201815f8f.0
+        for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 07:52:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741618032; x=1742222832;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sRdLlqQu7W7PLePcyJaXA4f8x3IBBJVcU95cq3MPXak=;
-        b=ntLzYPt+ncnb6924MyzQkVNayJogVPjjCowxj989BNEkzJ03N6I01bq3SMOgkwp1bL
-         tN8pm42t3D/+PwjX4bm64Dksxx9Od0lKCEvE1+nYgUjmZdNr65cvOiqaSu57Wn5ULnuQ
-         AjqVGyXTPqBwelqi2yPlvVqrBXot6JLzJtG/+uJ3BbDP/IiI4y65pdvSI1qBUp+djhTw
-         85bkTqM28OWpf3I1cvZhqqKRzCG2iJm3s2pUi09J+TZg0i1loIdLJXEUWb3GNzfOqIuY
-         2X6APUA6b3Q6Q134ipmh24D/ya0VdpWRkzsse0tKTn1l4lmwa0D1WvbOm5EIKwwJG7+/
-         mvUg==
-X-Forwarded-Encrypted: i=1; AJvYcCWm8CVoTh9IvxNPFMTb3S88CjrwUr6JvYj/bux2d7bIyIMZNt0zL47ZVsB/t28gI3jQ3xs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyk3Jj9WClXdHou8h5c/SvJ3Arz0F9p3KEblQb2I3jTE/j2YGRS
-	EXrYXtWRdVs1ZZ5ws+ddv0tqJ7jHaPx9TeoyfjOq2AKaWsZdZHjvxXlXCsTHK4Y=
-X-Gm-Gg: ASbGncsjto3liHDTvDd8AJKoEo6/Hp7we7lUjs3D2CRlRPVyuooYFKsL7M90UrVMPz8
-	QWgggSmt4aOIa3SgAQgJI0ZyZ+xBokw9HqfOA2GgX0CuaagBQ64BAKYNU2K5h8kDfSpt1hR7mlX
-	onOqwSU5RCiDELhh9dEUIXvUUzEOj+FicR04xTfVnzoWRXWwG4aE6mO3+ClZDr4Ct1dFf5IaQgU
-	XN3ndzX+rBMYFDTB7DtDZbpERdNMzPVfgQNH1AebrovMtxDU01/4RDd52akwqiwzmVog+Y1kZkl
-	0dQwsDShuHZvnas0cz6M+eKTPnKFurjdr82RPVj+CyjejOYYDxV2WHdheA==
-X-Google-Smtp-Source: AGHT+IGKo9sqAowokE6AGwo26RrrhWSwn0OXMAABmokcBBx3STpBddM0dK8/sj/YhIepSU9lwrv0nA==
-X-Received: by 2002:a05:600c:4f41:b0:43c:ec28:d301 with SMTP id 5b1f17b1804b1-43cec28d3c2mr36806185e9.26.1741618031460;
-        Mon, 10 Mar 2025 07:47:11 -0700 (PDT)
-Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bdd8da097sm150852295e9.17.2025.03.10.07.47.10
+        d=1e100.net; s=20230601; t=1741618364; x=1742223164;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tD8i+D5CkT0SBWrgEsAcKH9liSWprjwzpOukP8c/+ok=;
+        b=RDU9N7Wslc/yDg98zhQ9L6yuyRs7Eo/9QQ9Szo4884GcCPot1efeCpGt8Kx/cwtnUB
+         8iV58kF2Ifb0OYdbK0cmwzA3YjbHWHpVonOJpEw3fn8CtBnLAwS+J6dpCyiS9KYSwfzw
+         gS/ioFpn0Y2JmK0AILTesRIbxl6rK+/TOkv7e3Omjkh3XcMu/6KJLQZzYVyYOI/J1Bty
+         ONutNLpoD0rAOfyyZWAiGaD/fekTJ+EUN8n8+WPUehyEpSaI1uJcihS1RCDFcpYzGbXF
+         GEIIXwAxxsTQrieXmis965CO/ofutWzol2miFlTw6ln3A8VPGHSYXWFfCKup7rqYKosU
+         GeNw==
+X-Forwarded-Encrypted: i=1; AJvYcCVUO9ANq4jizCjA0tx3Txm5mPtk9bvF4TN4oCr1N1EJFw9IHJ3lWNqGuWONG7w5uKYrOGY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyuqK2zH7lpDdbpB1ppYW0WW8VUJjVaefFkIFye4KXHuuSqj0Z4
+	6667Yv4gN5Q2fb4oc0QOdQT6GlfNgfL13oa2GjkK3L9tTuzCNB7s/aQ2wlrunHlrFLE/ZcaZ36+
+	kV6/AFMUyw70LKQ4Do4ue21IkbF+Qw9xP7qeyi9EttZWa6brGNQ==
+X-Gm-Gg: ASbGnct31sOlKl63xVofieRjxxshnBRZHqjTroPoWmkUCJReZ4UUlErUDizqn+RwQ+U
+	t4PgqkJODr8r/yHZfIL9Uozs1+E2BKVk2S4pLK+oeCJyJ8X8yiagNfgdEo8e8IUqIY6EWEnjTsM
+	ZQOpB1GhRM/THHkie6xnzqMtZMlIC43mgOlidT114Ph5a7AyhXa/cboIU5NDzL0N6n65Bg+iRic
+	A6XJ039VeDCTzwoEt1hRvNySQRSYKnXfg+0OAjyBhkdilC83RBpT4yRaZRoicPnxGJwlC+oSDuj
+	5YE/KnvRzfrNukLxw5U0iTWqCEja9OXQF+7ypKK4Veky+K0wUmLOm74+2W3gFbTK
+X-Received: by 2002:a5d:6482:0:b0:38f:3e39:20ae with SMTP id ffacd0b85a97d-39132dc580amr11065886f8f.43.1741618364044;
+        Mon, 10 Mar 2025 07:52:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEKpz/aRteORGLUQDVzSqjXbJRJcg6+0YPgJ4aq+417+m56Qchn6s2RgghTGP/jggl8UNdbAA==
+X-Received: by 2002:a5d:6482:0:b0:38f:3e39:20ae with SMTP id ffacd0b85a97d-39132dc580amr11065841f8f.43.1741618363514;
+        Mon, 10 Mar 2025 07:52:43 -0700 (PDT)
+Received: from sgarzare-redhat (host-79-46-200-29.retail.telecomitalia.it. [79.46.200.29])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912bfdfdfdsm15532372f8f.34.2025.03.10.07.52.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Mar 2025 07:47:10 -0700 (PDT)
-From: Anton Protopopov <aspsk@isovalent.com>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	bpf@vger.kernel.org
-Cc: Anton Protopopov <aspsk@isovalent.com>
-Subject: [PATCH bpf-next] selftests/bpf: fix selection of static vs.  dynamic LLVM
-Date: Mon, 10 Mar 2025 14:51:12 +0000
-Message-Id: <20250310145112.1261241-1-aspsk@isovalent.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 10 Mar 2025 07:52:43 -0700 (PDT)
+Date: Mon, 10 Mar 2025 15:52:40 +0100
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Michal Luczaj <mhal@rbox.co>
+Cc: "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, leonardi@redhat.com
+Subject: Re: [PATCH net] vsock/bpf: Handle EINTR connect() racing against
+ sockmap update
+Message-ID: <fjy4jaww6xualdudevfuyoavnrbu45cg4d7erv4rttde363xfc@nahglijbl2eg>
+References: <20250307-vsock-trans-signal-race-v1-1-3aca3f771fbd@rbox.co>
+ <a96febaf-1d32-47d4-ad18-ce5d689b7bdb@rbox.co>
+ <vhda4sdbp725w7mkhha72u2nt3xpgyv2i4dphdr6lw7745qpuu@7c3lrl4tbomv>
+ <032764f5-e462-4f42-bfdc-8e31b25ada27@rbox.co>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <032764f5-e462-4f42-bfdc-8e31b25ada27@rbox.co>
 
-The Makefile uses the exit code of the `llvm-config --link-static --libs`
-command to choose between statically-linked and dynamically-linked LLVMs.
-The stdout and stderr of that command are redirected to /dev/null.
-To redirect the output the "&>" construction is used, which might not be
-supported by /bin/sh, which is executed by make for $(shell ...) commands.
-On such systems the test will fail even if static LLVM is actually
-supported. Replace "&>" by ">/dev/null 2>&1" to fix this.
+On Fri, Mar 07, 2025 at 05:01:11PM +0100, Michal Luczaj wrote:
+>On 3/7/25 15:35, Stefano Garzarella wrote:
+>> On Fri, Mar 07, 2025 at 10:58:55AM +0100, Michal Luczaj wrote:
+>>>> Signal delivered during connect() may result in a disconnect of an already
+>>>> TCP_ESTABLISHED socket. Problem is that such established socket might have
+>>>> been placed in a sockmap before the connection was closed. We end up with a
+>>>> SS_UNCONNECTED vsock in a sockmap. And this, combined with the ability to
+>>>> reassign (unconnected) vsock's transport to NULL, breaks the sockmap
+>>>> contract. As manifested by WARN_ON_ONCE.
+>>>
+>>> Note that Luigi is currently working on a (vsock test suit) test[1] for a
+>>> related bug, which could be neatly adapted to test this bug as well.
+>>> [1]: https://lore.kernel.org/netdev/20250306-test_vsock-v1-0-0320b5accf92@redhat.com/
+>>
+>> Can you work with Luigi to include the changes in that series?
+>
+>I was just going to wait for Luigi to finish his work (no rush, really) and
+>then try to parametrize it.
 
-Fixes: 2a9d30fac818 ("selftests/bpf: Support dynamically linking LLVM if static is not available")
-Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
----
- tools/testing/selftests/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sure, this is fine, thanks for that!
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 739305064839..ca41d47d4ba6 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -180,7 +180,7 @@ ifeq ($(feature-llvm),1)
-   # both llvm-config and lib.mk add -D_GNU_SOURCE, which ends up as conflict
-   LLVM_CFLAGS  += $(filter-out -D_GNU_SOURCE,$(shell $(LLVM_CONFIG) --cflags))
-   # Prefer linking statically if it's available, otherwise fallback to shared
--  ifeq ($(shell $(LLVM_CONFIG) --link-static --libs &> /dev/null && echo static),static)
-+  ifeq ($(shell $(LLVM_CONFIG) --link-static --libs >/dev/null 2>&1 && echo static),static)
-     LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --libs $(LLVM_CONFIG_LIB_COMPONENTS))
-     LLVM_LDLIBS  += $(shell $(LLVM_CONFIG) --link-static --system-libs $(LLVM_CONFIG_LIB_COMPONENTS))
-     LLVM_LDLIBS  += -lstdc++
--- 
-2.34.1
+Stefano
+
+>
+>That is unless BPF/sockmap maintainers decide this thread's thing is a
+>sockmap thing and should be in tools/testing/selftests/bpf.
+>
+>Below is a repro. If I'm not mistaken, it's basically what Luigi wrote,
+>just sprinkled with map_update_elem() and recv().
+>
+>#include <stdio.h>
+>#include <stdint.h>
+>#include <stdlib.h>
+>#include <unistd.h>
+>#include <errno.h>
+>#include <pthread.h>
+>#include <sys/wait.h>
+>#include <sys/socket.h>
+>#include <sys/syscall.h>
+>#include <linux/bpf.h>
+>#include <linux/vm_sockets.h>
+>
+>static void die(const char *msg)
+>{
+>	perror(msg);
+>	exit(-1);
+>}
+>
+>static int sockmap_create(void)
+>{
+>	union bpf_attr attr = {
+>		.map_type = BPF_MAP_TYPE_SOCKMAP,
+>		.key_size = sizeof(int),
+>		.value_size = sizeof(int),
+>		.max_entries = 1
+>	};
+>	int map;
+>
+>	map = syscall(SYS_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
+>	if (map < 0)
+>		die("map_create");
+>
+>	return map;
+>}
+>
+>static void map_update_elem(int fd, int key, int value)
+>{
+>	union bpf_attr attr = {
+>		.map_fd = fd,
+>		.key = (uint64_t)&key,
+>		.value = (uint64_t)&value,
+>		.flags = BPF_ANY
+>	};
+>
+>	(void)syscall(SYS_bpf, BPF_MAP_UPDATE_ELEM, &attr, sizeof(attr));
+>}
+>
+>static void sighandler(int sig)
+>{
+>	/* nop */
+>}
+>
+>static void *racer(void *c)
+>{
+>	int map = sockmap_create();
+>
+>	for (;;) {
+>		map_update_elem(map, 0, *(int *)c);
+> 		if (kill(0, SIGUSR1) < 0)
+> 			die("kill");
+> 	}
+>}
+>
+>int main(void)
+>{
+>	struct sockaddr_vm addr = {
+>		.svm_family = AF_VSOCK,
+>		.svm_cid = VMADDR_CID_LOCAL,
+>		.svm_port = VMADDR_PORT_ANY
+>	};
+>	socklen_t alen = sizeof(addr);
+>	struct sockaddr_vm bad_addr;
+>	pthread_t thread;
+>	int s, c;
+>
+>	s = socket(AF_VSOCK, SOCK_SEQPACKET, 0);
+>	if (s < 0)
+>		die("socket s");
+>
+>	if (bind(s, (struct sockaddr *)&addr, alen))
+>		die("bind");
+>
+>	if (listen(s, -1))
+>		die("listen");
+>
+>	if (getsockname(s, (struct sockaddr *)&addr, &alen))
+>		die("getsockname");
+>
+>	bad_addr = addr;
+>	bad_addr.svm_cid = 0x42424242; /* non-existing */
+>
+>	if (signal(SIGUSR1, sighandler) == SIG_ERR)
+>		die("signal");
+>
+>	if (pthread_create(&thread, 0, racer, &c))
+>		die("pthread_create");
+>
+>	for (;;) {
+>		c = socket(AF_VSOCK, SOCK_SEQPACKET, 0);
+>		if (c < 0)
+>			die("socket c");
+>
+>		if (!connect(c, (struct sockaddr *)&addr, alen) ||
+>		    errno != EINTR)
+>			goto outro;
+>
+>		if (!connect(c, (struct sockaddr *)&bad_addr, alen) ||
+>		    errno != ESOCKTNOSUPPORT)
+>			goto outro;
+>
+>		(void)recv(c, &(char){0}, 1, MSG_DONTWAIT);
+>outro:
+>		close(accept(s, NULL, NULL));
+>		close(c);
+>	}
+>
+>	return 0;
+>}
+>
 
 
