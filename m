@@ -1,284 +1,220 @@
-Return-Path: <bpf+bounces-53703-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53704-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B2F1A5899D
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 01:14:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3DEFA58A63
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 03:20:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21B3C16364A
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 00:14:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD93C3A94BA
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 02:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F94F320F;
-	Mon, 10 Mar 2025 00:13:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A+foJHPD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6AF1922F5;
+	Mon, 10 Mar 2025 02:19:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82D279C0
-	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 00:13:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1BD319DF99;
+	Mon, 10 Mar 2025 02:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741565637; cv=none; b=MCGWqGiQU8oeGT+VlqNNoRh56/8f0ZE6BpNy87cqXx+7pnC3+haZ1nxbqT9WCY/WbghY+yfHpHCFX3bNZsIFwyi3t9X3bHM7pDFaly/FOyaLOVMRM8JhA+efO024ybGvibZgWTJbSVldpSxvHQcPDXeiR+/eEXPUGZ5JxqfgQ80=
+	t=1741573186; cv=none; b=BBoHPiBOxeppVxjaFCENKbgCNtS6bVkrgiJzjl/8NiZAYR7yvzggQgBE48y4h+t1HeuqzlkSg64N21FXnoJt/D86q1jhTvMViiTZX04KUu6un1jVkeaG6sUY0SkYAY4RY0zy1YQdAAueZ46MZejiMcUKMhEQWluG2/G63sRu7ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741565637; c=relaxed/simple;
-	bh=qlVzoobfcMKhrZJlUXVsYUBWE3RYkGGNjsUv4tABpv0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X/vpvi6nWEWbuKWN2JpwJR6nVfbO1JYshdQlsGCb2pzQselJDpbRh8rtHbwa0EfQs3rmKqudFbUcVYMWYLX9Q8P+Anrrpf12rxhM3kkFPU49UKynI6G9B1VFuBPOYDUMmDvMBarG6ncFBter4QJmJDJfK3EJjTYXhbZQizee8XU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A+foJHPD; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-391342fc0b5so2804666f8f.3
-        for <bpf@vger.kernel.org>; Sun, 09 Mar 2025 17:13:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741565634; x=1742170434; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5cWjdThWCRTh5geVzdUfIM+DjntvFxskQHUQIqGAp+g=;
-        b=A+foJHPDgfK7KQyoD4MwdESu/tWWHznkmkA7Kf0wyC9aNGihk+OivTEZWNYAN//so/
-         TVQ6Q9EguKQnxa1XfqbVCHgCjTTTB+qq8r5nH7AGoYFVq1BxnT4itXWAApf+98pC2d6W
-         7H0u5MCSxFS/JE1bs7ZELTxTckhhCHzgWRnI+3inENMd5NdDI3ZrAAi2fZLQmMJSx0ez
-         lt74FBNjeHrOamEv6R+wSrTHr1xH/XtAtoQUfvZ6eKq5Ji3/tYXZYZV84bSdprnuQV/t
-         5GKoZx7UDq+R0H4f/+T9bHpMVfmELck3E70EJgI1tSaIPBBw14u2W8DDEIL5egx1vJzF
-         widg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741565634; x=1742170434;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5cWjdThWCRTh5geVzdUfIM+DjntvFxskQHUQIqGAp+g=;
-        b=MCgrc5+GLwGGFSG68bjsJcs+gxLCNoan/vmpMTSalMZIeV9smD2QZS0fMEGJSgtPoZ
-         RrEo+UbwFQi9/35AO72j7laJ2r1tGUUxhDtAzSPwBfGiwi2s0pW43pkeC4hgrOXKqxHb
-         EOP09BqToKqJewe8tk1a7rVmUuHhLVlWYkX31J+I/Q4gmywRhBn0cWKaDlY8JS+/levT
-         YHnArbSlvOBH55OJNGJRfkI4ErK8+RkKr5mEDPeyMICqYAqKnrgM3dyx+Ltp/aY8tu7y
-         6qo1IKAvN5kD9EuZfvlDuLacH780T8bZSYQf4KH5WRB8SudLD6Tw4JsUwh6EeUBfMNdx
-         xu/g==
-X-Gm-Message-State: AOJu0YyZ9ZIBrzjIZ8H264AFeScKHwh9fo3Qz0u34eBHnYD820QqU9y2
-	IXbjbNBzYeUIjKcyF1kdaNUEy0kfqzbjSYq+zouEmkR9LoC2mC04mbGQAQ==
-X-Gm-Gg: ASbGncuJIy3iuj/yeY1SJPqJhTxHxjwC7N2mUOca0BKIHrAnk8OkYx9FmlqJiQlpPbJ
-	ol8mJCOiu4/FFBfiPOEMsIcfOWSS9kE6ZOHyoTlTqToRNJRSBsuRQaMN31DNnG26XerAjHu9JdN
-	E186O2SzW8Bg+aD83piplWKMIAr5SxQThL5yo6RBeZEvk6x9zD47HpfR2N5UJ/ta96DgFxsJcZX
-	3Z+SaoAZfQAfUra3h3HRi/SK1ijTDH40FNKyIINsulstYH8b/liaVC9mfvB+2G7J6SlP8yORvx9
-	02wP+sWkrZGNOw6LcTvErZPy1Og6Yrja/rKjChMymBsyNQaPKxmiqAw7GNUlRVo2icFt4opsfrU
-	lkFi8WtKrerMAqRqwZ2QstJ0Q3L9ZiSHIKXlOJ5Q+Al/4upqWHw==
-X-Google-Smtp-Source: AGHT+IGbQnba+cIAzrcR9RrRJFxuFAkGdsDxiePzK2vs9EkkHBAqAZaKA1VCOUbF6jGWNo6F5H5swA==
-X-Received: by 2002:a05:6000:1f8a:b0:391:2e31:c7e5 with SMTP id ffacd0b85a97d-39132d093f8mr8368509f8f.6.1741565633966;
-        Sun, 09 Mar 2025 17:13:53 -0700 (PDT)
-Received: from localhost.localdomain (cpc158789-hari22-2-0-cust468.20-2.cable.virginm.net. [86.26.115.213])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912bee262esm13181050f8f.0.2025.03.09.17.13.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Mar 2025 17:13:52 -0700 (PDT)
-From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com,
-	eddyz87@gmail.com,
-	olsajiri@gmail.com,
-	yonghong.song@linux.dev
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v4 4/4] selftests/bpf: test freplace from user namespace
-Date: Mon, 10 Mar 2025 00:13:19 +0000
-Message-ID: <20250310001319.41393-5-mykyta.yatsenko5@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250310001319.41393-1-mykyta.yatsenko5@gmail.com>
-References: <20250310001319.41393-1-mykyta.yatsenko5@gmail.com>
+	s=arc-20240116; t=1741573186; c=relaxed/simple;
+	bh=+UkM0OEN4rOw6DU7+Tx/C6WWCe6zyQipbpvPzubAuLE=;
+	h=Subject:References:From:To:Cc:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ItrNkdlCJSmZ4VRF4f8GIt0+kx2ZrH4HtS9N/OJc7iSWST7kc/WlAUXKDGsdcHXiBX6hJhAxCYuy3e0ZmCiCvHq0sdYMwsA6qchRgMIpxgUPRuz+P9/db4Dtyz9aeQ4McVdgOqTXet06BhDWT9UEry2mAOmgE+5nskfH1cDBGGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4ZB0vS0TxFz4f3lwf;
+	Mon, 10 Mar 2025 10:19:16 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 59FA21A06DC;
+	Mon, 10 Mar 2025 10:19:38 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgBnyl43TM5nOgYyGA--.16576S2;
+	Mon, 10 Mar 2025 10:19:38 +0800 (CST)
+Subject: =?UTF-8?Q?=5bRESEND=5d_Fwd=3a_=5bBUG=5d_list_corruption_in_=5f=5fbp?=
+ =?UTF-8?Q?f=5flru=5fnode=5fmove_=28=29_=e3=80=90_bug_found_and_suggestions_?=
+ =?UTF-8?Q?for_fixing_it=e3=80=91?=
+References: <263a77e4-9ba8-f9e2-4aaf-5e2854d487e5@huaweicloud.com>
+From: Hou Tao <houtao@huaweicloud.com>
+To: Strforexc yn <strforexc@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ "Alexei Starovoitov," <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+X-Forwarded-Message-Id: <263a77e4-9ba8-f9e2-4aaf-5e2854d487e5@huaweicloud.com>
+Message-ID: <2e946e29-ccd3-3a12-d6b4-d44d778c9223@huaweicloud.com>
+Date: Mon, 10 Mar 2025 10:19:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <263a77e4-9ba8-f9e2-4aaf-5e2854d487e5@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBnyl43TM5nOgYyGA--.16576S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3JrW7XrWftFW3uF1fGFy3urg_yoW3JFy8pF
+	45GFWUGr48Xr17AFW7Jr10kr4fGF1UAF4UJr17Gr10yF15ua1Utr1Utr47AF98Jr45Xr1f
+	twn0qw48trW7GaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUOBMKDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+Resend due to the HTML part in the reply. Sorry for the inconvenience.
 
-Add selftests to verify that it is possible to load freplace program
-from user namespace if BPF token is initialized by bpf_object__prepare
-before calling bpf_program__set_attach_target.
-Negative test is added as well.
+Hi,
 
-Modified type of the priv_prog to xdp, as kprobe did not work on aarch64
-and s390x.
+On 3/5/2025 9:28 PM, Strforexc yn wrote:
+> Hi Maintainers,
+>
+> When using our customized Syzkaller to fuzz the latest Linux kernel,
+> the following crash was triggered.
+> Kernel Config : https://github.com/Strforexc/LinuxKernelbug/blob/main/.config
+>
+> A kernel BUG was reported due to list corruption during BPF LRU node movement.
+> The issue occurs when the node being moved is the sole element in its list and
+> also the next_inactive_rotation candidate. After moving, the list became empty,
+> but next_inactive_rotation incorrectly pointed to the moved node, causing later
+> operations to corrupt the list.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../testing/selftests/bpf/prog_tests/token.c  | 97 ++++++++++++++++++-
- .../selftests/bpf/progs/priv_freplace_prog.c  | 13 +++
- tools/testing/selftests/bpf/progs/priv_prog.c |  6 +-
- 3 files changed, 112 insertions(+), 4 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/priv_freplace_prog.c
+The list being pointed by next_inactive_rotation is a doubly linked list
+(aka, struct list_head), therefore, there are at least two nodes in the
+non-empty list: the head of the list and the sole element. When the node
+is the last element in the list, next_inactive_rotation will be pointed
+to the head of the list after the move. So I don't think the analysis
+and the fix below is correct.
+>
+> Here is my fix suggestion:
+> The fix checks if the node was the only element before adjusting
+> next_inactive_rotation. If so, it sets the pointer to NULL, preventing invalid
+> access.
+>
+> diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
+> index XXXXXXX..XXXXXXX 100644
+> --- a/kernel/bpf/bpf_lru_list.c
+> +++ b/kernel/bpf/bpf_lru_list.c
+> @@ -119,8 +119,13 @@ static void __bpf_lru_node_move(struct bpf_lru_list *l,
+>   * move the next_inactive_rotation pointer also.
+>   */
+>   if (&node->list == l->next_inactive_rotation)
+> - l->next_inactive_rotation = l->next_inactive_rotation->prev;
+> -
+> + {
+> + if (l->next_inactive_rotation->prev == &node->list) {
+> + l->next_inactive_rotation = NULL;
+> + } else {
+> + l->next_inactive_rotation = l->next_inactive_rotation->prev;
+> + }
+> + }
+>   list_move(&node->list, &l->lists[tgt_type]);
+>  }
+>
+> -- 2.34.1 Our knowledge of the kernel is somewhat limited, and we'd
+> appreciate it if you could determine if there is such an issue. If
+> this issue doesn't have an impact, please ignore it ☺. If you fix this
+> issue, please add the following tag to the commit: Reported-by:
+> Zhizhuo Tang strforexctzzchange@foxmail.com, Jianzhou Zhao
+> xnxc22xnxc22@qq.com, Haoran Liu <cherest_san@163.com> Last is my
+> report： vmalloc memory list_add corruption. next->prev should be prev
+> (ffffe8ffac433e40), but was 50ffffe8ffac433e. (next=ffffe8ffac433e41).
+> ------------[ cut here ]------------ kernel BUG at
+> lib/list_debug.c:29! Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> PTI CPU: 0 UID: 0 PID: 14524 Comm: syz.0.285 Not tainted
+> 6.14.0-rc5-00013-g99fa936e8e4f #1 Hardware name: QEMU Standard PC
+> (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014 RIP:
+> 0010:__list_add_valid_or_report+0xfc/0x1a0 lib/list_debug.c:29
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/token.c b/tools/testing/selftests/bpf/prog_tests/token.c
-index c3ab9b6fb069..f9392df23f8a 100644
---- a/tools/testing/selftests/bpf/prog_tests/token.c
-+++ b/tools/testing/selftests/bpf/prog_tests/token.c
-@@ -19,6 +19,7 @@
- #include "priv_prog.skel.h"
- #include "dummy_st_ops_success.skel.h"
- #include "token_lsm.skel.h"
-+#include "priv_freplace_prog.skel.h"
- 
- static inline int sys_mount(const char *dev_name, const char *dir_name,
- 			    const char *type, unsigned long flags,
-@@ -788,6 +789,84 @@ static int userns_obj_priv_prog(int mnt_fd, struct token_lsm *lsm_skel)
- 	return 0;
- }
- 
-+static int userns_obj_priv_freplace_setup(int mnt_fd, struct priv_freplace_prog **fr_skel,
-+					  struct priv_prog **skel, int *tgt_fd)
-+{
-+	LIBBPF_OPTS(bpf_object_open_opts, opts);
-+	int err;
-+	char buf[256];
-+
-+	/* use bpf_token_path to provide BPF FS path */
-+	snprintf(buf, sizeof(buf), "/proc/self/fd/%d", mnt_fd);
-+	opts.bpf_token_path = buf;
-+	*skel = priv_prog__open_opts(&opts);
-+	if (!ASSERT_OK_PTR(*skel, "priv_prog__open_opts"))
-+		return -EINVAL;
-+	err = priv_prog__load(*skel);
-+	if (!ASSERT_OK(err, "priv_prog__load"))
-+		return -EINVAL;
-+
-+	*fr_skel = priv_freplace_prog__open_opts(&opts);
-+	if (!ASSERT_OK_PTR(*skel, "priv_freplace_prog__open_opts"))
-+		return -EINVAL;
-+
-+	*tgt_fd = bpf_program__fd((*skel)->progs.xdp_prog1);
-+	return 0;
-+}
-+
-+/* Verify that freplace works from user namespace, because bpf token is loaded
-+ * in bpf_object__prepare
-+ */
-+static int userns_obj_priv_freplace_prog(int mnt_fd, struct token_lsm *lsm_skel)
-+{
-+	struct priv_freplace_prog *fr_skel = NULL;
-+	struct priv_prog *skel = NULL;
-+	int err, tgt_fd;
-+
-+	err = userns_obj_priv_freplace_setup(mnt_fd, &fr_skel, &skel, &tgt_fd);
-+	if (!ASSERT_OK(err, "setup"))
-+		goto out;
-+
-+	err = bpf_object__prepare(fr_skel->obj);
-+	if (!ASSERT_OK(err, "freplace__prepare"))
-+		goto out;
-+
-+	err = bpf_program__set_attach_target(fr_skel->progs.new_xdp_prog2, tgt_fd, "xdp_prog1");
-+	if (!ASSERT_OK(err, "set_attach_target"))
-+		goto out;
-+
-+	err = priv_freplace_prog__load(fr_skel);
-+	ASSERT_OK(err, "priv_freplace_prog__load");
-+
-+out:
-+	priv_freplace_prog__destroy(fr_skel);
-+	priv_prog__destroy(skel);
-+	return err;
-+}
-+
-+/* Verify that replace fails to set attach target from user namespace without bpf token */
-+static int userns_obj_priv_freplace_prog_fail(int mnt_fd, struct token_lsm *lsm_skel)
-+{
-+	struct priv_freplace_prog *fr_skel = NULL;
-+	struct priv_prog *skel = NULL;
-+	int err, tgt_fd;
-+
-+	err = userns_obj_priv_freplace_setup(mnt_fd, &fr_skel, &skel, &tgt_fd);
-+	if (!ASSERT_OK(err, "setup"))
-+		goto out;
-+
-+	err = bpf_program__set_attach_target(fr_skel->progs.new_xdp_prog2, tgt_fd, "xdp_prog1");
-+	if (ASSERT_ERR(err, "attach fails"))
-+		err = 0;
-+	else
-+		err = -EINVAL;
-+
-+out:
-+	priv_freplace_prog__destroy(fr_skel);
-+	priv_prog__destroy(skel);
-+	return err;
-+}
-+
- /* this test is called with BPF FS that doesn't delegate BPF_BTF_LOAD command,
-  * which should cause struct_ops application to fail, as BTF won't be uploaded
-  * into the kernel, even if STRUCT_OPS programs themselves are allowed
-@@ -1004,12 +1083,28 @@ void test_token(void)
- 	if (test__start_subtest("obj_priv_prog")) {
- 		struct bpffs_opts opts = {
- 			.cmds = bit(BPF_PROG_LOAD),
--			.progs = bit(BPF_PROG_TYPE_KPROBE),
-+			.progs = bit(BPF_PROG_TYPE_XDP),
- 			.attachs = ~0ULL,
- 		};
- 
- 		subtest_userns(&opts, userns_obj_priv_prog);
- 	}
-+	if (test__start_subtest("obj_priv_freplace_prog")) {
-+		struct bpffs_opts opts = {
-+			.cmds = bit(BPF_BTF_LOAD) | bit(BPF_PROG_LOAD) | bit(BPF_BTF_GET_FD_BY_ID),
-+			.progs = bit(BPF_PROG_TYPE_EXT) | bit(BPF_PROG_TYPE_XDP),
-+			.attachs = ~0ULL,
-+		};
-+		subtest_userns(&opts, userns_obj_priv_freplace_prog);
-+	}
-+	if (test__start_subtest("obj_priv_freplace_prog_fail")) {
-+		struct bpffs_opts opts = {
-+			.cmds = bit(BPF_BTF_LOAD) | bit(BPF_PROG_LOAD) | bit(BPF_BTF_GET_FD_BY_ID),
-+			.progs = bit(BPF_PROG_TYPE_EXT) | bit(BPF_PROG_TYPE_XDP),
-+			.attachs = ~0ULL,
-+		};
-+		subtest_userns(&opts, userns_obj_priv_freplace_prog_fail);
-+	}
- 	if (test__start_subtest("obj_priv_btf_fail")) {
- 		struct bpffs_opts opts = {
- 			/* disallow BTF loading */
-diff --git a/tools/testing/selftests/bpf/progs/priv_freplace_prog.c b/tools/testing/selftests/bpf/progs/priv_freplace_prog.c
-new file mode 100644
-index 000000000000..ccf1b04010ba
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/priv_freplace_prog.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("freplace/xdp_prog1")
-+int new_xdp_prog2(struct xdp_md *xd)
-+{
-+	return XDP_DROP;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/priv_prog.c b/tools/testing/selftests/bpf/progs/priv_prog.c
-index 3c7b2b618c8a..725e29595079 100644
---- a/tools/testing/selftests/bpf/progs/priv_prog.c
-+++ b/tools/testing/selftests/bpf/progs/priv_prog.c
-@@ -6,8 +6,8 @@
- 
- char _license[] SEC("license") = "GPL";
- 
--SEC("kprobe")
--int kprobe_prog(void *ctx)
-+SEC("xdp")
-+int xdp_prog1(struct xdp_md *xdp)
- {
--	return 1;
-+	return XDP_DROP;
- }
--- 
-2.48.1
+I suspect that the content of lists[BPF_LRU_LIST_T_ACTIVE].next has been
+corrupted, because the pointer itself should be at least 8-bytes
+aligned, but its value is 0xffffe8ffac433e41. Also only the last bit of
+the next pointer is different with the address of
+list[BPF_LRU_LIST_T_ACTIVE] itelse (aka 0xffffe8ffac433e40).
+
+> Code: 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 a6 00 00 00
+> 49 8b 54 24 08 4c 89 e1 48 c7 c7 c0 1f f2 8b e8 55 54 d3 fc 90 <0f> 0b
+> 48 89 f7 48 89 34 24 e8 16 54 33 fd 48 8b 34 24 48 b8 00 00 RSP:
+> 0018:ffffc900033779b0 EFLAGS: 00010046 RAX: 0000000000000075 RBX:
+> ffffc900035777c8 RCX: 0000000000000000 RDX: 0000000000000000 RSI:
+> 0000000000000000 RDI: 0000000000000000 RBP: ffffe8ffac433e40 R08:
+> 0000000000000000 R09: 0000000000000000 R10: 0000000000000000 R11:
+> 0000000000000000 R12: ffffe8ffac433e41 R13: ffffc900035777c8 R14:
+> ffffe8ffac433e49 R15: ffffe8ffac433e50 FS: 00007fef15ddd640(0000)
+> GS:ffff88802b600000(0000) knlGS:0000000000000000 CS: 0010 DS: 0000 ES:
+> 0000 CR0: 0000000080050033 CR2: 00007ffd53abb238 CR3: 00000000296f4000
+> CR4: 00000000000006f0 DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+> 0000000000000400 Call Trace: <TASK> __list_add_valid
+> include/linux/list.h:88 [inline] __list_add include/linux/list.h:150
+> [inline] list_add include/linux/list.h:169 [inline] list_move
+> include/linux/list.h:299 [inline] __bpf_lru_node_move+0x21a/0x480
+> kernel/bpf/bpf_lru_list.c:126
+> __bpf_lru_list_rotate_inactive+0x20f/0x310
+> kernel/bpf/bpf_lru_list.c:196 __bpf_lru_list_rotate
+> kernel/bpf/bpf_lru_list.c:247 [inline] bpf_percpu_lru_pop_free
+> kernel/bpf/bpf_lru_list.c:417 [inline] bpf_lru_pop_free+0x157/0x370
+> kernel/bpf/bpf_lru_list.c:502 prealloc_lru_pop+0x23/0xf0
+> kernel/bpf/hashtab.c:308 htab_lru_map_update_elem+0x14c/0xbe0
+> kernel/bpf/hashtab.c:1251 bpf_map_update_value+0x675/0xf50
+> kernel/bpf/syscall.c:289 generic_map_update_batch+0x44a/0x5f0
+> kernel/bpf/syscall.c:1963 bpf_map_do_batch+0x4be/0x610
+> kernel/bpf/syscall.c:5303 __sys_bpf+0x1002/0x1630
+> kernel/bpf/syscall.c:5859 __do_sys_bpf kernel/bpf/syscall.c:5902
+> [inline] __se_sys_bpf kernel/bpf/syscall.c:5900 [inline]
+> __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5900 do_syscall_x64
+> arch/x86/entry/common.c:52 [inline] do_syscall_64+0xcb/0x260
+> arch/x86/entry/common.c:83 entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7fef14fb85ad Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00
+> f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c
+> 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7
+> d8 64 89 01 48 RSP: 002b:00007fef15ddcf98 EFLAGS: 00000246 ORIG_RAX:
+> 0000000000000141 RAX: ffffffffffffffda RBX: 00007fef15245fa0 RCX:
+> 00007fef14fb85ad RDX: 0000000000000038 RSI: 0000400000000000 RDI:
+> 000000000000001a RBP: 00007fef1506a8d6 R08: 0000000000000000 R09:
+> 0000000000000000 R10: 0000000000000000 R11: 0000000000000246 R12:
+> 0000000000000000 R13: 0000000000000000 R14: 00007fef15245fa0 R15:
+> 00007fef15dbd000 </TASK> Modules linked in: ---[ end trace
+> 0000000000000000 ]--- RIP: 0010:__list_add_valid_or_report+0xfc/0x1a0
+> lib/list_debug.c:29 Code: 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00
+> 0f 85 a6 00 00 00 49 8b 54 24 08 4c 89 e1 48 c7 c7 c0 1f f2 8b e8 55
+> 54 d3 fc 90 <0f> 0b 48 89 f7 48 89 34 24 e8 16 54 33 fd 48 8b 34 24 48
+> b8 00 00 RSP: 0018:ffffc900033779b0 EFLAGS: 00010046 RAX:
+> 0000000000000075 RBX: ffffc900035777c8 RCX: 0000000000000000 RDX:
+> 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000 RBP:
+> ffffe8ffac433e40 R08: 0000000000000000 R09: 0000000000000000 R10:
+> 0000000000000000 R11: 0000000000000000 R12: ffffe8ffac433e41 R13:
+> ffffc900035777c8 R14: ffffe8ffac433e49 R15: ffffe8ffac433e50 FS:
+> 00007fef15ddd640(0000) GS:ffff88802b600000(0000)
+> knlGS:0000000000000000 CS: 0010 DS: 0000 ES: 0000 CR0:
+> 0000000080050033 CR2: 00007ffd53abb238 CR3: 00000000296f4000 CR4:
+> 00000000000006f0 DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+> 0000000000000400 Regards, Strforexc .
 
 
