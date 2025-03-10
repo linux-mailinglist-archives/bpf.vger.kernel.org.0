@@ -1,97 +1,96 @@
-Return-Path: <bpf+bounces-53734-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53735-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86262A59863
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 15:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 601B7A59906
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 16:04:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F21C18853A7
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 14:54:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8708218926C5
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 15:02:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A35622F3A8;
-	Mon, 10 Mar 2025 14:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6D0C22F17A;
+	Mon, 10 Mar 2025 14:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UgSqzrmj"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GPC9LmCl"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F00F22F3B8
-	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 14:52:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C604622D78F
+	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 14:57:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741618370; cv=none; b=M/51gVwA7ApRz6t4FUgj3ZJMOZQTL6lVLHd0GELkEvpt5XmzT7DzydIiyR5c8BdvgZiq83plgY9aJnsF3lmxGhPIYoGM+sp5FVN6ggde2bAB83QER47om5NGShYqHBEwC/7cuAy8Z1M8pljoFF+5kC+AhZbK/TiweLlJ2ZxjhTI=
+	t=1741618638; cv=none; b=lrj76MG0XfqYl9Jp7lb0Gu9uhjfS5YULVwnGG/Fftf9aEeGQDCROOcsjDGplUHnt2naDCO/q6sjlB4NjkP1JXTadya5T7Zo7syGeoDyK/GQ76tuw3/D3VRfjC5TmphiMp4d3b1Fl0m6oPSyzWFbn6WOEioOXyrGk8gI9hWUxY40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741618370; c=relaxed/simple;
-	bh=qrGb5lSwU6d/BiTcGEDE0iGBrg7QsIVsQ08BYads/bw=;
+	s=arc-20240116; t=1741618638; c=relaxed/simple;
+	bh=DDFSBY+EihpyeoK5HiOTV5WFyxGVogpelwrvov4Lxpw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nrSE8KJZBqn+KNfr2GrkgiinYGhh5dohgTzFm1/cN/VkgSWfmYRAVwefXmV8/YJGurjaV6WQLeVik5YjnmCCLjzqPCqKv14Owebhci92KClQaEBwblDh2eZlYLa6oVMfxbz6n5cpflMoyKg7v8FqWec4SMe4R6XQl6Id5qAZAFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UgSqzrmj; arc=none smtp.client-ip=170.10.129.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=YpeOyacIZMIY/Tx4ycljXXhFFa9Q+2pMaBfOvYy5XzfiT+EwJ60j8T2G/DIzYV8eNBYQ3bIKJwwoVv8iQFltz0AtOWImcoCoflhFrqWrXPNvYsyXSyQ8Wo0E859v7kJRQUm/MLigm9P0wX3b36OTH6eCJPSYCbxw0FWFXYMc6ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GPC9LmCl; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741618367;
+	s=mimecast20190719; t=1741618635;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tD8i+D5CkT0SBWrgEsAcKH9liSWprjwzpOukP8c/+ok=;
-	b=UgSqzrmj5MOFFlMD2adbssh161Yv4+racXkh8EKXX9UiLjEiOGtrGmtkMwQ/gsZuVjzvfT
-	v3J0Wx8LDZeTz9wbEXBhb1b3IBoZ+BMsexMMTeHGwA5jVVJvUR2x/qnN6O2o7VWRsxVQjZ
-	1rJ1cud4Y8a3PuMHdlPSMfQbOyJ+xSc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=jWNWb95iV+mWVJ+4wh8JfosTFPQltaYwNbslh/GR93Q=;
+	b=GPC9LmClCAJ+SsZyXWsSX6/4fABWSekeZujXVedQIjq9/aER2bv4ouz7Ax8MkFxRHxaUsr
+	LuQNZna/ZLblHRTmNnhOM0FHBZ3mJwxVJjPMgcRrsmXDxVSMNHjUTBYk4+TsjZLTHEoEmP
+	u2ZP4b9EKKqYte19DLvB75EIHBtPYTA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-341-5FX4_I1JP66s1Ab1P8FGPw-1; Mon, 10 Mar 2025 10:52:45 -0400
-X-MC-Unique: 5FX4_I1JP66s1Ab1P8FGPw-1
-X-Mimecast-MFC-AGG-ID: 5FX4_I1JP66s1Ab1P8FGPw_1741618364
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-39134c762ebso1201815f8f.0
-        for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 07:52:45 -0700 (PDT)
+ us-mta-2-WAPM9nNSNOGCjuNvtsfOhw-1; Mon, 10 Mar 2025 10:57:14 -0400
+X-MC-Unique: WAPM9nNSNOGCjuNvtsfOhw-1
+X-Mimecast-MFC-AGG-ID: WAPM9nNSNOGCjuNvtsfOhw_1741618633
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4394040fea1so20869315e9.0
+        for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 07:57:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741618364; x=1742223164;
+        d=1e100.net; s=20230601; t=1741618633; x=1742223433;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tD8i+D5CkT0SBWrgEsAcKH9liSWprjwzpOukP8c/+ok=;
-        b=RDU9N7Wslc/yDg98zhQ9L6yuyRs7Eo/9QQ9Szo4884GcCPot1efeCpGt8Kx/cwtnUB
-         8iV58kF2Ifb0OYdbK0cmwzA3YjbHWHpVonOJpEw3fn8CtBnLAwS+J6dpCyiS9KYSwfzw
-         gS/ioFpn0Y2JmK0AILTesRIbxl6rK+/TOkv7e3Omjkh3XcMu/6KJLQZzYVyYOI/J1Bty
-         ONutNLpoD0rAOfyyZWAiGaD/fekTJ+EUN8n8+WPUehyEpSaI1uJcihS1RCDFcpYzGbXF
-         GEIIXwAxxsTQrieXmis965CO/ofutWzol2miFlTw6ln3A8VPGHSYXWFfCKup7rqYKosU
-         GeNw==
-X-Forwarded-Encrypted: i=1; AJvYcCVUO9ANq4jizCjA0tx3Txm5mPtk9bvF4TN4oCr1N1EJFw9IHJ3lWNqGuWONG7w5uKYrOGY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyuqK2zH7lpDdbpB1ppYW0WW8VUJjVaefFkIFye4KXHuuSqj0Z4
-	6667Yv4gN5Q2fb4oc0QOdQT6GlfNgfL13oa2GjkK3L9tTuzCNB7s/aQ2wlrunHlrFLE/ZcaZ36+
-	kV6/AFMUyw70LKQ4Do4ue21IkbF+Qw9xP7qeyi9EttZWa6brGNQ==
-X-Gm-Gg: ASbGnct31sOlKl63xVofieRjxxshnBRZHqjTroPoWmkUCJReZ4UUlErUDizqn+RwQ+U
-	t4PgqkJODr8r/yHZfIL9Uozs1+E2BKVk2S4pLK+oeCJyJ8X8yiagNfgdEo8e8IUqIY6EWEnjTsM
-	ZQOpB1GhRM/THHkie6xnzqMtZMlIC43mgOlidT114Ph5a7AyhXa/cboIU5NDzL0N6n65Bg+iRic
-	A6XJ039VeDCTzwoEt1hRvNySQRSYKnXfg+0OAjyBhkdilC83RBpT4yRaZRoicPnxGJwlC+oSDuj
-	5YE/KnvRzfrNukLxw5U0iTWqCEja9OXQF+7ypKK4Veky+K0wUmLOm74+2W3gFbTK
-X-Received: by 2002:a5d:6482:0:b0:38f:3e39:20ae with SMTP id ffacd0b85a97d-39132dc580amr11065886f8f.43.1741618364044;
-        Mon, 10 Mar 2025 07:52:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEKpz/aRteORGLUQDVzSqjXbJRJcg6+0YPgJ4aq+417+m56Qchn6s2RgghTGP/jggl8UNdbAA==
-X-Received: by 2002:a5d:6482:0:b0:38f:3e39:20ae with SMTP id ffacd0b85a97d-39132dc580amr11065841f8f.43.1741618363514;
-        Mon, 10 Mar 2025 07:52:43 -0700 (PDT)
+        bh=jWNWb95iV+mWVJ+4wh8JfosTFPQltaYwNbslh/GR93Q=;
+        b=XdhktKRV8cuSHI424oOOSzsJYakgwA85L2Eww3gfxw8GafvktLPP3SIgebzxPJerlV
+         lDRNaJ92PbWJS3RfYTWr2VHwBkhiESKNpkfuMxt8J8gTxgYm3y1q7WfzVPEsMcQe+kJ9
+         waQhzRndXF+CDMEX+SdGy1vkcsn8uFvniqidwlIAB1u4aFUxwSKwOmhGW/CEsG6d3uiN
+         FkVS4Ova0XXeigcLabrSejzyJOg/lciPl0/NmKHnaAbSQLX1tTUNgJZ2Bbs5QByBFx2Q
+         FKdo7Be2hdpTXH+AFyfJiVsfW8KqE12oomv1L82Ij2t8SSdqrQq5DpJMwUwY6fYMWu98
+         +qbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWp0jxJ2iIVcVpaog4fTRALffbIgKNy3u5foFeoBRSymgo8SjlPoslJdgVexT1PGlNqGfY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyPB6x57kIhk8372DVVTw4UL+xQh/qI/JSdt/h1JdhEG5Yo5Z4I
+	ff9Yha7cgiJtcKnPz3MT2a3vn56J1BHAglyzskzuoN7cYG8u/VgCoQ+5jPpueHvG+w1Z5T7guHt
+	cBlqZOeHaFzS+3eo/OxoFoKXwv+CwcXY6WnHKhsVPGi3EPrOVIw==
+X-Gm-Gg: ASbGncud7nYDMLL5BsyrV2vLMKo3teiKQ+pI7WOokX3mgdZeYplAKU5/iDdt5LyczcZ
+	owLTufyP45K6oLY6cmNAylzQdfwRAz/W+cU2KCfXNtsgWK4wEdM919tObHINruTG6OmyLJq+r15
+	SLFIgEx4m77YYim7AZWVT2aJiZ4rHJHAahqz/0Uv5z9zZuBpICjrz52p4snX/4qBt2c1GDHo+v+
+	Xe3u0EKIh+55kDW73M9mU5CdXQ0uqTBXoh2d5AF8UX/3vLy1YoRCrzpRGDevGh+31VX3tSVcxBo
+	LOB5i6agviPZXdnT5uf29Izmov3C3W55S5cvKI0gUr7CJqN01MeRGc2QREB8wqdI
+X-Received: by 2002:a05:600c:a297:b0:43c:f3e1:a729 with SMTP id 5b1f17b1804b1-43cf3e1aba4mr29889545e9.12.1741618633102;
+        Mon, 10 Mar 2025 07:57:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHzpkMUlLsha9DGTnq1BtbAasQwodmyA9Pe+3Lsyz/kRmAtG7EMWFM+0qhRV1W1xI6hJpv6iw==
+X-Received: by 2002:a05:600c:a297:b0:43c:f3e1:a729 with SMTP id 5b1f17b1804b1-43cf3e1aba4mr29889105e9.12.1741618632510;
+        Mon, 10 Mar 2025 07:57:12 -0700 (PDT)
 Received: from sgarzare-redhat (host-79-46-200-29.retail.telecomitalia.it. [79.46.200.29])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912bfdfdfdsm15532372f8f.34.2025.03.10.07.52.42
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d017a9fa2sm901115e9.1.2025.03.10.07.57.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Mar 2025 07:52:43 -0700 (PDT)
-Date: Mon, 10 Mar 2025 15:52:40 +0100
+        Mon, 10 Mar 2025 07:57:12 -0700 (PDT)
+Date: Mon, 10 Mar 2025 15:57:08 +0100
 From: Stefano Garzarella <sgarzare@redhat.com>
 To: Michal Luczaj <mhal@rbox.co>
 Cc: "David S. Miller" <davem@davemloft.net>, 
 	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
 	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, leonardi@redhat.com
+	"Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org, bpf@vger.kernel.org
 Subject: Re: [PATCH net] vsock/bpf: Handle EINTR connect() racing against
  sockmap update
-Message-ID: <fjy4jaww6xualdudevfuyoavnrbu45cg4d7erv4rttde363xfc@nahglijbl2eg>
+Message-ID: <d7xxfu4af2wafmlj73ffhvmncg6zfuhc5cacezijddshbgmicx@37acg47rvclu>
 References: <20250307-vsock-trans-signal-race-v1-1-3aca3f771fbd@rbox.co>
- <a96febaf-1d32-47d4-ad18-ce5d689b7bdb@rbox.co>
- <vhda4sdbp725w7mkhha72u2nt3xpgyv2i4dphdr6lw7745qpuu@7c3lrl4tbomv>
- <032764f5-e462-4f42-bfdc-8e31b25ada27@rbox.co>
+ <wt72yg4zs5zqubpyrgccibuo5zpfwjlm5t2bnmfd4j3z2k5lio@3qqnuqs7loet>
+ <96121a41-20b4-4659-84d1-281b2b1ad710@rbox.co>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,156 +99,56 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <032764f5-e462-4f42-bfdc-8e31b25ada27@rbox.co>
+In-Reply-To: <96121a41-20b4-4659-84d1-281b2b1ad710@rbox.co>
 
-On Fri, Mar 07, 2025 at 05:01:11PM +0100, Michal Luczaj wrote:
->On 3/7/25 15:35, Stefano Garzarella wrote:
->> On Fri, Mar 07, 2025 at 10:58:55AM +0100, Michal Luczaj wrote:
->>>> Signal delivered during connect() may result in a disconnect of an already
->>>> TCP_ESTABLISHED socket. Problem is that such established socket might have
->>>> been placed in a sockmap before the connection was closed. We end up with a
->>>> SS_UNCONNECTED vsock in a sockmap. And this, combined with the ability to
->>>> reassign (unconnected) vsock's transport to NULL, breaks the sockmap
->>>> contract. As manifested by WARN_ON_ONCE.
+On Fri, Mar 07, 2025 at 05:00:08PM +0100, Michal Luczaj wrote:
+>On 3/7/25 15:33, Stefano Garzarella wrote:
+>> On Fri, Mar 07, 2025 at 10:27:50AM +0100, Michal Luczaj wrote:
+>>> Signal delivered during connect() may result in a disconnect of an already
+>>> TCP_ESTABLISHED socket. Problem is that such established socket might have
+>>> been placed in a sockmap before the connection was closed. We end up with a
+>>> SS_UNCONNECTED vsock in a sockmap. And this, combined with the ability to
+>>> reassign (unconnected) vsock's transport to NULL, breaks the sockmap
+>>> contract. As manifested by WARN_ON_ONCE.
 >>>
->>> Note that Luigi is currently working on a (vsock test suit) test[1] for a
->>> related bug, which could be neatly adapted to test this bug as well.
->>> [1]: https://lore.kernel.org/netdev/20250306-test_vsock-v1-0-0320b5accf92@redhat.com/
+>>> Ensure the socket does not stay in sockmap.
+>>>
+>>> WARNING: CPU: 10 PID: 1310 at net/vmw_vsock/vsock_bpf.c:90 vsock_bpf_recvmsg+0xb4b/0xdf0
+>>> CPU: 10 UID: 0 PID: 1310 Comm: a.out Tainted: G        W          6.14.0-rc4+
+>>> sock_recvmsg+0x1b2/0x220
+>>> __sys_recvfrom+0x190/0x270
+>>> __x64_sys_recvfrom+0xdc/0x1b0
+>>> do_syscall_64+0x93/0x1b0
+>>> entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>>>
+>>> Fixes: 634f1a7110b4 ("vsock: support sockmap")
+>>> Signed-off-by: Michal Luczaj <mhal@rbox.co>
+>>> ---
+>>> net/vmw_vsock/af_vsock.c  | 10 +++++++++-
+>>> net/vmw_vsock/vsock_bpf.c |  1 +
+>>> 2 files changed, 10 insertions(+), 1 deletion(-)
 >>
->> Can you work with Luigi to include the changes in that series?
+>> I can't see this patch on the virtualization ML, are you using
+>> get_maintainer.pl?
 >
->I was just going to wait for Luigi to finish his work (no rush, really) and
->then try to parametrize it.
+>My bad, sorry. In fact, what's the acceptable strategy for bouncing addresses?
 
-Sure, this is fine, thanks for that!
+I usually use --nogit so I put in CC pretty much just what's in 
+MAINTAINERS (there I hope there are no bouncing addresses).
 
+Thanks,
 Stefano
 
 >
->That is unless BPF/sockmap maintainers decide this thread's thing is a
->sockmap thing and should be in tools/testing/selftests/bpf.
+>> BTW the patch LGTM, thanks for the fix!
+>>
+>> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 >
->Below is a repro. If I'm not mistaken, it's basically what Luigi wrote,
->just sprinkled with map_update_elem() and recv().
+>Thanks!
 >
->#include <stdio.h>
->#include <stdint.h>
->#include <stdlib.h>
->#include <unistd.h>
->#include <errno.h>
->#include <pthread.h>
->#include <sys/wait.h>
->#include <sys/socket.h>
->#include <sys/syscall.h>
->#include <linux/bpf.h>
->#include <linux/vm_sockets.h>
->
->static void die(const char *msg)
->{
->	perror(msg);
->	exit(-1);
->}
->
->static int sockmap_create(void)
->{
->	union bpf_attr attr = {
->		.map_type = BPF_MAP_TYPE_SOCKMAP,
->		.key_size = sizeof(int),
->		.value_size = sizeof(int),
->		.max_entries = 1
->	};
->	int map;
->
->	map = syscall(SYS_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
->	if (map < 0)
->		die("map_create");
->
->	return map;
->}
->
->static void map_update_elem(int fd, int key, int value)
->{
->	union bpf_attr attr = {
->		.map_fd = fd,
->		.key = (uint64_t)&key,
->		.value = (uint64_t)&value,
->		.flags = BPF_ANY
->	};
->
->	(void)syscall(SYS_bpf, BPF_MAP_UPDATE_ELEM, &attr, sizeof(attr));
->}
->
->static void sighandler(int sig)
->{
->	/* nop */
->}
->
->static void *racer(void *c)
->{
->	int map = sockmap_create();
->
->	for (;;) {
->		map_update_elem(map, 0, *(int *)c);
-> 		if (kill(0, SIGUSR1) < 0)
-> 			die("kill");
-> 	}
->}
->
->int main(void)
->{
->	struct sockaddr_vm addr = {
->		.svm_family = AF_VSOCK,
->		.svm_cid = VMADDR_CID_LOCAL,
->		.svm_port = VMADDR_PORT_ANY
->	};
->	socklen_t alen = sizeof(addr);
->	struct sockaddr_vm bad_addr;
->	pthread_t thread;
->	int s, c;
->
->	s = socket(AF_VSOCK, SOCK_SEQPACKET, 0);
->	if (s < 0)
->		die("socket s");
->
->	if (bind(s, (struct sockaddr *)&addr, alen))
->		die("bind");
->
->	if (listen(s, -1))
->		die("listen");
->
->	if (getsockname(s, (struct sockaddr *)&addr, &alen))
->		die("getsockname");
->
->	bad_addr = addr;
->	bad_addr.svm_cid = 0x42424242; /* non-existing */
->
->	if (signal(SIGUSR1, sighandler) == SIG_ERR)
->		die("signal");
->
->	if (pthread_create(&thread, 0, racer, &c))
->		die("pthread_create");
->
->	for (;;) {
->		c = socket(AF_VSOCK, SOCK_SEQPACKET, 0);
->		if (c < 0)
->			die("socket c");
->
->		if (!connect(c, (struct sockaddr *)&addr, alen) ||
->		    errno != EINTR)
->			goto outro;
->
->		if (!connect(c, (struct sockaddr *)&bad_addr, alen) ||
->		    errno != ESOCKTNOSUPPORT)
->			goto outro;
->
->		(void)recv(c, &(char){0}, 1, MSG_DONTWAIT);
->outro:
->		close(accept(s, NULL, NULL));
->		close(c);
->	}
->
->	return 0;
->}
+>One question for BPF maintainers: sock_map_unhash() does _not_ call
+>`sk_psock_stop(psock)` nor `cancel_delayed_work_sync(&psock->work)`. Is
+>this intended?
 >
 
 
