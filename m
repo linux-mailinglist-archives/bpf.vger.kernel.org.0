@@ -1,405 +1,234 @@
-Return-Path: <bpf+bounces-53731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4690A5976E
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 15:21:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDEBAA59805
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 15:46:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 261EA188D22F
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 14:21:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 096D9167241
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 14:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C765C22C35C;
-	Mon, 10 Mar 2025 14:21:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B9D1AC88B;
+	Mon, 10 Mar 2025 14:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="A6yGpCg3"
+	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="HdZ9pC/b";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="FUEWQCLp"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C6422B8CD
-	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 14:21:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AFFF79C4;
+	Mon, 10 Mar 2025 14:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741616474; cv=none; b=hh52gOVjoZStIbjLCw3g7JSgAdFAB2FoBb+SU7EAik1jsO455nxrUaxgOlzti671cdiOl6/QW+iyFPSc6CVQ5fFcPIatCtq7fVLt8SPAYkeHTi5wlsHWOq7trMFyuGzZqb8mxc9Vnf2etSlGlodNVSvK6Dk4UEQPkJZwyHs7Iag=
+	t=1741617967; cv=none; b=BL4yqduBjz7MEx1AKC6szp+0E78evEIKSGmQxOatOMVxxtSq9qkWhig1rpIZaMub7xuDLgbYDa18NGpaqax6wcwuy+WonQVwYOPoJLGsXriNQfD2v7+eYMUtsLnnEd1SkhISVV4Fp6OgvUc2b8BPXyYgwqUVhUKRJP7DkANxNRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741616474; c=relaxed/simple;
-	bh=wx/qaPgqmQV1OHxnS/4xVDVYbfy6smuhEifLQq2IoJ0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OJgcV5QY+49ER14zHMplZAwtEa3Zbw0Kn4/wxnMt0iUng0pWNphuTUzlNk/ra+vP3Pi393NMRqQ/SS3z6nhXxIhsn324b5jLjtx6KIk6Sy+yIXoHanst2tpE4x7tBeVPJ6IERHSrXZGcGNlg+3V+FF+2mBNU9JGEN9Hy0D3aink=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=A6yGpCg3; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1741616470;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hGjmMwNsYsEU6XSb5gVAFngUH/2QUAQwqoU/xUXJ9Ek=;
-	b=A6yGpCg3dA64cjm4I9451IElkhc2mj8ssEOyfdQHLylKwwN1lIN/j8dV7wCK3jk8Kx4QqB
-	NvK+X8TT9jJgY29z5a8rECLqvF2VIA0aB5QHI4W+Tr5z2JR1PrLvxhBtzCs5/d9ZM70PTR
-	XhBT8ut7nc4gDL+lapODPmBDKClAOlo=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: bpf@vger.kernel.org,
-	qmo@kernel.org
-Cc: daniel@iogearbox.net,
-	linux-kernel@vger.kernel.org,
-	ast@kernel.org,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mrpre@163.com,
-	Jiayuan Chen <jiayuan.chen@linux.dev>
-Subject: [PATCH bpf-next v1 2/2] bpftool: Using the right format specifiers
-Date: Mon, 10 Mar 2025 22:20:37 +0800
-Message-ID: <20250310142037.45932-3-jiayuan.chen@linux.dev>
-In-Reply-To: <20250310142037.45932-1-jiayuan.chen@linux.dev>
-References: <20250310142037.45932-1-jiayuan.chen@linux.dev>
+	s=arc-20240116; t=1741617967; c=relaxed/simple;
+	bh=ud12zF0lPQFRWRGOxK4ukmj4g4pdMpd6TeX+OmXAbag=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=Z/QPzUsBTL35vql3d6jYnIQZ68Od5u2euG02ubutnWB1bTLnfegZG7qndSPQ4F1Sqj5uWf2qYPgnCkDcI6OP8EuhtNbLraoTS+yHvkqF74RxlVo7i/grr3XnMQGU2RpQzOycyz32iuYY6h1MPT9RT8sqouHCl9YNpBAHF9kvDaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=HdZ9pC/b; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=FUEWQCLp; arc=none smtp.client-ip=103.168.172.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arthurfabre.com
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id A23FD1140109;
+	Mon, 10 Mar 2025 10:46:00 -0400 (EDT)
+Received: from phl-imap-13 ([10.202.2.103])
+  by phl-compute-02.internal (MEProxy); Mon, 10 Mar 2025 10:46:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arthurfabre.com;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
+	 t=1741617960; x=1741704360; bh=MmWur/zQnOdfxWi8ehnrEc3bRLZ3l7wQ
+	k9qKd7F0Yw4=; b=HdZ9pC/bt3WiDij7mhOI7OGHEDbwB2ROrTuZQt9pwHpxBUG8
+	ZDCayq9n1iaASKeOIi3mkydPdY5fQSVBkSgDIx7K55CbsSGtVxYUSYFUayH8HdiT
+	or7Cx6HcIlGPBThxrYBBnAhvewJXAcXA62kMK8fEiNYF7hrJ9keVSYVJ+mKgEA2l
+	WRqGwJeX7LEEwspq1yo4dSPvvOMYtc8/XgzYY9JjWiXAMs3lebXfhFKTAC4SRwt2
+	oGtjuD5lU3ps1BBidZQUZEpL/8Vnq7ywG0OEyfofLwSHOihBtO9Rf1UBb2XZ4ptA
+	MUO3uiWQYs10w+bP/2cp55veENan2W9WbWvI7Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1741617960; x=
+	1741704360; bh=MmWur/zQnOdfxWi8ehnrEc3bRLZ3l7wQk9qKd7F0Yw4=; b=F
+	UEWQCLp6f/f5SUkg/DOX1XvQmtDD3cux8vOYsVYSismA+fLVikOQn335LrC1DIiv
+	L0A7QIc2YRVZH4SI4u+RIOySC9glTPKRK0muVEcxQtICOgOxRyBAbXIkuV8mlEua
+	ySpqWgza2aOgi89e9cad2t9XynfaBeZ3AdJu9YE2zGIDCvy2YCVmoyjGp/zpx5cb
+	+CuFi8fetc94VykDL7pox/6kcDwGmHQWyHtV/kjW0bvkPSKeHYZ0fwyNyEyq7jWN
+	g5/mJv/nMjuAQ2CQsHHDJ3gMILsV46junCJjFPqr2JflfRXzE9CDRQtsKpVbUuxB
+	F0IYJ/vT8+xxJowS1koQw==
+X-ME-Sender: <xms:KPvOZ7qt3X5FFn0BRmq5nVYZkM903z7WKb4ojhrPoMnOyEdxog2xVg>
+    <xme:KPvOZ1ow5ul8Z2GVFD_8qrpRHgNNUghQxc_HYws85V7ntp0_g7CcbDC6GJrdQLJ0h
+    MB-4GZTYfqC0WcegxU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduudeliedvucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepofgggfgtfffkvefuhffvofhfjgesthhqredt
+    redtjeenucfhrhhomhepfdetrhhthhhurhcuhfgrsghrvgdfuceorghrthhhuhhrsegrrh
+    hthhhurhhfrggsrhgvrdgtohhmqeenucggtffrrghtthgvrhhnpefhfeejgefhhffhveel
+    teehhfffheffvdettdelgfeltefhteelveeuffetfffgjeenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhthhhurhesrghrthhhuhhrfhgr
+    sghrvgdrtghomhdpnhgspghrtghpthhtohepuddtpdhmohguvgepshhmthhpohhuthdprh
+    gtphhtthhopegrfhgrsghrvgestghlohhuughflhgrrhgvrdgtohhmpdhrtghpthhtohep
+    jhgrkhhusgestghlohhuughflhgrrhgvrdgtohhmpdhrtghpthhtohepjhgsrhgrnhguvg
+    gsuhhrghestghlohhuughflhgrrhgvrdgtohhmpdhrtghpthhtohephigrnhestghlohhu
+    ughflhgrrhgvrdgtohhmpdhrtghpthhtoheprghlvgigvghirdhsthgrrhhovhhoihhtoh
+    hvsehgmhgrihhlrdgtohhmpdhrtghpthhtohephhgrfihksehkvghrnhgvlhdrohhrghdp
+    rhgtphhtthhopehlsghirghntghonhesrhgvughhrghtrdgtohhmpdhrtghpthhtohepth
+    hhohhilhgrnhgusehrvgguhhgrthdrtghomhdprhgtphhtthhopegsphhfsehvghgvrhdr
+    khgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:KPvOZ4PKy_yU_OoZFiExP1bDACfHz-av6DXax7me19r1oeqkLVnU4g>
+    <xmx:KPvOZ-5XXkqglYeoxKalDzGytUgkqt51c9gws2va_ZCnhmUipZyXiA>
+    <xmx:KPvOZ64I1xypGiMqNZSMlxeYShpzNC5O7TqCv71WKv1IC4RqO1jO4Q>
+    <xmx:KPvOZ2iiqd44826Mb5lRgAtgDS1N0mgR17IQoEAGwKnJN_W6OwtHig>
+    <xmx:KPvOZzFQkdMKHHiFXkCgD-bwdlr3ICoZWoywmmaRXpOx6VypWdYgxt9B>
+Feedback-ID: i25f1493c:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 647751F00080; Mon, 10 Mar 2025 10:46:00 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 10 Mar 2025 15:45:59 +0100
+Message-Id: <D8CO1HBNQNKR.3TLRR5FV98POU@arthurfabre.com>
+Cc: "Network Development" <netdev@vger.kernel.org>, "bpf"
+ <bpf@vger.kernel.org>, "Jakub Sitnicki" <jakub@cloudflare.com>, "Jesper
+ Dangaard Brouer" <hawk@kernel.org>, "Yan Zhai" <yan@cloudflare.com>,
+ <jbrandeburg@cloudflare.com>, =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
+ <thoiland@redhat.com>, <lbiancon@redhat.com>, "Arthur Fabre"
+ <afabre@cloudflare.com>
+Subject: Re: [PATCH RFC bpf-next 01/20] trait: limited KV store for packet
+ metadata
+From: "Arthur Fabre" <arthur@arthurfabre.com>
+To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+X-Mailer: aerc 0.17.0
+References: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com> <20250305-afabre-traits-010-rfc2-v1-1-d0ecfb869797@cloudflare.com> <CAADnVQ+OShaA37-=B4-GWTQQ8p4yPw3TgYLPTkbHMJLYhr48kg@mail.gmail.com> <D89ZNSJCPNUA.20V16A9FXJ54J@arthurfabre.com> <CAADnVQ+_O+kwTV-qhXqA9jc-L3w6uwn9FShG_859qx30NPkzsw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+_O+kwTV-qhXqA9jc-L3w6uwn9FShG_859qx30NPkzsw@mail.gmail.com>
 
-Fixed some formatting specifiers errors, such as using %d for int and %u
-for unsigned int, as well as other byte-length types.
+On Fri Mar 7, 2025 at 6:29 PM CET, Alexei Starovoitov wrote:
+> On Fri, Mar 7, 2025 at 3:14=E2=80=AFAM Arthur Fabre <arthur@arthurfabre.c=
+om> wrote:
+> >
+> > On Fri Mar 7, 2025 at 7:36 AM CET, Alexei Starovoitov wrote:
+> > > On Wed, Mar 5, 2025 at 6:33=E2=80=AFAM <arthur@arthurfabre.com> wrote=
+:
+> > > >
+> > > > +struct __trait_hdr {
+> > > > +       /* Values are stored ordered by key, immediately after the =
+header.
+> > > > +        *
+> > > > +        * The size of each value set is stored in the header as tw=
+o bits:
+> > > > +        *  - 00: Not set.
+> > > > +        *  - 01: 2 bytes.
+> > > > +        *  - 10: 4 bytes.
+> > > > +        *  - 11: 8 bytes.
+> > >
+> > > ...
+> > >
+> > > > +        *  - hweight(low) + hweight(high)<<1 is offset.
+> > >
+> > > the comment doesn't match the code
+> > >
+> > > > +        */
+> > > > +       u64 high;
+> > > > +       u64 low;
+> > >
+> > > ...
+> > >
+> > > > +static __always_inline int __trait_total_length(struct __trait_hdr=
+ h)
+> > > > +{
+> > > > +       return (hweight64(h.low) << 1) + (hweight64(h.high) << 2)
+> > > > +               // For size 8, we only get 4+2=3D6. Add another 2 i=
+n.
+> > > > +               + (hweight64(h.high & h.low) << 1);
+> > > > +}
+> > >
+> > > This is really cool idea, but 2 byte size doesn't feel that useful.
+> > > How about:
+> > > - 00: Not set.
+> > > - 01: 4 bytes.
+> > > - 10: 8 bytes.
+> > > - 11: 16 bytes.
+> > >
+> > > 4 byte may be useful for ipv4, 16 for ipv6, and 8 is just a good numb=
+er.
+> > > And compute the same way with 3 popcount with extra +1 to shifts.
+> >
+> > I chose the sizes arbitrarily, happy to change them.
+> >
+> > 16 is also useful for UUIDs, for tracing.
+> >
+> > Size 0 could store bools / flags. Keys could be set without a value,
+> > and users could check if the key is set or not.
+> > That replaces single bits of the mark today, for example a
+> > "route locally" key.
+>
+> I don't understand how that would work.
+> If I'm reading the code correctly 00 means that key is not present.
+> How one would differentiate key present/not with zero size in value?
 
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
----
- kernel/bpf/disasm.c                |  4 ++--
- tools/bpf/bpftool/btf.c            | 14 +++++++-------
- tools/bpf/bpftool/btf_dumper.c     |  2 +-
- tools/bpf/bpftool/cgroup.c         |  2 +-
- tools/bpf/bpftool/common.c         |  4 ++--
- tools/bpf/bpftool/jit_disasm.c     |  3 ++-
- tools/bpf/bpftool/map_perf_ring.c  |  6 +++---
- tools/bpf/bpftool/net.c            |  4 ++--
- tools/bpf/bpftool/netlink_dumper.c |  5 ++---
- tools/bpf/bpftool/prog.c           | 12 ++++++------
- tools/bpf/bpftool/tracelog.c       |  2 +-
- tools/bpf/bpftool/xlated_dumper.c  |  6 +++---
- 12 files changed, 32 insertions(+), 32 deletions(-)
+It isn't implemented right now, 0 could just be one of the three sizes.
+Eg:
 
-diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
-index 974d172d6735..20883c6b1546 100644
---- a/kernel/bpf/disasm.c
-+++ b/kernel/bpf/disasm.c
-@@ -202,7 +202,7 @@ void print_bpf_insn(const struct bpf_insn_cbs *cbs,
- 				insn->dst_reg, class == BPF_ALU ? 'w' : 'r',
- 				insn->dst_reg);
- 		} else if (is_addr_space_cast(insn)) {
--			verbose(cbs->private_data, "(%02x) r%d = addr_space_cast(r%d, %d, %d)\n",
-+			verbose(cbs->private_data, "(%02x) r%d = addr_space_cast(r%d, %u, %u)\n",
- 				insn->code, insn->dst_reg,
- 				insn->src_reg, ((u32)insn->imm) >> 16, (u16)insn->imm);
- 		} else if (is_mov_percpu_addr(insn)) {
-@@ -381,7 +381,7 @@ void print_bpf_insn(const struct bpf_insn_cbs *cbs,
- 				insn->code, class == BPF_JMP32 ? 'w' : 'r',
- 				insn->dst_reg,
- 				bpf_jmp_string[BPF_OP(insn->code) >> 4],
--				insn->imm, insn->off);
-+				(u32)insn->imm, insn->off);
- 		}
- 	} else {
- 		verbose(cbs->private_data, "(%02x) %s\n",
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 2636655ac180..4dc0ffdaf8ce 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -253,7 +253,7 @@ static int dump_btf_type(const struct btf *btf, __u32 id,
- 				if (btf_kflag(t))
- 					printf("\n\t'%s' val=%d", name, v->val);
- 				else
--					printf("\n\t'%s' val=%u", name, v->val);
-+					printf("\n\t'%s' val=%d", name, v->val);
- 			}
- 		}
- 		if (json_output)
-@@ -1022,7 +1022,7 @@ static int do_dump(int argc, char **argv)
- 			for (i = 0; i < root_type_cnt; i++) {
- 				if (root_type_ids[i] == root_id) {
- 					err = -EINVAL;
--					p_err("duplicate root_id %d supplied", root_id);
-+					p_err("duplicate root_id %u supplied", root_id);
- 					goto done;
- 				}
- 			}
-@@ -1132,7 +1132,7 @@ build_btf_type_table(struct hashmap *tab, enum bpf_obj_type type,
- 			break;
- 		default:
- 			err = -1;
--			p_err("unexpected object type: %d", type);
-+			p_err("unexpected object type: %u", type);
- 			goto err_free;
- 		}
- 		if (err) {
-@@ -1155,7 +1155,7 @@ build_btf_type_table(struct hashmap *tab, enum bpf_obj_type type,
- 			break;
- 		default:
- 			err = -1;
--			p_err("unexpected object type: %d", type);
-+			p_err("unexpected object type: %u", type);
- 			goto err_free;
- 		}
- 		if (fd < 0) {
-@@ -1188,7 +1188,7 @@ build_btf_type_table(struct hashmap *tab, enum bpf_obj_type type,
- 			break;
- 		default:
- 			err = -1;
--			p_err("unexpected object type: %d", type);
-+			p_err("unexpected object type: %u", type);
- 			goto err_free;
- 		}
- 		if (!btf_id)
-@@ -1254,12 +1254,12 @@ show_btf_plain(struct bpf_btf_info *info, int fd,
- 
- 	n = 0;
- 	hashmap__for_each_key_entry(btf_prog_table, entry, info->id) {
--		printf("%s%lu", n++ == 0 ? "  prog_ids " : ",", entry->value);
-+		printf("%s%ld", n++ == 0 ? "  prog_ids " : ",", entry->value);
- 	}
- 
- 	n = 0;
- 	hashmap__for_each_key_entry(btf_map_table, entry, info->id) {
--		printf("%s%lu", n++ == 0 ? "  map_ids " : ",", entry->value);
-+		printf("%s%ld", n++ == 0 ? "  map_ids " : ",", entry->value);
- 	}
- 
- 	emit_obj_refs_plain(refs_table, info->id, "\n\tpids ");
-diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
-index 527fe867a8fb..4e896d8a2416 100644
---- a/tools/bpf/bpftool/btf_dumper.c
-+++ b/tools/bpf/bpftool/btf_dumper.c
-@@ -653,7 +653,7 @@ static int __btf_dumper_type_only(const struct btf *btf, __u32 type_id,
- 	case BTF_KIND_ARRAY:
- 		array = (struct btf_array *)(t + 1);
- 		BTF_PRINT_TYPE(array->type);
--		BTF_PRINT_ARG("[%d]", array->nelems);
-+		BTF_PRINT_ARG("[%u]", array->nelems);
- 		break;
- 	case BTF_KIND_PTR:
- 		BTF_PRINT_TYPE(t->type);
-diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-index 9af426d43299..93b139bfb988 100644
---- a/tools/bpf/bpftool/cgroup.c
-+++ b/tools/bpf/bpftool/cgroup.c
-@@ -191,7 +191,7 @@ static int show_bpf_prog(int id, enum bpf_attach_type attach_type,
- 		if (attach_btf_name)
- 			printf(" %-15s", attach_btf_name);
- 		else if (info.attach_btf_id)
--			printf(" attach_btf_obj_id=%d attach_btf_id=%d",
-+			printf(" attach_btf_obj_id=%u attach_btf_id=%u",
- 			       info.attach_btf_obj_id, info.attach_btf_id);
- 		printf("\n");
- 	}
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index 0a764426d935..ecfa790adc13 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -714,7 +714,7 @@ ifindex_to_arch(__u32 ifindex, __u64 ns_dev, __u64 ns_ino, const char **opt)
- 	int vendor_id;
- 
- 	if (!ifindex_to_name_ns(ifindex, ns_dev, ns_ino, devname)) {
--		p_err("Can't get net device name for ifindex %d: %s", ifindex,
-+		p_err("Can't get net device name for ifindex %u: %s", ifindex,
- 		      strerror(errno));
- 		return NULL;
- 	}
-@@ -739,7 +739,7 @@ ifindex_to_arch(__u32 ifindex, __u64 ns_dev, __u64 ns_ino, const char **opt)
- 	/* No NFP support in LLVM, we have no valid triple to return. */
- 	default:
- 		p_err("Can't get arch name for device vendor id 0x%04x",
--		      vendor_id);
-+		      (unsigned int)vendor_id);
- 		return NULL;
- 	}
- }
-diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
-index c032d2c6ab6d..8895b4e1f690 100644
---- a/tools/bpf/bpftool/jit_disasm.c
-+++ b/tools/bpf/bpftool/jit_disasm.c
-@@ -343,7 +343,8 @@ int disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
- {
- 	const struct bpf_line_info *linfo = NULL;
- 	unsigned int nr_skip = 0;
--	int count, i, pc = 0;
-+	int count, i;
-+	unsigned int pc = 0;
- 	disasm_ctx_t ctx;
- 
- 	if (!len)
-diff --git a/tools/bpf/bpftool/map_perf_ring.c b/tools/bpf/bpftool/map_perf_ring.c
-index 21d7d447e1f3..552b4ca40c27 100644
---- a/tools/bpf/bpftool/map_perf_ring.c
-+++ b/tools/bpf/bpftool/map_perf_ring.c
-@@ -91,15 +91,15 @@ print_bpf_output(void *private_data, int cpu, struct perf_event_header *event)
- 		jsonw_end_object(json_wtr);
- 	} else {
- 		if (e->header.type == PERF_RECORD_SAMPLE) {
--			printf("== @%lld.%09lld CPU: %d index: %d =====\n",
-+			printf("== @%llu.%09llu CPU: %d index: %d =====\n",
- 			       e->time / 1000000000ULL, e->time % 1000000000ULL,
- 			       cpu, idx);
- 			fprint_hex(stdout, e->data, e->size, " ");
- 			printf("\n");
- 		} else if (e->header.type == PERF_RECORD_LOST) {
--			printf("lost %lld events\n", lost->lost);
-+			printf("lost %llu events\n", lost->lost);
- 		} else {
--			printf("unknown event type=%d size=%d\n",
-+			printf("unknown event type=%u size=%u\n",
- 			       e->header.type, e->header.size);
- 		}
- 	}
-diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index d2242d9f8441..811150873125 100644
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -476,7 +476,7 @@ static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
- 	for (i = 0; i < optq.count; i++) {
- 		NET_START_OBJECT;
- 		NET_DUMP_STR("devname", "%s", dev->devname);
--		NET_DUMP_UINT("ifindex", "(%u)", dev->ifindex);
-+		NET_DUMP_UINT("ifindex", "(%d)", dev->ifindex);
- 		NET_DUMP_STR("kind", " %s", attach_loc_strings[loc]);
- 		ret = __show_dev_tc_bpf_name(prog_ids[i], prog_name,
- 					     sizeof(prog_name));
-@@ -831,7 +831,7 @@ static void show_link_netfilter(void)
- 		if (err) {
- 			if (errno == ENOENT)
- 				break;
--			p_err("can't get next link: %s (id %d)", strerror(errno), id);
-+			p_err("can't get next link: %s (id %u)", strerror(errno), id);
- 			break;
- 		}
- 
-diff --git a/tools/bpf/bpftool/netlink_dumper.c b/tools/bpf/bpftool/netlink_dumper.c
-index 5f65140b003b..00741d51e7de 100644
---- a/tools/bpf/bpftool/netlink_dumper.c
-+++ b/tools/bpf/bpftool/netlink_dumper.c
-@@ -26,8 +26,7 @@ static void xdp_dump_prog_id(struct nlattr **tb, int attr,
- 		NET_END_OBJECT
- }
- 
--static int do_xdp_dump_one(struct nlattr *attr, unsigned int ifindex,
--			   const char *name)
-+static int do_xdp_dump_one(struct nlattr *attr, int ifindex, const char *name)
- {
- 	struct nlattr *tb[IFLA_XDP_MAX + 1];
- 	unsigned char mode;
-@@ -168,7 +167,7 @@ int do_filter_dump(struct tcmsg *info, struct nlattr **tb, const char *kind,
- 		NET_START_OBJECT;
- 		if (devname[0] != '\0')
- 			NET_DUMP_STR("devname", "%s", devname);
--		NET_DUMP_UINT("ifindex", "(%u)", ifindex);
-+		NET_DUMP_UINT("ifindex", "(%d)", ifindex);
- 		NET_DUMP_STR("kind", " %s", kind);
- 		ret = do_bpf_filter_dump(tb[TCA_OPTIONS]);
- 		NET_END_OBJECT_FINAL;
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index e71be67f1d86..58791542515a 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -521,10 +521,10 @@ static void print_prog_header_plain(struct bpf_prog_info *info, int fd)
- 	print_dev_plain(info->ifindex, info->netns_dev, info->netns_ino);
- 	printf("%s", info->gpl_compatible ? "  gpl" : "");
- 	if (info->run_time_ns)
--		printf(" run_time_ns %lld run_cnt %lld",
-+		printf(" run_time_ns %llu run_cnt %llu",
- 		       info->run_time_ns, info->run_cnt);
- 	if (info->recursion_misses)
--		printf(" recursion_misses %lld", info->recursion_misses);
-+		printf(" recursion_misses %llu", info->recursion_misses);
- 	printf("\n");
- }
- 
-@@ -569,7 +569,7 @@ static void print_prog_plain(struct bpf_prog_info *info, int fd, bool orphaned)
- 	}
- 
- 	if (info->btf_id)
--		printf("\n\tbtf_id %d", info->btf_id);
-+		printf("\n\tbtf_id %u", info->btf_id);
- 
- 	emit_obj_refs_plain(refs_table, info->id, "\n\tpids ");
- 
-@@ -1164,7 +1164,7 @@ static int get_run_data(const char *fname, void **data_ptr, unsigned int *size)
- 		}
- 		if (nb_read > buf_size - block_size) {
- 			if (buf_size == UINT32_MAX) {
--				p_err("data_in/ctx_in is too long (max: %d)",
-+				p_err("data_in/ctx_in is too long (max: %u)",
- 				      UINT32_MAX);
- 				goto err_free;
- 			}
-@@ -2251,7 +2251,7 @@ static char *profile_target_name(int tgt_fd)
- 
- 	t = btf__type_by_id(btf, func_info.type_id);
- 	if (!t) {
--		p_err("btf %d doesn't have type %d",
-+		p_err("btf %u doesn't have type %u",
- 		      info.btf_id, func_info.type_id);
- 		goto out;
- 	}
-@@ -2329,7 +2329,7 @@ static int profile_open_perf_events(struct profiler_bpf *obj)
- 			continue;
- 		for (cpu = 0; cpu < obj->rodata->num_cpu; cpu++) {
- 			if (profile_open_perf_event(m, cpu, map_fd)) {
--				p_err("failed to create event %s on cpu %d",
-+				p_err("failed to create event %s on cpu %u",
- 				      metrics[m].name, cpu);
- 				return -1;
- 			}
-diff --git a/tools/bpf/bpftool/tracelog.c b/tools/bpf/bpftool/tracelog.c
-index bf1f02212797..31d806e3bdaa 100644
---- a/tools/bpf/bpftool/tracelog.c
-+++ b/tools/bpf/bpftool/tracelog.c
-@@ -78,7 +78,7 @@ static bool get_tracefs_pipe(char *mnt)
- 		return false;
- 
- 	/* Allow room for NULL terminating byte and pipe file name */
--	snprintf(format, sizeof(format), "%%*s %%%zds %%99s %%*s %%*d %%*d\\n",
-+	snprintf(format, sizeof(format), "%%*s %%%zus %%99s %%*s %%*d %%*d\\n",
- 		 PATH_MAX - strlen(pipe_name) - 1);
- 	while (fscanf(fp, format, mnt, type) == 2)
- 		if (strcmp(type, fstype) == 0) {
-diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
-index d0094345fb2b..5e7cb8b36fef 100644
---- a/tools/bpf/bpftool/xlated_dumper.c
-+++ b/tools/bpf/bpftool/xlated_dumper.c
-@@ -199,13 +199,13 @@ static const char *print_imm(void *private_data,
- 
- 	if (insn->src_reg == BPF_PSEUDO_MAP_FD)
- 		snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
--			 "map[id:%u]", insn->imm);
-+			 "map[id:%d]", insn->imm);
- 	else if (insn->src_reg == BPF_PSEUDO_MAP_VALUE)
- 		snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
--			 "map[id:%u][0]+%u", insn->imm, (insn + 1)->imm);
-+			 "map[id:%d][0]+%d", insn->imm, (insn + 1)->imm);
- 	else if (insn->src_reg == BPF_PSEUDO_MAP_IDX_VALUE)
- 		snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
--			 "map[idx:%u]+%u", insn->imm, (insn + 1)->imm);
-+			 "map[idx:%d]+%d", insn->imm, (insn + 1)->imm);
- 	else if (insn->src_reg == BPF_PSEUDO_FUNC)
- 		snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
- 			 "subprog[%+d]", insn->imm);
--- 
-2.47.1
+- 00: key not set
+- 01: key set, no value
+- 10: key set, 4 bytes
+- 11: key set, 16 bytes
 
+We wouldn't popcnt the low bit, just the high bit, and high & low.
+
+>
+> >
+> > That only leaves one other size, maybe 4 for smaller values?
+> >
+> > If we want more sizes, we could also:
+> >
+> > - Add another u64 word to the header, so we have 3 bits per key. It
+> >   uses more room, and we need more popcnts, but most modern x86 CPUs ca=
+n
+> >   do 3 popcnts in parallel so it could be ok.
+>
+> Two u64s already need 3 pop counts, so it's a good compromise as-is.
+>
+> > - Let users set consecutive keys to one big value. Instead of supportin=
+g
+> >   size 16, we let them set two 8 byte KVs in one trait_set() call and
+> >   provide a 16 byte value. Eg:
+> >
+> >         trait_set_batch(u64 key_from, u64_key_to, size, ...);
+> >
+> >   It's easy to implement, but it makes the API more complicated.
+>
+> I don't think it complicates the api.
+> With max size 16 the user can put two consecutive keys of, say, 16 and 8
+> to make 24 bytes of info,
+> or use 4 keys of 16 byte each to form 64-bytes of info.
+> The bit manipulations are too tricky for compilers to optimize.
+> So even with full inlining the two trait_set() of consecutive keys
+> will still be largely separate blobs of code.
+> So trait_[gs]et_batch() makes sense to me.
+
+Ok! I'll respin this with a batch API too.
+
+>
+> Also let's not over focus on networking use cases.
+> This mini KV will be useful in all bpf maps including local storage.
+> For example the user process can add information about itself into
+> task local storage while sched-ext can use that to make scheduling decisi=
+ons.
+
+Good point, we've been focusing on networking only. Are you thinking
+of the value sizes, or is there something else that would help for other
+use cases?
 
