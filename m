@@ -1,217 +1,219 @@
-Return-Path: <bpf+bounces-53741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF53A59A66
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 16:52:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E132A59A82
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 16:58:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 221CB1888A60
-	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 15:52:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBE9E188E612
+	for <lists+bpf@lfdr.de>; Mon, 10 Mar 2025 15:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 020F522DF82;
-	Mon, 10 Mar 2025 15:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A9422E415;
+	Mon, 10 Mar 2025 15:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="kKLJRbVI";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Hlnpnwaz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nad7nJ78"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995CC22069E;
-	Mon, 10 Mar 2025 15:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE69C22E3F4
+	for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 15:57:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741621954; cv=none; b=TqC3gjtFLaQ8FRgcoF49ObDmKUYx8pFw5kGXzLgTUnKAnDI8r+uQSRWlr+gEGVfA6gYO8qZlQbl8f6cdAiZaMMYUrNW5Svyz2jbd3eX/OK5w5hKUSXRcs2N+sjRrG4n55419VNJMhsZQE5puoXubuUy7Y0fv0KyvkGsgO15EOgw=
+	t=1741622238; cv=none; b=BYy5E8dPD5RdjcBMHECIrVwAXMXEkNwvqSbEE3K9lejO+1Kc688MCx0k704S/zt/6PoOFuq7LfZXVYOQMuHzdSOP08C1oThPRqYl7BVdJVsBaNKf5FVo/V2qgxavaQ+IpP4TkpsF+Sv8W1VikhPcBKxs20F/C4spESHfb9Gjw1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741621954; c=relaxed/simple;
-	bh=LLBgJHAWcK8fXF+7yKP/eBHoQ+O33J7NZF81s0WDjWY=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=KVgwcPkbGsvd1Ijstq1p7zzhsw7dk3bpWuBENCvz9UGtQf1jRg1PcRsg6dnYct5NhfZhJ9N73XyPLDmiXvdFD601rlPcwarcYK3j/e9sMr4Ss/jtcYbIQfUYrKE3W4nydmB+bpXQqll6UPZ2ovezdKpYJV4MuAFHWilV7PgKSA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=kKLJRbVI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Hlnpnwaz; arc=none smtp.client-ip=103.168.172.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arthurfabre.com
-Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
-	by mailfout.phl.internal (Postfix) with ESMTP id A529C1382D57;
-	Mon, 10 Mar 2025 11:52:31 -0400 (EDT)
-Received: from phl-imap-13 ([10.202.2.103])
-  by phl-compute-02.internal (MEProxy); Mon, 10 Mar 2025 11:52:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arthurfabre.com;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
-	 t=1741621951; x=1741708351; bh=qImRhIDqJuLJMiTBNz81AyZHV8Om9bqb
-	nVSAsfrFHfs=; b=kKLJRbVI8zYE4w9sNgjwsGAtkR+Cz17jZoEkm8scnNSptGjx
-	d480YFfIw/4Imf/pfyVP0nooVqtoaPuxoETohoghVh4EBG0zA2vk0U763TT1ot3P
-	38ASoNdkVksHZfHAuPKfMUH1FHT4yfmvrrMYIBJ4f5rlp81abad0kH7/jrax1We4
-	AoN47lZOs3rbP/KJdI9VgB9MgH2m6BtTNAG22HLL0PtUPsha9sd91zyDhd9AoT5a
-	yBaGItACTv5UYFHTDn85qiUds43/gpCaGUX9pBaZuLvzkobIPjYqs9kS0WxOtN/m
-	W93w7/ETrAvt8iAhfk0kybKL4Nl0G3CRo/yb9w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1741621951; x=
-	1741708351; bh=qImRhIDqJuLJMiTBNz81AyZHV8Om9bqbnVSAsfrFHfs=; b=H
-	lnpnwazEqaTWrLJP3HcFLnQvJ1PdlX+vxiwHN+7gi9DG1rAhttVtzTaZiXBJhyyX
-	tXMp/rvIuMICHBQIZ33IBY02dboBJH+6p+TZsKYoYd0Pv0U5KJAoWqs3yjHu6wyh
-	kZI0yYTmJpgqTliCfSMKV7P8Q6Y2j3Hy9IjHkDjioLCpuxPaIQk391c0vRYAMALH
-	B4JYOUN+61k0TpFoS4kB1C0b5jBaTT09p0rewSgcWZds4UYe81Req0EkCmAAxh1h
-	79zLsLxxX86oAHVeVuCmQ5DhUIwh3YHzvw6ifaGsAlQyNszTfslCAjs38QXTXeob
-	+zeEtyYk2AOxbc2P1FpSA==
-X-ME-Sender: <xms:vwrPZxQr2vr30Frr3Y0Mw5Din0YVhOlGr2Dg9MzqbpTs9ZiFxlDa1w>
-    <xme:vwrPZ6xr_ifFxQAPhCXlAxW9gPhS7vj7JbAuhD_bE8oGExB72wVst97oGvEG_np44
-    _ls_XBF4xcYsdRoQVs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduudeljeehucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepofgggfgtfffkvefuhffvofhfjgesthhqredt
-    redtjeenucfhrhhomhepfdetrhhthhhurhcuhfgrsghrvgdfuceorghrthhhuhhrsegrrh
-    hthhhurhhfrggsrhgvrdgtohhmqeenucggtffrrghtthgvrhhnpefhfeejgefhhffhveel
-    teehhfffheffvdettdelgfeltefhteelveeuffetfffgjeenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhthhhurhesrghrthhhuhhrfhgr
-    sghrvgdrtghomhdpnhgspghrtghpthhtohepuddtpdhmohguvgepshhmthhpohhuthdprh
-    gtphhtthhopegrfhgrsghrvgestghlohhuughflhgrrhgvrdgtohhmpdhrtghpthhtohep
-    jhgrkhhusgestghlohhuughflhgrrhgvrdgtohhmpdhrtghpthhtohepjhgsrhgrnhguvg
-    gsuhhrghestghlohhuughflhgrrhgvrdgtohhmpdhrtghpthhtohephigrnhestghlohhu
-    ughflhgrrhgvrdgtohhmpdhrtghpthhtohephhgrfihksehkvghrnhgvlhdrohhrghdprh
-    gtphhtthhopehlsghirghntghonhesrhgvughhrghtrdgtohhmpdhrtghpthhtoheplhho
-    rhgvnhiiohdrsghirghntghonhhisehrvgguhhgrthdrtghomhdprhgtphhtthhopehthh
-    hoihhlrghnugesrhgvughhrghtrdgtohhmpdhrtghpthhtohepsghpfhesvhhgvghrrdhk
-    vghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:vwrPZ224AP5AS0tzHfSRE4PT2auaAxHWZBzgv2VwXajSrbWfh4LqrQ>
-    <xmx:vwrPZ5DgX5u-vaH0Zy07th8iENDYRtFI1HnFi1jGPUGJV-rK132rFw>
-    <xmx:vwrPZ6jBl2y2gChgVJNnmzBbfqmRMawGaIBEmfTSRjYukrNGzjQJPw>
-    <xmx:vwrPZ9oAYUxleEM3EBJVHSWO58tjLkZQL4c66sXcytjBVmRqb4AvRQ>
-    <xmx:vwrPZ1NFbhHwDImxarrfY4FFZlZhpdM2tVK0VxWdrVwIVqFd-W0q3ZTG>
-Feedback-ID: i25f1493c:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 5BDC51F00080; Mon, 10 Mar 2025 11:52:31 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1741622238; c=relaxed/simple;
+	bh=ZnWBolZ9mgr0354kBHx3ezMjZj3xyL740u/tFqoPJuc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Bm4W87t/CSdC3w/fm0qsnX3eFmxWhKtIUH8xsZrVG1QF+Gw7+BgD8JYAFYVqrzPGoNCQ6J+MC0Q86UE6/5Djn6ZbTU99S+aXv7vP7xu9v5XrOXqPbUSj3m81VAZIyTOZwO+0Y7Px7gUJeGz60Qo4IuDu0GOEoj+rl4QeGQpBAFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nad7nJ78; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-22435603572so43684945ad.1
+        for <bpf@vger.kernel.org>; Mon, 10 Mar 2025 08:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741622236; x=1742227036; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FfDY9iQaXwU4VfDLVOW8mAyFKA2HYB/3pD3Bbfn9vuc=;
+        b=Nad7nJ788ayVd1R6qQMMVfp/ge6zwgMDINR8c7jOKkRVwqMj3wZH72B/RfOxk3ltEJ
+         PADTRs6v5PRjo4mItyz6bADDo9Z5zODctnopMF4aYcw2Kc8HBFNQNYw800vjLcFwBG87
+         W4N8vz3vYx+XNULxpydxYuAQY26z4abikZZOp2on/6wrj3hBI1knfDOQV+SlJvOoKUV4
+         HniitepcLJJAqYns76KY5YlLX2T5eb0V6Qa//zvX8HzUFZiXHwHkPyBaKh7zGl7Ky5lN
+         H7Lt+BZ7NeirOSkRGTt+/f83e7lecq7/pDDa2Mxi/xxIjtLfAN48jO+OgtE02eB7Tnoa
+         mZtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741622236; x=1742227036;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FfDY9iQaXwU4VfDLVOW8mAyFKA2HYB/3pD3Bbfn9vuc=;
+        b=HtJ51mf06NjxVteYvxX5MHaXP15OW7SY16YuCIvqGWhlvjuCK4Gq3E4ZbAIp+n/HhA
+         zOpvLtxpakzPG62PU7dwKbsd3+qS8v3RgEPzhRh6tlK74w+T/1JgARectZ7UQJmCa8qD
+         Gr0Kjq87EvHlmkReyGKo3hr0iLn+LQ9F/0UcyhW3pVFCk+MHZodBTRUHN8bHc9LgrBks
+         DmH5Ngvao+bk1VhFgtNU8vmQ53bLJloTpZ0w6kOBpQxWFL3w48MRbQKN7+vMREsW9O5Z
+         iZz24RpV6BHxbRR7XuJPhnQ9fhVQkE69T6d5ZcyXHHa6K71u/ZQf5759M1IIHjjHA4Y8
+         dPOw==
+X-Gm-Message-State: AOJu0YxgbXBrDgG3hqeUONmLXUWKXzac0ZEdRE8hWQsgvQ+eaqP88Usj
+	RYxsJ+V5jD151O77MQ8idn4W8Toj7gNZ4BR/FHygdbXLhh3ruQfwu+Bvtoo8U6HQSDmivqE2d+v
+	mqz+yojyKgzwThn/ffUaK0dnzZDM=
+X-Gm-Gg: ASbGncv3EreSE9vahWyckY9LIK8Mj4x9nsiVBfR2iok2/iuyDscJz0CTJPpv10t2eWt
+	LdkseztFN7VvshvbdR/Sd57rhwb0uGDbvMml9hiFR03FGX8ULD+WurD1vquXrkuBUFMBq6LKiKE
+	AO5HjreIyAyvDLCLClUkco/fZ/WOG8QWmucukB73JGKQ==
+X-Google-Smtp-Source: AGHT+IEhQ+uASdYPK5qUdr1BEVGo34oNsBD31IK0svXg698SSVs+hhQDLJ7JRCA5suEGVWDX+1EPUeXeD7A8YVhSCLI=
+X-Received: by 2002:a17:902:ce0a:b0:220:cb1a:da5 with SMTP id
+ d9443c01a7336-22428c075e3mr262400145ad.40.1741622235977; Mon, 10 Mar 2025
+ 08:57:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20250310001319.41393-1-mykyta.yatsenko5@gmail.com> <20250310001319.41393-2-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250310001319.41393-2-mykyta.yatsenko5@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 10 Mar 2025 08:57:02 -0700
+X-Gm-Features: AQ5f1JouxV4_ff0wHPTcEujhVcLlxOkSnqw47vOed0Lvr9T0vab0nyCSNjPqPUg
+Message-ID: <CAEf4BzbwD62Q1W6KQnjzAvKULcihKG0VtYdJRr1wD0RS9=eJAw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/4] bpf: BPF token support for BPF_BTF_GET_FD_BY_ID
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	olsajiri@gmail.com, yonghong.song@linux.dev, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 10 Mar 2025 16:52:30 +0100
-Message-Id: <D8CPGEGQ4630.2MKAQH44PFCCO@arthurfabre.com>
-Cc: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <jakub@cloudflare.com>,
- <hawk@kernel.org>, <yan@cloudflare.com>, <jbrandeburg@cloudflare.com>,
- <thoiland@redhat.com>, <lbiancon@redhat.com>, "Arthur Fabre"
- <afabre@cloudflare.com>
-Subject: Re: [PATCH RFC bpf-next 05/20] trait: Replace memcpy calls with
- inline copies
-From: "Arthur Fabre" <arthur@arthurfabre.com>
-To: "Lorenzo Bianconi" <lorenzo.bianconi@redhat.com>
-X-Mailer: aerc 0.17.0
-References: <20250305-afabre-traits-010-rfc2-v1-0-d0ecfb869797@cloudflare.com> <20250305-afabre-traits-010-rfc2-v1-5-d0ecfb869797@cloudflare.com> <Z87D9GblwWBZjwE-@lore-desk>
-In-Reply-To: <Z87D9GblwWBZjwE-@lore-desk>
 
-On Mon Mar 10, 2025 at 11:50 AM CET, Lorenzo Bianconi wrote:
-> > From: Arthur Fabre <afabre@cloudflare.com>
-> >=20
-> > When copying trait values to or from the caller, the size isn't a
-> > constant so memcpy() ends up being a function call.
-> >=20
-> > Replace it with an inline implementation that only handles the sizes we
-> > support.
-> >=20
-> > We store values "packed", so they won't necessarily be 4 or 8 byte
-> > aligned.
-> >=20
-> > Setting and getting traits is roughly ~40% faster.
+On Sun, Mar 9, 2025 at 5:13=E2=80=AFPM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
 >
-> Nice! I guess in a formal series this patch can be squashed with patch 1/=
-20
-> (adding some comments).
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>
+> Currently BPF_BTF_GET_FD_BY_ID requires CAP_SYS_ADMIN, which does not
+> allow running it from user namespace. This creates a problem when
+> freplace program running from user namespace needs to query target
+> program BTF.
+> This patch relaxes capable check from CAP_SYS_ADMIN to CAP_BPF and adds
+> support for BPF token that can be passed in attributes to syscall.
+>
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  include/uapi/linux/bpf.h                      |  1 +
+>  kernel/bpf/syscall.c                          | 21 ++++++++++++++++---
+>  tools/include/uapi/linux/bpf.h                |  1 +
+>  .../bpf/prog_tests/libbpf_get_fd_by_id_opts.c |  3 +--
+>  4 files changed, 21 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index bb37897c0393..73c23daacabf 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1652,6 +1652,7 @@ union bpf_attr {
+>                 };
+>                 __u32           next_id;
+>                 __u32           open_flags;
+> +               __s32           token_fd;
+>         };
+>
+>         struct { /* anonymous struct used by BPF_OBJ_GET_INFO_BY_FD */
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 57a438706215..eb3a31aefa70 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -5137,17 +5137,32 @@ static int bpf_btf_load(const union bpf_attr *att=
+r, bpfptr_t uattr, __u32 uattr_
+>         return btf_new_fd(attr, uattr, uattr_size);
+>  }
+>
+> -#define BPF_BTF_GET_FD_BY_ID_LAST_FIELD btf_id
+> +#define BPF_BTF_GET_FD_BY_ID_LAST_FIELD token_fd
+>
+>  static int bpf_btf_get_fd_by_id(const union bpf_attr *attr)
+>  {
+> +       struct bpf_token *token =3D NULL;
+> +
+>         if (CHECK_ATTR(BPF_BTF_GET_FD_BY_ID))
+>                 return -EINVAL;
+>
+> -       if (!capable(CAP_SYS_ADMIN))
+> -               return -EPERM;
+> +       if (attr->open_flags & BPF_F_TOKEN_FD) {
+> +               token =3D bpf_token_get_from_fd(attr->token_fd);
+> +               if (IS_ERR(token))
+> +                       return PTR_ERR(token);
+> +               if (!bpf_token_allow_cmd(token, BPF_BTF_GET_FD_BY_ID))
+> +                       goto out;
 
-Happy to squash and add comments instead if that's better :)
+Look at map_create() and its handling of BPF token. If
+bpf_token_allow_cmd() returns false, we still perform
+bpf_token_capable(token, <cap>) check (where token will be NULL, so
+it's effectively just capable() check). While here you will just
+return -EPERM *even if the process actually has real CAP_SYS_ADMIN*
+capability.
+
+Instead, do:
+
+bpf_token_put(token);
+token =3D NULL;
+
+and carry on the rest of the logic
+
+pw-bot: cr
+
+
+> +       }
+> +
+> +       if (!bpf_token_capable(token, CAP_SYS_ADMIN))
+> +               goto out;
+> +
+> +       bpf_token_put(token);
+>
+>         return btf_get_fd_by_id(attr->btf_id);
+> +out:
+> +       bpf_token_put(token);
+> +       return -EPERM;
+>  }
+>
+>  static int bpf_task_fd_query_copy(const union bpf_attr *attr,
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index bb37897c0393..73c23daacabf 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1652,6 +1652,7 @@ union bpf_attr {
+>                 };
+>                 __u32           next_id;
+>                 __u32           open_flags;
+> +               __s32           token_fd;
+>         };
+>
+>         struct { /* anonymous struct used by BPF_OBJ_GET_INFO_BY_FD */
+> diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_by_id_o=
+pts.c b/tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_by_id_opts.c
+> index a3f238f51d05..976ff38a6d43 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_by_id_opts.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_by_id_opts.c
+> @@ -75,9 +75,8 @@ void test_libbpf_get_fd_by_id_opts(void)
+>         if (!ASSERT_EQ(ret, -EINVAL, "bpf_link_get_fd_by_id_opts"))
+>                 goto close_prog;
+>
+> -       /* BTF get fd with opts set should not work (no kernel support). =
+*/
+>         ret =3D bpf_btf_get_fd_by_id_opts(0, &fd_opts_rdonly);
+> -       ASSERT_EQ(ret, -EINVAL, "bpf_btf_get_fd_by_id_opts");
+> +       ASSERT_EQ(ret, -ENOENT, "bpf_btf_get_fd_by_id_opts");
+
+Why would your patch change this behavior? and if it does, should it?
+This looks fishy.
 
 >
-> Regards,
-> Lorenzo
+>  close_prog:
+>         if (fd >=3D 0)
+> --
+> 2.48.1
 >
-> >=20
-> > Signed-off-by: Arthur Fabre <afabre@cloudflare.com>
-> > ---
-> >  include/net/trait.h | 25 +++++++++++++++++++------
-> >  1 file changed, 19 insertions(+), 6 deletions(-)
-> >=20
-> > diff --git a/include/net/trait.h b/include/net/trait.h
-> > index 536b8a17dbbc091b4d1a4d7b4b21c1e36adea86a..d4581a877bd57a32e2ad032=
-147c906764d6d37f8 100644
-> > --- a/include/net/trait.h
-> > +++ b/include/net/trait.h
-> > @@ -7,6 +7,7 @@
-> >  #include <linux/errno.h>
-> >  #include <linux/string.h>
-> >  #include <linux/bitops.h>
-> > +#include <linux/unaligned.h>
-> > =20
-> >  /* Traits are a very limited KV store, with:
-> >   * - 64 keys (0-63).
-> > @@ -145,23 +146,23 @@ int trait_set(void *traits, void *hard_end, u64 k=
-ey, const void *val, u64 len, u
-> >  			memmove(traits + off + len, traits + off, traits_size(traits) - off=
-);
-> >  	}
-> > =20
-> > -	/* Set our value. */
-> > -	memcpy(traits + off, val, len);
-> > -
-> > -	/* Store our length in header. */
-> >  	u64 encode_len =3D 0;
-> > -
-> >  	switch (len) {
-> >  	case 2:
-> > +		/* Values are least two bytes, so they'll be two byte aligned */
-> > +		*(u16 *)(traits + off) =3D *(u16 *)val;
-> >  		encode_len =3D 1;
-> >  		break;
-> >  	case 4:
-> > +		put_unaligned(*(u32 *)val, (u32 *)(traits + off));
-> >  		encode_len =3D 2;
-> >  		break;
-> >  	case 8:
-> > +		put_unaligned(*(u64 *)val, (u64 *)(traits + off));
-> >  		encode_len =3D 3;
-> >  		break;
-> >  	}
-> > +
-> >  	h->high |=3D (encode_len >> 1) << key;
-> >  	h->low |=3D (encode_len & 1) << key;
-> >  	return 0;
-> > @@ -201,7 +202,19 @@ int trait_get(void *traits, u64 key, void *val, u6=
-4 val_len)
-> >  	if (real_len > val_len)
-> >  		return -ENOSPC;
-> > =20
-> > -	memcpy(val, traits + off, real_len);
-> > +	switch (real_len) {
-> > +	case 2:
-> > +		/* Values are least two bytes, so they'll be two byte aligned */
-> > +		*(u16 *)val =3D *(u16 *)(traits + off);
-> > +		break;
-> > +	case 4:
-> > +		*(u32 *)val =3D get_unaligned((u32 *)(traits + off));
-> > +		break;
-> > +	case 8:
-> > +		*(u64 *)val =3D get_unaligned((u64 *)(traits + off));
-> > +		break;
-> > +	}
-> > +
-> >  	return real_len;
-> >  }
-> > =20
-> >=20
-> > --=20
-> > 2.43.0
-> >=20
-> >=20
-
 
