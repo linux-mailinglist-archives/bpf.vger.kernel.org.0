@@ -1,50 +1,49 @@
-Return-Path: <bpf+bounces-53815-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53816-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01B0DA5C10F
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 13:28:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DA3BA5C0C0
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 13:23:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D673F18933AC
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 12:21:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7671E3B48FD
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 12:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF2325A2C2;
-	Tue, 11 Mar 2025 12:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9419825B672;
+	Tue, 11 Mar 2025 12:19:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mtvS7dUp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r8AqGYmk"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E6E25A2A2;
-	Tue, 11 Mar 2025 12:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120D325A63F;
+	Tue, 11 Mar 2025 12:19:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741695552; cv=none; b=cSmM4l+C2e9IZvcLmNcoS3byIBU4pOiG6mgNvU7eeg06oRRITODgs63XDjF/6oThNDK/M8jL12qULSxhVoQrhs138x0HwqQZFLplkYDD6Za2uYIJUZ03gNA5w1NcDdQnGAOtqo8CcqpPxn3af+v3IU/4fZfPbiSTzNlkF9WaGI4=
+	t=1741695555; cv=none; b=EYqMnR+lod54vyYCaXNqu7qYPWWz30aX1pX6Dg2my5dlfUTjdFgD6NuVJT67+dpiJ0Jbetlm9KZ+3MWXpBA2f31NmNUetAmW0ZsoUiJfQM2Z7U67eQucyZ6xpr8YpG5O5WvVrXDrdcdBGFebec3oAxu6TYVmZezBrBBVqlmHg3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741695552; c=relaxed/simple;
-	bh=hM+Tb4R5v8bLINi/KffYzAfj9nxBFX9y1AOJMkEpWCk=;
+	s=arc-20240116; t=1741695555; c=relaxed/simple;
+	bh=x+krQGj/SL7R2wTdC09zi8Lq2AOOM9k7jWivDeJJS7E=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SdY+xQvB1Xkq5RkLxkqZTE4CBP4LT0BRhLYTwPa3iWR9OfLly4LiX3JVLKqsRinFIG9iN/k7cmE2bkJIAV3C3RbiXDZeC2KXdhAhcbmfjo9chGyiT5Qvj+NRSzPECt7vA0hYTmmG+1MX6j/FFzAqLr4aGf861Bf/qu7nAIkaOGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mtvS7dUp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21D98C4CEEE;
-	Tue, 11 Mar 2025 12:19:11 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=Kh0x2fsFonW7uKwAkDhj2FWeRtXIZegBud60moeumpQdCpTgryWauxm7LbpcgWvy7OkModElRFEhXi24zNINz3FQyi2bhZZ9MAI/YG89mOTJdGLFd6812EJ9PfOQXb51RHLZXtfIDEdTyPsItwYzSdxd/YAwSKhZ/WNqVDV0wNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r8AqGYmk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 015E2C4CEEC;
+	Tue, 11 Mar 2025 12:19:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741695551;
-	bh=hM+Tb4R5v8bLINi/KffYzAfj9nxBFX9y1AOJMkEpWCk=;
+	s=k20201202; t=1741695554;
+	bh=x+krQGj/SL7R2wTdC09zi8Lq2AOOM9k7jWivDeJJS7E=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=mtvS7dUpX92xO/aWwKdRelwCLf5IKHFEHhw03H4yOPk+kGjXEOcMTnCxn1TIufoAR
-	 rbgN+CEuyzxrB9DFcjJnx6d/ZQpl7GRZbtQ4DE4L3TdbeNWcK4xMDzkEdGzWi4L8Fh
-	 GhnOsn8oFwdtku8OaN0lCJJhsK12LBxr3IYkrO/nZceHeVqRgKm5dRA+pzfq0amITL
-	 kh3cnGnkwpR2x9J+1p6bid8s0c5as08d1IOWundV5LmNn3pFMssapMIndBtG+8XNKV
-	 h8X+6fxlSOT6lyAjNXzkA93+kujQQUHn6XWPkoJ/NzB8ADekfC34H0+XNA+AYavzW6
-	 uQou4/yOIttSg==
+	b=r8AqGYmkKFQQ/vy7x1cM404pF4kwW8b9mOnf9uhfwPUs7/J3vpKMzAJjfAXOquY1L
+	 36qn3x0ZcN9kZFSINUG95beouVuvqQk51kt6TDGbq3BeFwB7FJUtrpcmFrxubQZOGU
+	 WaTwf6mK71Osy15xecOCW+flQF4dRFyi11XEAXOgo9ilG83bEoUrIqw5f2JS7AD5xh
+	 nYpQ1mna/BFRAoAtVl5aUD/Y+dckxhrzHEa5RLHCh8MHWzi5w5MOv1/X62hnh24n/d
+	 PUG1fyxAXOIOwqv8D4bs6uqN7OmRF9yI19BP/TSj8f5+bDPq0PutZZBw9SI7I+mQE8
+	 IFJYpfJFuFyGQ==
 From: Lorenzo Bianconi <lorenzo@kernel.org>
-Date: Tue, 11 Mar 2025 13:18:37 +0100
-Subject: [PATCH net-next 5/7] net: ethernet: mediatek: Add metadata support
- for xdp mode
+Date: Tue, 11 Mar 2025 13:18:38 +0100
+Subject: [PATCH net-next 6/7] net: mana: Add metadata support for xdp mode
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -53,7 +52,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250311-mvneta-xdp-meta-v1-5-36cf1c99790e@kernel.org>
+Message-Id: <20250311-mvneta-xdp-meta-v1-6-36cf1c99790e@kernel.org>
 References: <20250311-mvneta-xdp-meta-v1-0-36cf1c99790e@kernel.org>
 In-Reply-To: <20250311-mvneta-xdp-meta-v1-0-36cf1c99790e@kernel.org>
 To: Marcin Wojtas <marcin.s.wojtas@gmail.com>, 
@@ -82,45 +81,44 @@ Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
  Lorenzo Bianconi <lorenzo@kernel.org>
 X-Mailer: b4 0.14.2
 
-Set metadata size building the skb from xdp_buff in mediatek driver
+Set metadata size building the skb from xdp_buff in mana driver
 
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/microsoft/mana/mana_bpf.c | 2 +-
+ drivers/net/ethernet/microsoft/mana/mana_en.c  | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index 922330b3f4d70421276ecd3f4ab175b3ae263f71..43197b28b3e745319e974c6022a6a51b6953f60a 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -2122,7 +2122,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 		if (ring->page_pool) {
- 			struct page *page = virt_to_head_page(data);
- 			struct xdp_buff xdp;
--			u32 ret;
-+			u32 ret, metasize;
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_bpf.c b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
+index 23b1521c0df96e7fd595daad8b49fa9be935090c..d30721d4516fc60cf8883f2b35cc561559082ccc 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_bpf.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
+@@ -91,7 +91,7 @@ u32 mana_run_xdp(struct net_device *ndev, struct mana_rxq *rxq,
+ 		goto out;
  
- 			new_data = mtk_page_pool_get_buff(ring->page_pool,
- 							  &dma_addr,
-@@ -2138,7 +2138,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+ 	xdp_init_buff(xdp, PAGE_SIZE, &rxq->xdp_rxq);
+-	xdp_prepare_buff(xdp, buf_va, XDP_PACKET_HEADROOM, pkt_len, false);
++	xdp_prepare_buff(xdp, buf_va, XDP_PACKET_HEADROOM, pkt_len, true);
  
- 			xdp_init_buff(&xdp, PAGE_SIZE, &ring->xdp_q);
- 			xdp_prepare_buff(&xdp, data, MTK_PP_HEADROOM, pktlen,
--					 false);
-+					 true);
- 			xdp_buff_clear_frags_flag(&xdp);
+ 	act = bpf_prog_run_xdp(prog, xdp);
  
- 			ret = mtk_xdp_run(eth, ring, &xdp, netdev);
-@@ -2158,6 +2158,9 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 2d826077d38cdac7ebe9c355cf883b0d727eeca2..a3986fc47b819dae1f8a1d62ebe1ff051b144236 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1559,8 +1559,12 @@ static struct sk_buff *mana_build_skb(struct mana_rxq *rxq, void *buf_va,
+ 		return NULL;
  
- 			skb_reserve(skb, xdp.data - xdp.data_hard_start);
- 			skb_put(skb, xdp.data_end - xdp.data);
-+			metasize = xdp.data - xdp.data_meta;
-+			if (metasize)
-+				skb_metadata_set(skb, metasize);
- 			skb_mark_for_recycle(skb);
- 		} else {
- 			if (ring->frag_size <= PAGE_SIZE)
+ 	if (xdp->data_hard_start) {
++		u32 metasize = xdp->data - xdp->data_meta;
++
+ 		skb_reserve(skb, xdp->data - xdp->data_hard_start);
+ 		skb_put(skb, xdp->data_end - xdp->data);
++		if (metasize)
++			skb_metadata_set(skb, metasize);
+ 		return skb;
+ 	}
+ 
 
 -- 
 2.48.1
