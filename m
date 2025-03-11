@@ -1,129 +1,137 @@
-Return-Path: <bpf+bounces-53847-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53848-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33488A5CAB6
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 17:23:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C734A5CAE6
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 17:32:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DE16189BA65
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 16:23:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCE9617883F
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 16:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB3A25C70A;
-	Tue, 11 Mar 2025 16:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCA12260A2D;
+	Tue, 11 Mar 2025 16:32:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QlK+9P1n"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ilkGrbY2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2491EB180;
-	Tue, 11 Mar 2025 16:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59F825FA12
+	for <bpf@vger.kernel.org>; Tue, 11 Mar 2025 16:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741710201; cv=none; b=nB6Iq1wCfvKs0gkO5pVPpmHFGkMcpHlI2YV3mLQ6yP3sgeoldv7/Cs99sXPHWAGZXk6UmX27wo2HGVbvLjGg3qNs/yHkNYr0JzWrJalJZzG9cHrJooE0aLnyQhzmrSIbteLvmNZiN0P4NOVdJZEnrWnHnvhWoFvKtl35sShSh1k=
+	t=1741710722; cv=none; b=VUt/t9gsWzvP0qOymn9qRCO+Ur3l40PQGFkUcFTY2tLe/92jb8sLBKMiY2bBZaIq4jwGse3LweCCpLrNQ5GGbErjIJJm+cplpePLd9NH3VEnLKMgd7W8jspA7eIBqT34tC3bVFAKUXf86eZgLSRFLPXnrxnvJy5cUrP/XfDhGuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741710201; c=relaxed/simple;
-	bh=sCbfmw9mUciGYGwwBPd4GuSh5poYOFVJAiezu+rGBC0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kAc/dGAX/DcQgQyr10PPJqxTkpqKMlwdQ56VMv460/loFMSN68AaIT+3AN7ixQFB7s8Sgri6nESce74ACEqKusLrWNGHVYBMKKj19SzBmhIB6Rfpt2H3HyE3/3xppd9qNNU1e17zKQHnCOT+5Jmt77LQQ/iavIQR6SXD500sKVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QlK+9P1n; arc=none smtp.client-ip=209.85.216.41
+	s=arc-20240116; t=1741710722; c=relaxed/simple;
+	bh=T5xaA45swJs6EZrND2dqM9NE+NGXrrhiZbQH5uZFtfA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q0J1ED9w+R7nOkiWJ1EYPD8LlHOtme4PYDaSm0leOv3vgD+Kkn3okZKrgzN1MYGXNtbtpsHx++FL8solMHMqSBKNPfm+FpwPb2FWLtTj/eYbnwR7KeFRi/Oz4vIk9PUO/xGOfOTs5K05V6wPe84NXjN2nSipHzmdnwa373v541c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ilkGrbY2; arc=none smtp.client-ip=209.85.218.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2fea47bcb51so12071475a91.2;
-        Tue, 11 Mar 2025 09:23:20 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-aaf0f1adef8so988997866b.3
+        for <bpf@vger.kernel.org>; Tue, 11 Mar 2025 09:32:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741710199; x=1742314999; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0uZy7l3qUOyL2Z+qKh/31yAZqamw3GAny1IbGC+/M5A=;
-        b=QlK+9P1nkLspZhDtIvZH/5vKMF2v3aU4Sfa3nlwMemkPAa6mPH1aD+g+Xi/34uuhWt
-         g6fmaHeMXUJM5w1FG870ej3MOJkrNatjMUVMB+g9w4bv2QL83rhNh2DmnoFEfb4pajUx
-         GLB7pl5ofCiOAhZUz4tWxHoaZOB7EFMQAAJpdjtqcL4BMXIgwjpv9/9iTXUAHJpmp1jS
-         Ya7iqEKUqKDauggzMyeJGi0a3puV/kT29pFFcJAE5trasOAlKDLum1eG7vT9o1hrABmT
-         RPjcxiZLcRy93QfkgKiTt7zpqKuDvN25qNSmIBxlo9pvivjPkiXqVkxFaO9ET42RTuD7
-         +ljg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741710199; x=1742314999;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1741710719; x=1742315519; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0uZy7l3qUOyL2Z+qKh/31yAZqamw3GAny1IbGC+/M5A=;
-        b=dCbSjcOucui0nCbkLi6rfDuYf3YqtKmHAB+BznhnAlY46JPLR+X4/krY6nEm9d8cMf
-         B/QnKhZY70i6wFvrqSVIDXoNbu/4ZwDDTtPBOFzu16EsIpzwQCvpQwfzGCcANN9gBukv
-         USE6Qth+nzecPz6l3e2tGNd7aZy6jnZlkm2piq0efLp0iHPdy8BOwuy9vXZ/+eVUdz56
-         B+5080+2RYQfnBZuRxnj+B0qKb8Crl2C+QC8VRwDdlpgNYXhzfAYhlNgmSmYp7z5Fs5N
-         xmA/doSiyFT8W/Qv82vedSIUybjIQk1/ksPn3oFFogIYB7dqYpAdf/7T52QTYtuj4Ttl
-         DcVg==
-X-Forwarded-Encrypted: i=1; AJvYcCUnMnWsjusc/l7P9/4WJmOtbEcOv+SvXa6qXZvo1QH0s+hbsJYjJ36O6Ui8auCxVet9WvRslcde@vger.kernel.org, AJvYcCWQY8iXyYvSXCttx+o+grFt8u8Ki5qMnTjpR72h6HyYeqz8lm1WoKjnGSIQCxt3pit3UII=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8bp8FfE9Aj4qdWrVToa1GjnstCG+9SIHLf0Mb+6fxuOmV6jx8
-	mm5RYVIw5mmXoRk1ien5qG5I5s0Wjr2O60TTUq6wwTlObHVCh9fV
-X-Gm-Gg: ASbGncub1LdlVJCdO8YX3brNG/aiml6Mdn+IQnRkmjj4JdKVcKgFS2NoaRy7M8xt7VH
-	XdPFILVSIkeiXyJsoNCOcBUlRrCxe+fW+WgpVH4Awbfy5GZtHXSHerpF9Z0l/Q1mN2C2vmLeOcg
-	detf8YetU0KU6yjomeDU3VDBlpgucymyNoWoiElizxGXpFWsay4o3i3Y6Dfh8UBDnaMTq9JCHEK
-	Oyy8g50AAUBG5mHas12Uu9/4Q+WK5JxPdl1xO8UK3QLNYd15r8lvUlTworxabKMbtytBKKRTiUp
-	w814VaZ+zIpDPnCcsfsx4LDN5eZMQ/GJUbzAPs6GNa3F1g==
-X-Google-Smtp-Source: AGHT+IGMdwB06MoivJxS1E3TZw+tfdkhI+FhATOTvSARCD66DvrjOTftlxUBYqXk3EwqN+ZdB5oMkg==
-X-Received: by 2002:a17:90b:5281:b0:2ff:6f8a:3a13 with SMTP id 98e67ed59e1d1-2ff7cf167ecmr28426519a91.25.1741710199455;
-        Tue, 11 Mar 2025 09:23:19 -0700 (PDT)
-Received: from gmail.com ([98.97.37.243])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff693e73b9sm10194315a91.38.2025.03.11.09.23.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Mar 2025 09:23:18 -0700 (PDT)
-Date: Tue, 11 Mar 2025 09:23:04 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Michal Luczaj <mhal@rbox.co>
-Cc: Stefano Garzarella <sgarzare@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Bobby Eshleman <bobby.eshleman@bytedance.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH net] vsock/bpf: Handle EINTR connect() racing against
- sockmap update
-Message-ID: <20250311162304.5xcnjeue2uwrhswg@gmail.com>
-References: <20250307-vsock-trans-signal-race-v1-1-3aca3f771fbd@rbox.co>
+        bh=+ATE8FIn1idDAbY9I/1HHOPz3uLeAU5hh8uGv8VJ6WE=;
+        b=ilkGrbY2vf9tDeyXtY5ra+Es9ibaP4eJOEB5UXGxlrDRmE1iEPSNKsCdtv2vgECzMq
+         JA8CTnU7olaKxHaIK1KHhE3M/YF+c02BXONlfJoidGayFB95P/V91Mmf4QuMNOyeX9do
+         gHXiJf2k7ixbkC93gEt2w8T6MVlM2BnvZHX5wc298H5zDJqzjQCWKa24AF7uBtMvrOX0
+         KKziWmsVcsBA8A0uXV2z1ZfhaRsGr1P6lZLMWCVHNMR/diA4ibTiKj8YIgRoBHWX/MhN
+         En1HaHg05VVfmkRt1NCWaSR7kwRjVpdLRDCURK0YiR45CFvbLuzIkZSmTSZ7yF30joef
+         MAxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741710719; x=1742315519;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+ATE8FIn1idDAbY9I/1HHOPz3uLeAU5hh8uGv8VJ6WE=;
+        b=OBmFH4xYyTEL7bJ0CRRV8BmTGJI1X4OzAsEu9eyqZHFV0NK5fjzCgi7hzW40FN3PEc
+         ZxeIaQOodkT7PGGNtuGoaeqGVI2pglnHNYYdB6pWRxz8fb1jz2FXd+3RvFizvF3jEoHz
+         yLXPtFwzI6uDoozUrr38G0gk+w2lLNkHdZhAVfw4aE39b98e5IxY4gD2EGE3AlX+h30n
+         D1vqbLceIbUm+TFJfD6kIZ1km+9mLc1oYc27nhbfJavi/9iN+OnUunlYYR8VikjDUuIU
+         /JLWaW9Kyw2bmDAqX6zIP2FfoHalB4gEhj/PIJgwIryq69KG18cpkhyXIY+oFGX+8Flo
+         HKew==
+X-Forwarded-Encrypted: i=1; AJvYcCXRpqArRpiXb4HfIuSGJuiegJD81kgBQfcodgIYns2s4UNRYtyX9IbeYZon4JMIhjJ9mbo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyXJ7UNnMy6ltcERKzdwzIWMpKnpahDxHXbu2djEbzXgsWjbgPp
+	i0JQfEjmFye38JtNLjZ7zirB2jw2fsSmRZc+GEGPP3XBzXUkh8spva5SAH1sE9e9qOn67lpQocF
+	xYKmEawrNc/6FHawnnlAmyLDfYqU=
+X-Gm-Gg: ASbGncts/4gt2Zxb3pasmWvVHKUMMnBJ+pgJmUBKSBywqCno+7jSouK2v/CzyIEfe5u
+	jrtU5oQ5xfyWylNq4kJ4KZG3UbYrfE5f+OqPcUYjdGOKhAUcB6EkBGKcPfwJiYzMxwHpdC+0DaL
+	9AP8+K+O+l3VAZ8NpRGkcsKgoIDd+nOh/CJrhF
+X-Google-Smtp-Source: AGHT+IFkUDv1TXYed/RKP7EkFBEvEatnsfHK4Q2cbOI7UioO+YULzaTLJUdD+t6lXIPwz/NXgcDX8uKZJYS2w3tMmyg=
+X-Received: by 2002:a17:907:940a:b0:ac2:d1b2:72a with SMTP id
+ a640c23a62f3a-ac2d1b20967mr126736866b.11.1741710718767; Tue, 11 Mar 2025
+ 09:31:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250307-vsock-trans-signal-race-v1-1-3aca3f771fbd@rbox.co>
+References: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
+ <20250222024427.30294-2-alexei.starovoitov@gmail.com> <oswrb2f2mx36l6f624hqjvx4lkjdi26xwfwux2wi2mlzmdmmf2@dpaodu372ldv>
+ <20250311162059.BunTzxde@linutronix.de>
+In-Reply-To: <20250311162059.BunTzxde@linutronix.de>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Tue, 11 Mar 2025 17:31:46 +0100
+X-Gm-Features: AQ5f1JoMZWiUeXEqeX6qKRTppvEcZw0ZkhBYhuz300pzaSRVQo3WrdTMl602Aqs
+Message-ID: <CAGudoHEaGXwS1OQT_Af5YA=uw_zmUYy_csQ3nqYA_np+SbQ-cQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 1/6] locking/local_lock: Introduce localtry_lock_t
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org, andrii@kernel.org, 
+	memxor@gmail.com, akpm@linux-foundation.org, peterz@infradead.org, 
+	vbabka@suse.cz, rostedt@goodmis.org, houtao1@huawei.com, hannes@cmpxchg.org, 
+	shakeel.butt@linux.dev, mhocko@suse.com, willy@infradead.org, 
+	tglx@linutronix.de, jannh@google.com, tj@kernel.org, linux-mm@kvack.org, 
+	kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2025-03-07 10:27:50, Michal Luczaj wrote:
-> Signal delivered during connect() may result in a disconnect of an already
-> TCP_ESTABLISHED socket. Problem is that such established socket might have
-> been placed in a sockmap before the connection was closed. We end up with a
-> SS_UNCONNECTED vsock in a sockmap. And this, combined with the ability to
-> reassign (unconnected) vsock's transport to NULL, breaks the sockmap
-> contract. As manifested by WARN_ON_ONCE.
-> 
-> Ensure the socket does not stay in sockmap.
-> 
-> WARNING: CPU: 10 PID: 1310 at net/vmw_vsock/vsock_bpf.c:90 vsock_bpf_recvmsg+0xb4b/0xdf0
-> CPU: 10 UID: 0 PID: 1310 Comm: a.out Tainted: G        W          6.14.0-rc4+
->  sock_recvmsg+0x1b2/0x220
->  __sys_recvfrom+0x190/0x270
->  __x64_sys_recvfrom+0xdc/0x1b0
->  do_syscall_64+0x93/0x1b0
->  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> 
-> Fixes: 634f1a7110b4 ("vsock: support sockmap")
-> Signed-off-by: Michal Luczaj <mhal@rbox.co>
+On Tue, Mar 11, 2025 at 5:21=E2=80=AFPM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> On 2025-03-11 16:44:30 [+0100], Mateusz Guzik wrote:
+> > On Fri, Feb 21, 2025 at 06:44:22PM -0800, Alexei Starovoitov wrote:
+> > > +#define __localtry_lock(lock)                                      \
+> > > +   do {                                                    \
+> > > +           localtry_lock_t *lt;                            \
+> > > +           preempt_disable();                              \
+> > > +           lt =3D this_cpu_ptr(lock);                        \
+> > > +           local_lock_acquire(&lt->llock);                 \
+> > > +           WRITE_ONCE(lt->acquired, 1);                    \
+> > > +   } while (0)
+> >
+> > I think these need compiler barriers.
+> >
+> > I checked with gcc docs (https://gcc.gnu.org/onlinedocs/gcc/Volatiles.h=
+tml)
+> > and found this as confirmation:
+> > > Accesses to non-volatile objects are not ordered with respect to vola=
+tile accesses.
+> >
+> > Unless the Linux kernel is built with some magic to render this moot(?)=
+.
+>
+> You say we need a barrier() after the WRITE_ONCE()? If so, we need it in
+> the whole file=E2=80=A6
+>
 
-Hi Michal,
+I see the original local_lock machinery on the stock kernel works fine
+as it expands to the preempt pair which has the appropriate fences. If
+debug is added, the "locking" remains unaffected, but the debug state
+might be bogus when looked at from the "wrong" context and adding the
+compiler fences would trivially sort it out. I don't think it's a big
+deal for *their* case, but patching that up should not raise any
+eyebrows and may prevent eyebrows from going up later.
 
-Unhashing the socket to stop any references from sockmap side if the
-sock is being put into CLOSING state makes sense to me. Was there
-another v2 somewhere? I didn't see it in my inbox or I missed it.
-I think you mentioned more fixes were needed.
-
-Thanks!
-John
+The machinery added in this patch does need the addition for
+correctness in the base operation though.
+--=20
+Mateusz Guzik <mjguzik gmail.com>
 
