@@ -1,144 +1,129 @@
-Return-Path: <bpf+bounces-53819-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53820-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99544A5C2B4
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 14:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96D24A5C2C1
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 14:32:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13DBD7A9675
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 13:29:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC1DA7A2F78
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 13:31:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F36B1CAA9A;
-	Tue, 11 Mar 2025 13:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD8618870C;
+	Tue, 11 Mar 2025 13:32:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gZ5e98Jp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nFu2x2Am"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E5C1C245C
-	for <bpf@vger.kernel.org>; Tue, 11 Mar 2025 13:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8817156880
+	for <bpf@vger.kernel.org>; Tue, 11 Mar 2025 13:32:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741699833; cv=none; b=GowFkGo/Ssj9uQU95IjZ/jQuPivYRmOZjx1RovcHFX4b0USCQkQN/v8aN9vbsbjKHNniODTFYCTT9/iAL7FVpFL2jK2Qevx8j5mi8Qy6jQmc2n3i5e9wp8pTuWnH4dgGcHhCc0j2Ur5wLrSo6NnzFqeN62219qFY3Jy0C2lOD5c=
+	t=1741699959; cv=none; b=RIo+K1X2u68YgBeMm/lo6V/cVUWEEJlLpg/owai7FVFIVVpxfQMY1oQFIA9yvwXvfenrEfj3fcdde4OqeDd8bZNP27ZhPcma2+c7671sQMWsb9lXuXUO8mDfgCISqJswfR78xqcyTsPgoVrvUecfgnvgtiqGHvpWPGc99sXB8LY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741699833; c=relaxed/simple;
-	bh=l6zR6XGtKJ5X0OhwmHL3+OfRxrFGdi1TkJcer1hdk8Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eeTW5zT96Jq4jJuYQZFFTTckxMgowdGYXmsdOEVDoIlPZoDIa0tlVHoWZI2ThEI0u2lRVWsVY2iGCIKxrNMkPKMXs6hZc5o4Qa9Ye82qR+L2fi8DGJbaPep5eIMcPvOEBm511mmBOollOy3SC6M283+pJGtchexnivjKeu2alBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gZ5e98Jp; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741699831;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/pEztC+tYEqmw4n/BkTKddXXttPyUOtkMeTZTPuQrQU=;
-	b=gZ5e98Jp8JUR25heY/Yb3bboAm9IXb+WybL1RCjcXcTXOhJjxZ4/0FQKqG/PIQMrtXZ+DD
-	N4xYypa1ffmUEnNbEpA7AnFZrUPUOys5RIpEKdX0QUED09ogOyO8CAcKE0dq5WFOo6P2s6
-	i18m3vvN+PbyqPD3Dfd9AtK8wOJiHSY=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-25-kqLrgj9lMQ6k8PpG0HaASg-1; Tue,
- 11 Mar 2025 09:30:21 -0400
-X-MC-Unique: kqLrgj9lMQ6k8PpG0HaASg-1
-X-Mimecast-MFC-AGG-ID: kqLrgj9lMQ6k8PpG0HaASg_1741699818
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D90E91808869;
-	Tue, 11 Mar 2025 13:30:16 +0000 (UTC)
-Received: from fedora (unknown [10.22.88.194])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B40EF1955BCB;
-	Tue, 11 Mar 2025 13:30:13 +0000 (UTC)
-Date: Tue, 11 Mar 2025 09:30:11 -0400
-From: Luiz Capitulino <luizcap@redhat.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>, Networking
- <netdev@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the bpf-next tree with the mm tree
-Message-ID: <20250311093011.48fa9d08@fedora>
-In-Reply-To: <20250311120422.1d9a8f80@canb.auug.org.au>
-References: <20250311120422.1d9a8f80@canb.auug.org.au>
+	s=arc-20240116; t=1741699959; c=relaxed/simple;
+	bh=7YbnVmNe8UoRCBcf+1f3EZFQxgV8TT5S1exL28Gr7wQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Mwq21i9I6nnrb8D40vD0+NPPHq+0m2pjPpzdh29gpK2E7YfejGHGcelp2H/bvWCSNiVP+VyWSPksbiH0Ce4w4KWcfVgJarO76NnFJ+prTQVqt6tqv9HKy8XyyLXU5hMcW4tZdFLCSrquC/ajFZ7pGOYDIl77Be1UO8+oC3HPY+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nFu2x2Am; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-39133f709f5so2118968f8f.0
+        for <bpf@vger.kernel.org>; Tue, 11 Mar 2025 06:32:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741699956; x=1742304756; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TdTYoEl8wfhHEewA/2JsHqo4KOPWgY33CGSVFDAwKuE=;
+        b=nFu2x2Am3zgYrjJzS45Ax0gaSh/0bvZF1QnKs7q7yeSTbEYxLasBCWZR/e+hI4e0P9
+         EUSRsENH7A3ohCXOJmbfBjhkPzl5y0GuXhOSt0+KTxOtgnHc6axVYdAH+Qhatr0/uN50
+         +BB0ZtZc0b0cdzZxYGM14+yM1wuvfqz1cJZDgm6G8p+AGkOSkvTiHk3b0EyRidCMHce7
+         QdgbhicvOIY8SVa+Q2+yJZyvTLqxFOwFQes+Ouk2Bbx0xTWVdLpEZHMByZJe9IaeFSIi
+         p4oQjHYkCpAokApXIrLWhbH2lIp5lqYnjV7SKy7Aop7RnbCF44rOLSEatO4X/yX+7vne
+         usHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741699956; x=1742304756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TdTYoEl8wfhHEewA/2JsHqo4KOPWgY33CGSVFDAwKuE=;
+        b=NFOLYpqIO5EWNSKyxiCIPT9ljF9L2y+/topsRLa4gv7YMRqq/qWB8+JQw4g7SKdDMM
+         g6Q5gA2ipM7Il3sTEAwJC3Ol+hyVYQD03NNmF/5kY5uIsjsbf3LHJE3kht5PTXL3DAcD
+         YDzkpsPHVOn9eKzUX4cMVjTPBWIFgeLxiYaUN56cVvXmOgXvBb391Q4i73MOKGzYWCan
+         HXi+Yj2U1rrpErLwpO8VI7Iwli5rcEmgDiv35PVTC4ILgIJwDFy0UOClfwwY4jGQXnuh
+         8oEsL/fyChymZJ5mXZf8WBh2lFLkZYP/bTqVFC3xyJVb91HKPNMwDyzq6lL1AxKncMC9
+         QIPg==
+X-Gm-Message-State: AOJu0YxODFXXge3SvVUQgr4f6Bwb/uXK5Hbki0PnmQNSgReApTGgD1hE
+	wlGUtFYWVjBlHhhpoyxSGrp0ReY4L8iXs7U0L12ULak0fi2dnsVG7hVP+2mnssl860XScwklGJE
+	YxgF8KO6fu9GMzQDiyQxjRSNaQR8=
+X-Gm-Gg: ASbGncsaUU6F2o924u4wXuYm8yc5CGsx/6UiswQ+LvTJQMAmsn4azX/SjSTJScQ4FSC
+	IgiChUzECN6NLjdBCLp+usX4qPwWzpnfJ1vKg4Ynty/YR/VCVNYWzrlnC/ZTUyVGJDM7wm4i+Db
+	KZVHsU1Ra+BKyOhVfAkSnNvjqzrA==
+X-Google-Smtp-Source: AGHT+IEUkfhD/dw9hM3L/QFUgVEKOUsGduOUjXyRSO7SIgVBQyMoWBrdCZufpE6j0Uq2QsiYbNXfCHGwAWF6S9YA0V4=
+X-Received: by 2002:a05:6000:1448:b0:391:4608:e7be with SMTP id
+ ffacd0b85a97d-3914608e99amr8434110f8f.14.1741699955869; Tue, 11 Mar 2025
+ 06:32:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+References: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
+ <20250222024427.30294-3-alexei.starovoitov@gmail.com> <20250310190427.32ce3ba9adb3771198fe2a5c@linux-foundation.org>
+In-Reply-To: <20250310190427.32ce3ba9adb3771198fe2a5c@linux-foundation.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 11 Mar 2025 14:32:24 +0100
+X-Gm-Features: AQ5f1Jp7QSTqv2heAEtFcjekuEzUH9DYv2etNft2vfsyOnMf-bVen3S-43kRLbA
+Message-ID: <CAADnVQJsYcMfn4XjAtgo9gHsiUs-BX-PEyi1oPHy5_gEuWKHFQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 2/6] mm, bpf: Introduce try_alloc_pages() for
+ opportunistic page allocation
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Sebastian Sewior <bigeasy@linutronix.de>, 
+	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 11 Mar 2025 12:04:22 +1100
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-
-> Hi all,
-> 
-> Today's linux-next merge of the bpf-next tree got a conflict in:
-> 
->   mm/page_owner.c
-> 
-> between commit:
-> 
->   a5bc091881fd ("mm: page_owner: use new iteration API")
-> 
-> from the mm-unstable branch of the mm tree and commit:
-> 
->   8c57b687e833 ("mm, bpf: Introduce free_pages_nolock()")
-> 
-> from the bpf-next tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
-
-This looks good to me:
-
-Reviewed-by: Luiz Capitulino <luizcap@redhat.com>
-
-> -- 
-> Cheers,
-> Stephen Rothwell
+On Tue, Mar 11, 2025 at 3:04=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
 >
-> diff --cc mm/page_owner.c
-> index 849d4a471b6c,90e31d0e3ed7..000000000000
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@@ -297,11 -293,17 +297,17 @@@ void __reset_page_owner(struct page *pa
->  
->  	page_owner = get_page_owner(page_ext);
->  	alloc_handle = page_owner->handle;
-> +	page_ext_put(page_ext);
->  
-> - 	handle = save_stack(GFP_NOWAIT | __GFP_NOWARN);
-> + 	/*
-> + 	 * Do not specify GFP_NOWAIT to make gfpflags_allow_spinning() == false
-> + 	 * to prevent issues in stack_depot_save().
-> + 	 * This is similar to try_alloc_pages() gfp flags, but only used
-> + 	 * to signal stack_depot to avoid spin_locks.
-> + 	 */
-> + 	handle = save_stack(__GFP_NOWARN);
->  -	__update_page_owner_free_handle(page_ext, handle, order, current->pid,
->  +	__update_page_owner_free_handle(page, handle, order, current->pid,
->   					current->tgid, free_ts_nsec);
->  -	page_ext_put(page_ext);
->   
->   	if (alloc_handle != early_handle)
->   		/*
+> On Fri, 21 Feb 2025 18:44:23 -0800 Alexei Starovoitov <alexei.starovoitov=
+@gmail.com> wrote:
+>
+> > Tracing BPF programs execute from tracepoints and kprobes where
+> > running context is unknown, but they need to request additional
+> > memory. The prior workarounds were using pre-allocated memory and
+> > BPF specific freelists to satisfy such allocation requests.
+>
+> The "prior workarounds" sound entirely appropriate.  Because the
+> performance and maintainability of Linux's page allocator is about
+> 1,000,040 times more important than relieving BPF of having to carry a
+> "workaround".
 
+Please explain where performance and maintainability is affected?
+
+As far as motivation, if I recall correctly, you were present in
+the room when Vlastimil presented the next steps for SLUB at
+LSFMM back in May of last year.
+A link to memory refresher is in the commit log:
+https://lwn.net/Articles/974138/
+
+Back then he talked about a bunch of reasons including better
+maintainability of the kernel overall, but what stood out to me
+as the main reason to use SLUB for bpf, objpool, mempool,
+and networking needs is prevention of memory waste.
+All these wrappers of slub pin memory that should be shared.
+bpf, objpool, mempools should be good citizens of the kernel
+instead of stealing the memory. That's the core job of the
+kernel. To share resources. Memory is one such resource.
 
