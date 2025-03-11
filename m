@@ -1,271 +1,291 @@
-Return-Path: <bpf+bounces-53841-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53842-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC20AA5C9F9
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 16:59:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD822A5CA5D
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 17:09:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA5707AD20F
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 15:57:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6FDB3B097A
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 16:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B1725F7AD;
-	Tue, 11 Mar 2025 15:57:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C2725B68E;
+	Tue, 11 Mar 2025 16:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aWMJqefC"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nDQ2wD6E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0FEBE67;
-	Tue, 11 Mar 2025 15:57:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741708628; cv=none; b=QMhrMrgb+LxIVK58q91xSWT8uVYPztpALXY9Rz4uMzu8ho7ijH4ISLV0sVJFoSj7cyQfYfrhA+HC08cCmA9eTqs40OTnYu4jN8EHfo6qvV8LpnfOsNvTxfRLNcxOub3y9yyvyL9fu7ViInIee5vE7a/SOv/xev46z1QQA3xr424=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741708628; c=relaxed/simple;
-	bh=QlFbW1bJ+IJ20Ouvv0kgNJs8mTzYsRoSP6URexPhDYM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h0jTK62qmtLAUi/mu+h2IZ1ZNbVdw2dBG+vqK1qgmwyScyHFG6ih5WUkWC9xt0PfwknyvefgkA+DsxtkrQ5rIXnlCjurO7Imq0fHJttEihdoDh+qFk5mnWYDUN6bRroJdTQNA585cSxFANvG2a1lmc83urZLDswF2hypvhMBho4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aWMJqefC; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2fe9759e5c1so8540853a91.0;
-        Tue, 11 Mar 2025 08:57:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741708626; x=1742313426; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+j3TYJXdICnVRoNLJB0zASuwptCb9/IvvAbijCtphS8=;
-        b=aWMJqefC2VlvxLB0PzUOVDsF6kmNqeKbwlIWe8xquMgJ8OE314XbA1hOX3+LVLO7qq
-         s4Tkp9AcSS95wKyIF+hRVIPUV8ILfoiKRRYnOyA89gbtPuMKmdhqBfilIyt5Ylbq8lQJ
-         wcSvJh6n5frZpwghbC0qcBDgeDBdyscYBurbrJdRHGIL4J3alZEMFQ+USc36zYJ7k0uP
-         958Hdu7kL6OXkpZ/9Zzxpgp6rNHsjnDj0JftjS/sIWCS409YdpdpE0TkDGgcRHwVXKRM
-         rn7JeE5on3Afkg9NZnUgyI+RlucWQVpcfSPryLDr76KSZiuB3XO1RpY0QAmB6qId269N
-         LBjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741708626; x=1742313426;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+j3TYJXdICnVRoNLJB0zASuwptCb9/IvvAbijCtphS8=;
-        b=H37TttlkqxUjWjjO3F5o0gDjx1USdfWOyGREuXNmCnXNKIBOC5JjlLqE/MPV8TwqyE
-         Ffyjj+JIlNE2m/fG8pFSiyvjZxrzlP+wy5LaCLdUOMXYjwehZztgIildHGXjHWuAqSxO
-         7anYTkgB6rsi44Jd406kJDOY28ILJjyPh3VD3Zx+96DW5T2JLCb8qUut9LZCYCxuAzvV
-         KqtCrpIPztMbcxAiR13U0PnSWNDd+/MCycqMgHqDWHCzeByT9iVWoD7yuV5tBqQO3CMt
-         uo3sF+yfOFEgN+XEsrNDkKe1fUU/xgpjQ+5/qTpj1JkUC8Tfbj5XBeV5b2YWUYYgZzcD
-         cT/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVZ8aX41A7BYTTvUZvEkk7xszFLJlSkEGapaIhw9kmwuot8LiWNL9Rrzw6UQGJCXeV12vp+UbEv@vger.kernel.org, AJvYcCXfsWXL2Tum0WkmmhgC4P+v41dxKKnvvYcTisu7PmygXIptOXAiInvg8UgqrV/+3iixRIU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBxpO+v9qbVKPybnuK/6kUZHOWt9N3cDL8F99uWQLZj6vPG+hH
-	xA/HXyOU8acfAk+wqDoabmEVI0nC/O5zSG1I7l1HJ8K+2t7qQmGz
-X-Gm-Gg: ASbGncsfAD/LARAxp2l3P8e1jU3/PrPEjw3HUhZNfiJSXWx9zPt3XACBGEre/P4fuyg
-	weslIfDFOtHFt7Eg7mR8IDuB3Smd+LcCzn0wXG5n/wbZtxjApPNIH6Hx/kAdRTg3cQxbJjpZN0o
-	bdVDq7zh+vj3tyis58Gecv69+xhI/r3eRXEBge+5nKoYuArgTj0paQyCdfI6sgb4MnqDkBI6nWI
-	Ss7q/Y1nuBoAQfeIrAyoG1bj40wU9EJCSsUVriWuihf6CyBT+xStyKSXPR0h+OXXwJj1AMYI6mx
-	XfSxCKRXtCWCAZWnLC3YMBRSsmkqXFQn0dMeD5wLHiyVwA==
-X-Google-Smtp-Source: AGHT+IFYbgtcxfa+3fpDq4hN0+IISGQSz8qI8vUC1mCL5BDKbh31A4QE7MkSLgsaWy7Zw5rRpjXz0A==
-X-Received: by 2002:a17:90b:180a:b0:2ff:7ad4:77af with SMTP id 98e67ed59e1d1-300ff10d6aemr5537484a91.20.1741708626259;
-        Tue, 11 Mar 2025 08:57:06 -0700 (PDT)
-Received: from gmail.com ([98.97.37.243])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ff6cefb8f1sm11012911a91.18.2025.03.11.08.57.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Mar 2025 08:57:05 -0700 (PDT)
-Date: Tue, 11 Mar 2025 08:56:59 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Michal Luczaj <mhal@rbox.co>
-Cc: Stefano Garzarella <sgarzare@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	"Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, leonardi@redhat.com
-Subject: Re: [PATCH net] vsock/bpf: Handle EINTR connect() racing against
- sockmap update
-Message-ID: <20250311155601.eui5j2lta3q46i6u@gmail.com>
-References: <20250307-vsock-trans-signal-race-v1-1-3aca3f771fbd@rbox.co>
- <a96febaf-1d32-47d4-ad18-ce5d689b7bdb@rbox.co>
- <vhda4sdbp725w7mkhha72u2nt3xpgyv2i4dphdr6lw7745qpuu@7c3lrl4tbomv>
- <032764f5-e462-4f42-bfdc-8e31b25ada27@rbox.co>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3ACF260391;
+	Tue, 11 Mar 2025 16:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741709322; cv=fail; b=gD0LZdqvTMUxKe/j827CNEqm9gjC2KIgyj0nRXqVlIn8pbRzyBcoBk7XyUF0sRL5UV/JPEkfPlyXmkg3NGGtP7LqKtC4iawnPi8ndBqV3OqDidApOhbZRaPhG2HJqeNsEREcietsgLCWsWfyMilfpqY9dxDTu94wRN38VgdxYaY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741709322; c=relaxed/simple;
+	bh=OkjkUrUMX8B7t/III66trsykyVO1HM1PRyjHKvuzWqw=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=MjDJCU1qPxCbniI8tWJLiTUS6fVE7lobpszunenpJrsBcAYcS1p4QGvTwlWKC/k/roh3mJP2bdnhlSe9ciTHtn9ouWv6dhkdJtkYvdbUWEsAsIjhqEzvR73iOsHdSATPddRtYcMCaOQKJDa/ZBJAJklojJtgJP3w9uA9gfm1iVU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nDQ2wD6E; arc=fail smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741709320; x=1773245320;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=OkjkUrUMX8B7t/III66trsykyVO1HM1PRyjHKvuzWqw=;
+  b=nDQ2wD6EGmkykwJxZRqgCMjIn2hYiT/NC3+b8Ohz3V3wLbtGe173Y1Dq
+   0G+Ol8XdTYhGzSwLLUsx5v8pyYTLMdthGxvWvPPJx8q989+lccxIFiagU
+   whXcwGRtAF/2gGi7CZ5aaRnNnGpUWbn9gWbrxWKDDmbK7Igfq7J99Nlti
+   7beGHD4hsFWlXLAw4Hux9wPYIIIroFXg/IXINDP0vs7ekA+0K7A62sYXW
+   q8FIQvmwswYKpB1W6didFujJ+t+gGfulvbxMp4WVwpTxI93uYem0fx/Lz
+   gcvZMRvR4+82yvwEvnihexK9HeYm64MA+hwjUtUikN+q2mdsj3+4A/caj
+   A==;
+X-CSE-ConnectionGUID: ddYrUMEsSK2MyrObcmVEVg==
+X-CSE-MsgGUID: XhiRWuuEQm2S3G7/9l09/A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11370"; a="52963320"
+X-IronPort-AV: E=Sophos;i="6.14,239,1736841600"; 
+   d="scan'208";a="52963320"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2025 09:08:39 -0700
+X-CSE-ConnectionGUID: bmNMZZUtQ8iy58mVrLcD/A==
+X-CSE-MsgGUID: aOMMzt+2Romo2gM17OR/Jg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,239,1736841600"; 
+   d="scan'208";a="157566035"
+Received: from orsmsx901.amr.corp.intel.com ([10.22.229.23])
+  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2025 09:08:39 -0700
+Received: from ORSMSX903.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Tue, 11 Mar 2025 09:08:38 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Tue, 11 Mar 2025 09:08:38 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.44) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Tue, 11 Mar 2025 09:08:37 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=a4y2C7NTsdl1FMSI7xhMWk8rP3bgZs7f/e0vkNl1Sx+UKtzmpMkZdZYNfTlGJVZ6gpLm6ogDFTHpWy9sOrTJpAmCOVChQvXHJ5nEBktodmwJrtroglNF0Nti2SoO8Z5culnZH1WN0TI2wLLU3Rsa8gAnbznjCM0T+pgdaLQ+p+bQz001uMMdORI/wTAgIV2D8pUltIViDER7b5WNhTDR4Dj0+U4D+iBj8ruVhOy/LrLU3D1ZYR8VFadFCSA0nwxyrZvMCjtEw527RAxwAdxlfVh5e3ZdjWgVITJBvXde5gKgtkvOZgpZuLp/ssbqodLrObqisNXvPI0+3++2kKzt8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c59R477ddlaZFA5mwSJIlPuFpySYZH/70GAtW8M5ClA=;
+ b=Ci9LwzMAn7++PzPXe+B/iHZUW68+l/HkJU73EInnJr9oKyY5kN8JA4y0j2shEkOrvHGYLpK8xcXG7t43Qh9XadOkG62EJlormUSomWiPcMSC55+i4ll0jlhu+i3RYcXjR/6c/ofhzP1VS+E6pEMD9FT3C35Vihic1PRp9CgLLh5zouVWw16tZFtuBBAZVv/6w/qfmngbYMLoog1Olzlsbv0UKrkhabFRORX39nAXEKBY2VYw9oSU5mE3e7VGhAhJj3dZg8gPATgYZoBudZsVzXANuvpH8OMW8eMDV2E+Mmy3kv9rJxb+98kluYdaXG6rSSzh7ojZsOImDTGb37WORA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ CY8PR11MB7135.namprd11.prod.outlook.com (2603:10b6:930:61::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8511.27; Tue, 11 Mar 2025 16:08:35 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca%3]) with mapi id 15.20.8511.026; Tue, 11 Mar 2025
+ 16:08:35 +0000
+Date: Tue, 11 Mar 2025 17:08:22 +0100
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+CC: <intel-wired-lan@lists.osuosl.org>, Michal Kubiak
+	<michal.kubiak@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, "Przemek
+ Kitszel" <przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	"Jesper Dangaard Brouer" <hawk@kernel.org>, John Fastabend
+	<john.fastabend@gmail.com>, Simon Horman <horms@kernel.org>,
+	<bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 15/16] idpf: add support for .ndo_xdp_xmit()
+Message-ID: <Z9Bf9o+t4BmFsMQG@boxer>
+References: <20250305162132.1106080-1-aleksander.lobakin@intel.com>
+ <20250305162132.1106080-16-aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20250305162132.1106080-16-aleksander.lobakin@intel.com>
+X-ClientProxiedBy: ZR0P278CA0131.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:40::10) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <032764f5-e462-4f42-bfdc-8e31b25ada27@rbox.co>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|CY8PR11MB7135:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0b58fc10-dfd0-4095-b71c-08dd60b6f9f9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Sv4LRoF2QikQXpD+kVNXrRiIbrk00er7s3ndp6ecgEXIYUhlW80vTpYgD+AV?=
+ =?us-ascii?Q?PC28XkijZT5ymhqHLqhalsmexilCAH5rTpcsqPtNbEuy1pK63WWiPVq1y/WA?=
+ =?us-ascii?Q?UV9N0gEIEDzTrPGTzkUYmM5GfpoVAg9ZTsbQmtQerkH2NZwqBRuNPf32zhRf?=
+ =?us-ascii?Q?VAllc5GwaSVquuorrmY23YR+VZNi7/EOSBTkcmUuz2WKJaVmaahVJWWjelEZ?=
+ =?us-ascii?Q?U7CfSIYNvIxW8H2mlJFSyceQTsTUU2q4fcMljoS05yoaH9gsB17qUrxZGHMb?=
+ =?us-ascii?Q?6Yf1tJmpVvl+hfeM72VMVUzzuT23yg+KJttqSLgDWubaidRF10t9ae/EpA+1?=
+ =?us-ascii?Q?lVE46OAv1g4dCImHV40GJMDTHQVg4q7N+6zWEQnlVqKxl7oism6XTf/artXt?=
+ =?us-ascii?Q?nMaCqjfJlYiQBjsb6Rfa8Q1496gNhuwIrA2ZFmzYz3nJ8ZUA69yN1GZsc2y4?=
+ =?us-ascii?Q?L68IGVAX95Tyg33oqmWV76F02Akq+UQGxmgmRgodKfNDHBGwgR/mSU29I6Cp?=
+ =?us-ascii?Q?6EaAjKi5YjB9Uqd0YDr6g9rTYNq1F/YMl8iGU19lFCNqN9+M0Q+2V+g59JXQ?=
+ =?us-ascii?Q?Aw/gHvshWRrGk1qb027AvLwbuC+bSta1KfVbPurURclgy0oCuVbGffBd9g88?=
+ =?us-ascii?Q?gortUxp3qmPDpAdrLzIuNPpATaCAMxrO3WpRJ6IHDCXSDPTgK0mUhqsaU39j?=
+ =?us-ascii?Q?eq+J2Lf/J+/T+ZgVr5Gk3BTmysV7Pwr4avXfJ9ejGAS9+vyT8jI9IqUsI+hi?=
+ =?us-ascii?Q?NqYDrJcWoRwNhCWhxG4akf6IEwcZ4vDvDiJ+bsXSIXdvXpsMiQon7c90lIO3?=
+ =?us-ascii?Q?kzAGa15PCqANcdVoKOBzdCS16fWNpLTpEtiPeGIiyt8nYuIC1qa72S2Ib2+T?=
+ =?us-ascii?Q?4L7FZnckVLFbxBmZq/OdUQgmV6wWx6XRN3+pt6e+TzxM6CUdW9oCI/Hgw5bF?=
+ =?us-ascii?Q?/1AbKV89FzJzAOD4l93onl23aeO+vF7qP+8jc9g4hEfwdcbdn7CUhdHrP/iY?=
+ =?us-ascii?Q?if2mxC21zTyO2vP9iFNKTRCLmBYTx+Xy7rglj9nRolqyYGYjZWmBMaiXA85+?=
+ =?us-ascii?Q?0SIx9BF8rJ3TsSB5w0EI+2JGviuK8+b6zUAiqD0D+ZHGVRFwroFt1YFP00kj?=
+ =?us-ascii?Q?nLOa9YMUJlO1NDV8Ae2APwXeNX8/M0Oi6Qo6h3KvfqXVeZZewLH1ktDydyPC?=
+ =?us-ascii?Q?XPdgX0Qt+c3vo+HzXC/l+zN4NRepHviAYooTeAYMxfvDsGLxi2YkAOhkOLS1?=
+ =?us-ascii?Q?Am+o7t2p5cF+3yENb9m+MJWj5L5E++/d72Am66Xet66pGllIWzjeiZCNltq/?=
+ =?us-ascii?Q?ndaBk1oC/bogs+81FDEWr/CQ657XIQLrNXidLVrBdt8e8oMaDAGRZ/LMI8hG?=
+ =?us-ascii?Q?1gtvbgjwUlTE1GwuspH6DB+DNlEa?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FExpF9A9FAVM9/CzA+8uN1A5bdDv+qB/dEnBI7dK0REv4M4/ejDBoRHh9WoY?=
+ =?us-ascii?Q?neBo0x+jsOImArMIQzHvHEQS3E6ijnTPgbV/EaVVbri7r01M+gyjmlbF2lQc?=
+ =?us-ascii?Q?WnlIwfzDcUahsRDZw3NBG51agWcDtUZ8b4xmYVCiNqufRqcMuW6xodc3g/P8?=
+ =?us-ascii?Q?xzSVHf8G2zFvQUAHjCwYUDWyUeBl7FCnjlhN65sfxWb45zxtddA+kNH22mxS?=
+ =?us-ascii?Q?OTeokunSda359Grayp38Gdl+vgzw7G8I7U8K/riOnlh/jpJW/GYR3xcjVA8u?=
+ =?us-ascii?Q?dZomRj/bqc63HjMLIjHcDlf1rMU/4EhVgb3oRglKHcUnTOXaViQIk0V7w1ic?=
+ =?us-ascii?Q?4fWW7oWSjQvqU24Ctxk9Ipzd/5QyaRfJpjwz84Uvtpv3Ww+vNhUWx0UaIAiE?=
+ =?us-ascii?Q?XaBNmDZe5vL0lEjjvaQKmzUeC2ZXzjiUZevHygjF2vb7e5UjJveqLHF5rqLT?=
+ =?us-ascii?Q?XxME4cIutU1r/amzpXGHJ9dvzFRI/MXTQfDDK7J4u7nvR8mpB17Uwq41x56p?=
+ =?us-ascii?Q?2S62tJAo0ZGuP+XRYo9YI7AjhPOeCjdH1J+l2aQx41D4/Un+o+eRqhiaFPxk?=
+ =?us-ascii?Q?1C6QnyGZ+40eR7Mjhx0TmYICAY/kZCS08oRy6QwODCePhDow3lj6v/zdioCF?=
+ =?us-ascii?Q?2j5mSrK0dOugA7jP9lYwv/8ZqriHbpDlINu6wpPkPAYKcG5dmksBsXWrUrrM?=
+ =?us-ascii?Q?jmNQTV7rigMPxrPlmGBixRjwu4FaZMZLssmHIQktMehfci/piWr2FUEULkvl?=
+ =?us-ascii?Q?ffVlVoees/+P45wBn9JEAX3Jj1AYIctx4JkeAhWZTm35cHSQOwDa8QeQDZfD?=
+ =?us-ascii?Q?u8sjvAwIB+aoRIXTk2T+IBCd7Sdk9cOMxKmQ+vTFEEUpqDaHkiKz+o9INGl7?=
+ =?us-ascii?Q?2/xuONoE2gsKtiXYX8yShuxTsVJw0jo+gZ8BTIIaDwrkDoaOvfBIA71wYcJh?=
+ =?us-ascii?Q?0pDK7FsysDijvkEmmHVqQRsodO/dsCMiZAA83NJjOOwmw2NRM9b9aw9ibueb?=
+ =?us-ascii?Q?SxYwF6iZV7Q6WZ22y94Qy5lmqxGY3Av6TPZyeNiqNc0V94qKMdPB9R77GWo3?=
+ =?us-ascii?Q?MRyfEQans6u7oGfQZmTDNYWC8l81qUhCqwIGS3gw2b2/McdTsqwK36kO5XNZ?=
+ =?us-ascii?Q?ct+l1zKTrRjHCLSHz9uxLCP9iiWC6b5P1ne7i4DF7gXNhi75otv+JIhbRDJM?=
+ =?us-ascii?Q?rdErt4cy/qGmxLDc5XDrt/QjR37tdlmGmwcj4LNLQYSdsGacHfwaqAQOU/t5?=
+ =?us-ascii?Q?XOz6thasGE+KxUI9UzGPEFkk5Jg+6TV8mYdiSNMAYE0W0+nTLUJ9h8XJYDKk?=
+ =?us-ascii?Q?ZhXVFes1MHkpQfGWNapUW75Mr/FLy+YHGsKTMKiVB+stVWLuS7gne2KFPT1e?=
+ =?us-ascii?Q?GtVZrbmd02zxtkjWVQ5GdFKMtKnjs/9FyRUmMKTZJkQyaEgu8nVDAz+ZmW1V?=
+ =?us-ascii?Q?tQ6Q8xuID8LDvYS8WSn+wtTWIhiZ9FyOIQir4/XcOi+eGIh5Ybcji2jGepkq?=
+ =?us-ascii?Q?IVwbJQEcKkW6Y0eombhyAITPwRzT3eoah4qurtVH1M7MGMoM4tP3agUBVQou?=
+ =?us-ascii?Q?mV+8GzqK4QSy7qzVryUU76qftZvw7pOwRAafs7OEXZX6NQh3hb9j7FO+aqBB?=
+ =?us-ascii?Q?TA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b58fc10-dfd0-4095-b71c-08dd60b6f9f9
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2025 16:08:35.2271
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qGwxNqoFy48mabBZl+Lbj2ikgW/oSkz2ktEemGGTgsqnXyg7e3zmxMr/aKlxDxiXtbkdcbF0Y/3HnRX0dTJAfUR+IlBeZiE1BJyLOLFR4sM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7135
+X-OriginatorOrg: intel.com
 
-On 2025-03-07 17:01:11, Michal Luczaj wrote:
-> On 3/7/25 15:35, Stefano Garzarella wrote:
-> > On Fri, Mar 07, 2025 at 10:58:55AM +0100, Michal Luczaj wrote:
-> >>> Signal delivered during connect() may result in a disconnect of an already
-> >>> TCP_ESTABLISHED socket. Problem is that such established socket might have
-> >>> been placed in a sockmap before the connection was closed. We end up with a
-> >>> SS_UNCONNECTED vsock in a sockmap. And this, combined with the ability to
-> >>> reassign (unconnected) vsock's transport to NULL, breaks the sockmap
-> >>> contract. As manifested by WARN_ON_ONCE.
-> >>
-> >> Note that Luigi is currently working on a (vsock test suit) test[1] for a
-> >> related bug, which could be neatly adapted to test this bug as well.
-> >> [1]: https://lore.kernel.org/netdev/20250306-test_vsock-v1-0-0320b5accf92@redhat.com/
-> > 
-> > Can you work with Luigi to include the changes in that series?
+On Wed, Mar 05, 2025 at 05:21:31PM +0100, Alexander Lobakin wrote:
+> Use libeth XDP infra to implement .ndo_xdp_xmit() in idpf.
+> The Tx callbacks are reused from XDP_TX code. XDP redirect target
+> feature is set/cleared depending on the XDP prog presence, as for now
+> we still don't allocate XDP Tx queues when there's no program.
 > 
-> I was just going to wait for Luigi to finish his work (no rush, really) and
-> then try to parametrize it.
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> ---
+>  drivers/net/ethernet/intel/idpf/xdp.h      |  2 ++
+>  drivers/net/ethernet/intel/idpf/idpf_lib.c |  1 +
+>  drivers/net/ethernet/intel/idpf/xdp.c      | 29 ++++++++++++++++++++++
+>  3 files changed, 32 insertions(+)
 > 
-> That is unless BPF/sockmap maintainers decide this thread's thing is a
-> sockmap thing and should be in tools/testing/selftests/bpf.
+> diff --git a/drivers/net/ethernet/intel/idpf/xdp.h b/drivers/net/ethernet/intel/idpf/xdp.h
+> index fde85528a315..a2ac1b2f334f 100644
+> --- a/drivers/net/ethernet/intel/idpf/xdp.h
+> +++ b/drivers/net/ethernet/intel/idpf/xdp.h
+> @@ -110,5 +110,7 @@ static inline void idpf_xdp_tx_finalize(void *_xdpq, bool sent, bool flush)
+>  void idpf_xdp_set_features(const struct idpf_vport *vport);
+>  
+>  int idpf_xdp(struct net_device *dev, struct netdev_bpf *xdp);
+> +int idpf_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+> +		  u32 flags);
+>  
+>  #endif /* _IDPF_XDP_H_ */
+> diff --git a/drivers/net/ethernet/intel/idpf/idpf_lib.c b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+> index 2d1efcb854be..39b9885293a9 100644
+> --- a/drivers/net/ethernet/intel/idpf/idpf_lib.c
+> +++ b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+> @@ -2371,4 +2371,5 @@ static const struct net_device_ops idpf_netdev_ops = {
+>  	.ndo_set_features = idpf_set_features,
+>  	.ndo_tx_timeout = idpf_tx_timeout,
+>  	.ndo_bpf = idpf_xdp,
+> +	.ndo_xdp_xmit = idpf_xdp_xmit,
+>  };
+> diff --git a/drivers/net/ethernet/intel/idpf/xdp.c b/drivers/net/ethernet/intel/idpf/xdp.c
+> index abf75e840c0a..1834f217a07f 100644
+> --- a/drivers/net/ethernet/intel/idpf/xdp.c
+> +++ b/drivers/net/ethernet/intel/idpf/xdp.c
+> @@ -357,8 +357,35 @@ LIBETH_XDP_DEFINE_START();
+>  LIBETH_XDP_DEFINE_TIMER(static idpf_xdp_tx_timer, idpf_clean_xdp_irq);
+>  LIBETH_XDP_DEFINE_FLUSH_TX(idpf_xdp_tx_flush_bulk, idpf_xdp_tx_prep,
+>  			   idpf_xdp_tx_xmit);
+> +LIBETH_XDP_DEFINE_FLUSH_XMIT(static idpf_xdp_xmit_flush_bulk, idpf_xdp_tx_prep,
+> +			     idpf_xdp_tx_xmit);
+>  LIBETH_XDP_DEFINE_END();
+>  
+> +/**
+> + * idpf_xdp_xmit - send frames queued by ``XDP_REDIRECT`` to this interface
+> + * @dev: network device
+> + * @n: number of frames to transmit
+> + * @frames: frames to transmit
+> + * @flags: transmit flags (``XDP_XMIT_FLUSH`` or zero)
+> + *
+> + * Return: number of frames successfully sent or -errno on error.
+> + */
+> +int idpf_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+> +		  u32 flags)
+> +{
+> +	const struct idpf_netdev_priv *np = netdev_priv(dev);
+> +	const struct idpf_vport *vport = np->vport;
+> +
+> +	if (unlikely(!netif_carrier_ok(dev) || !vport->link_up))
+> +		return -ENETDOWN;
+> +
+> +	return libeth_xdp_xmit_do_bulk(dev, n, frames, flags,
+> +				       &vport->txqs[vport->xdp_txq_offset],
+> +				       vport->num_xdp_txq,
 
-I think it makes sense to pull into selftests/bpf then it would get run
-from BPF CI so we can ensure BPF changes will keep this working
-correctly.
+Have you considered in some future libeth being stateful where you could
+provide some initialization data such as vport->num_xdp_txq which is
+rather constant so that we wouldn't have to pass this all the time?
 
-I guess the trick would be to see how long to run racer to get the
-warning but also not hang the CI. If you run it for 5 seconds or so
-does it trip? Or are you running this for minutes?
+I got a bit puzzled here as it took me some digging that it is only used a
+bound check and libeth_xdpsq_id() uses cpu id as an index.
 
-If it takes too long to run it could be put into test_sockmap which
-has longer running things already. We also have some longer TCP
-compliance tests that would be good to start running in public somehow
-so might think a bit more how the infra for testing is going in
-sockmap side.
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-Thanks!
-
-> 
-> Below is a repro. If I'm not mistaken, it's basically what Luigi wrote,
-> just sprinkled with map_update_elem() and recv().
-> 
-> #include <stdio.h>
-> #include <stdint.h>
-> #include <stdlib.h>
-> #include <unistd.h>
-> #include <errno.h>
-> #include <pthread.h>
-> #include <sys/wait.h>
-> #include <sys/socket.h>
-> #include <sys/syscall.h>
-> #include <linux/bpf.h>
-> #include <linux/vm_sockets.h>
-> 
-> static void die(const char *msg)
-> {
-> 	perror(msg);
-> 	exit(-1);
-> }
-> 
-> static int sockmap_create(void)
-> {
-> 	union bpf_attr attr = {
-> 		.map_type = BPF_MAP_TYPE_SOCKMAP,
-> 		.key_size = sizeof(int),
-> 		.value_size = sizeof(int),
-> 		.max_entries = 1
-> 	};
-> 	int map;
-> 
-> 	map = syscall(SYS_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
-> 	if (map < 0)
-> 		die("map_create");
-> 
-> 	return map;
-> }
-> 
-> static void map_update_elem(int fd, int key, int value)
-> {
-> 	union bpf_attr attr = {
-> 		.map_fd = fd,
-> 		.key = (uint64_t)&key,
-> 		.value = (uint64_t)&value,
-> 		.flags = BPF_ANY
-> 	};
-> 
-> 	(void)syscall(SYS_bpf, BPF_MAP_UPDATE_ELEM, &attr, sizeof(attr));
-> }
-> 
-> static void sighandler(int sig)
-> {
-> 	/* nop */
-> }
-> 
-> static void *racer(void *c)
-> {
-> 	int map = sockmap_create();
-> 
-> 	for (;;) {
-> 		map_update_elem(map, 0, *(int *)c);
->  		if (kill(0, SIGUSR1) < 0)
->  			die("kill");
+> +				       idpf_xdp_xmit_flush_bulk,
+> +				       idpf_xdp_tx_finalize);
+> +}
+> +
+>  void idpf_xdp_set_features(const struct idpf_vport *vport)
+>  {
+>  	if (!idpf_is_queue_model_split(vport->rxq_model))
+> @@ -417,6 +444,8 @@ idpf_xdp_setup_prog(struct idpf_vport *vport, const struct netdev_bpf *xdp)
+>  		cfg->user_config.xdp_prog = old;
 >  	}
-> }
-> 
-> int main(void)
-> {
-> 	struct sockaddr_vm addr = {
-> 		.svm_family = AF_VSOCK,
-> 		.svm_cid = VMADDR_CID_LOCAL,
-> 		.svm_port = VMADDR_PORT_ANY
-> 	};
-> 	socklen_t alen = sizeof(addr);
-> 	struct sockaddr_vm bad_addr;
-> 	pthread_t thread;
-> 	int s, c;
-> 
-> 	s = socket(AF_VSOCK, SOCK_SEQPACKET, 0);
-> 	if (s < 0)
-> 		die("socket s");
-
-This would likely be a good test for all protocol types to stress test
-the update/connect/close flow. If we can land it in selftests/bpf I
-would be happy to make it run for TCP and others.
-
-It might be worth looking over ./tools/testing/selftests/bpf/test_sockmap.c
-and see if any tests from there should run for AF_VSOCK as well.
-
-> 
-> 	if (bind(s, (struct sockaddr *)&addr, alen))
-> 		die("bind");
-> 
-> 	if (listen(s, -1))
-> 		die("listen");
-> 
-> 	if (getsockname(s, (struct sockaddr *)&addr, &alen))
-> 		die("getsockname");
-> 
-> 	bad_addr = addr;
-> 	bad_addr.svm_cid = 0x42424242; /* non-existing */
-> 
-> 	if (signal(SIGUSR1, sighandler) == SIG_ERR)
-> 		die("signal");
-> 
-> 	if (pthread_create(&thread, 0, racer, &c))
-> 		die("pthread_create");
-> 
-> 	for (;;) {
-> 		c = socket(AF_VSOCK, SOCK_SEQPACKET, 0);
-> 		if (c < 0)
-> 			die("socket c");
-> 
-> 		if (!connect(c, (struct sockaddr *)&addr, alen) ||
-> 		    errno != EINTR)
-> 			goto outro;
-> 
-> 		if (!connect(c, (struct sockaddr *)&bad_addr, alen) ||
-> 		    errno != ESOCKTNOSUPPORT)
-> 			goto outro;
-> 
-> 		(void)recv(c, &(char){0}, 1, MSG_DONTWAIT);
-> outro:
-> 		close(accept(s, NULL, NULL));
-> 		close(c);
-> 	}
-> 
-> 	return 0;
-> }
-> 
+>  
+> +	libeth_xdp_set_redirect(vport->netdev, vport->xdp_prog);
+> +
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.48.1
 > 
 
