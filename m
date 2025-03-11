@@ -1,66 +1,66 @@
-Return-Path: <bpf+bounces-53801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53800-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62038A5BD41
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 11:08:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD431A5BD3D
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 11:08:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 729341897D76
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 10:08:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B18333AFBC8
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 10:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6973222FF21;
-	Tue, 11 Mar 2025 10:08:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEB2122D4FD;
+	Tue, 11 Mar 2025 10:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b="NbHoNCtC"
+	dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b="la58mwm1"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpbgau1.qq.com (smtpbgau1.qq.com [54.206.16.166])
+Received: from smtpbguseast1.qq.com (smtpbguseast1.qq.com [54.204.34.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DDE122F395;
-	Tue, 11 Mar 2025 10:08:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.206.16.166
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796A922B8D9;
+	Tue, 11 Mar 2025 10:07:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.204.34.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741687698; cv=none; b=ecD0rzTCS7y6xN6Q57fdoM5AfPEpC6N/5rDWW+vcizd/GfreE9Fz01DF7HW4aWlRGCYPNVwXq36tAcEa/HpLF/bDuUwfpg1hDSAH8NvvcWJhE+TGZ/8V+YWvMcQv0XWJ6/9ouusbqDE/uGCsXyBvHgA4edZEGxGYU7cp+QgtnRI=
+	t=1741687673; cv=none; b=lnmrqAd8Ep5mW+CbzSNuau6jNZ5LfPbIWi5scmITH4CZ3TV5TsXqJwAULIOI7KGFjTJGyH3FdQqFyckeWTVupuITnQnAOhgAAZnL4BnlIgebohSL0ZcH74C/xDDVXu+Hv6oPfVjP/F4nPTVN+yUmWd1G9M+QHqsx4pIJdCiuB70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741687698; c=relaxed/simple;
+	s=arc-20240116; t=1741687673; c=relaxed/simple;
 	bh=/YEgTke/EWVA4zV2VvPzaZU3/mXdRxciFkmCnDilfvQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q3L+9NZvmPNRJlTK7WAs9M4Lj+QXgMvS+jFhqOF6nBC+jjnzHX5uL+IvM9zlRN8hxqzZvdJ9NL6Xy0mc/IfQgmcPxqvO0EiZNnM+O3lQkij8+xx2cEiMfQdX90HWsf84UIUdUK78jPvwGMcNyPFdMkSJLOHOYxM79kQwghB1oiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org; spf=pass smtp.mailfrom=deepin.org; dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b=NbHoNCtC; arc=none smtp.client-ip=54.206.16.166
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HwAkvrT2Wv8GrBEUI/7fBhXBbKANRN+r87O59Whxa4ymFJ2Ve8z3mkFPqNzyfILBAllomFN3/A+QcSb5u79zxaUHXLsi7k9ndRN+Euc/5tAVmISGf55avdHTCxkVgFTcTOcEhhPyieg77GDrCsUwWfV/A5FGyJQBoki1Eu2KF68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org; spf=none smtp.mailfrom=deepin.org; dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b=la58mwm1; arc=none smtp.client-ip=54.204.34.129
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=deepin.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=deepin.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=deepin.org;
-	s=ukjg2408; t=1741687602;
+	s=ukjg2408; t=1741687619;
 	bh=zMkGsEOhRrQJoE7b/qjicmm9MOJ2PvmNyE4ve+8Rljo=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=NbHoNCtCHrdBNEZw9hBOFLibdlFWFRfrfcPWqHUQ7WWGlHlv12rtHt+DWF+cHKfSv
-	 upYj1I2QwkeLQ5VauT+7H0Ef0o3pFQEMiMRaojHio1R/hXo1nZE8XsgU6lPMO+8u5/
-	 6X+KUByO2DmogatK5H60W/NgZBBD7XJ2Gic7uMBg=
-X-QQ-mid: bizesmtpsz9t1741687593tbq18dz
-X-QQ-Originating-IP: kX9y4Fcsu0iy1+sU5FRsf9m+pbG5rAfE84obBpFpOyY=
+	b=la58mwm1rzqJdmIdJ6wglAy/6kC3IymMCwXqX+aTbcpW1bdXq5XRo+z3qePjN682A
+	 znvAVqQrsljn5vQ5MGon0T94RQmc4Hjm6xcUcLbhi0gU2Amx8YTbAlr22s2AWFG38U
+	 VZM+wZ0EvIIknv5s5b5rOa+n9ku4MM3QVd7Ra8u4=
+X-QQ-mid: bizesmtpsz6t1741687609t6fhxcq
+X-QQ-Originating-IP: gZ5N7ZadqohAjtcrwNj1tBMumWLqxssqEM+Ec67h4RI=
 Received: from localhost.localdomain ( [113.57.152.160])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Tue, 11 Mar 2025 18:06:30 +0800 (CST)
+	id ; Tue, 11 Mar 2025 18:06:47 +0800 (CST)
 X-QQ-SSF: 0000000000000000000000000000000
 X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 1712328354969147816
+X-BIZMAIL-ID: 6920947092459425178
 From: Chen Linxuan <chenlinxuan@deepin.org>
-To: Sasha Levin <sashal@kernel.org>,
+To: Andrii Nakryiko <andrii@kernel.org>,
 	Jiri Olsa <jolsa@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sasha Levin <sashal@kernel.org>,
 	Chen Linxuan <chenlinxuan@deepin.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Alexey Dobriyan <adobriyan@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Alexei Starovoitov <ast@kernel.org>
 Cc: stable@vger.kernel.org,
-	Jann Horn <jannh@google.com>,
+	Eduard Zingerman <eddyz87@gmail.com>,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH stable 6.1] lib/buildid: Handle memfd_secret() files in build_id_parse()
-Date: Tue, 11 Mar 2025 18:06:23 +0800
-Message-ID: <98CE17BE6E190CAE+20250311100624.310951-1-chenlinxuan@deepin.org>
+Subject: [PATCH stable 5.15] lib/buildid: Handle memfd_secret() files in build_id_parse()
+Date: Tue, 11 Mar 2025 18:06:38 +0800
+Message-ID: <31488F4A9095C9D0+20250311100639.311087-1-chenlinxuan@deepin.org>
 X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -71,22 +71,22 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtpsz:deepin.org:qybglogicsvrgz:qybglogicsvrgz7a-0
-X-QQ-XMAILINFO: MSstRF5C1p/jzCQM7slgxRxrF5U/0JKGgZFG6WYI3/BTsmGcz63LH6s0
-	VzW7IQufUiK/4jSXL+5F4rSuDRL6kTEcRqtE/XPayYSnMJVnJFDVkqQg4N+pBV76LJDtVlr
-	E42fyJRpSgIkUfvY740v82BATbrE78P5rPpEYRohfEAz9KzZ+WS1kUMvJ8KJrn27/G+PQrp
-	IaBCb/iNoBBSCqGBFZBKVllvlbpzIIwGRPmqCWf0G08szuQRhyxiZ79eWvK9s8m7N3r/KE3
-	ghg8zymSnu480nIpRuOmbw/lNNPXrHdFwmYDUdUsJ7QH6iXCMpZbu+cKlF7TKAl2mAEMqz3
-	UKCZnjtoEHLOxSv1i6SJC6akhoryH9H3tdoN9DsbZPUO3r+r1H7m1TzzM+6musCVYdcH39V
-	4v2xhugOEyY5zLj6wTI3wjT7kDvrEIG4LpcPEUevhUxJeyE+6eZ9p3u+xuvBABozBsmw5Cv
-	/Ue/K21zN3DOv93NaqOuCOySjBKAmvp1Ou2myWx/jv25oHn4aRtE2A5WWOkLYutDZeF5A6y
-	ZmFtJ0/UjCns1TKdE28u6ukO/XWCbA1q1o7EYUdrwU6xYWFFWe6Q5jxt1i0NUExpKA1Dld1
-	4mn+1J/ObXuGGjOw/T1SsYXNtnXfysPznNtoaoudQd9y8wohIdr5jt5kth2RNcGOsDkwZ5E
-	zvWiicOLXzg6r3nJP5+w4H6H531JEojdPLPlr+7GvPns8AEjBUmiG1bOWSC5P0p0LfM0qOM
-	yOGyDHihkNUt5Qf4Hel0CdTiukawxfxr+79Miq8KkJNERHntVD6WOXGu2VZu5dmk9QWq4T0
-	jBCwO3EWGXsx1w6jpu4Y3W5Yw8boAH1BQlpoJzbUcN48svIqKDD2/9eXUGy1V3PGS8BrYro
-	w9XXUFbr7O1S3Zo4gDdnoyFEp3e9QUJn6RvY4xVhqfODij5+O3RzUJQybUYHfHtR+3Bxu2S
-	2Km5VAo2k/5UOkH8H/TCGbQnTmbyxwX9c/JcsUufZL8SiLAkZldIKIcFErLJGLUTmSWEK72
-	UtP/kVDvlCXdP0jxHCa0LGnAST0oN7zZrv6T/Dnh4SWBPVhCFR
+X-QQ-XMAILINFO: M94I2jolx1v3EsK0u5BrFY8RGHNQarjX3cayv7769wJEcGzHC40sETRp
+	abdEyrGE2Hsxu2pvbWunAmNPDM4D6DUlUTg0s/erwMXnp9/iPLWs3QysVpks1pmunZEhGRd
+	BGP4a4KnjXaCrdLp20r9HlUyLhnSGY+zr0fj7b7To3bVYSej57kHYbZ5pGjlwJp07xB3WuQ
+	z4NBAhfqhIv+Qf9h3jNSHdcnIymOa8k6MKKChGuUrxxoU6j6GeiVWjnoqfHggmnG//mcgL7
+	Xe7YjcSQs1OTp4/SoAkITid7AHfHG4FefAHtG+kLL6pZdbF6dT6GxcF+YlWtucQcY5LR98U
+	/+qsw4jeTJg5xm7rx3S8xbp87ii0QBDxDF6K15/RUM0MLIp0lLW9pPy5E+kcgKWCm5eHykQ
+	J+fQV+0qst7u0ZzTM/+I4fHbkID2ORr39YUnipOAOlTq7hrIthxnra5lgSt1z5ADyDrgLbS
+	+yhP3ZoqAdwjoTlKnRYpR2vwp8+K0B8sJgiAIcHaUnlnW10+ezEEa0Fc1k0F1eajPDY7/zQ
+	mgYIkNjUwe5RwAAhNuFf9YdVuIZv5ELF1jyAPPhiLAvtJ6TIrXOJ01leH3vKBS0kBfNtyro
+	Kyz+Q2Jxqh13+Lykos0374YTynU4c+l7TOvx9AZfPhktNAxC4plfIezNXqrpAyYDC0Rlckz
+	WVxx9xfrZMZc8g6NYMxFsjU+bsMQpYiLy3/8FCq5/4PmfqtNJfomBX3hMZqUPJknfk8ehTV
+	53brjJ0+h1+LqcZ3ausGaqG84u6/XGuI090kzADKT9dsbTYFPnaodXJeO+qB7PXnESx5Q8t
+	mCqZsm+js6PbsAwwR0N65hlRX+08tgI8eNxjl9x9hVVE3QmqBtwOlf58AboqCYe9B39jGYf
+	op8Q8xMH+QY73cKhgB1mbWWve9B0+mhEz8c5CfyGXlbr+zjcN+HhN+P+01Zwws51RvuiGp6
+	54r0FlvYgzU+aYQ8q2lFop5kkDaEwm9Uv/cXU8rh1BvGsgPYv17N2+1s+Kpo//Ge/fvJNu5
+	bs3NltNun3C7CivsapxEFdfRDoyd8=
 X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
 X-QQ-RECHKSPAM: 0
 
