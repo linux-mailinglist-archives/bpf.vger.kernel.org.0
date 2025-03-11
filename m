@@ -1,78 +1,78 @@
-Return-Path: <bpf+bounces-53793-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53794-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C724AA5BB4C
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 09:57:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24246A5BB4E
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 09:57:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 056FF17172E
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 08:57:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56483171A22
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 08:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C0222FF44;
-	Tue, 11 Mar 2025 08:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B4C230BF5;
+	Tue, 11 Mar 2025 08:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eT9DB0K8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QIKA9Wvn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7109F22F39F;
-	Tue, 11 Mar 2025 08:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B745E22FE15;
+	Tue, 11 Mar 2025 08:56:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741683402; cv=none; b=N85Ubc+ARtPha/O7LybJYETWvTSAOPh2SUV8nZFSsRdwcntBy6UmKxiUkfHFZpafOOjUdRyprNJPDOE0EkE5Rw8CYHG7YIuvnteHKhXtDY72F57uopbyG94lLUaz5k/LXedbOnSBaTtbNSO7hgZok66GhCQu+3bVIAZQzKJR0nM=
+	t=1741683403; cv=none; b=IrH+WOM76x/jI7tVotrVvVArUCI6C82cwhajJ/gQrmmmqbKPim41xooHGhUD6r92BZLf0ML9dc/p52+dCJQlwxvGBtf94yvjIvnTwfDkxHUFwfNYjFTvcwfYP1/wcXRhaWUN1tnJ2oQAz9GG9psOdWKReUhUyUeupuJL9N8Asb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741683402; c=relaxed/simple;
-	bh=UVq854qgEpvP1dadjyuCmR0djax6WDkNt1BAcWtfAMc=;
+	s=arc-20240116; t=1741683403; c=relaxed/simple;
+	bh=oe9IFBRxTC4K7Yl2I4dZTUYiD8zJwqLA9l5IMudw9R0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GL/h//jUG4aJrcjb1uBn/I3lzNNFiKE8pJsmTYOsfDDLjD8bis1fNc6R1ELJJ2WtxeH1VFPQxA2Ad8vDQwx48rNevq9AExqAFgrwz7xa+BaMJ6szW+BCnxrxR2zIZWqIKH+oz7mzkDdlmsTu+Z3hJsHV2+plT9tLJXNL1DUfKM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eT9DB0K8; arc=none smtp.client-ip=209.85.208.42
+	 MIME-Version; b=IGihR5e7/B7urqc9q52upN7k0GwajX0Xn15ZgSu1UEKIoquc3VClUW3P1l6JoHvmJ3xw5Vh5Bukfo9g5ko5vmGVYSub2CmSlPRSLE+JZ+573RAS9dSeBB4dv/B47OCSxDewdHnV+aRwP/b7EPjIur5v+GDL8U9zX8fP8wNMnvrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QIKA9Wvn; arc=none smtp.client-ip=209.85.208.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5e5b56fc863so7504606a12.3;
-        Tue, 11 Mar 2025 01:56:40 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5dccaaca646so1439824a12.0;
+        Tue, 11 Mar 2025 01:56:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741683399; x=1742288199; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741683400; x=1742288200; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ONap8g/E/8Kd+50+E5mpWbiiyyQkbjrVWKMdb9y5KnA=;
-        b=eT9DB0K8z12E2a0DnXaI0wj4x7Gq0Ct6WVpV/g6eNS12NRnDaYpT0HgfMqUrySoEpP
-         rK16bOsJbOYfEatkP3zMIwpH1seF60Funn1OU/hktbef8dOjwuOq+T71NveyzuOQyXfU
-         jqiANvouhaMKjtrKcFw4ibjqeNA1y1U+NblIZAsu7fiBnY1j+3q9r6W0sHYp7Ruycspj
-         tOoObi/82WKZh/m+TPG5tuTlfMNpbOsFy6RUnY7/SDV7wP4PHNu5ADZMexMrPCT4APbJ
-         PxAmAcbIb7/X8SKjlUoDTTRzZJW4nHEFE1gPzToeAokmhr+c0tC2luU55l6Rm7EV+LMm
-         fwrQ==
+        bh=DbB+H6DnjKDKEGPGTN5Kwbnu/2fQ4gt3M/BOm0GQpoY=;
+        b=QIKA9Wvn6RnMP/lS4AjhzMAU6fCZMqBqBX4rHlFIhVG3QqmPLpqz7E/VxVHc4nT+pQ
+         qv+TIMMUX41TpwM91BAUNIF5ugqeUqLh31mtWwrTG/dwejFglnoLrGoTnh1vLpP+Ldsm
+         ib2hUvd2zBFMpRPCF9zB3EDxjfWjglv/iHZRawRU4pQ/Nw9C1Iq/0aZRTgZUmCc+q1Gc
+         pYpIn241AZFjD7DhC+VQwbKjCukY00Td46+rfWd8TPbH50XdMi5tJeqI3n/DEaPY0pbt
+         QuOBtQhG0zMA7jlKLP20XYMX2OBqTW5FN8hNPGk0r3wtno+LVKCe/8pAxoRBmfxabeE3
+         Rnbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741683399; x=1742288199;
+        d=1e100.net; s=20230601; t=1741683400; x=1742288200;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ONap8g/E/8Kd+50+E5mpWbiiyyQkbjrVWKMdb9y5KnA=;
-        b=pxZvSDEto/xQVACMdBonI5uE2Tu1sfLM44ePce8bP30ACIsQG6uuS9ocUjsPrBpO9z
-         On3HH6nu0woOYlMPeOHHIkWuaHOhD1uVbXoTLfn07n4ksWHI2Un2s6VRGpTBdrtV9VJJ
-         07k0+Rxd76HqbDHtlpvpTOXWuQLO1qxNdKWgo9J7DMK4b2vxmcb9nllDJANNLrnjn93S
-         EnTxx6HH4GrNIf3WMYZtprJLHwK4+iciDSRlBPjSjcQubJ8SrPD5f1czCx0hJ/O5iPu1
-         V77NAW/Kry90xUlhkH58Cd+1BL4DENN8E4I+hLlsEaS9T1IXXyO3mjjWhhjokC9Uk/vH
-         Nu/g==
-X-Forwarded-Encrypted: i=1; AJvYcCUJ+YyJuf4yvM0+MpI5HbbiWRfz+qFtNe/0P/lS4rZZ/cCIp/OlY2RLkKITHQvuo0v0L2WI/vE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxaxnFThSs9UV0z5onKBG06nGSDnDaUYMQldAqc2gLj4kX15vjv
-	VKeSipYGFhcqMtx3M82k5Xa3BXtPbG5bOUwp+DOSegHqsq6F3qw0
-X-Gm-Gg: ASbGncvtTjTTByaKxx54XV/FnThd1R9me4TmMcnN9TBBQLf4RB5t2mlR88ciw/fvrat
-	KMu7np2ZGj8bc+5uwjgNnXkhiBgx2/4YEWvjyhkjVCGJ/c1ue1+7BfgoyWhvTq6NojQ+3rNUx3j
-	YONpBHlm0VT+OZ391zp9iHSeCi9RXL3ABQyLjmGMGWeMFYHOCl23iUa10iUWWi1iAZvD0EOSa0i
-	QtuYSIdoyjShwlg8r6I+4M4gPmkiifORgJs8Hph8D6CcjDkiSM0m0EFgCK0Am1+ofyfyspjNrQP
-	Ek1hSEqNyk6pq8WGY7Jq2Ivdoe5DJWh2QY6gv9/4K/yjTaHihiSLe6QHS2MJo7x4FsZ+VGhlz3l
-	CIKaekA==
-X-Google-Smtp-Source: AGHT+IEZxbV2l8HM6Gn8Mgj6TjvQ5jVTp5hvU2YH/wQ5YOdU+CW6oY5QuMpFwvKMTvo6WhuSwIIdlQ==
-X-Received: by 2002:a05:6402:d08:b0:5e5:4807:5441 with SMTP id 4fb4d7f45d1cf-5e75f985a89mr3500590a12.30.1741683398382;
-        Tue, 11 Mar 2025 01:56:38 -0700 (PDT)
+        bh=DbB+H6DnjKDKEGPGTN5Kwbnu/2fQ4gt3M/BOm0GQpoY=;
+        b=TeGC64KvKVAA9vEHROplT5hptJYOlrUPyQw0udIMpPYmazezg6u5D9AXxukFraKaN8
+         4snF+oB1Eu+3G/zmIbHsu97GWYzVS1S2rZngiEMUVeQcODMjWqWleQIhvbcsz/TRSfqX
+         ZTyDoStnZEqt7Ony8dI3CoLBDkVR+uiL25uaGvopVZpLfeavDI4mxG/f722Q5od3Ox+/
+         kc+5ECPY9qjNxlhM+YRbwfHrIOcS5keQjRuescritpctKHFJ0Ne2Rjr/2ERorTGaF3r1
+         cCFlTpmst8JA9uOjtdBxiaLTAQTMpBcWgO+0RmxWc8FieB09TKQ75iQF623/aWKUX9vX
+         pB3g==
+X-Forwarded-Encrypted: i=1; AJvYcCVkLRLpxUYgqO1dLl6iCfVp+IizzM0Hwb8h18/4Acm9Fsr4wcC4ERSuXJwWWEbmE7WHkwwFK6s=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxi9Iod0bYux/uhtnSGBF3DUUu+osPkdgO6gbznZoYSGLF2yehO
+	0RivZveOTSRIM5Vlz3PXYDA682s0MvEnUpzVqeN4Rjeg24dskuJu
+X-Gm-Gg: ASbGncv2H12wl+aBnkS2f8xZBR5uVH0icucIQSVR+WEkQYDwaUtGTdxeO6uD3ki875Y
+	CyOJdyAPhD2b4YnbzO4SBro7kahZ+LSuVMdc0R23MgsDojWqXkwRZHozTz6sUgR8K6N8SPkS/cu
+	6d4L8zIyAwOJ0xUDsJ5byUKYViiNEDuvhzuhhiMdwC238DOaLdd03Gwe5CrwUqPLh1trH6QcS4J
+	qBrZ8qTpnuV0fKoGxZDXnBdhG5CwuBUNXxnnOKV51G9Q0YvCg80Ec+ZqThZ60W/xxH6hm9kHRpL
+	jm+7lgQu9UJm2SbRL0Q4h0x5FszUslFi16rYhI+urPEube1rZzVqVT7TOqml05urimI4YnJ+B3I
+	JlRGE8p1KjZsHuoWk
+X-Google-Smtp-Source: AGHT+IHqi95HHXK4SnypYgh0Eq1F37MXtX+T9Txf0/OZIvoA/td+0E+MwNoqRrpV70efO6Y4cwctRw==
+X-Received: by 2002:a05:6402:5204:b0:5db:7353:2b5c with SMTP id 4fb4d7f45d1cf-5e762fdd064mr2514128a12.11.1741683400124;
+        Tue, 11 Mar 2025 01:56:40 -0700 (PDT)
 Received: from KERNELXING-MC1.tencent.com ([213.147.98.98])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e5c766a16esm7965571a12.60.2025.03.11.01.56.36
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e5c766a16esm7965571a12.60.2025.03.11.01.56.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Mar 2025 01:56:38 -0700 (PDT)
+        Tue, 11 Mar 2025 01:56:39 -0700 (PDT)
 From: Jason Xing <kerneljasonxing@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -97,9 +97,9 @@ To: davem@davemloft.net,
 Cc: bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Jason Xing <kerneljasonxing@gmail.com>
-Subject: [PATCH bpf-next v2 5/6] tcp: support TCP_DELACK_MAX_US for set/getsockopt use
-Date: Tue, 11 Mar 2025 09:54:36 +0100
-Message-Id: <20250311085437.14703-6-kerneljasonxing@gmail.com>
+Subject: [PATCH bpf-next v2 6/6] selftests: add bpf_set/getsockopt() for TCP_BPF_DELACK_MAX and TCP_BPF_RTO_MIN
+Date: Tue, 11 Mar 2025 09:54:37 +0100
+Message-Id: <20250311085437.14703-7-kerneljasonxing@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20250311085437.14703-1-kerneljasonxing@gmail.com>
 References: <20250311085437.14703-1-kerneljasonxing@gmail.com>
@@ -111,81 +111,27 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Support adjusting delayed ack max for socket level in non BPF case.
+Add selftests for TCP_BPF_DELACK_MAX and TCP_BPF_RTO_MIN BPF socket
+cases.
 
 Signed-off-by: Jason Xing <kerneljasonxing@gmail.com>
 ---
- include/uapi/linux/tcp.h |  1 +
- net/ipv4/tcp.c           | 16 +++++++++++++++-
- net/ipv4/tcp_output.c    |  2 +-
- 3 files changed, 17 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/progs/setget_sockopt.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/uapi/linux/tcp.h b/include/uapi/linux/tcp.h
-index b2476cf7058e..2377e22f2c4b 100644
---- a/include/uapi/linux/tcp.h
-+++ b/include/uapi/linux/tcp.h
-@@ -138,6 +138,7 @@ enum {
- #define TCP_IS_MPTCP		43	/* Is MPTCP being used? */
- #define TCP_RTO_MAX_MS		44	/* max rto time in ms */
- #define TCP_RTO_MIN_US		45	/* min rto time in us */
-+#define TCP_DELACK_MAX_US	46	/* max delayed ack time in us */
- 
- #define TCP_REPAIR_ON		1
- #define TCP_REPAIR_OFF		0
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 2a0fd56358c3..ed652c5e9e96 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -3340,7 +3340,7 @@ int tcp_disconnect(struct sock *sk, int flags)
- 	icsk->icsk_probes_tstamp = 0;
- 	icsk->icsk_rto = TCP_TIMEOUT_INIT;
- 	WRITE_ONCE(icsk->icsk_rto_min, TCP_RTO_MIN);
--	icsk->icsk_delack_max = TCP_DELACK_MAX;
-+	WRITE_ONCE(icsk->icsk_delack_max, TCP_DELACK_MAX);
- 	tp->snd_ssthresh = TCP_INFINITE_SSTHRESH;
- 	tcp_snd_cwnd_set(tp, TCP_INIT_CWND);
- 	tp->snd_cwnd_cnt = 0;
-@@ -3828,6 +3828,14 @@ int do_tcp_setsockopt(struct sock *sk, int level, int optname,
- 		WRITE_ONCE(inet_csk(sk)->icsk_rto_min, rto_min);
- 		return 0;
- 	}
-+	case TCP_DELACK_MAX_US: {
-+		int delack_max = usecs_to_jiffies(val);
-+
-+		if (delack_max > TCP_DELACK_MAX || delack_max < TCP_TIMEOUT_MIN)
-+			return -EINVAL;
-+		WRITE_ONCE(inet_csk(sk)->icsk_delack_max, delack_max);
-+		return 0;
-+	}
- 	}
- 
- 	sockopt_lock_sock(sk);
-@@ -4673,6 +4681,12 @@ int do_tcp_getsockopt(struct sock *sk, int level,
- 		val = jiffies_to_usecs(rto_min);
- 		break;
- 	}
-+	case TCP_DELACK_MAX_US: {
-+		int delack_max = READ_ONCE(inet_csk(sk)->icsk_delack_max);
-+
-+		val = jiffies_to_usecs(delack_max);
-+		break;
-+	}
- 	default:
- 		return -ENOPROTOOPT;
- 	}
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index 9a3cf51eab78..00267b17f5e4 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -4173,7 +4173,7 @@ u32 tcp_delack_max(const struct sock *sk)
- {
- 	u32 delack_from_rto_min = max(tcp_rto_min(sk), 2) - 1;
- 
--	return min(inet_csk(sk)->icsk_delack_max, delack_from_rto_min);
-+	return min(READ_ONCE(inet_csk(sk)->icsk_delack_max), delack_from_rto_min);
- }
- 
- /* Send out a delayed ack, the caller does the policy checking
+diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c b/tools/testing/selftests/bpf/progs/setget_sockopt.c
+index 106fe430f41b..7a18a2d089bb 100644
+--- a/tools/testing/selftests/bpf/progs/setget_sockopt.c
++++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
+@@ -61,6 +61,8 @@ static const struct sockopt_test sol_tcp_tests[] = {
+ 	{ .opt = TCP_NOTSENT_LOWAT, .new = 1314, .expected = 1314, },
+ 	{ .opt = TCP_BPF_SOCK_OPS_CB_FLAGS, .new = BPF_SOCK_OPS_ALL_CB_FLAGS,
+ 	  .expected = BPF_SOCK_OPS_ALL_CB_FLAGS, },
++	{ .opt = TCP_BPF_DELACK_MAX, .new = 10000, .expected = 10000, },
++	{ .opt = TCP_BPF_RTO_MIN, .new = 2000, .expected = 2000, },
+ 	{ .opt = TCP_RTO_MAX_MS, .new = 2000, .expected = 2000, },
+ 	{ .opt = 0, },
+ };
 -- 
 2.43.5
 
