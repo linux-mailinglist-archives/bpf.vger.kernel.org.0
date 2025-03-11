@@ -1,127 +1,283 @@
-Return-Path: <bpf+bounces-53856-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53857-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD981A5CE29
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 19:46:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E87B6A5D090
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 21:13:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19DC27AC504
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 18:45:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D6D2179FD0
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 20:13:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7467D263F46;
-	Tue, 11 Mar 2025 18:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F021E264A86;
+	Tue, 11 Mar 2025 20:13:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aeSLI2vE"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="bPMjhQFS"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from BYAPR05CU005.outbound.protection.outlook.com (mail-westusazon11020143.outbound.protection.outlook.com [52.101.85.143])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65FC263F40
-	for <bpf@vger.kernel.org>; Tue, 11 Mar 2025 18:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741718687; cv=none; b=X1KH8w48pqv0FqvYg0rOz/RmkbF6exVoFk90SlLK7kK6vgeMuyBursCwzeTE75WlNm49l1Vv47ccUU7Zfu46dXwEM7KlqmtgKoRloCgbOyqLDX4uesKEVxJDiSOzpLtF8DC7bolPg4Bt0QV5jSlo5x2FZEYDK6o0D564wS5LLyI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741718687; c=relaxed/simple;
-	bh=7qeGGRF+Bs5Onbx2FBtdVg+e+PTGen7ZavhW6KRP0Ao=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=NRdJZKuzEm7LQ3BNa29GFA8KUJ7f5jInksYGQfYrflTBdIjE+bMrujVZA/H7GpjosHNaMGlMvRjvtbGP4Q0IEafI5kU0hkupNG7LKsfTg4xR6MrfpexCR/5ahM2jlBMlZoJPr8Xm79spTZYYL/2tIDdrQrdQtm+FHHnNSpTkrsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aeSLI2vE; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c6aec870-5c13-4d84-bca2-3b77513071b7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1741718673;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NUhgHWWJxUiOctQLZQHiTTEWSG04rbmNqKqbpd7zrzs=;
-	b=aeSLI2vEbtMvRZQ9zq14qfucPBo4bUgalaKBcXf/WJuCWxoLJPBUzCITyY3PknZZOmV5XL
-	rKlaFDmgxJvP/eVnvwUKX3Va+6vbOE5ZB7qZkJfCw0WAGeY8YxberuExY3wIIO3h6+A7I3
-	ai+1tNMU2E0Quz7dAvtm4O6X1EWmZH8=
-Date: Tue, 11 Mar 2025 11:44:29 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15DA26462C;
+	Tue, 11 Mar 2025 20:13:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.143
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741724008; cv=fail; b=BZtz9mnfLrrRnEQco2zHFuwb8GL2GIwAiJwAgdnKuz6S6FOpZiF246LI3KFd3TjS0zEMXVRUk9HDtKL9EM12xBJRGNfmDnEFBZRy5+Hr6tq6x355Dz0k7r3SXl5d9VgOSpmvjYXdj8iPfP64mKpwavjnfT7cdjH/FBPqdCo/n+c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741724008; c=relaxed/simple;
+	bh=LgPH+DyIlSRITmrnlMnG10XrRBzOJ4PmfZNZR0pR3E4=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=oc2HIfsrsmVw4XCVQ7R3jG5SWGmC1UQKIrFc1DOunYs9QGKfWkknb40ACvsF+oVF0VyHECYg53Iul4nCa9MUduphQYSwzZuSCJ3g1WX5wco7WvX2q+dPnbeaxTWrqD10Y1f9on2SyQUNGc33YO48pYiljocQM4xFcJD+OokmCRc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=bPMjhQFS; arc=fail smtp.client-ip=52.101.85.143
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=D1Vitpqevki20Kp8kxf+h+5gv2UTUlS5ekAsPqibOsxO/n2QdTnRTuEewdr/D5mjmm5QtXfeb4gooH5fkR7xUladWbi/rGFav9YTQMD3Uejb4mt1SIjuOQSH+ZsTHfRgMM0/+lJQ9fXkS92BalLdJo7uh5wpaaFFQZ1tOd4T0FEpWPTwUhpnDl5XwICleVVibcOAkM2tjAXLfIhsWyRbXf164d6nZMR4lJaGpShhWW6lKpNnukSCtfyojJ1PttubMKz/V4n6GMPn7rR/742IJuzjOjuarZRwylyyogSfWjX3fvvvUXIYODJilBYQzfewCoqGsBRgbytqf8yycreJzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IwfUjudnt9L6qZ9VPPEDvpVZrWWTW5TFNeQ6a60MwIs=;
+ b=eNcnJr/a/Ud2A96jhW1YQJ2JNuLbwmyFI0DCNgtR9QJH2Rj9VKt+5KTpfSQxh/LBkTsPUxiVt62nXBicqhMPEXCOoncTHYpZI2h8IEEPKwxyPM0UtSc9nZqJ50fFVKiaOOu0+HSUaGlwbJMpMZMv2HbXfei8bzEgLfeXHgoodGyZbtcOQ7zzxIBk6rXpgYLvXrfkSfJBjqVdoh7GFaiXDDk/XJbazw9BtRxorrdjZen7oYz51qZqnbnfj2pmmVAu6COY8O3PMSkrqhuOoV3S+9DYH/XwmhFFiMtpOxlduUzaehVObDPVXABZx0RWKoxMpOEbyHP0p8ngm29aImNaUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IwfUjudnt9L6qZ9VPPEDvpVZrWWTW5TFNeQ6a60MwIs=;
+ b=bPMjhQFSlmBn+hJB21TNvmwRpDA6jdwRMX6NMoIERZ2i4bXb6IbDrJEscjyLi2P+l8b78ls7YEN9zCPA3hT61iixIXRRJ5dqWz7mJ8U3QfTvTC8nXUBVL9IAm1Yn8KHvHH/lOoqhVp/6hmT02IBYgEbL2kp2u0RDq93UtMZtcVw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
+ by SJ1PR21MB3576.namprd21.prod.outlook.com (2603:10b6:a03:454::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.8; Tue, 11 Mar
+ 2025 20:13:23 +0000
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::5490:14c7:52e2:e12f]) by BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::5490:14c7:52e2:e12f%7]) with mapi id 15.20.8534.018; Tue, 11 Mar 2025
+ 20:13:23 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: haiyangz@microsoft.com,
+	decui@microsoft.com,
+	stephen@networkplumber.org,
+	kys@microsoft.com,
+	paulros@microsoft.com,
+	olaf@aepfle.de,
+	vkuznets@redhat.com,
+	davem@davemloft.net,
+	wei.liu@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	leon@kernel.org,
+	longli@microsoft.com,
+	ssengar@linux.microsoft.com,
+	linux-rdma@vger.kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	ast@kernel.org,
+	hawk@kernel.org,
+	tglx@linutronix.de,
+	shradhagupta@linux.microsoft.com,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH net, v2] net: mana: Support holes in device list reply msg
+Date: Tue, 11 Mar 2025 13:12:54 -0700
+Message-Id: <1741723974-1534-1-git-send-email-haiyangz@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: MW2PR16CA0016.namprd16.prod.outlook.com (2603:10b6:907::29)
+ To BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 0/6] tcp: add some RTO MIN and DELACK MAX
- {bpf_}set/getsockopt supports
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-To: Jason Xing <kerneljasonxing@gmail.com>
-Cc: bot+bpf-ci@kernel.org, kernel-ci@meta.com, andrii@kernel.org,
- daniel@iogearbox.net, bpf <bpf@vger.kernel.org>,
- Network Development <netdev@vger.kernel.org>
-References: <20250311085437.14703-1-kerneljasonxing@gmail.com>
- <80e745a45391cb8bb60b49978c0a9af5f51bec183f01a7b8f300992a4b14aa6f@mail.kernel.org>
- <CAL+tcoD8TAWT-_mU8wMT3zt-Thh5ZVfmBear5m=G4MbCbBS9XA@mail.gmail.com>
- <5e9fc094-8baf-4b67-b58e-dae5ff9ce350@linux.dev>
-Content-Language: en-US
-In-Reply-To: <5e9fc094-8baf-4b67-b58e-dae5ff9ce350@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Sender: LKML haiyangz <lkmlhyz@microsoft.com>
+X-MS-Exchange-MessageSentRepresentingType: 2
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|SJ1PR21MB3576:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3f64be3f-9354-4c37-70c0-08dd60d92ca2
+X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+ BCL:0;ARA:13230040|366016|1800799024|52116014|376014|7416014|38350700014;
+X-Microsoft-Antispam-Message-Info:
+ =?us-ascii?Q?aJShAhVlBcanItYY8PbVrdLY6EIjyiF4dH39uBtOG7QTLTw6eM3DRMDW57oU?=
+ =?us-ascii?Q?N8nywHF4gN2ue+rUnjoQ0F8wjdMpKJ9NpvnmQQW2CG7+aHTtVIGdMYNcrkIe?=
+ =?us-ascii?Q?Z4qKPmnj8Ki/OdXi3k7ACddYPrR/8nofq9UU5/w0fs7F2iEubevlfjQUMoIU?=
+ =?us-ascii?Q?yjbA4lJNLhNc01Jmw/T2uqxuoEeeb14/yS3X+uiQvUSa0W3+gyzHDyLdAbBA?=
+ =?us-ascii?Q?ndmlHcTHB4+nuO8rFWHkzZMOMxOIaVCkX0ZULcccIuwkbtRwTA0S/EFOhnfz?=
+ =?us-ascii?Q?jSCehGgWdfUILcJd3VE2d6RHR55Mf0TbUy9myIFG2XgbZQWeYuq9NJ2wXyTz?=
+ =?us-ascii?Q?58Jmjdh45lSYD8FjM331ZYhgLx9mKpd09R3GQFjjZpf1xMRhB7JS+2O8i5Ku?=
+ =?us-ascii?Q?SpcCyLsYLCbeZB/YXOl+qjjsIrFs0rr8niuJmW1ZB8LlpyNdg0Q81N4Jh5sa?=
+ =?us-ascii?Q?ZhPvuTxBWXPtK51zyuhlePh/tigd6vxBf6ooH8LyudD0VxWaTq6EkXPKtpZ2?=
+ =?us-ascii?Q?7pHeoGLliinqtdGIRq5SIuYJfcMGxiWcFmM6mgiQbp7vVyl+ldXFWo1xMkC+?=
+ =?us-ascii?Q?a7M6Xsi1l5/faV5nnMmiNZR5xYIGJOVTULrBDd5PGBhHz6jZmx0kMchjIJkw?=
+ =?us-ascii?Q?RS7cMjQuLpiGXAWlqUsJOkNjI1Wke3r7iYGhPy/wVeUZ8XyeLGb/F8GVf22x?=
+ =?us-ascii?Q?YmcXqRQD5GggoojIQP+2R8Z+N9T0GcE6Eb3KoQw3C/s3XpDCklt6rRfAJLR6?=
+ =?us-ascii?Q?gluzjJ2m+7QDIyzDEz6XhxMVJYDteyfRVFu8Lo02FRh4kWKDSZjqIleNUZHq?=
+ =?us-ascii?Q?yClcTzt6tSk5itQeiugBJJmAITq4GRdoWdkcpfnrGpoC84ok9ErzsXMLQLM6?=
+ =?us-ascii?Q?jHVNecZGRlDOnAV6o/YMEkWF6sk0MzL8nQdABdJOHGcgtrGlVvaUWDq4KP9x?=
+ =?us-ascii?Q?h0qDUddO1FWvEJKVM+bTV525NSpbqiX7c6yusF5joyUP3Sgm2GmJcxwOV5S8?=
+ =?us-ascii?Q?85PiqcUW/ejvK7vT2OCXmrLni23o64jqbBVEdtebxnuNdysla4yYHspflPjC?=
+ =?us-ascii?Q?WbsuvXqItLlnH/q9a/gnLv3DLpiiLvzhS6OLqEF4ov03Ow3Wny4OddTLHmeo?=
+ =?us-ascii?Q?uLpv2lUc4Yv4fBahu5Axzt8bj+pusQnzHrapd7nybGaAyihalcn3kwq9d+U/?=
+ =?us-ascii?Q?IjfS6KFGUjXLLwoXWKMfQq6xePeZJUdROqKYmRS1Wiow1GSBFqZP14v8wIWI?=
+ =?us-ascii?Q?+077PPEESE8A7HL3uRnyjcvriB/rKB9e3WOZ2tEpbyLXBHw7yOxeIO/ThANX?=
+ =?us-ascii?Q?yHv/fJNKCFAlKVZnWAbShEcci+2XpSKeuO7SH01Sg7lWdecIxuMcoApHAEfu?=
+ =?us-ascii?Q?3SM/G23RMabPXiyjRdNP31al1GsW2EAYZCOT6PnMIMZmIJLMcFPij8CYxGV4?=
+ =?us-ascii?Q?a1NbBl6ka9nqXiS6v+v+7645Z+QcpW51?=
+X-Forefront-Antispam-Report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(52116014)(376014)(7416014)(38350700014);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+ =?us-ascii?Q?w9b26j7KeMPGR1pxCg9IpfmoqjEvC5f2nrPEr4zvht2T2jUspqEmLAfxY4Tt?=
+ =?us-ascii?Q?JrkvUJz1Bm9tqcpyQsXoLydIosl4l1IIGuHr1rUpFWJoNXj88ugw+2r2xDXH?=
+ =?us-ascii?Q?RJ8RcNTELiT3k1bUPbrow7+5JbUfVSQN6QB7Qc+cDehN3neYlYo9jGH5UwJe?=
+ =?us-ascii?Q?M5KN82v6dQUYY11zqPlysOnjX/ckmFNrEgb5ZDzKHj92ws7DtWF+JTtLkmRq?=
+ =?us-ascii?Q?9uvzczKtLE2ef7UttXnDS8/CrFIkyCtYTJNWzSXjDok1lleSRo3x6qToYtby?=
+ =?us-ascii?Q?KQTEbZhHCCD/+IHWLj/W9zqknxE6qkZS7qV2gwEYbcmcHSMtTXb/EUN54o2n?=
+ =?us-ascii?Q?qgzwSZdsD8mxkFNBV2FBdo5qEqFj5jJdchTamowPXVCgnH74KYIMu0iuBUdU?=
+ =?us-ascii?Q?9YX5+G+Ius6sQ1HRkB8q03OQWz19isCadJP7uSSLrcG9WFEIYKED7fK84ivs?=
+ =?us-ascii?Q?sRTLTo2QkuYPhWuUE8cFVoF/BjcupDUM/X0f0zmM0aXd8qjP9vOtlwzP/+1a?=
+ =?us-ascii?Q?lGojnvJAa1c/PCiT3jKZdZ0mDI7CzmIQroh056zM04GtJIsl0ulpraRcSGJ3?=
+ =?us-ascii?Q?kn5MTdTLRUFeYEDn5xacc8FdPKBieZPBykC5QOVJHUvKSdLbPaXifoyZEvad?=
+ =?us-ascii?Q?SpzeOipgKzr4Zl9W2qFrpzR/ubzDmWopTJYC97BGdDfVRo2NDsgJXbdO7WIo?=
+ =?us-ascii?Q?qS7uPQNWv3eDh6T/gGJFfbhsc56dg6t6TwG99+oGGWI7UpFWycnkFnPE7O3/?=
+ =?us-ascii?Q?9L2HJQQC+WUlEN2aaEe+PiMbnkXksY0VKGm5UMBXXhLtCfFYNBTAQ9UdLjAc?=
+ =?us-ascii?Q?gmCYl6fTB54lI7YdnKdNQ/uA5tQzcxLwJx7k1kXEveAEz6RzWWWRJUAZwX9X?=
+ =?us-ascii?Q?Gv3mW27CRqO5av4rzhN9uB1tB5F4x5nDkv3h/8+t0ZifqlkLPaZZq2bGpvfr?=
+ =?us-ascii?Q?bygi+1FuRKgPEKiQPrDxlYBxCy3CBCs2jvBRPgOsXqRRhxiNYrVH7A/kWVnV?=
+ =?us-ascii?Q?Ysyzo6/pJXSkBc/isLSP1n5R4ShPwYQMWc/x17kwjT6UzblDGVFvAae/IqlX?=
+ =?us-ascii?Q?aFj2dnQ6Ce8eQWY23zZh72ciFk2iAijkJggv1fmNElVqJbCvpS9aJtv9/T/T?=
+ =?us-ascii?Q?rnpXXZA9hCvj45DAXZAoHkivZ/3X7UCtAlF4cSE7GpMZNcFEo9JMi75bZqvK?=
+ =?us-ascii?Q?3NMxAVLzokapHe/RkEk2q6G3CXd7ToxqZ+bju8dcKt8f5U2BKThzUqcRYSz4?=
+ =?us-ascii?Q?iJBW5xoo7cuL3GSVTD8IYk1L4mzvzYgPImayKiw/AokX7TB20gCJBDsiRmsp?=
+ =?us-ascii?Q?NjDM+p3iJAOG6Vv6Hy4y6fLatHBQxM6NRV4xs7fAo4arqN1WsSOHAbnaOm13?=
+ =?us-ascii?Q?b5Df2ZkTtJaPLF/U/98DQb8xaQ5WvzVDuATfKNbwi1O1Plr4KAdRYoBQDHQH?=
+ =?us-ascii?Q?pozPjowMmidhM8a7F949CT4DWDY2pHJyBmJrJ8TGeZ/VZFp5dYU3AlY9iw0M?=
+ =?us-ascii?Q?WHKVVwoI6EmHOutn+tyvY9lSTj/i029dc7UR8J/r6jm0cr44CoDEGPsxoBRp?=
+ =?us-ascii?Q?kyGu3FGpcug76j+L/q14tLAlPBCIc0dYN4vU+nGb?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f64be3f-9354-4c37-70c0-08dd60d92ca2
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2025 20:13:23.3763
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8vE6jDjDFOKe1Ti3S2CeUXfq6BuEE0Ye0sfLGyVepxk45b2qcNB4Sb2oYMhFlpZcoHxtdpiuNyyjQzv9X1qGbw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR21MB3576
 
-On 3/11/25 11:39 AM, Martin KaFai Lau wrote:
-> On 3/11/25 4:07 AM, Jason Xing wrote:
->> On Tue, Mar 11, 2025 at 10:26 AM <bot+bpf-ci@kernel.org> wrote:
->>>
->>> Dear patch submitter,
->>>
->>> CI has tested the following submission:
->>> Status:     FAILURE
->>> Name:       [bpf-next,v2,0/6] tcp: add some RTO MIN and DELACK MAX {bpf_}set/ 
->>> getsockopt supports
->>> Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/? 
->>> series=942617&state=*
->>> Matrix:     https://github.com/kernel-patches/bpf/actions/runs/13784214269
->>>
->>> Failed jobs:
->>> test_progs-aarch64-gcc: https://github.com/kernel-patches/bpf/actions/ 
->>> runs/13784214269/job/38548852334
->>> test_progs_no_alu32-aarch64-gcc: https://github.com/kernel-patches/bpf/ 
->>> actions/runs/13784214269/job/38548853075
->>> test_progs-s390x-gcc: https://github.com/kernel-patches/bpf/actions/ 
->>> runs/13784214269/job/38548829871
->>> test_progs_no_alu32-s390x-gcc: https://github.com/kernel-patches/bpf/actions/ 
->>> runs/13784214269/job/38548830246
->>
->> I see https://netdev.bots.linux.dev/static/nipa/942617/apply/desc that
-> 
-> It cannot apply, so it applied to bpf-next/net.
-> 
-> I just confirmed by first checking this:
-> https://github.com/kernel-patches/bpf/pulls
-> 
-> then find your patches and figure out bpf-net_base:
-> https://github.com/kernel-patches/bpf/pull/8649
-> 
->> says the patch can not be applied. Could it be possible that CI
->> applied it on the wrong branch? I targeted the net branch.
->>
->> I have no clue this series is affecting the following tests
-> 
-> The test is changing the exact same test setget_sockopt and it failed, so it 
-> should be suspicious enough to look at the details of the bpf CI report.
-> 
-> The report said it failed in aarch64 and s390 but x86 seems to be fine.
-> When the test failed, it pretty much failed on all tests. It looks like some of 
-> the new set/getsockopt checks failed in these two archs. A blind guess is the 
-> jiffies part.
+According to GDMA protocol, holes (zeros) are allowed at the beginning
+or middle of the gdma_list_devices_resp message. The existing code
+cannot properly handle this, and may miss some devices in the list.
 
-and forgot to mention that you can run bpf CI before posting. This may be easier 
-to test other archs. Take a look at Documentation/bpf/bpf_devel_QA.rst. The 
-section "How do I run BPF CI on my changes before sending them out for review?"
+To fix, scan the entire list until the num_of_devs are found, or until
+the end of the list.
 
-> 
-> 
->> (./test_progs -t setget_sockopt). It seems it has nothing to do with
->> this series. And I'm unable to reproduce it locally.
-> 
+Cc: stable@vger.kernel.org
+Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+Reviewed-by: Long Li <longli@microsoft.com>
+Reviewed-by: Shradha Gupta <shradhagupta@microsoft.com>
+---
+v2: Fix alignment, extra dmesg.
+
+---
+ drivers/net/ethernet/microsoft/mana/gdma_main.c | 14 ++++++++++----
+ include/net/mana/gdma.h                         | 11 +++++++----
+ 2 files changed, 17 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index c15a5ef4674e..af63d844b3bc 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -134,9 +134,10 @@ static int mana_gd_detect_devices(struct pci_dev *pdev)
+ 	struct gdma_list_devices_resp resp = {};
+ 	struct gdma_general_req req = {};
+ 	struct gdma_dev_id dev;
+-	u32 i, max_num_devs;
++	int found_dev = 0;
+ 	u16 dev_type;
+ 	int err;
++	u32 i;
+ 
+ 	mana_gd_init_req_hdr(&req.hdr, GDMA_LIST_DEVICES, sizeof(req),
+ 			     sizeof(resp));
+@@ -148,12 +149,17 @@ static int mana_gd_detect_devices(struct pci_dev *pdev)
+ 		return err ? err : -EPROTO;
+ 	}
+ 
+-	max_num_devs = min_t(u32, MAX_NUM_GDMA_DEVICES, resp.num_of_devs);
+-
+-	for (i = 0; i < max_num_devs; i++) {
++	for (i = 0; i < GDMA_DEV_LIST_SIZE &&
++	     found_dev < resp.num_of_devs; i++) {
+ 		dev = resp.devs[i];
+ 		dev_type = dev.type;
+ 
++		/* Skip empty devices */
++		if (dev.as_uint32 == 0)
++			continue;
++
++		found_dev++;
++
+ 		/* HWC is already detected in mana_hwc_create_channel(). */
+ 		if (dev_type == GDMA_DEVICE_HWC)
+ 			continue;
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 90f56656b572..62e9d7673862 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -408,8 +408,6 @@ struct gdma_context {
+ 	struct gdma_dev		mana_ib;
+ };
+ 
+-#define MAX_NUM_GDMA_DEVICES	4
+-
+ static inline bool mana_gd_is_mana(struct gdma_dev *gd)
+ {
+ 	return gd->dev_id.type == GDMA_DEVICE_MANA;
+@@ -556,11 +554,15 @@ enum {
+ #define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG BIT(3)
+ #define GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT BIT(5)
+ 
++/* Driver can handle holes (zeros) in the device list */
++#define GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP BIT(11)
++
+ #define GDMA_DRV_CAP_FLAGS1 \
+ 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+ 	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
+ 	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG | \
+-	 GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT)
++	 GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT | \
++	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP)
+ 
+ #define GDMA_DRV_CAP_FLAGS2 0
+ 
+@@ -621,11 +623,12 @@ struct gdma_query_max_resources_resp {
+ }; /* HW DATA */
+ 
+ /* GDMA_LIST_DEVICES */
++#define GDMA_DEV_LIST_SIZE 64
+ struct gdma_list_devices_resp {
+ 	struct gdma_resp_hdr hdr;
+ 	u32 num_of_devs;
+ 	u32 reserved;
+-	struct gdma_dev_id devs[64];
++	struct gdma_dev_id devs[GDMA_DEV_LIST_SIZE];
+ }; /* HW DATA */
+ 
+ /* GDMA_REGISTER_DEVICE */
+-- 
+2.34.1
 
 
