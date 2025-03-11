@@ -1,90 +1,104 @@
-Return-Path: <bpf+bounces-53787-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53788-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B234A5BB0B
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 09:47:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E778A5BB3C
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 09:56:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B17216FDD7
-	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 08:47:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF575171888
+	for <lists+bpf@lfdr.de>; Tue, 11 Mar 2025 08:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A3E226865;
-	Tue, 11 Mar 2025 08:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47702288CB;
+	Tue, 11 Mar 2025 08:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="V5Xc0PCN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xs/aN5X6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D05F22170A;
-	Tue, 11 Mar 2025 08:47:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94DD61DED63;
+	Tue, 11 Mar 2025 08:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741682850; cv=none; b=YfIH+ZVi2dVhOoN3omfxev8B8W3MVb74zKjMLID2Vzxdi3KLGVJvHVCgI7lwLljpRD4WwbbWCqaUmSO+vL4EG+AoO2T2pxfUy2rQoxxFGAzgs/AY3Xgd0rFKuOiJxDnKDv18FkJDrMVyViWuYDLmsXM4s6ZXfHWUXPTw+Kc9PYE=
+	t=1741683393; cv=none; b=OO2oRK4RkyyoK/oKm8/fGnLR8+hHFZf6ZzhB1cjLKn6O0ThrQxA2rwLnYIbWt0HfOy6plupW25V4rq763pE/uF938h/ELJaQyyb9NCt1StG7xKzVbrIVGbF/UCwDTuNIDpsd5ow9eJS60rJxJbQLCLWZnd6/z+cmjwDn1zMK0pE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741682850; c=relaxed/simple;
-	bh=ol1f7hay/Z679BK2/QRFOO0VTI1OSCSa3+Q2+6uk9yg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fmxGQkd4h1r+zzjMvZuJYA9r7g1z2i/oGWZLPcDCOelffwLYp+u8ZbWkdspfkG4VGOeQPbjU4Vd66Vq0AOrhtYHEJ7vUx34EjpVYa2UugHNskrRO34m/05gZL118WafcGOeAloAthLL5bFUVl0cp9b5zPWJGoaHq54CX9Ca3YSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=V5Xc0PCN; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52AKFZHY028791;
-	Tue, 11 Mar 2025 08:46:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=edl4hfarrhj8RCsBI17w+uCiwTK8phxXIqIjOaB8q
-	wg=; b=V5Xc0PCN9W0iODXEodpYJpuNRihgplC4uBE3VEZ5VnAeyvnyfePNbWQtF
-	aYSbX5y8/+JlPM/+x7sFXrpYq3QM/cdxwVJmqztdWdOAkk6BkWawjlOPBK6ubUrE
-	1ax+qqSjbbRXkqUrfz4rI0xotNtIT2pi1ThXK9Ne7qPisRrDrlOkOcMhas7W5IDY
-	5SLRcqjiQCBIMWTKbTCNcTSY2JdMFLQBAL+MATTzf28Dyxpt82Vv10dQ8NSib8HJ
-	bjjh/PrOv81OOyIyImB5Dl4hhtZrpen1kqk7yUvl0rBanoSALGZSVKJOaTwEPWXh
-	5RsYeVwN+ZamLu+TAe4mFN0QTbKiA==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45a042wcb2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Mar 2025 08:46:58 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 52B8LlTJ002936;
-	Tue, 11 Mar 2025 08:46:57 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45a042wcas-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Mar 2025 08:46:57 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52B7bK5b014011;
-	Tue, 11 Mar 2025 08:46:56 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4592x1ttma-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Mar 2025 08:46:56 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52B8ksZP34538076
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 11 Mar 2025 08:46:55 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D42052004D;
-	Tue, 11 Mar 2025 08:46:54 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1284320040;
-	Tue, 11 Mar 2025 08:46:50 +0000 (GMT)
-Received: from li-621bac4c-27c7-11b2-a85c-c2bf7c4b3c07.ibm.com.com (unknown [9.43.112.86])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 11 Mar 2025 08:46:49 +0000 (GMT)
-From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
-To: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc: ast@kernel.org, hbathini@linux.ibm.com, andrii@kernel.org,
-        daniel@iogearbox.net, mykolal@fb.com, martin.lau@linux.dev,
-        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-        jolsa@kernel.org, shuah@kernel.org, miaxu@meta.com
-Subject: [PATCH] selftests/bpf: Fix sockopt selftest failure on powerpc
-Date: Tue, 11 Mar 2025 14:16:47 +0530
-Message-ID: <20250311084647.3686544-1-skb99@linux.ibm.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1741683393; c=relaxed/simple;
+	bh=KHJ61QWzKw7QJXechSjHFjdLPVCALVWUIQuh5jW09Sc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g44zzZIeAbpCOO8zjBzjJoNaQrXj3M/eBrACTsXqNvY6WnsppKu6kEMRmXWWGM9LhNJFH3P0A1Im+suwI3oKutC32Mg+oTbQ77JsMUASST+jyI+QWKxJLmhbbRxJwrqqY1f+jFYsHW5Uv8rX/PWUGzoXyXY8n8g9kP8ne1yADbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xs/aN5X6; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5e5b6f3025dso7319276a12.1;
+        Tue, 11 Mar 2025 01:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741683390; x=1742288190; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bixHXxIG1NNufeoV7lBfe8WWM+Lb7vo/7BEU455qMWo=;
+        b=Xs/aN5X6SBO2Nvo6jm4Byr5Au3eRSXnSdcGbmal/gWvjMZNqFaaETaulMmBg3rzT6i
+         0mDldpQQm3zCrW02D/Q3Qphixv124TQLkPegMJB9UtVNI+Hwelfongs10Oh7jMJ3iQIJ
+         7h1IxX9cnr3pkrsxP/rWrzSfjWD2sKbkgFybIODU01uqwgDcX3cmVaC7wV/18NXq0qu4
+         9H37m6vsJS5ueP6CbomyENajlpO7ZzrE3w4S1dofvsv4GbsWt1go0EEshYNKCf+kMVT0
+         gVgNGNwVUFyt5SoPWFh9hw8VfFSZo1BnrpeHMHFHCCnYIjWYBImjJ3M3o+dxJ7X97xYr
+         47tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741683390; x=1742288190;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bixHXxIG1NNufeoV7lBfe8WWM+Lb7vo/7BEU455qMWo=;
+        b=uBAQ20Ss8Ti2LvLxCfilHWvMT4E94w0q+OBXfDycdl/UtWvYVig1FFlIk7oXihaaIT
+         XoUnECjtxzwJAT/c4z7nTcHQ0sWpCRm6Wy+1xolNcfjntvo1K+DvZ0gJDhbX9OkJLwf5
+         OekD4UtCkl1pY9SH2AFhPinkaykvolPIQDt2di7UCTVjF4TXqPmWOhFmoQWO7FNFkBSk
+         G6oN9gpjnsKAAsC8d3OgwEPKT6UUggHmAoca6zPatsB03YxQ7/gYsiIOOPXUCEw6oU7/
+         KIXPjCippw5FSZ+0PJ4zx0Xokh/4CPl9UHiH1P5+7XE4x9yloQHNrfQHBHl7m/XVTTDN
+         rPdg==
+X-Forwarded-Encrypted: i=1; AJvYcCW8B0qtzIPGWJUfaZCBR0FsSVdJSbvjI7/LDj3nzpPGtFkH2Jr8hzOLd1LesVivLLP9LhBevZY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKshN1ez2+HCSPWvX4oCNp287CM8KsH4bhYgrRuMfw4xIaJrY7
+	tB6DP8KluN4bVs4uHiwCUP468tPk/J5qkL12cMy4QPdzKcHtgjkY
+X-Gm-Gg: ASbGncsQsv6xp6nv0VTdM3k1B9tnt6wcLU0cYFQoPCQN0sUdnCgfFnR3pMNBbNdZIsv
+	gZVMU+41wsYRxPZC9YdREpaCIa7eSiOQrJUDsfPCiU9DbX7lrtG6d8Nw8GJh/umMbaZMbJV0Hox
+	7KTBcazhtL57wtXI4d+Q2qsWzHMKW8CRCzC9WE4PGyjJnnaOHgNcf5YA4kx/YL2GkfCb/uGb7p7
+	G8v0hobvKl/2Areh0tpB9VDlzdMMVdAV072nh35fp7vJ6zHyqtS6wwqw5J0tgOXMIe/N2kulQLP
+	r77tI5YHfVVryczzlbUDoKQ9tsieI5YXfVL+ygTKIh3TVD5UqM2e/6K2SLJ1tTTjS9XgDw4VMKA
+	FuV5dHA==
+X-Google-Smtp-Source: AGHT+IEL2OeAb7DVAh3NStAHVBy6aewMB47TDlExcq8zZu2Ybvy73qpbhyInDvvqsQnC1fAWZ3wuMQ==
+X-Received: by 2002:a05:6402:1ed6:b0:5e5:bfab:51e with SMTP id 4fb4d7f45d1cf-5e75d7a4980mr3373330a12.0.1741683389592;
+        Tue, 11 Mar 2025 01:56:29 -0700 (PDT)
+Received: from KERNELXING-MC1.tencent.com ([213.147.98.98])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e5c766a16esm7965571a12.60.2025.03.11.01.56.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Mar 2025 01:56:29 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	dsahern@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	horms@kernel.org,
+	kuniyu@amazon.com,
+	ncardwell@google.com
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Jason Xing <kerneljasonxing@gmail.com>
+Subject: [PATCH bpf-next v2 0/6] tcp: add some RTO MIN and DELACK MAX {bpf_}set/getsockopt supports
+Date: Tue, 11 Mar 2025 09:54:31 +0100
+Message-Id: <20250311085437.14703-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,46 +106,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: VPyMwzuXTjLqCJwbqKFCCgpkViq35HWO
-X-Proofpoint-ORIG-GUID: _tsnpUPWeg2Nlj8o_gcPPYdfxINmsmdD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-11_01,2025-03-11_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=902
- impostorscore=0 clxscore=1011 mlxscore=0 priorityscore=1501 spamscore=0
- adultscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2502100000
- definitions=main-2503110057
 
-The SO_RCVLOWAT option is defined as 18 in the selftest header,
-which matches the generic definition. However, on powerpc,
-SO_RCVLOWAT is defined as 16. This discrepancy causes
-sol_socket_sockopt() to fail with the default switch case on powerpc.
+Introduce bpf_sol_tcp_getsockopt() helper.
 
-This commit fixes by defining SO_RCVLOWAT as 16 for powerpc.
+Add bpf_getsockopt for RTO MIN and DELACK MAX.
 
-Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
----
- tools/testing/selftests/bpf/progs/bpf_tracing_net.h | 4 ++++
- 1 file changed, 4 insertions(+)
+Add setsockopt/getsockopt for RTO MIN and DELACK MAX.
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-index 59843b430f76..bcd44d5018bf 100644
---- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-@@ -15,7 +15,11 @@
- #define SO_KEEPALIVE		9
- #define SO_PRIORITY		12
- #define SO_REUSEPORT		15
-+#if defined(__TARGET_ARCH_powerpc)
-+#define SO_RCVLOWAT		16
-+#else
- #define SO_RCVLOWAT		18
-+#endif
- #define SO_BINDTODEVICE		25
- #define SO_MARK			36
- #define SO_MAX_PACING_RATE	47
+Add corresponding selftests for bpf.
+
+v2
+Link: https://lore.kernel.org/all/20250309123004.85612-1-kerneljasonxing@gmail.com/
+1. add bpf getsockopt common helper
+2. target bpf-next net branch
+
+Jason Xing (6):
+  bpf: introduce bpf_sol_tcp_getsockopt to support TCP_BPF flags
+  tcp: bpf: support bpf_getsockopt for TCP_BPF_RTO_MIN
+  tcp: bpf: support bpf_getsockopt for TCP_BPF_DELACK_MAX
+  tcp: support TCP_RTO_MIN_US for set/getsockopt use
+  tcp: support TCP_DELACK_MAX_US for set/getsockopt use
+  selftests: add bpf_set/getsockopt() for TCP_BPF_DELACK_MAX and
+    TCP_BPF_RTO_MIN
+
+ Documentation/networking/ip-sysctl.rst        |  4 +-
+ include/net/tcp.h                             |  2 +-
+ include/uapi/linux/tcp.h                      |  2 +
+ net/core/filter.c                             | 45 ++++++++++++++-----
+ net/ipv4/tcp.c                                | 32 ++++++++++++-
+ net/ipv4/tcp_output.c                         |  2 +-
+ .../selftests/bpf/progs/setget_sockopt.c      |  2 +
+ 7 files changed, 71 insertions(+), 18 deletions(-)
+
 -- 
 2.43.5
 
