@@ -1,195 +1,240 @@
-Return-Path: <bpf+bounces-53887-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53888-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76F7BA5DE52
-	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 14:47:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAF41A5DE8F
+	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 15:01:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C3761899FB3
-	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 13:48:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 210183B5A69
+	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 14:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECED0248861;
-	Wed, 12 Mar 2025 13:47:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4145824EABF;
+	Wed, 12 Mar 2025 14:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ftz5LvY7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JBExEqOD"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2381DC184
-	for <bpf@vger.kernel.org>; Wed, 12 Mar 2025 13:47:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741787268; cv=none; b=lhLRbd7tZsqbDDtD8yM7kjjiD00OOujA4ZU1spMcanfE7FOb++L3ZTIc8PPZ599WXUpxj602J4Hf4hxmVBdo6+FWhK8xHgQNZDL8rPq7tZ7eKYlRHkoa44hZw18dVPvuHgvgk97xMf/tAj3EYfcqMSgNK0/NCNQ7B8pz2Ae2vtc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741787268; c=relaxed/simple;
-	bh=6tGSGykodzCAtyZOeHBAPagJyYrkkHqB2fvCc3rQv6I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HIN3NyjVJ0L++kn3SbzbQboYbUJVdnmgEhXz1vk91hRtZrvO0YrE7YG20OP60+yXb9rq86qsTT3JRmeUnw1yGz60w+fmUITiSPKYuA4Y7KGHpODy4xTmvsj+vCP7xJeSmBb9TIGdPABIf5fVPjS2zkrzMgM7ED+l0iMKcWQHW2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ftz5LvY7; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741787265;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OFQMZ93NHY8bxD+VWg+ibXC+CNZRdUJX6/ldMKrpat4=;
-	b=Ftz5LvY7otp9WlSLo2cQEuvG3dCYycHkgBFAae1jN7XA79pE7WYzGjk6qPICUvCEKsN9Rj
-	Yo4E6t8UV4d+Vglanx7zwBgPnQTxmupYjJz88+wSDajfmHsfYDeUF0h1OhoB9wsksFsI4G
-	gb1hUisIGg70zdIG+yR0Jcr3Z6aUv5U=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-192-_LVUsQ-rMzSx7r5tp1rhJQ-1; Wed, 12 Mar 2025 09:47:44 -0400
-X-MC-Unique: _LVUsQ-rMzSx7r5tp1rhJQ-1
-X-Mimecast-MFC-AGG-ID: _LVUsQ-rMzSx7r5tp1rhJQ_1741787262
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4394c489babso33793735e9.1
-        for <bpf@vger.kernel.org>; Wed, 12 Mar 2025 06:47:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741787261; x=1742392061;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OFQMZ93NHY8bxD+VWg+ibXC+CNZRdUJX6/ldMKrpat4=;
-        b=QYaZ27MM5BHnqKSUW3iILsR5cQhPwwTxfVVwAJoOM5to8sg5bfjh7XoPL9ZRG9eXxC
-         WprU1YXzFiu/0uBLSm+Ogx9j6VSBGBLK/fM3YjzoEF/EGGYAf/Avpf4d2kNtv2lflZzj
-         be+boEBkZISptG0sUQ788/H6S7Tuqc3RiBaN4bnngy6A6+TAkSM0OqhuWD1KSsuws/X/
-         c4IntKsPd6ITTbbvsGtHQrVBgzxGS++zJKkeKqi4ZRpRAfv0amaXb+j9b8U0wZn65Xtl
-         7BFf6YuuMYxiT6Ssycnn+84EmbqWVVUv9HnHIcBB5arUy3BLOuYJWyIrE4h76T8Nso0e
-         9PTg==
-X-Gm-Message-State: AOJu0Yy93UBWnnQruT305BBNhEA7GMnYndfjYIWq7EKP8+RdhqbKi0sE
-	4V+v475moIdMeFFQrg8c26gWT7ILS619p5WpC3tLzWCSuOhdHPcwczsMbx+B4vKV0xzaXwVgEJL
-	DYYc5JAGrZnZGHSLku6NwZ+gqKbT+4BtK11Nv5+A2K8j9Lx3bKiv+xx7H2qUAS7pqRBsEg4prew
-	/YxgZTSdapErgOMqKtP63AyLxeps/rNE3S
-X-Gm-Gg: ASbGncvuZEOAtGDToNTBm/WsRnX368zhNRCwdJmq3Dx6QOuaITht/QfRsjDakjjUem6
-	KWfl6+cET6UihvJ1foWYXJqbej0Y5YwNgxK22MN8+ua13kVJw/u/Qo58A7wdGKOceqnYMJGnbLY
-	3H0Ow21P/buqSmyVwE2tieqdT7aYnm3b2rtvQVgC7uGJ+nD8TxAjq+eULs1rI2TUJItND0ktEo+
-	ModcWJ1hkifZsde3O+xGohgzHgKFAGqGQ6UK86bOf8kXohBG7k8b/S/8DCS9M+kXGwzZzhBCCMN
-	Z9u1lEpdLWLP5J5vEbDw2sE4Mf343H8lVvl4IQ==
-X-Received: by 2002:a05:600c:1992:b0:43d:db5:7b1a with SMTP id 5b1f17b1804b1-43d0db57d30mr13891105e9.12.1741787261443;
-        Wed, 12 Mar 2025 06:47:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFim1teiRjnYUCj7jAuMBWa8P1fe+F8UirNjsD5dD4ijDHMeVddedYgZL/TK9xDaqnL04jinQ==
-X-Received: by 2002:a05:600c:1992:b0:43d:db5:7b1a with SMTP id 5b1f17b1804b1-43d0db57d30mr13890715e9.12.1741787260942;
-        Wed, 12 Mar 2025 06:47:40 -0700 (PDT)
-Received: from [10.43.17.17] (nat-pool-brq-t.redhat.com. [213.175.37.10])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912bfba8a9sm21117212f8f.9.2025.03.12.06.47.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Mar 2025 06:47:40 -0700 (PDT)
-Message-ID: <f185389d-f911-46a6-9fb7-d949b00deca5@redhat.com>
-Date: Wed, 12 Mar 2025 14:47:39 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 487BB242918;
+	Wed, 12 Mar 2025 14:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741788083; cv=fail; b=robDseD/51tw3LG5/0EaP0QaJFxu0bCSZU3q7m38L4gpZ+D925sDhWcImSP6mUi0xCIqbX0EwNYZQOZou7xCcUAby05S317ZbIxzhJ3mWH8PtTQttgLtIvrLODlT9Hkcga8hLjLJkG51i9B9VzGqVqVSHO+tzmDwEGTtCbO4OQU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741788083; c=relaxed/simple;
+	bh=BAYXnZxA9ACbSPP+HsxbHYlwzS/b91Q4yBOD6niPKc8=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=f/uroTJO1/TiqtJ54ep2evqmfbwiekr4E1W1lLSqGbnh48gtqKL5UM/NVY1/QpR9Ncit8ziuk+j3klfmRT4KWci3SWQdfBEhfwB6NpGPEL7reYmu3p/xI3AKd27SRvjiq1MEDVSB5QdWIKK3LtPJZTJkVrj6l4KnfELDTa1L4C4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JBExEqOD; arc=fail smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741788083; x=1773324083;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=BAYXnZxA9ACbSPP+HsxbHYlwzS/b91Q4yBOD6niPKc8=;
+  b=JBExEqODX0Zv6jXMN9gt4PYBdIvEtYbrIRtlLs/LNs4GtjoO7hlPFptA
+   7YRq7vQaeVEzvmZeCNosti8YIY/+xTYOYmGuPs4JOnctuzhmWwL1Ce+Ho
+   F4V16sfHyVR6lqO46xbvNnQkB2EkQ9wuJJdE6lq/Ikf/GoyfL07RVm/45
+   eYEGkggKktrOUJXKDccpjqiAZNCJcR/C8pN+3NALDpMl5PxhMo8IGYfFD
+   FbVwB0zBSqbiu9JhF1kiNOWF96RCk59vuo5ZvvK1ouhnhCdRbj/gDxsln
+   9tJ7oRLcnWv3hW0bS86ALsTpZAyHjyCfNFcVAKwpGOz3ByUwX/Y0mx3dX
+   A==;
+X-CSE-ConnectionGUID: SXLZhhoKQsmlpqzgCDr5Dg==
+X-CSE-MsgGUID: h4spMxdnSXC2phz36Nqk2A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11371"; a="53859475"
+X-IronPort-AV: E=Sophos;i="6.14,241,1736841600"; 
+   d="scan'208";a="53859475"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2025 07:01:22 -0700
+X-CSE-ConnectionGUID: w5TmrA6MS4qi7XqvUJqeIg==
+X-CSE-MsgGUID: ShNyY4rCSOiVoKu0gWe7MQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,241,1736841600"; 
+   d="scan'208";a="120598986"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2025 07:01:21 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Wed, 12 Mar 2025 07:01:20 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Wed, 12 Mar 2025 07:01:20 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.42) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Wed, 12 Mar 2025 07:01:19 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=T+zjHKNcmKg3qZ9+P8QxcZt/WMcGz0WyJm0YWoJDkGP8bPecmkLEdX/vTRQU7not3zNC4cFTwwvBLw7FOQNvXMjnAr/tJgN3epJiYP9FUJ7Aur3O95eNRhuKrHSP88+twv6U+wOA8jlggLqG93qbk8bYwjlW2we6X1BaU7tDC/DDU+gC2W+uUbHbfu+OvmzdxTQKj4GSeQtQSHcB3+jTZzjr6pJ9vkrxMEIZ0EfBqJZ7W4v6ujzetMfTpSBDl3lKkS/+S8k3tcgK7Zt1XAvNOwYbhzU9O2il3Qajb5MrxuW2mHx/l9wXxDSPlIiGkH4gbEylDLwrYX0Fn5YV7lT5GQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Idi5fmL4dUxdyp2j2EifGLBEhlsQkPRTLwpESxgWvPg=;
+ b=EysdOO7YW6VEnxtTuQRYQPjr9P1U8g0PNNtnbPK1P16qfS7H5sSPMPUS7Tdb857uwxzeqd+tXdRiTw2h4IoWSUv82y3wTQ1UuEI/Bpe1+uRPGKaJ7S6a7MkDdWqslPO8lkaZxgoSwqu2GtYdKsqM5le2jD6kQwCB+KvbcLPfKEk/1r8IVHiZfVGgppvEBwdvyrf3p+DnFo4I+/aU3XyZ4Q9wkFBidRCT1obuZ0bFhQ0IE2MFwZZYFWTWkK+MzxyPJsjftHsmpjpehPBlp3IlF1JvVfl1FfqnCJ/FrVw0k5yZMKR2jGMBUqFz7spjVX5L3oPrzcine676NUzZww1DAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by PH7PR11MB6330.namprd11.prod.outlook.com (2603:10b6:510:1fe::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8511.27; Wed, 12 Mar
+ 2025 14:00:50 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808%5]) with mapi id 15.20.8511.026; Wed, 12 Mar 2025
+ 14:00:50 +0000
+Message-ID: <532d9f9b-e4d0-4050-b01d-730259535d5e@intel.com>
+Date: Wed, 12 Mar 2025 15:00:43 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-wired-lan] [PATCH net-next 11/16] idpf: prepare structures
+ to support XDP
+To: Jakub Kicinski <kuba@kernel.org>
+CC: <intel-wired-lan@lists.osuosl.org>, Michal Kubiak
+	<michal.kubiak@intel.com>, Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
+	<przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Paolo
+ Abeni" <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, "Daniel
+ Borkmann" <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Simon Horman <horms@kernel.org>,
+	<bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20250305162132.1106080-1-aleksander.lobakin@intel.com>
+ <20250305162132.1106080-12-aleksander.lobakin@intel.com>
+ <20250306171208.3162eb97@kernel.org>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+Content-Language: en-US
+In-Reply-To: <20250306171208.3162eb97@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MI1P293CA0014.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:2::17) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix string read in strncmp
- benchmark
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>
-References: <20250312083859.1019635-1-vmalik@redhat.com>
-From: Viktor Malik <vmalik@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20250312083859.1019635-1-vmalik@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|PH7PR11MB6330:EE_
+X-MS-Office365-Filtering-Correlation-Id: 740500ad-c9e8-41aa-d6a9-08dd616e4ba4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014|7053199007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?RFNzSWhsUXhQZSszSzV2MFhsSEE0TFBqS2VHeHpjZmtVTFBiUDJHRlpOdkRO?=
+ =?utf-8?B?N1RpSkRMK2NvK0ZxbmN6cVlIdGY4VXdHa2hOeUdibWdUL3VmS0tEUFN2WVVG?=
+ =?utf-8?B?S3VvRlVKZlgzYlNjZ2Q2Yll2Yi9PY1hpU2lQL3lPS1lsUk43Y20raVJNeENS?=
+ =?utf-8?B?K3RKMHM2OWxvRXdBMVZnTlBkRlliQ3lZSlRySm5FbzZPY1J2TlQ1OEFjM3Zn?=
+ =?utf-8?B?c1JNZFNLeVBoWXpMQlRqT2VLZVVwOW1BMS91U0hkNWNrcXNmYXVNZzFBZVRE?=
+ =?utf-8?B?a0QvRk1ldTc3TmZGVzhDZUZoTkhuQTdiWEZoVG16K3llYVFDU0R2WE5sNzNx?=
+ =?utf-8?B?UnVYWkg4QWZjOHlpRmMrRE1uNUkrYWhpTHVKbkkyejJrQlo3cFNVRVQ4OGRB?=
+ =?utf-8?B?SUxFeVFrK3I3M1l4RmxmTTQ1RDVtaEgyWndrOFdTSytzOEdFZ1pxU25CUUtG?=
+ =?utf-8?B?M0lmUG85K25hQktvM1dpU1BCVDFEWXRRb09DQW04UVF3U0dWS0JRTGwxN2NY?=
+ =?utf-8?B?UWhXRTFodUs2WDZjTFkzbHFnM0ZzTjhkZkczYURwTXo3UXRHa3JSTS9XczZl?=
+ =?utf-8?B?WWIvNmF5aDdkRkEzOVdNejhhOVdOVFYrZEIvbktKenJTUUJrWG5uZWY4N1hM?=
+ =?utf-8?B?ak9wZi9nYlVUTGVyTUlSZXRoTzAxaUZ6ejF0M1pZWCtyL1FWY205QWVPUlAr?=
+ =?utf-8?B?KzlqYktQWlNVa1FUM1prK0RVeEkrUXZEMkM3ZUtiWmM4ZVNJRWxkL0Nqb2wx?=
+ =?utf-8?B?OExLNW03Y3NHSWphRlh2cWY1dGtaWkpFWkdaVmRkcGxuYnBvYmlQR3QyT2Fz?=
+ =?utf-8?B?VlhVKzN0T1dCemU3Z1F2VjdvSWZvWkRmRythVDJydkRYSloxaklUZ3VBN1Nm?=
+ =?utf-8?B?UjF0cTJ5OSsrdzRYMFMvMW1yekM3d093djl5ejF1ZHFvQThwYnU1SlVmN1BB?=
+ =?utf-8?B?cWV6bWRLcEc2SDZrUzk2V3p6dzZqUnJDVStwQmJuTWVGNnc3RmNTQ090eDly?=
+ =?utf-8?B?bGkweWRWZjJiZU9wZXUyemVaMHZHRTBlMTlJWHFVK04zaEF5Nk1McFpPRkdo?=
+ =?utf-8?B?L0M2LzRQM2VQSHkwSlFqS2FwNmxZc2hvUVdIczJGWnA4NU0rVDlRcDVjbnoz?=
+ =?utf-8?B?UUF3MGZnYldsUHMvUGpsYVRVNnkrQi9QN2xUNUVNdzl4NEJxS1FDODJtVXQ5?=
+ =?utf-8?B?SGhXS2d1bTczYXdFME5XOU1IdlQwTE5ybThvOWt2eUFITTlOQzlOaW5RZXh6?=
+ =?utf-8?B?eFVGTzdFczM3UUhwdzVmaWQwTUVFT0VrN0lkNHJoSzdaaFUvelNrNjVyWm51?=
+ =?utf-8?B?NENLa2hGUEhFSDFDVHIvNmtNRGpsZ1V4V1dibzFUa1g4MTFrUEpNVlFrNnBu?=
+ =?utf-8?B?YVVUOVduU05ER0xsQkt5SU9OQVprZHk4Y0VpL0RHZGtkL0Q2aG5xVk1YRmVw?=
+ =?utf-8?B?UDVvSUxHS292UXpQaDFLSzRpR3FValc3VFVzWEgrTm1QYnI0blkzRk5sKzFr?=
+ =?utf-8?B?YXJOYkxwOGhSV21US2ZPUzhMbzYrU2VWMUxna3BBMVhUVUpFZFpPNEJkZGU2?=
+ =?utf-8?B?Z3BTUlhsbmluMU5qeSt4NDlGY1ppa2pWOS82RU9FVkk0ZG1ReHJOZVFQUjV3?=
+ =?utf-8?B?dEdtNG5jV21sOGt6TExHMWZSWmNGMFd1UHlMTDNuWUtBWE1YVWFWeVZMMFFh?=
+ =?utf-8?B?YmUrQVV1czBBY0M4QXR2RVhlMC9vS3NjL2ZlcFNhb3VPY1U2eWxNd09oNFlW?=
+ =?utf-8?B?dXpRQVRvTmFkZEtydlhJRnBKd0FleTEyL1AwclFMSWd1bG5aOXNqQnJxVERW?=
+ =?utf-8?B?RHM3ZnVuK2dCNWJXdVRUWXBUSnk1ZFphcGhzODdRVUp5UFRlQWlhNnVraHM1?=
+ =?utf-8?Q?AiMx8Qt+928Ie?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UWlmTzhxT2FUejFGbHdZaSsyL2hmVDYvcXBiQ1M2Y2Jwbm54aDNXRUg4SzQv?=
+ =?utf-8?B?U2I5WmQ4bVRhckZ5a3BMU01xMDUrUFpZNnRLa0dpa2NMTzBOK3NrTlduRTBZ?=
+ =?utf-8?B?a0RxZ1VsVGpLWVh6a0FZVSttL3dLNSthVmZiSUNFNkc2bVFSVkxjS01IcmlR?=
+ =?utf-8?B?RWRGdDZRT1lHRzc1djNJMUw5eVpqTXJiNkRrNDVNWmd1R3ZIQ0ZwL21mV3BC?=
+ =?utf-8?B?VU04VkUxYUJnT3NhNndCZTNYWStaeFhEMkNMRzQ0TlZaMUlCOFlWS2JCMDFj?=
+ =?utf-8?B?M1ZTYVdWV21hLyt4SDcybTVWbkV6Nkc5ZnprVWVDS0hONHBldDlDaGJUdmlo?=
+ =?utf-8?B?bmRPQ3JyMUI5MVEwTEx6UVBrN3BwWTd0M3lqcDJuZ296YnlBOU5OSmVCdC94?=
+ =?utf-8?B?VzFBVGswR01uY1hMMGhtcFNVR2JiemNsTm5FaTJoU2ZidS9LL2VJWTg4TnpI?=
+ =?utf-8?B?Mlh3anFTMnNKc0k4cDhmVEJwOElqWmtXWlJ2aUNtUHhQeG8rUTN2ZHpXc3Fy?=
+ =?utf-8?B?NlpqNjhiWm10UmMyamZoK0xsVG5TRWxNdmFpUWE2Z3ZydHNuTkpJeTU0TDA1?=
+ =?utf-8?B?MjdYR2V1dXo1K1RqTlVsOFd0Yk44TG1adldlbE5aT0REbjRLMVhUNktrUyti?=
+ =?utf-8?B?NUtGTThxeDIxYnNCSHJyRDY0TVd2Um9MRkxoZ1M4VFpJQUNhd00yalNPSGcz?=
+ =?utf-8?B?cnNiaUhQZkZLSEFPZmdPa1l6Q0lRNUpzaEVBNitaVVIzUFRtYmphc1cxK3ZC?=
+ =?utf-8?B?aVd1SW5Qc0JzSTdGTUw0emFnMHd1RTdvOG02Zmw4anNQQ0NQdWgyUGJMLy84?=
+ =?utf-8?B?ajRCRDlKQlNMK3dHMHYvUVdvclFqMVBnYVpXUno3T3BNbFdkQVExYk80V25B?=
+ =?utf-8?B?ZWlWckRwRGhwTjc0MlpmSUZ0YjdmWjNVNG1laWYzOS9Ja2Q3Q1lpU2ZIaDdp?=
+ =?utf-8?B?SHBiUWlvNnIycE84V1NibXhyOEFvM2tYVW94dnJqZVZxUGwxemlpTmExZU14?=
+ =?utf-8?B?KzNnd0dSSkpJSlNCQWNCUld4T1hrK084elg1bVhtWXNuRVAzbXhZemhMRXh0?=
+ =?utf-8?B?UzVlMTNjeS85cnlWNlY2aXQ2dFB3OG9FSEVqVGsvdzhhTFBHNUN4c084MkZh?=
+ =?utf-8?B?UUdFbjNhc1B6blNnVXJXQXNzSUZwREhFNnNvRENrb3pLQStyL25Wcml5TFpX?=
+ =?utf-8?B?UFFFdHZoNzFPU2U3dm0xZ1RvcCtabEV6QzRYT1RxYnl1b1hhcTFXcitTL2dJ?=
+ =?utf-8?B?dTI5UW9BaEVCRVhIaUExd3p5ekpwaGwvTVkzQ1l5V21yZWlGQ2pLZ0wxYlgw?=
+ =?utf-8?B?Mk1xMGVBQy9sNWdFUUl1UGk3RlRyZzRNYXBNTm5UU3pGK1lSR1MzelVOY2hy?=
+ =?utf-8?B?dW1qaUorVlFpMUg0VkQyd0hEdzg3Vnl0UC9YcEJMeEpQVXZ3bXdNOE1GV0Yv?=
+ =?utf-8?B?S3F0eWU3b0RVZDJFLytPaUxCanVNdnRUMC9JREh1VjNrWCtHbEdtbUxMR0dl?=
+ =?utf-8?B?RHRGbjNjYi9mS1NEeFoyZnk5cTJ5aU56TGpwaDkyRlJHUWRQVnR5elZjaUlz?=
+ =?utf-8?B?U3hqYzhCa0lOai9lV214UVJHdVVHckREVXRneEd5U3Mzcmc2L0hMRnArTCtZ?=
+ =?utf-8?B?YW5qSUlZRzZNTjRYQTcwb0RsZWxVakhRK0s0ZDhwcUVzRVRTMHl4b3VLSUg3?=
+ =?utf-8?B?U2pYTnVRdWNpbkJLaHVUR2JFSmlGOXRPWnpnVlcxRU5BRlcyZGFTK3h2VVBn?=
+ =?utf-8?B?b3hmYlBIVkVKSEI5ZkdoR1lXalJ4Q041RERjeXlIWVNXTkVSK2RueXdPcVZi?=
+ =?utf-8?B?VUhUVGY1RHBzZ3JGbDkyQzJLbXVWdzB6M1dnWjBjNy9qQ01hRUdlSHN0b2lS?=
+ =?utf-8?B?bXVKMFdrS1Ixa1VWSHNIcGxEM2VEWXFMaklYa25zODVFaW83TjV1VjZqUlB2?=
+ =?utf-8?B?akQwa3lVUUFsdzQrTmtOSmdTTGFoNTQ3bGQ4RDYzUzk4eTdSR1U5VjVOLy9X?=
+ =?utf-8?B?QnFCd2pBK2x4ZWdJWW9BWm1ucHFyK3puNTF4UFY1bkhGcGZoNDFIbENVcHRR?=
+ =?utf-8?B?MlpMYTBvUUtaVUlCWVhpY09jYlRBRnBEcTMzYmZPc0ZlWGsyZzR5VE5PU0Fw?=
+ =?utf-8?B?bUNiRThVNEx3ZVFrRFhxWWNGajFKYzdlYWNQa0lBejdFQXZqTm1CL0xTc3l4?=
+ =?utf-8?B?VXc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 740500ad-c9e8-41aa-d6a9-08dd616e4ba4
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2025 14:00:50.3382
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BcdQe4ardtveeyp5OlVpQDmBmNwf9D2WHahJNikm2fTLYf/QAa8ClOc+7ODUBBIMSMtaXkJNTG6pl+EWcS0gu63iX0/X6npP75PIsQGoVdw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6330
+X-OriginatorOrg: intel.com
 
-On 3/12/25 09:38, Viktor Malik wrote:
-> The strncmp benchmark uses the bpf_strncmp helper and a hand-written
-> loop to compare two strings. The values of the strings are filled from
-> userspace. One of the strings is non-const (in .bss) while the other is
-> const (in .rodata) since that is the requirement of bpf_strncmp.
-> 
-> The problem is that in the hand-written loop, Clang optimizes the reads
-> from the const string to always return 0 which breaks the benchmark.
-> 
-> Mark the const string as volatile to avoid that.
-> 
-> The effect can be seen on the strncmp-no-helper variant.
-> 
-> Before this change:
-> 
->     # ./bench strncmp-no-helper
->     Setting up benchmark 'strncmp-no-helper'...
->     Benchmark 'strncmp-no-helper' started.
->     Iter   0 (8440.107us): hits    0.000M/s (  0.000M/prod), drops    0.000M/s, total operations    0.000M/s
->     Iter   1 (73909.374us): hits    0.000M/s (  0.000M/prod), drops    0.000M/s, total operations    0.000M/s
->     Iter   2 (-8140.994us): hits    0.000M/s (  0.000M/prod), drops    0.000M/s, total operations    0.000M/s
->     Iter   3 (3094.474us): hits    0.000M/s (  0.000M/prod), drops    0.000M/s, total operations    0.000M/s
->     Iter   4 (-2828.468us): hits    0.000M/s (  0.000M/prod), drops    0.000M/s, total operations    0.000M/s
->     Iter   5 (2635.595us): hits    0.000M/s (  0.000M/prod), drops    0.000M/s, total operations    0.000M/s
->     Iter   6 (-306.478us): hits    0.000M/s (  0.000M/prod), drops    0.000M/s, total operations    0.000M/s
->     Summary: hits    0.000 ± 0.000M/s (  0.000M/prod), drops    0.000 ± 0.000M/s, total operations    0.000 ± 0.000M/s
-> 
-> After this change:
-> 
->     # ./bench strncmp-no-helper
->     Setting up benchmark 'strncmp-no-helper'...
->     Benchmark 'strncmp-no-helper' started.
->     Iter   0 (21180.011us): hits    5.320M/s (  5.320M/prod), drops    0.000M/s, total operations    5.320M/s
->     Iter   1 (-692.499us): hits    5.246M/s (  5.246M/prod), drops    0.000M/s, total operations    5.246M/s
->     Iter   2 (-704.751us): hits    5.332M/s (  5.332M/prod), drops    0.000M/s, total operations    5.332M/s
->     Iter   3 (62057.929us): hits    5.299M/s (  5.299M/prod), drops    0.000M/s, total operations    5.299M/s
->     Iter   4 (-7981.421us): hits    5.303M/s (  5.303M/prod), drops    0.000M/s, total operations    5.303M/s
->     Iter   5 (3500.341us): hits    5.306M/s (  5.306M/prod), drops    0.000M/s, total operations    5.306M/s
->     Iter   6 (-3851.046us): hits    5.264M/s (  5.264M/prod), drops    0.000M/s, total operations    5.264M/s
->     Summary: hits    5.338 ± 0.147M/s (  5.338M/prod), drops    0.000 ± 0.000M/s, total operations    5.338 ± 0.147M/s
-> 
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Thu, 6 Mar 2025 17:12:08 -0800
 
-Ah, forgot fixes:
-
-Fixes: 9c42652f8be3 ("selftests/bpf: Add benchmark for bpf_strncmp() helper")
-
-> Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> ---
->  tools/testing/selftests/bpf/progs/strncmp_bench.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> On Wed,  5 Mar 2025 17:21:27 +0100 Alexander Lobakin wrote:
+>> +/**
+>> + * idpf_xdp_is_prog_ena - check if there is an XDP program on adapter
+>> + * @vport: vport to check
+>> + */
+>> +static inline bool idpf_xdp_is_prog_ena(const struct idpf_vport *vport)
+>> +{
+>> +	return vport->adapter && vport->xdp_prog;
+>> +}
 > 
-> diff --git a/tools/testing/selftests/bpf/progs/strncmp_bench.c b/tools/testing/selftests/bpf/progs/strncmp_bench.c
-> index 18373a7df76e..92a828a1ebea 100644
-> --- a/tools/testing/selftests/bpf/progs/strncmp_bench.c
-> +++ b/tools/testing/selftests/bpf/progs/strncmp_bench.c
-> @@ -9,7 +9,7 @@
->  
->  /* Will be updated by benchmark before program loading */
->  const volatile unsigned int cmp_str_len = 1;
-> -const char target[STRNCMP_STR_SZ];
-> +const volatile char target[STRNCMP_STR_SZ];
->  
->  long hits = 0;
->  char str[STRNCMP_STR_SZ];
-> @@ -17,7 +17,7 @@ char str[STRNCMP_STR_SZ];
->  char _license[] SEC("license") = "GPL";
->  
->  static __always_inline int local_strncmp(const char *s1, unsigned int sz,
-> -					 const char *s2)
-> +					 const volatile char *s2)
->  {
->  	int ret = 0;
->  	unsigned int i;
-> @@ -43,7 +43,7 @@ int strncmp_no_helper(void *ctx)
->  SEC("tp/syscalls/sys_enter_getpgid")
->  int strncmp_helper(void *ctx)
->  {
-> -	if (bpf_strncmp(str, cmp_str_len + 1, target) < 0)
-> +	if (bpf_strncmp(str, cmp_str_len + 1, (const char *)target) < 0)
->  		__sync_add_and_fetch(&hits, 1);
->  	return 0;
->  }
+> drivers/net/ethernet/intel/idpf/idpf.h:624: warning: No description found for return value of 'idpf_xdp_is_prog_ena'
 
+Breh, I swear I ran sparse and kdoc... >_<
+
+> 
+> The documentation doesn't add much info, just remove it ?
+
+Ack, agree.
+
+Thanks,
+Olek
 
