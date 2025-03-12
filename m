@@ -1,95 +1,230 @@
-Return-Path: <bpf+bounces-53921-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53922-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF082A5E41D
-	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 20:06:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDAACA5E422
+	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 20:09:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4C613A5EBF
-	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 19:06:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B8E93A6340
+	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 19:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85802580ED;
-	Wed, 12 Mar 2025 19:06:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2348256C9E;
+	Wed, 12 Mar 2025 19:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pQPjkoF1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O7Y83ZSY"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD581E5B7D
-	for <bpf@vger.kernel.org>; Wed, 12 Mar 2025 19:06:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD81C1662F1
+	for <bpf@vger.kernel.org>; Wed, 12 Mar 2025 19:08:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741806383; cv=none; b=boi6g1Jap/EFJRy7u1wW5wBddVNmsx0TL4u9T6twEWGiHInYhMGsKvOfbqs1JxpMawYTkeijYHNvbTHEdp+l9JfjYEYkhE7rbvuiE120ukGr7JtbCgWYzvSK60R2fcyQ6FYI7z2rJsctiFBxlhAVkUhTCXVsbHOlz49edpdpPII=
+	t=1741806538; cv=none; b=f66ZbdDcppL9onb9W2qVPkOkteiOsTbMb/AIPJVIA/EyztJE0SaQO8VJ08RHrtMvvXK1C50/75OFC0cD8ZxJ4KHa2zR9r4SuPE1jewAUNboDku7ulEqjUMCC3keGQ7Y7WwIX5LTq8BsDK0UKIDszGqZLa+KTSa5wqPY+HEh3lWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741806383; c=relaxed/simple;
-	bh=L5zb19m/qRUY6q/AgTOBfXr2AsPqf/dRjm/OEyvutJw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gc1HQ9Is/+iuPfHnQUVcYYH53uPxOcanwvg+Acg+WkbRqyN01p/SZCpGaTzgBNcMwJUQ8lGWwOLNyhrg8HZbxn+hsmxkrzZvViWSjCiw/gyY7gHaItzrqvwC/eBvUR52aTzMnq5dlj3KVtv/JPxHqNzdp0QvuG/HNlh97FC8duM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pQPjkoF1; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 12 Mar 2025 12:06:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1741806378;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=taQrTtRT6oKrmvrbMflaeFBHHQcfBZ3zC2RW9QpVfrE=;
-	b=pQPjkoF1TjMWNogAMZSj/7G+VJWY+f94bgcxZSrwbLOtQtg3hQZcwKl5UAiLFO0zbNCUW+
-	8nEMMjtbDq/oCiOxHHvCbeYjDq6nBHgmKEcdtOtoqZ5oNkkCyxPnT4xjjNTffHlx/HoIkh
-	j8I4Aq8oUWThc29uOsDlcC+VX/VVlpo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Sebastian Sewior <bigeasy@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, 
-	Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v9 2/6] mm, bpf: Introduce try_alloc_pages() for
- opportunistic page allocation
-Message-ID: <igjisv7v3o2efey3qkhcrqjchlqvjn54c4dneo2atmown6pweq@jwohzvtldfzf>
-References: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
- <20250222024427.30294-3-alexei.starovoitov@gmail.com>
- <20250310190427.32ce3ba9adb3771198fe2a5c@linux-foundation.org>
- <CAADnVQJsYcMfn4XjAtgo9gHsiUs-BX-PEyi1oPHy5_gEuWKHFQ@mail.gmail.com>
- <4d75c5a8-a538-4d7d-aaf4-8ecf1d1be6b9@suse.cz>
+	s=arc-20240116; t=1741806538; c=relaxed/simple;
+	bh=Q/kTtpwfVp6ozh6QI+7ZvfxCk5aqqsCriozoiCfmDLU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KEfQxQ3QNDms5SEJEBV+4B20TkoD+lEzs/ra+KZUDl1sp4YcxedU8J3P/ID7ttpJH6JCT3DXRPD64xDEZkKCNCRCv4qbOQfOfnywICg3dWOarXcxY00VCe7h6ATr31bnuzelbdjgiNHdVPka7/6w3NOOTHWpanrTITnLxvwauI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O7Y83ZSY; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2fef5c978ccso419774a91.1
+        for <bpf@vger.kernel.org>; Wed, 12 Mar 2025 12:08:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741806536; x=1742411336; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gFiWdDaTO/G1LCqAEy3WlAv2K/bWlOTT/Inu1SYtQzw=;
+        b=O7Y83ZSYHF9m0PoXVWYkPCa16LlMn5XV3X4Wg1++WhLWxURXR6cHDbzVmg7I7Dw2tI
+         traUlx99wHwyPrVIitJ11JQknkU/0a8+h79h/Y6vfkxrg9qDSOW7oQJkJtLDP4pjQl1f
+         pariSHvXv1AJAsJN187ufsWn381OIA+86KnbYsyAx4fdgN45fjaLeuLQrTW/321Z00NQ
+         VT1+Wn7DpwkVKhk4kCdleynW8bdYrVwT9mKWElKEZT9SxyMKZLI3i9PTG5bkih+WLm9P
+         2pzwR8R4E6cQebUHTjXNen52ojM3PFBgaQwvzEqkE6JlBA9CH5sEoUvY2eE1/QnK6430
+         EYMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741806536; x=1742411336;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gFiWdDaTO/G1LCqAEy3WlAv2K/bWlOTT/Inu1SYtQzw=;
+        b=N7H3aOTc0rR43tQswobEBzXb954EKQDQO/iSEYkx4gujnGQ/Z4/1ndEbWe8HtBT1f+
+         Uur3XRgnq2qYt37Cu0LHZRVQ8Kbq1B2ZHPd4xVFH2au/D6tW9eWRbpNO8Xr2KGNfG6iN
+         0cINxISuzKERynWlCwrKgpiAW+sOyU89xo1lUa/mzzfPle5AQjsLY7GSM6baMjMFziAl
+         UgeN2eb5LoMdvSWWB0Pzl5cHMK4i8k4hhbplxSJTR+AC7CneGHebfXyt8OKKcz44weXd
+         lxtADF8hBWNb2vE8Lu7tBIvljbw447WEbD+TW6EEb3++em8ArAvspjmBZ0kfvQQ9z6D4
+         0yQg==
+X-Gm-Message-State: AOJu0YyBQa82WNFStJis/v9oo1fxGKCH1sS0pqobpi13YXR5HX+5iJE6
+	LrD1cYj4ImZ6X8lq254GJY8w00bPtczGU0lEOhE/fBCbfVGGqiVyMyvrUCuCSt3LBPP+4TXNETF
+	Y5QFGK+A5Bl53udAvgmdWtBuXvvYXYg==
+X-Gm-Gg: ASbGncs4XYpA0qm73jtAS3OvqA1Q19LEWigA5MNq11/RzbPnfB0WAxI9pYay7ZOpE5u
+	zcOZKXj8rL+3Bh4E82tWXgKUIqkBhe9xxk0/ghprcpBfr+8etWOl2MF8Oav3rvRmmRXtzIULWHN
+	lHJ8pe/gAQf2sLQS0NuhiKdcTFznBnR9DHKxRJCOuwSw==
+X-Google-Smtp-Source: AGHT+IHaBXo7ekMjdkprWTKd9aAXtKIE0VmNiGpCOD09AIsZxIwulzTmjLFWbB54yLyMTdeX5Hb37utXgr8x+8IqkYw=
+X-Received: by 2002:a17:90b:2d83:b0:2ee:e518:c1d8 with SMTP id
+ 98e67ed59e1d1-2ff7cf22df2mr30613944a91.30.1741806535896; Wed, 12 Mar 2025
+ 12:08:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4d75c5a8-a538-4d7d-aaf4-8ecf1d1be6b9@suse.cz>
-X-Migadu-Flow: FLOW_OUT
+References: <20250311215420.456512-1-mykyta.yatsenko5@gmail.com>
+ <20250311215420.456512-2-mykyta.yatsenko5@gmail.com> <CAEf4BzYRrHmDUBX=yqAtNbUJ7C9En_YrDSOY=zcbkoLVNZcC9Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzYRrHmDUBX=yqAtNbUJ7C9En_YrDSOY=zcbkoLVNZcC9Q@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 12 Mar 2025 12:08:43 -0700
+X-Gm-Features: AQ5f1Jr9fqeL3iRLHNtjSkAZyQynn48_jed_aQIWOdXs3MF4nIPJJxBQ_R6MHlc
+Message-ID: <CAEf4BzbEbJPeTihWW6M-MmW9MC1N9LTLF5vTLDVSm1E-Jxk_hA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/4] bpf: BPF token support for BPF_BTF_GET_FD_BY_ID
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	olsajiri@gmail.com, yonghong.song@linux.dev, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 12, 2025 at 11:00:20AM +0100, Vlastimil Babka wrote:
-[...]
-> 
-> But if we can achieve the same without such reserved objects, I think it's
-> even better. Performance and maintainability doesn't need to necessarily
-> suffer. Maybe it can even improve in the process. E.g. if we build upon
-> patches 1+4 and swith memcg stock locking to the non-irqsave variant, we
-> should avoid some overhead there (something similar was tried there in the
-> past but reverted when making it RT compatible).
+On Wed, Mar 12, 2025 at 11:53=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Mar 11, 2025 at 2:54=E2=80=AFPM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+> >
+> > From: Mykyta Yatsenko <yatsenko@meta.com>
+> >
+> > Currently BPF_BTF_GET_FD_BY_ID requires CAP_SYS_ADMIN, which does not
+> > allow running it from user namespace. This creates a problem when
+> > freplace program running from user namespace needs to query target
+> > program BTF.
+> > This patch relaxes capable check from CAP_SYS_ADMIN to CAP_BPF and adds
+> > support for BPF token that can be passed in attributes to syscall.
+> >
+> > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> > ---
+> >  include/uapi/linux/bpf.h                      |  1 +
+> >  kernel/bpf/syscall.c                          | 20 +++++++++++++++++--
+> >  tools/include/uapi/linux/bpf.h                |  1 +
+> >  .../bpf/prog_tests/libbpf_get_fd_by_id_opts.c |  3 +--
+> >  4 files changed, 21 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index bb37897c0393..73c23daacabf 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1652,6 +1652,7 @@ union bpf_attr {
+> >                 };
+> >                 __u32           next_id;
+> >                 __u32           open_flags;
+> > +               __s32           token_fd;
 
-In hindsight that revert was the bad decision. We accepted so much
-complexity in memcg code for RT without questioning about a real world
-use-case. Are there really RT users who want memcg or are using memcg? I
-can not think of some RT user fine with memcg limits enforcement
-(reclaim and throttling).
+So I almost applied it (I was going to add that flags check myself),
+but then I realized that attrs->token_fd looks a bit too good to be
+true... It's an ugly "historical" bpf_attr structure, but we have
+these weird mixes of named and anon sub-structs, so some fields are
+way too easily accessed even when dealing with a completely unrelated
+command.
 
-I am on the path to bypass per-cpu memcg stocks for RT kernels. The
-stats would still need to be careful but I don't see any reason to keep
-the complexity in memcg stocks for RT. IMO RT should prefer
-predictability over performance, so bypassing memcg stocks should be
-fine.
+That is just to say that token_fd here is way too error-prone and
+generically named, unfortunately. All other token-enabled commands
+have more specific name (btf_token_fd, prog_token_fd, map_token_fd),
+so I think we should continue the pattern here.
+
+Let's call it `fd_by_id_token_fd` (unless someone has a better name)?
+Let's keep a clean "token_fd" on libbpf API side (in opts), like we
+did for other APIs.
+
+
+> >         };
+> >
+> >         struct { /* anonymous struct used by BPF_OBJ_GET_INFO_BY_FD */
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 57a438706215..188f7296cf9f 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -5137,15 +5137,31 @@ static int bpf_btf_load(const union bpf_attr *a=
+ttr, bpfptr_t uattr, __u32 uattr_
+> >         return btf_new_fd(attr, uattr, uattr_size);
+> >  }
+> >
+> > -#define BPF_BTF_GET_FD_BY_ID_LAST_FIELD btf_id
+> > +#define BPF_BTF_GET_FD_BY_ID_LAST_FIELD token_fd
+> >
+> >  static int bpf_btf_get_fd_by_id(const union bpf_attr *attr)
+> >  {
+> > +       struct bpf_token *token =3D NULL;
+> > +
+> >         if (CHECK_ATTR(BPF_BTF_GET_FD_BY_ID))
+> >                 return -EINVAL;
+>
+> as I mentioned in another email, we used to implicitly reject any
+> open_flags set because of BPF_BTF_GET_FD_BY_ID_LAST_FIELD btf_id, but
+> now that we do support some flags in open_flags, we need to validate
+> that there are no other flags. So you need something like:
+>
+> if (attr->open_flags & ~BPF_F_TOKEN_FD)
+>     return -EINVAL;
+>
+>
+> pw-bot: cr
+>
+> >
+> > -       if (!capable(CAP_SYS_ADMIN))
+> > +       if (attr->open_flags & BPF_F_TOKEN_FD) {
+> > +               token =3D bpf_token_get_from_fd(attr->token_fd);
+> > +               if (IS_ERR(token))
+> > +                       return PTR_ERR(token);
+> > +               if (!bpf_token_allow_cmd(token, BPF_BTF_GET_FD_BY_ID)) =
+{
+> > +                       bpf_token_put(token);
+> > +                       token =3D NULL;
+> > +               }
+> > +       }
+> > +
+> > +       if (!bpf_token_capable(token, CAP_SYS_ADMIN)) {
+> > +               bpf_token_put(token);
+> >                 return -EPERM;
+> > +       }
+> > +
+> > +       bpf_token_put(token);
+> >
+> >         return btf_get_fd_by_id(attr->btf_id);
+> >  }
+> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/=
+bpf.h
+> > index bb37897c0393..73c23daacabf 100644
+> > --- a/tools/include/uapi/linux/bpf.h
+> > +++ b/tools/include/uapi/linux/bpf.h
+> > @@ -1652,6 +1652,7 @@ union bpf_attr {
+> >                 };
+> >                 __u32           next_id;
+> >                 __u32           open_flags;
+> > +               __s32           token_fd;
+> >         };
+> >
+> >         struct { /* anonymous struct used by BPF_OBJ_GET_INFO_BY_FD */
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_by_id=
+_opts.c b/tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_by_id_opts.c
+> > index a3f238f51d05..976ff38a6d43 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_by_id_opts.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_by_id_opts.c
+> > @@ -75,9 +75,8 @@ void test_libbpf_get_fd_by_id_opts(void)
+> >         if (!ASSERT_EQ(ret, -EINVAL, "bpf_link_get_fd_by_id_opts"))
+> >                 goto close_prog;
+> >
+> > -       /* BTF get fd with opts set should not work (no kernel support)=
+. */
+> >         ret =3D bpf_btf_get_fd_by_id_opts(0, &fd_opts_rdonly);
+> > -       ASSERT_EQ(ret, -EINVAL, "bpf_btf_get_fd_by_id_opts");
+> > +       ASSERT_EQ(ret, -ENOENT, "bpf_btf_get_fd_by_id_opts");
+> >
+> >  close_prog:
+> >         if (fd >=3D 0)
+> > --
+> > 2.48.1
+> >
 
