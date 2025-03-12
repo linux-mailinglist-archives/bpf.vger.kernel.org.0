@@ -1,207 +1,154 @@
-Return-Path: <bpf+bounces-53872-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53873-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 454A9A5D3D5
-	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 02:05:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDEBCA5D494
+	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 04:04:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29BCB17A038
-	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 01:05:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 387EE18963EE
+	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 03:04:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E1186358;
-	Wed, 12 Mar 2025 01:05:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77D59198E76;
+	Wed, 12 Mar 2025 03:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b="R6j115r1"
+	dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b="o3xvLH7Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
+Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C344213C914
-	for <bpf@vger.kernel.org>; Wed, 12 Mar 2025 01:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED1223DE;
+	Wed, 12 Mar 2025 03:03:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.206.34.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741741501; cv=none; b=bDj2ef+5Qa8y6HNuARIT25pB5MTkIB7c07jKan7X9+D5hu1DgdCdKRIV+WX78eYXAA7HE+XGnh7RqE/0cMplukAcKBDQepugxaOjqmy+CsPNq6cDsBL+0bdZgpt9RXzUYh6WdQ5yzgMdwS73aF6LSZpITrPhhDKQbcrSl9Bxr5c=
+	t=1741748634; cv=none; b=CUH6CG/KlnfpUQ42CI5E3OqDt7fMgknxDu+YJQ+3PFgTo1gBiPMISzsEWG8jPQpdcY8ca+65/HrqTSttmcWftqfA50EqBZfkg1zIiuQxdPcVtamlcruW4l5QDDCA+0jvoSWGNkH8Z1dtmOY5ZvHuMJ/UWUtQlJ6UAuRuaz7kxs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741741501; c=relaxed/simple;
-	bh=zLmS7OguD9RXBS9H3AupHq9ltsQBhDEQxcbPowzkhYQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DEhW4n/dmKZFVTLpJWbM0tvE3zXhltImULNccatDU/F85cZEH7odGyjowwLafdUOhC6HI5qIzQZKYrVZC+DnjePBjaVhrpo0igQX7rl1zwH1PR1efyOb1wrQxLpV5lJx9iaoJnnBHsCEk/+R0w3UCeNU7BkJ77QqqwPRrGRX8hY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com; spf=pass smtp.mailfrom=jordanrome.com; dkim=pass (2048-bit key) header.d=jordanrome.com header.i=linux@jordanrome.com header.b=R6j115r1; arc=none smtp.client-ip=74.208.4.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jordanrome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jordanrome.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jordanrome.com;
-	s=s1-ionos; t=1741741443; x=1742346243; i=linux@jordanrome.com;
-	bh=nLSKkK9VOyBHdQD7GM8j4kFUdMlT3QFVlJjS+0crkGk=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
-	 MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=R6j115r1tC1SOijw28lyx5A6qk0SxZxdUvAVNH+ECUYsPwGgfbo+AkZ6tpDldg+z
-	 vXfphfEPniVdGulvHO62nxUUsZc4HMkj7KX0bg/odIDv8ipI4zA48YEfbyFUixD1u
-	 OEHB4smWQo53Ppc0zM0ZapTIWv76BQA+MMU/PCaEsTdcIoFGRxkvIlSAdCbFUOIil
-	 B/nCE3hiQ9/QF8bX0mqbaoOLhwkSl3wYgRWWRqvdtmC8DHg1dC3HEC49IIXOE5MyP
-	 BUloaxcG7bxEYMGvdoPUREojOlNcuwDp/prQYU+zEDr7EzBtZ9TdnAKQDgBJ05+ei
-	 Re/p626mqWzr4AVdKg==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost ([69.171.251.12]) by mrelay.perfora.net (mreueus002
- [74.208.5.2]) with ESMTPSA (Nemesis) id 0LnPvE-1tIFsC3MYY-00nlt3; Wed, 12 Mar
- 2025 02:04:02 +0100
-From: Jordan Rome <linux@jordanrome.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Kernel Team <kernel-team@fb.com>
-Subject: [bpf-next v4] bpf: adjust btf load error logging
-Date: Tue, 11 Mar 2025 18:03:58 -0700
-Message-ID: <20250312010358.3468811-1-linux@jordanrome.com>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1741748634; c=relaxed/simple;
+	bh=hfB6LmlNXRiXOFa6y6EEyyq6AJIU3mlhZ8TjPoU66kE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zt5exvs2LJcqtrJFLJOW8weVvPnZaEPY4qYG+GA8ih5GXH3TzjTzpJGYFkHx8nRWf19BPzYEOX4M1DyjqVsR8DCQOyevXpV4Rhz8BF13UNMD7sLdVVn4gB5TSMEPPwGPdCzxRIS9SKjTnsRBFYnw9K4DlWd/V9hkI4NdU1HiP/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org; spf=pass smtp.mailfrom=deepin.org; dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b=o3xvLH7Q; arc=none smtp.client-ip=54.206.34.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=deepin.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=deepin.org;
+	s=ukjg2408; t=1741748618;
+	bh=fWfXLtt/2BULxNvCvOu79qbQYocRmAcLwiJSdNZqkqw=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To;
+	b=o3xvLH7Q6zRyexRGL2FUOlU7prvmwkmBvP9EHWHAhLrHoNF6XjKaKyS0He/gRy5TJ
+	 4v0XPOWh9zrwhyPZzj/8ZoUlbsmY5A1YHnru7q+GRAG0I8KbufFEhNw4akB6UxaZAZ
+	 yx27Yo+LbVJuLrg7/l70jUqfEWqrR3yiKxT1VsPo=
+X-QQ-mid: bizesmtpsz1t1741748612tpbdy52
+X-QQ-Originating-IP: 7fgsV5KrbksIUApRUS3a/spzhlTIJo2BCkd+jKCx6ck=
+Received: from mail-yw1-f178.google.com ( [209.85.128.178])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 12 Mar 2025 11:03:30 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 798136978951380909
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6febbd3b75cso50774187b3.0;
+        Tue, 11 Mar 2025 20:03:31 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUJj1EDwYRTkbEyT8HXkWywx/cxvfA/2Kf0T9pJLT46x/EBzgnoYjhLAfZGI+bJmenuq+Q=@vger.kernel.org, AJvYcCWMbpn+DPg/LPcfDDTck0kO9W35kSnWscTo5TsaKTDWhr0X1ewZSGWYoEtb3NG8MlxHcuPJBg6H@vger.kernel.org, AJvYcCXjVTYFKi7k+4i3g+gjWOlXH35NRTv0fyOIfBMQaKF6TQELV1jHIrQ/8TqO7OOiEp+5+2xxI5lvpaK6isZ8@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZPVWK7w0qGIZ9ynh6d4gesqw2ai6VWhh4BpxTqorZAWDjt3sA
+	PMiWOUzbwqPyjKR3Z+wymNQP3SVrXbNiXxN/un5gM0t3vQE2pc+ii2dpD6tNZdl3hAKG8mV7lIS
+	MnwfCv6TahunbiFAgyy6YMLbxObQ=
+X-Google-Smtp-Source: AGHT+IG8fzoRTgm+mPO00duGbFaQhdqA80HYU+jOry8PomyyzZFcQNqA3X4BezEcdEnxxa5v6r1H1PMn5ii4SzoB6uE=
+X-Received: by 2002:a05:690c:6c02:b0:6fd:3727:6471 with SMTP id
+ 00721157ae682-6febf2a7db2mr295754987b3.6.1741748609898; Tue, 11 Mar 2025
+ 20:03:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <05D0A9F7DE394601+20250311100555.310788-2-chenlinxuan@deepin.org> <2025031100-impromptu-pastrami-925c@gregkh>
+In-Reply-To: <2025031100-impromptu-pastrami-925c@gregkh>
+From: Chen Linxuan <chenlinxuan@deepin.org>
+Date: Wed, 12 Mar 2025 11:03:18 +0800
+X-Gmail-Original-Message-ID: <CDBA93EAD84C1583+CAC1kPDOXget0yMYPfQWbYPKrnSXL5RZ0f20Q8VmvT2zUTMBsNg@mail.gmail.com>
+X-Gm-Features: AQ5f1JqQVMl5MMY5tXg5YSS_HFN32cnbvkGJw6pL-RFnEJ8qfHj38hUDE-ogGL4
+Message-ID: <CAC1kPDOXget0yMYPfQWbYPKrnSXL5RZ0f20Q8VmvT2zUTMBsNg@mail.gmail.com>
+Subject: Re: [PATCH stable 6.6] lib/buildid: Handle memfd_secret() files in build_id_parse()
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Chen Linxuan <chenlinxuan@deepin.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Sasha Levin <sashal@kernel.org>, Jann Horn <jannh@google.com>, 
+	Alexey Dobriyan <adobriyan@gmail.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, 
+	Alexei Starovoitov <ast@kernel.org>, stable@vger.kernel.org, 
+	Eduard Zingerman <eddyz87@gmail.com>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:no8HlsA2uzDeZ0DnL/2ZGykZrtP5iTSc1th66ktd4/cEmvMZXde
- EsgfUtjgyMuE1ZcIEt1lrftyyz8AySF2OcgVoYxdAbV+9lbDbsGFdC6JVr8MQtFOWr6oPjO
- uM3b5O/p+x9HtXRUlIoHxNRwHfbhaAMFNwpBz8TEWgMKH854GX/e/7D8fAH9M4bQF541jhi
- lMuJTCR9/19v6dtHdorfQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:H5HFIPlv7Rg=;zb96NgFJSKfiA2Y5+37I3dVZozD
- QgwJPOyqVT6sJ3vRigNPgk7WP1CeV9iZ77jw0C1Xzp0ZiTfO5x8fvjCjSNRFUabLQ7EvnZ+SF
- RCza2ti1OcAOLxxilwJpyf4Zkqa3INa3n+QFnWNm5UA8jKjKpMY1JynWySaFQ8SoO2AyhTLxj
- 90VmQuOHoPAd892UDc5w00Uggpa5VpN6BRgLx1AiqGlZmVFHoPLFkeXdcEij37YrJJgfNP10y
- yL7aQrSwZ/66WViPblaQM+KBQ/1NdIO53CGgjeXVHZ4GLWG1cmIIHFcZDQgbHxYOfgZwXG+G3
- tBYCj0ztQgpQpoMtL6rfjMf/uKeP8gf3M4mM1E3Phxq3S18iLvi3sVDQG5UnG/MM8o4DZwNso
- vvC0w66D/RE0rlxGSZj5EfNq9AcwXmBPNvODhyebxB2thWfi4wEN50neSc5vAbnkgnq8GR4MY
- bcSsz1uOu8TpXXrmlbtGgJthpeb7V+MLIIRHPK2ZU6n3y20dtrEji1gjtv3/FB1LlfLYnPSn1
- RTPmTjKoUptbb5hkKvp11dgrAfzZEvFTwk5rg47SOVDqyb4IOafquidSuFxBHfd2Mjsg3koUB
- JCiDPvuIFuUj55/5Hco3A+X8IvKBUMr0Zsm9TYxsXzj4dl2DBHSva7QLmBuxqbEWB+6MClX6W
- tIkbqdBV/BcWoJ69Or2ksADEkYstAIsQ456nbC5ZIgt7drjME7t2vUZqTrZtOqZVkFJ5iLrBM
- ZIGWJRc6+PAkICt+lsabGyXziZEwFbrQ20wbBWuXPUECrZRTSxPd1GSLVfMXZfQmM3TLDzKDh
- v7UA2fAKTdCipbJZaVx/xQ2cWr49evahbZhGxVKWBk95z9lT9ZjPao+600h2iIDoZvhkGX7ZP
- GzEBf2F2m0ukyW+ZgnTPEMYbsOrWNeodm8GwLt+ZcHL5gxQ2YZZNQTps2GakIQAd8gIp0q++u
- 9oHDMM8Sd6DgHyomyNgsS+CJ5LAi/8b1GqkW8cB6XITThpyzv1LlMw/yBh/jdVzt9uYMombSg
- TB/jHGb+gPFfQJMYBeMHoYOi3k/ujMSHY1WdkiPnNABVMFE0l6NK9ERFitjwBCFaGK1tEaroH
- yRmwKo6NkmHVIwuLvXWiMtIumc0P9NBWNiKUkcgzyn6xvtCXl0quOTC5lTt0gprxfBVFVGRrT
- nqOMGh20INBCLljfXDpVuAPnWP4miyWOx7SUZFGP1+g2LxWeJrzdemmgnV6Jj5vheZRYoMht4
- iFGVgdGwa0KrKgltk9b137ExmPGQM1uKW3bwoG9FodkUEMCUGcQvLJFgDXc/zYp6ToHltqHoW
- uqAeEuxQuZEfge9Cn1b7Jj/kzrAMBJjRFfAVsoz2uPAxmzIBF/Otxbhyg6Wm4mJVMZ0
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpsz:deepin.org:qybglogicsvrgz:qybglogicsvrgz7a-0
+X-QQ-XMAILINFO: NEuxXjgkfD8wXbdnVy+MiOVveXMA+NSoQYdPPfa/rLIyVO8CmZ0VGCzO
+	9Yj6+R4lpgVqtPiMXoElcp0J5vXIZr8u24BkLx9Iv1xUGJYf9jTxjjD0aPkptsMuL8Q+2R2
+	cpwGPGSGnK7cTEK5+2yYwsS/t4Ey44nN/qTWBYOj8S0dbpF2JZP2ATTYMs473u1D1u8vKXu
+	6gDYuDjalHgBX7+z0n1hCEFoynOwgHp/QPWlw5CHXgJXv7LyrhH//zo3ozyzTFzsnDpoceJ
+	Cl7bH+SRSbBUz6cTaG4XgansIHvHHxgsGdMJxEyIjNxSHhiX1z626nUYAcOnh/7jLAc6MAY
+	HOzN65Aonsab8bf0Er01/EncUacv58NxsIAlLtm/KjlRf9nivM+fZY2/cmNi9gcFSRcCLGq
+	RZfayYRHBDyvKZTzncgMY1YDCVanm0XcGarEEBq7SrMk3aVsr52Mgja7DeYR8GXUtrlAQ6y
+	Z8+mK5socpWEBgMUPuKt2sZRdNaBT+VT5qeEe4wCmchnnfLLvYq81YQ24CH+8iFjSCWWdnX
+	zHTTQ6Mor5xKWki41y37HyNKDzs0rcLlTJBAt+JV7772E5ZN2wizxPJCKOsYhJo03ge3QM8
+	tfv2Vuzmvsnb6au5B/zDtEETFJdnDszTun0RdE5c0XHaMK9u87tkB+/1ShLmR3C6Rd7qhii
+	QunpR0vhPvbfFoG2wnatR2t6S3z4tA3B0Lrk2JrjfUWGcbQcYiyo0oCZvWlMmXyCxOjD/CU
+	Oi/RiL1ilwObKi7uwMrJdWEvnUbRVFOMhgVOcWF5AeueOycdQ6NLOWEBdxdJ1KNdsksex1/
+	dLMtY34o+kdB+u5GxzA3KbtOxcCqwRubA3YaCiIgs8yceg5tKZ4Agru7db3fVHeF73+y35Z
+	M6NelGP8uHMocyPae6IDJRTs+qOk81W94xGWhBl6mgSjZBmsLMiv0z20VqXR+yhMS2qeWz1
+	Q6msU1O5ghyB2GCV7xfAdwxjMotO9RgvqpEHjQ7UgnYEtvexAYprCL+t4
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+X-QQ-RECHKSPAM: 0
 
-For kernels where btf is not mandatory
-we should log loading errors with `pr_info`
-and not retry where we increase the log level
-as this is just added noise.
+Greg KH <gregkh@linuxfoundation.org> =E4=BA=8E2025=E5=B9=B43=E6=9C=8811=E6=
+=97=A5=E5=91=A8=E4=BA=8C 19:14=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Tue, Mar 11, 2025 at 06:05:55PM +0800, Chen Linxuan wrote:
+> > Backport of a similar change from commit 5ac9b4e935df ("lib/buildid:
+> > Handle memfd_secret() files in build_id_parse()") to address an issue
+> > where accessing secret memfd contents through build_id_parse() would
+> > trigger faults.
+> >
+> > Original report and repro can be found in [0].
+> >
+> >   [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation/
+> >
+> > This repro will cause BUG: unable to handle kernel paging request in
+> > build_id_parse in 5.15/6.1/6.6.
+> >
+> > Some other discussions can be found in [1].
+> >
+> >   [1] https://lore.kernel.org/bpf/20241104175256.2327164-1-jolsa@kernel=
+.org/T/#u
+> >
+> > Cc: stable@vger.kernel.org
+> > Fixes: 88a16a130933 ("perf: Add build id data in mmap2 event")
+> > Signed-off-by: Chen Linxuan <chenlinxuan@deepin.org>
+>
+> You dropped all the original signed-off-by and changelog text.  Just
 
-Signed-off-by: Jordan Rome <linux@jordanrome.com>
-=2D--
- tools/lib/bpf/btf.c             | 36 ++++++++++++++++++---------------
- tools/lib/bpf/libbpf.c          |  3 ++-
- tools/lib/bpf/libbpf_internal.h |  2 +-
- 3 files changed, 23 insertions(+), 18 deletions(-)
+The original commit is based on commit de3ec364c3c3 ("lib/buildid: add
+single folio-based file reader abstraction"). `git cherry-pick` result lots=
+ of
+conflicts. So I rewrite same logic on old code.
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index eea99c766a20..7da4807451bb 100644
-=2D-- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -1379,9 +1379,10 @@ static void *btf_get_raw_data(const struct btf *btf=
-, __u32 *size, bool swap_endi
+> provide a backport with all of the original information, and then if you
+> had to do something "different", put that in the signed-off-by area.
+> THere are loads of examples on the list for how that was done.
 
- int btf_load_into_kernel(struct btf *btf,
- 			 char *log_buf, size_t log_sz, __u32 log_level,
--			 int token_fd)
-+			 int token_fd, bool btf_mandatory)
- {
- 	LIBBPF_OPTS(bpf_btf_load_opts, opts);
-+	enum libbpf_print_level print_level;
- 	__u32 buf_sz =3D 0, raw_size;
- 	char *buf =3D NULL, *tmp;
- 	void *raw_data;
-@@ -1435,22 +1436,25 @@ int btf_load_into_kernel(struct btf *btf,
+Do you means that I should:
 
- 	btf->fd =3D bpf_btf_load(raw_data, raw_size, &opts);
- 	if (btf->fd < 0) {
--		/* time to turn on verbose mode and try again */
--		if (log_level =3D=3D 0) {
--			log_level =3D 1;
--			goto retry_load;
-+		if (btf_mandatory) {
-+			/* time to turn on verbose mode and try again */
-+			if (log_level =3D=3D 0) {
-+				log_level =3D 1;
-+				goto retry_load;
-+			}
-+			/* only retry if caller didn't provide custom log_buf, but
-+			 * make sure we can never overflow buf_sz
-+			 */
-+			if (!log_buf && errno =3D=3D ENOSPC && buf_sz <=3D UINT_MAX / 2)
-+				goto retry_load;
- 		}
--		/* only retry if caller didn't provide custom log_buf, but
--		 * make sure we can never overflow buf_sz
--		 */
--		if (!log_buf && errno =3D=3D ENOSPC && buf_sz <=3D UINT_MAX / 2)
--			goto retry_load;
--
- 		err =3D -errno;
--		pr_warn("BTF loading error: %s\n", errstr(err));
--		/* don't print out contents of custom log_buf */
--		if (!log_buf && buf[0])
--			pr_warn("-- BEGIN BTF LOAD LOG ---\n%s\n-- END BTF LOAD LOG --\n", buf=
-);
-+		print_level =3D btf_mandatory ? LIBBPF_WARN : LIBBPF_INFO;
-+		__pr(print_level, "BTF loading error: %s\n", errstr(err));
-+		if (!log_buf && log_level)
-+			__pr(print_level,
-+			     "-- BEGIN BTF LOAD LOG ---\n%s\n-- END BTF LOAD LOG --\n",
-+			     buf);
- 	}
+1. Run git cherry-pick 5ac9b4e935df on stable branches;
+2. Resolve conflicts by drop all changes then apply changes
+   as I send in this email;
+3. Note why content of this patch is different from the original
+   one after original signed-off-by area, but before the --- separator.
 
- done:
-@@ -1460,7 +1464,7 @@ int btf_load_into_kernel(struct btf *btf,
+I am not familiar with contributing to stable kernel tree.
+Sorry for bothering.
 
- int btf__load_into_kernel(struct btf *btf)
- {
--	return btf_load_into_kernel(btf, NULL, 0, 0, 0);
-+	return btf_load_into_kernel(btf, NULL, 0, 0, 0, true);
- }
-
- int btf__fd(const struct btf *btf)
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 8e32286854ef..2cb3f067a12e 100644
-=2D-- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -3604,9 +3604,10 @@ static int bpf_object__sanitize_and_load_btf(struct=
- bpf_object *obj)
- 		 */
- 		btf__set_fd(kern_btf, 0);
- 	} else {
-+		btf_mandatory =3D kernel_needs_btf(obj);
- 		/* currently BPF_BTF_LOAD only supports log_level 1 */
- 		err =3D btf_load_into_kernel(kern_btf, obj->log_buf, obj->log_size,
--					   obj->log_level ? 1 : 0, obj->token_fd);
-+					   obj->log_level ? 1 : 0, obj->token_fd, btf_mandatory);
- 	}
- 	if (sanitize) {
- 		if (!err) {
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_intern=
-al.h
-index de498e2dd6b0..f1de2ba462c3 100644
-=2D-- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -408,7 +408,7 @@ int libbpf__load_raw_btf(const char *raw_types, size_t=
- types_len,
- 			 int token_fd);
- int btf_load_into_kernel(struct btf *btf,
- 			 char *log_buf, size_t log_sz, __u32 log_level,
--			 int token_fd);
-+			 int token_fd, bool btf_mandatory);
-
- struct btf *btf_get_from_fd(int btf_fd, struct btf *base_btf);
- void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
-=2D-
-2.47.1
-
+>
+> thanks,
+>
+> greg k-h
+>
+>
 
