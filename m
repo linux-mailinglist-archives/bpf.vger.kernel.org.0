@@ -1,202 +1,182 @@
-Return-Path: <bpf+bounces-53885-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53886-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08E4DA5DA10
-	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 11:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF5B9A5DC88
+	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 13:26:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84D973A7F33
-	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 10:00:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D64FE3A6FD3
+	for <lists+bpf@lfdr.de>; Wed, 12 Mar 2025 12:26:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6328B236A8B;
-	Wed, 12 Mar 2025 10:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3DF242900;
+	Wed, 12 Mar 2025 12:26:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ch8DPrb1";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JFWtFWU2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OhsgD5va";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+jlQNgX3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a8d1l4KI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C3421DF979
-	for <bpf@vger.kernel.org>; Wed, 12 Mar 2025 10:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6134223F387;
+	Wed, 12 Mar 2025 12:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741773630; cv=none; b=u5f0OsglfC2GQlx1bh9dri4BYnqgcT5udXHt7YXcuragwnuQZ+xzHA7WOeMKGb6NDNKiaM/wzTOzkUMf+rboyNPC1cY49MOCQqHjjMZCj2XidjTUx76a0uCdU7Vzv2cKw9OO/6GG6sC32Wi/O5EgwLUNiGIsCCfnbdnOPG61mRY=
+	t=1741782373; cv=none; b=eQ2uekZ6qNrkqOIc2EeVPXRX/Eih4CRHXE4tnJ8ffneBDKkV9rfl4+9V7YrgXU8HeOkC1oXz/w4ooQaE4+VKR2GgNaUEw0/cZacJDu3MG7SxpynKiI3pN7zkhg1PBMVEATg8pO93eb8w3GUzLS11DxV3TPsvXceimqlC3eCA0hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741773630; c=relaxed/simple;
-	bh=OY35CyRLH65BAjnx1MusHgfueKnRQPBHjpDkYJNw2C0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VdFwxOLs0pdfE/bYBLwcpdZcRaGk/eIrMC3it9hH9DPo8SA/sPcPpWWpNya+qb7s3/5pKeFxKRTq0v6F1bFtXQfSUVfW/qpzpvsaLxqUhupCntGMDhluJ8JQtzec2nKYYYu1nzQXwfdGCOzKPJCgBIK9jbDVaomzlFw2fopiLyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ch8DPrb1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JFWtFWU2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OhsgD5va; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+jlQNgX3; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C77DB1F385;
-	Wed, 12 Mar 2025 10:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741773621; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mNzwwivjxxVIXbRf2brb54TB+ggvTLNkym/2QXw3vh4=;
-	b=ch8DPrb1PYEnPCgejqBMpT//JusTOiUka9MmLFbbqgQ7cx1/7CBMKs3Eb+sODb3tjLxyLv
-	9q9mZGxJ9dinjHOncXQWP5X55vuZBMHWtOX+QZ9OiPlctIQlfooppW93cjYF7uB/XJ119s
-	vcr6JTSdTljCyRMjb2wTUtUStc1XrzY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741773621;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mNzwwivjxxVIXbRf2brb54TB+ggvTLNkym/2QXw3vh4=;
-	b=JFWtFWU20NOoP6j48Miqux+YbvQEwDyAObjQG9B4Q6oT2i+XRL7RTDUOy6XmvHSnmb2vD5
-	/qUPMVFdrehYP5Dg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OhsgD5va;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+jlQNgX3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741773620; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mNzwwivjxxVIXbRf2brb54TB+ggvTLNkym/2QXw3vh4=;
-	b=OhsgD5vaLM3w9maT9BtwTbmcjmxiA2viK6XuFateXURR4rfYbckvegndeM8Ayu7JFM3yLy
-	diveavtiOtWLK7aq4s5NORezs/1iNoHq4naVWkR6v0+O1Vy2iMYcZ1hnBo6EOSARn2D/Gc
-	6ewGov0yeUXxdPCPJ+MMSgkLJWI4Tgg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741773620;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mNzwwivjxxVIXbRf2brb54TB+ggvTLNkym/2QXw3vh4=;
-	b=+jlQNgX3ZyvIkHcZb9erfSp3cu5N4jcWNtq8t4hXimj8eizN145BzboVfl4J1kUvM3KWOr
-	X6/Z2JgTqIbAhGAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A24681377F;
-	Wed, 12 Mar 2025 10:00:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id hh0dJzRb0WcbHQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 12 Mar 2025 10:00:20 +0000
-Message-ID: <4d75c5a8-a538-4d7d-aaf4-8ecf1d1be6b9@suse.cz>
-Date: Wed, 12 Mar 2025 11:00:20 +0100
+	s=arc-20240116; t=1741782373; c=relaxed/simple;
+	bh=Ua0UmxOb+ZROksG8fotyV5KfxdhXw1sq9u9jSAigQHk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b/nODSrnvhzJa+Kic68dxGXY5OfI6Wz/D19ubXzH6+2ygOnfr7Knr9Oek85FMJUBbiAyla20/mSODmOjqvTxkzBlTanWUYHmZEkNtEZJYDuu17wVWxzB9nGzv0cX26ItCFeE85bDJa7++dj61hzh+ikSf+ei1io17HL/p0XCc6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a8d1l4KI; arc=none smtp.client-ip=209.85.166.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-3cf880d90bdso20647705ab.3;
+        Wed, 12 Mar 2025 05:26:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741782371; x=1742387171; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CiGeVOzvh7Hi2MVVeNQQQNYnGFd+aA2n3AELBo7vFzs=;
+        b=a8d1l4KIqRPoehtSlMqjzGIf+GzCNMQoicvwEcBFIPPaOADKhy1JB/TaBDM8VL4bGe
+         QV5HEEBEqZ/+7VkqIKkv6A3EppCSaSjFrwIgajUm4PLaw7/uyfxu3Pvv26dqmLxj3xD/
+         vBX1yJbsaTumtsmXgHb+uCVK1qpQmMBSLPnEpDKtS2umrV8ghhXnPe0HVf9rdWTtWnJn
+         v9wz7RzeW7OJWR32Ilpr2KN4RT9wUYfHKKxopJ3dngxxvtxgkKIyqPxhTtnaup6RzB7Y
+         LGJ1AbxyBG9MECJaFA80BZQ0eSbrYBOfmsg4gxNwlxiMr4CRw274gBqRM/EiI5l4i6LN
+         xgqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741782371; x=1742387171;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CiGeVOzvh7Hi2MVVeNQQQNYnGFd+aA2n3AELBo7vFzs=;
+        b=mv1jPLUPaQ6+3WkIyQtSZbzl9BYkGPcap/gXi/w46VjehNfZHgztvoawxkuwim/lYT
+         uiE/FKfWaFudxQS7RjeyRtw/kvozmo6mfkoCyUEDUK26f7HK0IxggQVOCNAR5aLqzaWq
+         xd5yS/0ryVawdMQR212QSIbhcl259LputiF8WRBTey1yQemPqK5Xig+yevgG/HvbiLbe
+         zIjURjnCZ9ETod2V+THbpbnM3PW9QCH8ETT1DBRoeldxMr9C1SSwMUV+Wg9ZEDePnHja
+         0iUO+Kb5Xwrs5TngomTuWirlQinbGcebZwmGlHCoJOZhGdZsUF5c3roRKKj8P2ylJy5z
+         UcfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVrXK0l08bYo8sPNEh4CdR3wQiBel74V3f0w4bUyQoYFZ7VD0mhwdx0EPkRBZEcC/FLTp4=@vger.kernel.org, AJvYcCXBe6P4ZJFj4ugShFh31wKt/jHegWA5bRwjbl3QsA481YpFCH5ORYUXyObpNeeNfDKpXIYN47Ci@vger.kernel.org
+X-Gm-Message-State: AOJu0YxpiMT6bt30jkRKhelQZB3tMO2Tw088ZNOk934/Qu2fVl6oke1v
+	yS2WqFCIoxzSFz0C0+ZRPhO/Zgjw6re2SE1oHVcvud3PYYTHdQWLZOyOCHXdiNIBWrzJXL0O2xv
+	4cBvQO6262S8VabN4JuZ69LdgHao=
+X-Gm-Gg: ASbGncsoAAm1HOLc9KIe33R7+HL9l1KgJ3gpT0fTJh2ESyuRsh07UokqwD+KWMf1BES
+	bhras0MDIgt7F3ErBc6eTqNaHjgYShA/nZxPZICTENnCkkKCXt4riHsNFzuuzS91x5t2HQyPmPs
+	wIvhsO157l4qGKqf/IaKW7xWqt
+X-Google-Smtp-Source: AGHT+IH0sYORq9CF7IyIvrTs9g/pykq2xTGAGTnhL7EN34gCGzwPvB/XesSoNyOkErYPGNELZXrFKgySaB6IXGcqPEc=
+X-Received: by 2002:a05:6e02:1c0b:b0:3a7:87f2:b010 with SMTP id
+ e9e14a558f8ab-3d4419712a9mr238183455ab.5.1741782371298; Wed, 12 Mar 2025
+ 05:26:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v9 2/6] mm, bpf: Introduce try_alloc_pages() for
- opportunistic page allocation
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Sebastian Sewior <bigeasy@linutronix.de>,
- Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Shakeel Butt <shakeel.butt@linux.dev>,
- Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>,
- Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>,
- Kernel Team <kernel-team@fb.com>
-References: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
- <20250222024427.30294-3-alexei.starovoitov@gmail.com>
- <20250310190427.32ce3ba9adb3771198fe2a5c@linux-foundation.org>
- <CAADnVQJsYcMfn4XjAtgo9gHsiUs-BX-PEyi1oPHy5_gEuWKHFQ@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAADnVQJsYcMfn4XjAtgo9gHsiUs-BX-PEyi1oPHy5_gEuWKHFQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C77DB1F385
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,linux-foundation.org];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,gmail.com,infradead.org,linutronix.de,goodmis.org,huawei.com,cmpxchg.org,linux.dev,suse.com,google.com,kvack.org,fb.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <20250311085437.14703-1-kerneljasonxing@gmail.com>
+ <80e745a45391cb8bb60b49978c0a9af5f51bec183f01a7b8f300992a4b14aa6f@mail.kernel.org>
+ <CAL+tcoD8TAWT-_mU8wMT3zt-Thh5ZVfmBear5m=G4MbCbBS9XA@mail.gmail.com>
+ <5e9fc094-8baf-4b67-b58e-dae5ff9ce350@linux.dev> <c6aec870-5c13-4d84-bca2-3b77513071b7@linux.dev>
+ <CAL+tcoB7ZaYYyYsvR2QwAh8twEkoKjwn-gFZzsY3xM0VSsNJVQ@mail.gmail.com>
+In-Reply-To: <CAL+tcoB7ZaYYyYsvR2QwAh8twEkoKjwn-gFZzsY3xM0VSsNJVQ@mail.gmail.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Wed, 12 Mar 2025 13:25:34 +0100
+X-Gm-Features: AQ5f1Jodu1ngKFXzJBua5J-EFX8zdfkeSzkGSDbj2PmVMr1vdVZJdWVEV23dFfk
+Message-ID: <CAL+tcoBiLEJCY==xkxTBAvNSZ2P4-16nZpELkgq=sdB-=kM1Yw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/6] tcp: add some RTO MIN and DELACK MAX
+ {bpf_}set/getsockopt supports
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bot+bpf-ci@kernel.org, kernel-ci@meta.com, andrii@kernel.org, 
+	daniel@iogearbox.net, bpf <bpf@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/11/25 14:32, Alexei Starovoitov wrote:
-> On Tue, Mar 11, 2025 at 3:04 AM Andrew Morton <akpm@linux-foundation.org> wrote:
->>
->> On Fri, 21 Feb 2025 18:44:23 -0800 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->>
->> > Tracing BPF programs execute from tracepoints and kprobes where
->> > running context is unknown, but they need to request additional
->> > memory. The prior workarounds were using pre-allocated memory and
->> > BPF specific freelists to satisfy such allocation requests.
->>
->> The "prior workarounds" sound entirely appropriate.  Because the
->> performance and maintainability of Linux's page allocator is about
->> 1,000,040 times more important than relieving BPF of having to carry a
->> "workaround".
-> 
-> Please explain where performance and maintainability is affected?
-> 
-> As far as motivation, if I recall correctly, you were present in
-> the room when Vlastimil presented the next steps for SLUB at
-> LSFMM back in May of last year.
-> A link to memory refresher is in the commit log:
-> https://lwn.net/Articles/974138/
-> 
-> Back then he talked about a bunch of reasons including better
-> maintainability of the kernel overall, but what stood out to me
-> as the main reason to use SLUB for bpf, objpool, mempool,
-> and networking needs is prevention of memory waste.
-> All these wrappers of slub pin memory that should be shared.
-> bpf, objpool, mempools should be good citizens of the kernel
-> instead of stealing the memory. That's the core job of the
-> kernel. To share resources. Memory is one such resource.
+On Wed, Mar 12, 2025 at 7:50=E2=80=AFAM Jason Xing <kerneljasonxing@gmail.c=
+om> wrote:
+>
+> On Tue, Mar 11, 2025 at 7:44=E2=80=AFPM Martin KaFai Lau <martin.lau@linu=
+x.dev> wrote:
+> >
+> > On 3/11/25 11:39 AM, Martin KaFai Lau wrote:
+> > > On 3/11/25 4:07 AM, Jason Xing wrote:
+> > >> On Tue, Mar 11, 2025 at 10:26=E2=80=AFAM <bot+bpf-ci@kernel.org> wro=
+te:
+> > >>>
+> > >>> Dear patch submitter,
+> > >>>
+> > >>> CI has tested the following submission:
+> > >>> Status:     FAILURE
+> > >>> Name:       [bpf-next,v2,0/6] tcp: add some RTO MIN and DELACK MAX =
+{bpf_}set/
+> > >>> getsockopt supports
+> > >>> Patchwork:  https://patchwork.kernel.org/project/netdevbpf/list/?
+> > >>> series=3D942617&state=3D*
+> > >>> Matrix:     https://github.com/kernel-patches/bpf/actions/runs/1378=
+4214269
+> > >>>
+> > >>> Failed jobs:
+> > >>> test_progs-aarch64-gcc: https://github.com/kernel-patches/bpf/actio=
+ns/
+> > >>> runs/13784214269/job/38548852334
+> > >>> test_progs_no_alu32-aarch64-gcc: https://github.com/kernel-patches/=
+bpf/
+> > >>> actions/runs/13784214269/job/38548853075
+> > >>> test_progs-s390x-gcc: https://github.com/kernel-patches/bpf/actions=
+/
+> > >>> runs/13784214269/job/38548829871
+> > >>> test_progs_no_alu32-s390x-gcc: https://github.com/kernel-patches/bp=
+f/actions/
+> > >>> runs/13784214269/job/38548830246
+> > >>
+> > >> I see https://netdev.bots.linux.dev/static/nipa/942617/apply/desc th=
+at
+> > >
+> > > It cannot apply, so it applied to bpf-next/net.
+> > >
+> > > I just confirmed by first checking this:
+> > > https://github.com/kernel-patches/bpf/pulls
+> > >
+> > > then find your patches and figure out bpf-net_base:
+> > > https://github.com/kernel-patches/bpf/pull/8649
+> > >
+> > >> says the patch can not be applied. Could it be possible that CI
+> > >> applied it on the wrong branch? I targeted the net branch.
+> > >>
+> > >> I have no clue this series is affecting the following tests
+> > >
+> > > The test is changing the exact same test setget_sockopt and it failed=
+, so it
+> > > should be suspicious enough to look at the details of the bpf CI repo=
+rt.
+> > >
+> > > The report said it failed in aarch64 and s390 but x86 seems to be fin=
+e.
+> > > When the test failed, it pretty much failed on all tests. It looks li=
+ke some of
+> > > the new set/getsockopt checks failed in these two archs. A blind gues=
+s is the
+> > > jiffies part.
+> >
+> > and forgot to mention that you can run bpf CI before posting. This may =
+be easier
+> > to test other archs. Take a look at Documentation/bpf/bpf_devel_QA.rst.=
+ The
+> > section "How do I run BPF CI on my changes before sending them out for =
+review?"
+>
+> Thanks for the pointer.
+>
+> Let me try one patch by one patch. Having checked the series itself, I
+> still have no clue. You said jiffies part. What is that? Could you
+> please point out a file name or configuration so that I can follow you
+> and then do some tests?
 
-Yes. Although at that time I've envisioned there would still be some
-reserved objects set aside for these purposes. The difference would be they
-would be under control of the allocator and not in multiple caches outside
-of it.
+Oh, I realized that. Maybe I need to adjust the test and expected
+value in the selftests to make it compatible with different HZ values
+in those arch configs.
 
-But if we can achieve the same without such reserved objects, I think it's
-even better. Performance and maintainability doesn't need to necessarily
-suffer. Maybe it can even improve in the process. E.g. if we build upon
-patches 1+4 and swith memcg stock locking to the non-irqsave variant, we
-should avoid some overhead there (something similar was tried there in the
-past but reverted when making it RT compatible).
+Thanks,
+Jason
 
