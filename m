@@ -1,198 +1,257 @@
-Return-Path: <bpf+bounces-54008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 773D7A60438
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 23:24:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14CF8A605FD
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 00:45:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10C2219C187F
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 22:24:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC4F018862B5
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 23:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A4E1F76B3;
-	Thu, 13 Mar 2025 22:24:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6337C1FDE24;
+	Thu, 13 Mar 2025 23:36:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sQR/dARi"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WawCNW98"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317B31F4630;
-	Thu, 13 Mar 2025 22:24:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A6E11F9F79
+	for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 23:36:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741904665; cv=none; b=B3AveD3xSqj33FAzb4QAa6A2y6QgFz4Ssoz1E7sj/eGxoWyXR/Lb4iWUBICeYrWvL+ELejLk2R1jJos1eGnUM3eNn7lTzNJnsls6mwujoSI1ssIHNSuJyCTy2Fv7OjjGnwW7/LrTNM+x1r9Fs1jpA7OroafpkFc+3vdJb5wIj1s=
+	t=1741908980; cv=none; b=OoQGWUtVA6V2pdqV3AgZyJoNVoL144B8pbECICelST4Su3PL2y1cUo3BlOddZh5vyjocS7NNAu84l0lPYfY1j6FsNoALTuDSfTvXvKTHwiA/DGyrnvySjYX7uhhAijqktVT5QZX6MXtV7VAncy3shAgRol2o8HgkBr98ocFI9O8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741904665; c=relaxed/simple;
-	bh=C3TTb5Ms+0aEPdd4dgKKRbOv77Nyo/jHCcFF8YqhaZs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nPlFbqrY9XpzOP+s/4uWtBvSak4Kj/vALHuOZpPLmtz0vHKCaxO72UTJ/y83d3zz5kezupUD4sQVhn7WrUnH5SKruO094wCfsQVVe8CmRYYtKlfrkFEIg72RkEtqlQmfA6pym44/H9LCzjU64kVP82xBz4cEzV8a6lwiaH4BtpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sQR/dARi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6F0BC4CEDD;
-	Thu, 13 Mar 2025 22:24:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741904665;
-	bh=C3TTb5Ms+0aEPdd4dgKKRbOv77Nyo/jHCcFF8YqhaZs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sQR/dARim8x9mrB1aT27WjxqmOQRnqm1zxCXydRDRhh2Qt7E2HHIDgePOTgOLNtxH
-	 5O4bKKUiWy1YbBo8+lBAIrm3zpYXJl76XWhGz1mkLy02o+HBa72O/8jvx5Dz3LdxLS
-	 MSwVefC0Kaj8FwgED/bd2dNMsbYxrKf0TttEP5NJYcMZ0hqAouJVlFk6AbNtNAGlFB
-	 G1r43yFKdyhIejJ2DDnf7iRoI5hoLKllChNR1xb26UoV8edo3tHZ52PGG2LKEsA6a2
-	 2FPrkBaXQ5mYMvvjoo29D3g13wC6nQv2eqexu/rn6SuzktY52Kl/f6kaXPsY0ODyYb
-	 lp0V0kEuf4Eqw==
-Date: Thu, 13 Mar 2025 15:24:22 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Aditya Gupta <adityag@linux.ibm.com>,
-	"Steinar H. Gunderson" <sesse@google.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Changbin Du <changbin.du@huawei.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	James Clark <james.clark@linaro.org>,
-	Kajol Jain <kjain@linux.ibm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Li Huafei <lihuafei1@huawei.com>,
-	Dmitry Vyukov <dvyukov@google.com>, Andi Kleen <ak@linux.intel.com>,
-	Chaitanya S Prakash <chaitanyas.prakash@arm.com>,
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	llvm@lists.linux.dev, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>
-Subject: Re: [PATCH v2 00/17] Support dynamic opening of capstone/llvm remove
- BUILD_NONDISTRO
-Message-ID: <Z9NbFqaDQMjvYxcc@google.com>
-References: <20250122062332.577009-1-irogers@google.com>
- <Z5K712McgLXkN6aR@google.com>
- <CAP-5=fX2n4nCTcSXY9+jU--X010hS9Q-chBWcwEyDzEV05D=FQ@mail.gmail.com>
- <CAP-5=fUHLP-vtktodVuvMEbOd+TfQPPndkajT=WNf3Mc4VEZaA@mail.gmail.com>
- <CAP-5=fV_z+Ev=wDt+QDwx8GTNXNQH30H5KXzaUXQBOG1Mb8hJg@mail.gmail.com>
+	s=arc-20240116; t=1741908980; c=relaxed/simple;
+	bh=xS3KwElzny9P/4D1l1BeiGcPBm8EB+1tVWV8PbJUwQg=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=MT8xafKFkoDv4hp3N+WA3S0TCi2fJpBum1Bk95nwzErilV/zmufD1aTmVSFHjvhh+nk3Zd0m+h0XQkKMTevXLkO3T4aflJH9FHJ+tQRHy1L0kowPgeb3wDt27oagyM58dC2F772TVRrLf0VzoAVtVddNrM73vZRz4U6QIB6ift8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WawCNW98; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-300fefb8e05so2503861a91.3
+        for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 16:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1741908978; x=1742513778; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PTt4zbFyi/lWw6EXiC897VD1Joy4OZVjaIf4sel6ss4=;
+        b=WawCNW98GgZkCSMI/SC5VDC1a+NLi53mX7Omwrbx6x00vTXD/NzsvGlakgXT8pqdZ6
+         wVyssVqhXbMx6xmJUdl0B+shv4o5C092+SBdbie4JniMLmTJucZsRnkcrzYlyNatvLnm
+         cl96TEV/KOJT06A3Szyt2+qMfNPDEufiGAvart1zoPPZwqd51u7PpPYrkYA/hlTVB36Q
+         NZ3Fk2GXcOX43Zu7Yodmjt3XcpK/HSRc7VVIHMAkNv2DwGUWcpUmCa+c5lPzMxiIolfq
+         Pw9GUG6xOesEuptwiL1QpexbhVr3z422f+uJHFqyZ7e8frFCLcOHefQ7U4ci+ezzEVSm
+         LrLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741908978; x=1742513778;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PTt4zbFyi/lWw6EXiC897VD1Joy4OZVjaIf4sel6ss4=;
+        b=GPmIp0u6k0sO5gH0BnPgxxeT76DeTQVbT4Set2Io0CxspUS7VjL/iJxG9zXfGXiAwa
+         7UEvOEivM/seHVnkvshLxD/NG+tMBDtK/ZkKePVNYbPYHq1BWo8YBML0AkbsOAFav2h9
+         GtDrOdMqiuJChYRfzIfQs+1YumlCtxtvAoiMWXYMSWj0TuunPda14e6scVAGBjjc/nH8
+         G9Z3aWH2dBX2QrnkpxPvkrwnfwIUGj3A+WR0umIF4F3OyzF4zm4orQemi/y+BeCzqO4D
+         LARvxjnGd758clp921/4hWajfSI6ArzMhs0/mmjvXQ2ezQbLr30BnWmwB5VrXW3rKr2r
+         PLFA==
+X-Forwarded-Encrypted: i=1; AJvYcCU4EIHjfFj3+zS5KADTP2gYgO/Hrkl+0l4o9Vgl4SBAYU3cJI+Epn4v2zQkx3SqpL0Wrmk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxnx+iTDsEJ64V63KRXR/CjqNC/ODEjzAXhcQSAtG4oyZTK9EeC
+	5XkycRtczDK4OYnepfiAPdUDx1GqSi89P/w3RPhlyWPdYJ0bzUiZULCoanECXrl2J+EnmhlQHA=
+	=
+X-Google-Smtp-Source: AGHT+IFAWxqWUjLnZMLFc2bzm8kiMY76oEKWGdNUuudXwU7j4QDlLhxXaP3ro1hUsdqTtnhCp83SfQxiLg==
+X-Received: from pguc1.prod.google.com ([2002:a65:6741:0:b0:af5:1385:7743])
+ (user=jrife job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a21:394c:b0:1f5:790c:947
+ with SMTP id adf61e73a8af0-1f5c11bb371mr793468637.19.1741908978356; Thu, 13
+ Mar 2025 16:36:18 -0700 (PDT)
+Date: Thu, 13 Mar 2025 23:35:24 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fV_z+Ev=wDt+QDwx8GTNXNQH30H5KXzaUXQBOG1Mb8hJg@mail.gmail.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.49.0.rc1.451.g8f38331e32-goog
+Message-ID: <20250313233615.2329869-1-jrife@google.com>
+Subject: [RFC PATCH bpf-next 0/3] Avoid skipping sockets with socket iterators
+From: Jordan Rife <jrife@google.com>
+To: netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc: Jordan Rife <jrife@google.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, 
+	Aditi Ghag <aditi.ghag@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Ian,
+I was recently looking into using BPF socket iterators in conjunction
+with the bpf_sock_destroy() kfunc as a means to forcefully destroy a
+set of UDP sockets connected to a deleted backend [1]. Aditi describes
+the scenario in [2], the patch series that introduced bpf_sock_destroy()
+for this very purpose:
 
-On Wed, Mar 12, 2025 at 02:04:30PM -0700, Ian Rogers wrote:
-> On Mon, Feb 10, 2025 at 10:06 AM Ian Rogers <irogers@google.com> wrote:
-> >
-> > On Thu, Jan 23, 2025 at 3:36 PM Ian Rogers <irogers@google.com> wrote:
-> > > On Thu, Jan 23, 2025 at 1:59 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > > I like changes up to this in general.  Let me take a look at the
-> > > > patches.
-> >
-> > So it would be nice to make progress with this series given some level
-> > of happiness, I don't see any actions currently on the patch series as
-> > is. If I may be so bold as to recap the issues that have come up:
-> >
-> > 1) Andi Kleen mentions that dlopen is inferior to linking against
-> > libraries and those libraries aren't a memory overhead if unused.
-> >
-> > I agree but pointed-out the data center use case means that saving
-> > size on binaries can be important to some (me). We've also been trying
-> > to reduce perf's dependencies for distributions as perf dragging in
-> > say the whole of libLLVM can be annoying for making minimal
-> > distributions that contain perf. Perhaps somebody (Arnaldo?) more
-> > involved with distributions can confirm or deny the distribution
-> > problem, I'm hoping it is self-evident.
-> >
-> > 2) Namhyung Kim was uncomfortable with the code defining
-> > types/constants that were in header files as the two may drift over
-> > time
-> >
-> > I agree but in the same way as a function name is an ABI for dlysym,
-> > the types/constants are too. Yes a header file may change, but in
-> > doing so the ABI has changed and so it would be an incompatible change
-> > and everything would be broken. We'd need to fix the code for this,
-> > say as we did when libbpf moved to version 1.0, but using a header
-> > file would only weakly guard against this problem. The problem with
-> > including the header files is that then the build either breaks
-> > without the header or we need to support a no linking against a
-> > library and not using dlopen case. I suspect a lot of distributions
-> > wouldn't understand the build subtlety in this, the necessary build
-> > options and things installed, and we'd end up not using things like
-> > libLLVM even when it is known to be a large performance win. I also
-> > hope one day we can move from parsing text out of forked commands, as
-> > it is slower and more brittle, to just directly using libraries.
-> > Making dlopen the fallback (probably with a warning on failure) seems
-> > like the right direction for this except we won't get it if we need to
-> > drag in extra dependency header files for the build to succeed (well
-> > we could have a no library or dlopen option, but then we'd probably
-> > find distributions packaging this and things like perf annotate
-> > getting broken as they don't even know how to dlopen a library).
-> >
-> > 3) Namhyung Kim (and I) also raises that the libcapstone patch can be
-> > smaller by dropping the print_capstone_detail support on x86
-> >
-> > Note, given the similarity between capstone and libLLVM for
-> > disassembly, it is curious that only capstone gives the extra detail.
-> >
-> > I agree. Given the capstone disassembly output will be compromised we
-> > should warn for this, probably in Makefile.config to avoid running
-> > afoul of -Werror. It isn't clear that having a warning is a good move
-> > given the handful of structs needed to support print_capstone_detail.
-> > I'd prefer to keep the structs so that we haven't got a warning that
-> > looks like it needs cleaning up.
-> >
-> > 4) Namhyung Kim raised concerns over #if placement
-> >
-> > Namhyung raised that he'd prefer:
-> > ```
-> > #if HAVE_LIBCAPSTONE_SUPPORT
-> > // lots of code
-> > #else
-> > // lots of code
-> > #endif
-> > ```
-> > rather than the #ifs being inside or around individual functions. I
-> > raised that the large #ifs is a problem in the current code as you
-> > lose context when trying to understand a function. You may look at a
-> > function but not realize it isn't being used because of a #if 10s or
-> > 100s of lines above. Namhyung raised that the large #ifs is closer to
-> > kernel style, I disagreed as I think kernel style is only doing this
-> > when it stubs out a bunch of API functions, not when more context
-> > would be useful. Hopefully as the person writing the patches the style
-> > choice I've made can be respected.
-> >
-> > 5) Daniel Xu raised issues with the removal of libbfd for Rust
-> > support, as the code implies libbfd C++ demangling is a pre-requisite
-> > of legacy rust symbol demangling
-> >
-> > A separate patch was posted adding Rust v0 symbol demangling with no
-> > libbfd dependency:
-> > https://lore.kernel.org/lkml/20250129193037.573431-1-irogers@google.com/
-> > The legacy support should work with the non-libbfd demanglers as
-> > that's what we have today. We should really clean up Rust demangling
-> > and have tests. This is blocked on the Rust community responding to:
-> > https://github.com/rust-lang/rust/issues/60705
+> This patch set adds the capability to destroy sockets in BPF. We plan
+> to use the capability in Cilium to force client sockets to reconnect
+> when their remote load-balancing backends are deleted. The other use
+> case is on-the-fly policy enforcement where existing socket
+> connections prevented by policies need to be terminated.
 
-I think #ifdef placements is not a big deal, but I still don't want to
-pull libcapstone details into the perf tree.
+One would want and expect an iterator to visit every socket that existed
+before the iterator was created, if not exactly once, then at least
+once, otherwise we could accidentally skip a socket that we intended to
+destroy. With the iterator implementation as it exists today, this is
+the behavior you would observe in the vast majority of cases.
 
-For LLVM, I think you should to build llvm-c-helpers anyway which means
-you still need LLVM headers and don't need to redefine the structures.
+However, in the process of reviewing [2] and some follow up fixes to
+bpf_iter_udp_batch() ([3] [4]) by Martin, it occurred to me that there
+are situations where BPF socket iterators may repeat, or worse, skip
+sockets altogether even if they existed prior to iterator creation,
+making BPF iterators as a mechanism to achieve the goal stated above
+possibly buggy.
 
-Can we do the same for capstone?  I think it's best to use capstone
-headers directly and add a build option to use dlopen().
+Admittedly, this is probably an edge case of an edge case, but I had
+been pondering a few ways to to close this gap. This RFC highlights
+some of these scenarios, extending prog_tests/sock_iter_batch.c to
+illustrate conditions under which sockets can be skipped or repeated,
+and proposes a possible improvement to iterator progress tracking to
+achieve exactly-once semantics even in the face of concurrent changes
+to the iterator's current bucket.
 
-Thanks,
-Namhyung
+THE PROBLEM
+===========
+Both UDP and TCP socket iterators use iter->offset to track progress
+through a bucket, which is a measure of the number of matching sockets
+from the current bucket that have been seen or processed by the
+iterator. However, iter->offset isn't always an accurate measure of
+"things already seen" when the underlying bucket changes between reads.
+
+Scenario 1: Skip A Socket
++------+--------------------+--------------+---------------+
+| Time | Event              | Bucket State | Bucket Offset |
++------+--------------------+--------------+---------------+
+| 1    | read(iter_fd) -> A | A->B->C->D   | 1             |
+| 2    | close(A)           | B->C->D      | 1             |
+| 3    | read(iter_fd) -> C | B->C->D      | 2             |
+| 4    | read(iter_fd) -> D | B->C->D      | 3             |
+| 5    | read(iter_fd) -> 0 | B->C->D      | -             |
++------+--------------------+--------------+---------------+
+
+Iteration sees these buckets: [A, C, D]
+B is skipped.
+
+Scenario 2: Repeat A Socket
++------+--------------------+---------------+---------------+
+| Time | Event              | Bucket State  | Bucket Offset |
++------+--------------------+---------------+---------------+
+| 1    | read(iter_fd) -> A | A->B->C->D    | 1             |
+| 2    | connect(E)         | E->A->B->C->D | 1             |
+| 3    | read(iter_fd) -> A | E->A->B->C->D | 2             |
+| 3    | read(iter_fd) -> B | E->A->B->C->D | 3             |
+| 3    | read(iter_fd) -> C | E->A->B->C->D | 4             |
+| 4    | read(iter_fd) -> D | E->A->B->C->D | 5             |
+| 5    | read(iter_fd) -> 0 | E->A->B->C->D | -             |
++------+--------------------+---------------+---------------+
+
+Iteration sees these buckets: [A, A, B, C, D]
+A is repeated.
+
+PROPOSAL
+========
+If we ignore the possibility of signed 64 bit rollover*, then we can
+achieve exactly-once semantics. This series replaces the current
+offset-based scheme used for progress tracking with a scheme based on a
+monotonically increasing version number. It works as follows:
+
+* Assign index numbers on sockets in the bucket's linked list such that
+  they are monotonically increasing as you read from the head to tail.
+
+  * Every time a socket is added to a bucket, increment the hash
+    table's version number, ver.
+  * If the socket is being added to the head of the bucket's linked
+    list, set sk->idx to -1*ver.
+  * If the socket is being added to the tail of the bucket's linked
+    list, set sk->idx to ver.
+
+  Ex: append_head(C), append_head(B), append_tail(D), append_head(A),
+      append_tail(E) results in the following state.
+    
+      A -> B -> C -> D -> E
+     -4   -2   -1    3    5
+* As we iterate through a bucket, keep track of the last index number
+  we've seen for that bucket, iter->prev_idx.
+* On subsequent iterations, skip ahead in the bucket until we see a
+  socket whose index, sk->idx, is greater than iter->prev_idx.
+
+Indexes are globally and temporally unique within a table, and
+by extension each bucket, and always increase as we iterate from head
+to tail. Since the relative order of items within the linked list
+doesn't change, and we don't insert new items into the middle, we can
+be sure that any socket whose index is greater than iter->prev_idx has
+not yet been seen. Any socket whose index is less than or equal to
+iter->prev_idx has either been seen+ before or was added to the head of
+the bucket's list since we last saw that bucket. In either case, it's
+safe to skip them (any new sockets did not exist when we created the
+iterator, so skipping them doesn't create an "inconsistent view").
+
+* Practically speaking, I'm not sure if rollover is a very real concern,
+  but we could potentially extend the version/index field to 128 bits
+  or have some rollover detection built in as well (although this
+  introduces the possibility of repeated sockets again) if there are any
+  doubts.
++ If you really wanted to, I guess you could even iterate over a sort of
+  "consistent snapshot" of the collection by remembering the initial
+  ver in the iterator state, iter->ver, and filtering out any items
+  where abs(sk->idx) > iter->ver, but this is probably of little
+  practical use and more of an interesting side effect.
+
+SOME ALTERNATIVES
+=================
+1. One alternative I considered was simply counting the number of
+   removals that have occurred per bucket, remembering this between
+   calls to bpf_iter_(tcp|udp)_batch() as part of the iterator state,
+   then using it to detect if it has changed. If any removals have
+   occurred, we would need to walk back iter->offset by at least that
+   much to avoid skips. This approach is simpler but may repeat sockets.
+2. Don't allow partial batches; always make sure we capture all sockets
+   in a bucket in one batch. bpf_iter_(tcp|udp)_batch() already has some
+   logic to try one time to resize the batch, but still needs to contend
+   with the fact that bpf_iter_(tcp|udp)_realloc_batch() may not be able
+   grab more memory, and bpf_iter_(tcp|udp)_put_batch() is called
+   between reads anyway, making it necessary to seek to the previous
+   offset next time around.
+3. Error out if a scenario is detected where skips may be possible and
+   force the application layer to restart iteration. This doesn't seem
+   great.
+
+Anyway, maybe this is already common knowledge, but I thought I'd
+highlight the possibility just in case and share this idea; it seemed
+like an area that could be improved a bit. I also wonder if a similar
+scheme might be useful to create non-skipping iterators for collections
+like network namespaces, which I believe is just a big linked list where
+concurrent changes would be more likely, but I digress.
+
+-Jordan
+
+[1]: https://github.com/cilium/cilium/issues/37907
+[2]: https://lore.kernel.org/bpf/20230519225157.760788-1-aditi.ghag@isovalent.com/
+[3]: https://lore.kernel.org/netdev/20240112190530.3751661-1-martin.lau@linux.dev/
+[4]: https://lore.kernel.org/netdev/20240112190530.3751661-2-martin.lau@linux.dev/
+
+Jordan Rife (3):
+  bpf: udp: Avoid socket skips during iteration
+  bpf: tcp: Avoid socket skips during iteration
+  selftests/bpf: Add tests for socket skips and repeats
+
+ include/net/inet_hashtables.h                 |   2 +
+ include/net/sock.h                            |   2 +
+ include/net/tcp.h                             |   3 +-
+ include/net/udp.h                             |   1 +
+ net/ipv4/inet_hashtables.c                    |  18 +-
+ net/ipv4/tcp.c                                |   1 +
+ net/ipv4/tcp_ipv4.c                           |  29 +-
+ net/ipv4/udp.c                                |  38 ++-
+ .../bpf/prog_tests/sock_iter_batch.c          | 293 +++++++++++++++++-
+ .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
+ .../selftests/bpf/progs/sock_iter_batch.c     |  24 +-
+ 11 files changed, 364 insertions(+), 48 deletions(-)
+
+-- 
+2.49.0.rc1.451.g8f38331e32-goog
 
 
