@@ -1,250 +1,214 @@
-Return-Path: <bpf+bounces-53969-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53972-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5402A5FCC9
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 17:59:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 602DAA5FDC8
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 18:29:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C59D16A01C
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 16:59:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C867189598A
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 17:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C5E269D08;
-	Thu, 13 Mar 2025 16:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59E38189528;
+	Thu, 13 Mar 2025 17:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="SQb4+8R3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx-rz-3.rrze.uni-erlangen.de (mx-rz-3.rrze.uni-erlangen.de [131.188.11.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975CE2686BD
-	for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 16:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F9078F4C;
+	Thu, 13 Mar 2025 17:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741885173; cv=none; b=Uwty96ONk0+LQ4fCrJnQAuUkYFvMGRufpMhMqcQzGYsq1n8VlHVNZkqIy0N6hODlRQRvFvHIDvD54JXg7p0ZMWFZnt+ZQqvkwBrWKDLB79Vg/eak2WrDqrCsIJI0+/lNPDFYhBKZnVkL1q+m5L1/kPQ3V80BVkZK3Gst4jl6mCY=
+	t=1741886981; cv=none; b=C6EYhz7VBHTlF5k+BBu2iGEjQIc6YqzU6MfEQXC4b5CWd1yVB92r8lkFYWh3FhKeF5mO2bYnEJm+7kmZtMTXo6FFbqVrGjDRFw8SUe08vdd18jPwvMi2NabQ6imTgB5W3B6GaQQBE4m0lk2dagbosliX9fmBZpEUkifuDFX8K3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741885173; c=relaxed/simple;
-	bh=r78kbKxQagOfA4fTjXUz8rQD0c6w/m7aqX4C3ZCFu1Y=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=d8myhPSe2oa2sF2ymYyn4JBpzcvXorm4CuL5jwYZPZ/bHEP1LPv1YCNvQi5Yb4Lc4uxg6vKTDjgO83Ngnq8TSsdwaqI4HqbnQ3AdTu6kn/joPWSmgorU9j5oj4AfWR1B+1rR8Yiryfon2ieXXU56tFvgN6qELZYtrvoLWoQBR2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3d2a63dc62aso12626935ab.2
-        for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 09:59:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741885170; x=1742489970;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tdpBlpt1qHoogcDEBbY7Tv30XG+ng+gd1D5ipu5ours=;
-        b=dQaEGh92Ith+Q8PpV5u7SzvT7mPkU6kiQKbGdNmrlPTZoUvXjbpFaY+3rLlNdi9rQ0
-         91BWUjkmZwnjlZnFOdhZCJ+jmJw/reGdRM5xAKbpF2SfKwhyoXFn1GZIRlcCG7QtDthb
-         u+cW8IqBIirmb7jctrUQNnlqYAfydfp/rr/TXIGzKQP2Gd9osOoYsGlLVg1OCCpT0dyo
-         Y46LLyoPpMaCaHTTNPVjV3P41XXyqwjUhJsupFPPw8pxOjsZpeOGVrX+oDV9JuhyrvTS
-         RvjyfxfEhfRiXVBIEIwtY4nZ5y8i8CrMaUxwsy0ylLjMl68iNpsWmtRuSikatUMH78nf
-         PttA==
-X-Forwarded-Encrypted: i=1; AJvYcCWvIYp/dC6O5+DQYhJ+X3u1tMDEbNlakwZB6BwfDi5Ykeb8Cqua1EnHPToo4bTokYrGrhk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQSBVQdtgdZqtj3L3JZR3g7AAgP5oMF1HCvMzCEVWjUcW1u2Jp
-	MfrJ2nnfeev6KE11dRbY+zspg+C3uvlbRPTxrpaeqz9PsdjgqkfMFNh1AizCrLmTYvKC/R3in3W
-	gTZDzD9DXI19TAcBHHbIx7aXOvr97TFXOoxDbvzZvowyp7+xlx/aeGsE=
-X-Google-Smtp-Source: AGHT+IEczvvqGmjagvGQMtEa8Pq8M87g8xXwDIdXCeR2blw2m2+e3dFRH9JVZaM1p69oDP9VprNq9WWirbaRHuT0ORQausSa5xKg
+	s=arc-20240116; t=1741886981; c=relaxed/simple;
+	bh=6KZ4fjAT2bZCwY5Ayu8IzLehBcqStD+SrveP6Nwlt8w=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Nqrd9oh7nj1vOQyUPf+WW6afdQHUYQHo4jKzdoN7U++4apoqXtbqmdin+ywJ4vtEAOsWQ4206UtBhHU85E5WpB3CkpwXFxj7WnbIxEFyGUbR75pO20vK0PH+0dUg/Ep9gCxt7in2mQlx/wCZAPVR4LpJhNSGzR5Phfw3zfcmprE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=SQb4+8R3; arc=none smtp.client-ip=131.188.11.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1741886518; bh=Vto+5sxnbm5itz1/EdAaR/loDZXRrbOwTv+hhdfdi+g=;
+	h=From:To:Subject:Date:From:To:CC:Subject;
+	b=SQb4+8R3TWR3guJqo8PvChxi/O/yIjyNHMha8Fpu3fcZLoHvqRwGpqOblbKkwQb4r
+	 c1kZod9390FDuTl/vD2BomjUVRQP1SWzWJ1Kxe3IEZwe0JM9RUBuyTsW2CIngIm2Ff
+	 J4boAbcVavk1imK3SNhsdFte8535234fLWDgkYS2AOPn4Hv/PMbnI1wcxOm/Phfdo7
+	 ikZfmJjnQl/8npWntufPP+VLIR2aixi5Yw76YDNFKqdUWqZfdXZgVTDZ7qBHAUIwNK
+	 D9IvoeRve6/e8z3cNM72/+yB/3ui7Q2jN8r/90eJ8YkRJZLAy76bMKUztZskv8MxQ9
+	 woxjQOdGBZnEA==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-3.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4ZDDnf0gK1z1yGm;
+	Thu, 13 Mar 2025 18:21:58 +0100 (CET)
+X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:9e8:3614:2b00:7ee6:68e5:4447:ba92
+Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3614:2b00:7ee6:68e5:4447:ba92])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX19Ijm4+IBM849zk+H8/lYlR6tkKHCOwLNk=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4ZDDnZ2L1Nz1yN1;
+	Thu, 13 Mar 2025 18:21:54 +0100 (CET)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Hari Bathini <hbathini@linux.ibm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Luis Gerhorst <luis.gerhorst@fau.de>,
+	Henriette Herzog <henriette.herzog@rub.de>,
+	Cupertino Miranda <cupertino.miranda@oracle.com>,
+	Matan Shachnai <m.shachnai@gmail.com>,
+	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+	Daniel Xu <dxu@dxuuu.xyz>,
+	bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kselftest@vger.kernel.org,
+	George Guo <guodongtai@kylinos.cn>,
+	WANG Xuerui <git@xen0n.name>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [PATCH bpf-next 00/11] bpf: Mitigate Spectre v1 using barriers
+Date: Thu, 13 Mar 2025 18:21:16 +0100
+Message-ID: <20250313172127.1098195-1-luis.gerhorst@fau.de>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:18cb:b0:3cf:c7d3:e4b with SMTP id
- e9e14a558f8ab-3d4817af930mr5683665ab.21.1741885170615; Thu, 13 Mar 2025
- 09:59:30 -0700 (PDT)
-Date: Thu, 13 Mar 2025 09:59:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67d30ef2.050a0220.14e108.0039.GAE@google.com>
-Subject: [syzbot] [bpf?] KASAN: slab-out-of-bounds Read in atomic_ptr_type_ok
-From: syzbot <syzbot+a5964227adc0f904549c@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, iii@linux.ibm.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@fomichev.me, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yepeilin@google.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+This improves the expressiveness of unprivileged BPF by inserting
+speculation barriers instead of rejecting the programs.
 
-syzbot found the following issue on:
+The approach was previously presented at LPC'24 [1] and RAID'24 [2].
 
-HEAD commit:    f28214603dc6 Merge branch 'selftests-bpf-move-test_lwt_seg..
-git tree:       bpf-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15f84664580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b7bde34acd8f53b1
-dashboard link: https://syzkaller.appspot.com/bug?extid=a5964227adc0f904549c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16450ba8580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11f5fa54580000
+To mitigate the Spectre v1 (PHT) vulnerability, the kernel rejects
+potentially-dangerous unprivileged BPF programs as of
+commit 9183671af6db ("bpf: Fix leakage under speculation on mispredicted
+branches"). In [2], we have analyzed 364 object files from open source
+projects (Linux Samples and Selftests, BCC, Loxilb, Cilium, libbpf
+Examples, Parca, and Prevail) and found that this affects 31% to 54% of
+programs.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b6b450916744/disk-f2821460.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f67764ad4712/vmlinux-f2821460.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/42aedcc506e8/bzImage-f2821460.xz
+To resolve this in the majority of cases this patchset adds a fall-back
+for mitigating Spectre v1 using speculation barriers. The kernel still
+optimistically attempts to verify all speculative paths but uses
+speculation barriers against v1 when unsafe behavior is detected. This
+allows for more programs to be accepted without disabling the BPF
+Spectre mitigations (e.g., by setting cpu_mitigations_off()).
 
-The issue was bisected to:
+In [1] we have measured the overhead of this approach relative to having
+mitigations off and including the upstream Spectre v4 mitigations. For
+event tracing and stack-sampling profilers, we found that mitigations
+increase BPF program execution time by 0% to 62%. For the Loxilb network
+load balancer, we have measured a 14% slowdown in SCTP performance but
+no significant slowdown for TCP. This overhead only applies to programs
+that were previously rejected.
 
-commit e24bbad29a8de70bb33c1cabc85bb40e6707572a
-Author: Peilin Ye <yepeilin@google.com>
-Date:   Tue Mar 4 01:06:13 2025 +0000
+I reran the expressiveness-evaluation with v6.14 and made sure the main
+results still match those from [1] and [2] (which used v6.5).
 
-    bpf: Introduce load-acquire and store-release instructions
+Main design decisions are:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=154f5074580000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=174f5074580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=134f5074580000
+* Do not use separate bytecode insns for v1 and v4 barriers. This
+  simplifies the verifier significantly and has the only downside that
+  performance on PowerPC is not as high as it could be.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a5964227adc0f904549c@syzkaller.appspotmail.com
-Fixes: e24bbad29a8d ("bpf: Introduce load-acquire and store-release instructions")
+* Allow archs to still disable v1/v4 mitigations separately by setting
+  bpf_jit_bypass_spec_v1/v4(). This has the benefit that archs can
+  benefit from improved BPF expressiveness / performance if they are not
+  vulnerable (e.g., ARM64 for v4 in the kernel).
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in is_ctx_reg kernel/bpf/verifier.c:6185 [inline]
-BUG: KASAN: slab-out-of-bounds in atomic_ptr_type_ok+0x3d7/0x550 kernel/bpf/verifier.c:6223
-Read of size 4 at addr ffff888141b0d690 by task syz-executor143/5842
+* Do not remove the empty BPF_NOSPEC implementation for backends for
+  which it is unknown whether they are vulnerable to Spectre v1.
 
-CPU: 1 UID: 0 PID: 5842 Comm: syz-executor143 Not tainted 6.14.0-rc3-syzkaller-gf28214603dc6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:408 [inline]
- print_report+0x16e/0x5b0 mm/kasan/report.c:521
- kasan_report+0x143/0x180 mm/kasan/report.c:634
- is_ctx_reg kernel/bpf/verifier.c:6185 [inline]
- atomic_ptr_type_ok+0x3d7/0x550 kernel/bpf/verifier.c:6223
- check_atomic_store kernel/bpf/verifier.c:7804 [inline]
- check_atomic kernel/bpf/verifier.c:7841 [inline]
- do_check+0x89dd/0xedd0 kernel/bpf/verifier.c:19334
- do_check_common+0x1678/0x2080 kernel/bpf/verifier.c:22600
- do_check_main kernel/bpf/verifier.c:22691 [inline]
- bpf_check+0x165c8/0x1cca0 kernel/bpf/verifier.c:23821
- bpf_prog_load+0x1664/0x20e0 kernel/bpf/syscall.c:2967
- __sys_bpf+0x4ea/0x820 kernel/bpf/syscall.c:5811
- __do_sys_bpf kernel/bpf/syscall.c:5918 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5916 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5916
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fa3ac86bab9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe50fff5f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fa3ac86bab9
-RDX: 0000000000000094 RSI: 00004000000009c0 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000006
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
- </TASK>
+[1] https://lpc.events/event/18/contributions/1954/ ("Mitigating
+    Spectre-PHT using Speculation Barriers in Linux eBPF")
+[2] https://arxiv.org/pdf/2405.00078 ("VeriFence: Lightweight and
+    Precise Spectre Defenses for Untrusted Linux Kernel Extensions")
 
-Allocated by task 5842:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:394
- kasan_kmalloc include/linux/kasan.h:260 [inline]
- __kmalloc_cache_noprof+0x243/0x390 mm/slub.c:4325
- kmalloc_noprof include/linux/slab.h:901 [inline]
- kzalloc_noprof include/linux/slab.h:1037 [inline]
- do_check_common+0x1ec/0x2080 kernel/bpf/verifier.c:22499
- do_check_main kernel/bpf/verifier.c:22691 [inline]
- bpf_check+0x165c8/0x1cca0 kernel/bpf/verifier.c:23821
- bpf_prog_load+0x1664/0x20e0 kernel/bpf/syscall.c:2967
- __sys_bpf+0x4ea/0x820 kernel/bpf/syscall.c:5811
- __do_sys_bpf kernel/bpf/syscall.c:5918 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5916 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5916
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+Changes:
+* RFC -> v1:
+  - rebase to bpf-next-250313
+  - tests: mark expected successes/new errors
+  - add bpt_jit_bypass_spec_v1/v4() to avoid #ifdef in
+    bpf_bypass_spec_v1/v4()
+  - ensure that nospec with v1-support is implemented for archs for
+    which GCC supports speculation barriers, except for MIPS
+  - arm64: emit speculation barrier
+  - powerpc: change nospec to include v1 barrier
+  - discuss potential security (archs that do not impl. BPF nospec) and
+    performance (only PowerPC) regressions
 
-The buggy address belongs to the object at ffff888141b0d000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 312 bytes to the right of
- allocated 1368-byte region [ffff888141b0d000, ffff888141b0d558)
+RFC: https://lore.kernel.org/bpf/20250224203619.594724-1-luis.gerhorst@fau.de/
 
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x141b08
-head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x57ff00000000040(head|node=1|zone=2|lastcpupid=0x7ff)
-page_type: f5(slab)
-raw: 057ff00000000040 ffff88801b042000 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000080080008 00000000f5000000 0000000000000000
-head: 057ff00000000040 ffff88801b042000 dead000000000100 dead000000000122
-head: 0000000000000000 0000000080080008 00000000f5000000 0000000000000000
-head: 057ff00000000003 ffffea000506c201 ffffffffffffffff 0000000000000000
-head: 0000000000000008 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 8909973200, free_ts 0
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x1f4/0x240 mm/page_alloc.c:1585
- prep_new_page mm/page_alloc.c:1593 [inline]
- get_page_from_freelist+0x3a8c/0x3c20 mm/page_alloc.c:3538
- __alloc_frozen_pages_noprof+0x264/0x580 mm/page_alloc.c:4805
- alloc_pages_mpol+0x311/0x660 mm/mempolicy.c:2270
- alloc_slab_page mm/slub.c:2423 [inline]
- allocate_slab+0x8f/0x3a0 mm/slub.c:2587
- new_slab mm/slub.c:2640 [inline]
- ___slab_alloc+0xc27/0x14a0 mm/slub.c:3826
- __slab_alloc+0x58/0xa0 mm/slub.c:3916
- __slab_alloc_node mm/slub.c:3991 [inline]
- slab_alloc_node mm/slub.c:4152 [inline]
- __kmalloc_cache_noprof+0x27b/0x390 mm/slub.c:4320
- kmalloc_noprof include/linux/slab.h:901 [inline]
- kzalloc_noprof include/linux/slab.h:1037 [inline]
- virtio_pci_probe+0x54/0x340 drivers/virtio/virtio_pci_common.c:689
- local_pci_probe drivers/pci/pci-driver.c:324 [inline]
- pci_call_probe drivers/pci/pci-driver.c:392 [inline]
- __pci_device_probe drivers/pci/pci-driver.c:417 [inline]
- pci_device_probe+0x6c5/0xa10 drivers/pci/pci-driver.c:451
- really_probe+0x2b9/0xad0 drivers/base/dd.c:658
- __driver_probe_device+0x1a2/0x390 drivers/base/dd.c:800
- driver_probe_device+0x50/0x430 drivers/base/dd.c:830
- __driver_attach+0x45f/0x710 drivers/base/dd.c:1216
- bus_for_each_dev+0x239/0x2b0 drivers/base/bus.c:370
- bus_add_driver+0x346/0x670 drivers/base/bus.c:678
-page_owner free stack trace missing
+Luis Gerhorst (11):
+  bpf: Move insn if/else into do_check_insn()
+  bpf: Return -EFAULT on misconfigurations
+  bpf: Return -EFAULT on internal errors
+  bpf, arm64, powerpc: Add bpf_jit_bypass_spec_v1/v4()
+  bpf, arm64, powerpc: Change nospec to include v1 barrier
+  bpf: Rename sanitize_stack_spill to nospec_result
+  bpf: Fall back to nospec for Spectre v1
+  bpf: Allow nospec-protected var-offset stack access
+  bpf: Return PTR_ERR from push_stack()
+  bpf: Fall back to nospec for sanitization-failures
+  bpf: Fall back to nospec for spec path verification
 
-Memory state around the buggy address:
- ffff888141b0d580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888141b0d600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888141b0d680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                         ^
- ffff888141b0d700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888141b0d780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+ arch/arm64/net/bpf_jit.h                      |   5 +
+ arch/arm64/net/bpf_jit_comp.c                 |  28 +-
+ arch/powerpc/net/bpf_jit_comp64.c             |  79 +-
+ include/linux/bpf.h                           |  11 +-
+ include/linux/bpf_verifier.h                  |   3 +-
+ include/linux/filter.h                        |   2 +-
+ kernel/bpf/core.c                             |  32 +-
+ kernel/bpf/verifier.c                         | 723 ++++++++++--------
+ .../selftests/bpf/progs/verifier_and.c        |   3 +-
+ .../selftests/bpf/progs/verifier_bounds.c     |  35 +-
+ .../bpf/progs/verifier_bounds_deduction.c     |  43 +-
+ .../selftests/bpf/progs/verifier_map_ptr.c    |  12 +-
+ .../selftests/bpf/progs/verifier_movsx.c      |   6 +-
+ .../selftests/bpf/progs/verifier_unpriv.c     |   3 +-
+ .../bpf/progs/verifier_value_ptr_arith.c      |  50 +-
+ .../selftests/bpf/verifier/dead_code.c        |   3 +-
+ tools/testing/selftests/bpf/verifier/jmp32.c  |  33 +-
+ tools/testing/selftests/bpf/verifier/jset.c   |  10 +-
+ 18 files changed, 630 insertions(+), 451 deletions(-)
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+base-commit: 46d38f489ef02175dcff1e03a849c226eb0729a6
+-- 
+2.48.1
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
