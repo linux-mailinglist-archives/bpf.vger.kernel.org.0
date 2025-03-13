@@ -1,99 +1,75 @@
-Return-Path: <bpf+bounces-53999-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54000-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A42DA6019E
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 20:53:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A3C1A602B2
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 21:33:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A941421DB9
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 19:53:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 666153B6A3B
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 20:32:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 024001F3FD3;
-	Thu, 13 Mar 2025 19:53:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD431F4603;
+	Thu, 13 Mar 2025 20:32:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dMHZEq3m"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hBcXu/3B";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bGOfkoZE"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E961F37C5
-	for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 19:52:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2375A126C1E;
+	Thu, 13 Mar 2025 20:32:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741895581; cv=none; b=PhxKUXha84nDGHRDK9cmIcbfKKLD+VOpoqYEeaqURM8KCRBtJJjHmuVA9kjxXtHp8kBKQpz/ADfkOaOu5kxLpEeruaGtmb0uupeF616CSjSqJsJF88fmfa9bOOdpuuiLEaboyE5vxE4l6FjgilpJmD7searfqLS30+cszuOD3zU=
+	t=1741897952; cv=none; b=rEXer3RGNlja6ARZzNYpfOEgJJ9Hv1RajJvUb8Wt484ZqeELkCkCBwfRnP/cYrdrSmdjP8AYD3F3SGEtzjdOiLiyS92Ixwk9PhE6bre/N1+1pz900MjnyCIBQg/YrefaJRjSOusohv2p/OqaQhr6rz63OVQ/O+Q9EBTW0Klj8ZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741895581; c=relaxed/simple;
-	bh=ssrY+rvJTsOIek9mChfxY5TLNOw4wZX11HmnNeMPqsw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=N+/jlWM16Zeao7hKgwK3AWTHvYp5DUOGGbEjZU8PnErqoPvn+iw9tHdAA1DQE042S/DMPp2+yBcoo88Ki/WHw4GkFQgcE2jfcKCY+ZhqVvCPHK+QVEkTjBJ49v2kW2aKQfMeru/PFQpETlrGe69u2l6e4GD4YV9+8Ua281XWpXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dMHZEq3m; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741895578;
+	s=arc-20240116; t=1741897952; c=relaxed/simple;
+	bh=tGFxbAWHCzT3GO8fUjsbGi94iRLOi13UnMzaKDpP8fg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NY1id/DRjL42L+YyKOA1xuwRWfsEqxgGcm8CB4dbDGreROsTa/anDOjYOT/2Dp9gDkfSoIg82+nK9FZyUtwhCZMwA5TMz3pJ9ZfT2nORj5qDy8P8sj2oYRVR2WzeU/lz78yg+N9MUaSjOkk1If31tAFOu29RlT5h+dIFPE8qWTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hBcXu/3B; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bGOfkoZE; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 13 Mar 2025 21:32:26 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1741897948;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=K5Rwgf9qGOGXudkqHlAtuBTuQYQzfN70qYMcLMsFPhA=;
-	b=dMHZEq3mSz9/v6XNkF0OJJ7iKzYhaQUbXiCLeMwc+DHgDLUcLq95GIJory+9EtJfPMF+LT
-	vv3eWgcPaz6lDhLKgrHWiNkf2VOWuyMcC4oY1+thLTux1mZgciS+6SCrpP55kr9UZOF48Y
-	rLsJLRRMfTQjA11ceU+t05EhJYAJd6Y=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-158-fVCiQ8h1NviA7Wil6HoYqQ-1; Thu, 13 Mar 2025 15:52:57 -0400
-X-MC-Unique: fVCiQ8h1NviA7Wil6HoYqQ-1
-X-Mimecast-MFC-AGG-ID: fVCiQ8h1NviA7Wil6HoYqQ_1741895576
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5498d2a8b88so708160e87.1
-        for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 12:52:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741895576; x=1742500376;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K5Rwgf9qGOGXudkqHlAtuBTuQYQzfN70qYMcLMsFPhA=;
-        b=Ehlcih/O9op+zYO+7o6O9Or2YswigleU3Ng9X2ik/nvrTpZOoqwVraO0MolBLiKT75
-         lsNipC32jCOW0mitCC9tfp3tHcBym9Y73sAAGmWelH1a/vF7uv2hz9Jxjyf3nvYVhmoc
-         sbAsIVhYUXu3GhU+XGNcFAD+4ZUDuEnYUi9/9ZidExfgIUbLFQoXFEVaTVWZpNSxaeXL
-         Ff1XShQx3B7b9FWd5Hduvtmnjj/BiHNgqNtlsrpjcqp2XZyXiJUhB/sfo6nSIKOBkYuC
-         Ur/+g6o8qFqJRp8bfcdJypIMa/I0esLrsyL+/2QBsrKKy7zZXbduQov9Ydt9JG6c7pio
-         uU1A==
-X-Gm-Message-State: AOJu0Yw6+vsLpI0jpohHZ6c99FxBzKPha1QPsHvFKNFi/PVQp04eadpg
-	RYBY7mg7BetXvqAV9JQhfsqWLXE+oOPtTVSmKpPTTcFtdNAA3LEuyTDmcJQEnbryKe4TIuTHUoV
-	Mj68ovm5KTAb8wto3y2U+0Je7WfRuFDHQfancLvwEjJ/iJVSfZg==
-X-Gm-Gg: ASbGncs+tkBhnb3fJKzDbRVttPFmQH7MI0sijxtMdIqqpmvTHxi+CMTMCadow+3KbiS
-	W4lHSDGbjgwbZMD2O1U+kCj4L3IWeDy13U2dXAQVXapp2uvPckb5oEUwGxXnZV5e12xSlyCCpf+
-	rATsVaIC1JJxr9R2xfT4iIzWVbWngJzZ1POL6JIUdrYLTQ4ZyMeOvmdfg7VMZggyNgl5xy9ISW6
-	ktI2Y8kfc5kxdtPUc4ng+Unx1s69iMoS5fJWqoVcuHunhSzTI+6O68Sqt2sbDkw/BXqIuvOiyWP
-	k/0FaZqHbAnp
-X-Received: by 2002:a05:6512:3d0b:b0:549:7354:e4d1 with SMTP id 2adb3069b0e04-549c0a69cc9mr347165e87.38.1741895575592;
-        Thu, 13 Mar 2025 12:52:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGgazDuCvmszGomPJv4QwZuDgkCkfCLmqsdzf5Js6CYZfrk531WhEOt+lFCcA3MgDrafjMpgQ==
-X-Received: by 2002:a05:6512:3d0b:b0:549:7354:e4d1 with SMTP id 2adb3069b0e04-549c0a69cc9mr347149e87.38.1741895575138;
-        Thu, 13 Mar 2025 12:52:55 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-549ba8a79a9sm302680e87.221.2025.03.13.12.52.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Mar 2025 12:52:53 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 43E5618FA899; Thu, 13 Mar 2025 20:52:50 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Amery Hung <ameryhung@gmail.com>, netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- alexei.starovoitov@gmail.com, martin.lau@kernel.org, kuba@kernel.org,
- edumazet@google.com, xiyou.wangcong@gmail.com, jhs@mojatatu.com,
- sinquersw@gmail.com, jiri@resnulli.us, stfomichev@gmail.com,
- ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn,
- yepeilin.cs@gmail.com, ameryhung@gmail.com, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v5 00/13] bpf qdisc
-In-Reply-To: <20250313190309.2545711-1-ameryhung@gmail.com>
-References: <20250313190309.2545711-1-ameryhung@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Thu, 13 Mar 2025 20:52:50 +0100
-Message-ID: <87bju4u2r1.fsf@toke.dk>
+	bh=vk0S1hvnttnqNY5mzHQOJ/TqbFo4zrQpanr0L6iSdXM=;
+	b=hBcXu/3BTR48oApNQ9rEj93OEa9TSLZ9duQkXYtiHD1b/jK4llolbtNjvV7+j9S7MCOllI
+	s6jPj6SI6aEua848KzRKGfNb41ZfLFRdoLUcA2MzKm9SMSV4eRj4+3sT6U4OSZlLNVwnGQ
+	XSiuXDx5wWdvm1ZL6V28r3RPpICnvRM1F942LadVqTnrmb5pfENcyiK+pxAcdwxPSTgKoc
+	mGujJ5kbmSt/dry2Sz5b2Dk8bBIZVHODYI+A2FU14rh6zCNJZFD2ot488N2i2XTXNpXFt+
+	sXtsQ2Gxyevc90B4GDucAm+au1sTTpXTBQpAYDz9CJWfV3kVEvqTH/ikVbiOFw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1741897948;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vk0S1hvnttnqNY5mzHQOJ/TqbFo4zrQpanr0L6iSdXM=;
+	b=bGOfkoZECdAeLD6OU0Ub+lb3KoMwDVZjQ7eWnFUIll71GBpGFaJNsWDximdiBgbb4lueIs
+	OBhSO33+I2cvuqCw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+	Ricardo =?utf-8?Q?Ca=C3=B1uelo?= Navarro <rcn@igalia.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RFC] Use after free in BPF/ XDP during XDP_REDIRECT
+Message-ID: <20250313203226.47_0q7b6@linutronix.de>
+References: <20250313183911.SPAmGLyw@linutronix.de>
+ <87ecz0u3w9.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,105 +77,90 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87ecz0u3w9.fsf@toke.dk>
 
-Amery Hung <ameryhung@gmail.com> writes:
+On 2025-03-13 20:28:06 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+>=20
+> > Hi,
+> >
+> > Ricardo reported a KASAN related use after free
+> > 	https://lore.kernel.org/all/20250226-20250204-kasan-slab-use-after-fre=
+e-read-in-dev_map_enqueue__submit-v3-0-360efec441ba@igalia.com/
+> >
+> > in v6.6 stable and suggest a backport of commits
+> > 	401cb7dae8130 ("net: Reference bpf_redirect_info via task_struct on PR=
+EEMPT_RT.")
+> > 	fecef4cd42c68 ("tun: Assign missing bpf_net_context.")
+> > 	9da49aa80d686 ("tun: Add missing bpf_net_ctx_clear() in do_xdp_generic=
+()")
+> >
+> > as a fix. In the meantime I have the syz reproducer+config and was able
+> > to investigate.
+> > It looks as if the syzbot starts a BPF program via xdp_test_run_batch()
+> > which assigns ri->tgt_value via dev_hash_map_redirect() and the return =
+code
+> > isn't XDP_REDIRECT it looks like nonsense. So the print in
+> > bpf_warn_invalid_xdp_action() appears once. Everything goes as planned.
+> > Then the TUN driver runs another BPF program which returns XDP_REDIRECT
+> > without setting ri->tgt_value. This appears to be a trick because it
+> > invoked bpf_trace_printk() which printed four characters. Anyway, this
+> > is enough to get xdp_do_redirect() going.
+> >
+> > The commits in questions do fix it because the bpf_redirect_info becomes
+> > not only per-task but gets invalidated after the XDP context is left.
+> >
+> > Now that I understand it I would suggest something smaller instead as a
+> > stable fix, (instead the proposed patches). Any objections to the
+> > following:
+> >
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index be313928d272..1d906b7a541d 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -9000,8 +9000,12 @@ static bool xdp_is_valid_access(int off, int siz=
+e,
+> > =20
+> >  void bpf_warn_invalid_xdp_action(struct net_device *dev, struct bpf_pr=
+og *prog, u32 act)
+> >  {
+> > +	struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
+> >  	const u32 act_max =3D XDP_REDIRECT;
+> > =20
+> > +	ri->map_id =3D INT_MAX;
+> > +	ri->map_type =3D BPF_MAP_TYPE_UNSPEC;
+> > +
+> >  	pr_warn_once("%s XDP return value %u on prog %s (id %d) dev %s, expec=
+t packet loss!\n",
+> >  		     act > act_max ? "Illegal" : "Driver unsupported",
+> >  		     act, prog->aux->name, prog->aux->id, dev ? dev->name : "N/A");
+>=20
+> From your description above, this will fix the particular error
+> encountered, but what happens if the initial return code is not in fact
+> nonsense (so the warn_invalid_action) is not triggered?
+>=20
+> I.e.,
+>=20
+> bpf_redirect_map(...);
+> return XDP_DROP;
+>=20
+> would still leave ri->map_id and ri->map_type set for the later tun
+> driver invocation, no?
 
-> Hi all,
->
-> This patchset aims to support implementing qdisc using bpf struct_ops.
-> This version takes a step back and only implements the minimum support
-> for bpf qdisc. 1) support of adding skb to bpf_list and bpf_rbtree
-> directly and 2) classful qdisc are deferred to future patchsets. In
-> addition, we only allow attaching bpf qdisc to root or mq for now.
-> This is to prevent accidentally breaking exisiting classful qdiscs
-> that rely on data in a child qdisc. This limit may be lifted in the
-> future after careful inspection.
->
-> * Overview *
->
-> This series supports implementing qdisc using bpf struct_ops. bpf qdisc
-> aims to be a flexible and easy-to-use infrastructure that allows users to
-> quickly experiment with different scheduling algorithms/policies. It only
-> requires users to implement core qdisc logic using bpf and implements the
-> mundane part for them. In addition, the ability to easily communicate
-> between qdisc and other components will also bring new opportunities for
-> new applications and optimizations.
->
-> * struct_ops changes *
->
-> To make struct_ops works better with bpf qdisc, two new changes are
-> introduced to bpf specifically for struct_ops programs. Frist, we
-> introduce "__ref" postfix for arguments in stub functions in patch 1-2.
-> It allows Qdisc_ops->enqueue to acquire an unique referenced kptr to the
-> skb argument. Through the reference object tracking mechanism in
-> the verifier, we can make sure that the acquired skb will be either
-> enqueued or dropped. Besides, no duplicate references can be acquired.
-> Then, we allow a referenced kptr to be returned from struct_ops programs
-> so that we can return an skb naturally. This is done and tested in patch 3
-> and 4.
->
-> * Performance of bpf qdisc *
->
-> This patchset includes two qdisc examples, bpf_fifo and bpf_fq, for
-> __testing__ purposes. For performance test, we compare selftests and their
-> kernel counterparts to give you a sense of the performance of qdisc
-> implemented in bpf.
->
-> The implementation of bpf_fq is fairly complex and slightly different from
-> fq so later we only compare the two fifo qdiscs. bpf_fq implements a=20
-> scheduling algorithm similar to fq before commit 29f834aa326e ("net_sched:
-> sch_fq: add 3 bands and WRR scheduling") was introduced. bpf_fifo uses a
-> single bpf_list as a queue instead of three queues for different
-> priorities in pfifo_fast. The time complexity of fifo however should be
-> similar since the queue selection time is negligible.
->
-> Test setup:
->
->     client -> qdisc ------------->  server
->     ~~~~~~~~~~~~~~~                 ~~~~~~
->     nested VM1 @ DC1               VM2 @ DC2
->
-> Throghput: iperf3 -t 600, 5 times
->
->       Qdisc        Average (GBits/sec)
->     ----------     -------------------
->     pfifo_fast       12.52 =C2=B1 0.26
->     bpf_fifo         11.72 =C2=B1 0.32=20
->     fq               10.24 =C2=B1 0.13
->     bpf_fq           11.92 =C2=B1 0.64=20
->
-> Latency: sockperf pp --tcp -t 600, 5 times
->
->       Qdisc        Average (usec)
->     ----------     --------------
->     pfifo_fast      244.58 =C2=B1 7.93
->     bpf_fifo        244.92 =C2=B1 15.22
->     fq              234.30 =C2=B1 19.25
->     bpf_fq          221.34 =C2=B1 10.76
->
-> Looking at the two fifo qdiscs, the 6.4% drop in throughput in the bpf
-> implementatioin is consistent with previous observation (v8 throughput
-> test on a loopback device). This should be able to be mitigated by
-> supporting adding skb to bpf_list or bpf_rbtree directly in the future.
->
-> * Clean up skb in bpf qdisc during reset *
->
-> The current implementation relies on bpf qdisc implementors to correctly
-> release skbs in queues (bpf graphs or maps) in .reset, which might not be
-> a safe thing to do. The solution as Martin has suggested would be
-> supporting private data in struct_ops. This can also help simplifying
-> implementation of qdisc that works with mq. For examples, qdiscs in the
-> selftest mostly use global data. Therefore, even if user add multiple
-> qdisc instances under mq, they would still share the same queue.=20
+Right. So if it returns XDP_PASS or XDP_DROP instead of nonsense then
+the buffer remains set. And another driver could use it.
+But this would mean we would have to tackle each bpf_prog_run_xdp()
+invocation and reset it afterwards=E2=80=A6 So maybe the backport instead? =
+We
+have
+| $ git grep bpf_prog_run_xdp | wc -l
+| 55
 
-Very cool to see this progress!
+call sites.
 
-Are you aware that the series has a mix of commit author email addresses
-(mixing your bytedance.com and gmail addresses)?
+> -Toke
 
-Otherwise, for the series:
-
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-
+Sebastian
 
