@@ -1,202 +1,189 @@
-Return-Path: <bpf+bounces-53956-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53957-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D281A5F7DF
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 15:22:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79E68A5F86F
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 15:35:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FF8319C3BC3
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 14:22:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1754B881923
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 14:33:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879D2267F57;
-	Thu, 13 Mar 2025 14:21:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1653D26AA8F;
+	Thu, 13 Mar 2025 14:30:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QBheAwx+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LCVHwT1x";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QBheAwx+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LCVHwT1x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UfvAL82x"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744BA267B91
-	for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 14:21:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F24267393
+	for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 14:30:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741875718; cv=none; b=EjTOjdDaAGWZFhKZ7tgb3Nos7FY/V7Vr8vnNCMj1dUxvMgF9oryDtB4yE0DjROcwT82kh5HInhsyfro1Babr6A2yMENZDTst1PU6O/90WqwGyL9wWE1AXpww6EOAxh9u6Sh6Z3s1s0Zdpf9DWBR7BMsebdyVyC6reUCQ8nb3NoE=
+	t=1741876251; cv=none; b=H7fSIraOImrjEMBIEL6hNO1cQAZKU5fLb5EbiUAW82tKyVh00zwOBAzCOv2zQ/1oVk/cvNvtalv4ZRPpYdJfz5ecgKSL5AkoCZBzbGIMUmV5/L0Z76D3i1QBLbUuZbeX5F0p4w4YQS+yV1xxsvASFE14ywwZh+MkpoWVEaGH0yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741875718; c=relaxed/simple;
-	bh=sf07GbI+fvvAw3U3/dOhzQw4W4UZJUSfLxseMo/nSK4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=odf+R+l95ND3TUhp06P3AW8LSaouYIr2YgGlWYizppqx7wu/qgCDVqoIc0Z2YfUmJKp2wf36dIP8M1pUYM00ITdwr3bUXdc4kwriuSbemqi2vLwQh1gvBYIMAPU4YpldtvGanLdlVMS508DOL+Yu/f/qMrGwH7PwGnrZXB/V9oQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QBheAwx+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LCVHwT1x; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QBheAwx+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LCVHwT1x; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B818F1F390;
-	Thu, 13 Mar 2025 14:21:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741875708; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TSrY7tgSY5ZQNoZ60wgvqc0lXyP8OzsU9q7L4o35Neo=;
-	b=QBheAwx+nUZ4LHfhrCAyCKy6aRAG45GX1HfJmONEwYipcnxOkm6aQgx8YYGKRL2COYkqGZ
-	BGcYqvWPkw0zTIv2JxdpmOJV9ET9eoCKVV194i3erzQdtspXgtiLa8V+taqdlZ21CBRNML
-	UJxq0PQYO0Vm36WGc8pSKdLbIuK5eNY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741875708;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TSrY7tgSY5ZQNoZ60wgvqc0lXyP8OzsU9q7L4o35Neo=;
-	b=LCVHwT1xfmTtKU5RMaG97g/jhrIGiD3OF+dwoiDr3xND8q2Nd7yacLTthKTKcKOBWS/VGO
-	uGBdV3x5Gnpn8+Cw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1741875708; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TSrY7tgSY5ZQNoZ60wgvqc0lXyP8OzsU9q7L4o35Neo=;
-	b=QBheAwx+nUZ4LHfhrCAyCKy6aRAG45GX1HfJmONEwYipcnxOkm6aQgx8YYGKRL2COYkqGZ
-	BGcYqvWPkw0zTIv2JxdpmOJV9ET9eoCKVV194i3erzQdtspXgtiLa8V+taqdlZ21CBRNML
-	UJxq0PQYO0Vm36WGc8pSKdLbIuK5eNY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1741875708;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TSrY7tgSY5ZQNoZ60wgvqc0lXyP8OzsU9q7L4o35Neo=;
-	b=LCVHwT1xfmTtKU5RMaG97g/jhrIGiD3OF+dwoiDr3xND8q2Nd7yacLTthKTKcKOBWS/VGO
-	uGBdV3x5Gnpn8+Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 96DF413797;
-	Thu, 13 Mar 2025 14:21:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gJJ7JPzp0mdtCgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 13 Mar 2025 14:21:48 +0000
-Message-ID: <4a52db5b-f5fe-4a60-ba17-a634a2d0b7af@suse.cz>
-Date: Thu, 13 Mar 2025 15:21:48 +0100
+	s=arc-20240116; t=1741876251; c=relaxed/simple;
+	bh=XvuFMUXSuP8ersNk9s0JF0d5TU1k95qYeywmjNfXe8Y=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tMYsDhSPGZ+Y+w4v3nJYiXz8w6qC0mofUCdfGEsMeUPTNFOpgGbg0QHWCgj4ltA6x7iDhGNtcFzXOmhAD7DcCC5IqAO3NiFlGh0DfBpPK+TpU3u4YkCfaM+bbkrpmpfhkrT09SbzE1T52hRXcr6YQt6Tc0Pzap0KNiZ3VfX9KHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UfvAL82x; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43d0359b1fcso7333365e9.0
+        for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 07:30:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741876248; x=1742481048; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GwEu8pklcmQuFfQOPsr/psJ5/yZnM2Je73csOzRrZL8=;
+        b=UfvAL82xzAtgp3yFkieEi58XWu9WK3gEAmqAi2i29PgmD6XOI3NO5clmBFM0inJKRM
+         O08rgzzJKslpoD105kzDeiG7j25XLsWOKJbses9uzg0lYozQ8HwfH1HqZ+uKXePZmOGK
+         Y02+1o5NptVs9NufrvM4MXFi4QFUFLC4q+uGP+9JYzkcVK1EkoBllUSeyBlI8f4d7j7c
+         QGmfAp3XiUntYL7I3R6O/gzlfeaXfxiC2KTrdiK2H9/Qr5RgLm1AFziu/qtdDdYmTQ2x
+         JJj4zFUy4RmIIViH99vxFZlo5Bpe6GjREgKCqNzRRbyqUy9z/ifI8mJISL2UFaXzJgxO
+         +nrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741876248; x=1742481048;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GwEu8pklcmQuFfQOPsr/psJ5/yZnM2Je73csOzRrZL8=;
+        b=PH0XT6rn+dED7JEL+xHrXnWc1phbVQBUPayzSAoFcd5rBO7NW9SCZGyzbqq4XnZs9X
+         vyUMwtxzyH+rK5Z/Sf38etKhcZeQfXsT3ihsdhpGo+5a86X2E8PJ1pTzfqM4jY09o1WO
+         WLlTnNlXVOrmW5Yw0wmEBHdTRzm33zGn9nmDcjYMiuy+JGx4ysTiHsD19XsvCRXIs7e3
+         eMjnYdOv/3NS2HloR7yRU9lTJfRct7zfpkFTNr21VqO3FEhHlQt07It2HLObj97PSdj+
+         MNH/HzI2gH4pyK8BjeMns7mND9m+56xDkMkgVj7RLE2oqa6EVPPUp9QGj+/p4topPD+M
+         teTg==
+X-Forwarded-Encrypted: i=1; AJvYcCU/8xx1Ur5YlK2WaJaMA+ssUmNSQd1ct2SG5/FWi1PEPWS5obx00eKNlTARgJGNZitn3sA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxasQGsw1oEFittAJadEpUaXrQ3DXNvzUqMSc9yhlS4D+ZB1kNH
+	NCOj+SyJwjOyIcqFMC4OwcoJi4/9V7jiptwI2CyyOXTUcj8jVJ22
+X-Gm-Gg: ASbGncu7BdJ9Ql3qlTjeeOkup9a09BrhZdEj7jhluoGJIx5g6N32P5xh2+qdWp7zq0K
+	5SUJ8hEQ2SvxnBYZTrvoYZoXMD0yZUfpOa5HkzyQdDUDwEHjbsg3MflYQS8AYPXly3xevPbjOuH
+	X+CIw4bu2wQWJP8M4fMiKAo/D4vMZPSZC3NrTvzloeFN0HRD4qA2Z9+g4U06lRhm4V3/Dzfzj5Y
+	n8zMTuvt7OIlXvQ6Wm1U9irtUBnjC0Yq2t0EWHauyvGETWUptyI7+2s67D4NYedsunFFbMpTIGE
+	LwQOzxcKVwdI/IEpYHRqAeoALMmOU2Q=
+X-Google-Smtp-Source: AGHT+IGBJlWOOHiek8R+7qazQgJVf/m19HW3OOrzY/2aiOPaJQqoVoz0qxSJlv349L64z44u7a8fXA==
+X-Received: by 2002:a05:600c:46d2:b0:439:8e95:796a with SMTP id 5b1f17b1804b1-43d180a4435mr24723745e9.13.1741876247409;
+        Thu, 13 Mar 2025 07:30:47 -0700 (PDT)
+Received: from krava ([173.38.220.44])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395c82c255bsm2254956f8f.23.2025.03.13.07.30.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Mar 2025 07:30:46 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 13 Mar 2025 15:30:44 +0100
+To: Hengqi Chen <hengqi.chen@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
+	andrii@kernel.org, eddyz87@gmail.com, deso@posteo.net
+Subject: Re: [PATCH] libbpf: Fix uprobe offset calculation
+Message-ID: <Z9LsFNtXXBD0ydeO@krava>
+References: <20250307140120.1261890-1-hengqi.chen@gmail.com>
+ <10239917-2cbe-434e-adc5-69c3f3e66e36@linux.dev>
+ <CAEyhmHT+DZDjXixnWgCq028K7KZ84bWHY1+Kv9bjJAQW9vryHQ@mail.gmail.com>
+ <CAEf4BzbAi-g-jyFoHdXHNfOT3DLTnKN1XioPhR=XYJnM7+_VOQ@mail.gmail.com>
+ <CAEyhmHRobpifJ_h3q2ucnhunV_r2MLO4QE5sAMZKQmAMYaBzjw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v9 2/6] mm, bpf: Introduce try_alloc_pages() for
- opportunistic page allocation
-To: Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Sebastian Sewior <bigeasy@linutronix.de>,
- Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>,
- Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>,
- Kernel Team <kernel-team@fb.com>
-References: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
- <20250222024427.30294-3-alexei.starovoitov@gmail.com>
- <20250310190427.32ce3ba9adb3771198fe2a5c@linux-foundation.org>
- <CAADnVQJsYcMfn4XjAtgo9gHsiUs-BX-PEyi1oPHy5_gEuWKHFQ@mail.gmail.com>
- <4d75c5a8-a538-4d7d-aaf4-8ecf1d1be6b9@suse.cz>
- <igjisv7v3o2efey3qkhcrqjchlqvjn54c4dneo2atmown6pweq@jwohzvtldfzf>
- <Z9KbAZJh5uENfQtn@tiehlicka>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <Z9KbAZJh5uENfQtn@tiehlicka>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,vger.kernel.org,kernel.org,infradead.org,linutronix.de,goodmis.org,huawei.com,cmpxchg.org,google.com,kvack.org,fb.com];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid]
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEyhmHRobpifJ_h3q2ucnhunV_r2MLO4QE5sAMZKQmAMYaBzjw@mail.gmail.com>
 
-On 3/13/25 09:44, Michal Hocko wrote:
-> On Wed 12-03-25 12:06:10, Shakeel Butt wrote:
->> On Wed, Mar 12, 2025 at 11:00:20AM +0100, Vlastimil Babka wrote:
->> [...]
->> > 
->> > But if we can achieve the same without such reserved objects, I think it's
->> > even better. Performance and maintainability doesn't need to necessarily
->> > suffer. Maybe it can even improve in the process. E.g. if we build upon
->> > patches 1+4 and swith memcg stock locking to the non-irqsave variant, we
->> > should avoid some overhead there (something similar was tried there in the
->> > past but reverted when making it RT compatible).
->> 
->> In hindsight that revert was the bad decision. We accepted so much
->> complexity in memcg code for RT without questioning about a real world
->> use-case. Are there really RT users who want memcg or are using memcg? I
->> can not think of some RT user fine with memcg limits enforcement
->> (reclaim and throttling).
+On Thu, Mar 13, 2025 at 12:23:10PM +0800, Hengqi Chen wrote:
+
+SNIP
+
+> > > > >   tools/lib/bpf/elf.c | 32 ++++++++++++++++++++++++--------
+> > > > >   1 file changed, 24 insertions(+), 8 deletions(-)
+> > > > >
+> > > > > diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
+> > > > > index 823f83ad819c..9b561c8d1eec 100644
+> > > > > --- a/tools/lib/bpf/elf.c
+> > > > > +++ b/tools/lib/bpf/elf.c
+> > > > > @@ -260,13 +260,29 @@ static bool symbol_match(struct elf_sym_iter *iter, int sh_type, struct elf_sym
+> > > > >    * for shared libs) into file offset, which is what kernel is expecting
+> > > > >    * for uprobe/uretprobe attachment.
+> > > > >    * See Documentation/trace/uprobetracer.rst for more details. This is done
+> > > > > - * by looking up symbol's containing section's header and using iter's virtual
+> > > > > - * address (sh_addr) and corresponding file offset (sh_offset) to transform
+> > > > > + * by looking up symbol's containing program header and using its virtual
+> > > > > + * address (p_vaddr) and corresponding file offset (p_offset) to transform
+> > > > >    * sym.st_value (virtual address) into desired final file offset.
+> > > > >    */
+> > > > > -static unsigned long elf_sym_offset(struct elf_sym *sym)
+> > > > > +static unsigned long elf_sym_offset(Elf *elf, struct elf_sym *sym)
+> > > > >   {
+> > > > > -     return sym->sym.st_value - sym->sh.sh_addr + sym->sh.sh_offset;
+> > > > > +     size_t nhdrs, i;
+> > > > > +     GElf_Phdr phdr;
+> > > > > +
+> > > > > +     if (elf_getphdrnum(elf, &nhdrs))
+> > > > > +             return -1;
+> > > > > +
+> > > > > +     for (i = 0; i < nhdrs; i++) {
+> > > > > +             if (!gelf_getphdr(elf, (int)i, &phdr))
+> > > > > +                     continue;
+> > > > > +             if (phdr.p_type != PT_LOAD || !(phdr.p_flags & PF_X))
+> > > > > +                     continue;
+> > > > > +             if (sym->sym.st_value >= phdr.p_vaddr &&
+> > > > > +                 sym->sym.st_value < (phdr.p_vaddr + phdr.p_memsz))
+> > > > > +                     return sym->sym.st_value - phdr.p_vaddr + phdr.p_offset;
+> >
+> > Hengqi,
+> >
+> > Can you please provide an example where existing code doesn't work? I think that
+> >
+> > sym->sym.st_value - sym->sh.sh_addr + sym->sh.sh_offset
+> >
+> > and
+> >
+> > sym->sym.st_value - phdr.p_vaddr + phdr.p_offset
+> >
+> >
+> > Should result in the same, and we don't need to search for a matching
+> > segment if we have an ELF symbol and its section. But maybe I'm
+> > mistaken, so can you please elaborate a bit?
 > 
-> I do not think that there is any reasonable RT workload that would use
-> memcg limits or other memcg features. On the other hand it is not
-> unusual to have RT and non-RT workloads mixed on the same machine. They
-> usually use some sort of CPU isolation to prevent from CPU contention
-> but that doesn't help much if there are other resources they need to
-> contend for (like shared locks). 
+> The binary ([0]) provided in the issue shows some counterexamples.
+> I could't find an authoritative documentation describing this though.
+> A modified version ([1]) of this patch could pass the CI now.
+
+yes, I tried that binary and it gives me different offsets
+
+IIUC the symbol seems to be from .eh_frame_hdr (odd?) while the new logic
+base it on offset of .text section.. I'm still not following that binary
+layout completely.. will try to check on that more later today
+
+jirka
+
 > 
->> I am on the path to bypass per-cpu memcg stocks for RT kernels.
+>   [0]: https://github.com/libbpf/libbpf-rs/issues/1110#issuecomment-2699221802
+>   [1]: https://github.com/kernel-patches/bpf/pull/8647
 > 
-> That would cause regressions for non-RT tasks running on PREEMPT_RT
-> kernels, right?
-
-For the context, this is about commit 559271146efc ("mm/memcg: optimize user
-context object stock access")
-
-reverted in fead2b869764 ("mm/memcg: revert ("mm/memcg: optimize user
-context object stock access")")
-
-I think at this point we don't have to recreate the full approach of the
-first commit and introduce separate in_task() and in-interrupt stocks again.
-
-The localtry_lock itself should make it possible to avoid the
-irqsave/restore overhead (which was the main performance benefit of
-559271146efc [1]) and only end up bypassing the stock when an allocation
-from irq context actually interrupts an allocation from task context - which
-would be very rare. And it should be already RT compatible. Let me see how
-hard it would be on top of patch 4/6 "memcg: Use trylock to access memcg
-stock_lock" to switch to the variant without _irqsave...
-
-[1] the revert cites benchmarks that irqsave/restore can be actually cheaper
-than preempt disable/enable, but I believe those were flawed
+> >
+> > > > > +     }
+> > > > > +
+> > > > > +     return -1;
+> > > > >   }
+> > > > >
+> > > > >   /* Find offset of function name in the provided ELF object. "binary_path" is
+> > > > > @@ -329,7 +345,7 @@ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
+> > > > >
+> > > > >                       if (ret > 0) {
+> > > > >                               /* handle multiple matches */
+> > > > > -                             if (elf_sym_offset(sym) == ret) {
+> > > > > +                             if (elf_sym_offset(elf, sym) == ret) {
+> > > > >                                       /* same offset, no problem */
+> > > > >                                       continue;
+> > > > >                               } else if (last_bind != STB_WEAK && cur_bind != STB_WEAK) {
+> > > >
+> > > > [...]
+> > > >
+> 
 
