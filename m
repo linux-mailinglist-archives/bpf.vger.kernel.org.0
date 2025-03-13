@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-54010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E87A605FF
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 00:45:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29D0BA60601
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 00:46:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBA28189F0E4
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 23:45:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07500163714
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 23:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8342D213E6B;
-	Thu, 13 Mar 2025 23:36:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A48F213E94;
+	Thu, 13 Mar 2025 23:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zqvZ27NC"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MDhtPhcV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697401FE450
-	for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 23:36:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62C82139AF
+	for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 23:36:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741908982; cv=none; b=AFhl14dYQsasUCiG5kyoYN2hsGqJfyUANoSosCotOPP3EJIv1k0k5xMe4t+MZkm1EzM7DS54frd1W13D/m3w4KNCgiFtfYhy9yIymoFJsXlSifZ1LvnmKjOLRTY11czeOL4YrfW4C8YdLbbILbDZh2Fyw6Z6moljv/k+cVDb3AI=
+	t=1741908983; cv=none; b=ufaBtaeppnR+nSz6Z1x/HFy1XxBvMIcCXE1e9WZJgCiEd/T2/YDF0gcjKnh0kxDB7WAFQVDB3EDa+QakQF0YORr1UWHy+f+SlUtLZoL/n7qk4gHH1t0kYBaj4ISQEqwc03s/SxoVc5BVwnLrwuEUFHmguPuKyADV2ZozZO2KPL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741908982; c=relaxed/simple;
-	bh=pDqx/oBd4EkxVRGrbsc8//FAwklwDKmmwxtAokH5X40=;
+	s=arc-20240116; t=1741908983; c=relaxed/simple;
+	bh=MEKI3VBnIur5t+UOWEUKJ3aasrnKw4wV31ERHLuUEng=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=FanQ0y05BJ1z0SJ/EmGSBrheKyC1jEfyikKBCNqwiSaHin9v4gfh6Sd5BRNG7pfnZITWrTcB7wGxoSarMwwOKZUTCQEg4hGll77cK5OAH9GKINJh2b4XFTQsop/Z4rFz/yZ4En2qD4d/166zWmMagyXSHTyXvSpYPSRgFh+vaYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zqvZ27NC; arc=none smtp.client-ip=209.85.216.73
+	 To:Cc:Content-Type; b=FEYaRjVkhInEM+h8id8u8Z5Sd1r3oxefGeqtsstFG6CFF3/3NhCju1oDxEGbXE2ULVOQn0rbKPpSsRu/UC7SYplQkgb4lEm+CBqWNEcLcDtFBr0dz+/BhdqxtK2RDE0tU5KIj6mf1bMAvLmzD9raKOdCeb0SyjewOrzAojQ0rnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MDhtPhcV; arc=none smtp.client-ip=209.85.214.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-301192d5d75so4069211a91.0
-        for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 16:36:20 -0700 (PDT)
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-22410053005so40454895ad.1
+        for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 16:36:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1741908979; x=1742513779; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1741908981; x=1742513781; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SLnFFEgXuV02S88NGJhDng33QYC4VcTtXVXim4Kjqkw=;
-        b=zqvZ27NCn+BmLcW8Et+f4unsjPfpbQyqOqg68vWK30IXel4w08tf99VQiwYLxs2OLk
-         dzitn2zli+rx9JNRL4xU7mx0AwggErLN9Abbc+oNqPMg9jX1JhhCFDjS5lDWDkibXNDm
-         sjVhlU06sZ/dEPhN33uFZC8NhYwmtqbFayxndth/oGhSbMP/88gxSRLw2wMm2ZH6iPNt
-         5voEAk8bfp4W1uRpgTonz+q4niznw9F9FliXMxWQJRhA7EFlqMTHSqVEXG6r8Y8wThzt
-         RcsL2CcGG0YBravwqifg/9QoPoLKMX3nvmXNPvPX9exv7Xv3FCpB64UZjpmkLnetbMF9
-         srHA==
+        bh=XGB+lOhCdqUZGn3xMYzsRRLShpHA743cfsiVh9w/5P8=;
+        b=MDhtPhcV9SdhMWrMfko2KmGx1IwkeUaXwjOhcNSs9PUxtUMBOFcbxsYVhwMwHTgrhm
+         FzNgC4YmKWf44vSMlXzYeJWvhBQb+37WrOkSErEgW+dx+PWDA2uM088P6Z5Lu1PusLUe
+         A+uuhvwSiJVo/sktKJiUmgbrc0sW2uGeyFL2q/ReGcfbNgrjF9m5cAg+MZiTZbGBKqqK
+         dfUDkYFfFgACxvBzPNejHJKUUBEfZqv2TadSgH9MOaEFHEcUSu4w31/dCm1nspfVcwRn
+         ukqHLyHTt4YnCeIo75b44UtzLnOXSBpwugraZ+qNcDd+/ZHuBVRTNkX5XqiK7MKgMV0m
+         dGsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741908979; x=1742513779;
+        d=1e100.net; s=20230601; t=1741908981; x=1742513781;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SLnFFEgXuV02S88NGJhDng33QYC4VcTtXVXim4Kjqkw=;
-        b=taaPI98KLacZ2tgXtHdJszIGpRpBkWw73OyNdaCM/aHv4FajukZc2QKI96Fvk6Z1cY
-         KISP6KlzNKFW/S/gdxkXNXQq+hH28ViLRmwDFtZ8MTeU3xALnuUoCJOtIHRynpIALPka
-         PglaG7dUGLbnKEVuiLkAcOKK1/mYTih/X5RIRCdNGLNMwhuc7pvFyp2r2wW5Ab9h0FO2
-         qKp3fbLx8pBdTEIlrR8TVAGNPHJ7y009Iz4s0aXWX1mEzG18KfY3yWgQzlOzBx5SIoDR
-         YtDLKSCKIGCxYVRtvCMug2AkPWAz8AqbKx73qgZusWYc1p5oqrBPWxq9oFuyxwEx2Ac7
-         NPmw==
-X-Forwarded-Encrypted: i=1; AJvYcCUXNQsO7JMGdeElApkRe7od4etSpj5DUejdA6Q9QOuVsoUv84K39ZPbbEftyYULMNNg59Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxfhzOV0L2tt9tRkg2UnEKgMCLtqoI+9oR7l8OGziHVU9uHscBP
-	VngzZNoDg3GiasMqoEE99IQTlXa90Y9I36Ng6wF3RbrbJ+Z+x3tEK2CFZ087vbxQRojqY9m8bw=
+        bh=XGB+lOhCdqUZGn3xMYzsRRLShpHA743cfsiVh9w/5P8=;
+        b=NyCqhEQiST1IoOV5JmSAZbYUblnWRNstq7yzbkxNP3Qlqs0KaH5aWfR7clenQkvyZ2
+         1j+wKdOyJfP+pA1Mc8+zJvv/gPqoxgkdwBNGhPwGm3fhYVwOB5jz6Yp8E5nHV5D3zelj
+         O84wMZf3rsKWBxDwI8Vz0vv1uphyHkZrhSC9f2fpIFEE2EBtkrBayLfoq4jI120ERA/c
+         cSx8/qIO2wMZq6pcRAbB7OYHkKsGPtVdkzetS10zJ4OUyVvw4HCToL0vHUyKGpS4ZGCA
+         GZXwtuaDl5IKyaLe/NBuBp7wNuLj6JZE5llMbQsF08BF4rPL0W08eegJ2puEHuJgQtqc
+         uV6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXjzUf8Aaa7FRGFods0eWyKik4C8uD//OMgldXz1asLCPOlbWvH/k+MFNKINxsJP4FNuIc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy08SLHed0puaXGk9ULfznPKyiGG6W6u0Csa0Uj7qV+Tp8ievF8
+	0SU32gEQ+yGA64xvqCuokK+ADJsIXmCFdKERcWD+4PKatt/1l+WRA7zcrY5Ni9niytKp6JPdrg=
 	=
-X-Google-Smtp-Source: AGHT+IHCQe+x5Ig6/+JG4qWJq6nfvhnp/R8Ca+8RPm3mEv2B7nL0yruekONFz6MBhh9E1zQzaUnrAbPiLw==
-X-Received: from pjbsp12.prod.google.com ([2002:a17:90b:52cc:b0:2ff:5516:6add])
- (user=jrife job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90a:fc4d:b0:2fa:1851:a023
- with SMTP id 98e67ed59e1d1-30151d65226mr427988a91.35.1741908979675; Thu, 13
- Mar 2025 16:36:19 -0700 (PDT)
-Date: Thu, 13 Mar 2025 23:35:25 +0000
+X-Google-Smtp-Source: AGHT+IE8gqQd2I6kG5u2tuh9cZNViDDzIsiyVIfJ7jYqIJC09AKhDccVCQzJSq7lJ9vGCq1nl1N7rRNwAQ==
+X-Received: from pfjt14.prod.google.com ([2002:a05:6a00:21ce:b0:725:e4b6:901f])
+ (user=jrife job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:1402:b0:736:73ad:365b
+ with SMTP id d2e1a72fcca58-737223c0336mr419765b3a.14.1741908981193; Thu, 13
+ Mar 2025 16:36:21 -0700 (PDT)
+Date: Thu, 13 Mar 2025 23:35:26 +0000
 In-Reply-To: <20250313233615.2329869-1-jrife@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250313233615.2329869-1-jrife@google.com>
 X-Mailer: git-send-email 2.49.0.rc1.451.g8f38331e32-goog
-Message-ID: <20250313233615.2329869-2-jrife@google.com>
-Subject: [RFC PATCH bpf-next 1/3] bpf: udp: Avoid socket skips during iteration
+Message-ID: <20250313233615.2329869-3-jrife@google.com>
+Subject: [RFC PATCH bpf-next 2/3] bpf: tcp: Avoid socket skips during iteration
 From: Jordan Rife <jrife@google.com>
 To: netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc: Jordan Rife <jrife@google.com>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -84,173 +84,239 @@ Cc: Jordan Rife <jrife@google.com>, Daniel Borkmann <daniel@iogearbox.net>,
 Content-Type: text/plain; charset="UTF-8"
 
 Replace the offset-based approach for tracking progress through a bucket
-in the UDP table with one based on unique, monotonically increasing
+in the TCP table with one based on unique, monotonically increasing
 index numbers associated with each socket in a bucket.
 
 Signed-off-by: Jordan Rife <jrife@google.com>
 ---
- include/net/sock.h |  2 ++
- include/net/udp.h  |  1 +
- net/ipv4/udp.c     | 38 +++++++++++++++++++++++++-------------
- 3 files changed, 28 insertions(+), 13 deletions(-)
+ include/net/inet_hashtables.h |  2 ++
+ include/net/tcp.h             |  3 ++-
+ net/ipv4/inet_hashtables.c    | 18 +++++++++++++++---
+ net/ipv4/tcp.c                |  1 +
+ net/ipv4/tcp_ipv4.c           | 29 ++++++++++++++++-------------
+ 5 files changed, 36 insertions(+), 17 deletions(-)
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 8036b3b79cd8..b11f43e8e7ec 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -228,6 +228,7 @@ struct sock_common {
- 		u32		skc_window_clamp;
- 		u32		skc_tw_snd_nxt; /* struct tcp_timewait_sock */
- 	};
-+	__s64			skc_idx;
- 	/* public: */
+diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
+index 5eea47f135a4..c95d3b1da199 100644
+--- a/include/net/inet_hashtables.h
++++ b/include/net/inet_hashtables.h
+@@ -172,6 +172,8 @@ struct inet_hashinfo {
+ 	struct inet_listen_hashbucket	*lhash2;
+ 
+ 	bool				pernet;
++
++	atomic64_t			ver;
+ } ____cacheline_aligned_in_smp;
+ 
+ static inline struct inet_hashinfo *tcp_or_dccp_get_hashinfo(const struct sock *sk)
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 2d08473a6dc0..499acd6da35f 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -2202,7 +2202,8 @@ struct tcp_iter_state {
+ 	struct seq_net_private	p;
+ 	enum tcp_seq_states	state;
+ 	struct sock		*syn_wait_sk;
+-	int			bucket, offset, sbucket, num;
++	int			bucket, sbucket, num;
++	__s64			prev_idx;
+ 	loff_t			last_pos;
  };
  
-@@ -378,6 +379,7 @@ struct sock {
- #define sk_incoming_cpu		__sk_common.skc_incoming_cpu
- #define sk_flags		__sk_common.skc_flags
- #define sk_rxhash		__sk_common.skc_rxhash
-+#define sk_idx			__sk_common.skc_idx
- 
- 	__cacheline_group_begin(sock_write_rx);
- 
-diff --git a/include/net/udp.h b/include/net/udp.h
-index 6e89520e100d..9398561addc6 100644
---- a/include/net/udp.h
-+++ b/include/net/udp.h
-@@ -102,6 +102,7 @@ struct udp_table {
- #endif
- 	unsigned int		mask;
- 	unsigned int		log;
-+	atomic64_t		ver;
- };
- extern struct udp_table udp_table;
- void udp_table_init(struct udp_table *, const char *);
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index a9bb9ce5438e..d7e9b3346983 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -229,6 +229,11 @@ static int udp_reuseport_add_sock(struct sock *sk, struct udp_hslot *hslot)
- 	return reuseport_alloc(sk, inet_rcv_saddr_any(sk));
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index 9bfcfd016e18..bc9f58172790 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -534,6 +534,12 @@ struct sock *__inet_lookup_established(const struct net *net,
  }
+ EXPORT_SYMBOL_GPL(__inet_lookup_established);
  
-+static inline __s64 udp_table_next_idx(struct udp_table *udptable, bool pos)
++static inline __s64 inet_hashinfo_next_idx(struct inet_hashinfo *hinfo,
++					   bool pos)
 +{
-+	return (pos ? 1 : -1) * atomic64_inc_return(&udptable->ver);
++	return (pos ? 1 : -1) * atomic64_inc_return(&hinfo->ver);
 +}
 +
- /**
-  *  udp_lib_get_port  -  UDP/-Lite port lookup for IPv4 and IPv6
-  *
-@@ -244,6 +249,7 @@ int udp_lib_get_port(struct sock *sk, unsigned short snum,
- 	struct udp_hslot *hslot, *hslot2;
- 	struct net *net = sock_net(sk);
- 	int error = -EADDRINUSE;
+ /* called with local bh disabled */
+ static int __inet_check_established(struct inet_timewait_death_row *death_row,
+ 				    struct sock *sk, __u16 lport,
+@@ -581,6 +587,7 @@ static int __inet_check_established(struct inet_timewait_death_row *death_row,
+ 	sk->sk_hash = hash;
+ 	WARN_ON(!sk_unhashed(sk));
+ 	__sk_nulls_add_node_rcu(sk, &head->chain);
++	sk->sk_idx = inet_hashinfo_next_idx(hinfo, false);
+ 	if (tw) {
+ 		sk_nulls_del_node_init_rcu((struct sock *)tw);
+ 		__NET_INC_STATS(net, LINUX_MIB_TIMEWAITRECYCLED);
+@@ -678,8 +685,10 @@ bool inet_ehash_insert(struct sock *sk, struct sock *osk, bool *found_dup_sk)
+ 			ret = false;
+ 	}
+ 
+-	if (ret)
++	if (ret) {
+ 		__sk_nulls_add_node_rcu(sk, list);
++		sk->sk_idx = inet_hashinfo_next_idx(hashinfo, false);
++	}
+ 
+ 	spin_unlock(lock);
+ 
+@@ -729,6 +738,7 @@ int __inet_hash(struct sock *sk, struct sock *osk)
+ {
+ 	struct inet_hashinfo *hashinfo = tcp_or_dccp_get_hashinfo(sk);
+ 	struct inet_listen_hashbucket *ilb2;
 +	bool add_tail;
+ 	int err = 0;
  
- 	if (!snum) {
- 		DECLARE_BITMAP(bitmap, PORTS_PER_CHAIN);
-@@ -335,14 +341,16 @@ int udp_lib_get_port(struct sock *sk, unsigned short snum,
+ 	if (sk->sk_state != TCP_LISTEN) {
+@@ -747,11 +757,13 @@ int __inet_hash(struct sock *sk, struct sock *osk)
+ 			goto unlock;
+ 	}
+ 	sock_set_flag(sk, SOCK_RCU_FREE);
+-	if (IS_ENABLED(CONFIG_IPV6) && sk->sk_reuseport &&
+-		sk->sk_family == AF_INET6)
++	add_tail = IS_ENABLED(CONFIG_IPV6) && sk->sk_reuseport &&
++		   sk->sk_family == AF_INET6;
++	if (add_tail)
+ 		__sk_nulls_add_node_tail_rcu(sk, &ilb2->nulls_head);
+ 	else
+ 		__sk_nulls_add_node_rcu(sk, &ilb2->nulls_head);
++	sk->sk_idx = inet_hashinfo_next_idx(hashinfo, add_tail);
+ 	sock_prot_inuse_add(sock_net(sk), sk->sk_prot, 1);
+ unlock:
+ 	spin_unlock(&ilb2->lock);
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 285678d8ce07..63693af0c05c 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -5147,6 +5147,7 @@ void __init tcp_init(void)
  
- 		hslot2 = udp_hashslot2(udptable, udp_sk(sk)->udp_portaddr_hash);
- 		spin_lock(&hslot2->lock);
--		if (IS_ENABLED(CONFIG_IPV6) && sk->sk_reuseport &&
--		    sk->sk_family == AF_INET6)
-+		add_tail = IS_ENABLED(CONFIG_IPV6) && sk->sk_reuseport &&
-+			   sk->sk_family == AF_INET6;
-+		if (add_tail)
- 			hlist_add_tail_rcu(&udp_sk(sk)->udp_portaddr_node,
- 					   &hslot2->head);
- 		else
- 			hlist_add_head_rcu(&udp_sk(sk)->udp_portaddr_node,
- 					   &hslot2->head);
- 		hslot2->count++;
-+		sk->sk_idx = udp_table_next_idx(udptable, add_tail);
- 		spin_unlock(&hslot2->lock);
+ 	cnt = tcp_hashinfo.ehash_mask + 1;
+ 	sysctl_tcp_max_orphans = cnt / 2;
++	atomic64_set(&tcp_hashinfo.ver, 0);
+ 
+ 	tcp_init_mem();
+ 	/* Set per-socket limits to no more than 1/128 the pressure threshold */
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index 2632844d2c35..d0ddb307e2a1 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -2602,7 +2602,7 @@ static void *listening_get_first(struct seq_file *seq)
+ 	struct inet_hashinfo *hinfo = seq_file_net(seq)->ipv4.tcp_death_row.hashinfo;
+ 	struct tcp_iter_state *st = seq->private;
+ 
+-	st->offset = 0;
++	st->prev_idx = 0;
+ 	for (; st->bucket <= hinfo->lhash2_mask; st->bucket++) {
+ 		struct inet_listen_hashbucket *ilb2;
+ 		struct hlist_nulls_node *node;
+@@ -2637,7 +2637,7 @@ static void *listening_get_next(struct seq_file *seq, void *cur)
+ 	struct sock *sk = cur;
+ 
+ 	++st->num;
+-	++st->offset;
++	st->prev_idx = sk->sk_idx;
+ 
+ 	sk = sk_nulls_next(sk);
+ 	sk_nulls_for_each_from(sk, node) {
+@@ -2658,7 +2658,6 @@ static void *listening_get_idx(struct seq_file *seq, loff_t *pos)
+ 	void *rc;
+ 
+ 	st->bucket = 0;
+-	st->offset = 0;
+ 	rc = listening_get_first(seq);
+ 
+ 	while (rc && *pos) {
+@@ -2683,7 +2682,7 @@ static void *established_get_first(struct seq_file *seq)
+ 	struct inet_hashinfo *hinfo = seq_file_net(seq)->ipv4.tcp_death_row.hashinfo;
+ 	struct tcp_iter_state *st = seq->private;
+ 
+-	st->offset = 0;
++	st->prev_idx = 0;
+ 	for (; st->bucket <= hinfo->ehash_mask; ++st->bucket) {
+ 		struct sock *sk;
+ 		struct hlist_nulls_node *node;
+@@ -2714,7 +2713,7 @@ static void *established_get_next(struct seq_file *seq, void *cur)
+ 	struct sock *sk = cur;
+ 
+ 	++st->num;
+-	++st->offset;
++	st->prev_idx = sk->sk_idx;
+ 
+ 	sk = sk_nulls_next(sk);
+ 
+@@ -2763,8 +2762,8 @@ static void *tcp_seek_last_pos(struct seq_file *seq)
+ {
+ 	struct inet_hashinfo *hinfo = seq_file_net(seq)->ipv4.tcp_death_row.hashinfo;
+ 	struct tcp_iter_state *st = seq->private;
++	__s64 prev_idx = st->prev_idx;
+ 	int bucket = st->bucket;
+-	int offset = st->offset;
+ 	int orig_num = st->num;
+ 	void *rc = NULL;
+ 
+@@ -2773,18 +2772,21 @@ static void *tcp_seek_last_pos(struct seq_file *seq)
+ 		if (st->bucket > hinfo->lhash2_mask)
+ 			break;
+ 		rc = listening_get_first(seq);
+-		while (offset-- && rc && bucket == st->bucket)
++		while (rc && bucket == st->bucket && prev_idx &&
++		       ((struct sock *)rc)->sk_idx <= prev_idx)
+ 			rc = listening_get_next(seq, rc);
+ 		if (rc)
+ 			break;
+ 		st->bucket = 0;
++		prev_idx = 0;
+ 		st->state = TCP_SEQ_STATE_ESTABLISHED;
+ 		fallthrough;
+ 	case TCP_SEQ_STATE_ESTABLISHED:
+ 		if (st->bucket > hinfo->ehash_mask)
+ 			break;
+ 		rc = established_get_first(seq);
+-		while (offset-- && rc && bucket == st->bucket)
++		while (rc && bucket == st->bucket && prev_idx &&
++		       ((struct sock *)rc)->sk_idx <= prev_idx)
+ 			rc = established_get_next(seq, rc);
  	}
  
-@@ -2250,6 +2258,8 @@ void udp_lib_rehash(struct sock *sk, u16 newhash, u16 newhash4)
- 				hlist_add_head_rcu(&udp_sk(sk)->udp_portaddr_node,
- 							 &nhslot2->head);
- 				nhslot2->count++;
-+				sk->sk_idx = udp_table_next_idx(udptable,
-+								false);
- 				spin_unlock(&nhslot2->lock);
- 			}
+@@ -2807,7 +2809,7 @@ void *tcp_seq_start(struct seq_file *seq, loff_t *pos)
+ 	st->state = TCP_SEQ_STATE_LISTENING;
+ 	st->num = 0;
+ 	st->bucket = 0;
+-	st->offset = 0;
++	st->prev_idx = 0;
+ 	rc = *pos ? tcp_get_idx(seq, *pos - 1) : SEQ_START_TOKEN;
  
-@@ -3390,9 +3400,9 @@ struct bpf_udp_iter_state {
- 	unsigned int cur_sk;
- 	unsigned int end_sk;
- 	unsigned int max_sk;
--	int offset;
- 	struct sock **batch;
- 	bool st_bucket_done;
-+	__s64 prev_idx;
- };
- 
- static int bpf_iter_udp_realloc_batch(struct bpf_udp_iter_state *iter,
-@@ -3402,14 +3412,13 @@ static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
- 	struct bpf_udp_iter_state *iter = seq->private;
- 	struct udp_iter_state *state = &iter->state;
- 	struct net *net = seq_file_net(seq);
--	int resume_bucket, resume_offset;
- 	struct udp_table *udptable;
- 	unsigned int batch_sks = 0;
- 	bool resized = false;
-+	int resume_bucket;
- 	struct sock *sk;
- 
- 	resume_bucket = state->bucket;
--	resume_offset = iter->offset;
- 
- 	/* The current batch is done, so advance the bucket. */
- 	if (iter->st_bucket_done)
-@@ -3436,18 +3445,19 @@ static struct sock *bpf_iter_udp_batch(struct seq_file *seq)
- 		if (hlist_empty(&hslot2->head))
- 			continue;
- 
--		iter->offset = 0;
- 		spin_lock_bh(&hslot2->lock);
-+		/* Reset prev_idx if this is a new bucket. */
-+		if (!resume_bucket || state->bucket != resume_bucket)
-+			iter->prev_idx = 0;
- 		udp_portaddr_for_each_entry(sk, &hslot2->head) {
- 			if (seq_sk_match(seq, sk)) {
--				/* Resume from the last iterated socket at the
--				 * offset in the bucket before iterator was stopped.
-+				/* Resume from the first socket that we didn't
-+				 * see last time around.
- 				 */
- 				if (state->bucket == resume_bucket &&
--				    iter->offset < resume_offset) {
--					++iter->offset;
-+				    iter->prev_idx &&
-+				    sk->sk_idx <= iter->prev_idx)
- 					continue;
--				}
- 				if (iter->end_sk < iter->max_sk) {
- 					sock_hold(sk);
- 					iter->batch[iter->end_sk++] = sk;
-@@ -3492,8 +3502,9 @@ static void *bpf_iter_udp_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- 	 * done with seq_show(), so unref the iter->cur_sk.
+ out:
+@@ -2832,7 +2834,7 @@ void *tcp_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+ 		if (!rc) {
+ 			st->state = TCP_SEQ_STATE_ESTABLISHED;
+ 			st->bucket = 0;
+-			st->offset = 0;
++			st->prev_idx = 0;
+ 			rc	  = established_get_first(seq);
+ 		}
+ 		break;
+@@ -3124,7 +3126,7 @@ static struct sock *bpf_iter_tcp_batch(struct seq_file *seq)
+ 	 * it has to advance to the next bucket.
  	 */
- 	if (iter->cur_sk < iter->end_sk) {
--		sock_put(iter->batch[iter->cur_sk++]);
--		++iter->offset;
+ 	if (iter->st_bucket_done) {
+-		st->offset = 0;
++		st->prev_idx = 0;
+ 		st->bucket++;
+ 		if (st->state == TCP_SEQ_STATE_LISTENING &&
+ 		    st->bucket > hinfo->lhash2_mask) {
+@@ -3192,8 +3194,9 @@ static void *bpf_iter_tcp_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+ 		 * the future start() will resume at st->offset in
+ 		 * st->bucket.  See tcp_seek_last_pos().
+ 		 */
+-		st->offset++;
+-		sock_gen_put(iter->batch[iter->cur_sk++]);
 +		sk = iter->batch[iter->cur_sk++];
-+		iter->prev_idx = sk->sk_idx;
-+		sock_put(sk);
++		st->prev_idx = sk->sk_idx;
++		sock_gen_put(sk);
  	}
  
- 	/* After updating iter->cur_sk, check if there are more sockets
-@@ -3740,6 +3751,7 @@ static struct udp_table __net_init *udp_pernet_table_alloc(unsigned int hash_ent
- 	udptable->hash2 = (void *)(udptable->hash + hash_entries);
- 	udptable->mask = hash_entries - 1;
- 	udptable->log = ilog2(hash_entries);
-+	atomic64_set(&udptable->ver, 0);
- 
- 	for (i = 0; i < hash_entries; i++) {
- 		INIT_HLIST_HEAD(&udptable->hash[i].head);
+ 	if (iter->cur_sk < iter->end_sk)
 -- 
 2.49.0.rc1.451.g8f38331e32-goog
 
