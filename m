@@ -1,147 +1,205 @@
-Return-Path: <bpf+bounces-53998-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53999-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC9E1A6013C
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 20:31:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A42DA6019E
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 20:53:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E4D97AE90D
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 19:28:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A941421DB9
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 19:53:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC2F1F1931;
-	Thu, 13 Mar 2025 19:29:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 024001F3FD3;
+	Thu, 13 Mar 2025 19:53:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IwwOgLd2"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dMHZEq3m"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB3D1F1303
-	for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 19:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E961F37C5
+	for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 19:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741894142; cv=none; b=eoWT6RDlBqA4d342xEPEYJy+pFWaAfdEmi6ZcmrFkgGimXIlkTfqrHq+bYrXBJ/KcAbYm+CAoTH2zaVDDNPXxOJa927LbzXRZjuj/VBBSUGKC4neAa8agEzdOLjhgt7LBOZbF+rN7Gc2Yg2F3FSKLnRO8NjKnmsvHWWajhtTZt8=
+	t=1741895581; cv=none; b=PhxKUXha84nDGHRDK9cmIcbfKKLD+VOpoqYEeaqURM8KCRBtJJjHmuVA9kjxXtHp8kBKQpz/ADfkOaOu5kxLpEeruaGtmb0uupeF616CSjSqJsJF88fmfa9bOOdpuuiLEaboyE5vxE4l6FjgilpJmD7searfqLS30+cszuOD3zU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741894142; c=relaxed/simple;
-	bh=x7Yk55LHkgQ52daVFMKoT2FDuQuAloadZadogEUSkrs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Hr959x7Xb5wCUmCY3We5PnDlwFvBFvkwEnxfnXMRCT+moT+BsbCpxlnqUG6oUL46A+n9eNgE4sEc2X+rizmorU51mXyricfleUMXQSxXcnyhJwUMMNgNoCg2Mu9Q6I1AK07aWhaggrPR+axtCjkycuam/Fx7eZm1YIsOwGbd8y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IwwOgLd2; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-225b5448519so26393375ad.0
-        for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 12:29:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741894140; x=1742498940; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3dfku0Hje38VwB6g6HTNqYIRwoXSzbQAj43RKCFLVcw=;
-        b=IwwOgLd2k2p1pQtY8RQmcAw7VNGhvY98Ucv5vVU06I7do8sNgzUDGBdoNhV3H8BEwV
-         xBZBwyBTjr6j1R0eL/YHY9Btg+lQd6YaZwG+fhyd1itJp1STXnoFSjiKVA3+4Q+jqdDj
-         ylEt57KJMAm6o3a3wxTufAUSMrDwwTYDJlt91yqnQfwthjoTl+c9BcWpoFNYUKIWBq19
-         4jKk8ZaOR4nfI0TrfOcHeklwbIQ1GqvH7lZGE03Bnqf9hPcFtrF8krIds3oCVDMwsyi4
-         uqu1398V3JAmrrqpxYlyB0Y3ww/cLxhhtv713tuwz0Je2Mp68zvafgsrIiXg12GbNCvk
-         /2Yg==
+	s=arc-20240116; t=1741895581; c=relaxed/simple;
+	bh=ssrY+rvJTsOIek9mChfxY5TLNOw4wZX11HmnNeMPqsw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=N+/jlWM16Zeao7hKgwK3AWTHvYp5DUOGGbEjZU8PnErqoPvn+iw9tHdAA1DQE042S/DMPp2+yBcoo88Ki/WHw4GkFQgcE2jfcKCY+ZhqVvCPHK+QVEkTjBJ49v2kW2aKQfMeru/PFQpETlrGe69u2l6e4GD4YV9+8Ua281XWpXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dMHZEq3m; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1741895578;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=K5Rwgf9qGOGXudkqHlAtuBTuQYQzfN70qYMcLMsFPhA=;
+	b=dMHZEq3mSz9/v6XNkF0OJJ7iKzYhaQUbXiCLeMwc+DHgDLUcLq95GIJory+9EtJfPMF+LT
+	vv3eWgcPaz6lDhLKgrHWiNkf2VOWuyMcC4oY1+thLTux1mZgciS+6SCrpP55kr9UZOF48Y
+	rLsJLRRMfTQjA11ceU+t05EhJYAJd6Y=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-158-fVCiQ8h1NviA7Wil6HoYqQ-1; Thu, 13 Mar 2025 15:52:57 -0400
+X-MC-Unique: fVCiQ8h1NviA7Wil6HoYqQ-1
+X-Mimecast-MFC-AGG-ID: fVCiQ8h1NviA7Wil6HoYqQ_1741895576
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5498d2a8b88so708160e87.1
+        for <bpf@vger.kernel.org>; Thu, 13 Mar 2025 12:52:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741894140; x=1742498940;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3dfku0Hje38VwB6g6HTNqYIRwoXSzbQAj43RKCFLVcw=;
-        b=QeFysu/x2oQ1r2i4BSpXdj+rLv8oFt7LUWglxe2dvEXLA6PsIZynr/OXXx84ZnNkIS
-         0jvJO4wO3UpO+i5ON7F2MVdhQKssiDy3lVtv9DNqNCUw//yFzNnglkQIkExnGAGOaAmG
-         Lf13se2gh4/Syw9//9qqJjKF8jB7Du21UPFQOLzDH/QQIE//QPyiIunngz9y5Nf3hoJo
-         7H9kdGH1GasN5d+0gsSBerCYj2OoGRy4dssvZtdhwUa110AlLIjHeJL+X6JPwAVkWfwW
-         bQhm7vPjM55l0GyIZw9eOrro0VhP4Lt+w8Gi2ZworodqdZdwyDQGMbp3J7O8cILJwmtJ
-         gDbg==
-X-Gm-Message-State: AOJu0Ywz2550Cftpgie73nj8HYr5ut874bU3SS+DKTJaoFuijezUBtTD
-	vaOet3/t1rqLmP2WNQDffKl61ynxJbt658CX+z292Sxi7lsRq0yzj+RsPg==
-X-Gm-Gg: ASbGncswYjN7Ta4YtrrCL9JdKM/iNAACWYzemBX29rgVl5S4/AdUiJhrHphx3j/NpzD
-	bv5FAev80OiofsofqP7STBQ2FnNBKm+4jXzfMsuwbU+mPCzglCx3B3E7xpXsAiR1rVMbQ0WgzOV
-	nTSkKSXYgJqcNcyve7DBAX3X60LmPYVJ+kjgQEBKBjTQ5oEJeIqJJlx7yNjE6WD7YRaUiOcI9+a
-	VIRFRaQiqIRVCXFBeqUV9AgCt4y/k1V2RAwnDAyH+2sVI0TybSlo4WEkJJBxhDSYzL2AFDsLjbO
-	zCJgdWMyzQ8WWVrQYvjBkk3fzPJUYcrqr/QRU6Io
-X-Google-Smtp-Source: AGHT+IEIMXWPqvuTiZS2wu/CChN1ZvJWRVYnHGLLdtYauBWyFdXwj7K1WK0yNL6e+f0HxBgwZFfsGA==
-X-Received: by 2002:aa7:930a:0:b0:736:8c0f:7758 with SMTP id d2e1a72fcca58-7371f0eccbfmr848704b3a.10.1741894140500;
-        Thu, 13 Mar 2025 12:29:00 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7371167df0esm1773090b3a.93.2025.03.13.12.28.59
+        d=1e100.net; s=20230601; t=1741895576; x=1742500376;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K5Rwgf9qGOGXudkqHlAtuBTuQYQzfN70qYMcLMsFPhA=;
+        b=Ehlcih/O9op+zYO+7o6O9Or2YswigleU3Ng9X2ik/nvrTpZOoqwVraO0MolBLiKT75
+         lsNipC32jCOW0mitCC9tfp3tHcBym9Y73sAAGmWelH1a/vF7uv2hz9Jxjyf3nvYVhmoc
+         sbAsIVhYUXu3GhU+XGNcFAD+4ZUDuEnYUi9/9ZidExfgIUbLFQoXFEVaTVWZpNSxaeXL
+         Ff1XShQx3B7b9FWd5Hduvtmnjj/BiHNgqNtlsrpjcqp2XZyXiJUhB/sfo6nSIKOBkYuC
+         Ur/+g6o8qFqJRp8bfcdJypIMa/I0esLrsyL+/2QBsrKKy7zZXbduQov9Ydt9JG6c7pio
+         uU1A==
+X-Gm-Message-State: AOJu0Yw6+vsLpI0jpohHZ6c99FxBzKPha1QPsHvFKNFi/PVQp04eadpg
+	RYBY7mg7BetXvqAV9JQhfsqWLXE+oOPtTVSmKpPTTcFtdNAA3LEuyTDmcJQEnbryKe4TIuTHUoV
+	Mj68ovm5KTAb8wto3y2U+0Je7WfRuFDHQfancLvwEjJ/iJVSfZg==
+X-Gm-Gg: ASbGncs+tkBhnb3fJKzDbRVttPFmQH7MI0sijxtMdIqqpmvTHxi+CMTMCadow+3KbiS
+	W4lHSDGbjgwbZMD2O1U+kCj4L3IWeDy13U2dXAQVXapp2uvPckb5oEUwGxXnZV5e12xSlyCCpf+
+	rATsVaIC1JJxr9R2xfT4iIzWVbWngJzZ1POL6JIUdrYLTQ4ZyMeOvmdfg7VMZggyNgl5xy9ISW6
+	ktI2Y8kfc5kxdtPUc4ng+Unx1s69iMoS5fJWqoVcuHunhSzTI+6O68Sqt2sbDkw/BXqIuvOiyWP
+	k/0FaZqHbAnp
+X-Received: by 2002:a05:6512:3d0b:b0:549:7354:e4d1 with SMTP id 2adb3069b0e04-549c0a69cc9mr347165e87.38.1741895575592;
+        Thu, 13 Mar 2025 12:52:55 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGgazDuCvmszGomPJv4QwZuDgkCkfCLmqsdzf5Js6CYZfrk531WhEOt+lFCcA3MgDrafjMpgQ==
+X-Received: by 2002:a05:6512:3d0b:b0:549:7354:e4d1 with SMTP id 2adb3069b0e04-549c0a69cc9mr347149e87.38.1741895575138;
+        Thu, 13 Mar 2025 12:52:55 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-549ba8a79a9sm302680e87.221.2025.03.13.12.52.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Mar 2025 12:29:00 -0700 (PDT)
-Message-ID: <3c6ac16b7578406e2ddd9ba889ce955748fe636b.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: states with loop entry have
- incomplete read/precision marks
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	kernel-team@fb.com, yonghong.song@linux.dev
-Date: Thu, 13 Mar 2025 12:28:56 -0700
-In-Reply-To: <20250312031344.3735498-1-eddyz87@gmail.com>
-References: <20250312031344.3735498-1-eddyz87@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+        Thu, 13 Mar 2025 12:52:53 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 43E5618FA899; Thu, 13 Mar 2025 20:52:50 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Amery Hung <ameryhung@gmail.com>, netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ alexei.starovoitov@gmail.com, martin.lau@kernel.org, kuba@kernel.org,
+ edumazet@google.com, xiyou.wangcong@gmail.com, jhs@mojatatu.com,
+ sinquersw@gmail.com, jiri@resnulli.us, stfomichev@gmail.com,
+ ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn,
+ yepeilin.cs@gmail.com, ameryhung@gmail.com, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v5 00/13] bpf qdisc
+In-Reply-To: <20250313190309.2545711-1-ameryhung@gmail.com>
+References: <20250313190309.2545711-1-ameryhung@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 13 Mar 2025 20:52:50 +0100
+Message-ID: <87bju4u2r1.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2025-03-11 at 20:13 -0700, Eduard Zingerman wrote:
-> Suppose the verifier state exploration graph looks as follows:
->=20
->     .-> A --.    Suppose:
->     |   |   |    - state A is at iterator 'next';
->     |   v   v    - path A -> B -> A is verified first;
->     '-- B   C    - path A -> C is verified next;
->                  - B does not impose a read mark for register R1;
->                  - C imposes a read mark for register R1;
->=20
-> Under such conditions:
-> - when B is explored and A is identified as its loop entry, the read
->   marks are copied from A to B by propagate_liveness(), but these
->   marks do not include R1;
-> - when C is explored, the read mark for R1 is propagated to A,
->   but not to B.
-> - at this point, state A has its branch count at zero, but state
->   B has incomplete read marks.
->=20
-> The same logic applies to precision marks.
-> This means that states with a loop entry can have incomplete read and
-> precision marks, regardless of whether the loop entry itself has
-> branches.
+Amery Hung <ameryhung@gmail.com> writes:
 
-Which makes me wonder.
-If read/precision marks for B are not final and some state D outside
-of the loop becomes equal to B, the read/precision marks for that
-state would be incomplete as well:
+> Hi all,
+>
+> This patchset aims to support implementing qdisc using bpf struct_ops.
+> This version takes a step back and only implements the minimum support
+> for bpf qdisc. 1) support of adding skb to bpf_list and bpf_rbtree
+> directly and 2) classful qdisc are deferred to future patchsets. In
+> addition, we only allow attaching bpf qdisc to root or mq for now.
+> This is to prevent accidentally breaking exisiting classful qdiscs
+> that rely on data in a child qdisc. This limit may be lifted in the
+> future after careful inspection.
+>
+> * Overview *
+>
+> This series supports implementing qdisc using bpf struct_ops. bpf qdisc
+> aims to be a flexible and easy-to-use infrastructure that allows users to
+> quickly experiment with different scheduling algorithms/policies. It only
+> requires users to implement core qdisc logic using bpf and implements the
+> mundane part for them. In addition, the ability to easily communicate
+> between qdisc and other components will also bring new opportunities for
+> new applications and optimizations.
+>
+> * struct_ops changes *
+>
+> To make struct_ops works better with bpf qdisc, two new changes are
+> introduced to bpf specifically for struct_ops programs. Frist, we
+> introduce "__ref" postfix for arguments in stub functions in patch 1-2.
+> It allows Qdisc_ops->enqueue to acquire an unique referenced kptr to the
+> skb argument. Through the reference object tracking mechanism in
+> the verifier, we can make sure that the acquired skb will be either
+> enqueued or dropped. Besides, no duplicate references can be acquired.
+> Then, we allow a referenced kptr to be returned from struct_ops programs
+> so that we can return an skb naturally. This is done and tested in patch 3
+> and 4.
+>
+> * Performance of bpf qdisc *
+>
+> This patchset includes two qdisc examples, bpf_fifo and bpf_fq, for
+> __testing__ purposes. For performance test, we compare selftests and their
+> kernel counterparts to give you a sense of the performance of qdisc
+> implemented in bpf.
+>
+> The implementation of bpf_fq is fairly complex and slightly different from
+> fq so later we only compare the two fifo qdiscs. bpf_fq implements a=20
+> scheduling algorithm similar to fq before commit 29f834aa326e ("net_sched:
+> sch_fq: add 3 bands and WRR scheduling") was introduced. bpf_fifo uses a
+> single bpf_list as a queue instead of three queues for different
+> priorities in pfifo_fast. The time complexity of fifo however should be
+> similar since the queue selection time is negligible.
+>
+> Test setup:
+>
+>     client -> qdisc ------------->  server
+>     ~~~~~~~~~~~~~~~                 ~~~~~~
+>     nested VM1 @ DC1               VM2 @ DC2
+>
+> Throghput: iperf3 -t 600, 5 times
+>
+>       Qdisc        Average (GBits/sec)
+>     ----------     -------------------
+>     pfifo_fast       12.52 =C2=B1 0.26
+>     bpf_fifo         11.72 =C2=B1 0.32=20
+>     fq               10.24 =C2=B1 0.13
+>     bpf_fq           11.92 =C2=B1 0.64=20
+>
+> Latency: sockperf pp --tcp -t 600, 5 times
+>
+>       Qdisc        Average (usec)
+>     ----------     --------------
+>     pfifo_fast      244.58 =C2=B1 7.93
+>     bpf_fifo        244.92 =C2=B1 15.22
+>     fq              234.30 =C2=B1 19.25
+>     bpf_fq          221.34 =C2=B1 10.76
+>
+> Looking at the two fifo qdiscs, the 6.4% drop in throughput in the bpf
+> implementatioin is consistent with previous observation (v8 throughput
+> test on a loopback device). This should be able to be mitigated by
+> supporting adding skb to bpf_list or bpf_rbtree directly in the future.
+>
+> * Clean up skb in bpf qdisc during reset *
+>
+> The current implementation relies on bpf qdisc implementors to correctly
+> release skbs in queues (bpf graphs or maps) in .reset, which might not be
+> a safe thing to do. The solution as Martin has suggested would be
+> supporting private data in struct_ops. This can also help simplifying
+> implementation of qdisc that works with mq. For examples, qdiscs in the
+> selftest mostly use global data. Therefore, even if user add multiple
+> qdisc instances under mq, they would still share the same queue.=20
 
-        D------.  // as some read/precision marks are missing from C
-               |  // propagate_liveness() won't copy all necessary
-    .-> A --.  |  // marks to D.
-    |   |   |  |
-    |   v   v  |
-    '-- B   C  |
-        ^      |
-        '------'
+Very cool to see this progress!
 
-This makes comparison with 'loop_entry' states contagious,
-propagating incomplete read/precision mark flag up to the root state.
-This will have verification performance implications.
+Are you aware that the series has a mix of commit author email addresses
+(mixing your bytedance.com and gmail addresses)?
 
-Alternatively read/precision marks need to be propagated in the state
-graph until fixed point is reached. Like with DFA analysis.
+Otherwise, for the series:
 
-=D0=A0=D0=B5=D1=88=D0=B5=D1=82=D0=BE.
-
-> The current verification logic does not account for this. An example
-> of an unsafe program accepted by the verifier is the selftest included
-> in the next patch.
-
-[...]
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
 
