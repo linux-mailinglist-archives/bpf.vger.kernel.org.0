@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-53984-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53985-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94035A6005D
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 20:03:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CC65A60060
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 20:03:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B5F816C906
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 19:03:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 673117A942A
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 19:02:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667821F180E;
-	Thu, 13 Mar 2025 19:03:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DDBE1F2B94;
+	Thu, 13 Mar 2025 19:03:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R+tpF3M8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K1UmDjlm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1F078C9C;
-	Thu, 13 Mar 2025 19:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13B11E9B30;
+	Thu, 13 Mar 2025 19:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741892602; cv=none; b=oYdD7vUGtbDOl3StzzcKhkHQHkvevZpqMTYFFm/FvbMVWvJzLH145DUeI6ld9pcMxatZapI/GKeDyauNRKuQpkNYKWC5UjmHTEmRl8Z2b9ICJiYVEwcY5ZwJL0f3g9awBSR/QKzYrCdLHTiQWttXvq6P0rwC0JorYtNgkKfcwt8=
+	t=1741892603; cv=none; b=aRC7KFNvQTc29vGqzfLu16rVh+tVX45a8xw/mIA7quLUCzmndAkoWFUigCn5RjsLnG17eWnJWZBlZVUXa2OOAiy4ljAx05QBlGORFZ9ix0hMAi9Ms2y4vIdW58x0tbeEBjcBwOlpVuxM1GZbHSu4033h+IzCzHEHUiL281+6ppg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741892602; c=relaxed/simple;
-	bh=7ZdIUWwy2ZwCtyLTE2CZpC1ML5KbxUCT89YsXIcUQK0=;
+	s=arc-20240116; t=1741892603; c=relaxed/simple;
+	bh=sef1qcilGkhe9JUUrUVaEMXIk/wXcfEC+HV4nh1nh3M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t9uG6muvQPAhMXZxw3oqv73x07K4i2gF33SRtkPwhHQDUG9CkR6FHL1w2Hv9lXrAMEzHoHneSk+ic13dUO34Rm1VbrK9W8FzZROUSTKfcA5F7EIlezTTTEZ5fymIZSS5nwpLJ4w3IAs6lArWSYYpIlwjGi/+2QQBL0C/zXKIP5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R+tpF3M8; arc=none smtp.client-ip=209.85.214.178
+	 MIME-Version; b=oXT7JGRRhYuCMxNnazUfWcstKHHf4oLwj71M1MTLUwtl8yUMgyH2FtdWjw/bNePoaIaXYDcuQKNSm0JEsWUT6a7C9RmjOzaA+Z6MbFlb52ynFB4fiJWT3ApHBiEdOo65fzPwcD7ZH1YYAVSn9k/mjqe3GLyVSVrEPuU98UHBD8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K1UmDjlm; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2243803b776so40016555ad.0;
-        Thu, 13 Mar 2025 12:03:20 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2241053582dso34384685ad.1;
+        Thu, 13 Mar 2025 12:03:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741892600; x=1742497400; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741892601; x=1742497401; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JBe2Vn5705Uoga5BCF8FrreTJ3KADBCQ6CgS8nbEEIo=;
-        b=R+tpF3M89UPyHq6zHIbZwGlu6HBRDXR9qaCOBgUkG24vEeNgUSqW+AKFwkM1qQ+eb0
-         iqhmBN1jJhRbbUO3Vseq5mRIPcQUpZ3J4g+B6ZzQMVHgIhTDLehZBlWADWnjl6pjDhf5
-         /L4W7iEfD3lw2lqVqWAJQ68R8YJYJzBqpdlDSMbU3spzIgGXZjClcHrlG1yP4DF+NOAK
-         OQoX3juZ1/6KdZgJJUJNBwD2yMp5Lg4k2n9KBpCTXTPb6yxGx6qy82da9N0hJwlS3WLo
-         J+xSbKOOrvOrm+gUbIc0HSKA/5RpKns/Q+2EqpXhj2ygahHIYXwuOCGjZdB9FdLX1E5z
-         V8WQ==
+        bh=qjeR/x0qDwmVuV5v1i7wkxBYQ4TFckMqeAG7zQVs0H8=;
+        b=K1UmDjlm/J+p+rzAVRiItlcEpt6Qx67yLB8+RjUnDPgp5p3AvmKJaXDfDMRJJDWoUg
+         zy+voGO65GPVv0ItyV8nOr9O/yCZoCjNsPrN++aRfhygptmyoRKfbvQkfMlsRLBNdGHj
+         wYaXbLKCVMtIvfmiVTroGJmVVYrdZ30QpZXDsdAy6frqXGvr718GdwOpFW3WH3Xh8LKo
+         g7Z5ZAatIbHgFS+ZG2ny6z/t3MDj871mj3v763uU9MsthWtywvJ9dQJVawr2jTXDzGuQ
+         wtcY6T8xHmgIsAH2CjpbqqaNstllDbiYDXkj1Vn9Wub2vlwcDvI7fY08DfULzhj1J1Ks
+         0O2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741892600; x=1742497400;
+        d=1e100.net; s=20230601; t=1741892601; x=1742497401;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JBe2Vn5705Uoga5BCF8FrreTJ3KADBCQ6CgS8nbEEIo=;
-        b=YBWb/forV8zj2ZEevLAU0Tn5i+pWNVwCbS9yTQdOkz3+ZE+IT8s94VCXxkFZWPW6vY
-         dNw699eC8rH5mXLI5AHqOq8jMXiWv4imYRkAXb+Oe1VO8vSogTyQTkFer1yMOMBJwLy4
-         lYyDLm7sTHXZPHCXSZ5FJD1RNlHPUkq8N1N6dpHcoAW4SRTIkkgsxKSmwjD/AmN/XeIz
-         QbR41hjJ79mb5qQnty3ZdpSayYFKdvdXjB3MTfkRGBJIKuzuuNC4N770v8rFZRG7utrK
-         zCSwFF1YiITgNHS8MbITahsOsL8YWKxEP1RngxnyWBZTfjxmLLmkEWS6vRTBhm6WnhP9
-         9+jg==
-X-Gm-Message-State: AOJu0YyUq+Q5z5eibgHFvjgJszvFX+dFnyxbnGWKUIZ0W6R6Mant4EAb
-	/DysNLUV8jdymmGcQB3uqdXKm/RKOM0USSfB8nsEhWhVYjxI9s4f7oam0nymW6C1hw==
-X-Gm-Gg: ASbGncsvHPDjdKNl8gIxCYw2jMi9YIok1R0mjI0i9gb3/4hx3A9c/AsVmU8GCk86zTu
-	rW9noSutbXr4rJ8v6ptGEM0U8MCk4KQypULtoyZojEPLZB60JPAcFK3+OsTzfx811nOAQDdu+jG
-	X7WZI+eUeA30z0EN4TKdoWD/e6g3EgbPXM/G0sd4XoYK2EwwRHB+lLOcAUWuH0KLHKqrGqeJO/I
-	PuZTaYlsKNFQlEYu1UiXGGFCTRSn/3kFr7X2MuCyQNNg/z4/NVWiG1pXIvtuyMreD05N2DGulEj
-	uHTrUtXWXAyZuGCrUfMUfQMbbw309DlzilaWhz+LGy+uKo2TwtKFVvLUoz0285iPPbn6PhCdBHp
-	Z3dVRgRScJFQkVnqhWr0=
-X-Google-Smtp-Source: AGHT+IHQ/8YYRG+tDimUOLk60GZkFEfmf/gUmjBVadwddfwBlZtGq0wpmLQxn9WK4LusuND5l69Q2Q==
-X-Received: by 2002:a05:6300:67ca:b0:1f5:8903:860f with SMTP id adf61e73a8af0-1f5bd7d4fb3mr1243941637.14.1741892599624;
-        Thu, 13 Mar 2025 12:03:19 -0700 (PDT)
+        bh=qjeR/x0qDwmVuV5v1i7wkxBYQ4TFckMqeAG7zQVs0H8=;
+        b=AzDXflzubEK+v9tWCEDwOOkgsoGRwcu/fQFMtrbrb8sd1a5dYEey2knPMR3uFsM89g
+         eQNfyiObgHBoya0apf61LeXpRGw7VH/jsBkHMHi/5eHAkH5oblAynPPGKMyZiuOqEfn/
+         17GeKMFgFjGvkRFIflNiFnyoRUbEXmBYVwiUHLEC08DUVjG12qDfd3g7S0dx2DJ1brW4
+         ksKyx4FDDZMvh7Y4AfWBYjBTnU9GQHGAtGth46QDjfpMXvRbPEH0nZvIJM4I0ew+ylgK
+         wZ3yr4ZuoH8Hm/Gf/dVLhbZlulveSwoSg8stXjPkiXi9udw1WpPMaAZi3/VmVp49K3Mb
+         YMJQ==
+X-Gm-Message-State: AOJu0YyMwGz8oeiXZXaTy7otWhLlIh+n9iMvj7kgyjx48C0s+t63CWAO
+	vDIugqbHG7+yazCxmNzxyxlAiUVn8cvK6KJodi40PZoNkS1gbOLP3v54MhrqinDigw==
+X-Gm-Gg: ASbGnctunM6WOVmV/kJdiWHA4/oYu0Cs8pbzQEkk4Q+v9V6or2QbcVx+WBuX/8jY6CI
+	adVFkpAxc0w7kGTBZfhKOxJJgYVf1Nll5B8YM3mzS82UZ9E2JGJE7ZwoFpVlcf4ecV5wYx3xAlQ
+	Cxh6EBLSv/R0lkpQX71fqycpLTXWC8PR4v4YT7IH3GgIj2688WX5OSK72TVE3Y/4tg2djnR8EXH
+	bIwPWA3d3S4ceIeQBhhNfdlLmGsm/kFOyWIi/Lfy2AoWEBALlfmwN91xMP/BYDQynEl8f0bibAr
+	8um2VGT6iOsyrXe6KR0tC99FolTtHAQjtMS/KLiQYwruYZBP8cqiAgJg4I4wSucOFqF9j3IJVli
+	GaGz7N9zAk0lp1CVBHUg=
+X-Google-Smtp-Source: AGHT+IGFQZPK7gCfLmUYnjbo20WGBIJwFMaZIRaI++6/zw0QXtNtR50W2mEA98v8RGcbkLPnVlyckA==
+X-Received: by 2002:a05:6300:4046:b0:1f5:8678:183d with SMTP id adf61e73a8af0-1f5bd8a98c9mr1380466637.14.1741892600587;
+        Thu, 13 Mar 2025 12:03:20 -0700 (PDT)
 Received: from localhost.localdomain (c-76-146-13-146.hsd1.wa.comcast.net. [76.146.13.146])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af56e9e2f45sm1652505a12.29.2025.03.13.12.03.18
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af56e9e2f45sm1652505a12.29.2025.03.13.12.03.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Mar 2025 12:03:19 -0700 (PDT)
+        Thu, 13 Mar 2025 12:03:20 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -92,9 +92,9 @@ Cc: bpf@vger.kernel.org,
 	yepeilin.cs@gmail.com,
 	ameryhung@gmail.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v5 01/13] bpf: Prepare to reuse get_ctx_arg_idx
-Date: Thu, 13 Mar 2025 12:02:55 -0700
-Message-ID: <20250313190309.2545711-2-ameryhung@gmail.com>
+Subject: [PATCH bpf-next v5 02/13] bpf: Generalize finding member offset of struct_ops prog
+Date: Thu, 13 Mar 2025 12:02:56 -0700
+Message-ID: <20250313190309.2545711-3-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250313190309.2545711-1-ameryhung@gmail.com>
 References: <20250313190309.2545711-1-ameryhung@gmail.com>
@@ -106,51 +106,112 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename get_ctx_arg_idx to bpf_ctx_arg_idx, and allow others to call it.
-No functional change.
+Generalize prog_ops_moff() so that we can use it to retrieve a struct_ops
+program's offset for different ops.
 
 Signed-off-by: Amery Hung <ameryhung@gmail.com>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- include/linux/btf.h | 1 +
- kernel/bpf/btf.c    | 6 +++---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ include/linux/bpf.h         |  1 +
+ kernel/bpf/bpf_struct_ops.c | 13 +++++++++++++
+ net/ipv4/bpf_tcp_ca.c       | 23 ++---------------------
+ 3 files changed, 16 insertions(+), 21 deletions(-)
 
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index ebc0c0c9b944..b2983706292f 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -522,6 +522,7 @@ bool btf_param_match_suffix(const struct btf *btf,
- 			    const char *suffix);
- int btf_ctx_arg_offset(const struct btf *btf, const struct btf_type *func_proto,
- 		       u32 arg_no);
-+u32 btf_ctx_arg_idx(struct btf *btf, const struct btf_type *func_proto, int off);
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 7d55553de3fc..463e922cb0f5 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1908,6 +1908,7 @@ static inline void bpf_module_put(const void *data, struct module *owner)
+ 		module_put(owner);
+ }
+ int bpf_struct_ops_link_create(union bpf_attr *attr);
++u32 bpf_struct_ops_prog_moff(const struct bpf_prog *prog);
  
- struct bpf_verifier_log;
+ #ifdef CONFIG_NET
+ /* Define it here to avoid the use of forward declaration */
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index db13ee70d94d..1a5a9dee1e4a 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -1387,3 +1387,16 @@ void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map
  
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 519e3f5e9c10..9a4920828c30 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6369,8 +6369,8 @@ static bool is_int_ptr(struct btf *btf, const struct btf_type *t)
- 	return btf_type_is_int(t);
+ 	info->btf_vmlinux_id = btf_obj_id(st_map->btf);
+ }
++
++u32 bpf_struct_ops_prog_moff(const struct bpf_prog *prog)
++{
++	const struct btf_member *m;
++	const struct btf_type *t;
++	u32 midx;
++
++	t = btf_type_by_id(prog->aux->attach_btf, prog->aux->attach_btf_id);
++	midx = prog->expected_attach_type;
++	m = &btf_type_member(t)[midx];
++
++	return __btf_member_bit_offset(t, m) / 8;
++}
+diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+index 554804774628..415bd3b18eef 100644
+--- a/net/ipv4/bpf_tcp_ca.c
++++ b/net/ipv4/bpf_tcp_ca.c
+@@ -16,7 +16,6 @@ static struct bpf_struct_ops bpf_tcp_congestion_ops;
+ 
+ static const struct btf_type *tcp_sock_type;
+ static u32 tcp_sock_id, sock_id;
+-static const struct btf_type *tcp_congestion_ops_type;
+ 
+ static int bpf_tcp_ca_init(struct btf *btf)
+ {
+@@ -33,11 +32,6 @@ static int bpf_tcp_ca_init(struct btf *btf)
+ 	tcp_sock_id = type_id;
+ 	tcp_sock_type = btf_type_by_id(btf, tcp_sock_id);
+ 
+-	type_id = btf_find_by_name_kind(btf, "tcp_congestion_ops", BTF_KIND_STRUCT);
+-	if (type_id < 0)
+-		return -EINVAL;
+-	tcp_congestion_ops_type = btf_type_by_id(btf, type_id);
+-
+ 	return 0;
  }
  
--static u32 get_ctx_arg_idx(struct btf *btf, const struct btf_type *func_proto,
--			   int off)
-+u32 btf_ctx_arg_idx(struct btf *btf, const struct btf_type *func_proto,
-+		    int off)
- {
- 	const struct btf_param *args;
- 	const struct btf_type *t;
-@@ -6649,7 +6649,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 			tname, off);
- 		return false;
- 	}
--	arg = get_ctx_arg_idx(btf, t, off);
-+	arg = btf_ctx_arg_idx(btf, t, off);
- 	args = (const struct btf_param *)(t + 1);
- 	/* if (t == NULL) Fall back to default BPF prog with
- 	 * MAX_BPF_FUNC_REG_ARGS u64 arguments.
+@@ -135,19 +129,6 @@ static const struct bpf_func_proto bpf_tcp_send_ack_proto = {
+ 	.arg2_type	= ARG_ANYTHING,
+ };
+ 
+-static u32 prog_ops_moff(const struct bpf_prog *prog)
+-{
+-	const struct btf_member *m;
+-	const struct btf_type *t;
+-	u32 midx;
+-
+-	midx = prog->expected_attach_type;
+-	t = tcp_congestion_ops_type;
+-	m = &btf_type_member(t)[midx];
+-
+-	return __btf_member_bit_offset(t, m) / 8;
+-}
+-
+ static const struct bpf_func_proto *
+ bpf_tcp_ca_get_func_proto(enum bpf_func_id func_id,
+ 			  const struct bpf_prog *prog)
+@@ -166,7 +147,7 @@ bpf_tcp_ca_get_func_proto(enum bpf_func_id func_id,
+ 		 * setsockopt() to make further changes which
+ 		 * may potentially allocate new resources.
+ 		 */
+-		if (prog_ops_moff(prog) !=
++		if (bpf_struct_ops_prog_moff(prog) !=
+ 		    offsetof(struct tcp_congestion_ops, release))
+ 			return &bpf_sk_setsockopt_proto;
+ 		return NULL;
+@@ -177,7 +158,7 @@ bpf_tcp_ca_get_func_proto(enum bpf_func_id func_id,
+ 		 * The bpf-tcp-cc already has a more powerful way
+ 		 * to read tcp_sock from the PTR_TO_BTF_ID.
+ 		 */
+-		if (prog_ops_moff(prog) !=
++		if (bpf_struct_ops_prog_moff(prog) !=
+ 		    offsetof(struct tcp_congestion_ops, release))
+ 			return &bpf_sk_getsockopt_proto;
+ 		return NULL;
 -- 
 2.47.1
 
