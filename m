@@ -1,172 +1,124 @@
-Return-Path: <bpf+bounces-53981-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-53982-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45856A5FEB2
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 18:57:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E98DCA5FF7E
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 19:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AAF517C1DE
-	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 17:57:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D12F63AA469
+	for <lists+bpf@lfdr.de>; Thu, 13 Mar 2025 18:39:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2463C1E9B37;
-	Thu, 13 Mar 2025 17:57:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A287E1EBFE4;
+	Thu, 13 Mar 2025 18:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="AxKMmKCQ"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Eady/t0U";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wQeEiPqA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3FD21DC985;
-	Thu, 13 Mar 2025 17:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A083018952C;
+	Thu, 13 Mar 2025 18:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741888664; cv=none; b=sBQYu5leWmorp1Fol35+eAkSEMjWujTBVkZK9jf3wOt2wVUHgPJjPikO+WPZdmOmIwj9OHiFsPvBx2LCKIezZMVZJzeA5SziJshQIDx0dUHDgCdCECAQNPS4lvoQnms6w8XXCx+BcZbm5WtkRudaf2dIpL5UcVTERPv80p0jXfg=
+	t=1741891157; cv=none; b=M05jltUyycQwwHLcUbrktEiLk5fmsevCscaZykwdqtJ4Wc2fSsqD9uSGnIt93RRRNOnN1lzDvakBONvkSvBkeiuGDi04tqhGEcrGptej4PjRd0PZZsAHQ1H88pRM7gUy7gDWkrFbcLHoqfb+i7HN7cNPA+gbSBs70mHQRENfL4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741888664; c=relaxed/simple;
-	bh=9xFIBcjTWv8GRNX3oe1hCJyXa1xOTn0VkkaumuBVgRI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BkcaqrVUmPQ3ZRrndJBV+GxCv3SwIffvOFN1jXV1sxLQ/DzlcEA+6920EjpYNXEE29toYl9N9H1XYgZ307MRSJffTxrxyp7RkWkgqEWssjmYz0uvDI7SUDrsQrfGS9nTHMaJExCZ1ZRZQDy1Fk9Iga+vc9iG9xO/8o2dqNlfsNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=AxKMmKCQ; arc=none smtp.client-ip=131.188.11.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1741888660; bh=inXF0fSbPXzIw85fLojKxfeAwoCHVSrQnIcBk6Xmr0w=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From:To:CC:
-	 Subject;
-	b=AxKMmKCQ/tUIryjmV6bln3IsP87BGHN2B6gCMBY0/d23v1QncY7Fg4tvz9Ply2c2E
-	 EtZ9j5hk/a93x8xbTIDeFfX4xhjnAVkRHkqxR8JXcWkfYBYn7XqIDdRKjBW5K87Ulo
-	 CNJgfqkZkXshsU8mgMnsK14BhABBlO4wuzXR08U5aw0PIYhxgH+zSWNXs1ZU6RpevA
-	 c5zAnwkfBTXgRsb0ihRA3j+8KZaIVNDtvH5S/9CVFPq29NX+vt8ZOFeBQn2HXQM5tN
-	 9k0MxlQGKreHFKOYa/LE6axle2cpz397PbIJD/cx26VfVqozGpfawjRItUXG8S00o0
-	 WqDysq/Kj/HAg==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4ZDFZr3T6Cz8t05;
-	Thu, 13 Mar 2025 18:57:40 +0100 (CET)
-X-Virus-Scanned: amavisd-new at boeck5.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:9e8:3614:2b00:7ee6:68e5:4447:ba92
-Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3614:2b00:7ee6:68e5:4447:ba92])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX1+HSEbJ8SZ+LQGIWIboOg0KFAeQEvQjoXs=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4ZDFZm2cS5z8svD;
-	Thu, 13 Mar 2025 18:57:36 +0100 (CET)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
+	s=arc-20240116; t=1741891157; c=relaxed/simple;
+	bh=vT7fEt4DTg/BcGO6eidXlfE7hOX3H3MwLUghGMoyLBk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=UUEnrYdZQaeGPP9qfE0gOHL0i4M04wCusV50iST4erP5VwDSBu50HI6TG7pPFJv3r9a7CBU/0o15WxkC1i+CodxNrlIK7Kn8tdqQKuYq0wYxESanioJmEAOeGGCG+WCetIoFN5EWvgQIFAWfGRXZENvQMrAN8qcAn35/72Mo7ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Eady/t0U; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wQeEiPqA; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 13 Mar 2025 19:39:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1741891153;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=uOO4FSJBCvfZv7qYVAR8q4W2YmT/UHDlu5Twuo7/U5U=;
+	b=Eady/t0U/HGdfvWWZFXBzwyxFCPBbl3uUxqiK+cfoHf4PTxyVcLI6rb+gysMI1RIUqnjbC
+	r4PiPdSwTBfAQRPuvqsOEGdoE/6ExTrAsa/hOf+om/KD8Of4skP9DzdPxV/Psgv1SjK5R4
+	JM5+dQyRT51Bh8kjL2MIYvsEqT12x5odg/9Qf6PhESuX2zvfs/LiJe99HNxVuXGAd1jB2u
+	L6oE3L0wB2B/rC0PWR6z7ADHlohWOIs1+V+KLshHCca1RzJhvO4Sj3i8j8xNHtO2CZFA6w
+	fT8TU+Vtk9vkBlHxTO1L23RNVrgtS68jZNQoJmOEhjXWvEdesVdUYtToSBEQug==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1741891153;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=uOO4FSJBCvfZv7qYVAR8q4W2YmT/UHDlu5Twuo7/U5U=;
+	b=wQeEiPqA1og6JG33+LAvv42oQlaX5OSeDaMckRyOdVP2dENm1eMQnzIiK4+E80FAuclzBV
+	0GuZTv3ZKuDiu3Aw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc: Ricardo =?utf-8?Q?Ca=C3=B1uelo?= Navarro <rcn@igalia.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Hari Bathini <hbathini@linux.ibm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Luis Gerhorst <luis.gerhorst@fau.de>,
-	Henriette Herzog <henriette.herzog@rub.de>,
-	Cupertino Miranda <cupertino.miranda@oracle.com>,
-	Matan Shachnai <m.shachnai@gmail.com>,
-	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kselftest@vger.kernel.org,
-	George Guo <guodongtai@kylinos.cn>,
-	WANG Xuerui <git@xen0n.name>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Maximilian Ott <ott@cs.fau.de>,
-	Milan Stephan <milan.stephan@fau.de>
-Subject: [PATCH bpf-next 11/11] bpf: Fall back to nospec for spec path verification
-Date: Thu, 13 Mar 2025 18:53:12 +0100
-Message-ID: <20250313175312.1120183-2-luis.gerhorst@fau.de>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250313175312.1120183-1-luis.gerhorst@fau.de>
-References: <20250313172127.1098195-1-luis.gerhorst@fau.de>
- <20250313175312.1120183-1-luis.gerhorst@fau.de>
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [RFC] Use after free in BPF/ XDP during XDP_REDIRECT
+Message-ID: <20250313183911.SPAmGLyw@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-This trades verification complexity for runtime overheads due to the
-nospec inserted because of the EINVAL.
+Hi,
 
-With increased limits this allows applying mitigations to large BPF
-progs such as the Parca Continuous Profiler's prog. However, this
-requires a jump-seq limit of 256k. In any case, the same principle
-should apply to smaller programs therefore include it even if the limit
-stays at 8k for now. Most programs in [1] only require a limit of 32k.
+Ricardo reported a KASAN related use after free
+	https://lore.kernel.org/all/20250226-20250204-kasan-slab-use-after-free-read-in-dev_map_enqueue__submit-v3-0-360efec441ba@igalia.com/
 
-[1] https://arxiv.org/pdf/2405.00078 ("VeriFence: Lightweight and
-    Precise Spectre Defenses for Untrusted Linux Kernel Extensions")
+in v6.6 stable and suggest a backport of commits
+	401cb7dae8130 ("net: Reference bpf_redirect_info via task_struct on PREEMPT_RT.")
+	fecef4cd42c68 ("tun: Assign missing bpf_net_context.")
+	9da49aa80d686 ("tun: Add missing bpf_net_ctx_clear() in do_xdp_generic()")
 
-Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-Acked-by: Henriette Herzog <henriette.herzog@rub.de>
-Cc: Maximilian Ott <ott@cs.fau.de>
-Cc: Milan Stephan <milan.stephan@fau.de>
----
- kernel/bpf/verifier.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+as a fix. In the meantime I have the syz reproducer+config and was able
+to investigate.
+It looks as if the syzbot starts a BPF program via xdp_test_run_batch()
+which assigns ri->tgt_value via dev_hash_map_redirect() and the return code
+isn't XDP_REDIRECT it looks like nonsense. So the print in
+bpf_warn_invalid_xdp_action() appears once. Everything goes as planned.
+Then the TUN driver runs another BPF program which returns XDP_REDIRECT
+without setting ri->tgt_value. This appears to be a trick because it
+invoked bpf_trace_printk() which printed four characters. Anyway, this
+is enough to get xdp_do_redirect() going.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 03af82f52a02..49c7e2608ccd 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -187,6 +187,7 @@ struct bpf_verifier_stack_elem {
- };
+The commits in questions do fix it because the bpf_redirect_info becomes
+not only per-task but gets invalidated after the XDP context is left.
+
+Now that I understand it I would suggest something smaller instead as a
+stable fix, (instead the proposed patches). Any objections to the
+following:
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index be313928d272..1d906b7a541d 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -9000,8 +9000,12 @@ static bool xdp_is_valid_access(int off, int size,
  
- #define BPF_COMPLEXITY_LIMIT_JMP_SEQ	8192
-+#define BPF_COMPLEXITY_LIMIT_SPEC_V1_VERIFICATION	(BPF_COMPLEXITY_LIMIT_JMP_SEQ / 2)
- #define BPF_COMPLEXITY_LIMIT_STATES	64
+ void bpf_warn_invalid_xdp_action(struct net_device *dev, struct bpf_prog *prog, u32 act)
+ {
++	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
+ 	const u32 act_max = XDP_REDIRECT;
  
- #define BPF_MAP_KEY_POISON	(1ULL << 63)
-@@ -2010,6 +2011,19 @@ static struct bpf_verifier_state *push_stack(struct bpf_verifier_env *env,
- 	struct bpf_verifier_stack_elem *elem;
- 	int err;
- 
-+	if (!env->bypass_spec_v1 &&
-+	    cur->speculative &&
-+	    env->stack_size > BPF_COMPLEXITY_LIMIT_SPEC_V1_VERIFICATION) {
-+		/* Avoiding nested speculative path verification because we are
-+		 * close to exceeding the jump sequence complexity limit. Will
-+		 * instead insert a speculation barrier which will impact
-+		 * performace. To improve performance, authors should reduce the
-+		 * program's complexity. Barrier will be inserted in
-+		 * do_check().
-+		 */
-+		return ERR_PTR(-EINVAL);
-+	}
++	ri->map_id = INT_MAX;
++	ri->map_type = BPF_MAP_TYPE_UNSPEC;
 +
- 	elem = kzalloc(sizeof(struct bpf_verifier_stack_elem), GFP_KERNEL);
- 	if (!elem) {
- 		err = -ENOMEM;
--- 
-2.48.1
+ 	pr_warn_once("%s XDP return value %u on prog %s (id %d) dev %s, expect packet loss!\n",
+ 		     act > act_max ? "Illegal" : "Driver unsupported",
+ 		     act, prog->aux->name, prog->aux->id, dev ? dev->name : "N/A");
 
+
+
+Sebastian
 
