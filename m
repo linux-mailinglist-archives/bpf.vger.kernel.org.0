@@ -1,210 +1,121 @@
-Return-Path: <bpf+bounces-54072-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54073-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAD68A61CC4
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 21:34:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6285BA61CD2
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 21:35:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E487E3BDE20
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 20:34:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAE6A7A90B9
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 20:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2474A204840;
-	Fri, 14 Mar 2025 20:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0073204840;
+	Fri, 14 Mar 2025 20:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BiYyAKxa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eVCH7tNT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A3C2040A8
-	for <bpf@vger.kernel.org>; Fri, 14 Mar 2025 20:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60191A2872;
+	Fri, 14 Mar 2025 20:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741984454; cv=none; b=Rxd2eRXQSjl4w3dhNHHnkT3XwTVNmW3i4LKuZcnCiGvE7IdXB51MPc40ixaLlxNyCLFYS2aa7qqXvqyFtGZV18nokDeMzId9vlViKaj6O2TY1H4N7rggDwVCZmYOSt2WUMdQGo0SufXCs1Jia1hKoo5qNDmkaZPaZIWFt3wnQts=
+	t=1741984531; cv=none; b=X1J71xMoTg9cMUlev0SgCqFXJI+eEw8pYmkVwLXUCn02WaefqY8666TOEAifP0wwe/U47UYX2q1DJivSUwJDeIQU+8Ozr24XxuyiWpKMdDIzv1ocnZrQm5neW0Sjc0nh40NJO2WGII8HXLaKAYKBdcjK9DkIZFefgnYJ5Xayq+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741984454; c=relaxed/simple;
-	bh=c4wwXFuyd+09V8nYlFwZSaI4yQEVtJ2TGuKQbNyPRfA=;
+	s=arc-20240116; t=1741984531; c=relaxed/simple;
+	bh=y35moCP3XItPdmW0djksyvaUKSgqVbG7BR2LexXdQm0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C79ofFdQOuMzYVlRJJjh5x8Y8l9TsCJspblmGe3wpLSy2JtLIjnQUgR+xv7Jo9zra4eD46TDaJ9cWGeytC7tWLcHjzIjlzGSLIntFOgcOfIGf3acmxiVBRVtyEYJhHV6pdr3isUCCDA8jpYuC7EVj8K2zuMOH5TkWdmcVP1+KHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BiYyAKxa; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2240aad70f2so61815ad.0
-        for <bpf@vger.kernel.org>; Fri, 14 Mar 2025 13:34:12 -0700 (PDT)
+	 To:Cc:Content-Type; b=LHYZhm85fv8yk92igNtSQoK1XsyqhHHeUTJQUjwMeVRzK1DpdgWpa45WAXy3P4sddGYW4efsg431t7+EPXsMHIQJg3XEhHN7wbU/5UfY4YO6VnrE5D9HyRgyvj/Gs20j39mwu+MCIt3JdyFwTA/mfAWg2Gj7/NnHu4N5BzVJSDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eVCH7tNT; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3913d45a148so2073896f8f.3;
+        Fri, 14 Mar 2025 13:35:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1741984452; x=1742589252; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741984528; x=1742589328; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a9Yo0jce7GsP33A0Q9dWejB0soHGZhgKYNgRPCzK2O8=;
-        b=BiYyAKxaP6RgUoWVRpwm0ikmve5UwQevwQmc1fMNO/KW17GgsN1e/7j2jgp1CYLdjg
-         HcLbxlvtIRrLoNvq3BBgix8G1YclkE6vWKDZIuVi649eGgeSj8EkvclSKATSgL400q1a
-         9DIWjusN97sajLYokL+fi6fgua78fnDdgOhS3iXKcb51l3n3uI9OwPkf63OktbPmnEM9
-         4FQnyJVK97XzQoNR6Qg/MIzYU1RnX6OnjFr4nshks3+cDT2qH9UrX4oE92uxSuzmxmnu
-         F2EetlS2XwBdjAOxARhk7PYirQcVPo/7UXoDwj47dsk72p2IkQCKbESLjQFHpcDjuasj
-         Z8ig==
+        bh=xj8OXU2bswQnQmpSnQJFG1oDI/cU7j7n5fn2QP89/kU=;
+        b=eVCH7tNTjlK3AGA1YNbVcvLZwtk7nyrg/ayo2kGelgdlRncWVI8w4xZtsg05wXMDAV
+         9vkepS+0FdWpUKVZDDcoE61Xzt97WX9TADUTkegiR1R5dN6VqwznAUfgBKnzeO9Gm7LP
+         fx/lNsISdPk8ECowRbD3MoFNIpddfK6fud3lVwiPcJvf4NjNtYBdChd7f3eynf7peDOv
+         bn5xXW1YJVkfQQ/3ey/jUKlTN56EQU36NxWo574LNLvC9jdhQrXemiZGqgDle4LdbC/q
+         zXlOG/crh8TaXwB2lkKQoL8UmW4bWVs6ZrlvgR62Idt4Td5VFGWBu0/4gUi1O/OQvCwz
+         3xhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741984452; x=1742589252;
+        d=1e100.net; s=20230601; t=1741984528; x=1742589328;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a9Yo0jce7GsP33A0Q9dWejB0soHGZhgKYNgRPCzK2O8=;
-        b=oZPG5nQjqaRGiXdb8ByjIojzzNsF1jtbuS8eKzzXGQ5m9WOfQj5cKOe24QdyG0y3je
-         cnoPVXZiSm92efA5mXlYHndJNyxeAGa3D10zw3C3rs/7/B80aAY+/M3WCNrA2CPfzp8/
-         OMGIcEkkzIHpBstITDz8CerpvxJrUlnO657BCVaP+jLLkghnvHRPjcsWHWzyhJehjKvz
-         PKb3CsxwBhKlSASnkSE5uOskCAuJQFJ/gloE+lbh0SPG+S373eVYJfMneKnKA3QnmnaG
-         hSJM+qmupCFjS1ShP2iSmOBegO3Bfp/I78mKvkWbDYsPn6oGXoI2M8lKC9/DTzCposVS
-         4Okg==
-X-Forwarded-Encrypted: i=1; AJvYcCUL8uUDdm7TcoTJcg8V3sVrWHpNxMrgDvX3gfdx7JvemG9gHkVkgwPPyZQ0RVo5IsRd8MY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyFJK47K/eAP4zY0WPlzEMqBt2lxGIFsqpsYxVjeXlMoqs6qx6b
-	V+9NzFS70yGpdaxY1X5AezEu+AzZvL5ciiSHeoGZ0Dgy2PdhOnx5IRJh/8jesykrrvXMZEiUEnm
-	tEYrnUbhATPjh1p2j+ToEnsbnE+AgaqdzDCRf
-X-Gm-Gg: ASbGnctnLuFE2IYfbEmG2ldacnNUJ3Up4OrlZmqSN1r3oiEcitGmzvaitSv8RXMfh+t
-	ZRMcurfo7QcvLoEk1GSusFEj1saB45WVwTcQNc2C7fj34daDEGHRn+2LotZ+/7+PhfOmghMKdCV
-	mRbg43G+VuatL7UVgLSs74btB17IRbVG2wR1aEdFf+ovYxTgYL9wfXaOE=
-X-Google-Smtp-Source: AGHT+IH8lndJdL7NKJPYr5hvLG6zZyAsU+28Sd0KOcd1NkXO/cXOf7zDj6pw0lueMe4InFY+SymZ15Oxm8ynkeetjBg=
-X-Received: by 2002:a17:903:2f82:b0:21f:3c4a:136f with SMTP id
- d9443c01a7336-225f3eb05e9mr547905ad.28.1741984451984; Fri, 14 Mar 2025
- 13:34:11 -0700 (PDT)
+        bh=xj8OXU2bswQnQmpSnQJFG1oDI/cU7j7n5fn2QP89/kU=;
+        b=qbWUXPVKpl/HuNjFRK6m/j4BTMgiRj27BuPcasIZUZ5UgjennHBRkir4b+Xj6K0P6r
+         K3JlHhsRljLFeFZYoY3Ar8LxmAsOzjzevGGrhEyThVGYAe4Rkdhru63dh6sHRqYkvhHf
+         Gs3HYt7VHZ09e7HPxglCLljXzbQtbfYjnZXLS5c8OVTqlfUZyIfHKd6nv0EtQtZiKEK9
+         tJBfSTaRu3gu/wTjz70ZqvTPaMTKqIcuWR7XJp9hG2razMkNaR9YJ4SaUTYtFw1vNJj6
+         CqhVUw04YPAd5b5XDqozcL4YdLh6SYndkCDIMG6NOdivQZQabDlmDMC0GrU0Ju6LpGsy
+         urcA==
+X-Forwarded-Encrypted: i=1; AJvYcCVKb5IKGUTqwZ3KVEhRUSvU5TJgkXPtSaAM3gaXY+Yu12Db2gVwUmE+QLBRELP7PJeiyZo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVqdX6fKZ7/V0zmFBSUGlOiiBfnfmJrzsnPFhdwQ36BhXjqFij
+	bLD2DT46iCyA1A3lZ3KznEAWhS/ZLLVk7ewQOpr8eQrF++vkE4jqqiDCRADAHXX4rfyvKYNw+NE
+	Y3xZQJ4/QQJjA1M8D2ZwcODDe1Xw=
+X-Gm-Gg: ASbGncvRneU0uf7Tbd0PiN5aFfCbofSu7Oz3+oOyUxjmCm6WQAU4NmYEZ8Bo6cZ6+3k
+	uGE0nKoNrvpaOZxQs3gSoJLsNx/496OeL5hRCkLGWGOg4/OBKn+zkBWWJIT82u+vomVj1UzCli3
+	08m0dzI/1Yx8Mp3hmetn//JlvNSZ/ndeEAZIg8YaI7Bg==
+X-Google-Smtp-Source: AGHT+IGH0ch1bpRz5RWqHDMS4g9AffQUWD+9A2kHZvynf07UyLhMFxGsDWEp9wG5QFc+R955GPU7Z696xKK+gW68c4I=
+X-Received: by 2002:a5d:47c9:0:b0:390:e311:a8c7 with SMTP id
+ ffacd0b85a97d-3971cd57eb0mr4909674f8f.5.1741984527781; Fri, 14 Mar 2025
+ 13:35:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250122062332.577009-1-irogers@google.com> <Z5K712McgLXkN6aR@google.com>
- <CAP-5=fX2n4nCTcSXY9+jU--X010hS9Q-chBWcwEyDzEV05D=FQ@mail.gmail.com>
- <CAP-5=fUHLP-vtktodVuvMEbOd+TfQPPndkajT=WNf3Mc4VEZaA@mail.gmail.com>
- <CAP-5=fV_z+Ev=wDt+QDwx8GTNXNQH30H5KXzaUXQBOG1Mb8hJg@mail.gmail.com>
- <Z9NbFqaDQMjvYxcc@google.com> <Z9RiI9yjpMUPRYZe@x1>
-In-Reply-To: <Z9RiI9yjpMUPRYZe@x1>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 14 Mar 2025 13:34:00 -0700
-X-Gm-Features: AQ5f1Jp2oSwzsxV6loOKp3swePrskzYf2sJiobz94hX3O8DCQYyq7eJZBKLjY0k
-Message-ID: <CAP-5=fVGV=dbidHic4ae6EHV4cLF2M11wD17LsWntvhq_fcVTw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/17] Support dynamic opening of capstone/llvm remove BUILD_NONDISTRO
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Aditya Gupta <adityag@linux.ibm.com>, "Steinar H. Gunderson" <sesse@google.com>, 
-	Charlie Jenkins <charlie@rivosinc.com>, Changbin Du <changbin.du@huawei.com>, 
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, James Clark <james.clark@linaro.org>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Li Huafei <lihuafei1@huawei.com>, Dmitry Vyukov <dvyukov@google.com>, 
-	Andi Kleen <ak@linux.intel.com>, Chaitanya S Prakash <chaitanyas.prakash@arm.com>, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	llvm@lists.linux.dev, Song Liu <song@kernel.org>, bpf@vger.kernel.org, 
-	Daniel Xu <dxu@dxuuu.xyz>
+References: <20250313190309.2545711-1-ameryhung@gmail.com> <20250313190309.2545711-13-ameryhung@gmail.com>
+In-Reply-To: <20250313190309.2545711-13-ameryhung@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 14 Mar 2025 13:35:16 -0700
+X-Gm-Features: AQ5f1JrxdaJ9NE3HKEoE5DW_GIwb70mVam9Srpg9jgTi_uEL8Ox4ots74az0sEw
+Message-ID: <CAADnVQKrndZ25SuRj-Ofv8tA50XjTwVVyQWmasN94LT9zeV7JQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 12/13] selftests/bpf: Add a bpf fq qdisc to selftest
+To: Amery Hung <ameryhung@gmail.com>
+Cc: Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
+	Eric Dumazet <edumazet@google.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Jamal Hadi Salim <jhs@mojatatu.com>, Kui-Feng Lee <sinquersw@gmail.com>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Stanislav Fomichev <stfomichev@gmail.com>, 
+	ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn, 
+	Peilin Ye <yepeilin.cs@gmail.com>, Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 14, 2025 at 10:06=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On Thu, Mar 13, 2025 at 12:03=E2=80=AFPM Amery Hung <ameryhung@gmail.com> w=
+rote:
 >
-> On Thu, Mar 13, 2025 at 03:24:22PM -0700, Namhyung Kim wrote:
-> > I think #ifdef placements is not a big deal, but I still don't want to
-> > pull libcapstone details into the perf tree.
+> From: Amery Hung <amery.hung@bytedance.com>
 >
-> > For LLVM, I think you should to build llvm-c-helpers anyway which means
-> > you still need LLVM headers and don't need to redefine the structures.
+> This test implements a more sophisticated qdisc using bpf. The bpf fair-
+> queueing (fq) qdisc gives each flow an equal chance to transmit data. It
+> also respects the timestamp of skb for rate limiting.
 >
-> > Can we do the same for capstone?  I think it's best to use capstone
-> > headers directly and add a build option to use dlopen().
->
-> My two cents: if one wants to support some library, then have its devel
-> packages available at build time.
->
-> Then, perf nowadays has lots of dependencies, we need to rein on that,
-> making the good to have but not always used things to be dlopen'ed.
->
-> Like we did with gtk (that at this point I think is really deprecated,
-> BTW).
->
-> gdb has prior art in this area that we could use, it is not even a TUI
-> but it asks if debuginfo should be used and if so it goes on on
-> potentially lenghty updates of the local buildid cache they keep (which
-> is not the one we use, it should be).
->
-> And in the recent discussion with Dmitry Vyukov the possibility doing a
-> question to the user about a default behaviour to be set and then using
-> .perfconfig not to bother anymore the user about things is part of
-> helping the user to deal with the myriad possibilites perf offers.
->
-> gdb could use that as well, why ask at every session if debuginfod
-> should be used? Annoying.
->
-> I think perf should try to use what is available, both at build and at
-> run time, and it shouldn't change the way it output things, but should
-> warn the user about recent developments, things we over time figured out
-> are problematic and thus a new default would be better, but then obtain
-> consent if the user cares about it, and allow for backtracking, to go
-> and change .perfconfig when the user realises the old output/behaviour
-> is not really nice.
->
-> But keeping the grass green as it used to be should be the priority.
+> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> ---
+>  .../selftests/bpf/prog_tests/bpf_qdisc.c      |  24 +
+>  .../selftests/bpf/progs/bpf_qdisc_fq.c        | 718 ++++++++++++++++++
 
-So I don't understand what you are saying. If I have libcapstone
-installed should the build link against it or just use its headers for
-dlopen? Is declaring structs/constants to avoid needing the library
-acceptable?
+On the look of it, it's a pretty functional qdisc.
+Since bpftool supports loading st_ops,
+please list commands bpftool and tc the one can enter
+to use this qdisc without running selftests.
 
-The patches as they are will link against libcapstone if it's
-installed (just as currently happens) if not it will try to use dlopen
-at runtime, if that fails then you get the current no libcapstone not
-available at build time behavior. To support this a minimal amount of
-structs and constants are necessary. See here:
-https://github.com/googleprodkernel/linux-perf/blob/google_tools_master/too=
-ls/perf/util/llvm.c#L21-L58
-https://github.com/googleprodkernel/linux-perf/blob/google_tools_master/too=
-ls/perf/util/capstone.c#L23-L132
+Probably at the comment section at the top of bpf_qdisc_fq.c
 
-The patches try to make it look as though the same function exists
-with dlopen or directly calling by turning for example "cs_disasm"
-into:
-```
-static size_t perf_cs_disasm(csh handle, const uint8_t *code, size_t code_s=
-ize,
-uint64_t address, size_t count, struct cs_insn **insn)
-{
-#ifdef HAVE_LIBCAPSTONE_SUPPORT
-return cs_disasm(handle, code, code_size, address, count, insn);
-#else
-static bool fn_init;
-static enum cs_err (*fn)(csh handle, const uint8_t *code, size_t code_size,
-uint64_t address, size_t count, struct cs_insn **insn);
+It also needs SPDX and copyright.
 
-if (!fn_init) {
-fn =3D dlsym(perf_cs_dll_handle(), "cs_disasm");
-if (!fn)
-pr_debug("dlsym failed for cs_disasm\n");
-fn_init =3D true;
-}
-if (!fn)
-return CS_ERR_HANDLE;
-return fn(handle, code, code_size, address, count, insn);
-#endif
-}
-```
-That is with the library linked it is just a direct call otherwise
-dlopen/dlsym are used. This means that the perf code using the library
-is unchanged except turning "cs_disasm" into "perf_cs_disasm" and we
-can unconditionally assume the perf_cs_disasm function will be
-available.
-
-If we don't create the structs/constants ourselves, which I think is
-where controversy lies, then any function that calls cs_disasm needs
-to handle a situation where there is no cs_disasm at build time. I was
-trying to avoid this clutter in the code and just have things at the
-library boundary. The structs/constants become necessary as we can't
-assume we have access to the header file to support perf's current
-build.
-
-Thanks,
-Ian
+pw-bot: cr
 
