@@ -1,255 +1,203 @@
-Return-Path: <bpf+bounces-54067-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54068-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A7CAA61B29
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 20:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E0D9BA61C16
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 21:12:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6AAC420537
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 19:56:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0104E4606DE
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 20:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AFC3204F62;
-	Fri, 14 Mar 2025 19:56:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936632054FA;
+	Fri, 14 Mar 2025 20:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="F+IVbaAB"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="HTIWuCpI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2085.outbound.protection.outlook.com [40.107.101.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723BC204C0A;
-	Fri, 14 Mar 2025 19:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.220
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741982205; cv=none; b=M5gSckPKeexkPT/5KLxsdxEN986N9u+nmMWyGxeZd2YiAEIlJ9ojQQzI4kTAhACss/HJt8CnHIpnpkNZ1zxhJlE2KjK0LFxMt7uCNA8U7cHcjesPc5BEh+1Fvqf41j8w+aylvhueQXPiyUU8d9mB2HUQT2lGBCaeB8bcwV3r5+4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741982205; c=relaxed/simple;
-	bh=U3LTqnaQoJ6cnivkZhFFJm/5At6UnuFG6cx9LlZRvUE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KxvT2sOuqXH5tWSkj1t3QFh71L6VFxJUV/RP35izGTALNKgjVukejsvUEH4vmF5II8TFLxL8FlgOi3R41WGa0caX1Q2atOqHlnJBOeozWYbWoTW6l0UM/nBtQMjB+qRVdPsUYRKhOf9Nf/gY1v5PGsx1CXDOPe8vvIkpuc1OhGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=F+IVbaAB; arc=none smtp.client-ip=99.78.197.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1741982203; x=1773518203;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=U7wRJ7VC+rv4EtJEW3sN+uBrLZBEFVu4eIr+PzFjG2M=;
-  b=F+IVbaABi+pZ0/GD5NhCkNinCQ5Q8QpUP82pxiY+Q5/9pG91ipCyktWr
-   s+2pLTVGMuXJBqX2h+Ycs2Oe9lOX4Cbi1Ck+uQRfcCq0KbrH4IYBX4lxw
-   Fm3q4Tn4dY5aSQ/zru/k0+r5ggHKwfhGDZkSFZltIbYvGJ3srX2QF6lHu
-   Q=;
-X-IronPort-AV: E=Sophos;i="6.14,246,1736812800"; 
-   d="scan'208";a="182024035"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
-  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2025 19:56:41 +0000
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.21.151:15347]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.22.127:2525] with esmtp (Farcaster)
- id 03c2bee9-b5f1-4f3f-a53a-ffce81e92184; Fri, 14 Mar 2025 19:56:41 +0000 (UTC)
-X-Farcaster-Flow-ID: 03c2bee9-b5f1-4f3f-a53a-ffce81e92184
-Received: from EX19D003ANC003.ant.amazon.com (10.37.240.197) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Fri, 14 Mar 2025 19:56:40 +0000
-Received: from b0be8375a521.amazon.com (10.118.255.19) by
- EX19D003ANC003.ant.amazon.com (10.37.240.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Fri, 14 Mar 2025 19:56:35 +0000
-From: Kohei Enju <enjuk@amazon.com>
-To: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, "Andrii
- Nakryiko" <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-	"Eduard Zingerman" <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
- Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
-	<jolsa@kernel.org>, Peilin Ye <yepeilin@google.com>, Ilya Leoshkevich
-	<iii@linux.ibm.com>, Kuniyuki Iwashima <kuniyu@amazon.com>,
-	<kohei.enju@gmail.com>, Kohei Enju <enjuk@amazon.com>,
-	<syzbot+a5964227adc0f904549c@syzkaller.appspotmail.com>
-Subject: [PATCH bpf-next v1] bpf: Fix out-of-bounds read in check_atomic_load/store()
-Date: Sat, 15 Mar 2025 04:54:24 +0900
-Message-ID: <20250314195619.23772-2-enjuk@amazon.com>
-X-Mailer: git-send-email 2.48.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826E31FF5EB;
+	Fri, 14 Mar 2025 20:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.85
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741982724; cv=fail; b=cWl3R1z/NYRop8ZUcJL/o0+5R12TPqKxLcrE68BXLlsBTwM9ARC5NZxr6PcFINbFTmwcvd0RuuCFlxtBbHUsTUPFn//j10RCyQdvALN5D1DmNJqPaX0arlGQZHT6AUHQ4rBqLf3Brk+zANDCmU2R60zHDttL6LqGy58nbFYavYw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741982724; c=relaxed/simple;
+	bh=zLpRO6ulm/ncl0/ILv8oFwun6q2G0Zt+Opn3IOdGQuM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=g9M6kVoGLDAHlFlKh9cAToH2f/Sf3FiwE8WbYvhmzjDTdX6d7f3im/4FZEDlJ3wwkfy6kHTVhVUpoUTDkrS4wa5xzjkohBj7wsCwd4cCYG9NYWASYd1Ip0sje2yH0w4yAwSwOQtT16Nq8l7LfmCfyxyN22c7E0U+7xdgQJ81+Pk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=HTIWuCpI; arc=fail smtp.client-ip=40.107.101.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=NINUkRlTRinr3DDBQLB2U5UcSItHhulP2X1fm4hihQoy35xF77Yl080meBZw7Ditwuo7LOG9CPjz4bD67CdAkGW6HD7MmahWm0cIa9VSkerXwg3oTbUr87G/SZSzKod6RC6B0uB7J+njtDJ9lPGusA5uzqR7HXKgR5az2iA2lbFbolVP90LhNarIoe1WUOHeoB5UwCg50e5tfVrjElcUKDcuXYA7vXm73XOruIE3mUEuRYPNi9+C+pYly0dbsc/xl7zqXpyBwy3MBnUG/Bveeq172HX9HNxQ0a+I34W6OfOEhjO/aLYB2vwMgs+c1q6VzgDHC/LJ16dSrvuRHys+7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RN1CZcPc1IUhcRW3VgOEUX4o/R7g3uUXa+1ffpp9UsQ=;
+ b=dFa7kK+lQG4S1+6kKpvt4nrbUhY1vDuayyoB2oqbUeqkK/B9BNCYN4sSACJN5mTaNkPM5dzgrClr6hejNDnQb5+MfEazvvbuukkIa2kUQzNb8HlSEmrOvbnnT8eRVI5Yu0CPEr9F/1Bx+eDa0bUMEngFz7SMxDQnaQHnyw1BWRl2N6BRxPlhtbhKT/wwUCGDztR81BRPvMMnSmx39Kyh4YXj1ZgiccEj6DdSFV0DDH97bJkm5jaAjz/eKyv9uQkiMrWwX631U/fUjUo+yqQaFXguB/joJm5b8r+N03ECrzu2X3nMEuaGl2o7l6XMN976zF2iWFQAwHvWLcCHsI9fnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RN1CZcPc1IUhcRW3VgOEUX4o/R7g3uUXa+1ffpp9UsQ=;
+ b=HTIWuCpIXEupGI0P0wOwN7wovep0QXWjRPNJTvpyL3agCeekGCFQnEPkhfO9EW409PFAZ1P5QC9gcSPy4mL5HtAi3P3cExVeEW9L75bL1P+/zh4/GJ3Ygg0POvLLgf5XpxBO6w8BNgt/pqqmO1Lm9mC7+TWT/uaqnIb+mfuLyoniUdbkhkgZX9fJgFPNylv54vDlb1jx3KjH6Kh/UxqsiXzd8HfJypUMIHmglE9QsXF42eJr7heZlEwsAGYAVXndD3xLP8iMpahckQMd+uxpWriVBMC/4gSodWV2vdr5Ap3sYsyWvY97Ia1kDL6KzSFIfbAgvJjkjPGxzLr6Sk8xmA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
+ by PH7PR12MB6657.namprd12.prod.outlook.com (2603:10b6:510:1fe::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8511.31; Fri, 14 Mar
+ 2025 20:05:19 +0000
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5%5]) with mapi id 15.20.8511.031; Fri, 14 Mar 2025
+ 20:05:19 +0000
+Date: Fri, 14 Mar 2025 21:05:09 +0100
+From: Andrea Righi <arighi@nvidia.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: David Vernet <void@manifault.com>, Changwoo Min <changwoo@igalia.com>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/8] sched_ext: idle: Extend topology optimizations to
+ all tasks
+Message-ID: <Z9SL9chJFYswO5MU@gpd3>
+References: <20250314094827.167563-1-arighi@nvidia.com>
+ <20250314094827.167563-4-arighi@nvidia.com>
+ <Z9RzvWMiHWqiO2v7@slm.duckdns.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z9RzvWMiHWqiO2v7@slm.duckdns.org>
+X-ClientProxiedBy: MI0P293CA0013.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:44::18) To CY5PR12MB6405.namprd12.prod.outlook.com
+ (2603:10b6:930:3e::17)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D036UWC001.ant.amazon.com (10.13.139.233) To
- EX19D003ANC003.ant.amazon.com (10.37.240.197)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|PH7PR12MB6657:EE_
+X-MS-Office365-Filtering-Correlation-Id: 48254257-6bd7-4d21-1bb7-08dd63338b97
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?vI6Om3HX20DXT0AE0UZP9M2VJbeTWWuPrtQ2OaKPqrsPTaFUr9BJBBf3s+04?=
+ =?us-ascii?Q?5OWn//mem+nY0LmVZRVsFJsn1inqADFJ2B6A8xSs2VPxcFvT5qV59QkLNyiT?=
+ =?us-ascii?Q?Jc75u55IXF4H0nGyTzHt++uLBvHCuwU8Sw5GLBH+Vz2PY2lNeHJcEz07fwWs?=
+ =?us-ascii?Q?PtpfdDOsjVpS/8kNbD3qh3cVIMjAmukJ65iDFJO7elJPwCwCcMy3IeObkbtr?=
+ =?us-ascii?Q?bzN5KdJaXcZGkK/6/IUYo1oPH9YjYvHG2D4IYL2uD9/o8gb2Y0TIRrKLRTY+?=
+ =?us-ascii?Q?ubAtRXKtzXb7a72hqPWQlJb9UBj9yWViVflv28fSziMC4b4Y9aroogq9zgZW?=
+ =?us-ascii?Q?b9geOt3dlEomT1xN3n5TE6LOMH2IXIk00BuX9fOz4+pJmQxG2RHWD8cOoDZt?=
+ =?us-ascii?Q?WgKPKiGSj3Go6zeskD2YEH3w49r+USdWLQQs7zxnlg+rF9+TwzTs5EP/zyo3?=
+ =?us-ascii?Q?YrTlTjTDXiS1uAZPkAaveNKIaUHzmEAdEQps6m9jWQZU1NaWujiAxYLWDgpE?=
+ =?us-ascii?Q?DOtk6zGp5RuNwNhfC89wlDno6EyWJ/Dd7HokmDwmz3ABW2Cc7x8dpEXs99tk?=
+ =?us-ascii?Q?RiSlGfe0JbHz9DBn9N3iGM5sIivQTogOxUSWjxhGxrMAYmGomUMzIkhrL8n+?=
+ =?us-ascii?Q?kEy/si+6NLuL6XJIsaDq9tH6oqpA/r4qIQv6sBVThO3MUVuhqHJY5dXw1WQ3?=
+ =?us-ascii?Q?z/XUcs2CMN3NQZUSWvgzlIK41vMfABr3CLT3yRk+YQWx/UeHPSSpicksk56H?=
+ =?us-ascii?Q?yZGHUWpex6s5bXWm2XD3ljZ+giHyqCfH49/gMkoZJ7ts62lcBCK8SjRIQsaN?=
+ =?us-ascii?Q?gTLxH+FIjYkyl4mE6KzQZ3xFkB2V9K028CiuBfr8+7MMe6M/5VWyPdc8k15N?=
+ =?us-ascii?Q?4jNhxmnTq6GYIEZMhZIGcqgn96BCg7Lbn2xaVlxIdVheMLmyYID2Ud+AYxwR?=
+ =?us-ascii?Q?dYQ624ZnJKaEnWyzRrAX6wKORQ7xH1RCvgWVn7Wj+QLkHB90fzARbZyylQ4Y?=
+ =?us-ascii?Q?3bUuXv8NhonQ78iFR0C1jF9HQjYDMo1WIJbguvRxQFX6AzTZ7sUD372nPz1n?=
+ =?us-ascii?Q?tITFiNT9rjIChWiUCryPpQDQX2HZRP0/LzkLhWpjd+giy1SfBcMwQZfw4pAx?=
+ =?us-ascii?Q?HKhe/6GDUJFp62JFK/bAhBd0p9isFamKxwjVI89azMQeVdM+E/fUVOtWgZqj?=
+ =?us-ascii?Q?eI3RqwZUArs4ExRNO80ML0sQUw9Y3R+DXKAhxXvWcCfRRIwEUa0S8ukgYW3t?=
+ =?us-ascii?Q?XLYhSdScUNkY0umOewtTqMvZwbgckha9Jvt+3v6ePC2zx77yp+qfNJLajPyo?=
+ =?us-ascii?Q?hZJsVV+H9LAyUA9whFkaBgFWB/kalUKK+bOUllFoqAHKTBtOsUpreFUn4sRo?=
+ =?us-ascii?Q?RZw0wpVLC2POShVtZf/svM22LC8P?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?D9kdcnoBNeBkNRT0ysSCFuWcshqMW67ojXDwl2RgQbiPb5EJNUFY4uuEh0Wl?=
+ =?us-ascii?Q?quLcx3TWtcQeOtg7/v53AbY/R4mqbrID9z4oiXQGR1m5IHyf+dA+abAr8mY5?=
+ =?us-ascii?Q?fJB8jaTzlfwqUH/+Uf+yPInGjLu0Y9C5PB0xTGHiyjhxnC3fBxkEdBQ/03wM?=
+ =?us-ascii?Q?NztvmWoNQHsGt8mal0DuzIZlLy1o8w8aW81cFq7Ovbve5+gxpjLJu2XuOHIH?=
+ =?us-ascii?Q?QyXC4zVPCr/AFIyPuf+v16U+Se3zMh/tO1jfc5pqWK2Jw3mPUz6mJcfdjc2r?=
+ =?us-ascii?Q?jlLlVPlzrYgPMMOBkWiuZZ6CXpgDvlCX7KBspf2u3MLhFrNJ6pEsLxkwBZwC?=
+ =?us-ascii?Q?jM2CCzZFL9tZdriXYWIa7b2q17NU+9rvxrXvK6bqSmkU3liYhp6dEFH1i/+U?=
+ =?us-ascii?Q?ltL0rwuVCO+ZtPElpCa7PujwXZQLcP3hK5jRSKWnjFKSexE5aVq3cPJ8Zw12?=
+ =?us-ascii?Q?+030r1TOnZs1/zhuvLr1prVmE3zXhYXiIcu4vtVzzaVVCQSNzIojaeJTCnhS?=
+ =?us-ascii?Q?BWsUG3jRxEQOWsVgBBpM40S6SbsVVP3DsURGLsBskT/jV3uuJQqbluPhXfmm?=
+ =?us-ascii?Q?oDEj6/AT3nAd111YP2263C9nOpgHKzM+kOBWUtoGk0xFiRSOJio7J8xGazzY?=
+ =?us-ascii?Q?eEcz/JWZkQWpwzqz6XW9MY+juE0FfVkyUKNlI8dcKIK4/KaCaChQDIh4sEGs?=
+ =?us-ascii?Q?ZkoHO3KLPfMNTMbwPzFBKZKPhYUwhU2kR8JYAVLiBQ1+o+eX998S07kOipA2?=
+ =?us-ascii?Q?QD+i9HmQWGKxlm3dgXtQhM+7cSv+vOU7sjNBN66zmTX6D0PHAvCh9uB6VQ/D?=
+ =?us-ascii?Q?86ZeBWAvW9rPeR+JMJmWlnNYplr63k7+UMA8pQkqNKswPYRzIRBMaGrqpZbZ?=
+ =?us-ascii?Q?INeCqoiy2h6/3Gi25cF955CkPzPqTEATNBlh/NZH+AWQNbHYUyxKg1xjdpCN?=
+ =?us-ascii?Q?E1SPvCdZ5YbglVLEwrV4PR3Bd35aEYOJj6J4UQFgJM9wTG9JGgXmHs2AK0fv?=
+ =?us-ascii?Q?AreGHMAlMIm+1kiOz200/p2nwmhf0BEmyuen/gOHM0+F9X0//orVCRSCR83q?=
+ =?us-ascii?Q?GCcQi5oesNQwLNNYd6JYLlgAUuMdkgtwOvocGr3Y6glqCaMDnpm/SvSK2+qi?=
+ =?us-ascii?Q?E9cGC5XgsUTxl+uANQy8XJpfV2/E5jl+eMd1eD5Exl9wohqHr1oJekMvM1ok?=
+ =?us-ascii?Q?1YBCngSLHj3/ErMnYpWRHdduvjWj6vtWIHE/GOtpr5glV/rQwq0EcVS3DcJN?=
+ =?us-ascii?Q?oOBn/4/smE37dSs9It3kiozjJFhqXaJ+6k7ndbiA0kEbq2Rq/fsUIoGfbG0R?=
+ =?us-ascii?Q?gQiEQCJADAJuYCf74jbGfntKeYn6PtvjXz/I3gPdENrT+jBRDdXCMJWzJ8gN?=
+ =?us-ascii?Q?1hV9W6mIpdxwoU2GgdaqToaMtxCkqYKLR2bvsmlnVfjkuMxfiQ9bRUhAokoM?=
+ =?us-ascii?Q?H/X1PF0cCaxZCkIxhUz99eVja3s6hIK6hwpxk7/WeBIz8BwHr90hKD5XBlMf?=
+ =?us-ascii?Q?9YteRONR6Th16q4O+OLrAHxkWB99Q02Upgievygo1UJp7nWkDZvUIE7B3WTI?=
+ =?us-ascii?Q?lTwjF1ZzoiCouV/LpJLlNCYxzawAg9zKTHtfPqbl?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48254257-6bd7-4d21-1bb7-08dd63338b97
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2025 20:05:19.4345
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hitvoaHtUCIg4gN52TxlQVnabYqtD2vdfKsx3pgIn7cDQ8vReVfoYArAMgaGkmn+ROUAwWWyv14e78Xv5Ph71Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6657
 
-syzbot reported the following splat [0].
+On Fri, Mar 14, 2025 at 08:21:49AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, Mar 14, 2025 at 10:45:35AM +0100, Andrea Righi wrote:
+> ...
+> > -	if (p->nr_cpus_allowed >= num_possible_cpus()) {
+> > -		if (static_branch_maybe(CONFIG_NUMA, &scx_selcpu_topo_numa))
+> > -			numa_cpus = numa_span(prev_cpu);
+> > -
+> > -		if (static_branch_maybe(CONFIG_SCHED_MC, &scx_selcpu_topo_llc))
+> > -			llc_cpus = llc_span(prev_cpu);
+> > +	if (static_branch_maybe(CONFIG_NUMA, &scx_selcpu_topo_numa)) {
+> > +		struct cpumask *cpus = numa_span(prev_cpu);
+> > +
+> > +		if (cpus && !cpumask_equal(cpus, p->cpus_ptr)) {
+> > +			if (cpumask_subset(cpus, p->cpus_ptr)) {
+> > +				numa_cpus = cpus;
+> > +			} else {
+> > +				numa_cpus = this_cpu_cpumask_var_ptr(local_numa_idle_cpumask);
+> > +				if (!cpumask_and(numa_cpus, cpus, p->cpus_ptr))
+> > +					numa_cpus = NULL;
+> > +			}
+> > +		}
+> > +	}
+> > +	if (static_branch_maybe(CONFIG_SCHED_MC, &scx_selcpu_topo_llc)) {
+> > +		struct cpumask *cpus = llc_span(prev_cpu);
+> > +
+> > +		if (cpus && !cpumask_equal(cpus, p->cpus_ptr)) {
+> > +			if (cpumask_subset(cpus, p->cpus_ptr)) {
+> > +				llc_cpus = cpus;
+> > +			} else {
+> > +				llc_cpus = this_cpu_cpumask_var_ptr(local_llc_idle_cpumask);
+> > +				if (!cpumask_and(llc_cpus, cpus, p->cpus_ptr))
+> > +					llc_cpus = NULL;
+> > +			}
+> > +		}
+> > 
+> 
+> Wouldn't it still make sense to special case p->nr_cpus_allowed >=
+> num_possible_cpus()? That'd be vast majority of cases and we can skip all
+> the cpumask comparisons for them.
 
-In check_atomic_load/store(), register validity is not checked before
-atomic_ptr_type_ok(). This causes the out-of-bounds read in is_ctx_reg()
-called from atomic_ptr_type_ok() when the register number is MAX_BPF_REG
-or greater.
+Yeah, that's probably a good idea, I'll re-add that in the next version.
 
-Add check_reg_arg() before atomic_ptr_type_ok(), and return early when
-the register is invalid.
-
-[0]
- BUG: KASAN: slab-out-of-bounds in is_ctx_reg kernel/bpf/verifier.c:6185 [inline]
- BUG: KASAN: slab-out-of-bounds in atomic_ptr_type_ok+0x3d7/0x550 kernel/bpf/verifier.c:6223
- Read of size 4 at addr ffff888141b0d690 by task syz-executor143/5842
-
- CPU: 1 UID: 0 PID: 5842 Comm: syz-executor143 Not tainted 6.14.0-rc3-syzkaller-gf28214603dc6 #0
- Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
- Call Trace:
-  <TASK>
-  __dump_stack lib/dump_stack.c:94 [inline]
-  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
-  print_address_description mm/kasan/report.c:408 [inline]
-  print_report+0x16e/0x5b0 mm/kasan/report.c:521
-  kasan_report+0x143/0x180 mm/kasan/report.c:634
-  is_ctx_reg kernel/bpf/verifier.c:6185 [inline]
-  atomic_ptr_type_ok+0x3d7/0x550 kernel/bpf/verifier.c:6223
-  check_atomic_store kernel/bpf/verifier.c:7804 [inline]
-  check_atomic kernel/bpf/verifier.c:7841 [inline]
-  do_check+0x89dd/0xedd0 kernel/bpf/verifier.c:19334
-  do_check_common+0x1678/0x2080 kernel/bpf/verifier.c:22600
-  do_check_main kernel/bpf/verifier.c:22691 [inline]
-  bpf_check+0x165c8/0x1cca0 kernel/bpf/verifier.c:23821
-  bpf_prog_load+0x1664/0x20e0 kernel/bpf/syscall.c:2967
-  __sys_bpf+0x4ea/0x820 kernel/bpf/syscall.c:5811
-  __do_sys_bpf kernel/bpf/syscall.c:5918 [inline]
-  __se_sys_bpf kernel/bpf/syscall.c:5916 [inline]
-  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5916
-  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-  entry_SYSCALL_64_after_hwframe+0x77/0x7f
- RIP: 0033:0x7fa3ac86bab9
- Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
- RSP: 002b:00007ffe50fff5f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
- RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fa3ac86bab9
- RDX: 0000000000000094 RSI: 00004000000009c0 RDI: 0000000000000005
- RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000006
- R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
- R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
-  </TASK>
-
- Allocated by task 5842:
-  kasan_save_stack mm/kasan/common.c:47 [inline]
-  kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
-  poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
-  __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:394
-  kasan_kmalloc include/linux/kasan.h:260 [inline]
-  __kmalloc_cache_noprof+0x243/0x390 mm/slub.c:4325
-  kmalloc_noprof include/linux/slab.h:901 [inline]
-  kzalloc_noprof include/linux/slab.h:1037 [inline]
-  do_check_common+0x1ec/0x2080 kernel/bpf/verifier.c:22499
-  do_check_main kernel/bpf/verifier.c:22691 [inline]
-  bpf_check+0x165c8/0x1cca0 kernel/bpf/verifier.c:23821
-  bpf_prog_load+0x1664/0x20e0 kernel/bpf/syscall.c:2967
-  __sys_bpf+0x4ea/0x820 kernel/bpf/syscall.c:5811
-  __do_sys_bpf kernel/bpf/syscall.c:5918 [inline]
-  __se_sys_bpf kernel/bpf/syscall.c:5916 [inline]
-  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5916
-  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
- The buggy address belongs to the object at ffff888141b0d000
-  which belongs to the cache kmalloc-2k of size 2048
- The buggy address is located 312 bytes to the right of
-  allocated 1368-byte region [ffff888141b0d000, ffff888141b0d558)
-
- The buggy address belongs to the physical page:
- page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x141b08
- head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
- flags: 0x57ff00000000040(head|node=1|zone=2|lastcpupid=0x7ff)
- page_type: f5(slab)
- raw: 057ff00000000040 ffff88801b042000 dead000000000100 dead000000000122
- raw: 0000000000000000 0000000080080008 00000000f5000000 0000000000000000
- head: 057ff00000000040 ffff88801b042000 dead000000000100 dead000000000122
- head: 0000000000000000 0000000080080008 00000000f5000000 0000000000000000
- head: 057ff00000000003 ffffea000506c201 ffffffffffffffff 0000000000000000
- head: 0000000000000008 0000000000000000 00000000ffffffff 0000000000000000
- page dumped because: kasan: bad access detected
- page_owner tracks the page as allocated
- page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 8909973200, free_ts 0
-  set_page_owner include/linux/page_owner.h:32 [inline]
-  post_alloc_hook+0x1f4/0x240 mm/page_alloc.c:1585
-  prep_new_page mm/page_alloc.c:1593 [inline]
-  get_page_from_freelist+0x3a8c/0x3c20 mm/page_alloc.c:3538
-  __alloc_frozen_pages_noprof+0x264/0x580 mm/page_alloc.c:4805
-  alloc_pages_mpol+0x311/0x660 mm/mempolicy.c:2270
-  alloc_slab_page mm/slub.c:2423 [inline]
-  allocate_slab+0x8f/0x3a0 mm/slub.c:2587
-  new_slab mm/slub.c:2640 [inline]
-  ___slab_alloc+0xc27/0x14a0 mm/slub.c:3826
-  __slab_alloc+0x58/0xa0 mm/slub.c:3916
-  __slab_alloc_node mm/slub.c:3991 [inline]
-  slab_alloc_node mm/slub.c:4152 [inline]
-  __kmalloc_cache_noprof+0x27b/0x390 mm/slub.c:4320
-  kmalloc_noprof include/linux/slab.h:901 [inline]
-  kzalloc_noprof include/linux/slab.h:1037 [inline]
-  virtio_pci_probe+0x54/0x340 drivers/virtio/virtio_pci_common.c:689
-  local_pci_probe drivers/pci/pci-driver.c:324 [inline]
-  pci_call_probe drivers/pci/pci-driver.c:392 [inline]
-  __pci_device_probe drivers/pci/pci-driver.c:417 [inline]
-  pci_device_probe+0x6c5/0xa10 drivers/pci/pci-driver.c:451
-  really_probe+0x2b9/0xad0 drivers/base/dd.c:658
-  __driver_probe_device+0x1a2/0x390 drivers/base/dd.c:800
-  driver_probe_device+0x50/0x430 drivers/base/dd.c:830
-  __driver_attach+0x45f/0x710 drivers/base/dd.c:1216
-  bus_for_each_dev+0x239/0x2b0 drivers/base/bus.c:370
-  bus_add_driver+0x346/0x670 drivers/base/bus.c:678
- page_owner free stack trace missing
-
- Memory state around the buggy address:
-  ffff888141b0d580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff888141b0d600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- >ffff888141b0d680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                          ^
-  ffff888141b0d700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff888141b0d780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-
-Reported-by: syzbot+a5964227adc0f904549c@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=a5964227adc0f904549c
-Tested-by: syzbot+a5964227adc0f904549c@syzkaller.appspotmail.com
-Fixes: e24bbad29a8d ("bpf: Introduce load-acquire and store-release instructions")
-Signed-off-by: Kohei Enju <enjuk@amazon.com>
----
- kernel/bpf/verifier.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3303a3605ee8..6481604ab612 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7788,6 +7788,12 @@ static int check_atomic_rmw(struct bpf_verifier_env *env,
- static int check_atomic_load(struct bpf_verifier_env *env,
- 			     struct bpf_insn *insn)
- {
-+	int err;
-+
-+	err = check_reg_arg(env, insn->src_reg, SRC_OP);
-+	if (err)
-+		return err;
-+
- 	if (!atomic_ptr_type_ok(env, insn->src_reg, insn)) {
- 		verbose(env, "BPF_ATOMIC loads from R%d %s is not allowed\n",
- 			insn->src_reg,
-@@ -7801,6 +7807,12 @@ static int check_atomic_load(struct bpf_verifier_env *env,
- static int check_atomic_store(struct bpf_verifier_env *env,
- 			      struct bpf_insn *insn)
- {
-+	int err;
-+
-+	err = check_reg_arg(env, insn->dst_reg, SRC_OP);
-+	if (err)
-+		return err;
-+
- 	if (!atomic_ptr_type_ok(env, insn->dst_reg, insn)) {
- 		verbose(env, "BPF_ATOMIC stores into R%d %s is not allowed\n",
- 			insn->dst_reg,
--- 
-2.48.1
-
+Thanks,
+-Andrea
 
