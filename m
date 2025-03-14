@@ -1,145 +1,133 @@
-Return-Path: <bpf+bounces-54058-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54059-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBF98A615EF
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 17:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56829A61715
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 18:06:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C3BA1B64EE5
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 16:11:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49FE81B60A93
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 17:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 586D3204099;
-	Fri, 14 Mar 2025 16:08:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2354E204582;
+	Fri, 14 Mar 2025 17:06:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZEg4Jipu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bS8OqIP7"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B9F202C49;
-	Fri, 14 Mar 2025 16:08:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC4F1FDA89;
+	Fri, 14 Mar 2025 17:06:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741968523; cv=none; b=TRozUtDC970tPPoccpyHeftudpYI52CJfHuaswNs2nshTI2ssMn810NQeIOpfyW5erVv24Nzv+sfCrChWfbZ4sYjKo93Tbdc40ZnHmzFegCBQbKklh3OaR+rZx9/PSTL4bdo/LE1djZh48SD+uik0S2IFCZ4KY6HVM6nTY1M4ew=
+	t=1741972006; cv=none; b=QXC9ne4tcrlOL6g5qcKNLXBov5ch368Stg02sTTlcTjbSUcGKqVso0moci5c+E4cgXSdXw5OZOJ5LE3a5wrJOEbYK794Vuwwrc42efzCAT2kHBu/mvMxwIGzCqXw26Z/z+WjzRjOVPaEsgqlKH6MM2p3BgQruSG+zpEoYf6DKDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741968523; c=relaxed/simple;
-	bh=ow/xM2BzJY15oFxKt4B5fKNXKa5WQC08GFensnmTqlk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ayxa0EgIUAIAvKM0AZbqAc+6ZTEMw9r/eRVRpZg/93+0azvVPeYOv+uqiVQgcqSbg+ZRIzBQSDFp0FwAXgnB/iknqCykalp37BBmEzNGIjoPbrDoIadc7eFimvueX0sk4u/fiwmCrZPghXbG1hf9dlufsRLa9seMRLuXIaKTttk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZEg4Jipu; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8623744287;
-	Fri, 14 Mar 2025 16:08:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1741968513;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Bc5lGmMpmWaulKCgFmVYIGp/S0/wgDgZkGe6mPR+/0w=;
-	b=ZEg4Jipu4DRz6VRl88DhD8Pbqq2RVPR4SJqaKqAGCMWDDtk0SPmWJWpzRl5v55zdrTgJyF
-	PG9Dm9yyQcFXRFhGD6NvHNrAOPaxlZD/1IeNhA5aj/mYVR2ZJHMgAC05z70rAvPGCaHWDx
-	pQvu/ESRIT2rPtl/glUZwLJ25qgX/jYv/Itqe+s+Sp4PwAQGB5agKr6tR9adFOYTCb88jE
-	0cMGwZeQNPHh0QGxkV0cd9zEADQuRK4npdhppBsfRMygbQpOue50xkxIJHUrbxGQ1D1i7X
-	4uYYKMGSUKXllUfwcnPZdVB871JKGDol68DQ5i9FN2NEys8CHSESOYMsOIE99w==
-Message-ID: <a8c7e353-2e5f-4cdc-99fb-0937b8121b38@bootlin.com>
-Date: Fri, 14 Mar 2025 17:08:31 +0100
+	s=arc-20240116; t=1741972006; c=relaxed/simple;
+	bh=iDOL+Pgf68XI5fMo87a+IqebfJjceVppGD9rKghIMl0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QTXiqH1Dsx4/HTcJY6GJ4l9DD8CEiNZQuzyNzXik94OoeNvQ6rd7GdxCaF3rZf8SGovRkdyQqZSJ8jLIfKo4ceHIjHIO8HJzYb3HcnLHO9JDi6+uynVBmubd2fX1QcXkJCUYuVVs7+jDKCj7eq/e9sSGKqt66RY76I+idl4kKQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bS8OqIP7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88B19C4CEEC;
+	Fri, 14 Mar 2025 17:06:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741972006;
+	bh=iDOL+Pgf68XI5fMo87a+IqebfJjceVppGD9rKghIMl0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bS8OqIP7wINdAElZjuT/hg4AKOH+7zMy69HXrKw1kajUHeonYJkDLGZkiEUO5HbXD
+	 PRuDcvr2agaJwkzm/UEfYIuEJmjqvCd91E4ucyh7eR+KhY5gQEWI/yQT6j0XJNOjsZ
+	 /DQvBOyEyuKgYMx4sBbJjLu7K0Kuf7F91JI8j2Z1n1mAOwHsBmWbT8L8vvANd3rRiz
+	 igGUZz+9IWMxSgdW7hJIfprfp22mK7MCnI2BzD2IezhtZ7SQKRuP0u2SZDlD43fYOR
+	 rvVjYp4mL3UCbPqoCha98OkbDhYfazjV9w0ViNeYzx1F3sv35lb9DNlTCTvtMYTcOW
+	 0U388YuYtIedA==
+Date: Fri, 14 Mar 2025 14:06:43 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Aditya Gupta <adityag@linux.ibm.com>,
+	"Steinar H. Gunderson" <sesse@google.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Changbin Du <changbin.du@huawei.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	James Clark <james.clark@linaro.org>,
+	Kajol Jain <kjain@linux.ibm.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Li Huafei <lihuafei1@huawei.com>,
+	Dmitry Vyukov <dvyukov@google.com>, Andi Kleen <ak@linux.intel.com>,
+	Chaitanya S Prakash <chaitanyas.prakash@arm.com>,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	llvm@lists.linux.dev, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>
+Subject: Re: [PATCH v2 00/17] Support dynamic opening of capstone/llvm remove
+ BUILD_NONDISTRO
+Message-ID: <Z9RiI9yjpMUPRYZe@x1>
+References: <20250122062332.577009-1-irogers@google.com>
+ <Z5K712McgLXkN6aR@google.com>
+ <CAP-5=fX2n4nCTcSXY9+jU--X010hS9Q-chBWcwEyDzEV05D=FQ@mail.gmail.com>
+ <CAP-5=fUHLP-vtktodVuvMEbOd+TfQPPndkajT=WNf3Mc4VEZaA@mail.gmail.com>
+ <CAP-5=fV_z+Ev=wDt+QDwx8GTNXNQH30H5KXzaUXQBOG1Mb8hJg@mail.gmail.com>
+ <Z9NbFqaDQMjvYxcc@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/13] selftests/bpf: Integrate test_xsk.c to test_progs
- framework
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250313-xsk-v1-0-7374729a93b9@bootlin.com>
- <Z9RPNzJtBgheiTeS@boxer>
-Content-Language: en-US
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-In-Reply-To: <Z9RPNzJtBgheiTeS@boxer>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddufeduvdejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepuegrshhtihgvnhcuvehurhhuthgthhgvthcuoegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpefhheeggfetffekheevuedvkedvvdeufeegjeevgfelveevveetffevfefgheeijeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplgduledvrdduieekrddtrddugegnpdhmrghilhhfrhhomhepsggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepvdejpdhrtghpthhtohepmhgrtghivghjrdhfihhjrghlkhhofihskhhisehinhhtvghlrdgtohhmpdhrtghpthhtohepsghjohhrnheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrghhnuhhsrdhkrghrlhhsshhonhesihhnthgvlhdrtghomhdprhgtphhtthhopehjohhnrghthhgrnhdrlhgvmhhonhesghhmrghilhdrtghomhdprhgtphhtthhop
- egrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghv
-X-GND-Sasl: bastien.curutchet@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z9NbFqaDQMjvYxcc@google.com>
 
-Hi Maciej
+On Thu, Mar 13, 2025 at 03:24:22PM -0700, Namhyung Kim wrote:
+> I think #ifdef placements is not a big deal, but I still don't want to
+> pull libcapstone details into the perf tree.
+ 
+> For LLVM, I think you should to build llvm-c-helpers anyway which means
+> you still need LLVM headers and don't need to redefine the structures.
+ 
+> Can we do the same for capstone?  I think it's best to use capstone
+> headers directly and add a build option to use dlopen().
 
-On 3/14/25 4:45 PM, Maciej Fijalkowski wrote:
-> On Thu, Mar 13, 2025 at 11:47:58AM +0100, Bastien Curutchet (eBPF Foundation) wrote:
->> Hi all,
->>
->> This patch series continues the work to migrate the script tests into
->> prog_tests.
-> 
-> Hi Bastien,
-> 
-> the sole purpose of this is a cleanup of some sort?
-> 
+My two cents: if one wants to support some library, then have its devel
+packages available at build time.
 
-The goal is to have more tests run by the CI and fewer standalone 
-scripts so that regressions are spotted more efficiently.
+Then, perf nowadays has lots of dependencies, we need to rein on that,
+making the good to have but not always used things to be dlopen'ed.
 
->>
->> The test_xsk.sh script tests lots of AF_XDP use cases. The tests it uses
->> are defined in xksxceiver.c. As this script is used to test real
->> hardware, the goal here is to keep it as is and only integrate the
->> tests on veth peers into the test_progs framework.
-> 
-> We're doubling the functionality for no additional benefits? Or the
-> benefit of this set would be the veth xsk tests execution within BPF CI?
-> 
+Like we did with gtk (that at this point I think is really deprecated,
+BTW).
 
-Yes the benefit would be the tests execution within BPF CI.
+gdb has prior art in this area that we could use, it is not even a TUI
+but it asks if debuginfo should be used and if so it goes on on
+potentially lenghty updates of the local buildid cache they keep (which
+is not the one we use, it should be).
 
->> Three tests are flaky on s390 so they won't be integrated to test_progs
->> yet (I'm currently trying to make them more robust).
->>
->> PATCH 1 & 2 fix some small issues xskxceiver.c
->> PATCH 3 to 9 rework the xskxceiver to ease the integration in the
->> test_progs framework. Two main points are addressed in them :
->>   - wrap kselftest calls behind macros to ease their replacement later
->>   - handle all errors to release resources instead of calling exit() when
->>     any error occurs.
->> PATCH 10 extracts test_xsk[.c/.h] from xskxceiver[.c/.h] to make the
->> tests available to test_progs
->> PATCH 11 enables kselftest de-activation
->> PATCH 12 isolates the flaky tests
->> PATCH 13 integrate the non-flaky tests to the test_progs framework
-> 
-> I didn't bisect but this set breaks the HW tests for me which *is* what we
-> care about. I'll dig onto that on monday and will get back to you.
-> 
+And in the recent discussion with Dmitry Vyukov the possibility doing a
+question to the user about a default behaviour to be set and then using
+.perfconfig not to bother anymore the user about things is part of
+helping the user to deal with the myriad possibilites perf offers.
 
-Ok, thank you. Can you tell me what hardware you use please ? If by any 
-chance I have the same HW somewhere in my office, I can try to reproduce 
-on my side.
+gdb could use that as well, why ask at every session if debuginfod
+should be used? Annoying.
 
+I think perf should try to use what is available, both at build and at
+run time, and it shouldn't change the way it output things, but should
+warn the user about recent developments, things we over time figured out
+are problematic and thus a new default would be better, but then obtain
+consent if the user cares about it, and allow for backtracking, to go
+and change .perfconfig when the user realises the old output/behaviour
+is not really nice.
 
-Best regards,
-Bastien
+But keeping the grass green as it used to be should be the priority.
 
+- Arnaldo
 
