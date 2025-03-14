@@ -1,211 +1,149 @@
-Return-Path: <bpf+bounces-54074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE601A61D8D
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 22:05:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C67DA61D93
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 22:06:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BD6418985FD
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 21:05:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEE26880F58
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 21:06:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1141A5B84;
-	Fri, 14 Mar 2025 21:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53B41C8631;
+	Fri, 14 Mar 2025 21:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HRbDzyP2"
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="DJi/IKUS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD95C190676
-	for <bpf@vger.kernel.org>; Fri, 14 Mar 2025 21:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE71190676;
+	Fri, 14 Mar 2025 21:06:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741986325; cv=none; b=Vno0rVUARc9OklPlOQQjkHwWWwYJlDTGsdNjyS5oqwHlKsmwRaZYyEP5zOxGgqXq8O2NuSUHjNY+jp1fRE+44jmKaG0oO8HzXjtkGX29onNMfaHA30SljF5QMIO7KxRKhNZytfogSynzkUmCh2TP7x7EPNNIbknlMfSifiUV694=
+	t=1741986408; cv=none; b=dE5fuIu5k/pZk3amf0aowFkNUQ2fszjcWCLzPgyNkVy8Orr5Xk3NS79HX+JKUCLsM18pDtUeVfqqEPKCFeotBZndZcUF6RIvia6V+dmaPI/A+6FbzuluJq85916JaoFddnVlqSfQiE90EKKz57f+BH4HSBClHG5CXI2kVYui1Ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741986325; c=relaxed/simple;
-	bh=PK4BAut0O9u0MyuPnp8VNqQbPw1Q7vwbcazeiPQAYe8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V1cmWV4PujMQWyiTNkxA4pM59bt8wndoJMLJsM/wOrMByI/7Xzxn3XDIHIWhLDwrWDGcTXBGGSJSZPZ8vUX49isNXLiUzHl/IhvzOSxEui2mhUwPm9Fw0Y7lDIYzAPxoXii+6+f8QOXdnR60yHTnuqWgPNo573vbhUSRTTLlDac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HRbDzyP2; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-39149bccb69so2278515f8f.2
-        for <bpf@vger.kernel.org>; Fri, 14 Mar 2025 14:05:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741986322; x=1742591122; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T7w6Uc54Hp4Z4ogU8idzqB5PDjE5SVF81UwFxvxvh5Y=;
-        b=HRbDzyP22VdrsIlZ0TkukzF6S0uWuiYH4y4zY4WYdrIsnZs8zqP8c+eoIeQW8EL9sR
-         CgiRmTDqEqD+iG19vtE4VLhSwvrYpQCI4Yju8pMwEnyq5koRypO5W7Qi2k470ivYYkKj
-         8J7ctg5csiQ12BcMIhTDkPnoh6uMo+KZHZZBTAXkt+bQHh4GsX0KovM2kAow0CHAxf4l
-         g+e1rgifNAhElvVZMDV3DHDEWGpsnAHXuhh8vXDqvrr0u/yG5/ZVg9Ij3hR7HdSICImJ
-         6ruv+3K6qa1az8f9CJZagLAZDU2ZXrSyDYNW6QjlWLmPsvQPvseWxjf9g/5WrqAPFHCz
-         VzpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741986322; x=1742591122;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T7w6Uc54Hp4Z4ogU8idzqB5PDjE5SVF81UwFxvxvh5Y=;
-        b=dk7LgFkwTqAXu3jJ4TRpV06GwRkXIgBdDBZsc26ppPF9vJV8MYVjW+l1s/QSwDjhdV
-         V7ULiVNbIaiSzFzOgBVqudK9Zh4MRyFjbeRCitFrjCfNIamqSKG4GGduqv+IAaG6CANQ
-         /lJnPRBju2ndGqnFoyoZ5ex3dnXHuo2WcYciWH8V7zgRFzhQQ6XoIINaiOtfQHbHwQ0x
-         UazSPpbRzPhOfGNehqqM2PCb7BGrXNIA/3Hjghiw/GfD6hzBnuS1KqM0gudzUAxFwwW2
-         VmeHNrzgJh1/GpgHOU1ZIRB3lNswmlX/Suh7k2wTBtg1SLo6Uc3uYoAt/nGtJPlg15UT
-         t5NA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDmXkaJhp9YuNdet0i9hP4Kpc9HlS0E59RiGp5E+VcxVvrOtNKXHHp7eHqwIdDUmg4zhA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7Aj2uG8+0N2gAgdrZH4fpkgcLVkQSoHPy4bfXx2qd8e1WbLow
-	MgJSe+m/Kk0/e4rt826pDhWnYKH+xqx3MO07RBjgzpoGT9k4oXa9UxOQdvGtstUl93GyuAuymIt
-	uwqRxoekfXjRFZRzrBCI8otaiPXY=
-X-Gm-Gg: ASbGncuYXAQUFWV5r5EyC8lAwnsFO4IN5v2KHu1DwVey5fRl4AAFAqBhID01o8qBgm8
-	C+8q9/xPPkxP+xFS0GY31OSRPmqQ8RQgn4XKSOv/4YV9Owzz2nHOQGVXm6wYlnodobwOEbgKrY2
-	JlIG3JG0u2iWh6JeQo9aO1zWTG8tgu2FE7nxwvpprGeg==
-X-Google-Smtp-Source: AGHT+IFo13vCXBHtrlSWgGPCh8y5QQMU4cv7zNOU9SlNZjO1a1oUxuWBBplDhT7izEPAhcVB+QCkW2Zh/58maKTowiY=
-X-Received: by 2002:a5d:598b:0:b0:38d:badf:9df5 with SMTP id
- ffacd0b85a97d-3971d2378a8mr4137708f8f.17.1741986321824; Fri, 14 Mar 2025
- 14:05:21 -0700 (PDT)
+	s=arc-20240116; t=1741986408; c=relaxed/simple;
+	bh=6LYyJEQSRLfRi3eWvEUXDA8dkKvwR9DDtj4F2tbzI8M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JI8B/9v8eaTgJE30kLMSc1D41uBMVN5y7kIBnBMQyXMECbaGuO5VXP3R5guMolWLZXTLl8Yrscf6gT3Vwer4CpYENvOSFjVZjauqLXcQPSyT3d2KuSGiqqQwqpwkWYCmxOvpKSaW+DvInwNRS22OZR7RtyAfIiNX1lZcj+iva/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=DJi/IKUS; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 24C141C00B2; Fri, 14 Mar 2025 22:06:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1741986403;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=smPhwJATKEjWQ+pl7R6bsg4CgAkcIEX5UUZ9M/FhqZE=;
+	b=DJi/IKUSvjJ2MP//YCjTNZjs/ita0pUBnuUuS7aGK4JeC/seuTz+RW7jJro2VKTnBHsvpE
+	NMKSF3lW3eK/OR5z8bRq23Zin1mzdpQxO1mcGqi84VEktTeW5b+3zI1ZV8eJ5HdwtHrVy+
+	RICi0A+z73e+F+oj/RUvNljmne5pHIQ=
+Date: Fri, 14 Mar 2025 22:06:42 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Werner Sembach <wse@tuxedocomputers.com>
+Cc: Armin Wolf <W_Armin@gmx.de>, hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com, bentiss@kernel.org,
+	dri-devel@lists.freedesktop.org, jelle@vdwaa.nl, jikos@kernel.org,
+	lee@kernel.org, linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+	miguel.ojeda.sandonis@gmail.com, ojeda@kernel.org,
+	onitake@gmail.com, cs@tuxedo.de,
+	platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v5 0/1] platform/x86/tuxedo: Add virtual LampArray for
+ TUXEDO NB04 devices
+Message-ID: <Z9SaYi5sKOeKTvRA@duo.ucw.cz>
+References: <20250121225510.751444-1-wse@tuxedocomputers.com>
+ <aa91e17f-0ea8-4645-a0f9-57c016e36a9e@gmx.de>
+ <Z53f7VNIgUWWFn9l@duo.ucw.cz>
+ <b69e2766-2238-4913-ae2d-21d8716f2eef@tuxedocomputers.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
- <20250222024427.30294-2-alexei.starovoitov@gmail.com> <oswrb2f2mx36l6f624hqjvx4lkjdi26xwfwux2wi2mlzmdmmf2@dpaodu372ldv>
- <20250311162059.BunTzxde@linutronix.de> <CAGudoHEaGXwS1OQT_Af5YA=uw_zmUYy_csQ3nqYA_np+SbQ-cQ@mail.gmail.com>
- <b428858a-e985-4acc-95f4-4203afcb500a@suse.cz> <CAADnVQKP-oMrCyC2VPCEEXMxEO6+E2qknY8URLtCNySxwu8h0g@mail.gmail.com>
- <496ff0d2-97ac-41f5-a776-455025fb72db@suse.cz>
-In-Reply-To: <496ff0d2-97ac-41f5-a776-455025fb72db@suse.cz>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 14 Mar 2025 14:05:10 -0700
-X-Gm-Features: AQ5f1JrTxff2qQvWoQ34z5jQ9hEz8VBsLUFbKhfnN4sPE5bEh5-m8am-auc_V8s
-Message-ID: <CAADnVQJnZB52jvQDhA8XbhM3nd7O6PCms1jBKXx+F0jn+HA6fg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 1/6] locking/local_lock: Introduce localtry_lock_t
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Mateusz Guzik <mjguzik@gmail.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf <bpf@vger.kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="75ovjfMpliKM0pqD"
+Content-Disposition: inline
+In-Reply-To: <b69e2766-2238-4913-ae2d-21d8716f2eef@tuxedocomputers.com>
+
+
+--75ovjfMpliKM0pqD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 12, 2025 at 1:29=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> On 3/11/25 23:24, Alexei Starovoitov wrote:
-> > On Tue, Mar 11, 2025 at 9:21=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz=
-> wrote:
-> >>
-> >> On 3/11/25 17:31, Mateusz Guzik wrote:
-> >> > On Tue, Mar 11, 2025 at 5:21=E2=80=AFPM Sebastian Andrzej Siewior
-> >> > <bigeasy@linutronix.de> wrote:
-> >> >>
-> >> >> On 2025-03-11 16:44:30 [+0100], Mateusz Guzik wrote:
-> >> >> > On Fri, Feb 21, 2025 at 06:44:22PM -0800, Alexei Starovoitov wrot=
-e:
-> >> >> > > +#define __localtry_lock(lock)                                 =
-     \
-> >> >> > > +   do {                                                    \
-> >> >> > > +           localtry_lock_t *lt;                            \
-> >> >> > > +           preempt_disable();                              \
-> >> >> > > +           lt =3D this_cpu_ptr(lock);                        \
-> >> >> > > +           local_lock_acquire(&lt->llock);                 \
-> >> >> > > +           WRITE_ONCE(lt->acquired, 1);                    \
-> >> >> > > +   } while (0)
-> >> >> >
-> >> >> > I think these need compiler barriers.
-> >> >> >
-> >> >> > I checked with gcc docs (https://gcc.gnu.org/onlinedocs/gcc/Volat=
-iles.html)
-> >> >> > and found this as confirmation:
-> >> >> > > Accesses to non-volatile objects are not ordered with respect t=
-o volatile accesses.
-> >> >> >
-> >> >> > Unless the Linux kernel is built with some magic to render this m=
-oot(?).
-> >> >>
-> >> >> You say we need a barrier() after the WRITE_ONCE()? If so, we need =
-it in
-> >> >> the whole file=E2=80=A6
-> >> >>
-> >> >
-> >> > I see the original local_lock machinery on the stock kernel works fi=
-ne
-> >> > as it expands to the preempt pair which has the appropriate fences. =
-If
-> >> > debug is added, the "locking" remains unaffected, but the debug stat=
-e
-> >> > might be bogus when looked at from the "wrong" context and adding th=
-e
-> >> > compiler fences would trivially sort it out. I don't think it's a bi=
-g
-> >> > deal for *their* case, but patching that up should not raise any
-> >> > eyebrows and may prevent eyebrows from going up later.
-> >> >
-> >> > The machinery added in this patch does need the addition for
-> >> > correctness in the base operation though.
-> >>
-> >> Yeah my version of this kind of lock in sheaves code had those barrier=
-()'s,
-> >> IIRC after you or Jann told me. It's needed so that the *compiler* doe=
-s not
-> >> e.g. reorder a write to the protected data to happen before the
-> >> WRITE_ONCE(lt->acquired, 1) (or after the WRITE_ONCE(lt->acquired, 0) =
-in
-> >> unlock).
-> >
-> > I think you all are missing a fine print in gcc doc:
-> > "Unless...can be aliased".
-> > The kernel is compiled with -fno-strict-aliasing.
-> > No need for barrier()s here.
->
-> Note I know next to nothing about these things, but I see here [1]:
->
-> "Whether GCC actually performs type-based aliasing analysis depends on th=
-e
-> details of the code. GCC has other ways to determine (in some cases) whet=
-her
-> objects alias, and if it gets a reliable answer that way, it won=E2=80=99=
-t fall back
-> on type-based heuristics. [...] You can turn off type-based aliasing
-> analysis by giving GCC the option -fno-strict-aliasing."
->
-> I'd read that as -fno-strict-aliasing only disables TBAA, but that does n=
-ot
-> necessary mean anything can be assumed to be aliased with anything?
+Hi!
 
-That's correct.
+> > Comments from previous review were not addressed.
+> >=20
+> > Most importantly, this is not a way to do kernel interface. We want
+> > reasonable interface that can be documented and modified as needed. We
+> > want to pass /dev/input to userspace, not raw HID. This is not ok.
+>=20
+> There are already 2 endless discussions about this:
+>=20
+> https://lore.kernel.org/all/1fb08a74-62c7-4d0c-ba5d-648e23082dcb@tuxedoco=
+mputers.com/
+>=20
+> https://lore.kernel.org/all/73c36418-34d6-46cf-9f10-6ca5e569274f@tuxedoco=
+mputers.com/
+>=20
+> And a shorter one before that:
+>=20
+> https://lore.kernel.org/all/30cbbf20-08cf-a69b-4f58-359a9802e86f@tuxedoco=
+mputers.com/
+>=20
+> The brief:
+>=20
+> - LampArray is a standard that will hit the Linux world anyway.
 
-> An if we e.g. have a pointer to memcg_stock_pcp through which we access t=
-he
-> stock_lock an the other (protected) fields and that pointer doesn't chang=
-e
-> between that, I imagine gcc can reliably determine these can't alias?
+Maybe. Still have to see device implementing that. LampArray will
+still need /sys/class/leds for compatibility. LampArray still does not
+solve effects. More importantly, it is not okay to say "kernel
+interface is specified by that crazy document from 3rd party".
 
-Though my last gcc commit was very long ago here is a simple example
-where compiler can reorder/combine stores:
-struct s {
-   short a, b;
-} *p;
-p->a =3D 1;
-p->b =3D 2;
-The compiler can keep them as-is, combine or reorder even with
--fno-strict-aliasing, because it can determine that a and b don't alias.
+> - The alternative proposal via a led matrix does not even really fit
+> keyboards, and does not at all fit all other device types.
 
-But after re-reading gcc doc on volatiles again it's clear that
-extra barriers are not necessary.
-The main part:
-"The minimum requirement is that at a sequence point all previous
-accesses to volatile objects have stabilized"
+We are solving keyboards, not the other device types. The other devices
+can likely be handled by existing /sys/class/leds interfaces.
 
-So anything after WRITE_ONCE(lt->acquired, 1); will not be hoisted up
-and that's what we care about here.
+> Hans and Benjamin already agree with me that LampArray is the way to go.
+>=20
+> So after over 2 years can I please have a final decision on how to implem=
+ent this?
+
+For final decisions, you'd have to talk to Linus.
+
+(And sorry for the delay, btw).
+
+If you want to move this forward, place a driver in
+drivers/leds/keyboard. Implement /sys/class/leds interface, but make
+sure interface is clearly separated from the code talking to the
+firmware. Then we can review that, perhaps merge, so users will have
+something, and decide what interface to use for per-key control.
+
+LampArray is no-go. Other options are open.
+
+Best regards,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--75ovjfMpliKM0pqD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZ9SaYgAKCRAw5/Bqldv6
+8iwJAJ9mnjTAm2a5BD6DI5p8cmuCHFDsmgCfQXGzc5tidZGm75RqL1iGB0UMvPw=
+=uU6V
+-----END PGP SIGNATURE-----
+
+--75ovjfMpliKM0pqD--
 
