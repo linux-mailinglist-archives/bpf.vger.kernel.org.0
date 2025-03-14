@@ -1,58 +1,69 @@
-Return-Path: <bpf+bounces-54025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54027-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF3B1A60B20
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 09:20:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38A47A60CA5
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 10:04:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E0553B1F46
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 08:20:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2847E170DCF
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 09:03:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6291A2872;
-	Fri, 14 Mar 2025 08:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B941DE8A5;
+	Fri, 14 Mar 2025 09:03:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b="jXa4I/G3"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F9A1624FC;
-	Fri, 14 Mar 2025 08:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852081DE2C1;
+	Fri, 14 Mar 2025 09:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.128
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741940434; cv=none; b=ctEvf9INC2pJrPTyG916qWChU3T15CArGGjSusPtvzA32vCZ0sWQu+wVVS/RmGRY/Thym58ty7oL9uGbUe73mTx9jvRcytcCyFwUn3/+olEvNaW6QpOvqfwGOHmFiQzdrBEIEClDcWA9VY5k721BUGiA99dZHO420xpuWEmsDFs=
+	t=1741943032; cv=none; b=I75emS5PAopMq3t3RECdbvNcivNAa7VGV5ALFE1sMEkzunIyQpPFsouehwibqhNKFFFRkHU8tD6ry24RLGbJ0NkFscxr90d2mS+Sie5xuMHWV7Q/l+US6GKYW03yyxlfdYDqr4RKz6Mb2+TLFuAhtq/f7i7GmnDWa37zhoi+FgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741940434; c=relaxed/simple;
-	bh=g29ZXf4wwqo2NDIXF+nWjjIdKxamx2faR8t8+nPRbjw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IGcDLN35O856hHkXQKByenksHD2R6pIkEg89INyGalOj+OAucmBfk9lNox5eoPciJlmgZ7ljFJRURy14fR5+Zst6lwe7ujD/LUQo6mS5tXBhDuvI32uelJVirWO/9DEGCpB9/iL/iFpjn+6153AkKkgOna/w3sjWZCyclviXBdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4ZDcdx646FzvWs7;
-	Fri, 14 Mar 2025 16:16:37 +0800 (CST)
-Received: from kwepemd100023.china.huawei.com (unknown [7.221.188.33])
-	by mail.maildlp.com (Postfix) with ESMTPS id 459731402DB;
-	Fri, 14 Mar 2025 16:20:29 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- kwepemd100023.china.huawei.com (7.221.188.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 14 Mar 2025 16:20:27 +0800
-From: Dong Chenchen <dongchenchen2@huawei.com>
-To: <edumazet@google.com>, <kuniyu@amazon.com>, <pabeni@redhat.com>,
-	<willemb@google.com>, <john.fastabend@gmail.com>, <jakub@cloudflare.com>,
-	<davem@davemloft.net>, <kuba@kernel.org>, <horms@kernel.org>,
-	<daniel@iogearbox.net>
-CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <stfomichev@gmail.com>,
-	<mrpre@163.com>, <xiyou.wangcong@gmail.com>, <zhangchangzhong@huawei.com>,
-	<weiyongjun1@huawei.com>, Dong Chenchen <dongchenchen2@huawei.com>
-Subject: [PATCH net 2/2] selftests: bpf: Add case for sockmap_ktls set when verdict attached
-Date: Fri, 14 Mar 2025 16:20:04 +0800
-Message-ID: <20250314082004.2369712-3-dongchenchen2@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20250314082004.2369712-1-dongchenchen2@huawei.com>
-References: <20250314082004.2369712-1-dongchenchen2@huawei.com>
+	s=arc-20240116; t=1741943032; c=relaxed/simple;
+	bh=ZErZMC+QOWToIegQ2iKmCvjBmUNPIrj83qIYnRryRRc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FnT6hK09j2f3H+fVn7df2FNJvsRViQhCNdrnKZAPqX7xKXyR4ZTUCkxayIBVyjOqyeWlQi9JfDr9kFKD/G49v+V/wzZ+baacydUVWh69JsvPK5wV0ZEn0oxWgGulwbfgkS/+DGUdjflhE9qcTEmo/21ptEir+ngcu6eCN5Pnlbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org; spf=pass smtp.mailfrom=deepin.org; dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b=jXa4I/G3; arc=none smtp.client-ip=54.254.200.128
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=deepin.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=deepin.org;
+	s=ukjg2408; t=1741943015;
+	bh=F3Mr2gHjrrQbbfObvuHIpoye6jVxjDNGFB92bMbmjnM=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=jXa4I/G3uyCQg1WD0syZm8bEx4u8LV2xsCI9VQgC9WQoQDLXp+t7lMNZG3sHxwV+J
+	 3LmW5qqn/zc6zbIAphiW27/D8bXgkoMkmRLwN/PwiR9UhtAVotwmjHHicvnMonA6Fg
+	 hqwLVLhX58srmwO6KfZReoYIPEXbOEXQuVJGkolM=
+X-QQ-mid: bizesmtpsz6t1741943012t48o76y
+X-QQ-Originating-IP: yWt2CxAOtvx3l3yIbs0QqGFaTolnx3VFoOEH3BYpPD8=
+Received: from localhost.localdomain ( [113.57.152.160])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Fri, 14 Mar 2025 17:03:30 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 4056344661151254047
+From: Chen Linxuan <chenlinxuan@deepin.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Chen Linxuan <chenlinxuan@deepin.org>,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc: Yi Lai <yi1.lai@intel.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	stable@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH stable 6.1] lib/buildid: Handle memfd_secret() files in build_id_parse()
+Date: Fri, 14 Mar 2025 17:02:47 +0800
+Message-ID: <5602B4F2D8F73293+20250314090247.31170-2-chenlinxuan@deepin.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,114 +71,93 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemd100023.china.huawei.com (7.221.188.33)
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpsz:deepin.org:qybglogicsvrgz:qybglogicsvrgz7a-0
+X-QQ-XMAILINFO: N2uXtyrSU4Fu3wpACaovTJUP+GajuhxUR6pKBTRzKenMG8bkFVtrUdaj
+	9VnFEzRe2Jt6/MXQKV8lL0pBqDz0Bqlti5oI1KxwfRNShTixDnkT1CZ90u1uktmxkRd6WSS
+	j4natsBdxEjDIWDyeVb3HV4LjRl50Q3hpiErT1gJ2bDBFxc7C+ubitiJWcpfFc1dNYUAt65
+	QK2QIYmN5ETM3pe5mwlu+3AwzZ7mp8gonYreBmCoRf7HRnktpniGTLbhD41yk2rFrBE5RL2
+	Iol3qTwdyk03GE0Rz7iNn+1It46+j27m/4b8IJacOemhyFaQmyvNm/553jnbWfo5aensg41
+	fDrfYAFPGMaRd2+GwIZ01V7sgFd6ScOXGVcfda5n6Mxo5rwYMdolzyyU8XgHTh5SgA56MCz
+	jHfCHJx8kCbGUrV6IlHKnj77rCBxVeQIQxBVUlEwQKbo5/hT5IuNvWGE+kU5utjKv8l+dnj
+	xVVay8U2OoBidcowcZlBv0aVI3Br87EojcPYemUy0iZiAzbqI69xA+3xYx1jEjDb0SVo/Jj
+	VzVSbn1imw5YupfqkenibARcEWV7BQvtrFWtPAoZXJygPiloiwiYLHnAFe6fGTaBqrsVo+N
+	IGCA5d6FFC5DSjRnCIJgmIiv6zHfoPIpUhv8zBbW4hOO7nEj2NuNGbw6CBDOcR0mnPyqj/y
+	K2dMOk/Me3evuLKxYyj4CSjhQkAQhNI0YZrxKsJ6uJCaj2gHA8Qv50P1hJvRtnopHOGcrsI
+	Vp0dwU9CPAG0qrSXYI0mAEtRdGOs90toD0ZY+GqYG7mnxMMR/XYIHrR/mEgVui2kw8D8jHi
+	AF8aRuREqbsiMJb+zAk+1gU78NSrBAY4RtvnLvUIp1b48Co+6kcEvc8CeU5VT5G+QByyjEh
+	X46gKDrOqd7rUjzNC2PYUwljm1NbbCmnM8PzKg1RkWiG8a6ieJkPcSV0FdGPhfIvK/r0N6F
+	E4YYj9FrTBKy1L4Nw/zye35xUwcXrJn/mUbbDZLZvSn3Ke8jAONqiVD+hZo5Y/SPJkbNYpa
+	o/3xs0dkXc0n6GTVNF6orP2ppZRoyu1PxXtSxTNv+zuySJ8L3WyfdtU7WPuuJ7bSbWUPaMx
+	w==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+X-QQ-RECHKSPAM: 0
 
-Cover the scenario when close a socket after inserted into the sockmap
-(verdict attach) and set ULP. It will trigger sock_map_close warning.
+[ Upstream commit 5ac9b4e935dfc6af41eee2ddc21deb5c36507a9f ]
 
-Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
+>From memfd_secret(2) manpage:
+
+  The memory areas backing the file created with memfd_secret(2) are
+  visible only to the processes that have access to the file descriptor.
+  The memory region is removed from the kernel page tables and only the
+  page tables of the processes holding the file descriptor map the
+  corresponding physical memory. (Thus, the pages in the region can't be
+  accessed by the kernel itself, so that, for example, pointers to the
+  region can't be passed to system calls.)
+
+We need to handle this special case gracefully in build ID fetching
+code. Return -EFAULT whenever secretmem file is passed to build_id_parse()
+family of APIs. Original report and repro can be found in [0].
+
+  [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation/
+
+Fixes: de3ec364c3c3 ("lib/buildid: add single folio-based file reader abstraction")
+Reported-by: Yi Lai <yi1.lai@intel.com>
+Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+Link: https://lore.kernel.org/bpf/20241017175431.6183-A-hca@linux.ibm.com
+Link: https://lore.kernel.org/bpf/20241017174713.2157873-1-andrii@kernel.org
+[ Linxuan: perform an equivalent direct check without folio-based changes ]
+Cc: stable@vger.kernel.org
+Fixes: 88a16a130933 ("perf: Add build id data in mmap2 event")
+Signed-off-by: Chen Linxuan <chenlinxuan@deepin.org>
 ---
- .../selftests/bpf/prog_tests/sockmap_ktls.c   | 70 +++++++++++++++++++
- 1 file changed, 70 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c b/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
-index 2d0796314862..d54bd5f41d4d 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
-@@ -9,6 +9,7 @@
+Some previous discussions can be found in the following links:
+https://lore.kernel.org/stable/05D0A9F7DE394601+20250311100555.310788-2-chenlinxuan@deepin.org/
+
+---
+ lib/buildid.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/lib/buildid.c b/lib/buildid.c
+index 9fc46366597e..6249bd47fb0b 100644
+--- a/lib/buildid.c
++++ b/lib/buildid.c
+@@ -5,6 +5,7 @@
+ #include <linux/elf.h>
+ #include <linux/kernel.h>
+ #include <linux/pagemap.h>
++#include <linux/secretmem.h>
  
- #define MAX_TEST_NAME 80
- #define TCP_ULP 31
-+#define SOCKMAP_VERDICT_PROG "test_sockmap_skb_verdict_attach.bpf.o"
+ #define BUILD_ID 3
  
- static int tcp_server(int family)
- {
-@@ -132,6 +133,73 @@ static void test_sockmap_ktls_update_fails_when_sock_has_ulp(int family, int map
- 	close(s);
- }
+@@ -157,6 +158,12 @@ int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
+ 	if (!vma->vm_file)
+ 		return -EINVAL;
  
-+/* close a kTLS socket after removing it from sockmap. */
-+static void test_sockmap_ktls_close_after_delete(int family, int map)
-+{
-+	struct sockaddr_storage addr = {0};
-+	socklen_t len = sizeof(addr);
-+	int err, cli, srv, zero = 0;
-+	struct bpf_program *prog;
-+	struct bpf_object *obj;
-+	int verdict;
++#ifdef CONFIG_SECRETMEM
++       /* reject secretmem folios created with memfd_secret() */
++       if (vma->vm_file->f_mapping->a_ops == &secretmem_aops)
++               return -EFAULT;
++#endif
 +
-+	obj = bpf_object__open_file(SOCKMAP_VERDICT_PROG, NULL);
-+	if (!ASSERT_OK(libbpf_get_error(obj), "bpf_object__open_file"))
-+		return;
-+
-+	err = bpf_object__load(obj);
-+	if (!ASSERT_OK(err, "bpf_object__load"))
-+		goto close_obj;
-+
-+	prog = bpf_object__next_program(obj, NULL);
-+	verdict = bpf_program__fd(prog);
-+	if (!ASSERT_GE(verdict, 0, "bpf_program__fd"))
-+		goto close_obj;
-+
-+	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach"))
-+		goto close_verdict;
-+
-+	srv = tcp_server(family);
-+	if (srv == -1)
-+		goto detach;
-+
-+	err = getsockname(srv, (struct sockaddr *)&addr, &len);
-+	if (!ASSERT_OK(err, "getsockopt"))
-+		goto close_srv;
-+
-+	cli = socket(family, SOCK_STREAM, 0);
-+	if (!ASSERT_GE(cli, 0, "socket"))
-+		goto close_srv;
-+
-+	err = connect(cli, (struct sockaddr *)&addr, len);
-+	if (!ASSERT_OK(err, "connect"))
-+		goto close_cli;
-+
-+	err = bpf_map_update_elem(map, &zero, &cli, 0);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem"))
-+		goto close_cli;
-+
-+	err = setsockopt(cli, IPPROTO_TCP, TCP_ULP, "tls", strlen("tls"));
-+	if (!ASSERT_OK(err, "setsockopt(TCP_ULP)"))
-+		goto close_cli;
-+
-+	err = bpf_map_delete_elem(map, &zero);
-+	if (!ASSERT_OK(err, "bpf_map_delete_elem"))
-+		goto close_cli;
-+
-+close_cli:
-+	close(cli);
-+close_srv:
-+	close(srv);
-+detach:
-+	bpf_prog_detach2(verdict, map, BPF_SK_SKB_STREAM_VERDICT);
-+close_verdict:
-+	close(verdict);
-+close_obj:
-+	bpf_object__close(obj);
-+}
-+
- static const char *fmt_test_name(const char *subtest_name, int family,
- 				 enum bpf_map_type map_type)
- {
-@@ -158,6 +226,8 @@ static void run_tests(int family, enum bpf_map_type map_type)
- 		test_sockmap_ktls_disconnect_after_delete(family, map);
- 	if (test__start_subtest(fmt_test_name("update_fails_when_sock_has_ulp", family, map_type)))
- 		test_sockmap_ktls_update_fails_when_sock_has_ulp(family, map);
-+	if (test__start_subtest(fmt_test_name("close_after_delete", family, map_type)))
-+		test_sockmap_ktls_close_after_delete(family, map);
- 
- 	close(map);
- }
+ 	page = find_get_page(vma->vm_file->f_mapping, 0);
+ 	if (!page)
+ 		return -EFAULT;	/* page not mapped */
 -- 
-2.34.1
+2.48.1
 
 
