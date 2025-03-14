@@ -1,133 +1,171 @@
-Return-Path: <bpf+bounces-54059-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54060-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56829A61715
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 18:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 74E8BA6179B
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 18:29:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49FE81B60A93
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 17:07:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FF2C18830AC
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 17:28:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2354E204582;
-	Fri, 14 Mar 2025 17:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B1F2036FF;
+	Fri, 14 Mar 2025 17:27:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bS8OqIP7"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pAJgzl9J";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CgrjTBeh"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC4F1FDA89;
-	Fri, 14 Mar 2025 17:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD285204680;
+	Fri, 14 Mar 2025 17:27:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741972006; cv=none; b=QXC9ne4tcrlOL6g5qcKNLXBov5ch368Stg02sTTlcTjbSUcGKqVso0moci5c+E4cgXSdXw5OZOJ5LE3a5wrJOEbYK794Vuwwrc42efzCAT2kHBu/mvMxwIGzCqXw26Z/z+WjzRjOVPaEsgqlKH6MM2p3BgQruSG+zpEoYf6DKDE=
+	t=1741973274; cv=none; b=g1v0hRNwsn5xFpygi7gvdoeLKkdy75MpxAdxg+xxvlRGjZ4Xl1RdDyKJc8KY8PmSxb69Qdazx/C7ETMyLZpuDIZJNOCbaUVDkWmZoaG7Qfgto5YIPSmAuO4PMgHrhezIGietE/wTtIOKPk3sEh450vFfyCb0FLGWIhF7k/+rx6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741972006; c=relaxed/simple;
-	bh=iDOL+Pgf68XI5fMo87a+IqebfJjceVppGD9rKghIMl0=;
+	s=arc-20240116; t=1741973274; c=relaxed/simple;
+	bh=yGxgdF+OHwBPS6fl+QKaxNcmsUSJgirsc4Ag+DtLmcg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QTXiqH1Dsx4/HTcJY6GJ4l9DD8CEiNZQuzyNzXik94OoeNvQ6rd7GdxCaF3rZf8SGovRkdyQqZSJ8jLIfKo4ceHIjHIO8HJzYb3HcnLHO9JDi6+uynVBmubd2fX1QcXkJCUYuVVs7+jDKCj7eq/e9sSGKqt66RY76I+idl4kKQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bS8OqIP7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88B19C4CEEC;
-	Fri, 14 Mar 2025 17:06:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741972006;
-	bh=iDOL+Pgf68XI5fMo87a+IqebfJjceVppGD9rKghIMl0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bS8OqIP7wINdAElZjuT/hg4AKOH+7zMy69HXrKw1kajUHeonYJkDLGZkiEUO5HbXD
-	 PRuDcvr2agaJwkzm/UEfYIuEJmjqvCd91E4ucyh7eR+KhY5gQEWI/yQT6j0XJNOjsZ
-	 /DQvBOyEyuKgYMx4sBbJjLu7K0Kuf7F91JI8j2Z1n1mAOwHsBmWbT8L8vvANd3rRiz
-	 igGUZz+9IWMxSgdW7hJIfprfp22mK7MCnI2BzD2IezhtZ7SQKRuP0u2SZDlD43fYOR
-	 rvVjYp4mL3UCbPqoCha98OkbDhYfazjV9w0ViNeYzx1F3sv35lb9DNlTCTvtMYTcOW
-	 0U388YuYtIedA==
-Date: Fri, 14 Mar 2025 14:06:43 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Aditya Gupta <adityag@linux.ibm.com>,
-	"Steinar H. Gunderson" <sesse@google.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Changbin Du <changbin.du@huawei.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	James Clark <james.clark@linaro.org>,
-	Kajol Jain <kjain@linux.ibm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Li Huafei <lihuafei1@huawei.com>,
-	Dmitry Vyukov <dvyukov@google.com>, Andi Kleen <ak@linux.intel.com>,
-	Chaitanya S Prakash <chaitanyas.prakash@arm.com>,
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	llvm@lists.linux.dev, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>
-Subject: Re: [PATCH v2 00/17] Support dynamic opening of capstone/llvm remove
- BUILD_NONDISTRO
-Message-ID: <Z9RiI9yjpMUPRYZe@x1>
-References: <20250122062332.577009-1-irogers@google.com>
- <Z5K712McgLXkN6aR@google.com>
- <CAP-5=fX2n4nCTcSXY9+jU--X010hS9Q-chBWcwEyDzEV05D=FQ@mail.gmail.com>
- <CAP-5=fUHLP-vtktodVuvMEbOd+TfQPPndkajT=WNf3Mc4VEZaA@mail.gmail.com>
- <CAP-5=fV_z+Ev=wDt+QDwx8GTNXNQH30H5KXzaUXQBOG1Mb8hJg@mail.gmail.com>
- <Z9NbFqaDQMjvYxcc@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t1r6ghF3Icwf13vRTFKDqZqbiFHIcMydFNJHjS3keTHP/R8kuwwZOlFG8ZRWvy5LKwViYew345/hVu8jmk0X8LPprIuTq8uxZg36a5JFALOrKk0JttYwjGyfgfYONhHAT5Agf7ZK8vod4WUYZh5F07o6LsWdHcMyGZD8GvDrlkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pAJgzl9J; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CgrjTBeh; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 14 Mar 2025 18:27:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1741973270;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wcRCFIBiAQNI1L/e3qYxgTree8WI127fpfM7PwFeH8k=;
+	b=pAJgzl9JA7bq+lH2EEHM2+Sq9VQrAel6kyYkh18y+6OlAeOZgdy+4aaW5X5E8hL67dTC/W
+	nq98URRZw8U7o+eKg72Gv1gbBm5GOqi+mA0JrTzWyaRN7+ZIViSM4lJZVe2gEn4U0xhFzZ
+	ry3nqUZ3RQLGZQQ1BXXq7GT4trV81n2SMj4+ztdbZrjZ3uYmIllPHA3pvRjRZ7QRzJ3M1Y
+	CECA7OpfW9c2Tm5FSF8zfbXLcGRNbZJ4kVT+RDSIuZSLS1c2hz7pmk1KhrSFljifn2LNYK
+	pWYDBgUTr152UlSsXL3c0hfhyj0Zb6MpZD+H806O1VVSRrrdJ6BCONiwcpScqQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1741973270;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wcRCFIBiAQNI1L/e3qYxgTree8WI127fpfM7PwFeH8k=;
+	b=CgrjTBehA7t1aEFnDlXacuc37fxZk2+ByxJyRvUSaxNaXJhgjPjHw+Gr0RQ5Zz25ynF/Dn
+	1IoHt7Hn5atxMHBg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+	Ricardo =?utf-8?Q?Ca=C3=B1uelo?= Navarro <rcn@igalia.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RFC] Use after free in BPF/ XDP during XDP_REDIRECT
+Message-ID: <20250314172749.hsmtyM3N@linutronix.de>
+References: <20250313183911.SPAmGLyw@linutronix.de>
+ <87ecz0u3w9.fsf@toke.dk>
+ <20250313203226.47_0q7b6@linutronix.de>
+ <871pv0rmr8.fsf@toke.dk>
+ <20250314153041.9BKexZXH@linutronix.de>
+ <875xkbha5k.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Z9NbFqaDQMjvYxcc@google.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <875xkbha5k.fsf@toke.dk>
 
-On Thu, Mar 13, 2025 at 03:24:22PM -0700, Namhyung Kim wrote:
-> I think #ifdef placements is not a big deal, but I still don't want to
-> pull libcapstone details into the perf tree.
- 
-> For LLVM, I think you should to build llvm-c-helpers anyway which means
-> you still need LLVM headers and don't need to redefine the structures.
- 
-> Can we do the same for capstone?  I think it's best to use capstone
-> headers directly and add a build option to use dlopen().
+On 2025-03-14 17:03:35 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > While at it, is there anything that ensures that only bpf_prog_run_xdp()
+> > can invoke the map_redirect callback? Mainline only assigns the task
+> > pointer in NAPI callback so any usage outside of bpf_prog_run_xdp() will
+> > lead to a segfault and I haven't seen a report yet so=E2=80=A6
+>=20
+> Yes, the verifier restricts which program types can call the
+> map_redirect helper.
 
-My two cents: if one wants to support some library, then have its devel
-packages available at build time.
+Okay. So checks for the BPF_PROG_TYPE_XDP type for the map_redirect and
+that is the only one setting it. Okay. Now I remember Alexei mentioning
+something=E2=80=A6
 
-Then, perf nowadays has lots of dependencies, we need to rein on that,
-making the good to have but not always used things to be dlopen'ed.
+> > --- a/include/net/xdp.h
+> > +++ b/include/net/xdp.h
+> > @@ -486,7 +486,12 @@ static __always_inline u32 bpf_prog_run_xdp(const =
+struct bpf_prog *prog,
+> >  	 * under local_bh_disable(), which provides the needed RCU protection
+> >  	 * for accessing map entries.
+> >  	 */
+> > -	u32 act =3D __bpf_prog_run(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
+> > +	struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
+> > +	u32 act;
+> > +
+>=20
+> Add an if here like
+>=20
+> if (ri->map_id | ri->map_type) { /* single | to make it a single branch */
+>=20
+> > +	ri->map_id =3D INT_MAX;
+> > +	ri->map_type =3D BPF_MAP_TYPE_UNSPEC;
+>=20
+> }
+>=20
+> Also, ri->map_id should be set to 0, not INT_MAX.
 
-Like we did with gtk (that at this point I think is really deprecated,
-BTW).
+The or variant does
 
-gdb has prior art in this area that we could use, it is not even a TUI
-but it asks if debuginfo should be used and if so it goes on on
-potentially lenghty updates of the local buildid cache they keep (which
-is not the one we use, it should be).
+|         add %gs:this_cpu_off(%rip), %rax        # this_cpu_off, tcp_ptr__
+|         movl    32(%rax), %edx  # _51->map_id, _51->map_id
+|         orl     36(%rax), %edx  # _51->map_type, tmp311
+|         je      .L1546  #,
+|         movq    $0, 32(%rax)    #, MEM <vector(2) unsigned int> [(unsigne=
+d int *)_51 + 32B]
+| .L1546:
 
-And in the recent discussion with Dmitry Vyukov the possibility doing a
-question to the user about a default behaviour to be set and then using
-.perfconfig not to bother anymore the user about things is part of
-helping the user to deal with the myriad possibilites perf offers.
+while the || does
 
-gdb could use that as well, why ask at every session if debuginfod
-should be used? Annoying.
+|         add %gs:this_cpu_off(%rip), %rax        # this_cpu_off, tcp_ptr__
+|         cmpq    $0, 32(%rax)    #, *_51
+|         je      .L1546  #,
+|         movq    $0, 32(%rax)    #, MEM <vector(2) unsigned int> [(unsigne=
+d int *)_51 + 32B]
+| .L1546:
 
-I think perf should try to use what is available, both at build and at
-run time, and it shouldn't change the way it output things, but should
-warn the user about recent developments, things we over time figured out
-are problematic and thus a new default would be better, but then obtain
-consent if the user cares about it, and allow for backtracking, to go
-and change .perfconfig when the user realises the old output/behaviour
-is not really nice.
+gcc isn't bad at optimizing here ;)
 
-But keeping the grass green as it used to be should be the priority.
+This is the or version as asked for. I don't mind doing any of the both.
+I everyone agrees then I would send it to Greg.
 
-- Arnaldo
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -486,7 +486,14 @@ static __always_inline u32 bpf_prog_run_xdp(const stru=
+ct bpf_prog *prog,
+ 	 * under local_bh_disable(), which provides the needed RCU protection
+ 	 * for accessing map entries.
+ 	 */
+-	u32 act =3D __bpf_prog_run(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
++	struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
++	u32 act;
++
++	if (ri->map_id | ri->map_type) {
++		ri->map_id =3D 0;
++		ri->map_type =3D BPF_MAP_TYPE_UNSPEC;
++	}
++	act =3D __bpf_prog_run(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
+=20
+ 	if (static_branch_unlikely(&bpf_master_redirect_enabled_key)) {
+ 		if (act =3D=3D XDP_TX && netif_is_bond_slave(xdp->rxq->dev))
+
+> -Toke
+
+Sebastian
 
