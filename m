@@ -1,121 +1,211 @@
-Return-Path: <bpf+bounces-54073-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54074-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6285BA61CD2
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 21:35:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE601A61D8D
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 22:05:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAE6A7A90B9
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 20:34:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BD6418985FD
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 21:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0073204840;
-	Fri, 14 Mar 2025 20:35:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1141A5B84;
+	Fri, 14 Mar 2025 21:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eVCH7tNT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HRbDzyP2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60191A2872;
-	Fri, 14 Mar 2025 20:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD95C190676
+	for <bpf@vger.kernel.org>; Fri, 14 Mar 2025 21:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741984531; cv=none; b=X1J71xMoTg9cMUlev0SgCqFXJI+eEw8pYmkVwLXUCn02WaefqY8666TOEAifP0wwe/U47UYX2q1DJivSUwJDeIQU+8Ozr24XxuyiWpKMdDIzv1ocnZrQm5neW0Sjc0nh40NJO2WGII8HXLaKAYKBdcjK9DkIZFefgnYJ5Xayq+g=
+	t=1741986325; cv=none; b=Vno0rVUARc9OklPlOQQjkHwWWwYJlDTGsdNjyS5oqwHlKsmwRaZYyEP5zOxGgqXq8O2NuSUHjNY+jp1fRE+44jmKaG0oO8HzXjtkGX29onNMfaHA30SljF5QMIO7KxRKhNZytfogSynzkUmCh2TP7x7EPNNIbknlMfSifiUV694=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741984531; c=relaxed/simple;
-	bh=y35moCP3XItPdmW0djksyvaUKSgqVbG7BR2LexXdQm0=;
+	s=arc-20240116; t=1741986325; c=relaxed/simple;
+	bh=PK4BAut0O9u0MyuPnp8VNqQbPw1Q7vwbcazeiPQAYe8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LHYZhm85fv8yk92igNtSQoK1XsyqhHHeUTJQUjwMeVRzK1DpdgWpa45WAXy3P4sddGYW4efsg431t7+EPXsMHIQJg3XEhHN7wbU/5UfY4YO6VnrE5D9HyRgyvj/Gs20j39mwu+MCIt3JdyFwTA/mfAWg2Gj7/NnHu4N5BzVJSDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eVCH7tNT; arc=none smtp.client-ip=209.85.221.53
+	 To:Cc:Content-Type; b=V1cmWV4PujMQWyiTNkxA4pM59bt8wndoJMLJsM/wOrMByI/7Xzxn3XDIHIWhLDwrWDGcTXBGGSJSZPZ8vUX49isNXLiUzHl/IhvzOSxEui2mhUwPm9Fw0Y7lDIYzAPxoXii+6+f8QOXdnR60yHTnuqWgPNo573vbhUSRTTLlDac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HRbDzyP2; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3913d45a148so2073896f8f.3;
-        Fri, 14 Mar 2025 13:35:29 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-39149bccb69so2278515f8f.2
+        for <bpf@vger.kernel.org>; Fri, 14 Mar 2025 14:05:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741984528; x=1742589328; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741986322; x=1742591122; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xj8OXU2bswQnQmpSnQJFG1oDI/cU7j7n5fn2QP89/kU=;
-        b=eVCH7tNTjlK3AGA1YNbVcvLZwtk7nyrg/ayo2kGelgdlRncWVI8w4xZtsg05wXMDAV
-         9vkepS+0FdWpUKVZDDcoE61Xzt97WX9TADUTkegiR1R5dN6VqwznAUfgBKnzeO9Gm7LP
-         fx/lNsISdPk8ECowRbD3MoFNIpddfK6fud3lVwiPcJvf4NjNtYBdChd7f3eynf7peDOv
-         bn5xXW1YJVkfQQ/3ey/jUKlTN56EQU36NxWo574LNLvC9jdhQrXemiZGqgDle4LdbC/q
-         zXlOG/crh8TaXwB2lkKQoL8UmW4bWVs6ZrlvgR62Idt4Td5VFGWBu0/4gUi1O/OQvCwz
-         3xhA==
+        bh=T7w6Uc54Hp4Z4ogU8idzqB5PDjE5SVF81UwFxvxvh5Y=;
+        b=HRbDzyP22VdrsIlZ0TkukzF6S0uWuiYH4y4zY4WYdrIsnZs8zqP8c+eoIeQW8EL9sR
+         CgiRmTDqEqD+iG19vtE4VLhSwvrYpQCI4Yju8pMwEnyq5koRypO5W7Qi2k470ivYYkKj
+         8J7ctg5csiQ12BcMIhTDkPnoh6uMo+KZHZZBTAXkt+bQHh4GsX0KovM2kAow0CHAxf4l
+         g+e1rgifNAhElvVZMDV3DHDEWGpsnAHXuhh8vXDqvrr0u/yG5/ZVg9Ij3hR7HdSICImJ
+         6ruv+3K6qa1az8f9CJZagLAZDU2ZXrSyDYNW6QjlWLmPsvQPvseWxjf9g/5WrqAPFHCz
+         VzpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741984528; x=1742589328;
+        d=1e100.net; s=20230601; t=1741986322; x=1742591122;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xj8OXU2bswQnQmpSnQJFG1oDI/cU7j7n5fn2QP89/kU=;
-        b=qbWUXPVKpl/HuNjFRK6m/j4BTMgiRj27BuPcasIZUZ5UgjennHBRkir4b+Xj6K0P6r
-         K3JlHhsRljLFeFZYoY3Ar8LxmAsOzjzevGGrhEyThVGYAe4Rkdhru63dh6sHRqYkvhHf
-         Gs3HYt7VHZ09e7HPxglCLljXzbQtbfYjnZXLS5c8OVTqlfUZyIfHKd6nv0EtQtZiKEK9
-         tJBfSTaRu3gu/wTjz70ZqvTPaMTKqIcuWR7XJp9hG2razMkNaR9YJ4SaUTYtFw1vNJj6
-         CqhVUw04YPAd5b5XDqozcL4YdLh6SYndkCDIMG6NOdivQZQabDlmDMC0GrU0Ju6LpGsy
-         urcA==
-X-Forwarded-Encrypted: i=1; AJvYcCVKb5IKGUTqwZ3KVEhRUSvU5TJgkXPtSaAM3gaXY+Yu12Db2gVwUmE+QLBRELP7PJeiyZo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVqdX6fKZ7/V0zmFBSUGlOiiBfnfmJrzsnPFhdwQ36BhXjqFij
-	bLD2DT46iCyA1A3lZ3KznEAWhS/ZLLVk7ewQOpr8eQrF++vkE4jqqiDCRADAHXX4rfyvKYNw+NE
-	Y3xZQJ4/QQJjA1M8D2ZwcODDe1Xw=
-X-Gm-Gg: ASbGncvRneU0uf7Tbd0PiN5aFfCbofSu7Oz3+oOyUxjmCm6WQAU4NmYEZ8Bo6cZ6+3k
-	uGE0nKoNrvpaOZxQs3gSoJLsNx/496OeL5hRCkLGWGOg4/OBKn+zkBWWJIT82u+vomVj1UzCli3
-	08m0dzI/1Yx8Mp3hmetn//JlvNSZ/ndeEAZIg8YaI7Bg==
-X-Google-Smtp-Source: AGHT+IGH0ch1bpRz5RWqHDMS4g9AffQUWD+9A2kHZvynf07UyLhMFxGsDWEp9wG5QFc+R955GPU7Z696xKK+gW68c4I=
-X-Received: by 2002:a5d:47c9:0:b0:390:e311:a8c7 with SMTP id
- ffacd0b85a97d-3971cd57eb0mr4909674f8f.5.1741984527781; Fri, 14 Mar 2025
- 13:35:27 -0700 (PDT)
+        bh=T7w6Uc54Hp4Z4ogU8idzqB5PDjE5SVF81UwFxvxvh5Y=;
+        b=dk7LgFkwTqAXu3jJ4TRpV06GwRkXIgBdDBZsc26ppPF9vJV8MYVjW+l1s/QSwDjhdV
+         V7ULiVNbIaiSzFzOgBVqudK9Zh4MRyFjbeRCitFrjCfNIamqSKG4GGduqv+IAaG6CANQ
+         /lJnPRBju2ndGqnFoyoZ5ex3dnXHuo2WcYciWH8V7zgRFzhQQ6XoIINaiOtfQHbHwQ0x
+         UazSPpbRzPhOfGNehqqM2PCb7BGrXNIA/3Hjghiw/GfD6hzBnuS1KqM0gudzUAxFwwW2
+         VmeHNrzgJh1/GpgHOU1ZIRB3lNswmlX/Suh7k2wTBtg1SLo6Uc3uYoAt/nGtJPlg15UT
+         t5NA==
+X-Forwarded-Encrypted: i=1; AJvYcCUDmXkaJhp9YuNdet0i9hP4Kpc9HlS0E59RiGp5E+VcxVvrOtNKXHHp7eHqwIdDUmg4zhA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy7Aj2uG8+0N2gAgdrZH4fpkgcLVkQSoHPy4bfXx2qd8e1WbLow
+	MgJSe+m/Kk0/e4rt826pDhWnYKH+xqx3MO07RBjgzpoGT9k4oXa9UxOQdvGtstUl93GyuAuymIt
+	uwqRxoekfXjRFZRzrBCI8otaiPXY=
+X-Gm-Gg: ASbGncuYXAQUFWV5r5EyC8lAwnsFO4IN5v2KHu1DwVey5fRl4AAFAqBhID01o8qBgm8
+	C+8q9/xPPkxP+xFS0GY31OSRPmqQ8RQgn4XKSOv/4YV9Owzz2nHOQGVXm6wYlnodobwOEbgKrY2
+	JlIG3JG0u2iWh6JeQo9aO1zWTG8tgu2FE7nxwvpprGeg==
+X-Google-Smtp-Source: AGHT+IFo13vCXBHtrlSWgGPCh8y5QQMU4cv7zNOU9SlNZjO1a1oUxuWBBplDhT7izEPAhcVB+QCkW2Zh/58maKTowiY=
+X-Received: by 2002:a5d:598b:0:b0:38d:badf:9df5 with SMTP id
+ ffacd0b85a97d-3971d2378a8mr4137708f8f.17.1741986321824; Fri, 14 Mar 2025
+ 14:05:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250313190309.2545711-1-ameryhung@gmail.com> <20250313190309.2545711-13-ameryhung@gmail.com>
-In-Reply-To: <20250313190309.2545711-13-ameryhung@gmail.com>
+References: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
+ <20250222024427.30294-2-alexei.starovoitov@gmail.com> <oswrb2f2mx36l6f624hqjvx4lkjdi26xwfwux2wi2mlzmdmmf2@dpaodu372ldv>
+ <20250311162059.BunTzxde@linutronix.de> <CAGudoHEaGXwS1OQT_Af5YA=uw_zmUYy_csQ3nqYA_np+SbQ-cQ@mail.gmail.com>
+ <b428858a-e985-4acc-95f4-4203afcb500a@suse.cz> <CAADnVQKP-oMrCyC2VPCEEXMxEO6+E2qknY8URLtCNySxwu8h0g@mail.gmail.com>
+ <496ff0d2-97ac-41f5-a776-455025fb72db@suse.cz>
+In-Reply-To: <496ff0d2-97ac-41f5-a776-455025fb72db@suse.cz>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 14 Mar 2025 13:35:16 -0700
-X-Gm-Features: AQ5f1JrxdaJ9NE3HKEoE5DW_GIwb70mVam9Srpg9jgTi_uEL8Ox4ots74az0sEw
-Message-ID: <CAADnVQKrndZ25SuRj-Ofv8tA50XjTwVVyQWmasN94LT9zeV7JQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 12/13] selftests/bpf: Add a bpf fq qdisc to selftest
-To: Amery Hung <ameryhung@gmail.com>
-Cc: Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Eric Dumazet <edumazet@google.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
-	Jamal Hadi Salim <jhs@mojatatu.com>, Kui-Feng Lee <sinquersw@gmail.com>, 
-	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Jiri Pirko <jiri@resnulli.us>, Stanislav Fomichev <stfomichev@gmail.com>, 
-	ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn, 
-	Peilin Ye <yepeilin.cs@gmail.com>, Kernel Team <kernel-team@meta.com>
+Date: Fri, 14 Mar 2025 14:05:10 -0700
+X-Gm-Features: AQ5f1JrTxff2qQvWoQ34z5jQ9hEz8VBsLUFbKhfnN4sPE5bEh5-m8am-auc_V8s
+Message-ID: <CAADnVQJnZB52jvQDhA8XbhM3nd7O6PCms1jBKXx+F0jn+HA6fg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 1/6] locking/local_lock: Introduce localtry_lock_t
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mateusz Guzik <mjguzik@gmail.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, bpf <bpf@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Michal Hocko <mhocko@suse.com>, Matthew Wilcox <willy@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, Tejun Heo <tj@kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 13, 2025 at 12:03=E2=80=AFPM Amery Hung <ameryhung@gmail.com> w=
-rote:
+On Wed, Mar 12, 2025 at 1:29=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
 >
-> From: Amery Hung <amery.hung@bytedance.com>
+> On 3/11/25 23:24, Alexei Starovoitov wrote:
+> > On Tue, Mar 11, 2025 at 9:21=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz=
+> wrote:
+> >>
+> >> On 3/11/25 17:31, Mateusz Guzik wrote:
+> >> > On Tue, Mar 11, 2025 at 5:21=E2=80=AFPM Sebastian Andrzej Siewior
+> >> > <bigeasy@linutronix.de> wrote:
+> >> >>
+> >> >> On 2025-03-11 16:44:30 [+0100], Mateusz Guzik wrote:
+> >> >> > On Fri, Feb 21, 2025 at 06:44:22PM -0800, Alexei Starovoitov wrot=
+e:
+> >> >> > > +#define __localtry_lock(lock)                                 =
+     \
+> >> >> > > +   do {                                                    \
+> >> >> > > +           localtry_lock_t *lt;                            \
+> >> >> > > +           preempt_disable();                              \
+> >> >> > > +           lt =3D this_cpu_ptr(lock);                        \
+> >> >> > > +           local_lock_acquire(&lt->llock);                 \
+> >> >> > > +           WRITE_ONCE(lt->acquired, 1);                    \
+> >> >> > > +   } while (0)
+> >> >> >
+> >> >> > I think these need compiler barriers.
+> >> >> >
+> >> >> > I checked with gcc docs (https://gcc.gnu.org/onlinedocs/gcc/Volat=
+iles.html)
+> >> >> > and found this as confirmation:
+> >> >> > > Accesses to non-volatile objects are not ordered with respect t=
+o volatile accesses.
+> >> >> >
+> >> >> > Unless the Linux kernel is built with some magic to render this m=
+oot(?).
+> >> >>
+> >> >> You say we need a barrier() after the WRITE_ONCE()? If so, we need =
+it in
+> >> >> the whole file=E2=80=A6
+> >> >>
+> >> >
+> >> > I see the original local_lock machinery on the stock kernel works fi=
+ne
+> >> > as it expands to the preempt pair which has the appropriate fences. =
+If
+> >> > debug is added, the "locking" remains unaffected, but the debug stat=
+e
+> >> > might be bogus when looked at from the "wrong" context and adding th=
+e
+> >> > compiler fences would trivially sort it out. I don't think it's a bi=
+g
+> >> > deal for *their* case, but patching that up should not raise any
+> >> > eyebrows and may prevent eyebrows from going up later.
+> >> >
+> >> > The machinery added in this patch does need the addition for
+> >> > correctness in the base operation though.
+> >>
+> >> Yeah my version of this kind of lock in sheaves code had those barrier=
+()'s,
+> >> IIRC after you or Jann told me. It's needed so that the *compiler* doe=
+s not
+> >> e.g. reorder a write to the protected data to happen before the
+> >> WRITE_ONCE(lt->acquired, 1) (or after the WRITE_ONCE(lt->acquired, 0) =
+in
+> >> unlock).
+> >
+> > I think you all are missing a fine print in gcc doc:
+> > "Unless...can be aliased".
+> > The kernel is compiled with -fno-strict-aliasing.
+> > No need for barrier()s here.
 >
-> This test implements a more sophisticated qdisc using bpf. The bpf fair-
-> queueing (fq) qdisc gives each flow an equal chance to transmit data. It
-> also respects the timestamp of skb for rate limiting.
+> Note I know next to nothing about these things, but I see here [1]:
 >
-> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
-> ---
->  .../selftests/bpf/prog_tests/bpf_qdisc.c      |  24 +
->  .../selftests/bpf/progs/bpf_qdisc_fq.c        | 718 ++++++++++++++++++
+> "Whether GCC actually performs type-based aliasing analysis depends on th=
+e
+> details of the code. GCC has other ways to determine (in some cases) whet=
+her
+> objects alias, and if it gets a reliable answer that way, it won=E2=80=99=
+t fall back
+> on type-based heuristics. [...] You can turn off type-based aliasing
+> analysis by giving GCC the option -fno-strict-aliasing."
+>
+> I'd read that as -fno-strict-aliasing only disables TBAA, but that does n=
+ot
+> necessary mean anything can be assumed to be aliased with anything?
 
-On the look of it, it's a pretty functional qdisc.
-Since bpftool supports loading st_ops,
-please list commands bpftool and tc the one can enter
-to use this qdisc without running selftests.
+That's correct.
 
-Probably at the comment section at the top of bpf_qdisc_fq.c
+> An if we e.g. have a pointer to memcg_stock_pcp through which we access t=
+he
+> stock_lock an the other (protected) fields and that pointer doesn't chang=
+e
+> between that, I imagine gcc can reliably determine these can't alias?
 
-It also needs SPDX and copyright.
+Though my last gcc commit was very long ago here is a simple example
+where compiler can reorder/combine stores:
+struct s {
+   short a, b;
+} *p;
+p->a =3D 1;
+p->b =3D 2;
+The compiler can keep them as-is, combine or reorder even with
+-fno-strict-aliasing, because it can determine that a and b don't alias.
 
-pw-bot: cr
+But after re-reading gcc doc on volatiles again it's clear that
+extra barriers are not necessary.
+The main part:
+"The minimum requirement is that at a sequence point all previous
+accesses to volatile objects have stabilized"
+
+So anything after WRITE_ONCE(lt->acquired, 1); will not be hoisted up
+and that's what we care about here.
 
