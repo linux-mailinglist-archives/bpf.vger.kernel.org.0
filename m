@@ -1,167 +1,195 @@
-Return-Path: <bpf+bounces-54045-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54046-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28C60A60E89
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 11:16:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19569A60EA8
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 11:23:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E040169A9E
-	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 10:16:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39AF446115F
+	for <lists+bpf@lfdr.de>; Fri, 14 Mar 2025 10:23:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C7D21F30C3;
-	Fri, 14 Mar 2025 10:16:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 711611F4161;
+	Fri, 14 Mar 2025 10:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PdQ4E71h"
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="XhotPjCt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A9392AEE9
-	for <bpf@vger.kernel.org>; Fri, 14 Mar 2025 10:16:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A9211EB5D4
+	for <bpf@vger.kernel.org>; Fri, 14 Mar 2025 10:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741947387; cv=none; b=MFE8bXtjSS7bXYNWEZfNws2fiAMihSlgj8vS1Cksp6ggdS1LMqMMq+T2GxyaoNwUt7e4knr4OtJjTcfp7pmUfgO4RByQSnEti1gTLv22oNdjH5IL/4NGUpQ2GncThOdAfXaUq50Gk6Eg9NR4YJl+I1gCNNNX5HA4GER9xI4pFxo=
+	t=1741947774; cv=none; b=pMue7HnY/QYTM2qwvItiITbiikILKhcrrUP0IrVFfNuW5UE4fQ9Y5Euwh+RbAuJIvLvwHeubzaxAD/S7RgUbXO4GLRbkr0943L1A+gUu4qfF4yHu6sEkCd9MKlrYZrO+Q6VdxIXfCSnuD431TY962Rsa6LEu7g3Iz/dRMX6A0e0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741947387; c=relaxed/simple;
-	bh=asfU0pF76zrC74MvsYmZmJMVgv8X7tsgWSuNyy/0GU8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WBOGDcK3gUOx6UdblfNw3Q+8WCSlTJXZGgzAtFrcI3LPdG4InoAuo7Zn+04ROsHD2nGw/Bt9ygmcG3rMdAsxvyjW7LF3pArlZSOCpjGsm9G4kFbvV6LnGyLcpKcCz+Ahf8FyJ8na5oi08W6ljb3cTWcf0VVQROYHpzsTimkuY30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PdQ4E71h; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ac339f53df9so41250366b.1
-        for <bpf@vger.kernel.org>; Fri, 14 Mar 2025 03:16:24 -0700 (PDT)
+	s=arc-20240116; t=1741947774; c=relaxed/simple;
+	bh=MbdRv+iM89FnZKw451+VGkit0JczZSSrCCsWB6ggDHU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=unOP0pFf3XFH8oTsoUy8hHdOeipdmQCtV9BtfqMXcAdEMICmqniyVAOMjI8GxBfEesGXZvjKp06Qj5h3y1vvhTg+PKoNLH/e3m3f2FNzw4PzFkj67CXBLMxOeuvOhg9xM0tf7iZHR+mUr+yF5BXntAyLs24jVRFoGfu/aUD47OM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=XhotPjCt; arc=none smtp.client-ip=209.85.218.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
+Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ac2ab99e16eso401084066b.0
+        for <bpf@vger.kernel.org>; Fri, 14 Mar 2025 03:22:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741947383; x=1742552183; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UlooZCqpuuYmk/BU1NwLBULyb/9UA2hcKvt6wavKqTk=;
-        b=PdQ4E71hVv+rtS0mt1N2BlA4T/pdt2zADEq84t73m1GCCnzgU4J1LG6dMoY+Bl5ngv
-         cguCY9yMtInHRFZVoTSHDqfmYiWQLh1mbEfXiVergpIUzIkmSG2PxuFmnJfne9S8UwcL
-         1lG+KFlpNahqOgM8jcxoQ05eE8fSe17OmiNgi8hwU+k6BaYhMOHWUP7fFl5ij82/5wuC
-         B4vhCJgbxMkqpl8RPt+T+zHqpSNdbRnUr5wBCbQTTSmG5yBs+6bIZRw+5nX1lw8tAKZP
-         FQ863uP9trO5vnz/RmqnLvikq+eBhZThwYvdYNg7XaVcpFYhRK6OT+HQMMweYcelS7D/
-         gT0w==
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1741947770; x=1742552570; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WLC14bT7l5qVe9L1a3up7gLBRmwJJU5Zq8l66jxt7TQ=;
+        b=XhotPjCtFrrkvpxaJbXNGbFVj2zrV24A5/UMXkO+qCweMi6RqSJTI3nTz9E3pkpxkL
+         sQG3oMV8xV61qP3oL6uXPtfsatrt0Hn62gRWFcZaWpGY6eDzhs35swUJVES7W2To6DvB
+         ovWaS/GAjHmMGx5OYRr5WL7gZgsza8nh2w61FT2WTViUdN3nFOpFzDXftlmLV44C0I1Y
+         ku4049pvwKlTRtQUDBBgvi7um3k8i32r6v3RqkCEin72Z6o9bO/PvMo4wnDWItOfH6nU
+         kLEZBzpwthjfdxrqHXL3PrIWwXeHUaZopxJ12bDPTzP3psN1/ICsWv66AxuORESaNTSs
+         OqZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741947383; x=1742552183;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UlooZCqpuuYmk/BU1NwLBULyb/9UA2hcKvt6wavKqTk=;
-        b=hiAhU1RmUBOSGcHvP5M+Ha7djAEjZyp1P/jpFIQAfIFq0Q2rTJjpzomx0b/zlkzIcB
-         Cj7kcDocqejOHXgs7ErC5NCjr67KjOKCFeUm9d8FHaIllRyq/1oXK7qHgHJL9xESpE7d
-         XkV0WhELAv3pFtOsWHzQCDFmn8mEZ10eOkQYF1nQuFgTBVqdoPtWZT297aBKpxvwHF3S
-         /YwHL0L1cGoj5/rX6ttp4oh9ghMXx023DK0LeGZ5YL4GNyyxGdy5W2XSOJ49EFqsWksj
-         lPNUNDq92E8rzy0hieyERnYV8OR6pHyuv8TGnNloxMc3W3010dRfy7vDs0v9tCd/tYlC
-         aH2A==
-X-Forwarded-Encrypted: i=1; AJvYcCXYRNI70DvBMyrC4wadBNlhu1e2muA90alv/M6UfOnCM4SZPvqBO9E2aQlTaGvRp0VC3uk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1KlsSwS7A19Za3d/obFN7WwS5HjsLeUj7ae7+clMCqAFGXchB
-	qKuosrzHkYa7qSx8XBRmqLqgTJxx/8llECx6qOpV4/K8y8mkQ8Qz45Uf46zaD/E=
-X-Gm-Gg: ASbGnctCNnRmStMzBzeFMssF94fijFJa/cY52j/XXGS56HyWz3YfzCgRbWmF0zB/xIT
-	AGFy7MHNdSgxdr3UaQXEU/0Rqa0OXSbk+MvS53Py832iJU/TFofX/ntEVyBleLOXhyjWbJNJrR7
-	SD6EVvAxd01nzYsCOqov7ZXd5/aUGc+uSCWXyEwp8Q4nr8sWd3nIi6D8JbTgPbnv8LkSQ40kCt/
-	AqVJqYM/D0CiOA9laL3rAKHYCgyaPzBDHMKTpG6Rxe9DfCKk3nB3N81ZqwF9JzSKgjQhz6UCkuz
-	MOnz6cHcxgQVei3ysN5xQVyw2jhe4GILtsPWY0bP+mhG7gvF12+Z3G0cmA==
-X-Google-Smtp-Source: AGHT+IFIRZIpZU1ud7THKhfimdrL/Ki5fS5WMHUSVLs0E4NFQaMnaEfc5B/VLMfbRmQ0qXg0VbNxXA==
-X-Received: by 2002:a17:907:2d0f:b0:ac1:de84:deba with SMTP id a640c23a62f3a-ac33017bbc4mr211515266b.19.1741947383260;
-        Fri, 14 Mar 2025 03:16:23 -0700 (PDT)
-Received: from localhost (109-81-85-167.rct.o2.cz. [109.81.85.167])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-ac314aa5166sm207946466b.176.2025.03.14.03.16.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Mar 2025 03:16:23 -0700 (PDT)
-Date: Fri, 14 Mar 2025 11:16:22 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Sebastian Sewior <bigeasy@linutronix.de>,
-	Steven Rostedt <rostedt@goodmis.org>, Hou Tao <houtao1@huawei.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>,
-	Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>,
-	Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v9 2/6] mm, bpf: Introduce try_alloc_pages() for
- opportunistic page allocation
-Message-ID: <Z9QB9sH5R8F-xuYA@tiehlicka>
-References: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
- <20250222024427.30294-3-alexei.starovoitov@gmail.com>
- <20250310190427.32ce3ba9adb3771198fe2a5c@linux-foundation.org>
- <CAADnVQJsYcMfn4XjAtgo9gHsiUs-BX-PEyi1oPHy5_gEuWKHFQ@mail.gmail.com>
- <4d75c5a8-a538-4d7d-aaf4-8ecf1d1be6b9@suse.cz>
- <igjisv7v3o2efey3qkhcrqjchlqvjn54c4dneo2atmown6pweq@jwohzvtldfzf>
- <Z9KbAZJh5uENfQtn@tiehlicka>
- <4a52db5b-f5fe-4a60-ba17-a634a2d0b7af@suse.cz>
+        d=1e100.net; s=20230601; t=1741947770; x=1742552570;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WLC14bT7l5qVe9L1a3up7gLBRmwJJU5Zq8l66jxt7TQ=;
+        b=Y6Zo2dEXsiO7ocjFpNlc5O1aPMrOhyorF3css1x/ag8921haM24iGkk1TcyibEywjZ
+         41SqbSWEPaG37rd4mpcAVBfnvTo07h3yeKs5wRmyLF9Goz/c8Jw/ccxsnT7e5qOomXeG
+         UB3ZR1T5K3a/+ssnFSoXELMjSGCjCXUvNGwuLMamHrzuZZ/NQP0f8lLSCH9BpX3ptyfh
+         N4HXLeYSJVNquNZiiVaxw6DvMD/O4qpZWJ1NHp9MdcUdGIA4xirMpuBvF1X6Q7AMgmQO
+         fg9wkx+k0Xl0cxKlh6T8L8R26f5WnX9ex+pV8/ERGdHptPr5eVG0OIfGdTP521vef37L
+         mc4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVm4oeFsEnmM9JqCEOvywG0OsDQtW4+YvM6G4RAhgcOdJxpt0vjtCtAeRvtvFacwTeAXIk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyM5fQhY4qwzgECiCGNKdtwKPXtlNP9/RkoY1QhXTNRk9yqx8nR
+	BAkbT2d70bx0d2QBSRSztBXtQMq+C0gj9oJMxK4x7cz+0GeTLM9+jB6VcjwY/XE=
+X-Gm-Gg: ASbGncuOOzGFisxNSootHuOpfSyqrbtkHC/sTrFXQRXBPimJPJ+MJOfQt3LKu5FsJdO
+	553S5yarzAqzZArGFKeIIjEA+zohBq/X2iL+oBduNV5Q9EFNpA8i9s6GXfIiAd1qnXH5tNqnwGJ
+	MwJtu8LnPpwretOD7h2NG6cPtJ3ONYF6aYOrrfmOe2lkXtZlsWGb2Sqw+ucPWVlajfT/RI6mChU
+	BrdEBY2VSB9R5z/wdAuEtvEZ7swS63fAdZ5hXP9nPrdJq4+Xm9TBxT4XM6na+KrZMvU6gjACbPT
+	Yp1xPSAGLPHgPOtBHiPwleNkUzvcZfe+XkOxIW9Wxb8uUkoewlYj9Zsz
+X-Google-Smtp-Source: AGHT+IEtf+5uMhZHeMpuNHp44VDObLkwKhS755JgMPyzBh3Tkne5oU6MDvaxu9uSs1lL4nigwL2EYA==
+X-Received: by 2002:a17:906:c10d:b0:ac2:9210:d96e with SMTP id a640c23a62f3a-ac3304412b9mr190659866b.43.1741947769542;
+        Fri, 14 Mar 2025 03:22:49 -0700 (PDT)
+Received: from [10.20.7.108] ([195.29.209.28])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac314a9db94sm209442666b.171.2025.03.14.03.22.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Mar 2025 03:22:49 -0700 (PDT)
+Message-ID: <21d52659-622a-4b2a-b091-787bf0f5d67f@blackwall.org>
+Date: Fri, 14 Mar 2025 12:22:47 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4a52db5b-f5fe-4a60-ba17-a634a2d0b7af@suse.cz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] bonding: check xdp prog when set bond mode
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ Wang Liang <wangliang74@huawei.com>, jv@jvosburgh.net,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, joamaki@gmail.com
+Cc: yuehaibing@huawei.com, zhangchangzhong@huawei.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250314073549.1030998-1-wangliang74@huawei.com>
+ <87y0x7rkck.fsf@toke.dk>
+Content-Language: en-US
+From: Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <87y0x7rkck.fsf@toke.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu 13-03-25 15:21:48, Vlastimil Babka wrote:
-> On 3/13/25 09:44, Michal Hocko wrote:
-> > On Wed 12-03-25 12:06:10, Shakeel Butt wrote:
-> >> On Wed, Mar 12, 2025 at 11:00:20AM +0100, Vlastimil Babka wrote:
-> >> [...]
-> >> > 
-> >> > But if we can achieve the same without such reserved objects, I think it's
-> >> > even better. Performance and maintainability doesn't need to necessarily
-> >> > suffer. Maybe it can even improve in the process. E.g. if we build upon
-> >> > patches 1+4 and swith memcg stock locking to the non-irqsave variant, we
-> >> > should avoid some overhead there (something similar was tried there in the
-> >> > past but reverted when making it RT compatible).
-> >> 
-> >> In hindsight that revert was the bad decision. We accepted so much
-> >> complexity in memcg code for RT without questioning about a real world
-> >> use-case. Are there really RT users who want memcg or are using memcg? I
-> >> can not think of some RT user fine with memcg limits enforcement
-> >> (reclaim and throttling).
-> > 
-> > I do not think that there is any reasonable RT workload that would use
-> > memcg limits or other memcg features. On the other hand it is not
-> > unusual to have RT and non-RT workloads mixed on the same machine. They
-> > usually use some sort of CPU isolation to prevent from CPU contention
-> > but that doesn't help much if there are other resources they need to
-> > contend for (like shared locks). 
-> > 
-> >> I am on the path to bypass per-cpu memcg stocks for RT kernels.
-> > 
-> > That would cause regressions for non-RT tasks running on PREEMPT_RT
-> > kernels, right?
+On 3/14/25 12:13 PM, Toke Høiland-Jørgensen wrote:
+> Wang Liang <wangliang74@huawei.com> writes:
 > 
-> For the context, this is about commit 559271146efc ("mm/memcg: optimize user
-> context object stock access")
+>> Following operations can trigger a warning[1]:
+>>
+>>     ip netns add ns1
+>>     ip netns exec ns1 ip link add bond0 type bond mode balance-rr
+>>     ip netns exec ns1 ip link set dev bond0 xdp obj af_xdp_kern.o sec xdp
+>>     ip netns exec ns1 ip link set bond0 type bond mode broadcast
+>>     ip netns del ns1
+>>
+>> When delete the namespace, dev_xdp_uninstall() is called to remove xdp
+>> program on bond dev, and bond_xdp_set() will check the bond mode. If bond
+>> mode is changed after attaching xdp program, the warning may occur.
+>>
+>> Some bond modes (broadcast, etc.) do not support native xdp. Set bond mode
+>> with xdp program attached is not good. Add check for xdp program when set
+>> bond mode.
+>>
+>>     [1]
+>>     ------------[ cut here ]------------
+>>     WARNING: CPU: 0 PID: 11 at net/core/dev.c:9912 unregister_netdevice_many_notify+0x8d9/0x930
+>>     Modules linked in:
+>>     CPU: 0 UID: 0 PID: 11 Comm: kworker/u4:0 Not tainted 6.14.0-rc4 #107
+>>     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
+>>     Workqueue: netns cleanup_net
+>>     RIP: 0010:unregister_netdevice_many_notify+0x8d9/0x930
+>>     Code: 00 00 48 c7 c6 6f e3 a2 82 48 c7 c7 d0 b3 96 82 e8 9c 10 3e ...
+>>     RSP: 0018:ffffc90000063d80 EFLAGS: 00000282
+>>     RAX: 00000000ffffffa1 RBX: ffff888004959000 RCX: 00000000ffffdfff
+>>     RDX: 0000000000000000 RSI: 00000000ffffffea RDI: ffffc90000063b48
+>>     RBP: ffffc90000063e28 R08: ffffffff82d39b28 R09: 0000000000009ffb
+>>     R10: 0000000000000175 R11: ffffffff82d09b40 R12: ffff8880049598e8
+>>     R13: 0000000000000001 R14: dead000000000100 R15: ffffc90000045000
+>>     FS:  0000000000000000(0000) GS:ffff888007a00000(0000) knlGS:0000000000000000
+>>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>     CR2: 000000000d406b60 CR3: 000000000483e000 CR4: 00000000000006f0
+>>     Call Trace:
+>>      <TASK>
+>>      ? __warn+0x83/0x130
+>>      ? unregister_netdevice_many_notify+0x8d9/0x930
+>>      ? report_bug+0x18e/0x1a0
+>>      ? handle_bug+0x54/0x90
+>>      ? exc_invalid_op+0x18/0x70
+>>      ? asm_exc_invalid_op+0x1a/0x20
+>>      ? unregister_netdevice_many_notify+0x8d9/0x930
+>>      ? bond_net_exit_batch_rtnl+0x5c/0x90
+>>      cleanup_net+0x237/0x3d0
+>>      process_one_work+0x163/0x390
+>>      worker_thread+0x293/0x3b0
+>>      ? __pfx_worker_thread+0x10/0x10
+>>      kthread+0xec/0x1e0
+>>      ? __pfx_kthread+0x10/0x10
+>>      ? __pfx_kthread+0x10/0x10
+>>      ret_from_fork+0x2f/0x50
+>>      ? __pfx_kthread+0x10/0x10
+>>      ret_from_fork_asm+0x1a/0x30
+>>      </TASK>
+>>     ---[ end trace 0000000000000000 ]---
+>>
+>> Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driver")
+>> Signed-off-by: Wang Liang <wangliang74@huawei.com>
+>> ---
+>>  drivers/net/bonding/bond_options.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
+>> index 327b6ecdc77e..127181866829 100644
+>> --- a/drivers/net/bonding/bond_options.c
+>> +++ b/drivers/net/bonding/bond_options.c
+>> @@ -868,6 +868,9 @@ static bool bond_set_xfrm_features(struct bonding *bond)
+>>  static int bond_option_mode_set(struct bonding *bond,
+>>  				const struct bond_opt_value *newval)
+>>  {
+>> +	if (bond->xdp_prog)
+>> +		return -EOPNOTSUPP;
+>> +
 > 
-> reverted in fead2b869764 ("mm/memcg: revert ("mm/memcg: optimize user
-> context object stock access")")
+> Should we allow changing as long as the new mode also supports XDP?
 > 
-> I think at this point we don't have to recreate the full approach of the
-> first commit and introduce separate in_task() and in-interrupt stocks again.
+> -Toke
 > 
-> The localtry_lock itself should make it possible to avoid the
-> irqsave/restore overhead (which was the main performance benefit of
-> 559271146efc [1]) and only end up bypassing the stock when an allocation
-> from irq context actually interrupts an allocation from task context - which
-> would be very rare. And it should be already RT compatible. Let me see how
-> hard it would be on top of patch 4/6 "memcg: Use trylock to access memcg
-> stock_lock" to switch to the variant without _irqsave...
+> 
 
-makes sense.
++1
+I think we should allow it, the best way probably is to add a new
+BOND_VALFLAG_XDP_UNSUPP (for example) as a bond option flag and to set
+it in bond_options.c for each mode that doesn't support XDP, then you
+can do the check in a generic way (for any option) in
+bond_opt_check_deps. Any bond option that can't be changed with XDP prog
+should have that flag set.
 
-> [1] the revert cites benchmarks that irqsave/restore can be actually cheaper
-> than preempt disable/enable, but I believe those were flawed
+Cheers,
+ Nik
 
--- 
-Michal Hocko
-SUSE Labs
 
