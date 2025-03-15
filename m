@@ -1,169 +1,174 @@
-Return-Path: <bpf+bounces-54083-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54084-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECC64A622AF
-	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 01:19:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E30FEA6232C
+	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 01:34:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD332189051F
-	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 00:19:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21B113BDCD4
+	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 00:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1DD6FC3;
-	Sat, 15 Mar 2025 00:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36FFF4A06;
+	Sat, 15 Mar 2025 00:34:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Tx4ZYo9f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K2YS6Eo/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAEDE4C76;
-	Sat, 15 Mar 2025 00:19:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F74D10F9
+	for <bpf@vger.kernel.org>; Sat, 15 Mar 2025 00:34:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741997956; cv=none; b=PVsa0+9CRG7Nw3XxXvWSRAjtmnmnIXKI7wiRIfqglaI94aRKQkvEkbcRhcoyl6SSkLiulcQrdK6crwlwGdBauIvBcS3geNVhoWokkFBbBugrwPxWuXW4dyChNpeWuh0jdOy+adpIWA+CiI3B4hKQgxJnPlMD5uCk1xnNQPVtwWo=
+	t=1741998863; cv=none; b=FAWtIwRV3zWC3oElvqpnjl8xqJ/WmV8/9P0HpfPtwSsdmK2wNOGPvn8BxcC7oES74gGU/XsKTvNQpD9CwkLnN85/dOlmn/m5C/6R30hVNClkv6TiRcRBavdQuycmnnD0l49hfItsh2oSFZuWAfnsjbLWEVCjI4NOo6DIa95Wb6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741997956; c=relaxed/simple;
-	bh=Vu1QPwy12fhx3g7FowbsOY4q1TiQL9aT+Z6El6ge7xk=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=Zit+jjYpf40ukQqQ88l3acV8JePgKdsDwBB5rJYfmOfZY2Nim6Vqa2HLZChKdi1dcDYikIISat3DWJpvQGvZfeWmBe83TBmf+GY+imvL49LRjUIeD9VJlR121mDMO2UL2MYx5p/tmXWlY2qGQKda0DX7xBU5+xwjY1Tk2zks7Ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Tx4ZYo9f; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 52F0EnBX3633411
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Fri, 14 Mar 2025 17:14:49 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 52F0EnBX3633411
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025021701; t=1741997698;
-	bh=p1RiZcB4vxNShw8WemiNGPP7YkRsysNV0zKEEix3DOc=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=Tx4ZYo9fiuY+wDg4a68kI5cIuARdVD68JoQLpMesIGNwSOczhbBzbTQfcwfNxfdUD
-	 47XsN8wLRZvhKBjF2r+4045rg3oCcRJXoucMdOJNL1OMZbLn4bX9oZ+i6W8e9sW4/v
-	 gt8eVi3UxwK4JnA3/PA4TiFwuLM+Otv/LqOfFQaMUHaNp3e6BrpYdyQ0VwZeoSpqWr
-	 T/LWMwFrcdksOlkEzMrMEH8Z+9ya9BolDRz2oHPpWkApezrBJmDX+I34duXBeeFwZs
-	 kW+562xssDMBNp3juXplJf3P9JcHcQ4Wpbms/nUI43DenD4X+97Pqxmi4dScjrfmYn
-	 BdMqAkWnIyUzQ==
-Date: Fri, 14 Mar 2025 17:14:46 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: David Laight <david.laight.linux@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>
-CC: Yury Norov <yury.norov@gmail.com>, Jiri Slaby <jirislaby@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Kuan-Wei Chiu <visitorckw@gmail.com>,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
-        joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
-        neil.armstrong@linaro.org, rfoss@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-        dmitry.torokhov@gmail.com, mchehab@kernel.org, awalls@md.metrocast.net,
-        hverkuil@xs4all.nl, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, louis.peens@corigine.com, andrew+netdev@lunn.ch,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-        johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, alistair@popple.id.au,
-        linux@rasmusvillemoes.dk, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-        oss-drivers@corigine.com, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-        brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-        bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
-        Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v3 01/16] bitops: Change parity8() return type to bool
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20250314190604.53470966@pumpkin>
-References: <20250306162541.2633025-1-visitorckw@gmail.com> <20250306162541.2633025-2-visitorckw@gmail.com> <9d4b77da-18c5-4551-ae94-a2b9fe78489a@kernel.org> <Z8ra0s9uRoS35brb@gmail.com> <a4040c78-8765-425e-a44e-c374dfc02a9c@kernel.org> <20250307193643.28065d2d@pumpkin> <cbb26a91-807b-4227-be81-8114e9ea72cb@intel.com> <0F794C6F-32A9-4F34-9516-CEE24EA4BC49@zytor.com> <Z9MGxknjluvbX19w@thinkpad> <795281B1-9B8A-477F-8012-DECD14CB53E5@zytor.com> <b2b632cc-ca69-497f-9cf9-782bd02cac79@intel.com> <20250314190604.53470966@pumpkin>
-Message-ID: <F3723528-8978-43A9-804F-06FDFE55BDC0@zytor.com>
+	s=arc-20240116; t=1741998863; c=relaxed/simple;
+	bh=6iiflZ4de4w92IEmzHPrTo59KKlbBy2rGME6jB91mdc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VQzgyDsYd5RyWkdzzqGu8ifxkA2S7GqWEw1jCfjrAkizHdY+E9IZBlfTpYN6sc8/85a8cEQbKans253VWPXYVQ3nN/UpcPUb3faE4VrCcE4nEVZvflOjge7FJE60iR9+wtdZ9gI8DGV+sQh7vu5Azv10I5E60DPcA06RaBc8TW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K2YS6Eo/; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-390e3b3d3f4so1561888f8f.2
+        for <bpf@vger.kernel.org>; Fri, 14 Mar 2025 17:34:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741998860; x=1742603660; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xGLTlaUNAQGNRgFcp7B7w74lXcxE7FcMiChs3RZNW/k=;
+        b=K2YS6Eo/CSOuGQoYQbVIRMZV82LEGsLHWTGI9J3B6JckvYSsFedCNPAWaPjC8WCyJh
+         ael6P8YVqnntfr0DgK3r+W1Khj2K0IZTceil6gPdzDk97NYFTqsHCwMBmiBaLj0bxXMf
+         GoZ3Hztja4CevgeK/ssJFxLusP9Go8vMThIXevPr3XZk3KiwAQE+gnlniyQ2g756we8A
+         hPGZHftKZoA6uU4gRwIqv+EffQo6qGxUIBXqiNJRzQWDc2E7jrlz4uXRaOd5LB37syfw
+         iJ9zTEyarf7KgjgNUkHtdevDSZbjhkj1DisP3VmDASAkBwgfpltyf1RnC+g8PdD3e7Z8
+         WP5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741998860; x=1742603660;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xGLTlaUNAQGNRgFcp7B7w74lXcxE7FcMiChs3RZNW/k=;
+        b=FUUXL5lkTRJhsptxQRwoxR0mt7qV9IB6fxP/iwnHPgPBDoPEukOkW/j+6sSEDP3rai
+         wOfBPhd4TQ2hn7tx72/yxSbN6g/cgYb1KPH8qPrK5ffO4hdmtbSOU4mlC6roCBjJVc7n
+         VnuNlljhWIBc8fL+I6Hkfd1KOgxEULJzhF8HIqNIlZYJs6B6w2GjTLPaZX8LRAqVNWCk
+         9VdRTJMhl518uvqdhIJsAqx3jDOJpiCFLXQEoAkRE52okNrn7uscIkewsOJHb06vPM6N
+         NrjIe95GKv45d8jJAL3THvl5QulFsfmi4pnwyKNUY0NE+j3XjVHrsJAMF1Fry6gHGQdv
+         WgNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXauiyTEIz8GbetsdiZ04c6Dcry6fOAIZP6DiqIJb/w9LMwiWGRYz+89bhQisRQi0E4mmk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPMslptAJngsgjjn5OqcfoihVOs9Ch28IPLnfmWF4KUNYPtjwB
+	cAiBv7MeqrbS52+rZ1SNHautmSir6Ser6aUm8OQBfniVwZrWcv0lQBXBUYhZW9+G2Xb1VLHcNUg
+	vpOytinAEWK6uUqgbx2G1cnfwBtg=
+X-Gm-Gg: ASbGncuwqKI+xF7S42F3VCsYz2SuEI+xThD6xMneaDnqEfWvEby6Auvkm7JHRSaf+qe
+	kRXc46F21mYLzg4AiQkOGs+c+w7iuEFkMUc1gyqGV7CP1TiaeIrTxksgFSkhhrqzRUOt1rCyBkd
+	1v3ih9oAnjDsEsDJWWrzGDVOevWbXK2vrRaUm3znDngQ==
+X-Google-Smtp-Source: AGHT+IFsW4WwR/5hLucAOv60jvN7cIlIU5EYY9RLmRUSbV0nGZaDBUl96EggwZ7aPaaWgn0kBmhU7AzjYy8x8NJs88k=
+X-Received: by 2002:a05:6000:1884:b0:391:31c8:ba6b with SMTP id
+ ffacd0b85a97d-3971d03d345mr5580362f8f.10.1741998859888; Fri, 14 Mar 2025
+ 17:34:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20250222024427.30294-1-alexei.starovoitov@gmail.com>
+ <20250222024427.30294-3-alexei.starovoitov@gmail.com> <20250310190427.32ce3ba9adb3771198fe2a5c@linux-foundation.org>
+ <CAADnVQJsYcMfn4XjAtgo9gHsiUs-BX-PEyi1oPHy5_gEuWKHFQ@mail.gmail.com> <rbfpuj6kmbwbzyd25tjhlrf4aytmhmegn5ez54rpb2mue3cxyk@ok46lkhvvfjt>
+In-Reply-To: <rbfpuj6kmbwbzyd25tjhlrf4aytmhmegn5ez54rpb2mue3cxyk@ok46lkhvvfjt>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 14 Mar 2025 17:34:08 -0700
+X-Gm-Features: AQ5f1JrNWO3fSZJO1zPwFJbgMywZJwL6VfHigqxS-tSZP78BuN9thxzpBtBiIhE
+Message-ID: <CAADnVQ+Epu=s=Zu3OsrsDcbSGiLB0T-VXtdhQyTd3bpdV5PDOg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 2/6] mm, bpf: Introduce try_alloc_pages() for
+ opportunistic page allocation
+To: Mateusz Guzik <mjguzik@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, 
+	Sebastian Sewior <bigeasy@linutronix.de>, Steven Rostedt <rostedt@goodmis.org>, 
+	Hou Tao <houtao1@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Michal Hocko <mhocko@suse.com>, 
+	Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Jann Horn <jannh@google.com>, 
+	Tejun Heo <tj@kernel.org>, linux-mm <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On March 14, 2025 12:06:04 PM PDT, David Laight <david=2Elaight=2Elinux@gma=
-il=2Ecom> wrote:
->On Thu, 13 Mar 2025 14:09:24 -0700
->Jacob Keller <jacob=2Ee=2Ekeller@intel=2Ecom> wrote:
+On Tue, Mar 11, 2025 at 11:04=E2=80=AFAM Mateusz Guzik <mjguzik@gmail.com> =
+wrote:
 >
->> On 3/13/2025 9:36 AM, H=2E Peter Anvin wrote:
->> > On March 13, 2025 9:24:38 AM PDT, Yury Norov <yury=2Enorov@gmail=2Eco=
-m> wrote: =20
->> >> On Wed, Mar 12, 2025 at 05:09:16PM -0700, H=2E Peter Anvin wrote: =
-=20
->> >>> On March 12, 2025 4:56:31 PM PDT, Jacob Keller <jacob=2Ee=2Ekeller@=
-intel=2Ecom> wrote: =20
->> >>
->> >> [=2E=2E=2E]
->> >> =20
->> >>>> This is really a question of whether you expect odd or even parity=
- as
->> >>>> the "true" value=2E I think that would depend on context, and we m=
-ay not
->> >>>> reach a good consensus=2E
->> >>>>
->> >>>> I do agree that my brain would jump to "true is even, false is odd=
-"=2E
->> >>>> However, I also agree returning the value as 0 for even and 1 for =
-odd
->> >>>> kind of made sense before, and updating this to be a bool and then
->> >>>> requiring to switch all the callers is a bit obnoxious=2E=2E=2E =
-=20
->> >>>
->> >>> Odd =3D 1 =3D true is the only same definition=2E It is a bitwise X=
-OR, or sum mod 1=2E =20
->> >>
->> >> The x86 implementation will be "popcnt(val) & 1", right? So if we
->> >> choose to go with odd =3D=3D false, we'll have to add an extra negat=
-ion=2E
->> >> So because it's a purely conventional thing, let's just pick a simpl=
-er
->> >> one?
->> >>
->> >> Compiler's builtin parity() returns 1 for odd=2E
->> >>
->> >> Thanks,
->> >> Yury =20
->> >=20
->> > The x86 implementation, no, but there will be plenty of others having=
- that exact definition=2E =20
->>=20
->> Makes sense to stick with that existing convention then=2E Enough to
->> convince me=2E
+> On Tue, Mar 11, 2025 at 02:32:24PM +0100, Alexei Starovoitov wrote:
+> > On Tue, Mar 11, 2025 at 3:04=E2=80=AFAM Andrew Morton <akpm@linux-found=
+ation.org> wrote:
+> > >
+> > > On Fri, 21 Feb 2025 18:44:23 -0800 Alexei Starovoitov <alexei.starovo=
+itov@gmail.com> wrote:
+> > >
+> > > > Tracing BPF programs execute from tracepoints and kprobes where
+> > > > running context is unknown, but they need to request additional
+> > > > memory. The prior workarounds were using pre-allocated memory and
+> > > > BPF specific freelists to satisfy such allocation requests.
+> > >
+> > > The "prior workarounds" sound entirely appropriate.  Because the
+> > > performance and maintainability of Linux's page allocator is about
+> > > 1,000,040 times more important than relieving BPF of having to carry =
+a
+> > > "workaround".
+> >
+> > Please explain where performance and maintainability is affected?
+> >
 >
->There is the possibility that the compiler will treat the builtin as havi=
-ng
->an 'int' result without the constraint of it being zero or one=2E
->In which case the conversion to bool will be a compare=2E
->This doesn't happen on x86-64 (gcc or clang) - but who knows elsewhere=2E
+> I have some related questions below. Note I'm a bystander, not claiming
+> to have any (N)ACK power.
 >
->For x86 popcnt(val) & 1 is best (except for parity8) but requires a non-a=
-rchaic cpu=2E
->(Probably Nehelem or K10 or later - includes Sandy bridge and all the 'ea=
-rth movers'=2E)
->Since performance isn't critical the generic C code is actually ok=2E
->(The 'parity' flag bit is only set on the low 8 bits=2E)
+> A small bit before that:
+>        if (!spin_trylock_irqsave(&zone->lock, flags)) {
+>                if (unlikely(alloc_flags & ALLOC_TRYLOCK))
+>                        return NULL;
+>                spin_lock_irqsave(&zone->lock, flags);
+>        }
 >
->	David
->
->
+> This is going to perform worse when contested due to an extra access to
+> the lock. I presume it was done this way to avoid suffering another
+> branch, with the assumption the trylock is normally going to succeed.
 
-You seem confused=2E We have already established that the built-in didn't =
-currently produce good code on some cpus, but it does on others, with very =
-little in between, so it would make sense to use the builtins on an opt-in =
-basis=2E
+Steven already explained that extra trylock is a noise from performance pov=
+.
+Also notice that it's indeed not written as
+if (unlikely(alloc_flags & ALLOC_TRYLOCK))
+    spin_trylock_irqsave(...);
+else
+    spin_lock_irqsave(...);
 
-On x86 8- or 16-bit parity is best don't with test or xor respectively; 32=
-- or 64-bit parity may use popcnt; test or by reducing down to a parity16 x=
-or=2E
+because this way it will suffer an extra branch.
+Even with this extra branch it would have been in the noise
+considering all the prior branches rmqueue*() does.
+With unconditional trylock first the performance noise is even less
+noticeable.
+
+> I think it would help to outline why these are doing any memory
+> allocation from something like NMI to begin with. Perhaps you could have
+> carved out a very small piece of memory as a reserve just for that? It
+> would be refilled as needed from process context.
+
+It's not about NMI. It's about an unknown context.
+bpf and other subsystems will not be calling it from NMI on purpose.
+It can happen by accident.
+See netpoll_send_udp().
+It's using alloc_skb(GFP_ATOMIC) which is the same as GFP_WISH_ME_LUCK.
+netpoll is called from an arbitrary context where accessing slab is not ok.
+
+> If non-task memory allocs got beaten to the curb, or at least got heavily
+> limited, then a small allocator just for that purpose would do the
+> trick and the two variants would likely be simpler than one thing which
+> supports everyone.
+
+Try diff stat of this patch vs diff of bpf_mem_alloc and other hacks
+to see what it takes to build "small allocator".
+Also notice how "small allocator" doesn't work for netpoll.
+It needs an skb in an unknown context and currently pretends
+that GFP_ATOMIC isn't going to crash.
+Any context kmalloc will finally fix it.
 
