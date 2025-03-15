@@ -1,116 +1,115 @@
-Return-Path: <bpf+bounces-54108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41DE1A62E8C
-	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 15:57:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 448FDA62F04
+	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 16:21:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF1D67A33AD
-	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 14:56:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E2AC3BD187
+	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 15:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 908D8202963;
-	Sat, 15 Mar 2025 14:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73CD9204598;
+	Sat, 15 Mar 2025 15:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="mznAtxiI"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [131.188.11.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1695011185
-	for <bpf@vger.kernel.org>; Sat, 15 Mar 2025 14:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD1D917995E;
+	Sat, 15 Mar 2025 15:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742050653; cv=none; b=S4kORYHyzw4pZ3/HhzDEZvwRWzys7iZGup4SfLIorlF5pXTgA0KJwDHzvbLaXIA5kSHdSJjhLvK1G76r9fexHpjqrT4N8qAzg4su4Fdmbf06v+C0y51hXZTi0io81GSh8xqsDO1Pkh2/RU12VpCXNocv22G2RfhCTF2nkXxiMtI=
+	t=1742052054; cv=none; b=VDH/BjF+sCpWMd/74WeIm8etwG5nrIzDvq1d2cozm4wfnjR6eIuOWJ11P1pWLNuOIckVBQ7jabgabPuw1KwqoASXNXcM7p/Pd/gRLaByaLYew0DN0Y7kfl411gSNUl9iLLsXfJQGOzSXDHH/Uq86BfUL/4Sm26AK3lZP27de5rY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742050653; c=relaxed/simple;
-	bh=K0dCULXC2G6HXenHawqzd9J5kAY0WF4X/E6SiUQe0As=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ngwUJkGaUt9g3M3RQmJJAd6Gk0/NZDapVqVtJMhNmjkIIDE8q+ImxH7D/7V0yyYs9geRmgOScWEVBVJty4eg97PN7EYNRdBiZUBuZ019fzs4sbJuoSqOV7axPbU8KuTy1+0ct5Ot3QLO1Rs4AxtsLrM7U5/6Ip2hetGLDbYbrBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZFPTQ6wPdz4f3lgR
-	for <bpf@vger.kernel.org>; Sat, 15 Mar 2025 22:56:58 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id EBB581A07BB
-	for <bpf@vger.kernel.org>; Sat, 15 Mar 2025 22:57:22 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgAni19RldVnWsxPGg--.27761S4;
-	Sat, 15 Mar 2025 22:57:22 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	houtao1@huawei.com
-Subject: [RESEND][PATCH bpf-next] bpf: Check map->record at the beginning of check_and_free_fields()
-Date: Sat, 15 Mar 2025 23:09:30 +0800
-Message-Id: <20250315150930.1511727-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+	s=arc-20240116; t=1742052054; c=relaxed/simple;
+	bh=08eKfAUvxdmkmUvYQ9Z9AT/EYdDCAc7pdtIm2LqpGzA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=D1tYg7RndnSlMX6vvdB13F3a5TIozHsrKXkEsGCRJZw63K2SWfHcMbR3plZVh8S6CuS0GmY22/aijF7o2kbJN9P+ShQyDCrfGiHj3qkxn6VWAGhIdPwvKUSbHhmaPMK1dvL3biI7f6hxwJ7893KObXELZtHp5jALRI40TJIw7OQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=mznAtxiI; arc=none smtp.client-ip=131.188.11.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1742052044; bh=08eKfAUvxdmkmUvYQ9Z9AT/EYdDCAc7pdtIm2LqpGzA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
+	 Subject;
+	b=mznAtxiI1kJuIBGKAbfrHe6w8x8MA9DVTQPXk3d0my5iXVoXYyYABprKtB8tsWFBP
+	 IkwTRc8+ap+WYBbwmrQWhSV0m9CL4aXTKUwg+EgWYk7H2Q9v6S26SmWQmn3h0tVjKP
+	 PW4Hjph9jWSGlvjfSp3NqEYZMytJJebnCfFwlyQ8ItHpvN4IJwIJDGSJJj5nlIG8oB
+	 f4y7PpcYRkrZFk59ynAPhYK+hN15mdRnsw+QqcsHbs4b5jq0Ljql5F3KPCtWe0TtvX
+	 KOr+N2VQNrjSOSmQLSHS85rICmx9EfETv2j5XneoH+uB+VGhSTk9d7F9MyrYqRj2pR
+	 UEDCDnkIFd04Q==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4ZFQ0q6mX6z8tyl;
+	Sat, 15 Mar 2025 16:20:43 +0100 (CET)
+X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:9e8:361f:c600:5210:4b80:a502:1f98
+Received: from localhost (unknown [IPv6:2001:9e8:361f:c600:5210:4b80:a502:1f98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX1/OU7HXrel01HL8JhXs/U6F2fHJ1Gpb/vM=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4ZFQ0m590Xz8sYS;
+	Sat, 15 Mar 2025 16:20:40 +0100 (CET)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
+ KaFai Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong
+ Song <yonghong.song@linux.dev>,  John Fastabend
+ <john.fastabend@gmail.com>,  KP Singh <kpsingh@kernel.org>,  Stanislav
+ Fomichev <sdf@fomichev.me>,  Hao Luo <haoluo@google.com>,  Jiri Olsa
+ <jolsa@kernel.org>,  Puranjay Mohan <puranjay@kernel.org>,  Xu Kuohai
+ <xukuohai@huaweicloud.com>,  Catalin Marinas <catalin.marinas@arm.com>,
+  Will Deacon <will@kernel.org>,  Hari Bathini <hbathini@linux.ibm.com>,
+  Christophe Leroy <christophe.leroy@csgroup.eu>,  Naveen N Rao
+ <naveen@kernel.org>,  Madhavan Srinivasan <maddy@linux.ibm.com>,  Michael
+ Ellerman <mpe@ellerman.id.au>,  Nicholas Piggin <npiggin@gmail.com>,
+  Mykola Lysenko <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>,
+  Henriette Herzog <henriette.herzog@rub.de>,  Cupertino Miranda
+ <cupertino.miranda@oracle.com>,  Matan Shachnai <m.shachnai@gmail.com>,
+  Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,  Shung-Hsi Yu
+ <shung-hsi.yu@suse.com>,  Daniel Xu <dxu@dxuuu.xyz>,  bpf@vger.kernel.org,
+  linux-arm-kernel@lists.infradead.org,  linux-kernel@vger.kernel.org,
+  linuxppc-dev@lists.ozlabs.org,  linux-kselftest@vger.kernel.org,  George
+ Guo <guodongtai@kylinos.cn>,  WANG Xuerui <git@xen0n.name>,  Tiezhu Yang
+ <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH bpf-next 00/11] bpf: Mitigate Spectre v1 using barriers
+In-Reply-To: <f6f08d64c777a6022771ab0adf96cefb6b631d75.camel@gmail.com>
+	(Eduard Zingerman's message of "Fri, 14 Mar 2025 16:40:08 -0700")
+References: <20250313172127.1098195-1-luis.gerhorst@fau.de>
+	<f6f08d64c777a6022771ab0adf96cefb6b631d75.camel@gmail.com>
+User-Agent: mu4e 1.12.8; emacs 29.4
+Date: Sat, 15 Mar 2025 16:20:39 +0100
+Message-ID: <87seneqq0o.fsf@fau.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAni19RldVnWsxPGg--.27761S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKr4rXw4DZryxZrykGryUJrb_yoWfKrc_K3
-	y0yF1kKrsxC3ya93yUGan3WryxJryxKFnFvrs0qrZrtFyYq3Wrt3y8ZF98ZFyDJwsrJrZx
-	XasxtrZFgw1fXjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
-	e7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
-	UQ6p9UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain
 
-From: Hou Tao <houtao1@huawei.com>
+Eduard Zingerman <eddyz87@gmail.com> writes:
+> I think it would be good to have some tests checking that nospec
+> instructions are inserted in expected locations.
+> Could you please take look at use of __xlated tag in e.g.
+> tools/testing/selftests/bpf/progs/verifier_sdiv.c ?
 
-When there are no special fields in the map value, there is no need to
-invoke bpf_obj_free_fields(). Therefore, checking the validity of
-map->record in advance.
+That looks very promising, I will look into it for v2. Thanks for the
+pointer.
 
-After the change, the benchmark result of the per-cpu update case in
-map_perf_test increased by 40% under a 16-CPU VM.
+I guess it might be worth it to add __xlated to at least on test per
+nospec-related code path. If there are other rewrites at play that will
+make it harder to adapt the tests when the other rewrite is ever
+changed, but it might also help in catching interactions between the
+other rewrites and the nospec.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/hashtab.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index c308300fc72f6..877298133fdae 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -787,6 +787,9 @@ static int htab_lru_map_gen_lookup(struct bpf_map *map,
- static void check_and_free_fields(struct bpf_htab *htab,
- 				  struct htab_elem *elem)
- {
-+	if (IS_ERR_OR_NULL(htab->map.record))
-+		return;
-+
- 	if (htab_is_percpu(htab)) {
- 		void __percpu *pptr = htab_elem_get_ptr(elem, htab->map.key_size);
- 		int cpu;
--- 
-2.29.2
-
+Also, thanks for the review of patches 2 and 3.
 
