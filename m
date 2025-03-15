@@ -1,156 +1,152 @@
-Return-Path: <bpf+bounces-54104-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54105-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6EB3A62D27
-	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 14:00:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB168A62E40
+	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 15:36:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9D5617A4CF
-	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 13:00:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F2C37A88DC
+	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 14:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF5E1F8BDC;
-	Sat, 15 Mar 2025 13:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71999202982;
+	Sat, 15 Mar 2025 14:35:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Gwn9DVRn"
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="lZC/tbK4"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
+Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [131.188.11.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A94571DF964;
-	Sat, 15 Mar 2025 13:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.184.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691872E338C;
+	Sat, 15 Mar 2025 14:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742043651; cv=none; b=bUR5WLVvMyJjRwqCzUs2iLC4VzxT4jX81ABYg4w57LduUmjH9Km3eeCAX/uyPNYcxN0lSoxOfKjnggd3uaZ0BUC3tz6vLurkjPF7a7DH4G/IBwKcFrcjAFi6iCxWZBDxA3sxogxXgF7L7n5A0+/dYiN5YFVgFPW+iNKbedkxbuc=
+	t=1742049339; cv=none; b=Z/i9041a4f0Xu1187qBZQQqQsFxWLE5ksYkmZJpnN3Xm1KRLGzgHmpk2oqTa9cslYAqZibGkRXBYYv/JvF/8XpuBXO5+ef0fyUFsgFC3pyRcF5TvkinLWtzxPoR8ap89smlVhPzEKjJRSvCXYckv6QQBSZxZzdz5VVBiXOBms3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742043651; c=relaxed/simple;
-	bh=WXG3nm9VTQNTwm5ptPPKtK7R9NwVj/dBEI+Nk7wKJRs=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QWMSwtkL7pTKc/krpKcObVuCW4oD5BApYXcC1SI+wkYh/e+rg9tbwEcy9VcZAhkrDoNR87ZY08Qa172LqzhGUlQli7UEsQvVsrRQkcmQk4H/nDdZksRz6IlP9+1vyB6HGEGaU8rET/0FG6ASucsFlTnHjKXNQirXQI5CaSwvM6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=Gwn9DVRn; arc=none smtp.client-ip=207.171.184.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1742043650; x=1773579650;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=jqOXkuumBOlYORoc3RdeMLnYb4A6AmoaISyCTe+YEjA=;
-  b=Gwn9DVRnIgMddR7hXVDW+Dbp2T+/CuvMhlIXOswWhjwx+s1F6ZtjwevU
-   /tkY7QRK4fAnWPcLYPSz4UieUzwtT3Vy4EXboyqfY/sGP+ttZGdp8XpiD
-   r8ezTjbDa8skWT5witwTyaFkqZhes82QEgmEjiExy7A5sDbLkwwWc4tV+
-   A=;
-X-IronPort-AV: E=Sophos;i="6.14,250,1736812800"; 
-   d="scan'208";a="503054615"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2025 13:00:44 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.7.35:47751]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.18.34:2525] with esmtp (Farcaster)
- id 8f32fc71-a378-4960-a103-202bc15e229e; Sat, 15 Mar 2025 13:00:43 +0000 (UTC)
-X-Farcaster-Flow-ID: 8f32fc71-a378-4960-a103-202bc15e229e
-Received: from EX19D003ANC003.ant.amazon.com (10.37.240.197) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Sat, 15 Mar 2025 13:00:43 +0000
-Received: from b0be8375a521.amazon.com (10.118.246.93) by
- EX19D003ANC003.ant.amazon.com (10.37.240.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Sat, 15 Mar 2025 13:00:37 +0000
-From: Kohei Enju <enjuk@amazon.com>
-To: <enjuk@amazon.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <eddyz87@gmail.com>, <haoluo@google.com>,
-	<iii@linux.ibm.com>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-	<kohei.enju@gmail.com>, <kpsingh@kernel.org>, <kuniyu@amazon.com>,
-	<linux-kernel@vger.kernel.org>, <martin.lau@linux.dev>, <sdf@fomichev.me>,
-	<song@kernel.org>, <syzbot+a5964227adc0f904549c@syzkaller.appspotmail.com>,
-	<yepeilin@google.com>, <yonghong.song@linux.dev>
-Subject: Re: [PATCH bpf-next v1] bpf: Fix out-of-bounds read in check_atomic_load/store()
-Date: Sat, 15 Mar 2025 21:59:39 +0900
-Message-ID: <20250315130028.92105-1-enjuk@amazon.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250315082251.32679-1-enjuk@amazon.com>
-References: <20250315082251.32679-1-enjuk@amazon.com>
+	s=arc-20240116; t=1742049339; c=relaxed/simple;
+	bh=OkhF71d/bZ8TD/llrAXXX4wBjozRHz+q4IHia73yoww=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=UChh8eJJwE/2BT0EgMGNl71MQcgDQ4GIr5s8ja/oT4bQuRineoySI2etjvmEm/SMhGLZy0fraibvELfppZCzJ2Ret1IcmdVzF7Bhz3oj0iXae6EdB3T7v4vcUAvUid3M+vdZ/okjn0fvqiNKlenGL3RPrMPe6mch50ZGZq9UomA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=lZC/tbK4; arc=none smtp.client-ip=131.188.11.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1742049327; bh=NKq80W2W/U7t62HvKju2DWkfvvmrMHzUgfKCh8A8fD8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
+	 Subject;
+	b=lZC/tbK4VA1jg6uUg1xFVHXsgRkGYB4xDIQmrxlQdclI04AhPC93jh5VD4OdBv5eI
+	 7GKzMV5fU0+jZopO+yyfeQgD5mTn88lmVWySqSBYA7vaZ+sa9kTqJHD3CzJU5IgtQO
+	 65xS31s1PE/2sIT0BhwwKBYy8dECHGUbyX2lqtBcBNroFt2ZyJ76QDQkNKI/XUvLw7
+	 zmKTiGRoyxyCr4lVjsCGDfMH8w/8yPy49Zh6SzuHz4Rnynh4PgFv6z4gM6UOh7FsMY
+	 NQJ7dKsrP79s06e8VBwleNRYG/EdQwb8DUYEfLmRFGR0lEpVCKUohyjEt1N4Vxozqj
+	 +lZs4Wu8/hlyg==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4ZFP0b3yp2zPlS4;
+	Sat, 15 Mar 2025 15:35:27 +0100 (CET)
+X-Virus-Scanned: amavisd-new at boeck5.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:9e8:361f:c600:5210:4b80:a502:1f98
+Received: from localhost (unknown [IPv6:2001:9e8:361f:c600:5210:4b80:a502:1f98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX1/CUai+vFSchsFbhqVGYGLtiAUlGPs0iho=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4ZFP0X0QFczPlV0;
+	Sat, 15 Mar 2025 15:35:23 +0100 (CET)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
+ KaFai Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong
+ Song <yonghong.song@linux.dev>,  John Fastabend
+ <john.fastabend@gmail.com>,  KP Singh <kpsingh@kernel.org>,  Stanislav
+ Fomichev <sdf@fomichev.me>,  Hao Luo <haoluo@google.com>,  Jiri Olsa
+ <jolsa@kernel.org>,  Puranjay Mohan <puranjay@kernel.org>,  Xu Kuohai
+ <xukuohai@huaweicloud.com>,  Catalin Marinas <catalin.marinas@arm.com>,
+  Will Deacon <will@kernel.org>,  Hari Bathini <hbathini@linux.ibm.com>,
+  Christophe Leroy <christophe.leroy@csgroup.eu>,  Naveen N Rao
+ <naveen@kernel.org>,  Madhavan Srinivasan <maddy@linux.ibm.com>,  Michael
+ Ellerman <mpe@ellerman.id.au>,  Nicholas Piggin <npiggin@gmail.com>,
+  Mykola Lysenko <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>,
+  Henriette Herzog <henriette.herzog@rub.de>,  Cupertino Miranda
+ <cupertino.miranda@oracle.com>,  Matan Shachnai <m.shachnai@gmail.com>,
+  Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,  Shung-Hsi Yu
+ <shung-hsi.yu@suse.com>,  Daniel Xu <dxu@dxuuu.xyz>,  bpf@vger.kernel.org,
+  linux-arm-kernel@lists.infradead.org,  linux-kernel@vger.kernel.org,
+  linuxppc-dev@lists.ozlabs.org,  linux-kselftest@vger.kernel.org,  George
+ Guo <guodongtai@kylinos.cn>,  WANG Xuerui <git@xen0n.name>,  Tiezhu Yang
+ <yangtiezhu@loongson.cn>,  Maximilian Ott <ott@cs.fau.de>,  Milan Stephan
+ <milan.stephan@fau.de>
+Subject: Re: [PATCH bpf-next 01/11] bpf: Move insn if/else into do_check_insn()
+In-Reply-To: <293dbe3950a782b8eb3b87b71d7a967e120191fd.camel@gmail.com>
+	(Eduard Zingerman's message of "Fri, 14 Mar 2025 15:47:00 -0700")
+References: <20250313172127.1098195-1-luis.gerhorst@fau.de>
+	<20250313172127.1098195-2-luis.gerhorst@fau.de>
+	<293dbe3950a782b8eb3b87b71d7a967e120191fd.camel@gmail.com>
+User-Agent: mu4e 1.12.8; emacs 29.4
+Date: Sat, 15 Mar 2025 15:35:23 +0100
+Message-ID: <874izus6ok.fsf@fau.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: EX19D044UWA001.ant.amazon.com (10.13.139.100) To
- EX19D003ANC003.ant.amazon.com (10.37.240.197)
 
->> ...
->>>  kernel/bpf/verifier.c | 12 ++++++++++++
->>>  1 file changed, 12 insertions(+)
->>> 
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index 3303a3605ee8..6481604ab612 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -7788,6 +7788,12 @@ static int check_atomic_rmw(struct bpf_verifier_env *env,
->>>  static int check_atomic_load(struct bpf_verifier_env *env,
->>>  			     struct bpf_insn *insn)
->>>  {
->>> +	int err;
->>> +
->>> +	err = check_reg_arg(env, insn->src_reg, SRC_OP);
->>> +	if (err)
->>> +		return err;
->>> +
->>
->>I agree with these changes, however, both check_load_mem() and
->>check_store_reg() already do check_reg_arg() first thing.
->>Maybe just swap the atomic_ptr_type_ok() and check_load_mem()?
+Eduard Zingerman <eddyz87@gmail.com> writes:
+> On Thu, 2025-03-13 at 18:21 +0100, Luis Gerhorst wrote:
+>> +		err = do_check_insn(env, insn, pop_log, &do_print_state, regs, state,
+>> +				    &prev_insn_idx);
 >
->You're absolutely right. The additional check_reg_arg() introduces some 
->redundancy since check_load_mem() and check_store_reg() do that.
+> - `regs` remains declared in do_check(), while nothing prevents
+>   pushing its declaration to do_check_insn().
+> - `state` is `env->cur_state`, so I'd avoid passing it as a parameter
+>   (just to reduce count);
+> - `prev_insn_idx` is unused by `do_check_insn`;
+> - `pop_log` is not used by `do_check_insn`;
 
-IMHO, in this specific case, I believe OOB is caused by invalid register 
-number in reg_state(), so check_reg_arg() is too much and instead just 
-checking register number before atomic_ptr_type_ok() is sufficient.
+Changed for v2, thank you very much.
 
-Although it's still somewhat redundant and not a fundamental solution, I 
-think it would be better than doing whole register checking by 
-check_reg_arg().
+> - given that `insn` is presumed to correspond to `env->insn_idx` in
+>   many places down the stack not sure about this parameter.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3303a3605ee8..48131839ac26 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7788,6 +7788,11 @@ static int check_atomic_rmw(struct bpf_verifier_env *env,
- static int check_atomic_load(struct bpf_verifier_env *env,
-                 struct bpf_insn *insn)
- {
-+	if (insn->src_reg >= MAX_BPF_REG) {
-+		verbose(env, "R%d is invalid\n", insn->src_reg);
-+		return -EINVAL;
-+	}
-+
-    if (!atomic_ptr_type_ok(env, insn->src_reg, insn)) {
-        verbose(env, "BPF_ATOMIC loads from R%d %s is not allowed\n",
-            insn->src_reg,
-@@ -7801,6 +7806,11 @@ static int check_atomic_load(struct bpf_verifier_env *env,
- static int check_atomic_store(struct bpf_verifier_env *env,
-                  struct bpf_insn *insn)
- {
-+	if (insn->dst_reg >= MAX_BPF_REG) {
-+		verbose(env, "R%d is invalid\n", insn->dst_reg);
-+		return -EINVAL;
-+	}
-+
-    if (!atomic_ptr_type_ok(env, insn->dst_reg, insn)) {
-        verbose(env, "BPF_ATOMIC stores into R%d %s is not allowed\n",
-            insn->dst_reg,
+I don't have a strong opinion on this either. Unless someone objects I
+will keep it as it matches the other check_*() functions like this.
 
->I've revised the patch to simply swap the order and syzbot didn't trigger 
->the issue in this context.
->    https://lore.kernel.org/all/20250315055941.10487-2-enjuk@amazon.com/
-> ...
+>> +		if (err < 0) {
+>> +			return err;
+>> +		} else if (err == INSN_IDX_MODIFIED) {
+>
+> Also, I'd get rid of `INSN_IDX_MODIFIED` and move `env->insn_idx++`
+> into `do_check_insn()`. This would save a few mental cycles when
+> looking at the code with full patch-set applied:
+>
+> 		} else if (err == INSN_IDX_MODIFIED) {
+> 			continue;
+> 		} else if (err == PROCESS_BPF_EXIT) {
+> 			goto process_bpf_exit;
+> 		}
+> 		WARN_ON_ONCE(err);
+>
+> 		if (state->speculative && cur_aux(env)->nospec_result) {
+> 			... bunch of actions ...
+> 		}
+>
+> 		env->insn_idx++;
+>
+> One needs to stop for a moment and think why "bunch of actions" is
+> performed for regular index increment, but not for INSN_IDX_MODIFIED.
 
-Regards,
-Kohei
+That certainly makes it more readable. I changed it for v2.
+
+If we have an instruction that does not simply do `insn_idx++` but
+jumps, the `nospec_result` check should never trigger. Otherwise, the
+patched nospec might be skipped. Currently, this is satisfied because
+`nospec_result` is only used for store-instructions. I will add a
+comment and WARN_ON_ONCE to document that for v2.
 
