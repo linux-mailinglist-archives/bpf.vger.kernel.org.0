@@ -1,185 +1,146 @@
-Return-Path: <bpf+bounces-54096-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54097-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A444A62839
-	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 08:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 774A7A6289B
+	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 09:03:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86EC37A9640
-	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 07:43:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1988F7A7865
+	for <lists+bpf@lfdr.de>; Sat, 15 Mar 2025 08:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878B71DE4EC;
-	Sat, 15 Mar 2025 07:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D29218A6DF;
+	Sat, 15 Mar 2025 08:03:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cBYFx7UW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bTtIuHQp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B75185B5F;
-	Sat, 15 Mar 2025 07:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09911624DF
+	for <bpf@vger.kernel.org>; Sat, 15 Mar 2025 08:03:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742024630; cv=none; b=ZMUs4+ALzwKXq0HP33A2tOEyQRo/K9RM3nLpf16T5P6HCE0H4UQsFXdhugsdqDXWkzl7zW7utDxRUceQt1ktAd2GTkfuOmGKmGs6peZyA/vYuv9vtakDw9uHhAhb9lT42TDKvBDd1clA7q/v3c2SD/0Q4LYejlucSf1oO9yvgGA=
+	t=1742025811; cv=none; b=E83DX1ZO96K5+txeDzbmkvm+a1T8VUY1b+b9xOS4eM0/otjcrf9e3WwKH3RJw/qqoRhKlK8O7k4iVQScKXnljSw5nOSwwMLdMpgayIPxYr93u32FrC/C6o4+Bw7vg6KDEe5nmabfnC7MKyZLQzuDQQheXm0Ik9HTBtP3gIRGtCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742024630; c=relaxed/simple;
-	bh=pfYeHVsEDWveeuBl815DiEVWXdhQWhFp9D7h/1Tzfcw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JhHuv+sy73mPT9FMGBKDg3nd8vqdBJJ+wYzkZ+1Vy8fh3RMLUSG2UBbQgQzgSucq6jjIosFT3aSfDOd0KJy2HCcwBhDJvVQEyBY1sYmjgMQOtmzIlo86nmW677Ge0V9r/gHrkwcpMuRHqQSv3HnalawxbrPfiDFxGz5cfhek8aA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cBYFx7UW; arc=none smtp.client-ip=209.85.214.171
+	s=arc-20240116; t=1742025811; c=relaxed/simple;
+	bh=cK7X+ekj65GDPa3Y3otbIX2aFl4VQDsKw9VVrWlksIA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k2EG+Ae/bfJDXnkgPMicPPH6+CkHyxG/MqaDVBERvu6r14VZEO1YX3ZwpnaV7Bvyy+jR8eYdZl4JHXK0JSrGDZ4kKX51/mt6ECgK/eW2RnOK8shM/CVyDkmGxsGnx5jRq3jPHvRRm3p1sHlDIo9D5zrDqNxB8iphzjnc5lh+8gM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bTtIuHQp; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-22113560c57so56499785ad.2;
-        Sat, 15 Mar 2025 00:43:48 -0700 (PDT)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2239c066347so58629055ad.2
+        for <bpf@vger.kernel.org>; Sat, 15 Mar 2025 01:03:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742024628; x=1742629428; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rAmL+5CR2z6jEwd9cSjJDC4ozmAh9Z7pTmFVoqfcygM=;
-        b=cBYFx7UWnqQjhbq34R8lQfwcEUo9Oak6MvSVUwIwtBWikUu3iMRtpSHs0Rz0+qOwao
-         h6b3hbpW5fVMLybOiQrB72iVH+w44kWdHdlm8+0yEwUFkmQLo+AloWEcZZXcZfqXnqCj
-         ermO4X3MkdhFfS9ks5+gyKhSGTFCjcvA4+g+kdXUzHPWS7WjjIp8NhV09yEQN7h6uu74
-         +nl5VMnkXWgGe774/BtGyciMc33WX37W38PXsHHeJdK8AjlmID5NsfiAiUp7bJaZkPIr
-         X2+KI24LsPkD9e5uC2FCfP4y61Le6UhlNhv4Wc1VR5JknBVJ+Nc7q7pMl+R/33WvgFvr
-         Z7gw==
+        d=gmail.com; s=20230601; t=1742025809; x=1742630609; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MsBMohK1J5AZoR8f2vnP4yTF9NYNvX08pUGvJRqOXzk=;
+        b=bTtIuHQp/xNycPlMDgWbpKfEgL1rHGZhhUOueKK2hxE7LOeKGPrP3rsbhyOv7vDM0T
+         T3a1H1CxhyYVg2bt5LpYZzY3b3NYsCycRAcaK4mFPrlbEyN0HRkmMVttd1iDACVo3MAU
+         JR3wcank2j07N46G32/cRhdCYcKKyCR1O3uPAdYZdCR1RmdSa2YD521lU4VX2cWkGD2e
+         qvrf0Jc0tNr6BKdw29ShYsCsitluZ0S+yA/CoAfxdA+e5GPswTXEC7jUDkYR7NBPQ69m
+         55vdZN0Ahgq5eC4ZbUsODEhO7GV9NP84DYf106yNVXVRQGczcs0OyaY3BNvBH6OBmslR
+         nmpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742024628; x=1742629428;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rAmL+5CR2z6jEwd9cSjJDC4ozmAh9Z7pTmFVoqfcygM=;
-        b=cLfzQMEj65Ln14ebSMDqUn9PBz+ett5hyDcMXw+6B8UdP7BTeez+mTcV3NfCrjGbb/
-         tQpZEfQJ9539mY0zYHCZ/UM2EYHXpRWVPLLuf/JEuRQuUjUfeu/sVGZRnC0X5RIt21Qz
-         BuB1ZwP5rOUO9EMFS8J05LQjYdeUnCRxg/cNgZ0IKo8DupcV6c+LKNxdPKtfGCyP6JVU
-         zZqyuY3LX5a39kvI8N7W2im5hWYeFaIdNgSwRHXN/1rfdb7LBwjqWy5DMxLCfR0sYBky
-         ky1iylIZOy6vq11jsM8rcSMHbb7NIc+VZh1FRP7AWXS/X2VKkibvgixwb3Ly3t0I43S8
-         xhRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVMcYsyYhTKE1iLZH+dvvb6J4e3EBEv5/RE7KmoYYt2mXcWe6zdyHFVT298TJTtd4wehpY=@vger.kernel.org, AJvYcCVV0NV7ZWvBkKYDSS2IM71lSnS4o03eLPFCbGdamalbLXkgHSwxJtNzNJJWEC0km1bS5oypvRCl7ncquXVhD3XwQw==@vger.kernel.org, AJvYcCVb3/T+14g4BnknxAQBcdxqoRaIl+n7cMnbu5owrvtDrKiubvpec7XghkoE9n2f2MZWa2genBjthMioT4eB@vger.kernel.org, AJvYcCX+N1esY5roDlEXfku7dly2R/ddsliQUX0FIUblscXgAsm9vwmr31K6IVaT4PGsnIUpOTiKVZnOUdkwFtj51w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YygHq1oCbXzeyuSc/On2UyfeG5ZOkkq0gk8/4GXM/QT0iSo+OlU
-	bHuXfHrWiJ8opdsausJJtp4VyW16w3jKeDruPr6qY4BurEj430TQ
-X-Gm-Gg: ASbGncsqGhHGe5LTcHKFUzEjAjBNKnhWzz7A2Uq6j6QTEjeKCxfUG5mJfDnXdPN8dxc
-	3tGcyh6wspS7/5QfxhpVOdTNuQ9OSAw0kY9uyfFO7TDZsVn8pEMtyfXGqLSWHtNrxNjVYmPxdWP
-	J7M/luhzlz2In52fzXY073ktx1yOzbvZgGBxd1/dFhhGA4tIycwg9fRlqOFJDRcHEDC7OW5sDY2
-	NrtxMzX+Nxl/Y6pnc0i2RWztLSLK3g9+SxOQc2KJ5NJBP58K+0L4UUxv5Ir7MyGxQVDm4ZecgD0
-	M4imqDYPWQJN2nY5wc6cCRgdzbyW+FRPDM1AUl5Xoxtj
-X-Google-Smtp-Source: AGHT+IFNXmsiLHb1JHv7bDZUdBco+pV3oLLy0KNHvrNch7t31ViRO39JDS2byJdpYxvminRgrzVx7w==
-X-Received: by 2002:a05:6a00:2382:b0:736:4e02:c543 with SMTP id d2e1a72fcca58-7372233ae33mr6017160b3a.9.1742024627617;
-        Sat, 15 Mar 2025 00:43:47 -0700 (PDT)
-Received: from [192.168.0.164] ([50.35.39.14])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7371167df97sm3965668b3a.114.2025.03.15.00.43.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Mar 2025 00:43:47 -0700 (PDT)
-Message-ID: <a73ea646-0a24-474a-9e14-d59ea5eaa662@gmail.com>
-Date: Sat, 15 Mar 2025 00:43:45 -0700
+        d=1e100.net; s=20230601; t=1742025809; x=1742630609;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MsBMohK1J5AZoR8f2vnP4yTF9NYNvX08pUGvJRqOXzk=;
+        b=tpUYPh8yt+8mDujPaIR8r5x66p6WwH+/3ZMcgpsbycU9bXWfExtxvhIriTinI9mhGK
+         H9CRXiWYPXTYELTzHUdnyAMTh5nGK926cZemlv68oHFDZyr/+GoaBZi1R/ykwwhDDn3B
+         tCELRnN83cgRSZiLnq6fk15xAtwNZcorUqO77mcN2GJOy/urFVaoNRKUErYhQnEaCCJ2
+         ps2Ea41KEwuaTaPPo+ADN8MuKEr7WUAcNRSB7LsRt1rnUGChhBRzlp3sfUxNcO7ffVVI
+         RXCmA4jvRn5p8hTnN2+QD98/ze7vSlrvyv8PA96+wf7rlZas4umVupITXbLsFQlny2yU
+         cl/w==
+X-Forwarded-Encrypted: i=1; AJvYcCWpVfz2isr1ntssmBp6FvedIml26GZpRamLeUPo31uJAdaxmBe8DfyJT6Osq9U5HiPP4JU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywj5q4EleBypYwhqxPTkFS2W9Y44Lp72dsq5ANKifXsxqBXLcbB
+	XrSe035wof6EaN8f2u5r9ZOevMGr1JmU4DxofIGDUx8Wp6po5tLu
+X-Gm-Gg: ASbGncv8IdjWgudN4Gd8+uKsyzfaOT1vY1RQx7RCDsYuNLyzywiWP3sziY+6osCQr/U
+	nBOu7hoxwCJv4aWdyHG/HvYkcd5YyEk8OaarQttHgQtCzlhWrt9cfN2hadm4dfApatrXzq2/j3w
+	T0uHWNqRf+ppGqDC/onK4XHdO10g0xTVIXvcljcZodJ7mfTej5bSxwAhBADaPmgiEvfjEGUp7cF
+	NwmC2fGdNbEhsPFhH5C/EhZGFqXM3mfIkmtvb2LiaIsRv8fWK+fw07Bk9NkMM0+zuSVv4d802CU
+	KmKR8XlC0Nf5oTL6y9NHBVDb5TUpyYoC00n8+sX1BlDypdUBSVrxklvlmGZDV4R4vYTI7XLScDf
+	FfKpkaQ==
+X-Google-Smtp-Source: AGHT+IEHVcuvOSaQ9YBO8ax6PXV3hpfu6w1q13nBl2BZtcvzWwDaa3+1um1+XUscvYqwwvNKOrpVZA==
+X-Received: by 2002:a05:6a20:9148:b0:1f1:b69:9bdd with SMTP id adf61e73a8af0-1f5c1311632mr6046505637.37.1742025808748;
+        Sat, 15 Mar 2025 01:03:28 -0700 (PDT)
+Received: from localhost.localdomain ([14.116.239.34])
+        by smtp.googlemail.com with ESMTPSA id 41be03b00d2f7-af56ea7bd01sm3190508a12.61.2025.03.15.01.03.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Mar 2025 01:03:28 -0700 (PDT)
+From: Hengqi Chen <hengqi.chen@gmail.com>
+To: loongarch@lists.linux.dev,
+	bpf@vger.kernel.org
+Cc: yangtiezhu@loongson.cn,
+	Hengqi Chen <hengqi.chen@gmail.com>,
+	Vincent Li <vincent.mc.li@gmail.com>
+Subject: [PATCH] LoongArch: BPF: Fix off by one error in build_prologue()
+Date: Sat, 15 Mar 2025 08:03:20 +0000
+Message-ID: <20250315080320.4193821-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/2] Dynamically allocate memory to store task's full
- name
-To: Kees Cook <kees@kernel.org>, Bhupesh <bhupesh@igalia.com>
-Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
- laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
- mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
- alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
- mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
- david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
- brauner@kernel.org, jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com,
- bsegall@google.com, mgorman@suse.de, vschneid@redhat.com
-References: <20250314052715.610377-1-bhupesh@igalia.com>
- <202503141420.37D605B2@keescook>
-Content-Language: en-US
-From: Andres Rodriguez <andresx7@gmail.com>
-In-Reply-To: <202503141420.37D605B2@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Vincent reported that running BPF progs with tailcalls on LoongArch
+causes kernel hard lockup. Debugging the issues shows that the JITed
+image missing a jirl instruction at the end of the epilogue.
 
+There are two passes in JIT compile, the first pass set the flags and
+the second pass generates JIT code based on those flags. With BPF progs
+mixing bpf2bpf and tailcalls, build_prologue() generates N insns in the
+first pass and then generates N+1 insns in the second pass. This makes
+epilogue_offset off by one and we will jump to some unexpected insn and
+cause lockup. Fix this by inserting a nop insn.
 
-On 3/14/25 14:25, Kees Cook wrote:
-> On Fri, Mar 14, 2025 at 10:57:13AM +0530, Bhupesh wrote:
->> While working with user-space debugging tools which work especially
->> on linux gaming platforms, I found that the task name is truncated due
->> to the limitation of TASK_COMM_LEN.
->>
->> For example, currently running 'ps', the task->comm value of a long
->> task name is truncated due to the limitation of TASK_COMM_LEN.
->>      create_very_lon
->>
->> This leads to the names passed from userland via pthread_setname_np()
->> being truncated.
-> 
-> So there have been long discussions about "comm", and it mainly boils
-> down to "leave it alone". For the /proc-scraping tools like "ps" and
-> "top", they check both "comm" and "cmdline", depending on mode. The more
-> useful (and already untruncated) stuff is in "cmdline", so I suspect it
-> may make more sense to have pthread_setname_np() interact with that
-> instead. Also TASK_COMM_LEN is basically considered userspace ABI at
-> this point and we can't sanely change its length without breaking the
-> world.
-> 
+Fixes: 5dc615520c4d ("LoongArch: Add BPF JIT support")
+Fixes: bb035ef0cc91 ("LoongArch: BPF: Support mixing bpf2bpf and tailcalls")
+Reported-by: Vincent Li <vincent.mc.li@gmail.com>
+Closes: https://lore.kernel.org/loongarch/CAK3+h2w6WESdBN3UCr3WKHByD7D6Q_Ve1EDAjotVrnx6Or_c8g@mail.gmail.com/
+Closes: https://lore.kernel.org/bpf/CAK3+h2woEjG_N=-XzqEGaAeCmgu2eTCUc7p6bP4u8Q+DFHm-7g@mail.gmail.com/
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+---
+ arch/loongarch/include/asm/inst.h | 5 +++++
+ arch/loongarch/net/bpf_jit.c      | 2 ++
+ 2 files changed, 7 insertions(+)
 
-Completely agree that comm is best left untouched. TASK_COMM_LEN is 
-embedded into the kernel and the pthread ABI changes here should be avoided.
-
-> Best to use /proc/$pid/task/$tid/cmdline IMO...
-
-Your recommendation works great for programs like ps and top, which are
-the examples proposed in the cover letter. However, I think the opening 
-email didn't point out use cases where the name is modified at runtime. 
-In those cases cmdline would be an unsuitable solution as it should 
-remain immutable across the process lifetime. An example of this use 
-case would be to set a thread's name for debugging purposes and then 
-trying to query it via gdb or perf.
-
-I wrote a quick and dirty example to illustrate what I mean:
-https://github.com/lostgoat/tasknames
-
-I think an alternative approach could be to have a separate entry in 
-procfs to store a tasks debug name (and leave comm completely 
-untouched), e.g. /proc/$pid/task/$tid/debug_name. This would allow 
-userspace apps to be updated with the following logic:
-
-get_task_debug_name() {
-     if ( !is_empty( debug_name ) )
-         return debug_name;
-     return comm;
-}
-
-"Legacy" userspace apps would remain ABI compatible as they would just 
-fall back to comm. And apps that want to opt in to the new behaviour can 
-be updated one at a time. Which would be work intensive, but even just 
-updating gdb and perf would be super helpful.
-
--Andres
-
-> 
-> -Kees
-> 
->> will be shown in 'ps'. For example:
->>      create_very_long_name_user_space_script.sh
->>
->> Bhupesh (2):
->>    exec: Dynamically allocate memory to store task's full name
->>    fs/proc: Pass 'task->full_name' via 'proc_task_name()'
->>
->>   fs/exec.c             | 21 ++++++++++++++++++---
->>   fs/proc/array.c       |  2 +-
->>   include/linux/sched.h |  9 +++++++++
->>   3 files changed, 28 insertions(+), 4 deletions(-)
->>
->> -- 
->> 2.38.1
->>
-> 
+diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/asm/inst.h
+index 3089785ca97e..d61b356170fe 100644
+--- a/arch/loongarch/include/asm/inst.h
++++ b/arch/loongarch/include/asm/inst.h
+@@ -695,6 +695,11 @@ static inline void emit_jirl(union loongarch_instruction *insn,
+ 	insn->reg2i16_format.rj = rj;
+ }
+ 
++static inline void emit_nop(union loongarch_instruction *insn)
++{
++	insn->word = INSN_NOP;
++}
++
+ #define DEF_EMIT_REG2BSTRD_FORMAT(NAME, OP)				\
+ static inline void emit_##NAME(union loongarch_instruction *insn,	\
+ 			       enum loongarch_gpr rd,			\
+diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
+index ea357a3edc09..2346c0b55043 100644
+--- a/arch/loongarch/net/bpf_jit.c
++++ b/arch/loongarch/net/bpf_jit.c
+@@ -142,6 +142,8 @@ static void build_prologue(struct jit_ctx *ctx)
+ 	 */
+ 	if (seen_tail_call(ctx) && seen_call(ctx))
+ 		move_reg(ctx, TCC_SAVED, REG_TCC);
++	else
++		emit_insn(ctx, nop);
+ 
+ 	ctx->stack_size = stack_adjust;
+ }
+-- 
+2.43.5
 
 
