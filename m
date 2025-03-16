@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-54134-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54135-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7BE8A633A3
-	for <lists+bpf@lfdr.de>; Sun, 16 Mar 2025 05:10:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BD9AA633A5
+	for <lists+bpf@lfdr.de>; Sun, 16 Mar 2025 05:10:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F7ED16A811
-	for <lists+bpf@lfdr.de>; Sun, 16 Mar 2025 04:10:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9597C3A7840
+	for <lists+bpf@lfdr.de>; Sun, 16 Mar 2025 04:10:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7EAD1A23B5;
-	Sun, 16 Mar 2025 04:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6271A3148;
+	Sun, 16 Mar 2025 04:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fwo5xX6D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Maeif0LZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF3D19DFAB;
-	Sun, 16 Mar 2025 04:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD3E14D444;
+	Sun, 16 Mar 2025 04:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742097972; cv=none; b=BsGts0xzn6TrZIKM4pnjkXmY7O8q0sY+suAAnd1zPFFPJhjB0evaRPyicM8ImNVr4tNN7n+iu8KDVBxG8D8cHrUW6PQdXxGq4gF5uYg1fSCDLxF3IqaZJ+/HtQDxEfeiGtZeoeFsIy2WxtDvzxJYFbzo/ghsues0T/xjya1Q07s=
+	t=1742097973; cv=none; b=V1q2LAKhuepK/ZlAlaU1qBLcZzTB3Ird8sl8n2lzfoISuRch3hs5KgRSQjnxYXc/Qh8NuePddYLFgmRGefsgDu8Zs9Gh3uVswFZjifhJArRIbMkzKylR0lVitVp8/H5IZRTkZa9g4MEvaJsU1aIfT+1UKrYMc6z2AxZAUvlDLt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742097972; c=relaxed/simple;
-	bh=VwAQAxwAow7TrrvxCboQzb6cYiUbz63qPyaMUR2Lneg=;
+	s=arc-20240116; t=1742097973; c=relaxed/simple;
+	bh=9q6tMvL0KIAbFk+sY/U9KRjErNQz0NSPRbrt2C3ZJkE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HlwkGzQ8oXW2Mesh3uawsmEuZqj8uTz54Y4SPLpxxhqfaAOaHwEyEwfLHX1xKI59TY4vXFfXjejm+6CCnDE1ucXk0nzUJUJ5r/Lanh+CcVtXCbjIJEqifTfZ5+mSOmgQ+0WTZmdZB5OzFUmYA+ddD4bbTNEJcqbvtnD+zU4wkEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fwo5xX6D; arc=none smtp.client-ip=209.85.221.68
+	 MIME-Version; b=DYTr8qk0L4yccn5qIwM9hKVPQo5mW31ScgzL3TIKDt2l7o2ohafDTgz7zcv41xl2yiq/Rdylh6F+eA8vMJO4ORxi3oZGuW54HBDQVYMs0hj5MmEApcOov77AN0CG8dwBGaAWCu03EiJNA1UXf8Wz115OH2B+IRWEOjMXoK2Cm/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Maeif0LZ; arc=none smtp.client-ip=209.85.221.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-39141ffa9fcso2847408f8f.0;
-        Sat, 15 Mar 2025 21:06:09 -0700 (PDT)
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-39104c1cbbdso1885961f8f.3;
+        Sat, 15 Mar 2025 21:06:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742097968; x=1742702768; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742097969; x=1742702769; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CF4Uk2MYBA/hkoA+QSy5dWTlz17aW/WlIb/dNVcZIBA=;
-        b=fwo5xX6D5hc7ZOR1gA13/CIoA/m8pF3mnhd/Q3/FmmOri4qvbdJ8LYhhpz2tFnBQF6
-         iiBeGCxc9LwBzlWjpQHtJkY3d8fEkT6E5Bc/qQkasILJGj9V6BfRK8dE4njC88r1GcHR
-         BIsB0zahnEcMsbucZPy3qJxUoRlSRzTur/U+G3LGcG6PmBXHN2eAUp4IOFB5Fj1dZPM1
-         sTFSctW3JgDW5NyG5FgWTrg1LkS8Xp2HYZsMBYz0XvkRGz6zof797WJAnw0zUlYhbX2g
-         MYcrHnYM4aVEbUt9AYwaxM/rYyEho+Xit3hat8i3p3FctBdmx+FQvb3VTNoAE7NizkCC
-         yvHg==
+        bh=tjwed54Vqji5j5yoD9/wFQ/aRgNfk0MsQVfeIXpdSXQ=;
+        b=Maeif0LZANN+bGhNlD9S4OxIWSFz2OeAV9aCndNE9eFATc7HqO0ShQTHQVfTNq7nCE
+         K0pBJAMQP8FgfZgx3b/Tn+msFv47DWnMbdlUPkn+qGTu3cYb94Y/jUYIILb8pIH89aXQ
+         oNALM447nySxljHBV8w2aTvUDvQLiRiBtLYwkHmh2KZR1AwTu4pwxMIN8B72363vyTpH
+         4HFXrZSYhAuy87gWXWGB0f1wRBC79xCUQD8dmeIk7qi/R9gv5M0fXVV2UhPrhzkRbM7a
+         E/mEfz0Y03BLkctima/aymvQfh67sST9tqh8eIFswMtZKxPHkFbQZey893HRVEmN7LJ0
+         OQPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742097968; x=1742702768;
+        d=1e100.net; s=20230601; t=1742097969; x=1742702769;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CF4Uk2MYBA/hkoA+QSy5dWTlz17aW/WlIb/dNVcZIBA=;
-        b=LYxByxq0EcboaUrG+hRpQBtz44GBeJuOahplEGqHCf74qSKVy+b4X2RcR+i68bZ25n
-         M/CZJ7HYDRGBoNDoCZNj+iH01xsTIXbNVht/I8YUBdJNq2NeZ0eQoKhbU0Q3SIOwMUAB
-         bq5HJ6jECjoRQiZtUM6WRkGYnrbM6NBeoLTs055VQQk+1D7Zlo1iVv4RlRVQKaWutF30
-         TJD2pnkjGNDD9o/YbJpPyA5Z/K93bYB0lSOvtJNxtNk9M9aFFCjm5MwMRxGnDUO/PkfG
-         YVksqxIWz3sJ1dg1winjN0MpySTwB+u1clD0vXP8944fYU1stMDrOzFAm20tjZcBgNVk
-         9Hzw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2NWh7ngZCX7wdKUSh2F6SlyjWXXqDTOPaTXwsRdf9ABgI5+j2HWkzzUxJRR2dko/tU6jpCAciXGhCGMU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzyHMAePD393kVjZ62cIbNrkb92ixAmoQtyV3o0I0X6k+woJ+Ri
-	xQoIxZoanWDo3l3Mnh7l24c9zc8n/S6rDMyDC6PU6jKx/uaVMOHEH/uc+TWBsJM=
-X-Gm-Gg: ASbGncuzumG0JsLVgOQccg5l/9Cnln5SSh6mBq+aibbIuyjHgV9GfKvMdRBJTypYfOX
-	2AYeDbE27HZw3rCx1JXwtKOyrXCewfqk5UsbdZGQr/t8JI3HXWi4tvZsM0B3X5BwnSO70oEfHF+
-	Qrci75iLCrQIEPAwAJMasVXhn3fkOopYsW/25aQS+ZkUwFUzIq5d4KaiFN8RS9JVEASkb6QpEcV
-	jmAdL03tSiYLH06xGNSknpADBhmkQ1G14T11PGLdbEt+GdHS5UlkHYNi8SwgAuq9U/6abZooiMZ
-	B4ZwlSIo01epkRGE3nFbxaYDGlz3f0mkRUI=
-X-Google-Smtp-Source: AGHT+IG/cybe/X/vKmWywaeOPxKG+ExqzgfSAMkufyXQIte9dsBNmp17N0O0pQGVtXSWVe9+PQcBvQ==
-X-Received: by 2002:a5d:64a2:0:b0:38f:28dc:ec23 with SMTP id ffacd0b85a97d-3971d23799cmr10157067f8f.19.1742097967532;
-        Sat, 15 Mar 2025 21:06:07 -0700 (PDT)
-Received: from localhost ([2a03:2880:31ff:48::])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395cb7eb9d7sm10695515f8f.89.2025.03.15.21.06.06
+        bh=tjwed54Vqji5j5yoD9/wFQ/aRgNfk0MsQVfeIXpdSXQ=;
+        b=csNgFwLwEnwxNNCByxTDEbsh3YaM+hIQEq8Y4YXenkGIiX8cG/IS7D/hwtoEnuDxRR
+         3/IbWz+yV1HIC+SNR3qMxNl16vojh3y/RCUdmmetpsCWO/mDWgS4F02WGY+3VvGgLYF1
+         oi8NB+dcI3U6cPjwwH4eq5nA+u8fxqRi3V7VGt6QY68RGV19sG0RCiW1AwHmIhDpzqgl
+         Xg3D2g+w8mLcjFPBk4OrqKAQ3mAuCgufZGC35jQOm/AOTCNbzcl4ijq6ZXKySgUEmN1v
+         d4StNrdbtaSNzDbulv4H+OAuFHEp/Qlw1VBnxBYR5Ty6RmCoTcSD4d5X2rAyB9X0ACE7
+         Rucw==
+X-Forwarded-Encrypted: i=1; AJvYcCUNS919v8dTQTVlLenC3ZkCAzfwtRqD64/00inxtyYGiNx+1inVNL7JSE8wOBkhjLzPKL8lTzmvr+RepVc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwsuoS73uTr+ZpZgnzK9o8otT1zHE7quhIjPnWWD3Pk8TU9tW/A
+	sWSNE5C+cBy4hEQZtFQ1o+p7JnR8Pqg1ll/tV/JWVJ/8qRPVzt+4BUTEU41S81U=
+X-Gm-Gg: ASbGncvaT7b8sYMNwFwkZldKW4ESF3SZg6Qv/Yy0gsCDnlAm4R+CIwvUA/SSMuWzksJ
+	CRJLJyFzFPEbJoQDibVHJ70An2SYGxlbxSH3f1rPz6ZIiT5Yc4rwOuhDIA5ebs8iE6dzLLI+oE8
+	19MSyDtsLM4kGGnfK0lbcXFO2W+Mb+WJ1uJ7a3fYs9GYm+XJ9UdVDtxV8/I0IF0r36wzFMViHf3
+	LLdRmtCnYi9yotMQlIfPj+EKiwlmXhDgGr8clGczWYJ0PEbEkr6iezJFFjcSXXHVRrhBysAMt/3
+	NqlthRtJXbafmDQPw+saVhfBl3cn/7rUqA==
+X-Google-Smtp-Source: AGHT+IGK4qXm9ArrLCXgXNAYLraEfl7iQZEVMYeN5XftPU/x8Co4B5Nq48EhLKMbp6h132WBFeRBuQ==
+X-Received: by 2002:a5d:5f8f:0:b0:38f:38eb:fcfc with SMTP id ffacd0b85a97d-3971d136069mr9762245f8f.7.1742097968994;
+        Sat, 15 Mar 2025 21:06:08 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff:5::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d1fdda152sm67916635e9.1.2025.03.15.21.06.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Mar 2025 21:06:07 -0700 (PDT)
+        Sat, 15 Mar 2025 21:06:08 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -92,9 +92,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-arm-kernel@lists.infradead.org,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v4 19/25] bpf: Convert hashtab.c to rqspinlock
-Date: Sat, 15 Mar 2025 21:05:35 -0700
-Message-ID: <20250316040541.108729-20-memxor@gmail.com>
+Subject: [PATCH bpf-next v4 20/25] bpf: Convert percpu_freelist.c to rqspinlock
+Date: Sat, 15 Mar 2025 21:05:36 -0700
+Message-ID: <20250316040541.108729-21-memxor@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250316040541.108729-1-memxor@gmail.com>
 References: <20250316040541.108729-1-memxor@gmail.com>
@@ -104,359 +104,225 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=11131; h=from:subject; bh=VwAQAxwAow7TrrvxCboQzb6cYiUbz63qPyaMUR2Lneg=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBn1k3eGs+bJjtEdeiJjw+Cd9PjBR7SOiQpae9Vzm/W Hk3IcQyJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ9ZN3gAKCRBM4MiGSL8RymFdD/ 4guFTOgG2ezQtX/qNWMi70RSbmgFndzWKODlNByC2n50hmYhhX9QlUKP+tsvZw793omMVa4G7ivzR8 dj195Z7rzAQlMEA+Y2fHGnBQqQWjPQhXQk2bQ1Mvvs4/C/zBpkrWLeXIrs3l4L0VhKDvg+nTGxmJGQ 5pe6Dz+d15FajBJ5NTRVGVX6/BLShHrT3NpUFLx1iGqGO6ilzcz0SKrJXuIX1thW1XMvRbyacIxc8d c4rraPbRxMyYAuYdgHX6O2iJCeDXsVnlCJ9w4YSuWCUoiRrt8AF+73hKjEtO7yhk59ZCUsvojBLWQ6 7OaL3u0YLBcxSyG4OsaCu27eyiDMBSYTJQVfjnq63hJ00wz+6TReX4DDpYAn/KUjeQLxVBgjJ2HRYh JMe4RZjVlfiK51f7sGm9Oy5JzPDbkpQSBBg9DDeMWd+aOkMDTzERynTnkWImFKroy/83XrcICnFQDC uSy6RpJt69kFqYBIjZ3E6vOhQOsNPO2Yrf53s+utbaMKhRLyMdMWYrgSiP2r0CSyFlpEWI3ZWhW9WF mfskIl0ctWP39nXAdkW/yj8vNd3DeBVAAoWJp35wU3L1cBjMrTAyXac4M8lv5Ua+lc7vYEe85mI1ry qx+it9Hd826i/HpocK9iaHfGwuWdtF0b2JNeAuwKceiyeIVeKMW5ebSgsc3w==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6720; h=from:subject; bh=9q6tMvL0KIAbFk+sY/U9KRjErNQz0NSPRbrt2C3ZJkE=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBn1k3eRwoCpVBivHRVCIfYOVJ3bSQqELoQ3YdqIHaZ 0Qn/pVmJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ9ZN3gAKCRBM4MiGSL8RyhG8D/ 4gZK23dPYHGv97XCNumvumPpE5iAC1RvxTgRMG3f8G3jsmtWgXSKJJX0I/LPV9SIjEVENK69dF8OYo JtJzi6M0frKXWOH3i348qYosuOyV2drlvwfNUUEFB30EDCZyh15S5rPPv1UpNngps6KckmlscR7wKN MXqabQVbUGrYpUvjSK5gYCr7BOGqDYpZ1XagCXPKfXCOsOOn1H3cDaPCfaf8XxgcflHHLVxFBMvW9y +YzbVai2PpwEalAolVi6/DC77pJhgfX7rwqhMncu4/xkyFnH87t5JONBFJHZf45QeGx0A4agc9nOg8 rxjniya94z/TfDYqZLAfQEZIV9kAGOUMvPwhEnXyYuDHDDRec7tKNSO+P2IUb2hYefVM3Ghm0n4p0P CmZc9N/Y2GIRXvVl4VLGwfu/ensS1wCFj82w76Ig1qpUYwppwWkH9o5bWb9dv3U8lmN3c8F9NHEx1o OIsPoR47YLMoasxqRtXiWe2dvZbilJdVqJelZipX4dCEyIoC+1YYy6r2/ftW3XakSo6UWBre8hFohm bGJu1Qo3BxBDSej8CFT3E3KsVzZ5XVrF/RPr0liFKY5TyEV1kO33w/oEzrui9Z/irDz8gIF9aF4Y8z u+gd5bcIJtqR98WDZhEnXhXlVzZ3ZFtHlkSpmLfDqE0N5VNrh6rqLtwffGVA==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Convert hashtab.c from raw_spinlock to rqspinlock, and drop the hashed
-per-cpu counter crud from the code base which is no longer necessary.
+Convert the percpu_freelist.c code to use rqspinlock, and remove the
+extralist fallback and trylock-based acquisitions to avoid deadlocks.
 
-Closes: https://lore.kernel.org/bpf/675302fd.050a0220.2477f.0004.GAE@google.com
-Closes: https://lore.kernel.org/bpf/000000000000b3e63e061eed3f6b@google.com
+Key thing to note is the retained while (true) loop to search through
+other CPUs when failing to push a node due to locking errors. This
+retains the behavior of the old code, where it would keep trying until
+it would be able to successfully push the node back into the freelist of
+a CPU.
+
+Technically, we should start iteration for this loop from
+raw_smp_processor_id() + 1, but to avoid hitting the edge of nr_cpus,
+we skip execution in the loop body instead.
+
+Closes: https://lore.kernel.org/bpf/CAPPBnEa1_pZ6W24+WwtcNFvTUHTHO7KUmzEbOcMqxp+m2o15qQ@mail.gmail.com
+Closes: https://lore.kernel.org/bpf/CAPPBnEYm+9zduStsZaDnq93q1jPLqO-PiKX9jy0MuL8LCXmCrQ@mail.gmail.com
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/hashtab.c | 102 ++++++++++++++-----------------------------
- 1 file changed, 32 insertions(+), 70 deletions(-)
+ kernel/bpf/percpu_freelist.c | 113 ++++++++---------------------------
+ kernel/bpf/percpu_freelist.h |   4 +-
+ 2 files changed, 27 insertions(+), 90 deletions(-)
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 877298133fda..5a5adc66b8e2 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -16,6 +16,7 @@
- #include "bpf_lru_list.h"
- #include "map_in_map.h"
- #include <linux/bpf_mem_alloc.h>
+diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
+index 034cf87b54e9..632762b57299 100644
+--- a/kernel/bpf/percpu_freelist.c
++++ b/kernel/bpf/percpu_freelist.c
+@@ -14,11 +14,9 @@ int pcpu_freelist_init(struct pcpu_freelist *s)
+ 	for_each_possible_cpu(cpu) {
+ 		struct pcpu_freelist_head *head = per_cpu_ptr(s->freelist, cpu);
+ 
+-		raw_spin_lock_init(&head->lock);
++		raw_res_spin_lock_init(&head->lock);
+ 		head->first = NULL;
+ 	}
+-	raw_spin_lock_init(&s->extralist.lock);
+-	s->extralist.first = NULL;
+ 	return 0;
+ }
+ 
+@@ -34,58 +32,39 @@ static inline void pcpu_freelist_push_node(struct pcpu_freelist_head *head,
+ 	WRITE_ONCE(head->first, node);
+ }
+ 
+-static inline void ___pcpu_freelist_push(struct pcpu_freelist_head *head,
++static inline bool ___pcpu_freelist_push(struct pcpu_freelist_head *head,
+ 					 struct pcpu_freelist_node *node)
+ {
+-	raw_spin_lock(&head->lock);
+-	pcpu_freelist_push_node(head, node);
+-	raw_spin_unlock(&head->lock);
+-}
+-
+-static inline bool pcpu_freelist_try_push_extra(struct pcpu_freelist *s,
+-						struct pcpu_freelist_node *node)
+-{
+-	if (!raw_spin_trylock(&s->extralist.lock))
++	if (raw_res_spin_lock(&head->lock))
+ 		return false;
+-
+-	pcpu_freelist_push_node(&s->extralist, node);
+-	raw_spin_unlock(&s->extralist.lock);
++	pcpu_freelist_push_node(head, node);
++	raw_res_spin_unlock(&head->lock);
+ 	return true;
+ }
+ 
+-static inline void ___pcpu_freelist_push_nmi(struct pcpu_freelist *s,
+-					     struct pcpu_freelist_node *node)
++void __pcpu_freelist_push(struct pcpu_freelist *s,
++			struct pcpu_freelist_node *node)
+ {
+-	int cpu, orig_cpu;
++	struct pcpu_freelist_head *head;
++	int cpu;
+ 
+-	orig_cpu = raw_smp_processor_id();
+-	while (1) {
+-		for_each_cpu_wrap(cpu, cpu_possible_mask, orig_cpu) {
+-			struct pcpu_freelist_head *head;
++	if (___pcpu_freelist_push(this_cpu_ptr(s->freelist), node))
++		return;
+ 
++	while (true) {
++		for_each_cpu_wrap(cpu, cpu_possible_mask, raw_smp_processor_id()) {
++			if (cpu == raw_smp_processor_id())
++				continue;
+ 			head = per_cpu_ptr(s->freelist, cpu);
+-			if (raw_spin_trylock(&head->lock)) {
+-				pcpu_freelist_push_node(head, node);
+-				raw_spin_unlock(&head->lock);
+-				return;
+-			}
+-		}
+-
+-		/* cannot lock any per cpu lock, try extralist */
+-		if (pcpu_freelist_try_push_extra(s, node))
++			if (raw_res_spin_lock(&head->lock))
++				continue;
++			pcpu_freelist_push_node(head, node);
++			raw_res_spin_unlock(&head->lock);
+ 			return;
++		}
+ 	}
+ }
+ 
+-void __pcpu_freelist_push(struct pcpu_freelist *s,
+-			struct pcpu_freelist_node *node)
+-{
+-	if (in_nmi())
+-		___pcpu_freelist_push_nmi(s, node);
+-	else
+-		___pcpu_freelist_push(this_cpu_ptr(s->freelist), node);
+-}
+-
+ void pcpu_freelist_push(struct pcpu_freelist *s,
+ 			struct pcpu_freelist_node *node)
+ {
+@@ -120,71 +99,29 @@ void pcpu_freelist_populate(struct pcpu_freelist *s, void *buf, u32 elem_size,
+ 
+ static struct pcpu_freelist_node *___pcpu_freelist_pop(struct pcpu_freelist *s)
+ {
++	struct pcpu_freelist_node *node = NULL;
+ 	struct pcpu_freelist_head *head;
+-	struct pcpu_freelist_node *node;
+ 	int cpu;
+ 
+ 	for_each_cpu_wrap(cpu, cpu_possible_mask, raw_smp_processor_id()) {
+ 		head = per_cpu_ptr(s->freelist, cpu);
+ 		if (!READ_ONCE(head->first))
+ 			continue;
+-		raw_spin_lock(&head->lock);
++		if (raw_res_spin_lock(&head->lock))
++			continue;
+ 		node = head->first;
+ 		if (node) {
+ 			WRITE_ONCE(head->first, node->next);
+-			raw_spin_unlock(&head->lock);
++			raw_res_spin_unlock(&head->lock);
+ 			return node;
+ 		}
+-		raw_spin_unlock(&head->lock);
++		raw_res_spin_unlock(&head->lock);
+ 	}
+-
+-	/* per cpu lists are all empty, try extralist */
+-	if (!READ_ONCE(s->extralist.first))
+-		return NULL;
+-	raw_spin_lock(&s->extralist.lock);
+-	node = s->extralist.first;
+-	if (node)
+-		WRITE_ONCE(s->extralist.first, node->next);
+-	raw_spin_unlock(&s->extralist.lock);
+-	return node;
+-}
+-
+-static struct pcpu_freelist_node *
+-___pcpu_freelist_pop_nmi(struct pcpu_freelist *s)
+-{
+-	struct pcpu_freelist_head *head;
+-	struct pcpu_freelist_node *node;
+-	int cpu;
+-
+-	for_each_cpu_wrap(cpu, cpu_possible_mask, raw_smp_processor_id()) {
+-		head = per_cpu_ptr(s->freelist, cpu);
+-		if (!READ_ONCE(head->first))
+-			continue;
+-		if (raw_spin_trylock(&head->lock)) {
+-			node = head->first;
+-			if (node) {
+-				WRITE_ONCE(head->first, node->next);
+-				raw_spin_unlock(&head->lock);
+-				return node;
+-			}
+-			raw_spin_unlock(&head->lock);
+-		}
+-	}
+-
+-	/* cannot pop from per cpu lists, try extralist */
+-	if (!READ_ONCE(s->extralist.first) || !raw_spin_trylock(&s->extralist.lock))
+-		return NULL;
+-	node = s->extralist.first;
+-	if (node)
+-		WRITE_ONCE(s->extralist.first, node->next);
+-	raw_spin_unlock(&s->extralist.lock);
+ 	return node;
+ }
+ 
+ struct pcpu_freelist_node *__pcpu_freelist_pop(struct pcpu_freelist *s)
+ {
+-	if (in_nmi())
+-		return ___pcpu_freelist_pop_nmi(s);
+ 	return ___pcpu_freelist_pop(s);
+ }
+ 
+diff --git a/kernel/bpf/percpu_freelist.h b/kernel/bpf/percpu_freelist.h
+index 3c76553cfe57..914798b74967 100644
+--- a/kernel/bpf/percpu_freelist.h
++++ b/kernel/bpf/percpu_freelist.h
+@@ -5,15 +5,15 @@
+ #define __PERCPU_FREELIST_H__
+ #include <linux/spinlock.h>
+ #include <linux/percpu.h>
 +#include <asm/rqspinlock.h>
  
- #define HTAB_CREATE_FLAG_MASK						\
- 	(BPF_F_NO_PREALLOC | BPF_F_NO_COMMON_LRU | BPF_F_NUMA_NODE |	\
-@@ -78,7 +79,7 @@
-  */
- struct bucket {
- 	struct hlist_nulls_head head;
--	raw_spinlock_t raw_lock;
-+	rqspinlock_t raw_lock;
+ struct pcpu_freelist_head {
+ 	struct pcpu_freelist_node *first;
+-	raw_spinlock_t lock;
++	rqspinlock_t lock;
  };
  
- #define HASHTAB_MAP_LOCK_COUNT 8
-@@ -104,8 +105,6 @@ struct bpf_htab {
- 	u32 n_buckets;	/* number of hash buckets */
- 	u32 elem_size;	/* size of each element in bytes */
- 	u32 hashrnd;
--	struct lock_class_key lockdep_key;
--	int __percpu *map_locked[HASHTAB_MAP_LOCK_COUNT];
+ struct pcpu_freelist {
+ 	struct pcpu_freelist_head __percpu *freelist;
+-	struct pcpu_freelist_head extralist;
  };
  
- /* each htab element is struct htab_elem + key + value */
-@@ -140,45 +139,26 @@ static void htab_init_buckets(struct bpf_htab *htab)
- 
- 	for (i = 0; i < htab->n_buckets; i++) {
- 		INIT_HLIST_NULLS_HEAD(&htab->buckets[i].head, i);
--		raw_spin_lock_init(&htab->buckets[i].raw_lock);
--		lockdep_set_class(&htab->buckets[i].raw_lock,
--					  &htab->lockdep_key);
-+		raw_res_spin_lock_init(&htab->buckets[i].raw_lock);
- 		cond_resched();
- 	}
- }
- 
--static inline int htab_lock_bucket(const struct bpf_htab *htab,
--				   struct bucket *b, u32 hash,
--				   unsigned long *pflags)
-+static inline int htab_lock_bucket(struct bucket *b, unsigned long *pflags)
- {
- 	unsigned long flags;
-+	int ret;
- 
--	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets - 1);
--
--	preempt_disable();
--	local_irq_save(flags);
--	if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
--		__this_cpu_dec(*(htab->map_locked[hash]));
--		local_irq_restore(flags);
--		preempt_enable();
--		return -EBUSY;
--	}
--
--	raw_spin_lock(&b->raw_lock);
-+	ret = raw_res_spin_lock_irqsave(&b->raw_lock, flags);
-+	if (ret)
-+		return ret;
- 	*pflags = flags;
--
- 	return 0;
- }
- 
--static inline void htab_unlock_bucket(const struct bpf_htab *htab,
--				      struct bucket *b, u32 hash,
--				      unsigned long flags)
-+static inline void htab_unlock_bucket(struct bucket *b, unsigned long flags)
- {
--	hash = hash & min_t(u32, HASHTAB_MAP_LOCK_MASK, htab->n_buckets - 1);
--	raw_spin_unlock(&b->raw_lock);
--	__this_cpu_dec(*(htab->map_locked[hash]));
--	local_irq_restore(flags);
--	preempt_enable();
-+	raw_res_spin_unlock_irqrestore(&b->raw_lock, flags);
- }
- 
- static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node);
-@@ -483,14 +463,12 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
- 	bool percpu_lru = (attr->map_flags & BPF_F_NO_COMMON_LRU);
- 	bool prealloc = !(attr->map_flags & BPF_F_NO_PREALLOC);
- 	struct bpf_htab *htab;
--	int err, i;
-+	int err;
- 
- 	htab = bpf_map_area_alloc(sizeof(*htab), NUMA_NO_NODE);
- 	if (!htab)
- 		return ERR_PTR(-ENOMEM);
- 
--	lockdep_register_key(&htab->lockdep_key);
--
- 	bpf_map_init_from_attr(&htab->map, attr);
- 
- 	if (percpu_lru) {
-@@ -536,15 +514,6 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
- 	if (!htab->buckets)
- 		goto free_elem_count;
- 
--	for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++) {
--		htab->map_locked[i] = bpf_map_alloc_percpu(&htab->map,
--							   sizeof(int),
--							   sizeof(int),
--							   GFP_USER);
--		if (!htab->map_locked[i])
--			goto free_map_locked;
--	}
--
- 	if (htab->map.map_flags & BPF_F_ZERO_SEED)
- 		htab->hashrnd = 0;
- 	else
-@@ -607,15 +576,12 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
- free_map_locked:
- 	if (htab->use_percpu_counter)
- 		percpu_counter_destroy(&htab->pcount);
--	for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
--		free_percpu(htab->map_locked[i]);
- 	bpf_map_area_free(htab->buckets);
- 	bpf_mem_alloc_destroy(&htab->pcpu_ma);
- 	bpf_mem_alloc_destroy(&htab->ma);
- free_elem_count:
- 	bpf_map_free_elem_count(&htab->map);
- free_htab:
--	lockdep_unregister_key(&htab->lockdep_key);
- 	bpf_map_area_free(htab);
- 	return ERR_PTR(err);
- }
-@@ -820,7 +786,7 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
- 	b = __select_bucket(htab, tgt_l->hash);
- 	head = &b->head;
- 
--	ret = htab_lock_bucket(htab, b, tgt_l->hash, &flags);
-+	ret = htab_lock_bucket(b, &flags);
- 	if (ret)
- 		return false;
- 
-@@ -831,7 +797,7 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
- 			break;
- 		}
- 
--	htab_unlock_bucket(htab, b, tgt_l->hash, flags);
-+	htab_unlock_bucket(b, flags);
- 
- 	if (l == tgt_l)
- 		check_and_free_fields(htab, l);
-@@ -1150,7 +1116,7 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
- 		 */
- 	}
- 
--	ret = htab_lock_bucket(htab, b, hash, &flags);
-+	ret = htab_lock_bucket(b, &flags);
- 	if (ret)
- 		return ret;
- 
-@@ -1201,7 +1167,7 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
- 			check_and_free_fields(htab, l_old);
- 		}
- 	}
--	htab_unlock_bucket(htab, b, hash, flags);
-+	htab_unlock_bucket(b, flags);
- 	if (l_old) {
- 		if (old_map_ptr)
- 			map->ops->map_fd_put_ptr(map, old_map_ptr, true);
-@@ -1210,7 +1176,7 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
- 	}
- 	return 0;
- err:
--	htab_unlock_bucket(htab, b, hash, flags);
-+	htab_unlock_bucket(b, flags);
- 	return ret;
- }
- 
-@@ -1257,7 +1223,7 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
- 	copy_map_value(&htab->map,
- 		       l_new->key + round_up(map->key_size, 8), value);
- 
--	ret = htab_lock_bucket(htab, b, hash, &flags);
-+	ret = htab_lock_bucket(b, &flags);
- 	if (ret)
- 		goto err_lock_bucket;
- 
-@@ -1278,7 +1244,7 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
- 	ret = 0;
- 
- err:
--	htab_unlock_bucket(htab, b, hash, flags);
-+	htab_unlock_bucket(b, flags);
- 
- err_lock_bucket:
- 	if (ret)
-@@ -1315,7 +1281,7 @@ static long __htab_percpu_map_update_elem(struct bpf_map *map, void *key,
- 	b = __select_bucket(htab, hash);
- 	head = &b->head;
- 
--	ret = htab_lock_bucket(htab, b, hash, &flags);
-+	ret = htab_lock_bucket(b, &flags);
- 	if (ret)
- 		return ret;
- 
-@@ -1340,7 +1306,7 @@ static long __htab_percpu_map_update_elem(struct bpf_map *map, void *key,
- 	}
- 	ret = 0;
- err:
--	htab_unlock_bucket(htab, b, hash, flags);
-+	htab_unlock_bucket(b, flags);
- 	return ret;
- }
- 
-@@ -1381,7 +1347,7 @@ static long __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
- 			return -ENOMEM;
- 	}
- 
--	ret = htab_lock_bucket(htab, b, hash, &flags);
-+	ret = htab_lock_bucket(b, &flags);
- 	if (ret)
- 		goto err_lock_bucket;
- 
-@@ -1405,7 +1371,7 @@ static long __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
- 	}
- 	ret = 0;
- err:
--	htab_unlock_bucket(htab, b, hash, flags);
-+	htab_unlock_bucket(b, flags);
- err_lock_bucket:
- 	if (l_new) {
- 		bpf_map_dec_elem_count(&htab->map);
-@@ -1447,7 +1413,7 @@ static long htab_map_delete_elem(struct bpf_map *map, void *key)
- 	b = __select_bucket(htab, hash);
- 	head = &b->head;
- 
--	ret = htab_lock_bucket(htab, b, hash, &flags);
-+	ret = htab_lock_bucket(b, &flags);
- 	if (ret)
- 		return ret;
- 
-@@ -1457,7 +1423,7 @@ static long htab_map_delete_elem(struct bpf_map *map, void *key)
- 	else
- 		ret = -ENOENT;
- 
--	htab_unlock_bucket(htab, b, hash, flags);
-+	htab_unlock_bucket(b, flags);
- 
- 	if (l)
- 		free_htab_elem(htab, l);
-@@ -1483,7 +1449,7 @@ static long htab_lru_map_delete_elem(struct bpf_map *map, void *key)
- 	b = __select_bucket(htab, hash);
- 	head = &b->head;
- 
--	ret = htab_lock_bucket(htab, b, hash, &flags);
-+	ret = htab_lock_bucket(b, &flags);
- 	if (ret)
- 		return ret;
- 
-@@ -1494,7 +1460,7 @@ static long htab_lru_map_delete_elem(struct bpf_map *map, void *key)
- 	else
- 		ret = -ENOENT;
- 
--	htab_unlock_bucket(htab, b, hash, flags);
-+	htab_unlock_bucket(b, flags);
- 	if (l)
- 		htab_lru_push_free(htab, l);
- 	return ret;
-@@ -1561,7 +1527,6 @@ static void htab_map_free_timers_and_wq(struct bpf_map *map)
- static void htab_map_free(struct bpf_map *map)
- {
- 	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
--	int i;
- 
- 	/* bpf_free_used_maps() or close(map_fd) will trigger this map_free callback.
- 	 * bpf_free_used_maps() is called after bpf prog is no longer executing.
-@@ -1586,9 +1551,6 @@ static void htab_map_free(struct bpf_map *map)
- 	bpf_mem_alloc_destroy(&htab->ma);
- 	if (htab->use_percpu_counter)
- 		percpu_counter_destroy(&htab->pcount);
--	for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
--		free_percpu(htab->map_locked[i]);
--	lockdep_unregister_key(&htab->lockdep_key);
- 	bpf_map_area_free(htab);
- }
- 
-@@ -1631,7 +1593,7 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
- 	b = __select_bucket(htab, hash);
- 	head = &b->head;
- 
--	ret = htab_lock_bucket(htab, b, hash, &bflags);
-+	ret = htab_lock_bucket(b, &bflags);
- 	if (ret)
- 		return ret;
- 
-@@ -1668,7 +1630,7 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
- 	hlist_nulls_del_rcu(&l->hash_node);
- 
- out_unlock:
--	htab_unlock_bucket(htab, b, hash, bflags);
-+	htab_unlock_bucket(b, bflags);
- 
- 	if (l) {
- 		if (is_lru_map)
-@@ -1790,7 +1752,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 	head = &b->head;
- 	/* do not grab the lock unless need it (bucket_cnt > 0). */
- 	if (locked) {
--		ret = htab_lock_bucket(htab, b, batch, &flags);
-+		ret = htab_lock_bucket(b, &flags);
- 		if (ret) {
- 			rcu_read_unlock();
- 			bpf_enable_instrumentation();
-@@ -1813,7 +1775,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 		/* Note that since bucket_cnt > 0 here, it is implicit
- 		 * that the locked was grabbed, so release it.
- 		 */
--		htab_unlock_bucket(htab, b, batch, flags);
-+		htab_unlock_bucket(b, flags);
- 		rcu_read_unlock();
- 		bpf_enable_instrumentation();
- 		goto after_loop;
-@@ -1824,7 +1786,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 		/* Note that since bucket_cnt > 0 here, it is implicit
- 		 * that the locked was grabbed, so release it.
- 		 */
--		htab_unlock_bucket(htab, b, batch, flags);
-+		htab_unlock_bucket(b, flags);
- 		rcu_read_unlock();
- 		bpf_enable_instrumentation();
- 		kvfree(keys);
-@@ -1887,7 +1849,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 		dst_val += value_size;
- 	}
- 
--	htab_unlock_bucket(htab, b, batch, flags);
-+	htab_unlock_bucket(b, flags);
- 	locked = false;
- 
- 	while (node_to_free) {
+ struct pcpu_freelist_node {
 -- 
 2.47.1
 
