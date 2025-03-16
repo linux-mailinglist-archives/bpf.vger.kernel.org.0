@@ -1,136 +1,223 @@
-Return-Path: <bpf+bounces-54141-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54142-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA78EA63433
-	for <lists+bpf@lfdr.de>; Sun, 16 Mar 2025 07:13:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0DA4A635EB
+	for <lists+bpf@lfdr.de>; Sun, 16 Mar 2025 14:56:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF1CB1892127
-	for <lists+bpf@lfdr.de>; Sun, 16 Mar 2025 06:13:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBF7416FCAF
+	for <lists+bpf@lfdr.de>; Sun, 16 Mar 2025 13:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E031176AC5;
-	Sun, 16 Mar 2025 06:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326561AAE08;
+	Sun, 16 Mar 2025 13:56:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="DVAx48LB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cRHUBcbX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E78AF8BE5;
-	Sun, 16 Mar 2025 06:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2240419E7FA;
+	Sun, 16 Mar 2025 13:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742105617; cv=none; b=gs3WPI3JUPp+o5uLdYVfv+q916eKMIf7htPOPtBsNdNpK8yXCjn2w9SO6+vewiKVg1UddXOzG5E3kk+HsNVKUPmyCIzYB7W4bfA7yGC58m9rSRIUHzmFEaUAVhDRIq1wuWCbwTT5bFu2XanjOsHIwG2wcF3aqp/hBNN5l8uXSFo=
+	t=1742133396; cv=none; b=OdC/5v/KcmOpGjdI9ieJZEI0xXvJnkXwCR1vnvlVl1nwU7HtCeWJfoCMScRisjzK/QNkhTnQgmJcFlzrHODjsHTIwVBo3pHrT2FKonpRIPI52CQCzRZ1FlaGSUTdoouDncFr8lKVZH2G1AgvlAZqNio6fE7u8HCvh9DqlkcOKyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742105617; c=relaxed/simple;
-	bh=6cGBUz5aIol+ICzbCxvIpdgBgF6oR95SvmsvHtIWZGQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RhsW1su2pCrXjVTyhImz/KvDsfKZ/zy9a+Y43wqJ6Ul/KXhXMCne8KWwNPChwgHbyVQ1+dXUgOT+UF1g6kdmzPvBWxvVA3sYmoQD8lXqSsC+u7t4wn641BGT4IM/cJXF6XgRX9cKRGkg0UwhjlivqT7b9IO2PPMdd/HuR0Cz41c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=DVAx48LB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0759C4CEDD;
-	Sun, 16 Mar 2025 06:13:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1742105616;
-	bh=6cGBUz5aIol+ICzbCxvIpdgBgF6oR95SvmsvHtIWZGQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DVAx48LBcbZr2Na7a9Q6+MR6zCrdXcGGNoBNRa653NjHZtAaQ3ohTwCDNiCpF3hlU
-	 SjeUaR96oocKaQ8t7SzejjsGcN40aM1T6NgtlmhktdFShWq2B19uqoKh6aqO/Y2Ij5
-	 z84gScWh0schCEFzmfBF4zNj7jOGwqf7pNETmA/4=
-Date: Sun, 16 Mar 2025 07:13:33 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Chen Linxuan <chenlinxuan@deepin.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Sasha Levin <sashal@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>, Jann Horn <jannh@google.com>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Yi Lai <yi1.lai@intel.com>, Daniel Borkmann <daniel@iogearbox.net>,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH stable 6.6] lib/buildid: Handle memfd_secret() files in
- build_id_parse()
-Message-ID: <2025031645-unsightly-rely-25b3@gregkh>
-References: <6F04B7A95D1A4D64+20250314064039.21110-2-chenlinxuan@deepin.org>
+	s=arc-20240116; t=1742133396; c=relaxed/simple;
+	bh=/lGpgGo8Z+WG9+wFZwQUDcapNedzqeLEvT6E58LJ2TE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UUcVV39hJTIMBFsZWz7gbjEOH4hS/bPvFLZn+v+bXIfecGODAvu+HMw95GdNWNfJnIhjc6wqLuV0+lGnQ8iKrZ+CQCuE9Y8ZQPhOuT1OkHzMh/CjdqIVaTyOWEE/xkFTZ9QHV/SZQ9V4fSaeE3CxCFWWcc15XZEX09awCFx+Qds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cRHUBcbX; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-6ff37565232so27574247b3.3;
+        Sun, 16 Mar 2025 06:56:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742133394; x=1742738194; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kchZ9rsgLEYdP4HGLCj7ua1euIaz8+Xk2/kromwai50=;
+        b=cRHUBcbXWVH7tlCIwBw2Dh7Ua8zYcOFjDmsavv5SC/flfGxUALgEB46ld6srdDlxTs
+         Z/miOGE6matra59jBsRtG4QBv4v+eci8oaRP29fSjLjuKaAchPny9qRfGHm2cZBNAi6/
+         xjwjbjeCSSuOiXzADknO4Tb+WaqgbD9YR1An5jrNXMcmBbtJFjYsg5dyY8srrlOx/7wy
+         ApD3NlXU9u4yy6AcuKHhZL/WkMsaCpI+pZ5WY9iwVfdHcN2uJh1A/6TJpFxDAb1AV8wW
+         SH6q6uvBChdd4+vGkML5Ub/9FOO9MVcIZODB0RU3+YjV+U7+VX8yMEGWiUFH0YSsXOYS
+         rChw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742133394; x=1742738194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kchZ9rsgLEYdP4HGLCj7ua1euIaz8+Xk2/kromwai50=;
+        b=j+5PJ95H0CFiLuURq9HfN7Z1/h/yWhqkJgoXfz94YVq3BN1A5nel1DiiuwdzAiO1jT
+         j+KwC+kCjvsgcvWMpjfWaMf3d1EaajqGG6D1aDPKJrjZI24Jx2AK0E2TjIcERYvWVa1+
+         qN19CO1v6hEwdZ6fEw24Aq1Z/qLaQW09La16p/ZYYZHnhm3K/80jsnPWc7/kzxUxNT+d
+         lnYS5fWTxz6dUEXRLKrKIGu+tcqYRx2SZavRCKvzJVcoFTxuoA3ixS2t/fnvUV6nSVEG
+         o1wKrnCz2tYnphK857qdsH9OUTyDtm5iwzsga2HMNb+ssZ9mEP/dTlXuWahVe2nMOfpv
+         1j7g==
+X-Forwarded-Encrypted: i=1; AJvYcCXI6phZbJvz6DnwHBt1P4+q7BXtIVupGqwS/a193XS+S4D4YfLYrjbFx6zrXJtuPEh2I/o=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxKaUyg4SCrAToNE6UQDcGvcL0MCUOc4Xyxa1k8CPlvJUYVo9jb
+	V1qc8UOmnbcZQtzRHFlMGsn2XWAwKTtnGpxbHIgJtaqbPUxnYiWDuv4RR1kMV0C5Au/f3v77ijb
+	yXmTAqW84ADkS2KYaz6Qc8RaMPFQ=
+X-Gm-Gg: ASbGncvTZfF5LJpIniHk3BVy7lBF0pTZ1kbk24ixv3oLC8Pd1hhB8aexi3g+dVLp7h9
+	i3HJXtTP/4oYDsaGLbEQoKic8Jfv7gThgSXMgl+6AUIU0fKLh4Imu5iTYSvJM4TOmKayxG17HE7
+	wOdvwSotcPZAvJYJOsXGbWaPR+qg==
+X-Google-Smtp-Source: AGHT+IGOKmvfI+PIr0gYbk8ytJNZWHi+UTRo4SUDBVBphAuRu6c9gmeU9e/Pnbuyeyw/NZGtpHQGDZRHjPHO49suYt0=
+X-Received: by 2002:a05:690c:6007:b0:6f7:ac3f:d589 with SMTP id
+ 00721157ae682-6ff4605668bmr117309927b3.36.1742133393987; Sun, 16 Mar 2025
+ 06:56:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6F04B7A95D1A4D64+20250314064039.21110-2-chenlinxuan@deepin.org>
+References: <20250313190309.2545711-1-ameryhung@gmail.com> <20250313190309.2545711-8-ameryhung@gmail.com>
+ <CAADnVQKBe89WSjwsMaaGGmHAtGSSvCVQ+f7HstjQBzx8pu2gUQ@mail.gmail.com>
+In-Reply-To: <CAADnVQKBe89WSjwsMaaGGmHAtGSSvCVQ+f7HstjQBzx8pu2gUQ@mail.gmail.com>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Sun, 16 Mar 2025 21:56:22 +0800
+X-Gm-Features: AQ5f1Jqd8J8t5MWQDg4l8FLrppQPFJYtOK9dB4_r_wBc_j4yAos_mT3gPaXsTxQ
+Message-ID: <CAMB2axM-601dn0_vvprHp5qdVPb2-204ZHR8zh2pwo6GHo6UCQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 07/13] bpf: net_sched: Support updating qstats
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
+	Eric Dumazet <edumazet@google.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Jamal Hadi Salim <jhs@mojatatu.com>, Kui-Feng Lee <sinquersw@gmail.com>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Stanislav Fomichev <stfomichev@gmail.com>, 
+	ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn, 
+	Peilin Ye <yepeilin.cs@gmail.com>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 14, 2025 at 02:40:39PM +0800, Chen Linxuan wrote:
-> [ Upstream commit 5ac9b4e935dfc6af41eee2ddc21deb5c36507a9f ]
-> 
-> >>From memfd_secret(2) manpage:
-> 
->   The memory areas backing the file created with memfd_secret(2) are
->   visible only to the processes that have access to the file descriptor.
->   The memory region is removed from the kernel page tables and only the
->   page tables of the processes holding the file descriptor map the
->   corresponding physical memory. (Thus, the pages in the region can't be
->   accessed by the kernel itself, so that, for example, pointers to the
->   region can't be passed to system calls.)
-> 
-> We need to handle this special case gracefully in build ID fetching
-> code. Return -EFAULT whenever secretmem file is passed to build_id_parse()
-> family of APIs. Original report and repro can be found in [0].
-> 
->   [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation/
-> 
-> Fixes: de3ec364c3c3 ("lib/buildid: add single folio-based file reader abstraction")
-> Reported-by: Yi Lai <yi1.lai@intel.com>
-> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Link: https://lore.kernel.org/bpf/20241017175431.6183-A-hca@linux.ibm.com
-> Link: https://lore.kernel.org/bpf/20241017174713.2157873-1-andrii@kernel.org
-> [ Linxuan: perform an equivalent direct check without folio-based changes ]
-> Fixes: 88a16a130933 ("perf: Add build id data in mmap2 event")
-> Signed-off-by: Chen Linxuan <chenlinxuan@deepin.org>
-> ---
-> 
-> Some previous discussions can be found in the following links:
-> https://lore.kernel.org/stable/05D0A9F7DE394601+20250311100555.310788-2-chenlinxuan@deepin.org/
-> 
-> ---
->  lib/buildid.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/lib/buildid.c b/lib/buildid.c
-> index 9fc46366597e..6249bd47fb0b 100644
-> --- a/lib/buildid.c
-> +++ b/lib/buildid.c
-> @@ -5,6 +5,7 @@
->  #include <linux/elf.h>
->  #include <linux/kernel.h>
->  #include <linux/pagemap.h>
-> +#include <linux/secretmem.h>
->  
->  #define BUILD_ID 3
->  
-> @@ -157,6 +158,12 @@ int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
->  	if (!vma->vm_file)
->  		return -EINVAL;
->  
-> +#ifdef CONFIG_SECRETMEM
-> +       /* reject secretmem folios created with memfd_secret() */
-> +       if (vma->vm_file->f_mapping->a_ops == &secretmem_aops)
-> +               return -EFAULT;
-> +#endif
+On Sat, Mar 15, 2025 at 4:24=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Mar 13, 2025 at 12:03=E2=80=AFPM Amery Hung <ameryhung@gmail.com>=
+ wrote:
+> >
+> > From: Amery Hung <amery.hung@bytedance.com>
+> >
+> > Allow bpf qdisc programs to update Qdisc qstats directly with btf struc=
+t
+> > access.
+> >
+> > Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> > ---
+> >  net/sched/bpf_qdisc.c | 53 ++++++++++++++++++++++++++++++++++++-------
+> >  1 file changed, 45 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/net/sched/bpf_qdisc.c b/net/sched/bpf_qdisc.c
+> > index edf01f3f1c2a..6ad3050275a4 100644
+> > --- a/net/sched/bpf_qdisc.c
+> > +++ b/net/sched/bpf_qdisc.c
+> > @@ -36,6 +36,7 @@ bpf_qdisc_get_func_proto(enum bpf_func_id func_id,
+> >         }
+> >  }
+> >
+> > +BTF_ID_LIST_SINGLE(bpf_qdisc_ids, struct, Qdisc)
+> >  BTF_ID_LIST_SINGLE(bpf_sk_buff_ids, struct, sk_buff)
+> >  BTF_ID_LIST_SINGLE(bpf_sk_buff_ptr_ids, struct, bpf_sk_buff_ptr)
+> >
+> > @@ -60,20 +61,37 @@ static bool bpf_qdisc_is_valid_access(int off, int =
+size,
+> >         return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
+> >  }
+> >
+> > -static int bpf_qdisc_btf_struct_access(struct bpf_verifier_log *log,
+> > -                                       const struct bpf_reg_state *reg=
+,
+> > -                                       int off, int size)
+> > +static int bpf_qdisc_qdisc_access(struct bpf_verifier_log *log,
+> > +                                 const struct bpf_reg_state *reg,
+> > +                                 int off, int size)
+>
+> Introducing this func in patch 3 and refactoring in patch 7 ?
+> pls avoid the churn.
+> squash it ?
+>
+> if (off + size > end) check wouldn't need to be duplicated.
+> Can get the name of struct from btf for bpf_log() purpose.
+>
 
-We really do not like #ifdef in .c files.  Why can't this use much the
-same call it does in the original commit?  Just put that in the correct
-.h file so that the #ifdef is not needed here, to make the backport
-match much more cleanly.
+I will squash this patch to patch 3 and share the check in
+bpf_qdisc_btf_struct_access() to avoid duplication.
 
-thanks,
+Thanks,
+Amery
 
-greg k-h
+> >  {
+> > -       const struct btf_type *t, *skbt;
+> >         size_t end;
+> >
+> > -       skbt =3D btf_type_by_id(reg->btf, bpf_sk_buff_ids[0]);
+> > -       t =3D btf_type_by_id(reg->btf, reg->btf_id);
+> > -       if (t !=3D skbt) {
+> > -               bpf_log(log, "only read is supported\n");
+> > +       switch (off) {
+> > +       case offsetof(struct Qdisc, qstats) ... offsetofend(struct Qdis=
+c, qstats) - 1:
+> > +               end =3D offsetofend(struct Qdisc, qstats);
+> > +               break;
+> > +       default:
+> > +               bpf_log(log, "no write support to Qdisc at off %d\n", o=
+ff);
+> > +               return -EACCES;
+> > +       }
+> > +
+> > +       if (off + size > end) {
+> > +               bpf_log(log,
+> > +                       "write access at off %d with size %d beyond the=
+ member of Qdisc ended at %zu\n",
+> > +                       off, size, end);
+> >                 return -EACCES;
+> >         }
+> >
+> > +       return 0;
+> > +}
+> > +
+> > +static int bpf_qdisc_sk_buff_access(struct bpf_verifier_log *log,
+> > +                                   const struct bpf_reg_state *reg,
+> > +                                   int off, int size)
+> > +{
+> > +       size_t end;
+> > +
+> >         switch (off) {
+> >         case offsetof(struct sk_buff, tstamp):
+> >                 end =3D offsetofend(struct sk_buff, tstamp);
+> > @@ -115,6 +133,25 @@ static int bpf_qdisc_btf_struct_access(struct bpf_=
+verifier_log *log,
+> >         return 0;
+> >  }
+> >
+> > +static int bpf_qdisc_btf_struct_access(struct bpf_verifier_log *log,
+> > +                                      const struct bpf_reg_state *reg,
+> > +                                      int off, int size)
+> > +{
+> > +       const struct btf_type *t, *skbt, *qdisct;
+> > +
+> > +       skbt =3D btf_type_by_id(reg->btf, bpf_sk_buff_ids[0]);
+> > +       qdisct =3D btf_type_by_id(reg->btf, bpf_qdisc_ids[0]);
+> > +       t =3D btf_type_by_id(reg->btf, reg->btf_id);
+> > +
+> > +       if (t =3D=3D skbt)
+> > +               return bpf_qdisc_sk_buff_access(log, reg, off, size);
+> > +       else if (t =3D=3D qdisct)
+> > +               return bpf_qdisc_qdisc_access(log, reg, off, size);
+> > +
+> > +       bpf_log(log, "only read is supported\n");
+> > +       return -EACCES;
+> > +}
+> > +
+> >  BTF_ID_LIST(bpf_qdisc_init_prologue_ids)
+> >  BTF_ID(func, bpf_qdisc_init_prologue)
+> >
+> > --
+> > 2.47.1
+> >
 
