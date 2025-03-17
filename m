@@ -1,326 +1,165 @@
-Return-Path: <bpf+bounces-54216-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54217-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66847A65A37
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 18:17:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB3B1A65A8E
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 18:23:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AE687A2604
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 17:16:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84A461896391
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 17:19:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8564B1EDA19;
-	Mon, 17 Mar 2025 17:12:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BDB1B3956;
+	Mon, 17 Mar 2025 17:16:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c/WnmX+k"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ePmGmhB1"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3A41A38E3;
-	Mon, 17 Mar 2025 17:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E6E01A2860
+	for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 17:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742231544; cv=none; b=MjDj+JTaxiprZ4lzM+pyK2CXKbzi0rimK0wTQontRDHdgN4jYw4hQI/YCNvwrXyUNLO5fVfiQ0LYLNdNvPvk+4MkOdGQ+aD2wA1dlKzab99G8sGupnhuD9S27rr8uVw2J/LTibcN4ksPjTwTIbSSw/TVdEslzPirOVr7ZlmFzhE=
+	t=1742231786; cv=none; b=JojwYGfwqY3omQVMBMUlvCKVIzZqCpjilt/F2O19S09to+SZdBQDf+bukWNzhNvdmKIj+YVlRiznms+4r9lXQfbvZM7yvpRtCq1McnN06RyMoKkvf5oqJuX1A5ZlS+SUNjVMrTke+3cswShpgzbjs00Ge59r0mCg2lY2+6TaliU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742231544; c=relaxed/simple;
-	bh=l+W27dM7NXeV4RLA6dG+8n4yz6qVY2crzVyiZBDBhWQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NKUosly976bz0nPZspOxljNoRP0+vd71uQQ48JIq0/1uC7BlQg+TKyicQhOaTOf2wkt4TlpFL9yRIxJ8Er9ovVHgC70sAUv+nJ3JQ9ItVEINcpL9O00hXMFC6SJWWc5FBbDFEQbXx4FmyAmbUbkr4bF+590erpcW1zSknmScy18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c/WnmX+k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06A2CC4CEE3;
-	Mon, 17 Mar 2025 17:12:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742231543;
-	bh=l+W27dM7NXeV4RLA6dG+8n4yz6qVY2crzVyiZBDBhWQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=c/WnmX+kb4FDlkpUGzudzPpX2M0zx7/TK/8j7QiB5lwBp7cGNsGkbuFcgjPgShxxH
-	 5xi5g48Bkbw6fg34s9Vfm9WPNk7jemERVNTFb4mtDyYNlrr2DFpl7zPLiKL+JrDJWJ
-	 AEN5DeEoo2C1sr5uYxg5W+4FodxfpW/dP4V+dx4G57Mfjx3Gs9lJzaTR2b/sUo91iF
-	 l+jWCsadGbVsSos1kQJKviG8HnCK0hRZjrT4kDHxD5oV1lJbzX9upY+GmY0qXGvOzB
-	 mm5m2f9RZNdBzdDIxmAHzAb2Wt8nNhwiyasie5wrCQA4VwdCO35NDvX4hNWqjt8sC+
-	 KjX1Tk3/O58fw==
-Date: Mon, 17 Mar 2025 10:12:21 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	James Clark <james.clark@linaro.org>, Jiri Olsa <jolsa@kernel.org>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	linux-perf-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-	bpf@vger.kernel.org, Quentin Monnet <qmo@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 1/1 perf-tools-next] tools features: Don't check for
- libunwind devel files by default
-Message-ID: <Z9hX9fubyWFjnpPW@google.com>
-References: <Z09zTztD8X8qIWCX@x1>
- <CAP-5=fWqA+Wjr5eb3Mi0MO8KZ01fey6J2d72jJouN+_r_8vbdA@mail.gmail.com>
+	s=arc-20240116; t=1742231786; c=relaxed/simple;
+	bh=y6+fLLQ7kbH+0CzU5m2E0zr82FtMW+14mkUqDwtuBgU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F4SxoGJ+paaUtXFrpDUlPdiHXalBi/5xS5JO6VrAxnwIi9xRJeoo6D/gorz3q1n0awRY0meTi+jygb7WDRISMZLudGlf+KNk7SNS26RV+1iYUP07zk5yrbaiHjVni0a8JARelWptMb358Sj6d5c+R9WhTGt/UltuNy1hGuBJyw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ePmGmhB1; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2242ac37caeso9125ad.1
+        for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 10:16:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1742231783; x=1742836583; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DfFvXsXXQ4EwlZ+MVnsfd4i68TdMbHdFmvhxBUmT1PY=;
+        b=ePmGmhB1uKNtuXQYhldQphoFZOkE7v9H9pgnT+SuGwLzzGvJmpDJ7NpdnEPMBeFD9f
+         /eXbdWbyZExF0FhHz2NEBzuhr0vWEfb0n0qtKKF5BA9NZeuGHIT/9nSuDj6825oao94L
+         C8+EqVtGvfovKmAIfwQp4FHWXeQ3vnZvrTcu/mH6C0HrlOJZ5iPNNXyxk/gg/FoaAVQT
+         By9Rf7VNpwXbHt70fFNdM7mk7lFvnKV418JkisPm8ELeRBYUF+N+5VeAXkSQQO0dpCYe
+         VJflBM+h+a5lLmEqVW6fBnkJ1bySyPW9cruMx06RLN89pmQq3Ur68ifMDyTxXuU5nAwj
+         K7pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742231783; x=1742836583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DfFvXsXXQ4EwlZ+MVnsfd4i68TdMbHdFmvhxBUmT1PY=;
+        b=PMJxK0CEiyM4UNVAEiguoYOPW6A0oYOuiVMPjF3BaF61GCt0vEe1izITQ2rv+vfVtX
+         ppYqeCOwTZ/nXy5IJOMEA+AbGu2h/jUf04tolX9wstW0FCYgyxVzkBOwo7K/gAaJTPpa
+         A1XYiUpGG04rQREjpXhwb4l6bXbe7Q67rWv2gXwXCaLCt/ET/LfRh6DGgFLUlih8fGIK
+         PYMadysVr/pB++gitu2PCu7LWh4A9bq8S2yO7wpvUUvr7SAUAcXc4RVeHke0Ek14hvsp
+         QLvKAnpKXucTbudduyhvxOFsiTIVSkexWkCrq7FpJNhkCDrcCdYMdl/Bg/JjvVDFJ4uC
+         GxEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUJX6QuPyXuAzzaoo8KBvmzPyOC3LAu+wWJz9nRlWq+0Pk1fVqeRkEFj8cF3KQtxCZWYdM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWYNm45XDt22WVc8WJDziAxVhw2jvTe2fT4GYMrir/idgK4x0A
+	8+f2/adireW+2Mj4uHEZmmWxPUbaXme4+1ap0ld/9CpN3s7vfqm/1sNzXpL7ZagjabkEuAuou9e
+	uRBl+YD7qQjp7Ovp4ZikXwna6lOg0Chx4qR0q
+X-Gm-Gg: ASbGnctVEtAQ3j+kAL/Vxl3oy5A8PXYW8zsJlr87koUKFlXqTGKf/hyhE//a8Pa/N5Q
+	9uQ8jDOb3I8nSioaLTq2vuckZdWigJq3OCyLBeD5hgqHXRDGBBIMOhBTR5sHRr2M7rvRJuijiCC
+	NRC5oH6zjdtOVzSyOaoA4qA8nKTO9j5xaPzbBACHio5XCWOZuvyHZyZrQ=
+X-Google-Smtp-Source: AGHT+IFhZ062stJ/0U82tGKw9QwiiDMz/O63ruW8fttZu4gPEgpShZspW4XGSrAF3kxnv/LvZFzzf24xhBBDXgeBowk=
+X-Received: by 2002:a17:903:2441:b0:20c:f40e:6ec3 with SMTP id
+ d9443c01a7336-225f3eb1adbmr4633195ad.22.1742231783195; Mon, 17 Mar 2025
+ 10:16:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fWqA+Wjr5eb3Mi0MO8KZ01fey6J2d72jJouN+_r_8vbdA@mail.gmail.com>
+References: <Z1mzpfAUi8zeiFOp@x1> <CAP-5=fWqpcwc021enM8uMChSgCRB+UW_6z7+=pdsQG9msLJsbw@mail.gmail.com>
+ <Z9hWqwvNQO0GqH09@google.com>
+In-Reply-To: <Z9hWqwvNQO0GqH09@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 17 Mar 2025 10:16:11 -0700
+X-Gm-Features: AQ5f1Jp2d5UNDltp-P8jxNkRsUA61xne765QTZDlm7pFAHdCAdLEjY7qowx3yLY
+Message-ID: <CAP-5=fWCWD5Rq5RR7NSMxrxmc1SUkK=8gg+D-JxGOgaHA7_WBA@mail.gmail.com>
+Subject: Re: [PATCH 1/1 next] tools build: Remove the libunwind feature tests
+ from the ones detected when test-all.o builds
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	James Clark <james.clark@linaro.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Kan Liang <kan.liang@linux.intel.com>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-trace-devel@vger.kernel.org, 
+	Steven Rostedt <rostedt@goodmis.org>, Quentin Monnet <qmo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-CC-ing more people.
+On Mon, Mar 17, 2025 at 10:06=E2=80=AFAM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+>
+> Hello,
+>
+> On Mon, Mar 17, 2025 at 09:10:29AM -0700, Ian Rogers wrote:
+> > On Wed, Dec 11, 2024 at 7:45=E2=80=AFAM Arnaldo Carvalho de Melo
+> > <acme@kernel.org> wrote:
+> > >
+> > > We have a tools/build/feature/test-all.c that has the most common set=
+ of
+> > > features that perf uses and are expected to have its development file=
+s
+> > > available when building perf.
+> > >
+> > > When we made libwunwind opt-in we forgot to remove them from the list=
+ of
+> > > features that are assumed to be available when test-all.c builds, rem=
+ove
+> > > them.
+> > >
+> > > Before this patch:
+> > >
+> > >   $ rm -rf /tmp/b ; mkdir /tmp/b ; make -C tools/perf O=3D/tmp/b feat=
+ure-dump ; grep feature-libunwind-aarch64=3D /tmp/b/FEATURE-DUMP
+> > >   feature-libunwind-aarch64=3D1
+> > >   $
+> > >
+> > > Even tho this not being test built and those header files being
+> > > available:
+> > >
+> > >   $ head -5 tools/build/feature/test-libunwind-aarch64.c
+> > >   // SPDX-License-Identifier: GPL-2.0
+> > >   #include <libunwind-aarch64.h>
+> > >   #include <stdlib.h>
+> > >
+> > >   extern int UNW_OBJ(dwarf_search_unwind_table) (unw_addr_space_t as,
+> > >   $
+> > >
+> > > After this patch:
+> > >
+> > >   $ grep feature-libunwind- /tmp/b/FEATURE-DUMP
+> > >   $
+> > >
+> > > Now an audit on what is being enabled when test-all.c builds will be
+> > > performed.
+> > >
+> > > Fixes: 176c9d1e6a06f2fa ("tools features: Don't check for libunwind d=
+evel files by default")
+> > > Cc: Adrian Hunter <adrian.hunter@intel.com>
+> > > Cc: Ian Rogers <irogers@google.com>
+> > > Cc: James Clark <james.clark@linaro.org>
+> > > Cc: Jiri Olsa <jolsa@kernel.org>
+> > > Cc: Kan Liang <kan.liang@linux.intel.com>
+> > > Cc: Namhyung Kim <namhyung@kernel.org>
+> > > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> >
+> > Sorry for the delay on this.
+> >
+> > Reviewed-by: Ian Rogers <irogers@google.com>
+>
+> Thanks for the review, but I think this part is used by other tools like
+> BPF and tracing.  It'd be nice to get reviews from them.
 
-On Mon, Mar 17, 2025 at 09:09:20AM -0700, Ian Rogers wrote:
-> On Tue, Dec 3, 2024 at 1:08 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >
-> > Since 13e17c9ff49119aa ("perf build: Make libunwind opt-in rather than
-> > opt-out"), so we shouldn't by default be testing for its availability at
-> > build time in tools/build/features/test-all.c.
-> >
-> > That test was designed to test the features we expect to be the most
-> > common ones in most builds, so if we test build just that file, then we
-> > assume the features there are present and will not test one by one.
-> >
-> > Removing it from test-all.c gets rid of the first impediment for
-> > test-all.c to build successfully:
-> >
-> >   $ cat /tmp/build/perf-tools-next/feature/test-all.make.output
-> >   In file included from test-all.c:62:
-> >   test-libunwind.c:2:10: fatal error: libunwind.h: No such file or directory
-> >       2 | #include <libunwind.h>
-> >         |          ^~~~~~~~~~~~~
-> >   compilation terminated.
-> >   $
-> >
-> > We then get to:
-> >
-> >   $ cat /tmp/build/perf-tools-next/feature/test-all.make.output
-> >   /usr/bin/ld: cannot find -lunwind-x86_64: No such file or directory
-> >   /usr/bin/ld: cannot find -lunwind: No such file or directory
-> >   collect2: error: ld returned 1 exit status
-> >   $
-> >
-> > So make all the logic related to setting CFLAGS, LDFLAGS, etc for
-> > libunwind to be conditional on NO_LIBWUNWIND=1, which is now the
-> > default, now we get a faster build:
-> >
-> >   $ cat /tmp/build/perf-tools-next/feature/test-all.make.output
-> >   $ ldd /tmp/build/perf-tools-next/feature/test-all.bin
-> >         linux-vdso.so.1 (0x00007fef04cde000)
-> >         libdw.so.1 => /lib64/libdw.so.1 (0x00007fef04a49000)
-> >         libpython3.12.so.1.0 => /lib64/libpython3.12.so.1.0 (0x00007fef04478000)
-> >         libm.so.6 => /lib64/libm.so.6 (0x00007fef04394000)
-> >         libtraceevent.so.1 => /lib64/libtraceevent.so.1 (0x00007fef0436c000)
-> >         libtracefs.so.1 => /lib64/libtracefs.so.1 (0x00007fef04345000)
-> >         libcrypto.so.3 => /lib64/libcrypto.so.3 (0x00007fef03e95000)
-> >         libz.so.1 => /lib64/libz.so.1 (0x00007fef03e72000)
-> >         libelf.so.1 => /lib64/libelf.so.1 (0x00007fef03e56000)
-> >         libnuma.so.1 => /lib64/libnuma.so.1 (0x00007fef03e48000)
-> >         libslang.so.2 => /lib64/libslang.so.2 (0x00007fef03b65000)
-> >         libperl.so.5.38 => /lib64/libperl.so.5.38 (0x00007fef037c6000)
-> >         libc.so.6 => /lib64/libc.so.6 (0x00007fef035d5000)
-> >         liblzma.so.5 => /lib64/liblzma.so.5 (0x00007fef035a0000)
-> >         libzstd.so.1 => /lib64/libzstd.so.1 (0x00007fef034e1000)
-> >         libbz2.so.1 => /lib64/libbz2.so.1 (0x00007fef034cd000)
-> >         /lib64/ld-linux-x86-64.so.2 (0x00007fef04ce0000)
-> >         libcrypt.so.2 => /lib64/libcrypt.so.2 (0x00007fef03495000)
-> >   $
-> >
-> > Fixes: 13e17c9ff49119aa ("perf build: Make libunwind opt-in rather than opt-out")
-> > Cc: Adrian Hunter <adrian.hunter@intel.com>
-> > Cc: Ian Rogers <irogers@google.com>
-> > Cc: James Clark <james.clark@linaro.org>
-> > Cc: Jiri Olsa <jolsa@kernel.org>
-> > Cc: Kan Liang <kan.liang@linux.intel.com>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > ---
-> >  tools/build/feature/test-all.c |  5 --
-> >  tools/perf/Makefile.config     | 83 ++++++++++++++++++++--------------
-> >  2 files changed, 49 insertions(+), 39 deletions(-)
-> >
-> > diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
-> > index 59ef3d7fe6a4e771..80ac297f81967171 100644
-> > --- a/tools/build/feature/test-all.c
-> > +++ b/tools/build/feature/test-all.c
-> > @@ -58,10 +58,6 @@
-> >  # include "test-libelf-getshdrstrndx.c"
-> >  #undef main
-> >
-> > -#define main main_test_libunwind
-> > -# include "test-libunwind.c"
-> > -#undef main
-> > -
-> >  #define main main_test_libslang
-> >  # include "test-libslang.c"
-> >  #undef main
-> > @@ -184,7 +180,6 @@ int main(int argc, char *argv[])
-> >         main_test_libelf_getphdrnum();
-> >         main_test_libelf_gelf_getnote();
-> >         main_test_libelf_getshdrstrndx();
-> > -       main_test_libunwind();
-> >         main_test_libslang();
-> >         main_test_libbfd();
-> >         main_test_libbfd_buildid();
-> > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> > index 2916d59c88cd08b2..0e4f6a860ae25339 100644
-> > --- a/tools/perf/Makefile.config
-> > +++ b/tools/perf/Makefile.config
-> > @@ -43,7 +43,9 @@ endif
-> >  # Additional ARCH settings for ppc
-> >  ifeq ($(SRCARCH),powerpc)
-> >    CFLAGS += -I$(OUTPUT)arch/powerpc/include/generated
-> > -  LIBUNWIND_LIBS := -lunwind -lunwind-ppc64
-> > +  ifndef NO_LIBUNWIND
-> > +    LIBUNWIND_LIBS := -lunwind -lunwind-ppc64
-> > +  endif
-> 
-> Sorry for missing this patch. Given this, and below, are just
-> declaring a variable making it NO_LIBUNWIND conditional feels like
-> clutter. I'd suggest just keeping the variable unconditionally and
-> making the uses conditional (which of course the patch does).
-
-Agreed, we can leave LIBUNWIND_LIBS setting and make it added only if
-NO_LIBUNWIND is not set.
+Sgtm. The patch hasn't had attention for 3 months. A quick grep for
+"unwind" and "UNW_" shows only use in perf and the feature tests.
 
 Thanks,
-Namhyung
-
-> 
-> Other than this:
-> Reviewed-by: Ian Rogers <irogers@google.com>
-> 
-> Thanks,
-> Ian
-> 
-> >  endif
-> >
-> >  # Additional ARCH settings for x86
-> > @@ -53,25 +55,35 @@ ifeq ($(SRCARCH),x86)
-> >    ifeq (${IS_64_BIT}, 1)
-> >      CFLAGS += -DHAVE_ARCH_X86_64_SUPPORT
-> >      ARCH_INCLUDE = ../../arch/x86/lib/memcpy_64.S ../../arch/x86/lib/memset_64.S
-> > -    LIBUNWIND_LIBS = -lunwind-x86_64 -lunwind -llzma
-> > +    ifndef NO_LIBUNWIND
-> > +      LIBUNWIND_LIBS = -lunwind-x86_64 -lunwind -llzma
-> > +    endif
-> >      $(call detected,CONFIG_X86_64)
-> >    else
-> > -    LIBUNWIND_LIBS = -lunwind-x86 -llzma -lunwind
-> > +    ifndef NO_LIBUNWIND
-> > +      LIBUNWIND_LIBS = -lunwind-x86 -llzma -lunwind
-> > +    endif
-> >    endif
-> >  endif
-> >
-> >  ifeq ($(SRCARCH),arm)
-> > -  LIBUNWIND_LIBS = -lunwind -lunwind-arm
-> > +  ifndef NO_LIBUNWIND
-> > +    LIBUNWIND_LIBS = -lunwind -lunwind-arm
-> > +  endif
-> >  endif
-> >
-> >  ifeq ($(SRCARCH),arm64)
-> >    CFLAGS += -I$(OUTPUT)arch/arm64/include/generated
-> > -  LIBUNWIND_LIBS = -lunwind -lunwind-aarch64
-> > +  ifndef NO_LIBUNWIND
-> > +    LIBUNWIND_LIBS = -lunwind -lunwind-aarch64
-> > +  endif
-> >  endif
-> >
-> >  ifeq ($(SRCARCH),loongarch)
-> >    CFLAGS += -I$(OUTPUT)arch/loongarch/include/generated
-> > -  LIBUNWIND_LIBS = -lunwind -lunwind-loongarch64
-> > +  ifndef NO_LIBUNWIND
-> > +    LIBUNWIND_LIBS = -lunwind -lunwind-loongarch64
-> > +  endif
-> >  endif
-> >
-> >  ifeq ($(ARCH),s390)
-> > @@ -80,7 +92,9 @@ endif
-> >
-> >  ifeq ($(ARCH),mips)
-> >    CFLAGS += -I$(OUTPUT)arch/mips/include/generated
-> > -  LIBUNWIND_LIBS = -lunwind -lunwind-mips
-> > +  ifndef NO_LIBUNWIND
-> > +    LIBUNWIND_LIBS = -lunwind -lunwind-mips
-> > +  endif
-> >  endif
-> >
-> >  ifeq ($(ARCH),riscv)
-> > @@ -121,16 +135,18 @@ ifdef LIBUNWIND_DIR
-> >    $(foreach libunwind_arch,$(LIBUNWIND_ARCHS),$(call libunwind_arch_set_flags,$(libunwind_arch)))
-> >  endif
-> >
-> > -# Set per-feature check compilation flags
-> > -FEATURE_CHECK_CFLAGS-libunwind = $(LIBUNWIND_CFLAGS)
-> > -FEATURE_CHECK_LDFLAGS-libunwind = $(LIBUNWIND_LDFLAGS) $(LIBUNWIND_LIBS)
-> > -FEATURE_CHECK_CFLAGS-libunwind-debug-frame = $(LIBUNWIND_CFLAGS)
-> > -FEATURE_CHECK_LDFLAGS-libunwind-debug-frame = $(LIBUNWIND_LDFLAGS) $(LIBUNWIND_LIBS)
-> > -
-> > -FEATURE_CHECK_LDFLAGS-libunwind-arm += -lunwind -lunwind-arm
-> > -FEATURE_CHECK_LDFLAGS-libunwind-aarch64 += -lunwind -lunwind-aarch64
-> > -FEATURE_CHECK_LDFLAGS-libunwind-x86 += -lunwind -llzma -lunwind-x86
-> > -FEATURE_CHECK_LDFLAGS-libunwind-x86_64 += -lunwind -llzma -lunwind-x86_64
-> > +ifndef NO_LIBUNWIND
-> > +  # Set per-feature check compilation flags
-> > +  FEATURE_CHECK_CFLAGS-libunwind = $(LIBUNWIND_CFLAGS)
-> > +  FEATURE_CHECK_LDFLAGS-libunwind = $(LIBUNWIND_LDFLAGS) $(LIBUNWIND_LIBS)
-> > +  FEATURE_CHECK_CFLAGS-libunwind-debug-frame = $(LIBUNWIND_CFLAGS)
-> > +  FEATURE_CHECK_LDFLAGS-libunwind-debug-frame = $(LIBUNWIND_LDFLAGS) $(LIBUNWIND_LIBS)
-> > +
-> > +  FEATURE_CHECK_LDFLAGS-libunwind-arm += -lunwind -lunwind-arm
-> > +  FEATURE_CHECK_LDFLAGS-libunwind-aarch64 += -lunwind -lunwind-aarch64
-> > +  FEATURE_CHECK_LDFLAGS-libunwind-x86 += -lunwind -llzma -lunwind-x86
-> > +  FEATURE_CHECK_LDFLAGS-libunwind-x86_64 += -lunwind -llzma -lunwind-x86_64
-> > +endif
-> >
-> >  FEATURE_CHECK_LDFLAGS-libcrypto = -lcrypto
-> >
-> > @@ -734,26 +750,25 @@ ifeq ($(dwarf-post-unwind),1)
-> >    $(call detected,CONFIG_DWARF_UNWIND)
-> >  endif
-> >
-> > -ifndef NO_LOCAL_LIBUNWIND
-> > -  ifeq ($(SRCARCH),$(filter $(SRCARCH),arm arm64))
-> > -    $(call feature_check,libunwind-debug-frame)
-> > -    ifneq ($(feature-libunwind-debug-frame), 1)
-> > -      $(warning No debug_frame support found in libunwind)
-> > +ifndef NO_LIBUNWIND
-> > +  ifndef NO_LOCAL_LIBUNWIND
-> > +    ifeq ($(SRCARCH),$(filter $(SRCARCH),arm arm64))
-> > +      $(call feature_check,libunwind-debug-frame)
-> > +      ifneq ($(feature-libunwind-debug-frame), 1)
-> > +        $(warning No debug_frame support found in libunwind)
-> > +        CFLAGS += -DNO_LIBUNWIND_DEBUG_FRAME
-> > +      endif
-> > +    else
-> > +      # non-ARM has no dwarf_find_debug_frame() function:
-> >        CFLAGS += -DNO_LIBUNWIND_DEBUG_FRAME
-> >      endif
-> > -  else
-> > -    # non-ARM has no dwarf_find_debug_frame() function:
-> > -    CFLAGS += -DNO_LIBUNWIND_DEBUG_FRAME
-> > +    EXTLIBS += $(LIBUNWIND_LIBS)
-> > +    LDFLAGS += $(LIBUNWIND_LIBS)
-> > +  endif
-> > +  ifeq ($(findstring -static,${LDFLAGS}),-static)
-> > +    # gcc -static links libgcc_eh which contans piece of libunwind
-> > +    LIBUNWIND_LDFLAGS += -Wl,--allow-multiple-definition
-> >    endif
-> > -  EXTLIBS += $(LIBUNWIND_LIBS)
-> > -  LDFLAGS += $(LIBUNWIND_LIBS)
-> > -endif
-> > -ifeq ($(findstring -static,${LDFLAGS}),-static)
-> > -  # gcc -static links libgcc_eh which contans piece of libunwind
-> > -  LIBUNWIND_LDFLAGS += -Wl,--allow-multiple-definition
-> > -endif
-> > -
-> > -ifndef NO_LIBUNWIND
-> >    CFLAGS  += -DHAVE_LIBUNWIND_SUPPORT
-> >    CFLAGS  += $(LIBUNWIND_CFLAGS)
-> >    LDFLAGS += $(LIBUNWIND_LDFLAGS)
-> > --
-> > 2.47.0
-> >
+Ian
 
