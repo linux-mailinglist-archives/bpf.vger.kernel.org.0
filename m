@@ -1,211 +1,224 @@
-Return-Path: <bpf+bounces-54165-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54166-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D13EA63FD0
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 06:39:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B522BA643E6
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 08:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8E3016EA93
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 05:39:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56A15189380B
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 07:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C455B219319;
-	Mon, 17 Mar 2025 05:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73A021B1AA;
+	Mon, 17 Mar 2025 07:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b="SLlVMw93"
+	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="BvUQEJKf"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA0519ABD1;
-	Mon, 17 Mar 2025 05:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.243.244.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1821215046
+	for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 07:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742189949; cv=none; b=HZclYLMFvBHKs6m9Pk7RdZkh2Wkd25V9AosS559S1sbTrs8IK094ckGj1MPF4c7F2CJMRjO+gzcXWO45wGlmFgGzWFH/0L9kXyfzcPn9vrRqSIB96PH9fTzb6tCj6oXYcx3E04wrh1ZFFDhprEKapRdxSLvEiBUMveT36lIkLJg=
+	t=1742197156; cv=none; b=MbwdTjIBuwPsskddjljshCLhifu8OFiOEnhg3FenCru0oDByNLTI7dvuhO9H/kAh241YgQtNa+ZFiix54DD7u95F9UinI0M+hpqfh5J71tXejyTGm/DPQVsegIPLuN02XH1uC63pCvt4ja1KKU2Gz2XCUZLCXUi7J8DAHbcG08U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742189949; c=relaxed/simple;
-	bh=avvAm3TfVmPXqQzOZzdus2bewNPLEU/HczMySDIdZmQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=noZ8OG7HMy+n7yM6JecKGbu0JJIBOTxvoFPKyL7ymOQ4Ny73gi7Kibz7k08Dj9LuodmJRfiKAaoewQIosM2Bn5wnmZp8Mnv34KVakwAr4WcP6RyM9soPIYrHzzQkFPJjLL7J980ihiRRs7edO72XnUSmEPs8lUu/hNrZQ1rL8ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org; spf=pass smtp.mailfrom=deepin.org; dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b=SLlVMw93; arc=none smtp.client-ip=54.243.244.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=deepin.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=deepin.org;
-	s=ukjg2408; t=1742189934;
-	bh=zK+WlBZ7bfUFhV22HGI+VQBZQaODHmIrst6qLkeokfc=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To;
-	b=SLlVMw93lQ0pjnKON9JSVNeWfLyY4Wr+dPv3F/5SylHHgCrA0PYOnRnYdB5pJIqYK
-	 nZtSlNovZQYoA4Too4xZ2Rw7WbPw6PsSdmlm/rcXP5xAbTSotOb1DE1MlCoNMk7+8a
-	 0X0O3tM0o6bhEZ8l7U5jO2zgV4RtXLZSefIpa1KI=
-X-QQ-mid: bizesmtpsz10t1742189929t6cm00
-X-QQ-Originating-IP: s6iNHhpCw/0D1fPrZxK1dUONPmxCWlDy9tVvffz7Spg=
-Received: from mail-yb1-f171.google.com ( [209.85.219.171])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 17 Mar 2025 13:38:47 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 12359778561293452305
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e63fd2b482fso1789105276.1;
-        Sun, 16 Mar 2025 22:38:48 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVjC/9KNuzCwmLZtOeujkOyXju1sxXFwq+Qi/ocOkYYaKe8p184+zMQfE/LN/6/cHXU8xMEWPNY@vger.kernel.org, AJvYcCWirzynfBHu5E7xa1Atlh/lRgY6la5p6dIX5mdULli4s+3tihJt3BXh4E9/s7qQf2SXOJs=@vger.kernel.org, AJvYcCXhZfWzuzvn2+T/BHQ8OBED1+h0yIWrCqO8xeVX5XMbE8fSl2OTa0rXhqLksPPBYTBvMEN+k5oKkdBWqhnD@vger.kernel.org
-X-Gm-Message-State: AOJu0YzL5L//6H44Hhh/xXDILNtKbtXXNIOip2cm2iwnhFCh6Z6Rmigi
-	xYvXFgDwwAUEHEUPZblixnogk+R4mKrURkib+6carE2dlifygXP0AciAAHFTw+kpo2DTC0zvnZU
-	YMj23IAS2kuQZf9odC6BoyUjBiVA=
-X-Google-Smtp-Source: AGHT+IG9QcE+zk+CQT1TeMx4mbEkt+HkxFBWSzkmmibRNOjKnTS9z2gqmQyqlPyCZj8eKRE+CfVQsZ4ngcPpsidtPzc=
-X-Received: by 2002:a05:6902:2190:b0:e60:87a0:6216 with SMTP id
- 3f1490d57ef6-e63f64d177emr13808887276.5.1742189927117; Sun, 16 Mar 2025
- 22:38:47 -0700 (PDT)
+	s=arc-20240116; t=1742197156; c=relaxed/simple;
+	bh=Th8f45SOQCPR890tBRd7bDTWMo3bJcioqXxHTMd02+Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NmiPzxdlGyxVg6pY9CcIwsTvOlf/0rA8cJu9m98qwA/lwRiSI9mjDuVnvrx38gXqVB1HtrGV89/QVrG1jkL2gnFLAwZkmiuk0TV4iVQhpDgATdg4MUHbjIKakaGsNkDqwGbmTkKXoE3blHuJYJiU+uhLKlKCcjAMGwcJAS541fY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=BvUQEJKf; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-43948f77f1aso11575785e9.0
+        for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 00:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1742197152; x=1742801952; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WvL6YVUC/iLIzrgQ7ghXKRXq4PF6b66cA4hhiSylm1U=;
+        b=BvUQEJKf2t4OFEs8T/vvLjLOZxJDAYxxyO2bb9fnK4I7PvIvgc1q2Mjp8fRn1x13Z+
+         YAxPQ6B5Bv7Ae4ZWM2lSLQzrtjsYhNWsvfLe8t7ob6NGgriTxjMk5iFjOS4SxKeEm0P+
+         tOzhuNNZ0AQucen62rjgyDheXziW4SLoUZQx7DV3EgQbGucuCqAz8gD1dz/NqPzxud5Q
+         49qgBAui4oKZF2POEJ9QuUNW/D1kVUC47pAtPg5ku16fhhzdO2DS2c6L4WXJzWAgfr56
+         FQr/I+7n0p0m2qr5VW8+HSfNaVsSoa4shmbIoUYUjhSWKv17xJSh6LRnJYdPoyV/x3oS
+         7hRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742197152; x=1742801952;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WvL6YVUC/iLIzrgQ7ghXKRXq4PF6b66cA4hhiSylm1U=;
+        b=GfYzM2w+gWgZAv/xWWLGOmEdENmUXamRdR7Iz+W+yX4tYnRjeAv+MVBBHvMkWolhm9
+         omGEgWxjJ14rjrkcAPg1S6t0wifC9Uaem1v8df76Wi/vCwpYiCjc2+s+RL3qTVm9ItXa
+         u77W7rfNl2RN5SKObVw08Cxlsn+Cn5URuuDwsUonwnHFP8DRYDJMuRIxV94GcfR9KjiG
+         C1pkc3PyL+iSgnuvcTiyyOiX+Og8xS3b7lu1i+nDskjraJwrrWZrpwCGdek2DNqKZ2gU
+         VbdH6CGc4BwpnKRbB+BGaG4kI74XS9QPwS382OczRnFGI6SSAOPQVR/MnxldtfGuhhcs
+         6VVA==
+X-Forwarded-Encrypted: i=1; AJvYcCWTaUd/sE1FA0+SM/gh7NXyAuEbO+tqz5TpAz9Uk0lrb7VSObhtz52SziCz3K0gVkv/ZQs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzvuhGw4Aw/khT11hoIYEYJNsbvM+jE94kfx34++xFif34EMpuh
+	6Lq7P8779k+sGuX0JW8uIWIMZ4QvcpauVJgOgq+q7E3UfBS67zm9eWnrDF4fR4k=
+X-Gm-Gg: ASbGnctLwIvLKW1R8JNSWXq9SKCy7+h1r6O57vHQkBlk5jtsEQXqzIx5fHkqMkiW8/N
+	E38QrH2tcUK4Ims6NEgWUAkwVwZvrYtIcXtgBDfTmjyVosNCxMrhR5uTuC4akDFFar+nwcLmhFi
+	oRS/4h5HnIG8wkXhOkN1CD3eXXXQOUzjk9IZw1abaCBW15KZzo/XkkkCQxRtk4XkanQf9jpU1du
+	+gaMBj3xMxAwtZjq+Q+6C+D9C4/4isRgNlyCxBU+wt9dBiLWIw8i88IP68D5i+VKzX+6FkTR0sw
+	TlUhP0O25aWGVVx8/Glf8D2OVQjsjd/xceJi4KpU4J/jL5VPJ5G+LKBNdGQTKsl/XnrfJje7ixV
+	FPmBxZQHxCn8=
+X-Google-Smtp-Source: AGHT+IHqwKjiX7teb/pYc+lujlnEosSIXQee1577UGyyGKXpSNDEIcsnj3vai7+fhOIxXIGibFhRIg==
+X-Received: by 2002:a5d:59a9:0:b0:391:ffc:2413 with SMTP id ffacd0b85a97d-3971f9e497amr14184713f8f.40.1742197151769;
+        Mon, 17 Mar 2025 00:39:11 -0700 (PDT)
+Received: from [192.168.0.205] (78-154-15-142.ip.btc-net.bg. [78.154.15.142])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d1fe60951sm96760055e9.26.2025.03.17.00.39.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Mar 2025 00:39:11 -0700 (PDT)
+Message-ID: <6ea34ad0-8456-4e49-8eb1-372cf571d91b@blackwall.org>
+Date: Mon, 17 Mar 2025 09:39:09 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <84B05ADD5527685D+20250317011604.119801-2-chenlinxuan@deepin.org>
- <2025031759-sacrifice-wreckage-9948@gregkh> <CAC1kPDNNBj3Hd6s72mA3qxwxC0B69aE7qhM+Az5msvjPy41N5w@mail.gmail.com>
- <2025031743-haunt-masculine-afb4@gregkh>
-In-Reply-To: <2025031743-haunt-masculine-afb4@gregkh>
-From: Chen Linxuan <chenlinxuan@deepin.org>
-Date: Mon, 17 Mar 2025 13:38:36 +0800
-X-Gmail-Original-Message-ID: <1A817481715D4A86+CAC1kPDN-cwLyJgXY2DUZuhUf+guFS7u8OWJx_3G8s6RMua1NJQ@mail.gmail.com>
-X-Gm-Features: AQ5f1JrmjGnqdeXyssT6bNuZRCuqD15-5c3YjGNNWgoH8z4a5CDXQ1DtFJAE3l4
-Message-ID: <CAC1kPDN-cwLyJgXY2DUZuhUf+guFS7u8OWJx_3G8s6RMua1NJQ@mail.gmail.com>
-Subject: Re: [PATCH stable 6.6 v2] lib/buildid: Handle memfd_secret() files in build_id_parse()
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Chen Linxuan <chenlinxuan@deepin.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Jiri Olsa <jolsa@kernel.org>, Sasha Levin <sashal@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Jann Horn <jannh@google.com>, 
-	Alexey Dobriyan <adobriyan@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, 
-	Yi Lai <yi1.lai@intel.com>, Daniel Borkmann <daniel@iogearbox.net>, stable@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpsz:deepin.org:qybglogicsvrgz:qybglogicsvrgz7a-0
-X-QQ-XMAILINFO: NBkE/PP8DpFYcxWPOUcuHNHVU2DSA7vQ2zAXl/+KP76gCyYiNiIcCPr0
-	gWKfQWaOBTdFAHn8Pm0J0ex8Z5Lah8CMzhlkuDecysTT6WqM2R4OiNJcLamMFdykKh6OOi6
-	Q5l6B5UJpHR83n/lGg7da2m9kQt9WJLMH1zXefvHss65gahGr1ejdI/x8jh4B56qZ+e1x7k
-	aBEDGI7AXK+BLxtIrc4NjODPaF65DgDrtN4RaoFeSJ3nmL32FtEVnKhWqDQUcBR5khXbpjh
-	klBqTg9AyGlu+0XBi0XZijXMX2OYot6KyXpQumsszmRaXsgMJqO0aFEThmK1T3b3h+amXTJ
-	VoLxHZuGfP9Ps3IDkQsCTlLuFBC/Ukqqmw4Awih+e/muf07eRE2GJTYT2Ih8s1hYWxEC2xU
-	wwzL1UptnGdgGfDnu9VZtQGp4z0H3aTokyiFQtv/HVGzyfIHFuQX6AAsJMLUO/nVNePl0kE
-	MZU9byRR29rJt+zJvsVMqvg34BKkEO0rxdfS7ZATCYU8i2aAIiSYagL1B6UriNz6hztnJIu
-	t+GgHduwwXr8SU5RwiMrIdkkK+b4ZeSp+c7YXQ+p3m+xvprtSJB//uB5iQ3YmGO6/mdUjAe
-	vSsgaZSY5nuNJyfM/uJqUAs9uYwsS8DZ9e5h3SKkoQYgHi5LWbwvIiv/6JRdsEx3jbN3dU3
-	ubcdAk1NtvLHWx6VGiTJMdDKClQj5rT7JfbWWD+2cfdA62yS6kelW/e7RifKdSZAc7HgJmb
-	r99/ZufVIGXD85ioXGnLPb2ujSYYLZLRc/OqzG47VdIAfIzWWG3Mpofvzw3eGoP/sW1cOwf
-	df2fc8ReXOaJMshTiLCOL4GXwU5sWv2QL4u+Qd5DIi4DaI4G0hZivHDQqD/cOPbyY9uWn5m
-	EjvzD6dRGULFuYn2uG8RVjTvFNS5Ww6944RvkSouew06ZYw3azTBtX304m3HqOjnh0DEGqv
-	5dDOzmATAUnQisYFVkxXmS0N8LkOLa1fMMv2S7sPTBLQu1ucEl18vgGnX8+Dhx7xVBK+4hV
-	mYwLnhFJDk9wPwbBYzSf+DnUZLXt7LlbILxwquet2v+37eCOcnQn5efyIqZgZhSIYaJE4+K
-	XQLxPWeDlru
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-X-QQ-RECHKSPAM: 0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] bonding: check xdp prog when set bond mode
+To: Wang Liang <wangliang74@huawei.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ jv@jvosburgh.net, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+ joamaki@gmail.com
+Cc: yuehaibing@huawei.com, zhangchangzhong@huawei.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250314073549.1030998-1-wangliang74@huawei.com>
+ <87y0x7rkck.fsf@toke.dk> <21d52659-622a-4b2a-b091-787bf0f5d67f@blackwall.org>
+ <96a4043b-fdac-4ca1-a7b9-a6352b1d7dfe@blackwall.org>
+ <fad4cb08-be38-4f43-ba61-db147e4d26d0@huawei.com>
+Content-Language: en-US
+From: Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <fad4cb08-be38-4f43-ba61-db147e4d26d0@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Greg KH <gregkh@linuxfoundation.org> =E4=BA=8E2025=E5=B9=B43=E6=9C=8817=E6=
-=97=A5=E5=91=A8=E4=B8=80 13:15=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Mon, Mar 17, 2025 at 01:04:41PM +0800, Chen Linxuan wrote:
-> > Greg KH <greg@kroah.com> =E4=BA=8E2025=E5=B9=B43=E6=9C=8817=E6=97=A5=E5=
-=91=A8=E4=B8=80 12:20=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > On Mon, Mar 17, 2025 at 09:16:04AM +0800, Chen Linxuan wrote:
-> > > > [ Upstream commit 5ac9b4e935dfc6af41eee2ddc21deb5c36507a9f ]
-> > > >
-> > > > >>From memfd_secret(2) manpage:
-> > > >
-> > > >   The memory areas backing the file created with memfd_secret(2) ar=
-e
-> > > >   visible only to the processes that have access to the file descri=
-ptor.
-> > > >   The memory region is removed from the kernel page tables and only=
- the
-> > > >   page tables of the processes holding the file descriptor map the
-> > > >   corresponding physical memory. (Thus, the pages in the region can=
-'t be
-> > > >   accessed by the kernel itself, so that, for example, pointers to =
-the
-> > > >   region can't be passed to system calls.)
-> > > >
-> > > > We need to handle this special case gracefully in build ID fetching
-> > > > code. Return -EFAULT whenever secretmem file is passed to build_id_=
-parse()
-> > > > family of APIs. Original report and repro can be found in [0].
-> > > >
-> > > >   [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation=
-/
-> > > >
-> > > > Fixes: de3ec364c3c3 ("lib/buildid: add single folio-based file read=
-er abstraction")
-> > > > Reported-by: Yi Lai <yi1.lai@intel.com>
-> > > > Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> > > > Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > > > Link: https://lore.kernel.org/bpf/20241017175431.6183-A-hca@linux.i=
-bm.com
-> > > > Link: https://lore.kernel.org/bpf/20241017174713.2157873-1-andrii@k=
-ernel.org
-> > > > [ Chen Linxuan: backport same logic without folio-based changes ]
-> > > > Cc: stable@vger.kernel.org
-> > > > Fixes: 88a16a130933 ("perf: Add build id data in mmap2 event")
-> > > > Signed-off-by: Chen Linxuan <chenlinxuan@deepin.org>
-> > > > ---
-> > > > v1 -> v2: use vma_is_secretmem() instead of directly checking
-> > > >           vma->vm_file->f_op =3D=3D &secretmem_fops
-> > > > ---
-> > > >  lib/buildid.c | 5 +++++
-> > > >  1 file changed, 5 insertions(+)
-> > > >
-> > > > diff --git a/lib/buildid.c b/lib/buildid.c
-> > > > index 9fc46366597e..34315d09b544 100644
-> > > > --- a/lib/buildid.c
-> > > > +++ b/lib/buildid.c
-> > > > @@ -5,6 +5,7 @@
-> > > >  #include <linux/elf.h>
-> > > >  #include <linux/kernel.h>
-> > > >  #include <linux/pagemap.h>
-> > > > +#include <linux/secretmem.h>
-> > > >
-> > > >  #define BUILD_ID 3
-> > > >
-> > > > @@ -157,6 +158,10 @@ int build_id_parse(struct vm_area_struct *vma,=
- unsigned char *build_id,
-> > > >       if (!vma->vm_file)
-> > > >               return -EINVAL;
-> > > >
-> > > > +     /* reject secretmem */
-> > >
-> > > Why is this comment different from what is in the original commit?  S=
-ame
-> > > for your other backports.  Please try to keep it as identical to the
-> > > original whenever possible as we have to maintain this for a very lon=
-g
-> > > time.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> > >
-> > >
-> >
-> > Original comment is in a function named freader_get_folio(),
-> > but folio related changes has not been backported yet.
->
-> That's fine, but the logic is the same so keep the original code as
-> close as possible.  Otherwise it looks like this is a totally different
-> change and we would have to reject it for obvious reasons.
->
-> thanks,
->
-> greg k-h
->
->
+On 3/17/25 06:07, Wang Liang wrote:
+> 
+> 在 2025/3/14 18:44, Nikolay Aleksandrov 写道:
+>> On 3/14/25 12:22 PM, Nikolay Aleksandrov wrote:
+>>> On 3/14/25 12:13 PM, Toke Høiland-Jørgensen wrote:
+>>>> Wang Liang <wangliang74@huawei.com> writes:
+>>>>
+>>>>> Following operations can trigger a warning[1]:
+>>>>>
+>>>>>      ip netns add ns1
+>>>>>      ip netns exec ns1 ip link add bond0 type bond mode balance-rr
+>>>>>      ip netns exec ns1 ip link set dev bond0 xdp obj af_xdp_kern.o sec xdp
+>>>>>      ip netns exec ns1 ip link set bond0 type bond mode broadcast
+>>>>>      ip netns del ns1
+>>>>>
+>>>>> When delete the namespace, dev_xdp_uninstall() is called to remove xdp
+>>>>> program on bond dev, and bond_xdp_set() will check the bond mode. If bond
+>>>>> mode is changed after attaching xdp program, the warning may occur.
+>>>>>
+>>>>> Some bond modes (broadcast, etc.) do not support native xdp. Set bond mode
+>>>>> with xdp program attached is not good. Add check for xdp program when set
+>>>>> bond mode.
+>>>>>
+>>>>>      [1]
+>>>>>      ------------[ cut here ]------------
+>>>>>      WARNING: CPU: 0 PID: 11 at net/core/dev.c:9912 unregister_netdevice_many_notify+0x8d9/0x930
+>>>>>      Modules linked in:
+>>>>>      CPU: 0 UID: 0 PID: 11 Comm: kworker/u4:0 Not tainted 6.14.0-rc4 #107
+>>>>>      Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
+>>>>>      Workqueue: netns cleanup_net
+>>>>>      RIP: 0010:unregister_netdevice_many_notify+0x8d9/0x930
+>>>>>      Code: 00 00 48 c7 c6 6f e3 a2 82 48 c7 c7 d0 b3 96 82 e8 9c 10 3e ...
+>>>>>      RSP: 0018:ffffc90000063d80 EFLAGS: 00000282
+>>>>>      RAX: 00000000ffffffa1 RBX: ffff888004959000 RCX: 00000000ffffdfff
+>>>>>      RDX: 0000000000000000 RSI: 00000000ffffffea RDI: ffffc90000063b48
+>>>>>      RBP: ffffc90000063e28 R08: ffffffff82d39b28 R09: 0000000000009ffb
+>>>>>      R10: 0000000000000175 R11: ffffffff82d09b40 R12: ffff8880049598e8
+>>>>>      R13: 0000000000000001 R14: dead000000000100 R15: ffffc90000045000
+>>>>>      FS:  0000000000000000(0000) GS:ffff888007a00000(0000) knlGS:0000000000000000
+>>>>>      CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>>      CR2: 000000000d406b60 CR3: 000000000483e000 CR4: 00000000000006f0
+>>>>>      Call Trace:
+>>>>>       <TASK>
+>>>>>       ? __warn+0x83/0x130
+>>>>>       ? unregister_netdevice_many_notify+0x8d9/0x930
+>>>>>       ? report_bug+0x18e/0x1a0
+>>>>>       ? handle_bug+0x54/0x90
+>>>>>       ? exc_invalid_op+0x18/0x70
+>>>>>       ? asm_exc_invalid_op+0x1a/0x20
+>>>>>       ? unregister_netdevice_many_notify+0x8d9/0x930
+>>>>>       ? bond_net_exit_batch_rtnl+0x5c/0x90
+>>>>>       cleanup_net+0x237/0x3d0
+>>>>>       process_one_work+0x163/0x390
+>>>>>       worker_thread+0x293/0x3b0
+>>>>>       ? __pfx_worker_thread+0x10/0x10
+>>>>>       kthread+0xec/0x1e0
+>>>>>       ? __pfx_kthread+0x10/0x10
+>>>>>       ? __pfx_kthread+0x10/0x10
+>>>>>       ret_from_fork+0x2f/0x50
+>>>>>       ? __pfx_kthread+0x10/0x10
+>>>>>       ret_from_fork_asm+0x1a/0x30
+>>>>>       </TASK>
+>>>>>      ---[ end trace 0000000000000000 ]---
+>>>>>
+>>>>> Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driver")
+>>>>> Signed-off-by: Wang Liang <wangliang74@huawei.com>
+>>>>> ---
+>>>>>   drivers/net/bonding/bond_options.c | 3 +++
+>>>>>   1 file changed, 3 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
+>>>>> index 327b6ecdc77e..127181866829 100644
+>>>>> --- a/drivers/net/bonding/bond_options.c
+>>>>> +++ b/drivers/net/bonding/bond_options.c
+>>>>> @@ -868,6 +868,9 @@ static bool bond_set_xfrm_features(struct bonding *bond)
+>>>>>   static int bond_option_mode_set(struct bonding *bond,
+>>>>>                   const struct bond_opt_value *newval)
+>>>>>   {
+>>>>> +    if (bond->xdp_prog)
+>>>>> +        return -EOPNOTSUPP;
+>>>>> +
+>>>> Should we allow changing as long as the new mode also supports XDP?
+>>>>
+>>>> -Toke
+>>>>
+>>>>
+>>> +1
+>>> I think we should allow it, the best way probably is to add a new option
+>>> BOND_VALFLAG_XDP_UNSUPP (for example) as a bond option flag and to set
+>>> it in bond_options.c for each mode that doesn't support XDP, then you
+>>> can do the check in a generic way (for any option) in
+>>> bond_opt_check_deps. Any bond option that can't be changed with XDP prog
+>> err, I meant any bond option's value that isn't supported with XDP, for
+>> a whole option it would be a bit different
+> Thanks for your suggestions!
+> 
+> When install xdp prog, bond_xdp_set() use bond_xdp_check() to check whether the bond mode support xdp.
+> 
+> When uninstall xdp prog, the paramter prog of bond_xdp_set() is NULL. How about not call bond_xdp_check() to avoid the warning when the prog is NULL, like:
+> 
+> static int bond_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>             struct netlink_ext_ack *extack)
+>     ...
+>     if (prog && !bond_xdp_check(bond))
 
-V3 has been sent.
+No, this could cause other problems. Actually, for -net I think the best would be to stick to
+a simpler fix and just do bond_xdp_check() if there's a XDP program attached when changing
+the mode so it can be backported easier. The option value flag can be done in the future
+if more option values (or options) need to be disabled for XDP.
 
-Thanks,
-Chen Linxuan
+Cheers,
+ Nik
+
+>>> should have that flag set.
+>>>
+>>> Cheers,
+>>>   Nik
+>>>
+>>
+
 
