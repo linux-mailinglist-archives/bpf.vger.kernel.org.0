@@ -1,203 +1,122 @@
-Return-Path: <bpf+bounces-54173-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54174-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AED4A64734
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 10:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06E6EA64826
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 10:52:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BEB93A3988
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 09:24:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC1E73B3D32
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 09:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 198462236FF;
-	Mon, 17 Mar 2025 09:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F2722ACDA;
+	Mon, 17 Mar 2025 09:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RNA2CAAn"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="LhbTY4eW"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9867221F14
-	for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 09:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1E982D98;
+	Mon, 17 Mar 2025 09:52:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742203422; cv=none; b=toa7veQCe+COUwf9GX4YuEAr12aZg13E4XBJTKBG+20CLXJFMh3HZgeqe/KjmaXl1cNPXL97KVgQsydn/jXsRS4WQ5qV1SeW/v8IsrWMwGyQqw3zglMCCPfAMJvREFkLNsBT49W3FTM0Ol/FMtbpje4e+i+Q2xHGGesyuzyyNvY=
+	t=1742205126; cv=none; b=Y5W8KH644LIeMKRHMvoAECNtCT7nG6/6bN4Ze8ZlRITRJg9hKcPSK9XqToSrLPTVvv4vRwwS0cN4u+jXWI1JnpJRc+xWihJWE0yzMHsKVHTuy6tjziPwTsS8SK3DiXc1s7Sv5RJxI1hPp5fZIaMcvKt4KgxEu+QkSFKrRieVO8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742203422; c=relaxed/simple;
-	bh=ZOHoR1DVLuoqBGux5wOEYgvMSK5hDjDDqM2npNWq+30=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cPCcdp1fu1X6JpDTlI9Qz+H9Z1CClES5lR8alGd1VJ37m4RE/EaBY/FOIVeaFnUgK2eD1VZc4src2jt9lXvBB8thK/zOYiuwu7SG7zM5UX2XKouTVUoMdmeLwZbZTwhoAKxMz0iAcnoiBq70f5A0V2yTrqknU1xTtdXoEG6WNJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RNA2CAAn; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742203419;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BLSYPFz/nwodbHpxtrd6necAV0xMxciGJi0Eu7RL7/E=;
-	b=RNA2CAAnuPOFBDghPRo59PAWyHNhb/EZS0Iojw2W4OL9J7bW9AOp3MYTnEYVcExyrnymyM
-	6xFpwefmKLIQY6JiKke1uaAlB764IntP1LH3Mq8LnS4puuSRhXKauBLXb9eyal2rJo3HeX
-	wdhm4ypkvHh6qn+dmKe8Jy3AUNt2yms=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: xiyou.wangcong@gmail.com,
-	john.fastabend@gmail.com,
-	jakub@cloudflare.com
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	mykolal@fb.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	shuah@kernel.org,
-	mhal@rbox.co,
-	jiayuan.chen@linux.dev,
-	sgarzare@redhat.com,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v3 3/3] selftests/bpf: Add edge case tests for sockmap
-Date: Mon, 17 Mar 2025 17:22:56 +0800
-Message-ID: <20250317092257.68760-4-jiayuan.chen@linux.dev>
-In-Reply-To: <20250317092257.68760-1-jiayuan.chen@linux.dev>
-References: <20250317092257.68760-1-jiayuan.chen@linux.dev>
+	s=arc-20240116; t=1742205126; c=relaxed/simple;
+	bh=RQlN4PHT9t/BaZ1ZSO4BH6eUUyXAz56KtVwjMkjqBWI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DYfybW3SIg+95JyBfOp3nA2iFYaN7uhdiYYWqpEfU+5BZ337KdHCMTld8b7LijI5o+vKHNzj0/mklzqkMPR4UwYJTIpYM9JI527SM6+IrrBheTtSPmqPKjNLYBBxM/ljxn5legeCcJoy7rBW1tHkt6DyoMicLTJPHBdECDbE/f0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=LhbTY4eW; arc=none smtp.client-ip=185.226.149.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
+	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1tu78P-00Dms8-A3; Mon, 17 Mar 2025 10:51:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
+	bh=fVP4auPXeZ1wxgMxif41gK7AYDaPeOrAkaHk042YAE4=; b=LhbTY4eWbI+zGFZbmiLECfoOwY
+	vDpT1/PVIxRBFRTzkeix8eRzEWgT1kzSQfIQrdcEKpRH5Mqo22BL5oIDR8jqog5eJX9nJougQORCv
+	Xn7YlK2iEz8jldpNM9uywGbIkcKoT1eBEcQNIPIVzwxtZyfXB9QIETfvM02VKSX2Hi6njygAcr5y7
+	HLGyM8SRnAEptvT+4ureNLQvwCdWM6xs1ZRTi8h+EeWJ8PRMBKkxQ0Mf9u1HyiC5Dg29NReZgdk2X
+	D2HmZU25L5FK7fN2iXwlWy7u/v0DkKlEIHtv+zg3s2J6rgASlL37ap6FDhB+eoyArbkiEx8tZt2ae
+	MkFQejcg==;
+Received: from [10.9.9.74] (helo=submission03.runbox)
+	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1tu78N-0006il-JQ; Mon, 17 Mar 2025 10:51:47 +0100
+Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1tu78F-00DHyx-Ed; Mon, 17 Mar 2025 10:51:39 +0100
+Message-ID: <67a1ae27-84c1-4a5c-9178-a29276d6ab52@rbox.co>
+Date: Mon, 17 Mar 2025 10:51:37 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v3 2/3] selftest/bpf: Add test for AF_VSOCK connect()
+ racing sockmap update
+To: Paolo Abeni <pabeni@redhat.com>, Stefano Garzarella
+ <sgarzare@redhat.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Simon Horman <horms@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Bobby Eshleman <bobby.eshleman@bytedance.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+ virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20250316-vsock-trans-signal-race-v3-0-17a6862277c9@rbox.co>
+ <20250316-vsock-trans-signal-race-v3-2-17a6862277c9@rbox.co>
+ <981a871f-e0c0-4741-8e7e-4a4e5d93541d@redhat.com>
+Content-Language: pl-PL, en-GB
+From: Michal Luczaj <mhal@rbox.co>
+In-Reply-To: <981a871f-e0c0-4741-8e7e-4a4e5d93541d@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add edge case tests for sockmap.
+On 3/17/25 09:23, Paolo Abeni wrote:
+> On 3/16/25 11:45 PM, Michal Luczaj wrote:
+>> Racing signal-interrupted connect() and sockmap update may result in an
+>> unconnected (and missing vsock transport) socket in a sockmap.
+>>
+>> Test spends 2 seconds attempting to reach WARN_ON_ONCE().
+>>
+>> connect
+>>   / state = SS_CONNECTED /
+>>                                 sock_map_update_elem
+>>   if signal_pending
+>>     state = SS_UNCONNECTED
+>>
+>> connect
+>>   transport = NULL
+>>                                 vsock_bpf_recvmsg
+>>                                   WARN_ON_ONCE(!vsk->transport)
+>>
+>> Signed-off-by: Michal Luczaj <mhal@rbox.co>
+> 
+> This is apparently causing some bpf self-test failure. (Timeout? the
+> self-test failure output is not clear to me.)
+> 
+> Could you please have a look?
 
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
----
- .../selftests/bpf/prog_tests/socket_helpers.h | 13 +++-
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 60 +++++++++++++++++++
- 2 files changed, 72 insertions(+), 1 deletion(-)
+Sending signal to the whole process group probably isn't the best idea. Not
+sure how the previous version passed though.
+Sorry, v4 incoming.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/socket_helpers.h b/tools/testing/selftests/bpf/prog_tests/socket_helpers.h
-index 1bdfb79ef009..a805143dd84f 100644
---- a/tools/testing/selftests/bpf/prog_tests/socket_helpers.h
-+++ b/tools/testing/selftests/bpf/prog_tests/socket_helpers.h
-@@ -313,11 +313,22 @@ static inline int recv_timeout(int fd, void *buf, size_t len, int flags,
- 
- static inline int create_pair(int family, int sotype, int *p0, int *p1)
- {
--	__close_fd int s, c = -1, p = -1;
-+	__close_fd int s = -1, c = -1, p = -1;
- 	struct sockaddr_storage addr;
- 	socklen_t len = sizeof(addr);
- 	int err;
- 
-+	if (family == AF_UNIX) {
-+		int fds[2];
-+
-+		err = socketpair(family, sotype, 0, fds);
-+		if (!err) {
-+			*p0 = fds[0];
-+			*p1 = fds[1];
-+		}
-+		return err;
-+	}
-+
- 	s = socket_loopback(family, sotype);
- 	if (s < 0)
- 		return s;
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 1e3e4392dcca..c72357f41035 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -1042,6 +1042,59 @@ static void test_sockmap_vsock_unconnected(void)
- 	xclose(map);
- }
- 
-+void *close_thread(void *arg)
-+{
-+	int *fd = (int *)arg;
-+
-+	sleep(1);
-+	close(*fd);
-+	*fd = -1;
-+	return NULL;
-+}
-+
-+void test_sockmap_with_close_on_write(int family, int sotype)
-+{
-+	struct test_sockmap_pass_prog *skel;
-+	int err, map, verdict;
-+	pthread_t tid;
-+	int zero = 0;
-+	int c = -1, p = -1;
-+
-+	skel = test_sockmap_pass_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-+	map = bpf_map__fd(skel->maps.sock_map_rx);
-+
-+	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach"))
-+		goto out;
-+
-+	err = create_pair(family, sotype, &c, &p);
-+	if (!ASSERT_OK(err, "create_pair"))
-+		goto out;
-+
-+	err = bpf_map_update_elem(map, &zero, &p, BPF_ANY);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem"))
-+		goto out;
-+
-+	err = pthread_create(&tid, 0, close_thread, &p);
-+	if (!ASSERT_OK(err, "pthread_create"))
-+		goto out;
-+
-+	while (p > 0)
-+		send(c, "a", 1, MSG_NOSIGNAL);
-+
-+	pthread_join(tid, NULL);
-+out:
-+	if (c > 0)
-+		close(c);
-+	if (p > 0)
-+		close(p);
-+	test_sockmap_pass_prog__destroy(skel);
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -1108,4 +1161,11 @@ void test_sockmap_basic(void)
- 		test_sockmap_skb_verdict_vsock_poll();
- 	if (test__start_subtest("sockmap vsock unconnected"))
- 		test_sockmap_vsock_unconnected();
-+	if (test__start_subtest("sockmap with write on close")) {
-+		test_sockmap_with_close_on_write(AF_UNIX, SOCK_STREAM);
-+		test_sockmap_with_close_on_write(AF_UNIX, SOCK_DGRAM);
-+		test_sockmap_with_close_on_write(AF_INET, SOCK_STREAM);
-+		test_sockmap_with_close_on_write(AF_INET, SOCK_DGRAM);
-+		test_sockmap_with_close_on_write(AF_VSOCK, SOCK_STREAM);
-+	}
- }
--- 
-2.47.1
+Michal
 
 
