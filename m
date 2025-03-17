@@ -1,145 +1,185 @@
-Return-Path: <bpf+bounces-54168-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54169-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DE6CA64548
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 09:24:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB7FEA646E7
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 10:19:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B73F3B3E25
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 08:23:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78AC318871E8
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 09:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B57B21E0BB;
-	Mon, 17 Mar 2025 08:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5659C130A7D;
+	Mon, 17 Mar 2025 09:19:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T3H1ktej"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WV3auc4d"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C96821D3F1
-	for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 08:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FA11758B;
+	Mon, 17 Mar 2025 09:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742199831; cv=none; b=CrmNvgnaKMXJho40udatmyAvh7mk8H1KIC4dPyFfUWrgDWxyZhEbEBE2CoFH6XL5a5ksDew1B+yNfrpYTSojSDcIl9mtsaCwg0iqN6HFSVRtxCKWDjiUziXD57R+QWs3IFxtiwSGaSY3j2xlVKBAbWRZ9aSy0jerm0ZBL9z7PsU=
+	t=1742203155; cv=none; b=hIHrzXGOC8nOXtKxDLhiedxfOJZTkww/CTibRwKzZLrBhA9zkUpPUrTErlbmYVSpQzWztnZpkWeoTzsdO+4xr+ZMrVCmcCWrpV6kn4SVVZRSgjBzin5U3qDa1XpS+GrrCbM9ji6Vxlg0+9lAVFMHCyqWvCQNvTmis083PGSZ4v0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742199831; c=relaxed/simple;
-	bh=6F6vk/bCuTRFj9sHasYFtzBPnP8c9sLQfBUMl+1ThkY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Sxm19oixBTVRHJWeqt9h94liHPAOJsIW/e9QmPeGUpx8RxTzFmon1roD+GSBoxEXsFUFTiEDhHU2PTzrtZUWgAgu+rvpmp6s/Imd8xOEEGWwvLisNITVHRjet7AA360fbasXKloScgt+0KT0tzw7kz7qcoMEJjWTvHUgts4OjI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=T3H1ktej; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1742199828;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rC5lK1FxM1eWQXOh9AroE9tnp2td4VImfPnxc4mu+rg=;
-	b=T3H1ktejRD0Vh4sK7aDZUzpjaMS6nV/QZlHsgMGOhKwzEOcZyEmPPXxLsqEWE0kvvJNao1
-	GQjq2qyskoAOvH0vUjUQdkF6YA/l7stQRNnnNv9H1Ucs+EBRVN4tNaYlBz5nZELtZiDJ61
-	VGj5psdB1Ws2uXfqA6vvTstPhiMrijU=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-471-u17aXGz7OuOHGJe20zKx2Q-1; Mon, 17 Mar 2025 04:23:46 -0400
-X-MC-Unique: u17aXGz7OuOHGJe20zKx2Q-1
-X-Mimecast-MFC-AGG-ID: u17aXGz7OuOHGJe20zKx2Q_1742199825
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43947979ce8so8328555e9.0
-        for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 01:23:46 -0700 (PDT)
+	s=arc-20240116; t=1742203155; c=relaxed/simple;
+	bh=abhSV4oZla2hmjMZqJOBpvk7JGaPgKUD5B3Yerg3BxY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=YBluz4T4Vxq98H9/8kEh7EfzMHKg/4T/OPi1ZJcpOxR5AIuijemwqJ6ANTDkOPly4dMmtJfyaSQq6XpXji83QraT8ZcipDfn9NI5YnTH8vChIjrivwr1hW6U1o78TrB44mFw/klKiWfx6epbSd/E0CM9QgWommE+KkxABuOFOQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WV3auc4d; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-225d66a4839so47741955ad.1;
+        Mon, 17 Mar 2025 02:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742203154; x=1742807954; darn=vger.kernel.org;
+        h=mime-version:user-agent:references:in-reply-to:date:cc:to:from
+         :subject:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=lMORBukfDNOzWrCEQijjWj2H6MggMJxZRFJuSPvnV3s=;
+        b=WV3auc4dFxTsQQZJB6rEgKLXicouF6/JAn0MLYsSwns0BPRWhZJQf9vvu7IbbMJJ5b
+         iCCLxdeH0b79Bmdx+8F27Vm56GH0pmrH7Y5FaSMK+3YSF1Fxr6I/BACNoVwrqwqKZiXU
+         SmGR8yDFnUJA2tGDRS9P/v0jUdpEM/mS2QXCP7ZgcJ2SvWXcTxRFeJGAhs+yT2nSW9Iz
+         lOil0sPnD63hYj15VtWAASsm6ngqGxZ210y/Pvk/lMiK4OGU6nvPm9vgvAjNH22oxRIe
+         qy170sDBIyo25mqEdABXBO2QeVdMqe/G33gBw5qJiAr83RUm1BiyVk59lu6HX/rN9h6w
+         dsZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742199825; x=1742804625;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rC5lK1FxM1eWQXOh9AroE9tnp2td4VImfPnxc4mu+rg=;
-        b=Y2TGVwaRp1DJVD0I4asIz51MdRDo9j+ss58rZG+RQYhnaEVFdv+RA62cFELK3PYs5W
-         w0lFhtrjgyLwlnzIZkU5BnHpYWsU/19j5CB7vTiXW808T11hC/0HHcgIW10oxHg7/K9Q
-         tI00NgWr0rWIYcWDkEYAvd0wh3YkOOpxG/9TDB9K2z8Jxs7HexxC2bcbhipp8jCt3BWC
-         zzKQ6xlIrh9UlVDmjGixC5T2Bg6BAzY90yPsJpQKuFho1RihdhmP2esXsdZnx7lrAYAG
-         2X8xYvh03diHCzI12uK9Ee9fn47YsW2ZMSzkvSILhS3bt+qEQyxOJ/tGoq6AO/HQEoY6
-         Efrw==
-X-Forwarded-Encrypted: i=1; AJvYcCXnMq6FGwXBiIag+idzLsYgs/z7aiE0yiSshulzC8tL5kVoqlWyuDCWWbH5SfniHQ00Lwo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzV0GGvjoe0TfOWLd/f6mphOPgbCs97WlhWYLs6jEpei2T/6tnL
-	QA1HnPyv0IDwocQTbPi9zMjmLhvOGfif1CaWGmrrZ0CWMWUR1Pf7c2gAfxA3ion4FFRsIqBqi8p
-	B1EKYWQnQKhZegxSysw0g3+ZOS1c4UftoR9BnulZIzdTllrHpMA==
-X-Gm-Gg: ASbGnctyV/dgAn/1pZgJojZoBJ84ouXzJXc+QVKaBAKcNpLYB7GTcZD4PQBdWayWVij
-	0NBrCzhUFCSHaTy9eEO9CK0NV2QO8FljNhaz2N4rjxn4U7P/yI+5hrP8/MMthKg+E+rNQw2zyRE
-	/9KQZjNLkDDx8pKvq2oupaO32ASoOM2xPIk0JAI1Fq+SURZk9KnS5ZWbJ/+AJg2dAkBLA7/L4FH
-	pbLM/Jja91H8GeHXQrpPbmp8b/w/awyo/+jFYlPj7T+5D7+ejhbSWAOtvqdKbiiHQZ3BwoXnamH
-	9YJSD2VWxRoILbtI1ygmSAS5L3XUWFRgSz3Wvmp7eYLNuQ==
-X-Received: by 2002:a05:600c:511c:b0:43c:fbba:41ba with SMTP id 5b1f17b1804b1-43d1ecd60c1mr109892925e9.28.1742199825098;
-        Mon, 17 Mar 2025 01:23:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGvXGGv6tXY3ajGLLrOXr011xmJAYRLTHi8JZasNx5okT9lH6f9KisDDn8lGridr/hz5ZTMqg==
-X-Received: by 2002:a05:600c:511c:b0:43c:fbba:41ba with SMTP id 5b1f17b1804b1-43d1ecd60c1mr109892625e9.28.1742199824734;
-        Mon, 17 Mar 2025 01:23:44 -0700 (PDT)
-Received: from [192.168.88.253] (146-241-10-172.dyn.eolo.it. [146.241.10.172])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d2010de59sm96734785e9.33.2025.03.17.01.23.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Mar 2025 01:23:44 -0700 (PDT)
-Message-ID: <981a871f-e0c0-4741-8e7e-4a4e5d93541d@redhat.com>
-Date: Mon, 17 Mar 2025 09:23:42 +0100
+        d=1e100.net; s=20230601; t=1742203154; x=1742807954;
+        h=mime-version:user-agent:references:in-reply-to:date:cc:to:from
+         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lMORBukfDNOzWrCEQijjWj2H6MggMJxZRFJuSPvnV3s=;
+        b=sqzq7J6FfSaAZIWlusLKzlSH6c84iPKdQysqgitCzEH21sM3MiYydBXwgWiIfUx7II
+         fceJKgHgACvb8TBiA+ciSrWW4juXMLUNdcgDlgORsX+OdoY7nueah54UIpnxbf5g41PD
+         IsskWgqrV8qIDKEoL5ypnatb0Iop/HUijU6UWY7+11wh5lLoBanm+H6t//b2BGh4O/6F
+         I8nJJFvlQLT/XB5S2PKM++WItPUhitIGeOVerRFp6NV+5vrMUCE1lu1c3v8Q0wIvXCp3
+         W95tUpgnZtVLE2zhCCNUZXokEhcdpavNUBZxoojjGmYa38QugKaBSa3moQ6X7y2UDvsR
+         bmGw==
+X-Forwarded-Encrypted: i=1; AJvYcCUZngtGIIwMgr5ecttfXAAfy0k38/OCKkoVloQ3SDIOHqVN1NF1cPcbhIbqQ1u3xZ+/mQc=@vger.kernel.org, AJvYcCUnSBUZ5DgPz8kqrugmrYXwmiLjtHesY2S9xrEcGY0oCYwQCuyx35pehk937JXKBwq6ovNJOyCyyiyfFE3G@vger.kernel.org, AJvYcCVHqbZAmIgeU1km7bdhrM5DBvXz+fQyHFZqWepWDpJdqaFWKuA+7Y4zLfN3PNZnBtDLRh1dE1XXi5CM90LmO70m@vger.kernel.org
+X-Gm-Message-State: AOJu0YxaiPRbgqUX7yV9Vy91/DjaF1qFgXax9vHI/SZirwwBowH87G3P
+	sJATlF0DIPy8bZEU/tkf2zO/n1jEI2tmUwDgAPLnx1MLbJ9QsqVe
+X-Gm-Gg: ASbGncto3709iKm7WC61UkjL7+hATn9j34H9uvQO6oaJ8wTJppX0jikJ1tQH/TR0Gke
+	wkKWKttjA0hBe46kdgsN1CVhDrPtc6rxtnXv6m+6Kj/wtmSEbVszMkad4zsDSMHrVWuAW4CHbMF
+	4AXKIMV1rFJXy7/DrwNoGsptR7wlNXH/iqcp5JuwT9Zbbj5xQWqMjd77JWdeGX+Nj6uzPTabBuV
+	0IrBtgfNxEcpl+8338KpSd+AT8p3WCT1rf7NJnm/eBsZ1+ZA1VBUUBhbMVYsec5l3W12XK27+MB
+	zCMVh0LvxPCI2BIByVd0xRB7KJwhzWqPaVRgw5DWbbKhCAI7Mzk=
+X-Google-Smtp-Source: AGHT+IFQrLJwhlX7+RiGH3CxZ9FfxID5MIfJ1arkUBWGEnsa5Y9RjhdscgDV1ztpHSFUF5oJv7iB3A==
+X-Received: by 2002:a05:6a00:8306:b0:736:5813:8c46 with SMTP id d2e1a72fcca58-737107f9d11mr17429679b3a.8.1742203153453;
+        Mon, 17 Mar 2025 02:19:13 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-737115293f6sm7340451b3a.14.2025.03.17.02.19.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Mar 2025 02:19:12 -0700 (PDT)
+Message-ID: <9083b52fd4a2d7a5a0473e858042c277c883f8b0.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 09/11] bpf: Return PTR_ERR from push_stack()
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Luis Gerhorst <luis.gerhorst@fau.de>, Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend	
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev	 <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>,  Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai
+ <xukuohai@huaweicloud.com>, Catalin Marinas	 <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Hari Bathini	 <hbathini@linux.ibm.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,  Naveen N Rao
+ <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, Michael
+ Ellerman	 <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Mykola
+ Lysenko	 <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Henriette Herzog	
+ <henriette.herzog@rub.de>, Cupertino Miranda
+ <cupertino.miranda@oracle.com>,  Matan Shachnai <m.shachnai@gmail.com>,
+ Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, Shung-Hsi Yu	
+ <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org, George Guo	
+ <guodongtai@kylinos.cn>, WANG Xuerui <git@xen0n.name>, Tiezhu Yang	
+ <yangtiezhu@loongson.cn>
+Cc: Maximilian Ott <ott@cs.fau.de>, Milan Stephan <milan.stephan@fau.de>
+Date: Mon, 17 Mar 2025 02:19:08 -0700
+In-Reply-To: <20250313174149.1113165-4-luis.gerhorst@fau.de>
+References: <20250313172127.1098195-1-luis.gerhorst@fau.de>
+	 <20250313174149.1113165-1-luis.gerhorst@fau.de>
+	 <20250313174149.1113165-4-luis.gerhorst@fau.de>
+Content-Type: multipart/mixed; boundary="=-pU3IArgK79wjJvjdvEwt"
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3 2/3] selftest/bpf: Add test for AF_VSOCK connect()
- racing sockmap update
-To: Michal Luczaj <mhal@rbox.co>, Stefano Garzarella <sgarzare@redhat.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Bobby Eshleman <bobby.eshleman@bytedance.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
- virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20250316-vsock-trans-signal-race-v3-0-17a6862277c9@rbox.co>
- <20250316-vsock-trans-signal-race-v3-2-17a6862277c9@rbox.co>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250316-vsock-trans-signal-race-v3-2-17a6862277c9@rbox.co>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 3/16/25 11:45 PM, Michal Luczaj wrote:
-> Racing signal-interrupted connect() and sockmap update may result in an
-> unconnected (and missing vsock transport) socket in a sockmap.
-> 
-> Test spends 2 seconds attempting to reach WARN_ON_ONCE().
-> 
-> connect
->   / state = SS_CONNECTED /
->                                 sock_map_update_elem
->   if signal_pending
->     state = SS_UNCONNECTED
-> 
-> connect
->   transport = NULL
->                                 vsock_bpf_recvmsg
->                                   WARN_ON_ONCE(!vsk->transport)
-> 
-> Signed-off-by: Michal Luczaj <mhal@rbox.co>
+--=-pU3IArgK79wjJvjdvEwt
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This is apparently causing some bpf self-test failure. (Timeout? the
-self-test failure output is not clear to me.)
+On Thu, 2025-03-13 at 18:41 +0100, Luis Gerhorst wrote:
 
-Could you please have a look?
+[...]
 
-Thanks!
+> @@ -2011,8 +2011,10 @@ static struct bpf_verifier_state *push_stack(struc=
+t bpf_verifier_env *env,
+>  	int err;
+> =20
+>  	elem =3D kzalloc(sizeof(struct bpf_verifier_stack_elem), GFP_KERNEL);
+> -	if (!elem)
+> -		goto err;
+> +	if (!elem) {
+> +		err =3D -ENOMEM;
+> +		goto unrecoverable_err;
+> +	}
 
-Paolo
+Could you please point me to a location, where exact error code
+returned by updated push_stack() matters?
+I checked push_stack() callgraph (in the attachment), but can't find
+anything.
 
+> =20
+>  	elem->insn_idx =3D insn_idx;
+>  	elem->prev_insn_idx =3D prev_insn_idx;
+> @@ -2022,12 +2024,19 @@ static struct bpf_verifier_state *push_stack(stru=
+ct bpf_verifier_env *env,
+
+[...]
+
+
+--=-pU3IArgK79wjJvjdvEwt
+Content-Disposition: attachment; filename="push_stack.dot"
+Content-Transfer-Encoding: base64
+Content-Type: text/vnd.graphviz; name="push_stack.dot"; charset="UTF-8"
+
+ZGlncmFwaCBHIHsKTm9kZTB4NTVkZDRhOGQ0YjUwIFtsYWJlbD0ie2NoZWNrX2NvbmRfam1wX29w
+fSIsIHNoYXBlPXJlY29yZF07Ck5vZGUweDU1ZGQ0YWEwNjc5MCBbbGFiZWw9IntzYW5pdGl6ZV9z
+cGVjdWxhdGl2ZV9wYXRofSIsIHNoYXBlPXJlY29yZF07Ck5vZGUweDU1ZGQ0YThjYTU4MCBbbGFi
+ZWw9IntjaGVja19oZWxwZXJfY2FsbH0iLCBzaGFwZT1yZWNvcmRdOwpOb2RlMHg1NWRkNGE4Y2Yy
+NjAgW2xhYmVsPSJ7Y2hlY2tfa2Z1bmNfY2FsbH0iLCBzaGFwZT1yZWNvcmRdOwpOb2RlMHg1NWRk
+NGE4OGQ3ZDAgW2xhYmVsPSJ7ZG9fY2hlY2t9Iiwgc2hhcGU9cmVjb3JkXTsKTm9kZTB4NTVkZDRh
+YTNhMzYwIFtsYWJlbD0ie2FkanVzdF9wdHJfbWluX21heF92YWxzfSIsIHNoYXBlPXJlY29yZF07
+Ck5vZGUweDU1ZGQ0YTc2YzYyMCBbbGFiZWw9Intkb19jaGVja19jb21tb259Iiwgc2hhcGU9cmVj
+b3JkXTsKTm9kZTB4NTVkZDRhOGJhODUwIFtsYWJlbD0ie2FkanVzdF9yZWdfbWluX21heF92YWxz
+fSIsIHNoYXBlPXJlY29yZF07Ck5vZGUweDU1ZGQ0OTU5ZmU0MCBbbGFiZWw9Intwcm9jZXNzX2l0
+ZXJfbmV4dF9jYWxsfSIsIHNoYXBlPXJlY29yZF07Ck5vZGUweDU1ZGQ0YWE1YzFlMCBbbGFiZWw9
+IntzYW5pdGl6ZV9wdHJfYWx1fSIsIHNoYXBlPXJlY29yZF07Ck5vZGUweDU1ZGQ0YTlhM2FjMCBb
+bGFiZWw9IntwdXNoX2NhbGxiYWNrX2NhbGx9Iiwgc2hhcGU9cmVjb3JkXTsKTm9kZTB4NTVkZDRh
+OWZiOWQwIFtsYWJlbD0ie3B1c2hfc3RhY2t9Iiwgc2hhcGU9cmVjb3JkXTsKTm9kZTB4NTVkZDRh
+Nzc4ZGIwIFtsYWJlbD0ie2RvX2NoZWNrX3N1YnByb2dzfSIsIHNoYXBlPXJlY29yZF07Ck5vZGUw
+eDU1ZGQ0YTc0MTk5MCBbbGFiZWw9InticGZfY2hlY2t9Iiwgc2hhcGU9cmVjb3JkXTsKTm9kZTB4
+NTVkZDRhNzQxOTkwIC0+IE5vZGUweDU1ZGQ0YTc3OGRiMDsKTm9kZTB4NTVkZDRhNzQxOTkwIC0+
+IE5vZGUweDU1ZGQ0YTc2YzYyMDsKTm9kZTB4NTVkZDRhNzc4ZGIwIC0+IE5vZGUweDU1ZGQ0YTc2
+YzYyMDsKTm9kZTB4NTVkZDRhNzZjNjIwIC0+IE5vZGUweDU1ZGQ0YTg4ZDdkMDsKTm9kZTB4NTVk
+ZDRhODhkN2QwIC0+IE5vZGUweDU1ZGQ0YThkNGI1MDsKTm9kZTB4NTVkZDRhODhkN2QwIC0+IE5v
+ZGUweDU1ZGQ0YThjYTU4MDsKTm9kZTB4NTVkZDRhODhkN2QwIC0+IE5vZGUweDU1ZGQ0YThjZjI2
+MDsKTm9kZTB4NTVkZDRhODhkN2QwIC0+IE5vZGUweDU1ZGQ0YThiYTg1MDsKTm9kZTB4NTVkZDRh
+OGNmMjYwIC0+IE5vZGUweDU1ZGQ0OTU5ZmU0MDsKTm9kZTB4NTVkZDRhOGNmMjYwIC0+IE5vZGUw
+eDU1ZGQ0YTlhM2FjMDsKTm9kZTB4NTVkZDRhOGNhNTgwIC0+IE5vZGUweDU1ZGQ0YTlhM2FjMDsK
+Tm9kZTB4NTVkZDRhOGQ0YjUwIC0+IE5vZGUweDU1ZGQ0YTlmYjlkMDsKTm9kZTB4NTVkZDRhOGQ0
+YjUwIC0+IE5vZGUweDU1ZGQ0YWEwNjc5MDsKTm9kZTB4NTVkZDRhOGJhODUwIC0+IE5vZGUweDU1
+ZGQ0YWEzYTM2MDsKTm9kZTB4NTVkZDRhYTNhMzYwIC0+IE5vZGUweDU1ZGQ0YWE1YzFlMDsKTm9k
+ZTB4NTVkZDRhYTVjMWUwIC0+IE5vZGUweDU1ZGQ0YTlmYjlkMDsKTm9kZTB4NTVkZDRhYTA2Nzkw
+IC0+IE5vZGUweDU1ZGQ0YTlmYjlkMDsKTm9kZTB4NTVkZDRhOWEzYWMwIC0+IE5vZGUweDU1ZGQ0
+YTlmYjlkMDsKTm9kZTB4NTVkZDQ5NTlmZTQwIC0+IE5vZGUweDU1ZGQ0YTlmYjlkMDsKfQo=
+
+
+--=-pU3IArgK79wjJvjdvEwt--
 
