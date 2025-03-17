@@ -1,142 +1,171 @@
-Return-Path: <bpf+bounces-54241-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54242-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32976A66054
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 22:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 131A3A660EC
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 22:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20B383AA02E
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 21:19:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67D823B1B7C
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 21:46:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4194C20299D;
-	Mon, 17 Mar 2025 21:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9194D1FFC44;
+	Mon, 17 Mar 2025 21:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qgUgXRwV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bFMypfhq"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D4A54670;
-	Mon, 17 Mar 2025 21:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B681E1E08
+	for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 21:47:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742246366; cv=none; b=YXpBbjvpV2xVRHCCOAfsmKXA1ZNHOjmuDg/U5a0gJbdtgXvPmngBWm8CQ2X3Ok2bFlW61TIQDPQRcrUX67jHaV6QOHKI0lkEdTOJEx6DC8cyrsfYyw6d4Kzjb9z93n7hfOCxZ+f4bcWYxSsYsrYAPcV/NjLNtjufN2JKn+Dd8Wk=
+	t=1742248022; cv=none; b=j7bEAyvEHPSe4cz9f06myyCLsvfWON81vwkaykEMLY3pvKCwu34enLC5srp9fuavxDvlAraavx3Gf79uAh/lM6Be05nlxRIGFfmqR1f2VLztghm7IX9qmIf+eOpzlAUNhKLVC1ZaJ2P5+5DhgRTLhBje36sxkfJPPpVYnPWoEwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742246366; c=relaxed/simple;
-	bh=yxOJ65p4SAnE0Ir7dTqcv9g7ATU7SmbWT29NkJuH8BA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F6igaulZHn5/LwdfhL4NTZlbfb9HFgQcmmjj9YiOVouiDiisX7ZVhvDR6Nfc76G7nulF/fkUEKoWD9qLJs25DpYu4HvVzEa7atW3a+hsN3k9K0YByO/q8k3TqtcGlIvf/b81gthg/KQdj8Hkvc6kWjJAKpAjpe+PP+fueClzkqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qgUgXRwV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DDFFC4CEE3;
-	Mon, 17 Mar 2025 21:19:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742246366;
-	bh=yxOJ65p4SAnE0Ir7dTqcv9g7ATU7SmbWT29NkJuH8BA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qgUgXRwV69Nt7k3tS39yXyXMdldqU28UP+PtwBMatgfeffOfA5/oHb56jjgdcyxm/
-	 JSGRh83BxwutSnS40H41FN22i3wiENJS/dURZ3QjAjRHXeQG1UMqDT2HVcc79oBvMw
-	 vET5PfeOtb2f+b5dq+iwwdVPOK5J+pDe1JXaD9jjDP8DwVr5tpS0ev5oM5mzqDbZnv
-	 ai2u9v9ej5kzSJD99oA46h0kZ3R1oPFMxv8UODWo/IX8tL8mkrTsCX3RKrQYklEMUu
-	 YO6BRjjTOzO5YIGpehdDeTsx7RuknHnK/zXPyN9Y0IP9bCUcV1+H7bMrAIfj+kVJi4
-	 Oe1CcOBuXZfsg==
-Message-ID: <c4f4a1d0-aed8-4b09-a3d2-067fdd04bed3@kernel.org>
-Date: Mon, 17 Mar 2025 21:19:22 +0000
+	s=arc-20240116; t=1742248022; c=relaxed/simple;
+	bh=gEpQKMfdGp0LZ29keggzYvL/E6EYZYixw/P6b2eYWKI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H5v5KeJ7LrOBKIfwKBbgVxP6ox4uGkUNz3kpXweSgN/jkZh564crwxrE6jMB1ITjuyMalfAgoH52g717ejInZaAl4/2Y9Bcsj+gp5HJgX9Hwx00XdV0eEcU0ZlmAcZMi7macy3xekN4FhyY3kqtMKHgBM9zMUBj3sr1aM42ZQtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bFMypfhq; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-38a25d4b9d4so2703286f8f.0
+        for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 14:47:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742248018; x=1742852818; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=co9WR04AnR/fgO24BlOgTXR9OIiz/T2w9bN6++6N7n8=;
+        b=bFMypfhqd86Ir/Tkz9ZoeUhCWUXkKXhP+o3lwCz/cWIkWN26Q6tvvTgxtNcZWr+fNm
+         UsZoLRjU1mpmoPsgj8AAiq5VJcXZVy6gslUnti6Vni+9VIJO1xUuZWXJV+v38XC78lY8
+         GJapmnZwrJt0J1rSQj0EHevKl2u4QGvvHEzoR0F/i47Rf1fBDeY46KBsKa1DFJNda3JG
+         +/j3xsFC03EUH/A3x7mB2d0z4IjJSK4a15LUv1wEXkTyMLEVAXKoERiVa2oS3qp4E53u
+         nOjbsWexdtGyfcwUoto4qPg5WgUWqm9Ucw5GuZAXTz+U5nrD9T7+J4K4l1HAqyrpAqhG
+         G/rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742248018; x=1742852818;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=co9WR04AnR/fgO24BlOgTXR9OIiz/T2w9bN6++6N7n8=;
+        b=FurJydsnbdz6yz9wcmB+ia0e57afMLnpkQvrXRryxD77bLGLP8XezGQ4MTn5jwFRun
+         CNPMWIHpkbv6eF6O3+k/u0mCaOkDOChwylR8sTU+BHleChHO44+J2C2zrBz8D+ELLL54
+         Zq1Rf1dM0peqwjC96Rhww27gtnMpTjdH6c26omCGEEb7g9mBBc5rbqqUPy5QleYKiym3
+         STAiWBQ/JsWtbDrr0ay0Iy/04oziUAv8dM04oeAfcjKrMofTGU8liSow+QRYbmgWgjk4
+         +Ql4xoKkLApaPu1IbuU9QsaU5/l+FSf6AXlCY4AfhGwc2/gbbblX/vtjUjrpmvNKNDeG
+         CBww==
+X-Gm-Message-State: AOJu0YwxBGtxeVVDZJA/psL8pQ3l42HqEWqUS6lp1qeRhiA+6wcDKQUf
+	NwGmhS69RZj2qJyCSFILOAUA6zhvJhWe/eIck6juEbrQ2ef3ZRjmu3eF/wYkptW69F8bKPeOeuL
+	V66v1QJUiAT9CePZuXkXjojocNQE=
+X-Gm-Gg: ASbGncu9Ha63hD2Fv2NOhfmfXIWxH4xepyBbetOL1KsgnGO3sWrBJW20Y1YWaZ/IPRv
+	cOGWGpIBwUFhz6cBUYjBrf58vzdJIn8ZTmfyfzZ5pVKnur8KYJbBYDm4iCgn7LbmKzF5NRQRPuH
+	JVRIW8wwe2ZrCGWSJm5bnDBmu2um4W+vh16vqCAkF1gQ==
+X-Google-Smtp-Source: AGHT+IGisgqHpGv6A1wquzy6sOHxpZNcJbdyWUlOlhXE47nDqIeMQ+sttAddqPfqmt+gUZ7fkR5GXid263yCU50d8Rs=
+X-Received: by 2002:a05:6000:1a87:b0:390:f0ff:2c1c with SMTP id
+ ffacd0b85a97d-3971e96b183mr11661525f8f.18.1742248018387; Mon, 17 Mar 2025
+ 14:46:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1 next] tools build: Remove the libunwind feature tests
- from the ones detected when test-all.o builds
-To: Ian Rogers <irogers@google.com>, Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
- Adrian Hunter <adrian.hunter@intel.com>, James Clark
- <james.clark@linaro.org>, Jiri Olsa <jolsa@kernel.org>,
- Kan Liang <kan.liang@linux.intel.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
- linux-trace-devel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-References: <Z1mzpfAUi8zeiFOp@x1>
- <CAP-5=fWqpcwc021enM8uMChSgCRB+UW_6z7+=pdsQG9msLJsbw@mail.gmail.com>
- <Z9hWqwvNQO0GqH09@google.com>
- <CAP-5=fWCWD5Rq5RR7NSMxrxmc1SUkK=8gg+D-JxGOgaHA7_WBA@mail.gmail.com>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <CAP-5=fWCWD5Rq5RR7NSMxrxmc1SUkK=8gg+D-JxGOgaHA7_WBA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20250312031344.3735498-1-eddyz87@gmail.com> <3c6ac16b7578406e2ddd9ba889ce955748fe636b.camel@gmail.com>
+ <9190c8821684a6c75c524c58c6d54f7d9b2366e3.camel@gmail.com>
+ <CAADnVQKBdJsDWVCNk2LaEc7ZTPFOEeQrRgoEiio4YWFYsijkcw@mail.gmail.com> <1b1913448e28d0d6beef5c2f47a033aa44e2f336.camel@gmail.com>
+In-Reply-To: <1b1913448e28d0d6beef5c2f47a033aa44e2f336.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 17 Mar 2025 14:46:47 -0700
+X-Gm-Features: AQ5f1JqUXMi1TiJyKwRwacg90v5SiTov0wedGfmripZlTmAo4L80cJkJbiaKqyc
+Message-ID: <CAADnVQJabnCzo6=3uATv3nN2hz7Av=BAORVS=hgnyNHt+5dBCw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: states with loop entry have
+ incomplete read/precision marks
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, 
+	Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-2025-03-17 10:16 UTC-0700 ~ Ian Rogers <irogers@google.com>
-> On Mon, Mar 17, 2025 at 10:06 AM Namhyung Kim <namhyung@kernel.org> wrote:
->>
->> Hello,
->>
->> On Mon, Mar 17, 2025 at 09:10:29AM -0700, Ian Rogers wrote:
->>> On Wed, Dec 11, 2024 at 7:45 AM Arnaldo Carvalho de Melo
->>> <acme@kernel.org> wrote:
->>>>
->>>> We have a tools/build/feature/test-all.c that has the most common set of
->>>> features that perf uses and are expected to have its development files
->>>> available when building perf.
->>>>
->>>> When we made libwunwind opt-in we forgot to remove them from the list of
->>>> features that are assumed to be available when test-all.c builds, remove
->>>> them.
->>>>
->>>> Before this patch:
->>>>
->>>>   $ rm -rf /tmp/b ; mkdir /tmp/b ; make -C tools/perf O=/tmp/b feature-dump ; grep feature-libunwind-aarch64= /tmp/b/FEATURE-DUMP
->>>>   feature-libunwind-aarch64=1
->>>>   $
->>>>
->>>> Even tho this not being test built and those header files being
->>>> available:
->>>>
->>>>   $ head -5 tools/build/feature/test-libunwind-aarch64.c
->>>>   // SPDX-License-Identifier: GPL-2.0
->>>>   #include <libunwind-aarch64.h>
->>>>   #include <stdlib.h>
->>>>
->>>>   extern int UNW_OBJ(dwarf_search_unwind_table) (unw_addr_space_t as,
->>>>   $
->>>>
->>>> After this patch:
->>>>
->>>>   $ grep feature-libunwind- /tmp/b/FEATURE-DUMP
->>>>   $
->>>>
->>>> Now an audit on what is being enabled when test-all.c builds will be
->>>> performed.
->>>>
->>>> Fixes: 176c9d1e6a06f2fa ("tools features: Don't check for libunwind devel files by default")
->>>> Cc: Adrian Hunter <adrian.hunter@intel.com>
->>>> Cc: Ian Rogers <irogers@google.com>
->>>> Cc: James Clark <james.clark@linaro.org>
->>>> Cc: Jiri Olsa <jolsa@kernel.org>
->>>> Cc: Kan Liang <kan.liang@linux.intel.com>
->>>> Cc: Namhyung Kim <namhyung@kernel.org>
->>>> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
->>>
->>> Sorry for the delay on this.
->>>
->>> Reviewed-by: Ian Rogers <irogers@google.com>
->>
->> Thanks for the review, but I think this part is used by other tools like
->> BPF and tracing.  It'd be nice to get reviews from them.
-> 
-> Sgtm. The patch hasn't had attention for 3 months. A quick grep for
-> "unwind" and "UNW_" shows only use in perf and the feature tests.
-> 
-> Thanks,
-> Ian
+On Mon, Mar 17, 2025 at 1:28=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Fri, 2025-03-14 at 19:51 -0700, Alexei Starovoitov wrote:
+>
+> [...]
+>
+> > Looks like the whole concept of old-style liveness and precision
+> > is broken with loops.
+> > propagate_liveness() will take marks from old state,
+> > but old is incomplete, so propagating them into cur doesn't
+> > make cur complete either.
+> >
+> > > Another possibility is to forgo loop entries altogether and upon
+> > > states_equal(cached, cur, RANGE_WITHIN) mark all registers in the
+> > > `cached` state as read and precise, propagating this info in `cur`.
+> > > I'll try this as well.
+> >
+> > Have a gut feel that it won't work.
+> > Currently we have loop_entry->branches is a flag of "completeness".
+> > which doesn't work for loops,
+> > so maybe we need a bool flag for looping states and instead of:
+> > force_exact =3D loop_entry && complete
+> > use
+> > force_exact =3D loop_entry || incomplete
+> >
+> > looping state will have "incomplete" flag cleared only when branches =
+=3D=3D 0 ?
+> > or maybe never.
+> >
+> > The further we get into this the more I think we need to get rid of
+> > existing liveness, precision, and everything path sensitive and
+> > convert it all to data flow analysis.
+>
+> In [1] I tried conservatively marking cached state registers as both
+> read and precise when states_equal(cached, cur, RANGE_WITHIN) =3D=3D true=
+.
+> It works for the example at hand, but indeed falls apart because it
+> interferes with widening logic.
 
+hindsight 20/20 :)
 
-Indeed, bpftool does not rely on libunwind, and I don't remember other
-BPF components doing so, either.
+> So, anything like below can't be
+> verified anymore (what was I thinking?):
+>
+>     SEC("raw_tp")
+>     __success
+>     int iter_nested_deeply_iters(const void *ctx)
+>     {
+>         int sum =3D 0;
+>
+>         MY_PID_GUARD();
+>
+>         bpf_repeat(10) {
+>                 ...
+>                 sum +=3D 1;
+>                 ...
+>         }
+>
+>         return sum;
+>     }
+>
+> Looks like there are only two options left:
+> a. propagate read/precision marks in state graph until fixed point is
+>    reached;
+> b. switch to CFG based DFA analysis (will need slot/register type
+>    propagation to identify which scalars can be precise).
+>
+> (a) is more in line with what we do currently and probably less code.
+> But I expect that it would be harder to think about in case if
+> something goes wrong (e.g. we don't print/draw states graph at the
+> moment, I have a debug patch for this that I just cherry-pick).
 
-Quentin
+if (a) is not a ton of code it's worth giving it a shot,
+but while(!converged) propagate_precision()
+will look scary.
+We definitely need to do (b) at the end.
 
