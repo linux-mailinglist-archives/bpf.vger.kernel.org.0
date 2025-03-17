@@ -1,183 +1,181 @@
-Return-Path: <bpf+bounces-54158-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54159-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C6ACA63DDA
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 05:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39D7BA63E11
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 05:20:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53F98188F7A3
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 04:08:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E89CD188C232
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 04:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D79C214A9A;
-	Mon, 17 Mar 2025 04:07:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906C0214A9C;
+	Mon, 17 Mar 2025 04:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="LHRPolUi";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="meyFymZf"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+Received: from flow-b7-smtp.messagingengine.com (flow-b7-smtp.messagingengine.com [202.12.124.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA8179D2;
-	Mon, 17 Mar 2025 04:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71366A59;
+	Mon, 17 Mar 2025 04:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742184468; cv=none; b=NOeGywel7+s6wobB+YN8htLhqpcbfngws/izno6fV+ASl8YHM5lU+X8hyx5IDMDBMJzH/w7BVaPotI2NSSoBNvMSwX0z4DRM7rv7XtPDBVGRes2zkyDUANMaekyDcuiPOftmcaTaEcZ4xcZIKLz5z3xiqxtsF3v+JhdMcNee5mU=
+	t=1742185212; cv=none; b=sTIXwCADwWbMqrT6ZRDaQFsGnk1WEPyarT27fbY6/sfMQAizSuRIbw4omsUpDbTMUd6znfeBGUJuOQXlygQ/T7gy52qxw+9U+q+lfRQNOZokNIVct06/TcZwVJodE/Tfx0FZd5HS337VNLYP3gt25T52yclWSw8mtirWHxQ8a0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742184468; c=relaxed/simple;
-	bh=IhtH9py8CA8+Ld8RzERKZArjkqCMGLSW+c97C3UWBgk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=AO23SATw42MkVpn/WRcU7BVUbQdvexwt6hRnORjuvqs+t5XYHscvEWpKX0FAjNGCOTOP7GVcGpH4Ki8nUgTmrsWWXXITD23uohiQL8nTSSjEpANpIZAyQ8KJAuTXP/4zKMN6JE2NzMVAYtITOI2Nfe1IlIsDeGIS4zWSgCuSWX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4ZGLzx4DLyz27gks;
-	Mon, 17 Mar 2025 12:08:13 +0800 (CST)
-Received: from kwepemg200005.china.huawei.com (unknown [7.202.181.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id A8E1F1401F1;
-	Mon, 17 Mar 2025 12:07:37 +0800 (CST)
-Received: from [10.174.176.70] (10.174.176.70) by
- kwepemg200005.china.huawei.com (7.202.181.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 17 Mar 2025 12:07:36 +0800
-Message-ID: <fad4cb08-be38-4f43-ba61-db147e4d26d0@huawei.com>
-Date: Mon, 17 Mar 2025 12:07:35 +0800
+	s=arc-20240116; t=1742185212; c=relaxed/simple;
+	bh=/8FiYef5d99uCy0bDydFDdgkV/npK40z7TQ6Wa3apfk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tFn2+JpCz2najOB9VSFUOhdZu3R/j/g9W0S37cwTB9Z7uR0aCpWFXIznYYm51uSXJlJ9bxFf2E1bcvehysKr1eaB0CvPpHxPUFbF+ObJEHfrV6YSRfRw9p3nL4c0AC22zd3+iKzEVoJjicMZl0yTWKYR+GQt3HSeSrw1MWMs8ec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=LHRPolUi; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=meyFymZf; arc=none smtp.client-ip=202.12.124.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
+	by mailflow.stl.internal (Postfix) with ESMTP id 57D551D41340;
+	Mon, 17 Mar 2025 00:20:07 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-07.internal (MEProxy); Mon, 17 Mar 2025 00:20:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1742185207; x=1742192407; bh=sB2Vv7iTl6
+	/85KF2Q7eb4AEAere1+nDFaUtjRjzwOaM=; b=LHRPolUi5saPu1XiZVS3ParkbA
+	kx00UA6CNHfLPEKuTVKT+cLj4948DZFHx6q4hhfD4SP9CVXxfZE14iiS0pf70rIs
+	8+B8DnaTY1tFKDkjcfLPJIinTzFSyLXMEE8EJrekv8fh0cpV85XScCNbKgHnD89k
+	n8lGrhmJwxpU+Hop30iWD31kcRdxcAckOiEEif72sJRx7vKfy/uCM5weIzNG1RUk
+	sr48gPHqkJBGeD3L2pLZ/mZy7+zR4g43jLcx0iURNwBKTqex+kVceEtXE78SMv93
+	53d0PIcppu3j7bPJGJREUpt5OqUg3X6PtR5aLDqvO3y+dzyAkXCN2wWpJ/jA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1742185207; x=1742192407; bh=sB2Vv7iTl6/85KF2Q7eb4AEAere1+nDFaUt
+	jRjzwOaM=; b=meyFymZfR3uTVY+cLQHjkQTdqrcQSft4BF7vNgjwKf5GNvxO7Jl
+	vf4/MKK5K8DbtYgK0oze7sOBGlRWS6DZeKgjC5mtvOuPl9BfX7CA1UEheRxfoRsh
+	ZvYB0mkxToAW3UQcBhxrMBzHigNvQYym+2/r9SYeYr0RYVOogb6EJFZFFlppIiWF
+	l0hTkGJOoYlik2wVP+qT3lDroWYkdX9OHEjo0ZadBaeUFMNu5TIf/Xk/znKbjIVK
+	wMJKfMMcRKD12dwok1iNfAPEWllWgfUCB0q7O0BvY0bSLTJG7g8Q+gXFfVPKgqJW
+	CcsC7xt+jJV14I8X7b8D1ZMff/qgzLzLucA==
+X-ME-Sender: <xms:9qLXZ2whe3XnVtD7p6uAYXyUXaBMlF4qDvoFO9hqxIpLkBY0bt-SVQ>
+    <xme:9qLXZyRf-mRRzq8PaHSfzMJGYVix01oj9OaZepb0Z9Xa5j36zYIcYD_8UKkC8GiKs
+    DmeRgsjsh-ZZg>
+X-ME-Received: <xmr:9qLXZ4UypdR-W64LjvfJi2Ttbcg_2rg12oGDP_8ojVQr9lbnXZYJLsqHGsc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddufeekhedvucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
+    vdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecugg
+    ftrfgrthhtvghrnhepgeehueehgfdtledutdelkeefgeejteegieekheefudeiffdvudef
+    feelvedttddvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtgho
+    mhdpnhgspghrtghpthhtohepfedtpdhmohguvgepshhmthhpohhuthdprhgtphhtthhope
+    gthhgvnhhlihhngihurghnseguvggvphhinhdrohhrghdprhgtphhtthhopegrnhgurhhi
+    iheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhholhhsrgeskhgvrhhnvghlrdhorh
+    hgpdhrtghpthhtohepshgrshhhrghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegv
+    ugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtohepjhgrnhhnhhesghhoohhglh
+    gvrdgtohhmpdhrtghpthhtoheprgguohgsrhhihigrnhesghhmrghilhdrtghomhdprhgt
+    phhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehshhgrkhgvvghlrd
+    gsuhhttheslhhinhhugidruggvvh
+X-ME-Proxy: <xmx:9qLXZ8hsOSOPmrpMr7z25rfUo7kihDS248pcC4iG3YixAqqPZAc6Gg>
+    <xmx:9qLXZ4DF0ovr4P35nfGjfNgtdBde2-YXbbwlEd5ClfIX0Iz3OuHb5Q>
+    <xmx:9qLXZ9KzFXk2ZZEkes0H7D4sLeQRLcJ8F5cWTXw6Og9N_ia2skh2tA>
+    <xmx:9qLXZ_DNAWLN4SP871nOuwGG3K1MWGVETN4xqn9s0Diq8r7kLxQ15g>
+    <xmx:96LXZ5gxKLYoTJrau4DWGESssk316THjwidXZy3dOa2g5pM13hThXWF2>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 17 Mar 2025 00:20:05 -0400 (EDT)
+Date: Mon, 17 Mar 2025 05:18:48 +0100
+From: Greg KH <greg@kroah.com>
+To: Chen Linxuan <chenlinxuan@deepin.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Jann Horn <jannh@google.com>,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Yi Lai <yi1.lai@intel.com>, Daniel Borkmann <daniel@iogearbox.net>,
+	stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH stable 6.6 v2] lib/buildid: Handle memfd_secret() files
+ in build_id_parse()
+Message-ID: <2025031759-sacrifice-wreckage-9948@gregkh>
+References: <84B05ADD5527685D+20250317011604.119801-2-chenlinxuan@deepin.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] bonding: check xdp prog when set bond mode
-To: Nikolay Aleksandrov <razor@blackwall.org>,
-	=?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	<jv@jvosburgh.net>, <andrew+netdev@lunn.ch>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
-	<john.fastabend@gmail.com>, <joamaki@gmail.com>
-CC: <yuehaibing@huawei.com>, <zhangchangzhong@huawei.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>
-References: <20250314073549.1030998-1-wangliang74@huawei.com>
- <87y0x7rkck.fsf@toke.dk> <21d52659-622a-4b2a-b091-787bf0f5d67f@blackwall.org>
- <96a4043b-fdac-4ca1-a7b9-a6352b1d7dfe@blackwall.org>
-From: Wang Liang <wangliang74@huawei.com>
-In-Reply-To: <96a4043b-fdac-4ca1-a7b9-a6352b1d7dfe@blackwall.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemg200005.china.huawei.com (7.202.181.32)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <84B05ADD5527685D+20250317011604.119801-2-chenlinxuan@deepin.org>
 
+On Mon, Mar 17, 2025 at 09:16:04AM +0800, Chen Linxuan wrote:
+> [ Upstream commit 5ac9b4e935dfc6af41eee2ddc21deb5c36507a9f ]
+> 
+> >>From memfd_secret(2) manpage:
+> 
+>   The memory areas backing the file created with memfd_secret(2) are
+>   visible only to the processes that have access to the file descriptor.
+>   The memory region is removed from the kernel page tables and only the
+>   page tables of the processes holding the file descriptor map the
+>   corresponding physical memory. (Thus, the pages in the region can't be
+>   accessed by the kernel itself, so that, for example, pointers to the
+>   region can't be passed to system calls.)
+> 
+> We need to handle this special case gracefully in build ID fetching
+> code. Return -EFAULT whenever secretmem file is passed to build_id_parse()
+> family of APIs. Original report and repro can be found in [0].
+> 
+>   [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation/
+> 
+> Fixes: de3ec364c3c3 ("lib/buildid: add single folio-based file reader abstraction")
+> Reported-by: Yi Lai <yi1.lai@intel.com>
+> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Link: https://lore.kernel.org/bpf/20241017175431.6183-A-hca@linux.ibm.com
+> Link: https://lore.kernel.org/bpf/20241017174713.2157873-1-andrii@kernel.org
+> [ Chen Linxuan: backport same logic without folio-based changes ]
+> Cc: stable@vger.kernel.org
+> Fixes: 88a16a130933 ("perf: Add build id data in mmap2 event")
+> Signed-off-by: Chen Linxuan <chenlinxuan@deepin.org>
+> ---
+> v1 -> v2: use vma_is_secretmem() instead of directly checking
+>           vma->vm_file->f_op == &secretmem_fops
+> ---
+>  lib/buildid.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/lib/buildid.c b/lib/buildid.c
+> index 9fc46366597e..34315d09b544 100644
+> --- a/lib/buildid.c
+> +++ b/lib/buildid.c
+> @@ -5,6 +5,7 @@
+>  #include <linux/elf.h>
+>  #include <linux/kernel.h>
+>  #include <linux/pagemap.h>
+> +#include <linux/secretmem.h>
+>  
+>  #define BUILD_ID 3
+>  
+> @@ -157,6 +158,10 @@ int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
+>  	if (!vma->vm_file)
+>  		return -EINVAL;
+>  
+> +	/* reject secretmem */
 
-在 2025/3/14 18:44, Nikolay Aleksandrov 写道:
-> On 3/14/25 12:22 PM, Nikolay Aleksandrov wrote:
->> On 3/14/25 12:13 PM, Toke Høiland-Jørgensen wrote:
->>> Wang Liang <wangliang74@huawei.com> writes:
->>>
->>>> Following operations can trigger a warning[1]:
->>>>
->>>>      ip netns add ns1
->>>>      ip netns exec ns1 ip link add bond0 type bond mode balance-rr
->>>>      ip netns exec ns1 ip link set dev bond0 xdp obj af_xdp_kern.o sec xdp
->>>>      ip netns exec ns1 ip link set bond0 type bond mode broadcast
->>>>      ip netns del ns1
->>>>
->>>> When delete the namespace, dev_xdp_uninstall() is called to remove xdp
->>>> program on bond dev, and bond_xdp_set() will check the bond mode. If bond
->>>> mode is changed after attaching xdp program, the warning may occur.
->>>>
->>>> Some bond modes (broadcast, etc.) do not support native xdp. Set bond mode
->>>> with xdp program attached is not good. Add check for xdp program when set
->>>> bond mode.
->>>>
->>>>      [1]
->>>>      ------------[ cut here ]------------
->>>>      WARNING: CPU: 0 PID: 11 at net/core/dev.c:9912 unregister_netdevice_many_notify+0x8d9/0x930
->>>>      Modules linked in:
->>>>      CPU: 0 UID: 0 PID: 11 Comm: kworker/u4:0 Not tainted 6.14.0-rc4 #107
->>>>      Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
->>>>      Workqueue: netns cleanup_net
->>>>      RIP: 0010:unregister_netdevice_many_notify+0x8d9/0x930
->>>>      Code: 00 00 48 c7 c6 6f e3 a2 82 48 c7 c7 d0 b3 96 82 e8 9c 10 3e ...
->>>>      RSP: 0018:ffffc90000063d80 EFLAGS: 00000282
->>>>      RAX: 00000000ffffffa1 RBX: ffff888004959000 RCX: 00000000ffffdfff
->>>>      RDX: 0000000000000000 RSI: 00000000ffffffea RDI: ffffc90000063b48
->>>>      RBP: ffffc90000063e28 R08: ffffffff82d39b28 R09: 0000000000009ffb
->>>>      R10: 0000000000000175 R11: ffffffff82d09b40 R12: ffff8880049598e8
->>>>      R13: 0000000000000001 R14: dead000000000100 R15: ffffc90000045000
->>>>      FS:  0000000000000000(0000) GS:ffff888007a00000(0000) knlGS:0000000000000000
->>>>      CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>>>      CR2: 000000000d406b60 CR3: 000000000483e000 CR4: 00000000000006f0
->>>>      Call Trace:
->>>>       <TASK>
->>>>       ? __warn+0x83/0x130
->>>>       ? unregister_netdevice_many_notify+0x8d9/0x930
->>>>       ? report_bug+0x18e/0x1a0
->>>>       ? handle_bug+0x54/0x90
->>>>       ? exc_invalid_op+0x18/0x70
->>>>       ? asm_exc_invalid_op+0x1a/0x20
->>>>       ? unregister_netdevice_many_notify+0x8d9/0x930
->>>>       ? bond_net_exit_batch_rtnl+0x5c/0x90
->>>>       cleanup_net+0x237/0x3d0
->>>>       process_one_work+0x163/0x390
->>>>       worker_thread+0x293/0x3b0
->>>>       ? __pfx_worker_thread+0x10/0x10
->>>>       kthread+0xec/0x1e0
->>>>       ? __pfx_kthread+0x10/0x10
->>>>       ? __pfx_kthread+0x10/0x10
->>>>       ret_from_fork+0x2f/0x50
->>>>       ? __pfx_kthread+0x10/0x10
->>>>       ret_from_fork_asm+0x1a/0x30
->>>>       </TASK>
->>>>      ---[ end trace 0000000000000000 ]---
->>>>
->>>> Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driver")
->>>> Signed-off-by: Wang Liang <wangliang74@huawei.com>
->>>> ---
->>>>   drivers/net/bonding/bond_options.c | 3 +++
->>>>   1 file changed, 3 insertions(+)
->>>>
->>>> diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
->>>> index 327b6ecdc77e..127181866829 100644
->>>> --- a/drivers/net/bonding/bond_options.c
->>>> +++ b/drivers/net/bonding/bond_options.c
->>>> @@ -868,6 +868,9 @@ static bool bond_set_xfrm_features(struct bonding *bond)
->>>>   static int bond_option_mode_set(struct bonding *bond,
->>>>   				const struct bond_opt_value *newval)
->>>>   {
->>>> +	if (bond->xdp_prog)
->>>> +		return -EOPNOTSUPP;
->>>> +
->>> Should we allow changing as long as the new mode also supports XDP?
->>>
->>> -Toke
->>>
->>>
->> +1
->> I think we should allow it, the best way probably is to add a new option
->> BOND_VALFLAG_XDP_UNSUPP (for example) as a bond option flag and to set
->> it in bond_options.c for each mode that doesn't support XDP, then you
->> can do the check in a generic way (for any option) in
->> bond_opt_check_deps. Any bond option that can't be changed with XDP prog
-> err, I meant any bond option's value that isn't supported with XDP, for
-> a whole option it would be a bit different
-Thanks for your suggestions!
+Why is this comment different from what is in the original commit?  Same
+for your other backports.  Please try to keep it as identical to the
+original whenever possible as we have to maintain this for a very long
+time.
 
-When install xdp prog, bond_xdp_set() use bond_xdp_check() to check 
-whether the bond mode support xdp.
+thanks,
 
-When uninstall xdp prog, the paramter prog of bond_xdp_set() is NULL. 
-How about not call bond_xdp_check() to avoid the warning when the prog 
-is NULL, like:
-
-static int bond_xdp_set(struct net_device *dev, struct bpf_prog *prog,
-             struct netlink_ext_ack *extack)
-     ...
-     if (prog && !bond_xdp_check(bond))
->> should have that flag set.
->>
->> Cheers,
->>   Nik
->>
->
+greg k-h
 
