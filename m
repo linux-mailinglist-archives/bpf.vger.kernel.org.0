@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-54245-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3703A6620F
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 23:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AF9EA66210
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 23:51:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34B94189CCF6
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 22:51:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DEBE189DCF1
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 22:51:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCAF8204080;
-	Mon, 17 Mar 2025 22:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F289F204F8E;
+	Mon, 17 Mar 2025 22:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="KH7tFoUl"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="mZWyxDtT"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA6EF15B54A
-	for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 22:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DBB1F63F0
+	for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 22:50:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742251856; cv=none; b=MERGkl5lRGcg46cPlXscXAVPtfWbQmdfTkLpREUWKK7KPvXWuWxJQbQ63KjfhQobxX4tJoN7vpjTlIFhHZRfxH7s+ylYzOTpese3ipkkvzPmQJvjEIPTj9dbbWStc8NwUTbpyMZ6+5DKgTSE3xs8TzNMqaV3wcBp2ORtzMClSs8=
+	t=1742251857; cv=none; b=bo1BmfgW4lCbWVtHafXMIZG08eSACfOZT4TPvFpv1gQNSbjvg4/bnYPi8RYWqbAMbh6Pqja3bkT2L9CAZ9CR65Z7eIUAlKNoQnrKq0miyM54qKSSGmWBWg7cj5a9jst5BdKIyqy5g6wZbmN837t4lzbLlCkasPdldnu8V9DwPQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742251856; c=relaxed/simple;
-	bh=9aRhWW3ztQ6LCefM0k146uWvu2e3Fb99ygtTJdWATy4=;
+	s=arc-20240116; t=1742251857; c=relaxed/simple;
+	bh=PzFqfoRtY4n2SOUoLNd8OHnIMa/d6SS3tquxpWs0kpA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jrq2SoVN7xR4Tb08PKu/JI21bpmhR1lfniAfgbR7202riFaaCGrZBPvYH16pv81hReDh/0ygPYCP51FgAYoy7dEvPfHquMLwhrVlDpPNrUY/1tbGVMQ0dSPOGINOglxkfunDtK8k2Apw6RA/mGdcDHKY/s+q+mqcbvewTdPxnEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=KH7tFoUl; arc=none smtp.client-ip=67.231.153.30
+	 MIME-Version:Content-Type; b=V5IpnS+8uQXbUqTeuNZo+wEfI9V7czTAyuapBSVfev9qM+70esQyVZVHfKpYlGzw+ST8tSL0zvgLhV8n+yBLeALC4jIacBwKcybQcu46uF5CYz95XkHsxuk8dZNYB4Ch2V99ESeWDWw3eOVlsfJiYB9KSMi1k+w40tREwOv+Ons=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=mZWyxDtT; arc=none smtp.client-ip=67.231.153.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
 Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-	by m0001303.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 52HMl7f7005224;
+	by m0001303.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 52HMl7f8005224;
 	Mon, 17 Mar 2025 15:50:16 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=s2048-2021-q4;
-	 bh=mZ3vAknJTmduM2VcBYsorqL11Wx9mneNVqQB/ER57dc=; b=KH7tFoUl0gZ3
-	Obhorgp4qJtm0mJ0C7cta2iM1IiBKRC/Hy/bKtS0b71SaVrBinkcln9gcszKBN9o
-	3VPQJLZZ3nG2q1DY1e3tViiwLsXKAMILXL+EuxwErd0Okg2aVb6XQKuN2VEYL18w
-	aDNW///Sy7rLsp1KLirPrOaqdtZ6uimvyPUQjLeLK1wroC2RgYaPvpiHu/GXFAqb
-	4JJ0vtiNbFOWBv5rU4as3luaFfsP+uqsa1+MUOkiXQ8eLqYt1G8xdof5Kmvl4gls
-	bl6fUVLKmeBEZ+JpkaM70suyMMdx5sZg88kkP9kJC/lukSD2inSSNNfPmK0VnDj/
-	kXOPz7HzPw==
+	 bh=tAiN/cUXd5vSssqq46CTEACFwTd9FaSY1CA4OHp/kAo=; b=mZWyxDtTyDcM
+	dsZxP5ItVh7WRUV2gTfRN5Gckh+7quf6F1ViP/t8NH+E8IzxnninNMYHPRpw2hL5
+	xONvNMe7jHfrjwswgPSroOyie22OWxEwPGoQP0EaUpwJCjOmoIW2om3iS744MLkC
+	8dtq7ibOUuB1pAxX/iSmmM9YnIlugUuYNkZPrLCJPGlJVhuQ8mtBf3t2jGN091QG
+	PqpY4e0zvDWx2vsImOTD+iEZxsAIjHzTrUZdzszK+UXLVidJ0noaHypPQIgEdhl6
+	/Zwe2MfBXnjooI1qJCB/qoutAPi/BHUrmjVgiiIf7khzgrV5oymCADSOXHfTbHHv
+	dra3MQgWJQ==
 Received: from mail.thefacebook.com ([163.114.134.16])
-	by m0001303.ppops.net (PPS) with ESMTPS id 45evu280qv-6
+	by m0001303.ppops.net (PPS) with ESMTPS id 45evu280qv-7
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Mon, 17 Mar 2025 15:50:15 -0700 (PDT)
+	Mon, 17 Mar 2025 15:50:16 -0700 (PDT)
 Received: from devvm4158.cln0.facebook.com (2620:10d:c085:108::150d) by
  mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server id
- 15.2.1544.14; Mon, 17 Mar 2025 22:49:45 +0000
+ 15.2.1544.14; Mon, 17 Mar 2025 22:49:47 +0000
 From: Vadim Fedorenko <vadfed@meta.com>
 To: Borislav Petkov <bp@alien8.de>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -67,9 +67,9 @@ CC: <x86@kernel.org>, <bpf@vger.kernel.org>,
         Vadim Fedorenko <vadfed@meta.com>,
         Martin KaFai Lau
 	<martin.lau@linux.dev>
-Subject: [PATCH bpf-next v11 2/4] bpf: add bpf_cpu_time_counter_to_ns helper
-Date: Mon, 17 Mar 2025 15:49:30 -0700
-Message-ID: <20250317224932.1894918-3-vadfed@meta.com>
+Subject: [PATCH bpf-next v11 3/4] selftests/bpf: add selftest to check bpf_get_cpu_time_counter jit
+Date: Mon, 17 Mar 2025 15:49:31 -0700
+Message-ID: <20250317224932.1894918-4-vadfed@meta.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250317224932.1894918-1-vadfed@meta.com>
 References: <20250317224932.1894918-1-vadfed@meta.com>
@@ -81,176 +81,153 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: mO-FtP58J9G6zP0Xj1hKXRr2em0y_wvi
-X-Proofpoint-GUID: mO-FtP58J9G6zP0Xj1hKXRr2em0y_wvi
+X-Proofpoint-ORIG-GUID: V8MpRAWnVbMkLORVb2aJt2RHRw6IcFqB
+X-Proofpoint-GUID: V8MpRAWnVbMkLORVb2aJt2RHRw6IcFqB
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-03-17_09,2025-03-17_03,2024-11-22_01
 
-The new helper should be used to convert deltas of values
-received by bpf_get_cpu_time_counter() into nanoseconds. It is not
-designed to do full conversion of time counter values to
-CLOCK_MONOTONIC_RAW nanoseconds and cannot guarantee monotonicity of 2
-independent values, but rather to convert the difference of 2 close
-enough values of CPU timestamp counter into nanoseconds.
+bpf_get_cpu_time_counter() is replaced with rdtsc instruction on x86_64.
+Add tests to check that JIT works as expected.
 
-This function is JITted into just several instructions and adds as
-low overhead as possible and perfectly suits benchmark use-cases.
-
-When the kfunc is not JITted it returns the value provided as argument
-because the kfunc in previous patch will return values in nanoseconds.
-
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
 ---
- arch/x86/net/bpf_jit_comp.c   | 28 +++++++++++++++++++++++++++-
- arch/x86/net/bpf_jit_comp32.c | 27 ++++++++++++++++++++++++++-
- include/linux/bpf.h           |  1 +
- kernel/bpf/helpers.c          |  6 ++++++
- 4 files changed, 60 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/verifier_cpu_cycles.c | 104 ++++++++++++++++++
+ 2 files changed, 106 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 92cd5945d630..3e4d45defe2f 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -9,6 +9,7 @@
- #include <linux/filter.h>
- #include <linux/if_vlan.h>
- #include <linux/bpf.h>
-+#include <linux/clocksource.h>
- #include <linux/memory.h>
- #include <linux/sort.h>
- #include <asm/extable.h>
-@@ -2289,6 +2290,30 @@ st:			if (is_imm8(insn->off))
- 				break;
- 			}
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index e66a57970d28..d5e7e302a344 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -102,6 +102,7 @@
+ #include "verifier_xdp_direct_packet_access.skel.h"
+ #include "verifier_bits_iter.skel.h"
+ #include "verifier_lsm.skel.h"
++#include "verifier_cpu_cycles.skel.h"
+ #include "irq.skel.h"
  
-+			if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
-+			    IS_ENABLED(CONFIG_BPF_SYSCALL) &&
-+			    imm32 == BPF_CALL_IMM(bpf_cpu_time_counter_to_ns) &&
-+			    cpu_feature_enabled(X86_FEATURE_TSC) &&
-+			    using_native_sched_clock() && sched_clock_stable()) {
-+				struct cyc2ns_data data;
-+				u32 mult, shift;
-+
-+				cyc2ns_read_begin(&data);
-+				mult = data.cyc2ns_mul;
-+				shift = data.cyc2ns_shift;
-+				cyc2ns_read_end();
-+				/* imul RAX, RDI, mult */
-+				maybe_emit_mod(&prog, BPF_REG_1, BPF_REG_0, true);
-+				EMIT2_off32(0x69, add_2reg(0xC0, BPF_REG_1, BPF_REG_0),
-+					    mult);
-+
-+				/* shr RAX, shift (which is less than 64) */
-+				maybe_emit_1mod(&prog, BPF_REG_0, true);
-+				EMIT3(0xC1, add_1reg(0xE8, BPF_REG_0), shift);
-+
-+				break;
-+			}
-+
- 			func = (u8 *) __bpf_call_base + imm32;
- 			if (src_reg == BPF_PSEUDO_CALL && tail_call_reachable) {
- 				LOAD_TAIL_CALL_CNT_PTR(stack_depth);
-@@ -3906,7 +3931,8 @@ bool bpf_jit_inlines_kfunc_call(s32 imm)
+ #define MAX_ENTRIES 11
+@@ -236,6 +237,7 @@ void test_verifier_bits_iter(void) { RUN(verifier_bits_iter); }
+ void test_verifier_lsm(void)                  { RUN(verifier_lsm); }
+ void test_irq(void)			      { RUN(irq); }
+ void test_verifier_mtu(void)		      { RUN(verifier_mtu); }
++void test_verifier_cpu_cycles(void)	      { RUN(verifier_cpu_cycles); }
+ 
+ static int init_test_val_map(struct bpf_object *obj, char *map_name)
  {
- 	if (!IS_ENABLED(CONFIG_BPF_SYSCALL))
- 		return false;
--	if (imm == BPF_CALL_IMM(bpf_get_cpu_time_counter) &&
-+	if ((imm == BPF_CALL_IMM(bpf_get_cpu_time_counter) ||
-+	    imm == BPF_CALL_IMM(bpf_cpu_time_counter_to_ns)) &&
- 	    cpu_feature_enabled(X86_FEATURE_TSC) &&
- 	    using_native_sched_clock() && sched_clock_stable())
- 		return true;
-diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-index 7f13509c66db..9791a3fb9d69 100644
---- a/arch/x86/net/bpf_jit_comp32.c
-+++ b/arch/x86/net/bpf_jit_comp32.c
-@@ -12,6 +12,7 @@
- #include <linux/netdevice.h>
- #include <linux/filter.h>
- #include <linux/if_vlan.h>
-+#include <linux/clocksource.h>
- #include <asm/cacheflush.h>
- #include <asm/set_memory.h>
- #include <asm/nospec-branch.h>
-@@ -2115,6 +2116,29 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 					EMIT2(0x0F, 0x31);
- 					break;
- 				}
-+				if (IS_ENABLED(CONFIG_BPF_SYSCALL) &&
-+				    imm32 == BPF_CALL_IMM(bpf_cpu_time_counter_to_ns) &&
-+				    cpu_feature_enabled(X86_FEATURE_TSC) &&
-+				    using_native_sched_clock() && sched_clock_stable()) {
-+					struct cyc2ns_data data;
-+					u32 mult, shift;
+diff --git a/tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c b/tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c
+new file mode 100644
+index 000000000000..5b62e3690362
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c
+@@ -0,0 +1,104 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Inc. */
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
 +
-+					cyc2ns_read_begin(&data);
-+					mult = data.cyc2ns_mul;
-+					shift = data.cyc2ns_shift;
-+					cyc2ns_read_end();
++extern u64 bpf_cpu_time_counter_to_ns(u64 cycles) __weak __ksym;
++extern u64 bpf_get_cpu_time_counter(void) __weak __ksym;
 +
-+					/* move parameter to BPF_REG_0 */
-+					emit_ia32_mov_r64(true, bpf2ia32[BPF_REG_0],
-+							  bpf2ia32[BPF_REG_1], true, true,
-+							  &prog, bpf_prog->aux);
-+					/* multiply parameter by mut */
-+					emit_ia32_mul_i64(bpf2ia32[BPF_REG_0],
-+							  mult, true, &prog);
-+					/* shift parameter by shift which is less than 64 */
-+					emit_ia32_rsh_i64(bpf2ia32[BPF_REG_0],
-+							  shift, true, &prog);
-+				}
- 
- 				err = emit_kfunc_call(bpf_prog,
- 						      image + addrs[i],
-@@ -2648,7 +2672,8 @@ bool bpf_jit_inlines_kfunc_call(s32 imm)
- {
- 	if (!IS_ENABLED(CONFIG_BPF_SYSCALL))
- 		return false;
--	if (imm == BPF_CALL_IMM(bpf_get_cpu_time_counter) &&
-+	if ((imm == BPF_CALL_IMM(bpf_get_cpu_time_counter) ||
-+	    imm == BPF_CALL_IMM(bpf_cpu_time_counter_to_ns)) &&
- 	    cpu_feature_enabled(X86_FEATURE_TSC) &&
- 	    using_native_sched_clock() && sched_clock_stable())
- 		return true;
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a5e9b592d3e8..f45a704f06e3 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -3389,6 +3389,7 @@ u64 bpf_get_raw_cpu_id(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
- 
- /* Inlined kfuncs */
- u64 bpf_get_cpu_time_counter(void);
-+u64 bpf_cpu_time_counter_to_ns(u64 counter);
- 
- #if defined(CONFIG_NET)
- bool bpf_sock_common_is_valid_access(int off, int size,
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 43bf35a15f78..e5ed5ba4b4aa 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -3198,6 +3198,11 @@ __bpf_kfunc u64 bpf_get_cpu_time_counter(void)
- 	return ktime_get_raw_fast_ns();
- }
- 
-+__bpf_kfunc u64 bpf_cpu_time_counter_to_ns(u64 counter)
++SEC("syscall")
++__arch_x86_64
++__xlated("0: call kernel-function")
++__naked int bpf_rdtsc(void)
 +{
-+	return counter;
++	asm volatile(
++	"call %[bpf_get_cpu_time_counter];"
++	"exit"
++	:
++	: __imm(bpf_get_cpu_time_counter)
++	: __clobber_all
++	);
 +}
 +
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(generic_btf_ids)
-@@ -3299,6 +3304,7 @@ BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
- BTF_ID_FLAGS(func, bpf_local_irq_save)
- BTF_ID_FLAGS(func, bpf_local_irq_restore)
- BTF_ID_FLAGS(func, bpf_get_cpu_time_counter, KF_FASTCALL)
-+BTF_ID_FLAGS(func, bpf_cpu_time_counter_to_ns, KF_FASTCALL)
- BTF_KFUNCS_END(common_btf_ids)
- 
- static const struct btf_kfunc_id_set common_kfunc_set = {
++SEC("syscall")
++__arch_x86_64
++/* program entry for bpf_rdtsc_jit_x86_64(), regular function prologue */
++__jited("	endbr64")
++__jited("	nopl	(%rax,%rax)")
++__jited("	nopl	(%rax)")
++__jited("	pushq	%rbp")
++__jited("	movq	%rsp, %rbp")
++__jited("	endbr64")
++/* save RDX in R11 as it will be overwritten */
++__jited("	movq	%rdx, %r11")
++/* lfence may not be executed depending on cpu features */
++__jited("	{{(lfence|)}}")
++__jited("	rdtsc")
++/* combine EDX:EAX into RAX */
++__jited("	shlq	${{(32|0x20)}}, %rdx")
++__jited("	orq	%rdx, %rax")
++/* restore RDX from R11 */
++__jited("	movq	%r11, %rdx")
++__jited("	leave")
++__naked int bpf_rdtsc_jit_x86_64(void)
++{
++	asm volatile(
++	"call %[bpf_get_cpu_time_counter];"
++	"exit"
++	:
++	: __imm(bpf_get_cpu_time_counter)
++	: __clobber_all
++	);
++}
++
++SEC("syscall")
++__arch_x86_64
++__xlated("0: r1 = 42")
++__xlated("1: call kernel-function")
++__naked int bpf_cyc2ns(void)
++{
++	asm volatile(
++	"r1=0x2a;"
++	"call %[bpf_cpu_time_counter_to_ns];"
++	"exit"
++	:
++	: __imm(bpf_cpu_time_counter_to_ns)
++	: __clobber_all
++	);
++}
++
++SEC("syscall")
++__arch_x86_64
++/* program entry for bpf_rdtsc_jit_x86_64(), regular function prologue */
++__jited("	endbr64")
++__jited("	nopl	(%rax,%rax)")
++__jited("	nopl	(%rax)")
++__jited("	pushq	%rbp")
++__jited("	movq	%rsp, %rbp")
++__jited("	endbr64")
++/* save RDX in R11 as it will be overwritten */
++__jited("	movabsq	$0x2a2a2a2a2a, %rdi")
++__jited("	imulq	${{.*}}, %rdi, %rax")
++__jited("	shrq	${{.*}}, %rax")
++__jited("	leave")
++__naked int bpf_cyc2ns_jit_x86(void)
++{
++	asm volatile(
++	"r1=0x2a2a2a2a2a ll;"
++	"call %[bpf_cpu_time_counter_to_ns];"
++	"exit"
++	:
++	: __imm(bpf_cpu_time_counter_to_ns)
++	: __clobber_all
++	);
++}
++
++void rdtsc(void)
++{
++	bpf_get_cpu_time_counter();
++	bpf_cpu_time_counter_to_ns(42);
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.47.1
 
