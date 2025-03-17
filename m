@@ -1,247 +1,291 @@
-Return-Path: <bpf+bounces-54199-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54200-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90920A6554C
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 16:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 01182A65584
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 16:26:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEA00164A2F
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 15:16:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 485DD17482A
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 15:26:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0426E241685;
-	Mon, 17 Mar 2025 15:16:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C69248166;
+	Mon, 17 Mar 2025 15:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TGahoi2D"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gCVvCDg+"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B756B143748
-	for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 15:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742224611; cv=none; b=S+KTFaHHjhsixN/WFeDUKwwZ/93kw7XPjHx5Wv2Ao+AH5zZrRy5PRdmT7EhQtOhk39VkDUaE7wb1ZUgIvUe/p/D0gZ3W1Ow4Jztsl0bb5l6hlsKfrYiMqalpn5obtsuBeAKVCme1FOCLM7E5v3igvf8l7AUKsK023QsDAxp06fg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742224611; c=relaxed/simple;
-	bh=04tKKufKa20R9b387LUCyZ+68oviqMpABoU5vNN4Wzg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GLH+u3BvnwVVuhzUUZQHBLptTU1I0TdDw1DQb0TMq27EMT3TqFWuQYHsmZU7S7PXWPgqUFgKN0VMNM/nKPvaNmTZvDwgQEHzTTUS/u6F1EohV3MD67tPGGFOHHxupqg5m3ruhkLrBvaOf9iAftPPctJ4foYJ0wY8TUuiZgF1yFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TGahoi2D; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1742224608;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CzRZI32PvG1jM7oaHs4LUm1pa2tu5/yx3DzI4q+HHBg=;
-	b=TGahoi2DAXBWMxyFbkeVOVUnKvvDoh0GUFSuCprjd0dKL15mf8xM7YOVj00ewXgoeCop0G
-	XWAjkpEtqSDUiDC0dvyVo3me6hq1lfx81nRtjda9znfqSo+yw+EcnC2h6U2VKreW6SnksH
-	zkxeKrEQ0X5VMjngIwOR7lx1tUpcAjs=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-416-AJZLwEEdO2O16ZgvMz5Vdg-1; Mon, 17 Mar 2025 11:16:47 -0400
-X-MC-Unique: AJZLwEEdO2O16ZgvMz5Vdg-1
-X-Mimecast-MFC-AGG-ID: AJZLwEEdO2O16ZgvMz5Vdg_1742224606
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-30bff0c526cso24850901fa.0
-        for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 08:16:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742224606; x=1742829406;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CzRZI32PvG1jM7oaHs4LUm1pa2tu5/yx3DzI4q+HHBg=;
-        b=biUBhC3Jvgvk4fryMZgEflywkp9Kvng7KFNRbafKqO+B5k2PeXo02soaMzuqbcRfWu
-         TrNRAOtN5Ko7ZGedpawnsfORNIiyVM2Qhsk8tb+q523KozgV/ihsJdYXgFq4Gur3xpTv
-         nRfQK7oKn1jIDl8AB1LVk7jVEBrTB59XFhqKnJwIZPLh4wZsYU2/xbGKWp60FRdn4MXv
-         Z5icbbwb44TWtkth4rykUwCZQDHFjrwV+mOU425lzdMBBJ2QcT4/ud/W0TwrmUdfb461
-         Jyl8SD1R97LbAAcGFFyTZ4nfe2wmwURyGCDaoeLZ/R6NqSm79b8/UDwOHFGRR4NHuP9w
-         rXIw==
-X-Forwarded-Encrypted: i=1; AJvYcCUv6xj1qrMCtLz9sLWyTbPcBLl2Y/atnY2LeGL1iA2AuYCu7gVGYy4qZZU3tYArssEosbU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBJF3qyy+OM39nvndzMVMISwGThIYxwZI/wlemEnfaq8x7KnnQ
-	5zW4c2kmmcjxR2zQXuWYJL5px7BjPZfVWs+SienTjNpaRimGvMzejSTmL+LJHO4FZ+L9+9QGuq+
-	LHqyM3jT+WCBienUTABFO5u0zCW0TolelnCltr2GlLY/W8QCNaw==
-X-Gm-Gg: ASbGncv1bSmuSWIE8zfj4p7uxL6JKEJUL2oEUTDtKu59TCX1yQPH/595Wq4P6cIFfQa
-	T2PttnM/H6Bft6V8k80NFQO4UmkUeCeAMUvlE0634CaXewhlfoULtyrUf7zpMbubpE77yH44+ga
-	kJnvaI1S4sUeeSXN6oor1hBNLqNRHJu03tF3FjXpudIO5JFdlVNDIBIrVK5MmjwbrnTwmuf8xc7
-	jaIjzKhx+8kK7e3/pQLcrfUdLtHTptFVIb/zoziM1zgHRPHJLrq1HWanN2hlijuMbmQG4hUteV8
-	b3gpxKt5TwbZ
-X-Received: by 2002:a2e:740a:0:b0:30b:eb08:53e3 with SMTP id 38308e7fff4ca-30c4a8743d9mr64207521fa.17.1742224605619;
-        Mon, 17 Mar 2025 08:16:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFSi8cQyOlG/W3LR4YI+3jPWVFa3/mQXBuzJDNH22ZWPZDVglcHs63ffS5X17IwRGbk4plwDg==
-X-Received: by 2002:a2e:740a:0:b0:30b:eb08:53e3 with SMTP id 38308e7fff4ca-30c4a8743d9mr64207081fa.17.1742224605112;
-        Mon, 17 Mar 2025 08:16:45 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-30c3f116a4asm15789761fa.58.2025.03.17.08.16.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Mar 2025 08:16:44 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id DBB6318FAED8; Mon, 17 Mar 2025 16:16:42 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Yunsheng Lin <yunshenglin0825@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard
- Brouer <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew
- Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Simon Horman <horms@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>, Mina Almasry <almasrymina@google.com>,
- Yonglong Liu <liuyonglong@huawei.com>, Yunsheng Lin
- <linyunsheng@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>, Matthew
- Wilcox <willy@infradead.org>, Robin Murphy <robin.murphy@arm.com>, IOMMU
- <iommu@lists.linux.dev>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>, Yuying Ma
- <yuma@redhat.com>
-Subject: Re: [PATCH net-next 3/3] page_pool: Track DMA-mapped pages and
- unmap them when destroying the pool
-In-Reply-To: <db813035-fb38-4fc3-b91e-d1416959db13@gmail.com>
-References: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com>
- <20250314-page-pool-track-dma-v1-3-c212e57a74c2@redhat.com>
- <db813035-fb38-4fc3-b91e-d1416959db13@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 17 Mar 2025 16:16:42 +0100
-Message-ID: <87jz8nhelh.fsf@toke.dk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7781516E863;
+	Mon, 17 Mar 2025 15:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742225206; cv=fail; b=QmBfJpLBnYxZgN+x8KcukN9tRtawPJj4+Io3ECsihbbnFbORI0ChZCaOMDZ9YI9T44e14nVvpZEj/4cDUe8/cYtFMNM0xjb1PRFJGF2RSLbihPx2/M4K9JPe3t5Jy++YJmo3sTE6k1p1PiROXKxIZW2ZsbpikbfpfbcyfyP+Oks=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742225206; c=relaxed/simple;
+	bh=W1eepay6lE4b+JRy548CGUdWIHMweKdbISKLVMjITco=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=EnQHQ9Sbb6Kf1m7hSMSwJe/x7ZJVHbzE92ZXj1L1cpDVtMWKfGsodFYTqrTXypU+R5IWA62hjFHuE0N1MksDlJ2Q8WgHm2CeZ1jmVYZb/ep51IxHyRSgmhq5vMrUMLflKv1XLIgXFO295vP4mr8xzAsJ6Xz52DR7yufrawezCCU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gCVvCDg+; arc=fail smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1742225204; x=1773761204;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=W1eepay6lE4b+JRy548CGUdWIHMweKdbISKLVMjITco=;
+  b=gCVvCDg+/KvI7SeCWysbM+c+Kb4GUcAtNjs3WiChgXZOK7zYdg1blAG0
+   EliFjHio8L5oaboTlTVPmixhdpyY7+W2FpoEJxMrBEEz67k6/mhAvdwtX
+   D/CyJhOXc9JfRHQGnqZuqT/oRv0KVcQos4Kibky4vmGTEBBQkxFliam+w
+   QJD70byseNHpqGNgqwyApa6qtvy5+0ghivczKJ6wFEiMv/thzwpAovyTY
+   +2l3B6jOKliZffDw0IeP2Vv+M5GcWkLrT6xryIuIj6nOVN0wKwCZPcGsT
+   Y2Uw8B81+Fz3RabpE2qn3g2+COvtMiz0Qtgfo0s/vzuZLlKh3c14yILkw
+   w==;
+X-CSE-ConnectionGUID: uOZzFq6DTG6BYTBgdOOfuw==
+X-CSE-MsgGUID: 6Spzy3qjSOef02goR0WKtQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11376"; a="65789849"
+X-IronPort-AV: E=Sophos;i="6.14,254,1736841600"; 
+   d="scan'208";a="65789849"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2025 08:26:38 -0700
+X-CSE-ConnectionGUID: Y91+bUq2S7ydf7KjBwpYoA==
+X-CSE-MsgGUID: QebGlAERR1u13llFfc1zzQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,254,1736841600"; 
+   d="scan'208";a="121695841"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2025 08:26:35 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Mon, 17 Mar 2025 08:26:34 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Mon, 17 Mar 2025 08:26:34 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.42) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Mon, 17 Mar 2025 08:26:30 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=VPyRy7ZzsxKYhgFJtpeQN+XXnffrtzUPV0iRVmPjkZD2dd8vpsfP8y2TwD0G2cEuCIPoXqnVEUmKjmu0GZYw17TULYL+kisyD5fALwKGEQM3XZ+KUpQEOy0jyEr5rLDWaqydrjiLJYzI1uSBv91wFGLfP7pEJkIbJscSQm9uRB1JDY/p87uZVdJNhejYYK3xK+BldL0fu3uYMBpK+qdryHzh044d2xT0VZ1cx2lyuI9BsnBRH9/W67r237bx1lCC3yCU9PKULCyDXuldt/fJ+StW6gg264geySoqMHEsFp69i2/R/PiunecGsqrieXUC8mUfloarfwPMAQnF4qpr0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TQVohaY0LOeTm1pIT8iyKUZ8QHiG8O6GhpkbXYqbPNk=;
+ b=uCwMkfm4v2xxf02av7U1ZGA1ZY1pX09cNdjnooZmt722tCBUiQlDRY+HSF67lgxpUiq2DEH20L3ZytppzdrJ+tT1vuSuNPy+kP/8SkYWffgQJQajoWPMmf/1hKo1FvH/QVesE5CZoTvsAWOIJzyxxo2p3tIGFF+KR24RM8H+bP0G8KVPbAhnAJ0LOcZF2SB/FMnRwCfSfGwMD+XZH848G1quDD9pYbMgFWDtoP0nRQ/NglISiHO8NugiC9WLx08qpZvkBVtPzUIg/MDf4YDF1cZOG9Gtc/cox9md6Yn8LzyblY21On1cQI1ugxc4zmdtoR36Sm9iAxp0LG1bSv7SKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
+ by MN2PR11MB4744.namprd11.prod.outlook.com (2603:10b6:208:263::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.33; Mon, 17 Mar
+ 2025 15:26:10 +0000
+Received: from DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808]) by DS0PR11MB8718.namprd11.prod.outlook.com
+ ([fe80::4b3b:9dbe:f68c:d808%5]) with mapi id 15.20.8534.031; Mon, 17 Mar 2025
+ 15:26:10 +0000
+Message-ID: <fc94190c-3ea1-4034-a65d-7b5e8684812d@intel.com>
+Date: Mon, 17 Mar 2025 16:26:04 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 03/16] libeth: add a couple of XDP helpers
+ (libeth_xdp)
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+CC: <intel-wired-lan@lists.osuosl.org>, Michal Kubiak
+	<michal.kubiak@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, "Przemek
+ Kitszel" <przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Alexei
+ Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	"Jesper Dangaard Brouer" <hawk@kernel.org>, John Fastabend
+	<john.fastabend@gmail.com>, Simon Horman <horms@kernel.org>,
+	<bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20250305162132.1106080-1-aleksander.lobakin@intel.com>
+ <20250305162132.1106080-4-aleksander.lobakin@intel.com>
+ <Z9BDMrydhXrNlhVV@boxer>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+Content-Language: en-US
+In-Reply-To: <Z9BDMrydhXrNlhVV@boxer>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MI2P293CA0010.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:45::20) To DS0PR11MB8718.namprd11.prod.outlook.com
+ (2603:10b6:8:1b9::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|MN2PR11MB4744:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8df25010-44cc-4c92-5882-08dd65680b9d
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?NUhZMGM3WEZrZUNHQTMrOWhtSEdLaU5EUUdmakoybmsrd0tlZXBjdlNRN0Z2?=
+ =?utf-8?B?ZUlkVmNxdXZ1dVFFOFV3Mmd1M1FLQzk5WWlkcXdzU2x3TStiSU1PWjc5Mjdj?=
+ =?utf-8?B?eEdNcHNpVEMrb3BEZGNDbDlHL3IzTGpjcExWSjE1ODZ3R0lFbnR6WkFVQ29V?=
+ =?utf-8?B?RVhybzVzdTh5K3hxbUYxM1V5MklvV0lCZVFKcGlxWDVGMndKcDlYMFVMUWpU?=
+ =?utf-8?B?N3B4RE9NRlBvNzVNMUdjUzBIeWJUYU02Z0NHNGVvdzZaZVF4dlNpa1phdWVU?=
+ =?utf-8?B?RHdFc3ZUTnFocFlLZUpOeUJvZy9zY0FqdThtZStrQWk0TmhHMzduS1U2eTcv?=
+ =?utf-8?B?ckdLOFF0d3hBMFdET2NJM0lGR0FzNis2WDdEbHp5bnV0SXBNL3RNOEVJSHlo?=
+ =?utf-8?B?RU1OQWZseDBRa29HYWNhZVhDUzZ5dWlxSVo1VW9KMUlhZVJLWDc0eGNoUWU1?=
+ =?utf-8?B?SHJCd0ovcnVZckpnUHJDZmVqemJUSDRqMStzV3BjOVdrSFNvejNKaVBHTHoy?=
+ =?utf-8?B?T0dwSXBsbUs1dExBTmRUWGRkemhvSnRCdFhibFZ4clVObXFrR3VNQnpCazBz?=
+ =?utf-8?B?cXVKMHVDU3IwNnIvNFJZWEFTZUZtUmZQSWNTU1p1bXkxdkJPL3dwbytEcXBs?=
+ =?utf-8?B?L2RiK3lLYkt3bFR2UkY4dWlrTHBJWWxJc3JRZENRRFhGTFJZTWhydGJlTERE?=
+ =?utf-8?B?UTF0NCtvaEpEdlkxVmpVdWN5WC9WZXB2aVNOS0FRL09WeXprL2hjNUQwQWdp?=
+ =?utf-8?B?clUxQW5kUHBvdkw2bEovVXJnWTI1UHgyUzc1dzN2ekR2ZnFON0J6ODJweS9Q?=
+ =?utf-8?B?M09haUw5KytqZVlJTmpVcUFQSExPSTNxemZBZUp5Ry9CNERRZlkxcGJ5SXdk?=
+ =?utf-8?B?YzNoVFNlaThKQmlydlorak1NMGxqMTcrZGljc0g4bndDUWMyYzBMQWJiTEQ2?=
+ =?utf-8?B?clhqNmpzMEhDSmhPbjlFVzZmNlh2MGJVYWl2bXcrbzRZZlU2QmVid3B5TXA5?=
+ =?utf-8?B?SmwxREI1c2pEbXZVVmYvWkRrSm81Z0toSmY2dUFjTVRmSG9MZlEyVUNrYThS?=
+ =?utf-8?B?TU4zQjYyNXNqbjJYQzYzWjRRZnhRZXFHdzFVSmxma2p4Q0tmSlFyTkdKbG1k?=
+ =?utf-8?B?TTd0Vi9qa2VsSmgvcEhMR0RRS3dXYUMwdkpCdjZ0eGpkWFdLeWVNYjFBVW5R?=
+ =?utf-8?B?c25jUFd1Q2ZaSWRneFcyZUF6QXRnSU1wMDdHeUQxNlBTazBBSTRJTEhPYXdM?=
+ =?utf-8?B?eEVWZnYyNC96c3hoTWNSa21uczZPWGxBZTdpa3BWRjByNVh3Z0ZqQm9UWVJa?=
+ =?utf-8?B?L1I2U2ttd3k0b2FzWithNXdTbkZ1NCthNGQwT3YwYWJkVzBTQXpMWFZxZkRX?=
+ =?utf-8?B?amdxVlJXbzRJc00zNUx0OUMrN0NLd2RUak9ReU5aWnFEZ2JxQ3ZaenBOSmdF?=
+ =?utf-8?B?Sk9PYWlKQ0p0Q0ZVeEV1RDBnUlFKeTRtaVl4RW1XaFlvUmwyakZRMzRBMS9N?=
+ =?utf-8?B?RjR1WkFJMThQRDgvUDU2RTR6UGpzcHpKRUR1Wjg2VG5jVEUwMjY0V2Z2WnFB?=
+ =?utf-8?B?TU91RDBralRab3Q1eXlydmFqaTBEWUUwdFBYT2JXWVdhd1ZSQlM2RFVmVEtx?=
+ =?utf-8?B?MGxmdzN4Q2YrTEhrMytYUjF0SmRyczh5Qk1JRkxSY3JVMHVUajZ4SW5mRkVa?=
+ =?utf-8?B?SlBjdUg0aCtUaU1qcGZVbGRFSHAwSndEQ1hUbXV5QVNoTzBqQ1k0Y09TQnNS?=
+ =?utf-8?B?WmEydSszSHNLTHNEeE84SFdMYzdoWFB0dUM5QzFFQzBUSzN4NWkrQnBtYmY5?=
+ =?utf-8?B?YUMzYXhGZkI4cjhKVnBpSVpTcFVjallIeUs3a1pJQ2t3dDNEYjRVb0lMM1M1?=
+ =?utf-8?Q?FzSx7UOZz77rR?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YjYwcFBzVWpvdVlzb2ZndVlxcVBiRnJpVEFiSEFJREVydEJBYkU3RWgxNTdj?=
+ =?utf-8?B?NEZDZS9xbzFhaklGZWhEdXVGZGhGTjdFakVVanFacTkrRDVZQ2YzY29lTWlh?=
+ =?utf-8?B?UnJoS1k1Z0M2alBCb0xHR25kbGE3ZUlCYkx6YkxyeVRiNjM3engwR20zQnZO?=
+ =?utf-8?B?UCt0RTRicHlETXNJOUVXL0ZOU2JqNDN3MXRYS2lXNjJEUEV6bjFJTzlmMnJi?=
+ =?utf-8?B?YjhSNXVPQ3FsL1RQWlg4TThZMDRtL0c4aEswQVR5MzA1UWV6M3RTdmlHYnNJ?=
+ =?utf-8?B?Z01saFlhQlNkYmpKZXdqV0swa1g1WVdJeG9VZ0Q4N1lIL1IrVkpVMlZ1Z01K?=
+ =?utf-8?B?d01HNEZIeVhJQnNSOXRqc0ZUSE1ZQTlQdG9VVjNWeGFlejc3NlpBTnJDTS9i?=
+ =?utf-8?B?WnZqdTFnMlNpRkdsYng5NXQrOFNwY29VajRBNGZ6SEE4SjM5QUhwQWtOd3or?=
+ =?utf-8?B?em91ZHNHZTg0T3hmOGlxRVZSNHdad29tenZ4NE1MZEpSdFlzeFZhenFaOHBO?=
+ =?utf-8?B?RVJMNjgzZStzYThqRllxbVFLb1FJU1E1K0Q5M1JrMVBTNGNtWGYweGRnYm4r?=
+ =?utf-8?B?azVTVXZEcXV6WGJiS3VzQW4zeVJiRERZUHZQQnpLaVl2ZHBmZWtUVXl5elJ5?=
+ =?utf-8?B?OEROZmNySFJFUElEWTRKK3lzNmN4c0pGTjFiSHhMZFRzK003dC8ycDVEVHF4?=
+ =?utf-8?B?Z0k3dUR3eTk2aFVRTlU3c3lFblBaa094Ynl2RFQwRWlnRFdXSWhwME1wV2Q2?=
+ =?utf-8?B?V3RjZG1pZHdoTDljS2s4dWNoV0tnZFJSR3VDQlkxU00rNkJlV2VNanR1bFdN?=
+ =?utf-8?B?cE9qajFMNXlJMDVGZFBwRkRvUllXZDY5L2MxNFVvT1B0VHFWNGFCM20xU1M2?=
+ =?utf-8?B?STR3RnExRVRRZkZGc2paTDVzVDRsa2FSOUlFak1mTGdONUFxZUNNY3ZGT01x?=
+ =?utf-8?B?MFEvbmdHTjZvSzlSZmJIZ1kzSlp0bkR5bitMcm5uOE56VDdQN1lYSmdZVmxn?=
+ =?utf-8?B?TldRVHhLcDVoQ01tTkhkUkNKdC9JeEJ3eUdDUFRPMG85WWxNdTJ5d3Y1MjhF?=
+ =?utf-8?B?eGNhYzBDWGVzWTVSclBMODVIUEhKMFVtMzBZdWJyNU1XZzRIT0dTWldVOTJn?=
+ =?utf-8?B?QnQyblAxSy9zaVVqNlAzLy94NGJjS3FTbWlOeTJWYzNvdW00YUc4RDBZcitJ?=
+ =?utf-8?B?TVZEdzlmZDZiYmFTamN0WE5tNUJZNlRvOTZkUjhpbEYvQmdONEpXZTdxMWlI?=
+ =?utf-8?B?NG5xTnV2bUxlbUF0SHF0dmJTMk5tN0IrcUFpUWxxVTVHQUMwNlA4VzZPcCsz?=
+ =?utf-8?B?bHUxMkZyYm1SZmV3dU1iZGE0ZDd2cXpvNjFPMmxCM0dRdWN2RnZvZ2ZWZlJ3?=
+ =?utf-8?B?alMyd1pPdU1PTElxdkhSWitXU1JJbzlnam1KN0hZV0IycXAzeVhkYXYvclpm?=
+ =?utf-8?B?WFdYSUNrTUo3RVZXOG4rbnVxeUhYaXVJRnA5aElUZHJqWjZkVHFCVkdhQlhr?=
+ =?utf-8?B?YWFTTk83VjJzNlNkRFY0OW8wdHVhdmp6RDA4THNRKzZQRkoxc1dYUVZTZk40?=
+ =?utf-8?B?NFljT1lodm1mbHNGdnFpK0M4TkI4NXZUc0NZc1kzcitsNkVJVTZ0UjdjbVk4?=
+ =?utf-8?B?TFM2dkRFcVc3UU5ocExNYkIrM0FtYUtLY0JNWVU5bGpPa2ZCUXE1Z1NDVlJK?=
+ =?utf-8?B?aHAyZ2FkYTd2aTRUb3F4bGJicCs4b2lhajdSd1RjNTcxM1l5cUdKZy9iUlVM?=
+ =?utf-8?B?Wkt0ZW5mQWZHeFhRazhCNW1wejlFcllVNXBHRm85ZVRBeTVMR2xpMi8wc0tC?=
+ =?utf-8?B?dHpVeHhKS2t5YVFDdnpnSjRYVzE5Z3UyZlNPWkc0ZGgvRzRoZW9BbVVvc1NS?=
+ =?utf-8?B?S21JTlAzeUJ6MkxqY2E5SjVZZE9tS3BlM2VCSWVpY0MzWXhhd1lWcTg5cnJ1?=
+ =?utf-8?B?c0w2N2l0UWNmalIxSkllWVVvV29OL0owbFZkclBWcElDaitWNGsvaitEUm5T?=
+ =?utf-8?B?ZmxIZnlnVW9ERlBmN2d2SXNQQjc2YzNaQzVHWUF1ZlRyT3d5cThYNFNJQW5h?=
+ =?utf-8?B?Umx5dlJvbzJMS05jMGY0RFNVVVZ5OU41eGRNOWNQZk5vZGVzL3ZuQ01QL2Nh?=
+ =?utf-8?B?eEFOWXFSMHM1MmVscVRsdWFscVlvZlhFUkpZVFZJMjdyNmJPYitJdDZMS0p2?=
+ =?utf-8?B?V2c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8df25010-44cc-4c92-5882-08dd65680b9d
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2025 15:26:10.4917
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iFeCfFRObXd29DlDxBArUeRSoaIro6RxMytbTzXWYBDT/hOnOQuZb1bFHgY5WYda3bAGtI7AzI5+hBCKUConJN5z95fMymV7w18hWS9LB6A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4744
+X-OriginatorOrg: intel.com
 
-Yunsheng Lin <yunshenglin0825@gmail.com> writes:
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Date: Tue, 11 Mar 2025 15:05:38 +0100
 
-> On 3/14/2025 6:10 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->
-> ...
->
->>=20
->> To avoid having to walk the entire xarray on unmap to find the page
->> reference, we stash the ID assigned by xa_alloc() into the page
->> structure itself, using the upper bits of the pp_magic field. This
->> requires a couple of defines to avoid conflicting with the
->> POINTER_POISON_DELTA define, but this is all evaluated at compile-time,
->> so does not affect run-time performance. The bitmap calculations in this
->> patch gives the following number of bits for different architectures:
->>=20
->> - 24 bits on 32-bit architectures
->> - 21 bits on PPC64 (because of the definition of ILLEGAL_POINTER_VALUE)
->> - 32 bits on other 64-bit architectures
->
->  From commit c07aea3ef4d4 ("mm: add a signature in struct page"):
-> "The page->signature field is aliased to page->lru.next and
-> page->compound_head, but it can't be set by mistake because the
-> signature value is a bad pointer, and can't trigger a false positive
-> in PageTail() because the last bit is 0."
->
-> And commit 8a5e5e02fc83 ("include/linux/poison.h: fix LIST_POISON{1,2}=20
-> offset"):
-> "Poison pointer values should be small enough to find a room in
-> non-mmap'able/hardly-mmap'able space."
->
-> So the question seems to be:
-> 1. Is stashing the ID causing page->pp_magic to be in the mmap'able/
->     easier-mmap'able space? If yes, how can we make sure this will not
->     cause any security problem?
-> 2. Is the masking the page->pp_magic causing a valid pionter for
->     page->lru.next or page->compound_head to be treated as a vaild
->     PP_SIGNATURE? which might cause page_pool to recycle a page not
->     allocated via page_pool.
+> On Wed, Mar 05, 2025 at 05:21:19PM +0100, Alexander Lobakin wrote:
+>> "Couple" is a bit humbly... Add the following functionality to libeth:
+>>
+>> * XDP shared queues managing
+>> * XDP_TX bulk sending infra
+>> * .ndo_xdp_xmit() infra
+>> * adding buffers to &xdp_buff
+>> * running XDP prog and managing its verdict
+>> * completing XDP Tx buffers
+>>
+>> Suggested-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com> # lots of stuff
+>> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> 
+> Patch is really big and I'm not sure how to trim this TBH to make my
+> comments bearable. I know this is highly optimized but it's rather hard to
+> follow with all of the callbacks, defines/aligns and whatnot. Any chance
+> to chop this commit a bit?
 
-Right, so my reasoning for why the defines in this patch works for this
-is as follows: in both cases we need to make sure that the ID stashed in
-that field never looks like a valid kernel pointer. For 64-bit arches
-(where CONFIG_ILLEGAL_POINTER_VALUE), we make sure of this by never
-writing to any bits that overlap with the illegal value (so that the
-PP_SIGNATURE written to the field keeps it as an illegal pointer value).
-For 32-bit arches, we make sure of this by making sure the top-most bit
-is always 0 (the -1 in the define for _PP_DMA_INDEX_BITS) in the patch,
-which puts it outside the range used for kernel pointers (AFAICT).
+Sometimes "highly optimized" code means "not really readable". See
+PeterZ's code :D I mean, I'm not able to write it to look more readable
+without hurting object code or not provoking code duplications. Maybe
+it's an art which I don't possess.
+I tried by best and left the documentation, even with pseudo-examples.
+Sorry if it doesn't help =\
 
->> Since all the tracking is performed on DMA map/unmap, no additional code
->> is needed in the fast path, meaning the performance overhead of this
->> tracking is negligible. A micro-benchmark shows that the total overhead
->> of using xarray for this purpose is about 400 ns (39 cycles(tsc) 395.218
->> ns; sum for both map and unmap[1]). Since this cost is only paid on DMA
->> map and unmap, it seems like an acceptable cost to fix the late unmap
->
-> For most use cases when PP_FLAG_DMA_MAP is set and IOMMU is off, the
-> DMA map and unmap operation is almost negligible as said below, so the
-> cost is about 200% performance degradation, which doesn't seems like an
-> acceptable cost.
+> 
+> Timers and locking logic could be pulled out to separate patches I think.
+> You don't ever say what improvement gave you the __LIBETH_WORD_ACCESS
+> approach. You've put a lot of thought onto this work and I feel like this
 
-I disagree. This only impacts the slow path, as long as pages are
-recycled there is no additional cost. While your patch series has
-demonstrated that it is *possible* to reduce the cost even in the slow
-path, I don't think the complexity cost of this is worth it.
+I don't record/remember all of the perf changes. Couple percent for
+sure. Plus lighter object code.
+I can recall ~ -50-60 bytes in libeth_xdp_process_buff(), even though
+there's only 1 64-bit write replacing 2 32-bit writes. When there's a
+lot, like descriptor filling, it was 100+ bytes off, esp. when unrolling.
 
-[...]
+> is not explained/described thoroughly. What would be nice to see is to
+> have this in the separate commit as well with a comment like 'this gave me
+> +X% performance boost on Y workload'. That would be probably a non-zero
+> effort to restructure it but generally while jumping back and forth
 
->> The extra memory needed to track the pages is neatly encapsulated inside
->> xarray, which uses the 'struct xa_node' structure to track items. This
->> structure is 576 bytes long, with slots for 64 items, meaning that a
->> full node occurs only 9 bytes of overhead per slot it tracks (in
->> practice, it probably won't be this efficient, but in any case it should
->
-> Is there any debug infrastructure to know if it is not this efficient?
-> as there may be 576 byte overhead for a page for the worst case.
+Yeah it would be quite a big. I had a bit of hard time splitting it into
+2 commits (XDP and XSk) from one, that request would cost a bunch more.
 
-There's an XA_DEBUG define which enables some dump functions, but I
-don't think there's any API to inspect the memory usage. I guess you
-could attach a BPF program and walk the structure, or something?
+Dunno if it would make sense at all? Defines, alignments etc, won't go
+away. Same for "head-scratching moments". Moreover, sometimes splitting
+the code borns more questions as it feels incomplete until the last
+patch and then there'll be a train of replies like "this will be
+added/changes in patch number X", which I don't like to do :s
+I mean, I would like to not sacrifice time splitting it only for the
+sake of split, depends on how critical this is and what it would give.
 
->> +			/* Make sure all concurrent returns that may see the old
->> +			 * value of dma_sync (and thus perform a sync) have
->> +			 * finished before doing the unmapping below. Skip the
->> +			 * wait if the device doesn't actually need syncing, or
->> +			 * if there are no outstanding mapped pages.
->> +			 */
->> +			if (dma_dev_need_sync(pool->p.dev) &&
->> +			    !xa_empty(&pool->dma_mapped))
->> +				synchronize_net();
->
-> I guess the above synchronize_net() is assuming that the above dma sync
-> API is always called in the softirq context, as it seems there is no
-> rcu read lock added in this patch to be paired with that.
+> through this code I had a lot of head-scratching moments.
+> 
+>> ---
+>>  drivers/net/ethernet/intel/libeth/Kconfig  |   10 +-
+>>  drivers/net/ethernet/intel/libeth/Makefile |    7 +-
+>>  include/net/libeth/types.h                 |  106 +-
+>>  drivers/net/ethernet/intel/libeth/priv.h   |   26 +
+>>  include/net/libeth/tx.h                    |   30 +-
+>>  include/net/libeth/xdp.h                   | 1827 ++++++++++++++++++++
+>>  drivers/net/ethernet/intel/libeth/tx.c     |   38 +
+>>  drivers/net/ethernet/intel/libeth/xdp.c    |  431 +++++
+>>  8 files changed, 2467 insertions(+), 8 deletions(-)
+>>  create mode 100644 drivers/net/ethernet/intel/libeth/priv.h
+>>  create mode 100644 include/net/libeth/xdp.h
+>>  create mode 100644 drivers/net/ethernet/intel/libeth/tx.c
+>>  create mode 100644 drivers/net/ethernet/intel/libeth/xdp.c
 
-Yup, that was my assumption.
-
-> Doesn't page_pool_put_page() might be called in non-softirq context when
-> allow_direct is false and in_softirq() returns false?
-
-I am not sure if this happens in practice in any of the delayed return
-paths we are worried about for this patch. If it does we could apply
-something like the diff below (on top of this patch). I can respin with
-this if needed, but I'll wait a bit and give others a chance to chime in.
-
--Toke
-
-
-
-@@ -465,9 +465,13 @@ page_pool_dma_sync_for_device(const struct page_pool *=
-pool,
- 			      netmem_ref netmem,
- 			      u32 dma_sync_size)
- {
--	if ((READ_ONCE(pool->dma_sync) & PP_DMA_SYNC_DEV) &&
--	    dma_dev_need_sync(pool->p.dev))
--		__page_pool_dma_sync_for_device(pool, netmem, dma_sync_size);
-+	if (dma_dev_need_sync(pool->p.dev)) {
-+		rcu_read_lock();
-+		if (READ_ONCE(pool->dma_sync) & PP_DMA_SYNC_DEV)
-+			__page_pool_dma_sync_for_device(pool, netmem,
-+							dma_sync_size);
-+		rcu_read_unlock();
-+	}
- }
-=20
- static bool page_pool_dma_map(struct page_pool *pool, netmem_ref netmem, g=
-fp_t gfp)
-
+Thanks,
+Olek
 
