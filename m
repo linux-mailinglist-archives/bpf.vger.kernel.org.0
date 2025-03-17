@@ -1,86 +1,50 @@
-Return-Path: <bpf+bounces-54207-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54209-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB0ECA656A6
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 16:55:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14C16A6568E
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 16:52:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4E7D3BE2BC
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 15:49:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F40F2189C290
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 15:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F0E1A4E9E;
-	Mon, 17 Mar 2025 15:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B32519992C;
+	Mon, 17 Mar 2025 15:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Rr0IDy9W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p5qBC26t"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.207])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7761A5BAD;
-	Mon, 17 Mar 2025 15:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F31192B81;
+	Mon, 17 Mar 2025 15:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742226463; cv=none; b=Jmx9S++AZSQAViZgtXRg4cxK2KQgUypAZcgaxfJuQeZq38w9TIRVeXhy8HGOxO8zgFLzGXGdLohzJEtqcAofOhxzYIl0HWobzjJxK4Aq8KxQdGh/vAHbYCMg/iYPLP40gY/ZpCKKYrjQsYeE5BRNSuD+ZonY3xX+Dm2P/9ORQNE=
+	t=1742226606; cv=none; b=LXummjgYFSXjFvJLXMEzHDKIgOxLRh7cgdehrHXCZLrfZ8pzECP/PnJwei6nI8PDDoZztDGbWKmcXXxdtYlkMXyRoKTBM9LazlLZQPtChoZN2114iaQMS1hmC/M2ZpvRqDKpxUAMP/T80fF/J+wWBbJ/KeJ2EizjjMW11qabm3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742226463; c=relaxed/simple;
-	bh=kkvOio4ji9d9lxGqGA/GaudcwgwMaItK1/qm1HsZzDk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CKTuW8XvWxIZlzS30PSkgHJpEohwzGPj82BuljuFufxzOu6aKLjhbNzosiFFxb/5DPuFZDFQHF6DEsNqaVVfD9Gq+1JFxdYZP+kKa825P4n+4C+YgU39TX0w3hzEVApmujpdzIYqgLWMWZd4TpaGnvjIZc804NEUbvkZeBu6XX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Rr0IDy9W; arc=none smtp.client-ip=192.19.144.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: from mail-acc-it-01.broadcom.com (mail-acc-it-01.acc.broadcom.net [10.35.36.83])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 21CF4C0005EA;
-	Mon, 17 Mar 2025 08:47:41 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 21CF4C0005EA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1742226461;
-	bh=kkvOio4ji9d9lxGqGA/GaudcwgwMaItK1/qm1HsZzDk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Rr0IDy9WpIspv94TUWhEDf5ylWnh0/Py9+vdiIQKm7B6j1fVgRRpQXYMnO5BKRflB
-	 CPkMgxXLTd7jBWuv5C3nDNoi3tNXPucGZrwHmygcNx06FnTWcTBORa6y+mEKJoI0Uv
-	 xcmE74jcgPvnDkysUha5Z6xfRFV7UWzNhqSXQlvo=
-Received: from stbirv-lnx-1.igp.broadcom.net (stbirv-lnx-1.igp.broadcom.net [10.67.48.32])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail-acc-it-01.broadcom.com (Postfix) with ESMTPSA id 1EB394002F44;
-	Mon, 17 Mar 2025 11:47:09 -0400 (EDT)
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-To: stable@vger.kernel.org
-Cc: Ilya Maximets <i.maximets@ovn.org>,
-	Friedrich Weber <f.weber@proxmox.com>,
-	Aaron Conole <aconole@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	Carlos Soto <carlos.soto@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Pravin B Shelar <pshelar@ovn.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	Andrii Nakryiko <andriin@fb.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Willem de Bruijn <willemb@google.com>,
-	David Ahern <dsahern@kernel.org>,
-	=?UTF-8?q?Beno=C3=AEt=20Monin?= <benoit.monin@gmx.fr>,
-	Xin Long <lucien.xin@gmail.com>,
-	Felix Huettner <felix.huettner@mail.schwarz>,
-	netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
-	linux-kernel@vger.kernel.org (open list),
-	dev@openvswitch.org (open list:OPENVSWITCH),
-	bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools))
-Subject: [PATCH stable 5.15 2/2] openvswitch: fix lockup on tx to unregistering netdev with carrier
-Date: Mon, 17 Mar 2025 08:47:03 -0700
-Message-Id: <20250317154703.3671421-3-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250317154703.3671421-1-florian.fainelli@broadcom.com>
-References: <20250317154703.3671421-1-florian.fainelli@broadcom.com>
+	s=arc-20240116; t=1742226606; c=relaxed/simple;
+	bh=nMH0RzohJoZBT5RceZ8BBKm/q1nNIbRA2dK3YQi/RDo=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=rijBwn5GBY5LI7aofcH3toX8fKdSyhau2VIjAzE2gMwr4x2B1yrI8gLMnVXox0WdyAx4knIiCm3bA1WbIuo7d/eLhN5YgtXL4wwPQPUw9sSU8mNw0YHuYH5d/3Ql9cK5Md+sv2eoqd5pvcXLVncyfj69p3INN3TFQIxrAc7RJCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p5qBC26t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A0B9C4CEE3;
+	Mon, 17 Mar 2025 15:50:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742226605;
+	bh=nMH0RzohJoZBT5RceZ8BBKm/q1nNIbRA2dK3YQi/RDo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=p5qBC26t1VXdd7vTO8m0/a6n/R8f+BPfqE/NJwnP6iKdhhD1jYkbqLsfRwayShSSA
+	 aYPBUnZHGesLAc3U6++tLMwKw6YuT5L+/vo7+raymIeTdG3+y3sJcNzit4ZzsZUg8d
+	 oc9faAwsr7pKJ6rvnKWSNyrf0YitKm4o8puiMkjlhhoDGzkVbKBg9pjwAn1ymugYKL
+	 SubbZ2mu2pXVQoPhgnCawLRcamWlFV45ogb9NRCJV5iUWssU4UqWqPOtpCB4kaulgF
+	 gSmf6J5bPFp44ED6EOUsoxWyefHekEhEzEQYAt0p8N04fkto45FlBjAY9M4Y5C+71w
+	 r9VL70wLdTwoA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB6B3380CFF7;
+	Mon, 17 Mar 2025 15:50:41 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,81 +52,73 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v7 net-next 00/12] AccECN protocol preparation patch series
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174222664074.3797981.10286790754550014794.git-patchwork-notify@kernel.org>
+Date: Mon, 17 Mar 2025 15:50:40 +0000
+References: <20250305223852.85839-1-chia-yu.chang@nokia-bell-labs.com>
+In-Reply-To: <20250305223852.85839-1-chia-yu.chang@nokia-bell-labs.com>
+To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>
+Cc: netdev@vger.kernel.org, dsahern@gmail.com, davem@davemloft.net,
+ edumazet@google.com, dsahern@kernel.org, pabeni@redhat.com,
+ joel.granados@kernel.org, kuba@kernel.org, andrew+netdev@lunn.ch,
+ horms@kernel.org, pablo@netfilter.org, kadlec@netfilter.org,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ kory.maincent@bootlin.com, bpf@vger.kernel.org, kuniyu@amazon.com,
+ andrew@lunn.ch, ij@kernel.org, ncardwell@google.com,
+ koen.de_schepper@nokia-bell-labs.com, g.white@CableLabs.com,
+ ingemar.s.johansson@ericsson.com, mirja.kuehlewind@ericsson.com,
+ cheshire@apple.com, rs.ietf@gmx.at, Jason_Livingood@comcast.com,
+ vidhi_goel@apple.com
 
-From: Ilya Maximets <i.maximets@ovn.org>
+Hello:
 
-[ Upstream commit 82f433e8dd0629e16681edf6039d094b5518d8ed ]
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-Commit in a fixes tag attempted to fix the issue in the following
-sequence of calls:
+On Wed,  5 Mar 2025 23:38:40 +0100 you wrote:
+> From: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
+> 
+> Hello,
+> 
+> Please find the v7
+> 
+> v7 (03-Mar-2025)
+> - Move 2 new patches added in v6 to the next AccECN patch series
+> 
+> [...]
 
-    do_output
-    -> ovs_vport_send
-       -> dev_queue_xmit
-          -> __dev_queue_xmit
-             -> netdev_core_pick_tx
-                -> skb_tx_hash
+Here is the summary with links:
+  - [v7,net-next,01/12] tcp: reorganize tcp_in_ack_event() and tcp_count_delivered()
+    https://git.kernel.org/netdev/net-next/c/149dfb31615e
+  - [v7,net-next,02/12] tcp: create FLAG_TS_PROGRESS
+    https://git.kernel.org/netdev/net-next/c/da610e18313b
+  - [v7,net-next,03/12] tcp: use BIT() macro in include/net/tcp.h
+    https://git.kernel.org/netdev/net-next/c/0114a91da672
+  - [v7,net-next,04/12] tcp: extend TCP flags to allow AE bit/ACE field
+    https://git.kernel.org/netdev/net-next/c/2c2f08d31d2f
+  - [v7,net-next,05/12] tcp: reorganize SYN ECN code
+    (no matching commit)
+  - [v7,net-next,06/12] tcp: rework {__,}tcp_ecn_check_ce() -> tcp_data_ecn_check()
+    https://git.kernel.org/netdev/net-next/c/f0db2bca0cf9
+  - [v7,net-next,07/12] tcp: helpers for ECN mode handling
+    (no matching commit)
+  - [v7,net-next,08/12] gso: AccECN support
+    https://git.kernel.org/netdev/net-next/c/023af5a72ab1
+  - [v7,net-next,09/12] gro: prevent ACE field corruption & better AccECN handling
+    https://git.kernel.org/netdev/net-next/c/4e4f7cefb130
+  - [v7,net-next,10/12] tcp: AccECN support to tcp_add_backlog
+    https://git.kernel.org/netdev/net-next/c/d722762c4eaa
+  - [v7,net-next,11/12] tcp: add new TCP_TW_ACK_OOW state and allow ECN bits in TOS
+    https://git.kernel.org/netdev/net-next/c/4618e195f925
+  - [v7,net-next,12/12] tcp: Pass flags to __tcp_send_ack
+    https://git.kernel.org/netdev/net-next/c/9866884ce8ef
 
-When device is unregistering, the 'dev->real_num_tx_queues' goes to
-zero and the 'while (unlikely(hash >= qcount))' loop inside the
-'skb_tx_hash' becomes infinite, locking up the core forever.
-
-But unfortunately, checking just the carrier status is not enough to
-fix the issue, because some devices may still be in unregistering
-state while reporting carrier status OK.
-
-One example of such device is a net/dummy.  It sets carrier ON
-on start, but it doesn't implement .ndo_stop to set the carrier off.
-And it makes sense, because dummy doesn't really have a carrier.
-Therefore, while this device is unregistering, it's still easy to hit
-the infinite loop in the skb_tx_hash() from the OVS datapath.  There
-might be other drivers that do the same, but dummy by itself is
-important for the OVS ecosystem, because it is frequently used as a
-packet sink for tcpdump while debugging OVS deployments.  And when the
-issue is hit, the only way to recover is to reboot.
-
-Fix that by also checking if the device is running.  The running
-state is handled by the net core during unregistering, so it covers
-unregistering case better, and we don't really need to send packets
-to devices that are not running anyway.
-
-While only checking the running state might be enough, the carrier
-check is preserved.  The running and the carrier states seem disjoined
-throughout the code and different drivers.  And other core functions
-like __dev_direct_xmit() check both before attempting to transmit
-a packet.  So, it seems safer to check both flags in OVS as well.
-
-Fixes: 066b86787fa3 ("net: openvswitch: fix race on port output")
-Reported-by: Friedrich Weber <f.weber@proxmox.com>
-Closes: https://mail.openvswitch.org/pipermail/ovs-discuss/2025-January/053423.html
-Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
-Tested-by: Friedrich Weber <f.weber@proxmox.com>
-Reviewed-by: Aaron Conole <aconole@redhat.com>
-Link: https://patch.msgid.link/20250109122225.4034688-1-i.maximets@ovn.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Carlos Soto <carlos.soto@broadcom.com>
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
----
- net/openvswitch/actions.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
-index 9b07e2172c94..1f05fa85d295 100644
---- a/net/openvswitch/actions.c
-+++ b/net/openvswitch/actions.c
-@@ -913,7 +913,9 @@ static void do_output(struct datapath *dp, struct sk_buff *skb, int out_port,
- {
- 	struct vport *vport = ovs_vport_rcu(dp, out_port);
- 
--	if (likely(vport && netif_carrier_ok(vport->dev))) {
-+	if (likely(vport &&
-+		   netif_running(vport->dev) &&
-+		   netif_carrier_ok(vport->dev))) {
- 		u16 mru = OVS_CB(skb)->mru;
- 		u32 cutlen = OVS_CB(skb)->cutlen;
- 
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
