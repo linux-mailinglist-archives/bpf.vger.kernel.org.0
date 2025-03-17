@@ -1,184 +1,219 @@
-Return-Path: <bpf+bounces-54235-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54236-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A292DA65E4F
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 20:45:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75F6BA65F05
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 21:21:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD4EB420A6B
-	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 19:44:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A63B3B754E
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 20:20:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5DB11EB5D6;
-	Mon, 17 Mar 2025 19:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773D61F4162;
+	Mon, 17 Mar 2025 20:20:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dW1QUi6q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CH162qjY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B55D21C6FF7;
-	Mon, 17 Mar 2025 19:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 422731D934D
+	for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 20:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742240659; cv=none; b=Pjp3e9TA0/voUgg4PT2Bk1VoJepILMm9kwNnyeBcDyb/8jy9dBCr/QuTgLx0uPV1b7eaCbqdW3R0Y0Q40aMlLp1qnBUsqkDql//MaTfzQNeSZsQNyoh8X4WswcP4P0171ueR/0BHk/oNwpQz0leMoyVJHM5+wZjXaHN1bXOZ5Yk=
+	t=1742242857; cv=none; b=SmoyuT65xGWPsb2HaGGBn0NpOoJe5Exk4qPev2b7NH1IIOpnT7Md96+Jth58W4h4/iuucsL4fvKXdOUfukoxPoKkMqy8B1dCYx9t/ej0H1Jjzn9OHPZ64ptmtS6KgmmvKNCtoVmE9PNyn5UQM/Ifk0EJR3A9c4aJjopZPgxCtuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742240659; c=relaxed/simple;
-	bh=f2vuE+nTrayzhhqMMZKQ8JSb0fGRCq89tyb6ucXEec8=;
+	s=arc-20240116; t=1742242857; c=relaxed/simple;
+	bh=DBBYMIvBVe2dCvv5XKPSYdcSpjNGnlATXfg+lZW21ME=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qgi3xme66FFSeImz6vz0bOBBym19dqc8mEu5uXuiG8Kn8fnhGs6IiOaO4kP+ByOo6SilJJIlm0zCaHAO0Neix+1CJy9JKOyFpO1jLJKaPqBk+OR/RB7Q/rxPypplvj6N0eMXr+eNX9EkO1loLA6sRuwVofR/MnLVMP5twxijJWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dW1QUi6q; arc=none smtp.client-ip=209.85.128.175
+	 To:Cc:Content-Type; b=TonL90JH6WC/Zt9AvBs5AQG8BrX03cWj6XqEzqHF3ZS7+ctHE+iLN0SEs9XWVOu4DyDAhJNFrCFpr+w1KhlQ3kXotLvWu+Fi94pKWF5u6s9QEablozIUcIUHzAO1womYwaqGZZETF/FWzwa8Cl8bNObi2fI/b+jbvghyMj1osYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CH162qjY; arc=none smtp.client-ip=209.85.221.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6fedf6aaed2so43052897b3.0;
-        Mon, 17 Mar 2025 12:44:16 -0700 (PDT)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-39149bccb69so4841232f8f.2
+        for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 13:20:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742240655; x=1742845455; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742242853; x=1742847653; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c2mdqqe5PIecBodd6/2WI/jBOXfRtlmQjfSn4HBReDY=;
-        b=dW1QUi6qlqPUFN83pyu8ugsOVPVB1zzHvQoErBFGP5t6lYrNvGt6e1gjo433NwAo/W
-         ceBxu0u6cDPdNUZX9XgJQFq34QvfY3z+9gcu57ufI5Znx9DYEK3IRkPZg/k3myemr20B
-         rboaeiANYwDFwgurLVGpTd0JJ9/pmV1lDwBDJhfx3fg9sVygprWstH87Mazp7Qux6az5
-         PCD10T3Y+j9LWKM99Ii2sZB/qg0Lj/2khGw//SyWFKDw8clKD+/b3Yyo6+XwmgYzE12a
-         s1QM01QAgjEfxzuBbG7mGOlN11lTe66t4srVSt5+D37qZl7Wv/2X/aHCjSRc3CG6W4rJ
-         6+pg==
+        bh=r01ffLcrPHlu9AUL3mejKYR5OfGTYGtIRa7OrJMQCH0=;
+        b=CH162qjYks5uJkRtSbv/3B912K+UURJobRG1rUOYhJQYObmDetLywpl1qHWHyB2H5c
+         18vIrGEIyfEx0j2qLWjDSiKxI0PwLGgidRRdXBoLZAqY9Qw4Z5MlzyfBl74ot1ykZXqS
+         EGAlVyxPfQRqSSsB9cm0FEQRDOaiJ2Snch4kMIT1z4siKG+63kFxX7QPMJc5BcgVARj9
+         ZGY+BTYJ8L4ODyd8vSJmGibeuqtUv7AwmmXFViHa6ZtIaHl9nFfU6UROiFPZr6oH48jO
+         byJqFcdv2G5ONXMQX4IhXnZRJIWEQdnVoL7C9cNk+Qx576v+nPm5w7aT6FH7JRFhrq9m
+         RgWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742240655; x=1742845455;
+        d=1e100.net; s=20230601; t=1742242853; x=1742847653;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c2mdqqe5PIecBodd6/2WI/jBOXfRtlmQjfSn4HBReDY=;
-        b=FIq99ilJj7Aiao7pBA+DpWC7+v6kqJnoeECG23yFMCqns01JbHS9T0j4c001izJ8Lg
-         jqmeruc6hqLCTxb3h3oKSzr03HSOvoqnmahdKXbYYhQIlsig4HocsLlT/4Sc0SGQ9OZT
-         GK0kMUeNWIXD46/CdiA+THF0FxjZbSS87wcgrxOEpR03R2Aj6B168a7RRXZvkh2CGXvQ
-         CE0LPnIbES4wPbwCQMbUmMn1UMvRHdcwKUO0R6O6J4z4djWktNuzGl31Z5HVa4UooEsd
-         ro49V5SnbUwrrdCXSidL10wL9U49XyoowXgaIR05wsizeTKUn0Z5O19s9HzCGAoqwf4b
-         uhQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVyren7LmcSOUzndOynd+nyQd6dMgPXHpk6UuoIIkXI/FVVqd3PMzEri+FewJuCDwtyTEw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxjmb9Gp/hn9MuhsN5H00hq/uhFYQcQgz2JCBZNg5HZ3RZsIVvo
-	wdvOF1fIZnMFWJfFcpCKQySekJ+rWPIJqSxxPhYlPAmbr3ap2nsKJf/AwI5rRTK7WXys9tnwVOx
-	fItFagqfnRya14sbuFPTMtN7LqnY=
-X-Gm-Gg: ASbGnctfm8qfxBQYA+XCb/20MHxvOKJxLCS6ZfgFArVd3G/fLu3egtT454AYflgbqML
-	ksOhP7eluZYduzGsQDZ5mSwd5nj5/MYXqkJWFC/8NDWUGVKqTzabAnfG/EZMz1eDV5FTx/ZzBTq
-	XHyLUz0PXLVgEt0pypFRppEgpPBbGhuM2LQzc0
-X-Google-Smtp-Source: AGHT+IFYUj5KmocqF1Ytx0Co9xELeTU2Rkf0A3qLWZKMaQDcYr0zvQjFvahxg+hDIcZ65eRmi+EykVRo8eftiDzJidk=
-X-Received: by 2002:a81:fe0c:0:b0:6f9:5a36:577d with SMTP id
- 00721157ae682-6fff2f4792cmr9728807b3.9.1742240655591; Mon, 17 Mar 2025
- 12:44:15 -0700 (PDT)
+        bh=r01ffLcrPHlu9AUL3mejKYR5OfGTYGtIRa7OrJMQCH0=;
+        b=sw/qirLTnXwRLZc5ZEectJUzhgim8EwK8bOQmgiPJVCer1CMULShTJ0OFn36Q7wGpx
+         QNL3WnRap1ehCLoOsLv9IrqXret8NlsWI3M8geBJsG5My1MQwITE6UfmV5PxvhjZ13LR
+         DMfKE3EwiA4m/pZleYY0SVqGjJG/7sw72U5sL3Zw9yOAX2vtN4dZMm5FhMRR/PFZytLo
+         /HQzcDF3voDrwhaxmB3RF2BSxmeowVr9nlQfzEe25824VAAy8+wmxNuuOrQKiekIQ6og
+         GWIt2OWGrXpkA8mJNoRQv7ng03orSQObE4ys3fKlcMC8WixfB5CKcEoR0GibwJtYOy2H
+         7peQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXPuWymx6QBep3SeJ/CwQeeiJg5B2RQ8r4/dfnCM0KKUd57yd09Z1YiNIdfuO+YLpqdRN8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8aGx/4YfYqea42hQL0v2VhUh1yXWDvvdVxTXSp6OAEP2VEnOM
+	iRTiwALc/Bv679YYyV/V/XLJWyjMO9/QxvfH/QH2gaRNS5UiOxx5b41xzC1+qZ2+jvG/jurzmwd
+	FIAHOO92XURXjo+wEB39FbkXM0/k=
+X-Gm-Gg: ASbGncu2vmzGVCMHHK/hviER/DGM9pzhGMiv3o/S8FQhbhdHKfGW4mJVlfYNI+pyoTQ
+	xFwMa6nUf1QReZjvjLuApbs6M4wJ5rLv0QQ5LSG+PYMz0rs7sh8H2uvV4sOsQM6flOiEDTSQGv5
+	g1Y14KiOdkPy/uOum2HNWc8lLQASgUDt2wk+R0pMfBjw==
+X-Google-Smtp-Source: AGHT+IG9p+uCxNtw/Ibq1JkvMjkwlmu2qlHrxawaubsOoeGDfCbg4NufIokI2oM/SrtK7fWRqA5D/VQ4F5asS4C++Vc=
+X-Received: by 2002:a05:6000:144b:b0:390:f9d0:5df with SMTP id
+ ffacd0b85a97d-3996b4a217bmr598119f8f.52.1742242853208; Mon, 17 Mar 2025
+ 13:20:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250313190309.2545711-1-ameryhung@gmail.com> <20250313190309.2545711-5-ameryhung@gmail.com>
- <CAADnVQ+ayU=H0gzFdh5Yfx=Aya4PXUJYvQoOXb+4=wsgmnnDQQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+ayU=H0gzFdh5Yfx=Aya4PXUJYvQoOXb+4=wsgmnnDQQ@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Mon, 17 Mar 2025 12:44:04 -0700
-X-Gm-Features: AQ5f1Jr0xnJwXbZzk8hoxIu2f7Q_5E9c-1L_nswiqKAVM2XmlXF3xKDiqXkwvOA
-Message-ID: <CAMB2axOufMapSm2hgpCjRj9sC0K0iUtj9es2zFEA26F3SYY5Lw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 04/13] bpf: net_sched: Add basic bpf qdisc kfuncs
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Eric Dumazet <edumazet@google.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
-	Jamal Hadi Salim <jhs@mojatatu.com>, Kui-Feng Lee <sinquersw@gmail.com>, 
-	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Jiri Pirko <jiri@resnulli.us>, Stanislav Fomichev <stfomichev@gmail.com>, 
-	ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn, 
-	Peilin Ye <yepeilin.cs@gmail.com>, Kernel Team <kernel-team@meta.com>
+References: <20250317121735.86515-1-laoar.shao@gmail.com> <20250317121735.86515-2-laoar.shao@gmail.com>
+In-Reply-To: <20250317121735.86515-2-laoar.shao@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 17 Mar 2025 13:20:42 -0700
+X-Gm-Features: AQ5f1Jqr3TolhjaQWJ33Zr8zUP2axz0rswKEceNhLVgiqD3P-Ofn1VQEF0FZEXs
+Message-ID: <CAADnVQK=TBLUNrUUa0Yhi=M1-MfNVkKYKKca+jmTysJypign+g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4] bpf: Reject attaching fexit/fmod_ret to
+ __noreturn functions
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 14, 2025 at 1:14=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Mon, Mar 17, 2025 at 5:18=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
 >
-> On Thu, Mar 13, 2025 at 12:03=E2=80=AFPM Amery Hung <ameryhung@gmail.com>=
- wrote:
-> >
-> > From: Amery Hung <amery.hung@bytedance.com>
-> >
-> > Add basic kfuncs for working on skb in qdisc.
-> >
-> > Both bpf_qdisc_skb_drop() and bpf_kfree_skb() can be used to release
-> > a reference to an skb. However, bpf_qdisc_skb_drop() can only be called
-> > in .enqueue where a to_free skb list is available from kernel to defer
-> > the release. bpf_kfree_skb() should be used elsewhere. It is also used
-> > in bpf_obj_free_fields() when cleaning up skb in maps and collections.
-> >
-> > bpf_skb_get_hash() returns the flow hash of an skb, which can be used
-> > to build flow-based queueing algorithms.
-> >
-> > Finally, allow users to create read-only dynptr via bpf_dynptr_from_skb=
-().
-> >
-> > Signed-off-by: Amery Hung <amery.hung@bytedance.com>
-> > ---
-> >  include/linux/bpf.h         |  1 +
-> >  kernel/bpf/bpf_struct_ops.c |  2 +
-> >  net/sched/bpf_qdisc.c       | 93 ++++++++++++++++++++++++++++++++++++-
-> >  3 files changed, 95 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 463e922cb0f5..d3b0c4ccaebf 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -1826,6 +1826,7 @@ struct bpf_struct_ops {
-> >         void *cfi_stubs;
-> >         struct module *owner;
-> >         const char *name;
-> > +       const struct btf_type *type;
-> >         struct btf_func_model func_models[BPF_STRUCT_OPS_MAX_NR_MEMBERS=
-];
-> >  };
+> If we attach fexit/fmod_ret to __noreturn functions, it will cause an
+> issue that the bpf trampoline image will be left over even if the bpf
+> link has been destroyed. Take attaching do_exit() with fexit for example.
+> The fexit works as follows,
 >
-> there is an alternative to this...
+>   bpf_trampoline
+>   + __bpf_tramp_enter
+>     + percpu_ref_get(&tr->pcref);
 >
-> > +static int bpf_qdisc_kfunc_filter(const struct bpf_prog *prog, u32 kfu=
-nc_id)
-> > +{
-> > +       if (bpf_Qdisc_ops.type !=3D btf_type_by_id(prog->aux->attach_bt=
-f,
-> > +                                                prog->aux->attach_btf_=
-id))
-> > +               return 0;
-> > +
-> > +       /* Skip the check when prog->attach_func_name is not yet availa=
-ble
-> > +        * during check_cfg().
-> > +        */
-> > +       if (!btf_id_set8_contains(&qdisc_kfunc_ids, kfunc_id) ||
-> > +           !prog->aux->attach_func_name)
-> > +               return 0;
-> > +
-> > +       if (bpf_struct_ops_prog_moff(prog) =3D=3D offsetof(struct Qdisc=
-_ops, enqueue)) {
-> > +               if (btf_id_set_contains(&qdisc_enqueue_kfunc_set, kfunc=
-_id))
-> > +                       return 0;
-> > +       }
+>   + call do_exit()
 >
-> Instead of logic in this patch and patch 2,
-> I think it's cleaner to do:
-> https://lore.kernel.org/all/AM6PR03MB50804BE76B752350307B6B4C99C22@AM6PR0=
-3MB5080.eurprd03.prod.outlook.com/
+>   + __bpf_tramp_exit
+>     + percpu_ref_put(&tr->pcref);
 >
-> then in this patch it will be
+> Since do_exit() never returns, the refcnt of the trampoline image is
+> never decremented, preventing it from being freed. That can be verified
+> with as follows,
 >
-> if (prog->aux->st_ops !=3D &bpf_Qdisc_ops)
+>   $ bpftool link show                                   <<<< nothing outp=
+ut
+>   $ grep "bpf_trampoline_[0-9]" /proc/kallsyms
+>   ffffffffc04cb000 t bpf_trampoline_6442526459    [bpf] <<<< leftover
 >
-> and instead of unchecked array accesses in bpf_struct_ops_prog_moff()
-> it will be prog->aux->attach_st_ops_member_off
+> In this patch, all functions annotated with __noreturn are rejected, exce=
+pt
+> for the following cases:
+> - Functions that result in a system reboot, such as panic,
+>   machine_real_restart and rust_begin_unwind
+> - Functions that are never executed by tasks, such as rest_init and
+>   cpu_startup_entry
+> - Functions implemented in assembly, such as rewind_stack_and_make_dead a=
+nd
+>   xen_cpu_bringup_again, lack an associated BTF ID.
 >
-> Also see flag based approach in Juntong's patch 3+4.
-> imo it looks cleaner (more extensible with more checks per st_ops hook)
-> than offsetof() approach above.
+> With this change, attaching fexit probes to functions like do_exit() will
+> be rejected.
+>
+> $ ./fexit
+> libbpf: prog 'fexit': BPF program load failed: -EINVAL
+> libbpf: prog 'fexit': -- BEGIN PROG LOAD LOG --
+> Attaching fexit/fmod_ret to __noreturn functions is rejected.
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 48 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 9971c03adfd5..b7d7d5c4989f 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -22841,6 +22841,49 @@ BTF_ID(func, __rcu_read_unlock)
+>  #endif
+>  BTF_SET_END(btf_id_deny)
+>
+> +/* fexit and fmod_ret can't be used to attach to __noreturn functions.
+> + * Currently, we must manually list all __noreturn functions here. Once =
+a more
+> + * robust solution is implemented, this workaround can be removed.
+> + */
+> +BTF_SET_START(noreturn_deny)
+> +#define NORETURN(fn) BTF_ID(func, fn)
 
-Thanks for the pointer! I will drop patch 2 and adopt the flag-based
-kfunc filter.
+no need for extra macro. Just use BTF_ID(...) below.
+
+> +#ifdef CONFIG_IA32_EMULATION
+> +NORETURN(__ia32_sys_exit)
+> +NORETURN(__ia32_sys_exit_group)
+> +#endif
+> +#ifdef CONFIG_KUNIT
+> +NORETURN(__kunit_abort)
+> +NORETURN(kunit_try_catch_throw)
+> +#endif
+> +#ifdef CONFIG_MODULES
+> +NORETURN(__module_put_and_kthread_exit)
+> +#endif
+> +#ifdef CONFIG_X86_64
+> +NORETURN(__x64_sys_exit)
+> +NORETURN(__x64_sys_exit_group)
+> +#endif
+> +#ifdef CONFIG_XEN_PV_SMP
+> +NORETURN(cpu_bringup_and_idle)
+> +#endif
+
+it's called during bringup. bpf doesn't exist at that time.
+Drop it.
+
+> +NORETURN(do_exit)
+> +NORETURN(do_group_exit)
+> +#if defined(CONFIG_X86) && defined(CONFIG_SMP)
+> +NORETURN(hlt_play_dead)
+> +#endif
+
+This one is similar to panic.
+Drop it.
+
+> +#ifdef CONFIG_HYPERV
+> +NORETURN(hv_ghcb_terminate)
+> +#endif
+
+Also does 'hlt'.
+Drop it.
+
+> +NORETURN(kthread_complete_and_exit)
+> +NORETURN(kthread_exit)
+> +NORETURN(make_task_dead)
+> +#ifdef CONFIG_AMD_MEM_ENCRYPT
+> +NORETURN(sev_es_terminate)
+> +NORETURN(snp_abort)
+
+drop both for the same reason as above.
+
+> +#endif
+> +NORETURN(stop_this_cpu)
+
+and this one as well.
+
+Pls make sure to resend as series of 2 patches
+otherwise bpf CI will complain.
+
+pw-bot: cr
 
