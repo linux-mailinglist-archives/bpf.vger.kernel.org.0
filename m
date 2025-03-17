@@ -1,200 +1,158 @@
-Return-Path: <bpf+bounces-54148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54150-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D47A637CE
-	for <lists+bpf@lfdr.de>; Sun, 16 Mar 2025 23:47:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5DA2A639E2
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 02:16:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C406188EF54
-	for <lists+bpf@lfdr.de>; Sun, 16 Mar 2025 22:47:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71637188E877
+	for <lists+bpf@lfdr.de>; Mon, 17 Mar 2025 01:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3B821F8BC9;
-	Sun, 16 Mar 2025 22:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750731465AE;
+	Mon, 17 Mar 2025 01:16:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="R2VSz5G1"
+	dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b="Ab7GDiXT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+Received: from smtpbgsg1.qq.com (smtpbgsg1.qq.com [54.254.200.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E77B1A0BDB;
-	Sun, 16 Mar 2025 22:46:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE3C84D34;
+	Mon, 17 Mar 2025 01:15:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742165176; cv=none; b=TGrgRM2gJK5GtdY2ms4OnlTq09zIUdHRCySD0iSgCXKg24KlcWu8owcl62PJDJ0FltxZeCjoDT8kE1OURO5NqAbuMp8RP0Bx6OUzVTKZZlg11cVitJ8wlvhMTP22tHdxUcu8t6Q45k4vLlxrpEwrAgbBLpLvuarFdaRYnKsYrF4=
+	t=1742174166; cv=none; b=CHh+mEM/ao1rTTwsjTqWWutypr9+y+gm3AZBtESAlW/C1mQtBulVGSTXn9hBJCVbIIGigEyLn25KDL9Ew3hB4wMyIkRbqe/WFVoMO1D8hyBocWE/NN83wP3NC3JZAJJb1k4brsDM48GKgO1zqap+J9VI5iP4Gtact5w/GQMfROk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742165176; c=relaxed/simple;
-	bh=WKSI5tQo2ZCmquUaEjyal9KCtNxILWDmnnMtd21oT78=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=pORzolT+N4USd4RKWv+3gUIXc05BA6L/8VXKdkpilY+43M19srsOISfcxPWHmYIWc+B8/GP8iCI2W+wL8qBhTmDc92f7ECsEWH4G3kgKzcFTX9UiYG9Jq4PreVv5inkwHor0JzCdTzeRQHPEJ+nfhtRAnMJLtqLC5KMXrm7PGZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=R2VSz5G1; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1ttwkB-00Csg5-P0; Sun, 16 Mar 2025 23:46:07 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector1; h=Cc:To:In-Reply-To:References:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From;
-	bh=Qx6Q42lUm6Tq+A/H1tasLuFXsBAYaSnDK2lri+KURPw=; b=R2VSz5G1geS1IlY9yhGry/JtS+
-	jcIBvCOu0tq8IgLofQRHs/DLjNAneUf/Q/K9l0lBEpKvniVT8OPxLbZZb8xQieGrQvVohG+4J1jnU
-	5qkvnKZ80va+ERUtZjt8tdCtnhsrsC4kMQWPC8NIjnzjhZpYZe96gRUbSViEbjrD0gqZrI+1ydSsm
-	SgyuS711t1C0s7vL0qifdIzNAE1ihEQi0s111p3j0oiartg7K/VLMbWYsBpco+bFArKFyEwGM0R7f
-	C9kPv8eYHXfVLKnHcEfU8ehbKO3X61bShgw9CWx+zOg0P7dlVYQtTyWzWoTpNlZCK1w0w/MrFT+lh
-	HkI6NlFA==;
-Received: from [10.9.9.74] (helo=submission03.runbox)
-	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1ttwkB-0007hM-Ap; Sun, 16 Mar 2025 23:46:07 +0100
-Received: by submission03.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1ttwjr-00AYw2-L6; Sun, 16 Mar 2025 23:45:47 +0100
-From: Michal Luczaj <mhal@rbox.co>
-Date: Sun, 16 Mar 2025 23:45:08 +0100
-Subject: [PATCH net v3 3/3] vsock/bpf: Fix bpf recvmsg() racing transport
- reassignment
+	s=arc-20240116; t=1742174166; c=relaxed/simple;
+	bh=f8ylXnYjAovcWV1hNoHapa560iwl0vQ8IUpRdomoX/o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B3J20qEhjzVGecG1hRCCgt91kJJGFlwvp7nbV+yHKGjtXnFhdCfnmUrOeDTtXXB6bu+8NDD9IJdFHMDXVrCw1310cm7XxvSrS2YfgFkzwl/uvvWmFC/TAwtynotOnCN37y7JtrhK6Q7AJrllzBCXuP8xZ+16dWfbKJh+WwV1S0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org; spf=pass smtp.mailfrom=deepin.org; dkim=pass (1024-bit key) header.d=deepin.org header.i=@deepin.org header.b=Ab7GDiXT; arc=none smtp.client-ip=54.254.200.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=deepin.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=deepin.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=deepin.org;
+	s=ukjg2408; t=1742174127;
+	bh=hq7yTqJjEJZI2dh88leRFyAcAEXTLAjjYen6xx/Xhl4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=Ab7GDiXT1mD9p2zh1wG2yySVGSDYjIyaBZ5H7iBxG4GGJmScXO5JWvwNLU8M89sPK
+	 STZCzhjiXA0PKN8ymbkz9PEXgpxib4YbPik2F+1FR7nwSXbk0vulEOOVsTTcGVujfB
+	 q6USYSjIOxCb/8nYMk2s3gsKwZCHofXiz0vqAKlw=
+X-QQ-mid: bizesmtp90t1742174118tyldrwni
+X-QQ-Originating-IP: tL/PX2nb+gKddWUQBMRfqZdfZaw04/DM23EMBI9yowI=
+Received: from localhost.localdomain ( [113.57.152.160])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 17 Mar 2025 09:15:16 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 17978949113820821780
+From: Chen Linxuan <chenlinxuan@deepin.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Chen Linxuan <chenlinxuan@deepin.org>,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc: Yi Lai <yi1.lai@intel.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	stable@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH stable 5.15 v2] lib/buildid: Handle memfd_secret() files in build_id_parse()
+Date: Mon, 17 Mar 2025 09:13:40 +0800
+Message-ID: <C20998946B822F0F+20250317011339.119224-3-chenlinxuan@deepin.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250316-vsock-trans-signal-race-v3-3-17a6862277c9@rbox.co>
-References: <20250316-vsock-trans-signal-race-v3-0-17a6862277c9@rbox.co>
-In-Reply-To: <20250316-vsock-trans-signal-race-v3-0-17a6862277c9@rbox.co>
-To: Stefano Garzarella <sgarzare@redhat.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>, 
- Bobby Eshleman <bobby.eshleman@bytedance.com>, 
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
- virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Michal Luczaj <mhal@rbox.co>
-X-Mailer: b4 0.14.2
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:deepin.org:qybglogicsvrgz:qybglogicsvrgz7a-0
+X-QQ-XMAILINFO: OHTF91J1Rz8hHy5JQijd6SoVpHeuOYSZow0R5p8dM10iTln+yPA/Hjv7
+	J8zMoBx/5phAmHPvG1WzBNPSLWIu0/PQmgETadlZHLYCWUsCyBm8BgqA7h1xsBag3/fgP6X
+	rBdeROc3WMgw+ckRr319LMvViSynYoCVSXK9S8/qW7cp0DB5lKjmoQWUnO5QuMA+wuvFpnn
+	3JvLKyr63Ly0iSK+cJqnnJxKUcNnsi+VPT8NBjWkgr1nUq0nJdQKWrL3QhuymxZ9BiW4Yhl
+	qE4aoH9m9UyZtodkZGlfma9Dq2f/ZSildpxz5MYGTHDi9V4iYTNyauvBOLMj8rHTKXnGEy/
+	p7CdRIUALhB6Ua6HAc2FCmSDSU4qmoPcZthm7vItMqAiX2liiafU2OlJjCXXsNbiVqTu/EK
+	eR/p3JV8hPxr4kaYYaJKyUESIdkl/y8QDolSrgemonM/ZzUErNd/FaHYDCq6jHPHCGUoLkl
+	jaE7lz0Zn8EYDBlRz3OxZcEtZ7l2JiACNh6uCBuK8onrb/EgCYptdY/utjZYG+H+m+lvEap
+	CmlDoK/ktu5U8+wluw90sNIaMFkce/m9U1iQbB1+QqChS3ipsBoVP38V23W/yq7w8TNYklz
+	TPy8ISmDUIDeh2wnPhvDAe638z4NUdvTpncXOXMl7BLcETm3yd2UtfFWeDIO8zSUphqUXhH
+	25lq8sOIQn4A4hlPRBgFRsqvw780Fp3+N+75CVLdCF28BubqaNqfzDw2LvyJq3FWtSmHEee
+	mH4M+0ITzFe3LlAG0MlEXcME6OsdVvdeLWN7dVIuoDrq6etlB9XXURhL53LsbFznjY5V8x1
+	MPwIGbC9+Ym3LdqH4UBS8PxOEcHs4Q+MVszc8k0jyMoz8k8NRBvfOP+NaBluTvV6SQzs5yH
+	0EcaDbW/QUmecpUfQd2OWWb0r/9SHEh8yqyTHkFEYpVzGNzMFMCSSSyU7JospkiOlH+5/Jd
+	FPCxH78oEqV+JgHXIN01loZU+
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+X-QQ-RECHKSPAM: 0
 
-Signal delivery during connect() may lead to a disconnect of an already
-established socket. That involves removing socket from any sockmap and
-resetting state to SS_UNCONNECTED. While it correctly restores socket's
-proto, a call to vsock_bpf_recvmsg() might have been already under way in
-another thread. If the connect()ing thread reassigns the vsock transport to
-NULL, the recvmsg()ing thread may trigger a WARN_ON_ONCE.
+[ Upstream commit 5ac9b4e935dfc6af41eee2ddc21deb5c36507a9f ]
 
-connect
-  / state = SS_CONNECTED /
-                                sock_map_update_elem
-                                vsock_bpf_recvmsg
-                                  psock = sk_psock_get()
-  lock sk
-  if signal_pending
-    unhash
-      sock_map_remove_links
-    state = SS_UNCONNECTED
-  release sk
+>From memfd_secret(2) manpage:
 
-connect
-  transport = NULL
-                                  lock sk
-                                  WARN_ON_ONCE(!vsk->transport)
+  The memory areas backing the file created with memfd_secret(2) are
+  visible only to the processes that have access to the file descriptor.
+  The memory region is removed from the kernel page tables and only the
+  page tables of the processes holding the file descriptor map the
+  corresponding physical memory. (Thus, the pages in the region can't be
+  accessed by the kernel itself, so that, for example, pointers to the
+  region can't be passed to system calls.)
 
-Protect recvmsg() from racing against transport reassignment. Enforce the
-sockmap invariant that psock implies transport: lock socket before getting
-psock.
+We need to handle this special case gracefully in build ID fetching
+code. Return -EFAULT whenever secretmem file is passed to build_id_parse()
+family of APIs. Original report and repro can be found in [0].
 
-WARNING: CPU: 9 PID: 1222 at net/vmw_vsock/vsock_bpf.c:92 vsock_bpf_recvmsg+0xb55/0xe00
-CPU: 9 UID: 0 PID: 1222 Comm: a.out Not tainted 6.14.0-rc5+
-RIP: 0010:vsock_bpf_recvmsg+0xb55/0xe00
- sock_recvmsg+0x1b2/0x220
- __sys_recvfrom+0x190/0x270
- __x64_sys_recvfrom+0xdc/0x1b0
- do_syscall_64+0x93/0x1b0
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
+  [0] https://lore.kernel.org/bpf/ZwyG8Uro%2FSyTXAni@ly-workstation/
 
-Fixes: 634f1a7110b4 ("vsock: support sockmap")
-Signed-off-by: Michal Luczaj <mhal@rbox.co>
+Fixes: de3ec364c3c3 ("lib/buildid: add single folio-based file reader abstraction")
+Reported-by: Yi Lai <yi1.lai@intel.com>
+Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+Link: https://lore.kernel.org/bpf/20241017175431.6183-A-hca@linux.ibm.com
+Link: https://lore.kernel.org/bpf/20241017174713.2157873-1-andrii@kernel.org
+[ Chen Linxuan: backport same logic without folio-based changes ]
+Cc: stable@vger.kernel.org
+Fixes: 88a16a130933 ("perf: Add build id data in mmap2 event")
+Signed-off-by: Chen Linxuan <chenlinxuan@deepin.org>
 ---
- net/vmw_vsock/vsock_bpf.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+v1 -> v2: use vma_is_secretmem() instead of directly checking
+          vma->vm_file->f_op == &secretmem_fops
+---
+ lib/buildid.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/vmw_vsock/vsock_bpf.c b/net/vmw_vsock/vsock_bpf.c
-index c68fdaf09046b68254dac3ea70ffbe73dfa45cef..5138195d91fb258d4bc09b48e80e13651d62863a 100644
---- a/net/vmw_vsock/vsock_bpf.c
-+++ b/net/vmw_vsock/vsock_bpf.c
-@@ -73,28 +73,35 @@ static int __vsock_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int
- 	return err;
- }
+diff --git a/lib/buildid.c b/lib/buildid.c
+index 9fc46366597e..34315d09b544 100644
+--- a/lib/buildid.c
++++ b/lib/buildid.c
+@@ -5,6 +5,7 @@
+ #include <linux/elf.h>
+ #include <linux/kernel.h>
+ #include <linux/pagemap.h>
++#include <linux/secretmem.h>
  
--static int vsock_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
--			     size_t len, int flags, int *addr_len)
-+static int vsock_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
-+			     int flags, int *addr_len)
- {
- 	struct sk_psock *psock;
- 	struct vsock_sock *vsk;
- 	int copied;
+ #define BUILD_ID 3
  
-+	/* Since signal delivery during connect() may reset the state of socket
-+	 * that's already in a sockmap, take the lock before checking on psock.
-+	 * This serializes a possible transport reassignment, protecting this
-+	 * function from running with NULL transport.
-+	 */
-+	lock_sock(sk);
+@@ -157,6 +158,10 @@ int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
+ 	if (!vma->vm_file)
+ 		return -EINVAL;
+ 
++	/* reject secretmem */
++	if (vma_is_secretmem(vma))
++		return -EFAULT;
 +
- 	psock = sk_psock_get(sk);
--	if (unlikely(!psock))
-+	if (unlikely(!psock)) {
-+		release_sock(sk);
- 		return __vsock_recvmsg(sk, msg, len, flags);
-+	}
- 
--	lock_sock(sk);
- 	vsk = vsock_sk(sk);
--
- 	if (WARN_ON_ONCE(!vsk->transport)) {
- 		copied = -ENODEV;
- 		goto out;
- 	}
- 
- 	if (vsock_has_data(sk, psock) && sk_psock_queue_empty(psock)) {
--		release_sock(sk);
- 		sk_psock_put(sk, psock);
-+		release_sock(sk);
- 		return __vsock_recvmsg(sk, msg, len, flags);
- 	}
- 
-@@ -108,8 +115,8 @@ static int vsock_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
- 		}
- 
- 		if (sk_psock_queue_empty(psock)) {
--			release_sock(sk);
- 			sk_psock_put(sk, psock);
-+			release_sock(sk);
- 			return __vsock_recvmsg(sk, msg, len, flags);
- 		}
- 
-@@ -117,8 +124,8 @@ static int vsock_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
- 	}
- 
- out:
--	release_sock(sk);
- 	sk_psock_put(sk, psock);
-+	release_sock(sk);
- 
- 	return copied;
- }
-
+ 	page = find_get_page(vma->vm_file->f_mapping, 0);
+ 	if (!page)
+ 		return -EFAULT;	/* page not mapped */
 -- 
 2.48.1
 
