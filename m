@@ -1,183 +1,131 @@
-Return-Path: <bpf+bounces-54327-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54328-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C4FAA6774C
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 16:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A35AA6779D
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 16:22:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CB0F3B8B90
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 15:10:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E2813B35C5
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 15:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0315320E709;
-	Tue, 18 Mar 2025 15:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881B820E6F9;
+	Tue, 18 Mar 2025 15:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lr/CZO0A"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="u58P+tRC"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B0320E003;
-	Tue, 18 Mar 2025 15:10:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14C0820DD7B
+	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 15:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742310625; cv=none; b=px/QDVq4mHyoBstud8oeRPjbCLJ++8J6gM1Uk5okolaoFnb2hn703mf9hQ2nUMChItKfA7QFEbsL6rS34VUZHRlCjzaiSeSq4ErYT2kfeOORzts1ut9S6nHX7VKk6SyqJhuy+i2xM02hbIDXE7q+8GUw0d6HlJ2wMu1+0w70x2w=
+	t=1742311232; cv=none; b=czn915iYDcyBhY1tsfFwzePJ0dWmRHxHL7aOda4yEiH/ozhR/BsqxAAo5gwMyT7xppOT8EjptanxTQq86CbnpIQhSUlZGEFFXASCiBqqvxKz2K2QwovCh/IGQUZtG1dODH+IelLR2gKKcUDMcVklDOy7r18p80110UgiiUWET+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742310625; c=relaxed/simple;
-	bh=PJQ45Uc3ZlwUvmPQwTgGNG1XEmjXxIqYjtnNfTcNN8Q=;
+	s=arc-20240116; t=1742311232; c=relaxed/simple;
+	bh=/Nf2WgEB7ZxfmF5hTBb2omhK58IQDRjvAppogOSWPjQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aii+CUNXrJD6zoUuqLUqA52aoCbCR9P0DfPrwFloJKUmM6urv+tV8Wxyi4Nokep2Shp6dPsoE+Mz0Uz1bQmlAuH/6NEgTqKZlFhkutG/o56COrKdk2NPOUD6RY8u2U3+nlFgaCUubUK2QVmlJ03FsD5Ci/5cLDbcjEKFr+lbf20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lr/CZO0A; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6074644401;
-	Tue, 18 Mar 2025 15:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1742310615;
+	 In-Reply-To:Content-Type; b=pYds6O+b9FSOXZb7PknE5Ru/Ayu5SUhg09BY+Ku3LOzyag5d4hoGbe0HY/7pIP4fwW/Z9D8XnDri8eVA434BPVAJQV53uV9U5zy0+ld9hQUqvq7XPsEombCk6VVtq25LYTGaHYfxsnANLHTzBRF532Rd4LbKLyurombuPW6Vn+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=u58P+tRC; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0e3bd726-f0d8-4e50-832f-5a341486632f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1742311218;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2aqTqXgy5OZ/LDTWoLOWt3ncm07Z6J+uqCOpaod9xeE=;
-	b=lr/CZO0AZd8h9Kq6k/HO1L+TIyKG1CVO1n4+7DW0olOpTcPrncnLSZ7okGhXgHy3ZZ/0S5
-	vCe2qVt+dviPBPBhv0bTpfAOppbSOY3J+jNjgIP28KymiTftJfS9nKMKSZmM+oFbHxRoF4
-	zbvzLXagYYs7JQD7k9heY1OtEf/RBOJCFVYCW9xoBKi2cWVHVuzsY+pXyLBSHvNkIyBCEn
-	KEFlMmrrrkvkIGsQM7f5h1Jk7l4kxC3Mk3DeVtpM3NQcgGEScaTMBERYGBzy3M56xIrspj
-	cjAl6vArTjzxpdzalR7GKaRg7XISIsc2bBfjsfrbwKsHS+NdKHOaG5ruP/tazQ==
-Message-ID: <a965cc31-bbac-43dd-86d4-b2f72e789c92@bootlin.com>
-Date: Tue, 18 Mar 2025 16:10:12 +0100
+	bh=kc5eGOqSPSf6D9ZMVn/2teA8AR7WkwdTnTP3LraKcT4=;
+	b=u58P+tRCkN4eQaFqUlo8SuHKApGsIDIz2HadIKE6k4jIMtEQ6CpxQ/MdpV20qMYB4fxeNp
+	UbZnui++HsRt5/SP/4sdJu4X9ZLgdYmZrH872/S+MyJ+CTvtUjlbynLWG96MBOOcmbXalG
+	BtNxr90IrOV4qWHBmBCCkARK65OHvRE=
+Date: Tue, 18 Mar 2025 23:20:06 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/13] selftests/bpf: test_xsk: Split xskxceiver
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+Subject: Re: [PATCH bpf-next] bpf: Define bpf_token_show_fdinfo with
+ CONFIG_PROC_FS
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>,
  Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
  John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
  Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250313-xsk-v1-0-7374729a93b9@bootlin.com>
- <20250313-xsk-v1-10-7374729a93b9@bootlin.com> <Z9lyK5pEi+FmcvYw@boxer>
-Content-Language: en-US
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-In-Reply-To: <Z9lyK5pEi+FmcvYw@boxer>
+ Christian Brauner <brauner@kernel.org>, bpf <bpf@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20250318062557.3001333-1-chen.dylane@linux.dev>
+ <Z9k8216IwpMZnHaA@krava>
+ <CAADnVQLULbENAnJqOVn4m_xmS+T7FvYSFf70mxVSdusgL85m8Q@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <CAADnVQLULbENAnJqOVn4m_xmS+T7FvYSFf70mxVSdusgL85m8Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddugedvjeeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepuegrshhtihgvnhcuvehurhhuthgthhgvthcuoegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpefhheeggfetffekheevuedvkedvvdeufeegjeevgfelveevveetffevfefgheeijeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplgduledvrdduieekrddtrddugegnpdhmrghilhhfrhhomhepsggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepvdejpdhrtghpthhtohepmhgrtghivghjrdhfihhjrghlkhhofihskhhisehinhhtvghlrdgtohhmpdhrtghpthhtohepsghjohhrnheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrghhnuhhsrdhkrghrlhhsshhonhesihhnthgvlhdrtghomhdprhgtphhtthhopehjohhnrghthhgrnhdrlhgvmhhonhesghhmrghilhdrtghomhdprhgtphhtthhop
- egrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghv
-X-GND-Sasl: bastien.curutchet@bootlin.com
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Maciej,
-
-On 3/18/25 2:16 PM, Maciej Fijalkowski wrote:
-> On Thu, Mar 13, 2025 at 11:48:08AM +0100, Bastien Curutchet (eBPF Foundation) wrote:
->> AF_XDP features are tested by the test_xsk.sh script but not by the
->> test_progs framework. The tests used by the script are defined in
->> xksxceiver.c which can't be integrated in the test_progs framework as is.
+在 2025/3/18 22:59, Alexei Starovoitov 写道:
+> On Tue, Mar 18, 2025 at 2:29 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >>
->> Extract these test definitions from xskxceiver{.c/.h} to put them in new
->> test_xsk{.c/.h} files.
->> Keep the main() function and its unshared dependencies in xksxceiver to
->> avoid impacting the test_xsk.sh script which is often used to test real
->> hardware.
+>> On Tue, Mar 18, 2025 at 02:25:57PM +0800, Tao Chen wrote:
+>>> Protect bpf_token_show_fdinfo with CONFIG_PROC_FS check, follow the
+>>> pattern used with other *_show_fdinfo functions.
+>>>
+>>> Fixes: 35f96de04127 ("bpf: Introduce BPF token object")
+>>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+>>> ---
+>>>   kernel/bpf/token.c | 4 ++++
+>>>   1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/kernel/bpf/token.c b/kernel/bpf/token.c
+>>> index 26057aa13..104ca37e9 100644
+>>> --- a/kernel/bpf/token.c
+>>> +++ b/kernel/bpf/token.c
+>>> @@ -65,6 +65,7 @@ static int bpf_token_release(struct inode *inode, struct file *filp)
+>>>        return 0;
+>>>   }
+>>>
+>>> +#ifdef CONFIG_PROC_FS
+>>>   static void bpf_token_show_fdinfo(struct seq_file *m, struct file *filp)
+>>>   {
+>>>        struct bpf_token *token = filp->private_data;
+>>> @@ -98,6 +99,7 @@ static void bpf_token_show_fdinfo(struct seq_file *m, struct file *filp)
+>>>        else
+>>>                seq_printf(m, "allowed_attachs:\t0x%llx\n", token->allowed_attachs);
+>>>   }
+>>> +#endif
+>>>
+>>>   #define BPF_TOKEN_INODE_NAME "bpf-token"
+>>>
+>>> @@ -105,7 +107,9 @@ static const struct inode_operations bpf_token_iops = { };
+>>>
+>>>   static const struct file_operations bpf_token_fops = {
+>>>        .release        = bpf_token_release,
+>>> +#ifdef CONFIG_PROC_FS
+>>>        .show_fdinfo    = bpf_token_show_fdinfo,
+>>> +#endif
 >>
->> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
->> ---
->>   tools/testing/selftests/bpf/Makefile     |    2 +-
->>   tools/testing/selftests/bpf/test_xsk.c   | 2416 ++++++++++++++++++++++++++++
->>   tools/testing/selftests/bpf/test_xsk.h   |  279 ++++
->>   tools/testing/selftests/bpf/xskxceiver.c | 2503 +-----------------------------
->>   tools/testing/selftests/bpf/xskxceiver.h |  156 --
->>   5 files changed, 2727 insertions(+), 2629 deletions(-)
->> +
+>> there's many more of such cases.. I'm not sure if it makes sense to fix that,
+>> because it does not break the build and only save space for !CONFIG_PROC_FS
+>> kernels
 > 
-> (...)
-> 
->> +int testapp_hw_sw_max_ring_size(struct test_spec *test)
->> +{
->> +	u32 max_descs = XSK_RING_PROD__DEFAULT_NUM_DESCS * 4;
->> +	int ret;
->> +
->> +	test->set_ring = true;
->> +	test->total_steps = 2;
->> +	test->ifobj_tx->ring.tx_pending = test->ifobj_tx->ring.tx_max_pending;
->> +	test->ifobj_tx->ring.rx_pending  = test->ifobj_tx->ring.rx_max_pending;
->> +	test->ifobj_rx->umem->num_frames = max_descs;
->> +	test->ifobj_rx->umem->fill_size = max_descs;
->> +	test->ifobj_rx->umem->comp_size = max_descs;
->> +	test->ifobj_tx->xsk->batch_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
->> +	test->ifobj_rx->xsk->batch_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
->> +
->> +	ret = testapp_validate_traffic(test);
->> +	if (ret)
->> +		return ret;
->> +
->> +	/* Set batch_size to 8152 for testing, as the ice HW ignores the 3 lowest bits when
->> +	 * updating the Rx HW tail register.
->> +	 */
->> +	test->ifobj_tx->xsk->batch_size = test->ifobj_tx->ring.tx_max_pending - 8;
->> +	test->ifobj_rx->xsk->batch_size = test->ifobj_tx->ring.tx_max_pending - 8;
->> +	if (!pkt_stream_replace(test, max_descs, MIN_PKT_SIZE))
-> 
-> Here's the victim of test failures that i reported last week. This
-> function succeds with 0 and you interpret it as failure:)
-
-Oops ... Thanks for the feedback.
-
-> One sign wrong caused two days of debugging, but it was kinda fun.
+> +1.
+> let's keep the code as-is.
 > 
 
-I should have ordered patches in an other way to split the xskxceiver.c 
-sooner, the bisection would have narrowed the bug more precisely. I'll 
-do this in next iteration.
+Got it, thanks anyway.
 
-> What was happening was due to the failure here one of the sockets was not
-> deleted and later on whole test suite could not attach the socket for
-> every other test case which caused the ever going failures. Which makes me
-> think that since you changed the logic from exits to returning failures
-> probably we need to take care of state cleanup in a better way so case
-> like this one described here wouldn't take place.
-> 
-
-I hadn't notice the cleanup done in __testapp_validate_traffic(), I'll 
-handle this in a better way in next iteration.
-
-> This test is only executed for hw tests that's why you haven't seen this
-> problem as you were focused on veth case.
-> 
-> If you want to proceed with that then i would like to ask you to grab the
-> hw and check you're not introducing regressions. FWIW i have been working
-> with i40e and ice drivers.
-> 
-
-I don't think I have such hardware available but I'll try to find some 
-equivalent to test the next iteration on real HW before submitting it.
-
-> One last note is that verbose mode seemed to be broken for me.
-> 
-
-I'll take a look at this, thank you.
+> pw-bot: cr
 
 
-Best regards,
-Bastien
-
+-- 
+Best Regards
+Tao Chen
 
