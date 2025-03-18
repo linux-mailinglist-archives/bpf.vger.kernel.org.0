@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-54270-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54271-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DD60A66715
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 04:15:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA708A66719
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 04:15:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C42F33AB3A9
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 03:12:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31EA73B2230
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 03:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B0F71DF247;
-	Tue, 18 Mar 2025 03:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2687F1C5F10;
+	Tue, 18 Mar 2025 03:10:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dp/Re1TA"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TwJ5F5Rf"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31C641C2324;
-	Tue, 18 Mar 2025 03:10:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E62719341F;
+	Tue, 18 Mar 2025 03:10:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742267407; cv=none; b=evvigUh+8tC/UggC8MT24Z+uB/Cdbc/X6VTsOrWsew+aMppIJg6Tb7dnpUshOzzYMCzKdIYalaTr9gWix5XBA5m2uSEZjlF9IS6M2HrkHuNE4k/zVr3AXMdqoU5jklk7bIDGCT+U5Uu5rOlPNJRy9luchxdg3YHHiIdS1yXAUCM=
+	t=1742267418; cv=none; b=YFkHv4TQWs+DSOSUdnEiBy5eIosWwG5qookhv94zXb+gY78dbL+OAtZ2Bvj9VaaGIeiHEBYtCS6tG0gzH3pISod7bYyxVj+nOpBv6KL8Yy/wYTezzJHX4P+OmWTljJg8nXURiZWrMRPdiuFp4Mx+AMLNXCxL+WdAvr+vvyOYQfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742267407; c=relaxed/simple;
-	bh=0isZ6zpvYikdgV/NzKrMVcv5aGLqnoGvYP3OSYye2YU=;
+	s=arc-20240116; t=1742267418; c=relaxed/simple;
+	bh=3IZ4KIMokVKhdTfXCW+naj0KUzLIZ662FdCXfyXBtyQ=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BeiWi0pYuniLZ7WXJCM3qXTWZai51qpCqhliMtlyr38YsTsTfRoeZQNSSiyPMSgK1fzQx5eyr1JjhFqiH3Ea+jyGkTngSvEuQ8mvQRMSsJW2hUxFzyGNkWye+NslZdGHocrj3xmCMcW8EvPooDfhgzdMWRi5Ag2hclZAHEp19x4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dp/Re1TA; arc=none smtp.client-ip=198.175.65.13
+	 MIME-Version; b=sGsGYednHs1eOSVkLb3/edNK2hGkZ6TZoUqElzwGQ5VjOyfW/WgkeN1Qw23YLYv8m0a08kVfYQgrCdUIbKU5Sj64h/r8LzaXrBKibf65URY/dp+ZZR1FYDDJMT4EwrTfCWArS3OQ79OxTx2RH6Gnzc84ZU5BHtCwmaAnUfvgs20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TwJ5F5Rf; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1742267406; x=1773803406;
+  t=1742267417; x=1773803417;
   h=from:to:subject:date:message-id:in-reply-to:references:
    mime-version:content-transfer-encoding;
-  bh=0isZ6zpvYikdgV/NzKrMVcv5aGLqnoGvYP3OSYye2YU=;
-  b=dp/Re1TAYNTySbe2PdZhx6XXjP4FbXAbdKnCtwfai0l2Sh7L4n/6Kgsd
-   FX5hT050EDlvN+3w5u8OSSNbJzFNgmXpC46InuFz5BEmQ7ht4KdzGpO/M
-   C3JPOjhwpK6MVF2cfcyVMLvR3hiUA0efL6KMFks8Vh44YDSVse3UUC5qH
-   fhumhe3lIrX9HxLIaf3byWn55wBOJKITZF0ZKZoJRK7xRKkw1JZMfjyTG
-   wXYgIZNCJVy25eySQD6+fWY/gtatldlnP/Wvai/AVdD/o19oDiV4Dvyna
-   JTQCf7vaAR4h5bwVgVVO/lSGGbVnhkywJvIshu4LvYkENqZFTMmP/W26O
-   w==;
-X-CSE-ConnectionGUID: u90r+VAjR0SWZxynl0x75g==
-X-CSE-MsgGUID: SHAY4vGASS+Lh1LXb0ozbQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11376"; a="54383264"
+  bh=3IZ4KIMokVKhdTfXCW+naj0KUzLIZ662FdCXfyXBtyQ=;
+  b=TwJ5F5RfOieMEmLI+vX4XZCxsRyDeXDMSLyeG+Z2VCBil7Vs+gwne2as
+   FfL7PoXBffOLrklW8qxm+31EaHj/nRFfzkw3rAdVuUInVxrCcaYhhl7XZ
+   lj8IuWUpHi65OoYHRlqP6xbEVEjEN0d/GQmC0lJLa6TpsXU9yiEUkJ02d
+   Ua62iSDiNQv1Bbxp4kgg/8IYqDnchDARUPOGA+pHN3qf6tKvm/FvJLq15
+   LPfp0msaKVCoLkp+oGDSXUXnilY7q1nd+r9SN6UiA3eLiAiLsTfoNHacn
+   Vm6efZJwUMugFTWHHhcOn0OTMT6CuFMnXBr6axoFQMbhqxcLXfFmlJKKz
+   g==;
+X-CSE-ConnectionGUID: a0uokgXvRRWfWEsJpmveWA==
+X-CSE-MsgGUID: V1ZypqNCRaKr0jv3DHSE3g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11376"; a="54383290"
 X-IronPort-AV: E=Sophos;i="6.14,255,1736841600"; 
-   d="scan'208";a="54383264"
+   d="scan'208";a="54383290"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2025 20:10:05 -0700
-X-CSE-ConnectionGUID: 5FibIxdTT+a3rSLWBjSJaQ==
-X-CSE-MsgGUID: UnUGj4uJS+uGDEJtg6FShg==
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2025 20:10:13 -0700
+X-CSE-ConnectionGUID: oRlpz5nWTyqIvBViMP3UAA==
+X-CSE-MsgGUID: 4BSoNZ57Qz6hE25r114VvA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.14,255,1736841600"; 
-   d="scan'208";a="126313965"
+   d="scan'208";a="126313976"
 Received: from mohdfai2-ilbpg12-1.png.intel.com ([10.88.227.73])
-  by fmviesa003.fm.intel.com with ESMTP; 17 Mar 2025 20:09:58 -0700
+  by fmviesa003.fm.intel.com with ESMTP; 17 Mar 2025 20:10:05 -0700
 From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 To: Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
@@ -95,9 +95,9 @@ To: Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
 	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
 	Serge Semin <fancer.lancer@gmail.com>
-Subject: [PATCH iwl-next v10 13/14] igc: add support to get MAC Merge data via ethtool
-Date: Mon, 17 Mar 2025 23:07:41 -0400
-Message-Id: <20250318030742.2567080-14-faizal.abdul.rahim@linux.intel.com>
+Subject: [PATCH iwl-next v10 14/14] igc: add support to get frame preemption statistics via ethtool
+Date: Mon, 17 Mar 2025 23:07:42 -0400
+Message-Id: <20250318030742.2567080-15-faizal.abdul.rahim@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250318030742.2567080-1-faizal.abdul.rahim@linux.intel.com>
 References: <20250318030742.2567080-1-faizal.abdul.rahim@linux.intel.com>
@@ -109,74 +109,137 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement "ethtool --show-mm" callback for IGC.
+Implemented "ethtool --include-statistics --show-mm" callback for IGC.
 
-Tested with command:
-$ ethtool --show-mm enp1s0.
-  MAC Merge layer state for enp1s0:
-  pMAC enabled: on
-  TX enabled: on
-  TX active: on
-  TX minimum fragment size: 64
-  RX minimum fragment size: 60
-  Verify enabled: on
-  Verify time: 128
-  Max verify time: 128
-  Verification status: SUCCEEDED
+Tested preemption scenario to check preemption statistics:
+1) Trigger verification handshake on both boards:
+    $ sudo ethtool --set-mm enp1s0 pmac-enabled on
+    $ sudo ethtool --set-mm enp1s0 tx-enabled on
+    $ sudo ethtool --set-mm enp1s0 verify-enabled on
+2) Set preemptible or express queue in taprio for tx board:
+    $ sudo tc qdisc replace dev enp1s0 parent root handle 100 taprio \
+      num_tc 4 map 3 2 1 0 3 3 3 3 3 3 3 3 3 3 3 3 \
+      queues 1@0 1@1 1@2 1@3 base-time 0 sched-entry S F 100000 \
+      fp E E P P
+3) Send large size packets on preemptible queue
+4) Send small size packets on express queue to preempt packets in
+   preemptible queue
+5) Show preemption statistics on the receiving board:
+   $ ethtool --include-statistics --show-mm enp1s0
+     MAC Merge layer state for enp1s0:
+     pMAC enabled: on
+     TX enabled: on
+     TX active: on
+     TX minimum fragment size: 64
+     RX minimum fragment size: 60
+     Verify enabled: on
+     Verify time: 128
+     Max verify time: 128
+     Verification status: SUCCEEDED
+     Statistics:
+      MACMergeFrameAssErrorCount: 0
+      MACMergeFrameSmdErrorCount: 0
+      MACMergeFrameAssOkCount: 511
+      MACMergeFragCountRx: 764
+      MACMergeFragCountTx: 0
+      MACMergeHoldCount: 0
 
-Verified that the fields value are retrieved correctly.
-
+Co-developed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Co-developed-by: Chwee-Lin Choong <chwee.lin.choong@intel.com>
+Signed-off-by: Chwee-Lin Choong <chwee.lin.choong@intel.com>
 Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 ---
- drivers/net/ethernet/intel/igc/igc_ethtool.c | 14 ++++++++++++++
- drivers/net/ethernet/intel/igc/igc_tsn.h     |  1 +
- 2 files changed, 15 insertions(+)
+ drivers/net/ethernet/intel/igc/igc_ethtool.c | 40 ++++++++++++++++++++
+ drivers/net/ethernet/intel/igc/igc_regs.h    | 16 ++++++++
+ 2 files changed, 56 insertions(+)
 
 diff --git a/drivers/net/ethernet/intel/igc/igc_ethtool.c b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-index 529654ccd83f..fd4b4b332309 100644
+index fd4b4b332309..324a27a5bef9 100644
 --- a/drivers/net/ethernet/intel/igc/igc_ethtool.c
 +++ b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-@@ -1782,6 +1782,19 @@ static int igc_ethtool_set_eee(struct net_device *netdev,
- 	return 0;
+@@ -1819,6 +1819,45 @@ static int igc_ethtool_set_mm(struct net_device *netdev,
+ 	return igc_tsn_offload_apply(adapter);
  }
  
-+static int igc_ethtool_get_mm(struct net_device *netdev,
-+			      struct ethtool_mm_state *cmd)
++/**
++ * igc_ethtool_get_frame_ass_error - Get the frame assembly error count.
++ * @reg_value: Register value for IGC_PRMEXCPRCNT
++ * Return: The count of frame assembly errors.
++ */
++static u64 igc_ethtool_get_frame_ass_error(u32 reg_value)
 +{
-+	struct igc_adapter *adapter = netdev_priv(netdev);
-+	struct igc_fpe_t *fpe = &adapter->fpe;
++	/* Out of order statistics */
++	u32 ooo_frame_cnt, ooo_frag_cnt;
++	u32 miss_frame_frag_cnt;
 +
-+	ethtool_mmsv_get_mm(&fpe->mmsv, cmd);
-+	cmd->tx_min_frag_size = fpe->tx_min_frag_size;
-+	cmd->rx_min_frag_size = IGC_RX_MIN_FRAG_SIZE;
++	ooo_frame_cnt = FIELD_GET(IGC_PRMEXCPRCNT_OOO_FRAME_CNT, reg_value);
++	ooo_frag_cnt = FIELD_GET(IGC_PRMEXCPRCNT_OOO_FRAG_CNT, reg_value);
++	miss_frame_frag_cnt = FIELD_GET(IGC_PRMEXCPRCNT_MISS_FRAME_FRAG_CNT, reg_value);
 +
-+	return 0;
++	return ooo_frame_cnt + ooo_frag_cnt + miss_frame_frag_cnt;
 +}
 +
- static int igc_ethtool_set_mm(struct net_device *netdev,
- 			      struct ethtool_mm_cfg *cmd,
- 			      struct netlink_ext_ack *extack)
-@@ -2101,6 +2114,7 @@ static const struct ethtool_ops igc_ethtool_ops = {
- 	.get_link_ksettings	= igc_ethtool_get_link_ksettings,
++static u64 igc_ethtool_get_frame_smd_error(u32 reg_value)
++{
++	return FIELD_GET(IGC_PRMEXCPRCNT_OOO_SMDC, reg_value);
++}
++
++static void igc_ethtool_get_mm_stats(struct net_device *dev,
++				     struct ethtool_mm_stats *stats)
++{
++	struct igc_adapter *adapter = netdev_priv(dev);
++	struct igc_hw *hw = &adapter->hw;
++	u32 reg_value;
++
++	reg_value = rd32(IGC_PRMEXCPRCNT);
++
++	stats->MACMergeFrameAssErrorCount = igc_ethtool_get_frame_ass_error(reg_value);
++	stats->MACMergeFrameSmdErrorCount = igc_ethtool_get_frame_smd_error(reg_value);
++	stats->MACMergeFrameAssOkCount = rd32(IGC_PRMPTDRCNT);
++	stats->MACMergeFragCountRx = rd32(IGC_PRMEVNTRCNT);
++	stats->MACMergeFragCountTx = rd32(IGC_PRMEVNTTCNT);
++}
++
+ static int igc_ethtool_get_link_ksettings(struct net_device *netdev,
+ 					  struct ethtool_link_ksettings *cmd)
+ {
+@@ -2115,6 +2154,7 @@ static const struct ethtool_ops igc_ethtool_ops = {
  	.set_link_ksettings	= igc_ethtool_set_link_ksettings,
  	.self_test		= igc_ethtool_diag_test,
-+	.get_mm			= igc_ethtool_get_mm,
+ 	.get_mm			= igc_ethtool_get_mm,
++	.get_mm_stats		= igc_ethtool_get_mm_stats,
  	.set_mm			= igc_ethtool_set_mm,
  };
  
-diff --git a/drivers/net/ethernet/intel/igc/igc_tsn.h b/drivers/net/ethernet/intel/igc/igc_tsn.h
-index 58fe5f0773d7..c2a77229207b 100644
---- a/drivers/net/ethernet/intel/igc/igc_tsn.h
-+++ b/drivers/net/ethernet/intel/igc/igc_tsn.h
-@@ -4,6 +4,7 @@
- #ifndef _IGC_TSN_H_
- #define _IGC_TSN_H_
+diff --git a/drivers/net/ethernet/intel/igc/igc_regs.h b/drivers/net/ethernet/intel/igc/igc_regs.h
+index 12ddc5793651..f343c6bfc6be 100644
+--- a/drivers/net/ethernet/intel/igc/igc_regs.h
++++ b/drivers/net/ethernet/intel/igc/igc_regs.h
+@@ -222,6 +222,22 @@
  
-+#define IGC_RX_MIN_FRAG_SIZE		60
- #define SMD_FRAME_SIZE			60
+ #define IGC_FTQF(_n)	(0x059E0 + (4 * (_n)))  /* 5-tuple Queue Fltr */
  
- enum igc_txd_popts_type {
++/* Time sync registers - preemption statistics */
++#define IGC_PRMPTDRCNT		0x04284	/* Good RX Preempted Packets */
++#define IGC_PRMEVNTTCNT		0x04298	/* TX Preemption event counter */
++#define IGC_PRMEVNTRCNT		0x0429C	/* RX Preemption event counter */
++
++ /* Preemption Exception Counter */
++ #define IGC_PRMEXCPRCNT				0x42A0
++/* Received out of order packets with SMD-C */
++#define IGC_PRMEXCPRCNT_OOO_SMDC			0x000000FF
++/* Received out of order packets with SMD-C and wrong Frame CNT */
++#define IGC_PRMEXCPRCNT_OOO_FRAME_CNT			0x0000FF00
++/* Received out of order packets with SMD-C and wrong Frag CNT */
++#define IGC_PRMEXCPRCNT_OOO_FRAG_CNT			0x00FF0000
++/* Received packets with SMD-S and wrong Frag CNT and Frame CNT */
++#define IGC_PRMEXCPRCNT_MISS_FRAME_FRAG_CNT		0xFF000000
++
+ /* Transmit Scheduling Registers */
+ #define IGC_TQAVCTRL		0x3570
+ #define IGC_TXQCTL(_n)		(0x3344 + 0x4 * (_n))
 -- 
 2.34.1
 
