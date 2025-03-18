@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-54302-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54303-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46976A672FF
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 12:46:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F9CA67303
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 12:46:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1440189215A
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 11:46:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F6CA19A1A85
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 11:46:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0D120B80F;
-	Tue, 18 Mar 2025 11:46:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F01A20A5DE;
+	Tue, 18 Mar 2025 11:46:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Te31cvkx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G/8bSdeF"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D493FC2;
-	Tue, 18 Mar 2025 11:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC71E3FC2;
+	Tue, 18 Mar 2025 11:46:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742298380; cv=none; b=fl4T6n6wBpui5hmQtRHmw7pMIA1xwmtnIhp8R3x6Duz26/hvDcqwJ8cwCWGNwtKFde2kLnyui2uOwYFjWaNE0Uk/2o625H2OOtjDAisWyxXAAZK1hIaZpQ3fONGksEJzajiwhMhcw4lsJ0Ee9DhoU2rTF5vdAznhGTXjR4NwlrU=
+	t=1742298383; cv=none; b=K/vZbn4bVCBFZHyjZZsA5iP8QJejagahB638FRsVlZRvZkTqAYEqLuHYYu8MzBP7DnIgQEPLyiDl14ZUDcbbw5+g5zEXeAi7v5cNWMPttlFp/EiukyNl/h8o7H+CfkrPAF7TlkPKrDs/tgcD9GE6hRw9qHj+ymCgZBmmQZA5xLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742298380; c=relaxed/simple;
-	bh=DCr2QpGbgPQw5gBmGdkCjX3bRDvZZMiE3YTraB6GULE=;
+	s=arc-20240116; t=1742298383; c=relaxed/simple;
+	bh=OxxwCX4kmkFgORosEwbEM+9lMLPNKxBrIFre8ujLNdY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=aG1XeJaay3vLUYV9ur2L/pK9y2XCSEZ7VaJFKfeIn5lfUFakuSPRs4qCAdk1zGlUkyo7pun0pUK7ZBxkOBqqzlDFEK3U/8KN4l2ENDnva4ewysYJbivhehqeIKljuTSn6acN3IQeRU6q4qbviLvaRw+gvxqXYemL2ZnqMocR6No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Te31cvkx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C9BFC4CEE3;
-	Tue, 18 Mar 2025 11:46:19 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=kLYKTv3TjpP92iEiR3ilNhYK3kD75HegBnVHev4LKVZW6L1us4ysPDR3HGsnZFPxLE7I/JoWfUFWkG9TkYOb/9Nm4pc8XY1XetxWFwBRS7D1aejGHxQgwmxou+Tc0XsOq3rVMoV6zzhk4PDH8inmsyDQSRKF9y83WNmo4j6Q/Pw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G/8bSdeF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E22FEC4CEEE;
+	Tue, 18 Mar 2025 11:46:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742298379;
-	bh=DCr2QpGbgPQw5gBmGdkCjX3bRDvZZMiE3YTraB6GULE=;
+	s=k20201202; t=1742298382;
+	bh=OxxwCX4kmkFgORosEwbEM+9lMLPNKxBrIFre8ujLNdY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Te31cvkxgm1OC0ygqentt4hfJVDMpbqGU6XN9WM/QgVrhshyKV2EPy2l6uhTaB8Fy
-	 ZPHGW0Tu3cXt93oFNCDkjuKfmVg9uXLIIu1sc7pnZyQbuIlh6T/0rUxWwO+5kQJ/D4
-	 uAfzhPB/WsnDV8eudDpkdhQYWg97CLNnQdAiID0VTmUDBtYdtlOPuRHlgL5MWaeYS5
-	 MsFx31Jcr0YBnC5n89hAEGMuwr+3qz9lQ0emYDtxfgr/b8Z+aXchmsKaUePLBYqaoT
-	 KNAfpXXUGi9Yq0GOXJT6ZbGW8vod831j87d7PKNOA89oV0mRNnTqvBt99lVec+fOfU
-	 kwfLx7iv5aB4Q==
+	b=G/8bSdeF2XHkLu2RJLqgr1qcc3i6Xqs9vw1Kb8R7xY+Fhi+0qxrWc+cK7qxI1FdJL
+	 SS9/v+gso/M9T1ReB7ioMHdNvFXQ74ImLErduWqE3fubCGlD6gfANC1nj5NWggcloQ
+	 UAjkdTZmYRgdVo66u0YvV3qtp1AcqUexUDNL77Y90PSDdyDtyRaxljl0cgT3qpMiBc
+	 sLPQRd2J4E7JhLpm0Q7XJSmpiOOvxc9bSvcPPGY/2HsGFAd1WIPookJdVIVMv0pe+u
+	 Z4oaogFa1h5bqyrwnXJlNbRTr0lO6MlVVP0YpHqUnT147kwtp4IOKu7TrPtNCwHrcu
+	 mYphVAbb4JLRA==
 From: Lorenzo Bianconi <lorenzo@kernel.org>
-Date: Tue, 18 Mar 2025 12:46:06 +0100
-Subject: [PATCH net-next v2 2/7] net: mvpp2: Add metadata support for xdp
+Date: Tue, 18 Mar 2025 12:46:07 +0100
+Subject: [PATCH net-next v2 3/7] net: netsec: Add metadata support for xdp
  mode
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -53,7 +53,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250318-mvneta-xdp-meta-v2-2-b6075778f61f@kernel.org>
+Message-Id: <20250318-mvneta-xdp-meta-v2-3-b6075778f61f@kernel.org>
 References: <20250318-mvneta-xdp-meta-v2-0-b6075778f61f@kernel.org>
 In-Reply-To: <20250318-mvneta-xdp-meta-v2-0-b6075778f61f@kernel.org>
 To: Marcin Wojtas <marcin.s.wojtas@gmail.com>, 
@@ -82,71 +82,53 @@ Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
  Michal Kubiak <michal.kubiak@intel.com>
 X-Mailer: b4 0.14.2
 
-Set metadata size building the skb from xdp_buff in mvpp2 driver
-mvpp2 driver sets xdp headroom to:
+Set metadata size building the skb from xdp_buff in netsec driver.
+netsec driver sets xdp headroom to NETSEC_RXBUF_HEADROOM:
 
-MVPP2_MH_SIZE + MVPP2_SKB_HEADROOM
-
-where
-
-MVPP2_MH_SIZE 2
-MVPP2_SKB_HEADROOM min(max(XDP_PACKET_HEADROOM, NET_SKB_PAD), 224)
+NETSEC_RXBUF_HEADROOM max(XDP_PACKET_HEADROOM, NET_SKB_PAD) + NET_IP_ALIGN
 
 so the headroom is large enough to contain xdp_frame and xdp metadata.
 Please note this patch is just compiled tested.
 
+Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/socionext/netsec.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index f166dc4e650372d66e248601a5c948819e1dcd79..54a235366a01bdba526a1956f27836bcdee210ae 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -3915,13 +3915,13 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
+index dc99821c6226fbaece65c8ade23899f610b44a9a..ee890de69ffe795dbdcc5331e36be86769f0d9a6 100644
+--- a/drivers/net/ethernet/socionext/netsec.c
++++ b/drivers/net/ethernet/socionext/netsec.c
+@@ -970,7 +970,7 @@ static int netsec_process_rx(struct netsec_priv *priv, int budget)
+ 		struct netsec_de *de = dring->vaddr + (DESC_SZ * idx);
+ 		struct netsec_desc *desc = &dring->desc[idx];
+ 		struct page *page = virt_to_page(desc->addr);
+-		u32 xdp_result = NETSEC_XDP_PASS;
++		u32 metasize, xdp_result = NETSEC_XDP_PASS;
+ 		struct sk_buff *skb = NULL;
+ 		u16 pkt_len, desc_len;
+ 		dma_addr_t dma_handle;
+@@ -1019,7 +1019,7 @@ static int netsec_process_rx(struct netsec_priv *priv, int budget)
+ 		prefetch(desc->addr);
  
- 	while (rx_done < rx_todo) {
- 		struct mvpp2_rx_desc *rx_desc = mvpp2_rxq_next_desc_get(rxq);
-+		u32 rx_status, timestamp, metasize = 0;
- 		struct mvpp2_bm_pool *bm_pool;
- 		struct page_pool *pp = NULL;
- 		struct sk_buff *skb;
- 		unsigned int frag_size;
- 		dma_addr_t dma_addr;
- 		phys_addr_t phys_addr;
--		u32 rx_status, timestamp;
- 		int pool, rx_bytes, err, ret;
- 		struct page *page;
- 		void *data;
-@@ -3983,7 +3983,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 			xdp_init_buff(&xdp, PAGE_SIZE, xdp_rxq);
- 			xdp_prepare_buff(&xdp, data,
- 					 MVPP2_MH_SIZE + MVPP2_SKB_HEADROOM,
--					 rx_bytes, false);
-+					 rx_bytes, true);
+ 		xdp_prepare_buff(&xdp, desc->addr, NETSEC_RXBUF_HEADROOM,
+-				 pkt_len, false);
++				 pkt_len, true);
  
- 			ret = mvpp2_run_xdp(port, xdp_prog, &xdp, pp, &ps);
+ 		if (xdp_prog) {
+ 			xdp_result = netsec_run_xdp(priv, xdp_prog, &xdp);
+@@ -1048,6 +1048,9 @@ static int netsec_process_rx(struct netsec_priv *priv, int budget)
  
-@@ -3999,6 +3999,8 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 				ps.rx_bytes += rx_bytes;
- 				continue;
- 			}
-+
-+			metasize = xdp.data - xdp.data_meta;
- 		}
- 
- 		if (frag_size)
-@@ -4038,6 +4040,8 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
- 
- 		skb_reserve(skb, MVPP2_MH_SIZE + MVPP2_SKB_HEADROOM);
- 		skb_put(skb, rx_bytes);
+ 		skb_reserve(skb, xdp.data - xdp.data_hard_start);
+ 		skb_put(skb, xdp.data_end - xdp.data);
++		metasize = xdp.data - xdp.data_meta;
 +		if (metasize)
 +			skb_metadata_set(skb, metasize);
- 		skb->ip_summed = mvpp2_rx_csum(port, rx_status);
- 		skb->protocol = eth_type_trans(skb, dev);
+ 		skb->protocol = eth_type_trans(skb, priv->ndev);
  
+ 		if (priv->rx_cksum_offload_flag &&
 
 -- 
 2.48.1
