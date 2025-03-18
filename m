@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-54298-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54299-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27AADA672EF
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 12:45:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E505BA672F1
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 12:45:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B3F11898215
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 11:45:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 080733BB43A
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 11:45:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB0F205E1A;
-	Tue, 18 Mar 2025 11:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0074220A5D8;
+	Tue, 18 Mar 2025 11:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="acp8AlWl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WKXWBszr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C3E20B21D
-	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 11:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 507C1207E12
+	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 11:45:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742298307; cv=none; b=u62Ia+jXswioRJqE6USbrEKjBga5B5FYZ/xtIJBn6dVCNnP+M3vThldTl5exDRIrbNStHVtsDsZX4d35mn2VpYr4SpG1pd7p9bLuxLMNZl6Uqe3q71pE6PM1EhVnGwTssrRhxuxd1ZEAQbxhqZGWS0PS5pdwhr++1Qg7uWkyuAE=
+	t=1742298311; cv=none; b=OQ2CjotMXjDpfDxvzYAmk+CcJvswchtsGc659uhNYvHjcwr1E4xlUS4k54MFV771LbAO/9GvDYq9KlBzzkOb6IOiGpRMe3HyTmpB8mgT1qcwwJw+EyzHdb1WNk7kcwB1OXos/dghkwjjL7OaDShdLGkmHz6w30UgwXwEj0wrAyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742298307; c=relaxed/simple;
-	bh=2jYUWSW3GkWeakv2eOCsYiyoYkYLd729wzFjeqwImXw=;
+	s=arc-20240116; t=1742298311; c=relaxed/simple;
+	bh=zwEVN5zTcMw3G9CRTAJNDL9Gs+QyT1fTAemwSdAIdHY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MZaDcNLTq4hdmlQpZ/fpsQyweIHGO6GurTCeg3R35/xq5ADewYRtIpS6dvIQqFfGTuGtEH/doWAEuiE66Qxom5rXYPha/G/nihjg6SXA+59SFcs6FLcLSvMewmZoA9KARXEQizICxoAqxKhiARaNTU3sSpWKHXrNlF85Yma778Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=acp8AlWl; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version; b=VN8ZngKvOL2FJTqBtXivSGUSj4Vl6D5TUNx+LtNy2+Y50GWvCha2ryJbxKhBOX8qfSN/OY16mvfWWdxxSZYGZfbGdL+TY1yMaEQpEO36Yfr7PJuCvAYhDhnjCTi/POVYgerhEg/Yygxf8mYpkOamTDCLxyoOSbjLDHPKy7qf4YY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WKXWBszr; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-225b5448519so101933505ad.0
-        for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 04:45:01 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ff784dc055so5000671a91.1
+        for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 04:45:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742298301; x=1742903101; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742298305; x=1742903105; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oum4Jcuw4YbD2Sx/DsBjjiv57OnkNyHS5WE5JfKpl38=;
-        b=acp8AlWlJtpwvK5P1NazfizXtSb33GSaMZ14NnbjLlH5bk/TbGsVwoPQ666P2hGxc7
-         DWzueHadRnEfHyTckObvv5fkDySQEHwX6TEJwKQaSVMTBxZM7+LqHaFaYDiJ/FcqAl18
-         MuJYD/JTDrzUaLP8IaU7Us8/dKe4wrau2wvt08ohcMQiMb23/jEr4Ap42OjMHeCTXI53
-         AAV7BE5aXKznnvLnqC5qMdM6Ye9cIVoEBO7znBM8YKftSg3YrM9nKQ0sgHQd519N4n21
-         LsIK+TlxqnCL92ueIrVPhkhU1ps7dce+ftHBBU+b9ONbIWzY8WdUbkRZRAm4jK2W17N3
-         S/0A==
+        bh=2sViwZFqw4Dxk80MihqOntWJ5GqJszGdmQTVLIDsqs4=;
+        b=WKXWBszrdq+uWbAs/+6iWbhqC4GwF6PYPqc86I42GaeGk2ywa9IvjfKqIDDcpBMPHT
+         ebk9a5OH3MTTxf3ego3KxfdIzu/ZY+A4I1f/W3trlgP0lGgSObhHUWh7hGryCctVjYjJ
+         F9N//7kbWO6lbth2qxoSKJkj7dY48osysUWo/n/Kb/RGfU+PnZnvZU0FHitRqUWLq2bZ
+         MGsaZroJcZIuvxdzKNuW6prhWI+mghWC+xDWx8iFr2svQ7+1pe91mxt0a+aDWxd5Tt7k
+         tcwTpRID0bPc542UwDPNDuQV1Z10WuGWxIeNywgu5fTE74IKFiVQxTqerUEyUEZxv9mH
+         FsVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742298301; x=1742903101;
+        d=1e100.net; s=20230601; t=1742298305; x=1742903105;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oum4Jcuw4YbD2Sx/DsBjjiv57OnkNyHS5WE5JfKpl38=;
-        b=usHbh+EEkR6RD+BNJBpVaObybsEAvA57iJUEASvmdlTdJ6WSEYKNHcg9eXZ615N+Dy
-         eFsgI0dn4WNhNIm9b1vdA0bJVLM4ExDGi+/dZOmet1VdFAPKaAYJS+L8kHS/bEDQefrc
-         a/1Yc6RmYm+cOCE4q7nkmXWRMzFcfQ+RLdrhEf5KYe4Xj49BLb6++SeA+Y2tYomLjxyg
-         GHwbS4YnOrEicyfJrJPYp0XI6+UjyVViiJgGPi9ccgA3uWQnqNZuOKUqLu0ADE6Kib5U
-         fu4KEUkWxrwp5aYY6bo5CdmgdrHdZOYerQuskX5O8uaSgRmUbzfCg+1Kz6kdxUK1PU4b
-         JSpA==
-X-Gm-Message-State: AOJu0Yx+JYanlKflpDQdEfS4UC+wl/PRKSuddIXfy+MF0usORbBeO0jt
-	ry9r73xuxR6BsaXW40T+nGtILps+4+xhbuyHsy7t9mEVb5ffss28
-X-Gm-Gg: ASbGncvyLc5H/RyqHmk6SEYVsIXTf8SVeSBJjaB/F82r4i8iRGguPNj8VQew9sD+Mz7
-	rOomShkoPMLIe0f2q1MM+sOBIKKapdB/FRLYEuWP0cb7cjMb6ZHfIkQ0fkJEArbh19dW/BcrZi9
-	SSlsCqwM8QGmZ78yip+dvOmHQUY6Kfwp37xyU6Meb13QqFcSchHBxfT4qSkAuqJEQbe5wIIAjgn
-	7hJbnIS6QegzKnZy+3BtJ5UFW+53nbkKSlNIdXVdvwuElb77ReDimxvdM5yg7ZAUYG6XywN4xZ6
-	yRaHy35AvS8HaAF/h4h7G+iFHoCNpd5hNz2dd//m+Ep4INugIwu+FSVa+1HCVw99t+ZllZZKCg=
+        bh=2sViwZFqw4Dxk80MihqOntWJ5GqJszGdmQTVLIDsqs4=;
+        b=fsT3Spy8M4oL7bT/buPU/6gl0aFNmUyejaH5JIWzxB0Lp1aJ4nkzkXyaUUWw+gPfHA
+         lnzr9eYlN9H9E0umC7GffvGLu9MLKZ8V0/4QwYPZ8IC41Nw3fRYbo/bazUTQ5U0vFcdO
+         RLLzKu2QqHuRUyeqn46rmaNvEL80pNC4vcUHj9jGUDite7qPeo1MuqYxhUx5hmjG3NX5
+         azDJ+tjRMXGR4lCZxBhqk8du0CCqVU6WYnfAw5buEfh8JbUvCoFHicJW+7OwhYG1Ww7O
+         4cj0eYDcGdBDEjnun/fZkRRtKJmNoScrpKY4hsno8hJdq3AAg1FILRGxqfZbi93npT1H
+         vuJg==
+X-Gm-Message-State: AOJu0YwcIvXrn4qW++TDNTGGj06lSpTX0qbnSLR9shd5H5M3+xVi/t7r
+	tRfIRr+iod3yckTG93DEyeXxLxGebtDDuf1WhHDuVQvqFd0O9cVX
+X-Gm-Gg: ASbGncvAaymMOjatiUo/6W+w5s0zEMUiWt3UoQZZrAyhr1oTamPXwtEiWkc4JEJ71rL
+	P8OL1L3SW5yAyJeVy2DzJvRDh6haxnOtVEmrYuhXhsEDs4dg+GEQa1KViK1RmXvzyL7owGNzGLh
+	UekQwblQJTt6SjM/bIh8eBqO9MRXt7cbH9aPwZrR2pp+u+4alSbpWWh976uomTK3Zx/jUW+R+xR
+	zFMI9WtfgzGrms7hAWq3wNfwmS7GYvGVc48cDYOrfStJdZzxxIojI1A4c0nAIpgoJc6Gg8HR9RL
+	uGHd0cjzZVTRGN+qrsJ7uPcGMS7uGN0yPTgaOzEjvRlyZPNKlC1t4BqhSrkxlriCNTrqg0OwLQ=
 	=
-X-Google-Smtp-Source: AGHT+IFA1GRH6alD0mjrnIaK8csjxTF6TxJNxlYKoMcd6PXnmRyYYm5sbp0AaRsLROdY9Hl3l0cECg==
-X-Received: by 2002:a17:90b:1b0c:b0:2fa:1a23:c01d with SMTP id 98e67ed59e1d1-301a5b32778mr2743057a91.21.1742298300942;
-        Tue, 18 Mar 2025 04:45:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFL9dPqLOPqUGRFrwbdz/edQ3/w5BXuhg7lpuSUsEJ6HNk1OS0mLSs/9o6UJc3F5Eo95um/5Q==
+X-Received: by 2002:a17:90b:4acb:b0:2fe:994d:613b with SMTP id 98e67ed59e1d1-301a5b9a88cmr2362484a91.35.1742298305473;
+        Tue, 18 Mar 2025 04:45:05 -0700 (PDT)
 Received: from localhost.localdomain ([39.144.39.116])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3015353462asm7918551a91.27.2025.03.18.04.44.57
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3015353462asm7918551a91.27.2025.03.18.04.45.01
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 18 Mar 2025 04:45:00 -0700 (PDT)
+        Tue, 18 Mar 2025 04:45:05 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -89,9 +89,9 @@ To: ast@kernel.org,
 	peterz@infradead.org
 Cc: bpf@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v5 1/2] bpf: Reject attaching fexit/fmod_ret to __noreturn functions
-Date: Tue, 18 Mar 2025 19:44:46 +0800
-Message-Id: <20250318114447.75484-2-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v5 2/2] selftests/bpf: Add selftest for attaching fexit to __noreturn functions
+Date: Tue, 18 Mar 2025 19:44:47 +0800
+Message-Id: <20250318114447.75484-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20250318114447.75484-1-laoar.shao@gmail.com>
 References: <20250318114447.75484-1-laoar.shao@gmail.com>
@@ -103,100 +103,57 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If we attach fexit/fmod_ret to __noreturn functions, it will cause an
-issue that the bpf trampoline image will be left over even if the bpf
-link has been destroyed. Take attaching do_exit() with fexit for example.
-The fexit works as follows,
+The reuslt:
 
-  bpf_trampoline
-  + __bpf_tramp_enter
-    + percpu_ref_get(&tr->pcref);
-
-  + call do_exit()
-
-  + __bpf_tramp_exit
-    + percpu_ref_put(&tr->pcref);
-
-Since do_exit() never returns, the refcnt of the trampoline image is
-never decremented, preventing it from being freed. That can be verified
-with as follows,
-
-  $ bpftool link show                                   <<<< nothing output
-  $ grep "bpf_trampoline_[0-9]" /proc/kallsyms
-  ffffffffc04cb000 t bpf_trampoline_6442526459    [bpf] <<<< leftover
-
-In this patch, all functions annotated with __noreturn are rejected, except
-for the following cases:
-- Functions that result in a system reboot, such as panic,
-  machine_real_restart and rust_begin_unwind
-- Functions that are never executed by tasks, such as rest_init and
-  cpu_startup_entry
-- Functions implemented in assembly, such as rewind_stack_and_make_dead and
-  xen_cpu_bringup_again, lack an associated BTF ID.
-
-With this change, attaching fexit probes to functions like do_exit() will
-be rejected.
-
-$ ./fexit
-libbpf: prog 'fexit': BPF program load failed: -EINVAL
-libbpf: prog 'fexit': -- BEGIN PROG LOAD LOG --
-Attaching fexit/fmod_ret to __noreturn functions is rejected.
+  $ tools/testing/selftests/bpf/test_progs --name=fexit_noreturns
+  #99/1    fexit_noreturns/noreturns:OK
+  #99      fexit_noreturns:OK
+  Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/bpf/verifier.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ .../selftests/bpf/prog_tests/fexit_noreturns.c    |  9 +++++++++
+ .../testing/selftests/bpf/progs/fexit_noreturns.c | 15 +++++++++++++++
+ 2 files changed, 24 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fexit_noreturns.c
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3303a3605ee8..19ece8893d38 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -23215,6 +23215,33 @@ BTF_ID(func, __rcu_read_unlock)
- #endif
- BTF_SET_END(btf_id_deny)
- 
-+/* fexit and fmod_ret can't be used to attach to __noreturn functions.
-+ * Currently, we must manually list all __noreturn functions here. Once a more
-+ * robust solution is implemented, this workaround can be removed.
-+ */
-+BTF_SET_START(noreturn_deny)
-+#ifdef CONFIG_IA32_EMULATION
-+BTF_ID(func, __ia32_sys_exit)
-+BTF_ID(func, __ia32_sys_exit_group)
-+#endif
-+#ifdef CONFIG_KUNIT
-+BTF_ID(func, __kunit_abort)
-+BTF_ID(func, kunit_try_catch_throw)
-+#endif
-+#ifdef CONFIG_MODULES
-+BTF_ID(func, __module_put_and_kthread_exit)
-+#endif
-+#ifdef CONFIG_X86_64
-+BTF_ID(func, __x64_sys_exit)
-+BTF_ID(func, __x64_sys_exit_group)
-+#endif
-+BTF_ID(func, do_exit)
-+BTF_ID(func, do_group_exit)
-+BTF_ID(func, kthread_complete_and_exit)
-+BTF_ID(func, kthread_exit)
-+BTF_ID(func, make_task_dead)
-+BTF_SET_END(noreturn_deny)
+diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c b/tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
+new file mode 100644
+index 000000000000..568d3aa48a78
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
+@@ -0,0 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- static bool can_be_sleepable(struct bpf_prog *prog)
- {
- 	if (prog->type == BPF_PROG_TYPE_TRACING) {
-@@ -23301,6 +23328,11 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	} else if (prog->type == BPF_PROG_TYPE_TRACING &&
- 		   btf_id_set_contains(&btf_id_deny, btf_id)) {
- 		return -EINVAL;
-+	} else if ((prog->expected_attach_type == BPF_TRACE_FEXIT ||
-+		   prog->expected_attach_type == BPF_MODIFY_RETURN) &&
-+		   btf_id_set_contains(&noreturn_deny, btf_id)) {
-+		verbose(env, "Attaching fexit/fmod_ret to __noreturn functions is rejected.\n");
-+		return -EINVAL;
- 	}
- 
- 	key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
++#include <test_progs.h>
++#include "fexit_noreturns.skel.h"
++
++void test_fexit_noreturns(void)
++{
++	RUN_TESTS(fexit_noreturns);
++}
+diff --git a/tools/testing/selftests/bpf/progs/fexit_noreturns.c b/tools/testing/selftests/bpf/progs/fexit_noreturns.c
+new file mode 100644
+index 000000000000..54654539f550
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/fexit_noreturns.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++
++char _license[] SEC("license") = "GPL";
++
++SEC("fexit/do_exit")
++__failure __msg("Attaching fexit/fmod_ret to __noreturn functions is rejected.")
++int BPF_PROG(noreturns)
++{
++	return 0;
++}
 -- 
 2.43.5
 
