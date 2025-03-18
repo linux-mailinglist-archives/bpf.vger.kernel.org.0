@@ -1,614 +1,251 @@
-Return-Path: <bpf+bounces-54324-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54325-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38A18A6766D
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 15:31:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12E55A67715
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 16:00:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 743B342365B
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 14:30:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E30D516B29D
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 14:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14B0320D50C;
-	Tue, 18 Mar 2025 14:30:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DB420E6EC;
+	Tue, 18 Mar 2025 14:58:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="e/4Wr6FB"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NnNYG40R"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C151020E00A
-	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 14:30:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742308207; cv=none; b=FvpUTBGewSJ65nQuL1pPulfixhjGfmV4gAVpT61VV8GdbCsqDUELcCxxCvyGQ0y8ZvcAuXom+PXjwIeaMOIi6djJzYO22X1BtGuY8XFoq2JO5X8PJEjm3u7uyQSDLbd6eftjPoeCrfn723qRaMoD5AfKkQ1DJFA8Nttwl23EavM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742308207; c=relaxed/simple;
-	bh=HhnFCRvJd1R/ArCA8jejW8R6TOTaQM+a5n1G3HvVsPM=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XM7GrZjSvwftX2x0Uo1F7c5qAG67m7mzKKj5pRaRbaCUl+b4NP6KHkJdf+TbRVIUfIoUJys14NLH0jBsQ9xeSpTBDae5KZ0FJXOqBu6CZiY7sUWqRWGSYtxH7nBDGPS26PjGkqGdNp0YaPQFqd1DmojBKKjRUH5yskThaineocQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=e/4Wr6FB; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43cf05f0c3eso25240085e9.0
-        for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 07:30:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1742308200; x=1742913000; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/UZzeYYkzQK7t58AqMuKshbn3e7tI+uy8ybJOS+AN14=;
-        b=e/4Wr6FBOv8q612nw5t5Z/+JMXGqSeTY3Njx0lt9M0Nr8WNA6aYOec201alkU6gSPK
-         1/t9g4S6j2IQFz9R5vqt/by2SS/warn+Ua7RGdqHIPE10OyUKAxQR6op260WbAIChu0f
-         4Z+G1bpMsi4tz6Pz9KUSPTw68Il5dhq5NYCh6wiYeZXmKjdZL3ii0takHWaKXCaxqVzD
-         aOMoX9/ayuif1faltjIJvo+pLNjpOz5+UjJxTzrAdWdpvyWgOIO0d8X9LDd6xUy4cAz6
-         mUhXx/nvxJLwoZmPh4oI3KTzxm3uQRLkMRjYCyCoKGdglPP+IdD/iBESAofhr4ZwK77o
-         JD9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742308200; x=1742913000;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/UZzeYYkzQK7t58AqMuKshbn3e7tI+uy8ybJOS+AN14=;
-        b=FNgTEclldbM39sIHFopTfjkFjO+XpI1uD50rsisohHFofUm6bY+bs5QuGj60pNFsP6
-         Hl6SH+aVs98T1/WOabusy8PY+R7xfXi8OJb9R4FdvXBZJwIGNSfPDgyeOaK+Ngwn9V+Q
-         v5Q9qEVPIxqGQMBRX0YgJdHayjTwDMMkttsP5Ga2+GYpdLC/c8aXOgFLbpd8W34emWaB
-         qCSTNnC2BOrnu51IKEIfvV9r45Ffkq1DT7JqbsIXXN4kQn+VfJzkkWBrpmzg/N/NO7i/
-         X316cNeEVxxvVfTvvejvDRFpvgWEEgQG2A2voGd0fohCmabTeSH/37CyLsi1rx8L3Z4q
-         +/VA==
-X-Gm-Message-State: AOJu0YxL6MoLzR7lsUiqPZTEGCvVR+SprJJtft+wixr+t0Ug8F5s5xdU
-	qLus5TlqHuzLUbwK5e4BSve2qwTlqPfLjqoyrjZiH6rGznuA1hpsy3CMDagwQ5ty1ufa4YD6RRt
-	e
-X-Gm-Gg: ASbGncuRuZIN2HKvJmDjOwMxbNptMk3RQiYmNv5kymIkyPA91iaXOvVEy+OQ51/sLxi
-	NCGgIoyDFOOz17KnWPmNUnYYYNSckaBGh4Sy3IqSpBW+K+nzaA93Hka0k2EIlctS3wtrxUetmCn
-	0Cp2Gy16eUX3K0velaW7sJiy08djCYSB/IUY11m9zgOlnNqMgd3Tp1E0KpL/9oRKHwuyYEl/2HZ
-	xt1WYlwqWpiAxGxbBwVVU9amNMP1WE2TrkS0J4Z/x40i2McTcD1WRJLv+Brkn7R0WqPCzWNeuZ+
-	k5hSBzgfpBIxpiI4VyGCXenLc2UOS8aM8OzIq6VXGAxQG8Ez8juwOQadaA==
-X-Google-Smtp-Source: AGHT+IFt4xpzL2AYapNS7T8S3DB13XBZUl9DNgRa4dhnK2In5fb4T/gM5P503uruP0hR4VcLiPlt7Q==
-X-Received: by 2002:a05:600c:470d:b0:43d:17f1:2640 with SMTP id 5b1f17b1804b1-43d3ba0753bmr20634595e9.26.1742308199724;
-        Tue, 18 Mar 2025 07:29:59 -0700 (PDT)
-Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395cb40cdd0sm18348071f8f.77.2025.03.18.07.29.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Mar 2025 07:29:59 -0700 (PDT)
-From: Anton Protopopov <aspsk@isovalent.com>
-To: bpf@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Quentin Monnet <qmo@kernel.org>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	Alexei Starovoitov <ast@kernel.org>
-Subject: [RFC PATCH bpf-next 14/14] selftests/bpf: Add tests for BPF static calls
-Date: Tue, 18 Mar 2025 14:33:18 +0000
-Message-Id: <20250318143318.656785-15-aspsk@isovalent.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250318143318.656785-1-aspsk@isovalent.com>
-References: <20250318143318.656785-1-aspsk@isovalent.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E211D1C5F32;
+	Tue, 18 Mar 2025 14:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742309898; cv=fail; b=J7x0Z+ji2PftXaTrz6RD00SZp7jt+BfKGwU98bR5fc+fl+IwvOKeoXDjAqBjOopWUxSVe4bIYiEaReLN+fP2HiC/oe8WpLpUyJf4iNkHMGUZjVC1aUmEbVr7cnZzd+tzM9+siJ7hRijn1lr1MgRGuEEX4DDQGIg87uHYXeR0yco=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742309898; c=relaxed/simple;
+	bh=rIZeVbx50zEL1f7bJZCSJ7lf9joHhgYAFpUs9zhaaA4=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=PnXnCbTQiaJDW+bTVHwez1cvwEHw/UPhhhHb+I5EYNiekFQ3VP/EXfTSplgHCHo45zMhWdJJ8PWYmXgPj2Kzrg3PnwerCJcgzN9uXEUcH7H06S//vHKSrdQODlJfdrCJOyPBD1R9ufVjRlQ1srQ4hDwesgbbj94hEiKBgFZro54=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NnNYG40R; arc=fail smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1742309897; x=1773845897;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=rIZeVbx50zEL1f7bJZCSJ7lf9joHhgYAFpUs9zhaaA4=;
+  b=NnNYG40RxuOwTjyZHbn67+B+TzPZ8/UTS7/lZACk4lELKlHmaln+QTQz
+   waJ2MxlC8Q/k/LWb/e9rkkIq3cpo7QaV16xM6Wyoa6jB5qRfPcvBiumuC
+   DZ4gRf/GRxe8yu3e1b1PjZ0HkfkoR2TmG1w2sMEpu4KaK+L0KilhkCu12
+   oV72Gira6dUONvhOg0HBCAu79iuGRwdJGKIJcL9t6pK2pX3mpM9p3Eexb
+   6rS5s69d0K0lcMCYQzPxfgNHDLgj9SZVAlBsphc3GwUYm2yxE5RL/VcDy
+   AbQ0PAFfPNNQH9LIbaTp3YTl5fxaBKXr2A2SIEjbvmmPBCJsKo4EjXTSh
+   w==;
+X-CSE-ConnectionGUID: eVUkuOHQRYmIgam+U67QKg==
+X-CSE-MsgGUID: RGZ+BdI9SzaJTNGXk68uew==
+X-IronPort-AV: E=McAfee;i="6700,10204,11377"; a="47233024"
+X-IronPort-AV: E=Sophos;i="6.14,257,1736841600"; 
+   d="scan'208";a="47233024"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2025 07:58:16 -0700
+X-CSE-ConnectionGUID: SiyAF3RIRJq7temDXYrthw==
+X-CSE-MsgGUID: xIBgX8evQuGOv0EuIXspQQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,257,1736841600"; 
+   d="scan'208";a="153131721"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+  by orviesa002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2025 07:58:15 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Tue, 18 Mar 2025 07:58:14 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Tue, 18 Mar 2025 07:58:14 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.175)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Tue, 18 Mar 2025 07:58:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Q2pFL8Kh9/4hEu083js/TlB6mrbMbWKAShqjzGkTdx7i1G8cVxl0Xfh7HUuOJHfBUlV/kUZ9iKepzXW6S8UEgFkvZBaHUhWpcpsoA4Fut6J0YlR9cB19EEW5n2ACRdFl21F3Oi9WMhAr6PKD1J8Fitm+xx3RTsC5iOwpVuuIsH17GoJHAxymtPLkgOzMjm8c16F1FH7iKm1pV6CHWeOYYzmYtd90mD6cEaT2JSv62cA31jKYNLXlgp0ZlBXbcm6gkV/euZ9rP/C6FGupGxQKcHF6zDecIivbQKdHbOjOCqDtn8CdeIXAf5RWPObdWfb81RtJpUVmDcUMy9F1kqqikQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jBZFZdTqeATVZE+rxasCwU1XES31ZzHT66gO091Fjrg=;
+ b=s4t4Sb29/VTIGiod9ConOHD8wCp0CadJLhg08m4m1IF/M7dmx8dmDWf9vLhLDTJ3EbBVby1uW07eRVR7aHqS/qXbbfEVs9+G5uW+Mc8jylKdKXPfptxbMoLTLTOQhMkJAsw5uc6DeXl7JIijOV59KxE3TUZLWhN4W5cWsV//OU3lgqn3qA+46w8uCjDnrHllrB2zV+bW/8D7Wha2z/DLg5XxDiM6kVA8cSRzPx8f04pf2Ye5Y/32Q218YthA5tw/KcRuMHlKFc5IjOl7H/gozL/rvhD+QeK/h5UvFpiir9Ay3daYsKvstnPSgNLuz227nj/9JVXnN+Fo0Jndk4CC2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ SA1PR11MB8327.namprd11.prod.outlook.com (2603:10b6:806:378::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.33; Tue, 18 Mar
+ 2025 14:58:12 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::d19:56fe:5841:77ca%3]) with mapi id 15.20.8534.031; Tue, 18 Mar 2025
+ 14:58:11 +0000
+Date: Tue, 18 Mar 2025 15:58:05 +0100
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: "Vyavahare, Tushar" <tushar.vyavahare@intel.com>
+CC: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "bjorn@kernel.org" <bjorn@kernel.org>, "Karlsson,
+ Magnus" <magnus.karlsson@intel.com>, "jonathan.lemon@gmail.com"
+	<jonathan.lemon@gmail.com>, "davem@davemloft.net" <davem@davemloft.net>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
+	<daniel@iogearbox.net>, "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>
+Subject: Re: [PATCH bpf-next v3 2/2] selftests/xsk: Add tail adjustment tests
+ and support check
+Message-ID: <Z9mJ/QSbTfa0IW4Z@boxer>
+References: <20250305141813.286906-1-tushar.vyavahare@intel.com>
+ <20250305141813.286906-3-tushar.vyavahare@intel.com>
+ <Z9C0/2uFFQPGozkr@boxer>
+ <IA1PR11MB6514B98679051D03FDDED9C78FDE2@IA1PR11MB6514.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <IA1PR11MB6514B98679051D03FDDED9C78FDE2@IA1PR11MB6514.namprd11.prod.outlook.com>
+X-ClientProxiedBy: ZR2P278CA0042.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:47::13) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|SA1PR11MB8327:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8b9c8443-2ead-40bb-f2e8-08dd662d4d85
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016|7053199007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?OiFWX9dFt8HpQRcsrn/grHuw8c0yD7TnHRIpnYnQk4gy/Orve1AnnHNbkQHR?=
+ =?us-ascii?Q?9VYJul6gyalEUL3rQ5QHIUn0L+JVFVnSypLzErwDM9j9VMveHZvOewtgrqZl?=
+ =?us-ascii?Q?+wM7dwOXgUe16A8tlZ7PeBwfTGpIuzTbX9HxtRP7G8R9wv1zP5Jesj+mpkDR?=
+ =?us-ascii?Q?H55+fkeygFopHmZ238y8O+HO04IIFVm7n04B4PODV6yUi4Ih7aUBWsbH7Zv7?=
+ =?us-ascii?Q?cjXzAhV57qyHXm+q/9vVGMQHoc4gOB+MBU2hsFWFz7x99NkvEVq7c3a8yC6H?=
+ =?us-ascii?Q?Nr+xheMFlR2FXICQzhELVgMe1R8dkonpwzyDtUnC6XFyl+8mXXg2RRfBQlm6?=
+ =?us-ascii?Q?y9iIwkugxg34XvIURWeVTLe6SJgj/0jELwEOqjHMjV8PMHVBPzrI0yvOUXhk?=
+ =?us-ascii?Q?qG4kNCf/CJnoerLkU3bX0mrLCUfvcdSGtHfFcQLlye4g7luygiSGn919f0UC?=
+ =?us-ascii?Q?35n1eaRaSETjH+gWmudK43wgDGq3iRUDhUoBId92s9HfKrPgy9eqbOEmNFG7?=
+ =?us-ascii?Q?i/SCTIV0MeykOHcuaEUU9j/Jv/ew9JU5hHQhV3X13OmRfCV6N/HMX+ehR5/H?=
+ =?us-ascii?Q?JsB9gmNnWafZbcYqLbO3nlOBf9bs29J9LUA6DyPeZ2YCLfkTMCaUpIueN1vY?=
+ =?us-ascii?Q?iGS+61Wf58KN2ZoYV5Z1gapOzN5TvH1qEPcyCSzsuXJpM/peTA4vtoxTbEIi?=
+ =?us-ascii?Q?WBg88zHMFDrK/bc696fVEFf0GIW7y0fDy/EoQNRS+6vKUxSIcdeW/RcundbS?=
+ =?us-ascii?Q?FZIwyKd5DBA/fqe3eXxK7nCsHL8g35U7nTJJwWuE9MssZxrwH59SXT9IEnZN?=
+ =?us-ascii?Q?6S1JcMAWOk65HO/IKQGAC/HERXN7Pp8VCVs7wRjbJiKis4PhSpGb8Ltg7MrI?=
+ =?us-ascii?Q?JpNbOcnPIBTSd8sX+LKoQQlLmJYpL7l5JhXIO+67dqz3MBr8qDpmBBppk2Qk?=
+ =?us-ascii?Q?Zz4JkGlYiHw9ei9eQzMRbzfGWGokHIZD7SFu7Ii9/2+ivd2Vdis6+iMnLgoH?=
+ =?us-ascii?Q?Bm2+UO7a2/oRNmltpV3lTlWsxwLA8EZXYPXgtPfcc1+A8thROA1EkIQLXg5F?=
+ =?us-ascii?Q?9PQ7Mo9Jd+DAilZBUN3Jo+e3Nb0OVn5/51aqKwxYQaSEOqK9z0CJtfuvB8CZ?=
+ =?us-ascii?Q?mKmOFgvkGssqipFV01dTjDvGeIWWoZWQKVqLsyUU9xfN0v29h3+5EfFXzb09?=
+ =?us-ascii?Q?ur2B62OaL5mWZVAZ7AqKJNLwERPzBJdYP/XAs7NUa1X3JmRdR9Hm56sB+6sk?=
+ =?us-ascii?Q?E00rV+xlIrpMa+LEbzboZCZQKxvZGn8hT+6FXRAWqEUGBPlsFVANVw91XbzJ?=
+ =?us-ascii?Q?MbBij6q7blXh4i6SV3uCsB4ro4K9O0yqJA1afUfWPeKcPjpo3NbTipcrANvX?=
+ =?us-ascii?Q?nI/NO+9SuIojiNUtooD4ifILdGz1?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OEiumz2GB9rulN0A+LacZ517r4Cvg88NfJuFeSIqaKX2Y2UX3CeJpTz6aN8r?=
+ =?us-ascii?Q?nDW+xiLbWMFOSh+RC4txXhm9NclKHLWrMwvZ//Wk6+qF0GE4T1zCyLCrAple?=
+ =?us-ascii?Q?ZTdOgR/BqwUF27uzbpFV+omlSLkgkJXBaGxq8k5r8jWhTbGp83urZOeof4rR?=
+ =?us-ascii?Q?iiO6r1Q5M0JO+/5jaVq9MR9aFAtgLQ0iv0Xo51exEQrOkf0dJhcFKpbeQo8e?=
+ =?us-ascii?Q?m65HiRfNU+LE6h9tKWdEGHyB546WUrjM///tnqvmNAVh4AcH1gO9fQzlT6tt?=
+ =?us-ascii?Q?yM5+y1+CO6/QuuHcYZ3w1TZcB7eAfc5GAvLkwjQVB4rUvTbeEQpp5i0bufhb?=
+ =?us-ascii?Q?FVqDF53WyVzqIvQHZlkmaXNJyfP+jn7nfpUswnFysMrtP2RucKNXEdsosY/V?=
+ =?us-ascii?Q?4WQs4Tvzo3BWA/xmAOv7ifIlL2OopAfueY9ibhHaHrtX5NYP0C6EQzH++GCa?=
+ =?us-ascii?Q?c0qbKsSBKw2BGCTMlyuJUtA4rg8vMoHKFJUw9C1NaZkFBtgOqb0oPAGOeQm+?=
+ =?us-ascii?Q?bMOGy9TqB7uUJCjLgaJ1daTa5PWPbkL6O6WqB7p56rxvxeyZ5Bd3ItOwfKOx?=
+ =?us-ascii?Q?saO6fPSkz55N1ij6DkVbJxM6wPdsLhXftYdrk8+NIRsdsbPt1MfYayE9JB9l?=
+ =?us-ascii?Q?s3WeQbkSdPqVzHNB+I0To2/jTihmSf4TR6LPmkXxWYUVF2/Tpoxu5q9L0FvQ?=
+ =?us-ascii?Q?hDSxwimjnDwwm2sZxWDCQKX2UE/D/365OXKnzq8HX9xknIjL4C6gFptgjUTA?=
+ =?us-ascii?Q?cbzlUh49T2pPafzw2lMGSKQFtSZbhgV3jnXkZeFvkUFRUprmP6LYzR3s4Pmg?=
+ =?us-ascii?Q?YI8L2t+/WPzcmDelk9iGLFRWJvhaWHM+r8gktIJqaEAIEkXT8Her83+M1G2B?=
+ =?us-ascii?Q?Bf96eMF+Blzctr48Hvr/FSojvyPxjlvyxewp1M3dJyJ9T+HpgfieU22X3kZH?=
+ =?us-ascii?Q?v+PaxIDtvSqOG9XsxcSkGiEJ7McCNtkpNtVYHwlk2+boVFRUQEbGWoac+gFw?=
+ =?us-ascii?Q?qMXGdhoWDs+RF7FC8u0L0rV8w33wOqh1t7aA8Rvht7MmevTrenduIosPOQB4?=
+ =?us-ascii?Q?ANFJNbsOaZYhT3tTbz3Bvj9XckiC4zZ6qKyNli8Gr+DSvfW+WeYXMZZmqp1l?=
+ =?us-ascii?Q?S0ZTO0d0DHOaOpMDZ8HMdCugEPUyC+ccYb2OTTP2FfLKR/Ij11CInbD7VhZh?=
+ =?us-ascii?Q?t3AuD1Hlnfi1Ua1O0RdmSl2+ECyWEHyNaOmhhnTQFyPVAz0TEJDVTj85Xtf9?=
+ =?us-ascii?Q?vLPduwCDEut9hVzTmYqXuLHGp+D4LEuE1kHa61dH7mVekqcWnovlgwuhcE5O?=
+ =?us-ascii?Q?KlpxkJCKAiXzFfZZhlK0Ligfyw7Sq5ldg9efxEUC1QB31INxKsgzfusAmYJl?=
+ =?us-ascii?Q?Q9t/e4ouQHcMe8u+aDF5j/N+HCgYIeMlARVEE1SXi3YpCyV70fSXRT2bijTp?=
+ =?us-ascii?Q?GXUSLMbr5EBOfLjAQTu/7l6xRhIZxsIXI/z6eblOWSoEtydZTkh94+gCb5Rn?=
+ =?us-ascii?Q?aDM0gs65tqcRrn6Xer+i7Z3SNPHnVP32BpYbpcAqln6Au9Ct1e5OcMdzAzCa?=
+ =?us-ascii?Q?xzPyzbn9R4lwwJsigPn+GkgK08r7iLRigK9hTOiKJYkpsx7rnNVlNYQOD8eA?=
+ =?us-ascii?Q?ow=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b9c8443-2ead-40bb-f2e8-08dd662d4d85
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2025 14:58:11.8264
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FEpwCeGEg1+h7JGI4v278xYiebVUVbKBMwxSAgo6P2NfU69wXkriGFZBByS9/gimveHpkI3MffjS0+PJFZad9qnm0uPUUTIiBEvePWFajFU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8327
+X-OriginatorOrg: intel.com
 
-Add self-tests to test new BPF_STATIC_BRANCH_JA jump instructions
-and the BPF_STATIC_KEY_UPDATE syscall.
+On Tue, Mar 18, 2025 at 10:22:55AM +0100, Vyavahare, Tushar wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
+> > Sent: Wednesday, March 12, 2025 3:41 AM
+> > To: Vyavahare, Tushar <tushar.vyavahare@intel.com>
+> > Cc: bpf@vger.kernel.org; netdev@vger.kernel.org; bjorn@kernel.org; Karlsson,
+> > Magnus <magnus.karlsson@intel.com>; jonathan.lemon@gmail.com;
+> > davem@davemloft.net; kuba@kernel.org; pabeni@redhat.com;
+> > ast@kernel.org; daniel@iogearbox.net; Sarkar, Tirthendu
+> > <tirthendu.sarkar@intel.com>
+> > Subject: Re: [PATCH bpf-next v3 2/2] selftests/xsk: Add tail adjustment tests
+> > and support check
+> > 
+> > On Wed, Mar 05, 2025 at 02:18:13PM +0000, Tushar Vyavahare wrote:
+> > > Introduce tail adjustment functionality in xskxceiver using
+> > > bpf_xdp_adjust_tail(). Add `xsk_xdp_adjust_tail` to modify packet
+> > > sizes and drop unmodified packets. Implement
+> > > `is_adjust_tail_supported` to check helper availability. Develop
+> > > packet resizing tests, including shrinking and growing scenarios, with
+> > > functions for both single-buffer and multi-buffer cases. Update the
+> > > test framework to handle various scenarios and adjust MTU settings.
+> > > These changes enhance the testing of packet tail adjustments, improving
+> > AF_XDP framework reliability.
+> > >
+> > > Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
+> > > ---
+> > >  .../selftests/bpf/progs/xsk_xdp_progs.c       |  49 ++++++++
+> > >  tools/testing/selftests/bpf/xsk_xdp_common.h  |   1 +
+> > >  tools/testing/selftests/bpf/xskxceiver.c      | 107 +++++++++++++++++-
+> > >  tools/testing/selftests/bpf/xskxceiver.h      |   2 +
+> > >  4 files changed, 157 insertions(+), 2 deletions(-)
+> > >
+> > > +	return testapp_adjust_tail(test, adjust_value, len); }
+> > > +
+> > > +static int testapp_adjust_tail_shrink(struct test_spec *test) {
+> > > +	return testapp_adjust_tail_common(test, -4, MIN_PKT_SIZE, false); }
+> > > +
+> > > +static int testapp_adjust_tail_shrink_mb(struct test_spec *test) {
+> > > +	return testapp_adjust_tail_common(test, -4,
+> > > +XSK_RING_PROD__DEFAULT_NUM_DESCS * 3, true);
+> > 
+> > Am I reading this right that you are modifying the size by just 4 bytes?
+> > The bugs that drivers had were for cases when packets got modified by value
+> > bigger than frag size which caused for example underlying page being freed.
+> > 
+> > If that is the case tests do nothing valuable from my perspective.
+> > 
+> 
+> In the v4 patchset, I have updated the code to modify the packet size by
+> 1024 bytes instead of just 4 bytes.
 
-Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
----
- .../bpf/prog_tests/bpf_static_keys.c          | 359 ++++++++++++++++++
- .../selftests/bpf/progs/bpf_static_keys.c     | 131 +++++++
- 2 files changed, 490 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_static_keys.c
+Why this value?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c b/tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c
-new file mode 100644
-index 000000000000..3f105d36743b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c
-@@ -0,0 +1,359 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+
-+#include <sys/syscall.h>
-+#include <bpf/bpf.h>
-+
-+#include "bpf_static_keys.skel.h"
-+
-+#define VAL_ON	7
-+#define VAL_OFF	3
-+
-+enum {
-+	OFF,
-+	ON
-+};
-+
-+static int _bpf_prog_load(struct bpf_insn *insns, __u32 insn_cnt)
-+{
-+	return bpf_prog_load(BPF_PROG_TYPE_XDP, NULL, "GPL", insns, insn_cnt, NULL);
-+}
-+
-+static int _bpf_static_key_update(int map_fd, __u32 on)
-+{
-+	LIBBPF_OPTS(bpf_static_key_update_opts, opts);
-+
-+	opts.on = on;
-+
-+	return bpf_static_key_update(map_fd, &opts);
-+}
-+
-+#define BPF_JMP32_OR_NOP(IMM, OFF)				\
-+	((struct bpf_insn) {					\
-+		.code  = BPF_JMP32 | BPF_JA | BPF_K,		\
-+		.dst_reg = 0,					\
-+		.src_reg = BPF_STATIC_BRANCH_JA,		\
-+		.off   = OFF,					\
-+		.imm   = IMM })
-+
-+#define BPF_JMP_OR_NOP(IMM, OFF)				\
-+	((struct bpf_insn) {					\
-+		.code  = BPF_JMP | BPF_JA | BPF_K,		\
-+		.dst_reg = 0,					\
-+		.src_reg = BPF_STATIC_BRANCH_JA,		\
-+		.off   = OFF,					\
-+		.imm   = IMM })
-+
-+#define BPF_NOP_OR_JMP32(IMM, OFF)				\
-+	((struct bpf_insn) {					\
-+		.code  = BPF_JMP32 | BPF_JA | BPF_K,		\
-+		.dst_reg = 0,					\
-+		.src_reg = BPF_STATIC_BRANCH_JA |		\
-+			   BPF_STATIC_BRANCH_NOP,		\
-+		.off   = OFF,					\
-+		.imm   = IMM })
-+
-+#define BPF_NOP_OR_JMP(IMM, OFF)				\
-+	((struct bpf_insn) {					\
-+		.code  = BPF_JMP | BPF_JA | BPF_K,		\
-+		.dst_reg = 0,					\
-+		.src_reg = BPF_STATIC_BRANCH_JA |		\
-+			   BPF_STATIC_BRANCH_NOP,		\
-+		.off   = OFF,					\
-+		.imm   = IMM })
-+
-+static const struct bpf_insn insns0[] = {
-+	BPF_JMP_OR_NOP(0, 1),
-+	BPF_NOP_OR_JMP(0, 1),
-+	BPF_JMP32_OR_NOP(1, 0),
-+	BPF_NOP_OR_JMP32(1, 0),
-+};
-+
-+/* Lower-level selftests for the gotol_or_nop/nop_or_gotol instructions */
-+static void check_insn(void)
-+{
-+	struct bpf_insn insns[] = {
-+		{}, /* we will substitute this by insn0[i], i=0,1,2,3 */
-+		BPF_JMP_IMM(BPF_JA, 0, 0, 1),
-+		BPF_JMP_IMM(BPF_JA, 0, 0, -2),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	};
-+	bool stop = false;
-+	int prog_fd[4];
-+	int i;
-+
-+	for (i = 0; i < 4; i++) {
-+		insns[0] = insns0[i];
-+		prog_fd[i] = _bpf_prog_load(insns, ARRAY_SIZE(insns));
-+		if (!ASSERT_GE(prog_fd[i], 0, "correct program"))
-+			stop = true;
-+	}
-+
-+	for (i = 0; i < 4; i++)
-+		close(prog_fd[i]);
-+
-+	if (stop)
-+		return;
-+
-+	/* load should fail: incorrect SRC */
-+	for (i = 0; i < 4; i++) {
-+		insns[0] = insns0[i];
-+		insns[0].src_reg |= 4;
-+		prog_fd[i] = _bpf_prog_load(insns, ARRAY_SIZE(insns));
-+		if (!ASSERT_EQ(prog_fd[i], -EINVAL, "incorrect src"))
-+			return;
-+	}
-+
-+	/* load should fail: incorrect DST */
-+	for (i = 0; i < 4; i++) {
-+		insns[0] = insns0[i];
-+		insns[0].dst_reg = i + 1; /* non-zero */
-+		prog_fd[i] = _bpf_prog_load(insns, ARRAY_SIZE(insns));
-+		if (!ASSERT_EQ(prog_fd[i], -EINVAL, "incorrect dst"))
-+			return;
-+	}
-+
-+	/* load should fail: both off and imm are set */
-+	for (i = 0; i < 4; i++) {
-+		insns[0] = insns0[i];
-+		insns[0].imm = insns[0].off = insns0[i].imm ?: insns0[i].off;
-+		prog_fd[i] = _bpf_prog_load(insns, ARRAY_SIZE(insns));
-+		if (!ASSERT_EQ(prog_fd[i], -EINVAL, "incorrect imm/off"))
-+			return;
-+	}
-+
-+	/* load should fail: offset is incorrect */
-+	for (i = 0; i < 4; i++) {
-+		insns[0] = insns0[i];
-+
-+		if (insns0[i].imm)
-+			insns[0].imm = -2;
-+		else
-+			insns[0].off = -2;
-+		prog_fd[i] = _bpf_prog_load(insns, ARRAY_SIZE(insns));
-+		if (!ASSERT_EQ(prog_fd[i], -EINVAL, "incorrect imm/off"))
-+			return;
-+
-+		if (insns0[i].imm)
-+			insns[0].imm = 42;
-+		else
-+			insns[0].off = 42;
-+		prog_fd[i] = _bpf_prog_load(insns, ARRAY_SIZE(insns));
-+		if (!ASSERT_EQ(prog_fd[i], -EINVAL, "incorrect imm/off"))
-+			return;
-+
-+		/* 0 is not allowed */
-+		insns[0].imm = insns[0].off = 0;
-+		prog_fd[i] = _bpf_prog_load(insns, ARRAY_SIZE(insns));
-+		if (!ASSERT_EQ(prog_fd[i], -EINVAL, "incorrect imm/off"))
-+			return;
-+	}
-+
-+	/* incorrect field is used */
-+	for (i = 0; i < 4; i++) {
-+		int tmp;
-+
-+		insns[0] = insns0[i];
-+
-+		tmp = insns[0].imm;
-+		insns[0].imm = insns[0].off;
-+		insns[0].off = tmp;
-+
-+		prog_fd[i] = _bpf_prog_load(insns, ARRAY_SIZE(insns));
-+		if (!ASSERT_EQ(prog_fd[i], -EINVAL, "incorrect field"))
-+			return;
-+	}
-+}
-+
-+static void trigger_prog(void)
-+{
-+	usleep(1);
-+}
-+
-+static void __check_one_key(struct bpf_static_keys *skel,
-+			    struct bpf_map *key,
-+			    int val_off,
-+			    int val_on)
-+{
-+	int map_fd;
-+	int ret;
-+
-+	map_fd = bpf_map__fd(key);
-+	if (!ASSERT_GT(map_fd, 0, "key"))
-+		return;
-+
-+	ret = _bpf_static_key_update(map_fd, ON);
-+	if (!ASSERT_EQ(ret, 0, "_bpf_static_key_update(ON)"))
-+		return;
-+	skel->bss->ret_user = 0;
-+	trigger_prog();
-+	if (!ASSERT_EQ(skel->bss->ret_user, val_on, "skel->bss->ret_user"))
-+		return;
-+
-+	_bpf_static_key_update(map_fd, OFF);
-+	skel->bss->ret_user = 0;
-+	trigger_prog();
-+	if (!ASSERT_EQ(skel->bss->ret_user, val_off, "skel->bss->ret_user"))
-+		return;
-+}
-+
-+static void check_one_key(struct bpf_static_keys *skel, struct bpf_program *prog, struct bpf_map *key)
-+{
-+	struct bpf_link *link;
-+
-+	link = bpf_program__attach(prog);
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	__check_one_key(skel, key, VAL_OFF, VAL_ON);
-+
-+	bpf_link__destroy(link);
-+}
-+
-+static void check_one_key_multiple(struct bpf_static_keys *skel, struct bpf_map *key)
-+{
-+	struct bpf_link *link;
-+
-+	link = bpf_program__attach(skel->progs.check_one_key_multiple);
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	__check_one_key(skel, key, VAL_OFF * 3, VAL_ON * 3);
-+
-+	bpf_link__destroy(link);
-+}
-+
-+static void check_one_key_long_jump(struct bpf_static_keys *skel, struct bpf_map *key)
-+{
-+	struct bpf_link *link;
-+
-+	link = bpf_program__attach(skel->progs.check_one_key_long_jump);
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	__check_one_key(skel, key, 1000, 2000);
-+
-+	bpf_link__destroy(link);
-+}
-+
-+static void __check_multiple_keys(struct bpf_static_keys *skel,
-+				  struct bpf_map *key1,
-+				  struct bpf_map *key2,
-+				  int val_off_off,
-+				  int val_off_on,
-+				  int val_on_off,
-+				  int val_on_on)
-+{
-+	int map_fd1, map_fd2;
-+	int ret;
-+
-+	map_fd1 = bpf_map__fd(key1);
-+	if (!ASSERT_GT(map_fd1, 0, "key1"))
-+		return;
-+
-+	map_fd2 = bpf_map__fd(key2);
-+	if (!ASSERT_GT(map_fd2, 0, "key2"))
-+		return;
-+
-+	ret = _bpf_static_key_update(map_fd1, OFF);
-+	if (!ASSERT_EQ(ret, 0, "_bpf_static_key_update(key1, OFF)"))
-+		return;
-+	ret = _bpf_static_key_update(map_fd2, OFF);
-+	if (!ASSERT_EQ(ret, 0, "_bpf_static_key_update(key2, OFF)"))
-+		return;
-+	skel->bss->ret_user = 0;
-+	trigger_prog();
-+	if (!ASSERT_EQ(skel->bss->ret_user, val_off_off, "skel->bss->ret_user"))
-+		return;
-+
-+	ret = _bpf_static_key_update(map_fd1, ON);
-+	if (!ASSERT_EQ(ret, 0, "_bpf_static_key_update(key1, ON)"))
-+		return;
-+	ret = _bpf_static_key_update(map_fd2, OFF);
-+	if (!ASSERT_EQ(ret, 0, "_bpf_static_key_update(key2, OFF)"))
-+		return;
-+	skel->bss->ret_user = 0;
-+	trigger_prog();
-+	if (!ASSERT_EQ(skel->bss->ret_user, val_off_on, "skel->bss->ret_user"))
-+		return;
-+
-+	ret = _bpf_static_key_update(map_fd1, OFF);
-+	if (!ASSERT_EQ(ret, 0, "_bpf_static_key_update(key1, OFF)"))
-+		return;
-+	ret = _bpf_static_key_update(map_fd2, ON);
-+	if (!ASSERT_EQ(ret, 0, "_bpf_static_key_update(key2, ON)"))
-+		return;
-+	skel->bss->ret_user = 0;
-+	trigger_prog();
-+	if (!ASSERT_EQ(skel->bss->ret_user, val_on_off, "skel->bss->ret_user"))
-+		return;
-+
-+	ret = _bpf_static_key_update(map_fd1, ON);
-+	if (!ASSERT_EQ(ret, 0, "_bpf_static_key_update(key1, ON)"))
-+		return;
-+	ret = _bpf_static_key_update(map_fd2, ON);
-+	if (!ASSERT_EQ(ret, 0, "_bpf_static_key_update(key2, ON)"))
-+		return;
-+	skel->bss->ret_user = 0;
-+	trigger_prog();
-+	if (!ASSERT_EQ(skel->bss->ret_user, val_on_on, "skel->bss->ret_user"))
-+		return;
-+}
-+
-+static void check_multiple_keys(struct bpf_static_keys *skel,
-+				struct bpf_map *key1,
-+				struct bpf_map *key2)
-+{
-+	struct bpf_link *link;
-+
-+	link = bpf_program__attach(skel->progs.check_multiple_keys);
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	__check_multiple_keys(skel, key1, key2, 0, 3, 30, 33);
-+
-+	bpf_link__destroy(link);
-+}
-+
-+static void check_bpf_to_bpf_call(struct bpf_static_keys *skel,
-+				  struct bpf_map *key1,
-+				  struct bpf_map *key2)
-+{
-+	struct bpf_link *link;
-+
-+	link = bpf_program__attach(skel->progs.check_bpf_to_bpf_call);
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	__check_multiple_keys(skel, key1, key2, 0, 303, 3030, 3333);
-+
-+	bpf_link__destroy(link);
-+}
-+
-+static void check_syscall(void)
-+{
-+	struct bpf_static_keys *skel;
-+
-+	skel = bpf_static_keys__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_static_keys__open_and_load"))
-+		return;
-+
-+	check_one_key(skel, skel->progs.check_one_key_likely, skel->maps.key1);
-+	check_one_key(skel, skel->progs.check_one_key_unlikely, skel->maps.key2);
-+	check_one_key_multiple(skel, skel->maps.key3);
-+	check_one_key_long_jump(skel, skel->maps.key4);
-+	check_multiple_keys(skel, skel->maps.key5, skel->maps.key6);
-+
-+	bpf_static_keys__destroy(skel);
-+}
-+
-+void test_bpf_static_keys(void)
-+{
-+	if (test__start_subtest("check_insn"))
-+		check_insn();
-+
-+	if (test__start_subtest("check_syscall"))
-+		check_syscall();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_static_keys.c b/tools/testing/selftests/bpf/progs/bpf_static_keys.c
-new file mode 100644
-index 000000000000..79272de8e682
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_static_keys.c
-@@ -0,0 +1,131 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, u32);
-+	__type(value, u32);
-+} just_map SEC(".maps");
-+
-+int ret_user;
-+
-+#define VAL_ON	7
-+#define VAL_OFF	3
-+
-+DEFINE_STATIC_KEY(key1);
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int check_one_key_likely(void *ctx)
-+{
-+	if (bpf_static_branch_likely(&key1))
-+		ret_user += VAL_ON;
-+	else
-+		ret_user += VAL_OFF;
-+
-+	return 0;
-+}
-+
-+DEFINE_STATIC_KEY(key2);
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int check_one_key_unlikely(void *ctx)
-+{
-+	if (bpf_static_branch_unlikely(&key2))
-+		ret_user += VAL_ON;
-+	else
-+		ret_user += VAL_OFF;
-+
-+	return 0;
-+}
-+
-+DEFINE_STATIC_KEY(key3);
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int check_one_key_multiple(void *ctx)
-+{
-+	if (bpf_static_branch_likely(&key3))
-+		ret_user += VAL_ON;
-+	else
-+		ret_user += VAL_OFF;
-+
-+	bpf_printk("%lu\n", bpf_jiffies64());
-+
-+	if (bpf_static_branch_unlikely(&key3))
-+		ret_user += VAL_ON;
-+	else
-+		ret_user += VAL_OFF;
-+
-+	bpf_printk("%lu\n", bpf_jiffies64());
-+
-+	if (bpf_static_branch_likely(&key3))
-+		ret_user += VAL_ON;
-+	else
-+		ret_user += VAL_OFF;
-+
-+	return 0;
-+}
-+
-+static __always_inline int big_chunk_of_code(volatile int *x)
-+{
-+	#pragma clang loop unroll_count(256)
-+	for (int i = 0; i < 256; i++)
-+		*x += 1;
-+
-+	return *x;
-+}
-+
-+DEFINE_STATIC_KEY(key4);
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int check_one_key_long_jump(void *ctx)
-+{
-+	int x;
-+
-+	if (bpf_static_branch_unlikely(&key4)) {
-+		x = 1744;
-+		big_chunk_of_code(&x);
-+		ret_user = x;
-+	} else {
-+		x = 744;
-+		big_chunk_of_code(&x);
-+		ret_user = x;
-+	}
-+
-+	return 0;
-+}
-+
-+DEFINE_STATIC_KEY(key5);
-+DEFINE_STATIC_KEY(key6);
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int check_multiple_keys(void *ctx)
-+{
-+	__u64 j = bpf_jiffies64();
-+
-+	if (bpf_static_branch_likely(&key5))
-+		ret_user += 1;
-+	if (bpf_static_branch_unlikely(&key6))
-+		ret_user += 10;
-+
-+	bpf_printk("%lu\n", j);
-+
-+	if (bpf_static_branch_unlikely(&key5))
-+		ret_user += 1;
-+	if (bpf_static_branch_likely(&key6))
-+		ret_user += 10;
-+
-+	bpf_printk("%lu\n", bpf_jiffies64());
-+
-+	if (bpf_static_branch_likely(&key5))
-+		ret_user += 1;
-+	if (bpf_static_branch_unlikely(&key6))
-+		ret_user += 10;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.34.1
-
+> I will send v4.
 
