@@ -1,481 +1,294 @@
-Return-Path: <bpf+bounces-54250-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54251-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F3E8A6639D
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 01:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F0586A663A2
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 01:25:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F684173A19
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 00:23:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E548179419
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 00:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C08FDDCD;
-	Tue, 18 Mar 2025 00:23:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECDAB1805B;
+	Tue, 18 Mar 2025 00:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FaaeJbuP"
+	dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b="d+jFh65o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from DB3PR0202CU003.outbound.protection.outlook.com (mail-northeuropeazon11011039.outbound.protection.outlook.com [52.101.65.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BC7D8BE8
-	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 00:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742257433; cv=none; b=HceP0VdHciBuLoA8dC5ND5cxE9OYqFd6YxE8PWuIhR4NlaAWTCOl2hHMxDASRCRbkpTqAsk4lbEXM2oPHUmk6EV0CUUYi+tmaKA5wJFP5eCRCn0TVKDgTdUHfb6vnCv/oA7iRe3NXonBUmrEzreB2eoq8vR2rfuqQ6HopqlOT3I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742257433; c=relaxed/simple;
-	bh=Fe+2EEtvUUF94eNjXBYTZSZKpeauuxUVQKlGNFnSSeA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GoH+8zxrc7cd6a4OmikzcvXz5TfYljKK+L4z2lshweXv+atyIv13zHujQFAxL98nz1nW4SLAq0NJGTJUX7YdkZjnFT9tlc48zaa+eLM2ve3cHMH6P0craAzpp5ynUgK+Q25uflNfvkc5qGoWqrb329USlCuEq8+Ynq2lemrY714=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FaaeJbuP; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-391342fc0b5so4187389f8f.3
-        for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 17:23:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742257428; x=1742862228; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6nHhGe1vVc5mjKBJdTrrX1XSZgHNtZIVSmQuYMj8vGc=;
-        b=FaaeJbuPNpfXO28f/1CFwP6BcG/52fUuEtOz3A/E4kyyUc6BZKgDRNQxJz3f89DO6a
-         iY3P7H77nLo//ad94tC5rfFbtqTlIGDNW5fZNJvZP/F0mvaQmxy+LFfEK6Xx0UQAH36k
-         8944rtaIlg9ggTxzYzLIoYHx9y+Qbfg3qE3BsH9u1iE1/CUzJ+YxAe4MtoeYuV5K1Qgi
-         mHA1jczBLTj0QQqRi2UK3CbffYIifs5ld5kdnvH885b6wUtQiLF7BDrGafcqAIcTcTZ0
-         qlGRJlYRlQX5Inj+hx598CXVJjBKdovlj7UwaEhSVRjQ5qnzPNMaQVzWh3PL09i5trel
-         LY7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742257428; x=1742862228;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6nHhGe1vVc5mjKBJdTrrX1XSZgHNtZIVSmQuYMj8vGc=;
-        b=RBiZaYNMj+XOOjo7T1tL19JQkcIGTLF1ilf9gBlEFVDowHgAZcHHXL5UHyDhI/Y2/u
-         fsdkDUyoBOZBvJNM2RBSW+Pmb3Wd4LH01S2EksW+PEqnQwkFU5mocGRXTgubuSe7sZQS
-         YwqMn58RN+Ui37puYSRp6+Nnjjz8S8XvywN8AciGOZV39sS4ikZiq8K8UaDsS7rtnDCp
-         anYqAOemZsu1AYbcpl2y/umaNgnkjTMCqY3o4ZkqIPeD0dSnvSATbWjaDXOpGrKTV/XL
-         MAn15V6f+PF6QTNlRLUgwar/FWQs22ibRoZWTFeA0nwYVsMzPV5zhdSPZBE/nZJa28x2
-         BUxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUWi8HhflWctWkpRcMXsB+9g5BXPTosUMYz1KhBx9F0q6TVv+NFQQ32bvaQpc4QmH068/I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxXghd/vsN6z8rOcZlnVPb0EdPOBKhXPEKFSb2ZOrbl4LCaSPYh
-	2boxIy4WtdkLiUEwLNuek3ZmViE+AiFap3zgggA5lvKJy9Ow68xiX/NpQK88avrnV/wY/g1jJpP
-	WC/KkrAy5KMoi37xb1FazTlm+tYA=
-X-Gm-Gg: ASbGncvQUOn6l9wipSFqa0zXE/7CtyZl5IDC3TpOx45rgtkzAF9nd3r8xjZ5YfKuAul
-	XbqgZCg3EAUqglkPAZ1D4lqjqy1WUD8xr4vml5OoieX1RwLkAg71lbYk3svay3wkARnz8sbGJau
-	0ASTWGNmW3/F8lQhccbFjh8rLXRhvhp2/Nf2mhEXFmDg==
-X-Google-Smtp-Source: AGHT+IHdnHxzlUHyKKkjSL5BzRpRsJ3t6eZoA5f5FwcnmTbJYB8sXUIn6/w/wYmAPiooJ38EUBopjp2uHELVSfC8J6E=
-X-Received: by 2002:a5d:588f:0:b0:391:487f:27e7 with SMTP id
- ffacd0b85a97d-39720e3cb45mr15888716f8f.55.1742257428315; Mon, 17 Mar 2025
- 17:23:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4474EA934;
+	Tue, 18 Mar 2025 00:25:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.65.39
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742257526; cv=fail; b=r1mnCMRb4GU0+0OYgBLXigosFIWT6NO0bhwj6c+P5j29JQmHoE0Tr85pgp1WJWI9m/e5gOR3KafDVKQlHOhNSVoCjIhYv6OUTmxGVIcVFyAVe7nW2nLTeTvoSi0KufBBB112HBpLY+S+pDwjaGAI/b550dL425yS7Wtr4zkzx9A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742257526; c=relaxed/simple;
+	bh=T5PT/B0e++XcIdc2TNstz697kJfiOuQKcXOYD9puDys=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=MY9UDwef4U3lG2NWhKj/X51cVAxkAetT9pxJ6o9tEDKK6GULOiABLk4dAqYqdXjLrmKFagRh5xnVtPi3VSfnpjEoMYhFvu8hKti4HJyXJrkWYJP2qQiTeZxpntBihOdWP+OL5xWHdeQd4rPhYxTZocTdEie1YgCw5o4vJk2ubmA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com; spf=fail smtp.mailfrom=nokia-bell-labs.com; dkim=pass (2048-bit key) header.d=nokia-bell-labs.com header.i=@nokia-bell-labs.com header.b=d+jFh65o; arc=fail smtp.client-ip=52.101.65.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia-bell-labs.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia-bell-labs.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=kGXwQ86EMV1UTJyKPARtNZClTxKKIJFrQy1is2QKjXmOu3rEqO9gYfFW8Q9BrlFRGXJYW54hkpnc1NvoD4CGsvP/SSeiC6CsuWvRZWTLhFQYcQTMlDmNlXZysW1T66ddy5l1jqOzWjOwy2NE2ucM0IDYcperPcHVrAKbG7tvIAiZhjpsWK/d31cS8qjI0Jcg/zLxLKuQOOhYBsq0ztegKovimrWnlLlh3aFp8yxQA+fExkQ82aBM/bWi6gmT6+eVsxCKCv/FnoZbWXZfJsZCzbJEUlX9g3hF88qZQpgZnT/hVZkgRsRecGJCq1H5BZ/f92gTA7E+XxK3jtBCnsVJpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=45Md77WKSa/FVQszLfLaydrXCrkGQtuSpKdqSuwt4Qs=;
+ b=aDPxnqsWW6wNx2e4Vo+cXblM1dtvowWK3AS8BXJj+Y57gQenF3/qfB6KAd8FhlavUvB8ZlQTB9ZvACCPyOdSoYWN8cMLh3qapkK/MNSYVcT9dhZ0VPd+8EXRUZ1Cska9zbyMoehKYFPKpN8KoUthJyazJrjJn9Zqchnfslo4rrTTZkNpUTFkG/CHH8L6/ioet4Obs5F/WVYi23lMad7prKGILbQQs2Xx1X381COPmTChUvHJKC3Xo7j2jN8R//kxs42avxdVYuC0fSzb7SrYk7MMcs1e/A7lVADuWzdfbbmCTbAkfqHV7sb48BBePdSB32eSPK+dg9Xz7azbMT/rpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia-bell-labs.com; dmarc=pass action=none
+ header.from=nokia-bell-labs.com; dkim=pass header.d=nokia-bell-labs.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia-bell-labs.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=45Md77WKSa/FVQszLfLaydrXCrkGQtuSpKdqSuwt4Qs=;
+ b=d+jFh65oi+1FqZaXH1pU7UFUXRsEx3ccjq5ZJqSVsal6RehGHNnPLhKqeQhxTtZAf8e3/GomqIuQbl/6v+RIy4p0Cvwg0QbF4MB0dvXEm4eleeGxp5l5Vcf+j56zNGLzoSVJHTAf5Xrg5JC5rav3XbYhGW20fBoa0tDmZEv44j7nEu/L9Qc9PDQYR5JrDbAjxobAh7eUTPj4gzXdFhHy2mxV5ZD3FCEF31GV/07moq185ssc+3e+isqMLDcfQljH4CssKDxP6if3ELi/qfakI4t7UVTCd5oj9UAnQ4nRkW+oxuE9iy/qxPz29WWx5vXauQ0lj1jDodgZLp5CGmjXVQ==
+Received: from PAXPR07MB7984.eurprd07.prod.outlook.com (2603:10a6:102:133::12)
+ by AS8PR07MB7927.eurprd07.prod.outlook.com (2603:10a6:20b:396::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.33; Tue, 18 Mar
+ 2025 00:25:21 +0000
+Received: from PAXPR07MB7984.eurprd07.prod.outlook.com
+ ([fe80::b7f8:dc0a:7e8d:56]) by PAXPR07MB7984.eurprd07.prod.outlook.com
+ ([fe80::b7f8:dc0a:7e8d:56%4]) with mapi id 15.20.8534.031; Tue, 18 Mar 2025
+ 00:25:20 +0000
+From: "Chia-Yu Chang (Nokia)" <chia-yu.chang@nokia-bell-labs.com>
+To: Paolo Abeni <pabeni@redhat.com>, "patchwork-bot+netdevbpf@kernel.org"
+	<patchwork-bot+netdevbpf@kernel.org>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "dsahern@gmail.com"
+	<dsahern@gmail.com>, "davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>, "dsahern@kernel.org"
+	<dsahern@kernel.org>, "joel.granados@kernel.org" <joel.granados@kernel.org>,
+	"kuba@kernel.org" <kuba@kernel.org>, "andrew+netdev@lunn.ch"
+	<andrew+netdev@lunn.ch>, "horms@kernel.org" <horms@kernel.org>,
+	"pablo@netfilter.org" <pablo@netfilter.org>, "kadlec@netfilter.org"
+	<kadlec@netfilter.org>, "netfilter-devel@vger.kernel.org"
+	<netfilter-devel@vger.kernel.org>, "coreteam@netfilter.org"
+	<coreteam@netfilter.org>, "kory.maincent@bootlin.com"
+	<kory.maincent@bootlin.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"kuniyu@amazon.com" <kuniyu@amazon.com>, "andrew@lunn.ch" <andrew@lunn.ch>,
+	"ij@kernel.org" <ij@kernel.org>, "ncardwell@google.com"
+	<ncardwell@google.com>, "Koen De Schepper (Nokia)"
+	<koen.de_schepper@nokia-bell-labs.com>, g.white <g.white@cablelabs.com>,
+	"ingemar.s.johansson@ericsson.com" <ingemar.s.johansson@ericsson.com>,
+	"mirja.kuehlewind@ericsson.com" <mirja.kuehlewind@ericsson.com>,
+	"cheshire@apple.com" <cheshire@apple.com>, "rs.ietf@gmx.at" <rs.ietf@gmx.at>,
+	"Jason_Livingood@comcast.com" <Jason_Livingood@comcast.com>, vidhi_goel
+	<vidhi_goel@apple.com>
+Subject: RE: [PATCH v7 net-next 00/12] AccECN protocol preparation patch
+ series
+Thread-Topic: [PATCH v7 net-next 00/12] AccECN protocol preparation patch
+ series
+Thread-Index: AQHbjh9jtAGqv333XUi9HKdrMqfnAbN3jGsAgAAOHbCAAElxAIAAN6VA
+Date: Tue, 18 Mar 2025 00:25:20 +0000
+Message-ID:
+ <PAXPR07MB7984C811A8104A8ED9D852E1A3DE2@PAXPR07MB7984.eurprd07.prod.outlook.com>
+References: <20250305223852.85839-1-chia-yu.chang@nokia-bell-labs.com>
+ <174222664074.3797981.10286790754550014794.git-patchwork-notify@kernel.org>
+ <PAXPR07MB798499BAC1A21E323687C9CAA3DF2@PAXPR07MB7984.eurprd07.prod.outlook.com>
+ <eb1fb79c-d2f6-48bd-82b6-c630ae197a7d@redhat.com>
+In-Reply-To: <eb1fb79c-d2f6-48bd-82b6-c630ae197a7d@redhat.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nokia-bell-labs.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR07MB7984:EE_|AS8PR07MB7927:EE_
+x-ms-office365-filtering-correlation-id: af2645c5-85e8-42e3-ba23-08dd65b35dfa
+x-ld-processed: 5d471751-9675-428d-917b-70f44f9630b0,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|7416014|376014|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?Gf9pT/C60InGdlvtDOMMnq2OW5qU6ehwT451P/Igurqo6EGtoE0WlH83h0pl?=
+ =?us-ascii?Q?UQNoXWdFWqbIJvNgV04h3ECTdfNt7IU52KSEVPBgNv4JH9mt3PTa5fgxdPcd?=
+ =?us-ascii?Q?WQd9NEX5txK67kzod2FJnl9ECKx5rAWE+SJOp+o4oK+5KbUbiYu/xZqm262x?=
+ =?us-ascii?Q?Br0aWAn/PPBj4I3wBdLhrEXE6+wRMvArhJ6MBa4jP0t9inq5r5PYXdOeRNwn?=
+ =?us-ascii?Q?MklC2t5b2UW/bX8bE0TXLzzs/KYBmf4voxNZptAPmOhAY1Wk+DNUjmMqwNje?=
+ =?us-ascii?Q?m8IzzIVuJwTgBPC4TDojCDz4ZCI6i+KRjmVjGx0hH6JHevoFPz2grLBb47Df?=
+ =?us-ascii?Q?TaAeeNAeYGj83ArZqIdJmbsIKAI+dVSYlIIT8vAwWJjcg0iiWKPJ9kt7PDL+?=
+ =?us-ascii?Q?kU/TnHOpLKXwMBBb3dnBspJQ0/65+THJbe+rHr6Mp/feo51fHqiMIu9lsKiw?=
+ =?us-ascii?Q?BjAs+nfuHxhe18/vlvRPFq8KPo0JMl7wq3NaX84pv1G9rZiyowtMYpOM9QpK?=
+ =?us-ascii?Q?bSbW32VReuqnILHSLeYwcyNJvLBrjvvNcDji7i1hz4jhwlzxikGdOY+wxNoD?=
+ =?us-ascii?Q?CfUk6Y+I8mZHkTpqYRuvH1vNpvf7A/sGGjIjYCzONYEtzso3PQXXsYwSTcqr?=
+ =?us-ascii?Q?S94ayjq1LInjlHS+RCgjbJ0l7eBGxqt3y6wDjs/zFCUTTGRCki4noCXcbMYC?=
+ =?us-ascii?Q?dvnpRgFOgRKDhjkapEnWVerMcZSx6EDYqNeRh3ABUJObDTW6T5IV7PAeMVm+?=
+ =?us-ascii?Q?yi9U1FTousDfQ42j1OJ0a81VdC+DRWgvGEaAdN3YqRmRl4j6SqJaWhl9Jx4h?=
+ =?us-ascii?Q?uQJ1MCmeOo97Q9/kmKtGMYgZaKsEOwXcZdoyh3/QnGz6Qo/6U6mdfRXKDKIv?=
+ =?us-ascii?Q?+YNTB+YHtdgYWmow6i/hqKRNZf22bFm9WRdRxAoicx59R8zdUQlqz7Q0g9nv?=
+ =?us-ascii?Q?EZ1KGFFwty6zOOh7VBDtsMzusVeGps7xHpsOEqv9Ne125+orgG15bI3BuPRy?=
+ =?us-ascii?Q?JeHS0L7MCU7nGWhuMOlcmmMCm45ApDejBYxHqPwVuxHnhllwFFMAdNwiejs1?=
+ =?us-ascii?Q?oHBs7+w2K9BeS6WNgd7CJ+jTDDMQTNZq6GnYYoUjCvVjPIkjtzy3c8wXJtmm?=
+ =?us-ascii?Q?fWRDZpfMoYRqug375jkM458wX3iAZrMvFZs9CjV2DLuIxffEybze3svf7+5g?=
+ =?us-ascii?Q?ClMyNXmuduYtcWMkq56Vit7haPGxl0gGCdp2gc/pv9xVkxFbzWqMB37Z4bA1?=
+ =?us-ascii?Q?Qz3A1AJHTnVxXySgDOmuGgbioL9b0VuU3AG3wWlflHGZqROJNpc4Y3H/gj8R?=
+ =?us-ascii?Q?EX7tnTFEe27hdg6xlxDoN1i1GxFTlC+GRKMg0OjeEYci9ZWgt9Jx74eJZP7y?=
+ =?us-ascii?Q?Y7eJuty9Yg3LHznlvgPxXngpj8VzKtioMn38OuTtKtxXc92oFejfaaNO1OdA?=
+ =?us-ascii?Q?msQwlrBWlS2OWJVDLCI3eLgmO8k8yz/Q?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR07MB7984.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?kcoD/6BcX5yeaHA/mVnWY96zLSimYebzzhbFSQT7G7sb/Wk1WeGnEO7FJlig?=
+ =?us-ascii?Q?2ogw6FDTMjppZ/D0WHZ4AX7zrg1EtVRNhx0BpUzInq0TPKDkd/aasS7f7DUJ?=
+ =?us-ascii?Q?Zp7Nbopi/0ZMFThdfjQmW+GeSQkRNlDP/9kOJxps1cO7ounPTbocRJ2pndrQ?=
+ =?us-ascii?Q?9PxIBMo3raSKkfKE7F3kbBi7SHcM4pn1GVM66fG5oOYQbc3AHVQOCaUpM56E?=
+ =?us-ascii?Q?6eoGknps2UTyy9SH+c7e01MpRaIe86GwDkUvbObjCm1YH5brltl6qdQ5reox?=
+ =?us-ascii?Q?lDvnkZqju6USS5ccrBebykGdiswc7qIFLD6yg6erX7BYhtaiZgIo8+8kFsmO?=
+ =?us-ascii?Q?YBvvrpvsbmEa5NcSWOjq+S4yGPX6kB3kore0dolNATD1FgHusRKCTIRWetSO?=
+ =?us-ascii?Q?1Xr9eQHLn0CDwmSh41yroa9jWx1FqG+uscpW4Enkb+f76Zq6/NlivdjHVKF5?=
+ =?us-ascii?Q?K1me0ka5k7NEoDXbO4TCMx3zStwnq8c0D8B/zUzZf1zvK1s92iO+Z0Q7UYvO?=
+ =?us-ascii?Q?C9CaB3OEMNDBIKYIxsKqxnB668xnxJmxOZdWZsmYIExQvv/nHVIXH0EjESit?=
+ =?us-ascii?Q?6YrYs04fW6ltRKX34oOL9+iAMafLFv/ww0lYhEEVaEAPaaM2hQlyAwsQhBw+?=
+ =?us-ascii?Q?9LAjuHNLIIJLtcpwI66X8CuHy8ZI8jrT3xg6M5P6refYLq4K1OOu3n1DroXe?=
+ =?us-ascii?Q?TjbfmIPInWue2AvBBnxvfvxqWRvXP/TNxILZ/Q/kpMTH0BUJ4ognKdabgYer?=
+ =?us-ascii?Q?dVkZFY119HG8xbATPk5T+G/+y/8L+qFI4/JqUtSCWcTkCSRmx2gs/nop/Utq?=
+ =?us-ascii?Q?xfxse0pzTurDta5vQyM70B24apkcT4A7jf2DsYJQUJemfowdT0Yl8fliTpoA?=
+ =?us-ascii?Q?P7DmonqWkAFa6oqv8CMDY8Bm6CoTZLJBbJFxPWtIYQp1q2+e6G4zqZPiDPyK?=
+ =?us-ascii?Q?AU82PbCXl5h71H/+F5JhRCn2selVrjy6lg2Ju5a9cTR1UirlopZtfcRAg9mr?=
+ =?us-ascii?Q?q5fIM15W5UGl/Z3jd3gvJlYWHzvBH2v2s7S6Uwt1KzRMt7D7eLBY0be84BtL?=
+ =?us-ascii?Q?ApAr8jncEX8rznI7TN34ofARsTi0i1AnEX41rm7vhXlhvn1J6TFvG79qOu+V?=
+ =?us-ascii?Q?DIim9Fi65jeJVZWwT2D+7HYcfH3BFNPEtnjwEysP/0HjjMeAcgfcdH8+WNqO?=
+ =?us-ascii?Q?VeeYvGCln9k7iBcOCT7VosN5vr6WnEasMSL2UabLLoGzDoVIzirNjDWbu/E5?=
+ =?us-ascii?Q?wyi86KU+0Y3S6O8SD8lbdFXzkdKfXbhK8PAoK9Ze+CMzgzEzC6ZYRtBKg1Lq?=
+ =?us-ascii?Q?0W5Xp019w01g4LfUmwqkAarWgNxbE+K53sT/b9fRMt/UUqLeGl3b6eE2bG71?=
+ =?us-ascii?Q?ygXckGJNgHysQ7o2S7webkT7raf3qeYan1nzS/M/vQnEwo38guRKIEGmaMrx?=
+ =?us-ascii?Q?ojwKAmsJ+JiWIveDtFk+ORgi7t3qZ+gMOIEdUl3w9xTLIci8lKc9+4KKjKl9?=
+ =?us-ascii?Q?IAlneFG1fEPDCPAcBfzUGoEaan1/kr3pBtSQ8JVGvREsYxmS/bjieScZBt/2?=
+ =?us-ascii?Q?Y7WUgxXb3B88nhLTghxL4exI9fGLlolFyXrm7nV7kIAccmNN+HivgStkhVTc?=
+ =?us-ascii?Q?h5wg7T6b9C9Y87Fk8yfEmaE=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250317224932.1894918-1-vadfed@meta.com> <20250317224932.1894918-2-vadfed@meta.com>
-In-Reply-To: <20250317224932.1894918-2-vadfed@meta.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 17 Mar 2025 17:23:37 -0700
-X-Gm-Features: AQ5f1JorTwyETLfN3_6Y21MbSFKXbYmYEjGuJwEmLahw57Kqfu2ZXKdxmW6g-ew
-Message-ID: <CAADnVQJE89E7pjGK0QzUyX-9oySH8s_YQDibR2Jwt1wP4aT2Tw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v11 1/4] bpf: add bpf_get_cpu_time_counter kfunc
-To: Vadim Fedorenko <vadfed@meta.com>
-Cc: Borislav Petkov <bp@alien8.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Yonghong Song <yonghong.song@linux.dev>, 
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>, Mykola Lysenko <mykolal@fb.com>, X86 ML <x86@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: nokia-bell-labs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR07MB7984.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: af2645c5-85e8-42e3-ba23-08dd65b35dfa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2025 00:25:20.6541
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eZ8TSdP/t/fgiERGlcG6E8+uXI1z68GC3VrlcSuZA1j2HsN+zor/zwU7h4625GdfUKTMcrrtRZnrB+a1wkc+OyAH0oB22DL8SR16ZF1WKh+9vlxhGZBlNOhZwLf7vYPn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR07MB7927
 
-On Mon, Mar 17, 2025 at 3:50=E2=80=AFPM Vadim Fedorenko <vadfed@meta.com> w=
-rote:
+
+Please see below.
+
+-----Original Message-----
+> From: Paolo Abeni <pabeni@redhat.com>
+> Sent: Monday, March 17, 2025 10:04 PM
+> To: Chia-Yu Chang (Nokia) <chia-yu.chang@nokia-bell-labs.com>; patchwork-=
+bot+netdevbpf@kernel.org
+> Cc: netdev@vger.kernel.org; dsahern@gmail.com; davem@davemloft.net; eduma=
+zet@google.com; dsahern@kernel.org; joel.granados@kernel.org; kuba@kernel.o=
+rg; andrew+netdev@lunn.ch; horms@kernel.org; pablo@netfilter.org; kadlec@ne=
+tfilter.org; netfilter-devel@vger.kernel.org; coreteam@netfilter.org; kory.=
+maincent@bootlin.com; bpf@vger.kernel.org; kuniyu@amazon.com; andrew@lunn.c=
+h; ij@kernel.org; ncardwell@google.com; Koen De Schepper (Nokia) <koen.de_s=
+chepper@nokia-bell-labs.com>; g.white <g.white@cablelabs.com>; ingemar.s.jo=
+hansson@ericsson.com; mirja.kuehlewind@ericsson.com; cheshire@apple.com; rs=
+.ietf@gmx.at; Jason_Livingood@comcast.com; vidhi_goel <vidhi_goel@apple.com=
 >
-> New kfunc to return ARCH-specific timecounter. The main reason to
-> implement this kfunc is to avoid extra overhead of benchmark
-> measurements, which are usually done by a pair of bpf_ktime_get_ns()
-> at the beginnig and at the end of the code block under benchmark.
-> When fully JITed this function doesn't implement conversion to the
-> monotonic clock and saves some CPU cycles by receiving timecounter
-> values in single-digit amount of instructions. The delta values can be
-> translated into nanoseconds using kfunc introduced in the next patch.
-> For x86 BPF JIT converts this kfunc into rdtsc ordered call. Other
-> architectures will get JIT implementation too if supported. The fallback
-> is to get CLOCK_MONOTONIC_RAW value in ns.
+> Subject: Re: [PATCH v7 net-next 00/12] AccECN protocol preparation patch =
+series
 >
-> JIT version of the function uses "LFENCE; RDTSC" variant because it
-> doesn't care about cookie value returned by "RDTSCP" and it doesn't want
-> to trash RCX value. LFENCE option provides the same ordering guarantee as
-> RDTSCP variant.
 >
-> The simplest use-case is added in 4th patch, where we calculate the time
-> spent by bpf_get_ns_current_pid_tgid() kfunc. More complex example is to
-> use session cookie to store timecounter value at kprobe/uprobe using
-> kprobe.session/uprobe.session, and calculate the difference at
-> kretprobe/uretprobe.
+> CAUTION: This is an external email. Please be very careful when clicking =
+links or opening attachments. See the URL nok.it/ext for additional informa=
+tion.
 >
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
-> ---
->  arch/x86/net/bpf_jit_comp.c   | 47 +++++++++++++++++++++++++++++++++++
->  arch/x86/net/bpf_jit_comp32.c | 33 ++++++++++++++++++++++++
->  include/linux/bpf.h           |  3 +++
->  include/linux/filter.h        |  1 +
->  kernel/bpf/core.c             | 11 ++++++++
->  kernel/bpf/helpers.c          |  6 +++++
->  kernel/bpf/verifier.c         | 41 +++++++++++++++++++++++++-----
->  7 files changed, 136 insertions(+), 6 deletions(-)
 >
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index d3491cc0898b..92cd5945d630 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -15,6 +15,7 @@
->  #include <asm/ftrace.h>
->  #include <asm/set_memory.h>
->  #include <asm/nospec-branch.h>
-> +#include <asm/timer.h>
->  #include <asm/text-patching.h>
->  #include <asm/unwind.h>
->  #include <asm/cfi.h>
-> @@ -2254,6 +2255,40 @@ st:                      if (is_imm8(insn->off))
->                 case BPF_JMP | BPF_CALL: {
->                         u8 *ip =3D image + addrs[i - 1];
 >
-> +                       if (insn->src_reg =3D=3D BPF_PSEUDO_KFUNC_CALL &&
-> +                           IS_ENABLED(CONFIG_BPF_SYSCALL) &&
-
-why?
-
-It's true that JIT can be compiled in even when there is no sys_bpf,
-but why gate this?
-
-> +                           imm32 =3D=3D BPF_CALL_IMM(bpf_get_cpu_time_co=
-unter) &&
-> +                           cpu_feature_enabled(X86_FEATURE_TSC) &&
-> +                           using_native_sched_clock() && sched_clock_sta=
-ble()) {
-> +                               /* The default implementation of this kfu=
-nc uses
-> +                                * ktime_get_raw_ns() which effectively i=
-s implemented as
-> +                                * `(u64)rdtsc_ordered() & S64_MAX`. For =
-JIT We skip
-> +                                * masking part because we assume it's no=
-t needed in BPF
-> +                                * use case (two measurements close in ti=
-me).
-> +                                * Original code for rdtsc_ordered() uses=
- sequence:
-> +                                * 'rdtsc; nop; nop; nop' to patch it int=
-o
-> +                                * 'lfence; rdtsc' or 'rdtscp' depending =
-on CPU features.
-> +                                * JIT uses 'lfence; rdtsc' variant becau=
-se BPF program
-> +                                * doesn't care about cookie provided by =
-rdtscp in RCX.
-> +                                * Save RDX because RDTSC will use EDX:EA=
-X to return u64
-> +                                */
-> +                               emit_mov_reg(&prog, true, AUX_REG, BPF_RE=
-G_3);
-> +                               if (cpu_feature_enabled(X86_FEATURE_LFENC=
-E_RDTSC))
-> +                                       EMIT_LFENCE();
-> +                               EMIT2(0x0F, 0x31);
-> +
-> +                               /* shl RDX, 32 */
-> +                               maybe_emit_1mod(&prog, BPF_REG_3, true);
-> +                               EMIT3(0xC1, add_1reg(0xE0, BPF_REG_3), 32=
-);
-> +                               /* or RAX, RDX */
-> +                               maybe_emit_mod(&prog, BPF_REG_0, BPF_REG_=
-3, true);
-> +                               EMIT2(0x09, add_2reg(0xC0, BPF_REG_0, BPF=
-_REG_3));
-> +                               /* restore RDX from R11 */
-> +                               emit_mov_reg(&prog, true, BPF_REG_3, AUX_=
-REG);
-> +
-> +                               break;
-> +                       }
-> +
->                         func =3D (u8 *) __bpf_call_base + imm32;
->                         if (src_reg =3D=3D BPF_PSEUDO_CALL && tail_call_r=
-eachable) {
->                                 LOAD_TAIL_CALL_CNT_PTR(stack_depth);
-> @@ -3865,3 +3900,15 @@ bool bpf_jit_supports_timed_may_goto(void)
->  {
->         return true;
->  }
-> +
-> +/* x86-64 JIT can inline kfunc */
-> +bool bpf_jit_inlines_kfunc_call(s32 imm)
-> +{
-> +       if (!IS_ENABLED(CONFIG_BPF_SYSCALL))
-> +               return false;
-
-This is certainly unnecessary.
-Only the verifier calls this bpf_jit_inlines_kfunc_call() helper.
-
-> +       if (imm =3D=3D BPF_CALL_IMM(bpf_get_cpu_time_counter) &&
-> +           cpu_feature_enabled(X86_FEATURE_TSC) &&
-> +           using_native_sched_clock() && sched_clock_stable())
-
-The duplication of the check is ugly.
-Call this helper from an earlier bit ?
-if (insn->src_reg =3D=3D BPF_PSEUDO_KFUNC_CALL &&
-    bpf_jit_inlines_kfunc_call(imm32))
-?
-
-> +               return true;
-> +       return false;
-> +}
-> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.=
-c
-> index de0f9e5f9f73..7f13509c66db 100644
-> --- a/arch/x86/net/bpf_jit_comp32.c
-> +++ b/arch/x86/net/bpf_jit_comp32.c
-> @@ -16,6 +16,7 @@
->  #include <asm/set_memory.h>
->  #include <asm/nospec-branch.h>
->  #include <asm/asm-prototypes.h>
-> +#include <asm/timer.h>
->  #include <linux/bpf.h>
+> On 3/17/25 5:44 PM, Chia-Yu Chang (Nokia) wrote:
+> > Hello:
+> >> This series was applied to netdev/net-next.git (main) by David S. Mill=
+er <davem@davemloft.net>:
+> [...]
+> >> Here is the summary with links:
+> >>   - [v7,net-next,01/12] tcp: reorganize tcp_in_ack_event() and tcp_cou=
+nt_delivered()
+> >>     https://git.kernel.org/netdev/net-next/c/149dfb31615e
+> >>   - [v7,net-next,02/12] tcp: create FLAG_TS_PROGRESS
+> >>     https://git.kernel.org/netdev/net-next/c/da610e18313b
+> >>   - [v7,net-next,03/12] tcp: use BIT() macro in include/net/tcp.h
+> >>     https://git.kernel.org/netdev/net-next/c/0114a91da672
+> >>   - [v7,net-next,04/12] tcp: extend TCP flags to allow AE bit/ACE fiel=
+d
+> >>     https://git.kernel.org/netdev/net-next/c/2c2f08d31d2f
+> >>   - [v7,net-next,05/12] tcp: reorganize SYN ECN code
+> >>     (no matching commit)
+> >>   - [v7,net-next,06/12] tcp: rework {__,}tcp_ecn_check_ce() -> tcp_dat=
+a_ecn_check()
+> >>     https://git.kernel.org/netdev/net-next/c/f0db2bca0cf9
+> >>   - [v7,net-next,07/12] tcp: helpers for ECN mode handling
+> >>     (no matching commit)
+> >>   - [v7,net-next,08/12] gso: AccECN support
+> >>     https://git.kernel.org/netdev/net-next/c/023af5a72ab1
+> >>   - [v7,net-next,09/12] gro: prevent ACE field corruption & better Acc=
+ECN handling
+> >>     https://git.kernel.org/netdev/net-next/c/4e4f7cefb130
+> >>   - [v7,net-next,10/12] tcp: AccECN support to tcp_add_backlog
+> >>     https://git.kernel.org/netdev/net-next/c/d722762c4eaa
+> >>   - [v7,net-next,11/12] tcp: add new TCP_TW_ACK_OOW state and allow EC=
+N bits in TOS
+> >>     https://git.kernel.org/netdev/net-next/c/4618e195f925
+> >>   - [v7,net-next,12/12] tcp: Pass flags to __tcp_send_ack
+> >>
+> >> https://git/
+> >> .kernel.org%2Fnetdev%2Fnet-next%2Fc%2F9866884ce8ef&data=3D05%7C02%7Cch=
+i
+> >> a-yu.chang%40nokia-bell-labs.com%7C72e33ae0d7f0420790c208dd659742f9%7
+> >> C5d4717519675428d917b70f44f9630b0%7C0%7C0%7C638778422522699339%7CUnkn
+> >> own%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJ
+> >> XaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=3DkcRwgx%=
+2
+> >> FWDHKWt9hvGogvLksNHjjjQcd%2BAbCuSsJrtoo%3D&reserved=3D0
+> >>
+> >> You are awesome, thank you!
+> >> --
+> >> Deet-doot-dot, I am a bot.
+> >> https://kor/
+> >> g.docs.kernel.org%2Fpatchwork%2Fpwbot.html&data=3D05%7C02%7Cchia-yu.ch=
+a
+> >> ng%40nokia-bell-labs.com%7C72e33ae0d7f0420790c208dd659742f9%7C5d47175
+> >> 19675428d917b70f44f9630b0%7C0%7C0%7C638778422522710517%7CUnknown%7CTW
+> >> FpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiI
+> >> sIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=3D3MvKCWlvavf14mc=
+p
+> >> i3Xt1L9UNX8VyJ51n0rK3vpcT6U%3D&reserved=3D0
+> >
+> > Hello,
+> >
+> > I see two patches are NOT applied in the net-next (05/12 and 07/12) rep=
+o.
+> > So, I would like to ask would it be merged latter on, or shall I includ=
+e in the next AccECN patch series? Thanks.
 >
->  /*
-> @@ -2094,6 +2095,27 @@ static int do_jit(struct bpf_prog *bpf_prog, int *=
-addrs, u8 *image,
->                         if (insn->src_reg =3D=3D BPF_PSEUDO_KFUNC_CALL) {
->                                 int err;
+> Something went wrong at apply time.
 >
-> +                               if (IS_ENABLED(CONFIG_BPF_SYSCALL) &&
-
-same.
-
-> +                                   imm32 =3D=3D BPF_CALL_IMM(bpf_get_cpu=
-_time_counter) &&
-> +                                   cpu_feature_enabled(X86_FEATURE_TSC) =
-&&
-> +                                   using_native_sched_clock() && sched_c=
-lock_stable()) {
-> +                                       /* The default implementation of =
-this kfunc uses
-> +                                        * ktime_get_raw_ns() which effec=
-tively is implemented as
-> +                                        * `(u64)rdtsc_ordered() & S64_MA=
-X`. For JIT We skip
-> +                                        * masking part because we assume=
- it's not needed in BPF
-> +                                        * use case (two measurements clo=
-se in time).
-> +                                        * Original code for rdtsc_ordere=
-d() uses sequence:
-> +                                        * 'rdtsc; nop; nop; nop' to patc=
-h it into
-> +                                        * 'lfence; rdtsc' or 'rdtscp' de=
-pending on CPU features.
-> +                                        * JIT uses 'lfence; rdtsc' varia=
-nt because BPF program
-> +                                        * doesn't care about cookie prov=
-ided by rdtscp in ECX.
-> +                                        */
-> +                                       if (cpu_feature_enabled(X86_FEATU=
-RE_LFENCE_RDTSC))
-> +                                               EMIT3(0x0F, 0xAE, 0xE8);
-> +                                       EMIT2(0x0F, 0x31);
-> +                                       break;
-> +                               }
-> +
->                                 err =3D emit_kfunc_call(bpf_prog,
->                                                       image + addrs[i],
->                                                       insn, &prog);
-> @@ -2621,3 +2643,14 @@ bool bpf_jit_supports_kfunc_call(void)
->  {
->         return true;
->  }
-> +
-> +bool bpf_jit_inlines_kfunc_call(s32 imm)
-> +{
-> +       if (!IS_ENABLED(CONFIG_BPF_SYSCALL))
-> +               return false;
-> +       if (imm =3D=3D BPF_CALL_IMM(bpf_get_cpu_time_counter) &&
-> +           cpu_feature_enabled(X86_FEATURE_TSC) &&
-> +           using_native_sched_clock() && sched_clock_stable())
-> +               return true;
-
-same issue.
-
-> +       return false;
-> +}
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 0d7b70124d81..a5e9b592d3e8 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -3387,6 +3387,9 @@ void bpf_user_rnd_init_once(void);
->  u64 bpf_user_rnd_u32(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
->  u64 bpf_get_raw_cpu_id(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+> AFAICS patch 7 is there with commit 041fb11d518f ("tcp: helpers for ECN m=
+ode handling") while patch got lost somehow. I think it's better if you rep=
+ost them, rebased on top of current net-next.
 >
-> +/* Inlined kfuncs */
-> +u64 bpf_get_cpu_time_counter(void);
-> +
->  #if defined(CONFIG_NET)
->  bool bpf_sock_common_is_valid_access(int off, int size,
->                                      enum bpf_access_type type,
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 590476743f7a..2fbfa1bc3f49 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -1128,6 +1128,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
-g *prog);
->  void bpf_jit_compile(struct bpf_prog *prog);
->  bool bpf_jit_needs_zext(void);
->  bool bpf_jit_inlines_helper_call(s32 imm);
-> +bool bpf_jit_inlines_kfunc_call(s32 imm);
->  bool bpf_jit_supports_subprog_tailcalls(void);
->  bool bpf_jit_supports_percpu_insn(void);
->  bool bpf_jit_supports_kfunc_call(void);
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 62cb9557ad3b..1d811fc39eac 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -3035,6 +3035,17 @@ bool __weak bpf_jit_inlines_helper_call(s32 imm)
->         return false;
->  }
+> Thanks!
 >
-> +/* Return true if the JIT inlines the call to the kfunc corresponding to
-> + * the imm.
-> + *
-> + * The verifier will not patch the insn->imm for the call to the helper =
-if
-> + * this returns true.
-> + */
-> +bool __weak bpf_jit_inlines_kfunc_call(s32 imm)
-> +{
-> +       return false;
-> +}
-> +
->  /* Return TRUE if the JIT backend supports mixing bpf2bpf and tailcalls.=
- */
->  bool __weak bpf_jit_supports_subprog_tailcalls(void)
->  {
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 5449756ba102..43bf35a15f78 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3193,6 +3193,11 @@ __bpf_kfunc void bpf_local_irq_restore(unsigned lo=
-ng *flags__irq_flag)
->         local_irq_restore(*flags__irq_flag);
->  }
->
-> +__bpf_kfunc u64 bpf_get_cpu_time_counter(void)
-> +{
-> +       return ktime_get_raw_fast_ns();
+> Paolo
 
-Why 'raw' ?
-Is it faster than 'mono' ?
-This needs a comment at least.
+Yes, you are right. Thanks for pointing out.
+I will merge this missing one into the next Accurate ECN series.
 
-> +}
-> +
->  __bpf_kfunc_end_defs();
->
->  BTF_KFUNCS_START(generic_btf_ids)
-> @@ -3293,6 +3298,7 @@ BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF_ITE=
-R_NEXT | KF_RET_NULL | KF_SLE
->  BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_SLE=
-EPABLE)
->  BTF_ID_FLAGS(func, bpf_local_irq_save)
->  BTF_ID_FLAGS(func, bpf_local_irq_restore)
-> +BTF_ID_FLAGS(func, bpf_get_cpu_time_counter, KF_FASTCALL)
->  BTF_KFUNCS_END(common_btf_ids)
->
->  static const struct btf_kfunc_id_set common_kfunc_set =3D {
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 3303a3605ee8..0c4ea977973c 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -17035,6 +17035,24 @@ static bool verifier_inlines_helper_call(struct =
-bpf_verifier_env *env, s32 imm)
->         }
->  }
->
-> +/* True if fixup_kfunc_call() replaces calls to kfunc number 'imm',
-> + * replacement patch is presumed to follow bpf_fastcall contract
-> + * (see mark_fastcall_pattern_for_call() below).
-> + */
-> +static bool verifier_inlines_kfunc_call(struct bpf_verifier_env *env, s3=
-2 imm)
-> +{
-> +       const struct bpf_kfunc_desc *desc =3D find_kfunc_desc(env->prog, =
-imm, 0);
-> +
-> +       if (!env->prog->jit_requested)
-> +               return false;
-
-This is a regression.
-Why disable verifier inlining when jit is off?
-
-> +
-> +       if (desc->func_id =3D=3D special_kfunc_list[KF_bpf_cast_to_kern_c=
-tx] ||
-> +           desc->func_id =3D=3D special_kfunc_list[KF_bpf_rdonly_cast])
-> +               return true;
-> +
-> +       return false;
-> +}
-> +
->  struct call_summary {
->         u8 num_params;
->         bool is_void;
-> @@ -17077,7 +17095,10 @@ static bool get_call_summary(struct bpf_verifier=
-_env *env, struct bpf_insn *call
->                         /* error would be reported later */
->                         return false;
->                 cs->num_params =3D btf_type_vlen(meta.func_proto);
-> -               cs->fastcall =3D meta.kfunc_flags & KF_FASTCALL;
-> +               cs->fastcall =3D meta.kfunc_flags & KF_FASTCALL &&
-> +                              (verifier_inlines_kfunc_call(env, call->im=
-m) ||
-> +                              (meta.btf =3D=3D btf_vmlinux &&
-> +                              bpf_jit_inlines_kfunc_call(call->imm)));
->                 cs->is_void =3D btf_type_is_void(btf_type_by_id(meta.btf,=
- meta.func_proto->type));
->                 return true;
->         }
-> @@ -21223,6 +21244,7 @@ static int fixup_kfunc_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn,
->                             struct bpf_insn *insn_buf, int insn_idx, int =
-*cnt)
->  {
->         const struct bpf_kfunc_desc *desc;
-> +       s32 imm =3D insn->imm;
->
->         if (!insn->imm) {
->                 verbose(env, "invalid kernel function call not eliminated=
- in verifier pass\n");
-> @@ -21246,7 +21268,18 @@ static int fixup_kfunc_call(struct bpf_verifier_=
-env *env, struct bpf_insn *insn,
->                 insn->imm =3D BPF_CALL_IMM(desc->addr);
->         if (insn->off)
->                 return 0;
-> -       if (desc->func_id =3D=3D special_kfunc_list[KF_bpf_obj_new_impl] =
-||
-> +       if (verifier_inlines_kfunc_call(env, imm)) {
-> +               if (desc->func_id =3D=3D special_kfunc_list[KF_bpf_cast_t=
-o_kern_ctx] ||
-> +                   desc->func_id =3D=3D special_kfunc_list[KF_bpf_rdonly=
-_cast]) {
-
-I really don't like this copy paste.
-Next trivial function that inlines as r0=3Dr1
-would need to add itself in two places for no good reason.
-
-pw-bot: cr
+Chia-Yu
 
