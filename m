@@ -1,153 +1,141 @@
-Return-Path: <bpf+bounces-54337-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54338-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE83A67BA2
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 19:08:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98C6DA67BE3
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 19:28:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6518188D888
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 18:07:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B80D1613B5
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 18:28:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 645DF212FBA;
-	Tue, 18 Mar 2025 18:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65DD5212F8A;
+	Tue, 18 Mar 2025 18:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="DBzlswaw"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ao0mKIHH"
 X-Original-To: bpf@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB52212B07;
-	Tue, 18 Mar 2025 18:06:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3825B212B34
+	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 18:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742321227; cv=none; b=iYTitGZ+ICqTcbh38BM2r1cyXLK08wU/y0cNXMby34rYAEajgKXjiF4FPaIZ2nNZ2bJw1qVgBfhwv5Ap0vElmibgPm3GQpntsuGJJvUeGtumDP/m93KtX+zLcpfxQgMVz6cAUIUOsF2Qbb/JO6oa6YKQ25azc1lDmYJjnBo6ezw=
+	t=1742322493; cv=none; b=fyKNWg1/TqnH8WPa2FAg81Psy82TAckuQzJ7Lm34+lAq4Xr1B3X8C1MBh5oIsmi6wFDgbrDHPRprl3zQddzt1sH3vXCG6gnN0DTE1MNGW15SbyCCbxeqcJTIvA74MekQ8RV8yOuGU0g6wr4By4b16FlXGk0JrADqftXpzh43B8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742321227; c=relaxed/simple;
-	bh=ObvK4V5+WTs9GjlkzhLf22kOTTKhjSK/UvNK71fc+iI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=avuzkEjro65qZSENMPFIXhXmm1KWMlREGug9aBqD2gtfuOvF3Sp53YeBwgMvMCMzQW6md4TJzqsKmI8KEaweCCH92ELIyD0jy7O7JLuNTjJjXo0XNNyGUth5Z/6jmYxwYZ3Chd2EqSHvN2CenYdiaAuXiV0Wd0/RclVy6YQBS+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=DBzlswaw; arc=none smtp.client-ip=178.60.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=xi5z/098n3s55drfJnQC0KGieJT8vR+QHgsSyHMCSwc=; b=DBzlswawCpcdwZoCIaLOvmz4bR
-	f0qEhXAdTinfikQUSQKatFmc4DOOS06n8K1sJFrOSNcUeLsXDHdJtNOOqIoE8tMVCawIxhjr7V0il
-	wj7gIb8Wa/bOAL4CwOk29espYzdobGhMYvbkCHF6VHxQtcfoa7ax0Pyk3HAHtUSu/fg/xTpJm1xTt
-	IiNOB4hK2IvroqdJaIkKfy3UKumgrzzhUswjeq0+prccirjOKyNlc3/hOJZX8zgnN5eKsjqjMl02e
-	ARHGKMUHhTSXc/fvmwe4vsdSRTzB13/2bXVwzUV6PAVlRDiOf2K221sWXTZQAwmOS33ro4q6Qysbs
-	/dIdWobg==;
-Received: from [223.233.76.123] (helo=[192.168.1.12])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1tubKz-002s83-Kp; Tue, 18 Mar 2025 19:06:49 +0100
-Message-ID: <24766119-3aa2-fe88-878a-90a2794cca8f@igalia.com>
-Date: Tue, 18 Mar 2025 23:36:40 +0530
+	s=arc-20240116; t=1742322493; c=relaxed/simple;
+	bh=TCWUsUFNRTgiCR3VqJpNMDJXkXHAG7O/a0HTEos9TXI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=klhphMIpJisYEHE9R7G0rKsA/f0KZjc9vL83xz/O3ggH7wc3zW/nvXk2MCE3MybB3TNTmXtFBQZ+br4kpIfTlPa9M7Z7G3wbxEvQobY8/a4QLI/UrYR4yAAfe3h9SAdME+WoyckcIHRbgNNNLmIdha7c/Liwh0MN8FGccn6kU8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ao0mKIHH; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1742322487;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ln1nuqgHIeGL9q0V5Hm3vPA7qyMlapViS179tsXw9yo=;
+	b=ao0mKIHHTj25kOLLJEC0y867Ck6N0W4IkTcoXAIF9Dy3ArSfUNiqKRfpLLLJAsRfgjZM7m
+	LcK7xM/PLneZFVnzWIY6akTVOV3bwqopojUruTIZQGx5RnTwUKOJEuFnVj4iW/Act7Ztow
+	9r12t8R4Jli1cIRXJp2ao+X7LqvOWjk=
+From: Martin KaFai Lau <martin.lau@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next] bpf: Only fails the busy counter check in bpf_cgrp_storage_get if it creates storage
+Date: Tue, 18 Mar 2025 11:27:59 -0700
+Message-ID: <20250318182759.3676094-1-martin.lau@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH RFC 0/2] Dynamically allocate memory to store task's full
- name
-Content-Language: en-US
-To: Kees Cook <kees@kernel.org>
-Cc: Andres Rodriguez <andresx7@gmail.com>, Bhupesh <bhupesh@igalia.com>,
- akpm@linux-foundation.org, kernel-dev@igalia.com,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
- laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
- mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
- alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
- mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
- david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
- brauner@kernel.org, jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com,
- bsegall@google.com, mgorman@suse.de, vschneid@redhat.com
-References: <20250314052715.610377-1-bhupesh@igalia.com>
- <202503141420.37D605B2@keescook>
- <a73ea646-0a24-474a-9e14-d59ea5eaa662@gmail.com>
- <8b11d5f6-bb16-7af6-8377-bb0951fcfb60@igalia.com>
- <202503180846.EAB79290D@keescook>
-From: Bhupesh Sharma <bhsharma@igalia.com>
-In-Reply-To: <202503180846.EAB79290D@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Kees,
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-On 3/18/25 9:21 PM, Kees Cook wrote:
-> On Tue, Mar 18, 2025 at 04:49:28PM +0530, Bhupesh Sharma wrote:
->> On 3/15/25 1:13 PM, Andres Rodriguez wrote:
->>> On 3/14/25 14:25, Kees Cook wrote:
->>>> On Fri, Mar 14, 2025 at 10:57:13AM +0530, Bhupesh wrote:
->>>>> While working with user-space debugging tools which work especially
->>>>> on linux gaming platforms, I found that the task name is truncated due
->>>>> to the limitation of TASK_COMM_LEN.
->>>>>
->>>>> For example, currently running 'ps', the task->comm value of a long
->>>>> task name is truncated due to the limitation of TASK_COMM_LEN.
->>>>>       create_very_lon
->>>>>
->>>>> This leads to the names passed from userland via pthread_setname_np()
->>>>> being truncated.
->>>> So there have been long discussions about "comm", and it mainly boils
->>>> down to "leave it alone". For the /proc-scraping tools like "ps" and
->>>> "top", they check both "comm" and "cmdline", depending on mode. The more
->>>> useful (and already untruncated) stuff is in "cmdline", so I suspect it
->>>> may make more sense to have pthread_setname_np() interact with that
->>>> instead. Also TASK_COMM_LEN is basically considered userspace ABI at
->>>> this point and we can't sanely change its length without breaking the
->>>> world.
->>>>
->>> Completely agree that comm is best left untouched. TASK_COMM_LEN is
->>> embedded into the kernel and the pthread ABI changes here should be
->>> avoided.
->>>
->> So, basically my approach _does not_ touch TASK_COMM_LEN at all. The normal
->> 'TASK_COMM_LEN' 16byte design remains untouched.
->> Which means that all the legacy / existing ABi which uses 'task->comm' and
->> hence are designed / written to handle 'TASK_COMM_LEN' 16-byte name,
->> continue to work as before using '/proc/$pid/task/$tid/comm'.
->>
->> This change-set only adds a _parallel_ dynamically allocated
->> 'task->full_name' which can be used by interested users via
->> '/proc/$pid/task/$tid/full_name'.
-> I don't want to add this to all processes at exec time as the existing
-> solution works for those processes: read /proc/$pid/cmdline.
->
-> That said, adding another pointer to task_struct isn't to bad I guess,
-> and it could be updated by later calls. Maybe by default it just points
-> to "comm".
-Sure.
+The current cgrp storage has a percpu counter, bpf_cgrp_storage_busy,
+to detect potential deadlock at a spin_lock that the local storage
+acquires during new storage creation.
 
->
->> I am fine with adding either '/proc/$pid/task/$tid/full_name' or
->> '/proc/$pid/task/$tid/debug_name' (actually both of these achieve the same).
->> The new / modified users (especially the debug applications you listed
->> above) can switch easily to using '/proc/$pid/task/$tid/full_name' instead
->> of ''/proc/$pid/task/$tid/comm'
->>
->> AFAIK we already achieved for the kthreads using d6986ce24fc00 ("kthread:
->> dynamically allocate memory to store kthread's full name"), which adds
->> 'full_name' in parallel to 'comm' for kthread names.
-> If we do this for task_struct, we should remove "full_name" from kthread
-> and generalize it for all processes.
->
-Got it. Ok, let me rework the series so that we have a unified 
-'full_name' inside 'task_struct' and have kthread use it as well.
+There are false positives. It turns out to be too noisy in
+production. For example, a bpf prog may be doing a
+bpf_cgrp_storage_get on map_a. An IRQ comes in and triggers
+another bpf_cgrp_storage_get on a different map_b. It will then
+trigger the false positive deadlock check in the percpu counter.
+On top of that, both are doing lookup only and no need to create
+new storage, so practically it does not need to acquire
+the spin_lock.
 
-I will send a v2 accordingly.
+The bpf_task_storage_get already has a strategy to minimize this
+false positive by only failing if the bpf_task_storage_get needs
+to create a new storage and the percpu counter is busy. Creating
+a new storage is the only time it must acquire the spin_lock.
 
-Thanks,
-Bhupesh
+This patch borrows the same idea. Unlike task storage that
+has a separate variant for tracing (_recur) and non-tracing, this
+patch stays with one bpf_cgrp_storage_get helper to keep it simple
+for now in light of the upcoming res_spin_lock.
+
+The variable could potentially use a better name noTbusy instead
+of nobusy. This patch follows the same naming in
+bpf_task_storage_get for now.
+
+I have tested it by temporarily adding noinline to
+the cgroup_storage_lookup(), traced it by fentry, and the fentry
+program succeeded in calling bpf_cgrp_storage_get().
+
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+---
+ kernel/bpf/bpf_cgrp_storage.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/bpf/bpf_cgrp_storage.c b/kernel/bpf/bpf_cgrp_storage.c
+index 54ff2a85d4c0..148da8f7ff36 100644
+--- a/kernel/bpf/bpf_cgrp_storage.c
++++ b/kernel/bpf/bpf_cgrp_storage.c
+@@ -161,6 +161,7 @@ BPF_CALL_5(bpf_cgrp_storage_get, struct bpf_map *, map, struct cgroup *, cgroup,
+ 	   void *, value, u64, flags, gfp_t, gfp_flags)
+ {
+ 	struct bpf_local_storage_data *sdata;
++	bool nobusy;
+ 
+ 	WARN_ON_ONCE(!bpf_rcu_lock_held());
+ 	if (flags & ~(BPF_LOCAL_STORAGE_GET_F_CREATE))
+@@ -169,21 +170,21 @@ BPF_CALL_5(bpf_cgrp_storage_get, struct bpf_map *, map, struct cgroup *, cgroup,
+ 	if (!cgroup)
+ 		return (unsigned long)NULL;
+ 
+-	if (!bpf_cgrp_storage_trylock())
+-		return (unsigned long)NULL;
++	nobusy = bpf_cgrp_storage_trylock();
+ 
+-	sdata = cgroup_storage_lookup(cgroup, map, true);
++	sdata = cgroup_storage_lookup(cgroup, map, nobusy);
+ 	if (sdata)
+ 		goto unlock;
+ 
+ 	/* only allocate new storage, when the cgroup is refcounted */
+ 	if (!percpu_ref_is_dying(&cgroup->self.refcnt) &&
+-	    (flags & BPF_LOCAL_STORAGE_GET_F_CREATE))
++	    (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) && nobusy)
+ 		sdata = bpf_local_storage_update(cgroup, (struct bpf_local_storage_map *)map,
+ 						 value, BPF_NOEXIST, false, gfp_flags);
+ 
+ unlock:
+-	bpf_cgrp_storage_unlock();
++	if (nobusy)
++		bpf_cgrp_storage_unlock();
+ 	return IS_ERR_OR_NULL(sdata) ? (unsigned long)NULL : (unsigned long)sdata->data;
+ }
+ 
+-- 
+2.47.1
+
 
