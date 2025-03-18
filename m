@@ -1,107 +1,276 @@
-Return-Path: <bpf+bounces-54284-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54285-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 184CFA66EBF
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 09:45:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F24C8A66ECB
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 09:47:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AF097AD930
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 08:43:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1E0C3A629D
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 08:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103251FFC47;
-	Tue, 18 Mar 2025 08:44:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7475205AA5;
+	Tue, 18 Mar 2025 08:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AkN4sGLn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZajTzRvX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6348B1C860C
-	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 08:44:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6286E204C28
+	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 08:45:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742287449; cv=none; b=XsgDx8VIq5AUAj9pS/XUOQN7xu6aLRZcPjWz8h9kQXBAFT1CGvGtYt5/pIp9OGv0dHvDyB+KrI34ofxBv6threVsF3OG4e4q4n5ae5pGf7NYv8zqW1TUX+DWvQRUh2N2fjVag2h0pg5WR3ghwnNbhWZepxlJlFZ/weFpUyFuN/Q=
+	t=1742287507; cv=none; b=bHekvPu9Perm53JkVsrexJEMbHjiH1ZCnhEOVKZKDF1oEOu5YvRICamNggc2bAlgcrLlXqv24DM5MkrSvnWWKn0y26bIaU7zSZjyf47qAk8axVQOZFrpGnABwIi+EOvW7UVITmQEH3D3yaZEaA+l5o+MNSLRguReNrCkwkBtmVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742287449; c=relaxed/simple;
-	bh=iqTAtUJA/PJ9sl5PSweARZnanep8YR8kV1RNuLw431g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LSaolrxktRWGFi4cDA8CPCRoqD9Cvi3WbQcrX6SMeHYuFPXkr3aRxoGMDzP063plZYap3QpsQ4EMKTx93N9ZxBjCuPPY4S5JQ1twdvdHce2V1s4AKVpKqy4gWuIB05yOglDLyLjlqSd6/Ms0o+ALwAIg60qeeORixM/i0Ybv5Tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AkN4sGLn; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3913fdd003bso2607703f8f.1
-        for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 01:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1742287446; x=1742892246; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qrTeCa77YMi64HxFdGCxWhuYvHt2lDA4l8yS4Og6Iog=;
-        b=AkN4sGLnISpuNLWFJamL+ViEsv7UYRY5XaD0Z9JSZQyphCa6ropW01padIf5Rbf3/c
-         X/8sy7m2Kubq6rwvrxmHJmMgiNgPAFd7nzor0Ze6IrZ8/rXAos0qZbNy9STPE1tk8JyX
-         W9cz7H7wAPxwsLfyOXpl9NlU1qH+yRrFPI5qha1SyzGppJy+nQiKd6PtiCMocU2/1Mlk
-         SXSKxwIRVMsAJ3l798gYp4aJ8OYkyW6xYVvdj8vO/PfuW4Grnyor7fGRGVc3ok005KLB
-         XB5XkFumLNn8FRaxvnIqSVNuXEXBv5xLUKn6yhwe3EjS2hjOMFaaNSi8xunyQ2PcBLyn
-         i9UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742287446; x=1742892246;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qrTeCa77YMi64HxFdGCxWhuYvHt2lDA4l8yS4Og6Iog=;
-        b=G5VzVvigZXzGhVftJv2j2veDusvE4p5rQ/zu+pW13tkFcQKAcyiyO5Ijzu+L1wxFA8
-         mWzzRLd16a3LZvplT3G43RflyN+B16Cz81kNhL+B+1M99P3LykapkGlG00FHgSRh7n6n
-         AWuXzh6Xb9S5kTWg+X8CCUd8NAhdPdop8snQT10rKRc2+mNz39bamaJvGvkUeyFCnoGj
-         Y75bgMPppWs+UIoG3UA7jqwvmuQL22NeQOtVviwM0PwElx1kWfOgHpvvttpa3YeVh1fg
-         5N50lIAlEpGua96QmMuYa+bVMN5o6ts6ymh8KRHPvI2kiEGBlzDvSa5g6kls8OzRbEZQ
-         Ak+w==
-X-Gm-Message-State: AOJu0YxAyR6ORcJZBV7Vla1YjB0L7T0RDJBbneAHajGFxjILguX2t21b
-	GWxo85D6SSsT9IoXRXHgMhYu3dUGG7k1DmyZgULLe4azJBmtzH36KcR4JQMx3uo=
-X-Gm-Gg: ASbGnct6ZrAlr7HtSSw3QbwC2f3vZPitmxeEsUE8zYusC7MFc+T/ANdnnClhQVzBQj4
-	s53Y4GILK08/5W71w1VQbbkwmO/Pk6mtIoYcg9HTFgUkBjgOtqxPkW1CK1n3zE1hnZzJpRKEpHZ
-	aiAjD61zXR7Re4vnhn+gV3f4iRccDJ+Cm9c1Rk2bLhtlSGess1a8Rs4YkTYlHpRcGeYPxlwMhrd
-	koIVTr292FIKCb9bk9T9e25zzUwCtl9ljMO6p8D/2A434GoCjfp5v6IC+LboWnKI1m84vo+PUzx
-	5Pl/5oIIHBXajNSfENMluN57Zn8vOPS+N9i3jV8l
-X-Google-Smtp-Source: AGHT+IGggvjqtPvIae4sT84y4xyu6cPZKjVhsAYd+wRVhK50QGtX2jXahMbpPSeBaDTLxmnO0XkauQ==
-X-Received: by 2002:a05:6000:1a85:b0:38d:d166:d44 with SMTP id ffacd0b85a97d-3996bb82729mr1960070f8f.23.1742287445649;
-        Tue, 18 Mar 2025 01:44:05 -0700 (PDT)
-Received: from u94a ([2401:e180:88a2:a1cd:5826:4468:5b75:b568])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-225c68aa66esm89116945ad.91.2025.03.18.01.43.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Mar 2025 01:44:05 -0700 (PDT)
-Date: Tue, 18 Mar 2025 16:43:55 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Andrea Terzolo <andreaterzolo3@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH bpf] bpf: clarify a misleading verifier error message
-Message-ID: <l4kxrezqm4qli6ilr3vg33xh6eqjkrfaiff7uwfyxwzgl3v46m@rjgmcvjy7v52>
-References: <20250318083551.8192-1-andreaterzolo3@gmail.com>
+	s=arc-20240116; t=1742287507; c=relaxed/simple;
+	bh=ihnMB9YAv6W4/ZO/4Ibu8eER5w0QFJLlpgYXcU/dQZc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k2HECm9SU/nMHbDM/YvmAtnGwmiRq90CPXaU6PS1Wn7I5IzgF+gP4HqStfzYvX8LrTMA9oXsFFVgyKsXoVSfYIsg1+n6XQFZnv1kC3HwcCKovr+9gHLFnWs3P+q/WofaJddfm8munu7+wQ2voXcdI9/9jJOe274JdZlRztkVYh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZajTzRvX; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ce3747ba-e363-4fca-97fc-af539b86d723@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1742287498;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jQQzfq1dDur7PMg3Xa9mh7tHI7KLBBDYQc+vrdNfPKE=;
+	b=ZajTzRvXwr3Tg1/eDcB8nAjimXSLGXxsAr1rAmU6uADsYNgtscW9M0C6oL2z+Y9ueXs3N3
+	Sa2ZqZ9mHZYoJoFlzbPYwkfiIqx+/UI3ZOrMAQxSRXpmU/BL9RKXPqdTjo9ZE+w7twTyX9
+	na6LQ4AMBvRMvP5TDu/43LCKQPwZLnU=
+Date: Tue, 18 Mar 2025 08:44:55 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250318083551.8192-1-andreaterzolo3@gmail.com>
+Subject: Re: [PATCH bpf-next v11 2/4] bpf: add bpf_cpu_time_counter_to_ns
+ helper
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Vadim Fedorenko <vadfed@meta.com>
+Cc: Borislav Petkov <bp@alien8.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Yonghong Song <yonghong.song@linux.dev>, Mykola Lysenko <mykolal@fb.com>,
+ X86 ML <x86@kernel.org>, bpf <bpf@vger.kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>
+References: <20250317224932.1894918-1-vadfed@meta.com>
+ <20250317224932.1894918-3-vadfed@meta.com>
+ <CAADnVQLYT5SV+tS2ycLteBMYOc12C=X7iHZ=RjhyVzuY=6=8Uw@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <CAADnVQLYT5SV+tS2ycLteBMYOc12C=X7iHZ=RjhyVzuY=6=8Uw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Mar 18, 2025 at 09:35:45AM +0100, Andrea Terzolo wrote:
-> The current verifier error message states that tail_calls are not
-> allowed in non-JITed programs with BPF-to-BPF calls. While this is
-> accurate, it is not the only scenario where this restriction applies.
-> Some architectures do not support this feature combination even when
-> programs are JITed. This update improves the error message to better
-> reflect these limitations.
+On 18/03/2025 00:29, Alexei Starovoitov wrote:
+> On Mon, Mar 17, 2025 at 3:50 PM Vadim Fedorenko <vadfed@meta.com> wrote:
+>>
+>> The new helper should be used to convert deltas of values
+>> received by bpf_get_cpu_time_counter() into nanoseconds. It is not
+>> designed to do full conversion of time counter values to
+>> CLOCK_MONOTONIC_RAW nanoseconds and cannot guarantee monotonicity of 2
+>> independent values, but rather to convert the difference of 2 close
+>> enough values of CPU timestamp counter into nanoseconds.
+>>
+>> This function is JITted into just several instructions and adds as
+>> low overhead as possible and perfectly suits benchmark use-cases.
+>>
+>> When the kfunc is not JITted it returns the value provided as argument
+>> because the kfunc in previous patch will return values in nanoseconds.
+>>
+>> Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+>> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+>> ---
+>>   arch/x86/net/bpf_jit_comp.c   | 28 +++++++++++++++++++++++++++-
+>>   arch/x86/net/bpf_jit_comp32.c | 27 ++++++++++++++++++++++++++-
+>>   include/linux/bpf.h           |  1 +
+>>   kernel/bpf/helpers.c          |  6 ++++++
+>>   4 files changed, 60 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index 92cd5945d630..3e4d45defe2f 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -9,6 +9,7 @@
+>>   #include <linux/filter.h>
+>>   #include <linux/if_vlan.h>
+>>   #include <linux/bpf.h>
+>> +#include <linux/clocksource.h>
+>>   #include <linux/memory.h>
+>>   #include <linux/sort.h>
+>>   #include <asm/extable.h>
+>> @@ -2289,6 +2290,30 @@ st:                      if (is_imm8(insn->off))
+>>                                  break;
+>>                          }
+>>
+>> +                       if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL &&
+>> +                           IS_ENABLED(CONFIG_BPF_SYSCALL) &&
+>> +                           imm32 == BPF_CALL_IMM(bpf_cpu_time_counter_to_ns) &&
+>> +                           cpu_feature_enabled(X86_FEATURE_TSC) &&
+>> +                           using_native_sched_clock() && sched_clock_stable()) {
 > 
-> Suggested-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-> Signed-off-by: Andrea Terzolo <andreaterzolo3@gmail.com>
+> And now this condition copy pasted 3 times ?!
 
-Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Yeah, I'll factor it out
+
+>> +                               struct cyc2ns_data data;
+>> +                               u32 mult, shift;
+>> +
+>> +                               cyc2ns_read_begin(&data);
+>> +                               mult = data.cyc2ns_mul;
+>> +                               shift = data.cyc2ns_shift;
+>> +                               cyc2ns_read_end();
+> 
+> This needs a big comment explaining why this math will be stable
+> after JIT and for the lifetime of the prog.
+
+It's more or less the same comment as for the JIT of
+bpf_get_cpu_time_counter(). I'll add it.
+
+
+>> +                               /* imul RAX, RDI, mult */
+>> +                               maybe_emit_mod(&prog, BPF_REG_1, BPF_REG_0, true);
+>> +                               EMIT2_off32(0x69, add_2reg(0xC0, BPF_REG_1, BPF_REG_0),
+>> +                                           mult);
+>> +
+>> +                               /* shr RAX, shift (which is less than 64) */
+>> +                               maybe_emit_1mod(&prog, BPF_REG_0, true);
+>> +                               EMIT3(0xC1, add_1reg(0xE8, BPF_REG_0), shift);
+>> +
+>> +                               break;
+>> +                       }
+>> +
+>>                          func = (u8 *) __bpf_call_base + imm32;
+>>                          if (src_reg == BPF_PSEUDO_CALL && tail_call_reachable) {
+>>                                  LOAD_TAIL_CALL_CNT_PTR(stack_depth);
+>> @@ -3906,7 +3931,8 @@ bool bpf_jit_inlines_kfunc_call(s32 imm)
+>>   {
+>>          if (!IS_ENABLED(CONFIG_BPF_SYSCALL))
+>>                  return false;
+>> -       if (imm == BPF_CALL_IMM(bpf_get_cpu_time_counter) &&
+>> +       if ((imm == BPF_CALL_IMM(bpf_get_cpu_time_counter) ||
+>> +           imm == BPF_CALL_IMM(bpf_cpu_time_counter_to_ns)) &&
+>>              cpu_feature_enabled(X86_FEATURE_TSC) &&
+>>              using_native_sched_clock() && sched_clock_stable())
+>>                  return true;
+>> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+>> index 7f13509c66db..9791a3fb9d69 100644
+>> --- a/arch/x86/net/bpf_jit_comp32.c
+>> +++ b/arch/x86/net/bpf_jit_comp32.c
+>> @@ -12,6 +12,7 @@
+>>   #include <linux/netdevice.h>
+>>   #include <linux/filter.h>
+>>   #include <linux/if_vlan.h>
+>> +#include <linux/clocksource.h>
+>>   #include <asm/cacheflush.h>
+>>   #include <asm/set_memory.h>
+>>   #include <asm/nospec-branch.h>
+>> @@ -2115,6 +2116,29 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>>                                          EMIT2(0x0F, 0x31);
+>>                                          break;
+>>                                  }
+>> +                               if (IS_ENABLED(CONFIG_BPF_SYSCALL) &&
+>> +                                   imm32 == BPF_CALL_IMM(bpf_cpu_time_counter_to_ns) &&
+>> +                                   cpu_feature_enabled(X86_FEATURE_TSC) &&
+>> +                                   using_native_sched_clock() && sched_clock_stable()) {
+>> +                                       struct cyc2ns_data data;
+>> +                                       u32 mult, shift;
+>> +
+>> +                                       cyc2ns_read_begin(&data);
+>> +                                       mult = data.cyc2ns_mul;
+>> +                                       shift = data.cyc2ns_shift;
+>> +                                       cyc2ns_read_end();
+> 
+> same here.
+> 
+>> +
+>> +                                       /* move parameter to BPF_REG_0 */
+>> +                                       emit_ia32_mov_r64(true, bpf2ia32[BPF_REG_0],
+>> +                                                         bpf2ia32[BPF_REG_1], true, true,
+>> +                                                         &prog, bpf_prog->aux);
+>> +                                       /* multiply parameter by mut */
+>> +                                       emit_ia32_mul_i64(bpf2ia32[BPF_REG_0],
+>> +                                                         mult, true, &prog);
+> 
+> How did you test this?
+> It's far from obvious that this will match what mul_u64_u32_shr() does.
+> And on a quick look I really doubt.
+
+Well, I can re-write it op-by-op from mul_u64_u32_shr(), but it's more
+or less the same given that mult and shift are not too big, which is
+common for TSC coefficients.
+
+> 
+> The trouble of adding support for 32-bit JIT doesn't seem worth it.
+
+Do you mean it's better to drop this JIT implementation?
+
+> 
+>> +                                       /* shift parameter by shift which is less than 64 */
+>> +                                       emit_ia32_rsh_i64(bpf2ia32[BPF_REG_0],
+>> +                                                         shift, true, &prog);
+>> +                               }
+>>
+>>                                  err = emit_kfunc_call(bpf_prog,
+>>                                                        image + addrs[i],
+>> @@ -2648,7 +2672,8 @@ bool bpf_jit_inlines_kfunc_call(s32 imm)
+>>   {
+>>          if (!IS_ENABLED(CONFIG_BPF_SYSCALL))
+>>                  return false;
+>> -       if (imm == BPF_CALL_IMM(bpf_get_cpu_time_counter) &&
+>> +       if ((imm == BPF_CALL_IMM(bpf_get_cpu_time_counter) ||
+>> +           imm == BPF_CALL_IMM(bpf_cpu_time_counter_to_ns)) &&
+>>              cpu_feature_enabled(X86_FEATURE_TSC) &&
+>>              using_native_sched_clock() && sched_clock_stable())
+>>                  return true;
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index a5e9b592d3e8..f45a704f06e3 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -3389,6 +3389,7 @@ u64 bpf_get_raw_cpu_id(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+>>
+>>   /* Inlined kfuncs */
+>>   u64 bpf_get_cpu_time_counter(void);
+>> +u64 bpf_cpu_time_counter_to_ns(u64 counter);
+>>
+>>   #if defined(CONFIG_NET)
+>>   bool bpf_sock_common_is_valid_access(int off, int size,
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index 43bf35a15f78..e5ed5ba4b4aa 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+>> @@ -3198,6 +3198,11 @@ __bpf_kfunc u64 bpf_get_cpu_time_counter(void)
+>>          return ktime_get_raw_fast_ns();
+>>   }
+>>
+>> +__bpf_kfunc u64 bpf_cpu_time_counter_to_ns(u64 counter)
+>> +{
+>> +       return counter;
+>> +}
+>> +
+>>   __bpf_kfunc_end_defs();
+>>
+>>   BTF_KFUNCS_START(generic_btf_ids)
+>> @@ -3299,6 +3304,7 @@ BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_SLEEPABLE)
+>>   BTF_ID_FLAGS(func, bpf_local_irq_save)
+>>   BTF_ID_FLAGS(func, bpf_local_irq_restore)
+>>   BTF_ID_FLAGS(func, bpf_get_cpu_time_counter, KF_FASTCALL)
+>> +BTF_ID_FLAGS(func, bpf_cpu_time_counter_to_ns, KF_FASTCALL)
+>>   BTF_KFUNCS_END(common_btf_ids)
+>>
+>>   static const struct btf_kfunc_id_set common_kfunc_set = {
+>> --
+>> 2.47.1
+>>
+
 
