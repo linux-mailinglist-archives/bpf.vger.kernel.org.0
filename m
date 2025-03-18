@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-54319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54317-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A249A67665
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B350A67664
 	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 15:30:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 558143B36D7
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 14:30:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F6F87AAEC6
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 14:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A86AF20E6E7;
-	Tue, 18 Mar 2025 14:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6934C20E038;
+	Tue, 18 Mar 2025 14:29:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="F02H5hBs"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="YtOPIWmF"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF9C46426
-	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 14:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E58D20E00A
+	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 14:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742308200; cv=none; b=DDASlmMM86KxFhqKc5CsrAq/Ha9LVdd1H1+Sl3rdVzqMXWi4jFI80dKL14Mo/4daXtUSulKdQAcNkmq29himSqBDk8DvyqcDRK84+XTMcRa2O0sZOzVxOE5wMUk1AxZOznVQOTrim05HD+am9+8r+4WRFQHM71arvbOoUpHpYQ4=
+	t=1742308198; cv=none; b=LzwLgEAFBIs/RIHPZrBrirBOYPPD6ygri3oFT7Qv+uvSlFgdlQ7e0BE0xXIlOBX9X2ivTvoEUm83osDo3Va8PYpUSBCruJzZ54cOw5f2fQK/lwikUAfS42g/COZnNvJAvnr8WAGcZTnpQ2O3/LqcXZsvibl6WRfLLrQlBq0oWrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742308200; c=relaxed/simple;
-	bh=oODnVCdr1945qfq5cPuBPmRRXDtvK2Eo5z+BNBfhJ9Q=;
+	s=arc-20240116; t=1742308198; c=relaxed/simple;
+	bh=xTWLMGwZ+J2UJ54zkK4f/1GRnNBoqipWfS/8bDr/aWY=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=monQotzA30QEHetxsZTV0AfLuxVLVdPm8rpLvY4bcuS3PA9H5nq2mgZm1JD7ouBlwtsVIpcBogOo03NvIt3bD9KT2ADcQxxp2DbxEs3L3AhfK0xZRTd6SiJo/zkrJZ6oY0uLIK2k0RO0vPvQJYzTRvEX5GXEoydUxQVwJ4MxJFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=F02H5hBs; arc=none smtp.client-ip=209.85.128.43
+	 MIME-Version; b=fKldtqdJcK1koo2GfsrZWwe96gjXN36+jkfO+kHIK9OxV6ezZCleZu/CmE1x5fB7G6eZZ6g7T44xF5HkoS/quZpZbfXQazzXTrdU7hVLWpSwlDu7Db1BffauC5BNuVqNrnOb8xn052XJouAvxADOxrKgOrIixv65N4ZtLbnpAis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=YtOPIWmF; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43d0618746bso25938245e9.2
-        for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 07:29:54 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43cf0d787eeso35974895e9.3
+        for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 07:29:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1742308193; x=1742912993; darn=vger.kernel.org;
+        d=isovalent.com; s=google; t=1742308194; x=1742912994; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Zqan77Wlb3LpYTtYGPOVrcaQChoebzScRGAKNoFaw2w=;
-        b=F02H5hBs5DvXKvHlJ8iMXNvs1ncGA8ywJEcNpKTxcTwcM2nY9XpxoJ1ipi2p+bHSSm
-         j8/Yn2+7k1PpJAzPY8LcV2+urXyzpexPpc98buXcZQhKV+yCwM2ADj0CSrfat5t1BgAN
-         me+xpjpmftLMXvU2yC03xoHbRQnezLa/iNu9S+B00jJybjpBOgR13yUgcjnFY6qgMzai
-         hiys0eeQZ7y80B3J+Aj7AqQV9dDjJ6M1tYyO4fuFiRUrsUdzCCXucL1iGpo0CPqZ+XUB
-         RVikrMfse/q6+luzEnfESkHWwwTOpoA2H1WOE57iVPPPQHENoMHlaRk2TYLo+Td45Nto
-         pKyQ==
+        bh=5x/Zdr28U7rm8LeTlmCEIcnCk+qjtX3EDdKLOo1AFXY=;
+        b=YtOPIWmF6xBPscu7xsdUTTi1oJ1PlFwKIhx+QixBwlvFXLBJtq8eR56jL+G+lN3/3N
+         orTMPfgdm0QzOKOg0CAupqTSbMvGAZ6Cq5BM9x/mv+q2wRpggcUWvMMy9w6IQdAxqneG
+         82vGi8NVrBVSDZ2cbpf1JLLAjYFMNDPJSPLK1binIoOWZbiRwYLbE2Ho/T/n3/UyIkvS
+         H+btze+MLVs1PvXWUpSU7Qwevqy0N0aXpvwN2HMf1FwrkVgQHbqwmAhkotbfYTxwXn+8
+         F3nIZoYk+JUjXxdvJlaV4t5mHoatvoF2ZPtb1SvoBEjJIRl6eEu5Q5cLin5VWXYFE56v
+         F6vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742308193; x=1742912993;
+        d=1e100.net; s=20230601; t=1742308194; x=1742912994;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Zqan77Wlb3LpYTtYGPOVrcaQChoebzScRGAKNoFaw2w=;
-        b=TVKlW8eMNn9owlAfc8MHMl73vdZQ5XZ7UL8IVb9lKn3VSBCw6FhOkIhXTfyNxHIjKE
-         +fuKUBJenYMscDE9E2CPbVpzEtXKHS8XcGXeKyD8cnzZM8gSWKvfZ2F114ExZDuMxEiy
-         3iAq3QIXXOgukllFo/TmobYaQUlWTTBSW/PKom6IKk2EK5zTqYYr1mfLn4kc+UfqH/p9
-         PRrC2KxWPN1JLRh1OdM5VIqHV0gn7oZTEPd/vdCDCaZXOog1EkweaTmFXqa2aD1rl1O8
-         s5y9KGLl5U6XazX5JPeLKVtam9EriLUm1M0rzrY9TdGNr/8TmV2t/0mad6G560fGlnS2
-         6ZFg==
-X-Gm-Message-State: AOJu0Yzz3bmsNTm7nDeCk1nbD3vKYZsqJT9ZLP0vPHq6tS1Dvx3/qmO3
-	nON9khEU4bCgRRjv3oFCoX6UeRAQng72YIKVNy/PF5tixcu6c3hAD44pyz4eQ0QJWvA4BYLlb6Q
-	F
-X-Gm-Gg: ASbGnctkR74TmTRie2XhMVyFxIMPO8YW5kfXusJqn9hwLDCdUAlyJ56IwSKTvjv0odh
-	E2/C/LNBWCBaeBjjA2NVzOqs+gneUrTgKB1Th334wJ3tC4TW4Eb61lTbJE0QHv+VEDM2ZedkQpL
-	46YnzNHDly0wLTqm+EIOpBp3+MFECKbLPDP2nZkIJ20v9uhBGqD+fVZdOHt5BZZ98AvUtPjAg89
-	33y9hmwyJiS9bORu3GvgkUHPGwjcMcCo+hbjAN3A4tTsxBUhPLv6iZcqV87dPXgR6hoKa4fRgZa
-	jvNmkTjbWL5/2/FlQ17gG+Nc2PkGqecQTpdBvAULK/mSnZhpOzx3fljyCA==
-X-Google-Smtp-Source: AGHT+IGwjpRy7r2TqR7l+c+Fr2nOGop8hEQWz7a2FQY4+deaVgGoskabtlKqqBkHMtZtusEZtbyp2g==
-X-Received: by 2002:a05:600c:1389:b0:43d:8ea:8d80 with SMTP id 5b1f17b1804b1-43d3b951a1amr31560055e9.5.1742308192775;
-        Tue, 18 Mar 2025 07:29:52 -0700 (PDT)
+        bh=5x/Zdr28U7rm8LeTlmCEIcnCk+qjtX3EDdKLOo1AFXY=;
+        b=O5RVJFXnIuhconeYDvYyzWTniedOeAQo/5wz0ko3QFm3S4tuxD0lpjEHC7YY4E28kj
+         ibEjfq6G5S+DGn62kK0YvJIH+a48/rrOxloJHXBtn2qRGXLYbJXIAPpAFMS5mKHpwhUK
+         jkfi7Uk+dE29AllMlUWfZkl7AHN6oZj5KWLT9HtP8ARkbX/3tS7NkcPG6zB/zhlwGnlX
+         dE2o0JQv9Hed8GzFp5BRm+lk3OTXPib2AmsMTEDxtnpkznlV7I3jp7CEpPU3M1JTqN7G
+         yxWPtiFFpN6URJD8GQCtKKpBk7ZOuesydmVqTEQk5bKMUJb/yEQ4OuoufwqMnrQMecor
+         2Apw==
+X-Gm-Message-State: AOJu0YydsnSA3VGmhXuSuli6PsKhVAwoTYSHFADtgtGUBkDCp+epA3sP
+	leEKu+o1UwCgDm3dtsTgWgYo/khtP5IoZGh5uBvcAsEQkcxC6aNtix9L7modYO9LyoJ55LQQXHT
+	B
+X-Gm-Gg: ASbGncu5DrfTLr8QFjQzE8B6x2Ax/Da92CsACE14U8iehtyujUq5NP034aMhACAywNo
+	vuKCEsmfLsH9JrnS73psNVbc+kvIHmGG1BLyqNNDKJ41bWovdG/YDDAc0q2spioOsvWwNnw/Mgl
+	e7yGInsIoxz26kjmSrUE8TLeuPcm3JVl48rc5DDcLdzKk1hg5GsCV3K0hyeEbwfY8LdcIiu0qMu
+	kMDXW/cdsWcfioGzQpDr+ES34eh3YxgvqBcEcVHuCNGCAhzW0o7odFdazDbuRlYG+Mxoa4GYEDi
+	9qgX0ERLXcebtBw9ipl5a7p55ie9oXEjhppcwCt+04p4Ae07IGk1A/OzcQ==
+X-Google-Smtp-Source: AGHT+IFa/zYy9gev8ciPJk+pRnAUSQgYVlQeFbZJgzbUqwgGg4pG8F7bChHyI/Rve0Xt7xnPlyGK0Q==
+X-Received: by 2002:a05:600c:1e07:b0:43c:f689:88ce with SMTP id 5b1f17b1804b1-43d3b9d446bmr25661575e9.20.1742308193956;
+        Tue, 18 Mar 2025 07:29:53 -0700 (PDT)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
         by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-395cb40cdd0sm18348071f8f.77.2025.03.18.07.29.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Mar 2025 07:29:52 -0700 (PDT)
+        Tue, 18 Mar 2025 07:29:53 -0700 (PDT)
 From: Anton Protopopov <aspsk@isovalent.com>
 To: bpf@vger.kernel.org,
 	Andrii Nakryiko <andrii@kernel.org>,
@@ -81,9 +81,9 @@ To: bpf@vger.kernel.org,
 	Quentin Monnet <qmo@kernel.org>,
 	Anton Protopopov <aspsk@isovalent.com>,
 	Alexei Starovoitov <ast@kernel.org>
-Subject: [RFC PATCH bpf-next 07/14] bpf: save the start of functions in bpf_prog_aux
-Date: Tue, 18 Mar 2025 14:33:11 +0000
-Message-Id: <20250318143318.656785-8-aspsk@isovalent.com>
+Subject: [RFC PATCH bpf-next 08/14] bpf, x86: implement static key support
+Date: Tue, 18 Mar 2025 14:33:12 +0000
+Message-Id: <20250318143318.656785-9-aspsk@isovalent.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250318143318.656785-1-aspsk@isovalent.com>
 References: <20250318143318.656785-1-aspsk@isovalent.com>
@@ -95,42 +95,90 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce a new subprog_start field in bpf_prog_aux. This field may
-be used by JIT compilers wanting to know the real absolute xlated
-offset of the function being jitted. The func_info[func_id] may have
-served this purpose, but func_info may be NULL, so JIT compilers
-can't rely on it.
+Implement bpf_arch_poke_static_branch() for x86. Namely, during each
+JIT loop, save IP values and sizes of jump instructions pointed by
+static keys. Then use the text_poke_bp() to toggle jumps/nops.
 
 Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
 ---
- include/linux/bpf.h   | 1 +
- kernel/bpf/verifier.c | 1 +
- 2 files changed, 2 insertions(+)
+ arch/x86/net/bpf_jit_comp.c | 46 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 42ddd2b61866..fb0910083b79 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1524,6 +1524,7 @@ struct bpf_prog_aux {
- 	u32 ctx_arg_info_size;
- 	u32 max_rdonly_access;
- 	u32 max_rdwr_access;
-+	u32 subprog_start;
- 	struct btf *attach_btf;
- 	struct bpf_ctx_arg_aux *ctx_arg_info;
- 	void __percpu *priv_stack_ptr;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 0860ef57d5af..7f66002071ed 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -20999,6 +20999,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 		func[i]->aux->func_idx = i;
- 		/* Below members will be freed only at prog->aux */
- 		func[i]->aux->btf = prog->aux->btf;
-+		func[i]->aux->subprog_start = subprog_start;
- 		func[i]->aux->func_info = prog->aux->func_info;
- 		func[i]->aux->func_info_cnt = prog->aux->func_info_cnt;
- 		func[i]->aux->poke_tab = prog->aux->poke_tab;
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 5856ac1aab80..31cadded820b 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1569,6 +1569,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
+ 		const s32 imm32 = insn->imm;
+ 		u32 dst_reg = insn->dst_reg;
+ 		u32 src_reg = insn->src_reg;
++		int adjust_off = 0;
++		int abs_xlated_off;
+ 		u8 b2 = 0, b3 = 0;
+ 		u8 *start_of_ldx;
+ 		s64 jmp_offset;
+@@ -1724,6 +1726,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
+ 			emit_mov_imm64(&prog, dst_reg, insn[1].imm, insn[0].imm);
+ 			insn++;
+ 			i++;
++			adjust_off = 1;
+ 			break;
+ 
+ 			/* dst %= src, dst /= src, dst %= imm32, dst /= imm32 */
+@@ -2595,6 +2598,14 @@ st:			if (is_imm8(insn->off))
+ 				return -EFAULT;
+ 			}
+ 			memcpy(rw_image + proglen, temp, ilen);
++
++			/*
++			 * Static keys need to know how the xlated code
++			 * of static ja instructions maps to jited code
++			 */
++			abs_xlated_off = bpf_prog->aux->subprog_start + i - 1 - adjust_off;
++			bpf_prog_update_insn_ptr(bpf_prog, abs_xlated_off, proglen, ilen,
++						 jmp_offset, image + proglen);
+ 		}
+ 		proglen += ilen;
+ 		addrs[i] = proglen;
+@@ -3880,3 +3891,38 @@ bool bpf_jit_supports_timed_may_goto(void)
+ {
+ 	return true;
+ }
++
++int bpf_arch_poke_static_branch(struct bpf_insn_ptr *ptr, bool on)
++{
++	int jmp_offset = ptr->jitted_jump_offset;
++	void *ip = ptr->jitted_ip;
++	u32 len = ptr->jitted_len;
++	u8 op[5];
++
++	if (WARN_ON_ONCE(!ip))
++		return -EINVAL;
++
++	if (WARN_ON_ONCE(is_imm8(jmp_offset) && len != 2))
++		return -EINVAL;
++
++	if (WARN_ON_ONCE(!is_imm8(jmp_offset) && len != 5))
++		return -EINVAL;
++
++	if (on) {
++		if (len == 2) {
++			op[0] = 0xEB;
++			op[1] = jmp_offset;
++		} else {
++			op[0] = 0xE9;
++			memcpy(&op[1], &jmp_offset, 4);
++		}
++	} else {
++		memcpy(op, x86_nops[len], len);
++	}
++
++	mutex_lock(&text_mutex);
++	text_poke_bp(ip, op, len, NULL);
++	mutex_unlock(&text_mutex);
++
++	return 0;
++}
 -- 
 2.34.1
 
