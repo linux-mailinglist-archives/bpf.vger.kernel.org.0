@@ -1,151 +1,183 @@
-Return-Path: <bpf+bounces-54326-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54327-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6F19A67737
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 16:05:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C4FAA6774C
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 16:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A41BA188EBE1
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 14:59:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CB0F3B8B90
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 15:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5020D20E6E4;
-	Tue, 18 Mar 2025 14:59:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0315320E709;
+	Tue, 18 Mar 2025 15:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tcl1EMrK"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lr/CZO0A"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38DC720E32D;
-	Tue, 18 Mar 2025 14:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B0320E003;
+	Tue, 18 Mar 2025 15:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742309983; cv=none; b=LJ1GYn5TnK2H6LX6ffrQJnpX2dCChmAbxPn7eiOjl1PbQDlEgwPAnXGmiR5Xx0R54SVBywHc0WfS6oUC9/X5Apae4+6ZTKssz/rqQsmGCfL34bG0vl77Fco0pMLYEBw62faj5RStwrbD2PnGK85znjyHt1guyytUVx+XuWHK8zE=
+	t=1742310625; cv=none; b=px/QDVq4mHyoBstud8oeRPjbCLJ++8J6gM1Uk5okolaoFnb2hn703mf9hQ2nUMChItKfA7QFEbsL6rS34VUZHRlCjzaiSeSq4ErYT2kfeOORzts1ut9S6nHX7VKk6SyqJhuy+i2xM02hbIDXE7q+8GUw0d6HlJ2wMu1+0w70x2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742309983; c=relaxed/simple;
-	bh=XwilzGJMW8mM4pGtyarra4CPyHRb5PyQklPDZcCkCH4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jriavGUsTBBQH6EGPlxw6OuDQSl1xSP8Kdy+mCpqoC5+kezMeL7Qae9JqUD78p2JyoW7Pgj2BZFQyMHhRrufroNzTIPQ/0EvS4Kp6SGxGAdoDpk0qg0u0yojulJljTr3+veCMra7fsGhXGvzabYTKKNBJyI0qmd/C1rXLxM8I2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tcl1EMrK; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3913fdd003bso2881698f8f.1;
-        Tue, 18 Mar 2025 07:59:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742309980; x=1742914780; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z3IbVGPp8x3aPQM/NAuxeO0wEhGFzpjK3YTpNlFq24U=;
-        b=Tcl1EMrK9ChWzO72ExZkUbbQzJeutybX622KJJanVqLABjsA66TWHAxRGNJmnqeH+H
-         231EYm1ATdRVcPRrAIkxOU0M8hg1GSNanBU6Ftvk+ygOh4KhmCFfw26t0KxbV3V7HRlM
-         ixRIgAh2oSzpMVgPWhYVk/YOLhNT0sBwznBHpeXF6FhwCP0tHzrtVOCn+7ZxTtett0sJ
-         /Vs3BrcYITfP/tn3s0QeeGSiScG0yqYSLJ9iDfIi/XcIuH2WX1fV3nobAVMcal3+Fz4u
-         4o5+wIn07cOJ/9u/nrM9bR7HcT2M90oGZq7Hb0+JG9OkwQL0aZsdEcALQgxavKrd+Vy+
-         AFEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742309980; x=1742914780;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z3IbVGPp8x3aPQM/NAuxeO0wEhGFzpjK3YTpNlFq24U=;
-        b=qkAis8xLJ9n6Gb/R4w3wea38qIR9wbcfYeJI+AgcYwgO30kiqY4s3BSqJF2Zh90uHr
-         EMR8/TP1yNv0ygL9txJuGOnSHJGO9+cmw92+O/V4xehkejbLoaNAfLtLnc2BB90zR0fA
-         D+PmysC9BHOfDyNiIapn557LhLLy1ebJ0v4nyz4drrdoVvcmy/8VKfZUb8jir4h3Mwg1
-         bArZYAmLHt0BMXdEcTPACFihESm5hK/V/jyWtCYBuqMjKMP8sb6U0GMXpZDpor6yQxy1
-         IN/W4DdwdhsrVKnOxoSWFCLeo5Fp7RimJZAvDNq/qYRS0SH6cyFmBCmhxLdiCwHgJzHM
-         h9Pg==
-X-Forwarded-Encrypted: i=1; AJvYcCV7rN6s9FF2yLoOmFwWuMqO/MMv5w8dOuiPZwPyFre/45sZp6lQF2nxOa0H0+7qS6g+Nw21J6uZo6ea1MdB@vger.kernel.org, AJvYcCWXZ+rntcwa/qKDpGd6ui4B65Mv3aOzlLkvAFPxePG8mgiaqFc454BX94lhOsLPf7I6NUM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzhOs17Z2rpticXTy06qAKo1snz5aQzlwavCMjC3nkxem+rfDRR
-	PDy51TAAah9WGt4wPuh0iNW/B2LGGniu9hVQ37mvkq0TNMIMMPPrvaLgR/4UY5ebBlOJC3+u/FU
-	MibvRxS19qQEzW9G12AIq/gNyTpM=
-X-Gm-Gg: ASbGncvNQLhEwi5LgkdemXQak1x4oz9+hkD3swVK0Y88HL5O4TG0ouQL3neYyMIOhaR
-	l+2o0tu8bvbCnvUfQWEKSLrwhr5QJ2SnWlwoS2gm8e4XiBRjg60CVyrgNe+xvg2T1fHPeTDFneS
-	DG+1blfYxP6+czY4HwqMcK52kWcEhqOmu0EKjte7Mlmg==
-X-Google-Smtp-Source: AGHT+IH4VMrSU8CH3fHTu3TWM9X4Y+Aj4OA/wwwq1QoM9Pr2Bm3kF1mnBySxJ6FOPRPrTiWS44zHpNl8ysPSefs7OYo=
-X-Received: by 2002:a05:6000:156f:b0:390:e904:63ee with SMTP id
- ffacd0b85a97d-3996bb772d8mr3319530f8f.17.1742309980223; Tue, 18 Mar 2025
- 07:59:40 -0700 (PDT)
+	s=arc-20240116; t=1742310625; c=relaxed/simple;
+	bh=PJQ45Uc3ZlwUvmPQwTgGNG1XEmjXxIqYjtnNfTcNN8Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aii+CUNXrJD6zoUuqLUqA52aoCbCR9P0DfPrwFloJKUmM6urv+tV8Wxyi4Nokep2Shp6dPsoE+Mz0Uz1bQmlAuH/6NEgTqKZlFhkutG/o56COrKdk2NPOUD6RY8u2U3+nlFgaCUubUK2QVmlJ03FsD5Ci/5cLDbcjEKFr+lbf20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lr/CZO0A; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6074644401;
+	Tue, 18 Mar 2025 15:10:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1742310615;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2aqTqXgy5OZ/LDTWoLOWt3ncm07Z6J+uqCOpaod9xeE=;
+	b=lr/CZO0AZd8h9Kq6k/HO1L+TIyKG1CVO1n4+7DW0olOpTcPrncnLSZ7okGhXgHy3ZZ/0S5
+	vCe2qVt+dviPBPBhv0bTpfAOppbSOY3J+jNjgIP28KymiTftJfS9nKMKSZmM+oFbHxRoF4
+	zbvzLXagYYs7JQD7k9heY1OtEf/RBOJCFVYCW9xoBKi2cWVHVuzsY+pXyLBSHvNkIyBCEn
+	KEFlMmrrrkvkIGsQM7f5h1Jk7l4kxC3Mk3DeVtpM3NQcgGEScaTMBERYGBzy3M56xIrspj
+	cjAl6vArTjzxpdzalR7GKaRg7XISIsc2bBfjsfrbwKsHS+NdKHOaG5ruP/tazQ==
+Message-ID: <a965cc31-bbac-43dd-86d4-b2f72e789c92@bootlin.com>
+Date: Tue, 18 Mar 2025 16:10:12 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250318062557.3001333-1-chen.dylane@linux.dev> <Z9k8216IwpMZnHaA@krava>
-In-Reply-To: <Z9k8216IwpMZnHaA@krava>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 18 Mar 2025 07:59:28 -0700
-X-Gm-Features: AQ5f1JpuNmApueA2NblJk1D2carJ_ymdqh37wITwJgxYi2WYSF0p3vX9smBPYGw
-Message-ID: <CAADnVQLULbENAnJqOVn4m_xmS+T7FvYSFf70mxVSdusgL85m8Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Define bpf_token_show_fdinfo with CONFIG_PROC_FS
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Tao Chen <chen.dylane@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Christian Brauner <brauner@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/13] selftests/bpf: test_xsk: Split xskxceiver
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250313-xsk-v1-0-7374729a93b9@bootlin.com>
+ <20250313-xsk-v1-10-7374729a93b9@bootlin.com> <Z9lyK5pEi+FmcvYw@boxer>
+Content-Language: en-US
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+In-Reply-To: <Z9lyK5pEi+FmcvYw@boxer>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddugedvjeeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepuegrshhtihgvnhcuvehurhhuthgthhgvthcuoegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpefhheeggfetffekheevuedvkedvvdeufeegjeevgfelveevveetffevfefgheeijeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplgduledvrdduieekrddtrddugegnpdhmrghilhhfrhhomhepsggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepvdejpdhrtghpthhtohepmhgrtghivghjrdhfihhjrghlkhhofihskhhisehinhhtvghlrdgtohhmpdhrtghpthhtohepsghjohhrnheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrghhnuhhsrdhkrghrlhhsshhonhesihhnthgvlhdrtghomhdprhgtphhtthhopehjohhnrghthhgrnhdrlhgvmhhonhesghhmrghilhdrtghomhdprhgtphhtthhop
+ egrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghv
+X-GND-Sasl: bastien.curutchet@bootlin.com
 
-On Tue, Mar 18, 2025 at 2:29=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Tue, Mar 18, 2025 at 02:25:57PM +0800, Tao Chen wrote:
-> > Protect bpf_token_show_fdinfo with CONFIG_PROC_FS check, follow the
-> > pattern used with other *_show_fdinfo functions.
-> >
-> > Fixes: 35f96de04127 ("bpf: Introduce BPF token object")
-> > Signed-off-by: Tao Chen <chen.dylane@linux.dev>
-> > ---
-> >  kernel/bpf/token.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/kernel/bpf/token.c b/kernel/bpf/token.c
-> > index 26057aa13..104ca37e9 100644
-> > --- a/kernel/bpf/token.c
-> > +++ b/kernel/bpf/token.c
-> > @@ -65,6 +65,7 @@ static int bpf_token_release(struct inode *inode, str=
-uct file *filp)
-> >       return 0;
-> >  }
-> >
-> > +#ifdef CONFIG_PROC_FS
-> >  static void bpf_token_show_fdinfo(struct seq_file *m, struct file *fil=
-p)
-> >  {
-> >       struct bpf_token *token =3D filp->private_data;
-> > @@ -98,6 +99,7 @@ static void bpf_token_show_fdinfo(struct seq_file *m,=
- struct file *filp)
-> >       else
-> >               seq_printf(m, "allowed_attachs:\t0x%llx\n", token->allowe=
-d_attachs);
-> >  }
-> > +#endif
-> >
-> >  #define BPF_TOKEN_INODE_NAME "bpf-token"
-> >
-> > @@ -105,7 +107,9 @@ static const struct inode_operations bpf_token_iops=
- =3D { };
-> >
-> >  static const struct file_operations bpf_token_fops =3D {
-> >       .release        =3D bpf_token_release,
-> > +#ifdef CONFIG_PROC_FS
-> >       .show_fdinfo    =3D bpf_token_show_fdinfo,
-> > +#endif
->
-> there's many more of such cases.. I'm not sure if it makes sense to fix t=
-hat,
-> because it does not break the build and only save space for !CONFIG_PROC_=
-FS
-> kernels
+Hi Maciej,
 
-+1.
-let's keep the code as-is.
+On 3/18/25 2:16 PM, Maciej Fijalkowski wrote:
+> On Thu, Mar 13, 2025 at 11:48:08AM +0100, Bastien Curutchet (eBPF Foundation) wrote:
+>> AF_XDP features are tested by the test_xsk.sh script but not by the
+>> test_progs framework. The tests used by the script are defined in
+>> xksxceiver.c which can't be integrated in the test_progs framework as is.
+>>
+>> Extract these test definitions from xskxceiver{.c/.h} to put them in new
+>> test_xsk{.c/.h} files.
+>> Keep the main() function and its unshared dependencies in xksxceiver to
+>> avoid impacting the test_xsk.sh script which is often used to test real
+>> hardware.
+>>
+>> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+>> ---
+>>   tools/testing/selftests/bpf/Makefile     |    2 +-
+>>   tools/testing/selftests/bpf/test_xsk.c   | 2416 ++++++++++++++++++++++++++++
+>>   tools/testing/selftests/bpf/test_xsk.h   |  279 ++++
+>>   tools/testing/selftests/bpf/xskxceiver.c | 2503 +-----------------------------
+>>   tools/testing/selftests/bpf/xskxceiver.h |  156 --
+>>   5 files changed, 2727 insertions(+), 2629 deletions(-)
+>> +
+> 
+> (...)
+> 
+>> +int testapp_hw_sw_max_ring_size(struct test_spec *test)
+>> +{
+>> +	u32 max_descs = XSK_RING_PROD__DEFAULT_NUM_DESCS * 4;
+>> +	int ret;
+>> +
+>> +	test->set_ring = true;
+>> +	test->total_steps = 2;
+>> +	test->ifobj_tx->ring.tx_pending = test->ifobj_tx->ring.tx_max_pending;
+>> +	test->ifobj_tx->ring.rx_pending  = test->ifobj_tx->ring.rx_max_pending;
+>> +	test->ifobj_rx->umem->num_frames = max_descs;
+>> +	test->ifobj_rx->umem->fill_size = max_descs;
+>> +	test->ifobj_rx->umem->comp_size = max_descs;
+>> +	test->ifobj_tx->xsk->batch_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
+>> +	test->ifobj_rx->xsk->batch_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
+>> +
+>> +	ret = testapp_validate_traffic(test);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	/* Set batch_size to 8152 for testing, as the ice HW ignores the 3 lowest bits when
+>> +	 * updating the Rx HW tail register.
+>> +	 */
+>> +	test->ifobj_tx->xsk->batch_size = test->ifobj_tx->ring.tx_max_pending - 8;
+>> +	test->ifobj_rx->xsk->batch_size = test->ifobj_tx->ring.tx_max_pending - 8;
+>> +	if (!pkt_stream_replace(test, max_descs, MIN_PKT_SIZE))
+> 
+> Here's the victim of test failures that i reported last week. This
+> function succeds with 0 and you interpret it as failure:)
 
-pw-bot: cr
+Oops ... Thanks for the feedback.
+
+> One sign wrong caused two days of debugging, but it was kinda fun.
+> 
+
+I should have ordered patches in an other way to split the xskxceiver.c 
+sooner, the bisection would have narrowed the bug more precisely. I'll 
+do this in next iteration.
+
+> What was happening was due to the failure here one of the sockets was not
+> deleted and later on whole test suite could not attach the socket for
+> every other test case which caused the ever going failures. Which makes me
+> think that since you changed the logic from exits to returning failures
+> probably we need to take care of state cleanup in a better way so case
+> like this one described here wouldn't take place.
+> 
+
+I hadn't notice the cleanup done in __testapp_validate_traffic(), I'll 
+handle this in a better way in next iteration.
+
+> This test is only executed for hw tests that's why you haven't seen this
+> problem as you were focused on veth case.
+> 
+> If you want to proceed with that then i would like to ask you to grab the
+> hw and check you're not introducing regressions. FWIW i have been working
+> with i40e and ice drivers.
+> 
+
+I don't think I have such hardware available but I'll try to find some 
+equivalent to test the next iteration on real HW before submitting it.
+
+> One last note is that verbose mode seemed to be broken for me.
+> 
+
+I'll take a look at this, thank you.
+
+
+Best regards,
+Bastien
+
 
