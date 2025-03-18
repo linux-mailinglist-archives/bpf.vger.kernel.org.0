@@ -1,86 +1,87 @@
-Return-Path: <bpf+bounces-54252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E7E6A663BF
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 01:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 35280A663DB
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 01:31:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30DF87A3451
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 00:29:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 353D47A334D
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 00:30:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD51221348;
-	Tue, 18 Mar 2025 00:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BE32628D;
+	Tue, 18 Mar 2025 00:31:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G8wV368R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CtRevj4z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683BC18E25
-	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 00:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4241818AE2
+	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 00:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742257800; cv=none; b=h3UdfWwMxi4TeRm3+AwNXWZ3a3Wk4dJp3QdOpsNrh3ffZEdEZY4VtCQa7xQcc3YjcF6GmKJlq6nS6lW/f9P3Ax47vHejpF2IZrlNjZOtHUOKPk+crZHpeH3B2C4Mxjb45sgVbOnMUb65RJPhCZok7QItRSShCUtokIAy/3pWEWI=
+	t=1742257861; cv=none; b=eSwoh65GaxAabgs7vqWpe+HHEZ27UQxJiNGSxvNxhRjr55Cm3nSNNOdnLxoFW7cf54BsBoybnnxrc2b0wR6tsNB5VuR98tU79h4+hkvmDaWL0D7qBfuWhoxHdPiRNNqPw7L4bs3rKZ1C/kVBsra5K9KfhLKddM/k3+ZfvfKLCz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742257800; c=relaxed/simple;
-	bh=12Nw42TCEU370jH3sGRybYh/L0RIzsymDRr3Lnttrdc=;
+	s=arc-20240116; t=1742257861; c=relaxed/simple;
+	bh=TtmEYNkiTCkuSTB044pPXxALsYmqao5EgZpHVZJFwXQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D/+LC6c844jArnbMmPr0XnYm0BQMpq17kCq1OJrk7zQKh5i+MCtxSI1xA1MhrVWplyFQrKmK39sgIgbj+mWN8vousp0umV+5lGI58Wh7fs2N6vokGvRIxqw6RuGhDbWOjUF9/Lp9mO3izG9w3+ZP1J/60Ti+WugvhEpkRFx4m/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G8wV368R; arc=none smtp.client-ip=209.85.221.52
+	 To:Cc:Content-Type; b=Skb7gLay4SFEQywZOuafTI/S+cPmpMVb2njofr92A1oFmYQTPZFveJn/2PCYj+k4npdKt9egSU/ZOOnLdR6A1laW3dV0rFJYRlVMwoDYnssE4JuCDDvH71/670KHedxsJ4d9ZUZkkPJr6jw97xVcR6huN9MJ9L/iaq7cv5f+9OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CtRevj4z; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-39129fc51f8so4403823f8f.0
-        for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 17:29:58 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-390e3b3d3f4so2989171f8f.2
+        for <bpf@vger.kernel.org>; Mon, 17 Mar 2025 17:30:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742257796; x=1742862596; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742257857; x=1742862657; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jAL5e3c7lwCEBM3c6ZUq9iHXfTRtCNV0zM0BTZ/DUxA=;
-        b=G8wV368RXj6c6NeqaBJfsH9F+mA34znHCpWw+pN7kJSnrV9TpIBY/E5M8Dpbt412/6
-         oUJhxqgvGozbhaGehRgla5+vwvusrRaZ51AnJ0xBN4a1r4c+mEbXFkkbD3YukexOpMeW
-         8ztHOVdZAkXpm2f31fKryshj9wEKjhk01DbAZeFrWx8Cv+zQa/AbWul12LeyQ2L5VMcD
-         FcoYK/7hkxfJbeYqfFp051bVFVskvoKgYwR0W3fQI/fLzhOYfYwetxTwo8c9yKTXmCWW
-         FKbTCQWJywz8vYaG4GtV3xU56AQPNO0R9bETDFvchVJ/Mz4hbvjSRMt6bq21bw0Uobtz
-         pibQ==
+        bh=+Ayyxh5/J4j4y3scaMwCCLG/lcgZY37wyfVFiWkXY2A=;
+        b=CtRevj4z46kTYNNn5cTmGhkfT4H8cf3UQhTj6HDw07xXrJZCFnq+AgbzFqcnW+u4q3
+         bMSK9Tg8TK0W0FuwVYguJhlUWfU2NKC7p5rejwonCJg42f3Rr2Leshk2F0QWEMbFgsN9
+         J++sBQUULiSSWisp4OqGFo/xUWHOdeJBEYl1Z/YT6lZzYK4al2Cz6aSB2qdcmqq+63xY
+         /Etu5fSsBBl8ejKmAw5crR4giEu2jeEsbydEa4xwejTSaXzKE3aHh5gYF2lFpbH32dwT
+         l5CmxhZpiuG7wmWLc6pVMT05dP28vxIqQVSNncwBBXkoHkhL9fXpQfrwt/dC/dtCU6T7
+         TDMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742257796; x=1742862596;
+        d=1e100.net; s=20230601; t=1742257857; x=1742862657;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jAL5e3c7lwCEBM3c6ZUq9iHXfTRtCNV0zM0BTZ/DUxA=;
-        b=FK7Y2ncqLqsoOxlws56Xcbug28r99iDnxaRb6VwzMUrA7wbceHA3ipdEKh/pFV2UGK
-         Fm20Uw7Z3QStUV+p9VUU884JmzCxwFy+KjnIP8MA5y1p0QkwFtvlK5S00Xa+ILQmPAS7
-         HQHZ/wxw8GkimMyfsNY47+zXVL8otIfw358F5gP7z4Cvz9HrfIqTOhVYjzKbpgeGJMgz
-         yaVzMqpweBwdWFS+OB813VLpBcaNWSrqU4mEK1Doyz0spkX4Pp2/E+/eUgSDW+ke19/k
-         FotKEtFbp4ujZ/tDC+LFZKkh7LDXpSgauTMh9O9pkKwH7wwdfbhUU/+AO9zjBHLNVeBL
-         1c/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXj9Twamy/XgHJVea6isX//ZV6pCCTsx99rimGIfi4OV3iqb+MwsnGsnt5G99ndC8TMtHA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9yurI7JFnJ2S392lWV67UK+NSrcmq7t0J+N9zBF2jQ9zP+Ej1
-	Ri3dKhXD8U75RYvnGP/m1Hp0s9DuOeEQkW2lnidOLKPx8bdbyMLexHlyGKMX1HsBIr5oMGMBdHr
-	t+Y5evGOz9V9v8/3y8cXxpFzEW+U=
-X-Gm-Gg: ASbGncspLBgncxUxAiOFWAYEPTM74v8NayxKCsktkZTeO81+7lGuCjDcjKbJ2/7+Ukp
-	7UFxsHcifYK/bJGaPfr4JmVLhwTU7LGF0o0OAhuAqTLabIHLPxBvGsGXgs8YnWS8SQmz2gMFYxA
-	jPGt150QtsIQ3FNAhxgr9R/SbREqhPoZuSn+/5Uyd+Bw==
-X-Google-Smtp-Source: AGHT+IGMXxkuyadIcxVyMCd21idpeJjvb7sPPHlCUOcxPWYtb2JtrAOou0kCiTn1/XcDPBRZr0UBLcMV2Mn3mwdmYHs=
-X-Received: by 2002:a05:6000:144d:b0:398:9e96:e798 with SMTP id
- ffacd0b85a97d-3989e96e883mr9208892f8f.13.1742257796550; Mon, 17 Mar 2025
- 17:29:56 -0700 (PDT)
+        bh=+Ayyxh5/J4j4y3scaMwCCLG/lcgZY37wyfVFiWkXY2A=;
+        b=rzTdELMwuiM0iOsOuojptUE/WaQLhB12GL2zt1cWJUokjkHxmTl7MMsq70bxCoXxl0
+         LegrwBeqZP/YlZYLmkonq/qWQuzfDeitdqbaAe13/N1D3wFf7nktur+KsWQ8cm2yy+tj
+         Ayhd9aemjk8EKObc4sg8zYgvnXhJTTmXo1W+9darImhi4Jakcnte4HLZWSw+BANoH8bu
+         qLZiD4l0aVUq6aqEXUtvE+iM2aR0ZjQxquTkrgZta5GNe0LwsIx2wraLMvflYO69NgAM
+         yStvUOwcXWifU0O9A7opyOpaVM1dhkdiXdCJ+YpKeUp9LeY7Gzb5y3AfWIOYfxcQYNMu
+         y19g==
+X-Forwarded-Encrypted: i=1; AJvYcCW9onZZOEneAgHEjCWLoRtrqXQLvR+39rn5MWDEMOyVdh/q+lZD5YeJPVXKeQz0+FMkRn8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBUagwtWhzGhp/adJ67DYIN4JkhUmjVL+QWaZtzrcvIRd2hiPL
+	1cwC6oNXPAklMFWZtgaqc0k+zUVJyShzsTX4BbWEMQBfH17OKeVHxPP2lk1+cc6cOJXX3EcldPK
+	bW/rPlCzGtfhSMFh3AAKVZBYcid4=
+X-Gm-Gg: ASbGncuibQEo3Ysb9I4FIJt2FjIcDW4qNcgpfv03cbR5UDH5MybdCDhZ0i9GxSBE+q6
+	JtLEObxsEUQljzatt1TtP7MH2kC4y8zHIk2J061xZvheSOxg5jUbr1mJVYukQ1bG2X9l2RHSb1G
+	pmcT88Hj0Z690JL5KAlVWjZcYaz3CuIE53mi9f75KpAA==
+X-Google-Smtp-Source: AGHT+IHv+6NUPs08oNJpiXFh/qd8P0xjVMj34lHnHs2+lE77TBAZRAwx9qKlQf8/iMJz5AKkdF76MYyGE0X9+xIfPzg=
+X-Received: by 2002:a05:6000:18ac:b0:391:39ea:7866 with SMTP id
+ ffacd0b85a97d-3996b446d57mr1464270f8f.19.1742257857318; Mon, 17 Mar 2025
+ 17:30:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250317224932.1894918-1-vadfed@meta.com> <20250317224932.1894918-3-vadfed@meta.com>
-In-Reply-To: <20250317224932.1894918-3-vadfed@meta.com>
+References: <20250317224932.1894918-1-vadfed@meta.com> <20250317224932.1894918-4-vadfed@meta.com>
+In-Reply-To: <20250317224932.1894918-4-vadfed@meta.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 17 Mar 2025 17:29:43 -0700
-X-Gm-Features: AQ5f1JqdV5at1o-ioXc_BLhVfv-J8HcnEjoHZ0XZyfoIV81_XcmS-1rQcGytxSM
-Message-ID: <CAADnVQLYT5SV+tS2ycLteBMYOc12C=X7iHZ=RjhyVzuY=6=8Uw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v11 2/4] bpf: add bpf_cpu_time_counter_to_ns helper
+Date: Mon, 17 Mar 2025 17:30:46 -0700
+X-Gm-Features: AQ5f1JpkKG7Zk9WDfl_1BPLGOuYczHzYBmU3vBnMDjLc4Glu2w6dJWe_c9nHu4w
+Message-ID: <CAADnVQKzXjC2-24V_dYiq_cCf8Df-Sm0Kf=keiyBrLKZ0yXeVg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v11 3/4] selftests/bpf: add selftest to check
+ bpf_get_cpu_time_counter jit
 To: Vadim Fedorenko <vadfed@meta.com>
 Cc: Borislav Petkov <bp@alien8.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
@@ -94,210 +95,50 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Mar 17, 2025 at 3:50=E2=80=AFPM Vadim Fedorenko <vadfed@meta.com> w=
 rote:
 >
-> The new helper should be used to convert deltas of values
-> received by bpf_get_cpu_time_counter() into nanoseconds. It is not
-> designed to do full conversion of time counter values to
-> CLOCK_MONOTONIC_RAW nanoseconds and cannot guarantee monotonicity of 2
-> independent values, but rather to convert the difference of 2 close
-> enough values of CPU timestamp counter into nanoseconds.
+> bpf_get_cpu_time_counter() is replaced with rdtsc instruction on x86_64.
+> Add tests to check that JIT works as expected.
 >
-> This function is JITted into just several instructions and adds as
-> low overhead as possible and perfectly suits benchmark use-cases.
->
-> When the kfunc is not JITted it returns the value provided as argument
-> because the kfunc in previous patch will return values in nanoseconds.
->
-> Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 > Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
 > ---
->  arch/x86/net/bpf_jit_comp.c   | 28 +++++++++++++++++++++++++++-
->  arch/x86/net/bpf_jit_comp32.c | 27 ++++++++++++++++++++++++++-
->  include/linux/bpf.h           |  1 +
->  kernel/bpf/helpers.c          |  6 ++++++
->  4 files changed, 60 insertions(+), 2 deletions(-)
+>  .../selftests/bpf/prog_tests/verifier.c       |   2 +
+>  .../selftests/bpf/progs/verifier_cpu_cycles.c | 104 ++++++++++++++++++
+>  2 files changed, 106 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/verifier_cpu_cycles=
+.c
 >
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 92cd5945d630..3e4d45defe2f 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -9,6 +9,7 @@
->  #include <linux/filter.h>
->  #include <linux/if_vlan.h>
->  #include <linux/bpf.h>
-> +#include <linux/clocksource.h>
->  #include <linux/memory.h>
->  #include <linux/sort.h>
->  #include <asm/extable.h>
-> @@ -2289,6 +2290,30 @@ st:                      if (is_imm8(insn->off))
->                                 break;
->                         }
+> diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
+sting/selftests/bpf/prog_tests/verifier.c
+> index e66a57970d28..d5e7e302a344 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+> @@ -102,6 +102,7 @@
+>  #include "verifier_xdp_direct_packet_access.skel.h"
+>  #include "verifier_bits_iter.skel.h"
+>  #include "verifier_lsm.skel.h"
+> +#include "verifier_cpu_cycles.skel.h"
+>  #include "irq.skel.h"
 >
-> +                       if (insn->src_reg =3D=3D BPF_PSEUDO_KFUNC_CALL &&
-> +                           IS_ENABLED(CONFIG_BPF_SYSCALL) &&
-> +                           imm32 =3D=3D BPF_CALL_IMM(bpf_cpu_time_counte=
-r_to_ns) &&
-> +                           cpu_feature_enabled(X86_FEATURE_TSC) &&
-> +                           using_native_sched_clock() && sched_clock_sta=
-ble()) {
-
-And now this condition copy pasted 3 times ?!
-
-> +                               struct cyc2ns_data data;
-> +                               u32 mult, shift;
-> +
-> +                               cyc2ns_read_begin(&data);
-> +                               mult =3D data.cyc2ns_mul;
-> +                               shift =3D data.cyc2ns_shift;
-> +                               cyc2ns_read_end();
-
-This needs a big comment explaining why this math will be stable
-after JIT and for the lifetime of the prog.
-
-> +                               /* imul RAX, RDI, mult */
-> +                               maybe_emit_mod(&prog, BPF_REG_1, BPF_REG_=
-0, true);
-> +                               EMIT2_off32(0x69, add_2reg(0xC0, BPF_REG_=
-1, BPF_REG_0),
-> +                                           mult);
-> +
-> +                               /* shr RAX, shift (which is less than 64)=
- */
-> +                               maybe_emit_1mod(&prog, BPF_REG_0, true);
-> +                               EMIT3(0xC1, add_1reg(0xE8, BPF_REG_0), sh=
-ift);
-> +
-> +                               break;
-> +                       }
-> +
->                         func =3D (u8 *) __bpf_call_base + imm32;
->                         if (src_reg =3D=3D BPF_PSEUDO_CALL && tail_call_r=
-eachable) {
->                                 LOAD_TAIL_CALL_CNT_PTR(stack_depth);
-> @@ -3906,7 +3931,8 @@ bool bpf_jit_inlines_kfunc_call(s32 imm)
+>  #define MAX_ENTRIES 11
+> @@ -236,6 +237,7 @@ void test_verifier_bits_iter(void) { RUN(verifier_bit=
+s_iter); }
+>  void test_verifier_lsm(void)                  { RUN(verifier_lsm); }
+>  void test_irq(void)                          { RUN(irq); }
+>  void test_verifier_mtu(void)                 { RUN(verifier_mtu); }
+> +void test_verifier_cpu_cycles(void)          { RUN(verifier_cpu_cycles);=
+ }
+>
+>  static int init_test_val_map(struct bpf_object *obj, char *map_name)
 >  {
->         if (!IS_ENABLED(CONFIG_BPF_SYSCALL))
->                 return false;
-> -       if (imm =3D=3D BPF_CALL_IMM(bpf_get_cpu_time_counter) &&
-> +       if ((imm =3D=3D BPF_CALL_IMM(bpf_get_cpu_time_counter) ||
-> +           imm =3D=3D BPF_CALL_IMM(bpf_cpu_time_counter_to_ns)) &&
->             cpu_feature_enabled(X86_FEATURE_TSC) &&
->             using_native_sched_clock() && sched_clock_stable())
->                 return true;
-> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.=
-c
-> index 7f13509c66db..9791a3fb9d69 100644
-> --- a/arch/x86/net/bpf_jit_comp32.c
-> +++ b/arch/x86/net/bpf_jit_comp32.c
-> @@ -12,6 +12,7 @@
->  #include <linux/netdevice.h>
->  #include <linux/filter.h>
->  #include <linux/if_vlan.h>
-> +#include <linux/clocksource.h>
->  #include <asm/cacheflush.h>
->  #include <asm/set_memory.h>
->  #include <asm/nospec-branch.h>
-> @@ -2115,6 +2116,29 @@ static int do_jit(struct bpf_prog *bpf_prog, int *=
-addrs, u8 *image,
->                                         EMIT2(0x0F, 0x31);
->                                         break;
->                                 }
-> +                               if (IS_ENABLED(CONFIG_BPF_SYSCALL) &&
-> +                                   imm32 =3D=3D BPF_CALL_IMM(bpf_cpu_tim=
-e_counter_to_ns) &&
-> +                                   cpu_feature_enabled(X86_FEATURE_TSC) =
-&&
-> +                                   using_native_sched_clock() && sched_c=
-lock_stable()) {
-> +                                       struct cyc2ns_data data;
-> +                                       u32 mult, shift;
-> +
-> +                                       cyc2ns_read_begin(&data);
-> +                                       mult =3D data.cyc2ns_mul;
-> +                                       shift =3D data.cyc2ns_shift;
-> +                                       cyc2ns_read_end();
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c b/to=
+ols/testing/selftests/bpf/progs/verifier_cpu_cycles.c
+> new file mode 100644
+> index 000000000000..5b62e3690362
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/verifier_cpu_cycles.c
+> @@ -0,0 +1,104 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2022 Meta Inc. */
 
-same here.
-
-> +
-> +                                       /* move parameter to BPF_REG_0 */
-> +                                       emit_ia32_mov_r64(true, bpf2ia32[=
-BPF_REG_0],
-> +                                                         bpf2ia32[BPF_RE=
-G_1], true, true,
-> +                                                         &prog, bpf_prog=
-->aux);
-> +                                       /* multiply parameter by mut */
-> +                                       emit_ia32_mul_i64(bpf2ia32[BPF_RE=
-G_0],
-> +                                                         mult, true, &pr=
-og);
-
-How did you test this?
-It's far from obvious that this will match what mul_u64_u32_shr() does.
-And on a quick look I really doubt.
-
-The trouble of adding support for 32-bit JIT doesn't seem worth it.
-
-> +                                       /* shift parameter by shift which=
- is less than 64 */
-> +                                       emit_ia32_rsh_i64(bpf2ia32[BPF_RE=
-G_0],
-> +                                                         shift, true, &p=
-rog);
-> +                               }
->
->                                 err =3D emit_kfunc_call(bpf_prog,
->                                                       image + addrs[i],
-> @@ -2648,7 +2672,8 @@ bool bpf_jit_inlines_kfunc_call(s32 imm)
->  {
->         if (!IS_ENABLED(CONFIG_BPF_SYSCALL))
->                 return false;
-> -       if (imm =3D=3D BPF_CALL_IMM(bpf_get_cpu_time_counter) &&
-> +       if ((imm =3D=3D BPF_CALL_IMM(bpf_get_cpu_time_counter) ||
-> +           imm =3D=3D BPF_CALL_IMM(bpf_cpu_time_counter_to_ns)) &&
->             cpu_feature_enabled(X86_FEATURE_TSC) &&
->             using_native_sched_clock() && sched_clock_stable())
->                 return true;
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index a5e9b592d3e8..f45a704f06e3 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -3389,6 +3389,7 @@ u64 bpf_get_raw_cpu_id(u64 r1, u64 r2, u64 r3, u64 =
-r4, u64 r5);
->
->  /* Inlined kfuncs */
->  u64 bpf_get_cpu_time_counter(void);
-> +u64 bpf_cpu_time_counter_to_ns(u64 counter);
->
->  #if defined(CONFIG_NET)
->  bool bpf_sock_common_is_valid_access(int off, int size,
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 43bf35a15f78..e5ed5ba4b4aa 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -3198,6 +3198,11 @@ __bpf_kfunc u64 bpf_get_cpu_time_counter(void)
->         return ktime_get_raw_fast_ns();
->  }
->
-> +__bpf_kfunc u64 bpf_cpu_time_counter_to_ns(u64 counter)
-> +{
-> +       return counter;
-> +}
-> +
->  __bpf_kfunc_end_defs();
->
->  BTF_KFUNCS_START(generic_btf_ids)
-> @@ -3299,6 +3304,7 @@ BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_=
-ITER_DESTROY | KF_SLEEPABLE)
->  BTF_ID_FLAGS(func, bpf_local_irq_save)
->  BTF_ID_FLAGS(func, bpf_local_irq_restore)
->  BTF_ID_FLAGS(func, bpf_get_cpu_time_counter, KF_FASTCALL)
-> +BTF_ID_FLAGS(func, bpf_cpu_time_counter_to_ns, KF_FASTCALL)
->  BTF_KFUNCS_END(common_btf_ids)
->
->  static const struct btf_kfunc_id_set common_kfunc_set =3D {
-> --
-> 2.47.1
->
+botched copy paste.
 
