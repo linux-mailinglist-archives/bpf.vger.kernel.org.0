@@ -1,238 +1,187 @@
-Return-Path: <bpf+bounces-54277-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54278-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52A7CA66B88
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 08:24:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 533EDA66BB3
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 08:31:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 313513B1D7B
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 07:24:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C07F7A360A
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 07:30:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73CD21EB5E4;
-	Tue, 18 Mar 2025 07:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCAE1DF727;
+	Tue, 18 Mar 2025 07:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="MymperzF"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="gsMhIsES"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2071.outbound.protection.outlook.com [40.107.220.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19DBD1DED4E
-	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 07:24:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742282664; cv=none; b=QXqQcZ0a06A1NIqTNk8YTQFBVHMSj1cz5Dp+eWRiCxdMH786cyrtJeq4bmXUxyszcidW9rdcw3yyE0ZtQ35aEBQlrD4y4ssFQCyNwHtkcMyNaV0RjZNONNLv1KTApLVg4bWrc79ndaJrTrrA+Ggs+fqTB51kHvbyIah4kQBlz9E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742282664; c=relaxed/simple;
-	bh=drpyluEzjWz42VaTKx+3ZxJh27QPmaPVfN7uNvXTtms=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fiCgRP4S2gtTCOqsJV38peExugkvFk2MU3DYpIrgE85UAJnoLwmBwZXz8hFBSzOV1Hk1S59noeOCYB9U64opgQact5jhIlCYOGVKlbAvzzKgejYrxniGUpgjg/HbRVq5G+I31CXqCZnSZLm/oev5ABXUU7tILw4uqADvEtrHtQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=MymperzF; arc=none smtp.client-ip=209.85.221.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-39130ee05b0so5125493f8f.3
-        for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 00:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1742282660; x=1742887460; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wghak4RRDdu/qxRqHBoCmrXEPsW6IMGly6ZO5meoK24=;
-        b=MymperzFYo9mxTFAWtTodg64ZNrCrMRxhgHHPPErDp32zbjIOWZ4aE8sEFZEuEXqCo
-         cZY1ltlmT3mhGbi2g8wMJX7p1ugn6XsxbGA4OT0g+yuP70L/AuBPPYcvsPpMYIMfvaxx
-         KtMsPzPgoSHOvNbo0YDXp/ScAy+Y2GkHu92RPyfc8kUvVVx1UDDLJ5MBxPD8aDIWZ7QF
-         znF6hspvPxPPf/qH7jHP/KDy629UM3de1h6bvbGfVPkcyVJH4uQoBn9SpZbDpvfLmHlH
-         g05Myqn4fCSpE18sZ/vtmBpfqBE4Gkr4BJqJTBqqoQ/0ayx4CKKVL/lo+VhQewbmYvD6
-         sriA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742282660; x=1742887460;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wghak4RRDdu/qxRqHBoCmrXEPsW6IMGly6ZO5meoK24=;
-        b=hbOEeT0b8EMvnbc9eOd58LPtZ7zoRTn6ase8sVaLXKyxtUcs3+0Bv0MV5oM3VtmFQY
-         c2OYeD63Snqe1ZEHtdldpBeLVoU70TBiackRuc5Y2UfOdHfzx+T4mEmU7rUP9Su2yuJH
-         c9Qoq4sI2SSP4mV90uvFQf9Y8FW8mH44OohQ2N+W1pS9WAyhbGaVd+tvnjbIKpvk6iJV
-         S8oG8YeObifnNPYffDybIgVleQlmXD1VwziS1Got15NL3BXsqw1Xkx2qfB9dGAiNTSP9
-         LxqhSAWCJoIa+32j+8DHfoRwMBEN7ZAq2ioRx81Nscjd5mXm7HbTt2pYNYWidedGnqcc
-         3dUA==
-X-Forwarded-Encrypted: i=1; AJvYcCXqLSnCGSbsVaD91VbLW0oLR664kZ4vFB/tSbZSOD19AECNTRAwVlDsnAphtCGymOR/GkE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzV0Q7EjjNz106YInyjhIjdfBQ/7Umy8AanUt+JkA3z87EPfwBE
-	ec5HdqnlG/6sEFvX8VsnaDROSq1OicFa1mf9qC03VAVFz8MSKmUMhBAnzeheCt0=
-X-Gm-Gg: ASbGncuvlQs2ealHSWYW6tek3zGYWE+SrhaiNHUgjgXSteFEfG/zCAugrIKnw34lm42
-	RcmSywkwyAlLVJbfBdUZfen4+q4723U5rto9v/xq5lEwZVeOpXqNyHS+PKvf1iEpJtVv1prSSVM
-	OEQnV6CwWbE8bi8wqpDxWPhYWXr30r6LswGIWGeKzJUcXbDw0AhFyNnMm/fGttpQtG/54OUU1oP
-	+1cwdvwm+E5kXnkU4EWSva0vYsXE+IDY0L32MXTVgSgG4e8k6O0vs7Lym2xyOUXFpQCnes0Xwle
-	i6ifqTTaq5Px+e+IDkEySeTsPramr3SrdhiRkuN8R4Z7VdrPpu7+SnGNL9Z5xHZ72dZIUwBoq3z
-	S
-X-Google-Smtp-Source: AGHT+IHctrH0qtMWgGd5Q0VhrY29/j/KjrtA1DRu6LW50dPQTmIMJjN+BJrIvSAloTQfv3becstuDQ==
-X-Received: by 2002:a05:6000:184b:b0:391:3291:e416 with SMTP id ffacd0b85a97d-3971d617e54mr16883464f8f.19.1742282660131;
-        Tue, 18 Mar 2025 00:24:20 -0700 (PDT)
-Received: from [192.168.0.205] (78-154-15-142.ip.btc-net.bg. [78.154.15.142])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-397f2837e61sm11895876f8f.97.2025.03.18.00.24.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Mar 2025 00:24:19 -0700 (PDT)
-Message-ID: <490eac5e-d429-427e-823f-556504428f9d@blackwall.org>
-Date: Tue, 18 Mar 2025 09:24:18 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8EBC28F3;
+	Tue, 18 Mar 2025 07:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742283098; cv=fail; b=GLvSdBdN+Nf22uKERPipj6rqgUbMsX+VugI54+kfex+V62X6rwkFpxOpW61TVeu4hsn7aBfiq3Zd71UcNcxYBtwlXjhj1Ye/uxfcY4cOG5COUp8wLRiJnrjWAdU11TmOIMsqVRVhIUAUHTFXH0Y97/VH17AKX2fFUrwV5PF5t4c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742283098; c=relaxed/simple;
+	bh=Ap1uuxiIie64xK60CXY3EwKv7sFew44pdrm1O9IV21s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Z8L5FUZmY71Jtr0XCOa4g/KZfgZ+ddXYOgeGazAL+MGdMPGRShtQNkpEPQC+lWBvVadXrN3KtCPXUjIDH6Qh24TlNyA5bnKkqCi4OmTFozcYWxFMlL7KA+KE5+VgbPEcBNFUwRnmatNeZh1n9fZORyAv078ZbI3hYpestISomVw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=gsMhIsES; arc=fail smtp.client-ip=40.107.220.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=uaTzWcEKKo140V6VTebs3JWvh0PkdBE5icsWVYX0D6lCyN+dPjciIpTDLetMr6BvCUvNtMVZA96VzfkOxsbDLnuLYkppH4KmcOQDNSQTxDZB3o+3h/6GwaznMPcw3A+vjVG1ogCNSQ/Bg17/jhhAbyp5NqVmTUTdLGpYv3c/e/TcpkQppPIfRPMrlwC15Aj3pAHKWveiQet3JqioW1vPdPy7KglA9Ya2KoJ4XdfV3pK9YvhFUl3feSjo3VKdtuyvyqNJWHbefxP3N9l+8folMK9VnSkSWQOooJNPxMrSJ0Ma7I8KNoRpHzTiSEhx0kvPnLKxlNQ6iTG3CUpY/2GTqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Uq4nWBqIfhoQHW3VcNz5mNQ0JL2QPQr8CX08hh/Caa4=;
+ b=JJmvKQNB1hHlDfS+XgigHGEh1BhNvK9Z1zu9vEs5j21hjD/KmvJKgTXssH379xbw4z67kRYOxdAA/y+rn2WAeGzi4ZCyEFaor2bng9GKdChrr14pUg4t66Rv5aCV6uJat4S/m6DDCWQxPZiNgX4LoDeDXpKWHnLbKN0oXaUhJO/5X7ndCv357l13hh6oph1/abKLeAzeZzGqozGo6Qyta7A+qqrc7NFTxlYv25qR6dJNmZYyw7R9omYVn++YlY4rSU6FeMtkmJE750UZrsnelAQ4uMHDZLlkOflwNL83ieYjNcNHQOOgonJWlfYrotvE4IBU7Rrr/ttEI7gNI2mfoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Uq4nWBqIfhoQHW3VcNz5mNQ0JL2QPQr8CX08hh/Caa4=;
+ b=gsMhIsESdN6RLFflu0DXDwSaQOPqzoqcq8sYvoxON9x2fDceW2KmhDPl4o/KsVvcBv53nqJUXDSdCNmHdHwL+tA8iFEMCq95maEMKdbzVmktyvF1Ge9w4fv2mkb4L3JeB4vNqFCwEhvWiKk22Kg0F8Mt01yDprzPMDSnNej68fWCkx9pSdSvMpBfVkvHFAjURgR4+ujfN/I7ahCv1QAHV4xXXEr52TOMLfxA1nSLu6Q9yncofCFAIwpTNssdY683NeCPmgHUml8uoVvAT/HLeeY5jIXW+YACS9ZR0G4Q2gXl2Om5x/zVLUBALL6r7D2wpxbRqPiNyF8yUJca3zLHog==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com (2603:10b6:930:3e::17)
+ by LV8PR12MB9665.namprd12.prod.outlook.com (2603:10b6:408:297::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.33; Tue, 18 Mar
+ 2025 07:31:34 +0000
+Received: from CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5]) by CY5PR12MB6405.namprd12.prod.outlook.com
+ ([fe80::2119:c96c:b455:53b5%6]) with mapi id 15.20.8534.031; Tue, 18 Mar 2025
+ 07:31:33 +0000
+Date: Tue, 18 Mar 2025 08:31:29 +0100
+From: Andrea Righi <arighi@nvidia.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: David Vernet <void@manifault.com>, Changwoo Min <changwoo@igalia.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] sched_ext: idle: Extend topology optimizations to
+ all tasks
+Message-ID: <Z9khUVcHNfnQuN-u@gpd3>
+References: <20250317175717.163267-1-arighi@nvidia.com>
+ <20250317175717.163267-2-arighi@nvidia.com>
+ <Z9hoa5iPpDEOnXKt@slm.duckdns.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z9hoa5iPpDEOnXKt@slm.duckdns.org>
+X-ClientProxiedBy: FR0P281CA0115.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a8::14) To CY5PR12MB6405.namprd12.prod.outlook.com
+ (2603:10b6:930:3e::17)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] bonding: check xdp prog when set bond mode
-To: Wang Liang <wangliang74@huawei.com>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- jv@jvosburgh.net, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- joamaki@gmail.com
-Cc: yuehaibing@huawei.com, zhangchangzhong@huawei.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20250314073549.1030998-1-wangliang74@huawei.com>
- <87y0x7rkck.fsf@toke.dk> <21d52659-622a-4b2a-b091-787bf0f5d67f@blackwall.org>
- <96a4043b-fdac-4ca1-a7b9-a6352b1d7dfe@blackwall.org>
- <fad4cb08-be38-4f43-ba61-db147e4d26d0@huawei.com>
- <6ea34ad0-8456-4e49-8eb1-372cf571d91b@blackwall.org>
- <ef48d387-fb22-4059-a887-c9438c6e33b1@huawei.com>
-Content-Language: en-US
-From: Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <ef48d387-fb22-4059-a887-c9438c6e33b1@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6405:EE_|LV8PR12MB9665:EE_
+X-MS-Office365-Filtering-Correlation-Id: 96bedf10-43d7-4b31-6ecd-08dd65eee89d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?is6EfUoJiOb7i1vxTVMOpbFRZRsCdR+9mqYqGD45BsPOLjwkcri0/prNI7vL?=
+ =?us-ascii?Q?RV2MRL7Fw0g5RDxLb4VV2kKu4b/9kaJ0Uv3AnLHTPYikfaTy5KayUaQyS8WW?=
+ =?us-ascii?Q?kLKQejlBef+N6JS6x6rSbfx+uf7hHLkd7Y6z+LzV8nmt9GIey9jhQ0NVmFnE?=
+ =?us-ascii?Q?WRXrxrxRYjmN8/bRKGgo4I/M1rTgQgFZhT87DrCO41coiqYp/HfuMvEIvbsN?=
+ =?us-ascii?Q?lQU3n97XlFvnbQGdaxedQmEnIEpDgZvUU68EHHhkz6zrHMI+itRlzdM5tj27?=
+ =?us-ascii?Q?urzHGHfgHu4F1eLkzVlodb7lq7y3JmvseHL93QtfzQj6/7+qCRcTotG30qwA?=
+ =?us-ascii?Q?o7qydGmVTeqQMhU8lb4uab/YJPPY8wKtVdo57DIcYsfw2c19OoHk6jY6ZNIj?=
+ =?us-ascii?Q?uEb0OKN5VwKHpQ0ya72N7n0JOiZ17YfiM+AIKoV3h7Dekh0chdXbsp1NWNeR?=
+ =?us-ascii?Q?ezRmQu6YPaJ3LN04gXlcNs/gJBKl6SrhF8JJtgdNhq0OTeCP+wkePVSQWUuX?=
+ =?us-ascii?Q?fJPW9z3Ude5kOt0P8wnIImjCgxA7/skHHETqyT47xxzKYQgtWssi3I46V9UO?=
+ =?us-ascii?Q?ZdnYf+7q9Fogk7n5MrIJjBZCFMv42lCS2oWbC1GirRfgIzZk4kkHEu9JROPc?=
+ =?us-ascii?Q?D1RSybLIfTopeNbMW6Igq9wQr5muR2SOVpo6qsPQxH3t6FtIWxPpz7iY+Hnx?=
+ =?us-ascii?Q?lj8ybWUeamF1yF2bWM7IoFcj0k5jnjC1+OESob5EC0T3tyqK5ZROZVoEncjM?=
+ =?us-ascii?Q?KIQb1WClqripuTbq7NY4nk9iGwT+QKndIQXL2zto6QcKIbWu/bq3aoOY+fPG?=
+ =?us-ascii?Q?iTh/ytempxkDrr2w6FHA60MMieiEVfQ3Uh2XNfPHhhRE7Jf6riQAIwhl8aFR?=
+ =?us-ascii?Q?Ml1t8R3rlcCIDSIcZBE27VWyWXbut+TxsebLw/wS93W6OJjIJzP3pfOpFkBf?=
+ =?us-ascii?Q?iCV8H2lYCSHVGis8gqA92ToD5aJS0lKGLgY1XFkd35w1SK88NxuFE8CD1yVp?=
+ =?us-ascii?Q?+21kEaRLbN+dfoVuVbL0CB9Gwh7D5o1CcJnEu+NUm/ZMOPAU5BfufVbaxUXq?=
+ =?us-ascii?Q?Ct3yxHEV5OkoES2ETdrwyf3/6733yH8DIwPrIfzVd4XFi0F1/wpTyyOVl8lC?=
+ =?us-ascii?Q?mqWZlty4qNOVG05/fpcU8LARESFlPC3J2BRp6uG8EsJWrnC7EekojflQhRfr?=
+ =?us-ascii?Q?jYgVKzGv3Y/EWg4du/G5Nve7FvMHIDPXaXvXGrSewVsMPOj+afZ7aajUdDM/?=
+ =?us-ascii?Q?eHx964+5J1iGl29IMGVLvQmSoxquIJRZw5+wDOLxGhu9XusELmuQ/GHi6Xbv?=
+ =?us-ascii?Q?+nR6KeMq3fN36ziNWPvIYnrl6sPECrK5/FLZ5YZUXgc1MZYPr3U+o6R3qvxU?=
+ =?us-ascii?Q?CcRE1vWZsM1BYP8iHwHnauysQwfv?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6405.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Hb3b5qV4CDGGEAw6BkAgxCgdHpe6RmlGstb5ZWYB/ephjWwk5maJacQzK4+3?=
+ =?us-ascii?Q?0rUvQQzj75gf9/UlGJN1Js1sQcWqMLS8qX9seCmcNSXSnr8Lj143K1qkYYjt?=
+ =?us-ascii?Q?JuUEpeeECL45xpLV3hVqcbRPYxHOcNQYtoX0CWWhn7e5SsPpPImpAtv+dDeF?=
+ =?us-ascii?Q?1aIXuFev0k8hAD5TV6VJP5EYpew8pX1yF4C5R//qm7E02wsNgU4i+PhnBjZV?=
+ =?us-ascii?Q?pJZwT2fEfpHN6euYslS5E+04AlPr7yy3SPBEWyu5yJXwbZuQsFNin0NCEp2+?=
+ =?us-ascii?Q?B4rJku5EkZmeKXEXy350z/Jt/ZSUs4ULJgaPIHrov0m3GddAGfJeAvYX8VoB?=
+ =?us-ascii?Q?8alYG4GgtcLKoSzxiSE4Nc8czH+4ELk2KowQjr5LUxQoSQHI6vJfC2G9Xrgp?=
+ =?us-ascii?Q?QcX0PNbqio2igmL3I+7EDntg0pc9eXGMMTJU+kbH6uiez+tv5rD0ujpl2iXo?=
+ =?us-ascii?Q?TSEiY3MzPgVlJ8P96knjZ3Qa2AEr7oXhlVt6VfpRTi84NVYATXSJSqyhAz/q?=
+ =?us-ascii?Q?NPycMBmlWtAsY+ZwuWIdCcoS25UsMbNMYD7qqJGyWCdPpa9AbM5OueNhsL6X?=
+ =?us-ascii?Q?3178VZD48WsdY+lo6wKAjwo3/nu9J8UaLxb6vi0mBB0oMASLCy0lPDsavggD?=
+ =?us-ascii?Q?t2E1FiDnusqA9yo3tSiHaZH1fVHgJOV45jTwEVzUfM24BIIXrcKdEAhh8Dh5?=
+ =?us-ascii?Q?pG7/gi8os2UGbutot7xK/FUBlK4xNu5MRYTUGanld3ld2BEzqOFJ1SigcN+y?=
+ =?us-ascii?Q?2RzlsrtzJt1U8XMo4m8hReVLB5kJo3PZmH9P0IfpNmK5E6WtlQd0R+2wYTn5?=
+ =?us-ascii?Q?4ALxhAYxXhJoJg31j0g1btpDymqDjyFELB1wrhmEvJMU33UdH/QBjisAuNQc?=
+ =?us-ascii?Q?lEh/dCpKNoyhbMp9pzfHW3fkP2r03++DsUb/76QN6VM3p49bbE8x/HoLIHXY?=
+ =?us-ascii?Q?qtb0IsVUOzAwdoSKyNCcTj2B2o2OQPBVNofx4WyQLT+lnWZvx097rg+AmGQm?=
+ =?us-ascii?Q?Mjq/23w5H/6oOfF3kywIhxJ8fqYrNfsCfeiDVdHu1pMhaXOwnolCt65hZ77G?=
+ =?us-ascii?Q?9QjY7FmDxFodOs1u6kKjeadhM9uOeyjNXCzxJfahvHFjS3TlNHjmYGpqqBms?=
+ =?us-ascii?Q?FWtw1J6BJrp/oCzc30CH1m4iy0ITI7UlOyMOG4boyZh8tqi2BQgrMmvOZsIy?=
+ =?us-ascii?Q?qu+BfeEklQktR9VMBANAq4azDuJ7jOfe1LyduFlMKgKNhEMj4Y0KEx2Vv4jX?=
+ =?us-ascii?Q?dBZ91ex39C47FO715KTlg+tBCe2sL4e6rx40NlKEGLb2xbqE7ogJZ9oj0GqQ?=
+ =?us-ascii?Q?uj6QjiMvTVl0fiy9j0P6yUHxVXaEOBNtyJhzM6vbc9ycqnh744xG0kRTPgJt?=
+ =?us-ascii?Q?72AdgPVXjgftpT55QYN7We8ituvpBZiKCBTbp8CW0+5Nn/bjtzdu0V/+vAOz?=
+ =?us-ascii?Q?cBBaAnCIZFKl60A+at4X3+mjHs4L+m14AIdCZOz96dKph4y+ZBU53KUVfjda?=
+ =?us-ascii?Q?9N/yuISKyQbJ7vGDSXN5k4HAvDTe9AofS2BZ0txYn2QW7OpSeZMZ2m77ib/m?=
+ =?us-ascii?Q?xV/7R5g3oeoS+1jYsNjXjSMJ3fGmKzV5UaRkzhzw?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96bedf10-43d7-4b31-6ecd-08dd65eee89d
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6405.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2025 07:31:33.7736
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MWZXpVZS+vzVQn5+axo5GfM04mLmPu8e4Q2u0ekxSM1C9IZ/2bwQsL7076uto9edrfJsW2JWyMepke9amxf56A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9665
 
-On 3/18/25 08:50, Wang Liang wrote:
+On Mon, Mar 17, 2025 at 08:22:35AM -1000, Tejun Heo wrote:
+...
+> > +	/*
+> > +	 * If the task is allowed to run on all CPUs, simply use the
+> > +	 * architecture's cpumask directly. Otherwise, compute the
+> > +	 * intersection of the architecture's cpumask and the task's
+> > +	 * allowed cpumask.
+> > +	 */
+> > +	if (!cpus || p->nr_cpus_allowed >= num_possible_cpus() ||
+> > +	    cpumask_subset(cpus, p->cpus_ptr))
+> > +		return cpus;
+> > +
+> > +	if (!cpumask_equal(cpus, p->cpus_ptr) &&
 > 
-> 在 2025/3/17 15:39, Nikolay Aleksandrov 写道:
->> On 3/17/25 06:07, Wang Liang wrote:
->>> 在 2025/3/14 18:44, Nikolay Aleksandrov 写道:
->>>> On 3/14/25 12:22 PM, Nikolay Aleksandrov wrote:
->>>>> On 3/14/25 12:13 PM, Toke Høiland-Jørgensen wrote:
->>>>>> Wang Liang <wangliang74@huawei.com> writes:
->>>>>>
->>>>>>> Following operations can trigger a warning[1]:
->>>>>>>
->>>>>>>       ip netns add ns1
->>>>>>>       ip netns exec ns1 ip link add bond0 type bond mode balance-rr
->>>>>>>       ip netns exec ns1 ip link set dev bond0 xdp obj af_xdp_kern.o sec xdp
->>>>>>>       ip netns exec ns1 ip link set bond0 type bond mode broadcast
->>>>>>>       ip netns del ns1
->>>>>>>
->>>>>>> When delete the namespace, dev_xdp_uninstall() is called to remove xdp
->>>>>>> program on bond dev, and bond_xdp_set() will check the bond mode. If bond
->>>>>>> mode is changed after attaching xdp program, the warning may occur.
->>>>>>>
->>>>>>> Some bond modes (broadcast, etc.) do not support native xdp. Set bond mode
->>>>>>> with xdp program attached is not good. Add check for xdp program when set
->>>>>>> bond mode.
->>>>>>>
->>>>>>>       [1]
->>>>>>>       ------------[ cut here ]------------
->>>>>>>       WARNING: CPU: 0 PID: 11 at net/core/dev.c:9912 unregister_netdevice_many_notify+0x8d9/0x930
->>>>>>>       Modules linked in:
->>>>>>>       CPU: 0 UID: 0 PID: 11 Comm: kworker/u4:0 Not tainted 6.14.0-rc4 #107
->>>>>>>       Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
->>>>>>>       Workqueue: netns cleanup_net
->>>>>>>       RIP: 0010:unregister_netdevice_many_notify+0x8d9/0x930
->>>>>>>       Code: 00 00 48 c7 c6 6f e3 a2 82 48 c7 c7 d0 b3 96 82 e8 9c 10 3e ...
->>>>>>>       RSP: 0018:ffffc90000063d80 EFLAGS: 00000282
->>>>>>>       RAX: 00000000ffffffa1 RBX: ffff888004959000 RCX: 00000000ffffdfff
->>>>>>>       RDX: 0000000000000000 RSI: 00000000ffffffea RDI: ffffc90000063b48
->>>>>>>       RBP: ffffc90000063e28 R08: ffffffff82d39b28 R09: 0000000000009ffb
->>>>>>>       R10: 0000000000000175 R11: ffffffff82d09b40 R12: ffff8880049598e8
->>>>>>>       R13: 0000000000000001 R14: dead000000000100 R15: ffffc90000045000
->>>>>>>       FS:  0000000000000000(0000) GS:ffff888007a00000(0000) knlGS:0000000000000000
->>>>>>>       CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>>>>>>       CR2: 000000000d406b60 CR3: 000000000483e000 CR4: 00000000000006f0
->>>>>>>       Call Trace:
->>>>>>>        <TASK>
->>>>>>>        ? __warn+0x83/0x130
->>>>>>>        ? unregister_netdevice_many_notify+0x8d9/0x930
->>>>>>>        ? report_bug+0x18e/0x1a0
->>>>>>>        ? handle_bug+0x54/0x90
->>>>>>>        ? exc_invalid_op+0x18/0x70
->>>>>>>        ? asm_exc_invalid_op+0x1a/0x20
->>>>>>>        ? unregister_netdevice_many_notify+0x8d9/0x930
->>>>>>>        ? bond_net_exit_batch_rtnl+0x5c/0x90
->>>>>>>        cleanup_net+0x237/0x3d0
->>>>>>>        process_one_work+0x163/0x390
->>>>>>>        worker_thread+0x293/0x3b0
->>>>>>>        ? __pfx_worker_thread+0x10/0x10
->>>>>>>        kthread+0xec/0x1e0
->>>>>>>        ? __pfx_kthread+0x10/0x10
->>>>>>>        ? __pfx_kthread+0x10/0x10
->>>>>>>        ret_from_fork+0x2f/0x50
->>>>>>>        ? __pfx_kthread+0x10/0x10
->>>>>>>        ret_from_fork_asm+0x1a/0x30
->>>>>>>        </TASK>
->>>>>>>       ---[ end trace 0000000000000000 ]---
->>>>>>>
->>>>>>> Fixes: 9e2ee5c7e7c3 ("net, bonding: Add XDP support to the bonding driver")
->>>>>>> Signed-off-by: Wang Liang <wangliang74@huawei.com>
->>>>>>> ---
->>>>>>>    drivers/net/bonding/bond_options.c | 3 +++
->>>>>>>    1 file changed, 3 insertions(+)
->>>>>>>
->>>>>>> diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
->>>>>>> index 327b6ecdc77e..127181866829 100644
->>>>>>> --- a/drivers/net/bonding/bond_options.c
->>>>>>> +++ b/drivers/net/bonding/bond_options.c
->>>>>>> @@ -868,6 +868,9 @@ static bool bond_set_xfrm_features(struct bonding *bond)
->>>>>>>    static int bond_option_mode_set(struct bonding *bond,
->>>>>>>                    const struct bond_opt_value *newval)
->>>>>>>    {
->>>>>>> +    if (bond->xdp_prog)
->>>>>>> +        return -EOPNOTSUPP;
->>>>>>> +
->>>>>> Should we allow changing as long as the new mode also supports XDP?
->>>>>>
->>>>>> -Toke
->>>>>>
->>>>>>
->>>>> +1
->>>>> I think we should allow it, the best way probably is to add a new option
->>>>> BOND_VALFLAG_XDP_UNSUPP (for example) as a bond option flag and to set
->>>>> it in bond_options.c for each mode that doesn't support XDP, then you
->>>>> can do the check in a generic way (for any option) in
->>>>> bond_opt_check_deps. Any bond option that can't be changed with XDP prog
->>>> err, I meant any bond option's value that isn't supported with XDP, for
->>>> a whole option it would be a bit different
->>> Thanks for your suggestions!
->>>
->>> When install xdp prog, bond_xdp_set() use bond_xdp_check() to check whether the bond mode support xdp.
->>>
->>> When uninstall xdp prog, the paramter prog of bond_xdp_set() is NULL. How about not call bond_xdp_check() to avoid the warning when the prog is NULL, like:
->>>
->>> static int bond_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->>>              struct netlink_ext_ack *extack)
->>>      ...
->>>      if (prog && !bond_xdp_check(bond))
->> No, this could cause other problems. Actually, for -net I think the best would be to stick to
->> a simpler fix and just do bond_xdp_check() if there's a XDP program attached when changing
->> the mode so it can be backported easier. The option value flag can be done in the future
->> if more option values (or options) need to be disabled for XDP.
->>
->> Cheers,
->>   Nik
-> Excuse me again. I hope that I haven't misunderstood your suggestions.
+> Hmm... isn't this covered by the preceding cpumask_subset() test? Here, cpus
+> is not a subset of p->cpus_ptr, so how can it be the same as p->cpus_ptr?
 > 
-> When I try to do bond_xdp_check() if there's a XDP program attached when
-> changing the mode in function bond_option_mode_set(). bond_xdp_check()
-> visit bond->params.mode and bond->params.xmit_policy, should I create a
-> new function, whose paramter is int mode?
-> 
-> Looking forward to getting more replies. Thanks.
+> > +	    cpumask_and(local_cpus, cpus, p->cpus_ptr))
+> > +		return local_cpus;
+> > +
+> > +	return NULL;
 
-No need to create a new function, you can modify the existing and pass
-mode as an argument, then use it to do this check when changing the mode.
+Also, I'm also wondering if there's really a benefit checking for
+cpumask_subset() and then doing cpumask_and() only when it's needed, or if
+we should just do cpumask_and(). It's true that we can save some writes,
+but they're done on a temporary local per-CPU cpumask, so they shouldn't
+introduce cache contention.
 
->>>>> should have that flag set.
->>>>>
->>>>> Cheers,
->>>>>    Nik
->>>>>
->>
-
+-Andrea
 
