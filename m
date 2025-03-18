@@ -1,66 +1,64 @@
-Return-Path: <bpf+bounces-54346-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54348-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86A57A67E55
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 21:56:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41CB6A67E70
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 22:00:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D33EA42277E
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 20:56:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6C4D3B8C11
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 21:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BED7212FA0;
-	Tue, 18 Mar 2025 20:56:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0691C5F2C;
+	Tue, 18 Mar 2025 21:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V2DFTug9"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aSWz5sBX"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09996185B4C
-	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 20:56:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C57B1D9A49
+	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 21:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742331375; cv=none; b=Eu9N5NMzhJMzMFiIWhpv0SBi8DDYWCzD0SIruDpbTUTh1jDQfnXM7LOf5WZ1TvDPuo35JLjyVJzErH7nXxldWHwZy4lYDeG9HhyJJB22n+o/UVL9Gjqu9AMvqtxeEL12NFwXfLo1VCAVukCvesB4zNGXTkAYvt0UX+e0gQ6YsSs=
+	t=1742331647; cv=none; b=qw/9WhDuf9LsBABTgkKJ/EW1pbwhGPsvz5KlfvFl3qLzlP4ZX8j+Br4ATCWGWC/2X5LzNF1eqSCMFnE9qRggomMkjkFhfQGHpRlvkeAIVOKaK9xKZZH7lt+xPk5QiKk9W98OgnqYZSBZUt/MEpWLgbsNHSf5+YW+5Y0my+hXGcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742331375; c=relaxed/simple;
-	bh=yJd4jy4bjSHI/cw2uKyxQKKK1knsUJ0bGWmdp3YThMo=;
+	s=arc-20240116; t=1742331647; c=relaxed/simple;
+	bh=8ZjEo3llqLTUywvBJnzVjqQY/CSOd3KoVpDuEMkqnvo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=eBK2nq+psPg5nRZfPkFcivfE89AndBCAfEYeJPxfFRclWUBfGuXNZUH6CdMQH1Y+3Q0DSk4T7triFiObAwfMoMrnVQMxiN2S4gsZu+EF386SBPVqkoFt1NldUZTzOQhN47M2CSA/9/wBgzqdG0+MMBgYfzvtF/kZgcoVJmMo5Rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V2DFTug9; arc=none smtp.client-ip=91.218.175.170
+	 In-Reply-To:Content-Type; b=AiMDW3gJtpFdHJ1UTcKwHkjMU0o2+RQMVN0xmOVi+HGa3U5/AkZx0on308yUOZpfdJcqUkl9BYxox9rtgBqt3w9OcvqGGalaR7q4xtPgXFmXeT7bqlwSOget1qYeVLfZQoTf3qp9XlzoVj7p77pjE9XSQZ4AJYjMOSoeOuQDKJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aSWz5sBX; arc=none smtp.client-ip=91.218.175.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ea842369-6e90-40f9-a891-0c4a6a6e565c@linux.dev>
+Message-ID: <4a128a09-0b8b-488a-986b-7882f96bc5bb@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742331371;
+	t=1742331640;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Qq42+DIkiDYiYs2gO4JmclmnmnLxRDVNTpzgoSDYrDo=;
-	b=V2DFTug9USf4e34G1NxgCh2PNH/GLwZjBo/NrG3tYTScCPnRZK3Cid6iwuuC6kcIePdaQ3
-	ZWQkw+Rs9lqD/IdzHA3yuPunzB1bq1Dto8nmngNX1Woqdqov2kU/BYuNy+9EtpVjuWlgCH
-	M+TZTb1ueXdEiYDFGW7ViAJoCxTDCrg=
-Date: Tue, 18 Mar 2025 13:56:07 -0700
+	bh=OfG45ArWMVjcLLym1kC2zNxulD+w2HRn9zXM1xN+aMU=;
+	b=aSWz5sBXWDNK/MZ0kLZhEotMYw1MUCjTGZgk6T7Vo4aMUzvlCHWlP+2j8Z14LHgjtrvFoj
+	45uprfgHREkK2QanT7YqEcLD6F5DKpvBfAum4YdK8ypdKU9XSIpJHWqOCnFpwAPjmBfgv0
+	inKJ1FnGYIwv5KbFZjVKel1ckA40bjo=
+Date: Tue, 18 Mar 2025 14:00:37 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 03/14] selftests/bpf: add selftests for new
- insn_set map
+Subject: Re: [RFC PATCH bpf-next 00/14] instruction sets and static keys
 Content-Language: en-GB
 To: Anton Protopopov <aspsk@isovalent.com>, bpf@vger.kernel.org,
  Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
  Eduard Zingerman <eddyz87@gmail.com>, Quentin Monnet <qmo@kernel.org>,
  Alexei Starovoitov <ast@kernel.org>
 References: <20250318143318.656785-1-aspsk@isovalent.com>
- <20250318143318.656785-4-aspsk@isovalent.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20250318143318.656785-4-aspsk@isovalent.com>
+In-Reply-To: <20250318143318.656785-1-aspsk@isovalent.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
@@ -68,113 +66,119 @@ X-Migadu-Flow: FLOW_OUT
 
 
 On 3/18/25 7:33 AM, Anton Protopopov wrote:
-> Tests are split in two parts.
+> This patchset implements new type of map, instruction set, and uses
+> it to build support for BPF static keys. The same map will be later
+> used to provide support for indirect jumps and indirect calls. See
+> [1], [2] for more context.
 >
-> The `bpf_insn_set_ops` test checks that the map is managed properly:
+> Short table of contents:
 >
->    * Incorrect instruction indexes are rejected
->    * Non-sorted and non-unique indexes are rejected
->    * Unfrozen maps are not accepted
->    * Two programs can't use the same map
->    * BPF progs can't operate the map
+>    * patches 1, 9, 10, 11 are simple fixes (which can be sent
+>      independently, if acked)
 >
-> The `bpf_insn_set_reloc` part validates, as best as it can do it from user
-> space, that instructions are relocated properly:
+>    * patches 2, 3 add a new map type, BPF_MAP_TYPE_INSN_SET, and
+>      corresponding selftests. This map is used to track how original
+>      instructions were relocated into 'xlated' during the verification
 >
->    * no relocations => map is the same
->    * expected relocations when instructions are added
->    * expected relocations when instructions are deleted
->    * expected relocations when multiple functions are present
+>    * patches 4, 5, 6, 7, 8 add support for static keys (kernel only)
+>      using (an extension) to that new map type. Only x86 support is
+>      added in this RFC
 >
-> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> ---
+>    * patches 12, 13, 14 add libbpf-side support for static keys and
+>      selftests
+>
+> It is RFC for a few reasons:
+>
+> 1) The kernel side of the static keys looks clear, however, the
+> libbpf side is not _that_ clear. I thought that this is better to
+> commit to a particular userspace design, as any particular design
+> requires a lot of changes on the libbpf side. See patch 12 for
+> the details
+>
+> 2) The libbpf part of the series requires a patched LLVM (see [3]),
+> which adds support for gotol_or_nop/nop_or_gotol instructions, so
+> selftests would not compile in CI.
+>
+> 3) Patch 4 adds support for a new BPF instruction. It looks
+> reasonable to use an extended BPF_JMP|BPF_JA instruction, and not
+> may_goto. Reasons: a follow up will add support for
+> BPF_JMP|BPF_JA|BPF_X (indirect jumps), which also utilizes INSN_SET maps (see [2]).
+> Then another follow up will add support CALL|BPF_X, for which there's
+> no corresponding magic instruction (to be discussed at the following
+> LSF/MM/BPF).
+>
+> Besides these reasons, there are some questions / known bugs,
+> which will be fixed once the general plan is confirmed:
+>
+>    * bpf_jit_blind_constants will patch code, which is ignored in this
+>      RFC series. The solution would be either moving tracking
+>      instruction sets to bpf_prog from the verifier environment,
+>      or moving bpf_jit_blind_constants upper the stack (right now,
+>      this is the first thing which every jit does, so maybe it can
+>      be actually executed from the verifier, and provide env context)
+>
+>    * gen-loader not supported, fd_array usage in libbpf should be
+>      re-designed (see patch 12 for more details)
+>
+>    * insn_off -> insn_set map mapping should be optimized (now it is
+>      brute force)
+>
+> Links:
+>    1. http://oldvger.kernel.org/bpfconf2024_material/bpf_static_keys.pdf
+>    2. https://lpc.events/event/18/contributions/1941/
+>    3. https://github.com/aspsk/llvm-project/tree/static-keys
+
+For llvm patch in [3], please remove changes in function isValidIdInMiddle()
+as gotol_or_nop or nop_or_gotol will not appear in the *middle* of any
+instruction. "gotol" should not be there either, I may remove it sometime
+later.
+
+>
+> Anton Protopopov (14):
+>    bpf: fix a comment describing bpf_attr
+>    bpf: add new map type: instructions set
+>    selftests/bpf: add selftests for new insn_set map
+>    bpf: add support for an extended JA instruction
+>    bpf: Add kernel/bpftool asm support for new instructions
+>    bpf: add BPF_STATIC_KEY_UPDATE syscall
+>    bpf: save the start of functions in bpf_prog_aux
+>    bpf, x86: implement static key support
+>    selftests/bpf: add guard macros around likely/unlikely
+>    libbpf: add likely/unlikely macros
+>    selftests/bpf: remove likely/unlikely definitions
+>    libbpf: BPF Static Keys support
+>    libbpf: Add bpf_static_key_update() API
+>    selftests/bpf: Add tests for BPF static calls
+>
+>   arch/x86/net/bpf_jit_comp.c                   |  65 +-
+>   include/linux/bpf.h                           |  28 +
+>   include/linux/bpf_types.h                     |   1 +
+>   include/linux/bpf_verifier.h                  |   2 +
+>   include/uapi/linux/bpf.h                      |  40 +-
+>   kernel/bpf/Makefile                           |   2 +-
+>   kernel/bpf/bpf_insn_set.c                     | 400 +++++++++++
+>   kernel/bpf/core.c                             |   5 +
+>   kernel/bpf/disasm.c                           |  33 +-
+>   kernel/bpf/syscall.c                          |  28 +
+>   kernel/bpf/verifier.c                         |  94 ++-
+>   tools/include/uapi/linux/bpf.h                |  40 +-
+>   tools/lib/bpf/bpf.c                           |  17 +
+>   tools/lib/bpf/bpf.h                           |  19 +
+>   tools/lib/bpf/bpf_helpers.h                   |  63 ++
+>   tools/lib/bpf/libbpf.c                        | 362 +++++++++-
+>   tools/lib/bpf/libbpf.map                      |   1 +
+>   tools/lib/bpf/libbpf_internal.h               |   3 +
+>   tools/lib/bpf/linker.c                        |   6 +-
+>   .../selftests/bpf/bpf_arena_spin_lock.h       |   3 -
 >   .../selftests/bpf/prog_tests/bpf_insn_set.c   | 639 ++++++++++++++++++
->   1 file changed, 639 insertions(+)
+>   .../bpf/prog_tests/bpf_static_keys.c          | 359 ++++++++++
+>   .../selftests/bpf/progs/bpf_static_keys.c     | 131 ++++
+>   tools/testing/selftests/bpf/progs/iters.c     |   2 -
+>   24 files changed, 2315 insertions(+), 28 deletions(-)
+>   create mode 100644 kernel/bpf/bpf_insn_set.c
 >   create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_insn_set.c
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_static_keys.c
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_insn_set.c b/tools/testing/selftests/bpf/prog_tests/bpf_insn_set.c
-> new file mode 100644
-> index 000000000000..796980bd4fcb
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_insn_set.c
-> @@ -0,0 +1,639 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <bpf/bpf.h>
-> +#include <test_progs.h>
-> +
-> +static inline int map_create(__u32 map_type, __u32 max_entries)
-> +{
-> +	const char *map_name = "insn_set";
-> +	__u32 key_size = 4;
-> +	__u32 value_size = 4;
-> +
-> +	return bpf_map_create(map_type, map_name, key_size, value_size, max_entries, NULL);
-> +}
-> +
-> +/*
-> + * Load a program, which will not be anyhow mangled by the verifier.  Add an
-> + * insn_set map pointing to every instruction. Check that it hasn't changed
-> + * after the program load.
-> + */
-> +static void check_one_to_one_mapping(void)
-> +{
-> +	struct bpf_insn insns[] = {
-> +		BPF_MOV64_IMM(BPF_REG_0, 4),
-> +		BPF_MOV64_IMM(BPF_REG_0, 3),
-> +		BPF_MOV64_IMM(BPF_REG_0, 2),
-> +		BPF_MOV64_IMM(BPF_REG_0, 1),
-> +		BPF_MOV64_IMM(BPF_REG_0, 0),
-> +		BPF_EXIT_INSN(),
-> +	};
-> +	int prog_fd, map_fd;
-
-prog_fd needs to be initialized to something like -1.
-
-> +	union bpf_attr attr = {
-> +		.prog_type = BPF_PROG_TYPE_XDP, /* we don't care */
-> +		.insns     = ptr_to_u64(insns),
-> +		.insn_cnt  = ARRAY_SIZE(insns),
-> +		.license   = ptr_to_u64("GPL"),
-> +		.fd_array = ptr_to_u64(&map_fd),
-> +		.fd_array_cnt = 1,
-> +	};
-> +	int i;
-> +
-> +	map_fd = map_create(BPF_MAP_TYPE_INSN_SET, ARRAY_SIZE(insns));
-> +	if (!ASSERT_GE(map_fd, 0, "map_create"))
-> +		return;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(insns); i++)
-> +		if (!ASSERT_EQ(bpf_map_update_elem(map_fd, &i, &i, 0), 0, "bpf_map_update_elem"))
-> +			goto cleanup;
-
-Otherwise, goto cleanup here will goto cleanup and close(prog_fd) will close
-a random prog_fd. Please check the rest of prog_fd usage.
-
-> +
-> +	if (!ASSERT_EQ(bpf_map_freeze(map_fd), 0, "bpf_map_freeze"))
-> +		return;
-> +
-> +	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-> +	if (!ASSERT_GE(prog_fd, 0, "bpf(BPF_PROG_LOAD)"))
-> +		goto cleanup;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(insns); i++) {
-> +		__u32 val;
-> +
-> +		if (!ASSERT_EQ(bpf_map_lookup_elem(map_fd, &i, &val), 0, "bpf_map_lookup_elem"))
-> +			goto cleanup;
-> +
-> +		ASSERT_EQ(val, i, "val should be equal i");
-> +	}
-> +
-> +cleanup:
-> +	close(prog_fd);
-> +	close(map_fd);
-> +}
-> +
-
-[...]
 
 
