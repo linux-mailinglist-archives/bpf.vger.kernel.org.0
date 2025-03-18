@@ -1,137 +1,104 @@
-Return-Path: <bpf+bounces-54279-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54280-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D62FA66D32
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 09:01:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E69BA66DDB
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 09:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 074F03BA394
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 08:00:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 442FF188EB3B
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 08:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ABBC1EF379;
-	Tue, 18 Mar 2025 07:59:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEB71F875D;
+	Tue, 18 Mar 2025 08:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="keevS7Wo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CTSZQsWJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-3.rrze.uni-erlangen.de (mx-rz-3.rrze.uni-erlangen.de [131.188.11.22])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B6E1F5E6;
-	Tue, 18 Mar 2025 07:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B32E1EF39D;
+	Tue, 18 Mar 2025 08:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742284781; cv=none; b=mtZtxK9fXzt2Y5NtffI9P/4EiIOcJhiUWRV8hbjOUJX2FB26MbtFYCeaN34+j6Qo8CUaM6qkbJvoadtKUkPGXbAfNyNCGw6hitbmNVqFbn+IU8KSccP/ygKHqHzRMq8V4g51WnId4BPEzD2nr7XzD3PHeu1V4EZa5C/KNHT73fo=
+	t=1742285825; cv=none; b=O15XUAFjuBEWtzqwrvZT1kTXFaBsYFYZupg3vJZS8uR1v38zFF3lX60uRtq0ca/IF/p72xW215WFgLZLr5oxddmenRYyn15UpRXbbaEp6NcOKDB+GNrpQS9HCQngXfLHjE8/JF+2e6OAQhAa310+42+ZiF2P6xIEIqUw/HcxdpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742284781; c=relaxed/simple;
-	bh=c/ZcD6vqHuJ/dEWaARSk7oEoDASAo3inOBKdW1OPBPI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=WYshTiZgMHtay9zI5wGM3cVglZAczIpEeXP/vu5ag9N/xp7FD271aKLhWIFGZt72QLJUzKUH4oGlxE5sDusT7eX+gUKxjU4b+K2RFMUhbCQhQHrSVKYnftPCaG324ssCySN06kzIYl6Hk1tdc9Df/hS3yAcHuQOhdDXWJPGqxJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=keevS7Wo; arc=none smtp.client-ip=131.188.11.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1742284770; bh=T8g3BGN/mHpuPfK1H4SEVNvXxea99G16e6oOkBugydQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
-	 Subject;
-	b=keevS7WotUTlE4uv/uI0BB9M4xxOkfuah7+yI24TqsIPktTPJvCGGObVIIW6jeZKP
-	 w/bt5U30Oj42lmLjgCWzHND/darszlQnzkm2TfzKKC+5r8+zbw9gW/2+jMj1r8WoJN
-	 GWRd9JqWh62APoSyejo2Ue2ELzZ0R2JZChH0j3j5Gac6QGaEneNPA6B1S4KPi+9Ymt
-	 yq1OYftJSwHLFuepJ7+09KW9dPLsPrN4xGbBORAPBGx98UMms/frWVgz3oxRkMuf8t
-	 uCDu2K54M6rBVztc9Rrz/SOMocwXb+IlFyT1Lw80YIgT51+KovX1JWNEK+/fOk+RjO
-	 cQLLlEgHw199w==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-3.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4ZH44K5yb4z1xqh;
-	Tue, 18 Mar 2025 08:59:29 +0100 (CET)
-X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2a02:8071:7900:bc0:c583:a400:7f8d:5e80
-Received: from localhost (unknown [IPv6:2a02:8071:7900:bc0:c583:a400:7f8d:5e80])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX1/njMYOnHzLTANywgVWOWsVTWqW358Unx4=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4ZH44G1Xjqz1yjk;
-	Tue, 18 Mar 2025 08:59:26 +0100 (CET)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
- KaFai Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong
- Song <yonghong.song@linux.dev>,  John Fastabend
- <john.fastabend@gmail.com>,  KP Singh <kpsingh@kernel.org>,  Stanislav
- Fomichev <sdf@fomichev.me>,  Hao Luo <haoluo@google.com>,  Jiri Olsa
- <jolsa@kernel.org>,  Puranjay Mohan <puranjay@kernel.org>,  Xu Kuohai
- <xukuohai@huaweicloud.com>,  Catalin Marinas <catalin.marinas@arm.com>,
-  Will Deacon <will@kernel.org>,  Hari Bathini <hbathini@linux.ibm.com>,
-  Christophe Leroy <christophe.leroy@csgroup.eu>,  Naveen N Rao
- <naveen@kernel.org>,  Madhavan Srinivasan <maddy@linux.ibm.com>,  Michael
- Ellerman <mpe@ellerman.id.au>,  Nicholas Piggin <npiggin@gmail.com>,
-  Mykola Lysenko <mykolal@fb.com>,  Shuah Khan <shuah@kernel.org>,
-  Henriette Herzog <henriette.herzog@rub.de>,  Cupertino Miranda
- <cupertino.miranda@oracle.com>,  Matan Shachnai <m.shachnai@gmail.com>,
-  Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,  Shung-Hsi Yu
- <shung-hsi.yu@suse.com>,  Daniel Xu <dxu@dxuuu.xyz>,  bpf@vger.kernel.org,
-  linux-arm-kernel@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  linuxppc-dev@lists.ozlabs.org,  linux-kselftest@vger.kernel.org,  George
- Guo <guodongtai@kylinos.cn>,  WANG Xuerui <git@xen0n.name>,  Tiezhu Yang
- <yangtiezhu@loongson.cn>,  Maximilian Ott <ott@cs.fau.de>,  Milan Stephan
- <milan.stephan@fau.de>
-Subject: Re: [PATCH bpf-next 09/11] bpf: Return PTR_ERR from push_stack()
-In-Reply-To: <9083b52fd4a2d7a5a0473e858042c277c883f8b0.camel@gmail.com>
-	(Eduard Zingerman's message of "Mon, 17 Mar 2025 02:19:08 -0700")
-References: <20250313172127.1098195-1-luis.gerhorst@fau.de>
-	<20250313174149.1113165-1-luis.gerhorst@fau.de>
-	<20250313174149.1113165-4-luis.gerhorst@fau.de>
-	<9083b52fd4a2d7a5a0473e858042c277c883f8b0.camel@gmail.com>
-User-Agent: mu4e 1.12.8; emacs 29.4
-Date: Tue, 18 Mar 2025 08:59:24 +0100
-Message-ID: <87r02uu5ur.fsf@fau.de>
+	s=arc-20240116; t=1742285825; c=relaxed/simple;
+	bh=SyPRS1VQKcQGW7s/oBLq1ciCntHpRx8mww8jsVEAmhA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=g9j41eLYc/MbYRUv8c2eeQKc1Yffixa4YRi05E6r1mFDkNiwKeUIpQTaeO7wkDeN9keVOw3BInO4Pdrkwla/8HXcGkFI9GON3KnFKbpM0kv7BAjTjG+zqD98iKZD5Ga8E/mFOjLA1ZJL13y7L1xJGuL5MbqfKcvlobd5Q8RbSI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CTSZQsWJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40285C4CEDD;
+	Tue, 18 Mar 2025 08:17:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742285824;
+	bh=SyPRS1VQKcQGW7s/oBLq1ciCntHpRx8mww8jsVEAmhA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CTSZQsWJ+c3bx2DH4kww7FY3HWFKyDFBv1hZIhX+a+Hf2BPz/OnVT2fW5fPhbxMUJ
+	 RLucUrR98l3QJyT5Mlqbl6UyRnvAKpm2DcA59sC+oKEHQDsI29XXDd3MXn3O9cWiZK
+	 pLpd2nc7bnqvlOCmSPQCkVfm6+/5JUBLUgmmd74jzXdJ8Svg7P1zJZ73OywUu4aOqy
+	 ywUWBkk0tlIRpnLFEuxXiZhtTcjDnrHQ8UYasWg+zdGf0pnHCQ0JhtGz/xGvC+zKjK
+	 5hKxZ4eT1uClQjY4lfxU5MpQZ5U3WotU6h3OqQDHcR8I3kUTdRRedwPpqlrrLZRIss
+	 f5wgrV2YIe+0g==
+From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	bpf@vger.kernel.org
+Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] selftests/bpf: Sanitize pointer prior fclose()
+Date: Tue, 18 Mar 2025 09:16:47 +0100
+Message-ID: <20250318081648.122523-1-bjorn@kernel.org>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Eduard Zingerman <eddyz87@gmail.com> writes:
+From: Björn Töpel <bjorn@rivosinc.com>
 
-> Could you please point me to a location, where exact error code
-> returned by updated push_stack() matters?
-> I checked push_stack() callgraph (in the attachment), but can't find
-> anything.
+There are scenarios where env.{sub,}test_state->stdout_saved, can be
+NULL, e.g. sometimes when the watchdog timeout kicks in, or if the
+open_memstream syscall is not available.
 
-Only with the final patch 11 ("bpf: Fall back to nospec for spec path
-verification") applied, the error code should matter. Then, the error
-code either matches `state->speculative &&
-error_recoverable_with_nospec(err)` in do_check() if it was EINVAL (in
-this case we heuristically avoided nested speculative path verification
-but have to add a nospec), or we continue to raise the error (e.g.,
-ENOMEM) from do_check().
+Avoid crashing test_progs by adding an explicit NULL check prior the
+fclose() call.
 
-Or is your question on this part from the commit message of patch 9?
+Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+---
+ tools/testing/selftests/bpf/test_progs.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-  This changes the sanitization-case to returning -ENOMEM. However, this
-  is more fitting as -EFAULT would indicate a verifier-internal bug.
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index d4ec9586b98c..309d9d4a8ace 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -103,12 +103,14 @@ static void stdio_restore(void)
+ 	pthread_mutex_lock(&stdout_lock);
+ 
+ 	if (env.subtest_state) {
+-		fclose(env.subtest_state->stdout_saved);
++		if (env.subtest_state->stdout_saved)
++			fclose(env.subtest_state->stdout_saved);
+ 		env.subtest_state->stdout_saved = NULL;
+ 		stdout = env.test_state->stdout_saved;
+ 		stderr = env.test_state->stdout_saved;
+ 	} else {
+-		fclose(env.test_state->stdout_saved);
++		if (env.test_state->stdout_saved)
++			fclose(env.test_state->stdout_saved);
+ 		env.test_state->stdout_saved = NULL;
+ 		stdout = env.stdout_saved;
+ 		stderr = env.stderr_saved;
 
-This was referring to the sanitize_speculative_path() calls in
-check_cond_jmp_op(). For that case, the error should also only be used
-in do_check() with patch 11 applied. However, regarding this, EFAULT and
-ENOMEM are treated the same (they both don't satisfy
-error_recoverable_with_nospec()), therefore this change is primarily
-made to not complicate the code.
+base-commit: f3f8649585a445414521a6d5b76f41b51205086d
+-- 
+2.45.2
 
-I just became aware that there is some special handling of EFAULT as
-discussed in c7a897843224 ("bpf: don't leave partial mangled prog in
-jit_subprogs error path"). I will have look into this in detail to make
-sure changing push_stack() from EFAULT to ENOMEM is OK.
-
-Hope this answers your question.
-
-Adding some of these details to v2 won't hurt I guess.
 
