@@ -1,131 +1,174 @@
-Return-Path: <bpf+bounces-54295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9D2DA67226
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 12:07:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CF13A6727A
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 12:21:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9FCB3B022C
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 11:06:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39D8C189AEEE
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 11:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF06208978;
-	Tue, 18 Mar 2025 11:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D98020A5DC;
+	Tue, 18 Mar 2025 11:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FZYeGP3C"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="QVgvFXCY"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33AEE20967A;
-	Tue, 18 Mar 2025 11:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F61209F32;
+	Tue, 18 Mar 2025 11:19:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742295965; cv=none; b=jgUYEmmapO+MiJmVXiC1GuCL1jhCgidIKaA2aEPq69jfBRhlniBa3R+BUpR8hYLxbJEE5bsETKDaAJmmGvkV+6o4zWtZgtH70dASh8jkg6LpiahWvUBV+KK+lSSEY0Lrzzwz1TpNDhzHInTMbPf9HZ83ZKYEGQHAIYmG3sTwZF0=
+	t=1742296801; cv=none; b=NFJAod7yHFlkdPEtAcGD0a8VpW/ttnT2RMq5jtUGUJ9wdChPJJoJOKc6Hqq+tpVDgcK6ALBYsXZzlnL7lNSAMFd6V0DgrkyErbqOzpG6YXxq+MOTDbSviTX7Adi0ioS77Nw2w4dimnB9nYxNHGv+v4uQ9ZVowcCZ360E7yLQNsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742295965; c=relaxed/simple;
-	bh=+6eRMsycQCwnvUIb7YBuRBaRFSAMCS6WfElJU0fnob0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CB87L5QwBXwc8MwdcalIaFr3wE9Hg0Xd7qiIxLtT1pLh8Gc3JsTTnWx5jSlM2V/XPLzXmuqELb3DVq151pUqpyN/nVq+4tOXLAiaj0S0f/eLcR+kJMFPFGg9RxhT4kfXiRHCrTFccVvnt3kaXxueYtYtF3C5PmcJY8Nl60X51ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FZYeGP3C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D9C8C4CEDD;
-	Tue, 18 Mar 2025 11:06:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742295964;
-	bh=+6eRMsycQCwnvUIb7YBuRBaRFSAMCS6WfElJU0fnob0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FZYeGP3ChLjFgxxPhXwyrzj+8hdudeUK9TYlMtJjGSLAVE9l7b23fy6AlOGY3cXco
-	 JxmfMzVCnaC8910yJDVJNyWc9cVokzjiSUhLJ9Nwbn3O0bxJNoUovv6P8rxYZkGqUW
-	 8vxI26ywb35jSaW/zqOold5OFSPC3VgWsJPF46QKs3hueJrNGXj/MHgxylHyWs/90j
-	 gcF0O9bB1CgoEohptMg4SEViZ5T3Sa50+WsOO+APy9ZU2ApxdGL0RC3xjifQ7u/F5s
-	 60UVEROqpuCVkYO1fQXx5oetwtG8O03iJJf3018VZ4xMcN/cI+pX2Ms/28vDZz3R1V
-	 2DKF4AiY4dA2A==
-Date: Tue, 18 Mar 2025 12:06:01 +0100
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Marcin Wojtas <marcin.s.wojtas@gmail.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Masahisa Kojima <kojima.masahisa@socionext.com>,
-	Sunil Goutham <sgoutham@marvell.com>,
-	Geetha sowjanya <gakula@marvell.com>,
-	Subbaraya Sundeep <sbhatta@marvell.com>,
-	hariprasad <hkelam@marvell.com>,
-	Bharat Bhushan <bbhushan2@marvell.com>,
-	Felix Fietkau <nbd@nbd.name>, Sean Wang <sean.wang@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Siddharth Vadapalli <s-vadapalli@ti.com>,
-	Roger Quadros <rogerq@kernel.org>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-hyperv@vger.kernel.org,
-	linux-omap@vger.kernel.org
-Subject: Re: [PATCH net-next 0/7] net: xdp: Add missing metadata support for
- some xdp drvs
-Message-ID: <Z9lTmfyUsY3lqr1m@lore-desk>
-References: <20250311-mvneta-xdp-meta-v1-0-36cf1c99790e@kernel.org>
- <6259af5f-f518-4f88-ada9-31c3425ce6ed@redhat.com>
+	s=arc-20240116; t=1742296801; c=relaxed/simple;
+	bh=YV1JHVxz8NuwH6aGsDylRmmy3YqPpEpoYghJFRZw8zk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G3ZhWz16UYfqhkL+f9vLFMIcx5jA0uuywQCaOXI3P61903d6KxQ9u7T7XQb5c1/brfHBgJrEyUlcDRj/pkh/NOMuc86jsJ4upRUMskEkXkx3CIz7jwFvsKjjiMGPlRcMyR3yanxfE67YKXcAIwxplf8AO2lVMwYBtXuKrxbJDY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=QVgvFXCY; arc=none smtp.client-ip=178.60.130.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=hgkuz267b67SX+QM0W1jzr7EXhcboJpgPAQwlzu1erE=; b=QVgvFXCYTJl4+9Vf0VRaVN892p
+	Ugnl2V4H0E7oMDa5wTSJFhD3Ic4LgwEpDzYh+XQoA30GvMLWVEbkDxDxAiR0EGku0/ObwJixGuR4U
+	EMkNFaPzZRjpv28BXwkdsrzz6pcUvomjPAXX3i5E//wOkW3o2zgeu9pcBb55rQB38pfYSC34QMPQN
+	rI21IZBslc9xdp5oTeMEwlcfnz8E4hp7WmTZEL6pVorsizA6kTgi53Lbx8zRgyiaN3DyDvfiMzNaQ
+	hr64ob7YwQFoqo/uWj8pqc94Zag3D8XQ3TLAanesyUyBimCocC/sUzmb4r+VsiEMQqyeo4xxUG1z7
+	FBt2bi+A==;
+Received: from [223.233.71.8] (helo=[192.168.1.12])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1tuUz1-002g2U-L9; Tue, 18 Mar 2025 12:19:43 +0100
+Message-ID: <8b11d5f6-bb16-7af6-8377-bb0951fcfb60@igalia.com>
+Date: Tue, 18 Mar 2025 16:49:28 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7FKbPnYNhz7Z7bep"
-Content-Disposition: inline
-In-Reply-To: <6259af5f-f518-4f88-ada9-31c3425ce6ed@redhat.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH RFC 0/2] Dynamically allocate memory to store task's full
+ name
+Content-Language: en-US
+To: Andres Rodriguez <andresx7@gmail.com>, Kees Cook <kees@kernel.org>,
+ Bhupesh <bhupesh@igalia.com>
+Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
+ laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
+ mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+ alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
+ mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
+ david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
+ brauner@kernel.org, jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com,
+ bsegall@google.com, mgorman@suse.de, vschneid@redhat.com
+References: <20250314052715.610377-1-bhupesh@igalia.com>
+ <202503141420.37D605B2@keescook>
+ <a73ea646-0a24-474a-9e14-d59ea5eaa662@gmail.com>
+From: Bhupesh Sharma <bhsharma@igalia.com>
+In-Reply-To: <a73ea646-0a24-474a-9e14-d59ea5eaa662@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+Hi,
 
---7FKbPnYNhz7Z7bep
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for the review and inputs on the additional possible use-cases.
+Please see my replies inline.
 
-> On 3/11/25 1:18 PM, Lorenzo Bianconi wrote:
-> > Introduce missing metadata support for some xdp drivers setting metadata
-> > size building the skb from xdp_buff.
-> > Please note most of the drivers are just compile tested.
->=20
-> I'm sorry, but you should at very least report explicitly on per patch
-> basis which ones have been compile tested.
->=20
-> Even better, please additionally document in each patch why/how the
-> current headroom is large enough.
+On 3/15/25 1:13 PM, Andres Rodriguez wrote:
+>
+>
+> On 3/14/25 14:25, Kees Cook wrote:
+>> On Fri, Mar 14, 2025 at 10:57:13AM +0530, Bhupesh wrote:
+>>> While working with user-space debugging tools which work especially
+>>> on linux gaming platforms, I found that the task name is truncated due
+>>> to the limitation of TASK_COMM_LEN.
+>>>
+>>> For example, currently running 'ps', the task->comm value of a long
+>>> task name is truncated due to the limitation of TASK_COMM_LEN.
+>>>      create_very_lon
+>>>
+>>> This leads to the names passed from userland via pthread_setname_np()
+>>> being truncated.
+>>
+>> So there have been long discussions about "comm", and it mainly boils
+>> down to "leave it alone". For the /proc-scraping tools like "ps" and
+>> "top", they check both "comm" and "cmdline", depending on mode. The more
+>> useful (and already untruncated) stuff is in "cmdline", so I suspect it
+>> may make more sense to have pthread_setname_np() interact with that
+>> instead. Also TASK_COMM_LEN is basically considered userspace ABI at
+>> this point and we can't sanely change its length without breaking the
+>> world.
+>>
+>
+> Completely agree that comm is best left untouched. TASK_COMM_LEN is 
+> embedded into the kernel and the pthread ABI changes here should be 
+> avoided.
+>
 
-ack, I will do in v2.
+So, basically my approach _does not_ touch TASK_COMM_LEN at all. The 
+normal 'TASK_COMM_LEN' 16byte design remains untouched.
+Which means that all the legacy / existing ABi which uses 'task->comm' 
+and hence are designed / written to handle 'TASK_COMM_LEN' 16-byte name, 
+continue to work as before using '/proc/$pid/task/$tid/comm'.
 
-Regards,
-Lorenzo
+This change-set only adds a _parallel_ dynamically allocated 
+'task->full_name' which can be used by interested users via 
+'/proc/$pid/task/$tid/full_name'.
 
->=20
-> Thanks,
->=20
-> Paolo
->=20
+[PATCH 2/2] shows only a possible use-case of the same and can be 
+dropped with only [PATCH 1/2] being considered to add the 
+'/proc/$pid/task/$tid/full_name' interface.
+>> Best to use /proc/$pid/task/$tid/cmdline IMO...
+>
+> Your recommendation works great for programs like ps and top, which are
+> the examples proposed in the cover letter. However, I think the 
+> opening email didn't point out use cases where the name is modified at 
+> runtime. In those cases cmdline would be an unsuitable solution as it 
+> should remain immutable across the process lifetime. An example of 
+> this use case would be to set a thread's name for debugging purposes 
+> and then trying to query it via gdb or perf.
+>
+> I wrote a quick and dirty example to illustrate what I mean:
+> https://github.com/lostgoat/tasknames
+>
+> I think an alternative approach could be to have a separate entry in 
+> procfs to store a tasks debug name (and leave comm completely 
+> untouched), e.g. /proc/$pid/task/$tid/debug_name. This would allow 
+> userspace apps to be updated with the following logic:
+>
+> get_task_debug_name() {
+>     if ( !is_empty( debug_name ) )
+>         return debug_name;
+>     return comm;
+> }
+>
+> "Legacy" userspace apps would remain ABI compatible as they would just 
+> fall back to comm. And apps that want to opt in to the new behaviour 
+> can be updated one at a time. Which would be work intensive, but even 
+> just updating gdb and perf would be super helpful.
 
---7FKbPnYNhz7Z7bep
-Content-Type: application/pgp-signature; name=signature.asc
+I am fine with adding either '/proc/$pid/task/$tid/full_name' or 
+'/proc/$pid/task/$tid/debug_name' (actually both of these achieve the same).
+The new / modified users (especially the debug applications you listed 
+above) can switch easily to using '/proc/$pid/task/$tid/full_name' 
+instead of ''/proc/$pid/task/$tid/comm'
 
------BEGIN PGP SIGNATURE-----
+AFAIK we already achieved for the kthreads using d6986ce24fc00 
+("kthread: dynamically allocate memory to store kthread's full name"), 
+which adds 'full_name' in parallel to 'comm' for kthread names.
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZ9lTmQAKCRA6cBh0uS2t
-rDqfAQDOJNpxheA0LSnvOCTN+kPvwHBu5AGV2ArPeTAp70kJ3QD/apFRSAbfIcY1
-1f9jJDVDMRYLq6bmd+WcgF6DA0c7JwE=
-=n3M4
------END PGP SIGNATURE-----
-
---7FKbPnYNhz7Z7bep--
+Thanks,
+Bhupesh
 
