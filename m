@@ -1,113 +1,98 @@
-Return-Path: <bpf+bounces-54293-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54294-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BCEBA67135
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 11:26:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F41A1A67191
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 11:40:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9ADA19A22B2
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 10:26:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D42E03B3121
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 10:39:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676182080CD;
-	Tue, 18 Mar 2025 10:26:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F892080F6;
+	Tue, 18 Mar 2025 10:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="G7z/occu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KDkPUGRi"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA300206F18;
-	Tue, 18 Mar 2025 10:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E59935957;
+	Tue, 18 Mar 2025 10:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742293563; cv=none; b=MamwU2Vn0CXxjeH7+6l1F1Dz4ZyTkxD0B7MlKGz7y4XOquAByrhTEP6Bq9HGYuRy+soP+BbGlYAUcvm0e/ttfLhh0GOsTIBvWziZPQeU2vrv4poYWg9VYV++bUV1Cb/HKN+JPcHEIg9Rn4+HVoHLzXnHmUzoutFmp126AGmysA4=
+	t=1742294398; cv=none; b=QYvnu/X2l11fBACk2YsAhufCd5BN4O16WvVTP+Vg1BC2fMUEZ0IkVy0sMjIPgvIDORxr91IiMja0ZFXdloR368hh47B5XrKvNGh7PxO3EavnLwNonsrXFb9b9XA4JeePNXa74iH70VqZK2uGT/pPaglA8IoVIUfrAokKho2FjQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742293563; c=relaxed/simple;
-	bh=5jmDAGXiKABLCfb/KqDmMFp6vEjQ7B/rBqEoAHMmpxY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hRLbXYOegxrYRuFws6Q4pnx4RZCHnQmj6D9GyGS+ulAGRJrek3Ec4EiNADDMvFJh3zWb5cW1JVryYv5l1dl/viJFv+jT4X/mgON0TuHj1OwW3xPVNAZoarrb64Xh6Fb1o5fAdj+T2hofRbHdwfhP677AjptPEYQIPHilMpqzXjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=G7z/occu; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 160CC441CC;
-	Tue, 18 Mar 2025 10:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1742293558;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Zc6oFFUkHlFqpMlsRLdHY4M65dhXM48dn+z1oDl557o=;
-	b=G7z/occuwy0xr3+04zbh37s1Cajns5D+bR/lPxepiSwcGntuCZn6jkXFFBFo6mAvBb3kws
-	N/E9oeWnI72T5bbg+/TT/TF1bYkXEmLODtmMoxpqLsEzefSupFIKAvI2+r0Grff6NJ9vU8
-	C7Kg/3ZnvPDce8NL7ywILWBGpN8/E1mnqF5RGwgQRVcw8CU9H8acvUgeDByTRWqVKnN/EU
-	FTr6gzzsGZcMO3Lq8l2tnV+WfScQ6fGFUFJ6u4h5sotUpEg2THMR5+pPJxL7hB0hBFr3lw
-	V4uMBqF5kN4e2adzAeryTPGulf66tD3D8Zj1ZA2yDjxQiPBkPGSCF+zdxHYtNA==
-Message-ID: <f416d179-6405-4a84-8fea-2f6c0a60aef3@bootlin.com>
-Date: Tue, 18 Mar 2025 11:25:56 +0100
+	s=arc-20240116; t=1742294398; c=relaxed/simple;
+	bh=yc7zqx+OxHv/IMqY+YNnetE41OylMpiIkl27mOUynxk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=gvwZ6gY4m9v5Xknz1bS45DmKL0cD2VvQ4tS23GKxQSCt/x+cBGnxm5LFElRa1Wg7ARt1LY1nalRQVxGVjQ3NpXc617hFYYu1b71/jrcPxCyJuQhRfDuXpXVZnrOGL4+JyU2m4BbEyeEHxEPuiGOtDPvKWDwLT3kPS47aS0plmPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KDkPUGRi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0897AC4CEDD;
+	Tue, 18 Mar 2025 10:39:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742294398;
+	bh=yc7zqx+OxHv/IMqY+YNnetE41OylMpiIkl27mOUynxk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=KDkPUGRiJ1Z1Z4939QldG0X+WQJ32AAH8VVKBRgDn7GS5TEL+Vk5TzHy02/y2y2MW
+	 lo4V13l4jzCvbF7Oz6vre7pTrZK+ma463zONSqpo1GuDk74YtXww/kiz/zXataRUN3
+	 2cOXu1mI2e2wKePXUzCc7krtViYPza3X90ajyJwEljbOLz8swOyWtFSiAKMr8tFwep
+	 B8HNZiISLOqWRThdQDp4WT+pdZF90CbDR2XY3UPJOhIW0/8+vRZvjWIeVu967d/NC1
+	 +4UrvaS0zWZi/fFmfCNSs0yUI37ohbhJijVQ03m49B5Qqj77eCgfeLk2itb1eB5bQU
+	 Sr+QZuSWfDLiw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADCFE380DBE8;
+	Tue, 18 Mar 2025 10:40:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 0/2] selftests/bpf: Migrate test_xdp_vlan.sh into
- test_progs
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Shuah Khan <shuah@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Alexis Lothore <alexis.lothore@bootlin.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250221-xdp_vlan-v1-0-7d29847169af@bootlin.com>
- <Z7yZ8OxdisKbFYBi@mini-arch>
-Content-Language: en-US
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-In-Reply-To: <Z7yZ8OxdisKbFYBi@mini-arch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddugedvudelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepuegrshhtihgvnhcuvehurhhuthgthhgvthcuoegsrghsthhivghnrdgtuhhruhhttghhvghtsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpefhheeggfetffekheevuedvkedvvdeufeegjeevgfelveevveetffevfefgheeijeenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplgduledvrdduieekrddtrddugegnpdhmrghilhhfrhhomhepsggrshhtihgvnhdrtghurhhuthgthhgvthessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepvdegpdhrtghpthhtohepshhtfhhomhhitghhvghvsehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopehkuhgsrgeskhgvrhhnvghlrdhorhhgpdhrtghpt
- hhtohephhgrfihksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhg
-X-GND-Sasl: bastien.curutchet@bootlin.com
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net, v2] net: mana: Support holes in device list reply msg
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174229443352.4121686.16390383301229886639.git-patchwork-notify@kernel.org>
+Date: Tue, 18 Mar 2025 10:40:33 +0000
+References: <1741723974-1534-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1741723974-1534-1-git-send-email-haiyangz@microsoft.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
+ stephen@networkplumber.org, kys@microsoft.com, paulros@microsoft.com,
+ olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+ longli@microsoft.com, ssengar@linux.microsoft.com,
+ linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
+ shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
 
-Hi all,
+Hello:
 
-On 2/24/25 5:10 PM, Stanislav Fomichev wrote:
-> On 02/21, Bastien Curutchet (eBPF Foundation) wrote:
->> Hi all,
->>
->> This patch series continues the work to migrate the script tests into
->> prog_tests.
->>
->> test_xdp_vlan.sh tests the ability of an XDP program to modify the VLAN
->> ids on the fly. This isn't currently covered by an other test in the
->> test_progs framework so I add a new file prog_tests/xdp_vlan.c that does
->> the exact same tests (same network topology, same BPF programs) and
->> remove the script.
->>
->> Signed-off-by: Bastien Curutchet (eBPF Foundation) <bastien.curutchet@bootlin.com>
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Tue, 11 Mar 2025 13:12:54 -0700 you wrote:
+> According to GDMA protocol, holes (zeros) are allowed at the beginning
+> or middle of the gdma_list_devices_resp message. The existing code
+> cannot properly handle this, and may miss some devices in the list.
 > 
-> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+> To fix, scan the entire list until the num_of_devs are found, or until
+> the end of the list.
+> 
+> [...]
 
-Small gentle ping on this, as I haven't received any updates since 
-Stanislav acked it.
+Here is the summary with links:
+  - [net,v2] net: mana: Support holes in device list reply msg
+    https://git.kernel.org/netdev/net/c/2fc8a346625e
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Best regards,
-Bastien
 
