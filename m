@@ -1,174 +1,139 @@
-Return-Path: <bpf+bounces-54296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54297-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF13A6727A
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 12:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 782CAA672EE
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 12:45:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39D8C189AEEE
-	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 11:20:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B1781894867
+	for <lists+bpf@lfdr.de>; Tue, 18 Mar 2025 11:45:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D98020A5DC;
-	Tue, 18 Mar 2025 11:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B3620B20A;
+	Tue, 18 Mar 2025 11:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="QVgvFXCY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VQgtPNPo"
 X-Original-To: bpf@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F61209F32;
-	Tue, 18 Mar 2025 11:19:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D71E20AF7E
+	for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 11:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742296801; cv=none; b=NFJAod7yHFlkdPEtAcGD0a8VpW/ttnT2RMq5jtUGUJ9wdChPJJoJOKc6Hqq+tpVDgcK6ALBYsXZzlnL7lNSAMFd6V0DgrkyErbqOzpG6YXxq+MOTDbSviTX7Adi0ioS77Nw2w4dimnB9nYxNHGv+v4uQ9ZVowcCZ360E7yLQNsM=
+	t=1742298299; cv=none; b=jGtZusreFg54Av/9IDqpHP/JiLMYGlAsLCCCxLHFyneR+VhpeMg+S7JlCegcz9s6dwCx0a+BlcDOxEnf1Qw7h8oPk6Bh9/48yyrZrWi+J3D3JUhlzpsALt6ewbSbyNz8EG12uZtEVRQrg0J+naGl6xPV9kqlgv5RvAFslQqTwao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742296801; c=relaxed/simple;
-	bh=YV1JHVxz8NuwH6aGsDylRmmy3YqPpEpoYghJFRZw8zk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G3ZhWz16UYfqhkL+f9vLFMIcx5jA0uuywQCaOXI3P61903d6KxQ9u7T7XQb5c1/brfHBgJrEyUlcDRj/pkh/NOMuc86jsJ4upRUMskEkXkx3CIz7jwFvsKjjiMGPlRcMyR3yanxfE67YKXcAIwxplf8AO2lVMwYBtXuKrxbJDY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=QVgvFXCY; arc=none smtp.client-ip=178.60.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=hgkuz267b67SX+QM0W1jzr7EXhcboJpgPAQwlzu1erE=; b=QVgvFXCYTJl4+9Vf0VRaVN892p
-	Ugnl2V4H0E7oMDa5wTSJFhD3Ic4LgwEpDzYh+XQoA30GvMLWVEbkDxDxAiR0EGku0/ObwJixGuR4U
-	EMkNFaPzZRjpv28BXwkdsrzz6pcUvomjPAXX3i5E//wOkW3o2zgeu9pcBb55rQB38pfYSC34QMPQN
-	rI21IZBslc9xdp5oTeMEwlcfnz8E4hp7WmTZEL6pVorsizA6kTgi53Lbx8zRgyiaN3DyDvfiMzNaQ
-	hr64ob7YwQFoqo/uWj8pqc94Zag3D8XQ3TLAanesyUyBimCocC/sUzmb4r+VsiEMQqyeo4xxUG1z7
-	FBt2bi+A==;
-Received: from [223.233.71.8] (helo=[192.168.1.12])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1tuUz1-002g2U-L9; Tue, 18 Mar 2025 12:19:43 +0100
-Message-ID: <8b11d5f6-bb16-7af6-8377-bb0951fcfb60@igalia.com>
-Date: Tue, 18 Mar 2025 16:49:28 +0530
+	s=arc-20240116; t=1742298299; c=relaxed/simple;
+	bh=Z9D5OZ7TFXsWdjS+c6h9Qnf9evvPUQ6Qsynw9YQ6sRM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QsFot2XGE6eJk2TJhdstQvV7DQ6skuzayOab212xw9B1BwR4rEwnvCT6JfzV60gkrbpDsWT/tyOMkC1EEkUPusihDvtgz+JFPnvSIZMIgNZItG6XrX9CFj1kLOBOfcbebjHmvnXEUgMYMJ2ghHdkkBbxJ28nQ1QM2Teo2Yvas68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VQgtPNPo; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ff4a4f901fso5039989a91.2
+        for <bpf@vger.kernel.org>; Tue, 18 Mar 2025 04:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742298297; x=1742903097; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1UefuxNz7IiBfwsW1AV9o60SGm6COOKLkJ9fZf9SH4s=;
+        b=VQgtPNPoMowlLkzhXFo+iYki5vAKXhsIkc7ux64bmfBJXyf4OvhixuWjzRu9v1DmSG
+         0qo0ubY6h00lSyko2AJyQh3Gmv8LKRzIB3sSBMOEoiT2SUgLEUfSZShniXxOUo8iva/z
+         JUUlHNfjulVCFdoW55a7yDTnjXKeHPeLBWNp6bFHwfrKRx4KmdutMl3S4+15OJeFjw5J
+         jtasw+PGtjg4twcurYxOvm4Byk2fZyCbFWtQwuiub+hR8OcMFkZEyxkikpxW4axtL5ek
+         QBj+Bjr8QNeXTGSUx23u4AiWtr43XcmvUhA+5jiVF1y0Eds/3PW3cFu9slIkvg+Ekjkl
+         PonQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742298297; x=1742903097;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1UefuxNz7IiBfwsW1AV9o60SGm6COOKLkJ9fZf9SH4s=;
+        b=KmXtfRbU4LfMMyVBSfeyPjja3nitFXR3s6UtYSyiNJFHxyY3vMbHcD8GW736wkRC0b
+         FwNz8diehYCINbuXvbnR3ckYleWjRvA4rq1qyz/J+3VypuP0GNPg6uk14nc4AeEyecXf
+         XYUtnhZNxvi3P3wHhFFEc2Tru0V0N0+XtSLXN0B2B8GSwIUBiPeT/OD1CTJmCZzhXDD7
+         ZikZigdGBKjl831oyGDU7QcnoG/dzG+A1XzgxPfTnVTYaupAFzyTLbhmD+se8K/GkmCe
+         an5Vj8UHAe/wcpFLoy/aHA8avZpea6TVbv2rVZPXkWt82NaWtUcDAvYSwY4dOrXaPoJC
+         ghTg==
+X-Gm-Message-State: AOJu0Yz5e1EH65LpRfy+56FcOFn0PFB5jbPNBRMkDFpz9qcEfU021h3s
+	1rvf5azxhNC18YU9R9z6U+gVYI4BccZOnsHRZxNlyZmIKrnP5arT
+X-Gm-Gg: ASbGncubmXvhXCS/gvX2MeJ67z6sJjWSM+kExMydVkoFgOb09z3ig83ijW7Nx1FXOiH
+	CsDW43wfBBlB8s7ilxnu9Vbtr0tX1iuEro1udxJAy+r8TvB8YVON0owXVsIwZ2F1pxAb5X+yq/i
+	4JmXa1fQ4Jnh0QhJCBRYAkbxlKwUHbMPy2glHe3whKU6Ud8eZSd7bLeMBsw04Nk65h06D5d9Qbo
+	qdRgmmf2+8LJfmAsiSMYxERq9kT3bV9hlJQQcOGp8Ih+qqPLTAaVkU2Grwykkvd36xQ20UE4MkX
+	QxQBuClocC9bcv1LNieYCVA9dRJfmoAPZM7YyPJ4OBc1UnrRJ5XuD1R736aoalWrKF7EGoOB3g=
+	=
+X-Google-Smtp-Source: AGHT+IEkNqJt6+69rPv41usgWbox/bs3Bj3ZSkbVFSt+aKFfezAEZuQpJh9BPIv1UGK9vgO/zH/+eg==
+X-Received: by 2002:a17:90b:38c3:b0:2ff:692b:b15 with SMTP id 98e67ed59e1d1-301a5b9a2bamr2869051a91.33.1742298296716;
+        Tue, 18 Mar 2025 04:44:56 -0700 (PDT)
+Received: from localhost.localdomain ([39.144.39.116])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3015353462asm7918551a91.27.2025.03.18.04.44.52
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 18 Mar 2025 04:44:56 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	jpoimboe@kernel.org,
+	peterz@infradead.org
+Cc: bpf@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v5 0/2] bpf: Reject attaching fexit/fmod_ret to __noreturn functions
+Date: Tue, 18 Mar 2025 19:44:45 +0800
+Message-Id: <20250318114447.75484-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH RFC 0/2] Dynamically allocate memory to store task's full
- name
-Content-Language: en-US
-To: Andres Rodriguez <andresx7@gmail.com>, Kees Cook <kees@kernel.org>,
- Bhupesh <bhupesh@igalia.com>
-Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
- laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
- mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
- alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
- mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
- david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
- brauner@kernel.org, jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com,
- bsegall@google.com, mgorman@suse.de, vschneid@redhat.com
-References: <20250314052715.610377-1-bhupesh@igalia.com>
- <202503141420.37D605B2@keescook>
- <a73ea646-0a24-474a-9e14-d59ea5eaa662@gmail.com>
-From: Bhupesh Sharma <bhsharma@igalia.com>
-In-Reply-To: <a73ea646-0a24-474a-9e14-d59ea5eaa662@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Attaching fexit probes to functions marked with __noreturn may lead to
+unpredictable behavior. To avoid this, we will reject attaching probes to
+such functions. Currently, there is no ideal solution, so we will hardcode
+a check for all __noreturn functions.
 
-Thanks for the review and inputs on the additional possible use-cases.
-Please see my replies inline.
+Once a more robust solution is implemented, this workaround can be removed.
 
-On 3/15/25 1:13 PM, Andres Rodriguez wrote:
->
->
-> On 3/14/25 14:25, Kees Cook wrote:
->> On Fri, Mar 14, 2025 at 10:57:13AM +0530, Bhupesh wrote:
->>> While working with user-space debugging tools which work especially
->>> on linux gaming platforms, I found that the task name is truncated due
->>> to the limitation of TASK_COMM_LEN.
->>>
->>> For example, currently running 'ps', the task->comm value of a long
->>> task name is truncated due to the limitation of TASK_COMM_LEN.
->>>      create_very_lon
->>>
->>> This leads to the names passed from userland via pthread_setname_np()
->>> being truncated.
->>
->> So there have been long discussions about "comm", and it mainly boils
->> down to "leave it alone". For the /proc-scraping tools like "ps" and
->> "top", they check both "comm" and "cmdline", depending on mode. The more
->> useful (and already untruncated) stuff is in "cmdline", so I suspect it
->> may make more sense to have pthread_setname_np() interact with that
->> instead. Also TASK_COMM_LEN is basically considered userspace ABI at
->> this point and we can't sanely change its length without breaking the
->> world.
->>
->
-> Completely agree that comm is best left untouched. TASK_COMM_LEN is 
-> embedded into the kernel and the pthread ABI changes here should be 
-> avoided.
->
+v4->v5:
+- Remove unnecessary functions (Alexei)
+- Use BTF_ID directly (Alexei)
 
-So, basically my approach _does not_ touch TASK_COMM_LEN at all. The 
-normal 'TASK_COMM_LEN' 16byte design remains untouched.
-Which means that all the legacy / existing ABi which uses 'task->comm' 
-and hence are designed / written to handle 'TASK_COMM_LEN' 16-byte name, 
-continue to work as before using '/proc/$pid/task/$tid/comm'.
+v3->v4: https://lore.kernel.org/bpf/20250317121735.86515-1-laoar.shao@gmail.com/
+- Reject also fmod_ret (Alexei)
+- Fix build warnings and remove unnecessary functions (Alexei)
 
-This change-set only adds a _parallel_ dynamically allocated 
-'task->full_name' which can be used by interested users via 
-'/proc/$pid/task/$tid/full_name'.
+v1->v2: https://lore.kernel.org/bpf/20250223062735.3341-1-laoar.shao@gmail.com/
+- keep tools/objtool/noreturns.h as is (Josh)
+- Add noreturns.h to objtool/sync-check.sh (Josh)
+- Add verbose for the reject and simplify the test case (Song)
 
-[PATCH 2/2] shows only a possible use-case of the same and can be 
-dropped with only [PATCH 1/2] being considered to add the 
-'/proc/$pid/task/$tid/full_name' interface.
->> Best to use /proc/$pid/task/$tid/cmdline IMO...
->
-> Your recommendation works great for programs like ps and top, which are
-> the examples proposed in the cover letter. However, I think the 
-> opening email didn't point out use cases where the name is modified at 
-> runtime. In those cases cmdline would be an unsuitable solution as it 
-> should remain immutable across the process lifetime. An example of 
-> this use case would be to set a thread's name for debugging purposes 
-> and then trying to query it via gdb or perf.
->
-> I wrote a quick and dirty example to illustrate what I mean:
-> https://github.com/lostgoat/tasknames
->
-> I think an alternative approach could be to have a separate entry in 
-> procfs to store a tasks debug name (and leave comm completely 
-> untouched), e.g. /proc/$pid/task/$tid/debug_name. This would allow 
-> userspace apps to be updated with the following logic:
->
-> get_task_debug_name() {
->     if ( !is_empty( debug_name ) )
->         return debug_name;
->     return comm;
-> }
->
-> "Legacy" userspace apps would remain ABI compatible as they would just 
-> fall back to comm. And apps that want to opt in to the new behaviour 
-> can be updated one at a time. Which would be work intensive, but even 
-> just updating gdb and perf would be super helpful.
+v1: https://lore.kernel.org/bpf/20250211023359.1570-1-laoar.shao@gmail.com/
 
-I am fine with adding either '/proc/$pid/task/$tid/full_name' or 
-'/proc/$pid/task/$tid/debug_name' (actually both of these achieve the same).
-The new / modified users (especially the debug applications you listed 
-above) can switch easily to using '/proc/$pid/task/$tid/full_name' 
-instead of ''/proc/$pid/task/$tid/comm'
+Yafang Shao (2):
+  bpf: Reject attaching fexit/fmod_ret to __noreturn functions
+  selftests/bpf: Add selftest for attaching fexit to __noreturn
+    functions
 
-AFAIK we already achieved for the kthreads using d6986ce24fc00 
-("kthread: dynamically allocate memory to store kthread's full name"), 
-which adds 'full_name' in parallel to 'comm' for kthread names.
+ kernel/bpf/verifier.c                         | 32 +++++++++++++++++++
+ .../bpf/prog_tests/fexit_noreturns.c          |  9 ++++++
+ .../selftests/bpf/progs/fexit_noreturns.c     | 15 +++++++++
+ 3 files changed, 56 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_noreturns.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fexit_noreturns.c
 
-Thanks,
-Bhupesh
+-- 
+2.43.5
+
 
