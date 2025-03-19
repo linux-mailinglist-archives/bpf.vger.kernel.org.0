@@ -1,157 +1,252 @@
-Return-Path: <bpf+bounces-54401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1839DA699A7
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 20:44:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA76A69AE2
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 22:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E85F7AB4C5
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 19:43:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76EC83ACA2B
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 21:32:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4D792144C9;
-	Wed, 19 Mar 2025 19:44:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A6BD21480E;
+	Wed, 19 Mar 2025 21:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lH6rwQhR"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AyjOGA39"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 315561DE8BF;
-	Wed, 19 Mar 2025 19:44:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 071AF158538;
+	Wed, 19 Mar 2025 21:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742413450; cv=none; b=Ayd1GmVAvEuIJ4qGh7OwXy7rhoRKijqVXw1/pj/oQQn0rOrGeJAYv2Bmg5mCsUjmKowiwzsad52Y23JAZlpew7F/3AzLg7NrWdgXdfCwIcb/DWX1I6FO8vMjGvetqgyGch26iDvVIquYU55/kawBwQ5KLbQi0L7fZ7pJLsB2CMQ=
+	t=1742419925; cv=none; b=mKuh8WJ9d2Jn8tNeAtyNy4woFnJIvZZpNQ10+ZCCdnPcDxvXc0EYBElIFDwk22ZnOFPt497nCTefqKmB+cyIFeanwv/+QKXMHTYySlmmyeQx8KG3Z1vfG+2qm0MkIhkFNjq5L03WRLps5obLPaXEnm3cwmYSLDFCRCQ7m6ubXzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742413450; c=relaxed/simple;
-	bh=lLaat7az9MH7ezrPmTZOat/1ILwtVsbzCqb6WBBS0xo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=peEx9nBrcVl8cN+CeIFSO0A/Hx4P9M2U5RLDow0HkUbHPU/OAKBAZ/zlrKCOW0WMEXJ9gWX9ImhNq10FSkCLXGRwCtJcf3IV97/PKDEhTucAmJOXxiRMqLnXNMhYx1o3QgDdVCwa1I2UbbHGQtBQYnQF7uvrtbAKE9XHSl0dbMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lH6rwQhR; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-30761be8fcfso900111fa.0;
-        Wed, 19 Mar 2025 12:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742413446; x=1743018246; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dhYCmAWKpYLqMT/P3WekE89t5CCM6z3es1ZH5Zq+OZE=;
-        b=lH6rwQhRqerh4Is+DTiJ02aPWFisBvD6Qit2LeRTKMkx4DxS9tUvESarSidTFULtaa
-         KyDwPDm2EiQJvJ1TfYtGnjiS4+gIxjlP3FyyzmiyhFUecLSf4T8badx+oThL9q+NPhdv
-         4AM1TQVyouq7+CzeFablf0+klkhAIA75sWpFjM2vMsmXIjuj3V6QdhPef0FkvRCAvvwD
-         RVh8/dwpEpkupx9vlB7bycVzxsLxn/sG0y7KjzP7UtFzzfBHSTzHYomW1OwiNMft0N/G
-         YU7npD9BarQsXsl6wK+n3sobnYrOyUUKUzST2HW8JvartW16yWq7FNC0HjVxpMbROw31
-         rDdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742413446; x=1743018246;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dhYCmAWKpYLqMT/P3WekE89t5CCM6z3es1ZH5Zq+OZE=;
-        b=NF0IxbWIvukcAHg12Nlyuna6izgv6APFfW3WLq0Or28W9xpvYj0vTBh5xALUWZQGZ2
-         0NWEeHVmy3GtFNdSUoUJLslJFEn07Lz0oDjHJZuI44Y89E8WJPPPcFz4o/JamuBrerjq
-         JMHEJwUUtV+MU7glIs/MDv+VKgcDm7PSwCKD11foRfTH9u0gFwoLd/XdpeSazJmjCn5L
-         FwQWCH6HS5YfFDdtYZoH/YwYR8ek6nlXSIHlqta+fVMtFGF7G/qr/w1QrpvCIc3REIxG
-         +tloAK/sAZeJb7lxwqBKmjZgTyWtIqr+YG79MDGH7tCSwPOH9Cew70cIgh1hUl/nzl1w
-         CD4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWIp0FfPmrSkNSuuO8OL2jKMc0S9r4+jjmw7Dkk1toyeIWG6ajw7MiM6gTvSsOY88hhFcoRyb77D2jGPQ==@vger.kernel.org, AJvYcCXFVZGbhfXAXWqUTsQaPJjIOXgobe3iumRA1J+2qKboliW6CtslbCJHnVrpvjquRVLXXmE=@vger.kernel.org, AJvYcCXSVrfNdRR1+1EolQiV3Oly5PS2BM8bM9Qkq/4wLku9D76JdUcsK7ynSEgRm7VyNq5Ltx0wuHGG@vger.kernel.org, AJvYcCXfFlIRME9iJ02AwKQwodCbW6nhPzl+guzriAENLbBJVySI+fq3OUId44SyOmAXA/fwkB0vAFulvoPrXGCe@vger.kernel.org
-X-Gm-Message-State: AOJu0YyqBCN8RmWY4e33lXp8qxLR5ot3gRB/lBxgjmaWkBvrp0E4Q1pi
-	704lpiT/itP6msAJU3msIS1NJIoylFQ6/DDMFzI5s/XllZZ2g5i+lBgXYxsqF4sM1sw9bVmbMMa
-	aBPa5QDznTUIxkQReU3yhSf202+YhoeaJ2S7XpQ==
-X-Gm-Gg: ASbGncsoM4uuZtXAQ9c+ZXGdKdzWYKG76GrKQHh6sXV128rEjIvYCIVLcBkIyDtv4xa
-	P3mi07shB3dzrZMTMdziAxQq/1HGpsHfbftE0oXPi5oL+Yg1hLlGF1gml/KB5x/XooJEkmUCpMU
-	IFmR7YWaeN01QaAJNrv7rWFeEVug==
-X-Google-Smtp-Source: AGHT+IEqb8DYNNrbGP7rciW1niUuSjBxj6+DvYT/JveS26p0kxZ66Mnhoo+Sfd+hkXEbRXMLTPNGW4rQ78klTXJrpGI=
-X-Received: by 2002:a05:651c:2119:b0:30b:bf6f:66a3 with SMTP id
- 38308e7fff4ca-30d6a40c9b2mr17799441fa.17.1742413445934; Wed, 19 Mar 2025
- 12:44:05 -0700 (PDT)
+	s=arc-20240116; t=1742419925; c=relaxed/simple;
+	bh=vAqniqAhBFKef+KuyoHobDNwaY8WtdtxhHNOb6FFpqs=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=OBVtAAlTmjQ1Obe48LNW9q7W4pO9b+jUw4uq0R0dziHCrMoPyldUDmxSsRh6wNBMV6Zv0FURup0lco/KnI9BMhuB8y8XSIr8CVO97ioVMz3hnza4N72FXz4/k54xcl+tYqtunynEVLuZUvwHzlQI6g3ntIdkAY38+JyauJnBs1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=AyjOGA39; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52JKZjuR029932;
+	Wed, 19 Mar 2025 21:32:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=wm8bBb
+	3Ff4ndef3Al6u8k0vEHGPxrBII5ibS8GKdLwk=; b=AyjOGA3911hLLGAHjYXRag
+	Uz7B/YW3tIZbfFyLWgT1+k1uxBfYQ1Zp2L64TCpvl4cZqMLYJqs/x4DjMpWXZ5Oi
+	NpVBoMxr2k9qMMpx0WuOLYpwcKSiKQ1UI+E7h52G+mPtU8Ju4gvptCeaBU3Cc4wn
+	vWj0tMG2Dy3GbiRRrF+TkUQb/nlzFGnBKLUcAoGEsWluQaSnpUZtrEjSmd+iqFnT
+	glZ/4pZxIZwHUM96ozRYZvGHAQwLjl0cFz930UicwiiBOE2TGCPX1tPhgdtvu38A
+	lVOIz7pVHeRgKa14fsK1175IyTdHttVxkGdbzjy0uD7t64ls3QwWCYGJjuoKznHQ
+	==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45g53q89pv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 19 Mar 2025 21:32:02 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52JKVIep023211;
+	Wed, 19 Mar 2025 21:32:01 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 45dp3kuv2u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 19 Mar 2025 21:32:01 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52JLVw0h22020518
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 19 Mar 2025 21:31:58 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1041820043;
+	Wed, 19 Mar 2025 21:31:58 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D395320040;
+	Wed, 19 Mar 2025 21:31:56 +0000 (GMT)
+Received: from [9.43.119.87] (unknown [9.43.119.87])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 19 Mar 2025 21:31:56 +0000 (GMT)
+Message-ID: <ef9ce622-db85-4c2c-b59f-e7703dc0d335@linux.ibm.com>
+Date: Thu, 20 Mar 2025 03:01:55 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250319133309.6fce6404@canb.auug.org.au> <CAADnVQKotSrp8CkVpFw-y800NJ_R7An-iw-twrQZaOdYUeRtqQ@mail.gmail.com>
- <CAP01T76CqOxzEiMLKJ2y_YD=qDgWq+Fq5Zy-fnKP4AAyS30Dwg@mail.gmail.com>
- <CAP01T77_qMiMmyeyizud=-sbBH5q1jvY_Jkj-QLZqM1zh0a2hg@mail.gmail.com>
- <CAP01T77St7cpkvJ7w+5d3Ji-ULdz04QhZDxQWdNSBX9W7vXJCw@mail.gmail.com>
- <CAADnVQ+8apdQtyvMO=SKXCE_HWpQEo3CaTUwd39ekYEj-D4TQA@mail.gmail.com>
- <CAFULd4brsMuNX3-jJ44JyyRZqN1PO9FwJX7N3mvMwRzi8XYLag@mail.gmail.com> <CAADnVQ+7GTN0Tn_5XSZKGDwrjW=v3R6MyGrcDnos2QpkNSidAw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+7GTN0Tn_5XSZKGDwrjW=v3R6MyGrcDnos2QpkNSidAw@mail.gmail.com>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Wed, 19 Mar 2025 20:43:53 +0100
-X-Gm-Features: AQ5f1JoUJCMzHHENT_TDzaIDzJZhTJniayHR3OV_fr-rf4VmnbYHKYqMpdSbmXo
-Message-ID: <CAFULd4aHiEaJkJANNGwv1ae7T0oLd+r9_4+tozgAq0EZhS16Tw@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>, 
-	Networking <netdev@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [main-line]warning at arch/powerpc/net/bpf_jit_comp.c:961
+From: Hari Bathini <hbathini@linux.ibm.com>
+To: Venkat Rao Bagalkote <venkat88@linux.ibm.com>,
+        Saket Kumar Bhaskar <skb99@linux.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>
+References: <6168bfc8-659f-4b5a-a6fb-90a916dde3b3@linux.ibm.com>
+ <73047120-e683-4142-b4e4-2422fc41f58d@linux.ibm.com>
+Content-Language: en-US
+In-Reply-To: <73047120-e683-4142-b4e4-2422fc41f58d@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: JqrIfhEm-3v5rp9gLeQ5vyXEKZqUP4ij
+X-Proofpoint-ORIG-GUID: JqrIfhEm-3v5rp9gLeQ5vyXEKZqUP4ij
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-19_08,2025-03-19_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2502280000
+ definitions=main-2503190144
 
-On Wed, Mar 19, 2025 at 7:56=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Mar 19, 2025 at 9:06=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> w=
-rote:
-> >
-> > On Wed, Mar 19, 2025 at 3:55=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Wed, Mar 19, 2025 at 7:36=E2=80=AFAM Kumar Kartikeya Dwivedi
-> > > <memxor@gmail.com> wrote:
-> > > >
-> > > > > >
-> > > > > > I've sent a fix [0], but unfortunately I was unable to reproduc=
-e the
-> > > > > > problem with an LLVM >=3D 19 build, idk why. I will try with GC=
-C >=3D 14
-> > > > > > as the patches require to confirm, but based on the error I am =
-99%
-> > > > > > sure it will fix the problem.
-> > > > >
-> > > > > Probably because __seg_gs has CC_HAS_NAMED_AS depends on CC_IS_GC=
-C.
-> > > > > Let me give it a go with GCC.
-> > > > >
-> > > >
-> > > > Can confirm now that this fixes it, I just did a build with GCC 14
-> > > > where Uros's __percpu checks kick in.
-> > >
-> > > Great. Thanks for checking and quick fix.
-> > >
-> > > btw clang supports it with __attribute__((address_space(256))),
-> > > so CC_IS_GCC probably should be relaxed.
-> >
-> > https://github.com/llvm/llvm-project/issues/93449
-> >
-> > needs to be fixed first. Also, the feature has to be thoroughly tested
-> > (preferably by someone having a deep knowledge of clang) before it is
-> > enabled by default.
->
-> clang error makes sense to me.
 
-It is not an error, but an internal compiler error. This should never happe=
-n.
 
-> What does it even mean to do addr space cast from percpu to normal addres=
-s:
->
-> __typeof__(int __seg_gs) const_pcpu_hot;
-> void *__attribute____UNIQUE_ID___addressable_const_pcpu_hot612 =3D
->     (void *)(long)&const_pcpu_hot;
+On 19/03/25 1:06 pm, Hari Bathini wrote:
+> Hi Venkat,
+> 
+> Thanks for reporting this.
+> I am having a hard time reproducing this. Please share the
+> kernel build config..
+> 
 
-Please see [1] for an explanation.
+Thanks for reporting this and sharing the config file offline.
+Narrowed down the potential root cause. Will post the fix...
 
-[1] https://gcc.gnu.org/onlinedocs/gcc/Named-Address-Spaces.html#x86-Named-=
-Address-Spaces
+- Hari
 
-Uros.
+> On 17/03/25 6:21 pm, Venkat Rao Bagalkote wrote:
+>> Greetings!!!
+>>
+>> I am observing below warnings on linux-mainline kernel, while running 
+>> bpf-sefltests.
+>>
+>> These warnings are intermitent, reproduces roughly 6 out of 10 times.
+>>
+>>
+>> Repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>
+>>
+>> Tests:
+>>
+>> ./test_progs
+>>
+>>
+>> Attached is the log file of summary of tests.
+>>
+>>
+>> Traces:
+>>
+>> [  978.200120] ------------[ cut here ]------------
+>> [  978.200133] WARNING: CPU: 11 PID: 45522 at arch/powerpc/net/ 
+>> bpf_jit_comp.c:961 __arch_prepare_bpf_trampoline.isra.0+0xdc8/0xfe0
+>> [  978.200144] Modules linked in: tun(E) bpf_testmod(OE) veth(E) 
+>> bonding(E) tls(E) nft_fib_inet(E) nft_fib_ipv4(E) nft_fib_ipv6(E) 
+>> nft_fib(E) nft_reject_inet(E) nf_reject_ipv4(E) nf_reject_ipv6(E) 
+>> nft_reject(E) nft_ct(E) rfkill(E) nft_chain_nat(E) sunrpc(E) 
+>> ibmveth(E) pseries_rng(E) vmx_crypto(E) drm(E) dm_multipath(E) 
+>> dm_mod(E) fuse(E) drm_panel_orientation_quirks(E) zram(E) xfs(E) 
+>> sd_mod(E) ibmvscsi(E) scsi_transport_srp(E) [last unloaded: 
+>> bpf_test_modorder_x(OE)]
+>> [  978.200194] CPU: 11 UID: 0 PID: 45522 Comm: test_progs Tainted: 
+>> G           OE      6.14.0-rc7-auto #4
+>> [  978.200202] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+>> [  978.200205] Hardware name: IBM,8375-42A POWER9 (architected) 
+>> 0x4e0202 0xf000005 of:IBM,FW950.A0 (VL950_144) hv:phyp pSeries
+>> [  978.200210] NIP:  c0000000001e3658 LR: c0000000001e34b0 CTR: 
+>> 0000000000000006
+>> [  978.200216] REGS: c00000001c057570 TRAP: 0700   Tainted: G OE 
+>> (6.14.0-rc7-auto)
+>> [  978.200221] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 
+>> 44844442  XER: 20040169
+>> [  978.200234] CFAR: c0000000001e34e8 IRQMASK: 0
+>> [  978.200234] GPR00: c0000000001e34b0 c00000001c057810 
+>> c000000001d68100 0000000000000000
+>> [  978.200234] GPR04: c00800000025d640 c00000001c05786c 
+>> 0000000000000160 0000000000000164
+>> [  978.200234] GPR08: c000000157b8c164 c000000157b8c16c 
+>> 000000000000016c 0000000000004000
+>> [  978.200234] GPR12: 0000000000000001 c00000001ec82b00 
+>> 0000000000000078 0000000038210110
+>> [  978.200234] GPR16: 00000000000000a8 00000000eb210098 
+>> 0000000060638000 00000000e86100c0
+>> [  978.200234] GPR20: 00000000eb4100a0 0000000000000004 
+>> 000000002c230000 0000000060000000
+>> [  978.200234] GPR24: fffffffffffff000 c000000005834428 
+>> c00800000025d640 0000000000000001
+>> [  978.200234] GPR28: c000000157b89c00 000000000000026c 
+>> 0000000000000003 c000000157b8c000
+>> [  978.200294] NIP [c0000000001e3658] 
+>> __arch_prepare_bpf_trampoline.isra.0+0xdc8/0xfe0
+>> [  978.200301] LR [c0000000001e34b0] 
+>> __arch_prepare_bpf_trampoline.isra.0+0xc20/0xfe0
+>> [  978.200308] Call Trace:
+>> [  978.200310] [c00000001c057810] [c0000000001e34b0] 
+>> __arch_prepare_bpf_trampoline.isra.0+0xc20/0xfe0 (unreliable)
+>> [  978.200319] [c00000001c057950] [c0000000001e4974] 
+>> arch_prepare_bpf_trampoline+0x94/0x130
+>> [  978.200327] [c00000001c0579b0] [c0000000005001ac] 
+>> bpf_trampoline_update+0x23c/0x660
+>> [  978.200334] [c00000001c057a90] [c0000000005006dc] 
+>> __bpf_trampoline_link_prog+0x10c/0x360
+>> [  978.200341] [c00000001c057ad0] [c000000000500c28] 
+>> bpf_trampoline_link_cgroup_shim+0x268/0x370
+>> [  978.200348] [c00000001c057b80] [c00000000053254c] 
+>> __cgroup_bpf_attach+0x4ec/0x760
+>> [  978.200355] [c00000001c057c60] [c000000000533dd4] 
+>> cgroup_bpf_prog_attach+0xa4/0x310
+>> [  978.200362] [c00000001c057cb0] [c00000000049d1b8] 
+>> bpf_prog_attach+0x2a8/0x2e0
+>> [  978.200370] [c00000001c057d00] [c0000000004a7278] 
+>> __sys_bpf+0x428/0xd20
+>> [  978.200375] [c00000001c057df0] [c0000000004a7b9c] sys_bpf+0x2c/0x40
+>> [  978.200381] [c00000001c057e10] [c000000000033078] 
+>> system_call_exception+0x128/0x310
+>> [  978.200388] [c00000001c057e50] [c00000000000d05c] 
+>> system_call_vectored_common+0x15c/0x2ec
+>> [  978.200396] --- interrupt: 3000 at 0x7fff98ba9f40
+>> [  978.200405] NIP:  00007fff98ba9f40 LR: 00007fff98ba9f40 CTR: 
+>> 0000000000000000
+>> [  978.200410] REGS: c00000001c057e80 TRAP: 3000   Tainted: G OE 
+>> (6.14.0-rc7-auto)
+>> [  978.200415] MSR:  800000000280f033 
+>> <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 48002848  XER: 00000000
+>> [  978.200431] IRQMASK: 0
+>> [  978.200431] GPR00: 0000000000000169 00007fffde891b10 
+>> 00007fff98cb6d00 0000000000000008
+>> [  978.200431] GPR04: 00007fffde891bf8 0000000000000020 
+>> 0000000000000001 0000000000000008
+>> [  978.200431] GPR08: 0000000000000008 0000000000000000 
+>> 0000000000000000 0000000000000000
+>> [  978.200431] GPR12: 0000000000000000 00007fff995fe9e0 
+>> 0000000000000000 0000000000000000
+>> [  978.200431] GPR16: 0000000000000000 0000000000000000 
+>> 0000000000000000 0000000000000000
+>> [  978.200431] GPR20: 0000000000000000 0000000000000000 
+>> 0000000000000000 00007fff995ef438
+>> [  978.200431] GPR24: 00000000105ed2f4 00007fff995f0000 
+>> 00007fffde892998 0000000000000001
+>> [  978.200431] GPR28: 00007fffde892aa8 00007fffde892988 
+>> 0000000000000001 00007fffde891b40
+>> [  978.200487] NIP [00007fff98ba9f40] 0x7fff98ba9f40
+>> [  978.200491] LR [00007fff98ba9f40] 0x7fff98ba9f40
+>> [  978.200495] --- interrupt: 3000
+>> [  978.200498] Code: 7d5f412e 81210060 39290001 792a1788 3ba90040 
+>> 91210060 7d3f5214 57bd103a e9010030 3908ff00 7c294040 4081fae0 
+>> <0fe00000> 3ba0fff2 4bfffad4 8281003c
+>> [  978.200519] ---[ end trace 0000000000000000 ]---
+>>
+>> If you happen to fix this, please add below tag.
+>>
+>>
+>> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+>>
+>>
+>> Regards,
+>>
+>> Venkat.
+> 
+> 
+
 
