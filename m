@@ -1,142 +1,133 @@
-Return-Path: <bpf+bounces-54419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77DBDA69BF0
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 23:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EAF25A69C70
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 00:02:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0277C16E9FC
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 22:19:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63F9F427EF2
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 23:02:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD5EB21C185;
-	Wed, 19 Mar 2025 22:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E51221F38;
+	Wed, 19 Mar 2025 23:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NIN0GzU2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LVLZaXoi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6E52147F5;
-	Wed, 19 Mar 2025 22:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D1417A312;
+	Wed, 19 Mar 2025 23:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742422782; cv=none; b=SeZNWa2LlhpTnx0T+8XjO8OlbPB3Va5A4T3+ec5ZdKgRS757M2eYDgHwVId2fMF10Hh++pIwa0zUAzshOMUy64mVXoWHvjQIuIMuCyZkDGWeutsPzu+E+CZx5fuDu6lvW3hvf4TYpwBMGOm8FmokBKrEqGPTmdyfzaeDFdJ1ux8=
+	t=1742425350; cv=none; b=iBiGV3jDEYumLz2F05fQk197dNl40T9+NrJVROI5yyhNEEH8T2yPgFNGnLyNfTt2AuMCrMt3cBPZZ161tZ/Vz6QjJpZGW8boLh3DPEeaDVv5+XGruQ7qgxJZB4KWUPHKrbxEu7xrq0eiAMm4Eb24dkYlMNuEvEYcAUARthrz1vE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742422782; c=relaxed/simple;
-	bh=Y/xuKlTBlKlJ5n3sEPqtkxH20xEM5qZefy9mn8TE6TY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O5w1WKlnce+RZZ/az0IV8p4CKnURpkMuV8cf8Rx2vH2U5no6VoYz4eG4uAMP5Z0kFnnYEKah+cCbPTQAQR34Iu4Jt/1f2pet5alp5OjlJa6n0A+c3suYGYk0FudYveYVsZCAOBQC1VuD/OJ3xY0HgxzpHXfIWFhbqgmpnesKydE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NIN0GzU2; arc=none smtp.client-ip=209.85.128.171
+	s=arc-20240116; t=1742425350; c=relaxed/simple;
+	bh=BPG+iIqJAfChdQiMkdKc7iAPNjN79b25ISwXPBMiCRA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TZur8FBOEVjACsAc0c6eAPljlmIFoBBvApP1hHutxL08xiZtL2Y2UePBVBoKjNZIBlJpFEt1ykpnyY5C3u//V8nZiXJx50GsdzrTKmZjScTki07xxgoMklt/PbH/Qbwj43OhR/ckL+G91qP2pY5JQYAHRwzq/1TmB2ut7uXTCwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LVLZaXoi; arc=none smtp.client-ip=209.85.216.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6f6c90b51c3so1505077b3.2;
-        Wed, 19 Mar 2025 15:19:40 -0700 (PDT)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-3012885752dso261138a91.2;
+        Wed, 19 Mar 2025 16:02:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742422780; x=1743027580; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VtFCMos0kGObeHD+XRANvleMydMjqFHddzqyL7z7zWE=;
-        b=NIN0GzU2W5dikvEhI8ZOoI6drEpt2oQ/2IoAcTL+U8CEp3UfFn4dmAydMB18m3kLqZ
-         oJWD+gTJmJs/AZbO5vT3UWvCE0uGu5A+6BQJ1UC7bFDuchDP1PG65WShyeN8tCccpVzC
-         77JVkBOVO+Y5uDtHVwgOsxzUlJH98qUyspy5oOIfL7e0OSd9uR9JCZeL6k5gBX+6CH/x
-         F8lBkP340n2eA54DGgQJEDJym+9PcgPy1BA6H3WbmtcH9lbxrB0ZpKryg8JvKWgwXboO
-         XalK3HAs0EPHpipvk0XLHS4aN71HgJJmDYG9tGpO6sZben4qWoPRTzlRChgQE+jjfGh6
-         dVtA==
+        d=gmail.com; s=20230601; t=1742425348; x=1743030148; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DhmilIcdIAlYPcHBOd/ksA4qcB+RRwxxADQtlWE9lMc=;
+        b=LVLZaXoiA8rhvrLV5GaGIZaMwF9evkG0VNsho0LOD/sglU80b/78yjIx+OotKcEA4S
+         wcvOo6hEnhCzbRxZ+kuaXNalW6e7tTArTFcIXJIEBXz6c9NbJoRajgkg7yrDNzZYbSTr
+         JKFca42G4Oh852topLayfkVNXhpE7m+SKFpoJjFNIHywFjKw0m+b5A7s61DQNB9DrqW9
+         BhJ27N5Ix580/GQ++2shANPgppNoDAFnqwCFZ2GAkaQek+FDeaiivLYyMG9A8SDvNxz5
+         pqRftCIV2ekz2XJ6pcFLjpFC18OdKGSooW087UXINzzRUUvJ5f1IiVDNFNaLiAIWjlzH
+         efLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742422780; x=1743027580;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VtFCMos0kGObeHD+XRANvleMydMjqFHddzqyL7z7zWE=;
-        b=B9XbDVzKdqXVV93v2YHE2nRGZuaNsdpsYzgAYGgowdW2sk2JxIdjhEErT9mJkHvMjP
-         /fPoXq4Kvt3sq4kpoq9O2JtRUaa84bq2r1s0WHdw+Bnqkv/0ebNQiWyP0Ix5Feyf8eHL
-         xL5LvId4BGq5uhG3x+3K7OFdJ/lhUpPqo1L1UtkN2xWI9mOMRgw60Q+3Ch+YkmxPk6OS
-         cyJTSOsxbzo8wHGea9LeidtgAlqrocdZ34Ez7CX3AOKD7NPpS/Ri/5B2zAwq2l5P3RB8
-         FUTO9+h3UJqdTHT84RD6sEG2xD2vJeDdUIVb8tVeikzLM2hfeefD3PY360sC70l2gFr6
-         IZTw==
-X-Forwarded-Encrypted: i=1; AJvYcCUfAWjleUfQyCYhsgq/T4bFZHE6AJP7WE8e8TjwtfSeSrdQnkAfWw75E+PNj4J8+2aB5eo=@vger.kernel.org, AJvYcCV1xSFrFI6QPwarxVoflSocoL2uurAdHDU+iyVobpiqkXatMppYQpYX1jhAv8EcbEQNBSWeijSCzYxxxbLX@vger.kernel.org, AJvYcCVGAMHHj46hofRgfLMOFOCZ4jeYRO4RlxOVL/0cjnJdSJNUfud2bzEsQAbFjuX/Mcp3AWQO6N+ajZJ/VcKKrmzIwQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDB+sXOeQZnhnHtBvHl+EnJgeApp13P35GLovdQ1i0zhX/xfwC
-	ivX+mMspKD3GgBctS5j4Zv9cGOslWPC9c3hIjbRqsA8riND/g0j2tSnJVUPzNq1KKnkWDBjBDxj
-	hlYBr2VDqAPtYeyQa2UL0odkSPc8=
-X-Gm-Gg: ASbGncuK1yIrhcXq5U6pPLNSnvNh66zeCU8g+w0YlBEIRuGWgqUaeEOKEg0w+ca7us2
-	MsKFV/e0Y4DXYkDmrRBfwmRq2eRlFo3/o4l6u0CDI9GZBPZbj7IPvHXmS9maaz1Q2ZLwdwlh+zL
-	hIMVgqXbecPrvOgwkULoDLqQGP
-X-Google-Smtp-Source: AGHT+IFIU2HA8J1MALcm5HaaBsU88dqBJiVPdQkkkinoZSp7hKWVSDVnN/CXcZMInjRslZbNm4TbgbxKp1Q8QrlczOU=
-X-Received: by 2002:a05:690c:6c8e:b0:6ee:8363:96d3 with SMTP id
- 00721157ae682-7009c02de96mr68993257b3.27.1742422779636; Wed, 19 Mar 2025
- 15:19:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1742425348; x=1743030148;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DhmilIcdIAlYPcHBOd/ksA4qcB+RRwxxADQtlWE9lMc=;
+        b=w1MeUdooORonk9Vu//2kL0LeD2YCkg92LMKSQudMTgU8iirEt01mLzQ/onJFfkm/48
+         2pMlQJZTkpNo9DQ9ifmjiBN1mlv28ZZUjj93obcJq8Yf4qig1ZENysnNZ8fALDMPFb2a
+         Qro4065FvkmDtcc7G2rqZSuuVSZMHg0QvN1DR4xUwPv/2l5dHGkMrYWDl1BmJowoWcpV
+         7oaRh0W1I2MzYT8DEnsnd3XxeFXzIdh499uSo+dTdbXMwe1blYKfgKUr8KKxjxl9hk67
+         a8AKIqMfetk2ygKU1idDssPdibJThzxCihpBuGrteAUau69rReV0Y/G5PrJV4IDKh+0K
+         p/pQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUj6p41VgMLS98gbbHtETBVSzMC5R4uw9xfDOSkoNGKKCP1n47PI9ra5WL4ccMD4rGsytpGQcR6@vger.kernel.org, AJvYcCWWkNSmZ5Q3g4XS8KPKxrhIWcf4eLF/sXDrfxEIT1MzDWssAtPDzmBfjTzWUNptqb2Dag7ZJ0OnsetjJlCKabyd@vger.kernel.org, AJvYcCX0G+49FMmomFC47dJJ1Nng7JNosxuzdf9n617Sg3dyQx4gDHEKPJBA7AXNH+7F1haiN1sH8CjZmHe16s8s@vger.kernel.org, AJvYcCXKgmmXxELmW+EaCeut3cZ8CxewGUg0gWIBfnQb4ZyFXdr7dkJJdKm5MNbZ81xaRgUYZlw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzgRI5cYvsyDWE/fsT8wOvtKCOcuHsHNlWTTk/FAtVKYyefreT1
+	LIc9HbLaSBaabOhn1BW/OyIKSuY+FKTLI1OWRRJGcFiDaon5iFhU
+X-Gm-Gg: ASbGncug+Akxi+mkK8V3kM1NUSvJlPyeFhQVBFdKwdQAYGVG2/kWZTy3bkRO0ABwdNW
+	NPkLxDdpmiOKMEktUWNMzk0qtpYiE1bNpkCVoEMq4anMFG5moJYp4ymkrRHcGtzdaBdrtGXJwFx
+	hbVfxjv1da09SIY0A0qV/ggHWRrurEld6CRl2QUa1ENwXaRRVCqZm23TnrSCm7a5SkkCWetYJ/v
+	P8GoTOsQGwcaXIxdLxQ62/r/sFdzokb/MHyqkaIZkCAUjraTfdF+v8qGqqIO9lQgWzF6UBU3cMu
+	+/pxxsjwsFNRyBZ7eSKgH4Di1xElhabwffvuEFSrgy87j8No
+X-Google-Smtp-Source: AGHT+IEhfsgHrp6UIrWCrBXPSKv+nNwcdO5otatNNe7sxyKy46UyBt+P2mBrmJ7RVovwIUhDvxS/iA==
+X-Received: by 2002:a17:90b:2e52:b0:2ff:6608:78e2 with SMTP id 98e67ed59e1d1-301bdf937cfmr8451150a91.16.1742425348288;
+        Wed, 19 Mar 2025 16:02:28 -0700 (PDT)
+Received: from localhost ([129.210.115.104])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-301bf576aa7sm2296562a91.4.2025.03.19.16.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Mar 2025 16:02:27 -0700 (PDT)
+Date: Wed, 19 Mar 2025 16:02:26 -0700
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: john.fastabend@gmail.com, jakub@cloudflare.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	horms@kernel.org, andrii@kernel.org, eddyz87@gmail.com,
+	mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	jolsa@kernel.org, shuah@kernel.org, mhal@rbox.co,
+	sgarzare@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 1/3] bpf, sockmap: avoid using sk_socket
+ after free when sending
+Message-ID: <Z9tNAhMV1Y5znONo@pop-os.localdomain>
+References: <20250317092257.68760-1-jiayuan.chen@linux.dev>
+ <20250317092257.68760-2-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250317180834.1862079-1-namhyung@kernel.org> <CAH0uvogx1-oz4ZjLpcTRArTb2YJOyY1h1pccMXYSgCnHYD9bPA@mail.gmail.com>
- <Z9tABRzmYYYUyEFO@google.com>
-In-Reply-To: <Z9tABRzmYYYUyEFO@google.com>
-From: Howard Chu <howardchu95@gmail.com>
-Date: Wed, 19 Mar 2025 15:19:28 -0700
-X-Gm-Features: AQ5f1Jp25lqJtUZZi8oixdUt-G4InKr9juHsQeTVlqnP8KdpCs46Z430QijMzEA
-Message-ID: <CAH0uvog7uZL2AGyfPdSjCo0eahxDESXT3ZWSNmUCGWFc_SmFYg@mail.gmail.com>
-Subject: Re: [PATCH v2] perf trace: Implement syscall summary in BPF
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org, 
-	Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250317092257.68760-2-jiayuan.chen@linux.dev>
 
-Hi Namhyung,
+On Mon, Mar 17, 2025 at 05:22:54PM +0800, Jiayuan Chen wrote:
+> The sk->sk_socket is not locked or referenced, and during the call to
 
-On Wed, Mar 19, 2025 at 3:07=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> Hello Howard,
->
-> On Wed, Mar 19, 2025 at 12:00:10PM -0700, Howard Chu wrote:
-> > Hello Namhyung,
-> >
-> > Can you please rebase it? I cannot apply it, getting:
-> >
-> > perf $ git apply --reject --whitespace=3Dfix
-> > ./v2_20250317_namhyung_perf_trace_implement_syscall_summary_in_bpf.mbx
-> > Checking patch tools/perf/Documentation/perf-trace.txt...
-> > Checking patch tools/perf/Makefile.perf...
-> > Hunk #1 succeeded at 1198 (offset -8 lines).
-> > Checking patch tools/perf/builtin-trace.c...
-> > error: while searching for:
-> >         bool       hexret;
-> > };
-> >
-> > enum summary_mode {
-> >         SUMMARY__NONE =3D 0,
-> >         SUMMARY__BY_TOTAL,
-> >         SUMMARY__BY_THREAD,
-> > };
-> >
-> > struct trace {
-> >         struct perf_tool        tool;
-> >         struct {
-> >
-> > error: patch failed: tools/perf/builtin-trace.c:140
->
-> Oops, I think I forgot to say it's on top of Ian's change.
-> Please try this first.  Sorry for the confusion.
->
-> https://lore.kernel.org/r/20250319050741.269828-1-irogers@google.com
+Hm? We should have a reference in socket map, whether directly or
+indirectly, right? When we add a socket to a socket map, we do call
+sock_map_psock_get_checked() to obtain a reference.
 
-Yep, with Ian's patches it successfully applied. :)
+> skb_send_sock(), there is a race condition with the release of sk_socket.
+> All types of sockets(tcp/udp/unix/vsock) will be affected.
+> 
+> Race conditions:
+> '''
+> CPU0                               CPU1
+> skb_send_sock
+>   sendmsg_unlocked
+>     sock_sendmsg
+>       sock_sendmsg_nosec
+>                                    close(fd):
+>                                      ...
+>                                    ops->release()
 
-Thanks,
-Howard
->
-> Thanks,
-> Namhyung
->
+IIRC, ->release() is only called when the refcnt of fd becomes zero, so
+I wonder how we reach here despite we have a reference of psock->refcnt?
+
+>                                      sock_map_close()
+>                                    sk_socket->ops = NULL
+>                                    free(socket)
+>       sock->ops->sendmsg
+>             ^
+>             panic here
+
+Thanks.
 
