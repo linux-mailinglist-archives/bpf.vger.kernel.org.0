@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-54412-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54413-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59BADA69B9F
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 22:58:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41EEEA69B9D
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 22:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81D9C981B6D
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 21:56:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB1DE7AF1E0
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 21:56:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DB422155C;
-	Wed, 19 Mar 2025 21:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF25221701;
+	Wed, 19 Mar 2025 21:54:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HdR7SGM/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gA5tNiD4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E196C220686;
-	Wed, 19 Mar 2025 21:54:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51E97221543;
+	Wed, 19 Mar 2025 21:54:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742421262; cv=none; b=iqkfIjVdIMi3ixtg0WcBJBZ4+7pLL7UBLSFEO+E6Mu4TQWXcl7tZ3tuJXxbBCIeYEzwl3hAPwW2Hk11EA6euCXBeUrxL3ZaM+X0Dt0vNGc2+OVVBOSNX2HXrTKzFG0pX2M3hm6udhWC5X5EP/+zhxzhWhjTH/xd6WwkG+xuRMyc=
+	t=1742421264; cv=none; b=UOeSf3WgXbfmFmXYK2lzcc2b6spF69N+edqq00/Pc72bFVXmK42WtgrtHHayF+6QwoflVaoG2jOIsKDcjafp83TL3mvUduGq6zwmhkMQuo9o9TwcvBxUoz3F/7WRcCUreNsI28WiFupv2usCH6z9ipH8prKreP3LR3qem2VlA5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742421262; c=relaxed/simple;
-	bh=7oCmsNZ8473D2gAN3hzXmHGHBnHahfxBN0/mybaCK0g=;
+	s=arc-20240116; t=1742421264; c=relaxed/simple;
+	bh=8OLVn7hu1v5cstJbQMd6XNeQZdEFIb2Pt0G3MQbk5lA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=epXGobFjA4uleQ927sgaeG8vk+8vbspely7KCVMHAqLuySsEYqMOTagF8IeSF4WRbPFeQnHZH/CRYUdYaj3P8Dj6s7fMplJ2GE10aJKOGvevdk4L/yMrQP/4gbOPO/2VNY1JKuy/I6SnPMZN1raO0XDq6FC3B76vRTZljunuZsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HdR7SGM/; arc=none smtp.client-ip=209.85.214.169
+	 MIME-Version:Content-Type; b=Z7276p5DvjQEKYHCLs9BGw035RjiwsLlzyKdcGYhBepQdKsuezDXaiKII3Cm5Yx7Nh/olVWzVKOMP2pOpsckvL0CD5kdvsZya5uBS49zwVNt5T8NGGAo8ota5GF61+GnhlomjlcpprW5csSBFgnx1A/DVvMXsFGAQGSAl4yDbNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gA5tNiD4; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-22438c356c8so770725ad.1;
-        Wed, 19 Mar 2025 14:54:20 -0700 (PDT)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2240b4de12bso979315ad.2;
+        Wed, 19 Mar 2025 14:54:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742421260; x=1743026060; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742421261; x=1743026061; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KChyYDIA43QzHoDj7a8SpWlMHUhtVWuxUFkLRAF6kHM=;
-        b=HdR7SGM/aYOczB42cUglIJxblMKchViwJbmbyO/tE2e7QCVOpbJ4clVY7p9WkDxAjt
-         Xg8uLwXeHKRkkLV+vcgxBByaySl+89ZorXlBhkTXDDJCiGGNi27YNyEbGwIlBbewRwNJ
-         lJTK47aiqdX9YpDwIySs5G61LfZp5/QYUBe407kN+6MzPbICnFeKLRxGwog/ygC0U7Vo
-         PjcB86m2TYoLqbUWlKTUHBsA7iDLCOXlYnjVxQl2a2C32v7hwQiAYIRndgUuw7A2RiH4
-         glqJLYArvm77Jrj9gNT8yTHz9kxwc1Vyg8FRnJybAN6WFQimq3ghcw+Hg5i+DTPor3VW
-         IdrQ==
+        bh=PT85SIs/JkVmClXb4qMjRuR3aJ0Rmu+Fmom+AM2i/6Q=;
+        b=gA5tNiD4RCuaBP3rHlf6E0YtRnH5R5zV6y+FoQwt3FmWE7QWkB5146xJSxhnRcbdvm
+         JdEbqSkbOO4dL5XTvcgZwLPjk0dxr6gEEv1Iy2V/fpBkhnMfdUkUVOMaoPvId3EB6+bZ
+         O/4iOWw9LijhBKD6Ug26SMhjNHv4h48+W6QUyRN5eKdnPFXn7PR34I1vCe6AKdSpspOm
+         fiHL1vdl0zqbrWXbUgMe/qwg/sz5i3vfNNP0hd/0MjfKshzIEsnYKO3qr6GEyCTGboAy
+         7H/U7HpQjF4BL4GzYXux3HvxFATPqpaSC3qvgcvz+ZB6tRPBDbEm676pcxaGl8wxQdr/
+         XeFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742421260; x=1743026060;
+        d=1e100.net; s=20230601; t=1742421261; x=1743026061;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KChyYDIA43QzHoDj7a8SpWlMHUhtVWuxUFkLRAF6kHM=;
-        b=P7NP/XDXlwqYgk6PK72Dl9C8vffovu4G7ACe7UY5iOVpqiFAvh34sqo+iIGweSzbtz
-         Kxq4B+70oz8bcWWt4IVbFRcLv2NUG8tVxM8RqccouKslre099cERwKLyfLc6zTz9GN/+
-         pArO9NbGHfQK0H3ygdgICeVD6X3x4dETM0WlpW4UPcxgzwRwl4SvQNSUdCreyWbRjL7l
-         nQV67TkZAuSllOfunSfPMHwlgfJfxjni09/01StnIBG72WMrnnM+E+0QKi9YMVM7VXtZ
-         QA1iGvaWvg87yVJdqMSQmG+Kh5N3mK18UQ6uF1MVrz5X53yddESLwWBo4dJo43/BOlRv
-         YiwQ==
-X-Gm-Message-State: AOJu0YxFdXTwYFSsrHQ6onc/emyNoXXMpBzkLxhwQeGkVYGol0t61wzP
-	AluzLVJnxz8Js9evj/c0LhjEcNAYFY5Xf2sO5PQ8nrmQCwzf7JiMnTw5XJwYCjs=
-X-Gm-Gg: ASbGnctBLjlY3u/0Qi3WvPKZVQd99C4DJx9mTuKi+8T+OPCEK25CGHGxWABenvaDJki
-	sim7jLvDBHdCS8G5+/Wnp81aYYest9T4Gcm7lbPvNfWymM8Zbn850rKNGASOEhVLpFnPtTusWw3
-	SdCFi0cUXNDrP2XG1/YUPdycGSiu5mBzJfiuEB5icpSeuYGDnUn+BZFyZ7pmgJ85bhijts9Hwns
-	7GKVMIn/KOCdxWWYpfH/5K1A/FGt+8vRSXAeDG40bBTRiq3vtEjP52cnBdhY3l32LZRoomHCJkJ
-	WylkuUOuXri2D1WGFksttjtyqAOLf+0CtKMyiiKqw5YZRFeuabUTff+NcZ2Bm8KNjEmByUbjSzx
-	choyg3ZtntSFvBmXxrUE=
-X-Google-Smtp-Source: AGHT+IER4Wb+7sjIVeTNHgIin1FmwnOgqp5vlAgr+64pnKxRson9Vf15ODLw0A5H/Inu7ZpJd3u3VQ==
-X-Received: by 2002:a05:6a20:2d23:b0:1f5:5b2a:f641 with SMTP id adf61e73a8af0-1fd116ff312mr1438602637.28.1742421259961;
-        Wed, 19 Mar 2025 14:54:19 -0700 (PDT)
+        bh=PT85SIs/JkVmClXb4qMjRuR3aJ0Rmu+Fmom+AM2i/6Q=;
+        b=GYLb4haAXnt5wkT+IKtbF5cTPvo2qnJm5JFMf7Mn5sDMWmhDR7YDF8kuHDOxlK3gSR
+         HErr+dpFHAk7rMcRfDrd0+ACysVG2JKJLINg9sRjfQS5/BKhn4/qcJ6EcQ5MNxrjS7FL
+         2ejA/ApcUng51RJyGl+guoKfIpRk/jDfKxGx5S8TSMebX8pd/wAC2thPSfRi50dFFoe4
+         svoK/UtkohtHDLp/J/P1ddjrPxB3py91nmodBSl2zJ/Y9qIti5fQhP8+wG0W2rxCP3Ia
+         +knmRgf1oK7guUJOU/01EklEHE/v/A4LN3JpqhhULn4eGZdTpMtq+8oVR6gAt7zHL0FT
+         u0SA==
+X-Gm-Message-State: AOJu0YxAXHPiBrTNhXJjNfZ3SB6OK1/3SA2oCevcjQLQ1IJsawdU7L/L
+	spvFjW++MZxgZTBe+ESir18N9VfbPIJSAVmfFRLVxCLBCFXofs8hRDF3NZyFxc0=
+X-Gm-Gg: ASbGncvU+u1lNP2jiFJd+ALya/mIK0eb8VHBCMws8Zysv1u9UIAm0t3/DrPhoxTE3q1
+	EtI6LNKHhTFJ4RIoUIdqD4aALAM+N6mJLzSWt9oMrK/DdFC8wZZPwB6L08KVPt0bXoZLm7oansU
+	wFpusNadCpViE16zx12DlIZDU/sQRFJMPMAavmQYUxDnbPgYmi8MSjfJQ0ryuWNoTrSZ9iNtDbT
+	fPKUsJWjXRwHbWEL/tmh53RiuuISt2SrQ5yIsaUVQ1VTZNjmSg8zcqLThP+hYtkYHwP4Ke4fTPW
+	LP04YuWBxmtn5EzbTgKMUz5AlBavwBbvhVIiKVR5XufJSjwnKN9Lfy/PTjfUpfIQ9vtSjtetvXu
+	yAcFGpu1XJ5I8LxBcGvU=
+X-Google-Smtp-Source: AGHT+IHrwLEuUyMZxaTrIl7RJD8svbu/+7mMNk+wefABxRFPo3MQ8FKzsKxGyx0z6RZF5rHiynXEPw==
+X-Received: by 2002:a05:6a00:4651:b0:736:2a73:6756 with SMTP id d2e1a72fcca58-7376d6ff504mr7270788b3a.21.1742421261196;
+        Wed, 19 Mar 2025 14:54:21 -0700 (PDT)
 Received: from localhost.localdomain (c-76-146-13-146.hsd1.wa.comcast.net. [76.146.13.146])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-737116b0e8asm12175596b3a.158.2025.03.19.14.54.18
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-737116b0e8asm12175596b3a.158.2025.03.19.14.54.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Mar 2025 14:54:19 -0700 (PDT)
+        Wed, 19 Mar 2025 14:54:20 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 To: netdev@vger.kernel.org
 Cc: bpf@vger.kernel.org,
@@ -93,9 +93,9 @@ Cc: bpf@vger.kernel.org,
 	yepeilin.cs@gmail.com,
 	ameryhung@gmail.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v6 09/11] selftests/bpf: Add a basic fifo qdisc test
-Date: Wed, 19 Mar 2025 14:53:56 -0700
-Message-ID: <20250319215358.2287371-10-ameryhung@gmail.com>
+Subject: [PATCH bpf-next v6 10/11] selftests/bpf: Add a bpf fq qdisc to selftest
+Date: Wed, 19 Mar 2025 14:53:57 -0700
+Message-ID: <20250319215358.2287371-11-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250319215358.2287371-1-ameryhung@gmail.com>
 References: <20250319215358.2287371-1-ameryhung@gmail.com>
@@ -110,281 +110,825 @@ Content-Transfer-Encoding: 8bit
 
 From: Amery Hung <amery.hung@bytedance.com>
 
-This selftest includes a bare minimum fifo qdisc, which simply enqueues
-sk_buffs into the back of a bpf list and dequeues from the front of the
-list.
+This test implements a more sophisticated qdisc using bpf. The bpf fair-
+queueing (fq) qdisc gives each flow an equal chance to transmit data. It
+also respects the timestamp of skb for rate limiting.
 
 Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- tools/testing/selftests/bpf/config            |   1 +
- .../selftests/bpf/prog_tests/bpf_qdisc.c      |  81 ++++++++++++
- .../selftests/bpf/progs/bpf_qdisc_common.h    |  29 +++++
- .../selftests/bpf/progs/bpf_qdisc_fifo.c      | 119 ++++++++++++++++++
- 4 files changed, 230 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
+ .../selftests/bpf/prog_tests/bpf_qdisc.c      |  24 +
+ .../selftests/bpf/progs/bpf_qdisc_fq.c        | 752 ++++++++++++++++++
+ 2 files changed, 776 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index c378d5d07e02..6b0cab55bd2d 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -71,6 +71,7 @@ CONFIG_NET_IPGRE=y
- CONFIG_NET_IPGRE_DEMUX=y
- CONFIG_NET_IPIP=y
- CONFIG_NET_MPLS_GSO=y
-+CONFIG_NET_SCH_BPF=y
- CONFIG_NET_SCH_FQ=y
- CONFIG_NET_SCH_INGRESS=y
- CONFIG_NET_SCHED=y
 diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c b/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
-new file mode 100644
-index 000000000000..1ec321eb089f
---- /dev/null
+index 1ec321eb089f..230d8f935303 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
 +++ b/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/pkt_sched.h>
-+#include <linux/rtnetlink.h>
-+#include <test_progs.h>
-+
-+#include "network_helpers.h"
-+#include "bpf_qdisc_fifo.skel.h"
-+
-+#define LO_IFINDEX 1
-+
-+static const unsigned int total_bytes = 10 * 1024 * 1024;
-+
-+static void do_test(char *qdisc)
+@@ -6,6 +6,7 @@
+ 
+ #include "network_helpers.h"
+ #include "bpf_qdisc_fifo.skel.h"
++#include "bpf_qdisc_fq.skel.h"
+ 
+ #define LO_IFINDEX 1
+ 
+@@ -66,6 +67,27 @@ static void test_fifo(void)
+ 	bpf_qdisc_fifo__destroy(fifo_skel);
+ }
+ 
++static void test_fq(void)
 +{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex = LO_IFINDEX,
-+			    .attach_point = BPF_TC_QDISC,
-+			    .parent = TC_H_ROOT,
-+			    .handle = 0x8000000,
-+			    .qdisc = qdisc);
-+	int srv_fd = -1, cli_fd = -1;
-+	int err;
-+
-+	err = bpf_tc_hook_create(&hook);
-+	if (!ASSERT_OK(err, "attach qdisc"))
-+		return;
-+
-+	srv_fd = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
-+	if (!ASSERT_OK_FD(srv_fd, "start server"))
-+		goto done;
-+
-+	cli_fd = connect_to_fd(srv_fd, 0);
-+	if (!ASSERT_OK_FD(cli_fd, "connect to client"))
-+		goto done;
-+
-+	err = send_recv_data(srv_fd, cli_fd, total_bytes);
-+	ASSERT_OK(err, "send_recv_data");
-+
-+done:
-+	if (srv_fd != -1)
-+		close(srv_fd);
-+	if (cli_fd != -1)
-+		close(cli_fd);
-+
-+	bpf_tc_hook_destroy(&hook);
-+}
-+
-+static void test_fifo(void)
-+{
-+	struct bpf_qdisc_fifo *fifo_skel;
++	struct bpf_qdisc_fq *fq_skel;
 +	struct bpf_link *link;
 +
-+	fifo_skel = bpf_qdisc_fifo__open_and_load();
-+	if (!ASSERT_OK_PTR(fifo_skel, "bpf_qdisc_fifo__open_and_load"))
++	fq_skel = bpf_qdisc_fq__open_and_load();
++	if (!ASSERT_OK_PTR(fq_skel, "bpf_qdisc_fq__open_and_load"))
 +		return;
 +
-+	link = bpf_map__attach_struct_ops(fifo_skel->maps.fifo);
++	link = bpf_map__attach_struct_ops(fq_skel->maps.fq);
 +	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops")) {
-+		bpf_qdisc_fifo__destroy(fifo_skel);
++		bpf_qdisc_fq__destroy(fq_skel);
 +		return;
 +	}
 +
-+	do_test("bpf_fifo");
++	do_test("bpf_fq");
 +
 +	bpf_link__destroy(link);
-+	bpf_qdisc_fifo__destroy(fifo_skel);
++	bpf_qdisc_fq__destroy(fq_skel);
 +}
 +
-+void test_bpf_qdisc(void)
-+{
-+	struct netns_obj *netns;
-+
-+	netns = netns_new("bpf_qdisc_ns", true);
-+	if (!ASSERT_OK_PTR(netns, "netns_new"))
-+		return;
-+
-+	if (test__start_subtest("fifo"))
-+		test_fifo();
-+
-+	netns_free(netns);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
+ void test_bpf_qdisc(void)
+ {
+ 	struct netns_obj *netns;
+@@ -76,6 +98,8 @@ void test_bpf_qdisc(void)
+ 
+ 	if (test__start_subtest("fifo"))
+ 		test_fifo();
++	if (test__start_subtest("fq"))
++		test_fq();
+ 
+ 	netns_free(netns);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
 new file mode 100644
-index 000000000000..24a83cdec7cd
+index 000000000000..663cc155fb92
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
-@@ -0,0 +1,29 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef _BPF_QDISC_COMMON_H
-+#define _BPF_QDISC_COMMON_H
-+
-+#define NET_XMIT_SUCCESS        0x00
-+#define NET_XMIT_DROP           0x01    /* skb dropped                  */
-+#define NET_XMIT_CN             0x02    /* congestion notification      */
-+
-+#define TC_PRIO_CONTROL  7
-+#define TC_PRIO_MAX      15
-+
-+u32 bpf_skb_get_hash(struct sk_buff *p) __ksym;
-+void bpf_kfree_skb(struct sk_buff *p) __ksym;
-+void bpf_qdisc_skb_drop(struct sk_buff *p, struct bpf_sk_buff_ptr *to_free) __ksym;
-+void bpf_qdisc_watchdog_schedule(struct Qdisc *sch, u64 expire, u64 delta_ns) __ksym;
-+void bpf_qdisc_bstats_update(struct Qdisc *sch, const struct sk_buff *skb) __ksym;
-+
-+static struct qdisc_skb_cb *qdisc_skb_cb(const struct sk_buff *skb)
-+{
-+	return (struct qdisc_skb_cb *)skb->cb;
-+}
-+
-+static inline unsigned int qdisc_pkt_len(const struct sk_buff *skb)
-+{
-+	return qdisc_skb_cb(skb)->pkt_len;
-+}
-+
-+#endif
-diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
-new file mode 100644
-index 000000000000..a42024ce6c30
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
-@@ -0,0 +1,119 @@
++++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
+@@ -0,0 +1,752 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
++/* bpf_fq is intended for testing the bpf qdisc infrastructure and not a direct
++ * copy of sch_fq. bpf_fq implements the scheduling algorithm of sch_fq before
++ * 29f834aa326e ("net_sched: sch_fq: add 3 bands and WRR scheduling") was
++ * introduced. It gives each flow a fair chance to transmit packets in a
++ * round-robin fashion. Note that for flow pacing, bpf_fq currently only
++ * respects skb->tstamp but not skb->sk->sk_pacing_rate. In addition, if there
++ * are multiple bpf_fq instances, they will have a shared view of flows and
++ * configuration since some key data structure such as fq_prio_flows,
++ * fq_nonprio_flows, and fq_bpf_data are global.
++ *
++ * To use bpf_fq alone without running selftests, use the following commands.
++ *
++ * 1. Register bpf_fq to the kernel
++ *     bpftool struct_ops register bpf_qdisc_fq.bpf.o /sys/fs/bpf
++ * 2. Add bpf_fq to an interface
++ *     tc qdisc add dev <interface name> root handle <handle> bpf_fq
++ * 3. Delete bpf_fq attached to the interface
++ *     tc qdisc delete dev <interface name> root
++ * 4. Unregister bpf_fq
++ *     bpftool struct_ops unregister name fq
++ *
++ * The qdisc name, bpf_fq, used in tc commands is defined by Qdisc_ops.id.
++ * The struct_ops_map_name, fq, used in the bpftool command is the name of the
++ * Qdisc_ops.
++ *
++ * SEC(".struct_ops")
++ * struct Qdisc_ops fq = {
++ *         ...
++ *         .id        = "bpf_fq",
++ * };
++ */
++
 +#include <vmlinux.h>
++#include <errno.h>
++#include <bpf/bpf_helpers.h>
 +#include "bpf_experimental.h"
 +#include "bpf_qdisc_common.h"
 +
 +char _license[] SEC("license") = "GPL";
 +
-+struct skb_node {
-+	struct sk_buff __kptr * skb;
-+	struct bpf_list_node node;
++#define NSEC_PER_USEC 1000L
++#define NSEC_PER_SEC 1000000000L
++
++#define NUM_QUEUE (1 << 20)
++
++struct fq_bpf_data {
++	u32 quantum;
++	u32 initial_quantum;
++	u32 flow_refill_delay;
++	u32 flow_plimit;
++	u64 horizon;
++	u32 orphan_mask;
++	u32 timer_slack;
++	u64 time_next_delayed_flow;
++	u64 unthrottle_latency_ns;
++	u8 horizon_drop;
++	u32 new_flow_cnt;
++	u32 old_flow_cnt;
++	u64 ktime_cache;
 +};
++
++enum {
++	CLS_RET_PRIO	= 0,
++	CLS_RET_NONPRIO = 1,
++	CLS_RET_ERR	= 2,
++};
++
++struct skb_node {
++	u64 tstamp;
++	struct sk_buff __kptr * skb;
++	struct bpf_rb_node node;
++};
++
++struct fq_flow_node {
++	int credit;
++	u32 qlen;
++	u64 age;
++	u64 time_next_packet;
++	struct bpf_list_node list_node;
++	struct bpf_rb_node rb_node;
++	struct bpf_rb_root queue __contains(skb_node, node);
++	struct bpf_spin_lock lock;
++	struct bpf_refcount refcount;
++};
++
++struct dequeue_nonprio_ctx {
++	bool stop_iter;
++	u64 expire;
++	u64 now;
++};
++
++struct remove_flows_ctx {
++	bool gc_only;
++	u32 reset_cnt;
++	u32 reset_max;
++};
++
++struct unset_throttled_flows_ctx {
++	bool unset_all;
++	u64 now;
++};
++
++struct fq_stashed_flow {
++	struct fq_flow_node __kptr * flow;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__type(key, __u64);
++	__type(value, struct fq_stashed_flow);
++	__uint(max_entries, NUM_QUEUE);
++} fq_nonprio_flows SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__type(key, __u64);
++	__type(value, struct fq_stashed_flow);
++	__uint(max_entries, 1);
++} fq_prio_flows SEC(".maps");
 +
 +#define private(name) SEC(".data." #name) __hidden __attribute__((aligned(8)))
 +
-+private(A) struct bpf_spin_lock q_fifo_lock;
-+private(A) struct bpf_list_head q_fifo __contains(skb_node, node);
++private(A) struct bpf_spin_lock fq_delayed_lock;
++private(A) struct bpf_rb_root fq_delayed __contains(fq_flow_node, rb_node);
 +
-+SEC("struct_ops/bpf_fifo_enqueue")
-+int BPF_PROG(bpf_fifo_enqueue, struct sk_buff *skb, struct Qdisc *sch,
++private(B) struct bpf_spin_lock fq_new_flows_lock;
++private(B) struct bpf_list_head fq_new_flows __contains(fq_flow_node, list_node);
++
++private(C) struct bpf_spin_lock fq_old_flows_lock;
++private(C) struct bpf_list_head fq_old_flows __contains(fq_flow_node, list_node);
++
++private(D) struct fq_bpf_data q;
++
++/* Wrapper for bpf_kptr_xchg that expects NULL dst */
++static void bpf_kptr_xchg_back(void *map_val, void *ptr)
++{
++	void *ret;
++
++	ret = bpf_kptr_xchg(map_val, ptr);
++	if (ret)
++		bpf_obj_drop(ret);
++}
++
++static bool skbn_tstamp_less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
++{
++	struct skb_node *skbn_a;
++	struct skb_node *skbn_b;
++
++	skbn_a = container_of(a, struct skb_node, node);
++	skbn_b = container_of(b, struct skb_node, node);
++
++	return skbn_a->tstamp < skbn_b->tstamp;
++}
++
++static bool fn_time_next_packet_less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
++{
++	struct fq_flow_node *flow_a;
++	struct fq_flow_node *flow_b;
++
++	flow_a = container_of(a, struct fq_flow_node, rb_node);
++	flow_b = container_of(b, struct fq_flow_node, rb_node);
++
++	return flow_a->time_next_packet < flow_b->time_next_packet;
++}
++
++static void
++fq_flows_add_head(struct bpf_list_head *head, struct bpf_spin_lock *lock,
++		  struct fq_flow_node *flow, u32 *flow_cnt)
++{
++	bpf_spin_lock(lock);
++	bpf_list_push_front(head, &flow->list_node);
++	bpf_spin_unlock(lock);
++	*flow_cnt += 1;
++}
++
++static void
++fq_flows_add_tail(struct bpf_list_head *head, struct bpf_spin_lock *lock,
++		  struct fq_flow_node *flow, u32 *flow_cnt)
++{
++	bpf_spin_lock(lock);
++	bpf_list_push_back(head, &flow->list_node);
++	bpf_spin_unlock(lock);
++	*flow_cnt += 1;
++}
++
++static void
++fq_flows_remove_front(struct bpf_list_head *head, struct bpf_spin_lock *lock,
++		      struct bpf_list_node **node, u32 *flow_cnt)
++{
++	bpf_spin_lock(lock);
++	*node = bpf_list_pop_front(head);
++	bpf_spin_unlock(lock);
++	*flow_cnt -= 1;
++}
++
++static bool
++fq_flows_is_empty(struct bpf_list_head *head, struct bpf_spin_lock *lock)
++{
++	struct bpf_list_node *node;
++
++	bpf_spin_lock(lock);
++	node = bpf_list_pop_front(head);
++	if (node) {
++		bpf_list_push_front(head, node);
++		bpf_spin_unlock(lock);
++		return false;
++	}
++	bpf_spin_unlock(lock);
++
++	return true;
++}
++
++/* flow->age is used to denote the state of the flow (not-detached, detached, throttled)
++ * as well as the timestamp when the flow is detached.
++ *
++ * 0: not-detached
++ * 1 - (~0ULL-1): detached
++ * ~0ULL: throttled
++ */
++static void fq_flow_set_detached(struct fq_flow_node *flow)
++{
++	flow->age = bpf_jiffies64();
++}
++
++static bool fq_flow_is_detached(struct fq_flow_node *flow)
++{
++	return flow->age != 0 && flow->age != ~0ULL;
++}
++
++static bool sk_listener(struct sock *sk)
++{
++	return (1 << sk->__sk_common.skc_state) & (TCPF_LISTEN | TCPF_NEW_SYN_RECV);
++}
++
++static void fq_gc(void);
++
++static int fq_new_flow(void *flow_map, struct fq_stashed_flow **sflow, u64 hash)
++{
++	struct fq_stashed_flow tmp = {};
++	struct fq_flow_node *flow;
++	int ret;
++
++	flow = bpf_obj_new(typeof(*flow));
++	if (!flow)
++		return -ENOMEM;
++
++	flow->credit = q.initial_quantum,
++	flow->qlen = 0,
++	flow->age = 1,
++	flow->time_next_packet = 0,
++
++	ret = bpf_map_update_elem(flow_map, &hash, &tmp, 0);
++	if (ret == -ENOMEM || ret == -E2BIG) {
++		fq_gc();
++		bpf_map_update_elem(&fq_nonprio_flows, &hash, &tmp, 0);
++	}
++
++	*sflow = bpf_map_lookup_elem(flow_map, &hash);
++	if (!*sflow) {
++		bpf_obj_drop(flow);
++		return -ENOMEM;
++	}
++
++	bpf_kptr_xchg_back(&(*sflow)->flow, flow);
++	return 0;
++}
++
++static int
++fq_classify(struct sk_buff *skb, struct fq_stashed_flow **sflow)
++{
++	struct sock *sk = skb->sk;
++	int ret = CLS_RET_NONPRIO;
++	u64 hash = 0;
++
++	if ((skb->priority & TC_PRIO_MAX) == TC_PRIO_CONTROL) {
++		*sflow = bpf_map_lookup_elem(&fq_prio_flows, &hash);
++		ret = CLS_RET_PRIO;
++	} else {
++		if (!sk || sk_listener(sk)) {
++			hash = bpf_skb_get_hash(skb) & q.orphan_mask;
++			/* Avoid collision with an existing flow hash, which
++			 * only uses the lower 32 bits of hash, by setting the
++			 * upper half of hash to 1.
++			 */
++			hash |= (1ULL << 32);
++		} else if (sk->__sk_common.skc_state == TCP_CLOSE) {
++			hash = bpf_skb_get_hash(skb) & q.orphan_mask;
++			hash |= (1ULL << 32);
++		} else {
++			hash = sk->__sk_common.skc_hash;
++		}
++		*sflow = bpf_map_lookup_elem(&fq_nonprio_flows, &hash);
++	}
++
++	if (!*sflow)
++		ret = fq_new_flow(&fq_nonprio_flows, sflow, hash) < 0 ?
++		      CLS_RET_ERR : CLS_RET_NONPRIO;
++
++	return ret;
++}
++
++static bool fq_packet_beyond_horizon(struct sk_buff *skb)
++{
++	return (s64)skb->tstamp > (s64)(q.ktime_cache + q.horizon);
++}
++
++SEC("struct_ops/bpf_fq_enqueue")
++int BPF_PROG(bpf_fq_enqueue, struct sk_buff *skb, struct Qdisc *sch,
 +	     struct bpf_sk_buff_ptr *to_free)
 +{
++	struct fq_flow_node *flow = NULL, *flow_copy;
++	struct fq_stashed_flow *sflow;
++	u64 time_to_send, jiffies;
 +	struct skb_node *skbn;
-+	u32 pkt_len;
++	int ret;
 +
-+	if (sch->q.qlen == sch->limit)
++	if (sch->q.qlen >= sch->limit)
 +		goto drop;
++
++	if (!skb->tstamp) {
++		time_to_send = q.ktime_cache = bpf_ktime_get_ns();
++	} else {
++		if (fq_packet_beyond_horizon(skb)) {
++			q.ktime_cache = bpf_ktime_get_ns();
++			if (fq_packet_beyond_horizon(skb)) {
++				if (q.horizon_drop)
++					goto drop;
++
++				skb->tstamp = q.ktime_cache + q.horizon;
++			}
++		}
++		time_to_send = skb->tstamp;
++	}
++
++	ret = fq_classify(skb, &sflow);
++	if (ret == CLS_RET_ERR)
++		goto drop;
++
++	flow = bpf_kptr_xchg(&sflow->flow, flow);
++	if (!flow)
++		goto drop;
++
++	if (ret == CLS_RET_NONPRIO) {
++		if (flow->qlen >= q.flow_plimit) {
++			bpf_kptr_xchg_back(&sflow->flow, flow);
++			goto drop;
++		}
++
++		if (fq_flow_is_detached(flow)) {
++			flow_copy = bpf_refcount_acquire(flow);
++
++			jiffies = bpf_jiffies64();
++			if ((s64)(jiffies - (flow_copy->age + q.flow_refill_delay)) > 0) {
++				if (flow_copy->credit < q.quantum)
++					flow_copy->credit = q.quantum;
++			}
++			flow_copy->age = 0;
++			fq_flows_add_tail(&fq_new_flows, &fq_new_flows_lock, flow_copy,
++					  &q.new_flow_cnt);
++		}
++	}
 +
 +	skbn = bpf_obj_new(typeof(*skbn));
-+	if (!skbn)
++	if (!skbn) {
++		bpf_kptr_xchg_back(&sflow->flow, flow);
 +		goto drop;
++	}
 +
-+	pkt_len = qdisc_pkt_len(skb);
++	skbn->tstamp = skb->tstamp = time_to_send;
 +
-+	sch->q.qlen++;
++	sch->qstats.backlog += qdisc_pkt_len(skb);
++
 +	skb = bpf_kptr_xchg(&skbn->skb, skb);
 +	if (skb)
 +		bpf_qdisc_skb_drop(skb, to_free);
 +
-+	bpf_spin_lock(&q_fifo_lock);
-+	bpf_list_push_back(&q_fifo, &skbn->node);
-+	bpf_spin_unlock(&q_fifo_lock);
++	bpf_spin_lock(&flow->lock);
++	bpf_rbtree_add(&flow->queue, &skbn->node, skbn_tstamp_less);
++	bpf_spin_unlock(&flow->lock);
 +
-+	sch->qstats.backlog += pkt_len;
++	flow->qlen++;
++	bpf_kptr_xchg_back(&sflow->flow, flow);
++
++	sch->q.qlen++;
 +	return NET_XMIT_SUCCESS;
++
 +drop:
 +	bpf_qdisc_skb_drop(skb, to_free);
++	sch->qstats.drops++;
 +	return NET_XMIT_DROP;
 +}
 +
-+SEC("struct_ops/bpf_fifo_dequeue")
-+struct sk_buff *BPF_PROG(bpf_fifo_dequeue, struct Qdisc *sch)
++static int fq_unset_throttled_flows(u32 index, struct unset_throttled_flows_ctx *ctx)
 +{
-+	struct bpf_list_node *node;
-+	struct sk_buff *skb = NULL;
-+	struct skb_node *skbn;
++	struct bpf_rb_node *node = NULL;
++	struct fq_flow_node *flow;
 +
-+	bpf_spin_lock(&q_fifo_lock);
-+	node = bpf_list_pop_front(&q_fifo);
-+	bpf_spin_unlock(&q_fifo_lock);
++	bpf_spin_lock(&fq_delayed_lock);
++
++	node = bpf_rbtree_first(&fq_delayed);
++	if (!node) {
++		bpf_spin_unlock(&fq_delayed_lock);
++		return 1;
++	}
++
++	flow = container_of(node, struct fq_flow_node, rb_node);
++	if (!ctx->unset_all && flow->time_next_packet > ctx->now) {
++		q.time_next_delayed_flow = flow->time_next_packet;
++		bpf_spin_unlock(&fq_delayed_lock);
++		return 1;
++	}
++
++	node = bpf_rbtree_remove(&fq_delayed, &flow->rb_node);
++
++	bpf_spin_unlock(&fq_delayed_lock);
++
 +	if (!node)
-+		return NULL;
++		return 1;
 +
-+	skbn = container_of(node, struct skb_node, node);
++	flow = container_of(node, struct fq_flow_node, rb_node);
++	flow->age = 0;
++	fq_flows_add_tail(&fq_old_flows, &fq_old_flows_lock, flow, &q.old_flow_cnt);
++
++	return 0;
++}
++
++static void fq_flow_set_throttled(struct fq_flow_node *flow)
++{
++	flow->age = ~0ULL;
++
++	if (q.time_next_delayed_flow > flow->time_next_packet)
++		q.time_next_delayed_flow = flow->time_next_packet;
++
++	bpf_spin_lock(&fq_delayed_lock);
++	bpf_rbtree_add(&fq_delayed, &flow->rb_node, fn_time_next_packet_less);
++	bpf_spin_unlock(&fq_delayed_lock);
++}
++
++static void fq_check_throttled(u64 now)
++{
++	struct unset_throttled_flows_ctx ctx = {
++		.unset_all = false,
++		.now = now,
++	};
++	unsigned long sample;
++
++	if (q.time_next_delayed_flow > now)
++		return;
++
++	sample = (unsigned long)(now - q.time_next_delayed_flow);
++	q.unthrottle_latency_ns -= q.unthrottle_latency_ns >> 3;
++	q.unthrottle_latency_ns += sample >> 3;
++
++	q.time_next_delayed_flow = ~0ULL;
++	bpf_loop(NUM_QUEUE, fq_unset_throttled_flows, &ctx, 0);
++}
++
++static struct sk_buff*
++fq_dequeue_nonprio_flows(u32 index, struct dequeue_nonprio_ctx *ctx)
++{
++	u64 time_next_packet, time_to_send;
++	struct bpf_rb_node *rb_node;
++	struct sk_buff *skb = NULL;
++	struct bpf_list_head *head;
++	struct bpf_list_node *node;
++	struct bpf_spin_lock *lock;
++	struct fq_flow_node *flow;
++	struct skb_node *skbn;
++	bool is_empty;
++	u32 *cnt;
++
++	if (q.new_flow_cnt) {
++		head = &fq_new_flows;
++		lock = &fq_new_flows_lock;
++		cnt = &q.new_flow_cnt;
++	} else if (q.old_flow_cnt) {
++		head = &fq_old_flows;
++		lock = &fq_old_flows_lock;
++		cnt = &q.old_flow_cnt;
++	} else {
++		if (q.time_next_delayed_flow != ~0ULL)
++			ctx->expire = q.time_next_delayed_flow;
++		goto break_loop;
++	}
++
++	fq_flows_remove_front(head, lock, &node, cnt);
++	if (!node)
++		goto break_loop;
++
++	flow = container_of(node, struct fq_flow_node, list_node);
++	if (flow->credit <= 0) {
++		flow->credit += q.quantum;
++		fq_flows_add_tail(&fq_old_flows, &fq_old_flows_lock, flow, &q.old_flow_cnt);
++		return NULL;
++	}
++
++	bpf_spin_lock(&flow->lock);
++	rb_node = bpf_rbtree_first(&flow->queue);
++	if (!rb_node) {
++		bpf_spin_unlock(&flow->lock);
++		is_empty = fq_flows_is_empty(&fq_old_flows, &fq_old_flows_lock);
++		if (head == &fq_new_flows && !is_empty) {
++			fq_flows_add_tail(&fq_old_flows, &fq_old_flows_lock, flow, &q.old_flow_cnt);
++		} else {
++			fq_flow_set_detached(flow);
++			bpf_obj_drop(flow);
++		}
++		return NULL;
++	}
++
++	skbn = container_of(rb_node, struct skb_node, node);
++	time_to_send = skbn->tstamp;
++
++	time_next_packet = (time_to_send > flow->time_next_packet) ?
++		time_to_send : flow->time_next_packet;
++	if (ctx->now < time_next_packet) {
++		bpf_spin_unlock(&flow->lock);
++		flow->time_next_packet = time_next_packet;
++		fq_flow_set_throttled(flow);
++		return NULL;
++	}
++
++	rb_node = bpf_rbtree_remove(&flow->queue, rb_node);
++	bpf_spin_unlock(&flow->lock);
++
++	if (!rb_node)
++		goto add_flow_and_break;
++
++	skbn = container_of(rb_node, struct skb_node, node);
 +	skb = bpf_kptr_xchg(&skbn->skb, skb);
 +	bpf_obj_drop(skbn);
++
 +	if (!skb)
++		goto add_flow_and_break;
++
++	flow->credit -= qdisc_skb_cb(skb)->pkt_len;
++	flow->qlen--;
++
++add_flow_and_break:
++	fq_flows_add_head(head, lock, flow, cnt);
++
++break_loop:
++	ctx->stop_iter = true;
++	return skb;
++}
++
++static struct sk_buff *fq_dequeue_prio(void)
++{
++	struct fq_flow_node *flow = NULL;
++	struct fq_stashed_flow *sflow;
++	struct bpf_rb_node *rb_node;
++	struct sk_buff *skb = NULL;
++	struct skb_node *skbn;
++	u64 hash = 0;
++
++	sflow = bpf_map_lookup_elem(&fq_prio_flows, &hash);
++	if (!sflow)
 +		return NULL;
 +
-+	sch->qstats.backlog -= qdisc_pkt_len(skb);
-+	bpf_qdisc_bstats_update(sch, skb);
-+	sch->q.qlen--;
++	flow = bpf_kptr_xchg(&sflow->flow, flow);
++	if (!flow)
++		return NULL;
++
++	bpf_spin_lock(&flow->lock);
++	rb_node = bpf_rbtree_first(&flow->queue);
++	if (!rb_node) {
++		bpf_spin_unlock(&flow->lock);
++		goto out;
++	}
++
++	skbn = container_of(rb_node, struct skb_node, node);
++	rb_node = bpf_rbtree_remove(&flow->queue, &skbn->node);
++	bpf_spin_unlock(&flow->lock);
++
++	if (!rb_node)
++		goto out;
++
++	skbn = container_of(rb_node, struct skb_node, node);
++	skb = bpf_kptr_xchg(&skbn->skb, skb);
++	bpf_obj_drop(skbn);
++
++out:
++	bpf_kptr_xchg_back(&sflow->flow, flow);
 +
 +	return skb;
 +}
 +
-+SEC("struct_ops/bpf_fifo_init")
-+int BPF_PROG(bpf_fifo_init, struct Qdisc *sch, struct nlattr *opt,
-+	     struct netlink_ext_ack *extack)
++SEC("struct_ops/bpf_fq_dequeue")
++struct sk_buff *BPF_PROG(bpf_fq_dequeue, struct Qdisc *sch)
 +{
-+	sch->limit = 1000;
++	struct dequeue_nonprio_ctx cb_ctx = {};
++	struct sk_buff *skb = NULL;
++	int i;
++
++	if (!sch->q.qlen)
++		goto out;
++
++	skb = fq_dequeue_prio();
++	if (skb)
++		goto dequeue;
++
++	q.ktime_cache = cb_ctx.now = bpf_ktime_get_ns();
++	fq_check_throttled(q.ktime_cache);
++	bpf_for(i, 0, sch->limit) {
++		skb = fq_dequeue_nonprio_flows(i, &cb_ctx);
++		if (cb_ctx.stop_iter)
++			break;
++	};
++
++	if (skb) {
++dequeue:
++		sch->q.qlen--;
++		sch->qstats.backlog -= qdisc_pkt_len(skb);
++		bpf_qdisc_bstats_update(sch, skb);
++		return skb;
++	}
++
++	if (cb_ctx.expire)
++		bpf_qdisc_watchdog_schedule(sch, cb_ctx.expire, q.timer_slack);
++out:
++	return NULL;
++}
++
++static int fq_remove_flows_in_list(u32 index, void *ctx)
++{
++	struct bpf_list_node *node;
++	struct fq_flow_node *flow;
++
++	bpf_spin_lock(&fq_new_flows_lock);
++	node = bpf_list_pop_front(&fq_new_flows);
++	bpf_spin_unlock(&fq_new_flows_lock);
++	if (!node) {
++		bpf_spin_lock(&fq_old_flows_lock);
++		node = bpf_list_pop_front(&fq_old_flows);
++		bpf_spin_unlock(&fq_old_flows_lock);
++		if (!node)
++			return 1;
++	}
++
++	flow = container_of(node, struct fq_flow_node, list_node);
++	bpf_obj_drop(flow);
++
 +	return 0;
 +}
 +
-+SEC("struct_ops/bpf_fifo_reset")
-+void BPF_PROG(bpf_fifo_reset, struct Qdisc *sch)
++extern unsigned CONFIG_HZ __kconfig;
++
++/* limit number of collected flows per round */
++#define FQ_GC_MAX 8
++#define FQ_GC_AGE (3*CONFIG_HZ)
++
++static bool fq_gc_candidate(struct fq_flow_node *flow)
 +{
-+	struct bpf_list_node *node;
-+	struct skb_node *skbn;
-+	int i;
++	u64 jiffies = bpf_jiffies64();
 +
-+	bpf_for(i, 0, sch->q.qlen) {
-+		struct sk_buff *skb = NULL;
++	return fq_flow_is_detached(flow) &&
++	       ((s64)(jiffies - (flow->age + FQ_GC_AGE)) > 0);
++}
 +
-+		bpf_spin_lock(&q_fifo_lock);
-+		node = bpf_list_pop_front(&q_fifo);
-+		bpf_spin_unlock(&q_fifo_lock);
-+
-+		if (!node)
-+			break;
-+
-+		skbn = container_of(node, struct skb_node, node);
-+		skb = bpf_kptr_xchg(&skbn->skb, skb);
-+		if (skb)
-+			bpf_kfree_skb(skb);
-+		bpf_obj_drop(skbn);
++static int
++fq_remove_flows(struct bpf_map *flow_map, u64 *hash,
++		struct fq_stashed_flow *sflow, struct remove_flows_ctx *ctx)
++{
++	if (sflow->flow &&
++	    (!ctx->gc_only || fq_gc_candidate(sflow->flow))) {
++		bpf_map_delete_elem(flow_map, hash);
++		ctx->reset_cnt++;
 +	}
++
++	return ctx->reset_cnt < ctx->reset_max ? 0 : 1;
++}
++
++static void fq_gc(void)
++{
++	struct remove_flows_ctx cb_ctx = {
++		.gc_only = true,
++		.reset_cnt = 0,
++		.reset_max = FQ_GC_MAX,
++	};
++
++	bpf_for_each_map_elem(&fq_nonprio_flows, fq_remove_flows, &cb_ctx, 0);
++}
++
++SEC("struct_ops/bpf_fq_reset")
++void BPF_PROG(bpf_fq_reset, struct Qdisc *sch)
++{
++	struct unset_throttled_flows_ctx utf_ctx = {
++		.unset_all = true,
++	};
++	struct remove_flows_ctx rf_ctx = {
++		.gc_only = false,
++		.reset_cnt = 0,
++		.reset_max = NUM_QUEUE,
++	};
++	struct fq_stashed_flow *sflow;
++	u64 hash = 0;
++
 +	sch->q.qlen = 0;
++	sch->qstats.backlog = 0;
++
++	bpf_for_each_map_elem(&fq_nonprio_flows, fq_remove_flows, &rf_ctx, 0);
++
++	rf_ctx.reset_cnt = 0;
++	bpf_for_each_map_elem(&fq_prio_flows, fq_remove_flows, &rf_ctx, 0);
++	fq_new_flow(&fq_prio_flows, &sflow, hash);
++
++	bpf_loop(NUM_QUEUE, fq_remove_flows_in_list, NULL, 0);
++	q.new_flow_cnt = 0;
++	q.old_flow_cnt = 0;
++
++	bpf_loop(NUM_QUEUE, fq_unset_throttled_flows, &utf_ctx, 0);
++}
++
++SEC("struct_ops/bpf_fq_init")
++int BPF_PROG(bpf_fq_init, struct Qdisc *sch, struct nlattr *opt,
++	     struct netlink_ext_ack *extack)
++{
++	struct net_device *dev = sch->dev_queue->dev;
++	u32 psched_mtu = dev->mtu + dev->hard_header_len;
++	struct fq_stashed_flow *sflow;
++	u64 hash = 0;
++
++	if (fq_new_flow(&fq_prio_flows, &sflow, hash) < 0)
++		return -ENOMEM;
++
++	sch->limit = 10000;
++	q.initial_quantum = 10 * psched_mtu;
++	q.quantum = 2 * psched_mtu;
++	q.flow_refill_delay = 40;
++	q.flow_plimit = 100;
++	q.horizon = 10ULL * NSEC_PER_SEC;
++	q.horizon_drop = 1;
++	q.orphan_mask = 1024 - 1;
++	q.timer_slack = 10 * NSEC_PER_USEC;
++	q.time_next_delayed_flow = ~0ULL;
++	q.unthrottle_latency_ns = 0ULL;
++	q.new_flow_cnt = 0;
++	q.old_flow_cnt = 0;
++
++	return 0;
 +}
 +
 +SEC(".struct_ops")
-+struct Qdisc_ops fifo = {
-+	.enqueue   = (void *)bpf_fifo_enqueue,
-+	.dequeue   = (void *)bpf_fifo_dequeue,
-+	.init      = (void *)bpf_fifo_init,
-+	.reset     = (void *)bpf_fifo_reset,
-+	.id        = "bpf_fifo",
++struct Qdisc_ops fq = {
++	.enqueue   = (void *)bpf_fq_enqueue,
++	.dequeue   = (void *)bpf_fq_dequeue,
++	.reset     = (void *)bpf_fq_reset,
++	.init      = (void *)bpf_fq_init,
++	.id        = "bpf_fq",
 +};
-+
 -- 
 2.47.1
 
