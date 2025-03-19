@@ -1,131 +1,94 @@
-Return-Path: <bpf+bounces-54381-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54382-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09899A69453
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 17:07:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 203B3A69468
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 17:10:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8AF77A4672
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 16:06:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD3153BB5F5
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 16:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B321D61A5;
-	Wed, 19 Mar 2025 16:06:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A02421DF267;
+	Wed, 19 Mar 2025 16:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eisGPEEM"
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="EvtO6g37"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B15271CB337;
-	Wed, 19 Mar 2025 16:06:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B301DE884;
+	Wed, 19 Mar 2025 16:10:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742400413; cv=none; b=ZMLbzydh40dgqN97t/nitdhOndBZoDJL8VNLbOIUdvo9ThntgGjQWwXs2S/6EAy6AOHprCIJo57olbVd/O5jSdgehkZhwfOrH9Ds3S336HH0kD8TK6pKgDLUpWL5yNAN6kTNm+3oMdZneH+/RnEJCKfoZz0KyN2G1ZrvgCeJE8Y=
+	t=1742400627; cv=none; b=Npde9h/tdnkgZ5XdqwDHcdMmuGcZMrvQG4Lumteaw0KnQfLqMTSLWF+ksGCF3rNdrQOnzCwhQWR/dd3CaCNwqTSmnqH1vuC96ZZ640J1XEgWWki0I8Uq7kBnu0Zq2u3YhswBapt8lr7IQvgj4nMy3njQP0Gv5tPM7p24tj1vsIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742400413; c=relaxed/simple;
-	bh=GIegq0oT6qB1JtJRey7NbwCdp+CUQJQWDDvFEpMnnUs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ACff3LvgVucDRRqllsDFt8ZF5CCxCi+Xzh09eqER9uL+A9/U9mmR8iCv0gfUz15mDArT408UgcdDwMyMlULopeKD4ZtRU8JRiSyC53JjzHlBYNbR6EHN+vHPHTTBqREAqiG/2vAN2TjJBseYuAlLwq69rRNgNRadTY6qrgqdn5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eisGPEEM; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5499c5d9691so7523583e87.2;
-        Wed, 19 Mar 2025 09:06:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742400410; x=1743005210; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GIegq0oT6qB1JtJRey7NbwCdp+CUQJQWDDvFEpMnnUs=;
-        b=eisGPEEMV3CypfbbqyfWUJ/2ly/FXL6QsoFEqckkgtm8sdIPUtasAHpkb9WvmZjQVl
-         zf9x2kAx6tuDghtOInC8GgADMBGWPDFxWgHRaBy98XECNsbUwFrc5mcuPrOZgK4A6yG5
-         rVRa0otoLfDDmVN7osxb7bCGBhUkI+6sE/63m2oFn6rnbNuFAmubW8M9aIWM5wG1cP+3
-         yV/aBtARbQ7uiYEA9OqbeKUlcHmfLjVWzpFuK2y1cKXaXRapnDstPyMFfU0eQf2I3N1h
-         LvvDzWZImpqBAkl1QstxNhZK7EZ7OsgXq87Vr9Cy8NKJ8uQNS/nN8OimUUa2iBPjeviF
-         84VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742400410; x=1743005210;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GIegq0oT6qB1JtJRey7NbwCdp+CUQJQWDDvFEpMnnUs=;
-        b=qnEw7WsnLXsLYjAqbJFOOVuH/HXTVuy2PgKVsraGde9CI+BdaVdUqrKrSbqj99DSwi
-         bnWxpSnb1Fop18FkDHkl0sfZsbk682vRCLp6ApaYLM7qdLvwT6lGx7dDZ4qYq9QMzBbI
-         9YIqNV+zKSLxLF/IARQUzLQt4MRQhexDzk8vEKUcY3D+cs3QAUSSN3wf60r9IuD0WKnJ
-         ODJwwBxH+geqzwHJ3O5c0eGQ7VOAe+8hVftmvnj7NO71IF5utw8tDt3Sbm7tkhGuBZ6N
-         OckXF+Va6xYzTnMSHme5C9TUSePZUStLcOZS7IYbqfX7uZbK34WgGQzs4XkI9h8Cb+ov
-         J34g==
-X-Forwarded-Encrypted: i=1; AJvYcCUCAC/EzvItOV/v5R9L8zARj1Fod4jrNpLIZDjtwBfZAj9ua8UXabpXA0piNJmJQqxzeKAeb4/xjXOOzA==@vger.kernel.org, AJvYcCUlWuPv4drDk/fBkzxTwmvdiSCT8atjOMHDMN4TPwI3q5kok8TOQnBSs8JIFTIOKV3pkPU=@vger.kernel.org, AJvYcCWFMhC6J2XKof28CmebTggvnfUW+ytYph7bGIfSlO1p9I8xY7IcL8Nzn5QAemanJKOSQIZDmYJwp+cJGdX/@vger.kernel.org, AJvYcCX98xLW1LTGIme1Nd4RYrLfkKZcXLe9HGNwY+Ku12ypBPjUGkgyepN+o8IcvpATj65X7NFz4sv6@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywezc7I8bWteMn+fZY8U7JytK7nPYP/QbVxAohdamVSP4vzeavk
-	F/RDNA3QV0zr5pfQ7hSx7hAIsphvNlFNWQzwLFciw/LLRhaJVAEPKOUuZdsc4Fh5yJegyAPW280
-	pz0b/e0JCgrJWeiLk7nB6ocr4kOEfhqVM/YxC6Q==
-X-Gm-Gg: ASbGncvyQHwUxyoagxtH2Q9RvAu4QXQzcuXnbWkKmhva44C6z2mHU+je8+1EPsBeJUv
-	bG9KuczZ3n2sAOsuGpxrxe3xW6LD0BJl9iMLabaDMYzfTtJceiPqa8eY2qSjQwU3HUf+v7Zrkjf
-	VxR/weiJUcgOy/V3J3r2a2ae4+7g==
-X-Google-Smtp-Source: AGHT+IHmMFBxgWTdhY8PJN51uSi03KQFkFqruTJL/3AzgzUJ2KoIhJ4kJd2FL5HM00A/MVSkbE9sDGmCM2sChyyPNxA=
-X-Received: by 2002:a05:6512:a90:b0:549:4a13:3a82 with SMTP id
- 2adb3069b0e04-54acb1bf76fmr1334884e87.21.1742400409265; Wed, 19 Mar 2025
- 09:06:49 -0700 (PDT)
+	s=arc-20240116; t=1742400627; c=relaxed/simple;
+	bh=wQH1ImZR2MCOnMn7sAGHDKs6nYnyNfWPy4MNNVn3xUA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QTZGBhz5Xsj/ROTtBxoQDaMgLjZotE3X4fpQuRGCaiC28LBzXjaTe8Kgom+iewUzksnS0gra+G78hP5VqtxHJe09iAo+gFT84tsgbES8L0fJ5TughFm/ua8oEdg1W1xxo1/I18xVdeFP74Pfak0QrHivmArUowdzQ23x6hY9pno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=EvtO6g37; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A10AC4CEE8;
+	Wed, 19 Mar 2025 16:10:25 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="EvtO6g37"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1742400624;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wQH1ImZR2MCOnMn7sAGHDKs6nYnyNfWPy4MNNVn3xUA=;
+	b=EvtO6g37q/AUhMihU3ZZhr8nyNKYB04s5LH3pE00D/ZDJWn2AlnDocX5gqs57ORoZ1qBoj
+	aJM3G3HoNkDsukKfPcNHpUMUmj0u3MYuOovAWW/Gpr1xt9K4mFL3HwPauGx0Zc0UYwL4rT
+	4nBaJX5BrKmAmzcVni46bwp4xpczM04=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id cabd55d4 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Wed, 19 Mar 2025 16:10:23 +0000 (UTC)
+Date: Wed, 19 Mar 2025 17:10:18 +0100
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Simon Horman <horms@kernel.org>, Phil Sutter <phil@nwl.cc>,
+	Florian Westphal <fw@strlen.de>, Petr Mladek <pmladek@suse.com>,
+	Yoann Congal <yoann.congal@smile.fr>, wireguard@lists.zx2c4.com,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv4 RESEND net-next 1/2] selftests: wireguards: convert
+ iptables to nft
+Message-ID: <Z9rsahBCpwUkDTmf@zx2c4.com>
+References: <20250106081043.2073169-1-liuhangbin@gmail.com>
+ <20250106081043.2073169-2-liuhangbin@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250319133309.6fce6404@canb.auug.org.au> <CAADnVQKotSrp8CkVpFw-y800NJ_R7An-iw-twrQZaOdYUeRtqQ@mail.gmail.com>
- <CAP01T76CqOxzEiMLKJ2y_YD=qDgWq+Fq5Zy-fnKP4AAyS30Dwg@mail.gmail.com>
- <CAP01T77_qMiMmyeyizud=-sbBH5q1jvY_Jkj-QLZqM1zh0a2hg@mail.gmail.com>
- <CAP01T77St7cpkvJ7w+5d3Ji-ULdz04QhZDxQWdNSBX9W7vXJCw@mail.gmail.com> <CAADnVQ+8apdQtyvMO=SKXCE_HWpQEo3CaTUwd39ekYEj-D4TQA@mail.gmail.com>
-In-Reply-To: <CAADnVQ+8apdQtyvMO=SKXCE_HWpQEo3CaTUwd39ekYEj-D4TQA@mail.gmail.com>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Wed, 19 Mar 2025 17:06:37 +0100
-X-Gm-Features: AQ5f1JqZYR9VPu0HjinWzHMC5L1Scq9q3VwTd7PzyM-8Rfg9zsp8PFtqKud26SI
-Message-ID: <CAFULd4brsMuNX3-jJ44JyyRZqN1PO9FwJX7N3mvMwRzi8XYLag@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>, 
-	Networking <netdev@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250106081043.2073169-2-liuhangbin@gmail.com>
 
-On Wed, Mar 19, 2025 at 3:55=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Mar 19, 2025 at 7:36=E2=80=AFAM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > > >
-> > > > I've sent a fix [0], but unfortunately I was unable to reproduce th=
-e
-> > > > problem with an LLVM >=3D 19 build, idk why. I will try with GCC >=
-=3D 14
-> > > > as the patches require to confirm, but based on the error I am 99%
-> > > > sure it will fix the problem.
-> > >
-> > > Probably because __seg_gs has CC_HAS_NAMED_AS depends on CC_IS_GCC.
-> > > Let me give it a go with GCC.
-> > >
-> >
-> > Can confirm now that this fixes it, I just did a build with GCC 14
-> > where Uros's __percpu checks kick in.
->
-> Great. Thanks for checking and quick fix.
->
-> btw clang supports it with __attribute__((address_space(256))),
-> so CC_IS_GCC probably should be relaxed.
+On Mon, Jan 06, 2025 at 08:10:42AM +0000, Hangbin Liu wrote:
+> +n0 nft add rule ip wgtest INPUT meta length 1360 counter drop
 
-https://github.com/llvm/llvm-project/issues/93449
+What's the point of `counter` here? It's never read back.
 
-needs to be fixed first. Also, the feature has to be thoroughly tested
-(preferably by someone having a deep knowledge of clang) before it is
-enabled by default.
+> +n0 nft add rule ip wgtest POSTROUTING ip saddr 192.168.1.0/24 ip daddr 10.0.0.0/24 counter snat to 10.0.0.1
 
-Thanks,
-Uros.
+Ditto.
+
+> +n1 nft add rule ip wgtest OUTPUT counter meta mark set 0x1
+
+Ditto.
+
+> +n2 nft add rule ip wgtest POSTROUTING ip saddr 10.0.0.0/24 ip daddr 192.168.241.0/24 counter snat to 192.168.241.2
+
+Ditto.
+
+> +n0 nft add rule ip wgtest INPUT iifname "vethrs" ip saddr != 10.0.0.0/24 counter drop
+
+Ditto.
 
