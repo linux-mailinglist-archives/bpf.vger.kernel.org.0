@@ -1,169 +1,146 @@
-Return-Path: <bpf+bounces-54417-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54418-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9471A69BDA
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 23:14:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FF47A69BEA
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 23:18:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 565DC7A35AA
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 22:12:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4BC41616E9
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 22:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74EA121A438;
-	Wed, 19 Mar 2025 22:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE4EC21C183;
+	Wed, 19 Mar 2025 22:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OQHr/Zgr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lNvjWr52"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3BEE20899C;
-	Wed, 19 Mar 2025 22:13:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E3D214A7A;
+	Wed, 19 Mar 2025 22:18:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742422431; cv=none; b=r1IbMokzk1gSruwE7a4ufD0V3vxBC4EsT5NfynZ1lYMg1yMpNry5mAOg8kXH9MVBreyXGWLH8wB9zn6CDyVWuhak6tE7a6bA4+NV+vDun06Zspt31Bwo8jF5/UwM43pvLwHwMg67/gC6UxPybs9X23d6Caui9g45bzA0KAKtnyY=
+	t=1742422690; cv=none; b=GEA8/y9O4VuExFO2MulXTQOlXMohAt6Xwsz0LosJrx3EJjhv+1XBKodhYpEMuxmwTYIUKCB0U/MQWgevrogr+pN8Yn6Bbk/0528e4T/Zq6iTqxBLVj2xcoxk17RtRvZZsBCjw1DtvNhkI6JRv7ErIbltIcmitPcIcrMmsUJWzxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742422431; c=relaxed/simple;
-	bh=qrPQan7aw5N3MeZWa6aIxkoax/iYMIYBSO2gVX6y+FE=;
+	s=arc-20240116; t=1742422690; c=relaxed/simple;
+	bh=YUognYdZVDVKoNWdTzYPY6W8ESehC/hs2B/Ek/cAyZo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qHu4H1BgLPLU7C14CfbHw2aEIY5bmX7iDRIBI+drQgMcNiR8IG4k69iOwJojlWSyX2aYmeIxi6g/k7g4ZQKDJ6KuOYCiYsVCJAt5sEL6d555aOlSnNpZGevfhws3JBxqijk5eDppzDj1lVY7yV5fsui+rT/n9Rzd30DHvvz/bfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OQHr/Zgr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E915DC4CEE4;
-	Wed, 19 Mar 2025 22:13:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742422430;
-	bh=qrPQan7aw5N3MeZWa6aIxkoax/iYMIYBSO2gVX6y+FE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OQHr/ZgrTZyl8SSHK2iM2RLCn70VdrqlXrGV2fuE1r5nPo3TKKSYv6Bf9ZTb0KBk4
-	 bcgalLfR6bvPJMtJOj4vUYj72nBtHFwO5TUnjhgNfPERWWJuXzWdxSXEsvQ/uxDHul
-	 jWHccVtaDoV4iv5UBAkwuMGJNcmF5FxdzABAL/L2FKGh7xm15ZWF0CFsLSbTnMZoYb
-	 N2igCn/nybMU1OlSeb3I2Wvhbn1JOubU3qD5gZxHlQKy4zJw+9rEEhMRN+h7JsolHC
-	 kZ3Sk0RqvE61v4+Wd7ROzn7NyD47EmxVnZY8j5igLyOBaU+foQpl6ipIrv7cEw22s1
-	 YaTwCXc2KqR8w==
-Date: Wed, 19 Mar 2025 15:13:48 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Quentin Monnet <qmo@kernel.org>, Ian Rogers <irogers@google.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	James Clark <james.clark@linaro.org>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-	linux-trace-devel@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 1/1 next] tools build: Remove the libunwind feature tests
- from the ones detected when test-all.o builds
-Message-ID: <Z9tBnDYy0slX2xh7@google.com>
-References: <Z1mzpfAUi8zeiFOp@x1>
- <CAP-5=fWqpcwc021enM8uMChSgCRB+UW_6z7+=pdsQG9msLJsbw@mail.gmail.com>
- <Z9hWqwvNQO0GqH09@google.com>
- <CAP-5=fWCWD5Rq5RR7NSMxrxmc1SUkK=8gg+D-JxGOgaHA7_WBA@mail.gmail.com>
- <c4f4a1d0-aed8-4b09-a3d2-067fdd04bed3@kernel.org>
- <Z9oHGfAffX2Bfl7a@google.com>
- <Z9qSvGTlMCzktlZJ@krava>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rpvpQe1Xt2aDOWJy3tbCLn/wDEoreMBM7+dEz/2QSo05UKilO4cEFdV5TZoiokQYAsx1/J9Gkaxaj6LrfHImw068i4y7F/7zhi6VVTQJ7cnfJ53B7vLfGgwNxnIBzALylsXnxsiB9idczgW+FIGHHHCDP1ei/jIFA6w9VWIFyXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lNvjWr52; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-225df540edcso27453675ad.0;
+        Wed, 19 Mar 2025 15:18:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742422688; x=1743027488; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=u4D7n+2LppWRVXPYghpVBpyiFPmMtKDL9HM2hyc7IaU=;
+        b=lNvjWr52iUu+YVqNbXyW7i989idxLoKF4hGshp7mJhMCg7aaBtQ8fk1YI6dHrLT+JA
+         odyJUVSBuvH/AUs5t9w7QK3SQ1DgXo+yDlavkFun7Zaoinq4Y/2t1maa2aI/KJZE8BaO
+         yN5c/AY4hvyDTCb+D8rJkIsT/gaELi+EwKK3XxGDkEhoxiR8+quye87oq90c1uEJH4am
+         mbXs0kQ/GYjcg+b4Nk77KvYGpL40Iy6m3xgFHNuVka8rMogE8pNqg5WNEGDml0J3QF/7
+         l36fhfeD8j6cadKFZ+7Uj6nEYoFA/4BoLROISnk3LVTD+xXb8itIhct+uUjvBJrpBj0g
+         A05w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742422688; x=1743027488;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u4D7n+2LppWRVXPYghpVBpyiFPmMtKDL9HM2hyc7IaU=;
+        b=w7s9NxB3cjtDrLwsOmfam3jHr9fQoQxunU0JldeVfWdNQM8ZFAvigvOLjYwgljExZw
+         ebxtU6KFBR73XHJNgINo6+dQZJpWhKr4PPUXcgZwGH2iL4Xb6Buo4PfoLKpNqVe/W/4J
+         xsM8zY/yujLQQ9giyWojI/byO/qP+6WDiPyOK9MvUwjzY0JO46u333VGRDOOQqtV2RCh
+         U2AqHQSWcMx1c+GCy2IzPWsUeAA4BPUWNDZ0Ln1yoY/jBokDkaUnjt8px2yyN7oUG0mL
+         coNt2ieID7iOr87nZNElXN8leu0LGVChBA4USiN46lUZ+rK0wnkcdxzCAXTm6R6qCkyy
+         YTKw==
+X-Forwarded-Encrypted: i=1; AJvYcCWSZGVYSrcJWtIPcIlpDYouM+It8qHEaZTZzXxtWAAhob26ZgKBCVkgBiGNXRBUOg2z9FU=@vger.kernel.org, AJvYcCWbyH5m6A9Bi1zeroFnUjqswwOLqBmxP4QlYYJJQ2dI5lxPXyw6TIeJQQR+aDMWaakzAUMStL9d@vger.kernel.org, AJvYcCXCHYFKfCCgnnDqOPNBbtU1b0IJwOrilfIyQFqC0rl5wfrMM1CCm0FYDH1cUlaNUBiPvj1T6K3Ywk/R9d6q@vger.kernel.org, AJvYcCXwbDd+cPIrHhpTau5unwna2V/vZq/5EGkyvjCE/eB+cqHqFYlPAen6ThVib39jlOYwYvXqsYWBbPTyL2x2O/TG@vger.kernel.org
+X-Gm-Message-State: AOJu0YyatGyZjukWPhQCwKnKuAubc+qL+4fPIqM+Jtn42fml50X0K5id
+	qHK+lfZMjATzhhOPXodfzJriF8V9Urt1clRRESwuUwMrGWrVornO
+X-Gm-Gg: ASbGnctX9jxzC5j81beLdCsvUlexHomu2F+tuAqXiH35t+G7m5+NroFVD0zlNhUEMlj
+	9FPOAjehbIUU0PdsIqMsiQRzGFNrL1hcb0i3NUeGb3tXYeQjWIza144+nB6h/FvOFSqO1CF9hHM
+	I7Xm2HOUJ7ScxiCSB+1B/VhJr56vnBDzeAUEpM5XXFutk46RjrxtDL9+P2hpCdHiCN12pYyJ8l1
+	n+vjwowoLKtb30VAmn50y9U2ZqLR8MPnG4UmcelOFPtvPhTYQ7idmTY7JB7TS6zORbjPrcjYU2u
+	3j/lJ9q0qy1neWqdbDB4Ydp4sL9AVBECrvG1C9DjvTdnhkCI
+X-Google-Smtp-Source: AGHT+IGK0f2KkWnICFOc8q1r+oYDRZ2i3pe9qWJQ1JQu0L9prPZ3InQnyeIpr/0kzsZTnUAQx2nzGg==
+X-Received: by 2002:a05:6a00:1249:b0:736:5969:2b6f with SMTP id d2e1a72fcca58-7377a0d85e8mr1620793b3a.6.1742422687959;
+        Wed, 19 Mar 2025 15:18:07 -0700 (PDT)
+Received: from localhost ([129.210.115.104])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73711695ae4sm12671807b3a.145.2025.03.19.15.18.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Mar 2025 15:18:07 -0700 (PDT)
+Date: Wed, 19 Mar 2025 15:18:06 -0700
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: Michal Luczaj <mhal@rbox.co>
+Cc: Stefano Garzarella <sgarzare@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Bobby Eshleman <bobby.eshleman@bytedance.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, virtualization@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net v4 3/3] vsock/bpf: Fix bpf recvmsg() racing transport
+ reassignment
+Message-ID: <Z9tCnq0rBw+nETfW@pop-os.localdomain>
+References: <20250317-vsock-trans-signal-race-v4-0-fc8837f3f1d4@rbox.co>
+ <20250317-vsock-trans-signal-race-v4-3-fc8837f3f1d4@rbox.co>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z9qSvGTlMCzktlZJ@krava>
+In-Reply-To: <20250317-vsock-trans-signal-race-v4-3-fc8837f3f1d4@rbox.co>
 
-Hi Jiri,
-
-On Wed, Mar 19, 2025 at 10:47:40AM +0100, Jiri Olsa wrote:
-> On Tue, Mar 18, 2025 at 04:51:53PM -0700, Namhyung Kim wrote:
-> > Hello,
-> > 
-> > On Mon, Mar 17, 2025 at 09:19:22PM +0000, Quentin Monnet wrote:
-> > > 2025-03-17 10:16 UTC-0700 ~ Ian Rogers <irogers@google.com>
-> > > > On Mon, Mar 17, 2025 at 10:06 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > >>
-> > > >> Hello,
-> > > >>
-> > > >> On Mon, Mar 17, 2025 at 09:10:29AM -0700, Ian Rogers wrote:
-> > > >>> On Wed, Dec 11, 2024 at 7:45 AM Arnaldo Carvalho de Melo
-> > > >>> <acme@kernel.org> wrote:
-> > > >>>>
-> > > >>>> We have a tools/build/feature/test-all.c that has the most common set of
-> > > >>>> features that perf uses and are expected to have its development files
-> > > >>>> available when building perf.
-> > > >>>>
-> > > >>>> When we made libwunwind opt-in we forgot to remove them from the list of
-> > > >>>> features that are assumed to be available when test-all.c builds, remove
-> > > >>>> them.
-> > > >>>>
-> > > >>>> Before this patch:
-> > > >>>>
-> > > >>>>   $ rm -rf /tmp/b ; mkdir /tmp/b ; make -C tools/perf O=/tmp/b feature-dump ; grep feature-libunwind-aarch64= /tmp/b/FEATURE-DUMP
-> > > >>>>   feature-libunwind-aarch64=1
-> > > >>>>   $
-> > > >>>>
-> > > >>>> Even tho this not being test built and those header files being
-> > > >>>> available:
-> > > >>>>
-> > > >>>>   $ head -5 tools/build/feature/test-libunwind-aarch64.c
-> > > >>>>   // SPDX-License-Identifier: GPL-2.0
-> > > >>>>   #include <libunwind-aarch64.h>
-> > > >>>>   #include <stdlib.h>
-> > > >>>>
-> > > >>>>   extern int UNW_OBJ(dwarf_search_unwind_table) (unw_addr_space_t as,
-> > > >>>>   $
-> > > >>>>
-> > > >>>> After this patch:
-> > > >>>>
-> > > >>>>   $ grep feature-libunwind- /tmp/b/FEATURE-DUMP
-> > > >>>>   $
-> > > >>>>
-> > > >>>> Now an audit on what is being enabled when test-all.c builds will be
-> > > >>>> performed.
-> > > >>>>
-> > > >>>> Fixes: 176c9d1e6a06f2fa ("tools features: Don't check for libunwind devel files by default")
-> > > >>>> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> > > >>>> Cc: Ian Rogers <irogers@google.com>
-> > > >>>> Cc: James Clark <james.clark@linaro.org>
-> > > >>>> Cc: Jiri Olsa <jolsa@kernel.org>
-> > > >>>> Cc: Kan Liang <kan.liang@linux.intel.com>
-> > > >>>> Cc: Namhyung Kim <namhyung@kernel.org>
-> > > >>>> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > >>>
-> > > >>> Sorry for the delay on this.
-> > > >>>
-> > > >>> Reviewed-by: Ian Rogers <irogers@google.com>
-> > > >>
-> > > >> Thanks for the review, but I think this part is used by other tools like
-> > > >> BPF and tracing.  It'd be nice to get reviews from them.
-> > > > 
-> > > > Sgtm. The patch hasn't had attention for 3 months. A quick grep for
-> > > > "unwind" and "UNW_" shows only use in perf and the feature tests.
-> > > > 
-> > > > Thanks,
-> > > > Ian
-> > > 
-> > > 
-> > > Indeed, bpftool does not rely on libunwind, and I don't remember other
-> > > BPF components doing so, either.
-> > 
-> > Right, but my concern was about the feature test itself and the related
-> > changes in the build files.
-> > 
-> > Can I get your Acked-by then?
+On Mon, Mar 17, 2025 at 10:52:25AM +0100, Michal Luczaj wrote:
+> Signal delivery during connect() may lead to a disconnect of an already
+> established socket. That involves removing socket from any sockmap and
+> resetting state to SS_UNCONNECTED. While it correctly restores socket's
+> proto, a call to vsock_bpf_recvmsg() might have been already under way in
+> another thread. If the connect()ing thread reassigns the vsock transport to
+> NULL, the recvmsg()ing thread may trigger a WARN_ON_ONCE.
 > 
-> hi,
-> I might be missing something, but I see following commit in git already:
->   b40fbeb0b1cd tools build: Remove the libunwind feature tests from the ones detected when test-all.o builds
+> connect
+>   / state = SS_CONNECTED /
+>                                 sock_map_update_elem
+>                                 vsock_bpf_recvmsg
+>                                   psock = sk_psock_get()
+>   lock sk
+>   if signal_pending
+>     unhash
+>       sock_map_remove_links
 
-Oops, thanks for checking this.
+So vsock's ->recvmsg() should be restored after this, right? Then how is
+vsock_bpf_recvmsg() called afterward?
 
-I was confused by Ian's late reply and thought it belongs to this
-cycle. :)  Yep, it's already merged in the previous cycle.
+>     state = SS_UNCONNECTED
+>   release sk
+> 
+> connect
+>   transport = NULL
+>                                   lock sk
+>                                   WARN_ON_ONCE(!vsk->transport)
+> 
 
-Sorry for the noise.
-Namhyung
+And I am wondering why we need to WARN here since we can handle this error
+case correctly?
 
+Thanks.
 
