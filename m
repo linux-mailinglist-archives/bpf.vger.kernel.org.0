@@ -1,164 +1,176 @@
-Return-Path: <bpf+bounces-54358-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54359-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DADDA6833A
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 03:41:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BD41A6834D
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 03:47:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C374A19C647A
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 02:41:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFE4A19C68F1
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 02:47:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66A2324E4B4;
-	Wed, 19 Mar 2025 02:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1592E24E4C3;
+	Wed, 19 Mar 2025 02:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A9fzD6cz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M5VTP6pH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30815145A18;
-	Wed, 19 Mar 2025 02:40:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E129BAD2F;
+	Wed, 19 Mar 2025 02:47:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742352059; cv=none; b=fJ7bEi3vi4zohT2C+R2w7HNEd5KkfbEFQFieSti808g7YuF+r0D5ba93EOFWkFooagSDU1zXwA1ioewV2+Wbj/8rVI1Nxcj3D52M7eeVA0wbpUyHmgnVfxe15OlqY9SWaBK6z+7nqe8DTnQnv72GhkU9NLkFu1oGfSErM3HubWA=
+	t=1742352426; cv=none; b=egoHkG4oZBWq0LpYzls4rs0y+GP/f+2+dBL6R1d5ZkvJ8M0fnmrKsGlridFNLac1UZMU4jJU0661fBfqnI683Tj9vSMepOH6set8OS/XWyG4ps7MVlM9WYDOAqwB3Huq0cHW36CjWjx3LCc7j3Z+xHGkD/jMxZer1u8/Mkn0nnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742352059; c=relaxed/simple;
-	bh=E9i51D+sRDYe7TIlKQ1t9tMjTNjd9YGS/QutLm8JaFA=;
+	s=arc-20240116; t=1742352426; c=relaxed/simple;
+	bh=Dn3PWelJFddmp3s83Ht4bxxUTBHLl1iUXwTZRYpRWiI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NwXROgD42JDZ1kCIQ3lczysclvRSQaBaEfQT9ibxuPR3YjOS80K5pRi2bpRwri2ClpYG2u8DaiZ4+8bpe0Rz9BWa3GfxDDh5LVbHiRG23muE3jHpJ8GzE4+TkoOh+Jh0j92dJgTq+NaLPS8dRhkCIZJ9qN/sFTYyfIgXc7uhgq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A9fzD6cz; arc=none smtp.client-ip=209.85.221.46
+	 To:Cc:Content-Type; b=dk9ABRgKWxE54dXUV7psATLqTA/Sa5UAWshmuxz1GHVFOHl3SnYxzQNjLcDfVpmMfkync004OsG+SCj1Pyc2scN/b/oHPJqzR1MY3b1Ft3Xdne06eFRop6QeT9EuSUqNs8t9saxEonztibAYZrGeEQRcrWkQL+5gQ3TJ3HrOt7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M5VTP6pH; arc=none smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3913cf69784so5327702f8f.1;
-        Tue, 18 Mar 2025 19:40:57 -0700 (PDT)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-43948f77f1aso29143755e9.0;
+        Tue, 18 Mar 2025 19:47:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742352056; x=1742956856; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742352423; x=1742957223; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WeqBB++rcOx94nz1IuSE0ME1aOopqq+egTiTenlENkM=;
-        b=A9fzD6czaWgqPHgPTJWQwI72INyjZfHnqrNa+m9vUmZatNGjffxiSLMTZKWMicWEWX
-         P/kJeDGR/rgK9ldg/iuMlLcMvel+AzHxKv55gdstRs/Gm+4MIt9DhNQEXlHumBsXKFyQ
-         mRutAoJjWBatoBByWsh8Yw9M1sfw7nnxRkpU6hJOEWehIAR4rn5K2x+zMRnZFvpnRm/P
-         y/AGN1kv5PloH1BoT7XT8d4FTXY+KKqpCkWHh4xsuKtX3MCi7jH30HU14cdIG4KYEs9s
-         UTxA2zVv2csM9BR2qsM3CODVplSRjTKcdO1NVyGh4Uak3j5DjXauuvt8FmY1wkZuNwET
-         ys4g==
+        bh=pNwRjgTV5vyjSkK1YIBebLoMJzNTyzSDJ2Cwgi8wBxA=;
+        b=M5VTP6pHbzhXijA6lBHfmeJ7unhrvniUrpOn5jEmbkGU5CpGY6B/c2/XX6zjysXQob
+         AtfQ/H/1UqGzVB7sqzwJY5znLKTTH7JMRFrYfVZOyzpanIu4qo3mBSuTiOVs1hBtfaZL
+         EUB+fSVYUkzuZJ+OkcVWOgyYkL0o83ymEnk7QED7lE31mICr5MXIpuqywALA6EjKuPlL
+         +YhP6Hi/UM7+Ulqjipqp/QtkZEjhNmivR1LAYgGeGcNewIakrxEoZWfQ6TRrrAo7Ey8s
+         SeL9D2IOPyoByL/tyWszsZcFlVvX0oeF7LAyqJt+A+B38zUbVhgYsLNg6JLXc0FWtG3Z
+         yOgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742352056; x=1742956856;
+        d=1e100.net; s=20230601; t=1742352423; x=1742957223;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WeqBB++rcOx94nz1IuSE0ME1aOopqq+egTiTenlENkM=;
-        b=UxINhRNIPrEt8y2m3yNhZnP2btyyr0OO8vhElK3uEmw+URqMbtf1aBAICQoh2BNuSs
-         9s7Wl8bSqgEjMMb7uaTYSiMXKdVFwB43JNuLhWuOtBLNq9HAtcN9PpWlZ19bAfxMrCKg
-         c0OiRp2HgILNu8AoEBVsa/RcwNqkOjnQay/zabpdce/CdVolggOySYvVJr+5a9kxah0T
-         YY5uAv5d4y+aGf6FF9g5dm3udrG8XcBNkDPtYqbGwUQTn2dMDOlndL74a/ABDSB2IgqN
-         aCbJR6LLStksxoxbq7fAOkulsVwAf4RpL0dGu9rznks4XeG9r8Vr8BdKmYk6R1lFJzD7
-         8oLg==
-X-Forwarded-Encrypted: i=1; AJvYcCVUNU9x+jqRGaaK63iTCyHSehllaj/qXRSkfSRMiNf8wcMo4FVF8wEWKA+iwzjA8qj/XyM=@vger.kernel.org, AJvYcCW/nGsQLxqpPVSuIs4fat3A/GtLB3UvHW9pTmk8qhTnwUHVdtD9MY2P47zjzh6h7dsbps029PhIPRzFUx67p/6T@vger.kernel.org, AJvYcCXJJe6yjH0l2GIVgBhIQ0km317og1sW3KHyziKe2KcCgTf0xdcSEMHVm3ebDcGtiSoH4AkusHWRbVI0t1zv@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNwss2TcWKYC7ly9rlRuOno6rhze2A+nGf1bu06Q0iFcGlC8RD
-	9vB6ssLW4I92aOUO8yNyyKUT9X7PFgayIb97WgkSXDH87+IKK9lqoU33QV4ur7dHP3DZrs88Cqu
-	Yi6tQ4FGIQflh7XExPqAxhuCok5o=
-X-Gm-Gg: ASbGncuuOYanJNza1o/Pdhc2d/HAZH/wvFhBRVUJcKAgK7TBEmP6zCOe2aFBqvA/y6Y
-	GUxummNs5knrskCgls8etuaVz3Z0rPLuWpxfps27rOEPHRofA21D87nfD9ZPANyNRkbfgD6C6pa
-	GYF/psRZ7E1tWuXZKUbqjAU9D5a9vrHAC/E4KDffwRHUwAFPAtlL1P
-X-Google-Smtp-Source: AGHT+IEq4Cvjw+V0zW8HacPzY7dpEsXkttELmIjzb3h1MDYt7G6p44IBkRudTjyMAKCZQZF68Vdm9Bd7RVSCNEeyHA4=
-X-Received: by 2002:a05:6000:2a6:b0:391:2c0c:1247 with SMTP id
- ffacd0b85a97d-399739b7c7cmr810733f8f.1.1742352056133; Tue, 18 Mar 2025
- 19:40:56 -0700 (PDT)
+        bh=pNwRjgTV5vyjSkK1YIBebLoMJzNTyzSDJ2Cwgi8wBxA=;
+        b=Hv9WY1qkTv1z3RpzzLJvnyUaewWR4OmzcpCHVwrZJdFlOqGpttux1DWYZBT06p6Uu4
+         UI1ijJMeQQ1Kvxmhfpvfc1VZnMy2j9UrWD2An7DNMFrqkbIM2knqs2GRovjQe/lSqnCV
+         4oGkuWJTi3KGUqTODAOulOH30Wzz6b48B5a1cwYTY6lw93J+cHZppLlGr8o8vJQgdloO
+         tn4wGpFt9eLQBThktRm9oKmnFRAcd7fTzxu/atHyEryfpbQu2mCotnhyxtIdvvb+fBzD
+         X5kTK2vbpusxDumr49DJwTJD/+AzwemlPyIFQ9z8IPI3nqaZ6LrUn8yj+ZCn89V9LE77
+         /Lsw==
+X-Forwarded-Encrypted: i=1; AJvYcCVlZ7Q2c8Xm9ZhdX4r/wtPXE04x3ds+m004MFOL0XUB62uLm1b7h7bSf6np0YPGRDLfxnM=@vger.kernel.org, AJvYcCVwQ0exN2p8IGVcoPhqLHsBNjPcNDjGyKhAklCo1OrzLT7P1JawLwKdMO/qcQPQHGdlTaA4cjBY@vger.kernel.org, AJvYcCXII6ztW8Jt7vTpSsZF8oNyQKynpgQ7KxRtCFulN7COtAIzomAoGpxmOGzUE6Wa+hSDptzTi2fCnu/C48iM@vger.kernel.org, AJvYcCXqUf6H7/4MyLgJz1NpNh9dL9hwHN+iTh7fSarOFf8JVH4V0Fk4Gqpg9ZTjRqctg7aeMmtsGcM5bYLghw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzSEJR0AE2Qbt/shLNJLSAc/Yd1gxYTYCL/0RP+EQSbwnqOMl0b
+	yW4YyzFhU62V28NLGjv/M9Ou/+6gdrLFIvl/24qB/kUqNM8uDQs24v1z71NnpRyNV0xZCIDckiv
+	YcA7++G11KxELGfbtX9eNDgjdySUytO5z
+X-Gm-Gg: ASbGnctvbBUinsiC2jOQ4rCTS3WbDYfhZa9Xp5GD3VIrcxk7mMiE3SOtSRhTAGAQfSf
+	ijYZJLCKumLjT4gIiHGSi8DkwD+mptOE6oVgV4cvTSlRYLsqFXqmKyDn9vCHd9vgI1N2pQkx8iM
+	W8s4sZ1K9u0H1zsx13yv5Ds0WXwiIWRPy3gRmZ933QyMyuDTa9p9wH
+X-Google-Smtp-Source: AGHT+IE6MFlMuJtugrViJVg66D6og8DYJPY2VbtA0lQZ4r7b8uYfAxYuEvDGrs357PIC6nGVQardy/0Uda7JcMYyTAs=
+X-Received: by 2002:a5d:5982:0:b0:399:71d4:a2 with SMTP id ffacd0b85a97d-399739c1524mr816039f8f.14.1742352423079;
+ Tue, 18 Mar 2025 19:47:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250313172127.1098195-1-luis.gerhorst@fau.de>
- <20250313175312.1120183-1-luis.gerhorst@fau.de> <20250313175312.1120183-2-luis.gerhorst@fau.de>
-In-Reply-To: <20250313175312.1120183-2-luis.gerhorst@fau.de>
+References: <20250319133309.6fce6404@canb.auug.org.au>
+In-Reply-To: <20250319133309.6fce6404@canb.auug.org.au>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 18 Mar 2025 19:40:44 -0700
-X-Gm-Features: AQ5f1Jql7yFmS7_MWNSMia475Ma-4TwbNZCE_S5_030qdEibYwvwxGNs5a0zSMA
-Message-ID: <CAADnVQKL-NwxigMWM+U=n5ZXPG+xHYzSTEv0Rq8Y91m45eRJDw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 11/11] bpf: Fall back to nospec for spec path verification
-To: Luis Gerhorst <luis.gerhorst@fau.de>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
-	Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Hari Bathini <hbathini@linux.ibm.com>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Henriette Herzog <henriette.herzog@rub.de>, Cupertino Miranda <cupertino.miranda@oracle.com>, 
-	Matan Shachnai <m.shachnai@gmail.com>, Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, 
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	ppc-dev <linuxppc-dev@lists.ozlabs.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, George Guo <guodongtai@kylinos.cn>, 
-	WANG Xuerui <git@xen0n.name>, Tiezhu Yang <yangtiezhu@loongson.cn>, Maximilian Ott <ott@cs.fau.de>, 
-	Milan Stephan <milan.stephan@fau.de>
+Date: Tue, 18 Mar 2025 19:46:52 -0700
+X-Gm-Features: AQ5f1JqdE91XzIdfoDPQyyQUyj5uA6okIPHz4NL_DcBD8mOsI7c3nyOiy4dAGww
+Message-ID: <CAADnVQKotSrp8CkVpFw-y800NJ_R7An-iw-twrQZaOdYUeRtqQ@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the bpf-next tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Uros Bizjak <ubizjak@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Networking <netdev@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 13, 2025 at 10:57=E2=80=AFAM Luis Gerhorst <luis.gerhorst@fau.d=
-e> wrote:
+On Tue, Mar 18, 2025 at 7:33=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+.au> wrote:
 >
-> This trades verification complexity for runtime overheads due to the
-> nospec inserted because of the EINVAL.
+> Hi all,
 >
-> With increased limits this allows applying mitigations to large BPF
-> progs such as the Parca Continuous Profiler's prog. However, this
-> requires a jump-seq limit of 256k. In any case, the same principle
-> should apply to smaller programs therefore include it even if the limit
-> stays at 8k for now. Most programs in [1] only require a limit of 32k.
-
-Do you mean that without this change the verifier needs 256k
-jmp limit to load Parca's prog as unpriv due to speculative
-path exploration with push_stack ?
-
-And this change uses 4k as a trade-off between prog runtime
-and verification time ?
-
-But tracing progs use bpf_probe_read_kernel(), so they're never going
-to be unpriv.
-
-> @@ -2010,6 +2011,19 @@ static struct bpf_verifier_state *push_stack(struc=
-t bpf_verifier_env *env,
->         struct bpf_verifier_stack_elem *elem;
->         int err;
+> After merging the bpf-next tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
 >
-> +       if (!env->bypass_spec_v1 &&
-> +           cur->speculative &&
+> In file included from include/asm-generic/percpu.h:7,
+>                  from arch/x86/include/asm/percpu.h:630,
+>                  from arch/x86/include/asm/preempt.h:6,
+>                  from include/linux/preempt.h:79,
+>                  from include/linux/smp.h:116,
+>                  from kernel/locking/qspinlock.c:16:
+> kernel/locking/qspinlock.h: In function 'decode_tail':
+> include/linux/percpu-defs.h:219:45: error: initialization from pointer to=
+ non-enclosed address space
+>   219 |         const void __percpu *__vpp_verify =3D (typeof((ptr) + 0))=
+NULL;    \
+>       |                                             ^
+> include/linux/percpu-defs.h:237:9: note: in expansion of macro '__verify_=
+pcpu_ptr'
+>   237 |         __verify_pcpu_ptr(ptr);                                  =
+       \
+>       |         ^~~~~~~~~~~~~~~~~
+> kernel/locking/qspinlock.h:67:16: note: in expansion of macro 'per_cpu_pt=
+r'
+>    67 |         return per_cpu_ptr(&qnodes[idx].mcs, cpu);
+>       |                ^~~~~~~~~~~
+> include/linux/percpu-defs.h:219:45: note: expected 'const __seg_gs void *=
+' but pointer is of type 'struct mcs_spinlock *'
+>   219 |         const void __percpu *__vpp_verify =3D (typeof((ptr) + 0))=
+NULL;    \
+>       |                                             ^
+> include/linux/percpu-defs.h:237:9: note: in expansion of macro '__verify_=
+pcpu_ptr'
+>   237 |         __verify_pcpu_ptr(ptr);                                  =
+       \
+>       |         ^~~~~~~~~~~~~~~~~
+> kernel/locking/qspinlock.h:67:16: note: in expansion of macro 'per_cpu_pt=
+r'
+>    67 |         return per_cpu_ptr(&qnodes[idx].mcs, cpu);
+>       |                ^~~~~~~~~~~
+> kernel/locking/qspinlock.c: In function 'native_queued_spin_lock_slowpath=
+':
+> kernel/locking/qspinlock.c:285:41: error: passing argument 2 of 'decode_t=
+ail' from pointer to non-enclosed address space
+>   285 |                 prev =3D decode_tail(old, qnodes);
+>       |                                         ^~~~~~
+> In file included from kernel/locking/qspinlock.c:30:
+> kernel/locking/qspinlock.h:62:79: note: expected 'struct qnode *' but arg=
+ument is of type '__seg_gs struct qnode *'
+>    62 | static inline __pure struct mcs_spinlock *decode_tail(u32 tail, s=
+truct qnode *qnodes)
+>       |                                                                 ~=
+~~~~~~~~~~~~~^~~~~~
+> In file included from kernel/locking/qspinlock.c:401:
+> kernel/locking/qspinlock.c: In function '__pv_queued_spin_lock_slowpath':
+> kernel/locking/qspinlock.c:285:41: error: passing argument 2 of 'decode_t=
+ail' from pointer to non-enclosed address space
+>   285 |                 prev =3D decode_tail(old, qnodes);
+>       |                                         ^~~~~~
+> kernel/locking/qspinlock.h:62:79: note: expected 'struct qnode *' but arg=
+ument is of type '__seg_gs struct qnode *'
+>    62 | static inline __pure struct mcs_spinlock *decode_tail(u32 tail, s=
+truct qnode *qnodes)
+>       |                                                                 ~=
+~~~~~~~~~~~~~^~~~~~
+>
+> Caused by the resilient-queued-spin-lock branch of the bpf-next tree
+> interacting with the "Enable strict percpu address space checks" series
+> form the mm-stable tree.
 
-Should this be
-(cur->speculative || speculative)
-?
+Do you mean this set:
+https://lore.kernel.org/all/20250127160709.80604-1-ubizjak@gmail.com/
 
-In general I'm not convinced that the approach is safe.
+>
+> I don't know why this happens, but reverting that branch inf the bpf-next
+> tree makes the failure go away, so I have done that for today.
 
-This recoverable EINVAL means that exploration under speculation
-stops early, but there could be more branches and they won't be
-sanitized with extra lfence.
-So speculative execution can still happen at later insns.
+Kumar,
 
-Similar concern in patch 7:
-+ if (state->speculative && cur_aux(env)->nospec)
-+   goto process_bpf_exit;
-
-One lfence at this insn doesn't stop speculation until the program end.
-Only at this insn. The rest of the code is free to speculate.
-
-The refactoring in patches 1-3 is nice.
-Patches 4-5 are tricky and somewhat questionable, but make sense.
-Patch 7 without early goto process_bpf_exit looks correct too,
-Patch 8 is borderline. Feels like it's opening the door for
-new vulnerabilities and space to explore for security researchers.
-We disabled unpriv bpf by default and have no intentions to enable it.
-Even if we land the whole thing the unpriv will stay disabled.
-So trade offs don't appear favorable.
+pls take a look.
 
