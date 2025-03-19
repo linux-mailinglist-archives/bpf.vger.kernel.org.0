@@ -1,75 +1,71 @@
-Return-Path: <bpf+bounces-54362-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54363-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 632A7A685D5
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 08:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ACE3A68635
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 08:54:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3A57422722
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 07:36:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86D36178E52
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 07:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481B424EAB7;
-	Wed, 19 Mar 2025 07:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604AE2505A0;
+	Wed, 19 Mar 2025 07:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Oga8dRIi"
+	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="DqG01zv6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C281DE880;
-	Wed, 19 Mar 2025 07:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B9C24EF7F;
+	Wed, 19 Mar 2025 07:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.95.48.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742369778; cv=none; b=rc0PcdK+vjDaWzMbY2Cxj/9RBhLEFq6EVyAxT3gIgsv/P4AK70WBkwWxgMSbNSu+Mb5GBGXFV1OK0h4BXUIRKYVDYgGfHTKq9n/2mCz+QQKpyp6UxqH8FwxsUDgijWJOzzHdkz9c+/yD7DpPuAHrIxCQ4mu4qarjsV9Nn0ej8/c=
+	t=1742370839; cv=none; b=Lg6sqvoScINW1kI9rKECYQ9gsBXUh/ArTwCH4NU/uIPFPmZlEJlCIN8dqVPzDaaw6vnXATzTVjJJ3+Z5uFqdEhZjA0ZF1yyg6Zmq3Zqlzm74Ey4Nbw9YCZkBR2RWLpC0UlVT6RX0tJ6+8eR7D/EvIHXxi1+c++qFZAQnYMghf4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742369778; c=relaxed/simple;
-	bh=IhnqxCNcdBlmXOOsuqLw7xc9Vm4wgewG9CsnJuCWQ20=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=vBzTtZVMVI/ayk6lSztqR3IhMPWXXcu+3gdmxlQgPdRbpQMQrL54RqSujqeow5+Q3BrqpWTKpEc40Hbdn226/NX13jxmcmceYJWGmCuP6rMiM191zoR7soHE1Q58KdUxmhzXjUjAWKdlMWLTSlQhxccSE+LwnIuEKHh249+L9OE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Oga8dRIi; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52IMDZ8X027985;
-	Wed, 19 Mar 2025 07:36:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
-	content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=76de43
-	0e8ggFt6mL3KzOH5GE5t0O75BKBl/wsGZ/Ojw=; b=Oga8dRIiEj97Dk6kXTndDV
-	t47EATtV1qxphLalJCGq+s9QIH2H/gKjI+18WTEBpimlyw/RacEd7TG/GUU00tRO
-	GVNgZ3oGok6u5/z6EfYfmOutV21G3GT/RKKDEwUUuDl1l3x92R3HQjoARJz84pdx
-	VncPtrthpmA5lQwJCENhgrhHevf/aHa50JGpG6HiSNmK7NvVknOXweEOGXzwDzGa
-	PLrc5DVMhSuFQ3ZppKyWrgX1Kuir9MfP6chhCJP3b/nLGOhsqf4wXjL5LNOLzCfm
-	Dl2Xv+E5gdSvvpjGG4cETVGKY4fG3VV5hk5+3UeVuntYCxTMT9FnzRYlOg3GVPJw
-	==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45fa8pcbav-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 19 Mar 2025 07:36:15 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52J7DP9P023195;
-	Wed, 19 Mar 2025 07:36:15 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 45dp3kr4ef-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 19 Mar 2025 07:36:14 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52J7aBCs41615696
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 19 Mar 2025 07:36:11 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4F4B720040;
-	Wed, 19 Mar 2025 07:36:11 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EAAD220049;
-	Wed, 19 Mar 2025 07:36:09 +0000 (GMT)
-Received: from [9.203.115.62] (unknown [9.203.115.62])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 19 Mar 2025 07:36:09 +0000 (GMT)
-Message-ID: <73047120-e683-4142-b4e4-2422fc41f58d@linux.ibm.com>
-Date: Wed, 19 Mar 2025 13:06:08 +0530
+	s=arc-20240116; t=1742370839; c=relaxed/simple;
+	bh=ky3jiM1bjOMzTVRWpEBEoFuEvp1kviCET1tz7ZVwE2M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=p8sRDjXxkj5H37obxICefLjVocm67tUslQfkJU9E4m66fo/T/qiVAZsDROPRwgK1Xib8zjrb78p4Oqi+ZCZ73ZV1OtIFnUaNHon6XPgQwJawgSc7/Uca9hfi41azEqJNHIAUEVAmM2Z2LhjnkGVhM9IbCuFKjFv3A7IipfNRQEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=DqG01zv6; arc=none smtp.client-ip=52.95.48.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1742370839; x=1773906839;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=jXl/8vzx6TOy29mjcSY/yyQLEaXHaFbsfFs77FD/cV4=;
+  b=DqG01zv6efHOu5qF8LBUlJK8bGv0/di64ealz+ky2yRSAraysEpZX/O3
+   l2+gmCRnUavBY4q3NPaHk+z5e6b1t40AyTs91I43cpNU/2YCpZPnWb2Mz
+   i793CHBoh7ICQm8BJLz1StnIFOzDBVveVbW4sPRklXxGx2dAklUCRYBZj
+   4=;
+X-IronPort-AV: E=Sophos;i="6.14,259,1736812800"; 
+   d="scan'208";a="472339262"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2025 07:53:51 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:10937]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.62.245:2525] with esmtp (Farcaster)
+ id f1034041-96c5-4fa3-9e32-0aaec99408b2; Wed, 19 Mar 2025 07:53:50 +0000 (UTC)
+X-Farcaster-Flow-ID: f1034041-96c5-4fa3-9e32-0aaec99408b2
+Received: from EX19D020UWA001.ant.amazon.com (10.13.138.249) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Wed, 19 Mar 2025 07:53:50 +0000
+Received: from EX19MTAUEC002.ant.amazon.com (10.252.135.146) by
+ EX19D020UWA001.ant.amazon.com (10.13.138.249) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Wed, 19 Mar 2025 07:53:49 +0000
+Received: from email-imr-corp-prod-iad-all-1a-f1af3bd3.us-east-1.amazon.com
+ (10.43.8.6) by mail-relay.amazon.com (10.252.135.146) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id
+ 15.2.1544.14 via Frontend Transport; Wed, 19 Mar 2025 07:53:49 +0000
+Received: from [127.0.0.1] (dev-dsk-roypat-1c-dbe2a224.eu-west-1.amazon.com [172.19.88.180])
+	by email-imr-corp-prod-iad-all-1a-f1af3bd3.us-east-1.amazon.com (Postfix) with ESMTPS id 5C81F40881;
+	Wed, 19 Mar 2025 07:53:45 +0000 (UTC)
+Message-ID: <ad359b73-e50c-48e0-a5b5-4df9823fa289@amazon.co.uk>
+Date: Wed, 19 Mar 2025 07:53:43 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,162 +73,177 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [main-line]warning at arch/powerpc/net/bpf_jit_comp.c:961
-To: Venkat Rao Bagalkote <venkat88@linux.ibm.com>,
-        Saket Kumar Bhaskar <skb99@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>
-References: <6168bfc8-659f-4b5a-a6fb-90a916dde3b3@linux.ibm.com>
+Subject: Re: [PATCH v4 03/12] KVM: guest_memfd: Add flag to remove from direct
+ map
+To: David Hildenbrand <david@redhat.com>, <rppt@kernel.org>,
+	<seanjc@google.com>
+CC: <pbonzini@redhat.com>, <corbet@lwn.net>, <willy@infradead.org>,
+	<akpm@linux-foundation.org>, <song@kernel.org>, <jolsa@kernel.org>,
+	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<martin.lau@linux.dev>, <eddyz87@gmail.com>, <yonghong.song@linux.dev>,
+	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@fomichev.me>,
+	<haoluo@google.com>, <Liam.Howlett@oracle.com>, <lorenzo.stoakes@oracle.com>,
+	<vbabka@suse.cz>, <jannh@google.com>, <shuah@kernel.org>,
+	<kvm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-mm@kvack.org>, <bpf@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>, <tabba@google.com>, <jgowans@amazon.com>,
+	<graf@amazon.com>, <kalyazin@amazon.com>, <xmarcalx@amazon.com>,
+	<derekmn@amazon.com>, <jthoughton@google.com>, Elliot Berman
+	<quic_eberman@quicinc.com>
+References: <20250221160728.1584559-1-roypat@amazon.co.uk>
+ <20250221160728.1584559-4-roypat@amazon.co.uk>
+ <a3178c50-2e76-4743-8008-9a33bd0af93f@redhat.com>
+ <8642de57-553a-47ec-81af-803280a360ec@amazon.co.uk>
+ <bfe43591-66b6-4fb9-bf6c-df79ddeffb17@redhat.com>
+ <7f38018b-dc89-4d79-a309-149557796121@amazon.co.uk>
+ <9ffce724-23c9-4aa1-bc53-8292e1029991@redhat.com>
+From: Patrick Roy <roypat@amazon.co.uk>
 Content-Language: en-US
-From: Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <6168bfc8-659f-4b5a-a6fb-90a916dde3b3@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QZeiulx1mTi9Y2C3Brw6jh7GAc9J0pgB
-X-Proofpoint-ORIG-GUID: QZeiulx1mTi9Y2C3Brw6jh7GAc9J0pgB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-19_02,2025-03-17_03,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- mlxscore=0 spamscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
- adultscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2502280000
- definitions=main-2503190050
+Autocrypt: addr=roypat@amazon.co.uk; keydata=
+ xjMEY0UgYhYJKwYBBAHaRw8BAQdA7lj+ADr5b96qBcdINFVJSOg8RGtKthL5x77F2ABMh4PN
+ NVBhdHJpY2sgUm95IChHaXRodWIga2V5IGFtYXpvbikgPHJveXBhdEBhbWF6b24uY28udWs+
+ wpMEExYKADsWIQQ5DAcjaM+IvmZPLohVg4tqeAbEAgUCY0UgYgIbAwULCQgHAgIiAgYVCgkI
+ CwIEFgIDAQIeBwIXgAAKCRBVg4tqeAbEAmQKAQC1jMl/KT9pQHEdALF7SA1iJ9tpA5ppl1J9
+ AOIP7Nr9SwD/fvIWkq0QDnq69eK7HqW14CA7AToCF6NBqZ8r7ksi+QLOOARjRSBiEgorBgEE
+ AZdVAQUBAQdAqoMhGmiXJ3DMGeXrlaDA+v/aF/ah7ARbFV4ukHyz+CkDAQgHwngEGBYKACAW
+ IQQ5DAcjaM+IvmZPLohVg4tqeAbEAgUCY0UgYgIbDAAKCRBVg4tqeAbEAtjHAQDkh5jZRIsZ
+ 7JMNkPMSCd5PuSy0/Gdx8LGgsxxPMZwePgEAn5Tnh4fVbf00esnoK588bYQgJBioXtuXhtom
+ 8hlxFQM=
+In-Reply-To: <9ffce724-23c9-4aa1-bc53-8292e1029991@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-Hi Venkat,
+Hi David!
 
-Thanks for reporting this.
-I am having a hard time reproducing this. Please share the
-kernel build config..
+On Wed, 2025-02-26 at 15:30 +0000, David Hildenbrand wrote:
+> On 26.02.25 16:14, Patrick Roy wrote:
+>>
+>>
+>> On Wed, 2025-02-26 at 09:08 +0000, David Hildenbrand wrote:
+>>> On 26.02.25 09:48, Patrick Roy wrote:
+>>>>
+>>>>
+>>>> On Tue, 2025-02-25 at 16:54 +0000, David Hildenbrand wrote:> On 21.02.25 17:07, Patrick Roy wrote:
+>>>>>> Add KVM_GMEM_NO_DIRECT_MAP flag for KVM_CREATE_GUEST_MEMFD() ioctl. When
+>>>>>> set, guest_memfd folios will be removed from the direct map after
+>>>>>> preparation, with direct map entries only restored when the folios are
+>>>>>> freed.
+>>>>>>
+>>>>>> To ensure these folios do not end up in places where the kernel cannot
+>>>>>> deal with them, set AS_NO_DIRECT_MAP on the guest_memfd's struct
+>>>>>> address_space if KVM_GMEM_NO_DIRECT_MAP is requested.
+>>>>>>
+>>>>>> Note that this flag causes removal of direct map entries for all
+>>>>>> guest_memfd folios independent of whether they are "shared" or "private"
+>>>>>> (although current guest_memfd only supports either all folios in the
+>>>>>> "shared" state, or all folios in the "private" state if
+>>>>>> !IS_ENABLED(CONFIG_KVM_GMEM_SHARED_MEM)). The usecase for removing
+>>>>>> direct map entries of also the shared parts of guest_memfd are a special
+>>>>>> type of non-CoCo VM where, host userspace is trusted to have access to
+>>>>>> all of guest memory, but where Spectre-style transient execution attacks
+>>>>>> through the host kernel's direct map should still be mitigated.
+>>>>>>
+>>>>>> Note that KVM retains access to guest memory via userspace
+>>>>>> mappings of guest_memfd, which are reflected back into KVM's memslots
+>>>>>> via userspace_addr. This is needed for things like MMIO emulation on
+>>>>>> x86_64 to work. Previous iterations attempted to instead have KVM
+>>>>>> temporarily restore direct map entries whenever such an access to guest
+>>>>>> memory was needed, but this turned out to have a significant performance
+>>>>>> impact, as well as additional complexity due to needing to refcount
+>>>>>> direct map reinsertion operations and making them play nicely with gmem
+>>>>>> truncations.
+>>>>>>
+>>>>>> This iteration also doesn't have KVM perform TLB flushes after direct
+>>>>>> map manipulations. This is because TLB flushes resulted in a up to 40x
+>>>>>> elongation of page faults in guest_memfd (scaling with the number of CPU
+>>>>>> cores), or a 5x elongation of memory population. On the one hand, TLB
+>>>>>> flushes are not needed for functional correctness (the virt->phys
+>>>>>> mapping technically stays "correct",  the kernel should simply to not it
+>>>>>> for a while), so this is a correct optimization to make. On the other
+>>>>>> hand, it means that the desired protection from Spectre-style attacks is
+>>>>>> not perfect, as an attacker could try to prevent a stale TLB entry from
+>>>>>> getting evicted, keeping it alive until the page it refers to is used by
+>>>>>> the guest for some sensitive data, and then targeting it using a
+>>>>>> spectre-gadget.
+>>>>>>
+>>>>>> Signed-off-by: Patrick Roy <roypat@amazon.co.uk>
+>>>>>
+>>>>> ...
+>>>>>
+>>>>>>
+>>>>>> +static bool kvm_gmem_test_no_direct_map(struct inode *inode)
+>>>>>> +{
+>>>>>> +     return ((unsigned long) inode->i_private) & KVM_GMEM_NO_DIRECT_MAP;
+>>>>>> +}
+>>>>>> +
+>>>>>>     static inline void kvm_gmem_mark_prepared(struct folio *folio)
+>>>>>>     {
+>>>>>> +     struct inode *inode = folio_inode(folio);
+>>>>>> +
+>>>>>> +     if (kvm_gmem_test_no_direct_map(inode)) {
+>>>>>> +             int r = set_direct_map_valid_noflush(folio_page(folio, 0), folio_nr_pages(folio),
+>>>>>> +                                                  false);
+>>>>>
+>>>>> Will this work if KVM is built as a module, or is this another good
+>>>>> reason why we might want guest_memfd core part of core-mm?
+>>>>
+>>>> mh, I'm admittedly not too familiar with the differences that would come
+>>>> from building KVM as a module vs not. I do remember something about the
+>>>> direct map accessors not being available for modules, so this would
+>>>> indeed not work. Does that mean moving gmem into core-mm will be a
+>>>> pre-requisite for the direct map removal stuff?
+>>>
+>>> Likely, we'd need some shim.
+>>>
+>>> Maybe for the time being it could be fenced using #if IS_BUILTIN() ...
+>>> but that sure won't win in a beauty contest.
+>>
+>> Is anyone working on such a shim at the moment? Otherwise, would it make
+>> sense for me to look into it? (although I'll probably need a pointer or
+>> two for what is actually needed)
+>>
+>> I saw your comment on Fuad's series [1] indicating that he'll also need
+>> some shim, so probably makes sense to tackle it anyway instead of
+>> hacking around it with #if-ery.
+> 
+> Elliot (CC) was working on "guestmem library" project [1], but it was
+> unclear what we could factor out into the core.
+> 
+> Looks like a simple shim for such stuff might be a good starting point,
+> although not the final idea of encapsulating more in the library.
 
-On 17/03/25 6:21 pm, Venkat Rao Bagalkote wrote:
-> Greetings!!!
-> 
-> I am observing below warnings on linux-mainline kernel, while running 
-> bpf-sefltests.
-> 
-> These warnings are intermitent, reproduces roughly 6 out of 10 times.
-> 
-> 
-> Repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> 
-> 
-> Tests:
-> 
-> ./test_progs
-> 
-> 
-> Attached is the log file of summary of tests.
-> 
-> 
-> Traces:
-> 
-> [  978.200120] ------------[ cut here ]------------
-> [  978.200133] WARNING: CPU: 11 PID: 45522 at arch/powerpc/net/ 
-> bpf_jit_comp.c:961 __arch_prepare_bpf_trampoline.isra.0+0xdc8/0xfe0
-> [  978.200144] Modules linked in: tun(E) bpf_testmod(OE) veth(E) 
-> bonding(E) tls(E) nft_fib_inet(E) nft_fib_ipv4(E) nft_fib_ipv6(E) 
-> nft_fib(E) nft_reject_inet(E) nf_reject_ipv4(E) nf_reject_ipv6(E) 
-> nft_reject(E) nft_ct(E) rfkill(E) nft_chain_nat(E) sunrpc(E) ibmveth(E) 
-> pseries_rng(E) vmx_crypto(E) drm(E) dm_multipath(E) dm_mod(E) fuse(E) 
-> drm_panel_orientation_quirks(E) zram(E) xfs(E) sd_mod(E) ibmvscsi(E) 
-> scsi_transport_srp(E) [last unloaded: bpf_test_modorder_x(OE)]
-> [  978.200194] CPU: 11 UID: 0 PID: 45522 Comm: test_progs Tainted: 
-> G           OE      6.14.0-rc7-auto #4
-> [  978.200202] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-> [  978.200205] Hardware name: IBM,8375-42A POWER9 (architected) 0x4e0202 
-> 0xf000005 of:IBM,FW950.A0 (VL950_144) hv:phyp pSeries
-> [  978.200210] NIP:  c0000000001e3658 LR: c0000000001e34b0 CTR: 
-> 0000000000000006
-> [  978.200216] REGS: c00000001c057570 TRAP: 0700   Tainted: G OE       
-> (6.14.0-rc7-auto)
-> [  978.200221] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 
-> 44844442  XER: 20040169
-> [  978.200234] CFAR: c0000000001e34e8 IRQMASK: 0
-> [  978.200234] GPR00: c0000000001e34b0 c00000001c057810 c000000001d68100 
-> 0000000000000000
-> [  978.200234] GPR04: c00800000025d640 c00000001c05786c 0000000000000160 
-> 0000000000000164
-> [  978.200234] GPR08: c000000157b8c164 c000000157b8c16c 000000000000016c 
-> 0000000000004000
-> [  978.200234] GPR12: 0000000000000001 c00000001ec82b00 0000000000000078 
-> 0000000038210110
-> [  978.200234] GPR16: 00000000000000a8 00000000eb210098 0000000060638000 
-> 00000000e86100c0
-> [  978.200234] GPR20: 00000000eb4100a0 0000000000000004 000000002c230000 
-> 0000000060000000
-> [  978.200234] GPR24: fffffffffffff000 c000000005834428 c00800000025d640 
-> 0000000000000001
-> [  978.200234] GPR28: c000000157b89c00 000000000000026c 0000000000000003 
-> c000000157b8c000
-> [  978.200294] NIP [c0000000001e3658] 
-> __arch_prepare_bpf_trampoline.isra.0+0xdc8/0xfe0
-> [  978.200301] LR [c0000000001e34b0] 
-> __arch_prepare_bpf_trampoline.isra.0+0xc20/0xfe0
-> [  978.200308] Call Trace:
-> [  978.200310] [c00000001c057810] [c0000000001e34b0] 
-> __arch_prepare_bpf_trampoline.isra.0+0xc20/0xfe0 (unreliable)
-> [  978.200319] [c00000001c057950] [c0000000001e4974] 
-> arch_prepare_bpf_trampoline+0x94/0x130
-> [  978.200327] [c00000001c0579b0] [c0000000005001ac] 
-> bpf_trampoline_update+0x23c/0x660
-> [  978.200334] [c00000001c057a90] [c0000000005006dc] 
-> __bpf_trampoline_link_prog+0x10c/0x360
-> [  978.200341] [c00000001c057ad0] [c000000000500c28] 
-> bpf_trampoline_link_cgroup_shim+0x268/0x370
-> [  978.200348] [c00000001c057b80] [c00000000053254c] 
-> __cgroup_bpf_attach+0x4ec/0x760
-> [  978.200355] [c00000001c057c60] [c000000000533dd4] 
-> cgroup_bpf_prog_attach+0xa4/0x310
-> [  978.200362] [c00000001c057cb0] [c00000000049d1b8] 
-> bpf_prog_attach+0x2a8/0x2e0
-> [  978.200370] [c00000001c057d00] [c0000000004a7278] __sys_bpf+0x428/0xd20
-> [  978.200375] [c00000001c057df0] [c0000000004a7b9c] sys_bpf+0x2c/0x40
-> [  978.200381] [c00000001c057e10] [c000000000033078] 
-> system_call_exception+0x128/0x310
-> [  978.200388] [c00000001c057e50] [c00000000000d05c] 
-> system_call_vectored_common+0x15c/0x2ec
-> [  978.200396] --- interrupt: 3000 at 0x7fff98ba9f40
-> [  978.200405] NIP:  00007fff98ba9f40 LR: 00007fff98ba9f40 CTR: 
-> 0000000000000000
-> [  978.200410] REGS: c00000001c057e80 TRAP: 3000   Tainted: G OE       
-> (6.14.0-rc7-auto)
-> [  978.200415] MSR:  800000000280f033 
-> <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 48002848  XER: 00000000
-> [  978.200431] IRQMASK: 0
-> [  978.200431] GPR00: 0000000000000169 00007fffde891b10 00007fff98cb6d00 
-> 0000000000000008
-> [  978.200431] GPR04: 00007fffde891bf8 0000000000000020 0000000000000001 
-> 0000000000000008
-> [  978.200431] GPR08: 0000000000000008 0000000000000000 0000000000000000 
-> 0000000000000000
-> [  978.200431] GPR12: 0000000000000000 00007fff995fe9e0 0000000000000000 
-> 0000000000000000
-> [  978.200431] GPR16: 0000000000000000 0000000000000000 0000000000000000 
-> 0000000000000000
-> [  978.200431] GPR20: 0000000000000000 0000000000000000 0000000000000000 
-> 00007fff995ef438
-> [  978.200431] GPR24: 00000000105ed2f4 00007fff995f0000 00007fffde892998 
-> 0000000000000001
-> [  978.200431] GPR28: 00007fffde892aa8 00007fffde892988 0000000000000001 
-> 00007fffde891b40
-> [  978.200487] NIP [00007fff98ba9f40] 0x7fff98ba9f40
-> [  978.200491] LR [00007fff98ba9f40] 0x7fff98ba9f40
-> [  978.200495] --- interrupt: 3000
-> [  978.200498] Code: 7d5f412e 81210060 39290001 792a1788 3ba90040 
-> 91210060 7d3f5214 57bd103a e9010030 3908ff00 7c294040 4081fae0 
-> <0fe00000> 3ba0fff2 4bfffad4 8281003c
-> [  978.200519] ---[ end trace 0000000000000000 ]---
-> 
-> If you happen to fix this, please add below tag.
-> 
-> 
-> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-> 
-> 
-> Regards,
-> 
-> Venkat.
+So I started looking into this based on what we talked about at the last
+guest_memfd sync. I tried to sort of go the way you hinted at when this
+topic of "direct map removal from modules" came up in the past [1], and
+hide it behind some sort of "alloc/free" abstraction. E.g. have the
+library/shim expose gmem_get_folio(struct inode *inode, pgoff_t index)
+that is a sorta equivalent of today __kvm_gmem_get_pfn(), which grabs a
+new folio from the filemap, prepares it via a callback provided by KVM,
+and then direct map removes it before returning it proper. But then,
+that could still be "abused" by module code to just remove arbitrary
+folios from the direct map, if a caller messed up any old struct inode
+to look sufficiently like a gmem inode for the purposes of
+gmem_get_folio(). But I also couldn't really come up with anything that
+_wouldn't_ allow something like this. What're your thoughts on this? Do
+we need to find a way to prevent this sort of stuff, and is that even
+possible? I checked some of Elliot's old submissions that contain
+direct map removal as part of the library and they run into the
+same problem.
 
+Best, 
+Patrick
+
+[1]: https://lore.kernel.org/all/49d14780-56f4-478d-9f5f-0857e788c667@redhat.com/
+ 
+> @Elliot, are you currently still looking into this?
+>
+> [1]
+> https://lore.kernel.org/all/20241113-guestmem-library-v3-0-71fdee85676b@quicinc.com/T/#u
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+> 
 
