@@ -1,221 +1,183 @@
-Return-Path: <bpf+bounces-54424-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54425-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2C17A69CC8
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 00:39:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A4BEA69CCE
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 00:42:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EC583B34FA
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 23:39:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CFD97A222B
+	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 23:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B1D22422B;
-	Wed, 19 Mar 2025 23:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B0A224246;
+	Wed, 19 Mar 2025 23:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HMssuKX8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FI4VIG28"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42E716F858;
-	Wed, 19 Mar 2025 23:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED85C1991CB;
+	Wed, 19 Mar 2025 23:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742427571; cv=none; b=ZZBiF98Qe40K7HFv76AvIhVe+3wa8xq3aZ/FqyFZ3yyD3WPvVrvOF46NeYCUdIXdX3UDN6kX6bl18YXkflst3tg1gmgbNMqhlp9N0ewgct0DsY4AlJMdycnE2DDR2+sQvEuot4GwKtfny+Hr1lPtr4uxKMrKSnwlcnn59bxxZh4=
+	t=1742427752; cv=none; b=SJD3djSRLl814vmS2LoaVhTGnXiIfZs0Vy+NBelZrqTMORsMZ7a1YQF2kpBWPqxJNH98270CgRxHSWmrhNWpWPMofOA7QXn8TOPU09uioYXRo7GIKxKPHK6Bh0qVRekCd4hrWBIGKEuAV6+zarPEaaXou9o8TXHGESKyZljNaoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742427571; c=relaxed/simple;
-	bh=VEvV0hAAEzuzFIisaPBMod+lE5QjWK8T2Kmf1DMtKBM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ftx8XKrKJKhCGuyrhJVNEmC3XlVuNYxlFd9b8rtm+fMZ+f71s7QCsxNgiSNvKuCovmhGfQMLuogy1i6xB9K6GAKsPBoU9xHo68DkyPXjlNUl9kWDFfqvffwkGBD7WJ0sSPuiARUn4X2UCVLLtpydRWB/6bp09qiStmJb/8XFWKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HMssuKX8; arc=none smtp.client-ip=209.85.128.171
+	s=arc-20240116; t=1742427752; c=relaxed/simple;
+	bh=bt2ba/1aateD273zMpuBKHwx+vhYxn5LVtt6VAQmzEM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hOH9jid9NHqo1D+t0wiHGmti95WThzE8EiWuMVNz30XtCESURtFTlnY9V6NJSNksxHDIuJyS2teI+XBCaVQnVnfY7rYI1jPOgbWfyz5WnkjuyhcC2LSZ19uK5omIhv55rPC5WCWAaKmfdOO18x2UiZJpa5wL3/N6qcKjDbWfjU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FI4VIG28; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6ff0c9d1761so1901407b3.1;
-        Wed, 19 Mar 2025 16:39:29 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-225d66a4839so21223945ad.1;
+        Wed, 19 Mar 2025 16:42:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742427568; x=1743032368; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5Cq23PeKRIIRaRLnVCoTwyue9MtxIvEBi1Dzwf2/unk=;
-        b=HMssuKX8Z6+Jd/DIS8vSDB/kEJKFWM9REEbf54B7TAj9wcWkif70ppEz2p3Xhe/qcC
-         54bmVWrRxUYxPdNknx1jimBa2s16rGI0316S/TwU7zR6ll+XT0pDi63V0nY0sJ4fS4R/
-         svAYqCwcIhi4mINBwGf5IUU6VNZIBrSl2cDn1ckhGQx/W2JTCbwr8cW6PybQEd9TUoCA
-         oT5Y8x8iMBTDG2lXWSYw09U2QpoVETXPVSlnzfWoDS4cEGVLlqqS7dMtPwRxPy4/AJbL
-         Co8drILnKzrin6Bjpk1VcDTo9umCJ0P0L8rgLDHvcnXP1l62CTw7xuQWhubhof3KnIJF
-         ezVQ==
+        d=gmail.com; s=20230601; t=1742427750; x=1743032550; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s4BUXiAbtxDoW0HPX6dtOJ7c0QK5dcGl/NHAwfEJTQg=;
+        b=FI4VIG28NlWxmr5B9Y73i6MrI92zVpSD4FHSKgGXXcYMpWAiOI1E3eHLHOMZoVO1qK
+         97uf7XVNR3UZQgVjmaTMi1csJVlLTin3WcNpU/PxxrMW6rWIJQk0zrkcO7sDfHRO+kud
+         OpBtNOl/o4826zkn/y6sPohqaEzrz0W8drGizdGP5undjAJoCHMUzGQFJuVV/hhYA/8V
+         riTyirizMMm54soOnnvMTt7gZvlfnSm/g2v1hYGW9/CoEJzjVg7enLS2yP1l2s2+0D0g
+         fNY/6E0Gnis4t16c5sTpu6gqZzW1pWwVM0pI6WD62uZu1eR3X5dO8VB03tkVYdb041g+
+         zyGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742427568; x=1743032368;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Cq23PeKRIIRaRLnVCoTwyue9MtxIvEBi1Dzwf2/unk=;
-        b=O7NSPqcfIgkUG/ieEyORRPh1G3iXujFXRYgHfFXuoLWBGIuSbioGH6phC5kv/CsDRU
-         i6ULsENMszKhG5TSUMzlcSwrrhbFs8g66M8XjFVklacR4Kvw8aipBz+gSb5V3GN5VNWr
-         EpEVJI7fz6QZhZEZTs3q6Z7MG0fY6IxDjBAnfYKVDzpUEu8SMvOWglE0sS0cAKzf2phZ
-         32YxE+8c65uGvnCLgVpqYcQfuzl8BXKnnUU4/4mxC1N4Sx/GwdcR7Uigu1uQZMGYEmur
-         /2j5kV3yqDx6gtIFH4o9Godz2j2w4VzHfHbcbVXvn+9SQc19XABDTfSCCaTC7c+g5Q8H
-         atgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVDv855FLLUl2kvHBBQtv1yZLe6Zm/8jzHb/PxWMoakYIVREPo8blJjlfhyMnb/gZ33umud7jiHe5tTPDTe@vger.kernel.org, AJvYcCW/Oz7ZdLQLDzNN4mtrLiNN0HYWGtpX6cKfCmuyy+WELwKh5Gi75vmxdXa+lt05pOz1N5wHYepaD8l37EEoF9U7Ew==@vger.kernel.org, AJvYcCXgReu8AFORV5Y568LdoR+Lm7pTgTyXNh59rcMh667xvp1RvkM5qz/LNZiJ4s4aoLKiiqM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQLDl8K9bnJt65PSCpSIPpKdMY/1AEqx5xa5uhm9b5b155iaT3
-	D1a6sFSKh6UzeWBW6zywqefcIwhyxwEpEXdcT0U5D/Ajc/zrF9e2jG5s6s+QL1ntzg6lqNnKGv+
-	/asVPR5nb/AaksiHl2Ay3Ywo4vheDY86ZP7E=
-X-Gm-Gg: ASbGncs543mmSRXiZgtrk64RTic71s+5c7ufX7arUnHhvBzWYBJcAlC9jYoxIpy3nif
-	j0ahffOYtQHe2MGDs9FU3iRljt3wuE8EBydP16cP/6I4PBjrFaLztPxp3Y7hFP9BjnI0IP363Cu
-	wlKXtPP87IR3/kC7Lg30Va9eeT
-X-Google-Smtp-Source: AGHT+IFAw2POQPH36yc1ixUBdy6/IY9+jU8D5hEFwscQmrtmCZgGr0myaXaQh3Wt79t66lyV5CdD+i57MOfE1GyC1Lw=
-X-Received: by 2002:a05:690c:62c3:b0:6fd:3d37:99ce with SMTP id
- 00721157ae682-700ac5dd106mr16101017b3.17.1742427568539; Wed, 19 Mar 2025
- 16:39:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1742427750; x=1743032550;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s4BUXiAbtxDoW0HPX6dtOJ7c0QK5dcGl/NHAwfEJTQg=;
+        b=jjn+ZwOOxBi8op1qBZKEb2m3AMw/zpGNAdcF152BQGwa5ruK962SzG3VPX7pNTIp+3
+         4LZJvtLinIZvpVUK/i2dATtLjE5jvarFvOolBE8+AV3R/QqkL78YoIIG8Ar03fKODLPE
+         YDe78AQCKbEUaSMLDpJT/ZmG+HUk+V/qyq2dYK79v5XNUYB2VWTxNY0OZI5/5rKQzr90
+         VCHHXSzhKJ6uGZh9cSl3jrbwDCStOWYc7PoClqZtgLq0jkoPNgvmCarm7vEKYkkW3BLj
+         /AftfiOqt8BJd9yL8PhU7S/dbUFBNVlBGeC/sjBJ6ilOwlO2N973LPDlT4Wh1I1Cw8UG
+         Q/Mw==
+X-Forwarded-Encrypted: i=1; AJvYcCWH68VjR5YrBqnv+TEBwvYUd93NgecupP6TLulK37cskNPb9uuiVkJT54PCsESj/TgnJDIYugpy@vger.kernel.org, AJvYcCWOtcCrrG735kpg/2Yb8BK6SK9xLmPxJXVeuPZsPFvZ7+aUyXvPk4yPIzEDgqCpNwqh52I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbfBgfz3zdWoUrKHvk6hiNoTDTeRLL2F1d1Qd8pNXJ+fJzBblf
+	Id9O2MmRDEqnnw+KF+04nCkoZjztRM4X58RQ3ALxXVxV9pnCqFED
+X-Gm-Gg: ASbGncuzj5bK16A84IweeFsQ3+1Xu57aN+QOsFYKbIbjmZzIZBiRI7U6ooFJbOdP6rh
+	fwJaBpK+P8swN9sRjxr1R1iqzesyI+1RrPy8Prd38Xawnx8oo1Foz1610vFIFzJ9A6P8FfbfoCW
+	BJuHTdFTWVoCvDCgOnsFI799fO/JnI41w4/59fNpl7jltRatSOwa/SpEhQPT5hnZ7ONTpeVrwEH
+	0LAjRsaPU7yJaHEsa+eERTlU5aD12fihXdcpYriSDJH2p+VNgmMuUOuzWBS7lTHjcP1UmLSX6+x
+	tsqaVOWYUf9cC2FFINM1RlXopMcH2XKzu8WIUb9JCfOtveNm
+X-Google-Smtp-Source: AGHT+IEw/4vULxTa1ySDtMivMJt2yRxJKSRbEdiqkxcYBqX3FVNtAkwNisew4VKeeY2ibmcOqngY8A==
+X-Received: by 2002:a05:6a21:2d87:b0:1e1:a789:1b4d with SMTP id adf61e73a8af0-1fd09c2c36bmr1867343637.15.1742427750144;
+        Wed, 19 Mar 2025 16:42:30 -0700 (PDT)
+Received: from localhost ([129.210.115.104])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af56e9ddf4fsm11526155a12.21.2025.03.19.16.42.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Mar 2025 16:42:29 -0700 (PDT)
+Date: Wed, 19 Mar 2025 16:42:28 -0700
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: Dong Chenchen <dongchenchen2@huawei.com>
+Cc: edumazet@google.com, kuniyu@amazon.com, pabeni@redhat.com,
+	willemb@google.com, john.fastabend@gmail.com, jakub@cloudflare.com,
+	davem@davemloft.net, kuba@kernel.org, horms@kernel.org,
+	daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+	stfomichev@gmail.com, mrpre@163.com, zhangchangzhong@huawei.com,
+	weiyongjun1@huawei.com
+Subject: Re: [PATCH net 1/2] bpf, sockmap: Avoid sk_prot reset on sockmap
+ unlink with ULP set
+Message-ID: <Z9tWZPaidMB4uvQu@pop-os.localdomain>
+References: <20250314082004.2369712-1-dongchenchen2@huawei.com>
+ <20250314082004.2369712-2-dongchenchen2@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250317180834.1862079-1-namhyung@kernel.org> <CAH0uvogx1-oz4ZjLpcTRArTb2YJOyY1h1pccMXYSgCnHYD9bPA@mail.gmail.com>
- <Z9tABRzmYYYUyEFO@google.com> <CAH0uvog7uZL2AGyfPdSjCo0eahxDESXT3ZWSNmUCGWFc_SmFYg@mail.gmail.com>
-In-Reply-To: <CAH0uvog7uZL2AGyfPdSjCo0eahxDESXT3ZWSNmUCGWFc_SmFYg@mail.gmail.com>
-From: Howard Chu <howardchu95@gmail.com>
-Date: Wed, 19 Mar 2025 16:39:17 -0700
-X-Gm-Features: AQ5f1Jo3yarlJN9wYot80fffJ5hGYMkUS5yVrPcuTv39SUuE2b6Jr3ic3g8mBv4
-Message-ID: <CAH0uvoi_Soj=b1YdsqN=RhHMf340r1YZm72JgkyAyUi-Rox7_g@mail.gmail.com>
-Subject: Re: [PATCH v2] perf trace: Implement syscall summary in BPF
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org, 
-	Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250314082004.2369712-2-dongchenchen2@huawei.com>
 
-Hi Namhyung,
+On Fri, Mar 14, 2025 at 04:20:03PM +0800, Dong Chenchen wrote:
+> WARNING: CPU: 0 PID: 6558 at net/core/sock_map.c:1703 sock_map_close+0x3c4/0x480
+> Modules linked in:
+> CPU: 0 UID: 0 PID: 6558 Comm: syz-executor.14 Not tainted 6.14.0-rc5+ #238
+> RIP: 0010:sock_map_close+0x3c4/0x480
+> Call Trace:
+>  <TASK>
+>  inet_release+0x144/0x280
+>  __sock_release+0xb8/0x270
+>  sock_close+0x1e/0x30
+>  __fput+0x3c6/0xb30
+>  __fput_sync+0x7b/0x90
+>  __x64_sys_close+0x90/0x120
+>  do_syscall_64+0x5d/0x170
+>  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> 
+> The root cause is:
+> bpf_prog_attach(BPF_SK_SKB_STREAM_VERDICT)
+> tcp_set_ulp //set ulp after sockmap add
+> 	icsk->icsk_ulp_ops = ulp_ops;
+> sock_hash_update_common
+>   sock_map_unref
+>     sock_map_del_link
+>       psock->psock_update_sk_prot(sk, psock, false);
+> 	sk->sk_prot->close = sock_map_close
+> sk_psock_drop
+>   sk_psock_restore_proto
+>     tcp_bpf_update_proto
+>        tls_update //not redo sk_prot to tcp prot
+> inet_release
+>   sk->sk_prot->close
+>     sock_map_close
+>       WARN(sk->sk_prot->close == sock_map_close)
 
-I haven't finished the code review yet, but here are something that I
-found interesting to share:
+This makes sense now. Please see my comment below.
 
-## 1
-You used sudo ./perf trace -as --bpf-summary --summary-mode=3Dtotal -- slee=
-p 1 as
-an example
+> 
+> commit e34a07c0ae39 ("sock: redo the psock vs ULP protection check")
+> has moved ulp check from tcp_bpf_update_proto() to psock init.
+> If sk sets ulp after being added to sockmap, it will reset sk_prot to
+> BPF_BASE when removed from sockmap. After the psock is dropped, it will
+> not reset sk_prot back to the tcp prot, only tls context update is
+> performed. This can trigger a warning in sock_map_close() due to
+> recursion of sk->sk_prot->close.
+> 
+> To fix this issue, skip the sk_prot operations redo when deleting link
+> from sockmap if ULP is set.
+> 
+> Fixes: e34a07c0ae39 ("sock: redo the psock vs ULP protection check")
+> Fixes: c0d95d3380ee ("bpf, sockmap: Re-evaluate proto ops when psock is removed from sockmap")
+> Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
+> ---
+>  net/core/sock_map.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index 82a14f131d00..a3ed1f2cf8a2 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -170,7 +170,7 @@ static void sock_map_del_link(struct sock *sk,
+>  		if (verdict_stop)
+>  			sk_psock_stop_verdict(sk, psock);
+>  
+> -		if (psock->psock_update_sk_prot)
+> +		if (!(sk_is_inet(sk) && inet_csk_has_ulp(sk)) && psock->psock_update_sk_prot)
+>  			psock->psock_update_sk_prot(sk, psock, false);
 
-If I use perf trace --bpf-summary without the '-a', that is to record
-the process / task of 'sleep 1':
+Can we put this TCP-specific logic into tcp_bpf_update_proto() instead?
 
-sudo ./perf trace -s --bpf-summary --summary-mode=3Dtotal -- sleep 1
+Something like this...
 
-It won't be recording this one process. So there should be a sentence
-saying that bpf-summary only does system wide summaries.
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index ba581785adb4..0bb363447fc7 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -708,6 +708,8 @@ int tcp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
+                return 0;
+        }
 
-## 2
-there is a bug in min section, which made min always 0
++       if (inet_csk_has_ulp(sk))
++               return 0;
+        if (sk->sk_family == AF_INET6) {
+                if (tcp_bpf_assert_proto_ops(psock->sk_proto))
+                        return -EINVAL;
 
-you can see it in the sample output you provided above:
-     syscall            calls  errors  total       min       avg
-max       stddev
-                                       (msec)    (msec)    (msec)
-(msec)        (%)
-     --------------- --------  ------ -------- --------- ---------
----------     ------
-     futex                372     18  4373.773     0.000    11.757
-997.715    660.42%
-     poll                 241      0  2757.963     0.000    11.444
-997.758    580.34%
-     epoll_wait           161      0  2460.854     0.000    15.285
-325.189    260.73%
-     ppoll                 19      0  1298.652     0.000    68.350
-667.172    281.46%
-     clock_nanosleep        1      0  1000.093     0.000  1000.093
-1000.093      0.00%
-     epoll_pwait           16      0   192.787     0.000    12.049
-173.994    348.73%
-     nanosleep              6      0    50.926     0.000     8.488
-10.210     43.96%
-
-clock_nanosleep has only 1 call so min can never be 0, it has to be
-equal to the max and the mean.
-
-This can be resolved by adding this line (same as what you did in the BPF c=
-ode):
-
-diff --git a/tools/perf/util/bpf-trace-summary.c
-b/tools/perf/util/bpf-trace-summary.c
-index 5ae9feca244d..eb98db7d6e33 100644
---- a/tools/perf/util/bpf-trace-summary.c
-+++ b/tools/perf/util/bpf-trace-summary.c
-@@ -243,7 +243,7 @@ static int update_total_stats(struct hashmap
-*hash, struct syscall_key *map_key,
-
-  if (stat->max_time < map_data->max_time)
-  stat->max_time =3D map_data->max_time;
-- if (stat->min_time > map_data->min_time)
-+ if (stat->min_time > map_data->min_time || !stat->min_time)
-  stat->min_time =3D map_data->min_time;
-
-  return 0;
-
-(sorry for the poor formatting from the gmail browser app)
-
-## 3
-Apologies for misunderstanding how the calculation of the 'standard
-deviation of mean' works. You can decide what to do with it. :) Thanks
-for the explanation in the thread of the previous version.
-
-Thanks,
-Howard
-
-On Wed, Mar 19, 2025 at 3:19=E2=80=AFPM Howard Chu <howardchu95@gmail.com> =
-wrote:
->
-> Hi Namhyung,
->
-> On Wed, Mar 19, 2025 at 3:07=E2=80=AFPM Namhyung Kim <namhyung@kernel.org=
-> wrote:
-> >
-> > Hello Howard,
-> >
-> > On Wed, Mar 19, 2025 at 12:00:10PM -0700, Howard Chu wrote:
-> > > Hello Namhyung,
-> > >
-> > > Can you please rebase it? I cannot apply it, getting:
-> > >
-> > > perf $ git apply --reject --whitespace=3Dfix
-> > > ./v2_20250317_namhyung_perf_trace_implement_syscall_summary_in_bpf.mb=
-x
-> > > Checking patch tools/perf/Documentation/perf-trace.txt...
-> > > Checking patch tools/perf/Makefile.perf...
-> > > Hunk #1 succeeded at 1198 (offset -8 lines).
-> > > Checking patch tools/perf/builtin-trace.c...
-> > > error: while searching for:
-> > >         bool       hexret;
-> > > };
-> > >
-> > > enum summary_mode {
-> > >         SUMMARY__NONE =3D 0,
-> > >         SUMMARY__BY_TOTAL,
-> > >         SUMMARY__BY_THREAD,
-> > > };
-> > >
-> > > struct trace {
-> > >         struct perf_tool        tool;
-> > >         struct {
-> > >
-> > > error: patch failed: tools/perf/builtin-trace.c:140
-> >
-> > Oops, I think I forgot to say it's on top of Ian's change.
-> > Please try this first.  Sorry for the confusion.
-> >
-> > https://lore.kernel.org/r/20250319050741.269828-1-irogers@google.com
->
-> Yep, with Ian's patches it successfully applied. :)
->
-> Thanks,
-> Howard
-> >
-> > Thanks,
-> > Namhyung
-> >
 
