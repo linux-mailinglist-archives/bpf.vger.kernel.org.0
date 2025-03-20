@@ -1,148 +1,102 @@
-Return-Path: <bpf+bounces-54469-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54470-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13253A6A656
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 13:37:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34E6FA6A681
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 13:55:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A48A43AF749
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 12:37:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B00398A43EB
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 12:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA471DF252;
-	Thu, 20 Mar 2025 12:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B0B262A6;
+	Thu, 20 Mar 2025 12:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MPaOo1Zs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OSEaEywe"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3264D1367
-	for <bpf@vger.kernel.org>; Thu, 20 Mar 2025 12:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ED32F9EC;
+	Thu, 20 Mar 2025 12:53:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742474233; cv=none; b=g2zCtgJ3Hc9TTl6QevXERth+t4AsLKJkxWl9ZC3FZhyx/zedPdfe6J1nvv/dzK/gQmDEXJTssdouf8s6vdcNDoZFPQEH2yVHvMfvYLCAqHVqBawN4hU3jAcMa9cYN8MOfj4SI/s/mFZ9HB23cnKadG+qUcIxMXNt6esle0o9FhU=
+	t=1742475236; cv=none; b=qHTBWclWRE1MNvFg/RDy0PIL8MkciDarRYb4yEqj8cuDe1ZZ9MxoPBB+GTTe84/r/wz2mEQda88BAiGqGM9vEqbrxKYes6dG1n+xpo35AYpyJmwfQTtpaiNUHuMKGZH8NJc/zee357a6HhyQWqun2g6V+MBBkAn7WaDjqsl5VJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742474233; c=relaxed/simple;
-	bh=qe76n7w8WG2/vcG8sw7IiSgCXf7eBBkZ60h0gIOTUNU=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=aokKKuICONdpsfljnU5XYepSZRtROIZYQ1qtuCWEJY4wTzlMFnOyyDzIzgh3ojNTKlVyM84xNC55nLlCDlwQ9LkE5zO3eO5Fkf6RIfWndN1lwRApM5UQ+S1Criju/zFKTDYhiWu434+q4evvrsA1MvYPvwd8Z49Xj1N5lGjZ8C8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MPaOo1Zs; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1742475236; c=relaxed/simple;
+	bh=qz7MeaPR8fOUUQcZ6yj6cjFnFISOPaxEsa/PQ0ftEok=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ju0xaMAfrsXT13/3bFmozirK+B3b+ILZfT46/22xMcdXqoV9tm3PSl0smqEPkyvuve98DJeAnDo6kaxGZZCGiwTNcs6i+UhNZyT64qmtIk3KDSlvMXgj3gr3ozeirCeV28M9gl6h7F6zZXT9dG3bL01xgqSwpB5CFIrbP3UuJBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OSEaEywe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADDDBC4CEDD;
+	Thu, 20 Mar 2025 12:53:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742475235;
+	bh=qz7MeaPR8fOUUQcZ6yj6cjFnFISOPaxEsa/PQ0ftEok=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OSEaEyweNzA4Glaku9/kxFiZYPTRlTzqNWNKbcpiVt/T0M7WrzFY/xXDcutG7k5+u
+	 uHHjzBC581oQo4wIvbP1SEszyEzB1856/ZDv9NriIotrP4CF5GrlZ5psV42voERfr4
+	 Ry42mOocCkwIBXO99fp9JpMdoSBFOglm9n4ZYiuyu08kYdyzcSgWv5nYUXfvl9JAim
+	 6/o3gNfm+Nd/BuOtWDP54RdRLSi9n08t5BY+Dq2+Zpj2mxxcRQozAOFtFHLDBKiSdz
+	 2+5DGh2sJPOchXiUFxqv97zueJDS01w781OpmO9C61jXvCcvhi0cXCJ3Krgz7gGHGJ
+	 vgccg7ifdK5XQ==
+Date: Thu, 20 Mar 2025 12:53:49 +0000
+From: Simon Horman <horms@kernel.org>
+To: Meghana Malladi <m-malladi@ti.com>
+Cc: pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
+	davem@davemloft.net, andrew+netdev@lunn.ch, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, kory.maincent@bootlin.com,
+	javier.carrasco.cruz@gmail.com, diogo.ivo@siemens.com,
+	jacob.e.keller@intel.com, john.fastabend@gmail.com, hawk@kernel.org,
+	daniel@iogearbox.net, ast@kernel.org, srk@ti.com,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Roger Quadros <rogerq@kernel.org>, danishanwar@ti.com
+Subject: Re: [PATCH net-next 1/3] net: ti: prueth: Fix kernel warning while
+ bringing down network interface
+Message-ID: <20250320125349.GN280585@kernel.org>
+References: <20250317101551.1005706-1-m-malladi@ti.com>
+ <20250317101551.1005706-2-m-malladi@ti.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742474219;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rw6wMIYMJ1AHQenbcEv56UwG8Bnbs4a/rZ4UNrxeeV8=;
-	b=MPaOo1ZsDBnhct6Qww0pUpr15rn8LiP3QJx1nKQ0zU/QdWuhVM8+FVRdqYV67YBjZBSTeV
-	o2wW4MDvUBkgTVF5B1tFIwjobCU/PXmWM5wV2or+Qio27JfXbbZLA6HM0AbJy7NWVyrORv
-	nI4ICnNjWxD7HmEplggQ4hDYzOQW29I=
-Date: Thu, 20 Mar 2025 12:36:53 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
-Message-ID: <b403d53317c0bd8125cecbc0651e54338ca11bfd@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH bpf-next v3 2/3] bpf, sockmap: avoid using sk_socket
- after free when reading
-To: "Cong Wang" <xiyou.wangcong@gmail.com>
-Cc: john.fastabend@gmail.com, jakub@cloudflare.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- horms@kernel.org, andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com,
- ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
- mhal@rbox.co, sgarzare@redhat.com, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org,
- syzbot+dd90a702f518e0eac072@syzkaller.appspotmail.com
-In-Reply-To: <Z9tiqkSOH9vuOOJL@pop-os.localdomain>
-References: <20250317092257.68760-1-jiayuan.chen@linux.dev>
- <20250317092257.68760-3-jiayuan.chen@linux.dev>
- <Z9tiqkSOH9vuOOJL@pop-os.localdomain>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250317101551.1005706-2-m-malladi@ti.com>
 
-March 20, 2025 at 08:34, "Cong Wang" <xiyou.wangcong@gmail.com> wrote:
+On Mon, Mar 17, 2025 at 03:45:48PM +0530, Meghana Malladi wrote:
+> During network interface initialization, the NIC driver needs to register
+> its Rx queue with the XDP, to ensure the incoming XDP buffer carries a
+> pointer reference to this info and is stored inside xdp_rxq_info.
+> 
+> While this struct isn't tied to XDP prog, if there are any changes in
+> Rx queue, the NIC driver needs to stop the Rx queue by unregistering
+> with XDP before purging and reallocating memory. Drop page_pool destroy
+> during Rx channel reset and this is already handled by XDP during
+> xdp_rxq_info_unreg (Rx queue unregister), failing to do will cause the
+> following warning:
+> 
+> [  271.494611] ------------[ cut here ]------------
+> [  271.494629] WARNING: CPU: 0 PID: 2453 at /net/core/page_pool.c:1108 0xffff8000808d5f60
 
->=20
->=20On Mon, Mar 17, 2025 at 05:22:55PM +0800, Jiayuan Chen wrote:
->=20
->=20>=20
->=20> There are potential concurrency issues, as shown below.
-> >=20
->=20>  '''
-> >=20
->=20>  CPU0 CPU1
-> >=20
->=20>  sk_psock_verdict_data_ready:
-> >=20
->=20>  socket *sock =3D sk->sk_socket
-> >=20
->=20>  if (!sock) return
-> >=20
->=20>  close(fd):
-> >=20
->=20>  ...
-> >=20
->=20>  ops->release()
-> >=20
->=20>  if (!sock->ops) return
-> >=20
->=20>  sock->ops =3D NULL
-> >=20
->=20>  rcu_call(sock)
-> >=20
->=20>  free(sock)
-> >=20
->=20>  READ_ONCE(sock->ops)
-> >=20
->=20>  ^
-> >=20
->=20>  use 'sock' after free
-> >=20
->=20>  '''
-> >=20
->=20>=20=20
->=20>=20
->=20>  RCU is not applicable to Unix sockets read path, because the Unix =
-socket
-> >=20
->=20>  implementation itself assumes it's always in process context and h=
-eavily
-> >=20
->=20>  uses mutex_lock, so, we can't call read_skb within rcu lock.
-> >=20
->=20
-> Hm, I guess the RCU work in sk_psock_drop() does not work for Unix
->=20
->=20domain sockets either?
->=20
->=20Thanks.
->
+I think it would be nice to include a bit more of the stack trace here.
 
-Although the Unix domain socket framework does not use RCU locks, the
-entire sockmap process protects access to psock via RCU:
-'''
-rcu_read_lock();
-psock =3D sk_psock(sk_other);
-if (psock) {
- ...
-}
-rcu_read_unlock(); // `sk_psock_drop` will not execute until the unlock
-'''
+> 
+> Fixes: 46eeb90f03e0 ("net: ti: icssg-prueth: Use page_pool API for RX buffer allocation")
+> Signed-off-by: Meghana Malladi <m-malladi@ti.com>
 
-Therefore, I believe there are no issues with the psock operations here.
+It is a shame that we now have more asymmetry regarding
+the allocation of the pool and unwind on error prueth_prepare_rx_chan().
 
-Thanks~
+But if I see things correctly the freeing of the pool via
+xdp_rxq_info_unreg() is unconditional. And with that in mind
+I agree the approach taken by this patch makes sense.
+
+Reviewed-by: Simon Horman <horms@kernel.org>
+
+...
 
