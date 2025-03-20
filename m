@@ -1,65 +1,94 @@
-Return-Path: <bpf+bounces-54431-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54432-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CD89A69EB2
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 04:24:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CE6BA69F22
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 05:56:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B81ED3A55E8
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 03:24:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 609E51786EC
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 04:56:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A491B1EB1AB;
-	Thu, 20 Mar 2025 03:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296F21DE4E0;
+	Thu, 20 Mar 2025 04:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Qnvtby7G"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="IPEBQCh+"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD65B149DFF;
-	Thu, 20 Mar 2025 03:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D790A926
+	for <bpf@vger.kernel.org>; Thu, 20 Mar 2025 04:56:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742441049; cv=none; b=lde/E8CwZ1crFCBsJe+YuJQ6B8+zCGdd5OjHN3gBE+STQaeDf3OJePvKtWfD7Edq9I707+zcHjNfg7u1K6/UivV2kp/vjs4GSzIuuD4W9kJze39Z0d2M7XctdFpSXDTzwE0IM5I2SOws/Udhc+iHxU8efseKbK6z4Ty9x79zluc=
+	t=1742446595; cv=none; b=hDzOTx7UtiqwavSIqyU5ZxHV6uwzjEciribSzFRU5REJZtHUp6G/99HOXvI4j03TLPSqHOlhEVqFRv2UEnN4J+7oLC4w5X9DKmk90foe4HRmxyAnDUeJcSEpBqlX9HIqPgPV41JCwhfYE+hhGW1zyxoXHMnmfm+V4dD8CQyjIAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742441049; c=relaxed/simple;
-	bh=aEcWMfjm1bCPdKe7pjajiGT9FEWUXjCGx5Pn/ARpbSY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G84tdavsL06r7/jNtWpdCk6+KZRfQy6Ivo3Om2TxohzhoWBqaaXQrg/e6CJ8+gPevyy0J6ERVPKF4QyoYMR5tQ3QEna5bUscn7RyezN/I1vMG8jzEWXP3UhtY8sDW32IeUszOj76+zOOjsHA/aB0s2OfhOk7yoTtLDnk2Y8Y8ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Qnvtby7G; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=xR0Iz
-	hlv8+KjRs5JtDrVEB30IM6yfMqQ6O1XS7dIyK8=; b=Qnvtby7Gcbz3CYyYwbT7W
-	6dSB38u2blUqRVdPncslaYVfzLit2kiry+xTL7HeXjPFavahwTRtO0HYRBMypjm0
-	N7rSFYOeXy3libYCIKg3p+WKcGmYIczrSGJj9Je2sDfnMlivKGjEOWLyko6KgtQI
-	fSKXr+5VovseuKi5Ipdqyc=
-Received: from localhost.localdomain (unknown [])
-	by gzsmtp2 (Coremail) with SMTP id PSgvCgDXx48cittn7MfiAA--.19947S2;
-	Thu, 20 Mar 2025 11:23:09 +0800 (CST)
-From: Feng Yang <yangfeng59949@163.com>
-To: ast@kernel.org,
+	s=arc-20240116; t=1742446595; c=relaxed/simple;
+	bh=FqwmkQuXgv+LvKbpAHhzYxMfH0CDvjBiwXX/0Mg8NqQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MVxC2hQ/5CF6Lfh/E0t7WbzI1hhHOFcVpxG3UB7jzV/QkXyog2gRdxuUMkHKbaMAkfd1JUa89D6sG+cOuQVV5A1LcU4NQ0UgF8Hi9W746f8UkXGJYuXX/ac2YQ37REmOW6AfbpDUI7Gqwn0l0WoVV7PXxSMTl64bqWfcx6HbWNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=IPEBQCh+; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3fe83c8cbdbso90186b6e.3
+        for <bpf@vger.kernel.org>; Wed, 19 Mar 2025 21:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1742446593; x=1743051393; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eiHuxZFeR0z3qepLbbfoyYyyhunqYYoRUFEmmXRrBZQ=;
+        b=IPEBQCh+ui4qxoTa69sngz0xrycotwg1Ab61bMzQn/InFd3iMRAwNmD4ssP+fcGRLM
+         EhwOAqORHcZURVvmt6cu9sIQOcJTWqOcFXYXmb7PEYG+Xs8ixJZxa4Z0ZWXJr8I9o2ek
+         mhPG6Y6aQLSt8+ZFk/rfwhAfbEuxrlDcMg9Bw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742446593; x=1743051393;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eiHuxZFeR0z3qepLbbfoyYyyhunqYYoRUFEmmXRrBZQ=;
+        b=PCJJNqOFjkLQ2Hxx4JVGueIE1Bsuew+6nBna4GE2yPisZzgkOVRTZhW8Jnyj3lgBxR
+         PjGkavvBz49NV3Bdu1MhxPHj1/2uRyVm1NGvB/s2WYKktwOuMfj5V+u1PzEb0ko1qDSM
+         uQlB4GmKHoLvTRgJwmp8JT/yxS8vSsKmf2PbUhlMdg2nkXAUtnz56yjBarUu/KubLZ4V
+         phBHfj0F9TeG6knKywO0VfBg5cXkunyC1WWtP2I0HETBGyCLk1Qx4OJAOFzytS0TvJxt
+         KlTLF6yp3VV+FAG3QFOiH6JiwRz0IXoB1ySZseGMuSBi+GCI+8aGF6YkERFp+3KgNRxL
+         rmng==
+X-Forwarded-Encrypted: i=1; AJvYcCWq1FjIaU7w/+JMTkbzY2z0/LwHqBSJNXxs+GcHFa/AQ4z4Rfi2VFmHbr/4Dq5/Rx0ZROw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4cT+Br8TnfhK8hrwH5SRYYSP3Gi7PN7wrX0ak0RYegnWdlmay
+	spQfmhv/0jAseE+EjyYtGjlhw94Aa5S+HokBqONd+YQDlw+lz5sOw0pA8T9Slw==
+X-Gm-Gg: ASbGncsAb45dRyKahTTKKltkiQgF1fpZ6SI8WQ7NxWhLJzZTHDtd5dtiugw/415ydMb
+	cNtV7lYxAL1vtaqGFSA316Rhd4Xe8CVcjrLSWO09t6iqW9ZO4a7o6Podzf0w4E2O/oYLtDJMb16
+	vNVb6y7NJ1aQ9ecbrw9xZaOhMtTDPtxkQO1kX5n9u+qmAzsS8vNSVb+oQvoPFQ9Xyp4VbS4k4Wm
+	Or9ViiORmuNdltF4bb6RL/UQ2PKmCrV/hvdSe/9ufSc6hjAn0gH5Y3xcj5bWhAjdNPNZaOXDKKJ
+	q47w/vE2aUImoRDjtU4HSsYeMbZZI29Igg7P45ZOzJpJwFmbQPOnqDvSccCnF/MBXuzu0S1zMoe
+	qkbubgRpqSMdtN8Lvnr8aCYbGw7WiQBuUNeJjX3O32j99RriAd9d6Z5nhbnKqNn6xgz8X
+X-Google-Smtp-Source: AGHT+IGryUTxMq4wQF/kLVnELBMnVT8Hzh/H4A4e+JRdpwNZJb7WqBUC+IW9z2+FyNKb9fBwJfr0aw==
+X-Received: by 2002:a05:6808:2203:b0:3fa:1ed7:f7c3 with SMTP id 5614622812f47-3fead5b6ab4mr3167314b6e.29.1742446593155;
+        Wed, 19 Mar 2025 21:56:33 -0700 (PDT)
+Received: from sankartest7x-virtual-machine.lvn.broadcom.net ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-2c6712e5774sm3571771fac.31.2025.03.19.21.56.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Mar 2025 21:56:31 -0700 (PDT)
+From: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
+To: netdev@vger.kernel.org
+Cc: sankararaman.jayaraman@broadcom.com,
+	ronak.doshi@broadcom.com,
+	bcm-kernel-feedback-list@broadcom.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	u9012063@gmail.com,
+	kuba@kernel.org,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	ast@kernel.org,
+	alexandr.lobakin@intel.com,
+	alexanderduyck@fb.com,
+	bpf@vger.kernel.org,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mattbobrowski@google.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH] bpf: Remove duplicate judgments
-Date: Thu, 20 Mar 2025 11:22:58 +0800
-Message-Id: <20250320032258.116156-1-yangfeng59949@163.com>
+	hawk@kernel.org,
+	john.fastabend@gmail.com
+Subject: [PATCH net] vmxnet3: unregister xdp rxq info in the reset path
+Date: Thu, 20 Mar 2025 10:25:22 +0530
+Message-Id: <20250320045522.57892-1-sankararaman.jayaraman@broadcom.com>
 X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -68,148 +97,55 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PSgvCgDXx48cittn7MfiAA--.19947S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Ww4rZF4DKF45XF43Zr1kXwb_yoW7Cr1DpF
-	nxtrZxCrs2vw42qFy7Jr1fZa4Yyr9rZ3yUWaykKw18ur4UZr4xtF12kF42gF1rAr98G347
-	u3yvvFZ0kFyI93JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jerWrUUUUU=
-X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiTR4WeGfbhvJuSQAAsS
 
-From: Feng Yang <yangfeng@kylinos.cn>
+vmxnet3 does not unregister xdp rxq info in the
+vmxnet3_reset_work() code path as vmxnet3_rq_destroy()
+is not invoked in this code path. So, we get below message with a
+backtrace.
 
-Most of the judgments also exist in bpf_base_func_deto, remove them.
+Missing unregister, handled but fix driver
+WARNING: CPU:48 PID: 500 at net/core/xdp.c:182
+__xdp_rxq_info_reg+0x93/0xf0
 
-Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+This patch fixes the problem by moving the unregister
+code of XDP from vmxnet3_rq_destroy() to vmxnet3_rq_cleanup().
+
+Fixes: 54f00cce1178 ("vmxnet3: Add XDP support.")
+Signed-off-by: Sankararaman Jayaraman <sankararaman.jayaraman@broadcom.com>
+Signed-off-by: Ronak Doshi <ronak.doshi@broadcom.com>
 ---
- kernel/trace/bpf_trace.c | 72 ----------------------------------------
- 1 file changed, 72 deletions(-)
+ drivers/net/vmxnet3/vmxnet3_drv.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 6b07fa7081d9..c89b25344422 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1443,56 +1443,14 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	const struct bpf_func_proto *func_proto;
+diff --git a/drivers/net/vmxnet3/vmxnet3_drv.c b/drivers/net/vmxnet3/vmxnet3_drv.c
+index 6793fa09f9d1..3df6aabc7e33 100644
+--- a/drivers/net/vmxnet3/vmxnet3_drv.c
++++ b/drivers/net/vmxnet3/vmxnet3_drv.c
+@@ -2033,6 +2033,11 @@ vmxnet3_rq_cleanup(struct vmxnet3_rx_queue *rq,
  
- 	switch (func_id) {
--	case BPF_FUNC_map_lookup_elem:
--		return &bpf_map_lookup_elem_proto;
--	case BPF_FUNC_map_update_elem:
--		return &bpf_map_update_elem_proto;
--	case BPF_FUNC_map_delete_elem:
--		return &bpf_map_delete_elem_proto;
--	case BPF_FUNC_map_push_elem:
--		return &bpf_map_push_elem_proto;
--	case BPF_FUNC_map_pop_elem:
--		return &bpf_map_pop_elem_proto;
--	case BPF_FUNC_map_peek_elem:
--		return &bpf_map_peek_elem_proto;
--	case BPF_FUNC_map_lookup_percpu_elem:
--		return &bpf_map_lookup_percpu_elem_proto;
--	case BPF_FUNC_ktime_get_ns:
--		return &bpf_ktime_get_ns_proto;
--	case BPF_FUNC_ktime_get_boot_ns:
--		return &bpf_ktime_get_boot_ns_proto;
--	case BPF_FUNC_tail_call:
--		return &bpf_tail_call_proto;
--	case BPF_FUNC_get_current_task:
--		return &bpf_get_current_task_proto;
--	case BPF_FUNC_get_current_task_btf:
--		return &bpf_get_current_task_btf_proto;
--	case BPF_FUNC_task_pt_regs:
--		return &bpf_task_pt_regs_proto;
- 	case BPF_FUNC_get_current_uid_gid:
- 		return &bpf_get_current_uid_gid_proto;
- 	case BPF_FUNC_get_current_comm:
- 		return &bpf_get_current_comm_proto;
--	case BPF_FUNC_trace_printk:
--		return bpf_get_trace_printk_proto();
- 	case BPF_FUNC_get_smp_processor_id:
- 		return &bpf_get_smp_processor_id_proto;
--	case BPF_FUNC_get_numa_node_id:
--		return &bpf_get_numa_node_id_proto;
- 	case BPF_FUNC_perf_event_read:
- 		return &bpf_perf_event_read_proto;
--	case BPF_FUNC_get_prandom_u32:
--		return &bpf_get_prandom_u32_proto;
--	case BPF_FUNC_probe_read_user:
--		return &bpf_probe_read_user_proto;
--	case BPF_FUNC_probe_read_kernel:
--		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
--		       NULL : &bpf_probe_read_kernel_proto;
--	case BPF_FUNC_probe_read_user_str:
--		return &bpf_probe_read_user_str_proto;
--	case BPF_FUNC_probe_read_kernel_str:
--		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
--		       NULL : &bpf_probe_read_kernel_str_proto;
- #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	case BPF_FUNC_probe_read:
- 		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
-@@ -1502,10 +1460,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		       NULL : &bpf_probe_read_compat_str_proto;
- #endif
- #ifdef CONFIG_CGROUPS
--	case BPF_FUNC_cgrp_storage_get:
--		return &bpf_cgrp_storage_get_proto;
--	case BPF_FUNC_cgrp_storage_delete:
--		return &bpf_cgrp_storage_delete_proto;
- 	case BPF_FUNC_current_task_under_cgroup:
- 		return &bpf_current_task_under_cgroup_proto;
- #endif
-@@ -1513,20 +1467,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_send_signal_proto;
- 	case BPF_FUNC_send_signal_thread:
- 		return &bpf_send_signal_thread_proto;
--	case BPF_FUNC_perf_event_read_value:
--		return &bpf_perf_event_read_value_proto;
--	case BPF_FUNC_ringbuf_output:
--		return &bpf_ringbuf_output_proto;
--	case BPF_FUNC_ringbuf_reserve:
--		return &bpf_ringbuf_reserve_proto;
--	case BPF_FUNC_ringbuf_submit:
--		return &bpf_ringbuf_submit_proto;
--	case BPF_FUNC_ringbuf_discard:
--		return &bpf_ringbuf_discard_proto;
--	case BPF_FUNC_ringbuf_query:
--		return &bpf_ringbuf_query_proto;
--	case BPF_FUNC_jiffies64:
--		return &bpf_jiffies64_proto;
- 	case BPF_FUNC_get_task_stack:
- 		return prog->sleepable ? &bpf_get_task_stack_sleepable_proto
- 				       : &bpf_get_task_stack_proto;
-@@ -1534,12 +1474,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_copy_from_user_proto;
- 	case BPF_FUNC_copy_from_user_task:
- 		return &bpf_copy_from_user_task_proto;
--	case BPF_FUNC_snprintf_btf:
--		return &bpf_snprintf_btf_proto;
--	case BPF_FUNC_per_cpu_ptr:
--		return &bpf_per_cpu_ptr_proto;
--	case BPF_FUNC_this_cpu_ptr:
--		return &bpf_this_cpu_ptr_proto;
- 	case BPF_FUNC_task_storage_get:
- 		if (bpf_prog_check_recur(prog))
- 			return &bpf_task_storage_get_recur_proto;
-@@ -1548,18 +1482,12 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		if (bpf_prog_check_recur(prog))
- 			return &bpf_task_storage_delete_recur_proto;
- 		return &bpf_task_storage_delete_proto;
--	case BPF_FUNC_for_each_map_elem:
--		return &bpf_for_each_map_elem_proto;
--	case BPF_FUNC_snprintf:
--		return &bpf_snprintf_proto;
- 	case BPF_FUNC_get_func_ip:
- 		return &bpf_get_func_ip_proto_tracing;
- 	case BPF_FUNC_get_branch_snapshot:
- 		return &bpf_get_branch_snapshot_proto;
- 	case BPF_FUNC_find_vma:
- 		return &bpf_find_vma_proto;
--	case BPF_FUNC_trace_vprintk:
--		return bpf_get_trace_vprintk_proto();
- 	default:
- 		break;
+ 	rq->comp_ring.gen = VMXNET3_INIT_GEN;
+ 	rq->comp_ring.next2proc = 0;
++
++	if (xdp_rxq_info_is_reg(&rq->xdp_rxq))
++		xdp_rxq_info_unreg(&rq->xdp_rxq);
++	page_pool_destroy(rq->page_pool);
++	rq->page_pool = NULL;
+ }
+ 
+ 
+@@ -2073,11 +2078,6 @@ static void vmxnet3_rq_destroy(struct vmxnet3_rx_queue *rq,
+ 		}
  	}
+ 
+-	if (xdp_rxq_info_is_reg(&rq->xdp_rxq))
+-		xdp_rxq_info_unreg(&rq->xdp_rxq);
+-	page_pool_destroy(rq->page_pool);
+-	rq->page_pool = NULL;
+-
+ 	if (rq->data_ring.base) {
+ 		dma_free_coherent(&adapter->pdev->dev,
+ 				  rq->rx_ring[0].size * rq->data_ring.desc_size,
 -- 
-2.43.0
+2.25.1
 
 
