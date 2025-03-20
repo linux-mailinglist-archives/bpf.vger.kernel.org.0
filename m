@@ -1,256 +1,215 @@
-Return-Path: <bpf+bounces-54430-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54431-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE3CBA69E67
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 03:41:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CD89A69EB2
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 04:24:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F2EF7AD651
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 02:40:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B81ED3A55E8
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 03:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCD11EBFED;
-	Thu, 20 Mar 2025 02:41:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A491B1EB1AB;
+	Thu, 20 Mar 2025 03:24:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Qnvtby7G"
 X-Original-To: bpf@vger.kernel.org
-Received: from second.openwall.net (second.openwall.net [193.110.157.125])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 54BFB1EB1AB
-	for <bpf@vger.kernel.org>; Thu, 20 Mar 2025 02:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.110.157.125
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD65B149DFF;
+	Thu, 20 Mar 2025 03:24:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742438475; cv=none; b=qJfs7t97nR1CaKOCH7j4pB8ommNNf48HeqDCsINKg0mAvUvTbP3kaEt51NIBqDj6OYQZ5VzM6TUv9OS5ZiAi1f430svyNQvd2EgF9wxIx5DpdjUmiBIcKERS+JHrdyz4tJ4PHNk5zhrB1rWYhRBe9Ei0sadqZQXWurZ0Q3ajOVU=
+	t=1742441049; cv=none; b=lde/E8CwZ1crFCBsJe+YuJQ6B8+zCGdd5OjHN3gBE+STQaeDf3OJePvKtWfD7Edq9I707+zcHjNfg7u1K6/UivV2kp/vjs4GSzIuuD4W9kJze39Z0d2M7XctdFpSXDTzwE0IM5I2SOws/Udhc+iHxU8efseKbK6z4Ty9x79zluc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742438475; c=relaxed/simple;
-	bh=Ov12BHgQtJeYkVfTeLe4KkA/+7bFWMw8jGFJAJXzl3k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FjaYD/dTOu4BkMTrk2qXlzBE8yHB6A/4pvQ+xvcXkapYCMJVaFodb/NeN/IrfTz+fOUfZwphOspqBGhFu86VcFsajKSJs4vQxb+123g8Vgn8Krmw9BeYZ1L8pZ45jM9QUM29ei8dpRSXmKp53gKkFyyw0+D9kzkKq8rTz8g5SnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=openwall.com; spf=pass smtp.mailfrom=openwall.com; arc=none smtp.client-ip=193.110.157.125
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=openwall.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openwall.com
-Received: (qmail 5897 invoked from network); 20 Mar 2025 02:34:28 -0000
-Received: from localhost (HELO pvt.openwall.com) (127.0.0.1)
-  by localhost with SMTP; 20 Mar 2025 02:34:28 -0000
-Received: by pvt.openwall.com (Postfix, from userid 503)
-	id E98CBA064E; Thu, 20 Mar 2025 03:32:02 +0100 (CET)
-Date: Thu, 20 Mar 2025 03:32:02 +0100
-From: Solar Designer <solar@openwall.com>
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Yunsheng Lin <yunshenglin0825@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Simon Horman <horms@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Mina Almasry <almasrymina@google.com>,
-	Yonglong Liu <liuyonglong@huawei.com>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Robin Murphy <robin.murphy@arm.com>, IOMMU <iommu@lists.linux.dev>,
-	segoon@openwall.com, oss-security@lists.openwall.com,
-	kernel-hardening@lists.openwall.com, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-	Qiuling Ren <qren@redhat.com>, Yuying Ma <yuma@redhat.com>,
-	sultan@kerneltoast.com
-Subject: Re: [PATCH net-next 3/3] page_pool: Track DMA-mapped pages and unmap them when destroying the pool
-Message-ID: <20250320023202.GA25514@openwall.com>
-References: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com> <20250314-page-pool-track-dma-v1-3-c212e57a74c2@redhat.com> <db813035-fb38-4fc3-b91e-d1416959db13@gmail.com> <87jz8nhelh.fsf@toke.dk> <7a76908d-5be2-43f1-a8e2-03b104165a29@huawei.com> <87wmcmhxdz.fsf@toke.dk> <ce6ca18b-0eda-4d62-b1d3-e101fe6dcd4e@huawei.com>
+	s=arc-20240116; t=1742441049; c=relaxed/simple;
+	bh=aEcWMfjm1bCPdKe7pjajiGT9FEWUXjCGx5Pn/ARpbSY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G84tdavsL06r7/jNtWpdCk6+KZRfQy6Ivo3Om2TxohzhoWBqaaXQrg/e6CJ8+gPevyy0J6ERVPKF4QyoYMR5tQ3QEna5bUscn7RyezN/I1vMG8jzEWXP3UhtY8sDW32IeUszOj76+zOOjsHA/aB0s2OfhOk7yoTtLDnk2Y8Y8ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Qnvtby7G; arc=none smtp.client-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=xR0Iz
+	hlv8+KjRs5JtDrVEB30IM6yfMqQ6O1XS7dIyK8=; b=Qnvtby7Gcbz3CYyYwbT7W
+	6dSB38u2blUqRVdPncslaYVfzLit2kiry+xTL7HeXjPFavahwTRtO0HYRBMypjm0
+	N7rSFYOeXy3libYCIKg3p+WKcGmYIczrSGJj9Je2sDfnMlivKGjEOWLyko6KgtQI
+	fSKXr+5VovseuKi5Ipdqyc=
+Received: from localhost.localdomain (unknown [])
+	by gzsmtp2 (Coremail) with SMTP id PSgvCgDXx48cittn7MfiAA--.19947S2;
+	Thu, 20 Mar 2025 11:23:09 +0800 (CST)
+From: Feng Yang <yangfeng59949@163.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	mattbobrowski@google.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH] bpf: Remove duplicate judgments
+Date: Thu, 20 Mar 2025 11:22:58 +0800
+Message-Id: <20250320032258.116156-1-yangfeng59949@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ce6ca18b-0eda-4d62-b1d3-e101fe6dcd4e@huawei.com>
-User-Agent: Mutt/1.4.2.3i
+X-CM-TRANSID:PSgvCgDXx48cittn7MfiAA--.19947S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Ww4rZF4DKF45XF43Zr1kXwb_yoW7Cr1DpF
+	nxtrZxCrs2vw42qFy7Jr1fZa4Yyr9rZ3yUWaykKw18ur4UZr4xtF12kF42gF1rAr98G347
+	u3yvvFZ0kFyI93JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jerWrUUUUU=
+X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiTR4WeGfbhvJuSQAAsS
 
-On Wed, Mar 19, 2025 at 07:06:57PM +0800, Yunsheng Lin wrote:
-> On 2025/3/19 4:55, Toke Høiland-Jørgensen wrote:
-> > Yunsheng Lin <linyunsheng@huawei.com> writes:
-> >> On 2025/3/17 23:16, Toke Høiland-Jørgensen wrote:
-> >>> Yunsheng Lin <yunshenglin0825@gmail.com> writes:
-> >>>> On 3/14/2025 6:10 PM, Toke Høiland-Jørgensen wrote:
-> >>>>
-> >>>> ...
-> >>>>
-> >>>>> To avoid having to walk the entire xarray on unmap to find the page
-> >>>>> reference, we stash the ID assigned by xa_alloc() into the page
-> >>>>> structure itself, using the upper bits of the pp_magic field. This
-> >>>>> requires a couple of defines to avoid conflicting with the
-> >>>>> POINTER_POISON_DELTA define, but this is all evaluated at compile-time,
-> >>>>> so does not affect run-time performance. The bitmap calculations in this
-> >>>>> patch gives the following number of bits for different architectures:
-> >>>>>
-> >>>>> - 24 bits on 32-bit architectures
-> >>>>> - 21 bits on PPC64 (because of the definition of ILLEGAL_POINTER_VALUE)
-> >>>>> - 32 bits on other 64-bit architectures
-> >>>>
-> >>>>  From commit c07aea3ef4d4 ("mm: add a signature in struct page"):
-> >>>> "The page->signature field is aliased to page->lru.next and
-> >>>> page->compound_head, but it can't be set by mistake because the
-> >>>> signature value is a bad pointer, and can't trigger a false positive
-> >>>> in PageTail() because the last bit is 0."
-> >>>>
-> >>>> And commit 8a5e5e02fc83 ("include/linux/poison.h: fix LIST_POISON{1,2} 
-> >>>> offset"):
-> >>>> "Poison pointer values should be small enough to find a room in
-> >>>> non-mmap'able/hardly-mmap'able space."
-> >>>>
-> >>>> So the question seems to be:
-> >>>> 1. Is stashing the ID causing page->pp_magic to be in the mmap'able/
-> >>>>     easier-mmap'able space? If yes, how can we make sure this will not
-> >>>>     cause any security problem?
-> >>>> 2. Is the masking the page->pp_magic causing a valid pionter for
-> >>>>     page->lru.next or page->compound_head to be treated as a vaild
-> >>>>     PP_SIGNATURE? which might cause page_pool to recycle a page not
-> >>>>     allocated via page_pool.
-> >>>
-> >>> Right, so my reasoning for why the defines in this patch works for this
-> >>> is as follows: in both cases we need to make sure that the ID stashed in
-> >>> that field never looks like a valid kernel pointer. For 64-bit arches
-> >>> (where CONFIG_ILLEGAL_POINTER_VALUE), we make sure of this by never
-> >>> writing to any bits that overlap with the illegal value (so that the
-> >>> PP_SIGNATURE written to the field keeps it as an illegal pointer value).
-> >>> For 32-bit arches, we make sure of this by making sure the top-most bit
-> >>> is always 0 (the -1 in the define for _PP_DMA_INDEX_BITS) in the patch,
-> >>> which puts it outside the range used for kernel pointers (AFAICT).
-> >>
-> >> Is there any season you think only kernel pointer is relevant here?
-> > 
-> > Yes. Any pointer stored in the same space as pp_magic by other users of
-> > the page will be kernel pointers (as they come from page->lru.next). The
-> > goal of PP_SIGNATURE is to be able to distinguish pages allocated by
-> > page_pool, so we don't accidentally recycle a page from somewhere else.
-> > That's the goal of the check in page_pool_page_is_pp():
-> > 
-> > (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE
-> > 
-> > To achieve this, we must ensure that the check above never returns true
-> > for any value another page user could have written into the same field
-> > (i.e., into page->lru.next). For 64-bit arches, POISON_POINTER_DELTA
-> 
-> POISON_POINTER_DELTA is defined according to CONFIG_ILLEGAL_POINTER_VALUE,
-> if CONFIG_ILLEGAL_POINTER_VALUE is not defined yet, POISON_POINTER_DELTA
-> is defined to zero.
-> 
-> It seems only the below 64-bit arches define CONFIG_ILLEGAL_POINTER_VALUE
-> through grepping:
-> a29815a333c6 core, x86: make LIST_POISON less deadly
-> 5c178472af24 riscv: define ILLEGAL_POINTER_VALUE for 64bit
-> f6853eb561fb powerpc/64: Define ILLEGAL_POINTER_VALUE for 64-bit
-> bf0c4e047324 arm64: kconfig: Move LIST_POISON to a safe value
-> 
-> The below 64-bit arches don't seems to define the above config yet:
-> MIPS64, SPARC64, System z(S390X),loongarch
-> 
-> Does ID stashing cause problem for the above arches?
-> 
-> > serves this purpose. For 32-bit arches, we can leave the top-most bits
-> > out of PP_MAGIC_MASK, to make sure that any valid pointer value will
-> > fail the check above.
-> 
-> The above mainly explained how to ensure page_pool_page_is_pp() will
-> not return false positive result from the page_pool perspective.
-> 
-> From MM/security perspective, most of the commits quoted above seem
-> to suggest that poison pointer should be in the non-mmap'able or
-> hardly-mmap'able space, otherwise userspace can arrange for those
-> pointers to actually be dereferencable, potentially turning an oops
-> to an expolit, more detailed example in the below paper, which explains
-> how to exploit a vulnerability which hardened by the 8a5e5e02fc83 commit:
-> https://www.usenix.org/system/files/conference/woot15/woot15-paper-xu.pdf
-> 
-> ID stashing seems to cause page->lru.next (aliased to page->pp_magic) to
-> be in the mmap'able space for some arches.
+From: Feng Yang <yangfeng@kylinos.cn>
 
-...
+Most of the judgments also exist in bpf_base_func_deto, remove them.
 
-> To be honest, I am not that familiar with the pointer poison mechanism.
-> But through some researching and analyzing, it makes sense to overstate
-> it a little as it seems to be security-related.
-> Cc'ed some security-related experts and ML to see if there is some
-> clarifying from them.
+Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+---
+ kernel/trace/bpf_trace.c | 72 ----------------------------------------
+ 1 file changed, 72 deletions(-)
 
-You're correct that the pointer poison values should be in areas not
-mmap'able by userspace (at least with reasonable mmap_min_addr values).
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 6b07fa7081d9..c89b25344422 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1443,56 +1443,14 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	const struct bpf_func_proto *func_proto;
+ 
+ 	switch (func_id) {
+-	case BPF_FUNC_map_lookup_elem:
+-		return &bpf_map_lookup_elem_proto;
+-	case BPF_FUNC_map_update_elem:
+-		return &bpf_map_update_elem_proto;
+-	case BPF_FUNC_map_delete_elem:
+-		return &bpf_map_delete_elem_proto;
+-	case BPF_FUNC_map_push_elem:
+-		return &bpf_map_push_elem_proto;
+-	case BPF_FUNC_map_pop_elem:
+-		return &bpf_map_pop_elem_proto;
+-	case BPF_FUNC_map_peek_elem:
+-		return &bpf_map_peek_elem_proto;
+-	case BPF_FUNC_map_lookup_percpu_elem:
+-		return &bpf_map_lookup_percpu_elem_proto;
+-	case BPF_FUNC_ktime_get_ns:
+-		return &bpf_ktime_get_ns_proto;
+-	case BPF_FUNC_ktime_get_boot_ns:
+-		return &bpf_ktime_get_boot_ns_proto;
+-	case BPF_FUNC_tail_call:
+-		return &bpf_tail_call_proto;
+-	case BPF_FUNC_get_current_task:
+-		return &bpf_get_current_task_proto;
+-	case BPF_FUNC_get_current_task_btf:
+-		return &bpf_get_current_task_btf_proto;
+-	case BPF_FUNC_task_pt_regs:
+-		return &bpf_task_pt_regs_proto;
+ 	case BPF_FUNC_get_current_uid_gid:
+ 		return &bpf_get_current_uid_gid_proto;
+ 	case BPF_FUNC_get_current_comm:
+ 		return &bpf_get_current_comm_proto;
+-	case BPF_FUNC_trace_printk:
+-		return bpf_get_trace_printk_proto();
+ 	case BPF_FUNC_get_smp_processor_id:
+ 		return &bpf_get_smp_processor_id_proto;
+-	case BPF_FUNC_get_numa_node_id:
+-		return &bpf_get_numa_node_id_proto;
+ 	case BPF_FUNC_perf_event_read:
+ 		return &bpf_perf_event_read_proto;
+-	case BPF_FUNC_get_prandom_u32:
+-		return &bpf_get_prandom_u32_proto;
+-	case BPF_FUNC_probe_read_user:
+-		return &bpf_probe_read_user_proto;
+-	case BPF_FUNC_probe_read_kernel:
+-		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+-		       NULL : &bpf_probe_read_kernel_proto;
+-	case BPF_FUNC_probe_read_user_str:
+-		return &bpf_probe_read_user_str_proto;
+-	case BPF_FUNC_probe_read_kernel_str:
+-		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+-		       NULL : &bpf_probe_read_kernel_str_proto;
+ #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 	case BPF_FUNC_probe_read:
+ 		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+@@ -1502,10 +1460,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		       NULL : &bpf_probe_read_compat_str_proto;
+ #endif
+ #ifdef CONFIG_CGROUPS
+-	case BPF_FUNC_cgrp_storage_get:
+-		return &bpf_cgrp_storage_get_proto;
+-	case BPF_FUNC_cgrp_storage_delete:
+-		return &bpf_cgrp_storage_delete_proto;
+ 	case BPF_FUNC_current_task_under_cgroup:
+ 		return &bpf_current_task_under_cgroup_proto;
+ #endif
+@@ -1513,20 +1467,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_send_signal_proto;
+ 	case BPF_FUNC_send_signal_thread:
+ 		return &bpf_send_signal_thread_proto;
+-	case BPF_FUNC_perf_event_read_value:
+-		return &bpf_perf_event_read_value_proto;
+-	case BPF_FUNC_ringbuf_output:
+-		return &bpf_ringbuf_output_proto;
+-	case BPF_FUNC_ringbuf_reserve:
+-		return &bpf_ringbuf_reserve_proto;
+-	case BPF_FUNC_ringbuf_submit:
+-		return &bpf_ringbuf_submit_proto;
+-	case BPF_FUNC_ringbuf_discard:
+-		return &bpf_ringbuf_discard_proto;
+-	case BPF_FUNC_ringbuf_query:
+-		return &bpf_ringbuf_query_proto;
+-	case BPF_FUNC_jiffies64:
+-		return &bpf_jiffies64_proto;
+ 	case BPF_FUNC_get_task_stack:
+ 		return prog->sleepable ? &bpf_get_task_stack_sleepable_proto
+ 				       : &bpf_get_task_stack_proto;
+@@ -1534,12 +1474,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_copy_from_user_proto;
+ 	case BPF_FUNC_copy_from_user_task:
+ 		return &bpf_copy_from_user_task_proto;
+-	case BPF_FUNC_snprintf_btf:
+-		return &bpf_snprintf_btf_proto;
+-	case BPF_FUNC_per_cpu_ptr:
+-		return &bpf_per_cpu_ptr_proto;
+-	case BPF_FUNC_this_cpu_ptr:
+-		return &bpf_this_cpu_ptr_proto;
+ 	case BPF_FUNC_task_storage_get:
+ 		if (bpf_prog_check_recur(prog))
+ 			return &bpf_task_storage_get_recur_proto;
+@@ -1548,18 +1482,12 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		if (bpf_prog_check_recur(prog))
+ 			return &bpf_task_storage_delete_recur_proto;
+ 		return &bpf_task_storage_delete_proto;
+-	case BPF_FUNC_for_each_map_elem:
+-		return &bpf_for_each_map_elem_proto;
+-	case BPF_FUNC_snprintf:
+-		return &bpf_snprintf_proto;
+ 	case BPF_FUNC_get_func_ip:
+ 		return &bpf_get_func_ip_proto_tracing;
+ 	case BPF_FUNC_get_branch_snapshot:
+ 		return &bpf_get_branch_snapshot_proto;
+ 	case BPF_FUNC_find_vma:
+ 		return &bpf_find_vma_proto;
+-	case BPF_FUNC_trace_vprintk:
+-		return bpf_get_trace_vprintk_proto();
+ 	default:
+ 		break;
+ 	}
+-- 
+2.43.0
 
-Looking at the union inside "struct page", I see pp_magic is aliased
-against multiple pointers in the union'ed anonymous structs.
-
-I'm not familiar with the uses of page->pp_magic and how likely or not
-we are to have a bug where its aliasing with pointers would be exposed
-as an attack vector, but this does look like a serious security concern.
-It looks like we would be seriously weakening the poisoning, except on
-archs where the new values with ID stashing are still not mmap'able.
-
-I just discussed the matter with my colleague at CIQ, Sultan Alsawaf,
-and he thinks the added risk is not that bad.  He wrote:
-
-> Toke's response here is fair:
-> 
-> > Right, okay, I see what you mean. So the risk is basically the
-> > following:
-> > 
-> > If some other part of the kernel ends up dereferencing the
-> > page->lru.next pointer of a page that is owned by page_pool, and which
-> > has an ID stashed into page->pp_magic, that dereference can end up being
-> > to a valid userspace mapping, which can lead to Bad Things(tm), cf the
-> > paper above.
-> > 
-> > This is mitigated by the fact that it can only happen on architectures
-> > that don't set ILLEGAL_POINTER_VALUE (which includes 32-bit arches, and
-> > the ones you listed above). In addition, this has to happen while the
-> > page is owned by page_pool, and while it is DMA-mapped - we already
-> > clear the pp_magic field when releasing the page from page_pool.
-> > 
-> > I am not sure to what extent the above is a risk we should take pains to
-> > avoid, TBH. It seems to me that for this to become a real problem, lots
-> > of other things will already have gone wrong. But happy to defer to the
-> > mm/security folks here.
-> 
-> For this to be a problem, there already needs to be a use-after-free on
-> a page, which arguably creates many other vectors for attack.
-> 
-> The lru field of struct page is already used as a generic list pointer
-> in several places in the kernel once ownership of the page is obtained.
-> Any risk of dereferencing lru.next in a use-after-free scenario would
-> technically apply to a bunch of other places in the kernel (grep for
-> page->lru).
-
-We also tried searching for existing exploitation techniques for "struct
-page" use-after-free.  We couldn't find any.  The closest (non-)match I
-found is this fine research (the same project presented differently):
-
-https://i.blackhat.com/BH-US-24/Presentations/US24-Qian-PageJack-A-Powerful-Exploit-Technique-With-Page-Level-UAF-Thursday.pdf page 33+
-https://arxiv.org/html/2401.17618v2#S4
-https://phrack.org/issues/71/13
-
-The arxiv paper includes this sentence: "To create a page-level UAF, the
-key is to cause a UAF of the struct page objects."  However, we do not
-see them actually do that, and this statement is not found in the slides
-nor in the Phrack article.  Confused.
-
-Thank you for CC'ing me and the kernel-hardening list.  However, please
-do not CC the oss-security list like that, where it's against content
-guidelines.  Only properly focused new postings/threads are acceptable
-there (not CC'ing from/to other lists where only part of the content is
-on-topic, and follow-ups might not be on-topic at all).  See:
-
-https://oss-security.openwall.org/wiki/mailing-lists/oss-security#list-content-guidelines
-
-As a moderator for oss-security, I'm going to remove these messages from
-the queue now.  Please drop Cc: oss-security from any further replies.
-
-If desired, we may bring these topics to oss-security separately, with a
-proper Subject line and clear description of what we're talking about.
-
-Alexander
 
