@@ -1,90 +1,95 @@
-Return-Path: <bpf+bounces-54425-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54426-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A4BEA69CCE
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 00:42:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 671DDA69D07
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 01:06:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CFD97A222B
-	for <lists+bpf@lfdr.de>; Wed, 19 Mar 2025 23:41:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98179888876
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 00:06:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B0A224246;
-	Wed, 19 Mar 2025 23:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF4DE29A1;
+	Thu, 20 Mar 2025 00:06:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FI4VIG28"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OLlYOU9J"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED85C1991CB;
-	Wed, 19 Mar 2025 23:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EFA191;
+	Thu, 20 Mar 2025 00:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742427752; cv=none; b=SJD3djSRLl814vmS2LoaVhTGnXiIfZs0Vy+NBelZrqTMORsMZ7a1YQF2kpBWPqxJNH98270CgRxHSWmrhNWpWPMofOA7QXn8TOPU09uioYXRo7GIKxKPHK6Bh0qVRekCd4hrWBIGKEuAV6+zarPEaaXou9o8TXHGESKyZljNaoc=
+	t=1742429180; cv=none; b=As0M1LQktixPzZWB2f0OkFRmKqpFLQkjCUlIyoRMerY8fQH/4qHqiTCJcXGLiGNG3R9Oobi5U6Jx076Yu56JZFscZ4GQZDNvPa8TmfqjbXtp8M8kl28F9LSiluESVyGLjmC0GlKcYjw1niEaZzbn9BvgXj7awj8GCBczwmiqgSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742427752; c=relaxed/simple;
-	bh=bt2ba/1aateD273zMpuBKHwx+vhYxn5LVtt6VAQmzEM=;
+	s=arc-20240116; t=1742429180; c=relaxed/simple;
+	bh=BO+//tcXorx2kbUfYowaXvsu4SDU++zC1eH8TyB6buM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hOH9jid9NHqo1D+t0wiHGmti95WThzE8EiWuMVNz30XtCESURtFTlnY9V6NJSNksxHDIuJyS2teI+XBCaVQnVnfY7rYI1jPOgbWfyz5WnkjuyhcC2LSZ19uK5omIhv55rPC5WCWAaKmfdOO18x2UiZJpa5wL3/N6qcKjDbWfjU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FI4VIG28; arc=none smtp.client-ip=209.85.214.180
+	 Content-Type:Content-Disposition:In-Reply-To; b=IgRnSsi8OGfyNWYKFn42dyYGJWb5cuoIAM8DJDtzndW+DUH9HJbAfR82AD6Qa8bp+p0kV8jOCrJBy9/cEehRMtxdYCJp+OD0nKRe1136bfRdVB/QFamLIl4ySd8fRb3ZGMrOMO+HqoDUVmQzlwzmEPbWf9+iIQwLwwPaQSo7PTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OLlYOU9J; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-225d66a4839so21223945ad.1;
-        Wed, 19 Mar 2025 16:42:30 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2255003f4c6so2025525ad.0;
+        Wed, 19 Mar 2025 17:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742427750; x=1743032550; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742429178; x=1743033978; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s4BUXiAbtxDoW0HPX6dtOJ7c0QK5dcGl/NHAwfEJTQg=;
-        b=FI4VIG28NlWxmr5B9Y73i6MrI92zVpSD4FHSKgGXXcYMpWAiOI1E3eHLHOMZoVO1qK
-         97uf7XVNR3UZQgVjmaTMi1csJVlLTin3WcNpU/PxxrMW6rWIJQk0zrkcO7sDfHRO+kud
-         OpBtNOl/o4826zkn/y6sPohqaEzrz0W8drGizdGP5undjAJoCHMUzGQFJuVV/hhYA/8V
-         riTyirizMMm54soOnnvMTt7gZvlfnSm/g2v1hYGW9/CoEJzjVg7enLS2yP1l2s2+0D0g
-         fNY/6E0Gnis4t16c5sTpu6gqZzW1pWwVM0pI6WD62uZu1eR3X5dO8VB03tkVYdb041g+
-         zyGA==
+        bh=i67nHSXMn9wyesYVZ73ubzS5KypW1HRAz0KQwH13Rm0=;
+        b=OLlYOU9J9XriKEAb1kXq3MV7uemWz44X/P+d9MS2IVNeu3mTTzbDC5DxeGgvc1CbfS
+         UhEGJIkDFcfYdmjhTI/59VphgHxxU1J8v760LtT2VQh6PTRzJg82sJm789uMXn+sJozY
+         v7/0vd0Om7JPKIruiC9gngCQsGWL3n01BowLhewtKFZ6ZjlNKDhgH586q9zsKTyiFn8s
+         rjvI6etZ7NTZJbUs7Fh8cPWJgxuKpvqomWcoBmI+Je0W6fHOeVd5DNWv1I8tL4t4NhmV
+         WYjzzQis3azkHLpQOKBDLiiEgDXOvFWI0H5HTOAORXrXDteAB5NR6+yy05Hed8hzWwOD
+         wg5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742427750; x=1743032550;
+        d=1e100.net; s=20230601; t=1742429178; x=1743033978;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s4BUXiAbtxDoW0HPX6dtOJ7c0QK5dcGl/NHAwfEJTQg=;
-        b=jjn+ZwOOxBi8op1qBZKEb2m3AMw/zpGNAdcF152BQGwa5ruK962SzG3VPX7pNTIp+3
-         4LZJvtLinIZvpVUK/i2dATtLjE5jvarFvOolBE8+AV3R/QqkL78YoIIG8Ar03fKODLPE
-         YDe78AQCKbEUaSMLDpJT/ZmG+HUk+V/qyq2dYK79v5XNUYB2VWTxNY0OZI5/5rKQzr90
-         VCHHXSzhKJ6uGZh9cSl3jrbwDCStOWYc7PoClqZtgLq0jkoPNgvmCarm7vEKYkkW3BLj
-         /AftfiOqt8BJd9yL8PhU7S/dbUFBNVlBGeC/sjBJ6ilOwlO2N973LPDlT4Wh1I1Cw8UG
-         Q/Mw==
-X-Forwarded-Encrypted: i=1; AJvYcCWH68VjR5YrBqnv+TEBwvYUd93NgecupP6TLulK37cskNPb9uuiVkJT54PCsESj/TgnJDIYugpy@vger.kernel.org, AJvYcCWOtcCrrG735kpg/2Yb8BK6SK9xLmPxJXVeuPZsPFvZ7+aUyXvPk4yPIzEDgqCpNwqh52I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbfBgfz3zdWoUrKHvk6hiNoTDTeRLL2F1d1Qd8pNXJ+fJzBblf
-	Id9O2MmRDEqnnw+KF+04nCkoZjztRM4X58RQ3ALxXVxV9pnCqFED
-X-Gm-Gg: ASbGncuzj5bK16A84IweeFsQ3+1Xu57aN+QOsFYKbIbjmZzIZBiRI7U6ooFJbOdP6rh
-	fwJaBpK+P8swN9sRjxr1R1iqzesyI+1RrPy8Prd38Xawnx8oo1Foz1610vFIFzJ9A6P8FfbfoCW
-	BJuHTdFTWVoCvDCgOnsFI799fO/JnI41w4/59fNpl7jltRatSOwa/SpEhQPT5hnZ7ONTpeVrwEH
-	0LAjRsaPU7yJaHEsa+eERTlU5aD12fihXdcpYriSDJH2p+VNgmMuUOuzWBS7lTHjcP1UmLSX6+x
-	tsqaVOWYUf9cC2FFINM1RlXopMcH2XKzu8WIUb9JCfOtveNm
-X-Google-Smtp-Source: AGHT+IEw/4vULxTa1ySDtMivMJt2yRxJKSRbEdiqkxcYBqX3FVNtAkwNisew4VKeeY2ibmcOqngY8A==
-X-Received: by 2002:a05:6a21:2d87:b0:1e1:a789:1b4d with SMTP id adf61e73a8af0-1fd09c2c36bmr1867343637.15.1742427750144;
-        Wed, 19 Mar 2025 16:42:30 -0700 (PDT)
+        bh=i67nHSXMn9wyesYVZ73ubzS5KypW1HRAz0KQwH13Rm0=;
+        b=VXyC4sYrV9WWNa5ssHdv2kPoyUcrq4DOh+P5loHB8LeMfmGoo60vp9ZKjYzj8DYPEF
+         o5CCCnpEtr3/JNQvAvw+YNeI7pps1IIoD9lazx2gcsXRpcvyKWwrPWLfwbhLWnl5teL0
+         NC8nz4Qb1vaDn51DR7Ruu0zhDFFwYubuEF+0XSD3MDR70F4KgNZbURLVR3sKppqraakG
+         ImjFRSZDc0e/koEo5CtjZECAHXn9zUuwVgI2XJssltIlBNl9JliF+oluUFFVnJ3/TcfZ
+         IO2WQGSo5rxBj9shvwDox8CRDkYxpDAuxb+9umKJyJKSz9N/BLB1boWAqlBnSIjZ1Ghd
+         bCyg==
+X-Forwarded-Encrypted: i=1; AJvYcCUt1J/48KIrDNIICEE2MI3AxPmrczFBKlE9FHVJIY78LgqxJXQSgfw8jOjrXpMgQV8APCG63ElL@vger.kernel.org, AJvYcCVKJJH4E8m+6GHLF/eySqM3NuiCfJVjI51gIcMwwvC4PqGmoR09MMoZFg4oZobFMI4fYkeyJBS6SRgbo+cPqnTG@vger.kernel.org, AJvYcCVPlcDHX2rYnfPbljLZEfyVzjyqPtrGovB26bPefpouBtjPrRyxxMPVvmAFw6oZ/pmMl3vrP1+SdYYGYfYT@vger.kernel.org, AJvYcCW0pae/rLXPU1tHlSyZWiWl5H+K/mM3urzT3TmUPyYTgMplunVNzdjNlxqc0e+sbEPUZug=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwkqiUXQZOoPRL/OZIo9KcimFPRr13fBCHiiismBrymRi5lcwzz
+	baucdXxi8A1g9kk+6uMXHjZN6dQGWqUkYEJrP+BMx0hZrEubI6OU
+X-Gm-Gg: ASbGncumkx3om8W2gFUjnINjyTZ+bnhLTSViqgKt+B3+cfGcFWLh3gTA73fm79FYqJF
+	3Qww3O6YeysU5MVApkl35JyR9IVyfeSvEhg3ysOEgE+7LD0qyiu1d1ChSTPmK4eep+EN/Dvc7b5
+	yzwduKULeCcbYv1fwkvRTaSxbufrtEctwN+ONv5mAC/HxzYKDqhzCg/eXiTwE4ycRnCWeoQWoOJ
+	M82fwlvCchgGHxyoiyQ+2Qu/44wMsxR4e/QCOsCCfu1Os/Z848ulF4I+KWg1/jsEDW9vX/ytikj
+	kwigckVBXbo7CZmrdUrskrsleosZ6cHSZ1qHtqRjnPgvzJuk
+X-Google-Smtp-Source: AGHT+IEqQiEdBN18NzeCzATzPCdMYX7OSqKrz7WWXs+VpGIlSI/RD/m5riIAffmbr4BZka1MHDXYYw==
+X-Received: by 2002:a05:6a21:3a4a:b0:1ee:dcd3:80d7 with SMTP id adf61e73a8af0-1fbe862d8ddmr9179408637.0.1742429178363;
+        Wed, 19 Mar 2025 17:06:18 -0700 (PDT)
 Received: from localhost ([129.210.115.104])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af56e9ddf4fsm11526155a12.21.2025.03.19.16.42.29
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af56e9e2f45sm11619719a12.29.2025.03.19.17.06.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Mar 2025 16:42:29 -0700 (PDT)
-Date: Wed, 19 Mar 2025 16:42:28 -0700
+        Wed, 19 Mar 2025 17:06:17 -0700 (PDT)
+Date: Wed, 19 Mar 2025 17:06:17 -0700
 From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Dong Chenchen <dongchenchen2@huawei.com>
-Cc: edumazet@google.com, kuniyu@amazon.com, pabeni@redhat.com,
-	willemb@google.com, john.fastabend@gmail.com, jakub@cloudflare.com,
-	davem@davemloft.net, kuba@kernel.org, horms@kernel.org,
-	daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-	stfomichev@gmail.com, mrpre@163.com, zhangchangzhong@huawei.com,
-	weiyongjun1@huawei.com
-Subject: Re: [PATCH net 1/2] bpf, sockmap: Avoid sk_prot reset on sockmap
- unlink with ULP set
-Message-ID: <Z9tWZPaidMB4uvQu@pop-os.localdomain>
-References: <20250314082004.2369712-1-dongchenchen2@huawei.com>
- <20250314082004.2369712-2-dongchenchen2@huawei.com>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: john.fastabend@gmail.com, jakub@cloudflare.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	horms@kernel.org, andrii@kernel.org, eddyz87@gmail.com,
+	mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	jolsa@kernel.org, shuah@kernel.org, mhal@rbox.co,
+	sgarzare@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 1/3] bpf, sockmap: avoid using sk_socket
+ after free when sending
+Message-ID: <Z9tb+Y+w/gcqSnCo@pop-os.localdomain>
+References: <20250317092257.68760-1-jiayuan.chen@linux.dev>
+ <20250317092257.68760-2-jiayuan.chen@linux.dev>
+ <Z9tNAhMV1Y5znONo@pop-os.localdomain>
+ <48068a86ea99dffe1e7849fb544eac1746364afb@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,91 +98,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250314082004.2369712-2-dongchenchen2@huawei.com>
+In-Reply-To: <48068a86ea99dffe1e7849fb544eac1746364afb@linux.dev>
 
-On Fri, Mar 14, 2025 at 04:20:03PM +0800, Dong Chenchen wrote:
-> WARNING: CPU: 0 PID: 6558 at net/core/sock_map.c:1703 sock_map_close+0x3c4/0x480
-> Modules linked in:
-> CPU: 0 UID: 0 PID: 6558 Comm: syz-executor.14 Not tainted 6.14.0-rc5+ #238
-> RIP: 0010:sock_map_close+0x3c4/0x480
-> Call Trace:
->  <TASK>
->  inet_release+0x144/0x280
->  __sock_release+0xb8/0x270
->  sock_close+0x1e/0x30
->  __fput+0x3c6/0xb30
->  __fput_sync+0x7b/0x90
->  __x64_sys_close+0x90/0x120
->  do_syscall_64+0x5d/0x170
->  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+On Wed, Mar 19, 2025 at 11:36:13PM +0000, Jiayuan Chen wrote:
+> 2025/3/20 07:02, "Cong Wang" <xiyou.wangcong@gmail.com> wrote:
 > 
-> The root cause is:
-> bpf_prog_attach(BPF_SK_SKB_STREAM_VERDICT)
-> tcp_set_ulp //set ulp after sockmap add
-> 	icsk->icsk_ulp_ops = ulp_ops;
-> sock_hash_update_common
->   sock_map_unref
->     sock_map_del_link
->       psock->psock_update_sk_prot(sk, psock, false);
-> 	sk->sk_prot->close = sock_map_close
-> sk_psock_drop
->   sk_psock_restore_proto
->     tcp_bpf_update_proto
->        tls_update //not redo sk_prot to tcp prot
-> inet_release
->   sk->sk_prot->close
->     sock_map_close
->       WARN(sk->sk_prot->close == sock_map_close)
-
-This makes sense now. Please see my comment below.
-
+> > 
+> > On Mon, Mar 17, 2025 at 05:22:54PM +0800, Jiayuan Chen wrote:
+> > 
+> > > 
+> > > The sk->sk_socket is not locked or referenced, and during the call to
+> > > 
+> > 
+> > Hm? We should have a reference in socket map, whether directly or
+> > 
+> > indirectly, right? When we add a socket to a socket map, we do call
+> > 
+> > sock_map_psock_get_checked() to obtain a reference.
+> > 
 > 
-> commit e34a07c0ae39 ("sock: redo the psock vs ULP protection check")
-> has moved ulp check from tcp_bpf_update_proto() to psock init.
-> If sk sets ulp after being added to sockmap, it will reset sk_prot to
-> BPF_BASE when removed from sockmap. After the psock is dropped, it will
-> not reset sk_prot back to the tcp prot, only tls context update is
-> performed. This can trigger a warning in sock_map_close() due to
-> recursion of sk->sk_prot->close.
+> Yes, but we remove psock from sockmap when sock_map_close() was called
+> '''
+> sock_map_close
+> 	lock_sock(sk);
+> 	rcu_read_lock();
+> 	psock = sk_psock(sk);
+>         // here we remove psock and the reference of psock become 0
+> 	sock_map_remove_links(sk, psock)
+
+sk_psock_drop() also calls cancel_delayed_work_sync(&psock->work),
+althrough in yet another work. Is this also a contribution to this bug?
+
+>         psock = sk_psock_get(sk);
+>         if (unlikely(!psock))
+>             goto no_psock;     <=== jmp to no_psock
+>         rcu_read_unlock();
+>         release_sock(sk);
+>         cancel_delayed_work_sync(&psock->work); <== no chance to run cancel
+> '''
 > 
-> To fix this issue, skip the sk_prot operations redo when deleting link
-> from sockmap if ULP is set.
-> 
-> Fixes: e34a07c0ae39 ("sock: redo the psock vs ULP protection check")
-> Fixes: c0d95d3380ee ("bpf, sockmap: Re-evaluate proto ops when psock is removed from sockmap")
-> Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
-> ---
->  net/core/sock_map.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 82a14f131d00..a3ed1f2cf8a2 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -170,7 +170,7 @@ static void sock_map_del_link(struct sock *sk,
->  		if (verdict_stop)
->  			sk_psock_stop_verdict(sk, psock);
->  
-> -		if (psock->psock_update_sk_prot)
-> +		if (!(sk_is_inet(sk) && inet_csk_has_ulp(sk)) && psock->psock_update_sk_prot)
->  			psock->psock_update_sk_prot(sk, psock, false);
 
-Can we put this TCP-specific logic into tcp_bpf_update_proto() instead?
+I have to say sock_map_close() becomes harder and harder to understand
+now. And I am feeling we may have more bugs since we have two flying
+work's here: psock->rwork and psock->work.
 
-Something like this...
-
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index ba581785adb4..0bb363447fc7 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -708,6 +708,8 @@ int tcp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
-                return 0;
-        }
-
-+       if (inet_csk_has_ulp(sk))
-+               return 0;
-        if (sk->sk_family == AF_INET6) {
-                if (tcp_bpf_assert_proto_ops(psock->sk_proto))
-                        return -EINVAL;
-
+Thanks.
 
