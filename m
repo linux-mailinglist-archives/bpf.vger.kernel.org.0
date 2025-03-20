@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-54453-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54454-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43C17A6A540
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 12:48:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5566A6A53E
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 12:48:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80CAB1892A97
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 11:46:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE52F883957
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 11:46:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DE21225761;
-	Thu, 20 Mar 2025 11:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C088C221578;
+	Thu, 20 Mar 2025 11:44:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LxB2xpgB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ozQA0tXz"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7450225413;
-	Thu, 20 Mar 2025 11:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4219121D3EB;
+	Thu, 20 Mar 2025 11:44:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742471061; cv=none; b=GqtdslB8YtzZZhWlZ5o12jnq5NRqJ/aRtQ0Vt88iRHVnzKdg/DZ6h7XuYZE7DknlXWUv2kFI1m04ZC+xo0PD0OHkR3rrrwgeD8vRgteW1+Q9uR6QgMdRL6QUqS7sQSeQw4na+4DcbkQIJTwoJMnA6N4ouUQRxw2V0txV6g3EnZs=
+	t=1742471073; cv=none; b=hAK0l3/rhQllp+3kfUMgu+NBEjvw6PK5BkRdKx82n+gMke1bt5diDaImmlry97EjnRFJosNxNXp6l1XCWwGqkOAV06ml1ln9/qoR8PgoWK+4esztIP6Dg0lzDi++OqHSpUXRKpb296UcplBLi90A9lVnxPhIZ03YA7/PbFgA/gA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742471061; c=relaxed/simple;
-	bh=ArFi6LYnws/zK5pbLN4Y6WDU1aVkoTA4UhqE31uFzpc=;
+	s=arc-20240116; t=1742471073; c=relaxed/simple;
+	bh=QHeRP+3vFIU4kzTD64Z50sxitOHVSEPLwnAxE9SvpDo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZoUy14zmQcDe7smpq0xX0b7AuWCZt8XSXm4KLRp++oFkQw4KelC3E/A1oXwOzPs5YFGEngJqwbeMbCSJ80ktMjcMeBhXbXuHTqDYB0knHT1qWh57zt7jSxUPYcPrTj3ct/Cs3Z6gl47qjFz0ocxJCnLdy2dxJO+vyC2yfQDXFj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LxB2xpgB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71CEDC4CEDD;
-	Thu, 20 Mar 2025 11:44:17 +0000 (UTC)
+	 MIME-Version; b=LzsnQFCeYuRBQVcuVb1fy80wBLTpe4gaGaqTnMnS83SShM71uMs9n05AoUzwp8RwLX/fMs6HHUCaeT3lTQ23TQA/6mZZBjxRMGRKSiQNEkpxqvexkPb+8Vy7ePAN5hIUd7LPoJ1RnJDA0ZaEzklc6/6X7KrbyHQtkQ0V4jpni+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ozQA0tXz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B2CC4CEDD;
+	Thu, 20 Mar 2025 11:44:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742471061;
-	bh=ArFi6LYnws/zK5pbLN4Y6WDU1aVkoTA4UhqE31uFzpc=;
+	s=k20201202; t=1742471072;
+	bh=QHeRP+3vFIU4kzTD64Z50sxitOHVSEPLwnAxE9SvpDo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LxB2xpgBNiMBZ40aMizcDYZVftrCgO+oTiZatXW3BMIfuLoKksIo3rkEtIXBlMuiw
-	 VZQxFCZfGrFiJMzwSUeir4K3q152o90B7fFyUTZhpdJCj7KCLtR1Qsgw2e0pa54aOh
-	 S2oIj0YBb/jFPNcrOx34W/+cvHB63kKaFrc9IjtCWUebWaVPVZyeIUb1Q1JpWVCXQA
-	 Y/Rqp9mdiV/COtHq/hDCZfT2GeD6x/p0QTfPsPSEVHLmxB8N6Jm9Z+a363BlYjjoQu
-	 bbIrnSt7Kq0Xl4C0WSfkGAGrV7mpJijeKwkq4IvG94eBpk5dPuVKVnDFnP65SwPPcW
-	 Ce3T+Vl7Myi1A==
+	b=ozQA0tXzVwBTPNlA7ZheDZOSRMmKXEP+mmAMnjHpBp6WxSzAzr3T1586ngxyRcPWK
+	 M8xBP62SSlS6FQ/bA6XgSZCEF3/5hK9ikG+OqxZFxQMwt6mApegxPJj8joOMCyjb6W
+	 zj41DBk/2+mgemsxQ9KE6xPh/uVfEjZT2YW7fhGnmZTDLjosGkVvBqWxig/D04Hm1k
+	 UDRBPGzHSD+G+NVY2F++nmYgMN9pd1S3VR6nVU2bcxhHYUungey/6JL5rG4ndr9zPj
+	 3C5zHeram9bLxfYqQSXZ3TymKpGnQqfaPrUBSx1nrtr2vrNGDtnXCSudE4aFrmDCGD
+	 1hYDPK3I4WT7A==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -58,9 +58,9 @@ Cc: bpf@vger.kernel.org,
 	Alan Maguire <alan.maguire@oracle.com>,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-Subject: [PATCH RFCv3 12/23] selftests/bpf: Use 5-byte nop for x86 usdt probes
-Date: Thu, 20 Mar 2025 12:41:47 +0100
-Message-ID: <20250320114200.14377-13-jolsa@kernel.org>
+Subject: [PATCH RFCv3 13/23] selftests/bpf: Reorg the uprobe_syscall test function
+Date: Thu, 20 Mar 2025 12:41:48 +0100
+Message-ID: <20250320114200.14377-14-jolsa@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250320114200.14377-1-jolsa@kernel.org>
 References: <20250320114200.14377-1-jolsa@kernel.org>
@@ -72,41 +72,64 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Using 5-byte nop for x86 usdt probes so we can switch
-to optimized uprobe them.
+Adding __test_uprobe_syscall with non x86_64 stub to execute all the tests,
+so we don't need to keep adding non x86_64 stub functions for new tests.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/testing/selftests/bpf/sdt.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/uprobe_syscall.c | 34 +++++++------------
+ 1 file changed, 12 insertions(+), 22 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/sdt.h b/tools/testing/selftests/bpf/sdt.h
-index 1fcfa5160231..1d62c06f5ddc 100644
---- a/tools/testing/selftests/bpf/sdt.h
-+++ b/tools/testing/selftests/bpf/sdt.h
-@@ -236,6 +236,13 @@ __extension__ extern unsigned long long __sdt_unsp;
- #define _SDT_NOP	nop
- #endif
+diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+index c397336fe1ed..2b00f16406c8 100644
+--- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
++++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+@@ -350,29 +350,8 @@ static void test_uretprobe_shadow_stack(void)
  
-+/* Use 5 byte nop for x86_64 to allow optimizing uprobes. */
-+#if defined(__x86_64__)
-+# define _SDT_DEF_NOP _SDT_ASM_5(990:	.byte 0x0f, 0x1f, 0x44, 0x00, 0x00)
+ 	ARCH_PRCTL(ARCH_SHSTK_DISABLE, ARCH_SHSTK_SHSTK);
+ }
+-#else
+-static void test_uretprobe_regs_equal(void)
+-{
+-	test__skip();
+-}
+-
+-static void test_uretprobe_regs_change(void)
+-{
+-	test__skip();
+-}
+-
+-static void test_uretprobe_syscall_call(void)
+-{
+-	test__skip();
+-}
+ 
+-static void test_uretprobe_shadow_stack(void)
+-{
+-	test__skip();
+-}
+-#endif
+-
+-void test_uprobe_syscall(void)
++static void __test_uprobe_syscall(void)
+ {
+ 	if (test__start_subtest("uretprobe_regs_equal"))
+ 		test_uretprobe_regs_equal();
+@@ -383,3 +362,14 @@ void test_uprobe_syscall(void)
+ 	if (test__start_subtest("uretprobe_shadow_stack"))
+ 		test_uretprobe_shadow_stack();
+ }
 +#else
-+# define _SDT_DEF_NOP _SDT_ASM_1(990:	_SDT_NOP)
++static void __test_uprobe_syscall(void)
++{
++	test__skip();
++}
 +#endif
 +
- #define _SDT_NOTE_NAME	"stapsdt"
- #define _SDT_NOTE_TYPE	3
- 
-@@ -288,7 +295,7 @@ __extension__ extern unsigned long long __sdt_unsp;
- 
- #define _SDT_ASM_BODY(provider, name, pack_args, args, ...)		      \
-   _SDT_DEF_MACROS							      \
--  _SDT_ASM_1(990:	_SDT_NOP)					      \
-+  _SDT_DEF_NOP								      \
-   _SDT_ASM_3(		.pushsection .note.stapsdt,_SDT_ASM_AUTOGROUP,"note") \
-   _SDT_ASM_1(		.balign 4)					      \
-   _SDT_ASM_3(		.4byte 992f-991f, 994f-993f, _SDT_NOTE_TYPE)	      \
++void test_uprobe_syscall(void)
++{
++	__test_uprobe_syscall();
++}
 -- 
 2.49.0
 
