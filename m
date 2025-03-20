@@ -1,146 +1,217 @@
-Return-Path: <bpf+bounces-54426-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54427-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 671DDA69D07
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 01:06:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 891ADA69D30
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 01:18:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98179888876
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 00:06:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED6A2188E381
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 00:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF4DE29A1;
-	Thu, 20 Mar 2025 00:06:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A03C2C1A2;
+	Thu, 20 Mar 2025 00:17:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OLlYOU9J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iw+/COgU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EFA191;
-	Thu, 20 Mar 2025 00:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E11846D;
+	Thu, 20 Mar 2025 00:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742429180; cv=none; b=As0M1LQktixPzZWB2f0OkFRmKqpFLQkjCUlIyoRMerY8fQH/4qHqiTCJcXGLiGNG3R9Oobi5U6Jx076Yu56JZFscZ4GQZDNvPa8TmfqjbXtp8M8kl28F9LSiluESVyGLjmC0GlKcYjw1niEaZzbn9BvgXj7awj8GCBczwmiqgSA=
+	t=1742429852; cv=none; b=HNs+FRRI2Zn4wr94vN1+p4ghiQjVil+SjW/bQjJ1/fRkRziKFSY7JOgrGMYF0ZxVdUqUTQmfhfN73b3E+iXeTBXuSMgCi7Rm9r9kgSRi6nkh/t0Ef9IwpIUJsK3K9uyRa2E7DUxmLxamrYWfib3R9dYgjlW9Wxsv3pnVT52t+Co=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742429180; c=relaxed/simple;
-	bh=BO+//tcXorx2kbUfYowaXvsu4SDU++zC1eH8TyB6buM=;
+	s=arc-20240116; t=1742429852; c=relaxed/simple;
+	bh=/yS0JpV8hJu3Jxftqy7tqsojZdKf7wKp48xtukVTWUE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IgRnSsi8OGfyNWYKFn42dyYGJWb5cuoIAM8DJDtzndW+DUH9HJbAfR82AD6Qa8bp+p0kV8jOCrJBy9/cEehRMtxdYCJp+OD0nKRe1136bfRdVB/QFamLIl4ySd8fRb3ZGMrOMO+HqoDUVmQzlwzmEPbWf9+iIQwLwwPaQSo7PTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OLlYOU9J; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2255003f4c6so2025525ad.0;
-        Wed, 19 Mar 2025 17:06:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742429178; x=1743033978; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=i67nHSXMn9wyesYVZ73ubzS5KypW1HRAz0KQwH13Rm0=;
-        b=OLlYOU9J9XriKEAb1kXq3MV7uemWz44X/P+d9MS2IVNeu3mTTzbDC5DxeGgvc1CbfS
-         UhEGJIkDFcfYdmjhTI/59VphgHxxU1J8v760LtT2VQh6PTRzJg82sJm789uMXn+sJozY
-         v7/0vd0Om7JPKIruiC9gngCQsGWL3n01BowLhewtKFZ6ZjlNKDhgH586q9zsKTyiFn8s
-         rjvI6etZ7NTZJbUs7Fh8cPWJgxuKpvqomWcoBmI+Je0W6fHOeVd5DNWv1I8tL4t4NhmV
-         WYjzzQis3azkHLpQOKBDLiiEgDXOvFWI0H5HTOAORXrXDteAB5NR6+yy05Hed8hzWwOD
-         wg5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742429178; x=1743033978;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i67nHSXMn9wyesYVZ73ubzS5KypW1HRAz0KQwH13Rm0=;
-        b=VXyC4sYrV9WWNa5ssHdv2kPoyUcrq4DOh+P5loHB8LeMfmGoo60vp9ZKjYzj8DYPEF
-         o5CCCnpEtr3/JNQvAvw+YNeI7pps1IIoD9lazx2gcsXRpcvyKWwrPWLfwbhLWnl5teL0
-         NC8nz4Qb1vaDn51DR7Ruu0zhDFFwYubuEF+0XSD3MDR70F4KgNZbURLVR3sKppqraakG
-         ImjFRSZDc0e/koEo5CtjZECAHXn9zUuwVgI2XJssltIlBNl9JliF+oluUFFVnJ3/TcfZ
-         IO2WQGSo5rxBj9shvwDox8CRDkYxpDAuxb+9umKJyJKSz9N/BLB1boWAqlBnSIjZ1Ghd
-         bCyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUt1J/48KIrDNIICEE2MI3AxPmrczFBKlE9FHVJIY78LgqxJXQSgfw8jOjrXpMgQV8APCG63ElL@vger.kernel.org, AJvYcCVKJJH4E8m+6GHLF/eySqM3NuiCfJVjI51gIcMwwvC4PqGmoR09MMoZFg4oZobFMI4fYkeyJBS6SRgbo+cPqnTG@vger.kernel.org, AJvYcCVPlcDHX2rYnfPbljLZEfyVzjyqPtrGovB26bPefpouBtjPrRyxxMPVvmAFw6oZ/pmMl3vrP1+SdYYGYfYT@vger.kernel.org, AJvYcCW0pae/rLXPU1tHlSyZWiWl5H+K/mM3urzT3TmUPyYTgMplunVNzdjNlxqc0e+sbEPUZug=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwkqiUXQZOoPRL/OZIo9KcimFPRr13fBCHiiismBrymRi5lcwzz
-	baucdXxi8A1g9kk+6uMXHjZN6dQGWqUkYEJrP+BMx0hZrEubI6OU
-X-Gm-Gg: ASbGncumkx3om8W2gFUjnINjyTZ+bnhLTSViqgKt+B3+cfGcFWLh3gTA73fm79FYqJF
-	3Qww3O6YeysU5MVApkl35JyR9IVyfeSvEhg3ysOEgE+7LD0qyiu1d1ChSTPmK4eep+EN/Dvc7b5
-	yzwduKULeCcbYv1fwkvRTaSxbufrtEctwN+ONv5mAC/HxzYKDqhzCg/eXiTwE4ycRnCWeoQWoOJ
-	M82fwlvCchgGHxyoiyQ+2Qu/44wMsxR4e/QCOsCCfu1Os/Z848ulF4I+KWg1/jsEDW9vX/ytikj
-	kwigckVBXbo7CZmrdUrskrsleosZ6cHSZ1qHtqRjnPgvzJuk
-X-Google-Smtp-Source: AGHT+IEqQiEdBN18NzeCzATzPCdMYX7OSqKrz7WWXs+VpGIlSI/RD/m5riIAffmbr4BZka1MHDXYYw==
-X-Received: by 2002:a05:6a21:3a4a:b0:1ee:dcd3:80d7 with SMTP id adf61e73a8af0-1fbe862d8ddmr9179408637.0.1742429178363;
-        Wed, 19 Mar 2025 17:06:18 -0700 (PDT)
-Received: from localhost ([129.210.115.104])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af56e9e2f45sm11619719a12.29.2025.03.19.17.06.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Mar 2025 17:06:17 -0700 (PDT)
-Date: Wed, 19 Mar 2025 17:06:17 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: john.fastabend@gmail.com, jakub@cloudflare.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	horms@kernel.org, andrii@kernel.org, eddyz87@gmail.com,
-	mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	jolsa@kernel.org, shuah@kernel.org, mhal@rbox.co,
-	sgarzare@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 1/3] bpf, sockmap: avoid using sk_socket
- after free when sending
-Message-ID: <Z9tb+Y+w/gcqSnCo@pop-os.localdomain>
-References: <20250317092257.68760-1-jiayuan.chen@linux.dev>
- <20250317092257.68760-2-jiayuan.chen@linux.dev>
- <Z9tNAhMV1Y5znONo@pop-os.localdomain>
- <48068a86ea99dffe1e7849fb544eac1746364afb@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BwcGaPDN86HOOBtj2ecWJP98lAZZoEVWTT2okHr+iNVXTBfKN82qCTE4DWN8zNx3/lYIHwAssVpsjpNccKdnxyJnuAN/abTUe0jyAj5e043HHPrfgoVk/RY0SjkLqoR0WtjpzvXQeK4c3i/1+8Ggy111q2qr5jd7IpnfeDsbwQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iw+/COgU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2FF3C4CEE4;
+	Thu, 20 Mar 2025 00:17:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742429852;
+	bh=/yS0JpV8hJu3Jxftqy7tqsojZdKf7wKp48xtukVTWUE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iw+/COgUvIMB6bKaEBxZOrJJQ/HQEa0tEQa2oH1uO4wSGBBAImqNEvCLBKJiyEyFx
+	 NsUQ99wqaGipe7oAi+lFOeNj4IaEHU9rH0it2Dpjd3tEbIEsj64DB7RRBMkQia22YV
+	 RqtySWB//7j+eFBv9NXIvAPJGw0Vc/QLsAkpHs7bvqRuKbUjwGTDL9YBHnPB4DQqov
+	 Oxe8zL8gC3syMohy81gy3/00558vAJY4eJSywGDxobzMre1XFiKEMETBUMG2ynxd1s
+	 1vTAWl4hhabilY5EUJZdw/wYD4QE+3LT12QzPo78fDkHiJLMY1c708aeihDy/JzKAQ
+	 hF7+kCWzWYFgQ==
+Date: Wed, 19 Mar 2025 17:17:30 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Howard Chu <howardchu95@gmail.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+	Song Liu <song@kernel.org>
+Subject: Re: [PATCH v2] perf trace: Implement syscall summary in BPF
+Message-ID: <Z9temnrmEHVTfSZD@google.com>
+References: <20250317180834.1862079-1-namhyung@kernel.org>
+ <CAH0uvogx1-oz4ZjLpcTRArTb2YJOyY1h1pccMXYSgCnHYD9bPA@mail.gmail.com>
+ <Z9tABRzmYYYUyEFO@google.com>
+ <CAH0uvog7uZL2AGyfPdSjCo0eahxDESXT3ZWSNmUCGWFc_SmFYg@mail.gmail.com>
+ <CAH0uvoi_Soj=b1YdsqN=RhHMf340r1YZm72JgkyAyUi-Rox7_g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <48068a86ea99dffe1e7849fb544eac1746364afb@linux.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH0uvoi_Soj=b1YdsqN=RhHMf340r1YZm72JgkyAyUi-Rox7_g@mail.gmail.com>
 
-On Wed, Mar 19, 2025 at 11:36:13PM +0000, Jiayuan Chen wrote:
-> 2025/3/20 07:02, "Cong Wang" <xiyou.wangcong@gmail.com> wrote:
+On Wed, Mar 19, 2025 at 04:39:17PM -0700, Howard Chu wrote:
+> Hi Namhyung,
 > 
-> > 
-> > On Mon, Mar 17, 2025 at 05:22:54PM +0800, Jiayuan Chen wrote:
-> > 
-> > > 
-> > > The sk->sk_socket is not locked or referenced, and during the call to
-> > > 
-> > 
-> > Hm? We should have a reference in socket map, whether directly or
-> > 
-> > indirectly, right? When we add a socket to a socket map, we do call
-> > 
-> > sock_map_psock_get_checked() to obtain a reference.
-> > 
+> I haven't finished the code review yet, but here are something that I
+> found interesting to share:
+
+Thanks a lot for your review!
+
 > 
-> Yes, but we remove psock from sockmap when sock_map_close() was called
-> '''
-> sock_map_close
-> 	lock_sock(sk);
-> 	rcu_read_lock();
-> 	psock = sk_psock(sk);
->         // here we remove psock and the reference of psock become 0
-> 	sock_map_remove_links(sk, psock)
-
-sk_psock_drop() also calls cancel_delayed_work_sync(&psock->work),
-althrough in yet another work. Is this also a contribution to this bug?
-
->         psock = sk_psock_get(sk);
->         if (unlikely(!psock))
->             goto no_psock;     <=== jmp to no_psock
->         rcu_read_unlock();
->         release_sock(sk);
->         cancel_delayed_work_sync(&psock->work); <== no chance to run cancel
-> '''
+> ## 1
+> You used sudo ./perf trace -as --bpf-summary --summary-mode=total -- sleep 1 as
+> an example
 > 
+> If I use perf trace --bpf-summary without the '-a', that is to record
+> the process / task of 'sleep 1':
+> 
+> sudo ./perf trace -s --bpf-summary --summary-mode=total -- sleep 1
+> 
+> It won't be recording this one process. So there should be a sentence
+> saying that bpf-summary only does system wide summaries.
 
-I have to say sock_map_close() becomes harder and harder to understand
-now. And I am feeling we may have more bugs since we have two flying
-work's here: psock->rwork and psock->work.
+Hmm.. you're right.  I added per-thread summary but it still works for
+system-wide only.  I'll check the target and make it fail with an error
+message if it's not in system-wide mode for now.  I think we can add
+support for other targets later.
 
-Thanks.
+> 
+> ## 2
+> there is a bug in min section, which made min always 0
+> 
+> you can see it in the sample output you provided above:
+>      syscall            calls  errors  total       min       avg
+> max       stddev
+>                                        (msec)    (msec)    (msec)
+> (msec)        (%)
+>      --------------- --------  ------ -------- --------- ---------
+> ---------     ------
+>      futex                372     18  4373.773     0.000    11.757
+> 997.715    660.42%
+>      poll                 241      0  2757.963     0.000    11.444
+> 997.758    580.34%
+>      epoll_wait           161      0  2460.854     0.000    15.285
+> 325.189    260.73%
+>      ppoll                 19      0  1298.652     0.000    68.350
+> 667.172    281.46%
+>      clock_nanosleep        1      0  1000.093     0.000  1000.093
+> 1000.093      0.00%
+>      epoll_pwait           16      0   192.787     0.000    12.049
+> 173.994    348.73%
+>      nanosleep              6      0    50.926     0.000     8.488
+> 10.210     43.96%
+> 
+> clock_nanosleep has only 1 call so min can never be 0, it has to be
+> equal to the max and the mean.
+
+Oops, right.
+
+> 
+> This can be resolved by adding this line (same as what you did in the BPF code):
+> 
+> diff --git a/tools/perf/util/bpf-trace-summary.c
+> b/tools/perf/util/bpf-trace-summary.c
+> index 5ae9feca244d..eb98db7d6e33 100644
+> --- a/tools/perf/util/bpf-trace-summary.c
+> +++ b/tools/perf/util/bpf-trace-summary.c
+> @@ -243,7 +243,7 @@ static int update_total_stats(struct hashmap
+> *hash, struct syscall_key *map_key,
+> 
+>   if (stat->max_time < map_data->max_time)
+>   stat->max_time = map_data->max_time;
+> - if (stat->min_time > map_data->min_time)
+> + if (stat->min_time > map_data->min_time || !stat->min_time)
+>   stat->min_time = map_data->min_time;
+> 
+>   return 0;
+> 
+> (sorry for the poor formatting from the gmail browser app)
+
+No problem, I'll add this change.
+
+> 
+> ## 3
+> Apologies for misunderstanding how the calculation of the 'standard
+> deviation of mean' works. You can decide what to do with it. :) Thanks
+> for the explanation in the thread of the previous version.
+
+No, it turns out that it can be calculated easily with the squared sum.
+So I've added it.
+
+Thanks,
+Namhyung
+
+> 
+> Thanks,
+> Howard
+> 
+> On Wed, Mar 19, 2025 at 3:19 PM Howard Chu <howardchu95@gmail.com> wrote:
+> >
+> > Hi Namhyung,
+> >
+> > On Wed, Mar 19, 2025 at 3:07 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > >
+> > > Hello Howard,
+> > >
+> > > On Wed, Mar 19, 2025 at 12:00:10PM -0700, Howard Chu wrote:
+> > > > Hello Namhyung,
+> > > >
+> > > > Can you please rebase it? I cannot apply it, getting:
+> > > >
+> > > > perf $ git apply --reject --whitespace=fix
+> > > > ./v2_20250317_namhyung_perf_trace_implement_syscall_summary_in_bpf.mbx
+> > > > Checking patch tools/perf/Documentation/perf-trace.txt...
+> > > > Checking patch tools/perf/Makefile.perf...
+> > > > Hunk #1 succeeded at 1198 (offset -8 lines).
+> > > > Checking patch tools/perf/builtin-trace.c...
+> > > > error: while searching for:
+> > > >         bool       hexret;
+> > > > };
+> > > >
+> > > > enum summary_mode {
+> > > >         SUMMARY__NONE = 0,
+> > > >         SUMMARY__BY_TOTAL,
+> > > >         SUMMARY__BY_THREAD,
+> > > > };
+> > > >
+> > > > struct trace {
+> > > >         struct perf_tool        tool;
+> > > >         struct {
+> > > >
+> > > > error: patch failed: tools/perf/builtin-trace.c:140
+> > >
+> > > Oops, I think I forgot to say it's on top of Ian's change.
+> > > Please try this first.  Sorry for the confusion.
+> > >
+> > > https://lore.kernel.org/r/20250319050741.269828-1-irogers@google.com
+> >
+> > Yep, with Ian's patches it successfully applied. :)
+> >
+> > Thanks,
+> > Howard
+> > >
+> > > Thanks,
+> > > Namhyung
+> > >
 
