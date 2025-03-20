@@ -1,135 +1,161 @@
-Return-Path: <bpf+bounces-54486-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54487-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1E5DA6AC77
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 18:51:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 728B0A6AC8E
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 18:56:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 538F07B0392
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 17:49:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58BCB98305B
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 17:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDF29229B36;
-	Thu, 20 Mar 2025 17:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD61F226D1B;
+	Thu, 20 Mar 2025 17:55:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ArD4xhyG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FuKaMAk9"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44FEF1953A1;
-	Thu, 20 Mar 2025 17:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C022D225785;
+	Thu, 20 Mar 2025 17:55:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742492981; cv=none; b=jOlPUGSyNzjAdJv2SchIirkRVYXsptkNALpAx8XRiABZR02d4OeeFHVvCw+zwh2A6kcevad9jqejva82lruaX1SvMaYiEMAyukEeX8MrluWSKESMfp+2lQfBRmUlFVADZS+ombFsLJL3jgDaQvuPiklNpzawNqVuqEN3AUHfRKw=
+	t=1742493312; cv=none; b=bw0NAOPQJziWnpodxH/QV/XOwvTZpuaCpKSKgbGbxm/lsvvQ72qvKy1Un/NRyGXwdJxRJhZDugHxrXqXLczOYVC4b9qWnzLgM4f0Dij8ubf3uzG1IV7uAfkodgT2X/FiR/uHKiIyHW8KNJsA1mrivXbOTJ3aGeF6p6i46639nHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742492981; c=relaxed/simple;
-	bh=xqyeSV4G9bEvGxh7+XLA1KQjiatdEWvQJJpEHF2K2MA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=t1GiDzztLsMCBL1NaXak7SJBiOERf0x6DD5jrgYtXzHuDjXyanw3gSvJZptnRSCN0yOANzoUkHKf6fKicXQF8S/N2LFKIBnJNfmAxj+ptGXxsTSTzvb5d5cqn3+2+vsObpLQchlUiROMrRcvWZaVIkwuigzf+z8kwW1rVVDiVjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ArD4xhyG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04BD1C4CEED;
-	Thu, 20 Mar 2025 17:49:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742492981;
-	bh=xqyeSV4G9bEvGxh7+XLA1KQjiatdEWvQJJpEHF2K2MA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ArD4xhyGTHStavD8A76PBgnwVf/b6DAeY0m4VNRVRdFa2EkzAIAMHc43M4ZQD+5BY
-	 ZMtCAri6xcGzEOK83N3mMk1laPZkfieEaaiATEePwar2BgC4yeB1K2uiSiPwvegp//
-	 cnr7pWshpDEfcnZfw8xTk7ys/WytKBhlSCoMFDv8CTJaSamT5F3gRiNm0nn2LQFzBV
-	 l02C3ED582IYHSyzmbLmmvAr8kKgOzF7Zxh6z+2fnOHyRLfxTypyw4dw1bQC8wC40v
-	 hFEQ6LEGweKDFQGvWU5y+V3NlfA2LGnuTBydGQHPj74m4SbMpaJGfS69g6G8l8YR73
-	 G0Jv/4omDVUwg==
-From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Date: Thu, 20 Mar 2025 18:48:44 +0100
-Subject: [PATCH bpf-next/net v3 5/5] selftests/bpf: Drop cgroup_fd of
- run_mptcpify
+	s=arc-20240116; t=1742493312; c=relaxed/simple;
+	bh=1tHP3yvoRaMfGdgqMIapuAIJ8bRHb8wB2YvVk0UM2a4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EIBcv1IKHPDHGrqaYQn5vzSonGxphIvsDmH1tp7pKpA4Y3QYW0L3eVkjOwIr1SjWAn7RtJjbas2SpCSeCKfM3pSR5+Gl270cp0yY2Y1pjlwY0s+qdJwf1zpGt7oACeKPtgygcKjw9tPP91enjW57okQxjruwHO5bD30+L+rt8t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FuKaMAk9; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3d46aaf36a2so9161705ab.3;
+        Thu, 20 Mar 2025 10:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742493310; x=1743098110; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N8OWNr6NISgDNy1w3Ru5nNUSHta20LVgeQjr5h6nl+k=;
+        b=FuKaMAk9SFIDKca2Bh9OWSVDaMeRxMFXwhOVSNsPrtnCMy+UDYjs12oxOTQDugu3XZ
+         4I7DMv6cqyFNm/DZreX7nF2n9WQK51OQ7+u3DsgQOmsrh0KgyHgOfL6jLIO5YpNkZ2Ua
+         LTVgqkBIvlco2C3ddK2M5tXfgkzsND7nJf8Ng3VQUJDX3B9hfOPS9h2UVeJQ8gEOc3a8
+         xZ1jCctFpE0xaUrzIsa7z7Ad+pf+z+sKuUu2KJuEm6IH0DrTelmEzgS2aGCV0RabEHtb
+         BjBV3AlQaReWDOu3fHOYw2MFQJrLtFZDjWVuz0MkPwodpl0IatwpNHgoVbDlFzJifc8K
+         ylgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742493310; x=1743098110;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N8OWNr6NISgDNy1w3Ru5nNUSHta20LVgeQjr5h6nl+k=;
+        b=dBl/mg6mXCglhU5p/CiOLYHUlUW5MQtB26FB/Y8DAYQ6dSIg8WRLAqk+sK8lLbp68u
+         hqS150n+fhbB5pP3d6Dc+iNLl038+rHEnJMB7JC0WUEetisy+gAFEP1prxIwrZW/bUV4
+         akkKKymFkdNufcRGxLXiEcRWYcRzYVIEfQsGJMlms5Pcff4KYcf0H76gPzYVlzGYzgg4
+         zmlG05/qNslzGzRh/Jn1Pa/uHGUwsiuWzV3k+pufdlVUffk91guZTD9txmYqI1E1+GYU
+         JtM4yhLR4f6ZAQNIDk+iCoMNl2Q48V6VufoPZknIqIwuDdpuFlVHuvHh/3l9Dn+a3ahz
+         NyNw==
+X-Forwarded-Encrypted: i=1; AJvYcCUquwcMYGoIdcAv/qypUeDRjW5u3oEzAcP4vPOrMvKzwTEC8OjYhOXJyIH4RxX4uNV+E/q9T1CT@vger.kernel.org, AJvYcCXtvsbJOj2/S9dyRfgPCf4FKPoigoTpbpez1kS3OPNBIxQ5K50qpRlIV4PhAWXvyTXyvTY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfQG69MYFhf6nvdFni6MWI/RS26E2r+ALD06rHAls9nk/9vR/k
+	sfiQPXCvsSPJJp1ctDGECpv4aC4hmzewWKvQgD0n2GU+EPYgG4LsTMfxk+OJ8SB/Zshhza57RVB
+	italeSaklISjwuTvrpR/7v8de0R8=
+X-Gm-Gg: ASbGncu5JBBBnklAX/J4L0+ECrik2z6Hv6xqUOjHJJqNVp1THxaj/p8T4t3LB5PMltS
+	LWayLlvzZt9QbhUFfcceKzNiJsE3B7SwzTc1qNDwEAQbr53aTNQ2wB5TqoLAilpWZJbfPB4er4u
+	SkOGFn8NeLWJLaG/VkxaaKYRdF1IVQv24kXZE=
+X-Google-Smtp-Source: AGHT+IF+Bf0fuBiZvKXA7lUowNg9xdB13QbYsRfi7HGunQo07YbRtyOOhbWPCimuma0qBGrX41rIS+zwxHz2T3dZUqg=
+X-Received: by 2002:a05:6e02:1525:b0:3d3:dfa2:4642 with SMTP id
+ e9e14a558f8ab-3d59611b1famr3292405ab.13.1742493309847; Thu, 20 Mar 2025
+ 10:55:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250320-bpf-next-net-mptcp-bpf_iter-subflows-v3-5-9abd22c2a7fd@kernel.org>
-References: <20250320-bpf-next-net-mptcp-bpf_iter-subflows-v3-0-9abd22c2a7fd@kernel.org>
-In-Reply-To: <20250320-bpf-next-net-mptcp-bpf_iter-subflows-v3-0-9abd22c2a7fd@kernel.org>
-To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, 
- Geliang Tang <geliang@kernel.org>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1276; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=MJ4yUIHEjVx1dlHDaBDAevTBfGako1NrlTzaHOWEc8c=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBn3FUR0f5fhrsnGbmJRYV8FaWCHCgsF459EuDdS
- kPQ5IX7TrKJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZ9xVEQAKCRD2t4JPQmmg
- c5QBEACswLflX88JxzwMso+MxP61b7Q6a3H/WnAWYTZ57E0J0zI1QCQ/a1gelBY+QrIxE+e21W6
- sRoVTuz7kmSMxpn8VyuIlP//CD8/LZyT5cPWpCz3bTE0MI3FgbtIms20l6xr0udoqRdDibB7Ta+
- b7y5yKaXlNHSjKbx2r6jpi0OTTgR9R6C0xxDXQpQ/ySa/XGNTq76b4PNRrZQ5haMJvpUwhgaFIO
- UBOA6AYV5VQmooN2+w7Q2G0PVu8HAEaXzsqu189ZfI4nGZHOFpi6BCXUqREM19DQ+SmvT5D3DGa
- duV7zJpICVUDUqFF3GpkRRapMYfUucegH9KbGxPKfiiH8VsaHol686/v37Yegjb70FQfK+8qyZd
- 30y0INxl/pJUUtKyTYPqlZj8ZZZ43tUEDTLFIcSfE1GDJQCmiM71rDz40EYEm4HCx1/iiZeUBSV
- OtXwF/yeLXSZ1m0YMMRRt7vgS03MbzWDepEeJJJAdBXfH4Zj74M/8H6GMNci86d7G3KmX6I06pb
- YUr1XxoiIft85ld/JeYHCffzA1V+eBl+bG4JwJS8pb0oVo84dHOi1zcGp7D6P7ADFk7dLHQGXa9
- K3IIq97dFf30psO5+91vkGHWDhhGzBG6gJCHUk/AssJ0arGpkg2IsmYG648tsjWYnh6KlPM3Fk5
- I/sQEyhCmGnhefQ==
-X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+References: <20250313221620.2512684-1-martin.lau@linux.dev>
+In-Reply-To: <20250313221620.2512684-1-martin.lau@linux.dev>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Fri, 21 Mar 2025 00:54:33 +0700
+X-Gm-Features: AQ5f1JrGW-_G-Xxgwex1RpY5dtZcM6QkfahZCjCJCzt1StCgnxgsZJW0SxZ_w3c
+Message-ID: <CAL+tcoDPMrw8yuajgCFmLTVhB65EUvH3WXXo6O70uyEapwFnXQ@mail.gmail.com>
+Subject: Re: pull-request: bpf-next 2025-03-13
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+On Fri, Mar 14, 2025 at 5:16=E2=80=AFAM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+> Hi David, hi Jakub, hi Paolo, hi Eric,
+>
+> The following pull-request contains BPF updates for your *net-next* tree.
+>
+> We've added 4 non-merge commits during the last 3 day(s) which contain
+> a total of 2 files changed, 35 insertions(+), 12 deletions(-).
+>
+> The main changes are:
+>
+> 1) bpf_getsockopt support for TCP_BPF_RTO_MIN and TCP_BPF_DELACK_MAX,
+>    from Jason Xing
+>
+> Please consider pulling these changes from:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for=
+-netdev
+>
+> Thanks a lot!
+>
+> ----------------------------------------------------------------
+>
+> The following changes since commit 6d99faf2541d519ec30a104d6b585484563e2c=
+45:
+>
+>   Merge branch 'net-ti-icssg-prueth-add-native-mode-xdp-support' (2025-03=
+-11 11:10:16 +0100)
+>
+> are available in the Git repository at:
+>
+>   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/f=
+or-netdev
+>
+> for you to fetch changes up to c468c8d299341adf348f1d9cfaacca3cb4f91003:
+>
+>   Merge branch 'tcp-add-some-rto-min-and-delack-max-bpf_getsockopt-suppor=
+ts' (2025-03-13 14:43:15 -0700)
+>
+> ----------------------------------------------------------------
+> bpf-next-for-netdev
+>
+> ----------------------------------------------------------------
+> Jason Xing (4):
+>       tcp: bpf: Introduce bpf_sol_tcp_getsockopt to support TCP_BPF flags
+>       tcp: bpf: Support bpf_getsockopt for TCP_BPF_RTO_MIN
+>       tcp: bpf: Support bpf_getsockopt for TCP_BPF_DELACK_MAX
+>       selftests/bpf: Add bpf_getsockopt() for TCP_BPF_DELACK_MAX and TCP_=
+BPF_RTO_MIN
+>
+> Martin KaFai Lau (1):
+>       Merge branch 'tcp-add-some-rto-min-and-delack-max-bpf_getsockopt-su=
+pports'
+>
+>  net/core/filter.c                                  | 45 ++++++++++++++++=
+------
+>  tools/testing/selftests/bpf/progs/setget_sockopt.c |  2 +
+>  2 files changed, 35 insertions(+), 12 deletions(-)
+>
 
-The parameter 'cgroup_fd' of run_mptcpify() is useless, drop it.
+Hi maintainers,
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
----
-Notes:
- - v3:
-   - New patch, simply to remove an unused parameter in the selftests.
----
- tools/testing/selftests/bpf/prog_tests/mptcp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+No rush actually. I'm just noticing this patchset might be forgotten.
+(kindly reminder here.)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-index f37574b5ef68d8f32f8002df317869dfdf1d4b2d..f519c452884e7b6088de24b6c2a9e646954fe0d8 100644
---- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-@@ -272,7 +272,7 @@ static int verify_mptcpify(int server_fd, int client_fd)
- 	return err;
- }
- 
--static int run_mptcpify(int cgroup_fd)
-+static int run_mptcpify(void)
- {
- 	int server_fd, client_fd, err = 0;
- 	struct mptcpify *mptcpify_skel;
-@@ -325,7 +325,7 @@ static void test_mptcpify(void)
- 	if (!ASSERT_OK_PTR(netns, "netns_new"))
- 		goto fail;
- 
--	ASSERT_OK(run_mptcpify(cgroup_fd), "run_mptcpify");
-+	ASSERT_OK(run_mptcpify(), "run_mptcpify");
- 
- fail:
- 	netns_free(netns);
-
--- 
-2.48.1
-
+Thanks,
+Jason
 
