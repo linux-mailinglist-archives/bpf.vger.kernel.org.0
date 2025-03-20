@@ -1,167 +1,164 @@
-Return-Path: <bpf+bounces-54480-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54481-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40003A6AC47
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 18:42:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D15E1A6AC66
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 18:49:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C84A7A5B70
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 17:41:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82BE41895F5D
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 17:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C555F22576C;
-	Thu, 20 Mar 2025 17:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94795225A39;
+	Thu, 20 Mar 2025 17:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ho5PV3wo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FHHcAMGO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70CA1D7E41
-	for <bpf@vger.kernel.org>; Thu, 20 Mar 2025 17:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C17D1953A1;
+	Thu, 20 Mar 2025 17:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742492552; cv=none; b=V+2ZtfP/l/c/WK3mDWRnAUQw15c4idWijOuTStGIbi+0baud82G+XJdb0FCPkuy7JYjvZHrq58fKAqBJSxrmw0NUVyDHMUYTDZeKJza6TJ0tWx57GdGK8PBWpzJAB7HY3nl91cADRCdxTIWQITFnyIgzUQ3X/Ig6z2aHA/0c3mY=
+	t=1742492952; cv=none; b=Q/Va7SviK3Dd3nE67o00K3yw3bdpeiJdCbKF1ntALm31nDwjHV/7SSEIJ+O+77nVorAI9iy/KxifZ0ldXBbKgSV1ev9MSV+ykF5l8BQ//9Zr4UQV4jbNo3sLI/O+KP+bzcptbUWds4bwnfNHRTL0q50DhOeNEa0AOubzFqgNaL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742492552; c=relaxed/simple;
-	bh=iTqLD9y3w22SW2T4XeaP+XhUDCp1M/n2QeTdfoPzLlU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qfWDvopvHw+xjbiSovFPfhSAjYYMHt5HMoAoM2BlD1co11UrhWqxFb9Wfy0+6IblVn376LPMmioEiN3IipiE1F9ZORU7+sEGJI6tzLy90tQ53OdEc3cU1gnWBl2dAzZkGONVO/xixmosuMgG1fTtfMvHszBP6xSVQsId1ESJPEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ho5PV3wo; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ff6a98c638so2435125a91.0
-        for <bpf@vger.kernel.org>; Thu, 20 Mar 2025 10:42:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742492550; x=1743097350; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=an9o1wA8XGOeTBAb1/xE4N8a5OlNRtNIFYopStI0LGc=;
-        b=ho5PV3wok+k3SI48lfOJOAQLi2A4CSStVSmkYFYfkziz4jMfR/YY0FiWq1mHouUFah
-         JtUj/AsSGXYaZ/GOaBWFHxYx7tGIJLYluAX1qOUwwoT2Pqpd0sYm5EHn54kkPXRF99B4
-         pk27GbqOA9mN3qZ2Xfuj5GsbB3LAy1N8AgFcS9GPJyVheo1E1pOtfXrRVC2FtX7bVLx5
-         DarKxHGNFH2tndTNtD4tgNnlAOZBTaT8XVxxnkHyuuKLISKXpkXOp59S16s/fiaCaKxb
-         SGrpCHpaDRgoLqxJhIl93a06jIo3urUZB/fMPuv75LDonDsju9dkuqph00xX9OgyIo2M
-         8dhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742492550; x=1743097350;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=an9o1wA8XGOeTBAb1/xE4N8a5OlNRtNIFYopStI0LGc=;
-        b=t81dWOrpjoQ6JoD46QtUld0ycRAggp20Ds6ytegYWR2+DEUkBgq254ckxvSkbZ9WHE
-         qShhbV+rUSHyHJDqdL24OK2MNcSKvwXos1AR3HYnJVSGb3cD1YkxlHJbWs0KWD10DY9N
-         DcrFzErg4xwbRz+oAL/5uhVAFvWgB8BFIM8VOibydJJC+R9G41HqJjW8j36oeR0MuXxR
-         K5V6KM7dVs+MlipUHN9zz9dsBSvU1kPJOJJMV5Ds//qZ9wOJAIircLzgew7jTSQpu86p
-         6YE7noqHlHYpK477dr4eUqRVuuCEuYsd03Dm/QhZC46ASnwYr4qgakvdtjn8Q67IuC+H
-         fh3g==
-X-Gm-Message-State: AOJu0Yy4Ao9snA0Qhzo5/g81K1HgEPuew8wpER4HpXqdvWu/3atSh3GM
-	HAxOGF8Fiz/CNdY/GdF4gYjZKmMrUNf+arMalW35GPIPh6wMe/2rBnc1AKz58E/Fz1zszs0AntM
-	zH+tLX0WEjxBTW2h2TTN4kKl9Xzo=
-X-Gm-Gg: ASbGncvkZeZJCmLLx5NZEyU0mHD6ilDSfyZnyR+r4H2um3q8Upr8thMzuAyFcdtfd5c
-	+eLdv1fDz3SWIsNA5TSvwiWoUMBitMmmIb/dth2HKszhtDyghdf6xAg6tCEYnen0hUVSNETC1uQ
-	xcuuIiDHt6RMl5gzqWX8BCqxG24RU5y2CCnUH7qvphDw==
-X-Google-Smtp-Source: AGHT+IGeHVOrdwolG3Ctc6SHXI3a6Bsb9khneqXW5Cf8jbRSaj6oTPaWsNUxKnK9r65tJSVn0gUSdRHbFmfR5RnH/Ho=
-X-Received: by 2002:a17:90b:2688:b0:2ee:8ea0:6b9c with SMTP id
- 98e67ed59e1d1-3030fe90e28mr176023a91.12.1742492549671; Thu, 20 Mar 2025
- 10:42:29 -0700 (PDT)
+	s=arc-20240116; t=1742492952; c=relaxed/simple;
+	bh=/+9BFHdLCi4yrHM9Vpmg4VxF40F8p5KFkeboL0OuHTY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Fdu3CMLwcCC8WsjebHjEPgK4kwYC1IN4us8Qqn8F1dXBHbzLIPgHjVTIPiqcaiSOzxLSOpp5d6C1MRTk8+VnnuUQ6tl+SV5tUGZUKbSYLJtUxAukF9tvfhwxxDWP8j+MMZabX58FDDFZbOEAWuYBtZBZsRRSpH6jWRXvpHmJwvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FHHcAMGO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37BE3C4CEDD;
+	Thu, 20 Mar 2025 17:49:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742492951;
+	bh=/+9BFHdLCi4yrHM9Vpmg4VxF40F8p5KFkeboL0OuHTY=;
+	h=From:Subject:Date:To:Cc:From;
+	b=FHHcAMGO64EnmpJe3Qk5cTpAuMUD7ub8FgTlmSUO3w3VaJjXvrdVVyPyK4p6dHnCW
+	 z8UvnZfFjGV2vF/jJkNRlIQO/Zhz3tguuVl10gK7KDwk0hKi2xM09o18uHcgWp1u2u
+	 1/HBzNsh2d/6eMZ7mL0H1+9vio7Vp4670Lr/7AvuDPV2gpNjqugBGeTp0aMh3Czq6K
+	 xkApSzUKuyyztwfecqvfF165wP66FFkCpQh4rUUT6+4WYvmWJ//5Czn0kUeaTWozrm
+	 7nZgpyRIKc5ZmYUbD5s81/SNiC1OgscVfD5P5wUsKFI3kEorJ+Terk32g55xr2uVSt
+	 XENfN0IWJ7rgg==
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Subject: [PATCH bpf-next/net v3 0/5] bpf: Add mptcp_subflow bpf_iter
+ support
+Date: Thu, 20 Mar 2025 18:48:39 +0100
+Message-Id: <20250320-bpf-next-net-mptcp-bpf_iter-subflows-v3-0-9abd22c2a7fd@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <PA4PR03MB69099CE14414DEF4173A9A3FB3D92@PA4PR03MB6909.eurprd03.prod.outlook.com>
-In-Reply-To: <PA4PR03MB69099CE14414DEF4173A9A3FB3D92@PA4PR03MB6909.eurprd03.prod.outlook.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 20 Mar 2025 10:42:16 -0700
-X-Gm-Features: AQ5f1JrbO7PaZy061gCZmnICIkDO8G7NybDYmgO90sk0t1QYKXXkME3ovulKD5M
-Message-ID: <CAEf4BzayP7pV4E5pwfratnOoZw8G6W-RE4=YQ+na6kd+naQdWA@mail.gmail.com>
-Subject: Re: Ebpf function and doubts in its usage
-To: Francisco Soares Carvalho <francisco.s.carvalho@nos.pt>
-Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPdU3GcC/5XOSw7CIBAG4Ks0rEWBvl15D2NMS4eWWIEAYk3Tu
+ 4tNjHGnm0nmke+fGTmwEhzaJzOyEKSTWsUm3SSID43qAcsu9ogRllFKKtwagRVMPhaPr8Zz8xq
+ dpQeL3a0Vo747TFgpiq4qy5IAipSxIOS0xhzRW9hFAZ3idpDOa/tYfwh0vfkvLlBMMBe0qPOUp
+ DmnhwtYBeNW235NCOyjMlr/qLKoNsCyrEt517b8S12W5QkD8/kXPQEAAA==
+X-Change-ID: 20241108-bpf-next-net-mptcp-bpf_iter-subflows-027f6d87770e
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, Geliang Tang <geliang@kernel.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3034; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=/+9BFHdLCi4yrHM9Vpmg4VxF40F8p5KFkeboL0OuHTY=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBn3FURBUia0pErjIDFEx+UDwF+yBS8yXtXai7Jb
+ cKddCNbbX6JAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZ9xVEQAKCRD2t4JPQmmg
+ cxl6D/4kDNTGbiufxbHXbbAHuxC8oR8HlQ0VCX8GXspHixLuqscuUFnFWlXQsq5kBH3XLXHlWYN
+ 89lZ5KdzC6IoeCx6WTPdILgyH7aWQmUNo/FPb0ecXT1RwsZmXbetMGxqYqwWzewpCyLCpPEnuec
+ DQlSB5v9O3ag4No2dCbms0D52YMr9NsDXIzfaWZwuWPVvW/U+ZHMRbeHtLWu/9QviIQKgDMJOgi
+ 195qK7RsUbGKL0vaZ9G+RE/DyVu7pMEkWPk5gLZ3/cwH5x1H4boJYGoiZ1vI/19LlNYFpR5KnH0
+ Xr5U8wEt6noUkzwkRUfT8t+L8gudHAlClYpCjvx4LLNNgB7cDGf9jylYqt21R8lyFTtM6Zu2cGn
+ l65R+aw9AEk/3DAmVPtGz1usrKav+n1s928OyvbD+kvfurJyr8CbriIizsfQZVc9UP3CBrecpjX
+ l/Nh+cFimnY7Qty8eoxCQXOGWwwnLHFlA/lQj3bvNTHfPpWbX3QHdmrFacfn6j0dZXjgesabC8z
+ rx5WiMuqPLJ5jLzNAs9jbC2phTJgIHp18ySgJViCjz65lbsNWQUkxtGeQFcabOXm/MKpmbRRIwl
+ JkQUAcc3fjFCQp0Ddy+eyJYbPiBmsCdL8L7hh+KkVSwKuRKAhpKQ/jDcy1RQA4luyoe5tJoa+Nm
+ 3Dz57JS5G+2bpfw==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
-On Wed, Mar 19, 2025 at 8:35=E2=80=AFAM Francisco Soares Carvalho
-<francisco.s.carvalho@nos.pt> wrote:
->
-> Dear Linux Kernel team,
->
-> I hope this message finds you well, I am seeking your assistance in the c=
-orrect usage of the function bpf_dynptr_slice() please.
->
-> The program being developed is supposed to captures all the packets that =
-pass through the Prerouting stage of the Netfilter packet flow, so the prog=
-ram is required to be of ebpf Netfilter program type. As the objective is t=
-o copy large portions of the captured packets to user-space for processing,=
- without consuming them, a ringbuffer map type is used for storage and comm=
-unication.
->
-> According to the ebpf official page (Link to the Netfilter program type p=
-age: https://docs.ebpf.io/linux/program-type/BPF_PROG_TYPE_NETFILTER/), thi=
-s program type needs to read the packet with the dynptr interface, plus (Li=
-nk to the bpf_dynptr_from_skb() function page: https://docs.ebpf.io/linux/k=
-funcs/bpf_dynptr_from_skb/) the correct and only way to access the packets =
-captured is through the bpf_dynptr_slice() or bpf_dynptr_read() functions (=
-"For reads and writes through the bpf_dynptr_read() and bpf_dynptr_write() =
-interfaces, reading and writing from/to data in the head as well as from/to=
- non-linear paged buffers is supported. Data slices through the bpf_dynptr_=
-data API are not supported; instead bpf_dynptr_slice() and bpf_dynptr_slice=
-_rdwr() should be used.").
->
-> In order to write to the ringbuffer, the api provided needs to be respect=
-ed (Link to the list of functions that ringbuffer maps support: https://doc=
-s.ebpf.io/linux/map-type/BPF_MAP_TYPE_RINGBUF/), so the bpf_dynptr_read() f=
-unction can't be used, as it can't write to the ringbuffer, so it would nee=
-d space to store the packet information, and some (most) of the packets nee=
-d more space than the ebpf verifier allows (512 Bytes, this limit can be ch=
-anged, however it is not the first option in this program). So, the bpf_dyn=
-ptr_slice() was chosen.
->
-> I think I understand the description presented in the official page and t=
-he signature of the function, but if you see any mistakes or misunderstandi=
-ngs, please feel free to correct them. The current problem is with the veri=
-fier. According to it, the 4^th argument of bpf_dynptr_slice() needs to be =
-a known constant at compile time (figure 1 in attachments). However, the pa=
-ckets received don't have the same size, and the data part's sizes the user=
--space will need also varies. The following attempts were tried in a Ubuntu=
- 24.04.01 LTS with a kernel version 6.8.0-52:
->
-> 1. Switch case with the possible sizes, with the maximum size as 1099 byt=
-es per packet. (the clang optimizer placed a variable instead of the values=
- of the 4^th argument)
-> 2. Place bpf_dynptr_size() in the 4^th argument
-> 3. Declare const unsigned int size=3Dsz and use size as the 4^th argument
-> 4. Create a function that returned an unsigned int and use it in the 4^th=
- argument, and use it in the declaration of the const unsigned int size
->
-> The only way the code works is with brute force: Do the function, if it f=
-ails subtract one and do it again, always with the explicit value in the fo=
-urth argument, never with a variable. (figure 2 attached). This is not an o=
-ptimal solution, but a better one wasn't found.
->
-> What is the intended way of doing this?
->
-> Thank you very much for your time and assistance, and I'm looking forward=
- to your response.
->
+Here is a series from Geliang, adding mptcp_subflow bpf_iter support.
 
-I won't go into too many details, but you can find an example of how
-to do this with bpf_dynptr_slice() at [0], I wrote it as a demo a
-while ago.
+We are working on extending MPTCP with BPF, e.g. to control the path
+manager -- in charge of the creation, deletion, and announcements of
+subflows (paths) -- and the packet scheduler -- in charge of selecting
+which available path the next data will be sent to. These extensions
+need to iterate over the list of subflows attached to an MPTCP
+connection, and do some specific actions via some new kfunc that will be
+added later on.
 
-But, good news, just recently we've got a generic bpf_dynptr_copy()
-which is perfect for situations like this. Check it out as well.
+This preparation work is split in different patches:
 
-  [0] https://github.com/libbpf/libbpf-bootstrap/commit/046fad60df3e3954093=
-7b5ec6ee86054f33d3f28
-  [1] https://lore.kernel.org/bpf/20250226183201.332713-3-mykyta.yatsenko5@=
-gmail.com/
+- Patch 1: register some "basic" MPTCP kfunc.
 
-> Francisco Carvalho,
-> email: francisco.s.carvalho@nos.pt
->
+- Patch 2: add mptcp_subflow bpf_iter support. Note that previous
+           versions of this single patch have already been shared to the
+           BPF mailing list. The changelog has been kept with a comment,
+           but the version number has been reset to avoid confusions.
+
+- Patch 3: add more MPTCP endpoints in the selftests, in order to create
+           more than 2 subflows.
+
+- Patch 4: add a very simple test validating mptcp_subflow bpf_iter
+           support. This test could be written without the new bpf_iter,
+           but it is there only to make sure this specific feature works
+           as expected.
+
+- Patch 5: a small fix to drop an unused parameter in the selftests.
+
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+---
+Changes in v3:
+- Previous patches 1, 2 and 5 were no longer needed. (Martin)
+- Patch 2: Switch to 'struct sock' and drop unneeded checks. (Martin)
+- Patch 4: Adapt the test accordingly.
+- Patch 5: New small fix for the selftests.
+- Examples and questions for BPF maintainers have been added in Patch 2.
+- Link to v2: https://lore.kernel.org/r/20241219-bpf-next-net-mptcp-bpf_iter-subflows-v2-0-ae244d3cdbbc@kernel.org
+
+Changes in v2:
+- Patches 1-2: new ones.
+- Patch 3: remove two kfunc, more restrictions. (Martin)
+- Patch 4: add BUILD_BUG_ON(), more restrictions. (Martin)
+- Patch 7: adaptations due to modifications in patches 1-4.
+- Link to v1: https://lore.kernel.org/r/20241108-bpf-next-net-mptcp-bpf_iter-subflows-v1-0-cf16953035c1@kernel.org
+
+---
+Geliang Tang (5):
+      bpf: Register mptcp common kfunc set
+      bpf: Add mptcp_subflow bpf_iter
+      selftests/bpf: More endpoints for endpoint_init
+      selftests/bpf: Add mptcp_subflow bpf_iter subtest
+      selftests/bpf: Drop cgroup_fd of run_mptcpify
+
+ net/mptcp/bpf.c                                    |  87 +++++++++++++-
+ tools/testing/selftests/bpf/bpf_experimental.h     |   8 ++
+ tools/testing/selftests/bpf/prog_tests/mptcp.c     | 133 +++++++++++++++++++--
+ tools/testing/selftests/bpf/progs/mptcp_bpf.h      |   4 +
+ .../testing/selftests/bpf/progs/mptcp_bpf_iters.c  |  59 +++++++++
+ 5 files changed, 282 insertions(+), 9 deletions(-)
+---
+base-commit: dad704ebe38642cd405e15b9c51263356391355c
+change-id: 20241108-bpf-next-net-mptcp-bpf_iter-subflows-027f6d87770e
+
+Best regards,
+-- 
+Matthieu Baerts (NGI0) <matttbe@kernel.org>
+
 
