@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-54459-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54460-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E817A6A54D
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 12:50:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2752A6A54F
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 12:50:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEC651890F59
-	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 11:48:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E1DB16A542
+	for <lists+bpf@lfdr.de>; Thu, 20 Mar 2025 11:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F252221DAC;
-	Thu, 20 Mar 2025 11:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D120221F30;
+	Thu, 20 Mar 2025 11:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FKj72jCJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L0c8nFXR"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5D5A21C9F6;
-	Thu, 20 Mar 2025 11:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C0C22068D;
+	Thu, 20 Mar 2025 11:45:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742471127; cv=none; b=KKbZfFqn7kUajMFLnUmiF69IMfL+WApYmMwGEkr1oAqh7lFjlO3Rq2I79ZGRLx9b6xE9QcVD6ol/tJYdDLDmEK7x+XIiTW5k3NDoAj3/cmbnRKrX4RzerfOqAPj5NAQlBgc9nNMu1jkFYgZhd1b2fayNm0x2MW4c2Vn8driEgbk=
+	t=1742471138; cv=none; b=WGaCnNyVzl5j+CiXUHRE1rLzJXHjpDnO+0O/6s8L88aSU9HkdgbwDHDKnTNJvJDlvcOdZ1ab3YvCweqlxkMcGiXcbLji7Ew4bLrKBHnfmULJejB6kU+MLJ7JfyDc8y6Mh0kj6mBmvm6iXCSAai1yocpuJezDPOv/XbwuBazNHSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742471127; c=relaxed/simple;
-	bh=HTzBLdxwEvxQBtSDIW0CoRoNOhQjNbfqNb3hpAJa9fU=;
+	s=arc-20240116; t=1742471138; c=relaxed/simple;
+	bh=uXGPOiOOdsppE2rXpARjq1zblWUgfa+EtwPmNGuQXvw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hhfBwkUBKHhTyiSWHsRzJCfpIH34BUp3T/UZwfQHtfp/HoMjVUW8ROpfXOVeyYhS2sfLAdtZzneoWKYJA+pB1QCmp2ZEWBCG9RFlqWHRxzMwDdA36NSkCSH2mW3Q7hHtBxk3RgaxT44F/e4gAvb81hzENlaZuRSeMIKeQlRaIKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FKj72jCJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE6FEC4CEDD;
-	Thu, 20 Mar 2025 11:45:23 +0000 (UTC)
+	 MIME-Version; b=lLGoL16oJHg3pc557FQ5vHSOXCMyXGvtsYq5agU1zIj2PiDtsM36M/gWFbPimKA7GDxdJG1SHr4LShE2gxPRB2yCOCb3eOdlphHFoUGa/QwdpsPIE153U6wuM7t6z52UYMAWANyVxs2RuHpho7Lcn7+RGng91Nm4zDZ1wWUAfmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L0c8nFXR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3631C4CEDD;
+	Thu, 20 Mar 2025 11:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742471127;
-	bh=HTzBLdxwEvxQBtSDIW0CoRoNOhQjNbfqNb3hpAJa9fU=;
+	s=k20201202; t=1742471138;
+	bh=uXGPOiOOdsppE2rXpARjq1zblWUgfa+EtwPmNGuQXvw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FKj72jCJzZ3oEqQ5dov5lgnlczPq2M/FrVLSuui+cPTGbNJ9gRkbqvpvNy3c/QQ2Q
-	 6yE0qe3KBPa/V0cGO4wTlmukAKmLEuq+Lr1lEXvMjkrRO4NApafztqowyf4Go15I2J
-	 7BcfoQCMHihkt1myiTj8Qt5xUOeyeYRctTdYQuk5DH119Lqk6haRYHNChbDKDcUQS8
-	 P8km6HGjMQVt9x7f/1AqA/Qpfmblb6TQqavFVpt3xaviJnqWdmgFcWuM309/rRYXyi
-	 WIgKq09QenyNfwcvQKnhR1gGlU1UrQbaE2ZR6q50vJpsD2rjsw4Zhn4XqpOwKfQuTS
-	 v22v193WFOWMA==
+	b=L0c8nFXRdyRq+0X2yD+lfta7R/MhEa5H4wWnXSRxwupLbASLRSEovJo8jNUidvRQi
+	 upVjI1wA+HzPZA/K7bqiV5zl2NhfU5yHPBLXmzbEoBKtlS3nHIivifReYKJ9v3PUf5
+	 H/+FR9qgylclk/tqAlrTaK0ccjzoBJZ9YpBbY9v8tr3C4IGjqbcjax6/anGEetC06/
+	 MXHdGJjmJpB+oh8LO4xeX3zOMujPsiJCun9DpdHIcxg1PHnjTmEoyT2K18nMlwBUFp
+	 EALlkVv2QDRoz7UdTtumIJGbsjp/c5DQwBIABUsSP40k0wp/dN/oBsiRY7YDEYc4C+
+	 MxxSMPviCppEg==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -58,9 +58,9 @@ Cc: bpf@vger.kernel.org,
 	Alan Maguire <alan.maguire@oracle.com>,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-Subject: [PATCH RFCv3 18/23] selftests/bpf: Add optimized usdt variant for basic usdt test
-Date: Thu, 20 Mar 2025 12:41:53 +0100
-Message-ID: <20250320114200.14377-19-jolsa@kernel.org>
+Subject: [PATCH RFCv3 19/23] selftests/bpf: Add uprobe_regs_equal test
+Date: Thu, 20 Mar 2025 12:41:54 +0100
+Message-ID: <20250320114200.14377-20-jolsa@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250320114200.14377-1-jolsa@kernel.org>
 References: <20250320114200.14377-1-jolsa@kernel.org>
@@ -72,105 +72,197 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding optimized usdt variant for basic usdt test to check that
-usdt arguments are properly passed in optimized code path.
+Changing uretprobe_regs_trigger to allow the test for both
+uprobe and uretprobe and renaming it to uprobe_regs_equal.
+
+We check that both uprobe and uretprobe probes (bpf programs)
+see expected registers with few exceptions.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/testing/selftests/bpf/prog_tests/usdt.c | 38 ++++++++++++-------
- 1 file changed, 25 insertions(+), 13 deletions(-)
+ .../selftests/bpf/prog_tests/uprobe_syscall.c | 57 ++++++++++++++-----
+ .../selftests/bpf/progs/uprobe_syscall.c      |  4 +-
+ 2 files changed, 44 insertions(+), 17 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testing/selftests/bpf/prog_tests/usdt.c
-index 495d66414b57..3a5b5230bfa0 100644
---- a/tools/testing/selftests/bpf/prog_tests/usdt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
-@@ -40,12 +40,19 @@ static void __always_inline trigger_func(int x) {
- 	}
+diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+index b3518f48329c..f1c297a9bb03 100644
+--- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
++++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+@@ -18,15 +18,17 @@
+ 
+ #pragma GCC diagnostic ignored "-Wattributes"
+ 
+-__naked unsigned long uretprobe_regs_trigger(void)
++__attribute__((aligned(16)))
++__nocf_check __weak __naked unsigned long uprobe_regs_trigger(void)
+ {
+ 	asm volatile (
+-		"movq $0xdeadbeef, %rax\n"
++		".byte 0x0f, 0x1f, 0x44, 0x00, 0x00	\n"
++		"movq $0xdeadbeef, %rax			\n"
+ 		"ret\n"
+ 	);
  }
  
--static void subtest_basic_usdt(void)
-+static void subtest_basic_usdt(bool optimized)
+-__naked void uretprobe_regs(struct pt_regs *before, struct pt_regs *after)
++__naked void uprobe_regs(struct pt_regs *before, struct pt_regs *after)
  {
- 	LIBBPF_OPTS(bpf_usdt_opts, opts);
- 	struct test_usdt *skel;
- 	struct test_usdt__bss *bss;
--	int err, i;
-+	int err, i, called;
+ 	asm volatile (
+ 		"movq %r15,   0(%rdi)\n"
+@@ -47,15 +49,17 @@ __naked void uretprobe_regs(struct pt_regs *before, struct pt_regs *after)
+ 		"movq   $0, 120(%rdi)\n" /* orig_rax */
+ 		"movq   $0, 128(%rdi)\n" /* rip      */
+ 		"movq   $0, 136(%rdi)\n" /* cs       */
++		"pushq %rax\n"
+ 		"pushf\n"
+ 		"pop %rax\n"
+ 		"movq %rax, 144(%rdi)\n" /* eflags   */
++		"pop %rax\n"
+ 		"movq %rsp, 152(%rdi)\n" /* rsp      */
+ 		"movq   $0, 160(%rdi)\n" /* ss       */
+ 
+ 		/* save 2nd argument */
+ 		"pushq %rsi\n"
+-		"call uretprobe_regs_trigger\n"
++		"call uprobe_regs_trigger\n"
+ 
+ 		/* save  return value and load 2nd argument pointer to rax */
+ 		"pushq %rax\n"
+@@ -95,25 +99,37 @@ __naked void uretprobe_regs(struct pt_regs *before, struct pt_regs *after)
+ );
+ }
+ 
+-static void test_uretprobe_regs_equal(void)
++static void test_uprobe_regs_equal(bool retprobe)
+ {
++	LIBBPF_OPTS(bpf_uprobe_opts, opts,
++		.retprobe = retprobe,
++	);
+ 	struct uprobe_syscall *skel = NULL;
+ 	struct pt_regs before = {}, after = {};
+ 	unsigned long *pb = (unsigned long *) &before;
+ 	unsigned long *pa = (unsigned long *) &after;
+ 	unsigned long *pp;
++	unsigned long offset;
+ 	unsigned int i, cnt;
+-	int err;
 +
-+#define TRIGGER(x) ({			\
-+	trigger_func(x);		\
-+	if (optimized)			\
-+		trigger_func(x);	\
-+	optimized ? 2 : 1;		\
-+	})
++	offset = get_uprobe_offset(&uprobe_regs_trigger);
++	if (!ASSERT_GE(offset, 0, "get_uprobe_offset"))
++		return;
  
- 	skel = test_usdt__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
-@@ -66,11 +73,11 @@ static void subtest_basic_usdt(void)
- 	if (!ASSERT_OK_PTR(skel->links.usdt0, "usdt0_link"))
+ 	skel = uprobe_syscall__open_and_load();
+ 	if (!ASSERT_OK_PTR(skel, "uprobe_syscall__open_and_load"))
  		goto cleanup;
  
--	trigger_func(1);
-+	called = TRIGGER(1);
- 
--	ASSERT_EQ(bss->usdt0_called, 1, "usdt0_called");
--	ASSERT_EQ(bss->usdt3_called, 1, "usdt3_called");
--	ASSERT_EQ(bss->usdt12_called, 1, "usdt12_called");
-+	ASSERT_EQ(bss->usdt0_called, called, "usdt0_called");
-+	ASSERT_EQ(bss->usdt3_called, called, "usdt3_called");
-+	ASSERT_EQ(bss->usdt12_called, called, "usdt12_called");
- 
- 	ASSERT_EQ(bss->usdt0_cookie, 0xcafedeadbeeffeed, "usdt0_cookie");
- 	ASSERT_EQ(bss->usdt0_arg_cnt, 0, "usdt0_arg_cnt");
-@@ -119,11 +126,11 @@ static void subtest_basic_usdt(void)
- 	 * bpf_program__attach_usdt() handles this properly and attaches to
- 	 * all possible places of USDT invocation.
- 	 */
--	trigger_func(2);
-+	called += TRIGGER(2);
- 
--	ASSERT_EQ(bss->usdt0_called, 2, "usdt0_called");
--	ASSERT_EQ(bss->usdt3_called, 2, "usdt3_called");
--	ASSERT_EQ(bss->usdt12_called, 2, "usdt12_called");
-+	ASSERT_EQ(bss->usdt0_called, called, "usdt0_called");
-+	ASSERT_EQ(bss->usdt3_called, called, "usdt3_called");
-+	ASSERT_EQ(bss->usdt12_called, called, "usdt12_called");
- 
- 	/* only check values that depend on trigger_func()'s input value */
- 	ASSERT_EQ(bss->usdt3_args[0], 2, "usdt3_arg1");
-@@ -142,9 +149,9 @@ static void subtest_basic_usdt(void)
- 	if (!ASSERT_OK_PTR(skel->links.usdt3, "usdt3_reattach"))
+-	err = uprobe_syscall__attach(skel);
+-	if (!ASSERT_OK(err, "uprobe_syscall__attach"))
++	skel->links.probe = bpf_program__attach_uprobe_opts(skel->progs.probe,
++				0, "/proc/self/exe", offset, &opts);
++	if (!ASSERT_OK_PTR(skel->links.probe, "bpf_program__attach_uprobe_opts"))
  		goto cleanup;
  
--	trigger_func(3);
-+	called += TRIGGER(3);
+-	uretprobe_regs(&before, &after);
++	/* make sure uprobe gets optimized */
++	if (!retprobe)
++		uprobe_regs_trigger();
++
++	uprobe_regs(&before, &after);
  
--	ASSERT_EQ(bss->usdt3_called, 3, "usdt3_called");
-+	ASSERT_EQ(bss->usdt3_called, called, "usdt3_called");
- 	/* this time usdt3 has custom cookie */
- 	ASSERT_EQ(bss->usdt3_cookie, 0xBADC00C51E, "usdt3_cookie");
- 	ASSERT_EQ(bss->usdt3_arg_cnt, 3, "usdt3_arg_cnt");
-@@ -158,6 +165,7 @@ static void subtest_basic_usdt(void)
+ 	pp = (unsigned long *) &skel->bss->regs;
+ 	cnt = sizeof(before)/sizeof(*pb);
+@@ -122,7 +138,7 @@ static void test_uretprobe_regs_equal(void)
+ 		unsigned int offset = i * sizeof(unsigned long);
  
- cleanup:
- 	test_usdt__destroy(skel);
-+#undef TRIGGER
- }
+ 		/*
+-		 * Check register before and after uretprobe_regs_trigger call
++		 * Check register before and after uprobe_regs_trigger call
+ 		 * that triggers the uretprobe.
+ 		 */
+ 		switch (offset) {
+@@ -136,7 +152,7 @@ static void test_uretprobe_regs_equal(void)
  
- unsigned short test_usdt_100_semaphore SEC(".probes");
-@@ -419,7 +427,11 @@ static void subtest_urandom_usdt(bool auto_attach)
- void test_usdt(void)
+ 		/*
+ 		 * Check register seen from bpf program and register after
+-		 * uretprobe_regs_trigger call
++		 * uprobe_regs_trigger call (with rax exception, check below).
+ 		 */
+ 		switch (offset) {
+ 		/*
+@@ -149,6 +165,15 @@ static void test_uretprobe_regs_equal(void)
+ 		case offsetof(struct pt_regs, rsp):
+ 		case offsetof(struct pt_regs, ss):
+ 			break;
++		/*
++		 * uprobe does not see return value in rax, it needs to see the
++		 * original (before) rax value
++		 */
++		case offsetof(struct pt_regs, rax):
++			if (!retprobe) {
++				ASSERT_EQ(pp[i], pb[i], "uprobe rax prog-before value check");
++				break;
++			}
+ 		default:
+ 			if (!ASSERT_EQ(pp[i], pa[i], "register prog-after value check"))
+ 				fprintf(stdout, "failed register offset %u\n", offset);
+@@ -186,13 +211,13 @@ static void test_uretprobe_regs_change(void)
+ 	unsigned long cnt = sizeof(before)/sizeof(*pb);
+ 	unsigned int i, err, offset;
+ 
+-	offset = get_uprobe_offset(uretprobe_regs_trigger);
++	offset = get_uprobe_offset(uprobe_regs_trigger);
+ 
+ 	err = write_bpf_testmod_uprobe(offset);
+ 	if (!ASSERT_OK(err, "register_uprobe"))
+ 		return;
+ 
+-	uretprobe_regs(&before, &after);
++	uprobe_regs(&before, &after);
+ 
+ 	err = write_bpf_testmod_uprobe(0);
+ 	if (!ASSERT_OK(err, "unregister_uprobe"))
+@@ -347,7 +372,7 @@ static void test_uretprobe_shadow_stack(void)
+ 	}
+ 
+ 	/* Run all of the uretprobe tests. */
+-	test_uretprobe_regs_equal();
++	test_uprobe_regs_equal(false);
+ 	test_uretprobe_regs_change();
+ 	test_uretprobe_syscall_call();
+ 
+@@ -709,7 +734,7 @@ static void test_uprobe_sigill(void)
+ static void __test_uprobe_syscall(void)
  {
- 	if (test__start_subtest("basic"))
--		subtest_basic_usdt();
-+		subtest_basic_usdt(false);
-+#ifdef __x86_64__
-+	if (test__start_subtest("basic_optimized"))
-+		subtest_basic_usdt(true);
-+#endif
- 	if (test__start_subtest("multispec"))
- 		subtest_multispec_usdt();
- 	if (test__start_subtest("urand_auto_attach"))
+ 	if (test__start_subtest("uretprobe_regs_equal"))
+-		test_uretprobe_regs_equal();
++		test_uprobe_regs_equal(true);
+ 	if (test__start_subtest("uretprobe_regs_change"))
+ 		test_uretprobe_regs_change();
+ 	if (test__start_subtest("uretprobe_syscall_call"))
+@@ -728,6 +753,8 @@ static void __test_uprobe_syscall(void)
+ 		test_uprobe_race();
+ 	if (test__start_subtest("uprobe_sigill"))
+ 		test_uprobe_sigill();
++	if (test__start_subtest("uprobe_regs_equal"))
++		test_uprobe_regs_equal(false);
+ }
+ #else
+ static void __test_uprobe_syscall(void)
+diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall.c b/tools/testing/selftests/bpf/progs/uprobe_syscall.c
+index 8a4fa6c7ef59..e08c31669e5a 100644
+--- a/tools/testing/selftests/bpf/progs/uprobe_syscall.c
++++ b/tools/testing/selftests/bpf/progs/uprobe_syscall.c
+@@ -7,8 +7,8 @@ struct pt_regs regs;
+ 
+ char _license[] SEC("license") = "GPL";
+ 
+-SEC("uretprobe//proc/self/exe:uretprobe_regs_trigger")
+-int uretprobe(struct pt_regs *ctx)
++SEC("uprobe")
++int probe(struct pt_regs *ctx)
+ {
+ 	__builtin_memcpy(&regs, ctx, sizeof(regs));
+ 	return 0;
 -- 
 2.49.0
 
