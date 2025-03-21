@@ -1,351 +1,286 @@
-Return-Path: <bpf+bounces-54518-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54515-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE813A6B2A4
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 02:24:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18DD9A6B29B
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 02:19:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27C0B8A5B8C
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 01:23:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E88351897A0B
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 01:19:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E011B87EE;
-	Fri, 21 Mar 2025 01:23:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9FF518B46E;
+	Fri, 21 Mar 2025 01:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ehYk+Hnn"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CXFw2d9F"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392171C5F37;
-	Fri, 21 Mar 2025 01:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742520188; cv=none; b=ggshF9OvUCXNx1FstQ1gxHrzTG7GUl13e1Z8uMl0f51cDipSddPZYy/uMp2A5RDinPrzpOO4UkMOg5uLAfkznSUepH/VyfmUhLdRltOxp0jrrjxISdGXWVZ51IVak4P3mNPXU6EjjPtIKoSYzkV5Y58vzrTPOd3mOQ8fXfPclrU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742520188; c=relaxed/simple;
-	bh=YFq/vy9ty//7bbhsTW5Cj4Myq4fj6yOx2jp89I4jJWU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sd5Vt//wsxEQcFUAa32fMiKTONq67/1aZFIIoSU/53HuujGiqW4IcCbvcLGFRu9F44tMoEnfhL1NxjDY0fSaGNoAAILmg5IHK/MJczSsu2/h8LwRhKzSSp//6vlhtTDnHhtCPcbAZxxX7HSxKYd12hGuvV1xqJf0MOxHI5zaH9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ehYk+Hnn; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F154E169397;
+	Fri, 21 Mar 2025 01:18:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742519942; cv=fail; b=nVWO8Ktlyngjk1P1NoktaTG+K0ATJcOy3anG6WpSiQVWRjo8nhRE5lJqL27nnLQt6uTUuZ+fZc2buBpNgfIRryKOJnVM67tzYLrsBZjS7LIXe3SV9F20wKmomoFNyeD3/VGYp6dvBxYupFX5kCXtPA3+TFrj1SPGPD7cXRqRyfE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742519942; c=relaxed/simple;
+	bh=nWuWf2BwIjGTOmb8tcaR6mFhvorqbZY6QeOOSVpyOQs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=GWUw4CXkuEvQzl3f2FSTzvwRzOqfkBbMBD6g+2ahXqqMYtEAlS+ssz5IgbvaaCObonYnkt+niMJvEYlr8y79JsZ6dvkfIHDi69FRwaKrvZ0K01eRK5QmfeFia+7lgftFya/+jOGyhbvH2Toi9BByYIpIywn9cmSlUd6cthDzU08=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CXFw2d9F; arc=fail smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1742520187; x=1774056187;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=YFq/vy9ty//7bbhsTW5Cj4Myq4fj6yOx2jp89I4jJWU=;
-  b=ehYk+HnnzqqI227WO2yhed9UOo+W7P1BWbC8MTEizG1AnkWZUnl2r7+g
-   xJAw286gi5Un2U26g8sTI662+XSp7uARVggxmjgIUtYUPpHXG+dzda9FH
-   0xjU3AfccAQlIpXzfY304LPE56+RsdBSChNhtLCTPihVw5KCy0nkKSzib
-   0vLaQvamF8repbhLr0fq1xlMLcvNSbTYG7pBBO6jh/MpfOjAg3Y1y1ipU
-   LbkBJuvYtTinC4NcIdjWqhlORYJRqLBN5Ly6MvPd2rxKt9upMQCvxBt+s
-   Zx8et243AKpp1v5y/Ob0Dku0PMu1JAqvE3zXKLDXlV/tSanaBU9zUdMKa
-   w==;
-X-CSE-ConnectionGUID: Sc+q54rYT2KC6GvwNB7ECQ==
-X-CSE-MsgGUID: C5mGT3IASjqycqLeN6Y6hg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11379"; a="43658373"
+  t=1742519939; x=1774055939;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=nWuWf2BwIjGTOmb8tcaR6mFhvorqbZY6QeOOSVpyOQs=;
+  b=CXFw2d9F9O3OizxYFbtXhdlbdzKHM3GkoB3qBJlQzpbQ0a4psIRo55Mf
+   RZwzC7SgXpDLofnCNtUOMdsKg6fw76o+8a7P9MgEbjhhiE5CO8yPjG5G6
+   WhsQ/iPvKhpKcnIbxKh2lfUnyd1Zf8T4SptqpPterq4luv2hALG5M9VMR
+   hDN+FbuCNUkB5G/5ZAoa0FJ9LaYs0XJyvNXBZ/c5o7OvVka92grbh7JCQ
+   R5DGb9R9CCbs/2ZntaUuCfuAZpy19IQ2Kom9TsV/4IC1sJnrdFiaPJvtM
+   GBc9DRGon/Jm0kbocjx0ZBUzzZ244VFlsEG6GSAJZxNsJjIx0jMsuexUP
+   g==;
+X-CSE-ConnectionGUID: DSdPMqZsTlGCvf/0IZBuiA==
+X-CSE-MsgGUID: RhFAytVrRueu0kYUaiB9og==
+X-IronPort-AV: E=McAfee;i="6700,10204,11379"; a="43657969"
 X-IronPort-AV: E=Sophos;i="6.14,263,1736841600"; 
-   d="scan'208";a="43658373"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2025 18:23:06 -0700
-X-CSE-ConnectionGUID: CqEeL4T2Q3uC1fawGodYrg==
-X-CSE-MsgGUID: 4TU0nz+OT8S6kS6wo/1eSg==
+   d="scan'208";a="43657969"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2025 18:18:58 -0700
+X-CSE-ConnectionGUID: CgEWlQWSRR2MSYiAijmkPw==
+X-CSE-MsgGUID: Lc9WJevZSfeTpjJFDPMRsg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.14,263,1736841600"; 
-   d="scan'208";a="123777077"
-Received: from brc05.iind.intel.com (HELO brc05..) ([10.190.162.156])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2025 18:23:02 -0700
-From: Tushar Vyavahare <tushar.vyavahare@intel.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	bjorn@kernel.org,
-	magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com,
-	jonathan.lemon@gmail.com,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	tirthendu.sarkar@intel.com,
-	tushar.vyavahare@intel.com
-Subject: [PATCH bpf-next v4 2/2] selftests/xsk: Add tail adjustment tests and support check
-Date: Fri, 21 Mar 2025 00:54:19 +0000
-Message-Id: <20250321005419.684036-3-tushar.vyavahare@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250321005419.684036-1-tushar.vyavahare@intel.com>
-References: <20250321005419.684036-1-tushar.vyavahare@intel.com>
+   d="scan'208";a="146487504"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Mar 2025 18:18:57 -0700
+Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Thu, 20 Mar 2025 18:18:56 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14 via Frontend Transport; Thu, 20 Mar 2025 18:18:56 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.48) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Thu, 20 Mar 2025 18:18:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=oh28hBxwO/EzuyCLLJmiHGmCTrCevkl/BLdQ1iKdPDOb5Odg7I7Yb36+fSIEQ6g4mVWNQ6CbB5MG1EsqloIxbnnDndwp1MoUdQHcjS1Jviof5mvyDrqJtZpjcMD9PhYbhywCQnNt45Bw1+K8YMMYgcryqeVfKfe5SapCzces7wVMsqz2dsholBMtvsaqOUUAkzFeKwqQqPP+a3XK192YmVVoFfWQFASVBY/2C0S1l/nk2+FC+iFgxNhSnXRnXDzkAhr9KiE/hUylU8JHtvWzaaXWEMZwzIBCb7xm9cfLTen20muyD8SDCl51vBorolEEsAO0F2jnBrtNmLhkduIlOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Epnr0k97Klj6WCmE6DfK2XNWk1oAFohUzVE5RSGMyGo=;
+ b=l8g2hzlviZhfhLGJzIjLZqxDDnI14KBrEc98MkNQg2TMCFJc0yz100/VzYrWaPYoTNySrrYbbFUpyhNNkUTG6AsKaIvqSPDeOflGrAWMytz4RYLSOWC1cJ7ePFsDTL1GF/0UhGwAg2o4twtGqIoh6e/Zlr7v3SdSck+w2abRAXer3K8sjL5fu2x/zZtd99UW6ZFl4HvhDr5oC1fA2WL5R+BTNgm2UcZU6VCYr8P4X8BEu8LT7HU5ftU/94hWx3UQiJx3HcUD7VHcRKRNIwNOfhmUO+fCk9zLVrrCe+O4H2SmFo8rv1+h/znkHz/fSCvMNMn81OT4fQ6Y70yebevVnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from IA1PR11MB6514.namprd11.prod.outlook.com (2603:10b6:208:3a2::16)
+ by IA1PR11MB7199.namprd11.prod.outlook.com (2603:10b6:208:418::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.34; Fri, 21 Mar
+ 2025 01:18:21 +0000
+Received: from IA1PR11MB6514.namprd11.prod.outlook.com
+ ([fe80::c633:7053:e247:2bef]) by IA1PR11MB6514.namprd11.prod.outlook.com
+ ([fe80::c633:7053:e247:2bef%4]) with mapi id 15.20.8534.034; Fri, 21 Mar 2025
+ 01:18:21 +0000
+From: "Vyavahare, Tushar" <tushar.vyavahare@intel.com>
+To: "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
+CC: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "bjorn@kernel.org" <bjorn@kernel.org>, "Karlsson,
+ Magnus" <magnus.karlsson@intel.com>, "jonathan.lemon@gmail.com"
+	<jonathan.lemon@gmail.com>, "davem@davemloft.net" <davem@davemloft.net>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
+	<daniel@iogearbox.net>, "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>
+Subject: RE: [PATCH bpf-next v3 2/2] selftests/xsk: Add tail adjustment tests
+ and support check
+Thread-Topic: [PATCH bpf-next v3 2/2] selftests/xsk: Add tail adjustment tests
+ and support check
+Thread-Index: AQHbjd1v/YORudaNxUqqCfJ6VIiP07NuiUOAgAooXWCAAF7zgIAD0dTA
+Date: Fri, 21 Mar 2025 01:18:21 +0000
+Message-ID: <IA1PR11MB65145E703957897F13B65A648FDB2@IA1PR11MB6514.namprd11.prod.outlook.com>
+References: <20250305141813.286906-1-tushar.vyavahare@intel.com>
+ <20250305141813.286906-3-tushar.vyavahare@intel.com> <Z9C0/2uFFQPGozkr@boxer>
+ <IA1PR11MB6514B98679051D03FDDED9C78FDE2@IA1PR11MB6514.namprd11.prod.outlook.com>
+ <Z9mJ/QSbTfa0IW4Z@boxer>
+In-Reply-To: <Z9mJ/QSbTfa0IW4Z@boxer>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA1PR11MB6514:EE_|IA1PR11MB7199:EE_
+x-ms-office365-filtering-correlation-id: c7913e8a-8399-4f97-7cd8-08dd681644eb
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|1800799024|7053199007|38070700018;
+x-microsoft-antispam-message-info: =?us-ascii?Q?tCb/jXdi1NcuZxTdqgd7sYwATJ5KsfP/98jGlmJVoK5ZzkQsNC6ntY9Vtu/+?=
+ =?us-ascii?Q?vED9pK1vq5i6fch5muSR5k0hr8RleLL3ra3t+Shm/0k0GRyMbxkMmui2wozv?=
+ =?us-ascii?Q?l70CkOxZl6dqJWCU90jG6zPNGcBesAAOjnsnbCl5F3VV9vdR+S/PtRpbC3Tj?=
+ =?us-ascii?Q?SmjJToqOYETBDZ8fwR/MARyyB1C227qDsBeuIowfRqP+e86HQI15zhvSsXfs?=
+ =?us-ascii?Q?kEFkwHMVNku3pzQzUwBGUbbR9Z8TkB17CwaotoiuvWCRJ204DxsmFTWsUxqP?=
+ =?us-ascii?Q?6LsQYlT7Sbh58jgLsmj+ZyHFS7NQQDYVWiQZ/M2MPP2mCH9MUXOxFCGZcMAi?=
+ =?us-ascii?Q?giPUyMDNaIOKmycS774hOJtmGobE7r8VIcOZa1c9TC/n8myQbGDuoJRaN8dI?=
+ =?us-ascii?Q?ZK8luMMNUcmLNilRZ1oJtno+Y6FPztCLoGcmTI4RLvtsPU4Q7WUl9rRJawh5?=
+ =?us-ascii?Q?jr2TLyHePYa+KbNytj+Xu15uWAVM93y6rzXH+fOFdQMJqog+rPcGe92msnti?=
+ =?us-ascii?Q?JMqjL2ASSBApMde7BmpAFXyLlBCBsvJ6I004yAs08WTEAbzLYV9zmzKMjRIW?=
+ =?us-ascii?Q?n08dU0YOgZEemG9SWo9EXwEYxx/YCX3lryStWZ7kMT1d4L4lWeV0c5CneTb4?=
+ =?us-ascii?Q?Dl1zYm9PXmjnEUKBfibVlzjw8viW+qeSC6z7km7cQTwGKPz+65pzlNCwoBde?=
+ =?us-ascii?Q?r93y/ibaD3Pe4m/hYYxbgJe5BTDOnL4EJNnh19WeUS3fM/dK2MeOXLE5irSt?=
+ =?us-ascii?Q?EQBNthS04ZbUd0J7fXlyxJimG+ASLlKzmFjSI4Ny2f0V4Yq9JKuS36qbMwGv?=
+ =?us-ascii?Q?XqA5GfPY+SckqCbsg7N1BV7mONoZ9lf2xMrqxzHAkTcJiFD5zcPtgRlNM2JI?=
+ =?us-ascii?Q?pTVGxXjEwlEz8dP5xcl8zyLqW7oHMK7XdXNiE7x1vvVy2lgHikJ3VNN15h7a?=
+ =?us-ascii?Q?OSU22jhYZVZj+QPyLmKmPwPj5qbOm+yMBRveQDWkka+2KMHz9vm9GAgPEisR?=
+ =?us-ascii?Q?hD04KK8AROAf771d19/M6bPJWYnZZk42t3vG/p72VHCnBz2i7CtO8Wm3OQYQ?=
+ =?us-ascii?Q?tMWSgVIf63wspTX27snRZILHgIt/s9JrX4vL9Ud8T98kNSDBYYU17zqWCcxI?=
+ =?us-ascii?Q?NOUTQiEQVIU9KCEYgWJ9zI2EtlVMgCFgrzS9tuS6Jc/SCWFKrm2Nxx0tH7qy?=
+ =?us-ascii?Q?2YQl00zZkOkHiZkTtouDU6QK1mXDXQCK5qPKIrZB5ovkelIN56Qkulj8DncB?=
+ =?us-ascii?Q?tev5VeoSnyQogasHx92WHf13TKwuKhd9Hizdc2oLWK+z1Ndy/8abuSeTCFHw?=
+ =?us-ascii?Q?x3z+EsHaMCJXIISxoqQe8paSaEMLAQc4LmF8cfB0NryAYCME8jMVEJm00cEj?=
+ =?us-ascii?Q?eWEBfnOoKsSMp4d2dGyqzrgPJ9u6qWN6fo7cb6yENwPmb8dC+5zlI/SK++3d?=
+ =?us-ascii?Q?nnOa6RXKeW3jKYYYsknKFsqeZ7dhh9iY?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6514.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(7053199007)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?cpmluaHvuhCxD46UjJyhLIOY4qtH+CW5cvGfLDhS6w2CgRXculK52hTvbA22?=
+ =?us-ascii?Q?Pfnk7dfNWsLbkwdyQlKdu+5tpXp8+ebOGq7VcEj0b/TYpy9byNLJVo7YrOeA?=
+ =?us-ascii?Q?uOi9/OyvuTuxIHg2jedPtbUt0y6z383tVYDIZunlzMaRhHtSNRos8Q+fJUT6?=
+ =?us-ascii?Q?7FBHo+9RPruvAnxZSCBI75djvPgbx7ZG1K6SmKFw7anDA8iLKWZADdKv9oaG?=
+ =?us-ascii?Q?t/LWojpZFR2ZJ/FOb9O5tpKTVs7U4vIwHnl6gb4Rxhsp7c6XysOXDM/b06rk?=
+ =?us-ascii?Q?vMXSOHi1uEWkZKck/gfDSDRgnNN4e+t1M5Zv38rE5cMNzo1roo2sT73lHY6i?=
+ =?us-ascii?Q?cLvc6ac7kKmRDDKvrQ3mRxzjOyhmiao46eiDskSd/L6soqkU1PK/+ZpERK8+?=
+ =?us-ascii?Q?CFQSx9WbPJvbtvUNO/Yda0/dpTNjg+W6Kk/Y4Bu31KYCUw+5/xwAXB5ao6Y8?=
+ =?us-ascii?Q?Ps8gUYIKHujKejeGLwgrwpH7XgBRq1b2y71biPf3UsnlzKkXujADjz0wzjFz?=
+ =?us-ascii?Q?L25qfCxLpT2j/k8SAvPMp/QZhrE2O77HXfXBCClobTRz1t5aa4ei0htzxmkm?=
+ =?us-ascii?Q?aUV3gJ9Id4EnNNc1xfwczQLXHO4tbos03O8g88mmH1wrnr/Ekdav72vL45kr?=
+ =?us-ascii?Q?vdrKyPcKdCTGUVnpinzN2zWA6oou2aO+4emVTOFrvxx5q6y6d09BgVXu9IP7?=
+ =?us-ascii?Q?mWgHivXXTGTQVw1Zumn7F/rlJZoXd6BjObcd+nmZNkK/9l7vydk9s0B3azuX?=
+ =?us-ascii?Q?byIhEJNMpiz2sPaaDIRe+S3VF8cGvUSlnoyBSwEq86sDCmAuWxGoe/6F7L1X?=
+ =?us-ascii?Q?ICOFcx+ul8n+cz5IGtrgsJNa5WZ7sCAO5ovd6vmOY3khoVh0fFJcThWhCCb9?=
+ =?us-ascii?Q?jTcddwRRx4elIApbKFP4QB+N53Gy0b4UrtWMnnJfYIVqjoJ/v2u+Fj3zP3zP?=
+ =?us-ascii?Q?YSVAN5D85ar2MZGW+nGlumlrjkYHexiKJEIl6/Uvnidb3D3L0twvQ068/Lxx?=
+ =?us-ascii?Q?gTpsyOM84IOCvHMBldqFBTHIORxh3Vl2Hd8cmTsCRnQNhepqXtw4XXZyCQ0O?=
+ =?us-ascii?Q?PX3SoGAcsCioKdX5OUjKXTgDamwlYPspm6PEgxesZzUxA8RPbZ0ADh/+P/E8?=
+ =?us-ascii?Q?i4hk/1SfpfAnADhiqIf5ifBMqm6mrlcNWfX10JU/e9JSeOrJ3GZyfv+ZuSQX?=
+ =?us-ascii?Q?zszjfaOcU02boC1F5SCR0I93+xKkGBWtj//zIe11Jlw9jH5o/fJcS8ji3G8Z?=
+ =?us-ascii?Q?p4JaFG7EuABPKRLiIJksJyDpxZTiE8048rGmeSTVW3FXx+KwWiXmdqbdqOEJ?=
+ =?us-ascii?Q?PlXAxSzEIIgN2l6U0OGUzsGb1rRwGCwkAfvec1qDNuZzi+gDqmQYcU48LZfi?=
+ =?us-ascii?Q?I/gn8Sw3tG9WSNLiWVMw3uCVmEDsJMPVa37IGj8+2HRrOpLrInUSDMyeA90q?=
+ =?us-ascii?Q?THboNU/ubdKBBmSwaIPJ6+xh1BIbNlaQT792N/Tk3X4uD7hRVJDxRYv2At8h?=
+ =?us-ascii?Q?B9S8y4cToDRftslVmvIArFI69ZRMkN69zdWYKOzhDplsvnLN6oCKERCS57cf?=
+ =?us-ascii?Q?mY+hN7T08RCjkp5fyzIrCLuWGOzW74ZmAvaAtAslV3EzBbSABPQVJGJOLWcp?=
+ =?us-ascii?Q?IA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6514.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7913e8a-8399-4f97-7cd8-08dd681644eb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Mar 2025 01:18:21.0952
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: aZFipbnCCRvQvJ3zuWRH8t3lhd4CUPBxUxRDulG0m8XF0k+u8LK0HZd4ZBo2OL5pCMO3rOpgrKPv6IP9Djexuf8IS8sLXe+T2eYAhNO2q/o=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7199
+X-OriginatorOrg: intel.com
 
-Introduce tail adjustment functionality in xskxceiver using
-bpf_xdp_adjust_tail(). Add `xsk_xdp_adjust_tail` to modify packet sizes
-and drop unmodified packets. Implement `is_adjust_tail_supported` to check
-helper availability. Develop packet resizing tests, including shrinking
-and growing scenarios, with functions for both single-buffer and
-multi-buffer cases. Update the test framework to handle various scenarios
-and adjust MTU settings. These changes enhance the testing of packet tail
-adjustments, improving AF_XDP framework reliability.
 
-Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
----
- .../selftests/bpf/progs/xsk_xdp_progs.c       |  50 +++++++++
- tools/testing/selftests/bpf/xsk_xdp_common.h  |   1 +
- tools/testing/selftests/bpf/xskxceiver.c      | 105 +++++++++++++++++-
- tools/testing/selftests/bpf/xskxceiver.h      |   2 +
- 4 files changed, 156 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c b/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-index ccde6a4c6319..683306db8594 100644
---- a/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-+++ b/tools/testing/selftests/bpf/progs/xsk_xdp_progs.c
-@@ -4,6 +4,8 @@
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- #include <linux/if_ether.h>
-+#include <linux/ip.h>
-+#include <linux/errno.h>
- #include "xsk_xdp_common.h"
- 
- struct {
-@@ -14,6 +16,7 @@ struct {
- } xsk SEC(".maps");
- 
- static unsigned int idx;
-+int adjust_value = 0;
- int count = 0;
- 
- SEC("xdp.frags") int xsk_def_prog(struct xdp_md *xdp)
-@@ -70,4 +73,51 @@ SEC("xdp") int xsk_xdp_shared_umem(struct xdp_md *xdp)
- 	return bpf_redirect_map(&xsk, idx, XDP_DROP);
- }
- 
-+SEC("xdp.frags") int xsk_xdp_adjust_tail(struct xdp_md *xdp)
-+{
-+	__u32 buff_len, curr_buff_len;
-+	int ret;
-+
-+	buff_len = bpf_xdp_get_buff_len(xdp);
-+	if (buff_len == 0)
-+		return XDP_DROP;
-+
-+	ret = bpf_xdp_adjust_tail(xdp, adjust_value);
-+	if (ret < 0) {
-+		/* Handle unsupported cases */
-+		if (ret == -EOPNOTSUPP) {
-+			/* Set adjust_value to -EOPNOTSUPP to indicate to userspace that this case
-+			 * is unsupported
-+			 */
-+			adjust_value = -EOPNOTSUPP;
-+			return bpf_redirect_map(&xsk, 0, XDP_DROP);
-+		}
-+
-+		return XDP_DROP;
-+	}
-+
-+	curr_buff_len = bpf_xdp_get_buff_len(xdp);
-+	if (curr_buff_len != buff_len + adjust_value)
-+		return XDP_DROP;
-+
-+	if (curr_buff_len > buff_len) {
-+		__u32 *pkt_data = (void *)(long)xdp->data;
-+		__u32 len, words_to_end, seq_num;
-+
-+		len = curr_buff_len - PKT_HDR_ALIGN;
-+		words_to_end = len / sizeof(*pkt_data) - 1;
-+		seq_num = words_to_end;
-+
-+		/* Convert sequence number to network byte order. Store this in the last 4 bytes of
-+		 * the packet. Use 'adjust_value' to determine the position at the end of the
-+		 * packet for storing the sequence number.
-+		 */
-+		seq_num = __constant_htonl(words_to_end);
-+		bpf_xdp_store_bytes(xdp, curr_buff_len - sizeof(seq_num), &seq_num,
-+				    sizeof(seq_num));
-+	}
-+
-+	return bpf_redirect_map(&xsk, 0, XDP_DROP);
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/xsk_xdp_common.h b/tools/testing/selftests/bpf/xsk_xdp_common.h
-index 5a6f36f07383..45810ff552da 100644
---- a/tools/testing/selftests/bpf/xsk_xdp_common.h
-+++ b/tools/testing/selftests/bpf/xsk_xdp_common.h
-@@ -4,6 +4,7 @@
- #define XSK_XDP_COMMON_H_
- 
- #define MAX_SOCKETS 2
-+#define PKT_HDR_ALIGN (sizeof(struct ethhdr) + 2) /* Just to align the data in the packet */
- 
- struct xdp_info {
- 	__u64 count;
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index d60ee6a31c09..0ced4026ee44 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -524,6 +524,8 @@ static void __test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
- 	test->nb_sockets = 1;
- 	test->fail = false;
- 	test->set_ring = false;
-+	test->adjust_tail = false;
-+	test->adjust_tail_support = false;
- 	test->mtu = MAX_ETH_PKT_SIZE;
- 	test->xdp_prog_rx = ifobj_rx->xdp_progs->progs.xsk_def_prog;
- 	test->xskmap_rx = ifobj_rx->xdp_progs->maps.xsk;
-@@ -992,6 +994,31 @@ static bool is_metadata_correct(struct pkt *pkt, void *buffer, u64 addr)
- 	return true;
- }
- 
-+static bool is_adjust_tail_supported(struct xsk_xdp_progs *skel_rx)
-+{
-+	struct bpf_map *data_map;
-+	int adjust_value = 0;
-+	int key = 0;
-+	int ret;
-+
-+	data_map = bpf_object__find_map_by_name(skel_rx->obj, "xsk_xdp_.bss");
-+	if (!data_map || !bpf_map__is_internal(data_map)) {
-+		ksft_print_msg("Error: could not find bss section of XDP program\n");
-+		exit_with_error(errno);
-+	}
-+
-+	ret = bpf_map_lookup_elem(bpf_map__fd(data_map), &key, &adjust_value);
-+	if (ret) {
-+		ksft_print_msg("Error: bpf_map_lookup_elem failed with error %d\n", ret);
-+		exit_with_error(errno);
-+	}
-+
-+	/* Set the 'adjust_value' variable to -EOPNOTSUPP in the XDP program if the adjust_tail
-+	 * helper is not supported. Skip the adjust_tail test case in this scenario.
-+	 */
-+	return adjust_value != -EOPNOTSUPP;
-+}
-+
- static bool is_frag_valid(struct xsk_umem_info *umem, u64 addr, u32 len, u32 expected_pkt_nb,
- 			  u32 bytes_processed)
- {
-@@ -1768,8 +1795,13 @@ static void *worker_testapp_validate_rx(void *arg)
- 
- 	if (!err && ifobject->validation_func)
- 		err = ifobject->validation_func(ifobject);
--	if (err)
--		report_failure(test);
-+
-+	if (err) {
-+		if (test->adjust_tail && !is_adjust_tail_supported(ifobject->xdp_progs))
-+			test->adjust_tail_support = false;
-+		else
-+			report_failure(test);
-+	}
- 
- 	pthread_exit(NULL);
- }
-@@ -2516,6 +2548,71 @@ static int testapp_hw_sw_max_ring_size(struct test_spec *test)
- 	return testapp_validate_traffic(test);
- }
- 
-+static int testapp_xdp_adjust_tail(struct test_spec *test, int adjust_value)
-+{
-+	struct xsk_xdp_progs *skel_rx = test->ifobj_rx->xdp_progs;
-+	struct xsk_xdp_progs *skel_tx = test->ifobj_tx->xdp_progs;
-+
-+	test_spec_set_xdp_prog(test, skel_rx->progs.xsk_xdp_adjust_tail,
-+			       skel_tx->progs.xsk_xdp_adjust_tail,
-+			       skel_rx->maps.xsk, skel_tx->maps.xsk);
-+
-+	skel_rx->bss->adjust_value = adjust_value;
-+
-+	return testapp_validate_traffic(test);
-+}
-+
-+static int testapp_adjust_tail(struct test_spec *test, u32 value, u32 pkt_len)
-+{
-+	int ret;
-+
-+	test->adjust_tail_support = true;
-+	test->adjust_tail = true;
-+	test->total_steps = 1;
-+
-+	pkt_stream_replace_ifobject(test->ifobj_tx, DEFAULT_BATCH_SIZE, pkt_len);
-+	pkt_stream_replace_ifobject(test->ifobj_rx, DEFAULT_BATCH_SIZE, pkt_len + value);
-+
-+	ret = testapp_xdp_adjust_tail(test, value);
-+	if (ret)
-+		return ret;
-+
-+	if (!test->adjust_tail_support) {
-+		ksft_test_result_skip("%s %sResize pkt with bpf_xdp_adjust_tail() not supported\n",
-+				      mode_string(test), busy_poll_string(test));
-+		return TEST_SKIP;
-+	}
-+
-+	return 0;
-+}
-+
-+static int testapp_adjust_tail_shrink(struct test_spec *test)
-+{
-+	/* Shrink by 4 bytes for testing purpose */
-+	return testapp_adjust_tail(test, -4, MIN_PKT_SIZE * 2);
-+}
-+
-+static int testapp_adjust_tail_shrink_mb(struct test_spec *test)
-+{
-+	test->mtu = MAX_ETH_JUMBO_SIZE;
-+	/* Shrink by the frag size */
-+	return testapp_adjust_tail(test, -XSK_UMEM__MAX_FRAME_SIZE, XSK_UMEM__LARGE_FRAME_SIZE * 2);
-+}
-+
-+static int testapp_adjust_tail_grow(struct test_spec *test)
-+{
-+	/* Grow by 4 bytes for testing purpose */
-+	return testapp_adjust_tail(test, 4, MIN_PKT_SIZE * 2);
-+}
-+
-+static int testapp_adjust_tail_grow_mb(struct test_spec *test)
-+{
-+	test->mtu = MAX_ETH_JUMBO_SIZE;
-+	/* Grow by (frag_size - last_frag_Size) - 1 to stay inside the last fragment */
-+	return testapp_adjust_tail(test, (XSK_UMEM__MAX_FRAME_SIZE / 2) - 1,
-+				   XSK_UMEM__LARGE_FRAME_SIZE * 2);
-+}
-+
- static void run_pkt_test(struct test_spec *test)
- {
- 	int ret;
-@@ -2622,6 +2719,10 @@ static const struct test_spec tests[] = {
- 	{.name = "TOO_MANY_FRAGS", .test_func = testapp_too_many_frags},
- 	{.name = "HW_SW_MIN_RING_SIZE", .test_func = testapp_hw_sw_min_ring_size},
- 	{.name = "HW_SW_MAX_RING_SIZE", .test_func = testapp_hw_sw_max_ring_size},
-+	{.name = "XDP_ADJUST_TAIL_SHRINK", .test_func = testapp_adjust_tail_shrink},
-+	{.name = "XDP_ADJUST_TAIL_SHRINK_MULTI_BUFF", .test_func = testapp_adjust_tail_shrink_mb},
-+	{.name = "XDP_ADJUST_TAIL_GROW", .test_func = testapp_adjust_tail_grow},
-+	{.name = "XDP_ADJUST_TAIL_GROW_MULTI_BUFF", .test_func = testapp_adjust_tail_grow_mb},
- 	};
- 
- static void print_tests(void)
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index e46e823f6a1a..67fc44b2813b 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -173,6 +173,8 @@ struct test_spec {
- 	u16 nb_sockets;
- 	bool fail;
- 	bool set_ring;
-+	bool adjust_tail;
-+	bool adjust_tail_support;
- 	enum test_mode mode;
- 	char name[MAX_TEST_NAME_SIZE];
- };
--- 
-2.34.1
+> -----Original Message-----
+> From: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
+> Sent: Tuesday, March 18, 2025 8:28 PM
+> To: Vyavahare, Tushar <tushar.vyavahare@intel.com>
+> Cc: bpf@vger.kernel.org; netdev@vger.kernel.org; bjorn@kernel.org; Karlss=
+on,
+> Magnus <magnus.karlsson@intel.com>; jonathan.lemon@gmail.com;
+> davem@davemloft.net; kuba@kernel.org; pabeni@redhat.com;
+> ast@kernel.org; daniel@iogearbox.net; Sarkar, Tirthendu
+> <tirthendu.sarkar@intel.com>
+> Subject: Re: [PATCH bpf-next v3 2/2] selftests/xsk: Add tail adjustment t=
+ests
+> and support check
+>=20
+> On Tue, Mar 18, 2025 at 10:22:55AM +0100, Vyavahare, Tushar wrote:
+> >
+> >
+> > > -----Original Message-----
+> > > From: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
+> > > Sent: Wednesday, March 12, 2025 3:41 AM
+> > > To: Vyavahare, Tushar <tushar.vyavahare@intel.com>
+> > > Cc: bpf@vger.kernel.org; netdev@vger.kernel.org; bjorn@kernel.org;
+> > > Karlsson, Magnus <magnus.karlsson@intel.com>;
+> > > jonathan.lemon@gmail.com; davem@davemloft.net; kuba@kernel.org;
+> > > pabeni@redhat.com; ast@kernel.org; daniel@iogearbox.net; Sarkar,
+> > > Tirthendu <tirthendu.sarkar@intel.com>
+> > > Subject: Re: [PATCH bpf-next v3 2/2] selftests/xsk: Add tail
+> > > adjustment tests and support check
+> > >
+> > > On Wed, Mar 05, 2025 at 02:18:13PM +0000, Tushar Vyavahare wrote:
+> > > > Introduce tail adjustment functionality in xskxceiver using
+> > > > bpf_xdp_adjust_tail(). Add `xsk_xdp_adjust_tail` to modify packet
+> > > > sizes and drop unmodified packets. Implement
+> > > > `is_adjust_tail_supported` to check helper availability. Develop
+> > > > packet resizing tests, including shrinking and growing scenarios,
+> > > > with functions for both single-buffer and multi-buffer cases.
+> > > > Update the test framework to handle various scenarios and adjust MT=
+U
+> settings.
+> > > > These changes enhance the testing of packet tail adjustments,
+> > > > improving
+> > > AF_XDP framework reliability.
+> > > >
+> > > > Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
+> > > > ---
+> > > >  .../selftests/bpf/progs/xsk_xdp_progs.c       |  49 ++++++++
+> > > >  tools/testing/selftests/bpf/xsk_xdp_common.h  |   1 +
+> > > >  tools/testing/selftests/bpf/xskxceiver.c      | 107 ++++++++++++++=
++++-
+> > > >  tools/testing/selftests/bpf/xskxceiver.h      |   2 +
+> > > >  4 files changed, 157 insertions(+), 2 deletions(-)
+> > > >
+> > > > +	return testapp_adjust_tail(test, adjust_value, len); }
+> > > > +
+> > > > +static int testapp_adjust_tail_shrink(struct test_spec *test) {
+> > > > +	return testapp_adjust_tail_common(test, -4, MIN_PKT_SIZE,
+> > > > +false); }
+> > > > +
+> > > > +static int testapp_adjust_tail_shrink_mb(struct test_spec *test) {
+> > > > +	return testapp_adjust_tail_common(test, -4,
+> > > > +XSK_RING_PROD__DEFAULT_NUM_DESCS * 3, true);
+> > >
+> > > Am I reading this right that you are modifying the size by just 4 byt=
+es?
+> > > The bugs that drivers had were for cases when packets got modified
+> > > by value bigger than frag size which caused for example underlying pa=
+ge
+> being freed.
+> > >
+> > > If that is the case tests do nothing valuable from my perspective.
+> > >
+> >
+> > In the v4 patchset, I have updated the code to modify the packet size
+> > by
+> > 1024 bytes instead of just 4 bytes.
+>=20
+> Why this value?
+>=20
 
+Thanks for the clarification, Maciej. Based on our discussion, add
+comments and modify the code for buffer resizing logic in the test
+cases to shrink/grow by specific byte sizes for testing purposes.
+
+> > I will send v4.
 
