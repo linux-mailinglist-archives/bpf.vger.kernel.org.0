@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-54557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30323A6C5C8
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 23:18:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28AD6A6C5E1
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 23:24:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABA33461FF9
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 22:18:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B01AA3B64FF
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 22:24:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2F3233705;
-	Fri, 21 Mar 2025 22:16:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A556B2327A1;
+	Fri, 21 Mar 2025 22:24:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bzwUuilQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dF1GdA0h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD8D231A3B;
-	Fri, 21 Mar 2025 22:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F601C3F0C;
+	Fri, 21 Mar 2025 22:24:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742595411; cv=none; b=LNCxhLdqrmbv3MNjF675lPuG+Pzvyaa0DCDi8qdDhO76I3WK1PX5BjEwGxwVV4/r1G3mLk1bt/faGDoKb0JGLCy4UIFArEQtbwdPNujBKIhp7cVOmJ29N+KiHAfNkY+IaNz2Dmd3TDETUrZs69KbQzDkm9szIal1Zr4j0j2Tep0=
+	t=1742595852; cv=none; b=NlbQJJf3fXWLA1a65iSo6hSEYMHzIS7kGE/cT6VdQm5RHrORSka3WqYWG4wIJwqjX48zAoknYFzS7/LGIHTPbA6FvfTNnrQRkMhQwdR6PHlffhF8axorpnGyKGirNg288lGuCLvbtrwP7r0636GmyE3/r4QXfm1a38Z1KxMGmKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742595411; c=relaxed/simple;
-	bh=McojSxNO9gqGGYuPqlD7OTJKX7Y9wTjkkf5Vw+TLAxU=;
+	s=arc-20240116; t=1742595852; c=relaxed/simple;
+	bh=0YkPzCxkfOAlHN0wqWyLmmk4ddNfU4ie91D9ISjUL9Q=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fMNZCkiQRv1CMH2Mdexv9TqmwLyuvfMUtBrsYyzoKDRduGoldgG5eT3M2OkjZ3WGxMAziYghC1YO4OQuacnMFVbNSHw0RIKQTrSLDKahtIsdv0J2SM/rKdhUZWTzgOht6tzMGswPWDmVdNzvvpvJ1xRxAJ1+kE9U1k9DXl83Sjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bzwUuilQ; arc=none smtp.client-ip=209.85.214.175
+	 Content-Type:MIME-Version; b=DFNlb6Ylxby9DNC4RmpjR8R/RMgN3p06ZM4Od/y+Jpz6T4s15608DcfGz+pFknGV1YATvYTMJ68IxqscgOP6fS901gA8etebKPzk09HYT2cj68jF69vsuiq9KQyMvewIHRCJwN4WH6D+Slcd5tXaAev+zNy7vc1aWC8l2SF6Nyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dF1GdA0h; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2241053582dso17756425ad.1;
-        Fri, 21 Mar 2025 15:16:49 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2260c915749so35450265ad.3;
+        Fri, 21 Mar 2025 15:24:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742595409; x=1743200209; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742595850; x=1743200650; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=rO6kZlYBodR+iNzCw38n1gX1Mhj3Y52+rByQ+vHqnPg=;
-        b=bzwUuilQFB4bvQWWvFKIzadn2SjN4/Y2kGUZOQSPbjTSiGz/nLM4rpJXxhlceavvI1
-         wEGJBCc3+PN5FVkW51MOG6Z6iSr6jppYBO6i7tBeP5S8f0odVYcaQLbOvB4I3LZBES2e
-         6x0t4XhV4+5J/FT2czEftgTtfKuIyJY2qaAfZf2iE4EV6zIHDdCqihVh6CbO+/S9SFIX
-         +rxtwffoFUfotz1eNNMft02Gt0fIFu2wpVZx1WNHTexvLMXnTpzxBNI6rK/hXithdHL3
-         r3VZsaJRQvg738U2v3U8I2l5792r/tWwFJ4ZO3X0lbhqeVl1RJQg3iIJY7eBnJX7onUN
-         cH9A==
+        bh=5tf2Ikh9NqR1U+q6oew+ZklnvlQHvC0og7D+/5iMioM=;
+        b=dF1GdA0hrJASxP3viZhZEGLQuBUrLnu+cXR4TJ4EMzhFtKJk4FO6tdywNW7BcfIusM
+         9L/Y4s0JBDJtZmmmgDDBhVBbYbZD2Yyb6gl6ZjuciAA82S8bgr/JHjUfMrijMNvQtq/K
+         VGAizbagKDPEGzOAmUaXbr9UtbxyaZTez/Hxf/RQQlCYeO/Dhuu4FbRDYodlZc4sKJIO
+         dmrvqIsL2zMxh7XgxW0vM4K1Q+eKw9fYrU5Te67wUGUAqYhOJvdGhCxDYjYstsZz6jiB
+         EqEIa2aDjg+BLTVzVHYghuXq02UanCWFejg2+tQup6UFHpFcDW1bibKYb+tJl8uHddvC
+         sKFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742595409; x=1743200209;
+        d=1e100.net; s=20230601; t=1742595850; x=1743200650;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=rO6kZlYBodR+iNzCw38n1gX1Mhj3Y52+rByQ+vHqnPg=;
-        b=XNzQLPUrcBHqgmNUvs8ZUyF1EyW08wXXrvILXExZh6mdc5rxsJnx8hq2jXlj7HC2+l
-         84JQKuJ1PtIBxzBenI6I9PJJblITLRCbyEE42osNXQRr48c8uzAatl+yyZwlKp1p0ctB
-         OzRTn/unZa4GtHf9MrgC513ODlnwNnde+LwrLV4W/oCBp7u9hjI4i4SZfa51u7AM5wu6
-         FygKBgmmeQOP11fqFWUS5RxM+0+t56PB8TBtfrHnR/cqMYuTwlTP4wGNDXlgQlwiGIaX
-         jPTeH3hvVo5MLjYT0nVInJeCsjgIB1CXNWec5PEBQzeLVdqPOYlEtOi7KIas7+RZj7ob
-         KyXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUT5WHLRU98+dVTbmBPANEYhNftMahN6pRhvt4YznTjXqBWKz2Zel1nzhkR/r90Sg+EQQG4EkXBu73IqoB7@vger.kernel.org, AJvYcCUyGl7wAXqYUTX9NOkwx0o30IVDpCL+zIW7esHtWsUYWV/5G85uASGCLU5EzdNs6z66J1I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzvycsUCfbPs4sQAZcq6Yoz+4WhOSrU7ycZWQ5iEyqz0MNifP2x
-	TBdfFbmizADJwHAlhYSQ+cXzF1IDsraE8P5OFwfFTmufZkuPgu1e
-X-Gm-Gg: ASbGncu5gehyZBhL0UJ5QyTKzOjUcCCT36y3g5aW9l0i4p8GudJvNKKhUjJ0RAVxe9j
-	cUPPY/EZKR3iRO93hARyGtxHEgNdO5VZetRrg0BxMDoRczGS47cGIMZNSAXFxa3kBDPlvKOzMOM
-	+dmhVuQ8KeSEaVw0/87XLYK4NbNjtY3FNpkmzZCaPzt3TSBWh6kXgbM4oznmsZz20Ka2mjsHW1+
-	T+XZ5AiYru03XjmTr/6n5ZNcmTYIYlOnt0lYPknsc5IGiueGrnlZIH32tlOQvUWEXQdtDOo6e6v
-	XfLEeDpDcTlq3KzASZrWlsIy7dXtRAUsG037TEqrfql1Ca9oJP4=
-X-Google-Smtp-Source: AGHT+IG+7fbfZqhtDkRho2xcuIKFy2kY62DiTesFWRmKF/XNZF1b8e5xATfB1scEeKvKEHs7REYlDg==
-X-Received: by 2002:a17:903:2ca:b0:216:3c36:69a7 with SMTP id d9443c01a7336-22780e2fdbfmr82432295ad.45.1742595408938;
-        Fri, 21 Mar 2025 15:16:48 -0700 (PDT)
+        bh=5tf2Ikh9NqR1U+q6oew+ZklnvlQHvC0og7D+/5iMioM=;
+        b=aT6vHUsyhyI2fwaqekYiOR9b8KsAnJHv5FGm/QFgz0Jzldqa1mv1TRc34VpRZxIy2U
+         /fcXbL/39f8KTmCSA0BYWIpvMYOdRf5xqyj6kHLC2cPzct97I9gjhO3taelly9m10AyA
+         wU03SQLeN6RQY/auhzNfBAVdj26Cf2V1+aS7JwBONFGBwiofXabykS//QsL1/LKZwWSW
+         MwpzjCWv3O9BFQDTrodGQYzYBB5geX8NuZZ1KgOAsQW4X8mK+FQRFe7crurGa5N2B88l
+         qwmBSAtkiJHwHFp+0eIj+8J66x8iKplmkVXsVdaDYhsqnpIb1QfG04BOFYkOrhv7VynH
+         vwDw==
+X-Forwarded-Encrypted: i=1; AJvYcCUK++8bGzYHPxS4r7d9nPTER2jN5quyBabOwNsCbjISYBa8O496ipNnSS0NOUqJ6ZByBso/gVTG6qY0xuKP@vger.kernel.org, AJvYcCVjrK6vsPWW4SImh8IzSy5lWHz5iP6uAkQMSjqpphUJrn/5GQBFy1REpR+1YQahoDZyFP4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOvyZUXhK6b2FpGE6EV5PvjzLwq7SMqb30pZFVQJAAovA4UCgw
+	2sbNQaVP1oy1BGOoGj6J6qPNjW2vLbL02AQmLIwQ1GJoidKdyAo44VvxVQ==
+X-Gm-Gg: ASbGnctrJEFFTjSp0t2jQF59O5pWcgjaddkZSk1j62Ac2DrF2vPie/I0gZf/1bOQOha
+	f84aQTEApdygLkfmkGp3rUNZQwImGqqO3h7F5fprtuvMHc10KJy5wyMSqct1Ryibyd1CuwtrLsV
+	Wtky+S65HDoQV9+mTvqy6OOQ7qNtjL/65UZHFtHVAx5HiFsap2m4H+OqTjgkHvfzVHQOHaSTh0d
+	aH1K0bpqS54YNjYuK0zljE15qy/QKjdfzg+oPUYsReknSxpMgrbDt6vARyolB0kOJWTGnIxYIyw
+	1Evqv64E9nabarMlbbPZF3+Mz5YDeQMIvZwytx0m
+X-Google-Smtp-Source: AGHT+IHB+5AwTCUriSk+8m+jnYaDcxMN0yxif6zPGeg4oT8NcJaiOvkgjZx06CxF5bpaBiF7f3SxGg==
+X-Received: by 2002:a17:902:f64d:b0:223:47b4:aaf8 with SMTP id d9443c01a7336-22780e3f214mr73252335ad.52.1742595849969;
+        Fri, 21 Mar 2025 15:24:09 -0700 (PDT)
 Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22780f45029sm23147485ad.53.2025.03.21.15.16.47
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-227811da369sm22930475ad.170.2025.03.21.15.24.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Mar 2025 15:16:48 -0700 (PDT)
-Message-ID: <44d4adae6a5398dcd97afbe2c922f8c9a71598f2.camel@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Fix out-of-bounds read in
- check_atomic_load/store()
+        Fri, 21 Mar 2025 15:24:09 -0700 (PDT)
+Message-ID: <65ff9c62d0d2c355121468b04c0701081d3275fd.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add selftests for
+ load-acquire/store-release when register number is invalid
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Kohei Enju <enjuk@amazon.com>, bpf@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
@@ -85,12 +85,11 @@ Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
  Singh <kpsingh@kernel.org>, Stanislav Fomichev	 <sdf@fomichev.me>, Hao Luo
  <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Peilin Ye
  <yepeilin@google.com>, Ilya Leoshkevich <iii@linux.ibm.com>, Kuniyuki
- Iwashima	 <kuniyu@amazon.com>, kohei.enju@gmail.com, 
-	syzbot+a5964227adc0f904549c@syzkaller.appspotmail.com
-Date: Fri, 21 Mar 2025 15:16:43 -0700
-In-Reply-To: <20250321110010.95217-5-enjuk@amazon.com>
+ Iwashima	 <kuniyu@amazon.com>, kohei.enju@gmail.com
+Date: Fri, 21 Mar 2025 15:24:04 -0700
+In-Reply-To: <20250321110010.95217-6-enjuk@amazon.com>
 References: <20250321110010.95217-4-enjuk@amazon.com>
-	 <20250321110010.95217-5-enjuk@amazon.com>
+	 <20250321110010.95217-6-enjuk@amazon.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
@@ -102,38 +101,68 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Fri, 2025-03-21 at 19:59 +0900, Kohei Enju wrote:
-> syzbot reported the following splat [0].
->=20
-> In check_atomic_load/store(), register validity is not checked before
-> atomic_ptr_type_ok(). This causes the out-of-bounds read in is_ctx_reg()
-> called from atomic_ptr_type_ok() when the register number is MAX_BPF_REG
-> or greater.
->=20
-> Let's call check_load_mem()/check_store_reg() before atomic_ptr_type_ok()
-> to avoid the OOB read.
+
+Hi Kohei,
+
+Thank you for adding these tests.
 
 [...]
 
->  Memory state around the buggy address:
->   ffff888141b0d580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->   ffff888141b0d600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->  >ffff888141b0d680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->                           ^
->   ffff888141b0d700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->   ffff888141b0d780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->=20
-> Reported-by: syzbot+a5964227adc0f904549c@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3Da5964227adc0f904549c
-> Tested-by: syzbot+a5964227adc0f904549c@syzkaller.appspotmail.com
-> Fixes: e24bbad29a8d ("bpf: Introduce load-acquire and store-release instr=
-uctions")
-> Fixes: ff3afe5da998 ("selftests/bpf: Add selftests for load-acquire and s=
-tore-release instructions")
-> Signed-off-by: Kohei Enju <enjuk@amazon.com>
-> ---
+> +SEC("socket")
+> +__description("load-acquire with invalid register R11")
+> +__failure __failure_unpriv __msg("R11 is invalid")
+> +__naked void load_acquire_with_invalid_reg(void)
+> +{
+> +	asm volatile (
+> +	".8byte %[load_acquire_insn];" // r0 =3D load_acquire((u64 *)(r11 + 0))=
+;
+> +	"exit;"
+> +	:
+> +	: __imm_insn(load_acquire_insn,
+> +		     BPF_ATOMIC_OP(BPF_DW, BPF_LOAD_ACQ, BPF_REG_0, 11 /* invalid reg =
+*/, 0))
+> +	: __clobber_all);
+> +}
+> +
+>  #else /* CAN_USE_LOAD_ACQ_STORE_REL */
+> =20
+>  SEC("socket")
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_store_release.c b=
+/tools/testing/selftests/bpf/progs/verifier_store_release.c
+> index cd6f1e5f378b..2dc1d713b4a6 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_store_release.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_store_release.c
+> @@ -257,6 +257,20 @@ __naked void store_release_leak_pointer_to_map(void)
+>  	: __clobber_all);
+>  }
+> =20
+> +SEC("socket")
+> +__description("store-release with invalid register R11")
+> +__failure __failure_unpriv __msg("R11 is invalid")
+> +__naked void store_release_with_invalid_reg(void)
+> +{
+> +	asm volatile (
+> +	".8byte %[store_release_insn];" // store_release((u64 *)(r11 + 0), r1);
+> +	"exit;"
+> +	:
+> +	: __imm_insn(store_release_insn,
+> +		     BPF_ATOMIC_OP(BPF_DW, BPF_STORE_REL, 11 /* invalid reg */, BPF_RE=
+G_1, 0))
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+On my machine / config, the value of 11 was too small to trigger the
+KASAN warning. Value of 12 was sufficient.
+Curious if it is my config, did you see KASAN warning locally when running =
+this test
+before applying the fix?
+Maybe set the value to 15 here and above to maximize probability of KASAN w=
+arning?
 
-[...]
+> +	: __clobber_all);
+> +}
+> +
+>  #else
+> =20
+>  SEC("socket")
+
 
 
