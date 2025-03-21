@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-54512-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54513-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B383A6B248
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 01:32:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D14AA6B249
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 01:33:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC153189FD93
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 00:30:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A36FE19C3F36
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 00:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6546117E00E;
-	Fri, 21 Mar 2025 00:29:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDCF919D080;
+	Fri, 21 Mar 2025 00:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="s47HC+i6"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GpscTMen"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51AC714A095
-	for <bpf@vger.kernel.org>; Fri, 21 Mar 2025 00:29:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905B518DF6E
+	for <bpf@vger.kernel.org>; Fri, 21 Mar 2025 00:29:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742516972; cv=none; b=ez/KNjJRy60E7pf1V0P2wVWfNHG/3NtTIN0+YbR3blhPpZoz3BpjWvdWH4QcItjgSa18jiAHUHCOZ6FUHUxKNcePzk4DE8NU6/aw0oSUamiqAJYwvHTKux0Z/gMLY9Ws9RsQJNaBV9xUEuMF2yfCQFqO0537NzgUESE3ZsRkhx8=
+	t=1742516975; cv=none; b=hxrT+AoTfnig1rJPyPJlgrrDzVFDZWB1Nn/h7fVMAC547xKRv/hfxre5kdV1dB+OwdXSEZxaf7+xTmESNQ/aB/YIzXcsomOj0PckeK23SkS5Q5OTeoytsV4TQyYk/WXBxn9DzDl0MaW4bHlM87MfbUfc578ld0BwypMzSY+pWdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742516972; c=relaxed/simple;
-	bh=NhcZ+zbzhwPnYjaWWSny+o04Svf37lvqboIKaR19mLE=;
+	s=arc-20240116; t=1742516975; c=relaxed/simple;
+	bh=RpEz+u3qtPZ/8waeYzrQDWIqd2UbyuttbigwM1gEpkA=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=pGA4mrWj3osAU22JJCxHQXbM9ahbNqLp3zz8MDZq+07LTLq1Zw0aHLXUC5PoTi2rjyBVff7Xg85k19KM6vQYfQj4On/NRyTCcwRxVV5KDHR7B59OA9bObZ02QG2o5ndyYXl/PBNl56VI3yzAivDSaGBlr+4NIgnxmZu8gS6yGJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--hramamurthy.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=s47HC+i6; arc=none smtp.client-ip=209.85.216.74
+	 To:Cc:Content-Type; b=Tkmz4TxFKx8c3UBdevPUHkdAT5SCdrFqIOEku6tIb/aI6FGroqn3DP9R+pOJHiGGQFlEpg9+d3VKtjpU8aJlyiKandLmcoBVsnjwiI/WI9uGC7xe9vrMkQA6a12jnNKEk4m/yJbUuvoVnHi+TEOiY38VQyHeO34L2+6oyWkcnN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--hramamurthy.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GpscTMen; arc=none smtp.client-ip=209.85.216.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--hramamurthy.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ff798e8c90so2068566a91.1
-        for <bpf@vger.kernel.org>; Thu, 20 Mar 2025 17:29:29 -0700 (PDT)
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ff6943febeso1812033a91.0
+        for <bpf@vger.kernel.org>; Thu, 20 Mar 2025 17:29:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1742516969; x=1743121769; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1742516973; x=1743121773; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=em9gQO4+IduflzLNE8by+sP01vmyK8sm1poXWbQdmh8=;
-        b=s47HC+i6Ww6fkYcZBOvC2+Kv78HWeDRKHY8tqeIp59MmhTzuqu80mkEEK6JT4WDuOI
-         9huYGIkcZER4wHT27fM0qYt6G6sTwnI/wnek6Fk1Kx8Qa/4q6wuvuHFbKV4wmHJGIehZ
-         y/rnA8BlrBLbjDsbJKUXNXkN68eyTTVgfBKhjVS0oRmEUJO9KSew7axqJjwLPQY7YnhA
-         F2753sVnS5cqpS9ywmNnszoz8y71MMvOG39XkKPcC1My9oqnvHw9Xg4g9q/jKBzRN9Nq
-         spHCTUgz3cgFd/1uTgzLofHOhBzjTUJwZMCq7Un+HW229zaUQML+4ExZy+mryudtgd9s
-         5FWQ==
+        bh=rlZnJtOZOC8zdaIIteZz+tI3tXKlAzww+3aDYH87JYo=;
+        b=GpscTMenyG2o6O82EkGmFPFszBIZh2uM2lOsQL/utyGqQhsnQI6CXbLipPHu9WxZx7
+         cCj5ja5zXCruRrddRyAmA5RTXqg5b1csSY9Mg9jhvNUj1giOlJYgQ6sYab9qdP1KU27v
+         r+eqnvMkjpF/sDLJfVnX2LO5nVMpEfB86cCXX80a0siCM8BBKbs5g1cqrwYH/ZXCUGUt
+         z2mg9kVn0gGLA95wUyxVsr7yZdIHJImkChGmWsFwbm4x/ojhWoPfWCPrH0Eif5UWS+d/
+         d1UVGOHNaOAfOTOMay5fKejPc826n93z/P223qz+sKgfot4VtWN9tgd24sx8odV54UD6
+         6B9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742516969; x=1743121769;
+        d=1e100.net; s=20230601; t=1742516973; x=1743121773;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=em9gQO4+IduflzLNE8by+sP01vmyK8sm1poXWbQdmh8=;
-        b=pt7w4d0+mKkcbpSiS1VEO3F7CKtTOX7rYAKV4pOJ17ijNerQO5030jjlFV+vAVZCqm
-         2y4qsG0lqHDtmVlX6DySUNqzLP3XBxXGljrBni+CektQNv6bDsUxZw6Svb0wKqo+2t50
-         Ls/hRd1MDouQV+4nPP3kxa4UAwuSkJoVYZDPmS4pqYoGtBuypwGkqFoxSwJFHm3qPU5H
-         fjKpiQkBHdzaQSoZ0LPCw4JT5M8JSGb+WWGU3Qi+OCwLLzzcy1Wa1kxbD3c+7MBmLE/d
-         g2P/oaparKh/F/fv5Gj1PWOpMSzILWpAyZ87kl+ih6trdi+1G9erj1VYEPuu4aE1gNi9
-         ABXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVnld60Zx3ZyZvjh2AijcGgIOLahFa3/8y4q6JBJcUXHSvLzSLnrdwXKOieyA1QhLGvuDA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxkbPmSw9yjny43go0FcHoYtM2oTsuBa3Ba3e0RuPgEAIPVYbvm
-	htTBAFVzEDk6espw8/t/wMBwu+4HgHy5nq2fGe/+MLT/VLbvseNVOC4m83RHFh8XPPX095aV393
-	KqS4wKxkGRDhIT17W9+ZqAg==
-X-Google-Smtp-Source: AGHT+IE8Ju/LbwThFm7Q2P3L+DeXYJs94u/aaDVbtgY6B0JEC3AT/HfCkpiYyotrEytpARmRRKMIrfjEygFYwdJSMw==
-X-Received: from pjc7.prod.google.com ([2002:a17:90b:2f47:b0:2f9:e05f:187f])
+        bh=rlZnJtOZOC8zdaIIteZz+tI3tXKlAzww+3aDYH87JYo=;
+        b=mMXa4WoxlTBovEpKDwkP7A9rqhW3lOqHvzrP7kzO0St4oLgVlTgfepumeKh5/rzoN/
+         ssmDDvPopKx9TB1Fb6KrepGR+y6ygklIDJXRwo7qwAVY8x6pZ0O2gZ7ibm4GpeS3T1xK
+         D2EaJV7E43GK3qH1xyhLovvjbSnYw8OifOXnfE/45zKBYiYgTaqdrs5rQyKtf6csTnpW
+         VB70Xy7ui9d4NuUWIfmrdV3hONOuVbNmHXnhcO9sqqj0wsvVJhg3hmMZhi38pusZzoyq
+         rPh14atlHbD3sLA0leO+9+6CVQLuWKx6bjmN4iOPasb1An7cYOIk2fYCCWOCtKh2MATO
+         vkmA==
+X-Forwarded-Encrypted: i=1; AJvYcCUS0ckFo9nxLYaPmyPb6s+T6vh4aYifwkg8dqKt20/h4bVJ9U6pdk0gH7zddAgUH6pPU0E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoItxvLxzEdHRfMd6acGeW9YZ6BuC2r75S4FE3Q4CX5I2ZIMHc
+	iVhmrbnGkYqsU3zWzonqwO83pn6zVGi8lFeeEgMq2JhUzrX+dOxd7BTKYxvK/KjKv6gqZAtOpes
+	/FDc7SdycIXmfi5r1AENawg==
+X-Google-Smtp-Source: AGHT+IH1nlwYcmOy5sZiXKr1QY8fZy7y4pP1oqlNvVdbwry/tdlf+1eaNcltRq2LySc5zCPsOzTHnmuLrPfxcJnWqg==
+X-Received: from pjur4.prod.google.com ([2002:a17:90a:d404:b0:2fa:2661:76ac])
  (user=hramamurthy job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:4d05:b0:2f1:3355:4a8f with SMTP id 98e67ed59e1d1-3030fe8d50amr1526961a91.4.1742516969451;
- Thu, 20 Mar 2025 17:29:29 -0700 (PDT)
-Date: Fri, 21 Mar 2025 00:29:08 +0000
+ 2002:a17:90b:1d48:b0:2ff:6e58:89f5 with SMTP id 98e67ed59e1d1-3030ec2648cmr2514328a91.6.1742516972855;
+ Thu, 20 Mar 2025 17:29:32 -0700 (PDT)
+Date: Fri, 21 Mar 2025 00:29:09 +0000
 In-Reply-To: <20250321002910.1343422-1-hramamurthy@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250321002910.1343422-1-hramamurthy@google.com>
 X-Mailer: git-send-email 2.49.0.395.g12beb8f557-goog
-Message-ID: <20250321002910.1343422-5-hramamurthy@google.com>
-Subject: [PATCH net-next 4/6] gve: merge packet buffer size fields
+Message-ID: <20250321002910.1343422-6-hramamurthy@google.com>
+Subject: [PATCH net-next 5/6] gve: update XDP allocation path support RX
+ buffer posting
 From: Harshitha Ramamurthy <hramamurthy@google.com>
 To: netdev@vger.kernel.org
 Cc: jeroendb@google.com, hramamurthy@google.com, andrew+netdev@lunn.ch, 
@@ -89,200 +90,264 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Joshua Washington <joshwash@google.com>
 
-The data_buffer_size_dqo field in gve_priv and the packet_buffer_size
-field in gve_rx_ring theoretically have the same meaning, but they are
-defined in two different places and used in two separate contexts. There
-is no good reason for this, so this change merges those fields into the
-packet_buffer_size field in the RX ring.
+In order to support installing an XDP program on DQ, RX buffers need to
+be reposted using 4K buffers, which is larger than the default packet
+buffer size of 2K. This is needed to accommodate the extra head and tail
+that accompanies the data portion of an XDP buffer. Continuing to use 2K
+buffers would mean that the packet buffer size for the NIC would have to
+be restricted to 2048 - 320 - 256 = 1472B. However, this is problematic
+for two reasons: first, 1472 is not a packet buffer size accepted by
+GVE; second, at least 1474B of buffer space is needed to accommodate an
+MTU of 1460, which is the default on GCP. As such, we allocate 4K
+buffers, and post a 2K section of those 4K buffers (offset relative to
+the XDP headroom) to the NIC for DMA to avoid a potential extra copy.
+Because the GQ-QPL datapath requires copies regardless, this change was
+not needed to support XDP in that case.
 
-This change also introduces a packet_buffer_size field to struct
-gve_rx_queue_config to account for cases where queues are not allocated,
-such as when the interface is down.
+To capture this subtlety, a new field, packet_buffer_truesize, has been
+added to the rx ring struct to represent size of the allocated buffer,
+while packet_buffer_size has been left to represent the portion of the
+buffer posted to the NIC.
 
 Reviewed-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Praveen Kaligineedi <pkaligineedi@google.com>
 Signed-off-by: Joshua Washington <joshwash@google.com>
 Signed-off-by: Harshitha Ramamurthy <hramamurthy@google.com>
 ---
- drivers/net/ethernet/google/gve/gve.h                 | 4 ++--
- drivers/net/ethernet/google/gve/gve_adminq.c          | 4 +---
- drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c | 7 +++----
- drivers/net/ethernet/google/gve/gve_ethtool.c         | 3 +--
- drivers/net/ethernet/google/gve/gve_main.c            | 8 +++-----
- drivers/net/ethernet/google/gve/gve_rx.c              | 2 +-
- drivers/net/ethernet/google/gve/gve_rx_dqo.c          | 1 +
- 7 files changed, 12 insertions(+), 17 deletions(-)
+ drivers/net/ethernet/google/gve/gve.h         | 12 ++++++++--
+ .../ethernet/google/gve/gve_buffer_mgmt_dqo.c | 17 +++++++++-----
+ drivers/net/ethernet/google/gve/gve_main.c    | 19 +++++++++++++---
+ drivers/net/ethernet/google/gve/gve_rx_dqo.c  | 22 ++++++++++++++-----
+ 4 files changed, 53 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/net/ethernet/google/gve/gve.h b/drivers/net/ethernet/google/gve/gve.h
-index e5cc3fada9c9..9895541eddae 100644
+index 9895541eddae..2fab38c8ee78 100644
 --- a/drivers/net/ethernet/google/gve/gve.h
 +++ b/drivers/net/ethernet/google/gve/gve.h
-@@ -227,6 +227,7 @@ struct gve_rx_cnts {
+@@ -59,6 +59,8 @@
+ 
+ #define GVE_MAX_RX_BUFFER_SIZE 4096
+ 
++#define GVE_XDP_RX_BUFFER_SIZE_DQO 4096
++
+ #define GVE_DEFAULT_RX_BUFFER_OFFSET 2048
+ 
+ #define GVE_PAGE_POOL_SIZE_MULTIPLIER 4
+@@ -227,7 +229,11 @@ struct gve_rx_cnts {
  /* Contains datapath state used to represent an RX queue. */
  struct gve_rx_ring {
  	struct gve_priv *gve;
-+	u16 packet_buffer_size;
+-	u16 packet_buffer_size;
++
++	u16 packet_buffer_size;		/* Size of buffer posted to NIC */
++	u16 packet_buffer_truesize;	/* Total size of RX buffer */
++	u16 rx_headroom;
++
  	union {
  		/* GQI fields */
  		struct {
-@@ -235,7 +236,6 @@ struct gve_rx_ring {
+@@ -688,6 +694,7 @@ struct gve_rx_alloc_rings_cfg {
+ 	bool raw_addressing;
+ 	bool enable_header_split;
+ 	bool reset_rss;
++	bool xdp;
  
- 			/* threshold for posting new buffs and descs */
- 			u32 db_threshold;
--			u16 packet_buffer_size;
+ 	/* Allocated resources are returned here */
+ 	struct gve_rx_ring *rx;
+@@ -1218,7 +1225,8 @@ void gve_free_buffer(struct gve_rx_ring *rx,
+ 		     struct gve_rx_buf_state_dqo *buf_state);
+ int gve_alloc_buffer(struct gve_rx_ring *rx, struct gve_rx_desc_dqo *desc);
+ struct page_pool *gve_rx_create_page_pool(struct gve_priv *priv,
+-					  struct gve_rx_ring *rx);
++					  struct gve_rx_ring *rx,
++					  bool xdp);
  
- 			u32 qpl_copy_pool_mask;
- 			u32 qpl_copy_pool_head;
-@@ -635,6 +635,7 @@ struct gve_notify_block {
- struct gve_rx_queue_config {
- 	u16 max_queues;
- 	u16 num_queues;
-+	u16 packet_buffer_size;
- };
- 
- /* Tracks allowed and current tx queue settings */
-@@ -842,7 +843,6 @@ struct gve_priv {
- 	struct gve_ptype_lut *ptype_lut_dqo;
- 
- 	/* Must be a power of two. */
--	u16 data_buffer_size_dqo;
- 	u16 max_rx_buffer_size; /* device limit */
- 
- 	enum gve_queue_format queue_format;
-diff --git a/drivers/net/ethernet/google/gve/gve_adminq.c b/drivers/net/ethernet/google/gve/gve_adminq.c
-index be7a423e5ab9..3e8fc33cc11f 100644
---- a/drivers/net/ethernet/google/gve/gve_adminq.c
-+++ b/drivers/net/ethernet/google/gve/gve_adminq.c
-@@ -731,6 +731,7 @@ static void gve_adminq_get_create_rx_queue_cmd(struct gve_priv *priv,
- 		.ntfy_id = cpu_to_be32(rx->ntfy_id),
- 		.queue_resources_addr = cpu_to_be64(rx->q_resources_bus),
- 		.rx_ring_size = cpu_to_be16(priv->rx_desc_cnt),
-+		.packet_buffer_size = cpu_to_be16(rx->packet_buffer_size),
- 	};
- 
- 	if (gve_is_gqi(priv)) {
-@@ -743,7 +744,6 @@ static void gve_adminq_get_create_rx_queue_cmd(struct gve_priv *priv,
- 			cpu_to_be64(rx->data.data_bus);
- 		cmd->create_rx_queue.index = cpu_to_be32(queue_index);
- 		cmd->create_rx_queue.queue_page_list_id = cpu_to_be32(qpl_id);
--		cmd->create_rx_queue.packet_buffer_size = cpu_to_be16(rx->packet_buffer_size);
- 	} else {
- 		u32 qpl_id = 0;
- 
-@@ -756,8 +756,6 @@ static void gve_adminq_get_create_rx_queue_cmd(struct gve_priv *priv,
- 			cpu_to_be64(rx->dqo.complq.bus);
- 		cmd->create_rx_queue.rx_data_ring_addr =
- 			cpu_to_be64(rx->dqo.bufq.bus);
--		cmd->create_rx_queue.packet_buffer_size =
--			cpu_to_be16(priv->data_buffer_size_dqo);
- 		cmd->create_rx_queue.rx_buff_ring_size =
- 			cpu_to_be16(priv->rx_desc_cnt);
- 		cmd->create_rx_queue.enable_rsc =
+ /* Reset */
+ void gve_schedule_reset(struct gve_priv *priv);
 diff --git a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
-index af84cb88f828..f9824664d04c 100644
+index f9824664d04c..a71883e1d920 100644
 --- a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
 +++ b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
-@@ -139,7 +139,7 @@ int gve_alloc_qpl_page_dqo(struct gve_rx_ring *rx,
+@@ -139,7 +139,8 @@ int gve_alloc_qpl_page_dqo(struct gve_rx_ring *rx,
  	buf_state->page_info.page_offset = 0;
  	buf_state->page_info.page_address =
  		page_address(buf_state->page_info.page);
--	buf_state->page_info.buf_size = priv->data_buffer_size_dqo;
-+	buf_state->page_info.buf_size = rx->packet_buffer_size;
+-	buf_state->page_info.buf_size = rx->packet_buffer_size;
++	buf_state->page_info.buf_size = rx->packet_buffer_truesize;
++	buf_state->page_info.pad = rx->rx_headroom;
  	buf_state->last_single_ref_offset = 0;
  
  	/* The page already has 1 ref. */
-@@ -162,7 +162,7 @@ void gve_free_qpl_page_dqo(struct gve_rx_buf_state_dqo *buf_state)
+@@ -162,7 +163,7 @@ void gve_free_qpl_page_dqo(struct gve_rx_buf_state_dqo *buf_state)
  void gve_try_recycle_buf(struct gve_priv *priv, struct gve_rx_ring *rx,
  			 struct gve_rx_buf_state_dqo *buf_state)
  {
--	const u16 data_buffer_size = priv->data_buffer_size_dqo;
-+	const u16 data_buffer_size = rx->packet_buffer_size;
+-	const u16 data_buffer_size = rx->packet_buffer_size;
++	const u16 data_buffer_size = rx->packet_buffer_truesize;
  	int pagecount;
  
  	/* Can't reuse if we only fit one buffer per page */
-@@ -217,10 +217,9 @@ void gve_free_to_page_pool(struct gve_rx_ring *rx,
- static int gve_alloc_from_page_pool(struct gve_rx_ring *rx,
- 				    struct gve_rx_buf_state_dqo *buf_state)
+@@ -219,7 +220,7 @@ static int gve_alloc_from_page_pool(struct gve_rx_ring *rx,
  {
--	struct gve_priv *priv = rx->gve;
  	netmem_ref netmem;
  
--	buf_state->page_info.buf_size = priv->data_buffer_size_dqo;
-+	buf_state->page_info.buf_size = rx->packet_buffer_size;
+-	buf_state->page_info.buf_size = rx->packet_buffer_size;
++	buf_state->page_info.buf_size = rx->packet_buffer_truesize;
  	netmem = page_pool_alloc_netmem(rx->dqo.page_pool,
  					&buf_state->page_info.page_offset,
  					&buf_state->page_info.buf_size,
-diff --git a/drivers/net/ethernet/google/gve/gve_ethtool.c b/drivers/net/ethernet/google/gve/gve_ethtool.c
-index a862031ba5d1..31a21ccf4863 100644
---- a/drivers/net/ethernet/google/gve/gve_ethtool.c
-+++ b/drivers/net/ethernet/google/gve/gve_ethtool.c
-@@ -647,8 +647,7 @@ static int gve_set_tunable(struct net_device *netdev,
- 	switch (etuna->id) {
- 	case ETHTOOL_RX_COPYBREAK:
- 	{
--		u32 max_copybreak = gve_is_gqi(priv) ?
--			GVE_DEFAULT_RX_BUFFER_SIZE : priv->data_buffer_size_dqo;
-+		u32 max_copybreak = priv->rx_cfg.packet_buffer_size;
+@@ -231,12 +232,14 @@ static int gve_alloc_from_page_pool(struct gve_rx_ring *rx,
+ 	buf_state->page_info.netmem = netmem;
+ 	buf_state->page_info.page_address = netmem_address(netmem);
+ 	buf_state->addr = page_pool_get_dma_addr_netmem(netmem);
++	buf_state->page_info.pad = rx->dqo.page_pool->p.offset;
  
- 		len = *(u32 *)value;
- 		if (len > max_copybreak)
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index 354f526a9238..20aabbe0e518 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -1224,9 +1224,7 @@ static void gve_rx_get_curr_alloc_cfg(struct gve_priv *priv,
- 	cfg->raw_addressing = !gve_is_qpl(priv);
- 	cfg->enable_header_split = priv->header_split_enabled;
- 	cfg->ring_size = priv->rx_desc_cnt;
--	cfg->packet_buffer_size = gve_is_gqi(priv) ?
--				  GVE_DEFAULT_RX_BUFFER_SIZE :
--				  priv->data_buffer_size_dqo;
-+	cfg->packet_buffer_size = priv->rx_cfg.packet_buffer_size;
- 	cfg->rx = priv->rx;
+ 	return 0;
  }
  
-@@ -1331,7 +1329,7 @@ static int gve_queues_start(struct gve_priv *priv,
- 		goto reset;
+ struct page_pool *gve_rx_create_page_pool(struct gve_priv *priv,
+-					  struct gve_rx_ring *rx)
++					  struct gve_rx_ring *rx,
++					  bool xdp)
+ {
+ 	u32 ntfy_id = gve_rx_idx_to_ntfy(priv, rx->q_num);
+ 	struct page_pool_params pp = {
+@@ -247,7 +250,8 @@ struct page_pool *gve_rx_create_page_pool(struct gve_priv *priv,
+ 		.netdev = priv->dev,
+ 		.napi = &priv->ntfy_blocks[ntfy_id].napi,
+ 		.max_len = PAGE_SIZE,
+-		.dma_dir = DMA_FROM_DEVICE,
++		.dma_dir = xdp ? DMA_BIDIRECTIONAL : DMA_FROM_DEVICE,
++		.offset = xdp ? XDP_PACKET_HEADROOM : 0,
+ 	};
  
- 	priv->header_split_enabled = rx_alloc_cfg->enable_header_split;
--	priv->data_buffer_size_dqo = rx_alloc_cfg->packet_buffer_size;
-+	priv->rx_cfg.packet_buffer_size = rx_alloc_cfg->packet_buffer_size;
+ 	return page_pool_create(&pp);
+@@ -301,7 +305,8 @@ int gve_alloc_buffer(struct gve_rx_ring *rx, struct gve_rx_desc_dqo *desc)
+ 	}
+ 	desc->buf_id = cpu_to_le16(buf_state - rx->dqo.buf_states);
+ 	desc->buf_addr = cpu_to_le64(buf_state->addr +
+-				     buf_state->page_info.page_offset);
++				     buf_state->page_info.page_offset +
++				     buf_state->page_info.pad);
  
- 	err = gve_create_rings(priv);
- 	if (err)
-@@ -2627,7 +2625,7 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	priv->service_task_flags = 0x0;
- 	priv->state_flags = 0x0;
- 	priv->ethtool_flags = 0x0;
--	priv->data_buffer_size_dqo = GVE_DEFAULT_RX_BUFFER_SIZE;
-+	priv->rx_cfg.packet_buffer_size = GVE_DEFAULT_RX_BUFFER_SIZE;
- 	priv->max_rx_buffer_size = GVE_DEFAULT_RX_BUFFER_SIZE;
+ 	return 0;
  
- 	gve_set_probe_in_progress(priv);
-diff --git a/drivers/net/ethernet/google/gve/gve_rx.c b/drivers/net/ethernet/google/gve/gve_rx.c
-index 9d444e723fcd..90e875c1832f 100644
---- a/drivers/net/ethernet/google/gve/gve_rx.c
-+++ b/drivers/net/ethernet/google/gve/gve_rx.c
-@@ -288,7 +288,7 @@ int gve_rx_alloc_ring_gqi(struct gve_priv *priv,
+diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+index 20aabbe0e518..cb2f9978f45e 100644
+--- a/drivers/net/ethernet/google/gve/gve_main.c
++++ b/drivers/net/ethernet/google/gve/gve_main.c
+@@ -1149,8 +1149,14 @@ static int gve_reg_xdp_info(struct gve_priv *priv, struct net_device *dev)
+ 				       napi->napi_id);
+ 		if (err)
+ 			goto err;
+-		err = xdp_rxq_info_reg_mem_model(&rx->xdp_rxq,
+-						 MEM_TYPE_PAGE_SHARED, NULL);
++		if (gve_is_qpl(priv))
++			err = xdp_rxq_info_reg_mem_model(&rx->xdp_rxq,
++							 MEM_TYPE_PAGE_SHARED,
++							 NULL);
++		else
++			err = xdp_rxq_info_reg_mem_model(&rx->xdp_rxq,
++							 MEM_TYPE_PAGE_POOL,
++							 rx->dqo.page_pool);
+ 		if (err)
+ 			goto err;
+ 		rx->xsk_pool = xsk_get_pool_from_qid(dev, i);
+@@ -1226,6 +1232,7 @@ static void gve_rx_get_curr_alloc_cfg(struct gve_priv *priv,
+ 	cfg->ring_size = priv->rx_desc_cnt;
+ 	cfg->packet_buffer_size = priv->rx_cfg.packet_buffer_size;
+ 	cfg->rx = priv->rx;
++	cfg->xdp = !!cfg->qcfg_tx->num_xdp_queues;
+ }
  
- 	rx->gve = priv;
- 	rx->q_num = idx;
--	rx->packet_buffer_size = GVE_DEFAULT_RX_BUFFER_SIZE;
-+	rx->packet_buffer_size = cfg->packet_buffer_size;
+ void gve_get_curr_alloc_cfgs(struct gve_priv *priv,
+@@ -1461,6 +1468,7 @@ static int gve_configure_rings_xdp(struct gve_priv *priv,
+ 	gve_get_curr_alloc_cfgs(priv, &tx_alloc_cfg, &rx_alloc_cfg);
+ 	tx_alloc_cfg.num_xdp_rings = num_xdp_rings;
  
- 	rx->mask = slots - 1;
- 	rx->data.raw_addressing = cfg->raw_addressing;
++	rx_alloc_cfg.xdp = !!num_xdp_rings;
+ 	return gve_adjust_config(priv, &tx_alloc_cfg, &rx_alloc_cfg);
+ }
+ 
+@@ -1629,6 +1637,7 @@ static int gve_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags)
+ static int verify_xdp_configuration(struct net_device *dev)
+ {
+ 	struct gve_priv *priv = netdev_priv(dev);
++	u16 max_xdp_mtu;
+ 
+ 	if (dev->features & NETIF_F_LRO) {
+ 		netdev_warn(dev, "XDP is not supported when LRO is on.\n");
+@@ -1641,7 +1650,11 @@ static int verify_xdp_configuration(struct net_device *dev)
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+-	if (dev->mtu > GVE_DEFAULT_RX_BUFFER_SIZE - sizeof(struct ethhdr) - GVE_RX_PAD) {
++	max_xdp_mtu = priv->rx_cfg.packet_buffer_size - sizeof(struct ethhdr);
++	if (priv->queue_format == GVE_GQI_QPL_FORMAT)
++		max_xdp_mtu -= GVE_RX_PAD;
++
++	if (dev->mtu > max_xdp_mtu) {
+ 		netdev_warn(dev, "XDP is not supported for mtu %d.\n",
+ 			    dev->mtu);
+ 		return -EOPNOTSUPP;
 diff --git a/drivers/net/ethernet/google/gve/gve_rx_dqo.c b/drivers/net/ethernet/google/gve/gve_rx_dqo.c
-index dcdad6d09bf3..5fbcf93a54e0 100644
+index 5fbcf93a54e0..2edf3c632cbd 100644
 --- a/drivers/net/ethernet/google/gve/gve_rx_dqo.c
 +++ b/drivers/net/ethernet/google/gve/gve_rx_dqo.c
-@@ -223,6 +223,7 @@ int gve_rx_alloc_ring_dqo(struct gve_priv *priv,
- 	memset(rx, 0, sizeof(*rx));
- 	rx->gve = priv;
+@@ -225,6 +225,14 @@ int gve_rx_alloc_ring_dqo(struct gve_priv *priv,
  	rx->q_num = idx;
-+	rx->packet_buffer_size = cfg->packet_buffer_size;
+ 	rx->packet_buffer_size = cfg->packet_buffer_size;
  
++	if (cfg->xdp) {
++		rx->packet_buffer_truesize = GVE_XDP_RX_BUFFER_SIZE_DQO;
++		rx->rx_headroom = XDP_PACKET_HEADROOM;
++	} else {
++		rx->packet_buffer_truesize = rx->packet_buffer_size;
++		rx->rx_headroom = 0;
++	}
++
  	rx->dqo.num_buf_states = cfg->raw_addressing ? buffer_queue_slots :
  		gve_get_rx_pages_per_qpl_dqo(cfg->ring_size);
+ 	rx->dqo.buf_states = kvcalloc(rx->dqo.num_buf_states,
+@@ -254,7 +262,7 @@ int gve_rx_alloc_ring_dqo(struct gve_priv *priv,
+ 		goto err;
+ 
+ 	if (cfg->raw_addressing) {
+-		pool = gve_rx_create_page_pool(priv, rx);
++		pool = gve_rx_create_page_pool(priv, rx, cfg->xdp);
+ 		if (IS_ERR(pool))
+ 			goto err;
+ 
+@@ -484,14 +492,15 @@ static void gve_skb_add_rx_frag(struct gve_rx_ring *rx,
+ 	if (rx->dqo.page_pool) {
+ 		skb_add_rx_frag_netmem(rx->ctx.skb_tail, num_frags,
+ 				       buf_state->page_info.netmem,
+-				       buf_state->page_info.page_offset,
+-				       buf_len,
++				       buf_state->page_info.page_offset +
++				       buf_state->page_info.pad, buf_len,
+ 				       buf_state->page_info.buf_size);
+ 	} else {
+ 		skb_add_rx_frag(rx->ctx.skb_tail, num_frags,
+ 				buf_state->page_info.page,
+-				buf_state->page_info.page_offset,
+-				buf_len, buf_state->page_info.buf_size);
++				buf_state->page_info.page_offset +
++				buf_state->page_info.pad, buf_len,
++				buf_state->page_info.buf_size);
+ 	}
+ }
+ 
+@@ -611,7 +620,8 @@ static int gve_rx_dqo(struct napi_struct *napi, struct gve_rx_ring *rx,
+ 
+ 	/* Sync the portion of dma buffer for CPU to read. */
+ 	dma_sync_single_range_for_cpu(&priv->pdev->dev, buf_state->addr,
+-				      buf_state->page_info.page_offset,
++				      buf_state->page_info.page_offset +
++				      buf_state->page_info.pad,
+ 				      buf_len, DMA_FROM_DEVICE);
+ 
+ 	/* Append to current skb if one exists. */
 -- 
 2.49.0.rc1.451.g8f38331e32-goog
 
