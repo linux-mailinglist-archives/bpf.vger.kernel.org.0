@@ -1,153 +1,137 @@
-Return-Path: <bpf+bounces-54527-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54528-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D5F8A6B525
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 08:36:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC676A6B5BC
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 09:03:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89F3918885FF
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 07:36:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5D6118998B7
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 08:03:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 943121EDA35;
-	Fri, 21 Mar 2025 07:36:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A361EFF8D;
+	Fri, 21 Mar 2025 08:02:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="CuIyKFbs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAAB1EB184;
-	Fri, 21 Mar 2025 07:36:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C7C1E5B67;
+	Fri, 21 Mar 2025 08:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.245
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742542589; cv=none; b=ibiGYtFcG3PRAZfC4Wo+srFbxC3XMTBv/+oOIIdFusrSb8m+ZuaeDUgM25hMZxLXIFiqO3dmq3yQDHnJ9Yu/O35yqDiZwo+Z96CRgj5VAbIdm9PwNOWCJP3P9MpKfNsxCKMHDuY98Hl9Y+pGgGjDXJvpC4hJ3zYGId5WFFPJYqI=
+	t=1742544137; cv=none; b=NNSRaV4c315FZ65Hs1CRsYr2GQkmdA15SkNF4ux6nkfUWV3he5iT7oaFY2t+PyXQpxriJkgxh+I0YRk9BrMa4Y1rRkqShl7vucwKJVvLh3bsG6w2vttdjYm+viZ1yjHf+9orGmM5bse4C8bZ727yaEivzv+ZvXBYC2A1iKFrcdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742542589; c=relaxed/simple;
-	bh=fS/gdm7jl9A9E/8qkYUBnE/GTJQ194bTtcWytpXr2hc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PWICkfyd/tBc09vvRHWh0Xd4ctLL8dQpP/PWI3Z7qtlMHF6QoMoLadHHMfKG0OA/I21nWvC9Mj3DyC1mDmKdK+tavDB1RdefHu7pFoFt/dZYycL0RSTHYbzjxRehZIR2dFsLLKkrXUCVhx15Q0bFDxuJRjp10WyURnA5sLLHnls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 2dc6dd46062711f0a216b1d71e6e1362-20250321
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.45,REQID:1ed1ee8c-635a-4db8-905f-5fd8e445a575,IP:0,U
-	RL:0,TC:0,Content:0,EDM:25,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:25
-X-CID-META: VersionHash:6493067,CLOUDID:39ed90eb5f5a2127bb68b461e85b47f3,BulkI
-	D:nil,BulkQuantity:0,Recheck:0,SF:81|82|102,TC:nil,Content:0|50,EDM:5,IP:n
-	il,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LE
-	S:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 2dc6dd46062711f0a216b1d71e6e1362-20250321
-Received: from node4.com.cn [(10.44.16.170)] by mailgw.kylinos.cn
-	(envelope-from <zhangxi@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1895884079; Fri, 21 Mar 2025 15:36:18 +0800
-Received: from node4.com.cn (localhost [127.0.0.1])
-	by node4.com.cn (NSMail) with SMTP id EC8911600052C;
-	Fri, 21 Mar 2025 15:36:17 +0800 (CST)
-X-ns-mid: postfix-67DD16F1-274370864
-Received: from localhost.localdomain (unknown [172.30.80.11])
-	by node4.com.cn (NSMail) with ESMTPA id 4DAB91600052C;
-	Fri, 21 Mar 2025 07:36:15 +0000 (UTC)
-From: Zhang Xi <zhangxi@kylinos.cn>
-To: chenhuacai@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	llvm@lists.linux.de,
-	yangtiezhu@loongson.cn,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	nathan@kernel.org,
-	nick.desaulniers+lkml@gmail.com,
-	morbo@google.com,
-	justinstitt@google.com,
-	yijiangshan@kylinos.cn,
-	zhangxi <zhangxi@kylinos.cn>
-Subject: [PATCH v2] selftests/bpf: fix the compilation errors caused by larchintrin.h
-Date: Fri, 21 Mar 2025 15:36:13 +0800
-Message-Id: <20250321073613.1082510-1-zhangxi@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20250317083142.561104-1-zhangxi@kylinos.cn>
-References: <20250317083142.561104-1-zhangxi@kylinos.cn>
+	s=arc-20240116; t=1742544137; c=relaxed/simple;
+	bh=qwa6a+2FSKObC7POn6jD/SygueU+uOQsl+xTVPOkE4k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=n+SpMA7Poz6vf5GXo5aoDaUzEPfq6VqZQh4TtJ0ElTVxpXcnLJxVqBcIvu2R46pd8C/qmPYMXiK+Fez70z3wXsjJvdVAPMShtO2nMNL8xr3Ajm2Fa5hLG7xpqkBcmNNHf0SPaMQW7VNUY4Mqtvc6WlDq2W7i3GDO8Ff/MQbdqC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=CuIyKFbs; arc=none smtp.client-ip=198.47.19.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 52L81aQZ257023
+	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 21 Mar 2025 03:01:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1742544097;
+	bh=Axdj0QnFgjxfraWinlzlf+n30BytYhrhTX2isoRR1xs=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=CuIyKFbscqKOjmXrH91k9s8t7OXo3P8jAqitsCtKup3PkMQDhDHqpcDl9maXUkTgx
+	 LqogDkZUthqCdXKeM530PWhXw85t1MCQgxcer+T2av/4vPKLgZ6TazhqFwcJYPkXef
+	 rKQQC8AtMWn100ZzBBD/xytYBaMtGbE/CE93Pd+0=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 52L81aBj008848
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 21 Mar 2025 03:01:36 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 21
+ Mar 2025 03:01:36 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 21 Mar 2025 03:01:36 -0500
+Received: from [172.24.19.92] (lt9560gk3.dhcp.ti.com [172.24.19.92])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 52L81UVH114513;
+	Fri, 21 Mar 2025 03:01:31 -0500
+Message-ID: <48519536-6756-4d3d-9bb1-09197248df36@ti.com>
+Date: Fri, 21 Mar 2025 13:31:29 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/3] net: ti: prueth: Fix kernel warning while
+ bringing down network interface
+To: Simon Horman <horms@kernel.org>
+CC: <pabeni@redhat.com>, <kuba@kernel.org>, <edumazet@google.com>,
+        <davem@davemloft.net>, <andrew+netdev@lunn.ch>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kory.maincent@bootlin.com>,
+        <javier.carrasco.cruz@gmail.com>, <diogo.ivo@siemens.com>,
+        <jacob.e.keller@intel.com>, <john.fastabend@gmail.com>,
+        <hawk@kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
+        <srk@ti.com>, Vignesh Raghavendra
+	<vigneshr@ti.com>,
+        Roger Quadros <rogerq@kernel.org>, <danishanwar@ti.com>
+References: <20250317101551.1005706-1-m-malladi@ti.com>
+ <20250317101551.1005706-2-m-malladi@ti.com>
+ <20250320125349.GN280585@kernel.org>
+Content-Language: en-US
+From: "Malladi, Meghana" <m-malladi@ti.com>
+In-Reply-To: <20250320125349.GN280585@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 
-From: zhangxi <zhangxi@kylinos.cn>
+Hi Simon,
+Thanks for reviewing the patch series.
 
-On the LoongArch platform, the header file 'larchintrin.h' is provided by
-the package clang-libs, and it is necessary to add CLANG_SYS_INCLUDES to
-the compilation command.
+On 3/20/2025 6:23 PM, Simon Horman wrote:
+> On Mon, Mar 17, 2025 at 03:45:48PM +0530, Meghana Malladi wrote:
+>> During network interface initialization, the NIC driver needs to register
+>> its Rx queue with the XDP, to ensure the incoming XDP buffer carries a
+>> pointer reference to this info and is stored inside xdp_rxq_info.
+>>
+>> While this struct isn't tied to XDP prog, if there are any changes in
+>> Rx queue, the NIC driver needs to stop the Rx queue by unregistering
+>> with XDP before purging and reallocating memory. Drop page_pool destroy
+>> during Rx channel reset and this is already handled by XDP during
+>> xdp_rxq_info_unreg (Rx queue unregister), failing to do will cause the
+>> following warning:
+>>
+>> [  271.494611] ------------[ cut here ]------------
+>> [  271.494629] WARNING: CPU: 0 PID: 2453 at /net/core/page_pool.c:1108 0xffff8000808d5f60
+> 
+> I think it would be nice to include a bit more of the stack trace here.
+> 
 
-make M=3Dsamples/bpf, compilation errors:
+Sure, I will attach a link to the warning logs in v2.
 
-In file included from sockex2_kern.c:2:
-In file included from /root/work/src/github/linux/include/uapi/linux/in.h=
-:25:
-In file included from /root/work/src/github/linux/include/linux/socket.h:=
-8:
-In file included from /root/work/src/github/linux/include/linux/uio.h:9:
-In file included from /root/work/src/github/linux/include/linux/thread_in=
-fo.h:60:
-In file included from /root/work/src/github/linux/arch/loongarch/include/=
-asm/thread_info.h:15:
-In file included from /root/work/src/github/linux/arch/loongarch/include/=
-asm/processor.h:13:
-In file included from /root/work/src/github/linux/arch/loongarch/include/=
-asm/cpu-info.h:11:
-/root/work/src/github/linux/arch/loongarch/include/asm/loongarch.h:13:10:=
- fatal error: 'larchintrin.h' file not found
-   13 | #include <larchintrin.h>
+>>
+>> Fixes: 46eeb90f03e0 ("net: ti: icssg-prueth: Use page_pool API for RX buffer allocation")
+>> Signed-off-by: Meghana Malladi <m-malladi@ti.com>
+> 
+> It is a shame that we now have more asymmetry regarding
+> the allocation of the pool and unwind on error prueth_prepare_rx_chan().
+> 
+> But if I see things correctly the freeing of the pool via
+> xdp_rxq_info_unreg() is unconditional. And with that in mind
+> I agree the approach taken by this patch makes sense.
+> 
 
-Signed-off-by: zhangxi <zhangxi@kylinos.cn>
----
- samples/bpf/Makefile | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Agreed on the asymmetry part, but I am not quite convinced on why 
+xdp_rxq_info_unreg() is freeing the pool unconditionally, when the 
+driver is the one which is allocating the pool. If xdp_rxq_info_unreg() 
+is freeing it, then shouldn't xdp_rxq_info_reg() be allocating it ?
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index dd9944a97b7e..f459360c99bc 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -337,6 +337,10 @@ endef
-=20
- CLANG_SYS_INCLUDES =3D $(call get_sys_includes,$(CLANG))
-=20
-+ifeq ($(ARCH), loongarch)
-+CLANG_CFLAGS =3D $(CLANG_SYS_INCLUDES)
-+endif
-+
- $(obj)/xdp_router_ipv4.bpf.o: $(obj)/xdp_sample.bpf.o
-=20
- $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h =
-$(src)/xdp_sample_shared.h
-@@ -376,7 +380,7 @@ $(obj)/%.o: $(src)/%.c
- 	@echo "  CLANG-bpf " $@
- 	$(Q)$(CLANG) $(NOSTDINC_FLAGS) $(LINUXINCLUDE) $(BPF_EXTRA_CFLAGS) \
- 		-I$(obj) -I$(srctree)/tools/testing/selftests/bpf/ \
--		-I$(LIBBPF_INCLUDE) \
-+		-I$(LIBBPF_INCLUDE) $(CLANG_CFLAGS)\
- 		-D__KERNEL__ -D__BPF_TRACING__ -Wno-unused-value -Wno-pointer-sign \
- 		-D__TARGET_ARCH_$(SRCARCH) -Wno-compare-distinct-pointer-types \
- 		-Wno-gnu-variable-sized-type-not-at-end \
---=20
-2.25.1
+> Reviewed-by: Simon Horman <horms@kernel.org>
+> 
+> ...
 
 
