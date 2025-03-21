@@ -1,54 +1,56 @@
-Return-Path: <bpf+bounces-54543-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54544-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 752B5A6BB38
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 13:53:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F390A6BD69
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 15:45:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 773944A1D74
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 12:51:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDF423B3C6E
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 14:41:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46EE822A7E3;
-	Fri, 21 Mar 2025 12:51:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815112236FC;
+	Fri, 21 Mar 2025 14:40:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="SfQ4S5k0"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b="j53Ogs/H"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from orbyte.nwl.cc (orbyte.nwl.cc [151.80.46.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9325A226D04;
-	Fri, 21 Mar 2025 12:51:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70DB1D514B;
+	Fri, 21 Mar 2025 14:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=151.80.46.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742561469; cv=none; b=crmXpWI7DbFkIMK5iGUAisds312iYRi5VElz9/fQvVnvhtM+yQ4QwInSPaNxVqMJBbhCxGCa5ip6ygzECAnLLeCFnDC7Z8/CY+Ivs+RaGBAY0uNU4nr/QHhXP883dZr0oPD49LLgtDuFvb5Qu4qmAB8RSPloksV+nFhy9XrrhXA=
+	t=1742568032; cv=none; b=MheTAQocF/zCgmGWIBsLWePFq8JdfeaoXJv7wi4Ht337lnG6+TbBVLYatwPwPokvU4Rne4Pe+2QLFPpR1YeeYzZR3YZxn2eWTSHFL1cSGVELSuW7hqu+TKn+v8WijAShtcGBzTC9dQfeIPa/o7ZQwVp1zy+tf7IARF0TB3Ts8bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742561469; c=relaxed/simple;
-	bh=frb61xLTauRJ1oYAsBn7KGB1v01AGxe7+8/rQqlvlJo=;
+	s=arc-20240116; t=1742568032; c=relaxed/simple;
+	bh=E2+FqgznUEnyWr4r8jGmtnjZVC3ujDGJrrzUcsUPLY8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rkS+0dxAv9bggULVrH/I+VvxYHauZFYwA2WXfbHpcOwAC0/TD1cJ99n0d8gyjEBxOtT/lQ5n6Xor3Dh9Dk1CkLgqmmokAjXDFAekQ+Kty04fJp3yk/mFsZRMGCBRdEFXCbY/ArxK9dUg9NK7HxnsMCAIskk7a2WFz3qApr0to1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=SfQ4S5k0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25DDAC4CEE3;
-	Fri, 21 Mar 2025 12:51:08 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="SfQ4S5k0"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1742561466;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1dUf+NuD25WdVcY/g4ihIatL9n9p+d1MPap8zY1l6+Y=;
-	b=SfQ4S5k0pTvKrxFXVspBerla/SbUp0Opfi1U//bwYh9m4JHnvyn19VfONZNdUhstjg+pCk
-	zg1c+e0ozExXfzaWwUGKFmjtnLhvIiLoFhAPuffwWmgYwiRkQbcVkRsehvpqwa9xn16W7I
-	ZSnCZbZpUksmk6EnYC1HPvZ+Gfcqo5Y=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 4f1bf067 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Fri, 21 Mar 2025 12:51:05 +0000 (UTC)
-Date: Fri, 21 Mar 2025 13:51:02 +0100
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZdUCq0xBAn1JXam7xjkUm9ckWypN27/sO+QTAkzelvxn1neVBMKvwF85u5+l2m7cHAlgkcWNk6sboJA8KQd4/UrFmHoVYwvaoEARRWe/oCZoGdXhXQ8QQI1BCxR0qFfQuDJaN3Yaw7wh9vbNtC+E2AnZ8uQuPtDFnY/O0tEMrwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc; spf=pass smtp.mailfrom=nwl.cc; dkim=pass (2048-bit key) header.d=nwl.cc header.i=@nwl.cc header.b=j53Ogs/H; arc=none smtp.client-ip=151.80.46.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nwl.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nwl.cc
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nwl.cc;
+	s=mail2022; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=273ZrHicthe524y60l8YzXOeWySzybOyGBG8piPpQfM=; b=j53Ogs/HYM8gv6m80/LKlzzCWv
+	MiPX9TVIujy06m/jUc4kRBI7ZCTIUceHk9yMjF3Hp+no9GfrpbnFo0CEq2KEsqZNdFXSn5y+JFIvq
+	/I/+Gx5cwLKNuryJ22XFwuTmOF+SuHJdvtgA3m9AmakvAxjlP3DC0/J5k0OMHEzJqQkkzAHWSIoU9
+	1HUGg0gcgoQqWfz2L3zF5JMyb/iPV/o+4jLaGqr4j01cvf4GG0aoWIbRnwkkeW+VJVxMGM2R7a64N
+	POFqrbfsNw5DZ0H38sqRzPt6AIFm3/+h1Xm8BB9yKOZIVJZe+56Ka9z3fud+2Kj2zXXS9cjfrMozZ
+	kyd+MZZQ==;
+Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.97.1)
+	(envelope-from <phil@nwl.cc>)
+	id 1tvdXo-000000003pz-1Qsu;
+	Fri, 21 Mar 2025 15:40:20 +0100
+Date: Fri, 21 Mar 2025 15:40:20 +0100
+From: Phil Sutter <phil@nwl.cc>
 To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: Phil Sutter <phil@nwl.cc>, netdev@vger.kernel.org,
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, netdev@vger.kernel.org,
 	Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>,
 	"David S. Miller" <davem@davemloft.net>,
 	Simon Horman <horms@kernel.org>, Florian Westphal <fw@strlen.de>,
@@ -58,7 +60,17 @@ Cc: Phil Sutter <phil@nwl.cc>, netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCHv4 RESEND net-next 2/2] selftests: wireguard: update to
  using nft for qemu test
-Message-ID: <Z91gtk_5nA76iYGw@zx2c4.com>
+Message-ID: <Z916VMSCEtinZl54@orbyte.nwl.cc>
+Mail-Followup-To: Phil Sutter <phil@nwl.cc>,
+	Hangbin Liu <liuhangbin@gmail.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, netdev@vger.kernel.org,
+	Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Simon Horman <horms@kernel.org>, Florian Westphal <fw@strlen.de>,
+	Petr Mladek <pmladek@suse.com>,
+	Yoann Congal <yoann.congal@smile.fr>, wireguard@lists.zx2c4.com,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
 References: <20250106081043.2073169-1-liuhangbin@gmail.com>
  <20250106081043.2073169-3-liuhangbin@gmail.com>
  <Z9rtrVk-15Ts_BNp@zx2c4.com>
@@ -71,7 +83,7 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <Z91fXURX3BQFDaq9@fedora>
 
@@ -107,8 +119,10 @@ On Fri, Mar 21, 2025 at 12:45:17PM +0000, Hangbin Liu wrote:
 > "./configure --prefix=/ $(CROSS_COMPILE_FLAG) --enable-static \
 > --disable-shared --disable-debug --disable-man-doc --with-mini-gmp --without-cli"
 > to build nft.
-> 
-> I don't know why it's not linked static.
 
-All three DSOs...
+Do you pass that to the configure calls for libnftnl and libmnl, too? I
+didn't find a way to force static linking in nftables build system, so I
+disabled building of shared libmnl/libnftnl libraries.
+
+Cheers, Phil
 
