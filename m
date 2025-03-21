@@ -1,557 +1,232 @@
-Return-Path: <bpf+bounces-54559-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54560-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC8BCA6C5F7
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 23:30:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 080F9A6C648
+	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 00:13:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25B6A3BDF66
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 22:29:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C008480ABB
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 23:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775BE233129;
-	Fri, 21 Mar 2025 22:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1398D1E3DE0;
+	Fri, 21 Mar 2025 23:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OMxpGn3o"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hRNc6Zr+"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF4701F4183;
-	Fri, 21 Mar 2025 22:29:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECC1F1E51FF
+	for <bpf@vger.kernel.org>; Fri, 21 Mar 2025 23:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742596190; cv=none; b=ie2WTJlC97bsGl6HyvUvK2gAQQQ8a8cirg1huHht8U0812G5xTiieBmHSx8iBlNGdht+U0kGKV7EZ0WiO/NFx7nmT4UrOtU88aZqiXsA/gnOttF4gKw8E90GUP3GD2vsgBd6r1qksz2vs12Awo2O2rw/G3KfiX6aOuK7AnPGvNk=
+	t=1742598813; cv=none; b=jNr8glnmLt5gnX7Gyo6y/Nttmunf05j0hg9FzZSW7mPuEHmGm6FKsB8bSnsx0JNE7uGCAnvbL1Shd1Jxuc1dGqE1hvujSkm8yLw+WIZcG1hd/nxpQUCAXcHnzSvPxJtmbTaBpq2UIRenlWPIkhHN7JLe7PPUNfSq+ujc73bTrGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742596190; c=relaxed/simple;
-	bh=MJnjYRN0LEgZ0tEihdscwvdV0tOUjsMvYyVAybCBfrg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q/XiFFkjy/J2on3gGe+bmEzMY+rUAiDyin+GN5fFbDA4CCT2WxNxLW44HiipxM97wpErRmwmlgCbgvCVOESPlMIpDGT/xfY6NGx4MdqwgIyz95auFkI1L2C9aN8+ucVWz9n+VQzB5wKSO1pxla8QJ6RcgMTR7dPuTZa/FyttAJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OMxpGn3o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20994C4CEE3;
-	Fri, 21 Mar 2025 22:29:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742596189;
-	bh=MJnjYRN0LEgZ0tEihdscwvdV0tOUjsMvYyVAybCBfrg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OMxpGn3onwmLIr77R5VCSx0MSVLUoWdyEI5YyV8/340EtL25+O9CmgCQbs58z7GS6
-	 Eu2W/kH7WuBbwSlzUpNTnqOn2sCvwl5ubNzAKZFwE7zALPjs4tmFcNZbzKTr+uK0+d
-	 0Y0Nz3fqVRYxtEFgdDwTBp+n9KPviSIVufjk3itXnJFTHj7nEoWPUd+3r7BZ0yE9mx
-	 aeBDTwstoJ2uAOP7v/q9l1xzG59uyII/F5Ze/n/QJAbAsecaXZonfujWsFbGwHG/Oi
-	 r2YI3b7idxY3BPi6OFHwdjXr8irY4rz/IyRI1TIWoJRsUz4NBtHx+fjoUANRtfaBZd
-	 rPFyZxVCiO3NA==
-Date: Fri, 21 Mar 2025 22:29:40 +0000
-From: sergeh@kernel.org
-To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Jan Stancek <jstancek@redhat.com>, Neal Gompa <neal@gompa.dev>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-kbuild@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-	llvm@lists.linux.dev, nkapron@google.com, teknoraver@meta.com,
-	roberto.sassu@huawei.com, xiyou.wangcong@gmail.com
-Subject: Re: [RFC PATCH security-next 1/4] security: Hornet LSM
-Message-ID: <Z93oVD96C3Cvc4ps@lei>
-References: <20250321164537.16719-1-bboscaccy@linux.microsoft.com>
- <20250321164537.16719-2-bboscaccy@linux.microsoft.com>
+	s=arc-20240116; t=1742598813; c=relaxed/simple;
+	bh=uFn9cls7wPw1ExWDyl25jEWNwCiGXwygOKPkcriR1wU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mDZZYb+mRnvLIKpuB9Vlz+NYEljoDlsl249Rf4u3ihrKFL1vll8RqFVSdiLrmAckyaeD9JVs7y2lwdYjzNgNd3NUtM42A6oz0/YRcrJFYENdy8vHTqq+zMDIl43irryyKv2ZXERlcswDapo0FGaY6Us1SwaH58SJ1r4YiCnEmcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hRNc6Zr+; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2240aad70f2so83345ad.0
+        for <bpf@vger.kernel.org>; Fri, 21 Mar 2025 16:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1742598810; x=1743203610; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FbvnD5haxTLytS47gBGUy0pWnlYckQ3OAvL7U1cwfUA=;
+        b=hRNc6Zr+J2FR/l+FdbH6+wHqEmNWj1AgvX/7VCBHNbn6TGlNtqjMPswbjvaENJvuHe
+         w5jQYuTqbMdCOJiNti3cDrUjdn7D83i+2oOfkNjKywerYNoNElg8oIgapMu18DnvEoYh
+         ik48aJHTiRvWDl4dkN25gIuEq0qK1ccIqolUEopL8p+I2usOgXRdCkHIxEjPbuawhr2a
+         pz9TnUnCkpyMV/p9TcnfYNTx5xLIqhYdigOkDZnTGqe7FGisvadvpRuqsH4kQ7xHx6eq
+         aHZS5DmkRQWwdaDn4pZaVu50h13iOoLteyObxOY/ytQOco4otttVVZx5lYMm/h9lBvn6
+         OR9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742598810; x=1743203610;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FbvnD5haxTLytS47gBGUy0pWnlYckQ3OAvL7U1cwfUA=;
+        b=DFqS3heepWGty1dZ03CZi2qRgCnx635fF4ZUddLVIdc5DCZyD7/XS6jBxU3CyZ79oF
+         UOkKHrgAucquzIL70ccq4ionTxoI/TpAXcBqNHxdQT02j5tkZPp6l1Sl/jt+U8RYJMd+
+         iny/3cW6otJdPGZ568lYdZlR4n3QYWZsBRdwJdVQfXLIGmMhlUMXOjJieg4/K8YzFHRa
+         6gHT+T8+wnmM571wabvDfVKbb8t9ieFVYa7N6vK9BFzPM/xopJ2ZdnDSqj9HuHoF9avS
+         0K/1Rm048BrItk8JC7Esd7YP7zo2+obNpG997qXSzVBwR+anolYQypplgHQhQ7HqDxbd
+         cWcg==
+X-Forwarded-Encrypted: i=1; AJvYcCXZanHZ9dAolvG0VBxvr5KRCzyZ00qAAlR6HwO/vJBvYM6FCynb2bltlOUiZ9r3Ykb6FZY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyr/On3hf64Eh1DW6ZBSsu5g/Lxcec5EA2co6FA28zUspa1j+CR
+	3CsUjyXrC9PVE5mMWT3raZDr7chxSqAhrHeHaIrnjH6xTDyafsagxO812EyMKvwwa0H+54Nak97
+	xXCtw2XfM/h69YuC6/DvD8e7Pa3etEgQyXsh0
+X-Gm-Gg: ASbGnctUBVuEu/LKaPKrPmp+Pkj5Tm/12Ppzuh+wKCZU0uM0ZOlThMUM97IiTuF4opl
+	z0y5y702LF2vSuOJgI8nfqbBEkkrzibz9CmD7rnzUmaOBGriQkNuEft5e/F1JXs24LBOw7tuU21
+	XvD1S7RpvTdMPSsFQgqN8vCsrOcL9lhy0lTiMPtFTQqIX31r2v4yRvduQ=
+X-Google-Smtp-Source: AGHT+IGJfNj+BTaeUb7CmreHUKO1/d5/Yp0KjN22BdNR7eOnswfJOKqQxGDzzhLFJBXAju2i6SyYA+NISPX0wGE5064=
+X-Received: by 2002:a17:903:234f:b0:21f:465d:c588 with SMTP id
+ d9443c01a7336-227982bcf17mr1141275ad.14.1742598809765; Fri, 21 Mar 2025
+ 16:13:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250321164537.16719-2-bboscaccy@linux.microsoft.com>
+References: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com> <20250314-page-pool-track-dma-v1-2-c212e57a74c2@redhat.com>
+In-Reply-To: <20250314-page-pool-track-dma-v1-2-c212e57a74c2@redhat.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Fri, 21 Mar 2025 16:13:17 -0700
+X-Gm-Features: AQ5f1Jr3pNjB7nwYsq0njhmiKzooW96U1O7ADhvC9S4zs33ypykXN0QQc-_3wro
+Message-ID: <CAHS8izNPLnbZ-M=367k7H6OYts7RXbcDpbrWy_p37=62LsYYcg@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/3] page_pool: Turn dma_sync and dma_sync_cpu
+ fields into a bitmap
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Yonglong Liu <liuyonglong@huawei.com>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>, 
+	Matthew Wilcox <willy@infradead.org>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 21, 2025 at 09:45:03AM -0700, Blaise Boscaccy wrote:
-> This adds the Hornet Linux Security Module which provides signature
-> verification of eBPF programs.
-> 
-> Hornet uses a similar signature verification scheme similar to that of
+On Fri, Mar 14, 2025 at 3:12=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <t=
+oke@redhat.com> wrote:
+>
+> Change the single-bit booleans for dma_sync into an unsigned long with
+> BIT() definitions so that a subsequent patch can write them both with a
+> singe WRITE_ONCE() on teardown. Also move the check for the sync_cpu
+> side into __page_pool_dma_sync_for_cpu() so it can be disabled for
+> non-netmem providers as well.
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-used 'similar' twice
+Reviewed-by: Mina Almasry <almasrymina@google.com>
 
-> kernel modules. A pkcs#7 signature is appended to the end of an
-> executable file. During an invocation of bpf_prog_load, the signature
-> is fetched from the current task's executable file. That signature is
-> used to verify the integrity of the bpf instructions and maps which
-> where passed into the kernel. Additionally, Hornet implicitly trusts any
-
-s/where/were
-
-> programs which where loaded from inside kernel rather than userspace,
-
-s/where/were
-
-> which allows BPF_PRELOAD programs along with outputs for BPF_SYSCALL
-> programs to run.
-> 
-> Hornet allows users to continue to maintain an invariant that all code
-> running inside of the kernel has been signed and works well with
-> light-skeleton based loaders, or any statically generated program that
-> doesn't require userspace instruction rewriting.
-> 
-> Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
 > ---
->  Documentation/admin-guide/LSM/Hornet.rst |  51 +++++
->  crypto/asymmetric_keys/pkcs7_verify.c    |  10 +
->  include/linux/kernel_read_file.h         |   1 +
->  include/linux/verification.h             |   1 +
->  include/uapi/linux/lsm.h                 |   1 +
->  security/Kconfig                         |   3 +-
->  security/Makefile                        |   1 +
->  security/hornet/Kconfig                  |  11 ++
->  security/hornet/Makefile                 |   4 +
->  security/hornet/hornet_lsm.c             | 239 +++++++++++++++++++++++
->  10 files changed, 321 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/admin-guide/LSM/Hornet.rst
->  create mode 100644 security/hornet/Kconfig
->  create mode 100644 security/hornet/Makefile
->  create mode 100644 security/hornet/hornet_lsm.c
-> 
-> diff --git a/Documentation/admin-guide/LSM/Hornet.rst b/Documentation/admin-guide/LSM/Hornet.rst
-> new file mode 100644
-> index 0000000000000..fa112412638f1
-> --- /dev/null
-> +++ b/Documentation/admin-guide/LSM/Hornet.rst
-> @@ -0,0 +1,51 @@
-> +======
-> +Hornet
-> +======
+>  include/net/page_pool/helpers.h | 6 +++---
+>  include/net/page_pool/types.h   | 8 ++++++--
+>  net/core/devmem.c               | 3 +--
+>  net/core/page_pool.c            | 9 +++++----
+>  4 files changed, 15 insertions(+), 11 deletions(-)
+>
+> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/help=
+ers.h
+> index 582a3d00cbe2315edeb92850b6a42ab21e509e45..7ed32bde4b8944deb7fb22e29=
+1e95b8487be681a 100644
+> --- a/include/net/page_pool/helpers.h
+> +++ b/include/net/page_pool/helpers.h
+> @@ -443,6 +443,9 @@ static inline void __page_pool_dma_sync_for_cpu(const=
+ struct page_pool *pool,
+>                                                 const dma_addr_t dma_addr=
+,
+>                                                 u32 offset, u32 dma_sync_=
+size)
+>  {
+> +       if (!(READ_ONCE(pool->dma_sync) & PP_DMA_SYNC_CPU))
+> +               return;
 > +
-> +Hornet is a Linux Security Module that provides signature verification
-> +for eBPF programs. This is selectable at build-time with
-> +``CONFIG_SECURITY_HORNET``.
+>         dma_sync_single_range_for_cpu(pool->p.dev, dma_addr,
+>                                       offset + pool->p.offset, dma_sync_s=
+ize,
+>                                       page_pool_get_dma_dir(pool));
+> @@ -473,9 +476,6 @@ page_pool_dma_sync_netmem_for_cpu(const struct page_p=
+ool *pool,
+>                                   const netmem_ref netmem, u32 offset,
+>                                   u32 dma_sync_size)
+>  {
+> -       if (!pool->dma_sync_for_cpu)
+> -               return;
+> -
+>         __page_pool_dma_sync_for_cpu(pool,
+>                                      page_pool_get_dma_addr_netmem(netmem=
+),
+>                                      offset, dma_sync_size);
+
+I think moving the check to __page_pool_dma_sync_for_cpu is fine, but
+I would have preferred to keep it as-is actually.
+
+I think if we're syncing netmem we should check dma_sync_for_cpu,
+because the netmem may not be dma-syncable. But for pages, they will
+likely always be dma-syncable. Some driver may have opted to do a perf
+optimizations by calling __page_pool_dma_sync_for_cpu on a dma-addr
+that it knows came from a page to save some cycles of netmem checking.
+
+> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.=
+h
+> index df0d3c1608929605224feb26173135ff37951ef8..fbe34024b20061e8bcd1d4474=
+f6ebfc70992f1eb 100644
+> --- a/include/net/page_pool/types.h
+> +++ b/include/net/page_pool/types.h
+> @@ -33,6 +33,10 @@
+>  #define PP_FLAG_ALL            (PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV |=
+ \
+>                                  PP_FLAG_SYSTEM_POOL | PP_FLAG_ALLOW_UNRE=
+ADABLE_NETMEM)
+>
+> +/* bit values used in pp->dma_sync */
+> +#define PP_DMA_SYNC_DEV        BIT(0)
+> +#define PP_DMA_SYNC_CPU        BIT(1)
 > +
-> +Overview
-> +========
-> +
-> +Hornet provides signature verification for eBPF programs by utilizing
-> +the existing PKCS#7 infrastructure that's used for module signature
-> +verification. Hornet works by creating a buffer containing the eBPF
-> +program instructions along with its associated maps and checking a
-> +signature against that buffer. The signature is appended to the end of
-> +the lskel executable file and is extracted at runtime via
-> +get_task_exe_file. Hornet works by hooking into the
-> +security_bpf_prog_load hook. Load invocations that originate from the
-> +kernel (bpf preload, results of bpf_syscall programs, etc.) are
-> +allowed to run unconditionally. Calls that originate from userspace
-> +require signature verification. If signature verification fails, the
-> +program will fail to load.
-> +
-> +Instruction/Map Ordering
-> +========================
-> +
-> +Hornet supports both sparse-array based maps via map discovery along
-> +with the newly added fd_array_cnt API for continuous map arrays. The
-> +buffer used for signature verification is assumed to be the
-> +instructions followed by all maps used, ordered by their index in
-> +fd_array.
-> +
-> +Tooling
-> +=======
-> +
-> +Some tooling is provided to aid with the development of signed eBPF lskels.
-> +
-> +extract-skel.sh
-> +---------------
-> +
-> +This simple shell script extracts the instructions and map data used
-> +by the light skeleton from the autogenerated header file created by
-> +bpftool.
-> +
-> +sign-ebpf
-> +---------
-> +
-> +sign-ebpf works similarly to the sign-file script with one key
-> +difference: it takes a separate input binary used for signature
-> +verification and will append the signature to a different output file.
-> diff --git a/crypto/asymmetric_keys/pkcs7_verify.c b/crypto/asymmetric_keys/pkcs7_verify.c
-> index f0d4ff3c20a83..1a5fbb3612188 100644
-> --- a/crypto/asymmetric_keys/pkcs7_verify.c
-> +++ b/crypto/asymmetric_keys/pkcs7_verify.c
-> @@ -428,6 +428,16 @@ int pkcs7_verify(struct pkcs7_message *pkcs7,
->  		}
->  		/* Authattr presence checked in parser */
->  		break;
-> +	case VERIFYING_EBPF_SIGNATURE:
-> +		if (pkcs7->data_type != OID_data) {
-> +			pr_warn("Invalid ebpf sig (not pkcs7-data)\n");
-> +			return -EKEYREJECTED;
-> +		}
-> +		if (pkcs7->have_authattrs) {
-> +			pr_warn("Invalid ebpf sig (has authattrs)\n");
-> +			return -EKEYREJECTED;
-> +		}
-> +		break;
->  	case VERIFYING_UNSPECIFIED_SIGNATURE:
->  		if (pkcs7->data_type != OID_data) {
->  			pr_warn("Invalid unspecified sig (not pkcs7-data)\n");
-> diff --git a/include/linux/kernel_read_file.h b/include/linux/kernel_read_file.h
-> index 90451e2e12bd1..7ed9337be5423 100644
-> --- a/include/linux/kernel_read_file.h
-> +++ b/include/linux/kernel_read_file.h
-> @@ -14,6 +14,7 @@
->  	id(KEXEC_INITRAMFS, kexec-initramfs)	\
->  	id(POLICY, security-policy)		\
->  	id(X509_CERTIFICATE, x509-certificate)	\
-> +	id(EBPF, ebpf)				\
->  	id(MAX_ID, )
->  
->  #define __fid_enumify(ENUM, dummy) READING_ ## ENUM,
-> diff --git a/include/linux/verification.h b/include/linux/verification.h
-> index 4f3022d081c31..812be8ad5f744 100644
-> --- a/include/linux/verification.h
-> +++ b/include/linux/verification.h
-> @@ -35,6 +35,7 @@ enum key_being_used_for {
->  	VERIFYING_KEXEC_PE_SIGNATURE,
->  	VERIFYING_KEY_SIGNATURE,
->  	VERIFYING_KEY_SELF_SIGNATURE,
-> +	VERIFYING_EBPF_SIGNATURE,
->  	VERIFYING_UNSPECIFIED_SIGNATURE,
->  	NR__KEY_BEING_USED_FOR
->  };
-> diff --git a/include/uapi/linux/lsm.h b/include/uapi/linux/lsm.h
-> index 938593dfd5daf..2ff9bcdd551e2 100644
-> --- a/include/uapi/linux/lsm.h
-> +++ b/include/uapi/linux/lsm.h
-> @@ -65,6 +65,7 @@ struct lsm_ctx {
->  #define LSM_ID_IMA		111
->  #define LSM_ID_EVM		112
->  #define LSM_ID_IPE		113
-> +#define LSM_ID_HORNET		114
->  
 >  /*
->   * LSM_ATTR_XXX definitions identify different LSM attributes
-> diff --git a/security/Kconfig b/security/Kconfig
-> index f10dbf15c2947..0030f0224c7ab 100644
-> --- a/security/Kconfig
-> +++ b/security/Kconfig
-> @@ -230,6 +230,7 @@ source "security/safesetid/Kconfig"
->  source "security/lockdown/Kconfig"
->  source "security/landlock/Kconfig"
->  source "security/ipe/Kconfig"
-> +source "security/hornet/Kconfig"
->  
->  source "security/integrity/Kconfig"
->  
-> @@ -273,7 +274,7 @@ config LSM
->  	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,ipe,bpf" if DEFAULT_SECURITY_APPARMOR
->  	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,ipe,bpf" if DEFAULT_SECURITY_TOMOYO
->  	default "landlock,lockdown,yama,loadpin,safesetid,ipe,bpf" if DEFAULT_SECURITY_DAC
-> -	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,ipe,bpf"
-> +	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,ipe,hornet,bpf"
->  	help
->  	  A comma-separated list of LSMs, in initialization order.
->  	  Any LSMs left off this list, except for those with order
-> diff --git a/security/Makefile b/security/Makefile
-> index 22ff4c8bd8cec..e24bccd951f88 100644
-> --- a/security/Makefile
-> +++ b/security/Makefile
-> @@ -26,6 +26,7 @@ obj-$(CONFIG_CGROUPS)			+= device_cgroup.o
->  obj-$(CONFIG_BPF_LSM)			+= bpf/
->  obj-$(CONFIG_SECURITY_LANDLOCK)		+= landlock/
->  obj-$(CONFIG_SECURITY_IPE)		+= ipe/
-> +obj-$(CONFIG_SECURITY_HORNET)		+= hornet/
->  
->  # Object integrity file lists
->  obj-$(CONFIG_INTEGRITY)			+= integrity/
-> diff --git a/security/hornet/Kconfig b/security/hornet/Kconfig
-> new file mode 100644
-> index 0000000000000..19406aa237ac6
-> --- /dev/null
-> +++ b/security/hornet/Kconfig
-> @@ -0,0 +1,11 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +config SECURITY_HORNET
-> +	bool "Hornet support"
-> +	depends on SECURITY
-> +	default n
-> +	help
-> +	  This selects Hornet.
-> +	  Further information can be found in
-> +	  Documentation/admin-guide/LSM/Hornet.rst.
+>   * Fast allocation side cache array/stack
+>   *
+> @@ -175,12 +179,12 @@ struct page_pool {
+>
+>         bool has_init_callback:1;       /* slow::init_callback is set */
+>         bool dma_map:1;                 /* Perform DMA mapping */
+> -       bool dma_sync:1;                /* Perform DMA sync for device */
+> -       bool dma_sync_for_cpu:1;        /* Perform DMA sync for cpu */
+>  #ifdef CONFIG_PAGE_POOL_STATS
+>         bool system:1;                  /* This is a global percpu pool *=
+/
+>  #endif
+>
+> +       unsigned long dma_sync;
 > +
-> +	  If you are unsure how to answer this question, answer N.
-> diff --git a/security/hornet/Makefile b/security/hornet/Makefile
-> new file mode 100644
-> index 0000000000000..79f4657b215fa
-> --- /dev/null
-> +++ b/security/hornet/Makefile
-> @@ -0,0 +1,4 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +obj-$(CONFIG_SECURITY_HORNET) := hornet.o
-> +
-> +hornet-y := hornet_lsm.o
-> diff --git a/security/hornet/hornet_lsm.c b/security/hornet/hornet_lsm.c
-> new file mode 100644
-> index 0000000000000..3616c68b76fbc
-> --- /dev/null
-> +++ b/security/hornet/hornet_lsm.c
-> @@ -0,0 +1,239 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Hornet Linux Security Module
-> + *
-> + * Author: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-> + *
-> + * Copyright (C) 2025 Microsoft Corporation
-> + */
-> +
-> +#include <linux/lsm_hooks.h>
-> +#include <uapi/linux/lsm.h>
-> +#include <linux/bpf.h>
-> +#include <linux/verification.h>
-> +#include <crypto/public_key.h>
-> +#include <linux/module_signature.h>
-> +#include <crypto/pkcs7.h>
-> +#include <linux/bpf_verifier.h>
-> +#include <linux/sort.h>
-> +
-> +#define EBPF_SIG_STRING "~eBPF signature appended~\n"
-> +
-> +struct hornet_maps {
-> +	u32 used_idx[MAX_USED_MAPS];
-> +	u32 used_map_cnt;
-> +	bpfptr_t fd_array;
-> +};
-> +
-> +static int cmp_idx(const void *a, const void *b)
-> +{
-> +	return *(const u32 *)a - *(const u32 *)b;
-> +}
-> +
-> +static int add_used_map(struct hornet_maps *maps, int idx)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < maps->used_map_cnt; i++)
-> +		if (maps->used_idx[i] == idx)
-> +			return i;
-> +
-> +	if (maps->used_map_cnt >= MAX_USED_MAPS)
-> +		return -E2BIG;
-> +
-> +	maps->used_idx[maps->used_map_cnt] = idx;
-> +	return maps->used_map_cnt++;
-> +}
-> +
-> +static int hornet_find_maps(struct bpf_prog *prog, struct hornet_maps *maps)
-> +{
-> +	struct bpf_insn *insn = prog->insnsi;
-> +	int insn_cnt = prog->len;
-> +	int i;
-> +	int err;
-> +
-> +	for (i = 0; i < insn_cnt; i++, insn++) {
-> +		if (insn[0].code == (BPF_LD | BPF_IMM | BPF_DW)) {
-> +			switch (insn[0].src_reg) {
-> +			case BPF_PSEUDO_MAP_IDX_VALUE:
-> +			case BPF_PSEUDO_MAP_IDX:
-> +				err = add_used_map(maps, insn[0].imm);
-> +				if (err < 0)
-> +					return err;
-> +				break;
-> +			default:
-> +				break;
-> +			}
-> +		}
-> +	}
-> +	/* Sort the spare-array indices. This should match the map ordering used during
-> +	 * signature generation
-> +	 */
-> +	sort(maps->used_idx, maps->used_map_cnt, sizeof(*maps->used_idx),
-> +	     cmp_idx, NULL);
-> +
-> +	return 0;
-> +}
-> +
-> +static int hornet_populate_fd_array(struct hornet_maps *maps, u32 fd_array_cnt)
-> +{
-> +	int i;
-> +
-> +	if (fd_array_cnt > MAX_USED_MAPS)
-> +		return -E2BIG;
-> +
-> +	for (i = 0; i < fd_array_cnt; i++)
-> +		maps->used_idx[i] = i;
-> +
-> +	maps->used_map_cnt = fd_array_cnt;
-> +	return 0;
-> +}
-> +
-> +/* kern_sys_bpf is declared as an EXPORT_SYMBOL in kernel/bpf/syscall.c, however no definition is
-> + * provided in any bpf header files. If/when this function has a proper definition provided
-> + * somewhere this declaration should be removed
-> + */
-> +int kern_sys_bpf(int cmd, union bpf_attr *attr, unsigned int size);
-> +
-> +static int hornet_verify_lskel(struct bpf_prog *prog, struct hornet_maps *maps,
-> +			       void *sig, size_t sig_len)
-> +{
-> +	int fd;
-> +	u32 i;
-> +	void *buf;
-> +	void *new;
-> +	size_t buf_sz;
-> +	struct bpf_map *map;
-> +	int err = 0;
-> +	int key = 0;
-> +	union bpf_attr attr = {0};
-> +
-> +	buf = kmalloc_array(prog->len, sizeof(struct bpf_insn), GFP_KERNEL);
-> +	if (!buf)
-> +		return -ENOMEM;
-> +	buf_sz = prog->len * sizeof(struct bpf_insn);
-> +	memcpy(buf, prog->insnsi, buf_sz);
-> +
-> +	for (i = 0; i < maps->used_map_cnt; i++) {
-> +		err = copy_from_bpfptr_offset(&fd, maps->fd_array,
-> +					      maps->used_idx[i] * sizeof(fd),
-> +					      sizeof(fd));
-> +		if (err < 0)
-> +			continue;
-> +		if (fd < 1)
-> +			continue;
-> +
-> +		map = bpf_map_get(fd);
-> +		if (IS_ERR(map))
-> +			continue;
-> +
-> +		/* don't allow userspace to change map data used for signature verification */
-> +		if (!map->frozen) {
-> +			attr.map_fd = fd;
-> +			err = kern_sys_bpf(BPF_MAP_FREEZE, &attr, sizeof(attr));
-> +			if (err < 0)
-> +				goto out;
-> +		}
-> +
-> +		new = krealloc(buf, buf_sz + map->value_size, GFP_KERNEL);
-> +		if (!new) {
-> +			err = -ENOMEM;
-> +			goto out;
-> +		}
-> +		buf = new;
-> +		new = map->ops->map_lookup_elem(map, &key);
-> +		if (!new) {
-> +			err = -ENOENT;
-> +			goto out;
-> +		}
-> +		memcpy(buf + buf_sz, new, map->value_size);
-> +		buf_sz += map->value_size;
-> +	}
-> +
-> +	err = verify_pkcs7_signature(buf, buf_sz, sig, sig_len,
-> +				     VERIFY_USE_SECONDARY_KEYRING,
-> +				     VERIFYING_EBPF_SIGNATURE,
-> +				     NULL, NULL);
-> +out:
-> +	kfree(buf);
-> +	return err;
-> +}
-> +
-> +static int hornet_check_binary(struct bpf_prog *prog, union bpf_attr *attr,
-> +			       struct hornet_maps *maps)
-> +{
-> +	struct file *file = get_task_exe_file(current);
-> +	const unsigned long markerlen = sizeof(EBPF_SIG_STRING) - 1;
-> +	void *buf = NULL;
-> +	size_t sz = 0, sig_len, prog_len, buf_sz;
-> +	int err = 0;
-> +	struct module_signature sig;
-> +
-> +	buf_sz = kernel_read_file(file, 0, &buf, INT_MAX, &sz, READING_EBPF);
-> +	fput(file);
-> +	if (!buf_sz)
-> +		return -1;
-> +
-> +	prog_len = buf_sz;
-> +
-> +	if (prog_len > markerlen &&
-> +	    memcmp(buf + prog_len - markerlen, EBPF_SIG_STRING, markerlen) == 0)
-> +		prog_len -= markerlen;
-> +
-> +	memcpy(&sig, buf + (prog_len - sizeof(sig)), sizeof(sig));
-> +	sig_len = be32_to_cpu(sig.sig_len);
-> +	prog_len -= sig_len + sizeof(sig);
-> +
-> +	err = mod_check_sig(&sig, prog->len * sizeof(struct bpf_insn), "ebpf");
-> +	if (err)
-> +		return err;
-> +	return hornet_verify_lskel(prog, maps, buf + prog_len, sig_len);
-> +}
-> +
-> +static int hornet_check_signature(struct bpf_prog *prog, union bpf_attr *attr,
-> +				  struct bpf_token *token, bool is_kernel)
+>         __cacheline_group_begin_aligned(frag, PAGE_POOL_FRAG_GROUP_ALIGN)=
+;
+>         long frag_users;
+>         netmem_ref frag_page;
+> diff --git a/net/core/devmem.c b/net/core/devmem.c
+> index 7c6e0b5b6acb55f376ec725dfb71d1f70a4320c3..16e43752566feb510b3e47fbe=
+c2d8da0f26a6adc 100644
+> --- a/net/core/devmem.c
+> +++ b/net/core/devmem.c
+> @@ -337,8 +337,7 @@ int mp_dmabuf_devmem_init(struct page_pool *pool)
+>         /* dma-buf dma addresses do not need and should not be used with
+>          * dma_sync_for_cpu/device. Force disable dma_sync.
+>          */
+> -       pool->dma_sync =3D false;
+> -       pool->dma_sync_for_cpu =3D false;
+> +       pool->dma_sync =3D 0;
+>
+>         if (pool->p.order !=3D 0)
+>                 return -E2BIG;
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index acef1fcd8ddcfd1853a6f2055c1f1820ab248e8d..d51ca4389dd62d8bc266a9a2b=
+792838257173535 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -203,7 +203,7 @@ static int page_pool_init(struct page_pool *pool,
+>         memcpy(&pool->slow, &params->slow, sizeof(pool->slow));
+>
+>         pool->cpuid =3D cpuid;
+> -       pool->dma_sync_for_cpu =3D true;
+> +       pool->dma_sync =3D PP_DMA_SYNC_CPU;
+>
 
-It's a little confusing that you are passing is_kernel in here, when the
-only caller will always pass in true.  Is there a good reason not to
-drop the arg here and pass 'true' in to make_bpfptr().  Of course, then
-people will ask why not define an IS_KERNEL to true as passing true to
-second argument is cryptic...  Maybe you just can't win here :)
+More pedantically this should have been pool->dma_sync |=3D
+PP_DMA_SYNC_CPU, but it doesn't matter since this variable is 0
+initialized I think.
 
-> +{
-> +	struct hornet_maps maps = {0};
-> +	int err;
-> +
-> +	/* support both sparse arrays and explicit continuous arrays of map fds */
-> +	if (attr->fd_array_cnt)
-> +		err = hornet_populate_fd_array(&maps, attr->fd_array_cnt);
-> +	else
-> +		err = hornet_find_maps(prog, &maps);
-> +
-> +	if (err < 0)
-> +		return err;
-> +
-> +	maps.fd_array = make_bpfptr(attr->fd_array, is_kernel);
-> +	return hornet_check_binary(prog, attr, &maps);
-> +}
-> +
-> +static int hornet_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
-> +				struct bpf_token *token, bool is_kernel)
-> +{
-> +	if (is_kernel)
-> +		return 0;
-> +	return hornet_check_signature(prog, attr, token, is_kernel);
-> +}
-> +
-> +static struct security_hook_list hornet_hooks[] __ro_after_init = {
-> +	LSM_HOOK_INIT(bpf_prog_load, hornet_bpf_prog_load),
-> +};
-> +
-> +static const struct lsm_id hornet_lsmid = {
-> +	.name = "hornet",
-> +	.id = LSM_ID_HORNET,
-> +};
-> +
-> +static int __init hornet_init(void)
-> +{
-> +	pr_info("Hornet: eBPF signature verification enabled\n");
-> +	security_add_hooks(hornet_hooks, ARRAY_SIZE(hornet_hooks), &hornet_lsmid);
-> +	return 0;
-> +}
-> +
-> +DEFINE_LSM(hornet) = {
-> +	.name = "hornet",
-> +	.init = hornet_init,
-> +};
-> -- 
-> 2.48.1
-> 
+
+--
+Thanks,
+Mina
 
