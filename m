@@ -1,120 +1,121 @@
-Return-Path: <bpf+bounces-54537-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54538-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95120A6B8EC
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 11:40:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB82BA6B969
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 12:02:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E70EA3AFB3E
-	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 10:40:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44EDF19C0D9C
+	for <lists+bpf@lfdr.de>; Fri, 21 Mar 2025 11:01:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 760B921D3DC;
-	Fri, 21 Mar 2025 10:40:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ACBD221578;
+	Fri, 21 Mar 2025 11:00:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TETQ1dQm"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="OlqUSf95"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E916214A74;
-	Fri, 21 Mar 2025 10:40:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6FDE1EFF93;
+	Fri, 21 Mar 2025 11:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742553635; cv=none; b=pM6uFmIe/f7xmRydYxAvkrm4es7q3yM7c4QY9+wnoNDcqyi6sjzdv6U6bHCFqhLIpRl0fZyHpWPpsjUelvqP8may9dkqvx8U4Lj4potBspW6iWxPgeOewh2uxP47x1Il8WjX2tiq3+afDbNOi97xGPyi2JlBX5B/4rcWdrtR1MQ=
+	t=1742554846; cv=none; b=trT785JwcNiivPoTjNEapasQwzfBum+l9uW8jDJgkcVENzeNGriOds6Ni6FEeMdTi+bdKOtlCArdNmswE0Hg1Q8PM8fI7KRH4ZfpqX4txqEGmv9R2aajTZVa5tACsgOWTFQCNaJLdXKavpsiHqP6kaz3wN3jJt22+3Rv5si4c54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742553635; c=relaxed/simple;
-	bh=Iue1Lgh81S/J+D/jTnJX8H2KzZOJHRiThoffvR/VuQI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ujq0BIf8NIwFz7R4tJ/uWRvJzsUZJXR7eE+5jgEJMMHSC/RIOQma2dr/KxDOgHRiXYZ/Xy7z715zl/goQwnfDhemYTu8RWsS0yy1JlJaEt4gMuy05BnleohUQBdxkVX0q34tFAIja6cZJG3dHkJvmwRNYDm3NnZGYivdI8wqdfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TETQ1dQm; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-22438c356c8so34256025ad.1;
-        Fri, 21 Mar 2025 03:40:33 -0700 (PDT)
+	s=arc-20240116; t=1742554846; c=relaxed/simple;
+	bh=6uAh4DyA5uukHlSVeiMOu2AM5c0+OP6b6mRrd4u9TSc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IwAFuVYzw6yIAcyMw3VfB8mlyidHiWQAPB7pCEJZzL+DkglEsckNw64iVPIl0aQZmOd0jG2pCXKmU1NgIMsfJ/qZldvFHyHc7thQtvqM1iVWjf8EHjI6WcgKxEc1aLqCV90d7C0XRj+k9Hy/jJW/dEZsRWwpIWoej3YPwJOzwWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=OlqUSf95; arc=none smtp.client-ip=52.119.213.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742553633; x=1743158433; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CGN8+jyuXdIKgFC5SmamsVca/i/p3bqkMBsaF9BgFCA=;
-        b=TETQ1dQmGc5fyWDQ0AoFdS/VJ3B+DFzmyAw9LqCr6uFECaH/Ik0bn42y6tf4n3BCK6
-         dN4P/zw7kfCmn2j+zevxRcPwpyURew/cvGXcdxbG8RWHN31Bg52GfO0IcayupPCI0mlK
-         ZJbCvE/9S6nV9LMHe6esrunMEn7I1TTyGyBKc8TbAuyIefRknZr4dPQBK0WBFwXSUTDA
-         l3i1YLdsdbHKJ84ms4EAYxnuaO4++2U03Zlbjcp0EoQq3pxwPn1WFmueOQp5Vn5Kcce4
-         1zPG68hPIa2IeAO9DNDQgbZbPELiDHDhdXY8L2od55E8yV0an2EtQNFb8Y2JJjA6tI2q
-         4I/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742553633; x=1743158433;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CGN8+jyuXdIKgFC5SmamsVca/i/p3bqkMBsaF9BgFCA=;
-        b=JVtn8KCJXnRrb6Dxjf7K+K7LV0aYUn2rHR0i4c9i+lEaiFAAOjQ16n4BCcPmpTkIol
-         esJuD/pXBov1dk1h9IC37NzJtKkNaH4MV/BgJNDiosNN8O0yMfhnKy5LuvatCXjlYbyf
-         eV6ytwWk+dgsAZRXZVDW6jejguYLELIsxE2VUClf4lbLr16ZE6uO+rnv7TCuor9mWbC9
-         5ioDyn2++cNAnioxkKnBxIsrFv5dhRDpIpoGiZlRxOzAys7AJl4Btu/w5WXbYeDxScs9
-         U4Zn8ytTvbYWfQTSjV7tduuCWsTFPca+OK5Phz3Yxv/ZGtz56NvDr9p1bCWpOFyiE3TS
-         vJeg==
-X-Forwarded-Encrypted: i=1; AJvYcCU9R7zOH6agFnsETQzrxGIBZ65IS7gXG2HBqUZ9IZ+eCGSiDEibFvpNHqDm2X4yDg8oBQU=@vger.kernel.org, AJvYcCVBr2eF+finjnVXdcNXY/HIRWSsA9902s0FQeLVbFS3OnuuPDtPO9SI2yABXKYszNyWSXZ+xFdenxls3MoO@vger.kernel.org, AJvYcCXNJv/rt61AjdOB6Xe72/XwPTUo6FfhhCjaPQRzX+rNFBbkUBrk+SzHd+BTYKfVP++Mxl4K4Z/6ldjRwCTp2SrZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbEw53wIrXi1fAed1QDWmhOlQ7WvyIA1DRE2zFusgcElgNFP34
-	fqh/UEv2B/Uw5h+XngfQpOq8eJ8ySjWxm6cgJIHK+iCPiNRTaLPl
-X-Gm-Gg: ASbGncs7W13o91wPJ4P0HUslLPZm5tLQNwFmTQnfBy9YnyEkMbyRIPdw3LE16RMVG2M
-	uH/mJRWSN3IQ6YOL3/4Cp6sSnsLRklNeSUW60tXdYSBb7rAK2MvTAgcNFPny6D2KApI34i4H8MV
-	8tVuYZb3C3PlAlJ6uL6zaP2FEFgCmGtnAAIrYMBfMR3s+qiU8RkjyGgaLl7VYzG6+XYLKMu/olo
-	3GnrmV6/M2pnMeZUBubm8zAuLKQBlLHx5M1Ywp+dwJw4oTtSuAXHDcazSh/KHj7ardM8Re/jCWC
-	h/EZjLvOStExmK/S4r2QRb3jBv5IbGGztLzmQwhEDVtS8p4C5Q==
-X-Google-Smtp-Source: AGHT+IE5d61IKdQUVqIuK3tZPZAqsdBa4ZBvtIiT+3a8/1I1RIjBnF97317bCAJX5B/9SMIXdU1Dcw==
-X-Received: by 2002:a17:902:d484:b0:223:6657:5003 with SMTP id d9443c01a7336-22780e121cemr46814965ad.32.1742553632721;
-        Fri, 21 Mar 2025 03:40:32 -0700 (PDT)
-Received: from fedora ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22780f3b40esm13292215ad.12.2025.03.21.03.40.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Mar 2025 03:40:32 -0700 (PDT)
-Date: Fri, 21 Mar 2025 10:40:25 +0000
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Phil Sutter <phil@nwl.cc>, "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Simon Horman <horms@kernel.org>, Florian Westphal <fw@strlen.de>,
-	Petr Mladek <pmladek@suse.com>,
-	Yoann Congal <yoann.congal@smile.fr>, wireguard@lists.zx2c4.com,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv4 RESEND net-next 2/2] selftests: wireguard: update to
- using nft for qemu test
-Message-ID: <Z91CGRP9QLdZONiZ@fedora>
-References: <20250106081043.2073169-1-liuhangbin@gmail.com>
- <20250106081043.2073169-3-liuhangbin@gmail.com>
- <Z9rtrVk-15Ts_BNp@zx2c4.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1742554844; x=1774090844;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CTNB5uKYjZrRcQPF588LU6kSYhvG/6lODUqFhdJSlYA=;
+  b=OlqUSf95qltghDWT8Dnhwyz5jokZpkS5Am0Swa3WK8U7T3edZBqorIjd
+   VXAvZSEtgfa7yyDpTJB/jykYNefaQA/SCvE3OyQ0EppUR4DsUfA6eipCi
+   WYf8AphHhGcp/DeAXQ2JA76Y+GjjvsZ+Dd8ElKAwHVuufsmKlR9tr5v+m
+   M=;
+X-IronPort-AV: E=Sophos;i="6.14,264,1736812800"; 
+   d="scan'208";a="76445985"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2025 11:00:35 +0000
+Received: from EX19MTAUWB002.ant.amazon.com [10.0.21.151:21421]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.56.45:2525] with esmtp (Farcaster)
+ id fd6e5c18-c6d0-4c15-95d3-d7e47153aa11; Fri, 21 Mar 2025 11:00:33 +0000 (UTC)
+X-Farcaster-Flow-ID: fd6e5c18-c6d0-4c15-95d3-d7e47153aa11
+Received: from EX19D003ANC003.ant.amazon.com (10.37.240.197) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Fri, 21 Mar 2025 11:00:32 +0000
+Received: from b0be8375a521.amazon.com (10.37.244.8) by
+ EX19D003ANC003.ant.amazon.com (10.37.240.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Fri, 21 Mar 2025 11:00:26 +0000
+From: Kohei Enju <enjuk@amazon.com>
+To: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, "Andrii
+ Nakryiko" <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+	"Eduard Zingerman" <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
+ Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+	<jolsa@kernel.org>, Peilin Ye <yepeilin@google.com>, Ilya Leoshkevich
+	<iii@linux.ibm.com>, Kuniyuki Iwashima <kuniyu@amazon.com>,
+	<kohei.enju@gmail.com>, Kohei Enju <enjuk@amazon.com>,
+	<syzbot+a5964227adc0f904549c@syzkaller.appspotmail.com>
+Subject: [PATCH v2 bpf-next 0/2] bpf: Fix OOB read and add tests for load-acquire/store-release
+Date: Fri, 21 Mar 2025 19:59:00 +0900
+Message-ID: <20250321110010.95217-4-enjuk@amazon.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z9rtrVk-15Ts_BNp@zx2c4.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D043UWC003.ant.amazon.com (10.13.139.240) To
+ EX19D003ANC003.ant.amazon.com (10.37.240.197)
 
-Hi Jason, Phil,
-On Wed, Mar 19, 2025 at 05:15:41PM +0100, Jason A. Donenfeld wrote:
-> On Mon, Jan 06, 2025 at 08:10:43AM +0000, Hangbin Liu wrote:
-> > +	echo "file /bin/nft $(NFTABLES_PATH)/src/nft 755 0 0" >> $@
-> > +	echo "file /lib/libmnl.so.0 $(TOOLCHAIN_PATH)/lib/libmnl.so.0 755 0 0" >> $@
-> > +	echo "file /lib/libnftnl.so.11 $(TOOLCHAIN_PATH)/lib/libnftnl.so.11 755 0 0" >> $@
-> 
-> Can't these be statically linked into the nft binary?
+This patch series addresses an out-of-bounds read issue in 
+check_atomic_load/store() reported by syzkaller when an invalid register 
+number (MAX_BPF_REG or greater) is used.
 
-If I omit these, I will got error like
+The first patch fixes the actual bug by changing the order of validity 
+checks, ensuring register validity is checked before atomic_ptr_type_ok() 
+is called.
+It also updates some tests that were assuming the previous order of checks.
 
-mnl_attr_put: symbol not found
+The second patch adds new tests specifically for the invalid register 
+number case to prevent regression in the future.
 
-Even though I set `--enable-static` in nft build.
+Changes:
+  v2: 
+    - Just swap atomic_ptr_type_ok() and check_load_mem()/check_store_reg()
+    - Update some tests that were assuming the previous order of checks
+    - Add new tests specifically for the invalid register number
+  v1: https://lore.kernel.org/bpf/20250314195619.23772-2-enjuk@amazon.com/
 
-Do you know what's the reason?
+Reported-by: syzbot+a5964227adc0f904549c@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=a5964227adc0f904549c
 
-Thanks
-Hangbin
+Kohei Enju (2):
+  bpf: Fix out-of-bounds read in check_atomic_load/store()
+  selftests/bpf: Add selftests for load-acquire/store-release when
+    register number is invalid
+
+ kernel/bpf/verifier.c                         | 16 +++++++++--
+ .../bpf/progs/verifier_load_acquire.c         | 26 +++++++++++++++--
+ .../bpf/progs/verifier_store_release.c        | 28 +++++++++++++++++--
+ 3 files changed, 63 insertions(+), 7 deletions(-)
+
+-- 
+2.49.0
+
 
