@@ -1,159 +1,148 @@
-Return-Path: <bpf+bounces-54567-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54568-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD483A6C79F
-	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 05:55:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27935A6C8AF
+	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 10:26:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 979A81B61C3E
-	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 04:55:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5566189BA6A
+	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 09:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D801519A0;
-	Sat, 22 Mar 2025 04:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504AE1EB18D;
+	Sat, 22 Mar 2025 09:25:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="BW/JDLy3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q8j/zwb0"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93782E339B;
-	Sat, 22 Mar 2025 04:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.188.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 784341E9907;
+	Sat, 22 Mar 2025 09:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742619303; cv=none; b=ZbTmaicqOY2sAObXLIyzjfXL5vwxdvRGwlALQdC/HJ4tbLZL9+vuoFcNwFyb5BUPqjyu5Eto8iTwJtYaysJg6a/ktQzJDiSpgimbuWo67CvJmACFPntYUmeGFMdwahLHNba0hffcBVabJIuTBRnxAdNge7fGlzj2XFCwqcUzOj0=
+	t=1742635528; cv=none; b=JirsG45PXTKQWCkXWP6huHEx8nXCilxa+tCxIP6mr8A5zT8vu25RwEGK6PtV0a6ju8aCrDlixV0uUBqZavONxGpkbKhKgMBlQwI6J40EB4OUezzpgZkfBcBMLcab12GELHsqqztDa56JqEyhQIYi8yndY4ptiqNRCW7gJAwTkEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742619303; c=relaxed/simple;
-	bh=/BANrqohcaH8gkslBYw6uDTdmQqSYjo1r5cLL91blqs=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aiZQ+cjzf4m0ZqZeAbzsl/C1WvZr0oDwD1cUh5wEz8fJ24SiHp9TAw2P97KTZdx4x8TsDdWsA20eePE4tspx1JuMVEgeIL1r5+Co2A3LXoQYkzFe38/7sEToVVMkJAuoFcjcAuKpN0fkUGXTrMSDCx4x4DanwYWlcUyDXnUx64E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=BW/JDLy3; arc=none smtp.client-ip=207.171.188.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+	s=arc-20240116; t=1742635528; c=relaxed/simple;
+	bh=zXysE9+eZmHFbPbkVxXeKnl96KXqFxCLHJZD2dVakVY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CEfsrOHomYbLxnl6rvW2F/Y5R7NBhBnE+Y0ASprgci069o1J1BKpZC6jQ9YynnCQGEkh4+pzAlEuuJWeQ95BIIST+/K2k6QhHMP0qgCeS5C6L+ibusbrsA0Vk1pxM6X95eQoVNVYs88obU9NTllyrVUW86N0A87cm2KC9Myn8aY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q8j/zwb0; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2239c066347so65130835ad.2;
+        Sat, 22 Mar 2025 02:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1742619302; x=1774155302;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=alxkgRk2YP28x0I/t2md9n8GWPrTMSHqZ0tB261Lni8=;
-  b=BW/JDLy3OYSQrs9dclWKArGFP5LhJH735mgNkpgKunlWHyAN0YgA5rxf
-   UmeyMJi8mchsB0JM5uNd+0lcf2TEiGb7EYuGP+xDvagoqMbHUFImIk91n
-   jOKzJDrM6nkipI8BmyEA6k9vFTKKJIiYee36CNNfe6eMW/509hpE0+oUr
-   w=;
-X-IronPort-AV: E=Sophos;i="6.14,266,1736812800"; 
-   d="scan'208";a="809617375"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
-  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2025 04:54:56 +0000
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.21.151:46446]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.20.119:2525] with esmtp (Farcaster)
- id 9103bcaa-3a54-4c78-b770-cb9e249cbf13; Sat, 22 Mar 2025 04:54:56 +0000 (UTC)
-X-Farcaster-Flow-ID: 9103bcaa-3a54-4c78-b770-cb9e249cbf13
-Received: from EX19D003ANC003.ant.amazon.com (10.37.240.197) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Sat, 22 Mar 2025 04:54:55 +0000
-Received: from b0be8375a521.amazon.com (10.37.245.7) by
- EX19D003ANC003.ant.amazon.com (10.37.240.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Sat, 22 Mar 2025 04:54:49 +0000
-From: Kohei Enju <enjuk@amazon.com>
-To: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, "Andrii
- Nakryiko" <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-	"Eduard Zingerman" <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
- Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
-	<jolsa@kernel.org>, Peilin Ye <yepeilin@google.com>, Ilya Leoshkevich
-	<iii@linux.ibm.com>, Kuniyuki Iwashima <kuniyu@amazon.com>,
-	<kohei.enju@gmail.com>, Kohei Enju <enjuk@amazon.com>
-Subject: [PATCH v3 bpf-next 2/2] selftests/bpf: Add selftests for load-acquire/store-release when register number is invalid
-Date: Sat, 22 Mar 2025 13:52:56 +0900
-Message-ID: <20250322045340.18010-6-enjuk@amazon.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250322045340.18010-4-enjuk@amazon.com>
-References: <20250322045340.18010-4-enjuk@amazon.com>
+        d=gmail.com; s=20230601; t=1742635526; x=1743240326; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CAxmjD+4ShrH2qVul5h8U6ZQKpv0SeH27W7krvXTAuY=;
+        b=Q8j/zwb0Mg0pQA3ua9J3X3jGEhWLIEEyBGM/UEEnOF/sMGDsj1TV1DYcTjj5jOylJh
+         +MN5Nfbm+qbfZI6xwMH3Efyv+PUYeWDeKvJZurd9H3edORcYhPXD/lNIb5wTV/KavI0Q
+         pQ7QVqp4YTT4q6bDOUAX5cBkBGDlP0/GRGqmTiVXKKdKyX2Np+59F8mQQyVcuPK/Dftu
+         +smXJt2+4CGHiIEWgy6pauCVK5sOOLlVa/ZJPhckMuhl48OcSrKe1sCzm85yFnIwq42U
+         XD8mGpMuBmDi5Ke2fNtPfJniag5v2HuM7yWdwcB3HSChq/uhx3U5NpaZLlEk7HFnUauQ
+         w6rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742635526; x=1743240326;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CAxmjD+4ShrH2qVul5h8U6ZQKpv0SeH27W7krvXTAuY=;
+        b=MfJC94sUp7p6dtlGOFI2yZF95XZbdois1kR4OmBtD7FHiFHzrNPfGiHcJfzmNPuUkL
+         m3vXYz6uwL9K3Ly7Puc6unfJZ12HrWHpHf2x98fYgE9L4fX3TUXvhkOXFLyLWkMfRAEI
+         i2q1xXYw62hhYVZGKsQMJ/HLLsh8rwiw7jujuF/WD2uza92IH21KaOl+DGlwLVoWNaCh
+         bS1zWaCsI8Zq9dEUj23glKIeBAfyj+hrR/FaPyrxpAaMrAq6lxpFIDHSqCV1DACpfTnt
+         As6+/LVChwkqCgJTL9IEUmOJyRYWIGCpn/itbP3UTvSD2xN41fzVsE2UKmfDAVIcDDhT
+         Ai1A==
+X-Forwarded-Encrypted: i=1; AJvYcCURCzda0XDB7trjzMGCBf68FhxNYvM+RscVNNR7eJcpui6Q/HnlCpumnIfnSwAyLZVWHVg5ZnKNRNzF6ama@vger.kernel.org, AJvYcCVREvE5U7pt1yJzvjChC3vBQz1aopThKRR+WZiFFTjQ2AWommME+VT9GvUf0S1O926/f64ojw6DYrnA1mjBlnPR@vger.kernel.org, AJvYcCW6qznKGl5xNY1aH26HrilTKDXVRFqWntMdy3ZLBz6DFGFAdNEIOeUGbmCn2a4SaKrqhHg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPgX4RSLD+0NsHWtiC9IWo/TWkh2NamyPnUMPVrQOrRSbuSemZ
+	P5XXrvKbcbQ+wxx9Owzv6fFeBpUgQAcSIf0MRoSiuZcEFqnqnN0W
+X-Gm-Gg: ASbGncunB2ZrsxQ+X6wI5+Q5bxHpoTsgqx0G+K0URSOuadg2XNM8L2J5nz7FTNalNbq
+	ANqDulV7gE6GtYsBY3mHO/PHiDVttdwZ7lrexy08sWVklbtark+wNeIix7kKCElymF95UyeFLxY
+	FObmXPq0XGKfiPGz9BOOBeQOBtspFJApYPIYcYFCfONmxzeE7f7+7qV7q8pR7QOZLzwmA1rAUQU
+	2Ionj23zEzM3yi3sCj+W8eLJ8sqMtMEOs7ipYH95RZghczURn4gGjhwYT7/xNu83skNQvFuy1lM
+	dlCviUkU+6FPAG0VyvsspCgNuk1kv6JfL3wNormOqXrIlHp+Ow==
+X-Google-Smtp-Source: AGHT+IFSu+bGGQRjawLHDtslf0SzwTbnDI1kjP5psSX/njED57/1HtiodD8whtxKMq7t1GftztQyIg==
+X-Received: by 2002:a05:6a20:72a0:b0:1f5:889c:3ccc with SMTP id adf61e73a8af0-1fe42f74ff5mr11146522637.14.1742635526324;
+        Sat, 22 Mar 2025 02:25:26 -0700 (PDT)
+Received: from fedora ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af8a27dbb2fsm3230302a12.9.2025.03.22.02.25.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Mar 2025 02:25:25 -0700 (PDT)
+Date: Sat, 22 Mar 2025 09:25:17 +0000
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: Phil Sutter <phil@nwl.cc>, "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Simon Horman <horms@kernel.org>, Florian Westphal <fw@strlen.de>,
+	Petr Mladek <pmladek@suse.com>,
+	Yoann Congal <yoann.congal@smile.fr>, wireguard@lists.zx2c4.com,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv4 RESEND net-next 2/2] selftests: wireguard: update to
+ using nft for qemu test
+Message-ID: <Z96B_VRDHZHPn-2w@fedora>
+References: <20250106081043.2073169-1-liuhangbin@gmail.com>
+ <20250106081043.2073169-3-liuhangbin@gmail.com>
+ <Z9rtrVk-15Ts_BNp@zx2c4.com>
+ <Z91CGRP9QLdZONiZ@fedora>
+ <Z91QshzKRlmPdpv7@orbyte.nwl.cc>
+ <Z91fXURX3BQFDaq9@fedora>
+ <Z916VMSCEtinZl54@orbyte.nwl.cc>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D033UWA004.ant.amazon.com (10.13.139.85) To
- EX19D003ANC003.ant.amazon.com (10.37.240.197)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z916VMSCEtinZl54@orbyte.nwl.cc>
 
-syzbot reported out-of-bounds read in check_atomic_load/store() when the
-register number is invalid in this context:
-    https://syzkaller.appspot.com/bug?extid=a5964227adc0f904549c
+On Fri, Mar 21, 2025 at 03:40:20PM +0100, Phil Sutter wrote:
+> On Fri, Mar 21, 2025 at 12:45:17PM +0000, Hangbin Liu wrote:
+> > On Fri, Mar 21, 2025 at 12:42:42PM +0100, Phil Sutter wrote:
+> > > Hi Hangbin,
+> > > 
+> > > On Fri, Mar 21, 2025 at 10:40:25AM +0000, Hangbin Liu wrote:
+> > > > Hi Jason, Phil,
+> > > > On Wed, Mar 19, 2025 at 05:15:41PM +0100, Jason A. Donenfeld wrote:
+> > > > > On Mon, Jan 06, 2025 at 08:10:43AM +0000, Hangbin Liu wrote:
+> > > > > > +	echo "file /bin/nft $(NFTABLES_PATH)/src/nft 755 0 0" >> $@
+> > > > > > +	echo "file /lib/libmnl.so.0 $(TOOLCHAIN_PATH)/lib/libmnl.so.0 755 0 0" >> $@
+> > > > > > +	echo "file /lib/libnftnl.so.11 $(TOOLCHAIN_PATH)/lib/libnftnl.so.11 755 0 0" >> $@
+> > > > > 
+> > > > > Can't these be statically linked into the nft binary?
+> > > > 
+> > > > If I omit these, I will got error like
+> > > > 
+> > > > mnl_attr_put: symbol not found
+> > > > 
+> > > > Even though I set `--enable-static` in nft build.
+> > > > 
+> > > > Do you know what's the reason?
+> > > 
+> > > I was able to have nft linked statically against built libmnl and
+> > > libnftnl by passing '--disable-shared --enable-static' to configure
+> > > calls of all three build systems. With --enable-shared in library
+> > > configure calls, nftables build preferred to link against the DSOs and I
+> > > did not find a way to change this.
+> > 
+> > The patch is using
+> > "./configure --prefix=/ $(CROSS_COMPILE_FLAG) --enable-static \
+> > --disable-shared --disable-debug --disable-man-doc --with-mini-gmp --without-cli"
+> > to build nft.
+> 
+> Do you pass that to the configure calls for libnftnl and libmnl, too? I
+> didn't find a way to force static linking in nftables build system, so I
+> disabled building of shared libmnl/libnftnl libraries.
+> 
 
-To avoid the issue from now on, let's add tests where the register number
-is invalid for load-acquire/store-release.
+It works after pass that to libnftnl and libmnl.
 
-After discussion with Eduard, I decided to use R15 as invalid register
-because the actual slab-out-of-bounds read issue occurs when the register
-number is R12 or larger.
-
-Signed-off-by: Kohei Enju <enjuk@amazon.com>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../selftests/bpf/progs/verifier_load_acquire.c    | 14 ++++++++++++++
- .../selftests/bpf/progs/verifier_store_release.c   | 14 ++++++++++++++
- 2 files changed, 28 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/progs/verifier_load_acquire.c b/tools/testing/selftests/bpf/progs/verifier_load_acquire.c
-index 1babe9ad9b43..77698d5a19e4 100644
---- a/tools/testing/selftests/bpf/progs/verifier_load_acquire.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_load_acquire.c
-@@ -189,6 +189,20 @@ __naked void load_acquire_from_sock_pointer(void)
- 	: __clobber_all);
- }
- 
-+SEC("socket")
-+__description("load-acquire with invalid register R15")
-+__failure __failure_unpriv __msg("R15 is invalid")
-+__naked void load_acquire_with_invalid_reg(void)
-+{
-+	asm volatile (
-+	".8byte %[load_acquire_insn];" // r0 = load_acquire((u64 *)(r15 + 0));
-+	"exit;"
-+	:
-+	: __imm_insn(load_acquire_insn,
-+		     BPF_ATOMIC_OP(BPF_DW, BPF_LOAD_ACQ, BPF_REG_0, 15 /* invalid reg */, 0))
-+	: __clobber_all);
-+}
-+
- #else /* CAN_USE_LOAD_ACQ_STORE_REL */
- 
- SEC("socket")
-diff --git a/tools/testing/selftests/bpf/progs/verifier_store_release.c b/tools/testing/selftests/bpf/progs/verifier_store_release.c
-index cd6f1e5f378b..c0442d5bb049 100644
---- a/tools/testing/selftests/bpf/progs/verifier_store_release.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_store_release.c
-@@ -257,6 +257,20 @@ __naked void store_release_leak_pointer_to_map(void)
- 	: __clobber_all);
- }
- 
-+SEC("socket")
-+__description("store-release with invalid register R15")
-+__failure __failure_unpriv __msg("R15 is invalid")
-+__naked void store_release_with_invalid_reg(void)
-+{
-+	asm volatile (
-+	".8byte %[store_release_insn];" // store_release((u64 *)(r15 + 0), r1);
-+	"exit;"
-+	:
-+	: __imm_insn(store_release_insn,
-+		     BPF_ATOMIC_OP(BPF_DW, BPF_STORE_REL, 15 /* invalid reg */, BPF_REG_1, 0))
-+	: __clobber_all);
-+}
-+
- #else
- 
- SEC("socket")
--- 
-2.48.1
-
+Thanks
+Hangbin
 
