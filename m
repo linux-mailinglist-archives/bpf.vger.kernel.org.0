@@ -1,208 +1,125 @@
-Return-Path: <bpf+bounces-54563-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54564-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 595DEA6C746
-	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 03:50:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CFBDA6C75C
+	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 04:17:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 609A717F128
-	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 02:50:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BFCD1B605E9
+	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 03:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9576A33B;
-	Sat, 22 Mar 2025 02:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0517386349;
+	Sat, 22 Mar 2025 03:17:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="ArGwcii+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zam5Wuyz"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3AC5258A;
-	Sat, 22 Mar 2025 02:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D27E2E339B;
+	Sat, 22 Mar 2025 03:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742611834; cv=none; b=t7/+GdN/7F5bB6nOGrteVyjuirPYO6bFxy8w644EKKtjx/5s46dvzXIy3JHOpx/6pgzxwzE6IE/GXlvONRDM4UCer+AwGhhrK6Fc1Tl92lp3qW7qH2MDPkkI3pWCaUqhl/cojSThOt3tDzM1iw+AzzzI6szZzxJm8P2z4QnrWLs=
+	t=1742613454; cv=none; b=FMCJtlid0MDs6TLdk8Il/k3bzn1LECFxqTB3i5I+sxVVasM3lTbvtO+mtrut4+NBk2DAOK2FO+oTok2YmGxCaKsBkNnvzxdU1DdprIYFpq0bR1BdkHu8v/9/Y8Iavqans+u4ZXyGBJ29EprDpVnjxcwvpSfBqzWcvGTCHqhmivs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742611834; c=relaxed/simple;
-	bh=1BiFl53oc1kpxx5ey5R66T3DEw8hBTtgDLrRn9rgAp0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=imP0gJn4ILfNFE96HZ7n/lYS2Q/CKckw8QPdulxT88b4k6/OOC9ucdkMUxLQjhQGbrFo1ps2r7heyjYE+5tkBdMFoHuCR9OrnJosEs7cEjfwDqluQk1R515IH4U+Lq3L0r1Z3/INlOi5BTVdeLIPfHU1fYf9NgSfcGA7aPl3mjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=ArGwcii+; arc=none smtp.client-ip=72.21.196.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+	s=arc-20240116; t=1742613454; c=relaxed/simple;
+	bh=WmIYri5geIA6iz6zSAryOlx0KnSOfaMzZ5okPJ46L0o=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=p7oUwnMpqBx8EGhDAYF60bfenB8AF2VhZonu3OQ2GSVhLB/NaV6s71WaOCmP5Q/RaVkPRMQiBp7jl4mdIpyTMM8ECLiQTZQ4Y21w5Dd8K2kMxV+ff3MCFNPmRZmZkE9c0ReaCcXT3iWNNjOYzt9QjrF1uIyco6ccHZdu9RlohM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zam5Wuyz; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-224171d6826so23392895ad.3;
+        Fri, 21 Mar 2025 20:17:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1742611833; x=1774147833;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=3NTXoE812gxhkh6ZaJaWv3L2T+sfHWpWaHGpsXz0hn4=;
-  b=ArGwcii+0TfZAOzdf2zs6iXnoTxs0fop2YlZqmklML7y1Oulm+jPbujr
-   igIM7U6zfmvm4RLz2P3kksmCR2xPN8VWMFGn5wKi0GAqe2yBxPPeyibWy
-   yV0T2J7ZqKbwI/birUWe9j/z+3+o0a34srUt7Y35WoJmeARDHKGRJy7FB
-   U=;
-X-IronPort-AV: E=Sophos;i="6.14,266,1736812800"; 
-   d="scan'208";a="477254702"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2025 02:50:29 +0000
-Received: from EX19MTAUWA002.ant.amazon.com [10.0.7.35:51031]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.29.36:2525] with esmtp (Farcaster)
- id beeba110-8be0-460e-a2d7-bfdc7e614639; Sat, 22 Mar 2025 02:50:28 +0000 (UTC)
-X-Farcaster-Flow-ID: beeba110-8be0-460e-a2d7-bfdc7e614639
-Received: from EX19D003ANC003.ant.amazon.com (10.37.240.197) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Sat, 22 Mar 2025 02:50:27 +0000
-Received: from b0be8375a521.amazon.com (10.37.244.8) by
- EX19D003ANC003.ant.amazon.com (10.37.240.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Sat, 22 Mar 2025 02:50:21 +0000
-From: Kohei Enju <enjuk@amazon.com>
-To: <eddyz87@gmail.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <enjuk@amazon.com>, <haoluo@google.com>,
-	<iii@linux.ibm.com>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-	<kohei.enju@gmail.com>, <kpsingh@kernel.org>, <kuniyu@amazon.com>,
-	<linux-kernel@vger.kernel.org>, <martin.lau@linux.dev>, <sdf@fomichev.me>,
-	<song@kernel.org>, <yepeilin@google.com>, <yonghong.song@linux.dev>
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add selftests for load-acquire/store-release when register number is invalid
-Date: Sat, 22 Mar 2025 11:48:56 +0900
-Message-ID: <20250322025013.76028-1-enjuk@amazon.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <65ff9c62d0d2c355121468b04c0701081d3275fd.camel@gmail.com>
+        d=gmail.com; s=20230601; t=1742613452; x=1743218252; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WmIYri5geIA6iz6zSAryOlx0KnSOfaMzZ5okPJ46L0o=;
+        b=Zam5WuyzCgE7+Kciz4L9eBYqqlPFjlKYl5KAYBPI3lGO2cWhu7eAYzgsSw1W3ZcqdI
+         kRMRhWCdYB+XMY1hISlZtOKgh+lazyg9jhrKL1DePJWOjdnp1dG7+5pJSq0IAXafsYXT
+         ZWickIDRcKLsQpS0tvKuW1zMZS0Bl3k1x5CzyfZtUAMGgsFtcM5pCSDN3XsegNpwPfuD
+         BZd375O3y8WoeraZZMqaBP5uxkmp64M2vufBqhTfRx672OL4agS6gtnBFmARblDXc7j3
+         fFuDB7mgCyTwBfZQbKChCpi38DZwmNcfNMPXTSl+IhBl8DJcJ7JMQ/umnfed7TBcoZUc
+         lt/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742613452; x=1743218252;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WmIYri5geIA6iz6zSAryOlx0KnSOfaMzZ5okPJ46L0o=;
+        b=WgJ4ljo8P5shIYNOI1aSwhq0rGMLWyBa9P50M3m+rZ+RP/HPTMTe9xa5be8Tp9DmXl
+         HbseFBPiNAXzFyW+CF4U5TglbMYWBwhGW0Vwo++w5aWRlQ7K1EQ2Tdg7r7Ha3ae9T+m9
+         HfM6UYw45BVPR4IFE6ZAk95i/3DaPuSnC73UYptPlqh92ScOQBATm8hCrgybe8SOjvzi
+         A0BMjXjDbwYAxMV2Rfp75Hc+VSk5gEi5o5g1PMlnoXqPTKWtU6oAeTZgDjsCOD4VO5xY
+         Mly2QW+iFsDtZox+zDW4GETd01Hz0TvxQ4WKaHr2fHmosOpxddG7Iq8KCEZ1MCAdjobg
+         g1iw==
+X-Forwarded-Encrypted: i=1; AJvYcCU9vaXZWU8KY0kFUJVIbNbu8ZOesh9RPx8Ml1brSS2fDr0phpdO9FgRhU7GOUXHMvLfoVY=@vger.kernel.org, AJvYcCUcv+my11mBblT6HTcJ6AwrbZr3H2U+45SZ16dTB1IEBT2i7crBZ+qHZtbajJS5AEJ+XWy8go5GOM21D/LC@vger.kernel.org
+X-Gm-Message-State: AOJu0YzV07Iu6gK9LBBJoogjEtZuU8C2ta3oQN6KPSaj5mUrOZCJ0RFA
+	1KioXG7GYnYNnnmWBD49/D5ird+ScgTgJ/WbcGEa4uXbVL0grMwT
+X-Gm-Gg: ASbGnctIjtWhfgMeLRMCH8aeYWKgI/BYq4t+MYSP0LQEs4bzGVRc+yHhZNey5qB3GZV
+	37hcaSV1mKPiepyL8CUPglswFQBhmP5YS7Qki+eZS0h0AU8MtbX2fsVCRI1oamMsarxkSPsjPMA
+	aeXEhkcKvayxzPHKmDAoqHHZtL4is8LhrOFyukJ8DguRIMQEGH9WvvIgp4j6PeNMyuCueKxz5//
+	62255TTco4qX9YxmAmBVFjWNTwVAmL47GVqWG2S+8UC+HCOgu3f0/XS5RWA5TCVjZ7N6SefEVat
+	nZdaZunewTdPezKmItCZA4VrpB3BbJODMGSAMKJr
+X-Google-Smtp-Source: AGHT+IFbWw5Wo8cyq6P6QMBtmDT8WXm7+AfSVecP5ctBT93NTLbN8af1L5YITFrWMx1MPJSIjOgZcA==
+X-Received: by 2002:a05:6a00:2d90:b0:730:9752:d02a with SMTP id d2e1a72fcca58-7390593b9c5mr7683129b3a.4.1742613452284;
+        Fri, 21 Mar 2025 20:17:32 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7390611d21dsm2916811b3a.118.2025.03.21.20.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Mar 2025 20:17:31 -0700 (PDT)
+Message-ID: <cd4c961ef54cc3a03d5f8eb709699a476b7a1300.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add selftests for
+ load-acquire/store-release when register number is invalid
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kohei Enju <enjuk@amazon.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, 	haoluo@google.com, iii@linux.ibm.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, 	kohei.enju@gmail.com,
+ kpsingh@kernel.org, kuniyu@amazon.com, 	linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, sdf@fomichev.me, 	song@kernel.org,
+ yepeilin@google.com, yonghong.song@linux.dev
+Date: Fri, 21 Mar 2025 20:17:27 -0700
+In-Reply-To: <20250322025013.76028-1-enjuk@amazon.com>
 References: <65ff9c62d0d2c355121468b04c0701081d3275fd.camel@gmail.com>
+	 <20250322025013.76028-1-enjuk@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D044UWA004.ant.amazon.com (10.13.139.7) To
- EX19D003ANC003.ant.amazon.com (10.37.240.197)
 
-> [...]
-> 
-> > +SEC("socket")
-> > +__description("load-acquire with invalid register R11")
-> > +__failure __failure_unpriv __msg("R11 is invalid")
-> > +__naked void load_acquire_with_invalid_reg(void)
-> > +{
-> > +	asm volatile (
-> > +	".8byte %[load_acquire_insn];" // r0 = load_acquire((u64 *)(r11 + 0));
-> > +	"exit;"
-> > +	:
-> > +	: __imm_insn(load_acquire_insn,
-> > +		     BPF_ATOMIC_OP(BPF_DW, BPF_LOAD_ACQ, BPF_REG_0, 11 /* invalid reg */, 0))
-> > +	: __clobber_all);
-> > +}
-> > +
-> >  #else /* CAN_USE_LOAD_ACQ_STORE_REL */
-> >  
-> >  SEC("socket")
-> > diff --git a/tools/testing/selftests/bpf/progs/verifier_store_release.c b/tools/testing/selftests/bpf/progs/verifier_store_release.c
-> > index cd6f1e5f378b..2dc1d713b4a6 100644
-> > --- a/tools/testing/selftests/bpf/progs/verifier_store_release.c
-> > +++ b/tools/testing/selftests/bpf/progs/verifier_store_release.c
-> > @@ -257,6 +257,20 @@ __naked void store_release_leak_pointer_to_map(void)
-> >  	: __clobber_all);
-> >  }
-> >  
-> > +SEC("socket")
-> > +__description("store-release with invalid register R11")
-> > +__failure __failure_unpriv __msg("R11 is invalid")
-> > +__naked void store_release_with_invalid_reg(void)
-> > +{
-> > +	asm volatile (
-> > +	".8byte %[store_release_insn];" // store_release((u64 *)(r11 + 0), r1);
-> > +	"exit;"
-> > +	:
-> > +	: __imm_insn(store_release_insn,
-> > +		     BPF_ATOMIC_OP(BPF_DW, BPF_STORE_REL, 11 /* invalid reg */, BPF_REG_1, 0))
-> 
-> On my machine / config, the value of 11 was too small to trigger the
-> KASAN warning. Value of 12 was sufficient.
-> Curious if it is my config, did you see KASAN warning locally when running this test
-> before applying the fix?
+On Sat, 2025-03-22 at 11:48 +0900, Kohei Enju wrote:
 
-Yes, as you pointed out, R11 doesn't trigger the KASAN splat in practice. 
-For the splat, we need a value of 12 or larger.
+[...]
 
-The sizes of struct bpf_reg_state and bpf_func_state are 120 and 1368 
-respectively.[1]
-In the bpf_func_state, the member `regs` ranges from 0 to 1320 bytes (each 
-120 bytes for each R0 to R10).
-Also, the member `type`, which is accessed in is_ctx_reg(), is the first 
-member of struct bpf_reg_state.
+> I chose the minimum invalid register regardless of the actual occurrence=
+=20
+> of the splat, since the validity check of this type might be `regno >=3D=
+=20
+> MAX_BPF_REG` or not.
+> Sorry for my confusing choice.
+>=20
+> Since I'm not attached to that particular choice, I'll change it to R15.
+> Thank you for reviewing and providing feedback!
 
-Therefore, when the register is R11, `regs->type` reads 4 bytes from 1320.
-Since the size of bpf_func_state is 1368 and it doesn't exceed the end of 
-the allocated memory, it doesn't trigger the KASAN splat.
+Hi Kohei,
 
-OTOH, when the register is R12, `regs->type` reads 4 bytes from 1440 (120 
-* 12 + 0).
-This triggers the KASAN splat since it's larger than bpf_func_state's size.
+Thank you for detailed explanation.
+Please add 'Acked-by: Eduard Zingerman <eddyz87@gmail.com>'
+for the next revision.
 
-Here is a part of the splat I saw in my environment when specifying R12. 
-This says that the buggy address is 1440 (1368 + 72) and also matches 
-previous analysis.
+Thanks,
+Eduard
 
-    The buggy address belongs to the object at ffff888112603800
-     which belongs to the cache kmalloc-2k of size 2048
-    The buggy address is located 72 bytes to the right of
-     allocated 1368-byte region [ffff888112603800, ffff888112603d58)
-    ...
-    Memory state around the buggy address:
-     ffff888112603c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-     ffff888112603d00: 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc
-    >ffff888112603d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                                   ^
-     ffff888112603e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-     ffff888112603e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[...]
 
-> Maybe set the value to 15 here and above to maximize probability of KASAN warning?
-
-Understood. Thank you for the feedback.
-
-I chose the minimum invalid register regardless of the actual occurrence 
-of the splat, since the validity check of this type might be `regno >= 
-MAX_BPF_REG` or not.
-Sorry for my confusing choice.
-
-Since I'm not attached to that particular choice, I'll change it to R15.
-Thank you for reviewing and providing feedback!
-
-> 
-> > +	: __clobber_all);
-> > +}
-> > +
-> >  #else
-> >  
-> >  SEC("socket")
-
-Regards,
-Kohei
-
----
-[1]
-struct bpf_reg_state {
-        enum bpf_reg_type          type;                 /*     0     4 */
-...
-
-        /* size: 120, cachelines: 2, members: 19 */
-        /* padding: 3 */
-        /* last cacheline: 56 bytes */
-};
-
-struct bpf_func_state {
-        struct bpf_reg_state       regs[11];             /*     0  1320 */
-...
-        int                        allocated_stack;      /*  1360     4 */
-
-        /* size: 1368, cachelines: 22, members: 12 */
-        /* sum members: 1363, holes: 1, sum holes: 1 */
-        /* padding: 4 */
-        /* last cacheline: 24 bytes */
-};
 
