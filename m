@@ -1,356 +1,208 @@
-Return-Path: <bpf+bounces-54562-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54563-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61D77A6C6D7
-	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 02:09:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 595DEA6C746
+	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 03:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C86CF3BC642
-	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 01:09:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 609A717F128
+	for <lists+bpf@lfdr.de>; Sat, 22 Mar 2025 02:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DC81BC5C;
-	Sat, 22 Mar 2025 01:09:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9576A33B;
+	Sat, 22 Mar 2025 02:50:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RBN+dKUq"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="ArGwcii+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C5B3FFD
-	for <bpf@vger.kernel.org>; Sat, 22 Mar 2025 01:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3AC5258A;
+	Sat, 22 Mar 2025 02:50:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742605776; cv=none; b=uDfWuAwZR3GHsnITBynqbQqcc2Dfs2IUrGGkjQJ/DizM4nFb87HhTvViepTR5nZ+ttLumwfCQBiNB9XNrUfQFfIWgx4nmSlE7QLO45yk+K97G/hsnNuFFYYQpeZdcKbq1NnmfmtT9/VbBhxGogcijYHfn5aPHM9Ho8EFao/3E8w=
+	t=1742611834; cv=none; b=t7/+GdN/7F5bB6nOGrteVyjuirPYO6bFxy8w644EKKtjx/5s46dvzXIy3JHOpx/6pgzxwzE6IE/GXlvONRDM4UCer+AwGhhrK6Fc1Tl92lp3qW7qH2MDPkkI3pWCaUqhl/cojSThOt3tDzM1iw+AzzzI6szZzxJm8P2z4QnrWLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742605776; c=relaxed/simple;
-	bh=RHnF97vxaogfg31pPh0xihnTtDGXFdxNZg66JB90DRE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=bk9pn6aZIeYPEHwR71PySd3+2jZwLApTxoN6HSZijJeVa56jC6gS0O7Kv9QyiPa8E/9Yk8hR14UiYMFDx7Ihf/6t1+LgOoSEMn0+aTLtiLG1Bmypo4suev8M/GO9fhhaKkR1mZcb3yH7ESFA0gp7CtRae8tVLaOrQAl9itZQhhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RBN+dKUq; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-22423adf751so52723675ad.2
-        for <bpf@vger.kernel.org>; Fri, 21 Mar 2025 18:09:34 -0700 (PDT)
+	s=arc-20240116; t=1742611834; c=relaxed/simple;
+	bh=1BiFl53oc1kpxx5ey5R66T3DEw8hBTtgDLrRn9rgAp0=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=imP0gJn4ILfNFE96HZ7n/lYS2Q/CKckw8QPdulxT88b4k6/OOC9ucdkMUxLQjhQGbrFo1ps2r7heyjYE+5tkBdMFoHuCR9OrnJosEs7cEjfwDqluQk1R515IH4U+Lq3L0r1Z3/INlOi5BTVdeLIPfHU1fYf9NgSfcGA7aPl3mjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=ArGwcii+; arc=none smtp.client-ip=72.21.196.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742605774; x=1743210574; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZZ20OGaNtfn3wuTOXT6V11NpZCZpr982oQaFZGqvM3I=;
-        b=RBN+dKUqxVyhz6P9wmRKNUpq9ppGfoNZxYX2mtqGOwR6Oo3HVB1Wow0FXa6LmDo5kr
-         cqsQxrc7D93QcU9oq42/Zp1tfUQ35q6RH4m67FDZvp2T0QrRtoXp9GYBtZjoRkcIQoqk
-         wszZLMdnC4JtpWcrGhmJ2TBk8HYMoHDDGGeMgTV1uc1KhNlFUxk8oBB7xg4NRoWLsj3p
-         YjQTn9WSCjOSkxAxiyXVB0ffs9yEb4PxwTa/bGl0DqXvJgf9fDCJ6Nxy1w3Kn4Vs2C7v
-         WPMOUuEgiqtZtGJqQEnA15F7MfsntNv6xvRYe0xqGSCMKgu3t7wL+oROEpmd7UeqOyHZ
-         +6Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742605774; x=1743210574;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZZ20OGaNtfn3wuTOXT6V11NpZCZpr982oQaFZGqvM3I=;
-        b=dX6XHoNKmjh/OMbSSOh9jP8DcyZYOvxgkkh4LBk47Dvp6HpL3kWNzFYj9Xk+4eX66u
-         Q6LeFCknPaslcuuSUZlFsMIQ8oMClpPKMkRafuXTkdu0401iL+IJ7vLqEOCoYxGb11Cx
-         DbXr9G7jKoW6V3E3ByKhoUsd9SJ0pxtAhAf/HN1OZewcuWF2kHSVjq4ybq/Xd9QwMP3e
-         632PWn5wsjlGg+qKRM0C1LGuWcdoiiYH0teMCT5lpMRwrxLdj+15VdSNVNfvwOwL5+hi
-         K5mmPexqM++lwXG9vJPJ2/xITr3CCVpTp/aKWBHVEbORIge3bTMArZM0lZVk1ViKnGJj
-         AxoA==
-X-Forwarded-Encrypted: i=1; AJvYcCVNjP8/axP4G42aUBacsG9dWbo4EllYqHh0+Ygx9KEjEnokkwngJqUJWNkDUuAjpAPkb20=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyg9W2SNhBk7Z/i8XByh6qFkLdVejd1Lu28bSF1UGuVUh9fin+P
-	SZutd/2vQ+mhfQgOkfSLvQoqm5tf9aOF60jSjM5U6EOhJUZnb/i+
-X-Gm-Gg: ASbGncstvNtID0kHDiJ4S23maZ2e1Mbv49vBt71Ke9fTBiZC6GlfpD1So1AfIFTRnla
-	jUWwq/I/0PLPgVmdlbLlsf1qp3bcwWCJ3SR6v41BOLY88s8Drdv5Ycref3L354pykjEXOZpY65a
-	JJjmamA+BAIo9O6TTqj3LoBS8GbC0+mx/caYy+yBhyanZ50ccQ/I4tSKV7zlob4wDyT01pIzebh
-	XfrChd/4YhZsdtOB1EMAUULT+lu0+YAzHm2IS1VazEpdBNNmyftOIt474L8PkogtyEGkK2gzbHg
-	tYVBaEK75LclU9V+0DzXLB1n+KoHJWNgwTQqXgs9h2p8r1MxRAk=
-X-Google-Smtp-Source: AGHT+IH25HSwG6nzGTYjuJ/j+wfgKtBHuv1fjueIGCpvUAdUieSQncoFOwBG3OQhcEpQCkkKY8JdAg==
-X-Received: by 2002:a17:903:2350:b0:216:410d:4c53 with SMTP id d9443c01a7336-22780e10cdemr77019465ad.41.1742605774251;
-        Fri, 21 Mar 2025 18:09:34 -0700 (PDT)
-Received: from [192.168.0.56] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-301bf636122sm6929309a91.45.2025.03.21.18.09.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Mar 2025 18:09:33 -0700 (PDT)
-Message-ID: <73d0676051a7e0e0108a13a5b4f36c33d6496fa2.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: support struct/union presets in
- veristat
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf@vger.kernel.org, 
-	ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, kafai@meta.com, 
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Date: Fri, 21 Mar 2025 18:09:29 -0700
-In-Reply-To: <20250320224546.241673-1-mykyta.yatsenko5@gmail.com>
-References: <20250320224546.241673-1-mykyta.yatsenko5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1742611833; x=1774147833;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=3NTXoE812gxhkh6ZaJaWv3L2T+sfHWpWaHGpsXz0hn4=;
+  b=ArGwcii+0TfZAOzdf2zs6iXnoTxs0fop2YlZqmklML7y1Oulm+jPbujr
+   igIM7U6zfmvm4RLz2P3kksmCR2xPN8VWMFGn5wKi0GAqe2yBxPPeyibWy
+   yV0T2J7ZqKbwI/birUWe9j/z+3+o0a34srUt7Y35WoJmeARDHKGRJy7FB
+   U=;
+X-IronPort-AV: E=Sophos;i="6.14,266,1736812800"; 
+   d="scan'208";a="477254702"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2025 02:50:29 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.7.35:51031]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.29.36:2525] with esmtp (Farcaster)
+ id beeba110-8be0-460e-a2d7-bfdc7e614639; Sat, 22 Mar 2025 02:50:28 +0000 (UTC)
+X-Farcaster-Flow-ID: beeba110-8be0-460e-a2d7-bfdc7e614639
+Received: from EX19D003ANC003.ant.amazon.com (10.37.240.197) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Sat, 22 Mar 2025 02:50:27 +0000
+Received: from b0be8375a521.amazon.com (10.37.244.8) by
+ EX19D003ANC003.ant.amazon.com (10.37.240.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Sat, 22 Mar 2025 02:50:21 +0000
+From: Kohei Enju <enjuk@amazon.com>
+To: <eddyz87@gmail.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <enjuk@amazon.com>, <haoluo@google.com>,
+	<iii@linux.ibm.com>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
+	<kohei.enju@gmail.com>, <kpsingh@kernel.org>, <kuniyu@amazon.com>,
+	<linux-kernel@vger.kernel.org>, <martin.lau@linux.dev>, <sdf@fomichev.me>,
+	<song@kernel.org>, <yepeilin@google.com>, <yonghong.song@linux.dev>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add selftests for load-acquire/store-release when register number is invalid
+Date: Sat, 22 Mar 2025 11:48:56 +0900
+Message-ID: <20250322025013.76028-1-enjuk@amazon.com>
+X-Mailer: git-send-email 2.48.1
+In-Reply-To: <65ff9c62d0d2c355121468b04c0701081d3275fd.camel@gmail.com>
+References: <65ff9c62d0d2c355121468b04c0701081d3275fd.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D044UWA004.ant.amazon.com (10.13.139.7) To
+ EX19D003ANC003.ant.amazon.com (10.37.240.197)
 
-On Thu, 2025-03-20 at 22:45 +0000, Mykyta Yatsenko wrote:
+> [...]
+> 
+> > +SEC("socket")
+> > +__description("load-acquire with invalid register R11")
+> > +__failure __failure_unpriv __msg("R11 is invalid")
+> > +__naked void load_acquire_with_invalid_reg(void)
+> > +{
+> > +	asm volatile (
+> > +	".8byte %[load_acquire_insn];" // r0 = load_acquire((u64 *)(r11 + 0));
+> > +	"exit;"
+> > +	:
+> > +	: __imm_insn(load_acquire_insn,
+> > +		     BPF_ATOMIC_OP(BPF_DW, BPF_LOAD_ACQ, BPF_REG_0, 11 /* invalid reg */, 0))
+> > +	: __clobber_all);
+> > +}
+> > +
+> >  #else /* CAN_USE_LOAD_ACQ_STORE_REL */
+> >  
+> >  SEC("socket")
+> > diff --git a/tools/testing/selftests/bpf/progs/verifier_store_release.c b/tools/testing/selftests/bpf/progs/verifier_store_release.c
+> > index cd6f1e5f378b..2dc1d713b4a6 100644
+> > --- a/tools/testing/selftests/bpf/progs/verifier_store_release.c
+> > +++ b/tools/testing/selftests/bpf/progs/verifier_store_release.c
+> > @@ -257,6 +257,20 @@ __naked void store_release_leak_pointer_to_map(void)
+> >  	: __clobber_all);
+> >  }
+> >  
+> > +SEC("socket")
+> > +__description("store-release with invalid register R11")
+> > +__failure __failure_unpriv __msg("R11 is invalid")
+> > +__naked void store_release_with_invalid_reg(void)
+> > +{
+> > +	asm volatile (
+> > +	".8byte %[store_release_insn];" // store_release((u64 *)(r11 + 0), r1);
+> > +	"exit;"
+> > +	:
+> > +	: __imm_insn(store_release_insn,
+> > +		     BPF_ATOMIC_OP(BPF_DW, BPF_STORE_REL, 11 /* invalid reg */, BPF_REG_1, 0))
+> 
+> On my machine / config, the value of 11 was too small to trigger the
+> KASAN warning. Value of 12 was sufficient.
+> Curious if it is my config, did you see KASAN warning locally when running this test
+> before applying the fix?
 
-[...]
+Yes, as you pointed out, R11 doesn't trigger the KASAN splat in practice. 
+For the splat, we need a value of 12 or larger.
 
-> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selft=
-ests/bpf/veristat.c
-> index a18972ffdeb6..babc97b799a2 100644
-> --- a/tools/testing/selftests/bpf/veristat.c
-> +++ b/tools/testing/selftests/bpf/veristat.c
-> @@ -23,6 +23,7 @@
->  #include <float.h>
->  #include <math.h>
->  #include <limits.h>
-> +#include <linux/err.h>
-> =20
->  #ifndef ARRAY_SIZE
->  #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-> @@ -1486,7 +1487,131 @@ static bool is_preset_supported(const struct btf_=
-type *t)
->  	return btf_is_int(t) || btf_is_enum(t) || btf_is_enum64(t);
->  }
-> =20
-> -static int set_global_var(struct bpf_object *obj, struct btf *btf, const=
- struct btf_type *t,
-> +struct btf_anon_stack {
-> +	const struct btf_type *t;
-> +	__u32 offset;
-> +};
-> +
-> +const struct btf_member *btf_find_member(const struct btf *btf,
-> +					 const struct btf_type *parent_type,
-> +					 const char *member_name,
-> +					 __u32 *anon_offset)
-> +{
-> +	struct btf_anon_stack *anon_stack;
-> +	const struct btf_member *retval =3D NULL;
-> +	__u32 cur_offset =3D 0;
-> +	const char *name;
-> +	int top =3D 0, i;
-> +
-> +	if (!btf_is_struct(parent_type) && !btf_is_union(parent_type))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	anon_stack =3D malloc(sizeof(*anon_stack));
-> +	if (!anon_stack)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	anon_stack[top].t =3D parent_type;
-> +	anon_stack[top++].offset =3D 0;
-> +
-> +	do {
-> +		parent_type =3D anon_stack[--top].t;
-> +		cur_offset =3D anon_stack[top].offset;
-> +
-> +		for (i =3D 0; i < btf_vlen(parent_type); ++i) {
-> +			const struct btf_member *member;
-> +			const struct btf_type *t;
-> +			int tid;
-> +
-> +			member =3D btf_members(parent_type) + i;
-> +			tid =3D  btf__resolve_type(btf, member->type);
+The sizes of struct bpf_reg_state and bpf_func_state are 120 and 1368 
+respectively.[1]
+In the bpf_func_state, the member `regs` ranges from 0 to 1320 bytes (each 
+120 bytes for each R0 to R10).
+Also, the member `type`, which is accessed in is_ctx_reg(), is the first 
+member of struct bpf_reg_state.
 
-Nit: these are called member_tid and member_type in the function below.
+Therefore, when the register is R11, `regs->type` reads 4 bytes from 1320.
+Since the size of bpf_func_state is 1368 and it doesn't exceed the end of 
+the allocated memory, it doesn't trigger the KASAN splat.
 
-> +			if (tid < 0) {
-> +				retval =3D ERR_PTR(-EINVAL);
-> +				goto out;
-> +			}
-> +			t =3D btf__type_by_id(btf, tid);
-> +			if (member->name_off) {
-> +				name =3D btf__name_by_offset(btf, member->name_off);
-> +				if (name && strcmp(member_name, name) =3D=3D 0) {
-> +					if (anon_offset)
+OTOH, when the register is R12, `regs->type` reads 4 bytes from 1440 (120 
+* 12 + 0).
+This triggers the KASAN splat since it's larger than bpf_func_state's size.
 
-Nit: anon_offset is always non-null.
+Here is a part of the splat I saw in my environment when specifying R12. 
+This says that the buggy address is 1440 (1368 + 72) and also matches 
+previous analysis.
 
-> +						*anon_offset =3D cur_offset;
-> +					retval =3D member;
-> +					goto out;
-> +				}
-> +			} else if (t) {
+    The buggy address belongs to the object at ffff888112603800
+     which belongs to the cache kmalloc-2k of size 2048
+    The buggy address is located 72 bytes to the right of
+     allocated 1368-byte region [ffff888112603800, ffff888112603d58)
+    ...
+    Memory state around the buggy address:
+     ffff888112603c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+     ffff888112603d00: 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc
+    >ffff888112603d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                                   ^
+     ffff888112603e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+     ffff888112603e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
 
-Nit: result of `btf__resolve_type()` is not checked against NULL in
-     most places in veristat.c. When bpf object file is opened by
-     libbpf the BTF is setup by function btf.c:btf_new(), which
-     does some sanity including checks for ids of member types.
-     See btf.c:btf_sanity_check().
+> Maybe set the value to 15 here and above to maximize probability of KASAN warning?
 
-> +				struct btf_anon_stack *tmp;
-> +
-> +				tmp =3D realloc(anon_stack, (top + 1) * sizeof(*anon_stack));
-> +				if (!tmp) {
-> +					retval =3D ERR_PTR(-ENOMEM);
-> +					goto out;
-> +				}
-> +				anon_stack =3D tmp;
-> +				/* Anonymous union/struct: push to stack */
-> +				anon_stack[top].t =3D t;
-> +				anon_stack[top++].offset =3D cur_offset + member->offset;
+Understood. Thank you for the feedback.
 
-I think it is necessary to check that `t` is struct or union,
-otherwise something like 'struct foo { int :64; int bar; }'
-will cause trouble.
+I chose the minimum invalid register regardless of the actual occurrence 
+of the splat, since the validity check of this type might be `regno >= 
+MAX_BPF_REG` or not.
+Sorry for my confusing choice.
 
-> +			}
-> +		}
-> +	} while (top > 0);
-> +out:
-> +	free(anon_stack);
-> +	return retval;
-> +}
-> +
-> +static int adjust_var_secinfo_tok(char **name_tok, const struct btf *btf=
-,
-> +				  const struct btf_type *t, struct btf_var_secinfo *sinfo)
-> +{
-> +	char *name =3D strtok_r(NULL, ".", name_tok);
-> +	const struct btf_type *member_type;
-> +	const struct btf_member *member;
-> +	int member_tid;
-> +	__u32 anon_offset =3D 0;
-> +
-> +	if (!name)
-> +		return 0;
-> +
-> +	if (!btf_is_union(t) && !btf_is_struct(t))
-> +		return -EINVAL;
-> +
-> +	member =3D btf_find_member(btf, t, name, &anon_offset);
-> +	if (IS_ERR(member))
-> +		return -EINVAL;
-> +
-> +	member_tid =3D btf__resolve_type(btf, member->type);
-> +	member_type =3D btf__type_by_id(btf, member_tid);
-> +
-> +	if (btf_kflag(t)) {
-> +		sinfo->offset +=3D (BTF_MEMBER_BIT_OFFSET(member->offset) + anon_offse=
-t) / 8;
-> +		sinfo->size =3D BTF_MEMBER_BITFIELD_SIZE(member->offset) / 8;
+Since I'm not attached to that particular choice, I'll change it to R15.
+Thank you for reviewing and providing feedback!
 
-Bitfields are not handled by `set_global_var`, as ->size is in bytes.
-Maybe just error out here saying that setting bitfields is not supported?
-Alternatively, there is a utility function btf_member_bit_offset(),
-maybe declare a similar btf_member_bit_size() and remove the
-btf_kflag(t) condition here? Just to make it a bit easier to understand.
+> 
+> > +	: __clobber_all);
+> > +}
+> > +
+> >  #else
+> >  
+> >  SEC("socket")
 
-> +	} else {
-> +		sinfo->offset +=3D (member->offset + anon_offset) / 8;
-> +		sinfo->size =3D member_type->size;
-> +	}
-> +	sinfo->type =3D member_tid;
-> +
-> +	return adjust_var_secinfo_tok(name_tok, btf, member_type, sinfo);
-> +}
-> +
-> +static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
-> +			      struct btf_var_secinfo *sinfo, const char *var)
-> +{
-> +	char expr[256], *saveptr;
-> +	const struct btf_type *base_type;
-> +	int err;
-> +
-> +	base_type =3D btf__type_by_id(btf, btf__resolve_type(btf, t->type));
-> +	if (!btf_is_union(base_type) && !btf_is_struct(base_type))
-> +		return 0;
+Regards,
+Kohei
 
-What would happen if preset "foo.bar" would be specified for variable
-"foo" being e.g. of type "int"? It seems the ".bar" part would be just
-ignored.
+---
+[1]
+struct bpf_reg_state {
+        enum bpf_reg_type          type;                 /*     0     4 */
+...
 
-> +
-> +	strcpy(expr, var);
+        /* size: 120, cachelines: 2, members: 19 */
+        /* padding: 3 */
+        /* last cacheline: 56 bytes */
+};
 
-Nit: strncpy ?
+struct bpf_func_state {
+        struct bpf_reg_state       regs[11];             /*     0  1320 */
+...
+        int                        allocated_stack;      /*  1360     4 */
 
-> +	strtok_r(expr, ".", &saveptr);
-> +	err =3D adjust_var_secinfo_tok(&saveptr, btf, base_type, sinfo);
-> +	if (err)
-> +		return err;
-> +
-> +	return 0;
-> +}
-> +
-> +static int set_global_var(struct bpf_object *obj, struct btf *btf,
->  			  struct bpf_map *map, struct btf_var_secinfo *sinfo,
->  			  struct var_preset *preset)
->  {
-> @@ -1495,9 +1620,9 @@ static int set_global_var(struct bpf_object *obj, s=
-truct btf *btf, const struct
->  	long long value =3D preset->ivalue;
->  	size_t size;
-> =20
-> -	base_type =3D btf__type_by_id(btf, btf__resolve_type(btf, t->type));
-> +	base_type =3D btf__type_by_id(btf, btf__resolve_type(btf, sinfo->type))=
-;
->  	if (!base_type) {
-> -		fprintf(stderr, "Failed to resolve type %d\n", t->type);
-> +		fprintf(stderr, "Failed to resolve type %d\n", sinfo->type);
->  		return -EINVAL;
->  	}
->  	if (!is_preset_supported(base_type)) {
-> @@ -1530,7 +1655,7 @@ static int set_global_var(struct bpf_object *obj, s=
-truct btf *btf, const struct
->  		if (value >=3D max_val || value < -max_val) {
->  			fprintf(stderr,
->  				"Variable %s value %lld is out of range [%lld; %lld]\n",
-> -				btf__name_by_offset(btf, t->name_off), value,
-> +				btf__name_by_offset(btf, base_type->name_off), value,
->  				is_signed ? -max_val : 0, max_val - 1);
->  			return -EINVAL;
->  		}
-> @@ -1590,7 +1715,12 @@ static int set_global_vars(struct bpf_object *obj,=
- struct var_preset *presets, i
->  			var_name =3D btf__name_by_offset(btf, var_type->name_off);
-> =20
->  			for (k =3D 0; k < npresets; ++k) {
-> -				if (strcmp(var_name, presets[k].name) !=3D 0)
-> +				struct btf_var_secinfo tmp_sinfo;
-> +				int var_len =3D strlen(var_name);
-> +
-> +				if (strncmp(var_name, presets[k].name, var_len) !=3D 0 ||
-> +				    (presets[k].name[var_len] !=3D '\0' &&
-> +				     presets[k].name[var_len] !=3D '.'))
-
-var_name comes from BTF and presets[k].name comes from command line, right?
-Meaning that there might be a case when strlen(presets[k].name) < strlen(va=
-r_name)
-and access presets[k].name[var_len] would be out of bounds. Wdyt?
-
->  					continue;
-> =20
->  				if (presets[k].applied) {
-> @@ -1598,13 +1728,17 @@ static int set_global_vars(struct bpf_object *obj=
-, struct var_preset *presets, i
->  						var_name);
->  					return -EINVAL;
->  				}
-> +				memcpy(&tmp_sinfo, sinfo, sizeof(*sinfo));
-> +				err =3D adjust_var_secinfo(btf, var_type,
-> +							 &tmp_sinfo, presets[k].name);
-> +				if (err)
-> +					return err;
-> =20
-> -				err =3D set_global_var(obj, btf, var_type, map, sinfo, presets + k);
-> +				err =3D set_global_var(obj, btf, map, &tmp_sinfo, presets + k);
->  				if (err)
->  					return err;
-> =20
->  				presets[k].applied =3D true;
-> -				break;
-
-This is removed to handle cases with presets "foo.bar" and "foo.buz", right=
-?
-Maybe extend the test case a bit?
-
->  			}
->  		}
->  	}
-
-
+        /* size: 1368, cachelines: 22, members: 12 */
+        /* sum members: 1363, holes: 1, sum holes: 1 */
+        /* padding: 4 */
+        /* last cacheline: 24 bytes */
+};
 
