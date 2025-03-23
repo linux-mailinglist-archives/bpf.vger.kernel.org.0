@@ -1,306 +1,308 @@
-Return-Path: <bpf+bounces-54584-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54585-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B9BBA6CFDC
-	for <lists+bpf@lfdr.de>; Sun, 23 Mar 2025 16:16:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6861A6D092
+	for <lists+bpf@lfdr.de>; Sun, 23 Mar 2025 19:31:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AAF916E9C8
-	for <lists+bpf@lfdr.de>; Sun, 23 Mar 2025 15:16:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA2A118946A7
+	for <lists+bpf@lfdr.de>; Sun, 23 Mar 2025 18:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E0E136672;
-	Sun, 23 Mar 2025 15:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4753F190052;
+	Sun, 23 Mar 2025 18:31:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QSKErXam"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mB0+e1ij"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A9F6EEA8;
-	Sun, 23 Mar 2025 15:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E230C4C8F;
+	Sun, 23 Mar 2025 18:31:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742742997; cv=none; b=h8j6FEDi/DkOYrc4A6WbistRwRtUZwFZ6uT4oZD8iROn0syU6tcbQPCTLczhCo9OGW3lYod0iSR3WAtQM61Vj+HJAjPKNuu7PbKK5bPvLES+uYPAMXhLOTEXdgHvSM76fJYClcSyEgu2hhsgoGk25CAHsZE4zb77AoWNVngd2jY=
+	t=1742754674; cv=none; b=HafD1UhIa0ZHguYCHRakc9QTTzmfO+H6hoBuiQe2U/lleFkBmuBjo3/ZjEZFIrygwMhkfQYpNc/az6cG71u33YDkgzrDeSY6Czfm6ALPlKH81w61OvmE7oLv+1oRSJniLhNcRKxdJ1S6vDw4X8IWFtpKIPmj+1t1awKxdXLjlLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742742997; c=relaxed/simple;
-	bh=z1iry3Q+ZuonlJJ0TwlMVAFT0se2HxhIpoPnsRsnLsc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QsC9avdn5V7N5OgzT8CTEP6aiIhHlKTSSf/2JUctaWs3+FJtTqrvuiNBRgTBVzgLWdUtCnZy/SbQ1MNAuzeFPudle/friGxj8oeC0KLJ1LlIjw6l3hz3pFV5xgEDyr+FzaU/BfW6zzbJewI6htLS7IxszzoSrxgdjxrBV76Jh88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QSKErXam; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-224019ad9edso86857995ad.1;
-        Sun, 23 Mar 2025 08:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742742995; x=1743347795; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8HAFSGGoHUlB/P//y8CRGPMxIiz2cZBE9oAiPUoftnU=;
-        b=QSKErXam2M/O3L3qT9hiT/LG33negg+IlgrywqMrof0yVzQPGEO8pMXP5NBg9zKyNB
-         5aQ5/axR7fELGSwcGzqs4Ls6A+MHtdFVxn41ScblbZgdJkRUKtsevNQO8AlqCu4yOUkB
-         IKOadC2A3ssnQ+qnuk6Hkd4cxOFkt7zTCfwJKyl9E2Mb8/R68s9igYXSguHsJgaUse0J
-         W70NvOTkGlTJFbH10x3O/LS2t1uJmBR/sLdMt9h7Zq2mX/t3C82wT4NSCfQSqxZbMbTS
-         bHLWM38cBHkpsrin3WcCBS5LjsZIhJkMMq9fimWdSNXK/gHIo9nvkrK1tQR668tLLUZy
-         GVrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742742995; x=1743347795;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8HAFSGGoHUlB/P//y8CRGPMxIiz2cZBE9oAiPUoftnU=;
-        b=IGeAD/cEFZTJXKjOtR4ucO07a3mkpPnft3u9FJua22FVRuRSE2h5ZH/y6M1bX+aBVh
-         V1jTNR9jEINon2X05IY2iQ9bfBk4eszjStGiYtYRqeaAczkDGxXJSJ7Q/G97jI8bgurv
-         9K6OSjSF3X0o5sIk+sxrmEyCiljC6qYIVuIK7SxoSERlDAJ8R6L6XoZiQMeoNWbSEQ2W
-         4uMz6NJyHEvBeRKERdYFR32pVXJdfZ/7XJe7AcX6TgIzQDLyL+cHdPWe8tpaD4lwuMTV
-         aKzscHDd4k7LYE9QmcGwZ8BqCnQ43IazbqX+UR8x7mH5yNJryEGK6d4xAqLxDOFZBrkW
-         mtKA==
-X-Forwarded-Encrypted: i=1; AJvYcCU2Xw0v9ojtIYehIb2kR/2XB9VwSSJsLzXDj5gLrE8/5Gdm38qEalMQBrKVMHyVBdzEdUpK9kjd@vger.kernel.org, AJvYcCVU+Of6USSioyxNuo5IdCIWATJYaooAenKr4eb9H0FJ2qkOJEy/j8NXeJUNoXxS6Gpb6kY1jKwMxNdOGTZh@vger.kernel.org, AJvYcCVpkkFUxqc/wuVqnvhZXtviLd4ZE5eXQw0DqeSGHbZhfPd5MzdqS2XrV35lOfv84UsWVHEDuNE5lI117kM=@vger.kernel.org, AJvYcCVydyj1nXFQDpP9SNTvjtwjhBDF9aVFoNHTtiboBvJfW0yhCm6zP3RpYb0ePJ3FTFSDn2XqsKm4cLJcR4xv@vger.kernel.org, AJvYcCWEZcxqia3gXCYnh/A1uKylw8vzZ7zRJgLi9od+59xx2q7aFI8H84T10Urx2+X9CK+IzZNqpXnl/0XJpe0=@vger.kernel.org, AJvYcCX4RCUaVzTmys5wL9bRAr8L4SMjYRJVLKojuHhZUcH1pP2lcfDv2U4VObBvCtxA+GxIWis=@vger.kernel.org, AJvYcCXBSVsKoSCWAz5VyiJBiroGSLFolKjHw/il9YFZB8T5a4g0K3X2Sl/7DErVEGvnzCpVXOVWw4glANRaOyAFeTo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2RtgMAPbYx6CnzlH8PsLPdxnWweF5gwOI3Fng/WImvzT0UhV1
-	YN4bf23XjMEEg1ODqXhb/5KDQcCCd+c2ZbIzTBKkKU0R6CFSbQmC
-X-Gm-Gg: ASbGnct2vr76XZkQJBvEoyPRw4a1ebYFUw5JGCw939jmiNz5BBQXXNWkBw+llyb6X8u
-	pOttVrNqsgECm1y1EibdqpevRNh/DjXvBsZpstVpabNiYLxaVfmnbLPHYF3B/uRSPI6iSLAwgs3
-	5SGQXjo22U96msYWio4ChHviJ8lgJKrmMKVTTEs2DqIYL1jGcU6pSdq2kA+o+RNOgOBRGCP3m74
-	e/wdpRda0YTUUDYqhWjh4lJixJ4a7nhJHKZcpcnZRZxrm/Ey1OHks4ssGA+9dh/te5fd8n8qxKq
-	/pt98mOAfF+61MmM766RVzD3WYrQmsRCjGi9tya794eqm0yNvLXtjyFCsz+xGomPlq3fn4WI
-X-Google-Smtp-Source: AGHT+IFu7aSko21Sw2wxa8CSJ3BoLCLGU4XDLggoCqJDcaLIBubWzqHl2YbchxgGWLxoXzaA2oGt1A==
-X-Received: by 2002:a17:902:db12:b0:216:3d72:1712 with SMTP id d9443c01a7336-22780e1a30emr184600615ad.48.1742742994925;
-        Sun, 23 Mar 2025 08:16:34 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22781207f3csm52440875ad.247.2025.03.23.08.16.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Mar 2025 08:16:34 -0700 (PDT)
-Date: Sun, 23 Mar 2025 23:16:24 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>,
-	David Laight <david.laight.linux@gmail.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Laurent.pinchart@ideasonboard.com, airlied@gmail.com,
-	akpm@linux-foundation.org, alistair@popple.id.au,
-	andrew+netdev@lunn.ch, andrzej.hajda@intel.com,
-	arend.vanspriel@broadcom.com, awalls@md.metrocast.net, bp@alien8.de,
-	bpf@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
-	brcm80211@lists.linux.dev, dave.hansen@linux.intel.com,
-	davem@davemloft.net, dmitry.torokhov@gmail.com,
-	dri-devel@lists.freedesktop.org, eajames@linux.ibm.com,
-	edumazet@google.com, eleanor15x@gmail.com,
-	gregkh@linuxfoundation.org, hverkuil@xs4all.nl,
-	jernej.skrabec@gmail.com, jirislaby@kernel.org, jk@ozlabs.org,
-	joel@jms.id.au, johannes@sipsolutions.net, jonas@kwiboo.se,
-	jserv@ccns.ncku.edu.tw, kuba@kernel.org, linux-fsi@lists.ozlabs.org,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-serial@vger.kernel.org, linux-wireless@vger.kernel.org,
-	linux@rasmusvillemoes.dk, louis.peens@corigine.com,
-	maarten.lankhorst@linux.intel.com, mchehab@kernel.org,
-	mingo@redhat.com, miquel.raynal@bootlin.com, mripard@kernel.org,
-	neil.armstrong@linaro.org, netdev@vger.kernel.org,
-	oss-drivers@corigine.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, rfoss@kernel.org,
-	richard@nod.at, simona@ffwll.ch, tglx@linutronix.de,
-	tzimmermann@suse.de, vigneshr@ti.com, x86@kernel.org
-Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
-Message-ID: <Z+AlyB461xwMxMtG@visitorckw-System-Product-Name>
-References: <efc2ee9d-5382-457f-b471-f3c44b81a190@citrix.com>
- <5A790652-1B22-4D13-AAC5-5D9931E90903@zytor.com>
- <20250307195310.58abff8c@pumpkin>
- <EB85C3C1-8A0D-4CB9-B501-BFEABDF3E977@zytor.com>
- <Z824SgB9Dt5zdWYc@visitorckw-System-Product-Name>
- <Z9CyuowYsZyez36c@thinkpad>
- <80771542-476C-493E-858A-D2AF6A355CC1@zytor.com>
- <Z9GtcNJie8TRKywZ@thinkpad>
- <Z9G2Tyypb3iLoBjn@visitorckw-System-Product-Name>
- <Z9KMKwnZXA2mkD2s@visitorckw-System-Product-Name>
+	s=arc-20240116; t=1742754674; c=relaxed/simple;
+	bh=Y3cNSXQWrRJ+X42ZFCnRlpb1W8mGKD3GA39bty0UQeU=;
+	h=Content-Type:Message-ID:Date:MIME-Version:Subject:From:To:
+	 References:In-Reply-To; b=gb/mZDDg/f24tFOcIc5CSTf+0c1h++k96F9NdkGzuKOuuQVwIK2YMRa+hTrevrLXfMt/g1HZBo+CnZRUXCv2UbVCdE9aLnalzzl5fH2otem1vJBXgSgqIckKiXrLGRk5TFW1fisGq7xRwAdo3JZASRyAqIsbg/YQAaKg7oz9aYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mB0+e1ij; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52NEU3Vi001632;
+	Sun, 23 Mar 2025 18:31:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=LzfccMC1Sv9oyQvyfO7z6eM4YF/kGn
+	0pLUo0WrfHexM=; b=mB0+e1ijXvkxuweNl1sCqEGWARfiAib5vG7UEx0qWs/S60
+	Q0tiY7x2+8tlvBoYgEVMIySmq2qZabk44+YgGEz6Ozh1YVAkSf4bYzoBlBYBbDmA
+	qsRYngaITqlsF2ZLdyeA1q/aMgFjLTilQZWot3J/3xX/oYspvepdwHCl9pYO6wqz
+	LhjHCe3/8nKqnlAMGU2G8NyGMgCqrvbH9Z5LmN41k93APwVNiZYlvXCiDm8dWfsY
+	bQDmztVuVgwsVUv9CN8fHsBMhEKzfEDJ66ywJPT5ZJRxmPxfFsxwGnUEg2FEVWzA
+	WNGOWikz8iysJnWPv+plojAidc/xNyJEi5DD7DcA==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45j4dyk459-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 23 Mar 2025 18:31:05 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52NHj86D012234;
+	Sun, 23 Mar 2025 18:31:05 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 45j91ktrh0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 23 Mar 2025 18:31:04 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52NIV0JK48628216
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 23 Mar 2025 18:31:01 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E13512004D;
+	Sun, 23 Mar 2025 18:31:00 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9598E20040;
+	Sun, 23 Mar 2025 18:30:59 +0000 (GMT)
+Received: from [9.43.2.178] (unknown [9.43.2.178])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Sun, 23 Mar 2025 18:30:59 +0000 (GMT)
+Content-Type: multipart/mixed; boundary="------------NswYESWQF00tvx6wuNGErzHZ"
+Message-ID: <2a3c9acc-01de-43fd-a946-a3af4b0312a6@linux.ibm.com>
+Date: Mon, 24 Mar 2025 00:00:58 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [main-line]warning at arch/powerpc/net/bpf_jit_comp.c:961
+From: Hari Bathini <hbathini@linux.ibm.com>
+To: Venkat Rao Bagalkote <venkat88@linux.ibm.com>,
+        Saket Kumar Bhaskar <skb99@linux.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>
+References: <6168bfc8-659f-4b5a-a6fb-90a916dde3b3@linux.ibm.com>
+ <73047120-e683-4142-b4e4-2422fc41f58d@linux.ibm.com>
+ <ef9ce622-db85-4c2c-b59f-e7703dc0d335@linux.ibm.com>
+Content-Language: en-US
+In-Reply-To: <ef9ce622-db85-4c2c-b59f-e7703dc0d335@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Yce8GwNeN_iuMVtqJtOuPYRVkZpE1icE
+X-Proofpoint-ORIG-GUID: Yce8GwNeN_iuMVtqJtOuPYRVkZpE1icE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-23_08,2025-03-21_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ adultscore=0 mlxlogscore=999 bulkscore=0 impostorscore=0 clxscore=1015
+ spamscore=0 malwarescore=0 lowpriorityscore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502280000 definitions=main-2503230131
+
+This is a multi-part message in MIME format.
+--------------NswYESWQF00tvx6wuNGErzHZ
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z9KMKwnZXA2mkD2s@visitorckw-System-Product-Name>
 
-On Thu, Mar 13, 2025 at 03:41:49PM +0800, Kuan-Wei Chiu wrote:
-> On Thu, Mar 13, 2025 at 12:29:13AM +0800, Kuan-Wei Chiu wrote:
-> > On Wed, Mar 12, 2025 at 11:51:12AM -0400, Yury Norov wrote:
-> > > On Tue, Mar 11, 2025 at 03:24:14PM -0700, H. Peter Anvin wrote:
-> > > > On March 11, 2025 3:01:30 PM PDT, Yury Norov <yury.norov@gmail.com> wrote:
-> > > > >On Sun, Mar 09, 2025 at 11:48:26PM +0800, Kuan-Wei Chiu wrote:
-> > > > >> On Fri, Mar 07, 2025 at 12:07:02PM -0800, H. Peter Anvin wrote:
-> > > > >> > On March 7, 2025 11:53:10 AM PST, David Laight <david.laight.linux@gmail.com> wrote:
-> > > > >> > >On Fri, 07 Mar 2025 11:30:35 -0800
-> > > > >> > >"H. Peter Anvin" <hpa@zytor.com> wrote:
-> > > > >> > >
-> > > > >> > >> On March 7, 2025 10:49:56 AM PST, Andrew Cooper <andrew.cooper3@citrix.com> wrote:
-> > > > >> > >> >> (int)true most definitely is guaranteed to be 1.  
-> > > > >> > >> >
-> > > > >> > >> >That's not technically correct any more.
-> > > > >> > >> >
-> > > > >> > >> >GCC has introduced hardened bools that intentionally have bit patterns
-> > > > >> > >> >other than 0 and 1.
-> > > > >> > >> >
-> > > > >> > >> >https://gcc.gnu.org/gcc-14/changes.html
-> > > > >> > >> >
-> > > > >> > >> >~Andrew  
-> > > > >> > >> 
-> > > > >> > >> Bit patterns in memory maybe (not that I can see the Linux kernel using them) but
-> > > > >> > >> for compiler-generated conversations that's still a given, or the manager isn't C
-> > > > >> > >> or anything even remotely like it.
-> > > > >> > >> 
-> > > > >> > >
-> > > > >> > >The whole idea of 'bool' is pretty much broken by design.
-> > > > >> > >The underlying problem is that values other than 'true' and 'false' can
-> > > > >> > >always get into 'bool' variables.
-> > > > >> > >
-> > > > >> > >Once that has happened it is all fubar.
-> > > > >> > >
-> > > > >> > >Trying to sanitise a value with (say):
-> > > > >> > >int f(bool v)
-> > > > >> > >{
-> > > > >> > >	return (int)v & 1;
-> > > > >> > >}    
-> > > > >> > >just doesn't work (see https://www.godbolt.org/z/MEndP3q9j)
-> > > > >> > >
-> > > > >> > >I really don't see how using (say) 0xaa and 0x55 helps.
-> > > > >> > >What happens if the value is wrong? a trap or exception?, good luck recovering
-> > > > >> > >from that.
-> > > > >> > >
-> > > > >> > >	David
-> > > > >> > 
-> > > > >> > Did you just discover GIGO?
-> > > > >> 
-> > > > >> Thanks for all the suggestions.
-> > > > >> 
-> > > > >> I don't have a strong opinion on the naming or return type. I'm still a
-> > > > >> bit confused about whether I can assume that casting bool to int always
-> > > > >> results in 0 or 1.
-> > > > >> 
-> > > > >> If that's the case, since most people prefer bool over int as the
-> > > > >> return type and some are against introducing u1, my current plan is to
-> > > > >> use the following in the next version:
-> > > > >> 
-> > > > >> bool parity_odd(u64 val);
-> > > > >> 
-> > > > >> This keeps the bool return type, renames the function for better
-> > > > >> clarity, and avoids extra maintenance burden by having just one
-> > > > >> function.
-> > > > >> 
-> > > > >> If I can't assume that casting bool to int always results in 0 or 1,
-> > > > >> would it be acceptable to keep the return type as int?
-> > > > >> 
-> > > > >> Would this work for everyone?
-> > > > >
-> > > > >Alright, it's clearly a split opinion. So what I would do myself in
-> > > > >such case is to look at existing code and see what people who really
-> > > > >need parity invent in their drivers:
-> > > > >
-> > > > >                                     bool      parity_odd
-> > > > >static inline int parity8(u8 val)       -               -
-> > > > >static u8 calc_parity(u8 val)           -               -
-> > > > >static int odd_parity(u8 c)             -               +
-> > > > >static int saa711x_odd_parity           -               +
-> > > > >static int max3100_do_parity            -               -
-> > > > >static inline int parity(unsigned x)    -               -
-> > > > >static int bit_parity(u32 pkt)          -               -
-> > > > >static int oa_tc6_get_parity(u32 p)     -               -
-> > > > >static u32 parity32(__le32 data)        -               -
-> > > > >static u32 parity(u32 sample)           -               -
-> > > > >static int get_parity(int number,       -               -
-> > > > >                      int size)
-> > > > >static bool i2cr_check_parity32(u32 v,  +               -
-> > > > >                        bool parity)
-> > > > >static bool i2cr_check_parity64(u64 v)  +               -
-> > > > >static int sw_parity(__u64 t)           -               -
-> > > > >static bool parity(u64 value)           +               -
-> > > > >
-> > > > >Now you can refer to that table say that int parity(uXX) is what
-> > > > >people want to see in their drivers.
-> > > > >
-> > > > >Whichever interface you choose, please discuss it's pros and cons.
-> > > > >What bloat-o-meter says for each option? What's maintenance burden?
-> > > > >Perf test? Look at generated code?
-> > > > >
-> > > > >I personally for a macro returning boolean, something like I
-> > > > >proposed at the very beginning.
-> > > > >
-> > > > >Thanks,
-> > > > >Yury
-> > > > 
-> > > > Also, please at least provide a way for an arch to opt in to using the builtins, which seem to produce as good results or better at least on some architectures like x86 and probably with CPU options that imply fast popcnt is available.
-> > > 
-> > > Yeah. And because linux/bitops.h already includes asm/bitops.h
-> > > the simplest way would be wrapping generic implementation with
-> > > the #ifndef parity, similarly to how we handle find_next_bit case.
-> > > 
-> > > So:
-> > > 1. Kuan-Wei, please don't invent something like ARCH_HAS_PARITY;
-> > > 2. This may, and probably should, be a separate follow-up series,
-> > >    likely created by corresponding arch experts.
-> > > 
-> > I saw discussions in the previous email thread about both
-> > __builtin_parity and x86-specific implementations. However, from the
-> > discussion, I learned that before considering any optimization, we
-> > should first ask: which driver or subsystem actually cares about parity
-> > efficiency? If someone does, I can help with a micro-benchmark to
-> > provide performance numbers, but I don't have enough domain knowledge
-> > to identify hot paths where parity efficiency matters.
-> > 
-> IMHO,
-> 
-> If parity is never used in any hot path and we don't care about parity:
-> 
-> Then benchmarking its performance seems meaningless. In this case, a
-> function with a u64 argument would suffice, and we might not even need
-> a macro to optimize for different types—especially since the macro
-> requires special hacks to avoid compiler warnings. Also, I don't think
-> code size matters here. If it does, we should first consider making
-> parity a non-inline function in a .c file rather than an inline
-> function/macro in a header.
-> 
-> If parity is used in a hot path:
-> 
-> We need different handling for different type sizes. As previously
-> discussed, x86 assembly might use different instructions for u8 and
-> u16. This may sound stubborn, but I want to ask again: should we
-> consider using parity8/16/32/64 interfaces? Like in the i3c driver
-> example, if we only have a single parity macro that selects an
-> implementation based on type size, users must explicitly cast types.
-> If future users also need parity in a hot path, they might not be aware
-> of this requirement and end up generating suboptimal code. Since we
-> care about efficiency and generated code, why not follow hweight() and
-> provide separate implementations for different sizes?
-> 
-It seems no one will reply to my two emails. So, I have summarized
-different interface approaches. If there is a next version, I will send
-it after the merge window closes.
+Hi Venkat,
 
-Interface 1: Single Function
-Description: bool parity_odd(u64)
-Pros: Minimal maintenance cost
-Cons: Difficult to integrate with architecture-specific implementations
-      due to the inability to optimize for different argument sizes
-Opinions: Jiri supports this approach
+On 20/03/25 3:01 am, Hari Bathini wrote:
+> 
+> 
+> On 19/03/25 1:06 pm, Hari Bathini wrote:
+>> Hi Venkat,
+>>
+>> Thanks for reporting this.
+>> I am having a hard time reproducing this. Please share the
+>> kernel build config..
+>>
+> 
+> Thanks for reporting this and sharing the config file offline.
+> Narrowed down the potential root cause. Will post the fix...
+> 
+> - Hari
+> 
+>> On 17/03/25 6:21 pm, Venkat Rao Bagalkote wrote:
+>>> Greetings!!!
+>>>
+>>> I am observing below warnings on linux-mainline kernel, while running 
+>>> bpf-sefltests.
+>>>
+>>> These warnings are intermitent, reproduces roughly 6 out of 10 times.
+>>>
+>>>
+>>> Repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>
+>>>
+>>> Tests:
+>>>
+>>> ./test_progs
+>>>
+>>>
+>>> Attached is the log file of summary of tests.
+>>>
+>>>
+>>> Traces:
+>>>
+>>> [  978.200120] ------------[ cut here ]------------
+>>> [  978.200133] WARNING: CPU: 11 PID: 45522 at arch/powerpc/net/ 
+>>> bpf_jit_comp.c:961 __arch_prepare_bpf_trampoline.isra.0+0xdc8/0xfe0
+>>> [  978.200144] Modules linked in: tun(E) bpf_testmod(OE) veth(E) 
+>>> bonding(E) tls(E) nft_fib_inet(E) nft_fib_ipv4(E) nft_fib_ipv6(E) 
+>>> nft_fib(E) nft_reject_inet(E) nf_reject_ipv4(E) nf_reject_ipv6(E) 
+>>> nft_reject(E) nft_ct(E) rfkill(E) nft_chain_nat(E) sunrpc(E) 
+>>> ibmveth(E) pseries_rng(E) vmx_crypto(E) drm(E) dm_multipath(E) 
+>>> dm_mod(E) fuse(E) drm_panel_orientation_quirks(E) zram(E) xfs(E) 
+>>> sd_mod(E) ibmvscsi(E) scsi_transport_srp(E) [last unloaded: 
+>>> bpf_test_modorder_x(OE)]
+>>> [  978.200194] CPU: 11 UID: 0 PID: 45522 Comm: test_progs Tainted: 
+>>> G           OE      6.14.0-rc7-auto #4
+>>> [  978.200202] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+>>> [  978.200205] Hardware name: IBM,8375-42A POWER9 (architected) 
+>>> 0x4e0202 0xf000005 of:IBM,FW950.A0 (VL950_144) hv:phyp pSeries
+>>> [  978.200210] NIP:  c0000000001e3658 LR: c0000000001e34b0 CTR: 
+>>> 0000000000000006
+>>> [  978.200216] REGS: c00000001c057570 TRAP: 0700   Tainted: G OE 
+>>> (6.14.0-rc7-auto)
+>>> [  978.200221] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 
+>>> 44844442  XER: 20040169
+>>> [  978.200234] CFAR: c0000000001e34e8 IRQMASK: 0
+>>> [  978.200234] GPR00: c0000000001e34b0 c00000001c057810 
+>>> c000000001d68100 0000000000000000
+>>> [  978.200234] GPR04: c00800000025d640 c00000001c05786c 
+>>> 0000000000000160 0000000000000164
+>>> [  978.200234] GPR08: c000000157b8c164 c000000157b8c16c 
+>>> 000000000000016c 0000000000004000
+>>> [  978.200234] GPR12: 0000000000000001 c00000001ec82b00 
+>>> 0000000000000078 0000000038210110
+>>> [  978.200234] GPR16: 00000000000000a8 00000000eb210098 
+>>> 0000000060638000 00000000e86100c0
+>>> [  978.200234] GPR20: 00000000eb4100a0 0000000000000004 
+>>> 000000002c230000 0000000060000000
+>>> [  978.200234] GPR24: fffffffffffff000 c000000005834428 
+>>> c00800000025d640 0000000000000001
+>>> [  978.200234] GPR28: c000000157b89c00 000000000000026c 
+>>> 0000000000000003 c000000157b8c000
+>>> [  978.200294] NIP [c0000000001e3658] 
+>>> __arch_prepare_bpf_trampoline.isra.0+0xdc8/0xfe0
+>>> [  978.200301] LR [c0000000001e34b0] 
+>>> __arch_prepare_bpf_trampoline.isra.0+0xc20/0xfe0
+>>> [  978.200308] Call Trace:
+>>> [  978.200310] [c00000001c057810] [c0000000001e34b0] 
+>>> __arch_prepare_bpf_trampoline.isra.0+0xc20/0xfe0 (unreliable)
+>>> [  978.200319] [c00000001c057950] [c0000000001e4974] 
+>>> arch_prepare_bpf_trampoline+0x94/0x130
+>>> [  978.200327] [c00000001c0579b0] [c0000000005001ac] 
+>>> bpf_trampoline_update+0x23c/0x660
+>>> [  978.200334] [c00000001c057a90] [c0000000005006dc] 
+>>> __bpf_trampoline_link_prog+0x10c/0x360
+>>> [  978.200341] [c00000001c057ad0] [c000000000500c28] 
+>>> bpf_trampoline_link_cgroup_shim+0x268/0x370
+>>> [  978.200348] [c00000001c057b80] [c00000000053254c] 
+>>> __cgroup_bpf_attach+0x4ec/0x760
+>>> [  978.200355] [c00000001c057c60] [c000000000533dd4] 
+>>> cgroup_bpf_prog_attach+0xa4/0x310
+>>> [  978.200362] [c00000001c057cb0] [c00000000049d1b8] 
+>>> bpf_prog_attach+0x2a8/0x2e0
+>>> [  978.200370] [c00000001c057d00] [c0000000004a7278] 
+>>> __sys_bpf+0x428/0xd20
+>>> [  978.200375] [c00000001c057df0] [c0000000004a7b9c] sys_bpf+0x2c/0x40
+>>> [  978.200381] [c00000001c057e10] [c000000000033078] 
+>>> system_call_exception+0x128/0x310
+>>> [  978.200388] [c00000001c057e50] [c00000000000d05c] 
+>>> system_call_vectored_common+0x15c/0x2ec
+>>> [  978.200396] --- interrupt: 3000 at 0x7fff98ba9f40
+>>> [  978.200405] NIP:  00007fff98ba9f40 LR: 00007fff98ba9f40 CTR: 
+>>> 0000000000000000
+>>> [  978.200410] REGS: c00000001c057e80 TRAP: 3000   Tainted: G OE 
+>>> (6.14.0-rc7-auto)
+>>> [  978.200415] MSR:  800000000280f033 
+>>> <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 48002848  XER: 00000000
+>>> [  978.200431] IRQMASK: 0
+>>> [  978.200431] GPR00: 0000000000000169 00007fffde891b10 
+>>> 00007fff98cb6d00 0000000000000008
+>>> [  978.200431] GPR04: 00007fffde891bf8 0000000000000020 
+>>> 0000000000000001 0000000000000008
+>>> [  978.200431] GPR08: 0000000000000008 0000000000000000 
+>>> 0000000000000000 0000000000000000
+>>> [  978.200431] GPR12: 0000000000000000 00007fff995fe9e0 
+>>> 0000000000000000 0000000000000000
+>>> [  978.200431] GPR16: 0000000000000000 0000000000000000 
+>>> 0000000000000000 0000000000000000
+>>> [  978.200431] GPR20: 0000000000000000 0000000000000000 
+>>> 0000000000000000 00007fff995ef438
+>>> [  978.200431] GPR24: 00000000105ed2f4 00007fff995f0000 
+>>> 00007fffde892998 0000000000000001
+>>> [  978.200431] GPR28: 00007fffde892aa8 00007fffde892988 
+>>> 0000000000000001 00007fffde891b40
+>>> [  978.200487] NIP [00007fff98ba9f40] 0x7fff98ba9f40
+>>> [  978.200491] LR [00007fff98ba9f40] 0x7fff98ba9f40
+>>> [  978.200495] --- interrupt: 3000
+>>> [  978.200498] Code: 7d5f412e 81210060 39290001 792a1788 3ba90040 
+>>> 91210060 7d3f5214 57bd103a e9010030 3908ff00 7c294040 4081fae0 
+>>> <0fe00000> 3ba0fff2 4bfffad4 8281003c
+>>> [  978.200519] ---[ end trace 0000000000000000 ]---
+>>>
+>>> If you happen to fix this, please add below tag.
+>>>
+>>>
+>>> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
 
-Interface 2: Single Macro
-Description: parity_odd() macro
-Pros: Allows type-specific implementation
-Cons: Requires hacks to avoid warnings; users may need explicit
-      casting; potential sub-optimal code on 32-bit x86
-Opinions: Yury supports this approach
+The attached fix is not complete but will be sufficient for this
+test scenario. While I come up with the complete fix for all scenarios,
+can you share your observations applying the change...
 
-Interface 3: Multiple Functions
-Description: bool parity_odd8/16/32/64()
-Pros: No need for explicit casting; easy to integrate
-      architecture-specific optimizations; except for parity8(), all
-      functions are one-liners with no significant code duplication
-Cons: More functions may increase maintenance burden
-Opinions: Only I support this approach
+- Hari
+--------------NswYESWQF00tvx6wuNGErzHZ
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-powerpc-bpf-trampoline-fix.patch"
+Content-Disposition: attachment;
+ filename="0001-powerpc-bpf-trampoline-fix.patch"
+Content-Transfer-Encoding: base64
 
-Regards,
-Kuan-Wei
+ZGlmZiAtLWdpdCBhL2FyY2gvcG93ZXJwYy9uZXQvYnBmX2ppdF9jb21wLmMgYi9hcmNoL3Bv
+d2VycGMvbmV0L2JwZl9qaXRfY29tcC5jCmluZGV4IDI5OTFiYjE3MWE5Yi4uZDg2N2FkYTMx
+YmQ1IDEwMDY0NAotLS0gYS9hcmNoL3Bvd2VycGMvbmV0L2JwZl9qaXRfY29tcC5jCisrKyBi
+L2FyY2gvcG93ZXJwYy9uZXQvYnBmX2ppdF9jb21wLmMKQEAgLTgzMyw3ICs4MzMsOCBAQCBz
+dGF0aWMgaW50IF9fYXJjaF9wcmVwYXJlX2JwZl90cmFtcG9saW5lKHN0cnVjdCBicGZfdHJh
+bXBfaW1hZ2UgKmltLCB2b2lkICpyd19pbQogCUVNSVQoUFBDX1JBV19TVEwoX1IyNiwgX1Ix
+LCBudnJfb2ZmICsgU1pMKSk7CiAKIAlpZiAoZmxhZ3MgJiBCUEZfVFJBTVBfRl9DQUxMX09S
+SUcpIHsKLQkJUFBDX0xJX0FERFIoX1IzLCAodW5zaWduZWQgbG9uZylpbSk7CisJCVBQQ19M
+SV9BRERSKF9SMywgaW0gPyAodW5zaWduZWQgbG9uZylpbSA6CisJCQkJKHVuc2lnbmVkIGxv
+bmcpKH4oMVVMIDw8IChCSVRTX1BFUl9MT05HIC0gMSkpKSk7CiAJCXJldCA9IGJwZl9qaXRf
+ZW1pdF9mdW5jX2NhbGxfcmVsKGltYWdlLCByb19pbWFnZSwgY3R4LAogCQkJCQkJICh1bnNp
+Z25lZCBsb25nKV9fYnBmX3RyYW1wX2VudGVyKTsKIAkJaWYgKHJldCkKQEAgLTg4OSw3ICs4
+OTAsOCBAQCBzdGF0aWMgaW50IF9fYXJjaF9wcmVwYXJlX2JwZl90cmFtcG9saW5lKHN0cnVj
+dCBicGZfdHJhbXBfaW1hZ2UgKmltLCB2b2lkICpyd19pbQogCQkJYnBmX3RyYW1wb2xpbmVf
+cmVzdG9yZV90YWlsX2NhbGxfY250KGltYWdlLCBjdHgsIGZ1bmNfZnJhbWVfb2Zmc2V0LCBy
+NF9vZmYpOwogCiAJCS8qIFJlc2VydmUgc3BhY2UgdG8gcGF0Y2ggYnJhbmNoIGluc3RydWN0
+aW9uIHRvIHNraXAgZmV4aXQgcHJvZ3MgKi8KLQkJaW0tPmlwX2FmdGVyX2NhbGwgPSAmKCh1
+MzIgKilyb19pbWFnZSlbY3R4LT5pZHhdOworCQlpZiAoaW0pCisJCQlpbS0+aXBfYWZ0ZXJf
+Y2FsbCA9ICYoKHUzMiAqKXJvX2ltYWdlKVtjdHgtPmlkeF07CiAJCUVNSVQoUFBDX1JBV19O
+T1AoKSk7CiAJfQogCkBAIC05MTIsOCArOTE0LDEwIEBAIHN0YXRpYyBpbnQgX19hcmNoX3By
+ZXBhcmVfYnBmX3RyYW1wb2xpbmUoc3RydWN0IGJwZl90cmFtcF9pbWFnZSAqaW0sIHZvaWQg
+KnJ3X2ltCiAJCX0KIAogCWlmIChmbGFncyAmIEJQRl9UUkFNUF9GX0NBTExfT1JJRykgewot
+CQlpbS0+aXBfZXBpbG9ndWUgPSAmKCh1MzIgKilyb19pbWFnZSlbY3R4LT5pZHhdOwotCQlQ
+UENfTElfQUREUihfUjMsIGltKTsKKwkJaWYgKGltKQorCQkJaW0tPmlwX2VwaWxvZ3VlID0g
+JigodTMyICopcm9faW1hZ2UpW2N0eC0+aWR4XTsKKwkJUFBDX0xJX0FERFIoX1IzLCBpbSA/
+ICh1bnNpZ25lZCBsb25nKWltIDoKKwkJCQkodW5zaWduZWQgbG9uZykofigxVUwgPDwgKEJJ
+VFNfUEVSX0xPTkcgLSAxKSkpKTsKIAkJcmV0ID0gYnBmX2ppdF9lbWl0X2Z1bmNfY2FsbF9y
+ZWwoaW1hZ2UsIHJvX2ltYWdlLCBjdHgsCiAJCQkJCQkgKHVuc2lnbmVkIGxvbmcpX19icGZf
+dHJhbXBfZXhpdCk7CiAJCWlmIChyZXQpCkBAIC05NzIsNyArOTc2LDYgQEAgc3RhdGljIGlu
+dCBfX2FyY2hfcHJlcGFyZV9icGZfdHJhbXBvbGluZShzdHJ1Y3QgYnBmX3RyYW1wX2ltYWdl
+ICppbSwgdm9pZCAqcndfaW0KIGludCBhcmNoX2JwZl90cmFtcG9saW5lX3NpemUoY29uc3Qg
+c3RydWN0IGJ0Zl9mdW5jX21vZGVsICptLCB1MzIgZmxhZ3MsCiAJCQkgICAgIHN0cnVjdCBi
+cGZfdHJhbXBfbGlua3MgKnRsaW5rcywgdm9pZCAqZnVuY19hZGRyKQogewotCXN0cnVjdCBi
+cGZfdHJhbXBfaW1hZ2UgaW07CiAJdm9pZCAqaW1hZ2U7CiAJaW50IHJldDsKIApAQCAtOTg4
+LDcgKzk5MSw3IEBAIGludCBhcmNoX2JwZl90cmFtcG9saW5lX3NpemUoY29uc3Qgc3RydWN0
+IGJ0Zl9mdW5jX21vZGVsICptLCB1MzIgZmxhZ3MsCiAJaWYgKCFpbWFnZSkKIAkJcmV0dXJu
+IC1FTk9NRU07CiAKLQlyZXQgPSBfX2FyY2hfcHJlcGFyZV9icGZfdHJhbXBvbGluZSgmaW0s
+IGltYWdlLCBpbWFnZSArIFBBR0VfU0laRSwgaW1hZ2UsCisJcmV0ID0gX19hcmNoX3ByZXBh
+cmVfYnBmX3RyYW1wb2xpbmUoTlVMTCwgaW1hZ2UsIGltYWdlICsgUEFHRV9TSVpFLCBpbWFn
+ZSwKIAkJCQkJICAgIG0sIGZsYWdzLCB0bGlua3MsIGZ1bmNfYWRkcik7CiAJYnBmX2ppdF9m
+cmVlX2V4ZWMoaW1hZ2UpOwogCg==
+
+--------------NswYESWQF00tvx6wuNGErzHZ--
+
 
