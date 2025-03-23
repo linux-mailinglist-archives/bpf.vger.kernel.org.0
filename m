@@ -1,429 +1,276 @@
-Return-Path: <bpf+bounces-54581-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54582-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16557A6CDD8
-	for <lists+bpf@lfdr.de>; Sun, 23 Mar 2025 04:50:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 555E4A6CE47
+	for <lists+bpf@lfdr.de>; Sun, 23 Mar 2025 08:25:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 773C618928D7
-	for <lists+bpf@lfdr.de>; Sun, 23 Mar 2025 03:50:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3284E7A5B80
+	for <lists+bpf@lfdr.de>; Sun, 23 Mar 2025 07:24:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135CA1FFC4C;
-	Sun, 23 Mar 2025 03:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C411220127A;
+	Sun, 23 Mar 2025 07:25:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TX/u7+B2"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HX2sVng8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f195.google.com (mail-yb1-f195.google.com [209.85.219.195])
+Received: from mail-qk1-f202.google.com (mail-qk1-f202.google.com [209.85.222.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1B51519BA;
-	Sun, 23 Mar 2025 03:49:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8BF47B3E1
+	for <bpf@vger.kernel.org>; Sun, 23 Mar 2025 07:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742701800; cv=none; b=Z2l2wm3CZMhKdqtdNu7HICzmIXAedKQTu9ey0NCteITyH0Wp1AqpTSKbVxn8MnDK7Dau1jMFewT58jlHb9k39RZQTi2k62JpIsOIMksq+AowbjhtkMEX8La7K5jPuF3VntoNeuSR14CIvBbU4L1woKbK3FzBt6Ft747BKksArrE=
+	t=1742714719; cv=none; b=IEb06YEqtIgsKgZEbtSQZYpBrZxjhA6pRFIgD08LqTLDn8+TfQ0IXBSfBUCtZFF3ThIhdGTrJTq26bzlPfc2+FUljwXQ+3Ug34ndfpqKzHtacxn3sPX9+1n4SyeVo5L2muNlXXYi8sfKjajbWZYw/yygQUVA8sRyeuNbwtJNfus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742701800; c=relaxed/simple;
-	bh=xLM6LykXakU9e8TajiIjcM/MXZewxiiJE85ejB3akTM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HZNA211N/jBXSmZrYvq51PlsTNPSXyxtuTs0p6AogcP/jwjXgQ3RrhmAlJRDN5ZcuUVaYSmYHWRBdY/20ZqlaoXCHNR1BmpYvkpl4hgI8c66ZKIquE0dbugz638BorBgIY4Wf0vT4ie47gV6reIdUx+tfXtlT8tzKjn14NM77Gs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TX/u7+B2; arc=none smtp.client-ip=209.85.219.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f195.google.com with SMTP id 3f1490d57ef6-e5dc299deb4so3007675276.1;
-        Sat, 22 Mar 2025 20:49:58 -0700 (PDT)
+	s=arc-20240116; t=1742714719; c=relaxed/simple;
+	bh=pjEHBPzfvEeYJItimRBKQTAk73orwkt8aka59h1vjNs=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=SjsTbU5enyxoldyHHG47WIN76Sp8NwDdtraKL2L3W3TQB/VQnrnwMSJYLHjYBrS48njBVOY7653CszEDbsn3sHsQkQKgaoVMiKxsDkXfe1pn0nxtGv6b8+8CEK7RNnQ6np3oWw2KAC6d6sZPhuoajlw9nsg+ZPMGo7X8O0b34fU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edumazet.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HX2sVng8; arc=none smtp.client-ip=209.85.222.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edumazet.bounces.google.com
+Received: by mail-qk1-f202.google.com with SMTP id af79cd13be357-7bb849aa5fbso890486485a.0
+        for <bpf@vger.kernel.org>; Sun, 23 Mar 2025 00:25:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742701798; x=1743306598; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/0FRMX9aBKnekAkOBfw/gbWkw+xrCQaz5CvPCEHncCk=;
-        b=TX/u7+B2+htPIoQb4sUiGQ7qXZKGwCkR5YDdNJYWXAKTggpwGBNUmBhaKhS1/BoTW7
-         M4pD9AFmZELnYg4iz0a2htG1ka/5xebXkXZNDsQrzrd97YaMaaezibQi8FhdHJAeaZ/r
-         y4khmw6izl5l38rqrpCkkHijdpfXSUdRQLpV3lauVdgHOW1iQ+yCkaRR/Sgf/YMC92TZ
-         N1mxB7alcJKSeKajV7C8SyK4I9NGftcZWTqRmXy5oYDhdwUwCY0Jcie9ScH8YpNKwY/7
-         54iUrp7YQVMprb/9G8BSQLZPGPQmD6pe0YfdC5p5fAplSxyHZDI0nThX6g0tEWLAzt/f
-         YULg==
+        d=google.com; s=20230601; t=1742714715; x=1743319515; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ocoek1h3wHR+5f+ll4cNEMjKwfXiGgCdyPNt9yxsz0c=;
+        b=HX2sVng8oXl2aqg2rbx0PNA7lDuIc47L6wG6gSjRyO8nsjUdj+0iwvhbm/+Ny/umJ0
+         eHvfYsbYT6YV0AGhnOuzeXZDmcE5BY2tq/TZlqfnMm/Rqrr78ly4LgNLYXUQWh2PKQoZ
+         HGT0v+67IoLQUBiOYeQ9dzX6h7jAzVhYP4ProZVQyZ4F7RX0alC3f4M4l4oszPztg6PM
+         I6u/6kyGglQHYnKCXW22LruWXLXqowOAdKVrWO8FhIZKzaslkQUEsNCRzft6zW3Ze+Vi
+         AcB3v0FtKy//FwnniewPOCUyKI7YuMnHdxLDlMcygZ3HNEN5HMjAMizTBUnfJd5aaCg+
+         sivg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742701798; x=1743306598;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/0FRMX9aBKnekAkOBfw/gbWkw+xrCQaz5CvPCEHncCk=;
-        b=h6h6HYgDsQfi/eFLmSvQhEuYhKUM8xB1V+gsfY8nnPC+Ll5VoD45lLwPXXKSwM2vU7
-         rouqpkWQpskZih+Yx6nSdcFHq1ZAL0+k9trgRIklgUwKKTA5HymGVZHKSqG7AQ4InyaA
-         b2i//lbpWyvVsf5S2k8JpfQ+S4X1VPrLNEI1d4QR8fd5+NAoi3BQvOXyoYDVtpcLL2zN
-         97jKJGsUu5O+ZJUR2oyBIb189zpYuVOs7TeOaY36CWdqJLRKdjXbNH7joFanldigkOuR
-         7/bps0x6NjDtxPj9KhHxK7oOx1SUrJ3Ing/2vIcrtG8qLR7tq8XUQwCmeNXU1CjqRxKK
-         iYGg==
-X-Forwarded-Encrypted: i=1; AJvYcCUYpBlq6mo7D9Y5LL6MQPwXMNzkgD38jP9PwYn1gx9LlvX6s8O01s4FlBoUs1EMgi+el6ifQowH@vger.kernel.org, AJvYcCVbPzwqUkJ7lxV39oaoHMalfnw3QdVbXr6whPXRHMDirgC4duTLb01080pn3leJwpi666ldOuc9Fe1+ve3N@vger.kernel.org, AJvYcCX+bmLmditE1V9u3SlpJgGXXkVoe2WMo09IiFiV8cUqFaEHzMv/0K/ljpKSb1IC1w+1G06flENN1MzmU08SaJ0uGt9h@vger.kernel.org, AJvYcCXaNR4P5ejFlPNA58yTjim2PVCpCO+reUlMXzS6AulS7474Gv90lh18SL2/GBU5bDxZL2M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwP8Rc4xn7XLBxrcVXbSUcDd8/kk48gQ8TncvdZUCOhGaCF/f8R
-	l716WSjlK2P2S4xS1kymPipIqtL9K3d9HxoYRzT2opLtT3mu7Wvoxri6VWo3prwWdOPCqeTUN0r
-	NgASzVEMpbK3IN2ZfCVVhCTVGXTyO1j9zhwE=
-X-Gm-Gg: ASbGncvqF374dUyE4vQQIoZBhMhjfNLfyOcgX7E6BSrcrGRyNPe6yRDECx3DXBZjg1n
-	cfuWgdei5CUSpi7/Zc87PpX5iBHPELQ/nr5cSy+Nf7J+KhvNTVc2zOOr3H4a/8pg5mZtWF5V2nF
-	/c7+mRzRy9ulRdZn8UFH+91GmeKQ==
-X-Google-Smtp-Source: AGHT+IHrRRGwnzoEVm9rPtAOLwXv3Ds9wIlF/k9E56Cd7/IsdGAe157sqosMk0nWoRQCnTz/jDyzC+GOxDdPuG1Zei0=
-X-Received: by 2002:a05:690c:64c8:b0:6ff:28b2:50bd with SMTP id
- 00721157ae682-700babfd2e1mr111396127b3.2.1742701797513; Sat, 22 Mar 2025
- 20:49:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1742714715; x=1743319515;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ocoek1h3wHR+5f+ll4cNEMjKwfXiGgCdyPNt9yxsz0c=;
+        b=qix83V/il3kGRrGEJii49wdYJkB9nbEJt9SF6C/aQxQGIV0EPX0yI+7LfsJqqK5r1e
+         xigl8+1yYHN9qWixyoMRxFJfInlgpm5RkN+mRz6q8PsOEjfNhqRzdFjTgvHH0MUfFcU9
+         Mhj+6xF8GLjPg7gmeBvlkYqx4PEGvO7f/DGYhwaaal4VTdqqJCNz6IYEUhN6ud/W7uSy
+         8keojXYcnW+MYRhhtn2lphvjy/s3JU9B532BP4O67SHz+8azh+7oOfOnauFk6Kr4Qyzg
+         o/mz1gwCzOvyXCZjTpSVqLJCmlBgozf92iuorNvW/zxiefO75/ib+Y4N8EXCsBf/pO6o
+         BMVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVzmoCeLBqUeRVnNUM3v6CIGgJw34zn4Zqn5+uCiiN64ff4rwPCyK9Ov3S8b+3c5RznZUk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxOCobAo0d/zt8wY/sp0qTz58c5zoFK+NYAX5ueNJIzJIvMxlgj
+	ryfCKvqHdLyf7r4ukiDn7R1h5D7o3zeJznSFtEqc5CunwepcPM1ymOJlN+SgIwy1GNmMz+PMuKx
+	UVLpTs2VK4g==
+X-Google-Smtp-Source: AGHT+IEWgWZF6N/oTjsn9wQHDrFwRXFS8i6IktZJ+/0O2oyPVZJ2yRW/Ir7R6ApD3ALqTYnYnIF5efzt6GHTfQ==
+X-Received: from qkbdp6.prod.google.com ([2002:a05:620a:2b46:b0:7c5:3ce0:bd3e])
+ (user=edumazet job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:620a:4720:b0:7c5:4c49:76a6 with SMTP id af79cd13be357-7c5ba12d9bemr1402211385a.8.1742714715634;
+ Sun, 23 Mar 2025 00:25:15 -0700 (PDT)
+Date: Sun, 23 Mar 2025 07:25:11 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250303132837.498938-1-dongml2@chinatelecom.cn>
- <20250303132837.498938-2-dongml2@chinatelecom.cn> <20250303165454.GB11590@noisy.programming.kicks-ass.net>
- <CADxym3aVtKx_mh7aZyZfk27gEiA_TX6VSAvtK+YDNBtuk_HigA@mail.gmail.com>
- <20250304053853.GA7099@noisy.programming.kicks-ass.net> <20250304061635.GA29480@noisy.programming.kicks-ass.net>
- <CADxym3bS_6jpGC3vLAAyD20GsR+QZofQw0_GgKT8nN3c-HqG-g@mail.gmail.com>
- <20250304094220.GC11590@noisy.programming.kicks-ass.net> <6F9EF5C3-4CAE-4C5E-B70E-F73462AC7CA0@zytor.com>
- <CADxym3busXZKtX=+FY_xnYw7e1CKp5AiHSasZGjVJTdeCZao-g@mail.gmail.com>
- <20250305100306.4685333a@gandalf.local.home> <CADxym3ZB_eQny=-aO4AwrHiwT264NXitdKwjRUYrnGJ2tH=Qwg@mail.gmail.com>
- <CAADnVQJ0_+Hij=kf9eVPX_ZND=2=uDHaYPWvv1x-WmR5sZRSmA@mail.gmail.com> <CADxym3YMeAPpc+ozM2E7yW1qpB_arKJiDyAcRs8pW8sRqJZOZw@mail.gmail.com>
-In-Reply-To: <CADxym3YMeAPpc+ozM2E7yW1qpB_arKJiDyAcRs8pW8sRqJZOZw@mail.gmail.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Sun, 23 Mar 2025 11:51:41 +0800
-X-Gm-Features: AQ5f1JrZYkyvJMf2b6Drb-R-P7CuIuoIpnCVtLn7V-eAwU_iQgNyMkTt6IvDE_Q
-Message-ID: <CADxym3aRTo0GfhfTKKxbig+QmrGfiBGoqs-Rtr6y_WFzNpgmgw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] x86/ibt: factor out cfi and fineibt offset
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, dongml2@chinatelecom.cn, 
-	Mike Rapoport <rppt@kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.49.0.395.g12beb8f557-goog
+Message-ID: <20250323072511.2353342-1-edumazet@google.com>
+Subject: [PATCH] x86/alternatives: remove false sharing in poke_int3_handler()
+From: Eric Dumazet <edumazet@google.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org, 
+	bpf@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>, 
+	Greg Thelen <gthelen@google.com>, Stephane Eranian <eranian@google.com>, 
+	Eric Dumazet <edumazet@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 6, 2025 at 4:50=E2=80=AFPM Menglong Dong <menglong8.dong@gmail.=
-com> wrote:
->
-> On Thu, Mar 6, 2025 at 11:39=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Mar 5, 2025 at 6:59=E2=80=AFPM Menglong Dong <menglong8.dong@gm=
-ail.com> wrote:
-> > >
-> > > I'm not sure if it works. However, indirect call is also used
-> > > in function graph, so we still have better performance. Isn't it?
-> > >
-> > > Let me have a look at the code of the function graph first :/
-> >
-> > Menglong,
-> >
-> > Function graph infra isn't going to help.
-> > "call foo" isn't a problem either.
-> >
-> > But we have to step back.
-> > per-function metadata is an optimization and feels like
-> > we're doing a premature optimization here without collecting
-> > performance numbers first.
-> >
-> > Let's implement multi-fentry with generic get_metadata_by_ip() first.
-> > get_metadata_by_ip() will be a hashtable in such a case and
-> > then we can compare its performance when it's implemented as
-> > a direct lookup from ip-4 (this patch) vs hash table
-> > (that does 'ip' to 'metadata' lookup).
->
-> Hi, Alexei
->
-> You are right, I should do such a performance comparison.
->
-> >
-> > If/when we decide to do this per-function metadata we can also
-> > punt to generic hashtable for cfi, IBT, FineIBT, etc configs.
-> > When mitigations are enabled the performance suffers anyway,
-> > so hashtable lookup vs direct ip-4 lookup won't make much difference.
-> > So we can enable per-function metadata only on non-mitigation configs
-> > when FUNCTION_ALIGNMENT=3D16.
-> > There will be some number of bytes available before every function
-> > and if we can tell gcc/llvm to leave at least 5 bytes there
-> > the growth of vmlinux .text will be within a noise.
+eBPF programs can be run 20,000,000+ times per second on busy servers.
 
-Hi, Alexei
+Whenever /proc/sys/kernel/bpf_stats_enabled is turned off,
+hundreds of calls sites are patched from text_poke_bp_batch()
+and we see a critical loss of performance due to false sharing
+on bp_desc.refs lasting up to three seconds.
 
-I have finished the demo of the tracing multi-link recently.
-The code is not ready to be sent out, as it's very very ugly
-for now, and I did some performance testing.
+   51.30%  server_bin       [kernel.kallsyms]           [k] poke_int3_handler
+            |
+            |--46.45%--poke_int3_handler
+            |          exc_int3
+            |          asm_exc_int3
+            |          |
+            |          |--24.26%--cls_bpf_classify
+            |          |          tcf_classify
+            |          |          __dev_queue_xmit
+            |          |          ip6_finish_output2
+            |          |          ip6_output
+            |          |          ip6_xmit
+            |          |          inet6_csk_xmit
+            |          |          __tcp_transmit_skb
+            |          |          |
+            |          |          |--9.00%--tcp_v6_do_rcv
+            |          |          |          tcp_v6_rcv
+            |          |          |          ip6_protocol_deliver_rcu
+            |          |          |          ip6_rcv_finish
+            |          |          |          ipv6_rcv
+            |          |          |          __netif_receive_skb
+            |          |          |          process_backlog
+            |          |          |          __napi_poll
+            |          |          |          net_rx_action
+            |          |          |          __softirqentry_text_start
+            |          |          |          asm_call_sysvec_on_stack
+            |          |          |          do_softirq_own_stack
 
-The test case is very simple. I defined a function "kfunc_md_test",
-and called it 10000000 times in "do_kfunc_md_test". And I will
-attach my empty bpf program of attach type BPF_FENTRY_MULTI
-to it. Following is the code of the test case:
+Fix this by replacing bp_desc.refs with a per-cpu bp_refs.
 
------------------------------------------kernel
-part--------------------------------
-int kfunc_md_test_result =3D 0;
-noinline void kfunc_md_test(int a)
-{
-    kfunc_md_test_result =3D a;
-}
+Before the patch, on a host with 240 cpus (480 threads):
 
-int noinline
-do_kfunc_md_test(const struct ctl_table *table, int write,
-                void *buffer, size_t *lenp, loff_t *ppos)
-{
-    u64 start, interval;
-    int i;
+echo 0 >/proc/sys/kernel/bpf_stats_enabled
+text_poke_bp_batch(nr_entries=2)
+        text_poke_bp_batch+1
+        text_poke_finish+27
+        arch_jump_label_transform_apply+22
+        jump_label_update+98
+        __static_key_slow_dec_cpuslocked+64
+        static_key_slow_dec+31
+        bpf_stats_handler+236
+        proc_sys_call_handler+396
+        vfs_write+761
+        ksys_write+102
+        do_syscall_64+107
+        entry_SYSCALL_64_after_hwframe+103
+Took 324 usec
 
-    start =3D ktime_get_boottime_ns();
-    for (i =3D 0; i < 10000000; i++)
-        kfunc_md_test(i);
+text_poke_bp_batch(nr_entries=164)
+        text_poke_bp_batch+1
+        text_poke_finish+27
+        arch_jump_label_transform_apply+22
+        jump_label_update+98
+        __static_key_slow_dec_cpuslocked+64
+        static_key_slow_dec+31
+        bpf_stats_handler+236
+        proc_sys_call_handler+396
+        vfs_write+761
+        ksys_write+102
+        do_syscall_64+107
+        entry_SYSCALL_64_after_hwframe+103
+Took 2655300 usec
 
-    interval =3D ktime_get_boottime_ns() - start;
-    pr_info("%llu.%llums\n",
-        interval / 1000000, interval % 1000000);
+After this patch:
 
-    return 0;
-}
+echo 0 >/proc/sys/kernecho 0 >/proc/sys/kernel/bpf_stats_enabled
+text_poke_bp_batch(nr_entries=2)
+        text_poke_bp_batch+1
+        text_poke_finish+27
+        arch_jump_label_transform_apply+22
+        jump_label_update+98
+        __static_key_slow_dec_cpuslocked+64
+        static_key_slow_dec+31
+        bpf_stats_handler+236
+        proc_sys_call_handler+396
+        vfs_write+761
+        ksys_write+102
+        do_syscall_64+107
+        entry_SYSCALL_64_after_hwframe+103
+Took 519 usec
 
----------------------------------------bpf
-part-----------------------------------------
-SEC("fentry.multi/kfunc_md_test")
-int BPF_PROG(fentry_manual_nop)
-{
-    return 0;
-}
-------------------------------------bpf part
-end-------------------------------------
+text_poke_bp_batch(nr_entries=164)
+        text_poke_bp_batch+1
+        text_poke_finish+27
+        arch_jump_label_transform_apply+22
+        jump_label_update+98
+        __static_key_slow_dec_cpuslocked+64
+        static_key_slow_dec+31
+        bpf_stats_handler+236
+        proc_sys_call_handler+396
+        vfs_write+761
+        ksys_write+102
+        do_syscall_64+107
+        entry_SYSCALL_64_after_hwframe+103
+Took 702 usec
 
-I did the testing for BPF_FENTRY, BPF_FENTRY_MULTI and
-BPF_KPROBE_MULTI, and following is the results:
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+---
+ arch/x86/kernel/alternative.c | 30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
 
-Without any bpf:
----------------------------------------------------------------------------=
------------
-9.234677ms
-9.486119ms
-9.310059ms
-9.468227ms
-9.217295ms
-9.500406ms
-9.292606ms
-9.530492ms
-9.268741ms
-9.513371ms
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index c71b575bf229..d7afbf822c45 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -2137,28 +2137,29 @@ struct text_poke_loc {
+ struct bp_patching_desc {
+ 	struct text_poke_loc *vec;
+ 	int nr_entries;
+-	atomic_t refs;
+ };
+ 
++static DEFINE_PER_CPU(atomic_t, bp_refs);
++
+ static struct bp_patching_desc bp_desc;
+ 
+ static __always_inline
+ struct bp_patching_desc *try_get_desc(void)
+ {
+-	struct bp_patching_desc *desc = &bp_desc;
++	atomic_t *refs = this_cpu_ptr(&bp_refs);
+ 
+-	if (!raw_atomic_inc_not_zero(&desc->refs))
++	if (!raw_atomic_inc_not_zero(refs))
+ 		return NULL;
+ 
+-	return desc;
++	return &bp_desc;
+ }
+ 
+ static __always_inline void put_desc(void)
+ {
+-	struct bp_patching_desc *desc = &bp_desc;
++	atomic_t *refs = this_cpu_ptr(&bp_refs);
+ 
+ 	smp_mb__before_atomic();
+-	raw_atomic_dec(&desc->refs);
++	raw_atomic_dec(refs);
+ }
+ 
+ static __always_inline void *text_poke_addr(struct text_poke_loc *tp)
+@@ -2191,9 +2192,9 @@ noinstr int poke_int3_handler(struct pt_regs *regs)
+ 	 * Having observed our INT3 instruction, we now must observe
+ 	 * bp_desc with non-zero refcount:
+ 	 *
+-	 *	bp_desc.refs = 1		INT3
+-	 *	WMB				RMB
+-	 *	write INT3			if (bp_desc.refs != 0)
++	 *	bp_refs = 1		INT3
++	 *	WMB			RMB
++	 *	write INT3		if (bp_refs != 0)
+ 	 */
+ 	smp_rmb();
+ 
+@@ -2299,7 +2300,8 @@ static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries
+ 	 * Corresponds to the implicit memory barrier in try_get_desc() to
+ 	 * ensure reading a non-zero refcount provides up to date bp_desc data.
+ 	 */
+-	atomic_set_release(&bp_desc.refs, 1);
++	for_each_possible_cpu(i)
++		atomic_set_release(per_cpu_ptr(&bp_refs, i), 1);
+ 
+ 	/*
+ 	 * Function tracing can enable thousands of places that need to be
+@@ -2413,8 +2415,12 @@ static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries
+ 	/*
+ 	 * Remove and wait for refs to be zero.
+ 	 */
+-	if (!atomic_dec_and_test(&bp_desc.refs))
+-		atomic_cond_read_acquire(&bp_desc.refs, !VAL);
++	for_each_possible_cpu(i) {
++		atomic_t *refs = per_cpu_ptr(&bp_refs, i);
++
++		if (!atomic_dec_and_test(refs))
++			atomic_cond_read_acquire(refs, !VAL);
++	}
+ }
+ 
+ static void text_poke_loc_init(struct text_poke_loc *tp, void *addr,
+-- 
+2.49.0.395.g12beb8f557-goog
 
-BPF_FENTRY:
----------------------------------------------------------------------------=
--------------
-80.800800ms
-79.746338ms
-83.292012ms
-80.324835ms
-84.25841ms
-81.67250ms
-81.21824ms
-80.415886ms
-79.910556ms
-80.427809ms
-
-BPF_FENTRY_MULTI with function padding:
----------------------------------------------------------------------------=
-------------
-120.457336ms
-117.854154ms
-118.888287ms
-119.726011ms
-117.52847ms
-117.463910ms
-119.212126ms
-118.722216ms
-118.843222ms
-119.166079ms
-
-It seems that the overhead of BPF_FENTRY_MULTI is more
-that BPF_FENTRY. I'm not sure if it is because of the "indirect
-call". However, it's not what we want to discuss today, so let's
-focus on the performance of the function metadata basing on
-"function padding" and "hash table".
-
-Generally speaking, the overhead of the BPF_FENTRY_MULTI
-with the hash table has a linear relation. The hash table that I
-used is exactly the same to the filter_hash that ftrace uses, and
-the array length is 1024. I didn't do that statistics basing on the
-function number, but the hash table looking up count, as I find
-that the hash is not random enough some times. However, we
-can compute the kernel function number if we image the hash
-is random enough.
-
-BPF_FENTRY_MULTI with hash table:
----------------------------------------------------------------------------=
--------
-1(1k)                    16(32k)
---------------------    --------------------
-124.950881ms    235.24341ms
-124.171226ms    232.20816ms
-123.969627ms    232.212086ms
-125.803975ms    230.935175ms
-124.256777ms    230.906713ms
-124.314095ms    234.551623ms
-124.165637ms    231.435496ms
-124.488003ms    230.936458ms
-125.571929ms    230.753203ms
-124.168110ms    234.679152ms
-
-(The 1 and 16 above means that the hash lookup times is
-1 and 16, 1k and 32k means the corresponding kernel function
-count that we trace.)
-
-According to my testing, the hash table will have a slight overhead
-if the kernel functions that we trace are no more than 5k. And
-I think this is the most use case, according to the people who are
-interested in tracing multi-link. When the function count up to 32k,
-the overhead is obvious.
-
-According to my research, the kprobe-multi/fprobe also based on
-the hash table, which will lookup the callback ops with the function
-address in a hash table, and the overhead is heavy too. And I alse
-did the kprobe-multi performance. I run the test case
-"kprobe_multi_bench_attach/kernel", and do the "kfunc_md_test"
-meanwhile, just like what I did for BPF_FENTRY_MULTI:
-
-BPF_KPROBE_MULTI:
----------------------------------------------------------------------------=
---------
-36895.985224ms
-37002.298075ms
-30150.774087ms
-
-The kernel function count is 55239 in the kprobe-multi testing.
-I'm not sure if there is something wrong with my testing, but
-the overhead looks heavy.
-
-So I think maybe it works to fallback to the hash table if
-CFI/FINEIBT/... are enabled? I would be appreciated to
-hear some advice here.
-
-(BTW, I removed most CCs to reduce the noise :/)
-
-Thanks!
-Menglong Dong
-
----------------------------------------------------------------------------=
-----
----------------------------------------------------------------------------=
-----
-
-Following is the bpf global trampoline(x86, demo and ugly):
----------------------------------------------------------------------------=
-------
-#define FUNC_ARGS_SIZE        (6 * 8)
-#define FUNC_ARGS_OFFSET    (-8 - FUNC_ARGS_SIZE)
-#define FUNC_ARGS_1        (FUNC_ARGS_OFFSET + 0 * 8)
-#define FUNC_ARGS_2        (FUNC_ARGS_OFFSET + 1 * 8)
-#define FUNC_ARGS_3        (FUNC_ARGS_OFFSET + 2 * 8)
-#define FUNC_ARGS_4        (FUNC_ARGS_OFFSET + 3 * 8)
-#define FUNC_ARGS_5        (FUNC_ARGS_OFFSET + 4 * 8)
-#define FUNC_ARGS_6        (FUNC_ARGS_OFFSET + 5 * 8)
-
-/* the args count, rbp - 8 * 8 */
-#define FUNC_ARGS_COUNT_OFFSET    (FUNC_ARGS_OFFSET - 1 * 8)
-#define FUNC_ORIGIN_IP        (FUNC_ARGS_OFFSET - 2 * 8) /* -9 * 8 */
-#define RBX_OFFSET        (FUNC_ARGS_OFFSET - 3 * 8)
-
-/* bpf_tramp_run_ctx, rbp - BPF_RUN_CTX_OFFSET */
-#define BPF_RUN_CTX_OFFSET    (RBX_OFFSET - BPF_TRAMP_RUN_CTX_SIZE)
-#define KFUNC_MD_OFFSET        (BPF_RUN_CTX_OFFSET - 1 * 8)
-#define STACK_SIZE        (-1 * KFUNC_MD_OFFSET)
-
-.macro tramp_restore_regs
-    movq FUNC_ARGS_1(%rbp), %rdi
-    movq FUNC_ARGS_2(%rbp), %rsi
-    movq FUNC_ARGS_3(%rbp), %rdx
-    movq FUNC_ARGS_4(%rbp), %rcx
-    movq FUNC_ARGS_5(%rbp), %r8
-    movq FUNC_ARGS_6(%rbp), %r9
-    .endm
-
-SYM_FUNC_START(bpf_global_caller)
-    pushq %rbp
-    movq %rsp, %rbp
-    subq $STACK_SIZE, %rsp
-
-    /* save the args to stack, only regs is supported for now */
-    movq %rdi, FUNC_ARGS_1(%rbp)
-    movq %rsi, FUNC_ARGS_2(%rbp)
-    movq %rdx, FUNC_ARGS_3(%rbp)
-    movq %rcx, FUNC_ARGS_4(%rbp)
-    movq %r8, FUNC_ARGS_5(%rbp)
-    movq %r9, FUNC_ARGS_6(%rbp)
-
-    /* save the rbx, rbp - 9 * 8 */
-    movq %rbx, RBX_OFFSET(%rbp)
-
-    /* get the function address */
-    movq 8(%rbp), %rdi
-    /* subq $(4+5), %rdi */
-    /* save the function ip */
-    movq %rdi, FUNC_ORIGIN_IP(%rbp)
-
-    call kfunc_md_find
-    cmpq $0, %rax
-    jz out
-    /* kfunc_md, keep it in %rcx */
-    movq %rax, %rcx
-
-    /* fentry bpf prog */
-    cmpq $0, KFUNC_MD_FENTRY(%rcx)
-    jz out
-
-    /* load fentry bpf prog to the 1st arg */
-    movq KFUNC_MD_FENTRY(%rcx), %rdi
-    /* load the pointer of tramp_run_ctx to the 2nd arg */
-    leaq BPF_RUN_CTX_OFFSET(%rbp), %rsi
-    /* save the bpf cookie to the tramp_run_ctx */
-    movq KFUNC_MD_COOKIE(%rcx), %rax
-    movq %rax, BPF_COOKIE_OFFSET(%rsi)
-    call __bpf_prog_enter_recur
-    /* save the start time to rbx */
-    movq %rax, %rbx
-
-    /* load fentry JITed prog to rax */
-    movq BPF_FUNC_OFFSET(%rdi), %rax
-    /* load func args array to the 1st arg */
-    leaq FUNC_ARGS_OFFSET(%rbp), %rdi
-
-    /* load and call the JITed bpf func */
-    call *%rax
-
-    /* load bpf prog to the 1st arg */
-    movq KFUNC_MD_FENTRY(%rcx), %rdi
-    /* load the rbx(start time) to the 2nd arg */
-    movq %rbx, %rsi
-    /* load the pointer of tramp_run_ctx to the 3rd arg */
-    leaq BPF_RUN_CTX_OFFSET(%rbp), %rdx
-    call __bpf_prog_exit_recur
-out:
-    tramp_restore_regs
-
-    movq RBX_OFFSET(%rbp), %rbx
-    addq $STACK_SIZE, %rsp
-    popq %rbp
-    RET
-
-SYM_FUNC_END(bpf_global_caller)
-STACK_FRAME_NON_STANDARD_FP(bpf_global_caller)
-
->
-> Sounds great! It's so different to make the per-function metadata
-> work in all the cases. Especially, we can't implement it in arm64
-> if CFI_CLANG is enabled. And the fallbacking to the hash table makes
-> it much easier in these cases.
->
-> >
-> > So let's figure out the design of multi-fenty first with a hashtable
-> > for metadata and decide next steps afterwards.
->
-> Ok, I'll develop a version for fentry multi-link with both hashtable
-> and function metadata, and do some performance testing. Thank
-> you for your advice :/
->
-> Thanks!
-> Menglong Dong
 
