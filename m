@@ -1,104 +1,62 @@
-Return-Path: <bpf+bounces-54593-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54594-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 026F5A6D462
-	for <lists+bpf@lfdr.de>; Mon, 24 Mar 2025 07:43:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34D81A6D46F
+	for <lists+bpf@lfdr.de>; Mon, 24 Mar 2025 07:54:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CD91188FB5D
-	for <lists+bpf@lfdr.de>; Mon, 24 Mar 2025 06:43:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8899F16903E
+	for <lists+bpf@lfdr.de>; Mon, 24 Mar 2025 06:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7D8190051;
-	Mon, 24 Mar 2025 06:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ILbbtFAw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B49204C1D;
+	Mon, 24 Mar 2025 06:53:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163E62E338E;
-	Mon, 24 Mar 2025 06:43:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DCEA202C22;
+	Mon, 24 Mar 2025 06:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742798584; cv=none; b=s0jogGx6Y9DBspNoCAKJQ0Os3a+2Odd/3AsJhrFXZeY5xb6PUTqmB45KsE4VhZ/hHOWMJZzIPGZWTfLzarARCmpf+us8KcpY15mZXs7gSydUaSCzcxe2CZ0DoRMKtRNq2wLmqXR1jTi2pwL2ilFdtMgH7j1mJRG+Pe3wsvhqChY=
+	t=1742799211; cv=none; b=n7fZ0XCXf2UfqspMhHpKrmljMM9JUvYAEiGlt5QI+ApNJzu+R7BL64m3jaWT5MHMzC2jtBIX0QWYH1Pxvhbi/wssNxXbQ7HGFUx0GCctwo/GUJ90MHGUlxao8LkIIu1UBnBkQ93YshwEQidAJG2GqrZ3VsZ3XUaILpyuAycfxQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742798584; c=relaxed/simple;
-	bh=3GDPaf9kAVH6vi9UQz0EbD6wzACAE/x3IWZpE9t2MlI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uPXfV06mcjC/bIE7lOg5rppr8/X8UTcuyesrLocJcoQeXOM/aIuBS2PgbtiEfo3REQbASI4t6MYnF5hVAHoWy4fEylZnVa4rDnHv3LufFUyDXAFqApnu3VBw2s8w4GmmjwuneKSEw9q6ukiWUoV+5pg9iNVS50U3knU64qnaecU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ILbbtFAw; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-22409077c06so70741585ad.1;
-        Sun, 23 Mar 2025 23:43:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742798582; x=1743403382; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=avYKSEMp5uulDA5FmpuH+JjdUIqqwn+PXiLercSA2Oo=;
-        b=ILbbtFAwyiHjK8Jdp45GFcPJYJT9lmE2jYvHLikPFECiGEonnBkNb3iCmjvppZoA9N
-         DMlyGA3O+9/8yXarUOiOghEH/uzEeSnIuhxEWosugb7RWoSziLYYqQklfePhDdOyrQyH
-         qGlyOXopJvSlh6ZRCswfTtIykoIWVci0zhP42UrEDife+Ae4FrYoICOzfrsmioDz9N+Y
-         EzqiqN4EqSxzNIo0RzHfAu+OKIpw34Jeh6xxVYUvepRHQCSfBvwcXs13QgULdwRd8lTQ
-         MojTUJi7kUvS6Gn1CGvoFBL+lHnpuZcVpE5+8BM9mlAqj9c6T3Ds0vXQmPZJFUybzd/t
-         Sg/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742798582; x=1743403382;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=avYKSEMp5uulDA5FmpuH+JjdUIqqwn+PXiLercSA2Oo=;
-        b=XaOUUfWjnCI/EpIqkrtHarUWO4DMeWw9jrY3R1IbXWJnX3lFv/M9x0TbncRNt2aso6
-         ZBaxGgOxN/QezWwx728w1pdahKsWVJe4Tt+DoPI98VrZ6qRHFjNcvYSuk8FVLouJZeYN
-         55F/4HND9/tHJtDJqG0rBySu8o6Jl7VjuKnogF7fPf7TuPpOfHbBd47do0Bpwaa6r6He
-         8gkmTvanvX4D8Tf1FUbqKsOF0099SjND1RFezbvxVBo/Oj2n/cjSCbjMaM/StA0OY65c
-         c5RrAFp4hDQlHwIFuD5IS/dcJWMnn2Jx3dLSTwD3086NGKStq8FkQolaNg/n7/u4ZDK/
-         eGsA==
-X-Forwarded-Encrypted: i=1; AJvYcCUul8xn7Msgw0K0sQgqa+XIT4a86+XROZJ0XAVrF2RGEmjyMsCN0pbGroOZOPL6GQuTkLhrlZGYrN/Lcihw0QH9@vger.kernel.org, AJvYcCV74SMBLzoD/rPY5384JCqIvNgdcKy8M1agzpro3iD/lzvQDy6SnN3XKUO20wqShDROlh0=@vger.kernel.org, AJvYcCXLmfMbZcbNvOS3InK6IiK2yDIVCZrV2E2Vb9eRm6f8BTget26BE+VFze+4yj5mJgiiFiLka8+Wg6NkGnmr@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxjf5i2oiXpoMB8zItXI3casRiD2ZNyKlwpLRE5ZNorMCGITb3S
-	ot+YHpTAt9YBr8OvmX/IitqjZLjtcsoyS/u3byE+wgmAGZGdaqnq
-X-Gm-Gg: ASbGncuoDduq9Z4Mq9YoAo8NYXlMvIghTiv0qK1hvjfzqyEvMjfSp2iL0Z3wOMV6uQE
-	2CgFXIajoCjdnaaESYQsoXAJQEX3HCDqPuWtN2vwOuH1i7N/YlObXNvEt8NMJHJpQdPYW/p1TXS
-	DnjFgjE2RGFzz5i4FrdWd10Beng8Jrpu4V8MC9p15uhxiv/DcHROhnKuiXXMrInmeP/0l4nF48b
-	Q2TYg7RcHSsIPNL4U9USPio1qYOHJpy8z8oPJZUHN5eobRNnvGN5UHRAwG1Pve8WvyCAXjB+Da6
-	rWACHH2F+2RWTSJe/HtwvxTzetNb/ouPG/zeQzdbL+2Crflb9Ifb4xgQqDPg+Fb2dQRdnd9XNC0
-	Yp4Y1ZJq1uB+cVxpQ
-X-Google-Smtp-Source: AGHT+IF8+4TJLgp83Qv06VrPfp1uuCsQfmW4YhBkKQOtqN0lGp4bA4yreyx8j4WAUkjKsDzxKe89uw==
-X-Received: by 2002:a17:902:ec87:b0:223:52fc:a15a with SMTP id d9443c01a7336-22780e09691mr157125175ad.33.1742798582038;
-        Sun, 23 Mar 2025 23:43:02 -0700 (PDT)
-Received: from malayaVM.mrout-thinkpadp16vgen1.punetw6.csb ([103.133.229.222])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22780f459aasm62693845ad.76.2025.03.23.23.42.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Mar 2025 23:43:01 -0700 (PDT)
-From: Malaya Kumar Rout <malayarout91@gmail.com>
-To: malayarout91@gmail.com
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/bpf: close the file descriptor to avoid resource leaks
-Date: Mon, 24 Mar 2025 12:12:14 +0530
-Message-ID: <20250324064234.853591-1-malayarout91@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <malayarout91@gmail.com>
-References: <malayarout91@gmail.com>
+	s=arc-20240116; t=1742799211; c=relaxed/simple;
+	bh=nkrvSw/90gggkSHojkoVxU+WAa1fXW0Z4hxUc0n7bRM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MhjE2ccdfn96mkWz5ZfHG2rJe1oLAP8hpjaLTtOnCgfz/BafE5xcOTaiQbFVqw4MMYjUK+5Aofr4tWGAU9lt5Ez5+4irGrqiHB/5PZLXZuQHg/Mmb6g9MgLfjehMe4AxchvjxSRfV3EpHmDeeli7Dce5MzEeMmPNsGDZncAUREY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52O5jeav006903;
+	Mon, 24 Mar 2025 06:53:06 GMT
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 45hje1hth0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Mon, 24 Mar 2025 06:53:06 +0000 (GMT)
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.43; Sun, 23 Mar 2025 23:53:04 -0700
+Received: from pek-lpg-core1.wrs.com (147.11.136.210) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2507.43 via Frontend Transport; Sun, 23 Mar 2025 23:52:59 -0700
+From: <jianqi.ren.cn@windriver.com>
+To: <stable@vger.kernel.org>
+CC: <patches@lists.linux.dev>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <jianqi.ren.cn@windriver.com>,
+        <shravya.k-n@broadcom.com>, <michael.chan@broadcom.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <hawk@kernel.org>, <john.fastabend@gmail.com>,
+        <somnath.kotur@broadcom.com>, <ajit.khaparde@broadcom.com>,
+        <andrew.gospodarek@broadcom.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH 6.6.y] bnxt_en: Fix receive ring space parameters when XDP is active
+Date: Mon, 24 Mar 2025 14:52:58 +0800
+Message-ID: <20250324065258.3795814-1-jianqi.ren.cn@windriver.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -106,51 +64,107 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Authority-Analysis: v=2.4 cv=KPVaDEFo c=1 sm=1 tr=0 ts=67e10152 cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=Vs1iUdzkB0EA:10 a=Q-fNiiVtAAAA:8 a=20KFwNOVAAAA:8 a=t7CeM3EgAAAA:8 a=fl9wSW5VptL9eKRiuLsA:9 a=FdTzh2GWekK77mhwV6Dw:22
+X-Proofpoint-GUID: AvZ1eSOouUOQTrkOF6mQ1EP2wtzvCLn0
+X-Proofpoint-ORIG-GUID: AvZ1eSOouUOQTrkOF6mQ1EP2wtzvCLn0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-24_03,2025-03-21_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ adultscore=0 impostorscore=0 mlxlogscore=999 malwarescore=0 spamscore=0
+ bulkscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
+ clxscore=1011 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.21.0-2502280000
+ definitions=main-2503240049
 
-Static Analyis for bench_htab_mem.c with cppcheck:error
-tools/testing/selftests/bpf/benchs/bench_htab_mem.c:284:3:
-error: Resource leak: fd [resourceLeak]
-tools/testing/selftests/bpf/prog_tests/sk_assign.c:41:3:
-error: Resource leak: tc [resourceLeak]
+From: Shravya KN <shravya.k-n@broadcom.com>
 
-fix the issue  by closing the file descriptor (fd & tc) when
-read & fgets operation fails.
+[ Upstream commit 3051a77a09dfe3022aa012071346937fdf059033 ]
 
-Signed-off-by: Malaya Kumar Rout <malayarout91@gmail.com>
+The MTU setting at the time an XDP multi-buffer is attached
+determines whether the aggregation ring will be used and the
+rx_skb_func handler.  This is done in bnxt_set_rx_skb_mode().
+
+If the MTU is later changed, the aggregation ring setting may need
+to be changed and it may become out-of-sync with the settings
+initially done in bnxt_set_rx_skb_mode().  This may result in
+random memory corruption and crashes as the HW may DMA data larger
+than the allocated buffer size, such as:
+
+BUG: kernel NULL pointer dereference, address: 00000000000003c0
+PGD 0 P4D 0
+Oops: 0000 [#1] PREEMPT SMP NOPTI
+CPU: 17 PID: 0 Comm: swapper/17 Kdump: loaded Tainted: G S         OE      6.1.0-226bf9805506 #1
+Hardware name: Wiwynn Delta Lake PVT BZA.02601.0150/Delta Lake-Class1, BIOS F0E_3A12 08/26/2021
+RIP: 0010:bnxt_rx_pkt+0xe97/0x1ae0 [bnxt_en]
+Code: 8b 95 70 ff ff ff 4c 8b 9d 48 ff ff ff 66 41 89 87 b4 00 00 00 e9 0b f7 ff ff 0f b7 43 0a 49 8b 95 a8 04 00 00 25 ff 0f 00 00 <0f> b7 14 42 48 c1 e2 06 49 03 95 a0 04 00 00 0f b6 42 33f
+RSP: 0018:ffffa19f40cc0d18 EFLAGS: 00010202
+RAX: 00000000000001e0 RBX: ffff8e2c805c6100 RCX: 00000000000007ff
+RDX: 0000000000000000 RSI: ffff8e2c271ab990 RDI: ffff8e2c84f12380
+RBP: ffffa19f40cc0e48 R08: 000000000001000d R09: 974ea2fcddfa4cbf
+R10: 0000000000000000 R11: ffffa19f40cc0ff8 R12: ffff8e2c94b58980
+R13: ffff8e2c952d6600 R14: 0000000000000016 R15: ffff8e2c271ab990
+FS:  0000000000000000(0000) GS:ffff8e3b3f840000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000000003c0 CR3: 0000000e8580a004 CR4: 00000000007706e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ <IRQ>
+ __bnxt_poll_work+0x1c2/0x3e0 [bnxt_en]
+
+To address the issue, we now call bnxt_set_rx_skb_mode() within
+bnxt_change_mtu() to properly set the AGG rings configuration and
+update rx_skb_func based on the new MTU value.
+Additionally, BNXT_FLAG_NO_AGG_RINGS is cleared at the beginning of
+bnxt_set_rx_skb_mode() to make sure it gets set or cleared based on
+the current MTU.
+
+Fixes: 08450ea98ae9 ("bnxt_en: Fix max_mtu setting for multi-buf XDP")
+Co-developed-by: Somnath Kotur <somnath.kotur@broadcom.com>
+Signed-off-by: Somnath Kotur <somnath.kotur@broadcom.com>
+Signed-off-by: Shravya KN <shravya.k-n@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Jianqi Ren <jianqi.ren.cn@windriver.com>
+Signed-off-by: He Zhe <zhe.he@windriver.com>
 ---
- tools/testing/selftests/bpf/benchs/bench_htab_mem.c | 1 +
- tools/testing/selftests/bpf/prog_tests/sk_assign.c  | 4 +++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+Verified the build test
+---
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-index 926ee822143e..59746fd2c23a 100644
---- a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-@@ -281,6 +281,7 @@ static void htab_mem_read_mem_cgrp_file(const char *name, unsigned long *value)
- 	got = read(fd, buf, sizeof(buf) - 1);
- 	if (got <= 0) {
- 		*value = 0;
-+		close(fd);
- 		return;
- 	}
- 	buf[got] = 0;
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-index 0b9bd1d6f7cc..10a0ab954b8a 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-@@ -37,8 +37,10 @@ configure_stack(void)
- 	tc = popen("tc -V", "r");
- 	if (CHECK_FAIL(!tc))
- 		return false;
--	if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc)))
-+	if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc))) {
-+		pclose(tc);
- 		return false;
-+	}
- 	if (strstr(tc_version, ", libbpf "))
- 		prog = "test_sk_assign_libbpf.bpf.o";
- 	else
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index c440f4d8d43a..1dd873338ec0 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -3986,7 +3986,7 @@ int bnxt_set_rx_skb_mode(struct bnxt *bp, bool page_mode)
+ 	struct net_device *dev = bp->dev;
+ 
+ 	if (page_mode) {
+-		bp->flags &= ~BNXT_FLAG_AGG_RINGS;
++		bp->flags &= ~(BNXT_FLAG_AGG_RINGS | BNXT_FLAG_NO_AGG_RINGS);
+ 		bp->flags |= BNXT_FLAG_RX_PAGE_MODE;
+ 
+ 		if (bp->xdp_prog->aux->xdp_has_frags)
+@@ -12795,6 +12795,14 @@ static int bnxt_change_mtu(struct net_device *dev, int new_mtu)
+ 		bnxt_close_nic(bp, true, false);
+ 
+ 	dev->mtu = new_mtu;
++
++	/* MTU change may change the AGG ring settings if an XDP multi-buffer
++	 * program is attached.  We need to set the AGG rings settings and
++	 * rx_skb_func accordingly.
++	 */
++	if (READ_ONCE(bp->xdp_prog))
++		bnxt_set_rx_skb_mode(bp, true);
++
+ 	bnxt_set_ring_params(bp);
+ 
+ 	if (netif_running(dev))
 -- 
-2.43.0
+2.25.1
 
 
