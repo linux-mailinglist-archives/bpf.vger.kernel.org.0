@@ -1,176 +1,210 @@
-Return-Path: <bpf+bounces-54591-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54592-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45ACBA6D36D
-	for <lists+bpf@lfdr.de>; Mon, 24 Mar 2025 04:59:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7F85A6D3A2
+	for <lists+bpf@lfdr.de>; Mon, 24 Mar 2025 05:48:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 049C13AF058
-	for <lists+bpf@lfdr.de>; Mon, 24 Mar 2025 03:59:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 347F816E9B5
+	for <lists+bpf@lfdr.de>; Mon, 24 Mar 2025 04:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD56918893C;
-	Mon, 24 Mar 2025 03:59:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA00E18B475;
+	Mon, 24 Mar 2025 04:47:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JKFKTxGM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J54RU1LL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FCD126BF1
-	for <bpf@vger.kernel.org>; Mon, 24 Mar 2025 03:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC27A7E110;
+	Mon, 24 Mar 2025 04:47:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742788766; cv=none; b=RRIUZ3P8Toi0+9Xf5Kym9cpW4jlAxvkOdczGzn3dmFD0NI/pOzN6ShdANwOtmmwFV6y73RQcib6f/g5X17H7Vl/8Bx3M5903O6NLJxnp2IPdA0ePnUhR9drbuOBuvP8Bov/np0AcE4WnRkuuGMxMK3slahZnML4qd6J76plHyt0=
+	t=1742791679; cv=none; b=fgQDIaSYa8Lj4fPzaqg6+9zBlZha2wxOBW6u93kOEWe66pIEEmTUcNBX/fA+adTlIbf+KZO0f0ZAQlqvxBaDgnYkUJhLxUI8DIoiMRlo1NcctJpSEf7RX9lZGFnpD/y3wPZ/DUyqFD5GLqQPhyFlWXyIy5SW+fz+fMpyfCu9OBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742788766; c=relaxed/simple;
-	bh=Wq+njKOQoQ99uBxCYYmu1SdJbJ9l8kYeBFwtH+SIH6c=;
+	s=arc-20240116; t=1742791679; c=relaxed/simple;
+	bh=oebWO/ZrGI6QIP5rK12oT36vAOsde3sQA+5FPtJA3g8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Kb147ToyuY/esqCWhTjVyoeFN7QEoYjpgtcAxTlj9kLGxuLqD32aEZ5KP3M9XxrPNSKLwSnFbpWsu9CaodSgEPX9PPBR0GsJG8S0lRmXCaNVY2QyRUBqR9nsci8/hz6PZKWspf0qxIcg08nDzQ+VeLfOBD7pU85pC0L+aEebIIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JKFKTxGM; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-476b89782c3so44999721cf.1
-        for <bpf@vger.kernel.org>; Sun, 23 Mar 2025 20:59:24 -0700 (PDT)
+	 To:Cc:Content-Type; b=ToLwriaGhGouq0+xCaf0QyQLG9cphsl9Oxm0TKBHFKV8OBshiP3clxSLXVZu98JdAPGhuaxkRx5+pxjLDR8okWhMHR1ofRZkft82wN4Lrvit34YWTpO7XlAyGzWDxQy0TJ7d4OUFaWSQrQcJNOatXj6+6vHM4QQEvDk4+V7wNj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J54RU1LL; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e64165ae78cso2840395276.0;
+        Sun, 23 Mar 2025 21:47:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1742788763; x=1743393563; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1742791676; x=1743396476; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IHCjbbw8cS5r9fVyN01ZZMdpGoFgkz+MT6KHTqF2eLw=;
-        b=JKFKTxGMEOOESchKHG/VMgtdCGwZ839HIkwjrciv3zgVa2DiGLEdCKwsTrn+jZU82P
-         O4wQPs8oyxX21F5p+r9rGSeBUEbQRps8SC4D3lE6AHPqGcg0JO8Tnn0gq/4HBik794WE
-         zqoBWXDAouFIE30VL3BIyb4AmMKrG+i+FQ0MdnfKdUEew9Rf//N9ygFTuAr1fMufZCQY
-         9MBo4MUALmkiRY31EARDWNHdw5JuIUaVQdTp5VkJexlOG0jlLA6BEURwHOKLcO+dU8KS
-         Vio0DBTO8uZonRXX6u7Tddq+3slLFwTgiDlOmme6n8ICB2tKIibfNDIxF5C9jwvrpcMW
-         eLDw==
+        bh=irOA4kDWv4T7ma/36tjF6MRUdZOvW8mgL9gXhU3hjJY=;
+        b=J54RU1LLMiE3J9MbJlM4ZYZdLFmfbeQz/URYpOpBKSPoscFGMh/3gXzcTZLfTiQ3JO
+         KYIN4mHobU5fIS9LVN8k4Gq4gl3ODGuaXjASbJ9xo81F4SZH/Bbk4q0kvTNmNV6jt8no
+         BV8bzOrAYTQ2ibpPh3hlYHBmVcWu8XCOOjk+k7yUuzyzXLbO0NPexYUWcOnnFNPWYbJ1
+         ws0LcER3XWYU2/IkGsORf3C65q7G/awBYYmkUDLKn6FcL7vGF97+iFdW1FP+b/QmeO4c
+         jTTMYDeKomUqQ2Pq0QnaxINBab64S7lFUYG4o8cLc1+d6m4hjXtE8Nxb58rQdMiWy/kJ
+         WNxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742788763; x=1743393563;
+        d=1e100.net; s=20230601; t=1742791676; x=1743396476;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IHCjbbw8cS5r9fVyN01ZZMdpGoFgkz+MT6KHTqF2eLw=;
-        b=VpXGqIzPoDkhR72vw+kEq/xgryTXXQLcZYslkBdGjVgEZcjvvOy+vMMVzWoOTDwOB/
-         VKE4qgMdMQogQx5GzlmwZA7BmMiZaRFtpRDHYqxgNSlQ2F4/2VaqDhofXb27BNaCZgdC
-         upND/ApI8sVWOf6kS5BGsqx9QkQ1IsFF7oXvEc4jThDwn9iv+zUZgfrYBsq44H6rJjbV
-         +a5HePfWbfBP96wnVCLpVTQeKLrGSVRzThZvGT07W8A/51G04cwOAFdnXwPyPoufF2Um
-         /dChRs1Puec0XuD7Pq1KTYnGf4Ht0Ose6bvrxeTazA++OPvDJQXzE6CtahkUH+tI7yoF
-         47pw==
-X-Forwarded-Encrypted: i=1; AJvYcCWUcyQaXMj75E9Dv74oO90ug9+MtUyF+w/bCJqsCDMbmjDZWF79hqLZJgPKNzoKiAo+YOM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMFY+lGmQEh2QId47JSkqSeawFVPCZtT37lv9hnuijU8w53wCq
-	d3M10LAV8j72i0S2iHybNvLWb2X7iPlxhWDW9li8tzixR0l193YOi//EluhZEoIRGlbA4+nZ43u
-	/rztsjKnB0j9Y2zXHULWVl9iwpJSO9ocy/TS6
-X-Gm-Gg: ASbGnctrHQxmO50fW3wbipmSJv4dXszKNeFxSYOub/a3E91rhdGQDPK/ithcmtOzLQ/
-	zVpF6PzYMAlXXu9uwFI6FmgnyJex/GON1aRgX7yyPA/k2bBzymBaG6TSvL9vSBDaGzU5hCiAGav
-	l6jcWg+bwlVJVizVFiRyN3bem9mA==
-X-Google-Smtp-Source: AGHT+IGK12fhHHVbahJ7SysnMjn37oqNWgxttj/oJLfD8m7bfXLO2LhJ+ZdJWh372ToAug2mpXl0iXJ/1PfveaeuNsQ=
-X-Received: by 2002:a05:622a:4816:b0:476:6d30:8aed with SMTP id
- d75a77b69052e-4771de80b3dmr206300591cf.49.1742788763307; Sun, 23 Mar 2025
- 20:59:23 -0700 (PDT)
+        bh=irOA4kDWv4T7ma/36tjF6MRUdZOvW8mgL9gXhU3hjJY=;
+        b=M8Pbb+AnB2Fw79Um762hSPaT4EdCrcWNrVMHwDVrnzugRLR2szrid6Zf3U6cmUEKim
+         dG+SoCWo66KnNqg7B1r9QdRGFA1sed2rrK+mc3ztw7YLAMpsdYQGFuwhe37ilcpnyZ0r
+         j+wXT+FlvK7tVSwUpXJoFnsFUnQMgzXJ8xoWPB5jbFUxdjKFVHy1DEGzY6MbHbBgpNMR
+         tAbCEBd1s7LEhsHUM+Yg1rsItR4NccxDiO6U2+TTTeB6BquI7ExSAziznsROxDsCZD4V
+         eiGa60YBAPm1Gh/Uj6ShIT6Pq/HEHqtt7RBBq19DSalGMfHGGkmVlcCcEj22jj1k52Oj
+         Pp7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUFNaTn3lHBvd7fg6cef0pnPIq4Iceso3eMF/MRTeDmY+0jnByS581lamV5PaCtaAA4/MLS096QmRdlHLBB@vger.kernel.org, AJvYcCUhbTbS1KJ/B17rkS44ljI63SG8HhRqrVv4vVPnkvSpGPuhV1zdRMzidEqnbMZGDx+dV60KbdKhJNS2BxHlNvtrKg==@vger.kernel.org, AJvYcCWlvt417cGVlc4pmhcKV1WPXDZM4Rx1NsliCIUfvdWpu39VNbq3jVSErLSFLEWoPMPH3oQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2v9Aqgk3J4aJ9cXaHLc9DXkQFlM8HPh6Xlz6jbf9KsOaBbGQ1
+	fjlYcWbZzMDOqgOuYf9wYJbU4UEQ11w9gAmPaiqqjW5D2OC5tWLqBdBpmlhHEFZqUfp006jxxnh
+	ZHy+mabmGhGyCPs30LmwntkOo93I=
+X-Gm-Gg: ASbGncsDg+gghoOfxaW8uuZ43uvLnjCy3b6k/9teMFQ19wzo2XONpS5nRtyiKPTMI1d
+	eUY7BdtCJth6nUdkH7+yloOTKJdUY8LcthL9FN4wll8I9RUedCgDzhK8lBIi4w31RLNks2ikkXw
+	IGvN5uS84zHqOQUxg/M4AGJoc1
+X-Google-Smtp-Source: AGHT+IG0Q3vCe9YM49MiXZIdS6r7vCU8YR/bYrCYkh14g7ZyUIxlwy86RnParcxNaxtT4W6k7/Gx84f/1Tcc90+kssE=
+X-Received: by 2002:a05:6902:2e0e:b0:e5a:e39d:c2ad with SMTP id
+ 3f1490d57ef6-e66a4ab615fmr13672444276.0.1742791676384; Sun, 23 Mar 2025
+ 21:47:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250323072511.2353342-1-edumazet@google.com> <Z-B_R737uM31m6_K@gmail.com>
-In-Reply-To: <Z-B_R737uM31m6_K@gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 24 Mar 2025 04:59:12 +0100
-X-Gm-Features: AQ5f1JrD2KBd12qso3pX-i2q5qA5RW02Ppfc4GqZZTsvRfJx8oBuRknHp5449Qc
-Message-ID: <CANn89i+fmyJ8p=vBpwBy38yhVMCJv8XjrTkrXSUnSGedboCM_Q@mail.gmail.com>
-Subject: Re: [PATCH] x86/alternatives: remove false sharing in poke_int3_handler()
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org, 
-	bpf@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>, 
-	Greg Thelen <gthelen@google.com>, Stephane Eranian <eranian@google.com>
+References: <20250321184255.2809370-1-namhyung@kernel.org> <Z-C6CdVXohPJSjzu@gmail.com>
+In-Reply-To: <Z-C6CdVXohPJSjzu@gmail.com>
+From: Howard Chu <howardchu95@gmail.com>
+Date: Sun, 23 Mar 2025 21:47:45 -0700
+X-Gm-Features: AQ5f1JrRvD_8pxSfdLWXEHG4xGXMpSiVYWEb2Kfava-aAZ_cOZ5-0-xGinxFRSI
+Message-ID: <CAH0uvogCka=hXsyPXboZS7znOgFHYhaMQ0H0VGMEM_z_AdBZYw@mail.gmail.com>
+Subject: Re: [PATCH v3] perf trace: Implement syscall summary in BPF
+To: Namhyung Kim <namhyung@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
+	Song Liu <song@kernel.org>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 23, 2025 at 10:38=E2=80=AFPM Ingo Molnar <mingo@kernel.org> wro=
-te:
+Hello,
+
+On Sun, Mar 23, 2025 at 6:49=E2=80=AFPM Howard Chu <howardchu95@gmail.com> =
+wrote:
 >
+> Hello Namhyung,
 >
-> * Eric Dumazet <edumazet@google.com> wrote:
->
-> > eBPF programs can be run 20,000,000+ times per second on busy servers.
+> On Fri, Mar 21, 2025 at 11:42:55AM -0700, Namhyung Kim wrote:
+> > When -s/--summary option is used, it doesn't need (augmented) arguments
+> > of syscalls.  Let's skip the augmentation and load another small BPF
+> > program to collect the statistics in the kernel instead of copying the
+> > data to the ring-buffer to calculate the stats in userspace.  This will
+> > be much more light-weight than the existing approach and remove any los=
+t
+> > events.
 > >
-> > Whenever /proc/sys/kernel/bpf_stats_enabled is turned off,
-> > hundreds of calls sites are patched from text_poke_bp_batch()
-> > and we see a critical loss of performance due to false sharing
-> > on bp_desc.refs lasting up to three seconds.
+> > Let's add a new option --bpf-summary to control this behavior.  I canno=
+t
+> > make it default because there's no way to get e_machine in the BPF whic=
+h
+> > is needed for detecting different ABIs like 32-bit compat mode.
+> >
+> > No functional changes intended except for no more LOST events. :)  But
+> > it only works with -a/--all-cpus for now.
+> >
+> >   $ sudo ./perf trace -as --summary-mode=3Dtotal --bpf-summary sleep 1
+> >
+> >    Summary of events:
+> >
+> >    total, 6194 events
+> >
+> >      syscall            calls  errors  total       min       avg       =
+max       stddev
+> >                                        (msec)    (msec)    (msec)    (m=
+sec)        (%)
+> >      --------------- --------  ------ -------- --------- --------- ----=
+-----     ------
+> >      epoll_wait           561      0  4530.843     0.000     8.076   52=
+0.941     18.75%
+> >      futex                693     45  4317.231     0.000     6.230   50=
+0.077     21.98%
+> >      poll                 300      0  1040.109     0.000     3.467   12=
+0.928     17.02%
+> >      clock_nanosleep        1      0  1000.172  1000.172  1000.172  100=
+0.172      0.00%
+> >      ppoll                360      0   872.386     0.001     2.423   25=
+3.275     41.91%
+> >      epoll_pwait           14      0   384.349     0.001    27.453   38=
+0.002     98.79%
+> >      pselect6              14      0   108.130     7.198     7.724     =
+8.206      0.85%
+> >      nanosleep             39      0    43.378     0.069     1.112    1=
+0.084     44.23%
+> >      ...
+> >
+> > Cc: Howard Chu <howardchu95@gmail.com>
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> > v3)
+> >  * support -S/--with-summary option too  (Howard)
 >
-> > @@ -2413,8 +2415,12 @@ static void text_poke_bp_batch(struct text_poke_=
-loc *tp, unsigned int nr_entries
-> >       /*
-> >        * Remove and wait for refs to be zero.
-> >        */
-> > -     if (!atomic_dec_and_test(&bp_desc.refs))
-> > -             atomic_cond_read_acquire(&bp_desc.refs, !VAL);
-> > +     for_each_possible_cpu(i) {
-> > +             atomic_t *refs =3D per_cpu_ptr(&bp_refs, i);
-> > +
-> > +             if (!atomic_dec_and_test(refs))
-> > +                     atomic_cond_read_acquire(refs, !VAL);
-> > +     }
+> It gave me segfault somehow.
 >
-> So your patch changes text_poke_bp_batch() to busy-spin-wait for
-> bp_refs to go to zero on all 480 CPUs.
->
-> Your measurement is using /proc/sys/kernel/bpf_stats_enabled on a
-> single CPU, right?
+> (gdb) bt
+> #0  sighandler_dump_stack (sig=3D32767) at util/debug.c:322
+> #1  <signal handler called>
+> #2  0x00005555556d2383 in hashmap_find ()
+> #3  0x000055555567474a in thread__update_stats (thread=3D0x5555564acc60, =
+ttrace=3D0x5555564ad7a0, id=3D0, sample=3D0x7fffffff8f10, err=3D1,
+>     trace=3D0x7fffffffb1a0) at builtin-trace.c:2616
+> #4  0x00005555556757cb in trace__sys_exit (trace=3D0x7fffffffb1a0, evsel=
+=3D0x5555561879d0, event=3D0x7fffed980000, sample=3D0x7fffffff8f10)
+>     at builtin-trace.c:2924
+> #5  0x0000555555677e1b in trace__handle_event (trace=3D0x7fffffffb1a0, ev=
+ent=3D0x7fffed980000, sample=3D0x7fffffff8f10) at builtin-trace.c:3619
+> #6  0x00005555556796fb in __trace__deliver_event (trace=3D0x7fffffffb1a0,=
+ event=3D0x7fffed980000) at builtin-trace.c:4173
+> #7  0x0000555555679859 in trace__deliver_event (trace=3D0x7fffffffb1a0, e=
+vent=3D0x7fffed980000) at builtin-trace.c:4201
+> #8  0x000055555567abed in trace__run (trace=3D0x7fffffffb1a0, argc=3D2, a=
+rgv=3D0x7fffffffeb30) at builtin-trace.c:4590
+> #9  0x000055555567f102 in cmd_trace (argc=3D2, argv=3D0x7fffffffeb30) at =
+builtin-trace.c:5803
+> #10 0x0000555555685252 in run_builtin (p=3D0x5555560eaf28 <commands+648>,=
+ argc=3D7, argv=3D0x7fffffffeb30) at perf.c:351
+> #11 0x00005555556854fd in handle_internal_command (argc=3D7, argv=3D0x7ff=
+fffffeb30) at perf.c:404
+> #12 0x000055555568565e in run_argv (argcp=3D0x7fffffffe91c, argv=3D0x7fff=
+ffffe910) at perf.c:448
+> #13 0x00005555556859af in main (argc=3D7, argv=3D0x7fffffffeb30) at perf.=
+c:556
 
-Yes, some daemon enables bpf_stats for a small amount of time (one
-second) to gather stats
-on eBPF run time costs.  (bpftool prog | grep run_time)
+the command I used is:
 
-One eBPF selftest can also do this.
+perf $ sudo ./perf trace -aS --summary-mode=3Dtotal --bpf-summary -- sleep =
+1
+[sudo] password for howard:
+perf: Segmentation fault
+Obtained 14 stack frames.
+./perf(dump_stack+0x35) [0x591e26c8a735]
+./perf(sighandler_dump_stack+0x2d) [0x591e26c8a7dd]
+/lib/x86_64-linux-gnu/libc.so.6(+0x45250) [0x737072045250]
+./perf(+0x1543ed) [0x591e26ba43ed]
+./perf(+0xff616) [0x591e26b4f616]
+./perf(+0xfc3f4) [0x591e26b4c3f4]
+./perf(+0x10193b) [0x591e26b5193b]
+./perf(cmd_trace+0x205e) [0x591e26b56a9e]
+./perf(+0x10b0e0) [0x591e26b5b0e0]
+./perf(+0x10b3fb) [0x591e26b5b3fb]
+./perf(main+0x2fb) [0x591e26ad63eb]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2a3b8) [0x73707202a3b8]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b) [0x73707202a47b]
+./perf(_start+0x25) [0x591e26ad6a35]
+Segmentation fault
 
-tools/testing/selftests/bpf/prog_tests/enable_stats.c
-
-
->
-> What's the adversarial workload here? Spamming bpf_stats_enabled on all
-> CPUs in parallel? Or mixing it with some other text_poke_bp_batch()
-> user if bpf_stats_enabled serializes access?
-
-The workload is having ~480 cpus running various eBPF programs all
-over the places,
-
-In the perf bit I added in the changelog, we see an eBPF program
-hooked at the xmit of each packet.
-
-But the fd =3D bpf_enable_stats(BPF_STATS_RUN_TIME)  / .... / close(fd)
-only happens from time to time,
-because of the supposed extra cost of fetching two extra time stamps.
-
-BTW, before the patch stats on my test host look like
-
-105: sched_cls  name hn_egress  tag 699fc5eea64144e3  gpl run_time_ns
-3009063719 run_cnt 82757845
--> average cost is 36 nsec per call
-
-And after the patch :
-
-105: sched_cls  name hn_egress  tag 699fc5eea64144e3  gpl run_time_ns
-1928223019 run_cnt 67682728
- -> average cost is 28 nsec per call
-
->
-> Does anything undesirable happen in that case?
-
-The case of multiple threads trying to flip bpf_stats_enabled is
-handled by bpf_stats_enabled_mutex.
-
-Thanks !
-
->
-> Thanks,
->
->         Ingo
+Thanks,
+Howard
 
