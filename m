@@ -1,171 +1,102 @@
-Return-Path: <bpf+bounces-54630-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54631-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFA7AA6F257
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 12:26:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ED9EA6F540
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 12:43:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87B13188DD36
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 11:26:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB508170202
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 11:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F9A254AE8;
-	Tue, 25 Mar 2025 11:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 253A9256C87;
+	Tue, 25 Mar 2025 11:41:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fSmI4cfR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UjIcrAY7"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234701FC111;
-	Tue, 25 Mar 2025 11:26:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929AE2561AD;
+	Tue, 25 Mar 2025 11:41:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742902003; cv=none; b=Cr2WgSFY7NNIuo01NutuIK3acOZ577f/hJBMZvdGgJyhD0OxpQDTxn6RmhaForSbl5NsZSHLHVsLfsW+cnIjSWKZ/9wtylPCzZAPdbLiESztKdsThO+qlkEGTRZnSmzIzAb+xhEZ+Gy+1FQhsezskopCXlGedA7r4FJ/flE+4Uk=
+	t=1742902902; cv=none; b=HMbkwCziffKMCQK5pNVcBBsi4awYQ2PBZ4BeZBF6uzuMeZGTrVYhz+r5T/CgOBWyZZk1CI3md2wP9x9mqzAYYgKYf+9tXr8b0RKSfTLNHBvqEc43kvDSfmGHrDKIbXf+wZ4a8usjRlGTvFFQcllnMeJzPbt6UgnJaZdKKdMHJ0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742902003; c=relaxed/simple;
-	bh=17lGbFEAJ1ty/woWfnYd6oAcPxVl3pgPP0W1h/+Gop0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bPjpr4Zv1WIw1ZC8V8Pc9KjJPZrRBpe2ZuCutPgRjnnnGWkd3xiaH9zIuWhESJo7jQqpO5/xcNO9qHgbxamwR1w6n32e0M9AIxZgKL+wljmpVToj6zdOjCr7xQDjTn9fjORXzzW9yHqQIoeT8LfEhJMA0ERrfo98lqiu3r3Ebjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fSmI4cfR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2739C4CEE4;
-	Tue, 25 Mar 2025 11:26:38 +0000 (UTC)
+	s=arc-20240116; t=1742902902; c=relaxed/simple;
+	bh=zUelcqDDriz9SHJ6HG975vlFXTHLgPVDZutVhZothAA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Duj84mPmdTH4cXHKp2KuasO9je9J5x3KLqhO6nQGo1jxI5WyAOh5ZSLuK2teP6BzyO1gLGRXUg6Q/+To0ZSFZqnQx8TpKA3VyOd/fRuLPjaYWCiZvgUkFOWR2yytHLQjchE5MYBAL0gcAycYKUWceQKUNjM5gsyF1E4/FwEa90M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UjIcrAY7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 078DFC4CEE4;
+	Tue, 25 Mar 2025 11:41:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742902002;
-	bh=17lGbFEAJ1ty/woWfnYd6oAcPxVl3pgPP0W1h/+Gop0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fSmI4cfRgxNxIdZ+3CF6vmFS1IeAWJ35hwV5+EXZgJUKUrLZEkoXGjFO+0FUHm/K+
-	 hBSCDP59FLFdfB1y/cVroWA8zvvlJ4Hwuk66y8TMIObAyJY1oxBaVFMTmwEiwHkNPO
-	 7tl5VXBHGLZwEJsLPedt9t7IjL0cM/SW1v3UEVksuo69MRP8vz50ZEY1YltbsAXmov
-	 lqWSn0eGM6AUJCC+JPdWfI/ae5odoY8Mu0ulx9jLi6jXY9zEJ13xUihr5kV3HY8KR2
-	 pv97MjE8CbLuj8Dq7ncnkT8SbPq9KBBf6BwtAX70VOxLOiNILxG59wN0uRsnV9KNnw
-	 rTVFmivXj+qCA==
-Date: Tue, 25 Mar 2025 12:26:36 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Eric Dumazet <edumazet@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-	bpf@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-	Greg Thelen <gthelen@google.com>,
-	Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] x86/alternatives: remove false sharing in
- poke_int3_handler()
-Message-ID: <Z-KS7H6666PZ3eKv@gmail.com>
-References: <20250323072511.2353342-1-edumazet@google.com>
- <Z-B_R737uM31m6_K@gmail.com>
- <CANn89i+fmyJ8p=vBpwBy38yhVMCJv8XjrTkrXSUnSGedboCM_Q@mail.gmail.com>
- <Z-EGvjhkg6llyX24@gmail.com>
- <CANn89iL8o0UZTpomaT1oaMxRTBv1YdaXZGwXQn3H0dDO81UyGA@mail.gmail.com>
- <CANn89iKwPpV7v=EnK2ac5KjHSef64eyVwUST=q=+oFaqTB95sQ@mail.gmail.com>
- <20250324113304.GB14944@noisy.programming.kicks-ass.net>
- <Z-JsJruueRgLQ8st@gmail.com>
- <20250325103047.GH36322@noisy.programming.kicks-ass.net>
+	s=k20201202; t=1742902902;
+	bh=zUelcqDDriz9SHJ6HG975vlFXTHLgPVDZutVhZothAA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=UjIcrAY75aMFN3vXVfik+OFX0Uy5JnrBVRd5fjFX94lL3SFrNbHkKgQcaIA2VC/uF
+	 c2d7+SrvjPHqi3AbZvmgxIvY1UxRQw1jAJGd9d3ejma7XAkMJ9jHVUr0VdOT7lBd3B
+	 7FPhJeSfb/hWEt/mJCtOzTE4a5iZPKQyCm1dsixrg+kYQkSNd82p/JF1V6m1cUw/ZC
+	 Lcg/MJdd6r8tQjuNkSp6keZMt6LC86vUeKhTm2Ohaw2PdtTPuxtGB0ImPQpkjXtbmf
+	 H5elHwkT2m/vYSAJ7IqPJXyDiyrnd51xugQZFl94GUFuKOXJFsN97DLbXN66xX352G
+	 iZxetGKtfiGvQ==
+Date: Tue, 25 Mar 2025 04:41:26 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: Marcin Wojtas <marcin.s.wojtas@gmail.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, Russell King <linux@armlinux.org.uk>, Ilias
+ Apalodimas <ilias.apalodimas@linaro.org>, Masahisa Kojima
+ <kojima.masahisa@socionext.com>, Sunil Goutham <sgoutham@marvell.com>,
+ Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep
+ <sbhatta@marvell.com>, hariprasad <hkelam@marvell.com>, Bharat Bhushan
+ <bbhushan2@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
+ <sean.wang@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, "K.
+ Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+ Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Siddharth
+ Vadapalli <s-vadapalli@ti.com>, Roger Quadros <rogerq@kernel.org>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-hyperv@vger.kernel.org, linux-omap@vger.kernel.org, Michal Kubiak
+ <michal.kubiak@intel.com>
+Subject: Re: [PATCH net-next v2 4/7] net: octeontx2: Add metadata support
+ for xdp mode
+Message-ID: <20250325044126.1c0f9b83@kernel.org>
+In-Reply-To: <20250318-mvneta-xdp-meta-v2-4-b6075778f61f@kernel.org>
+References: <20250318-mvneta-xdp-meta-v2-0-b6075778f61f@kernel.org>
+	<20250318-mvneta-xdp-meta-v2-4-b6075778f61f@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250325103047.GH36322@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-
-* Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Tue, Mar 25, 2025 at 09:41:10AM +0100, Ingo Molnar wrote:
-> > 
-> > * Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > > On Mon, Mar 24, 2025 at 08:53:31AM +0100, Eric Dumazet wrote:
-> > > 
-> > > > BTW the atomic_cond_read_acquire() part is never called even during my
-> > > > stress test.
-> > > 
-> > > Yes, IIRC this is due to text_poke_sync() serializing the state, as that
-> > > does a synchronous IPI broadcast, which by necessity requires all
-> > > previous INT3 handlers to complete.
-> > > 
-> > > You can only hit that case if the INT3 remains after step-3 (IOW you're
-> > > actively writing INT3 into the text). This is exceedingly rare.
-> > 
-> > Might make sense to add a comment for that.
-> 
-> Sure, find below.
-> 
-> > Also, any strong objections against doing this in the namespace:
-> > 
-> >   s/bp_/int3_
-> > 
-> > ?
-> > 
-> > Half of the code already calls it a variant of 'int3', half of it 'bp', 
-> > which I had to think for a couple of seconds goes for breakpoint, not 
-> > base pointer ... ;-)
-> 
-> It actually is breakpoint, as in INT3 raises #BP. For complete confusion
-> the things that are commonly known as debug breakpoints, those things in
-> DR7, they raise #DB or debug exceptions.
-
-Yeah, it's a software breakpoint, swbp, that raises the #BP trap.
-
-'bp' is confusingly aliased (in my brain at least) with 'base pointer' 
-register naming and assembler syntax: as in bp, ebp, rbp.
-
-So I'd prefer if it was named consistently:
-
-  text_poke_int3_batch()
-  text_poke_int3_handler()
-  ...
-
-Not the current mishmash of:
-
-  text_poke_bp_batch()
-  poke_int3_handler()
-  ...
-
-Does this make more sense?
-
-> > Might as well standardize on int3_ and call it a day?
-> 
-> Yeah, perhaps. At some point you've got to know that INT3->#BP and
-> DR7->#DB and it all sorta makes sense, but *shrug* :-)
-
-Yeah, so I do know what #BP is, but what the heck disambiguates the two 
-meanings of _bp and why do we have the above jungle of an inconsistent 
-namespace? :-)
-
-Picking _int3 would neatly solve all of that.
-
-> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-> index bf82c6f7d690..01e94603e767 100644
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -2749,6 +2749,13 @@ static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries
+On Tue, 18 Mar 2025 12:46:08 +0100 Lorenzo Bianconi wrote:
+> @@ -1514,13 +1518,14 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
 >  
->  	/*
->  	 * Remove and wait for refs to be zero.
-> +	 *
-> +	 * Notably, if after step-3 above the INT3 got removed, then the
-> +	 * text_poke_sync() will have serialized against any running INT3
-> +	 * handlers and the below spin-wait will not happen.
-> +	 *
-> +	 * IOW. unless the replacement instruction is INT3, this case goes
-> +	 * unused.
->  	 */
->  	if (!atomic_dec_and_test(&bp_desc.refs))
->  		atomic_cond_read_acquire(&bp_desc.refs, !VAL);
+>  	hard_start = (unsigned char *)phys_to_virt(pa);
+>  	xdp_prepare_buff(&xdp, hard_start, OTX2_HEAD_ROOM,
+> -			 cqe->sg.seg_size, false);
+> +			 cqe->sg.seg_size, true);
+>  
+>  	act = bpf_prog_run_xdp(prog, &xdp);
+>  
+>  handle_xdp_verdict:
+>  	switch (act) {
+>  	case XDP_PASS:
+> +		*metasize = xdp.data - xdp.data_meta;
+>  		break;
+>  	case XDP_TX:
+>  		qidx += pfvf->hw.tx_queues;
 
-Thanks! I stuck this into tip:x86/alternatives, with your SOB.
-
-	Ingo
+This one handles ABORT and invalid return codes as PASS not DROP.
+That should probably be fixed separately?
 
