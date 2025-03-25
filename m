@@ -1,102 +1,192 @@
-Return-Path: <bpf+bounces-54631-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54632-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ED9EA6F540
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 12:43:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51876A6F6EB
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 12:46:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB508170202
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 11:43:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B06671891C62
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 11:45:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 253A9256C87;
-	Tue, 25 Mar 2025 11:41:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 291EE255E3D;
+	Tue, 25 Mar 2025 11:45:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UjIcrAY7"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="EVjLbNU/"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929AE2561AD;
-	Tue, 25 Mar 2025 11:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 141EF1E833A;
+	Tue, 25 Mar 2025 11:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742902902; cv=none; b=HMbkwCziffKMCQK5pNVcBBsi4awYQ2PBZ4BeZBF6uzuMeZGTrVYhz+r5T/CgOBWyZZk1CI3md2wP9x9mqzAYYgKYf+9tXr8b0RKSfTLNHBvqEc43kvDSfmGHrDKIbXf+wZ4a8usjRlGTvFFQcllnMeJzPbt6UgnJaZdKKdMHJ0I=
+	t=1742903125; cv=none; b=l/w4kG4ZhiHQEnX0o/yt5lDiMQCff9pwA5qEEXq1KgchpYc7pcBPvfouzNv3clq6t1OcXhz4aw6YRV79/Qatfk42qLJH5UH6BkX3P7p9BUXANExkIBXrAOcVx266UPR91c7K+ODkfRx+Uv6rHF/VlkhahDIMKfQELMM7KpCR2LY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742902902; c=relaxed/simple;
-	bh=zUelcqDDriz9SHJ6HG975vlFXTHLgPVDZutVhZothAA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Duj84mPmdTH4cXHKp2KuasO9je9J5x3KLqhO6nQGo1jxI5WyAOh5ZSLuK2teP6BzyO1gLGRXUg6Q/+To0ZSFZqnQx8TpKA3VyOd/fRuLPjaYWCiZvgUkFOWR2yytHLQjchE5MYBAL0gcAycYKUWceQKUNjM5gsyF1E4/FwEa90M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UjIcrAY7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 078DFC4CEE4;
-	Tue, 25 Mar 2025 11:41:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742902902;
-	bh=zUelcqDDriz9SHJ6HG975vlFXTHLgPVDZutVhZothAA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=UjIcrAY75aMFN3vXVfik+OFX0Uy5JnrBVRd5fjFX94lL3SFrNbHkKgQcaIA2VC/uF
-	 c2d7+SrvjPHqi3AbZvmgxIvY1UxRQw1jAJGd9d3ejma7XAkMJ9jHVUr0VdOT7lBd3B
-	 7FPhJeSfb/hWEt/mJCtOzTE4a5iZPKQyCm1dsixrg+kYQkSNd82p/JF1V6m1cUw/ZC
-	 Lcg/MJdd6r8tQjuNkSp6keZMt6LC86vUeKhTm2Ohaw2PdtTPuxtGB0ImPQpkjXtbmf
-	 H5elHwkT2m/vYSAJ7IqPJXyDiyrnd51xugQZFl94GUFuKOXJFsN97DLbXN66xX352G
-	 iZxetGKtfiGvQ==
-Date: Tue, 25 Mar 2025 04:41:26 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Marcin Wojtas <marcin.s.wojtas@gmail.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Russell King <linux@armlinux.org.uk>, Ilias
- Apalodimas <ilias.apalodimas@linaro.org>, Masahisa Kojima
- <kojima.masahisa@socionext.com>, Sunil Goutham <sgoutham@marvell.com>,
- Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep
- <sbhatta@marvell.com>, hariprasad <hkelam@marvell.com>, Bharat Bhushan
- <bbhushan2@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
- <sean.wang@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, "K.
- Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
- Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Siddharth
- Vadapalli <s-vadapalli@ti.com>, Roger Quadros <rogerq@kernel.org>,
- netdev@vger.kernel.org, bpf@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-hyperv@vger.kernel.org, linux-omap@vger.kernel.org, Michal Kubiak
- <michal.kubiak@intel.com>
-Subject: Re: [PATCH net-next v2 4/7] net: octeontx2: Add metadata support
- for xdp mode
-Message-ID: <20250325044126.1c0f9b83@kernel.org>
-In-Reply-To: <20250318-mvneta-xdp-meta-v2-4-b6075778f61f@kernel.org>
-References: <20250318-mvneta-xdp-meta-v2-0-b6075778f61f@kernel.org>
-	<20250318-mvneta-xdp-meta-v2-4-b6075778f61f@kernel.org>
+	s=arc-20240116; t=1742903125; c=relaxed/simple;
+	bh=ln3YIN/p3pvOOr6HTpKHmEmdZ4o2gfuuldLKRJWcKsY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dGDCUWlhuYyttwS43uB4+u5Xcws3/88TZ+O4R8vbjMv3QxrZ69itk7u88O9Y2SYUAMpUKcAOdJN8R7t82J0w68obNGpa1U869MNRDdpGzUddRozctnwsDGZ9WEGPDtZXpMEYJ53MLlzQzl2Eobd2aaNW3QzN2KFHuIuH+L2cj1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=EVjLbNU/; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52P56dKK027910;
+	Tue, 25 Mar 2025 11:45:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=ZeSvWIeDWkZDUBR4rtlXsoPy9rqPVD
+	RaaZ2ycwV8IUc=; b=EVjLbNU/k5+hqrBMGzGH/Fx07OdHl42M4QPRgyplfcTT6J
+	MwoJFMiFn5ij4vtQYKZws4avcfDpsg8HTGu+yk4smIpknNF1/LkS9KUAqwNixD79
+	ad7FOtrMtYWSfMK+0y/k+iBDcS6qO2SkUM7X6JDEdc0QPeNWVoTr+oIu2kRcRv28
+	DH0NIcG89cBtHwrkcT21EncIaY9Q921n7hd3XwjNstgoRdi+kOoqJidlt36eXkrq
+	6W2i1ELzPn0x3ZKkp92ZwW92S6D4xMHM8O766zh98f74mqdkawWrPoNExbZDg3KS
+	b4KT6ZUcufkzDEdKg+dAFe6vpOlRQKkw/S04GkGA==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45kbjwvae5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 25 Mar 2025 11:45:06 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52PA0TZm009692;
+	Tue, 25 Mar 2025 11:45:05 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 45j9rkjy33-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 25 Mar 2025 11:45:05 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52PBj2hk35258764
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 25 Mar 2025 11:45:02 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 41C5120043;
+	Tue, 25 Mar 2025 11:45:02 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2D19320040;
+	Tue, 25 Mar 2025 11:44:59 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.43.39.189])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 25 Mar 2025 11:44:58 +0000 (GMT)
+Date: Tue, 25 Mar 2025 17:14:55 +0530
+From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+To: Quentin Monnet <qmo@qmon.net>
+Cc: Venkat Rao Bagalkote <venkat88@linux.ibm.com>,
+        Hari Bathini <hbathini@linux.ibm.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        jkacur@redhat.com, lgoncalv@redhat.com, gmonaco@redhat.com,
+        williams@redhat.com, tglozar@redhat.com, rostedt@goodmis.org
+Subject: Re: [linux-next-20250324]/tool/bpf/bpftool fails to complie on
+ linux-next-20250324
+Message-ID: <Z+KXN0KjyHlQPLUj@linux.ibm.com>
+References: <5df6968a-2e5f-468e-b457-fc201535dd4c@linux.ibm.com>
+ <8b0b2a41-203d-41f8-888d-2273afb877d0@qmon.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8b0b2a41-203d-41f8-888d-2273afb877d0@qmon.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 6J8TeICOWrWWtMDx4atpNlqvb8kZ_Apf
+X-Proofpoint-ORIG-GUID: 6J8TeICOWrWWtMDx4atpNlqvb8kZ_Apf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-25_04,2025-03-25_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 spamscore=0
+ clxscore=1011 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502280000 definitions=main-2503250080
 
-On Tue, 18 Mar 2025 12:46:08 +0100 Lorenzo Bianconi wrote:
-> @@ -1514,13 +1518,14 @@ static bool otx2_xdp_rcv_pkt_handler(struct otx2_nic *pfvf,
->  
->  	hard_start = (unsigned char *)phys_to_virt(pa);
->  	xdp_prepare_buff(&xdp, hard_start, OTX2_HEAD_ROOM,
-> -			 cqe->sg.seg_size, false);
-> +			 cqe->sg.seg_size, true);
->  
->  	act = bpf_prog_run_xdp(prog, &xdp);
->  
->  handle_xdp_verdict:
->  	switch (act) {
->  	case XDP_PASS:
-> +		*metasize = xdp.data - xdp.data_meta;
->  		break;
->  	case XDP_TX:
->  		qidx += pfvf->hw.tx_queues;
+On Tue, Mar 25, 2025 at 11:09:24AM +0000, Quentin Monnet wrote:
+> 2025-03-25 16:02 UTC+0530 ~ Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+> > Greetings!!!
+> > 
+> > 
+> > bpftool fails to complie on linux-next-20250324 repo.
+> > 
+> > 
+> > Error:
+> > 
+> > make: *** No rule to make target 'bpftool', needed by '/home/linux/
+> > tools/testing/selftests/bpf/tools/include/vmlinux.h'. Stop.
+> > make: *** Waiting for unfinished jobs.....
+> 
+> 
+> Thanks! Would be great to have a bit more context on the error (and on
+> how to reproduce) for next time. Bpftool itself seems to compile fine,
+> the error shows that it's building it from the context of the selftests
+> that seems broken.
+> 
+> 
+Yes, selftest build for BPF fails.
+## pwd
+/linux/tools/testing/selftests/bpf
 
-This one handles ABORT and invalid return codes as PASS not DROP.
-That should probably be fixed separately?
+# make -j 33
+
+make: *** No rule to make target 'bpftool', needed by '/home/upstreamci/linux/tools/testing/selftests/bpf/tools/include/vmlinux.h'.  Stop.
+make: *** Waiting for unfinished jobs....
+
+> > Git bisect points to commit: 8a635c3856ddb74ed3fe7c856b271cdfeb65f293 as
+> > first bad commit.
+> 
+> Thank you Venkat for the bisect!
+> 
+> On a quick look, that commit introduced a definition for BPFTOOL in
+> tools/scripts/Makefile.include:
+> 
+> 	diff --git a/tools/scripts/Makefile.include .../Makefile.include
+> 	index 0aa4005017c7..71bbe52721b3 100644
+> 	--- a/tools/scripts/Makefile.include
+> 	+++ b/tools/scripts/Makefile.include
+> 	@@ -91,6 +91,9 @@ LLVM_CONFIG	?= llvm-config
+> 	 LLVM_OBJCOPY	?= llvm-objcopy
+> 	 LLVM_STRIP	?= llvm-strip
+> 	
+> 	+# Some tools require bpftool
+> 	+BPFTOOL		?= bpftool
+> 	+
+> 	 ifeq ($(CC_NO_CLANG), 1)
+> 	 EXTRA_WARNINGS += -Wstrict-aliasing=3
+> 
+> But several utilities or selftests under tools/ include
+> tools/scripts/Makefile.include _and_ use their own version of the
+> $(BPFTOOL) variable, often assigning only if unset, for example in
+> tools/testing/selftests/bpf/Makefile:
+> 
+> 	BPFTOOL ?= $(DEFAULT_BPFTOOL)
+> 
+> My guess is that the new definition from Makefile.include overrides this
+> with simply "bpftool" as a value, and the Makefile fails to build it as
+> a result.
+> 
+> If I guessed correctly, one workaround would be to rename the variable
+> in Makefile.include (and in whatever Makefile now relies on it) into
+> something that is not used in the other Makefiles, for example
+> BPFTOOL_BINARY.
+> 
+> Please copy the BPF mailing list on changes impacting BPF tooling (or
+> for BPF-related patchsets in general).
+> 
+> Thanks,
+> Quentin
+Yes you are right that the new definition from Makefile.include overrides this
+with simply "bpftool" as a value, and the Makefile in bpf selftest fails to 
+build it as a result.
+
+But the main cause is that it is not able to locate the bpftool binary.
+So, is it good idea to both rename this variable in Makefile.include and 
+use:
+
+BPFTOOL ?= /usr/sbin/bpftool
+
+This is the link to patch that is impacting: 
+https://lore.kernel.org/all/20250218145859.27762-3-tglozar@redhat.com/
+
+Thanks,
+Saket
 
