@@ -1,94 +1,72 @@
-Return-Path: <bpf+bounces-54624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54625-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D73E8A6EB9C
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 09:33:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 425FFA6EBE0
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 09:42:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3AC03A8547
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 08:33:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E21901896460
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 08:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48F72528E5;
-	Tue, 25 Mar 2025 08:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D852825484D;
+	Tue, 25 Mar 2025 08:41:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NL6Na3Fu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fWrUA0oE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4EC519E992
-	for <bpf@vger.kernel.org>; Tue, 25 Mar 2025 08:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CED8253F2D;
+	Tue, 25 Mar 2025 08:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742891624; cv=none; b=VkIECMTtNYKY5yUsS5RBBhFkV2hzu7svjH87/gdBMX3kjK5jOgeICUYCQgUAWfJ08smpIbvAC84QcswEVg7+EFvS7LvKfaTv5ro8hAhX1RpqUXtJo+1j1m0Nop7tIS4y3nTAZHdUPITrqFkb0a9WyFOxsKD3Y1Jov+NL4ca2oeI=
+	t=1742892077; cv=none; b=uB/yK9pXThqLjiyTLJ+XaaGcIhtraa3/f5QdEnW0/rt8qNj5i9oD/44xCz0zreCKxJ2GeyKYLcJliIZ/VOW6siKdUGebPxm+bNO38oGyrk1PxF3x8eLfXh0RNtEiscIdPzcC0v0MwhgTPN2xmuV62dr5KPkiWhVOEXwaas90x8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742891624; c=relaxed/simple;
-	bh=CIpgglvc6zGyqz34CRhRB2JPJCMFeVq9yDZ+adJAmf8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lg5mDXNTYdMsbN3g0hyyppreV45lS0+VuqHQ1N8Eiel+6Iii0W6G+FgnanUkLCs4oR3WL2AJFiP6FZAji9r0Vg4g+SDYQmGBoK5jf/0aAixAGBUqnfPjyfWVF+PrECw9ggOV3oRgzAn4Sr3hb/M86Kj7VFibXqeBuJ8yyWezezY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NL6Na3Fu; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-43cf034d4abso56877625e9.3
-        for <bpf@vger.kernel.org>; Tue, 25 Mar 2025 01:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742891621; x=1743496421; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tf4bT8kmKVbZr7VGN7uPEhabgyxoTN8D48RcEUDiO3A=;
-        b=NL6Na3FunwlrWvzWkR6hJnaeaFdvXcFr68pbOJOqmJu9VzRCjgZznOK3l0zoreWr+I
-         HM1Mrb9Jbo93uCA2yKzqzDZG9Ux34kxfwYEsdXngWti60qPwfa5liX9k5Ni9ZPwPDPTC
-         o0cm4pT0AJHLlVLeq44bPf0T2kWcWG07QpL6lLbVt7wap0NRDat6UszC9kisdU3dJlv1
-         P5tdTmnY9ivy6fmEtTMfjDbFr04g6c1OmoWUmsYQe9oB5L7U0aUJniCH10m2PLtLAhWm
-         ZJvUp+kmJoO1USTlv5TxiZPn+WJTOXZCWByhmHhx6t2P61yYeZsOV69imQP3qI1IXYCA
-         g/mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742891621; x=1743496421;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tf4bT8kmKVbZr7VGN7uPEhabgyxoTN8D48RcEUDiO3A=;
-        b=s1MqYL+G2Aa4//e3e13dlu+Tm1hRb3vk3rV9IYcI+pXWsL6SLbfiyi3/x8wHsMT84y
-         JGhGTC67nmYHqPWqs/WYnV95/85yy99bsjITPEcD5wc3gBDImtNdo/tqwvgDRmnXmcoL
-         ieeZbOGSfw4HYTzKVFkvbHJSbEodR2XSL+UHhoa1uMGG7LlSlwrFyzVZKMJVMu4kKNqM
-         GtCRX6criSK9ykABzHfi1P9Boqe+XAku5JqhckLmDxsyl6TZygPczua/Gb50uh/XP3Rz
-         U5z+jQ4cLUV2U9z8/gsagxxN9c0gLAkEYf5iESGt3QGEXw/Vyc9dclxnFcT663luJbGx
-         mqRA==
-X-Gm-Message-State: AOJu0YzA9QTzQVZEMelRxyGsJWev0XCGMUlmJfplxnEocLGdSX3wjmjy
-	8Po+rbnHbKk3JKnnk6zsnzmOisjlOA1VuyivnL0bBTeteCdLkwEz
-X-Gm-Gg: ASbGncvUsUKd7sx7CgmimdizDL/fNxcNCXaQZzuxxlJdaCHyWrs9aJgqDQwQ7zdGI9Q
-	5SqHfGTysqUGNbKvc4GtMWSU3N06Vd9C9i81MWLURCjU0kklgG9wwRlimVNw6fb+zu9iToXaDii
-	zhrln5o1EU7EndQKdJ+D5Con/dfahaBAMnl5p5wkrJUDGkWOYY7KzsISIv648LS+s/PP577d32x
-	7S6hV+Cgt6CDUYVaiOL0Apr8CsboPMYVI5MBhrPLeXRfYmVvYK9SoGgckyzAxiEiJt3INhyNka2
-	T8W152YeVxDf6rLjiRQlGt/52Al+7go=
-X-Google-Smtp-Source: AGHT+IEOyGpkfiMhe0MlnEZsUSK53xOln3mF+6k9rwU1nUcUqj43DXQTClofbiJDUfmm5tHn94104Q==
-X-Received: by 2002:a05:600c:b8d:b0:43b:ce08:c382 with SMTP id 5b1f17b1804b1-43d509f6797mr157213785e9.16.1742891620597;
-        Tue, 25 Mar 2025 01:33:40 -0700 (PDT)
-Received: from krava ([173.38.220.49])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3997f9ef1f7sm12970301f8f.82.2025.03.25.01.33.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Mar 2025 01:33:40 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 25 Mar 2025 09:33:37 +0100
-To: Viktor Malik <vmalik@redhat.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1742892077; c=relaxed/simple;
+	bh=CY5RP842umNjCXx2QIefjQ/33Qh6ZSa0whh4kFlNOwg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gcL7E3/OgxkabOlocVIRiq1Bjpz4ktNb6N8MyHSmLElOf9EnhdYe6HiE9Yxr5hs7IDHmHPRZf0jQRG4Ih3d5qGJ/h0TiAyfzHNvSb96uZVghHtdHzL/ZY7GHfWu0WfiJf/VwigGEyLVhQRfQdBXavibtidPo6vZTPRi9TF1E3zE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fWrUA0oE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2FDBC4CEE4;
+	Tue, 25 Mar 2025 08:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742892076;
+	bh=CY5RP842umNjCXx2QIefjQ/33Qh6ZSa0whh4kFlNOwg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fWrUA0oEG3GWgwAvoabVeyqyPfN7/TU9eaLCZoSwA9RhUTZ9Po4eF5siEeVlVF+xI
+	 tX5I2WQ6gz+LaiDsDz5xqhXJMZm894wU3O/nnq2g/RNQJW1ufzcXKTtAbB9A4J8PXd
+	 XY9gymc19bMnu46AZ8Rf+dpKusxA5miFnD2OAYSkUy2KkJX0lnwAF2XMnsUZh0vydv
+	 fOvkZvDsnaBznwusgjP7KZfuEkgV5cAmY1LJMBuSXV2jw71AboL6gEqXDmP0Q/9XOw
+	 ZDLmve8SJ8i6P5VcuqXxvtsqvm68bMooZdDdUc+GHw0lhS4ojEFbmd76T4AbU9db6R
+	 0PUMIaizQMxkg==
+Date: Tue, 25 Mar 2025 09:41:10 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Eric Dumazet <edumazet@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH bpf-next v3 2/3] selftests/bpf: Add tests for string
- kfuncs
-Message-ID: <Z-JqYX6k6lS6srQX@krava>
-References: <cover.1741874348.git.vmalik@redhat.com>
- <2a26a72e223811f3060d772f5e9c2cf217541f18.1741874348.git.vmalik@redhat.com>
+	Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
+	bpf@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
+	Greg Thelen <gthelen@google.com>,
+	Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] x86/alternatives: remove false sharing in
+ poke_int3_handler()
+Message-ID: <Z-JsJruueRgLQ8st@gmail.com>
+References: <20250323072511.2353342-1-edumazet@google.com>
+ <Z-B_R737uM31m6_K@gmail.com>
+ <CANn89i+fmyJ8p=vBpwBy38yhVMCJv8XjrTkrXSUnSGedboCM_Q@mail.gmail.com>
+ <Z-EGvjhkg6llyX24@gmail.com>
+ <CANn89iL8o0UZTpomaT1oaMxRTBv1YdaXZGwXQn3H0dDO81UyGA@mail.gmail.com>
+ <CANn89iKwPpV7v=EnK2ac5KjHSef64eyVwUST=q=+oFaqTB95sQ@mail.gmail.com>
+ <20250324113304.GB14944@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,109 +75,38 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2a26a72e223811f3060d772f5e9c2cf217541f18.1741874348.git.vmalik@redhat.com>
+In-Reply-To: <20250324113304.GB14944@noisy.programming.kicks-ass.net>
 
-On Mon, Mar 24, 2025 at 01:03:29PM +0100, Viktor Malik wrote:
-> The tests use the RUN_TESTS helper which executes BPF programs with
-> BPF_PROG_TEST_RUN and check for the expected return value.
+
+* Peter Zijlstra <peterz@infradead.org> wrote:
+
+> On Mon, Mar 24, 2025 at 08:53:31AM +0100, Eric Dumazet wrote:
 > 
-> Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-> Signed-off-by: Viktor Malik <vmalik@redhat.com>
-> ---
->  .../selftests/bpf/prog_tests/string_kfuncs.c  | 10 ++++
->  .../selftests/bpf/progs/string_kfuncs.c       | 58 +++++++++++++++++++
->  2 files changed, 68 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
->  create mode 100644 tools/testing/selftests/bpf/progs/string_kfuncs.c
+> > BTW the atomic_cond_read_acquire() part is never called even during my
+> > stress test.
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c b/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
-> new file mode 100644
-> index 000000000000..79dab172eb92
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/string_kfuncs.c
-> @@ -0,0 +1,10 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (C) 2025 Red Hat, Inc.*/
-> +#include <test_progs.h>
-> +#include "string_kfuncs.skel.h"
-> +
-> +void test_string_kfuncs(void)
-> +{
-> +	RUN_TESTS(string_kfuncs);
-> +}
-> +
-> diff --git a/tools/testing/selftests/bpf/progs/string_kfuncs.c b/tools/testing/selftests/bpf/progs/string_kfuncs.c
-> new file mode 100644
-> index 000000000000..9fb1ed5ba1fa
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/string_kfuncs.c
-> @@ -0,0 +1,58 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (C) 2025 Red Hat, Inc.*/
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_misc.h"
-> +
-> +int bpf_strcmp(const char *cs, const char *ct) __ksym;
-> +char *bpf_strchr(const char *s, int c) __ksym;
-> +char *bpf_strchrnul(const char *s, int c) __ksym;
-> +char *bpf_strnchr(void *s, u32 s__sz, int c) __ksym;
-> +char *bpf_strnchrnul(void *s, u32 s__sz, int c) __ksym;
-> +char *bpf_strrchr(const char *s, int c) __ksym;
-> +size_t bpf_strlen(const char *s) __ksym;
-> +size_t bpf_strnlen(void *s, u32 s__sz) __ksym;
-> +size_t bpf_strspn(const char *s, const char *accept) __ksym;
-> +size_t bpf_strcspn(const char *s, const char *reject) __ksym;
-> +char *bpf_strpbrk(const char *cs, const char *ct) __ksym;
-> +char *bpf_strstr(const char *s1, const char *s2) __ksym;
-> +char *bpf_strstr(const char *s1, const char *s2) __ksym;
-> +char *bpf_strnstr(void *s1, u32 s1__sz, void *s2, u32 s2__sz) __ksym;
-
-hi,
-I don't think above declarations are necessary, it should be all
-in vmlinux.h already
-
-jirka
-
-> +
-> +char str1[] = "hello world";
-> +char str2[] = "hello";
-> +char str3[] = "world";
-> +char str4[] = "abc";
-> +char str5[] = "";
-> +
-> +#define __test(retval) SEC("syscall") __success __retval(retval)
-> +
-> +__test(0) int test_strcmp_eq(void *ctx) { return bpf_strcmp(str1, str1); }
-> +__test(1) int test_strcmp_neq(void *ctx) { return bpf_strcmp(str1, str2); }
-> +__test(1) int test_strchr_found(void *ctx) { return bpf_strchr(str1, 'e') - str1; }
-> +__test(11) int test_strchr_null(void *ctx) { return bpf_strchr(str1, '\0') - str1; }
-> +__test(0) u64 test_strchr_notfound(void *ctx) { return (u64)bpf_strchr(str1, 'x'); }
-> +__test(1) int test_strchrnul_found(void *ctx) { return bpf_strchrnul(str1, 'e') - str1; }
-> +__test(11) int test_strchrnul_notfound(void *ctx) { return bpf_strchrnul(str1, 'x') - str1; }
-> +__test(1) int test_strnchr_found(void *ctx) { return bpf_strnchr(str1, 5, 'e') - str1; }
-> +__test(11) int test_strnchr_null(void *ctx) { return bpf_strnchr(str1, 12, '\0') - str1; }
-> +__test(0) u64 test_strnchr_notfound(void *ctx) { return (u64)bpf_strnchr(str1, 5, 'w'); }
-> +__test(1) int test_strnchrnul_found(void *ctx) { return bpf_strnchrnul(str1, 5, 'e') - str1; }
-> +__test(11) int test_strnchrnul_notfound(void *ctx) { return bpf_strnchrnul(str1, 12, 'x') - str1; }
-> +__test(9) int test_strrchr_found(void *ctx) { return bpf_strrchr(str1, 'l') - str1; }
-> +__test(0) u64 test_strrchr_notfound(void *ctx) { return (u64)bpf_strrchr(str1, 'x'); }
-> +__test(11) size_t test_strlen(void *ctx) { return bpf_strlen(str1); }
-> +__test(11) size_t test_strnlen(void *ctx) { return bpf_strnlen(str1, 12); }
-> +__test(5) size_t test_strspn(void *ctx) { return bpf_strspn(str1, str2); }
-> +__test(2) size_t test_strcspn(void *ctx) { return bpf_strcspn(str1, str3); }
-> +__test(2) int test_strpbrk_found(void *ctx) { return bpf_strpbrk(str1, str3) - str1; }
-> +__test(0) u64 test_strpbrk_notfound(void *ctx) { return (u64)bpf_strpbrk(str1, str4); }
-> +__test(6) int test_strstr_found(void *ctx) { return bpf_strstr(str1, str3) - str1; }
-> +__test(0) u64 test_strstr_notfound(void *ctx) { return (u64)bpf_strstr(str1, str4); }
-> +__test(0) int test_strstr_empty(void *ctx) { return bpf_strstr(str1, str5) - str1; }
-> +__test(6) int test_strnstr_found(void *ctx) { return bpf_strnstr(str1, 12, str3, 6) - str1; }
-> +__test(0) u64 test_strnstr_unsafe(void *ctx) { return (u64)bpf_strnstr(str1, 5, str3, 5); }
-> +__test(0) u64 test_strnstr_notfound(void *ctx) { return (u64)bpf_strnstr(str1, 12, str4, 4); }
-> +__test(0) int test_strnstr_empty(void *ctx) { return bpf_strnstr(str1, 5, str5, 1) - str1; }
-> +
-> +char _license[] SEC("license") = "GPL";
-> -- 
-> 2.48.1
+> Yes, IIRC this is due to text_poke_sync() serializing the state, as that
+> does a synchronous IPI broadcast, which by necessity requires all
+> previous INT3 handlers to complete.
 > 
+> You can only hit that case if the INT3 remains after step-3 (IOW you're
+> actively writing INT3 into the text). This is exceedingly rare.
+
+Might make sense to add a comment for that.
+
+Also, any strong objections against doing this in the namespace:
+
+  s/bp_/int3_
+
+?
+
+Half of the code already calls it a variant of 'int3', half of it 'bp', 
+which I had to think for a couple of seconds goes for breakpoint, not 
+base pointer ... ;-)
+
+Might as well standardize on int3_ and call it a day?
+
+Thanks,
+
+	Ingo
 
