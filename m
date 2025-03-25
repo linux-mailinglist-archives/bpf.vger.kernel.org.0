@@ -1,128 +1,151 @@
-Return-Path: <bpf+bounces-54684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54686-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FBF2A70362
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 15:17:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 924EDA70475
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 16:00:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E27CF3A7FE4
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 14:11:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5DA33AFDEC
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 14:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1ABC259C8D;
-	Tue, 25 Mar 2025 14:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEBAC25B691;
+	Tue, 25 Mar 2025 15:00:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U8NIPyTB"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VGdDPVGr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 273F0254AF2
-	for <bpf@vger.kernel.org>; Tue, 25 Mar 2025 14:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF3925B668
+	for <bpf@vger.kernel.org>; Tue, 25 Mar 2025 15:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742911875; cv=none; b=kRU/qwOkzJtZbUTmyXkQ4saWpN16BGC++ClrHCKSiMN6+crWYWqPOmj7dJalei/2Huoh6Uet4e06WDMfHKf1Mk7XRaNFE4l3IxvD2WludFGkq0xuAJdWw+zkxFHSNfXsvKEH7qPeObcFsclKfgoQ7B/QYCBMkurO0jt2SpsSEmo=
+	t=1742914804; cv=none; b=Ds/65h35ie9nCr1h7YWBH4fUcEuTlIvCBLMsV07UyY2HmU3UWHF51pQbWIY+SViMMHBCiMp+QrcocxqM01CgdNKc28PpkirFq62SfxZ+BCUvJwNhQEFkGvCPmjzl6OlccmjuCeJrLuMbISnEANfpWthS7bXvI1HICREdVhyDkTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742911875; c=relaxed/simple;
-	bh=m5Rf71rIgy5GkGGzXBi5Ik4Xt/g0V0ssPzWjnP0LN/c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PRsTz7MyoIDjMXtdcgGH6hXjvUky4b9NL7wr1gC0CBlLcXDOV8RHML/tE2c0K5F4mG1cmviPMzgAa4BdjmJf7gnJWfkCEcI0e99G+STs9uR7oAriG2thsKMx1f4E7aqbxKLcWOwn2nGyLGDmSUcWoy8gzIaVvD3GVnC+8CR1p3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U8NIPyTB; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2ff6cf448b8so13040177a91.3
-        for <bpf@vger.kernel.org>; Tue, 25 Mar 2025 07:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742911873; x=1743516673; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oyT+32LK+A27PsW6quCOsG6ro+lQiaS6tL1T9+kWwRw=;
-        b=U8NIPyTBhLTJ9fh24aHhkKHJvo3P5hV+pa8oNBDEWOCRnHARj6+4wqcqu+3pYYNfN7
-         +tpNIkuqns+aerS2DwXrE7Tf3wM8K81wmQ9+EgLq31JWgZgJkSGRyw1KyH1R0Din81w1
-         Q9HTTemv3TCqKYcNGmiTAHoKibM47T2fF34ZhcJAajMKPx9vmxX9l6wORDm1x8/2ysm9
-         pooFSpu2xDP71PfxYiJkd1enW73ZBcphBJT8V/rwKkFcwa8ak2HXNCM3N2V0rA8cvkyo
-         mHy0uDmmAJ8tZdzNBYI+pXyE3sC6sIeP4iDsEgEq04IRpHuZylgyeNi4O4rkwm31Nwvp
-         CydA==
+	s=arc-20240116; t=1742914804; c=relaxed/simple;
+	bh=GPD56TsPvi3UfQl0ryL3JUmt+MmqXDPi65xi8w44GI8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BtsB2T29KSowivwzxzLUCsb7W5JbqFlMUdmb0M+2B51qWAKC7jc83ogNwpJitjBNO1AcfsyAuatTYHILmMea/WnzZWZV/xjPSMPuTFxzMjxx4tW1/pPNMBBjc6BPdP0SlFoIzFO1sDl+FQIIpiNb5XXtcSqGTcke8hh1auTRGas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VGdDPVGr; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1742914801;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GPD56TsPvi3UfQl0ryL3JUmt+MmqXDPi65xi8w44GI8=;
+	b=VGdDPVGr3VrxXuWcptIQGx7/oTBv6iiy0PSBV39hqEJ7D0qZc9IXd8a1biqlRR+BtBGXWe
+	6n+uxFtFoboImNR1JReXTb2iMjK62e20spbv3rxXQr+SzLbqzem7P9jewh1Gmmy+qSZFk9
+	e8B6iKSyzUckK0mp1Z0n7j4ey46NT/M=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-681-z9o0Cz5nMMmmYBmto5qUIQ-1; Tue, 25 Mar 2025 11:00:00 -0400
+X-MC-Unique: z9o0Cz5nMMmmYBmto5qUIQ-1
+X-Mimecast-MFC-AGG-ID: z9o0Cz5nMMmmYBmto5qUIQ_1742914799
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-ac6ce5fe9bfso53150366b.1
+        for <bpf@vger.kernel.org>; Tue, 25 Mar 2025 08:00:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742911873; x=1743516673;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oyT+32LK+A27PsW6quCOsG6ro+lQiaS6tL1T9+kWwRw=;
-        b=ZQePsWboVxOS9Vy5mOYeOhQbt1KfBYzEQZIvnr9xqheaCyNfso0xOPNk6fWh6sL6r0
-         oJtywVHAVYUQDCwYGpMP2RO5A8GKLqgbl0huwVBEcD4LcickP1wtIihsXnxdGMLGZLpo
-         vuHyV3Pw9SNlLJ9ycJWsVByBFcn64AxFud5lYUYWuoV/KqWWsX3LiLrwBpPKFc1i3uxV
-         rMW5EYszsGp85XCkrRj1qAmB7Ug3BcwfBBHetlvEJ6YMlA51emeIuy9026A0R4dh2n9i
-         l4u0JC5cdzpu2cTnWwKBdfJsz2iqOOymgycQuxUBUllClt2Dy/B31Q8RlbKVPtB1z5g+
-         EtvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUY5oFP5F+dl8ViQcI7GjwK0o9w94k9h99MKGLW3bviy2Z4K4nAv8D2+mfE/zNMgKr/kHI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyeP1BOSuocq/JElFOR05tkyiE+LdIPR+jA5UUw8Bya8I0dB1V0
-	AuoM2B5dEJm/JFJykPZEqcZwDqx9o9tC3gZ6CNcV1y+drAHbtLaH
-X-Gm-Gg: ASbGncuyQz7pVcRhrfpDK0Ey5SGFve1U38vunV91rPf42X2L3A7t/DKnJKuldyVBCOg
-	KJHNL4UezoJIJ8ST5FVi70XDJY/xTfz3BEs7Zz5CZHIj74XAfnn5Yw/YXRZ/J5AInT/B8xs1PND
-	Qfu8dyMCNkdERNfWNOYMCi4OJ7xxeBOsxW+IPd2Ouc+47tg5o69pyh+THnDkZEOfIwyyRpxVcDZ
-	A5cZovXJo8o4x853c8hzSf7Mi+jvlRN39aGGD5nyZEhI4ZbrDll2cIJdRKJZQHxFNqvlQPdql2t
-	tmVRRxY1NrpDHCb0MwQUl5tBf+f5rScRBi6uDzMY9Ln04nY9NqtgBzt9OsZvcPrW6TR0MNPo4sB
-	x0dj2
-X-Google-Smtp-Source: AGHT+IHKVKtahgG1m7Tdx6vHXjWe+CS9GOWBxJwwA8IFIs2F6eJ/pV/0atMx/qpIbWs2P/FAtiNZXw==
-X-Received: by 2002:a17:90b:4a8d:b0:2ee:e945:5355 with SMTP id 98e67ed59e1d1-3030feb1386mr24995855a91.19.1742911873106;
-        Tue, 25 Mar 2025 07:11:13 -0700 (PDT)
-Received: from localhost.localdomain ([14.22.11.162])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22780f4a670sm90556965ad.86.2025.03.25.07.11.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Mar 2025 07:11:12 -0700 (PDT)
-From: Hengqi Chen <hengqi.chen@gmail.com>
-To: loongarch@lists.linux.dev,
-	bpf@vger.kernel.org
-Cc: chenhuacai@kernel.org,
-	yangtiezhu@loongson.cn,
-	john.fastabend@gmail.com,
-	Hengqi Chen <hengqi.chen@gmail.com>
-Subject: [PATCH] LoongArch: BPF: Don't override subprog's return value
-Date: Tue, 25 Mar 2025 14:10:46 +0000
-Message-ID: <20250325141046.38347-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.43.5
+        d=1e100.net; s=20230601; t=1742914799; x=1743519599;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GPD56TsPvi3UfQl0ryL3JUmt+MmqXDPi65xi8w44GI8=;
+        b=JhjMsN5ZoFmRSARjpGLjeactC1ybiUJ7+5j4M0ItzeRGX8zuCK342LwWC6LCsiu2AX
+         9bQ4T+wYF2qzPKQYvRA29jgZnqLZSSHKY7nL3iHonDsbEU8ENAcXc1oOQK47Y926tdhn
+         MGrqJrDxjG77xxZWgEZRzURZ8AveECz3sKqQFtTUoGZJaJbDtXmFD37yBeb6B8OYMzK/
+         d/BZ0ZGRDAWNOZJGXPPmU0oi62TGW6lUpOfgmK7S6Yi4kzHNPI8EIBFKcnoFZb/amOGI
+         3fx6lXmiWwvTCNrWr2NtGU+3E4GBhJcO/TgOqLm7utpYtsWRxCyZmkIHhAdWaKLOK4ex
+         koWA==
+X-Forwarded-Encrypted: i=1; AJvYcCXsvFU1CfzttSPPcv79d0zB7ghnE/ffVOQG28OrVuXOa8HE6izRSY60w+q98uDliALHHBg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwM44gpWcHln/2rO9V4XSp1TiHePm4abF/0N5zJdMLOZZJ8c14y
+	QD/jiB2VZL8FisGrObNZwHSvzZ9DpjDmSvTarGi9Q0gJuGbI+FcCCcm42X5Q3lcMD5/Oya3XIzr
+	dwUThZz20EAiInPty+Eu57wBfkhpoRCELhPVq0kg6WOIb09vcQFFVYJGSsITyDqf4L1s6CaHniU
+	e8Wyq1DlQZWSrgnbHRYyMld8IS
+X-Gm-Gg: ASbGnct26a2jpIosRRyi0QAiYlRuKSUhX9ZvFge/DszW1jsnKfqfwqWBHgB4ihVAJdJ
+	FZ3d7yxhSLRQC+7zXd5jb7BtXY6WlpftC14qNgHX3saQhfF89Fbg6k1+z4/jGpY5ZaZppS0/c6A
+	==
+X-Received: by 2002:a17:907:1b05:b0:ac3:8626:607 with SMTP id a640c23a62f3a-ac3f251fbd3mr1795386766b.38.1742914798876;
+        Tue, 25 Mar 2025 07:59:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG+YUjGVWtfpyBwCFBLJ1QlJAEWsiUBcgZ5CATDRVTkA/NPywRDWZDxKGd2LtWzuRZROP8MS1zhzDRVTnbwctU=
+X-Received: by 2002:a17:907:1b05:b0:ac3:8626:607 with SMTP id
+ a640c23a62f3a-ac3f251fbd3mr1795382466b.38.1742914798382; Tue, 25 Mar 2025
+ 07:59:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <5df6968a-2e5f-468e-b457-fc201535dd4c@linux.ibm.com>
+ <8b0b2a41-203d-41f8-888d-2273afb877d0@qmon.net> <Z+KXN0KjyHlQPLUj@linux.ibm.com>
+ <15370998-6a91-464d-b680-931074889bc1@kernel.org>
+In-Reply-To: <15370998-6a91-464d-b680-931074889bc1@kernel.org>
+From: Tomas Glozar <tglozar@redhat.com>
+Date: Tue, 25 Mar 2025 15:59:44 +0100
+X-Gm-Features: AQ5f1JoiLoJo4ZTpZl2aK1T1MfyI1PFI0KWuUJogAG7QL32ZnjVnpgltDvnuL14
+Message-ID: <CAP4=nvQ23pcQQ+bf6ddVWXd4zAXfUTqQxDrimqhsrB-sBXL_ew@mail.gmail.com>
+Subject: Re: [linux-next-20250324]/tool/bpf/bpftool fails to complie on linux-next-20250324
+To: Quentin Monnet <qmo@kernel.org>
+Cc: Saket Kumar Bhaskar <skb99@linux.ibm.com>, Venkat Rao Bagalkote <venkat88@linux.ibm.com>, 
+	Hari Bathini <hbathini@linux.ibm.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org, 
+	jkacur@redhat.com, lgoncalv@redhat.com, gmonaco@redhat.com, 
+	williams@redhat.com, rostedt@goodmis.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The verifier test `calls: div by 0 in subprog` triggers a panic at the
-ld.bu instruction. The ld.bu insn is trying to load byte from memory
-address returned by the subprog. The subprog actually set the correct
-address at the a5 register (dedicated register for BPF return values).
-But at commit 73c359d1d356 ("LoongArch: BPF: Sign-extend return values")
-we also sign extended a5 to the a0 register (return value in LoongArch).
-For function call insn, we later propagate the a0 register back to a5
-register. This is right for native calls but wrong for bpf2bpf calls
-which expect zero-extended return value in a5 register. So only move a0
-to a5 for native calls (i.e. non-BPF_PSEUDO_CALL).
+Hello Quentin, Venkat, Saket,
 
-Fixes: 73c359d1d356 ("LoongArch: BPF: Sign-extend return values")
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- arch/loongarch/net/bpf_jit.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Thanks for looking into this.
 
-diff --git a/arch/loongarch/net/bpf_jit.c b/arch/loongarch/net/bpf_jit.c
-index a06bf89fed67..73ff1a657aa5 100644
---- a/arch/loongarch/net/bpf_jit.c
-+++ b/arch/loongarch/net/bpf_jit.c
-@@ -907,7 +907,9 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx, bool ext
- 
- 		move_addr(ctx, t1, func_addr);
- 		emit_insn(ctx, jirl, LOONGARCH_GPR_RA, t1, 0);
--		move_reg(ctx, regmap[BPF_REG_0], LOONGARCH_GPR_A0);
-+
-+		if (insn->src_reg != BPF_PSEUDO_CALL)
-+			move_reg(ctx, regmap[BPF_REG_0], LOONGARCH_GPR_A0);
- 		break;
- 
- 	/* tail call */
--- 
-2.43.5
+=C3=BAt 25. 3. 2025 v 13:12 odes=C3=ADlatel Quentin Monnet <qmo@kernel.org>=
+ napsal:
+> If you talk about tools/tracing/rtla/Makefile failing to locate bpftool,
+> it's another matter. As far as I understand, the RTLA Makefile assumes
+> that bpftool is available from $PATH, this is why the commit introduced
+> a probe in tools/build/feature: to ensure that bpftool is installed and
+> available. So here again, I don't see the motivation for changing the
+> path to the binary (And how do you know it's /usr/sbin/bpftool anyway?
+> Some users have it under /usr/local/sbin/, for example). If the intent
+> were to compile a bootstrap bpftool to make sure that it's available
+> instead then it should replicate what other BPF utilities or selftests
+> do, and get rid of the probe. But the commit description for
+> 8a635c3856dd indicates that RTLA folks prefer not to compile bpftool and
+> rely on it being installed.
+
+Yes, that is correct. The reason why I opted to use the system bpftool
+is that bpftool itself has a lot of dependencies, and they would have
+to be available at the time of building RTLA. Since RTLA only requires
+basic bpftool skeleton generation, and the only "special" feature it
+uses is CO-RE which is already quite old now, I don't expect the build
+to fail with system bpftool, so I chose to use that to make both the
+build dependencies and the RTLA Makefiles simpler.
+
+My commits sets BPFTOOL to bpftool since otherwise, the feature check
+would fail, as BPFTOOL wouldn't be defined, since it is not passed to
+the feature detection make call. I observed we are doing the same for
+Clang and the LLVM toolchain in tools/scripts/Makefile.include;
+obviously, there is no problem there, since neither of these are
+in-kernel.
+
+Shouldn't the selftests always test the in-tree bpftool instead of the
+system one? Let's say there is a stray BPFTOOL environmental variable.
+In that case, the tests will give incorrect, possibly false negative
+results, if the user is expecting selftests to test what is in the
+kernel tree. If it is intended to also be able to test with another
+version of bpftool, we can work around the problem by removing the
+BPFTOOL definition from tools/scripts/Makefile.include and exporting
+it from the rtla Makefiles instead, to make sure the feature tests see
+it. The problem with that is, obviously, that future users of the
+bpftool feature check would have to do the same, or they would always
+fail, unless the user sets BPFTOOL as an environment variable
+themselves.
+
+Tomas
 
 
