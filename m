@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-54676-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C30CDA6FF49
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 14:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D5414A6FF87
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 14:05:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA753840E93
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 12:55:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1327B3B5EB2
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 12:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F8C0290BA3;
-	Tue, 25 Mar 2025 12:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3B2266587;
+	Tue, 25 Mar 2025 12:27:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ihVlwKbl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BOK/wPKS"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6617525745C;
-	Tue, 25 Mar 2025 12:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A5D26656F;
+	Tue, 25 Mar 2025 12:27:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742905603; cv=none; b=i6TphsgKWTOCs4hkVTuMbuDuScl7kHolxQtdVmIdmrBzZWwvZJLabWc6xFYf73EtTXz2wBi2Opr1FtwfkKNuZfyyHRRfODRBjSnL7djM0XsWaSJ6Is4lkQEZs3b7B+dkBLfaz3rsKcRs63C0t8VY2veobCcQ8uRaDutcNL//4fo=
+	t=1742905630; cv=none; b=lSA3gxwGMP/D51a9ShRV/Oui4UEy61exe2Mv+BKBak0UgB7m4jJIHGjj0+7TLuFR2KNhEFA/mczgbvnRp03mEMupxoD1KJHWdo+Eujo1UCBc+T2KCqPNJp3JJWS/nBdfOfzxjPuPTxGe3gYu5R7Ep3kT/Q4o1XEk6hLYrPSeR0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742905603; c=relaxed/simple;
-	bh=gGEDexkonBv9xkqlklXH6H0siev5It/WclAJgWuLAaE=;
+	s=arc-20240116; t=1742905630; c=relaxed/simple;
+	bh=AWjl4tBrnhRkcRiex/88q6k6fRAmxNwISnnYEf7182Q=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZJz+SqQonA4Emf+lRFy347EqEP/b9jer/HUpWI1fKDSN0pLBOq8MqIQb5VfDcZvsQu+jDyqTzlbhwqs6VdZv08yt984u0y0qRM/aucA4w/ov+1St/a8jG5T2xjdmBg4etTkZTKpIDd86t8mh8SVQuwhq71WiwYDDoVND31FAB4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ihVlwKbl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58230C4CEE4;
-	Tue, 25 Mar 2025 12:26:27 +0000 (UTC)
+	 MIME-Version; b=m7H9qapBaAXxp+Tk/PZCNHDJ6C4mD/pSePwrd1a/6/Tpx1ArkIgEI3BWkrsbOuqwD6m/wzfajLNCAzXD44K6TbUyVOB/5XfCwq9++a2oUEsNuZanagW71We/UNy58cXcTT44MAPbwL1lWHgx6/qYWxj98cbkeF7XQEDU70gebQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BOK/wPKS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EF18C4CEE4;
+	Tue, 25 Mar 2025 12:26:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742905600;
-	bh=gGEDexkonBv9xkqlklXH6H0siev5It/WclAJgWuLAaE=;
+	s=k20201202; t=1742905629;
+	bh=AWjl4tBrnhRkcRiex/88q6k6fRAmxNwISnnYEf7182Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ihVlwKblKsuWFNcMtDJ1k3ctKSbBwY49h9IjoH9KGH6RI/zq8BylDBqvJ9wyno/qp
-	 IUv3RwZeYhK0sWieeIu1X7UarNylQxXDlKivCnDKhn4bx62KBOApARfUIXTkLXXsFn
-	 3rI4E6bpvA/elj8kLNZnsdeON0EYb/TTcZHXFJrgLVFjWNZTsDHQaIIhPnPY6YDHgo
-	 7rJORY6u+zOpHejnqnKv38Ge2nOcCABkagysYa3pxGYsHk/Lvc8HyUvKwE4GThzBZl
-	 GffrGstDg5zLMeOPdXBQ0RXicXDZjiJ6nMyN1iFUR0hjCFd9gaaZECI2ylLLzOHNni
-	 HKltn+V1I4Cmg==
+	b=BOK/wPKSymoONoK8d8zXPGGMy5MG+aYpHf3TkadCLwDPTOQJGUAW9et07ZG7zCZWv
+	 ef4pdsDxtkJTHjY+SAKtAcW26il80oDtB38MozaTEhXlGd4IkrTlN3tIWkXmAwnoLn
+	 BzHu8ImCylu3Yb81WL68Buni1g0ODfLOGd7OBrnKV/M2af0y77JoFV43LSNATjnN4G
+	 9CzIE3AozXUaiD7HuaDWAl0wAkWF1HUbFGm1CJxGQ45QPczxfx9HKr6TYKmSS9kPAD
+	 gZpFZHUBEZFz8k7KsyAguseekaOJzmeEib25mONLZRMhFlnpUorLwGTrqPnI6I56MM
+	 2bv1z0/9P4X3A==
 From: guoren@kernel.org
 To: arnd@arndb.de,
 	gregkh@linuxfoundation.org,
@@ -114,9 +114,9 @@ Cc: ardb@kernel.org,
 	linux-sctp@vger.kernel.org,
 	linux-usb@vger.kernel.org,
 	linux-media@vger.kernel.org
-Subject: [RFC PATCH V3 41/43] rv64ilp32_abi: tty: Adapt ptr_to_compat
-Date: Tue, 25 Mar 2025 08:16:22 -0400
-Message-Id: <20250325121624.523258-42-guoren@kernel.org>
+Subject: [RFC PATCH V3 43/43] riscv: Fixup address space overlay of print_mlk
+Date: Tue, 25 Mar 2025 08:16:24 -0400
+Message-Id: <20250325121624.523258-44-guoren@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20250325121624.523258-1-guoren@kernel.org>
 References: <20250325121624.523258-1-guoren@kernel.org>
@@ -130,33 +130,52 @@ Content-Transfer-Encoding: 8bit
 
 From: "Guo Ren (Alibaba DAMO Academy)" <guoren@kernel.org>
 
-The RV64ILP32 ABI is based on 64-bit ISA, but BITS_PER_LONG is 32.
-So, the size of unsigned long is the same as compat_ulong_t and
-no need "(unsigned long)v.iomem_base >> 32 ? 0xfffffff : ..."
-detection.
+If phyical memory is 1GiB for ilp32 linux, then print_mlk would be:
+lowmem : 0xc0000000 - 0x00000000   ( 1024 MB)
+
+After fixup:
+lowmem : 0xc0000000 - 0xffffffff   ( 1024 MB)
 
 Signed-off-by: Guo Ren (Alibaba DAMO Academy) <guoren@kernel.org>
 ---
- drivers/tty/tty_io.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/riscv/mm/init.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index 449dbd216460..75e256e879d0 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -2873,8 +2873,12 @@ static int compat_tty_tiocgserial(struct tty_struct *tty,
- 	err = tty->ops->get_serial(tty, &v);
- 	if (!err) {
- 		memcpy(&v32, &v, offsetof(struct serial_struct32, iomem_base));
-+#if BITS_PER_LONG == 64
- 		v32.iomem_base = (unsigned long)v.iomem_base >> 32 ?
- 			0xfffffff : ptr_to_compat(v.iomem_base);
-+#else
-+		v32.iomem_base = ptr_to_compat(v.iomem_base);
-+#endif
- 		v32.iomem_reg_shift = v.iomem_reg_shift;
- 		v32.port_high = v.port_high;
- 		if (copy_to_user(ss, &v32, sizeof(v32)))
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 3cdbb033860e..e09286d4916a 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -105,26 +105,26 @@ static void __init zone_sizes_init(void)
+ 
+ static inline void print_mlk(char *name, unsigned long b, unsigned long t)
+ {
+-	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld kB)\n", name, b, t,
++	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld kB)\n", name, b, t - 1,
+ 		  (((t) - (b)) >> LOG2_SZ_1K));
+ }
+ 
+ static inline void print_mlm(char *name, unsigned long b, unsigned long t)
+ {
+-	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld MB)\n", name, b, t,
++	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld MB)\n", name, b, t - 1,
+ 		  (((t) - (b)) >> LOG2_SZ_1M));
+ }
+ 
+ static inline void print_mlg(char *name, unsigned long b, unsigned long t)
+ {
+-	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld GB)\n", name, b, t,
++	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld GB)\n", name, b, t - 1,
+ 		   (((t) - (b)) >> LOG2_SZ_1G));
+ }
+ 
+ #if BITS_PER_LONG == 64
+ static inline void print_mlt(char *name, unsigned long b, unsigned long t)
+ {
+-	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld TB)\n", name, b, t,
++	pr_notice("%12s : 0x%08lx - 0x%08lx   (%4ld TB)\n", name, b, t - 1,
+ 		   (((t) - (b)) >> LOG2_SZ_1T));
+ }
+ #else
 -- 
 2.40.1
 
