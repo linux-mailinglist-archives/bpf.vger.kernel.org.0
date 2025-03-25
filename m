@@ -1,146 +1,184 @@
-Return-Path: <bpf+bounces-54627-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54628-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 620B6A6EDBD
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 11:32:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F10CA6EDBE
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 11:32:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86EED17256D
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 10:31:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B26957A1965
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 10:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C10BF253F38;
-	Tue, 25 Mar 2025 10:31:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4403025484F;
+	Tue, 25 Mar 2025 10:32:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gfFaiqWZ"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="MBpKnnhe"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBAAC1F09B4;
-	Tue, 25 Mar 2025 10:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2768F19EED3;
+	Tue, 25 Mar 2025 10:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742898671; cv=none; b=C+AsEL6L9cgHgwOgGghUeU9hJeQLuryt7ptvmqWapRa2zyrQqjDsa+FGST7cuhML7VnDNsx95xrT5Ls5cyj806tvJaynl+eoeaemN9zVEYRsNbQDiXuy70D4+WFoCB8amkFIhHKAtWyhGukjDQdjOguejJkS35HbBShVljOjvPc=
+	t=1742898744; cv=none; b=c1Gp0SiVi5i7m5DWvMs11age4w5mc044z5Bpt9WSlLKZO9/TbQsj7ThOpxjzXO4xNG37ym1Lb9nOZ/1BkfubpSo3Qi/GsX2Hxi5Fx1anYI+7vNOLN7N9XVQnJPGoErsCc72lV1SjZshH2BW5qMW4XEGOPs5d2sCFjCv53zlkc7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742898671; c=relaxed/simple;
-	bh=iUVRNoX1Knz7Y6rUE7hxKfH2OvC8R/1+8cUIgp2bKnc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nZbTcFsGmtYGweVBFzbvOID243R7GSiGAw1v57UjbTbzTd0ngFV41dBgsysrwN7LdZpSWcllBN2hpDbi+92E1T6x3oUfSU9DeUiqPUH8TzTkiYmmaqn9uLNaBNCdisXR+UtN8GZixk18LJovLOoKSnz/j5jnb/XGh03/vUj+jhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gfFaiqWZ; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=/kcNSHKt+p7xj8Bd8AiTv8+l1qAYvdxpi++1IEtteso=; b=gfFaiqWZoPHPtFfYrf3Z/e/vJj
-	gUrLZg/FV2zYzWXh7k0otAW57zDJ3F81RJMrj3f9jdnEWW9wz7dRze0kKx6p4uXNtcreAchaJeOEA
-	QcnE/ccvmOZxXFQpytN9KZ9eZX4QPrZccuh4HtgjKHt3Pd7dUg8DdsVCptXfQmVjHGlwj8rBV1OdG
-	XNAfhVHXAs6necQ4vvePPSmVf01mN4lGqmuTKAoMHOsxrMI5EBrE6Oove3ulQjDPbxqVUzWbx4Olc
-	Q1dfGMSi5+wSeYDhdh67b1lVfYkgwSjyy+WvhU3RIXRXxVRnjeN9ZQ+bYfJTqTFC9XjVog2vi6OO8
-	X4kJVCKA==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tx1YV-00000003nQ3-3Mco;
-	Tue, 25 Mar 2025 10:30:47 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 28D7E3004AF; Tue, 25 Mar 2025 11:30:47 +0100 (CET)
-Date: Tue, 25 Mar 2025 11:30:47 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Eric Dumazet <edumazet@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-	bpf@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-	Greg Thelen <gthelen@google.com>,
-	Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] x86/alternatives: remove false sharing in
- poke_int3_handler()
-Message-ID: <20250325103047.GH36322@noisy.programming.kicks-ass.net>
-References: <20250323072511.2353342-1-edumazet@google.com>
- <Z-B_R737uM31m6_K@gmail.com>
- <CANn89i+fmyJ8p=vBpwBy38yhVMCJv8XjrTkrXSUnSGedboCM_Q@mail.gmail.com>
- <Z-EGvjhkg6llyX24@gmail.com>
- <CANn89iL8o0UZTpomaT1oaMxRTBv1YdaXZGwXQn3H0dDO81UyGA@mail.gmail.com>
- <CANn89iKwPpV7v=EnK2ac5KjHSef64eyVwUST=q=+oFaqTB95sQ@mail.gmail.com>
- <20250324113304.GB14944@noisy.programming.kicks-ass.net>
- <Z-JsJruueRgLQ8st@gmail.com>
+	s=arc-20240116; t=1742898744; c=relaxed/simple;
+	bh=oUvc43xr6WPKRjpfGnFSErNnrJe4V3FbQA2sD2OzZUo=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=hm5tp+DaT7ldULN4F3qujkJD9qC/hvQ9pX33PFAeiVVW2Znmwx1glGWO1EE+70lve1VvlcD+POpYuMpGfeVKfABov1B537n/5vEVmdgupMFxUNKgEcId1k1wl5aO86Y7Pj1kMlETqmECvupljN81/vT8/YLSBek6DftVR6hkHyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=MBpKnnhe; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52P8rFDM011900;
+	Tue, 25 Mar 2025 10:32:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=pp1; bh=TDu0Ny0Fcmjl+OCepVqwkzhE+JS6
+	jvmII5BtRtgp3Xw=; b=MBpKnnheWBepOp1W3NkAWcv+9Gb1k630RvhptHs0nJNd
+	1UJJXSc8yRGxr8XxX7CN59FL/oEAn+uI9A9zim3LeC8TfbI+vQ7+OCBhoD76uAxU
+	OCKZMjYzNbrW96JTv68qn2FcmuWp+Y3zsLQS5PNVBRphJeUn2f9cZyb/bhKSdkn0
+	g2G3+XNlNqu89PqAlokJuNhFY6sHrjlTcklqsmIOf2RTboe9vxF9RGHQqKOZdazC
+	uSO5eJ6aAm1WI/PXQu5LfVk2x7dCxt2y0Rj8aNLkVOUCqMb/mUr9xpGjEkxrsjeQ
+	XeeHxim5ceqLyRNtedDX3gSs+ASU+2BprMyJsRi0Ww==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45kejptytp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 25 Mar 2025 10:32:15 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52P7lM8M030330;
+	Tue, 25 Mar 2025 10:32:14 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 45j7htb351-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 25 Mar 2025 10:32:14 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52PAWD2j11076112
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 25 Mar 2025 10:32:14 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A7B3F58058;
+	Tue, 25 Mar 2025 10:32:13 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2058558059;
+	Tue, 25 Mar 2025 10:32:10 +0000 (GMT)
+Received: from [9.61.251.51] (unknown [9.61.251.51])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 25 Mar 2025 10:32:09 +0000 (GMT)
+Message-ID: <5df6968a-2e5f-468e-b457-fc201535dd4c@linux.ibm.com>
+Date: Tue, 25 Mar 2025 16:02:08 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z-JsJruueRgLQ8st@gmail.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-GB
+To: Saket Kumar Bhaskar <skb99@linux.ibm.com>,
+        Hari Bathini <hbathini@linux.ibm.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        jkacur@redhat.com, lgoncalv@redhat.com, gmonaco@redhat.com,
+        williams@redhat.com, tglozar@redhat.com, rostedt@goodmis.org
+From: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Subject: [linux-next-20250324]/tool/bpf/bpftool fails to complie on
+ linux-next-20250324
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: upORWBvozE1TM21JUSyh-tiHSH1YQ4xZ
+X-Proofpoint-GUID: upORWBvozE1TM21JUSyh-tiHSH1YQ4xZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-25_04,2025-03-25_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=802 adultscore=0
+ suspectscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 clxscore=1011
+ impostorscore=0 malwarescore=0 mlxscore=0 priorityscore=1501 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2502280000
+ definitions=main-2503250072
 
-On Tue, Mar 25, 2025 at 09:41:10AM +0100, Ingo Molnar wrote:
-> 
-> * Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > On Mon, Mar 24, 2025 at 08:53:31AM +0100, Eric Dumazet wrote:
-> > 
-> > > BTW the atomic_cond_read_acquire() part is never called even during my
-> > > stress test.
-> > 
-> > Yes, IIRC this is due to text_poke_sync() serializing the state, as that
-> > does a synchronous IPI broadcast, which by necessity requires all
-> > previous INT3 handlers to complete.
-> > 
-> > You can only hit that case if the INT3 remains after step-3 (IOW you're
-> > actively writing INT3 into the text). This is exceedingly rare.
-> 
-> Might make sense to add a comment for that.
-
-Sure, find below.
-
-> Also, any strong objections against doing this in the namespace:
-> 
->   s/bp_/int3_
-> 
-> ?
-> 
-> Half of the code already calls it a variant of 'int3', half of it 'bp', 
-> which I had to think for a couple of seconds goes for breakpoint, not 
-> base pointer ... ;-)
-
-It actually is breakpoint, as in INT3 raises #BP. For complete confusion
-the things that are commonly known as debug breakpoints, those things in
-DR7, they raise #DB or debug exceptions.
-
-> Might as well standardize on int3_ and call it a day?
-
-Yeah, perhaps. At some point you've got to know that INT3->#BP and
-DR7->#DB and it all sorta makes sense, but *shrug* :-)
+Greetings!!!
 
 
----
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index bf82c6f7d690..01e94603e767 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -2749,6 +2749,13 @@ static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries
- 
- 	/*
- 	 * Remove and wait for refs to be zero.
-+	 *
-+	 * Notably, if after step-3 above the INT3 got removed, then the
-+	 * text_poke_sync() will have serialized against any running INT3
-+	 * handlers and the below spin-wait will not happen.
-+	 *
-+	 * IOW. unless the replacement instruction is INT3, this case goes
-+	 * unused.
- 	 */
- 	if (!atomic_dec_and_test(&bp_desc.refs))
- 		atomic_cond_read_acquire(&bp_desc.refs, !VAL);
+bpftool fails to complie on linux-next-20250324 repo.
+
+
+Error:
+
+make: *** No rule to make target 'bpftool', needed by 
+'/home/linux/tools/testing/selftests/bpf/tools/include/vmlinux.h'. Stop.
+make: *** Waiting for unfinished jobs.....
+
+
+Git bisect points to commit: 8a635c3856ddb74ed3fe7c856b271cdfeb65f293 as 
+first bad commit.
+
+Bisect log:
+
+git bisect start
+# status: waiting for both good and bad commits
+# good: [4701f33a10702d5fc577c32434eb62adde0a1ae1] Linux 6.14-rc7
+git bisect good 4701f33a10702d5fc577c32434eb62adde0a1ae1
+# status: waiting for bad commit, 1 good commit known
+# bad: [882a18c2c14fc79adb30fe57a9758283aa20efaa] Add linux-next 
+specific files for 20250324
+git bisect bad 882a18c2c14fc79adb30fe57a9758283aa20efaa
+# good: [36ad536dbad8e29a1fdb7a8760a9c4fcb0dcf7cb] Merge branch 
+'for-next' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-next.git
+git bisect good 36ad536dbad8e29a1fdb7a8760a9c4fcb0dcf7cb
+# good: [96c123361d8e32f6012aa449eed27147979af27e] Merge branch 'next' 
+of git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
+git bisect good 96c123361d8e32f6012aa449eed27147979af27e
+# bad: [b9fc57d1f74797e7b25c779671c03192a81feb1a] Merge branch 
+'usb-next' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git
+git bisect bad b9fc57d1f74797e7b25c779671c03192a81feb1a
+# good: [1da0a3d00734bf365f53480a7ffb4361fd61e6d5] Merge branch 'master' 
+of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+git bisect good 1da0a3d00734bf365f53480a7ffb4361fd61e6d5
+# bad: [4541ffab99f8b7ddadb367c73f28ea1fe70f2f97] Merge branch 'next' of 
+git://git.kernel.org/pub/scm/virt/kvm/kvm.git
+git bisect bad 4541ffab99f8b7ddadb367c73f28ea1fe70f2f97
+# good: [361da275e5ce98bbab5f6990d02eb9709742d703] Merge branch 
+'kvm-nvmx-and-vm-teardown' into HEAD
+git bisect good 361da275e5ce98bbab5f6990d02eb9709742d703
+# bad: [28b4c36e59ccfd4e38eaf804b292b3c5b2287900] Merge branch 
+'for-next' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+git bisect bad 28b4c36e59ccfd4e38eaf804b292b3c5b2287900
+# good: [2ec5357274fdbe8d48d13d33a1b0e367bcadb85a] Merge sorttable/for-next
+git bisect good 2ec5357274fdbe8d48d13d33a1b0e367bcadb85a
+# good: [af1a78613133542583c9a9875c824678a3c3a145] Merge branch 
+'edac-drivers' into edac-for-next
+git bisect good af1a78613133542583c9a9875c824678a3c3a145
+# good: [2325ccf7b99fa8e1e95c3ce8a205e170d244b062] Merge branch 
+'edac-for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git
+git bisect good 2325ccf7b99fa8e1e95c3ce8a205e170d244b062
+# bad: [18923806b1291102cad3a6b713006c7e7f563534] rtla/timerlat_top: 
+Move divisor to update
+git bisect bad 18923806b1291102cad3a6b713006c7e7f563534
+# bad: [9dc3766ed07c95c9a77fa98dcbc83dcb7f49df3d] rtla: Add optional 
+dependency on BPF tooling
+git bisect bad 9dc3766ed07c95c9a77fa98dcbc83dcb7f49df3d
+# bad: [8a635c3856ddb74ed3fe7c856b271cdfeb65f293] tools/build: Add 
+bpftool-skeletons feature test
+git bisect bad 8a635c3856ddb74ed3fe7c856b271cdfeb65f293
+# good: [6fa5e3a87cd7838453be66c3a69c2236a1680504] rtla/timerlat: Unify 
+params struct
+git bisect good 6fa5e3a87cd7838453be66c3a69c2236a1680504
+# first bad commit: [8a635c3856ddb74ed3fe7c856b271cdfeb65f293] 
+tools/build: Add bpftool-skeletons feature test
+
+
+If you happen to fix this, please add below tag.
+
+
+Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+
+
+Regards,
+
+Venkat.
+
 
