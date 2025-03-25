@@ -1,207 +1,104 @@
-Return-Path: <bpf+bounces-54622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FFCFA6EA35
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 08:15:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18EDCA6EAC4
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 08:45:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 914A1188B831
-	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 07:15:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDB23188ECBE
+	for <lists+bpf@lfdr.de>; Tue, 25 Mar 2025 07:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A73234969;
-	Tue, 25 Mar 2025 07:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2AB71F03DC;
+	Tue, 25 Mar 2025 07:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W+vvW9E1"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qn+kMkRq"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B5718C92F;
-	Tue, 25 Mar 2025 07:14:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA858460
+	for <bpf@vger.kernel.org>; Tue, 25 Mar 2025 07:45:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742886891; cv=none; b=OJyU1HVEvS3Z8rtoqA/nY34cDoaF17/o6NYniZiRoAhiOfo3xbOysQLro4fMTo685ltT9W2DQ2Q1CSAzUPaD4y6Kg3//QcZTk4GHDmt8+1SBIuSk66wqxYTelA0Z5L06HW/Vb7FafpJOBjKhQQtfc4p+9ooiUOHOgeh3OT1Tlpc=
+	t=1742888724; cv=none; b=gqaxjbUikIaCGPFznX1tXzJLtS1UJPn5s4EMyuNRcwy2lEIpb4/ciEEdgDklP0E5/6JxWS5EjHP/mJF20WaKC4dseJs9szgCqP3QLTkNHB4QiICk/LilsEEwuSNNJkLCMaM5gd3EWoJWZmcsVR0Rbm6ljsbM6WVKZnu65Doj1Dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742886891; c=relaxed/simple;
-	bh=1TWK6NEmpcH3Tnhy1DMaTugnC9yzYdJK+FhaUnOaf+Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UoeXML92347KCvXfYAOjeV26APYT5Dz4UE7mqROHKg0HKdwAQw6en0N7yJUFQtVY3gQwYtjRI8jeJCLR5iE3Z4P/OvD52IPCjJ585WiZ/TWBN5e5X7vjs+sqrsqkXILwPDYlkpB/3dhqVscrQ3R45AnnIMBlOQobt5w271TpE8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W+vvW9E1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8873C4CEE8;
-	Tue, 25 Mar 2025 07:14:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742886890;
-	bh=1TWK6NEmpcH3Tnhy1DMaTugnC9yzYdJK+FhaUnOaf+Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=W+vvW9E1INkCFnuFICYOL75WUKw5cWaz7HZXJHR0tQ3VZspFw8SLwGpALyQRj8xw2
-	 X3WK8q8q9hGyDIqJUBGH4HZ/dFqoUBbtDxHGIml2Yfi+cCdBCcnneiN7NqA7ARK3LZ
-	 jpGUih43Ag4baQS3CNOEBoLkpkpA8sqwy76vSpH82Iu4K9bS9Cy9qbafKPDPlhMmAx
-	 T2mzcyVjBMoFhMKAksOW/O43OO5Z0Fgf5C/42ylQ1IBrFSXrp9xkw/+wmw8TNZ6Hjx
-	 Q38BNMqJaLglsWwH0eWi0l69R7kzCKdwpysmIeOC3GXd3q4P+tH8FRzpi86g81RmYc
-	 P955aOIhJGtEA==
-Date: Tue, 25 Mar 2025 08:14:44 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Eric Dumazet <edumazet@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-	bpf@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
-	Greg Thelen <gthelen@google.com>,
-	Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v3] x86/alternatives: remove false sharing in
- poke_int3_handler()
-Message-ID: <Z-JX5ImltdTFoFgr@gmail.com>
-References: <20250325043316.874518-1-edumazet@google.com>
+	s=arc-20240116; t=1742888724; c=relaxed/simple;
+	bh=KXJv3KA+VGk1G2n3TxvoBs+9dMjstgii8GbSxuM+l3I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SqhlLn7H+TTWPs89R5Zz9lOtbMc+uV+UllRoZzVBMomS9NKpDMX6WzG9eJMEBggr2q38/Pn+eE4Bm6pH8PVsNDJHLFia1Ygl/Kvs/Rq4k+UKxVGcqwogu/HvFAgzntZbbCgn6F8NdAEhtx+ZoLVYeYJKrp+7+O1xaBo21s4whkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qn+kMkRq; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-47686580529so50877981cf.2
+        for <bpf@vger.kernel.org>; Tue, 25 Mar 2025 00:45:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1742888721; x=1743493521; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KXJv3KA+VGk1G2n3TxvoBs+9dMjstgii8GbSxuM+l3I=;
+        b=qn+kMkRqO5R+u+OAomhYS7g1TXnnXUyt+aIlNnB/qXrqQ3mtIDI8hj+B7BEzuoM+WV
+         GWLYIj/UFWvkH2lMiVo8yjMObSmGp4eOsVWDWplbAJvmRue/jGe1uckIfsXDx8OVSvv0
+         hsde7pFiuT33pCgr0Gz/pFKrdPC2+vzgv67PhYyvOFPLBwKd/mUGHld9QMO4f9HQfJE3
+         SJmrd7etjba2iEilMRppFGoC3zD6WUSdJZAfLFe220yQI9C8EkaglKhTiVKPz9P7FP3i
+         L6HaIWHGnrMLyoYuN5kmaZ3T/IfE0BAa4fQflXlMjatJaTc/ocTOA58/XHov2lRWti8Y
+         gtEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742888721; x=1743493521;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KXJv3KA+VGk1G2n3TxvoBs+9dMjstgii8GbSxuM+l3I=;
+        b=DgsyAePi+kvB4joKuIKubAwsYvmmbmeLpDYrEy/SfhZFrfo9ipIvpTluQ6abLR3smK
+         zSwQrCrjXA3HpCz1m2ifxo0EhQc/nsV60BzXvnlhCso189ipWFt0px/0Cd1vnv5/kIB2
+         uVJEh2DZkyS1QokT+ZuA3C9Ji2TQXBj2QFLD6+fZ2Bpx0pmKJkfkrbV/zg12bmy1OpKl
+         BD8mApKqU1MAZQtOa5WyaFuzPDE2KDVr6HbiKv0IHRb048EKBjU2hb8Bbm4cXDRZfkrr
+         TNgq+psPUcdnSX0Ayu/3YcEeD6r1DBvzWwgWpqjpNb44bE4TqWc90sD2S05tUZXwQXAR
+         9mnA==
+X-Forwarded-Encrypted: i=1; AJvYcCWea2m5l5vih02Lw/SAmF7oBCjsyXoqkYYsPHw58gJG0kQG3sEP5DJJGnc91RGPKxhbKZw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBZGd22xpyGGa7oUbizWx5R4t667R0FWJGyaHMV2gqPYSZsfNR
+	HE7bqOd7BcwodsKdXPIsTj8l0M/fYLiczLfV47Qj2lKluE2KT+3Gb2yJhvzxnoWtpHRu2C5vDyT
+	RXWD1vIomyyqQ8QPspxen6uldNrsCHYjHz6U9
+X-Gm-Gg: ASbGncvnDtb6lzFi40l2hcDEc5wdEUxFtBzX06hdZO7jYftfvCxD5t9rlEO1LkSlNQe
+	sjOdW+GRnbRs7fidwccktj70g1VsPA8QO/N3py61BIHT0KKp2rvZ2YJivt5/I1Luve2Ulo077e5
+	Yunx0YrXDEbUHwGMZ/KBS3e/GIfA==
+X-Google-Smtp-Source: AGHT+IFQ6AKs9yuPyEWUX1lXG98g0MgxzXXoE6kIh/7IMM0xqyJwp8WOtCZNAjMdqF9iMVJtHXS4nHRoCPy8TrKO0T4=
+X-Received: by 2002:a05:622a:418b:b0:476:b3b8:2a35 with SMTP id
+ d75a77b69052e-4771de41bd0mr252207261cf.40.1742888721263; Tue, 25 Mar 2025
+ 00:45:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250325043316.874518-1-edumazet@google.com>
-
-
-* Eric Dumazet <edumazet@google.com> wrote:
-
-> eBPF programs can be run 50,000,000 times per second on busy servers.
-> 
-> Whenever /proc/sys/kernel/bpf_stats_enabled is turned off,
-> hundreds of calls sites are patched from text_poke_bp_batch()
-> and we see a huge loss of performance due to false sharing
-> on bp_desc.refs lasting up to three seconds.
-> 
->    51.30%  server_bin       [kernel.kallsyms]           [k] poke_int3_handler
->             |
->             |--46.45%--poke_int3_handler
->             |          exc_int3
->             |          asm_exc_int3
->             |          |
->             |          |--24.26%--cls_bpf_classify
->             |          |          tcf_classify
->             |          |          __dev_queue_xmit
->             |          |          ip6_finish_output2
->             |          |          ip6_output
->             |          |          ip6_xmit
->             |          |          inet6_csk_xmit
->             |          |          __tcp_transmit_skb
-> 
-> Fix this by replacing bp_desc.refs with a per-cpu bp_refs.
-> 
-> Before the patch, on a host with 240 cores (480 threads):
-> 
-> sysctl -wq kernel.bpf_stats_enabled=0
-> 
-> text_poke_bp_batch(nr_entries=164) : Took 2655300 usec
-> 
-> bpftool prog | grep run_time_ns
-> ...
-> 105: sched_cls  name hn_egress  tag 699fc5eea64144e3  gpl run_time_ns
-> 3009063719 run_cnt 82757845 : average cost is 36 nsec per call
-> 
-> After this patch:
-> 
-> sysctl -wq kernel.bpf_stats_enabled=0
-> 
-> text_poke_bp_batch(nr_entries=164) : Took 702 usec
-> 
-> $ bpftool prog | grep run_time_ns
-> ...
-> 105: sched_cls  name hn_egress  tag 699fc5eea64144e3  gpl run_time_ns
-> 1928223019 run_cnt 67682728 : average cost is 28 nsec per call
-> 
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> ---
->  arch/x86/kernel/alternative.c | 30 ++++++++++++++++++------------
->  1 file changed, 18 insertions(+), 12 deletions(-)
-
-Thanks for the updates. I've further improved the changelog (see 
-attached below), and have tentatively applied it to 
-tip:x86/alternatives.
-
-Thanks,
-
-	Ingo
-
-==============================>
+References: <20250325043316.874518-1-edumazet@google.com> <Z-JX5ImltdTFoFgr@gmail.com>
+In-Reply-To: <Z-JX5ImltdTFoFgr@gmail.com>
 From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 25 Mar 2025 04:33:16 +0000
-Subject: [PATCH] x86/alternatives: Improve code-patching scalability by removing false sharing in poke_int3_handler()
+Date: Tue, 25 Mar 2025 08:45:09 +0100
+X-Gm-Features: AQ5f1JoPBDtsy07vWlKPsvzIEc1Q9Gdc9Mikq3sx1DBAUnBjOIFVLzg05pRb2Uo
+Message-ID: <CANn89iJ-BtE9twfibcHtzzB5ixVd7xhrkHo-kXJsSr+WaGrZEQ@mail.gmail.com>
+Subject: Re: [PATCH v3] x86/alternatives: remove false sharing in poke_int3_handler()
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org, 
+	bpf@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>, 
+	Greg Thelen <gthelen@google.com>, Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-eBPF programs can be run 50,000,000 times per second on busy servers.
+On Tue, Mar 25, 2025 at 8:14=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wrot=
+e:
 
-Whenever /proc/sys/kernel/bpf_stats_enabled is turned off,
-hundreds of calls sites are patched from text_poke_bp_batch()
-and we see a huge loss of performance due to false sharing
-on bp_desc.refs lasting up to three seconds.
+> Thanks for the updates. I've further improved the changelog (see
+> attached below), and have tentatively applied it to
+> tip:x86/alternatives.
+>
 
-   51.30%  server_bin       [kernel.kallsyms]           [k] poke_int3_handler
-            |
-            |--46.45%--poke_int3_handler
-            |          exc_int3
-            |          asm_exc_int3
-            |          |
-            |          |--24.26%--cls_bpf_classify
-            |          |          tcf_classify
-            |          |          __dev_queue_xmit
-            |          |          ip6_finish_output2
-            |          |          ip6_output
-            |          |          ip6_xmit
-            |          |          inet6_csk_xmit
-            |          |          __tcp_transmit_skb
-
-Fix this by replacing bp_desc.refs with a per-cpu bp_refs.
-
-Before the patch, on a host with 240 cores (480 threads):
-
-  $ sysctl -wq kernel.bpf_stats_enabled=0
-
-  text_poke_bp_batch(nr_entries=164) : Took 2655300 usec
-
-  $ bpftool prog | grep run_time_ns
-  ...
-  105: sched_cls  name hn_egress  tag 699fc5eea64144e3  gpl run_time_ns
-  3009063719 run_cnt 82757845 : average cost is 36 nsec per call
-
-After this patch:
-
-  $ sysctl -wq kernel.bpf_stats_enabled=0
-
-  text_poke_bp_batch(nr_entries=164) : Took 702 usec
-
-  $ bpftool prog | grep run_time_ns
-  ...
-  105: sched_cls  name hn_egress  tag 699fc5eea64144e3  gpl run_time_ns
-  1928223019 run_cnt 67682728 : average cost is 28 nsec per call
-
-Ie. text-patching performance improved 3700x: from 2.65 seconds
-to 0.0007 seconds.
-
-Since the atomic_cond_read_acquire(refs, !VAL) spin-loop was not triggered
-even once in my tests, add an unlikely() annotation, because this appears
-to be the common case.
-
-[ mingo: Improved the changelog some more. ]
-
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Brian Gerst <brgerst@gmail.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lore.kernel.org/r/20250325043316.874518-1-edumazet@google.com
-
+Thanks Ingo !
 
