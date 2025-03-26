@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-54730-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54731-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 425BFA70FEB
-	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 05:40:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 469E8A70FEC
+	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 05:40:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 177763AD5EF
-	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 04:39:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3547178D92
+	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 04:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923F017A2F3;
-	Wed, 26 Mar 2025 04:40:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB5D17A31C;
+	Wed, 26 Mar 2025 04:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CTQaas8N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m2pdFxL3"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061B14A05;
-	Wed, 26 Mar 2025 04:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8042F17A2F1;
+	Wed, 26 Mar 2025 04:40:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742964003; cv=none; b=WMAv1WsH+ugIvig3BvBrOtrWA4T8o4DbuZgICTGV1w+SDzM5IXle4EyJB/yTxyOtI341+K+SXb9qzBDEae62pfUvLWeAJB/AEvgltzTWHgLLwMuDUN69ny2O/VOiNqcx8Pa2oCKIW3yg6XYFVi/KGQSIExemHRd8URCOwDxjTMs=
+	t=1742964003; cv=none; b=Bjd405tTa9rQwJ0Y7vmL8gBTs2TptwN8d3EqWjsEGSQowjyvkVPVR9u8L/XK/IeYP6RqyYV/zplRk7ObOo7JogpzRBzZ+bSOa8sW0gcZlPk+eKXjToumweRMH9JTzY7F7Xj0S/PeFrJNkRIO1BmZYPdJdy25IIAqbAvniTghsbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1742964003; c=relaxed/simple;
-	bh=ts5xUpvVLQTaQuO4hyng9iwGLhUFBufskRkb2U5P1QE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fvsCloEyIyIYKFDhArg2FSamz3jNivHNeiAZpAQuevyndPh6tDUORCR+Fcyem/ZNhnDqwQJXLn9CMqB77g1P88ZNLJ8+lQnRd+KzJBncv5Zj+fW5j7jfmH13uF1hYdSxeIEjGP19IqPJxFLm4jQlBgGwjcGo+2jMOSY3b7RtwzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CTQaas8N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0CD0C4CEE2;
-	Wed, 26 Mar 2025 04:40:01 +0000 (UTC)
+	bh=upsD70LPNN2yPXKSeT2E0dGUq2NzcC5mUkscKaqKeRM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=m77B1gQXigdrGKYvKYpAMBBfqZQ3YYirr9OlOUzb3lwFReqSIRH9Pte08tbkE7Rs/bK26O/CdARsS6RycK8ieH3KqGe3LDDZrc6OuonD7SehEDyWyPfklDvi2DCtSoGMKNqeQ0ezX0+S8tBaAqKZglbK+3gXVBRWEPdhAoGZigc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m2pdFxL3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9122BC4AF09;
+	Wed, 26 Mar 2025 04:40:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742964002;
-	bh=ts5xUpvVLQTaQuO4hyng9iwGLhUFBufskRkb2U5P1QE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=CTQaas8NM52goDCHLyOYdQIUcHnfSotruHW64ighm9zmGc6ZBzCsCO4+gj5vreztZ
-	 HdZCGjUBKoXe3fcDB/KxJZyaCTf3mR37W1WR0sNYNAylCVwZbEUNBHM0UwdlZSAYVU
-	 A4RwaZ8NJQWzu011FHpixUDo8RsuLq4M5Rsn06T4pdTKtkUziTmyHQjON4mV/4aIng
-	 2O929UbiJUvRtoT3q/ai96a2EBUhJ5g8OlXswnH3ubzHoB5ONKk6eJxZZdGV74naUB
-	 jIWU6jiyDk+jDxnWewQZr6UTWEidaQ0B/SSihVmIFJvLefZr9D1UAUs6DTeFZeUs/l
-	 jl8pbKMyi01Kw==
+	s=k20201202; t=1742964003;
+	bh=upsD70LPNN2yPXKSeT2E0dGUq2NzcC5mUkscKaqKeRM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=m2pdFxL301HQ1EkJ5vFBsNcjHEr7ku37P1x96bK1RCKU327xfd5WwPsp3ipoCMTTF
+	 EWN9V0fqNv8A4EK6a49VneIQVm+FhoRBz9n1lfQ/SzB7INg4fkqX8LpDtSQbc3fbth
+	 t0ZKs+2X8y2usZWA/e1+amgBiIciJ9ek6351MLAsJKhGEs0j3lMkRIs1rxIbQy4F7y
+	 gjyZvtPGBQ6R6REcuJ1SPwGBRt5mg+q+4EBNzevyZoMYGRw8t3PcHxpzI6BzWhIJYZ
+	 dIkbYgP88wYSPhMNPfwOa2mCO31eQDATx/zU8lWYR3RDQvuGLngtjr5+5rLoqjeG4Q
+	 AtoLJ6hGpxkVw==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -53,10 +54,12 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Song Liu <song@kernel.org>,
 	bpf@vger.kernel.org,
 	Howard Chu <howardchu95@gmail.com>
-Subject: [PATCH v4 1/2] perf trace: Implement syscall summary in BPF
-Date: Tue, 25 Mar 2025 21:40:00 -0700
-Message-ID: <20250326044001.3503432-1-namhyung@kernel.org>
+Subject: [PATCH v4 2/2] perf test: Add perf trace summary test
+Date: Tue, 25 Mar 2025 21:40:01 -0700
+Message-ID: <20250326044001.3503432-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.49.0.395.g12beb8f557-goog
+In-Reply-To: <20250326044001.3503432-1-namhyung@kernel.org>
+References: <20250326044001.3503432-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,825 +68,100 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When -s/--summary option is used, it doesn't need (augmented) arguments
-of syscalls.  Let's skip the augmentation and load another small BPF
-program to collect the statistics in the kernel instead of copying the
-data to the ring-buffer to calculate the stats in userspace.  This will
-be much more light-weight than the existing approach and remove any lost
-events.
-
-Let's add a new option --bpf-summary to control this behavior.  I cannot
-make it default because there's no way to get e_machine in the BPF which
-is needed for detecting different ABIs like 32-bit compat mode.
-
-No functional changes intended except for no more LOST events. :)
-
-  $ sudo ./perf trace -as --summary-mode=total --bpf-summary sleep 1
-
-   Summary of events:
-
-   total, 6194 events
-
-     syscall            calls  errors  total       min       avg       max       stddev
-                                       (msec)    (msec)    (msec)    (msec)        (%)
-     --------------- --------  ------ -------- --------- --------- ---------     ------
-     epoll_wait           561      0  4530.843     0.000     8.076   520.941     18.75%
-     futex                693     45  4317.231     0.000     6.230   500.077     21.98%
-     poll                 300      0  1040.109     0.000     3.467   120.928     17.02%
-     clock_nanosleep        1      0  1000.172  1000.172  1000.172  1000.172      0.00%
-     ppoll                360      0   872.386     0.001     2.423   253.275     41.91%
-     epoll_pwait           14      0   384.349     0.001    27.453   380.002     98.79%
-     pselect6              14      0   108.130     7.198     7.724     8.206      0.85%
-     nanosleep             39      0    43.378     0.069     1.112    10.084     44.23%
-     ...
+  $ sudo ./perf test -vv 'trace summary'
+  109: perf trace summary:
+  --- start ---
+  test child forked, pid 3501572
+  testing: perf trace -s -- true
+  testing: perf trace -S -- true
+  testing: perf trace -s --summary-mode=thread -- true
+  testing: perf trace -S --summary-mode=total -- true
+  testing: perf trace -as --summary-mode=thread --no-bpf-summary -- true
+  testing: perf trace -as --summary-mode=total --no-bpf-summary -- true
+  testing: perf trace -as --summary-mode=thread --bpf-summary -- true
+  testing: perf trace -as --summary-mode=total --bpf-summary -- true
+  testing: perf trace -aS --summary-mode=total --bpf-summary -- true
+  ---- end(0) ----
+  109: perf trace summary                                              : Ok
 
 Cc: Howard Chu <howardchu95@gmail.com>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
-v4)
- * fix segfault on -S  (Howard)
- * correct some comments  (Howard)
+ tools/perf/tests/shell/trace_summary.sh | 65 +++++++++++++++++++++++++
+ 1 file changed, 65 insertions(+)
+ create mode 100755 tools/perf/tests/shell/trace_summary.sh
 
-v3)
- * support -S/--with-summary option too  (Howard)
- * make it work only with -a/--all-cpus  (Howard)
- * fix stddev calculation  (Howard)
- * add some comments about syscall_data  (Howard)
-
-v2)
- * Rebased on top of Ian's e_machine changes
- * add --bpf-summary option
- * support per-thread summary
- * add stddev calculation  (Howard)
-
- tools/perf/Documentation/perf-trace.txt       |   6 +
- tools/perf/Makefile.perf                      |   2 +-
- tools/perf/builtin-trace.c                    |  54 ++-
- tools/perf/util/Build                         |   1 +
- tools/perf/util/bpf-trace-summary.c           | 347 ++++++++++++++++++
- .../perf/util/bpf_skel/syscall_summary.bpf.c  | 118 ++++++
- tools/perf/util/bpf_skel/syscall_summary.h    |  25 ++
- tools/perf/util/trace.h                       |  37 ++
- 8 files changed, 577 insertions(+), 13 deletions(-)
- create mode 100644 tools/perf/util/bpf-trace-summary.c
- create mode 100644 tools/perf/util/bpf_skel/syscall_summary.bpf.c
- create mode 100644 tools/perf/util/bpf_skel/syscall_summary.h
- create mode 100644 tools/perf/util/trace.h
-
-diff --git a/tools/perf/Documentation/perf-trace.txt b/tools/perf/Documentation/perf-trace.txt
-index 887dc37773d0f4d6..a8a0d8c33438fef7 100644
---- a/tools/perf/Documentation/perf-trace.txt
-+++ b/tools/perf/Documentation/perf-trace.txt
-@@ -251,6 +251,12 @@ the thread executes on the designated CPUs. Default is to monitor all CPUs.
- 	pretty-printing serves as a fallback to hand-crafted pretty printers, as the latter can
- 	better pretty-print integer flags and struct pointers.
- 
-+--bpf-summary::
-+	Collect system call statistics in BPF.  This is only for live mode and
-+	works well with -s/--summary option where no argument information is
-+	required.
-+
-+
- PAGEFAULTS
- ----------
- 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index d335151736eda370..4c5d093542409f88 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -1216,7 +1216,7 @@ SKELETONS += $(SKEL_OUT)/bperf_leader.skel.h $(SKEL_OUT)/bperf_follower.skel.h
- SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h $(SKEL_OUT)/func_latency.skel.h
- SKELETONS += $(SKEL_OUT)/off_cpu.skel.h $(SKEL_OUT)/lock_contention.skel.h
- SKELETONS += $(SKEL_OUT)/kwork_trace.skel.h $(SKEL_OUT)/sample_filter.skel.h
--SKELETONS += $(SKEL_OUT)/kwork_top.skel.h
-+SKELETONS += $(SKEL_OUT)/kwork_top.skel.h $(SKEL_OUT)/syscall_summary.skel.h
- SKELETONS += $(SKEL_OUT)/bench_uprobe.skel.h
- SKELETONS += $(SKEL_OUT)/augmented_raw_syscalls.skel.h
- 
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index b9bdab52f5801c3a..3d0c0076884d34cb 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -55,6 +55,7 @@
- #include "util/thread_map.h"
- #include "util/stat.h"
- #include "util/tool.h"
-+#include "util/trace.h"
- #include "util/util.h"
- #include "trace/beauty/beauty.h"
- #include "trace-event.h"
-@@ -141,12 +142,6 @@ struct syscall_fmt {
- 	bool	   hexret;
- };
- 
--enum summary_mode {
--	SUMMARY__NONE = 0,
--	SUMMARY__BY_TOTAL,
--	SUMMARY__BY_THREAD,
--};
--
- struct trace {
- 	struct perf_tool	tool;
- 	struct {
-@@ -205,7 +200,7 @@ struct trace {
- 	} stats;
- 	unsigned int		max_stack;
- 	unsigned int		min_stack;
--	enum summary_mode	summary_mode;
-+	enum trace_summary_mode	summary_mode;
- 	int			raw_augmented_syscalls_args_size;
- 	bool			raw_augmented_syscalls;
- 	bool			fd_path_disabled;
-@@ -234,6 +229,7 @@ struct trace {
- 	bool			force;
- 	bool			vfs_getname;
- 	bool			force_btf;
-+	bool			summary_bpf;
- 	int			trace_pgfaults;
- 	char			*perfconfig_events;
- 	struct {
-@@ -2608,6 +2604,9 @@ static void thread__update_stats(struct thread *thread, struct thread_trace *ttr
- 	struct syscall_stats *stats = NULL;
- 	u64 duration = 0;
- 
-+	if (trace->summary_bpf)
-+		return;
-+
- 	if (trace->summary_mode == SUMMARY__BY_TOTAL)
- 		syscall_stats = trace->syscall_stats;
- 
-@@ -4371,6 +4370,14 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
- 
- 	trace->live = true;
- 
-+	if (trace->summary_bpf) {
-+		if (trace_prepare_bpf_summary(trace->summary_mode) < 0)
-+			goto out_delete_evlist;
-+
-+		if (trace->summary_only)
-+			goto create_maps;
-+	}
-+
- 	if (!trace->raw_augmented_syscalls) {
- 		if (trace->trace_syscalls && trace__add_syscall_newtp(trace))
- 			goto out_error_raw_syscalls;
-@@ -4429,6 +4436,7 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
- 	if (trace->cgroup)
- 		evlist__set_default_cgroup(trace->evlist, trace->cgroup);
- 
-+create_maps:
- 	err = evlist__create_maps(evlist, &trace->opts.target);
- 	if (err < 0) {
- 		fprintf(trace->output, "Problems parsing the target to trace, check your options!\n");
-@@ -4441,7 +4449,7 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
- 		goto out_delete_evlist;
- 	}
- 
--	if (trace->summary_mode == SUMMARY__BY_TOTAL) {
-+	if (trace->summary_mode == SUMMARY__BY_TOTAL && !trace->summary_bpf) {
- 		trace->syscall_stats = alloc_syscall_stats();
- 		if (trace->syscall_stats == NULL)
- 			goto out_delete_evlist;
-@@ -4529,9 +4537,11 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
- 	if (err < 0)
- 		goto out_error_apply_filters;
- 
--	err = evlist__mmap(evlist, trace->opts.mmap_pages);
--	if (err < 0)
--		goto out_error_mmap;
-+	if (!trace->summary_only || !trace->summary_bpf) {
-+		err = evlist__mmap(evlist, trace->opts.mmap_pages);
-+		if (err < 0)
-+			goto out_error_mmap;
-+	}
- 
- 	if (!target__none(&trace->opts.target) && !trace->opts.target.initial_delay)
- 		evlist__enable(evlist);
-@@ -4544,6 +4554,9 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
- 		evlist__enable(evlist);
- 	}
- 
-+	if (trace->summary_bpf)
-+		trace_start_bpf_summary();
-+
- 	trace->multiple_threads = perf_thread_map__pid(evlist->core.threads, 0) == -1 ||
- 		perf_thread_map__nr(evlist->core.threads) > 1 ||
- 		evlist__first(evlist)->core.attr.inherit;
-@@ -4611,12 +4624,17 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
- 
- 	evlist__disable(evlist);
- 
-+	if (trace->summary_bpf)
-+		trace_end_bpf_summary();
-+
- 	if (trace->sort_events)
- 		ordered_events__flush(&trace->oe.data, OE_FLUSH__FINAL);
- 
- 	if (!err) {
- 		if (trace->summary) {
--			if (trace->summary_mode == SUMMARY__BY_TOTAL)
-+			if (trace->summary_bpf)
-+				trace_print_bpf_summary(trace->output);
-+			else if (trace->summary_mode == SUMMARY__BY_TOTAL)
- 				trace__fprintf_total_summary(trace, trace->output);
- 			else
- 				trace__fprintf_thread_summary(trace, trace->output);
-@@ -4632,6 +4650,7 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
- 	}
- 
- out_delete_evlist:
-+	trace_cleanup_bpf_summary();
- 	delete_syscall_stats(trace->syscall_stats);
- 	trace__symbols__exit(trace);
- 	evlist__free_syscall_tp_fields(evlist);
-@@ -5467,6 +5486,7 @@ int cmd_trace(int argc, const char **argv)
- 		     "start"),
- 	OPT_BOOLEAN(0, "force-btf", &trace.force_btf, "Prefer btf_dump general pretty printer"
- 		       "to customized ones"),
-+	OPT_BOOLEAN(0, "bpf-summary", &trace.summary_bpf, "Summary syscall stats in BPF"),
- 	OPTS_EVSWITCH(&trace.evswitch),
- 	OPT_END()
- 	};
-@@ -5558,6 +5578,16 @@ int cmd_trace(int argc, const char **argv)
- 		goto skip_augmentation;
- 	}
- 
-+	if (trace.summary_bpf) {
-+		if (!trace.opts.target.system_wide) {
-+			/* TODO: Add filters in the BPF to support other targets. */
-+			pr_err("Error: --bpf-summary only works for system-wide mode.\n");
-+			goto out;
-+		}
-+		if (trace.summary_only)
-+			goto skip_augmentation;
-+	}
-+
- 	trace.skel = augmented_raw_syscalls_bpf__open();
- 	if (!trace.skel) {
- 		pr_debug("Failed to open augmented syscalls BPF skeleton");
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 946bce6628f37eb6..4311cf154d05304c 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -171,6 +171,7 @@ perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf_off_cpu.o
- perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf-filter.o
- perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf-filter-flex.o
- perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf-filter-bison.o
-+perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf-trace-summary.o
- perf-util-$(CONFIG_PERF_BPF_SKEL) += btf.o
- 
- ifeq ($(CONFIG_LIBTRACEEVENT),y)
-diff --git a/tools/perf/util/bpf-trace-summary.c b/tools/perf/util/bpf-trace-summary.c
-new file mode 100644
-index 0000000000000000..114d8d9ed9b2d3f3
+diff --git a/tools/perf/tests/shell/trace_summary.sh b/tools/perf/tests/shell/trace_summary.sh
+new file mode 100755
+index 0000000000000000..4d98cb212dd9de0b
 --- /dev/null
-+++ b/tools/perf/util/bpf-trace-summary.c
-@@ -0,0 +1,347 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#include <inttypes.h>
-+#include <math.h>
-+#include <stdio.h>
-+#include <stdlib.h>
++++ b/tools/perf/tests/shell/trace_summary.sh
+@@ -0,0 +1,65 @@
++#!/bin/sh
++# perf trace summary
++# SPDX-License-Identifier: GPL-2.0
 +
-+#include "dwarf-regs.h" /* for EM_HOST */
-+#include "syscalltbl.h"
-+#include "util/hashmap.h"
-+#include "util/trace.h"
-+#include "util/util.h"
-+#include <bpf/bpf.h>
-+#include <linux/time64.h>
-+#include <tools/libc_compat.h> /* reallocarray */
++# Check that perf trace works with various summary mode
 +
-+#include "bpf_skel/syscall_summary.h"
-+#include "bpf_skel/syscall_summary.skel.h"
++# shellcheck source=lib/probe.sh
++. "$(dirname $0)"/lib/probe.sh
 +
++skip_if_no_perf_trace || exit 2
++[ "$(id -u)" = 0 ] || exit 2
 +
-+static struct syscall_summary_bpf *skel;
++OUTPUT=$(mktemp /tmp/perf_trace_test.XXXXX)
 +
-+int trace_prepare_bpf_summary(enum trace_summary_mode mode)
-+{
-+	skel = syscall_summary_bpf__open();
-+	if (skel == NULL) {
-+		fprintf(stderr, "failed to open syscall summary bpf skeleton\n");
-+		return -1;
-+	}
++test_perf_trace() {
++    args=$1
++    workload="true"
++    search="^\s*(open|read|close).*[0-9]+%$"
 +
-+	if (mode == SUMMARY__BY_THREAD)
-+		skel->rodata->aggr_mode = SYSCALL_AGGR_THREAD;
-+	else
-+		skel->rodata->aggr_mode = SYSCALL_AGGR_CPU;
++    echo "testing: perf trace ${args} -- ${workload}"
++    perf trace ${args} -- ${workload} >${OUTPUT} 2>&1
++    if [ $? -ne 0 ]; then
++        echo "Error: perf trace ${args} failed unexpectedly"
++        cat ${OUTPUT}
++        rm -f ${OUTPUT}
++        exit 1
++    fi
 +
-+	if (syscall_summary_bpf__load(skel) < 0) {
-+		fprintf(stderr, "failed to load syscall summary bpf skeleton\n");
-+		return -1;
-+	}
-+
-+	if (syscall_summary_bpf__attach(skel) < 0) {
-+		fprintf(stderr, "failed to attach syscall summary bpf skeleton\n");
-+		return -1;
-+	}
-+
-+	return 0;
++    count=$(grep -E -c -m 3 "${search}" ${OUTPUT})
++    if [ "${count}" != "3" ]; then
++	echo "Error: cannot find enough pattern ${search} in the output"
++	cat ${OUTPUT}
++	rm -f ${OUTPUT}
++	exit 1
++    fi
 +}
 +
-+void trace_start_bpf_summary(void)
-+{
-+	skel->bss->enabled = 1;
-+}
++# summary only for a process
++test_perf_trace "-s"
 +
-+void trace_end_bpf_summary(void)
-+{
-+	skel->bss->enabled = 0;
-+}
++# normal output with summary at the end
++test_perf_trace "-S"
 +
-+struct syscall_node {
-+	int syscall_nr;
-+	struct syscall_stats stats;
-+};
++# summary only with an explicit summary mode
++test_perf_trace "-s --summary-mode=thread"
 +
-+static double rel_stddev(struct syscall_stats *stat)
-+{
-+	double variance, average;
++# summary with normal output - total summary mode
++test_perf_trace "-S --summary-mode=total"
 +
-+	if (stat->count < 2)
-+		return 0;
++# summary only for system wide - per-thread summary
++test_perf_trace "-as --summary-mode=thread --no-bpf-summary"
 +
-+	average = (double)stat->total_time / stat->count;
++# summary only for system wide - total summary mode
++test_perf_trace "-as --summary-mode=total --no-bpf-summary"
 +
-+	variance = stat->squared_sum;
-+	variance -= (stat->total_time * stat->total_time) / stat->count;
-+	variance /= stat->count - 1;
++# summary only for system wide - per-thread summary with BPF
++test_perf_trace "-as --summary-mode=thread --bpf-summary"
 +
-+	return 100 * sqrt(variance / stat->count) / average;
-+}
++# summary only for system wide - total summary mode with BPF
++test_perf_trace "-as --summary-mode=total --bpf-summary"
 +
-+/*
-+ * The syscall_data is to maintain syscall stats ordered by total time.
-+ * It supports different summary modes like per-thread or global.
-+ *
-+ * For per-thread stats, it uses two-level data strurcture -
-+ * syscall_data is keyed by TID and has an array of nodes which
-+ * represents each syscall for the thread.
-+ *
-+ * For global stats, it's still two-level technically but we don't need
-+ * per-cpu analysis so it's keyed by the syscall number to combine stats
-+ * from different CPUs.  And syscall_data always has a syscall_node so
-+ * it can effectively work as flat hierarchy.
-+ */
-+struct syscall_data {
-+	int key; /* tid if AGGR_THREAD, syscall-nr if AGGR_CPU */
-+	int nr_events;
-+	int nr_nodes;
-+	u64 total_time;
-+	struct syscall_node *nodes;
-+};
++# summary with normal output for system wide - total summary mode with BPF
++test_perf_trace "-aS --summary-mode=total --bpf-summary"
 +
-+static int datacmp(const void *a, const void *b)
-+{
-+	const struct syscall_data * const *sa = a;
-+	const struct syscall_data * const *sb = b;
-+
-+	return (*sa)->total_time > (*sb)->total_time ? -1 : 1;
-+}
-+
-+static int nodecmp(const void *a, const void *b)
-+{
-+	const struct syscall_node *na = a;
-+	const struct syscall_node *nb = b;
-+
-+	return na->stats.total_time > nb->stats.total_time ? -1 : 1;
-+}
-+
-+static size_t sc_node_hash(long key, void *ctx __maybe_unused)
-+{
-+	return key;
-+}
-+
-+static bool sc_node_equal(long key1, long key2, void *ctx __maybe_unused)
-+{
-+	return key1 == key2;
-+}
-+
-+static int print_common_stats(struct syscall_data *data, FILE *fp)
-+{
-+	int printed = 0;
-+
-+	for (int i = 0; i < data->nr_nodes; i++) {
-+		struct syscall_node *node = &data->nodes[i];
-+		struct syscall_stats *stat = &node->stats;
-+		double total = (double)(stat->total_time) / NSEC_PER_MSEC;
-+		double min = (double)(stat->min_time) / NSEC_PER_MSEC;
-+		double max = (double)(stat->max_time) / NSEC_PER_MSEC;
-+		double avg = total / stat->count;
-+		const char *name;
-+
-+		/* TODO: support other ABIs */
-+		name = syscalltbl__name(EM_HOST, node->syscall_nr);
-+		if (name)
-+			printed += fprintf(fp, "   %-15s", name);
-+		else
-+			printed += fprintf(fp, "   syscall:%-7d", node->syscall_nr);
-+
-+		printed += fprintf(fp, " %8u %6u %9.3f %9.3f %9.3f %9.3f %9.2f%%\n",
-+				   stat->count, stat->error, total, min, avg, max,
-+				   rel_stddev(stat));
-+	}
-+	return printed;
-+}
-+
-+static int update_thread_stats(struct hashmap *hash, struct syscall_key *map_key,
-+			       struct syscall_stats *map_data)
-+{
-+	struct syscall_data *data;
-+	struct syscall_node *nodes;
-+
-+	if (!hashmap__find(hash, map_key->cpu_or_tid, &data)) {
-+		data = zalloc(sizeof(*data));
-+		if (data == NULL)
-+			return -ENOMEM;
-+
-+		data->key = map_key->cpu_or_tid;
-+		if (hashmap__add(hash, data->key, data) < 0) {
-+			free(data);
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	/* update thread total stats */
-+	data->nr_events += map_data->count;
-+	data->total_time += map_data->total_time;
-+
-+	nodes = reallocarray(data->nodes, data->nr_nodes + 1, sizeof(*nodes));
-+	if (nodes == NULL)
-+		return -ENOMEM;
-+
-+	data->nodes = nodes;
-+	nodes = &data->nodes[data->nr_nodes++];
-+	nodes->syscall_nr = map_key->nr;
-+
-+	/* each thread has an entry for each syscall, just use the stat */
-+	memcpy(&nodes->stats, map_data, sizeof(*map_data));
-+	return 0;
-+}
-+
-+static int print_thread_stat(struct syscall_data *data, FILE *fp)
-+{
-+	int printed = 0;
-+
-+	qsort(data->nodes, data->nr_nodes, sizeof(*data->nodes), nodecmp);
-+
-+	printed += fprintf(fp, " thread (%d), ", data->key);
-+	printed += fprintf(fp, "%d events\n\n", data->nr_events);
-+
-+	printed += fprintf(fp, "   syscall            calls  errors  total       min       avg       max       stddev\n");
-+	printed += fprintf(fp, "                                     (msec)    (msec)    (msec)    (msec)        (%%)\n");
-+	printed += fprintf(fp, "   --------------- --------  ------ -------- --------- --------- ---------     ------\n");
-+
-+	printed += print_common_stats(data, fp);
-+	printed += fprintf(fp, "\n\n");
-+
-+	return printed;
-+}
-+
-+static int print_thread_stats(struct syscall_data **data, int nr_data, FILE *fp)
-+{
-+	int printed = 0;
-+
-+	for (int i = 0; i < nr_data; i++)
-+		printed += print_thread_stat(data[i], fp);
-+
-+	return printed;
-+}
-+
-+static int update_total_stats(struct hashmap *hash, struct syscall_key *map_key,
-+			      struct syscall_stats *map_data)
-+{
-+	struct syscall_data *data;
-+	struct syscall_stats *stat;
-+
-+	if (!hashmap__find(hash, map_key->nr, &data)) {
-+		data = zalloc(sizeof(*data));
-+		if (data == NULL)
-+			return -ENOMEM;
-+
-+		data->nodes = zalloc(sizeof(*data->nodes));
-+		if (data->nodes == NULL) {
-+			free(data);
-+			return -ENOMEM;
-+		}
-+
-+		data->nr_nodes = 1;
-+		data->key = map_key->nr;
-+		data->nodes->syscall_nr = data->key;
-+
-+		if (hashmap__add(hash, data->key, data) < 0) {
-+			free(data->nodes);
-+			free(data);
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	/* update total stats for this syscall */
-+	data->nr_events += map_data->count;
-+	data->total_time += map_data->total_time;
-+
-+	/* This is sum of the same syscall from different CPUs */
-+	stat = &data->nodes->stats;
-+
-+	stat->total_time += map_data->total_time;
-+	stat->squared_sum += map_data->squared_sum;
-+	stat->count += map_data->count;
-+	stat->error += map_data->error;
-+
-+	if (stat->max_time < map_data->max_time)
-+		stat->max_time = map_data->max_time;
-+	if (stat->min_time > map_data->min_time || stat->min_time == 0)
-+		stat->min_time = map_data->min_time;
-+
-+	return 0;
-+}
-+
-+static int print_total_stats(struct syscall_data **data, int nr_data, FILE *fp)
-+{
-+	int printed = 0;
-+	int nr_events = 0;
-+
-+	for (int i = 0; i < nr_data; i++)
-+		nr_events += data[i]->nr_events;
-+
-+	printed += fprintf(fp, " total, %d events\n\n", nr_events);
-+
-+	printed += fprintf(fp, "   syscall            calls  errors  total       min       avg       max       stddev\n");
-+	printed += fprintf(fp, "                                     (msec)    (msec)    (msec)    (msec)        (%%)\n");
-+	printed += fprintf(fp, "   --------------- --------  ------ -------- --------- --------- ---------     ------\n");
-+
-+	for (int i = 0; i < nr_data; i++)
-+		printed += print_common_stats(data[i], fp);
-+
-+	printed += fprintf(fp, "\n\n");
-+	return printed;
-+}
-+
-+int trace_print_bpf_summary(FILE *fp)
-+{
-+	struct bpf_map *map = skel->maps.syscall_stats_map;
-+	struct syscall_key *prev_key, key;
-+	struct syscall_data **data = NULL;
-+	struct hashmap schash;
-+	struct hashmap_entry *entry;
-+	int nr_data = 0;
-+	int printed = 0;
-+	int i;
-+	size_t bkt;
-+
-+	hashmap__init(&schash, sc_node_hash, sc_node_equal, /*ctx=*/NULL);
-+
-+	printed = fprintf(fp, "\n Summary of events:\n\n");
-+
-+	/* get stats from the bpf map */
-+	prev_key = NULL;
-+	while (!bpf_map__get_next_key(map, prev_key, &key, sizeof(key))) {
-+		struct syscall_stats stat;
-+
-+		if (!bpf_map__lookup_elem(map, &key, sizeof(key), &stat, sizeof(stat), 0)) {
-+			if (skel->rodata->aggr_mode == SYSCALL_AGGR_THREAD)
-+				update_thread_stats(&schash, &key, &stat);
-+			else
-+				update_total_stats(&schash, &key, &stat);
-+		}
-+
-+		prev_key = &key;
-+	}
-+
-+	nr_data = hashmap__size(&schash);
-+	data = calloc(nr_data, sizeof(*data));
-+	if (data == NULL)
-+		goto out;
-+
-+	i = 0;
-+	hashmap__for_each_entry(&schash, entry, bkt)
-+		data[i++] = entry->pvalue;
-+
-+	qsort(data, nr_data, sizeof(*data), datacmp);
-+
-+	if (skel->rodata->aggr_mode == SYSCALL_AGGR_THREAD)
-+		printed += print_thread_stats(data, nr_data, fp);
-+	else
-+		printed += print_total_stats(data, nr_data, fp);
-+
-+	for (i = 0; i < nr_data && data; i++) {
-+		free(data[i]->nodes);
-+		free(data[i]);
-+	}
-+	free(data);
-+
-+out:
-+	hashmap__clear(&schash);
-+	return printed;
-+}
-+
-+void trace_cleanup_bpf_summary(void)
-+{
-+	syscall_summary_bpf__destroy(skel);
-+}
-diff --git a/tools/perf/util/bpf_skel/syscall_summary.bpf.c b/tools/perf/util/bpf_skel/syscall_summary.bpf.c
-new file mode 100644
-index 0000000000000000..b25f53b3c1351392
---- /dev/null
-+++ b/tools/perf/util/bpf_skel/syscall_summary.bpf.c
-@@ -0,0 +1,118 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Trace raw_syscalls tracepoints to collect system call statistics.
-+ */
-+
-+#include "vmlinux.h"
-+#include "syscall_summary.h"
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+/* This is to calculate a delta between sys-enter and sys-exit for each thread */
-+struct syscall_trace {
-+	int nr; /* syscall number is only available at sys-enter */
-+	int unused;
-+	u64 timestamp;
-+};
-+
-+#define MAX_ENTRIES	(128 * 1024)
-+
-+struct syscall_trace_map {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, int); /* tid */
-+	__type(value, struct syscall_trace);
-+	__uint(max_entries, MAX_ENTRIES);
-+} syscall_trace_map SEC(".maps");
-+
-+struct syscall_stats_map {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, struct syscall_key);
-+	__type(value, struct syscall_stats);
-+	__uint(max_entries, MAX_ENTRIES);
-+} syscall_stats_map SEC(".maps");
-+
-+int enabled; /* controlled from userspace */
-+
-+const volatile enum syscall_aggr_mode aggr_mode;
-+
-+static void update_stats(int cpu_or_tid, int nr, s64 duration, long ret)
-+{
-+	struct syscall_key key = { .cpu_or_tid = cpu_or_tid, .nr = nr, };
-+	struct syscall_stats *stats;
-+
-+	stats = bpf_map_lookup_elem(&syscall_stats_map, &key);
-+	if (stats == NULL) {
-+		struct syscall_stats zero = {};
-+
-+		bpf_map_update_elem(&syscall_stats_map, &key, &zero, BPF_NOEXIST);
-+		stats = bpf_map_lookup_elem(&syscall_stats_map, &key);
-+		if (stats == NULL)
-+			return;
-+	}
-+
-+	__sync_fetch_and_add(&stats->count, 1);
-+	if (ret < 0)
-+		__sync_fetch_and_add(&stats->error, 1);
-+
-+	if (duration > 0) {
-+		__sync_fetch_and_add(&stats->total_time, duration);
-+		__sync_fetch_and_add(&stats->squared_sum, duration * duration);
-+		if (stats->max_time < duration)
-+			stats->max_time = duration;
-+		if (stats->min_time > duration || stats->min_time == 0)
-+			stats->min_time = duration;
-+	}
-+
-+	return;
-+}
-+
-+SEC("tp_btf/sys_enter")
-+int sys_enter(u64 *ctx)
-+{
-+	int tid;
-+	struct syscall_trace st;
-+
-+	if (!enabled)
-+		return 0;
-+
-+	st.nr = ctx[1]; /* syscall number */
-+	st.unused = 0;
-+	st.timestamp = bpf_ktime_get_ns();
-+
-+	tid = bpf_get_current_pid_tgid();
-+	bpf_map_update_elem(&syscall_trace_map, &tid, &st, BPF_ANY);
-+
-+	return 0;
-+}
-+
-+SEC("tp_btf/sys_exit")
-+int sys_exit(u64 *ctx)
-+{
-+	int tid;
-+	int key;
-+	long ret = ctx[1]; /* return value of the syscall */
-+	struct syscall_trace *st;
-+	s64 delta;
-+
-+	if (!enabled)
-+		return 0;
-+
-+	tid = bpf_get_current_pid_tgid();
-+	st = bpf_map_lookup_elem(&syscall_trace_map, &tid);
-+	if (st == NULL)
-+		return 0;
-+
-+	if (aggr_mode == SYSCALL_AGGR_THREAD)
-+		key = tid;
-+	else
-+		key = bpf_get_smp_processor_id();
-+
-+	delta = bpf_ktime_get_ns() - st->timestamp;
-+	update_stats(key, st->nr, delta, ret);
-+
-+	bpf_map_delete_elem(&syscall_trace_map, &tid);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/perf/util/bpf_skel/syscall_summary.h b/tools/perf/util/bpf_skel/syscall_summary.h
-new file mode 100644
-index 0000000000000000..17f9ecba657088aa
---- /dev/null
-+++ b/tools/perf/util/bpf_skel/syscall_summary.h
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+/* Data structures shared between BPF and tools. */
-+#ifndef UTIL_BPF_SKEL_SYSCALL_SUMMARY_H
-+#define UTIL_BPF_SKEL_SYSCALL_SUMMARY_H
-+
-+enum syscall_aggr_mode {
-+	SYSCALL_AGGR_THREAD,
-+	SYSCALL_AGGR_CPU,
-+};
-+
-+struct syscall_key {
-+	int cpu_or_tid;
-+	int nr;
-+};
-+
-+struct syscall_stats {
-+	u64 total_time;
-+	u64 squared_sum;
-+	u64 max_time;
-+	u64 min_time;
-+	u32 count;
-+	u32 error;
-+};
-+
-+#endif /* UTIL_BPF_SKEL_SYSCALL_SUMMARY_H */
-diff --git a/tools/perf/util/trace.h b/tools/perf/util/trace.h
-new file mode 100644
-index 0000000000000000..ef8361ed12c4edc1
---- /dev/null
-+++ b/tools/perf/util/trace.h
-@@ -0,0 +1,37 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef UTIL_TRACE_H
-+#define UTIL_TRACE_H
-+
-+#include <stdio.h>  /* for FILE */
-+
-+enum trace_summary_mode {
-+	SUMMARY__NONE = 0,
-+	SUMMARY__BY_TOTAL,
-+	SUMMARY__BY_THREAD,
-+};
-+
-+#ifdef HAVE_BPF_SKEL
-+
-+int trace_prepare_bpf_summary(enum trace_summary_mode mode);
-+void trace_start_bpf_summary(void);
-+void trace_end_bpf_summary(void);
-+int trace_print_bpf_summary(FILE *fp);
-+void trace_cleanup_bpf_summary(void);
-+
-+#else /* !HAVE_BPF_SKEL */
-+
-+static inline int trace_prepare_bpf_summary(enum trace_summary_mode mode __maybe_unused)
-+{
-+	return -1;
-+}
-+static inline void trace_start_bpf_summary(void) {}
-+static inline void trace_end_bpf_summary(void) {}
-+static inline int trace_print_bpf_summary(FILE *fp __maybe_unused)
-+{
-+	return 0;
-+}
-+static inline void trace_cleanup_bpf_summary(void) {}
-+
-+#endif /* HAVE_BPF_SKEL */
-+
-+#endif /* UTIL_TRACE_H */
++rm -f ${OUTPUT}
 -- 
 2.49.0.395.g12beb8f557-goog
 
