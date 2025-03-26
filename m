@@ -1,228 +1,135 @@
-Return-Path: <bpf+bounces-54746-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54747-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53451A71640
-	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 13:08:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED8DEA71665
+	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 13:21:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D3BD3AF132
-	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 12:08:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ABBF7A517E
+	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 12:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04A114D2A0;
-	Wed, 26 Mar 2025 12:08:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A9B1E51FB;
+	Wed, 26 Mar 2025 12:20:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="IdpyvnCk"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OyPvISRM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4981D6187;
-	Wed, 26 Mar 2025 12:08:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F641E1DE9
+	for <bpf@vger.kernel.org>; Wed, 26 Mar 2025 12:20:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742990921; cv=none; b=H80azB76LxknLbi7/vtZqfV7LJY8yR7FKz7SXQ8ktUC9MfpzjX2ki/1HLWZXoTMSaVCTh2P0MpBcPzCQDwtaAEfa5OD3+t8rt30xI9fEbeMR2u6DkLJjgOCE88lJnBacer5a0nbHzFauH7k0bmDwOdEG4MdqukNfNqC/sjsPfXA=
+	t=1742991645; cv=none; b=WiqCMw+YVsDxIOW1/WVWgiK6Trubn0srlhGEHCDzmbxg4AxBJpIomLSi2HhZhoy+adEvGxs/7RfIzflod9vxJstFNuMA81HMj67+M+wO+dwsJ6Lm7tNckF8o+ujMEkk46Yb8RdyWjXarkwgEEeWaRG20eWSu1FwQ2S58lnnH0Is=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742990921; c=relaxed/simple;
-	bh=t1W9A7CztuYOzyocp5DJOWnQhbCVCTcqe7Werp2bR1k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gO+TmkfO4rkLSOOTJ+U+G+jYlgt/hzlrjFMIZ3EMqjdyaX+XQL7Pram7VWJVGwvRywZHHV4l3Bg21tKbLK7OQVvUnp0BTzjmyh/sCAXVo2CBExjvFSTFZPz4f34sFWLbUyqgW08IsUiF5f5eELxA7PRglwQMspkJuG91BZ1gPSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=IdpyvnCk; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52Q1jDcT026988;
-	Wed, 26 Mar 2025 12:08:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=scsnGuI4cun0Pezz+whqX+7I1f1DZvHWO46k2SNU/
-	Hk=; b=IdpyvnCkf6UiB4n8i++o1byKwDuenD/Z1iXLh28PSOLPqKguaF7aqiuUT
-	/txcKe1/HmhB5JzH5q7+Ha32WSQdKC/HzGI01HVcbRgiKf0WEO6wgceQ98TgOpjp
-	qnQP+KvZ+2jBxbiIkPWFKPvokobOtD/L20RifJGOX7bcLCq1/8ZKNwTj2PcVtO2Q
-	MJ+chcISqGTczuKoIjpo85UBAA4CNtHzym0SR2hHyRzvRz6n8C93OsPuEaaRRKfk
-	zx8TKO0AV5JxDi8zWOGPtkrKwX62+jbwDGncM82/LPneq3p0YmlKwad/wio7Q02J
-	7EnKPIWlswlaof9vmgAInclzet54w==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45kbjx2nrd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 26 Mar 2025 12:08:09 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 52QC3hcj027642;
-	Wed, 26 Mar 2025 12:08:08 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45kbjx2nr5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 26 Mar 2025 12:08:08 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52QBsZYW005801;
-	Wed, 26 Mar 2025 12:08:08 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 45ja82fxaf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 26 Mar 2025 12:08:07 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52QC84Bn21954864
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 26 Mar 2025 12:08:04 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3A1752004B;
-	Wed, 26 Mar 2025 12:08:04 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 747CE20040;
-	Wed, 26 Mar 2025 12:08:01 +0000 (GMT)
-Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.ibm.com.com (unknown [9.43.113.131])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 26 Mar 2025 12:08:01 +0000 (GMT)
-From: Hari Bathini <hbathini@linux.ibm.com>
-To: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org
-Cc: Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Venkat Rao Bagalkote <venkat88@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>, stable@vger.kernel.org
-Subject: [PATCH] powerpc64/bpf: fix JIT code size calculation of bpf trampoline
-Date: Wed, 26 Mar 2025 17:38:00 +0530
-Message-ID: <20250326120800.1141056-1-hbathini@linux.ibm.com>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1742991645; c=relaxed/simple;
+	bh=fDGZt+SqyiAW6zCfVM1bGeXtRYL5+861efZwXKZVyjc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=uzwR6y74FNxoDMzgANTTDE/84IuSAhnqfujAfzPSSCdoffTRyyk+YahF2jjL5RGB+b4ftFgee+kLfJAFFIBpkFLgl98E0g9aZZRZ2AidSiwwgxuFwzyq8Q4cmgnh5c2hxAkhskh0LOrvshl/QSm+/I5DSzVcBBlNSkUATbIOmMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OyPvISRM; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1742991642;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fDGZt+SqyiAW6zCfVM1bGeXtRYL5+861efZwXKZVyjc=;
+	b=OyPvISRM1O7N2DrDBtYUfU1M3lZNR79xAUvEcl/4733LtWFE/ooQGt5l4ftsYYRePmAYMq
+	TXXTdW1DPVcyxBrHAVyjeDWm/X0dhN87OAKwCZwUMUMq8ppFK5AAz4HCQKILxJOSy1uJVx
+	h0U29bxapI/uWE9vnWYLkDonSHulV5c=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-208-V8vwwQofM6qeH9Ifk_e6xQ-1; Wed, 26 Mar 2025 08:20:40 -0400
+X-MC-Unique: V8vwwQofM6qeH9Ifk_e6xQ-1
+X-Mimecast-MFC-AGG-ID: V8vwwQofM6qeH9Ifk_e6xQ_1742991639
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-ac37ed2b99fso603657266b.3
+        for <bpf@vger.kernel.org>; Wed, 26 Mar 2025 05:20:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742991639; x=1743596439;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fDGZt+SqyiAW6zCfVM1bGeXtRYL5+861efZwXKZVyjc=;
+        b=fuVCFAMBncYEppuvINP+T74K9Jxk6DapJbZ/vMpH6lGyZTkpMdrTJ5w8lirTU3x1iM
+         y4NIrjlwLOdH3mWprQ6kV1LIo73BcaQusfSRKyNbJ/qjwAVYer7ltw8siWDX+S5lU52W
+         dTJpBowohYcNJ+9naPKtF+E7U1ZOIDsD+Dx5p5ri2aBKIYJzWd5R3YCBmJq1AL1wlyNj
+         s4cOmPw9ELkQOYnYzhKyRehOeBc+3JaS/1NHjgKdB+tvC9KoOfIj8hkAvtJT+1av3vgC
+         ncJbIdLT1GJR9UkSFxFtQ6nAdo3VYAIGDwtMcoZ6qQAoQCWZxSXNipGvemQVqnfS8H5i
+         v8qg==
+X-Forwarded-Encrypted: i=1; AJvYcCUA8blhn8R4z6aeFarGorDCf1M413SUGxKcmzizGe533+aWcXyW8bRT9RHOUXzMsOtECww=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw6zGPAdhGyqjyDLQIyADwKiVIgiYCNdDGzfQE37aVJUEeV1/k6
+	4sVnfjJUsWxuHd8S0hNiTjtyqwS9r8t6n8HDY01+ce/Yn234NO3nfX2Bf/qUVcunRg517LekxPU
+	0YYQH45EvLGRkNN85qceGwQlvb8cXjuAf65/8jx3KZQr/8hD8gw==
+X-Gm-Gg: ASbGncth2ozqkVm6lPjJ/rAREf2Sl93MfuH2S3aYV43iUq798XV5d7kgupTQbm5Rh7a
+	qqH0Vu4vqUEFp5gP5yMZ2+Xc7Pvkv5SMPJFo53DTTsLRgKfnAFrzaPziBtVYb64C6DQ0tFITjBe
+	IiE6KcKJlYX7/GtTOI0gLYlGY7m/KG35XwapCTK0EZjISsbJvoUSTlGjrjFqf/dT1FD7otTgfNb
+	vC8BUEgHmNkM9vnDBxHt9E+QWflMaKnVmwPnEoQcr/dTT3M0MLVwVTvIfHFWpnd9wF8dKgq6W/1
+	0U6GisSARLVK/XisTNn4yu4xsvdKS+xuuuzZND/s
+X-Received: by 2002:a17:906:c105:b0:ac1:fab4:a83 with SMTP id a640c23a62f3a-ac3f22aec3fmr1934592666b.25.1742991639139;
+        Wed, 26 Mar 2025 05:20:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGXpD8SKp1cf90maKHi6um2LlX8ejsXAgc5A98IWT9wYQriYmqy8j/0VlxO8lFqKGic1FYQjQ==
+X-Received: by 2002:a17:906:c105:b0:ac1:fab4:a83 with SMTP id a640c23a62f3a-ac3f22aec3fmr1934588766b.25.1742991638698;
+        Wed, 26 Mar 2025 05:20:38 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac3efb65701sm1003437266b.122.2025.03.26.05.20.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Mar 2025 05:20:38 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 4474318FCA84; Wed, 26 Mar 2025 13:20:37 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+ <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
+ Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
+ Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>, Pavel Begunkov
+ <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>, Yuying Ma
+ <yuma@redhat.com>
+Subject: Re: [PATCH net-next v3 0/3] Fix late DMA unmap crash for page pool
+In-Reply-To: <20250326044855.433a0ed1@kernel.org>
+References: <20250326-page-pool-track-dma-v3-0-8e464016e0ac@redhat.com>
+ <20250326044855.433a0ed1@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 26 Mar 2025 13:20:37 +0100
+Message-ID: <874izgq8yy.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: XqlQA9WjzOD7z2NE0J22XdWUXsPLNiVH
-X-Proofpoint-ORIG-GUID: 9CHHgm0--2r1Zri-QBe13F6AWbFgBKqc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-26_04,2025-03-26_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 spamscore=0
- clxscore=1011 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
- mlxlogscore=616 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2502280000 definitions=main-2503260073
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-The JIT compile of ldimm instructions can be anywhere between 1-5
-instructions long depending on the value being loaded.
+Jakub Kicinski <kuba@kernel.org> writes:
 
-arch_bpf_trampoline_size() provides JIT size of the BPF trampoline
-before the buffer for JIT'ing it is allocated. BPF trampoline JIT
-code has ldimm instructions that need to load the value of pointer
-to struct bpf_tramp_image. But this pointer value is not same while
-calling arch_bpf_trampoline_size() & arch_prepare_bpf_trampoline().
-So, the size arrived at using arch_bpf_trampoline_size() can vary
-from the size needed in arch_prepare_bpf_trampoline(). When the
-number of ldimm instructions emitted in arch_bpf_trampoline_size()
-is less than the number of ldimm instructions emitted during the
-actual JIT compile of trampoline, the below warning is produced:
+> On Wed, 26 Mar 2025 09:18:37 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> This series fixes the late dma_unmap crash for page pool first reported
+>> by Yonglong Liu in [0]. It is an alternative approach to the one
+>> submitted by Yunsheng Lin, most recently in [1]. The first two commits
+>> are small refactors of the page pool code, in preparation of the main
+>> change in patch 3. See the commit message of patch 3 for the details.
+>
+> Doesn't apply, FWIW,
 
-  WARNING: CPU: 8 PID: 204190 at arch/powerpc/net/bpf_jit_comp.c:981 __arch_prepare_bpf_trampoline.isra.0+0xd2c/0xdcc
+Ugh, sorry about that; rebased yesterday before reposting, but forgot to
+do so this morning :/
 
-which is:
+> maybe rebase/repost after Linus pull net-next, in case something
+> conflicts on the MM side
 
-  /* Make sure the trampoline generation logic doesn't overflow */
-  if (image && WARN_ON_ONCE(&image[ctx->idx] >
-			(u32 *)rw_image_end - BPF_INSN_SAFETY)) {
+As in, you want to wait until after the merge window? Sure, can do.
 
-Pass NULL as the first argument to __arch_prepare_bpf_trampoline()
-call from arch_bpf_trampoline_size() function, to differentiate it
-from how arch_prepare_bpf_trampoline() calls it and ensure maximum
-possible instructions are emitted in arch_bpf_trampoline_size() for
-ldimm instructions that load a different value during the actual JIT
-compile of BPF trampoline.
-
-Fixes: d243b62b7bd3 ("powerpc64/bpf: Add support for bpf trampolines")
-Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Closes: https://lore.kernel.org/all/6168bfc8-659f-4b5a-a6fb-90a916dde3b3@linux.ibm.com/
-Cc: stable@vger.kernel.org # v6.13+
-Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
----
- arch/powerpc/net/bpf_jit_comp.c | 31 ++++++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
-
-diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-index 2991bb171a9b..49d7e9a8d17c 100644
---- a/arch/powerpc/net/bpf_jit_comp.c
-+++ b/arch/powerpc/net/bpf_jit_comp.c
-@@ -686,7 +686,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
- 	 *                              [                   ] --
- 	 * LR save area                 [ r0 save (64-bit)  ]   | header
- 	 *                              [ r0 save (32-bit)  ]   |
--	 * dummy frame for unwind       [ back chain 1      ] --
-+	 /* dummy frame for unwind       [ back chain 1      ] --
- 	 *                              [ padding           ] align stack frame
- 	 *       r4_off                 [ r4 (tailcallcnt)  ] optional - 32-bit powerpc
- 	 *       alt_lr_off             [ real lr (ool stub)] optional - actual lr
-@@ -833,7 +833,12 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
- 	EMIT(PPC_RAW_STL(_R26, _R1, nvr_off + SZL));
- 
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
--		PPC_LI_ADDR(_R3, (unsigned long)im);
-+		/*
-+		 * Emit maximum possible instructions while getting the size of
-+		 * bpf trampoline to ensure trampoline JIT code doesn't overflow.
-+		 */
-+		PPC_LI_ADDR(_R3, im ? (unsigned long)im :
-+				(unsigned long)(~(1UL << (BITS_PER_LONG - 1))));
- 		ret = bpf_jit_emit_func_call_rel(image, ro_image, ctx,
- 						 (unsigned long)__bpf_tramp_enter);
- 		if (ret)
-@@ -889,7 +894,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
- 			bpf_trampoline_restore_tail_call_cnt(image, ctx, func_frame_offset, r4_off);
- 
- 		/* Reserve space to patch branch instruction to skip fexit progs */
--		im->ip_after_call = &((u32 *)ro_image)[ctx->idx];
-+		if (im)
-+			im->ip_after_call = &((u32 *)ro_image)[ctx->idx];
- 		EMIT(PPC_RAW_NOP());
- 	}
- 
-@@ -912,8 +918,14 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
- 		}
- 
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
--		im->ip_epilogue = &((u32 *)ro_image)[ctx->idx];
--		PPC_LI_ADDR(_R3, im);
-+		if (im)
-+			im->ip_epilogue = &((u32 *)ro_image)[ctx->idx];
-+		/*
-+		 * Emit maximum possible instructions while getting the size of
-+		 * bpf trampoline to ensure trampoline JIT code doesn't overflow.
-+		 */
-+		PPC_LI_ADDR(_R3, im ? (unsigned long)im :
-+				(unsigned long)(~(1UL << (BITS_PER_LONG - 1))));
- 		ret = bpf_jit_emit_func_call_rel(image, ro_image, ctx,
- 						 (unsigned long)__bpf_tramp_exit);
- 		if (ret)
-@@ -972,7 +984,6 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
- int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
- 			     struct bpf_tramp_links *tlinks, void *func_addr)
- {
--	struct bpf_tramp_image im;
- 	void *image;
- 	int ret;
- 
-@@ -988,7 +999,13 @@ int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
- 	if (!image)
- 		return -ENOMEM;
- 
--	ret = __arch_prepare_bpf_trampoline(&im, image, image + PAGE_SIZE, image,
-+	/*
-+	 * Pass NULL as bpf_tramp_image pointer to differentiate the intent to get the
-+	 * buffer size for trampoline here. This differentiation helps in accounting for
-+	 * maximum possible instructions if the JIT code size is likely to vary during
-+	 * the actual JIT compile of the trampoline.
-+	 */
-+	ret = __arch_prepare_bpf_trampoline(NULL, image, image + PAGE_SIZE, image,
- 					    m, flags, tlinks, func_addr);
- 	bpf_jit_free_exec(image);
- 
--- 
-2.48.1
+-Toke
 
 
