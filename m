@@ -1,75 +1,48 @@
-Return-Path: <bpf+bounces-54750-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B3D0A7171F
-	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 14:11:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1B10A717DF
+	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 14:55:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B2E83B05D3
-	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 13:10:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FC53173715
+	for <lists+bpf@lfdr.de>; Wed, 26 Mar 2025 13:54:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F0951E5218;
-	Wed, 26 Mar 2025 13:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6651F0E5B;
+	Wed, 26 Mar 2025 13:54:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gzS4bThc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PbyAtgkG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 799261A2398;
-	Wed, 26 Mar 2025 13:10:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60291EFF9D;
+	Wed, 26 Mar 2025 13:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742994659; cv=none; b=EgDXrG9bvnVEspzm23Yk2DVrj5//eslFkcT0KBSV/yaTkeY3QtGsJas7eglEFgel38Hx5dGvG3txHrEucueSVCssmDhaDelC+BtkH1fd1ro1bT7S9HGkat06/9pEWzgxE/2BUVCk/ve6IQppOVxYlBL3QLXdoXL5k2WG3jDcHCE=
+	t=1742997275; cv=none; b=UWK21FKKYhkgwY6JE5zBFKL45w4N7UjfFAxvVGE+gNms7psPGRtM9CnUPgz3c7ckOPAt5ZpTSUTldFK0yZs3iVNwH+wp7n73DlVIqz9eXSLYFNcBhY7lbnKQ73Fz2CQowSBshPbXBpG7+GnXzn1FVYBPVB8B/qxYcbDAMdn+lAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742994659; c=relaxed/simple;
-	bh=pcGemtqeLCa12GaytPmSy1mLPmv3gaNtLKFT7C5Ws/4=;
+	s=arc-20240116; t=1742997275; c=relaxed/simple;
+	bh=MITqSr2jxezS0QyojVv0ctDgJnQhqNl2NQ/2YZtbfcg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GrT8KugtXqdAcQ8B9XpPHuROfRqJylgFSYsQtOPoBtYdS//L2pzNwIex/TIegkWfpukKfdhE5wpgooxkYxgZBjHLy1hsqMcqfBrlDKWEVZy0NOuw1bds3tDihFjcNrBmVHhQJ+H6Dueds0wOK1/R4JzCuQxwXt4Fd0v7GQupOPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gzS4bThc; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52Q44JdY028382;
-	Wed, 26 Mar 2025 13:10:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=nT38b4
-	dlu+sSPzXtH+E32XelC14qGuu494AMIpez530=; b=gzS4bThcnKQgx9CkoTgww1
-	nk5pqCPntkPoS1SzyEKytoGah0MERTIS/wG/UqnUFCgwTCvrbWe3DMdjmrCfbUUS
-	Y2rMrlT+nVVI0r0YbrEO5WGPQbHU62Hmrj8MW39c2G5uMqSLt4sQF4dJxgNTJaJV
-	FwuL9lutQaT9kJQziO6OPWHSVlQO1GzQdfhZ36Cw+I4roX3Q3udfO5S6daFN5IB2
-	LO7/EhYInmQ8hgINZhcy/CJdI7ok237kbJ+TJR1tNQEED6YjsIaAz3AVTx6E/3xM
-	1Zr72zTVRqpB/svU85WD4Yh13MG5ONRqeqFQMeYd5nIHU2SRQ8CWD/c4172SgvAQ
-	==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45kbjx2ysu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 26 Mar 2025 13:10:45 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52Q9lo3e025462;
-	Wed, 26 Mar 2025 13:10:44 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 45j7x08k7c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 26 Mar 2025 13:10:44 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52QDAhgV28115710
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 26 Mar 2025 13:10:44 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D34D758054;
-	Wed, 26 Mar 2025 13:10:43 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 33F9E5805C;
-	Wed, 26 Mar 2025 13:10:41 +0000 (GMT)
-Received: from [9.61.254.184] (unknown [9.61.254.184])
-	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 26 Mar 2025 13:10:40 +0000 (GMT)
-Message-ID: <e41a7fc8-824d-4369-b581-1fa8600ae3ec@linux.ibm.com>
-Date: Wed, 26 Mar 2025 18:40:39 +0530
+	 In-Reply-To:Content-Type; b=k+yOsacY488lyi/ipPCVnyTGPDUfOjkeq7iUX2kmLrrcBNnDgmSrXYfbo/CJnQazPlXpketwTyfd2wk3Ni8oozc34Dmm/FC8kA6csGYg3YhZo07QJyhHN3RvLfWDCSY/ogWHYEx85UVOWCtsQL6PYWc6zDZg/MnwW75HHDAlLUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PbyAtgkG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C49BC4CEE2;
+	Wed, 26 Mar 2025 13:54:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742997274;
+	bh=MITqSr2jxezS0QyojVv0ctDgJnQhqNl2NQ/2YZtbfcg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=PbyAtgkGc+aKaImYhRMQjv+zRBhwIak2tCy9xSaIpgTDPzvjlfsgexNGHffaTrHQ4
+	 Qa42mNEgB5FWzqoY/Kcobv23eDqoxmSOyahMfSZeiuCDjXQYIvz+ChC4ZKZ80ro1EW
+	 z3d2wMl49SRmGb0guBH9CyEvZ+BGMw76RpFBxL8DMYfpv3ROji0In7+P+KVpc/1JsP
+	 SpZe1W+c4V6JxmoUozZo8XRQrUMd+fRcimXegdLuL7YmOX7+0TniZRuCGVHQDUfvge
+	 gZziZstnk7KgSv7qSjhWb+6b/DhcgSYpfcRXub9Nj6LRNpoXVaqaeOHmUWJ8HBKO9P
+	 eBH3H93mNqU/w==
+Message-ID: <e9e0affd-683d-418b-9618-4b1a69095342@kernel.org>
+Date: Wed, 26 Mar 2025 14:54:26 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,109 +50,115 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tools/build: Use SYSTEM_BPFTOOL for system bpftool
-Content-Language: en-GB
-To: Tomas Glozar <tglozar@redhat.com>, Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, John Kacur <jkacur@redhat.com>,
-        Luis Goncalves <lgoncalv@redhat.com>, Quentin Monnet <qmo@qmon.net>
-References: <20250326004018.248357-1-tglozar@redhat.com>
-From: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-In-Reply-To: <20250326004018.248357-1-tglozar@redhat.com>
+Subject: Re: [PATCH net-next v2 3/3] page_pool: Track DMA-mapped pages and
+ unmap them when destroying the pool
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Simon Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Mina Almasry <almasrymina@google.com>, Yonglong Liu
+ <liuyonglong@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>,
+ Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>,
+ Yuying Ma <yuma@redhat.com>
+References: <20250325-page-pool-track-dma-v2-0-113ebc1946f3@redhat.com>
+ <20250325-page-pool-track-dma-v2-3-113ebc1946f3@redhat.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250325-page-pool-track-dma-v2-3-113ebc1946f3@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: dfFNw-joNW9YygyCJUJUZE8a20B8jpwe
-X-Proofpoint-ORIG-GUID: dfFNw-joNW9YygyCJUJUZE8a20B8jpwe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-26_06,2025-03-26_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 spamscore=0
- clxscore=1011 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2502280000 definitions=main-2503260079
+Content-Transfer-Encoding: 8bit
 
 
-On 26/03/25 6:10 am, Tomas Glozar wrote:
-> The feature test for system bpftool uses BPFTOOL as the variable to set
-> its path, defaulting to just "bpftool" if not set by the user.
->
-> This conflicts with selftests and a few other utilities, which expect
-> BPFTOOL to be set to the in-tree bpftool path by default. For example,
-> bpftool selftests fail to build:
->
-> $ make -C tools/testing/selftests/bpf/
-> make: Entering directory '/home/tglozar/dev/linux/tools/testing/selftests/bpf'
->
-> make: *** No rule to make target 'bpftool', needed by '/home/tglozar/dev/linux/tools/testing/selftests/bpf/tools/include/vmlinux.h'.  Stop.
-> make: Leaving directory '/home/tglozar/dev/linux/tools/testing/selftests/bpf'
->
-> Fix the problem by renaming the variable used for system bpftool from
-> BPFTOOL to SYSTEM_BPFTOOL, so that the new usage does not conflict with
-> the existing one of BPFTOOL.
->
-> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-> Closes: https://lore.kernel.org/linux-kernel/5df6968a-2e5f-468e-b457-fc201535dd4c@linux.ibm.com/
-> Suggested-by: Quentin Monnet <qmo@qmon.net>
-> Fixes: 8a635c3856dd ("tools/build: Add bpftool-skeletons feature test")
-> Signed-off-by: Tomas Glozar <tglozar@redhat.com>
+
+On 25/03/2025 16.45, Toke Høiland-Jørgensen wrote:
+> When enabling DMA mapping in page_pool, pages are kept DMA mapped until
+> they are released from the pool, to avoid the overhead of re-mapping the
+> pages every time they are used. This causes resource leaks and/or
+> crashes when there are pages still outstanding while the device is torn
+> down, because page_pool will attempt an unmap through a non-existent DMA
+> device on the subsequent page return.
+> 
+> To fix this, implement a simple tracking of outstanding DMA-mapped pages
+> in page pool using an xarray. This was first suggested by Mina[0], and
+> turns out to be fairly straight forward: We simply store pointers to
+> pages directly in the xarray with xa_alloc() when they are first DMA
+> mapped, and remove them from the array on unmap. Then, when a page pool
+> is torn down, it can simply walk the xarray and unmap all pages still
+> present there before returning, which also allows us to get rid of the
+> get/put_device() calls in page_pool. Using xa_cmpxchg(), no additional
+> synchronisation is needed, as a page will only ever be unmapped once.
+> 
+> To avoid having to walk the entire xarray on unmap to find the page
+> reference, we stash the ID assigned by xa_alloc() into the page
+> structure itself, using the upper bits of the pp_magic field. This
+> requires a couple of defines to avoid conflicting with the
+> POINTER_POISON_DELTA define, but this is all evaluated at compile-time,
+> so does not affect run-time performance. The bitmap calculations in this
+> patch gives the following number of bits for different architectures:
+> 
+> - 23 bits on 32-bit architectures
+> - 21 bits on PPC64 (because of the definition of ILLEGAL_POINTER_VALUE)
+> - 32 bits on other 64-bit architectures
+> 
+> Stashing a value into the unused bits of pp_magic does have the effect
+> that it can make the value stored there lie outside the unmappable
+> range (as governed by the mmap_min_addr sysctl), for architectures that
+> don't define ILLEGAL_POINTER_VALUE. This means that if one of the
+> pointers that is aliased to the pp_magic field (such as page->lru.next)
+> is dereferenced while the page is owned by page_pool, that could lead to
+> a dereference into userspace, which is a security concern. The risk of
+> this is mitigated by the fact that (a) we always clear pp_magic before
+> releasing a page from page_pool, and (b) this would need a
+> use-after-free bug for struct page, which can have many other risks
+> since page->lru.next is used as a generic list pointer in multiple
+> places in the kernel. As such, with this patch we take the position that
+> this risk is negligible in practice. For more discussion, see[1].
+> 
+> Since all the tracking added in this patch is performed on DMA
+> map/unmap, no additional code is needed in the fast path, meaning the
+> performance overhead of this tracking is negligible there. A
+> micro-benchmark shows that the total overhead of the tracking itself is
+> about 400 ns (39 cycles(tsc) 395.218 ns; sum for both map and unmap[2]).
+> Since this cost is only paid on DMA map and unmap, it seems like an
+> acceptable cost to fix the late unmap issue. Further optimisation can
+> narrow the cases where this cost is paid (for instance by eliding the
+> tracking when DMA map/unmap is a no-op).
+> 
+> The extra memory needed to track the pages is neatly encapsulated inside
+> xarray, which uses the 'struct xa_node' structure to track items. This
+> structure is 576 bytes long, with slots for 64 items, meaning that a
+> full node occurs only 9 bytes of overhead per slot it tracks (in
+> practice, it probably won't be this efficient, but in any case it should
+> be an acceptable overhead).
+> 
+> [0]https://lore.kernel.org/all/CAHS8izPg7B5DwKfSuzz-iOop_YRbk3Sd6Y4rX7KBG9DcVJcyWg@mail.gmail.com/
+> [1]https://lore.kernel.org/r/20250320023202.GA25514@openwall.com
+> [2]https://lore.kernel.org/r/ae07144c-9295-4c9d-a400-153bb689fe9e@huawei.com
+> 
+> Reported-by: Yonglong Liu<liuyonglong@huawei.com>
+> Closes:https://lore.kernel.org/r/8743264a-9700-4227-a556-5f931c720211@huawei.com
+> Fixes: ff7d6b27f894 ("page_pool: refurbish version of page_pool code")
+> Suggested-by: Mina Almasry<almasrymina@google.com>
+> Reviewed-by: Mina Almasry<almasrymina@google.com>
+> Reviewed-by: Jesper Dangaard Brouer<hawk@kernel.org>
+> Tested-by: Jesper Dangaard Brouer<hawk@kernel.org>
+> Tested-by: Qiuling Ren<qren@redhat.com>
+> Tested-by: Yuying Ma<yuma@redhat.com>
+> Tested-by: Yonglong Liu<liuyonglong@huawei.com>
+> Signed-off-by: Toke Høiland-Jørgensen<toke@redhat.com>
 > ---
->   tools/build/feature/Makefile   | 2 +-
->   tools/scripts/Makefile.include | 2 +-
->   tools/tracing/rtla/Makefile    | 2 +-
->   3 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> index 4f9c1d950f5d..b8b5fb183dd4 100644
-> --- a/tools/build/feature/Makefile
-> +++ b/tools/build/feature/Makefile
-> @@ -419,7 +419,7 @@ $(OUTPUT)test-libpfm4.bin:
->   	$(BUILD) -lpfm
->   
->   $(OUTPUT)test-bpftool-skeletons.bin:
-> -	$(BPFTOOL) version | grep '^features:.*skeletons' \
-> +	$(SYSTEM_BPFTOOL) version | grep '^features:.*skeletons' \
->   		> $(@:.bin=.make.output) 2>&1
->   ###############################
->   
-> diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
-> index 6268534309aa..5158250988ce 100644
-> --- a/tools/scripts/Makefile.include
-> +++ b/tools/scripts/Makefile.include
-> @@ -92,7 +92,7 @@ LLVM_OBJCOPY	?= llvm-objcopy
->   LLVM_STRIP	?= llvm-strip
->   
->   # Some tools require bpftool
-> -BPFTOOL		?= bpftool
-> +SYSTEM_BPFTOOL	?= bpftool
->   
->   ifeq ($(CC_NO_CLANG), 1)
->   EXTRA_WARNINGS += -Wstrict-aliasing=3
-> diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
-> index 4cc3017dccaa..746ccf2f5808 100644
-> --- a/tools/tracing/rtla/Makefile
-> +++ b/tools/tracing/rtla/Makefile
-> @@ -72,7 +72,7 @@ src/timerlat.bpf.o: src/timerlat.bpf.c
->   	$(QUIET_CLANG)$(CLANG) -g -O2 -target bpf -c $(filter %.c,$^) -o $@
->   
->   src/timerlat.skel.h: src/timerlat.bpf.o
-> -	$(QUIET_GENSKEL)$(BPFTOOL) gen skeleton $< > $@
-> +	$(QUIET_GENSKEL)$(SYSTEM_BPFTOOL) gen skeleton $< > $@
->   else
->   src/timerlat.skel.h:
->   	$(Q)echo '/* BPF skeleton is disabled */' > src/timerlat.skel.h
-
-Tested this patch by applying on linux-next20250326 and this patch fixes 
-the reported issue.
-
-Please add below tag.
-
-Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+>   include/linux/poison.h        |  4 +++
+>   include/net/page_pool/types.h | 49 +++++++++++++++++++++++---
+>   net/core/netmem_priv.h        | 28 ++++++++++++++-
+>   net/core/page_pool.c          | 82 ++++++++++++++++++++++++++++++++++++-------
+>   4 files changed, 145 insertions(+), 18 deletions(-)
 
 
-Regards,
-
-Venkat.
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
 
