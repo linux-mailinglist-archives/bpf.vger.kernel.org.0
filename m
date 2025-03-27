@@ -1,154 +1,139 @@
-Return-Path: <bpf+bounces-54830-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54831-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AF68A736B4
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 17:22:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3A8CA73A4A
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 18:19:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1220217DD79
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 16:21:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AE223AF3C0
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 17:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5E1218AD4;
-	Thu, 27 Mar 2025 16:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941D21B0411;
+	Thu, 27 Mar 2025 17:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="kYpVbHXO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ppk2Fbz2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D9913DBA0
-	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC991A28D
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 17:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743092416; cv=none; b=okdJit2YBPYeaQEK3k8+UHDfRRxXK+kViL5hIzpgokPP2GtV3+u+Hduk4PmFlrDy1PnStPDB0h+VTGm1m8T/D/aqTl2Al8y/5a9oY/ocUsMw97Oy3GTDDmpdENJGMcYwI/BKteiMYvvi5eTESzWlFXVXzMP1LCofW5PugS3NL8Q=
+	t=1743095953; cv=none; b=BlXJoCpwbb90W0RRiiex2n3tC88YP19RZeo6PYtRR4sW4XOsuHsRHGlO5Q+Mr90ta7O86+SYPIyH9/N73nE2Cno0XqdCPc1Qpinf7m8pagI+kHF13I4d7oKJzCCJnPHDhfXdRFHl9eu8z1r04MEWuyqy4CD/KQ8vgDGUnroS+60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743092416; c=relaxed/simple;
-	bh=NVwNdpFq+nrFVf9YMmHiCb/6V19g4IwZkEMgGwL2onM=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=S6ouRGhExQO39a66hxeaCp21af3BYaMamaXlWeO1+QfPytMRAYE2Yjuyx8SehNTMjVMRCufGqcnBrmmwFyKl+b0cCZ5lR1kbNPp8fvpzSMzKr41dh8Uf0frBf2Bd0vxrrQJikJTlzeAEsON8QixrrM6uaKKKbCRh7vhjETqdT1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=kYpVbHXO; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-22401f4d35aso28668825ad.2
-        for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 09:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1743092412; x=1743697212; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kX05jx75Xb8+ENPYRjK+Gc3Ht1e9kjVMOGIod7/HdTg=;
-        b=kYpVbHXOgUpLRMTokda7b4lmD2DDWFPI2/1xILmmVtvv2Uw2c425hHMb6Mh3XvOHcy
-         nP8Sil2DtAmwEzSGosSFOLRmQxPK0h32eU2gWjNMDVPHCiA1hN9BeUxBlsKxkGufn3G3
-         TcU/USq5mdFBfH0YQ84YyaDyymgPlO23ua3WuznzjPqV//xHsgEpA/FAqpZZiXhxdgRb
-         dM7o2SRY3KiDdmyuRpL0DXg5EldGGr7oEX4+yMoTg1p2xyBHS0DPepwNmXiT2Elk7/6w
-         gzIfRy2jc5Y2IQle7KV3aoz4JzA3VybBDskwGHOBLoZbb2KnEXpw4TivDslOd9+I6MHq
-         GV+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743092412; x=1743697212;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kX05jx75Xb8+ENPYRjK+Gc3Ht1e9kjVMOGIod7/HdTg=;
-        b=Qy5tJiSyu5AMjn2JH3EcQDZjSP13InJwCWxH50cBPtoX+Nu+3rQRM9WsNJhS+6z9Jx
-         e4RYwXL9owgylBdM7jgYkh9kD2c5Tl2mDU1CH6TF6tHk03nyB8psLWtcByipX3gEPtol
-         ywP+SgQ7eS9Y5H+aqTPzPEV7iTsU/eIdY8QMIpV3jvkLBy+2q1SCiAV6Lc3PBEf1YyW1
-         JRTNvw2YmJ3Ob85j1RjfexZsNviFOb9Mr4cwRLnFEoAeFBP5rXVdjyIcYFBNQZCtYKnA
-         +t/Q33DHhlHiBE1eNzaJO/WzHgY/xATikptzDY9RV20J324fG7qSVc+wdFr3ZZSZ/dMC
-         HZ4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV5XDhoRzBzmwkPju4xi3E8q6uXnR/zhCG+8WLimjERkERQVg+Aqufi8oxyZ0l/Aw45MIg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxOyLREQ7zQx/vhCBYbVXirmZOxKqwr8wb7JT4GVdg7nBLsNjLh
-	k3UzD3WIMeZ2sHDZhet81M+FZpsIE5ixe+6r7xcymSYIQ+rKG4VmT/Vz8kkQDRc=
-X-Gm-Gg: ASbGncsDA59AgBiEGwtmO8SawhKNUWjJAQvlM/XpqODkN2+b6wSYpRZKCQ5jP3c4+pv
-	VUlyHkVwU+MtEgSSMdWJckC259r6cLtrKsGvWMkSYMYc2ulvIJjnek+N2onV4unEBJbiGfopEvP
-	Hw91aY7OpNziFLecUsL0P3OgNWdtp0hJs4b8YiUQ1v+qgDxr+5RWGLXTYt/L8agQyKGDNINQttf
-	01ug9GQ6eGgAD1nWi9Ec8FsKIWQWVe+BK1cR2o4sgKyKc/t38GUR/HRbBhbAap0/9udc6fy/T5t
-	6Uv7fLae5HX7cqhrJxT8twx2WKO40ptfS7HaDw==
-X-Google-Smtp-Source: AGHT+IGClNJzmnXOK1L/PFNFl5ogZb2gMU/Eqg4X3l9WVxApkZth9g72YE2t9vJ4dK3KZhjxhfYK+Q==
-X-Received: by 2002:a17:903:228c:b0:224:216e:332f with SMTP id d9443c01a7336-22804968a3cmr61064755ad.48.1743092411962;
-        Thu, 27 Mar 2025 09:20:11 -0700 (PDT)
-Received: from localhost ([50.145.13.30])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2291eec780bsm1682245ad.19.2025.03.27.09.20.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Mar 2025 09:20:11 -0700 (PDT)
-Date: Thu, 27 Mar 2025 09:20:11 -0700 (PDT)
-X-Google-Original-Date: Thu, 27 Mar 2025 09:20:02 PDT (-0700)
-Subject:     Re: [RFC PATCH V3 01/43] rv64ilp32_abi: uapi: Reuse lp64 ABI interface
-In-Reply-To: <CAHk-=wiVgTJpSxrQbEi28pUOmuWXrox45vV9kPhe9q5CcRxEbw@mail.gmail.com>
-CC: guoren@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-  Greg KH <gregkh@linuxfoundation.org>, Paul Walmsley <paul.walmsley@sifive.com>, anup@brainfault.org,
-  atishp@atishpatra.org, oleg@redhat.com, kees@kernel.org, tglx@linutronix.de,
-  Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, brauner@kernel.org,
-  akpm@linux-foundation.org, rostedt@goodmis.org, edumazet@google.com, unicorn_wang@outlook.com,
-  inochiama@outlook.com, gaohan@iscas.ac.cn, shihua@iscas.ac.cn, jiawei@iscas.ac.cn,
-  wuwei2016@iscas.ac.cn, drew@pdp7.com, prabhakar.mahadev-lad.rj@bp.renesas.com, ctsai390@andestech.com,
-  wefu@redhat.com, kuba@kernel.org, pabeni@redhat.com, josef@toxicpanda.com, dsterba@suse.com,
-  mingo@redhat.com, peterz@infradead.org, boqun.feng@gmail.com, xiao.w.wang@intel.com,
-  qingfang.deng@siflower.com.cn, leobras@redhat.com, jszhang@kernel.org,
-  Conor Dooley <conor.dooley@microchip.com>, samuel.holland@sifive.com, yongxuan.wang@sifive.com, luxu.kernel@bytedance.com,
-  david@redhat.com, ruanjinjie@huawei.com, cuiyunhui@bytedance.com, wangkefeng.wang@huawei.com,
-  qiaozhe@iscas.ac.cn, Ard Biesheuvel <ardb@kernel.org>, ast@kernel.org, linux-kernel@vger.kernel.org,
-  linux-riscv@lists.infradead.org, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-mm@kvack.org,
-  linux-crypto@vger.kernel.org, bpf@vger.kernel.org, linux-input@vger.kernel.org,
-  linux-perf-users@vger.kernel.org, linux-serial@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-  linux-arch@vger.kernel.org, maple-tree@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
-  netdev@vger.kernel.org, linux-atm-general@lists.sourceforge.net, linux-btrfs@vger.kernel.org,
-  netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-nfs@vger.kernel.org, linux-sctp@vger.kernel.org,
-  linux-usb@vger.kernel.org, linux-media@vger.kernel.org
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-16d3c75b-cf60-499e-98b0-098d630874b4@palmer-ri-x1c9a>
+	s=arc-20240116; t=1743095953; c=relaxed/simple;
+	bh=jsaLVoVo2KyFMlyuTNZVdQLOxuxxrYovyhcC1amT0OA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rgqHGAgSxryL/5Q4WwZPKaoHC9xG8FC82BINKmEOOrQ2qOiOhfxdWeYiDMDvAcnOMgrYc/TZixMyHQ3/uD/UDowjNCt6Nr7JNbO4ILuLuyQ/YKz4MW7C4dCvohNNaVR1BKZjGTNq7HfLuiW2XGL0qx0raNI5UcMa9626mR8jFr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ppk2Fbz2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E76E0C4CEDD
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 17:19:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743095952;
+	bh=jsaLVoVo2KyFMlyuTNZVdQLOxuxxrYovyhcC1amT0OA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ppk2Fbz2fOLEF9ttqIyKIY+ebaHm6Wk4r7YiGLhvmUgdAZzbXRMrAvCxnN6rC3O2R
+	 lq2c0t0+VdZ76hK4vXtl7biU75HLbRLcIhy5Nv8KCsLR97Yx3aGNvk6vwHJtCzzIMo
+	 tqi0HtbnffI+UzMyZjzGSmjoxGvlEKd2A38Q7Cb5E5ZFTBDHNmRAiqMKTufIDBjmjv
+	 iUZzb84k5pIDLi1iCilLWfxRIfcXSRI0S6KZXViQHFULoSQbnLk8RSulslxvvATTzh
+	 ohb+SnqUXQftmk5m0QDTMbp3zzFlh7dlDKXUcf+e1YYA4qhIJOD9JfzDOZ4uRBSG7p
+	 5QGSvlVe8ztMg==
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7c5b8d13f73so149195785a.0
+        for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 10:19:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXn15VwZqV1SYwrP0h7tyxUjRiNbSbvKGGNE7uyCvJihgDzy52PpNLYf6T/lYCPQ5pGhl0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyHBxzqU+mf+OIZPOkDhl4xufI1wIA5ZsByvdc+3nVjwA+Enjj
+	KFnvuwZe1CGhjqAIX45jXDXA6fbJB/ITS34vYJijiU8StkuA6EWjnHSKL84JUCwYB6UZJ+sR8Pi
+	Fjg+M+ysEMSDJM+JM/3OowedroOc=
+X-Google-Smtp-Source: AGHT+IFGwF4jeUhQGCIiivGyj+JV0A7pmi4Yd/zvqQcN+TUpM6OM4iy6Ts8hM0aTChrxAWJl7JYENtgEVYnq/fQssKc=
+X-Received: by 2002:a05:620a:2403:b0:7c5:49e3:333f with SMTP id
+ af79cd13be357-7c5eda7c9a6mr702587385a.36.1743095952093; Thu, 27 Mar 2025
+ 10:19:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <7e46c811-e85b-4001-8fac-b16aa0e9815f@linux.dev>
+In-Reply-To: <7e46c811-e85b-4001-8fac-b16aa0e9815f@linux.dev>
+From: Song Liu <song@kernel.org>
+Date: Thu, 27 Mar 2025 10:19:00 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW46kTsSzc+B5pE+kM24nc+OUXXGnkgSgZbu+T55HSJb7w@mail.gmail.com>
+X-Gm-Features: AQ5f1JrgSCVR54oiJjF2XDIQfE95hEiSGu2gLoj0iUIOwn3YPugrJhjnA-aHwIc
+Message-ID: <CAPhsuW46kTsSzc+B5pE+kM24nc+OUXXGnkgSgZbu+T55HSJb7w@mail.gmail.com>
+Subject: Re: Question: fentry on kernel func optimized by compiler
+To: Tao Chen <chen.dylane@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 25 Mar 2025 13:41:30 PDT (-0700), Linus Torvalds wrote:
-> On Tue, 25 Mar 2025 at 05:17, <guoren@kernel.org> wrote:
->>
->> The rv64ilp32 abi kernel accommodates the lp64 abi userspace and
->> leverages the lp64 abi Linux interface. Hence, unify the
->> BITS_PER_LONG = 32 memory layout to match BITS_PER_LONG = 64.
->
-> No.
->
-> This isn't happening.
->
-> You can't do crazy things in the RISC-V code and then expect the rest
-> of the kernel to just go "ok, we'll do crazy things".
->
-> We're not doing crazy __riscv_xlen hackery with random structures
-> containing 64-bit values that the kernel then only looks at the low 32
-> bits. That's wrong on *so* many levels.
+Hi Tao,
 
-FWIW: this has come up a few times and we've generally said "nobody 
-wants this", but that doesn't seem to stick...
+Compiler optimizations can cause issues for tracing kernel functions. Pleas=
+e
+refer to Yonghong and Alan's presentation [1] for various cases.
 
-> I'm willing to say "big-endian is dead", but I'm not willing to accept
-> this kind of crazy hackery.
->
-> Not today, not ever.
+Thanks,
+Song
 
-OK, maybe that will stick ;)
+[1] https://lpc.events/event/18/contributions/1945/
 
-> If you want to run a ilp32 kernel on 64-bit hardware (and support
-> 64-bit ABI just in a 32-bit virtual memory size), I would suggest you
+
+On Thu, Mar 27, 2025 at 9:03=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> wr=
+ote:
 >
->  (a) treat the kernel as natively 32-bit (obviously you can then tell
-> the compiler to use the rv64 instructions, which I presume you're
-> already doing - I didn't look)
+> Hi,
 >
->  (b) look at making the compat stuff do the conversion the "wrong way".
+> I recently encountered a problem when using fentry to trace kernel
+> functions optimized by compiler, the specific situation is as follows:
+> https://github.com/bpftrace/bpftrace/issues/3940
 >
-> And btw, that (b) implies *not* just ignoring the high bits. If
-> user-space gives 64-bit pointer, you don't just treat it as a 32-bit
-> one by dropping the high bits. You add some logic to convert it to an
-> invalid pointer so that user space gets -EFAULT.
+> Simply put, some functions have been optimized by the compiler. The
+> original function names are found through BTF, but the optimized
+> functions are the ones that exist in kallsyms_lookup_name. Therefore,
+> the two do not match.
 >
->             Linus
+>          func_proto =3D btf_type_by_id(desc_btf, func->type);
+>          if (!func_proto || !btf_type_is_func_proto(func_proto)) {
+>                  verbose(env, "kernel function btf_id %u does not have a
+> valid func_proto\n",
+>                          func_id);
+>                  return -EINVAL;
+>          }
+>
+>          func_name =3D btf_name_by_offset(desc_btf, func->name_off);
+>          addr =3D kallsyms_lookup_name(func_name);
+>          if (!addr) {
+>                  verbose(env, "cannot find address for kernel function
+> %s\n",
+>                          func_name);
+>                  return -EINVAL;
+>          }
+>
+> I have made a simple statistics and there are approximately more than
+> 2,000 functions in Ubuntu 24.04.
+>
+> dylane@2404:~$ cat /proc/kallsyms | grep isra | wc -l
+> 2324
+>
+> So can we add a judgment from libbpf. If it is an optimized function,
+> pass the suffix of the optimized function from the user space to the
+> kernel, and then perform a function name concatenation, like:
+>
+>          func_name =3D btf_name_by_offset(desc_btf, func->name_off);
+>         if (optimize) {
+>                 func_name =3D func_name + ".isra.0"
+>         }
+>          addr =3D kallsyms_lookup_name(func_name);
+>
+> --
+> Best Regards
+> Tao Chen
+>
 
