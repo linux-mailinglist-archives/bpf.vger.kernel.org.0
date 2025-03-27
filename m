@@ -1,254 +1,287 @@
-Return-Path: <bpf+bounces-54800-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54783-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33D74A72B5F
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 09:23:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5711CA72B50
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 09:23:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFA7118989D7
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 08:23:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E0C33B3252
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 08:22:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2B92054E1;
-	Thu, 27 Mar 2025 08:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="oNOth5O8";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="WFZd+x9V"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F36204F7F;
+	Thu, 27 Mar 2025 08:22:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8229204F81;
-	Thu, 27 Mar 2025 08:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743063804; cv=fail; b=RAaWDYnh6df8jCImk7giSi4aVK3wg0gUc8RuJc0jme/BXXXYTmfGShcObuhPf5+ihG/bDSpPe2upsH9m6fGjEozpxFkKbVrkeCklG5jAOuo/koBrxr3pKQOp78IemwBFAbYVb2spF/gtP7369yx4jWAB/4+tgwSxQLX0W4tjLGc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743063804; c=relaxed/simple;
-	bh=ezUPvgdEixRCotBZyuQHijv9GbCH8Nu9sHcz0LQIcNY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=d2WZR0Enejdu0HrM0PfTes01CnWi14X9SW/NdyAubnac+isZUl2z7h6380FQz57J0uaJOxYO58/J7BiWftSzwOPJadocX1L0PujHwHokeR4glsTTROJYqLXHdI6pYp1f0vlZfzL41mK3bVVMe3FSSU9IWstLUEWM8jd3wJzx2LM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=oNOth5O8; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=WFZd+x9V; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52R8N4np032562;
-	Thu, 27 Mar 2025 08:23:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2023-11-20; bh=hsGWwWyHVS9gQMnJJCkrU4jWYEBXBFucYhY0+qE9UeQ=; b=
-	oNOth5O85lcFSCJL21QqKxw38NwsZXKR124VOLshKAKU4qVMA05ZNfKRrVH35q+0
-	QHJYbLV8wrfF0CHg2cDQQVTTYJsAe0yKFzat21KsU/jWP95RSaZ/1pqAv+LlFobn
-	LQd/rzNPV2feYfiE6c8ZmDQhR3zzg5sG8kf0ItN2lhsyHxvYp6Nzp+3xNjIbaNm4
-	G60IUVIXI+1IDRYZ+IIvYPOHVPFDmLqa0WnKROVTQj+TGMrsLGPnAjgbQwpUQoeu
-	qg5PLmyM4Wcvk6gwJUlEeVZ0sudC7pHKHH4WAXwAvOyKtC3924LSCntuTXA4bFou
-	gI/IGMukFjIjN3swxSoEYw==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 45hnrskxyk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 27 Mar 2025 08:23:04 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 52R7c7IU036488;
-	Thu, 27 Mar 2025 08:23:03 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2049.outbound.protection.outlook.com [104.47.70.49])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 45jj5eywqj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 27 Mar 2025 08:23:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mwnTfuf8LzMxrzzfbiJ5SZHUnwOJoT2MAHr9wW6Z6WosXIIWw0bqitgQ+l3QsQSSN0Ba8MESJTqFSHD+STRy70R9EOXuLNxR2jsZjQk+09+zYrUu5DiiMHNJXI8ohYVlmjU0rsQabILKZ1mQ0LGDaqkeCCfhTI/kT6pE196u6ZVfF9RfA7m4A2Vbh5gFFgGP8nxUSjD9I2qLot7E4UgMsc7POxb0LlfuZvsR1nHXE72mLX3pAEK4aSoKo9U08krRCNxA4OJ2ZrcRU2Ydj8tNeEtXNIR5Z8vstS3AvdX7y8BQ/C8jzWwcv/FTB2B1S1ilyU9dr05p8VPG6QOrL59Rew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hsGWwWyHVS9gQMnJJCkrU4jWYEBXBFucYhY0+qE9UeQ=;
- b=sbFYaYvJTPQm9a/JZ0dRD0iPgdh6MLDyOuBg2kpZqsxUiDfNP1zeXivbJCCYXCWgKvqa5mLlZ/UY1u6VKqWef3vkkfMR4c/eibs/lYS4a1O7rBdldDIfVkD0FDDv60zQb8k8f3iOpUgbUBfay4hAg9svG+iYAJ619JFZsBXAArXY9h3syhwDe5KVwlIPwNuJcR9px9Kq35kBSkIg1U7DiCxDXzACHOcSVy1nLdKwDDTXtI6D00ZUsEeAxe8afydl/ChD9oE69ZVfFAe0SHi4li9Px90KcJdfqdVmPMApvjhPumICV5DGrJU3rA2FgJeVySlg0e+hhkEBOsMItoB/xQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hsGWwWyHVS9gQMnJJCkrU4jWYEBXBFucYhY0+qE9UeQ=;
- b=WFZd+x9VJf8nlLz53Rx9ssTt+8+yM/03nShLKTcFy3bZKh3NBQqVaCUl+oktdA5VURuLjThQM+1FWZUSYOzR+VbrIo0VYMhRxBxBqZY4kEwO/RbyxJ/MixzMvmhsOij7SAuNKgdejCxEw5rXGWsjMdkpr5L6b5SvRJlhinUM9QA=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by LV8PR10MB7727.namprd10.prod.outlook.com (2603:10b6:408:1ed::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.44; Thu, 27 Mar
- 2025 08:23:00 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::682b:c879:9f97:a34f]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::682b:c879:9f97:a34f%5]) with mapi id 15.20.8534.043; Thu, 27 Mar 2025
- 08:23:00 +0000
-Message-ID: <97ab5e09-6240-4fd9-9411-19b689a21e37@oracle.com>
-Date: Thu, 27 Mar 2025 08:22:56 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH dwarves v4 0/6] btf_encoder: emit type tags for bpf_arena
- pointers
-To: Ihor Solodrai <ihor.solodrai@linux.dev>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc: acme@kernel.org, ast@kernel.org, andrii@kernel.org, eddyz87@gmail.com,
-        mykolal@fb.com, kernel-team@meta.com
-References: <20250228194654.1022535-1-ihor.solodrai@linux.dev>
- <9c3d6c77c79bfa2175a727886ce235152054f605@linux.dev>
- <27f725da-eeda-4921-b0f1-c84b95337e17@oracle.com>
- <b1a23727-098e-473b-8282-8fb0cbf97603@oracle.com>
- <68a594e38c00ff3dd30d0a13fb1e1de71f19954c@linux.dev>
- <458b2ae24972021b99e99c2bad19b524672b0ac0@linux.dev>
- <e9c86b63-7715-4232-869e-8835eead9a8e@oracle.com>
- <70bf9434663f748563e5e464ac76bab669d0acf9@linux.dev>
-Content-Language: en-GB
-From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <70bf9434663f748563e5e464ac76bab669d0acf9@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM4PR0302CA0023.eurprd03.prod.outlook.com
- (2603:10a6:205:2::36) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E42E04C62
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 08:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743063778; cv=none; b=dEnih1FO0bG7t4E4S72dYd9KByBGzIWkhIvp9KiRo6rrf6IWifZb28ww9kBN/LOi/A6rEgjqL1LFXn9lBJzQf3PKvjrlHluIJzDyHijJnbHUglDcLeXg0YLpcnmk+hfb/Zv4A8prRX7C0ghFj69ny6TeSXlQU0CWa7sQhShdtnw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743063778; c=relaxed/simple;
+	bh=kEqkyFi3Q8FyTX8QrL22t/l1cMJs3+k1L1PLvlVI82k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=lPsZygXNjOKXZdbevOi36cdbFzPcdWvdLIwvsKXceT1Rbx1Jq033TdIK/zXQoPFbhzfCxNd46N55WqDsZ/QIEbFHbwGhBFCW/I3Mzj9aCKxoxan+4EwuVf14UqpFJpCz+NIX320Y36JkWVgvHzoFORdptrVkSU3zhZzB/iWL+RE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZNc8f5vLlz4f3m6j
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:26 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 480C91A0CD6
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:51 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP4 (Coremail) with SMTP id gCh0CgAXe1_XCuVnluzSHg--.7420S4;
+	Thu, 27 Mar 2025 16:22:49 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	houtao1@huawei.com
+Subject: [PATCH bpf-next v3 00/16] Support dynptr key for hash map
+Date: Thu, 27 Mar 2025 16:34:39 +0800
+Message-Id: <20250327083455.848708-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|LV8PR10MB7727:EE_
-X-MS-Office365-Filtering-Correlation-Id: abc61ae7-2714-4848-55d9-08dd6d089659
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?cENUbWsyUHVlSkk2VnRYeXFqaW9BYUdUMTIzL0pPZDUwWnBndUVla2NMV25T?=
- =?utf-8?B?cWRLUmNTUTNkUjFWSzhnbXBqMXlNTlN1VHZLZ0ZFeVhaZVU3bnpSRlFEQXRp?=
- =?utf-8?B?Y1BVc0RlSlpWN3JXaFQ2U1VjOVJYdnorMDV5U2xrRlZYV0lGZ3Y4TU9LaXlW?=
- =?utf-8?B?TUlUTEV4ODZIWE1hMVhvZVFRcHV1MjNNV0hESk9hQnlZeDFBdkVsajNkckpi?=
- =?utf-8?B?VW56NGZXQUNVVXZDTHREOXZYRnFlUHZEeVYwUk01bFdYaVkwRTBuSGRadXVY?=
- =?utf-8?B?TEJBekUxdHAwUlh6VXJSOWdiWFBOalBzTHVZOWkvNUloQ0FTYkhJYWd3eGhO?=
- =?utf-8?B?Y0JreEVWSWdZUUlCbHlWb2RhbEZZUERmNGlFS3BOazNHdGJVMlFXRlYrOEJW?=
- =?utf-8?B?R3ByMVhWQmxwVmVZWmhCYkxtdWd2ZUZ0QVY3QkZJbitWTWpBSmdSekZJc2Uy?=
- =?utf-8?B?ejhQZWpuYko1ODJFc2dKTDhXNjZremR4dFRBN3lQUEY5T0l0cFhEU3YrbjVy?=
- =?utf-8?B?NmJhNzlHbHovR0d2RjRmL053VnVBUlZUdE1ZVEpkUkh4THhCWGFveFFVMlpO?=
- =?utf-8?B?dnovdXIzZXhDQ0c5cGJNbXMzWm1vZWkzYVdNRmhpM1RnWTJ6U21RUkhJVDRr?=
- =?utf-8?B?eCtSVG82MlJ3cEdDeStubTZ1MjZPTzlJbWlLQXgzNlFDWlRaczRNQ2ZsbGtS?=
- =?utf-8?B?V3J2a3VxeGtxam5tb3E1YU1GRnB0WWNSaDhlajFYSzZBeWJvNW1wVzR5eFh2?=
- =?utf-8?B?N1Q5bEV2NWVMbVFWQldJS0piMkg3TTRoejl2elJhZUNJZVVGeDZidnVFMlkx?=
- =?utf-8?B?dWdma0tTd0dEazVmTlp1dWlHRm5HeTMyQ3plenJIQzkvSTZaell6dUxlT3Qx?=
- =?utf-8?B?dldKZUJkcytvKy9GMSt4QVhVZE5lcHIyTTFabFAwYTBFWXo1cHkwbFdYOHhO?=
- =?utf-8?B?bVFyYjBOTlJBSXEyNEowNmg2MTd6T0RFQlV4WjRvbm05ZkJxQlZYaXdsd2Jw?=
- =?utf-8?B?c09mSlZZM2s2SGUzMVFxTmZoWlp1akhncHhJNWtuWU5kRHY3RzFXV1Z5WEl4?=
- =?utf-8?B?aitoeU9DRGRjSEFrWmpkNUtSaEtiSStRTEUwQXlSRDk4ZkRtUWtQRW0zV1l4?=
- =?utf-8?B?cENLOUFLbXgxSXcwckxPV1JmWittbWFicnBwMXREb08xbmpjWEpVdWVmeWpT?=
- =?utf-8?B?R1luNkQ3SGR1ZHF2QlRzZ2FQejJZNThUeEtzcnhvbDVvUHh1bS8yejhRSmRx?=
- =?utf-8?B?V2MxdStQREFNQ0VReGZOb0FMSHQyYzk4WEZkd1JmSzlIUFp0N3BaSXBYY1Fx?=
- =?utf-8?B?ellqbkYrSE9tNmRSZGJHRlpqVHV4b3BzVURGSzRmRzV0QVkyMGVvcVBjM3Y0?=
- =?utf-8?B?MVkvdnJEa0Y3QWlGMTgyMTFGQ0pQUlh2Z1Y0elhDYVJjd2ZOTmxTc1RPL29C?=
- =?utf-8?B?RUxCTFZudnRncFo1dllBbmpaQ2VhVTVUbjFHd2Q1WjNpWW5ZdHNmV1NmODV5?=
- =?utf-8?B?ZUVSaVEvM0FPV2ZlSURUV0hrdGNPV3NYMXNrODUraHdMbHA5RjNoNk5CTXVJ?=
- =?utf-8?B?em8wdzlmSFV0SDlhQy8ra29wUDZHK2I1WGpzdFdtNlhMVzkwaFd4aVdHTnA3?=
- =?utf-8?B?MFNUSExudXlVUFZqS0ZFWUlNclZjQkZOS09YQmptZ2duSFFKaHVRbWtCUDhX?=
- =?utf-8?B?cXN5WWtWY0l3bmZINStFMTh5MXlyeXY4cXdwWGdocTVlcXFOeWhPL1c1bnN3?=
- =?utf-8?B?R0p4TFNBcTl5YUdvQnRLUnVNdDIxTzNtcDRDMXp5dzhEOHZMUlR1N1N3bVVm?=
- =?utf-8?B?ZHQ4VG81WGpJN01IU2VvUT09?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VWVMQ0ZhZ0dOUUgwaHZOK0dnSFYxSUFmSnlBbUphVUJwSFZUOWhQbVlwTUtZ?=
- =?utf-8?B?M2c0anBHTmdNZkE0VzNVMGdiRUx2SS9zUU10dytHVnUyd0x5TDdLUXRkcS9D?=
- =?utf-8?B?d0tGSDZNM1FhNTNGeWJlYjNEYjRyT3UveGhmWVpaU2FKU21sTytxZi9VYkhn?=
- =?utf-8?B?Z3pyMEtXYmFMUkZzSnN2MDZSMHNwT1kxL2xyY05BM1hxczdOMURmQmU2YjQr?=
- =?utf-8?B?QTJVWkpEMS96T0RjM1VZRXNPclpSZ0dKZXhzUVFlUFJacDA2MndTVVdpSjA5?=
- =?utf-8?B?V1ZFb0hUa2JlSGtlK0lEZUNuR1o3Z1lMUDBKN2JocTBkNW80SllHamlpSW1H?=
- =?utf-8?B?QlN2djJLS3cyNFJ6VUxMYktaMHBiZThpL2hDUEUzNXI5QkJINTMvTW9laXlm?=
- =?utf-8?B?aGNHTlJQcFgyTlB2YzhGV0VxQlRJM0xXTEQ0VjZZUEVuQjh1cTJxellHVEVm?=
- =?utf-8?B?UHNXZ0NCdjA1WElhRVVQOWxRUzEwVEFQcVloWDE0eDY1ZGtuSVM2K1BtUVVl?=
- =?utf-8?B?cVNaM3N2VVlGN3c3YVFkclY1K3VhUU5lc2hUdFNCZWlWekVKWUJyeDFRN1Uz?=
- =?utf-8?B?YnN1QXFMRStRNSs4QS84NlNrYytmS0V4cmNoVHRiQVZuWVRLYmcxdSsxbTJr?=
- =?utf-8?B?TWo0UjREekNWMmNCZ2lCdTVhV1AyMWxhZG1nTGZMM3hpQjBzelhxUVhoL0xt?=
- =?utf-8?B?RVl6a3czMUhEeWNjTUlKaVB0aTZGYmhzcm1hMHVjc3l5Y2JUbkVjcGhQVFVP?=
- =?utf-8?B?cXNLeUZpVTRLQU9RWGR3SGgwY3JlVHhGMERYL1M4TEFNU1JVbktaZGhPUU8r?=
- =?utf-8?B?dkVuSkJMZ0dGSldPQTFtSDV3UzJSM2tVRjFlRFhOVE5SMEhKUEdjNDFPK3VU?=
- =?utf-8?B?SnBTMHRwdzI0RjBaUmJ3MHRFbEl1WDFZMm92L1ptNnU1eFNZWUsydTRsZWVU?=
- =?utf-8?B?bENScVJHVG1IRDRDMWxoNUh4UW85c015OTQyaEYzc2NyWnMrUStkcnhpYmN4?=
- =?utf-8?B?V0Z2b2ZlWTAzYTQyMXY0QVk4b1lQZ1ZzNHVoVVhIYVEzOEFnanBQM3ljUHNY?=
- =?utf-8?B?Q3pGWWxMT1Bwa1hoV0M5Wkl6RHVLV0tpaTIxRnFFZkt5dloxTElJYThpWHFT?=
- =?utf-8?B?QXMrRWpOREVyMTFKNWdHWEZBeVhTaFQzTjBLclpPUmo4cGcwanZYdWhROGRk?=
- =?utf-8?B?MEVhT3JRSFRqbFpqR1YxZFhnNFdqUmZVWVM0empIYVpmaDlvZ0UvQ2ZpdXRj?=
- =?utf-8?B?empEZmVBVXloSUZFTEFuRGN6dDZQM2RaVHJFbENvSFlYOFZFa0xDWmNkaGFv?=
- =?utf-8?B?em5va1krRldnZmpPRzlpbXF0UXVOSzV4ajUya0gyUTJqTGxZd1dZQlRjclJu?=
- =?utf-8?B?ZkJPWDhQRXZNaTNNTHpSK3ZrVnc3WStaUkVSWVo3bE9PY3QyaGd2b3N5UlQ0?=
- =?utf-8?B?TDBjNDFScU43czQzd2JTQWR2SHMzZldhb2VCWUU3MTBsL0VBK2g3Mnp5dGU0?=
- =?utf-8?B?Rkx5ajhXUC9yRmJyUWRZZ3Z4MU9rUWFoUk9oNDI3cTU5ckhuN0haa3o2UEV5?=
- =?utf-8?B?a2tVTzdYZHpUWGJ4azduSnFuYnlPaVNLaERkRHRFYlgrc2lYbFZXTGMwbjJl?=
- =?utf-8?B?bk45a0xTQjhNMWQvN0hJY0JMaUZ0ZGVxK0laNnNrMnpNMlBnZUorbUJ0dHpE?=
- =?utf-8?B?ajdEeXlSTzhBU2w4OVUweEJybUZidDdmdTVlOEJydU52amlYcklOeHJFR1lk?=
- =?utf-8?B?bXplWFFjKytqY0c1UjRIMmlONklCK2NUMFRLMDM0U0I3L2pRL3V2VWZZUFFG?=
- =?utf-8?B?NXZybnhnSG11MUVLZ0RCdFgxcWs2b25Vc2JqbjhmU2lsOWZiWUZMbER6WDRI?=
- =?utf-8?B?ZWJBUXduVG1LcExkSHhMeHpUdjBlaDh4aFJzNitUd3ZQbzFmQ0J4T0NISTJw?=
- =?utf-8?B?WUhHcmRCNE9zQldKdkNSbGY3SWJKdG5ZSmk0N3Q4R05VL3ZRVWMxSHFFaGRO?=
- =?utf-8?B?MitHZzJhTGhHaGdYczU2YWhFSENaWHRORFVFcVVyQUhmR0RCeEI5Y0VxcTJl?=
- =?utf-8?B?NjhETkVnS0NlNEpOR3Yxd2Q2a09NUCsyQ3JSeTVRZ2xnS2RpeFA1eGw1dnZN?=
- =?utf-8?B?YzlZdDdlSk9mNVN4ekZ3c1U4YkRUL2prR3dBZWh6blZWeG5yYlQ0czlJYll6?=
- =?utf-8?B?alE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	/7DIk98cosOmNAmbAqxtCguupCwf65rsdDQFoY7fzFqdIiaQpzrhnjCVwJ6k+WrI/J9EjKd6KNELUTct+5oWcNv6L5sJB50SS3FhaH+DcGIi0C6mmvZFJfKkHMmP8g6y+O7BnVQGFo4q4ERHt0nQUD/r8jPFUmzdfgRtfyDGMzMFgFPD5g1T5pFOeAndmLzPfsg7TVRVN40AE8jUSTwaGxQ2rTSNs6f03dq0tOZy6Q5MWybVSmUxCdJksFqUjvUYA2x/enzBXg97vmspDyvjnMx8oosS9dsGymp0z0HyA/niYpBXaYZ10ID8OW8wsxkzd5mw+lu9y1lnns4LjaaBmwIyUWylWyqdEiD8RCvzdTZmNPc40BAzPX/U3vmHKqUk+1UdFZAux/wetPQsOtLP9/b0pFMlLm4p0AGMYY43eYeBtShGOlSvCRIpB/WkcHCucKuRUozju/k/nhS3k0ArD9vrJPC5xA3yY+YqwIHWT9z6W4L66Et0Vwemi6xsaTvF8enpQExOk1t/r+2TvkPAdzsmzJ27U4IbDq0sc4AYDpboq3m72VTTbi6KtGVL/hQefLRujzpcZxYY4WWzFohyGKoW4OM5aqRiB7tZPvpHlMw=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: abc61ae7-2714-4848-55d9-08dd6d089659
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2025 08:23:00.8237
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: paybrw810VwXEfaGjLYUHYvCWPU3HRnqDWzE602he2Xs8gEeaqy/qxcP2oyYvbOf/E5J5Sj9Y/CueIug6RSiMw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR10MB7727
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-26_09,2025-03-26_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 bulkscore=0
- malwarescore=0 mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2502280000
- definitions=main-2503270055
-X-Proofpoint-GUID: TooZL3gcUCuMu1JhJAyXWRsRhovQ5Tgq
-X-Proofpoint-ORIG-GUID: TooZL3gcUCuMu1JhJAyXWRsRhovQ5Tgq
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgAXe1_XCuVnluzSHg--.7420S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3WF47AF18tr47Ary7Cw1Dtrb_yoW3ZFWkpa
+	y8W3y3tr4xtFyxXw47Ca1xJrWFqws5Xr1UG3Wxt34ru348XryfZr4Ig3WFgF9xtryFqr45
+	Aw1xtr98uw18CFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
+	n4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+	tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU17KsUUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On 26/03/2025 17:41, Ihor Solodrai wrote:
-> On 3/25/25 2:59 AM, Alan Maguire wrote:
->>
->> [...]
->>
->> Great; so let's do this to land the series. Could you either
->>
->> - check I merged your patches correctly in the above branch, and if they
->> look good I'll merge them into next and I'll officially send the feature
->> check patch; or if you'd prefer
->> - send a v5 (perhaps including my feature check patch?)
->>
->> ...whichever approach is easiest for you.
-> 
-> Hi Alan.
-> 
-> I reviewed the diff between your branch:
-> https://web.git.kernel.org/pub/scm/devel/pahole/pahole.git/log/?h=next.attributes-v4
-> 
-> and v1.29 + my patchset:
-> https://github.com/theihor/dwarves/tree/v4.kf-arena
-> 
-> Not a lot of difference besides your patch.
-> Didn't spot any problems.
-> 
-> I also ran a couple of tests on your branch:
-> * generate BTF with and without --btf_feature=attributes
-> * run ./tests/tests on 6.14-rc3 vmlinux (just a build I had at hand)
-> 
-> I think you can apply patches from next.attributes-v4 as is.
-> 
-> Thank you.
->
+From: Hou Tao <houtao1@huawei.com>
 
-will do; can I add your Acked-by to the feature check patch? Thanks!
+Hi,
 
-Alan
+The patch set aims to add the basic dynptr key support for hash map as
+discussed in [1]. The main motivation is to fully utilize the BTF info
+of the map key and to support variable-length key (e.g., string or any
+byte stream) for bpf map. The patch set uses bpf_dynptr to represent the
+variable-length part in the map key and the total number of
+variable-length parts in the map key is limited as 2 now. Due to the
+limitation in bpf memory allocator, the max size of dynptr in map key is
+limited as 4088 bytes. Beside the variable-length parts (dynptr parts),
+the fixed-size part in map key is still allowed, so all of these
+following map key definitions are valid:
+
+	struct bpf_dynptr;
+
+	struct map_key_1 {
+		struct bpf_dynptr name;
+	};
+	struct map_key_2 {
+		int pid;
+		struct bpf_dynptr name;
+	};
+	struct map_key_3 {
+		struct map_key_2 f1;
+		unsigned long when;
+                struct bpf_dynptr tag;
+	};
+
+The patch set supports lookup, update, delete operations on normal hash
+map with dynptr key for both bpf program and bpf syscall. It also
+supports lookup_and_delete and get_next_key operations on dynptr map key
+for bpf syscall.
+
+However the following operations have not been fully supported yet on a
+hash map with dynptr key:
+
+1) batched map operation through bpf syscall
+2) the memory accounting for dynptr (aka .htab_map_mem_usage)
+3) btf print for the dynptr in map key
+4) bpftool support
+5) the iteration of elements through bpf program
+When a bpf program iterates the element in a hash map with dynptr key
+(e.g., bpf_for_each_map_elem() helper or map element iterator), the
+dynptr in the map key has not been specially treated yet and the dynptr
+is only treated as a read-only 16-bytes buffer, therefore the iteration
+of dynptr-keyed map is disabled.
+
+The patch set is structured as follow:
+
+Patch #1~#2 introduce BPF_DYNPTR in btf_field_type and parse the
+bpf_dynptr in the map key.
+
+Patch #3 introduce a helper to check whether the map supports dynptr in
+its map key or not.
+
+Patch #4~#5 refactor check_stack_range_initialized() and support
+dynptr-keyed map in verifier.
+
+Patch #6~#8 updates the definition of bpf_dynptr, support the use of
+bpf_dynptr in bpf syscall for map lookup, lookup_delete, update, delete
+and get_next_key operations.
+
+Patch #9~#13 update the lookup, lookup_delete, update, delete and
+get_next_key callback correspondingly to support dynptr-keyed hash map.
+
+Patch #14~#15 add positive and negative test cases for hash map with
+dynptr key support.
+
+Patch #16 adds the benchmark to compare the lookup and update
+performance between normal hash map and dynptr-keyed hash map.
+
+When the max length of str is greater than 256, the lookup performance
+of dynptr hash-map will be better than the normal hash map. When the max
+length is greater than 512, the update performance of dynptr hash map
+will be better than the normal hash map. And the memory consumption of
+hash-map with dynptr key is smaller compared with normal hash map.
+
+a) lookup operation
+
+max_entries = 8K (randomly generated data set)
+| max length of desc | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+|  64                | 11.2 M/s (1.7 MB)  | 8.2 M/s (1.4 MB)  |
+| 128                |  6.6 M/s (2.2 MB)  | 6.6 M/s (1.7 MB)  |
+| 256                |  3.7 M/s (4.2 MB)  | 4.8 M/s (2.3 MB)  |
+| 512                |  2.1 M/s (8.2 MB)  | 3.1 M/s (3.8 MB)  |
+| 1024               |  1.1 M/s (16 MB)   | 1.9 M/s (6.5 MB)  |
+| 2048               |  0.6 M/s (32 MB)   | 1.1 M/s (12 MB)   |
+| 4096               |  0.3 M/s (64 MB)   | 0.6 M/s (23 MB)   |
+
+| string in file     | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+| kallsyms           |  6.8 M/s (29 MB)   | 6.0 M/s (23 MB)   |
+| string in BTF      |  7.2 M/s (22 MB)   | 6.9 M/s (16 MB)   |
+| alexa top 1M sites |  2.7 M/s (191 MB)  | 3.1 M/s (138 MB)  |
+
+b) update and delete operation
+
+max_entries = 8K (randomly generated data set)
+| max length of desc | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+|  64                |  5.0 M/s           | 3.5 M/s           |
+| 128                |  3.8 M/s           | 3.3 M/s           |
+| 256                |  2.7 M/s           | 2.7 M/s           |
+| 512                |  1.7 M/s           | 2.0 M/s           |
+| 1024               |  0.9 M/s           | 1.4 M/s           |
+| 2048               |  0.5 M/s           | 0.8 M/s           |
+| 4096               |  0.l M/s           | 0.5 M/s           |
+
+| strings in file    | normal hash-map    | dynptr hash-map   |
+| ---                |  ---               | ---               |
+| kallsyms           |  3.3 M/s           | 2.6 M/s           |
+| strings in BTF     |  3.7 M/s           | 3.0 M/s           |
+| alexa top 1M sites |  2.3 M/s           | 2.2 M/s           |
+
+As usual, comments and suggestions are always welcome.
+
+---
+
+Change Log:
+
+v3: mainly address comments and suggestions from Alexei
+ * use ->map_check_btf callback to check whether the map attributes
+   are valid for dynptr-key map and to initialize the allocator for
+   dynptr
+ * don't use map_extra for hash map with dynptr key.
+ * don't increase BTF_FIELDS_MAX
+ * lift the max number of bpf_dynptr in map key from 1 to 2
+ * merge the definition of bpf_dynptr_user into bpf_dynptr
+ * disable the support of the iteration of dynptr-keyed map
+ * add negative lookup test in benchmark
+ * move the definition of bpf_dynptr_user_init from bpf_util to
+   testing_helpers.h, otherwise it will break the build of samples/bpf
+ * update benchmark result based on bpf_next/master
+ * rebased on bpf_next/for-next
+
+v2: https://lore.kernel.org/bpf/20250125111109.732718-1-houtao@huaweicloud.com/
+  * remove the need to set BPF_F_DYNPTR_IN_KEY flag explicitly
+  * remove bpf_dynptr_user helpers from libbpf
+  * support dynptr-keyed map in verifier in a less-intrusive way
+  * handle the return value of kvmemdup_bpfptr() correctly
+  * add necessary comments for ->record and ->key_record
+  * use __bpf_md_ptr to define the data field of bpf_dynptr_user
+  * add always_inline for lookup_{nulls_elem|elem}_raw
+  * add benchmark patch for dynptr-keyed hash map
+
+v1: https://lore.kernel.org/bpf/20241008091501.8302-1-houtao@huaweicloud.com/
+
+[1]: https://lore.kernel.org/bpf/CAADnVQJWaBRB=P-ZNkppwm=0tZaT3qP8PKLLJ2S5SSA2-S8mxg@mail.gmail.com/
+
+Hou Tao (16):
+  bpf: Introduce BPF_DYNPTR and helpers to facilitate its parsing
+  bpf: Parse bpf_dynptr in map key
+  bpf: Add helper bpf_map_has_dynptr_key()
+  bpf: Split check_stack_range_initialized() into small functions
+  bpf: Support map key with dynptr in verifier
+  bpf: Reuse bpf_dynptr for userspace application use case
+  bpf: Handle bpf_dynptr in bpf syscall when it is used as input
+  bpf: Handle bpf_dynptr in bpf syscall when it is used as output
+  bpf: Support basic operations for dynptr key in hash map
+  bpf: Export bpf_dynptr_set_size
+  bpf: Support get_next_key operation for dynptr key in hash map
+  bpf: Disable unsupported operations for map with dynptr key
+  bpf: Enable the creation of hash map with dynptr key
+  selftests/bpf: Add bpf_dynptr_user_init() helper
+  selftests/bpf: Add test cases for hash map with dynptr key
+  selftests/bpf: Add benchmark for dynptr key support in hash map
+
+ include/linux/bpf.h                           |  22 +-
+ include/linux/btf.h                           |   2 +
+ include/uapi/linux/bpf.h                      |  11 +-
+ kernel/bpf/btf.c                              |  46 +-
+ kernel/bpf/hashtab.c                          | 330 ++++++++-
+ kernel/bpf/helpers.c                          |   2 +-
+ kernel/bpf/map_in_map.c                       |  21 +-
+ kernel/bpf/map_iter.c                         |   3 +
+ kernel/bpf/syscall.c                          | 216 +++++-
+ kernel/bpf/verifier.c                         | 392 ++++++++---
+ tools/include/uapi/linux/bpf.h                |  11 +-
+ tools/testing/selftests/bpf/Makefile          |   2 +
+ tools/testing/selftests/bpf/bench.c           |  14 +
+ .../selftests/bpf/benchs/bench_dynptr_key.c   | 648 ++++++++++++++++++
+ .../bpf/benchs/run_bench_dynptr_key.sh        |  51 ++
+ .../bpf/prog_tests/htab_dynkey_test.c         | 446 ++++++++++++
+ .../selftests/bpf/progs/dynptr_key_bench.c    | 249 +++++++
+ .../bpf/progs/htab_dynkey_test_failure.c      | 266 +++++++
+ .../bpf/progs/htab_dynkey_test_success.c      | 382 +++++++++++
+ tools/testing/selftests/bpf/testing_helpers.h |   9 +
+ 20 files changed, 2958 insertions(+), 165 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_dynptr_key.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_dynptr_key.sh
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_dynkey_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/dynptr_key_bench.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_success.c
+
+-- 
+2.46.1
+
 
