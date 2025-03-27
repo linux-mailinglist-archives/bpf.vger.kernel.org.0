@@ -1,42 +1,43 @@
-Return-Path: <bpf+bounces-54783-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54784-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5711CA72B50
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 09:23:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FA31A72B51
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 09:23:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E0C33B3252
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 08:22:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA08C189781F
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 08:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F36204F7F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEFC6204F8A;
 	Thu, 27 Mar 2025 08:22:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E42E04C62
-	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 08:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE59204F72
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 08:22:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743063778; cv=none; b=dEnih1FO0bG7t4E4S72dYd9KByBGzIWkhIvp9KiRo6rrf6IWifZb28ww9kBN/LOi/A6rEgjqL1LFXn9lBJzQf3PKvjrlHluIJzDyHijJnbHUglDcLeXg0YLpcnmk+hfb/Zv4A8prRX7C0ghFj69ny6TeSXlQU0CWa7sQhShdtnw=
+	t=1743063778; cv=none; b=my3R7yTs6yvWgh9a070e7az9QFBMP3jRpTspDYN44E0ttW4TfWJnVrt2P2f45aKsQyZADan7yF6y7S2o0KL3SBndMXFIYd2mFnzQoYtvQ6nhsUR2Kg1Wb83U47n+daL3oFlrxn7rOupGcq7cdwgA0L0iStMZBxq54VVUqHMaGPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1743063778; c=relaxed/simple;
-	bh=kEqkyFi3Q8FyTX8QrL22t/l1cMJs3+k1L1PLvlVI82k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=lPsZygXNjOKXZdbevOi36cdbFzPcdWvdLIwvsKXceT1Rbx1Jq033TdIK/zXQoPFbhzfCxNd46N55WqDsZ/QIEbFHbwGhBFCW/I3Mzj9aCKxoxan+4EwuVf14UqpFJpCz+NIX320Y36JkWVgvHzoFORdptrVkSU3zhZzB/iWL+RE=
+	bh=6s1072Of2TkmZoucRpkDlaD00oTMM5x2AZTzoApXicU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=CjY19P6LyKMvJa2XH2zW5n4i0Zqmos1ix/OjfK3hGg+Qdb2O0wJUMHl9gTHjtlcmEsWRPzMKH0lBz9dPfJieBchwjVSwUpsIEWkAq2OTrpLsY02Yv+FD63x4t0cjX8z7fPflo1WgYTri3l51+3L0uz80CiMjhz6uEQ8ue0WgLUU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZNc8f5vLlz4f3m6j
-	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:26 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZNc8g2dxgz4f3m7L
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:27 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 480C91A0CD6
+	by mail.maildlp.com (Postfix) with ESMTP id C8C461A1511
 	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:51 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgAXe1_XCuVnluzSHg--.7420S4;
-	Thu, 27 Mar 2025 16:22:49 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgAXe1_XCuVnluzSHg--.7420S5;
+	Thu, 27 Mar 2025 16:22:51 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -52,236 +53,161 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf-next v3 00/16] Support dynptr key for hash map
-Date: Thu, 27 Mar 2025 16:34:39 +0800
-Message-Id: <20250327083455.848708-1-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v3 01/16] bpf: Introduce BPF_DYNPTR and helpers to facilitate its parsing
+Date: Thu, 27 Mar 2025 16:34:40 +0800
+Message-Id: <20250327083455.848708-2-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20250327083455.848708-1-houtao@huaweicloud.com>
+References: <20250327083455.848708-1-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXe1_XCuVnluzSHg--.7420S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3WF47AF18tr47Ary7Cw1Dtrb_yoW3ZFWkpa
-	y8W3y3tr4xtFyxXw47Ca1xJrWFqws5Xr1UG3Wxt34ru348XryfZr4Ig3WFgF9xtryFqr45
-	Aw1xtr98uw18CFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
-	n4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
-	tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU17KsUUUUUU==
+X-CM-TRANSID:gCh0CgAXe1_XCuVnluzSHg--.7420S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw4fJw1DCrWDZF43CrykKrg_yoWrur13pF
+	nrAr13Cr48trW3uw1DGrs8u3y3tay8Gw12vFy7K34akFZ2qryDXFs8Kr18ZryYkrZ0kr1x
+	Zr1YgFZ8Ary7AFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
+	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI
+	0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
+	67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MI
+	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
+	14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
+	W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2HGQ
+	DUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Hi,
+Add BPF_DYNPTR in btf_field_type to support bpf_dynptr in map key. The
+parsing of bpf_dynptr in btf will be done in the following patch, and
+the patch only adds two helpers: btf_new_bpf_dynptr_record() creates an
+btf record which only includes a bpf_dynptr and btf_type_is_dynptr()
+checks whether the btf_type is a bpf_dynptr or not.
 
-The patch set aims to add the basic dynptr key support for hash map as
-discussed in [1]. The main motivation is to fully utilize the BTF info
-of the map key and to support variable-length key (e.g., string or any
-byte stream) for bpf map. The patch set uses bpf_dynptr to represent the
-variable-length part in the map key and the total number of
-variable-length parts in the map key is limited as 2 now. Due to the
-limitation in bpf memory allocator, the max size of dynptr in map key is
-limited as 4088 bytes. Beside the variable-length parts (dynptr parts),
-the fixed-size part in map key is still allowed, so all of these
-following map key definitions are valid:
-
-	struct bpf_dynptr;
-
-	struct map_key_1 {
-		struct bpf_dynptr name;
-	};
-	struct map_key_2 {
-		int pid;
-		struct bpf_dynptr name;
-	};
-	struct map_key_3 {
-		struct map_key_2 f1;
-		unsigned long when;
-                struct bpf_dynptr tag;
-	};
-
-The patch set supports lookup, update, delete operations on normal hash
-map with dynptr key for both bpf program and bpf syscall. It also
-supports lookup_and_delete and get_next_key operations on dynptr map key
-for bpf syscall.
-
-However the following operations have not been fully supported yet on a
-hash map with dynptr key:
-
-1) batched map operation through bpf syscall
-2) the memory accounting for dynptr (aka .htab_map_mem_usage)
-3) btf print for the dynptr in map key
-4) bpftool support
-5) the iteration of elements through bpf program
-When a bpf program iterates the element in a hash map with dynptr key
-(e.g., bpf_for_each_map_elem() helper or map element iterator), the
-dynptr in the map key has not been specially treated yet and the dynptr
-is only treated as a read-only 16-bytes buffer, therefore the iteration
-of dynptr-keyed map is disabled.
-
-The patch set is structured as follow:
-
-Patch #1~#2 introduce BPF_DYNPTR in btf_field_type and parse the
-bpf_dynptr in the map key.
-
-Patch #3 introduce a helper to check whether the map supports dynptr in
-its map key or not.
-
-Patch #4~#5 refactor check_stack_range_initialized() and support
-dynptr-keyed map in verifier.
-
-Patch #6~#8 updates the definition of bpf_dynptr, support the use of
-bpf_dynptr in bpf syscall for map lookup, lookup_delete, update, delete
-and get_next_key operations.
-
-Patch #9~#13 update the lookup, lookup_delete, update, delete and
-get_next_key callback correspondingly to support dynptr-keyed hash map.
-
-Patch #14~#15 add positive and negative test cases for hash map with
-dynptr key support.
-
-Patch #16 adds the benchmark to compare the lookup and update
-performance between normal hash map and dynptr-keyed hash map.
-
-When the max length of str is greater than 256, the lookup performance
-of dynptr hash-map will be better than the normal hash map. When the max
-length is greater than 512, the update performance of dynptr hash map
-will be better than the normal hash map. And the memory consumption of
-hash-map with dynptr key is smaller compared with normal hash map.
-
-a) lookup operation
-
-max_entries = 8K (randomly generated data set)
-| max length of desc | normal hash-map    | dynptr hash-map   |
-| ---                |  ---               | ---               |
-|  64                | 11.2 M/s (1.7 MB)  | 8.2 M/s (1.4 MB)  |
-| 128                |  6.6 M/s (2.2 MB)  | 6.6 M/s (1.7 MB)  |
-| 256                |  3.7 M/s (4.2 MB)  | 4.8 M/s (2.3 MB)  |
-| 512                |  2.1 M/s (8.2 MB)  | 3.1 M/s (3.8 MB)  |
-| 1024               |  1.1 M/s (16 MB)   | 1.9 M/s (6.5 MB)  |
-| 2048               |  0.6 M/s (32 MB)   | 1.1 M/s (12 MB)   |
-| 4096               |  0.3 M/s (64 MB)   | 0.6 M/s (23 MB)   |
-
-| string in file     | normal hash-map    | dynptr hash-map   |
-| ---                |  ---               | ---               |
-| kallsyms           |  6.8 M/s (29 MB)   | 6.0 M/s (23 MB)   |
-| string in BTF      |  7.2 M/s (22 MB)   | 6.9 M/s (16 MB)   |
-| alexa top 1M sites |  2.7 M/s (191 MB)  | 3.1 M/s (138 MB)  |
-
-b) update and delete operation
-
-max_entries = 8K (randomly generated data set)
-| max length of desc | normal hash-map    | dynptr hash-map   |
-| ---                |  ---               | ---               |
-|  64                |  5.0 M/s           | 3.5 M/s           |
-| 128                |  3.8 M/s           | 3.3 M/s           |
-| 256                |  2.7 M/s           | 2.7 M/s           |
-| 512                |  1.7 M/s           | 2.0 M/s           |
-| 1024               |  0.9 M/s           | 1.4 M/s           |
-| 2048               |  0.5 M/s           | 0.8 M/s           |
-| 4096               |  0.l M/s           | 0.5 M/s           |
-
-| strings in file    | normal hash-map    | dynptr hash-map   |
-| ---                |  ---               | ---               |
-| kallsyms           |  3.3 M/s           | 2.6 M/s           |
-| strings in BTF     |  3.7 M/s           | 3.0 M/s           |
-| alexa top 1M sites |  2.3 M/s           | 2.2 M/s           |
-
-As usual, comments and suggestions are always welcome.
-
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
+ include/linux/bpf.h |  1 +
+ include/linux/btf.h |  2 ++
+ kernel/bpf/btf.c    | 44 ++++++++++++++++++++++++++++++++++++++------
+ 3 files changed, 41 insertions(+), 6 deletions(-)
 
-Change Log:
-
-v3: mainly address comments and suggestions from Alexei
- * use ->map_check_btf callback to check whether the map attributes
-   are valid for dynptr-key map and to initialize the allocator for
-   dynptr
- * don't use map_extra for hash map with dynptr key.
- * don't increase BTF_FIELDS_MAX
- * lift the max number of bpf_dynptr in map key from 1 to 2
- * merge the definition of bpf_dynptr_user into bpf_dynptr
- * disable the support of the iteration of dynptr-keyed map
- * add negative lookup test in benchmark
- * move the definition of bpf_dynptr_user_init from bpf_util to
-   testing_helpers.h, otherwise it will break the build of samples/bpf
- * update benchmark result based on bpf_next/master
- * rebased on bpf_next/for-next
-
-v2: https://lore.kernel.org/bpf/20250125111109.732718-1-houtao@huaweicloud.com/
-  * remove the need to set BPF_F_DYNPTR_IN_KEY flag explicitly
-  * remove bpf_dynptr_user helpers from libbpf
-  * support dynptr-keyed map in verifier in a less-intrusive way
-  * handle the return value of kvmemdup_bpfptr() correctly
-  * add necessary comments for ->record and ->key_record
-  * use __bpf_md_ptr to define the data field of bpf_dynptr_user
-  * add always_inline for lookup_{nulls_elem|elem}_raw
-  * add benchmark patch for dynptr-keyed hash map
-
-v1: https://lore.kernel.org/bpf/20241008091501.8302-1-houtao@huaweicloud.com/
-
-[1]: https://lore.kernel.org/bpf/CAADnVQJWaBRB=P-ZNkppwm=0tZaT3qP8PKLLJ2S5SSA2-S8mxg@mail.gmail.com/
-
-Hou Tao (16):
-  bpf: Introduce BPF_DYNPTR and helpers to facilitate its parsing
-  bpf: Parse bpf_dynptr in map key
-  bpf: Add helper bpf_map_has_dynptr_key()
-  bpf: Split check_stack_range_initialized() into small functions
-  bpf: Support map key with dynptr in verifier
-  bpf: Reuse bpf_dynptr for userspace application use case
-  bpf: Handle bpf_dynptr in bpf syscall when it is used as input
-  bpf: Handle bpf_dynptr in bpf syscall when it is used as output
-  bpf: Support basic operations for dynptr key in hash map
-  bpf: Export bpf_dynptr_set_size
-  bpf: Support get_next_key operation for dynptr key in hash map
-  bpf: Disable unsupported operations for map with dynptr key
-  bpf: Enable the creation of hash map with dynptr key
-  selftests/bpf: Add bpf_dynptr_user_init() helper
-  selftests/bpf: Add test cases for hash map with dynptr key
-  selftests/bpf: Add benchmark for dynptr key support in hash map
-
- include/linux/bpf.h                           |  22 +-
- include/linux/btf.h                           |   2 +
- include/uapi/linux/bpf.h                      |  11 +-
- kernel/bpf/btf.c                              |  46 +-
- kernel/bpf/hashtab.c                          | 330 ++++++++-
- kernel/bpf/helpers.c                          |   2 +-
- kernel/bpf/map_in_map.c                       |  21 +-
- kernel/bpf/map_iter.c                         |   3 +
- kernel/bpf/syscall.c                          | 216 +++++-
- kernel/bpf/verifier.c                         | 392 ++++++++---
- tools/include/uapi/linux/bpf.h                |  11 +-
- tools/testing/selftests/bpf/Makefile          |   2 +
- tools/testing/selftests/bpf/bench.c           |  14 +
- .../selftests/bpf/benchs/bench_dynptr_key.c   | 648 ++++++++++++++++++
- .../bpf/benchs/run_bench_dynptr_key.sh        |  51 ++
- .../bpf/prog_tests/htab_dynkey_test.c         | 446 ++++++++++++
- .../selftests/bpf/progs/dynptr_key_bench.c    | 249 +++++++
- .../bpf/progs/htab_dynkey_test_failure.c      | 266 +++++++
- .../bpf/progs/htab_dynkey_test_success.c      | 382 +++++++++++
- tools/testing/selftests/bpf/testing_helpers.h |   9 +
- 20 files changed, 2958 insertions(+), 165 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/benchs/bench_dynptr_key.c
- create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_dynptr_key.sh
- create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_dynkey_test.c
- create mode 100644 tools/testing/selftests/bpf/progs/dynptr_key_bench.c
- create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_failure.c
- create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_success.c
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 2083905a4e9fa..0b65c98d8b7d5 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -206,6 +206,7 @@ enum btf_field_type {
+ 	BPF_WORKQUEUE  = (1 << 10),
+ 	BPF_UPTR       = (1 << 11),
+ 	BPF_RES_SPIN_LOCK = (1 << 12),
++	BPF_DYNPTR     = (1 << 13),
+ };
+ 
+ typedef void (*btf_dtor_kfunc_t)(void *);
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index ebc0c0c9b9446..2ab48b377d312 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -226,8 +226,10 @@ bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
+ 			   u32 expected_offset, u32 expected_size);
+ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type *t,
+ 				    u32 field_mask, u32 value_size);
++struct btf_record *btf_new_bpf_dynptr_record(void);
+ int btf_check_and_fixup_fields(const struct btf *btf, struct btf_record *rec);
+ bool btf_type_is_void(const struct btf_type *t);
++bool btf_type_is_dynptr(const struct btf *btf, const struct btf_type *t);
+ s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind);
+ s32 bpf_find_btf_id(const char *name, u32 kind, struct btf **btf_p);
+ const struct btf_type *btf_type_skip_modifiers(const struct btf *btf,
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 16ba36f34dfab..1054a1e27e9d3 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3939,6 +3939,17 @@ static int btf_field_cmp(const void *_a, const void *_b, const void *priv)
+ 	return 0;
+ }
+ 
++static void btf_init_record(struct btf_record *record)
++{
++	record->cnt = 0;
++	record->field_mask = 0;
++	record->spin_lock_off = -EINVAL;
++	record->res_spin_lock_off = -EINVAL;
++	record->timer_off = -EINVAL;
++	record->wq_off = -EINVAL;
++	record->refcount_off = -EINVAL;
++}
++
+ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type *t,
+ 				    u32 field_mask, u32 value_size)
+ {
+@@ -3957,15 +3968,11 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
+ 	/* This needs to be kzalloc to zero out padding and unused fields, see
+ 	 * comment in btf_record_equal.
+ 	 */
+-	rec = kzalloc(offsetof(struct btf_record, fields[cnt]), GFP_KERNEL | __GFP_NOWARN);
++	rec = kzalloc(struct_size(rec, fields, cnt), GFP_KERNEL | __GFP_NOWARN);
+ 	if (!rec)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	rec->spin_lock_off = -EINVAL;
+-	rec->res_spin_lock_off = -EINVAL;
+-	rec->timer_off = -EINVAL;
+-	rec->wq_off = -EINVAL;
+-	rec->refcount_off = -EINVAL;
++	btf_init_record(rec);
+ 	for (i = 0; i < cnt; i++) {
+ 		field_type_size = btf_field_type_size(info_arr[i].type);
+ 		if (info_arr[i].off + field_type_size > value_size) {
+@@ -4067,6 +4074,25 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
+ 	return ERR_PTR(ret);
+ }
+ 
++struct btf_record *btf_new_bpf_dynptr_record(void)
++{
++	struct btf_record *record;
++
++	record = kzalloc(struct_size(record, fields, 1), GFP_KERNEL | __GFP_NOWARN);
++	if (!record)
++		return ERR_PTR(-ENOMEM);
++
++	btf_init_record(record);
++
++	record->cnt = 1;
++	record->field_mask = BPF_DYNPTR;
++	record->fields[0].offset = 0;
++	record->fields[0].size = sizeof(struct bpf_dynptr);
++	record->fields[0].type = BPF_DYNPTR;
++
++	return record;
++}
++
+ int btf_check_and_fixup_fields(const struct btf *btf, struct btf_record *rec)
+ {
+ 	int i;
+@@ -7562,6 +7588,12 @@ static bool btf_is_dynptr_ptr(const struct btf *btf, const struct btf_type *t)
+ 	return false;
+ }
+ 
++bool btf_type_is_dynptr(const struct btf *btf, const struct btf_type *t)
++{
++	return __btf_type_is_struct(t) && t->size == sizeof(struct bpf_dynptr) &&
++	       !strcmp(__btf_name_by_offset(btf, t->name_off), "bpf_dynptr");
++}
++
+ struct bpf_cand_cache {
+ 	const char *name;
+ 	u32 name_len;
 -- 
-2.46.1
+2.29.2
 
 
