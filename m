@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-54798-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54791-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A17BA72B5D
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 09:23:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38061A72B58
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 09:23:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D45F61898A60
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 08:23:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 657FA1898883
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 08:23:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17B7C20551B;
-	Thu, 27 Mar 2025 08:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B282054ED;
+	Thu, 27 Mar 2025 08:23:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFBD5204F7F
-	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 08:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF40204F96
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 08:22:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743063786; cv=none; b=WenKj9HEGoJdikBg0lSXB9ctbldM4ak81Ay7IobhvJq9symrqBGiJE46u/KJmyKhQjtinEz+cvvH4MIi57bywGbEOSebsShaNXF1W4H6f35+Xr8t1LAgFbTLJnonp2EaI8pi9MhKqss/BFBqr3GvAiicKyg++wu5bbvzYVwb0BM=
+	t=1743063781; cv=none; b=pn1KDqddWbqrjXlgHF9UrnXY50IU6Lr/kGNqlk0pTmWVf68j2PrETEIyVNVbfWjHtYmXrtxpuEdXpsm9ul5/Ipb2NKVG1B5vWHc1ylnn7SEqrd3lgEvHun/0ieS7nZyblTPK94+k8yMKpLpY/jX7CX9MvTGExtrd02L47HLLPg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743063786; c=relaxed/simple;
-	bh=6NmuHmprQGQyMyd6DhwXoJJEJPrriVBTKeim9p4R4E0=;
+	s=arc-20240116; t=1743063781; c=relaxed/simple;
+	bh=K9b6HESaDBVB5EcoK0mYstVpHc8+vb3/8Cl/x55Zr14=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eOg3sM7t9XpKsovgv6R6CiUwTx1Fsb+p07Kggjy3PXAHcZDmMqmOqmRUAJix/32Tex5rPWQzhOw8MHPC6ewGhZrgkeJ6a+aAEtsWA+wmhhHwQ8TPO4fj74UVMeBLC+fM5XddXJFnOcH0iDfKF7XEplbsH3a9Ji7dXcLuPicq5NQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=mBjmMZG/E9gcq2Y6jGE5Kz8+XE4FZUGPeC2pp1UHgfQvSkmSAmVYUKiHqdaRYurAeU+KwUesdQAnFwN0LhapKyZxe+TMnCDrcBUWw9hv1Lggkq9VslB+MgZ/s85VCcDnB22sWO0v7aM6bhJ+qIC/Syxp6S7dnjw0TaYAxZV2wI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4ZNc8m5DQTz4f3jXm
-	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:32 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZNc8t58nqz4f3jtK
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:38 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id AD7EE1A0AD5
-	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:55 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 4B3D21A083E
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:56 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgAXe1_XCuVnluzSHg--.7420S12;
-	Thu, 27 Mar 2025 16:22:55 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgAXe1_XCuVnluzSHg--.7420S13;
+	Thu, 27 Mar 2025 16:22:56 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -53,9 +53,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf-next v3 08/16] bpf: Handle bpf_dynptr in bpf syscall when it is used as output
-Date: Thu, 27 Mar 2025 16:34:47 +0800
-Message-Id: <20250327083455.848708-9-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v3 09/16] bpf: Support basic operations for dynptr key in hash map
+Date: Thu, 27 Mar 2025 16:34:48 +0800
+Message-Id: <20250327083455.848708-10-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20250327083455.848708-1-houtao@huaweicloud.com>
 References: <20250327083455.848708-1-houtao@huaweicloud.com>
@@ -66,205 +66,630 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXe1_XCuVnluzSHg--.7420S12
-X-Coremail-Antispam: 1UD129KBjvJXoW3WF1fuF1DAr4fAF1rJw1fWFg_yoW7KF15pF
-	48G3sxZr4Fqr43JFZ8X3Wjv3yrtrn7Ww1UGas3Ka4rWF9xWr90vr1xKFW09ryYvFyDCr12
-	vws2qr98ZrWxJrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2
-	AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r
-	43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-	v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuY
-	vjxUF9NVUUUUU
+X-CM-TRANSID:gCh0CgAXe1_XCuVnluzSHg--.7420S13
+X-Coremail-Antispam: 1UD129KBjvAXoWfZFW7AFy3KryrAryDJr47Jwb_yoW8ZFyfJo
+	WfW3y3CF48GF4xt3ykWFs7W3WrX345JayUJw4aqwsxWw4avr4YkryxCF43Kay5XF15tF10
+	gry0y3sxur4rWr4rn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUOY7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
+	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF
+	0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
+	j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxV
+	AFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x02
+	67AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I
+	80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCj
+	c4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4
+	kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E
+	5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtV
+	W8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY
+	1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67
+	AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZE
+	Xa7IU1aLvJUUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-For get_next_key operation, unext_key is used as an output argument.
-When there is dynptr in map key, unext_key will also be used as an input
-argument, because the userspace application needs to pre-allocate a
-buffer for each variable-length part in the map key and save the
-length and the address of these buffers in bpf_dynptr objects.
+The patch supports lookup, update, delete and lookup_delete operations
+for hash map with dynptr map. There are two major differences between
+the implementation of normal hash map and dynptr-keyed hash map:
 
-To support get_next_key op for map with dynptr key, map_get_next_key()
-first calls bpf_copy_from_dynptr_ukey() to construct a map key in which
-each bpf_dynptr_kern object has the same size as the corresponding
-bpf_dynptr object. It then calls ->map_get_next_key() to get the
-next_key, and finally calls bpf_copy_to_dynptr_ukey() to copy both the
-non-dynptr part and dynptr part in the map key to unext_key.
+1) dynptr-keyed hash map doesn't support pre-allocation.
+The reason is that the dynptr in map key is allocated dynamically
+through bpf mem allocator. The length limitation for these dynptrs is
+4088 bytes now. Because there dynptrs are allocated dynamically, the
+consumption of memory will be smaller compared with normal hash map when
+there are big differences between the length of these dynptrs.
+
+2) the freed element in dynptr-key map will not be reused immediately
+For normal hash map, the freed element may be reused immediately by the
+newly-added element, so the lookup may return an incorrect result due to
+element deletion and element reuse. However dynptr-key map could not do
+that, there are pointers (dynptrs) in the map key and the updates of
+these dynptrs are not atomic: both the address and the length of the
+dynptr will be updated. If the element is reused immediately, the access
+of the dynptr in the freed element may incur invalid memory access due
+to the mismatch between the address and the size of dynptr, so reuse the
+freed element after one RCU grace period.
+
+Beside the differences above, dynptr-keyed hash map also needs to handle
+the maybe-nullified dynptr in the map key.
+
+After the support of dynptr key in hash map, the performance of lookup
+and update/delete operations in map_perf_test degrades a lot. Marking
+lookup_nulls_elem_raw() and lookup_elem_raw() as always_inline will
+narrow the gap from 22%/10% to ~3%. Therefore, the patch also adds
+always_inline for these two hot functions. The following lines show the
+detailed performance numbers:
+
+before patch:
+0:hash_map_perf pre-alloc 716183 events per sec
+0:hash_map_perf kmalloc 718449 events per sec
+0:hash_lookup 96028984 lookups per sec
+
+after patch (without always_inline):
+0:hash_map_perf pre-alloc 680580 events per sec
+0:hash_map_perf kmalloc 648885 events per sec
+0:hash_lookup 77693901 lookups per sec
+
+after patch:
+0:hash_map_perf pre-alloc 701188 events per sec
+0:hash_map_perf kmalloc 690954 events per sec
+0:hash_lookup 93802965 lookups per sec
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/syscall.c | 89 ++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 74 insertions(+), 15 deletions(-)
+ kernel/bpf/hashtab.c | 291 ++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 261 insertions(+), 30 deletions(-)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index d6dbcea3c30cb..40c3d85b06bae 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1664,7 +1664,7 @@ int __weak bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
- 	return -ENOTSUPP;
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 5a5adc66b8e22..028542c2b4237 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -105,6 +105,7 @@ struct bpf_htab {
+ 	u32 n_buckets;	/* number of hash buckets */
+ 	u32 elem_size;	/* size of each element in bytes */
+ 	u32 hashrnd;
++	struct bpf_mem_alloc dynptr_ma;
+ };
+ 
+ /* each htab element is struct htab_elem + key + value */
+@@ -586,13 +587,55 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ 	return ERR_PTR(err);
  }
  
--static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey)
-+static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey, bool copy_data)
+-static inline u32 htab_map_hash(const void *key, u32 key_len, u32 hashrnd)
++static inline u32 __htab_map_hash(const void *key, u32 key_len, u32 hashrnd)
  {
- 	const struct btf_record *record;
- 	const struct btf_field *field;
-@@ -1672,7 +1672,6 @@ static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey)
- 	void *key, *new_key, *kdata;
- 	unsigned int key_size, size;
- 	struct bpf_dynptr *uptr;
--	bpfptr_t udata;
- 	unsigned int i;
- 	int err;
- 
-@@ -1687,6 +1686,7 @@ static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey)
- 		field = &record->fields[i];
- 		if (field->type != BPF_DYNPTR)
- 			continue;
-+
- 		uptr = key + field->offset;
- 		if (!uptr->size || uptr->reserved) {
- 			err = -EINVAL;
-@@ -1717,10 +1717,14 @@ static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey)
- 
- 		uptr = key + field->offset;
- 		size = uptr->size;
--		udata = make_bpfptr((u64)(uintptr_t)uptr->data, bpfptr_is_kernel(ukey));
--		if (copy_from_bpfptr(kdata, udata, size)) {
--			err = -EFAULT;
--			goto free_key;
-+		if (copy_data) {
-+			bpfptr_t udata = make_bpfptr((u64)(uintptr_t)uptr->data,
-+						     bpfptr_is_kernel(ukey));
-+
-+			if (copy_from_bpfptr(kdata, udata, size)) {
-+				err = -EFAULT;
-+				goto free_key;
-+			}
- 		}
- 		kptr = (struct bpf_dynptr_kern *)uptr;
- 		bpf_dynptr_init(kptr, kdata, BPF_DYNPTR_TYPE_LOCAL, 0, size);
-@@ -1737,7 +1741,7 @@ static void *bpf_copy_from_dynptr_ukey(const struct bpf_map *map, bpfptr_t ukey)
- static void *__bpf_copy_key(const struct bpf_map *map, void __user *ukey)
- {
- 	if (bpf_map_has_dynptr_key(map))
--		return bpf_copy_from_dynptr_ukey(map, USER_BPFPTR(ukey));
-+		return bpf_copy_from_dynptr_ukey(map, USER_BPFPTR(ukey), true);
- 
- 	if (map->key_size)
- 		return vmemdup_user(ukey, map->key_size);
-@@ -1751,7 +1755,7 @@ static void *__bpf_copy_key(const struct bpf_map *map, void __user *ukey)
- static void *___bpf_copy_key(const struct bpf_map *map, bpfptr_t ukey)
- {
- 	if (bpf_map_has_dynptr_key(map))
--		return bpf_copy_from_dynptr_ukey(map, ukey);
-+		return bpf_copy_from_dynptr_ukey(map, ukey, true);
- 
- 	if (map->key_size)
- 		return kvmemdup_bpfptr(ukey, map->key_size);
-@@ -1762,6 +1766,51 @@ static void *___bpf_copy_key(const struct bpf_map *map, bpfptr_t ukey)
- 	return NULL;
+ 	if (likely(key_len % 4 == 0))
+ 		return jhash2(key, key_len / 4, hashrnd);
+ 	return jhash(key, key_len, hashrnd);
  }
  
-+static int bpf_copy_to_dynptr_ukey(const struct bpf_map *map,
-+				   void __user *ukey, void *key)
++static u32 htab_map_dynptr_hash(const void *key, u32 key_len, u32 hashrnd,
++				const struct btf_record *rec)
 +{
-+	struct bpf_dynptr __user *uptr;
-+	struct bpf_dynptr_kern *kptr;
-+	struct btf_record *record;
-+	unsigned int i, offset;
++	unsigned int i, cnt = rec->cnt;
++	unsigned int hash = hashrnd;
++	unsigned int offset = 0;
 +
-+	offset = 0;
-+	record = map->key_record;
-+	for (i = 0; i < record->cnt; i++) {
-+		struct btf_field *field;
-+		unsigned int size;
-+		void *udata;
++	for (i = 0; i < cnt; i++) {
++		const struct btf_field *field = &rec->fields[i];
++		const struct bpf_dynptr_kern *kptr;
++		unsigned int len;
 +
-+		field = &record->fields[i];
 +		if (field->type != BPF_DYNPTR)
 +			continue;
 +
-+		/* Any no-dynptr part before the dynptr ? */
-+		if (offset < field->offset &&
-+		    copy_to_user(ukey + offset, key + offset, field->offset - offset))
-+			return -EFAULT;
++		/* non-dynptr part ? */
++		if (offset < field->offset)
++			hash = jhash(key + offset, field->offset - offset, hash);
 +
-+		/* dynptr part */
-+		uptr = ukey + field->offset;
-+		if (copy_from_user(&udata, &uptr->data, sizeof(udata)))
-+			return -EFAULT;
-+
++		/* Skip nullified dynptr */
 +		kptr = key + field->offset;
-+		size = __bpf_dynptr_size(kptr);
-+		if (copy_to_user((void __user *)udata, __bpf_dynptr_data(kptr, size), size) ||
-+		    put_user(size, &uptr->size) || put_user(0, &uptr->reserved))
-+			return -EFAULT;
++		if (kptr->data) {
++			len = __bpf_dynptr_size(kptr);
++			hash = jhash(__bpf_dynptr_data(kptr, len), len, hash);
++		}
++		offset = field->offset + field->size;
++	}
++
++	if (offset < key_len)
++		hash = jhash(key + offset, key_len - offset, hash);
++
++	return hash;
++}
++
++static inline u32 htab_map_hash(const void *key, u32 key_len, u32 hashrnd,
++				const struct btf_record *rec)
++{
++	if (likely(!rec))
++		return __htab_map_hash(key, key_len, hashrnd);
++	return htab_map_dynptr_hash(key, key_len, hashrnd, rec);
++}
++
+ static inline struct bucket *__select_bucket(struct bpf_htab *htab, u32 hash)
+ {
+ 	return &htab->buckets[hash & (htab->n_buckets - 1)];
+@@ -603,15 +646,68 @@ static inline struct hlist_nulls_head *select_bucket(struct bpf_htab *htab, u32
+ 	return &__select_bucket(htab, hash)->head;
+ }
+ 
++static bool is_same_dynptr_key(const void *key, const void *tgt, unsigned int key_size,
++			       const struct btf_record *rec)
++{
++	unsigned int i, cnt = rec->cnt;
++	unsigned int offset = 0;
++
++	for (i = 0; i < cnt; i++) {
++		const struct btf_field *field = &rec->fields[i];
++		const struct bpf_dynptr_kern *kptr, *tgt_kptr;
++		const void *data, *tgt_data;
++		unsigned int len;
++
++		if (field->type != BPF_DYNPTR)
++			continue;
++
++		if (offset < field->offset &&
++		    memcmp(key + offset, tgt + offset, field->offset - offset))
++			return false;
++
++		/*
++		 * For a nullified dynptr in the target key, __bpf_dynptr_size()
++		 * will return 0, and there will be no match for the target key.
++		 */
++		kptr = key + field->offset;
++		tgt_kptr = tgt + field->offset;
++		len = __bpf_dynptr_size(kptr);
++		if (len != __bpf_dynptr_size(tgt_kptr))
++			return false;
++
++		data = __bpf_dynptr_data(kptr, len);
++		tgt_data = __bpf_dynptr_data(tgt_kptr, len);
++		if (memcmp(data, tgt_data, len))
++			return false;
 +
 +		offset = field->offset + field->size;
 +	}
 +
-+	if (offset < map->key_size &&
-+	    copy_to_user(ukey + offset, key + offset, map->key_size - offset))
-+		return -EFAULT;
++	if (offset < key_size &&
++	    memcmp(key + offset, tgt + offset, key_size - offset))
++		return false;
++
++	return true;
++}
++
++static inline bool htab_is_same_key(const void *key, const void *tgt, unsigned int key_size,
++				    const struct btf_record *rec)
++{
++	if (likely(!rec))
++		return !memcmp(key, tgt, key_size);
++	return is_same_dynptr_key(key, tgt, key_size, rec);
++}
++
+ /* this lookup function can only be called with bucket lock taken */
+-static struct htab_elem *lookup_elem_raw(struct hlist_nulls_head *head, u32 hash,
+-					 void *key, u32 key_size)
++static __always_inline struct htab_elem *lookup_elem_raw(struct hlist_nulls_head *head, u32 hash,
++							 void *key, u32 key_size,
++							 const struct btf_record *record)
+ {
+ 	struct hlist_nulls_node *n;
+ 	struct htab_elem *l;
+ 
+ 	hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
+-		if (l->hash == hash && !memcmp(&l->key, key, key_size))
++		if (l->hash == hash && htab_is_same_key(l->key, key, key_size, record))
+ 			return l;
+ 
+ 	return NULL;
+@@ -621,16 +717,17 @@ static struct htab_elem *lookup_elem_raw(struct hlist_nulls_head *head, u32 hash
+  * the unlikely event when elements moved from one bucket into another
+  * while link list is being walked
+  */
+-static struct htab_elem *lookup_nulls_elem_raw(struct hlist_nulls_head *head,
+-					       u32 hash, void *key,
+-					       u32 key_size, u32 n_buckets)
++static __always_inline struct htab_elem *lookup_nulls_elem_raw(struct hlist_nulls_head *head,
++							       u32 hash, void *key,
++							       u32 key_size, u32 n_buckets,
++							       const struct btf_record *record)
+ {
+ 	struct hlist_nulls_node *n;
+ 	struct htab_elem *l;
+ 
+ again:
+ 	hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
+-		if (l->hash == hash && !memcmp(&l->key, key, key_size))
++		if (l->hash == hash && htab_is_same_key(l->key, key, key_size, record))
+ 			return l;
+ 
+ 	if (unlikely(get_nulls_value(n) != (hash & (n_buckets - 1))))
+@@ -647,6 +744,7 @@ static struct htab_elem *lookup_nulls_elem_raw(struct hlist_nulls_head *head,
+ static void *__htab_map_lookup_elem(struct bpf_map *map, void *key)
+ {
+ 	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
++	const struct btf_record *record;
+ 	struct hlist_nulls_head *head;
+ 	struct htab_elem *l;
+ 	u32 hash, key_size;
+@@ -655,12 +753,13 @@ static void *__htab_map_lookup_elem(struct bpf_map *map, void *key)
+ 		     !rcu_read_lock_bh_held());
+ 
+ 	key_size = map->key_size;
++	record = map->key_record;
+ 
+-	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	hash = htab_map_hash(key, key_size, htab->hashrnd, record);
+ 
+ 	head = select_bucket(htab, hash);
+ 
+-	l = lookup_nulls_elem_raw(head, hash, key, key_size, htab->n_buckets);
++	l = lookup_nulls_elem_raw(head, hash, key, key_size, htab->n_buckets, record);
+ 
+ 	return l;
+ }
+@@ -750,6 +849,26 @@ static int htab_lru_map_gen_lookup(struct bpf_map *map,
+ 	return insn - insn_buf;
+ }
+ 
++static void htab_free_dynptr_key(struct bpf_htab *htab, void *key)
++{
++	const struct btf_record *record = htab->map.key_record;
++	unsigned int i, cnt = record->cnt;
++
++	for (i = 0; i < cnt; i++) {
++		const struct btf_field *field = &record->fields[i];
++		struct bpf_dynptr_kern *kptr;
++
++		if (field->type != BPF_DYNPTR)
++			continue;
++
++		/* It may be accessed concurrently, so don't overwrite
++		 * the kptr.
++		 */
++		kptr = key + field->offset;
++		bpf_mem_free_rcu(&htab->dynptr_ma, kptr->data);
++	}
++}
++
+ static void check_and_free_fields(struct bpf_htab *htab,
+ 				  struct htab_elem *elem)
+ {
+@@ -804,6 +923,68 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+ 	return l == tgt_l;
+ }
+ 
++static int htab_copy_dynptr_key(struct bpf_htab *htab, void *dst_key, const void *key, u32 key_size)
++{
++	const struct btf_record *rec = htab->map.key_record;
++	struct bpf_dynptr_kern *dst_kptr;
++	const struct btf_field *field;
++	unsigned int i, cnt, offset;
++	int err;
++
++	offset = 0;
++	cnt = rec->cnt;
++	for (i = 0; i < cnt; i++) {
++		const struct bpf_dynptr_kern *kptr;
++		unsigned int len;
++		const void *data;
++		void *dst_data;
++
++		field = &rec->fields[i];
++		if (field->type != BPF_DYNPTR)
++			continue;
++
++		if (offset < field->offset)
++			memcpy(dst_key + offset, key + offset, field->offset - offset);
++
++		/* Doesn't support nullified dynptr in map key */
++		kptr = key + field->offset;
++		if (!kptr->data) {
++			err = -EINVAL;
++			goto out;
++		}
++		len = __bpf_dynptr_size(kptr);
++		data = __bpf_dynptr_data(kptr, len);
++
++		dst_data = bpf_mem_alloc(&htab->dynptr_ma, len);
++		if (!dst_data) {
++			err = -ENOMEM;
++			goto out;
++		}
++
++		memcpy(dst_data, data, len);
++		dst_kptr = dst_key + field->offset;
++		bpf_dynptr_init(dst_kptr, dst_data, BPF_DYNPTR_TYPE_LOCAL, 0, len);
++
++		offset = field->offset + field->size;
++	}
++
++	if (offset < key_size)
++		memcpy(dst_key + offset, key + offset, key_size - offset);
++
++	return 0;
++
++out:
++	while (i-- > 0) {
++		field = &rec->fields[i];
++		if (field->type != BPF_DYNPTR)
++			continue;
++
++		dst_kptr = dst_key + field->offset;
++		bpf_mem_free(&htab->dynptr_ma, dst_kptr->data);
++	}
++	return err;
++}
++
+ /* Called from syscall */
+ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+ {
+@@ -820,12 +1001,12 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+ 	if (!key)
+ 		goto find_first_elem;
+ 
+-	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	hash = htab_map_hash(key, key_size, htab->hashrnd, NULL);
+ 
+ 	head = select_bucket(htab, hash);
+ 
+ 	/* lookup the key */
+-	l = lookup_nulls_elem_raw(head, hash, key, key_size, htab->n_buckets);
++	l = lookup_nulls_elem_raw(head, hash, key, key_size, htab->n_buckets, NULL);
+ 
+ 	if (!l)
+ 		goto find_first_elem;
+@@ -865,11 +1046,27 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+ 
+ static void htab_elem_free(struct bpf_htab *htab, struct htab_elem *l)
+ {
++	bool dynptr_in_key = bpf_map_has_dynptr_key(&htab->map);
++
++	if (dynptr_in_key)
++		htab_free_dynptr_key(htab, l->key);
++
+ 	check_and_free_fields(htab, l);
+ 
+ 	if (htab->map.map_type == BPF_MAP_TYPE_PERCPU_HASH)
+ 		bpf_mem_cache_free(&htab->pcpu_ma, l->ptr_to_pptr);
+-	bpf_mem_cache_free(&htab->ma, l);
++
++	/*
++	 * For dynptr key, the update of dynptr in the key is not atomic:
++	 * both the pointer and the size are updated. If the element is reused
++	 * immediately, the access of the dynptr key during lookup procedure may
++	 * incur invalid memory access due to mismatch between the size and the
++	 * data pointer, so reuse the element after one RCU GP.
++	 */
++	if (dynptr_in_key)
++		bpf_mem_cache_free_rcu(&htab->ma, l);
++	else
++		bpf_mem_cache_free(&htab->ma, l);
+ }
+ 
+ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
+@@ -1016,7 +1213,19 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
+ 		}
+ 	}
+ 
+-	memcpy(l_new->key, key, key_size);
++	if (bpf_map_has_dynptr_key(&htab->map)) {
++		int copy_err;
++
++		copy_err = htab_copy_dynptr_key(htab, l_new->key, key, key_size);
++		if (copy_err) {
++			bpf_mem_cache_free(&htab->ma, l_new);
++			l_new = ERR_PTR(copy_err);
++			goto dec_count;
++		}
++	} else {
++		memcpy(l_new->key, key, key_size);
++	}
++
+ 	if (percpu) {
+ 		if (prealloc) {
+ 			pptr = htab_elem_get_ptr(l_new, key_size);
+@@ -1072,7 +1281,8 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 				 u64 map_flags)
+ {
+ 	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
+-	struct htab_elem *l_new = NULL, *l_old;
++	const struct btf_record *key_record = map->key_record;
++	struct htab_elem *l_new, *l_old;
+ 	struct hlist_nulls_head *head;
+ 	unsigned long flags;
+ 	void *old_map_ptr;
+@@ -1089,7 +1299,7 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 
+ 	key_size = map->key_size;
+ 
+-	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	hash = htab_map_hash(key, key_size, htab->hashrnd, key_record);
+ 
+ 	b = __select_bucket(htab, hash);
+ 	head = &b->head;
+@@ -1099,7 +1309,7 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 			return -EINVAL;
+ 		/* find an element without taking the bucket lock */
+ 		l_old = lookup_nulls_elem_raw(head, hash, key, key_size,
+-					      htab->n_buckets);
++					      htab->n_buckets, key_record);
+ 		ret = check_flags(htab, l_old, map_flags);
+ 		if (ret)
+ 			return ret;
+@@ -1120,7 +1330,7 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 	if (ret)
+ 		return ret;
+ 
+-	l_old = lookup_elem_raw(head, hash, key, key_size);
++	l_old = lookup_elem_raw(head, hash, key, key_size, key_record);
+ 
+ 	ret = check_flags(htab, l_old, map_flags);
+ 	if (ret)
+@@ -1207,7 +1417,7 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
+ 
+ 	key_size = map->key_size;
+ 
+-	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	hash = __htab_map_hash(key, key_size, htab->hashrnd);
+ 
+ 	b = __select_bucket(htab, hash);
+ 	head = &b->head;
+@@ -1227,7 +1437,7 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
+ 	if (ret)
+ 		goto err_lock_bucket;
+ 
+-	l_old = lookup_elem_raw(head, hash, key, key_size);
++	l_old = lookup_elem_raw(head, hash, key, key_size, NULL);
+ 
+ 	ret = check_flags(htab, l_old, map_flags);
+ 	if (ret)
+@@ -1276,7 +1486,7 @@ static long __htab_percpu_map_update_elem(struct bpf_map *map, void *key,
+ 
+ 	key_size = map->key_size;
+ 
+-	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	hash = __htab_map_hash(key, key_size, htab->hashrnd);
+ 
+ 	b = __select_bucket(htab, hash);
+ 	head = &b->head;
+@@ -1285,7 +1495,7 @@ static long __htab_percpu_map_update_elem(struct bpf_map *map, void *key,
+ 	if (ret)
+ 		return ret;
+ 
+-	l_old = lookup_elem_raw(head, hash, key, key_size);
++	l_old = lookup_elem_raw(head, hash, key, key_size, NULL);
+ 
+ 	ret = check_flags(htab, l_old, map_flags);
+ 	if (ret)
+@@ -1331,7 +1541,7 @@ static long __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+ 
+ 	key_size = map->key_size;
+ 
+-	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	hash = htab_map_hash(key, key_size, htab->hashrnd, NULL);
+ 
+ 	b = __select_bucket(htab, hash);
+ 	head = &b->head;
+@@ -1351,7 +1561,7 @@ static long __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+ 	if (ret)
+ 		goto err_lock_bucket;
+ 
+-	l_old = lookup_elem_raw(head, hash, key, key_size);
++	l_old = lookup_elem_raw(head, hash, key, key_size, NULL);
+ 
+ 	ret = check_flags(htab, l_old, map_flags);
+ 	if (ret)
+@@ -1397,6 +1607,7 @@ static long htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+ static long htab_map_delete_elem(struct bpf_map *map, void *key)
+ {
+ 	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
++	const struct btf_record *key_record = map->key_record;
+ 	struct hlist_nulls_head *head;
+ 	struct bucket *b;
+ 	struct htab_elem *l;
+@@ -1409,7 +1620,7 @@ static long htab_map_delete_elem(struct bpf_map *map, void *key)
+ 
+ 	key_size = map->key_size;
+ 
+-	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	hash = htab_map_hash(key, key_size, htab->hashrnd, key_record);
+ 	b = __select_bucket(htab, hash);
+ 	head = &b->head;
+ 
+@@ -1417,7 +1628,7 @@ static long htab_map_delete_elem(struct bpf_map *map, void *key)
+ 	if (ret)
+ 		return ret;
+ 
+-	l = lookup_elem_raw(head, hash, key, key_size);
++	l = lookup_elem_raw(head, hash, key, key_size, key_record);
+ 	if (l)
+ 		hlist_nulls_del_rcu(&l->hash_node);
+ 	else
+@@ -1445,7 +1656,7 @@ static long htab_lru_map_delete_elem(struct bpf_map *map, void *key)
+ 
+ 	key_size = map->key_size;
+ 
+-	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	hash = __htab_map_hash(key, key_size, htab->hashrnd);
+ 	b = __select_bucket(htab, hash);
+ 	head = &b->head;
+ 
+@@ -1453,7 +1664,7 @@ static long htab_lru_map_delete_elem(struct bpf_map *map, void *key)
+ 	if (ret)
+ 		return ret;
+ 
+-	l = lookup_elem_raw(head, hash, key, key_size);
++	l = lookup_elem_raw(head, hash, key, key_size, NULL);
+ 
+ 	if (l)
+ 		hlist_nulls_del_rcu(&l->hash_node);
+@@ -1547,6 +1758,7 @@ static void htab_map_free(struct bpf_map *map)
+ 	bpf_map_free_elem_count(map);
+ 	free_percpu(htab->extra_elems);
+ 	bpf_map_area_free(htab->buckets);
++	bpf_mem_alloc_destroy(&htab->dynptr_ma);
+ 	bpf_mem_alloc_destroy(&htab->pcpu_ma);
+ 	bpf_mem_alloc_destroy(&htab->ma);
+ 	if (htab->use_percpu_counter)
+@@ -1580,6 +1792,7 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
+ 					     bool is_percpu, u64 flags)
+ {
+ 	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
++	const struct btf_record *key_record;
+ 	struct hlist_nulls_head *head;
+ 	unsigned long bflags;
+ 	struct htab_elem *l;
+@@ -1588,8 +1801,9 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
+ 	int ret;
+ 
+ 	key_size = map->key_size;
++	key_record = map->key_record;
+ 
+-	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	hash = htab_map_hash(key, key_size, htab->hashrnd, key_record);
+ 	b = __select_bucket(htab, hash);
+ 	head = &b->head;
+ 
+@@ -1597,7 +1811,7 @@ static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
+ 	if (ret)
+ 		return ret;
+ 
+-	l = lookup_elem_raw(head, hash, key, key_size);
++	l = lookup_elem_raw(head, hash, key, key_size, key_record);
+ 	if (!l) {
+ 		ret = -ENOENT;
+ 		goto out_unlock;
+@@ -2251,6 +2465,22 @@ static u64 htab_map_mem_usage(const struct bpf_map *map)
+ 	return usage;
+ }
+ 
++static int htab_map_check_btf(const struct bpf_map *map, const struct btf *btf,
++			      const struct btf_type *key_type, const struct btf_type *value_type)
++{
++	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
++
++	/* Only support non-preallocated map */
++	if (bpf_map_has_dynptr_key(map)) {
++		if (htab_is_prealloc(htab))
++			return -EINVAL;
++
++		return bpf_mem_alloc_init(&htab->dynptr_ma, 0, false);
++	}
 +
 +	return 0;
 +}
 +
- /* last field in 'union bpf_attr' used by this command */
- #define BPF_MAP_LOOKUP_ELEM_LAST_FIELD flags
- 
-@@ -1964,10 +2013,19 @@ static int map_get_next_key(union bpf_attr *attr)
- 		key = NULL;
- 	}
- 
--	err = -ENOMEM;
--	next_key = kvmalloc(map->key_size, GFP_USER);
--	if (!next_key)
-+	if (bpf_map_has_dynptr_key(map))
-+		next_key = bpf_copy_from_dynptr_ukey(map, USER_BPFPTR(unext_key), false);
-+	else
-+		next_key = kvmalloc(map->key_size, GFP_USER);
-+	if (IS_ERR_OR_NULL(next_key)) {
-+		if (!next_key) {
-+			err = -ENOMEM;
-+		} else {
-+			err = PTR_ERR(next_key);
-+			next_key = NULL;
-+		}
- 		goto free_key;
-+	}
- 
- 	if (bpf_map_is_offloaded(map)) {
- 		err = bpf_map_offload_get_next_key(map, key, next_key);
-@@ -1981,12 +2039,13 @@ static int map_get_next_key(union bpf_attr *attr)
- 	if (err)
- 		goto free_next_key;
- 
--	err = -EFAULT;
--	if (copy_to_user(unext_key, next_key, map->key_size) != 0)
-+	if (bpf_map_has_dynptr_key(map))
-+		err = bpf_copy_to_dynptr_ukey(map, unext_key, next_key);
-+	else
-+		err = copy_to_user(unext_key, next_key, map->key_size) ? -EFAULT : 0;
-+	if (err)
- 		goto free_next_key;
- 
--	err = 0;
--
- free_next_key:
- 	kvfree(next_key);
- free_key:
+ BTF_ID_LIST_SINGLE(htab_map_btf_ids, struct, bpf_htab)
+ const struct bpf_map_ops htab_map_ops = {
+ 	.map_meta_equal = bpf_map_meta_equal,
+@@ -2264,6 +2494,7 @@ const struct bpf_map_ops htab_map_ops = {
+ 	.map_update_elem = htab_map_update_elem,
+ 	.map_delete_elem = htab_map_delete_elem,
+ 	.map_gen_lookup = htab_map_gen_lookup,
++	.map_check_btf = htab_map_check_btf,
+ 	.map_seq_show_elem = htab_map_seq_show_elem,
+ 	.map_set_for_each_callback_args = map_set_for_each_callback_args,
+ 	.map_for_each_callback = bpf_for_each_hash_elem,
 -- 
 2.29.2
 
