@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-54790-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54799-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1019FA72B57
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 09:23:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EFA9A72B5E
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 09:23:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 191681898654
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 08:23:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F96D1898E15
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 08:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA12A205506;
-	Thu, 27 Mar 2025 08:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D01205ABF;
+	Thu, 27 Mar 2025 08:23:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44B82054ED
-	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 08:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59AD204F83
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 08:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743063781; cv=none; b=EF59jvvbnthTHPsE8WmJVXvEEciyjQztEhUFPfc9yNw5uPFNnzI5r48NC90bdP1d54nnKs+ZBV9n4UOwNJSFgCPB/O7c7u9pkYg0bK88F7HrZ3PnNKkAjYOlo/RVJm96pAvDzQKoqidrZC9a4wZykWNQQ+5KER/DVVpRiUzpqlU=
+	t=1743063787; cv=none; b=rbPEzTiEaN02CS/GPH3vPIQ7LmJZTumR2L1NP6IXnBFgdvwUkAeeoq+EKarvf7lKtq0WWJBxIAab47uqKMt5LupvG08SAj3dKuesZbFJAyEuss+gJSKtDGv1Wjaf9grU2pPItkr2XYfgOUZdGKrGDXYktJcXPju5qVdq+Y2wftA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743063781; c=relaxed/simple;
-	bh=AEJO9vFVL52Kxhyeulyf7zWvLcIZD4OL/9top033pw0=;
+	s=arc-20240116; t=1743063787; c=relaxed/simple;
+	bh=QJJDTnwYgISQUbuzvnXJLr4lJHAYz6U+kC/Yj9Hi6E8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IKdTVmgcxgXjAtCjQIzwBdA/DEWK4aGCOtOOuOjaS18T5w7LMrq+tAWI//S13XwRhFumCENIIBaEjhtTxgBjTTfOjzReuEKmbJ0nxNM7+cCd1nJWt3WLNLxfvT0txyhAV3CbMPwklOL65wh2mjtwz8bNxFFKlLPYfn+xviK1Cf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=VA/zdYJSstsdrJKjPJDhlm4w/HjA9zd20Ym2Q7wC1R8fJE3iLwlijTrUcVn838NLZ9KQCAqC1Lw/r1SIYNIu2yxxzAON2p0n2fjg5NqT6F/AIh+a6oc5LAhw2RYinalsXW5uZ+dY8k5QzexQnYqYnlF2WhleLyL8FfRDihDv4HE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZNc8v1qQ0z4f3jtP
-	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:39 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4ZNc8p3Bz9z4f3jXm
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:34 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id CF7611A0E96
-	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:56 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 6877B1A0EC9
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:57 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgAXe1_XCuVnluzSHg--.7420S14;
-	Thu, 27 Mar 2025 16:22:56 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgAXe1_XCuVnluzSHg--.7420S15;
+	Thu, 27 Mar 2025 16:22:57 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -53,9 +53,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf-next v3 10/16] bpf: Export bpf_dynptr_set_size
-Date: Thu, 27 Mar 2025 16:34:49 +0800
-Message-Id: <20250327083455.848708-11-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v3 11/16] bpf: Support get_next_key operation for dynptr key in hash map
+Date: Thu, 27 Mar 2025 16:34:50 +0800
+Message-Id: <20250327083455.848708-12-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20250327083455.848708-1-houtao@huaweicloud.com>
 References: <20250327083455.848708-1-houtao@huaweicloud.com>
@@ -66,10 +66,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXe1_XCuVnluzSHg--.7420S14
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw18tF15tFWrWrWUKrW3Wrg_yoW8Gw13pF
-	ykC34xXr48tFZ2qw4UJFsavw4Ykay7Wr17GFykt34rursFqF9I9r1jgry7Kr98t3ykCr43
-	Ar92grWFvry8ZrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgAXe1_XCuVnluzSHg--.7420S15
+X-Coremail-Antispam: 1UD129KBjvJXoWxXF1UXryxGw4DJr4kXFW8Zwb_yoWrKF1fpF
+	18Ga97Xw40kF4DtF45Wan2vw43Kr1Igw109FykGas7KFnFgr97Zw18tFW0kryYyFZrJr4f
+	tr4jqa45uws5JrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -88,41 +88,148 @@ X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-It will be used by the following patch to shrink the size of dynptr when
-the actual data length is smaller than the size of dynptr during
-map_get_next_key operation.
+It firstly passed the key_record to htab_map_hash() and
+lookup_nulls_eleme_raw() to find the target key, then it uses
+htab_copy_dynptr_key() helper to copy from the target key to the next
+key used for output.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- include/linux/bpf.h  | 1 +
- kernel/bpf/helpers.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ kernel/bpf/hashtab.c | 56 ++++++++++++++++++++++++++++++--------------
+ 1 file changed, 38 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 737890e5c58b4..4f4b43b68f8d1 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1361,6 +1361,7 @@ enum bpf_dynptr_type {
- };
- 
- int bpf_dynptr_check_size(u32 size);
-+void bpf_dynptr_set_size(struct bpf_dynptr_kern *ptr, u32 new_size);
- u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
- const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 len);
- void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len);
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index ddaa41a70676c..67c13a6d20dae 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1688,7 +1688,7 @@ u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr)
- 	return ptr->size & DYNPTR_SIZE_MASK;
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 028542c2b4237..2c3017086e4ab 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -923,7 +923,8 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+ 	return l == tgt_l;
  }
  
--static void bpf_dynptr_set_size(struct bpf_dynptr_kern *ptr, u32 new_size)
-+void bpf_dynptr_set_size(struct bpf_dynptr_kern *ptr, u32 new_size)
+-static int htab_copy_dynptr_key(struct bpf_htab *htab, void *dst_key, const void *key, u32 key_size)
++static int htab_copy_dynptr_key(struct bpf_htab *htab, void *dst_key, const void *key, u32 key_size,
++				bool copy_in)
  {
- 	u32 metadata = ptr->size & ~DYNPTR_SIZE_MASK;
+ 	const struct btf_record *rec = htab->map.key_record;
+ 	struct bpf_dynptr_kern *dst_kptr;
+@@ -948,22 +949,32 @@ static int htab_copy_dynptr_key(struct bpf_htab *htab, void *dst_key, const void
  
+ 		/* Doesn't support nullified dynptr in map key */
+ 		kptr = key + field->offset;
+-		if (!kptr->data) {
++		if (copy_in && !kptr->data) {
+ 			err = -EINVAL;
+ 			goto out;
+ 		}
+ 		len = __bpf_dynptr_size(kptr);
+ 		data = __bpf_dynptr_data(kptr, len);
+ 
+-		dst_data = bpf_mem_alloc(&htab->dynptr_ma, len);
+-		if (!dst_data) {
+-			err = -ENOMEM;
+-			goto out;
+-		}
++		dst_kptr = dst_key + field->offset;
++		if (copy_in) {
++			dst_data = bpf_mem_alloc(&htab->dynptr_ma, len);
++			if (!dst_data) {
++				err = -ENOMEM;
++				goto out;
++			}
++			bpf_dynptr_init(dst_kptr, dst_data, BPF_DYNPTR_TYPE_LOCAL, 0, len);
++		} else {
++			dst_data = __bpf_dynptr_data_rw(dst_kptr, len);
++			if (!dst_data) {
++				err = -ENOSPC;
++				goto out;
++			}
+ 
++			if (__bpf_dynptr_size(dst_kptr) > len)
++				bpf_dynptr_set_size(dst_kptr, len);
++		}
+ 		memcpy(dst_data, data, len);
+-		dst_kptr = dst_key + field->offset;
+-		bpf_dynptr_init(dst_kptr, dst_data, BPF_DYNPTR_TYPE_LOCAL, 0, len);
+ 
+ 		offset = field->offset + field->size;
+ 	}
+@@ -974,7 +985,7 @@ static int htab_copy_dynptr_key(struct bpf_htab *htab, void *dst_key, const void
+ 	return 0;
+ 
+ out:
+-	while (i-- > 0) {
++	while (copy_in && i-- > 0) {
+ 		field = &rec->fields[i];
+ 		if (field->type != BPF_DYNPTR)
+ 			continue;
+@@ -985,10 +996,22 @@ static int htab_copy_dynptr_key(struct bpf_htab *htab, void *dst_key, const void
+ 	return err;
+ }
+ 
++static inline int htab_copy_next_key(struct bpf_htab *htab, void *next_key, const void *key,
++				     u32 key_size)
++{
++	if (!bpf_map_has_dynptr_key(&htab->map)) {
++		memcpy(next_key, key, key_size);
++		return 0;
++	}
++
++	return htab_copy_dynptr_key(htab, next_key, key, key_size, false);
++}
++
+ /* Called from syscall */
+ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+ {
+ 	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
++	const struct btf_record *key_record = map->key_record;
+ 	struct hlist_nulls_head *head;
+ 	struct htab_elem *l, *next_l;
+ 	u32 hash, key_size;
+@@ -1001,13 +1024,12 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+ 	if (!key)
+ 		goto find_first_elem;
+ 
+-	hash = htab_map_hash(key, key_size, htab->hashrnd, NULL);
++	hash = htab_map_hash(key, key_size, htab->hashrnd, key_record);
+ 
+ 	head = select_bucket(htab, hash);
+ 
+ 	/* lookup the key */
+-	l = lookup_nulls_elem_raw(head, hash, key, key_size, htab->n_buckets, NULL);
+-
++	l = lookup_nulls_elem_raw(head, hash, key, key_size, htab->n_buckets, key_record);
+ 	if (!l)
+ 		goto find_first_elem;
+ 
+@@ -1017,8 +1039,7 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+ 
+ 	if (next_l) {
+ 		/* if next elem in this hash list is non-zero, just return it */
+-		memcpy(next_key, next_l->key, key_size);
+-		return 0;
++		return htab_copy_next_key(htab, next_key, next_l->key, key_size);
+ 	}
+ 
+ 	/* no more elements in this hash list, go to the next bucket */
+@@ -1035,8 +1056,7 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+ 					  struct htab_elem, hash_node);
+ 		if (next_l) {
+ 			/* if it's not empty, just return it */
+-			memcpy(next_key, next_l->key, key_size);
+-			return 0;
++			return htab_copy_next_key(htab, next_key, next_l->key, key_size);
+ 		}
+ 	}
+ 
+@@ -1216,7 +1236,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
+ 	if (bpf_map_has_dynptr_key(&htab->map)) {
+ 		int copy_err;
+ 
+-		copy_err = htab_copy_dynptr_key(htab, l_new->key, key, key_size);
++		copy_err = htab_copy_dynptr_key(htab, l_new->key, key, key_size, true);
+ 		if (copy_err) {
+ 			bpf_mem_cache_free(&htab->ma, l_new);
+ 			l_new = ERR_PTR(copy_err);
 -- 
 2.29.2
 
