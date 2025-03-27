@@ -1,92 +1,105 @@
-Return-Path: <bpf+bounces-54834-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54835-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F1F5A73F17
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 20:52:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37DD1A73FC7
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 22:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7BFB3A48D0
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 19:48:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 865AB17D8E9
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 21:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6501D1C68BE;
-	Thu, 27 Mar 2025 19:48:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06ECE1D6DA3;
+	Thu, 27 Mar 2025 20:57:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RyWbkIkQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IobFMYmC"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75B318DB1D;
-	Thu, 27 Mar 2025 19:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9B41624C2;
+	Thu, 27 Mar 2025 20:57:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743104887; cv=none; b=u+grhobKtcpfYEF84kjVOcSzC7cCgUniELd9w86rsS+9+0rqQB35LtXIufSHtKo9sttzmQrGgFRFrs5X7kgFh7iwAzm1UcpVJcGjVw6EZ0F277vRhhP7AJl1R7/gBu34ovhw6tgW1VNYojPWd1ZKG6nyRDYQd4dXPNXkO51xYY4=
+	t=1743109023; cv=none; b=BUzsbPonVCSfdM7HU3hucoY3AOI++MvHRpwK6CerwcKn8Ghs4z0YP1JbeBjCQRkKmp71y5iHYo23GvVzK+NQd7eq7jgefJ7dKfGVZas8oOuHfXZ/fMgnVTNtsieHUhWrr8lVK+/O5CPKAvRpcGFe1O9kgxppcLeQkmc8fwxLxlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743104887; c=relaxed/simple;
-	bh=28kjruSiqh684ht2B0qQ4T/a+5Cnx5UQ0hJSQyVknzo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WK/IurYHqmlyCqZi80KJ74/mudWcN/MSb0l7lL7i0nk2Rn4ACyTW8Fh4ZutPRzlBjaAdimHxtzeYJONYCuqNiUol/nww0olyh1TJGHiVH5AJ9P8B74yfoKo7ngs13eYl2cnmxoXReOFp2g90LL7KK/AEZov81CDT8WxqqAjl96w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RyWbkIkQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C2F3C4CEDD;
-	Thu, 27 Mar 2025 19:48:04 +0000 (UTC)
+	s=arc-20240116; t=1743109023; c=relaxed/simple;
+	bh=k965J4r67f9gDf6M03ogXhOMMMJERpqaXsXopGkUyrI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IFnJt6KPjaILho5BkbSAeq8bAihkCKL5tdi+IzHydjgf+Iq9Rd1/0B9a1JOIjpCoPj1lcTa2zZ5ELaEA4Hn5HKRObfYpqK2NKDlK5SCLtLF08HI2bqIZu0gpC95pFNJXCPi3olTdFlx6P0bY2HqvFgrtusl0Tv4daWkZBMc2Udw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IobFMYmC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43E2DC4CEDD;
+	Thu, 27 Mar 2025 20:56:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743104885;
-	bh=28kjruSiqh684ht2B0qQ4T/a+5Cnx5UQ0hJSQyVknzo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=RyWbkIkQM8RAwAVFK4RbHDFEFMQsIbJPevb078oNZnIDEFifYjCkVsMDthJoXENhG
-	 Opy3YFKZkoYtJGbr0DEs7XXQ1ZnlTSLc4pXES9XfrvR6xBYhMj6ANtWiTKVGrCrXv3
-	 +I2eMGatCcfqurRShuyqkSvznsejJpOLdHNSgTa5qrqhMBI9Qw1LATVpkhZhbY2mZc
-	 QemRCXM2nASmYcGxOlNUTnWAnBgKWmnOT8IMEC4/JMaXjKRBnUc8bvDcNN5W6alfLE
-	 O9g6IqlNTcpyihbkFYUKXpXhEnI3f3FYGnImCZI3gNMIHS1SFk5SMRMbANvfsHx6CP
-	 /Yk82fFB0z1yA==
-Date: Thu, 27 Mar 2025 12:48:03 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
- <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
- Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
- Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
- Yunsheng Lin <linyunsheng@huawei.com>, Pavel Begunkov
- <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>, Yuying Ma
- <yuma@redhat.com>
-Subject: Re: [PATCH net-next v4 0/3] Fix late DMA unmap crash for page pool
-Message-ID: <20250327124803.41feffed@kernel.org>
-In-Reply-To: <20250327-page-pool-track-dma-v4-0-b380dc6706d0@redhat.com>
-References: <20250327-page-pool-track-dma-v4-0-b380dc6706d0@redhat.com>
+	s=k20201202; t=1743109023;
+	bh=k965J4r67f9gDf6M03ogXhOMMMJERpqaXsXopGkUyrI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IobFMYmCjS6A956MvZWr9OlF1ezNb0xk5tv0RvQp3a8buZqkAwy7PoL6jMs9ZYQFe
+	 El7w1LBGuK7aG3IaVSRYH7QXt+shX4uil8KxhjfEgJJEPhtF5xzZAFcJLcjaSUcnCE
+	 qqXumV7+9j5utajJqflF93JPEFLD5oxVPo9BJIS2GjBkQDlMal4f4wpobPFES1B5iM
+	 ujUVmGMJa20BojdeiZO8WO2jWq91eIeaD2zMzvZNvsLdjUZJ2IRZb33YRMt0eMWXox
+	 SvS/ZeDvuVuAvJGak4rV8ZAHO5+ADFYI3pYWj/3PyF9n5kEPBJJnDG4MgZN+ioSK+u
+	 AdF7ElJfOAoIw==
+Date: Thu, 27 Mar 2025 21:56:57 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Eric Dumazet <edumazet@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
+	bpf@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>,
+	Greg Thelen <gthelen@google.com>,
+	Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] x86/alternatives: remove false sharing in
+ poke_int3_handler()
+Message-ID: <Z-W7mRAkMfFyJ6sE@gmail.com>
+References: <Z-B_R737uM31m6_K@gmail.com>
+ <CANn89i+fmyJ8p=vBpwBy38yhVMCJv8XjrTkrXSUnSGedboCM_Q@mail.gmail.com>
+ <Z-EGvjhkg6llyX24@gmail.com>
+ <CANn89iL8o0UZTpomaT1oaMxRTBv1YdaXZGwXQn3H0dDO81UyGA@mail.gmail.com>
+ <CANn89iKwPpV7v=EnK2ac5KjHSef64eyVwUST=q=+oFaqTB95sQ@mail.gmail.com>
+ <20250324113304.GB14944@noisy.programming.kicks-ass.net>
+ <Z-JsJruueRgLQ8st@gmail.com>
+ <20250325103047.GH36322@noisy.programming.kicks-ass.net>
+ <Z-KS7H6666PZ3eKv@gmail.com>
+ <20250325123119.GL36322@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250325123119.GL36322@noisy.programming.kicks-ass.net>
 
-On Thu, 27 Mar 2025 11:44:10 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> This series fixes the late dma_unmap crash for page pool first reported
-> by Yonglong Liu in [0]. It is an alternative approach to the one
-> submitted by Yunsheng Lin, most recently in [1]. The first two commits
-> are small refactors of the page pool code, in preparation of the main
-> change in patch 3. See the commit message of patch 3 for the details.
 
-We see a crash and an UAF on:
+* Peter Zijlstra <peterz@infradead.org> wrote:
 
-[   18.574787] RIP: 0010:page_pool_put_unrefed_netmem (net/core/page_pool.c=
-:465 net/core/page_pool.c:808 net/core/page_pool.c:866)=20
-[   18.575880] napi_pp_put_page (net/core/skbuff.c:998)=20
-[   18.575912] skb_release_data (./include/linux/skbuff_ref.h:40 ./include/=
-linux/skbuff_ref.h:56 net/core/skbuff.c:1079)=20
-[   18.575944] consume_skb (net/core/skbuff.c:1165 net/core/skbuff.c:1396 n=
-et/core/skbuff.c:1390)=20
+> On Tue, Mar 25, 2025 at 12:26:36PM +0100, Ingo Molnar wrote:
+> 
+> > Yeah, so I do know what #BP is, but what the heck disambiguates the two 
+> > meanings of _bp and why do we have the above jungle of an inconsistent 
+> > namespace? :-)
+> > 
+> > Picking _int3 would neatly solve all of that.
+> 
+> Sure; the most obvious case where BP would make sense, the trap entry
+> point, we already use int3 so yeah, make it int3 throughout.
 
-You should be able to repro with ping test over netdevsim
---=20
-pw-bot: cr
+Okay - I just sent out a series to do this. Found a few other things to 
+fix/improve along the way:
+
+	https://lore.kernel.org/r/20250327205355.378659-1-mingo@kernel.org
+
+Thanks,
+
+	Ingo
 
