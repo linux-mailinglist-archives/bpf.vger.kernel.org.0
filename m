@@ -1,88 +1,94 @@
-Return-Path: <bpf+bounces-54824-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54825-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 926D6A734F6
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 15:48:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 105C9A734FE
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 15:52:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABC423AD3F9
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 14:48:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFC6B7A735D
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 14:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9E182185BD;
-	Thu, 27 Mar 2025 14:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA3B21885D;
+	Thu, 27 Mar 2025 14:52:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ELSsyA9U"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SbqqRtBG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D549D1392;
-	Thu, 27 Mar 2025 14:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5957A217F34;
+	Thu, 27 Mar 2025 14:52:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743086910; cv=none; b=g8IvPhvPjbkZBr/HzF0zP84SJaf9qeLBGNvwP2fk5mESZpeV/+ds9saDH7YJeuSCDd1Lj1iYv0o2hM+D8HikwZfCvL6kT3rGddLW0Gp/xxK9QjwtEREPhhbM07TTJJm6Z9pBAL9WOXlhEF97oEtOwG7KnJCnXpqIsUzbQ7j9XPE=
+	t=1743087126; cv=none; b=mFu0giv7VphMghZS7vceHOBSleH8kh3adFb6VnAZSOW8k7I9lfYF15bPLo0obj0bbG5krlRpZwUoMvMRroBGqxkpIgleyNl5C6KJx2Y1X8ObqjPGxgP2qiWX/t2p3hTFmpb9ebgov0M1TtS8heq0QJQkfqmRC1JQhnFq2NYQRM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743086910; c=relaxed/simple;
-	bh=srbg5hU/kX9GEqR+4GxYh6W7OhpBwZ2zLL+OHMRWn/w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ad92Wq5+A2SX4alaC1tZgGKpAFL4GRUqODraVWIRojPkV43/4ZcbUeOoTf8q8XS+E4Zc2IuEE6RvhbNTjVzortPRQ0xSpc6KJHFEkNaNwuzhLDaVx1soOLhImn+h3xcEzqHNdmNk/FHjRZzANtyWwk2+A+fWYPA263qZbjuzj/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ELSsyA9U; arc=none smtp.client-ip=209.85.219.53
+	s=arc-20240116; t=1743087126; c=relaxed/simple;
+	bh=ulbvVnd77hM9vOG8fiI1yJo51l2mFcG5ZH2o5D+8nyY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cCneDAUDdDr/axfn/BuTqS3wxz4vK13GFg37KMQVdyPguQAQ+PhDEQvQ7Q2+lhF2LcUqRoqT1B3rgSNcB23sgCiJrbWnfvS3Bgg0kw+AnUCOcOpe5uZx98iQ1p8HFdxmjO7A79Xiaruwai+D6Os/mcJlypbhn+YxRjuNJR0E7BQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SbqqRtBG; arc=none smtp.client-ip=209.85.219.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6e17d3e92d9so7791386d6.1;
-        Thu, 27 Mar 2025 07:48:28 -0700 (PDT)
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6e8f8657f29so8058766d6.3;
+        Thu, 27 Mar 2025 07:52:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743086908; x=1743691708; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1743087124; x=1743691924; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9og7QHW7yZ4FvbucctyT5rc0uqSsMWzyqs7LNH+w4zk=;
-        b=ELSsyA9UCL4z+6lZDleZRpgubDb8T6/n51moSdSNd7kKwee/6h8IGhaiGN32Zz1cOV
-         apluqLdgW3OcDGGqRKxiuKBRDnwdotVZq6R/sU+yBSEJiSec3feCV/E2TBp0Ng+8rPGC
-         a8p0zfqRRPVCE+ye2jzS+D+ntQF1rC1W6qcrtPl7blT7+L3EfTfhudai6yPJH9i3tkUp
-         9ufTzs9qOWjScongbSfBo92M3wDe9A41+DjGJ8n7McoDW4Oo5vNevwBl3KAwB1sJpR/p
-         r3GzqMOWM7lQE7t+epiuG7qxgtMmPgYsRA2kpEveZKGcJuvzQZChEarlSItmfSAi+5ix
-         3WDw==
+        bh=6F0q/kxgMh4HTjwgKMB6A+5VY81dq/P/Rx36ntiQZRI=;
+        b=SbqqRtBGoMkMQk6nJZVodpugEMKmk3ZaM4p7DrZt2GNxQIeV6JHuKXCltOwvisf4gU
+         g9T6cemu0f0EHIF2X7fS81adn+gBK4FRuj1lrmCKFbMDyXiCxrJIEQXJmvbjnqqcmiC1
+         /Zg/UgLffAMwx+sMh6aAkqbJ9SNI5U9K2WEMpAOxnZgK54Bh6h36K4Otdr9I2LjTcaZX
+         HkZiGqfb86DPli/QXFUe/mLvivMQFm/EVGyt5aUxQggLpBZO1uUI+3MNZgQ2QsMQ8HCN
+         YoQevocBjjgZqQAnqNvobBfJMjEy0H8s/tl3mgZ2lwTzlh69Ef3PWSwO6QVlfxadKp4i
+         ZmDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743086908; x=1743691708;
+        d=1e100.net; s=20230601; t=1743087124; x=1743691924;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9og7QHW7yZ4FvbucctyT5rc0uqSsMWzyqs7LNH+w4zk=;
-        b=YXk/ymb6oJjyOlFRyHgLXmICr2M7OJQOi/Zb4D0BGdE6iVLzP3dZ1r6+1uUL8oPO3Z
-         m/roOcZY02dCTLVrJvYXiiartv1j+jsbPrkHU3mIhELVOSFJYrkE405WBJaIMDKOc9hH
-         6ZqJGdROxSvNJs2dNQG+nIU/42SaGMw3xH9GqASfTm5tsXF5xxFh7wD1QCDtGG12ULRi
-         aKqGQdi6pBmdlV6vqBh+BYcuyc9doy7lACsq/Tqvf+FEMAH2KjN2b8G7Jl9zRqRoHrC7
-         FUduAhp8ncnS2dTkFr+zrYBoXBye8qItggg3+K70bchSLcLKv4uujiCA95gL2rAE63Qy
-         hoGw==
-X-Forwarded-Encrypted: i=1; AJvYcCXlb5yK+x/uyDjA4zepNCdAps7OLb8XfCm/qfJcrYQci9mLy7JEGbv4oShUPpF8Oo90v1zSznrg3xH1BR4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YztvX2fonxhl0S0wMNDaNFUkAJ1dEqRne4+dVVBklnJzB0RQpiT
-	VgUpo43h1irmTi6DnzjuZ9n0OxOkpaynzafYw48d4JthdgD9JQZ/
-X-Gm-Gg: ASbGnctIEY4vx4oKBMiJ2AC5I9RS7CqvJcjG73k5UGWLcuaxPR4ab4uvyBVyySpmHDO
-	3VMLMByJLUyr4krcVx2gBHWHF7DX4lXDa9pRCE1xrzYIH3ORHN7jrq3XwaWCjUIENsbMrnImeYt
-	tOSslgrUD5v799fz3fIquEYgs2201JMzjDodH/TtrWvpqkjayoSn83ZCSCtYrpF20b8pHFr1YQk
-	c1j1Aq6uFFDvTAUrJX08PaZsqc8LS0ZeUNzTlCg9kq1rYZX2KD4+tPJpE4iClYlRKVDZwVtjSO6
-	9J6GZuBi74NIWXHgfcr6BuB40joPIIfyDcNcX6NGZktF+RBBSOtIqUnSpw6/7pd8J238ieuoVuF
-	SYjAIWpJg65w80FMvYRXQlcm/yGhzloE7vYQHY4tzTsgq0w==
-X-Google-Smtp-Source: AGHT+IFZ0iTeup043Uaqa4k8vNniJp3yD6375e4R3nCqSubhPSwoSDkhZWAnx74Ht6mOe6vI5TarXg==
-X-Received: by 2002:a05:6214:2483:b0:6d8:b3a7:75a5 with SMTP id 6a1803df08f44-6ed2399af9emr61996706d6.42.1743086907453;
-        Thu, 27 Mar 2025 07:48:27 -0700 (PDT)
+        bh=6F0q/kxgMh4HTjwgKMB6A+5VY81dq/P/Rx36ntiQZRI=;
+        b=QytrbIiUCZ2je3gkm1+pYnLsdeH547hZI/WA80G0xxpIM4oDMtNy/1cCnjAzXyNZc2
+         5ZkH4k/0Ymy0s+wT5Lb+tD29vX7QMpi8Kf9SUzw8vN7RXbp3Pch6Q7MLHMB25IgaN2p0
+         7LU/hZE5PhcSGID6qKmtRnwKbeTfL/IWd9ymtvXTncnHnkwuLx2PTcqnGiJlmnJ2EKnW
+         5oOSiDsOVFfYJ7Rsl681zmGp559H3oQ9r0hrtQTMumyjh7vXN67aobCBqjaT2AFBybCC
+         1hWEP8qq//eHVpQ3IFpl+5KoX8d8JRH0jIEXQPG7y4JF9/QlsSN6zTpHxsG5V+AqGpW+
+         h81Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXPxJr1ZFhQQvZ3+Z4hJSSwEhSdFOWnkuYVHIOpUMfDmkgi6spapEowLg+mpWInxRKUywJweqRqO/Y83AQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxtUPMZwEtpve60YEsA+Y931hMZlqOlwk7ffBaauGmZpzkrAZgr
+	RdFB+JZBPf4EM2ZrW+vHIIhMnz5thBH18SOBbVrVsgr/c1cz/SvH8H4mFlS7
+X-Gm-Gg: ASbGncv6V9nt1mhbyHUPJ9LOaIxL+d4djziEo3p3AkSi7Nu39DpvUujffVoee5+rs5Q
+	lQ9K8YJTmOnMaT6pivgKJfG8WPq89Vm2mLs7boFltPSEBiOHcRBevQX0z2lcboR8yMYtX0pvM4e
+	1SVoOSC7zSJ2bkl/0ndG9DyEP/8zbO3uiFIpYth/ES9C1bvmv6wCg8jAhuv60FMvdxXKPJ7yl5x
+	hsQlWua1+Q8FHtmcu4hyfjTU/r1htPWtm3/f8dhnB0egvNTEL88ZSTYfA1e1177YoqN3eGRnWJM
+	VTWleY+SSFib668d7AHoaKYL8c/ZhT116riBpVlZAh4n8/p4cy8uMh7YLfLuWeY6nO23hgYSMwf
+	7gDdmhtMpKZOtjcSy5pZprW4Yka+Jm2/TduI=
+X-Google-Smtp-Source: AGHT+IEoG/2aSIZRRI3VLRjKxgjxIVKISbF3fSEXZY9id3JPyrhW2IqRCw1GyMaQcZXfUYjfPwUUVA==
+X-Received: by 2002:a05:6214:1d02:b0:6e8:f4e2:26ef with SMTP id 6a1803df08f44-6ed23904822mr59197876d6.31.1743087123789;
+        Thu, 27 Mar 2025 07:52:03 -0700 (PDT)
 Received: from localhost.localdomain (219.sub-174-198-10.myvzw.com. [174.198.10.219])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6eec9645d1esm115796d6.35.2025.03.27.07.48.25
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6eec965a40bsm181656d6.61.2025.03.27.07.52.01
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 27 Mar 2025 07:48:26 -0700 (PDT)
+        Thu, 27 Mar 2025 07:52:03 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: torvalds@linux-foundation.org
 Cc: bpf@vger.kernel.org,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	martin.lau@kernel.org,
+	akpm@linux-foundation.org,
 	peterz@infradead.org,
-	linux-arm-kernel@lists.infradead.org,
+	vbabka@suse.cz,
+	bigeasy@linutronix.de,
+	rostedt@goodmis.org,
+	mhocko@suse.com,
+	shakeel.butt@linux.dev,
+	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] BPF resilient spin_lock for 6.15
-Date: Thu, 27 Mar 2025 10:48:23 -0400
-Message-Id: <20250327144823.99186-1-alexei.starovoitov@gmail.com>
+Subject: [GIT PULL] Introduce try_alloc_pages for 6.15
+Date: Thu, 27 Mar 2025 10:51:59 -0400
+Message-Id: <20250327145159.99799-1-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -90,136 +96,108 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 Hi Linus,
 
-The following changes since commit ae0a457f5d33c336f3c4259a258f8b537531a04b:
+The following changes since commit 2014c95afecee3e76ca4a56956a936e23283f05b:
 
-  bpf: Make perf_event_read_output accessible in all program types. (2025-03-18 10:21:59 -0700)
+  Linux 6.14-rc1 (2025-02-02 15:39:26 -0800)
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/bpf_res_spin_lock
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/bpf_try_alloc_pages
 
-for you to fetch changes up to 6ffb9017e9329168b3b4216d15def8e78e1b1fac:
+for you to fetch changes up to f90b474a35744b5d43009e4fab232e74a3024cae:
 
-  Merge branch 'resilient-queued-spin-lock' (2025-03-19 08:03:06 -0700)
+  mm: Fix the flipped condition in gfpflags_allow_spinning() (2025-03-15 11:18:19 -0700)
 
 ----------------------------------------------------------------
-Please merge this pull request after main BPF changes.
+Please pull after main MM changes.
 
-This patch set introduces Resilient Queued Spin Lock (or rqspinlock with
-res_spin_lock() and res_spin_unlock() APIs).
+The pull includes work from Sebastian, Vlastimil and myself
+with a lot of help from Michal and Shakeel.
+This is a first step towards making kmalloc reentrant to get rid
+of slab wrappers: bpf_mem_alloc, kretprobe's objpool, etc.
+These patches make page allocator safe from any context.
 
-This is a qspinlock variant which recovers the kernel from a stalled
-state when the lock acquisition path cannot make forward progress. This
-can occur when a lock acquisition attempt enters a deadlock situation
-(e.g. AA, or ABBA), or more generally, when the owner of the lock (which
-we’re trying to acquire) isn’t making forward progress.
-Deadlock detection is the main mechanism used to provide instant recovery,
-with the timeout mechanism acting as a final line of defense. Detection is
-triggered immediately when beginning the waiting loop of a lock slow path.
+Vlastimil kicked off this effort at LSFMM 2024:
+https://lwn.net/Articles/974138/
+and we continued at LSFMM 2025:
+https://lore.kernel.org/all/CAADnVQKfkGxudNUkcPJgwe3nTZ=xohnRshx9kLZBTmR_E1DFEg@mail.gmail.com/
 
-Additionally, BPF programs attached to different parts of the kernel
-can introduce new control flow into the kernel, which increases the
-likelihood of deadlocks in code not written to handle reentrancy. There
-have been multiple syzbot reports surfacing deadlocks in internal kernel
-code due to the diverse ways in which BPF programs can be attached to
-different parts of the kernel.  By switching the BPF subsystem’s lock
-usage to rqspinlock, all of these issues are mitigated at runtime.
+Why:
+SLAB wrappers bind memory to a particular subsystem
+making it unavailable to the rest of the kernel.
+Some BPF maps in production consume Gbytes of preallocated
+memory. Top 5 in Meta: 1.5G, 1.2G, 1.1G, 300M, 200M.
+Once we have kmalloc that works in any context BPF map
+preallocation won't be necessary.
 
-This spin lock implementation allows BPF maps to become safer and remove
-mechanisms that have fallen short in assuring safety when nesting
-programs in arbitrary ways in the same context or across different
-contexts.
+How:
+Synchronous kmalloc/page alloc stack has multiple
+stages going from fast to slow:
+cmpxchg16 -> slab_alloc -> new_slab -> alloc_pages ->
+rmqueue_pcplist -> __rmqueue.
+rmqueue_pcplist was already relying on trylock.
+This set changes rmqueue_bulk/rmqueue_buddy to attempt
+a trylock and return ENOMEM if alloc_flags & ALLOC_TRYLOCK.
+Then it wraps this functionality into try_alloc_pages() helper.
+We make sure that the logic is sane in PREEMPT_RT.
+End result: try_alloc_pages()/free_pages_nolock() are
+safe to call from any context.
+try_kmalloc() for any context with similar trylock
+approach will follow. It will use try_alloc_pages()
+when slab needs a new page.
+Though such try_kmalloc/page_alloc() is an opportunistic
+allocator, this design ensures that the probability of
+successful allocation of small objects (up to one
+page in size) is high.
 
-We run benchmarks that stress locking scalability and perform comparison
-against the baseline (qspinlock). For the rqspinlock case, we replace
-the default qspinlock with it in the kernel, such that all spin locks in
-the kernel use the rqspinlock slow path. As such, benchmarks that stress
-kernel spin locks end up exercising rqspinlock.
+Even before we have try_kmalloc(), we already use
+try_alloc_pages() in BPF arena implementation and it's
+going to be used more extensively in BPF.
 
-More details in the merge commit cover letter.
+Once the set was applied to bpf-next we ran into two
+two small conflicts with MM tree as reported by Stephen:
+https://lore.kernel.org/bpf/20250311120422.1d9a8f80@canb.auug.org.au/
+https://lore.kernel.org/bpf/20250312145247.380c2aa5@canb.auug.org.au/
 
-In this patchset we convert BPF hashtab, LPM, and percpu_freelist
-to res_spin_lock:
-  kernel/bpf/hashtab.c         | 102 ++++++++++++++++++++++++-----------
-  kernel/bpf/lpm_trie.c        |  25 ++++++++++-----------
-  kernel/bpf/percpu_freelist.c | 113 +++++++++++++++++------------------
-  kernel/bpf/percpu_freelist.h |   4 ++--
-  4 files changed, 73 insertions(+), 171 deletions(-)
+So Andrew suggested to keep thing as-is instead of moving
+patchset between the trees before merge window:
+https://lore.kernel.org/all/20250317132710.fbcde1c8bb66f91f36e78c89@linux-foundation.org/
 
-Other BPF mechansims: queue_stack, local storage, ringbuf
-will be converted in the follow-ups.
+Note "locking/local_lock: Introduce localtry_lock_t" patch is
+later used in Vlastimil's sheaves and in Shakeel's changes.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ----------------------------------------------------------------
-Alexei Starovoitov (1):
-      Merge branch 'resilient-queued-spin-lock'
+Alexei Starovoitov (6):
+      mm, bpf: Introduce try_alloc_pages() for opportunistic page allocation
+      mm, bpf: Introduce free_pages_nolock()
+      memcg: Use trylock to access memcg stock_lock.
+      mm, bpf: Use memcg in try_alloc_pages().
+      bpf: Use try_alloc_pages() to allocate pages for bpf needs.
+      Merge branch 'bpf-mm-introduce-try_alloc_pages'
 
-Kumar Kartikeya Dwivedi (24):
-      locking: Move MCS struct definition to public header
-      locking: Move common qspinlock helpers to a private header
-      locking: Allow obtaining result of arch_mcs_spin_lock_contended
-      locking: Copy out qspinlock.c to kernel/bpf/rqspinlock.c
-      rqspinlock: Add rqspinlock.h header
-      rqspinlock: Drop PV and virtualization support
-      rqspinlock: Add support for timeouts
-      rqspinlock: Hardcode cond_acquire loops for arm64
-      rqspinlock: Protect pending bit owners from stalls
-      rqspinlock: Protect waiters in queue from stalls
-      rqspinlock: Protect waiters in trylock fallback from stalls
-      rqspinlock: Add deadlock detection and recovery
-      rqspinlock: Add a test-and-set fallback
-      rqspinlock: Add basic support for CONFIG_PARAVIRT
-      rqspinlock: Add macros for rqspinlock usage
-      rqspinlock: Add entry to Makefile, MAINTAINERS
-      rqspinlock: Add locktorture support
-      bpf: Convert hashtab.c to rqspinlock
-      bpf: Convert percpu_freelist.c to rqspinlock
-      bpf: Convert lpm_trie.c to rqspinlock
-      bpf: Introduce rqspinlock kfuncs
-      bpf: Implement verifier support for rqspinlock
-      bpf: Maintain FIFO property for rqspinlock unlock
-      selftests/bpf: Add tests for rqspinlock
+Sebastian Andrzej Siewior (1):
+      locking/local_lock: Introduce localtry_lock_t
 
- MAINTAINERS                                        |   2 +
- arch/arm64/include/asm/rqspinlock.h                |  93 +++
- arch/x86/include/asm/rqspinlock.h                  |  33 +
- include/asm-generic/Kbuild                         |   1 +
- include/asm-generic/mcs_spinlock.h                 |   6 +
- include/asm-generic/rqspinlock.h                   | 250 +++++++
- include/linux/bpf.h                                |  10 +
- include/linux/bpf_verifier.h                       |  19 +-
- kernel/bpf/Makefile                                |   2 +-
- kernel/bpf/btf.c                                   |  26 +-
- kernel/bpf/hashtab.c                               | 102 +--
- kernel/bpf/lpm_trie.c                              |  25 +-
- kernel/bpf/percpu_freelist.c                       | 113 +---
- kernel/bpf/percpu_freelist.h                       |   4 +-
- kernel/bpf/rqspinlock.c                            | 737 +++++++++++++++++++++
- kernel/bpf/rqspinlock.h                            |  48 ++
- kernel/bpf/syscall.c                               |   6 +-
- kernel/bpf/verifier.c                              | 248 +++++--
- kernel/locking/lock_events_list.h                  |   5 +
- kernel/locking/locktorture.c                       |  57 ++
- kernel/locking/mcs_spinlock.h                      |  10 +-
- kernel/locking/qspinlock.c                         | 193 +-----
- kernel/locking/qspinlock.h                         | 201 ++++++
- .../selftests/bpf/prog_tests/res_spin_lock.c       |  98 +++
- tools/testing/selftests/bpf/progs/irq.c            |  53 ++
- tools/testing/selftests/bpf/progs/res_spin_lock.c  | 143 ++++
- .../selftests/bpf/progs/res_spin_lock_fail.c       | 244 +++++++
- 27 files changed, 2312 insertions(+), 417 deletions(-)
- create mode 100644 arch/arm64/include/asm/rqspinlock.h
- create mode 100644 arch/x86/include/asm/rqspinlock.h
- create mode 100644 include/asm-generic/rqspinlock.h
- create mode 100644 kernel/bpf/rqspinlock.c
- create mode 100644 kernel/bpf/rqspinlock.h
- create mode 100644 kernel/locking/qspinlock.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/res_spin_lock.c
- create mode 100644 tools/testing/selftests/bpf/progs/res_spin_lock.c
- create mode 100644 tools/testing/selftests/bpf/progs/res_spin_lock_fail.c
+Vlastimil Babka (1):
+      mm: Fix the flipped condition in gfpflags_allow_spinning()
+
+ include/linux/bpf.h                 |   2 +-
+ include/linux/gfp.h                 |  23 ++++
+ include/linux/local_lock.h          |  70 +++++++++++++
+ include/linux/local_lock_internal.h | 146 ++++++++++++++++++++++++++
+ include/linux/mm_types.h            |   4 +
+ include/linux/mmzone.h              |   3 +
+ kernel/bpf/arena.c                  |   5 +-
+ kernel/bpf/syscall.c                |  23 +++-
+ lib/stackdepot.c                    |  10 +-
+ mm/internal.h                       |   1 +
+ mm/memcontrol.c                     |  53 +++++++---
+ mm/page_alloc.c                     | 203 +++++++++++++++++++++++++++++++++---
+ mm/page_owner.c                     |   8 +-
+ 13 files changed, 509 insertions(+), 42 deletions(-)
 
