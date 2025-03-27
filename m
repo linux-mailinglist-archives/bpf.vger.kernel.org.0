@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-54792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1844A72B59
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 09:23:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69CC4A72B60
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 09:24:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA96C1898A3F
-	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 08:23:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E01B3B8626
+	for <lists+bpf@lfdr.de>; Thu, 27 Mar 2025 08:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68EC1205515;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF57D205AA6;
 	Thu, 27 Mar 2025 08:23:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED1A205500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E95420550C
 	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 08:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743063783; cv=none; b=QNAGVUnQqdJSwiXszlJrbwz5LvB7E/GyUR4sxOEDFYhEZ4Yojqx6ieqhivtkmAhTtvrxdH1EBfHMDmMXpHMIK0SHk/xBivgV4gPejgKDUyDls0Y8SjHL1NYbbVOx9IWt1i1zZd/rlUUewXHMb5oySdC1RAtG2YJ6KSFBj+TSoOg=
+	t=1743063783; cv=none; b=UT2Ia3Ja6eVFidAQjpBaZ4LipAX09hwWcxGh34kpZxLCZXVbqim+VmtCp+8oJ0y1zu+UHGH2M7bEQ5d7ZFiasdCE/6lVtI5EPL50oNdeAnmLuUIJmhlkMTQUBvYo8L2SgcMBprAAdyUOHx4al6kcFaydU5aBDupbRBlnnuEAIr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1743063783; c=relaxed/simple;
-	bh=DsZUziRlSUFgWXMaNb+yMzDK1jBAmiiDwj49VMiU6vc=;
+	bh=3Tq+ed5Zbr9kviCfTKcg4d6tfz28BG8aSvWjUR294ns=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=t0McBGK5Lx8hGjpBJ2637HY2bjwHXMmicVsS/paUD2j81ri8Hhq+FzPynvSUlEN027sG86J+ztnIm6faz/P3QH3iHutbKhRVemsv946egs56H1C9VFHcKV01R1ZsByHraCY3TD3HfR3AnsQxCvf4PtTX1o0kc5LhUkZ6+zZm3EY=
+	 MIME-Version; b=jFSvIwGP87uUzMxtwNpjsodSolhJ4TV/9KFoGIHESUjTou+L6EX83Bxu3qhBdJUoQThSNUqkws+u+QMvvbJc/TfSmS0f2KdRhGh+2Ze0ACElI9MZ6OOyKwI7q5lKQEM893yDj8BwBDEbwcATghbAgt8GZACaNMZ00YmbLGz6BjU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZNc8p0MsWz4f3m7L
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZNc8p4GtPz4f3lfp
 	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:34 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 7FA001A0ECD
-	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:58 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 11FAE1A1195
+	for <bpf@vger.kernel.org>; Thu, 27 Mar 2025 16:22:59 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgAXe1_XCuVnluzSHg--.7420S17;
+	by APP4 (Coremail) with SMTP id gCh0CgAXe1_XCuVnluzSHg--.7420S18;
 	Thu, 27 Mar 2025 16:22:58 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
@@ -53,9 +53,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf-next v3 13/16] bpf: Enable the creation of hash map with dynptr key
-Date: Thu, 27 Mar 2025 16:34:52 +0800
-Message-Id: <20250327083455.848708-14-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v3 14/16] selftests/bpf: Add bpf_dynptr_user_init() helper
+Date: Thu, 27 Mar 2025 16:34:53 +0800
+Message-Id: <20250327083455.848708-15-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20250327083455.848708-1-houtao@huaweicloud.com>
 References: <20250327083455.848708-1-houtao@huaweicloud.com>
@@ -66,10 +66,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXe1_XCuVnluzSHg--.7420S17
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFyDuFW5KF4UKr47Jr18Krg_yoWfurX_Cr
-	4YqF1rG398AFZ2qF15CrsxXry8Gw48Xr18Zw4DXF9FyFs8X34kJr4YvryrCF9xuw4UWFy5
-	Gas8Z39IqFnxZjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID:gCh0CgAXe1_XCuVnluzSHg--.7420S18
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw1kuw15WFykGr18Zry3twb_yoWkWFXE9F
+	W0gF93Jr4DuF17Kr1jkrn8urZ5Cw45Gr48XrWDXry3Gr18Xa15XF4kCrs5Zas7W398Gay3
+	tF4kZry3Jr4UKjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
 	9fnUUIcSsGvfJTRUUUbgxYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
 	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r126s
 	0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
@@ -88,32 +88,33 @@ X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-The support for bpf_dynptr key in hash map is in place, therefore
-enable the creation of hash map with dynptr key in map_create().
+Add bpf_dynptr_user_init() to initialize a bpf_dynptr object. It will be
+used by test_progs and bench. User can dereference the {data|size}
+fields directly to get the address and length of the dynptr object.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/syscall.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/testing_helpers.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 24599749dc6f9..f5bda7fdb746f 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1262,9 +1262,10 @@ static int map_check_btf(struct bpf_map *map, struct bpf_token *token,
- 			ret = -EACCES;
- 			goto free_map_tab;
- 		}
--		/* Enable for BPF_MAP_TYPE_HASH later */
--		ret = -EOPNOTSUPP;
--		goto free_map_tab;
-+		if (map->map_type != BPF_MAP_TYPE_HASH) {
-+			ret = -EOPNOTSUPP;
-+			goto free_map_tab;
-+		}
- 	} else if (IS_ERR(map->key_record)) {
- 		/* Return an error early even the bpf program doesn't use it */
- 		ret = PTR_ERR(map->key_record);
+diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
+index 46d7f7089f636..d93ee5bfa7f6f 100644
+--- a/tools/testing/selftests/bpf/testing_helpers.h
++++ b/tools/testing/selftests/bpf/testing_helpers.h
+@@ -58,4 +58,13 @@ int get_xlated_program(int fd_prog, struct bpf_insn **buf, __u32 *cnt);
+ int testing_prog_flags(void);
+ bool is_jit_enabled(void);
+ 
++/* sys_bpf() will check the validity of data and size */
++static inline void bpf_dynptr_user_init(void *data, __u32 size,
++					struct bpf_dynptr *dynptr)
++{
++	dynptr->data = data;
++	dynptr->size = size;
++	dynptr->reserved = 0;
++}
++
+ #endif /* __TESTING_HELPERS_H */
 -- 
 2.29.2
 
