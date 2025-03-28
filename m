@@ -1,241 +1,157 @@
-Return-Path: <bpf+bounces-54862-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54863-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9B0DA74F1E
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 18:18:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71BB3A74F2C
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 18:22:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35B0D7A7409
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 17:17:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 118EC164C11
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 17:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426211DDA36;
-	Fri, 28 Mar 2025 17:14:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE861C8FD7;
+	Fri, 28 Mar 2025 17:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KmhijbxL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ir+RP5et"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A661DD0DC
-	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 17:14:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3566823CB
+	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 17:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743182088; cv=none; b=nrR/0cBwsrN09GMDCIhY7byqNj4MQ0lTqH0INkYyHANs/0sqsz0QySzuQbaM3wsWPK/RgylE8KzEERIwbe6LK//k1v97gpNLB3b8FgYAP7NsolSBCI5JW2dIY1EfZGJHBGdcoEwywoBgR81+DUiw51mS5RGjXCRB4R17JYiHR78=
+	t=1743182519; cv=none; b=c7hDW3ABua/+chXtsZevgszDsiYBh4hTnWvREtILcLEU9tk533FUjnhdVoSnuyfBsenS3ltxXQISdgx8049KQWvOo/UH1UNuq3Brwzuwm0BC0UsC5jtvMl77HWa6p0ap5izMsnVC46m/TKBgGIrha29UGQkDxB2OGhNDelCIpgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743182088; c=relaxed/simple;
-	bh=I+uh82Evs8NTTnpNOr7MUupMU9rHspQZqRTYBb2+XGw=;
+	s=arc-20240116; t=1743182519; c=relaxed/simple;
+	bh=LJhEmdFTwSEQgmi6em0HR+PW3qTkOAsaTNGOUALza/w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gL1EDu/WuSntEK4dR7ZLSsIWcqxHQ9ACxwb7fL6r8RHbb8x5eEfxOG40fTShLeZ6cMOlYNGX6dEXv/Gc7JuD9PUumIGFNuSZgamF1PsCYIZjWpqpW4L0QSSWhh4AR9iPY+0RLuNZ7vxRcr/6Qb15nroYxK1sVK+mpHSLdbfStHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KmhijbxL; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=F4n/xsLf9zRkZuNr0gpTlPszE0VNubUXEPdXwG0Mou59bXD7IQp5AJf4DQrtF3FqYE1GeYKppZguL5xWGAEhXGEkbJE+/UDbjxrPSQ4TQ8vSS8r9pAsywo3Y2wF9b/HeOd8DOdjLEof4FRGh06FakyPjHiFU6dvnm8LwIObwMPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ir+RP5et; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2ff6e91cff5so4388744a91.2
-        for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 10:14:47 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-225df540edcso70257415ad.0
+        for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 10:21:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743182086; x=1743786886; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1743182517; x=1743787317; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vApnCDibFrqUcI36uG0RrYK1S6ltT5tJqiBxSM6N9FY=;
-        b=KmhijbxLd44WVwWk7g75PorVU7gWKTqp8kXr4hYkKGYOfSOD1BAitS7AI0dRAKBUYT
-         OU357PBJR7yjgEqxlIVGd/X6KVw3xov34cvRykV+n/Fc1coWn/mSbrGVBu+kIDrflxsT
-         6kK63TINKDPDohv2SNVDhSFN6xw82x7UOeTmiXY3XzsXhXkYafrXq36gZ9LWOjLSTy6T
-         WR3bSbyhzQhUAtOr1V5O6Tg8oZhq+M2/ZL6E1q4IZqsk0IaJHJ1sCN2CvmwT3oJH50e8
-         O6mehxtRHl90EK612XgnTu1ftD24yQEbffkoEBp8Nf4JUt2NccSloi78EDUP9JSNrkJa
-         gtJA==
+        bh=TLicBjbj/212seg4QYb8w1t4cVicjiCqi7CsUijIHWQ=;
+        b=ir+RP5etfLEqeotxVeGT+AvYQofiPqkAbF6eV7dWxn3L6IFeQPs1ek5L4cRe9YIGJD
+         +8+dYfKQ9lA0DGJLaxbBCLjylUjnNl0W28w1UST1U+nP904Ay7GYbgjxSXuWROkYfSJI
+         p+aK5cZ71vCVVfht0BTGgT45e/ljeDHBy41c0RsrufKe6BTr2jHzcwJgUhyNqJYroL9F
+         lbgYFmXppahZM6nAeX5aJjHr9P7ETu0QWHAbV/o0035pwT0WrduWgZEHDONZO/EZbEQs
+         AczARdWP26MOcBNWcHpqziC6WamnHwQmG1eLquEmMA/0gtLLGa3bzBvILKJo28PE3t1p
+         Ga9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743182086; x=1743786886;
+        d=1e100.net; s=20230601; t=1743182517; x=1743787317;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vApnCDibFrqUcI36uG0RrYK1S6ltT5tJqiBxSM6N9FY=;
-        b=hKrn+tXp/FUr71QAVpV5TggSHc1nlMiR/o2R5YmifjC0lNmQN/K/Exx4K1Pcc7d7hM
-         3I/RwmpqMRSGd6FzgURXqVQ5ivHglSVfsfL646soaS3kvX/JPZ2BWU4AnLcmepWRYvzS
-         sebERvZ+RctmEejzs0vpsm5LY+Hzi4ycXqr4rN4AIHMtmp/6O0+8lT8gQl84BKyvG9yp
-         X03BY35W9ntNYKQc60M3O9bixo8bWmYjB6hLcqkItUk+Zx8dtIBHb5r5bSycRVzNzLjA
-         dyzA/DXiYVnwXfM+QLbXJhKGZHLOWPVkid3COWVxCUb7h/POJFlPkQV5vR1a04Moiszx
-         Pnrw==
-X-Gm-Message-State: AOJu0YxGTQvSykEWWhx2zDTOA/Ll3orw53ihQYO3UKVsUPTPc2GISD/3
-	SVrvxc0NxL6xP601XCK/WRAyUs/S+vGFCM240jBqkiXsqhKe8/o660+2EEphBdX6HVZEs1mYs0J
-	FdFvj3TM7ZRsv7jtcPw6IE/zvOvU=
-X-Gm-Gg: ASbGnctAZfvfXeb7x032tG1oh7h71BAmRj70xBckfhzMXg8EHtAF/GDtVPojFk3HSXe
-	6/vmXJAEokpNpVro07kWB3q1FQ+Z9L7leKSvt8kCSNg2GIParaFTjiwH6+YexwVvtBPr9mfiw+2
-	NfoKYwIPXZeB5m6QLAX+SStxpnDeux1MiNWtVOMj4+kzXakzpGrFE3
-X-Google-Smtp-Source: AGHT+IFlx3zyRWCnkqRjQiQ2t0rm5+cVV3cywaPdn2LtuDcomZRrsihElZp1O2MnUoAaK1tj5nTJ83W5d0jCfOyrdpU=
-X-Received: by 2002:a17:90b:2643:b0:2ee:741c:e9f4 with SMTP id
- 98e67ed59e1d1-30531fa4e8fmr106605a91.11.1743182086166; Fri, 28 Mar 2025
- 10:14:46 -0700 (PDT)
+        bh=TLicBjbj/212seg4QYb8w1t4cVicjiCqi7CsUijIHWQ=;
+        b=X9fzXSHL51JwoXdVBikjwvsCLMuU4gCnacaKBZg8HzJxJUNR262v+PMmlAnvmWb0Q1
+         1ws637tLeOsPIkeHpZkIqP044a8kyWv+smyBkjxOGfwmMJj/AvdH3jhS16lCKWEeH3di
+         FOGuHzADexSef82evqE15eNSB/xlxPZRGv6O5at6djIC36/fCiqlJgFWRrCrB6skpgLO
+         OTRsQvqh8mQyXMBHP1oP2xC17uO/3mgDh0GvArXbKCA5cjR/nYGjx2EBlARkbOyVCW29
+         4wSXm/nV1aFL4cilRDe2ODMNXKo4U1h/jxHPHq+vKDXPzAwkqbgce5BRhFay2ABJjMsx
+         96Ug==
+X-Forwarded-Encrypted: i=1; AJvYcCWBIHn0O3CDxPJ25Q3ElDKwFQYwTqJ99aNmX+nQ3ykYMvxWZ879cAdcw5vVM9ljLX7qAaA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxk3v/YVNf7Alvh0ZcNcC+zJm9xQ3JtrO7hKiYM+5ieziyzkfRc
+	eTGOL60QhkUzD+dStDN1IqYeTEs8aLEqnynWtVxpkCOzEDB2ONWURT4dxmmHjHHaDde6Ukvfman
+	n+JrdoPk4yK6o2Sj9F/GoUvp35bk=
+X-Gm-Gg: ASbGncupCQhs8VeG6KefBU6Kw6ETvglYx0UeGQvZQVdJLadnAXmQwuf+Hz2qNWeLL45
+	AlOy77FrtxFlz0jrAtYqiY44Xofw6UJRMOfeXX6gWgVKRIWkeXx5i+6kLL61LPCz4HidqnMkkHz
+	m1mT7W8bDQmw1pP3brt0LGpGnLS89V4rkyad+5xCuQWg==
+X-Google-Smtp-Source: AGHT+IGD9gnTAle4v7hVARgWNzQH92AUKyz/2Aw+fO4qQPla0+uGDBX7htTdRj2ekga2Rhq8DuiOuwuQVaJVYAxalx8=
+X-Received: by 2002:a05:6a00:1151:b0:728:f21b:ce4c with SMTP id
+ d2e1a72fcca58-7397f369169mr572605b3a.5.1743182517123; Fri, 28 Mar 2025
+ 10:21:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250326180714.44954-1-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20250326180714.44954-1-mykyta.yatsenko5@gmail.com>
+References: <7e46c811-e85b-4001-8fac-b16aa0e9815f@linux.dev>
+In-Reply-To: <7e46c811-e85b-4001-8fac-b16aa0e9815f@linux.dev>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 28 Mar 2025 10:14:33 -0700
-X-Gm-Features: AQ5f1Jqn_eTQSK-DiZ9b3Fh2r-nIUFfboVVRLbjXXmKzfMmVPNj2Jq4XNDxz1pw
-Message-ID: <CAEf4BzY_rbdXFDyYN=s7c25R5kwpBX5-zxQd8Q+6wX2N0r6Uhw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: add getters for BTF.ext func and line info
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
+Date: Fri, 28 Mar 2025 10:21:44 -0700
+X-Gm-Features: AQ5f1Jo4A5l75XMtG0rjpoLOVx-PeKVZzfQE16ZwwXMC0yjoz1EnSn26XB6839c
+Message-ID: <CAEf4BzaEg1mPag0-bAPVeJhj-BL_ssABBAOc_AhFvOLi2GkrEg@mail.gmail.com>
+Subject: Re: Question: fentry on kernel func optimized by compiler
+To: Tao Chen <chen.dylane@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 26, 2025 at 11:07=E2=80=AFAM Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
+On Thu, Mar 27, 2025 at 9:03=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> wr=
+ote:
 >
-> From: Mykyta Yatsenko <yatsenko@meta.com>
+> Hi,
 >
-> Introducing new libbpf API getters for BTF.ext func and line info,
-> namely:
->   bpf_program__func_info
->   bpf_program__func_info_cnt
->   bpf_program__func_info_rec_size
->   bpf_program__line_info
->   bpf_program__line_info_cnt
->   bpf_program__line_info_rec_size
+> I recently encountered a problem when using fentry to trace kernel
+> functions optimized by compiler, the specific situation is as follows:
+> https://github.com/bpftrace/bpftrace/issues/3940
 >
-> This change enables scenarios, when user needs to load bpf_program
-> directly using `bpf_prog_load`, instead of higher-level
-> `bpf_object__load`. Line and func info are required for checking BTF
-> info in verifier; verification may fail without these fields if, for
-> example, program calls `bpf_obj_new`.
+> Simply put, some functions have been optimized by the compiler. The
+> original function names are found through BTF, but the optimized
+> functions are the ones that exist in kallsyms_lookup_name. Therefore,
+> the two do not match.
 >
-
-Really, bpf_obj_new() needs func_info/line_info? Can you point where
-in the verifier we check this, curious why we do that.
-
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
->  tools/lib/bpf/libbpf.c   | 30 ++++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.h   |  8 ++++++++
->  tools/lib/bpf/libbpf.map |  6 ++++++
->  3 files changed, 44 insertions(+)
+>          func_proto =3D btf_type_by_id(desc_btf, func->type);
+>          if (!func_proto || !btf_type_is_func_proto(func_proto)) {
+>                  verbose(env, "kernel function btf_id %u does not have a
+> valid func_proto\n",
+>                          func_id);
+>                  return -EINVAL;
+>          }
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 6b85060f07b3..bc15526ed84c 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -9455,6 +9455,36 @@ int bpf_program__set_log_buf(struct bpf_program *p=
-rog, char *log_buf, size_t log
->         return 0;
->  }
+>          func_name =3D btf_name_by_offset(desc_btf, func->name_off);
+>          addr =3D kallsyms_lookup_name(func_name);
+>          if (!addr) {
+>                  verbose(env, "cannot find address for kernel function
+> %s\n",
+>                          func_name);
+>                  return -EINVAL;
+>          }
 >
-> +void *bpf_program__func_info(struct bpf_program *prog)
-
-const struct bpf_program, here and everywhere else
-
-> +{
-> +       return prog->func_info;
-> +}
-> +
-> +__u32 bpf_program__func_info_cnt(struct bpf_program *prog)
-> +{
-> +       return prog->func_info_cnt;
-> +}
-> +
-> +__u32 bpf_program__func_info_rec_size(struct bpf_program *prog)
-> +{
-> +       return prog->func_info_rec_size;
-> +}
-> +
-> +void *bpf_program__line_info(struct bpf_program *prog)
-
-should be `const void *`, if we went with `void *`, but see below about typ=
-es
-
-> +{
-> +       return prog->line_info;
-> +}
-> +
-> +__u32 bpf_program__line_info_cnt(struct bpf_program *prog)
-> +{
-> +       return prog->line_info_cnt;
-> +}
-> +
-> +__u32 bpf_program__line_info_rec_size(struct bpf_program *prog)
-> +{
-> +       return prog->line_info_rec_size;
-> +}
-> +
-
-As Eduard mentioned, I don't think `void *` is a good interface. We
-have bpf_line_info_min and bpf_func_info_min structs in
-libbpf_internal.h. We have never changed those types, so at this point
-I feel comfortable enough to expose them as API types. Let's drop the
-_min suffix, and move definitions to btf.h?
-
-The only question is whether to document that each record could be
-bigger in size than sizeof(struct bpf_func_info) (and similarly for
-bpf_line_info), and thus user should always care about
-func_info_rec_size? Or, to keep it ergonomic and simple, and basically
-always return sizeof(struct bpf_func_info) data (and if it so happens
-that we'll in the future have different record sizes, then we'll
-create a local trimmed representation for user; it's a pain, but we
-won't be really stuck from API compatibility standpoint).
-
-I'd go with simple and ergonomic, given we haven't ever extended these
-records, and it's unlikely we will. Those types work well and provide
-enough information as is. So let's not even add _rec_size() APIs (at
-least for now; we can always revisit this later)
-
-pw-bot: cr
-
->  #define SEC_DEF(sec_pfx, ptype, atype, flags, ...) {                    =
-   \
->         .sec =3D (char *)sec_pfx,                                        =
-     \
->         .prog_type =3D BPF_PROG_TYPE_##ptype,                            =
-     \
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index e0605403f977..29a5fd7f51f0 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -940,6 +940,14 @@ LIBBPF_API int bpf_program__set_log_level(struct bpf=
-_program *prog, __u32 log_le
->  LIBBPF_API const char *bpf_program__log_buf(const struct bpf_program *pr=
-og, size_t *log_size);
->  LIBBPF_API int bpf_program__set_log_buf(struct bpf_program *prog, char *=
-log_buf, size_t log_size);
+> I have made a simple statistics and there are approximately more than
+> 2,000 functions in Ubuntu 24.04.
 >
-> +LIBBPF_API void *bpf_program__func_info(struct bpf_program *prog);
-> +LIBBPF_API __u32 bpf_program__func_info_cnt(struct bpf_program *prog);
-> +LIBBPF_API __u32 bpf_program__func_info_rec_size(struct bpf_program *pro=
-g);
-> +
-> +LIBBPF_API void *bpf_program__line_info(struct bpf_program *prog);
-> +LIBBPF_API __u32 bpf_program__line_info_cnt(struct bpf_program *prog);
-> +LIBBPF_API __u32 bpf_program__line_info_rec_size(struct bpf_program *pro=
-g);
-> +
->  /**
->   * @brief **bpf_program__set_attach_target()** sets BTF-based attach tar=
-get
->   * for supported BPF program types:
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index d8b71f22f197..a5d83189c084 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -437,6 +437,12 @@ LIBBPF_1.6.0 {
->                 bpf_linker__add_fd;
->                 bpf_linker__new_fd;
->                 bpf_object__prepare;
-> +               bpf_program__func_info;
-> +               bpf_program__func_info_cnt;
-> +               bpf_program__func_info_rec_size;
-> +               bpf_program__line_info;
-> +               bpf_program__line_info_cnt;
-> +               bpf_program__line_info_rec_size;
->                 btf__add_decl_attr;
->                 btf__add_type_attr;
->  } LIBBPF_1.5.0;
+> dylane@2404:~$ cat /proc/kallsyms | grep isra | wc -l
+> 2324
+>
+> So can we add a judgment from libbpf. If it is an optimized function,
+
+No, we cannot. It's a different function at that point and libbpf
+isn't going to be in the business of guessing on behalf of the user
+whether it's ok to do or not.
+
+But the user can use multi-kprobe with `prefix*` naming, if they
+encountered (or are anticipating) this situation and think it's fine
+for them.
+
+As for fentry/fexit, you need to have the correct BTF ID associated
+with that function anyways, so I'm not sure that currently you can
+attach fentry/fexit to such compiler-optimized functions at all
+(pahole won't produce BTF for such functions, right?).
+
+> pass the suffix of the optimized function from the user space to the
+> kernel, and then perform a function name concatenation, like:
+>
+>          func_name =3D btf_name_by_offset(desc_btf, func->name_off);
+>         if (optimize) {
+>                 func_name =3D func_name + ".isra.0"
+>         }
+>          addr =3D kallsyms_lookup_name(func_name);
+>
 > --
-> 2.48.1
+> Best Regards
+> Tao Chen
+>
 >
 
