@@ -1,166 +1,241 @@
-Return-Path: <bpf+bounces-54871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AE6CA75084
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 19:45:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A254DA75097
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 19:59:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56751176742
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 18:45:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A9951740C4
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 18:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971651E130F;
-	Fri, 28 Mar 2025 18:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1CF71E1A3F;
+	Fri, 28 Mar 2025 18:59:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jT2Cepiq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PVSfusWE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 799691531C5;
-	Fri, 28 Mar 2025 18:45:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF39122094
+	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 18:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743187527; cv=none; b=uMRUsIxsW9g7CU+dTE0Bhf8VrOSz3IL3nrYr98qW+E85MAh167ekxVLMZXwYqpmjq0zKwCj072JqT/zKUbD/nymJhk6OhebcYRgMmTjQSvjj+20SgT7FbbzdNdL6IeG6+zK3CRxXkEH+vFQ16ZqvqszZdhzN8U3AgkmqpRlzB0A=
+	t=1743188386; cv=none; b=jPcZQOcyxIeALaBs27kAibWxbON6GM0O3npa7L4zzh6rMl3MP5sHDmTjg44WTgD9F8FnX8wMknWPuhmEtvPr1cvH+zf2OhchvX43Z4Xktz+flCDolx5w4J7tC5xmY14POUe1B77PY8pn1pH1CRQFXFBshYEXmfWM6VAPTVcRbC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743187527; c=relaxed/simple;
-	bh=dmw/5m7IZXzUnE3b4KRIPY1KfLGFwtYZiQxylVjG4gI=;
+	s=arc-20240116; t=1743188386; c=relaxed/simple;
+	bh=s2pkKEZl9HPF4ZT4QEk60RCcbTE70NTojCm1+RewEZY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CmEIOrTOnzGn8B1DUF1sJVNDJUlL7A5EVSH/IGzo8CGBWNkaIqDTRA5Tl6oe4xHZ1pbsz/GN83gVZ2VlOI7D/8H40WVTlJgi4DvsxLsqxFtzH68WsNcm2dn5WoaAkxZ6lNBXWzQXMYF1K2Zz0rZWEnoaz9PQSbmFqMd00gLbnKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jT2Cepiq; arc=none smtp.client-ip=209.85.128.45
+	 To:Cc:Content-Type; b=Pe+hVKnIm1yR+HCwBsFCvIO+fVcNFzNCjiNONGw8n8GSxw7UKGU6seUdIjRAw8VdQDBVyFHFGS1cU7fGP+m3J7fNPR1l1e+ieEMaEGoX3LrmCZWswYtl7vocSDqu+v+1xaslQ49nn+9OksYO8il4bvJduRUHmZpsHBii+Q2KD0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PVSfusWE; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-43948021a45so24744405e9.1;
-        Fri, 28 Mar 2025 11:45:25 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-30384072398so3488456a91.0
+        for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 11:59:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743187524; x=1743792324; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1743188383; x=1743793183; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pv4obcckIMgIj8vAEDgrTtvOBA95aNakLopowEYoBPk=;
-        b=jT2CepiqK46pYLQTIPXyn9YDLkqxfWjeDgix3I4ODXQKL0zV1TkSCFqWss7gW2Dtfi
-         qPgzOhib7Cl3AIhpp/CT3rVW8X7UrEi4Zj/O9SNMixJ91NqxrTMfEcOH0VNBZtlwET87
-         K0vH1oCWL+dA7TH446+T8j+haaNSA0xv/quE2YyR5hI/+fXpLve9SMtafYakmmjHBS8M
-         7vsXcruVW8RAoaMiP+B6fMPtxcjziZtWTv+vr5hxhQUSk3A/qS5ykKOG0Kuu6KTf2oEz
-         MntEsyU6s27o3EeX4+AIy1lhfvFXQr6GvT0hD4IcvPjTCAx2vP54ZeCh5o+czQmbjoi/
-         6LiQ==
+        bh=d+lzyDRRjbJyrszRoHHA/+rRBw4PCxAnFSdOUww3xHo=;
+        b=PVSfusWEbz8KHJh9w21iCQTW0ypKbksSLTy6bXzkkfQzFhCjkrjRro0Xr9QDMSYw8N
+         qZgRCEYZ7cEGfZTWRy/37VBP0ehnvLooo1s3PHJKhqWZWzUhjD0Vukt+GzFGsrKe9mbo
+         1emu3b6ufJ0MvmPxjz811xE3xIePkP3hN+hf3W8BUeYDUqRZ8os4171u4S8uEAdo5cVq
+         I1ZkzkjVvUWiX7DxZ7Itbe3cjrDN2jisnTfYOs/u24wfrgw4ogz8rXWzoftrgzHLWo9c
+         Q9C3iZujbkR5VBCxe1ShZ1PPcHD250kkdJW7VsIlhBqVmdb0LRHsuAJEalkTIUW66KVc
+         596w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743187524; x=1743792324;
+        d=1e100.net; s=20230601; t=1743188383; x=1743793183;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pv4obcckIMgIj8vAEDgrTtvOBA95aNakLopowEYoBPk=;
-        b=dMekMwyfVsnBHR7/DhOFbn19Kh7bA5TYj1Ag2qxIjptCMI8nekmU4pY8wBJIQwlGYd
-         ZXRSb/ACpiiJE9iIhC/+tAwstXY0THi8KnKn3mZWKGuLt+KV4PJuZICqHE9xUf4zkpDY
-         WkP+6+0OJ/eJ/yol5qgBHyaDrtod/fpyUN7Bkgcx+fHeSgJYYe4K6vefzHX2H5BiDZJ5
-         QdFCMYyEgEAb3Iaa/YzGQ1qFitBrcCVlM6NwSeU5KKIfvDJy+s8Gqfb7qEUhH48nAttF
-         zQutOZKaMoMlYgmmVgxoNdxV98SIuo6ysjh0Krtdo0jXjoAaTS5bMiLRivz/H3RKS8Cw
-         jwmw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2GTZbBdQhfLekMbLk0RZ9x/ye1YOnhS0JoWZTokdUGu0sJG7oCObBEMYzfDKuozZIeQg=@vger.kernel.org, AJvYcCX7aK1LJC/7apLxBmQORSyXYb/RMMN7oM1kxmx9c5d2ue+7SDPdEe39dVWTQPnoWvcrjiHB8nyN@vger.kernel.org
-X-Gm-Message-State: AOJu0YwNB/P1o+9uzhayWtOuoSOA9Zwlcmbq9mfZk4EOrA2kpWRKHoCe
-	8xpmIaWpLy4H620YjdRaFy/WOAoGjwhw14mfbXvZdpx1+usezumyTVBAvhVzQXZ2RHBBGRSMg/S
-	/8cFmdD1QGUEvO5TbEiyq0tZ/8YA=
-X-Gm-Gg: ASbGnctqZ3+vufNKyGYpraYuTzohWA2aC4mDrDwjZobUnFRlCBIyXX9bNXd9wCW4Zk5
-	nzV1JXTDBZTSpl9QHLGTWyiC/0Gmc8pPUh6/h/5fndc5Ohhl6KTtNLXJLKFhfFEKzhLKgcl3QKp
-	h/NOyl6UVppEy4uqfFbOQjhHtLBJg1ueYUepCwNSwXHyeS/cEAC0wY
-X-Google-Smtp-Source: AGHT+IFyGnmq01FY0vYdjQzcrW7fmUD0RP5pkxyNqhytNeXUEYYAG5ibHD6g8NurkU/lZ8xYIaSoBZ/H/rlBD1Fvwvc=
-X-Received: by 2002:a05:600c:5108:b0:43c:f629:66f3 with SMTP id
- 5b1f17b1804b1-43db624be12mr4594605e9.18.1743187523423; Fri, 28 Mar 2025
- 11:45:23 -0700 (PDT)
+        bh=d+lzyDRRjbJyrszRoHHA/+rRBw4PCxAnFSdOUww3xHo=;
+        b=pRPgwQa2VR0yHdcN027VgaiVvbd8GeH+hVCHnHJLghhjIEU3tced00Z8sf89vmLSnj
+         YrPzWeLLL5StgD/oS/lRaxJkJLpIf1AowU8TRiKR+vSqE8QBE65ZPQwA2Bb1/jJRwQCD
+         amVhiggalTS6lI9/36ECEELA1sCB87cCCG0IE6zgoBpVWZfo2yUh3wErEkxM0QV+i8ta
+         yY5PG5ixk8P8dSRAhpfn+udOrGrdB8WhRpBORSbFr47GMRjqIFx2+YdLtTB6P03XkBTY
+         VmY7cN1DnEJ2ju1vUDT2Y2DDKkQuPwBJqwAHyNB85a0Vg7GHLVj8kjWdE3qbyL84JKql
+         JDgw==
+X-Gm-Message-State: AOJu0Yx0GTKKTME+wC7NjyOyhcZsC0XRTf7ixkX+EnpxCbq93IAciSF7
+	nQ+tpIBmQ/JdtMtEPQsXkBl6DHJdXaTntUdi88xpvL3OVKM6KwFH6Ut96usvVIrnXOdCGnT0HE0
+	93UvTgv5ILf6FqkcDxRlWIfqNhsc=
+X-Gm-Gg: ASbGnctmI6rwsb92162UgJpoVt9giwF6kLlMD1vtk8pibnL58zNqxgkenlwjj47UNrx
+	+dTwfSjghLudKTbsjAbCPanB8p1ZuCbQ6UxUelUl2f1AxFXfum4anT5b5iJpj8OXFKKHnvuZGTQ
+	S0F6lllFKefar6VtpmLPHHwZzOY53DjWSOGVVc95lJwA==
+X-Google-Smtp-Source: AGHT+IHJN/Ap20TStuWs8qq5nFZqaOzowEEQjAELpMQKYzXIHSOfvCbhFkyAxJU4IlMG8SMbJFJXZGhwRj8xungEMDQ=
+X-Received: by 2002:a17:90b:4b06:b0:2ff:4a8d:74f8 with SMTP id
+ 98e67ed59e1d1-30531f78cccmr506529a91.6.1743188382647; Fri, 28 Mar 2025
+ 11:59:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250327185528.1740787-1-song@kernel.org> <CAEf4BzagkTArcqnvqgu7kNq31QFsATM36OGPLs4-GFOo0TDxsg@mail.gmail.com>
- <8536CB49-0091-4019-839A-B460847995C2@fb.com>
-In-Reply-To: <8536CB49-0091-4019-839A-B460847995C2@fb.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 28 Mar 2025 11:45:11 -0700
-X-Gm-Features: AQ5f1Jqy_AJHDe8puoTrgHj1M2MYjACC1XVuYIZoez7xDk7dMtJXSEhEcUypv9A
-Message-ID: <CAADnVQ+dbiBVOuPXY6N8EjQh=7wtQt-mCXP3Ujd1xFfD5rLbew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix tests after change in struct file
-To: Song Liu <songliubraving@meta.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Song Liu <song@kernel.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
-	"andrii@kernel.org" <andrii@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	"kuba@kernel.org" <kuba@kernel.org>
+References: <20250320214058.2946857-1-ameryhung@gmail.com> <20250320214058.2946857-2-ameryhung@gmail.com>
+ <CAEf4Bza-WiBjEEhtk-kXCjrkP_d5_-mGpezqm6_S+qiuDoEc1g@mail.gmail.com> <CAMB2axNZtBaWSE+LPTNU8hO-VyBRj=w0JiJnhSLosOyts1nSuw@mail.gmail.com>
+In-Reply-To: <CAMB2axNZtBaWSE+LPTNU8hO-VyBRj=w0JiJnhSLosOyts1nSuw@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 28 Mar 2025 11:59:30 -0700
+X-Gm-Features: AQ5f1JrByWkov1ShUBOX_CqU7F5h0VS2DhBb3Cjz9URfezXhAecHktCLCQkafhM
+Message-ID: <CAEf4Bzb5mWBSPGaUppU8fs-B73YbzrsdEPreA7kZvcD=W9SR_Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/4] bpf: Allow creating dynptr from uptr
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	alexei.starovoitov@gmail.com, martin.lau@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 28, 2025 at 10:57=E2=80=AFAM Song Liu <songliubraving@meta.com>=
- wrote:
+On Thu, Mar 20, 2025 at 4:21=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wr=
+ote:
 >
->
->
-> > On Mar 28, 2025, at 10:30=E2=80=AFAM, Andrii Nakryiko <andrii.nakryiko@=
-gmail.com> wrote:
+> On Thu, Mar 20, 2025 at 3:45=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > On Thu, Mar 27, 2025 at 11:55=E2=80=AFAM Song Liu <song@kernel.org> wro=
-te:
-> >>
-> >> Change in struct file [1] moves f_ref to the 3rd cache line. This make=
-s
-> >> deferencing file pointer as a 8-byte variable invalid, because
-> >> btf_struct_walk() will walk into f_lock, which is 4-byte long.
-> >>
-> >> Fix the selftests to deference the file pointer as a 4-byte variable.
-> >>
-> >> [1] commit e249056c91a2 ("fs: place f_ref to 3rd cache line in struct
-> >>                          file to resolve false sharing")
-> >> Reported-by: Jakub Kicinski <kuba@kernel.org>
-> >> Signed-off-by: Song Liu <song@kernel.org>
-> >> ---
-> >> tools/testing/selftests/bpf/progs/test_module_attach.c    | 2 +-
-> >> tools/testing/selftests/bpf/progs/test_subprogs_extable.c | 6 +++---
-> >> 2 files changed, 4 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/progs/test_module_attach.c b/=
-tools/testing/selftests/bpf/progs/test_module_attach.c
-> >> index fb07f5773888..7f3c233943b3 100644
-> >> --- a/tools/testing/selftests/bpf/progs/test_module_attach.c
-> >> +++ b/tools/testing/selftests/bpf/progs/test_module_attach.c
-> >> @@ -117,7 +117,7 @@ int BPF_PROG(handle_fexit_ret, int arg, struct fil=
-e *ret)
-> >>
-> >>        bpf_probe_read_kernel(&buf, 8, ret);
-> >>        bpf_probe_read_kernel(&buf, 8, (char *)ret + 256);
-> >> -       *(volatile long long *)ret;
-> >> +       *(volatile int *)ret;
+> > On Thu, Mar 20, 2025 at 2:41=E2=80=AFPM Amery Hung <ameryhung@gmail.com=
+> wrote:
+> > >
+> > > Currently, bpf_dynptr_from_mem() only allows creating dynptr from loc=
+al
+> > > memory of reg type PTR_TO_MAP_VALUE, specifically ringbuf. This patch
+> > > futher supports PTR_TO_MEM as a valid source of data.
+> > >
+> > > For a reg to be PTR_TO_MEM in the verifier:
+> > >  - read map value with special field BPF_UPTR
+> > >  - ld_imm64 kfunc (MEM_RDONLY)
+> > >  - ld_imm64 other non-struct ksyms (MEM_RDONLY)
+> > >  - return from helper with RET_PTR_TO_MEM: ringbuf_reserve (MEM_RINGB=
+UF)
+> > >    and dynptr_from_data
+> > >  - return from helper with RET_PTR_TO_MEM_OR_BTF_ID: this_cpu_ptr,
+> > >    per_cpu_ptr and the return type is not struct (both MEM_RDONLY)
+> > >  - return from special kfunc: dynptr_slice (MEM_RDONLY), dynptr_slice=
+_rdwr
+> > >  - return from non-special kfunc that returns non-struct pointer:
+> > >    hid_bpf_get_data
+> > >
+> > > Since this patch only allows PTR_TO_MEM without any flags, so only up=
+tr,
+> > > global subprog argument, non-special kfunc that returns non-struct pt=
+r,
+> > > return of bpf_dynptr_slice_rdwr() and bpf_dynptr_slice_rdwr() will be=
+ allowed
+> > > additionally.
+> > >
+> > > The last two will allow creating dynptr from dynptr data. Will they c=
+reate
+> > > any problem?
 > >
-> > we already have `*(volatile int *)&ret->f_mode;` below, do we really
-> > need this int casting case?.. Maybe instead of guessing the size of
-> > file's first field, let's just remove `*(volatile long long *)ret;`
-> > altogether?
+> > Yes, I think so. You need to make sure that dynptr you created from
+> > that PTR_TO_MEM is invalidated if that memory "goes away". E.g., for
+> > ringbuf case:
+> >
+> > void *r =3D bpf_ringbuf_reserve(..., 100);
+> >
+> > struct dynptr d;
+> > bpf_dynptr_from_mem(r, 100, 0, &d);
+> >
 >
-> I was assuming the original test covers two cases:
->   1) deref ret itself;
->   2) deref a member of ret (ret->f_mode);
->
-> Therefore, instead of doing something like
->
->    *(volatile long long *)&ret->f_ref;  /* first member of file */
->
-> I got current version.
->
-> If we don't need the first case, we sure can remove it.
+> ^ This will fail during verification because "r" will be PTR_TO_MEM |
+> MEM_RINGBUF.
 
-The idea of the patch was to test the load from the address
-returned from bpf_testmod_return_ptr() twice.
-Once as that exact value and another with some offset,
-since JIT processing logic is different whether insn->off is zero.
-Doing &ret->f_lock /* first member of file */
-sort-of works, but the comment will be stale eventually.
-I think the current fix is the best:
--       *(volatile long long *)ret;
-+       *(volatile int *)ret;
+We discussed all this at LSFMMBPF2025, but for those who follow and
+didn't attend, we can just slightly modify the example by adding one
+extra bpf_dynptr_slice() constructed from r:
 
-This way the load will have guaranteed insn->off =3D=3D 0,
-and when file layout changes we will notice the breakage right away.
-Like happened this time.
 
-So I'm thinking of applying this patch as-is when bpf-next is ready.
+void *r =3D bpf_ringbuf_reserve(..., 100);
+void *m =3D bpf_dynpt_slice(&r, ...);
+if (!m) return 0; /* shouldn't happen */
+
+struct dynptr d;
+bpf_dynptr_from_mem(m, 100, 0, &d);
+
+void *p =3D bpf_dynptr_data(&d, 0, 100);
+if (!p) return 0; /* can't happen */
+
+bpf_ringbuf_submit(r, 0);
+
+*(char *)p =3D '\0'; /* bad things happen */
+
+
+And we can keep building this long chain of dependencies. So we'd need
+to take all that into account and propagate invalidation across entire
+tree of dependencies between dynptrs and slices.
+
+>
+> Only five of the listed PTR_TO_MEM cases will be allowed with this
+> patch additionally: uptr, global subprog argument, hid_bpf_get_data,
+> bpf_dynptr_ptr_data and bpf_dynptr_slice_rdwr. For the former three,
+> the memory seems to be valid all the time. For the last two, IIUC,
+> bpf_dynptr_data or bpf_dynptr_slice_rdwr should be valid if null
+> checks pass. I am just so not sure about the nested situation (i.e.,
+> creating another dynptr from data behind a dynptr).
+>
+> Thanks,
+> Amery
+>
+> > void *p =3D bpf_dynptr_data(&d, 0, 100);
+> > if (!p) return 0; /* can't happen */
+> >
+> > bpf_ringbuf_submit(r, 0);
+> >
+> >
+> > *(char *)p =3D '\0'; /* bad things happen */
+> >
+> >
+> > Do you handle that situation? With PTR_TO_MAP_VALUE "bad things" can't
+> > happen even if value is actually deleted/reused (besides overwriting
+> > some other element's value, which we can do without dynptrs anyways),
+> > because that memory won't go away due to RCU and it doesn't contain
+> > any information important for correctness (ringbuf data area does have
+> > it).
+> >
+> >
+> > >
+> > > Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> > > ---
+> > >  include/uapi/linux/bpf.h | 4 +++-
+> > >  kernel/bpf/verifier.c    | 3 ++-
+> > >  2 files changed, 5 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index beac5cdf2d2c..2b1335fa1173 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -5562,7 +5562,9 @@ union bpf_attr {
+> > >   *     Description
+> > >   *             Get a dynptr to local memory *data*.
+> > >   *
+> > > - *             *data* must be a ptr to a map value.
+> > > + *             *data* must be a ptr to valid local memory such as a =
+map value, a uptr,
+> > > + *             a null-checked non-void pointer pass to a global subp=
+rogram, and allocated
+> > > + *             memory returned by a kfunc such as hid_bpf_get_data()=
+,
+> > >   *             The maximum *size* supported is DYNPTR_MAX_SIZE.
+> > >   *             *flags* is currently unused.
+> > >   *     Return
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 22c4edc8695c..d22310d1642c 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -11307,7 +11307,8 @@ static int check_helper_call(struct bpf_verif=
+ier_env *env, struct bpf_insn *insn
+> > >                 }
+> > >                 break;
+> > >         case BPF_FUNC_dynptr_from_mem:
+> > > -               if (regs[BPF_REG_1].type !=3D PTR_TO_MAP_VALUE) {
+> > > +               if (regs[BPF_REG_1].type !=3D PTR_TO_MAP_VALUE &&
+> > > +                   regs[BPF_REG_1].type !=3D PTR_TO_MEM) {
+> > >                         verbose(env, "Unsupported reg type %s for bpf=
+_dynptr_from_mem data\n",
+> > >                                 reg_type_str(env, regs[BPF_REG_1].typ=
+e));
+> > >                         return -EACCES;
+> > > --
+> > > 2.47.1
+> > >
 
