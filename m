@@ -1,169 +1,109 @@
-Return-Path: <bpf+bounces-54842-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54843-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3877A74339
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 06:24:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1783FA743B4
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 07:12:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B003189CDAB
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 05:24:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E24F83B003E
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 06:12:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 704CA211285;
-	Fri, 28 Mar 2025 05:23:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03EE21146F;
+	Fri, 28 Mar 2025 06:12:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b="o5tYy4c8"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="F96GF6DW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.nppct.ru (mail.nppct.ru [195.133.245.4])
+Received: from lelvem-ot02.ext.ti.com (lelvem-ot02.ext.ti.com [198.47.23.235])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68CD818DB03
-	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 05:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.133.245.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8963479CF;
+	Fri, 28 Mar 2025 06:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.235
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743139425; cv=none; b=TL0JtuQlmlGwwR+8nUBKpyyiFQ4Ho2mt/8atzV4o4a+VB3n7HfLVuYmclUdUmqZ9nkgBqR1lSYM3Xw4rd7SI8bdRR6pT6mAcr+e4A/Fg17M8I/vOqDmY9jsbq9nZ641qXhGypqlBmHOWnjO2KHO2N5rtVVjanqCkUSmWOmLjwLE=
+	t=1743142350; cv=none; b=mvjbJBOmWeSE4FTDGw1pKt0X+EWVf2aVQt4KhIvbNX5rDgEdLnQuTTkmRgJxGJD1SN7UGTPXWdrpdh0jBgnKHZftsbESHeCvom2TCi2ibkb2Bbap+plp4aLWFpGN9KkK2HLqURioUoK/GErs8plstn6B/JApWjcvO4NWqMCNNtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743139425; c=relaxed/simple;
-	bh=rjm2kyFJM/oTTcUQkAvPohHlHqu5acUnY1JM2jMRNdQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LVOKNaLHjxGYf5c/SXkpcsfuCq/omygmYhyzZbcSAzWjke40UiwM0nAqmILV1A3FC5nQk5H2IDoWS2GLWpw7qvywf02fdhQ+APAUfJ1S8Pk0nLupb130/u4odgkXUOokZuhKyWmA7PVTSKFCow8Z1EMPJF+GsVNQWcuyE5aoBDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru; spf=pass smtp.mailfrom=nppct.ru; dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b=o5tYy4c8; arc=none smtp.client-ip=195.133.245.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nppct.ru
-Received: from mail.nppct.ru (localhost [127.0.0.1])
-	by mail.nppct.ru (Postfix) with ESMTP id ED3021C242F
-	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 08:23:30 +0300 (MSK)
-Authentication-Results: mail.nppct.ru (amavisd-new); dkim=pass (1024-bit key)
-	reason="pass (just generated, assumed good)" header.d=nppct.ru
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nppct.ru; h=
-	content-transfer-encoding:mime-version:x-mailer:message-id:date
-	:date:subject:subject:to:from:from; s=dkim; t=1743139407; x=
-	1744003408; bh=rjm2kyFJM/oTTcUQkAvPohHlHqu5acUnY1JM2jMRNdQ=; b=o
-	5tYy4c88YdpfCLvcujwdBqL/zLNlyQn4CgRWF4EKHHqm0BWVM3oRF8gLcU8PChwp
-	ydaQn/MKZ+mWN+6ZzngNLf3/MqWEK5EZGIYn+4VxmO8ureF6Eg5Pwlzef7/VtKDm
-	4VQ2jcDLRnBeB3l1qef3lCAHgusFizWlj91ZCFqkM0=
-X-Virus-Scanned: Debian amavisd-new at mail.nppct.ru
-Received: from mail.nppct.ru ([127.0.0.1])
-	by mail.nppct.ru (mail.nppct.ru [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id iYOxfbT7cs2G for <bpf@vger.kernel.org>;
-	Fri, 28 Mar 2025 08:23:27 +0300 (MSK)
-Received: from localhost.localdomain (unknown [87.249.24.51])
-	by mail.nppct.ru (Postfix) with ESMTPSA id D49A21C0872;
-	Fri, 28 Mar 2025 08:23:20 +0300 (MSK)
-From: Alexey Nepomnyashih <sdl@nppct.ru>
-To: "David S. Miller" <davem@davemloft.net>
-Cc: Alexey Nepomnyashih <sdl@nppct.ru>,
-	Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-	Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	bpf@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	stable@vger.kernel.org
-Subject: [PATCH 5.10] gso: fix udp gso fraglist segmentation after pull from frag_list
-Date: Fri, 28 Mar 2025 05:23:13 +0000
-Message-ID: <20250328052315.1205798-1-sdl@nppct.ru>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1743142350; c=relaxed/simple;
+	bh=qrK0dPbVWUOk4PR7RgSLOyEhCBzwdV2UZk0QMH06ekY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=iT8lsNSue4/NW/kStNWPv7gzLzEtXv8jcgbu0t+phzQ/pRu50jC5bVRbTvRFmmKy3482bmU/w0utVzMWOcpbR8VqSaIWs+OLF8PoYKC1Ll9UxoXxYOi2j5Ju8QwvUBjSXMRxeSq6DGnsTEpV6nywamX85hbUgVN3KckouzMmBIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=F96GF6DW; arc=none smtp.client-ip=198.47.23.235
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 52S6BYoe2633129
+	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 28 Mar 2025 01:11:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1743142294;
+	bh=j9GlTDbw/VGq+mpBKGBMYd7sWUnu8ZpsWmTLspYzU0Y=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=F96GF6DWBTDVRcJr5ixE81enuTD2bJKxrQu9uNtWNPBV7AgpX9CO3KIUOPMXzEI5L
+	 Lc97WzllLq+PDeRMCBOWJA4F2D3iYaPQ+OWgVWlYAJvedPD6iUPcsqsuJHBxncnFev
+	 HM6+I7RdJQclCjZdiN6ispcVwO9VFNUYRKGaAhD0=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 52S6BYt7024519
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 28 Mar 2025 01:11:34 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 28
+ Mar 2025 01:11:34 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 28 Mar 2025 01:11:34 -0500
+Received: from [10.249.140.156] ([10.249.140.156])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 52S6BQTf038705;
+	Fri, 28 Mar 2025 01:11:27 -0500
+Message-ID: <d1abf39d-c452-4bf1-ab40-2fc1ebca6ff7@ti.com>
+Date: Fri, 28 Mar 2025 11:41:26 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 0/3] Bug fixes from XDP and perout series
+To: Jakub Kicinski <kuba@kernel.org>
+CC: <pabeni@redhat.com>, <edumazet@google.com>, <davem@davemloft.net>,
+        <andrew+netdev@lunn.ch>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kory.maincent@bootlin.com>,
+        <dan.carpenter@linaro.org>, <javier.carrasco.cruz@gmail.com>,
+        <diogo.ivo@siemens.com>, <jacob.e.keller@intel.com>,
+        <horms@kernel.org>, <john.fastabend@gmail.com>, <hawk@kernel.org>,
+        <daniel@iogearbox.net>, <ast@kernel.org>, <srk@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Roger
+ Quadros <rogerq@kernel.org>, <danishanwar@ti.com>
+References: <20250321081313.37112-1-m-malladi@ti.com>
+ <20250325104458.3363fb5d@kernel.org>
+Content-Language: en-US
+From: "Malladi, Meghana" <m-malladi@ti.com>
+In-Reply-To: <20250325104458.3363fb5d@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 
-From: Willem de Bruijn <willemb@google.com>
 
-commit a1e40ac5b5e9077fe1f7ae0eb88034db0f9ae1ab upstream.
+On 3/25/2025 11:14 PM, Jakub Kicinski wrote:
+> On Fri, 21 Mar 2025 13:43:10 +0530 Meghana Malladi wrote:
+>> This patch series consists of bug fixes from the features which recently
+>> got merged into net-next, and haven't been merged to net tree yet.
+>>
+>> Patch 2/3 and 3/3 are bug fixes reported by Dan Carpenter
+>> <dan.carpenter@linaro.org> using Smatch static checker.
+> 
+> Could you perhaps add the customary
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> 
+> tags, then?
+> 
+> Please also link to the reports.
 
-Detect gso fraglist skbs with corrupted geometry (see below) and
-pass these to skb_segment instead of skb_segment_list, as the first
-can segment them correctly.
-
-Valid SKB_GSO_FRAGLIST skbs
-- consist of two or more segments
-- the head_skb holds the protocol headers plus first gso_size
-- one or more frag_list skbs hold exactly one segment
-- all but the last must be gso_size
-
-Optional datapath hooks such as NAT and BPF (bpf_skb_pull_data) can
-modify these skbs, breaking these invariants.
-
-In extreme cases they pull all data into skb linear. For UDP, this
-causes a NULL ptr deref in __udpv4_gso_segment_list_csum at
-udp_hdr(seg->next)->dest.
-
-Detect invalid geometry due to pull, by checking head_skb size.
-Don't just drop, as this may blackhole a destination. Convert to be
-able to pass to regular skb_segment.
-
-Link: https://lore.kernel.org/netdev/20240428142913.18666-1-shiming.cheng@mediatek.com/
-Fixes: 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.")
-Signed-off-by: Willem de Bruijn <willemb@google.com>
-Cc: stable@vger.kernel.org
-Link: https://patch.msgid.link/20241001171752.107580-1-willemdebruijn.kernel@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Alexey Nepomnyashih <sdl@nppct.ru>
----
- net/ipv4/udp_offload.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
-
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index b6952b88b505..515d591d00b9 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/skbuff.h>
- #include <net/udp.h>
-+#include <net/ip6_checksum.h>
- #include <net/protocol.h>
- #include <net/inet_common.h>
- 
-@@ -269,8 +270,26 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
- 	__sum16 check;
- 	__be16 newlen;
- 
--	if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
--		return __udp_gso_segment_list(gso_skb, features, is_ipv6);
-+	if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST) {
-+		 /* Detect modified geometry and pass those to skb_segment. */
-+		if (skb_pagelen(gso_skb) - sizeof(*uh) == skb_shinfo(gso_skb)->gso_size)
-+			return __udp_gso_segment_list(gso_skb, features, is_ipv6);
-+
-+		 /* Setup csum, as fraglist skips this in udp4_gro_receive. */
-+		gso_skb->csum_start = skb_transport_header(gso_skb) - gso_skb->head;
-+		gso_skb->csum_offset = offsetof(struct udphdr, check);
-+		gso_skb->ip_summed = CHECKSUM_PARTIAL;
-+
-+		uh = udp_hdr(gso_skb);
-+		if (is_ipv6)
-+			uh->check = ~udp_v6_check(gso_skb->len,
-+						  &ipv6_hdr(gso_skb)->saddr,
-+						  &ipv6_hdr(gso_skb)->daddr, 0);
-+		else
-+			uh->check = ~udp_v4_check(gso_skb->len,
-+						  ip_hdr(gso_skb)->saddr,
-+						  ip_hdr(gso_skb)->daddr, 0);
-+	}
- 
- 	mss = skb_shinfo(gso_skb)->gso_size;
- 	if (gso_skb->len <= sizeof(*uh) + mss)
--- 
-2.43.0
-
+Sure, I will add them and post to the v3 to net.
 
