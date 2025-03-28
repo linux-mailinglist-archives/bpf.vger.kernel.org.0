@@ -1,241 +1,243 @@
-Return-Path: <bpf+bounces-54872-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54873-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A254DA75097
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 19:59:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01C25A750B4
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 20:16:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A9951740C4
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 18:59:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A67CF3B61B4
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 19:16:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1CF71E1A3F;
-	Fri, 28 Mar 2025 18:59:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4041D61B7;
+	Fri, 28 Mar 2025 19:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PVSfusWE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gg6YPvBl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF39122094
-	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 18:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CCFC2BB15
+	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 19:16:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743188386; cv=none; b=jPcZQOcyxIeALaBs27kAibWxbON6GM0O3npa7L4zzh6rMl3MP5sHDmTjg44WTgD9F8FnX8wMknWPuhmEtvPr1cvH+zf2OhchvX43Z4Xktz+flCDolx5w4J7tC5xmY14POUe1B77PY8pn1pH1CRQFXFBshYEXmfWM6VAPTVcRbC8=
+	t=1743189375; cv=none; b=rUogzGhiUhzJ6TnqFa7hab7OqmK6bpToBdcVXzwq8AMhQzeX83w8jt7efBBWdsk7F2K6qdQotY9sxvmYu9p34THqTT0MVL3FmRFJ7PaNy0+oxXx7LkuLwcCTonZgzmT31rgYl5q7rqzqBNQ+kShJuZ7V5tsip6EbPwoEyYfGOyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743188386; c=relaxed/simple;
-	bh=s2pkKEZl9HPF4ZT4QEk60RCcbTE70NTojCm1+RewEZY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Pe+hVKnIm1yR+HCwBsFCvIO+fVcNFzNCjiNONGw8n8GSxw7UKGU6seUdIjRAw8VdQDBVyFHFGS1cU7fGP+m3J7fNPR1l1e+ieEMaEGoX3LrmCZWswYtl7vocSDqu+v+1xaslQ49nn+9OksYO8il4bvJduRUHmZpsHBii+Q2KD0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PVSfusWE; arc=none smtp.client-ip=209.85.216.53
+	s=arc-20240116; t=1743189375; c=relaxed/simple;
+	bh=2KgFrZGE+sa+GTybeOUTD4ECq83eRXhjesPYIq8ugUs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lRK4gWARAdHbrX8QLoQdhFaJO5DSERqiXNgG03BiXXc8+lpCimY9tJ33OrUHZ3tCZUsqtoEfSQ2Yj4ZkGi241mZkFjMefDvL8i6F2EMWCjt1nJzhUFIngfUz6m4uwJk3QWHPpslW0CV4cTmOTr8bifK1DepmJ2Cr06Oec40aFqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gg6YPvBl; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-30384072398so3488456a91.0
-        for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 11:59:43 -0700 (PDT)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-399749152b4so841720f8f.3
+        for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 12:16:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743188383; x=1743793183; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d+lzyDRRjbJyrszRoHHA/+rRBw4PCxAnFSdOUww3xHo=;
-        b=PVSfusWEbz8KHJh9w21iCQTW0ypKbksSLTy6bXzkkfQzFhCjkrjRro0Xr9QDMSYw8N
-         qZgRCEYZ7cEGfZTWRy/37VBP0ehnvLooo1s3PHJKhqWZWzUhjD0Vukt+GzFGsrKe9mbo
-         1emu3b6ufJ0MvmPxjz811xE3xIePkP3hN+hf3W8BUeYDUqRZ8os4171u4S8uEAdo5cVq
-         I1ZkzkjVvUWiX7DxZ7Itbe3cjrDN2jisnTfYOs/u24wfrgw4ogz8rXWzoftrgzHLWo9c
-         Q9C3iZujbkR5VBCxe1ShZ1PPcHD250kkdJW7VsIlhBqVmdb0LRHsuAJEalkTIUW66KVc
-         596w==
+        d=gmail.com; s=20230601; t=1743189371; x=1743794171; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VnBDpX3rU3QekuOvYLYE3igRQJMETIDKkTgAkKNlceE=;
+        b=Gg6YPvBlAMdQdsgP+9bZotdXck/wIrQA91v+pJB91T/+E1RbE16lazbrVYNIymhqOQ
+         +7HR6qBjLVFdAWZOa7T3X1qUCtdQV1saTH70rEmJoi5qaChsWGlf4M/XsrXZ5iit1Zkr
+         iS0xPOnuTHQVbuZlFpD5dGLOJ6lst8q69JOEH+3WOcz1eO2r1/JQO/pWnrC6cp7a6jFH
+         lNBNB8aU0u++QBBqp9mTBg5uekr37S52vig/b8QoRUaer07RxTIEtyGsSongdzt5n/DC
+         KlgNWWjfkHVocHA6qmCl4v/EvSh0TydbieK6Jj0RLgSSYF/PjV9EdFaKLSX/mLdUdGD1
+         VJhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743188383; x=1743793183;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d+lzyDRRjbJyrszRoHHA/+rRBw4PCxAnFSdOUww3xHo=;
-        b=pRPgwQa2VR0yHdcN027VgaiVvbd8GeH+hVCHnHJLghhjIEU3tced00Z8sf89vmLSnj
-         YrPzWeLLL5StgD/oS/lRaxJkJLpIf1AowU8TRiKR+vSqE8QBE65ZPQwA2Bb1/jJRwQCD
-         amVhiggalTS6lI9/36ECEELA1sCB87cCCG0IE6zgoBpVWZfo2yUh3wErEkxM0QV+i8ta
-         yY5PG5ixk8P8dSRAhpfn+udOrGrdB8WhRpBORSbFr47GMRjqIFx2+YdLtTB6P03XkBTY
-         VmY7cN1DnEJ2ju1vUDT2Y2DDKkQuPwBJqwAHyNB85a0Vg7GHLVj8kjWdE3qbyL84JKql
-         JDgw==
-X-Gm-Message-State: AOJu0Yx0GTKKTME+wC7NjyOyhcZsC0XRTf7ixkX+EnpxCbq93IAciSF7
-	nQ+tpIBmQ/JdtMtEPQsXkBl6DHJdXaTntUdi88xpvL3OVKM6KwFH6Ut96usvVIrnXOdCGnT0HE0
-	93UvTgv5ILf6FqkcDxRlWIfqNhsc=
-X-Gm-Gg: ASbGnctmI6rwsb92162UgJpoVt9giwF6kLlMD1vtk8pibnL58zNqxgkenlwjj47UNrx
-	+dTwfSjghLudKTbsjAbCPanB8p1ZuCbQ6UxUelUl2f1AxFXfum4anT5b5iJpj8OXFKKHnvuZGTQ
-	S0F6lllFKefar6VtpmLPHHwZzOY53DjWSOGVVc95lJwA==
-X-Google-Smtp-Source: AGHT+IHJN/Ap20TStuWs8qq5nFZqaOzowEEQjAELpMQKYzXIHSOfvCbhFkyAxJU4IlMG8SMbJFJXZGhwRj8xungEMDQ=
-X-Received: by 2002:a17:90b:4b06:b0:2ff:4a8d:74f8 with SMTP id
- 98e67ed59e1d1-30531f78cccmr506529a91.6.1743188382647; Fri, 28 Mar 2025
- 11:59:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1743189371; x=1743794171;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VnBDpX3rU3QekuOvYLYE3igRQJMETIDKkTgAkKNlceE=;
+        b=APjUnJOAmJyKwEicloJZV5WzKRZzUn3w72DRe3TNH9FW4zViFL2YXaJ9R3vqCSo3et
+         ElwtXmxMbBF0+cKDN9TDKUg6qETZ7AJQh0Ay1HdsR+y1pvDeLsT/TInIaVAWzmVkKTx+
+         QrX6ZJiAjc2A37iusbIRDhdgmcdhoOSwShv3r2n2a86CDkP8WiH6TQVXrJfsXZgtLg7w
+         F7nNBfbwMw9SaBqtRpMuyDZ0crymnkyTZjMXU7IWfcwh/hnD5Fe1x1Cep1xfE698qs8F
+         HH3KpWFCSTSEag5eOdDP+qgpEFwIN/fQXSB64Gkex4PSECsHZ1jrZ0hOm2sNnnUbYkrt
+         abQQ==
+X-Gm-Message-State: AOJu0YwTn5o5PDai2wF6oSgqtUzxEW23jOsXuVUvWC2UnA6BX8IfqDb7
+	M3aYTb0+J7zBHqQxeGBHgjMliufQA5oBm38j5qxgSZRMZGVzaVZQ
+X-Gm-Gg: ASbGncvHTMnmuMt9ssGZxhSLrM1yHi9G8/2+US+OSW9P8AOhLbA3CpWcZJ83PNR/7c4
+	LGdEgBG12W8kSyMBQ5eOkTLC9F06QYA2ZYyGddNkVw1Exc03PhxzMmoLkd8OtWQcHqw8PCqYfnq
+	J2oGjV4HOWy5WQUvysEHHNYWKb3XuuaOBopb4kAqDsBclKXiwh9S5miVxihplZRpbY6kpqmW6b0
+	1ozKRQf26i8h4Xlppt5E7BW351P1pg4OOGoIuFvQZxXVT8W8Mbs0LZtfmYhku9rUVMSuWIWIuHt
+	YKRyHOYbvfr3qyrNT5hWARvux0Tqyc4qEkx0VUxJGdOkDTWuJARF4NZlA+6BgdEm53JR4kjWxe4
+	M77bkqfp05siw0aWcMV8vdVFVxYCCm2TxoWAW
+X-Google-Smtp-Source: AGHT+IEGDJ0B/H0ReqWl+RTq0gPQS/jZoVcMLZKbJUTURJG6mRB7ddzdOntNXHEHRcTDQJy7/ndEPQ==
+X-Received: by 2002:a05:6000:2d88:b0:39c:1257:feb9 with SMTP id ffacd0b85a97d-39c1257ff14mr105049f8f.57.1743189371079;
+        Fri, 28 Mar 2025 12:16:11 -0700 (PDT)
+Received: from ?IPV6:2a01:4b00:bf28:2e00:ff96:2dac:a39:3e10? ([2a01:4b00:bf28:2e00:ff96:2dac:a39:3e10])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d8fbc1716sm36018435e9.15.2025.03.28.12.16.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Mar 2025 12:16:10 -0700 (PDT)
+Message-ID: <196c2eb9-aca9-4533-b927-255569154a73@gmail.com>
+Date: Fri, 28 Mar 2025 19:16:09 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250320214058.2946857-1-ameryhung@gmail.com> <20250320214058.2946857-2-ameryhung@gmail.com>
- <CAEf4Bza-WiBjEEhtk-kXCjrkP_d5_-mGpezqm6_S+qiuDoEc1g@mail.gmail.com> <CAMB2axNZtBaWSE+LPTNU8hO-VyBRj=w0JiJnhSLosOyts1nSuw@mail.gmail.com>
-In-Reply-To: <CAMB2axNZtBaWSE+LPTNU8hO-VyBRj=w0JiJnhSLosOyts1nSuw@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 28 Mar 2025 11:59:30 -0700
-X-Gm-Features: AQ5f1JrByWkov1ShUBOX_CqU7F5h0VS2DhBb3Cjz9URfezXhAecHktCLCQkafhM
-Message-ID: <CAEf4Bzb5mWBSPGaUppU8fs-B73YbzrsdEPreA7kZvcD=W9SR_Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/4] bpf: Allow creating dynptr from uptr
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	alexei.starovoitov@gmail.com, martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] libbpf: add getters for BTF.ext func and line
+ info
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ eddyz87@gmail.com, Mykyta Yatsenko <yatsenko@meta.com>
+References: <20250326180714.44954-1-mykyta.yatsenko5@gmail.com>
+ <CAEf4BzY_rbdXFDyYN=s7c25R5kwpBX5-zxQd8Q+6wX2N0r6Uhw@mail.gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <CAEf4BzY_rbdXFDyYN=s7c25R5kwpBX5-zxQd8Q+6wX2N0r6Uhw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 20, 2025 at 4:21=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wr=
-ote:
+On 28/03/2025 17:14, Andrii Nakryiko wrote:
+> On Wed, Mar 26, 2025 at 11:07 AM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Introducing new libbpf API getters for BTF.ext func and line info,
+>> namely:
+>>    bpf_program__func_info
+>>    bpf_program__func_info_cnt
+>>    bpf_program__func_info_rec_size
+>>    bpf_program__line_info
+>>    bpf_program__line_info_cnt
+>>    bpf_program__line_info_rec_size
+>>
+>> This change enables scenarios, when user needs to load bpf_program
+>> directly using `bpf_prog_load`, instead of higher-level
+>> `bpf_object__load`. Line and func info are required for checking BTF
+>> info in verifier; verification may fail without these fields if, for
+>> example, program calls `bpf_obj_new`.
+>>
+> Really, bpf_obj_new() needs func_info/line_info? Can you point where
+> in the verifier we check this, curious why we do that.
+Indirectly, yes:
+in verifier.c function check_btf_info_early sets
+`env->prog->aux->btf = btf;`
+only if line_info_cnt or func_info_cnt are non zero.
+and then there is a check that errors out:
+`verbose(env, "bpf_obj_new/bpf_percpu_obj_new requires prog BTF\n");`
+perhaps this can be improved as well, by setting aux->btf even if no 
+func info and line info
 >
-> On Thu, Mar 20, 2025 at 3:45=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Mar 20, 2025 at 2:41=E2=80=AFPM Amery Hung <ameryhung@gmail.com=
-> wrote:
-> > >
-> > > Currently, bpf_dynptr_from_mem() only allows creating dynptr from loc=
-al
-> > > memory of reg type PTR_TO_MAP_VALUE, specifically ringbuf. This patch
-> > > futher supports PTR_TO_MEM as a valid source of data.
-> > >
-> > > For a reg to be PTR_TO_MEM in the verifier:
-> > >  - read map value with special field BPF_UPTR
-> > >  - ld_imm64 kfunc (MEM_RDONLY)
-> > >  - ld_imm64 other non-struct ksyms (MEM_RDONLY)
-> > >  - return from helper with RET_PTR_TO_MEM: ringbuf_reserve (MEM_RINGB=
-UF)
-> > >    and dynptr_from_data
-> > >  - return from helper with RET_PTR_TO_MEM_OR_BTF_ID: this_cpu_ptr,
-> > >    per_cpu_ptr and the return type is not struct (both MEM_RDONLY)
-> > >  - return from special kfunc: dynptr_slice (MEM_RDONLY), dynptr_slice=
-_rdwr
-> > >  - return from non-special kfunc that returns non-struct pointer:
-> > >    hid_bpf_get_data
-> > >
-> > > Since this patch only allows PTR_TO_MEM without any flags, so only up=
-tr,
-> > > global subprog argument, non-special kfunc that returns non-struct pt=
-r,
-> > > return of bpf_dynptr_slice_rdwr() and bpf_dynptr_slice_rdwr() will be=
- allowed
-> > > additionally.
-> > >
-> > > The last two will allow creating dynptr from dynptr data. Will they c=
-reate
-> > > any problem?
-> >
-> > Yes, I think so. You need to make sure that dynptr you created from
-> > that PTR_TO_MEM is invalidated if that memory "goes away". E.g., for
-> > ringbuf case:
-> >
-> > void *r =3D bpf_ringbuf_reserve(..., 100);
-> >
-> > struct dynptr d;
-> > bpf_dynptr_from_mem(r, 100, 0, &d);
-> >
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c   | 30 ++++++++++++++++++++++++++++++
+>>   tools/lib/bpf/libbpf.h   |  8 ++++++++
+>>   tools/lib/bpf/libbpf.map |  6 ++++++
+>>   3 files changed, 44 insertions(+)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 6b85060f07b3..bc15526ed84c 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -9455,6 +9455,36 @@ int bpf_program__set_log_buf(struct bpf_program *prog, char *log_buf, size_t log
+>>          return 0;
+>>   }
+>>
+>> +void *bpf_program__func_info(struct bpf_program *prog)
+> const struct bpf_program, here and everywhere else
 >
-> ^ This will fail during verification because "r" will be PTR_TO_MEM |
-> MEM_RINGBUF.
-
-We discussed all this at LSFMMBPF2025, but for those who follow and
-didn't attend, we can just slightly modify the example by adding one
-extra bpf_dynptr_slice() constructed from r:
-
-
-void *r =3D bpf_ringbuf_reserve(..., 100);
-void *m =3D bpf_dynpt_slice(&r, ...);
-if (!m) return 0; /* shouldn't happen */
-
-struct dynptr d;
-bpf_dynptr_from_mem(m, 100, 0, &d);
-
-void *p =3D bpf_dynptr_data(&d, 0, 100);
-if (!p) return 0; /* can't happen */
-
-bpf_ringbuf_submit(r, 0);
-
-*(char *)p =3D '\0'; /* bad things happen */
-
-
-And we can keep building this long chain of dependencies. So we'd need
-to take all that into account and propagate invalidation across entire
-tree of dependencies between dynptrs and slices.
-
+>> +{
+>> +       return prog->func_info;
+>> +}
+>> +
+>> +__u32 bpf_program__func_info_cnt(struct bpf_program *prog)
+>> +{
+>> +       return prog->func_info_cnt;
+>> +}
+>> +
+>> +__u32 bpf_program__func_info_rec_size(struct bpf_program *prog)
+>> +{
+>> +       return prog->func_info_rec_size;
+>> +}
+>> +
+>> +void *bpf_program__line_info(struct bpf_program *prog)
+> should be `const void *`, if we went with `void *`, but see below about types
 >
-> Only five of the listed PTR_TO_MEM cases will be allowed with this
-> patch additionally: uptr, global subprog argument, hid_bpf_get_data,
-> bpf_dynptr_ptr_data and bpf_dynptr_slice_rdwr. For the former three,
-> the memory seems to be valid all the time. For the last two, IIUC,
-> bpf_dynptr_data or bpf_dynptr_slice_rdwr should be valid if null
-> checks pass. I am just so not sure about the nested situation (i.e.,
-> creating another dynptr from data behind a dynptr).
+>> +{
+>> +       return prog->line_info;
+>> +}
+>> +
+>> +__u32 bpf_program__line_info_cnt(struct bpf_program *prog)
+>> +{
+>> +       return prog->line_info_cnt;
+>> +}
+>> +
+>> +__u32 bpf_program__line_info_rec_size(struct bpf_program *prog)
+>> +{
+>> +       return prog->line_info_rec_size;
+>> +}
+>> +
+> As Eduard mentioned, I don't think `void *` is a good interface. We
+> have bpf_line_info_min and bpf_func_info_min structs in
+> libbpf_internal.h. We have never changed those types, so at this point
+> I feel comfortable enough to expose them as API types. Let's drop the
+> _min suffix, and move definitions to btf.h?
 >
-> Thanks,
-> Amery
+> The only question is whether to document that each record could be
+> bigger in size than sizeof(struct bpf_func_info) (and similarly for
+> bpf_line_info), and thus user should always care about
+> func_info_rec_size? Or, to keep it ergonomic and simple, and basically
+> always return sizeof(struct bpf_func_info) data (and if it so happens
+> that we'll in the future have different record sizes, then we'll
+> create a local trimmed representation for user; it's a pain, but we
+> won't be really stuck from API compatibility standpoint).
 >
-> > void *p =3D bpf_dynptr_data(&d, 0, 100);
-> > if (!p) return 0; /* can't happen */
-> >
-> > bpf_ringbuf_submit(r, 0);
-> >
-> >
-> > *(char *)p =3D '\0'; /* bad things happen */
-> >
-> >
-> > Do you handle that situation? With PTR_TO_MAP_VALUE "bad things" can't
-> > happen even if value is actually deleted/reused (besides overwriting
-> > some other element's value, which we can do without dynptrs anyways),
-> > because that memory won't go away due to RCU and it doesn't contain
-> > any information important for correctness (ringbuf data area does have
-> > it).
-> >
-> >
-> > >
-> > > Signed-off-by: Amery Hung <ameryhung@gmail.com>
-> > > ---
-> > >  include/uapi/linux/bpf.h | 4 +++-
-> > >  kernel/bpf/verifier.c    | 3 ++-
-> > >  2 files changed, 5 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index beac5cdf2d2c..2b1335fa1173 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -5562,7 +5562,9 @@ union bpf_attr {
-> > >   *     Description
-> > >   *             Get a dynptr to local memory *data*.
-> > >   *
-> > > - *             *data* must be a ptr to a map value.
-> > > + *             *data* must be a ptr to valid local memory such as a =
-map value, a uptr,
-> > > + *             a null-checked non-void pointer pass to a global subp=
-rogram, and allocated
-> > > + *             memory returned by a kfunc such as hid_bpf_get_data()=
-,
-> > >   *             The maximum *size* supported is DYNPTR_MAX_SIZE.
-> > >   *             *flags* is currently unused.
-> > >   *     Return
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 22c4edc8695c..d22310d1642c 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -11307,7 +11307,8 @@ static int check_helper_call(struct bpf_verif=
-ier_env *env, struct bpf_insn *insn
-> > >                 }
-> > >                 break;
-> > >         case BPF_FUNC_dynptr_from_mem:
-> > > -               if (regs[BPF_REG_1].type !=3D PTR_TO_MAP_VALUE) {
-> > > +               if (regs[BPF_REG_1].type !=3D PTR_TO_MAP_VALUE &&
-> > > +                   regs[BPF_REG_1].type !=3D PTR_TO_MEM) {
-> > >                         verbose(env, "Unsupported reg type %s for bpf=
-_dynptr_from_mem data\n",
-> > >                                 reg_type_str(env, regs[BPF_REG_1].typ=
-e));
-> > >                         return -EACCES;
-> > > --
-> > > 2.47.1
-> > >
+> I'd go with simple and ergonomic, given we haven't ever extended these
+> records, and it's unlikely we will. Those types work well and provide
+> enough information as is. So let's not even add _rec_size() APIs (at
+> least for now; we can always revisit this later)
+>
+> pw-bot: cr
+Thanks for reviewing, I'll send v2.
+>>   #define SEC_DEF(sec_pfx, ptype, atype, flags, ...) {                       \
+>>          .sec = (char *)sec_pfx,                                             \
+>>          .prog_type = BPF_PROG_TYPE_##ptype,                                 \
+>> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+>> index e0605403f977..29a5fd7f51f0 100644
+>> --- a/tools/lib/bpf/libbpf.h
+>> +++ b/tools/lib/bpf/libbpf.h
+>> @@ -940,6 +940,14 @@ LIBBPF_API int bpf_program__set_log_level(struct bpf_program *prog, __u32 log_le
+>>   LIBBPF_API const char *bpf_program__log_buf(const struct bpf_program *prog, size_t *log_size);
+>>   LIBBPF_API int bpf_program__set_log_buf(struct bpf_program *prog, char *log_buf, size_t log_size);
+>>
+>> +LIBBPF_API void *bpf_program__func_info(struct bpf_program *prog);
+>> +LIBBPF_API __u32 bpf_program__func_info_cnt(struct bpf_program *prog);
+>> +LIBBPF_API __u32 bpf_program__func_info_rec_size(struct bpf_program *prog);
+>> +
+>> +LIBBPF_API void *bpf_program__line_info(struct bpf_program *prog);
+>> +LIBBPF_API __u32 bpf_program__line_info_cnt(struct bpf_program *prog);
+>> +LIBBPF_API __u32 bpf_program__line_info_rec_size(struct bpf_program *prog);
+>> +
+>>   /**
+>>    * @brief **bpf_program__set_attach_target()** sets BTF-based attach target
+>>    * for supported BPF program types:
+>> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+>> index d8b71f22f197..a5d83189c084 100644
+>> --- a/tools/lib/bpf/libbpf.map
+>> +++ b/tools/lib/bpf/libbpf.map
+>> @@ -437,6 +437,12 @@ LIBBPF_1.6.0 {
+>>                  bpf_linker__add_fd;
+>>                  bpf_linker__new_fd;
+>>                  bpf_object__prepare;
+>> +               bpf_program__func_info;
+>> +               bpf_program__func_info_cnt;
+>> +               bpf_program__func_info_rec_size;
+>> +               bpf_program__line_info;
+>> +               bpf_program__line_info_cnt;
+>> +               bpf_program__line_info_rec_size;
+>>                  btf__add_decl_attr;
+>>                  btf__add_type_attr;
+>>   } LIBBPF_1.5.0;
+>> --
+>> 2.48.1
+>>
+
 
