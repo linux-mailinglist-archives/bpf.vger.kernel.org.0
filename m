@@ -1,148 +1,165 @@
-Return-Path: <bpf+bounces-54875-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54876-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBB6EA7516B
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 21:25:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BB01A751A9
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 21:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 869E13A3935
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 20:25:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D08F189303B
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 20:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1871E47A8;
-	Fri, 28 Mar 2025 20:25:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABDDB1E8358;
+	Fri, 28 Mar 2025 20:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vf45mxMW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eQy3NdGw"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E4D3C0C
-	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 20:25:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF91AE545
+	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 20:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743193533; cv=none; b=rcCciqopDrMcMXcPeJsNYAZh4ykUV+LmH6GElHpEGjwre1Er+QluxZLdo/yItb3/ZyjNzXrSR0+XRmnGRATf6NthqPr2gVjVjQlZru33H3XX2KpHqBN6EtaKPjAl+/13z6hi/1VgVXMTaIGZFcyFWYy8VBvDYv0G6VlSwi7YNr8=
+	t=1743195159; cv=none; b=XhNJycH4E14Wmt3jVSeb0NA6FFnTu0UxexuDVGmWmYtlbmO78pxajWuLhdCVI6Y/FxdPtc82TJJiZs64e7VUlieuMSmOMGSff0u67YyK1QXfOyCHCGl/Eo17QJ4M9JuiBHSnG6CVjmUg6kLgn/qTlEPrrna/3NIgkNIVzYF6M4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743193533; c=relaxed/simple;
-	bh=I1MZd3ctv0xxtRHXWceS++h4ZmYZxbz4tD2i3fzkXs8=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=lNUlqMkBhlXBR1WMIMkbr+w9UgQJfWrqRR/h8PIhoCgpEUIcYrBG1BJdS84JFUUVLUBSJUNlEMFJq2WnK10f+qcFXyWu1utH4ZncWpebfm0vZFHA8pX71Wv10ZxbTU2ujmCtzxUBaWZTd6WF2sIupTVdYLBGBMJyxY+fAK2V6qU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vf45mxMW; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1743195159; c=relaxed/simple;
+	bh=o0Hu2LiSErqJAdNbF+wmL9QZXpswtGXt+oe4Hd4D314=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DrxLL46ppyit7f0fJcSzLbth12intG1/AHlzwHXbqEv7WqPdmz3yhI8iJnn/+PZlPKTn64k9K/DwzLFaKIfibAhpKY/Br6ak3c/mueNodlxswOmHXolTsfJdpREefz0zUuD0NdLHgMrlI7IS8H+2L/a/hlt+vttOwzdG1wObcWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eQy3NdGw; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-301a4d5156aso4146604a91.1
+        for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 13:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743195157; x=1743799957; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qxQKZVmKyV9m1ibiDzwCdit5nG4P2FHfiljCH5uWOiA=;
+        b=eQy3NdGwbTl07PUCY2/t/gsXD7U4fDGE9OnLa0SdhF2gztBmBGYNgiaprYtRlC0lcJ
+         xTT694MUYFbtQ9MqNEKR6NWVShBKfBOarIV2w1MamkhIDhjkgWEdzBBd6HDzaxTv0xn/
+         uKT14eLybfSRKFKdr7OEo865qufLmehnJersZELeabVGcuYyYVHDwA5leFZLM2GtQehb
+         dgZ48TW2unGD9di2xaSSCxSDkBi7EQHzSmYKftdCOnlUF0AVkqgyD8ciujiTDWGlX6EE
+         94LK0hxqZ7TT5rIl/wTR1GAudtPVj8d5OjaqgwFlSbp3hd48Ynn3qP4vGf+XNZvq4Mfn
+         567g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743195157; x=1743799957;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qxQKZVmKyV9m1ibiDzwCdit5nG4P2FHfiljCH5uWOiA=;
+        b=iVGoZEQxhd1IWom30tyecOgWi75gwy4CWpZavEsPK5V6g1/KeMbRBtfJo3bhuIolt/
+         T7h732hE/ZsoGd015tQMwcj5CS9Pd01kBYlcWhz8nS6DB6BJG2nIE1wiOakWJlPCh956
+         sPWmaO0hoV0NNpCcFZiIgCpjwFvO/HrGLUaaACwZ9c+oed3s4lsXn8s+m9U+CiLR06Ee
+         TnFsjrLOAA4fVWuErE91hx5UN/+WDWNwB4m3os9MF13TVbIEdNV3XDpKwP+wiz40bma3
+         g9dw6NsnhN0dtrvbRmOkd4HeMVKHwHLjgEmtMwMM0KLM/ulbi52/xblvZTl4rBOn6oU5
+         E1rQ==
+X-Gm-Message-State: AOJu0YzuZDSJXliNsa/6Xo+4uzS/ds4S8O8X8TDXYruRFJ4u/bplffnx
+	1POOAN3iWGrOwAFSU6x+nCKWX9UHvhLF+qo+GIHRgm+xRd7fb7AFkuYcdcgcy0sIa1nghDkAP0/
+	4/xgcWe6CbPfQv4zHLvlWmweMf/5cPQ==
+X-Gm-Gg: ASbGnctaqZI4mx1Szmc5hhF2RzHSTHrIblL0XdQ3LHsOBE2a0zajBzcbW+QODPOvev4
+	GyFUA3vKd0N9ZZf7JZCEhMURJl5+AAUkd0icRv7orrjex+z3cz0k9EmG1zSYBtAM3N+qcHJAwqa
+	rgN9yEKyjdZyIyQGN2nZH8SZA9ygQDJ4xajaVOW/NsDA==
+X-Google-Smtp-Source: AGHT+IFwuAOcRCe7Q/Hjhc3cckWMvRzqadmzRd3MfVjvtL4MARzhPJNSeskELaEXveDFW1pFpRtwfrAPiB7a/7KbLFE=
+X-Received: by 2002:a17:90a:e183:b0:2ff:7c2d:6ff3 with SMTP id
+ 98e67ed59e1d1-3053215c0aemr889825a91.35.1743195156827; Fri, 28 Mar 2025
+ 13:52:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743193518;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gELwOsfg9Jc2cU0XqNsKOLgPXn2UDRW97s76TiWdZcs=;
-	b=vf45mxMWhsbnHD25yop7/j7eCT41keYpByZgNMvuunA9su2iPryeEetkP8KOKGbtgO3Za4
-	r2SxfJDfxp4FjNh1iTWIHfHpXuyZTVh1RCaUmG35udeFh1nxHobopaKTn+NI0kUviIH5xk
-	RbZc7DshEfzg0YOUPBjdaIeYWxubVOE=
-Date: Fri, 28 Mar 2025 20:25:08 +0000
-Content-Type: text/plain; charset="utf-8"
+References: <20250326180714.44954-1-mykyta.yatsenko5@gmail.com>
+ <CAEf4BzY_rbdXFDyYN=s7c25R5kwpBX5-zxQd8Q+6wX2N0r6Uhw@mail.gmail.com> <196c2eb9-aca9-4533-b927-255569154a73@gmail.com>
+In-Reply-To: <196c2eb9-aca9-4533-b927-255569154a73@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 28 Mar 2025 13:52:24 -0700
+X-Gm-Features: AQ5f1Jq6t_IXDFVV-VQwzIZQNkUoHM_7BAwRWBS4JtHthNxsygddEjTtnKamgSI
+Message-ID: <CAEf4BzYBWGHT56b5QAN9VD2viVpgLWTH-SXosPqYjqvfbLpqCg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: add getters for BTF.ext func and line info
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Ihor Solodrai" <ihor.solodrai@linux.dev>
-Message-ID: <310663685bc9fcc1e16490ca9f08b25825ddea91@linux.dev>
-TLS-Required: No
-Subject: Re: parallel pahole hangs while building modules from
- nvidia-open-kernel-dkms
-To: "Domenico Andreoli" <domenico.andreoli@linux.com>,
- alan.maguire@oracle.com, acme@kernel.org
-Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org
-In-Reply-To: <Z-JzFrXaopQCYd6h@localhost>
-References: <Z-JzFrXaopQCYd6h@localhost>
-X-Migadu-Flow: FLOW_OUT
 
-On 3/25/25 2:10 AM, Domenico Andreoli wrote:
-> Hi,
+On Fri, Mar 28, 2025 at 12:16=E2=80=AFPM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
 >
->   This a forward of Debian bug report [0] where you can find more
-> details. At [1] and [2] you can get the kernel and module to reproduce.
-> I could reproduce on both amd64 and arm64 using pahole 1.29.
+> On 28/03/2025 17:14, Andrii Nakryiko wrote:
+> > On Wed, Mar 26, 2025 at 11:07=E2=80=AFAM Mykyta Yatsenko
+> > <mykyta.yatsenko5@gmail.com> wrote:
+> >> From: Mykyta Yatsenko <yatsenko@meta.com>
+> >>
+> >> Introducing new libbpf API getters for BTF.ext func and line info,
+> >> namely:
+> >>    bpf_program__func_info
+> >>    bpf_program__func_info_cnt
+> >>    bpf_program__func_info_rec_size
+> >>    bpf_program__line_info
+> >>    bpf_program__line_info_cnt
+> >>    bpf_program__line_info_rec_size
+> >>
+> >> This change enables scenarios, when user needs to load bpf_program
+> >> directly using `bpf_prog_load`, instead of higher-level
+> >> `bpf_object__load`. Line and func info are required for checking BTF
+> >> info in verifier; verification may fail without these fields if, for
+> >> example, program calls `bpf_obj_new`.
+> >>
+> > Really, bpf_obj_new() needs func_info/line_info? Can you point where
+> > in the verifier we check this, curious why we do that.
+> Indirectly, yes:
+> in verifier.c function check_btf_info_early sets
+> `env->prog->aux->btf =3D btf;`
+> only if line_info_cnt or func_info_cnt are non zero.
+> and then there is a check that errors out:
+> `verbose(env, "bpf_obj_new/bpf_percpu_obj_new requires prog BTF\n");`
+> perhaps this can be improved as well, by setting aux->btf even if no
+> func info and line info
+
+lol, doesn't seem intentional (just in the early days prog BTF was
+only referenced and used with func_info/line_info, which isn't true
+anymore), we can probably swap the order and load and remember prog
+BTF regardless of func_info/line_info. Feel free to send a patch.
+
+> >
+> >> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> >> ---
+> >>   tools/lib/bpf/libbpf.c   | 30 ++++++++++++++++++++++++++++++
+> >>   tools/lib/bpf/libbpf.h   |  8 ++++++++
+> >>   tools/lib/bpf/libbpf.map |  6 ++++++
+> >>   3 files changed, 44 insertions(+)
+> >>
+
+[...]
+
+> >> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> >> index d8b71f22f197..a5d83189c084 100644
+> >> --- a/tools/lib/bpf/libbpf.map
+> >> +++ b/tools/lib/bpf/libbpf.map
+> >> @@ -437,6 +437,12 @@ LIBBPF_1.6.0 {
+> >>                  bpf_linker__add_fd;
+> >>                  bpf_linker__new_fd;
+> >>                  bpf_object__prepare;
+> >> +               bpf_program__func_info;
+> >> +               bpf_program__func_info_cnt;
+> >> +               bpf_program__func_info_rec_size;
+> >> +               bpf_program__line_info;
+> >> +               bpf_program__line_info_cnt;
+> >> +               bpf_program__line_info_rec_size;
+
+nit: hm... please check tabs vs spaces, formatting looks off
+
+> >>                  btf__add_decl_attr;
+> >>                  btf__add_type_attr;
+> >>   } LIBBPF_1.5.0;
+> >> --
+> >> 2.48.1
+> >>
 >
-> This is marked as serious severity because it makes the autobuilder han=
-g
-> as well [3].
->
-> Could you please help?
->
-> Regards,
-> Domenico
->
->
-> The command to succeed:
->
-> This simplified (sequential) command succeeds:
->
-> cp nvidia-modeset.base.ko nvidia-modeset.ko
-> LLVM_OBJCOPY=3D"x86_64-linux-gnu-objcopy" pahole -J --btf_features=3Den=
-code_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_f=
-unc,decl_tag_kfuncs --btf_features=3Ddistilled_base --btf_base vmlinux nv=
-idia-modeset.ko -j1
-> echo $?
->
-> producing this output:
-> =3D=3D=3D=3D=3D 8< =3D=3D=3D=3D=3D
-> dwarf_expr: unhandled 0x12 DW_OP_ operation
-> Unsupported DW_TAG_reference_type(0x10): type: 0x28172
-
-Domenico, Alan, Arnaldo,
-
-I was able to reproduce this error using the input files provided by
-Domenico [1][2].
-
-    ./build/pahole -J --btf_features=3Dencode_force,var,float,enum64,decl=
-_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs --btf_featur=
-es=3Ddistilled_base --btf_base debian-repro/vmlinux debian-repro/nvidia-m=
-odeset.base.ko -j1
-    dwarf_expr: unhandled 0x12 DW_OP_ operation
-    Unsupported DW_TAG_reference_type(0x10): type: 0x28172
-    Error while encoding BTF.
-    libbpf: failed to find '.BTF' ELF section in debian-repro/nvidia-mode=
-set.base.ko
-    pahole: debian-repro/nvidia-modeset.base.ko: Invalid argument
-
-
-The unhandled tag points to src/common/displayport/src/dp_auxretry.cpp
-[3] of nvidia-modeset.base.ko
-
-Now, as far as I know, BTF can't represent C++-style references
-directly (maybe indirectly with tags?).
-
-According to the code, pahole simply bails out in case it encounters
-`DW_TAG_reference_type` during BTF encoding. So the question is why
-BTF generation is even attempted for a module written in C++? It does
-not appear to be a supported use-case.
-
-Please correct me if I'm wrong about this.
-
-Alan, sorry for jumping into this uninvited. I trust you'll take over
-from here. Thanks!
-
-I've sent a patch with a fix for the hanging [4].
-
-[1] https://bugs.debian.org/cgi-bin/bugreport.cgi?att=3D1;bug=3D1100503;f=
-ilename=3Dvmlinux.zst;msg=3D19
-[2] https://bugs.debian.org/cgi-bin/bugreport.cgi?att=3D1;bug=3D1100503;f=
-ilename=3Dnvidia-modeset.base.ko.zst;msg=3D12
-[3] https://github.com/NVIDIA/open-gpu-kernel-modules/blob/main/src/commo=
-n/displayport/src/dp_auxretry.cpp
-[4] https://lore.kernel.org/bpf/20250328174003.3945581-1-ihor.solodrai@li=
-nux.dev/
-
-> Error while encoding BTF.
-> 0
-> =3D=3D=3D=3D=3D >8 =3D=3D=3D=3D=3D
->
-> [...]
 
