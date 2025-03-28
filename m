@@ -1,128 +1,148 @@
-Return-Path: <bpf+bounces-54874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303D1A750CD
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 20:31:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBB6EA7516B
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 21:25:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3669E189043C
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 19:31:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 869E13A3935
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 20:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715C41E1DF9;
-	Fri, 28 Mar 2025 19:31:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1871E47A8;
+	Fri, 28 Mar 2025 20:25:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C0VMFWQb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vf45mxMW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB7301531C5;
-	Fri, 28 Mar 2025 19:31:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E4D3C0C
+	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 20:25:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743190301; cv=none; b=ql5cBs5+qrdAaOZ2lOxaXHK5SIyhT4Pi3sEpUybksdq8YsUiUEdOKFVFvTA1zm2X37epUBWO+7YiihPxGojumjvxjm7w2TVsUapTvG38pbroDHkj5aF71+FH9TkVMcmEXJ4Gj09SEMSNgITn/sbnqWn0y+YDwuk7xRBNCcDVFj0=
+	t=1743193533; cv=none; b=rcCciqopDrMcMXcPeJsNYAZh4ykUV+LmH6GElHpEGjwre1Er+QluxZLdo/yItb3/ZyjNzXrSR0+XRmnGRATf6NthqPr2gVjVjQlZru33H3XX2KpHqBN6EtaKPjAl+/13z6hi/1VgVXMTaIGZFcyFWYy8VBvDYv0G6VlSwi7YNr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743190301; c=relaxed/simple;
-	bh=vUUOmaBsW00jSF2gRrb1rpo7FsoIYv4PkVoMJjSPa2M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HeSQR4NuwpSwV0vB+MoT0aK+VxQIG/zjXrADNv8tgUiTpeCGSxf+RE7yv3xq0RM5yRROEwm54K1bwNFzSH16mtWtfCwoOt8m/PbdBMQ3FOlrbkI6nMCVv1c083/fNfazsDGTfrNzvprBo/thABqFRzwQK03aaO83ur+vrWYuW1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C0VMFWQb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0ABDC4CEE4;
-	Fri, 28 Mar 2025 19:31:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743190299;
-	bh=vUUOmaBsW00jSF2gRrb1rpo7FsoIYv4PkVoMJjSPa2M=;
-	h=From:To:Cc:Subject:Date:From;
-	b=C0VMFWQb8cYGUvMuEndJm2THrABw3Y92jxwzHOxIFThfBQYab+AUk90h/LYeib/MW
-	 ya/XzXkgdDIqMCSDgPG4WXqXg+EWaNlT4aiqZegxpCHsQATBIHTNnO+ylP0KSmL3a7
-	 Lcfw7E5+D5nzddG3HVhHH0yv3bIG4CPMbt0ZjTK4YVgzIIWmKVQnGZAoJ9F9ptX7oY
-	 jhmhuaHMMHXzHx4hcUBngmKr27ZMiwVCGKBgTqeq2OybP0s3zy6umuSGYoGRNN5zQj
-	 nvjlTRpOVyiRW574lRNb7u9XhnRpDhVVkrrAM5O6dARu2TvTaY3Mb5EOcLTEBbKHtS
-	 +JP/Vp1kffFIg==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	kernel-team@meta.com,
-	song@kernel.org,
-	Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH bpf-next] selftests/bpf: Fix verifier_bpf_fastcall
-Date: Fri, 28 Mar 2025 12:31:24 -0700
-Message-ID: <20250328193124.808784-1-song@kernel.org>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1743193533; c=relaxed/simple;
+	bh=I1MZd3ctv0xxtRHXWceS++h4ZmYZxbz4tD2i3fzkXs8=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=lNUlqMkBhlXBR1WMIMkbr+w9UgQJfWrqRR/h8PIhoCgpEUIcYrBG1BJdS84JFUUVLUBSJUNlEMFJq2WnK10f+qcFXyWu1utH4ZncWpebfm0vZFHA8pX71Wv10ZxbTU2ujmCtzxUBaWZTd6WF2sIupTVdYLBGBMJyxY+fAK2V6qU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vf45mxMW; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1743193518;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gELwOsfg9Jc2cU0XqNsKOLgPXn2UDRW97s76TiWdZcs=;
+	b=vf45mxMWhsbnHD25yop7/j7eCT41keYpByZgNMvuunA9su2iPryeEetkP8KOKGbtgO3Za4
+	r2SxfJDfxp4FjNh1iTWIHfHpXuyZTVh1RCaUmG35udeFh1nxHobopaKTn+NI0kUviIH5xk
+	RbZc7DshEfzg0YOUPBjdaIeYWxubVOE=
+Date: Fri, 28 Mar 2025 20:25:08 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Ihor Solodrai" <ihor.solodrai@linux.dev>
+Message-ID: <310663685bc9fcc1e16490ca9f08b25825ddea91@linux.dev>
+TLS-Required: No
+Subject: Re: parallel pahole hangs while building modules from
+ nvidia-open-kernel-dkms
+To: "Domenico Andreoli" <domenico.andreoli@linux.com>,
+ alan.maguire@oracle.com, acme@kernel.org
+Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org
+In-Reply-To: <Z-JzFrXaopQCYd6h@localhost>
+References: <Z-JzFrXaopQCYd6h@localhost>
+X-Migadu-Flow: FLOW_OUT
 
-Commit [1] moves percpu data on x86 from address 0x000... to address
-0xfff...
+On 3/25/25 2:10 AM, Domenico Andreoli wrote:
+> Hi,
+>
+>   This a forward of Debian bug report [0] where you can find more
+> details. At [1] and [2] you can get the kernel and module to reproduce.
+> I could reproduce on both amd64 and arm64 using pahole 1.29.
+>
+> This is marked as serious severity because it makes the autobuilder han=
+g
+> as well [3].
+>
+> Could you please help?
+>
+> Regards,
+> Domenico
+>
+>
+> The command to succeed:
+>
+> This simplified (sequential) command succeeds:
+>
+> cp nvidia-modeset.base.ko nvidia-modeset.ko
+> LLVM_OBJCOPY=3D"x86_64-linux-gnu-objcopy" pahole -J --btf_features=3Den=
+code_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_f=
+unc,decl_tag_kfuncs --btf_features=3Ddistilled_base --btf_base vmlinux nv=
+idia-modeset.ko -j1
+> echo $?
+>
+> producing this output:
+> =3D=3D=3D=3D=3D 8< =3D=3D=3D=3D=3D
+> dwarf_expr: unhandled 0x12 DW_OP_ operation
+> Unsupported DW_TAG_reference_type(0x10): type: 0x28172
 
-Before [1]:
+Domenico, Alan, Arnaldo,
 
-159020: 0000000000030700     0 OBJECT  GLOBAL DEFAULT   23 pcpu_hot
+I was able to reproduce this error using the input files provided by
+Domenico [1][2].
 
-After [1]:
+    ./build/pahole -J --btf_features=3Dencode_force,var,float,enum64,decl=
+_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs --btf_featur=
+es=3Ddistilled_base --btf_base debian-repro/vmlinux debian-repro/nvidia-m=
+odeset.base.ko -j1
+    dwarf_expr: unhandled 0x12 DW_OP_ operation
+    Unsupported DW_TAG_reference_type(0x10): type: 0x28172
+    Error while encoding BTF.
+    libbpf: failed to find '.BTF' ELF section in debian-repro/nvidia-mode=
+set.base.ko
+    pahole: debian-repro/nvidia-modeset.base.ko: Invalid argument
 
-152602: ffffffff83a3e034     4 OBJECT  GLOBAL DEFAULT   35 pcpu_hot
 
-As a result, verifier_bpf_fastcall tests should now expect a negative
-value for pcpu_hot, IOW, the disassemble should show "r=" instead of
-"w=".
+The unhandled tag points to src/common/displayport/src/dp_auxretry.cpp
+[3] of nvidia-modeset.base.ko
 
-Fix this in the test.
+Now, as far as I know, BTF can't represent C++-style references
+directly (maybe indirectly with tags?).
 
-Note that, a later change created a new variable "cpu_number" for
-bpf_get_smp_processor_id() [2]. The inlining logic is updated properly
-as part of this change, so there is no need to fix anything on the
-kernel side.
+According to the code, pahole simply bails out in case it encounters
+`DW_TAG_reference_type` during BTF encoding. So the question is why
+BTF generation is even attempted for a module written in C++? It does
+not appear to be a supported use-case.
 
-[1] commit 9d7de2aa8b41 ("x86/percpu/64: Use relative percpu offsets")
-[2] commit 01c7bc5198e9 ("x86/smp: Move cpu number to percpu hot section")
-Reported-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Song Liu <song@kernel.org>
----
- tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Please correct me if I'm wrong about this.
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c b/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
-index a9be6ae49454..c258b0722e04 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bpf_fastcall.c
-@@ -12,7 +12,7 @@ SEC("raw_tp")
- __arch_x86_64
- __log_level(4) __msg("stack depth 8")
- __xlated("4: r5 = 5")
--__xlated("5: w0 = ")
-+__xlated("5: r0 = ")
- __xlated("6: r0 = &(void __percpu *)(r0)")
- __xlated("7: r0 = *(u32 *)(r0 +0)")
- __xlated("8: exit")
-@@ -704,7 +704,7 @@ SEC("raw_tp")
- __arch_x86_64
- __log_level(4) __msg("stack depth 32+0")
- __xlated("2: r1 = 1")
--__xlated("3: w0 =")
-+__xlated("3: r0 =")
- __xlated("4: r0 = &(void __percpu *)(r0)")
- __xlated("5: r0 = *(u32 *)(r0 +0)")
- /* bpf_loop params setup */
-@@ -753,7 +753,7 @@ __arch_x86_64
- __log_level(4) __msg("stack depth 40+0")
- /* call bpf_get_smp_processor_id */
- __xlated("2: r1 = 42")
--__xlated("3: w0 =")
-+__xlated("3: r0 =")
- __xlated("4: r0 = &(void __percpu *)(r0)")
- __xlated("5: r0 = *(u32 *)(r0 +0)")
- /* call bpf_get_prandom_u32 */
--- 
-2.47.1
+Alan, sorry for jumping into this uninvited. I trust you'll take over
+from here. Thanks!
 
+I've sent a patch with a fix for the hanging [4].
+
+[1] https://bugs.debian.org/cgi-bin/bugreport.cgi?att=3D1;bug=3D1100503;f=
+ilename=3Dvmlinux.zst;msg=3D19
+[2] https://bugs.debian.org/cgi-bin/bugreport.cgi?att=3D1;bug=3D1100503;f=
+ilename=3Dnvidia-modeset.base.ko.zst;msg=3D12
+[3] https://github.com/NVIDIA/open-gpu-kernel-modules/blob/main/src/commo=
+n/displayport/src/dp_auxretry.cpp
+[4] https://lore.kernel.org/bpf/20250328174003.3945581-1-ihor.solodrai@li=
+nux.dev/
+
+> Error while encoding BTF.
+> 0
+> =3D=3D=3D=3D=3D >8 =3D=3D=3D=3D=3D
+>
+> [...]
 
