@@ -1,135 +1,139 @@
-Return-Path: <bpf+bounces-54850-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54852-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87EE8A7482E
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 11:26:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C982EA74920
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 12:20:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69DD13BC4C6
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 10:25:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B6677A98E1
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 11:19:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07D9221B199;
-	Fri, 28 Mar 2025 10:25:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D1721ABA7;
+	Fri, 28 Mar 2025 11:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="UjTCfmWL"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NioVTezr"
 X-Original-To: bpf@vger.kernel.org
-Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0F0218E81;
-	Fri, 28 Mar 2025 10:25:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0AFA213221
+	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 11:20:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743157506; cv=none; b=PiKyn/F04n4rP8ThPOjzTK0ySC4Zn1B/Ah1TFI/gsEba3t4z4DUW7Ylfzz+h0+41dnWX1bdMrrXZxD/kcP+Wiqxq92HRrdo1lGr+q//Q05QH13u8CCjhJN2pYvz8kX/+BipPVWoNWnoSCEvOY3f3PqcZjIzQsOOqk2EoByRI+Zw=
+	t=1743160825; cv=none; b=ir2bIxXPeuoYgtRYPW8G23oJ6sNGzncebDtjg5XCX00aO7ChE+cQEQ+/IOqYVRQkVOpdzcFwit21gndExGQCbrRVcFKqEymwXR9aXYgHEwfdSj3b6WrnOYCD6tY6sqtdAi2QEiUrSKgBjcr3V20qm3kBnpoIxwS2bC3pORaFxOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743157506; c=relaxed/simple;
-	bh=VxUgKafT4KHR2xDe781AhbpVJyVma76wkzz6s4SiyOo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CSE/gTCHAoiM7XoKZtOxnPG2KajD8nuLFhoQVelpwLzGM+O/QzFmrU58NnEd/RypyHHM1vzenOhDeHygE8jReNwHftoiKZYJsTFKkKYDREPWw+/CBOVDx4MEnYmbqjHEBei2KanHSUHby90HIi2z4e3fgwLpIK7n5sWSNuudPjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=UjTCfmWL; arc=none smtp.client-ip=198.47.19.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 52SAOI4d2096894
-	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 28 Mar 2025 05:24:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1743157458;
-	bh=u4tP25R7wKXZmeyNdNfbQrRvdEC/iStfy1ogy2I2G0I=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=UjTCfmWLI9GYR0caRe30ghn8tIfqDc5srFVpP7vmtK/+KstuxiYWS+FuDAeES3aWF
-	 rokLxSYI2CjCR3IJKYQD4DFALV7BRsCRRwJoBTa+YLxHkp+lPfKQXtsmRHknWQihK5
-	 R87n2zxhtHoXlOwluWmryQXO8VlYaSTIV63R8t6w=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 52SAOIer056909
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 28 Mar 2025 05:24:18 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 28
- Mar 2025 05:24:17 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 28 Mar 2025 05:24:17 -0500
-Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 52SAOH0Y004266;
-	Fri, 28 Mar 2025 05:24:17 -0500
-Received: from localhost (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
-	by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 52SAOGom030930;
-	Fri, 28 Mar 2025 05:24:17 -0500
-From: Meghana Malladi <m-malladi@ti.com>
-To: <dan.carpenter@linaro.org>, <pabeni@redhat.com>, <kuba@kernel.org>,
-        <edumazet@google.com>, <davem@davemloft.net>, <andrew+netdev@lunn.ch>
-CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <namcao@linutronix.de>, <javier.carrasco.cruz@gmail.com>,
-        <diogo.ivo@siemens.com>, <horms@kernel.org>,
-        <jacob.e.keller@intel.com>, <m-malladi@ti.com>,
-        <john.fastabend@gmail.com>, <hawk@kernel.org>, <daniel@iogearbox.net>,
-        <ast@kernel.org>, <srk@ti.com>, Vignesh Raghavendra
-	<vigneshr@ti.com>,
-        Roger Quadros <rogerq@kernel.org>, <danishanwar@ti.com>
-Subject: [PATCH net v3 3/3] net: ti: icss-iep: Fix possible NULL pointer dereference for perout request
-Date: Fri, 28 Mar 2025 15:54:03 +0530
-Message-ID: <20250328102403.2626974-4-m-malladi@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250328102403.2626974-1-m-malladi@ti.com>
-References: <20250328102403.2626974-1-m-malladi@ti.com>
+	s=arc-20240116; t=1743160825; c=relaxed/simple;
+	bh=AGQAVNzeZWIutjsf8vmQB6eAcv49DEkuAYtLpgz/A8c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AmYX3yfCpuQXucaNFHXMo7znP09KgM1k6HsWC5SN1EBg5ciPJjJ0Ag/ANynAiCPcnxNlsHdQHsReMmVVKyGitK37uPQ/f/SKlDyARJwWvm+169yo4CJ14FIo5AgHjTwkIH0LgYaFeASjD+Qj3BI0zO7oUVUPLcKNehNRGJG1cEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NioVTezr; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1743160822;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xADjDk9zc1bw1YBgWMpS4QPMZR6DTQ8CJRDpLqIGwyc=;
+	b=NioVTezrX2nTWCgSlE2JjGpjk6O1Fo4Y/+dlZWqXQOHWqGABQD+WpYiz79aNPsBl211EXW
+	fnp+V3JRI1S61hihg8Y3LdMiDVkoZyumfw/TxwG0r//JQDzWWLUghkDxLL6c1hZBnOIVHF
+	aCg/Mg1b9b9E8v8bFiEhW6XEPeBw9LM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-355-Zsu-eqOHMDimhbLtm9WlpA-1; Fri, 28 Mar 2025 07:20:21 -0400
+X-MC-Unique: Zsu-eqOHMDimhbLtm9WlpA-1
+X-Mimecast-MFC-AGG-ID: Zsu-eqOHMDimhbLtm9WlpA_1743160820
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5e6136633b1so1824565a12.0
+        for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 04:20:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743160820; x=1743765620;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xADjDk9zc1bw1YBgWMpS4QPMZR6DTQ8CJRDpLqIGwyc=;
+        b=qk2ehJEBwdBZ4CiY4x+HUZvhn5ktCTR1LaGvZa/AwmJ24+vKvfobrIjlq+nTgSgF1Y
+         xey2b9cWB03wYdL1jf6Kf/mYTZ0m1GknvFOzfq4sOuYen0AqTe9C0NYek76VuvR8VT/V
+         Szo+0F+gCIcPadNq1f5SKQZZuX76M8njCBFC8dTsxwYQo2hsq08lTHDkk4qxCH6BFuxP
+         jxxdo3TDoCTeKtEC3J1FIMtBjyP3zoDy9R1CoZtBManAN1XDZCep+YzhNvmOTfmgreOf
+         EZcIU4ZcESeXd/ElCzb+Yz142dbtvDPQRc2US6LOXbwxv9VhE1H6uuCCEGOJG1Wql5zV
+         Aw2A==
+X-Forwarded-Encrypted: i=1; AJvYcCVCZup1lDLXAPlLS0LECdbzG/Zyf9s6vjABC1BxTZHzvizkAkcptWWQzOsgtjW2pLlpdoI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxqNJo2EogGa1DhUdHIVATWQCHg0WCxsuCtZXwlB9XWM3dsCabl
+	TOgfSWpXzfiwKYTnYkI0PJVa361DK+mK9fg6SmJp+wp9aX+5wpAxod+Ow/WN6gQlTKiCFzqwLDP
+	69RA5huKn1FkQlRyPy83B6o+sMCgfFXJSCyUBCw4lmlxbw3gVSg==
+X-Gm-Gg: ASbGnctuN8jKXiLUC2Jl2BHMd9YjLmOBFTBWOLV+O9gKlqBO1DCn1F0y/aPPvP50vHQ
+	DHe+K2sv07IMeLjBnzGzw9cujW481WOUSDakVyHGlwbjOUtkuuQ0E+wGGXlpDo2wvXxqfFhhCuD
+	bmCstvOtdQer95zB/H/trsY0KkE0yZeHJQs6gUC6DAttS4ihxq81IVWds5zvZOaQlrqGRxBEE4h
+	wXgTdshFrRXNYqiIXX/avrp+WmUEGul6QBKoPpgYKGbYZwr5rfelJJqs83WRxdk9QqqZAvZx1Vl
+	Xt/7ks1DPVT+qzdj5opk+bcsvIUehGbK7n4cnsuS
+X-Received: by 2002:a05:6402:1ed4:b0:5ed:837:e3db with SMTP id 4fb4d7f45d1cf-5ed8f2099b0mr5968667a12.32.1743160820367;
+        Fri, 28 Mar 2025 04:20:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEZK5Nv8BYjsY2nT5mHNKK8N9+Tgsi5w7rURbNEpTt3wAIOPFbmvEnvl96t0hGLvCjO+tk/7A==
+X-Received: by 2002:a05:6402:1ed4:b0:5ed:837:e3db with SMTP id 4fb4d7f45d1cf-5ed8f2099b0mr5968629a12.32.1743160819905;
+        Fri, 28 Mar 2025 04:20:19 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5edc16d3629sm1220781a12.23.2025.03.28.04.20.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Mar 2025 04:20:18 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 4DF8C18FCDB5; Fri, 28 Mar 2025 12:20:17 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+ <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
+ Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
+ Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>, Pavel Begunkov
+ <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>, Yuying Ma
+ <yuma@redhat.com>
+Subject: Re: [PATCH net-next v4 0/3] Fix late DMA unmap crash for page pool
+In-Reply-To: <20250327124803.41feffed@kernel.org>
+References: <20250327-page-pool-track-dma-v4-0-b380dc6706d0@redhat.com>
+ <20250327124803.41feffed@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Fri, 28 Mar 2025 12:20:17 +0100
+Message-ID: <87bjtlpfke.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-ICSS IEP driver has flags to check if perout or pps has been enabled
-at any given point of time. Whenever there is request to enable or
-disable the signal, the driver first checks its enabled or disabled
-and acts accordingly.
+Jakub Kicinski <kuba@kernel.org> writes:
 
-After bringing the interface down and up, calling PPS/perout enable
-doesn't work as the driver believes PPS is already enabled,
-(iep->pps_enabled is not cleared during interface bring down)
-and driver will just return true even though there is no signal.
-Fix this by setting pps and perout flags to false instead of
-disabling perout to avoid possible null pointer dereference.
+> On Thu, 27 Mar 2025 11:44:10 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> This series fixes the late dma_unmap crash for page pool first reported
+>> by Yonglong Liu in [0]. It is an alternative approach to the one
+>> submitted by Yunsheng Lin, most recently in [1]. The first two commits
+>> are small refactors of the page pool code, in preparation of the main
+>> change in patch 3. See the commit message of patch 3 for the details.
+>
+> We see a crash and an UAF on:
+>
+> [   18.574787] RIP: 0010:page_pool_put_unrefed_netmem (net/core/page_pool=
+.c:465 net/core/page_pool.c:808 net/core/page_pool.c:866)=20
+> [   18.575880] napi_pp_put_page (net/core/skbuff.c:998)=20
+> [   18.575912] skb_release_data (./include/linux/skbuff_ref.h:40 ./includ=
+e/linux/skbuff_ref.h:56 net/core/skbuff.c:1079)=20
+> [   18.575944] consume_skb (net/core/skbuff.c:1165 net/core/skbuff.c:1396=
+ net/core/skbuff.c:1390)=20
+>
+> You should be able to repro with ping test over netdevsim
 
-Fixes: 9b115361248d ("net: ti: icssg-prueth: Fix clearing of IEP_CMP_CFG registers during iep_init")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/all/7b1c7c36-363a-4085-b26c-4f210bee1df6@stanley.mountain/
-Signed-off-by: Meghana Malladi <m-malladi@ti.com>
----
+Alright, I'll take a look, thanks for the pointer.
 
-Changes from v2(v3-v2):
-- Add Reported-by tag and link to the bug reported by Dan Carpenter <dan.carpenter@linaro.org>
-- drop calling icss_iep_perout_enable() for disabling perout and set perout to false instead
-
- drivers/net/ethernet/ti/icssg/icss_iep.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/ti/icssg/icss_iep.c b/drivers/net/ethernet/ti/icssg/icss_iep.c
-index b4a34c57b7b4..b70e4c482d74 100644
---- a/drivers/net/ethernet/ti/icssg/icss_iep.c
-+++ b/drivers/net/ethernet/ti/icssg/icss_iep.c
-@@ -820,9 +820,9 @@ int icss_iep_exit(struct icss_iep *iep)
- 	icss_iep_disable(iep);
- 
- 	if (iep->pps_enabled)
--		icss_iep_pps_enable(iep, false);
-+		iep->pps_enabled = false;
- 	else if (iep->perout_enabled)
--		icss_iep_perout_enable(iep, NULL, false);
-+		iep->perout_enabled = false;
- 
- 	return 0;
- }
--- 
-2.43.0
+-Toke
 
 
