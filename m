@@ -1,157 +1,127 @@
-Return-Path: <bpf+bounces-54863-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54864-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71BB3A74F2C
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 18:22:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10123A74F39
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 18:29:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 118EC164C11
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 17:22:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18355188FE5C
+	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 17:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE861C8FD7;
-	Fri, 28 Mar 2025 17:22:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0056F1D86ED;
+	Fri, 28 Mar 2025 17:29:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ir+RP5et"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mxhbVUiO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3566823CB
-	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 17:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C5781A08B1
+	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 17:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743182519; cv=none; b=c7hDW3ABua/+chXtsZevgszDsiYBh4hTnWvREtILcLEU9tk533FUjnhdVoSnuyfBsenS3ltxXQISdgx8049KQWvOo/UH1UNuq3Brwzuwm0BC0UsC5jtvMl77HWa6p0ap5izMsnVC46m/TKBgGIrha29UGQkDxB2OGhNDelCIpgI=
+	t=1743182959; cv=none; b=bHO3udW62FB389oQUvxqFjRGoKJWlApn3q2iWZ0VEOAwHwVyNzGamlnheCoa8APiFVDNf9fBlRQ1fi79OZk2uo+RZR5RknaWZiMPSva0+QMBRLFcg8Xg3Tyl5cX4dvrww/yrI+Y6L+x2h+vlIcLAQd9o3wAZ44oEJq5v+uDbAX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743182519; c=relaxed/simple;
-	bh=LJhEmdFTwSEQgmi6em0HR+PW3qTkOAsaTNGOUALza/w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F4n/xsLf9zRkZuNr0gpTlPszE0VNubUXEPdXwG0Mou59bXD7IQp5AJf4DQrtF3FqYE1GeYKppZguL5xWGAEhXGEkbJE+/UDbjxrPSQ4TQ8vSS8r9pAsywo3Y2wF9b/HeOd8DOdjLEof4FRGh06FakyPjHiFU6dvnm8LwIObwMPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ir+RP5et; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1743182959; c=relaxed/simple;
+	bh=F2XBGPntS64CFIQZOkcJRkWFezPKMXkMZ/Wv6bmQdcU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=QJSJKcTnk365F4MpDIrbyH4BQJwskxrMGmRkE9Bsi+HzieSxQElVyBRkkLKkHSXjeabKKzanp1ToLWF3T25cnq986dnWfBBw25pIXt/VIzG6Em68qmdk142Q7qzuLUU5wtGsXoPy6uuDteXhNeoHNaPEikSCifKNpdGPmNPXdrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mxhbVUiO; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-225df540edcso70257415ad.0
-        for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 10:21:57 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-301493f461eso3102683a91.3
+        for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 10:29:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743182517; x=1743787317; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TLicBjbj/212seg4QYb8w1t4cVicjiCqi7CsUijIHWQ=;
-        b=ir+RP5etfLEqeotxVeGT+AvYQofiPqkAbF6eV7dWxn3L6IFeQPs1ek5L4cRe9YIGJD
-         +8+dYfKQ9lA0DGJLaxbBCLjylUjnNl0W28w1UST1U+nP904Ay7GYbgjxSXuWROkYfSJI
-         p+aK5cZ71vCVVfht0BTGgT45e/ljeDHBy41c0RsrufKe6BTr2jHzcwJgUhyNqJYroL9F
-         lbgYFmXppahZM6nAeX5aJjHr9P7ETu0QWHAbV/o0035pwT0WrduWgZEHDONZO/EZbEQs
-         AczARdWP26MOcBNWcHpqziC6WamnHwQmG1eLquEmMA/0gtLLGa3bzBvILKJo28PE3t1p
-         Ga9A==
+        d=gmail.com; s=20230601; t=1743182956; x=1743787756; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nfQMRNomMjIl/8WkyoEZcGgwH2FfbujbB3aZexxzKVg=;
+        b=mxhbVUiOyBM87WLo62nD9VebGeD+mKaBxuVUaatDEvT0utgB5lK53dWF7GoZ53TDws
+         NDfFixaz/UovKmYPW0cZSdsbGw5MAZzv8aOIPkUsOoolGps7tz0Hxyr+QmB6csqGvxzU
+         1oUG9T00pV8MSI2WCOYIQYH+qdqlTNLM857J6kG3Dv5pYL48uq68pLgSz8cNvM0OjUaH
+         GYRluZyRad52ZXuyxhFUjQUvoUZjHypl+DyBdzpwlavbp/K+4zAy+5hv5bBzOxyi0wGy
+         Ak6537Z2FtfAwME8krSJlkiG046y9eZjOocfGJt7+hYeJUHeotk2wjCac6kW5++DHFzB
+         oVcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743182517; x=1743787317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TLicBjbj/212seg4QYb8w1t4cVicjiCqi7CsUijIHWQ=;
-        b=X9fzXSHL51JwoXdVBikjwvsCLMuU4gCnacaKBZg8HzJxJUNR262v+PMmlAnvmWb0Q1
-         1ws637tLeOsPIkeHpZkIqP044a8kyWv+smyBkjxOGfwmMJj/AvdH3jhS16lCKWEeH3di
-         FOGuHzADexSef82evqE15eNSB/xlxPZRGv6O5at6djIC36/fCiqlJgFWRrCrB6skpgLO
-         OTRsQvqh8mQyXMBHP1oP2xC17uO/3mgDh0GvArXbKCA5cjR/nYGjx2EBlARkbOyVCW29
-         4wSXm/nV1aFL4cilRDe2ODMNXKo4U1h/jxHPHq+vKDXPzAwkqbgce5BRhFay2ABJjMsx
-         96Ug==
-X-Forwarded-Encrypted: i=1; AJvYcCWBIHn0O3CDxPJ25Q3ElDKwFQYwTqJ99aNmX+nQ3ykYMvxWZ879cAdcw5vVM9ljLX7qAaA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxk3v/YVNf7Alvh0ZcNcC+zJm9xQ3JtrO7hKiYM+5ieziyzkfRc
-	eTGOL60QhkUzD+dStDN1IqYeTEs8aLEqnynWtVxpkCOzEDB2ONWURT4dxmmHjHHaDde6Ukvfman
-	n+JrdoPk4yK6o2Sj9F/GoUvp35bk=
-X-Gm-Gg: ASbGncupCQhs8VeG6KefBU6Kw6ETvglYx0UeGQvZQVdJLadnAXmQwuf+Hz2qNWeLL45
-	AlOy77FrtxFlz0jrAtYqiY44Xofw6UJRMOfeXX6gWgVKRIWkeXx5i+6kLL61LPCz4HidqnMkkHz
-	m1mT7W8bDQmw1pP3brt0LGpGnLS89V4rkyad+5xCuQWg==
-X-Google-Smtp-Source: AGHT+IGD9gnTAle4v7hVARgWNzQH92AUKyz/2Aw+fO4qQPla0+uGDBX7htTdRj2ekga2Rhq8DuiOuwuQVaJVYAxalx8=
-X-Received: by 2002:a05:6a00:1151:b0:728:f21b:ce4c with SMTP id
- d2e1a72fcca58-7397f369169mr572605b3a.5.1743182517123; Fri, 28 Mar 2025
- 10:21:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1743182956; x=1743787756;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nfQMRNomMjIl/8WkyoEZcGgwH2FfbujbB3aZexxzKVg=;
+        b=SpKni0OABCBqEy+ZpJ5fECuAOuEZIC7k++nJSdUbeOIibkkOZWi7mNnEIwrnJfj3Md
+         lidAoF5ivLjEItH9UOd+/Ma3DNxCKLPlxmjlCjejHEYBesio6A2LAYJGZm+fqTZkL+kg
+         ZBQpBI7Y12wFhGpHyllwG/pxe3Glfbd6y00KHHtzchmKUlL/Ut8BOkgcG0wwIs868Ydh
+         73jB1Q1KYm1AZ5jOyG70c3NcfQOBzBCUy+vjPyd/8ASsB3U07dNEo8aBLSXGODQT+2He
+         nGTnxIbTy22Tsx1l+n7e1zpr7TakgtQXUwPnu+3vOpBxnJJ/UqjO76J+oQ5PT4mUH9PW
+         DLGw==
+X-Gm-Message-State: AOJu0YwKabT20o26Oa2S77uPapuEtx7IyR7m6CHN2+ln8WwK3tRSsVU1
+	l7UhwXGNp7pazRwIvxSbIEMt5ebMiAxVFkftuuL5lVfo1MqtH4Up
+X-Gm-Gg: ASbGnctbk3IpWTW9GVYFGahXycGmOoakJkLe8AzuQwpZuF0aHy7KHmPDiHJhiYGwzDf
+	wEUD652xL0uB0POV6GIk4vobMAqYDTmqeUouCJ8F4SKobU2f9wj50KJGPJIcQohfef6hcPO1euT
+	QaFNL+JRGJQx4gMrsD1tsw/rkdTpA7LxmZeWmfDoyB/IJvGKqmxawVICJRRyBCfzIz9RJs8R3py
+	G+gmo5avqiHSFYz1DaSwayg4ArvLstAlocCL2KcttpCb8w7g8UrM9US/0d1Wz7vkQpMIrHQha9F
+	qaB3SCJZasEVmFv3H7arnDpGuclwvnjLctqmdNKv
+X-Google-Smtp-Source: AGHT+IHULmUY1GRn93xLX5FuwWtZWs6ao/vpCVbotJzgEehHKGwvrwQ+Y/7maY6bsMe14WEHoRMOgg==
+X-Received: by 2002:a17:90b:3a85:b0:2ff:5ec1:6c6a with SMTP id 98e67ed59e1d1-305320b1e26mr159851a91.18.1743182956149;
+        Fri, 28 Mar 2025 10:29:16 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3039dcf48fcsm4533268a91.0.2025.03.28.10.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Mar 2025 10:29:15 -0700 (PDT)
+Message-ID: <d3edc724c733fc656eb61f98c9a78273ebd28df9.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: add getters for BTF.ext func and line
+ info
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Mykyta Yatsenko
+	 <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, 	kafai@meta.com, kernel-team@meta.com, Mykyta
+ Yatsenko <yatsenko@meta.com>
+Date: Fri, 28 Mar 2025 10:29:10 -0700
+In-Reply-To: <CAEf4BzY_rbdXFDyYN=s7c25R5kwpBX5-zxQd8Q+6wX2N0r6Uhw@mail.gmail.com>
+References: <20250326180714.44954-1-mykyta.yatsenko5@gmail.com>
+	 <CAEf4BzY_rbdXFDyYN=s7c25R5kwpBX5-zxQd8Q+6wX2N0r6Uhw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <7e46c811-e85b-4001-8fac-b16aa0e9815f@linux.dev>
-In-Reply-To: <7e46c811-e85b-4001-8fac-b16aa0e9815f@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 28 Mar 2025 10:21:44 -0700
-X-Gm-Features: AQ5f1Jo4A5l75XMtG0rjpoLOVx-PeKVZzfQE16ZwwXMC0yjoz1EnSn26XB6839c
-Message-ID: <CAEf4BzaEg1mPag0-bAPVeJhj-BL_ssABBAOc_AhFvOLi2GkrEg@mail.gmail.com>
-Subject: Re: Question: fentry on kernel func optimized by compiler
-To: Tao Chen <chen.dylane@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 27, 2025 at 9:03=E2=80=AFAM Tao Chen <chen.dylane@linux.dev> wr=
-ote:
->
-> Hi,
->
-> I recently encountered a problem when using fentry to trace kernel
-> functions optimized by compiler, the specific situation is as follows:
-> https://github.com/bpftrace/bpftrace/issues/3940
->
-> Simply put, some functions have been optimized by the compiler. The
-> original function names are found through BTF, but the optimized
-> functions are the ones that exist in kallsyms_lookup_name. Therefore,
-> the two do not match.
->
->          func_proto =3D btf_type_by_id(desc_btf, func->type);
->          if (!func_proto || !btf_type_is_func_proto(func_proto)) {
->                  verbose(env, "kernel function btf_id %u does not have a
-> valid func_proto\n",
->                          func_id);
->                  return -EINVAL;
->          }
->
->          func_name =3D btf_name_by_offset(desc_btf, func->name_off);
->          addr =3D kallsyms_lookup_name(func_name);
->          if (!addr) {
->                  verbose(env, "cannot find address for kernel function
-> %s\n",
->                          func_name);
->                  return -EINVAL;
->          }
->
-> I have made a simple statistics and there are approximately more than
-> 2,000 functions in Ubuntu 24.04.
->
-> dylane@2404:~$ cat /proc/kallsyms | grep isra | wc -l
-> 2324
->
-> So can we add a judgment from libbpf. If it is an optimized function,
+On Fri, 2025-03-28 at 10:14 -0700, Andrii Nakryiko wrote:
 
-No, we cannot. It's a different function at that point and libbpf
-isn't going to be in the business of guessing on behalf of the user
-whether it's ok to do or not.
+[...]
 
-But the user can use multi-kprobe with `prefix*` naming, if they
-encountered (or are anticipating) this situation and think it's fine
-for them.
+> As Eduard mentioned, I don't think `void *` is a good interface. We
+> have bpf_line_info_min and bpf_func_info_min structs in
+> libbpf_internal.h. We have never changed those types, so at this point
+> I feel comfortable enough to expose them as API types. Let's drop the
+> _min suffix, and move definitions to btf.h?
+>=20
+> The only question is whether to document that each record could be
+> bigger in size than sizeof(struct bpf_func_info) (and similarly for
+> bpf_line_info), and thus user should always care about
+> func_info_rec_size? Or, to keep it ergonomic and simple, and basically
+> always return sizeof(struct bpf_func_info) data (and if it so happens
+> that we'll in the future have different record sizes, then we'll
+> create a local trimmed representation for user; it's a pain, but we
+> won't be really stuck from API compatibility standpoint).
 
-As for fentry/fexit, you need to have the correct BTF ID associated
-with that function anyways, so I'm not sure that currently you can
-attach fentry/fexit to such compiler-optimized functions at all
-(pahole won't produce BTF for such functions, right?).
+There is also an option to do:
 
-> pass the suffix of the optimized function from the user space to the
-> kernel, and then perform a function name concatenation, like:
->
->          func_name =3D btf_name_by_offset(desc_btf, func->name_off);
->         if (optimize) {
->                 func_name =3D func_name + ".isra.0"
->         }
->          addr =3D kallsyms_lookup_name(func_name);
->
-> --
-> Best Regards
-> Tao Chen
->
->
+    const struct bpf_line_info *bpf_program__line_info(const struct bpf_pro=
+gram *prog, u32 idx)
+
+and hide the rec_size.
+But yes, simply assuming the array of `struct bpf_line_info` looks reasonab=
+le.
+
+[...]
+
 
