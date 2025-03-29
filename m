@@ -1,150 +1,178 @@
-Return-Path: <bpf+bounces-54883-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54884-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0DA9A7534F
-	for <lists+bpf@lfdr.de>; Sat, 29 Mar 2025 00:27:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FA96A753D6
+	for <lists+bpf@lfdr.de>; Sat, 29 Mar 2025 02:24:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97ED37A34BE
-	for <lists+bpf@lfdr.de>; Fri, 28 Mar 2025 23:26:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B089517558F
+	for <lists+bpf@lfdr.de>; Sat, 29 Mar 2025 01:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3F01F8729;
-	Fri, 28 Mar 2025 23:26:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0E9E8F4A;
+	Sat, 29 Mar 2025 01:24:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40FE91F417D
-	for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 23:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B8B915A8
+	for <bpf@vger.kernel.org>; Sat, 29 Mar 2025 01:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743204417; cv=none; b=jQ1tUkxDeuQnxjCmgt6BZIypMpiA23isKic4ZAyqPozaFQhSd4KsKrlN7y1iX1ucaeZMQ0HdPWQsUL1igQCVZIEilWUkfj2sS0oFP3rP3gtgdEXZzyHW1HkaWMIw2xqJN49kS0DMA9JriFJANmI/bC3qD507h9RWdTnJOtoEM3A=
+	t=1743211461; cv=none; b=BPrpM9Vg3Ovx5pKcbme9e2nNWMlo+74jcTqSf8Uxa85jSVaCu2P9WCkl9V2kNYqsMJewMBaCWZnZ9NmcyTS5h0nkYloTFItoXR6YQVYOr7JrGuPcy1NPh/1ZozqYQdb6KJztyWn6zZRWl897PjbYBraTJbCB8mopS0OQii/EC2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743204417; c=relaxed/simple;
-	bh=WSyKVT+LLfi3XjuyztQbmXWWPjKYwlhkJaZVZreKxQg=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=nAy2a1gwLoBZfP/bumrN1fXUFu4hU4N4hFRjPuytwYyYpE3XeuJ6mV9NBp5ckq+sOrmFSFrpNYD2Wia9suO6CPxY78wxYwS78iIUd+BMyhhmwkdlgOoazdVuY1HCLLYB4MjnybOB7KDgcnj/+NX4NTr/wwBnyZeDeO2na4H5Gd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3d44b221f0dso49508425ab.1
-        for <bpf@vger.kernel.org>; Fri, 28 Mar 2025 16:26:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743204413; x=1743809213;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vq9BN13Z7QMePfoIMCa/4EWlsqA5TKcwQV+02LV1Sdg=;
-        b=ln+9q2xVev0oP42l+aeUKP5e4LgelZovjIMlu0tAcw4wy7W6OF6Nz0s0XQcoIfXpGy
-         x1Eg0Tr6HMR+wySmMhhZ/hx2A/CnbG9gwO9kw0BvyZJ6dTvRafKZJm8qImZOoR7V+z5i
-         xZbKqT3gvwkM96GpP2ve7gIJO4iXZxCo9CNYUwdwHvEwvTcMVJKd2Nu9U10S495J4UIE
-         pPp2Sc+FYo7ITjr5dVC+n9COCMFYlk6/rWEuAP5rkiLnUK1NZCaK+Km1VkAjXCv7hTJT
-         0+rrMNoIFVjxjofwyheSHag1BgdNlIPx/h2aO9eXTPxESwXa07hWJ8i5wrbVlMFvoiQa
-         8iXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVUS7JvYbFWcJf7Dlx1hwoacrU82lw/RRS/z0r2lVSOcXYmjD8/XPAAwzYBy01i9Hepu7o=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyw0V+5uckY+jLN/fsU/qF+QPuxdRGv8o9nHwUjcrUP/spPebN7
-	sakpo7flnJR8E3y5+9g6h7TW5B7ZSDRNpNQs9KiuzkwojhBgM3roZDWaM+hn0K9tnEG+5mfbtfV
-	ZhWLn9gyniq7xniXGzPhYTqQGHRJnvaXN6/8tDZonJiA+Dkyku6CVVmM=
-X-Google-Smtp-Source: AGHT+IHbyZ+oBRgu5yixQoUhQdGIOqQasOZARqwrJiv+F68orCwj6RVd8suaPk9QZi41ifHPb7hRsHyVLzyFC9TM+qqcHTolD85v
+	s=arc-20240116; t=1743211461; c=relaxed/simple;
+	bh=xggSNdesiIsRD7iMVFlPFMwiWQ48xBfEJTWPmaI4Sxc=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=X2AJpnh7Re5ojwi1LV8QeOOLVDPw0jHfMyOPatufdC6s2GUBMgVKlUu1Kc4SM3NYgEDJIfADb6psPKp1Ii80xP5hFTK9dsfXV0Tk33omnjfQioUxSEqPDB10jjdLgfFbI+ixFtFS3+372jcCcFQjmtAF1FIyTujjYcRR+gz13/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZPfmk1lyXz4f3m7L
+	for <bpf@vger.kernel.org>; Sat, 29 Mar 2025 09:23:50 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id C1F2D1A0B7B
+	for <bpf@vger.kernel.org>; Sat, 29 Mar 2025 09:24:14 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgBHmcO5S+dnQhUIHw--.38750S2;
+	Sat, 29 Mar 2025 09:24:13 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2 0/6] bpf: Support atomic update for htab of
+ maps
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@kernel.org>,
+ Zvi Effron <zeffron@riotgames.com>, Cody Haas <chaas@riotgames.com>
+References: <20250308135110.953269-1-houtao@huaweicloud.com>
+ <04a2b00d-970f-7357-81e3-509a543550e9@huaweicloud.com>
+ <CAADnVQJeFmNjjshdXUAm0jnOofWSA-O3YJCfvtP82ZbYO40rBQ@mail.gmail.com>
+ <CAEf4BzY91syLTet6S=NWH=hnuV3Ye0dSWy_nYbqND3g1FNrcoQ@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <60ffe544-9c7d-24c3-fa10-dc560db6f728@huaweicloud.com>
+Date: Sat, 29 Mar 2025 09:24:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:214b:b0:3d3:d067:73f8 with SMTP id
- e9e14a558f8ab-3d5e092a397mr11477505ab.11.1743204413236; Fri, 28 Mar 2025
- 16:26:53 -0700 (PDT)
-Date: Fri, 28 Mar 2025 16:26:53 -0700
-In-Reply-To: <Z-cwOkotpxeSxirT@mini-arch>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67e7303d.050a0220.1547ec.0001.GAE@google.com>
-Subject: Re: [syzbot] [bpf?] WARNING in dev_xdp_install
-From: syzbot <syzbot+08936936fe8132f91f1a@syzkaller.appspotmail.com>
-To: stfomichev@gmail.com
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
-	netdev@vger.kernel.org, sdf@fomichev.me, song@kernel.org, 
-	stfomichev@gmail.com, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEf4BzY91syLTet6S=NWH=hnuV3Ye0dSWy_nYbqND3g1FNrcoQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgBHmcO5S+dnQhUIHw--.38750S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr1kZr1kCF4DWry8tr1fWFg_yoWrWryUpa
+	yF9F4akrWkJFnFqw1Sqw42gF4Fyrn3Kr15Zwnrtr4UCFsYkFn7tr1xKF4F9FZ5CryFgrya
+	qryjqrsxu34xAa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUIa0PDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-> On 03/28, syzbot wrote:
->> Hello,
->> 
->> syzbot found the following issue on:
->> 
->> HEAD commit:    1a9239bb4253 Merge tag 'net-next-6.15' of git://git.kernel..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=17989bb0580000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=d48017cf0c2458bf
->> dashboard link: https://syzkaller.appspot.com/bug?extid=08936936fe8132f91f1a
->> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
->> 
->> Unfortunately, I don't have any reproducer for this issue yet.
->> 
->> Downloadable assets:
->> disk image: https://storage.googleapis.com/syzbot-assets/0795c9a2c8ce/disk-1a9239bb.raw.xz
->> vmlinux: https://storage.googleapis.com/syzbot-assets/dfe4e652ed32/vmlinux-1a9239bb.xz
->> kernel image: https://storage.googleapis.com/syzbot-assets/34deb7756b26/bzImage-1a9239bb.xz
->> 
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+08936936fe8132f91f1a@syzkaller.appspotmail.com
->> 
->> ------------[ cut here ]------------
->> WARNING: CPU: 1 PID: 8456 at ./include/net/netdev_lock.h:54 netdev_ops_assert_locked include/net/netdev_lock.h:54 [inline]
->> WARNING: CPU: 1 PID: 8456 at ./include/net/netdev_lock.h:54 dev_xdp_install+0x610/0x9b0 net/core/dev.c:9911
->> Modules linked in:
->> CPU: 1 UID: 0 PID: 8456 Comm: syz.5.847 Not tainted 6.14.0-syzkaller-05877-g1a9239bb4253 #0 PREEMPT(full) 
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
->> RIP: 0010:netdev_ops_assert_locked include/net/netdev_lock.h:54 [inline]
->> RIP: 0010:dev_xdp_install+0x610/0x9b0 net/core/dev.c:9911
->> Code: 8d bc 24 28 0d 00 00 be ff ff ff ff e8 69 c5 26 02 31 ff 89 c5 89 c6 e8 0e af 81 f8 85 ed 0f 85 59 fb ff ff e8 d1 b3 81 f8 90 <0f> 0b 90 e9 4b fb ff ff e8 c3 b3 81 f8 49 8d bc 24 28 0d 00 00 be
->> RSP: 0018:ffffc9001f13f950 EFLAGS: 00010287
->> RAX: 000000000000023c RBX: ffff888059e8ccbd RCX: ffffc9000da1b000
->> RDX: 0000000000080000 RSI: ffffffff89395ebf RDI: 0000000000000005
->> RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
->> R10: 0000000000000000 R11: 0000000000000000 R12: ffff888059e8c000
->> R13: ffffffff870484d0 R14: ffffc9000ec3f000 R15: 0000000000000001
->> FS:  00007f6e99bf66c0(0000) GS:ffff888124b41000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 000000110c2f3eb0 CR3: 000000007f4ec000 CR4: 0000000000350ef0
->> Call Trace:
->>  <TASK>
->>  dev_xdp_attach+0x6d1/0x16a0 net/core/dev.c:10094
->>  dev_xdp_attach_link net/core/dev.c:10113 [inline]
->>  bpf_xdp_link_attach+0x2c5/0x680 net/core/dev.c:10287
->>  link_create kernel/bpf/syscall.c:5379 [inline]
->>  __sys_bpf+0x1bc7/0x4c80 kernel/bpf/syscall.c:5865
->>  __do_sys_bpf kernel/bpf/syscall.c:5902 [inline]
->>  __se_sys_bpf kernel/bpf/syscall.c:5900 [inline]
->>  __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5900
->>  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->>  do_syscall_64+0xcd/0x260 arch/x86/entry/syscall_64.c:94
->>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
->> RIP: 0033:0x7f6e9bd8d169
+Hi,
+
+On 3/29/2025 6:05 AM, Andrii Nakryiko wrote:
+> On Mon, Mar 24, 2025 at 6:29 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>> On Mon, Mar 24, 2025 at 7:36 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>>> ping ?
+>> Sorry for the delay. Still thinking about it.
+>> The mix of cleanups and features make it difficult to evaluate.
+>> Most bpf folks attend lsfmmbpf this week, so expect more delays.
+> I looked at the patches and didn't find anything obviously wrong with them.
 >
-> #syz test
-
-This crash does not have a reproducer. I cannot test it.
-
+> I'm a bit worried how we implicitly assume that if it's not per-cpu,
+> then htab_map_update_elem_in_place() will be working with FD hashtable
+> and map->ops->map_fd_put_ptr() will be defined. Seems a bit error
+> prone. But overall everything looks correct, and some of the
+> refactorings (e.g. patch #1) are a nice clean up.
 >
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 87cba93fa59f..534eda336f8d 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -10336,7 +10336,9 @@ int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
->  		goto unlock;
->  	}
->  
-> +	netdev_lock_ops(dev);
->  	err = dev_xdp_attach_link(dev, &extack, link);
-> +	netdev_unlock_ops(dev);
->  	rtnl_unlock();
->  
->  	if (err) {
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+Thanks for looking at the patch set and acking it. Since bpf CI had
+dropped the patch set, I will resend it next week.
+>
+> BTW, while I was reading all that code, I got a question. Why is it
+> specifically per-CPU maps that allow in-place updates for arbitrary
+> values? What makes it special? The assumption that we only have one
+> BPF program using value on the current CPU or something?
+
+I think part of the reason is that the update procedure will disable
+interruption on current CPU, therefore, there will be not concurrent
+lookup procedure on this CPU.
+>
+> If yes, what do we say about bpf_map_lookup_percpu_elem() executed
+> from another CPU? Weird. Hopefully I'm missing something and it's not
+> really just broken.
+
+Er, considering that bpf_map_lookup_percpu_elem() can be used to lookup
+element from any CPU, there may be concurrent update on CPU A and
+lookup_percpu on CPU B, therefore, the lookup_percpu procedure may read
+a partial updated value. It seem there is no better way to handle it. We
+could do out-of-place update by allocation a new per-cpu pointer,
+however due to the immediate reuse, the lookup_percpu procedure may read
+a reused value in the per-cpu pointer.
+>
+>
+>>> On 3/8/2025 9:51 PM, Hou Tao wrote:
+>>>> From: Hou Tao <houtao1@huawei.com>
+>>>>
+>>>> Hi,
+>>>>
+>>>> The motivation for the patch set comes from the question raised by Cody
+>>>> Haas [1]. When trying to concurrently lookup and update an existing
+>>>> element in a htab of maps, the lookup procedure may return -ENOENT
+>>>> unexpectedly. The first revision of the patch set tried to resolve the
+>>>> problem by making the insertion of the new element and the deletion of
+>>>> the old element being atomic from the perspective of the lookup process.
+>>>> While the solution would benefit all hash maps, it does not fully
+>>>> resolved the problem due to the immediate reuse issue. Therefore, in v2
+>>>> of the patch set, it only fixes the problem for fd htab.
+>>>>
+>>>> Please see individual patches for details. Comments are always welcome.
+>>>>
+>>>> v2:
+>>>>   * only support atomic update for fd htab
+>>>>
+>>>> v1: https://lore.kernel.org/bpf/20250204082848.13471-1-hotforest@gmail.com
+>>>>
+>>>> [1]: https://lore.kernel.org/xdp-newbies/CAH7f-ULFTwKdoH_t2SFc5rWCVYLEg-14d1fBYWH2eekudsnTRg@mail.gmail.com/
+>>>>
+>>>> Hou Tao (6):
+>>>>   bpf: Factor out htab_elem_value helper()
+>>>>   bpf: Rename __htab_percpu_map_update_elem to
+>>>>     htab_map_update_elem_in_place
+>>>>   bpf: Support atomic update for htab of maps
+>>>>   bpf: Add is_fd_htab() helper
+>>>>   bpf: Don't allocate per-cpu extra_elems for fd htab
+>>>>   selftests/bpf: Add test case for atomic update of fd htab
+>>>>
+>>>>  kernel/bpf/hashtab.c                          | 148 +++++++-------
+>>>>  .../selftests/bpf/prog_tests/fd_htab_lookup.c | 192 ++++++++++++++++++
+>>>>  .../selftests/bpf/progs/fd_htab_lookup.c      |  25 +++
+>>>>  3 files changed, 289 insertions(+), 76 deletions(-)
+>>>>  create mode 100644 tools/testing/selftests/bpf/prog_tests/fd_htab_lookup.c
+>>>>  create mode 100644 tools/testing/selftests/bpf/progs/fd_htab_lookup.c
+>>>>
+
 
