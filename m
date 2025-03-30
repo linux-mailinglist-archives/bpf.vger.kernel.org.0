@@ -1,165 +1,175 @@
-Return-Path: <bpf+bounces-54905-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54906-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 239F3A75CAC
-	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 23:14:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ADB7A75CBC
+	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 23:30:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BC351886CC0
-	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 21:14:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9515F7A39BD
+	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 21:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2004A1DE3D2;
-	Sun, 30 Mar 2025 21:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C15911BEF8A;
+	Sun, 30 Mar 2025 21:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MSrKarQ4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZPWrbCi3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 464E0185935
-	for <bpf@vger.kernel.org>; Sun, 30 Mar 2025 21:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2CE0BE67;
+	Sun, 30 Mar 2025 21:30:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743369240; cv=none; b=bc9oqD05sEsU5WMuT0xXOYEUaVEFkx3hy1UNtkMjKXfPyzuHwpfqrQCLOLjoaffMkrGD+/mw1de5fVVA7C5BEfxVj17yYeeOHQJxWasidKIgXVMkBFwiUOnPp7KUxXZPE+ZmA3L7/fI1GGudMHs37kdTEREjm6f4MaxO6rge1qY=
+	t=1743370230; cv=none; b=md5A0BFSu3I2dm0vIjhzaRGf1xoRZQac53yedE3GLoX4BDJPMjA2GwMgU5F4SyCRHtv5LjZUZ+kajmE804LbkkVBsosOhzAss6YUOyEV/laymQHs2dOXr0B5DX7KEJgSFfL8xQI0Bj3phMmNVuXnLKzJ7NGyRzJJtJNPZ+650Mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743369240; c=relaxed/simple;
-	bh=tuY/QNQk/F9SugrUgSfFsgzuGaTIb2SuuPlR/76U+A8=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=LDs1MmAAwqOwD0A27gyuPcS9RlnJpP/JBgWQPj0OSiKerVm0tfAZG7gLJduJrQaUn5Mc643notnphsbFrauJ0euCy7BzLSQBbY//dqSXkGIzZUMd2K7jXt7dnAATiF0nPW4lrWw/lcxRf4D0UdcKVdBk7AN8kBYJJgy/DJdXGU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--cmllamas.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MSrKarQ4; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--cmllamas.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-30364fc706fso6202008a91.3
-        for <bpf@vger.kernel.org>; Sun, 30 Mar 2025 14:13:59 -0700 (PDT)
+	s=arc-20240116; t=1743370230; c=relaxed/simple;
+	bh=rwPm/b9mN0zAn8FYFaggPzfpON9La4aWZ1wDAZv7GmQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DlaC8Lm9RhgXXa0wMa8QqNrfBzu5sskfqnin9R6GKT600dO2F1vEp4EXJQ3tgN+KKJHzbRYlWkB/2YzUA90qF3Jbzzpq575QqFsHfxf3ly+xMQYYah21qIAXvbrs4+fr8F9xfolYQ7JhW7KPuw/pm192QSjT7AMxoXIVewvC7+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZPWrbCi3; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-39141ffa9fcso3661605f8f.0;
+        Sun, 30 Mar 2025 14:30:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1743369238; x=1743974038; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=61IYoBnyZqJEMEpkuy3cn0SZfZ0XGPVC6El2dNeevTQ=;
-        b=MSrKarQ4eiBdkKzw55QshBdp7cp8chyr4CABIpQ4u8jkYg/AYGqv/qvkMbcMAhYnK+
-         5eIlc/xEQRM79Wf/iar2zzrRSGcrIlTboJyPb68MXKsfMYJtYBIWRpTayM61I68nFpq5
-         gzg2iscxRhIB6Hu6L2Z+NMO75PYGNxef3swBxsiQY1A24JiDtRe+kQa3bHprCSmini/9
-         Z2/7Hcx2dnI1VUeoCT55C+uo6KzfytYHEje+sw+1XGk1Jb4eRZhg5zw2Q2O7UymazgkJ
-         s5kvnePPhFz5bXqsfDIx8anFlHggHgcL+OUIaHiR3GQ1f+JZskzyqVWHm7hdkZEr0a+O
-         +iXA==
+        d=gmail.com; s=20230601; t=1743370227; x=1743975027; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yOOpYDacP3qw4CicXaURsjZhalE+xbMRn+milGOOg5E=;
+        b=ZPWrbCi3d9YJabEwAIh77/4Geo6+e3193HJeNZErD/DnDJGTGCWVmAn4iqMGI3PSxs
+         2c95kbKyTpCGjoXZ3BY219oRa/KSpQ3hqIBFfXQ2xG8LxdQ+3LRyomDTgqmeQ3pn1m6D
+         r+SwkPlIXl51oDrksjAqYKH3A/Q9lYnnNu9XyXtfIWVHiDRHya3cz4Dqe/AQVeJR8L4D
+         gS7u6U8ABPY0HfnCC6VaGj1p/GtGupfND1RjzWhnSiIEGurT+sNgcEo77//l3Vw/oP8i
+         oVoQ1jdFgfipmASCLkFD8vLuQCu4caMl80atkGVW95XvAdYd28ZLfYD5/7yMNJpRt3z3
+         dbYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743369238; x=1743974038;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=61IYoBnyZqJEMEpkuy3cn0SZfZ0XGPVC6El2dNeevTQ=;
-        b=qrLYVTlKWunrnoEx53fns7XvzpK2jxzG2Ew82rKmhawfuOV7zFCAZuSD2SbO+0VVFV
-         wAz68CZ1lTHIt8nf1X5hws/w1SwX9P46JPtAUw7U3YEy+uDgkaX7kBOsIJf25KZU/S2I
-         LyW2P3P1O7sGhDgTp38ukr8VFo37CyCR7VfU2I4sHZ3+AZHnCb3tDPmPwNW0VTX3CEB3
-         P9M3WUS6Gl2JkaA6YFPScrUHLAIveFgVmI1Cn/hOG6A6WF1xMsSjOu4xnrz6v2uHcqFh
-         i9EovE3MXbA7EaqXSLf2TJZDITLHui+crhr5FUFNSVbUX55ziAxzgYc3XlQWlru3CsoF
-         EIPw==
-X-Gm-Message-State: AOJu0YwkolevtKdDzDVQWPLQoo/hHrifPelGjt6uiQ7+hWAm3jF/8Y31
-	rVorVToKi8x/cDdtS+lpHmBMsH5hDjcMtoiGNOapQV/Iql86JX1NjldCc+sUJ0p5X+D/ps14G3M
-	xiMjn8Mg29PENzcG8ZWQuhfKQXG/UmuRNqrTFJYT3F+XQYbKRRCzoMcFTvpSAYY4ELKSrrGC+63
-	wlAyuOq/Kv4RDX+0QwoPeFEirie0mD4h2iNs4ijl4=
-X-Google-Smtp-Source: AGHT+IExA/Qh/zET4rYRjfCGWnHQ2oDyUcaf7FrxoGsylJCTJr1cZxpuLWN9JGul9NvyF2ynMXNVsUSEXVUzfA==
-X-Received: from pjbqn11.prod.google.com ([2002:a17:90b:3d4b:b0:2ea:29de:af10])
- (user=cmllamas job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:2e8d:b0:2fe:99cf:f579 with SMTP id 98e67ed59e1d1-30531f7c03bmr12282871a91.4.1743369238499;
- Sun, 30 Mar 2025 14:13:58 -0700 (PDT)
-Date: Sun, 30 Mar 2025 21:13:23 +0000
+        d=1e100.net; s=20230601; t=1743370227; x=1743975027;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yOOpYDacP3qw4CicXaURsjZhalE+xbMRn+milGOOg5E=;
+        b=SNw6ntTksKgNabECkE+wQBXn8Rxx376V4UemkKlMHaKk0Fv4oYgN9bIxWbK7flpBmm
+         iXww8EA2TNvzyTwFWqLDxWrLt3Br15IUzEeUsZlSYqvgQfSD+L0X4ka4nz97pKT9xNbD
+         Y7E+5Zj+TboFMar9+0Tfu3yNYDgpitKpX/eYnKj8gYEjtp05V9K1FUXan/uddEIx2sEN
+         qdt4eKM/7ei2dhpracUGUVHYBTlTV/MtnSNt4SOqEj+4wOCSnU0ZuKxRe+ppqrgQ9F8V
+         gX1WzSf/ulCMdswksujkkT73Et3W5f4N3H4PHkAAX0AV95CYu06DYikITHWCnOUHIlVl
+         89wg==
+X-Forwarded-Encrypted: i=1; AJvYcCVLGAtdjWr+xjxpe1AQYlRpCu0BtqQYlIsT92UyRxrITyYsRBv2HKeZZixN4fORBf0Ed9rumGP1Bc7GGMY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywn7fpRjPCTI5/OIyVJ+JQYMfyQ97di2fCYANd9UKDy9/MEgjPj
+	O3rxtxnicshok1qS23Exgw5zh4PCEhjjDnmcBXCkMxNzLIamQQPntj8oq20Zo0ZKvbqyPcA7RD5
+	vLQj3KDrJgMW/hcA61Na9aUb1aDQ=
+X-Gm-Gg: ASbGnctIirJfqblIMx//t1XUtyMAF4Gdt4Q21myxpNUcwKquw1g7Wx7xid0FuceWzrD
+	eUCQypp3DcpA6HMl1mgVewT5cr1eWHSVcdMUsL4VDHPcdUu7zaqerlIp5QbJTcIqA8cFlQKimNj
+	ncEPK0chILVGL6KC1S+nyELV/UjZQfY2QQqzNYhFm6nncppmChpeIW
+X-Google-Smtp-Source: AGHT+IGy6TYkwqWgmB4qVvUpl+hS3Hb0sVBnt8U2ZwjeeCa8mROOAVHVYBHFbL7WUn3u4+jOQRKGFypsVayyAIua8Uc=
+X-Received: by 2002:a05:6000:2913:b0:39a:ca59:a626 with SMTP id
+ ffacd0b85a97d-39c120e3e5cmr5650236f8f.28.1743370226631; Sun, 30 Mar 2025
+ 14:30:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.49.0.472.ge94155a9ec-goog
-Message-ID: <20250330211325.530677-1-cmllamas@google.com>
-Subject: [PATCH bpf] libbpf: Fix implicit memfd_create() for bionic
-From: Carlos Llamas <cmllamas@google.com>
-To: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alastair Robertson <ajor@meta.com>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com, 
-	Carlos Llamas <cmllamas@google.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>
+MIME-Version: 1.0
+References: <20250327145159.99799-1-alexei.starovoitov@gmail.com> <CAHk-=wgRbk2ezu1TNewZQSrT1MCzP-xAXrcHXULMeW=RRSak5A@mail.gmail.com>
+In-Reply-To: <CAHk-=wgRbk2ezu1TNewZQSrT1MCzP-xAXrcHXULMeW=RRSak5A@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 30 Mar 2025 14:30:15 -0700
+X-Gm-Features: AQ5f1JqKoFYJATW7xwoyQD92tAvSQWSre1BbHdyzNRzzGs11RJb--CavgF31AIQ
+Message-ID: <CAADnVQJBHPbq6+TQhM2kmWNBTiPoB50_fnVcwC+yLOtpjUWujA@mail.gmail.com>
+Subject: Re: [GIT PULL] Introduce try_alloc_pages for 6.15
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Sebastian Sewior <bigeasy@linutronix.de>, 
+	Steven Rostedt <rostedt@goodmis.org>, Michal Hocko <mhocko@suse.com>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, linux-mm <linux-mm@kvack.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Johannes Weiner <hannes@cmpxchg.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Since memfd_create() is not consistently available across different
-bionic libc implementations, using memfd_create() directly can break
-some Android builds:
+On Sun, Mar 30, 2025 at 1:42=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, 27 Mar 2025 at 07:52, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > The pull includes work from Sebastian, Vlastimil and myself
+> > with a lot of help from Michal and Shakeel.
+> > This is a first step towards making kmalloc reentrant to get rid
+> > of slab wrappers: bpf_mem_alloc, kretprobe's objpool, etc.
+> > These patches make page allocator safe from any context.
+>
+> So I've pulled this too, since it looked generally fine.
 
-  tools/lib/bpf/linker.c:576:7: error: implicit declaration of function 'memfd_create' [-Werror,-Wimplicit-function-declaration]
-    576 |         fd = memfd_create(filename, 0);
-        |              ^
+Thanks!
 
-To fix this, relocate and inline the sys_memfd_create() helper so that
-it can be used in "linker.c". Similar issues were previously fixed by
-commit 9fa5e1a180aa ("libbpf: Call memfd_create() syscall directly").
+> The one reaction I had is that when you basically change
+>
+>         spin_lock_irqsave(&zone->lock, flags);
+>
+> into
+>
+>         if (!spin_trylock_irqsave(&zone->lock, flags)) {
+>                 if (unlikely(alloc_flags & ALLOC_TRYLOCK))
+>                         return NULL;
+>                 spin_lock_irqsave(&zone->lock, flags);
+>         }
+>
+> we've seen bad cache behavior for this kind of pattern in other
+> situations: if the "try" fails, the subsequent "do the lock for real"
+> case now does the wrong thing, in that it will immediately try again
+> even if it's almost certainly just going to fail - causing extra write
+> cache accesses.
+>
+> So typically, in places that can see contention, it's better to either do
+>
+>  (a) trylock followed by a slowpath that takes the fact that it was
+> locked into account and does a read-only loop until it sees otherwise
+>
+>      This is, for example, what the mutex code does with that
+> __mutex_trylock() -> mutex_optimistic_spin() pattern, but our
+> spinlocks end up doing similar things (ie "trylock" followed by
+> "release irq and do the 'relax loop' thing).
 
-Cc: Alastair Robertson <ajor@meta.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Fixes: 6d5e5e5d7ce1 ("libbpf: Extend linker API to support in-memory ELF files")
-Signed-off-by: Carlos Llamas <cmllamas@google.com>
----
- tools/lib/bpf/libbpf.c          | 9 ---------
- tools/lib/bpf/libbpf_internal.h | 9 +++++++++
- tools/lib/bpf/linker.c          | 2 +-
- 3 files changed, 10 insertions(+), 10 deletions(-)
+Right,
+__mutex_trylock(lock) -> mutex_optimistic_spin() pattern is
+equivalent to 'pending' bit spinning in qspinlock.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 194809da5172..1f36e16461e1 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1719,15 +1719,6 @@ static Elf64_Sym *find_elf_var_sym(const struct bpf_object *obj, const char *nam
- 	return ERR_PTR(-ENOENT);
- }
- 
--/* Some versions of Android don't provide memfd_create() in their libc
-- * implementation, so avoid complications and just go straight to Linux
-- * syscall.
-- */
--static int sys_memfd_create(const char *name, unsigned flags)
--{
--	return syscall(__NR_memfd_create, name, flags);
--}
--
- #ifndef MFD_CLOEXEC
- #define MFD_CLOEXEC 0x0001U
- #endif
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index de498e2dd6b0..19770402807f 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -666,6 +666,15 @@ static inline int sys_dup3(int oldfd, int newfd, int flags)
- 	return syscall(__NR_dup3, oldfd, newfd, flags);
- }
- 
-+/* Some versions of Android don't provide memfd_create() in their libc
-+ * implementation, so avoid complications and just go straight to Linux
-+ * syscall.
-+ */
-+static inline int sys_memfd_create(const char *name, unsigned flags)
-+{
-+	return syscall(__NR_memfd_create, name, flags);
-+}
-+
- /* Point *fixed_fd* to the same file that *tmp_fd* points to.
-  * Regardless of success, *tmp_fd* is closed.
-  * Whatever *fixed_fd* pointed to is closed silently.
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index b52f71c59616..077af6f8bebb 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -573,7 +573,7 @@ int bpf_linker__add_buf(struct bpf_linker *linker, void *buf, size_t buf_sz,
- 
- 	snprintf(filename, sizeof(filename), "mem:%p+%zu", buf, buf_sz);
- 
--	fd = memfd_create(filename, 0);
-+	fd = sys_memfd_create(filename, 0);
- 	if (fd < 0) {
- 		ret = -errno;
- 		pr_warn("failed to create memfd '%s': %s\n", filename, errstr(ret));
--- 
-2.49.0.472.ge94155a9ec-goog
+> or
+>
+>  (b) do the trylock and lock separately, ie
+>
+>         if (unlikely(alloc_flags & ALLOC_TRYLOCK)) {
+>                 if (!spin_trylock_irqsave(&zone->lock, flags))
+>                         return NULL;
+>         } else
+>                 spin_lock_irqsave(&zone->lock, flags);
+>
+> so that you don't end up doing two cache accesses for ownership that
+> can cause extra bouncing.
 
+Ok, I will switch to above.
+
+> I'm not sure this matters at all in the allocation path - contention
+> may simply not be enough of an issue, and the trylock is purely about
+> "unlikely NMI worries", but I do worry that you might have made the
+> normal case slower.
+
+We actually did see zone->lock being contended in production.
+Last time the culprit was an inadequate per-cpu caching and
+these series in 6.11 fixed it:
+https://lwn.net/Articles/947900/
+I don't think we've seen it contended in the newer kernels.
+
+Johannes, pls correct me if I'm wrong.
+
+But to avoid being finger pointed, I'll switch to checking alloc_flags
+first. It does seem a better trade off to avoid cache bouncing because
+of 2nd cmpxchg. Though when I wrote it this way I convinced myself and
+others that it's faster to do trylock first to avoid branch misprediction.
 
