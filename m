@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-54895-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54896-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2329A75A0C
-	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 14:24:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73B32A75A10
+	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 14:24:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4B2E188ACC0
-	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 12:24:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 883D316901B
+	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 12:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E333C1CDFCE;
-	Sun, 30 Mar 2025 12:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3101CAA6C;
+	Sun, 30 Mar 2025 12:24:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="ULEoh+5A"
+	dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="USRgcXdD"
 X-Original-To: bpf@vger.kernel.org
 Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [185.185.170.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1CF51E4AB;
-	Sun, 30 Mar 2025 12:23:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DBAE158A13;
+	Sun, 30 Mar 2025 12:24:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.185.170.37
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743337440; cv=pass; b=d5CqOulj3hkN6o5FNxR0ptN7MXVwBtK1dy6BRJ3IxIxtiUFTthq1uhcnDYBguGIhVspYh7B34YGtTKdJwJBRo6dCSGXVvAANyUV6MxdRbJ8rqqX91iS5jByAGOdjr4kgPvUmjhfKMyNAGqDUeGECIH3jMssOnBgmfNRa2JZeXvg=
+	t=1743337446; cv=pass; b=HwQZiL3QpSRR49IJ0ZEru4oiJqbZYivlByeVAbyW/WufTs5mPJviQuO6FkoA3X+6Hz6pHcgsIkKfJzZQR2f2q1FCJBDKSlJcBbQXqpvcgjEqpQH3OwuXllN50ULGe7oA1tHOqnfLGDsvt/XdZ315a9FFuqd8iB84WkCsJXGLg1w=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743337440; c=relaxed/simple;
-	bh=IXWeVNUrDwiVLsyEdQ+VN9pOIe6FAnFmLtT5lPuMAqU=;
+	s=arc-20240116; t=1743337446; c=relaxed/simple;
+	bh=SGD5O0nr6VC6fbVT1etVdb3PMfIKF7sy2ecIqezxLfA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ppUBAFNXL4uvPB64dYpeCedZFJWFQw7+TiMoqHs/45zH/bLJMN3gyNnjOl5V+5HsuzLzxaj1IMChBesvynvPVDF1nrhkl8FWBCQE/UX0C4o+mAxh/2m/qzTEGfpCkwThuVRFBANDSfOS9X7LMQN0Zij4ibDxu8ZPOkJSIRhtsf4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b=ULEoh+5A; arc=pass smtp.client-ip=185.185.170.37
+	 MIME-Version; b=b47cG+T/BOcf+0fRxZVoVPGQtvwTeSdELPDMuFJ3pvbe/hBDPSAnum+qmGjAuwXVQWZc8AdNzYrY33eGEu7FJFElFO5sPma3/gucNRsRP9ux4JB5T2/ikUUjg9Bujv6xoTlbmsCq12UVNdwVTPiKHUyqRI6r4oRheTsEJaXOzzI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b=USRgcXdD; arc=pass smtp.client-ip=185.185.170.37
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
 Received: from monolith.lan (unknown [193.138.7.178])
@@ -36,39 +36,39 @@ Received: from monolith.lan (unknown [193.138.7.178])
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: pav)
-	by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4ZQYMq0WqZz49QBV;
-	Sun, 30 Mar 2025 15:23:50 +0300 (EEST)
+	by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4ZQYMw5y8xz49QB9;
+	Sun, 30 Mar 2025 15:23:56 +0300 (EEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-	t=1743337432;
+	t=1743337438;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5iXUua0n2qyPzavE1+BdybGcZSsXWYWL87EJRkEHnm8=;
-	b=ULEoh+5AH6+MHwMyi9PcNk9mKsXF9NowBN2Ohbu9lga83k+JE43AVgEAQsU9672YrZ4Lx4
-	s7R1jyYdPLlkQ0BpuPNguT4lYI9ZQHru4nNnUZ8XK6i+dlTSHJVXpS2b+KxGstiJ4K/gAm
-	Zna1t0xIwb4FBJ420YuYss/lbY7Cxsw4k9XyVApB39/f3QKs27AojnDzD+VKfYmZcTjy49
-	Y3+Guz8f7+uKa3HZ/aEuQVrzjtOvH55LQ1DpVagsS0k/60fPix912I0RZNNS0rjZ+fgfQm
-	mC/179Lskz9WNHbkd9KgFrzpL8oydhw+oi6356CkoMplf+HNPG4zDCzGHUddMA==
+	bh=RGk790DxeR6uG6Xv1mTCCd3mPVISN0jmLoUn7FXY/PA=;
+	b=USRgcXdDb/njzFsAUDq8GL97BdDGtYhunEk5Lb46d6o4TGyESl4G8TlPAvAqPLe0i7Ego/
+	JSVlGbLAB9aNiAUOpvhTny/gUyhl4gS6/Mg9vHqInx18r0xPcPUiUs1VJnxK6a52m9zOoI
+	rErfcL8Ytdq86kn4R4sL6EeLB6ECSnzZRyIKUloiJDi/SdLuHxrQ01HPGfvr47J4tzxGme
+	bi9vPDeIe/kMrUizGBODtLVDXafQxkO1QIX21ApdBMmepZckOzxJjYzsud++x/nR1L2O5R
+	zfHYg57o7f9BKY0mEMKsnmfR0JTbnm1XAfRhwt5HrMTM64Mwr/xsnize02T4Ow==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-	s=lahtoruutu; t=1743337432;
+	s=lahtoruutu; t=1743337438;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5iXUua0n2qyPzavE1+BdybGcZSsXWYWL87EJRkEHnm8=;
-	b=nhnQb1qU5g/B02s/rFW/A4E+sQPfU/uoOHpmRbbVxJ1qDXgOAp/+kdY6RV/oP7rXxisSC1
-	YjpB+h5hpse/kF04PbQaYHRD5eZ0R0c5F+Y/gQOPFMRZJL3RLaHNM3iTZamu5svqPeLs3O
-	d57i+hydKoutxD2x+3tNsq23/vVZvcBFkWwyCgBh/75gx5QeVAv/vusKvSunw/EvcDAnkB
-	IHiru30JAKweYb96zW3kbPtZmJQHf5GQmfh8IP5Esi67xgkFC8LwoM++5M4bJ6g9REJsCw
-	o6GuCQwllWmv4XInIs/IF7dpkJkHV4G+ojwb/dOkkUVpGnyITI0tw0QzwlCONQ==
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1743337432; a=rsa-sha256;
+	bh=RGk790DxeR6uG6Xv1mTCCd3mPVISN0jmLoUn7FXY/PA=;
+	b=iqq3sYfCWEM66p+OyAc6bxjtvTqeGK5YkvGxr8YGKVj/iIKIF8xdZM5x9wxq71HhkoJzgr
+	NwY/w/Lmo3qAJK/2EAAJ3hZp2abVcSWPOD19h9+z3+Kgexv6RA1E3XL1LfQEI3yrXzDhRT
+	MMF6hGaCJ8o5ixNY2M5uOe5OBv7d5vsgI20/Ht37H36O73ggDK4SOqgPCswTG0e/USWqul
+	vSPb3sI/4+6kw3lB+ZMWPGdv9RoKWVKQXAr2YXppq4W2xLOnVWrNzzMal+LJ4wzxgIjqRo
+	OvqD+A50i3NU9EyPRD79h2WUIxo26xVfHuQq6FAvCxWbG02NT6tbVDhp0tdjrQ==
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1743337438; a=rsa-sha256;
 	cv=none;
-	b=U80OMiRKKvL6HcmR75FWKsTCZnrGCYK7FMfSse84dx0waTA2EusVTaNGvKPGijJEXFSBqn
-	mkhjYn8ZyKezlvC67svzW+DxzZIbfg6l3aJppIzu9cjiNMS3pj+op4LjZIcAy467hm3eLq
-	lq6RdWNy1A6bYSfdyssetxjgyK0s1RxZyKUAGOWCYgRPENNrhkttEmapfjCYoS8kTKLRSw
-	hqB7oQUWytDPYstP9vyVZ52aFpAWEvgeXXwx/u1z3+mF7uu5qZrdmef3EY8ycBaNXfw025
-	XPjSkaWfxJANsp7qkKvfkOXnPKxKfyX4aMtYCXg76FWH0FpRKAh0JPzbu5lcYA==
+	b=cZ8ZBV9wHJUdbbwdUEis9P5U5Trk9FJs2BmmURi6PQOi7BcGXPdFwLrhEMcuiDlLZxu2Aa
+	l8d7l6fpyftg+q85W3ce1QkyiaR0ytfAhls64SyR/bjBFxCF4bgI+ZWmjmrVAuHRidgBvZ
+	xtZDHTK8omM+dNeOyMB9tBqDCLLr+dVa8LlM90aWEY2xdbczNjBHw308e3Tau0GVZwLfat
+	MRvTeXOrk/DdqqNej1GXmRTMwBpN6eOxMEHDokU1GF3q15PwlY+KVmnUQU/cTuXyl0s3Oa
+	qokUHI96IS+lp2DpMK0Uq/3OdMGQf1XOmoL38hJtLbG8aEWheHpTGx5zDMXUJw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=pav smtp.mailfrom=pav@iki.fi
@@ -79,9 +79,9 @@ Cc: Pauli Virtanen <pav@iki.fi>,
 	bpf@vger.kernel.org,
 	willemdebruijn.kernel@gmail.com,
 	kerneljasonxing@gmail.com
-Subject: [PATCH 1/3] bpf: Add BPF_SOCK_OPS_TSTAMP_COMPLETION_CB callback
-Date: Sun, 30 Mar 2025 15:23:36 +0300
-Message-ID: <256cac73a03d6c46b81766db0a1c67cd3220b8f5.1743337403.git.pav@iki.fi>
+Subject: [PATCH 2/3] [RFC] bpf: allow non-TCP skbs for bpf_sock_ops_enable_tx_tstamp
+Date: Sun, 30 Mar 2025 15:23:37 +0300
+Message-ID: <4c44029f32c3e6d5e3190e1f5687a604ebeafdff.1743337403.git.pav@iki.fi>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1743337403.git.pav@iki.fi>
 References: <cover.1743337403.git.pav@iki.fi>
@@ -93,52 +93,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Support SCM_TSTAMP_COMPLETION case for bpf timestamping.
+Change bpf_sock_ops_enable_tx_tstamp() kfunc to only set SKBTX_BPF flag,
+so that it can be used also for non-TCP skbs.  Do not set TCP-specific
+fields if the socket is not TCP.
 
-Add a new sock_ops callback, BPF_SOCK_OPS_TSTAMP_SND_SW_CB. This
-callback shall occur at the same timestamping point as the user
-space's software SCM_TSTAMP_COMPLETION. The BPF program can use it to
-get the same SCM_TSTAMP_COMPLETION timestamp without modifying the
-user-space application.
+***
 
-Emitting BPF completion timestamps is enabled in separate patches.
-
-Signed-off-by: Pauli Virtanen <pav@iki.fi>
+Doing it this way requires a valid tskey is set by the socket family,
+before BPF_SOCK_OPS_TSTAMP_SENDMSG_CB.  Alternatively, it maybe could be
+hardcoded per socket type here, or some new proto_ops added.
 ---
- include/uapi/linux/bpf.h | 5 +++++
- net/core/skbuff.c        | 3 +++
- 2 files changed, 8 insertions(+)
+ net/core/filter.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index defa5bb881f4..6cd918febcb3 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -7054,6 +7054,11 @@ enum {
- 					 * sendmsg timestamp with corresponding
- 					 * tskey.
- 					 */
-+	BPF_SOCK_OPS_TSTAMP_COMPLETION_CB,	/* Called on skb completion
-+						 * report from hardware when
-+						 * SK_BPF_CB_TX_TIMESTAMPING
-+						 * feature is on.
-+						 */
- };
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 46ae8eb7a03c..1300b0ef3620 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -12127,6 +12127,7 @@ __bpf_kfunc int bpf_sk_assign_tcp_reqsk(struct __sk_buff *s, struct sock *sk,
+ __bpf_kfunc int bpf_sock_ops_enable_tx_tstamp(struct bpf_sock_ops_kern *skops,
+ 					      u64 flags)
+ {
++	struct sock *sk;
+ 	struct sk_buff *skb;
  
- /* List of TCP states. There is a build check in net/ipv4/tcp.c to detect
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 6cbf77bc61fc..9b2ff115eaf5 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -5552,6 +5552,9 @@ static void skb_tstamp_tx_report_bpf_timestamping(struct sk_buff *skb,
- 	case SCM_TSTAMP_ACK:
- 		op = BPF_SOCK_OPS_TSTAMP_ACK_CB;
- 		break;
-+	case SCM_TSTAMP_COMPLETION:
-+		op = BPF_SOCK_OPS_TSTAMP_COMPLETION_CB;
-+		break;
- 	default:
- 		return;
- 	}
+ 	if (skops->op != BPF_SOCK_OPS_TSTAMP_SENDMSG_CB)
+@@ -12135,10 +12136,17 @@ __bpf_kfunc int bpf_sock_ops_enable_tx_tstamp(struct bpf_sock_ops_kern *skops,
+ 	if (flags)
+ 		return -EINVAL;
+ 
++	sk = skops->sk;
++	if (!sk)
++		return -EINVAL;
++
+ 	skb = skops->skb;
+ 	skb_shinfo(skb)->tx_flags |= SKBTX_BPF;
+-	TCP_SKB_CB(skb)->txstamp_ack |= TSTAMP_ACK_BPF;
+-	skb_shinfo(skb)->tskey = TCP_SKB_CB(skb)->seq + skb->len - 1;
++
++	if (sk_is_tcp(sk)) {
++		TCP_SKB_CB(skb)->txstamp_ack |= TSTAMP_ACK_BPF;
++		skb_shinfo(skb)->tskey = TCP_SKB_CB(skb)->seq + skb->len - 1;
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.49.0
 
