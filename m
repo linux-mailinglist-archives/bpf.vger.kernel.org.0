@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-54896-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54897-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73B32A75A10
-	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 14:24:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD985A75A11
+	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 14:24:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 883D316901B
-	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 12:24:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1CC43A8AC4
+	for <lists+bpf@lfdr.de>; Sun, 30 Mar 2025 12:24:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3101CAA6C;
-	Sun, 30 Mar 2025 12:24:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E448A1D54E9;
+	Sun, 30 Mar 2025 12:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="USRgcXdD"
+	dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="SZOFCeTq"
 X-Original-To: bpf@vger.kernel.org
 Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [185.185.170.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DBAE158A13;
-	Sun, 30 Mar 2025 12:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B26158A13;
+	Sun, 30 Mar 2025 12:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.185.170.37
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743337446; cv=pass; b=HwQZiL3QpSRR49IJ0ZEru4oiJqbZYivlByeVAbyW/WufTs5mPJviQuO6FkoA3X+6Hz6pHcgsIkKfJzZQR2f2q1FCJBDKSlJcBbQXqpvcgjEqpQH3OwuXllN50ULGe7oA1tHOqnfLGDsvt/XdZ315a9FFuqd8iB84WkCsJXGLg1w=
+	t=1743337451; cv=pass; b=dlrl2WxYj233x/1tCyfjBjCqK9wysg+I072enzD0xFn6vipWN3rdKWJY1gsajgdVjwZ07d+PmDyHuVA/K6M3s2XgjzPCGcsiVlu/OSGzxVoXuNPa9FUQftq+hljtWe5efkJQZthlTJcMJnvnP5R0jyhIKdWztC5pp0f4CYe5PnM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743337446; c=relaxed/simple;
-	bh=SGD5O0nr6VC6fbVT1etVdb3PMfIKF7sy2ecIqezxLfA=;
+	s=arc-20240116; t=1743337451; c=relaxed/simple;
+	bh=oVeFAI7piMnHF4YnHOy1gBLcP24XFytf+ah6CTXpPow=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b47cG+T/BOcf+0fRxZVoVPGQtvwTeSdELPDMuFJ3pvbe/hBDPSAnum+qmGjAuwXVQWZc8AdNzYrY33eGEu7FJFElFO5sPma3/gucNRsRP9ux4JB5T2/ikUUjg9Bujv6xoTlbmsCq12UVNdwVTPiKHUyqRI6r4oRheTsEJaXOzzI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b=USRgcXdD; arc=pass smtp.client-ip=185.185.170.37
+	 MIME-Version; b=uo+4k7VJaBqp4CfQhJQO9MHIao7RW8uGaneX/1ijJkAhYOacO1n3nRUaZQzwKzWxceLHVRhnVbKVKJ74P0LvlImGaD0DH+IoKHzWjVETNec9wepVgRMPoEoYp5V2B1zYdCk0zwEHO/yZfv3IXh+FqaeqThhwsl/2XK8NcItlF7s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b=SZOFCeTq; arc=pass smtp.client-ip=185.185.170.37
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
 Received: from monolith.lan (unknown [193.138.7.178])
@@ -36,39 +36,39 @@ Received: from monolith.lan (unknown [193.138.7.178])
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: pav)
-	by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4ZQYMw5y8xz49QB9;
-	Sun, 30 Mar 2025 15:23:56 +0300 (EEST)
+	by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4ZQYN306Gxz49QBV;
+	Sun, 30 Mar 2025 15:24:02 +0300 (EEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-	t=1743337438;
+	t=1743337445;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RGk790DxeR6uG6Xv1mTCCd3mPVISN0jmLoUn7FXY/PA=;
-	b=USRgcXdDb/njzFsAUDq8GL97BdDGtYhunEk5Lb46d6o4TGyESl4G8TlPAvAqPLe0i7Ego/
-	JSVlGbLAB9aNiAUOpvhTny/gUyhl4gS6/Mg9vHqInx18r0xPcPUiUs1VJnxK6a52m9zOoI
-	rErfcL8Ytdq86kn4R4sL6EeLB6ECSnzZRyIKUloiJDi/SdLuHxrQ01HPGfvr47J4tzxGme
-	bi9vPDeIe/kMrUizGBODtLVDXafQxkO1QIX21ApdBMmepZckOzxJjYzsud++x/nR1L2O5R
-	zfHYg57o7f9BKY0mEMKsnmfR0JTbnm1XAfRhwt5HrMTM64Mwr/xsnize02T4Ow==
+	bh=iHgOmlyF/u0xf4oOA2xxDbXezfoxwB3V0WUM3ag/w6o=;
+	b=SZOFCeTqaD9WbHsIlahmE9wx7V1Dy63Zp/DLSfH3wsAibJgvTLKn9B1/p/0n2h4jKCN+vr
+	zxUP3ddM29BhWmw5r/0WyJRZiZQKH0N2rA+ZSAQqv2j5QTz5guJblNfsE+3HL3rvauKHeE
+	0in5Zbfb+NcR5moz+MTpOk8YljWDyjoFr1TIAo2JqqLj3I4JmUxW2r23TyoOjQvGio1RV7
+	RBvdj2xrlZx4kLcwEgy4nM7NwG54XOWXGhvD7vaIMOscY5rqk1Wsj21s41pPDXLC66rUuh
+	PhyRZclE7UCGra32aGTNvk+wHmDc4WLR3w8Mh6N0s0D2qmRCCSZOfRAzG5mnTQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-	s=lahtoruutu; t=1743337438;
+	s=lahtoruutu; t=1743337445;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RGk790DxeR6uG6Xv1mTCCd3mPVISN0jmLoUn7FXY/PA=;
-	b=iqq3sYfCWEM66p+OyAc6bxjtvTqeGK5YkvGxr8YGKVj/iIKIF8xdZM5x9wxq71HhkoJzgr
-	NwY/w/Lmo3qAJK/2EAAJ3hZp2abVcSWPOD19h9+z3+Kgexv6RA1E3XL1LfQEI3yrXzDhRT
-	MMF6hGaCJ8o5ixNY2M5uOe5OBv7d5vsgI20/Ht37H36O73ggDK4SOqgPCswTG0e/USWqul
-	vSPb3sI/4+6kw3lB+ZMWPGdv9RoKWVKQXAr2YXppq4W2xLOnVWrNzzMal+LJ4wzxgIjqRo
-	OvqD+A50i3NU9EyPRD79h2WUIxo26xVfHuQq6FAvCxWbG02NT6tbVDhp0tdjrQ==
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1743337438; a=rsa-sha256;
+	bh=iHgOmlyF/u0xf4oOA2xxDbXezfoxwB3V0WUM3ag/w6o=;
+	b=aDxyEPs7AL/tSGS+d8CjNUBrTb9IMtOCzxOkzM0nd0QEMc3sYh1g/YypQo/USPJAaOsA/A
+	ux63oUQDM03S60Kqxhy00MbRCWWMTEyrTIuD2hUeRndnexiJjPDxKQKbeHqQ1kvNuX4XsT
+	DAWXmj5JYpLby1rnHmS1PyLqQqt11npw3X8lKYGB2GG7JeNCK2cp8vJJqgdWYeeqdCw0c2
+	4S+wRfCIiGfe/FaQuiRMB5bb0SsVDlOqq7gSUDWEWMRhhg7PQZNZ2ZmHdRIoPLyIyMsF8r
+	Si+iJlvdNYHZBDfve0fQXXs2cIqskE09HT1tJhwD5r9pY9wgXkh9Tcv9IsUaiQ==
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1743337445; a=rsa-sha256;
 	cv=none;
-	b=cZ8ZBV9wHJUdbbwdUEis9P5U5Trk9FJs2BmmURi6PQOi7BcGXPdFwLrhEMcuiDlLZxu2Aa
-	l8d7l6fpyftg+q85W3ce1QkyiaR0ytfAhls64SyR/bjBFxCF4bgI+ZWmjmrVAuHRidgBvZ
-	xtZDHTK8omM+dNeOyMB9tBqDCLLr+dVa8LlM90aWEY2xdbczNjBHw308e3Tau0GVZwLfat
-	MRvTeXOrk/DdqqNej1GXmRTMwBpN6eOxMEHDokU1GF3q15PwlY+KVmnUQU/cTuXyl0s3Oa
-	qokUHI96IS+lp2DpMK0Uq/3OdMGQf1XOmoL38hJtLbG8aEWheHpTGx5zDMXUJw==
+	b=imgpFEQt4GqDcpuQanSOzOr76SDpkn+k7zyDUFwjLvPnMqBQfSpjfTErCyBiPRnmA7QRKy
+	M8kbxq9qv8ZEwEgKSXn+Y9OIFQ9NPdsShUBS1/fFPicApNvD5iAa4UVB61OHA5uE/raXq9
+	gnztNkfLPTOHUIGDNKQ3B+illNZMLrziGege2B0rkhe2mogjies2MlGxgTqhLhAio8JvRP
+	uCPXwfBoB32pUsi3BJ6qdB6BSrypT1WfjbQ2McgMsQ0zGa7oEahCG5AYwjWLOwP7jUaV3o
+	a0DQe7+JvofQ4TWsM0dZuubih/d5ZlC8W8lSLM1uiYX1OD1RMQSIZ93KXuf1KA==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=pav smtp.mailfrom=pav@iki.fi
@@ -79,9 +79,9 @@ Cc: Pauli Virtanen <pav@iki.fi>,
 	bpf@vger.kernel.org,
 	willemdebruijn.kernel@gmail.com,
 	kerneljasonxing@gmail.com
-Subject: [PATCH 2/3] [RFC] bpf: allow non-TCP skbs for bpf_sock_ops_enable_tx_tstamp
-Date: Sun, 30 Mar 2025 15:23:37 +0300
-Message-ID: <4c44029f32c3e6d5e3190e1f5687a604ebeafdff.1743337403.git.pav@iki.fi>
+Subject: [PATCH 3/3] [RFC] Bluetooth: enable bpf TX timestamping
+Date: Sun, 30 Mar 2025 15:23:38 +0300
+Message-ID: <bbd7fa454ed03ebba9bfe79590fb78a75d4f07db.1743337403.git.pav@iki.fi>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1743337403.git.pav@iki.fi>
 References: <cover.1743337403.git.pav@iki.fi>
@@ -93,51 +93,88 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Change bpf_sock_ops_enable_tx_tstamp() kfunc to only set SKBTX_BPF flag,
-so that it can be used also for non-TCP skbs.  Do not set TCP-specific
-fields if the socket is not TCP.
+Emit timestamps also for BPF timestamping.
 
 ***
 
-Doing it this way requires a valid tskey is set by the socket family,
-before BPF_SOCK_OPS_TSTAMP_SENDMSG_CB.  Alternatively, it maybe could be
-hardcoded per socket type here, or some new proto_ops added.
+The tskey management here is not quite right: see cover letter.
 ---
- net/core/filter.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ include/net/bluetooth/bluetooth.h |  1 +
+ net/bluetooth/hci_conn.c          | 21 +++++++++++++++++++--
+ 2 files changed, 20 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 46ae8eb7a03c..1300b0ef3620 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -12127,6 +12127,7 @@ __bpf_kfunc int bpf_sk_assign_tcp_reqsk(struct __sk_buff *s, struct sock *sk,
- __bpf_kfunc int bpf_sock_ops_enable_tx_tstamp(struct bpf_sock_ops_kern *skops,
- 					      u64 flags)
+diff --git a/include/net/bluetooth/bluetooth.h b/include/net/bluetooth/bluetooth.h
+index bbefde319f95..3b2e59cedd2d 100644
+--- a/include/net/bluetooth/bluetooth.h
++++ b/include/net/bluetooth/bluetooth.h
+@@ -383,6 +383,7 @@ struct bt_sock {
+ 	struct list_head accept_q;
+ 	struct sock *parent;
+ 	unsigned long flags;
++	atomic_t bpf_tskey;
+ 	void (*skb_msg_name)(struct sk_buff *, void *, int *);
+ 	void (*skb_put_cmsg)(struct sk_buff *, struct msghdr *, struct sock *);
+ };
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index 95972fd4c784..7430df1c5822 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -28,6 +28,7 @@
+ #include <linux/export.h>
+ #include <linux/debugfs.h>
+ #include <linux/errqueue.h>
++#include <linux/bpf-cgroup.h>
+ 
+ #include <net/bluetooth/bluetooth.h>
+ #include <net/bluetooth/hci_core.h>
+@@ -3072,6 +3073,7 @@ void hci_setup_tx_timestamp(struct sk_buff *skb, size_t key_offset,
+ 			    const struct sockcm_cookie *sockc)
  {
-+	struct sock *sk;
- 	struct sk_buff *skb;
+ 	struct sock *sk = skb ? skb->sk : NULL;
++	bool have_tskey = false;
  
- 	if (skops->op != BPF_SOCK_OPS_TSTAMP_SENDMSG_CB)
-@@ -12135,10 +12136,17 @@ __bpf_kfunc int bpf_sock_ops_enable_tx_tstamp(struct bpf_sock_ops_kern *skops,
- 	if (flags)
- 		return -EINVAL;
+ 	/* This shall be called on a single skb of those generated by user
+ 	 * sendmsg(), and only when the sendmsg() does not return error to
+@@ -3096,6 +3098,20 @@ void hci_setup_tx_timestamp(struct sk_buff *skb, size_t key_offset,
  
-+	sk = skops->sk;
-+	if (!sk)
-+		return -EINVAL;
-+
- 	skb = skops->skb;
- 	skb_shinfo(skb)->tx_flags |= SKBTX_BPF;
--	TCP_SKB_CB(skb)->txstamp_ack |= TSTAMP_ACK_BPF;
--	skb_shinfo(skb)->tskey = TCP_SKB_CB(skb)->seq + skb->len - 1;
-+
-+	if (sk_is_tcp(sk)) {
-+		TCP_SKB_CB(skb)->txstamp_ack |= TSTAMP_ACK_BPF;
-+		skb_shinfo(skb)->tskey = TCP_SKB_CB(skb)->seq + skb->len - 1;
+ 			skb_shinfo(skb)->tskey = key - 1;
+ 		}
++		have_tskey = true;
 +	}
- 
- 	return 0;
++
++	if (cgroup_bpf_enabled(CGROUP_SOCK_OPS) &&
++	    SK_BPF_CB_FLAG_TEST(sk, SK_BPF_CB_TX_TIMESTAMPING)) {
++		struct bt_sock *bt_sk = container_of(sk, struct bt_sock, sk);
++		int key = atomic_inc_return(&bt_sk->bpf_tskey);
++
++		if (!have_tskey)
++			skb_shinfo(skb)->tskey = key - 1;
++
++		bpf_skops_tx_timestamping(sk, skb,
++					  BPF_SOCK_OPS_TSTAMP_SENDMSG_CB);
++
+ 	}
  }
+ 
+@@ -3105,7 +3121,7 @@ void hci_conn_tx_queue(struct hci_conn *conn, struct sk_buff *skb)
+ 	bool track = false;
+ 
+ 	/* Emit SND now, ie. just before sending to driver */
+-	if (skb_shinfo(skb)->tx_flags & SKBTX_SW_TSTAMP)
++	if (skb_shinfo(skb)->tx_flags & (SKBTX_SW_TSTAMP | SKBTX_BPF))
+ 		__skb_tstamp_tx(skb, NULL, NULL, skb->sk, SCM_TSTAMP_SND);
+ 
+ 	/* COMPLETION tstamp is emitted for tracked skb later in Number of
+@@ -3127,7 +3143,8 @@ void hci_conn_tx_queue(struct hci_conn *conn, struct sk_buff *skb)
+ 		return;
+ 	}
+ 
+-	if (skb->sk && (skb_shinfo(skb)->tx_flags & SKBTX_COMPLETION_TSTAMP))
++	if (skb->sk && (skb_shinfo(skb)->tx_flags &
++			(SKBTX_COMPLETION_TSTAMP | SKBTX_BPF)))
+ 		track = true;
+ 
+ 	/* If nothing is tracked, just count extra skbs at the queue head */
 -- 
 2.49.0
 
