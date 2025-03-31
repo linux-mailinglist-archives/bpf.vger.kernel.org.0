@@ -1,97 +1,90 @@
-Return-Path: <bpf+bounces-54976-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54977-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8981CA76A68
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 17:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EE27A76AA3
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 17:35:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D4A07A1666
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 15:29:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94C567A13D7
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 15:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F883218AA3;
-	Mon, 31 Mar 2025 15:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4BB722173C;
+	Mon, 31 Mar 2025 15:22:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="VvKN2nlt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TBLExL2i"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D542144CF
-	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 15:00:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8AB213E6A;
+	Mon, 31 Mar 2025 15:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743433206; cv=none; b=qqG8ClhTrkiGyNaeREcIGudl5/i5xFKVnGx9clisPLNbpDQUhY0xdvOpwX31erWhVemUtKUHU3dO1F01qNcUTOd98co690CkxruPxzN6c4ViVxAMipEsKA2f8b7XYCf6CdkAl3qRknEshsn6VE5DUvbYrYioVrEKsxlbQBduwaA=
+	t=1743434547; cv=none; b=sAJ/ae8Vb2yrBvbEW1FIow/uaSYx4Tu2VURo/OP1nlByR/xGSTfQRYHUoCwSgYis77elVnUuYbQUnlYj6Ompsc4Wg9ha7KizuSrz2Trob9O9aozX0M3mhR9VMlEtsj22HVi0sBbkAnMzmmE0Ad0AlEyR28jmwaV8YMpIIrVinmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743433206; c=relaxed/simple;
-	bh=1EN/cIMgUtWr0qWN49ERSHoJ6jcvO58c2E3XnD9QX1g=;
+	s=arc-20240116; t=1743434547; c=relaxed/simple;
+	bh=w4FKHA0anMKrh0e3i1HLRk37hU4Z/VK/ffHTy5oGwnE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O//5BzukTUKCIo47/VhGdQghvA+zHyNNyXvhgB/NiR5013R7iTheVV8PjMWlBYhIhHtfbkD67BacqjOLtTpPh3gtFMqIKdvx+Sx+tCq/+dlx9pAuz1qe9EDE9X5hZ4lIcicSZtvo07Pu8+MCpQZpre3oI+ZSRDvluxQgbgq91fM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=VvKN2nlt; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7c07cd527e4so426915285a.3
-        for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 08:00:04 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=KUQEW19f53718QB+lybuy/g/rk/ouylbBWt6oyHkIBpWprqMtHi1TDQMbHMdD2oocZrs0raNjiyE6NuaJW7uTYy9h0Nl2+AYT4Cpd/2e1zfVsNOlqECWcrpqNEt73Zp6COm91xJ+JuRL5q+fLYP617DBnUazX5So9haP6b50vJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TBLExL2i; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2ff69365e1dso6002388a91.3;
+        Mon, 31 Mar 2025 08:22:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1743433203; x=1744038003; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=q/XP5iQdJ2sfX5iQDsDzT/UIhpAdSsTpMGtKs110k1o=;
-        b=VvKN2nlt3tFyCTyT+cKUdfgSwQVwkP6ps/amL+FYl7nSq5S5noWmOp3e+UCPYSZs6K
-         SPKddWdgvScKp4PfnOujme1iYrAgAbIFnNin4aFXrCeimA7ZMNL5R4yKpHD7l/awwD0u
-         uPRevIz4sRx+qGuDNlbLnQ0A+uzESW1JUhyhrTdbgG7Vntb9G2lHp9+zTEma0gx2GXwa
-         JlzWbr8r974q94aGwiIDTWcJ8IuJHpF/yWqJzY0kIKCVPt/c4JMo8AGh8ugYQZYLq+YB
-         W83Iy/rQUELTUrrrTOIvwvQBQPWOAU5W2a9i7SUZzbBzQ7ZnM7/NhWQUatqTSyYxAPqA
-         zHqQ==
+        d=gmail.com; s=20230601; t=1743434545; x=1744039345; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=z8kHRV4D1blEw8Z5EgHS57iPCad16rDsewn8MF9vi3Q=;
+        b=TBLExL2iXAbEGJambbdJhcM4M53gGJhFf7IAWt8AhEpSzecm9oecX6X+9b1KDfYmCA
+         4yYGg36SjeP0ONeye+tjpW1Otpup7swOtzVHhitS+CezHiWJxyyUlNm0RGsptLvCmsTn
+         ZQORkoAHSMe1JlAk+i5VEBHboVzf7i0ZN8KptNasvWD1udCoSQrrmRypwNpMv0N0Lo3g
+         Br7ch2xxXDehFQkuVn5hC0z5nms1ZuPiHVDtqD/HYm5Xu6umHuBHF2aqbLZy3dMqcPjX
+         rQq5yHoyI6gvlKt+zNhzCM0atMKRFTgdZBS24QA5spECq4MCUrgXlDfKHcRkhmzh1PDg
+         hQ2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743433203; x=1744038003;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q/XP5iQdJ2sfX5iQDsDzT/UIhpAdSsTpMGtKs110k1o=;
-        b=KYAfNdDn2mYOpyGGU3vPWGrvvnBT+ou9rl11jIPZU+/x32WqyhUzL5z9XUXs9P2/LM
-         kkWmCzztxxCI9gON/+EFjlYDOy9m0+ozlEBCpUO8BjrCw/K7QcrAOnoq2tXq6DPMgk8X
-         XqryOx0PxTi3JXHvcw7CyGaAHwBcxWhbDu9VgQ6X63BYJl28RY5sZF4pYf9g81x+SzYn
-         b8p7ItgKTJYrPi7gUihxcrAq3YYel3pjLtshVvcSurgytsrCnaG/y7CFrdJfv23bEexh
-         DXLvv525km3gr8dcHet8WhemPmbsZRCijrO6MZouNWulD1hzZi+/8VA41lIEcEX3gfaN
-         sKRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUGkgLIaLlfpJqcZ7GM4oC/ZFCx9firkFiI8ws3H54thWy0OfmC2TLnhBMrU216v2CjxMw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQEb/k77bhxA5VYeT0F3KyskpqFgC5iC2zMMzIbHk394jPAGb0
-	BcT+Z9RmDdDBEuqZ4DWHr1xmwkczu/oJoYz3o/TOe2KqZzdEgQTPP+rfesyfHIA=
-X-Gm-Gg: ASbGncu+2kFvBW0JMxSNpO1ZqBb117kAEopWosDtXsn5MnfxjR/+PXrpD4MlU1YUDhc
-	e6qH0byeVx8UK+xaAA/7z59EmfUZm/GZA2re8Cn3D4TCARioeIgn4WlJ8RqOZ3ZcvS5Twgn3LtE
-	EIxfkZG1jjM/tuwvuDuhTAG3FAHfA+b5/MIIgTnrqR3cC+C+OrOsViqP1NrlrEUPPj49jmbyOph
-	jYXIYKwbU8dfy+A3S3KG58gxzaTuAI5knHgXFtONV/EtcFsu54IqM9aHn5vwAAxzz/wZs+f1bMF
-	3+EUA2dYHthpKgOM1dY4NHFwFnaeZSgLViDPcD6udyk=
-X-Google-Smtp-Source: AGHT+IE9kLbI8h0rUyhUxntQ/fxPgI58b5Kb5NuIQENL4V46jZPC7rePLkR5c64cC1zxLsKy2I1Ivg==
-X-Received: by 2002:ac8:7d08:0:b0:471:cdae:ac44 with SMTP id d75a77b69052e-477ed78e91cmr123041321cf.47.1743433202781;
-        Mon, 31 Mar 2025 08:00:02 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with UTF8SMTPSA id d75a77b69052e-47782a49facsm50913661cf.31.2025.03.31.08.00.01
+        d=1e100.net; s=20230601; t=1743434545; x=1744039345;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z8kHRV4D1blEw8Z5EgHS57iPCad16rDsewn8MF9vi3Q=;
+        b=q9KVkeyL9pLhpG1reG7TuYjtanmnyoz6frhGg71fvPOIKToWbXQB0g5OlrD2xckvLv
+         P/0picU+tTHQpuDzZjePGOoR4iKCCwYFmiox+LmcEr3yLi5COKm7WRnmEsGToWrvJriI
+         D54zy3XGVZhmPyP2PWas7a6+LJess7HA254AD2zkSKJnlzyImQ0UkokQFiUlNQVx6pc7
+         mqKJ0/8/wGz6d8WDtwIQ6f26jzffVd1/2nA23Avq7dRCHLFNaFFuoUv8TgsObEnfaiNS
+         42eK0X66hnZQxxgU3g/rNlZzmL8oRuxLrRZudwuQnEHvq6wX+Bn0ctVb4xf0Y6pqSQIl
+         CVDA==
+X-Forwarded-Encrypted: i=1; AJvYcCUJgfHgoZd0wnYwVR9927mWf2p1cAcqmg80q6PakyneCNZ0GjMyO6Y96o+E2A7trGzcMcHOCBamJmUlrnAB@vger.kernel.org, AJvYcCUM/69x/JgbHyqxGcvBpY+F1PLXgrO0DDVFYK6f5vBLMRlQ3JRBr3ZhhO1nphU41vUTOeE=@vger.kernel.org, AJvYcCWPCVcLWTlV1ZC5AH5REd4dxBHBkAT+zgq7d91pRbduyyoSE45TmQbObegm8X+yNcCPhTIWeqPN@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz499E8YPB67Oi/CeK6p0hASrRUoVtb2oqD01MZ6WggfnTcbr1Q
+	SInAvBt1PLo6ORhsEknmJnI7XMG/JD4LocYLoYradaWQWIsTsPw6zuyk
+X-Gm-Gg: ASbGncvKskPbjfcw19wlCadhKIb/YzzCxC7HrOI43aHSWH50RvvMYHkP/0kXC2dh3B0
+	PzTNMrcJkOAE+jEVYoITY+mMV+W9FhAveQikRiuZTr5p5CMFxXkmF6F9fpv2cbK/JNEKkcaKdDw
+	GccsrTnN6IWaqFl8CKqRS4bkv0vPUzHQulJABu9bEFAKffIVshoVGHlEYcy6SuQBj8j0VWU5N1H
+	mBznUTyCJZ5UfNfuBBw82HrmJyhiuPQOaSB10k9mO8iX1U4V84899ELrQdVr589Ry8fcrR++JBJ
+	cPKIke91KZiMrHs0Di+uNG1KhJ4x2Gd26Yh7Lc+fBNSi
+X-Google-Smtp-Source: AGHT+IE8+4eupeE2NGK/U3jWJ3Gg10N3UWQlFKfezMmp/E0AIxLwJgjIRW/MrxT/PjXZK1WP5aSKgQ==
+X-Received: by 2002:a17:90b:1648:b0:301:1d03:93cd with SMTP id 98e67ed59e1d1-3053214bfcamr14758556a91.24.1743434545096;
+        Mon, 31 Mar 2025 08:22:25 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-30516d62c57sm7348400a91.28.2025.03.31.08.22.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Mar 2025 08:00:01 -0700 (PDT)
-Date: Mon, 31 Mar 2025 10:59:57 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Sebastian Sewior <bigeasy@linutronix.de>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Michal Hocko <mhocko@suse.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Introduce try_alloc_pages for 6.15
-Message-ID: <20250331145957.GA2110528@cmpxchg.org>
-References: <20250327145159.99799-1-alexei.starovoitov@gmail.com>
- <CAHk-=wgRbk2ezu1TNewZQSrT1MCzP-xAXrcHXULMeW=RRSak5A@mail.gmail.com>
- <CAADnVQJBHPbq6+TQhM2kmWNBTiPoB50_fnVcwC+yLOtpjUWujA@mail.gmail.com>
+        Mon, 31 Mar 2025 08:22:24 -0700 (PDT)
+Date: Mon, 31 Mar 2025 08:22:23 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Wang Liang <wangliang74@huawei.com>
+Cc: bjorn@kernel.org, magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+	yuehaibing@huawei.com, zhangchangzhong@huawei.com,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] xsk: correct tx_ring_empty_descs count statistics
+Message-ID: <Z-qzLyGKskaqgFh5@mini-arch>
+References: <20250329061548.1357925-1-wangliang74@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,97 +93,25 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJBHPbq6+TQhM2kmWNBTiPoB50_fnVcwC+yLOtpjUWujA@mail.gmail.com>
+In-Reply-To: <20250329061548.1357925-1-wangliang74@huawei.com>
 
-On Sun, Mar 30, 2025 at 02:30:15PM -0700, Alexei Starovoitov wrote:
-> On Sun, Mar 30, 2025 at 1:42 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Thu, 27 Mar 2025 at 07:52, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > The pull includes work from Sebastian, Vlastimil and myself
-> > > with a lot of help from Michal and Shakeel.
-> > > This is a first step towards making kmalloc reentrant to get rid
-> > > of slab wrappers: bpf_mem_alloc, kretprobe's objpool, etc.
-> > > These patches make page allocator safe from any context.
-> >
-> > So I've pulled this too, since it looked generally fine.
+On 03/29, Wang Liang wrote:
+> The tx_ring_empty_descs count may be incorrect, when set the XDP_TX_RING
+> option but do not reserve tx ring. Because xsk_poll() try to wakeup the
+> driver by calling xsk_generic_xmit() for non-zero-copy mode. So the
+> tx_ring_empty_descs count increases once the xsk_poll()is called:
 > 
-> Thanks!
+>   xsk_poll
+>     xsk_generic_xmit
+>       __xsk_generic_xmit
+>         xskq_cons_peek_desc
+>           xskq_cons_read_desc
+>             q->queue_empty_descs++;
 > 
-> > The one reaction I had is that when you basically change
-> >
-> >         spin_lock_irqsave(&zone->lock, flags);
-> >
-> > into
-> >
-> >         if (!spin_trylock_irqsave(&zone->lock, flags)) {
-> >                 if (unlikely(alloc_flags & ALLOC_TRYLOCK))
-> >                         return NULL;
-> >                 spin_lock_irqsave(&zone->lock, flags);
-> >         }
-> >
-> > we've seen bad cache behavior for this kind of pattern in other
-> > situations: if the "try" fails, the subsequent "do the lock for real"
-> > case now does the wrong thing, in that it will immediately try again
-> > even if it's almost certainly just going to fail - causing extra write
-> > cache accesses.
-> >
-> > So typically, in places that can see contention, it's better to either do
-> >
-> >  (a) trylock followed by a slowpath that takes the fact that it was
-> > locked into account and does a read-only loop until it sees otherwise
-> >
-> >      This is, for example, what the mutex code does with that
-> > __mutex_trylock() -> mutex_optimistic_spin() pattern, but our
-> > spinlocks end up doing similar things (ie "trylock" followed by
-> > "release irq and do the 'relax loop' thing).
+> To avoid this count error, add check for tx descs before send msg in poll.
 > 
-> Right,
-> __mutex_trylock(lock) -> mutex_optimistic_spin() pattern is
-> equivalent to 'pending' bit spinning in qspinlock.
-> 
-> > or
-> >
-> >  (b) do the trylock and lock separately, ie
-> >
-> >         if (unlikely(alloc_flags & ALLOC_TRYLOCK)) {
-> >                 if (!spin_trylock_irqsave(&zone->lock, flags))
-> >                         return NULL;
-> >         } else
-> >                 spin_lock_irqsave(&zone->lock, flags);
-> >
-> > so that you don't end up doing two cache accesses for ownership that
-> > can cause extra bouncing.
-> 
-> Ok, I will switch to above.
-> 
-> > I'm not sure this matters at all in the allocation path - contention
-> > may simply not be enough of an issue, and the trylock is purely about
-> > "unlikely NMI worries", but I do worry that you might have made the
-> > normal case slower.
-> 
-> We actually did see zone->lock being contended in production.
-> Last time the culprit was an inadequate per-cpu caching and
-> these series in 6.11 fixed it:
-> https://lwn.net/Articles/947900/
-> I don't think we've seen it contended in the newer kernels.
->
-> Johannes, pls correct me if I'm wrong.
+> Fixes: df551058f7a3 ("xsk: Fix crash in poll when device does not support ndo_xsk_wakeup")
+> Signed-off-by: Wang Liang <wangliang74@huawei.com>
 
-Contention should indeed be rare in practice. This has become a very
-coarse lock, with nowadays hundreds of HW threads hitting still only
-one or two zones. A lot rides on the fastpath per-cpu caches, and it
-becomes noticable very quickly if those are sized inappropriately.
-
-> But to avoid being finger pointed, I'll switch to checking alloc_flags
-> first. It does seem a better trade off to avoid cache bouncing because
-> of 2nd cmpxchg. Though when I wrote it this way I convinced myself and
-> others that it's faster to do trylock first to avoid branch misprediction.
-
-If you haven't yet, it could be interesting to check if/where branches
-are generated at all, given the proximity and the heavy inlining
-between where you pass the flag and where it's tested.
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
