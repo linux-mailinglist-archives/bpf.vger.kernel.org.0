@@ -1,127 +1,241 @@
-Return-Path: <bpf+bounces-54958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CA1BA7652B
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 13:48:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FA8FA765A4
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 14:18:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 436E27A23DD
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 11:47:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C324A188983D
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 12:18:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 662C61E3780;
-	Mon, 31 Mar 2025 11:48:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A891E5205;
+	Mon, 31 Mar 2025 12:17:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IVdg0TaW"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yoahoAHh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EaYcS6pK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yoahoAHh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EaYcS6pK"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794653FFD
-	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 11:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86B701ADC69
+	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 12:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743421681; cv=none; b=iLJw9EvdT/wjJNAKmE5gSkl7CgPNxI8uIvL6u529hp63lWfGn88jTxbcXrGpZ42bWqOA8kSyAzr7qheGCqxzAkECOAaJvSIqfXNhCHJ3jjXzdlis2+35zLN66bVQHx3j7Lt27TcyX7/oVBbeUiDjpgsDcz5zLoBixdL91/EYW3U=
+	t=1743423474; cv=none; b=gMHhQjwNiYv2rjoR3C8zBUb7LBNU9Kbkouc4OxCm6WLOA3w4QJ1sZyx6aMb9exx/Jr3Qxx+UKTaIkKHAif7nTn+vhr47rrdKat8D63Dp0m4WrsL+5AZSkT3lpkPtQIPjV4zIQT1SGJwiyPFn2FX0eCyjDrlP9TEpKuGVt2pB6M4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743421681; c=relaxed/simple;
-	bh=pArKK9G7xodDbemAOrxPr3k38aDwYAqpgkxAXEAWrXM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UeorAvZ8OgLIhxjo9IukIMKO/yzMHZ5IVZkL5ycMXPIH8E2b6UE32YRQ5edzRwPS957zYsmN1RYt1Ujv0+4z2NYZBkGszHm/lDeDz/4v3OnqANCmZlvp4jkh/OKEaBx+c9L+k/BuPPNSe0kKTKPojUG+mDyllAg+aeyVJ71VgG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IVdg0TaW; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1743421678;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1743423474; c=relaxed/simple;
+	bh=XiU6XXZh7I2bVg3HYxXrfGTUzcpkCnRZ5VDh0RelhA0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JOc+QwmqFumc/jm/b/gPiY4sLzEHZExTmf13RAcwKElzgi0rAomoq6FFh6BloTjR0ympAICHNB2R0/L928Ww6JQjS1vKsW47oLaql765bxN34bdFu0C9fZ3PfPHsm7T5M9DDA8/4p/CDtXbI4BbT24GnSApFDpP8O5X2arNJPGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yoahoAHh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EaYcS6pK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yoahoAHh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EaYcS6pK; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 846E91F38D;
+	Mon, 31 Mar 2025 12:17:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1743423470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pArKK9G7xodDbemAOrxPr3k38aDwYAqpgkxAXEAWrXM=;
-	b=IVdg0TaWCdtV5/OIXUW7BVWyphAyE/LJeXQY2DnEjcCyL2/7XtgyWf2OywWPZ1r3PNhb1c
-	ZA305tXeZDuLbJl+Bqpz85B/K828fEWuNFMm5Xek9+XTl1vKyZtg7Ad+SagtHMGAHBKaso
-	StSz094ErrSsT1veEo0YGI8rkS4AVM8=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-428--awEjCBjP_uUD2KBdBcHzQ-1; Mon, 31 Mar 2025 07:47:55 -0400
-X-MC-Unique: -awEjCBjP_uUD2KBdBcHzQ-1
-X-Mimecast-MFC-AGG-ID: -awEjCBjP_uUD2KBdBcHzQ_1743421674
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-ac737973d03so145778666b.1
-        for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 04:47:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743421674; x=1744026474;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pArKK9G7xodDbemAOrxPr3k38aDwYAqpgkxAXEAWrXM=;
-        b=XunpUl60QwPz59uJIX377WV0KX5Cd2qmskgGIRlM25gpt/FVOjNnrmuN4r2ozIoyyd
-         3oLKJHHo7UHK/J/r1caskhxtEwUU2J0QqesMQ6tVhJa+RYNAIQwFUj4opue/4Y/YgpsB
-         RZD0iie+gWLjbKm/shP7/I6UEHTYlVn+5ryvTWouprGbA2TAhcw/0XtpTkH1rZS50Cg2
-         If5ldAA2fumWoV9IV6aSmDun2uJ3lIiQKO9fwlF8HUjkAyrIo4AERlXmg3uooKdGpl7z
-         XS21GD4oQimgMsk+IeoDnCWw9D642DlQqk5nWCkytQ+Ds8/8YkWrX4a8NXtBxVVSuNOO
-         HLqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXIlpfHxGk+8q9ZywYQltsGWhpKQs6EqLndwOCVZFaw3VbciM/FgxLLgI8e3xHL2UxHqSE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyczqrYQzy8Q+ZlgXvihTX1HbLLliGn/p0svUcmNqacdpPq1Kas
-	qeEL6ip7LCm7l9mJ75k6rAi6Wv1tugulq6NVvuOcffKwfseeGDJ6BXH2aCOiGIg16pQ6khFu2p2
-	XW2fDR2PmC5XhVaS/s+6gU04TE+rvQVA9qbytTmuLRZjypZapUnJOTHask11FFjfP0jSneLi+R2
-	qpDN0U2I3hje/UDXU6rbD2gY5p
-X-Gm-Gg: ASbGncspOzKaxEcj/iK3x6nNbi3cENRQT1KkDF6ICQmOdABx4AzI/FPRkNGJjdHg+8E
-	Skk4hlsz8mUib4KsSMfsg/uVqOPclFh9IqfdkBxvkVRACkB1Et/GQ7VYJcs9G0SFp9XobrRXBNA
-	==
-X-Received: by 2002:a17:907:7e88:b0:abf:4b6e:e107 with SMTP id a640c23a62f3a-ac738a374efmr776688466b.25.1743421674157;
-        Mon, 31 Mar 2025 04:47:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFRmb2sP6u1Kcqc9voC0cuFc8cG9X4wanJkzT5G0J8qfH5D6leVLiwsM+zFjfRL7h+LKaFEAz4OgYXd5DAAjI4=
-X-Received: by 2002:a17:907:7e88:b0:abf:4b6e:e107 with SMTP id
- a640c23a62f3a-ac738a374efmr776685266b.25.1743421673726; Mon, 31 Mar 2025
- 04:47:53 -0700 (PDT)
+	bh=oArW10f+nxGARF7+t8CNupKdBShoEMsJB1abiQpAdLM=;
+	b=yoahoAHh3yp3ahPbxKNhDvzTyUxLXL/uumJF48ldJ3Li5oukjBFBATYY+0uThGdp8CT/LQ
+	JOoGlEDDAahUhccs3prywY6WKb2GvbOIKhe1+JQ+v8igWI1vxBcfDxQrddJOs4Xw94XHWJ
+	GJibedOnHde9unjDeAuuExoCxHdB8hc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1743423470;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oArW10f+nxGARF7+t8CNupKdBShoEMsJB1abiQpAdLM=;
+	b=EaYcS6pKOcf5tfcfHlmkzt7UN62yDfHrSYadIWuWSRGwU/FmcbZTJgxw/RoY7zdhb67epB
+	gLIeXAwQWLEUJvDg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yoahoAHh;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=EaYcS6pK
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1743423470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oArW10f+nxGARF7+t8CNupKdBShoEMsJB1abiQpAdLM=;
+	b=yoahoAHh3yp3ahPbxKNhDvzTyUxLXL/uumJF48ldJ3Li5oukjBFBATYY+0uThGdp8CT/LQ
+	JOoGlEDDAahUhccs3prywY6WKb2GvbOIKhe1+JQ+v8igWI1vxBcfDxQrddJOs4Xw94XHWJ
+	GJibedOnHde9unjDeAuuExoCxHdB8hc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1743423470;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oArW10f+nxGARF7+t8CNupKdBShoEMsJB1abiQpAdLM=;
+	b=EaYcS6pKOcf5tfcfHlmkzt7UN62yDfHrSYadIWuWSRGwU/FmcbZTJgxw/RoY7zdhb67epB
+	gLIeXAwQWLEUJvDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F8EA139A1;
+	Mon, 31 Mar 2025 12:17:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tlWfFO6H6mfJCQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 31 Mar 2025 12:17:50 +0000
+Message-ID: <aeac0a2e-bf4a-4a73-8c64-6244978284b1@suse.cz>
+Date: Mon, 31 Mar 2025 14:17:50 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250327134122.399874-1-jiayuan.chen@linux.dev>
- <67e5be3c65de3_10636329488@willemb.c.googlers.com.notmuch>
- <17a3bc7273fac6a2e647a6864212510b37b96ab2@linux.dev> <20250328043941.085de23b@kernel.org>
-In-Reply-To: <20250328043941.085de23b@kernel.org>
-From: Lei Yang <leiyang@redhat.com>
-Date: Mon, 31 Mar 2025 19:47:16 +0800
-X-Gm-Features: AQ5f1JpaEdK08-KL1Gf8Ek3oojs8QnopOUqDVrhQ8D9XsTzqJ71WtMtHpHShaOE
-Message-ID: <CAPpAL=y2ysE6jJgVYAOOx9DQXOYkR627LF1nusb2-Jwx6gXR8A@mail.gmail.com>
-Subject: Re: [PATCH net v1] net: Fix tuntap uninitialized value
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Jiayuan Chen <jiayuan.chen@linux.dev>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, netdev@vger.kernel.org, 
-	jasowang@redhat.com, andrew+netdev@lunn.ch, davem@davemloft.net, 
-	edumazet@google.com, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, 
-	hawk@kernel.org, john.fastabend@gmail.com, linux-kernel@vger.kernel.org, 
-	syzbot+0e6ddb1ef80986bdfe64@syzkaller.appspotmail.com, bpf@vger.kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, kpsingh@kernel.org, 
-	jolsa@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH mm] mm/page_alloc: Avoid second trylock of zone->lock
+Content-Language: en-US
+To: Michal Hocko <mhocko@suse.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, bpf@vger.kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+ akpm@linux-foundation.org, peterz@infradead.org, bigeasy@linutronix.de,
+ rostedt@goodmis.org, shakeel.butt@linux.dev, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20250331002809.94758-1-alexei.starovoitov@gmail.com>
+ <Z-p0B27EtOW_lswI@tiehlicka>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <Z-p0B27EtOW_lswI@tiehlicka>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 846E91F38D
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	FREEMAIL_TO(0.00)[suse.com,gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:dkim,suse.cz:mid,suse.cz:email]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-QE tested this patch with virtio-net regression tests, everything works fin=
-e.
+On 3/31/25 12:52, Michal Hocko wrote:
+> On Sun 30-03-25 17:28:09, Alexei Starovoitov wrote:
+>> From: Alexei Starovoitov <ast@kernel.org>
+>> 
+>> spin_trylock followed by spin_lock will cause extra write cache
+>> access. If the lock is contended it may cause unnecessary cache
+>> line bouncing
 
-Tested-by: Lei Yang <leiyang@redhat.com>
+Right.
 
+> and will execute redundant irq restore/save pair.
 
-On Fri, Mar 28, 2025 at 7:39=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Fri, 28 Mar 2025 09:15:53 +0000 Jiayuan Chen wrote:
-> > I'm wondering if we can directly perform a memset in bpf_xdp_adjust_hea=
-d
-> > when users execute an expand header (offset < 0).
->
-> Same situation happens in bpf_xdp_adjust_meta(), but I'm pretty
-> sure this was discussed and considered too high cost for XDP.
-> Could you find the old discussions and double check the arguments
-> made back then? Opinions may have changed but let's make sure we're
-> not missing anything. And performance numbers would be good to have
-> since the main reason this isn't done today was perf.
->
+Maybe that part matters less if we're likely to have to spin anyway - it
+doesn't affect other cpus at least unlike the bouncing.
+
+>> Therefore, check alloc/fpi_flags first and use spin_trylock or
+>> spin_lock.
+
+Yeah this should be still ok for the zone lock as the fast paths are using
+pcplists, so we still shouldn't be making page allocator slower due to the
+try_alloc addition.
+
+>> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+>> Fixes: 97769a53f117 ("mm, bpf: Introduce try_alloc_pages() for opportunistic page allocation")
+>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> 
+> Makes sense. Fixes tag is probably over reaching but whatever.
+
+It's fixing 6.15-rc1 code so no possible stable implications anyway.
+
+> Acked-by: Michal Hocko <mhocko@suse.com>
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+> Thanks!
+> 
+>> ---
+>>  mm/page_alloc.c | 15 +++++++++------
+>>  1 file changed, 9 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index e3ea5bf5c459..ffbb5678bc2f 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -1268,11 +1268,12 @@ static void free_one_page(struct zone *zone, struct page *page,
+>>  	struct llist_head *llhead;
+>>  	unsigned long flags;
+>>  
+>> -	if (!spin_trylock_irqsave(&zone->lock, flags)) {
+>> -		if (unlikely(fpi_flags & FPI_TRYLOCK)) {
+>> +	if (unlikely(fpi_flags & FPI_TRYLOCK)) {
+>> +		if (!spin_trylock_irqsave(&zone->lock, flags)) {
+>>  			add_page_to_zone_llist(zone, page, order);
+>>  			return;
+>>  		}
+>> +	} else {
+>>  		spin_lock_irqsave(&zone->lock, flags);
+>>  	}
+>>  
+>> @@ -2341,9 +2342,10 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+>>  	unsigned long flags;
+>>  	int i;
+>>  
+>> -	if (!spin_trylock_irqsave(&zone->lock, flags)) {
+>> -		if (unlikely(alloc_flags & ALLOC_TRYLOCK))
+>> +	if (unlikely(alloc_flags & ALLOC_TRYLOCK)) {
+>> +		if (!spin_trylock_irqsave(&zone->lock, flags))
+>>  			return 0;
+>> +	} else {
+>>  		spin_lock_irqsave(&zone->lock, flags);
+>>  	}
+>>  	for (i = 0; i < count; ++i) {
+>> @@ -2964,9 +2966,10 @@ struct page *rmqueue_buddy(struct zone *preferred_zone, struct zone *zone,
+>>  
+>>  	do {
+>>  		page = NULL;
+>> -		if (!spin_trylock_irqsave(&zone->lock, flags)) {
+>> -			if (unlikely(alloc_flags & ALLOC_TRYLOCK))
+>> +		if (unlikely(alloc_flags & ALLOC_TRYLOCK)) {
+>> +			if (!spin_trylock_irqsave(&zone->lock, flags))
+>>  				return NULL;
+>> +		} else {
+>>  			spin_lock_irqsave(&zone->lock, flags);
+>>  		}
+>>  		if (alloc_flags & ALLOC_HIGHATOMIC)
+>> -- 
+>> 2.47.1
+> 
 
 
