@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-54990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54991-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49492A76DFB
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:10:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3257A76DFC
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:10:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 949E03AAE3A
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:10:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FA8916B367
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:10:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6959B217675;
-	Mon, 31 Mar 2025 20:10:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28D118BBBB;
+	Mon, 31 Mar 2025 20:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iGWja10p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kimDF8yF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3703618BBBB
-	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 20:10:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64C70216E24
+	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 20:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743451834; cv=none; b=MM4jQA2GJHaDbjMeUi/BvNr68mUr84CyJe4++rE2G2sy4cZg89U9raxtB4Cl0IuoFE7bbidkMNFtu9sMCqLLpkfLUScvHUhMclcpD1zuCkki4Jj9gxEOmyw+89vamayWuA99ZCby+sG1TwISyCCRIF65JwsqWGsOw9TP+UqMa/A=
+	t=1743451837; cv=none; b=AegsmKPAe9dN9PxuU6BrGIODu19q3eKxvBiAhIwUYDgKbp/K3tmfuahRx94SCAMguZIvZIxkZ0QveHCbFtXq+fvY9Y9h/VU3ZthJoHi/Jd9ReTZw4T9B71ArSaBoHbz9Q6Q17Y8yESvpzLA46LJXY49EfQnv0kYRv+eUgjzrbV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743451834; c=relaxed/simple;
-	bh=EYQ0MHc/CY9aFj+IlI+Nom2h4guWq3kAF7fJcYA8ugY=;
+	s=arc-20240116; t=1743451837; c=relaxed/simple;
+	bh=/DTbuuhLVNpbHtTt8fqm87LAVH3okI1UJz34ysO4E2Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DlFVsTYeRxAxATpefhagHTB685is4IRuS40IH02pB+eiknebbuqyJn9C1vIPdm+ixD0J7m4YFuUUs6c6ZAQ1VNhc++tV1M/yZg5WvhI7MX3VN2WJo3/Vrh8betgzk69jMiloXf3bVAxutxbMJHjxxPq9sZS0SPlfBTX1S735pNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iGWja10p; arc=none smtp.client-ip=209.85.167.47
+	 MIME-Version; b=Mf5bIpOTZ3RvirBgGEwCTzu2bKByNs0t+1PD9iXYsAlwHzI1invjfDils7vueDmPPAAlH7fzOcnwYdiqeEfyNGoEt00wN+V1YbHWI7qYEC47plY1MQHvgFarthOP4Qo04ruSLIwgvEAcG/7RVQ3xXfThu/3baDNU0nHFpZFIX/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kimDF8yF; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-549963b5551so4996197e87.2
-        for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 13:10:31 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-549b116321aso5631678e87.3
+        for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 13:10:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743451830; x=1744056630; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1743451833; x=1744056633; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NEGoLovXvpwYUrY6U3HN5L8CDd8R65LHRR8osNivfko=;
-        b=iGWja10pEobxC6LxRcEDi45U7P9wbt/R1jd1jYEYDCvj7rJi4qzmWdRwLKBgGt7efh
-         pw47FjKv0RGcQniQDPer2RmaVY2s3Y6gxGs/J1m7oymujhEJ5obGzmxe52u3obw3UXPy
-         zRyRtQDRxu1Y75BX9DYe7D74sS5XowM/3M4mbTxZJI5Sx6TZPXf+gUzJ/84ZpYaK2TFs
-         LSxdAqdLGSGviYaRMArSNNmrHSZ+k/r5RyQ8iNmoq6N5iHIHHW4lKlTTtAJzNOa5vCdB
-         GyN0I/+IOYBKEy5zZ7BTjjQ5PjRkvW70tUrcPF7RjxIDDRcS2O4V5oykkT7PqhMmTGkY
-         OjMA==
+        bh=uHty7clYNwCXavi66+rfgLX8CCmTXVsVBT8+fNIbevo=;
+        b=kimDF8yF2zICfaD5D7xa9VD4iQ4FIXSu8+O51C0Fl11Zr24iuQ72B52jLgUsyrsD1f
+         9238zTNraGxXn4KkCOYNriHtnh0sulmvBBtgzzI0N8kvfAH58MXFoYswE8bpDKSVLOrx
+         dGvDLDLh2mbRijRq/5M83NuDY0wdl0FrcuQBM2QhHMu/SRTxGoLI6lB22Srax972/vhi
+         2lcX0UQpMkjz/DYtiEtHW2Ka8+bMLVhXp+s8m3HPG+hY5skuYmF97tQW+/02aOlRcxIg
+         1qSCtiGRAOsZQ8ij5OizJGbilnxzvmbOeDA9fIVDQZ5xLrETJASFiERKkmDZBrpFm0g7
+         i9gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743451830; x=1744056630;
+        d=1e100.net; s=20230601; t=1743451833; x=1744056633;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NEGoLovXvpwYUrY6U3HN5L8CDd8R65LHRR8osNivfko=;
-        b=vt4LOg5zK2KPMq5cZkbjmH9z/OE1PvXWZvL4/KJ3g8DeAlt14jJU4UGLnuoBynIL4A
-         bKPkoD7Y6Q9B3NL4e+x8q2GkSCk1cti7n2JO732iVKDqc9BYX2oLOPZtzbZPPQ4PqCkg
-         IoqRUPmdOb8/y3TXE9Lwq5pnPsoE923GwnhZxjvk1QItLOQ2kqtdur7ahTpyzTvtOzzN
-         8yh3E5hbggm5bFDNouZ9EX8h1jEnXkUUqWE+QlNikNarRiFDadoFvbq3aekxawFkLIrG
-         gnzFpZE0huRe9pNvRkCx6D+t9T9TH0AbMuZPrvmsPudGymtOfu4bvmZs5Zy/i29/HDZP
-         xIiQ==
-X-Gm-Message-State: AOJu0YxRfFAbOBzd8PT2QAl3Yx6Hl08daL+uOXTkg8zQF28TjMGveF+s
-	pELb2S5zKp2RzAJ83qlsMFv2M5Dq8wPbK6H7aBPMXG0FE5nmP2+73Pe2Fadf
-X-Gm-Gg: ASbGncv8a9yp4flgnPhhC09Rj74xf70RmPK4nqGjpNFlA2UGsdIVRDrlJdDbCSAs8Oy
-	Qr7iPP79aGEWbCyvcf9iWdMaJ4yMg9UW2rQ9C1SzcZQgRDbVonljIqHrbShDytJpOyKWLlqhbYM
-	q3Sd8tBrXckmBz7XJDew8Wiakayi8tbDYWi+VB8FGD3q+5gcwE++vBurbFDtYtVbiF78pLa3Xro
-	R+BYAGvy5j8/wPiptpVtJoDq+5GVmb3VtdeiKCtc/p/9ZWdn1k6kmPEuxrwmf0xWPxanWCxkj5S
-	jaIlc1+5mC4VEQ+GgZl4T2L6hD2Xv+2Y/CUb/DcF/UeJzumExXt8tA==
-X-Google-Smtp-Source: AGHT+IH7wywFypP/pG36JFjbW0HAcKLhBfX+GDXQ+kyk2URZaqN7ijCM1lWkhElrxzKYErRd39BkZw==
-X-Received: by 2002:a05:6512:3090:b0:545:2ab1:3de with SMTP id 2adb3069b0e04-54b10dc7b75mr2505007e87.13.1743451829882;
-        Mon, 31 Mar 2025 13:10:29 -0700 (PDT)
+        bh=uHty7clYNwCXavi66+rfgLX8CCmTXVsVBT8+fNIbevo=;
+        b=m/pMY+rmC2zGwtnDhx5+Lz23s1mHz1PBgQ9M0nOYt2TrFfsdAJutMPMoZVosdWNgeG
+         2GbMAf4voyiyciKP+9Kmz2J40gva0Eq5J5bs0gZvVoNJ/wnVAycCrBPcaU9C34JdZvJ6
+         3LOA1/8gnqL4Y5vABeJk90EO2Q5JW7hbjBC6Q/oLf9j4+ZlMXIJFhUtKz2DIh45mXTF/
+         XB/cq/kmP4dXi02T+5QQzg5U4JSfFjgaLeiyFMF1zI+wL1Lx1agC/3kpSTUVetLvJy3H
+         8prtIWVPyYLBTJFKdfXlremgyra9vv3UZCkXpL74CIb4VVXjXaAUJonHZQsKcB9Bf3EN
+         U1oA==
+X-Gm-Message-State: AOJu0YyBXRdSBAhkhY6xvVKftMuXTuM5GGNGuYc5zHS3r7xrbPBaMe0R
+	LVcYIwOLNVY1ocjinGPY3y5Kne3hBCRpwQaLS3xvEE1ZGKNPGIXX8RO7IZZV
+X-Gm-Gg: ASbGnctK+DjEFTwCklYwVjSi+Ea7KX9FyUC52in/yifFOjpQ65CcnBo2MQSDFPQ/1kF
+	EoYMGt9u8rPlJxN4rjvjJhD8VpaNMC7pLpwSXp7O1nKy6Sa4Hmswsvv0zbEfy9S3BG99VnJIOSl
+	3FgmRJN9/T5TlOBgKPjwt3Ws0v+qDbgndP4P/cfd+EeO31Pe47GjdYiFtjjTPzaWTfUDjuFXnRk
+	cTUPpceTzcvRTcQdZtV6qLCCUIO0adyyiVizm8Ye+hZvnYJ287NGrLBqvrwwn/qNMN973Lht6YO
+	OOI9o1ssVoImflGPldScOXYrcH3jvAQXudYDw6fZXjKh3WYMiSHt0A==
+X-Google-Smtp-Source: AGHT+IFD7k3woM3hskaiiXK96WTyAqoDvML920N1OhMylJRhSnyACZkHwrQqnHYEaAOlkm8eLrmRMA==
+X-Received: by 2002:ac2:51d1:0:b0:54b:117c:8ef5 with SMTP id 2adb3069b0e04-54b117c8f37mr3366958e87.56.1743451833034;
+        Mon, 31 Mar 2025 13:10:33 -0700 (PDT)
 Received: from cherry-pc-nix.. ([77.91.199.108])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54b09580604sm1196328e87.122.2025.03.31.13.10.27
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54b09580604sm1196328e87.122.2025.03.31.13.10.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Mar 2025 13:10:28 -0700 (PDT)
+        Mon, 31 Mar 2025 13:10:31 -0700 (PDT)
 From: Timur Chernykh <tim.cherry.co@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Timur Chernykh <tim.cherry.co@gmail.com>
-Subject: [PATCH 1/2] libbpf: add proto_func param name generation on sanitazing it to enum type
-Date: Mon, 31 Mar 2025 23:09:53 +0300
-Message-ID: <20250331201016.345704-2-tim.cherry.co@gmail.com>
+Subject: [PATCH 2/2] libbpf: add check if kernel supports kind flag and fix the bitfield members in union and structs if not
+Date: Mon, 31 Mar 2025 23:09:54 +0300
+Message-ID: <20250331201016.345704-3-tim.cherry.co@gmail.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250331201016.345704-1-tim.cherry.co@gmail.com>
 References: <20250331201016.345704-1-tim.cherry.co@gmail.com>
@@ -90,73 +90,161 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Timur Chernykh <tim.cherry.co@gmail.com>
 ---
- tools/lib/bpf/libbpf.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ tools/lib/bpf/features.c        | 30 ++++++++++++++++
+ tools/lib/bpf/libbpf.c          | 62 ++++++++++++++++++++++++++++++++-
+ tools/lib/bpf/libbpf_internal.h |  2 ++
+ 3 files changed, 93 insertions(+), 1 deletion(-)
 
+diff --git a/tools/lib/bpf/features.c b/tools/lib/bpf/features.c
+index 760657f5224c..dfab65f30f0c 100644
+--- a/tools/lib/bpf/features.c
++++ b/tools/lib/bpf/features.c
+@@ -507,6 +507,33 @@ static int probe_kern_arg_ctx_tag(int token_fd)
+ 	return probe_fd(prog_fd);
+ }
+ 
++static int probe_kern_btf_type_kind_flag(int token_fd)
++{
++	const char strs[] = "\0bpf_spin_lock\0val\0cnt\0l";
++	/* struct bpf_spin_lock {
++	 *   int val;
++	 * };
++	 * struct val {
++	 *   int cnt;
++	 *   struct bpf_spin_lock l;
++	 * };
++	 */
++	__u32 types[] = {
++		/* int */
++		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),  /* [1] */
++		/* struct bpf_spin_lock */                      /* [2] */
++		BTF_TYPE_ENC(1, BTF_INFO_ENC(BTF_KIND_STRUCT, 1 /* kind bit */, 1), 4),
++		BTF_MEMBER_ENC(15, 1, 0), /* int val; */
++		/* struct val */                                /* [3] */
++		BTF_TYPE_ENC(15, BTF_INFO_ENC(BTF_KIND_STRUCT, 1 /* kind bit */, 2), 8),
++		BTF_MEMBER_ENC(19, 1, 0), /* int cnt; */
++		BTF_MEMBER_ENC(23, 2, 32),/* struct bpf_spin_lock l; */
++	    };
++
++	return probe_fd(libbpf__load_raw_btf((char *)types, sizeof(types),
++			     strs, sizeof(strs), token_fd));
++}
++
+ typedef int (*feature_probe_fn)(int /* token_fd */);
+ 
+ static struct kern_feature_cache feature_cache;
+@@ -582,6 +609,9 @@ static struct kern_feature_desc {
+ 	[FEAT_BTF_QMARK_DATASEC] = {
+ 		"BTF DATASEC names starting from '?'", probe_kern_btf_qmark_datasec,
+ 	},
++	[FEAT_BTF_TYPE_KIND_FLAG] = {
++		"BTF btf_type can have the kind flags set", probe_kern_btf_type_kind_flag,
++	},
+ };
+ 
+ bool feat_supported(struct kern_feature_cache *cache, enum kern_feature_id feat_id)
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6b85060f07b3..8e1edba443dd 100644
+index 8e1edba443dd..392779c10a73 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -3128,6 +3128,8 @@ static int bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
+@@ -3113,9 +3113,10 @@ static bool btf_needs_sanitization(struct bpf_object *obj)
  	bool has_type_tag = kernel_supports(obj, FEAT_BTF_TYPE_TAG);
  	bool has_enum64 = kernel_supports(obj, FEAT_BTF_ENUM64);
  	bool has_qmark_datasec = kernel_supports(obj, FEAT_BTF_QMARK_DATASEC);
-+
-+	char name_gen_buff[32] = {0};
++    bool has_kind_bit_support = kernel_supports(obj, FEAT_BTF_TYPE_KIND_FLAG);
+ 
+ 	return !has_func || !has_datasec || !has_func_global || !has_float ||
+-	       !has_decl_tag || !has_type_tag || !has_enum64 || !has_qmark_datasec;
++	       !has_decl_tag || !has_type_tag || !has_enum64 || !has_qmark_datasec || has_kind_bit_support;
+ }
+ 
+ static int bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
+@@ -3128,6 +3129,7 @@ static int bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
+ 	bool has_type_tag = kernel_supports(obj, FEAT_BTF_TYPE_TAG);
+ 	bool has_enum64 = kernel_supports(obj, FEAT_BTF_ENUM64);
+ 	bool has_qmark_datasec = kernel_supports(obj, FEAT_BTF_QMARK_DATASEC);
++	bool has_kind_bit_support = kernel_supports(obj, FEAT_BTF_TYPE_KIND_FLAG);
+ 
+ 	char name_gen_buff[32] = {0};
  	int enum64_placeholder_id = 0;
- 	struct btf_type *t;
- 	int i, j, vlen;
-@@ -3178,10 +3180,50 @@ static int bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
- 			if (name[0] == '?')
- 				name[0] = '_';
- 		} else if (!has_func && btf_is_func_proto(t)) {
-+			struct btf_param* params;
-+			int new_param_name_off;
+@@ -3263,6 +3265,64 @@ static int bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
+ 				m->type = enum64_placeholder_id;
+ 				m->offset = 0;
+ 			}
++		} else if (!has_kind_bit_support && (btf_is_struct(t) || btf_is_union(t) || btf_is_fwd(t) || btf_is_enum(t) || btf_is_enum64(t))) {
++			const uint16_t members_cnt = btf_vlen(t);
 +
- 			/* replace FUNC_PROTO with ENUM */
- 			vlen = btf_vlen(t);
- 			t->info = BTF_INFO_ENC(BTF_KIND_ENUM, 0, vlen);
- 			t->size = sizeof(__u32); /* kernel enforced */
++			/* type encoded with a kind flag */
++		    if (t->info != BTF_INFO_ENC(btf_kind(t), 1, members_cnt)) {
++		        continue;
++		    }
 +
-+			/* since the btf_enum and btf_param has the same binary layout it's ok to use btf_param */
-+			params = btf_params(t);
++		    /* unset kind flag anyway */
++		    t->info = BTF_INFO_ENC(btf_kind(t), 0, btf_vlen(t));
 +
-+			for (j = 0; j < vlen; ++j) {
-+				struct btf_param* param = &params[j];
-+				const char* param_name = btf__str_by_offset(btf, param->name_off);
++		    /* structs an unions has a different bitfield processing behaviour is kind flag is set */
++		    if (btf_is_struct(t) || btf_is_union(t)) {
++		        struct btf_member* members = btf_members(t);
++				struct btf_type* new_int_type = NULL;
++				int new_int_type_id;
++				__u32* new_int_type_data;
++				int encoding = 0;
++		        int nmember;
 +
-+				/*
-+				 * kernel disallow any unnamed enum members which can be generated for,
-+				 * as example, struct members like
-+				 * struct quota_format_ops {
-+				 *     ...
-+				 *     int (*get_next_id)(struct super_block *, struct kqid *);
-+				 *     ...
-+				 * }
-+				 */
-+				if (param_name && param_name[0]) {
-+					/* definitely has a name, valid it or no should decide kernel verifier */
-+					continue;
-+				}
++		        for (nmember = 0; nmember < members_cnt; nmember++) {
++		            struct btf_member* member = &members[nmember];
++		            const struct btf_type* member_type = btf_type_by_id(btf, member->type);
 +
-+				/*
-+				 * generate an uniq name for each func_proto
-+				 */
-+				snprintf(name_gen_buff, sizeof(name_gen_buff), "__parm_proto_%d_%d", i, j);
-+				new_param_name_off = btf__add_str(btf, name_gen_buff);
++		            while (btf_is_typedef(member_type)) { /* unwrap typedefs */
++		                member_type = btf_type_by_id(btf, member_type->type);
++		            }
 +
-+				if (new_param_name_off < 0) {
-+					pr_warn("Error creating the name for func_proto param");
-+					return new_param_name_off;
-+				}
++		            /* bitfields can be only int or enum values */
++		            if (!(btf_is_int(member_type) || btf_is_enum(member_type))) {
++		                continue;
++		            }
 +
-+				/* give a valid name to func_proto param as it now an enum member */
-+				param->name_off = new_param_name_off;
-+			}
++		            encoding = btf_int_encoding(member_type);
++		            if (btf_is_enum(member_type) && member_type->info & 0x80000000 /* kind flag */) {
++		                /* enum value encodes integer signed/unsigned info in the kind flag */
++		                encoding = BTF_INT_SIGNED;
++		            }
 +
- 		} else if (!has_func && btf_is_func(t)) {
- 			/* replace FUNC with TYPEDEF */
- 			t->info = BTF_INFO_ENC(BTF_KIND_TYPEDEF, 0, 0);
++		            /* create new integral type with the same info */
++		            snprintf(name_gen_buff, sizeof(name_gen_buff), "__int_%d_%d", i, nmember);
++		            new_int_type_id = btf__add_int(btf, name_gen_buff, member_type->size, encoding);
++
++		            if (new_int_type_id < 0) {
++		                pr_warn("Error adding integer type for a bitfield %d of [%d]", nmember, i);
++		                return new_int_type_id;
++		            }
++
++		            new_int_type = btf_type_by_id(btf, new_int_type_id);
++
++		            /* encode int in legacy way, keep offset 0 and specify bit size as set in the member */
++		            new_int_type_data = (__u32*)(new_int_type + 1);
++		            *new_int_type_data = BTF_INT_ENC(encoding, 0, BTF_MEMBER_BITFIELD_SIZE(member->offset));
++
++		            member->type = new_int_type_id;
++		            member->offset = BTF_MEMBER_BIT_OFFSET(member->offset) /* old kernels looks only on offset */;
++		        }
++		    }
+ 		}
+ 	}
+ 
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index 76669c73dcd1..6369c5520fce 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -380,6 +380,8 @@ enum kern_feature_id {
+ 	FEAT_ARG_CTX_TAG,
+ 	/* Kernel supports '?' at the front of datasec names */
+ 	FEAT_BTF_QMARK_DATASEC,
++	/* Kernel supports kind flag */
++	FEAT_BTF_TYPE_KIND_FLAG,
+ 	__FEAT_CNT,
+ };
+ 
 -- 
 2.49.0
 
