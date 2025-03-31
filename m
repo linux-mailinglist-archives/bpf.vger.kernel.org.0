@@ -1,103 +1,111 @@
-Return-Path: <bpf+bounces-54924-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54925-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93ED4A75E50
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 06:00:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7F0DA75F4D
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 09:14:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 019171682CA
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 04:00:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F38D518889F8
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 07:14:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89981531C8;
-	Mon, 31 Mar 2025 03:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135DCAD23;
+	Mon, 31 Mar 2025 07:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pzOlrh4w"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IoulPSNw";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="i3hrdc5x"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A1F03FFD
-	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 03:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 056D51B4F0F;
+	Mon, 31 Mar 2025 07:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743393597; cv=none; b=nwlLi5y9zx11Y+rDflLc6FeLWpb96wzhh6NKYvudr+KVIv6i0o5IeswqtuvWqzlNkPgEnrlHu6jly4bvxY5XcQyWGhMyz5PKavJfCC5upZCJvy0rh1X1J6xEekSWR6Q6UVvVDmSPDSuMgybhXGWh3q/hxT5nUXFUKReurPkbCkc=
+	t=1743405254; cv=none; b=QE4d+3sVhs7lMZEyBq415xk/0gmHgy8Yf4hxkz6bJ6KfFcUeklEkLsi0xoFgMHYd18sRpNA5U4nvUCjpkV7NaY3qwmB6ral1TBDOu1RguG/hzpo46GF1fNxsas871wMcGTvvDx0ztEiD+DAek57T+vHSYzhKcXnIP2tbJxdLBZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743393597; c=relaxed/simple;
-	bh=n2k5TIeMiJPPE85EhmGLwIPw/of/yrJvYsnRcc2mGgM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=bSl6L/p73vDy/8XYa6spmXeIPu11UgHYx0A0YJPZm6SrrQOuQPzW3qNUgtN1wqhLfPoTWP4nBt01OxxwbFaJ7uqv9+FxiOtxo0Aq6Rh8X+P+o9b5UA3SA5muHeJmnx6DIXp4Fmx5UY4QG7+rVi9UXZ0YZAA853268hXGo1HHMws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pzOlrh4w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B389C4CEE4;
-	Mon, 31 Mar 2025 03:59:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743393596;
-	bh=n2k5TIeMiJPPE85EhmGLwIPw/of/yrJvYsnRcc2mGgM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=pzOlrh4w226t2sl5dFfI5NxTugmhihOKCyZFN+18nQvO4h8CyeydlYve1pMLkW4cp
-	 B2yARrPaul4BsDWXSMMxH9nRwmziMZpvOJrvWdFnJt03ltfiIQTD6sBYrfD1Y8P8pz
-	 ze6wsYMI60XTFv/5Hk0CEdsKDyPgMQY2aSpyXu71lYUGqdY1g7ldi7xMBZIgp0uO7y
-	 k6mxPqoFCXhigpygOxH/1DrSHeanhP36wO4dh+mTiog4SzG7afslgb+b9bk9hDiSuJ
-	 kBoKVER1+PSERjiw1KCDvmsZPSovn8N3mKJFYnlRyD2gXxgUMyb/RzGhWwlONHzwIT
-	 myfNUOgdR5hOQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 71004380AA7A;
-	Mon, 31 Mar 2025 04:00:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1743405254; c=relaxed/simple;
+	bh=14OiOFgKNzhtSB+lwAKQ6sSgA5AUmbgsIVjCgbUdAGA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PJ3uyb5eVd8TZLL3HWPWmmy54/vUiATRdkm/W0ehbGyW3xiQa7f7MNGmUBU2InAR7ba6LogCN0+CzVS/ruN0SugRw6oEXwdqfUo4cB11J116fZGPoicmGdhu67BjrpBHNwpPQJULZmBdwMDhF5H5vvST8UsdqtIDXSBxkewsuHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IoulPSNw; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=i3hrdc5x; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 31 Mar 2025 09:14:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1743405251;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=14OiOFgKNzhtSB+lwAKQ6sSgA5AUmbgsIVjCgbUdAGA=;
+	b=IoulPSNwmBsQwL2ELGgYoXjp0H/WHpcx0uJiFwlNufrtSi1XUGJ6a+/iXaru9QwHVkZi7v
+	enN1QAFR8Pt9Khyr16M6tJ+2tT171Hc/5p5gyaiR48XsebGwP4+vr4xMOLZBuNFyqXNArI
+	E30XlBmjHI7Fq/f2RiDc+D6phSrIg+IN5tgYBJ14PSCOI1MP7wseYRDBdI55kWxy1EvnyU
+	YjSwhJYbz5QSX1z4TWLj26miN8yf9RKYDUyQI+PeoenD6/7aXvm229dx0gmSky9YIPYZn5
+	LecigZ9gGKbwczx3ULyiOAQRMSh4sd/66+vBdwC1AVmA1DarQbaiR6I5HNCbAw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1743405251;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=14OiOFgKNzhtSB+lwAKQ6sSgA5AUmbgsIVjCgbUdAGA=;
+	b=i3hrdc5xD2jgNcGVyGU1sPXbHLt0ylDnXiwHs8y+EobPj45/vndg/svbVW/nSgQ5iWkUjr
+	ZOGFJVpUWDfMKvAA==
+From: Sebastian Sewior <bigeasy@linutronix.de>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Michal Hocko <mhocko@suse.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Introduce try_alloc_pages for 6.15
+Message-ID: <20250331071409.ycI7q6Q2@linutronix.de>
+References: <20250327145159.99799-1-alexei.starovoitov@gmail.com>
+ <CAHk-=wgRbk2ezu1TNewZQSrT1MCzP-xAXrcHXULMeW=RRSak5A@mail.gmail.com>
+ <CAHk-=whVcfPyL3PhmSoQyRQZpYUDaKTFA+MOR9w8HCXDdQX8Uw@mail.gmail.com>
+ <CAADnVQKBg0ESvDRvs_cHHrwLrpkar9bAZ9JJRnxUwe4zfGym6w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix verifier_private_stack test
- failure
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174339363328.3671970.15555565857872714950.git-patchwork-notify@kernel.org>
-Date: Mon, 31 Mar 2025 04:00:33 +0000
-References: <20250331033828.365077-1-yonghong.song@linux.dev>
-In-Reply-To: <20250331033828.365077-1-yonghong.song@linux.dev>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAADnVQKBg0ESvDRvs_cHHrwLrpkar9bAZ9JJRnxUwe4zfGym6w@mail.gmail.com>
 
-Hello:
+On 2025-03-30 14:49:25 [-0700], Alexei Starovoitov wrote:
+> On Sun, Mar 30, 2025 at 1:56=E2=80=AFPM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> > So maybe "nmisafe_local_lock_t" or something in that vein?
+> >
+> > Please fix this up, There aren't *that* many users of
+> > "localtry_xyzzy", let's get this fixed before there are more of them.
+>=20
+> Ok. Agree with the reasoning that the name doesn't quite fit.
+>=20
+> nmisafe_local_lock_t name works for me,
+> though nmisafe_local_lock_irqsave() is a bit verbose.
+>=20
+> Don't have better name suggestions at the moment.
+>=20
+> Sebastian, Vlastimil,
+> what do you prefer ?
 
-This patch was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+nmisafe_local_lock_t sounds okay assuming the "nmisafe" part does not
+make it look like it can be used without the trylock part in NMI context.
 
-On Sun, 30 Mar 2025 20:38:28 -0700 you wrote:
-> Several verifier_private_stack tests failed with latest bpf-next.
-> For example, for 'Private stack, single prog' subtest, the
-> jitted code:
->   func #0:
->   0:      f3 0f 1e fa                             endbr64
->   4:      0f 1f 44 00 00                          nopl    (%rax,%rax)
->   9:      0f 1f 00                                nopl    (%rax)
->   c:      55                                      pushq   %rbp
->   d:      48 89 e5                                movq    %rsp, %rbp
->   10:     f3 0f 1e fa                             endbr64
->   14:     49 b9 58 74 8a 8f 7d 60 00 00           movabsq $0x607d8f8a7458, %r9
->   1e:     65 4c 03 0c 25 28 c0 48 87              addq    %gs:-0x78b73fd8, %r9
->   27:     bf 2a 00 00 00                          movl    $0x2a, %edi
->   2c:     49 89 b9 00 ff ff ff                    movq    %rdi, -0x100(%r9)
->   33:     31 c0                                   xorl    %eax, %eax
->   35:     c9                                      leave
->   36:     e9 20 5d 0f e1                          jmp     0xffffffffe10f5d5b
-> 
-> [...]
+But yeah, it sounds better than the previous one.
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Fix verifier_private_stack test failure
-    https://git.kernel.org/bpf/bpf/c/07be1f644ff9
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Sebastian
 
