@@ -1,86 +1,72 @@
-Return-Path: <bpf+bounces-54931-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54940-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B872A760F5
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 10:09:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D84E1A761EB
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 10:28:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 699863A1663
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 08:08:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35C613A5873
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 08:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B96D1D63C5;
-	Mon, 31 Mar 2025 08:08:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08211EB1B7;
+	Mon, 31 Mar 2025 08:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lgP0DN95"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="OnHXAiC9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F14487BE
-	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 08:08:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B73F1E882F;
+	Mon, 31 Mar 2025 08:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743408538; cv=none; b=k7NJeFwB4qCuhUaKPkacTFGKrTrEIrPDAf1OV0FukmoXxPPSPYi6TSHUfWTQK2VpiC67N3n8grq6dYD3NfToofHriXL2zuVAGnoYfrA9x/jpY/cQO1Gsk7SoSxV4drbkqzHoW2Uq0wR2w51grNDU0DQZ7DqdGyJ158GmH4BMKPI=
+	t=1743409464; cv=none; b=TWcS+vU4nlhDCZUvwJHbYBGtbkGem2qlqJqBZ5pPgodinJtQe+gZMRlVQpIy5TD+1sC1rmU/YNf630SF7FUtAgCXSGkpB9YoUnud04PkQM8m/+RPtEKWQ8jBGVT37Hcn/br/9kXbxxxD/VlIhz621GtIw3E8rinkP82w3r8i77c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743408538; c=relaxed/simple;
-	bh=/at7c45nf1j9WiNW7z91BFuvSYozx/q5GqcS+AgKEbY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AqRi4mCBtOyrdJkzxJcKavqUjrh6fAmc0tX3LTMv4wQzHCdDfofzCECjfxe/I8VCFyYKneANtS3UlWb0IJA3ceKkBmIbnsaYBxLHYKHu2VX1i9GRF7iKgnIx5o7piBUNNKi4pyYiaKRdgynnbks0HI5mTLU61ifWusXed+YXMgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lgP0DN95; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-399744f74e9so2723023f8f.1
-        for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 01:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743408535; x=1744013335; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y+wZFuHVjOSlPrTFQB4eXbAHklcQfF137d2bnkdBtBY=;
-        b=lgP0DN958yuIMgBp3WvdNFSNshk5smvDD/pgua9W6d8ab0F0QXd/gql6sFOX97FgN7
-         cmZqx4XCQZjZIDtfnmr4hkw2vH93RpLTtBl7K9oEnhvP1PJBeRdA3HRiyBUaoexmsMOz
-         8FMisLUfe0cT9dt0AfLmk4X5mxeZzKUNlKKjNJCh6XYNT0RddYe5Z4lvo3X8eEI81JtI
-         0kxGoTeUseEIIkDLAjtXFyLWRGyKJhJtF3Ibq/VqckfSD1WzcK7/RbvBfwmEDMo1oDv0
-         pHlXw6uV8oheo01mI/zDN7wWPxWb2h+x1wWx41+B2xnKeIRRZaOHG9Pzz3P0aQvyeUd4
-         B/3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743408535; x=1744013335;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y+wZFuHVjOSlPrTFQB4eXbAHklcQfF137d2bnkdBtBY=;
-        b=m7q7Wjs+4p/XepjJAfTJ098nwmtedvxtUb6xLCyHykoTHL2ZvOQazvsqMBOBtCDeQl
-         amyD4hNn3D0bj1y3O1GYFEr1XLDw4TFqvL3/6oJuVqHReeUBrB1V95YE38CxlJfyJM+A
-         TI2nDjcI2DbMILiS5ivkHWu+FD/0SctWclwT5BVLGxpV0Po/X622C8jctL1RM4no0d52
-         DXCGwpmb7DSBGNOzQZvGh1z89oKlCnq/vxJDfRwsuVc0jKeTcHMKixCb1G0bt+DbWwyl
-         KEB1X3ruYASkyU3/DwgLRSDdR/6AolPnPS8UWeIGL8ZozmonQzoxfV5Qmrk+MixkZIWq
-         OrsQ==
-X-Gm-Message-State: AOJu0YwoDhoLqXnkG3a+fFbov9iMLlj4lhp1xeVFsz3IjAoi67LEWk4k
-	RMHkebnHonyTCCp9CkT87fG8w/kcNJH3uKB/V9HAEceptlj0RWrxNP2RfFxh
-X-Gm-Gg: ASbGncum142HrBKpaeoR5dwDZVCBglmVmHBGyKoSzN/7dv1USqDMu1qFPE3MuYrDIb7
-	eeThO8Q1YUPaNfNDG5C2mGNiXCK3D8Gryr4Fybc2hw+hqCDz6MgbNgK5W4Gy9ywF/RxRL51QM6+
-	H5+WwSItkbovOdO7Oy4WSv+85Tan2IWI2eWnZqjwIBs7sxnqnExY2fpRa8TD/bJ1L1eVRLo3XHn
-	7MSaVGC796E/MxB8evFvykwxCG1GL7UEzmekm0nIbn49wggNsq6kumgi1c62IzohNAP4GOH2weE
-	Bi2wu+cM3niXVDqNiPH7ZxD8apalpLVmxvYntGownJ2xxGVKK8Ew1ytilDswrNfo
-X-Google-Smtp-Source: AGHT+IEcuJm9GmNVhr/HIcXU+uBhQtPUP6jwe14zY7C2SVsAD4FoYt13WRNqy22R7y5coMEdAHhvUQ==
-X-Received: by 2002:a5d:47a2:0:b0:39a:c9ed:8555 with SMTP id ffacd0b85a97d-39c120dfd8dmr6327175f8f.23.1743408534964;
-        Mon, 31 Mar 2025 01:08:54 -0700 (PDT)
-Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c0b658b5dsm10471987f8f.3.2025.03.31.01.08.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Mar 2025 01:08:54 -0700 (PDT)
-From: Anton Protopopov <a.s.protopopov@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH bpf-next 4/4] selftests/bpf: remove likely/unlikely definitions
-Date: Mon, 31 Mar 2025 08:13:08 +0000
-Message-Id: <20250331081308.1722343-5-a.s.protopopov@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250331081308.1722343-1-a.s.protopopov@gmail.com>
-References: <20250331081308.1722343-1-a.s.protopopov@gmail.com>
+	s=arc-20240116; t=1743409464; c=relaxed/simple;
+	bh=Cby37SG2DpHxgTqq3lgoJ+EC3eGF0uFSXmj9Op+ZdcQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gTlDiOEuWsWWDc/qWPTHGl9B21poBEPKqG4XwLolt3nYXs427QUhhHxCObfHdKChy++uRpy7owlNTmQLj5lc0pFGwFqj0KZoRHAHNHGlJZ0HCetJXwn/i6L9HT79gmC0hSc2bIb2DuJxra2m2Pcnq+2HNOO33xD2JpyTAE3voJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=OnHXAiC9; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from terminus.zytor.com (terminus.zytor.com [IPv6:2607:7c80:54:3:0:0:0:136])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 52V8Mp003171319
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Mon, 31 Mar 2025 01:22:57 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 52V8Mp003171319
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025032001; t=1743409380;
+	bh=c4mcztnFt3iWZUjta5DXg4eheqI37Lh6HqidwU3OGSY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OnHXAiC9aSEzd0WpdrjoHSGZ04PCiEeIv62hkaEXPnx8evimLF7vpw0m7zz3VzHAt
+	 hDuVc4dghG43y+jsV+a7Qfx20Ng9DHzGpu8XsE0uIkomgEmFYL/K1tnjvzIxsjKA4M
+	 Jmbxizi87C0PeKt7ohivxxIv0jnlvkyUQ9sNKdDbevgpXy1tk7W9PyoTsHjecZxvs2
+	 aVQVkmqox4yIzWpZCAHpOgStdzq0qcj13XEqjfbZbCPUeEsVftd405OaQn09xyGuCx
+	 rSayuzUgrw2M+BWzbnfHvv62mRW+cXcdQf8/qP5CIkCNwAjzjH0U7W5kYlhj6Xy0BH
+	 xAje3DGcgV+zw==
+From: "Xin Li (Intel)" <xin@zytor.com>
+To: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, virtualization@lists.linux.dev,
+        linux-edac@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-ide@vger.kernel.org,
+        linux-pm@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, peterz@infradead.org,
+        acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
+        wei.liu@kernel.org, ajay.kaher@broadcom.com,
+        alexey.amakhalov@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        tony.luck@intel.com, pbonzini@redhat.com, vkuznets@redhat.com,
+        seanjc@google.com, luto@kernel.org, boris.ostrovsky@oracle.com,
+        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com
+Subject: [RFC PATCH v1 00/15] MSR refactor with new MSR instructions support
+Date: Mon, 31 Mar 2025 01:22:36 -0700
+Message-ID: <20250331082251.3171276-1-xin@zytor.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,50 +75,95 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now likely/unlikely macros are defined in tools/lib/bpf/bpf_helpers.h
-and thus can be removed from selftests.
+Obviously the existing MSR code and the pv_ops MSR access APIs need some
+love: https://lore.kernel.org/lkml/87y1h81ht4.ffs@tglx/
 
-Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
----
- tools/testing/selftests/bpf/bpf_arena_spin_lock.h | 8 --------
- tools/testing/selftests/bpf/progs/iters.c         | 4 ----
- 2 files changed, 12 deletions(-)
+hpa has started a discussion about how to refactor it last October:
+https://lore.kernel.org/lkml/7a4de623-ecda-4369-a7ae-0c43ef328177@zytor.com/
 
-diff --git a/tools/testing/selftests/bpf/bpf_arena_spin_lock.h b/tools/testing/selftests/bpf/bpf_arena_spin_lock.h
-index d60d899dd9da..4e29c31c4ef8 100644
---- a/tools/testing/selftests/bpf/bpf_arena_spin_lock.h
-+++ b/tools/testing/selftests/bpf/bpf_arena_spin_lock.h
-@@ -95,14 +95,6 @@ struct arena_qnode {
- #define _Q_LOCKED_VAL		(1U << _Q_LOCKED_OFFSET)
- #define _Q_PENDING_VAL		(1U << _Q_PENDING_OFFSET)
- 
--#ifndef likely
--#define likely(x) __builtin_expect(!!(x), 1)
--#endif
--
--#ifndef unlikely
--#define unlikely(x) __builtin_expect(!!(x), 0)
--#endif
--
- struct arena_qnode __arena qnodes[_Q_MAX_CPUS][_Q_MAX_NODES];
- 
- static inline u32 encode_tail(int cpu, int idx)
-diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
-index 1b9a908f2607..76adf4a8f2da 100644
---- a/tools/testing/selftests/bpf/progs/iters.c
-+++ b/tools/testing/selftests/bpf/progs/iters.c
-@@ -7,10 +7,6 @@
- #include "bpf_misc.h"
- #include "bpf_compiler.h"
- 
--#ifndef unlikely
--#define unlikely(x)	__builtin_expect(!!(x), 0)
--#endif
--
- static volatile int zero = 0;
- 
- int my_pid;
+The consensus so far is to utilize the alternatives mechanism to eliminate
+the Xen MSR access overhead on native systems and enable new MSR instructions
+based on their availability.
+
+To achieve this, a code refactor is necessary.  Initially, the MSR API usage
+needs to be unified and simplified, which is addressed by patches 1 through 7.
+
+Patches 8 and 9 introduce basic support for immediate form MSR instructions,
+while patch 10 employs the immediate form WRMSRNS in VMX.
+
+Finally, patches 11 to 15 leverage the alternatives mechanism to read and
+write MSR.
+
+
+H. Peter Anvin (Intel) (1):
+  x86/extable: Implement EX_TYPE_FUNC_REWIND
+
+Xin Li (Intel) (14):
+  x86/msr: Replace __wrmsr() with native_wrmsrl()
+  x86/msr: Replace __rdmsr() with native_rdmsrl()
+  x86/msr: Simplify pmu_msr_{read,write}()
+  x86/msr: Let pv_cpu_ops.write_msr{_safe}() take an u64 instead of two
+    u32
+  x86/msr: Replace wrmsr(msr, low, 0) with wrmsrl(msr, value)
+  x86/msr: Remove MSR write APIs that take the MSR value in two u32
+    arguments
+  x86/msr: Remove pmu_msr_{read,write}()
+  x86/cpufeatures: Add a CPU feature bit for MSR immediate form
+    instructions
+  x86/opcode: Add immediate form MSR instructions to x86-opcode-map
+  KVM: VMX: Use WRMSRNS or its immediate form when available
+  x86/msr: Use the alternatives mechanism to write MSR
+  x86/msr: Use the alternatives mechanism to read MSR
+  x86/extable: Add support for the immediate form MSR instructions
+  x86/msr: Move the ARGS macros after the MSR read/write APIs
+
+ arch/x86/coco/sev/core.c                   |   2 +-
+ arch/x86/events/amd/brs.c                  |   4 +-
+ arch/x86/hyperv/hv_apic.c                  |   6 +-
+ arch/x86/hyperv/hv_vtl.c                   |   4 +-
+ arch/x86/hyperv/ivm.c                      |   2 +-
+ arch/x86/include/asm/apic.h                |   4 +-
+ arch/x86/include/asm/asm.h                 |   6 +
+ arch/x86/include/asm/cpufeatures.h         |  19 +-
+ arch/x86/include/asm/extable_fixup_types.h |   1 +
+ arch/x86/include/asm/fred.h                |   2 +-
+ arch/x86/include/asm/mshyperv.h            |   2 +-
+ arch/x86/include/asm/msr-index.h           |   6 +
+ arch/x86/include/asm/msr.h                 | 664 ++++++++++++++++-----
+ arch/x86/include/asm/paravirt.h            |  64 --
+ arch/x86/include/asm/paravirt_types.h      |  11 -
+ arch/x86/include/asm/switch_to.h           |   2 +-
+ arch/x86/kernel/cpu/amd.c                  |   2 +-
+ arch/x86/kernel/cpu/common.c               |  10 +-
+ arch/x86/kernel/cpu/mce/core.c             |   6 +-
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c  |  12 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c     |   2 +-
+ arch/x86/kernel/cpu/scattered.c            |   1 +
+ arch/x86/kernel/cpu/umwait.c               |   4 +-
+ arch/x86/kernel/kvm.c                      |   2 +-
+ arch/x86/kernel/kvmclock.c                 |   2 +-
+ arch/x86/kernel/paravirt.c                 |   4 -
+ arch/x86/kvm/svm/svm.c                     |  15 +-
+ arch/x86/kvm/vmx/vmenter.S                 |  28 +-
+ arch/x86/kvm/vmx/vmx.c                     |   4 +-
+ arch/x86/lib/x86-opcode-map.txt            |   5 +-
+ arch/x86/mm/extable.c                      | 186 ++++--
+ arch/x86/mm/mem_encrypt_identity.c         |   4 +-
+ arch/x86/xen/enlighten_pv.c                | 110 ++--
+ arch/x86/xen/pmu.c                         |  43 +-
+ arch/x86/xen/xen-asm.S                     |  89 +++
+ arch/x86/xen/xen-ops.h                     |  12 +-
+ drivers/ata/pata_cs5535.c                  |  12 +-
+ drivers/ata/pata_cs5536.c                  |   6 +-
+ drivers/cpufreq/acpi-cpufreq.c             |   2 +-
+ drivers/cpufreq/e_powersaver.c             |   2 +-
+ drivers/cpufreq/powernow-k6.c              |   8 +-
+ tools/arch/x86/lib/x86-opcode-map.txt      |   5 +-
+ 42 files changed, 896 insertions(+), 479 deletions(-)
+
+
+base-commit: 8fc8ae1aeed6dc895bf35a4797c6e770574f4612
 -- 
-2.34.1
+2.49.0
 
 
