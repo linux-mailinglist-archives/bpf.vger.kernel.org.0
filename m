@@ -1,107 +1,149 @@
-Return-Path: <bpf+bounces-54951-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54952-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E77E3A7638A
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 11:48:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3609CA7639E
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 11:55:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C91E169422
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 09:48:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7176B188A0F4
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 09:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27FB11DE4D8;
-	Mon, 31 Mar 2025 09:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFCE01DE887;
+	Mon, 31 Mar 2025 09:54:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jTztKrYn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="J9nktezE"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB2F1DEFE7
-	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 09:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE84F15530C
+	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 09:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743414493; cv=none; b=A36gvoU/jheuD1GpKcfvv1Eglu04aXYlBCQwLdg7tuCtpzdSlmsN6vtM4fK9lk5U7SIgA7VfjJhzoAuUsxbSWV8XlT61hkU3aMMrf6HwufVE0R1Qev1/g2nCIu9R4uUqxFOdEdVhSIybBv38+09YtTuU8ELLko7CO+kvF1kWEdw=
+	t=1743414896; cv=none; b=MpMVXaCpeiioelVCbxdYEl/YAh8Uwp9TFLMZlY7YTnomJrY48w++sw9sq2DWOfJUYw5DRGaija9MQNcd10SsRP12bIB750BtVGXuYlwZCV9vxuNQ7/cARpIA89dG234uKSdqtVec+FcFqlh+nSeXmyMG4NUP7Ej7NlI/SbM23ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743414493; c=relaxed/simple;
-	bh=NzhgIP+mGQ4W0FZZ4z+rjwuiSBsl4UldHISVpGjwMLs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Yxd4PSaDhwSpUkpX/ShOtT6Tp2npeeXcovf9f625UrAQfsJ/fm7y6lVgj7F1X9BYgxV773aHMQZXXE8bf8bjjxKPVa8pXvkcOjaCVByAMdlO2MHT1xZTLUjuBH5iM37wX2Ijr0SzBcV7xaYOrIpErwPThy1+MgOT35HW8inMmZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jTztKrYn; arc=none smtp.client-ip=95.215.58.187
+	s=arc-20240116; t=1743414896; c=relaxed/simple;
+	bh=/B5Wkn2ERhIJcrWZ1pSBQGH4Xjd54kaX3qokDhgQxl8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mA4GPCRt7UMdd54daOnyJ2pZ+mWHZm/fEm2zQ3LW1Ls9ITfPMrLZXwruuDk9PsBJ2uFDVirXO4dQuwNG3hMB+waSDQ+Wg3hr8jXmmQO/aoogLQEcag8G2RmSn72YnunQ6Lh1JrhkGnhnVE7j9fTKvG59vom/TTIMRb7Kng85wTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=J9nktezE; arc=none smtp.client-ip=95.215.58.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+Message-ID: <f9dc7fcc-0ff1-4b9a-992a-d1d8c9c7dc14@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743414490;
+	t=1743414893;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UyUrTgpXdHKKZlTezNXfLIKziuKXRmHvZa1e0YMWZvE=;
-	b=jTztKrYnA8IOCXe3ptnUHJ1vImVoTcF5079lKHCE63wX9O4hF//jQUswhjiz0EdtTqEhYp
-	mS0RxpfbmrhkUVOdgcfruYH2SBn62Hh0Ja16nBKVTYgeCc2JcrkKTlW7wE+89EmLF8CEOS
-	MA/E/67kP6StiQ1MPt4s4uHvdq5C2mc=
-From: Tao Chen <chen.dylane@linux.dev>
-To: song@kernel.org,
-	jolsa@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	laoar.shao@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Tao Chen <chen.dylane@linux.dev>
-Subject: [PATCH bpf-next 2/2] bpf: Check link_create parameter for multi_uprobe
-Date: Mon, 31 Mar 2025 17:47:45 +0800
-Message-Id: <20250331094745.336010-2-chen.dylane@linux.dev>
-In-Reply-To: <20250331094745.336010-1-chen.dylane@linux.dev>
-References: <20250331094745.336010-1-chen.dylane@linux.dev>
+	bh=IX5GgdM/hSkMdMSyDwxEq1056Rord2VXHALCJ35TNks=;
+	b=J9nktezE6zlh3lrqmC327EAZ44QjGaVaT66gZMI40JWr7hy9JHsxDoWnnrVktrlKPbeKO6
+	HyLhY+ZeFO0z1h7G6/9w/JUbDDj6dHPPo48TdaVsgFFVZiBFYqozyq8o04lAc0JMEYV949
+	VhuffgZZG14c48lgSpNBXyOGgNUlHnM=
+Date: Mon, 31 Mar 2025 17:54:45 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: Question: fentry on kernel func optimized by compiler
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ bpf <bpf@vger.kernel.org>
+References: <7e46c811-e85b-4001-8fac-b16aa0e9815f@linux.dev>
+ <CAEf4BzaEg1mPag0-bAPVeJhj-BL_ssABBAOc_AhFvOLi2GkrEg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Chen <chen.dylane@linux.dev>
+In-Reply-To: <CAEf4BzaEg1mPag0-bAPVeJhj-BL_ssABBAOc_AhFvOLi2GkrEg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-The target_fd and flags in link_create no used in multi_uprobe
-, return -EINVAL if they assigned, keep it same as other link
-attach apis.
+在 2025/3/29 01:21, Andrii Nakryiko 写道:
 
-Fixes: 89ae89f53d20 ("bpf: Add multi uprobe link")
-Signed-off-by: Tao Chen <chen.dylane@linux.dev>
----
- kernel/trace/bpf_trace.c | 3 +++
- 1 file changed, 3 insertions(+)
+Hi Andrri,
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 2f206a2a2..f7ebf17e3 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3385,6 +3385,9 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 	if (sizeof(u64) != sizeof(void *))
- 		return -EOPNOTSUPP;
- 
-+	if (attr->link_create.target_fd || attr->link_create.flags)
-+		return -EINVAL;
-+
- 	if (!is_uprobe_multi(prog))
- 		return -EINVAL;
- 
+> On Thu, Mar 27, 2025 at 9:03 AM Tao Chen <chen.dylane@linux.dev> wrote:
+>>
+>> Hi,
+>>
+>> I recently encountered a problem when using fentry to trace kernel
+>> functions optimized by compiler, the specific situation is as follows:
+>> https://github.com/bpftrace/bpftrace/issues/3940
+>>
+>> Simply put, some functions have been optimized by the compiler. The
+>> original function names are found through BTF, but the optimized
+>> functions are the ones that exist in kallsyms_lookup_name. Therefore,
+>> the two do not match.
+>>
+>>           func_proto = btf_type_by_id(desc_btf, func->type);
+>>           if (!func_proto || !btf_type_is_func_proto(func_proto)) {
+>>                   verbose(env, "kernel function btf_id %u does not have a
+>> valid func_proto\n",
+>>                           func_id);
+>>                   return -EINVAL;
+>>           }
+>>
+>>           func_name = btf_name_by_offset(desc_btf, func->name_off);
+>>           addr = kallsyms_lookup_name(func_name);
+>>           if (!addr) {
+>>                   verbose(env, "cannot find address for kernel function
+>> %s\n",
+>>                           func_name);
+>>                   return -EINVAL;
+>>           }
+>>
+>> I have made a simple statistics and there are approximately more than
+>> 2,000 functions in Ubuntu 24.04.
+>>
+>> dylane@2404:~$ cat /proc/kallsyms | grep isra | wc -l
+>> 2324
+>>
+>> So can we add a judgment from libbpf. If it is an optimized function,
+> 
+> No, we cannot. It's a different function at that point and libbpf
+> isn't going to be in the business of guessing on behalf of the user
+> whether it's ok to do or not.
+> 
+> But the user can use multi-kprobe with `prefix*` naming, if they
+> encountered (or are anticipating) this situation and think it's fine
+> for them.
+> 
+
+I will try multi-kprobe feature, and briefly checked and found that the 
+multi-kprobe is implemented based on fprobe. Is its performance similar 
+to that of fentry? Thanks.
+
+> As for fentry/fexit, you need to have the correct BTF ID associated
+> with that function anyways, so I'm not sure that currently you can
+> attach fentry/fexit to such compiler-optimized functions at all
+> (pahole won't produce BTF for such functions, right?).
+>
+
+Yes, it is.
+
+>> pass the suffix of the optimized function from the user space to the
+>> kernel, and then perform a function name concatenation, like:
+>>
+>>           func_name = btf_name_by_offset(desc_btf, func->name_off);
+>>          if (optimize) {
+>>                  func_name = func_name + ".isra.0"
+>>          }
+>>           addr = kallsyms_lookup_name(func_name);
+>>
+>> --
+>> Best Regards
+>> Tao Chen
+>>
+>>
+
+
 -- 
-2.43.0
-
+Best Regards
+Tao Chen
 
