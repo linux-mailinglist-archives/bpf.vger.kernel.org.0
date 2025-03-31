@@ -1,115 +1,188 @@
-Return-Path: <bpf+bounces-55008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13CF0A76F9B
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:46:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73799A76F98
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:46:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8513A3ABFEC
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:44:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1A301888040
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C88B21ABB4;
-	Mon, 31 Mar 2025 20:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6999E21B9FC;
+	Mon, 31 Mar 2025 20:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="M0M9Stdc"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="HxVmo8Dk"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B693B13C9A3
-	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 20:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B86A214227;
+	Mon, 31 Mar 2025 20:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743453895; cv=none; b=i+Qlx1RbkkYXOK1s1z2Cf5LM5W+F7T9e3fRN3Xk2tx/i4Eauh0G6FJF+uQELKGyCL7b6cHJEvUu+5mOls76nGO/K8DAWUUK4fluwy5QvnhhLCqkPk4abc5ChJgtGXRQ8wfvOHX8ZhRGnw9dL9iq25aVsfv3T/EHzK5EQWnaA8z8=
+	t=1743453957; cv=none; b=ipiCZJcoYi2zbu9tcIJyAbzP6RHDuA7j+cvqcdRwqaywkVplQKivM0JCogORziP/UyjAxt4PHARONtc9onkbGHF+OSOXWjR3DWq8ltOAaDPV9Z8gHQTJF46jNL5qJMcdUvZP/A8osz0SWJvvQAkcAmogmMSVryNjSLGPe9GKmAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743453895; c=relaxed/simple;
-	bh=A5kHAqHWJDYvoVXmtqF9sLfxheRYN8d4mKVknr5HPX0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b5f/8sc+9qdrdrA3J4XOhUBzMzU05RNfAnUfTzVqfYnLT1tPsVPrZteCDdD5nnapgwFMIaXzOZv93O6vXVlsMreyITXT9sHGmBRqquzlB6nUPQUbkzIXtHZly5nx9+dtoMyCZI322x2JfNSDZkCcwODjbK8TqHv3y0zrrSkkyww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=M0M9Stdc; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8910c6a2-9a57-4eae-826b-2c81dbd9150d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743453890;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s1ikD+eto2ZOHWAzUxRJSmAOyChfYiE2agGB/R2Iua8=;
-	b=M0M9Stdc8Nz9jK2xZY6jFve847s2v5cYidhaKS04iT7Ndf8Ubcli0R1Bah68r29vNPiSZk
-	oSHdbo/alBphAKHGmuZ+25xW9b7+FGbNaN6XtJqH1aJUzpK7CIayIBjaq9oeudrDw8JVtf
-	mwc/Ryt1g2xR2/qI5bRkaFl4qn/x5yY=
-Date: Mon, 31 Mar 2025 13:44:41 -0700
+	s=arc-20240116; t=1743453957; c=relaxed/simple;
+	bh=twG6CQed6l7FmuGlaOP2JT3vtaMAM3QZL4+4ljJB9AY=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=TfBEAwtBGZ3EMRt2sQr5Rf/C+L4qWUItRrzQ0Z+xfQ10iHQblnxYw1BjYY8hVkB5m84i39/qvz6snFfD8T7pffSklz1rLC0X6PGzis0lUM8oAR+ikzpv2ID0WsnKPy9wxVsps/JppTOAf3w4Kr8lbcO84ZHq3FTyNhNE8b3wjZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=HxVmo8Dk; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 52VKj9Qn3416775
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Mon, 31 Mar 2025 13:45:09 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 52VKj9Qn3416775
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025032001; t=1743453911;
+	bh=RJdRtnEZs6j9KCHMK9Hs6l8j7NbGQuDD7agHU0tLvBI=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=HxVmo8DkI9aNvRf1hcqEg8jzzMSY2oZD90HufIujscG2rvkncKPrPb+WA+c+g0suh
+	 /YcJMxfKUsQ4F8Z6u9d11v2PvN+rc6RDRO7SOLUWmo98Bvi5RoWFOVpeS7LZapdbwg
+	 c0VVhZTDrgO4nd1x6fRXi50mF6ODAI4Z//Ff315UAHYo5E30ntta9HQ0dQDI63QbQX
+	 wsSBv2EApG/7Wim0LEJBM8iyKUly1+Xe3rkKvAJ5UpMNOF1WweGYeZuv5uWyIfCGo4
+	 knMOhY9KwEWpYJOjgr4OeH+Mr6fbgyX9NOi48CwDXIHZNPU8ytifS+R6rnkliZEvxh
+	 1eSzBxlfxbOiA==
+Date: Mon, 31 Mar 2025 13:45:06 -0700
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        "Xin Li (Intel)" <xin@zytor.com>
+CC: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, virtualization@lists.linux.dev,
+        linux-edac@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-ide@vger.kernel.org,
+        linux-pm@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, jgross@suse.com,
+        andrew.cooper3@citrix.com, peterz@infradead.org, acme@kernel.org,
+        namhyung@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
+        wei.liu@kernel.org, ajay.kaher@broadcom.com,
+        alexey.amakhalov@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        tony.luck@intel.com, pbonzini@redhat.com, vkuznets@redhat.com,
+        seanjc@google.com, luto@kernel.org, boris.ostrovsky@oracle.com,
+        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com
+Subject: =?US-ASCII?Q?Re=3A_=5BRFC_PATCH_v1_10/15=5D_KVM=3A_VMX=3A_Use_WR?=
+ =?US-ASCII?Q?MSRNS_or_its_immediate_form_when_available?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <Z-r6qxmk7niRssee@char.us.oracle.com>
+References: <20250331082251.3171276-1-xin@zytor.com> <20250331082251.3171276-11-xin@zytor.com> <Z-r6qxmk7niRssee@char.us.oracle.com>
+Message-ID: <EC243029-B8DE-4526-8869-5FA430DADC16@zytor.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 0/3] Avoid skipping sockets with socket
- iterators
-To: Jordan Rife <jrife@google.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
- Daniel Borkmann <daniel@iogearbox.net>,
- Yonghong Song <yonghong.song@linux.dev>,
- Aditi Ghag <aditi.ghag@isovalent.com>
-References: <20250313233615.2329869-1-jrife@google.com>
- <384c31a4-f0d7-449b-a7a4-2994f936d049@linux.dev>
- <CADKFtnQk+Ve57h0mMY1o2u=ZDaqNuyjx=vtE8fzy0q-9QK52tw@mail.gmail.com>
- <c53cee32-02c0-4c5a-a57d-910b12e73afd@linux.dev>
- <CADKFtnT+c2XY96NCTCf7qpptq3PKNrkedQt68+-gvD9LK-tBVQ@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CADKFtnT+c2XY96NCTCf7qpptq3PKNrkedQt68+-gvD9LK-tBVQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 3/31/25 10:23 AM, Jordan Rife wrote:
->> We can also consider if the same sk batch array can be reused to store cookies
->> during stop(). If the array can reuse, it would be nice but not a blocker imo.
-> 
->> In term of slowness, the worst will be all the previous stored cookies cannot be
->> found in the updated bucket? Not sure how often a socket is gone and how often
->> there is a very large bucket (as mentioned at the hashtable's key earlier), so
->> should not be an issue for iteration use case? I guess it may need some rough
->> PoC code to judge if it is feasible.
-> 
-> I like the idea of reusing the sk batch array. Maybe create a union
-> batch_item containing struct sock * and __u64. I'll explore this
-> direction a bit and see if I can come up with a small PoC. Lots of
+On March 31, 2025 1:27:23 PM PDT, Konrad Rzeszutek Wilk <konrad=2Ewilk@orac=
+le=2Ecom> wrote:
+>On Mon, Mar 31, 2025 at 01:22:46AM -0700, Xin Li (Intel) wrote:
+>> Signed-off-by: Xin Li (Intel) <xin@zytor=2Ecom>
+>> ---
+>>  arch/x86/include/asm/msr-index=2Eh |  6 ++++++
+>>  arch/x86/kvm/vmx/vmenter=2ES       | 28 ++++++++++++++++++++++++----
+>>  2 files changed, 30 insertions(+), 4 deletions(-)
+>>=20
+>> diff --git a/arch/x86/include/asm/msr-index=2Eh b/arch/x86/include/asm/=
+msr-index=2Eh
+>> index e6134ef2263d=2E=2E04244c3ba374 100644
+>> --- a/arch/x86/include/asm/msr-index=2Eh
+>> +++ b/arch/x86/include/asm/msr-index=2Eh
+>> @@ -1226,4 +1226,10 @@
+>>  						* a #GP
+>>  						*/
+>> =20
+>> +/* Instruction opcode for WRMSRNS supported in binutils >=3D 2=2E40 */
+>> +#define ASM_WRMSRNS		_ASM_BYTES(0x0f,0x01,0xc6)
+>> +
+>> +/* Instruction opcode for the immediate form RDMSR/WRMSRNS */
+>> +#define ASM_WRMSRNS_RAX		_ASM_BYTES(0xc4,0xe7,0x7a,0xf6,0xc0)
+>> +
+>>  #endif /* _ASM_X86_MSR_INDEX_H */
+>> diff --git a/arch/x86/kvm/vmx/vmenter=2ES b/arch/x86/kvm/vmx/vmenter=2E=
+S
+>> index f6986dee6f8c=2E=2E9fae43723c44 100644
+>> --- a/arch/x86/kvm/vmx/vmenter=2ES
+>> +++ b/arch/x86/kvm/vmx/vmenter=2ES
+>> @@ -64,6 +64,29 @@
+>>  	RET
+>>  =2Eendm
+>> =20
+>> +/*
+>> + * Write EAX to MSR_IA32_SPEC_CTRL=2E
+>> + *
+>> + * Choose the best WRMSR instruction based on availability=2E
+>> + *
+>> + * Replace with 'wrmsrns' and 'wrmsrns %rax, $MSR_IA32_SPEC_CTRL' once=
+ binutils support them=2E
+>> + */
+>> +=2Emacro WRITE_EAX_TO_MSR_IA32_SPEC_CTRL
+>> +	ALTERNATIVE_2 __stringify(mov $MSR_IA32_SPEC_CTRL, %ecx;		\
+>> +				  xor %edx, %edx;				\
+>> +				  mov %edi, %eax;				\
+>> +				  ds wrmsr),					\
+>> +		      __stringify(mov $MSR_IA32_SPEC_CTRL, %ecx;		\
+>> +				  xor %edx, %edx;				\
+>> +				  mov %edi, %eax;				\
+>> +				  ASM_WRMSRNS),					\
+>> +		      X86_FEATURE_WRMSRNS,					\
+>> +		      __stringify(xor %_ASM_AX, %_ASM_AX;			\
+>> +				  mov %edi, %eax;				\
+>> +				  ASM_WRMSRNS_RAX; =2Elong MSR_IA32_SPEC_CTRL),	\
+>> +		      X86_FEATURE_MSR_IMM
+>> +=2Eendm
+>> +
+>>  =2Esection =2Enoinstr=2Etext, "ax"
+>> =20
+>>  /**
+>> @@ -123,10 +146,7 @@ SYM_FUNC_START(__vmx_vcpu_run)
+>>  	movl PER_CPU_VAR(x86_spec_ctrl_current), %esi
+>>  	cmp %edi, %esi
+>>  	je =2ELspec_ctrl_done
+>> -	mov $MSR_IA32_SPEC_CTRL, %ecx
+>> -	xor %edx, %edx
+>> -	mov %edi, %eax
+>> -	wrmsr
+>
+>Is that the right path forward?
+>
+>That is replace the MSR write to disable speculative execution with a
+>non-serialized WRMSR? Doesn't that mean the WRMSRNS is speculative?
+>
+>
+>> +	WRITE_EAX_TO_MSR_IA32_SPEC_CTRL
+>> =20
+>>  =2ELspec_ctrl_done:
+>> =20
+>> --=20
+>> 2=2E49=2E0
+>>=20
+>>=20
 
-sgtm. Thanks.
+So to clarify the semantics of WRMSRNS: it is an opt-in capability for the=
+ OS to allow the hardware to choose the amount of serialization needed on a=
+n MSR- or implementation-specific basis=2E
 
-I think udp should be easier to begin with for PoC.
+It also allows the OS to set multiple MSRs followed by a SERIALIZE instruc=
+tion if full hard serialization is still desired, rather than having each i=
+ndividual MSR write do a full hard serialization (killing the full pipe and=
+ starting over from instruction fetch=2E)
 
-tcp may need some thoughts. It seems it may be a good time to have some bpf 
-specific implementation instead of reusing the existing tcp ones, e.g. 
-tcp_seek_last_pos(). Not sure.
+This will replace the =E2=80=93 architecturally questionable, in my opinio=
+n =E2=80=93 practice of introducing non-serializing MSRs which after all ar=
+e retroactive changes to the semantics WRMSR instruction with no opt-out (a=
+lthough the existence of SERIALIZE improves the situation somewhat=2E)
 
-> array scanning could be slow, but since changes to a bucket should be
-> rare, one optimization could be to only compare to the saved socket
-> cookies if the bucket has changed since it was last seen. I think
-> saving and checking the head, tail, and size of the bucket's linked
-> list should be sufficient for this?
-
-Not sure if head, tail, and size stay the same is enough to imply the bucket('s 
-linked list) has not changed. I think tcp may be ok since I currently don't see 
-a way to re-bind() a bind()-ed socket without close()-ing it. I don't know about 
-the connected UDP...etc.
-
-A quick thought is to keep it simple and scan the 1st cookie from the beginning 
-of the bucket. The current saved "offset" should be no longer necessary.
-
-Then start finding the 2nd, 3rd... cookies from the bucket's location where the 
-1st cookie was found.
-
-For the amount of work, this should be similar to the current "offset" which 
-needs to walk the list till the "offset" point also. In the unlikely case a 
-cookie cannot be found, it may need to scan from the beginning of the list to 
-ensure it is indeed gone.
+I agree that we need better documentation as to the semantics of WRMSRNS o=
+n critical MSRs like SPEC_CTRL, and especially in that specific case, when =
+post-batch SERIALIZE would be called for=2E
 
