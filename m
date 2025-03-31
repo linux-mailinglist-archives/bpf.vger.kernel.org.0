@@ -1,91 +1,87 @@
-Return-Path: <bpf+bounces-55006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55005-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E6B3A76F76
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:39:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97660A76F68
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:34:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D6643A9D16
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:39:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5207B16409F
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:34:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF12521B19F;
-	Mon, 31 Mar 2025 20:39:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD3E219A86;
+	Mon, 31 Mar 2025 20:34:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="F8o5RaNF"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="RgmI+aEh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58FC1E0E14;
-	Mon, 31 Mar 2025 20:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6D0217664
+	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 20:34:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743453556; cv=none; b=iSRV/IN6nQxHuPiGgGT4ppH0VZXPc5ZKRuGw6Or73XDnFdVA084HjKs7MFDuBM3TAjPhfoKmJkR0uxvInXbCfqoD4u/7pTFDUQJEXdNy1Jy0wsXWcSA8b2DtmmBqGNOVRHpmFpbmeqoxOE3g4op9jgug4qNoQNXuXy6ZmAlGaDE=
+	t=1743453258; cv=none; b=hhHJSCzCJABBuIFzQqROh0SUTi7ewFJnQUyHFEjxCrcpFeBvqqCSnGnl5WpD4+IWZmsvWSHbkHingDEUaTYwIdK3ZcbsNFBCCLlH7bAWMxNrQKYsaBzRCuys+Dz4AcaDyM+uDYq7E1YYLmkOEILDlYKymmJy8aCEnVW5tJ1gEPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743453556; c=relaxed/simple;
-	bh=zeVINXMb/01mGZrBfhpTJgMRXJBpTOtPkCDCxl2+D44=;
+	s=arc-20240116; t=1743453258; c=relaxed/simple;
+	bh=Al/1tCYsrdXclJlMIEvLK+68JB9i1no2kWQUIGVnPK0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=llh28Rac8T1PmaYtI5kn9lbIp7ARAqI2TmNNpCzU5/Aesu2OlGWtueLfgCUPT7FKKVdZu1KnF5zXFmGTo2wItGPEqVIbZLOnR50M6RrCZh58SiGd0GoRHE94+TfpFMPZ1ayhUr9UBy+i7fjIu2iVzB3R2cPkenozbE0mV8S9y28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=F8o5RaNF; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8E35D40E0219;
-	Mon, 31 Mar 2025 20:39:04 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id hCZ-tIlyS7we; Mon, 31 Mar 2025 20:39:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1743453540; bh=/G/aKVJEvh+BK78jU3R26aPND/GQH52x97woE6DFwhw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F8o5RaNF3wWAqRLnTqi/8tHi7xkMgpKiN8syntrCDDi2HsW0ZteAq1vHxftuVDtEM
-	 cGldDTW3HAyOII383lFtqZ8kjPjJ4cSMMQfZiMs2i75K92ljQxK+B976L1H8wpzDw3
-	 qBq06saJEtD83EHlZGDTbn2Zrkjdn/pwU8XSUo89HvNJ5HrM4jKMmVBY/vqWzOGZAs
-	 YMW9m5mTnDMA2/H7Mc2kS6IohGQx9CIGf8UFDrLzc7i1zbdiFLx+LurM0lT0p+r++K
-	 xEE/rCcJDi/j7xqbBgk5XLjKmFoXPTIY8xiaG6nY2M2HoVZUHdlffKXc5AXjOsjk3h
-	 bXWm4T/N6Gzr7tBdHvVBTC9fABhXTGLNWEaMUMRerH2SrcucWBS7Q76YE/0gGMLqzP
-	 CqnJj5s+MxEXI5KS+enCYMAbhBo+MWFpsW8Kykxy0tXn0BVbIXqfGDdwlFwzMacC8O
-	 wk0mK5nC05VUHquiE5jhJgdoZX9HEiHuFW4xPMnCFYz2SfZ/QITV5Kj74oo3FyeTUi
-	 lHFVgGPccdky6om9VHQjHwlCkorANK8owgOFCwgm7tlqdg27yNAxCe8hVJ6wqynD9T
-	 GmKhQh3WsSnbfRxcHEl1wAa+FmSiCk8yZbj+eB5Ssk9ytAfGykALiBs591qReXfIrj
-	 SZqE/RALHdS8Q8yfLauzWt/Q=
-Received: from zn.tnic (pd95303ce.dip0.t-ipconnect.de [217.83.3.206])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A5FD540E0215;
-	Mon, 31 Mar 2025 20:38:17 +0000 (UTC)
-Date: Mon, 31 Mar 2025 22:38:11 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc: "Xin Li (Intel)" <xin@zytor.com>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	virtualization@lists.linux.dev, linux-edac@vger.kernel.org,
-	kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-	linux-ide@vger.kernel.org, linux-pm@vger.kernel.org,
-	bpf@vger.kernel.org, llvm@lists.linux.dev, tglx@linutronix.de,
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com, jgross@suse.com, andrew.cooper3@citrix.com,
-	peterz@infradead.org, acme@kernel.org, namhyung@kernel.org,
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, wei.liu@kernel.org,
-	ajay.kaher@broadcom.com, alexey.amakhalov@broadcom.com,
-	bcm-kernel-feedback-list@broadcom.com, tony.luck@intel.com,
-	pbonzini@redhat.com, vkuznets@redhat.com, seanjc@google.com,
-	luto@kernel.org, boris.ostrovsky@oracle.com, kys@microsoft.com,
-	haiyangz@microsoft.com, decui@microsoft.com
-Subject: Re: [RFC PATCH v1 10/15] KVM: VMX: Use WRMSRNS or its immediate form
- when available
-Message-ID: <20250331203811.GCZ-r9M9Zrww_b7IjJ@fat_crate.local>
-References: <20250331082251.3171276-1-xin@zytor.com>
- <20250331082251.3171276-11-xin@zytor.com>
- <Z-r6qxmk7niRssee@char.us.oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pmNmD333JszOyDEcvYkxZBwrOZbxm0fvcOZz0JowxyW4+gckD2iman9twVZ+hvESZnwIoXVsWba1nktZern8silms3Nph39z+Do0OMfFdHViH2n3VeDctuMDV+CpXUhnTHIZCC+vom/pbRYTlNmfyBchlHTD3pgaXiTz2wqK8sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=RgmI+aEh; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-aaecf50578eso844673866b.2
+        for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 13:34:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1743453255; x=1744058055; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=FtBD1D9Bxpz/b4j3qBbX8bn0WB46Sg/0vM7wDZiZni0=;
+        b=RgmI+aEhHLZ83kS7lHh8YcSEZlv59qs5YN/zGLfJMeC2U5ztS+aOIBkJTTH1kwTYeg
+         RDvbbplobIIQigVY4qC3toYj7JnAbDPZfBbtCtRmLFXxfssjmI3iEi2j66+DaSQ8tOTP
+         ECr+tOrgkT6iMTxX07e7H7g/D/mV/EIv4jThltYCAREQLC3HhwHu4nK8ZHAZ9YnV8pkR
+         L/wlC82VFmxpYxi7z5NMZpgINCBUMo8zyCIeSM8hLQ/zP0PoG02d0hdv9LZ9ALMfOMVY
+         vsghQtciTaweQK+CUliMNRItk5llfTJqjtUE9gv+Xv3fIynjtm5KYAmaafPRUvhBOKhR
+         IN/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743453255; x=1744058055;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FtBD1D9Bxpz/b4j3qBbX8bn0WB46Sg/0vM7wDZiZni0=;
+        b=U+k8JX8IYa+aiHqIMptRT59xfbdNUYpG22gHgerZvqkYS3A3ctI5mh0Jlu+v7d3zgr
+         y0Arw6FhZ477wNJg26v33XlR+psDk3c1oPuDazdNa2F2hDcwlWU6FC7VTkveUqg3gOL0
+         NYez2TFsT0ujNa5U1z3bd9Coc9Q/ULmh9PreCfesLNp7h8KmskO9axLLFMy84VdspVro
+         RYV8b4RqE5svkW8kWwPtLMKsAb2aR2zJhvobVh7dAReovN5bg11IxfQhIIqtqp4YTQMs
+         U6uMXeNQOUcogGuNCCHGkdN0XmSPP/tuj3xWJgnPB+zcIftJsWFdFeovlJYEwaUmQ+DC
+         Sp+A==
+X-Forwarded-Encrypted: i=1; AJvYcCUijl+D6QfXAks8OlO8jyWyQ31giOqkZjL/AIUmKgwipIgwiGm5E5yor5djgn737T/WbIw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwEJAc/rz38lx27tJeryu4qRjfAD7wPjVN9CCz0wgPtXLOrvPCp
+	M0oaRvbgETv8IvtJ94hf3ShDhGKXtdXp6qlwr0XNiE5qD4h0ptO0qEiI/iqb94hojgbDL6qZxT/
+	Ff9Y=
+X-Gm-Gg: ASbGncuzI7+LPUWTzfUVR7Cg/bVNsoeki/HvMEvr+iiBcHYwR1FWbDUb7h3UCfPGR6n
+	TPtIPXKz3eVflmCDwUPOvv7XpHE6TLe5vA/JxiegxBHzoETv98iHz30hnyYPkUuDa8lZZfNepQM
+	quBdhuF0BDDKN+rdN7s51Qwm7x5DxfA3AP2O10Zcp1osTpeGvu966o1VLUqcA7zzKJAvTZ3E/lc
+	j0tkyw/3vCb1K1lC7T/FzdGFpYAa2PqjEBSWwXEvkkZccx+/6fehn0wFbrTqpztyjfE6ngJQl/E
+	eol+V3VDsU3JRuG3ElCWTf9jub8uRyLpcCNlQ0wY7YvxlHn/
+X-Google-Smtp-Source: AGHT+IFXWLsOkVhNKx1G8VWKlaoyoHz/BeD3SY6x1XoqBXPo1rxYImBjUMzw9AzPEcPvrmPEt2Ab0Q==
+X-Received: by 2002:a17:907:c1f:b0:abf:4ca9:55ff with SMTP id a640c23a62f3a-ac738a9853fmr818003766b.32.1743453255148;
+        Mon, 31 Mar 2025 13:34:15 -0700 (PDT)
+Received: from mail.gmail.com ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac719621718sm679928466b.102.2025.03.31.13.34.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Mar 2025 13:34:14 -0700 (PDT)
+Date: Mon, 31 Mar 2025 20:38:41 +0000
+From: Anton Protopopov <aspsk@isovalent.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Anton Protopopov <a.s.protopopov@gmail.com>, bpf@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH bpf-next 0/4] likely/unlikely for bpf_helpers
+Message-ID: <Z+r9UcPhDyikP48+@mail.gmail.com>
+References: <20250331081308.1722343-1-a.s.protopopov@gmail.com>
+ <CAEf4BzaTf-SKBW8j7Y_D81Y4j+MB76Bn0xBRr0YJdv+B7aWfTQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,30 +90,44 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Z-r6qxmk7niRssee@char.us.oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzaTf-SKBW8j7Y_D81Y4j+MB76Bn0xBRr0YJdv+B7aWfTQ@mail.gmail.com>
 
-On Mon, Mar 31, 2025 at 04:27:23PM -0400, Konrad Rzeszutek Wilk wrote:
-> Is that the right path forward?
+On 25/03/31 01:12PM, Andrii Nakryiko wrote:
+> On Mon, Mar 31, 2025 at 1:08 AM Anton Protopopov
+> <a.s.protopopov@gmail.com> wrote:
+> >
+> > Andrii suggested to send this piece with small fixes
+> > separately from the insn set rfc.
+> >
+> > The first patch fixes a comment in <linux/bpf.h>, and the latter
+> > three patches add likely/unlikely macros to <bph/bpf_helpers.h>.
+> > The reason there are three patches and not one is to separate
+> > libbpf changes such that userspace libbpf can be updated more
+> > easily, and the order is such that each commit can be built.
+> >
+> > Anton Protopopov (4):
+> >   bpf: fix a comment describing bpf_attr
+> >   selftests/bpf: add guard macros around likely/unlikely
+> >   libbpf: add likely/unlikely macros
+> >   selftests/bpf: remove likely/unlikely definitions
 > 
-> That is replace the MSR write to disable speculative execution with a
-> non-serialized WRMSR? Doesn't that mean the WRMSRNS is speculative?
+> let's just collapse the last 3 patches into one? libbpf sync process
+> will be totally fine with that.
 
-Ha, interesting question.
+Thanks, I've squashed them in v2.
 
-If the WRMSR is non-serializing, when do speculative things like indirect
-branches and the like get *actually* cleared and can such a speculation window
-be used to leak branch data even if IBRS is actually enabled for example...
-
-Fun.
-
-This change needs to be run by hw folks and I guess until then WRMSRNS should
-not get anywhere near mitigation MSRs like SPEC_CTRL or PRED_CMD...
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> pw-bot: cr
+> 
+> >
+> >  include/uapi/linux/bpf.h                          | 2 +-
+> >  tools/include/uapi/linux/bpf.h                    | 2 +-
+> >  tools/lib/bpf/bpf_helpers.h                       | 8 ++++++++
+> >  tools/testing/selftests/bpf/bpf_arena_spin_lock.h | 3 ---
+> >  tools/testing/selftests/bpf/progs/iters.c         | 2 --
+> >  5 files changed, 10 insertions(+), 7 deletions(-)
+> >
+> > --
+> > 2.34.1
+> >
 
