@@ -1,121 +1,109 @@
-Return-Path: <bpf+bounces-55004-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55003-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43EC8A76F69
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:34:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9092FA76F5C
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:32:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDF421887A19
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:34:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F65A165DAA
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:32:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF3B21ABC3;
-	Mon, 31 Mar 2025 20:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC7C321A45A;
+	Mon, 31 Mar 2025 20:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Z4KFFf20"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hS0sgY50"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3A51BBBFD;
-	Mon, 31 Mar 2025 20:33:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B695B1BBBFD
+	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 20:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743453232; cv=none; b=saBpqFedm541IzygEb6UJknwe2Ix/rqlHWUSSyDptRDtvqDoxNM6pxBYYtFH9MPH762MGfvcxYPfBylv4/4dExYg76IrQOCiWCk9P7OpSndsOnWml6XJDQsuuRVCHCCP+HG9k2IsTqNb+W55XfiI/O8kB4aPQrpJto4meTITl7Q=
+	t=1743453123; cv=none; b=fzDh4+Ib7uwO6fswwBZPoxMABmlItHnaABNuoZetCFFtqnC4wP7uZOSPVGz257eLzl46Ccb/RiBJyHrOjvikYDi1nO4xHx3OSI3OrHftNICmae5bHvNCf26TKnSjvyvqrg0YyIpImnsbDXqWKybB/IjGN1CS9Rmyee5hhl1OQD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743453232; c=relaxed/simple;
-	bh=c2UV0LQ0uKecBVFY2BqHPj+KlQwpu911b6y9CvieRMM=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=a1RJrp0dnaW4a2o36MPkwWXZ2OFxtmgfcJSgEFRA2z6XckTkrCZ/+XxVACOWYJ/rQidYIDOVjDq0S8YEwBm+dRcdVu920zbvCaQvqZQIYg5fVHk7NNar0YlHIHRXNF6wCIZyDnpDz0nVda11FJuke3OpVFT64hhdKDuvR/ONZZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Z4KFFf20; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 52VKX0M73412381
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Mon, 31 Mar 2025 13:33:01 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 52VKX0M73412381
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025032001; t=1743453183;
-	bh=x7/smMOdPkYBe+t7QfoSlZKr+k8BBZp4ioXVR2T0his=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=Z4KFFf201sZydaNbvnLKcIFsMDrRsRhjp8bCSzYq7irlJscPCzdUI+8Dh4pqCCfV4
-	 ma0aiKDH5Cg73nGZwNOvjvhtZagcXOcQ9p2pYNsCc45pMH4VWAZVeIr/shFTXOyoJT
-	 59zF4BynSpJMyvMuqGTq9ieFHT39HOkA0HdIKxpHd/yvEWkvuEK7rGz99DeXh2OChY
-	 Zn0hvSP59z7ec+xOZ7nTecOJAXBz/IE20VtgatRaj322fOCOFRQHF4aywsa6ze8XYD
-	 fG5J1+Jt7zMsFRAlcpYJxihjmqzIyqp5Hnp/IhNJbmgWmvn330XKZNgzjeZAZMX0yB
-	 LqLmBrw0GOEjQ==
-Date: Mon, 31 Mar 2025 13:32:58 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Ingo Molnar <mingo@kernel.org>, "Xin Li (Intel)" <xin@zytor.com>
-CC: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, virtualization@lists.linux.dev,
-        linux-edac@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-ide@vger.kernel.org,
-        linux-pm@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, jgross@suse.com,
-        andrew.cooper3@citrix.com, peterz@infradead.org, acme@kernel.org,
-        namhyung@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
-        wei.liu@kernel.org, ajay.kaher@broadcom.com,
-        alexey.amakhalov@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        tony.luck@intel.com, pbonzini@redhat.com, vkuznets@redhat.com,
-        seanjc@google.com, luto@kernel.org, boris.ostrovsky@oracle.com,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com
-Subject: =?US-ASCII?Q?Re=3A_=5BRFC_PATCH_v1_01/15=5D_x86/msr=3A_Re?=
- =?US-ASCII?Q?place_=5F=5Fwrmsr=28=29_with_native=5Fwrmsrl=28=29?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <Z-pruogreCuU66wm@gmail.com>
-References: <20250331082251.3171276-1-xin@zytor.com> <20250331082251.3171276-2-xin@zytor.com> <Z-pruogreCuU66wm@gmail.com>
-Message-ID: <9D15DE81-2E68-4FCD-A133-4963602E18C9@zytor.com>
+	s=arc-20240116; t=1743453123; c=relaxed/simple;
+	bh=e+tQBoVL5aWGWRUYMR6blPrf6R3rHEia843Z2DpupCc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=q8XY0yQ7s3eAynXJrjU8v3ctPQnqrB4uXLoVHv1CYNoF4jeiDMor6VFkLsixi0UrELY8WcfHE9Gbe9m3mDV/n8xMRcDx1jIOwP1LNtJurWSgMlO1r00mwlPVKFGMTFveVAoowQ1hQfkbhUhyevyihWqu4pSoOTR1vf5jPrg7VVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hS0sgY50; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5e6167d0536so5015104a12.1
+        for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 13:31:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743453117; x=1744057917; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BG5ukwjAqIGFXmvef5IUOdwrnpl+xmUgyjg6IDS2ivQ=;
+        b=hS0sgY50SyRf/SYj61HP8WGecWsh+OxpIoub2X1Wld2Ej9iKAJRVSKLeZemSd3iNsr
+         txaPc4HcDqkjpTxC0gTsEmNOL7UDYtR/UD/k4Vbp24AfYbDYeHGtdkO5VIMUFW+aE8iJ
+         jjCMx5I2eDzCpYkooayTWGCuAuFgX5K5CnMAxK4a+Bcf9/OUIDXpVlpQVMMMV87hliOC
+         yhySysVfQh76vvDEi3+dlEVWyjLmSTEGswpmrzi5QAyfXNqZOUqwvESBbfTtw941F1hj
+         bXjOgQOTgvtIYIp32zxojI7qG0REezxJmMtrPF+O6Z3FPsyZP6KPkwqIsGTnK+ODWtyW
+         8kkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743453117; x=1744057917;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BG5ukwjAqIGFXmvef5IUOdwrnpl+xmUgyjg6IDS2ivQ=;
+        b=VIA/O+YEnQe59iwNXtISQYKAmOmZpwyXzmO2sLxQBnV0nAuOg8hb9qVCwPTMWsyH/6
+         mCoOgq3IWm4FIMWtJYQEaOYl0+wuUQ9ZIQFUKOxHsd9J56iIbyGA1k0nGRqHLXnutZmM
+         WJCHs7m51RTgAc0S5hI0E/CeNgRqOHfUnmNPrxOeUasCLuDaCRwHWiTCyRhV1Ch2OsWJ
+         9VBLkAYQC5HSKrpYjkYEkD21vwNm+M47jnt5S7L1oL+52uBqrk4NEbyfZRKuo3lICoYE
+         C9iJSM7lp1puNY36lMHGddcIWCYhn0RZJMjhIUwaAZOuwLd8yzCs0zvF9Bub6tk8M/CT
+         8T3Q==
+X-Gm-Message-State: AOJu0Yz3DMeh6gufbkRVRBv5VEWqvgnVtQB5Px6MJ1XLwhfRTYj7ygBy
+	rirt/aOZerk/UYEKsDuD2HYIfF6YxlGnhb+MszxFSbsHAEj/qyX+I4LIkg==
+X-Gm-Gg: ASbGncvJYYWo26WCez2h5rEGLbhWvpHP4LwF+WvXGtxNXEdOp1LbGUhdawLRycA8BdG
+	15/qbS0I+DA6hWFb8vdcY5JSMDHpTTirjJE62Sd2i91+h49yOqyvnml8lHYqnid6izzO+uSH7cS
+	sl2eNInjRcLg7tCe+tnbzBDBHmXxnKFtE8IRgE2ANq4IPHeDRY5lf/qfGgiR5KkbTSQ7tGC2p0D
+	QJ7Y1h84+w2wXffOet38Uh58wH5zQ2aJJZw23bT7oGkWKOk/gsGeNwMNkI4w5w5nug3Qk7PFMtB
+	UIaBzZLM1FHT/hfAMqQ/Q5hdg3PjV28UcbAd0LbKe8vqOCZxoGOJ6qYAvP6hTXVP
+X-Google-Smtp-Source: AGHT+IHn31uet7Rxh3TUEMXPSKpat3xoqxC7ZQLsEQz6b/p5gNSUeSOv/AiFv+diLsPWoAafJ7vBCw==
+X-Received: by 2002:a05:6402:84f:b0:5ee:497:89fd with SMTP id 4fb4d7f45d1cf-5f02b38ad17mr356105a12.34.1743453116348;
+        Mon, 31 Mar 2025 13:31:56 -0700 (PDT)
+Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5edc16aae2fsm6030589a12.4.2025.03.31.13.31.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Mar 2025 13:31:56 -0700 (PDT)
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Anton Protopopov <a.s.protopopov@gmail.com>
+Subject: [PATCH v2 bpf-next 0/2] likely/unlikely for bpf_helpers and a small comment fix
+Date: Mon, 31 Mar 2025 20:36:16 +0000
+Message-Id: <20250331203618.1973691-1-a.s.protopopov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On March 31, 2025 3:17:30 AM PDT, Ingo Molnar <mingo@kernel=2Eorg> wrote:
->
->* Xin Li (Intel) <xin@zytor=2Ecom> wrote:
->
->> -	__wrmsr      (MSR_AMD_DBG_EXTN_CFG, val | 3ULL << 3, val >> 32);
->> +	native_wrmsrl(MSR_AMD_DBG_EXTN_CFG, val | 3ULL << 3);
->
->This is an improvement=2E
->
->> -	__wrmsr      (MSR_IA32_PQR_ASSOC, rmid_p, plr->closid);
->> +	native_wrmsrl(MSR_IA32_PQR_ASSOC, (u64)plr->closid << 32 | rmid_p);
->
->> -	__wrmsr      (MSR_IA32_PQR_ASSOC, rmid_p, closid_p);
->> +	native_wrmsrl(MSR_IA32_PQR_ASSOC, (u64)closid_p << 32 | rmid_p);
->
->This is not an improvement=2E
->
->Please provide a native_wrmsrl() API variant where natural [rmid_p, closi=
-d_p]
->high/lo parameters can be used, without the shift-uglification=2E=2E=2E
->
->Thanks,
->
->	Ingo
+These two commits fix a comment describing bpf_attr in <linux/bpf.h>
+and add likely/unlikely macros to <bph/bpf_helpers.h> to be consumed
+by selftests and, later, by the static_branch_likely/unlikely macros.
 
-Directing this question primarily to Ingo, who is more than anyone else th=
-e namespace consistency guardian:
+v1 -> v2:
+  * squash libbpf and selftests fixes into one patch (Andrii)
 
-On the subject of msr function naming =2E=2E=2E *msrl() has always been mi=
-sleading=2E The -l suffix usually means 32 bits; sometimes it means the C t=
-ype "long" (which in the kernel is used instead of size_t/uintptr_t, which =
-might end up being "fun" when 128-bit architectures appear some time this c=
-entury), but for a fixed 64-but type we normally use -q=2E
+Anton Protopopov (2):
+  bpf: fix a comment describing bpf_attr
+  libbpf: add likely/unlikely macros and use them in selftests
 
-Should we rename the *msrl() functions to *msrq() as part of this overhaul=
-?
+ include/uapi/linux/bpf.h                          | 2 +-
+ tools/include/uapi/linux/bpf.h                    | 2 +-
+ tools/lib/bpf/bpf_helpers.h                       | 8 ++++++++
+ tools/testing/selftests/bpf/bpf_arena_spin_lock.h | 3 ---
+ tools/testing/selftests/bpf/progs/iters.c         | 2 --
+ 5 files changed, 10 insertions(+), 7 deletions(-)
+
+-- 
+2.34.1
+
 
