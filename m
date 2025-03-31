@@ -1,114 +1,183 @@
-Return-Path: <bpf+bounces-55012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93673A76FBA
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:56:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E773EA76FCA
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:57:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27FEC166FDD
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:56:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3EA23A1F3A
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:57:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F1821C171;
-	Mon, 31 Mar 2025 20:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29C9421C184;
+	Mon, 31 Mar 2025 20:57:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="LD97Y7SS"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="d28vV6/y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787181E0E0B;
-	Mon, 31 Mar 2025 20:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D832216E24;
+	Mon, 31 Mar 2025 20:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743454569; cv=none; b=kc82f19BNBc8F3gCKhkO/VyKYMWxi6XWk7bcGR0cGL9oSC0blnzqH6ZzTBvXra69863+UdicBd/ltTdF5hXaBRDiqbYINLMmA+zsFaF6Zpq9gibKnFPjXayQUVz+tQSdfO8p1Cu/gfc47j3xVnvDdCK1pzKZTrAVPIh+gnaPEok=
+	t=1743454647; cv=none; b=ACPIdPR4fhGFOqtrFlSbyvgegUTlA8G63EVCFYDmc348cMS1wnl/CeH17XZiRMOVPhCuwKekWyfDksahv8hpMBmkXm/QmShL2AKNr1eAbuztvVuJL4daef4NvHOEiIhdm7GhBK7KB2D8QKekk49R8IdqGrqgNgNlEGnz5zvLiXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743454569; c=relaxed/simple;
-	bh=BKcRdLKRYeLS92+jgK2NznbnU5/0fhFnhqd09FApGAE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QU3e3pQj7na7VB6qTTGvBn+x6oliEUcUwE5LP5X08zCjR2bvvvAEyx0hJMuxb0VMXokiRBRKM59Zui33NxVxMZYuHHSpD3nS3bVn3qpX+4hOkripHaW10zQ3Y0siMa1qLsTiyKU68GR7mokEGAsp/yCwgyLTxwsgo/EoTCSlMnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=LD97Y7SS; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [172.27.3.244] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 52VKtBNP3418600
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Mon, 31 Mar 2025 13:55:12 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 52VKtBNP3418600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025032001; t=1743454520;
-	bh=VWL5qq9zWu3cNVnIm7LG7BNkZkCMGz8p/x6Wg1aq0Vk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=LD97Y7SSrMxEUulSMZu+ff9YU54RyfVQzj+cvjC0nuyPVAEvUTBY9vRHA9kuqRBck
-	 zCpoYM2uH/99eIUDQGh5oDFn03Tifu66IeQ3yxFSTx24lBmHWwTojxMeI1feo+cKyk
-	 7eP21xGMkfSjHVWZupPDlETH4s1vyAwJDOC+QWi0AcWJErrmD9O7x5BZvgDMta9Uss
-	 0c3ftb/ovwly81i9hfmlGacobBgXN1Th2kgo58DJsSRQjb9x/QGkISc7TVQc+0OMDc
-	 i/TzJFXz/ephJVSay1Qes3/ceo2JQmIVHTc6M8xH77vra6FcPLxFWWqYEiisToZPWj
-	 Zy5DmP5WmybQw==
-Message-ID: <1add8de0-8c62-444e-a7d6-5681432d48a9@zytor.com>
-Date: Mon, 31 Mar 2025 13:55:11 -0700
+	s=arc-20240116; t=1743454647; c=relaxed/simple;
+	bh=10bv2ci8Gq6q+ywpbgUZb11BTLKgedTDu+zcEPWmeN0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=msjov1frB92gd2WoBbWubIY9zHA29Y3AZ5refKJgx2KaoN3zFXv4dxBuScXXWY/Iw6iRq4nwxnUALtvKmgSDDOck1LEN/V5kdMjc/7ge0U4BYpGP9inMjGeQ+Yidl/PjW5eJn482MvwizzHNoR9h4ovsvVrIzA1FcNja57z7JbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=d28vV6/y; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [167.220.2.28])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 4D2A1210237A;
+	Mon, 31 Mar 2025 13:57:18 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4D2A1210237A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1743454645;
+	bh=5XsgAWUoFJ8EmLqO+z62iuJCHz41nTI4m6vFV/nAFDg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=d28vV6/yHuGZDGRY+KhqOML58EhHOZvrywvgHDZb0obC9gbdEWtd1vkSN7MEHX4P2
+	 e9a2D4VWMXQWHWQ2FoVJfkcWg1HevVpml0wySPWlEGN/IQiIxN2AtXipKVvyu9vvC9
+	 c0uwH1dLc9NLCkUNPgqOf5hVIXGc82dBCH4f5l54=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller"
+ <davem@davemloft.net>, Paul Moore <paul@paul-moore.com>, James Morris
+ <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Masahiro Yamada
+ <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nicolas
+ Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>, =?utf-8?Q?Mick?=
+ =?utf-8?Q?a=C3=ABl_Sala=C3=BCn?=
+ <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Nick
+ Desaulniers
+ <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>,
+ Justin Stitt <justinstitt@google.com>, Jan Stancek <jstancek@redhat.com>,
+ Neal Gompa <neal@gompa.dev>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ bpf@vger.kernel.org, llvm@lists.linux.dev, nkapron@google.com,
+ teknoraver@meta.com, roberto.sassu@huawei.com, xiyou.wangcong@gmail.com
+Subject: Re: [RFC PATCH security-next 0/4] Introducing Hornet LSM
+In-Reply-To: <Z97xvUul1ObkmulE@kernel.org>
+References: <20250321164537.16719-1-bboscaccy@linux.microsoft.com>
+ <Z97xvUul1ObkmulE@kernel.org>
+Date: Mon, 31 Mar 2025 13:57:15 -0700
+Message-ID: <871puc7wb8.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 10/15] KVM: VMX: Use WRMSRNS or its immediate form
- when available
-To: Andrew Cooper <andrew.cooper3@citrix.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        "Xin Li (Intel)" <xin@zytor.com>
-Cc: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, virtualization@lists.linux.dev,
-        linux-edac@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-ide@vger.kernel.org,
-        linux-pm@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, jgross@suse.com,
-        peterz@infradead.org, acme@kernel.org, namhyung@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        kan.liang@linux.intel.com, wei.liu@kernel.org, ajay.kaher@broadcom.com,
-        alexey.amakhalov@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        tony.luck@intel.com, pbonzini@redhat.com, vkuznets@redhat.com,
-        seanjc@google.com, luto@kernel.org, boris.ostrovsky@oracle.com,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com
-References: <20250331082251.3171276-1-xin@zytor.com>
- <20250331082251.3171276-11-xin@zytor.com>
- <Z-r6qxmk7niRssee@char.us.oracle.com>
- <fde11fbb-4b3f-44f1-90cf-6aaefb6bb7c1@citrix.com>
-Content-Language: en-US
-From: "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <fde11fbb-4b3f-44f1-90cf-6aaefb6bb7c1@citrix.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 3/31/25 13:41, Andrew Cooper wrote:
->>
->> That is replace the MSR write to disable speculative execution with a
->> non-serialized WRMSR? Doesn't that mean the WRMSRNS is speculative?
-> 
-> MSR_SPEC_CTRL is explicitly non-serialising, even with a plain WRMSR.
-> 
-> non-serialising != non-speculative.
-> 
-> Although WRMSRNS's precise statement on the matter of
-> non-speculativeness is woolly, given an intent to optimise it some more
-> in the future.
-> 
+Jarkko Sakkinen <jarkko@kernel.org> writes:
 
-To be specific, "serializing" is a much harder statement than 
-"non-speculative."
+Hi Jarkko,
 
-For architecturally non-serializing MSRs, WRMSRNS and WRMSR are 
-equivalent (or to put it differently, WRMSR acts like WRMSRNS.)
+Thanks for the comments. Paul did a very nice job providing some
+background info, allow me to provide some additional data.
 
-The advantage with making them explicitly WRMSRNS is that it allows for 
-the substitution of the upcoming immediate forms.
+> On Fri, Mar 21, 2025 at 09:45:02AM -0700, Blaise Boscaccy wrote:
+>> This patch series introduces the Hornet LSM.
+>> 
+>> Hornet takes a simple approach to light-skeleton-based eBPF signature
+>
+> Can you define "light-skeleton-based" before using the term.
+>
+> This is the first time in my life when I hear about it.
+>
 
-	-hpa
+Sure. Here is the patchset where this stuff got introduced if you are
+curious.
+https://lore.kernel.org/bpf/20220209054315.73833-1-alexei.starovoitov@gmail.com/
 
+eBPF has similar requirements to that of modules when it comes to
+loading: find kallysym addresses, fix up elf relocations, some
+struct field offset handing stuff called CO-RE (compile-one
+run-anywhere), and some other miscellaneous bookkeeping.  During eBPF
+program compilation, pseudo-values get written to the immedate operands
+of instructions.  During loading, those pseudo-values get rewritten with
+concrete addresses or data applicable to the currently running system,
+e.g. a kallsym address or a fd for a map. This needs to happen before
+the instructions for a bpf program are loaded into the kernel via the
+bpf() syscall.
+
+Unlike modules, an in-kernel loader unfortunately doesn't
+exist. Typically, the instruction rewriting is done dynamically in
+userspace via libbpf (or the rust/go/python loader). What skeletons do
+is generate a script of required instruction-rewriting operations which
+then gets played back at load-time against a hard-coded blob of raw
+instruction data. This removes the need to distribute source-code or
+object files.
+
+There are two flavors of skeletons, normal skeletons, and light
+skeletons. Normal skeletons utilize relocation logic that lives in
+libbpf, and the relocations/instruction rewriting happen in userspace.
+The second flavor, light skeletons, uses a small eBPF program that
+contains the relocation lookup logic. As it's running in in the kernel,
+it unpacks the target program, peforms the instruction rewriting, and
+loads the target program. Light skeletons are currently utilized for
+some drivers, and BPF_PRELOAD functionionality since they can operate
+without userspace.
+
+Light skeletons were recommended on various mailing list discussions as
+the preffered path to performing signature verification. There are some
+PoCs floating around that used light-skeletons in concert with
+fs-verity/IMA and eBPF LSMs. We took a slightly different approach to
+Hornet, by utilizing the existing PCKS#7 signing scheme that is used for
+kernel modules.
+
+>> verification. Signature data can be easily generated for the binary
+>
+> s/easily//
+>
+> Useless word having no measure.
+>
+
+Ack, thanks.
+
+
+>> data that is generated via bpftool gen -L. This signature can be
+>
+> I have no idea what that command does.
+>
+> "Signature data can be generated for the binary data as follows:
+>
+> bpftool gen -L
+>
+> <explanation>"
+>
+> Here you'd need to answer to couple of unknowns:
+>
+> 1. What is in exact terms "signature data"?
+
+That is a PKCS#7 signature of a data buffer containing the raw
+instructions of an eBPF program, followed by the initial values of any
+maps used by the program. 
+
+> 2. What does "bpftool gen -L" do?
+>
+
+eBPF programs often have 2 parts. An orchestrator/loader program that
+provides load -> attach/run -> i/o -> teardown logic and the in-kernel
+program.
+
+That command is used to generate a skeleton which can be used by the
+orchestrator prgoram. Skeletons get generated as a C header file, that
+contains various autogenerated functions that open and load bpf programs
+as decribed above. That header file ends up being included in a
+userspace orchestrator program or possibly a kernel module.
+
+> This feedback maps to other examples too in the cover letter.
+>
+> BR, Jarkko
+
+
+I'll rework this with some definitions of the eBPF subsystem jargon
+along with your suggestions.
+
+-blaise
 
