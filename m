@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-54971-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54972-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20561A76812
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 16:36:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 361FFA7684E
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 16:42:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D3A53AC706
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 14:35:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAC0F1886093
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 14:40:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F973214A7A;
-	Mon, 31 Mar 2025 14:34:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92BFE221557;
+	Mon, 31 Mar 2025 14:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jkQRLIC4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D4rsu0YO"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EEF2214228;
-	Mon, 31 Mar 2025 14:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 123342144C4;
+	Mon, 31 Mar 2025 14:34:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743431652; cv=none; b=Uhif5WYCJ9RYmoda+Ddvz3UFRAtiZJxnhF/l1clI5JYSmEuxeyKk2hXwMySNpdcQggGATdxtiyEvAR6vY0Wc2eL2teBD4BSBanweKooFm7/LCjbQShF5tCO04EzNUcYGzMhwsEOcDpHL+m6Y6CEadE7JvoI90DYUr5yk4rQo7fc=
+	t=1743431694; cv=none; b=UIwaNALKY0/9chTsWI+tGR67C5RjIA7Wm+V1Dpq1TL96VtpjZ9UYcw0+KvEsZYRq8CUtt8osmfTqqBE4ozJfos1a/bCPOB1cZ0aDkILU/x7JrE/wSOhEHbPWbJO/rdxQN4thOLZx8dS+/sWh8JHUjIUxJPkGEH6+/zIdx/7kRnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743431652; c=relaxed/simple;
-	bh=6jrWfKkieuu/8D+kTWmVGcAum/HJ0dEaNmeuUwbEYPU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XYzLbV8A3phOgMWf1I1woe0f6ume/FaGJc9dwWa4b+biOj1sLurWml/VDrZxKO5eZYkgvLK/uyRpJW28hKXK99tVRpVI6hHP7/oz0y+Dj+P97Y2y3MdtAY6OITEI0ce3AhgwBw7AK1K+zDhQ2hx/y1OQapVBRrfDG+M9srIpaMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jkQRLIC4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78325C4CEE3;
-	Mon, 31 Mar 2025 14:34:10 +0000 (UTC)
+	s=arc-20240116; t=1743431694; c=relaxed/simple;
+	bh=mAM52nXXk2wvI22VWk+1kREQBjj6KscgBkI2cwPtYwY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g0gR0tKOe+O+Aa4kASscgcrGwBlLM8YDGxcsc9DIDN8QqWtSixdI3qRC7Qk1CQ5S1OiROrUgJW/ZwtdMz6pHb1F2gSLGt8VJhOuQL5mS5EPhKY7fg/aJYWu6B24xuMY3QhjZRyQVLWTj5+7TlhmkSFhq00pv72OZyS4zkXoo+/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D4rsu0YO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E7FCC4CEE3;
+	Mon, 31 Mar 2025 14:34:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743431652;
-	bh=6jrWfKkieuu/8D+kTWmVGcAum/HJ0dEaNmeuUwbEYPU=;
+	s=k20201202; t=1743431693;
+	bh=mAM52nXXk2wvI22VWk+1kREQBjj6KscgBkI2cwPtYwY=;
 	h=From:To:Cc:Subject:Date:From;
-	b=jkQRLIC4+dn8Hfh8zf/gPHOJZzqOOFEBBdsWGZPiC2XmX0zj+H4qvPl5oPfOBW4gI
-	 AhJwJYrEG2f++IvA4Y3WUqpH+g2PjkVDbHtpyPdjYslJ5ui/0P0dBXw0sfZuZHhqGM
-	 SaSI9+9c5PiGq3BlPosOEVuygeHgPqVUkc9sYNRM4pQsxi6upxnxSblSG+uEYpF6tq
-	 dkxVHU2s5tjsuyPrSi8OILIavDjT8U+iHsv4ldE05/I68mQT/J0O1H4BwKJ3bKI+t2
-	 qjLbkot8WMZv1yGjOT2Eit8Ll+Zcea3oiLzKYUvoBr3+Lly1umj8AoiAJxBgm80/IJ
-	 5FqSe2E33A0vA==
+	b=D4rsu0YOvpuTU86W7BqCgMv76xZ4BeOaXwclxmhjrF6r0+IulNA30EVzFCtdCKwJn
+	 xrZxUjGu9LaQimRft0iU2Tz47TrrLxa5bqpxIwnoskGpJg6dzjsvHhIi2QgkHZEMgD
+	 Ibx9QMF9IHY9GPTe/Unr/40Ra03ruPjbO2UnzN6Z4bkjhhHOkv4IhyIJJeMawiX10i
+	 bfv+jxOABFk81zGdiuaoA9v+X73zhYJMenuPtphVUvb0wmSTGLMJnbWK1qUWNKMGiE
+	 gG75pNtPqW0RhhlzectBVC1AH9GS5lP7/g3LS106bbiQv3mX0yKU62QmB+F5HNxwCr
+	 MrtZFzsDxzutQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -55,9 +55,9 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	jiangshanlai@gmail.com,
 	josh@joshtriplett.org,
 	rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 01/18] srcu: Force synchronization for srcu_get_delay()
-Date: Mon, 31 Mar 2025 10:33:51 -0400
-Message-Id: <20250331143409.1682789-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.13 01/16] srcu: Force synchronization for srcu_get_delay()
+Date: Mon, 31 Mar 2025 10:34:35 -0400
+Message-Id: <20250331143450.1685242-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -67,7 +67,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.14
+X-stable-base: Linux 6.13.9
 Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
@@ -99,7 +99,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index b83c74c4dcc0d..2d8f3329023c5 100644
+index 5e2e534647946..c5419e97bd97b 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
 @@ -647,6 +647,7 @@ static unsigned long srcu_get_delay(struct srcu_struct *ssp)
