@@ -1,71 +1,72 @@
-Return-Path: <bpf+bounces-54927-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54928-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0342AA760F0
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 10:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFE92A760F1
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 10:09:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D90F1886B7D
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 08:09:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91B1618886A2
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 08:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE921D5165;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E731D54C0;
 	Mon, 31 Mar 2025 08:08:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DsyuKSS9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OlEb8lRF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3174D1CAA87
-	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 08:08:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D9E487BE
+	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 08:08:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743408535; cv=none; b=Caxe/ref06pPoSaLzaXtHRNSNnQ/nNOJeClvsBGsu4tsWdvr/asHzyrQei8UGe7J4ZFYvo2Y99afcAshvfOA3EG6rNfEFOTvkpQhPaPsi6w9JlmzIqpq6tSwcylAKxa91lBZ6aCjWfN3a/gosVfy2xDZ7PAgQ8lh7lhTH1pOpOw=
+	t=1743408536; cv=none; b=ijYo2ongFeF8+oQmlFn+b0Tn6+QT2WbX0Wu/+Bg4l1SSXN8NKdP/VImpM5p2QNDBAvgEdu4JVQn6oZl43sZOzunrbfwpsbnzyDF9OxLDdhYyLxlrBza024mH75FPaQu40gVCOOtN6sB7iUu9k6z1Mc2sr8ZzmzBXSaSuvm4ZFuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743408535; c=relaxed/simple;
-	bh=R2Ls4WJgZ32YrvTPVG1fI8aV1WMu/ZDTKKfXfM8Tm0E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=P3dOvIFMgEtV5C+SPNxp9cxXJA32PR38mKPL0HUsOQAH3XOEfbONQDi+kmhTKkZk0oMg2ugVu1xbChwGUHGUuIcEA0XtBKxQrRYHOkF5Eaqeq9XzOfwKsQqrjjsqX+NvHyf1UZwopVPU4ReSXC49X7mSxbBHs3iCwWhnKYV1h3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DsyuKSS9; arc=none smtp.client-ip=209.85.221.53
+	s=arc-20240116; t=1743408536; c=relaxed/simple;
+	bh=AgqxCsa7u7/GqrERlinz1v9hlQtSuvsGx3Ucq0DWxq4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=KSZzIa3oiqLqS7cJPRcGCAziVRq39khbT2G30IQ1AU1VGSlE7CqH2DZMbQL5GX2O6jJT0Oo55zH3MZDGSL0P9MchIZBYV5lTuzV4KlnBXggIWZMmqfghYXSziZhUoAS/TiyQCnnriHj0h8WwdnQxVI0nOookkp5QKDawCxH8Gus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OlEb8lRF; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-39141ffa9fcso3987699f8f.0
-        for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 01:08:53 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-39bf44be22fso2035032f8f.0
+        for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 01:08:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743408531; x=1744013331; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PS04p96a+dh4Ckxj1I0Wk7ps7gVmGqqhjmUirGuVAh0=;
-        b=DsyuKSS9v62VCWxB/ikVQT5FjJDHkWGdN7RcrNciu/7dh812OIgsNXiMb7UQU8U5zn
-         TFpguSVofjvOEVlCLPdvWwUr8Ka7E0bDBawt/Ntq0pCyxDHDNP4JvIjLW7nb/+NOCmVX
-         1IMAmrwTQmEzO7Ib0FDBhR6Pkh7a7QraZ//m51/6bdglHdlkH+Mx8aJgScs1Mqcwq2GI
-         lxYTnYDsIU8gYDZdeuHk+oNHxUpye00IL6272ZRvyTIaIQmYLkrxG6oT7wSAE9MnD1NH
-         +hYttCW/o6o3EojTsBI/ghAC95emsfZlfE0BtiL6+Q+K8jgF0taTOR9selreDVVklD3e
-         7vww==
+        d=gmail.com; s=20230601; t=1743408532; x=1744013332; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QTlRu/142GTJE4p4Az4hv9VEZYubzamXsEThiSq3AUA=;
+        b=OlEb8lRFnOyRbW6vZKsDXjV8v32XXtxnpJJn/ju66MPtlzaCEFPYWEUxVULNnqKzkD
+         q4WGiC+rHoOTiJkWBNf9HxLx30GXBkUjJQpZheVTL6TZSXOcbxTlorSiMGjbhpoHQpG7
+         x5zTQ9NRPoUfWR4JoewGlZArX0UZYFkvYjhRTqJDvZeQXXeDyg6IjxLADd3+FPmLlDwb
+         ZMV0jVa/PPfuFBgMYSfQSVYpStgSsowOQUU3974dRcF+3/XzH5RkPS1AGZjB7zPUDMYm
+         sWCOBzGWZILM5oTymOXqprh4iGIlFGPylmha6EU+WjNaQIsDumrA6di4y7J5hvxPz7Dd
+         QnfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743408531; x=1744013331;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PS04p96a+dh4Ckxj1I0Wk7ps7gVmGqqhjmUirGuVAh0=;
-        b=L0MBBBq8S6LxLwUz9aJ3zCQQguTz4Q9zJjQTAQxElPP6Q3OmvY9ANEGPXGXygExJER
-         jJkH8DHhSgPVMDfbhsvMuOT8LnEkOldPQP8QF+hhhl3VO1vuDfAva1rlnDzwZSpV8Mrv
-         sMngkz7lsh3zqsJ3VmB37korNF+s1MnnMBGjRDdXSHX6slqmPXtj3HAKC5MkFjkHxxp/
-         vJtH43bydKJkYgbrNZKti+WftiESr3EwYcNwyjUYvd+lXEK7gmcud57uM5zl0QyZTpWk
-         WsCxlx8Qpl+HJnR/qE5BHLkj2RDndXxXsAx0LyC2FCiuRd0qAHxQbwKLHBvToIoNPre3
-         EBrA==
-X-Gm-Message-State: AOJu0YxGAvDP+gAY0njzNgsqzUj6EMyGfryeCuo8yPuHUIhWF83HNjG8
-	cKhGcYPlw4RWvrevy3tYomJRxQSYjJmgib6bo1w5/5nnf/TCUAqP5/qPUnK/
-X-Gm-Gg: ASbGncsRwWgMmPl8dkSw2shhM7HzmfSBkPg/rff9jdFd+D0zCylQckli7S0zBEkiz0v
-	ECHryXeM+L6gwvOyCC8+IffBtMjXNa9DESBm77xwsr80JLzxbpJu0b1+etTC/k7BYkjDtGW35fH
-	+AXpyDE92hltfopuOEmfoVLNBndENNhEmudutrGA855qQpTa6mHcCKqwA6L/jFCeB5cW8bD05TT
-	GWPKydSYIo4H5kUuMZPx5laxuQzNlOwLMnDqTaRxKXw1vARvLxeo56TnzWhudu+E4Bh5BKdtH/h
-	MzZsadk21qemaZWiGxrN643P8i5gqw3IIXzam+5E6N7XEBhbRu9plRk7NYTSPA4mnbR+5cUgljA
-	=
-X-Google-Smtp-Source: AGHT+IEd+0hE0v/tdi+ll4BXM572k02oKWBemB1/Fxb/WDtAiSYX6O6N7OMrfnDXlh1oXYh4M28RGw==
-X-Received: by 2002:a05:6000:1a8d:b0:391:2a9a:478c with SMTP id ffacd0b85a97d-39c120e3d61mr5051481f8f.23.1743408531551;
-        Mon, 31 Mar 2025 01:08:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1743408532; x=1744013332;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QTlRu/142GTJE4p4Az4hv9VEZYubzamXsEThiSq3AUA=;
+        b=Ut+fSlVdJC+1EDbOuLf7cHyAdS8QV5G0V1NHG1XgqS2f4dKLv32tRv6tQ6tMernOYz
+         lKwwyLFgqJSiK27++0u7Y+WG0m/QCA3oKdhpui9ml1+S8wAcM7kCSi1pbSbmc2UI127G
+         GdlRi+Ejr26njqPdKSdhcICbLalr/NY+/sCrUcY3V8yyXxRoT7sOa5/FLnssy5d/s74l
+         rgu8hz5Vlu7qiUZJ2/Ihs0qXO0djmzXzU0Dk7Msy84vMN+HdMqqPFcpVQOVyhlNdYD5b
+         Aorz2gfYWXOGl0PUfx9wLI+ZHK+KYTjCeRlrS/pG2oHZ580eyP4HKU1UiD/gnT4VhrJY
+         zmaw==
+X-Gm-Message-State: AOJu0YzQi52+dzqR1hjP+FAzvaVT9wgM5dLaPuLN9TAJAbPmVbIBdiYY
+	d+PPHdZy9+vRQtwZaA33M8UrkrV+9QKSbYmJXxS/3L07DRTuTkzZRbSlmyf6
+X-Gm-Gg: ASbGncvWGeiQVaRZaxhmVDQv3Vcdr8zWldSnmSjt9Pp5W3QjXu/d5t9X/7O60PHogES
+	rT4U6lIcYvsGk6zvcQ03+ZLmqVRdDXB8UmSz/hMSwgbvhXOatBZ5NHJWZP3B6FoaCqNBVIgR8dA
+	4oKulGEbNKUyycgBOLAZ1D1TfpF6o/8X6DQVKe+8p7ZRHIGs/S9Qy42PppfBdVMUSKivOY9kkpo
+	d/5FSaEeKOPxOt68oqUHv1AshSECxPELvj3OR3Q3oB5yMyxwv0Zhxg0NgaFmQu/+hVXYBBIJNDJ
+	si32PGAH/C0VyuCyhR3uCrYP1AtswO/ynvwwvVLR4a2KFeI4hhPP8yY6mtf+0Ub1
+X-Google-Smtp-Source: AGHT+IHpNHa2I3zJ4Cg8hp1I6svLsSTwuJM/Bji+v3C19nQQ8KYxQaee03eCpo3yr21jBk0boIafRQ==
+X-Received: by 2002:a5d:5f45:0:b0:39c:dfa:c3de with SMTP id ffacd0b85a97d-39c1211ccb3mr5616621f8f.47.1743408532053;
+        Mon, 31 Mar 2025 01:08:52 -0700 (PDT)
 Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
         by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c0b658b5dsm10471987f8f.3.2025.03.31.01.08.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -74,10 +75,12 @@ From: Anton Protopopov <a.s.protopopov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Andrii Nakryiko <andrii@kernel.org>,
 	Anton Protopopov <a.s.protopopov@gmail.com>
-Subject: [PATCH bpf-next 0/4] likely/unlikely for bpf_helpers
-Date: Mon, 31 Mar 2025 08:13:04 +0000
-Message-Id: <20250331081308.1722343-1-a.s.protopopov@gmail.com>
+Subject: [PATCH bpf-next 1/4] bpf: fix a comment describing bpf_attr
+Date: Mon, 31 Mar 2025 08:13:05 +0000
+Message-Id: <20250331081308.1722343-2-a.s.protopopov@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250331081308.1722343-1-a.s.protopopov@gmail.com>
+References: <20250331081308.1722343-1-a.s.protopopov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,28 +89,41 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Andrii suggested to send this piece with small fixes
-separately from the insn set rfc.
+The map_fd field of the bpf_attr union is used in the BPF_MAP_FREEZE
+syscall.  Explicitly mention this in the comments.
 
-The first patch fixes a comment in <linux/bpf.h>, and the latter
-three patches add likely/unlikely macros to <bph/bpf_helpers.h>.
-The reason there are three patches and not one is to separate
-libbpf changes such that userspace libbpf can be updated more
-easily, and the order is such that each commit can be built.
+Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+---
+ include/uapi/linux/bpf.h       | 2 +-
+ tools/include/uapi/linux/bpf.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Anton Protopopov (4):
-  bpf: fix a comment describing bpf_attr
-  selftests/bpf: add guard macros around likely/unlikely
-  libbpf: add likely/unlikely macros
-  selftests/bpf: remove likely/unlikely definitions
-
- include/uapi/linux/bpf.h                          | 2 +-
- tools/include/uapi/linux/bpf.h                    | 2 +-
- tools/lib/bpf/bpf_helpers.h                       | 8 ++++++++
- tools/testing/selftests/bpf/bpf_arena_spin_lock.h | 3 ---
- tools/testing/selftests/bpf/progs/iters.c         | 2 --
- 5 files changed, 10 insertions(+), 7 deletions(-)
-
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 661de2444965..1388db053d9e 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1506,7 +1506,7 @@ union bpf_attr {
+ 		__s32	map_token_fd;
+ 	};
+ 
+-	struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
++	struct { /* anonymous struct used by BPF_MAP_*_ELEM and BPF_MAP_FREEZE commands */
+ 		__u32		map_fd;
+ 		__aligned_u64	key;
+ 		union {
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 661de2444965..1388db053d9e 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1506,7 +1506,7 @@ union bpf_attr {
+ 		__s32	map_token_fd;
+ 	};
+ 
+-	struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
++	struct { /* anonymous struct used by BPF_MAP_*_ELEM and BPF_MAP_FREEZE commands */
+ 		__u32		map_fd;
+ 		__aligned_u64	key;
+ 		union {
 -- 
 2.34.1
 
