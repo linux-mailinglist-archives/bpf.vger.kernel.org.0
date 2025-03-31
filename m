@@ -1,122 +1,131 @@
-Return-Path: <bpf+bounces-54994-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54999-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A9B4A76E10
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:12:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1F43A76F2E
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 22:27:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F403C16B4E7
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:12:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B6173A9774
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 20:27:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E67CF21A92F;
-	Mon, 31 Mar 2025 20:12:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79F2C21ADBC;
+	Mon, 31 Mar 2025 20:27:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TqbC87M2"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="1xyxNhXA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247B321A45A
-	for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 20:12:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1731CAA90;
+	Mon, 31 Mar 2025 20:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743451935; cv=none; b=ZiBQXCHFyGjzpraFdJFv0X4aJ7+GoFoEz9/wUip0ORGDciCLMEhg4zv3rd1aRHvhoVx6byeq0eM9WI8Y6s0S4bEGJ9BRpqJOigKxCrDY/tZ+h+pQ1SLZMWJY4tGdHyVGZajvtfUyLPzynUInQnSZCgeQUWAEuRy3+nMPZ6LSp0I=
+	t=1743452850; cv=none; b=Lhg80K6y8Dzrx91Bb2sFMP+edgB7vyicOTFxAuss6umDBAokQ8mNwM7Rj1fFLAq8+CSgbfugbicd8Q/0RuCOCiyUWe1Uu2wfZWdXzZCN07BkadYATqW7T4s4+BXipxLyMugG6kh3Na8kIRQG54Z6tBbOQiLDkpXGrIoVsCVuRqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743451935; c=relaxed/simple;
-	bh=SH1xL5YWfjT5Z7iVAhIXMMYwoGmrMHQAYmn8G344WEg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Pjdd44S97wPCSj2Y1MCHc0Xfrm9iaIPLSOHpgWNsex7zgI8lTXt5S1lYDWr+wa5P+ZGd+LLWVdQip0hfDU9Q53ZDG1xys1N0XW5u+RDi1uTNUBrBkc99thcyqLV+nKzNNLpwlnwrWCS3preMpMyBqIw9AqLJhNkZRhcHFxuZI8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TqbC87M2; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-22409077c06so132004935ad.1
-        for <bpf@vger.kernel.org>; Mon, 31 Mar 2025 13:12:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743451933; x=1744056733; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NGhpAf5RBKmGiKLeNBabpZa5QO5dMHeRd3cjcMuUg5M=;
-        b=TqbC87M2HwjWKV6bKgKi8NpY0j9JT4PfI3jKewS837rRS3hBfhbac4XBh3huOUGqLj
-         r37PusFyXEdu9mQQUA5M4qoUP//eMS9W1UMAAdqt0L6QrAW+oGAxs20i4j5fJUHoxfXS
-         EnyhYpbzSbTtQomGpJRyMakUhMx/LeoPxkS/b2mvO2RZocgzWEDz1bb58OmibKJMnZw+
-         soN7nyCgJ993enPqrxlJByGpmwHnJIW5W6b5zDZ9PaRH0kpadlxSbf3S4SqcgSJx4oCg
-         JLYWDapMs3KmY81AstKGGrg3azR714jBY8RyiQDOwRcrePzni0TbERo2st5w+FQp9t69
-         Ja6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743451933; x=1744056733;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NGhpAf5RBKmGiKLeNBabpZa5QO5dMHeRd3cjcMuUg5M=;
-        b=dShf5ClEwHcQd83JwBMrW6RXCw7QCdPa51s8YqxDwot4Kqs53TybaXvYEquyXmiW4a
-         fRm4FbVDpNQsDGsHGyJSYY4wmWn6h47yHG6U+N+0yYq5lJ8CzGcz60rIfqBIdpihqL+t
-         cdiJEgXjYFxFD/JN0SJ6x3heNO/Fjd+hYBd+OrOUpEWlcFkZFkbcn9NW0K3/dwawNKG9
-         LUSqshFY9XBBwIO4370qq7fxwi4Tu97WPRbpTgUA+clZ5uf4gYIDyJ4AfBezJUJg1J6B
-         Jm0FZGfBYIj7l59nPpZhOMSUOw2Ib8VLVI2ybsuhiKy9cN07LmO2r9AUsCCkludLXeVZ
-         QaCg==
-X-Gm-Message-State: AOJu0Yy6SkW8+DMtukb6AyT/44SuH6GYNrP8NFwB63pwF5SMWsw5/fCb
-	U+PKyGnWsOH5kdf4xZYcS49ImoHr6YhB7f51/yH6wu8cwJGmCPQL8iJzDNHnhYkN7Z6NlNJMJ+q
-	hAxyThiB15RzxnSQSNUSQ/RjB5R4=
-X-Gm-Gg: ASbGnctYfCrruAzBz9md/XxlnpjeU+OUNTOOCubpKnJfddwDrFTXQS6t3Zc09BPqdQV
-	bzxNpLQ0cptwKav2kVyrd4IfXZMUX6s4ha2wLXmp6EIyVowxODk/TbCgFTzdc2tOBxrj39VlkKN
-	ySsKh2uRf7En+tTdD3pscB9oBOfbDUij0QTuvK1LD5wg==
-X-Google-Smtp-Source: AGHT+IGnOeBhqwue8b6HsA7ZZ3pb3DX8g6vDRBmrAf5SCxo4sTj/vdw3l+sQpV8eLJ70YGMmgDoushjLHp97HQ427MM=
-X-Received: by 2002:a05:6a00:cd3:b0:736:3768:6d74 with SMTP id
- d2e1a72fcca58-73980387a7bmr15383782b3a.7.1743451933379; Mon, 31 Mar 2025
- 13:12:13 -0700 (PDT)
+	s=arc-20240116; t=1743452850; c=relaxed/simple;
+	bh=vYhCw4nnQmvtyifVwDW6bFGacU6nCINp4M+2BQ1vpis=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TV9/ltKq0hSU4b99KrjQw53lKSGHTMpeiJAoGPsq/FLoPDvE/yACVUTteLELLmwvA5MBKTWocw6dlfwwWK5Dvqhy/h57zEhoF/cf9jX1npvvM50x0JZt6+AmxiVAZ3diYqleCL2wdI0vmhOZonOO2AeCw9nMEnQU9165Fs9Uezw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=1xyxNhXA; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=From:Cc:To:Date:Message-ID;
+	bh=vYhCw4nnQmvtyifVwDW6bFGacU6nCINp4M+2BQ1vpis=; b=1xyxNhXAAZkumfn+rj9gjbDgJq
+	Cac07i2SbLbMyd3WejpqlYAZVYYUr44gazhhYrd4YT8aNL7InIJUa8HDHDKrH39rL+yAODAtOH/7W
+	O4j8vi/2JqQUU3hGyXW+acp0G6EuYTesgDP9t4I9fOHGiXRet9y7HD+n8rGRvNAOznCzq5roEUY1m
+	7BoGjfNMB6lVKOw406lFzYc91MyD8ADG8uM9jOeXlxWWzT+NqbO0Sr5tRTkGP8ry5YaR6uzAZQ3rt
+	ykbUgPvgPMRkNTbX7AqOM/i8CQiNgBDue667YAS2zuEXYboBuiyDbB0DNmEUv/4KIaGtzEw0IHpur
+	YBO6gx7cElsGJEN1IsJxDEiAO4N3dhfj+icUDr4RWA6qGmhE/J1uSHf0gocR9WXKmoZDAvdVBjjMC
+	T5H55JVmt3id6TXT5t3Q0YgS8tKzB4WMMNOB4EQYHjzySVUlsBn/xb34lZ6+LVMKIgkQ6MV+AO7RS
+	d1XvbBcwupfsWYYJr0+8JKjv;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1tzLj6-007YEh-3D;
+	Mon, 31 Mar 2025 20:27:21 +0000
+Message-ID: <62ef4f1e-a726-423a-a765-ee584ee681c0@samba.org>
+Date: Mon, 31 Mar 2025 22:27:17 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250331081308.1722343-1-a.s.protopopov@gmail.com>
-In-Reply-To: <20250331081308.1722343-1-a.s.protopopov@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 31 Mar 2025 13:12:01 -0700
-X-Gm-Features: AQ5f1JoJBn_aLs9x__oU4bSu7_A0svy4_ZFn36XgXNAQy6DJR8hyUFvLhPexuok
-Message-ID: <CAEf4BzaTf-SKBW8j7Y_D81Y4j+MB76Bn0xBRr0YJdv+B7aWfTQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] likely/unlikely for bpf_helpers
-To: Anton Protopopov <a.s.protopopov@gmail.com>
-Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 2/4] net: pass 'optlen_t' to proto[ops].getsockopt()
+ hooks
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>
+Cc: Pavel Begunkov <asml.silence@gmail.com>, Breno Leitao
+ <leitao@debian.org>, Jakub Kicinski <kuba@kernel.org>,
+ Christoph Hellwig <hch@lst.de>, Karsten Keil <isdn@linux-pingi.de>,
+ Ayush Sawal <ayush.sawal@chelsio.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>, Willem de Bruijn
+ <willemb@google.com>, David Ahern <dsahern@kernel.org>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Xin Long <lucien.xin@gmail.com>, Neal Cardwell <ncardwell@google.com>,
+ Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>,
+ Marc Kleine-Budde <mkl@pengutronix.de>,
+ Robin van der Gracht <robin@protonic.nl>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+ Alexander Aring <alex.aring@gmail.com>,
+ Stefan Schmidt <stefan@datenfreihafen.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Alexandra Winter <wintera@linux.ibm.com>,
+ Thorsten Winkler <twinkler@linux.ibm.com>,
+ James Chapman <jchapman@katalix.com>, Jeremy Kerr <jk@codeconstruct.com.au>,
+ Matt Johnston <matt@codeconstruct.com.au>,
+ Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Remi Denis-Courmont <courmisch@gmail.com>,
+ Allison Henderson <allison.henderson@oracle.com>,
+ David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+ Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
+ "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
+ Wen Gu <guwen@linux.alibaba.com>, Jon Maloy <jmaloy@redhat.com>,
+ Boris Pismenny <borisp@nvidia.com>, John Fastabend
+ <john.fastabend@gmail.com>, Stefano Garzarella <sgarzare@redhat.com>,
+ Martin Schiller <ms@dev.tdt.de>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
+ linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
+ linux-s390@vger.kernel.org, mptcp@lists.linux.dev,
+ linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
+ virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
+ bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
+ io-uring@vger.kernel.org
+References: <cover.1743449872.git.metze@samba.org>
+ <76db80040bdeeb4a0221b5b6583fda4988afa64e.1743449872.git.metze@samba.org>
+Content-Language: en-US, de-DE
+From: Stefan Metzmacher <metze@samba.org>
+In-Reply-To: <76db80040bdeeb4a0221b5b6583fda4988afa64e.1743449872.git.metze@samba.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-On Mon, Mar 31, 2025 at 1:08=E2=80=AFAM Anton Protopopov
-<a.s.protopopov@gmail.com> wrote:
->
-> Andrii suggested to send this piece with small fixes
-> separately from the insn set rfc.
->
-> The first patch fixes a comment in <linux/bpf.h>, and the latter
-> three patches add likely/unlikely macros to <bph/bpf_helpers.h>.
-> The reason there are three patches and not one is to separate
-> libbpf changes such that userspace libbpf can be updated more
-> easily, and the order is such that each commit can be built.
->
-> Anton Protopopov (4):
->   bpf: fix a comment describing bpf_attr
->   selftests/bpf: add guard macros around likely/unlikely
->   libbpf: add likely/unlikely macros
->   selftests/bpf: remove likely/unlikely definitions
-
-let's just collapse the last 3 patches into one? libbpf sync process
-will be totally fine with that.
-
-pw-bot: cr
-
->
->  include/uapi/linux/bpf.h                          | 2 +-
->  tools/include/uapi/linux/bpf.h                    | 2 +-
->  tools/lib/bpf/bpf_helpers.h                       | 8 ++++++++
->  tools/testing/selftests/bpf/bpf_arena_spin_lock.h | 3 ---
->  tools/testing/selftests/bpf/progs/iters.c         | 2 --
->  5 files changed, 10 insertions(+), 7 deletions(-)
->
-> --
-> 2.34.1
->
+PiBkaWZmIC0tZ2l0IGEvbmV0L3NvY2tldC5jIGIvbmV0L3NvY2tldC5jDQo+IGluZGV4IDlh
+MGU3MjBmMDg1OS4uZmEyZGUxMmMxMGU2IDEwMDY0NA0KPiAtLS0gYS9uZXQvc29ja2V0LmMN
+Cj4gKysrIGIvbmV0L3NvY2tldC5jDQo+IEBAIC0yMzUwLDEyICsyMzUwLDE1IEBAIGludCBk
+b19zb2NrX2dldHNvY2tvcHQoc3RydWN0IHNvY2tldCAqc29jaywgYm9vbCBjb21wYXQsIGlu
+dCBsZXZlbCwNCj4gICAJfSBlbHNlIGlmICh1bmxpa2VseSghb3BzLT5nZXRzb2Nrb3B0KSkg
+ew0KPiAgIAkJZXJyID0gLUVPUE5PVFNVUFA7DQo+ICAgCX0gZWxzZSB7DQo+IC0JCWlmIChX
+QVJOX09OQ0Uob3B0dmFsLmlzX2tlcm5lbCB8fCBvcHRsZW4uaXNfa2VybmVsLA0KPiArCQlv
+cHRsZW5fdCBfb3B0bGVuID0geyAudXAgPSBOVUxMLCB9Ow0KPiArDQo+ICsJCWlmIChXQVJO
+X09OQ0Uob3B0dmFsLmlzX2tlcm5lbCwNCg0KU29ycnksIHRoZSByZW1vdmFsIG9mICd8fCBv
+cHRsZW4uaXNfa2VybmVsJyBzaG91bGQgYmUgaW4gdGhlIG5leHQgY29tbWl0Li4uDQoNCj4g
+ICAJCQkgICAgICAiSW52YWxpZCBhcmd1bWVudCB0eXBlIikpDQo+ICAgCQkJcmV0dXJuIC1F
+T1BOT1RTVVBQOw0KDQoNCg==
 
