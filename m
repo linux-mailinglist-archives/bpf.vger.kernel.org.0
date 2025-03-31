@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-54918-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-54919-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03729A75D94
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 03:22:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69663A75D95
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 03:22:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5FC07A32B1
-	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 01:21:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55C881679D4
+	for <lists+bpf@lfdr.de>; Mon, 31 Mar 2025 01:22:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1432873451;
-	Mon, 31 Mar 2025 01:22:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 159E682866;
+	Mon, 31 Mar 2025 01:22:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF48E33F3;
-	Mon, 31 Mar 2025 01:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1EEC33F3;
+	Mon, 31 Mar 2025 01:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743384119; cv=none; b=cs232RyCbOM02EU3wR9/OC9J8Mr7YfDlmjq9Nnh9jbGdXdpP9PW0sNZbLiSeVEkHP7YXvIK/YqFxEvRpDhxplgjxbXiJgHhyCdjHBW4Suwb+dSvdIYlxgUX2l25xf6GzAu6cUNesn5CLF/xTUz6AYh+CxbHHLPcI1SuPospOM0s=
+	t=1743384122; cv=none; b=A3bmAKBlDSqyeldkbSecchkOBJ2E3UZWp5ntTaexUdXroCh6vYVFD/CcwiqGx8D+DWU/l/3DpVc0BC9o+pXhzRvKwWA9k6o+ZZJ3poCGQ0d1jxRraWSoCMkoD4WFi9IuYsY6cPl9aYSfvcS76yX3KhzsF46sig0RJMeLRdu6tTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743384119; c=relaxed/simple;
-	bh=i5EBeJNNbzKqr+aaq9w/1eyGwDCjbtmbFVENMct97XM=;
+	s=arc-20240116; t=1743384122; c=relaxed/simple;
+	bh=400QaFdEbB8ZZWSPlzN1aIw7EMTI7fMl9MaoSlcbtts=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jB+WtNoWyjYzk1512u/k/MWdV0IIU/Tc3AU9na2NJPBKzTPYfiBr+MTNvPypyVQwL0aixcNoN59aHx2B93XUvP+ecp59elC8iMISf5mYokEO6nM2EiFLmcFhkxv+yem8+aXk8yDti9cyewNnS0bs2O03zfek8Z9KlDBgYagT1C4=
+	 MIME-Version:Content-Type; b=Vl62XUHkrfq1ZJ6S744qya7UDVU9VD2wd+LYpygwyTwtZk6SKHkQgLTTB+yeKl66+kvH9hmX6o+6oEALzB4Xe0XfclHdedsXjw58DAakMFnQQ1JA5q3HvtrKLplbXKjMLSzYBb/lC8beXdguMjc1HfYaXO/qLqMCPHNF3Cakghk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ZQtbM3PQdz1R7bS;
-	Mon, 31 Mar 2025 09:19:59 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ZQtX41TZNz1jBCh;
+	Mon, 31 Mar 2025 09:17:08 +0800 (CST)
 Received: from kwepemd100023.china.huawei.com (unknown [7.221.188.33])
-	by mail.maildlp.com (Postfix) with ESMTPS id D29591A016C;
-	Mon, 31 Mar 2025 09:21:48 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 5016D1A0188;
+	Mon, 31 Mar 2025 09:21:53 +0800 (CST)
 Received: from localhost.localdomain (10.175.104.82) by
  kwepemd100023.china.huawei.com (7.221.188.33) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1748.10; Mon, 31 Mar 2025 09:21:47 +0800
+ 15.2.1748.10; Mon, 31 Mar 2025 09:21:52 +0800
 From: Dong Chenchen <dongchenchen2@huawei.com>
 To: <edumazet@google.com>, <kuniyu@amazon.com>, <pabeni@redhat.com>,
 	<willemb@google.com>, <john.fastabend@gmail.com>, <jakub@cloudflare.com>,
@@ -47,9 +47,9 @@ To: <edumazet@google.com>, <kuniyu@amazon.com>, <pabeni@redhat.com>,
 CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <stfomichev@gmail.com>,
 	<mrpre@163.com>, <zhangchangzhong@huawei.com>, Dong Chenchen
 	<dongchenchen2@huawei.com>
-Subject: [PATCH net v2 1/2] bpf, sockmap: Avoid sk_prot reset on sockmap unlink with ULP set
-Date: Mon, 31 Mar 2025 09:21:25 +0800
-Message-ID: <20250331012126.1649720-2-dongchenchen2@huawei.com>
+Subject: [PATCH net v2 2/2] selftests: bpf: Add case for sockmap_ktls set when verdict attached
+Date: Mon, 31 Mar 2025 09:21:26 +0800
+Message-ID: <20250331012126.1649720-3-dongchenchen2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20250331012126.1649720-1-dongchenchen2@huawei.com>
 References: <20250331012126.1649720-1-dongchenchen2@huawei.com>
@@ -64,75 +64,109 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemd100023.china.huawei.com (7.221.188.33)
 
-WARNING: CPU: 0 PID: 6558 at net/core/sock_map.c:1703 sock_map_close+0x3c4/0x480
-Modules linked in:
-CPU: 0 UID: 0 PID: 6558 Comm: syz-executor.14 Not tainted 6.14.0-rc5+ #238
-RIP: 0010:sock_map_close+0x3c4/0x480
-Call Trace:
- <TASK>
- inet_release+0x144/0x280
- __sock_release+0xb8/0x270
- sock_close+0x1e/0x30
- __fput+0x3c6/0xb30
- __fput_sync+0x7b/0x90
- __x64_sys_close+0x90/0x120
- do_syscall_64+0x5d/0x170
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
+Cover the scenario when close a socket after inserted into the sockmap
+(verdict attach) and set ULP. It will trigger sock_map_close warning.
 
-The root cause is:
-bpf_prog_attach(BPF_SK_SKB_STREAM_VERDICT)
-tcp_set_ulp //set ulp after sockmap add
-	icsk->icsk_ulp_ops = ulp_ops;
-sock_hash_update_common
-  sock_map_unref
-    sock_map_del_link
-      psock->psock_update_sk_prot(sk, psock, false);
-	sk->sk_prot->close = sock_map_close
-sk_psock_drop
-  sk_psock_restore_proto
-    tcp_bpf_update_proto
-       tls_update //not redo sk_prot to tcp prot
-inet_release
-  sk->sk_prot->close
-    sock_map_close
-      WARN(sk->sk_prot->close == sock_map_close)
-
-commit e34a07c0ae39 ("sock: redo the psock vs ULP protection check")
-has moved ulp check from tcp_bpf_update_proto() to psock init.
-If sk sets ulp after being added to sockmap, it will reset sk_prot to
-BPF_BASE when removed from sockmap. After the psock is dropped, it will
-not reset sk_prot back to the tcp prot, only tls context update is
-performed. This can trigger a warning in sock_map_close() due to
-recursion of sk->sk_prot->close.
-
-To fix this issue, skip the sk_prot operations redo when deleting link
-from sockmap if ULP is set.
-
-Fixes: e34a07c0ae39 ("sock: redo the psock vs ULP protection check")
-Fixes: c0d95d3380ee ("bpf, sockmap: Re-evaluate proto ops when psock is removed from sockmap")
-Suggested-by: Cong Wang <xiyou.wangcong@gmail.com>
 Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
 ---
-Changes for v2:
-- Move ULP check from sock_map_del_link() to tcp_bpf_update_proto()
----
- net/ipv4/tcp_bpf.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../selftests/bpf/prog_tests/sockmap_ktls.c   | 70 +++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index ba581785adb4..01b3930947cc 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -708,6 +708,9 @@ int tcp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
- 		return 0;
- 	}
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c b/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
+index 2d0796314862..d54bd5f41d4d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c
+@@ -9,6 +9,7 @@
  
-+	if (inet_csk_has_ulp(sk))
-+		return 0;
+ #define MAX_TEST_NAME 80
+ #define TCP_ULP 31
++#define SOCKMAP_VERDICT_PROG "test_sockmap_skb_verdict_attach.bpf.o"
+ 
+ static int tcp_server(int family)
+ {
+@@ -132,6 +133,73 @@ static void test_sockmap_ktls_update_fails_when_sock_has_ulp(int family, int map
+ 	close(s);
+ }
+ 
++/* close a kTLS socket after removing it from sockmap. */
++static void test_sockmap_ktls_close_after_delete(int family, int map)
++{
++	struct sockaddr_storage addr = {0};
++	socklen_t len = sizeof(addr);
++	int err, cli, srv, zero = 0;
++	struct bpf_program *prog;
++	struct bpf_object *obj;
++	int verdict;
 +
- 	if (sk->sk_family == AF_INET6) {
- 		if (tcp_bpf_assert_proto_ops(psock->sk_proto))
- 			return -EINVAL;
++	obj = bpf_object__open_file(SOCKMAP_VERDICT_PROG, NULL);
++	if (!ASSERT_OK(libbpf_get_error(obj), "bpf_object__open_file"))
++		return;
++
++	err = bpf_object__load(obj);
++	if (!ASSERT_OK(err, "bpf_object__load"))
++		goto close_obj;
++
++	prog = bpf_object__next_program(obj, NULL);
++	verdict = bpf_program__fd(prog);
++	if (!ASSERT_GE(verdict, 0, "bpf_program__fd"))
++		goto close_obj;
++
++	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
++	if (!ASSERT_OK(err, "bpf_prog_attach"))
++		goto close_verdict;
++
++	srv = tcp_server(family);
++	if (srv == -1)
++		goto detach;
++
++	err = getsockname(srv, (struct sockaddr *)&addr, &len);
++	if (!ASSERT_OK(err, "getsockopt"))
++		goto close_srv;
++
++	cli = socket(family, SOCK_STREAM, 0);
++	if (!ASSERT_GE(cli, 0, "socket"))
++		goto close_srv;
++
++	err = connect(cli, (struct sockaddr *)&addr, len);
++	if (!ASSERT_OK(err, "connect"))
++		goto close_cli;
++
++	err = bpf_map_update_elem(map, &zero, &cli, 0);
++	if (!ASSERT_OK(err, "bpf_map_update_elem"))
++		goto close_cli;
++
++	err = setsockopt(cli, IPPROTO_TCP, TCP_ULP, "tls", strlen("tls"));
++	if (!ASSERT_OK(err, "setsockopt(TCP_ULP)"))
++		goto close_cli;
++
++	err = bpf_map_delete_elem(map, &zero);
++	if (!ASSERT_OK(err, "bpf_map_delete_elem"))
++		goto close_cli;
++
++close_cli:
++	close(cli);
++close_srv:
++	close(srv);
++detach:
++	bpf_prog_detach2(verdict, map, BPF_SK_SKB_STREAM_VERDICT);
++close_verdict:
++	close(verdict);
++close_obj:
++	bpf_object__close(obj);
++}
++
+ static const char *fmt_test_name(const char *subtest_name, int family,
+ 				 enum bpf_map_type map_type)
+ {
+@@ -158,6 +226,8 @@ static void run_tests(int family, enum bpf_map_type map_type)
+ 		test_sockmap_ktls_disconnect_after_delete(family, map);
+ 	if (test__start_subtest(fmt_test_name("update_fails_when_sock_has_ulp", family, map_type)))
+ 		test_sockmap_ktls_update_fails_when_sock_has_ulp(family, map);
++	if (test__start_subtest(fmt_test_name("close_after_delete", family, map_type)))
++		test_sockmap_ktls_close_after_delete(family, map);
+ 
+ 	close(map);
+ }
 -- 
 2.25.1
 
