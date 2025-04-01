@@ -1,86 +1,86 @@
-Return-Path: <bpf+bounces-55052-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55053-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45955A776ED
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 10:52:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AED48A776F7
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 10:56:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FD173AA89E
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 08:52:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA0DA3AA9D6
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 08:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CFDD1EBA16;
-	Tue,  1 Apr 2025 08:52:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028881EB9EF;
+	Tue,  1 Apr 2025 08:56:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YUojYi8Z"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Xa1b5g3B"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 372161EB5F8
-	for <bpf@vger.kernel.org>; Tue,  1 Apr 2025 08:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090EF1EB5D0
+	for <bpf@vger.kernel.org>; Tue,  1 Apr 2025 08:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743497544; cv=none; b=nk2iXoATsOCpV473+yWUOkF+6vDMNzeCmScMTyEO14/PJEA8IHkXScAU8V+hF+Ii1cl73C2eNU5d59Uu9Ye7kGYy8GaesaiCNnH10BPOYTDQj8IQE86g1osa89TkYqOXY8hulKCjV+Q0daKGkF+z9DfFKUaquNiHK9Wvc79dpCs=
+	t=1743497767; cv=none; b=tQ1EKwNPXS+l4iTGkAFd154+B966B1WAAwlpZEmVd0HLTuwg9Fwob5o/VDUrwa+i5+3mbQqle2MZDLHfpk2graW7EvgJyBYa2y2l93OT6ChvtlYnXGjzZWCGlME/3ogEPKuirwp0sl1e43XrWK+6TYX/Bmt88g1gUI5/tkyRZyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743497544; c=relaxed/simple;
-	bh=fNkQvYlNaa3cqbrVMNrNNj9EdtzcFO71fUGvPTgiinQ=;
+	s=arc-20240116; t=1743497767; c=relaxed/simple;
+	bh=tV7GHmfr5Si8SRiqwT6boi3Gj3jsFs4R9lIa/PbtSKw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SFgAplBsHJsQOqZi/B3yy5CG1Oz9ZSgmoNrO4dd28QvIP6zSeSGGSQJdd5suqFo0+yGPLWeB3ye2IHSEGOLJlJ9BPiCLdLBgbpJVFOgyuRBbrQC0oeu4ceP//i5CI4ZJl+eOrlyyG0x1wL24mAk6ZP2x3nenHWS26h4kLv3ysYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YUojYi8Z; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=iwX7ltSns4H7ZYmo/Q/mXXcZkvunCK9REfyYSm51K3MKs87VjD4EraSswCPmmK58/pmVPaUfCMU3l/b9NthBiMYT0KtZ8VSSzMOF8cSdFIMfZ7qddWkw/52SCx9fZL8utURqdDw72zIp0pLVUr5VmIRlWNjGAGG6LUaXc1rTLj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Xa1b5g3B; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1743497542;
+	s=mimecast20190719; t=1743497765;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=iTrzmKHOhipGTrVn6hOCwktriFPfHqZi1ySNcTDYp58=;
-	b=YUojYi8ZAMeXoo/HxJ0x0B/DNZk3CljCNCrB/uYtvSkTGDMptoyt/IAVmTS1K3kecys3JU
-	akTUhE9MxJdzeznuoxLNwPpQowFoKlkOZ7LZSqBUmA/uL0GnSPqQDI9nfJODc1w8RoiMHH
-	AqL1zoGvoiK5VXNNnjhA4xECPLUVH40=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=/EOGpZgMMwI61gNswk7Hqy4zEoEqDiKfuBQe+kGOmzE=;
+	b=Xa1b5g3BriYlUA5VNSoObwldecuYJmbPxvW+fI6QgxRaN3T2RbHY22klk0qX064bGWF6Rn
+	SEHx6iEeBhwbvu+24L36vR2OJ2Rz42he3E3LxY3Qyo1NtNZQoNYwUmEj5bBiUuyVQYVhOv
+	WTn9YJCswgrpSms3VJ3wrX4PMLGvfbE=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-376-DFjFjMNENPaP6Ai7LODymg-1; Tue, 01 Apr 2025 04:52:21 -0400
-X-MC-Unique: DFjFjMNENPaP6Ai7LODymg-1
-X-Mimecast-MFC-AGG-ID: DFjFjMNENPaP6Ai7LODymg_1743497540
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-438e180821aso23968705e9.1
-        for <bpf@vger.kernel.org>; Tue, 01 Apr 2025 01:52:20 -0700 (PDT)
+ us-mta-19-5ShsdABkNxmL-HWaBmUINg-1; Tue, 01 Apr 2025 04:56:03 -0400
+X-MC-Unique: 5ShsdABkNxmL-HWaBmUINg-1
+X-Mimecast-MFC-AGG-ID: 5ShsdABkNxmL-HWaBmUINg_1743497763
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3913aaf1e32so3047091f8f.0
+        for <bpf@vger.kernel.org>; Tue, 01 Apr 2025 01:56:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743497540; x=1744102340;
+        d=1e100.net; s=20230601; t=1743497763; x=1744102563;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iTrzmKHOhipGTrVn6hOCwktriFPfHqZi1ySNcTDYp58=;
-        b=lc/VMHnWmNiIB2WiS8cfM5Hr3fizVLR8I7k2jLpylY8ElWjdD28wTv57vZtIgoY5mo
-         ep0knhKfukpcRTVCFI0j/EyeP6CC3tH6s8PV7nMqpGtXQqtTGTTlp/c+GfjIjEvdvhOE
-         rSc8qqGnxZ+HG2ht5/15nAkEREwJDDGQtgmMtX3T8szv3Efpj3zOKzy19BLpPL85TTCS
-         UcfBoBTK77BCUrLJd0sXoW5xgZSm45/SnW/ecOfG4LfqShN//cnQz3whytXI8FgIxWza
-         RW7WPkYPQdrqb3s5aOIAl8/xTc1TfUaPu8QK/kufqJMXN2bcK/+XPkBEjyJUUKTRkA6p
-         PL8A==
-X-Forwarded-Encrypted: i=1; AJvYcCUPtW7D0wWyLV2smd6VXvwu41/HkXHW8Os/9ySigf5NWAkl0exWJwjs90cSgxPiCF/aGdQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZ13BmzRobbqKSGLDV6IemO82wRffbjl8sWipEYOQku65RQg7I
-	y00CoBmGge9M4dGCWQjrcvz5NFLs/2i/izjlZXQW+ExNVftjX2tjST2XrMzBwqUHdn1DfjJKF1k
-	yYmvnaVS/zfo5PHZGEdsbVEMYoidVVjC5NFkB25ZmdwbgSXew/Q==
-X-Gm-Gg: ASbGncs2WyWRaPsmeYcdDMHlu+V3QyTu2yMMn9EpyC9pwfsqXj3U/wHglbbenKN1sAi
-	vxcDZZB57k6cGfmSBf3Lv5zolKKUB2ZkvN0ETX+pcbyoNirmalzGLucVcddbOCp1vTzMJ4ev/tL
-	Ou0t65SYzVo2y9RoPJ9xPLtFII4ulRcHgocBxFD7a6JYvYL+47G79NFhSk/w7oOLvvXe7ZGcn3J
-	zuetsofRw/B8e7Zw1UjTVf2Xfsv2F0PPdnDz5rD6GzpJ4mwKNq04743Rcairh0B966JDtn5nV8P
-	oL8Dn2GIE9R4U2nWaaEn9kxU2Qun0hqA8kivutriQdBEcQ==
-X-Received: by 2002:a5d:6daf:0:b0:391:1222:b444 with SMTP id ffacd0b85a97d-39c120db3f4mr8036371f8f.20.1743497539706;
-        Tue, 01 Apr 2025 01:52:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEFIwIsFXgnFgUnvUf7GiB0Qo92O2pFQl8WkobeyI6QhVmQ5/bHplaSDVAbQLHpuaV2qU/iLQ==
-X-Received: by 2002:a5d:6daf:0:b0:391:1222:b444 with SMTP id ffacd0b85a97d-39c120db3f4mr8036337f8f.20.1743497539288;
-        Tue, 01 Apr 2025 01:52:19 -0700 (PDT)
+        bh=/EOGpZgMMwI61gNswk7Hqy4zEoEqDiKfuBQe+kGOmzE=;
+        b=sAtmH02DzS9qCcYmRpi+egAg4P17MV7iaftbdmMZ7+QErv9IiRTkLmZwTt85rmAtPl
+         WgIzN6trs/9rYmFmUoRxD/UbPwG0K0xhvs0EtztgTz4dmvvQyzxNFiZInX6ysNXNr5Nw
+         ay29a7JM8Dx9u/0yEg6roy5dmnYHULxTLHwLTO0wpN8OYFXKJcJvTdw24BlT4tpVVMN0
+         fSuxFMAwLe1dnaBmOQ/gkShsmS5ZicZjsUhP5PAOv66DXbbIcp563hb056ifVxosUwfM
+         6oRmbTebiVTLuQa5ks+nTIL5L1eBMROPK32fooRUNacscZMvBXmlQAP1GOSPu8yGouBW
+         bmWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUC621AueuE3kb0EAbvSKfGHtHGSOFoNbfs52zoZ5Mx+QPRn929Uoiu39PWzPv47k6pOFE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxIBJzOP46E9BhLZUVLPG3CWM4EVAjNHWa64S42CETlM1kNVhud
+	CMnY7zRBCGI8tjk0BRJG+2r7NmwvKJU7Pc1XwwV0Ix5pdyZgc+8UVb7+fCARqby6e8swkqzH6rd
+	DqaAMRrzO1ryiTTYJXHf/tFxSplG6PG/hrnBRKl65jX4xY1eYMQ==
+X-Gm-Gg: ASbGnctWEg6V07tj+vpJrZF8UAkVtyx0x0JMOhQ7706hWBq78g5MrmLan3Bshh8UmuZ
+	V8Nh1q0dhDTeHujuAG7v9QCBkaCRDpJJ4Q4BZfkHkjDmhSN1e9oRO6VOogPnkMaoPDBUe6g3t2J
+	ZrhK8i5DDq+uoqjEtNb4MqxV9tQKNeLA2JTwpLEREQf8/VNqpqiwWHjEMe0xcVctCOERN8riggN
+	u6OEz9XBzVaBlgIFfYjwZxz8HNBI6ypzWKCAih9TGlsQKjVJGhWydvy4SJp/XSaPfYQutPqw3VM
+	uji54iFUch5cr4zUv9E7dCtr++yuxNhu+ScAv0gH6ZryWw==
+X-Received: by 2002:a05:6000:2913:b0:391:122c:8b2 with SMTP id ffacd0b85a97d-39c120e1566mr10357899f8f.31.1743497762664;
+        Tue, 01 Apr 2025 01:56:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHPPFEHn5QvMX8T7Toc4UY1OJQWioAVuAJM2JZ1z1ZDDcbJGmm1kVkDwd+dzHOwCnzyaJepwA==
+X-Received: by 2002:a05:6000:2913:b0:391:122c:8b2 with SMTP id ffacd0b85a97d-39c120e1566mr10357860f8f.31.1743497762256;
+        Tue, 01 Apr 2025 01:56:02 -0700 (PDT)
 Received: from [192.168.88.253] (146-241-68-231.dyn.eolo.it. [146.241.68.231])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c0b7a4351sm13751264f8f.98.2025.04.01.01.52.17
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c0b79e141sm13581555f8f.77.2025.04.01.01.56.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Apr 2025 01:52:18 -0700 (PDT)
-Message-ID: <38b9af46-0d03-424d-8ecc-461b7daf216c@redhat.com>
-Date: Tue, 1 Apr 2025 10:52:17 +0200
+        Tue, 01 Apr 2025 01:56:01 -0700 (PDT)
+Message-ID: <7488e6cf-e68b-4404-aaa9-f4892b2ff94b@redhat.com>
+Date: Tue, 1 Apr 2025 10:56:00 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,40 +90,58 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH net-next v5 2/2] page_pool: Track DMA-mapped pages and
  unmap them when destroying the pool
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski
+ <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
  Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
  Eric Dumazet <edumazet@google.com>,
  Ilias Apalodimas <ilias.apalodimas@linaro.org>,
  Simon Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
  Mina Almasry <almasrymina@google.com>, Yonglong Liu
  <liuyonglong@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>,
- Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>,
- Yuying Ma <yuma@redhat.com>
+ Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox
+ <willy@infradead.org>, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-mm@kvack.org, Qiuling Ren
+ <qren@redhat.com>, Yuying Ma <yuma@redhat.com>
 References: <20250328-page-pool-track-dma-v5-0-55002af683ad@redhat.com>
  <20250328-page-pool-track-dma-v5-2-55002af683ad@redhat.com>
+ <aaf31c50-9b57-40b7-bbd7-e19171370563@intel.com>
 Content-Language: en-US
 From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250328-page-pool-track-dma-v5-2-55002af683ad@redhat.com>
+In-Reply-To: <aaf31c50-9b57-40b7-bbd7-e19171370563@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 3/28/25 1:19 PM, Toke Høiland-Jørgensen wrote:
-> @@ -463,13 +462,21 @@ page_pool_dma_sync_for_device(const struct page_pool *pool,
->  			      netmem_ref netmem,
->  			      u32 dma_sync_size)
->  {
-> -	if (pool->dma_sync && dma_dev_need_sync(pool->p.dev))
-> -		__page_pool_dma_sync_for_device(pool, netmem, dma_sync_size);
-> +	if (pool->dma_sync && dma_dev_need_sync(pool->p.dev)) {
+On 3/31/25 6:35 PM, Alexander Lobakin wrote:
+> From: Toke Høiland-Jørgensen <toke@redhat.com>
+> Date: Fri, 28 Mar 2025 13:19:09 +0100
+> 
+>> When enabling DMA mapping in page_pool, pages are kept DMA mapped until
+>> they are released from the pool, to avoid the overhead of re-mapping the
+>> pages every time they are used. This causes resource leaks and/or
+>> crashes when there are pages still outstanding while the device is torn
+>> down, because page_pool will attempt an unmap through a non-existent DMA
+>> device on the subsequent page return.
+> 
+> [...]
+> 
+>> @@ -173,10 +212,10 @@ struct page_pool {
+>>  	int cpuid;
+>>  	u32 pages_state_hold_cnt;
+>>  
+>> -	bool has_init_callback:1;	/* slow::init_callback is set */
+>> +	bool dma_sync;			/* Perform DMA sync for device */
+> 
+> Have you seen my comment under v3 (sorry but I missed that there was v4
+> already)? Can't we just test the bit atomically?
 
-Lacking a READ_ONCE() here, I think it's within compiler's right do some
-unexpected optimization between this read and the next one. Also it will
-make the double read more explicit.
+My understanding is that to make such operation really atomic, we will
+need to access all the other bits within the same bitfield with atomic
+bit ops, leading to a significant code churn (and possibly some overhead).
+
+I think that using a full bool field is a better option.
 
 Thanks,
 
