@@ -1,242 +1,190 @@
-Return-Path: <bpf+bounces-55047-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55048-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3F36A775FD
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 10:12:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5644A77632
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 10:19:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5443716672B
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 08:12:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF4873A979F
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 08:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E931E991D;
-	Tue,  1 Apr 2025 08:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 865AE1EA7C9;
+	Tue,  1 Apr 2025 08:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gYBPKsZS"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="RV7b9Dch"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C880132103;
-	Tue,  1 Apr 2025 08:12:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF2781E261F;
+	Tue,  1 Apr 2025 08:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743495148; cv=none; b=j9kEcltvf9ZQrWUZHlpdN3r9Y/elnx3T1FVljNmhfRczK2whhpxXISM6MzsynR1kKYxwIpxUwKjOFYWUDJt10Oo4jNHBfJrevCViZ/PUs1Jxs7gtelVJEbOCQt7S+DqNmt+OhKcfXIKACg8F1zUMS8GlTgE6wqLz/2f/8xdVKtA=
+	t=1743495560; cv=none; b=n+nNNrhEm/i30t4yqDoBPP8TVg4t84feV/cgPmcOdnJCaxYwgPnDF5aVbaFyPcD+ik26JA/vDNmnSieQhQ629qTfwvgvSnKX8V6HBnXWFple3x2SPkywFWjObvg4s5j8GVgA8rJoc70lNk5qPU6pSguAON/Auddyw2k44cfRpEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743495148; c=relaxed/simple;
-	bh=/waPTM4xPD4317aDJ0hxEkq/rYW4h1hSGRbxP3lbXHk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BtvaoKea39H7y59wYvOBtDcl35Mk1KqDRx0a5dfTAHN4Xf3tMgWmfwAHZeBhnnc4Ol1KPm5b3npeCBQyEP9Tad6UoS/IGE5HYWDDjclm57K2r1peDhV8GEBKbeycYf4mqsBjCOt0oWvSWFuU38Uj5W/kHm5akWgh94w41fGigy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gYBPKsZS; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7c5b2472969so533858985a.1;
-        Tue, 01 Apr 2025 01:12:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743495145; x=1744099945; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N921zeEVObbyyzXGZX+/L4SVyesPmMbWZMrfrZMAMZI=;
-        b=gYBPKsZSZuncc84FAmAB2dTrZW1TMTPrBSnol3BqvCM/JZuuRikBU6koP40hXj2P+F
-         Z6r5dIVfwDjT6W2z98EtOVQwoX8W9j61NWtxRQtRdkKiEO4MD6n6KMUUttexDP0W9WKH
-         ty0o3Wcl9E179vHC/FUiRfeHlw93crfZlEbS5g6/3AOwPTf7Zv1065Gd1CPwaWjfdSuO
-         SbWl1a+WnG++DoqKAaycIbWix4izPMLXXlOyFQr43vPgDk6A+QxkiKplUD2cjwxDVE2p
-         KN8aNK8h7qRienEIFWsdCcXG73feEc8JMC2qUrebTHEVWqd3N9AbCCEpxi6u+V7H4AzD
-         zAGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743495145; x=1744099945;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N921zeEVObbyyzXGZX+/L4SVyesPmMbWZMrfrZMAMZI=;
-        b=OHHPNV08ZuS+5ogeL3xwdcebtwhs1MjIkv0vKL9VOxEyrzUFdqbJTrQQ7dxHbHAang
-         feeXEIocvZg2IpbdBgEYy2P6Zl4RP+zqoLp8hmhEfpqBPz3DoAuBTs1Nj7KieLTQvA93
-         CTIfk2i2NC4kNSDuzOC2b3E7h1WyntLzo9PbxoK9Iit8LaSy33d+o/O/6LGJfWl0823E
-         sdXXwfK/JYHxX7m44B79Eatx+Gcv0LvxjQk/9mkA7JHr+HkM3p5iHtmpTtYx7g7OiKMs
-         52gK93oyt54DRCa1W3Dug0ocJ60p0cWjujmFR8a9F21Y2Hg6nFHjWsHtwVmKAhFUppOP
-         NkdA==
-X-Forwarded-Encrypted: i=1; AJvYcCU5wrIe3Qp9ror/PWd0XpDeV00tTmM+pXoMx7l/BFyNM+lxFs8EEAnI3uYfFmxuxuDgb/PenrEn@vger.kernel.org, AJvYcCWO2+Hk3UWVuXyEZo3SEkcVkGFqDo6iOjDJ4ERDrb5gIPD3b55ZldurDuOPetyHddWO/AY=@vger.kernel.org, AJvYcCWSLZKUnQE4Vq71PK5RL9F7stPASD8e7BlgcPeLrP5LYU+3SjT1/YKFJcu0HNmvZr8uYQXi+XJZZ26wxKkT@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+j8C3juxLDc8uit6/SYtsBZDA479akCpUwHscLhmJQHatVMYd
-	+BUk73JhO06yss2ahL9thFohQrcR1s/MYs+5h4+81GWkf9neQlK1eKn1lil+ghL/2qqnF7rrUkV
-	YS9yw2JP6cY2ClHKfoNKiOZcQKUo=
-X-Gm-Gg: ASbGnctlRnNrSjvI7mwQC7OJNwftfqxfBDUI4ay8aWkVO5e6Xzwk8qIUBUSREer6voo
-	PM6VUP5vkM9LvSBHxSr1JH89EY4i96RmjQKzxL9n6bbmQhZFE9Ew/C/UcLMpVm97L0xMLFe2QGS
-	wxEEWnZkUNAL52xkT9aKvhmmYh1Dypcu1Kf+BWZUo=
-X-Google-Smtp-Source: AGHT+IHHhqW7g5N8MXmKeQ3ZdpNS4nfu3IJeiO8IjKHPXDxhW5RCauWGQn75EU0rmHifckbfG9wIri5Wmu8NJ1eEBmc=
-X-Received: by 2002:a05:620a:17a0:b0:7c5:3e22:6167 with SMTP id
- af79cd13be357-7c69073366amr1734893785a.23.1743495145058; Tue, 01 Apr 2025
- 01:12:25 -0700 (PDT)
+	s=arc-20240116; t=1743495560; c=relaxed/simple;
+	bh=qlsGP9nYpg9ECwWOf+7L3C+s5nRg0js3AhgwMO+0GnI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WYKJJuzxEtWepFLwZN/Q37B3sKEBndoZLi2DNj37vrhJ3R7/q8L7Z8+b97YfGewB2ro8JpzZTvWIPnriDMjMPFlA99w1L4AKoSXmPXvHFN+Xu7DtRANP0Lo4Sf5HqbCz9xkcqvH+nuyZBU/P7nbbAunoEwCbp96hgBugHTud0ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=RV7b9Dch; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=From:Cc:To:Date:Message-ID;
+	bh=vJej1gym8PffvPJkpcAVY4oHxH7PtcR6PiojZNvFt9M=; b=RV7b9DchSX6L/1eGwqFQrmPoMe
+	hf0+MvUSe77ZEvXnOMKdaDfI72KNjrnBHp4+fOyw74E/OKn4qz/xPPhyS7jysMN32ED0nZFh+bSWt
+	qNTdeC9sUxWNSlUy3fPjumM8AyZcbA0ZmlEpLcU9V+2QwUoXZ7eQfcl2nXK+BF86z5eiOUe5W+1UA
+	0QlMB9Ew/iDDfZQz1e7CZjakP0NXtY+bs+HEsN/fv3tTiQvAZhGTsamRKtNDHQAO89fEIE3KeBJf8
+	xcd8vRDXXIUCf417uDpOhlMncOdHNgBrwgFPS3pKv66oe2Gxh7inZx1qK9sSIbFAyQV3hRiMvLECg
+	thVcgrdmcYk8AM8eIrag2xACAnicTWSHEjTexxvojrRysCeGDc29D6smjQ2phM7X9otv3Fm5Phnsk
+	JXkUjKNwFhUfQWuhXXq7lO+xH6aXarbwoeT3Oz7x9XbnXQJv7YBaLBY2zEYjoaVXXS037eARPx8fj
+	gfrHfFqPkn/4/n7sGmBOfAQs;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1tzWpu-007dNX-35;
+	Tue, 01 Apr 2025 08:19:07 +0000
+Message-ID: <39515c76-310d-41af-a8b4-a814841449e3@samba.org>
+Date: Tue, 1 Apr 2025 10:19:05 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250329061548.1357925-1-wangliang74@huawei.com>
- <Z-qzLyGKskaqgFh5@mini-arch> <Z-sRF0G43HpGiGwH@mini-arch> <0d1b689c-c0ef-460a-9969-ff5aebbb8fac@huawei.com>
- <CAJ8uoz1JxhXFkzW8n_Dud8SR-4zE7gim5vS_UZHELiA7d0k+wQ@mail.gmail.com> <ed10eea2-0bf2-4747-b519-f9b9089e434e@huawei.com>
-In-Reply-To: <ed10eea2-0bf2-4747-b519-f9b9089e434e@huawei.com>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Tue, 1 Apr 2025 10:12:14 +0200
-X-Gm-Features: AQ5f1JpJTLxGpoXFk_gCek9AD6xD42I4RGHs3jBV7-49f2FG1SOBDoEkHyywjuI
-Message-ID: <CAJ8uoz2QXNN4so-EgR8sU8A86E_AeYx1w_b+BSVeCgzr1kaR+g@mail.gmail.com>
-Subject: Re: [PATCH net] xsk: correct tx_ring_empty_descs count statistics
-To: Wang Liang <wangliang74@huawei.com>
-Cc: Stanislav Fomichev <stfomichev@gmail.com>, bjorn@kernel.org, magnus.karlsson@intel.com, 
-	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, 
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
-	john.fastabend@gmail.com, yuehaibing@huawei.com, zhangchangzhong@huawei.com, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/4] net/io_uring: pass a kernel pointer via optlen_t
+ to proto[_ops].getsockopt()
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>, Pavel Begunkov <asml.silence@gmail.com>,
+ Breno Leitao <leitao@debian.org>, Jakub Kicinski <kuba@kernel.org>,
+ Christoph Hellwig <hch@lst.de>, Karsten Keil <isdn@linux-pingi.de>,
+ Ayush Sawal <ayush.sawal@chelsio.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>, Willem de Bruijn
+ <willemb@google.com>, David Ahern <dsahern@kernel.org>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Xin Long <lucien.xin@gmail.com>, Neal Cardwell <ncardwell@google.com>,
+ Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>,
+ Marc Kleine-Budde <mkl@pengutronix.de>,
+ Robin van der Gracht <robin@protonic.nl>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+ Alexander Aring <alex.aring@gmail.com>,
+ Stefan Schmidt <stefan@datenfreihafen.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Alexandra Winter <wintera@linux.ibm.com>,
+ Thorsten Winkler <twinkler@linux.ibm.com>,
+ James Chapman <jchapman@katalix.com>, Jeremy Kerr <jk@codeconstruct.com.au>,
+ Matt Johnston <matt@codeconstruct.com.au>,
+ Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Remi Denis-Courmont <courmisch@gmail.com>,
+ Allison Henderson <allison.henderson@oracle.com>,
+ David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+ Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
+ "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
+ Wen Gu <guwen@linux.alibaba.com>, Jon Maloy <jmaloy@redhat.com>,
+ Boris Pismenny <borisp@nvidia.com>, John Fastabend
+ <john.fastabend@gmail.com>, Stefano Garzarella <sgarzare@redhat.com>,
+ Martin Schiller <ms@dev.tdt.de>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
+ linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
+ linux-s390@vger.kernel.org, mptcp@lists.linux.dev,
+ linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
+ virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
+ bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
+ io-uring@vger.kernel.org
+References: <cover.1743449872.git.metze@samba.org>
+ <Z-sDc-0qyfPZz9lv@mini-arch>
+Content-Language: en-US, de-DE
+From: Stefan Metzmacher <metze@samba.org>
+In-Reply-To: <Z-sDc-0qyfPZz9lv@mini-arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 1 Apr 2025 at 09:44, Wang Liang <wangliang74@huawei.com> wrote:
->
->
-> =E5=9C=A8 2025/4/1 14:57, Magnus Karlsson =E5=86=99=E9=81=93:
-> > On Tue, 1 Apr 2025 at 04:36, Wang Liang <wangliang74@huawei.com> wrote:
-> >>
-> >> =E5=9C=A8 2025/4/1 6:03, Stanislav Fomichev =E5=86=99=E9=81=93:
-> >>> On 03/31, Stanislav Fomichev wrote:
-> >>>> On 03/29, Wang Liang wrote:
-> >>>>> The tx_ring_empty_descs count may be incorrect, when set the XDP_TX=
-_RING
-> >>>>> option but do not reserve tx ring. Because xsk_poll() try to wakeup=
- the
-> >>>>> driver by calling xsk_generic_xmit() for non-zero-copy mode. So the
-> >>>>> tx_ring_empty_descs count increases once the xsk_poll()is called:
-> >>>>>
-> >>>>>     xsk_poll
-> >>>>>       xsk_generic_xmit
-> >>>>>         __xsk_generic_xmit
-> >>>>>           xskq_cons_peek_desc
-> >>>>>             xskq_cons_read_desc
-> >>>>>               q->queue_empty_descs++;
-> > Sorry, but I do not understand how to reproduce this error. So you
-> > first issue a setsockopt with the XDP_TX_RING option and then you do
-> > not "reserve tx ring". What does that last "not reserve tx ring" mean?
-> > No mmap() of that ring, or something else? I guess you have bound the
-> > socket with a bind()? Some pseudo code on how to reproduce this would
-> > be helpful. Just want to understand so I can help. Thank you.
-> Sorry, the last email is garbled, and send again.
->
-> Ok. Some pseudo code like below:
->
->      fd =3D socket(AF_XDP, SOCK_RAW, 0);
->      setsockopt(fd, SOL_XDP, XDP_UMEM_REG, &mr, sizeof(mr));
->
->      setsockopt(fd, SOL_XDP, XDP_UMEM_FILL_RING, &fill_size,
-> sizeof(fill_size));
->      setsockopt(fd, SOL_XDP, XDP_UMEM_COMPLETION_RING, &comp_size,
-> sizeof(comp_size));
->      mmap(NULL, off.fr.desc + fill_size * sizeof(__u64), ...,
-> XDP_UMEM_PGOFF_FILL_RING);
->      mmap(NULL, off.cr.desc + comp_size * sizeof(__u64), ...,
-> XDP_UMEM_PGOFF_COMPLETION_RING);
->
->      setsockopt(fd, SOL_XDP, XDP_RX_RING, &rx_size, sizeof(rx_size));
->      setsockopt(fd, SOL_XDP, XDP_TX_RING, &tx_size, sizeof(tx_size));
->      mmap(NULL, off.rx.desc + rx_size * sizeof(struct xdp_desc), ...,
-> XDP_PGOFF_RX_RING);
->      mmap(NULL, off.tx.desc + tx_size * sizeof(struct xdp_desc), ...,
-> XDP_PGOFF_TX_RING);
->
->      bind(fd, (struct sockaddr *)&sxdp, sizeof(sxdp));
->      bpf_map_update_elem(xsk_map_fd, &queue_id, &fd, 0);
->
->      while(!global_exit) {
->          poll(fds, 1, -1);
->          handle_receive_packets(...);
->      }
->
-> The xsk is created success, and xs->tx is initialized.
->
-> The "not reserve tx ring" means user app do not update tx ring producer.
-> Like:
->
->      xsk_ring_prod__reserve(tx, 1, &tx_idx);
->      xsk_ring_prod__tx_desc(tx, tx_idx)->addr =3D frame;
->      xsk_ring_prod__tx_desc(tx, tx_idx)->len =3D pkg_length;
->      xsk_ring_prod__submit(tx, 1);
->
-> These functions (xsk_ring_prod__reserve, etc.) is provided by libxdp.
->
-> The tx->producer is not updated, so the xs->tx->cached_cons and
-> xs->tx->cached_prod are always zero.
->
-> When receive packets and user app call poll(), xsk_generic_xmit() will be
-> triggered by xsk_poll(), leading to this issue.
+Am 31.03.25 um 23:04 schrieb Stanislav Fomichev:
+> On 03/31, Stefan Metzmacher wrote:
+>> The motivation for this is to remove the SOL_SOCKET limitation
+>> from io_uring_cmd_getsockopt().
+>>
+>> The reason for this limitation is that io_uring_cmd_getsockopt()
+>> passes a kernel pointer as optlen to do_sock_getsockopt()
+>> and can't reach the ops->getsockopt() path.
+>>
+>> The first idea would be to change the optval and optlen arguments
+>> to the protocol specific hooks also to sockptr_t, as that
+>> is already used for setsockopt() and also by do_sock_getsockopt()
+>> sk_getsockopt() and BPF_CGROUP_RUN_PROG_GETSOCKOPT().
+>>
+>> But as Linus don't like 'sockptr_t' I used a different approach.
+>>
+>> @Linus, would that optlen_t approach fit better for you?
+> 
+> [..]
+> 
+>> Instead of passing the optlen as user or kernel pointer,
+>> we only ever pass a kernel pointer and do the
+>> translation from/to userspace in do_sock_getsockopt().
+> 
+> At this point why not just fully embrace iov_iter? You have the size
+> now + the user (or kernel) pointer. Might as well do
+> s/sockptr_t/iov_iter/ conversion?
 
-Thanks, that really helped. The problem here is that the kernel cannot
-guess your intent. Since you created a socket with both Rx and Tx, it
-thinks you will use it for both, so it should increase
-queue_empty_descs in this case as you did not provide any Tx descs.
-Your proposed patch will break this. Consider this Tx case with the
-exact same init code as you have above but with this send loop:
+I think that would only be possible if we introduce
+proto[_ops].getsockopt_iter() and then convert the implementations
+step by step. Doing it all in one go has a lot of potential to break
+the uapi. I could try to convert things like socket, ip and tcp myself, but
+the rest needs to be converted by the maintainer of the specific protocol,
+as it needs to be tested. As there are crazy things happening in the existing
+implementations, e.g. some getsockopt() implementations use optval as in and out
+buffer.
 
-while(!global_exit) {
-       maybe_send_packets(...);
-       poll(fds, 1, -1);
-}
+I first tried to convert both optval and optlen of getsockopt to sockptr_t,
+and that showed that touching the optval part starts to get complex very soon,
+see https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=141912166473bf8843ec6ace76dc9c6945adafd1
+(note it didn't converted everything, I gave up after hitting
+sctp_getsockopt_peer_addrs and sctp_getsockopt_local_addrs.
+sctp_getsockopt_context, sctp_getsockopt_maxseg, sctp_getsockopt_associnfo and maybe
+more are the ones also doing both copy_from_user and copy_to_user on optval)
 
-With your patch, the queue_empty_descs will never be increased in the
-case when I do not submit any Tx descs, even though we would like it
-to be so.
+I come also across one implementation that returned -ERANGE because *optlen was
+too short and put the required length into *optlen, which means the returned
+*optlen is larger than the optval buffer given from userspace.
 
-So in my mind, you have a couple of options:
+Because of all these strange things I tried to do a minimal change
+in order to get rid of the io_uring limitation and only converted
+optlen and leave optval as is.
 
-* Create two sockets, one rx only and one tx only and use the
-SHARED_UMEM mode to bind them to the same netdev and queue id. In your
-loop above, you would use the Rx socket. This might have the drawback
-that you need to call poll() twice if you are both sending and
-receiving in the same loop. But the stats will be the way you want
-them to be.
+In order to have a patchset that has a low risk to cause regressions.
 
-* Introduce a new variable in user space that you increase every time
-you do poll() in your loop above. When displaying the statistics, just
-deduct this variable from the queue_empty_descs that the kernel
-reports using the XDP_STATISTICS getsockopt().
+But as alternative introducing a prototype like this:
 
-Hope this helps.
+         int (*getsockopt_iter)(struct socket *sock, int level, int optname,
+                                struct iov_iter *optval_iter);
 
-> >>>>> To avoid this count error, add check for tx descs before send msg i=
-n poll.
-> >>>>>
-> >>>>> Fixes: df551058f7a3 ("xsk: Fix crash in poll when device does not s=
-upport ndo_xsk_wakeup")
-> >>>>> Signed-off-by: Wang Liang <wangliang74@huawei.com>
-> >>>> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
-> >>> Hmm, wait, I stumbled upon xskq_has_descs again and it looks only at
-> >>> cached prod/cons. How is it supposed to work when the actual tx
-> >>> descriptor is posted? Is there anything besides xskq_cons_peek_desc f=
-rom
-> >>> __xsk_generic_xmit that refreshes cached_prod?
-> >>
-> >> Yes, you are right!
-> >>
-> >> How about using xskq_cons_nb_entries() to check free descriptors?
-> >>
-> >> Like this:
-> >>
-> >>
-> >> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> >> index e5d104ce7b82..babb7928d335 100644
-> >> --- a/net/xdp/xsk.c
-> >> +++ b/net/xdp/xsk.c
-> >> @@ -993,7 +993,7 @@ static __poll_t xsk_poll(struct file *file, struct
-> >> socket *sock,
-> >>           if (pool->cached_need_wakeup) {
-> >>                   if (xs->zc)
-> >>                           xsk_wakeup(xs, pool->cached_need_wakeup);
-> >> -               else if (xs->tx)
-> >> +               else if (xs->tx && xskq_cons_nb_entries(xs->tx, 1))
-> >>                           /* Poll needs to drive Tx also in copy mode =
-*/
-> >>                           xsk_generic_xmit(sk);
-> >>           }
-> >>
-> >>
+That returns a non-negative value which can be placed into *optlen
+or negative value as error and *optlen will not be changed on error.
+optval_iter will get direction ITER_DEST, so it can only be written to.
+
+Implementations could then opt in for the new interface and
+allow do_sock_getsockopt() work also for the io_uring case,
+while all others would still get -EOPNOTSUPP.
+
+So what should be the way to go?
+
+metze
 
