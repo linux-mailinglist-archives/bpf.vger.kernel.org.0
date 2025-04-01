@@ -1,101 +1,89 @@
-Return-Path: <bpf+bounces-55087-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55088-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D4A7A780A7
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 18:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B94AA780D4
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 18:48:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92A831887756
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 16:39:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F658188F5B6
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 16:47:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA3220D509;
-	Tue,  1 Apr 2025 16:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F107F211299;
+	Tue,  1 Apr 2025 16:45:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bqK9tW2l"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FplJlPvG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E2E20B7E1;
-	Tue,  1 Apr 2025 16:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A5CD20C006;
+	Tue,  1 Apr 2025 16:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743525551; cv=none; b=cAq8o6o4yrRWVeUg3mo0vBVCL2E3bxpC1nIXZucum7IL1ODOg4S97E9K4VWoyjJ0FoiCxtzHAoN25ZWTExANeOy+zDnOdEVQ8maYwZ14gMNT9zO11LGzbRPh3acOsjH/7ocWWWssDnPsO8pzm688riIzC17zYSNAw7NsGf6NIjQ=
+	t=1743525923; cv=none; b=eWCcOyOuQ6CzSl4qk7KMdjxPjmt/VBg8Ht9FjGdkbCIdwBRUn/Ge99m12upEWe0Vg0KH/P1d77BcfFom4+hisfF4ZNZdJQGQ899fuGZ9hcqQqGK9qpBL9GxLIAH007jdg1udxSXxjqXrWCN771vj/VWwumQfnH6uDYgjV7Aqmeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743525551; c=relaxed/simple;
-	bh=1+HPiGJkMYpy6pkR8X3utQL9ZJoe9RZZqaoc8k5B2kE=;
+	s=arc-20240116; t=1743525923; c=relaxed/simple;
+	bh=FQRzceMu5PfqWDxq7jqSN1LyrWg6gQ6twYztodXRRVw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V+IvThasitlz/D7KKObm84MHFQ79KR20aEmdnPHJwApF6VwZQs8TPeznNB6WrCCFxUgSkQkRMUAz0CDINPoTutv6ft8OPQippd0rDeis3CiPaOkghrXc6D4/c9YCKCOVik7VH55/Hlncu/+6Gmcf92+FbRpXXf2PSNEMV9FXK5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bqK9tW2l; arc=none smtp.client-ip=209.85.214.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=IKwMVintKeq5mJzyY7OlvlWAq6YV8jkYw9KcigpZUV67goi+Qlsg+/dcJWn6OihCxLUDqYCzpHDzKMDYZxX6cuID1AdmXDE5M2Nu2sfM7mFC/6xMtKFgHDd5HDwUVqH7vXqNbyf2uPD0N0p45ta3UYxsw13NMq7Rfa3g7uGapLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FplJlPvG; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-227c7e57da2so87249355ad.0;
-        Tue, 01 Apr 2025 09:39:10 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-223f4c06e9fso247115ad.1;
+        Tue, 01 Apr 2025 09:45:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743525550; x=1744130350; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fXxG8/KJLq5lQeA9/oOuwtl3Ja9SvkQ3rvJPvyidBdk=;
-        b=bqK9tW2lTAa51Kq8/qdCnctS8/Vu+yFBojtutV6ApEhINk2HKyLG0vkUPpCQ5wWpSz
-         rYWfHh/+FNacXejJLC4T/Nnt0D63ziOnE6KiViCc4zQD+PPWmdK2KROI/dkj7ZoChuAZ
-         JS3ve7t3HyjwN+10jXPj+8DHnckE5uQZHJ3EyemvYLHlHoCX6N3+K4I6m0isx4UcZiDE
-         PmosCozMXQjoP+MVIkSr50Awu6ctj9gABa0BhwCtFhmCxwMq3lcbgXJj/DsP9RXKCm8z
-         +mUbuCG8P8cLJBmUuzqjFsN59h7wLh5UjYUNEIWRfOmmZDpbUtQMJeVPY1P9joeF6+Ee
-         ZMwA==
+        d=gmail.com; s=20230601; t=1743525921; x=1744130721; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Nw69mQoIfcr7PG0OaaKVJexApQmL7lFoCUOI3rp0LI=;
+        b=FplJlPvGJRIysqx2dWGpEJ2xc5sfypF7/fvyEKIMgxtNud4XEJPPIax/LRcFWrPI5v
+         jbIxqMf3VNfED7gPVa1LrS6Zw+nT2t82FV/PDICo5QTcV+uB0luAC/N88dPKRLyLbTGk
+         warRckvURd4m45jpRWj30jcTomOnM3a/tBncigEzGF3DSfYNO5edSpvqYEgRph5iQ+al
+         vyRzoQf0tZUtoGRNZdiWsIBfqCQOkgz0hnTkqtWOXiTI0m/aHYm1A1XHr3nM6DFN2RJU
+         nor7QyKQg6LHAUpr4EmJHj9E7Chn/hHkSP8dl4Gk/kcIFstNzarS3jSobVywmEb7HI85
+         r0Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743525550; x=1744130350;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fXxG8/KJLq5lQeA9/oOuwtl3Ja9SvkQ3rvJPvyidBdk=;
-        b=bj9QwE4pc+IhfLgfjx3YCUiIuWKK8E9jXif7HPMPGDguRNjJYkknsKbttV8zGg+Fc8
-         JWAUXM1JOnwOFufpXuQns1lE2UvPVGGve/p/tUqifDHYahdsKA7cQ/oVP0NuOJD8hFk5
-         mhs0wk0vYs07CA52eejet5hR/oFoG3GmeSv/BgSU0EpXm9MtkpE2JoPb83oVurVPp8Vm
-         yP++mg7Q1K7E5sOiGIxeolF+/YGzs/x7IZ7wzgRVl/hHSfEN0U8oV+V5CLBX/W0q6Rk6
-         CXBlkb0shQpmbZBJ585CrtRSsL7vBz19LJHvhvf53+nRxwPt6mpGwNYTc6X8kRwe8WCK
-         qubg==
-X-Forwarded-Encrypted: i=1; AJvYcCU/bMQVNzlBZfrrTjqyT8xJmqm6Ka4bNpTZy++lRrdGjSfSdohf7HCkayUscxLk2Jdp2V8=@vger.kernel.org, AJvYcCVrgQbI19iHlh6KiGd3WGhRR25opbUoLria7SWMfPlMBtKsF9DTB6NvJEzje1/XC1msrdBDjYIcIUu8pnvI@vger.kernel.org, AJvYcCWkky9fASzIZu/2nen66G+4KlMfJgpCmGk+2sOyBTMen/+L+FCmdXtCM+NuJ1tdjhd/BeAO+dHh@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw9seV/LUXHbTzLkonQojp2duG1IGmqS2A8VJAXkUs8aJZuZv2i
-	FrJSwHBBZg/W2YWBm1uIWlKdkP6py+ZJJQ2vl0M8BsxHCm03LnZGwNbTRlRG9w==
-X-Gm-Gg: ASbGncvoLofLhN5ynb+loJUNTD0LK68nBG3qA8QyUxQGmiHf3DzBHzSJ2SHKc3smSCq
-	NLLOR+i1i5XKCUdajaU7z8/ztu2cCdg/NoYMY4wJjVOzChTsUNAWOVABLKtyJESFOnUrWRhl7Qf
-	1SOGLDKb3x8EOAWjxz6ZIvrFncwe0YWlKetc3c91v0PijLaK6RCF+YkHLk7DTB3YITEgKsUSVGv
-	gTWlzJtrzn9xfmS0mCRDrRhcZPGGzvzDxKYgNZKKPIQ/PcA48OLklZRxpp290Hd0nxPiaEol103
-	fwIjy9pWS/VCF+Z6sEfSaJjyF2HST60NgGCeEglWDaR0
-X-Google-Smtp-Source: AGHT+IFjFplP/VCj1K4hdj1XXuXFukTUKN/Y7r7TPX+q/ahHctFj6US+a3x6n/bezkuEQqYB8kG+jg==
-X-Received: by 2002:a17:902:d507:b0:216:794f:6d7d with SMTP id d9443c01a7336-2292fa058c5mr244283035ad.48.1743525549716;
-        Tue, 01 Apr 2025 09:39:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1743525921; x=1744130721;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4Nw69mQoIfcr7PG0OaaKVJexApQmL7lFoCUOI3rp0LI=;
+        b=D+k6AXN/tPJz8qCMaY4XcbdshuOcY7HJu1d25nEPVvHH8IxCvxAikAKrmaMchXFJ5R
+         6+YXndS+UEnYyEc/Y04fW7K2IF0yJ4+xw75JnKR0MfxhNK7eqehroVHihqzWhu0b0a1w
+         7zEjzqfc9xHpBXnAGS8pe57leioUXI4dkMkAurM7V77u5dn9XEehnkTI9cKU70lvLFac
+         Ttqr26rWRZgj5zOOMm7QllQnizG2CibBREJw9UMec+ANFzIzKNpqMnUUZGtRPNnXFxVx
+         xVRtAnc5L9D1iCja4/mE995PVvypdyUhUX7y1zQMjhX9ORBMXjLzr81JL15gEXfvN0Wv
+         JhKw==
+X-Forwarded-Encrypted: i=1; AJvYcCWJYGwX2PXavij4EuuAOFStdHLlsJlhLKmUsb9p5m1HJitnSfA9littieA7ni0U+shpFDQ=@vger.kernel.org, AJvYcCX6Xbxzc5T5sXsPdDHZ/a6s1PhX44VkOeTcfT4peFjAjtTmoHYhJ7qBIAWmKucKSyaRXeeY1N8Z@vger.kernel.org
+X-Gm-Message-State: AOJu0YwCQnf3uUAaXA8h4EOF6TF9mC4nHAK/gZPEn3DuA9uYOjfcCb5f
+	VVG92JvdyrS/CRbIxHM4HF6cQfh729t76trwzm66XaW62t7SzXc=
+X-Gm-Gg: ASbGnctsm8emqHRgwUXEe6qKoN1ABMOlHWplv4Vqn/wmDXTB4wLDvByl3aoFG9/KKkd
+	Mwqr4p6cFvYb9TNfKjEHpylZ26CrOD53OWCvuD8/8h6/GTcG9dlXT8Swm0d9NTsYQi1erWHGMWV
+	l5YnbjE3a8s5D5Z7KnTT4QXlK321nlIIwHhGutB/GWiKJ1nOTA2qdjSkerAcFRd2+6oCKKq6EQQ
+	yRr5mEevfKbekaJrNtK2VT2HdCxJEK0Sh2+5pBKY1FuTzyqaaO1AWJt9QjJrv3as4pm8bagNoK2
+	w40DApmHqDPMlueFil+xsO41z61j6bM+yNjPh2nhz8Gf
+X-Google-Smtp-Source: AGHT+IEt23FR6gEupTyJ8VCJLzQrkAkKqDDnyXXQpCwagz7Gv7kZAqQ4IGIdYhY59+4DjYbrtkQj3g==
+X-Received: by 2002:a17:902:f545:b0:215:ba2b:cd55 with SMTP id d9443c01a7336-2296829b1bemr9485385ad.2.1743525921073;
+        Tue, 01 Apr 2025 09:45:21 -0700 (PDT)
 Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2291eec73b6sm90853395ad.43.2025.04.01.09.39.09
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2291eec693esm90791875ad.31.2025.04.01.09.45.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Apr 2025 09:39:09 -0700 (PDT)
-Date: Tue, 1 Apr 2025 09:39:08 -0700
+        Tue, 01 Apr 2025 09:45:20 -0700 (PDT)
+Date: Tue, 1 Apr 2025 09:45:19 -0700
 From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Paolo Abeni <pabeni@redhat.com>, Stanislav Fomichev <sdf@fomichev.me>,
+To: Justin Iurman <justin.iurman@uliege.be>
+Cc: Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	bpf <bpf@vger.kernel.org>,
 	Network Development <netdev@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	syzbot+08936936fe8132f91f1a@syzkaller.appspotmail.com
-Subject: Re: [PATCH bpf] bpf: add missing ops lock around dev_xdp_attach_link
-Message-ID: <Z-wWrMfsUtfrnMiU@mini-arch>
-References: <20250331142814.1887506-1-sdf@fomichev.me>
- <d2914c9f-5fc6-4719-bf6b-bc48991cd563@redhat.com>
- <CAADnVQJJFPD2X1enPCa-0D7RG6SraRFTdMj1bsKkzFuz6Nighw@mail.gmail.com>
+	Jakub Kicinski <kuba@kernel.org>
+Subject: Re: new splat
+Message-ID: <Z-wYH-gIvMd89-3d@mini-arch>
+References: <CAADnVQJFWn3dBFJtY+ci6oN1pDFL=TzCmNbRgey7MdYxt_AP2g@mail.gmail.com>
+ <647c3886-72fd-4e49-bdd0-4512f0319e8c@redhat.com>
+ <d24ea1cc-4d32-44f9-9051-0c874f73f1c5@uliege.be>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -104,27 +92,69 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJJFPD2X1enPCa-0D7RG6SraRFTdMj1bsKkzFuz6Nighw@mail.gmail.com>
+In-Reply-To: <d24ea1cc-4d32-44f9-9051-0c874f73f1c5@uliege.be>
 
-On 04/01, Alexei Starovoitov wrote:
-> On Tue, Apr 1, 2025 at 3:33 AM Paolo Abeni <pabeni@redhat.com> wrote:
-> >
-> > On 3/31/25 4:28 PM, Stanislav Fomichev wrote:
-> > > Syzkaller points out that create_link path doesn't grab ops lock,
-> > > add it.
-> > >
-> > > Cc: Jakub Kicinski <kuba@kernel.org>
-> > > Reported-by: syzbot+08936936fe8132f91f1a@syzkaller.appspotmail.com
-> > > Closes: https://lore.kernel.org/bpf/67e6b3e8.050a0220.2f068f.0079.GAE@google.com/
-> > > Fixes: 97246d6d21c2 ("net: hold netdev instance lock during ndo_bpf")
-> > > Signed-off-by: Stanislav Fomichev <sdf@fomichev.me>
-> >
-> > LGTM, but are there any special reasons to get this via the bpf tree? It
-> > looks like 'net' material to me?!?
+On 04/01, Justin Iurman wrote:
+> On 3/31/25 10:07, Paolo Abeni wrote:
+> > Adding Justin.
+> > 
+> > On 3/31/25 1:28 AM, Alexei Starovoitov wrote:
+> > > After bpf fast forward we see this new failure:
+> > > 
+> > > [  138.359852] BUG: using __this_cpu_read() in preemptible [00000000]
+> > > code: test_progs/9368
+> > > [  138.362686] caller is lwtunnel_xmit+0x1c/0x2e0
+> > > [  138.364363] CPU: 9 UID: 0 PID: 9368 Comm: test_progs Tainted: G
+> > >        O        6.14.0-10767-g8be3a12f9f26 #1092 PREEMPT
+> > > [  138.364366] Tainted: [O]=OOT_MODULE
+> > > [  138.364366] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > > BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+> > > [  138.364368] Call Trace:
+> > > [  138.364370]  <TASK>
+> > > [  138.364375]  dump_stack_lvl+0x80/0x90
+> > > [  138.364381]  check_preemption_disabled+0xc6/0xe0
+> > > [  138.364385]  lwtunnel_xmit+0x1c/0x2e0
+> > > [  138.364387]  ip_finish_output2+0x2f9/0x850
+> > > [  138.364391]  ? __ip_finish_output+0xa0/0x320
+> > > [  138.364394]  ip_send_skb+0x3f/0x90
+> > > [  138.364397]  udp_send_skb+0x1a6/0x3d0
+> > > [  138.364402]  udp_sendmsg+0x87b/0x1000
+> > > [  138.364404]  ? ip_frag_init+0x60/0x60
+> > > [  138.364406]  ? reacquire_held_locks+0xcd/0x1f0
+> > > [  138.364414]  ? copy_process+0x2ae0/0x2fa0
+> > > [  138.364418]  ? inet_autobind+0x41/0x60
+> > > [  138.364420]  ? __local_bh_enable_ip+0x79/0xe0
+> > > [  138.364422]  ? inet_autobind+0x41/0x60
+> > > [  138.364424]  ? inet_send_prepare+0xe7/0x1e0
+> > > [  138.364428]  __sock_sendmsg+0x38/0x70
+> > > [  138.364432]  ____sys_sendmsg+0x1c9/0x200
+> > > [  138.364437]  ___sys_sendmsg+0x73/0xa0
+> > > [  138.364444]  ? __fget_files+0xb9/0x180
+> > > [  138.364447]  ? lock_release+0x131/0x280
+> > > [  138.364450]  ? __fget_files+0xc3/0x180
+> > > [  138.364453]  __sys_sendmsg+0x5a/0xa0
+> > 
+> > Possibly a decoded stack trace could help.
+> > 
+> > I think a possible suspect is:
+> > 
+> > commit 986ffb3a57c5650fb8bf6d59a8f0f07046abfeb6
+> > Author: Justin Iurman <justin.iurman@uliege.be>
+> > Date:   Fri Mar 14 13:00:46 2025 +0100
+> > 
+> >      net: lwtunnel: fix recursion loops
+> > 
+> > with dev_xmit_recursion() in lwtunnel_xmit() being called in preemptible
+> > scope.
 > 
-> Pls take it through net.
+> Correct, I came to the same conclusion based on that trace. However, I can't
+> reproduce it with a PREEMPT kernel. It goes through without problem and the
+> output is (as expected), i.e., "lwtunnel_xmit(): recursion limit reached on
+> datapath".
 
-SG! LMK if I should repost to make it happen. (it's always hard for me,
-with xdp, to figure out the proper tree)
+For me adding the following to the config did the trick:
+CONFIG_PREEMPT
+CONFIG_DEBUG_PREEMPT
+
+And reverting your patch made it go away.
 
