@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-55037-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55038-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B40AA7744F
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 08:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EF9F2A77450
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 08:11:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19E1718898B6
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 06:11:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE9AA1889BA5
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 06:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A3B1E2823;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC0E91E3772;
 	Tue,  1 Apr 2025 06:11:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4BAD1372
-	for <bpf@vger.kernel.org>; Tue,  1 Apr 2025 06:10:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C002B1DC9B3
+	for <bpf@vger.kernel.org>; Tue,  1 Apr 2025 06:10:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743487860; cv=none; b=Tt+cQxyzosGMXMKGNN7Q5Ucf2z/3EYqK5hmy0EmoMVoQZmb3VAHH9SBNg0pFmkFwtxcGuKtTChkL/KhfxXHOrrkGQdBuDmCsCGQdxDz6v68aUiagqZ2SbtzfEhX7+sZHZgQf7+rquRBa6i/1ZivISQXh4B4eyPEMdWlv8naljXI=
+	t=1743487861; cv=none; b=X8BBhXFlDwxvFVBaGuljzWZpANI8doEtI4eonmq8MgYB7njeLAR+wSs4GrarZX0zCAfM0a+Xe19ozLcxd8kKPZXMa2taGjxGq1caGtbTmiJFNyoR6fjzEDMoOc7Nm8QOu0Bmx+USo1SWF4um5UKKqes9bH978l5/D+i6W4BgSmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743487860; c=relaxed/simple;
-	bh=qB+jqCRnvk42qN14gOkTjAPQ7Qt1Dg8uyi4MMC04b3k=;
+	s=arc-20240116; t=1743487861; c=relaxed/simple;
+	bh=dBQP/u0ZVOxGf/0x4Rgnkgf385tEm/HVEwVGeZSVtDs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RTgPkj6AeocV1GuHQPu5zl/qFA1y1zmfTdZG6XGqQGFAXBzQEHjbkhAuvB9QSx0chXUTL4pc5hDlOSyuJyCbexsAhEb3NDn8xnYuGe8k76ZR/984a6xQEZwqSqSNJovToGDNQaGlNHBGsXdxS2VnyVMULKCJFa98z/oD9a8TpeI=
+	 MIME-Version; b=OxwxjXefWKu0+4hwLo+qsKWgrFgw0a23LCqE9RwqQ6clgKqAZwoVsFC2QkYq5oKb1AItQPdHmsCvKOCkPNKvRXYJpRVlmEUnpmk69AvvEUhqRreCffXTkZ9h1hT3ZQFf/wIzYHGAFRktxT4b5RqQMwUwNEv05hOTqs2ZhbTec/A=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZRd012xc7z4f3m7d
-	for <bpf@vger.kernel.org>; Tue,  1 Apr 2025 14:10:25 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZRd020P1Vz4f3mHH
+	for <bpf@vger.kernel.org>; Tue,  1 Apr 2025 14:10:26 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 1590B1A0EC2
+	by mail.maildlp.com (Postfix) with ESMTP id B431F1A1A6E
 	for <bpf@vger.kernel.org>; Tue,  1 Apr 2025 14:10:50 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgDXOl9ig+tnpa6yIA--.16784S9;
-	Tue, 01 Apr 2025 14:10:49 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgDXOl9ig+tnpa6yIA--.16784S10;
+	Tue, 01 Apr 2025 14:10:50 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -56,9 +56,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Zvi Effron <zeffron@riotgames.com>,
 	Cody Haas <chaas@riotgames.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf-next v3 5/6] bpf: Don't allocate per-cpu extra_elems for fd htab
-Date: Tue,  1 Apr 2025 14:22:49 +0800
-Message-Id: <20250401062250.543403-6-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v3 6/6] selftests/bpf: Add test case for atomic update of fd htab
+Date: Tue,  1 Apr 2025 14:22:50 +0800
+Message-Id: <20250401062250.543403-7-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20250401062250.543403-1-houtao@huaweicloud.com>
 References: <20250401062250.543403-1-houtao@huaweicloud.com>
@@ -69,10 +69,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDXOl9ig+tnpa6yIA--.16784S9
-X-Coremail-Antispam: 1UD129KBjvJXoW7tr18tr4fGFyDGF1kAF45trb_yoW8ZFyDpF
-	4xGr129r1rXr1vgws8JanFkryYvr1xtFyUCrZ0q34FyF1jvrn7Kr17Aa1IvFyYkryxtw1f
-	Xryava4Fv3y8ZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgDXOl9ig+tnpa6yIA--.16784S10
+X-Coremail-Antispam: 1UD129KBjvJXoWxKry7WF4xKr4fArW5CrW5Awb_yoWxuryrpa
+	yrGayUtFW8XrW7Xw1rtan7KFZ8KFsYqr47Ar95Wry5AF18X3WSqF4xKFW5tFyfCrZYqF4F
+	vw43tFW5u3y7XFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -91,55 +91,272 @@ X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-The update of element in fd htab is in-place now, therefore, there is no
-need to allocate per-cpu extra_elems, just remove it.
+Add a test case to verify the atomic update of existing elements in the
+htab of maps. The test proceeds in three steps:
+
+1) fill the outer map with keys in the range [0, 8]
+For each inner array map, the value of its first element is set as the
+key used to lookup the inner map.
+
+2) create 16 threads to lookup these keys concurrently
+Each lookup thread first lookups the inner map, then it checks whether
+the first value of the inner array map is the same as the key used to
+lookup the inner map.
+
+3) create 8 threads to overwrite these keys concurrently
+Each update thread first creates an inner array, it sets the first value
+of the array to the key used to update the outer map, then it uses the
+key and the inner map to update the outer map.
+
+Without atomic update support, the lookup operation may return -ENOENT
+during the lookup of outer map, or return -EINVAL during the comparison
+of the first value in the inner map and the key used for inner map, and
+the test will fail. After the atomic update change, both the lookup and
+the comparison will succeed.
+
+Given that the update of outer map is slow, the test case sets the loop
+number for each thread as 5 to reduce the total running time. However,
+the loop number could also be adjusted through FD_HTAB_LOOP_NR
+environment variable.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/hashtab.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ .../selftests/bpf/prog_tests/fd_htab_lookup.c | 192 ++++++++++++++++++
+ .../selftests/bpf/progs/fd_htab_lookup.c      |  25 +++
+ 2 files changed, 217 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fd_htab_lookup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fd_htab_lookup.c
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 097992efef05..2e18d7e50d9b 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -206,9 +206,13 @@ static struct htab_elem *get_htab_elem(struct bpf_htab *htab, int i)
- 	return (struct htab_elem *) (htab->elems + i * (u64)htab->elem_size);
- }
- 
-+/* Both percpu and fd htab support in-place update, so no need for
-+ * extra elem. LRU itself can remove the least used element, so
-+ * there is no need for an extra elem during map_update.
-+ */
- static bool htab_has_extra_elems(struct bpf_htab *htab)
- {
--	return !htab_is_percpu(htab) && !htab_is_lru(htab);
-+	return !htab_is_percpu(htab) && !htab_is_lru(htab) && !is_fd_htab(htab);
- }
- 
- static void htab_free_prealloced_timers_and_wq(struct bpf_htab *htab)
-@@ -464,8 +468,6 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
- {
- 	bool percpu = (attr->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
- 		       attr->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH);
--	bool lru = (attr->map_type == BPF_MAP_TYPE_LRU_HASH ||
--		    attr->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH);
- 	/* percpu_lru means each cpu has its own LRU list.
- 	 * it is different from BPF_MAP_TYPE_PERCPU_HASH where
- 	 * the map's value itself is percpu.  percpu_lru has
-@@ -560,10 +562,7 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
- 		if (err)
- 			goto free_map_locked;
- 
--		if (!percpu && !lru) {
--			/* lru itself can remove the least used element, so
--			 * there is no need for an extra elem during map_update.
--			 */
-+		if (htab_has_extra_elems(htab)) {
- 			err = alloc_extra_elems(htab);
- 			if (err)
- 				goto free_prealloc;
+diff --git a/tools/testing/selftests/bpf/prog_tests/fd_htab_lookup.c b/tools/testing/selftests/bpf/prog_tests/fd_htab_lookup.c
+new file mode 100644
+index 000000000000..ca46fdd6e1ae
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/fd_htab_lookup.c
+@@ -0,0 +1,192 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2025. Huawei Technologies Co., Ltd */
++#define _GNU_SOURCE
++#include <stdbool.h>
++#include <test_progs.h>
++#include "fd_htab_lookup.skel.h"
++
++struct htab_op_ctx {
++	int fd;
++	int loop;
++	unsigned int entries;
++	bool stop;
++};
++
++#define ERR_TO_RETVAL(where, err) ((void *)(long)(((where) << 12) | (-err)))
++
++static void *htab_lookup_fn(void *arg)
++{
++	struct htab_op_ctx *ctx = arg;
++	int i = 0;
++
++	while (i++ < ctx->loop && !ctx->stop) {
++		unsigned int j;
++
++		for (j = 0; j < ctx->entries; j++) {
++			unsigned int key = j, zero = 0, value;
++			int inner_fd, err;
++
++			err = bpf_map_lookup_elem(ctx->fd, &key, &value);
++			if (err) {
++				ctx->stop = true;
++				return ERR_TO_RETVAL(1, err);
++			}
++
++			inner_fd = bpf_map_get_fd_by_id(value);
++			if (inner_fd < 0) {
++				/* The old map has been freed */
++				if (inner_fd == -ENOENT)
++					continue;
++				ctx->stop = true;
++				return ERR_TO_RETVAL(2, inner_fd);
++			}
++
++			err = bpf_map_lookup_elem(inner_fd, &zero, &value);
++			if (err) {
++				close(inner_fd);
++				ctx->stop = true;
++				return ERR_TO_RETVAL(3, err);
++			}
++			close(inner_fd);
++
++			if (value != key) {
++				ctx->stop = true;
++				return ERR_TO_RETVAL(4, -EINVAL);
++			}
++		}
++	}
++
++	return NULL;
++}
++
++static void *htab_update_fn(void *arg)
++{
++	struct htab_op_ctx *ctx = arg;
++	int i = 0;
++
++	while (i++ < ctx->loop && !ctx->stop) {
++		unsigned int j;
++
++		for (j = 0; j < ctx->entries; j++) {
++			unsigned int key = j, zero = 0;
++			int inner_fd, err;
++
++			inner_fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, 4, 4, 1, NULL);
++			if (inner_fd < 0) {
++				ctx->stop = true;
++				return ERR_TO_RETVAL(1, inner_fd);
++			}
++
++			err = bpf_map_update_elem(inner_fd, &zero, &key, 0);
++			if (err) {
++				close(inner_fd);
++				ctx->stop = true;
++				return ERR_TO_RETVAL(2, err);
++			}
++
++			err = bpf_map_update_elem(ctx->fd, &key, &inner_fd, BPF_EXIST);
++			if (err) {
++				close(inner_fd);
++				ctx->stop = true;
++				return ERR_TO_RETVAL(3, err);
++			}
++			close(inner_fd);
++		}
++	}
++
++	return NULL;
++}
++
++static int setup_htab(int fd, unsigned int entries)
++{
++	unsigned int i;
++
++	for (i = 0; i < entries; i++) {
++		unsigned int key = i, zero = 0;
++		int inner_fd, err;
++
++		inner_fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, 4, 4, 1, NULL);
++		if (!ASSERT_OK_FD(inner_fd, "new array"))
++			return -1;
++
++		err = bpf_map_update_elem(inner_fd, &zero, &key, 0);
++		if (!ASSERT_OK(err, "init array")) {
++			close(inner_fd);
++			return -1;
++		}
++
++		err = bpf_map_update_elem(fd, &key, &inner_fd, 0);
++		if (!ASSERT_OK(err, "init outer")) {
++			close(inner_fd);
++			return -1;
++		}
++		close(inner_fd);
++	}
++
++	return 0;
++}
++
++static int get_int_from_env(const char *name, int dft)
++{
++	const char *value;
++
++	value = getenv(name);
++	if (!value)
++		return dft;
++
++	return atoi(value);
++}
++
++void test_fd_htab_lookup(void)
++{
++	unsigned int i, wr_nr = 8, rd_nr = 16;
++	pthread_t tids[wr_nr + rd_nr];
++	struct fd_htab_lookup *skel;
++	struct htab_op_ctx ctx;
++	int err;
++
++	skel = fd_htab_lookup__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "fd_htab_lookup__open_and_load"))
++		return;
++
++	ctx.fd = bpf_map__fd(skel->maps.outer_map);
++	ctx.loop = get_int_from_env("FD_HTAB_LOOP_NR", 5);
++	ctx.stop = false;
++	ctx.entries = 8;
++
++	err = setup_htab(ctx.fd, ctx.entries);
++	if (err)
++		goto destroy;
++
++	memset(tids, 0, sizeof(tids));
++	for (i = 0; i < wr_nr; i++) {
++		err = pthread_create(&tids[i], NULL, htab_update_fn, &ctx);
++		if (!ASSERT_OK(err, "pthread_create")) {
++			ctx.stop = true;
++			goto reap;
++		}
++	}
++	for (i = 0; i < rd_nr; i++) {
++		err = pthread_create(&tids[i + wr_nr], NULL, htab_lookup_fn, &ctx);
++		if (!ASSERT_OK(err, "pthread_create")) {
++			ctx.stop = true;
++			goto reap;
++		}
++	}
++
++reap:
++	for (i = 0; i < wr_nr + rd_nr; i++) {
++		void *ret = NULL;
++		char desc[32];
++
++		if (!tids[i])
++			continue;
++
++		snprintf(desc, sizeof(desc), "thread %u", i + 1);
++		err = pthread_join(tids[i], &ret);
++		ASSERT_OK(err, desc);
++		ASSERT_EQ(ret, NULL, desc);
++	}
++destroy:
++	fd_htab_lookup__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/fd_htab_lookup.c b/tools/testing/selftests/bpf/progs/fd_htab_lookup.c
+new file mode 100644
+index 000000000000..a4a9e1db626f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/fd_htab_lookup.c
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2025. Huawei Technologies Co., Ltd */
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++char _license[] SEC("license") = "GPL";
++
++struct inner_map_type {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(key_size, 4);
++	__uint(value_size, 4);
++	__uint(max_entries, 1);
++} inner_map SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
++	__uint(max_entries, 64);
++	__type(key, int);
++	__type(value, int);
++	__array(values, struct inner_map_type);
++} outer_map SEC(".maps") = {
++	.values = {
++		[0] = &inner_map,
++	},
++};
 -- 
 2.29.2
 
