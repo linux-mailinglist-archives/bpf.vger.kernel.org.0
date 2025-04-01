@@ -1,300 +1,554 @@
-Return-Path: <bpf+bounces-55099-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55100-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9226FA7831A
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 22:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EA20A78339
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 22:21:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA9021891159
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 20:06:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A7041890EAA
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 20:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A892046B7;
-	Tue,  1 Apr 2025 20:06:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5F520E70D;
+	Tue,  1 Apr 2025 20:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hBKxsxSa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sb5UluY/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D2C1C6FFE
-	for <bpf@vger.kernel.org>; Tue,  1 Apr 2025 20:06:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9DA3594F
+	for <bpf@vger.kernel.org>; Tue,  1 Apr 2025 20:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743537985; cv=none; b=lALQkm4WYd9UIFYZcTcixtJz9QsEfNmSoQs+mB81Sg1BihuIUtU6YELK++wkvGyxJKPLpPEz+zDNpMqLyU1NFOL+6XVIiCJuNfWURRvVoHJOxytJyFP0W7nWXfnSLnEO9XFtHTjN36SuZtgs7KPgov+kc6/n0+O9vh8tJmiHgs4=
+	t=1743538859; cv=none; b=UzyJgrB27wVvARYcyKHaTlIWZepfpvFsNOe6d0aJUr7YLRfqulCi7eO/tLBYi4Zl5N3QAy0jVUVFNldrEGhY7mSMDJ6MuXPTkcUB7NwatUUvmxMtLHKLkCZ/DfRRicMLmGivS6vd5P3uGIJw0CtHa7CCb92gGvpKJMvFzBNnGWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743537985; c=relaxed/simple;
-	bh=HgjgxgElPFP5Qb/lsgiHpNSyr6wsDreWOgZ5aB0OIQY=;
+	s=arc-20240116; t=1743538859; c=relaxed/simple;
+	bh=kG9MHKWfPsSZKGqLUTFwCujqelgajo8PTThK77Y2xCI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZmsWkQGwRSEQMk4Jrth01sLbJWKm7hEq9qkmRy+KbymcWBwtBL4AKuBI8IBuQxxoYPZQgaypN+eLp/VSR9bzWaV8JRyZtjCW2PXtX024rKs2so5Jp02M+2wVJA6Ssov8bpo95zQhJH42APjDkL3FliMQDul+uWUhOrxpH6dndQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hBKxsxSa; arc=none smtp.client-ip=209.85.214.171
+	 To:Cc:Content-Type; b=kXmG5y7jPuAWq4gTqDYRdjf7IRxocx4PW+UPhJlgWXNkbK/K69CprM4vIZ950jlVPlyEKlYYRWA+Y6YRvUV0Lv/A+ZWkuT8l7tC28KV8fb7yxrSWWUh91tI8QdRz/O0tqv0pdo4rntckP+6YXZ4OFa1XD20DNzgUV0jaTjVHKRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sb5UluY/; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-224019ad9edso36693065ad.1
-        for <bpf@vger.kernel.org>; Tue, 01 Apr 2025 13:06:22 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-223fd89d036so128264795ad.1
+        for <bpf@vger.kernel.org>; Tue, 01 Apr 2025 13:20:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743537982; x=1744142782; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1743538857; x=1744143657; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ybOtG3VAxLAs6srHFBYiNH/ZxqdGyvM9iMYANl9hoCE=;
-        b=hBKxsxSaUiKOUbb3grWSd4sh8Irwaza4wGPXBaXq04PxKCLEfu8z+ryKJNyUwr+i4G
-         QNu0gGmXFfNJSpn+Ofr8KLi0uhvjJrCz+s4tASzIy4hSBIGnz/AAJiIBrST/Spidc+AJ
-         YfQEXGXhGeIwKUa+SQvMBgsbEz8t471WEIo/8WRkFQaQgqnrVHBYxP09G4VOsFg6RRLX
-         w+3sWvXaLS6V1CeO35qMpoFKkXKjqiC9aEquwMdFwtCAVeyIeYximT6H+x2oSSa1ZByQ
-         NF77n1bQjAxqdIUbmdlmYvQTd9hLfSE6yjlR5+GEZqu5dEMVIeTyGDSCUlDN+1XmdeoQ
-         wsRw==
+        bh=4GD4JOmOmxtR6uV1aAT/bnTzFjdrEUsA2rDcxgCEY+k=;
+        b=Sb5UluY/b3NgoOTsq/xT/7vuuvAjaAGajKG8jM116wzBYP+2ftWDwmsYy4cFUJFgNX
+         7v/6a9GK7PNzLEeF8chMz9bf4oUlJ27e/1jJNMgmXM4uCoSIMHZDR4m3w4YMyxByNuxd
+         kQScpeqrE/HVkLvIcgr8jHrsFAzffvqXlOEpDN78q8YwLyrqY1OxPQNwxrQoJ162LjsG
+         LkYLALluAIX9cB6HENuJssXkFaHEDNMsVQpSff4403R3FO3CPLY0EB2UTTo82mnR4gbx
+         xBsqOI3UceC6MNgn+RFitve3mm0E2YHWaUyHYM5+MB9lhabIS91wVSJicEW7AadLSGnd
+         4PoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743537982; x=1744142782;
+        d=1e100.net; s=20230601; t=1743538857; x=1744143657;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ybOtG3VAxLAs6srHFBYiNH/ZxqdGyvM9iMYANl9hoCE=;
-        b=CTS/2Epwost2E7ZVQFjTtCronr6CT786TwYmhhzBtZitQGbuvlk+X7FYrYOL4Udq/w
-         dV7qOInQRj5q2EDVE297Qzg9SDEwTBQvdlAjNBNKTTdRUgOUZgMxA+KcE0JHvuby9N52
-         EX8IWiGjPrCk9c5OBfMrl/Njscgd5spTp0wamyGfcSL5OpVRXmN1/HOxwJHYBfGeGYnK
-         HHuNpymG16lPx0j+usZVhmTLOEnLCPHYHXcpVIXE2MD7RkQj8zJNtSdmgbRxtXJ/JVMi
-         1aNlCWkvpd/PyWD029mif+G19T+GRo/8PzzVoDJdJW1Wekka3yoYhdaKxjb1LH2+c1I9
-         XE+g==
-X-Gm-Message-State: AOJu0YwEOypRgkSs60e8FvUzWUjHwxMxEsyZiDjLe9p1GTjlbZuflqUO
-	wNXyaNGGwSqd9+8CHcKcX+N9D8c6T45tt5H0vpQDdylGPG7MeEjZsTA55R0pH8dZprkeGJznSr8
-	nXNGbIOi49K6HFC2Jwu0OO5isJtoJnWiU
-X-Gm-Gg: ASbGncvjeMpY1IdCDZEH6k3H8Hk/IE0lAmx6UoWk453UDQVzdbEvfec9bfbzcXDVImI
-	LuTVHFZgvoRAAqW8TQhvZSzJ0as/msMmlDiQ8JDU0niIez9L+79cQw4T3t5w2fabepbdKYrbX4h
-	BQtPjEmAYPNGJ7FV4I7eh7fAWKOY23fFUfjHIMy++zZw==
-X-Google-Smtp-Source: AGHT+IHDHcTyUpqXgHraHvAnQDNRRTmcI8gvfGLI5Lntijm8qb/mgjHad2SKTHKBlQfjtgt//5n1m0KoIH68M2CjpN4=
-X-Received: by 2002:a05:6a00:2292:b0:736:bfc4:ef2c with SMTP id
- d2e1a72fcca58-739c7529d87mr79995b3a.0.1743537982179; Tue, 01 Apr 2025
- 13:06:22 -0700 (PDT)
+        bh=4GD4JOmOmxtR6uV1aAT/bnTzFjdrEUsA2rDcxgCEY+k=;
+        b=HpgG8EbiDcsr7CKie0SuRa+5JIDoySBoLkBJKQKYlB1fGg982SJgIiZVPjjZROotR9
+         IJtEl0Soe+xPBEhTPIzZ1Qt60qD3Vbr/1pMe4QNCRwfb1q1fYE0qbXaBT0yVAahPKqpf
+         xQYq49Ig6oOoqBgBMT9XAx1HGdiRyv7ItIa6tPDOcLJ4DQnJET1g/TiVdh9ezyHluuJ6
+         XGtGRmxoq/pXqmvRmApel9GWtsAP4DridO5ltoqrTxFbUf52o/0Q8EYDzcUAa7IgB5ji
+         V172dhQoEFUZL46mXKgciptdaRyhSXkTwJ1NAqxBU/XEx+P3rlKkVt+P/7Tox1WCXG51
+         /D0Q==
+X-Gm-Message-State: AOJu0YzIXIiX6PSAf0fqubL4Go3663R2KfQKUFs17S96Lfsj4bfXHJy+
+	+7mdti4n52MkXlR2vxm1PAtV8d+xomEWIV/N7QnAPqo70KjOw2qJb7ITxgqgDTfMtVdJHeQE/4Y
+	G6vZjgJtfWomhHAcTrgyJBXTUVYk=
+X-Gm-Gg: ASbGncuDJBWGCqMoxRnbwek7xLtnZj+tBYLseKANN2OVD0xjRPO+DYoCYabqUuNc5Ry
+	xZ8Q9N8qr+grb/oISmr18Bu3aPZTEXdKtJParN1ydTCHxhKU92Cu4uFJAY6Y4LMxHGSy9hXpo5w
+	AvQd2NovPRjxEG08id5+Jy0ScsAy//cyoqu4Eki9Lyzw==
+X-Google-Smtp-Source: AGHT+IHvYRGa0PpkqUOldtS81M/uIkpqIbu1pPA1goB035m3ZifYdG5WS13dKvfJQXG6vuK3I8rgxQ1JIV7/rfvtWfk=
+X-Received: by 2002:a17:902:ef07:b0:224:c47:cb7 with SMTP id
+ d9443c01a7336-2292f89cb94mr236295095ad.0.1743538856974; Tue, 01 Apr 2025
+ 13:20:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250401165417.170632-1-mykyta.yatsenko5@gmail.com> <20250401165417.170632-3-mykyta.yatsenko5@gmail.com>
-In-Reply-To: <20250401165417.170632-3-mykyta.yatsenko5@gmail.com>
+References: <cover.1741874348.git.vmalik@redhat.com> <4e26ca57634db305a622b010b0d86dbb36b09c37.1741874348.git.vmalik@redhat.com>
+ <CAEf4BzYTJh06kqR9hL=TvfBTRNskZMCPTAmcD7=nMFJrqR1OSA@mail.gmail.com> <317d7c59-a8aa-45ca-a6ab-3b602ac360ed@redhat.com>
+In-Reply-To: <317d7c59-a8aa-45ca-a6ab-3b602ac360ed@redhat.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 1 Apr 2025 13:06:09 -0700
-X-Gm-Features: AQ5f1JqQkV5Thh68e8FJRT3IcCpcsbcl-BGJv2F3ls7I2UNTJeT6YLH7n7WjYuo
-Message-ID: <CAEf4Bzbo59+mQs2YVpi0K4gKfbJzGhK3=yaBqHNXQkXBttGi4A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: add .BTF.ext line/func
- info getter tests
-To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
-	Mykyta Yatsenko <yatsenko@meta.com>
+Date: Tue, 1 Apr 2025 13:20:44 -0700
+X-Gm-Features: AQ5f1Jq5eGvjlc5XS122G8N6-BT1357c3GmZFj2yIs_n2ho9W5adQY1cUfr89_U
+Message-ID: <CAEf4Bzb=F7nTWvLMo=NgMf_X4bkcNg8rR2E8K6UTv6B++4gxsg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] bpf: Add kfuncs for read-only string operations
+To: Viktor Malik <vmalik@redhat.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 1, 2025 at 9:54=E2=80=AFAM Mykyta Yatsenko
-<mykyta.yatsenko5@gmail.com> wrote:
+On Tue, Apr 1, 2025 at 5:48=E2=80=AFAM Viktor Malik <vmalik@redhat.com> wro=
+te:
 >
-> From: Mykyta Yatsenko <yatsenko@meta.com>
+> On 3/28/25 23:48, Andrii Nakryiko wrote:
+> > On Mon, Mar 24, 2025 at 5:04=E2=80=AFAM Viktor Malik <vmalik@redhat.com=
+> wrote:
+> >>
+> >> String operations are commonly used so this exposes the most common on=
+es
+> >> to BPF programs. For now, we limit ourselves to operations which do no=
+t
+> >> copy memory around.
+> >>
+> >> Unfortunately, most in-kernel implementations assume that strings are
+> >> %NUL-terminated, which is not necessarily true, and therefore we canno=
+t
+> >> use them directly in BPF context. So, we use distinct approaches for
+> >> bounded and unbounded variants of string operations:
+> >>
+> >> - Unbounded variants are open-coded with using __get_kernel_nofault
+> >>   instead of plain dereference to make them safe.
+> >>
+> >> - Bounded variants use params with the __sz suffix so safety is assure=
+d
+> >>   by the verifier and we can use the in-kernel (potentially optimized)
+> >>   functions.
+> >>
+> >> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> >> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+> >> ---
+> >>  kernel/bpf/helpers.c | 299 ++++++++++++++++++++++++++++++++++++++++++=
++
+> >>  1 file changed, 299 insertions(+)
+> >>
+
+[...]
+
+> >> +
+> >> +       pagefault_disable();
+> >> +       while (i++ < XATTR_SIZE_MAX) {
+> >> +               __get_kernel_nofault(&c1, cs++, char, cs_out);
+> >> +               __get_kernel_nofault(&c2, ct++, char, ct_out);
+> >
+> > nit: should we avoid passing increment statements into macro? It's
+> > succinct and all, but we lose nothing by having cs++; ct++; at the end
+> > of while loop, no?
 >
-> Add selftests checking that line and func info retrieved by newly added
-> libbpf APIs are the same as returned by kernel via bpf_prog_get_info_by_f=
-d.
+> That's probably a good idea. It shouldn't be a problem having those
+> increments at the end of the loop so let me update it.
+
+ok, thanks
+
 >
-> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
-> ---
->  .../selftests/bpf/prog_tests/test_btf_ext.c   | 111 ++++++++++++++++++
->  .../selftests/bpf/progs/test_btf_ext.c        |  21 ++++
->  2 files changed, 132 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_btf_ext.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_btf_ext.c
+> >
+> >> +               if (c1 !=3D c2) {
+> >> +                       ret =3D c1 < c2 ? -1 : 1;
+> >> +                       goto out;
+> >> +               }
+> >> +               if (!c1)
+> >> +                       goto out;
+> >> +       }
+> >> +cs_out:
+> >> +       ret =3D -1;
+> >> +       goto out;
+> >> +ct_out:
+> >> +       ret =3D 1;
+> >> +out:
+> >> +       pagefault_enable();
+> >> +       return ret;
+> >> +}
+> >
+> > Given valid values are only -1, 0, and 1, should we return -EFAULT
+> > when one or the other string can't be fetched?
+> >
+> > Yes, users that don't care will treat -EFAULT as the first string is
+> > smaller than the second, but that's what you have anyways. But having
+> > -EFAULT is still useful, IMO. We can also return -E2BIG if we reach i
+> > =3D=3D XATTR_SIZE_MAX situation, no?
+>
+> I was a bit hesitant to make the semantics of bpf_strcmp different from
+> strcmp. But the truth is that returning errors here may bring some value
+> so if people are ok with that, I have no problem implementing your
+> proposal.
+>
+> But in such a case, I'd suggest that we do the same for the rest of the
+> string kfuncs, too. That is, return -EINVAL if __get_kernel_nofault
+
+-EFAULT, not -EINVAL
+
+> fails and -E2BIG if the string is longer than XATTR_SIZE_MAX, possibly
+> wrapped in PTR_ERR when the kfunc returns a pointer. What do you think?
+
+yep, makes sense. Unlike strcmp() and others, we do have an extra
+conditions as you mentioned (memory read faulting, too long/unbounded
+strings, etc), so I'd prefer if users were able to tell error
+condition from trustworthy result, yep
+
+>
+> >
+> >> +
+> >> +/**
+> >> + * bpf_strchr - Find the first occurrence of a character in a string
+> >> + * @s: The string to be searched
+> >> + * @c: The character to search for
+> >> + *
+> >> + * Note that the %NUL-terminator is considered part of the string, an=
+d can
+> >> + * be searched for.
+> >> + */
+> >> +__bpf_kfunc char *bpf_strchr(const char *s, int c)
+> >
+> > if we do int -> char here, something breaks?
+>
+> No, it shouldn't. IIUC the int comes from the original prototype of libc
+> strchr and it's there solely for legacy purposes. Let's change it to
+> char.
 >
 
-Seems like s390x isn't happy about this test, please check what's
-going on there. See some nits below as well.
++1, I always found that `int c` in glibc confusing
 
-API-wise everything looks good, though.
+> >
+> >> +{
+> >> +       char *ret =3D NULL;
+> >> +       int i =3D 0;
+> >> +       char sc;
+> >> +
+> >> +       pagefault_disable();
+> >> +       while (i++ < XATTR_SIZE_MAX) {
+> >> +               __get_kernel_nofault(&sc, s, char, out);
+> >> +               if (sc =3D=3D (char)c) {
+> >> +                       ret =3D (char *)s;
+> >> +                       break;
+> >> +               }
+> >> +               if (sc =3D=3D '\0')
+> >
+> > not very consistent with bpf_strcmp() implementation where you just
+> > did `!c1` for the same. FWIW, when dealing with string characters I
+> > like `sc =3D=3D '\0'` better, but regardless let's be consistent, at
+> > least.
+> >
+> >> +                       break;
+> >> +               s++;
+> >
+> > It's like bpf_strcmp and bpf_strchr were written by two different
+> > people, stylistically :)
+>
+> Yeah, the main reason here is that I've taken the implementations from
+> lib/string.c so that's where these differences come from. But the truth
+> is that the BPF kfuncs required quite a lot of changes so it's better to
+> rewrite them even further and make them consistent among themselves.
+> I'll have a look into it.
+>
+> >
+> >> +       }
+> >> +out:
+> >> +       pagefault_enable();
+> >
+> > how about we
+> >
+> > DEFINE_LOCK_GUARD_0(pagefault, pagefault_disable(), pagefault_enable())
+> >
+> > like we do for preempt_{disable,enable}() and simplify all the
+> > implementations significantly?
+>
+> That's neat, I didn't know it. It will a bit more tricky to use here as
+> __get_kernel_nofault still requires a label but we should at least be
+> able to get rid of pagefault_{disable,enable}() in each function.
 
-pw-bot: cr
+yep, we'll have:
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_btf_ext.c b/tool=
-s/testing/selftests/bpf/prog_tests/test_btf_ext.c
-> new file mode 100644
-> index 000000000000..00aeebc8f863
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_btf_ext.c
-> @@ -0,0 +1,111 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 Facebook */
+err_out:
+    return -EFAULT;
 
-outdated copy/paste
+But the rest will be a clean loop and no pagefault_disable() clean
+ups, distracting from the main logic
 
-> +#include <test_progs.h>
-> +#include "test_btf_ext.skel.h"
-> +#include "btf_helpers.h"
-> +
-> +static void subtest_line_info(void)
-> +{
-> +       struct test_btf_ext *skel;
-> +       struct bpf_prog_info info;
-> +       struct bpf_line_info line_info[1024], *libbpf_line_info;
-> +       __u32 info_len =3D sizeof(info), libbbpf_line_info_cnt;
-> +       int err, fd, i;
-> +
-> +       skel =3D test_btf_ext__open();
-> +       if (!ASSERT_OK_PTR(skel, "skel_open"))
-> +               return;
-> +
-> +       bpf_program__set_autoload(skel->progs.global_func, true);
+[...]
 
-no need to set this explicitly, it will be auto-loaded anyways
+> >> +/**
+> >> + * bpf_strnchr - Find a character in a length limited string
+> >> + * @s: The string to be searched
+> >> + * @s__sz: The number of characters to be searched
+> >> + * @c: The character to search for
+> >> + *
+> >> + * Note that the %NUL-terminator is considered part of the string, an=
+d can
+> >> + * be searched for.
+> >> + */
+> >> +__bpf_kfunc char *bpf_strnchr(void *s, u32 s__sz, int c)
+> >
+> > I'm a bit on the fence here. I can see cases where s would be some
+> > string somewhere (not "trusted" by verifier, because I did BPF CO-RE
+> > based casts, etc). Also I can see how s__sz is non-const known at
+> > runtime only.
+> >
+> > I think the performance argument is much less of a priority compared
+> > to the ability to use the helper in a much wider set of cases. WDYT?
+> > Maybe let's just have __get_kernel_nofault() for everything?
+> >
+> > If performance is truly that important, we can later have an
+> > optimization in which we detect constant size and "guaranteed"
+> > lifetime and validity of `s`, and use optimized strnchr()
+> > implementation?
+> >
+> > But I'd start with a safe and generic __get_kernel_nofault() way for su=
+re.
+>
+> Ok, that makes sense. I didn't realize that with this prototype, we're
+> eliminating a number of uses-cases and I agree that it's more important
+> than performance.
+>
+> Also it turned out that the bounded string functions are seldom
+> optimized on arches and therefore the performance benefit is minimal
+> (the only real case is strnlen on few arches like arm64).
+>
+> So let's turn everything to generic __get_kernel_nofault variants for
+> now. We can think about optimization later, it would be much better if
+> we could detect situations when the kernel implementaion can be used
+> even for the unbounded functions. There, the performance gain would be
+> seen on much more functions.
 
-> +
-> +       err =3D test_btf_ext__load(skel);
-> +       if (!ASSERT_OK(err, "skel_load"))
-> +               goto out;
+Let's leave it for the future, I suspect string routine performance
+will never be a real performance concert, as it will normally be a
+small part of otherwise much more expensive custom logic in BPF
+program. But we'll have an option to optimize, and that's all that
+matters. Generality beats performance for these APIs, though, so let's
+generalize first.
 
-you can actually shorten these two steps to test_btf_ext__open_and_load()
+>
+> >
+> >> +{
+> >> +       return strnchr(s, s__sz, c);
+> >> +}
+> >> +
 
-> +
-> +       fd =3D bpf_program__fd(skel->progs.global_func);
-> +
-> +       memset(&info, 0, sizeof(info));
-> +       info.line_info =3D ptr_to_u64(&line_info);
-> +       info.nr_line_info =3D sizeof(line_info);
-> +       info.line_info_rec_size =3D sizeof(*line_info);
-> +       err =3D bpf_prog_get_info_by_fd(fd, &info, &info_len);
-> +       if (!ASSERT_OK(err, "prog_info"))
-> +               goto out;
-> +
-> +       libbpf_line_info =3D bpf_program__line_info(skel->progs.global_fu=
-nc);
-> +       libbbpf_line_info_cnt =3D bpf_program__line_info_cnt(skel->progs.=
-global_func);
-> +
-> +       if (!ASSERT_OK_PTR(libbpf_line_info, "bpf_program__line_info"))
-> +               goto out;
-> +       if (!ASSERT_GT(libbbpf_line_info_cnt, 0, "line_info_cnt>0"))
-> +               goto out;
-> +       if (!ASSERT_EQ(libbbpf_line_info_cnt, info.nr_line_info, "line_in=
-fo_cnt"))
-> +               goto out;
+[...]
 
-hm.., why _GT and _EQ?... Shouldn't just ASSERT_EQ be enough?
+> >> +/**
+> >> + * bpf_strspn - Calculate the length of the initial substring of @s w=
+hich only contain letters in @accept
+> >> + * @s: The string to be searched
+> >> + * @accept: The string to search for
+> >> + */
+> >> +__bpf_kfunc size_t bpf_strspn(const char *s, const char *accept)
+> >> +{
+> >> +       int i =3D 0;
+> >> +       char c;
+> >> +
+> >> +       pagefault_disable();
+> >> +       while (i < XATTR_SIZE_MAX) {
+> >> +               __get_kernel_nofault(&c, s++, char, out);
+> >> +               if (c =3D=3D '\0' || !bpf_strchr(accept, c))
+> >
+> > hm... so `s` is untrusted/unsafe, but `accept` is? How should verifier
+> > make a distinction? It's `const char *` in the signature, so what
+> > makes one more safe than the other?
+>
+> accept is untrusted as well, that's why bpf_strchr is used instead of
+> strchr. Or am I missing something?
 
-> +
-> +       for (i =3D 0; i < libbbpf_line_info_cnt; ++i) {
-> +               int eq =3D memcmp(libbpf_line_info + i, line_info + i, si=
-zeof(*line_info));
-> +
-> +               if (!ASSERT_EQ(eq, 0, "line_info"))
-> +                       goto out;
-> +       }
 
-seems like we have ASSERT_MEMEQ(), let's use that? I'd probably get
-rid of the loop to not spam test output too much. Just one big
-ASSERT_MEMEQ() should be good enough (though admittedly would be
-harder to debug, if something breaks... but we don't expect that, so
-it's probably fine a tradeoff)
+I'm just asking how should verifier know this just looking at the prototype=
+:
 
-> +
-> +out:
-> +       test_btf_ext__destroy(skel);
-> +}
-> +
-> +static void subtest_func_info(void)
-> +{
-> +       struct test_btf_ext *skel;
-> +       struct bpf_prog_info info;
-> +       struct bpf_func_info func_info[1024], *libbpf_func_info;
-> +       __u32 info_len =3D sizeof(info), libbbpf_func_info_cnt;
-> +       int err, fd, i;
-> +
-> +       skel =3D test_btf_ext__open();
-> +       if (!ASSERT_OK_PTR(skel, "skel_open"))
-> +               return;
-> +
-> +       bpf_program__set_autoload(skel->progs.global_func, true);
-> +
-> +       err =3D test_btf_ext__load(skel);
-> +       if (!ASSERT_OK(err, "skel_load"))
-> +               goto out;
-> +
-> +       fd =3D bpf_program__fd(skel->progs.global_func);
-> +
-> +       memset(&info, 0, sizeof(info));
-> +       info.func_info =3D ptr_to_u64(&func_info);
-> +       info.nr_func_info =3D sizeof(func_info);
-> +       info.func_info_rec_size =3D sizeof(*func_info);
-> +       err =3D bpf_prog_get_info_by_fd(fd, &info, &info_len);
-> +       if (!ASSERT_OK(err, "prog_info"))
-> +               goto out;
-> +
-> +       libbpf_func_info =3D bpf_program__func_info(skel->progs.global_fu=
-nc);
-> +       libbbpf_func_info_cnt =3D bpf_program__func_info_cnt(skel->progs.=
-global_func);
-> +
-> +       if (!ASSERT_OK_PTR(libbpf_func_info, "bpf_program__func_info"))
-> +               goto out;
-> +       if (!ASSERT_GT(libbbpf_func_info_cnt, 0, "func_info_cnt>0"))
-> +               goto out;
-> +       if (!ASSERT_EQ(libbbpf_func_info_cnt, info.nr_func_info, "func_in=
-fo_cnt"))
-> +               goto out;
-> +
-> +       for (i =3D 0; i < libbbpf_func_info_cnt; ++i) {
-> +               int eq =3D memcmp(libbpf_func_info + i, func_info + i, si=
-zeof(*func_info));
-> +
-> +               if (!ASSERT_EQ(eq, 0, "func_info"))
-> +                       goto out;
-> +       }
-> +
-> +out:
-> +       test_btf_ext__destroy(skel);
-> +}
-> +
-> +void test_btf_ext(void)
-> +{
-> +       if (test__start_subtest("func_info"))
-> +               subtest_func_info();
-> +       if (test__start_subtest("line_info"))
-> +               subtest_line_info();
+__bpf_kfunc size_t bpf_strspn(const char *s, const char *accept)
 
-nit: I'd combine those two subtests into one test, same program, same
-logic to get data, two ASSERT_MEMEQ(), not sure subtest is buying us
-anything
+?
 
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_btf_ext.c b/tools/tes=
-ting/selftests/bpf/progs/test_btf_ext.c
-> new file mode 100644
-> index 000000000000..be92e445a988
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_btf_ext.c
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2025 Meta Platforms Inc. */
-> +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +const volatile int val =3D 3;
-> +
-> +static __attribute__ ((noinline))
+For the next revision, let's add a bunch more "negative cases",
+passing known-bad pointers/strings and checking -EFAULT and -E2BIG.
+These are very generic APIs, let's test this thoroughly: user instead
+of kernel pointers, unbounded/too long strings, just plain invalid
+pointers, etc.
 
-use __noinline, it's defined in bpf_helpers.h
 
-> +int f0(int var)
-> +{
-> +       int retval =3D var + val;
-> +
-> +       return retval;
-> +}
-> +
-> +SEC("tc")
-> +int global_func(struct __sk_buff *skb)
-> +{
-> +       return f0(skb->len);
-> +}
-> --
-> 2.49.0
+>
+> >
+> >> +                       break;
+> >> +               i++;
+> >> +       }
+> >> +out:
+> >> +       pagefault_enable();
+> >> +       return i;
+> >> +}
+> >> +
+> >> +/**
+> >> + * strcspn - Calculate the length of the initial substring of @s whic=
+h does not contain letters in @reject
+> >> + * @s: The string to be searched
+> >> + * @reject: The string to avoid
+> >> + */
+> >> +__bpf_kfunc size_t bpf_strcspn(const char *s, const char *reject)
+> >> +{
+> >> +       int i =3D 0;
+> >> +       char c;
+> >> +
+> >> +       pagefault_disable();
+> >> +       while (i < XATTR_SIZE_MAX) {
+> >> +               __get_kernel_nofault(&c, s++, char, out);
+> >> +               if (c =3D=3D '\0' || bpf_strchr(reject, c))
+> >> +                       break;
+> >> +               i++;
+> >> +       }
+> >> +out:
+> >> +       pagefault_enable();
+> >> +       return i;
+> >> +}
+> >> +
+> >> +/**
+> >> + * bpf_strpbrk - Find the first occurrence of a set of characters
+> >> + * @cs: The string to be searched
+> >> + * @ct: The characters to search for
+> >> + */
+> >> +__bpf_kfunc char *bpf_strpbrk(const char *cs, const char *ct)
+> >
+> > wouldn't this be `cs + bpf_strcspn(cs, ct)`?
+>
+> That's IMO correct, unless bpf_strcspn(cs, ct) =3D=3D strlen(cs). Then it=
+'s
+> NULL. But it's still a nicer implementation.
+
+ah, strlen() is problematic (though we can have __bpf_strcspn()
+returning both size_t and the actual character (as out parameter), to
+distinguish these situations, don't know. It will be more obvious
+while implementing if that makes sense or not (all those algorithms
+are pretty straightforward, so code reuse isn't really a big concern
+from my POV)
+
+>
+> >
+> >> +{
+> >> +       char *ret =3D NULL;
+> >> +       int i =3D 0;
+> >> +       char c;
+> >> +
+> >> +       pagefault_disable();
+> >> +       while (i++ < XATTR_SIZE_MAX) {
+> >> +               __get_kernel_nofault(&c, cs, char, out);
+> >> +               if (c =3D=3D '\0')
+> >> +                       break;
+> >> +               if (bpf_strchr(ct, c)) {
+> >> +                       ret =3D (char *)cs;
+> >> +                       break;
+> >> +               }
+> >> +               cs++;
+> >> +       }
+> >> +out:
+> >> +       pagefault_enable();
+> >> +       return ret;
+> >> +}
+> >> +
+> >> +/**
+> >> + * bpf_strstr - Find the first substring in a %NUL terminated string
+> >> + * @s1: The string to be searched
+> >> + * @s2: The string to search for
+> >> + */
+> >> +__bpf_kfunc char *bpf_strstr(const char *s1, const char *s2)
+> >> +{
+> >> +       size_t l1, l2;
+> >> +
+> >> +       l2 =3D bpf_strlen(s2);
+> >> +       if (!l2)
+> >> +               return (char *)s1;
+> >> +       l1 =3D bpf_strlen(s1);
+> >> +       while (l1 >=3D l2) {
+> >> +               l1--;
+> >> +               if (!memcmp(s1, s2, l2))
+> >> +                       return (char *)s1;
+> >> +               s1++;
+> >> +       }
+> >> +       return NULL;
+> >
+> > no __get_kernel_nofault() anymore?
+>
+> It's hidden inside bpf_strlen.
+>
+> But I assume that the same as below applies (string possibly changing in
+> between the bpf_strlen and memcmp calls) so we'll need a different
+> implementation.
+>
+
+yep, assume the worst. The result might be invalid due to race (as in,
+we can report that string is found at position X, but a few
+nanoseconds later that's not true anymore), that's fine. But we
+shouldn't crash, loop forever, etc. As long as the result is correct
+in a non-changing string situation, we should be fine.
+
+> >
+> >> +}
+> >> +
+> >> +/**
+> >> + * bpf_strnstr - Find the first substring in a length-limited string
+> >> + * @s1: The string to be searched
+> >> + * @s1__sz: The size of @s1
+> >> + * @s2: The string to search for
+> >> + * @s2__sz: The size of @s2
+> >> + */
+> >> +__bpf_kfunc char *bpf_strnstr(void *s1, u32 s1__sz, void *s2, u32 s2_=
+_sz)
+> >> +{
+> >> +       /* strnstr() uses strlen() to get the length of s2. Since this=
+ is not
+> >> +        * safe in BPF context for non-%NUL-terminated strings, use st=
+rnlen
+> >> +        * first to make it safe.
+> >> +        */
+> >> +       if (strnlen(s2, s2__sz) =3D=3D s2__sz)
+> >> +               return NULL;
+> >> +       return strnstr(s1, s2, s1__sz);
+> >> +}
+> >> +
+> >
+> > we have to assume that the string will change from under us, so any
+> > algorithm that does bpf_strlen/strlen/strnlen and then relies on that
+> > length to be true seems fishy...
+>
+> Hm, that's a good point, I didn't consider that. I'll think about a
+> better implementation for bpf_strstr and bpf_strnstr.
+>
+> Thanks a lot for the thourough review! I'll post v4 soon.
+>
+
+thanks, let's be a bit more paranoid and add some negative tests while at i=
+t
+
+> Viktor
+>
+> >
+> > pw-bot: cr
+> >
+> >>  __bpf_kfunc_end_defs();
+> >>
+> >>  BTF_KFUNCS_START(generic_btf_ids)
+> >> @@ -3293,6 +3579,19 @@ BTF_ID_FLAGS(func, bpf_iter_kmem_cache_next, KF=
+_ITER_NEXT | KF_RET_NULL | KF_SLE
+> >>  BTF_ID_FLAGS(func, bpf_iter_kmem_cache_destroy, KF_ITER_DESTROY | KF_=
+SLEEPABLE)
+> >>  BTF_ID_FLAGS(func, bpf_local_irq_save)
+> >>  BTF_ID_FLAGS(func, bpf_local_irq_restore)
+> >> +BTF_ID_FLAGS(func, bpf_strcmp);
+> >> +BTF_ID_FLAGS(func, bpf_strchr);
+> >> +BTF_ID_FLAGS(func, bpf_strchrnul);
+> >> +BTF_ID_FLAGS(func, bpf_strnchr);
+> >> +BTF_ID_FLAGS(func, bpf_strnchrnul);
+> >> +BTF_ID_FLAGS(func, bpf_strrchr);
+> >> +BTF_ID_FLAGS(func, bpf_strlen);
+> >> +BTF_ID_FLAGS(func, bpf_strnlen);
+> >> +BTF_ID_FLAGS(func, bpf_strspn);
+> >> +BTF_ID_FLAGS(func, bpf_strcspn);
+> >> +BTF_ID_FLAGS(func, bpf_strpbrk);
+> >> +BTF_ID_FLAGS(func, bpf_strstr);
+> >> +BTF_ID_FLAGS(func, bpf_strnstr);
+> >>  BTF_KFUNCS_END(common_btf_ids)
+> >>
+> >>  static const struct btf_kfunc_id_set common_kfunc_set =3D {
+> >> --
+> >> 2.48.1
+> >>
+> >
 >
 
