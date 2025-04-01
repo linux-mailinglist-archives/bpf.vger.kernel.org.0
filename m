@@ -1,53 +1,95 @@
-Return-Path: <bpf+bounces-55080-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55081-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 855A2A77CAA
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 15:50:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52F28A77D83
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 16:19:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5399C189084C
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 13:49:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFDFD161C1C
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 14:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1412046BC;
-	Tue,  1 Apr 2025 13:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC762054E4;
+	Tue,  1 Apr 2025 14:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="XluRdcNt"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="C5WyKFjS";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="v6R1h9rj";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rexuW2xe";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ox2DFSQo"
 X-Original-To: bpf@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B49E01EF37C;
-	Tue,  1 Apr 2025 13:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC79204F94
+	for <bpf@vger.kernel.org>; Tue,  1 Apr 2025 14:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743515347; cv=none; b=l8v9y+Q8gs7+YIbgKYcaxe8P9Hyvx6L6YnT3iqPXAiVJjb6iDZ76U+ukwbVvurSJtePI5uRIAyXVrMEd45Jflx3MP8HKWmdRC8DnusrHSoSd+50LEeaqmxpQI7LtSubyoa27JA64oalSC/mOBQZuSCPK0CH6iBFVCIvM2/e6mac=
+	t=1743517086; cv=none; b=t/cu3wz7SoKJSfHhUMcGO+a7x/aeWqfHAbGV9FtKnCNtO5k1blEsdX8Q6XZ/1Ub7J11VHyMIj0v7luM6XoK0ZdhDrCvKOYd/EbUpi7ISszGf8SiH9i5P4B92g1SXMAzJrMfrzoyP30VLW3DV5bx7mmwEdc8mw9jxyrR0wG6a0W4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743515347; c=relaxed/simple;
-	bh=hV0F6tq5yOMctrxhbw9eHTl9U3HW56lx2la3BwPfE6U=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=UAxjnx/JhmB6s2ZLIMmmu5Ya9NBef00tnQfiUUwi+ICTHUMPz5oEKkoPfdof7TBcHWBmJUsEkSeYT95mcVyZ8P+BXcRFtEEPv3aYEeowWHGnBehzHmMqPemgUZXlV/mXMFPm7xV4JYVfW6rPh1qm/+jANn41WvbT4rAcQLF+Qjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=XluRdcNt; arc=none smtp.client-ip=144.76.82.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=Cc:To:From:Date:Message-ID;
-	bh=muR3/xoxds4Q0VhmaHrJCJC6DwicqL2rRGouQWPbdZU=; b=XluRdcNt9u6w7WqRbOB++O5yG5
-	jh7rpJ3GkeNr38tsq6kbqXuit5fxmiNWW7odG50gQPWg5pFsmUP0gL+IBdpsHAwVUSPQlUmRQh8ej
-	83wRT7OZUfS7qfyKOTUyLFo/Hp3lKxxeeZXri9uc01LKMXk8lqCsjyJKq3KtiWrTCehGUiR2rlW9Q
-	eghnDlkNhoYf5MKEgP4WLBGP0wSKv7rtzdx4myDYtPfSzidMXPwM0CAgrA+CRxgyYCvAUgiJG71ro
-	LEh8AecIiaiqG9zE/jdEUCqVLAEoCzTkqOMb/R52iQkMARU2G+plYznSGtTkME/lLGbmyHRfxaPwO
-	UTUUGGLCNzIUNCzNMlD8UpIalLbd2c1+4sFExAFen/iyuzxo3eVyloGK4KlG0ze1LClf8XnWo3aSc
-	cRJPhOGx2xx5b1TsoLd6IEXsAKvvdGf6D/RTyoPwdzZIUwdeNfPopsaLPrUd8ujuWtugcq2TW4JOO
-	pGKWf8qw2tyk+JOJ0lfYpEZW;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1tzbz9-007g1p-1H;
-	Tue, 01 Apr 2025 13:48:59 +0000
-Message-ID: <ed2038b1-0331-43d6-ac15-fd7e004ab27e@samba.org>
-Date: Tue, 1 Apr 2025 15:48:58 +0200
+	s=arc-20240116; t=1743517086; c=relaxed/simple;
+	bh=Y7jsjWBuwe702oaNOkC97s4Or584AGrSbN/Xz5jZVD0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JGKe8IscJCQ3cb2WvMdDbZ3K5SBPzWhgqGnYI98ATKM+gecyJ+yTELI2Y/Ez6u93zKnfwC2LKYN43HRBheYbVzDVC1wFOpJ80D9L0nrZhXamkpNxIaoUEEWu2YtfYlmTANoWxN0zzocGorWqEaNRld7siAlKGv2en7CJaCX51sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=C5WyKFjS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=v6R1h9rj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rexuW2xe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ox2DFSQo; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D73E01F38E;
+	Tue,  1 Apr 2025 14:18:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1743517083; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nywPJHY2aHhWmHc5HhX/rKXrnwGvUOpqsHuTYIcbA00=;
+	b=C5WyKFjSDfbaNutXxOR/HxhlJmLNxMLgxyHZFw1NRBkk5fU88H0Lq0jepsNJ96whYsq6iW
+	NhcIi1qUnHSChVxYyIodAXKrE+7wcwmQGmv0UIAd01UAW5mscRrTsmSHgbB59Zr6g/Xc0R
+	G3p35QxwcctvNSJON2FsEgsgBbrp64w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1743517083;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nywPJHY2aHhWmHc5HhX/rKXrnwGvUOpqsHuTYIcbA00=;
+	b=v6R1h9rj4oS8/e2fhSL9kNuk1eXhhrSb0BPcPtPch1mZdXRbgJKayr9JGeJd2n22X9s3mg
+	NJosxdkShOW/AsAg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1743517082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nywPJHY2aHhWmHc5HhX/rKXrnwGvUOpqsHuTYIcbA00=;
+	b=rexuW2xecf84ysFcxOqbSoc6+fKYd/mGtit4u1qmSZ/TNPX6FwI7vlOzPSI4sxHkpapP2C
+	t8IYfkM2a+ni2XPqK4NVUZTMcIAx0DSY5vo7exDtteLJpldiNyWAScgpkOaaUis6YqiAgz
+	AkpLe8G8NHCXeLtWH3l41BRAt2pX0qA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1743517082;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nywPJHY2aHhWmHc5HhX/rKXrnwGvUOpqsHuTYIcbA00=;
+	b=ox2DFSQoWModJPYitU5WGDaL97dFUOlKEzgMme2fD7QKyi+WRl8uO7b/0YpixmZ1AlsZDN
+	V9m81qIaY0sF3eBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B664113A43;
+	Tue,  1 Apr 2025 14:18:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 72kxLJr162ceYgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 01 Apr 2025 14:18:02 +0000
+Message-ID: <84d7adee-fa83-4a8b-8476-820212dc929e@suse.cz>
+Date: Tue, 1 Apr 2025 16:18:02 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -55,159 +97,200 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/4] net/io_uring: pass a kernel pointer via optlen_t
- to proto[_ops].getsockopt()
-From: Stefan Metzmacher <metze@samba.org>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Jens Axboe <axboe@kernel.dk>, Pavel Begunkov <asml.silence@gmail.com>,
- Breno Leitao <leitao@debian.org>, Jakub Kicinski <kuba@kernel.org>,
- Christoph Hellwig <hch@lst.de>, Karsten Keil <isdn@linux-pingi.de>,
- Ayush Sawal <ayush.sawal@chelsio.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Kuniyuki Iwashima <kuniyu@amazon.com>, Willem de Bruijn
- <willemb@google.com>, David Ahern <dsahern@kernel.org>,
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
- Xin Long <lucien.xin@gmail.com>, Neal Cardwell <ncardwell@google.com>,
- Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>,
- Johan Hedberg <johan.hedberg@gmail.com>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- Marc Kleine-Budde <mkl@pengutronix.de>,
- Robin van der Gracht <robin@protonic.nl>,
- Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
- Alexander Aring <alex.aring@gmail.com>,
- Stefan Schmidt <stefan@datenfreihafen.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Alexandra Winter <wintera@linux.ibm.com>,
- Thorsten Winkler <twinkler@linux.ibm.com>,
- James Chapman <jchapman@katalix.com>, Jeremy Kerr <jk@codeconstruct.com.au>,
- Matt Johnston <matt@codeconstruct.com.au>,
- Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
- Geliang Tang <geliang@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
- Remi Denis-Courmont <courmisch@gmail.com>,
- Allison Henderson <allison.henderson@oracle.com>,
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
- Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
- "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
- Wen Gu <guwen@linux.alibaba.com>, Jon Maloy <jmaloy@redhat.com>,
- Boris Pismenny <borisp@nvidia.com>, John Fastabend
- <john.fastabend@gmail.com>, Stefano Garzarella <sgarzare@redhat.com>,
- Martin Schiller <ms@dev.tdt.de>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
- linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
- linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
- linux-s390@vger.kernel.org, mptcp@lists.linux.dev,
- linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
- linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
- virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
- bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
- io-uring@vger.kernel.org
-References: <cover.1743449872.git.metze@samba.org>
- <Z-sDc-0qyfPZz9lv@mini-arch> <39515c76-310d-41af-a8b4-a814841449e3@samba.org>
- <407c1a05-24a7-430b-958c-0ca78c467c07@samba.org>
-Content-Language: en-US, de-DE
-In-Reply-To: <407c1a05-24a7-430b-958c-0ca78c467c07@samba.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] locking/local_lock, mm: Replace localtry_ helpers with
+ local_trylock_t type
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@kernel.org, akpm@linux-foundation.org, peterz@infradead.org,
+ bigeasy@linutronix.de, rostedt@goodmis.org, shakeel.butt@linux.dev,
+ mhocko@suse.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20250401005134.14433-1-alexei.starovoitov@gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20250401005134.14433-1-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.996];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_TO(0.00)[gmail.com,linux-foundation.org];
+	TAGGED_RCPT(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-Am 01.04.25 um 15:37 schrieb Stefan Metzmacher:
-> Am 01.04.25 um 10:19 schrieb Stefan Metzmacher:
->> Am 31.03.25 um 23:04 schrieb Stanislav Fomichev:
->>> On 03/31, Stefan Metzmacher wrote:
->>>> The motivation for this is to remove the SOL_SOCKET limitation
->>>> from io_uring_cmd_getsockopt().
->>>>
->>>> The reason for this limitation is that io_uring_cmd_getsockopt()
->>>> passes a kernel pointer as optlen to do_sock_getsockopt()
->>>> and can't reach the ops->getsockopt() path.
->>>>
->>>> The first idea would be to change the optval and optlen arguments
->>>> to the protocol specific hooks also to sockptr_t, as that
->>>> is already used for setsockopt() and also by do_sock_getsockopt()
->>>> sk_getsockopt() and BPF_CGROUP_RUN_PROG_GETSOCKOPT().
->>>>
->>>> But as Linus don't like 'sockptr_t' I used a different approach.
->>>>
->>>> @Linus, would that optlen_t approach fit better for you?
->>>
->>> [..]
->>>
->>>> Instead of passing the optlen as user or kernel pointer,
->>>> we only ever pass a kernel pointer and do the
->>>> translation from/to userspace in do_sock_getsockopt().
->>>
->>> At this point why not just fully embrace iov_iter? You have the size
->>> now + the user (or kernel) pointer. Might as well do
->>> s/sockptr_t/iov_iter/ conversion?
->>
->> I think that would only be possible if we introduce
->> proto[_ops].getsockopt_iter() and then convert the implementations
->> step by step. Doing it all in one go has a lot of potential to break
->> the uapi. I could try to convert things like socket, ip and tcp myself, but
->> the rest needs to be converted by the maintainer of the specific protocol,
->> as it needs to be tested. As there are crazy things happening in the existing
->> implementations, e.g. some getsockopt() implementations use optval as in and out
->> buffer.
->>
->> I first tried to convert both optval and optlen of getsockopt to sockptr_t,
->> and that showed that touching the optval part starts to get complex very soon,
->> see https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=141912166473bf8843ec6ace76dc9c6945adafd1
->> (note it didn't converted everything, I gave up after hitting
->> sctp_getsockopt_peer_addrs and sctp_getsockopt_local_addrs.
->> sctp_getsockopt_context, sctp_getsockopt_maxseg, sctp_getsockopt_associnfo and maybe
->> more are the ones also doing both copy_from_user and copy_to_user on optval)
->>
->> I come also across one implementation that returned -ERANGE because *optlen was
->> too short and put the required length into *optlen, which means the returned
->> *optlen is larger than the optval buffer given from userspace.
->>
->> Because of all these strange things I tried to do a minimal change
->> in order to get rid of the io_uring limitation and only converted
->> optlen and leave optval as is.
->>
->> In order to have a patchset that has a low risk to cause regressions.
->>
->> But as alternative introducing a prototype like this:
->>
->>          int (*getsockopt_iter)(struct socket *sock, int level, int optname,
->>                                 struct iov_iter *optval_iter);
->>
->> That returns a non-negative value which can be placed into *optlen
->> or negative value as error and *optlen will not be changed on error.
->> optval_iter will get direction ITER_DEST, so it can only be written to.
->>
->> Implementations could then opt in for the new interface and
->> allow do_sock_getsockopt() work also for the io_uring case,
->> while all others would still get -EOPNOTSUPP.
->>
->> So what should be the way to go?
+On 4/1/25 02:51, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> Ok, I've added the infrastructure for getsockopt_iter, see below,
-> but the first part I wanted to convert was
-> tcp_ao_copy_mkts_to_user() and that also reads from userspace before
-> writing.
+> Partially revert commit 0aaddfb06882 ("locking/local_lock: Introduce localtry_lock_t").
+> Remove localtry_*() helpers, since localtry_lock() name might
+> be misinterpreted as "try lock".
 > 
-> So we could go with the optlen_t approach, or we need
-> logic for ITER_BOTH or pass two iov_iters one with ITER_SRC and one
-> with ITER_DEST...
+> Introduce local_trylock_irqsave() helper that only works
+
+Introduce local_trylock[_irqsave]() helpers that only work
+
+?
+
+> with newly introduced local_trylock_t type.
+> Note that attempt to use local_trylock_irqsave() with local_lock_t
+> will cause compilation failure.
 > 
-> So who wants to decide?
+> Usage and behavior in !PREEMPT_RT:
+> 
+> local_lock_t lock;                     // sizeof(lock) == 0
 
-I just noticed that it's even possible in same cases
-to pass in a short buffer to optval, but have a longer value in optlen,
-hci_sock_getsockopt() with SOL_BLUETOOTH completely ignores optlen.
+local_lock(&lock, ...);			// preempt disable
 
-This makes it really hard to believe that trying to use iov_iter for this
-is a good idea :-(
+> local_lock_irqsave(&lock, ...);        // irq save
+> if (local_trylock_irqsave(&lock, ...)) // compilation error
+> 
+> local_trylock_t lock;                  // sizeof(lock) == 4
 
-Any ideas beside just going with optlen_t?
+ditto
 
-metze
+> local_lock_irqsave(&lock, ...);        // irq save and acquired = 1
+> if (local_trylock_irqsave(&lock, ...)) // if (!acquired) irq save
+> 
+> The existing local_lock_*() macros can be used either with
+> local_lock_t or local_trylock_t.
+> With local_trylock_t they set acquired = 1 while local_unlock_*() clears it.
+> 
+> In !PREEMPT_RT local_lock_irqsave(local_lock_t *) disables interrupts
+> to protect critical section, but it doesn't prevent NMI, so the fully
+> reentrant code cannot use local_lock_irqsave(local_lock_t *) for
+> exclusive access.
+> 
+> The local_lock_irqsave(local_trylock_t *) helper disables interrupts
+> and sets acquired=1, so local_trylock_irqsave(local_trylock_t *) from
+> NMI attempting to acquire the same lock will return false.
+> 
+> In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
+> Map local_trylock_irqsave() to preemptible spin_trylock().
+> When in hard IRQ or NMI return false right away, since
+> spin_trylock() is not safe due to explicit locking in the underneath
+> rt_spin_trylock() implementation. Removing this explicit locking and
+> attempting only "trylock" is undesired due to PI implications.
+
+And something like:
+
+The local_trylock() without _irqsave can be used to avoid the cost of
+disabling/enabling interrupts by only disabling preemption, so
+local_trylock() in an interrupt attempting to acquire the same
+lock will return false.
+
+> Note there is no need to use local_inc for acquired variable,
+> since it's a percpu variable with strict nesting scopes.
+> 
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+Is there a chance this refactoring will make it to -rc1? It would make
+basing the further usage of the lock in mm and slab trees much easier.
+
+But squash in the following fixups please:
+----8<----
+From bc9098ebb58a2958010428c9294547934852ffa2 Mon Sep 17 00:00:00 2001
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Tue, 1 Apr 2025 15:25:21 +0200
+Subject: [PATCH] fixup! locking/local_lock, mm: Replace localtry_ helpers with
+ local_trylock_t type
+
+---
+ include/linux/local_lock.h          |  5 ++---
+ include/linux/local_lock_internal.h | 21 +++++++++++++++++++--
+ 2 files changed, 21 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
+index 9262109cca51..7ac9385cd475 100644
+--- a/include/linux/local_lock.h
++++ b/include/linux/local_lock.h
+@@ -52,15 +52,14 @@
+ 	__local_unlock_irqrestore(lock, flags)
+ 
+ /**
+- * local_trylock_irqsave - Try to acquire a per CPU local lock
++ * local_trylock - Try to acquire a per CPU local lock
+  * @lock:	The lock variable
+- * @flags:	Storage for interrupt flags
+  *
+  * The function can be used in any context such as NMI or HARDIRQ. Due to
+  * locking constrains it will _always_ fail to acquire the lock in NMI or
+  * HARDIRQ context on PREEMPT_RT.
+  */
+-#define local_trylock(lock, flags)	__local_trylock(lock, flags)
++#define local_trylock(lock)		__local_trylock(lock)
+ 
+ /**
+  * local_trylock_irqsave - Try to acquire a per CPU local lock, save and disable
+diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
+index cc79854206df..5634383c8e9e 100644
+--- a/include/linux/local_lock_internal.h
++++ b/include/linux/local_lock_internal.h
+@@ -23,7 +23,7 @@ typedef struct {
+ #endif
+ 	/*
+ 	 * Same layout as local_lock_t with 'acquired' field at the end.
+-	 * (local_trylock_t *) will be casted to (local_lock_t *).
++	 * (local_trylock_t *) will be cast to (local_lock_t *).
+ 	 */
+ 	int acquired;
+ } local_trylock_t;
+@@ -80,7 +80,7 @@ do {								\
+ 	lockdep_init_map_type(&(lock)->dep_map, #lock, &__key,  \
+ 			      0, LD_WAIT_CONFIG, LD_WAIT_INV,	\
+ 			      LD_LOCK_PERCPU);			\
+-	local_lock_debug_init(lock);				\
++	local_lock_debug_init((local_lock_t *)lock);		\
+ } while (0)
+ 
+ #define __spinlock_nested_bh_init(lock)				\
+@@ -128,6 +128,23 @@ do {								\
+ 		__local_lock_acquire(lock);			\
+ 	} while (0)
+ 
++#define __local_trylock(lock)					\
++	({							\
++		local_trylock_t *tl;				\
++								\
++		preempt_disable();				\
++		tl = this_cpu_ptr(lock);			\
++		if (READ_ONCE(tl->acquired) == 1) {		\
++			preempt_enable();			\
++			tl = NULL;				\
++		} else {					\
++			WRITE_ONCE(tl->acquired, 1);		\
++			local_trylock_acquire(			\
++				(local_lock_t *)tl);		\
++		}						\
++		!!tl;						\
++	})
++
+ #define __local_trylock_irqsave(lock, flags)			\
+ 	({							\
+ 		local_trylock_t *tl;				\
+-- 
+2.49.0
+
+
 
