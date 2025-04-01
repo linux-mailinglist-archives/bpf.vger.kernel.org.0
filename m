@@ -1,143 +1,160 @@
-Return-Path: <bpf+bounces-55041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2587CA774B5
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 08:46:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D71D0A774D5
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 08:58:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D213A16B1B4
-	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 06:46:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E8AD3A9E7C
+	for <lists+bpf@lfdr.de>; Tue,  1 Apr 2025 06:57:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E541E47C9;
-	Tue,  1 Apr 2025 06:46:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7927E1E5B8B;
+	Tue,  1 Apr 2025 06:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cGUWTLuq"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698801C3C08;
-	Tue,  1 Apr 2025 06:46:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820BC3BBC9;
+	Tue,  1 Apr 2025 06:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743489980; cv=none; b=Z/+PbLApmz4XM/8iVV+u2uVMEPixfb9SgQz9AsQ2G8sVB9HM4HO8u6xwN9OTtB6GDyv7f/KSR3kRn6tTFZY8DyafFbufxKyoXMRfkV3cVJ4toFuI4x+uVUVeIleTBvtlChVw7Jt1dIxLnECPi82tXMUIekQioAMdu9Aw0e1oBko=
+	t=1743490673; cv=none; b=vBd1DWTc4Dd54P/1J7Ui3Q6rr1/6vWG/BNCmAirOAYXJk3x0jbAdQD6eY2RMq0mgwA/fjnVj9hLP6vTxOwznWdjpdytf4V1uUUVjkyJ6UQ2aVwPSFL5QyWLEnvBP39hyk9+zVBPD1x1BGFNtH9BUvngHHcUOQcUyuWn5zCCo3wU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743489980; c=relaxed/simple;
-	bh=W9rSmiwKduxUWi49l8wNtNetlF5W1ByAEmk9M9wIH9Y=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=IqImrX33umqACpTGRBavH43d7sv2p0Kxn09M9wXK5j0WMNTA+9kvLDskkjWwV26ilQ0w6GiTg8oSpBV9oY6NA7jn6pLTwNmiKXCsT2OfqpqbybiTOXmQbpbXKT5HeGH2Oqgl5yNO5JyjTOmPm6/Lbst4Y+duEZU9jCCEWGaBG90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4ZRdmr5nmYz4f3jJH;
-	Tue,  1 Apr 2025 14:45:48 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id EC88C1A10CD;
-	Tue,  1 Apr 2025 14:46:11 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgB3gmWvi+tnaud_IA--.20876S2;
-	Tue, 01 Apr 2025 14:46:11 +0800 (CST)
-Subject: Re: [PATCH] selftests/bpf: close the file descriptor to avoid
- resource leaks
-To: Malaya Kumar Rout <malayarout91@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, Geliang Tang <geliang@kernel.org>,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <malayarout91@gmail.com>
- <20250324064234.853591-1-malayarout91@gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <fd481035-5608-6c8e-eb72-65b4ad320d4d@huaweicloud.com>
-Date: Tue, 1 Apr 2025 14:46:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1743490673; c=relaxed/simple;
+	bh=IGCSEc7Ts4W/Xzxedq5JGQXSYv7wzW4BM7kIZ4pyBGQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FH8Lg/CfOG71e8rKpC/GcfXcmvcGv5EP2h98mCQBCVnfMGgDFTYqyxEWmR3OuZJjd/oppkmZdq3N4ILQJ4GogWURcKo464rir/rcSRBLYdK6XQHGGHuU6zHu0Rn0Y8GoEqNmd28JzZNXWHeofeB01YXShoSY+g+cXCI/rreYQrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cGUWTLuq; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6e8f7019422so46909766d6.1;
+        Mon, 31 Mar 2025 23:57:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743490670; x=1744095470; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ssnm22tzkENh8oJAuNiuanJgxcOth+qg0jpPFpBJdzU=;
+        b=cGUWTLuqjA+4F99F7Hf4STbEs6beosoTp1GBEKtW95IGyc6bkiZylCshJNKN3ymPLH
+         W+IE4SXa2R7RogEluuEpu3yegbgZvwlvrL0XIwoM1YRggqnlSItP6/bC5TbuSNHGKvfH
+         ruIrFYeSWxEJgQ8LUsrm6RpF3UuM6ybsMwhNq6BO59sijy2o/jWQaOV2R6+WYlqALtxn
+         GtHFopYVjo3IS/uIIygXNw6pgp9GYoYVC1Pgl7Dd6Q/E+bSz5v4C6FujBUiiid7EB9JR
+         e8crPJgKpolZGsN8S9ncQQ9xD7OQZ9QHHu+IjF0MyoQ0MVJ9Ss1NdsiqOo+4mcPulnq/
+         EgbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743490670; x=1744095470;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ssnm22tzkENh8oJAuNiuanJgxcOth+qg0jpPFpBJdzU=;
+        b=Wqe2dAlcT5IhE3qvYbCVoYaAs2oB9LUWF63Q0i91N06dS9dIWno9Kbsi26HQ1N5sMW
+         JYfOws4SNhjjJ0RA/AeoHDjAoNBkY20xpBTUruY5wubBZgzUJNFwQyLTLCK8mhRqLTN6
+         HFi1soz6DgJ9MYS3pk5u/oG9wJtFHE8+Le4TfR5CLStGoqOx/wUr8NrtC3ymuhP/7KF1
+         Q3f6n5jbQ5JBxL9y+eaDFY7upEnZVQav8K2mLLngOfJNwmICEvdXKxWRPDb+kjPIxRwK
+         iWWQ3XS2hsFkiYiTV+WYGO1Y5Z2tpRgHLofNTykfomEt0CnZdaFnyMvyIziwQuUiabDh
+         vMEA==
+X-Forwarded-Encrypted: i=1; AJvYcCUwAyo8lYc1/8er+I0L2dZNmBBTtH+FwOwW5GNToyXrPW2coZ6D71TM5SDrA6iM7yikf0yAhFwTV+blO2Q+@vger.kernel.org, AJvYcCWTWpbL/4wi+s2HEHYKG3gW8QYIo2AcJNLaN/JNafEwpDSewCyK8Yzb/V7di4bDwWNVwCQURB34@vger.kernel.org, AJvYcCXl8naALy2TqsErRhtR/7puTyH788/eihP0hpALrGxwTwV1eVAsvAdWXJZLfiijPLaml+w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzoAEn1HiOSWHPk9Z5S2f57zj0AIWWjK0NFStvDL9uOebeYkS01
+	iF6Dv0XfF/ezFDiRSps4lAFkCycCe8R2hCvnu6h1FTsM46SFqx/jLhCyD3QNyaMrQNqNUS/tYnt
+	Qj+rkNhWJICPmP3cw96UAgY1E1cc=
+X-Gm-Gg: ASbGncvC07b9zVDnPBPbi65VAVxTQ/pr2GefrvP9Fypik6soE7V8zaBMfAh765nVUAN
+	YnVt9EjPGI7bAyiUlv2vgacqHCkLX1oWHujzySys+Bd/lEI7D/hTBzjW+nBxM/gq2mVrz1Y8uN8
+	QWKDuNBZB6v8om/RNU5WWlGbBF/oRtNZoxovvpzMI=
+X-Google-Smtp-Source: AGHT+IEdDAVr7gVEbl/GU6WDm3sxWkA6MwHWEQcbw2gEjH2spd6Tnyrk+S3j01CtNdHmm8Kio51U0o84zUlZceK8Um4=
+X-Received: by 2002:ad4:5c69:0:b0:6e8:9dc9:1c03 with SMTP id
+ 6a1803df08f44-6eed61d4938mr215266606d6.21.1743490670336; Mon, 31 Mar 2025
+ 23:57:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20250324064234.853591-1-malayarout91@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgB3gmWvi+tnaud_IA--.20876S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFW7Xw48AF48ArW8JF1fZwb_yoW8urWfpa
-	4xGa4YkFySyF1FyF17CF4YqFWfurn7Xr45AF4rJr1UuF1xJFWIqr1xKayFqan8C34Fqrs5
-	Z3WIgF9xZw48Jw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCY1x0262kKe7AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
-	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-	MI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
-	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJb
-	IYCTnIWIevJa73UjIFyTuYvjxUIa0PDUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20250329061548.1357925-1-wangliang74@huawei.com>
+ <Z-qzLyGKskaqgFh5@mini-arch> <Z-sRF0G43HpGiGwH@mini-arch> <0d1b689c-c0ef-460a-9969-ff5aebbb8fac@huawei.com>
+In-Reply-To: <0d1b689c-c0ef-460a-9969-ff5aebbb8fac@huawei.com>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Tue, 1 Apr 2025 08:57:39 +0200
+X-Gm-Features: AQ5f1JoOBJ9GaGcDlhTEvX2DMHnIg27Jf5d7FVBWwMgFdH6LVMOQBiZvlY1hMAs
+Message-ID: <CAJ8uoz1JxhXFkzW8n_Dud8SR-4zE7gim5vS_UZHELiA7d0k+wQ@mail.gmail.com>
+Subject: Re: [PATCH net] xsk: correct tx_ring_empty_descs count statistics
+To: Wang Liang <wangliang74@huawei.com>
+Cc: Stanislav Fomichev <stfomichev@gmail.com>, bjorn@kernel.org, magnus.karlsson@intel.com, 
+	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, 
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
+	john.fastabend@gmail.com, yuehaibing@huawei.com, zhangchangzhong@huawei.com, 
+	netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 3/24/2025 2:42 PM, Malaya Kumar Rout wrote:
-> Static Analyis for bench_htab_mem.c with cppcheck:error
-> tools/testing/selftests/bpf/benchs/bench_htab_mem.c:284:3:
-> error: Resource leak: fd [resourceLeak]
-> tools/testing/selftests/bpf/prog_tests/sk_assign.c:41:3:
-> error: Resource leak: tc [resourceLeak]
+On Tue, 1 Apr 2025 at 04:36, Wang Liang <wangliang74@huawei.com> wrote:
 >
-> fix the issue  by closing the file descriptor (fd & tc) when
-> read & fgets operation fails.
 >
-> Signed-off-by: Malaya Kumar Rout <malayarout91@gmail.com>
+> =E5=9C=A8 2025/4/1 6:03, Stanislav Fomichev =E5=86=99=E9=81=93:
+> > On 03/31, Stanislav Fomichev wrote:
+> >> On 03/29, Wang Liang wrote:
+> >>> The tx_ring_empty_descs count may be incorrect, when set the XDP_TX_R=
+ING
+> >>> option but do not reserve tx ring. Because xsk_poll() try to wakeup t=
+he
+> >>> driver by calling xsk_generic_xmit() for non-zero-copy mode. So the
+> >>> tx_ring_empty_descs count increases once the xsk_poll()is called:
+> >>>
+> >>>    xsk_poll
+> >>>      xsk_generic_xmit
+> >>>        __xsk_generic_xmit
+> >>>          xskq_cons_peek_desc
+> >>>            xskq_cons_read_desc
+> >>>              q->queue_empty_descs++;
 
-Acked-by: Hou Tao <houtao1@huawei.com>
+Sorry, but I do not understand how to reproduce this error. So you
+first issue a setsockopt with the XDP_TX_RING option and then you do
+not "reserve tx ring". What does that last "not reserve tx ring" mean?
+No mmap() of that ring, or something else? I guess you have bound the
+socket with a bind()? Some pseudo code on how to reproduce this would
+be helpful. Just want to understand so I can help. Thank you.
 
-The right subject prefix for the patch should be "[PATCH bpf-next]",
-however, it seems there is no need or no reason to respin the patch.
-> ---
->  tools/testing/selftests/bpf/benchs/bench_htab_mem.c | 1 +
->  tools/testing/selftests/bpf/prog_tests/sk_assign.c  | 4 +++-
->  2 files changed, 4 insertions(+), 1 deletion(-)
+> >>>
+> >>> To avoid this count error, add check for tx descs before send msg in =
+poll.
+> >>>
+> >>> Fixes: df551058f7a3 ("xsk: Fix crash in poll when device does not sup=
+port ndo_xsk_wakeup")
+> >>> Signed-off-by: Wang Liang <wangliang74@huawei.com>
+> >> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
+> > Hmm, wait, I stumbled upon xskq_has_descs again and it looks only at
+> > cached prod/cons. How is it supposed to work when the actual tx
+> > descriptor is posted? Is there anything besides xskq_cons_peek_desc fro=
+m
+> > __xsk_generic_xmit that refreshes cached_prod?
 >
-> diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-> index 926ee822143e..59746fd2c23a 100644
-> --- a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-> +++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-> @@ -281,6 +281,7 @@ static void htab_mem_read_mem_cgrp_file(const char *name, unsigned long *value)
->  	got = read(fd, buf, sizeof(buf) - 1);
->  	if (got <= 0) {
->  		*value = 0;
-> +		close(fd);
->  		return;
->  	}
->  	buf[got] = 0;
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> index 0b9bd1d6f7cc..10a0ab954b8a 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> @@ -37,8 +37,10 @@ configure_stack(void)
->  	tc = popen("tc -V", "r");
->  	if (CHECK_FAIL(!tc))
->  		return false;
-> -	if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc)))
-> +	if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc))) {
-> +		pclose(tc);
->  		return false;
-> +	}
->  	if (strstr(tc_version, ", libbpf "))
->  		prog = "test_sk_assign_libbpf.bpf.o";
->  	else
-
+>
+> Yes, you are right!
+>
+> How about using xskq_cons_nb_entries() to check free descriptors?
+>
+> Like this:
+>
+>
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index e5d104ce7b82..babb7928d335 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -993,7 +993,7 @@ static __poll_t xsk_poll(struct file *file, struct
+> socket *sock,
+>          if (pool->cached_need_wakeup) {
+>                  if (xs->zc)
+>                          xsk_wakeup(xs, pool->cached_need_wakeup);
+> -               else if (xs->tx)
+> +               else if (xs->tx && xskq_cons_nb_entries(xs->tx, 1))
+>                          /* Poll needs to drive Tx also in copy mode */
+>                          xsk_generic_xmit(sk);
+>          }
+>
+>
 
