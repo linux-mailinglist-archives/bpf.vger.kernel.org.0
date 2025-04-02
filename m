@@ -1,90 +1,65 @@
-Return-Path: <bpf+bounces-55173-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55175-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97402A793E6
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 19:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D213DA794D6
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 20:09:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E49603B42D0
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 17:39:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 922923B117C
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 18:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F361C861F;
-	Wed,  2 Apr 2025 17:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1416019006B;
+	Wed,  2 Apr 2025 18:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SSD69hQ8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YG4y6sUt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5679A1A38E1;
-	Wed,  2 Apr 2025 17:39:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7915E19F461;
+	Wed,  2 Apr 2025 18:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743615553; cv=none; b=UpbY6VMGa7UMe/0Mn0GqgLfn3vqTD1YhpVCeUSYwsm9ENv2YFBXkV+0pns8wvVB4UihZPWX6m2NO5MEPhEUtIbsC0wRR6mXMSHK/5oWL+73ol0H27jftsKU02Gv5m8m2sI2TRmNA7rm/iQibG3ot80BfwG32m4XVCiHUgEqhZ9Y=
+	t=1743617369; cv=none; b=qIk6Iop0RBTIFAB88h8ox2yTozRcqb15qqeLr2SmnckuLASCOK8n3FsArP6QmnI3h7elqid5pwQFAGeYRY34PfQWAIZB7rZBT9iMjXm0cBOAHM++YnzSkEQiKu+DK+KP6s0ajwWwgsJwI4yme4VZtrCCiOYTFVxwn7WruwC16tQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743615553; c=relaxed/simple;
-	bh=jNwFDxTuOCH8lyUs09sANxzuuVeAM/rbcLgVg4H6dsg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Irm9JyvpkgK8m4MeixtO7ddXZHY+1kvzpACgpZEZ+fS3A07gwLlhW7V7o7491dNFsUL1XsxMORF4WKvp9igN6H4Y68r7L9ikf5EA8isoDdr+dk4THUsJ+AsTziGZ0L49pwerqzjRe0QslOrS7UOawzLjgZR+t8iDj0vz34A0Sbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SSD69hQ8; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1743615551; x=1775151551;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=jNwFDxTuOCH8lyUs09sANxzuuVeAM/rbcLgVg4H6dsg=;
-  b=SSD69hQ8Ohknpo8uxIccFl+NOjcxKZfidiYc5MB6qIIlF8TVnj3kSTVA
-   FUbmu0syhtvQvREkVrWoLSwYJp5Vos85bHVhCoBJupCfcBM9BwtIVAdas
-   oDjBZA1iAnNjVsrNR4YLMK4pUFXjlqi8dtNdk20/kJVdZYGhsbJNK04lM
-   Vxhpld0C1vsnZlGXcIm8J3haNDfNerIUcixIyp82IskCSW7itYGVonR47
-   C3amgOpGZ+O3ooIaDSjAnGk4I4yaO1xkuHtYEyAJQal0bQcoAx5Erqb9a
-   ukvnIRq6UlGxnLs82I8cjhVJ0IYxuB9TDbOrvGxEYBR2yAmMBbmA2/guW
-   w==;
-X-CSE-ConnectionGUID: Tk9kVoglT+K+xipyulGQMg==
-X-CSE-MsgGUID: RFOyCye2Qk+Jgyz75ridmQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11392"; a="44257269"
-X-IronPort-AV: E=Sophos;i="6.15,182,1739865600"; 
-   d="scan'208";a="44257269"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2025 10:39:10 -0700
-X-CSE-ConnectionGUID: p2GHOo/VQNmyOgcQ+JIrIg==
-X-CSE-MsgGUID: 7kOBXsLKRbyTzowjtSdWEQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,182,1739865600"; 
-   d="scan'208";a="149968781"
-Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
-  by fmviesa002.fm.intel.com with ESMTP; 02 Apr 2025 10:39:09 -0700
-From: Tony Nguyen <anthony.l.nguyen@intel.com>
-To: davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	andrew+netdev@lunn.ch,
-	netdev@vger.kernel.org
-Cc: Zdenek Bouska <zdenek.bouska@siemens.com>,
-	anthony.l.nguyen@intel.com,
-	vitaly.lifshits@intel.com,
-	dima.ruinskiy@intel.com,
-	maciej.fijalkowski@intel.com,
-	magnus.karlsson@intel.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	bpf@vger.kernel.org,
-	Song Yoong Siang <yoong.siang.song@intel.com>,
-	Florian Bezdeka <florian.bezdeka@siemens.com>,
-	Mor Bar-Gabay <morx.bar.gabay@intel.com>
-Subject: [PATCH net 2/5] igc: Fix TX drops in XDP ZC
-Date: Wed,  2 Apr 2025 10:38:54 -0700
-Message-ID: <20250402173900.1957261-3-anthony.l.nguyen@intel.com>
+	s=arc-20240116; t=1743617369; c=relaxed/simple;
+	bh=rNmMO+u09D5zPnq+/pg7RkMy9c5EPySrQWya/Jy4H60=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kn8nSLod5pxA4rO4fy5OjzmNCfBLkDP4i45mOj9oN8ZwmQYOs5b6fiPxJEIDKGg09YL66OmesKbcmFiWvrgyABSo1Nojh9QUlTNBbKBPWNU6cE8FcwJ8QOG3Rq605lxq1Vk3wmvvLF/9cKfavxVN2PmefX/PvJK/fH27LNHU5uA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YG4y6sUt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB9B0C4CEDD;
+	Wed,  2 Apr 2025 18:09:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743617368;
+	bh=rNmMO+u09D5zPnq+/pg7RkMy9c5EPySrQWya/Jy4H60=;
+	h=From:To:Cc:Subject:Date:From;
+	b=YG4y6sUtR4ioGK8k00znOECE6AwnW1jKHtU3d4Yo28ZvmRpHcn9dZNADVqHntSJri
+	 UQeLbECJ0saH0Y62Xrx95BcgTHsGuvTAa0eFkV01Lq8wFZuMdumb8zU+aEHDU7NY0c
+	 rN0lSmFlt8dLaZFaxhr0e3p1I+hqUI8d8COStuGRNgnb3JgbFKRYUuLuvOlbk7Dtl+
+	 6GqUXKzIe22z7+gmSUNiXPl4m0Os7dohc3a705Wh4dq3cgE8kxR2+1PUQfpQCVbX6J
+	 xLQ+EmuLzsBKEabhRgZ45b1ndmLr9D0vrauaE4U79ZSWbOzQtAT87TBJqiOd4me1C0
+	 eiHXf7kQTTTZQ==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: linux-trace-kernel@vger.kernel.org,
+	peterz@infradead.org,
+	mingo@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	mhocko@kernel.org,
+	rostedt@goodmis.org,
+	oleg@redhat.com,
+	brauner@kernel.org,
+	glider@google.com,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	akpm@linux-foundation.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v2] exit: move and extend sched_process_exit() tracepoint
+Date: Wed,  2 Apr 2025 11:09:25 -0700
+Message-ID: <20250402180925.90914-1-andrii@kernel.org>
 X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250402173900.1957261-1-anthony.l.nguyen@intel.com>
-References: <20250402173900.1957261-1-anthony.l.nguyen@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -93,40 +68,96 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Zdenek Bouska <zdenek.bouska@siemens.com>
+It is useful to be able to access current->mm at task exit to, say,
+record a bunch of VMA information right before the task exits (e.g., for
+stack symbolization reasons when dealing with short-lived processes that
+exit in the middle of profiling session). Currently,
+trace_sched_process_exit() is triggered after exit_mm() which resets
+current->mm to NULL making this tracepoint unsuitable for inspecting
+and recording task's mm_struct-related data when tracing process
+lifetimes.
 
-Fixes TX frame drops in AF_XDP zero copy mode when budget < 4.
-xsk_tx_peek_desc() consumed TX frame and it was ignored because of
-low budget. Not even AF_XDP completion was done for dropped frames.
+There is a particularly suitable place, though, right after
+taskstats_exit() is called, but before we do exit_mm() and other
+exit_*() resource teardowns. taskstats performs a similar kind of
+accounting that some applications do with BPF, and so co-locating them
+seems like a good fit. So that's where trace_sched_process_exit() is
+moved with this patch.
 
-It can be reproduced on i226 by sending 100000x 60 B frames with
-launch time set to minimal IPG (672 ns between starts of frames)
-on 1Gbit/s. Always 1026 frames are not sent and are missing a
-completion.
+Also, existing trace_sched_process_exit() tracepoint is notoriously
+missing `group_dead` flag that is certainly useful in practice and some
+of our production applications have to work around this. So plumb
+`group_dead` through while at it, to have a richer and more complete
+tracepoint.
 
-Fixes: 9acf59a752d4c ("igc: Enable TX via AF_XDP zero-copy")
-Signed-off-by: Zdenek Bouska <zdenek.bouska@siemens.com>
-Reviewed-by: Song Yoong Siang <yoong.siang.song@intel.com>
-Reviewed-by: Florian Bezdeka <florian.bezdeka@siemens.com>
-Tested-by: Mor Bar-Gabay <morx.bar.gabay@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Note that we can't use sched_process_template anymore, and so we use
+TRACE_EVENT()-based tracepoint definition. But all the field names and
+order, as well as assign and output logic remain intact. We just add one
+extra field at the end in backwards-compatible way.
+
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- drivers/net/ethernet/intel/igc/igc_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/trace/events/sched.h | 28 +++++++++++++++++++++++++---
+ kernel/exit.c                |  2 +-
+ 2 files changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 27c99ff59ed4..156d123c0e21 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -3042,7 +3042,7 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
- 	 * descriptors. Therefore, to be safe, we always ensure we have at least
- 	 * 4 descriptors available.
- 	 */
--	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget >= 4) {
-+	while (budget >= 4 && xsk_tx_peek_desc(pool, &xdp_desc)) {
- 		struct igc_metadata_request meta_req;
- 		struct xsk_tx_metadata *meta = NULL;
- 		struct igc_tx_buffer *bi;
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index 8994e97d86c1..05a14f2b35c3 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -328,9 +328,31 @@ DEFINE_EVENT(sched_process_template, sched_process_free,
+ /*
+  * Tracepoint for a task exiting:
+  */
+-DEFINE_EVENT(sched_process_template, sched_process_exit,
+-	     TP_PROTO(struct task_struct *p),
+-	     TP_ARGS(p));
++TRACE_EVENT(sched_process_exit,
++
++	TP_PROTO(struct task_struct *p, bool group_dead),
++
++	TP_ARGS(p, group_dead),
++
++	TP_STRUCT__entry(
++		__array(	char,	comm,	TASK_COMM_LEN	)
++		__field(	pid_t,	pid			)
++		__field(	int,	prio			)
++		__field(	bool,	group_dead		)
++	),
++
++	TP_fast_assign(
++		memcpy(__entry->comm, p->comm, TASK_COMM_LEN);
++		__entry->pid		= p->pid;
++		__entry->prio		= p->prio; /* XXX SCHED_DEADLINE */
++		__entry->group_dead	= group_dead;
++	),
++
++	TP_printk("comm=%s pid=%d prio=%d group_dead=%s",
++		  __entry->comm, __entry->pid, __entry->prio,
++		  __entry->group_dead ? "true" : "false"
++	)
++);
+ 
+ /*
+  * Tracepoint for waiting on task to unschedule:
+diff --git a/kernel/exit.c b/kernel/exit.c
+index c2e6c7b7779f..4abd307b1586 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -937,12 +937,12 @@ void __noreturn do_exit(long code)
+ 
+ 	tsk->exit_code = code;
+ 	taskstats_exit(tsk, group_dead);
++	trace_sched_process_exit(tsk, group_dead);
+ 
+ 	exit_mm();
+ 
+ 	if (group_dead)
+ 		acct_process();
+-	trace_sched_process_exit(tsk);
+ 
+ 	exit_sem(tsk);
+ 	exit_shm(tsk);
 -- 
 2.47.1
 
