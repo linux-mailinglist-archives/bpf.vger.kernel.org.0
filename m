@@ -1,58 +1,90 @@
-Return-Path: <bpf+bounces-55181-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55182-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A506A796EB
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 22:56:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D869A796EF
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 22:57:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 889AB3B324B
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 20:56:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 453503B37BF
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 20:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE97B1F4181;
-	Wed,  2 Apr 2025 20:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FCEB1F3BBA;
+	Wed,  2 Apr 2025 20:56:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s77R92D0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GfBDTIz2"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA38E1F30BE
-	for <bpf@vger.kernel.org>; Wed,  2 Apr 2025 20:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7045A1EB182;
+	Wed,  2 Apr 2025 20:56:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743627390; cv=none; b=jeUUkmcdl/6JHfte+/ZSZNbKa/nSTh6zB4Z5CvDoEmFOoHiPiS9BFxrZmMTeuJAohHt1JXPnFAvdX2cRNL4W8g+PdWFdfXo2AEPc+EDH+kvAYArcxk3gnhZLeEam1Z3ptMD7mNoE7C9wszgdw4ViW8p+Y/VOEqIzc1igPbUUsK0=
+	t=1743627409; cv=none; b=CRoTTS3FUjs0Dg0cmsXmOzwvhBjclYHn4R9KpwQ74PhESiDyoIcMLDR3ew59yWnkzIMNUwsztgsU7Has8xK1keBXrO1yi5YnF41ZuWv1za9FfDbluT7YRcpdfPEAnwKTJH8CZq/H82EBaPMfNvu/L4uNEigB7cN3pMr58ZmkRHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743627390; c=relaxed/simple;
-	bh=Ea6X89pYj/k3fVNoM2A0I92xYqPOC+A0sTg3PrPImqk=;
+	s=arc-20240116; t=1743627409; c=relaxed/simple;
+	bh=7b178FymiVTKJIVbEZEK4LifWYIg7wabzqBAxITRouU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KFcbh3bdLn9zV9V7VoB5WKXiCA6895ssuh2B43WhHt3lcHP9ebpdHoJopAvvvC9MwQGmdi1m9Pvbby0VKJ2D9b2/RWvYnAZOMpAZ8fB5qNtmwPH6QlkRAI7+bd72lawKogX8W79FmgkFlhmfY3KBT4Px6aR4fhScrOjX3VCUyyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s77R92D0; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 2 Apr 2025 13:56:06 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743627373;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ENBk6Zps1y3iJcNgBI6UVcMLN7HDztYsknTvn4weW9I=;
-	b=s77R92D0wcOyKFh37BYitJugHAsVroC1aW2Rud2sNsta6FEInOiH7BlCpz5fbVHrJI+7Sk
-	tvRwMrSkPMB9lZSmNXSX0rt9PhoEyGYDingWiM0o9KgOqHfoxtwa1ZjFtlN4wyTsFdRrJ6
-	EdaLC8bZvzXVYyL0LkHXyvXvY0PuO2s=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: torvalds@linux-foundation.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
-	akpm@linux-foundation.org, peterz@infradead.org, vbabka@suse.cz, bigeasy@linutronix.de, 
-	rostedt@goodmis.org, mhocko@suse.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] locking/local_lock, mm: Replace localtry_ helpers
- with local_trylock_t type
-Message-ID: <umfukiohyxcxxw5g6ca5g7stq7oonnr3sbvjyjshnbqalzffeq@2nrwqsmwcrug>
-References: <20250401205245.70838-1-alexei.starovoitov@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SwC87CGAD7XM935tddBKALgZgsgSUNUaOuU/x5f1zPvQt1qFaX1FrGgPENjEh2aV/LwVsYlvWboQmMXXO5jyDtmU8s6xBl/5nmnpexF/tnR1TxTCsSsXWYkj6SDGByFxeRUcYoBRz3sP4yE7gjpFnct4Xvs2r/8id9QgVQH+hqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GfBDTIz2; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-736c3e7b390so189752b3a.2;
+        Wed, 02 Apr 2025 13:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743627408; x=1744232208; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O6H9lg2RZh4ZHiEv8Kqa+UR0aSpTT/Kfq4waHfMS/6k=;
+        b=GfBDTIz2W31LBosLcypsFV+RLR2ivCQraGGWUbvh1lxtohPOya477GVh+bSJrFFROh
+         FvXQz1VzWkzYearR7/IWdl+BNg/yNNmcSZyY/h7fZtzYhP+6aT1bCP2NguZdTxilBoi/
+         Oi1C/jURXy1/k+a5txO7ULz/8JyOzNn4Mj9/3bWF3+OxmFk9HuSVSOyurSOptsLulHgY
+         bL66V/nfD3WDdLkOtb12tu7FRnkKQ4O2wlZcpEz2vydPsLVY6Ci9Ia7HjN5Se/QQWY4z
+         ftGKELRqGnSPZxn/5vjNphN1kV4q13o8wsCE1VMHdySM1m99NSJlWYDw7RQzI2+KCqoH
+         k+MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743627408; x=1744232208;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O6H9lg2RZh4ZHiEv8Kqa+UR0aSpTT/Kfq4waHfMS/6k=;
+        b=Y576b7KBJEgo8e9Xr+TGRXkuXHYIvRPLhhdhKcRc1XaI8pClEx1stwH8xQyu9lV2zO
+         BkS/CKvmTdvYfRNgcCB5Y1AiGxF4oo8DarDvoI5kjIqApklkBsVCuHfVLRLmUs+Y+pWR
+         qGpdtDkWiVslkmNiX3DewdtPQ4nQYOItjUfQ7DxyTMdwqJPCFlt1vxDUddOqXA8K66LF
+         5aMHfQnZN2O8roPamTfSgXa5qoZaFgc2VQUy1LklMsm2lGAP3K+ayFQV0zRAx+lhqwsb
+         fkTlP/wWVoph9l/yaMEGmEMhiCGOVFxnC1YnBqSpJkDq5jEumqcZKc+PAYyM8ksG4Rn5
+         l3WQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWrIeJWwffFjuJe6j8d3NsuAwcwbOjllUTAE2jedCq0H6g7HX1dUD5bnUpp12A/vk97X3g=@vger.kernel.org, AJvYcCXpqKkemM/TPOR9eJTkmJ5BGFpTGQIkxx5TiIp71zYAXPRsQMVQHL+U4nGAa3ie8QOEqVHrmqFG@vger.kernel.org
+X-Gm-Message-State: AOJu0YxaLR9mch+ZoBK06aliLWWKFLpABtqaz25YemJ0MJBFrj+aU/FZ
+	ED6h1vLHCq8pPRu5m7yVKEpSF+vPA8p+chwgTc3XVcUtgg7/hPim
+X-Gm-Gg: ASbGnctoh1T6324/Eewv4LHxaM6X2ftmmWCg0PTbFMcCQk1/ytM5Wu7BmKAzxQkNKgD
+	EX6TRo8Ecgzbaauzppu3WgJYpnzl2NUzpprA5I7URFZiNLxz39gx8h7K7XE3b/C27t13IDz3mp4
+	CRqpRYC+aYKt3WkAIx3Hyf6NpSjh55A8nWHSKeLzVAlICaWXGGd92rl1aXFoply0/ef/xA6zTlK
+	epP8bghjWpA8WK8iLcOaPF0CNtlP9lUZhEMavsXT+htiEK7N7W0dV3KYmLe0rNDTIdFEIV/RFLF
+	tZ3LkhGPmF1h1TveZlfe1uCecPgit9GpcbMlLEv9rwlO
+X-Google-Smtp-Source: AGHT+IH7YAE+oS+GTWmh2OqJhDwX0yBPUMDZseaLgabblgMJk8xA9sl9w1PGo1hyJyOFzCWdtrQUnA==
+X-Received: by 2002:a05:6a00:3d12:b0:736:32d2:aa93 with SMTP id d2e1a72fcca58-73980461abfmr30569862b3a.20.1743627407578;
+        Wed, 02 Apr 2025 13:56:47 -0700 (PDT)
+Received: from gmail.com ([98.97.40.51])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73970e27129sm11870292b3a.57.2025.04.02.13.56.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Apr 2025 13:56:46 -0700 (PDT)
+Date: Wed, 2 Apr 2025 13:56:36 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Dong Chenchen <dongchenchen2@huawei.com>
+Cc: edumazet@google.com, kuniyu@amazon.com, pabeni@redhat.com,
+	willemb@google.com, jakub@cloudflare.com, davem@davemloft.net,
+	kuba@kernel.org, horms@kernel.org, daniel@iogearbox.net,
+	xiyou.wangcong@gmail.com, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, stfomichev@gmail.com, mrpre@163.com,
+	zhangchangzhong@huawei.com
+Subject: Re: [PATCH net v2 2/2] selftests: bpf: Add case for sockmap_ktls set
+ when verdict attached
+Message-ID: <20250402205608.kz2pwsetleu2ssmo@gmail.com>
+References: <20250331012126.1649720-1-dongchenchen2@huawei.com>
+ <20250331012126.1649720-3-dongchenchen2@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,72 +93,16 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250401205245.70838-1-alexei.starovoitov@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20250331012126.1649720-3-dongchenchen2@huawei.com>
 
-On Tue, Apr 01, 2025 at 01:52:45PM -0700, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+On 2025-03-31 09:21:26, Dong Chenchen wrote:
+> Cover the scenario when close a socket after inserted into the sockmap
+> (verdict attach) and set ULP. It will trigger sock_map_close warning.
 > 
-> Partially revert commit 0aaddfb06882 ("locking/local_lock: Introduce localtry_lock_t").
-> Remove localtry_*() helpers, since localtry_lock() name might
-> be misinterpreted as "try lock".
-> 
-> Introduce local_trylock[_irqsave]() helpers that only work
-> with newly introduced local_trylock_t type.
-> Note that attempt to use local_trylock[_irqsave]() with local_lock_t
-> will cause compilation failure.
-> 
-> Usage and behavior in !PREEMPT_RT:
-> 
-> local_lock_t lock;                     // sizeof(lock) == 0
-> local_lock(&lock);                     // preempt disable
-> local_lock_irqsave(&lock, ...);        // irq save
-> if (local_trylock_irqsave(&lock, ...)) // compilation error
-> 
-> local_trylock_t lock;                  // sizeof(lock) == 4
+> Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
+> ---
 
-Is there a reason for this 'acquired' to be int? Can it be uint8_t? No
-need to change anything here but I plan to change it later to compact as
-much as possible within one (or two) cachline for memcg stocks.
+Nice Thanks.
 
-> local_lock(&lock);                     // preempt disable, acquired = 1
-> local_lock_irqsave(&lock, ...);        // irq save, acquired = 1
-> if (local_trylock(&lock))              // if (!acquired) preempt disable
-> if (local_trylock_irqsave(&lock, ...)) // if (!acquired) irq save
-
-For above two ", acquired = 1" as well.
-
-> 
-> The existing local_lock_*() macros can be used either with
-> local_lock_t or local_trylock_t.
-> With local_trylock_t they set acquired = 1 while local_unlock_*() clears it.
-> 
-> In !PREEMPT_RT local_lock_irqsave(local_lock_t *) disables interrupts
-> to protect critical section, but it doesn't prevent NMI, so the fully
-> reentrant code cannot use local_lock_irqsave(local_lock_t *) for
-> exclusive access.
-> 
-> The local_lock_irqsave(local_trylock_t *) helper disables interrupts
-> and sets acquired=1, so local_trylock_irqsave(local_trylock_t *) from
-> NMI attempting to acquire the same lock will return false.
-> 
-> In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
-> Map local_trylock_irqsave() to preemptible spin_trylock().
-> When in hard IRQ or NMI return false right away, since
-> spin_trylock() is not safe due to explicit locking in the underneath
-> rt_spin_trylock() implementation. Removing this explicit locking and
-> attempting only "trylock" is undesired due to PI implications.
-> 
-> The local_trylock() without _irqsave can be used to avoid the cost of
-> disabling/enabling interrupts by only disabling preemption, so
-> local_trylock() in an interrupt attempting to acquire the same
-> lock will return false.
-> 
-> Note there is no need to use local_inc for acquired variable,
-> since it's a percpu variable with strict nesting scopes.
-> 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-
-Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
 
