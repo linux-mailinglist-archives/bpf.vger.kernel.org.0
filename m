@@ -1,202 +1,202 @@
-Return-Path: <bpf+bounces-55189-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55190-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EDAEA7987C
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 01:01:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FDBAA7988B
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 01:10:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99AAB7A444E
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 23:00:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8754D1895BF6
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 23:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD0F71F78E6;
-	Wed,  2 Apr 2025 23:01:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B981B1F585B;
+	Wed,  2 Apr 2025 23:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ICbdYUMO"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ppAEBHcw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7A431F7075;
-	Wed,  2 Apr 2025 23:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC7A1F4C8F
+	for <bpf@vger.kernel.org>; Wed,  2 Apr 2025 23:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743634878; cv=none; b=VCnhqNTcpMlX+sLv3agXcKIa+RJENjS6QssUe4jjyxmNCJrLNsnoABcnkcRgDuOfSEUolWv0iSsa53QALXB9qMrmDfMpao55diC4VJkO/j6ehzB9uswcmjvXoC8A6mArrcJOp50JqAkVivNyyE2L9OQfkY+ULq48bdBimStepNQ=
+	t=1743635426; cv=none; b=apJsBZSlgsaQmr1t0tp22LQGWTJ/20p/KEGsxKAEH//ExYZIFnr7GRRa73EPQjmjRO69CfLbxrGevTc5QjuXW+0E4GgDhvh1pjaDQ5s83JhRKv8VD8c65SKfxU+mSyIOBtIUudR1XHxJHD/bWe8IyVdgPH6r3KPybTmvQ6wBXbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743634878; c=relaxed/simple;
-	bh=2GzWdaDmN/7Vn4Jjp/ACQtNwRhu01zTK3kcsoJgCWbo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WWQu2QkaZVIYL0pqwKyv8hiEIDK91lfeX+YGbf1MofGF4a5f8kkQkhmM/QyGiOuZ5IZB+riUGxrfjmevQNU84/GxgPctCkftItG0BfmYMsToiQj2zdUtB4kDzxxiWWPnekRVRCMxoMCiTB7TJQwD2MPvxfKFHcVpV++ylGon4pA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ICbdYUMO; arc=none smtp.client-ip=209.85.216.45
+	s=arc-20240116; t=1743635426; c=relaxed/simple;
+	bh=50Z2yDR6KF+f2MTKC+x7xCZQh/1SfIY3Au1Mpel5v8I=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=kTsdLl+lU1xWr15jUKx3eADxRw/Jr2/CILlbp+p250WoRu/uvsnGpFUKcu2GxZ/0oektSt3uh5UwLEtNDHqA4KOJyI8LALYld26RDQkbPKHDistzID6JYf5hLZTj99La8CYzrH/0yFIM6Lmj+PDARR1W6bfsTp7s7Ct+TsrCP5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=fail (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ppAEBHcw reason="signature verification failed"; arc=none smtp.client-ip=95.215.58.178; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-30185d00446so225953a91.0;
-        Wed, 02 Apr 2025 16:01:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743634875; x=1744239675; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Q5g6vjilwHVlFu2iNXstsKlqPmWzVrhaLj3zxkMXn4=;
-        b=ICbdYUMO0SjLlEgMz+UX411Jcgx0uVLYv3Nr6Ym0LMnGc2b+UgMjeEYHdtnuzkpen7
-         Ujm9HX5mwUcnOO+85/2gMng3ruzNmrNy+YASX/3oJ/4HR8x2GVo2sWZwGpf+54IWVGSy
-         LDf6wWgQKz8loEyXr7jJmcoEvnMpkzEyQKn8Y7xE3fvx92Jx0KERbmmMftAoRpRGED2K
-         XoZsBEObkM9bg115rvL2eKuZoxX8toQeilYEp1XivfMYFOvYcgC6e4myHSbjEC/oAE+H
-         bSF2ejKTzGOv4s7i8u1i08j0eqneKfitp6SCYI1ZzmQv2dqOrf1IOOiK1/KQ8qg1JOP0
-         23gw==
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-736c277331eso577805b3a.1
+        for <bpf@vger.kernel.org>; Wed, 02 Apr 2025 16:10:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743634875; x=1744239675;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3Q5g6vjilwHVlFu2iNXstsKlqPmWzVrhaLj3zxkMXn4=;
-        b=xVgpiNZ5byRgwnUzVJKdi7ugGKrT7hRhJyO3e8AaxITXPW6ZrZGU/GNyaK6BFNGP02
-         qtL/GJZsbpr1+Ubr02y7z8FIEo6RDN+eSTXvtW21ru9y5m7M4DMnlAiIYOmmsf8AUmKP
-         T00IJtlxdrHoZYKYfMuVbwnGskRaiJC+c+hfQ/+yHEa2o/JYK9+8RFjqe4Orm3k04Ux+
-         8c6OKeNNeFzyo92Xxpfdj5fgsC9Lz4RIBhITe/1DpzodXNXHYvjiL/0PGuuqK3KJX+ta
-         g3f2IkL543/+Uz0uaZhNBRYC3BkrwRQamJvfKgY0UK6ep77WlNkBaEkbtVLAwK5WiZ1g
-         H7Zw==
-X-Forwarded-Encrypted: i=1; AJvYcCWVLbwK9xDZfC1wqWYX4j2J1o6P90T7Dmd8IKrS1MfdRPjsgSiKL1zzwtWCdRcbG10x5fc=@vger.kernel.org, AJvYcCWsRQM2Z5Mo4ihYZWEwi0ccEOVpRXyV22e81L0nHWQfpUoJ0KElNS2CAGdxVy6uhq2UmGRoYoWA@vger.kernel.org
-X-Gm-Message-State: AOJu0YwvxWkjAnyhp+hdcn3ZB00ErkjIxCbUjmgsQXWha3esDW2x6a4I
-	JuTK0iyOkkNI6U5Qcn9JlyfI6Mf/3GgYb6iZiltjJslqsZIp9sK8
-X-Gm-Gg: ASbGncuZFDR/WDt0ygEYymdwfONlxR4w9l1D1updXoDDEyYQZKQFD8cmO+rOieYzvbw
-	iSCLsjXc4ihwZfKmOOjUa028GgiUCqNjbU9wXYHRHwqUV6qj2uVTdzW4Rhp1COib6YDM3NMFUhT
-	5NIPiKutRJCg27Y/KEI5ucnxYj40H7fr8K3fEbJ+smV6nAdEufKVhiBwFCLp5RD01qORaYd1ckm
-	JdWloWR/P+fKQs5AogypT+NPVG/rMwzt4Ur00/awf4ZrF1x2Z1T81m31GR+9wlvBiei0/eLzHlC
-	rEgXTDMxmxcEs6gXyL0YeXAAPKgnUgw3DbgKe9t6g6cJ
-X-Google-Smtp-Source: AGHT+IFTn/3YRHFEhIEuXBYfveNpG911n8tz7h0qc3UcYP9adi1ViVPh9fIv1rRDRodHcVoJYgSsXw==
-X-Received: by 2002:a17:90b:3509:b0:2ee:cbd0:4910 with SMTP id 98e67ed59e1d1-3057a5a14a4mr1641907a91.1.1743634874882;
-        Wed, 02 Apr 2025 16:01:14 -0700 (PDT)
-Received: from gmail.com ([98.97.40.51])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2297865e45fsm1140155ad.135.2025.04.02.16.01.13
+        d=1e100.net; s=20230601; t=1743635424; x=1744240224;
+        h=content-transfer-encoding:mime-version:list-unsubscribe
+         :list-subscribe:list-id:precedence:dkim-signature:references
+         :in-reply-to:message-id:date:subject:to:from:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ZTvf69xZVqywcDHwAK1eBb6GZKnmWx3ondXneizH4aM=;
+        b=PZE8fuI/CcUYj/gQcNi6T2WCLINK8v9C3eek4WKHa0b8e88c+wCLfqDtgJKKbZo8rX
+         o7bTKtBdhUD5nVl30zCMy1maemUhbEHKWK1dyQXYuh6GGKE0fUephvtIzextuYFD9Gar
+         TL0UxRtOJYrlCt3uoYfp/GRws9yGYEey0uhOXU+o+O/bwV+PtmSM42Yw4Jc52ak3n6WO
+         xmXHmJnrlm9sdjwY954wMCjHGKwzcwciqZPwLcsrt0tsFdSunqucmEPvl89PtL/66M+I
+         bDAf2GrlRAlbVpeUlyAj6zM8tVJI33pnyWgQcePHWY8i1HSizlRjn3BKp7J69jYfwaaQ
+         ljHg==
+X-Forwarded-Encrypted: i=1; AJvYcCW+MJbznJBmJ3UdWTKl9KB3JXRlVoaE9yJIRMh8Pyt4kWQ0h6kox10A5W13eNB2GxguKlA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzV3TgYgNKuVS3NlJxNlSlNbXzPchgoq9Fm8G4GirCbHRjBG7UA
+	VHLEF8rElRhGZrK1e2yPTKob2v9J7rYGJ5OoPlGUmu8bzwh/lIBmtx39+w==
+X-Gm-Gg: ASbGncuqnxzGwHOWTfPQ1q2rK1DfyFA3SeB9RhGYx9LNpK0gGobWXY+f9Q81K18u93S
+	l1+/QcDaLyCVkRepLebouDNMl3CY4jSGQu4fYY1DFo3D9SRlbJciF9sUoLwsz/Rtg4ApHqF1qhV
+	TjLn7eX/+6V2AkPNF1Gh279AGojQhd1Carkuw3/dt3MAl58CxVKcFMPpv2bqpqeLHi8uwaOZ188
+	BOAYlVy/I2I2wcdj2f1VE5McRxTPoPHI2pzP2tcx/QYcFuvSMPu6YkH6fKbA25iyWnchwoz7sPl
+	08jFCldsT3z27PE61qcb2m3AN0MMqN6d09A+KvDtklHUob9WUL5fMBQ=
+X-Google-Smtp-Source: AGHT+IHicb4AR5zm1VWkUmqUG4Sz3aOyJ5ko6ycZJClIhLWoM5uyh754p0PxQVcbPCcdeIbb3Qi9Cw==
+X-Received: by 2002:a05:6a20:6008:b0:1f3:1ba1:266a with SMTP id adf61e73a8af0-200f507f11amr1239360637.0.1743635423588;
+        Wed, 02 Apr 2025 16:10:23 -0700 (PDT)
+Received: from john-l-PF4NN7FK.. ([98.97.40.51])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af9bc41a84bsm1721a12.63.2025.04.02.16.10.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Apr 2025 16:01:14 -0700 (PDT)
-Date: Wed, 2 Apr 2025 16:00:56 -0700
+        Wed, 02 Apr 2025 16:10:22 -0700 (PDT)
 From: John Fastabend <john.fastabend@gmail.com>
-To: Dong Chenchen <dongchenchen2@huawei.com>
-Cc: edumazet@google.com, kuniyu@amazon.com, pabeni@redhat.com,
-	willemb@google.com, jakub@cloudflare.com, davem@davemloft.net,
-	kuba@kernel.org, horms@kernel.org, daniel@iogearbox.net,
-	xiyou.wangcong@gmail.com, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, stfomichev@gmail.com, mrpre@163.com,
-	zhangchangzhong@huawei.com
-Subject: Re: [PATCH net v2 1/2] bpf, sockmap: Avoid sk_prot reset on sockmap
- unlink with ULP set
-Message-ID: <20250402230056.6xobt4gwpfnqorzp@gmail.com>
-References: <20250331012126.1649720-1-dongchenchen2@huawei.com>
- <20250331012126.1649720-2-dongchenchen2@huawei.com>
+To: john.fastabend@gmail.com,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf-next v2 1/2] bpf: fix ktls panic with sockmap
+Date: Wed,  2 Apr 2025 16:10:21 -0700
+Message-Id: <20250219052015.274405-2-jiayuan.chen@linux.dev>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250219052015.274405-1-jiayuan.chen@linux.dev>
+References: <20250219052015.274405-1-jiayuan.chen@linux.dev>
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178]) (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits)) (No client certificate requested) by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01B2F14A85 for <bpf@vger.kernel.org>; Wed, 19 Feb 2025 05:21:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1; t=1739942469; h=from:from:reply-to:subject:subject:date:date:message-id:message-id: to:to:cc:cc:mime-version:mime-version: content-transfer-encoding:content-transfer-encoding: in-reply-to:in-reply-to:references:references; bh=Ng683JyK1h4LyOkLDNWozrztNxPIVIkoqqjCDrkgTXU=; b=ppAEBHcwJaxwkdYAlQZcN15UbSCuCebLNl/nOqkifuaQ+FPzp0Jd5H3+5Mos9CWY8pCqr4 X5gZSVr1rKcMMWnlWVxWkphEQreM6Kb458+dbi9PwbAjxrxNE7+rl4cAFFumEcEhYCbQ6j iSVGSm2j1bZZJV1WdRAWYC0bfm60ZHM=
+Precedence: bulk
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250331012126.1649720-2-dongchenchen2@huawei.com>
+X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 2025-03-31 09:21:25, Dong Chenchen wrote:
-> WARNING: CPU: 0 PID: 6558 at net/core/sock_map.c:1703 sock_map_close+0x3c4/0x480
-> Modules linked in:
-> CPU: 0 UID: 0 PID: 6558 Comm: syz-executor.14 Not tainted 6.14.0-rc5+ #238
-> RIP: 0010:sock_map_close+0x3c4/0x480
-> Call Trace:
->  <TASK>
->  inet_release+0x144/0x280
->  __sock_release+0xb8/0x270
->  sock_close+0x1e/0x30
->  __fput+0x3c6/0xb30
->  __fput_sync+0x7b/0x90
->  __x64_sys_close+0x90/0x120
->  do_syscall_64+0x5d/0x170
->  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> 
-> The root cause is:
-> bpf_prog_attach(BPF_SK_SKB_STREAM_VERDICT)
-> tcp_set_ulp //set ulp after sockmap add
-> 	icsk->icsk_ulp_ops = ulp_ops;
-> sock_hash_update_common
->   sock_map_unref
->     sock_map_del_link
->       psock->psock_update_sk_prot(sk, psock, false);
-> 	sk->sk_prot->close = sock_map_close
-> sk_psock_drop
->   sk_psock_restore_proto
->     tcp_bpf_update_proto
->        tls_update //not redo sk_prot to tcp prot
-> inet_release
->   sk->sk_prot->close
->     sock_map_close
->       WARN(sk->sk_prot->close == sock_map_close)
-> 
-> commit e34a07c0ae39 ("sock: redo the psock vs ULP protection check")
-> has moved ulp check from tcp_bpf_update_proto() to psock init.
-> If sk sets ulp after being added to sockmap, it will reset sk_prot to
-> BPF_BASE when removed from sockmap. After the psock is dropped, it will
-> not reset sk_prot back to the tcp prot, only tls context update is
-> performed. This can trigger a warning in sock_map_close() due to
-> recursion of sk->sk_prot->close.
-> 
-> To fix this issue, skip the sk_prot operations redo when deleting link
-> from sockmap if ULP is set.
-> 
-> Fixes: e34a07c0ae39 ("sock: redo the psock vs ULP protection check")
-> Fixes: c0d95d3380ee ("bpf, sockmap: Re-evaluate proto ops when psock is removed from sockmap")
-> Suggested-by: Cong Wang <xiyou.wangcong@gmail.com>
-> Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
-> ---
-> Changes for v2:
-> - Move ULP check from sock_map_del_link() to tcp_bpf_update_proto()
-> ---
->  net/ipv4/tcp_bpf.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-> index ba581785adb4..01b3930947cc 100644
-> --- a/net/ipv4/tcp_bpf.c
-> +++ b/net/ipv4/tcp_bpf.c
-> @@ -708,6 +708,9 @@ int tcp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
->  		return 0;
->  	}
->  
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
 
-I think in this case we also want to update the ULP so that when it
-tears down it will restore the correct proto ops?
+[ 2172.936997] ------------[ cut here ]------------
+[ 2172.936999] kernel BUG at lib/iov_iter.c:629!
+......
+[ 2172.944996] PKRU: 55555554
+[ 2172.945155] Call Trace:
+[ 2172.945299]  <TASK>
+[ 2172.945428]  ? die+0x36/0x90
+[ 2172.945601]  ? do_trap+0xdd/0x100
+[ 2172.945795]  ? iov_iter_revert+0x178/0x180
+[ 2172.946031]  ? iov_iter_revert+0x178/0x180
+[ 2172.946267]  ? do_error_trap+0x7d/0x110
+[ 2172.946499]  ? iov_iter_revert+0x178/0x180
+[ 2172.946736]  ? exc_invalid_op+0x50/0x70
+[ 2172.946961]  ? iov_iter_revert+0x178/0x180
+[ 2172.947197]  ? asm_exc_invalid_op+0x1a/0x20
+[ 2172.947446]  ? iov_iter_revert+0x178/0x180
+[ 2172.947683]  ? iov_iter_revert+0x5c/0x180
+[ 2172.947913]  tls_sw_sendmsg_locked.isra.0+0x794/0x840
+[ 2172.948206]  tls_sw_sendmsg+0x52/0x80
+[ 2172.948420]  ? inet_sendmsg+0x1f/0x70
+[ 2172.948634]  __sys_sendto+0x1cd/0x200
+[ 2172.948848]  ? find_held_lock+0x2b/0x80
+[ 2172.949072]  ? syscall_trace_enter+0x140/0x270
+[ 2172.949330]  ? __lock_release.isra.0+0x5e/0x170
+[ 2172.949595]  ? find_held_lock+0x2b/0x80
+[ 2172.949817]  ? syscall_trace_enter+0x140/0x270
+[ 2172.950211]  ? lockdep_hardirqs_on_prepare+0xda/0x190
+[ 2172.950632]  ? ktime_get_coarse_real_ts64+0xc2/0xd0
+[ 2172.951036]  __x64_sys_sendto+0x24/0x30
+[ 2172.951382]  do_syscall_64+0x90/0x170
+......
 
-Either tcp_bpf_update_proto should be called with restore=true or
-this logic should be similar to above?
+After calling bpf_exec_tx_verdict(), the size of msg_pl->sg may increase,
+e.g., when the BPF program executes bpf_msg_push_data().
 
-	if (inet_csk_has_ulp(sk)) {
-		/* TLS does not have an unhash proto in SW cases,
-		 * but we need to ensure we stop using the sock_map
-		 * unhash routine because the associated psock is being
-		 * removed. So use the original unhash handler.
-		 */
-		WRITE_ONCE(sk->sk_prot->unhash, psock->saved_unhash);
-		tcp_update_ulp(sk, psock->sk_proto, psock->saved_write_space);
+If the BPF program sets cork_bytes and sg.size is smaller than cork_bytes,
+it will return -ENOSPC and attempt to roll back to the non-zero copy
+logic. However, during rollback, msg->msg_iter is reset, but since
+msg_pl->sg.size has been increased, subsequent executions will exceed the
+actual size of msg_iter.
+'''
+iov_iter_revert(&msg->msg_iter, msg_pl->sg.size - orig_size);
+'''
 
-> +	if (inet_csk_has_ulp(sk))
-> +		return 0;
+The changes in this commit are based on the following considerations:
 
-I'm thinking of this stack of psock/ULPs,
+1. When cork_bytes is set, rolling back to non-zero copy logic is
+pointless and can directly go to zero-copy logic.
 
-   TCP ops -> sockmap psock -> TLS (ULP) ops
+2. We can not calculate the correct number of bytes to revert msg_iter.
 
-When ULP ops was initialized it stored sockmap ops in its ctx->sk_proto
-so that it if it was removed it could restore the correct ops. Similar
-sockmap psock stored TCP ops to restore if its removed. So if we remove
-psock in the middle we shoudl tell the ULP to update its stored value.
+Assume the original data is "abcdefgh" (8 bytes), and after 3 pushes
+by the BPF program, it becomes 11-byte data: "abc?de?fgh?".
+Then, we set cork_bytes to 6, which means the first 6 bytes have been
+processed, and the remaining 5 bytes "?fgh?" will be cached until the
+length meets the cork_bytes requirement.
 
-The concerning flow might be,
+However, some data in "?fgh?" is not within 'sg->msg_iter'
+(but in msg_pl instead), especially the data "?" we pushed.
 
-   socket insert into sockmap (gets psock)
-   socket adds ULP
-   socket removed from socketmap (removes psock)
-   socket removes ULP (restores original tcp ops hopefully)
+So it doesn't seem as simple as just reverting through an offset of
+msg_iter.
 
-Perhaps we could also add a test for this case to the 2nd patch?
+3. For non-TLS sockets in tcp_bpf_sendmsg, when a "cork" situation occurs,
+the user-space send() doesn't return an error, and the returned length is
+the same as the input length parameter, even if some data is cached.
 
-Thanks,
-John
- 
+Additionally, I saw that the current non-zero-copy logic for handling
+corking is written as:
+'''
+line 1177
+else if (ret != -EAGAIN) {
+	if (ret == -ENOSPC)
+		ret = 0;
+	goto send_end;
+'''
+
+So it's ok to just return 'copied' without error when a "cork" situation
+occurs.
+
+Fixes: fcb14cb1bdac ("new iov_iter flavour - ITER_UBUF")
+Fixes: d3b18ad31f93 ("tls: add bpf support to sk_msg handling")
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+---
+ net/tls/tls_sw.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index 914d4e1516a3..f3d7d19482da 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -1120,9 +1120,13 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+ 					num_async++;
+ 				else if (ret == -ENOMEM)
+ 					goto wait_for_memory;
+-				else if (ctx->open_rec && ret == -ENOSPC)
++				else if (ctx->open_rec && ret == -ENOSPC) {
++					if (msg_pl->cork_bytes) {
++						ret = 0;
++						goto send_end;
++					}
+ 					goto rollback_iter;
+-				else if (ret != -EAGAIN)
++				} else if (ret != -EAGAIN)
+ 					goto send_end;
+ 			}
+ 			continue;
+-- 
+2.47.1
+
+
 
