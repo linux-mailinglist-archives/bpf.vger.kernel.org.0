@@ -1,263 +1,268 @@
-Return-Path: <bpf+bounces-55118-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55119-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D778A7867A
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 04:39:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28CFA786BC
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 05:05:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19E8E16BAAE
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 02:39:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F0516D4A6
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 03:05:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965A3126C1E;
-	Wed,  2 Apr 2025 02:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470A713774D;
+	Wed,  2 Apr 2025 03:05:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 635CE33C9;
-	Wed,  2 Apr 2025 02:39:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743561543; cv=none; b=qJ8W67DCwxLckl/SaM1zL0PHkgjhsLRhhKDv8uLIHxdhP8dQAL8b1xbdV0GW+j7WB/enB3/TjZBLqfxe2K1WErPWayWNTAsrn0EcY/50HBGahd8fYVbVZ7eoGRNCi7cg+IrZsDEqMmllG0/VTDqvozmgMcgBatK27q9Dyo7wf8A=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743561543; c=relaxed/simple;
-	bh=0eR4hK0BQ/4v5YAB7N1FQMuBNS+VlicybXl7MF44OpA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=g9T+iTMEP9PlPnNVJXSdel8gVdVR5ukE4kRlXZFPKo9GAYWr9+RbpA73N/LtC4BP9rmOGokv3MWXA/kgov5eyZ4juPalCGRopuNaHbCBnc4AngL5hxYMDGzXto3IhXQ23H+TRREMgnpcxn9pWszlt2ARryjHi+RJSIBsG3kBBxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ZS8813wPnz2TS5H;
-	Wed,  2 Apr 2025 10:34:09 +0800 (CST)
-Received: from kwepemg200005.china.huawei.com (unknown [7.202.181.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id 75FC7140109;
-	Wed,  2 Apr 2025 10:38:57 +0800 (CST)
-Received: from [10.174.176.70] (10.174.176.70) by
- kwepemg200005.china.huawei.com (7.202.181.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 2 Apr 2025 10:38:56 +0800
-Message-ID: <16797fe9-2080-4e1e-ba2c-aa8e13febe8f@huawei.com>
-Date: Wed, 2 Apr 2025 10:38:55 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9493FC7;
+	Wed,  2 Apr 2025 03:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.166.238
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743563134; cv=fail; b=YCks7lbeA8oH1azxmeki6EswyCqaWBRlmoBtgK2X1F9zubc5XY0IVJzb8RFT0iAX6Y7CCbgAxLzNiFL8pH//oi7j6fiGwSk4mDm6RflzGpES3Qzvmrvq41wQXjpnE8J4y7gR3lplEFsZfpa8GWW74G3Xvagt5GsdQqUuMwRGfX4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743563134; c=relaxed/simple;
+	bh=OtWwf3KIAT82hGi11rObcwTuKM/cs4yD2c83pVsvnNc=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=LDp6OLpBuAQhosKtPzeFXU5Ac26BjU0vo0bIXMIyuCv6M3/b6QP51UAb6dTT40nfIX6j5hkrVgSjuJvmSdUisvB1EDP+kbN/Cjflu64WOTgWDufrxfSzUfh2hESsmsKcyiRp0f4UQiQsabzfArrb/D0GtNAHaLvwMtVavINvlXM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=fail smtp.client-ip=205.220.166.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5322AJ1v020265;
+	Tue, 1 Apr 2025 20:05:14 -0700
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2041.outbound.protection.outlook.com [104.47.55.41])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 45rtc9r577-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 01 Apr 2025 20:05:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=cKo+JqBGPC9gWU/TuXPoRjscAIknMZ3yvvo/jlBRfO1BSnMia6VgRP+xaUbceZpPBaKCiCIPYfUqVwfC0oamkpVwEzv/8sJXKzqf7dlwf6vGwSw04SGpUXVNsEMidrkLU8dYFF2kNnUSfEJ4FoRWxWKZe50HKQiZJVAR4VCIrdEdEnEfFRZmLgulINnrAS+f7nPYLXfsInAboK3GrhIKDRnU7akrI95vfA81QORkcUwj7jpkL9pbfbLhCkCqLjoly0i/TQraNe+L+FhCwAWmNbbbeHfwcfoLO+xJ6jJa8avNR7PBllOvJlbaFKoxG9hKsnQ3BSo1+6ZKUK5Sja5Yhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=83V/HO00XvWydT9RayBF1SKOkzqtPGU3XJsDkuNrBr4=;
+ b=S6H8RE/WfNak2IqbEZv0PrbCYq0TlsUANxb20DhwYfV7uGDirdDEbPrTsFixLRemjZOK+6sAYXCKFCpDCDEPNKAtFyCZtfS0xiT9iiSp2iOCtIZigWr9PqXB6gYwSoD7cKEzSyuq1TBX2MMOmcUncalJPfQ0q2qcfgV8j2ZPedNPs058eoqmah2QEazSFTnm3fN/v4YToomqvjGPu1FAObYiwRPmZmEzJ78D6TieBWMKvXpXWcrGF51KQk+oMguPZaYOvM+bx3kEcKydWkIbd9bVGlt9eBg4AxnZZq89BLNuNel2wUfJTrkzSKstYeJSWm4DJ6kkc1Um989WzysqFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+Received: from CY8PR11MB7012.namprd11.prod.outlook.com (2603:10b6:930:54::6)
+ by SN7PR11MB6828.namprd11.prod.outlook.com (2603:10b6:806:2a3::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8583.41; Wed, 2 Apr
+ 2025 03:05:10 +0000
+Received: from CY8PR11MB7012.namprd11.prod.outlook.com
+ ([fe80::83d5:946f:3692:8c0d]) by CY8PR11MB7012.namprd11.prod.outlook.com
+ ([fe80::83d5:946f:3692:8c0d%4]) with mapi id 15.20.8534.048; Wed, 2 Apr 2025
+ 03:05:10 +0000
+From: Cliff Liu <donghua.liu@windriver.com>
+To: stable@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhe.He@windriver.com,
+        donghua.liu@windriver.com
+Subject: [PATCH 5.10.y] bpf: Check rcu_read_lock_trace_held() before calling bpf map helpers
+Date: Wed,  2 Apr 2025 11:04:57 +0800
+Message-Id: <20250402030457.617254-1-donghua.liu@windriver.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYCP286CA0040.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:29d::15) To CY8PR11MB7012.namprd11.prod.outlook.com
+ (2603:10b6:930:54::6)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] xsk: correct tx_ring_empty_descs count statistics
-To: Magnus Karlsson <magnus.karlsson@gmail.com>
-CC: Stanislav Fomichev <stfomichev@gmail.com>, <bjorn@kernel.org>,
-	<magnus.karlsson@intel.com>, <maciej.fijalkowski@intel.com>,
-	<jonathan.lemon@gmail.com>, <davem@davemloft.net>, <edumazet@google.com>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <horms@kernel.org>, <ast@kernel.org>,
-	<daniel@iogearbox.net>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
-	<yuehaibing@huawei.com>, <zhangchangzhong@huawei.com>,
-	<netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20250329061548.1357925-1-wangliang74@huawei.com>
- <Z-qzLyGKskaqgFh5@mini-arch> <Z-sRF0G43HpGiGwH@mini-arch>
- <0d1b689c-c0ef-460a-9969-ff5aebbb8fac@huawei.com>
- <CAJ8uoz1JxhXFkzW8n_Dud8SR-4zE7gim5vS_UZHELiA7d0k+wQ@mail.gmail.com>
- <ed10eea2-0bf2-4747-b519-f9b9089e434e@huawei.com>
- <CAJ8uoz2QXNN4so-EgR8sU8A86E_AeYx1w_b+BSVeCgzr1kaR+g@mail.gmail.com>
- <ffc84696-f9c6-4869-9f1e-7faf45d99060@huawei.com>
- <CAJ8uoz127WoEFbm1Gg7OquYJCLigg03N1XrKDcXejsUmVuQ3PA@mail.gmail.com>
-From: Wang Liang <wangliang74@huawei.com>
-In-Reply-To: <CAJ8uoz127WoEFbm1Gg7OquYJCLigg03N1XrKDcXejsUmVuQ3PA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemg200005.china.huawei.com (7.202.181.32)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY8PR11MB7012:EE_|SN7PR11MB6828:EE_
+X-MS-Office365-Filtering-Correlation-Id: bdf7f0f9-81a4-491b-3e54-08dd71932dbc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|52116014|376014|7416014|1800799024|366016|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?6A7ncHR837zh6fyPR+NHGEAM55yT6OIq0oxtyyQNn76fk47pjbdr1fNp6/U+?=
+ =?us-ascii?Q?MQxrVfWS+fLLEcnHq0vEKWen2+0IDu1T5M0Ra2zwSThTbrNZCLb0+e4s1QC4?=
+ =?us-ascii?Q?njJXiH9n6XMo680+DHgLK/x7VxcoZ54eueUx/miQHN4e2uucC0fS8+p095Kp?=
+ =?us-ascii?Q?Kw+iVFQvVOY/sFbziBKfSL6mFOOLHFzZHbAXoAbeAgUFcGvuE+PGZ09OkauZ?=
+ =?us-ascii?Q?KCXoyUhqcmdol/GuqZ/8mzdVYjaH9kHTWrIBeU2Mvufxss0Qml8ueqN1LU5S?=
+ =?us-ascii?Q?I8t4wfjFZB9t4nJfjkKDpbULGGvOu51781vCvb1aJ/oJAzrCxbFSqPqibjdV?=
+ =?us-ascii?Q?VqiqXLRowkxir4Qv067O2Hb/hegdnKfHLtLMvaklXz2V2iifsckuHleHvAJH?=
+ =?us-ascii?Q?0+DEzotMsxzLx+NrIlLAkDrRfBfA1fij9W/ZbdXnq7Mp7jGuz2lGJVGD/0Lv?=
+ =?us-ascii?Q?wzPufYPZBYwt8/HD6U1jC73vvlImw5aWwtXDvP569JY74L2msqE4GLrbC6Qb?=
+ =?us-ascii?Q?K9d/uZ5dkgNJZST8eGlzNijXZBYvjJYKQgE9o1DfHn2WfoYlFVUz+jhCDFGp?=
+ =?us-ascii?Q?De6TJKF76+HujiQ6IqZ7gzvSxSKe5iZCxSHUbwl0N/ecKHfI1s5djZ/6Rzwg?=
+ =?us-ascii?Q?KdoHbIqAjEZFHIHOxrb41tTfBN61RZUVCOXZ32sv+tlKKpVsjWo7kaw8itI1?=
+ =?us-ascii?Q?ipoQu+/oxhIDl/Nk+25HkG7pp6I0SsyYZcVBb7XUX7JaI7pEYurNEUf8CiPf?=
+ =?us-ascii?Q?Xymr8F+WC4Sihf91npa1mUkQQ1AJhbLFiNccZDQkDFa5z2ZeUhWc3URkNkA+?=
+ =?us-ascii?Q?aemxOX+Z5ORdhSkLodEioyLydVfJWhARJhU6EqWzaADeXN0BEZ8kVpoFdJHO?=
+ =?us-ascii?Q?XuZZrFga9J2fmnNcrDS93fwl7dsXGPq5JXZQ7GQpgGueA3SvEC7kWavLBJKX?=
+ =?us-ascii?Q?K8MjemUsKRIJhOAVDoGvOZIszgo76J0Dk9leXoYTyz9SYSQsR2Cg8MH2f9Yf?=
+ =?us-ascii?Q?ZKsEWVt5b3vlbHTfzWSU178b4C0yXHdfKZt0mwO8xmDFeAk4mL1i+KW2Zidk?=
+ =?us-ascii?Q?xQUdRRRy/odpbzWKCoGaHZmOBdb5Adx3e9Cdv1ln0p5NDhm7AVqu+zwyy2I9?=
+ =?us-ascii?Q?1cTmBUl4KcMTVXx0JrxaC3Wvtsq9oBMHl2JhpFDAmGpCw9Kq9CZzCl5vVRzr?=
+ =?us-ascii?Q?vTGt7tsTQW4y4CHNk9YHiPe/AsIZq2rkEe37P160+ATmNhn91Owz8ih0m4K1?=
+ =?us-ascii?Q?xbHEx0IV39UASkdXgIR/Ump0fW+XQKyrK/1fLy0tC0dR9+M2lTF7WiGN4V5I?=
+ =?us-ascii?Q?WA208+lWEHrF4oQwv+o0CPD28vrlLUFosfXK350Ixmim9FsrtvJAmaqHPSrC?=
+ =?us-ascii?Q?Vsgb/dLfGQ2QVsu6BQ8Z684HPBUaGQRP44WYstmwPxYih6K9vx+25o8O8hxX?=
+ =?us-ascii?Q?e6AQkGAKNDLavPgPVWFrT2eX64XRv/rK?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR11MB7012.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(52116014)(376014)(7416014)(1800799024)(366016)(38350700014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?1kGASZgdZjzMPyocPXRac6upGwkeUGT8jVeuEx4f4vffQx+ZgNrR2JKpmQ6Z?=
+ =?us-ascii?Q?mVL4jbjw5AGTecc6p0pYjoEiR227yF6bIgmRJQ1yBlioq15pq80qatIjFgG5?=
+ =?us-ascii?Q?6Y5KJpZtwR5/Y4S90VJnDtFRZEED1Amq5/2JM4ZEkaVdnOlBnzViXSRSfxes?=
+ =?us-ascii?Q?ElT4GOk0SVgthr/YJFLhAdZy7aIgkOe2e4km8ZsnGjdNp1yliUz7MubypGRC?=
+ =?us-ascii?Q?KeHoOrJzHPefOUNaQih6bmtuSWsR6gXCUMr1VaH9pUgK35ZY5dFFPMj4NUcg?=
+ =?us-ascii?Q?Y3XUvKFsmvCNqZFa63oUzhx6HY3vnmv+up7+QYeIT6YXH4ZEM5SuciSbWfeE?=
+ =?us-ascii?Q?Wt01AGNCmDCnI8sBM7H81Hjplzf8OPOVaiN54Qq7KSEobYJ7R63duIzkQPC0?=
+ =?us-ascii?Q?R5XXSnba6CfylE4B/msiueSBTF+LIflBium9nfrjbM82ieC143s+ImcPL+JJ?=
+ =?us-ascii?Q?96e3CgC3lsM2pZ4u7NJpunFYE+VhPBhnihRigBNwZ7QtaiTy/dyWyYjkifM7?=
+ =?us-ascii?Q?NKhHPNnvskBgQySGlEfrQKOzM7gsgFz2ubZj6RAXpjjQNUgttKDJOCpCOXV7?=
+ =?us-ascii?Q?fHWqG6juw5HAH4nzdusvFTwq5ht/oak1KBvDNssCy8GGTu513VD/Hmdhd0Gm?=
+ =?us-ascii?Q?E3XF3LU/M4CvtIGBbRcLEWapViee1UTb8M4Gh9OiK3nsj4LaJogm15bRol+h?=
+ =?us-ascii?Q?3/hSO9NJyqASIpcsxAfInVjIkxrcPHL94I3whFTVrnAga+U/D0fx71U2kX/F?=
+ =?us-ascii?Q?hK4knGxxBSoGEitKUrXKLmFTfXZQhFHB+F0ENVMduf4023aIciLgbduP4UYG?=
+ =?us-ascii?Q?1Jn4Zl5Bj9pnyNmKA2dsh5+FGaSs4e4IYIYwuQ/3n45huzYoB4zazkzXBPtA?=
+ =?us-ascii?Q?E/dLnKHqVYLJCvwClA+Mver8mbqsjXhStSxb7ZKbGtyAGqIXpxHlz1xW7huv?=
+ =?us-ascii?Q?eWtnl5x3RBu9cNhF7856mZ/UMhQl2zTEIZfKe1Ase5E3UqpXrPaWJZDJVKKb?=
+ =?us-ascii?Q?blfzbrFNbkDpWcTOtfY4xh46KxLLYVfmVwVJltkNRIy9vx+EUZ+9tWZB+Dao?=
+ =?us-ascii?Q?mShZh4ia+SFyiwIBTtTTMTmI7I5BXrj7e6HH5VuYvubsoHdFJd85la2BkZgl?=
+ =?us-ascii?Q?i08T2gLp2Q6/B2NQsccqIiGOHm3dC6Zt1HJPlGGFbVvKtYxfHzS2PpFoUhxF?=
+ =?us-ascii?Q?Tx+E5msgKGAwpRDdoC9MPZcNLs6H5OAaAfK/HzEt8WoD+gCYdHhWyCdVaxZi?=
+ =?us-ascii?Q?ug4Qha3yh3vAHWhI2swr1nsxLJ252uQYxJkS1LAmQX/WQwYdllHclNsqvqn9?=
+ =?us-ascii?Q?i75fDx4/Mr0J2F/NJ7z89GF7oZjgZHo0RlC7Opz23iQozQ/GOTU1Rqi9/JGk?=
+ =?us-ascii?Q?9Y3HNsr171tewoxNmOwE75PZgWGiRdWUW49DjYqqFX3pmpvAiZ3CRVSAve3p?=
+ =?us-ascii?Q?djIClKsv2XpR8oqhPogixRHIx0xDkU3OmF+sI700SQBLLRSt8/88POIAvxUo?=
+ =?us-ascii?Q?uOEvXyVd7q+WOALNZ3YMQnbrtqiwF7yp1qUdavBOfX3AZ2oElrD9KMppzppz?=
+ =?us-ascii?Q?+diueyF+nZODpX9MlguVFLIR/PRG/Genfs8Ntfw3ClDua0iZ6Bcx4qxbMeaF?=
+ =?us-ascii?Q?CA=3D=3D?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bdf7f0f9-81a4-491b-3e54-08dd71932dbc
+X-MS-Exchange-CrossTenant-AuthSource: CY8PR11MB7012.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2025 03:05:09.9893
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 79f3JMHynLzmsx52TdpSQ0pFVPJTQ1KmtQ61EBQ1cA/xCmmI7r7qu9vDCYscAAH3TEf0rk1Zfv72v7g52xkBBJ+UFpFfRtItXkGNeTOVRD0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6828
+X-Proofpoint-ORIG-GUID: QAujmhRGQiOBJc7E20hT21cJbACMIYZm
+X-Authority-Analysis: v=2.4 cv=Tb2WtQQh c=1 sm=1 tr=0 ts=67eca969 cx=c_pps a=O5U4z+bWMBJw47+h9fOlNw==:117 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=XR8D0OoHHMoA:10
+ a=H5OGdu5hBBwA:10 a=VwQbUJbxAAAA:8 a=AiHppB-aAAAA:8 a=i0EeH86SAAAA:8 a=t7CeM3EgAAAA:8 a=dt8AdFoPAicW6VDz_WAA:9 a=FdTzh2GWekK77mhwV6Dw:22
+X-Proofpoint-GUID: QAujmhRGQiOBJc7E20hT21cJbACMIYZm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-04-02_01,2025-04-01_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=865 adultscore=0
+ clxscore=1011 malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 suspectscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.21.0-2502280000
+ definitions=main-2504020018
 
+From: Hou Tao <houtao1@huawei.com>
 
-在 2025/4/1 19:00, Magnus Karlsson 写道:
-> On Tue, 1 Apr 2025 at 11:33, Wang Liang <wangliang74@huawei.com> wrote:
->>
->> 在 2025/4/1 16:12, Magnus Karlsson 写道:
->>> On Tue, 1 Apr 2025 at 09:44, Wang Liang <wangliang74@huawei.com> wrote:
->>>> 在 2025/4/1 14:57, Magnus Karlsson 写道:
->>>>> On Tue, 1 Apr 2025 at 04:36, Wang Liang <wangliang74@huawei.com> wrote:
->>>>>> 在 2025/4/1 6:03, Stanislav Fomichev 写道:
->>>>>>> On 03/31, Stanislav Fomichev wrote:
->>>>>>>> On 03/29, Wang Liang wrote:
->>>>>>>>> The tx_ring_empty_descs count may be incorrect, when set the XDP_TX_RING
->>>>>>>>> option but do not reserve tx ring. Because xsk_poll() try to wakeup the
->>>>>>>>> driver by calling xsk_generic_xmit() for non-zero-copy mode. So the
->>>>>>>>> tx_ring_empty_descs count increases once the xsk_poll()is called:
->>>>>>>>>
->>>>>>>>>       xsk_poll
->>>>>>>>>         xsk_generic_xmit
->>>>>>>>>           __xsk_generic_xmit
->>>>>>>>>             xskq_cons_peek_desc
->>>>>>>>>               xskq_cons_read_desc
->>>>>>>>>                 q->queue_empty_descs++;
->>>>> Sorry, but I do not understand how to reproduce this error. So you
->>>>> first issue a setsockopt with the XDP_TX_RING option and then you do
->>>>> not "reserve tx ring". What does that last "not reserve tx ring" mean?
->>>>> No mmap() of that ring, or something else? I guess you have bound the
->>>>> socket with a bind()? Some pseudo code on how to reproduce this would
->>>>> be helpful. Just want to understand so I can help. Thank you.
->>>> Sorry, the last email is garbled, and send again.
->>>>
->>>> Ok. Some pseudo code like below:
->>>>
->>>>        fd = socket(AF_XDP, SOCK_RAW, 0);
->>>>        setsockopt(fd, SOL_XDP, XDP_UMEM_REG, &mr, sizeof(mr));
->>>>
->>>>        setsockopt(fd, SOL_XDP, XDP_UMEM_FILL_RING, &fill_size,
->>>> sizeof(fill_size));
->>>>        setsockopt(fd, SOL_XDP, XDP_UMEM_COMPLETION_RING, &comp_size,
->>>> sizeof(comp_size));
->>>>        mmap(NULL, off.fr.desc + fill_size * sizeof(__u64), ...,
->>>> XDP_UMEM_PGOFF_FILL_RING);
->>>>        mmap(NULL, off.cr.desc + comp_size * sizeof(__u64), ...,
->>>> XDP_UMEM_PGOFF_COMPLETION_RING);
->>>>
->>>>        setsockopt(fd, SOL_XDP, XDP_RX_RING, &rx_size, sizeof(rx_size));
->>>>        setsockopt(fd, SOL_XDP, XDP_TX_RING, &tx_size, sizeof(tx_size));
->>>>        mmap(NULL, off.rx.desc + rx_size * sizeof(struct xdp_desc), ...,
->>>> XDP_PGOFF_RX_RING);
->>>>        mmap(NULL, off.tx.desc + tx_size * sizeof(struct xdp_desc), ...,
->>>> XDP_PGOFF_TX_RING);
->>>>
->>>>        bind(fd, (struct sockaddr *)&sxdp, sizeof(sxdp));
->>>>        bpf_map_update_elem(xsk_map_fd, &queue_id, &fd, 0);
->>>>
->>>>        while(!global_exit) {
->>>>            poll(fds, 1, -1);
->>>>            handle_receive_packets(...);
->>>>        }
->>>>
->>>> The xsk is created success, and xs->tx is initialized.
->>>>
->>>> The "not reserve tx ring" means user app do not update tx ring producer.
->>>> Like:
->>>>
->>>>        xsk_ring_prod__reserve(tx, 1, &tx_idx);
->>>>        xsk_ring_prod__tx_desc(tx, tx_idx)->addr = frame;
->>>>        xsk_ring_prod__tx_desc(tx, tx_idx)->len = pkg_length;
->>>>        xsk_ring_prod__submit(tx, 1);
->>>>
->>>> These functions (xsk_ring_prod__reserve, etc.) is provided by libxdp.
->>>>
->>>> The tx->producer is not updated, so the xs->tx->cached_cons and
->>>> xs->tx->cached_prod are always zero.
->>>>
->>>> When receive packets and user app call poll(), xsk_generic_xmit() will be
->>>> triggered by xsk_poll(), leading to this issue.
->>> Thanks, that really helped. The problem here is that the kernel cannot
->>> guess your intent. Since you created a socket with both Rx and Tx, it
->>> thinks you will use it for both, so it should increase
->>> queue_empty_descs in this case as you did not provide any Tx descs.
->>> Your proposed patch will break this. Consider this Tx case with the
->>> exact same init code as you have above but with this send loop:
->>>
->>> while(!global_exit) {
->>>          maybe_send_packets(...);
->>>          poll(fds, 1, -1);
->>> }
->>>
->>> With your patch, the queue_empty_descs will never be increased in the
->>> case when I do not submit any Tx descs, even though we would like it
->>> to be so.
->>>
->>> So in my mind, you have a couple of options:
->>>
->>> * Create two sockets, one rx only and one tx only and use the
->>> SHARED_UMEM mode to bind them to the same netdev and queue id. In your
->>> loop above, you would use the Rx socket. This might have the drawback
->>> that you need to call poll() twice if you are both sending and
->>> receiving in the same loop. But the stats will be the way you want
->>> them to be.
->>>
->>> * Introduce a new variable in user space that you increase every time
->>> you do poll() in your loop above. When displaying the statistics, just
->>> deduct this variable from the queue_empty_descs that the kernel
->>> reports using the XDP_STATISTICS getsockopt().
->>>
->>> Hope this helps.
->>
->> Thank you for the advices.
->>
->>   From user view, queue_empty_descs increases when the app only receive
->> packets and call poll(), it is some confusing.
-> But if the only thing you are doing in the app is receive packets, you
-> should create an Rx only socket.
->
->> In your Tx case, if user app use sendto() to send packets, the
->> queue_empty_descs will increase. This is reasonably.
->>
->> In linux manual, poll() waits for some event on a file descriptor. But
->> in af_xdp, poll() has a side effect of send msg.
-> If I remember correctly, we did this so that zero-copy mode and copy
-> mode should have the same behavior from an app point of view. But I do
-> not remember why we implemented this behavior in zero-copy in the
-> first place. Maybe out of necessity since zero-copy Tx is driven by
-> the driver.
->
->> Previous commit 77cd0d7b3f25 ("xsk: add support for need_wakeup flag in
->> AF_XDP rings") add need_wakeup flag. It mainly work in rx process. When
->> the application and driver run on the same core, if the fill ring is
->> empty, the driver can set the need_wakeup flag and return, so the
->> application could be scheduled to produce entries of the fill ring.
->>
->> The commit df551058f7a3 ("xsk: Fix crash in poll when device does not
->> support ndo_xsk_wakeup") add sendmsg function in xsk_poll(), considering
->> some devices donot define ndo_xsk_wakeup.
->>
->> At present the value of need_wakeup & XDP_WAKEUP_TX is always true,
->> except the mlx5 driver. If the mlx5 driver queued some packets for tx,
->> it may clear XDP_WAKEUP_TX by xsk_clear_tx_need_wakeup(). So when user
->> app use sendto() to send packets, __xsk_sendmsg() will return without
->> calling xsk_generic_xmit().
-> Mellanox is doing it in the correct way. The Intel drivers had it like
-> this too in the beginning, until we discovered a race condition in the
-> HW in which the interrupt was not armed at the same time as the
-> need_wakeup flag was cleared. This would then lead to packets not
-> being sent and user-space not knowing about it. As to why all other
-> drivers copied this unfortunate fall-back, I do not know.
->
->> So I have a bold suggestion, how about removing xsk_generic_xmit() in
->> xsk_poll()?
-> That would indeed be bold :-)! But we cannot do this since it would
-> break existing applications that rely on this. I think you have to use
-> one of the workarounds I pitched in the previous mail. If you are
-> really just receiving, you should create an Rx only socket.
-Thanks for your replies. it is really helpful.
->>>>>>>>> To avoid this count error, add check for tx descs before send msg in poll.
->>>>>>>>>
->>>>>>>>> Fixes: df551058f7a3 ("xsk: Fix crash in poll when device does not support ndo_xsk_wakeup")
->>>>>>>>> Signed-off-by: Wang Liang <wangliang74@huawei.com>
->>>>>>>> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
->>>>>>> Hmm, wait, I stumbled upon xskq_has_descs again and it looks only at
->>>>>>> cached prod/cons. How is it supposed to work when the actual tx
->>>>>>> descriptor is posted? Is there anything besides xskq_cons_peek_desc from
->>>>>>> __xsk_generic_xmit that refreshes cached_prod?
->>>>>> Yes, you are right!
->>>>>>
->>>>>> How about using xskq_cons_nb_entries() to check free descriptors?
->>>>>>
->>>>>> Like this:
->>>>>>
->>>>>>
->>>>>> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
->>>>>> index e5d104ce7b82..babb7928d335 100644
->>>>>> --- a/net/xdp/xsk.c
->>>>>> +++ b/net/xdp/xsk.c
->>>>>> @@ -993,7 +993,7 @@ static __poll_t xsk_poll(struct file *file, struct
->>>>>> socket *sock,
->>>>>>             if (pool->cached_need_wakeup) {
->>>>>>                     if (xs->zc)
->>>>>>                             xsk_wakeup(xs, pool->cached_need_wakeup);
->>>>>> -               else if (xs->tx)
->>>>>> +               else if (xs->tx && xskq_cons_nb_entries(xs->tx, 1))
->>>>>>                             /* Poll needs to drive Tx also in copy mode */
->>>>>>                             xsk_generic_xmit(sk);
->>>>>>             }
->>>>>>
->>>>>>
+[ Upstream commit 169410eba271afc9f0fb476d996795aa26770c6d ]
+
+These three bpf_map_{lookup,update,delete}_elem() helpers are also
+available for sleepable bpf program, so add the corresponding lock
+assertion for sleepable bpf program, otherwise the following warning
+will be reported when a sleepable bpf program manipulates bpf map under
+interpreter mode (aka bpf_jit_enable=0):
+
+  WARNING: CPU: 3 PID: 4985 at kernel/bpf/helpers.c:40 ......
+  CPU: 3 PID: 4985 Comm: test_progs Not tainted 6.6.0+ #2
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
+  RIP: 0010:bpf_map_lookup_elem+0x54/0x60
+  ......
+  Call Trace:
+   <TASK>
+   ? __warn+0xa5/0x240
+   ? bpf_map_lookup_elem+0x54/0x60
+   ? report_bug+0x1ba/0x1f0
+   ? handle_bug+0x40/0x80
+   ? exc_invalid_op+0x18/0x50
+   ? asm_exc_invalid_op+0x1b/0x20
+   ? __pfx_bpf_map_lookup_elem+0x10/0x10
+   ? rcu_lockdep_current_cpu_online+0x65/0xb0
+   ? rcu_is_watching+0x23/0x50
+   ? bpf_map_lookup_elem+0x54/0x60
+   ? __pfx_bpf_map_lookup_elem+0x10/0x10
+   ___bpf_prog_run+0x513/0x3b70
+   __bpf_prog_run32+0x9d/0xd0
+   ? __bpf_prog_enter_sleepable_recur+0xad/0x120
+   ? __bpf_prog_enter_sleepable_recur+0x3e/0x120
+   bpf_trampoline_6442580665+0x4d/0x1000
+   __x64_sys_getpgid+0x5/0x30
+   ? do_syscall_64+0x36/0xb0
+   entry_SYSCALL_64_after_hwframe+0x6e/0x76
+   </TASK>
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Link: https://lore.kernel.org/r/20231204140425.1480317-2-houtao@huaweicloud.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+[Minor conflict resolved due to code context change.]
+Signed-off-by: Cliff Liu <donghua.liu@windriver.com>
+Signed-off-by: He Zhe <Zhe.He@windriver.com>
+---
+Verified the build test.
+---
+ kernel/bpf/helpers.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 31e3a5482156..238a51daefa4 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -3,6 +3,7 @@
+  */
+ #include <linux/bpf.h>
+ #include <linux/rcupdate.h>
++#include <linux/rcupdate_trace.h>
+ #include <linux/random.h>
+ #include <linux/smp.h>
+ #include <linux/topology.h>
+@@ -24,12 +25,12 @@
+  *
+  * Different map implementations will rely on rcu in map methods
+  * lookup/update/delete, therefore eBPF programs must run under rcu lock
+- * if program is allowed to access maps, so check rcu_read_lock_held in
+- * all three functions.
++ * if program is allowed to access maps, so check rcu_read_lock_held() or
++ * rcu_read_lock_trace_held() in all three functions.
+  */
+ BPF_CALL_2(bpf_map_lookup_elem, struct bpf_map *, map, void *, key)
+ {
+-	WARN_ON_ONCE(!rcu_read_lock_held());
++	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
+ 	return (unsigned long) map->ops->map_lookup_elem(map, key);
+ }
+ 
+@@ -45,7 +46,7 @@ const struct bpf_func_proto bpf_map_lookup_elem_proto = {
+ BPF_CALL_4(bpf_map_update_elem, struct bpf_map *, map, void *, key,
+ 	   void *, value, u64, flags)
+ {
+-	WARN_ON_ONCE(!rcu_read_lock_held());
++	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
+ 	return map->ops->map_update_elem(map, key, value, flags);
+ }
+ 
+@@ -62,7 +63,7 @@ const struct bpf_func_proto bpf_map_update_elem_proto = {
+ 
+ BPF_CALL_2(bpf_map_delete_elem, struct bpf_map *, map, void *, key)
+ {
+-	WARN_ON_ONCE(!rcu_read_lock_held());
++	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
+ 	return map->ops->map_delete_elem(map, key);
+ }
+ 
+-- 
+2.34.1
+
 
