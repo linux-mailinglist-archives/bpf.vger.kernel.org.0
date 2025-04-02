@@ -1,268 +1,358 @@
-Return-Path: <bpf+bounces-55119-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55120-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A28CFA786BC
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 05:05:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 248AFA786E9
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 05:46:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F0516D4A6
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 03:05:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 880F2188807F
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 03:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470A713774D;
-	Wed,  2 Apr 2025 03:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE7592309A7;
+	Wed,  2 Apr 2025 03:46:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="d7YoxvOk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9493FC7;
-	Wed,  2 Apr 2025 03:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.166.238
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743563134; cv=fail; b=YCks7lbeA8oH1azxmeki6EswyCqaWBRlmoBtgK2X1F9zubc5XY0IVJzb8RFT0iAX6Y7CCbgAxLzNiFL8pH//oi7j6fiGwSk4mDm6RflzGpES3Qzvmrvq41wQXjpnE8J4y7gR3lplEFsZfpa8GWW74G3Xvagt5GsdQqUuMwRGfX4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743563134; c=relaxed/simple;
-	bh=OtWwf3KIAT82hGi11rObcwTuKM/cs4yD2c83pVsvnNc=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=LDp6OLpBuAQhosKtPzeFXU5Ac26BjU0vo0bIXMIyuCv6M3/b6QP51UAb6dTT40nfIX6j5hkrVgSjuJvmSdUisvB1EDP+kbN/Cjflu64WOTgWDufrxfSzUfh2hESsmsKcyiRp0f4UQiQsabzfArrb/D0GtNAHaLvwMtVavINvlXM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=fail smtp.client-ip=205.220.166.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5322AJ1v020265;
-	Tue, 1 Apr 2025 20:05:14 -0700
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2041.outbound.protection.outlook.com [104.47.55.41])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 45rtc9r577-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 01 Apr 2025 20:05:13 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=cKo+JqBGPC9gWU/TuXPoRjscAIknMZ3yvvo/jlBRfO1BSnMia6VgRP+xaUbceZpPBaKCiCIPYfUqVwfC0oamkpVwEzv/8sJXKzqf7dlwf6vGwSw04SGpUXVNsEMidrkLU8dYFF2kNnUSfEJ4FoRWxWKZe50HKQiZJVAR4VCIrdEdEnEfFRZmLgulINnrAS+f7nPYLXfsInAboK3GrhIKDRnU7akrI95vfA81QORkcUwj7jpkL9pbfbLhCkCqLjoly0i/TQraNe+L+FhCwAWmNbbbeHfwcfoLO+xJ6jJa8avNR7PBllOvJlbaFKoxG9hKsnQ3BSo1+6ZKUK5Sja5Yhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=83V/HO00XvWydT9RayBF1SKOkzqtPGU3XJsDkuNrBr4=;
- b=S6H8RE/WfNak2IqbEZv0PrbCYq0TlsUANxb20DhwYfV7uGDirdDEbPrTsFixLRemjZOK+6sAYXCKFCpDCDEPNKAtFyCZtfS0xiT9iiSp2iOCtIZigWr9PqXB6gYwSoD7cKEzSyuq1TBX2MMOmcUncalJPfQ0q2qcfgV8j2ZPedNPs058eoqmah2QEazSFTnm3fN/v4YToomqvjGPu1FAObYiwRPmZmEzJ78D6TieBWMKvXpXWcrGF51KQk+oMguPZaYOvM+bx3kEcKydWkIbd9bVGlt9eBg4AxnZZq89BLNuNel2wUfJTrkzSKstYeJSWm4DJ6kkc1Um989WzysqFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from CY8PR11MB7012.namprd11.prod.outlook.com (2603:10b6:930:54::6)
- by SN7PR11MB6828.namprd11.prod.outlook.com (2603:10b6:806:2a3::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8583.41; Wed, 2 Apr
- 2025 03:05:10 +0000
-Received: from CY8PR11MB7012.namprd11.prod.outlook.com
- ([fe80::83d5:946f:3692:8c0d]) by CY8PR11MB7012.namprd11.prod.outlook.com
- ([fe80::83d5:946f:3692:8c0d%4]) with mapi id 15.20.8534.048; Wed, 2 Apr 2025
- 03:05:10 +0000
-From: Cliff Liu <donghua.liu@windriver.com>
-To: stable@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhe.He@windriver.com,
-        donghua.liu@windriver.com
-Subject: [PATCH 5.10.y] bpf: Check rcu_read_lock_trace_held() before calling bpf map helpers
-Date: Wed,  2 Apr 2025 11:04:57 +0800
-Message-Id: <20250402030457.617254-1-donghua.liu@windriver.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TYCP286CA0040.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:29d::15) To CY8PR11MB7012.namprd11.prod.outlook.com
- (2603:10b6:930:54::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E71515D1;
+	Wed,  2 Apr 2025 03:46:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743565602; cv=none; b=oYC0XExepBkL6EY+0D7MQ/ZdD2qh6IWdy9YdUxTOik+glUUKZi2wMUWstu79ciI/eURWxiC6sSu3he41C2Bb6TjGZaOwXw3LpHWYJKAWuDOraJfmHNkghfc3HyQnlK65JY4P06/yWkb9GWu3+QxMkq56sB5Ws6/gD72NK/0FuNo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743565602; c=relaxed/simple;
+	bh=itFb7mH56VIHh1MdibQIr63I3OMPQvhBlOjKG1lYYJA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XT2NncJzUeCjaJDVm4raPMXE7PWT70xwbH48arEZr49l3ozKa6mCZHYH7dSu8Y1S7x1KNcPp64I81trMkRHhvyBYJOCzOoh0u+fBbg6dNw+kIhEkjSc67V8p+dAp2tBcywpht1RI/7GZmdWcEWC9d4B+da4jq24TRIhCA01wxvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=d7YoxvOk; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.202] ([71.202.166.45])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 5323jYCp4052768
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Tue, 1 Apr 2025 20:45:34 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 5323jYCp4052768
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025032001; t=1743565538;
+	bh=B/0Ul12154gIBLTRQGmDrSHkQipxSmmaRYkawQNhljs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=d7YoxvOk9CIKebUmypsUBsbIGJDe0uIJODZYK5DJptXRC7jV6F3X1iHgsxaJq7z/U
+	 nBC47DHx45CFSikk6yorSJmHvn/RCUzlkE0NIfP5y7UNWDRWBv91w7rT+GXmQbAe6z
+	 HCcFPhy4gq4eFfyUGP1oJ31ejuLGzPZzPtgaEGzAY4WeayjxRzdkiEm1K913UJ2qFb
+	 o2q11OGn9+Uc+NNdgOH1HNABy4p6gq8usi/RT27lr00ZcWFGEXHyfLPucBEl+bhIGt
+	 HaLheaydO5A8cmC7yD4/mcLHEGK1M9ACDi53Kn4fWVEbhWUVQAm5iuaES3HqoGE7N5
+	 7tT7gwjoWNc5Q==
+Message-ID: <7a503d55-db41-42da-8133-4a3dbbd36c7e@zytor.com>
+Date: Tue, 1 Apr 2025 20:45:33 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY8PR11MB7012:EE_|SN7PR11MB6828:EE_
-X-MS-Office365-Filtering-Correlation-Id: bdf7f0f9-81a4-491b-3e54-08dd71932dbc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|52116014|376014|7416014|1800799024|366016|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?6A7ncHR837zh6fyPR+NHGEAM55yT6OIq0oxtyyQNn76fk47pjbdr1fNp6/U+?=
- =?us-ascii?Q?MQxrVfWS+fLLEcnHq0vEKWen2+0IDu1T5M0Ra2zwSThTbrNZCLb0+e4s1QC4?=
- =?us-ascii?Q?njJXiH9n6XMo680+DHgLK/x7VxcoZ54eueUx/miQHN4e2uucC0fS8+p095Kp?=
- =?us-ascii?Q?Kw+iVFQvVOY/sFbziBKfSL6mFOOLHFzZHbAXoAbeAgUFcGvuE+PGZ09OkauZ?=
- =?us-ascii?Q?KCXoyUhqcmdol/GuqZ/8mzdVYjaH9kHTWrIBeU2Mvufxss0Qml8ueqN1LU5S?=
- =?us-ascii?Q?I8t4wfjFZB9t4nJfjkKDpbULGGvOu51781vCvb1aJ/oJAzrCxbFSqPqibjdV?=
- =?us-ascii?Q?VqiqXLRowkxir4Qv067O2Hb/hegdnKfHLtLMvaklXz2V2iifsckuHleHvAJH?=
- =?us-ascii?Q?0+DEzotMsxzLx+NrIlLAkDrRfBfA1fij9W/ZbdXnq7Mp7jGuz2lGJVGD/0Lv?=
- =?us-ascii?Q?wzPufYPZBYwt8/HD6U1jC73vvlImw5aWwtXDvP569JY74L2msqE4GLrbC6Qb?=
- =?us-ascii?Q?K9d/uZ5dkgNJZST8eGlzNijXZBYvjJYKQgE9o1DfHn2WfoYlFVUz+jhCDFGp?=
- =?us-ascii?Q?De6TJKF76+HujiQ6IqZ7gzvSxSKe5iZCxSHUbwl0N/ecKHfI1s5djZ/6Rzwg?=
- =?us-ascii?Q?KdoHbIqAjEZFHIHOxrb41tTfBN61RZUVCOXZ32sv+tlKKpVsjWo7kaw8itI1?=
- =?us-ascii?Q?ipoQu+/oxhIDl/Nk+25HkG7pp6I0SsyYZcVBb7XUX7JaI7pEYurNEUf8CiPf?=
- =?us-ascii?Q?Xymr8F+WC4Sihf91npa1mUkQQ1AJhbLFiNccZDQkDFa5z2ZeUhWc3URkNkA+?=
- =?us-ascii?Q?aemxOX+Z5ORdhSkLodEioyLydVfJWhARJhU6EqWzaADeXN0BEZ8kVpoFdJHO?=
- =?us-ascii?Q?XuZZrFga9J2fmnNcrDS93fwl7dsXGPq5JXZQ7GQpgGueA3SvEC7kWavLBJKX?=
- =?us-ascii?Q?K8MjemUsKRIJhOAVDoGvOZIszgo76J0Dk9leXoYTyz9SYSQsR2Cg8MH2f9Yf?=
- =?us-ascii?Q?ZKsEWVt5b3vlbHTfzWSU178b4C0yXHdfKZt0mwO8xmDFeAk4mL1i+KW2Zidk?=
- =?us-ascii?Q?xQUdRRRy/odpbzWKCoGaHZmOBdb5Adx3e9Cdv1ln0p5NDhm7AVqu+zwyy2I9?=
- =?us-ascii?Q?1cTmBUl4KcMTVXx0JrxaC3Wvtsq9oBMHl2JhpFDAmGpCw9Kq9CZzCl5vVRzr?=
- =?us-ascii?Q?vTGt7tsTQW4y4CHNk9YHiPe/AsIZq2rkEe37P160+ATmNhn91Owz8ih0m4K1?=
- =?us-ascii?Q?xbHEx0IV39UASkdXgIR/Ump0fW+XQKyrK/1fLy0tC0dR9+M2lTF7WiGN4V5I?=
- =?us-ascii?Q?WA208+lWEHrF4oQwv+o0CPD28vrlLUFosfXK350Ixmim9FsrtvJAmaqHPSrC?=
- =?us-ascii?Q?Vsgb/dLfGQ2QVsu6BQ8Z684HPBUaGQRP44WYstmwPxYih6K9vx+25o8O8hxX?=
- =?us-ascii?Q?e6AQkGAKNDLavPgPVWFrT2eX64XRv/rK?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR11MB7012.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(52116014)(376014)(7416014)(1800799024)(366016)(38350700014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?1kGASZgdZjzMPyocPXRac6upGwkeUGT8jVeuEx4f4vffQx+ZgNrR2JKpmQ6Z?=
- =?us-ascii?Q?mVL4jbjw5AGTecc6p0pYjoEiR227yF6bIgmRJQ1yBlioq15pq80qatIjFgG5?=
- =?us-ascii?Q?6Y5KJpZtwR5/Y4S90VJnDtFRZEED1Amq5/2JM4ZEkaVdnOlBnzViXSRSfxes?=
- =?us-ascii?Q?ElT4GOk0SVgthr/YJFLhAdZy7aIgkOe2e4km8ZsnGjdNp1yliUz7MubypGRC?=
- =?us-ascii?Q?KeHoOrJzHPefOUNaQih6bmtuSWsR6gXCUMr1VaH9pUgK35ZY5dFFPMj4NUcg?=
- =?us-ascii?Q?Y3XUvKFsmvCNqZFa63oUzhx6HY3vnmv+up7+QYeIT6YXH4ZEM5SuciSbWfeE?=
- =?us-ascii?Q?Wt01AGNCmDCnI8sBM7H81Hjplzf8OPOVaiN54Qq7KSEobYJ7R63duIzkQPC0?=
- =?us-ascii?Q?R5XXSnba6CfylE4B/msiueSBTF+LIflBium9nfrjbM82ieC143s+ImcPL+JJ?=
- =?us-ascii?Q?96e3CgC3lsM2pZ4u7NJpunFYE+VhPBhnihRigBNwZ7QtaiTy/dyWyYjkifM7?=
- =?us-ascii?Q?NKhHPNnvskBgQySGlEfrQKOzM7gsgFz2ubZj6RAXpjjQNUgttKDJOCpCOXV7?=
- =?us-ascii?Q?fHWqG6juw5HAH4nzdusvFTwq5ht/oak1KBvDNssCy8GGTu513VD/Hmdhd0Gm?=
- =?us-ascii?Q?E3XF3LU/M4CvtIGBbRcLEWapViee1UTb8M4Gh9OiK3nsj4LaJogm15bRol+h?=
- =?us-ascii?Q?3/hSO9NJyqASIpcsxAfInVjIkxrcPHL94I3whFTVrnAga+U/D0fx71U2kX/F?=
- =?us-ascii?Q?hK4knGxxBSoGEitKUrXKLmFTfXZQhFHB+F0ENVMduf4023aIciLgbduP4UYG?=
- =?us-ascii?Q?1Jn4Zl5Bj9pnyNmKA2dsh5+FGaSs4e4IYIYwuQ/3n45huzYoB4zazkzXBPtA?=
- =?us-ascii?Q?E/dLnKHqVYLJCvwClA+Mver8mbqsjXhStSxb7ZKbGtyAGqIXpxHlz1xW7huv?=
- =?us-ascii?Q?eWtnl5x3RBu9cNhF7856mZ/UMhQl2zTEIZfKe1Ase5E3UqpXrPaWJZDJVKKb?=
- =?us-ascii?Q?blfzbrFNbkDpWcTOtfY4xh46KxLLYVfmVwVJltkNRIy9vx+EUZ+9tWZB+Dao?=
- =?us-ascii?Q?mShZh4ia+SFyiwIBTtTTMTmI7I5BXrj7e6HH5VuYvubsoHdFJd85la2BkZgl?=
- =?us-ascii?Q?i08T2gLp2Q6/B2NQsccqIiGOHm3dC6Zt1HJPlGGFbVvKtYxfHzS2PpFoUhxF?=
- =?us-ascii?Q?Tx+E5msgKGAwpRDdoC9MPZcNLs6H5OAaAfK/HzEt8WoD+gCYdHhWyCdVaxZi?=
- =?us-ascii?Q?ug4Qha3yh3vAHWhI2swr1nsxLJ252uQYxJkS1LAmQX/WQwYdllHclNsqvqn9?=
- =?us-ascii?Q?i75fDx4/Mr0J2F/NJ7z89GF7oZjgZHo0RlC7Opz23iQozQ/GOTU1Rqi9/JGk?=
- =?us-ascii?Q?9Y3HNsr171tewoxNmOwE75PZgWGiRdWUW49DjYqqFX3pmpvAiZ3CRVSAve3p?=
- =?us-ascii?Q?djIClKsv2XpR8oqhPogixRHIx0xDkU3OmF+sI700SQBLLRSt8/88POIAvxUo?=
- =?us-ascii?Q?uOEvXyVd7q+WOALNZ3YMQnbrtqiwF7yp1qUdavBOfX3AZ2oElrD9KMppzppz?=
- =?us-ascii?Q?+diueyF+nZODpX9MlguVFLIR/PRG/Genfs8Ntfw3ClDua0iZ6Bcx4qxbMeaF?=
- =?us-ascii?Q?CA=3D=3D?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdf7f0f9-81a4-491b-3e54-08dd71932dbc
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR11MB7012.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2025 03:05:09.9893
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 79f3JMHynLzmsx52TdpSQ0pFVPJTQ1KmtQ61EBQ1cA/xCmmI7r7qu9vDCYscAAH3TEf0rk1Zfv72v7g52xkBBJ+UFpFfRtItXkGNeTOVRD0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6828
-X-Proofpoint-ORIG-GUID: QAujmhRGQiOBJc7E20hT21cJbACMIYZm
-X-Authority-Analysis: v=2.4 cv=Tb2WtQQh c=1 sm=1 tr=0 ts=67eca969 cx=c_pps a=O5U4z+bWMBJw47+h9fOlNw==:117 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10 a=XR8D0OoHHMoA:10
- a=H5OGdu5hBBwA:10 a=VwQbUJbxAAAA:8 a=AiHppB-aAAAA:8 a=i0EeH86SAAAA:8 a=t7CeM3EgAAAA:8 a=dt8AdFoPAicW6VDz_WAA:9 a=FdTzh2GWekK77mhwV6Dw:22
-X-Proofpoint-GUID: QAujmhRGQiOBJc7E20hT21cJbACMIYZm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-04-02_01,2025-04-01_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=865 adultscore=0
- clxscore=1011 malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 suspectscore=0 priorityscore=1501
- impostorscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.21.0-2502280000
- definitions=main-2504020018
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 01/15] x86/msr: Replace __wrmsr() with
+ native_wrmsrl()
+To: Ingo Molnar <mingo@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
+Cc: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, virtualization@lists.linux.dev,
+        linux-edac@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-ide@vger.kernel.org,
+        linux-pm@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, jgross@suse.com,
+        andrew.cooper3@citrix.com, peterz@infradead.org, acme@kernel.org,
+        namhyung@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
+        wei.liu@kernel.org, ajay.kaher@broadcom.com,
+        alexey.amakhalov@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        tony.luck@intel.com, pbonzini@redhat.com, vkuznets@redhat.com,
+        seanjc@google.com, luto@kernel.org, boris.ostrovsky@oracle.com,
+        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20250331082251.3171276-1-xin@zytor.com>
+ <20250331082251.3171276-2-xin@zytor.com> <Z-pruogreCuU66wm@gmail.com>
+ <9D15DE81-2E68-4FCD-A133-4963602E18C9@zytor.com> <Z-ubVFyoOzwKhI53@gmail.com>
+Content-Language: en-US
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <Z-ubVFyoOzwKhI53@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Hou Tao <houtao1@huawei.com>
+On 4/1/2025 12:52 AM, Ingo Molnar wrote:
+> 
+> * H. Peter Anvin <hpa@zytor.com> wrote:
+> 
+>> On March 31, 2025 3:17:30 AM PDT, Ingo Molnar <mingo@kernel.org> wrote:
+>>>
+>>> * Xin Li (Intel) <xin@zytor.com> wrote:
+>>>
+>>>> -	__wrmsr      (MSR_AMD_DBG_EXTN_CFG, val | 3ULL << 3, val >> 32);
+>>>> +	native_wrmsrl(MSR_AMD_DBG_EXTN_CFG, val | 3ULL << 3);
+>>>
+>>> This is an improvement.
+>>>
+>>>> -	__wrmsr      (MSR_IA32_PQR_ASSOC, rmid_p, plr->closid);
+>>>> +	native_wrmsrl(MSR_IA32_PQR_ASSOC, (u64)plr->closid << 32 | rmid_p);
+>>>
+>>>> -	__wrmsr      (MSR_IA32_PQR_ASSOC, rmid_p, closid_p);
+>>>> +	native_wrmsrl(MSR_IA32_PQR_ASSOC, (u64)closid_p << 32 | rmid_p);
+>>>
+>>> This is not an improvement.
+>>>
+>>> Please provide a native_wrmsrl() API variant where natural [rmid_p, closid_p]
+>>> high/lo parameters can be used, without the shift-uglification...
+>>>
+>>> Thanks,
+>>>
+>>> 	Ingo
+>>
+>> Directing this question primarily to Ingo, who is more than anyone
+>> else the namespace consistency guardian:
+>>
+>> On the subject of msr function naming ... *msrl() has always been
+>> misleading. The -l suffix usually means 32 bits; sometimes it means
+>> the C type "long" (which in the kernel is used instead of
+>> size_t/uintptr_t, which might end up being "fun" when 128-bit
+>> architectures appear some time this century), but for a fixed 64-but
+>> type we normally use -q.
+> 
+> Yeah, agreed - that's been bothering me for a while too. :-)
+> 
+>> Should we rename the *msrl() functions to *msrq() as part of this
+>> overhaul?
+> 
+> Yeah, that's a good idea, and because talk is cheap I just implemented
+> this in the tip:WIP.x86/msr branch with a couple of other cleanups in
+> this area (see the shortlog & diffstat below), but the churn is high:
+> 
+>    144 files changed, 1034 insertions(+), 1034 deletions(-)
+> 
+> So this can only be done if regenerated and sent to Linus right before
+> an -rc1 I think:
+> 
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip WIP.x86/msr
 
-[ Upstream commit 169410eba271afc9f0fb476d996795aa26770c6d ]
+Hi Ingo,
 
-These three bpf_map_{lookup,update,delete}_elem() helpers are also
-available for sleepable bpf program, so add the corresponding lock
-assertion for sleepable bpf program, otherwise the following warning
-will be reported when a sleepable bpf program manipulates bpf map under
-interpreter mode (aka bpf_jit_enable=0):
+Is this branch public?
 
-  WARNING: CPU: 3 PID: 4985 at kernel/bpf/helpers.c:40 ......
-  CPU: 3 PID: 4985 Comm: test_progs Not tainted 6.6.0+ #2
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
-  RIP: 0010:bpf_map_lookup_elem+0x54/0x60
-  ......
-  Call Trace:
-   <TASK>
-   ? __warn+0xa5/0x240
-   ? bpf_map_lookup_elem+0x54/0x60
-   ? report_bug+0x1ba/0x1f0
-   ? handle_bug+0x40/0x80
-   ? exc_invalid_op+0x18/0x50
-   ? asm_exc_invalid_op+0x1b/0x20
-   ? __pfx_bpf_map_lookup_elem+0x10/0x10
-   ? rcu_lockdep_current_cpu_online+0x65/0xb0
-   ? rcu_is_watching+0x23/0x50
-   ? bpf_map_lookup_elem+0x54/0x60
-   ? __pfx_bpf_map_lookup_elem+0x10/0x10
-   ___bpf_prog_run+0x513/0x3b70
-   __bpf_prog_run32+0x9d/0xd0
-   ? __bpf_prog_enter_sleepable_recur+0xad/0x120
-   ? __bpf_prog_enter_sleepable_recur+0x3e/0x120
-   bpf_trampoline_6442580665+0x4d/0x1000
-   __x64_sys_getpgid+0x5/0x30
-   ? do_syscall_64+0x36/0xb0
-   entry_SYSCALL_64_after_hwframe+0x6e/0x76
-   </TASK>
+I wanted to rebase on it and then incooperate your review comments, but
+couldn't find the branch.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Link: https://lore.kernel.org/r/20231204140425.1480317-2-houtao@huaweicloud.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-[Minor conflict resolved due to code context change.]
-Signed-off-by: Cliff Liu <donghua.liu@windriver.com>
-Signed-off-by: He Zhe <Zhe.He@windriver.com>
----
-Verified the build test.
----
- kernel/bpf/helpers.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+Thanks!
+     Xin
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 31e3a5482156..238a51daefa4 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -3,6 +3,7 @@
-  */
- #include <linux/bpf.h>
- #include <linux/rcupdate.h>
-+#include <linux/rcupdate_trace.h>
- #include <linux/random.h>
- #include <linux/smp.h>
- #include <linux/topology.h>
-@@ -24,12 +25,12 @@
-  *
-  * Different map implementations will rely on rcu in map methods
-  * lookup/update/delete, therefore eBPF programs must run under rcu lock
-- * if program is allowed to access maps, so check rcu_read_lock_held in
-- * all three functions.
-+ * if program is allowed to access maps, so check rcu_read_lock_held() or
-+ * rcu_read_lock_trace_held() in all three functions.
-  */
- BPF_CALL_2(bpf_map_lookup_elem, struct bpf_map *, map, void *, key)
- {
--	WARN_ON_ONCE(!rcu_read_lock_held());
-+	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
- 	return (unsigned long) map->ops->map_lookup_elem(map, key);
- }
- 
-@@ -45,7 +46,7 @@ const struct bpf_func_proto bpf_map_lookup_elem_proto = {
- BPF_CALL_4(bpf_map_update_elem, struct bpf_map *, map, void *, key,
- 	   void *, value, u64, flags)
- {
--	WARN_ON_ONCE(!rcu_read_lock_held());
-+	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
- 	return map->ops->map_update_elem(map, key, value, flags);
- }
- 
-@@ -62,7 +63,7 @@ const struct bpf_func_proto bpf_map_update_elem_proto = {
- 
- BPF_CALL_2(bpf_map_delete_elem, struct bpf_map *, map, void *, key)
- {
--	WARN_ON_ONCE(!rcu_read_lock_held());
-+	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
- 	return map->ops->map_delete_elem(map, key);
- }
- 
--- 
-2.34.1
+> 
+> Thanks,
+> 
+> 	Ingo
+> 
+> =======================>
+> Ingo Molnar (18):
+>        x86/msr: Standardize on u64 in <asm/msr.h>
+>        x86/msr: Standardize on u64 in <asm/msr-index.h>
+>        x86/msr: Use u64 in rdmsrl_amd_safe() and wrmsrl_amd_safe()
+>        x86/msr: Use u64 in rdmsrl_safe() and paravirt_read_pmc()
+>        x86/msr: Rename 'rdmsrl()' to 'rdmsrq()'
+>        x86/msr: Rename 'wrmsrl()' to 'wrmsrq()'
+>        x86/msr: Rename 'rdmsrl_safe()' to 'rdmsrq_safe()'
+>        x86/msr: Rename 'wrmsrl_safe()' to 'wrmsrq_safe()'
+>        x86/msr: Rename 'rdmsrl_safe_on_cpu()' to 'rdmsrq_safe_on_cpu()'
+>        x86/msr: Rename 'wrmsrl_safe_on_cpu()' to 'wrmsrq_safe_on_cpu()'
+>        x86/msr: Rename 'rdmsrl_on_cpu()' to 'rdmsrq_on_cpu()'
+>        x86/msr: Rename 'wrmsrl_on_cpu()' to 'wrmsrq_on_cpu()'
+>        x86/msr: Rename 'mce_rdmsrl()' to 'mce_rdmsrq()'
+>        x86/msr: Rename 'mce_wrmsrl()' to 'mce_wrmsrq()'
+>        x86/msr: Rename 'rdmsrl_amd_safe()' to 'rdmsrq_amd_safe()'
+>        x86/msr: Rename 'wrmsrl_amd_safe()' to 'wrmsrq_amd_safe()'
+>        x86/msr: Rename 'native_wrmsrl()' to 'native_wrmsrq()'
+>        x86/msr: Rename 'wrmsrl_cstar()' to 'wrmsrq_cstar()'
+> 
+>   arch/x86/coco/sev/core.c                           |   2 +-
+>   arch/x86/events/amd/brs.c                          |   8 +-
+>   arch/x86/events/amd/core.c                         |  12 +--
+>   arch/x86/events/amd/ibs.c                          |  26 ++---
+>   arch/x86/events/amd/lbr.c                          |  20 ++--
+>   arch/x86/events/amd/power.c                        |  10 +-
+>   arch/x86/events/amd/uncore.c                       |  12 +--
+>   arch/x86/events/core.c                             |  42 ++++----
+>   arch/x86/events/intel/core.c                       |  66 ++++++-------
+>   arch/x86/events/intel/cstate.c                     |   2 +-
+>   arch/x86/events/intel/ds.c                         |  10 +-
+>   arch/x86/events/intel/knc.c                        |  16 +--
+>   arch/x86/events/intel/lbr.c                        |  44 ++++-----
+>   arch/x86/events/intel/p4.c                         |  24 ++---
+>   arch/x86/events/intel/p6.c                         |  12 +--
+>   arch/x86/events/intel/pt.c                         |  32 +++---
+>   arch/x86/events/intel/uncore.c                     |   2 +-
+>   arch/x86/events/intel/uncore_discovery.c           |  10 +-
+>   arch/x86/events/intel/uncore_nhmex.c               |  70 ++++++-------
+>   arch/x86/events/intel/uncore_snb.c                 |  42 ++++----
+>   arch/x86/events/intel/uncore_snbep.c               |  50 +++++-----
+>   arch/x86/events/msr.c                              |   2 +-
+>   arch/x86/events/perf_event.h                       |  26 ++---
+>   arch/x86/events/probe.c                            |   2 +-
+>   arch/x86/events/rapl.c                             |   8 +-
+>   arch/x86/events/zhaoxin/core.c                     |  16 +--
+>   arch/x86/hyperv/hv_apic.c                          |   4 +-
+>   arch/x86/hyperv/hv_init.c                          |  66 ++++++-------
+>   arch/x86/hyperv/hv_spinlock.c                      |   6 +-
+>   arch/x86/hyperv/ivm.c                              |   2 +-
+>   arch/x86/include/asm/apic.h                        |   8 +-
+>   arch/x86/include/asm/debugreg.h                    |   4 +-
+>   arch/x86/include/asm/fsgsbase.h                    |   4 +-
+>   arch/x86/include/asm/kvm_host.h                    |   2 +-
+>   arch/x86/include/asm/microcode.h                   |   2 +-
+>   arch/x86/include/asm/msr-index.h                   |  12 +--
+>   arch/x86/include/asm/msr.h                         |  50 +++++-----
+>   arch/x86/include/asm/paravirt.h                    |   8 +-
+>   arch/x86/include/asm/spec-ctrl.h                   |   2 +-
+>   arch/x86/kernel/acpi/cppc.c                        |   8 +-
+>   arch/x86/kernel/amd_nb.c                           |   2 +-
+>   arch/x86/kernel/apic/apic.c                        |  16 +--
+>   arch/x86/kernel/apic/apic_numachip.c               |   6 +-
+>   arch/x86/kernel/cet.c                              |   2 +-
+>   arch/x86/kernel/cpu/amd.c                          |  28 +++---
+>   arch/x86/kernel/cpu/aperfmperf.c                   |  28 +++---
+>   arch/x86/kernel/cpu/bugs.c                         |  24 ++---
+>   arch/x86/kernel/cpu/bus_lock.c                     |  18 ++--
+>   arch/x86/kernel/cpu/common.c                       |  68 ++++++-------
+>   arch/x86/kernel/cpu/feat_ctl.c                     |   4 +-
+>   arch/x86/kernel/cpu/hygon.c                        |   6 +-
+>   arch/x86/kernel/cpu/intel.c                        |  10 +-
+>   arch/x86/kernel/cpu/intel_epb.c                    |  12 +--
+>   arch/x86/kernel/cpu/mce/amd.c                      |  22 ++---
+>   arch/x86/kernel/cpu/mce/core.c                     |  58 +++++------
+>   arch/x86/kernel/cpu/mce/inject.c                   |  32 +++---
+>   arch/x86/kernel/cpu/mce/intel.c                    |  32 +++---
+>   arch/x86/kernel/cpu/mce/internal.h                 |   2 +-
+>   arch/x86/kernel/cpu/microcode/amd.c                |   2 +-
+>   arch/x86/kernel/cpu/microcode/intel.c              |   2 +-
+>   arch/x86/kernel/cpu/mshyperv.c                     |  12 +--
+>   arch/x86/kernel/cpu/resctrl/core.c                 |  10 +-
+>   arch/x86/kernel/cpu/resctrl/monitor.c              |   2 +-
+>   arch/x86/kernel/cpu/resctrl/pseudo_lock.c          |   2 +-
+>   arch/x86/kernel/cpu/resctrl/rdtgroup.c             |   6 +-
+>   arch/x86/kernel/cpu/sgx/main.c                     |   2 +-
+>   arch/x86/kernel/cpu/topology.c                     |   2 +-
+>   arch/x86/kernel/cpu/topology_amd.c                 |   4 +-
+>   arch/x86/kernel/cpu/tsx.c                          |  20 ++--
+>   arch/x86/kernel/cpu/umwait.c                       |   2 +-
+>   arch/x86/kernel/fpu/core.c                         |   2 +-
+>   arch/x86/kernel/fpu/xstate.c                       |  10 +-
+>   arch/x86/kernel/fpu/xstate.h                       |   2 +-
+>   arch/x86/kernel/fred.c                             |  20 ++--
+>   arch/x86/kernel/hpet.c                             |   2 +-
+>   arch/x86/kernel/kvm.c                              |  28 +++---
+>   arch/x86/kernel/kvmclock.c                         |   4 +-
+>   arch/x86/kernel/mmconf-fam10h_64.c                 |   8 +-
+>   arch/x86/kernel/process.c                          |  16 +--
+>   arch/x86/kernel/process_64.c                       |  20 ++--
+>   arch/x86/kernel/reboot_fixups_32.c                 |   2 +-
+>   arch/x86/kernel/shstk.c                            |  18 ++--
+>   arch/x86/kernel/traps.c                            |  10 +-
+>   arch/x86/kernel/tsc.c                              |   2 +-
+>   arch/x86/kernel/tsc_sync.c                         |  14 +--
+>   arch/x86/kvm/svm/avic.c                            |   2 +-
+>   arch/x86/kvm/svm/sev.c                             |   2 +-
+>   arch/x86/kvm/svm/svm.c                             |  16 +--
+>   arch/x86/kvm/vmx/nested.c                          |   4 +-
+>   arch/x86/kvm/vmx/pmu_intel.c                       |   4 +-
+>   arch/x86/kvm/vmx/sgx.c                             |   8 +-
+>   arch/x86/kvm/vmx/vmx.c                             |  66 ++++++-------
+>   arch/x86/kvm/x86.c                                 |  38 ++++----
+>   arch/x86/lib/insn-eval.c                           |   6 +-
+>   arch/x86/lib/msr-smp.c                             |  16 +--
+>   arch/x86/lib/msr.c                                 |   4 +-
+>   arch/x86/mm/pat/memtype.c                          |   4 +-
+>   arch/x86/mm/tlb.c                                  |   2 +-
+>   arch/x86/pci/amd_bus.c                             |  10 +-
+>   arch/x86/platform/olpc/olpc-xo1-rtc.c              |   6 +-
+>   arch/x86/platform/olpc/olpc-xo1-sci.c              |   2 +-
+>   arch/x86/power/cpu.c                               |  26 ++---
+>   arch/x86/realmode/init.c                           |   2 +-
+>   arch/x86/virt/svm/sev.c                            |  20 ++--
+>   arch/x86/xen/suspend.c                             |   6 +-
+>   drivers/acpi/acpi_extlog.c                         |   2 +-
+>   drivers/acpi/acpi_lpit.c                           |   2 +-
+>   drivers/cpufreq/acpi-cpufreq.c                     |   8 +-
+>   drivers/cpufreq/amd-pstate-ut.c                    |   6 +-
+>   drivers/cpufreq/amd-pstate.c                       |  22 ++---
+>   drivers/cpufreq/amd_freq_sensitivity.c             |   2 +-
+>   drivers/cpufreq/e_powersaver.c                     |   6 +-
+>   drivers/cpufreq/intel_pstate.c                     | 108 ++++++++++-----------
+>   drivers/cpufreq/longhaul.c                         |  24 ++---
+>   drivers/cpufreq/powernow-k7.c                      |  14 +--
+>   drivers/crypto/ccp/sev-dev.c                       |   2 +-
+>   drivers/edac/amd64_edac.c                          |   6 +-
+>   drivers/gpu/drm/i915/selftests/librapl.c           |   4 +-
+>   drivers/hwmon/fam15h_power.c                       |   6 +-
+>   drivers/idle/intel_idle.c                          |  34 +++----
+>   drivers/mtd/nand/raw/cs553x_nand.c                 |   6 +-
+>   drivers/platform/x86/intel/ifs/core.c              |   4 +-
+>   drivers/platform/x86/intel/ifs/load.c              |  20 ++--
+>   drivers/platform/x86/intel/ifs/runtest.c           |  16 +--
+>   drivers/platform/x86/intel/pmc/cnp.c               |   6 +-
+>   drivers/platform/x86/intel/pmc/core.c              |   8 +-
+>   .../x86/intel/speed_select_if/isst_if_common.c     |  18 ++--
+>   .../x86/intel/speed_select_if/isst_if_mbox_msr.c   |  14 +--
+>   .../x86/intel/speed_select_if/isst_tpmi_core.c     |   2 +-
+>   drivers/platform/x86/intel/tpmi_power_domains.c    |   4 +-
+>   drivers/platform/x86/intel/turbo_max_3.c           |   4 +-
+>   .../x86/intel/uncore-frequency/uncore-frequency.c  |  10 +-
+>   drivers/platform/x86/intel_ips.c                   |  36 +++----
+>   drivers/powercap/intel_rapl_msr.c                  |   6 +-
+>   .../int340x_thermal/processor_thermal_device.c     |   2 +-
+>   drivers/thermal/intel/intel_hfi.c                  |  14 +--
+>   drivers/thermal/intel/intel_powerclamp.c           |   4 +-
+>   drivers/thermal/intel/intel_tcc_cooling.c          |   4 +-
+>   drivers/thermal/intel/therm_throt.c                |  10 +-
+>   drivers/video/fbdev/geode/gxfb_core.c              |   2 +-
+>   drivers/video/fbdev/geode/lxfb_ops.c               |  22 ++---
+>   drivers/video/fbdev/geode/suspend_gx.c             |  10 +-
+>   drivers/video/fbdev/geode/video_gx.c               |  16 +--
+>   include/hyperv/hvgdk_mini.h                        |   2 +-
+>   144 files changed, 1034 insertions(+), 1034 deletions(-)
 
 
