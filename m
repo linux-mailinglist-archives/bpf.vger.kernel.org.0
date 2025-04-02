@@ -1,102 +1,135 @@
-Return-Path: <bpf+bounces-55139-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55140-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49C15A78CF1
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 13:16:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6741FA78CFA
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 13:21:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEF031892F65
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 11:16:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB2F518905AE
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 11:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8114237717;
-	Wed,  2 Apr 2025 11:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074FC238159;
+	Wed,  2 Apr 2025 11:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R3c2jDgm"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 083F32AEE9;
-	Wed,  2 Apr 2025 11:15:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08CCD238149
+	for <bpf@vger.kernel.org>; Wed,  2 Apr 2025 11:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743592562; cv=none; b=b1y5t+lAl21dQ1C1S3oR8lWfx1jv1O5A4Ks5m6jEmviDNUK+SKah3Y0gKbDPeAy8hgJ4Feo/c68DLfJDaL6OlCqo+aDUX1FVT81kDd/nTlxGEVZH97URZT4DkgfSEpNhLvMQd0w2cHwOM2PWfUr3nsxEOyUKEOLlZASlxavbxmw=
+	t=1743592856; cv=none; b=bnAm7/VKCOgcdUuwTfMk/OYsbveZUi70PxTiI3/0f3GmhOXdEeT0nlLNY7nlz0jwGf48NKu51ZPiy6UyZglpW/YuYcrbimOwIqbczAGMmo+DBzlEnURTHtkuYz0+AUlhJOR0vVKT3Ii56kRRQr5sMN9leS5OF6uDW1xl+2BH/CE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743592562; c=relaxed/simple;
-	bh=JhUo/aChD/18U7gBE8w/fmpWt+EyPWny3Tq6rchm2WE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=RQ1VCtHdlMkHq+5KI9oEvNmdtuwmzBanY/rK6fJjQRvgVzHB7Us7hfAT0Ong6dFK3VP0SJzdVMQiYxIgHC7An2l9X+MQNx4+0xYyaTiQNhtaKb96EOZmmheY9Iy0EJbB7BLc66VqbuAHgADrc/K1buxZ2uTrXPGdxVRg7NVLizY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4ZSMkk2m1fz27gml;
-	Wed,  2 Apr 2025 19:16:30 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 48E821A0188;
-	Wed,  2 Apr 2025 19:15:51 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 2 Apr 2025 19:15:50 +0800
-Message-ID: <6cd5a1dc-b938-46f3-8957-c2d99921f95c@huawei.com>
-Date: Wed, 2 Apr 2025 19:15:50 +0800
+	s=arc-20240116; t=1743592856; c=relaxed/simple;
+	bh=V/YTv1LrEDJt9Qc5FmXgPMHnsXS0LqtIguChw7m7jPc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c2GS/Se/S7bUe80Gp4rAVEFlTKALaOWFAAKhOefdUmvlgjQ63cGRIAPvYx3FRo+1DZvht1Jc0s/kbsLYl5mkTd1CAdnXIL27wAL1wFUoCZqmwHSwVnro5UYOY29Dp0iu4KBpu4jzRilYSlxY2JJiDVbX/Pe3F4xoADYXs6nki3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R3c2jDgm; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1743592853;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3gh3qc3mCI6REs+l4y8fDZe09szrk57uTA/tlkvkAr0=;
+	b=R3c2jDgmLlL1RTFX4Evpzr13Y/H14Wgoa0//z+aleyI13qKBkFQ+EpxisCQ8N+NS65nnby
+	HZ/T8p0j3AuF8eMZUw7iAlIDxbsa08Xw4KBDcwT8F0L/E7wcMzEUH+tB+N1SqHp/zUY+8U
+	DIcZMpjxDmiwGVJTxE5veJO3PHaU2Gs=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-283-3_J5tzInOPmgbdEKMHE27Q-1; Wed,
+ 02 Apr 2025 07:20:49 -0400
+X-MC-Unique: 3_J5tzInOPmgbdEKMHE27Q-1
+X-Mimecast-MFC-AGG-ID: 3_J5tzInOPmgbdEKMHE27Q_1743592848
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7EA3219560BC;
+	Wed,  2 Apr 2025 11:20:47 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.44.34.147])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 6A7B31955DCE;
+	Wed,  2 Apr 2025 11:20:44 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed,  2 Apr 2025 13:20:12 +0200 (CEST)
+Date: Wed, 2 Apr 2025 13:20:08 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Sebastian Sewior <bigeasy@linutronix.de>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Peter Ziljstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: uprobe splat in PREEMP_RT
+Message-ID: <20250402112007.GE22091@redhat.com>
+References: <CAADnVQLLOHZmPO4X_dQ+cTaSDvzdWHzA0qUqQDhLFYL3D6xPxg@mail.gmail.com>
+ <20250402091044.GB22091@redhat.com>
+ <20250402105444.tW8UU7vO@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 2/2] page_pool: Track DMA-mapped pages and
- unmap them when destroying the pool
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-CC: Zhu Yanjun <yanjun.zhu@linux.dev>,
-	=?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, "David S.
- Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
-	<andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
-	<pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
- Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
- Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
-	Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox
-	<willy@infradead.org>, <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>, Qiuling Ren
-	<qren@redhat.com>, Yuying Ma <yuma@redhat.com>
-References: <20250328-page-pool-track-dma-v5-0-55002af683ad@redhat.com>
- <20250328-page-pool-track-dma-v5-2-55002af683ad@redhat.com>
- <aaf31c50-9b57-40b7-bbd7-e19171370563@intel.com>
- <b75c5329-0049-4c9c-ba79-a1132d848d5d@linux.dev>
- <b87a14f4-181b-4a82-9d71-2750699601d6@huawei.com>
- <d3dcd3e1-c6ba-4756-bd8e-273e727b635a@intel.com>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <d3dcd3e1-c6ba-4756-bd8e-273e727b635a@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250402105444.tW8UU7vO@linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-On 2025/4/1 19:56, Alexander Lobakin wrote:
+On 04/02, Sebastian Sewior wrote:
+>
+> On 2025-04-02 11:10:45 [+0200], Oleg Nesterov wrote:
+> > Add Peter.
+> >
+> > I never understood why __seqprop_preemptible() returns false.
+> > Stupid question, perhaps
+> >
+> > 	--- x/include/linux/seqlock.h
+> > 	+++ x/include/linux/seqlock.h
+> > 	@@ -213,12 +213,11 @@ static inline unsigned __seqprop_sequenc
+> >
+> > 	 static inline bool __seqprop_preemptible(const seqcount_t *s)
+> > 	 {
+> > 	-	return false;
+> > 	+	return true;
+> > 	 }
+> >
+> > 	 static inline void __seqprop_assert(const seqcount_t *s)
+> > 	 {
+> > 	-	lockdep_assert_preemption_disabled();
+> > 	 }
+> >
+> > 	 #define __SEQ_RT	IS_ENABLED(CONFIG_PREEMPT_RT)
+> >
+> > makes more sense?
+> >
+> > Then we can remove the no longer necessary preempt_disable()'s
+> > before write_seqcount_begin() in other users of seqcount_t.
+>
+> This depends on locktype that is coupled with the seqcount.
 
-...
+Yes.
 
->> There are two reading of dma_sync in this patch, the first reading is not
->> under rcu read lock and doing the reading without READ_ONCE(), the second
->> reading is under rcu read lock and do the reading with READ_ONCE().
->>
->> The first one seems an optimization to avoid taking the rcu read lock,
->> why might need READ_ONCE() to make KCSAN happy if we do care about making
->> KCSAN happy.
->>
->> The second one does not seems to need the atomicity by using the READ_ONCE()
->> as it is always under RCU read lock(implicit or explicit one), and there is
->> a rcu sync after the clearing of that bit.
-> 
-> IOW, are you saying this change is not needed at all?
+But seqcount_t doesn't have the "internal" lock. Unlike other
+seqcount's defined by SEQCOUNT_LOCKNAME().
 
-It is not needed unless KCSAN is not happy about this and we really want to make
-KCSAN happy about it as my understanding.
+> If the lock disables preemption and relies on it then it must be somehow
+> enforced on PREEMPT_RT or rely on the lock+unlock mechnanism to avoid
+> deadlocks. Also it needs to be ensured that you don't have two writer
+> since preemption is allowed.
+
+Sorry, I don't understand.
+
+Again, seqcount_t differs, it can't do lock+unlock like (say)
+seqcount_spinlock_t.
+
+Oleg.
 
 
