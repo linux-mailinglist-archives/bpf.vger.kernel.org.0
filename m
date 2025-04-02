@@ -1,167 +1,164 @@
-Return-Path: <bpf+bounces-55155-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55156-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62512A78E95
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 14:35:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7094A78EB7
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 14:39:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C1FB7A2AD4
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 12:34:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 933A37A5687
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 12:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FFAA23A562;
-	Wed,  2 Apr 2025 12:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E5923BD1A;
+	Wed,  2 Apr 2025 12:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QcGL7P7x"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="gDeoq9iu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6FE1E50B;
-	Wed,  2 Apr 2025 12:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C757823BCF2;
+	Wed,  2 Apr 2025 12:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.245
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743597327; cv=none; b=h30ZLn+JkUvc/rCp75EnT9baK+mFmpIEYgLM+MWwud50Qun1Ux5MpdGxKAT6pA39HwOp0mgns5oiEJt1UYX5q7ABX5OL4/FlKCRYaplSHZcKR/4K9Wx4DYTBsPG2Yl+gT7w8qXNuNzbN7PkeE046zPzBWsN+Pj/boMr0YLapqP4=
+	t=1743597505; cv=none; b=WDVMCJ7cOqeUgZw53CvOa8iyp2ol/RIYDOSuDNgu+8PbKv27E4geEnVtcSFAA+JW1p52o/Xrs3erz/T7wYCky6yLn3f7Rv+sP8wwK1tHC5JchR3wxLZ9lpFV0oiEoeu6GZqiBabGeUtCsnpR8DIjM+FLup04rQN7rtuoJ/R4l/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743597327; c=relaxed/simple;
-	bh=5x5voHAbthWztCnJTAxyUPzXr6ODagheOFflvD8Cgow=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AMA7oZUMCtonaVfpWJxkF+P0OJ7BSsOvWYg+QhSJkZK+hI/WxIvN1zTQQR7g1YfghwIV22VO40xeAgHkqNDHApafGqfZFCwT1Hv/91aD+Rqjj7hca6jJ9eGt6abJElLe4u2nZ6WAlNCmU/BzGqdHEMrwE8HJuLxjYxuNT6f9UeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QcGL7P7x; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3996af42857so578663f8f.0;
-        Wed, 02 Apr 2025 05:35:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743597324; x=1744202124; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fQPuk4z8aXO1/VwBQYL7UU05vvl1F/e5DxjIm3de0nQ=;
-        b=QcGL7P7xdIlNJFtbv1qiOnhd1v9UoUavw/eehcp5qTLK0ORnH24kzw7vGiboSbQGWD
-         ppytj7pxBsNeBJ/KEKu+yDjfacmVaip2Rdtoiwu/lcFmMPR30sBASZMW3vgAcQlC/kcJ
-         ONvHmufdnMwPmONrOTcijCBRR2mOKJRGN5Ik7OM0eZsVFF/wU6crTCymAIDEJLJ57LrX
-         yCfYIunRsZeYeilqu/gLbzXgnpL2aIL7IAMuIsvD1k4EzGkwrkdWakxLu2W6ESTmdWUy
-         CfBPgOa9ZZm0VX6/PZ/plvawSRCxyqIDzzojeiKRQDut4z5jxdRiFefL8ekzy/gSebAT
-         iATA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743597324; x=1744202124;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fQPuk4z8aXO1/VwBQYL7UU05vvl1F/e5DxjIm3de0nQ=;
-        b=rchl1ru5mEMrx+XbmE9zYhC8XxudatiZQckUfx+Q2yI1Sj58lcKLgfU4Ag+BlD5Arb
-         Apv4e0Uz0JaADiMbZPpur/U4xYeYusWhzxeYuYyN/bxXAX+msULtfbg7i1pT4E5IQ92U
-         8ff4RlkkHQPUJkr8GnaY+PCPHdU911BPpY5oiE18oD6ZPQEJ4ecEA2ugmAK81GNC1yxt
-         YNrSUQXHmX/OBYDNiDE0LoPdGvJU+NVDnFyibzPnKYAF4MTAJPPHF+19EBuLrx57rYti
-         Z3mnVI5AD3WEUFgh1GuXKzJ8NRZkLp6T/wnEwj+4NbspODNC1CzRoL+iaejXknP/MY30
-         /CAw==
-X-Forwarded-Encrypted: i=1; AJvYcCU3ET9hdKoCZuK+lJXILl+QeOU+9q2P4mmTWak/Kb6lNcsImdv3f60sxiyThbSwBN1mMHzEbRhC@vger.kernel.org, AJvYcCU74I9PmntDjz8zfd5JZDle0wx1kYIfc3UH7VOnGLXRO8T1kaRpYEDHuDyHwR4oHrjh9lA1fW464D6N@vger.kernel.org, AJvYcCUpJAx58K9xug8hCIcO4omOHbbtVDeMV2FnHsQPCgMsjTFNxbSlMeWQecOe0YeZLxaFaGlvKWOxqhv/@vger.kernel.org, AJvYcCVUJIQV2CYwVKa47sx5jWjf8kaOKvNmxOpNFNgFc7bhaOknHWN7EAW74bdQDDY9T5HrEmu/12SEhRy+yOKN@vger.kernel.org, AJvYcCVc+6wQcTWNvC5fGMy4colAI6SZ5ypD70q24zcagN2lOyQSLqbRKyMOSFXfjAFRFAokq50N2/Y2WQlJZw==@vger.kernel.org, AJvYcCVsGxNX+HQ7AxC/1/MOiDCNjX8hTbxrcPkogZqgWZQ3OzRI/ptciXR0N1SDcONAsKeZ9pkDuueh0ltZKQ==@vger.kernel.org, AJvYcCVvaLjZn2jWAOMryTf4TiQ9104/LhPJuQlmGmJWUymC9iJ0/4vjoG9mB07t2hOOTQjCHjs=@vger.kernel.org, AJvYcCWAO6wB/JHNG23o7D8wYYPRsT4woPW+mTI+ON3VykxaRxp85v9QbDMaZ+YrItzAgAFSU0SMypZBWDKDhg==@vger.kernel.org, AJvYcCWTozHbnxqZ0g4Mvqobcf98xg3b/LKrcQklnfZuZmUTH9yjYQr7huKmW5V+sDaIgNuZGK4npl2r1tw=@vger.kernel.org, AJvYcCWUySn7qvYZ7IfLe11HJ2nL9+AItCC9UNyZkXUmJaOC
- 5Snh0leeY34sY0lWbq7yG235zceWfeh4PKthCC7pWu0a@vger.kernel.org, AJvYcCWyNyjHbs+QL6MN+LXrAl1LtFZ9eY4JHcwvO0So+LWgY7csykGT6u2JddCF8rfT3w6cfy/x1w==@vger.kernel.org, AJvYcCX7HB3HV08iHwh/h7qhgJbtQznDp2S8P9T8x5XmSZO//Yk+PNt1m2Eg82rqf5DdmxFJsMM93cb+dEgfkQ==@vger.kernel.org, AJvYcCXnjTIbGQ42spZ/B8cllCy0Wnw15dTI6sCfNv7cnja1bz3/Tn2ImuYGsX8lMVOYVQ4lGKCcun7G0y+h8Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8kWe0OlPNKLMsRXrarDGAeF37TCmufpkhVJnukaY4cKLB0faL
-	3tWGhirrQsk7ZSfwk9zR2+yAODq9btzp1uLBk55AM5iuoqTpS46r
-X-Gm-Gg: ASbGncuwgp92SBngGAPvxqqxLAH0bom1QCyMzyiznnf/tCGA/5eVlJAmlDK+rd3Vnp6
-	zAE5/LFt43ItXHumAUnhVbRGkS3yvPE1fPlWNMfine5e6ZD9Rq3gxTzT6aH2JW4g2J+rNl20ZsS
-	zLqzJDsjitfGTXUaMmFSOVSU0qhHKnhsrrj2sLnDCplbP++r/MfJOV8Rhmp+SPpgcNN3ZeF43sh
-	cS4bJRDDLZnS/RUO5Agu/e0ZkYgeE//MONrwhzPhIos2dK1WIj/OOfA+YsfwGcXbqTM2VGK70wH
-	NG2d1QNr0uXb/qzKsUWEM9iad3ZDAwpqwWqN/VX7BfwQ3XSteV0ZNaELqpRH+bnF6OV4o4YKwmQ
-	+sKwCmsE=
-X-Google-Smtp-Source: AGHT+IHaPOBKU7A29Yjs98Lc1iT7Oi631s03TvCGaxR6gPTH2ceLJBkQprnFjuTvnVXixjBxLkV5PQ==
-X-Received: by 2002:a5d:648b:0:b0:38d:df15:2770 with SMTP id ffacd0b85a97d-39c2a2c9272mr2009745f8f.0.1743597323750;
-        Wed, 02 Apr 2025 05:35:23 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43eb613ae24sm19468475e9.40.2025.04.02.05.35.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Apr 2025 05:35:23 -0700 (PDT)
-Date: Wed, 2 Apr 2025 13:35:20 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Stefan Metzmacher <metze@samba.org>, Jens Axboe <axboe@kernel.dk>, Pavel
- Begunkov <asml.silence@gmail.com>, Breno Leitao <leitao@debian.org>, Jakub
- Kicinski <kuba@kernel.org>, Christoph Hellwig <hch@lst.de>, Karsten Keil
- <isdn@linux-pingi.de>, Ayush Sawal <ayush.sawal@chelsio.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon
- Horman <horms@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>, Willem de
- Bruijn <willemb@google.com>, David Ahern <dsahern@kernel.org>, Marcelo
- Ricardo Leitner <marcelo.leitner@gmail.com>, Xin Long
- <lucien.xin@gmail.com>, Neal Cardwell <ncardwell@google.com>, Joerg Reuter
- <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
- <johan.hedberg@gmail.com>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde
- <mkl@pengutronix.de>, Robin van der Gracht <robin@protonic.nl>, Oleksij
- Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, Alexander Aring
- <alex.aring@gmail.com>, Stefan Schmidt <stefan@datenfreihafen.org>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Alexandra Winter
- <wintera@linux.ibm.com>, Thorsten Winkler <twinkler@linux.ibm.com>, James
- Chapman <jchapman@katalix.com>, Jeremy Kerr <jk@codeconstruct.com.au>, Matt
- Johnston <matt@codeconstruct.com.au>, Matthieu Baerts <matttbe@kernel.org>,
- Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>,
- Krzysztof Kozlowski <krzk@kernel.org>, Remi Denis-Courmont
- <courmisch@gmail.com>, Allison Henderson <allison.henderson@oracle.com>,
- David Howells <dhowells@redhat.com>, Marc Dionne
- <marc.dionne@auristor.com>, Wenjia Zhang <wenjia@linux.ibm.com>, Jan
- Karcher <jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, Tony
- Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, Jon Maloy
- <jmaloy@redhat.com>, Boris Pismenny <borisp@nvidia.com>, John Fastabend
- <john.fastabend@gmail.com>, Stefano Garzarella <sgarzare@redhat.com>,
- Martin Schiller <ms@dev.tdt.de>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>, Maciej
- Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon
- <jonathan.lemon@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
- linux-bluetooth@vger.kernel.org, linux-can@vger.kernel.org,
- dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
- linux-s390@vger.kernel.org, mptcp@lists.linux.dev,
- linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
- linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
- virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
- bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
- io-uring@vger.kernel.org
-Subject: Re: [RFC PATCH 0/4] net/io_uring: pass a kernel pointer via
- optlen_t to proto[_ops].getsockopt()
-Message-ID: <20250402133520.40451468@pumpkin>
-In-Reply-To: <CAHk-=whmzrO-BMU=uSVXbuoLi-3tJsO=0kHj1BCPBE3F2kVhTA@mail.gmail.com>
-References: <cover.1743449872.git.metze@samba.org>
-	<CAHk-=whmzrO-BMU=uSVXbuoLi-3tJsO=0kHj1BCPBE3F2kVhTA@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1743597505; c=relaxed/simple;
+	bh=dTjL5EFXoS0czJKKji+k4G9YaMQT5DMND5Dnr5uRJm0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=jgTyGYoyUuDtL+QbDSwFubVN6x7qOgquQsquD41/dwVKZU7KgIHgiCpN72oem0Eadw4yEyZ/AyCYKfmn4eWWhr3yNL0oLteD2jPiTDhy3/RUD518WNZkwRSKBNWEc91BeJNMb3E4ue9Aukrc15rv9b7uj9ZTwdwFHSIDROpgDbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=gDeoq9iu; arc=none smtp.client-ip=198.47.19.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 532CbN0f3241854
+	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 2 Apr 2025 07:37:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1743597443;
+	bh=4qOoA3LVJAeCTkVPfMbm4Vm9pRsN9xHcsiNmubFd1nM=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=gDeoq9iu0w5moioITpXaWzK1YWwZkMwmmrVhnKQM60yYkUx9zFlXdUoaRrIxuyxu3
+	 0876/n+IAnhhIimjd/X49IGjjUrJI6o8G7PgO1bG3dvYdb7f1qXxe2mE+yFca+Nd9p
+	 4qa2UqZOzY1pOof5+dgSWzCV+YknEskwRNCJ363U=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 532CbNrc019560
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 2 Apr 2025 07:37:23 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
+ Apr 2025 07:37:22 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 2 Apr 2025 07:37:22 -0500
+Received: from [172.24.17.211] (lt9560gk3.dhcp.ti.com [172.24.17.211])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 532CbGDp101576;
+	Wed, 2 Apr 2025 07:37:17 -0500
+Message-ID: <b0a099a6-33b2-49f9-9af7-580c60b98f55@ti.com>
+Date: Wed, 2 Apr 2025 18:07:15 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v3 3/3] net: ti: icss-iep: Fix possible NULL pointer
+ dereference for perout request
+To: Roger Quadros <rogerq@kernel.org>, <dan.carpenter@linaro.org>,
+        <pabeni@redhat.com>, <kuba@kernel.org>, <edumazet@google.com>,
+        <davem@davemloft.net>, <andrew+netdev@lunn.ch>
+CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <namcao@linutronix.de>, <javier.carrasco.cruz@gmail.com>,
+        <diogo.ivo@siemens.com>, <horms@kernel.org>,
+        <jacob.e.keller@intel.com>, <john.fastabend@gmail.com>,
+        <hawk@kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
+        <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        <danishanwar@ti.com>
+References: <20250328102403.2626974-1-m-malladi@ti.com>
+ <20250328102403.2626974-4-m-malladi@ti.com>
+ <0fb67fc2-4915-49af-aa20-8bdc9bed4226@kernel.org>
+Content-Language: en-US
+From: "Malladi, Meghana" <m-malladi@ti.com>
+In-Reply-To: <0fb67fc2-4915-49af-aa20-8bdc9bed4226@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 
-On Tue, 1 Apr 2025 17:40:19 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> "
+
+On 4/2/2025 5:58 PM, Roger Quadros wrote:
+> Meghana,
 > 
-> On Mon, 31 Mar 2025 at 13:11, Stefan Metzmacher <metze@samba.org> wrote:
-> >
-> > But as Linus don't like 'sockptr_t' I used a different approach.  
+> On 28/03/2025 12:24, Meghana Malladi wrote:
+>> ICSS IEP driver has flags to check if perout or pps has been enabled
+>> at any given point of time. Whenever there is request to enable or
+>> disable the signal, the driver first checks its enabled or disabled
+>> and acts accordingly.
+>>
+>> After bringing the interface down and up, calling PPS/perout enable
+>> doesn't work as the driver believes PPS is already enabled,
 > 
-> So the sockptr_t thing has already happened. I hate it, and I think
-> it's ugly as hell, but it is what it is.
+> How? aren't we calling icss_iep_pps_enable(iep, false)?
+> wouldn't this disable the IEP and clear the iep->pps_enabled flag?
 > 
-> I think it's a complete hack and having that "kernel or user" pointer
-> flag is disgusting.
 
-I have proposed a patch which replaced it with a structure.
-That showed up some really hacky code in IIRC io_uring.
+The whole purpose of calling icss_iep_pps_enable(iep, false) is to clear 
+iep->pps_enabled flag, because if this flag is not cleared it hinders 
+generating new pps signal (with the newly loaded firmware) once any of 
+the interfaces are up (check icss_iep_perout_enable()), so instead of 
+calling icss_iep_pps_enable(iep, false) I am just clearing the 
+iep->pps_enabled flag.
 
-Using sockptr_t for the buffer was one thing, the generic code
-can't copy the buffer to/from user because code lies about the length.
+> And, what if you brought 2 interfaces of the same ICSS instances up
+> but put only 1 interface down and up?
+> 
 
-But using for the length is just brain-dead.
-That is fixed size and can be copied from/to user by the wrapper.
-The code bloat reduction will be significant.
+Then the flag need not be disabled if only one interface is brought down 
+because the IEP is still alive and all the IEP configuration (including 
+pps/perout) is still valid.
 
-	David
+please refer for more details: 
+https://lore.kernel.org/all/20241211135941.1800240-1-m-malladi@ti.com/
+
+>> (iep->pps_enabled is not cleared during interface bring down)
+>> and driver will just return true even though there is no signal.
+>> Fix this by setting pps and perout flags to false instead of
+>> disabling perout to avoid possible null pointer dereference.
+>>
+>> Fixes: 9b115361248d ("net: ti: icssg-prueth: Fix clearing of IEP_CMP_CFG registers during iep_init")
+>> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+>> Closes: https://lore.kernel.org/all/7b1c7c36-363a-4085-b26c-4f210bee1df6@stanley.mountain/
+>> Signed-off-by: Meghana Malladi <m-malladi@ti.com>
+>> ---
+>>
+>> Changes from v2(v3-v2):
+>> - Add Reported-by tag and link to the bug reported by Dan Carpenter <dan.carpenter@linaro.org>
+>> - drop calling icss_iep_perout_enable() for disabling perout and set perout to false instead
+>>
+>>   drivers/net/ethernet/ti/icssg/icss_iep.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/ti/icssg/icss_iep.c b/drivers/net/ethernet/ti/icssg/icss_iep.c
+>> index b4a34c57b7b4..b70e4c482d74 100644
+>> --- a/drivers/net/ethernet/ti/icssg/icss_iep.c
+>> +++ b/drivers/net/ethernet/ti/icssg/icss_iep.c
+>> @@ -820,9 +820,9 @@ int icss_iep_exit(struct icss_iep *iep)
+>>   	icss_iep_disable(iep);
+>>   
+>>   	if (iep->pps_enabled)
+>> -		icss_iep_pps_enable(iep, false);
+>> +		iep->pps_enabled = false;
+>>   	else if (iep->perout_enabled)
+>> -		icss_iep_perout_enable(iep, NULL, false);
+>> +		iep->perout_enabled = false;
+>>   
+>>   	return 0;
+>>   }
+> 
 
 
