@@ -1,157 +1,126 @@
-Return-Path: <bpf+bounces-55125-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90E6EA787A2
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 07:43:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 962CAA788C5
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 09:19:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E49E1892EB4
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 05:43:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6EB13B113D
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 07:18:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75AB2230D0E;
-	Wed,  2 Apr 2025 05:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C47B231CB0;
+	Wed,  2 Apr 2025 07:18:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m5TNYqzv"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AfY1RVlW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E7302E3360;
-	Wed,  2 Apr 2025 05:43:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10ADE1E260C
+	for <bpf@vger.kernel.org>; Wed,  2 Apr 2025 07:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743572619; cv=none; b=tHKTWN9TebDnn3fkcLldIld0+bw3vhHtOn3OqjdnGe1mCMt/tfjKxLIMI/O/dPKReamlKoJl56aqH9lzqZCHZzTVcPeRijmzWliNUKukMf+9N/xrLTfwEpITCamqDoTfbLJaqE8oZ8yfF8QOMi5HVarXaFMnia2o0Z/5YvgnehA=
+	t=1743578320; cv=none; b=S6HZNDdcT8SS/EcaexNXplDWlaPDlCGV7/PV4sVirgK8KndsHRzJMpWZ9Gi7+49iklj7a3ZGPfHUXENx46P3/2L87oHdMLxl6Oe8nxtll+vcZF5T4Xgh21p/QgynIpotrP1HxU0qCpSpYY7iCfpBbZheVczdYRUBzM+el4XcNbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743572619; c=relaxed/simple;
-	bh=4YodOXIyddgrUGXCDpWh7pKVlP0DqqsIUu4EW1rqHZU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Njtdr4wO6l2X5cIMrR1kBjL544GlH2VfxUQQBjiuui88RaJmnrlPAVAsc0sn0SL6AtAOAdX64dYUPfKBHcljXC28cinuPT70ER05z01ELncn2LHB5fqkbKvWmZCaMygnjwaWh6DAnCHxeELLutcBFrpqAkbKFTJEfsgRdD+y/5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m5TNYqzv; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-301e05b90caso10842925a91.2;
-        Tue, 01 Apr 2025 22:43:37 -0700 (PDT)
+	s=arc-20240116; t=1743578320; c=relaxed/simple;
+	bh=rjEzmnr1+2wjq2FxTj4ZIbqL36uWLhzyqELF4hjcmb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tl/ljOeX5xdqQ2e0jqPEvLvf2E9m+hHFYoO7rLYkPZRDDu0Bo5NVRMiPawdyh3iyEvX9AmnjBoKp8VmnOBnX01fmEx0jw2VOZZXZZcA0qGQ0yV8ZCNbDOnRZ6l/ZfyrAB7mspmbPXiUc2iMl+2g0Lm6h867UKDfEou67aAYIl6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AfY1RVlW; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4394345e4d5so41585835e9.0
+        for <bpf@vger.kernel.org>; Wed, 02 Apr 2025 00:18:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743572617; x=1744177417; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7oMFt6rTiybYoRdpooKvYV5UYutJybr7cfusGu3htIA=;
-        b=m5TNYqzv15bXRjG04zu1R2qoTvZYtpwYNcXckGw0dyM/Z4WngShcMCJQqAE9kdvh/G
-         7+4N9p1JMXKm70KdpvUuhu6WE8+qReIGsRS3RaPO1JF6cgCF/lG6uqo4Q3VfzFCglVIH
-         uWKdP69QgSrh6SK8N+8HGB+oeONjfWCAxdG1+EBho7LhJzK6UpX1mO7lGqkvvBnLkqmp
-         DwzJ8srdFT54P+y/IaXBXKDi5qDjYv+vPAJ0Um1vV2kKVG+rPMvO1e8HNukKEqXVj2JY
-         pbkn4fZT7rTAcL2AZESx/gNMtBfyU0U7Cvev+AJGbueHsasaRRKnnJAkZCMYXwUXndI2
-         cdIA==
+        d=suse.com; s=google; t=1743578316; x=1744183116; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W0eNMuQ6+Ok777NsoTbkMeCm6WNQ+H1nK9Grprmoglc=;
+        b=AfY1RVlW9XQmP7xzI2DNsaWJ45+U8MgmD0aLQcJyZcezFt1PKA0bvc/zAW6yzhpoic
+         CzGB5YFyBAexQYzTd/SXfCdJ6XIiTwhFRRIaAHVbb6rrGCxTVw1Cv9HjU5H7x5rAyJ9k
+         elC3LgSXMhIpysPT5pIDSdSNLLy+ouP0ZruPayBZq54nLHz9Fnkg/htKDvRZctxUzgRS
+         sxrJ/psnN2NGNf8AGr0Pg2hhwyjinIJVaCkUHKe2QlvgXWDzNUZlM1TNiIInFh1yfSgK
+         +VcfMK1PJfLr+XvKuyXPywUqQY5BKm5K9bjPV4MTV1Pjn1xs1yA8t1J3HbBk4zg/c7u2
+         sl2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743572617; x=1744177417;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7oMFt6rTiybYoRdpooKvYV5UYutJybr7cfusGu3htIA=;
-        b=GBn0RZbtb9YoXmPOfJfGGQqX7YsXb2ERUYgJo7DhB8RLEM7p1Bzz/KUiOrWSPxaIc4
-         3lFRHbotz6wSByjhlsTEg3X/8wejEElSygyQAfNsUEs/7KFJrZzXe8REujHEq4+Pex5R
-         5ix7qDnQCboX0+DAwxHIqzMvGthLoGTqAWT6FKqIpUM0f8yTQZGoEZXgrbUw1G7U8TPT
-         PKf0a3DmyCM2OAgXSurJZ+zn27tYlW6e7n8B34DtOdeSGcXWiy/C2W23NhYSXsgebIl2
-         t5UQgbntFJqmLe1pAduW23DZB5R2XNe1ZYLSf2knGSGFUMIVyxR7iK6Tbz/5tkcztpUA
-         mfww==
-X-Forwarded-Encrypted: i=1; AJvYcCUcTEdXZJs7aRvfDEceIazcDU5duSe1oWZH0OZc4HdyrmSSaumNGWh8LrWLMX/9DHuRIsCLswme@vger.kernel.org, AJvYcCVSJDyxtnKLIQZww9YB+zsPoKs1bzibfsIiXXGMIk2iBBOMHaay/+nVhiHIgKAH1IBGHpHYIT9TinoUANT3@vger.kernel.org, AJvYcCWKRtrDEE6A2RUJPM+OB3llapuFT2GfKLb6K8ZoFbId+ZO3gTuQ0YGGH4pqmp12VNLZ8w4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSTt+jrj5K0hUAZWI5bcxGrbT1iUvMRffJSSO1uXzBGKdG4fPz
-	9QpxyXHJrOm4Hqu165gOy4Rse/KJQ21iIq6aPF3Hf2cIPU07tu/a
-X-Gm-Gg: ASbGncul4SMwqY2BSF+CBfJp491qzk9J24GAeWyb2BiW8hKuGIDALhGkEngne8ErqNp
-	ov064JbMbA7J7i5Oe4i2kJqP/2yr0tnBCPSNxCNs2h6BHL0PV/OfXOlnSWcTolGs5d/zEHbd7BN
-	hEBLSUFsOZ4+Lh/7DKhssTe/SW9MW9h7YQaVEs1hObiugXWCuqu5+nAnQCUcZrHJljeEMkphlrQ
-	hic2PZS0EZFqAtcZHg++YOlqg4jzy3dchqcgX2bvtcAwHJf82XeaW8qDWFr62hIthQ6SXTcuGXO
-	oRovcVCsUTpH0LREctnINn3/nUwpc/XoDJ+s+5zxh31ReYa7ONJlBKTsVZ4Z
-X-Google-Smtp-Source: AGHT+IEic+6AY+ZdBrLSKJCMvjDVGOhMYUP1QxYWYvLdMiiVD00LmEfJ4lEnY8i5M2nghj2SBWMTbA==
-X-Received: by 2002:a17:90b:5210:b0:2ee:9d49:3ae6 with SMTP id 98e67ed59e1d1-30531f93127mr25734500a91.10.1743572616792;
-        Tue, 01 Apr 2025 22:43:36 -0700 (PDT)
-Received: from minh.192.168.1.1 ([2001:ee0:4f4e:bd30:194b:b252:cf33:1fe5])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-3056f83c93asm720529a91.14.2025.04.01.22.43.31
+        d=1e100.net; s=20230601; t=1743578316; x=1744183116;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W0eNMuQ6+Ok777NsoTbkMeCm6WNQ+H1nK9Grprmoglc=;
+        b=AH4Lx5zJT52/EzXZhSEws/5etZWSNApQp9qpZC0y6K2hxL0dBO2gUVx5qj/o4fEQ14
+         B2yTygGYLSsUoc0kSp4GKU6v7XzemUC2apFuO7OBggfcA5bJYGYC2k+hz7KVLMqRYmwR
+         AKiI+YwkCX7TJPwCjo6SNenfzzq4roi2Ivxkq2QpOzOk+Eg711YxXQe7RS71VhCRE+76
+         NFfOvquOrl+xrst2h+YRD49Lj163RYDKEug3PMkLLL6WtglHzzLITPR+1LYgzYfMRlrZ
+         ZOHE1ZbwHAh7YzQIhSJ6s6rH2RoK+oSmmCwjQX5KlsnO0p7GE7xlov+4Qv2SUv+FEUde
+         n5dg==
+X-Forwarded-Encrypted: i=1; AJvYcCX8vfnA7nwN6KQj+psyQSBl2k+YSXAYo2bCEbBOcavRtWMPCO5hZq6NeCtOPHOzvkibA4M=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzyb9WKAf+oKJKjKzUzBbjsbKAyISdLVP2LfvemCg7B/FS/M1O4
+	lfDtAkEdUaUxSecBuTydHPZH11Q/Yh5K4+746yvqX6kBntFpKtNYjpsXIgFbnjo=
+X-Gm-Gg: ASbGncv5x94qY1xMaSEVLRtg2vutTqCUdojtNOVoaXp0C4Wa1T41DFvNAGtZlXRfJ7J
+	ROZaCJ3rddmXDRlincZghIxsZGfwJxl5nPvVConTgvlZldjiTppEoduVCmpXOn/woN9Idw3njbu
+	YpBE77vd9JRUNC0VeVJqZU+DvJEiB2YHhhLJazwAxZiEXUwbeafBPUgXS+dEZJHViM8DwA04UFk
+	m9zBfYcLn1GBmfKwOJMob/iQMAF5qE1i8thd4z3eI4CKUZmFToIt1L2u/wTRrzBdyLgpgIObvIF
+	7yD3EwfSySKFeReQYeOH0qbvzt4RY5Kg+45bmqNGsHkHXVrSbVuU+FvCYAN42maQysuD
+X-Google-Smtp-Source: AGHT+IHQ9iNu+elipxYIEZPm2TvVq8PRAYgvNwvPs5tGfD6BvIXUlyeIxgVszh67+jwKs4A4yZZ0tw==
+X-Received: by 2002:a05:600c:444b:b0:43d:79:ae1b with SMTP id 5b1f17b1804b1-43eb5c188bemr8972985e9.14.1743578316325;
+        Wed, 02 Apr 2025 00:18:36 -0700 (PDT)
+Received: from localhost (109-81-92-185.rct.o2.cz. [109.81.92.185])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-39c0b79e393sm16360517f8f.72.2025.04.02.00.18.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Apr 2025 22:43:36 -0700 (PDT)
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-To: virtualization@lists.linux.dev
-Cc: "Michael S . Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Bui Quang Minh <minhquangbui99@gmail.com>
-Subject: [PATCH] virtio-net: disable delayed refill when setting up xdp
-Date: Wed,  2 Apr 2025 12:42:10 +0700
-Message-ID: <20250402054210.67623-1-minhquangbui99@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        Wed, 02 Apr 2025 00:18:36 -0700 (PDT)
+Date: Wed, 2 Apr 2025 09:18:34 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+	peterz@infradead.org, mingo@kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com, oleg@redhat.com,
+	brauner@kernel.org, glider@google.com, mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com, akpm@linux-foundation.org
+Subject: Re: [PATCH] exit: add trace_task_exit() tracepoint before
+ current->mm is reset
+Message-ID: <Z-zkylk6r_rZ5V_K@tiehlicka>
+References: <20250401184021.2591443-1-andrii@kernel.org>
+ <20250401173249.42d43a28@gandalf.local.home>
+ <20250401173416.45a164c8@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250401173416.45a164c8@gandalf.local.home>
 
-When setting up XDP for a running interface, we call napi_disable() on
-the receive queue's napi. In delayed refill_work, it also calls
-napi_disable() on the receive queue's napi. This can leads to deadlock
-when napi_disable() is called on an already disabled napi. This commit
-fixes this by disabling future and cancelling all inflight delayed
-refill works before calling napi_disabled() in virtnet_xdp_set.
+On Tue 01-04-25 17:34:16, Steven Rostedt wrote:
+> On Tue, 1 Apr 2025 17:32:49 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > static void exit_mm(void)
+> > {
+> > 	struct mm_struct *mm = current->mm;
+> > 
+> > 	exit_mm_release(current, mm);
+> > 	trace_exit_mm(mm);
+> > 
+> > ??
+> 
+> That should have been:
+> 
+> static void exit_mm(void)
+> {
+> 	struct mm_struct *mm = current->mm;
+> 
+> 	trace_exit_mm(mm);
+> 	exit_mm_release(current, mm);
 
-Fixes: 4941d472bf95 ("virtio-net: do not reset during XDP set")
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
----
- drivers/net/virtio_net.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+If the primary usecase is to get an overview of the mm before exiting
+then this is more appropriate.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 7e4617216a4b..33406d59efe2 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -5956,6 +5956,15 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 	if (!prog && !old_prog)
- 		return 0;
- 
-+	/*
-+	 * Make sure refill_work does not run concurrently to
-+	 * avoid napi_disable race which leads to deadlock.
-+	 */
-+	if (netif_running(dev)) {
-+		disable_delayed_refill(vi);
-+		cancel_delayed_work_sync(&vi->refill);
-+	}
-+
- 	if (prog)
- 		bpf_prog_add(prog, vi->max_queue_pairs - 1);
- 
-@@ -6004,6 +6013,8 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 			virtnet_napi_tx_enable(&vi->sq[i]);
- 		}
- 	}
-+	if (netif_running(dev))
-+		enable_delayed_refill(vi);
- 
- 	return 0;
- 
-@@ -6019,6 +6030,7 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 			virtnet_napi_enable(&vi->rq[i]);
- 			virtnet_napi_tx_enable(&vi->sq[i]);
- 		}
-+		enable_delayed_refill(vi);
- 	}
- 	if (prog)
- 		bpf_prog_sub(prog, vi->max_queue_pairs - 1);
 -- 
-2.43.0
-
+Michal Hocko
+SUSE Labs
 
