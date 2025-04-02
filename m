@@ -1,94 +1,111 @@
-Return-Path: <bpf+bounces-55147-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55148-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 547DEA78DF6
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 14:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B2A53A78E08
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 14:17:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61BC53B173F
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 12:13:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0050D3AAD69
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 12:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11EB8238D42;
-	Wed,  2 Apr 2025 12:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B1823A58B;
+	Wed,  2 Apr 2025 12:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q7Om3u2q"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tH6g8IAf";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CbT04qDU"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB252356DF;
-	Wed,  2 Apr 2025 12:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BA08239082
+	for <bpf@vger.kernel.org>; Wed,  2 Apr 2025 12:16:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743596023; cv=none; b=JiS+CNvDkZDrhIaU0jOjHCCyUymkPmjOdHqJ9gW0akGs+AROlQEkCLNi2nZUt6APXNhhdv7yVMKIMhn96XB2dVDhGZZTAeZRtKexizcAExtMtIuxhpASvs4Vgx7gabJDZlUdcH0ekc25ZlXD9xYC8BIyy3kFTBYc7yT1DYdHOeA=
+	t=1743596190; cv=none; b=g4FkKZndn7gsAAA5U17XdbnryXipPRpEHSw+dMtGMcnCrSIMGjHLpeyw+HQUTidcevs6/xJpYAG3DaVEWSPS1/zARwjIjz1oiYWSPZ3irWipbcdchFdzEE0uGSB2TaWv0L4AsI9VpdK0h3fcUdrdtKRt8lPj4cPDqna2AM7cGIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743596023; c=relaxed/simple;
-	bh=O7oesmgNvnpeMIG+T0CoO9IemBq179dATBp4McwmeYY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KEihw0jJGM0RPGgG3zukZVDF2IetefjFU0tNUtFbaf2+ae1fwE+sVDnQJmssDO4lAeoGmlqaDEzm+fYTbcRx9fQEGffYiuhm/1GJ/ryCZoybq6bJfL25JfDLNFT9rqY3Io9WLNJwsKC43elCzomR+Hg9j8mIyiTnPcVq/RXPy6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q7Om3u2q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06D08C4CEDD;
-	Wed,  2 Apr 2025 12:13:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743596022;
-	bh=O7oesmgNvnpeMIG+T0CoO9IemBq179dATBp4McwmeYY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Q7Om3u2qOXHzmCKvzl9SNmhsvqIglkLX1PkahL07EHm7zSQpi6dW1zTwhYqk8ZHmM
-	 x6DNred9+HEQYWmXIYOHr57SFmRQtzrdjLXlJc2Y3ZF7XTyZzR9fQ8Qr0nVyjZSudi
-	 fIYtm0cRR3ac/1lGXMvT4+Dshb55UoAuLZCuQMD5IN6CoQhxVkZdoasZNNKrhhVVsB
-	 ZHIGSvVXXRDIeNPo9ID0pIV9QF7ileqKyQh6PgZR+QkfI2Fl0tDeLupw7WGa1hpfs4
-	 vYMgEh7qRm0ABFLDbep4yM9YdaC4sztiHoTMtcO+9omJ9MSyuODqGXQk54fyvoG0BV
-	 m8KO/ji5p/lVA==
-Message-ID: <a6f3b75c-2781-4d77-a5fb-ebf5d4a36c4a@kernel.org>
-Date: Wed, 2 Apr 2025 15:13:35 +0300
+	s=arc-20240116; t=1743596190; c=relaxed/simple;
+	bh=59947Uzvz/Wz9HkcMH9W6ivrjIBdj/ddLa4eFtJ6O48=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CkNd/7fF8svOZbT5/a8Cgq8krE6vUXmf7FP3lV1aNlrIFPwdC+oK5GvFNdoJNN8emH8bwUMYw2bwihqSEYsDXdjlT+dSrNrNBGiN+oY3F654e4pXxtQqCqxg/o+GzAXZkdEKi0fo4YXZTLdj9zidmtFKqhXWB8Gjzuy1nc6d6/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tH6g8IAf; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CbT04qDU; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 2 Apr 2025 14:16:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1743596186;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hQk4WQsPf11N7Iy+mIpH3whaONZtx1TFQpD1Yg1zXaQ=;
+	b=tH6g8IAf+WIhTI3cb6YfvB3LAjnqpV55NX+GAqjr+NSlKJAvyalL1AYQUcgY2zyeCLRWAm
+	421gpGh3HnLmzhSif34ze/Mp263yc/bMzD7bPPKcC7Nb5RdutPC4iVOnE6T9fYcsuGQqd1
+	hNZMluNgLRlTKElKLuOP0nhBHT8LVvogkFhPDmovUN0GjKoPkx9EkgnNg818ITIzb1UiuJ
+	lT9OmTme22vHqbxacEIu6TBSo3WaupZ2A5TyKcHnd4ooWzyJVPy543EDit6po9xR3XaIqP
+	wniL4q+2eyprvAwfdF+0wk3y4cCQivoHxcCCyTLV4WcX0og6Cpa60jhFWTajBA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1743596186;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hQk4WQsPf11N7Iy+mIpH3whaONZtx1TFQpD1Yg1zXaQ=;
+	b=CbT04qDUJsDGlgyLyNz33oIxANPd6wcVARTAoIYW4V86ySWdSUUCAG9OlpXFTJdi5zdQvS
+	S99+C8yIN4a3sjCg==
+From: Sebastian Sewior <bigeasy@linutronix.de>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Peter Ziljstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: uprobe splat in PREEMP_RT
+Message-ID: <20250402121624.lRIPMa_h@linutronix.de>
+References: <CAADnVQLLOHZmPO4X_dQ+cTaSDvzdWHzA0qUqQDhLFYL3D6xPxg@mail.gmail.com>
+ <20250402091044.GB22091@redhat.com>
+ <20250402105444.tW8UU7vO@linutronix.de>
+ <20250402112007.GE22091@redhat.com>
+ <20250402113142.GG22091@redhat.com>
+ <20250402120649._gQHEtYM@linutronix.de>
+ <20250402121228.GH22091@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3 1/3] net: ti: icssg-prueth: Fix kernel warning
- while bringing down network interface
-To: Meghana Malladi <m-malladi@ti.com>, dan.carpenter@linaro.org,
- pabeni@redhat.com, kuba@kernel.org, edumazet@google.com,
- davem@davemloft.net, andrew+netdev@lunn.ch
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- namcao@linutronix.de, javier.carrasco.cruz@gmail.com, diogo.ivo@siemens.com,
- horms@kernel.org, jacob.e.keller@intel.com, john.fastabend@gmail.com,
- hawk@kernel.org, daniel@iogearbox.net, ast@kernel.org, srk@ti.com,
- Vignesh Raghavendra <vigneshr@ti.com>, danishanwar@ti.com
-References: <20250328102403.2626974-1-m-malladi@ti.com>
- <20250328102403.2626974-2-m-malladi@ti.com>
-Content-Language: en-US
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20250328102403.2626974-2-m-malladi@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250402121228.GH22091@redhat.com>
 
-
-
-On 28/03/2025 12:24, Meghana Malladi wrote:
-> During network interface initialization, the NIC driver needs to register
-> its Rx queue with the XDP, to ensure the incoming XDP buffer carries a
-> pointer reference to this info and is stored inside xdp_rxq_info.
+On 2025-04-02 14:12:28 [+0200], Oleg Nesterov wrote:
+> On 04/02, Sebastian Sewior wrote:
+> >
+> > On 2025-04-02 13:31:43 [+0200], Oleg Nesterov wrote:
+> > >
+> > > IOW.
+> > >
+> > > I understand that seqcount_t is not RT-friendly, but why exactly do
+> > > you think the patch above can make the things worse?
+> >
+> > We wouldn't notice such a case.
 > 
-> While this struct isn't tied to XDP prog, if there are any changes in
-> Rx queue, the NIC driver needs to stop the Rx queue by unregistering
-> with XDP before purging and reallocating memory. Drop page_pool destroy
-> during Rx channel reset as this is already handled by XDP during
-> xdp_rxq_info_unreg (Rx queue unregister), failing to do will cause the
-> following warning:
+> Sebastian, could you spell please?
 > 
-> warning logs: https://gist.github.com/MeghanaMalladiTI/eb627e5dc8de24e42d7d46572c13e576
-> 
-> Fixes: 46eeb90f03e0 ("net: ti: icssg-prueth: Use page_pool API for RX buffer allocation")
-> Signed-off-by: Meghana Malladi <m-malladi@ti.com>
-> Reviewed-by: Simon Horman <horms@kernel.org>
+> What case we wouldn't notice?
 
-Reviewed-by: Roger Quadros <rogerq@kernel.org>
+I'm sorry. It wouldn't notice that preemption isn't disabled and yell.
 
+> With this patch write_seqcount_begin(seqcount_t) will notice that
+> seqprop_preemptible() is true and do preempt_disable() itself.
+
+Yes, but that we don't want. This would disable preemption for the whole
+section and not allow anything on PREEMPT_RT what would be possible
+otherwise. Like acquire a spinlock_t or so.
+
+Yes, none of this would affect hprobe_expire().
+
+> Oleg.
+
+Sebastian
 
