@@ -1,119 +1,143 @@
-Return-Path: <bpf+bounces-55171-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55172-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB707A79385
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 18:58:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41DF6A79389
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 19:00:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A8D41892801
-	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 16:58:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B833F1891989
+	for <lists+bpf@lfdr.de>; Wed,  2 Apr 2025 17:00:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 434F9192B95;
-	Wed,  2 Apr 2025 16:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZCoeYsE9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDE919CC36;
+	Wed,  2 Apr 2025 17:00:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4DC4192B75
-	for <bpf@vger.kernel.org>; Wed,  2 Apr 2025 16:58:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A19815350B
+	for <bpf@vger.kernel.org>; Wed,  2 Apr 2025 17:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743613111; cv=none; b=jOI4q3MtGvfiG4dtslFlZllbHkF/QCrK3u9f0/EuDGOxZ+IHQii+ObhdYwrC3dT0t8XtsPYIGdNLw9Vhddcc+h8boxiGqwB6A1RNBRVNsAmZnt9JCPu5xLFt9Yos4qAJtIEANTWQwkTXHbXpHpzyNyCHRBgEr05KW7upP0X1Hkg=
+	t=1743613224; cv=none; b=udI6ih/v9e+79zhxsewjZccp5hEFPHqoBRBUhnxDxfngkFYLMdm21aMdBbsebZnSpOeK6nOBC7EOr1xXXM6YKqPv8/yTogVvlZnhi6iKOFyUjF9v7aJm3R6uCNws3PMGtSvJyg99kIIEYdyo3NbNu0ZJJqVtg17buxp/pE3Yr4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743613111; c=relaxed/simple;
-	bh=O47k8Zz7R8rcTrtY8Tt6whxOuLcGsKRKWG6x1Vu5tMQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gq/ivWfKCTQd2gtcZuTE5vhMQEA5TIZLjdwk3sGxs93Nu6/TKtUBh5djf0c6NO9rNyt51jgLDUV2P5opPmxWWNpzca0SivuCn8HKb51H2nZiTQQAeuZ7wi6hVGNn8dyV4L2XV56JExI7iL677tup11paIWc/u/49ST0Z1wgIawM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZCoeYsE9; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1743613108;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O47k8Zz7R8rcTrtY8Tt6whxOuLcGsKRKWG6x1Vu5tMQ=;
-	b=ZCoeYsE9tX5MNcG+NkAaQ7pVN55/1ZG295kmcyksmHwA+arxkOITG1DmCHla2o4en9iaRx
-	THTzv0oa9s2HGmtGR43rvxS9KNTyzA+tt/I5hREcgeqaP8e2UQxbJlsjN9iwLYNsZUvXQP
-	3/wby7tj+bkvDLoGzNphJTmyTJsp6Vc=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-629-hWcsFLjRMd6vlOsfJQW1Pg-1; Wed,
- 02 Apr 2025 12:58:25 -0400
-X-MC-Unique: hWcsFLjRMd6vlOsfJQW1Pg-1
-X-Mimecast-MFC-AGG-ID: hWcsFLjRMd6vlOsfJQW1Pg_1743613103
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8186019560BD;
-	Wed,  2 Apr 2025 16:58:23 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.28])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 7F97D195DF82;
-	Wed,  2 Apr 2025 16:58:19 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed,  2 Apr 2025 18:57:48 +0200 (CEST)
-Date: Wed, 2 Apr 2025 18:57:43 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Peter Ziljstra <peterz@infradead.org>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	Sebastian Sewior <bigeasy@linutronix.de>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: uprobe splat in PREEMP_RT
-Message-ID: <20250402165705.GA32368@redhat.com>
-References: <CAADnVQLLOHZmPO4X_dQ+cTaSDvzdWHzA0qUqQDhLFYL3D6xPxg@mail.gmail.com>
- <20250401172225.06b01b22@gandalf.local.home>
- <CAEf4BzbVmUfDVEs1ndy5hr2YYA5xgt7NODjNhy4x+Syfbr1yaA@mail.gmail.com>
- <20250402103326.GD22091@redhat.com>
- <CAEf4Bzb-61gDHhacpUQRJ86Fg_uiugk5MOGv8bshaxqQiABLHA@mail.gmail.com>
+	s=arc-20240116; t=1743613224; c=relaxed/simple;
+	bh=ccLcUgTmXjIF27X8UBrYDxtVpq6fiXDVnXWWX0MuuNA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Toh5MkTuRRyBTLKNDb5TMWi1Z/wSYWTQKhDAtb1LEW3QrvhznPoCD4p0W+OqWITC6YnVdo3o7iDKYkZzY/+mlX+IkKKy3dEaJanNoWwxiGePdyKxo/nAzyHUlIxRE913A9Po0pTa4PW7zsp9ePw+CzmnzuztR+8gmdAXPvqHh04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3d585d76b79so911055ab.1
+        for <bpf@vger.kernel.org>; Wed, 02 Apr 2025 10:00:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743613222; x=1744218022;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rJNKc9NNH1K50V9qxLmrz9u3644fP6bUwf045zuQrTg=;
+        b=tSoqLpX2x9e121gl5f9QzymgdhPD+oX9z7UZODW3JaUhVim+3XhikWCMADDQo9pCsH
+         QpHZZwS41xmU2W1pCyUDo1g5OhA2lTA07SF6oCJxjPjrDcZNPOZyenF10JtFZlUf7k1t
+         0vTLjgHFfWGY87Z0ComRzv94fTNPKyEv1+AurpttoAtM260wCX9ZS+E3wfKIaCF4sTrK
+         vLoUQ/eXRlHD7e/n0z/uxpU7ey3bGpzxHyaySPfBawjTfC/E5yuK31zjCedPVFWWPKt4
+         ItnE28xLAThd9HxbWNtgphgMpvO53wBckxeXRIminc89LLD1ZoJBI34zOpZD0IPF5Q17
+         J2lg==
+X-Forwarded-Encrypted: i=1; AJvYcCXLbTHe0FYP8xMWrWr4RRdKz2fSSpMjQ1zfNNGueKYzRU6i4ShiB9aFTmRKObVi3pf0VM0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZgFit247//Redjzp1wUmnm4UrwPkcwmkG6D2cs+7fS2JFo0ol
+	AVl/MuwAsUix3fnZeHla/2I15a1cSTI7nNjiLeX8CytC8OL4lW3u9lua4FLVK9VQjiwqnz7HExW
+	6V3xHqeHT/4tg5rncsD94ZG+khulIl5JKGxeDPFLW8rSET8uMpoeXynM=
+X-Google-Smtp-Source: AGHT+IGxSNbnqTBLFnrEbvRwIqRe3FFuMnpSpt7E64gLr1K/192bq0FwSFPJF2TFBbkRbbLOpeesUQ4xc5vqlVuQeMeLFhx12Jv8
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzb-61gDHhacpUQRJ86Fg_uiugk5MOGv8bshaxqQiABLHA@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Received: by 2002:a05:6e02:34a0:b0:3d3:fdb8:1799 with SMTP id
+ e9e14a558f8ab-3d6d5549646mr40250905ab.22.1743613222110; Wed, 02 Apr 2025
+ 10:00:22 -0700 (PDT)
+Date: Wed, 02 Apr 2025 10:00:22 -0700
+In-Reply-To: <67e6b3e8.050a0220.2f068f.0079.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67ed6d26.050a0220.297a31.001d.GAE@google.com>
+Subject: Re: [syzbot] [bpf?] WARNING in dev_xdp_install
+From: syzbot <syzbot+08936936fe8132f91f1a@syzkaller.appspotmail.com>
+To: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net, 
+	eddyz87@gmail.com, edumazet@google.com, haoluo@google.com, hawk@kernel.org, 
+	horms@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org, 
+	kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
+	martin.lau@linux.dev, netdev@vger.kernel.org, pabeni@redhat.com, 
+	sdf@fomichev.me, song@kernel.org, stfomichev@gmail.com, 
+	syzkaller-bugs@googlegroups.com, yhs@fb.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On 04/02, Andrii Nakryiko wrote:
->
-> On Wed, Apr 2, 2025 at 3:34 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> >
-> > I have no idea if this logic is correct or not, but it seems that (apart
-> > from the necessary barriers) we could use the utask->ri_timer_is_running
-> > boolean instead with the same effect? Set/cleared in ri_timer(), checked
-> > in free_ret_instance().
->
-> "Apart from the necessary barriers" is exactly what I didn't want to
-> deal with, tbh... Which is why I went with (ab)using seqcount lock.
->
-> Other than that, yes, the reader logic is very simple and just wants
-> to make sure that ri_timer (writer) couldn't have seen the
-> return_instance we are about to immediately reuse (which would pose a
-> problem).
+syzbot has found a reproducer for the following issue on:
 
-Ah. This answers my question about the motivation to use seqcount_t,
-thanks.
+HEAD commit:    acc4d5ff0b61 Merge tag 'net-6.15-rc0' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=124f9404580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=410c49aba9aeb859
+dashboard link: https://syzkaller.appspot.com/bug?extid=08936936fe8132f91f1a
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=109b7c3f980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=103fa178580000
 
-I am not going to question your decision, but perhaps this deserves a
-comment, it is not immediately clear from reading this code...
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-acc4d5ff.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/aad60517b1c2/vmlinux-acc4d5ff.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/27bf64833684/bzImage-acc4d5ff.xz
 
-Thanks!
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+08936936fe8132f91f1a@syzkaller.appspotmail.com
 
-Oleg.
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 5936 at ./include/net/netdev_lock.h:54 netdev_ops_assert_locked include/net/netdev_lock.h:54 [inline]
+WARNING: CPU: 3 PID: 5936 at ./include/net/netdev_lock.h:54 dev_xdp_install+0x610/0x9b0 net/core/dev.c:9911
+Modules linked in:
+CPU: 3 UID: 0 PID: 5936 Comm: syz-executor652 Not tainted 6.14.0-syzkaller-12456-gacc4d5ff0b61 #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:netdev_ops_assert_locked include/net/netdev_lock.h:54 [inline]
+RIP: 0010:dev_xdp_install+0x610/0x9b0 net/core/dev.c:9911
+Code: 8d bc 24 30 0d 00 00 be ff ff ff ff e8 b9 0d 28 02 31 ff 89 c5 89 c6 e8 4e f4 71 f8 85 ed 0f 85 59 fb ff ff e8 01 f9 71 f8 90 <0f> 0b 90 e9 4b fb ff ff e8 f3 f8 71 f8 49 8d bc 24 30 0d 00 00 be
+RSP: 0018:ffffc900031d7950 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88802ab20cc5 RCX: ffffffff89494752
+RDX: ffff88802a4b2440 RSI: ffffffff8949475f RDI: 0000000000000005
+RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff88802ab20000
+R13: ffffffff87119240 R14: ffffc90000a26000 R15: 0000000000000002
+FS:  0000555586ae1380(0000) GS:ffff8880d6cbb000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000200000000140 CR3: 0000000030ae2000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ dev_xdp_attach+0x6d1/0x16a0 net/core/dev.c:10094
+ dev_xdp_attach_link net/core/dev.c:10113 [inline]
+ bpf_xdp_link_attach+0x2c5/0x680 net/core/dev.c:10287
+ link_create kernel/bpf/syscall.c:5418 [inline]
+ __sys_bpf+0x19ef/0x4d80 kernel/bpf/syscall.c:5904
+ __do_sys_bpf kernel/bpf/syscall.c:5941 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5939 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5939
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcd/0x260 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fa71b995919
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc061aef48 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fa71b995919
+RDX: 0000000000000040 RSI: 0000200000000200 RDI: 000000000000001c
+RBP: 0000000000000000 R08: 0000555500000000 R09: 0000555500000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000003
+ </TASK>
 
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
