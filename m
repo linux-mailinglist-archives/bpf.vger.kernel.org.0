@@ -1,100 +1,95 @@
-Return-Path: <bpf+bounces-55261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82DAFA7A9C3
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 20:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 02C90A7A9C5
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 20:57:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29558171F1D
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 18:54:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2B0C174C26
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 18:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C601252906;
-	Thu,  3 Apr 2025 18:54:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27FFF253324;
+	Thu,  3 Apr 2025 18:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C4INoqj1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NrO6tYQ9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477041E87B;
-	Thu,  3 Apr 2025 18:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B24151992;
+	Thu,  3 Apr 2025 18:56:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743706482; cv=none; b=TfBBFOBJ+UWuqs+rmuX8JsSIPtHGeym0IInWoF8i8zzYEIxdH6xPH2BYu2WnxvhmLfz40aiUxuMGEWZVqcuarXldmkE9RFedFh1xN7kM0+SSB5MJdP/L1syC7flHQ3merQtgf8yu8KBVy7+K8RoAG3G/HhAVvtPqPqkVI8XKGGE=
+	t=1743706618; cv=none; b=WZ0AXuj3FaXEE1OMbMOO1E8Vb7n8rA1hc1UxCB26Lt6RfvDe7jPbWctMM+5hqVfyjzULyLF7XpfBInMIVK8s2KAJn29ew8+PvCybgUkp1clRgBWJgR4AO3A5xpd3q32enSxpKMUAA/V+1RYAwnhH06sqizfUFGnl3LUuJRt2mG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743706482; c=relaxed/simple;
-	bh=C1FBcDaAVK1uwh+G94FF6tFU7E/4QQ7RC9zYw+17n1c=;
+	s=arc-20240116; t=1743706618; c=relaxed/simple;
+	bh=0m0tDiG3R2IbxVtrdFv1pZS7BMH8Twtcpv1xpgspNUE=;
 	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=pADn0JVpOXhlI0og5a2ZW7+4QzlXuL/IKzCB1vFdRM/B4gQCJCPMiaCMas8j42eq8lmM3r743QAg+qsWHI0NsJVt3OlDKdVhZrE2CHCDowSyniViOEi8AqgWFCDdwcIQCJxuJhwjlFalrqL+wDLt14nrQdbXlajBOiy2khIYeW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C4INoqj1; arc=none smtp.client-ip=209.85.222.180
+	 Mime-Version:Content-Type; b=k5Di0NdSx6ZvEU8xAL1NKDpc8SJu2yEmp26S9iGBqLD58Yk7vilHuEAxqFWK2PFWTTzID1X8CZ615oCXGhOXRtYbHVrG89PcsykGKRojCT9aR98z1w2sddud451J80jB2BdG9NJcNzS2NtPxVUJSMLIDSozZ/umX3Uatk7sZyxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NrO6tYQ9; arc=none smtp.client-ip=209.85.222.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7c5ba363f1aso156034585a.0;
-        Thu, 03 Apr 2025 11:54:39 -0700 (PDT)
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7c3bf231660so124405885a.0;
+        Thu, 03 Apr 2025 11:56:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743706479; x=1744311279; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1743706615; x=1744311415; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FMHBtl9xVpe2paA6VM6NhRj4hgDpCE/8p2jTkeAf0Ds=;
-        b=C4INoqj1VnLKP958SUifjbGY++vGh3f15cmmtMGz3bQLZI37WQVXJHbqcWM2cdHRLI
-         3HMwbXOFf0QBmQjiuMRBFZerbTqRdjpfz09evHFslHZVDe9ibveVUSCga+hnCXuklmX8
-         jL+xdfy7Q9tE54NUkNZeymdB+mtEP5QjImUhaEBfQNtAYP7SbWoVgpQ88RRJwn7gXJhQ
-         L5XvyfJGqurYQavR6ve514r0u1Ihe9GaGxBE2fuB0Yio5o16731kXSrxOLM83Iv6itpW
-         hxCa8UjLY43BZK5NH9z/+wW9MITfOgSe045xI/2+SqxjhcIdPKpL+7C17AJzYAUWWOqZ
-         JM9A==
+        bh=xnfme6BvDM4d5TgtkwsHU5xoleP7xzMB6ssKtqL68hw=;
+        b=NrO6tYQ9gEUcwYA7IHcEWgznt7ZMzYGcjHWYCTO+SNhQIexVeP4wSbCo1tHuN+PDbs
+         iwEbToS6oWLJCQMUCdevAxDn06+CbY7czSX+JXCIcej/0WIMCHljZzHz0CsmeK1HQScu
+         o0kzygx/2FepobwSm7IOOxhcgXB0c7Pz8tJ6IHexYFsXo8ofr02ZdJlun7ExOZHjGVLW
+         sl/Mv/hyIj+eSW1NLgyzYkf7Yrvda+eW6t3uXqHe0d2+Wa6n2UZvCwDpJgVzjM2aZZpC
+         R+LkRUCQua0Nu3Zb0UctI8lhu2xIEULKtVwaJ8sx9hxurWlSj+g+Ssw7+9Q4/+/J06th
+         mplg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743706479; x=1744311279;
+        d=1e100.net; s=20230601; t=1743706615; x=1744311415;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=FMHBtl9xVpe2paA6VM6NhRj4hgDpCE/8p2jTkeAf0Ds=;
-        b=KsBWkDyE3jYU03dFq96FKONBAnqBdPfqK5LpDtXI9aHo++6uBWrMCkQDduhRCJREfy
-         9+/a71ivZV+c61rl3vbNpF4s2jBup1b5C9oeJ/nnJB8NieccWk2FgCXJidbhXDOqFeCl
-         VpnU3pTfs6h0CAW+Onga7j5DwEGhZOQ/U+jzukMdPE1bK9LM+ReR4fF4x//aMT/CBS4N
-         WktUPkclo0ALcBDh39v/OnYmL+P0zAzKmCUBOxz0dr6B00XZTnNsj1G8voXiXPHsQYBB
-         uPwacLbidNoq6cw7vjcWdJP2eVZdX432pcEpFxyAglvDDtIrhlm055v+pYSmxerKxb/Q
-         HKzg==
-X-Forwarded-Encrypted: i=1; AJvYcCUW48xEAVLCBiH0PQBLU/ATC/0RbWRAPKC9SaRZxaDMFULKIgMm4f58ATQmtAikUTpM9hZu+Rrq@vger.kernel.org, AJvYcCXOkKXTcucBkmHHou86p0A4BgpFpMTCmi9pgmskd59vRMEh1V4JaNZbsrV6ClgdpEXXnHo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyO6ySjQltIx9u3gesDfOWaAzJcJfPY2+JDtjNfFJ9agl8bPyIw
-	o26WjgkGAaOWw/1xIg3k3NCdpHW971/fTuZVOiLuaS6Lh9bx09Hl
-X-Gm-Gg: ASbGncstSVXHrEbXF2GGH8nynn1mBSoIDig0jvK8TDz1WsWYZ0uaC+p973wS3ImyI8Y
-	bqx670NtUtFsQbxnBJPX7OP4VHGb/Yq8kNQRf5/0LND8JcVnyppB8VOrT9PkqYmThcbHYJSlEBJ
-	1AEYmj7PNpK2rpfUWaUFFEQMRZFqzHkBAnPqyDxJmto8UOU32yDj3lCzhLIi0wy26DYXvxgkhNH
-	1aZyWD18lfviJ/fEQ2GSpd/6DAd0BLMLbGOUjCyz3F7tgZKRsaHJdca2Eg87rBNEyOS4GoAbFpo
-	YPLUWCRd34WrlvH56UypoWmthMMtel1RApMWoKf2iFLo1EhbRoO1KMyvFJ7f3EK+6THuG7uuf81
-	PIbXV0OdZWfTR8LkBz0KITQ==
-X-Google-Smtp-Source: AGHT+IGimAQSATFXuluPG4ZScnHaw1NfaxvDSGwfLcrI5K0t2HAN7GsU2bY+68sJrVrZfDDPo5DHAA==
-X-Received: by 2002:a05:620a:319f:b0:7c5:5800:ddba with SMTP id af79cd13be357-7c774d526ecmr51949485a.22.1743706478914;
-        Thu, 03 Apr 2025 11:54:38 -0700 (PDT)
+        bh=xnfme6BvDM4d5TgtkwsHU5xoleP7xzMB6ssKtqL68hw=;
+        b=BJ7tOZKEwu13zO0cirO1yuWcRvaPvuVuCT7Bp3rEYbb+buFgw41fnL2nk8F2PxbvXd
+         aLcTg5fph1lMOoAyLc5cIqXAd0jC3shpzcWyFQyajyMk4SEt3LxzHWyXoxLqByJRBZzU
+         7AH53bPAjxXOa41P1qJd6FT7Kj6F7LKrP5U6tmFFmbree9DNy2x946mDbkEOfBYb9prE
+         Y15SMt/JyRSg2v7yLhF8VWrroekjcLS3sTcxkrpjdw4fvW+SbomXXqSxzhH3LAdCbG88
+         ASqT70HDXiTes2n4MwCLQnIKJdL7TtcFWFBosGSqdyRXLlQGkOXGYdYVONTQZlmy20Sz
+         vV+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVS05oYPJNy3QQ0ifRabwbEMdvLgsc3rbhN0Xu/7qwEEzCFTOBkTI+IAGQ5h6j3Qz4FtwGd67k=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/TKLa6MfD0xo0MJECGn9gCFFqFMAGkMuWuKvWrhX7QnBz0uno
+	3Z57Jag7tLf1yZSYjQuoo3TK99r/JvX4RSgA+IhYjdKBPlZ800rb
+X-Gm-Gg: ASbGncuMeD49kcBXMm9KuEZmx2GCiWNiTLTtAK/zJIkk/sVkFblYblaIyHLZruLmKfb
+	Vq1d69vmSaaLbs8Mbm9cTR8m53hBZSDuvKca3pU92hdFb1Rw2eQUqYBH9p2RyRZ9xkUjrfLtzdU
+	aMgkYI34l2HyT00CoD4XlncUMUU7vdu+WL4mrli+1YKf/1ryaqO45fSy4a7BcFCNFrfdjtk8GAF
+	KlPUU92dW6hQjVK23uT5Hxk33qqWrv1kfsNBtFuJxCK/mKAVq47iej7EdPnAEffUBInLy+CSgHj
+	5fmY32fryNusODlmI+uu35cLJzx15+clUW9XKJAroMLtdjDDLIH9Yyu2bmRc/nsSzLqEwNhtJ1a
+	rH+JDRPZohFsM6YRUt2YAGg==
+X-Google-Smtp-Source: AGHT+IFv+ITUUDoTIGYnoN5z4pYhd11i9IXx/333FCO7+kuWmRLNxWRDlY4KHRLkGDogZST7jcolow==
+X-Received: by 2002:a05:620a:2805:b0:7c5:5cc4:ca5c with SMTP id af79cd13be357-7c774d32335mr49531685a.14.1743706615519;
+        Thu, 03 Apr 2025 11:56:55 -0700 (PDT)
 Received: from localhost (86.235.150.34.bc.googleusercontent.com. [34.150.235.86])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c76ea9022dsm109068585a.104.2025.04.03.11.54.38
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c76e735361sm110260285a.18.2025.04.03.11.56.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Apr 2025 11:54:38 -0700 (PDT)
-Date: Thu, 03 Apr 2025 14:54:38 -0400
+        Thu, 03 Apr 2025 11:56:54 -0700 (PDT)
+Date: Thu, 03 Apr 2025 14:56:54 -0400
 From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: =?UTF-8?B?TWFjaWVqIMW7ZW5jenlrb3dza2k=?= <maze@google.com>, 
- Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- bpf@vger.kernel.org, 
+To: Stanislav Fomichev <stfomichev@gmail.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: bpf@vger.kernel.org, 
  netdev@vger.kernel.org, 
  ast@kernel.org, 
  daniel@iogearbox.net, 
  john.fastabend@gmail.com, 
- Willem de Bruijn <willemb@google.com>, 
- Matt Moeller <moeller.matt@gmail.com>
-Message-ID: <67eed96e15750_15e1b32945a@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CANP3RGe8ZjcX8yGhCPs+Q1x7ijpGKthjawztFiXSeDQazgSrpA@mail.gmail.com>
+ Willem de Bruijn <willemb@google.com>
+Message-ID: <67eed9f680b5f_15e1b3294f4@willemb.c.googlers.com.notmuch>
+In-Reply-To: <Z-7FaAu8qr5sFgXp@mini-arch>
 References: <20250403140846.1268564-1-willemdebruijn.kernel@gmail.com>
- <20250403140846.1268564-2-willemdebruijn.kernel@gmail.com>
- <Z-7DiZWkOQ_n5aXw@mini-arch>
- <67eec501d0d58_14b7b229490@willemb.c.googlers.com.notmuch>
- <Z-7G8cBIW7-dVeH8@mini-arch>
- <CANP3RGe8ZjcX8yGhCPs+Q1x7ijpGKthjawztFiXSeDQazgSrpA@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf: support SKF_NET_OFF and SKF_LL_OFF on skb
- frags
+ <20250403140846.1268564-3-willemdebruijn.kernel@gmail.com>
+ <Z-7FaAu8qr5sFgXp@mini-arch>
+Subject: Re: [PATCH bpf 2/2] selftests/net: test sk_filter support for
+ SKF_NET_OFF on frags
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -103,216 +98,348 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-Maciej =C5=BBenczykowski wrote:
-> On Thu, Apr 3, 2025 at 10:35=E2=80=AFAM Stanislav Fomichev <stfomichev@=
-gmail.com> wrote:
-> >
-> > On 04/03, Willem de Bruijn wrote:
-> > > Stanislav Fomichev wrote:
-> > > > On 04/03, Willem de Bruijn wrote:
-> > > > > From: Willem de Bruijn <willemb@google.com>
-> > > > >
-> > > > > Classic BPF socket filters with SKB_NET_OFF and SKB_LL_OFF fail=
- to
-> > > > > read when these offsets extend into frags.
-> > > > >
-> > > > > This has been observed with iwlwifi and reproduced with tun wit=
-h
-> > > > > IFF_NAPI_FRAGS. The below straightforward socket filter on UDP =
-port,
-> > > > > applied to a RAW socket, will silently miss matching packets.
-> > > > >
-> > > > >     const int offset_proto =3D offsetof(struct ip6_hdr, ip6_nxt=
-);
-> > > > >     const int offset_dport =3D sizeof(struct ip6_hdr) + offseto=
-f(struct udphdr, dest);
-> > > > >     struct sock_filter filter_code[] =3D {
-> > > > >             BPF_STMT(BPF_LD  + BPF_B   + BPF_ABS, SKF_AD_OFF + =
-SKF_AD_PKTTYPE),
-> > > > >             BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, PACKET_HOST, 0,=
- 4),
-> > > > >             BPF_STMT(BPF_LD  + BPF_B   + BPF_ABS, SKF_NET_OFF +=
- offset_proto),
-> > > > >             BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, IPPROTO_UDP, 0,=
- 2),
-> > > > >             BPF_STMT(BPF_LD  + BPF_H   + BPF_ABS, SKF_NET_OFF +=
- offset_dport),
-> > > > >
-> > > > > This is unexpected behavior. Socket filter programs should be
-> > > > > consistent regardless of environment. Silent misses are
-> > > > > particularly concerning as hard to detect.
-> > > > >
-> > > > > Use skb_copy_bits for offsets outside linear, same as done for
-> > > > > non-SKF_(LL|NET) offsets.
-> > > > >
-> > > > > Offset is always positive after subtracting the reference thres=
-hold
-> > > > > SKB_(LL|NET)_OFF, so is always >=3D skb_(mac|network)_offset. T=
-he sum of
-> > > > > the two is an offset against skb->data, and may be negative, bu=
-t it
-> > > > > cannot point before skb->head, as skb_(mac|network)_offset woul=
-d too.
-> > > > >
-> > > > > This appears to go back to when frag support was introduced to
-> > > > > sk_run_filter in linux-2.4.4, before the introduction of git.
-> > > > >
-> > > > > The amount of code change and 8/16/32 bit duplication are unfor=
-tunate.
-> > > > > But any attempt I made to be smarter saved very few LoC while
-> > > > > complicating the code.
-> > > > >
-> > > > > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> > > > > Link: https://lore.kernel.org/netdev/20250122200402.3461154-1-m=
-aze@google.com/
-> > > > > Link: https://elixir.bootlin.com/linux/2.4.4/source/net/core/fi=
-lter.c#L244
-> > > > > Reported-by: Matt Moeller <moeller.matt@gmail.com>
-> > > > > Co-developed-by: Maciej =C5=BBenczykowski <maze@google.com>
-> > > > > Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
-> > > > > Signed-off-by: Willem de Bruijn <willemb@google.com>
-> > > > > ---
-> > > > >  include/linux/filter.h |  3 --
-> > > > >  kernel/bpf/core.c      | 21 ------------
-> > > > >  net/core/filter.c      | 75 +++++++++++++++++++++++-----------=
---------
-> > > > >  3 files changed, 42 insertions(+), 57 deletions(-)
-> > > > >
-> > > > > diff --git a/include/linux/filter.h b/include/linux/filter.h
-> > > > > index f5cf4d35d83e..708ac7e0cd36 100644
-> > > > > --- a/include/linux/filter.h
-> > > > > +++ b/include/linux/filter.h
-> > > > > @@ -1496,9 +1496,6 @@ static inline u16 bpf_anc_helper(const st=
-ruct sock_filter *ftest)
-> > > > >   }
-> > > > >  }
-> > > > >
-> > > > > -void *bpf_internal_load_pointer_neg_helper(const struct sk_buf=
-f *skb,
-> > > > > -                                    int k, unsigned int size);=
+Stanislav Fomichev wrote:
+> On 04/03, Willem de Bruijn wrote:
+> > From: Willem de Bruijn <willemb@google.com>
+> > 
+> > Verify that a classic BPF linux socket filter correctly matches
+> > packet contents. Including when accessing contents in an
+> > skb_frag.
+> > 
+> > 1. Open a SOCK_RAW socket with a classic BPF filter on UDP dport 8000.
+> > 2. Open a tap device with IFF_NAPI_FRAGS to inject skbs with frags.
+> > 3. Send a packet for which the UDP header is in frag[0].
+> > 4. Receive this packet to demonstrate that the socket accepted it.
+> > 
+> > Signed-off-by: Willem de Bruijn <willemb@google.com>
+> 
+> Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
-> > > > > -
-> > > > >  static inline int bpf_tell_extensions(void)
-> > > > >  {
-> > > > >   return SKF_AD_MAX;
-> > > > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > > > > index ba6b6118cf50..0e836b5ac9a0 100644
-> > > > > --- a/kernel/bpf/core.c
-> > > > > +++ b/kernel/bpf/core.c
-> > > > > @@ -68,27 +68,6 @@
-> > > > >  struct bpf_mem_alloc bpf_global_ma;
-> > > > >  bool bpf_global_ma_set;
-> > > > >
-> > > > > -/* No hurry in this branch
-> > > > > - *
-> > > > > - * Exported for the bpf jit load helper.
-> > > > > - */
-> > > > > -void *bpf_internal_load_pointer_neg_helper(const struct sk_buf=
-f *skb, int k, unsigned int size)
-> > > > > -{
-> > > > > - u8 *ptr =3D NULL;
-> > > > > -
-> > > > > - if (k >=3D SKF_NET_OFF) {
-> > > > > -         ptr =3D skb_network_header(skb) + k - SKF_NET_OFF;
-> > > > > - } else if (k >=3D SKF_LL_OFF) {
-> > > > > -         if (unlikely(!skb_mac_header_was_set(skb)))
-> > > > > -                 return NULL;
-> > > > > -         ptr =3D skb_mac_header(skb) + k - SKF_LL_OFF;
-> > > > > - }
-> > > > > - if (ptr >=3D skb->head && ptr + size <=3D skb_tail_pointer(sk=
-b))
-> > > > > -         return ptr;
-> > > > > -
-> > > > > - return NULL;
-> > > > > -}
-> > > > > -
-> > > > >  /* tell bpf programs that include vmlinux.h kernel's PAGE_SIZE=
- */
-> > > > >  enum page_size_enum {
-> > > > >   __PAGE_SIZE =3D PAGE_SIZE
-> > > > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > > > index bc6828761a47..b232b70dd10d 100644
-> > > > > --- a/net/core/filter.c
-> > > > > +++ b/net/core/filter.c
-> > > > > @@ -221,21 +221,24 @@ BPF_CALL_3(bpf_skb_get_nlattr_nest, struc=
-t sk_buff *, skb, u32, a, u32, x)
-> > > > >  BPF_CALL_4(bpf_skb_load_helper_8, const struct sk_buff *, skb,=
- const void *,
-> > > > >      data, int, headlen, int, offset)
-> > > > >  {
-> > > > > - u8 tmp, *ptr;
-> > > > > + u8 tmp;
-> > > > >   const int len =3D sizeof(tmp);
-> > > > >
-> > > > > - if (offset >=3D 0) {
-> > > > > -         if (headlen - offset >=3D len)
-> > > > > -                 return *(u8 *)(data + offset);
-> > > > > -         if (!skb_copy_bits(skb, offset, &tmp, sizeof(tmp)))
-> > > > > -                 return tmp;
-> > > > > - } else {
-> > > > > -         ptr =3D bpf_internal_load_pointer_neg_helper(skb, off=
-set, len);
-> > > > > -         if (likely(ptr))
-> > > > > -                 return *(u8 *)ptr;
-> > > >
-> > > > [..]
-> > > >
-> > > > > + if (offset < 0) {
-> > > > > +         if (offset >=3D SKF_NET_OFF)
-> > > > > +                 offset +=3D skb_network_offset(skb) - SKF_NET=
-_OFF;
-> > > > > +         else if (offset >=3D SKF_LL_OFF && skb_mac_header_was=
-_set(skb))
-> > > > > +                 offset +=3D skb_mac_offset(skb) - SKF_LL_OFF;=
+Thanks for the review :)
 
-> > > > > +         else
-> > > > > +                 return -EFAULT;
-> > > > >   }
-> > > >
-> > > > nit: we now repeat the same logic three times, maybe still worth =
-it to put it
-> > > > into a helper? bpf_resolve_classic_offset or something.
-> > >
-> > > I definitely tried this in various ways. But since the core logic i=
-s
-> > > only four lines and there is an early return on error, no helper
-> > > really simplifies anything. It just adds a layer of indirection and=
+> My (weak) preference is to put (most) bpf-related things under
+> selftests/bpf, but since you already have it working, not sure
+> it's worth the effort.
 
-> > > more code in the end.
-> >
-> > More code, but at least it de-duplicates the logic of translating
-> > SKF_XXX_OFF? Something like the following below, but yeah, a matter
-> > of preference, up to you.
+I wasn't sure since this is exclusively legacy linux socket filters,
+and needs a tun network stack to exercise it.
 
-I see your point. No strong opinion from me. Will revise,
-assuming you don't mind the workaround below:
+Will keep as is if you indeed don't mind.
 
-> > static int bpf_skb_resolve_offset(skb, offset) {
-> >         if (offset >=3D 0)
-> >                 return offset;
-> >
-> >         if (offset >=3D SKF_NET_OFF)
-> >                 offset +=3D skb_network_offset(skb) - SKF_NET_OFF;
-> >         else if (offset >=3D SKF_LL_OFF && skb_mac_header_was_set(skb=
-))
-> >                 offset +=3D skb_mac_offset(skb) - SKF_LL_OFF;
-> >
-> >         return -1;
-> > }
-> >
-> > BPF_CALL_4(bpf_skb_load_helper_8, const struct sk_buff *, skb, const =
-void *,
-> >            data, int, headlen, int, offset)
-> > {
-> >         offset =3D bpf_skb_resolve_offset(skb, offset);
-> >         if (offset < 0)
-> >                 return -EFAULT;
-> =
+> > ---
+> >  tools/testing/selftests/net/.gitignore     |   1 +
+> >  tools/testing/selftests/net/Makefile       |   2 +
+> >  tools/testing/selftests/net/skf_net_off.c  | 244 +++++++++++++++++++++
+> >  tools/testing/selftests/net/skf_net_off.sh |  28 +++
+> >  4 files changed, 275 insertions(+)
+> >  create mode 100644 tools/testing/selftests/net/skf_net_off.c
+> >  create mode 100755 tools/testing/selftests/net/skf_net_off.sh
+> > 
+> > diff --git a/tools/testing/selftests/net/.gitignore b/tools/testing/selftests/net/.gitignore
+> > index 679542f565a4..532bb732bc6d 100644
+> > --- a/tools/testing/selftests/net/.gitignore
+> > +++ b/tools/testing/selftests/net/.gitignore
+> > @@ -39,6 +39,7 @@ scm_rights
+> >  sk_bind_sendto_listen
+> >  sk_connect_zero_addr
+> >  sk_so_peek_off
+> > +skf_net_off
+> >  socket
+> >  so_incoming_cpu
+> >  so_netns_cookie
+> > diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
+> > index 6d718b478ed8..124078b56fa4 100644
+> > --- a/tools/testing/selftests/net/Makefile
+> > +++ b/tools/testing/selftests/net/Makefile
+> > @@ -106,6 +106,8 @@ TEST_PROGS += ipv6_route_update_soft_lockup.sh
+> >  TEST_PROGS += busy_poll_test.sh
+> >  TEST_GEN_PROGS += proc_net_pktgen
+> >  TEST_PROGS += lwt_dst_cache_ref_loop.sh
+> > +TEST_PROGS += skf_net_off.sh
+> > +TEST_GEN_FILES += skf_net_off
+> >  
+> >  # YNL files, must be before "include ..lib.mk"
+> >  YNL_GEN_FILES := busy_poller netlink-dumps
+> > diff --git a/tools/testing/selftests/net/skf_net_off.c b/tools/testing/selftests/net/skf_net_off.c
+> > new file mode 100644
+> > index 000000000000..1fdf61d6cd7f
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/net/skf_net_off.c
+> > @@ -0,0 +1,244 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +/* Open a tun device.
+> > + *
+> > + * [modifications: use IFF_NAPI_FRAGS, add sk filter]
+> > + *
+> > + * Expects the device to have been configured previously, e.g.:
+> > + *   sudo ip tuntap add name tap1 mode tap
+> > + *   sudo ip link set tap1 up
+> > + *   sudo ip link set dev tap1 addr 02:00:00:00:00:01
+> > + *   sudo ip -6 addr add fdab::1 peer fdab::2 dev tap1 nodad
+> > + *
+> > + * And to avoid premature pskb_may_pull:
+> > + *
+> > + *   sudo ethtool -K tap1 gro off
+> > + *   sudo bash -c 'echo 0 > /proc/sys/net/ipv4/ip_early_demux'
+> > + */
+> > +
+> > +#define _GNU_SOURCE
+> > +
+> > +#include <arpa/inet.h>
+> > +#include <errno.h>
+> > +#include <error.h>
+> > +#include <fcntl.h>
+> > +#include <getopt.h>
+> > +#include <linux/filter.h>
+> > +#include <linux/if.h>
+> > +#include <linux/if_packet.h>
+> > +#include <linux/if_tun.h>
+> > +#include <linux/ipv6.h>
+> > +#include <netinet/if_ether.h>
+> > +#include <netinet/in.h>
+> > +#include <netinet/ip.h>
+> > +#include <netinet/ip6.h>
+> > +#include <netinet/udp.h>
+> > +#include <poll.h>
+> > +#include <signal.h>
+> > +#include <stdbool.h>
+> > +#include <stddef.h>
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +#include <string.h>
+> > +#include <sys/ioctl.h>
+> > +#include <sys/socket.h>
+> > +#include <sys/poll.h>
+> > +#include <sys/types.h>
+> > +#include <sys/uio.h>
+> > +#include <unistd.h>
+> > +
+> > +static bool cfg_do_filter;
+> > +static bool cfg_do_frags;
+> > +static int cfg_dst_port = 8000;
+> > +static char *cfg_ifname;
+> > +
+> > +static int tun_open(const char *tun_name)
+> > +{
+> > +	struct ifreq ifr = {0};
+> > +	int fd, ret;
+> > +
+> > +	fd = open("/dev/net/tun", O_RDWR);
+> > +	if (fd == -1)
+> > +		error(1, errno, "open /dev/net/tun");
+> > +
+> > +	ifr.ifr_flags = IFF_TAP;
+> > +	if (cfg_do_frags)
+> > +		ifr.ifr_flags |= IFF_NAPI | IFF_NAPI_FRAGS;
+> > +
+> > +	strncpy(ifr.ifr_name, tun_name, IFNAMSIZ - 1);
+> > +
+> > +	ret = ioctl(fd, TUNSETIFF, &ifr);
+> > +	if (ret)
+> > +		error(1, ret, "ioctl TUNSETIFF");
+> > +
+> > +	return fd;
+> > +}
+> > +
+> > +static void sk_set_filter(int fd)
+> > +{
+> > +	const int offset_proto = offsetof(struct ip6_hdr, ip6_nxt);
+> > +	const int offset_dport = sizeof(struct ip6_hdr) + offsetof(struct udphdr, dest);
+> > +
+> > +	/* Filter UDP packets with destination port cfg_dst_port */
+> > +	struct sock_filter filter_code[] = {
+> > +		BPF_STMT(BPF_LD  + BPF_B   + BPF_ABS, SKF_AD_OFF + SKF_AD_PKTTYPE),
+> > +		BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, PACKET_HOST, 0, 4),
+> > +		BPF_STMT(BPF_LD  + BPF_B   + BPF_ABS, SKF_NET_OFF + offset_proto),
+> > +		BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, IPPROTO_UDP, 0, 2),
+> > +		BPF_STMT(BPF_LD  + BPF_H   + BPF_ABS, SKF_NET_OFF + offset_dport),
+> > +		BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, cfg_dst_port, 1, 0),
+> > +		BPF_STMT(BPF_RET + BPF_K, 0),
+> > +		BPF_STMT(BPF_RET + BPF_K, 0xFFFF),
+> > +	};
+> > +
+> > +	struct sock_fprog filter = {
+> > +		sizeof(filter_code) / sizeof(filter_code[0]),
+> > +		filter_code,
+> > +	};
+> > +
+> > +	if (setsockopt(fd, SOL_SOCKET, SO_ATTACH_FILTER, &filter, sizeof(filter)))
+> > +		error(1, errno, "setsockopt attach filter");
+> > +}
+> > +
+> > +static int raw_open(void)
+> > +{
+> > +	int fd;
+> > +
+> > +	fd = socket(PF_INET6, SOCK_RAW, IPPROTO_UDP);
+> > +	if (fd == -1)
+> > +		error(1, errno, "socket raw (udp)");
+> > +
+> > +	if (cfg_do_filter)
+> > +		sk_set_filter(fd);
+> > +
+> > +	return fd;
+> > +}
+> > +
+> > +static void tun_write(int fd)
+> > +{
+> > +	const char eth_src[] = { 0x02, 0x00, 0x00, 0x00, 0x00, 0x02 };
+> > +	const char eth_dst[] = { 0x02, 0x00, 0x00, 0x00, 0x00, 0x01 };
+> > +	struct tun_pi pi = {0};
+> > +	struct ipv6hdr ip6h = {0};
+> > +	struct udphdr uh = {0};
+> > +	struct ethhdr eth = {0};
+> > +	uint32_t payload;
+> > +	struct iovec iov[5];
+> > +	int ret;
+> > +
+> > +	pi.proto = htons(ETH_P_IPV6);
+> > +
+> > +	memcpy(eth.h_source, eth_src, sizeof(eth_src));
+> > +	memcpy(eth.h_dest, eth_dst, sizeof(eth_dst));
+> > +	eth.h_proto = htons(ETH_P_IPV6);
+> > +
+> > +	ip6h.version = 6;
+> > +	ip6h.payload_len = htons(sizeof(uh) + sizeof(uint32_t));
+> > +	ip6h.nexthdr = IPPROTO_UDP;
+> > +	ip6h.hop_limit = 8;
+> > +	if (inet_pton(AF_INET6, "fdab::2", &ip6h.saddr) != 1)
+> > +		error(1, errno, "inet_pton src");
+> > +	if (inet_pton(AF_INET6, "fdab::1", &ip6h.daddr) != 1)
+> > +		error(1, errno, "inet_pton src");
+> > +
+> > +	uh.source = htons(8000);
+> > +	uh.dest = htons(cfg_dst_port);
+> > +	uh.len = ip6h.payload_len;
+> > +	uh.check = 0;
+> > +
+> > +	payload = htonl(0xABABABAB);		/* Covered in IPv6 length */
+> > +
+> > +	iov[0].iov_base = &pi;
+> > +	iov[0].iov_len  = sizeof(pi);
+> > +	iov[1].iov_base = &eth;
+> > +	iov[1].iov_len  = sizeof(eth);
+> > +	iov[2].iov_base = &ip6h;
+> > +	iov[2].iov_len  = sizeof(ip6h);
+> > +	iov[3].iov_base = &uh;
+> > +	iov[3].iov_len  = sizeof(uh);
+> > +	iov[4].iov_base = &payload;
+> > +	iov[4].iov_len  = sizeof(payload);
+> > +
+> > +	ret = writev(fd, iov, sizeof(iov) / sizeof(iov[0]));
+> > +	if (ret <= 0)
+> > +		error(1, errno, "writev");
+> > +}
+> > +
+> > +static void raw_read(int fd)
+> > +{
+> > +	struct timeval tv = { .tv_usec = 100 * 1000 };
+> > +	struct msghdr msg = {0};
+> > +	struct iovec iov[2];
+> > +	struct udphdr uh;
+> > +	uint32_t payload[2];
+> > +	int ret;
+> > +
+> > +	if (setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)))
+> > +		error(1, errno, "setsockopt rcvtimeo udp");
+> > +
+> > +	iov[0].iov_base = &uh;
+> > +	iov[0].iov_len = sizeof(uh);
+> > +
+> > +	iov[1].iov_base = payload;
+> > +	iov[1].iov_len = sizeof(payload);
+> > +
+> > +	msg.msg_iov = iov;
+> > +	msg.msg_iovlen = sizeof(iov) / sizeof(iov[0]);
+> > +
+> > +	ret = recvmsg(fd, &msg, 0);
+> > +	if (ret <= 0)
+> > +		error(1, errno, "read raw");
+> > +	if (ret != sizeof(uh) + sizeof(payload[0]))
+> > +		error(1, errno, "read raw: len=%d\n", ret);
+> > +
+> > +	fprintf(stderr, "raw recv: 0x%x\n", payload[0]);
+> > +}
+> > +
+> > +static void parse_opts(int argc, char **argv)
+> > +{
+> > +	int c;
+> > +
+> > +	while ((c = getopt(argc, argv, "fFi:")) != -1) {
+> > +		switch (c) {
+> > +		case 'f':
+> > +			cfg_do_filter = true;
+> > +			printf("bpf filter enabled\n");
+> > +			break;
+> > +		case 'F':
+> > +			cfg_do_frags = true;
+> > +			printf("napi frags mode enabled\n");
+> > +			break;
+> > +		case 'i':
+> > +			cfg_ifname = optarg;
+> > +			break;
+> > +		default:
+> > +			error(1, 0, "unknown option %c", optopt);
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +	if (!cfg_ifname)
+> > +		error(1, 0, "must specify tap interface name (-i)");
+> > +}
+> > +
+> > +int main(int argc, char **argv)
+> > +{
+> > +	int fdt, fdr;
+> > +
+> > +	parse_opts(argc, argv);
+> > +
+> > +	fdr = raw_open();
+> > +	fdt = tun_open(cfg_ifname);
+> > +
+> > +	tun_write(fdt);
+> > +	raw_read(fdr);
+> > +
+> > +	if (close(fdt))
+> > +		error(1, errno, "close tun");
+> > +	if (close(fdr))
+> > +		error(1, errno, "close udp");
+> > +
+> > +	fprintf(stderr, "OK\n");
+> > +	return 0;
+> > +}
+> > +
+> > diff --git a/tools/testing/selftests/net/skf_net_off.sh b/tools/testing/selftests/net/skf_net_off.sh
+> > new file mode 100755
+> > index 000000000000..e9cce93a0258
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/net/skf_net_off.sh
+> > @@ -0,0 +1,28 @@
+> > +#!/bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +readonly NS="ns-$(mktemp -u XXXXXX)"
+> > +
+> > +cleanup() {
+> > +	ip netns del $NS
+> > +}
+> > +
+> > +ip netns add $NS
+> > +trap cleanup EXIT
+> > +
+> > +ip -netns $NS link set lo up
+> > +ip -netns $NS tuntap add name tap1 mode tap
+> > +ip -netns $NS link set tap1 up
+> > +ip -netns $NS link set dev tap1 addr 02:00:00:00:00:01
+> > +ip -netns $NS -6 addr add fdab::1 peer fdab::2 dev tap1 nodad
+> > +ip netns exec $NS ethtool -K tap1 gro off
+> > +ip netns exec $NS sysctl -w net.ipv4.ip_early_demux=0
+> 
+> Curious: why disable ip_early_demux here?
 
-> this is incorrect, as offset can be legally negative here.
-
-Yeah, this needs a special case like INT_MIN to communicate error,
-or pass-by-value. Exactly the kind of workarounds that gave me pause.
+Otherwise early demux will pull the headers into linear, in
+udp_v6_early_demux
 
