@@ -1,54 +1,86 @@
-Return-Path: <bpf+bounces-55207-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55208-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0015A79CB4
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 09:16:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AE18A79CDD
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 09:24:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75424173D07
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 07:14:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3069A7A1A5C
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 07:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCAA123F419;
-	Thu,  3 Apr 2025 07:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE4F24113D;
+	Thu,  3 Apr 2025 07:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="LvUp7AXA"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fZye6mhy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7403E23F26A;
-	Thu,  3 Apr 2025 07:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C3F23F42D
+	for <bpf@vger.kernel.org>; Thu,  3 Apr 2025 07:24:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743664475; cv=none; b=RIzIufsVYgXIuRanLibrvbBN2E2AI+btWro1mNEcKFwPh24PTpYsg+o/8oWR80POCUObE8qNcExOof4fvmdWI7PegAxRCbHX22dGBUkGOivs9gTv7peDlPQzsPpiCrAutm6dsp8JUoGZmOTk3dxqfJA4bB0ZhdIwk+tB1+Fj0Hs=
+	t=1743665055; cv=none; b=iwMnvyEPjJvg0YbOOGpx9+136ypP2xLNcHb/FyCLLbNFrv/CCYyCUXJmTauJMzGL2yez+itczjhfqFnofhyJiPXoJm+Y2NZzM/Vf3AqLS9xDpzRiKWuXv4NJxFLutKtX/oG103peGzY8wapbfSfw2UAy6oNaoGWG9oW9j/Ou6yE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743664475; c=relaxed/simple;
-	bh=i9chyyVVA4u/5n6H3ot6TYnyHk7hwD1gNPF2JpU27pA=;
+	s=arc-20240116; t=1743665055; c=relaxed/simple;
+	bh=BmGXNVrTqxXAkUExqcGcIkfGVthayzRf/XdQRf0ErJs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WkU2IsrT/hmZ9X+Bd+CrarCA2ohHSGeVZ6+1vgiUctvz44RXKveLgFSEmA4GUSbN2hmRBdWraJi67fXZkJqAFqSi2GD9++vRuEvvCbv8dx30yyisz1gyG6mf6DFTSNlIEXYVGbtf44TcvWw5kwK+vPo4NYueqsAOOU+Xs8SAXi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=LvUp7AXA; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [192.168.7.202] ([71.202.166.45])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 5337DaOj395784
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Thu, 3 Apr 2025 00:13:36 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 5337DaOj395784
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025032001; t=1743664419;
-	bh=dud2+LDxOfaRRcFmlvhcB6Zv69u4yGoWIvsFJ3yQaXY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=LvUp7AXAlEO7ZIoS25ITyVlvXptK8gf870o88D54rWCbMQJtullUs6cSr27rMyA/c
-	 e00XhjujppWmi0xvi52Gm5YkQ9UqdP9DhcXE4mt5uG56eLAwJBxdh7bKLKbRIqR2p0
-	 hxKa4VWv19GOJTD4k62M7VFYmdH3jsk65f7uqAnVJxOmWHStXYZEEGIcS6Niv2j2w8
-	 IpwtqFX6o9BUdi073LOjU6OWdKPza4N1Bv/d9TXdnTnKbzJm97DWYQJKY13xLxauZ1
-	 08EiDBm8bzmIvt+yzgcbSw7C5JTPomxa++o0v4ZpnafbOTywuWRfv+qFdLQxvDDbc8
-	 M3z/FLprqi4PA==
-Message-ID: <9618fccf-3620-4395-bdac-aa8999fe2437@zytor.com>
-Date: Thu, 3 Apr 2025 00:13:35 -0700
+	 In-Reply-To:Content-Type; b=N5MnH+uW0yHV3CLLUOvyxcXtPAVI/lCpJpsugaEI2DKtWJ+bmlA8A7PX2XK2n40d8QBpIveEH0UkvXgLGcYFae4qBF5usZ4ryG7Q+SiuZBmpxtlYhYRNAOxebdyGq2bcQa3G/xKySNroes77EE8UOWFkKGu27+wvIvGMJVWHMIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fZye6mhy; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1743665051;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i4GpbdVAioAsBhxItBe3Gp1I1aqveVV1B4xHRWy2NlY=;
+	b=fZye6mhylmx+dpbsv2k4N6OZMzqaOgsvd/qgqR3DLbEhi59sHTr3QISe97Kbsb37eQ8zkz
+	LOCrYZC5lSV2SNy/d5dycRKQ6pMfY3l5n4acDkgOSsJDRl5qsmBRUyR3wLZ9wsafMeyTU5
+	q6vcxp/WPWcnxpEcj91COc/s4cm6nYI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-595-4f9sEl9XPdGyawPoAKCtjA-1; Thu, 03 Apr 2025 03:24:10 -0400
+X-MC-Unique: 4f9sEl9XPdGyawPoAKCtjA-1
+X-Mimecast-MFC-AGG-ID: 4f9sEl9XPdGyawPoAKCtjA_1743665049
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43ce8f82e66so2723645e9.3
+        for <bpf@vger.kernel.org>; Thu, 03 Apr 2025 00:24:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743665049; x=1744269849;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=i4GpbdVAioAsBhxItBe3Gp1I1aqveVV1B4xHRWy2NlY=;
+        b=cvbDr6HmJ+A5CjEEEVUFmQHpwk0e+024zPeSb0dcvXlUhlxYXt+CCZOyQd39Z2sXVs
+         Z7+46Qg2EMveNiJaxUseKc3QKymL+GT1WEW2M0VOVlp3x/VxlcTn+4CQRPzpXByq1C68
+         gMVgOAe/upP0R7kJ4WGMzxjV9BQulkW31pwZ8s6b4A/6TmuAybEpmvI47FjR2Le+BK03
+         2fuZ3HSMZDau1SfK3HJE2NngAm+sy62XYsF1dTP7tRaNUL+eIv+l9fU1whCo2l5Bdm2I
+         GSv8IUxizTB6Tdeh+arYxaMhHSMeI6vWlKhmnAqOoQbtRwaTkHdS38Ow5ZrrjiNmFLeu
+         1nqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWGXIH6ZCXcInWoTUNVdDh83rSaOjblpBK3C8qCzvIEGlpTRRhDdsGaRbvfjrtShVLTX7Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzXPQ5hAoq87n2gYNa1S2MgAEIpVY2PcxPr3ESnYGTELHOZp+IO
+	utTJutl2RMT9bXkqFhyxvU8eSERGIQL/46b6PoI2eND0OXB7vtmHxhczSRtZIvs0UKYZupVeGd4
+	mRyqrR+2OnOr1iDbpVnGfjvG1RGC3zOFTz0XotTpvJU+QlKLg9g==
+X-Gm-Gg: ASbGncvSNuaVLmaFt/CA3fLmQ1V5cYazGMRoSRfuzSO4OodVgdOfyogelNe/uLSV5ot
+	wJlPENwFiwAOr2yCU10dx/aw7PKmI4dhxER8Z3UqJWxHXQjqAkPRzQ+Gl1mF1EvEbuazf9SpKRO
+	HYoCcjjYa9WEDx2+/Ol6JcMEgrYqgUcFTLs80Q4tgbyvJPK1x/6KBGbNgXdtHY16hUxbwE6YAyO
+	v23ZnX1Tn9uOwCeCCAH3h/yS9Fk9gl0nG/cAQygfT6mnUs8Z5IQ8lzRcjx5YjYRdCIiQdOFXrOP
+	jHTI2DIb7yMld2qqnVPuDxxcpJqbFY+9Zs+84vESFlRw1w==
+X-Received: by 2002:a5d:6d8a:0:b0:39c:dcc:f589 with SMTP id ffacd0b85a97d-39c120dd036mr17302227f8f.20.1743665049160;
+        Thu, 03 Apr 2025 00:24:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFLjiN+esCynIJ2+bi2OUprGrFibkCQORORxWzFxwa+nAcvodEQofseNEFH/q+D6t/l5rRnhg==
+X-Received: by 2002:a5d:6d8a:0:b0:39c:dcc:f589 with SMTP id ffacd0b85a97d-39c120dd036mr17302194f8f.20.1743665048726;
+        Thu, 03 Apr 2025 00:24:08 -0700 (PDT)
+Received: from [192.168.88.253] (146-241-68-231.dyn.eolo.it. [146.241.68.231])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c3020d68esm975281f8f.67.2025.04.03.00.24.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Apr 2025 00:24:08 -0700 (PDT)
+Message-ID: <4b3bea7c-110d-48eb-bcf6-58f4b2cd1999@redhat.com>
+Date: Thu, 3 Apr 2025 09:24:06 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,87 +88,62 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 01/15] x86/msr: Replace __wrmsr() with
- native_wrmsrl()
-To: Andrew Cooper <andrew.cooper3@citrix.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux.dev, linux-edac@vger.kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-ide@vger.kernel.org, linux-pm@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        jgross@suse.com, peterz@infradead.org, acme@kernel.org,
-        namhyung@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
-        wei.liu@kernel.org, ajay.kaher@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, tony.luck@intel.com,
-        pbonzini@redhat.com, vkuznets@redhat.com, seanjc@google.com,
-        luto@kernel.org, boris.ostrovsky@oracle.com, kys@microsoft.com,
-        haiyangz@microsoft.com, decui@microsoft.com
-References: <20250331082251.3171276-1-xin@zytor.com>
- <20250331082251.3171276-2-xin@zytor.com>
- <0da43a86-81b0-4388-b47b-3a76b15f2a4c@citrix.com>
+Subject: Re: [PATCH] virtio-net: disable delayed refill when setting up xdp
+To: Bui Quang Minh <minhquangbui99@gmail.com>, virtualization@lists.linux.dev
+Cc: "Michael S . Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250402054210.67623-1-minhquangbui99@gmail.com>
 Content-Language: en-US
-From: Xin Li <xin@zytor.com>
-Autocrypt: addr=xin@zytor.com; keydata=
- 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
- l75w1xInsg==
-In-Reply-To: <0da43a86-81b0-4388-b47b-3a76b15f2a4c@citrix.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20250402054210.67623-1-minhquangbui99@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 3/31/2025 2:45 PM, Andrew Cooper wrote:
-> On 31/03/2025 9:22 am, Xin Li (Intel) wrote:
->> __wrmsr() is the lowest level primitive MSR write API, and its direct
->> use is NOT preferred.  Use its wrapper function native_wrmsrl() instead.
->>
->> No functional change intended.
->>
->> Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+On 4/2/25 7:42 AM, Bui Quang Minh wrote:
+> When setting up XDP for a running interface, we call napi_disable() on
+> the receive queue's napi. In delayed refill_work, it also calls
+> napi_disable() on the receive queue's napi. This can leads to deadlock
+> when napi_disable() is called on an already disabled napi. This commit
+> fixes this by disabling future and cancelling all inflight delayed
+> refill works before calling napi_disabled() in virtnet_xdp_set.
 > 
-> The critical piece of information you're missing from the commit message
-> is that the MSR_IMM instructions take a single u64.
+> Fixes: 4941d472bf95 ("virtio-net: do not reset during XDP set")
+> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+> ---
+>  drivers/net/virtio_net.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> Therefore to use them, you've got to arrange for all callers to provide
-> a single u64, rather than a split u32 pair.
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 7e4617216a4b..33406d59efe2 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -5956,6 +5956,15 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>  	if (!prog && !old_prog)
+>  		return 0;
+>  
+> +	/*
+> +	 * Make sure refill_work does not run concurrently to
+> +	 * avoid napi_disable race which leads to deadlock.
+> +	 */
+> +	if (netif_running(dev)) {
+> +		disable_delayed_refill(vi);
+> +		cancel_delayed_work_sync(&vi->refill);
 
-You definitely caught me on how I was thinking it ;)
+AFAICS at this point refill_work() could still be running, why don't you
+need to call flush_delayed_work()?
 
-Sometimes it is nice to see a change log with a thinking process.
+@Jason: somewhat related, why virtnet_close() does not use
+flush_delayed_work(), too?
 
-Thanks!
-     Xin
+Thanks,
+
+Paolo
+
 
