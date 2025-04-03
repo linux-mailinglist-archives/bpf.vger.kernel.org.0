@@ -1,229 +1,199 @@
-Return-Path: <bpf+bounces-55230-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55231-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C17ABA7A53D
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 16:35:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49436A7A58B
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 16:44:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 706DF176CAE
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 14:32:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEF633B0BF0
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 14:39:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F98D24EF7E;
-	Thu,  3 Apr 2025 14:32:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D116E24EF91;
+	Thu,  3 Apr 2025 14:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ak0LtGE7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eAskKQkl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2329524C08A;
-	Thu,  3 Apr 2025 14:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06762E3386;
+	Thu,  3 Apr 2025 14:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743690733; cv=none; b=ivThEpJPkfjx6h6BcWngIgqPmmuk4Se7lpkOtD9JfdMID+CRybs4OVTE5UFBy5w2xKpIGe+uRnT28/L1Hp38sou/7grymiI9xQauF7THvUltWeOKu7xxVqfkz4WgboEUNqj90XxJrvwup3WFDUj81SmwwccGGVmmWK1b/FLeuVk=
+	t=1743691157; cv=none; b=RjsbccIMbHhFIYGyZcdWroTK/wEdR9BbmKygPb4lSTQ8Ql4HGkR50w/jQw11Qi8bqFnMDiKHkZsZxFCD78uN2ej5elYJWh/A15s4VeegdxczJoz6UJnmg6QpDZOjcwQ6YM50uer7CUXFSN1s434VWEq2a6NGivDNC/mnUUnafqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743690733; c=relaxed/simple;
-	bh=vVR4dzjbwximKMFz2GolQ+usgSrCBodydLu3KgERStE=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=MOXoDMhT/2FvuvJoKM3UWJbwxQOkCLiwjgR0bDufB8rfAS0usVpydeb3f34mJQyfk02XygZxC/0n4m36EjHVXAjbjSGLfy5bcQG9HPwxxfm1rfFZz/n4R7/BT7vz82uvTtsfvREvhSBuefEk/TZQEpvehbtsePHVGu72fzar3UQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ak0LtGE7; arc=none smtp.client-ip=209.85.160.181
+	s=arc-20240116; t=1743691157; c=relaxed/simple;
+	bh=dmX8ClR6s2gT1VOXeNIIzH890lXaEbUlMlb3oILAje8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IBwfeOS4YfngygK02SN5AACj7zftNNAQval20PsfpjWo/0fc5KH/p/zqY0yDFuS24gnGHEuLnJLNzwww/bk/f9WBDWLFxyzCz1VWGy3nmvxRejO/gqjvU6QJ8bLao143GSaitXSU7lcQNA/bQLGu0EUyoXP88pLmITwH4CbdTlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eAskKQkl; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4774d68c670so13065661cf.0;
-        Thu, 03 Apr 2025 07:32:11 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-736b98acaadso1027972b3a.1;
+        Thu, 03 Apr 2025 07:39:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743690731; x=1744295531; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4cM/Hf3taQ82kW/fJqiW37cU3vX6rk2UxXpAJR5iIVQ=;
-        b=Ak0LtGE7xBASbInCTu1D7e/P4BQhde5JHbcAgyy5etK6a2oMLHxBooZGnoZTB7ytK2
-         cMBfuG2pRRlNnzbExHVI7mLBY3+nh2UOdinHNE13FOmYqqp5dhEUyZMsUsOJgXvAQGLW
-         lfuuKTZnR6DIaRI84Rl/6/bGQNelVl/TPSEjhkH49VcDs3uuq4R5OBkS/bnR5N8/7Efu
-         r93cWC6Ml6PWcmZTmpGtrb0qFX6BgH+MgZ2phE/DBmYIQo2zbH6VXB1INnTTBYBPDy2d
-         RC1jHR3segbex1Or8imL+4HeUUzAdHr3VOfC4wDU7E7HytrujghIWx1tsHudAt9cqIMX
-         /IuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743690731; x=1744295531;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+        d=gmail.com; s=20230601; t=1743691155; x=1744295955; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=4cM/Hf3taQ82kW/fJqiW37cU3vX6rk2UxXpAJR5iIVQ=;
-        b=WZLBrN7HvCaxgNr24FgL7KD+rIEqwpbDMNfYDvmXzx4aTmc8icTaM2UR4lB2JrHNpF
-         JDQn8wWyPlPNPKZnUPSh+e7QKgBkToahgsZme77b4qlNCOutwuhOxXsR8Q7GGHbPZTZI
-         VgxQAR5tWSIZL9KEBFbvJ6Ch6nbwvWy5J6fWVP+yIqY9JYzKYzZr50P4DOHp0HV48n2D
-         gqdwgxd6y5zaznLLEEfEsy0b/m/q29hxu02FVK5bfH3lx650QBD+3xLKYr58UggxO7wu
-         dK+467WN1hJmZj5cMGFvgd4R1TYDADIEtBwY5/BcBpyckwvpRYibKGm1wMhv+dOO5jsB
-         2YkA==
-X-Forwarded-Encrypted: i=1; AJvYcCVRpyn2jn3FuWeZsoZ9fc+fsDEVeWo+b/9lPBJAmKxJ24kubk0qx+pyPZ3G0oFk0a3Rjk10z2dw@vger.kernel.org, AJvYcCWRBaGRR8L2BF/7Okap/KqmZokGbIDP0FQsisoyqhWS6rIaNW0jElOWWNfAw75Bt5Rhd+y0vsxPWpE4SI8=@vger.kernel.org, AJvYcCXYKazXa5W07mhpiSJ9zFumUIb21DHhkiHTIvPrxSpHkP2RnB5Z1/VeC+FMMIj/XcywjatzJY0Lpp3VxCjhh/sO@vger.kernel.org
-X-Gm-Message-State: AOJu0YyK5Gx8Ajnn7v0Ays88IoxfHvhDLDasbh0SRCyfFGkaPO8rNS8v
-	kYPuSXq8x6kiKqhabVHfXOWZzgH6vOpC21ZMiIV7lhDX/YBP1VO+
-X-Gm-Gg: ASbGncuVZ+lEqDcU1kpDxEbjMLDHf4eG8iZXLWmhXphAk8qGQ9s1zvbmjmxywNyGPhz
-	QnV4ipCzwUMjwnb6MCj7bIhDhbOHUfB0FjDLj6RmoJvaBATNaQbucnvQO5j1m6MlkVvqfenrR7L
-	c7jiog1mCP1PdpvWH0I0p4ic9voFWsnvXk9VCJAW0eBywEsBn/oALoVBl0LAIxAMGpL4U5EmoMp
-	S4f+yIq9S8wzo23gRFXGuPmr63Wf32UIr5hpaEH0+1PrlVdXvUH3FolpULInIiw0SnY83gfFkAt
-	TWNkPeMnzVPytNo0BdxJGHM6p9thHNbFfaWydmUhV1swzmYlJfT3TR+t0Wy/c6tpp4rss3vrfGZ
-	Z3pqShvP8m8rYDEZ1pJ2YiA==
-X-Google-Smtp-Source: AGHT+IG5js78IwTVCo0mnbgZawwpmTGNCA/TG7sieG+24V1Gv+bkWWNlJPo/KnhB+g6blu3Sxt7EGg==
-X-Received: by 2002:ac8:59cf:0:b0:476:a4eb:10a5 with SMTP id d75a77b69052e-4791925bd09mr33748561cf.12.1743690730655;
-        Thu, 03 Apr 2025 07:32:10 -0700 (PDT)
-Received: from localhost (86.235.150.34.bc.googleusercontent.com. [34.150.235.86])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c76e734fc8sm83989885a.5.2025.04.03.07.32.10
+        bh=Rvr0XxDHh05/lDdFnQkqZ5aBAiK03CfkHR41QzNZGHs=;
+        b=eAskKQklC12e/ry9l7cH1ctbUMIvWFD4TYd+Df4dYRw2MC0E39OFsWe5QTt/E3G8GJ
+         r1EWWiYTzJxHSZlI68BwRgwZ+46IkTs3uT4tcRHLY1j/z3zNwjzKXprH36WBLbMTvHnf
+         ULTyq8ufdIImCpA9cL8e3XGNqKwM3VCAldYVJlcYP3+BUbS2e0TdM1A5KI/Tyv1UzYg3
+         JvytZZaGh4Tf9RChBwXBGw/RINa4IV5SnSOvFXopClfhiHY47PwifbYgot1tB9KuYJmI
+         cDnULyHfKNVTfXN2XYwujI4dtEieH0toB5EB20D0Obc+6IRFsH8H0n2jFu8R9XdtV+Tz
+         okxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743691155; x=1744295955;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rvr0XxDHh05/lDdFnQkqZ5aBAiK03CfkHR41QzNZGHs=;
+        b=QZpcmZ6rlls4IJSFgVD+R/YZrrxb9La8xo+Zzyjrwb/yjhOslL1irjMdXFHd1+Areq
+         f49god6HTJ+j3PnViha9kzO+aj7F6pCjcATWGhuUrbu2EAmQ9eZ4kVosVzEZrqD+di6r
+         36gPo3kLhVhFWxfc4TO0YuoHqZ9OlRN9Ti1S2WtoKowm+dyED4KDt+ukNsjkDmBQlZZL
+         /yjoNIkeBd9Sh3QuJMVUC2iO4N9WjS9IZWlbmbe/ZQCuD6KpvH/eT54a8H14Yrp1qIYg
+         Ae3+i4Nyg/bW+yYvb/qSe6d3aONoMRVCoQhl6nA1oi4Vqsv2d7e7bKHkRKS5z8yglDrB
+         YGVg==
+X-Forwarded-Encrypted: i=1; AJvYcCULsmrXYjV3MR8aKW5NGpQGcjvtbX4F4BBKNHzlpS3bMN3Hn6MX06LgrZjP3KwPc/Tr3E+YEOVZL3aANxct@vger.kernel.org, AJvYcCVVyDCqKTv/BVOXJ+ZAog2oZ8DwAeCrnDqvUViBOMJaaHqezE9WY7TkpB72h0SahbJ9hCU=@vger.kernel.org, AJvYcCVkj66LdSHEy530I8aZeqamjYlHjOAQC0YOorcQzb5uzQYa0hPxm17gqf+YcOsJXsZNCnNMgm9jnHqlgyBk6LA=@vger.kernel.org, AJvYcCWNpRm+bZ2OfwF03+IQzwg5IPkmBMz3VUk+ElB9szPqxtmAMMy1YF060H+0+NbJUVF0CyEH4PgoGrTBD88=@vger.kernel.org, AJvYcCXdFDrfQinB7VgtZUO6m4N68JX3qqA8SI8JjIbcMKbrh467BX2yrvUm/d/6RwIl7Rs/oR7zV4eQpdM79WY=@vger.kernel.org, AJvYcCXdosafBjnlO4vBbMVNH6aeN5rve+E5sStyeJq+/u+phIkm+A6YkNmzKNoPe7HayAk3Y7H8SZufmfz4E3Zy@vger.kernel.org, AJvYcCXffW0RFwDS2KuMuQKhgIBFeephHrqFyhlUmUubFc3LOdV0KP1WBvC7NvMwuWP02tVU/Gzo85t5@vger.kernel.org
+X-Gm-Message-State: AOJu0YxOSBzuInOu5hDkoYPKwMEZHPRLnl3GpMhl95fXRinQggvK4oDD
+	bWho26PoaldQOtHBbg4gPY26A88xr/h6C4VlDQMNVhyWj81yFoOT
+X-Gm-Gg: ASbGncuNQ0yG1NE8l6aaInEn9HvjEMCM5LffqR7KdGxE8ggeLV+9Oxhd+x9MxpUTUTo
+	7nNp4gktau9DA5l1rFId/phnTNKKFy3kuDa0CoJXPv5bUXQzllV4OEisf7YUNALiyRHPkAFeGxk
+	4z28sK3bSpMRRQ5CG3X+FFlFcJ2V6OTKLjSVC5EL9vMMqVcQk/fem9tZJcuvqi8iEw0iMG9kxBU
+	pnzkNh5Hsqc1D2OmGLD07lKcZZGDWr8bUHoTlS9uo/V8nu7Z4WSoub9K0rb+to5DPprljtQMQnl
+	UacM/tsauEhwUr33g0qoEFSlwtuuhT7fcTV3glcZrZPW8tl7jvrUrt1LsvWvIDWmW1w0cFD2
+X-Google-Smtp-Source: AGHT+IEBLhxF2I4CcVDE0Ip1aaBG/9qxfajK2d8loqdQY51JgxIHQayN0kr/iRs9O5E0K4MztoDo5g==
+X-Received: by 2002:a05:6a20:6f04:b0:1fd:e9c8:cf3b with SMTP id adf61e73a8af0-200e4cc69c1mr11499641637.30.1743691154910;
+        Thu, 03 Apr 2025 07:39:14 -0700 (PDT)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-af9bc2d331csm1285435a12.12.2025.04.03.07.39.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Apr 2025 07:32:10 -0700 (PDT)
-Date: Thu, 03 Apr 2025 10:32:09 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
- Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, 
- Jiayuan Chen <mrpre@163.com>, 
- syzbot+0e6ddb1ef80986bdfe64@syzkaller.appspotmail.com, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, 
- Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, 
- KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, 
- Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>, 
- Willem de Bruijn <willemb@google.com>, 
- Jason Xing <kerneljasonxing@gmail.com>, 
- Anton Protopopov <aspsk@isovalent.com>, 
- Abhishek Chauhan <quic_abchauha@quicinc.com>, 
- Jordan Rome <linux@jordanrome.com>, 
- Martin Kelly <martin.kelly@crowdstrike.com>, 
- David Lechner <dlechner@baylibre.com>, 
- LKML <linux-kernel@vger.kernel.org>, 
- Network Development <netdev@vger.kernel.org>, 
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Message-ID: <67ee9be9db59b_138964294b7@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CAADnVQJ6NPGuY=c8kbpX_nLYq4oOxOBAxbDPFLuw+yr4WrQQOQ@mail.gmail.com>
-References: <20250331032354.75808-1-jiayuan.chen@linux.dev>
- <20250331032354.75808-2-jiayuan.chen@linux.dev>
- <CAADnVQJ6NPGuY=c8kbpX_nLYq4oOxOBAxbDPFLuw+yr4WrQQOQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 1/2] bpf, xdp: clean head/meta when expanding it
+        Thu, 03 Apr 2025 07:39:13 -0700 (PDT)
+Date: Thu, 3 Apr 2025 22:39:03 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: "H. Peter Anvin" <hpa@zytor.com>, Yury Norov <yury.norov@gmail.com>
+Cc: Yury Norov <yury.norov@gmail.com>,
+	David Laight <david.laight.linux@gmail.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Laurent.pinchart@ideasonboard.com, airlied@gmail.com,
+	akpm@linux-foundation.org, alistair@popple.id.au,
+	andrew+netdev@lunn.ch, andrzej.hajda@intel.com,
+	arend.vanspriel@broadcom.com, awalls@md.metrocast.net, bp@alien8.de,
+	bpf@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
+	brcm80211@lists.linux.dev, dave.hansen@linux.intel.com,
+	davem@davemloft.net, dmitry.torokhov@gmail.com,
+	dri-devel@lists.freedesktop.org, eajames@linux.ibm.com,
+	edumazet@google.com, eleanor15x@gmail.com,
+	gregkh@linuxfoundation.org, hverkuil@xs4all.nl,
+	jernej.skrabec@gmail.com, jirislaby@kernel.org, jk@ozlabs.org,
+	joel@jms.id.au, johannes@sipsolutions.net, jonas@kwiboo.se,
+	jserv@ccns.ncku.edu.tw, kuba@kernel.org, linux-fsi@lists.ozlabs.org,
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-serial@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linux@rasmusvillemoes.dk, louis.peens@corigine.com,
+	maarten.lankhorst@linux.intel.com, mchehab@kernel.org,
+	mingo@redhat.com, miquel.raynal@bootlin.com, mripard@kernel.org,
+	neil.armstrong@linaro.org, netdev@vger.kernel.org,
+	oss-drivers@corigine.com, pabeni@redhat.com,
+	parthiban.veerasooran@microchip.com, rfoss@kernel.org,
+	richard@nod.at, simona@ffwll.ch, tglx@linutronix.de,
+	tzimmermann@suse.de, vigneshr@ti.com, x86@kernel.org
+Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
+Message-ID: <Z+6dh1ZVIKWWOKaP@visitorckw-System-Product-Name>
+References: <20250307195310.58abff8c@pumpkin>
+ <EB85C3C1-8A0D-4CB9-B501-BFEABDF3E977@zytor.com>
+ <Z824SgB9Dt5zdWYc@visitorckw-System-Product-Name>
+ <Z9CyuowYsZyez36c@thinkpad>
+ <80771542-476C-493E-858A-D2AF6A355CC1@zytor.com>
+ <Z9GtcNJie8TRKywZ@thinkpad>
+ <Z9G2Tyypb3iLoBjn@visitorckw-System-Product-Name>
+ <Z9KMKwnZXA2mkD2s@visitorckw-System-Product-Name>
+ <Z+AlyB461xwMxMtG@visitorckw-System-Product-Name>
+ <eec0dfd7-5e4f-4a08-928c-b7714dbc4a17@zytor.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eec0dfd7-5e4f-4a08-928c-b7714dbc4a17@zytor.com>
 
-Alexei Starovoitov wrote:
-> On Sun, Mar 30, 2025 at 8:27=E2=80=AFPM Jiayuan Chen <jiayuan.chen@linu=
-x.dev> wrote:
-> >
-> > The device allocates an skb, it additionally allocates a prepad size
-> > (usually equal to NET_SKB_PAD or XDP_PACKET_HEADROOM) but leaves it
-> > uninitialized.
-> >
-> > The bpf_xdp_adjust_head function moves skb->data forward, which allow=
-s
-> > users to access data belonging to other programs, posing a security r=
-isk.
-> >
-> > Reported-by: syzbot+0e6ddb1ef80986bdfe64@syzkaller.appspotmail.com
-> > Closes: https://lore.kernel.org/all/00000000000067f65105edbd295d@goog=
-le.com/T/
-> > Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-> > ---
-> >  include/uapi/linux/bpf.h       | 8 +++++---
-> >  net/core/filter.c              | 5 ++++-
-> >  tools/include/uapi/linux/bpf.h | 6 ++++--
-> >  3 files changed, 13 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index defa5bb881f4..be01a848cbbf 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -2760,8 +2760,9 @@ union bpf_attr {
-> >   *
-> >   * long bpf_xdp_adjust_head(struct xdp_buff *xdp_md, int delta)
-> >   *     Description
-> > - *             Adjust (move) *xdp_md*\ **->data** by *delta* bytes. =
-Note that
-> > - *             it is possible to use a negative value for *delta*. T=
-his helper
-> > + *             Adjust (move) *xdp_md*\ **->data** by *delta* bytes. =
-Note that
-> > + *             it is possible to use a negative value for *delta*. I=
-f *delta*
-> > + *             is negative, the new header will be memset to zero. T=
-his helper
-> >   *             can be used to prepare the packet for pushing or popp=
-ing
-> >   *             headers.
-> >   *
-> > @@ -2989,7 +2990,8 @@ union bpf_attr {
-> >   * long bpf_xdp_adjust_meta(struct xdp_buff *xdp_md, int delta)
-> >   *     Description
-> >   *             Adjust the address pointed by *xdp_md*\ **->data_meta=
-** by
-> > - *             *delta* (which can be positive or negative). Note tha=
-t this
-> > + *             *delta* (which can be positive or negative). If *delt=
-a* is
-> > + *             negative, the new meta will be memset to zero. Note t=
-hat this
-> >   *             operation modifies the address stored in *xdp_md*\ **=
-->data**,
-> >   *             so the latter must be loaded only after the helper ha=
-s been
-> >   *             called.
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 46ae8eb7a03c..5f01d373b719 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -3947,6 +3947,8 @@ BPF_CALL_2(bpf_xdp_adjust_head, struct xdp_buff=
- *, xdp, int, offset)
-> >         if (metalen)
-> >                 memmove(xdp->data_meta + offset,
-> >                         xdp->data_meta, metalen);
-> > +       if (offset < 0)
-> > +               memset(data, 0, -offset);
-> >         xdp->data_meta +=3D offset;
-> >         xdp->data =3D data;
-> >
-> > @@ -4239,7 +4241,8 @@ BPF_CALL_2(bpf_xdp_adjust_meta, struct xdp_buff=
- *, xdp, int, offset)
-> >                 return -EINVAL;
-> >         if (unlikely(xdp_metalen_invalid(metalen)))
-> >                 return -EACCES;
-> > -
-> > +       if (offset < 0)
-> > +               memset(meta, 0, -offset);
-> =
+On Tue, Mar 25, 2025 at 12:43:25PM -0700, H. Peter Anvin wrote:
+> On 3/23/25 08:16, Kuan-Wei Chiu wrote:
+> > 
+> > Interface 3: Multiple Functions
+> > Description: bool parity_odd8/16/32/64()
+> > Pros: No need for explicit casting; easy to integrate
+> >        architecture-specific optimizations; except for parity8(), all
+> >        functions are one-liners with no significant code duplication
+> > Cons: More functions may increase maintenance burden
+> > Opinions: Only I support this approach
+> > 
+> 
+> OK, so I responded to this but I can't find my reply or any of the
+> followups, so let me go again:
+> 
+> I prefer this option, because:
+> 
+> a. Virtually all uses of parity is done in contexts where the sizes of the
+> items for which parity is to be taken are well-defined, but it is *really*
+> easy for integer promotion to cause a value to be extended to 32 bits
+> unnecessarily (sign or zero extend, although for parity it doesn't make any
+> difference -- if the compiler realizes it.)
+> 
+> b. It makes it easier to add arch-specific implementations, notably using
+> __builtin_parity on architectures where that is known to generate good code.
+> 
+> c. For architectures where only *some* parity implementations are
+> fast/practical, the generic fallbacks will either naturally synthesize them
+> from components via shift-xor, or they can be defined to use a larger
+> version; the function prototype acts like a cast.
+> 
+> d. If there is a reason in the future to add a generic version, it is really
+> easy to do using the size-specific functions as components; this is
+> something we do literally all over the place, using a pattern so common that
+> it, itself, probably should be macroized:
+> 
+> #define parity(x) 				\
+> ({						\
+> 	typeof(x) __x = (x);			\
+> 	bool __y;				\
+> 	switch (sizeof(__x)) {			\
+> 		case 1:				\
+> 			__y = parity8(__x);	\
+> 			break;			\
+> 		case 2:				\
+> 			__y = parity16(__x);	\
+> 			break;			\
+> 		case 4:				\
+> 			__y = parity32(__x);	\
+> 			break;			\
+> 		case 8:				\
+> 			__y = parity64(__x);	\
+> 			break;			\
+> 		default:			\
+> 			BUILD_BUG();		\
+> 			break;			\
+> 	}					\
+> 	__y;					\
+> })
+>
+Thank you for your detailed response and for explaining the rationale
+behind your preference. The points you outlined in (a)–(d) all seem
+quite reasonable to me.
 
-> Let's make everyone pay a performance penalty to silence
-> KMSAN warning?
-> =
+Yury,
+do you have any feedback on this?
+Thank you.
 
-> I don't think it's a good trade off.
-> =
+Regards,
+Kuan-Wei
 
-> Soft nack.
-
-I also assumed that this was known when the feature was originally
-introduced and left as is for performance reasons.
-
-Might be good to have that explicit. And that it is deemed safe by
-virtue of XDP requiring superuser privileges anyway. Or at least I
-guess that was the thought process?
 
