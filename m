@@ -1,94 +1,79 @@
-Return-Path: <bpf+bounces-55263-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55264-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89044A7ACC1
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 21:49:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46E34A7AF76
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 22:52:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD3033B357E
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 19:44:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1384F7A5F0B
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 20:51:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224FE280CF3;
-	Thu,  3 Apr 2025 19:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E37926560A;
+	Thu,  3 Apr 2025 19:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="qM9zA1Ei"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fZQgf2eW"
 X-Original-To: bpf@vger.kernel.org
-Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AE7258CEC;
-	Thu,  3 Apr 2025 19:08:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27E2C264FA5
+	for <bpf@vger.kernel.org>; Thu,  3 Apr 2025 19:33:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743707298; cv=none; b=N5qt4KGwWL0O99ryb52lrjEMsXQfgUrubgtt+llSpnyO86eZyHVwNn3H5B6PCWHARGJFGlH7KFrIRaAQnF5JmzGngBSiLtC9iXqdmq3qKbWUgyxDDn5FLovCCt2KXJpeeco/63UrOhmWmcdqX3c1XSzc29e6bzH9XM2hFuoAq2w=
+	t=1743708787; cv=none; b=jGDH33uS4pLrgIFNUMIZWVTJ39TD6clJKhuNKntGQR2JDkcArFwY0CE+kFnFzpuJnfntHIUtO14ieVpE4ZQHlHykTOPEZGgT7bbibnQWF2Yqh+6VJmHN4j0xz6xpteqXY9tasALj9n226rxAsIY6oEzs6RG6xBS/RHjZcOUuSRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743707298; c=relaxed/simple;
-	bh=Wh5Ni6yEb9pzYvSxle13v0riTVmFQqhjt3k27dRwEqU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BM0mon2wq3kziWhd6hkxUhDrQuF2pOYgUz0HMPWsKLbFC+MPN5Kb7yKJlEXm2cunPqgJMSQxJsmyslpEvYYTFUWuDOVRGnrFsPGEN+oDIcD6bdDlfP3eyEmQH1DR+V4WAzkkBfBAM5S19tclxo1OBS7LiKfN+m1YvRBfG+hjUGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=qM9zA1Ei; arc=none smtp.client-ip=139.165.32.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
-Received: from [192.168.1.58] (220.24-245-81.adsl-dyn.isp.belgacom.be [81.245.24.220])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id 63D01200C241;
-	Thu,  3 Apr 2025 21:08:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be 63D01200C241
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
-	s=ulg20190529; t=1743707292;
-	bh=KrNpRha9b/ZPtCbTWmlK4b+wJzbqizSsJUCYeP/vmhM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qM9zA1EiDlk+7qhQ8c6mnOQ1pr5QfQpd47HEslS4xQMoOsPV5T8d5YiGznPUP2E6d
-	 /1A4Eg0M4CABN777HIiwuDICp9qnhSdsnNDggzYLM4bvtqxdvsGt8VK66gXwlti6MP
-	 n8MlSINUJ5oF5oGD2s3oJEOWE5b8cOVV4ZGMqW5WGzUZ0LNGJ/CDN5IUGqcFg+sMlr
-	 leiwED4EV8fMHHShsXYuhOnHHe03wQuH3M+dpu+Togus0hxfDkc2TvZAfN1q98SkzH
-	 AIGk4+Ca7QNhQlOUXyuj9xW2AdUhLy2T8x3k7BGwXIgoso+roiSXe3q1sX23DlLy/a
-	 M8oxqd7Z2DMgQ==
-Message-ID: <cb0df409-ebbf-4970-b10c-4ea9f863ff00@uliege.be>
-Date: Thu, 3 Apr 2025 21:08:12 +0200
+	s=arc-20240116; t=1743708787; c=relaxed/simple;
+	bh=WpvzLMUEeQ7hWN5EhC7SNf9xLtfnSAVVIqcQkIRlm3k=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=dpIB9/XNLYk8LwOljrPK+IdJ4KbSj9qKhc8w7SEuMqKRtP4hNqnCtwz3Tz68x+bG0raeCcD2JrkQmH1oH1vd/IIch0xCTlimQ5DduIYfPF7cbBlTWfRxTsl4Lj5sAtx4w2OeQFfv4EQem4VlCIyPgcGcNvGR4p2ArTo/85Inc9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fZQgf2eW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01508C4CEE3;
+	Thu,  3 Apr 2025 19:33:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743708787;
+	bh=WpvzLMUEeQ7hWN5EhC7SNf9xLtfnSAVVIqcQkIRlm3k=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=fZQgf2eWq7LRTy2C3YbnrPd1kdHbAModJSp7v52BK+RJ/1lL0TsElQfx1OCyzaYYX
+	 5gO4Z4DQqg7nUaQxc/k86SVB9iXLydmtC1VAza5o7Sz7Oo63mV68GRM52r7z4b86ce
+	 bVceDLpxT99Z7ZjlrpaV/8+tRmLkaGOY8ROCNFN8Ak3ED/nyPi2BHRQ/JAmnwU488G
+	 Rw5w5WKgl25JclYiCGS7c/GUD3bCkVvweEOt/zw07CUe0cw/x//rwSLRJjHSBaIhyj
+	 dcOLfLZ02eqFkQXesCRfjivb9QMcS28e+/K+m6DA/TDyFwikUDr89Zf+Mlz8od9gjA
+	 MjEs9WW4vf0Hw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 34356380664C;
+	Thu,  3 Apr 2025 19:33:45 +0000 (UTC)
+Subject: Re: [GIT PULL] BPF fixes for 6.15-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20250403152526.9565-1-alexei.starovoitov@gmail.com>
+References: <20250403152526.9565-1-alexei.starovoitov@gmail.com>
+X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20250403152526.9565-1-alexei.starovoitov@gmail.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+X-PR-Tracked-Commit-Id: 3f8ad18f81841a9ce70f603c45d5a278528c67e6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 531a62f223d2f4c0d01df3b3387f0836b5006256
+Message-Id: <174370882381.2657822.8179196238206686778.pr-tracker-bot@kernel.org>
+Date: Thu, 03 Apr 2025 19:33:43 +0000
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: torvalds@linux-foundation.org, bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net: lwtunnel: disable preemption when required
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, kuniyu@amazon.com,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>
-References: <20250403083956.13946-1-justin.iurman@uliege.be>
- <Z-62MSCyMsqtMW1N@mini-arch>
-Content-Language: en-US
-From: Justin Iurman <justin.iurman@uliege.be>
-In-Reply-To: <Z-62MSCyMsqtMW1N@mini-arch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 4/3/25 18:24, Stanislav Fomichev wrote:
-> On 04/03, Justin Iurman wrote:
->> In lwtunnel_{input|output|xmit}(), dev_xmit_recursion() may be called in
->> preemptible scope for PREEMPT kernels. This patch disables preemption
->> before calling dev_xmit_recursion(). Preemption is re-enabled only at
->> the end, since we must ensure the same CPU is used for both
->> dev_xmit_recursion_inc() and dev_xmit_recursion_dec() (and any other
->> recursion levels in some cases) in order to maintain valid per-cpu
->> counters.
-> 
-> Dummy question: CONFIG_PREEMPT_RT uses current->net_xmit.recursion to
-> track the recursion. Any reason not to do it in the generic PREEMPT case?
+The pull request you sent on Thu,  3 Apr 2025 08:25:26 -0700:
 
-I'd say PREEMPT_RT is a different beast. IMO, softirqs can be 
-preempted/migrated in RT kernels, which is not true for non-RT kernels. 
-Maybe RT kernels could use __this_cpu_* instead of "current" though, but 
-it would be less trivial. For example, see commit ecefbc09e8ee ("net: 
-softnet_data: Make xmit per task.") on why it makes sense to use 
-"current" in RT kernels. I guess the opposite as you suggest (i.e., 
-non-RT kernels using "current") would be technically possible, but there 
-must be a reason it is defined the way it is... so probably incorrect or 
-inefficient?
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/531a62f223d2f4c0d01df3b3387f0836b5006256
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
