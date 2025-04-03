@@ -1,79 +1,129 @@
-Return-Path: <bpf+bounces-55264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46E34A7AF76
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 22:52:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2885A7B055
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 23:14:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1384F7A5F0B
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 20:51:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE008188A4D5
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 21:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E37926560A;
-	Thu,  3 Apr 2025 19:33:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87DAD1FCCFB;
+	Thu,  3 Apr 2025 20:33:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fZQgf2eW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xsrbw6xG"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27E2C264FA5
-	for <bpf@vger.kernel.org>; Thu,  3 Apr 2025 19:33:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581D11FBC92;
+	Thu,  3 Apr 2025 20:33:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743708787; cv=none; b=jGDH33uS4pLrgIFNUMIZWVTJ39TD6clJKhuNKntGQR2JDkcArFwY0CE+kFnFzpuJnfntHIUtO14ieVpE4ZQHlHykTOPEZGgT7bbibnQWF2Yqh+6VJmHN4j0xz6xpteqXY9tasALj9n226rxAsIY6oEzs6RG6xBS/RHjZcOUuSRM=
+	t=1743712400; cv=none; b=qCKI1tZtMe44YZtIm0bO6L891lQy3HKndeHMXeSXs8G1wjBXhHhfoLePxbrsxirrYHcbJLGK82M6nxn39pRhqnDTE4FVauzqsGFNDBZVexCFN1B5epCnN0Lng8QwffhCu7f5lYSVHx4Zhqfqz8Ce+ky015oaVyJkPYdgCYjxMgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743708787; c=relaxed/simple;
-	bh=WpvzLMUEeQ7hWN5EhC7SNf9xLtfnSAVVIqcQkIRlm3k=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=dpIB9/XNLYk8LwOljrPK+IdJ4KbSj9qKhc8w7SEuMqKRtP4hNqnCtwz3Tz68x+bG0raeCcD2JrkQmH1oH1vd/IIch0xCTlimQ5DduIYfPF7cbBlTWfRxTsl4Lj5sAtx4w2OeQFfv4EQem4VlCIyPgcGcNvGR4p2ArTo/85Inc9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fZQgf2eW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01508C4CEE3;
-	Thu,  3 Apr 2025 19:33:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743708787;
-	bh=WpvzLMUEeQ7hWN5EhC7SNf9xLtfnSAVVIqcQkIRlm3k=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=fZQgf2eWq7LRTy2C3YbnrPd1kdHbAModJSp7v52BK+RJ/1lL0TsElQfx1OCyzaYYX
-	 5gO4Z4DQqg7nUaQxc/k86SVB9iXLydmtC1VAza5o7Sz7Oo63mV68GRM52r7z4b86ce
-	 bVceDLpxT99Z7ZjlrpaV/8+tRmLkaGOY8ROCNFN8Ak3ED/nyPi2BHRQ/JAmnwU488G
-	 Rw5w5WKgl25JclYiCGS7c/GUD3bCkVvweEOt/zw07CUe0cw/x//rwSLRJjHSBaIhyj
-	 dcOLfLZ02eqFkQXesCRfjivb9QMcS28e+/K+m6DA/TDyFwikUDr89Zf+Mlz8od9gjA
-	 MjEs9WW4vf0Hw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 34356380664C;
-	Thu,  3 Apr 2025 19:33:45 +0000 (UTC)
-Subject: Re: [GIT PULL] BPF fixes for 6.15-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20250403152526.9565-1-alexei.starovoitov@gmail.com>
-References: <20250403152526.9565-1-alexei.starovoitov@gmail.com>
-X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20250403152526.9565-1-alexei.starovoitov@gmail.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
-X-PR-Tracked-Commit-Id: 3f8ad18f81841a9ce70f603c45d5a278528c67e6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 531a62f223d2f4c0d01df3b3387f0836b5006256
-Message-Id: <174370882381.2657822.8179196238206686778.pr-tracker-bot@kernel.org>
-Date: Thu, 03 Apr 2025 19:33:43 +0000
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: torvalds@linux-foundation.org, bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org
+	s=arc-20240116; t=1743712400; c=relaxed/simple;
+	bh=ur2Tr6iw7X46fc/5bRLx6fdqJrE0cltK+bwwRImun+Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jhfru4zDfOd5SWG2pp6VwucLbV/d732+FGc7CQqoQKNCItS0aY4Ynk9ZrquULClzJ7yQT1Ur7GYRxDJMUMiDRV17Tuov1l3v034zS6mJ8+7+HGPGEop+QVeOIluWLx7ugAjauGa4pp6xAeg4rchdWlGbCwczf9HKNopHgDsnO2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xsrbw6xG; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-39c0dfba946so872936f8f.3;
+        Thu, 03 Apr 2025 13:33:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743712394; x=1744317194; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ur2Tr6iw7X46fc/5bRLx6fdqJrE0cltK+bwwRImun+Q=;
+        b=Xsrbw6xG7bVsUETNlq+guwyj3eAm52ekojJzJtG1G+pAZ6TKH5vkALzuOdJfNBbwgT
+         5kMTuXuegNhqwuJvM82YktlzzAJQPhImlG4v5PATaw5CqNjNy1ODpBoa5lSVU3NZ1552
+         C7x3dkHjlGmRlKbugohbsOpmzjigan8UtfbfB8ZDztRuciASptnMFmWypMw7dRxE32oT
+         V2Tq130xpVAQkDeBlxiHvkeSrG+poKVFTkL12OIjinVcomDheVuu3VLXaaMF7K5+hho4
+         7iZytZ1hG4EDwQhtguel18pEpwf+vEV7ZhvhyFBqST0taWF29HPJ+ncFhCmC8UALAyYP
+         i2RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743712394; x=1744317194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ur2Tr6iw7X46fc/5bRLx6fdqJrE0cltK+bwwRImun+Q=;
+        b=frgZm2QN1GUaRK3YC6Y35Jz4Uhjni5FVE7CJb44w8zzk3jJX7EmkUiP+SnDSuylJiI
+         gy7leYPm3W9++QisC/txU5KRrjbt8emV8Q9PctpQLtD9NfLUavxyCTXWNg5GQ93rhqVq
+         GFVuxZBpdFACqf83NNB3vs5NPA3pQ0csLuD1Ro6hq6RHGoIWZMPNnexmyh3qICyjKpGR
+         508QLqFygvU6xFVNypN5XilNKBFzmjJybgbKEkCxFqJdC35ez04qO2XzDz/bPwMaVmuD
+         WAusa8/9FmiS536KP2v3ufhbdKwFMKzVXa0yBxefcFzNLiMAoaiDbRxXZQTiS1F6FaKd
+         CtHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV0ywAH/CC3T/ZZRpR82uwMF+EI7oi7lZrySzqx/H6FzKp3Dl//KQFMy8vALwxlPzxB+Rxd7g4AYwhrMtNNV99F@vger.kernel.org, AJvYcCW/ANmYUcZzh+twkVBWyA7Az83WrfLShLaZbBNbr+7I0ie4p/hKP69ir1BrEv+Tg+7NzC0FlJU6aZLOOTdg@vger.kernel.org, AJvYcCW22AT6kxVx4kWLnXrM5meXAMJmZ6GOC3iWlQplfo2CDTAj4xGIqgZvdN5MYd05zpPg+6M=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYcc0hVD5awcVGKTP8uI5ns6miSOoB2LUTDDsTF/t3+qm2pfZW
+	Mz/QNcXd/SV3SGhQiXs7KUReMC83/XP9G3yqJnFN7chtqancJn0p4/noo7RSdLclkVXgm3SdcIu
+	+81f150mxOXfedPKwVbBQc+bCG14=
+X-Gm-Gg: ASbGncsLunP7AlLqyb1iziBuQ9JmbGe7g2a1OF7j9BxtQOq8INX48H6gvdnRHTdjYLw
+	VeT43+b8gJ2sW1AjiKFC8OM/T04jCaYXmVbQpIBlwtnqz4yqwGVm7LLsx7tIIDTkJMTZxQmCqgH
+	39oHL1SIDYnT2s8oNWTMzRVZEiS/vOS9CSskU46VRjEA==
+X-Google-Smtp-Source: AGHT+IEu34HOnVSPLCEPZgUjMqgj5ikBMtgLqNQ7LH7V6Xsh1zQa1uWkmsD6Y8njY4+v2/UFK6c0Z5jpunIin/qN29o=
+X-Received: by 2002:a05:6000:4284:b0:39b:ede7:8906 with SMTP id
+ ffacd0b85a97d-39cb359572bmr610867f8f.19.1743712394400; Thu, 03 Apr 2025
+ 13:33:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20250313172127.1098195-1-luis.gerhorst@fau.de>
+ <20250313175312.1120183-1-luis.gerhorst@fau.de> <20250313175312.1120183-2-luis.gerhorst@fau.de>
+ <CAADnVQKL-NwxigMWM+U=n5ZXPG+xHYzSTEv0Rq8Y91m45eRJDw@mail.gmail.com> <87cyedie3w.fsf@fau.de>
+In-Reply-To: <87cyedie3w.fsf@fau.de>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 3 Apr 2025 13:33:01 -0700
+X-Gm-Features: ATxdqUHPAFiAlWbRvEI6Dyb_uIy-F7VX7qdc8juRjqz8Jt6HEvin01eMZNJzsww
+Message-ID: <CAADnVQKAFfOKWe+rdvaM=sKp229Kn14jj=K6+8oybw5m2Mh-RQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 11/11] bpf: Fall back to nospec for spec path verification
+To: Luis Gerhorst <luis.gerhorst@fau.de>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
+	Xu Kuohai <xukuohai@huaweicloud.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Hari Bathini <hbathini@linux.ibm.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Henriette Herzog <henriette.herzog@rub.de>, Cupertino Miranda <cupertino.miranda@oracle.com>, 
+	Matan Shachnai <m.shachnai@gmail.com>, Dimitar Kanaliev <dimitar.kanaliev@siteground.com>, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>, Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	ppc-dev <linuxppc-dev@lists.ozlabs.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, George Guo <guodongtai@kylinos.cn>, 
+	WANG Xuerui <git@xen0n.name>, Tiezhu Yang <yangtiezhu@loongson.cn>, Maximilian Ott <ott@cs.fau.de>, 
+	Milan Stephan <milan.stephan@fau.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The pull request you sent on Thu,  3 Apr 2025 08:25:26 -0700:
+On Wed, Mar 19, 2025 at 2:06=E2=80=AFAM Luis Gerhorst <luis.gerhorst@fau.de=
+> wrote:
+>
+> Thank you very much for having a look. Let me know whether the above
+> resolves your concern.
+>
+> In any case, should I separate patches 1-3 into another series?
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+Sorry for the delay. lsfmm was followed by the busy merge window.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/531a62f223d2f4c0d01df3b3387f0836b5006256
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Please rebase and repost the patches with the detailed
+explanation of how lfence works internally and it affects on
+the algorithm.
+I mistakenly thought that lfence is a load fence only.
+That it forces all prior loads to complete, but not the other insns.
+Since it's an absolute speculation barrier the algorithm appears sound.
+My only remaining reservation is a heuristic in this patch.
+If we don't do it, we wouldn't have to special case push_stack() too,
+right?
+Let's continue discussion in the new thread.
 
