@@ -1,83 +1,58 @@
-Return-Path: <bpf+bounces-55223-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55224-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7728DA7A312
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 14:45:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A150A7A45F
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 15:54:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98379174447
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 12:44:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E030B1898BD3
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 13:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7740124CEF4;
-	Thu,  3 Apr 2025 12:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3F7024E4D4;
+	Thu,  3 Apr 2025 13:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ohkjuat/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q4R2uHOn"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517A224C09A
-	for <bpf@vger.kernel.org>; Thu,  3 Apr 2025 12:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE3F29408;
+	Thu,  3 Apr 2025 13:54:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743684288; cv=none; b=Xq+TRabFYKM0rW52iEhERhQH2cFkOzKEIi+vLQWB0fQonieMECUUtvCPfJZiuyzukErh+hmfjC6Ssb70XQFUqxP2Orsf+FtMi/eM4wTjCI2W5Yg5Kj9vcQ0d4UTtTLB+gTbAxWY1vMh48U+wcAl7XvQ0Wr48p4suJN8AsKbmCGM=
+	t=1743688469; cv=none; b=meO4chdVylIh+4t+2xW3f2c8WNkooUj4p1ejPcPnMNJtb5DYRC+AXFbhRkLBKsjMGp+7zu6ZsI/pJMKOGesMW3t4TRqo8Mrui6fBVKcZvDN5qxbjEIqosdF4zSHdFV1eOzc4dDi1y8uky8dc7B6iPLZtt9JcV3CVPDRDgMzZl70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743684288; c=relaxed/simple;
-	bh=THsjslv0PclgQM1w5C5ZeQBaIcQM+ov2tnQiCR+JXQY=;
+	s=arc-20240116; t=1743688469; c=relaxed/simple;
+	bh=lyNXz735Z2cTKcDUQuDQ893qwBJi5amYRPfXvdsMpwM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ltv/JLIdag0gP/js+xfl+QUBoHT4No+3sm6xhRsfz0hj4+ZDzFQoBGtnO4t+fqyeWzZ1FJf6h40ppjkbeF02Q1pFAANfgI8vvfk03l7EijrmPWD1mZRIliNA9dYbZscsd9hH0snBZ6ucYbgFTu6dfQQQQffaTk/VoKDcjVjmaUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ohkjuat/; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1743684285;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k99cCVI4tAyR1lEvT/RV0Try5Bha7HjmpcxC+bC28K0=;
-	b=Ohkjuat/Tn6Yerq5f+5hhfp1UcQbqfY0vkOP/g05F4OzIzzKkHG9BAeEIOo1FXFg+mRQKj
-	2B47xkT+WmHNisNOhLoxJ5DvkZ8aIxDUk3m9RdLubUD5hurWHeBEoIG3xdZzWP/bbUwtCt
-	+j3WSa65MaSwl0mVyYjDRE1NsJs6Rds=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-210-7sMHfITfOQ6QGpM9_9Xjjg-1; Thu,
- 03 Apr 2025 08:44:40 -0400
-X-MC-Unique: 7sMHfITfOQ6QGpM9_9Xjjg-1
-X-Mimecast-MFC-AGG-ID: 7sMHfITfOQ6QGpM9_9Xjjg_1743684279
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 53A1A1809CA6;
-	Thu,  3 Apr 2025 12:44:39 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.44.32.20])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 08D643003770;
-	Thu,  3 Apr 2025 12:44:34 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu,  3 Apr 2025 14:44:03 +0200 (CEST)
-Date: Thu, 3 Apr 2025 14:43:46 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Sebastian Sewior <bigeasy@linutronix.de>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Peter Ziljstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: uprobe splat in PREEMP_RT
-Message-ID: <20250403124345.GC16254@redhat.com>
-References: <20250402105444.tW8UU7vO@linutronix.de>
- <20250402112007.GE22091@redhat.com>
- <20250402113142.GG22091@redhat.com>
- <20250402120649._gQHEtYM@linutronix.de>
- <20250402121228.GH22091@redhat.com>
- <20250402121624.lRIPMa_h@linutronix.de>
- <20250402135641.GJ22091@redhat.com>
- <20250402142349.GL22091@redhat.com>
- <20250403090834.rp7Y4KRt@linutronix.de>
- <20250403121107.GA16254@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PrrAl1bKlo3uRFilk8z5F13rCzz7u29YhQiAM8Wfa1TqHogtuRQy4EetWkk5APGCTrZEI4lobLnsdC+WATULE+JtDzkf7pnfzkSIdboTgrL+aEo9tvOLFdP7cFjmGNYaxfO/rNxrtj5pGDNDXeuk1ux6VXWbTt7dLs2ZJCSHNBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q4R2uHOn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AE2AC4CEE3;
+	Thu,  3 Apr 2025 13:54:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743688468;
+	bh=lyNXz735Z2cTKcDUQuDQ893qwBJi5amYRPfXvdsMpwM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=q4R2uHOnSA+w0i5dCg4AB8+JL2u7dKOIXLE5xx2LjUYq/Qw49cqeVRKqbviu8I9ro
+	 uzzMb1hZGQ16Rrew5uc2TA9u9w0vo4MzIVcsYmEPwtMLNWuFVoeleFvrwxjAG8OVnX
+	 LbZ90j0P0jaxFWfNHKZvROWMafJlqr9KpuMZUsne2fFKyxA0T0Q5Kp3cpWmB3+gyck
+	 NiUolxQ53qG5fzVwqIfsrpdX9IX8WZ9+RN5NvwPNAyU/EAvOTJD2C0CMMuL+4OBg18
+	 JFI1sY6a4MHEDlkakmwfjJcwL3Rux2ZC+7G3ydjQIQGECEmKW2R0l7B7HB7EK/3M4H
+	 uONVovjMtNU9Q==
+Date: Thu, 3 Apr 2025 15:54:22 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com, mhocko@kernel.org, rostedt@goodmis.org,
+	oleg@redhat.com, brauner@kernel.org, glider@google.com,
+	mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+	akpm@linux-foundation.org
+Subject: Re: [PATCH v2] exit: move and extend sched_process_exit() tracepoint
+Message-ID: <Z-6TDh1MUT49lvjk@gmail.com>
+References: <20250402180925.90914-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,26 +61,88 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250403121107.GA16254@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+In-Reply-To: <20250402180925.90914-1-andrii@kernel.org>
 
-On 04/03, Oleg Nesterov wrote:
->
-> From include/linux/seqlock.h
->
-> 	SEQCOUNT_LOCKNAME(raw_spinlock, raw_spinlock_t,  false,    raw_spin)
-> 	SEQCOUNT_LOCKNAME(spinlock,     spinlock_t,      __SEQ_RT, spin)
-> 	SEQCOUNT_LOCKNAME(rwlock,       rwlock_t,        __SEQ_RT, read)
-> 	SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
->
-> so for these seqcount's seqprop_preemptible() returns false only if
-> the associated lock disables preemption. raw_spinlock always does this
-> spinlock/rwlock depend on PREEMPT_RT.
 
-Sorry, I wasn't clear... seqprop_preemptible() always returns false
-on PREEMPT_RT, I meant the "preemptible" check in seqprop_sequence().
+* Andrii Nakryiko <andrii@kernel.org> wrote:
 
-Oleg.
+> It is useful to be able to access current->mm at task exit to, say,
+> record a bunch of VMA information right before the task exits (e.g., for
+> stack symbolization reasons when dealing with short-lived processes that
+> exit in the middle of profiling session). Currently,
+> trace_sched_process_exit() is triggered after exit_mm() which resets
+> current->mm to NULL making this tracepoint unsuitable for inspecting
+> and recording task's mm_struct-related data when tracing process
+> lifetimes.
+> 
+> There is a particularly suitable place, though, right after
+> taskstats_exit() is called, but before we do exit_mm() and other
+> exit_*() resource teardowns. taskstats performs a similar kind of
+> accounting that some applications do with BPF, and so co-locating them
+> seems like a good fit. So that's where trace_sched_process_exit() is
+> moved with this patch.
+> 
+> Also, existing trace_sched_process_exit() tracepoint is notoriously
+> missing `group_dead` flag that is certainly useful in practice and some
+> of our production applications have to work around this. So plumb
+> `group_dead` through while at it, to have a richer and more complete
+> tracepoint.
+> 
+> Note that we can't use sched_process_template anymore, and so we use
+> TRACE_EVENT()-based tracepoint definition.
 
+ But all the field names and
+> order, as well as assign and output logic remain intact. We just add one
+> extra field at the end in backwards-compatible way.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  include/trace/events/sched.h | 28 +++++++++++++++++++++++++---
+>  kernel/exit.c                |  2 +-
+>  2 files changed, 26 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> index 8994e97d86c1..05a14f2b35c3 100644
+> --- a/include/trace/events/sched.h
+> +++ b/include/trace/events/sched.h
+> @@ -328,9 +328,31 @@ DEFINE_EVENT(sched_process_template, sched_process_free,
+>  /*
+>   * Tracepoint for a task exiting:
+>   */
+> -DEFINE_EVENT(sched_process_template, sched_process_exit,
+> -	     TP_PROTO(struct task_struct *p),
+> -	     TP_ARGS(p));
+> +TRACE_EVENT(sched_process_exit,
+> +
+> +	TP_PROTO(struct task_struct *p, bool group_dead),
+> +
+> +	TP_ARGS(p, group_dead),
+> +
+> +	TP_STRUCT__entry(
+> +		__array(	char,	comm,	TASK_COMM_LEN	)
+> +		__field(	pid_t,	pid			)
+> +		__field(	int,	prio			)
+> +		__field(	bool,	group_dead		)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		memcpy(__entry->comm, p->comm, TASK_COMM_LEN);
+> +		__entry->pid		= p->pid;
+> +		__entry->prio		= p->prio; /* XXX SCHED_DEADLINE */
+> +		__entry->group_dead	= group_dead;
+> +	),
+> +
+> +	TP_printk("comm=%s pid=%d prio=%d group_dead=%s",
+> +		  __entry->comm, __entry->pid, __entry->prio,
+> +		  __entry->group_dead ? "true" : "false"
+> +	)
+
+This feels really fragile, could you please at least add a comment that 
+points out that this is basically an extension of 
+sched_process_template, and that it should remain a subset of it, or 
+something to that end?
+
+Thanks,
+
+	Ingo
 
