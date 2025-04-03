@@ -1,126 +1,121 @@
-Return-Path: <bpf+bounces-55266-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55267-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9D7CA7B063
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 23:16:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D89BCA7B1AF
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 23:53:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 361811880812
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 21:12:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D10133B2F10
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 21:53:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A47F1FF1A1;
-	Thu,  3 Apr 2025 20:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E8818CBFB;
+	Thu,  3 Apr 2025 21:53:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OS2Df7Ja"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UiQuLG3C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6097A1FECBA;
-	Thu,  3 Apr 2025 20:35:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75CCE161320
+	for <bpf@vger.kernel.org>; Thu,  3 Apr 2025 21:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743712525; cv=none; b=NBoXhQkMW1zWsSs2qVT7wTW1pdAHsO1ocIUSli9D6VcHLf0PWXldggkcR1/U7HgsYqGRuf0jvi/o9hOBIaBHcWMSgyBbZqcckcvmzJv/4n82w7x1uolTNnKH/7/6xJyCmlJcWL5ZHfV5rHCpa1PA+XT2/T7RLw8Z9PrP+ewibQ8=
+	t=1743717209; cv=none; b=WWJRMLIpLdH/W7SDjdkf1CfB6EaALIJ5dVX0yNYTG9eYC8I6ILJceaX+cfjyi1biiSfrIN9GaNXCNW/pRaNLnRNh9j4c0VhK5Pyu4P7yrryrCJMfXyPsy3COydPYm6+9q1ltcnnu2M+sf4MIH3AHK3SyV4alO96tfxAKR+6zJmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743712525; c=relaxed/simple;
-	bh=/Wr+De8aYTAPyPrxtzWeHutGqhqMA3Y8gKZr6gv9Nyk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PzLmIUzPraS4LkqtiY1DeirhXUIz+q2BDh7tnymMM0bsRWPWYTI6bZNLzG8/kRAbgjlH7DEBQisPjbtr/6h1ksb7jfIN/VcO07ivjrSd9m3Fj/nSFUjj4lxKpEQHYflALAXySXvTURDl0+66fRb3W5B8abOiKuHbWiQvQBz6B+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OS2Df7Ja; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-43cebe06e9eso8640165e9.3;
-        Thu, 03 Apr 2025 13:35:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743712521; x=1744317321; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Wr+De8aYTAPyPrxtzWeHutGqhqMA3Y8gKZr6gv9Nyk=;
-        b=OS2Df7JajUg7XB3wpMMyYZWCYzFxK1TFTeew1CsOlefwdjQFc0vjiNXf3rUBjoVPQU
-         jCi8J+nne1iADvo0TYwgKREbWRTI0a8RqyJu3D5lYV2UyEIM06VemIPsrkGVtxcRZ+JL
-         b9YQ1ItC5oc9nkwjcq8f34Hq19ejKGWfsW4PUOjR78ks7F96454yQ9XxCNciRxSbY24R
-         L8HfYZJ6w4acy5k7o1IZrqJNlyIgu5JQf2+eNmIeK/VNlu+xRoWKohQkaqgt3wa+FFwH
-         d7SVKrsyhP2bC2KZDpMiCWrnb5Px7MgmFGfam/Y5lnHSAoTz+PNxkop5s81LBYrEWeIA
-         i+8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743712521; x=1744317321;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/Wr+De8aYTAPyPrxtzWeHutGqhqMA3Y8gKZr6gv9Nyk=;
-        b=IV/QVBVH5qdPbHMS2rDxv07XGU4cXyjmw8P5LyEftcEaerfCzxMj/+hKoCzbJW4Jl0
-         JfC0pglHrtw5oc/FMs+HNW+5Ft4X3VCFTmILA2ZZ3CuzWUzVO0ed1IROeo66Wpd1oOO0
-         IUEwSGTw3U6jVIhDphkccvdC6jCeRlavIgDe6FE7Zxc0MtZsZJQwkMXfRXIjUHlU591N
-         hPBXFjtD2qZBBwgzEaqB0owVTrXb30DUVPFVwzQGiwWYxfh46u46wjIWpry/he7gU+ck
-         t2jfdsgNL3K8OhpkPsJP+LmChcVSFc+QINxrDGPeVUPtEhc/rJcUZFvtBvTIaY+km4Ms
-         wlfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUuA+xTKaufsRtRInInPQ3zdlbuCO27xxmXQmawGqmQquwD17Fh292GvEiC/tDn2+Jkn3I=@vger.kernel.org, AJvYcCXxtVR7WFsKnEL+iJq98WF2iM18v02DS8k7QXCSB5KRJ7ENdLgiykxjt7olMNBybZ2R7x8t+FOd@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyd0Tisb3U4oKxAVzwOVkbFcn5jPvFagpHSXoTSutEZ/5ddsllf
-	deDYpEXHDE1JlhP0WSfNIdwRxPXruYi1KH6N9ITiRvcvliRNHOIC4jZJt5sXPq9+tCOmqWPSbAY
-	cqsSs5Q3Nsz21DE+XiUal2WQMIsc=
-X-Gm-Gg: ASbGncvxlFdnpKoWEbRKfWnl/zchN1ccvVPUBDjtblRzxtkmbbdhHEOenccPnxQnF3V
-	WBuuLAApsvp4mXZEw7tyr9Dagp23qAp3VA2M9CJ8q/oUxjQ+Nh9K6zM+YHpFPHsUdQk1ePAtDxv
-	XZgBdbKDdY2bxmCFQPDDhp5MjVp8ytWtzwvCcoe5nQmQ==
-X-Google-Smtp-Source: AGHT+IEIo0arv2FrOFFQjtalHYTnun5hmCjMio+8gW+CtIMdtp5L+XkccqOdcnnjtpmS3LegJ67paXSeq1yD3j5e0/M=
-X-Received: by 2002:a05:600c:1d86:b0:43d:934:ea97 with SMTP id
- 5b1f17b1804b1-43ecfa35fd6mr3783355e9.27.1743712521511; Thu, 03 Apr 2025
- 13:35:21 -0700 (PDT)
+	s=arc-20240116; t=1743717209; c=relaxed/simple;
+	bh=xDbe7xG6uC7/xLzkVbi/KMH3m7W/R15mhmk7Hr0LUqg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CT2KhlFYHPh9IgrZ1K2dkL2PvN0BKjO46yDjTST+twTt2k20VagrrReTwDQKRrSl4ziCMcL65kKBOyKpq4k+16vZb1/uZt2UjHizueNCKbQ47mqmVONnd7b/2psoqjs1zNHmYnYrw1DMbvaxjgDXBh6AllXN0177CFD65Jqg6oY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UiQuLG3C; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 3 Apr 2025 14:53:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1743717203;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O4guBMfIbd3F2XZ6kM9yTMeZgA4X0tKNbbP6azMXJGU=;
+	b=UiQuLG3CvFakiz8eI670didk7PB/xq02yBvMyCdtIHMsqzDdhKqqSgXcWwWzNjWoNOhovN
+	43MeRlA9a0dkG6GXz7rRWPBLo/g6bSXSd+8IjUNBXW5cR0dGXRXrsGHTZBxn5XrI5D6icu
+	7XSIN5Ms+HdtmzzYSSlwxIzE63mmPVE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Sebastian Sewior <bigeasy@linutronix.de>, 
+	Steven Rostedt <rostedt@goodmis.org>, Michal Hocko <mhocko@suse.com>, linux-mm <linux-mm@kvack.org>, 
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] locking/local_lock, mm: Replace localtry_ helpers
+ with local_trylock_t type
+Message-ID: <dfcba7bacqwpwpdttj7y44ltyvdcclx7pibr4l3pwrfbmk6itl@pheighdusebk>
+References: <20250401205245.70838-1-alexei.starovoitov@gmail.com>
+ <umfukiohyxcxxw5g6ca5g7stq7oonnr3sbvjyjshnbqalzffeq@2nrwqsmwcrug>
+ <CAADnVQLHakKsVEbKiENF8eV0fEAtbVbL0b_QbJO2b0dH9r7PSw@mail.gmail.com>
+ <78c2d3be-aa8e-4bb7-8883-7f144a06f866@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250403083956.13946-1-justin.iurman@uliege.be>
- <Z-62MSCyMsqtMW1N@mini-arch> <cb0df409-ebbf-4970-b10c-4ea9f863ff00@uliege.be>
-In-Reply-To: <cb0df409-ebbf-4970-b10c-4ea9f863ff00@uliege.be>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 3 Apr 2025 13:35:10 -0700
-X-Gm-Features: ATxdqUFfG_KTUPwWMYOrHRjOO3sypxV6hn2k5bGj-_5jN1n54OV_NlNnc2Y-uVI
-Message-ID: <CAADnVQLiM5MA3Xyrkqmubku6751ZPrDk6v-HmC1jnOaL47=t+g@mail.gmail.com>
-Subject: Re: [PATCH net] net: lwtunnel: disable preemption when required
-To: Justin Iurman <justin.iurman@uliege.be>, Sebastian Sewior <bigeasy@linutronix.de>
-Cc: Stanislav Fomichev <stfomichev@gmail.com>, Network Development <netdev@vger.kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Kuniyuki Iwashima <kuniyu@amazon.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <78c2d3be-aa8e-4bb7-8883-7f144a06f866@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 3, 2025 at 12:08=E2=80=AFPM Justin Iurman <justin.iurman@uliege=
-.be> wrote:
->
-> On 4/3/25 18:24, Stanislav Fomichev wrote:
-> > On 04/03, Justin Iurman wrote:
-> >> In lwtunnel_{input|output|xmit}(), dev_xmit_recursion() may be called =
-in
-> >> preemptible scope for PREEMPT kernels. This patch disables preemption
-> >> before calling dev_xmit_recursion(). Preemption is re-enabled only at
-> >> the end, since we must ensure the same CPU is used for both
-> >> dev_xmit_recursion_inc() and dev_xmit_recursion_dec() (and any other
-> >> recursion levels in some cases) in order to maintain valid per-cpu
-> >> counters.
-> >
-> > Dummy question: CONFIG_PREEMPT_RT uses current->net_xmit.recursion to
-> > track the recursion. Any reason not to do it in the generic PREEMPT cas=
-e?
->
-> I'd say PREEMPT_RT is a different beast. IMO, softirqs can be
-> preempted/migrated in RT kernels, which is not true for non-RT kernels.
-> Maybe RT kernels could use __this_cpu_* instead of "current" though, but
-> it would be less trivial. For example, see commit ecefbc09e8ee ("net:
-> softnet_data: Make xmit per task.") on why it makes sense to use
-> "current" in RT kernels. I guess the opposite as you suggest (i.e.,
-> non-RT kernels using "current") would be technically possible, but there
-> must be a reason it is defined the way it is... so probably incorrect or
-> inefficient?
+On Thu, Apr 03, 2025 at 11:26:35AM +0200, Vlastimil Babka wrote:
+> On 4/2/25 23:40, Alexei Starovoitov wrote:
+> > On Wed, Apr 2, 2025 at 1:56 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> >>
+> >> On Tue, Apr 01, 2025 at 01:52:45PM -0700, Alexei Starovoitov wrote:
+> >> > From: Alexei Starovoitov <ast@kernel.org>
+> >> >
+> >> > Partially revert commit 0aaddfb06882 ("locking/local_lock: Introduce localtry_lock_t").
+> >> > Remove localtry_*() helpers, since localtry_lock() name might
+> >> > be misinterpreted as "try lock".
+> >> >
+> >> > Introduce local_trylock[_irqsave]() helpers that only work
+> >> > with newly introduced local_trylock_t type.
+> >> > Note that attempt to use local_trylock[_irqsave]() with local_lock_t
+> >> > will cause compilation failure.
+> >> >
+> >> > Usage and behavior in !PREEMPT_RT:
+> >> >
+> >> > local_lock_t lock;                     // sizeof(lock) == 0
+> >> > local_lock(&lock);                     // preempt disable
+> >> > local_lock_irqsave(&lock, ...);        // irq save
+> >> > if (local_trylock_irqsave(&lock, ...)) // compilation error
+> >> >
+> >> > local_trylock_t lock;                  // sizeof(lock) == 4
+> >>
+> >> Is there a reason for this 'acquired' to be int? Can it be uint8_t? No
+> >> need to change anything here but I plan to change it later to compact as
+> >> much as possible within one (or two) cachline for memcg stocks.
+> > 
+> > I don't see any issue. I can make it u8 right away.
+> 
+> Are you planning to put the lock near other <64bit sized values in memcg
+> stock? Otherwise it will be padded anyway?
+> 
 
-Stating the obvious...
-Sebastian did a lot of work removing preempt_disable from the networking
-stack.
-We're certainly not adding them back.
-This patch is no go.
+Something like following:
+
+struct memcg_stock_pcp {
+	local_trylock_t stock_lock;
+	uint8_t size;
+	uint8_t nr_pages[NR_CACHED];
+	struct mem_cgroup *cached[NR_CACHED];
+...
+}
+
+and then experiment with different values of NR_CACHED which puts all
+these fields in 1 or 2 cachelines.
 
