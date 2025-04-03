@@ -1,148 +1,122 @@
-Return-Path: <bpf+bounces-55224-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A150A7A45F
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 15:54:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E6B0A7A4C6
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 16:13:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E030B1898BD3
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 13:54:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35F5F17668C
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 14:09:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3F7024E4D4;
-	Thu,  3 Apr 2025 13:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644DD24EF94;
+	Thu,  3 Apr 2025 14:08:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q4R2uHOn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NZUJjLtd"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE3F29408;
-	Thu,  3 Apr 2025 13:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BCD024EF86;
+	Thu,  3 Apr 2025 14:08:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743688469; cv=none; b=meO4chdVylIh+4t+2xW3f2c8WNkooUj4p1ejPcPnMNJtb5DYRC+AXFbhRkLBKsjMGp+7zu6ZsI/pJMKOGesMW3t4TRqo8Mrui6fBVKcZvDN5qxbjEIqosdF4zSHdFV1eOzc4dDi1y8uky8dc7B6iPLZtt9JcV3CVPDRDgMzZl70=
+	t=1743689332; cv=none; b=RRDkZGyt+cq+xLqPAZ2EN3k5SMKmd97cNiM8Reri3hxuyK19TqaqTAIPhMEhHH/FtoIkPhP+fAnN/vTmHFvxwDxTJGnI0hJsUhBGgq214Q8zsU9qRDMgTHHb8Lhhv03prmV09VMheLNX1ua6+xYWlXMDHAOPCwcqBK4FWl4CWaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743688469; c=relaxed/simple;
-	bh=lyNXz735Z2cTKcDUQuDQ893qwBJi5amYRPfXvdsMpwM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PrrAl1bKlo3uRFilk8z5F13rCzz7u29YhQiAM8Wfa1TqHogtuRQy4EetWkk5APGCTrZEI4lobLnsdC+WATULE+JtDzkf7pnfzkSIdboTgrL+aEo9tvOLFdP7cFjmGNYaxfO/rNxrtj5pGDNDXeuk1ux6VXWbTt7dLs2ZJCSHNBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q4R2uHOn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AE2AC4CEE3;
-	Thu,  3 Apr 2025 13:54:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743688468;
-	bh=lyNXz735Z2cTKcDUQuDQ893qwBJi5amYRPfXvdsMpwM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=q4R2uHOnSA+w0i5dCg4AB8+JL2u7dKOIXLE5xx2LjUYq/Qw49cqeVRKqbviu8I9ro
-	 uzzMb1hZGQ16Rrew5uc2TA9u9w0vo4MzIVcsYmEPwtMLNWuFVoeleFvrwxjAG8OVnX
-	 LbZ90j0P0jaxFWfNHKZvROWMafJlqr9KpuMZUsne2fFKyxA0T0Q5Kp3cpWmB3+gyck
-	 NiUolxQ53qG5fzVwqIfsrpdX9IX8WZ9+RN5NvwPNAyU/EAvOTJD2C0CMMuL+4OBg18
-	 JFI1sY6a4MHEDlkakmwfjJcwL3Rux2ZC+7G3ydjQIQGECEmKW2R0l7B7HB7EK/3M4H
-	 uONVovjMtNU9Q==
-Date: Thu, 3 Apr 2025 15:54:22 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, peterz@infradead.org,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com, mhocko@kernel.org, rostedt@goodmis.org,
-	oleg@redhat.com, brauner@kernel.org, glider@google.com,
-	mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
-	akpm@linux-foundation.org
-Subject: Re: [PATCH v2] exit: move and extend sched_process_exit() tracepoint
-Message-ID: <Z-6TDh1MUT49lvjk@gmail.com>
-References: <20250402180925.90914-1-andrii@kernel.org>
+	s=arc-20240116; t=1743689332; c=relaxed/simple;
+	bh=8uYo024WLm4EllTFZpqKl5MM+ZCQE0UGN0kobHgcJVU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=p+BlHCWfaFg2Q6+5bAj6vTnbfdtFfRR5V7pPS4b2e4CDx07Rxg/Z3bxRt5lmJdfSxd4O6oMjDNceb6tuEgSCYi1KBwdwoPWVta5rBuX+hjoQ/9EsmW3Va84ToEp2cgWt3NCL2ex7JfJn57EXOebPaEgp1xldJIqDlr0knw9w2q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NZUJjLtd; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6e8f6970326so8732116d6.0;
+        Thu, 03 Apr 2025 07:08:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743689330; x=1744294130; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Km5+XEZJNgqkv+i1cBiye0ejQCdeCAoxyfb3tPfnuA4=;
+        b=NZUJjLtdbYFxAvPCDPIXC/elMrQMoohz2VGuoCwHt7IFs/Kc5wJvHU/cdaxybBBrWs
+         burGPoj/rWLZFEk4DPzob8JK/e8Jx0KhWcmXJdPT4Cl+Fibc7BUAMCDx3ljzKCz+zlbi
+         Ev065D8tSMgdpR8LrgsNcPy0ck/E5S6po81fcAyJoCYg+B/VoJARe4Vy2deyQcA51CRF
+         7IKqFZL9nU3usMRDr7nvrXL+SIpYCMvus71m1lAvbZDRKTEqY3dziyY+SjuKU+ES0blM
+         Z14V/s7YPLxN88AHzO/H6zkCqY/mrhiQrjGrFANB/VKjwO6A0mVh+zYnM2KnYPUghi2a
+         bupg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743689330; x=1744294130;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Km5+XEZJNgqkv+i1cBiye0ejQCdeCAoxyfb3tPfnuA4=;
+        b=c3gRoDY3T/fwk7aMZ2ftL2UJAqHpDdRRpCWTshGGQahN6/S350BJxlXWJd4GtlMRrK
+         yEDBq0Y1blEEMKxMm1XdPYwlUE3g7fZ6OpOyJm+5G58oB2fV6zjKU24B+vUjegD4RVWE
+         0k0jNPdFmHFM35HJn10thNdZ/lXwo/TZxi+5flF3v+9Mm9L7lwBrZLs0kjboAs+cyObK
+         sNvWgyVTk/Ob3OY9mS+jqZvZVZlqi6fbePo73E8FWe1SlVIwSXDxEdATQNdcbFEy5SHV
+         x7gy/oKp3FGariB4g+pe8cxVodPYwoKgfaBKKsY+JG+/FC555IF1aHRGNAy/OlyS3ruH
+         RCqw==
+X-Gm-Message-State: AOJu0Ywnt1/peIOZz0TzUDDzYEfWfKlJnR1d/eHNW95/NQckJg0mdPDu
+	YBbU9pbDuoydtRLlUnOidRTx+lnoVIEQdsFaBc8fweYey4co7RqCLQJgIQ==
+X-Gm-Gg: ASbGnctFbJywI1qXI86ffLYr48p0JWzSm9WJoenacA36sBzHvB0IRWUJL682mM70DvY
+	ZeJ4/kTyaTHeGM5N8Pb31SIyr2ZhqUSX66l3WrOzVwk0DOE5yYNhPWxIo+lW0EbT5l1znsYau6f
+	lKut98QLa0ER3S5XdJU9PRzTWNTRKV7DMtZKanoxRzHSu2DmtYKfdzLvTRoWTgu3sgCINt3n++A
+	5Vc7OpXxoLm1NFVhyRUzkhrjXdxInSc806BZv9yZjvB82XFXHd6PovnbUrootn+Frsls6qJ090n
+	P+jOL9x6AJePRqpypK//8V0nPVvFlRBd7mQ6CdbzMYcQqdr1pQoBH5fL1b+Y1PIwRF9COQkGiQO
+	yIG3n12PmkorIHIEheADuZXfnBGBu/BClflkvHfVaucSf
+X-Google-Smtp-Source: AGHT+IG8TsodMjYBZQkmYunDHbwX6AV5pGugniJewQMHCS8zd3LQnW9AvmIiLvO4CZPnFbNqaz4mFA==
+X-Received: by 2002:a05:6214:2a49:b0:6e8:f4e2:26d9 with SMTP id 6a1803df08f44-6ef02d0d895mr97359936d6.35.1743689330020;
+        Thu, 03 Apr 2025 07:08:50 -0700 (PDT)
+Received: from willemb.c.googlers.com.com (86.235.150.34.bc.googleusercontent.com. [34.150.235.86])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6ef0f16535bsm7895946d6.123.2025.04.03.07.08.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Apr 2025 07:08:49 -0700 (PDT)
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	Willem de Bruijn <willemb@google.com>
+Subject: [PATCH bpf 0/2] support SKF_NET_OFF and SKF_LL_OFF on skb frags
+Date: Thu,  3 Apr 2025 10:07:44 -0400
+Message-ID: <20250403140846.1268564-1-willemdebruijn.kernel@gmail.com>
+X-Mailer: git-send-email 2.49.0.472.ge94155a9ec-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250402180925.90914-1-andrii@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+From: Willem de Bruijn <willemb@google.com>
 
-* Andrii Nakryiko <andrii@kernel.org> wrote:
+Address a longstanding issue that may lead to missed packets
+depending on system configuration.
 
-> It is useful to be able to access current->mm at task exit to, say,
-> record a bunch of VMA information right before the task exits (e.g., for
-> stack symbolization reasons when dealing with short-lived processes that
-> exit in the middle of profiling session). Currently,
-> trace_sched_process_exit() is triggered after exit_mm() which resets
-> current->mm to NULL making this tracepoint unsuitable for inspecting
-> and recording task's mm_struct-related data when tracing process
-> lifetimes.
-> 
-> There is a particularly suitable place, though, right after
-> taskstats_exit() is called, but before we do exit_mm() and other
-> exit_*() resource teardowns. taskstats performs a similar kind of
-> accounting that some applications do with BPF, and so co-locating them
-> seems like a good fit. So that's where trace_sched_process_exit() is
-> moved with this patch.
-> 
-> Also, existing trace_sched_process_exit() tracepoint is notoriously
-> missing `group_dead` flag that is certainly useful in practice and some
-> of our production applications have to work around this. So plumb
-> `group_dead` through while at it, to have a richer and more complete
-> tracepoint.
-> 
-> Note that we can't use sched_process_template anymore, and so we use
-> TRACE_EVENT()-based tracepoint definition.
+Ensure that reading from packet contents works regardless of skb
+geometry, also when using the special SKF_.. negative offsets to
+offset from L2 or L3 header.
 
- But all the field names and
-> order, as well as assign and output logic remain intact. We just add one
-> extra field at the end in backwards-compatible way.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  include/trace/events/sched.h | 28 +++++++++++++++++++++++++---
->  kernel/exit.c                |  2 +-
->  2 files changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-> index 8994e97d86c1..05a14f2b35c3 100644
-> --- a/include/trace/events/sched.h
-> +++ b/include/trace/events/sched.h
-> @@ -328,9 +328,31 @@ DEFINE_EVENT(sched_process_template, sched_process_free,
->  /*
->   * Tracepoint for a task exiting:
->   */
-> -DEFINE_EVENT(sched_process_template, sched_process_exit,
-> -	     TP_PROTO(struct task_struct *p),
-> -	     TP_ARGS(p));
-> +TRACE_EVENT(sched_process_exit,
-> +
-> +	TP_PROTO(struct task_struct *p, bool group_dead),
-> +
-> +	TP_ARGS(p, group_dead),
-> +
-> +	TP_STRUCT__entry(
-> +		__array(	char,	comm,	TASK_COMM_LEN	)
-> +		__field(	pid_t,	pid			)
-> +		__field(	int,	prio			)
-> +		__field(	bool,	group_dead		)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		memcpy(__entry->comm, p->comm, TASK_COMM_LEN);
-> +		__entry->pid		= p->pid;
-> +		__entry->prio		= p->prio; /* XXX SCHED_DEADLINE */
-> +		__entry->group_dead	= group_dead;
-> +	),
-> +
-> +	TP_printk("comm=%s pid=%d prio=%d group_dead=%s",
-> +		  __entry->comm, __entry->pid, __entry->prio,
-> +		  __entry->group_dead ? "true" : "false"
-> +	)
+Patch 2 is the selftest for the fix.
 
-This feels really fragile, could you please at least add a comment that 
-points out that this is basically an extension of 
-sched_process_template, and that it should remain a subset of it, or 
-something to that end?
+Willem de Bruijn (2):
+  bpf: support SKF_NET_OFF and SKF_LL_OFF on skb frags
+  selftests/net: test sk_filter support for SKF_NET_OFF on frags
 
-Thanks,
+ include/linux/filter.h                     |   3 -
+ kernel/bpf/core.c                          |  21 --
+ net/core/filter.c                          |  75 ++++---
+ tools/testing/selftests/net/.gitignore     |   1 +
+ tools/testing/selftests/net/Makefile       |   2 +
+ tools/testing/selftests/net/skf_net_off.c  | 244 +++++++++++++++++++++
+ tools/testing/selftests/net/skf_net_off.sh |  28 +++
+ 7 files changed, 317 insertions(+), 57 deletions(-)
+ create mode 100644 tools/testing/selftests/net/skf_net_off.c
+ create mode 100755 tools/testing/selftests/net/skf_net_off.sh
 
-	Ingo
+-- 
+2.49.0.472.ge94155a9ec-goog
+
 
