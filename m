@@ -1,95 +1,48 @@
-Return-Path: <bpf+bounces-55215-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55216-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86C4BA7A002
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 11:26:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A3C8A7A02F
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 11:38:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38773170560
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 09:26:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEC461898391
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 09:37:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5475243399;
-	Thu,  3 Apr 2025 09:26:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D269024886B;
+	Thu,  3 Apr 2025 09:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Go74T+tU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Yo5K1YJs";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Go74T+tU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Yo5K1YJs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ig+s+hYa"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A811E5B8B
-	for <bpf@vger.kernel.org>; Thu,  3 Apr 2025 09:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495FD248868;
+	Thu,  3 Apr 2025 09:37:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743672407; cv=none; b=s+HFYOLQYGCABbXIEQWwKZeu6OkYA40uHix3ESTrvz5dgd/Mr7qTVOQJb0ZuGjT7iT1caXHNN38z/NkIBEliC9nsxoMfqA4tYwpr3Xa2AgP/TrF/05//h7ETidz0mdR79DJl/5ONNK6sO6rwtECdOPs9iVIHXbDf8dzWVDjj8zU=
+	t=1743673049; cv=none; b=nKtltPSprvliOdX2RYkMFG/jA+5A7GV1FJq3b4AQGJ0t8uzz+8GsVdZt1FvcHbCqc2RG7bo7mN0mmsQyjrnu+FHNL/l4nWRo8SCD2sTZjBtES7f6z9MXg5z+RHooiBCtkSz5QEJjdkqLtQzrNbELVSyM/vlttY3Xti7U3x5M+bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743672407; c=relaxed/simple;
-	bh=3kt8uZWFqgd+7TiQBoV1mBy2E5+2zlC3Ohx8tCaBTJg=;
+	s=arc-20240116; t=1743673049; c=relaxed/simple;
+	bh=Coan5fmk6E+RdsNlnuGPbdLAJylFKtntjKLClwzjJaM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LOWTrl4hVR+aFh+cLkB/LyPqWFyCzpCwcXTGeFZGXdvVTPXvrhMlinMT3yR8bnmhfmQGHBMoSEentGUsevcfZWTU4U92VOUloaR7oSwPoMfqsGrwjazlR9TE9tR+3SRWW9CYcdnUVmlowpt9DeJdket9hWEF1/hxh6RHjqAl1mQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Go74T+tU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Yo5K1YJs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Go74T+tU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Yo5K1YJs; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3946C2119C;
-	Thu,  3 Apr 2025 09:26:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1743672396; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g5JBiagd/IaphZnNyD5cE9CP+4ou/BNEE11+z/xpLv8=;
-	b=Go74T+tUMTM6OYdgLA37QBOkBLwM+KvGmRKuScprELaI3wS+y+CEE0CAGHNeZpSu42E4HC
-	PS4zr7Qb+kuj+u0fqs7wZGYgJs+8ZJTPubY1mLgqZrdVKHNGouW1eOPXNA83eeDL7OXWaT
-	wz/auDH67aPVt+xsgV9PkVm2z0QNIrQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1743672396;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g5JBiagd/IaphZnNyD5cE9CP+4ou/BNEE11+z/xpLv8=;
-	b=Yo5K1YJsEQjD37r4hoFAPojI/47BnHdlm4EGwH/fr7Ve751Vut4k5R/Mwyg8w3kGQRfuid
-	PkQezbA8/O+1sSCQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1743672396; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g5JBiagd/IaphZnNyD5cE9CP+4ou/BNEE11+z/xpLv8=;
-	b=Go74T+tUMTM6OYdgLA37QBOkBLwM+KvGmRKuScprELaI3wS+y+CEE0CAGHNeZpSu42E4HC
-	PS4zr7Qb+kuj+u0fqs7wZGYgJs+8ZJTPubY1mLgqZrdVKHNGouW1eOPXNA83eeDL7OXWaT
-	wz/auDH67aPVt+xsgV9PkVm2z0QNIrQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1743672396;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=g5JBiagd/IaphZnNyD5cE9CP+4ou/BNEE11+z/xpLv8=;
-	b=Yo5K1YJsEQjD37r4hoFAPojI/47BnHdlm4EGwH/fr7Ve751Vut4k5R/Mwyg8w3kGQRfuid
-	PkQezbA8/O+1sSCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 146AD13A2C;
-	Thu,  3 Apr 2025 09:26:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id JThnBExU7mdkbgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 03 Apr 2025 09:26:36 +0000
-Message-ID: <78c2d3be-aa8e-4bb7-8883-7f144a06f866@suse.cz>
-Date: Thu, 3 Apr 2025 11:26:35 +0200
+	 In-Reply-To:Content-Type; b=dzi1PXCwaV3gXAw88T6tFy7BknM1j0pihjDnZfbbiSSYMAwergX2vqUvHwpl3GhwczX7C8f+432rBAz/2p2d+DkAFWE37BcZgx2DRwIzdgzDxVNQrramaH5Y5+gzsbpUdN59vADeHtOX2NLLUOPO7oDd6UwZuaZreI+EE2TNIJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ig+s+hYa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5BCFC4CEE3;
+	Thu,  3 Apr 2025 09:37:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743673048;
+	bh=Coan5fmk6E+RdsNlnuGPbdLAJylFKtntjKLClwzjJaM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Ig+s+hYaQHzELTAg91ITV3teiTpfEPSBqrj1zwv+43dLClfpkRJkweKQjDhZi5/DD
+	 60T+pB1Vsw8mwP1oep0aPlOJB3J1sbGZD7lp7GYk6YOedMHnmUAQRf0zVwyIoRUDsq
+	 JQjwivrt7PURqX7GDdNgCHbrHqJQlKZsTlKbRmHVATsX7EOD8Wo1dAZVyp9S4z9JzS
+	 q0B+Xx8rUulz4PdpXr+1A5LEZS/AERYSxxHDdJT9A0NtWH17lr3ClT3RPpzmty4d4o
+	 MziNvs8DbfXpSbqeH4MLoUf+23Pamfd4fXKme6Rp4ccnEZv+rBVl5CT1SPb16UNyjm
+	 C0mrk8uMmXKlg==
+Message-ID: <78b2d2ad-4e0e-41b7-95b4-b7fe945dfe13@kernel.org>
+Date: Thu, 3 Apr 2025 11:37:19 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,137 +50,86 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] locking/local_lock, mm: Replace localtry_ helpers with
- local_trylock_t type
+Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: add perf test for
+ adjust_{head,meta}
+To: Jakub Kicinski <kuba@kernel.org>, Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: bpf@vger.kernel.org, mrpre@163.com, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Willem de Bruijn <willemb@google.com>,
+ Jason Xing <kerneljasonxing@gmail.com>,
+ Anton Protopopov <aspsk@isovalent.com>,
+ Abhishek Chauhan <quic_abchauha@quicinc.com>,
+ Jordan Rome <linux@jordanrome.com>,
+ Martin Kelly <martin.kelly@crowdstrike.com>,
+ David Lechner <dlechner@baylibre.com>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ kernel-team <kernel-team@cloudflare.com>
+References: <20250331032354.75808-1-jiayuan.chen@linux.dev>
+ <20250331032354.75808-3-jiayuan.chen@linux.dev>
+ <20250402172447.75ed447f@kernel.org>
 Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, bpf
- <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Sebastian Sewior <bigeasy@linutronix.de>,
- Steven Rostedt <rostedt@goodmis.org>, Michal Hocko <mhocko@suse.com>,
- linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20250401205245.70838-1-alexei.starovoitov@gmail.com>
- <umfukiohyxcxxw5g6ca5g7stq7oonnr3sbvjyjshnbqalzffeq@2nrwqsmwcrug>
- <CAADnVQLHakKsVEbKiENF8eV0fEAtbVbL0b_QbJO2b0dH9r7PSw@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAADnVQLHakKsVEbKiENF8eV0fEAtbVbL0b_QbJO2b0dH9r7PSw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,linux.dev];
-	ARC_NA(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:mid,linux.dev:email]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250402172447.75ed447f@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 4/2/25 23:40, Alexei Starovoitov wrote:
-> On Wed, Apr 2, 2025 at 1:56 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+
+
+On 03/04/2025 02.24, Jakub Kicinski wrote:
+> On Mon, 31 Mar 2025 11:23:45 +0800 Jiayuan Chen wrote:
+>> which is negligible for the net stack.
 >>
->> On Tue, Apr 01, 2025 at 01:52:45PM -0700, Alexei Starovoitov wrote:
->> > From: Alexei Starovoitov <ast@kernel.org>
->> >
->> > Partially revert commit 0aaddfb06882 ("locking/local_lock: Introduce localtry_lock_t").
->> > Remove localtry_*() helpers, since localtry_lock() name might
->> > be misinterpreted as "try lock".
->> >
->> > Introduce local_trylock[_irqsave]() helpers that only work
->> > with newly introduced local_trylock_t type.
->> > Note that attempt to use local_trylock[_irqsave]() with local_lock_t
->> > will cause compilation failure.
->> >
->> > Usage and behavior in !PREEMPT_RT:
->> >
->> > local_lock_t lock;                     // sizeof(lock) == 0
->> > local_lock(&lock);                     // preempt disable
->> > local_lock_irqsave(&lock, ...);        // irq save
->> > if (local_trylock_irqsave(&lock, ...)) // compilation error
->> >
->> > local_trylock_t lock;                  // sizeof(lock) == 4
+>> Before memset
+>> ./test_progs -a xdp_adjust_head_perf -v
+>> run adjust head with size 6 cost 56 ns
+>> run adjust head with size 20 cost 56 ns
+>> run adjust head with size 40 cost 56 ns
+>> run adjust head with size 200 cost 56 ns
 >>
->> Is there a reason for this 'acquired' to be int? Can it be uint8_t? No
->> need to change anything here but I plan to change it later to compact as
->> much as possible within one (or two) cachline for memcg stocks.
+>> After memset
+>> ./test_progs -a xdp_adjust_head_perf -v
+>> run adjust head with size 6 cost 58 ns
+>> run adjust head with size 20 cost 58 ns
+>> run adjust head with size 40 cost 58 ns
+>> run adjust head with size 200 cost 66 ns
 > 
-> I don't see any issue. I can make it u8 right away.
+> FWIW I'm not sure if this is "negligible" for XDP like you say,
+> but I defer to Jesper :)
 
-Are you planning to put the lock near other <64bit sized values in memcg
-stock? Otherwise it will be padded anyway?
+It would be too much for the XDP_DROP use-case, e.g. DDoS protection and
+driver hardware eval. But this is changing a BPF-helper, which means it
+is opt-in by the BPF-programmer.  Thus, we can accept larger perf
+overhead here.
 
-I hope it won't hurt the performance though, AFAIK at least sub-word atomics
-are much slower than using a full word. But we use only read/write once for
-acquired so hopefully it's fine?
+I suspect your 2 nanosec overhead primarily comes from the function call
+overhead.  On my AMD production system with SRSO mitigation enabled I
+expect to see around 6 ns overhead (5.699 ns), which is sad.
 
->> > local_lock(&lock);                     // preempt disable, acquired = 1
->> > local_lock_irqsave(&lock, ...);        // irq save, acquired = 1
->> > if (local_trylock(&lock))              // if (!acquired) preempt disable
->> > if (local_trylock_irqsave(&lock, ...)) // if (!acquired) irq save
->>
->> For above two ", acquired = 1" as well.
-> 
-> I felt it would be too verbose and not accurate anyway,
-> since irq save will be done before the check.
-> It's a pseudo code.
-> But sure, I can add.
-> 
->>
->> >
->> > The existing local_lock_*() macros can be used either with
->> > local_lock_t or local_trylock_t.
->> > With local_trylock_t they set acquired = 1 while local_unlock_*() clears it.
->> >
->> > In !PREEMPT_RT local_lock_irqsave(local_lock_t *) disables interrupts
->> > to protect critical section, but it doesn't prevent NMI, so the fully
->> > reentrant code cannot use local_lock_irqsave(local_lock_t *) for
->> > exclusive access.
->> >
->> > The local_lock_irqsave(local_trylock_t *) helper disables interrupts
->> > and sets acquired=1, so local_trylock_irqsave(local_trylock_t *) from
->> > NMI attempting to acquire the same lock will return false.
->> >
->> > In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
->> > Map local_trylock_irqsave() to preemptible spin_trylock().
->> > When in hard IRQ or NMI return false right away, since
->> > spin_trylock() is not safe due to explicit locking in the underneath
->> > rt_spin_trylock() implementation. Removing this explicit locking and
->> > attempting only "trylock" is undesired due to PI implications.
->> >
->> > The local_trylock() without _irqsave can be used to avoid the cost of
->> > disabling/enabling interrupts by only disabling preemption, so
->> > local_trylock() in an interrupt attempting to acquire the same
->> > lock will return false.
->> >
->> > Note there is no need to use local_inc for acquired variable,
->> > since it's a percpu variable with strict nesting scopes.
->> >
->> > Acked-by: Vlastimil Babka <vbabka@suse.cz>
->> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
->>
->> Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
-> 
-> Thanks!
+I've done a lot of benchmarking of memset (see [1]). One take-away is
+that memset with small const values will get compiled into very fast
+code that avoids the function call (basically QWORD MOVs).  E.g. memset
+with const 32 is extremely fast[2], on my system it takes 0.673 ns (and
+0.562 ns comes from for-loop overhead).  Thus, it is possible to do
+something faster, as we are clearing very small values. I.e. using a
+duff's device construct like I did for remainder in [2].
 
+In this case, as this is a BPF-helper, I am uncertain if it is worth the
+complexity to add such optimizations... I guess not.
+This turned into a long way of saying, I'm okay with this change.
+
+[1] 
+https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/time_bench_memset.c
+
+[2] 
+https://github.com/netoptimizer/prototype-kernel/blob/35b1716d0c300e7fa2c8b6d8cfed2ec81df8f3a4/kernel/lib/time_bench_memset.c#L520-L521
+
+--Jesper
 
