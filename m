@@ -1,232 +1,146 @@
-Return-Path: <bpf+bounces-55243-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55244-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B524AA7A7BF
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 18:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C6F2A7A7E2
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 18:24:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEF601891C07
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 16:17:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADDD018880DD
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 16:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0886B2512D0;
-	Thu,  3 Apr 2025 16:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B0B2512D5;
+	Thu,  3 Apr 2025 16:24:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="es+zoAxQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rbbT45SN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C7F33DB;
-	Thu,  3 Apr 2025 16:17:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A9D190679;
+	Thu,  3 Apr 2025 16:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743697042; cv=none; b=L7w7OLeHN8wNLs+3Z2+kL43I6cfCFG+UnFOb/WLo93DxqNF9pjgounPmiD5pByR6MWqKlL5UdK5Cz/unLwHJdSsjEWmXSQVO7CCHv8ZUPx+JpYAXfrEsH9MZ7+Ixmy96vAUEb4E2pL9iKarPKWjte3veIDOx+XY+Xu/c5Sxe6b8=
+	t=1743697457; cv=none; b=DH/GGeA+1QAXVkKcPVIDXmXUr+DZFZSqBGMOc2rKIh6fv3RTde1AFin0qq9W+ROGgZXfpGRIPr5Twn4rURoscKpveXSCynm85ZyRlTZN9SIrs1QIY3RY+4h3SupwB2MwImewRzd5JvRQd/SbQojZJaVg0vDK1ziKKAo/wzaGQ8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743697042; c=relaxed/simple;
-	bh=mciINuOiA6SXlEiQqq7znATGm/qWXcLyL5KKYNRmH7w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BbY8sOdrRtQ0krQk2hAMG+TWqZ+DmPrXL4Ged2oZxbauvCwHmfGO/i9YfGKsG8dXoWqTi3V6l5VET34xZP582CYm8ESp6pHVVQV6YM7S8uHbJ2stdK5aq+gazEBZy88cSiwC9Sitikhz1wxxx5CLz33yrbjCSbnIFK0zwqcG46I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=es+zoAxQ; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7359aca7ef2so1353622b3a.2;
-        Thu, 03 Apr 2025 09:17:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743697040; x=1744301840; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lrlDtqZMiFT4AIYDXfp4xswJ1nrQcwl2WHvmHsEcdj8=;
-        b=es+zoAxQgbEHnjDdf6BClK7WR9mNJhulDsXV7dezKBoj4j9G4rjQIeodRzQ54AVK9E
-         1H0lTt/XlxuCOGLH5DtsMtnNHf4fpWbjppkYbtj2WrAg/ABwS96xUOQueH8QCkRliPSN
-         wywVW0trPRwEkCOhAF9xA7TXqLCpk7tFEIrOiupJWm7BrzzgXL0D/aX7BWRQXw/ZvJ7a
-         XI3p+00UKunOdUP2vrRtnZ1Ig33dyj9THWQi5FSSbKDywAaDMjvx20FbC9Qwjt6fp6Kf
-         yrD6q2Yt+o07bZSHJxbuNpbfqK2mLhlXX+rYnpJDkE5M5kLAPhCwtOk2R1Ma9T+dEqVN
-         TkJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743697040; x=1744301840;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lrlDtqZMiFT4AIYDXfp4xswJ1nrQcwl2WHvmHsEcdj8=;
-        b=KiQFEVWO+/vAcZyjmT/Esci0PUKZN70fT/GZSBCexdDwVshAadtng0pn0S1Hq4+zCV
-         pHEpKNc2VjSOOGDR9tvIvzBztibrLlJTXG+uuhmBlzR6pNfask9Ao9ekFLrdJwWGb/1o
-         4A2TH6mAYWyQj7Drdr3re/Gk0XxeyMc9fqkjT6Hc7kdDjhejs+EWGXBmpTvXzbFTjy6Z
-         KKqxVg56QGsb0rsChcPvEMYzzma2cKLxpvHQJuhAB2RtZzeUzmMxAQFE4ULyYrmNGWKR
-         kgPCH9/kCI5U/S54gV7aKgg6blNmkGGMJbDQP4r7LLgRbS4DxTNR242uxWWGOq/V4/IX
-         RpVg==
-X-Forwarded-Encrypted: i=1; AJvYcCU+vaCTYgcZKNGhjSMYkPuZHiH/XrlwehPuGI/9+mYVEgaekH36brZ73JFCs31Y5hgkKLLn1OFQ3dVsF7kLcORA5w==@vger.kernel.org, AJvYcCVQHmdBgh0XHQXjMXWPlgYasYLf8/moRqDeugQiIa8jso5Z4wl5t2wwY7yg7Ot1/IsO6Gw=@vger.kernel.org, AJvYcCWEu1EMHEFfE1vJ11WOgjWT08cJqBSSE7Zp26FXr2nUTmT1MMRnMqRzMdzBI70ayiWPbFpVNNaDdCpUvT1WQw==@vger.kernel.org, AJvYcCXOAkPoJGyT+ZqcUJVCIJkBhQH3G8A1S9JXYuw2aYcJ8MRn4TCnTQsdvIL9965Lrq29GX1kX6wnmV7GkBsV@vger.kernel.org
-X-Gm-Message-State: AOJu0YxVVX1ilvAqyeaOLqFXypMao24/Hvv7G6GyaoBqNi0wkCNA9yzd
-	gfPUpZdaqVdDJ8e9FkPLzJPwWWR0rqAULcdnoqZ26sEqiELwyzhw/9btcvNJSo4EgCxxX17jE2Z
-	k0WF51giDxAePGfx/86R5ifBfdZ0=
-X-Gm-Gg: ASbGncs7POnPp9w/Amd0I4IfJvh94mJs2+zCeQ4RZsuMm2enToT3vt8HfjY9ss6MPRG
-	AGzF8JdgXsi78UGmUK0e9elifbKOhex8ue7iAGHKH2SkHH+81aO6fUuVEMeCjiQqz29xpMOk2zP
-	wBDNYV9sZgLDmqMJd7A4O7UtcdtX7GH//WXpRbT4FhdQ==
-X-Google-Smtp-Source: AGHT+IEBSskNXsIbuqDvn/U9LSu6LemK4P3tlqREkuD8KUd3EhC5S8wl7sbDcR2Rt95XQ/sMlfmu/6VNCXsvhSJaXm8=
-X-Received: by 2002:a05:6a00:3a1e:b0:730:95a6:3761 with SMTP id
- d2e1a72fcca58-739e48f9521mr216458b3a.3.1743697040257; Thu, 03 Apr 2025
- 09:17:20 -0700 (PDT)
+	s=arc-20240116; t=1743697457; c=relaxed/simple;
+	bh=vhrl4p3qftt6QxANAuIi+azQRkD9hhqzoqCdg7PCsT8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FBAWPdu7cXR40ujx2OejRXRWSG01FXlBSheePfNW1Ct+FsHW/f8EPDIGSgsmfcEBadP0accwsCSGkxpQRwj5fBVBxfiR5qCX2h1ohpuLTTNKhSpdDwMydZxu5Y8sEgjrnVpD9a+PYXnL5UiytEawGIKigvMBUjllHV+iKoceFG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rbbT45SN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D490C4CEE3;
+	Thu,  3 Apr 2025 16:24:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743697457;
+	bh=vhrl4p3qftt6QxANAuIi+azQRkD9hhqzoqCdg7PCsT8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rbbT45SNiUqNV3TyRh2EOo0pHftvGWFWRH6vBPJudMPmwiLb6WS7wgiK5Q59kVq/l
+	 /YJb64mzcTT2KqJ9UYP5d2xZ5n9/Jvr/cWUkrkbGnIXzQjEBIO38AGnM9vTtABopU/
+	 YAJHsePiJIqDiBQELEuWxMPSSa2HKRV53DWvBXptAhBL1IgRu2Lxwm90pLLwMLv38o
+	 ONUPyD3uH/jCdrUJkyhbEpCcdp2Ys7NwBdEd1sF/A4gIxp7Hoyh0Cl3b9gddvXT4lz
+	 XKzokxWQ8vKM0QK/Wccns5rkNWZemPG6vH3fGD9ZTEESdQgFsLCw6SC2OTh/RL0pZI
+	 yU+rwKUcUY4TA==
+Date: Thu, 3 Apr 2025 09:24:13 -0700
+From: Kees Cook <kees@kernel.org>
+To: Bhupesh <bhupesh@igalia.com>
+Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
+	laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
+	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
+	david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
+	brauner@kernel.org, jack@suse.cz, mingo@redhat.com,
+	juri.lelli@redhat.com, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com
+Subject: Re: [PATCH v2 3/3] kthread: Use 'task_struct->full_name' to store
+ kthread's full name
+Message-ID: <202504030923.1FE7874F@keescook>
+References: <20250331121820.455916-1-bhupesh@igalia.com>
+ <20250331121820.455916-4-bhupesh@igalia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250331121820.455916-1-bhupesh@igalia.com> <20250331121820.455916-2-bhupesh@igalia.com>
-In-Reply-To: <20250331121820.455916-2-bhupesh@igalia.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 3 Apr 2025 09:17:07 -0700
-X-Gm-Features: AQ5f1JoPHx0PeSv2IqtIqL5NZPMMksgJM8eq0HuoqlbPglyYkI1vhpYvqJ-LgI4
-Message-ID: <CAEf4Bza1xjSD9KPkB0gE6AN0vc=xejW-jkn0M_Z_pSQ4_7e7Jw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] exec: Dynamically allocate memory to store task's
- full name
-To: Bhupesh <bhupesh@igalia.com>
-Cc: akpm@linux-foundation.org, kernel-dev@igalia.com, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com, 
-	laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org, 
-	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com, 
-	alexei.starovoitov@gmail.com, mirq-linux@rere.qmqm.pl, peterz@infradead.org, 
-	willy@infradead.org, david@redhat.com, viro@zeniv.linux.org.uk, 
-	keescook@chromium.org, ebiederm@xmission.com, brauner@kernel.org, 
-	jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com, bsegall@google.com, 
-	mgorman@suse.de, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250331121820.455916-4-bhupesh@igalia.com>
 
-On Mon, Mar 31, 2025 at 5:18=E2=80=AFAM Bhupesh <bhupesh@igalia.com> wrote:
->
-> Provide a parallel implementation for get_task_comm() called
-> get_task_full_name() which allows the dynamically allocated
-> and filled-in task's full name to be passed to interested
-> users such as 'gdb'.
->
-> Currently while running 'gdb', the 'task->comm' value of a long
-> task name is truncated due to the limitation of TASK_COMM_LEN.
->
-> For example using gdb to debug a simple app currently which generate
-> threads with long task names:
->   # gdb ./threadnames -ex "run info thread" -ex "detach" -ex "quit" > log
->   # cat log
->
->   NameThatIsTooLo
->
-> This patch does not touch 'TASK_COMM_LEN' at all, i.e.
-> 'TASK_COMM_LEN' and the 16-byte design remains untouched. Which means
-> that all the legacy / existing ABI, continue to work as before using
-> '/proc/$pid/task/$tid/comm'.
->
-> This patch only adds a parallel, dynamically-allocated
-> 'task->full_name' which can be used by interested users
-> via '/proc/$pid/task/$tid/full_name'.
->
-> After this change, gdb is able to show full name of the task:
->   # gdb ./threadnames -ex "run info thread" -ex "detach" -ex "quit" > log
->   # cat log
->
->   NameThatIsTooLongForComm[4662]
->
+On Mon, Mar 31, 2025 at 05:48:20PM +0530, Bhupesh wrote:
+> Commit 6986ce24fc00 ("kthread: dynamically allocate memory to store
+> kthread's full name"), added 'full_name' in parallel to 'comm' for
+> kthread names.
+> 
+> Now that we have added 'full_name' added to 'task_struct' itself,
+> drop the additional 'full_name' entry from 'struct kthread' and also
+> its usage.
+> 
 > Signed-off-by: Bhupesh <bhupesh@igalia.com>
+
+I'd like to see this patch be the first patch in the series. This show
+the existing use for "full_name". (And as such it'll probably need bits
+from patch 1.)
+
+-Kees
+
 > ---
->  fs/exec.c             | 21 ++++++++++++++++++---
->  include/linux/sched.h |  9 +++++++++
->  2 files changed, 27 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/exec.c b/fs/exec.c
-> index f45859ad13ac..4219d77a519c 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1208,6 +1208,9 @@ int begin_new_exec(struct linux_binprm * bprm)
+>  kernel/kthread.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/kthread.c b/kernel/kthread.c
+> index 5dc5b0d7238e..46fe19b7ef76 100644
+> --- a/kernel/kthread.c
+> +++ b/kernel/kthread.c
+> @@ -66,8 +66,6 @@ struct kthread {
+>  #ifdef CONFIG_BLK_CGROUP
+>  	struct cgroup_subsys_state *blkcg_css;
+>  #endif
+> -	/* To store the full name if task comm is truncated. */
+> -	char *full_name;
+>  	struct task_struct *task;
+>  	struct list_head hotplug_node;
+>  	struct cpumask *preferred_affinity;
+> @@ -108,12 +106,12 @@ void get_kthread_comm(char *buf, size_t buf_size, struct task_struct *tsk)
 >  {
->         struct task_struct *me =3D current;
->         int retval;
-> +       va_list args;
-> +       char *name;
-> +       const char *fmt;
->
->         /* Once we are committed compute the creds */
->         retval =3D bprm_creds_from_file(bprm);
-> @@ -1348,11 +1351,22 @@ int begin_new_exec(struct linux_binprm * bprm)
->                  * detecting a concurrent rename and just want a terminat=
-ed name.
->                  */
->                 rcu_read_lock();
-> -               __set_task_comm(me, smp_load_acquire(&bprm->file->f_path.=
-dentry->d_name.name),
-> -                               true);
-> +               fmt =3D smp_load_acquire(&bprm->file->f_path.dentry->d_na=
-me.name);
-> +               name =3D kvasprintf(GFP_KERNEL, fmt, args);
-
-this `args` argument, it's not initialized anywhere, right? It's not
-clear where it's coming from, but you are passing it directly into
-kvasprintf(), I can't convince myself that this is correct. Can you
-please explain what is happening here?
-
-Also, instead of allocating a buffer unconditionally, maybe check that
-comm is longer than 16, and if not, just use the old-schoold 16-byte
-comm array?
-
-
-> +               if (!name)
-> +                       return -ENOMEM;
-> +
-> +               me->full_name =3D name;
-> +               __set_task_comm(me, fmt, true);
->                 rcu_read_unlock();
->         } else {
-> -               __set_task_comm(me, kbasename(bprm->filename), true);
-> +               fmt =3D kbasename(bprm->filename);
-> +               name =3D kvasprintf(GFP_KERNEL, fmt, args);
-> +               if (!name)
-> +                       return -ENOMEM;
-> +
-> +               me->full_name =3D name;
-> +               __set_task_comm(me, fmt, true);
->         }
->
->         /* An exec changes our domain. We are no longer part of the threa=
-d
-> @@ -1399,6 +1413,7 @@ int begin_new_exec(struct linux_binprm * bprm)
->         return 0;
->
->  out_unlock:
-> +       kfree(me->full_name);
->         up_write(&me->signal->exec_update_lock);
->         if (!bprm->cred)
->                 mutex_unlock(&me->signal->cred_guard_mutex);
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 56ddeb37b5cd..053b52606652 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1166,6 +1166,9 @@ struct task_struct {
->          */
->         char                            comm[TASK_COMM_LEN];
->
-> +       /* To store the full name if task comm is truncated. */
-> +       char                            *full_name;
-> +
->         struct nameidata                *nameidata;
->
->  #ifdef CONFIG_SYSVIPC
-> @@ -2007,6 +2010,12 @@ extern void __set_task_comm(struct task_struct *ts=
-k, const char *from, bool exec
->         buf;                                            \
->  })
->
-> +#define get_task_full_name(buf, buf_size, tsk) ({      \
-> +       BUILD_BUG_ON(sizeof(buf) < TASK_COMM_LEN);      \
-> +       strscpy_pad(buf, (tsk)->full_name, buf_size);   \
-> +       buf;                                            \
-> +})
-> +
->  #ifdef CONFIG_SMP
->  static __always_inline void scheduler_ipi(void)
->  {
-> --
+>  	struct kthread *kthread = to_kthread(tsk);
+>  
+> -	if (!kthread || !kthread->full_name) {
+> +	if (!kthread || !tsk->full_name) {
+>  		strscpy(buf, tsk->comm, buf_size);
+>  		return;
+>  	}
+>  
+> -	strscpy_pad(buf, kthread->full_name, buf_size);
+> +	strscpy_pad(buf, tsk->full_name, buf_size);
+>  }
+>  
+>  bool set_kthread_struct(struct task_struct *p)
+> @@ -153,7 +151,6 @@ void free_kthread_struct(struct task_struct *k)
+>  	WARN_ON_ONCE(kthread->blkcg_css);
+>  #endif
+>  	k->worker_private = NULL;
+> -	kfree(kthread->full_name);
+>  	kfree(kthread);
+>  }
+>  
+> @@ -430,7 +427,7 @@ static int kthread(void *_create)
+>  		kthread_exit(-EINTR);
+>  	}
+>  
+> -	self->full_name = create->full_name;
+> +	self->task->full_name = create->full_name;
+>  	self->threadfn = threadfn;
+>  	self->data = data;
+>  
+> -- 
 > 2.38.1
->
+> 
+
+-- 
+Kees Cook
 
