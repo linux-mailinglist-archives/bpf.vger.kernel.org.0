@@ -1,186 +1,221 @@
-Return-Path: <bpf+bounces-55211-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55212-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1C1DA79DD2
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 10:17:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0759A79E5D
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 10:40:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CC89174677
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 08:17:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F00911896FB9
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 08:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D0F2417E4;
-	Thu,  3 Apr 2025 08:17:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51BF241CA3;
+	Thu,  3 Apr 2025 08:40:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tav1fUh6"
+	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="qC4mrEeX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202F21854;
-	Thu,  3 Apr 2025 08:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35D81F03CB;
+	Thu,  3 Apr 2025 08:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743668235; cv=none; b=gF4+4npLemMmsU5gQb5cryYgnwlgflKImgmn0tmOGWpfXi74XlNZmqIlxqMAs6P0k9zcZG//occ07PXxyC+Kgcm1SIZSQMHpzsjSvuq1PVMwjc6YhZqgdj0Eq0I6avP2Cv5QBN/Lub6uaLjbKPhCWj3PoJ0/pVMb4nyQAdiFejM=
+	t=1743669637; cv=none; b=QY4j5b+0dTqbugrhxbokB/AnGYobhKbjG1+joXwGP7PCv7FUPYoxud2jl3pXMKy2JnELyOcaOfyV+SjOzOQ69oauRqJ0ejcXvX6ceScajXS437oOpv5+LxTtVR1fnZ3MYX/viqp+mL+2KalUyG0DbBUR3ffMEPZu6rMZZnMOT+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743668235; c=relaxed/simple;
-	bh=NH6Xl6My3uB8VV7ts3K3V3CB2w3gDVGSyxth+G2YtOA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H8TNRp3H8Ps+Q05EevGRrfbT9R6cbDnREmyqHC1HE3zB1LNJ96ji65K1Zwx/Qg8rNYDgh3TM4e093mTfUAZZR0/Mt4yo2Ep6nL4X8L1xSLpbEA7p3TXwOUi++/2kzsIxjHH7H17RB0Qkh491ou8tzg5IK30umRd+J4ZZax/qWjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tav1fUh6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47B72C4CEE3;
-	Thu,  3 Apr 2025 08:17:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743668234;
-	bh=NH6Xl6My3uB8VV7ts3K3V3CB2w3gDVGSyxth+G2YtOA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Tav1fUh6tkOTHKpkrkVLElZqk32bmwq6XVYJI7Z0Amp2fEqeapHSbiPFOpzZukK1m
-	 pcsOAfZoXS2U0/dbqS3VwoaJP7V79/pu/anR5KyQfmMqyql486AHPXIBYgbyBedI4P
-	 slUtZguyHTw1V0Hw5EAinpRnK175mvTcUutIPJFjXLw/5Fdk/x22EyN9wteAhjtjaz
-	 JMa6ec/yXiOjIh/jFKfNVn3VpUcnoAVWRFPaU3Bl9H2I2gt36is+zDtpYb9/U6JbcL
-	 Gp60qiiBC53h1D3EpT/aB7iWMSmlyzfIA6YL7s+SOHNq4eBe55Jzs9QI5eK2pelXVL
-	 TH5977Wmx9M/A==
-Message-ID: <75f49cbc-2d54-480e-b67d-35ef53c4421b@kernel.org>
-Date: Thu, 3 Apr 2025 10:17:05 +0200
+	s=arc-20240116; t=1743669637; c=relaxed/simple;
+	bh=adNmKijgwJ0/HuyYribCZ1SflALgeVpdt9ZDAd8R8f8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gBT3na7UD4mdsnp056Vydde7dL/x3JfyhLGKcJL/ao5PshnwJNrWZReT2AgOtI/DMh+NsFQKuA7Wf16x848uBflSDlH20eBtWBzbnNQL1l+UO+vAcfVFBXo/QaggKaqinpSW+mVUgeiCouTAgwfvfIaAZu8CwUF9HkNOMe9POGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=qC4mrEeX; arc=none smtp.client-ip=139.165.32.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
+Received: from ubuntu.home (220.24-245-81.adsl-dyn.isp.belgacom.be [81.245.24.220])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id D00A9200A728;
+	Thu,  3 Apr 2025 10:40:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be D00A9200A728
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
+	s=ulg20190529; t=1743669626;
+	bh=94DJ7KtPQKubwfSja/wln0B8MjCkiuH0R9N/UpDkdu8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qC4mrEeXIlQbcEHZIvGjHX2tGfByiQQd7iOyDqXJmls0X1oYFndmOj9uE36Y3jQOH
+	 3jNjR0GCM2LZAqEO99ZohOCxP/JqBc3d/38sSAMgZIB5BiDwjiRAPmyxIJjjkJtB/x
+	 1SKJyTUjxMyy7bcBaRuAj0/dUVkwt3myWYU5qzZRaK/0TuBwI2etY6HXOvf1b7vqif
+	 2zWm8FDfZrCY81vqhnGqJydUkPQsijjqvxUOEXUcqn7pKFuVLagE69wfNnUrM58tI7
+	 3cZ/R/N8UiaMevmSYCwN6iVIGrDB5iNYduprAwatAb5bxyuqDlW7UkTM+C+mP2XT3J
+	 WtvpqvjKa3+pA==
+From: Justin Iurman <justin.iurman@uliege.be>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	kuniyu@amazon.com,
+	justin.iurman@uliege.be,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	bpf <bpf@vger.kernel.org>,
+	Stanislav Fomichev <stfomichev@gmail.com>
+Subject: [PATCH net] net: lwtunnel: disable preemption when required
+Date: Thu,  3 Apr 2025 10:39:56 +0200
+Message-Id: <20250403083956.13946-1-justin.iurman@uliege.be>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf v2 1/2] bpf, xdp: clean head/meta when expanding it
-To: Jiayuan Chen <jiayuan.chen@linux.dev>, bpf@vger.kernel.org
-Cc: mrpre@163.com, syzbot+0e6ddb1ef80986bdfe64@syzkaller.appspotmail.com,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- Willem de Bruijn <willemb@google.com>, Jason Xing
- <kerneljasonxing@gmail.com>, Anton Protopopov <aspsk@isovalent.com>,
- Abhishek Chauhan <quic_abchauha@quicinc.com>,
- Jordan Rome <linux@jordanrome.com>,
- Martin Kelly <martin.kelly@crowdstrike.com>,
- David Lechner <dlechner@baylibre.com>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20250331032354.75808-1-jiayuan.chen@linux.dev>
- <20250331032354.75808-2-jiayuan.chen@linux.dev>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20250331032354.75808-2-jiayuan.chen@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+In lwtunnel_{input|output|xmit}(), dev_xmit_recursion() may be called in
+preemptible scope for PREEMPT kernels. This patch disables preemption
+before calling dev_xmit_recursion(). Preemption is re-enabled only at
+the end, since we must ensure the same CPU is used for both
+dev_xmit_recursion_inc() and dev_xmit_recursion_dec() (and any other
+recursion levels in some cases) in order to maintain valid per-cpu
+counters.
 
+Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Closes: https://lore.kernel.org/netdev/CAADnVQJFWn3dBFJtY+ci6oN1pDFL=TzCmNbRgey7MdYxt_AP2g@mail.gmail.com/
+Fixes: 986ffb3a57c5 ("net: lwtunnel: fix recursion loops")
+Signed-off-by: Justin Iurman <justin.iurman@uliege.be>
+---
+Cc: bpf <bpf@vger.kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Stanislav Fomichev <stfomichev@gmail.com>
+---
+ net/core/lwtunnel.c | 47 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 18 deletions(-)
 
-On 31/03/2025 05.23, Jiayuan Chen wrote:
-> The device allocates an skb, it additionally allocates a prepad size
-> (usually equal to NET_SKB_PAD or XDP_PACKET_HEADROOM) but leaves it
-> uninitialized.
-> 
-> The bpf_xdp_adjust_head function moves skb->data forward, which allows
-> users to access data belonging to other programs, posing a security risk.
+diff --git a/net/core/lwtunnel.c b/net/core/lwtunnel.c
+index e39a459540ec..a9ad068e5707 100644
+--- a/net/core/lwtunnel.c
++++ b/net/core/lwtunnel.c
+@@ -333,6 +333,8 @@ int lwtunnel_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+ 	struct dst_entry *dst;
+ 	int ret;
+ 
++	preempt_disable();
++
+ 	if (dev_xmit_recursion()) {
+ 		net_crit_ratelimited("%s(): recursion limit reached on datapath\n",
+ 				     __func__);
+@@ -345,11 +347,13 @@ int lwtunnel_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+ 		ret = -EINVAL;
+ 		goto drop;
+ 	}
+-	lwtstate = dst->lwtstate;
+ 
++	lwtstate = dst->lwtstate;
+ 	if (lwtstate->type == LWTUNNEL_ENCAP_NONE ||
+-	    lwtstate->type > LWTUNNEL_ENCAP_MAX)
+-		return 0;
++	    lwtstate->type > LWTUNNEL_ENCAP_MAX) {
++		ret = 0;
++		goto out;
++	}
+ 
+ 	ret = -EOPNOTSUPP;
+ 	rcu_read_lock();
+@@ -364,11 +368,11 @@ int lwtunnel_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+ 	if (ret == -EOPNOTSUPP)
+ 		goto drop;
+ 
+-	return ret;
+-
++	goto out;
+ drop:
+ 	kfree_skb(skb);
+-
++out:
++	preempt_enable();
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(lwtunnel_output);
+@@ -380,6 +384,8 @@ int lwtunnel_xmit(struct sk_buff *skb)
+ 	struct dst_entry *dst;
+ 	int ret;
+ 
++	preempt_disable();
++
+ 	if (dev_xmit_recursion()) {
+ 		net_crit_ratelimited("%s(): recursion limit reached on datapath\n",
+ 				     __func__);
+@@ -394,10 +400,11 @@ int lwtunnel_xmit(struct sk_buff *skb)
+ 	}
+ 
+ 	lwtstate = dst->lwtstate;
+-
+ 	if (lwtstate->type == LWTUNNEL_ENCAP_NONE ||
+-	    lwtstate->type > LWTUNNEL_ENCAP_MAX)
+-		return 0;
++	    lwtstate->type > LWTUNNEL_ENCAP_MAX) {
++		ret = 0;
++		goto out;
++	}
+ 
+ 	ret = -EOPNOTSUPP;
+ 	rcu_read_lock();
+@@ -412,11 +419,11 @@ int lwtunnel_xmit(struct sk_buff *skb)
+ 	if (ret == -EOPNOTSUPP)
+ 		goto drop;
+ 
+-	return ret;
+-
++	goto out;
+ drop:
+ 	kfree_skb(skb);
+-
++out:
++	preempt_enable();
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(lwtunnel_xmit);
+@@ -428,6 +435,8 @@ int lwtunnel_input(struct sk_buff *skb)
+ 	struct dst_entry *dst;
+ 	int ret;
+ 
++	preempt_disable();
++
+ 	if (dev_xmit_recursion()) {
+ 		net_crit_ratelimited("%s(): recursion limit reached on datapath\n",
+ 				     __func__);
+@@ -440,11 +449,13 @@ int lwtunnel_input(struct sk_buff *skb)
+ 		ret = -EINVAL;
+ 		goto drop;
+ 	}
+-	lwtstate = dst->lwtstate;
+ 
++	lwtstate = dst->lwtstate;
+ 	if (lwtstate->type == LWTUNNEL_ENCAP_NONE ||
+-	    lwtstate->type > LWTUNNEL_ENCAP_MAX)
+-		return 0;
++	    lwtstate->type > LWTUNNEL_ENCAP_MAX) {
++		ret = 0;
++		goto out;
++	}
+ 
+ 	ret = -EOPNOTSUPP;
+ 	rcu_read_lock();
+@@ -459,11 +470,11 @@ int lwtunnel_input(struct sk_buff *skb)
+ 	if (ret == -EOPNOTSUPP)
+ 		goto drop;
+ 
+-	return ret;
+-
++	goto out;
+ drop:
+ 	kfree_skb(skb);
+-
++out:
++	preempt_enable();
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(lwtunnel_input);
+-- 
+2.34.1
 
-I find your description confusing, and it needs to be improved to avoid 
-people interpenetrating this when reading the commit log in the future.
-
-It is part of the UAPI that BPF programs access data belonging to other 
-BPF programs.  It is the concept behind data_meta, e.g. that XDP set 
-information in this memory and TC-BPF reads it again (chained XDP progs 
-also have R/W access).  I hope/assume this is not the desired 
-interpretation of your text.
-
-I guess you want to say, that the intention is to avoid BPF programs 
-accessing uninitialized data?
-(... which is also what the code does at a glance)
-
-> Reported-by: syzbot+0e6ddb1ef80986bdfe64@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/00000000000067f65105edbd295d@google.com/T/
-> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-> ---
->   include/uapi/linux/bpf.h       | 8 +++++---
->   net/core/filter.c              | 5 ++++-
->   tools/include/uapi/linux/bpf.h | 6 ++++--
->   3 files changed, 13 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index defa5bb881f4..be01a848cbbf 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2760,8 +2760,9 @@ union bpf_attr {
->    *
->    * long bpf_xdp_adjust_head(struct xdp_buff *xdp_md, int delta)
->    * 	Description
-> - * 		Adjust (move) *xdp_md*\ **->data** by *delta* bytes. Note that
-> - * 		it is possible to use a negative value for *delta*. This helper
-> + *		Adjust (move) *xdp_md*\ **->data** by *delta* bytes. Note that
-> + *		it is possible to use a negative value for *delta*. If *delta*
-> + *		is negative, the new header will be memset to zero. This helper
->    * 		can be used to prepare the packet for pushing or popping
->    * 		headers.
->    *
-> @@ -2989,7 +2990,8 @@ union bpf_attr {
->    * long bpf_xdp_adjust_meta(struct xdp_buff *xdp_md, int delta)
->    * 	Description
->    * 		Adjust the address pointed by *xdp_md*\ **->data_meta** by
-> - * 		*delta* (which can be positive or negative). Note that this
-> + *		*delta* (which can be positive or negative). If *delta* is
-> + *		negative, the new meta will be memset to zero. Note that this
->    * 		operation modifies the address stored in *xdp_md*\ **->data**,
->    * 		so the latter must be loaded only after the helper has been
->    * 		called.
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 46ae8eb7a03c..5f01d373b719 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3947,6 +3947,8 @@ BPF_CALL_2(bpf_xdp_adjust_head, struct xdp_buff *, xdp, int, offset)
->   	if (metalen)
->   		memmove(xdp->data_meta + offset,
->   			xdp->data_meta, metalen);
-> +	if (offset < 0)
-> +		memset(data, 0, -offset);
->   	xdp->data_meta += offset;
->   	xdp->data = data;
->   
-> @@ -4239,7 +4241,8 @@ BPF_CALL_2(bpf_xdp_adjust_meta, struct xdp_buff *, xdp, int, offset)
->   		return -EINVAL;
->   	if (unlikely(xdp_metalen_invalid(metalen)))
->   		return -EACCES;
-> -
-> +	if (offset < 0)
-> +		memset(meta, 0, -offset);
->   	xdp->data_meta = meta;
->   
->   	return 0;
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index defa5bb881f4..7b1871f2eccf 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -2761,7 +2761,8 @@ union bpf_attr {
->    * long bpf_xdp_adjust_head(struct xdp_buff *xdp_md, int delta)
->    * 	Description
->    * 		Adjust (move) *xdp_md*\ **->data** by *delta* bytes. Note that
-> - * 		it is possible to use a negative value for *delta*. This helper
-> + *		it is possible to use a negative value for *delta*. If *delta*
-> + *		is negative, the new header will be memset to zero. This helper
->    * 		can be used to prepare the packet for pushing or popping
->    * 		headers.
->    *
-> @@ -2989,7 +2990,8 @@ union bpf_attr {
->    * long bpf_xdp_adjust_meta(struct xdp_buff *xdp_md, int delta)
->    * 	Description
->    * 		Adjust the address pointed by *xdp_md*\ **->data_meta** by
-> - * 		*delta* (which can be positive or negative). Note that this
-> + *		*delta* (which can be positive or negative). If *delta* is
-> + *		negative, the new meta will be memset to zero. Note that this
->    * 		operation modifies the address stored in *xdp_md*\ **->data**,
->    * 		so the latter must be loaded only after the helper has been
->    * 		called.
 
