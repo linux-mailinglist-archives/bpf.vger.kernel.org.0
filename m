@@ -1,146 +1,106 @@
-Return-Path: <bpf+bounces-55244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C6F2A7A7E2
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 18:24:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F389A7A7E5
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 18:24:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADDD018880DD
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 16:24:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FB527A6790
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 16:23:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B0B2512D5;
-	Thu,  3 Apr 2025 16:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303B525178D;
+	Thu,  3 Apr 2025 16:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rbbT45SN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jOQJIAwS"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A9D190679;
-	Thu,  3 Apr 2025 16:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651822512F3;
+	Thu,  3 Apr 2025 16:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743697457; cv=none; b=DH/GGeA+1QAXVkKcPVIDXmXUr+DZFZSqBGMOc2rKIh6fv3RTde1AFin0qq9W+ROGgZXfpGRIPr5Twn4rURoscKpveXSCynm85ZyRlTZN9SIrs1QIY3RY+4h3SupwB2MwImewRzd5JvRQd/SbQojZJaVg0vDK1ziKKAo/wzaGQ8o=
+	t=1743697460; cv=none; b=rcX/tMKGwGrBdmPoq3qbCj/ciC88iL2fbyAWX8i6gnN7YWaFY2smFssDB1E7JfN0c1N/urYML9lupX8bhVQJZNgE2p/ArW3ycSf2oSHhj7ockvcIuPFGZaqD7sGNeUjX/z96vInwee4gXtTbWED+z26t5HbnEPEk351v09sgnkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743697457; c=relaxed/simple;
-	bh=vhrl4p3qftt6QxANAuIi+azQRkD9hhqzoqCdg7PCsT8=;
+	s=arc-20240116; t=1743697460; c=relaxed/simple;
+	bh=w9qi0RaHXu+8dQL+qsiD/76xGd8kW7JvMd9p7IvrQbI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FBAWPdu7cXR40ujx2OejRXRWSG01FXlBSheePfNW1Ct+FsHW/f8EPDIGSgsmfcEBadP0accwsCSGkxpQRwj5fBVBxfiR5qCX2h1ohpuLTTNKhSpdDwMydZxu5Y8sEgjrnVpD9a+PYXnL5UiytEawGIKigvMBUjllHV+iKoceFG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rbbT45SN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D490C4CEE3;
-	Thu,  3 Apr 2025 16:24:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743697457;
-	bh=vhrl4p3qftt6QxANAuIi+azQRkD9hhqzoqCdg7PCsT8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rbbT45SNiUqNV3TyRh2EOo0pHftvGWFWRH6vBPJudMPmwiLb6WS7wgiK5Q59kVq/l
-	 /YJb64mzcTT2KqJ9UYP5d2xZ5n9/Jvr/cWUkrkbGnIXzQjEBIO38AGnM9vTtABopU/
-	 YAJHsePiJIqDiBQELEuWxMPSSa2HKRV53DWvBXptAhBL1IgRu2Lxwm90pLLwMLv38o
-	 ONUPyD3uH/jCdrUJkyhbEpCcdp2Ys7NwBdEd1sF/A4gIxp7Hoyh0Cl3b9gddvXT4lz
-	 XKzokxWQ8vKM0QK/Wccns5rkNWZemPG6vH3fGD9ZTEESdQgFsLCw6SC2OTh/RL0pZI
-	 yU+rwKUcUY4TA==
-Date: Thu, 3 Apr 2025 09:24:13 -0700
-From: Kees Cook <kees@kernel.org>
-To: Bhupesh <bhupesh@igalia.com>
-Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
-	laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-	alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
-	mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
-	david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
-	brauner@kernel.org, jack@suse.cz, mingo@redhat.com,
-	juri.lelli@redhat.com, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com
-Subject: Re: [PATCH v2 3/3] kthread: Use 'task_struct->full_name' to store
- kthread's full name
-Message-ID: <202504030923.1FE7874F@keescook>
-References: <20250331121820.455916-1-bhupesh@igalia.com>
- <20250331121820.455916-4-bhupesh@igalia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dD6VIOdEOoEW14riX/5RbYLaPIkK1McpLDL3C8sT05H35I/NxPlyhuYucTxs8+I7hgF/HC2rCazVHfyXdwzBrDAx2QcKMb3ToLX4rFppO4zg1Dt+p+ZswoxklKPkX6zwCqobuBhIOa5IywxChMeSIRGSPDi4vC+/YJZ+d9lOk4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jOQJIAwS; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2254e0b4b79so14024215ad.2;
+        Thu, 03 Apr 2025 09:24:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743697458; x=1744302258; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=w9qi0RaHXu+8dQL+qsiD/76xGd8kW7JvMd9p7IvrQbI=;
+        b=jOQJIAwS2cZZr58OQ0m8Jsr+rwg0X05ieFPxtZbk8A1win3bqJg9HgYrgCjqPOvnuk
+         cNh6yx10AkgBLjbaYQV1EzBISCcu3qqsZU+CNnUZoHObA3GefbeU/7KEmHrL6LJmI0F6
+         bZmPtY/RJYz7WJkHbC1uR9VqQ1BDiD2iEkX/am7YPs9wuq4TOuFkwZcXpCkrRS7Io4XR
+         VYIR60R7+tNgGvkM2QHG6SLlMGttL0X3dYJyaN3xJa73W6ufdIuEKUQVDqoeH++89e2D
+         XPjSvR/Qu8zWMslbDkut0uLfmDlV+zhkP2rsKvnR2ft1GCNV1x3kzJxJNSwKOg11Crm5
+         hg0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743697458; x=1744302258;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w9qi0RaHXu+8dQL+qsiD/76xGd8kW7JvMd9p7IvrQbI=;
+        b=Iq+hTIlRX0TUNX34JSgTEVjtYzmWL3cPaCYVKuMvP8pDD8m/DsH0MxWXQbYwzh0+6n
+         /jCHen147WRvmqXAIW7HyugoTJWgNOBxcwzNYiPElDs9EEvzmu+MfTNRkl5XDLfgfxKi
+         muRvOWNjosqyzt97uLqHC3ZJVyCJW6aPL1R7+YKhzba4/E2g4gxgzu+hg9ngisnOfAjb
+         R88DfJTpsuqMSQlJqKVY2xDW8a5pRo/16Mg1Ygz3w0rnUn5HJKlavSgn3Z1obm0FMEY4
+         BTYAuDaphV40/YIv/rE6IrTKkmJ7ekb+Y1m1Uyh4kSS+8fsIFStDFY6Ufujr9zJ01WAx
+         8zLA==
+X-Forwarded-Encrypted: i=1; AJvYcCUXDc84A7zEvKXVasGFu9Vv7I0HJH5nAZYCYM2FBpx9jZ5yrkhiaa+Cs4cxXyzyIuXAz64=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxxJ5+b05+tLIrQxo6KfYHGLT/5NERoKqSDQ3FS/VjXdWfodBxn
+	dPvH7nqGTIeUkSaqRcJ5v+6Z/uidJFHVOw5qcU/nWuQst5JVt3I=
+X-Gm-Gg: ASbGnctkNdQS5F7S3DPhfnqQA+E5HyFEr0Hd7R2/rDvidLrSPZuH1wdlxb+vWZjdL+Y
+	6h1F7z1dKs7PhOy2Gu1YnZ36EODE+Y/fJVB/W8IAmEz75e+Y8tWUiJNXiLUW20lCAQSy6Hh02mg
+	38FH3HpqraLy/3bZR7dBKBN6AWxq01nlovcKBO0vyBeemcEFwjdEjwgBQgoFWhYbMRoRtNo6WwI
+	BlNKo3AJHT25/DrU8Rjamy2Mfe89Q9zswRVau1IqXToeVoCKgFph2OzSj5++tRMILOVhEZxT0nO
+	L64bnaf8ILv2aO9eepdQZ4ahFfBLVZONSBCRgx4GaQzMd9/aI/vyvZg=
+X-Google-Smtp-Source: AGHT+IHed8zBpOcczDTpbkk/eiKF3UxXlzBH6SqqRyMTg+t+QCZvQKUusnMa+JBGUi5a8cMNJUtMkQ==
+X-Received: by 2002:a17:903:2acb:b0:220:f87d:9d5b with SMTP id d9443c01a7336-2292f97a130mr367033955ad.24.1743697458541;
+        Thu, 03 Apr 2025 09:24:18 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-739d97ee2b3sm1693762b3a.46.2025.04.03.09.24.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Apr 2025 09:24:18 -0700 (PDT)
+Date: Thu, 3 Apr 2025 09:24:17 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Justin Iurman <justin.iurman@uliege.be>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+	kuniyu@amazon.com,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net] net: lwtunnel: disable preemption when required
+Message-ID: <Z-62MSCyMsqtMW1N@mini-arch>
+References: <20250403083956.13946-1-justin.iurman@uliege.be>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250331121820.455916-4-bhupesh@igalia.com>
+In-Reply-To: <20250403083956.13946-1-justin.iurman@uliege.be>
 
-On Mon, Mar 31, 2025 at 05:48:20PM +0530, Bhupesh wrote:
-> Commit 6986ce24fc00 ("kthread: dynamically allocate memory to store
-> kthread's full name"), added 'full_name' in parallel to 'comm' for
-> kthread names.
-> 
-> Now that we have added 'full_name' added to 'task_struct' itself,
-> drop the additional 'full_name' entry from 'struct kthread' and also
-> its usage.
-> 
-> Signed-off-by: Bhupesh <bhupesh@igalia.com>
+On 04/03, Justin Iurman wrote:
+> In lwtunnel_{input|output|xmit}(), dev_xmit_recursion() may be called in
+> preemptible scope for PREEMPT kernels. This patch disables preemption
+> before calling dev_xmit_recursion(). Preemption is re-enabled only at
+> the end, since we must ensure the same CPU is used for both
+> dev_xmit_recursion_inc() and dev_xmit_recursion_dec() (and any other
+> recursion levels in some cases) in order to maintain valid per-cpu
+> counters.
 
-I'd like to see this patch be the first patch in the series. This show
-the existing use for "full_name". (And as such it'll probably need bits
-from patch 1.)
-
--Kees
-
-> ---
->  kernel/kthread.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index 5dc5b0d7238e..46fe19b7ef76 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -66,8 +66,6 @@ struct kthread {
->  #ifdef CONFIG_BLK_CGROUP
->  	struct cgroup_subsys_state *blkcg_css;
->  #endif
-> -	/* To store the full name if task comm is truncated. */
-> -	char *full_name;
->  	struct task_struct *task;
->  	struct list_head hotplug_node;
->  	struct cpumask *preferred_affinity;
-> @@ -108,12 +106,12 @@ void get_kthread_comm(char *buf, size_t buf_size, struct task_struct *tsk)
->  {
->  	struct kthread *kthread = to_kthread(tsk);
->  
-> -	if (!kthread || !kthread->full_name) {
-> +	if (!kthread || !tsk->full_name) {
->  		strscpy(buf, tsk->comm, buf_size);
->  		return;
->  	}
->  
-> -	strscpy_pad(buf, kthread->full_name, buf_size);
-> +	strscpy_pad(buf, tsk->full_name, buf_size);
->  }
->  
->  bool set_kthread_struct(struct task_struct *p)
-> @@ -153,7 +151,6 @@ void free_kthread_struct(struct task_struct *k)
->  	WARN_ON_ONCE(kthread->blkcg_css);
->  #endif
->  	k->worker_private = NULL;
-> -	kfree(kthread->full_name);
->  	kfree(kthread);
->  }
->  
-> @@ -430,7 +427,7 @@ static int kthread(void *_create)
->  		kthread_exit(-EINTR);
->  	}
->  
-> -	self->full_name = create->full_name;
-> +	self->task->full_name = create->full_name;
->  	self->threadfn = threadfn;
->  	self->data = data;
->  
-> -- 
-> 2.38.1
-> 
-
--- 
-Kees Cook
+Dummy question: CONFIG_PREEMPT_RT uses current->net_xmit.recursion to
+track the recursion. Any reason not to do it in the generic PREEMPT case?
 
