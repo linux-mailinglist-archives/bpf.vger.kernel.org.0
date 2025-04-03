@@ -1,129 +1,180 @@
-Return-Path: <bpf+bounces-55220-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55221-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE9FDA7A23B
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 13:58:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AD9AA7A28C
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 14:12:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7420188F09F
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 11:56:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4E81171524
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 12:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D998324BBE3;
-	Thu,  3 Apr 2025 11:56:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF5A24C09A;
+	Thu,  3 Apr 2025 12:11:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UcuTvaiI"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZLmmH5cY"
 X-Original-To: bpf@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90A64224B0C
-	for <bpf@vger.kernel.org>; Thu,  3 Apr 2025 11:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1911F8720
+	for <bpf@vger.kernel.org>; Thu,  3 Apr 2025 12:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743681381; cv=none; b=VlPnjJsCoqge1+ZwnF8fNpVuev+GlhJDfzTHzNJ+ICCp1GrOPz6L2M5hipN8NyRzNqn/vf/9gIvVVofdb1QWk2BoE6vfJnPZYvcuOXC1NApqz7IAM0L8tz2cp0l3Orh9AMvkHTgSwArhyB2AnPghUdpkgkzYi09nkNRTkHpG73g=
+	t=1743682318; cv=none; b=CUUIqC99Y8r6Mw8o65nf7zzPjEQh0Y/dpnwrH72W3l5MBYAJktsqw1PdixxTz/RtDIn5TvbdDHezXzNuAcirtSeHkC/mKHUkH7jGe77w6zQ1XjX6l/jeWMfRl8696YsxNrLgN0Lt4xlGpZLxO3qSJNOzRo5Pg6azYoYG+JbVLL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743681381; c=relaxed/simple;
-	bh=CQW3LvrpYLZr2hfNBWwV9hoIx59/BSsLvUr5/tUTLg4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pf/fcIzAhpsFDDuGkx/ZUJbQXqfxbOjIui1mV870hF0dUqkBRkWNJtp8qFnFHv9I7J/vZ7lHs6kjrBgq1MsrF2pUTRd+H9zwubBZ/DBBwV4z1x8eSseTiKkuvwNsepeEuNWS/I5N58cMlMmnE99XXA5HhsWF0kVSWTnigqlMRQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UcuTvaiI; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1743682318; c=relaxed/simple;
+	bh=qrVfNh0Vqdd+bdD+aXgmU21PqVdhgJ/+f9D/uc9wIfU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ud9ifMAfXjfdlCWSElrSRBbJq2D4UJkOQtuo33tXOY7oiOspMEmKRlQJM4a2IyBKHAoQS2H05ACJUOcOkynTsDRg5oZgfXjFRb7PHaFqHVcJfx6EHLOi/YwuLS0TlWG0JGoIyfwp3r6TgkQc24xrMV9HwOFN2dmeGJ7XnrCO7nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZLmmH5cY; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1743681377;
+	s=mimecast20190719; t=1743682312;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0H5/xBFkSHvSdkgm2kc89t+j93IWUj4d38uiubvlMZM=;
-	b=UcuTvaiIa4JvYlViu4Tbr8SIfXohQ2glX6O3m40MIBQPJXWOk+CAyRsWee6GizyO0csyin
-	RG1uW4VJKnXNTUPoOP9+pQV181BviRjfdTBf+NFf7uhA7hzHn3XfUhP8FislCetyM6xAbF
-	K+4A4/davgqzVjdJEJ7zYW429eXqFkg=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-220-YfryqcJZPfuMlqEGuus8Ag-1; Thu, 03 Apr 2025 07:56:16 -0400
-X-MC-Unique: YfryqcJZPfuMlqEGuus8Ag-1
-X-Mimecast-MFC-AGG-ID: YfryqcJZPfuMlqEGuus8Ag_1743681375
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3913f546dfdso484878f8f.1
-        for <bpf@vger.kernel.org>; Thu, 03 Apr 2025 04:56:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743681375; x=1744286175;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0H5/xBFkSHvSdkgm2kc89t+j93IWUj4d38uiubvlMZM=;
-        b=wd9wTf4PFb04pi3mMbbxMJ97q0k7B7FLhyNTGRFsPmr6oh6VwW9XxSz5pLyOq0q2j4
-         gaGLqREbYkTAOBJrhYCmKKJZCj6Vy0B+s9ODgp6JnUulY4uW6Vv+j8TLiMOaLxIwaYfL
-         NsTiprnjMCv9BM4oMg9ZtLfSurxm6mQ2Pm+sOZP4buuGj04B4bdq+4I2X4rAPZDLcLCX
-         1N4R4E/YXQ8cMGz+bYJEzaQZHG0+VjRG2ZayBn+cFW8hYY2QAG6FU+HCjv5PwUaoFrNM
-         BGLdSKmbfIm+2/NNGj8gf4JY5ZqZF5udAqW7LHIWBtSVtZsOwShboLS/nzo6iOZH+H1l
-         0Aig==
-X-Forwarded-Encrypted: i=1; AJvYcCXF0iRJ1bLmvHXkgvh7H/Ef9jd8ZZkUBhWujiN6+v4oE8g8YESqU34KMRF3lY1JuCWXYYk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/JgPdeaYw2EeSkqcAvxlCzsCIqtwPd6wlfU4ytb7vAaNnkOVz
-	XxTe41JuffLUz2qdjVlELaI8jI0P+OQ37ECKwD+42CBtiSNE446BNof2J41E9OIt2SX8KYiiMeJ
-	4tc4/gIqR03qFEHO3yblMcTtgGuQBqBXjHv819YKDPoP9LH9ZKA==
-X-Gm-Gg: ASbGncs+ebDAy2Lr4Vjix5/Jz5oxXLLLd22ufhoL+cC61yut+jfHPTGK3SmmXRv8J6/
-	9no9OuD0MzyN9F7RKeheezfOUnvDl2UNvDdo/aWvzcDSHc2FB5HmMaA0pTeLNjecWa0bTT8+sxU
-	smZxJoDbtd4YyglEZEIdm/aDOYxrMKg+ZBzNKbkcmoOe/UEmgkdCC7fs1A6SULyTrsMcDzpzoBc
-	hOIAPkCSwJIGsY9LQV8pjVnfyfOHBcVjLv0jAFCuKGeo6+8BS9CaQphJjJhfyl4mxKlKT5d9uJv
-	UIRov371YFBakje5rcLup0rprcKMjg9sLb+yVMlG3Lplgw==
-X-Received: by 2002:a05:6000:22c6:b0:39c:1efc:1c1c with SMTP id ffacd0b85a97d-39c2976984emr5568299f8f.34.1743681374884;
-        Thu, 03 Apr 2025 04:56:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGe9epn8RH+1tWTOrW9iJCz/QsoiUwz7lwD5Ai/FLreIW9iTiIUclOnBL+eTfQUeG5/OFX1zA==
-X-Received: by 2002:a05:6000:22c6:b0:39c:1efc:1c1c with SMTP id ffacd0b85a97d-39c2976984emr5568275f8f.34.1743681374535;
-        Thu, 03 Apr 2025 04:56:14 -0700 (PDT)
-Received: from [192.168.88.253] (146-241-68-231.dyn.eolo.it. [146.241.68.231])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c30226acfsm1558796f8f.88.2025.04.03.04.56.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Apr 2025 04:56:14 -0700 (PDT)
-Message-ID: <4ea9e4da-636a-4573-a0b0-78ae3972bdb0@redhat.com>
-Date: Thu, 3 Apr 2025 13:56:12 +0200
+	bh=zmX6w5Ix4fYyhU741pjwWrsIs2mvR5Rct1Vyb9R9+8E=;
+	b=ZLmmH5cYNcT9v8AgMy4Rqv4Ms1pVIwSZ5vYKN5zZkdF2i4C1sNj4iY82mJjc29soa+KLzw
+	dG2oe+9te3Iwtal2rBv4W/K7zhXPIFkjzr0PnTH42hrbtq4SnBcadHMQck9fSLgJJ8Fz8P
+	3RtjBJN/czeRul2d9gFlkBoqocYmbL4=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-608-7Q5TL18jNVuUNJVa8Ui_Ug-1; Thu,
+ 03 Apr 2025 08:11:50 -0400
+X-MC-Unique: 7Q5TL18jNVuUNJVa8Ui_Ug-1
+X-Mimecast-MFC-AGG-ID: 7Q5TL18jNVuUNJVa8Ui_Ug_1743682308
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 53A2B180AF55;
+	Thu,  3 Apr 2025 12:11:48 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.44.32.20])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 163C01955BC2;
+	Thu,  3 Apr 2025 12:11:44 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu,  3 Apr 2025 14:11:13 +0200 (CEST)
+Date: Thu, 3 Apr 2025 14:11:07 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Sebastian Sewior <bigeasy@linutronix.de>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Peter Ziljstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: uprobe splat in PREEMP_RT
+Message-ID: <20250403121107.GA16254@redhat.com>
+References: <20250402091044.GB22091@redhat.com>
+ <20250402105444.tW8UU7vO@linutronix.de>
+ <20250402112007.GE22091@redhat.com>
+ <20250402113142.GG22091@redhat.com>
+ <20250402120649._gQHEtYM@linutronix.de>
+ <20250402121228.GH22091@redhat.com>
+ <20250402121624.lRIPMa_h@linutronix.de>
+ <20250402135641.GJ22091@redhat.com>
+ <20250402142349.GL22091@redhat.com>
+ <20250403090834.rp7Y4KRt@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net: octeontx2: Handle XDP_ABORTED and XDP invalid as
- XDP_DROP
-To: Lorenzo Bianconi <lorenzo@kernel.org>,
- Sunil Goutham <sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>,
- Subbaraya Sundeep <sbhatta@marvell.com>, hariprasad <hkelam@marvell.com>,
- Bharat Bhushan <bbhushan2@marvell.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>
-Cc: Sunil Goutham <sgoutham@cavium.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20250401-octeontx2-xdp-abort-fix-v1-1-f0587c35a0b9@kernel.org>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250401-octeontx2-xdp-abort-fix-v1-1-f0587c35a0b9@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250403090834.rp7Y4KRt@linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-On 4/1/25 11:02 AM, Lorenzo Bianconi wrote:
-> In the current implementation octeontx2 manages XDP_ABORTED and XDP
-> invalid as XDP_PASS forwarding the skb to the networking stack.
-> Align the behaviour to other XDP drivers handling XDP_ABORTED and XDP
-> invalid as XDP_DROP.
-> Please note this patch has just compile tested.
-> 
-> Fixes: 06059a1a9a4a5 ("octeontx2-pf: Add XDP support to netdev PF")
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+On 04/03, Sebastian Sewior wrote:
+>
+> On 2025-04-02 16:23:50 [+0200], Oleg Nesterov wrote:
+> > OK, it seems we can't understand each other. Probably my fault.
+> >
+> > So, it think that
+> >
+> > 	static inline bool __seqprop_preemptible(const seqcount_t *s)
+> > 	{
+> > 		return false;
+> > 	}
+> >
+> > should return true. Well because it is preemptible just like
+> > SEQCOUNT_LOCKNAME(mutex) or, if PREEMPT_RT=y, SEQCOUNT_LOCKNAME(spinlock).
+> >
+> > Am I wrong?
+>
+> A seqcount_t has no lock associated with so it is not preemptible.
 
-The patch LGTM, but I would appreciate some feedback from someone that
-could actually run the code on real H/W before sending it all the way to
-stable.
+Well, I still disagree...
 
-Thanks!
+> It
+> always refers to the lock. This should come from extern so it not only
+> disables preemption but also ensures that there can only be one writer.
 
-Paolo
+Yes, but
+
+> The "disabling preemption" is only there to ensure progress is made in
+> reasonable time: You should not get preempted in your write section. If
+> the writer gets preempted then nothing bad (as in *boom*) will happen
+> because you ensured that you have only one writer can enter the section.
+> In that scenario the reader will spin on the counter until the writer
+> gets back on the CPU and completes the write section and while doing so
+> wasting resources. No boom, just wasting resources.
+
+This can lead to deadlock.
+
+Suppose we have a seqcount_t SEQ, and we ensure that it has a single
+writer. Say, this SEQ is protected by mutex.
+
+The writer does write_seqcount_begin(&SEQ) on a UP machine, and it is
+preeempted by a real-time process which does read_seqcount_begin(&SEQ).
+The reader will spin "forever".
+
+> If you make __seqprop_preemptible() return true then
+> write_seqcount_begin() for seqcount_t will disable preemption on its
+> own. You could now remove all preempt_disable() around its callers. So
+> far so good as everyone should have one.
+
+Yes,
+
+> The problem here is that for !RT only seqcount_mutex_t gets preemption
+> disabled.
+
+Sure, for !RT spinlock/rwlock disable preemption,
+
+> For RT none of the seqcount_t variants get preemption disabled
+> but rely on lock+unlock mechanism to ensure that progress is made.
+
+Yes I know, but seqcount_t doesn't have the associated lock.
+
+> With this change it would also disable preemption for RT and I don't
+> know if it is is always the smart thing to do.
+
+I don't know either.
+
+But the current logic doesn't look right to me.
+
+From include/linux/seqlock.h
+
+	SEQCOUNT_LOCKNAME(raw_spinlock, raw_spinlock_t,  false,    raw_spin)
+	SEQCOUNT_LOCKNAME(spinlock,     spinlock_t,      __SEQ_RT, spin)
+	SEQCOUNT_LOCKNAME(rwlock,       rwlock_t,        __SEQ_RT, read)
+	SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     mutex)
+
+so for these seqcount's seqprop_preemptible() returns false only if
+the associated lock disables preemption. raw_spinlock always does this
+spinlock/rwlock depend on PREEMPT_RT.
+
+But seqcount_t doesn't have the associated lock, so I think that
+seqprop_preemptible(seqcount_t) should return true.
+
+But OK, I won't insist. At least it seems we more or less understand
+each other ;)
+
+Oleg.
 
 
