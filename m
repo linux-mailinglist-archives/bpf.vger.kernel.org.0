@@ -1,80 +1,48 @@
-Return-Path: <bpf+bounces-55210-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55211-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF31A79DB2
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 10:11:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1C1DA79DD2
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 10:17:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65C291897847
-	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 08:11:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CC89174677
+	for <lists+bpf@lfdr.de>; Thu,  3 Apr 2025 08:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92EC24169E;
-	Thu,  3 Apr 2025 08:11:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D0F2417E4;
+	Thu,  3 Apr 2025 08:17:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E5nNnpmV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tav1fUh6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63B0241691;
-	Thu,  3 Apr 2025 08:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202F21854;
+	Thu,  3 Apr 2025 08:17:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743667866; cv=none; b=d2YtwO+Jl2d2OAJpwApFCxbMnQao1QXnAXaLrAn9NVcRkqnttsDhS6B1bBq4WjiGDn0AT08plPFYal4rt+Hk+lKpVIp0k37LFx2Kk52ya1EXr2TsT7SSBy0RI3bnsgME8oqImJPzqkmyZ2GSZ/sPSoxKJMwgVCWrYeJnhZlb9aQ=
+	t=1743668235; cv=none; b=gF4+4npLemMmsU5gQb5cryYgnwlgflKImgmn0tmOGWpfXi74XlNZmqIlxqMAs6P0k9zcZG//occ07PXxyC+Kgcm1SIZSQMHpzsjSvuq1PVMwjc6YhZqgdj0Eq0I6avP2Cv5QBN/Lub6uaLjbKPhCWj3PoJ0/pVMb4nyQAdiFejM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743667866; c=relaxed/simple;
-	bh=2R7xbK2zYAifCYk+bxYA2fYSAJkn/8z0fvehWJ4nvyw=;
+	s=arc-20240116; t=1743668235; c=relaxed/simple;
+	bh=NH6Xl6My3uB8VV7ts3K3V3CB2w3gDVGSyxth+G2YtOA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=icC/9pnoy0DiZz0OFhiTR49VG/MkEWh3gs+tBkftEZbcFdnuY8MpirWNRNMe2pPKmqTZJJG9xbNF+qaqZFOO9Tg2xq2w78g2fgF0YfCoW4Uik4MtxvO5nqefaxjLdM5Jgyz279sCuWuXsBwUyJmcW+9y8zJKFvboYoYUcwyY/Vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E5nNnpmV; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-225df540edcso23004335ad.0;
-        Thu, 03 Apr 2025 01:11:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743667864; x=1744272664; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iUzFKSfu3nO5CAOYlZxLMd314d5zWCMqkdsMAHHXslE=;
-        b=E5nNnpmVli3mgdfUexiyX10YTzOlH4nyWL39mpeHWkAUNXsTa/ldqhVJR0eVGNtVBj
-         +0s7YScBhkQ+WaAj4s7q0TzEMpu4GMB5n4qd63XJ2xPpwqp8TeUFnpm3MtGJFTXKx/pN
-         bTWlNRzGpxPEl6fJSuwioYPl74cSjJe81xhfQYwCWewt0GonHER77dE8SkpGixd4HC84
-         6Sef2Foa35uZpvjBcX6mRmDlF+pPTlF5UTchOPBEJJbnod3nQmebwFAZDF/+ToJM22wc
-         6rLbwSR7GxZhO/EcN+invekG4TDpTSp3qTsU2waZPNrZ45Vik0tGNmDqVg7eqmTZwEN2
-         8AkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743667864; x=1744272664;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iUzFKSfu3nO5CAOYlZxLMd314d5zWCMqkdsMAHHXslE=;
-        b=N+goa62lXK63uuWD1A+AZq9dUe1119UJLMOF0RUYBmr3yijjpb1fzIFnR+mjuDzKKd
-         ysuRZO5PCRsYDzDvfsHzMKOj6GWONkprzRuFkxjJA0HUVdKfKuvF4Xb3JJbiah9Iu9Lb
-         seZaU2WjiQWDRiEoaBQs9SPXg1dd8IgcnoMy3RMWh9SRCT+v1rKp+LwLTXeueul656gp
-         hypxYVllPNmT9614JW6IkgB7hNNY8N4SQL+zGbc8z5mJt/CWIlfu2XAfzCW7JuwkraiS
-         O1mGBuV5kqYmboskvFsCzDvrfAQq7Rl6BapYsLMYMMLJQiO2upCHfb52Gy+EZEdQK2YS
-         vy2A==
-X-Forwarded-Encrypted: i=1; AJvYcCU9EWkLv53uiQB6hXBzTGBz47Fx8+VqzuJYtDdIX8kbRYR5ncXg9BkbAlp8IH3+f691ELVde7nk@vger.kernel.org, AJvYcCULozVVy0La968Os2me7/uX1OqFAUrbDB+KMXcT+r1UNiVAljlrqZnH+AH1KrPDQc1ewP0v4KjgTuRMKxNb@vger.kernel.org, AJvYcCWRgrFf7NJ0DqikhxvGDEr8+sKZttyKeZnNRtQwBnuyK2XRiMyyCo6lKSfRy/re5Z0K2DM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYNbWJor99PcUYZQJzJ1vU5aAP8mmZPJ0dANTH6ikRvN8jTmBE
-	hwPTYy0flitYnKsgO2ydlX60FVo6RLb75NP//sj4++4axDa4E6o/
-X-Gm-Gg: ASbGncsh0gxva4Nfhws577wxen4/kibq1zIjtRdAQEGxT6mTjGH3YOyBe7z8t0aZ+oC
-	sfcN6AiD+rLJcb2YAd+llYN2jhKNDzJ9e9fm1x/BdN1/LsXiEl16zkLoiXkwm2k5ekhfpB78sDu
-	3MBdhGvt6PqOUBdW4FIGI7AMe4eIKbPMaepIhT9WZChsFlKgZSj5qLfT+u7Dt/aGz265zMwf7QN
-	73fLx8ePtjbNMpm1yrQ+lYe2bhUQZATajW0U3Fa9e3yLqxRAixNqHOXE/fplOgUUJOcsAAk/RrS
-	WJmkDpnIIFvDU/bXIbL2C8m01lLv/koXuRhEzk4H/cIhooBfg2VPraALYmaV2G42F1Vfv2e1uQe
-	18bUj6joDlm63oFMmdyVikLo=
-X-Google-Smtp-Source: AGHT+IF4eQzBfv+ODf73ZPw7KCMX4BruvGE2f4o7JP7Bv1oXNuTH3a7SodgEPjBCqKICofhoR7aC0A==
-X-Received: by 2002:a17:902:820d:b0:21f:40de:ae4e with SMTP id d9443c01a7336-229765ce2bdmr28438375ad.9.1743667863970;
-        Thu, 03 Apr 2025 01:11:03 -0700 (PDT)
-Received: from ?IPV6:2001:ee0:4f4e:bd30:1c8a:9f9b:3aa6:dc25? ([2001:ee0:4f4e:bd30:1c8a:9f9b:3aa6:dc25])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-229785ad0d6sm8658415ad.22.2025.04.03.01.10.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Apr 2025 01:11:03 -0700 (PDT)
-Message-ID: <653b71a4-99a5-49d4-b927-fe2bf5890896@gmail.com>
-Date: Thu, 3 Apr 2025 15:10:57 +0700
+	 In-Reply-To:Content-Type; b=H8TNRp3H8Ps+Q05EevGRrfbT9R6cbDnREmyqHC1HE3zB1LNJ96ji65K1Zwx/Qg8rNYDgh3TM4e093mTfUAZZR0/Mt4yo2Ep6nL4X8L1xSLpbEA7p3TXwOUi++/2kzsIxjHH7H17RB0Qkh491ou8tzg5IK30umRd+J4ZZax/qWjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tav1fUh6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47B72C4CEE3;
+	Thu,  3 Apr 2025 08:17:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743668234;
+	bh=NH6Xl6My3uB8VV7ts3K3V3CB2w3gDVGSyxth+G2YtOA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Tav1fUh6tkOTHKpkrkVLElZqk32bmwq6XVYJI7Z0Amp2fEqeapHSbiPFOpzZukK1m
+	 pcsOAfZoXS2U0/dbqS3VwoaJP7V79/pu/anR5KyQfmMqyql486AHPXIBYgbyBedI4P
+	 slUtZguyHTw1V0Hw5EAinpRnK175mvTcUutIPJFjXLw/5Fdk/x22EyN9wteAhjtjaz
+	 JMa6ec/yXiOjIh/jFKfNVn3VpUcnoAVWRFPaU3Bl9H2I2gt36is+zDtpYb9/U6JbcL
+	 Gp60qiiBC53h1D3EpT/aB7iWMSmlyzfIA6YL7s+SOHNq4eBe55Jzs9QI5eK2pelXVL
+	 TH5977Wmx9M/A==
+Message-ID: <75f49cbc-2d54-480e-b67d-35ef53c4421b@kernel.org>
+Date: Thu, 3 Apr 2025 10:17:05 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,67 +50,137 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] virtio-net: disable delayed refill when setting up xdp
-To: Paolo Abeni <pabeni@redhat.com>, virtualization@lists.linux.dev
-Cc: "Michael S . Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+Subject: Re: [PATCH bpf v2 1/2] bpf, xdp: clean head/meta when expanding it
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, bpf@vger.kernel.org
+Cc: mrpre@163.com, syzbot+0e6ddb1ef80986bdfe64@syzkaller.appspotmail.com,
  Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20250402054210.67623-1-minhquangbui99@gmail.com>
- <4b3bea7c-110d-48eb-bcf6-58f4b2cd1999@redhat.com>
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ Willem de Bruijn <willemb@google.com>, Jason Xing
+ <kerneljasonxing@gmail.com>, Anton Protopopov <aspsk@isovalent.com>,
+ Abhishek Chauhan <quic_abchauha@quicinc.com>,
+ Jordan Rome <linux@jordanrome.com>,
+ Martin Kelly <martin.kelly@crowdstrike.com>,
+ David Lechner <dlechner@baylibre.com>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20250331032354.75808-1-jiayuan.chen@linux.dev>
+ <20250331032354.75808-2-jiayuan.chen@linux.dev>
 Content-Language: en-US
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-In-Reply-To: <4b3bea7c-110d-48eb-bcf6-58f4b2cd1999@redhat.com>
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250331032354.75808-2-jiayuan.chen@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 4/3/25 14:24, Paolo Abeni wrote:
-> On 4/2/25 7:42 AM, Bui Quang Minh wrote:
->> When setting up XDP for a running interface, we call napi_disable() on
->> the receive queue's napi. In delayed refill_work, it also calls
->> napi_disable() on the receive queue's napi. This can leads to deadlock
->> when napi_disable() is called on an already disabled napi. This commit
->> fixes this by disabling future and cancelling all inflight delayed
->> refill works before calling napi_disabled() in virtnet_xdp_set.
->>
->> Fixes: 4941d472bf95 ("virtio-net: do not reset during XDP set")
->> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
->> ---
->>   drivers/net/virtio_net.c | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
->>
->> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->> index 7e4617216a4b..33406d59efe2 100644
->> --- a/drivers/net/virtio_net.c
->> +++ b/drivers/net/virtio_net.c
->> @@ -5956,6 +5956,15 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->>   	if (!prog && !old_prog)
->>   		return 0;
->>   
->> +	/*
->> +	 * Make sure refill_work does not run concurrently to
->> +	 * avoid napi_disable race which leads to deadlock.
->> +	 */
->> +	if (netif_running(dev)) {
->> +		disable_delayed_refill(vi);
->> +		cancel_delayed_work_sync(&vi->refill);
-> AFAICS at this point refill_work() could still be running, why don't you
-> need to call flush_delayed_work()?
 
-AFAIK, the cancel_delayed_work_sync (this is a synchronous version) 
-provides somewhat stronger guarantee than the flush_delayed_work. 
-Internally, the cancel_delayed_work_sync will also call to __flush_work. 
-The cancel_delayed_work_sync temporarily disables the work before 
-calling __flush_work, so that even if refill_work tries to re-queue 
-itself, that re-queue will fail. As the refill_work can actually 
-re-queue itself, I think we must use cancel_delayed_work_sync here.
 
-Thanks,
-Quang Minh.
+On 31/03/2025 05.23, Jiayuan Chen wrote:
+> The device allocates an skb, it additionally allocates a prepad size
+> (usually equal to NET_SKB_PAD or XDP_PACKET_HEADROOM) but leaves it
+> uninitialized.
+> 
+> The bpf_xdp_adjust_head function moves skb->data forward, which allows
+> users to access data belonging to other programs, posing a security risk.
 
+I find your description confusing, and it needs to be improved to avoid 
+people interpenetrating this when reading the commit log in the future.
+
+It is part of the UAPI that BPF programs access data belonging to other 
+BPF programs.  It is the concept behind data_meta, e.g. that XDP set 
+information in this memory and TC-BPF reads it again (chained XDP progs 
+also have R/W access).  I hope/assume this is not the desired 
+interpretation of your text.
+
+I guess you want to say, that the intention is to avoid BPF programs 
+accessing uninitialized data?
+(... which is also what the code does at a glance)
+
+> Reported-by: syzbot+0e6ddb1ef80986bdfe64@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/00000000000067f65105edbd295d@google.com/T/
+> Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+> ---
+>   include/uapi/linux/bpf.h       | 8 +++++---
+>   net/core/filter.c              | 5 ++++-
+>   tools/include/uapi/linux/bpf.h | 6 ++++--
+>   3 files changed, 13 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index defa5bb881f4..be01a848cbbf 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -2760,8 +2760,9 @@ union bpf_attr {
+>    *
+>    * long bpf_xdp_adjust_head(struct xdp_buff *xdp_md, int delta)
+>    * 	Description
+> - * 		Adjust (move) *xdp_md*\ **->data** by *delta* bytes. Note that
+> - * 		it is possible to use a negative value for *delta*. This helper
+> + *		Adjust (move) *xdp_md*\ **->data** by *delta* bytes. Note that
+> + *		it is possible to use a negative value for *delta*. If *delta*
+> + *		is negative, the new header will be memset to zero. This helper
+>    * 		can be used to prepare the packet for pushing or popping
+>    * 		headers.
+>    *
+> @@ -2989,7 +2990,8 @@ union bpf_attr {
+>    * long bpf_xdp_adjust_meta(struct xdp_buff *xdp_md, int delta)
+>    * 	Description
+>    * 		Adjust the address pointed by *xdp_md*\ **->data_meta** by
+> - * 		*delta* (which can be positive or negative). Note that this
+> + *		*delta* (which can be positive or negative). If *delta* is
+> + *		negative, the new meta will be memset to zero. Note that this
+>    * 		operation modifies the address stored in *xdp_md*\ **->data**,
+>    * 		so the latter must be loaded only after the helper has been
+>    * 		called.
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 46ae8eb7a03c..5f01d373b719 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3947,6 +3947,8 @@ BPF_CALL_2(bpf_xdp_adjust_head, struct xdp_buff *, xdp, int, offset)
+>   	if (metalen)
+>   		memmove(xdp->data_meta + offset,
+>   			xdp->data_meta, metalen);
+> +	if (offset < 0)
+> +		memset(data, 0, -offset);
+>   	xdp->data_meta += offset;
+>   	xdp->data = data;
+>   
+> @@ -4239,7 +4241,8 @@ BPF_CALL_2(bpf_xdp_adjust_meta, struct xdp_buff *, xdp, int, offset)
+>   		return -EINVAL;
+>   	if (unlikely(xdp_metalen_invalid(metalen)))
+>   		return -EACCES;
+> -
+> +	if (offset < 0)
+> +		memset(meta, 0, -offset);
+>   	xdp->data_meta = meta;
+>   
+>   	return 0;
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index defa5bb881f4..7b1871f2eccf 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -2761,7 +2761,8 @@ union bpf_attr {
+>    * long bpf_xdp_adjust_head(struct xdp_buff *xdp_md, int delta)
+>    * 	Description
+>    * 		Adjust (move) *xdp_md*\ **->data** by *delta* bytes. Note that
+> - * 		it is possible to use a negative value for *delta*. This helper
+> + *		it is possible to use a negative value for *delta*. If *delta*
+> + *		is negative, the new header will be memset to zero. This helper
+>    * 		can be used to prepare the packet for pushing or popping
+>    * 		headers.
+>    *
+> @@ -2989,7 +2990,8 @@ union bpf_attr {
+>    * long bpf_xdp_adjust_meta(struct xdp_buff *xdp_md, int delta)
+>    * 	Description
+>    * 		Adjust the address pointed by *xdp_md*\ **->data_meta** by
+> - * 		*delta* (which can be positive or negative). Note that this
+> + *		*delta* (which can be positive or negative). If *delta* is
+> + *		negative, the new meta will be memset to zero. Note that this
+>    * 		operation modifies the address stored in *xdp_md*\ **->data**,
+>    * 		so the latter must be loaded only after the helper has been
+>    * 		called.
 
