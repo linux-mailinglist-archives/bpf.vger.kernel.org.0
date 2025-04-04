@@ -1,149 +1,241 @@
-Return-Path: <bpf+bounces-55298-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55299-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 454D4A7B3E4
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 02:28:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 528C2A7B496
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 02:41:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFF8B173A8B
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 00:25:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 963E87A2AA7
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 00:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFAE2066C5;
-	Fri,  4 Apr 2025 00:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17B261925BC;
+	Fri,  4 Apr 2025 00:28:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UZSJeXxo"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="o0pYuFHS"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF1F199E8D;
-	Fri,  4 Apr 2025 00:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF13634
+	for <bpf@vger.kernel.org>; Fri,  4 Apr 2025 00:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743725237; cv=none; b=F2r/tW9g9avWkXY7Cja0hzwp+32Ri/3usqP83iwt6qZ/i+OvfNSEUcw2rl8/fCzXB1gq2y+kpQUmfW6LqJAH4/p3Fo6aE6/L7geaUfhZEh1REEYD+uOIHyBKwolvSFcCej0Io0J1MiijwVZBrzkxMQOI6x3dmSvsLzBBRGClVek=
+	t=1743726480; cv=none; b=XELf/EN0QEQQPBPTZsWbj4YDIkQGQgz2YuzIle4BQ5Kfru5Q6Nl3QMzMQ0QVBCyUHqlIecXgxL1Eu1s2JErYAL1GYQ3aIkqyMTC+Dbj89LYnNRfunKkTC9kvxecEgM4IGXSwGJVjWRaby9TVNsoVxUA1J+9iH36EVUfz8/DTdUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743725237; c=relaxed/simple;
-	bh=yxVDXcigv0yG9RTyQnDfcMA9shJwIBsdRhZlBLLrTt0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ay4Ij2TAJNYhkjFw2FOWWzWqKbe4ExaHROYty3fjmhFyFaB4Io7J3v+3EgOGarvlAfL47I6kOwwb39vOIW688DI34J3Bj65hQdjvFJMU0w9QLpLsaq4Op5UwM+CA1zD7XGmlB7EGCDKU/ya/1rT6At9pToRkLOUfe3ukAaFXNX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UZSJeXxo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E457C4CEE9;
-	Fri,  4 Apr 2025 00:07:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743725234;
-	bh=yxVDXcigv0yG9RTyQnDfcMA9shJwIBsdRhZlBLLrTt0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UZSJeXxoWlgKguSaxpFJgFjESvONPw8XfbChhpsbDrZEzN/K7qqRhKf10zqlK0j4w
-	 yAChIpZJAKNhUjaGh0zBF1SB98gEPd34Q5hVKS7ZV0hiLyPMgOiXOvWAoKeldcfdn4
-	 yOxmFDCO/kNNmXzB/LD3zTNmuhlaqzCFN8i7EgaJgN3xUWHnpqecIfVGz9dijsVxZP
-	 lCqe1MwL30vhFx7W6vm/CueDywleTwaJsVn/8WuZV2r+kUl630QZ1CJaroFk8VUkup
-	 diOAhIux4ncEIDY3NO1jq6SkStyAZ7cV+UeTKpRLL6w30lTMM7eWW1fAbP4qpuEHbt
-	 dlmpprqSywd+Q==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	song@kernel.org,
-	daniel@iogearbox.net,
-	kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 05/10] bpf: Fix deadlock between rcu_tasks_trace and event_mutex.
-Date: Thu,  3 Apr 2025 20:06:55 -0400
-Message-Id: <20250404000700.2689158-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250404000700.2689158-1-sashal@kernel.org>
-References: <20250404000700.2689158-1-sashal@kernel.org>
+	s=arc-20240116; t=1743726480; c=relaxed/simple;
+	bh=sZCuFd4nf1NVtLGFqso9PSbFQ53jt5gd2JBpo8x0AYk=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=optkZ9rfSvpuCrI0UrhXMu4REkOzPWySV35ttJPlu+LZrWRJL3JLxaAh71bXpKRSrhsbU4JZRKLy6rIcPazj+I2JgRkoTgLSt1P0cjio9vy+B6pmDt/2HS0ZoKRiygFZ+5tsEt7eLlxhC5LhWo6+Wu8D/6BN4zykwhG4y8e7UcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=o0pYuFHS; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.132
-Content-Transfer-Encoding: 8bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1743726466;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xBkmuETqkFanCorV9XII3T38OpLgK/5FcDlEGxS6XPw=;
+	b=o0pYuFHS4a16tKKp9qPixsi8OkmZfIh/VoQNM467L8R0c/GR+tYyqm5x2K/ZHU2ZArSZ0M
+	EpIEZ+nb7humYj32cSPTWpEq8Uat13ol/fFWrg0y8UVvTfBPWLDD713oUl/Hf3NPpULtDL
+	aYvRGeZ7p9Pt3qbOd8TXVpYiVsAUulQ=
+Date: Fri, 04 Apr 2025 00:27:42 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <ce4a0aacecb2db7d232e94a324150dc5936c803a@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH bpf v2 1/2] bpf, xdp: clean head/meta when expanding it
+To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+Cc: "bpf" <bpf@vger.kernel.org>, "Jiayuan Chen" <mrpre@163.com>,
+ syzbot+0e6ddb1ef80986bdfe64@syzkaller.appspotmail.com, "Alexei
+ Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
+ <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Song
+ Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "John
+ Fastabend" <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>,
+ "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
+ "Jiri Olsa" <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>, "Simon Horman" <horms@kernel.org>,
+ "Jesper Dangaard Brouer" <hawk@kernel.org>, "Mykola Lysenko"
+ <mykolal@fb.com>, "Shuah Khan" <shuah@kernel.org>, "Willem de Bruijn"
+ <willemb@google.com>, "Jason Xing" <kerneljasonxing@gmail.com>, "Anton
+ Protopopov" <aspsk@isovalent.com>, "Abhishek Chauhan"
+ <quic_abchauha@quicinc.com>, "Jordan Rome" <linux@jordanrome.com>,
+ "Martin Kelly" <martin.kelly@crowdstrike.com>, "David Lechner"
+ <dlechner@baylibre.com>, "LKML" <linux-kernel@vger.kernel.org>, "Network
+ Development" <netdev@vger.kernel.org>, "open list:KERNEL SELFTEST
+ FRAMEWORK" <linux-kselftest@vger.kernel.org>
+In-Reply-To: <CAADnVQJ6NPGuY=c8kbpX_nLYq4oOxOBAxbDPFLuw+yr4WrQQOQ@mail.gmail.com>
+References: <20250331032354.75808-1-jiayuan.chen@linux.dev>
+ <20250331032354.75808-2-jiayuan.chen@linux.dev>
+ <CAADnVQJ6NPGuY=c8kbpX_nLYq4oOxOBAxbDPFLuw+yr4WrQQOQ@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-From: Alexei Starovoitov <ast@kernel.org>
+April 3, 2025 at 22:24, "Alexei Starovoitov" <alexei.starovoitov@gmail.co=
+m> wrote:
 
-[ Upstream commit 4580f4e0ebdf8dc8d506ae926b88510395a0c1d1 ]
 
-Fix the following deadlock:
-CPU A
-_free_event()
-  perf_kprobe_destroy()
-    mutex_lock(&event_mutex)
-      perf_trace_event_unreg()
-        synchronize_rcu_tasks_trace()
 
-There are several paths where _free_event() grabs event_mutex
-and calls sync_rcu_tasks_trace. Above is one such case.
+>=20
+>=20On Sun, Mar 30, 2025 at 8:27 PM Jiayuan Chen <jiayuan.chen@linux.dev>=
+ wrote:
+>=20
+>=20>=20
+>=20> The device allocates an skb, it additionally allocates a prepad siz=
+e
+> >=20
+>=20>  (usually equal to NET_SKB_PAD or XDP_PACKET_HEADROOM) but leaves i=
+t
+> >=20
+>=20>  uninitialized.
+> >=20
+>=20>  The bpf_xdp_adjust_head function moves skb->data forward, which al=
+lows
+> >=20
+>=20>  users to access data belonging to other programs, posing a securit=
+y risk.
+> >=20
+>=20>  Reported-by: syzbot+0e6ddb1ef80986bdfe64@syzkaller.appspotmail.com
+> >=20
+>=20>  Closes: https://lore.kernel.org/all/00000000000067f65105edbd295d@g=
+oogle.com/T/
+> >=20
+>=20>  Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+> >=20
+>=20>  ---
+> >=20
+>=20>  include/uapi/linux/bpf.h | 8 +++++---
+> >=20
+>=20>  net/core/filter.c | 5 ++++-
+> >=20
+>=20>  tools/include/uapi/linux/bpf.h | 6 ++++--
+> >=20
+>=20>  3 files changed, 13 insertions(+), 6 deletions(-)
+> >=20
+>=20>  diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> >=20
+>=20>  index defa5bb881f4..be01a848cbbf 100644
+> >=20
+>=20>  --- a/include/uapi/linux/bpf.h
+> >=20
+>=20>  +++ b/include/uapi/linux/bpf.h
+> >=20
+>=20>  @@ -2760,8 +2760,9 @@ union bpf_attr {
+> >=20
+>=20>  *
+> >=20
+>=20>  * long bpf_xdp_adjust_head(struct xdp_buff *xdp_md, int delta)
+> >=20
+>=20>  * Description
+> >=20
+>=20>  - * Adjust (move) *xdp_md*\ **->data** by *delta* bytes. Note that
+> >=20
+>=20>  - * it is possible to use a negative value for *delta*. This helpe=
+r
+> >=20
+>=20>  + * Adjust (move) *xdp_md*\ **->data** by *delta* bytes. Note that
+> >=20
+>=20>  + * it is possible to use a negative value for *delta*. If *delta*
+> >=20
+>=20>  + * is negative, the new header will be memset to zero. This helpe=
+r
+> >=20
+>=20>  * can be used to prepare the packet for pushing or popping
+> >=20
+>=20>  * headers.
+> >=20
+>=20>  *
+> >=20
+>=20>  @@ -2989,7 +2990,8 @@ union bpf_attr {
+> >=20
+>=20>  * long bpf_xdp_adjust_meta(struct xdp_buff *xdp_md, int delta)
+> >=20
+>=20>  * Description
+> >=20
+>=20>  * Adjust the address pointed by *xdp_md*\ **->data_meta** by
+> >=20
+>=20>  - * *delta* (which can be positive or negative). Note that this
+> >=20
+>=20>  + * *delta* (which can be positive or negative). If *delta* is
+> >=20
+>=20>  + * negative, the new meta will be memset to zero. Note that this
+> >=20
+>=20>  * operation modifies the address stored in *xdp_md*\ **->data**,
+> >=20
+>=20>  * so the latter must be loaded only after the helper has been
+> >=20
+>=20>  * called.
+> >=20
+>=20>  diff --git a/net/core/filter.c b/net/core/filter.c
+> >=20
+>=20>  index 46ae8eb7a03c..5f01d373b719 100644
+> >=20
+>=20>  --- a/net/core/filter.c
+> >=20
+>=20>  +++ b/net/core/filter.c
+> >=20
+>=20>  @@ -3947,6 +3947,8 @@ BPF_CALL_2(bpf_xdp_adjust_head, struct xdp_b=
+uff *, xdp, int, offset)
+> >=20
+>=20>  if (metalen)
+> >=20
+>=20>  memmove(xdp->data_meta + offset,
+> >=20
+>=20>  xdp->data_meta, metalen);
+> >=20
+>=20>  + if (offset < 0)
+> >=20
+>=20>  + memset(data, 0, -offset);
+> >=20
+>=20>  xdp->data_meta +=3D offset;
+> >=20
+>=20>  xdp->data =3D data;
+> >=20
+>=20>  @@ -4239,7 +4241,8 @@ BPF_CALL_2(bpf_xdp_adjust_meta, struct xdp_b=
+uff *, xdp, int, offset)
+> >=20
+>=20>  return -EINVAL;
+> >=20
+>=20>  if (unlikely(xdp_metalen_invalid(metalen)))
+> >=20
+>=20>  return -EACCES;
+> >=20
+>=20>  -
+> >=20
+>=20>  + if (offset < 0)
+> >=20
+>=20>  + memset(meta, 0, -offset);
+> >=20
+>=20
+> Let's make everyone pay a performance penalty to silence
+> KMSAN warning?
+> I don't think it's a good trade off.
+> Soft nack.
+>
 
-CPU B
-bpf_prog_test_run_syscall()
-  rcu_read_lock_trace()
-    bpf_prog_run_pin_on_cpu()
-      bpf_prog_load()
-        bpf_tracing_func_proto()
-          trace_set_clr_event()
-            mutex_lock(&event_mutex)
+It's not just about simply suppressing KMSAN warnings, but for security
+considerations.
 
-Delegate trace_set_clr_event() to workqueue to avoid
-such lock dependency.
+So I'd like to confirm: currently, loading an XDP program only requires
+CAP_NET_ADMIN and CAP_BPF permissions. If we consider this as a super
+privilege, then even if uninitialized memory is exposed, I think it's oka=
+y,
+as it's the developer's responsibility, for example, like the CVE in meta
+https://vuldb.com/?id.246309.
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20250224221637.4780-1-alexei.starovoitov@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/trace/bpf_trace.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index af48f66466e81..91d0d1cce09b3 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -403,7 +403,7 @@ static const struct bpf_func_proto bpf_trace_printk_proto = {
- 	.arg2_type	= ARG_CONST_SIZE,
- };
- 
--static void __set_printk_clr_event(void)
-+static void __set_printk_clr_event(struct work_struct *work)
- {
- 	/*
- 	 * This program might be calling bpf_trace_printk,
-@@ -416,10 +416,11 @@ static void __set_printk_clr_event(void)
- 	if (trace_set_clr_event("bpf_trace", "bpf_trace_printk", 1))
- 		pr_warn_ratelimited("could not enable bpf_trace_printk events");
- }
-+static DECLARE_WORK(set_printk_work, __set_printk_clr_event);
- 
- const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
- {
--	__set_printk_clr_event();
-+	schedule_work(&set_printk_work);
- 	return &bpf_trace_printk_proto;
- }
- 
-@@ -462,7 +463,7 @@ static const struct bpf_func_proto bpf_trace_vprintk_proto = {
- 
- const struct bpf_func_proto *bpf_get_trace_vprintk_proto(void)
- {
--	__set_printk_clr_event();
-+	schedule_work(&set_printk_work);
- 	return &bpf_trace_vprintk_proto;
- }
- 
--- 
-2.39.5
-
+Or I'm thinking, can we rely on the verifier to force the initialization
+of the newly added packet boundary behavior, specifically for this specia=
+l
+case (although it won't be easy to implement).
 
