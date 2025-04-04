@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-55309-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55310-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 609E1A7B765
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 07:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CA019A7B7D5
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 08:36:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 197401776CB
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 05:37:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63CC817830A
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 06:36:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D657167DB7;
-	Fri,  4 Apr 2025 05:37:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360B318C930;
+	Fri,  4 Apr 2025 06:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="iXesTLYp"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="VLtktzyg"
 X-Original-To: bpf@vger.kernel.org
 Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184ED2E62C0;
-	Fri,  4 Apr 2025 05:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A5F9847B;
+	Fri,  4 Apr 2025 06:35:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743745027; cv=none; b=NAjuS203K0C+Aifjmagixeqka9k7PM3Hgg8kKgK6baaKqPQvfq68V7YbhXq27uCMw8drszBWR2mVUYsgyIcsQQ8aTR3tfuDbXPUANAC2md8wC8TId/CmsdSUAN/2dHRi84ORq84DtDOjf3MzmH/MxrhX7HEFSXx/9EjwS+HOqW4=
+	t=1743748549; cv=none; b=IzSJel+XuOqdbmmkaKkVzQN0wuur9nlZlGUAYEaX44wQjTMzhWSoR0wMPnYynniIrvOGrrr2c/LeoscFU1n8hSuae+3uNXWxexIUSH5e2n7ARKzvhSf9dDJpS8CjWAyw7IcvRFKTrX215Rpi8LQd5OBvl1uE8IErmtH8FJ9kPXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743745027; c=relaxed/simple;
-	bh=eMsiF/PXoai0KvDHU7yXTnPdYeGeIe/AIWfCyoMZMcs=;
+	s=arc-20240116; t=1743748549; c=relaxed/simple;
+	bh=hD8174uOH2T+lsYS2evpeGfkcl1Wpip1zHGbv8j2Ef8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BX0oKfMmp8jo7/RupoialKmZjj9lxkmGI9dUxm6n/tZwjnz0fPZB3AxOJpA7LdXfn5AXA5uEV/OUbaJDXrVTL1yQvmYI9/fBhsuDeEZZb6yxCi/gsB4vDr0PR/P/or7FCtB34fFST+u08cEJ5gfoylkrjsYPpkTVOftPh/sqNjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=iXesTLYp; arc=none smtp.client-ip=178.60.130.6
+	 In-Reply-To:Content-Type; b=rqBtrXnrax2vdCgMJb8G/Y62IDbhlsXSgMjbKpdPsWcAcScbVaja0Gnec65rD8+NszaMbInTo60q9mPOKk12wx69ID4rvMkdFU+U7CFKKHnjy8NFTIDpAaaLfWUHjkgKKWlQy00tE3I0ZU+qG1munhVxk0uEP394kgjIJVmqIec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=VLtktzyg; arc=none smtp.client-ip=178.60.130.6
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
@@ -37,18 +37,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=RJ6sJSRTRl9f2sZO8e6I1tdZqgXHwuW7syCheEXJI80=; b=iXesTLYpmAC7VnKZcqwzWpaBMr
-	+BjlrXU93j2nnBgWxooZfjJgUfl5Evpo0stzq6D2PRnPg17LRd1iUGHQLn52CF5XjyGL5UNSFzHbf
-	JPKPCo/VWr+iyn89AlTv0SBwY4vv/I1EN+lFPdhbg47mAxFgPtMYzLs6PTjGwr5S6eVfboNa31UMy
-	eliDl/+0VjIcxwD8y7zhtGv1a/nu24osG1SG3saWbE8klvXekMID1DobWqI0xvINcpn9xVpQlL9vf
-	ANjhs9vuySDsxA8cPjPQEkotsnRrFDO8Nt8xrPZgJox5OxJ18R6NFrkDms8qrPTemGH5d5iUIaUka
-	xIAQ1tjg==;
+	bh=0rog/nxboMHnwuFuI69UvOFfP3CGYosW55e+1Io3x50=; b=VLtktzygHenGP22YTGx9UMPXIs
+	obpPCT9aIas2r7evBpL2D0bb1js6q0i/B4uC2opnWfDUipcfONy+0g0IbelLJS8aWQuyS2PsuDIdm
+	7w0cjzbWLsM7LHRK3mT51Cc3k9Ln/ZQIsH1KX/wq6HZzUcbB72ZYToUAJurnXWcFJEdpGZUbdw3BA
+	eh4hfAftwtmwzZFx1nZQs65zJEKslflvY7h601Fs48wxfKauy8fCWwVUIJ5I1FVouXn1lFW/1ES93
+	UOhDoOM9fSM2eyYscL3Uhqe7g8Qpi9xnwtjK0geFQUNqmvLdom5iBDTzulTdeQFl3ou1zbJmbqssb
+	K7OyNpGw==;
 Received: from [223.233.74.223] (helo=[192.168.1.12])
 	by fanzine2.igalia.com with esmtpsa 
 	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1u0Zjb-00BC68-IJ; Fri, 04 Apr 2025 07:36:55 +0200
-Message-ID: <04038132-2edf-f13e-86f9-449cb7426104@igalia.com>
-Date: Fri, 4 Apr 2025 11:06:50 +0530
+	id 1u0aeJ-00BDab-Pv; Fri, 04 Apr 2025 08:35:32 +0200
+Message-ID: <6beead5a-8c21-af57-0304-1bf825588481@igalia.com>
+Date: Fri, 4 Apr 2025 12:05:26 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,30 +60,30 @@ User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
 Subject: Re: [PATCH v2 1/3] exec: Dynamically allocate memory to store task's
  full name
 Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Bhupesh <bhupesh@igalia.com>
+To: Yafang Shao <laoar.shao@gmail.com>, Bhupesh <bhupesh@igalia.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
 Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
  linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
  linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
- laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
- mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
- alexei.starovoitov@gmail.com, mirq-linux@rere.qmqm.pl, peterz@infradead.org,
- willy@infradead.org, david@redhat.com, viro@zeniv.linux.org.uk,
- keescook@chromium.org, ebiederm@xmission.com, brauner@kernel.org,
- jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com, bsegall@google.com,
- mgorman@suse.de, vschneid@redhat.com
+ linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com, pmladek@suse.com,
+ rostedt@goodmis.org, mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+ alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
+ mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
+ david@redhat.com, viro@zeniv.linux.org.uk, keescook@chromium.org,
+ ebiederm@xmission.com, brauner@kernel.org, jack@suse.cz, mingo@redhat.com,
+ juri.lelli@redhat.com, bsegall@google.com, mgorman@suse.de,
+ vschneid@redhat.com
 References: <20250331121820.455916-1-bhupesh@igalia.com>
  <20250331121820.455916-2-bhupesh@igalia.com>
- <CAEf4Bza1xjSD9KPkB0gE6AN0vc=xejW-jkn0M_Z_pSQ4_7e7Jw@mail.gmail.com>
+ <CALOAHbB51b-reG6+ypr43sBJ-QpQhF39r5WPjuEp5rgabgRmoA@mail.gmail.com>
 From: Bhupesh Sharma <bhsharma@igalia.com>
-In-Reply-To: <CAEf4Bza1xjSD9KPkB0gE6AN0vc=xejW-jkn0M_Z_pSQ4_7e7Jw@mail.gmail.com>
+In-Reply-To: <CALOAHbB51b-reG6+ypr43sBJ-QpQhF39r5WPjuEp5rgabgRmoA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
-
-On 4/3/25 9:47 PM, Andrii Nakryiko wrote:
-> On Mon, Mar 31, 2025 at 5:18 AM Bhupesh <bhupesh@igalia.com> wrote:
+On 4/1/25 7:37 AM, Yafang Shao wrote:
+> On Mon, Mar 31, 2025 at 8:18 PM Bhupesh <bhupesh@igalia.com> wrote:
 >> Provide a parallel implementation for get_task_comm() called
 >> get_task_full_name() which allows the dynamically allocated
 >> and filled-in task's full name to be passed to interested
@@ -142,18 +142,6 @@ On 4/3/25 9:47 PM, Andrii Nakryiko wrote:
 >> -                               true);
 >> +               fmt = smp_load_acquire(&bprm->file->f_path.dentry->d_name.name);
 >> +               name = kvasprintf(GFP_KERNEL, fmt, args);
-> this `args` argument, it's not initialized anywhere, right? It's not
-> clear where it's coming from, but you are passing it directly into
-> kvasprintf(), I can't convince myself that this is correct. Can you
-> please explain what is happening here?
->
-> Also, instead of allocating a buffer unconditionally, maybe check that
-> comm is longer than 16, and if not, just use the old-schoold 16-byte
-> comm array?
-
-Ok. As Kees also mentioned in his comment, I will try to do away with
-the allocation in the exec() hot-path in v3.
-
 >> +               if (!name)
 >> +                       return -ENOMEM;
 >> +
@@ -191,25 +179,31 @@ the allocation in the exec() hot-path in v3.
 >> +       /* To store the full name if task comm is truncated. */
 >> +       char                            *full_name;
 >> +
->>          struct nameidata                *nameidata;
->>
->>   #ifdef CONFIG_SYSVIPC
->> @@ -2007,6 +2010,12 @@ extern void __set_task_comm(struct task_struct *tsk, const char *from, bool exec
->>          buf;                                            \
->>   })
->>
->> +#define get_task_full_name(buf, buf_size, tsk) ({      \
->> +       BUILD_BUG_ON(sizeof(buf) < TASK_COMM_LEN);      \
->> +       strscpy_pad(buf, (tsk)->full_name, buf_size);   \
->> +       buf;                                            \
->> +})
->> +
->>   #ifdef CONFIG_SMP
->>   static __always_inline void scheduler_ipi(void)
->>   {
->> --
->> 2.38.1
->>
+> Adding another field to store the task name isn’t ideal. What about
+> combining them into a single field, as Linus suggested [0]?
+>
+> [0]. https://lore.kernel.org/all/CAHk-=wjAmmHUg6vho1KjzQi2=psR30+CogFd4aXrThr2gsiS4g@mail.gmail.com/
+>
 
-Thanks.
+Thanks for sharing Linus's suggestion. I went through the suggested 
+changes in the related threads and came up with the following set of points:
+
+1. struct task_struct would contain both 'comm' and 'full_name',
+2. Remove the task_lock() inside __get_task_comm(),
+3. Users of task->comm will be affected in the following ways:
+     (a). Printing with '%s' and tsk->comm would just continue to 
+work,but will get a longer max string.
+     (b). For users of memcpy.*->comm\>', we should change 'memcpy()' to 
+'copy_comm()' which would look like:
+
+         memcpy(dst, src, TASK_COMM_LEN);
+         dst[TASK_COMM_LEN-1] = 0;
+
+    (c). Users which use "sizeof(->comm)" will continue to get the old value because of the hacky union.
+
+Am I missing something here. Please let me know your views.
+
+Thanks,
+Bhupesh
+
 
