@@ -1,63 +1,60 @@
-Return-Path: <bpf+bounces-55294-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55295-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1288DA7B3B9
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 02:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D0117A7B3CA
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 02:25:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DE4E1742E4
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 00:22:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BB3B17C3A6
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 00:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27172201015;
-	Fri,  4 Apr 2025 00:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C06204583;
+	Fri,  4 Apr 2025 00:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tcfHTHJZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KSv/B5b0"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95519200127;
-	Fri,  4 Apr 2025 00:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE84C20409A;
+	Fri,  4 Apr 2025 00:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743725200; cv=none; b=hUskt89uLQCulALodkUEWOGwNg60u0Sb2gI8Jyc6fUwtv0zQ5q2FSRst5gxO5FtiMATVoI4qjOVpYRuNtpNaGEvmaS40wjTTTofKU1oV2z5aK0REsDTjNhft0mmWRcgq7n5ZMK5iBZ6lfgVUVx9S90WKzeb70yBLe3qNygxnrtw=
+	t=1743725211; cv=none; b=s9TfHCutY0UxdInRQVXlpcp+MNfrNvRmKy7Em09ZrtrvcGGd0QHxBaYdpBpJapKMpCXKvv9Ke7cm+QvpBki3GIvd2QzcHuNrel6Zg6tAX5NZC+zLmSy+6cEZFwiqiInDrlFt7Wjbwb3AQrBBVxhSRIZcNwwY9ehOlmPbLlF2iCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743725200; c=relaxed/simple;
-	bh=jQgFMtpvIfsLgbacEuyFXfCo0xTll4YBnX56vt9tXP8=;
+	s=arc-20240116; t=1743725211; c=relaxed/simple;
+	bh=QwLzINMbv2zgSv1/FxCNaD/DrH9nc42/Y9VEWhmUXI0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PN0KroseX/fo4tbxxaa9/5hSHDQYtzKG/3wrlHTTQ1PLTn06AGiv3TraqAFQJyvGfAfxks+78DeAIyM5rLbBK4P76GlJDSXUhgQ94nfD8xkq9ZsEVHa5yCj48B7eScbfsOdP+al7S1oOV+wbpejkIuHGmvyPDwNL529j/DvZ054=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tcfHTHJZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14ACFC4CEE5;
-	Fri,  4 Apr 2025 00:06:38 +0000 (UTC)
+	 MIME-Version; b=AgaOHHNzCavFeUShbdGVBVPdfwi89oW8QvAoAvYRfcbiaEJYZWWGuALZEQHqCr0gXhmvuEbRH5drFUuACuclPeLx09XANva2WYLzH8j8Wnlx8JrB+0OcqNvVHBmbQoHFJxB3UQKF/OL6v95ioHpdLkoEnGq4GsdZqw42Hv9Z1K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KSv/B5b0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AE45C4CEE5;
+	Fri,  4 Apr 2025 00:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743725200;
-	bh=jQgFMtpvIfsLgbacEuyFXfCo0xTll4YBnX56vt9tXP8=;
+	s=k20201202; t=1743725211;
+	bh=QwLzINMbv2zgSv1/FxCNaD/DrH9nc42/Y9VEWhmUXI0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tcfHTHJZj/69OZbKPUt+v5lqJPaBwQxElWDIpm8BiIzAonfi/D3zaLcex7u1hytbn
-	 wxD4r3Dsghp5dd8wg0iCGB4iwoO6xCrfcKJLHDLpwf2VCKgX7Rs3Nqelm25Pw5yrKS
-	 mNW0Q9GJN8iQCfpP6R7syQuGwoaN+tSkEOFv0soyE7MHpGaA9nmJcgGu5CZPOPUHFH
-	 Pr2T8g/K3GAlQWr5qZ3ggi9ErJOEgIxLKeQ06XECMCuDaGBZwSbNNTMoyvhussn2Z+
-	 exr3u/uaY+DwdhXxNrZioZVXLKwmo6Ss54yYUwreLxjnovOWRtLHTw6OCrrQyxOdmJ
-	 jtz78IT1ALKDg==
+	b=KSv/B5b0S73amyJG3CJSN7io1PpwaP5xucL5Q3DMznxcI6vLBHsWlPDGoh5CMTc98
+	 MKJZmAiK0vHZ4QqTeusS2vhG/+A7d2EZHlpdImSgm7tGMl9LZa1bWHMcz/qJm6pLYW
+	 NrtZtg2Tbyctnmrw/7c3QNMFT0RRDTdZHS4t6IlbYaitOdr5V2vRKr/s4J/vHmuwMw
+	 lzfmWemCwmu8gYOphBdTdoLJ9bRugpl3B/7wgIxaUf97v3+ZFKGzbo1LhbSGtVvokT
+	 mJfhBOPF2+cOQU+t5lPURg5W7CjKuJ1D4frCUvLN7UJsf4xRvHzqG+pI4dI+G5CUwJ
+	 OH1XUOqbM/F1A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
+Cc: Sewon Nam <swnam0729@gmail.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
+	Quentin Monnet <qmo@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	kpsingh@kernel.org,
-	mattbobrowski@google.com,
-	song@kernel.org,
 	daniel@iogearbox.net,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 06/16] bpf: Fix deadlock between rcu_tasks_trace and event_mutex.
-Date: Thu,  3 Apr 2025 20:06:14 -0400
-Message-Id: <20250404000624.2688940-6-sashal@kernel.org>
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 11/16] bpf: bpftool: Setting error code in do_loader()
+Date: Thu,  3 Apr 2025 20:06:19 -0400
+Message-Id: <20250404000624.2688940-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250404000624.2688940-1-sashal@kernel.org>
 References: <20250404000624.2688940-1-sashal@kernel.org>
@@ -72,77 +69,43 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.85
 Content-Transfer-Encoding: 8bit
 
-From: Alexei Starovoitov <ast@kernel.org>
+From: Sewon Nam <swnam0729@gmail.com>
 
-[ Upstream commit 4580f4e0ebdf8dc8d506ae926b88510395a0c1d1 ]
+[ Upstream commit 02a4694107b4c830d4bd6d194e98b3ac0bc86f29 ]
 
-Fix the following deadlock:
-CPU A
-_free_event()
-  perf_kprobe_destroy()
-    mutex_lock(&event_mutex)
-      perf_trace_event_unreg()
-        synchronize_rcu_tasks_trace()
+We are missing setting error code in do_loader() when
+bpf_object__open_file() fails. This means the command's exit status code
+will be successful, even though the operation failed. So make sure to
+return the correct error code. To maintain consistency with other
+locations where bpf_object__open_file() is called, return -1.
 
-There are several paths where _free_event() grabs event_mutex
-and calls sync_rcu_tasks_trace. Above is one such case.
+  [0] Closes: https://github.com/libbpf/bpftool/issues/156
 
-CPU B
-bpf_prog_test_run_syscall()
-  rcu_read_lock_trace()
-    bpf_prog_run_pin_on_cpu()
-      bpf_prog_load()
-        bpf_tracing_func_proto()
-          trace_set_clr_event()
-            mutex_lock(&event_mutex)
-
-Delegate trace_set_clr_event() to workqueue to avoid
-such lock dependency.
-
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Sewon Nam <swnam0729@gmail.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20250224221637.4780-1-alexei.starovoitov@gmail.com
+Tested-by: Quentin Monnet <qmo@kernel.org>
+Reviewed-by: Quentin Monnet <qmo@kernel.org>
+Link: https://lore.kernel.org/bpf/d3b5b4b4-19bb-4619-b4dd-86c958c4a367@stanley.mountain/t/#u
+Link: https://lore.kernel.org/bpf/20250311031238.14865-1-swnam0729@gmail.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/bpf_trace.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/bpf/bpftool/prog.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 9d8f60e0cb554..eebdde66564ec 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -400,7 +400,7 @@ static const struct bpf_func_proto bpf_trace_printk_proto = {
- 	.arg2_type	= ARG_CONST_SIZE,
- };
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 90ae2ea61324c..174e076e56af2 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1924,6 +1924,7 @@ static int do_loader(int argc, char **argv)
  
--static void __set_printk_clr_event(void)
-+static void __set_printk_clr_event(struct work_struct *work)
- {
- 	/*
- 	 * This program might be calling bpf_trace_printk,
-@@ -413,10 +413,11 @@ static void __set_printk_clr_event(void)
- 	if (trace_set_clr_event("bpf_trace", "bpf_trace_printk", 1))
- 		pr_warn_ratelimited("could not enable bpf_trace_printk events");
- }
-+static DECLARE_WORK(set_printk_work, __set_printk_clr_event);
- 
- const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
- {
--	__set_printk_clr_event();
-+	schedule_work(&set_printk_work);
- 	return &bpf_trace_printk_proto;
- }
- 
-@@ -459,7 +460,7 @@ static const struct bpf_func_proto bpf_trace_vprintk_proto = {
- 
- const struct bpf_func_proto *bpf_get_trace_vprintk_proto(void)
- {
--	__set_printk_clr_event();
-+	schedule_work(&set_printk_work);
- 	return &bpf_trace_vprintk_proto;
- }
- 
+ 	obj = bpf_object__open_file(file, &open_opts);
+ 	if (!obj) {
++		err = -1;
+ 		p_err("failed to open object file");
+ 		goto err_close_obj;
+ 	}
 -- 
 2.39.5
 
