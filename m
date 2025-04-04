@@ -1,328 +1,436 @@
-Return-Path: <bpf+bounces-55348-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55349-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9ADAA7C302
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 19:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00BBDA7C345
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 20:39:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93B511891D0A
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 17:59:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A759189FE48
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 18:39:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48923219A90;
-	Fri,  4 Apr 2025 17:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD80820ADE9;
+	Fri,  4 Apr 2025 18:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FyH1YYsW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nAlLqxfX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A2018FC92
-	for <bpf@vger.kernel.org>; Fri,  4 Apr 2025 17:58:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9949BE4A
+	for <bpf@vger.kernel.org>; Fri,  4 Apr 2025 18:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743789531; cv=none; b=qkEWzGCBg2E12q3SkL338EhuVE/rkwbpko9/V2B82r+oCW+hLANJ+arFBUfrpAEpQPRTT1NbkISRqDzS2Hlr/wM/xd9GijbJ2EmyBy06Uw5M3xVLn3s4oaTEStaikcI0XiRIWJ//cJCV0eI93NtfW0HEfQHYX5LU4hCSsCSZMg4=
+	t=1743791960; cv=none; b=Pls5cKZWlx8umhVGUS3kCjyt2Py8/B8Be0VyrYOJp9p50ueiUnE51TzM3fqPcZ/u14D7N6WN9K8U86b2O/9ItorfwaO/q1VXuwCeJ/FkoZo9DLrPXYr8qkciPaD15fwhHMQU98KmRQ9RW4fONsNt4M/aIfM7txhfkyW358mb5fg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743789531; c=relaxed/simple;
-	bh=Vg2GTShh6vQca32Zz34Llm2oa0hnM4x87gjG8Apr8Sg=;
+	s=arc-20240116; t=1743791960; c=relaxed/simple;
+	bh=8b1BosOHjfrlEqCRpkpBqCKVzNVFUDbGSt86+5TeCGU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ItcvZgkjb+6swAH2Y+VKBCgxV1JUpxy1CcwFPqTwrE+sjZOfWUf0c3QLlxGkUngHsI4RrAr92goaMaOFsL/1wphc0ZOHOqF7vlfiRCE8WE9560WCKnfZEJ7d9jqsVUT3Nh+hPMTOL/B7R6mChNGKZgw4EwybIR6ZMkaMNq0BHs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FyH1YYsW; arc=none smtp.client-ip=209.85.210.171
+	 To:Cc:Content-Type; b=q9NLcp3UmjINAdKSOzkDdfvjd38LStjVMZj7tlhabuyEsBV6PojphY+Xn9GzLnLy/YdYKrheNnvUABcDR/FiSv1zc0535B5XoCXpFMN4wGWl3Slq3qnzV+DBD18aF/4JkmCVliTTpEfrMTuJXQds7nBnNfDKrF5B4i62yTIfTcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nAlLqxfX; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-73712952e1cso2250706b3a.1
-        for <bpf@vger.kernel.org>; Fri, 04 Apr 2025 10:58:49 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-af5a4cd980dso1751975a12.1
+        for <bpf@vger.kernel.org>; Fri, 04 Apr 2025 11:39:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743789529; x=1744394329; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1743791958; x=1744396758; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZnHpYDtKX5x6eELNrvKuka3LKQCjylIpXxRnCz78l7s=;
-        b=FyH1YYsWyC5uWBUxlO6uZ28gDTmBsYwSosOhmqp5jR6yrHmuLVZ4MDyKSbpJejym6V
-         7i3YJCGKWgFOY4/zzh7HPVgFTQUv6crcedw3I3Lt9b/fxgT0wZlcDEi/INjcGLZSwjFT
-         qrE0jxGkau7e/p0QP7LNG0roj81j5HdFHu9aztFy2O/sGkVS4t13xP3jc4z9z/bIh/aK
-         H9/yGZQBDVy4cil7c2SpsMkyBU9HNAHT3lRASSh/tZ5l8cSTFuvBv2DBCKUGPW5PdZcT
-         kiJ8b+jH22BBTM1zhzJWusx5Lsb1/A1Pti0/VklQxqCJPISr2YuODibCpE3Rnxy2tzQl
-         s7VQ==
+        bh=cxLYjS9fXzO6HwHR/y/TIO3ME3BkG9wBTRmt7ZXPLJc=;
+        b=nAlLqxfXdUHu8VIO+wzdTluuZ93NovGLRsPdmBOXNPO5QLlB4z9mJli/N3iA6B6Qr+
+         YYHnjRd4+LQDqSMV1SX+BeNP+lr0nL4xrCZF4044Jg3irjN/3rf71z6EAquWwbzNRW6u
+         tKsDMBw/XN2jhk15YTQtnKcG4087eZdOYLxAgPtems4DTpuYBhwpGnZOpmLWvrmm3HV9
+         w0tqACSHcCkiGbtzz7cjrH+kNqpIhudclsEVC9xX60a1cqg/Dh6SSj/4sXdz4CPEB8Xe
+         H6JSvr7SUEaeCn7b95EYHnxWuvwYocSzw/PMS/qIeNix4IeRzFTSW0kVX9qwmc2bcefa
+         NMFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743789529; x=1744394329;
+        d=1e100.net; s=20230601; t=1743791958; x=1744396758;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZnHpYDtKX5x6eELNrvKuka3LKQCjylIpXxRnCz78l7s=;
-        b=mt++QwRbiXy0EhVlLO+9Pp6ZJc2RpC3Ni+AgOJdSq3FAgk0OidggZ/JPef7faA1gAp
-         Xl1Q5C3asp7VUnM6ZtltRebeavCoHNFbgomwU3rBTMDX8RsLyXqG11l8qlB4Pdoet/NV
-         tW+5Z4+3ZVK8gyMMO+XoT5lOqbwFiauZ35Ydxzx+lEKnt6blXDVqsokGm14VsaY6GH8X
-         tzivp+W84r2wzvUIx6N/IWIm4Rzj/Cbuw3xu5WZWwOTzoGqK+9VKoDphVLNFuMuZn/Vj
-         BLdhmodm6vzO4/4uWGryXMva4enAp6FNVAWonN0yIW2W4f1BxZyja2edoRBXuS8NvcAW
-         NoOA==
-X-Gm-Message-State: AOJu0YzKYPLqZnq8rBbewvZMtN9ZRjjh67zPfM7z9nlUi5f9jQ9n+0jv
-	QnBaczWxuI/7Myr85na9A+maQ2UcMw1F1YI1J419zb+FxBP1ulqIlZ9Sp7aUdFml/mWj34US7TT
-	Np4fv1beivtUTmdEkSnN36LO7Gwc=
-X-Gm-Gg: ASbGncsYMApkk82B/2aZLqTDBYMLMs5W/lLKOkHLY+EPRwkGRIewpqm6CcjAfwggH7t
-	L/kqAlklpngh2CU8wzaazcXxINfdNGuQ5kbuw4MdSATSBSAuIFfSs+DCVBMkLP6KnCQgfRSP7NJ
-	IOWzQzXMga73vkXj1sHA7BAuOtEuHYr1Nq538L0uKR4Q==
-X-Google-Smtp-Source: AGHT+IHELcheVo7vRqkGGML3k0snw44Q8UGUR64LIjdCFtfmpkT3Ch6MNCaqWvpYoTFQLaEF4oTe5mR7Awi4ETWHmHo=
-X-Received: by 2002:aa7:8890:0:b0:736:a4ca:62e1 with SMTP id
- d2e1a72fcca58-739e4815f68mr5227355b3a.6.1743789529046; Fri, 04 Apr 2025
- 10:58:49 -0700 (PDT)
+        bh=cxLYjS9fXzO6HwHR/y/TIO3ME3BkG9wBTRmt7ZXPLJc=;
+        b=lGyS5Oci3QBQBXEZQC1Gv3mpOWvFSKIh3mTLuGQfOtOK+sTxq0p1NrTEhJFDKUiC4e
+         zbhJ1d4GrGf/kvoHeg26pwBnKC/ovqc7WVHQ1n2GLdImksqHY0xIkolOQ1rlIjmNXs1c
+         8auA/TkUHCqXKB9UYQEmEMGVg1HfSULPSHrJ6cHjatupAOhqBjkRRGUNZdSbnPJdoVYz
+         hYxSuAZnhen9NH9nn2E8+SLd7JRmvK8ncr4XKeBplq/6/Moxh1+Ks8LssJ6lEQwk4uKr
+         jQ/3UyA+/feJx2amwWgZR/ekRmS86FBj3n1jLb/BTq9iJn1HOgueRyKbBUFsvPS8IOmo
+         tGpQ==
+X-Gm-Message-State: AOJu0YzJtbcs/Zoqtj6jYnWb7BZkn+irDYPuJHR2f3R2Zt4PSjnRklMa
+	YX+hbhWISfHaV/ulEV5sZjqr2MbzdV1iamyj8gzl1XUV+QEFLEZ9AlCvT0s9786c8PbzHNUhNtT
+	9NXbErhftYDwFea3xxTL9luAsjbcTwKMl
+X-Gm-Gg: ASbGnctp3OWzfTdUeDjyj3xdRdcd2xgVUNE7qqzttktOtHMfcduzqc+gfAp5ZH4DQ6N
+	6ztd8KMe5vYqATjsr9L1z30+AcqAtlwDnV9j9jJ3y5JJ6tNdCRhv2+iJMw4f0IjWp48YPso83WK
+	5wt7HIQKuJtIRd84+OXM+wVdlwmSh7qVzK77xZ8DKf1w==
+X-Google-Smtp-Source: AGHT+IHED0i29lmMfeR+ABBSZcqBGx7wAsIK7xIq/Gw6plT6qhZN79uJ8QK7pABl/Ex8ahd+ztSzqlNiAElh5owB1EI=
+X-Received: by 2002:a17:90b:4d0b:b0:2ff:6bd0:ff26 with SMTP id
+ 98e67ed59e1d1-306af7b7889mr432613a91.34.1743791957663; Fri, 04 Apr 2025
+ 11:39:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250327083455.848708-1-houtao@huaweicloud.com> <20250327083455.848708-16-houtao@huaweicloud.com>
-In-Reply-To: <20250327083455.848708-16-houtao@huaweicloud.com>
+References: <20250331211217.201198-1-mykyta.yatsenko5@gmail.com>
+In-Reply-To: <20250331211217.201198-1-mykyta.yatsenko5@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 4 Apr 2025 10:58:37 -0700
-X-Gm-Features: ATxdqUG0ILel8hQyB0BxhwYfXD2lig1Kalyd698lKIgKvK5FqMKaluXydd0mTYk
-Message-ID: <CAEf4BzY6Y=40NHs12r3Jb7u_N8CVapwRuF09+dmxBH85J2t88w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 15/16] selftests/bpf: Add test cases for hash
- map with dynptr key
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
+Date: Fri, 4 Apr 2025 11:39:05 -0700
+X-Gm-Features: ATxdqUHW0yoYbxZm7xXTOWS3fGVEhYF_2gh1MNZuk0RTU-AWrgvUn62mAiXC2BI
+Message-ID: <CAEf4BzbD1SP=fv0cG81HBS6Ld_v07f4RXgDDR_EMhEYAkHjx9Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: support struct/union presets
+ in veristat
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, eddyz87@gmail.com, 
+	Mykyta Yatsenko <yatsenko@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 27, 2025 at 1:23=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
+On Mon, Mar 31, 2025 at 2:12=E2=80=AFPM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
 >
-> From: Hou Tao <houtao1@huawei.com>
+> From: Mykyta Yatsenko <yatsenko@meta.com>
 >
-> Add three positive test cases to test the basic operations on the
-> dynptr-keyed hash map. The basic operations include lookup, update,
-> delete and get_next_key. These operations are exercised both through
-> bpf syscall and bpf program. These three test cases use different map
-> keys. The first test case uses both bpf_dynptr and a struct with only
-> bpf_dynptr as map key, the second one uses a struct with an integer and
-> a bpf_dynptr as map key, and the last one use a struct with two
-> bpf_dynptr as map key: one in the struct itself and another is nested in
-> another struct.
+> Extend commit e3c9abd0d14b ("selftests/bpf: Implement setting global
+> variables in veristat") to support applying presets to members of
+> the global structs or unions in veristat.
+> For example:
+> ```
+> ./veristat set_global_vars.bpf.o  -G "union1.struct3.var_u8_h =3D 0xBB"
+> ```
 >
-> Also add multiple negative test cases for dynptr-keyed hash map. These
-> test cases mainly check whether the layout of dynptr and non-dynptr in
-> the stack is matched with the definition of map->key_record.
->
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 > ---
->  .../bpf/prog_tests/htab_dynkey_test.c         | 446 ++++++++++++++++++
->  .../bpf/progs/htab_dynkey_test_failure.c      | 266 +++++++++++
->  .../bpf/progs/htab_dynkey_test_success.c      | 382 +++++++++++++++
->  3 files changed, 1094 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_dynkey_te=
-st.c
->  create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_fa=
-ilure.c
->  create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_su=
-ccess.c
+>  .../selftests/bpf/prog_tests/test_veristat.c  |   5 +
+>  tools/testing/selftests/bpf/progs/prepare.c   |   1 -
+>  .../selftests/bpf/progs/set_global_vars.c     |  40 +++++++
+>  tools/testing/selftests/bpf/veristat.c        | 106 ++++++++++++++++--
+>  4 files changed, 144 insertions(+), 8 deletions(-)
 >
-
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/progs/htab_dynkey_test_success.c=
- b/tools/testing/selftests/bpf/progs/htab_dynkey_test_success.c
-> new file mode 100644
-> index 0000000000000..84e6931cc19c0
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/htab_dynkey_test_success.c
-> @@ -0,0 +1,382 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (C) 2025. Huawei Technologies Co., Ltd */
-> +#include <linux/types.h>
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <errno.h>
-> +
-> +#include "bpf_misc.h"
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> +
-> +struct pure_dynptr_key {
-> +       struct bpf_dynptr name;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_veristat.c b/too=
+ls/testing/selftests/bpf/prog_tests/test_veristat.c
+> index a95b42bf744a..47b56c258f3f 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/test_veristat.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_veristat.c
+> @@ -63,6 +63,9 @@ static void test_set_global_vars_succeeds(void)
+>             " -G \"var_eb =3D EB2\" "\
+>             " -G \"var_ec =3D EC2\" "\
+>             " -G \"var_b =3D 1\" "\
+> +           " -G \"struct1.struct2.u.var_u8 =3D 170\" "\
+> +           " -G \"union1.struct3.var_u8_l =3D 0xaa\" "\
+> +           " -G \"union1.struct3.var_u8_h =3D 0xaa\" "\
+>             "-vl2 > %s", fix->veristat, fix->tmpfile);
+>
+>         read(fix->fd, fix->output, fix->sz);
+> @@ -78,6 +81,8 @@ static void test_set_global_vars_succeeds(void)
+>         __CHECK_STR("_w=3D12 ", "var_eb =3D EB2");
+>         __CHECK_STR("_w=3D13 ", "var_ec =3D EC2");
+>         __CHECK_STR("_w=3D1 ", "var_b =3D 1");
+> +       __CHECK_STR("_w=3D170 ", "struct1.struct2.u.var_u8 =3D 170");
+> +       __CHECK_STR("_w=3D0xaaaa ", "union1.var_u16 =3D 0xaaaa");
+>
+>  out:
+>         teardown_fixture(fix);
+> diff --git a/tools/testing/selftests/bpf/progs/prepare.c b/tools/testing/=
+selftests/bpf/progs/prepare.c
+> index 1f1dd547e4ee..cfc1f48e0d28 100644
+> --- a/tools/testing/selftests/bpf/progs/prepare.c
+> +++ b/tools/testing/selftests/bpf/progs/prepare.c
+> @@ -2,7 +2,6 @@
+>  /* Copyright (c) 2025 Meta */
+>  #include <vmlinux.h>
+>  #include <bpf/bpf_helpers.h>
+> -//#include <bpf/bpf_tracing.h>
+>
+>  char _license[] SEC("license") =3D "GPL";
+>
+> diff --git a/tools/testing/selftests/bpf/progs/set_global_vars.c b/tools/=
+testing/selftests/bpf/progs/set_global_vars.c
+> index 9adb5ba4cd4d..187e9791e72e 100644
+> --- a/tools/testing/selftests/bpf/progs/set_global_vars.c
+> +++ b/tools/testing/selftests/bpf/progs/set_global_vars.c
+> @@ -24,6 +24,43 @@ const volatile enum Enumu64 var_eb =3D EB1;
+>  const volatile enum Enums64 var_ec =3D EC1;
+>  const volatile bool var_b =3D false;
+>
+> +struct Struct {
+> +       int:16;
+> +       __u16 filler;
+> +       struct {
+> +               const __u16 filler2;
+> +       };
+> +       struct Struct2 {
+> +               __u16 filler;
+> +               volatile struct {
+> +                       const __u32 filler2;
+> +                       union {
+> +                               const volatile __u8 var_u8;
+> +                               const volatile __s16 filler3;
+> +                       } u;
+> +               };
+> +       } struct2;
 > +};
 > +
-> +struct mixed_dynptr_key {
-> +       int id;
-> +       struct bpf_dynptr name;
+> +const volatile __u32 stru =3D 0; /* same prefix as below */
+> +const volatile struct Struct struct1 =3D {.struct2 =3D {.u =3D {.var_u8 =
+=3D 1}}};
+> +
+> +union Union {
+> +       __u16 var_u16;
+> +       struct Struct3 {
+> +               struct {
+> +                       __u8 var_u8_l;
+> +               };
+> +               struct {
+> +                       struct {
+> +                               __u8 var_u8_h;
+> +                       };
+> +               };
+> +       } struct3;
 > +};
 > +
-> +struct multiple_dynptr_key {
-> +       struct pure_dynptr_key f_1;
-> +       unsigned long f_2;
-> +       struct mixed_dynptr_key f_3;
-> +       unsigned long f_4;
+> +const volatile union Union union1 =3D {.var_u16 =3D -1};
+> +
+>  char arr[4] =3D {0};
+>
+>  SEC("socket")
+> @@ -43,5 +80,8 @@ int test_set_globals(void *ctx)
+>         a =3D var_eb;
+>         a =3D var_ec;
+>         a =3D var_b;
+> +       a =3D struct1.struct2.u.var_u8;
+> +       a =3D union1.var_u16;
+> +
+>         return a;
+>  }
+> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selft=
+ests/bpf/veristat.c
+> index a18972ffdeb6..727ef80a1e47 100644
+> --- a/tools/testing/selftests/bpf/veristat.c
+> +++ b/tools/testing/selftests/bpf/veristat.c
+> @@ -1486,7 +1486,89 @@ static bool is_preset_supported(const struct btf_t=
+ype *t)
+>         return btf_is_int(t) || btf_is_enum(t) || btf_is_enum64(t);
+>  }
+>
+> -static int set_global_var(struct bpf_object *obj, struct btf *btf, const=
+ struct btf_type *t,
+> +struct btf_anon_stack {
+> +       const struct btf_type *type;
+> +       __u32 offset;
 > +};
 > +
 
-[...]
+unused leftover
 
-> +       /* Delete the newly-inserted key */
-> +       bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(systemd_name), 0, &ke=
-y.f_3.name);
-> +       err =3D bpf_dynptr_write(&key.f_3.name, 0, (void *)systemd_name, =
-sizeof(systemd_name), 0);
-> +       if (err) {
-> +               bpf_ringbuf_discard_dynptr(&key.f_3.name, 0);
-> +               err =3D 10;
-> +               goto out;
-> +       }
-> +       err =3D bpf_map_delete_elem(htab, &key);
-> +       if (err) {
-> +               bpf_ringbuf_discard_dynptr(&key.f_3.name, 0);
-> +               err =3D 11;
-> +               goto out;
+> +const int btf_find_member(const struct btf *btf,
+> +                         const struct btf_type *parent_type,
+> +                         __u32 parent_offset,
+> +                         const char *member_name,
+> +                         int *member_tid,
+> +                         __u32 *member_offset)
+> +{
+> +       int i;
+> +
+> +       if (!btf_is_composite(parent_type))
+> +               return -EINVAL;
+> +
+> +       for (i =3D 0; i < btf_vlen(parent_type); ++i) {
+> +               const struct btf_member *member;
+> +               const struct btf_type *member_type;
+> +               int tid;
+> +
+> +               member =3D btf_members(parent_type) + i;
+> +               tid =3D  btf__resolve_type(btf, member->type);
+> +               if (tid < 0)
+> +                       return -EINVAL;
+> +
+> +               member_type =3D btf__type_by_id(btf, tid);
+> +               if (member->name_off) {
+> +                       const char *name =3D btf__name_by_offset(btf, mem=
+ber->name_off);
+> +
+> +                       if (strcmp(member_name, name) =3D=3D 0) {
+> +                               *member_offset =3D parent_offset + member=
+->offset;
+> +                               *member_tid =3D tid;
+> +                               return 0;
+> +                       }
+> +               } else if (btf_is_composite(member_type)) {
+> +                       int err;
+> +
+> +                       err =3D btf_find_member(btf, member_type, parent_=
+offset + member->offset,
+> +                                             member_name, member_tid, me=
+mber_offset);
+> +                       if (!err)
+> +                               return 0;
+> +               }
 > +       }
 > +
-> +       /* Lookup it again */
-> +       value =3D bpf_map_lookup_elem(htab, &key);
-> +       bpf_ringbuf_discard_dynptr(&key.f_3.name, 0);
-> +       if (value) {
-> +               err =3D 12;
-> +               goto out;
-> +       }
-> +out:
-> +       return err;
+> +       return -EINVAL;
 > +}
+> +
+> +static int adjust_var_secinfo(struct btf *btf, const struct btf_type *t,
+> +                             struct btf_var_secinfo *sinfo, const char *=
+var)
+> +{
+> +       char expr[256], *saveptr;
+> +       const struct btf_type *base_type, *member_type;
+> +       int err, member_tid;
+> +       char *name;
+> +       __u32 member_offset =3D 0;
+> +
+> +       base_type =3D btf__type_by_id(btf, btf__resolve_type(btf, t->type=
+));
+> +       strncpy(expr, var, 255);
+> +       expr[255] =3D '\0';
+
+strncpy() isn't a great API, and compilers have problems
+false-reporting non-zero-termination for them. I found that snprintf()
+works better
+
+snprintf(expr, sizeof(expr), "%s", var);
+
+?
+
+> +       strtok_r(expr, ".", &saveptr);
+> +
+> +       while ((name =3D strtok_r(NULL, ".", &saveptr))) {
+> +               err =3D btf_find_member(btf, base_type, 0, name, &member_=
+tid, &member_offset);
+> +               if (err) {
+> +                       fprintf(stderr, "Could not find member %s for var=
+iable %s\n", name, var);
+> +                       return err;
+> +               }
+> +               if (btf_kflag(base_type)) {
+
+hm... doesn't kflag on, say, STRUCT, just mean that there are *some*
+fields that are bitfields? If we don't reference those fields, it
+should be fine, no?
+
+So, instead, I think we should just check that
+btf_member_bitfield_size() for that field is zero, and if not --
+complain.
+
+Can you please also add a test case where we have a struct with
+bitfields, but we set only non-bitfield values and it all should work
+just fine. Thanks.
 
 
-So, I'm not a big fan of this approach of literally embedding struct
-bpf_dynptr into map key type and actually initializing and working
-with it directly, like you do here with
-bpf_ringbuf_reserve_dynptr(..., &key.f_3.name).
+pw-bot: cr
 
-Here's why. This approach only works for *map keys* (not map values)
-and only when **the copy of the key** is on the stack (i.e., for map
-lookups/updates/deletes). This approach won't work for having dynptrs
-inside map value (for variable sized map values), nor does it really
-work when you get a direct pointer to map key in
-bpf_for_each_map_elem().
+> +                       fprintf(stderr, "Bitfield presets are not support=
+ed %s\n", name);
+> +                       return -EINVAL;
+> +               }
+> +               member_type =3D btf__type_by_id(btf, member_tid);
+> +               sinfo->offset +=3D member_offset / 8;
+> +               sinfo->size =3D member_type->size;
+> +               sinfo->type =3D member_tid;
+> +               base_type =3D member_type;
+> +       }
+> +       return 0;
+> +}
+> +
+> +static int set_global_var(struct bpf_object *obj, struct btf *btf,
+>                           struct bpf_map *map, struct btf_var_secinfo *si=
+nfo,
+>                           struct var_preset *preset)
+>  {
+> @@ -1495,9 +1577,9 @@ static int set_global_var(struct bpf_object *obj, s=
+truct btf *btf, const struct
+>         long long value =3D preset->ivalue;
+>         size_t size;
+>
+> -       base_type =3D btf__type_by_id(btf, btf__resolve_type(btf, t->type=
+));
+> +       base_type =3D btf__type_by_id(btf, btf__resolve_type(btf, sinfo->=
+type));
+>         if (!base_type) {
+> -               fprintf(stderr, "Failed to resolve type %d\n", t->type);
+> +               fprintf(stderr, "Failed to resolve type %d\n", sinfo->typ=
+e);
+>                 return -EINVAL;
+>         }
+>         if (!is_preset_supported(base_type)) {
+> @@ -1530,7 +1612,7 @@ static int set_global_var(struct bpf_object *obj, s=
+truct btf *btf, const struct
+>                 if (value >=3D max_val || value < -max_val) {
+>                         fprintf(stderr,
+>                                 "Variable %s value %lld is out of range [=
+%lld; %lld]\n",
+> -                               btf__name_by_offset(btf, t->name_off), va=
+lue,
+> +                               btf__name_by_offset(btf, base_type->name_=
+off), value,
+>                                 is_signed ? -max_val : 0, max_val - 1);
+>                         return -EINVAL;
+>                 }
+> @@ -1583,14 +1665,20 @@ static int set_global_vars(struct bpf_object *obj=
+, struct var_preset *presets, i
+>                 for (j =3D 0; j < n; ++j, ++sinfo) {
+>                         const struct btf_type *var_type =3D btf__type_by_=
+id(btf, sinfo->type);
+>                         const char *var_name;
+> +                       int var_len;
+>
+>                         if (!btf_is_var(var_type))
+>                                 continue;
+>
+>                         var_name =3D btf__name_by_offset(btf, var_type->n=
+ame_off);
+> +                       var_len =3D strlen(var_name);
+>
+>                         for (k =3D 0; k < npresets; ++k) {
+> -                               if (strcmp(var_name, presets[k].name) !=
+=3D 0)
+> +                               struct btf_var_secinfo tmp_sinfo;
+> +
+> +                               if (strncmp(var_name, presets[k].name, va=
+r_len) !=3D 0 ||
+> +                                   (presets[k].name[var_len] !=3D '\0' &=
+&
+> +                                    presets[k].name[var_len] !=3D '.'))
+>                                         continue;
+>
+>                                 if (presets[k].applied) {
+> @@ -1598,13 +1686,17 @@ static int set_global_vars(struct bpf_object *obj=
+, struct var_preset *presets, i
+>                                                 var_name);
+>                                         return -EINVAL;
+>                                 }
+> +                               memcpy(&tmp_sinfo, sinfo, sizeof(*sinfo))=
+;
 
-Curiously, you do have bpf_for_each_map_elem() "example" in patch #16
-in benchmarks, but you are carefully avoiding actually touching the
-`void *key` passed to your callback. Instead you create a local key,
-do lookup, and then compare the pointers to value to know that you
-"guessed" the key right.
+isn't this just:
 
-This doesn't seem to be how bpf_for_each_map_elem() is really meant to
-work: you'd want to be able to work with that key for real, get its
-data, etc. Not guess and confirm, like you do.
+tmp_sinfo =3D *sinfo;
 
-And in case it's not obvious why this approach won't work when dynptrs
-are stored inside map value. Dynptr itself relies on not being
-modified concurrently. We achieve that through *always* keeping it on
-BPF programs stack, guaranteeing that no concurrently running BPF
-program (BPF program sharing the map, or same program on different
-CPU) can touch the dynptr. This is pretty fundamental. And I don't
-think we should add more locking to dynptr itself just to enable this.
+why memcpy?
 
-So I have an alternative proposal that will extend to map values and
-real map keys (not they local copy on the stack).
-
-I say, we stop pretending that it's an actual dynptr that is stored in
-the key. It should be some sort of "dynptr impression" (I don't want
-to bikeshed right now), and user would have to put it into map key for
-lookup/update/delete through a special kfunc (let's call this
-"bpf_dynptr_stash" for now). When working with an existing map key
-(and map value in the future), we need to create a local real dynptr
-from its map key/value "impression", say, with "bpf_dynptr_unstash".
-
-bpf_dynptr_stash() is effectively bpf_dynptr_clone() (so all the
-mechanics is already supported by verifier). bpf_dynptr_unstash() is
-effectively bpf_dynptr_from_mem(). But they might need a slight change
-to accommodate a different actual struct type we'll use for that
-stashed dynptr.
-
-So just to show what I mean on pseudo example:
-
-
-struct bpf_stashed_dynptr {
-   __bpf_md_ptr(void *, data);
-   __u32 size;
-   __u32 reserved;
-}
-
-struct id_dname_key {
-       int id;
-       struct bpf_stashed_dynptr name;
-};
-
-struct {
-       __uint(type, BPF_MAP_TYPE_HASH);
-       __uint(max_entries, 10);
-       __uint(map_flags, BPF_F_NO_PREALLOC);
-       __type(key, struct id_dname_key);
-       __type(value, unsigned long);
-} htab SEC(".maps");
-
-int bpf_dynptr_stash(const struct bpf_dynptr *src, struct
-stashed_dynptr *dst) SEC(".ksyms"); /* kfunc */
-int bpf_dynptr_unstash(const struct stashed_dynptr *dst, struct
-bpf_dynptr *dst) SEC(".ksyms"); /* kfunc */
-
-
-/* LOOKUP/UPDATE/DELETE APPROACH */
-
-struct id_name_key my_key =3D { .id =3D 123 };
-char buf[128] =3D "my_string";
-struct bpf_dynptr dptr;
-
-/* create real dynptr */
-bpf_dynptr_from_mem(buf, sizeof(buf), 0, &dptr);
-/* stash it into our on-the-stack key copy */
-bpf_dynptr_stash(&dptr, &my_key.name);
-
-/* here, kernel will read "my_string" through "stashed dynptr"
- * my_key.name pointing to buf, same as dptr
- */
-bpf_map_update_elem(&htab, &my_key, BPF_ANY);
-
-
-/* FOR_EACH_MAP_ELEM_KEY READING */
-static int cb(void *map, void *key, void *value, void *ctx)
-{
-    struct id_dname_key *k =3D key;
-    struct bpf_dynptr dptr;
-    const void *name;
-
-    /* create local real dynptr from stashed one in the key in the map */
-    bpf_dynptr_unstash(&k->name, &dptr);
-
-    /* get direct memory access to the data stored in the key, NO COPIES! *=
-/
-    name =3D bpf_dynptr_slice(&dptr, ....);
-    if (name)
-        bpf_printk("my_key.name: %s", name);
-}
-
-...
-
-bpf_for_each_map_elem(&htab, cb, NULL, 0); /* iterate */
-
-
-
-And I'm too lazy to write this for hypothetical map value use case.
-Map value has an extra challenge of making sure stashing/unstashing
-handle racy updates from other CPUs, which I believe you can do with
-seqcount-like approach (no heavy-weight locking).
-
-BTW, this dedicated `struct bpf_stashed_dynptr` completely avoids that
-double-defined `struct bpf_dynptr` you do in patch #6. Kernel will
-know it's something like a real dynptr when doing update/lookup/delete
-from on-the-stack key copy, and that it's a completely different thing
-when it's actually stored inside the map in the key (and, eventually,
-in the value). And in user space it will be a still different
-definition, which kernel will provide when doing lookups from user
-space.
-
-Hope this makes sense.
-
-[...]
+> +                               err =3D adjust_var_secinfo(btf, var_type,
+> +                                                        &tmp_sinfo, pres=
+ets[k].name);
+> +                               if (err)
+> +                                       return err;
+>
+> -                               err =3D set_global_var(obj, btf, var_type=
+, map, sinfo, presets + k);
+> +                               err =3D set_global_var(obj, btf, map, &tm=
+p_sinfo, presets + k);
+>                                 if (err)
+>                                         return err;
+>
+>                                 presets[k].applied =3D true;
+> -                               break;
+>                         }
+>                 }
+>         }
+> --
+> 2.49.0
+>
 
