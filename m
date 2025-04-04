@@ -1,62 +1,60 @@
-Return-Path: <bpf+bounces-55281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55282-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7DD7A7B322
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 02:11:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3927A7B347
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 02:15:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 184A317313F
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 00:10:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EEAC37A8A5F
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 00:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E361ACED7;
-	Fri,  4 Apr 2025 00:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5901E1DE3;
+	Fri,  4 Apr 2025 00:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sQok2Jav"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mF9XQrpI"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 768421AA79C;
-	Fri,  4 Apr 2025 00:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E5811DED6D;
+	Fri,  4 Apr 2025 00:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743725100; cv=none; b=ggnDfQd8Izh+QWfORsvOYAJBp5eOYf3eqV8/Avkl/Wq6GN0dQxk9LCSW4aN0j/mpLeU5bL5fGBeNE1kWx5LN034Nuc2DVSd9tTLcMzVhp77wdN+4y30GxpZm7gUjKqxayHN2scULSkPsZfsKgrsH1bSlojcwPKzBJH+5YQ6SjRE=
+	t=1743725114; cv=none; b=l/8A/aGvPGxvYR8q36AmVcSj8kuZfcLFWLFg6Ys7TwFxg5L5xnIRqOSinS8EHcFNwEqudYOT9c/1OC8mWRk9zTSjDaI/yHmT9fgGpfHU4y2BmQ1KQxx98qt5nLeqvlyR8u+qUGLKM3YhYGs6sLQcDbsRwBEo/L7mEO2pA/AMVJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743725100; c=relaxed/simple;
-	bh=OEphS++aiw5Zon+jzaEsnLlRZocxSiGBmdEBgLHZP4M=;
+	s=arc-20240116; t=1743725114; c=relaxed/simple;
+	bh=lbJeD+K4S5kfWbH0kRQUiptWwBbMhU0X5XWz0+4Wh/U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fW89I/klTjDaedy/qxiLcD+YruI3u2N7YpDMIIac997Kw/D7TY3zI283xqWqkkKlDX3VPMAZHv0Q/l5r9vjVrvEgglAofx2I3wYlsHwRJiu7JTCQqQU8xssReMg1mCWmiYWi8iGkZvzsxaEnHr0II8f/xKrIQgsKd0pYdOMPaCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sQok2Jav; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 112B3C4CEE5;
-	Fri,  4 Apr 2025 00:04:58 +0000 (UTC)
+	 MIME-Version; b=YNpOvvP2WRZz53Qxkry7jyDoH9Hbho+wj7H/sNLZySAYL+cc/DKCm3etbvXQWCF/VcL3QRxPPfAIlDxw1o9IHgg4j+grElkDEHgbcJ5l2G7zPdCKYSC1WmRGdNM64kRaB7vstiJqoQYIIn/uq5hwjBWkXI52nMkjeOoyH7z5ZIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mF9XQrpI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEF18C4CEE5;
+	Fri,  4 Apr 2025 00:05:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743725100;
-	bh=OEphS++aiw5Zon+jzaEsnLlRZocxSiGBmdEBgLHZP4M=;
+	s=k20201202; t=1743725113;
+	bh=lbJeD+K4S5kfWbH0kRQUiptWwBbMhU0X5XWz0+4Wh/U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sQok2Javbq5NSTMcVpir2cudNdP3veTtL6dJ+6Klx5nChzXvWTYpM6oNRjXFPm2lB
-	 W1/bY3OfAmUYmlwbnS0jiwJOyILj5FEc+DAPNVatZBKfdl03OsW5Svzt56OstJkRv9
-	 AQkaWPblZ0iuxxegAtWgUIZspeuY569jQtsNYfZZHgS23zOElgZGMUkRAS2kppGQIy
-	 QedQ58yAPohLKBPk/nxxNnF3q/3OXT8g94D4xqj/+07QCQwImqY6CH2EssCnn5uTrE
-	 QxXcelGrSdAT2Z4WRccaAYRxrrlTRtOHG7e0qIiJ6HxfEYtUp/QZY5C1a2HoxQA3Lh
-	 QeV9J8WKhM80Q==
+	b=mF9XQrpIhBlBAZiU8b1v+u2WJGt9eMnVjvro/w/fiAziiSt8XBeGi/Nl2oMG6mnxi
+	 RqXuqzAME2T+GazNoDayVdRdXMbi6jB+DQ+5ztL2Lfcw54n3K4jF1V50dq6+4imann
+	 kivdWI2mSRZxILDyvgf7IXOE5WMcrW1m4YW0GCjVzb1jAFahdxnAbhPEXcWn+MKbmn
+	 oHo2TAVrtaYBrzw5FApQfQYYzKVYsjMPbK3JYKJKq65ji1WbhIiEsY/yQw20ZCr34k
+	 50/5D55bT/PLtePA1Mb6AAaRLBDMGQmiVRKm8nqF+Bng01gCVGOQpP80Tv3TFAH3FN
+	 ilbGeLBjNJPAA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Amery Hung <ameryhung@gmail.com>,
+Cc: Yonghong Song <yonghong.song@linux.dev>,
+	Vlad Poenaru <thevlad@meta.com>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
 	daniel@iogearbox.net,
-	shuah@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.13 02/22] selftests/bpf: Fix stdout race condition in traffic monitor
-Date: Thu,  3 Apr 2025 20:04:31 -0400
-Message-Id: <20250404000453.2688371-2-sashal@kernel.org>
+	andrii@kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.13 09/22] bpf: Fix kmemleak warning for percpu hashmap
+Date: Thu,  3 Apr 2025 20:04:38 -0400
+Message-Id: <20250404000453.2688371-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250404000453.2688371-1-sashal@kernel.org>
 References: <20250404000453.2688371-1-sashal@kernel.org>
@@ -71,115 +69,90 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.13.9
 Content-Transfer-Encoding: 8bit
 
-From: Amery Hung <ameryhung@gmail.com>
+From: Yonghong Song <yonghong.song@linux.dev>
 
-[ Upstream commit b99f27e90268b1a814c13f8bd72ea1db448ea257 ]
+[ Upstream commit 11ba7ce076e5903e7bdc1fd1498979c331b3c286 ]
 
-Fix a race condition between the main test_progs thread and the traffic
-monitoring thread. The traffic monitor thread tries to print a line
-using multiple printf and use flockfile() to prevent the line from being
-torn apart. Meanwhile, the main thread doing io redirection can reassign
-or close stdout when going through tests. A deadlock as shown below can
-happen.
+Vlad Poenaru reported the following kmemleak issue:
 
-       main                      traffic_monitor_thread
-       ====                      ======================
-                                 show_transport()
-                                 -> flockfile(stdout)
+  unreferenced object 0x606fd7c44ac8 (size 32):
+    backtrace (crc 0):
+      pcpu_alloc_noprof+0x730/0xeb0
+      bpf_map_alloc_percpu+0x69/0xc0
+      prealloc_init+0x9d/0x1b0
+      htab_map_alloc+0x363/0x510
+      map_create+0x215/0x3a0
+      __sys_bpf+0x16b/0x3e0
+      __x64_sys_bpf+0x18/0x20
+      do_syscall_64+0x7b/0x150
+      entry_SYSCALL_64_after_hwframe+0x4b/0x53
 
-stdio_hijack_init()
--> stdout = open_memstream(log_buf, log_cnt);
-   ...
-   env.subtest_state->stdout_saved = stdout;
+Further investigation shows the reason is due to not 8-byte aligned
+store of percpu pointer in htab_elem_set_ptr():
+  *(void __percpu **)(l->key + key_size) = pptr;
 
-                                    ...
-                                    funlockfile(stdout)
-stdio_restore_cleanup()
--> fclose(env.subtest_state->stdout_saved);
+Note that the whole htab_elem alignment is 8 (for x86_64). If the key_size
+is 4, that means pptr is stored in a location which is 4 byte aligned but
+not 8 byte aligned. In mm/kmemleak.c, scan_block() scans the memory based
+on 8 byte stride, so it won't detect above pptr, hence reporting the memory
+leak.
 
-After the traffic monitor thread lock stdout, A new memstream can be
-assigned to stdout by the main thread. Therefore, the traffic monitor
-thread later will not be able to unlock the original stdout. As the
-main thread tries to access the old stdout, it will hang indefinitely
-as it is still locked by the traffic monitor thread.
+In htab_map_alloc(), we already have
 
-The deadlock can be reproduced by running test_progs repeatedly with
-traffic monitor enabled:
+        htab->elem_size = sizeof(struct htab_elem) +
+                          round_up(htab->map.key_size, 8);
+        if (percpu)
+                htab->elem_size += sizeof(void *);
+        else
+                htab->elem_size += round_up(htab->map.value_size, 8);
 
-for ((i=1;i<=100;i++)); do
-  ./test_progs -a flow_dissector_skb* -m '*'
-done
+So storing pptr with 8-byte alignment won't cause any problem and can fix
+kmemleak too.
 
-Fix this by only calling printf once and remove flockfile()/funlockfile().
+The issue can be reproduced with bpf selftest as well:
+  1. Enable CONFIG_DEBUG_KMEMLEAK config
+  2. Add a getchar() before skel destroy in test_hash_map() in prog_tests/for_each.c.
+     The purpose is to keep map available so kmemleak can be detected.
+  3. run './test_progs -t for_each/hash_map &' and a kmemleak should be reported.
 
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Link: https://patch.msgid.link/20250213233217.553258-1-ameryhung@gmail.com
+Reported-by: Vlad Poenaru <thevlad@meta.com>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
+Link: https://lore.kernel.org/r/20250224175514.2207227-1-yonghong.song@linux.dev
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/network_helpers.c | 33 ++++++++-----------
- 1 file changed, 13 insertions(+), 20 deletions(-)
+ kernel/bpf/hashtab.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 27784946b01b8..af0ee70a53f9f 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -771,12 +771,13 @@ static const char *pkt_type_str(u16 pkt_type)
- 	return "Unknown";
- }
- 
-+#define MAX_FLAGS_STRLEN 21
- /* Show the information of the transport layer in the packet */
- static void show_transport(const u_char *packet, u16 len, u32 ifindex,
- 			   const char *src_addr, const char *dst_addr,
- 			   u16 proto, bool ipv6, u8 pkt_type)
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 3ec941a0ea41c..bb3ba8ebaf3d2 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -198,12 +198,12 @@ static bool htab_is_percpu(const struct bpf_htab *htab)
+ static inline void htab_elem_set_ptr(struct htab_elem *l, u32 key_size,
+ 				     void __percpu *pptr)
  {
--	char *ifname, _ifname[IF_NAMESIZE];
-+	char *ifname, _ifname[IF_NAMESIZE], flags[MAX_FLAGS_STRLEN] = "";
- 	const char *transport_str;
- 	u16 src_port, dst_port;
- 	struct udphdr *udp;
-@@ -817,29 +818,21 @@ static void show_transport(const u_char *packet, u16 len, u32 ifindex,
- 
- 	/* TCP or UDP*/
- 
--	flockfile(stdout);
-+	if (proto == IPPROTO_TCP)
-+		snprintf(flags, MAX_FLAGS_STRLEN, "%s%s%s%s",
-+			 tcp->fin ? ", FIN" : "",
-+			 tcp->syn ? ", SYN" : "",
-+			 tcp->rst ? ", RST" : "",
-+			 tcp->ack ? ", ACK" : "");
-+
- 	if (ipv6)
--		printf("%-7s %-3s IPv6 %s.%d > %s.%d: %s, length %d",
-+		printf("%-7s %-3s IPv6 %s.%d > %s.%d: %s, length %d%s\n",
- 		       ifname, pkt_type_str(pkt_type), src_addr, src_port,
--		       dst_addr, dst_port, transport_str, len);
-+		       dst_addr, dst_port, transport_str, len, flags);
- 	else
--		printf("%-7s %-3s IPv4 %s:%d > %s:%d: %s, length %d",
-+		printf("%-7s %-3s IPv4 %s:%d > %s:%d: %s, length %d%s\n",
- 		       ifname, pkt_type_str(pkt_type), src_addr, src_port,
--		       dst_addr, dst_port, transport_str, len);
--
--	if (proto == IPPROTO_TCP) {
--		if (tcp->fin)
--			printf(", FIN");
--		if (tcp->syn)
--			printf(", SYN");
--		if (tcp->rst)
--			printf(", RST");
--		if (tcp->ack)
--			printf(", ACK");
--	}
--
--	printf("\n");
--	funlockfile(stdout);
-+		       dst_addr, dst_port, transport_str, len, flags);
+-	*(void __percpu **)(l->key + key_size) = pptr;
++	*(void __percpu **)(l->key + roundup(key_size, 8)) = pptr;
  }
  
- static void show_ipv6_packet(const u_char *packet, u32 ifindex, u8 pkt_type)
+ static inline void __percpu *htab_elem_get_ptr(struct htab_elem *l, u32 key_size)
+ {
+-	return *(void __percpu **)(l->key + key_size);
++	return *(void __percpu **)(l->key + roundup(key_size, 8));
+ }
+ 
+ static void *fd_htab_map_get_ptr(const struct bpf_map *map, struct htab_elem *l)
+@@ -2355,7 +2355,7 @@ static int htab_percpu_map_gen_lookup(struct bpf_map *map, struct bpf_insn *insn
+ 	*insn++ = BPF_EMIT_CALL(__htab_map_lookup_elem);
+ 	*insn++ = BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 3);
+ 	*insn++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_0,
+-				offsetof(struct htab_elem, key) + map->key_size);
++				offsetof(struct htab_elem, key) + roundup(map->key_size, 8));
+ 	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0);
+ 	*insn++ = BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF_REG_0);
+ 
 -- 
 2.39.5
 
