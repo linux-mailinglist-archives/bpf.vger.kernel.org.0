@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-55311-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55312-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCA15A7B7E5
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 08:39:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C165A7B7FA
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 08:49:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D3217A791E
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 06:38:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 421D63B7E3B
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 06:49:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2EB918BBB9;
-	Fri,  4 Apr 2025 06:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A693118B495;
+	Fri,  4 Apr 2025 06:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="UVXvNaRv"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="MyU3z52G"
 X-Original-To: bpf@vger.kernel.org
 Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0AD155316;
-	Fri,  4 Apr 2025 06:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6ED13CA9C;
+	Fri,  4 Apr 2025 06:49:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743748751; cv=none; b=p19rQB3Jf91qb01J87D/4YHa20w8Lu8F5gxEL4LSkxwGrFmxllQpHhLLU999LwVE+iTyrAFAzZ53jnK9U7hiqN843FDLJpJNd/9wYr8LT/pm3xs5Jru1z1j4ndVSrAj3r+5Lv9yQGKLYCKYBjkMN1N9mtVf4pgp6EUeeAyYkR6o=
+	t=1743749354; cv=none; b=m6cIHpVfdHyALRcrzhGy5E3BSqYWXDToHUtMntMmzoevTtVyKs+IONurpXwjBSQrNyfBdlJy5NmtBrdvwPDhNtuP92CuR5VyLy3YBsLgEYFFfpv6MSHgptThkV2ajXH18VpARYkmajczo2hHEWh3bfkP1YQCbr2Xx4GDFLWH7fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743748751; c=relaxed/simple;
-	bh=IfIl8FE43pGx+uQUjFgWd8RZQmiuKxZdD9ewBzSoVio=;
+	s=arc-20240116; t=1743749354; c=relaxed/simple;
+	bh=kELR835UCWCK7OY1En5387hJQdIbvGqYSUGhSzutYM0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LZR+L5iaGNRUZFC1SjAgEt96S3wn+tKY8ucufLryoFZvlvSKiYurf4Fm7wlS9+eoVOX7UUKJj3l0ldsCfgE+/IFN2ZgHk83xVhQaMuvbodg42llB0TcTp+wHG9yIvjg7Nu/evLAEDcMU+L3n+yOi6Q6pxYAuXao6zBpkWT51Jp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=UVXvNaRv; arc=none smtp.client-ip=178.60.130.6
+	 In-Reply-To:Content-Type; b=T/Ng78hZiNkWe4MyDN9dlcw+ApUghVoBfChpeTqcBlXAM0+N8u/R7SX0XCTmaHelWqMA4pziYM2+2Q0vmt2hjWtct6nVC7gP7o8JQ/7xPgBV742N64xMDx0Jb2q2YIReUuWKY6HbEpBbasPhSzrr0mraVV2au1NQB6KdnJx0k2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=MyU3z52G; arc=none smtp.client-ip=178.60.130.6
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
@@ -37,18 +37,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=uXwHVhIQiwQ3uewZeyB4MHzXT2Md9jRYI048JFRNUHo=; b=UVXvNaRvohlIod85Wo7r6eTwEA
-	eaQFuyGce9TLEyIIkuWx6dA8epXQXo5zR91aSQsoUMN2mFXvENJz8wmC2LWbgZnp5YblZXkBOXmoy
-	1tJLQ2Gp9QU7iNaxP5VMd8mN9iRAaWTQ28+kIDY20WM98OfYfhpM2pmGhz5kIUXV1z5mI1lcTMdXi
-	0hC5CUXpWhq16z4Pk47YCNXFcCVzPJjXZjXjYULxjvEuvwvFGOEPXCgmM/XfszU+o0ms42YD4Rp/S
-	vHd//uyxeQ8qE0DAfUPVMOJ7GVblx8/yJZEkVlq+rBAz6aSwQHlA++xcueVcPf2C29ihSZUB1I+1A
-	liG80V1Q==;
+	bh=ZQQetR+xc2zZIjsgAF6hLgPLxVn2j39ULjiJ2InxQX0=; b=MyU3z52G1+KtUQ6PCH08uwLVGE
+	mtNllg/HfLXAlicIuUuukxuO5PzUux0ZSBoNgfAkU27/L+6GoEn9SQjg5q543gJI2m5QLTsLobUIe
+	YOBObsFHoI+HhezX1HDjCUvKEsbiTSm9v7MQ2QeaH7iT+yhovEZ/JM6Of3YkNBg8QEdO+ujEB81A7
+	32uV12gGW3Mff5+7s++370dOnTGFsFNSxr7eHhjqOH3GSSWkOSgz0Yvz8UeZ774bG/yb1f0Y0j9wh
+	NqSPDnmnIigBz0r+aJQgGXPd1EPOEKlCL/1JFZNg6S6/rA9yZRm6uAq8fVQMam/CFR3B9yJpG2pTp
+	OwckH4Cw==;
 Received: from [223.233.74.223] (helo=[192.168.1.12])
 	by fanzine2.igalia.com with esmtpsa 
 	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1u0ahf-00BDfn-Mg; Fri, 04 Apr 2025 08:38:59 +0200
-Message-ID: <ce03ac93-c8ee-4803-acdc-597dd432207b@igalia.com>
-Date: Fri, 4 Apr 2025 12:08:55 +0530
+	id 1u0arM-00BDu0-W2; Fri, 04 Apr 2025 08:49:01 +0200
+Message-ID: <3202d24e-b155-ab0a-86cd-0a3204ec52dd@igalia.com>
+Date: Fri, 4 Apr 2025 12:18:56 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,8 +57,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.5.0
-Subject: Re: [PATCH v2 3/3] kthread: Use 'task_struct->full_name' to store
- kthread's full name
+Subject: Re: [PATCH v2 1/3] exec: Dynamically allocate memory to store task's
+ full name
 Content-Language: en-US
 To: Kees Cook <kees@kernel.org>, Bhupesh <bhupesh@igalia.com>
 Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
@@ -73,86 +73,153 @@ Cc: akpm@linux-foundation.org, kernel-dev@igalia.com,
  brauner@kernel.org, jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com,
  bsegall@google.com, mgorman@suse.de, vschneid@redhat.com
 References: <20250331121820.455916-1-bhupesh@igalia.com>
- <20250331121820.455916-4-bhupesh@igalia.com> <202504030923.1FE7874F@keescook>
+ <20250331121820.455916-2-bhupesh@igalia.com>
+ <202504030924.50896AD12@keescook>
 From: Bhupesh Sharma <bhsharma@igalia.com>
-In-Reply-To: <202504030923.1FE7874F@keescook>
+In-Reply-To: <202504030924.50896AD12@keescook>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Hi Kees,
 
-On 4/3/25 9:54 PM, Kees Cook wrote:
-> On Mon, Mar 31, 2025 at 05:48:20PM +0530, Bhupesh wrote:
->> Commit 6986ce24fc00 ("kthread: dynamically allocate memory to store
->> kthread's full name"), added 'full_name' in parallel to 'comm' for
->> kthread names.
+On 4/3/25 10:00 PM, Kees Cook wrote:
+> On Mon, Mar 31, 2025 at 05:48:18PM +0530, Bhupesh wrote:
+>> Provide a parallel implementation for get_task_comm() called
+>> get_task_full_name() which allows the dynamically allocated
+>> and filled-in task's full name to be passed to interested
+>> users such as 'gdb'.
 >>
->> Now that we have added 'full_name' added to 'task_struct' itself,
->> drop the additional 'full_name' entry from 'struct kthread' and also
->> its usage.
+>> Currently while running 'gdb', the 'task->comm' value of a long
+>> task name is truncated due to the limitation of TASK_COMM_LEN.
+>>
+>> For example using gdb to debug a simple app currently which generate
+>> threads with long task names:
+>>    # gdb ./threadnames -ex "run info thread" -ex "detach" -ex "quit" > log
+>>    # cat log
+>>
+>>    NameThatIsTooLo
+>>
+>> This patch does not touch 'TASK_COMM_LEN' at all, i.e.
+>> 'TASK_COMM_LEN' and the 16-byte design remains untouched. Which means
+>> that all the legacy / existing ABI, continue to work as before using
+>> '/proc/$pid/task/$tid/comm'.
+>>
+>> This patch only adds a parallel, dynamically-allocated
+>> 'task->full_name' which can be used by interested users
+>> via '/proc/$pid/task/$tid/full_name'.
+>>
+>> After this change, gdb is able to show full name of the task:
+>>    # gdb ./threadnames -ex "run info thread" -ex "detach" -ex "quit" > log
+>>    # cat log
+>>
+>>    NameThatIsTooLongForComm[4662]
 >>
 >> Signed-off-by: Bhupesh <bhupesh@igalia.com>
-> I'd like to see this patch be the first patch in the series. This show
-> the existing use for "full_name". (And as such it'll probably need bits
-> from patch 1.)
+>> ---
+>>   fs/exec.c             | 21 ++++++++++++++++++---
+>>   include/linux/sched.h |  9 +++++++++
+>>   2 files changed, 27 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/exec.c b/fs/exec.c
+>> index f45859ad13ac..4219d77a519c 100644
+>> --- a/fs/exec.c
+>> +++ b/fs/exec.c
+>> @@ -1208,6 +1208,9 @@ int begin_new_exec(struct linux_binprm * bprm)
+>>   {
+>>   	struct task_struct *me = current;
+>>   	int retval;
+>> +	va_list args;
+>> +	char *name;
+>> +	const char *fmt;
+>>   
+>>   	/* Once we are committed compute the creds */
+>>   	retval = bprm_creds_from_file(bprm);
+>> @@ -1348,11 +1351,22 @@ int begin_new_exec(struct linux_binprm * bprm)
+>>   		 * detecting a concurrent rename and just want a terminated name.
+>>   		 */
+>>   		rcu_read_lock();
+>> -		__set_task_comm(me, smp_load_acquire(&bprm->file->f_path.dentry->d_name.name),
+>> -				true);
+>> +		fmt = smp_load_acquire(&bprm->file->f_path.dentry->d_name.name);
+>> +		name = kvasprintf(GFP_KERNEL, fmt, args);
+>> +		if (!name)
+>> +			return -ENOMEM;
+>> +
+>> +		me->full_name = name;
+>> +		__set_task_comm(me, fmt, true);
+> I don't want to add new allocations to the default exec path unless we
+> absolutely must.
+>
+> In the original proposal this was about setting thread names (after
+> exec), and I think that'll be fine.
+>
 
-Sure, I will fix this in v3.
+Ok.
+
+>>   		rcu_read_unlock();
+>>   	} else {
+>> -		__set_task_comm(me, kbasename(bprm->filename), true);
+>> +		fmt = kbasename(bprm->filename);
+>> +		name = kvasprintf(GFP_KERNEL, fmt, args);
+>> +		if (!name)
+>> +			return -ENOMEM;
+>> +
+>> +		me->full_name = name;
+>> +		__set_task_comm(me, fmt, true);
+>>   	}
+> I think we can just set me->full_name = me->comm by default.
+
+Sure.
+
+>>   
+>>   	/* An exec changes our domain. We are no longer part of the thread
+>> @@ -1399,6 +1413,7 @@ int begin_new_exec(struct linux_binprm * bprm)
+>>   	return 0;
+>>   
+>>   out_unlock:
+>> +	kfree(me->full_name);
+>>   	up_write(&me->signal->exec_update_lock);
+>>   	if (!bprm->cred)
+>>   		mutex_unlock(&me->signal->cred_guard_mutex);
+>> diff --git a/include/linux/sched.h b/include/linux/sched.h
+>> index 56ddeb37b5cd..053b52606652 100644
+>> --- a/include/linux/sched.h
+>> +++ b/include/linux/sched.h
+>> @@ -1166,6 +1166,9 @@ struct task_struct {
+>>   	 */
+>>   	char				comm[TASK_COMM_LEN];
+>>   
+>> +	/* To store the full name if task comm is truncated. */
+>> +	char				*full_name;
+>> +
+>>   	struct nameidata		*nameidata;
+>>   
+>>   #ifdef CONFIG_SYSVIPC
+>> @@ -2007,6 +2010,12 @@ extern void __set_task_comm(struct task_struct *tsk, const char *from, bool exec
+>>   	buf;						\
+>>   })
+>>   
+>> +#define get_task_full_name(buf, buf_size, tsk) ({	\
+>> +	BUILD_BUG_ON(sizeof(buf) < TASK_COMM_LEN);	\
+>> +	strscpy_pad(buf, (tsk)->full_name, buf_size);	\
+>> +	buf;						\
+>> +})
+> I think it should be possible to just switch get_task_comm() to use
+> (tsk)->full_name.
+>
+
+In another review for this series, Yafang mentioned the following 
+cleanup + approach suggested by Linus (see [0]).
+Also I have summarized my understanding on the basis of the suggestions 
+Linus shared and the accompanying background threads (please see [1]).
+
+Kindly share your views on the same, so that I can change the 
+implementation in v3 series accordingly.
+
+[0].https://lore.kernel.org/all/CAHk-=wjAmmHUg6vho1KjzQi2=psR30+CogFd4aXrThr2gsiS4g@mail.gmail.com/
+[1]. https://lore.kernel.org/all/20250331121820.455916-1-bhupesh@igalia.com/T/#m7c163829440f2c98e64b475b7cdbc35ba4d613ca
 
 Thanks,
 Bhupesh
-
->
->> ---
->>   kernel/kthread.c | 9 +++------
->>   1 file changed, 3 insertions(+), 6 deletions(-)
->>
->> diff --git a/kernel/kthread.c b/kernel/kthread.c
->> index 5dc5b0d7238e..46fe19b7ef76 100644
->> --- a/kernel/kthread.c
->> +++ b/kernel/kthread.c
->> @@ -66,8 +66,6 @@ struct kthread {
->>   #ifdef CONFIG_BLK_CGROUP
->>   	struct cgroup_subsys_state *blkcg_css;
->>   #endif
->> -	/* To store the full name if task comm is truncated. */
->> -	char *full_name;
->>   	struct task_struct *task;
->>   	struct list_head hotplug_node;
->>   	struct cpumask *preferred_affinity;
->> @@ -108,12 +106,12 @@ void get_kthread_comm(char *buf, size_t buf_size, struct task_struct *tsk)
->>   {
->>   	struct kthread *kthread = to_kthread(tsk);
->>   
->> -	if (!kthread || !kthread->full_name) {
->> +	if (!kthread || !tsk->full_name) {
->>   		strscpy(buf, tsk->comm, buf_size);
->>   		return;
->>   	}
->>   
->> -	strscpy_pad(buf, kthread->full_name, buf_size);
->> +	strscpy_pad(buf, tsk->full_name, buf_size);
->>   }
->>   
->>   bool set_kthread_struct(struct task_struct *p)
->> @@ -153,7 +151,6 @@ void free_kthread_struct(struct task_struct *k)
->>   	WARN_ON_ONCE(kthread->blkcg_css);
->>   #endif
->>   	k->worker_private = NULL;
->> -	kfree(kthread->full_name);
->>   	kfree(kthread);
->>   }
->>   
->> @@ -430,7 +427,7 @@ static int kthread(void *_create)
->>   		kthread_exit(-EINTR);
->>   	}
->>   
->> -	self->full_name = create->full_name;
->> +	self->task->full_name = create->full_name;
->>   	self->threadfn = threadfn;
->>   	self->data = data;
->>   
->> -- 
->> 2.38.1
->>
 
 
