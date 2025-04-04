@@ -1,61 +1,65 @@
-Return-Path: <bpf+bounces-55280-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55281-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25C22A7B31B
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 02:11:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7DD7A7B322
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 02:11:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CF557A8715
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 00:08:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 184A317313F
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 00:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F3CEBE;
-	Fri,  4 Apr 2025 00:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E361ACED7;
+	Fri,  4 Apr 2025 00:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R7NU5vkJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sQok2Jav"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C5A1A314D;
-	Fri,  4 Apr 2025 00:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 768421AA79C;
+	Fri,  4 Apr 2025 00:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743725086; cv=none; b=g56YcrC8ZGAW5mDXu+4a2X+WvbVaL3Gx7ois8TzJ68wG411cWbXmLVwmoX0yIHCnNZU0BAJSX9VoefPhm03jNiJdPtFFFzQgeVLWRSA3H+pXVROmqb1IkfoLEoZf637ZbZ9ZwR3pkM8Kq7IQmAUTyiru0Wi3M8Upz1uGCKW8WNI=
+	t=1743725100; cv=none; b=ggnDfQd8Izh+QWfORsvOYAJBp5eOYf3eqV8/Avkl/Wq6GN0dQxk9LCSW4aN0j/mpLeU5bL5fGBeNE1kWx5LN034Nuc2DVSd9tTLcMzVhp77wdN+4y30GxpZm7gUjKqxayHN2scULSkPsZfsKgrsH1bSlojcwPKzBJH+5YQ6SjRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743725086; c=relaxed/simple;
-	bh=aQOzBmEo1VKKoJxxC5YjSqATKHwoRR3RuMha6YtF2Nw=;
+	s=arc-20240116; t=1743725100; c=relaxed/simple;
+	bh=OEphS++aiw5Zon+jzaEsnLlRZocxSiGBmdEBgLHZP4M=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=U7XLiRyBNwk17HtUzUeBV404RVXu9KEXhp9iKGCuLsqRYT8alnNzUn0SHLRE4FtykVACXD7W+pU5jKNZn2rbe1TmTRkI+adUMchg4sglOAgKmvbV4Ui5avfL4tQ6qFmLQU643+5pShGExVCki88M0R1RfaY5NDU0H+oxopIXZY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R7NU5vkJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57AC7C4CEEC;
-	Fri,  4 Apr 2025 00:04:45 +0000 (UTC)
+	 MIME-Version; b=fW89I/klTjDaedy/qxiLcD+YruI3u2N7YpDMIIac997Kw/D7TY3zI283xqWqkkKlDX3VPMAZHv0Q/l5r9vjVrvEgglAofx2I3wYlsHwRJiu7JTCQqQU8xssReMg1mCWmiYWi8iGkZvzsxaEnHr0II8f/xKrIQgsKd0pYdOMPaCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sQok2Jav; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 112B3C4CEE5;
+	Fri,  4 Apr 2025 00:04:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743725086;
-	bh=aQOzBmEo1VKKoJxxC5YjSqATKHwoRR3RuMha6YtF2Nw=;
+	s=k20201202; t=1743725100;
+	bh=OEphS++aiw5Zon+jzaEsnLlRZocxSiGBmdEBgLHZP4M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=R7NU5vkJpJBqG9pCdVe46XVHRSzt6Jx1xj7zLOmkS9SgbXRcE7LyQqY0WdS+kg/sW
-	 UtEYPM1469KzWyveCRenGuwg2gV//mnV0lTPT/d74IR+FVF35sTSrPZGV6OCzTopDM
-	 IYBZWMthqxiCTHq8K1l8yMwddNSz+ijr1k4DXS4kWCQk6n8xdiQZVsavsiqlby5AxU
-	 C5hfotbN9pkEkWw8J9ExaLL+2FOmmSvNrUyNJhiS8AOsg5kQwrQqHWlfI+1+kzKV1A
-	 cj/yLQgfTer9GtiYNYcLc5UW0fN5zJfrQXbq0Dk25MS7pwTn+/SsdW/8+u0rVwODNL
-	 sMQ1IUIYycVuA==
+	b=sQok2Javbq5NSTMcVpir2cudNdP3veTtL6dJ+6Klx5nChzXvWTYpM6oNRjXFPm2lB
+	 W1/bY3OfAmUYmlwbnS0jiwJOyILj5FEc+DAPNVatZBKfdl03OsW5Svzt56OstJkRv9
+	 AQkaWPblZ0iuxxegAtWgUIZspeuY569jQtsNYfZZHgS23zOElgZGMUkRAS2kppGQIy
+	 QedQ58yAPohLKBPk/nxxNnF3q/3OXT8g94D4xqj/+07QCQwImqY6CH2EssCnn5uTrE
+	 QxXcelGrSdAT2Z4WRccaAYRxrrlTRtOHG7e0qIiJ6HxfEYtUp/QZY5C1a2HoxQA3Lh
+	 QeV9J8WKhM80Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yafang Shao <laoar.shao@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Amery Hung <ameryhung@gmail.com>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	daniel@iogearbox.net,
 	andrii@kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 20/23] bpf: Reject attaching fexit/fmod_ret to __noreturn functions
-Date: Thu,  3 Apr 2025 20:03:57 -0400
-Message-Id: <20250404000402.2688049-20-sashal@kernel.org>
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	shuah@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.13 02/22] selftests/bpf: Fix stdout race condition in traffic monitor
+Date: Thu,  3 Apr 2025 20:04:31 -0400
+Message-Id: <20250404000453.2688371-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250404000402.2688049-1-sashal@kernel.org>
-References: <20250404000402.2688049-1-sashal@kernel.org>
+In-Reply-To: <20250404000453.2688371-1-sashal@kernel.org>
+References: <20250404000453.2688371-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,110 +68,118 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.14
+X-stable-base: Linux 6.13.9
 Content-Transfer-Encoding: 8bit
 
-From: Yafang Shao <laoar.shao@gmail.com>
+From: Amery Hung <ameryhung@gmail.com>
 
-[ Upstream commit cfe816d469dce9c0864062cf65dd7b3c42adc6f8 ]
+[ Upstream commit b99f27e90268b1a814c13f8bd72ea1db448ea257 ]
 
-If we attach fexit/fmod_ret to __noreturn functions, it will cause an
-issue that the bpf trampoline image will be left over even if the bpf
-link has been destroyed. Take attaching do_exit() with fexit for example.
-The fexit works as follows,
+Fix a race condition between the main test_progs thread and the traffic
+monitoring thread. The traffic monitor thread tries to print a line
+using multiple printf and use flockfile() to prevent the line from being
+torn apart. Meanwhile, the main thread doing io redirection can reassign
+or close stdout when going through tests. A deadlock as shown below can
+happen.
 
-  bpf_trampoline
-  + __bpf_tramp_enter
-    + percpu_ref_get(&tr->pcref);
+       main                      traffic_monitor_thread
+       ====                      ======================
+                                 show_transport()
+                                 -> flockfile(stdout)
 
-  + call do_exit()
+stdio_hijack_init()
+-> stdout = open_memstream(log_buf, log_cnt);
+   ...
+   env.subtest_state->stdout_saved = stdout;
 
-  + __bpf_tramp_exit
-    + percpu_ref_put(&tr->pcref);
+                                    ...
+                                    funlockfile(stdout)
+stdio_restore_cleanup()
+-> fclose(env.subtest_state->stdout_saved);
 
-Since do_exit() never returns, the refcnt of the trampoline image is
-never decremented, preventing it from being freed. That can be verified
-with as follows,
+After the traffic monitor thread lock stdout, A new memstream can be
+assigned to stdout by the main thread. Therefore, the traffic monitor
+thread later will not be able to unlock the original stdout. As the
+main thread tries to access the old stdout, it will hang indefinitely
+as it is still locked by the traffic monitor thread.
 
-  $ bpftool link show                                   <<<< nothing output
-  $ grep "bpf_trampoline_[0-9]" /proc/kallsyms
-  ffffffffc04cb000 t bpf_trampoline_6442526459    [bpf] <<<< leftover
+The deadlock can be reproduced by running test_progs repeatedly with
+traffic monitor enabled:
 
-In this patch, all functions annotated with __noreturn are rejected, except
-for the following cases:
-- Functions that result in a system reboot, such as panic,
-  machine_real_restart and rust_begin_unwind
-- Functions that are never executed by tasks, such as rest_init and
-  cpu_startup_entry
-- Functions implemented in assembly, such as rewind_stack_and_make_dead and
-  xen_cpu_bringup_again, lack an associated BTF ID.
+for ((i=1;i<=100;i++)); do
+  ./test_progs -a flow_dissector_skb* -m '*'
+done
 
-With this change, attaching fexit probes to functions like do_exit() will
-be rejected.
+Fix this by only calling printf once and remove flockfile()/funlockfile().
 
-$ ./fexit
-libbpf: prog 'fexit': BPF program load failed: -EINVAL
-libbpf: prog 'fexit': -- BEGIN PROG LOAD LOG --
-Attaching fexit/fmod_ret to __noreturn functions is rejected.
-
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Link: https://lore.kernel.org/r/20250318114447.75484-2-laoar.shao@gmail.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Amery Hung <ameryhung@gmail.com>
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Link: https://patch.msgid.link/20250213233217.553258-1-ameryhung@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ tools/testing/selftests/bpf/network_helpers.c | 33 ++++++++-----------
+ 1 file changed, 13 insertions(+), 20 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 60611df77957a..b1232c9e67fc4 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -22856,6 +22856,33 @@ BTF_ID(func, __rcu_read_unlock)
- #endif
- BTF_SET_END(btf_id_deny)
+diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+index 27784946b01b8..af0ee70a53f9f 100644
+--- a/tools/testing/selftests/bpf/network_helpers.c
++++ b/tools/testing/selftests/bpf/network_helpers.c
+@@ -771,12 +771,13 @@ static const char *pkt_type_str(u16 pkt_type)
+ 	return "Unknown";
+ }
  
-+/* fexit and fmod_ret can't be used to attach to __noreturn functions.
-+ * Currently, we must manually list all __noreturn functions here. Once a more
-+ * robust solution is implemented, this workaround can be removed.
-+ */
-+BTF_SET_START(noreturn_deny)
-+#ifdef CONFIG_IA32_EMULATION
-+BTF_ID(func, __ia32_sys_exit)
-+BTF_ID(func, __ia32_sys_exit_group)
-+#endif
-+#ifdef CONFIG_KUNIT
-+BTF_ID(func, __kunit_abort)
-+BTF_ID(func, kunit_try_catch_throw)
-+#endif
-+#ifdef CONFIG_MODULES
-+BTF_ID(func, __module_put_and_kthread_exit)
-+#endif
-+#ifdef CONFIG_X86_64
-+BTF_ID(func, __x64_sys_exit)
-+BTF_ID(func, __x64_sys_exit_group)
-+#endif
-+BTF_ID(func, do_exit)
-+BTF_ID(func, do_group_exit)
-+BTF_ID(func, kthread_complete_and_exit)
-+BTF_ID(func, kthread_exit)
-+BTF_ID(func, make_task_dead)
-+BTF_SET_END(noreturn_deny)
-+
- static bool can_be_sleepable(struct bpf_prog *prog)
++#define MAX_FLAGS_STRLEN 21
+ /* Show the information of the transport layer in the packet */
+ static void show_transport(const u_char *packet, u16 len, u32 ifindex,
+ 			   const char *src_addr, const char *dst_addr,
+ 			   u16 proto, bool ipv6, u8 pkt_type)
  {
- 	if (prog->type == BPF_PROG_TYPE_TRACING) {
-@@ -22944,6 +22971,11 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	} else if (prog->type == BPF_PROG_TYPE_TRACING &&
- 		   btf_id_set_contains(&btf_id_deny, btf_id)) {
- 		return -EINVAL;
-+	} else if ((prog->expected_attach_type == BPF_TRACE_FEXIT ||
-+		   prog->expected_attach_type == BPF_MODIFY_RETURN) &&
-+		   btf_id_set_contains(&noreturn_deny, btf_id)) {
-+		verbose(env, "Attaching fexit/fmod_ret to __noreturn functions is rejected.\n");
-+		return -EINVAL;
- 	}
+-	char *ifname, _ifname[IF_NAMESIZE];
++	char *ifname, _ifname[IF_NAMESIZE], flags[MAX_FLAGS_STRLEN] = "";
+ 	const char *transport_str;
+ 	u16 src_port, dst_port;
+ 	struct udphdr *udp;
+@@ -817,29 +818,21 @@ static void show_transport(const u_char *packet, u16 len, u32 ifindex,
  
- 	key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
+ 	/* TCP or UDP*/
+ 
+-	flockfile(stdout);
++	if (proto == IPPROTO_TCP)
++		snprintf(flags, MAX_FLAGS_STRLEN, "%s%s%s%s",
++			 tcp->fin ? ", FIN" : "",
++			 tcp->syn ? ", SYN" : "",
++			 tcp->rst ? ", RST" : "",
++			 tcp->ack ? ", ACK" : "");
++
+ 	if (ipv6)
+-		printf("%-7s %-3s IPv6 %s.%d > %s.%d: %s, length %d",
++		printf("%-7s %-3s IPv6 %s.%d > %s.%d: %s, length %d%s\n",
+ 		       ifname, pkt_type_str(pkt_type), src_addr, src_port,
+-		       dst_addr, dst_port, transport_str, len);
++		       dst_addr, dst_port, transport_str, len, flags);
+ 	else
+-		printf("%-7s %-3s IPv4 %s:%d > %s:%d: %s, length %d",
++		printf("%-7s %-3s IPv4 %s:%d > %s:%d: %s, length %d%s\n",
+ 		       ifname, pkt_type_str(pkt_type), src_addr, src_port,
+-		       dst_addr, dst_port, transport_str, len);
+-
+-	if (proto == IPPROTO_TCP) {
+-		if (tcp->fin)
+-			printf(", FIN");
+-		if (tcp->syn)
+-			printf(", SYN");
+-		if (tcp->rst)
+-			printf(", RST");
+-		if (tcp->ack)
+-			printf(", ACK");
+-	}
+-
+-	printf("\n");
+-	funlockfile(stdout);
++		       dst_addr, dst_port, transport_str, len, flags);
+ }
+ 
+ static void show_ipv6_packet(const u_char *packet, u32 ifindex, u8 pkt_type)
 -- 
 2.39.5
 
