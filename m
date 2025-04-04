@@ -1,86 +1,86 @@
-Return-Path: <bpf+bounces-55353-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55354-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B8C3A7C4FD
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 22:33:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3B59A7C4FE
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 22:34:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A8A63B1B90
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 20:33:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5283E7A64E0
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 20:32:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993A621E0B2;
-	Fri,  4 Apr 2025 20:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235D522068E;
+	Fri,  4 Apr 2025 20:33:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lzYH5ewG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JPFsC3qu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E7421D599;
-	Fri,  4 Apr 2025 20:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDED618B494;
+	Fri,  4 Apr 2025 20:33:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743798809; cv=none; b=g+gPbvsBTUvqkg+5KG5kyai/wWN0ZoFm69tmttlV2UBdRv08tvJY8+pjfVLaHSVof+P2KF57QKOdCqzRESMRbAISjQIKpTrXXaAzeIpWEQIKCd8vTvmu0sL3CjVRof9QnMeQuv9BCamE6S3M+X5YbF+pLBk16A+G3g6OoOi+P04=
+	t=1743798815; cv=none; b=Uv2ARxWtDWxtIUBhY3vx4fvPhSYjgebJNC83wHUF12qhvThdjeZ053cLqON0/qFzyTuWTlQVtvUGz6G2XEY+Jl10ZVTxFxI5oH0oAtWwEVp2dnQNfp+EmkemXA1O8AxpVxa4k+vK8bXp6Ld2i5q2NdNkq3vSCp9PZ+DpVvI7oPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743798809; c=relaxed/simple;
-	bh=jFvO2bJuTG4Ts4CMNjPFuPu6FgOmvIgksnPLagCcOxo=;
+	s=arc-20240116; t=1743798815; c=relaxed/simple;
+	bh=2xMTOpHaD6Tq4PduBp3zFPy0iV5QymlDq8gdScBz35k=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cv5XJ+9/wvT+WEgqmEb/YZpS4qefHg62UTt9z/NIBi8OSbsPOxlv2hCIkXqKeh+fucMTjy6EdUIDBZmzpyrJkfRa38eW88cLwzxVCemc7H55ryzLvll5Hm9ZwUOk8cZ6EJzZFP7OalrluUHgrtmAw60isfELKe0PglAvBsfS7xQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lzYH5ewG; arc=none smtp.client-ip=209.85.208.42
+	 To:Cc:Content-Type; b=o6gzIdZcaJ9lzpmDaYsoFAKq5WFlscSSdtgMzeNX9JwxYkMb3Juz456DsBJLKRO3hG+xEKYGzcINfZWveXU5JPt+HDJferDCIZOkRnNRwISzmfMvDKkh8Uji5KlCeE267a3Wl1lpi4UeAkECe9SRQOVqm8ZDFSOUUcQhbI6fZw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JPFsC3qu; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5e5e63162a0so3902327a12.3;
-        Fri, 04 Apr 2025 13:33:26 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-ac2902f7c2aso412313666b.1;
+        Fri, 04 Apr 2025 13:33:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743798805; x=1744403605; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1743798812; x=1744403612; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h4jie8VsL5jEq4w1LylrEHNeeWtiZI/nPv4l0uBUSy8=;
-        b=lzYH5ewG8AH6jVIVrzTApf5a3BdfwXqDOpThJ9EE5oY8IjwpqiHtBxCwMNZdo98d9b
-         yNVx/M6Q8+JM7H+/XANYLpFL875dXJoGgWTNu16M1TLhhl2Cp7r1zw3pH5kDdWWnvye2
-         oAboifuHjQnoW8wSKX/Gvltk0Y0gfmvHfN95DSFZvv0Na9HCK9DOZKU1wI7dF+xtKzlK
-         wl7QdbkqFSqT1kJBsKGjWF9x8UqlbYeQkYWgG3TdQdMRjPcnyMw7vLHiU5Do+7/R1he3
-         5tQsIKMX3BEQN+UVMB28b9x3ovA7QryVsJ31tRyD7GnsGQvtZVl9mX+FAh296znWsTLF
-         KUAg==
+        bh=F6O94xchGE6Ra4ULfDNFEhmXB7lbzxKyrsf60rukico=;
+        b=JPFsC3qukfGPOjXz8fsONx0NEmSTNZuPtjSaCfP3UT3/ZkwC3PN6rbdZJP3IpPGvXS
+         SCME1QSHCyOwPkxaWahDjW3MNaQHCoF+5H5JY0Uf2BjKk6x+YPmOvx42Y8z+zKdxCiBB
+         vfABI2ylvCQ4ORTRC1ScMkaRw+WwTfXobUfUoee2IKH2CUuCApbuVqTlgkOr4QUwpsMI
+         HNboAjubnD/oNMQfSuLdqPXJ382w+tN2Zog6BMwLN5oAodFQEwGNsUA8mdqSkwHagOsM
+         g36hMVXNVZTBDXtf7o670sMP+gy7p00ypDD3nhCK/7/N65B0IQb1MVX2W5K1CwVu+rmB
+         K4cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743798805; x=1744403605;
+        d=1e100.net; s=20230601; t=1743798812; x=1744403612;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h4jie8VsL5jEq4w1LylrEHNeeWtiZI/nPv4l0uBUSy8=;
-        b=I8PADt1OFg3/xKYw6HFBVzzGcJf7b71gSc0u31OV2rMjChHF6wJNqD/YEmg+Wl+GnR
-         W9N5gdkCEyP7NyyrsJlewCmU25HuqnuyNkOfQMrD9LNT9fOoYeNWKANSZb3TxJvJX3JO
-         tpRiFRET1uXemxn2bDoYtrzX3XieXa6s38PyRfQN3T5ovWHtCbPjGRoHs3KJxFPi+fLD
-         76MSRtc2J2B9VLLdLtlx8Msp4YZjbY8L+cEtPdA3298dv9bf7/zx+NGojYj3xBan/L9r
-         BCA0EX+SwzBqMfRdhF7CSdkkYAj7CLqmS4TU0810kxBrbqXkdguoTtXPG7kOzN+qki3T
-         khKw==
-X-Forwarded-Encrypted: i=1; AJvYcCUc2BsuQ/uKJhs4Hhop24toqN8pNTvn0SiuoLbQeDkEh7XiAUETlWTbCog0aA18w0aC1d3DSuY/B9YYcLTdlhddNbSR@vger.kernel.org, AJvYcCWcW2dquioWK6qXKpIc3WdXd+M6zezl8o3WsTEQq7NvOqqUlPe9ytavhu+JJ6g1imlVaqs=@vger.kernel.org, AJvYcCXziZcOCGviQCsDW1kzzRgEYmp73GCVKM1mmZsyoGzolXsM7wQ8UsrtIrXIQ90ORrD6XEpv9Yrbi48hYdFb@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzceag8i/tCKPKk7wmwEzOTxJvOxJkwPMuDD+6/aQsejfUJiP6I
-	8adad8FuKFbJuuXLJ5UjP/1h6YxK8X7ulDVR1VFo+5FdRShqY1jFo4CKWU9ch52z92CaIBlGgVr
-	NteozBNMWkZVTR6zaaAu7gJtsk9g=
-X-Gm-Gg: ASbGncucHADSoY9ebpHN2o351dFFPdR/XQA4DfsTG9Ody9qaHEvLDvolonQWbpPrd/6
-	mKJLf3iJDBJH/ADyBx0tWCoSrhr1brAf535yM0OWWW5Egv0gusmXzXzBAy7N1xFOcyC2AFlylo5
-	Q1yRZy9ER74oPw7B+8xgdWnP15JDDdo5gk0LwxTqPP31N71+Ijn3h0
-X-Google-Smtp-Source: AGHT+IGeJqwUH8uBu4TLo/R6q3donYu47Xzk7fav2vZe9wavylS2grYPXEdbSi+E8TweeLGwkDzhWU2CqNxTaG1C3F8=
-X-Received: by 2002:a17:906:7955:b0:ac3:3fe4:3378 with SMTP id
- a640c23a62f3a-ac7d181d95cmr515448666b.12.1743798805262; Fri, 04 Apr 2025
- 13:33:25 -0700 (PDT)
+        bh=F6O94xchGE6Ra4ULfDNFEhmXB7lbzxKyrsf60rukico=;
+        b=TOPE6hPrxL0e8849PE1Y3bBncN4afTV9ZXp4cJFYiKtpWmqJyuUmcXVaqglWrQz+L6
+         15iIIzprBwG6S4k0SkCPbGm23HbucOyduU1PrT/dGI+a/FKY2V4zz0xJi6q+4G9WDIEf
+         LZ44PzcqhoLmD9aP9aPBu7wWTv90/E9FPrPbgKGhb0OAZjqjE/GNBvs0CWpqrhSgKReF
+         7BcVm0nKa4cefOP6Lp3hbTcPTzxpkz80ylOobDepiAG5H3t4g78YM7XVsUjBxmQKV59R
+         Evfgt0ggynBSxB6W3mNsA4nFUGEvj+pkccv+4y6PNwA6Xpk3e/1ynHzg8hQp79UiEjQH
+         ygdw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+2uTkZwOmjNTEPgXjgnG/1vZ5KSzUI/vJqgahTRyDMF4THVHcG72GGMZFIqaOKzrXCkn7/+ouEnYQw3QE@vger.kernel.org, AJvYcCUcNJnqIu9AkZqAoM5sLQEmWGaWnpUC72OrLAy3mgTPq4FV//TdEJJrw84kqpCfsRGfMsVMMaDBkg2F79UbeQv3q7nc@vger.kernel.org, AJvYcCWB/C16KUM8gWmcpZVgVI1fP9ns+zsmf4gaiPuVR6rPnX5vP4GIlmiLXOVB+5W/AAxMRMM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz1nGATXJteVHfO/Y4gD4aPYDGynDJXHrSoxNNyLIFqSgD1w1cZ
+	ALNHvaAJImhLCg/DFeAWJyAeTMpyqEc4PBY1zypdQJU2y/g4eL9cOn+DxOCJ4U+SwfLP13kh9El
+	zkkw8eLmEvHC9HxCQCFR4rFzbM+Q=
+X-Gm-Gg: ASbGncscKuYlQfDap5xxuglll4g7o8mIJHY+C1GUGwcEDz09iTdTyw0AkWEgg8RsFrC
+	5DPorTAUL24EmEe4WoLB7Ch+Cr6ri46kvbZ7g5W3/dZ5so4l6UoZzbsSZGsLq2Nhhe084zk8NW8
+	578eeA7OwMfIXDurXsGcK7cUCFQpo10B3magwucBkruw==
+X-Google-Smtp-Source: AGHT+IHhZr4vL2yJq+ZUyxUpJe7kYWa2YtibNG/wlE/aYWLozXIBBPOglx5HMQtbZ2THvFyhrIzmivFIkzpKVXC6ds4=
+X-Received: by 2002:a17:907:1ca8:b0:ac2:6910:a12f with SMTP id
+ a640c23a62f3a-ac7d6e3ce0fmr345768866b.46.1743798811928; Fri, 04 Apr 2025
+ 13:33:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250320114200.14377-1-jolsa@kernel.org> <20250320114200.14377-9-jolsa@kernel.org>
-In-Reply-To: <20250320114200.14377-9-jolsa@kernel.org>
+References: <20250320114200.14377-1-jolsa@kernel.org> <20250320114200.14377-11-jolsa@kernel.org>
+In-Reply-To: <20250320114200.14377-11-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 4 Apr 2025 13:33:07 -0700
-X-Gm-Features: ATxdqUHwd-OF88zMZHqc_3Ajvt9DS6mGBtT8fgVDUF8Sb0ZrwKrrJtTbymCwPD4
-Message-ID: <CAEf4Bza=xexa6jixoz7dDY7WSoX3k5Tub231o_6nO_89LB_BjA@mail.gmail.com>
-Subject: Re: [PATCH RFCv3 08/23] uprobes/x86: Add uprobe syscall to speed up uprobe
+Date: Fri, 4 Apr 2025 13:33:11 -0700
+X-Gm-Features: ATxdqUEKShCAghH7mYNzt8B7VsHCVh2-bYrl3TK_wDgvAaUUlneedLO4gOiW1Eo
+Message-ID: <CAEf4BzY8z8r5uGEFjtNVm0L2JBwQ1ZPP2gqgsVqheqBkPiJ-9g@mail.gmail.com>
+Subject: Re: [PATCH RFCv3 10/23] uprobes/x86: Add support to emulate nop5 instruction
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -95,79 +95,71 @@ Content-Transfer-Encoding: quoted-printable
 
 On Thu, Mar 20, 2025 at 4:43=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding new uprobe syscall that calls uprobe handlers for given
-> 'breakpoint' address.
->
-> The idea is that the 'breakpoint' address calls the user space
-> trampoline which executes the uprobe syscall.
->
-> The syscall handler reads the return address of the initial call
-> to retrieve the original 'breakpoint' address. With this address
-> we find the related uprobe object and call its consumers.
->
-> Adding the arch_uprobe_trampoline_mapping function that provides
-> uprobe trampoline mapping. This mapping is backed with one global
-> page initialized at __init time and shared by the all the mapping
-> instances.
->
-> We do not allow to execute uprobe syscall if the caller is not
-> from uprobe trampoline mapping.
->
-> The uprobe syscall ensures the consumer (bpf program) sees registers
-> values in the state before the trampoline was called.
+> Adding support to emulate nop5 as the original uprobe instruction.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  arch/x86/entry/syscalls/syscall_64.tbl |   1 +
->  arch/x86/kernel/uprobes.c              | 134 +++++++++++++++++++++++++
->  include/linux/syscalls.h               |   2 +
->  include/linux/uprobes.h                |   1 +
->  kernel/events/uprobes.c                |  22 ++++
->  kernel/sys_ni.c                        |   1 +
->  6 files changed, 161 insertions(+)
+>  arch/x86/kernel/uprobes.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 >
 
-[...]
+This optimization is independent from the sys_uprobe, right? Maybe
+send it as a stand-alone patch and let's land it sooner?
+Also, how hard would it be to do the same for other nopX instructions?
 
-> +void handle_syscall_uprobe(struct pt_regs *regs, unsigned long bp_vaddr)
+
+> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+> index 5ee2cce4c63e..1661e0ab2a3d 100644
+> --- a/arch/x86/kernel/uprobes.c
+> +++ b/arch/x86/kernel/uprobes.c
+> @@ -308,6 +308,11 @@ static int uprobe_init_insn(struct arch_uprobe *aupr=
+obe, struct insn *insn, bool
+>         return -ENOTSUPP;
+>  }
+>
+> +static int is_nop5_insn(uprobe_opcode_t *insn)
 > +{
-> +       struct uprobe *uprobe;
-> +       int is_swbp;
-> +
-> +       rcu_read_lock_trace();
-> +       uprobe =3D find_active_uprobe_rcu(bp_vaddr, &is_swbp);
-> +       if (!uprobe)
-> +               goto unlock;
-> +
-> +       if (!get_utask())
-> +               goto unlock;
-> +
-> +       if (arch_uprobe_ignore(&uprobe->arch, regs))
-> +               goto unlock;
-> +
-> +       handler_chain(uprobe, regs);
-> +
-> + unlock:
-> +       rcu_read_unlock_trace();
-
-we now have `guard(rcu_tasks_trace)();`, let's use that in this
-function, seems like a good fit?
-
-
+> +       return !memcmp(insn, x86_nops[5], 5);
 > +}
 > +
->  /*
->   * Perform required fix-ups and disable singlestep.
->   * Allow pending signals to take effect.
-> diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
-> index c00a86931f8c..bf5d05c635ff 100644
-> --- a/kernel/sys_ni.c
-> +++ b/kernel/sys_ni.c
-> @@ -392,3 +392,4 @@ COND_SYSCALL(setuid16);
->  COND_SYSCALL(rseq);
+>  #ifdef CONFIG_X86_64
 >
->  COND_SYSCALL(uretprobe);
-> +COND_SYSCALL(uprobe);
+>  asm (
+> @@ -865,6 +870,11 @@ void arch_uprobe_clear_state(struct mm_struct *mm)
+>         hlist_for_each_entry_safe(tramp, n, &state->head_tramps, node)
+>                 destroy_uprobe_trampoline(tramp);
+>  }
+> +
+> +static bool emulate_nop5_insn(struct arch_uprobe *auprobe)
+> +{
+> +       return is_nop5_insn((uprobe_opcode_t *) &auprobe->insn);
+> +}
+>  #else /* 32-bit: */
+>  /*
+>   * No RIP-relative addressing on 32-bit
+> @@ -878,6 +888,10 @@ static void riprel_pre_xol(struct arch_uprobe *aupro=
+be, struct pt_regs *regs)
+>  static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs =
+*regs)
+>  {
+>  }
+> +static bool emulate_nop5_insn(struct arch_uprobe *auprobe)
+> +{
+> +       return false;
+> +}
+>  #endif /* CONFIG_X86_64 */
+>
+>  struct uprobe_xol_ops {
+> @@ -1109,6 +1123,8 @@ static int branch_setup_xol_ops(struct arch_uprobe =
+*auprobe, struct insn *insn)
+>                 break;
+>
+>         case 0x0f:
+> +               if (emulate_nop5_insn(auprobe))
+> +                       goto setup;
+>                 if (insn->opcode.nbytes !=3D 2)
+>                         return -ENOSYS;
+>                 /*
 > --
 > 2.49.0
 >
