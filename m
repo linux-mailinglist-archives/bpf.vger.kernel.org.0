@@ -1,59 +1,58 @@
-Return-Path: <bpf+bounces-55296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55297-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 727CDA7B3AD
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 02:23:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CF4AA7B3DA
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 02:26:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59B7A3B4F47
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 00:23:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 691A87A8824
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 00:22:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD652046B4;
-	Fri,  4 Apr 2025 00:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24231917D0;
+	Fri,  4 Apr 2025 00:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s5rDlg/W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dt+AyTWX"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B322045BD;
-	Fri,  4 Apr 2025 00:06:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4638E204874;
+	Fri,  4 Apr 2025 00:06:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743725213; cv=none; b=qjOXxN9l6OBI9GVG+XuiBHkvtLDiykJLpDsCh/6g6w2weXTw6q4LuVLG+FRP6HTlsS4rghllo1F+V6GT7Lomzoxw8XAwpY6E2H3psFEC8uAHtT0XFetlF0a0oI7MN/6R9MM/S8vVZYFSLxoqKPxG7BMDErLtImJlDzcbWMNYMRM=
+	t=1743725215; cv=none; b=cLqfmg8DdjbVCCUqOoD32dF9RfoGOaohnlvRWurIw70geOBDW7f2G9MpN9JMyjaq38a66fj2vBqKmXCbABRPZHo3/9sji4eEgkD+YBOpbYj8qvx+vZRpLyEtoZmEwW8+iJfTbHp9Y0QpweN3/rI/Am1LaN5rrl15A5E9LTcBea8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743725213; c=relaxed/simple;
-	bh=+u0+g6UvPqNLcLw5Z4Do5wUhFhP7h8XFf1TffU5uJ+4=;
+	s=arc-20240116; t=1743725215; c=relaxed/simple;
+	bh=kOpVAW2eZnPzGD/yiLTqH1fpEPle2cVcYhRZhQyftlE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Y7Ls0Mql4iWeboYovwBrS3NzDCevO1Y8AdO+Lozw5E4X3kVOXQ2p32rhQcshsjcq6zwVzYI+RlzWxtVOl9rwb8XGH2pdFYFxq4i2FCi2q1B73IpXuNUBH7OdqngHKEw3LiHmIoaUWEgjRY5a8llQeOFrambaW+V5zkI4s9i81Pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s5rDlg/W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D187C4CEE5;
-	Fri,  4 Apr 2025 00:06:52 +0000 (UTC)
+	 MIME-Version; b=d/qHNrhvz35dXVOWS7iWBM55yTXpNhJURAj0y91EnmFmqTSk6ruBfYivqUIpv8l31A5slw3a9Bs5cgotGHtz9vM+AwkQgDU/X8qe441acgp7/jI2BFxl2W9K2jv4Z1ZHoPito//3aD9+vsIL6YUME/BB2QLllz5yuOeB4cB2syc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dt+AyTWX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9E00C4CEE3;
+	Fri,  4 Apr 2025 00:06:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743725213;
-	bh=+u0+g6UvPqNLcLw5Z4Do5wUhFhP7h8XFf1TffU5uJ+4=;
+	s=k20201202; t=1743725214;
+	bh=kOpVAW2eZnPzGD/yiLTqH1fpEPle2cVcYhRZhQyftlE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=s5rDlg/Wk0GoBa1Pu0os1E3uPHBfgpMUCadG6fruIhFMVz2XTzF8UPrqZ7hWEROFz
-	 XmPNjfXk4HYn0T6sFsk2HjLA42/4YNvxH2hVW212HSlXfWDMjZkD0h4/3ONFuwROiO
-	 3sQHrqUYIlN8DamdOfZOH7qQcYDcSqLFLSqsDrfifdKoF+so+AChDCYINlOdrIEsyB
-	 X7xNACRrI469bpcCNrwk5kRQj+uwcBODvptj/WZ7Y+BJV6Piq9FC7xtCuSHdCDkjzr
-	 lmUTzlDaNFyWlqDmsArEfGsucbBexK7T1STIWTXVY5RR4G9dy3t1krs77rPWYKkpS3
-	 zt9pC4jKzkVOw==
+	b=Dt+AyTWXHOcPY+cuP5OAxNGas6Croxg+UOq9yWkHYZb7fzj5/LoqV6VQFiuTCtt9g
+	 +qa3Pek49V5iDPvkA9r1XV9kvtgP+4HRCLIA/D3VYFsB9Ovi1/mdoua6Xqs3gflinI
+	 y165ut7mMxifrTfOyB2Uc2rSQ/sVf26eAvxxoXsNpPIfhKgTvL2cR5kzMlESQiUzrt
+	 wuykMIzfHQKHmubc+sv8GuxhbfMAfT9ejVK3jt7lUFM1jgxiYs5WcCoGuJj+BlS97V
+	 4OWe33kgkPg7UPR3Rvl/H6L0gCcnkt+me51oCbdRJ1MKUzgpPICYyU3Qx2zWtbH39S
+	 Xq/Q/pitKzslw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@kernel.org>,
+Cc: Yafang Shao <laoar.shao@gmail.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	martin.lau@linux.dev,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 12/16] bpf: Only fails the busy counter check in bpf_cgrp_storage_get if it creates storage
-Date: Thu,  3 Apr 2025 20:06:20 -0400
-Message-Id: <20250404000624.2688940-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 13/16] bpf: Reject attaching fexit/fmod_ret to __noreturn functions
+Date: Thu,  3 Apr 2025 20:06:21 -0400
+Message-Id: <20250404000624.2688940-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250404000624.2688940-1-sashal@kernel.org>
 References: <20250404000624.2688940-1-sashal@kernel.org>
@@ -68,88 +67,107 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.85
 Content-Transfer-Encoding: 8bit
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+From: Yafang Shao <laoar.shao@gmail.com>
 
-[ Upstream commit f4edc66e48a694b3e6d164cc71f059de542dfaec ]
+[ Upstream commit cfe816d469dce9c0864062cf65dd7b3c42adc6f8 ]
 
-The current cgrp storage has a percpu counter, bpf_cgrp_storage_busy,
-to detect potential deadlock at a spin_lock that the local storage
-acquires during new storage creation.
+If we attach fexit/fmod_ret to __noreturn functions, it will cause an
+issue that the bpf trampoline image will be left over even if the bpf
+link has been destroyed. Take attaching do_exit() with fexit for example.
+The fexit works as follows,
 
-There are false positives. It turns out to be too noisy in
-production. For example, a bpf prog may be doing a
-bpf_cgrp_storage_get on map_a. An IRQ comes in and triggers
-another bpf_cgrp_storage_get on a different map_b. It will then
-trigger the false positive deadlock check in the percpu counter.
-On top of that, both are doing lookup only and no need to create
-new storage, so practically it does not need to acquire
-the spin_lock.
+  bpf_trampoline
+  + __bpf_tramp_enter
+    + percpu_ref_get(&tr->pcref);
 
-The bpf_task_storage_get already has a strategy to minimize this
-false positive by only failing if the bpf_task_storage_get needs
-to create a new storage and the percpu counter is busy. Creating
-a new storage is the only time it must acquire the spin_lock.
+  + call do_exit()
 
-This patch borrows the same idea. Unlike task storage that
-has a separate variant for tracing (_recur) and non-tracing, this
-patch stays with one bpf_cgrp_storage_get helper to keep it simple
-for now in light of the upcoming res_spin_lock.
+  + __bpf_tramp_exit
+    + percpu_ref_put(&tr->pcref);
 
-The variable could potentially use a better name noTbusy instead
-of nobusy. This patch follows the same naming in
-bpf_task_storage_get for now.
+Since do_exit() never returns, the refcnt of the trampoline image is
+never decremented, preventing it from being freed. That can be verified
+with as follows,
 
-I have tested it by temporarily adding noinline to
-the cgroup_storage_lookup(), traced it by fentry, and the fentry
-program succeeded in calling bpf_cgrp_storage_get().
+  $ bpftool link show                                   <<<< nothing output
+  $ grep "bpf_trampoline_[0-9]" /proc/kallsyms
+  ffffffffc04cb000 t bpf_trampoline_6442526459    [bpf] <<<< leftover
 
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Link: https://lore.kernel.org/r/20250318182759.3676094-1-martin.lau@linux.dev
+In this patch, all functions annotated with __noreturn are rejected, except
+for the following cases:
+- Functions that result in a system reboot, such as panic,
+  machine_real_restart and rust_begin_unwind
+- Functions that are never executed by tasks, such as rest_init and
+  cpu_startup_entry
+- Functions implemented in assembly, such as rewind_stack_and_make_dead and
+  xen_cpu_bringup_again, lack an associated BTF ID.
+
+With this change, attaching fexit probes to functions like do_exit() will
+be rejected.
+
+$ ./fexit
+libbpf: prog 'fexit': BPF program load failed: -EINVAL
+libbpf: prog 'fexit': -- BEGIN PROG LOAD LOG --
+Attaching fexit/fmod_ret to __noreturn functions is rejected.
+
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Link: https://lore.kernel.org/r/20250318114447.75484-2-laoar.shao@gmail.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/bpf_cgrp_storage.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ kernel/bpf/verifier.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/kernel/bpf/bpf_cgrp_storage.c b/kernel/bpf/bpf_cgrp_storage.c
-index ee1c7b77096e7..fbbf3b6b9f835 100644
---- a/kernel/bpf/bpf_cgrp_storage.c
-+++ b/kernel/bpf/bpf_cgrp_storage.c
-@@ -162,6 +162,7 @@ BPF_CALL_5(bpf_cgrp_storage_get, struct bpf_map *, map, struct cgroup *, cgroup,
- 	   void *, value, u64, flags, gfp_t, gfp_flags)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d6a4102312fad..e443506b0a65a 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -20106,6 +20106,33 @@ BTF_ID(func, __rcu_read_unlock)
+ #endif
+ BTF_SET_END(btf_id_deny)
+ 
++/* fexit and fmod_ret can't be used to attach to __noreturn functions.
++ * Currently, we must manually list all __noreturn functions here. Once a more
++ * robust solution is implemented, this workaround can be removed.
++ */
++BTF_SET_START(noreturn_deny)
++#ifdef CONFIG_IA32_EMULATION
++BTF_ID(func, __ia32_sys_exit)
++BTF_ID(func, __ia32_sys_exit_group)
++#endif
++#ifdef CONFIG_KUNIT
++BTF_ID(func, __kunit_abort)
++BTF_ID(func, kunit_try_catch_throw)
++#endif
++#ifdef CONFIG_MODULES
++BTF_ID(func, __module_put_and_kthread_exit)
++#endif
++#ifdef CONFIG_X86_64
++BTF_ID(func, __x64_sys_exit)
++BTF_ID(func, __x64_sys_exit_group)
++#endif
++BTF_ID(func, do_exit)
++BTF_ID(func, do_group_exit)
++BTF_ID(func, kthread_complete_and_exit)
++BTF_ID(func, kthread_exit)
++BTF_ID(func, make_task_dead)
++BTF_SET_END(noreturn_deny)
++
+ static bool can_be_sleepable(struct bpf_prog *prog)
  {
- 	struct bpf_local_storage_data *sdata;
-+	bool nobusy;
+ 	if (prog->type == BPF_PROG_TYPE_TRACING) {
+@@ -20194,6 +20221,11 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 	} else if (prog->type == BPF_PROG_TYPE_TRACING &&
+ 		   btf_id_set_contains(&btf_id_deny, btf_id)) {
+ 		return -EINVAL;
++	} else if ((prog->expected_attach_type == BPF_TRACE_FEXIT ||
++		   prog->expected_attach_type == BPF_MODIFY_RETURN) &&
++		   btf_id_set_contains(&noreturn_deny, btf_id)) {
++		verbose(env, "Attaching fexit/fmod_ret to __noreturn functions is rejected.\n");
++		return -EINVAL;
+ 	}
  
- 	WARN_ON_ONCE(!bpf_rcu_lock_held());
- 	if (flags & ~(BPF_LOCAL_STORAGE_GET_F_CREATE))
-@@ -170,21 +171,21 @@ BPF_CALL_5(bpf_cgrp_storage_get, struct bpf_map *, map, struct cgroup *, cgroup,
- 	if (!cgroup)
- 		return (unsigned long)NULL;
- 
--	if (!bpf_cgrp_storage_trylock())
--		return (unsigned long)NULL;
-+	nobusy = bpf_cgrp_storage_trylock();
- 
--	sdata = cgroup_storage_lookup(cgroup, map, true);
-+	sdata = cgroup_storage_lookup(cgroup, map, nobusy);
- 	if (sdata)
- 		goto unlock;
- 
- 	/* only allocate new storage, when the cgroup is refcounted */
- 	if (!percpu_ref_is_dying(&cgroup->self.refcnt) &&
--	    (flags & BPF_LOCAL_STORAGE_GET_F_CREATE))
-+	    (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) && nobusy)
- 		sdata = bpf_local_storage_update(cgroup, (struct bpf_local_storage_map *)map,
- 						 value, BPF_NOEXIST, gfp_flags);
- 
- unlock:
--	bpf_cgrp_storage_unlock();
-+	if (nobusy)
-+		bpf_cgrp_storage_unlock();
- 	return IS_ERR_OR_NULL(sdata) ? (unsigned long)NULL : (unsigned long)sdata->data;
- }
- 
+ 	key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
 -- 
 2.39.5
 
