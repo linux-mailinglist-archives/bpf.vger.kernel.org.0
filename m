@@ -1,85 +1,87 @@
-Return-Path: <bpf+bounces-55361-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55362-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6513A7C5F8
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 23:57:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA219A7C620
+	for <lists+bpf@lfdr.de>; Sat,  5 Apr 2025 00:03:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD73A1780D8
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 21:57:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98E86177BD8
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 22:03:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31357221726;
-	Fri,  4 Apr 2025 21:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5771EF368;
+	Fri,  4 Apr 2025 22:03:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="rAplIJIH"
+	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="tI6C49oZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FDF1F561C;
-	Fri,  4 Apr 2025 21:56:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C2F13CA9C
+	for <bpf@vger.kernel.org>; Fri,  4 Apr 2025 22:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743803781; cv=none; b=Lz78dk9C79kfbTyZqiVQhWB44WFYq0e2UKb5c++pFplHK6B388WJCykY5kv7mhzO05BOfMUX6TM1k8n2zLdi6aaMsieB3uxjKpAVj/TeyfT/x+HP3fLdFC4yUKygkgwz0pU+5kFEl6NbfTcdkk76ZdxekDwkd8h+Y0dTZBUQQPo=
+	t=1743804193; cv=none; b=AOHakT34PTmYj1RHOx6fqpY+uuYlm0DbVGjNC3UQf66yOM3Kk2ftaX355S6MATK8C8gL+g3F30K8DtRwpXAcG7KN6lao1ikga0zd9KYhb/B18mroDaEt+s1fJfee05GAeawk93aU8TloboRfSgG/CeNeWfr3vNimrwlPVs7mSko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743803781; c=relaxed/simple;
-	bh=vErPsP1f8OmYiisdnHrct0dtflgIUFAowO74VEc7nxw=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gQeoHphkPt7LmjDLNt28NRUJs3HEd5ay1cVAVnMeHlU4F+omRIx7MkLyftHMJ3cFXpSDm2aN9w6M1XhdT810fRk38FUER9UDNZBh5JQGdtEbQMgwBMO0bE5XHYihr1AUYIwlLYXKsElZMRjmfhqN1ik/b667pzOsXtG33tPW+rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=rAplIJIH; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia.corp.microsoft.com (unknown [167.220.2.28])
-	by linux.microsoft.com (Postfix) with ESMTPSA id AD18F2027DF5;
-	Fri,  4 Apr 2025 14:56:11 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AD18F2027DF5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1743803779;
-	bh=szwO3lNn6ZvHTun2QxjXczTlSkLfwthZiFQZw/CTTCs=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=rAplIJIHi/Zplgew6qOSq6wvSVcFUimFRjEpCxx7UTU38iNMEH6lWl5b35PRyUpJ9
-	 I8MdHmDRlB7VQpD6nSbStvhRXJA8bYmkUDsIPGGl9nHxJzDYf+UMXzus8NLF0+Qp9I
-	 48cnH38StUwNcg/74AMQjLeTfLssXmflcfHow84g=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	David Howells <dhowells@redhat.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Shuah Khan <shuah@kernel.org>,
-	=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Blaise Boscaccy <bboscaccy@linux.microsoft.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Jan Stancek <jstancek@redhat.com>,
-	Neal Gompa <neal@gompa.dev>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	keyrings@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-kbuild@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	bpf@vger.kernel.org,
-	llvm@lists.linux.dev,
-	nkapron@google.com,
-	teknoraver@meta.com,
-	roberto.sassu@huawei.com,
-	xiyou.wangcong@gmail.com
-Subject: [PATCH v2 security-next 4/4] selftests/hornet: Add a selftest for the Hornet LSM
-Date: Fri,  4 Apr 2025 14:54:53 -0700
-Message-ID: <20250404215527.1563146-5-bboscaccy@linux.microsoft.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
-References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
+	s=arc-20240116; t=1743804193; c=relaxed/simple;
+	bh=gDIk+x7JiIL+gnOhb2PtlJx0NIt5hrUfBy9Dv1McNpY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nGW1MKmwWW50bb+p49kcrT/uvclz6VvPbaqL+i8eRfajp6jJGJkVjRGELFOXCHeiakU6bEcdB0oIDv92mcY6xA6J1tgWFL5FK8IDA45XSilK0N3IbgA1w+UZxr9hgZz4UrTL4wC6MZxqs5XO/h8pa7X0ZjXDJN+T50jREIFwad4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=tI6C49oZ; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-ad511b3ce41so171221a12.0
+        for <bpf@vger.kernel.org>; Fri, 04 Apr 2025 15:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1743804191; x=1744408991; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CW5ZyU6B2yF5dGEahKYT7fT/ZpR48aYGEFhGWqrrZLw=;
+        b=tI6C49oZPPpgW2fv0XbuPGy6xP0B+1w7Kcy3PcxNrA+Liehl4zLsLEu+SzNniC3xTb
+         ZbN78wf2Q2QZVyL2INYXc2i78LpNPIUmQ3bb7DvSpEDjWm/c1Uvn24zRtHYBvxoKDoBn
+         VCSu3LJfKHCdxTDg/fgei29VRc8yKpYD85ovuM+VaER18FR0R8RofCg6qTEVVknZ701x
+         dA+20V1A3ANtniT/t0KbP0d/btSfGUxsckmDLsyOcemrz1SPsQRv7yLoeAt3sjAjITo8
+         lHZ8jj3M1/ZFBgSlrr1vWBWfHtgm20iu4IkNb9E7xxJauoMkmEdT86qXENguh74EGW+t
+         i0+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743804191; x=1744408991;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CW5ZyU6B2yF5dGEahKYT7fT/ZpR48aYGEFhGWqrrZLw=;
+        b=CHNEp59bGDog3l0+pL1sPCpGottJshOkCBhQHYAC9v88ahAt53pTu4LCGUmFzafADI
+         BbdFjLAwCivUFKhO3wyNtr4jx/etjj6hfirguDKn0WXYFmeK3cZNbeDVh9FciSprgKxP
+         mWoconDGNkT6gjnDSb8m2s0bBdXB33WZ/xenOjK6+W6/moqHXjEB8goWCjaNgaiBbXcF
+         32Vh3w+RzFfs8uUt6QOG7NnreninY5Ch71Pp1WNT7FJos+V5F0/e6roscHPe5kF26D9i
+         /NgJVuv5erM7GTZcOwtvXjCK8vxyj3Y8J7cymkGanG2K7mpOmxMScPWcHbkWnpNpQV5R
+         DRgw==
+X-Forwarded-Encrypted: i=1; AJvYcCXeQ7leEqbtLyvqmB2AHQx3wXfepJcSnMLc1Ufb5lshXy+Ksyo1SZxZ5zZ+KD2IoAHf3yk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVID+CYgOppGCzbq/wjBttw1bHcVavpcFUGcF0hWBAUKEGzdz5
+	jf1uWUe5Abt30sAIVr3lmdUQSnrcPrpL0UPPP0Tte3PTESotrL9ydVy11GfpBYQ=
+X-Gm-Gg: ASbGncvCfgkLEfQBb10K2Ud2Ok9tia6wyuj/xCgr/BfsrezgBWFO3mrHGKbUU/WPKZJ
+	e4nF/3VPMghv5WqLCO/3wj4Zry2+6aljDnI3UiBCOa8BYO3FhMK4GRvz5zFBL8qT4dRjIfaXC99
+	megWc88xgHBlk0H6423/QKArAuI0w0jnY+ZSf57+GcNziXGTze/b9fTI4G09vsq3hvSqDdJrXRJ
+	EohjxjzF8sOd0vKyvCraYBN6aph0ZJdQVQTvJ9odLOKm/sC5GbClbGuJUonjBvT39jW4tGEbRSz
+	G//fQalM6H2rXn+OIzLOBDHf0P/2N1vJ/w==
+X-Google-Smtp-Source: AGHT+IGPY11M35Kf34J5Cp2LKGX38l0gM/LjzYNVc47EBpMsFRd04aizMBpqNDtfukm7vlwivU1AQA==
+X-Received: by 2002:a17:903:18d:b0:224:706:6d08 with SMTP id d9443c01a7336-22a8a06ee21mr24874435ad.8.1743804190744;
+        Fri, 04 Apr 2025 15:03:10 -0700 (PDT)
+Received: from t14.. ([2001:5a8:4528:b100:d158:c069:399b:1ed0])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-739da0deddfsm3953570b3a.162.2025.04.04.15.03.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Apr 2025 15:03:10 -0700 (PDT)
+From: Jordan Rife <jordan@jrife.io>
+To: netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: Jordan Rife <jordan@jrife.io>,
+	Aditi Ghag <aditi.ghag@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Subject: [RFC PATCH bpf-next 0/3] Exactly-once UDP socket iteration
+Date: Fri,  4 Apr 2025 15:02:15 -0700
+Message-ID: <20250404220221.1665428-1-jordan@jrife.io>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,159 +90,56 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This selftest contains a testcase that utilizes light skeleton eBPF
-loaders. One version of the light skeleton is signed with the
-autogenerated module signing key, another is not. A test driver
-attempts to load the programs. With Hornet enabled, the signed version
-should successfully be loaded, and the unsigned version should fail.
+Both UDP and TCP socket iterators use iter->offset to track progress
+through a bucket, which is a measure of the number of matching sockets
+from the current bucket that have been seen or processed by the
+iterator. On subsequent iterations, if the current bucket has
+unprocessed items, we skip at least iter->offset matching items in the
+bucket before adding any remaining items to the next batch. However,
+iter->offset isn't always an accurate measure of "things already seen"
+when the underlying bucket changes between reads which can lead to
+repeated or skipped sockets.
 
-Signed-off-by: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
----
- tools/testing/selftests/Makefile             |  1 +
- tools/testing/selftests/hornet/Makefile      | 51 ++++++++++++++++++++
- tools/testing/selftests/hornet/loader.c      | 21 ++++++++
- tools/testing/selftests/hornet/trivial.bpf.c | 33 +++++++++++++
- 4 files changed, 106 insertions(+)
- create mode 100644 tools/testing/selftests/hornet/Makefile
- create mode 100644 tools/testing/selftests/hornet/loader.c
- create mode 100644 tools/testing/selftests/hornet/trivial.bpf.c
+In my original RFC, [1], I proposed a solution that added a new index
+field to struct sock_common, but general feedback is that we should
+avoid this. After some discussion, Martin suggested using socket cookies
+to keep track of what we haven't seen yet in the current bucket. This
+series is a follow up from that discussion and implements a PoC of this
+approach.
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 8daac70c2f9d..fce32ee4de32 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -41,6 +41,7 @@ TARGETS += ftrace
- TARGETS += futex
- TARGETS += gpio
- TARGETS += hid
-+TARGETS += hornet
- TARGETS += intel_pstate
- TARGETS += iommu
- TARGETS += ipc
-diff --git a/tools/testing/selftests/hornet/Makefile b/tools/testing/selftests/hornet/Makefile
-new file mode 100644
-index 000000000000..93da70f41d40
---- /dev/null
-+++ b/tools/testing/selftests/hornet/Makefile
-@@ -0,0 +1,51 @@
-+# SPDX-License-Identifier: GPL-2.0
-+include ../../../build/Build.include
-+include ../../../scripts/Makefile.arch
-+include ../../../scripts/Makefile.include
-+
-+CLANG ?= clang
-+CFLAGS := -g -O2 -Wall
-+BPFTOOL ?= bpftool
-+SCRIPTSDIR := $(abspath ../../../../scripts/hornet)
-+TOOLSDIR := $(abspath ../../..)
-+LIBDIR := $(TOOLSDIR)/lib
-+BPFDIR := $(LIBDIR)/bpf
-+TOOLSINCDIR := $(TOOLSDIR)/include
-+APIDIR := $(TOOLSINCDIR)/uapi
-+CERTDIR := $(abspath ../../../../certs)
-+
-+TEST_GEN_PROGS_EXTENDED := loader
-+TEST_GEN_PROGS := signed_loader
-+TEST_PROGS := fail_loader
-+TEST_GEN_FILES := vmlinux.h loader.h trivial.bin trivial.bpf.o
-+$(TEST_GEN_PROGS): LDLIBS += -lbpf
-+$(TEST_GEN_PROGS): $(TEST_GEN_FILES)
-+
-+include ../lib.mk
-+
-+BPF_CFLAGS := -target bpf \
-+              -D__TARGET_ARCH_$(ARCH) \
-+              -I/usr/include/$(shell uname -m)-linux-gnu \
-+               $(KHDR_INCLUDES)
-+vmlinux.h:
-+	$(BPFTOOL) btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
-+
-+trivial.bpf.o: trivial.bpf.c vmlinux.h
-+	$(CLANG) $(CFLAGS) $(BPF_CFLAGS) -c $< -o $@
-+
-+loader.h: trivial.bpf.o
-+	$(BPFTOOL) gen skeleton -L $< name trivial > $@
-+
-+trivial.bin: loader.h
-+	$(SCRIPTSDIR)/extract-skel.sh $< $@
-+
-+loader: loader.c loader.h
-+	$(CC) $(CFLAGS) -I$(LIBDIR) -I$(APIDIR) $< -o $@ -lbpf
-+
-+fail_loader: fail_loader.c loader.h
-+	$(CC) $(CFLAGS) -I$(LIBDIR) -I$(APIDIR) $< -o $@ -lbpf
-+
-+signed_loader: trivial.bin loader fail_loader
-+	$(SCRIPTSDIR)/sign-ebpf sha256 $(CERTDIR)/signing_key.pem  $(CERTDIR)/signing_key.x509 \
-+		trivial.bin loader signed_loader
-+	chmod u+x $@
-diff --git a/tools/testing/selftests/hornet/loader.c b/tools/testing/selftests/hornet/loader.c
-new file mode 100644
-index 000000000000..9a43bb012d1b
---- /dev/null
-+++ b/tools/testing/selftests/hornet/loader.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-+
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <stddef.h>
-+#include <sys/resource.h>
-+#include <bpf/libbpf.h>
-+#include <errno.h>
-+#include  "loader.h"
-+
-+int main(int argc, char **argv)
-+{
-+	struct trivial *skel;
-+
-+	skel = trivial__open_and_load();
-+	if (!skel)
-+		return -1;
-+
-+	trivial__destroy(skel);
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/hornet/trivial.bpf.c b/tools/testing/selftests/hornet/trivial.bpf.c
-new file mode 100644
-index 000000000000..d38c5b53ff93
---- /dev/null
-+++ b/tools/testing/selftests/hornet/trivial.bpf.c
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-+
-+#include "vmlinux.h"
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+char LICENSE[] SEC("license") = "Dual BSD/GPL";
-+
-+int monitored_pid = 0;
-+
-+SEC("tracepoint/syscalls/sys_enter_unlinkat")
-+int handle_enter_unlink(struct trace_event_raw_sys_enter *ctx)
-+{
-+	char filename[128] = { 0 };
-+	struct task_struct *task;
-+	unsigned long start_time = 0;
-+	int pid = bpf_get_current_pid_tgid() >> 32;
-+	char *pathname_ptr = (char *) BPF_CORE_READ(ctx, args[1]);
-+
-+	bpf_probe_read_str(filename, sizeof(filename), pathname_ptr);
-+	task = (struct task_struct *)bpf_get_current_task();
-+	start_time = BPF_CORE_READ(task, start_time);
-+
-+	bpf_printk("BPF triggered unlinkat by PID: %d, start_time %ld. pathname = %s",
-+		   pid, start_time, filename);
-+
-+	if (monitored_pid == pid)
-+		bpf_printk("target pid found");
-+
-+	return 0;
-+}
+This series replaces struct sock **batch inside struct
+bpf_udp_iter_state with union bpf_udp_iter_batch_item *batch, where
+union bpf_udp_iter_batch_item can contain either a pointer to a socket
+or a socket cookie. During reads, batch contains pointers to all sockets
+in the current batch while between reads batch contains all the cookies
+of the sockets in the current bucket that have yet to be processed. On
+subsequent reads, when iteration resumes, bpf_iter_udp_batch finds the
+first saved cookie that matches a socket in the bucket's socket list and
+picks up from there to construct the next batch. On average, assuming
+it's rare that the next socket disappears before the next read occurs,
+we should only need to scan as much as we did with the offset-based
+approach to find the starting point. In the case that the next socket
+is no longer there, we keep scanning through the saved cookies list
+until we find a match. The worst case is when none of the sockets from
+last time exist anymore, but again, this should be rare.
+
+[1]: https://lore.kernel.org/bpf/20250313233615.2329869-1-jrife@google.com/
+
+Jordan Rife (3):
+  bpf: udp: Use bpf_udp_iter_batch_item for bpf_udp_iter_state batch
+    items
+  bpf: udp: Avoid socket skips and repeats during iteration
+  selftests/bpf: Add tests for bucket resume logic in UDP socket
+    iterators
+
+ include/linux/udp.h                           |   3 +
+ net/ipv4/udp.c                                |  94 +++-
+ .../bpf/prog_tests/sock_iter_batch.c          | 452 +++++++++++++++++-
+ .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
+ .../selftests/bpf/progs/sock_iter_batch.c     |  24 +-
+ 5 files changed, 533 insertions(+), 41 deletions(-)
+
 -- 
-2.48.1
+2.43.0
 
 
