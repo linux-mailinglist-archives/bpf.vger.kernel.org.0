@@ -1,181 +1,126 @@
-Return-Path: <bpf+bounces-55318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55319-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7125A7B960
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 10:56:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2761DA7B978
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 11:01:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87749177519
-	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 08:56:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 130B73B66D2
+	for <lists+bpf@lfdr.de>; Fri,  4 Apr 2025 09:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04161A2398;
-	Fri,  4 Apr 2025 08:55:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2FE51A9B39;
+	Fri,  4 Apr 2025 09:01:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="fIwd/wjv"
+	dkim=pass (2048-bit key) header.d=ozlabs.org header.i=@ozlabs.org header.b="POc5E/b+"
 X-Original-To: bpf@vger.kernel.org
-Received: from fllvem-ot03.ext.ti.com (fllvem-ot03.ext.ti.com [198.47.19.245])
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7035ADF49;
-	Fri,  4 Apr 2025 08:55:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7622D1A3031;
+	Fri,  4 Apr 2025 09:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743756952; cv=none; b=XdJjqqGylET8Jy0fJOhTJxy5z/U3kn0kHQI0tRxKQj5lbZRXbwXyBLBD+pQ7SKrfaz1HkY62gDfUufc2cjg+B//A6NyiKzeZ1aOTiUd/HMtjJrXkHvrRe27zgAl3Sslj+WpvZy8rPGiLYS1ok4vkt5tlQ+mpfSUJUCqoPb9r0Xw=
+	t=1743757286; cv=none; b=CQ67sDc3A3WqOgRaf78tRRu3S46FzpV63kLfoNtcKbI56Mi3AYPJ+XLmyJZNN1ZX+bPZgmb0RoGcxW1Xna9H98tLfPu16uThvWgqsXQ9Gra+zNchFuHyMJUT/Y7fb8Cgm5QaP0b54YTBO18G+PG/cg+gVqTcfB0l5i7vAfelvAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743756952; c=relaxed/simple;
-	bh=yxBCbzoKp7KS7YTX84wHYXDQoY79bzGvyNbzcmYejE8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mv3sYvI6FR5z038f/3bsnOPFmxeFDRvr29ro4ZhOkrwdHtQ4UKsyGbCzJcfpPQ5ev+xB+6apFJG9G6MLR2kJQOo6NGhdMsK3dwlWWUdwjnHTg5IrpYNpQcyrDmbXAMlx/scs+6/eJ96MWH5QAfc7gexgyqblONvf81vpOP4aOm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=fIwd/wjv; arc=none smtp.client-ip=198.47.19.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllvem-ot03.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 5348sv783766828
-	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 4 Apr 2025 03:54:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1743756897;
-	bh=CYUW+JoyF/G12mMwzahnbc23eTPvuYAy1EdgeaJckFw=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=fIwd/wjv9tNPGAqWuceipoxKdjUosBvrfZmw8J6brluxUGRxZXWtDFLp9q2ZJ/L65
-	 7/l11pcAprXbl2tvlbAGCi1BnOCF7vdiOReLao8ExUXRmO8ncRWKyTJNaTGCH91PXP
-	 qpunLiWN3HI6KJ/zWz+0USFzErUZnqPkxQjp+Sjc=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 5348svC1091374
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 4 Apr 2025 03:54:57 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
- Apr 2025 03:54:57 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 4 Apr 2025 03:54:57 -0500
-Received: from [172.24.23.235] (lt9560gk3.dhcp.ti.com [172.24.23.235])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 5348sonl071093;
-	Fri, 4 Apr 2025 03:54:51 -0500
-Message-ID: <d54d6d16-8422-4506-8f9a-24628dd95471@ti.com>
-Date: Fri, 4 Apr 2025 14:24:50 +0530
+	s=arc-20240116; t=1743757286; c=relaxed/simple;
+	bh=rh/0DiLc06njMesCXvy0xrm4fBBepKP0I72Ww69sE8A=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=c7zj8Tzv6W3kT64PB41oQEmYA0BhTFjpGBorE6NQsuP8Y6HBqsejVw90dg9gE+Z83AU1x780CEebl91iMP0ofz7lU0LeQJ36+FFChuPxpKD4GlMi3mWtNI9LDNomtl/PGaE09Hi8sQAr5WWPWMNg6esv8F+bY4DQrVf62i3k1wM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ozlabs.org; spf=pass smtp.mailfrom=ozlabs.org; dkim=pass (2048-bit key) header.d=ozlabs.org header.i=@ozlabs.org header.b=POc5E/b+; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ozlabs.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ozlabs.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ozlabs.org;
+	s=201707; t=1743757280;
+	bh=rh/0DiLc06njMesCXvy0xrm4fBBepKP0I72Ww69sE8A=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=POc5E/b+AglzAkY37sDRa/BDBtwIOb5JtEf38ItfllacsvyAoJ6qEG+ptCBMH85cU
+	 exN1qESJmMuVAaqeYVEx0Zx+5FSea+pTuEuHFAAVrNYXpzibQhqLh1DsPBGvSciGjA
+	 RyKNNchWJOxVOiut7+Pkir7mGi+N2faVLqorOR0+4ELgC3jA8tGF2M2MziFNRNXmyN
+	 7p3NKStjr+0nrOSMqn2yWu7rZpEK4jSVxfwhLron6DRu5V5j+4YTYwoVWzQOSqBL9D
+	 MmV81L2OARI4NP/P9sMvY1YvHear7fw9ve2Cg4VgwbPsXHfQlRY1dULsVO5Igk2Q+p
+	 Pbd3oPliPLCzw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4ZTXdf2VVvz4x8w;
+	Fri,  4 Apr 2025 20:01:10 +1100 (AEDT)
+Message-ID: <811962e9c4964dd06eddb2fffab284946878df4e.camel@ozlabs.org>
+Subject: Re: [PATCH v3 00/16] Introduce and use generic parity16/32/64 helper
+From: Jeremy Kerr <jk@ozlabs.org>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: Yury Norov <yury.norov@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+ David Laight <david.laight.linux@gmail.com>, Andrew Cooper
+ <andrew.cooper3@citrix.com>,  Laurent.pinchart@ideasonboard.com,
+ airlied@gmail.com, akpm@linux-foundation.org,  alistair@popple.id.au,
+ andrew+netdev@lunn.ch, andrzej.hajda@intel.com, 
+ arend.vanspriel@broadcom.com, awalls@md.metrocast.net, bp@alien8.de, 
+ bpf@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com, 
+ brcm80211@lists.linux.dev, dave.hansen@linux.intel.com,
+ davem@davemloft.net,  dmitry.torokhov@gmail.com,
+ dri-devel@lists.freedesktop.org,  eajames@linux.ibm.com,
+ edumazet@google.com, eleanor15x@gmail.com,  gregkh@linuxfoundation.org,
+ hverkuil@xs4all.nl, jernej.skrabec@gmail.com,  jirislaby@kernel.org,
+ joel@jms.id.au, johannes@sipsolutions.net, jonas@kwiboo.se, 
+ jserv@ccns.ncku.edu.tw, kuba@kernel.org, linux-fsi@lists.ozlabs.org, 
+ linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-media@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ linux-serial@vger.kernel.org, linux-wireless@vger.kernel.org, 
+ linux@rasmusvillemoes.dk, louis.peens@corigine.com, 
+ maarten.lankhorst@linux.intel.com, mchehab@kernel.org, mingo@redhat.com, 
+ miquel.raynal@bootlin.com, mripard@kernel.org, neil.armstrong@linaro.org, 
+ netdev@vger.kernel.org, oss-drivers@corigine.com, pabeni@redhat.com, 
+ parthiban.veerasooran@microchip.com, rfoss@kernel.org, richard@nod.at, 
+ simona@ffwll.ch, tglx@linutronix.de, tzimmermann@suse.de, vigneshr@ti.com, 
+ x86@kernel.org
+Date: Fri, 04 Apr 2025 17:01:09 +0800
+In-Reply-To: <Z++cbTTp8leOJ5O+@visitorckw-System-Product-Name>
+References: <Z9CyuowYsZyez36c@thinkpad>
+	 <80771542-476C-493E-858A-D2AF6A355CC1@zytor.com>
+	 <Z9GtcNJie8TRKywZ@thinkpad>
+	 <Z9G2Tyypb3iLoBjn@visitorckw-System-Product-Name>
+	 <Z9KMKwnZXA2mkD2s@visitorckw-System-Product-Name>
+	 <Z+AlyB461xwMxMtG@visitorckw-System-Product-Name>
+	 <eec0dfd7-5e4f-4a08-928c-b7714dbc4a17@zytor.com>
+	 <Z+6dh1ZVIKWWOKaP@visitorckw-System-Product-Name>
+	 <Z-6zzP2O-Q7zvTLt@thinkpad>
+	 <3ebd280e6697790da55f88a5e9e87b4cab407253.camel@ozlabs.org>
+	 <Z++cbTTp8leOJ5O+@visitorckw-System-Product-Name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXTERNAL] Re: [PATCH net v3 3/3] net: ti: icss-iep: Fix possible
- NULL pointer dereference for perout request
-To: Paolo Abeni <pabeni@redhat.com>, Roger Quadros <rogerq@kernel.org>,
-        <dan.carpenter@linaro.org>, <kuba@kernel.org>, <edumazet@google.com>,
-        <davem@davemloft.net>, <andrew+netdev@lunn.ch>
-CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <namcao@linutronix.de>, <javier.carrasco.cruz@gmail.com>,
-        <diogo.ivo@siemens.com>, <horms@kernel.org>,
-        <jacob.e.keller@intel.com>, <john.fastabend@gmail.com>,
-        <hawk@kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
-        <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        <danishanwar@ti.com>
-References: <20250328102403.2626974-1-m-malladi@ti.com>
- <20250328102403.2626974-4-m-malladi@ti.com>
- <0fb67fc2-4915-49af-aa20-8bdc9bed4226@kernel.org>
- <b0a099a6-33b2-49f9-9af7-580c60b98f55@ti.com>
- <469fd8d0-c72e-4ca6-87a9-2f42b180276b@redhat.com>
-Content-Language: en-US
-From: "Malladi, Meghana" <m-malladi@ti.com>
-In-Reply-To: <469fd8d0-c72e-4ca6-87a9-2f42b180276b@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+
+Hi Kuan-Wei,
+
+> Thanks for your feedback.
+
+No problem!
+
+> IIUC, from the fsi-i2c perspective, parity efficiency isn't a major
+> concern,
+
+Yes
+
+> but you still prefer optimizing with methods like __builtin_parity().
+
+No, it's not really about optimisation. In the case of this driver, my
+preference would be more directed to using common code (either in the
+form of these changes, or __builtin_parity) rather than any performance
+considerations.
+
+The implementation details I gave was more a note about the platforms
+that are applicable for the driver.
+
+Cheers,
 
 
-
-On 4/3/2025 4:55 PM, Paolo Abeni wrote:
-> On 4/2/25 2: 37 PM, Malladi, Meghana wrote: > On 4/2/2025 5: 58 PM, 
-> Roger Quadros wrote: >> On 28/03/2025 12: 24, Meghana Malladi wrote: >>> 
-> ICSS IEP driver has flags to check if perout or pps has been enabled >>> at
-> ZjQcmQRYFpfptBannerStart
-> This message was sent from outside of Texas Instruments.
-> Do not click links or open attachments unless you recognize the source 
-> of this email and know the content is safe.
-> Report Suspicious
-> <https://us-phishalarm-ewt.proofpoint.com/EWT/v1/G3vK! 
-> updqndalvOwRqgXOXDPJf9wy4vKojW68gavBCIsz5DlBLvSeawwT53qgFGcvIm0ULRBQkJv028AcR194Ei9ZDPp5ily-uAw$>
-> ZjQcmQRYFpfptBannerEnd
-> 
-> On 4/2/25 2:37 PM, Malladi, Meghana wrote:
->> On 4/2/2025 5:58 PM, Roger Quadros wrote:
->>> On 28/03/2025 12:24, Meghana Malladi wrote:
->>>> ICSS IEP driver has flags to check if perout or pps has been enabled
->>>> at any given point of time. Whenever there is request to enable or
->>>> disable the signal, the driver first checks its enabled or disabled
->>>> and acts accordingly.
->>>>
->>>> After bringing the interface down and up, calling PPS/perout enable
->>>> doesn't work as the driver believes PPS is already enabled,
->>>
->>> How? aren't we calling icss_iep_pps_enable(iep, false)?
->>> wouldn't this disable the IEP and clear the iep->pps_enabled flag?
->>>
->> 
->> The whole purpose of calling icss_iep_pps_enable(iep, false) is to clear 
->> iep->pps_enabled flag, because if this flag is not cleared it hinders 
->> generating new pps signal (with the newly loaded firmware) once any of 
->> the interfaces are up (check icss_iep_perout_enable()), so instead of 
->> calling icss_iep_pps_enable(iep, false) I am just clearing the 
->> iep->pps_enabled flag.
-> 
-> IDK what Roger thinks, but the above is not clear to me. I read it as
-> you are stating that icss_iep_pps_enable() indeed clears the flag, so i
-> don't see/follow the reasoning behind this change.
-> 
-
-The reason behind this change is to fix the possible null pointer 
-dereference which will occur when icss_iep_perout_enable(iep, NULL, 
-false) is called during icss_iep_exit(), my bad for not mentioning it 
-clearly in the commit message.
-
-> Skimmir over the code, icss_iep_pps_enable() could indeed avoid clearing
-> the flag under some circumstances is that the reason?
-> 
-
-icss_iep_pps_enable() does indeed clear the flag, but 
-icss_iep_perout_enable() doesn't due to the null pointer dereference. So 
-instead of calling these functions for clearing the flag, we can simply 
-just clear the flag directly.
-
-> Possibly a more describing commit message would help.
-> 
-
-Yes agreed. I will update it for v4.
-
->>> And, what if you brought 2 interfaces of the same ICSS instances up
->>> but put only 1 interface down and up?
->>>
->> 
->> Then the flag need not be disabled if only one interface is brought down 
->> because the IEP is still alive and all the IEP configuration (including 
->> pps/perout) is still valid.
-> 
-> I read the above as stating this fix is not correct in such scenario,
-> leading to the wrong final state.
-> 
-
-No it is the correct scenario. When you bring down all the existing 
-interfaces (be it one or two, when whatever is up goes down) you unload 
-the existing firmware and clear the all the driver configuration (this 
-flag also needs to be cleared) to ensure everything starts with a clean 
-state.
-
-> I think it would be better to either give a better reasoning about this
-> change in the commit message or refactor it to handle even such scenario,
-> 
-> Thanks,
-> 
-> Paolo
-> 
-
+Jeremy
 
