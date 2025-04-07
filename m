@@ -1,151 +1,214 @@
-Return-Path: <bpf+bounces-55374-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55375-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2327BA7D06C
-	for <lists+bpf@lfdr.de>; Sun,  6 Apr 2025 22:43:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50B87A7D170
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 03:07:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7A9216D8BC
-	for <lists+bpf@lfdr.de>; Sun,  6 Apr 2025 20:43:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 237CE188CC0C
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 01:07:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8930D1B4223;
-	Sun,  6 Apr 2025 20:43:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A75513D62B;
+	Mon,  7 Apr 2025 01:07:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RCfRAANi"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="gKU3beZn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13FF718C03F;
-	Sun,  6 Apr 2025 20:42:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5454A3594A;
+	Mon,  7 Apr 2025 01:06:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743972182; cv=none; b=ScDb9wdm8vhDYnWHxSYImlky+V+Zx2VIC9Bryxrz5wFK1XXi3yzzuoDE9D7qCPDdAQoPItMfuqTUZvZbWAlgcoCukO4AyIvr+CA+sZEmP8QcTCekTB3C/RXmgsa19GeEsiwORc6v9jE+jypydz6R8CL+7ybpj5w5ZWSABsYsNak=
+	t=1743988022; cv=none; b=B/iydmU6ApZLjvS9hcYUAgsloHauYGYmbbE8fGi686oITdB5cuhbkImkv6vjJSDtGJD1fokkGFCfbTp3qwf4MDX+ogw4po4QLBdLdlWENvakNPyuKM2kS34VK01t37NHayNNQWEjk0BbHVXyN5xaaajfXI/7CiOEF8r7njZULDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743972182; c=relaxed/simple;
-	bh=ucTOR97qFqJDSGh++Oi8YunL4fytJwroFSyVVKXhxw8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QQ9t1/62a5eKuYzuXh/FdA4cUzJNxHJ8LJodOuU3h3wwVncndjDxQJ47FYAbd+VPw6ZSvBO1SoNrJazgQcCsA9nV4QtFMIa78EzOsk0ktko5V32A3iDeBv31M4SkV0oiFxHdwsIvq917+emS7/+yS5utoa0xZZnMZzd7vZiQXz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RCfRAANi; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1743972180; x=1775508180;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ucTOR97qFqJDSGh++Oi8YunL4fytJwroFSyVVKXhxw8=;
-  b=RCfRAANiFlsffxsLkeOrf3D2ZxEdUtpkJ7iUEcGjAYGGPvkwsIydz1Fl
-   4Fcdra37AWaAzXnc7mtm8SV0gjrTuOcaOQ3NvmykOBiJo71gtMg2NhanK
-   0YY9JmBAcZSmDiUlg9e6lpAaaZbmNRnsez8C9syFOQ9Y+f9fhNDG82/Lt
-   cE0amL0ZwPPLmALE0ts9ebCRM9R3V4yiOKac6HszOgbG1m2aZLVMNlb/v
-   Ay6V/fkQy9bVdgBpWVE1HbkcI/IJBq+xIF6XgHxQexJb3u9UKwsUomWhG
-   HCzyuKbowCSBZxBxWXct4hGXQJnwoKm0Fq2zKP3meO6/1KTmgT9wAnnWX
-   w==;
-X-CSE-ConnectionGUID: T6WPsuguRsaw4+xAPBrnFA==
-X-CSE-MsgGUID: z+EiWtdLSdGJW8Guhc1I0w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11396"; a="62893348"
-X-IronPort-AV: E=Sophos;i="6.15,193,1739865600"; 
-   d="scan'208";a="62893348"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2025 13:42:59 -0700
-X-CSE-ConnectionGUID: 7A1SZ+9HQaeEOp+zSzOO2A==
-X-CSE-MsgGUID: 1Mu686fJRWm6vbVCtSdAXQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,193,1739865600"; 
-   d="scan'208";a="128624589"
-Received: from lkp-server01.sh.intel.com (HELO b207828170a5) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 06 Apr 2025 13:42:53 -0700
-Received: from kbuild by b207828170a5 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1u1WpO-0002lj-2N;
-	Sun, 06 Apr 2025 20:42:50 +0000
-Date: Mon, 7 Apr 2025 04:42:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	David Howells <dhowells@redhat.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Jan Stancek <jstancek@redhat.com>, Neal Gompa <neal@gompa.dev>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-kbuild@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-	llvm@lists.linux.dev
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
-Message-ID: <202504070413.eDHSjWGP-lkp@intel.com>
-References: <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
+	s=arc-20240116; t=1743988022; c=relaxed/simple;
+	bh=ch6lvxNheDI1ivTt0ioTzc9Ny+4ood1tqZFhk88N0lc=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=Gz6eDqnVnFSKBTXH0Y7RZgiy1E0VDWMiNeIEvnV/fbhrzq8fQq4xZ59rIfK0glQkQxGOt+EhlmeNv1xHi53yYWUXFBSEFSmHo6O8/XQz/2N48/plE0URj1LftX2iA4rSrDAJtiLmCDx3OGmOnh1oYkts87eCMXp8yKY/DfiuIM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=gKU3beZn; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1743988009; h=Message-ID:Subject:Date:From:To;
+	bh=RQsGAvlcouaF8GQ6e4VtQjlTST+z+xj3ljx+lelKUrw=;
+	b=gKU3beZnczj9WNOm+nAW+U1d5iOtOoTJHHx6hij0RZQgo55Gl4xuIwcVfBzVJV4k4+CEzHkvROx1y7r/xBHBnlvjfvRiT/QHsouXicx3tPfq8RnJRNJ5M89X7kFUGDbP8fA7LlwjMz6vArf+KCkrdKMa0/EQSQxC1ZPosH55eoU=
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0WVj13AP_1743988008 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Mon, 07 Apr 2025 09:06:48 +0800
+Message-ID: <1743987836.9938157-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH] virtio-net: disable delayed refill when pausing rx
+Date: Mon, 7 Apr 2025 09:03:56 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: "Michael S . Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ =?utf-8?q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,
+ Bui Quang Minh <minhquangbui99@gmail.com>,
+ virtualization@lists.linux.dev
+References: <20250404093903.37416-1-minhquangbui99@gmail.com>
+In-Reply-To: <20250404093903.37416-1-minhquangbui99@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
 
-Hi Blaise,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on shuah-kselftest/next]
-[also build test ERROR on shuah-kselftest/fixes herbert-cryptodev-2.6/master herbert-crypto-2.6/master masahiroy-kbuild/for-next masahiroy-kbuild/fixes v6.14]
-[cannot apply to linus/master next-20250404]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Blaise-Boscaccy/security-Hornet-LSM/20250405-055741
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
-patch link:    https://lore.kernel.org/r/20250404215527.1563146-2-bboscaccy%40linux.microsoft.com
-patch subject: [PATCH v2 security-next 1/4] security: Hornet LSM
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20250407/202504070413.eDHSjWGP-lkp@intel.com/config)
-compiler: clang version 18.1.8 (https://github.com/llvm/llvm-project 3b5b5c1ec4a3095ab096dd780e84d7ab81f3d7ff)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250407/202504070413.eDHSjWGP-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202504070413.eDHSjWGP-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> security/hornet/hornet_lsm.c:221:31: error: incompatible function pointer types initializing 'int (*)(struct bpf_prog *, union bpf_attr *, struct bpf_token *)' with an expression of type 'int (struct bpf_prog *, union bpf_attr *, struct bpf_token *, bool)' (aka 'int (struct bpf_prog *, union bpf_attr *, struct bpf_token *, _Bool)') [-Wincompatible-function-pointer-types]
-     221 |         LSM_HOOK_INIT(bpf_prog_load, hornet_bpf_prog_load),
-         |                                      ^~~~~~~~~~~~~~~~~~~~
-   include/linux/lsm_hooks.h:136:21: note: expanded from macro 'LSM_HOOK_INIT'
-     136 |                 .hook = { .NAME = HOOK }                \
-         |                                   ^~~~
-   1 error generated.
+On Fri,  4 Apr 2025 16:39:03 +0700, Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+> When pausing rx (e.g. set up xdp, xsk pool, rx resize), we call
+> napi_disable() on the receive queue's napi. In delayed refill_work, it
+> also calls napi_disable() on the receive queue's napi. This can leads to
+> deadlock when napi_disable() is called on an already disabled napi. This
+> scenario can be reproducible by binding a XDP socket to virtio-net
+> interface without setting up the fill ring. As a result, try_fill_recv
+> will fail until the fill ring is set up and refill_work is scheduled.
 
 
-vim +221 security/hornet/hornet_lsm.c
+So, what is the problem? The refill_work is waiting? As I know, that thread
+will sleep some time, so the cpu can do other work.
 
-   219	
-   220	static struct security_hook_list hornet_hooks[] __ro_after_init = {
- > 221		LSM_HOOK_INIT(bpf_prog_load, hornet_bpf_prog_load),
-   222	};
-   223	
+Thanks.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> This commit adds virtnet_rx_(pause/resume)_all helpers and fixes up the
+> virtnet_rx_resume to disable future and cancel all inflights delayed
+> refill_work before calling napi_disable() to pause the rx.
+>
+> Fixes: 6a4763e26803 ("virtio_net: support rx queue resize")
+> Fixes: 4941d472bf95 ("virtio-net: do not reset during XDP set")
+> Fixes: 09d2b3182c8e ("virtio_net: xsk: bind/unbind xsk for rx")
+> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+> ---
+>  drivers/net/virtio_net.c | 60 ++++++++++++++++++++++++++++++++++------
+>  1 file changed, 51 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 7e4617216a4b..4361b91ccc64 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -3342,10 +3342,53 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
+>  	return NETDEV_TX_OK;
+>  }
+>
+> +static void virtnet_rx_pause_all(struct virtnet_info *vi)
+> +{
+> +	bool running = netif_running(vi->dev);
+> +
+> +	/*
+> +	 * Make sure refill_work does not run concurrently to
+> +	 * avoid napi_disable race which leads to deadlock.
+> +	 */
+> +	disable_delayed_refill(vi);
+> +	cancel_delayed_work_sync(&vi->refill);
+> +	if (running) {
+> +		int i;
+> +
+> +		for (i = 0; i < vi->max_queue_pairs; i++) {
+> +			virtnet_napi_disable(&vi->rq[i]);
+> +			virtnet_cancel_dim(vi, &vi->rq[i].dim);
+> +		}
+> +	}
+> +}
+> +
+> +static void virtnet_rx_resume_all(struct virtnet_info *vi)
+> +{
+> +	bool running = netif_running(vi->dev);
+> +	int i;
+> +
+> +	enable_delayed_refill(vi);
+> +	for (i = 0; i < vi->max_queue_pairs; i++) {
+> +		if (i < vi->curr_queue_pairs) {
+> +			if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
+> +				schedule_delayed_work(&vi->refill, 0);
+> +		}
+> +
+> +		if (running)
+> +			virtnet_napi_enable(&vi->rq[i]);
+> +	}
+> +}
+> +
+>  static void virtnet_rx_pause(struct virtnet_info *vi, struct receive_queue *rq)
+>  {
+>  	bool running = netif_running(vi->dev);
+>
+> +	/*
+> +	 * Make sure refill_work does not run concurrently to
+> +	 * avoid napi_disable race which leads to deadlock.
+> +	 */
+> +	disable_delayed_refill(vi);
+> +	cancel_delayed_work_sync(&vi->refill);
+>  	if (running) {
+>  		virtnet_napi_disable(rq);
+>  		virtnet_cancel_dim(vi, &rq->dim);
+> @@ -3356,6 +3399,7 @@ static void virtnet_rx_resume(struct virtnet_info *vi, struct receive_queue *rq)
+>  {
+>  	bool running = netif_running(vi->dev);
+>
+> +	enable_delayed_refill(vi);
+>  	if (!try_fill_recv(vi, rq, GFP_KERNEL))
+>  		schedule_delayed_work(&vi->refill, 0);
+>
+> @@ -5959,12 +6003,12 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>  	if (prog)
+>  		bpf_prog_add(prog, vi->max_queue_pairs - 1);
+>
+> +	virtnet_rx_pause_all(vi);
+> +
+>  	/* Make sure NAPI is not using any XDP TX queues for RX. */
+>  	if (netif_running(dev)) {
+> -		for (i = 0; i < vi->max_queue_pairs; i++) {
+> -			virtnet_napi_disable(&vi->rq[i]);
+> +		for (i = 0; i < vi->max_queue_pairs; i++)
+>  			virtnet_napi_tx_disable(&vi->sq[i]);
+> -		}
+>  	}
+>
+>  	if (!prog) {
+> @@ -5996,13 +6040,12 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>  		vi->xdp_enabled = false;
+>  	}
+>
+> +	virtnet_rx_resume_all(vi);
+>  	for (i = 0; i < vi->max_queue_pairs; i++) {
+>  		if (old_prog)
+>  			bpf_prog_put(old_prog);
+> -		if (netif_running(dev)) {
+> -			virtnet_napi_enable(&vi->rq[i]);
+> +		if (netif_running(dev))
+>  			virtnet_napi_tx_enable(&vi->sq[i]);
+> -		}
+>  	}
+>
+>  	return 0;
+> @@ -6014,11 +6057,10 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>  			rcu_assign_pointer(vi->rq[i].xdp_prog, old_prog);
+>  	}
+>
+> +	virtnet_rx_resume_all(vi);
+>  	if (netif_running(dev)) {
+> -		for (i = 0; i < vi->max_queue_pairs; i++) {
+> -			virtnet_napi_enable(&vi->rq[i]);
+> +		for (i = 0; i < vi->max_queue_pairs; i++)
+>  			virtnet_napi_tx_enable(&vi->sq[i]);
+> -		}
+>  	}
+>  	if (prog)
+>  		bpf_prog_sub(prog, vi->max_queue_pairs - 1);
+> --
+> 2.43.0
+>
 
