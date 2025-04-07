@@ -1,243 +1,218 @@
-Return-Path: <bpf+bounces-55386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75164A7D8B2
-	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 10:56:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D50DA7D8F0
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 11:04:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0085916E62A
-	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 08:54:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 627FE1793AD
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 09:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4B722A4D1;
-	Mon,  7 Apr 2025 08:54:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8435922B8AC;
+	Mon,  7 Apr 2025 09:00:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N9bvnAfw"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="CSphnPOp"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6307D229B38
-	for <bpf@vger.kernel.org>; Mon,  7 Apr 2025 08:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D71224AEB;
+	Mon,  7 Apr 2025 09:00:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744016043; cv=none; b=ow5VOoDdJUXDJk6UfwhH8tICpiRPuy+0+NJ8zYTEDfrX9v0d2tCHOg7Rk84BqLA7VYu9syWUL+yLlvZfQbPsMuzTGx7xxauG0doKbR3dQMVxA7N+NN4uoHfgZ9OwEgLl8OrJiW4jU9Wzvk3u/QamVof3g4oHusLo+xnuExh0UMU=
+	t=1744016451; cv=none; b=im7FmDa9kLChQ2UfqBfuYkhO0nsP9xLFzIbMNO19UmCmYanlgPofJ3jr/qRfIhs6I1RRGachfF1Xuqu+rXupNxO6VkKLZOeNxnXafGaetveZXpp3k4R0GFQgZKoqKRHd/GlmqhM/4JK6DYx05RYs/iMC6pe5ELXlGMulH6SUj0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744016043; c=relaxed/simple;
-	bh=pOXia/AC4waKdD2HU2F4EacxLHFYKsgGieOUXINuaVM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=eJAsOpEC+FbCYj3MfJJ6vwVVx6IRiy2BXDcLyaBzz4BqXBa/5BKhFq2UQIfi9mfVVLa1h3r61h9ynHDME1sqr+g4XXedz3oZvuFM/syiHRzWF0c+4OGk/YNi8qAbD4OpovPEgwQDqiMZ3qF3Xwu4+thkHy2fNcDFzRel+EohoJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N9bvnAfw; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744016040;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WX08fMyjATa1UCoVjYCNjOKyQjVIMz6mY8L2vI8owLs=;
-	b=N9bvnAfwF4roAx/9xsMbsk3Eai8HIiUHzQF11t0ZtnID9lOhfh/dq+uZhhI2i5dNIXjVmL
-	5qGRiq6dJmk6HWQmAozuwn6JEkB5dsh1cYsQWsQwm+nhnXwa59kQPVVfGgRPeljmiYi30y
-	40GqQQ6+EIyK+9tiKf+8W+MB7MBVA0c=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-86-5ea-UW5JMF6AiHeb4IxtCQ-1; Mon, 07 Apr 2025 04:53:58 -0400
-X-MC-Unique: 5ea-UW5JMF6AiHeb4IxtCQ-1
-X-Mimecast-MFC-AGG-ID: 5ea-UW5JMF6AiHeb4IxtCQ_1744016038
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-ac297c7a0c2so320723366b.3
-        for <bpf@vger.kernel.org>; Mon, 07 Apr 2025 01:53:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744016037; x=1744620837;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WX08fMyjATa1UCoVjYCNjOKyQjVIMz6mY8L2vI8owLs=;
-        b=FiWAX2Gl7zOPCG7b0TaWKgYM20LXfjaUx4oDwBjB1+scV98V8sLEeZOaFcaMxgScBw
-         1fJbxu2xhMHYZpM5SUQ9Ggax6uwUkcCAWK6kfk2UEVk6Z9qxvLj6vzPpnmx7SM3gT5Oc
-         vxoULsC7OFuS/a60iXtxaC+Kw8xc6knuEOi72sh9XihHzmakV/K42KgD6jNpMaQQFbdA
-         C2HQCZQErjRSH40aNqAcafzKglqC1ENwjtqwuMNH4qg6oYwN+R7HEvHI+kLymDYelYRi
-         KifioODMvbBwMlZwUDK3aI/zHthEKpeg6NhZeveIM1ZDWh5M5VbAesklMwPEMYRRZ7js
-         7xyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUkeGdhVKACYiDvo+Nqu/HoGohhWeJbB2kO2pGZrnoAJjPR9o9M2kamR8oXBFeSRxAUuWk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8TRtStUw76Q2mxN1UjFuDdN6TbPGqJ7Pp8e1AnNkEXZmXY+Nw
-	FSpmZBHH8XI4IG6Rm955Qtr0zAx5J6FByWnTl8JmaW8OdEo5pWwYJtGOIOlZ+PH0kYpol6vr+5s
-	fNAiabLZME7XDo9oeCMfzrH3AOcYzQ2PVg4Pu1VBQBA2FKK7wpw==
-X-Gm-Gg: ASbGnctWU9rBgnP89h05nF0BFrsoLBNVHv8gZ+oTriKFdcgpjmgOFNBKHiSEfE+IUM1
-	LchSNiiwF0B/Bq97qzmoAvrJMBstNHvF8EhpAZDtrtYCiM4EsquKsSUmBgkXWan2GCgxjO9DaHP
-	hkXAbAWZ1wujEJ5rtaEpIgjn16/mIt8JF+9wpsw45nrQHaJb9s85FD0iVJDW+oIwz696lzY+Fdw
-	FkG4loVKEuywDzBnSfx3o9sgk9chcvDYMZ/KlfT7B5lVU2BIEj7xKUMfwPhyjaPE4EBlH8LQRuh
-	5EXOkl4TIGbcueZiu7HW9MiBVq4Dp0MAG5UWCoez
-X-Received: by 2002:a17:907:60d1:b0:ac2:66ff:878 with SMTP id a640c23a62f3a-ac7e77b48afmr787962666b.50.1744016037485;
-        Mon, 07 Apr 2025 01:53:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFVb33+8wF4lK6cnuu9f4nRUChR41f7hK0+8LtHxpAhi3vaXbXMmuVF5DNGsf7Ha6IvN6oWCg==
-X-Received: by 2002:a17:907:60d1:b0:ac2:66ff:878 with SMTP id a640c23a62f3a-ac7e77b48afmr787959466b.50.1744016037067;
-        Mon, 07 Apr 2025 01:53:57 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac7c013f71asm706325866b.112.2025.04.07.01.53.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Apr 2025 01:53:56 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 521BF1991859; Mon, 07 Apr 2025 10:53:55 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Zi Yan <ziy@nvidia.com>, "David S. Miller" <davem@davemloft.net>, Jakub
- Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ilias
- Apalodimas <ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Mina Almasry
- <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>, Yunsheng
- Lin <linyunsheng@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>,
- Matthew Wilcox <willy@infradead.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org
-Subject: Re: [PATCH net-next v7 1/2] page_pool: Move pp_magic check into
- helper functions
-In-Reply-To: <D8ZSA9FSRHX2.2Q6MA2HLESONR@nvidia.com>
-References: <20250404-page-pool-track-dma-v7-0-ad34f069bc18@redhat.com>
- <20250404-page-pool-track-dma-v7-1-ad34f069bc18@redhat.com>
- <D8ZSA9FSRHX2.2Q6MA2HLESONR@nvidia.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 07 Apr 2025 10:53:55 +0200
-Message-ID: <87cydoxsgs.fsf@toke.dk>
+	s=arc-20240116; t=1744016451; c=relaxed/simple;
+	bh=w0tWavQl+YpsDHBSzOwcYlHjUFqOxhKwQeLdkmj4vYM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=trNl5YEEij6WZBFfc9fgwyVyQQUH7D4ITrhktoDNq8bCc1H/6Y/AXyNloEkdRYfimO74u8LqybbCCMhOqjYUEfhGvKKWjxnnamuFxFrryCyXpE6vWRSusTqlu7gXoE/NcFLLWJ+N0GTndNS030GxqRopBCu4Xh/LNJi8+/E2sME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=CSphnPOp; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=x0kZSjI5cXDCsU46sqMKWaFM1hZW8VHKFbEkunPM1y8=; b=CSphnPOpIVxyr+laAB0yVjCTUf
+	IdIf8eh/2BoNMPUFevhZisIWzfISy4WPLFjYvqyE9bqmZTAstasoym7a2l3qm8ifXETOP0E+2XsL7
+	x7EDc2noByzRDvl1CecoCtuVzdmRNEhNe5UcNXn0Ge021kz+TWvf0uCKLpAnI3tXix3ehPlw3TeMZ
+	HNZozAzz2V6qIq28DphbJJc1LFxYalW3EyBQbgc4Yfnj59ebky9ktZFYvv+dMtF8NTEHmpehnIDpA
+	vXlXziMG72m/OplRYnnZGlsRiZCoWNk3AYOYM5i9IGhRQGr0zOXbqG2gw3FAuzS5oQZuTNjN3o2Ap
+	ZbOKc0dw==;
+Received: from sslproxy08.your-server.de ([78.47.166.52])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1u1iLP-000M66-12;
+	Mon, 07 Apr 2025 11:00:39 +0200
+Received: from [178.197.249.21] (helo=[192.168.1.114])
+	by sslproxy08.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1u1iLO-000PGR-2g;
+	Mon, 07 Apr 2025 11:00:38 +0200
+Message-ID: <98b2c012-dcbe-4abf-8b22-2ab37604ccc8@iogearbox.net>
+Date: Mon, 7 Apr 2025 11:00:38 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf v2 1/2] bpf: support SKF_NET_OFF and SKF_LL_OFF on skb
+ frags
+To: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+ john.fastabend@gmail.com, Willem de Bruijn <willemb@google.com>,
+ Matt Moeller <moeller.matt@gmail.com>
+References: <20250404142633.1955847-1-willemdebruijn.kernel@gmail.com>
+ <20250404142633.1955847-2-willemdebruijn.kernel@gmail.com>
+ <584071a3-10df-443a-ad8c-1fa7bc82d821@iogearbox.net>
+ <CAF=yD-+ccY58AAneA7tLokuUahrj=8cdDtPPopGH0h8mK-hMbQ@mail.gmail.com>
+ <CANP3RGdQNt5Qn9APrUh7V+r2RKoBx9KtzpDfres0wf+UZMeedg@mail.gmail.com>
+Content-Language: en-US
+From: Daniel Borkmann <daniel@iogearbox.net>
+Autocrypt: addr=daniel@iogearbox.net; keydata=
+ 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
+In-Reply-To: <CANP3RGdQNt5Qn9APrUh7V+r2RKoBx9KtzpDfres0wf+UZMeedg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27600/Sun Apr  6 10:29:47 2025)
 
-"Zi Yan" <ziy@nvidia.com> writes:
-
-> On Fri Apr 4, 2025 at 6:18 AM EDT, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Since we are about to stash some more information into the pp_magic
->> field, let's move the magic signature checks into a pair of helper
->> functions so it can be changed in one place.
+On 4/4/25 7:56 PM, Maciej Żenczykowski wrote:
+> On Fri, Apr 4, 2025 at 9:34 AM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+>> On Fri, Apr 4, 2025 at 12:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>
+>>> Hi Willem,
+>>>
+>>> On 4/4/25 4:23 PM, Willem de Bruijn wrote:
+>>> [...]
+>>>> v1->v2
+>>>>     - introduce bfp_skb_load_helper_convert_offset to avoid open coding
+>>>> ---
+>>>>    include/linux/filter.h |  3 --
+>>>>    kernel/bpf/core.c      | 21 -----------
+>>>>    net/core/filter.c      | 80 +++++++++++++++++++++++-------------------
+>>>>    3 files changed, 44 insertions(+), 60 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>>>> index f5cf4d35d83e..708ac7e0cd36 100644
+>>>> --- a/include/linux/filter.h
+>>>> +++ b/include/linux/filter.h
+>>>> @@ -1496,9 +1496,6 @@ static inline u16 bpf_anc_helper(const struct sock_filter *ftest)
+>>>>        }
+>>>>    }
+>>>>
+>>>> -void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb,
+>>>> -                                        int k, unsigned int size);
+>>>> -
+>>>>    static inline int bpf_tell_extensions(void)
+>>>>    {
+>>>>        return SKF_AD_MAX;
+>>>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>>>> index ba6b6118cf50..0e836b5ac9a0 100644
+>>>> --- a/kernel/bpf/core.c
+>>>> +++ b/kernel/bpf/core.c
+>>>> @@ -68,27 +68,6 @@
+>>>>    struct bpf_mem_alloc bpf_global_ma;
+>>>>    bool bpf_global_ma_set;
+>>>>
+>>>> -/* No hurry in this branch
+>>>> - *
+>>>> - * Exported for the bpf jit load helper.
+>>>> - */
+>>>> -void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb, int k, unsigned int size)
+>>>> -{
+>>>> -     u8 *ptr = NULL;
+>>>> -
+>>>> -     if (k >= SKF_NET_OFF) {
+>>>> -             ptr = skb_network_header(skb) + k - SKF_NET_OFF;
+>>>> -     } else if (k >= SKF_LL_OFF) {
+>>>> -             if (unlikely(!skb_mac_header_was_set(skb)))
+>>>> -                     return NULL;
+>>>> -             ptr = skb_mac_header(skb) + k - SKF_LL_OFF;
+>>>> -     }
+>>>> -     if (ptr >= skb->head && ptr + size <= skb_tail_pointer(skb))
+>>>> -             return ptr;
+>>>> -
+>>>> -     return NULL;
+>>>> -}
+>>>
+>>> Wouldn't this break sparc 32bit JIT which still calls into this?
+>>>
+>>> arch/sparc/net/bpf_jit_asm_32.S :
+>>>
+>>> #define bpf_negative_common(LEN)                        \
+>>>           save    %sp, -SAVE_SZ, %sp;                     \
+>>>           mov     %i0, %o0;                               \
+>>>           mov     r_OFF, %o1;                             \
+>>>           SIGN_EXTEND(%o1);                               \
+>>>           call    bpf_internal_load_pointer_neg_helper;   \
+>>>            mov    (LEN), %o2;                             \
+>>>           mov     %o0, r_TMP;                             \
+>>>           cmp     %o0, 0;                                 \
+>>>           BE_PTR(bpf_error);                              \
+>>>            restore;
 >>
->> Reviewed-by: Mina Almasry <almasrymina@google.com>
->> Tested-by: Yonglong Liu <liuyonglong@huawei.com>
->> Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
->> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->>  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |  4 ++--
->>  include/net/page_pool/types.h                    | 18 ++++++++++++++++++
->>  mm/page_alloc.c                                  |  9 +++------
->>  net/core/netmem_priv.h                           |  5 +++++
->>  net/core/skbuff.c                                | 16 ++--------------
->>  net/core/xdp.c                                   |  4 ++--
->>  6 files changed, 32 insertions(+), 24 deletions(-)
+>> Argh, good catch. Thanks Daniel.
 >>
->
-> <snip>
->
->> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types=
-.h
->> index 36eb57d73abc6cfc601e700ca08be20fb8281055..df0d3c1608929605224feb26=
-173135ff37951ef8 100644
->> --- a/include/net/page_pool/types.h
->> +++ b/include/net/page_pool/types.h
->> @@ -54,6 +54,14 @@ struct pp_alloc_cache {
->>  	netmem_ref cache[PP_ALLOC_CACHE_SIZE];
->>  };
->>=20=20
->> +/* Mask used for checking in page_pool_page_is_pp() below. page->pp_mag=
-ic is
->> + * OR'ed with PP_SIGNATURE after the allocation in order to preserve bi=
-t 0 for
->> + * the head page of compound page and bit 1 for pfmemalloc page.
->> + * page_is_pfmemalloc() is checked in __page_pool_put_page() to avoid r=
-ecycling
->> + * the pfmemalloc page.
->> + */
->> +#define PP_MAGIC_MASK ~0x3UL
->> +
->>  /**
->>   * struct page_pool_params - page pool parameters
->>   * @fast:	params accessed frequently on hotpath
->> @@ -264,6 +272,11 @@ void page_pool_destroy(struct page_pool *pool);
->>  void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(v=
-oid *),
->>  			   const struct xdp_mem_info *mem);
->>  void page_pool_put_netmem_bulk(netmem_ref *data, u32 count);
->> +
->> +static inline bool page_pool_page_is_pp(struct page *page)
->> +{
->> +	return (page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
->> +}
->>  #else
->>  static inline void page_pool_destroy(struct page_pool *pool)
->>  {
->> @@ -278,6 +291,11 @@ static inline void page_pool_use_xdp_mem(struct pag=
-e_pool *pool,
->>  static inline void page_pool_put_netmem_bulk(netmem_ref *data, u32 coun=
-t)
->>  {
->>  }
->> +
->> +static inline bool page_pool_page_is_pp(struct page *page)
->> +{
->> +	return false;
->> +}
->>  #endif
->>=20=20
->>  void page_pool_put_unrefed_netmem(struct page_pool *pool, netmem_ref ne=
-tmem,
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index f51aa6051a99867d2d7d8c70aa7c30e523629951..347a3cc2c188f4a9ced85e0d=
-198947be7c503526 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -55,6 +55,7 @@
->>  #include <linux/delayacct.h>
->>  #include <linux/cacheinfo.h>
->>  #include <linux/pgalloc_tag.h>
->> +#include <net/page_pool/types.h>
->>  #include <asm/div64.h>
->>  #include "internal.h"
->>  #include "shuffle.h"
->> @@ -897,9 +898,7 @@ static inline bool page_expected_state(struct page *=
-page,
->>  #ifdef CONFIG_MEMCG
->>  			page->memcg_data |
->>  #endif
->> -#ifdef CONFIG_PAGE_POOL
->> -			((page->pp_magic & ~0x3UL) =3D=3D PP_SIGNATURE) |
->> -#endif
->> +			page_pool_page_is_pp(page) |
->>  			(page->flags & check_flags)))
->>  		return false;
->>=20=20
->> @@ -926,10 +925,8 @@ static const char *page_bad_reason(struct page *pag=
-e, unsigned long flags)
->>  	if (unlikely(page->memcg_data))
->>  		bad_reason =3D "page still charged to cgroup";
->>  #endif
->> -#ifdef CONFIG_PAGE_POOL
->> -	if (unlikely((page->pp_magic & ~0x3UL) =3D=3D PP_SIGNATURE))
->> +	if (unlikely(page_pool_page_is_pp(page)))
->>  		bad_reason =3D "page_pool leak";
->> -#endif
->>  	return bad_reason;
->>  }
->>=20=20
->
-> I wonder if it is OK to make page allocation depend on page_pool from
-> net/page_pool.
+>> I'll drop the removal of bpf_internal_load_pointer_neg_helper from the patch.
+> 
+> add a 'deprecated only used by sparc32 comment'
+> 
+> hopefully someone that knows sparc32 assembly can fix it
 
-Why? It's not really a dependency, just a header include with a static
-inline function...
+Alternatively, the bpf_internal_load_pointer_neg_helper() could be moved entirely
+over into arch/sparc/net/ so that others won't be tempted to reuse.
 
-> Would linux/mm.h be a better place for page_pool_page_is_pp()?
-
-That would require moving all the definitions introduced in patch 2,
-which I don't think is appropriate.
-
--Toke
-
+Cheers,
+Daniel
 
