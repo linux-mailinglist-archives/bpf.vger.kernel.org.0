@@ -1,218 +1,266 @@
-Return-Path: <bpf+bounces-55398-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55399-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D757A7DDF5
-	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 14:42:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED68FA7DEBC
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 15:16:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2FBE7A2CD8
-	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 12:41:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E67C2175EC9
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 13:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DAA7248896;
-	Mon,  7 Apr 2025 12:42:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F1E253F0F;
+	Mon,  7 Apr 2025 13:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FBXkHIqn"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bsfL50OM"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40908F5A;
-	Mon,  7 Apr 2025 12:42:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1EFC24EA98
+	for <bpf@vger.kernel.org>; Mon,  7 Apr 2025 13:14:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744029763; cv=none; b=e8Ag9GDFss+29ki5m/9Gfxy8on28p/6V7oU8YLdl1InuepDHLp8TOrKns0/kG6PCMPKDYalSrXztI56XCT/4j3jSXsNGB+xDHV1M4Jaa+CWANM4EBoxAvxC+cE2LdkhQ2syYdPqzze9YxjZXHtd4X+13qpmzK4oE54wxsvq1tZ0=
+	t=1744031651; cv=none; b=r92YLOp7bu32P2XWGg7jaCCoMyTEqPyGTZ1BJ/3q4ccM514CS0ZlCyGQxCqurDz6U3vrgtSbYczjPBNexVmQ4yq/NqPe18RdiAeErDXGiE5qmw1j8ehSaNMo9VM6KnJYKJW15VMhwl577716mKXNyIWVtck8s/RG4QpAiR5TGqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744029763; c=relaxed/simple;
-	bh=ZEqSqfTVwx6g78qMbC8XHcLkPQv0COK6D+JuKLHvpvU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SpI8wwEOLhfEOwZYgsPKAHHQA2doJ6Wb1LG8VqeKB2BxacBMmon4HhDOV3Fnh3ODYeqi2tieQxHvyMFcSD+nRTKlLi6YjFr6IdX7SHPbq7QCK9aNHItjrJenTVG2mq0puTeHfvZDJJAOHAxBtjDwlsiNYhc27slHnGQgpdXU6NU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FBXkHIqn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72DBFC4CEE7;
-	Mon,  7 Apr 2025 12:42:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744029763;
-	bh=ZEqSqfTVwx6g78qMbC8XHcLkPQv0COK6D+JuKLHvpvU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=FBXkHIqnyrB9PRMGn6D2VOUtRvkl1Lhg6q3MHN3zIAWxJEOi7Jvulh+DQEaFAnjKf
-	 xn4giljXufYa1QL1EXR5pnFa6TmftwYXqsT2ewTKH2JO+XRt3Rh6HTLqkJdNOiFkqs
-	 5eLsZoJLWnCLG9LaQnz1ywy+U6uqrylt90lVDjduRNMBNl8nCAXoSA/6pTRyRJfbRi
-	 O926lCSfBOjS86Z/QrAGjJdnsK5j8hQ5S6qPN/TQqIuPYvsoyurjOxykaa555DL56+
-	 oqto2gQNYRR1zecrUKsR430Llf+LybUFUVXaL802X2D/1uCcw8oU869BwlRBmAxVqx
-	 c4OS2p+i9r82g==
-Message-ID: <7e67776b-84d7-4976-8a97-82473cd63b06@kernel.org>
-Date: Mon, 7 Apr 2025 14:42:37 +0200
+	s=arc-20240116; t=1744031651; c=relaxed/simple;
+	bh=MptCtTBgjqA4wG6+vocwrF37pI9/bDP9Ih0yctlcMbE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=TlfGyjNPhbWSiOg/n280jrlBfDRd2HOQevhQvZFl80+OOoYAl3SwuTTA8yprPG9fb0YJevLVUOka2fnymmDzHupWnzxmJzjKNSBXIt6eZND3IAq5Wvp5i65mjNv5Ps5w2nnmNKILzdL3cdxzXk4T7Ako3ECsnbbRa4+l7SKp71w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bsfL50OM; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744031648;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OllSiN0eUkcOVIrXz329Q1Mf/3+77Twh9+vlNXCNGXM=;
+	b=bsfL50OMunujyjFhNfnQ9XnG/+/nSwJuFmil4J9sP361TzjRsmLP8CxWf9Lxdb36Gb8Byu
+	oRpcX4UnK3xgjm8TbCWqIJfMQR1sZTFcUR+x+ZKWTjeN+rCKMRB2QUKEN9MVFgsK7eAAA1
+	JmsRJWfrBNuNASH/FOpxpJTodS7y0oY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-103-NcIT5W1LOm-1xNDb6QBbzA-1; Mon, 07 Apr 2025 09:14:07 -0400
+X-MC-Unique: NcIT5W1LOm-1xNDb6QBbzA-1
+X-Mimecast-MFC-AGG-ID: NcIT5W1LOm-1xNDb6QBbzA_1744031646
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5e623fe6aa2so4773210a12.2
+        for <bpf@vger.kernel.org>; Mon, 07 Apr 2025 06:14:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744031646; x=1744636446;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OllSiN0eUkcOVIrXz329Q1Mf/3+77Twh9+vlNXCNGXM=;
+        b=jgaYoWYYa22+L1w/Be+dWksEyLyi6eoOsoCFxb90KBxk8U1vVIQOwTp5Inn2B1UV64
+         jetvl2flVCNO+6I7KakPZOAB9M1MjBipUk+hMcm7euVg+9YxmYpoP52IGm4slF6zg69P
+         BSNLSM6qlKvhsXY6EdCFNtag0cOhrpUDIS5OFUS0wkOHyhbzEpzs4S5/CcyPMfRla+ZO
+         PpBVTQcAOrQa3bYRarGDwQWcWBfvBT2Uw+PsUOYu3S0FOYVk1MjPD5KfdepkLqQ7CU9S
+         jjN3yKjpBFx1JPDoLiqxAVVA0LSh/DNbPcQZCklvMYRnfz/tO+xgWSdNtM0dqtWIQCn5
+         kP6g==
+X-Forwarded-Encrypted: i=1; AJvYcCU8tQUSAUo5HiVoy7IrHFanOQZ2Xt42GJ9978lkEBQFRI35VkbiDgdUkKSKfL9qJ9x03qw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+qreT5fKs9l6LjH6xQckFCVlUQRQfh9ngWQaSul56NxZZMcP9
+	hnbooKE6v8AF9kBUFpu6XDQml2E37Cl8lWC9jvCxiHLaR7qCJ+arMVUkvvorlyPnGo/M8+FhN1M
+	4hzIk7ii5xKOJQ1zQbCPUBMBgb6WX7zXmuVrOsIuQeZbMsDWP8A==
+X-Gm-Gg: ASbGnct/mgYJBz/PI+JPad2cwd8MlWEJbZMMF/E3m1/PmISvHL4K7fejrICvZ1aNWQ9
+	bxx5oKJemCxnpQaU3qoOaiKpY1DAd893a0DmaL7e8tKal4Fl7YT5QqyyXd7fj0Zhbxc1kjWBh+f
+	giLG0bX17sc+S9fxFj5nlVKGW0nsuNXJERMy105kLATPj3w4cJIJRMwxLe6CJFFQvYgz7GBN4yt
+	w/KVUq3lTx/h8ctGXocs3wnPiKcmsxyVq+JRpaRV8L02fuQ8YL60cxuNMZZ5imDrBYGHkdaS4ik
+	27v2MLmtW7a1
+X-Received: by 2002:a05:6402:42cb:b0:5ec:922f:7a02 with SMTP id 4fb4d7f45d1cf-5f0db81b649mr6165672a12.10.1744031645907;
+        Mon, 07 Apr 2025 06:14:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGavQJlmmghtqSg9iLbaBJHfh2I8uG3HzWNkv49MzKEgM7vcl9P3RYd3+0DSM+pvZQMRNiEeA==
+X-Received: by 2002:a05:6402:42cb:b0:5ec:922f:7a02 with SMTP id 4fb4d7f45d1cf-5f0db81b649mr6165640a12.10.1744031645440;
+        Mon, 07 Apr 2025 06:14:05 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5f087f0a9c9sm6969011a12.41.2025.04.07.06.14.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Apr 2025 06:14:04 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id C40FC19918A1; Mon, 07 Apr 2025 15:14:03 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Zi Yan <ziy@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski
+ <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, Saeed
+ Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq
+ Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ilias
+ Apalodimas <ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Mina Almasry
+ <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>, Yunsheng
+ Lin <linyunsheng@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>,
+ Matthew Wilcox <willy@infradead.org>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH net-next v7 1/2] page_pool: Move pp_magic check into
+ helper functions
+In-Reply-To: <DF12251B-E50F-4724-A2FA-FE5AAF3E63DF@nvidia.com>
+References: <20250404-page-pool-track-dma-v7-0-ad34f069bc18@redhat.com>
+ <20250404-page-pool-track-dma-v7-1-ad34f069bc18@redhat.com>
+ <D8ZSA9FSRHX2.2Q6MA2HLESONR@nvidia.com> <87cydoxsgs.fsf@toke.dk>
+ <DF12251B-E50F-4724-A2FA-FE5AAF3E63DF@nvidia.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 07 Apr 2025 15:14:03 +0200
+Message-ID: <87v7rgw1us.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next] veth: apply qdisc backpressure on full
- ptr_ring to reduce TX drops
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Cc: bpf@vger.kernel.org, tom@herbertland.com,
- Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- kernel-team@cloudflare.com, makita.toshiaki@lab.ntt.co.jp,
- Yan Zhai <yan@cloudflare.com>, Jesse Brandeburg
- <jbrandeburg@cloudflare.com>, "Michael S. Tsirkin" <mst@redhat.com>
-References: <174377814192.3376479.16481605648460889310.stgit@firesoul>
- <87a58sxrhn.fsf@toke.dk>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <87a58sxrhn.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+Zi Yan <ziy@nvidia.com> writes:
 
-
-On 07/04/2025 11.15, Toke Høiland-Jørgensen wrote:
-> Jesper Dangaard Brouer <hawk@kernel.org> writes:
-> 
->> In production, we're seeing TX drops on veth devices when the ptr_ring
->> fills up. This can occur when NAPI mode is enabled, though it's
->> relatively rare. However, with threaded NAPI - which we use in
->> production - the drops become significantly more frequent.
+> Resend to fix my signature.
+>
+> On 7 Apr 2025, at 4:53, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>
+>> "Zi Yan" <ziy@nvidia.com> writes:
 >>
->> The underlying issue is that with threaded NAPI, the consumer often runs
->> on a different CPU than the producer. This increases the likelihood of
->> the ring filling up before the consumer gets scheduled, especially under
->> load, leading to drops in veth_xmit() (ndo_start_xmit()).
+>>> On Fri Apr 4, 2025 at 6:18 AM EDT, Toke H=C3=B8iland-J=C3=B8rgensen wro=
+te:
+>>>> Since we are about to stash some more information into the pp_magic
+>>>> field, let's move the magic signature checks into a pair of helper
+>>>> functions so it can be changed in one place.
+>>>>
+>>>> Reviewed-by: Mina Almasry <almasrymina@google.com>
+>>>> Tested-by: Yonglong Liu <liuyonglong@huawei.com>
+>>>> Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+>>>> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+>>>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>>>> ---
+>>>>  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |  4 ++--
+>>>>  include/net/page_pool/types.h                    | 18 +++++++++++++++=
++++
+>>>>  mm/page_alloc.c                                  |  9 +++------
+>>>>  net/core/netmem_priv.h                           |  5 +++++
+>>>>  net/core/skbuff.c                                | 16 ++--------------
+>>>>  net/core/xdp.c                                   |  4 ++--
+>>>>  6 files changed, 32 insertions(+), 24 deletions(-)
+>>>>
+>>>
+>>> <snip>
+>>>
+>>>> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/typ=
+es.h
+>>>> index 36eb57d73abc6cfc601e700ca08be20fb8281055..df0d3c1608929605224feb=
+26173135ff37951ef8 100644
+>>>> --- a/include/net/page_pool/types.h
+>>>> +++ b/include/net/page_pool/types.h
+>>>> @@ -54,6 +54,14 @@ struct pp_alloc_cache {
+>>>>  	netmem_ref cache[PP_ALLOC_CACHE_SIZE];
+>>>>  };
+>>>>
+>>>> +/* Mask used for checking in page_pool_page_is_pp() below. page->pp_m=
+agic is
+>>>> + * OR'ed with PP_SIGNATURE after the allocation in order to preserve =
+bit 0 for
+>>>> + * the head page of compound page and bit 1 for pfmemalloc page.
+>>>> + * page_is_pfmemalloc() is checked in __page_pool_put_page() to avoid=
+ recycling
+>>>> + * the pfmemalloc page.
+>>>> + */
+>>>> +#define PP_MAGIC_MASK ~0x3UL
+>>>> +
+>>>>  /**
+>>>>   * struct page_pool_params - page pool parameters
+>>>>   * @fast:	params accessed frequently on hotpath
+>>>> @@ -264,6 +272,11 @@ void page_pool_destroy(struct page_pool *pool);
+>>>>  void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)=
+(void *),
+>>>>  			   const struct xdp_mem_info *mem);
+>>>>  void page_pool_put_netmem_bulk(netmem_ref *data, u32 count);
+>>>> +
+>>>> +static inline bool page_pool_page_is_pp(struct page *page)
+>>>> +{
+>>>> +	return (page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
+>>>> +}
+>>>>  #else
+>>>>  static inline void page_pool_destroy(struct page_pool *pool)
+>>>>  {
+>>>> @@ -278,6 +291,11 @@ static inline void page_pool_use_xdp_mem(struct p=
+age_pool *pool,
+>>>>  static inline void page_pool_put_netmem_bulk(netmem_ref *data, u32 co=
+unt)
+>>>>  {
+>>>>  }
+>>>> +
+>>>> +static inline bool page_pool_page_is_pp(struct page *page)
+>>>> +{
+>>>> +	return false;
+>>>> +}
+>>>>  #endif
+>>>>
+>>>>  void page_pool_put_unrefed_netmem(struct page_pool *pool, netmem_ref =
+netmem,
+>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>>> index f51aa6051a99867d2d7d8c70aa7c30e523629951..347a3cc2c188f4a9ced85e=
+0d198947be7c503526 100644
+>>>> --- a/mm/page_alloc.c
+>>>> +++ b/mm/page_alloc.c
+>>>> @@ -55,6 +55,7 @@
+>>>>  #include <linux/delayacct.h>
+>>>>  #include <linux/cacheinfo.h>
+>>>>  #include <linux/pgalloc_tag.h>
+>>>> +#include <net/page_pool/types.h>
+>>>>  #include <asm/div64.h>
+>>>>  #include "internal.h"
+>>>>  #include "shuffle.h"
+>>>> @@ -897,9 +898,7 @@ static inline bool page_expected_state(struct page=
+ *page,
+>>>>  #ifdef CONFIG_MEMCG
+>>>>  			page->memcg_data |
+>>>>  #endif
+>>>> -#ifdef CONFIG_PAGE_POOL
+>>>> -			((page->pp_magic & ~0x3UL) =3D=3D PP_SIGNATURE) |
+>>>> -#endif
+>>>> +			page_pool_page_is_pp(page) |
+>>>>  			(page->flags & check_flags)))
+>>>>  		return false;
+>>>>
+>>>> @@ -926,10 +925,8 @@ static const char *page_bad_reason(struct page *p=
+age, unsigned long flags)
+>>>>  	if (unlikely(page->memcg_data))
+>>>>  		bad_reason =3D "page still charged to cgroup";
+>>>>  #endif
+>>>> -#ifdef CONFIG_PAGE_POOL
+>>>> -	if (unlikely((page->pp_magic & ~0x3UL) =3D=3D PP_SIGNATURE))
+>>>> +	if (unlikely(page_pool_page_is_pp(page)))
+>>>>  		bad_reason =3D "page_pool leak";
+>>>> -#endif
+>>>>  	return bad_reason;
+>>>>  }
+>>>>
+>>>
+>>> I wonder if it is OK to make page allocation depend on page_pool from
+>>> net/page_pool.
 >>
->> This patch introduces backpressure by returning NETDEV_TX_BUSY when the
->> ring is full, signaling the qdisc layer to requeue the packet. The txq
->> (netdev queue) is stopped in this condition and restarted once
->> veth_poll() drains entries from the ring, ensuring coordination between
->> NAPI and qdisc.
-> 
-> Right, I definitely agree that this is the right solution; having no
-> backpressure and a fixed-size ringbuffer is obviously not ideal.
-> 
->> Backpressure is only enabled when a qdisc is attached. Without a qdisc,
->> the driver retains its original behavior - dropping packets immediately
->> when the ring is full. This avoids unexpected behavior changes in setups
->> without a configured qdisc.
-> 
-> Not sure I like this bit, though; see below.
-> 
+>> Why? It's not really a dependency, just a header include with a static
+>> inline function...
+>
+> The function is checking, not even modifying, an core mm data structure,
+> struct page, which is also used by almost all subsystems. I do not get
+> why the function is in net subsystem.
 
-I agree, but the reason for being chicken here is my prod deployment plan.
-I'm about to roll this change out to production, and it is practical
-that we can do a roll-back based on removing the qdisc.
+Well, because it's using details of the PP definitions, so keeping it
+there nicely encapsulates things. I mean, that's the whole point of
+defining a wrapper function - encapsulating the logic :)
 
-In the future, we (netdev community) should consider changing veth to
-automatically get the default qdisc attached, when enabling NAPI mode.
-I will propose this when I have more data from production.
-
-The ptr_ring overflow case is very easy to reproduce, even on testlab
-servers without any competing traffic.
-Together with Yan (Cc) we/I have a reproducer script available here:
-
- 
-https://github.com/xdp-project/xdp-project/blob/main/areas/core/veth_setup01_NAPI_TX_drops.sh
-
-
->> With a qdisc in place (e.g. fq, sfq) this allows Active Queue Management
->> (AQM) to fairly schedule packets across flows and reduce collateral
->> damage from elephant flows.
+>>> Would linux/mm.h be a better place for page_pool_page_is_pp()?
 >>
->> A known limitation of this approach is that the full ring sits in front
->> of the qdisc layer, effectively forming a FIFO buffer that introduces
->> base latency. While AQM still improves fairness and mitigates flow
->> dominance, the latency impact is measurable.
->>
->> In hardware drivers, this issue is typically addressed using BQL (Byte
->> Queue Limits), which tracks in-flight bytes needed based on physical link
->> rate. However, for virtual drivers like veth, there is no fixed bandwidth
->> constraint - the bottleneck is CPU availability and the scheduler's ability
->> to run the NAPI thread. It is unclear how effective BQL would be in this
->> context.
-> 
-> So the BQL algorithm tries to tune the maximum number of outstanding
-> bytes to be ~twice the maximum that can be completed in one batch. Since
-> we're not really limited by bytes in the same sense here (as you point
-> out), an approximate equivalent would be the NAPI budget, I guess? I.e.,
-> as a first approximation, we could have veth stop the queue once the
-> ringbuffer has 2x the NAPI budget packets in it?
-> 
+>> That would require moving all the definitions introduced in patch 2,
+>> which I don't think is appropriate.
+>
+> Why? I do not see page_pool_page_is_pp() or PP_SIGNATURE is used anywhere
+> in patch 2.
 
-I like the idea. (Note: The current ptr_ring size is 256.)
+Look again. Patch 2 redefines PP_MAGIC_MASK in terms of all the other
+definitions.
 
-To implement this, we could simply reduce the ptr_ring size to 128 
-(2*64), right?
-IMHO would be cooler to have a larger queue, but dynamically stop it
-once the ringbuffer has 2x the NAPI budget. but...
+-Toke
 
-There are two subtle issue with the ptr_ring (Cc MST). (So, perhaps we
-need choose another ring buffer API for veth?)
-
-(1) We don't have a counter for how many elements are in the queue.
-Most hardware drivers tried to stop the TXQ *before* their ring buffer
-runs full, such that it avoids returning NETDEV_TX_BUSY.
-(This is why it is hard to implement BQL for veth.)
-
-(2) ptr_ring consumer delays making the slots available to the producer,
-to avoiding bouncing cache-lines, in the ring-full case.  Thus, we
-cannot make ptr_ring too small.  And I'm unsure how this interacts with
-the idea of having two NAPI budgets available.
-
-
->> This patch serves as a first step toward addressing TX drops. Future work
->> may explore adapting a BQL-like mechanism to better suit virtual devices
->> like veth.
->>
->> Reported-by: Yan Zhai <yan@cloudflare.com>
->> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> 
-> [...]
-> 
->> +/* Does specific txq have a real qdisc attached? - see noqueue_init() */
->> +static inline bool txq_has_qdisc(struct netdev_queue *txq)
->> +{
->> +	struct Qdisc *q;
->> +
->> +	q = rcu_dereference(txq->qdisc);
->> +	if (q->enqueue)
->> +		return true;
->> +	else
->> +		return false;
->> +}
-> 
-> This seems like a pretty ugly layering violation, inspecting the qdisc
-> like this in the driver?
-> 
-
-I agree. (as minimum it should be moved to include/net/sch_generic.h.)
-
-I did considered using qdisc_tx_is_noop() defined in
-include/net/sch_generic.h, but IMHO it is too slow for data-(fast)path
-code as it walks all the TXQs.
-
-(more below)
-
-> AFAICT, __dev_queue_xmit() turns a stopped queue into drops anyway, but
-> emits a warning (looks like this, around line 4640 in dev.c):
-> 
-> 			net_crit_ratelimited("Virtual device %s asks to queue packet!\n",
-> 					     dev->name);
-> 
-> As this patch shows, it can clearly be appropriate for a virtual device
-> to stop the queue even if there's no qdisc, so how about we just get rid
-> of that warning? Then this logic won't be needed at all in the driver..
-> 
-
-Yes, the real reason for the layer violation is to avoid this warning in
-_dev_queue_xmit().
-
-The NETDEV_TX_BUSY is (correctly) converted into a drop, when the
-net_device TXQ doesn't have a qdisc attached.   Thus, we don't need the
-driver layer violation, if we can remove this warning.
-
-Does anyone object to removing this net_crit_ratelimited?
-
---Jesper
 
