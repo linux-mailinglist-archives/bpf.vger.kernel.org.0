@@ -1,218 +1,191 @@
-Return-Path: <bpf+bounces-55387-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55388-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D50DA7D8F0
-	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 11:04:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 243A1A7D94A
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 11:17:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 627FE1793AD
-	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 09:01:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D4FE3B1A3C
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 09:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8435922B8AC;
-	Mon,  7 Apr 2025 09:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEF56230D11;
+	Mon,  7 Apr 2025 09:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="CSphnPOp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QfwkR1Cr"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D71224AEB;
-	Mon,  7 Apr 2025 09:00:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEE22309A3
+	for <bpf@vger.kernel.org>; Mon,  7 Apr 2025 09:15:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744016451; cv=none; b=im7FmDa9kLChQ2UfqBfuYkhO0nsP9xLFzIbMNO19UmCmYanlgPofJ3jr/qRfIhs6I1RRGachfF1Xuqu+rXupNxO6VkKLZOeNxnXafGaetveZXpp3k4R0GFQgZKoqKRHd/GlmqhM/4JK6DYx05RYs/iMC6pe5ELXlGMulH6SUj0U=
+	t=1744017309; cv=none; b=VIdlelm9GdZOSCb3rwhqmuRvj8FIHtTV5isqGpPBoG4rw6oyIgwj/92Ibu6OqR5ppN4LIYEj3vga5dSp0xXjw9ojB7M11sg2STYeeZQL7shls+Z6x9UQTdbb37DQ+Gy1oaTAucQWRHr97oLJTvGMD0iNOPgEegOdy62HZ9lnKr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744016451; c=relaxed/simple;
-	bh=w0tWavQl+YpsDHBSzOwcYlHjUFqOxhKwQeLdkmj4vYM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=trNl5YEEij6WZBFfc9fgwyVyQQUH7D4ITrhktoDNq8bCc1H/6Y/AXyNloEkdRYfimO74u8LqybbCCMhOqjYUEfhGvKKWjxnnamuFxFrryCyXpE6vWRSusTqlu7gXoE/NcFLLWJ+N0GTndNS030GxqRopBCu4Xh/LNJi8+/E2sME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=CSphnPOp; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=x0kZSjI5cXDCsU46sqMKWaFM1hZW8VHKFbEkunPM1y8=; b=CSphnPOpIVxyr+laAB0yVjCTUf
-	IdIf8eh/2BoNMPUFevhZisIWzfISy4WPLFjYvqyE9bqmZTAstasoym7a2l3qm8ifXETOP0E+2XsL7
-	x7EDc2noByzRDvl1CecoCtuVzdmRNEhNe5UcNXn0Ge021kz+TWvf0uCKLpAnI3tXix3ehPlw3TeMZ
-	HNZozAzz2V6qIq28DphbJJc1LFxYalW3EyBQbgc4Yfnj59ebky9ktZFYvv+dMtF8NTEHmpehnIDpA
-	vXlXziMG72m/OplRYnnZGlsRiZCoWNk3AYOYM5i9IGhRQGr0zOXbqG2gw3FAuzS5oQZuTNjN3o2Ap
-	ZbOKc0dw==;
-Received: from sslproxy08.your-server.de ([78.47.166.52])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1u1iLP-000M66-12;
-	Mon, 07 Apr 2025 11:00:39 +0200
-Received: from [178.197.249.21] (helo=[192.168.1.114])
-	by sslproxy08.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1u1iLO-000PGR-2g;
-	Mon, 07 Apr 2025 11:00:38 +0200
-Message-ID: <98b2c012-dcbe-4abf-8b22-2ab37604ccc8@iogearbox.net>
-Date: Mon, 7 Apr 2025 11:00:38 +0200
+	s=arc-20240116; t=1744017309; c=relaxed/simple;
+	bh=rtv3uKl9VXHeF0/KLPL+wj6KGBUj48JJzaaj2N5fSzQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YaJcG1rUlLM8Dn2t9TeoTOphsxdFF8Zvj+xtLqxe4VdTt7i6UgL8HHZaHspsXJzy8LIlG+Z/ioU0TJbcOFoW7/rkT14SFt6/z1uZDP6zwo7YWdt1wH5qocy+VuqMUsqTPm5CasTg6iO3v3HqaWHsGNiokF9PE3agoWagkD88IT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QfwkR1Cr; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744017306;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZGi2ao5xTS6q7xxogEZT7ErGY12oS2SGlQvSkjIpc0I=;
+	b=QfwkR1CrTfodta3YChKW0JARZOV1D2baAYf0ejTolEPYOQGz39QmhMX3WUcvQ5j7zT+UG7
+	CdYqIhre8dKhgeMfaz6LNCIiitNkOjUBqIosexH0nnP1pvWOTBH7CbldMO6O425HMHwUku
+	awQ8mm2NflEPeLOpNmrvgQZ9YIWbQcQ=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-641-YDvT0EQON0m41abNzrHH6A-1; Mon, 07 Apr 2025 05:15:03 -0400
+X-MC-Unique: YDvT0EQON0m41abNzrHH6A-1
+X-Mimecast-MFC-AGG-ID: YDvT0EQON0m41abNzrHH6A_1744017302
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-ac6b047c0dcso353920366b.0
+        for <bpf@vger.kernel.org>; Mon, 07 Apr 2025 02:15:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744017302; x=1744622102;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZGi2ao5xTS6q7xxogEZT7ErGY12oS2SGlQvSkjIpc0I=;
+        b=gfMQ/L48bNAFS2ohSd+28/aarteLzMJX98HCOjHI/83JR4MjU4leqpi5yChesRwN/x
+         6voWx28hfBQPLM5PbHkDK0ifLjOEoUpP6ToHZbFinXUaR9ErzAusYRxtquYgP3Ko416T
+         yBHvaqc1BshwFWUyAm87Ji4psTyzmasZEBaeDNKkCUhOHX+DT16KuiFZutz4YbnYeQXL
+         MSvjBnBwLDvQww3slefqch98WCGxdCSlWfyx7X8q8bAAL7+6Rd180zHW9vx7Sd/Nc9aL
+         0mzwkiSA8azpktL/5YGV0zso4LjlANV2JEIoi4HbiDARGMC/lSJt4H3gnrKsPfrZiWiw
+         owwA==
+X-Forwarded-Encrypted: i=1; AJvYcCWlp8QDvFoM3qccrhYw2M2sg1+7DvmyQpAdsXgQeb66MreOKbyi5XMb7o53wqVNcf6gwLE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzEiUuXIiEdNTgMIhcqttXv6cZxzi3dVeOb4nbI0rB2USnPkSVG
+	Hkl0aC0WgxObChDL+R25f9eZbwwUlAWDGlhFsxA2ntvHpI+6DruafH6ABR2MrMhHoAGMZxG1VB8
+	HO6/+XYohj4GgUbpZqbxv+CBlrU3zwAWoytIsyqHIFNpAiIp4/g==
+X-Gm-Gg: ASbGnctXPKxlBJbJIHOqRZve44bHch9F6Z3nE27gcVCfXhIKXqHBxVe8BDzen8DTiGD
+	sP7f9uJgmpaxqrH5dovtDY2wIwIKLdMHtRBE1qy7oVHGbPuoQXRRUzCYU/3TNPoOgvYBrVlcKrc
+	gntiV5XwscmBxNN+JKjE0GF+OcbtgP7Bb6pluSXIoyreBwWmCa+XzeiHDQfqNlAYqWBc93Fvy3y
+	GvlrvBeJTYNHVbzDQJtKRSggm2Uiw5b3lw5vypuiByxAyuHqyhs+uBR2145NFdMNboBb0JVT9rO
+	1RQ+2DmwCALFpf43g7i/iaJfXGfugcm/tjCGvQdC
+X-Received: by 2002:a17:907:948c:b0:abf:7636:3cab with SMTP id a640c23a62f3a-ac7d17d874dmr978657766b.29.1744017302207;
+        Mon, 07 Apr 2025 02:15:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG2TSfWBoxbxnNZnNOPTgh1JM4sNEzsnpKewmkg6V6GZg94v/B6Ci2rqDrTGx7DOnxrfL+nGw==
+X-Received: by 2002:a17:907:948c:b0:abf:7636:3cab with SMTP id a640c23a62f3a-ac7d17d874dmr978655366b.29.1744017301660;
+        Mon, 07 Apr 2025 02:15:01 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac7bfe9adc6sm718530366b.59.2025.04.07.02.15.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Apr 2025 02:15:01 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 45B261991862; Mon, 07 Apr 2025 11:15:00 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org, Jakub
+ Kicinski <kuba@kernel.org>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
+ tom@herbertland.com, Eric Dumazet <eric.dumazet@gmail.com>, "David S.
+ Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ kernel-team@cloudflare.com
+Subject: Re: [RFC PATCH net-next] veth: apply qdisc backpressure on full
+ ptr_ring to reduce TX drops
+In-Reply-To: <174377814192.3376479.16481605648460889310.stgit@firesoul>
+References: <174377814192.3376479.16481605648460889310.stgit@firesoul>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 07 Apr 2025 11:15:00 +0200
+Message-ID: <87a58sxrhn.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf v2 1/2] bpf: support SKF_NET_OFF and SKF_LL_OFF on skb
- frags
-To: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
- john.fastabend@gmail.com, Willem de Bruijn <willemb@google.com>,
- Matt Moeller <moeller.matt@gmail.com>
-References: <20250404142633.1955847-1-willemdebruijn.kernel@gmail.com>
- <20250404142633.1955847-2-willemdebruijn.kernel@gmail.com>
- <584071a3-10df-443a-ad8c-1fa7bc82d821@iogearbox.net>
- <CAF=yD-+ccY58AAneA7tLokuUahrj=8cdDtPPopGH0h8mK-hMbQ@mail.gmail.com>
- <CANP3RGdQNt5Qn9APrUh7V+r2RKoBx9KtzpDfres0wf+UZMeedg@mail.gmail.com>
-Content-Language: en-US
-From: Daniel Borkmann <daniel@iogearbox.net>
-Autocrypt: addr=daniel@iogearbox.net; keydata=
- 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
-In-Reply-To: <CANP3RGdQNt5Qn9APrUh7V+r2RKoBx9KtzpDfres0wf+UZMeedg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27600/Sun Apr  6 10:29:47 2025)
+Content-Type: text/plain
 
-On 4/4/25 7:56 PM, Maciej Żenczykowski wrote:
-> On Fri, Apr 4, 2025 at 9:34 AM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
->> On Fri, Apr 4, 2025 at 12:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>
->>> Hi Willem,
->>>
->>> On 4/4/25 4:23 PM, Willem de Bruijn wrote:
->>> [...]
->>>> v1->v2
->>>>     - introduce bfp_skb_load_helper_convert_offset to avoid open coding
->>>> ---
->>>>    include/linux/filter.h |  3 --
->>>>    kernel/bpf/core.c      | 21 -----------
->>>>    net/core/filter.c      | 80 +++++++++++++++++++++++-------------------
->>>>    3 files changed, 44 insertions(+), 60 deletions(-)
->>>>
->>>> diff --git a/include/linux/filter.h b/include/linux/filter.h
->>>> index f5cf4d35d83e..708ac7e0cd36 100644
->>>> --- a/include/linux/filter.h
->>>> +++ b/include/linux/filter.h
->>>> @@ -1496,9 +1496,6 @@ static inline u16 bpf_anc_helper(const struct sock_filter *ftest)
->>>>        }
->>>>    }
->>>>
->>>> -void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb,
->>>> -                                        int k, unsigned int size);
->>>> -
->>>>    static inline int bpf_tell_extensions(void)
->>>>    {
->>>>        return SKF_AD_MAX;
->>>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->>>> index ba6b6118cf50..0e836b5ac9a0 100644
->>>> --- a/kernel/bpf/core.c
->>>> +++ b/kernel/bpf/core.c
->>>> @@ -68,27 +68,6 @@
->>>>    struct bpf_mem_alloc bpf_global_ma;
->>>>    bool bpf_global_ma_set;
->>>>
->>>> -/* No hurry in this branch
->>>> - *
->>>> - * Exported for the bpf jit load helper.
->>>> - */
->>>> -void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb, int k, unsigned int size)
->>>> -{
->>>> -     u8 *ptr = NULL;
->>>> -
->>>> -     if (k >= SKF_NET_OFF) {
->>>> -             ptr = skb_network_header(skb) + k - SKF_NET_OFF;
->>>> -     } else if (k >= SKF_LL_OFF) {
->>>> -             if (unlikely(!skb_mac_header_was_set(skb)))
->>>> -                     return NULL;
->>>> -             ptr = skb_mac_header(skb) + k - SKF_LL_OFF;
->>>> -     }
->>>> -     if (ptr >= skb->head && ptr + size <= skb_tail_pointer(skb))
->>>> -             return ptr;
->>>> -
->>>> -     return NULL;
->>>> -}
->>>
->>> Wouldn't this break sparc 32bit JIT which still calls into this?
->>>
->>> arch/sparc/net/bpf_jit_asm_32.S :
->>>
->>> #define bpf_negative_common(LEN)                        \
->>>           save    %sp, -SAVE_SZ, %sp;                     \
->>>           mov     %i0, %o0;                               \
->>>           mov     r_OFF, %o1;                             \
->>>           SIGN_EXTEND(%o1);                               \
->>>           call    bpf_internal_load_pointer_neg_helper;   \
->>>            mov    (LEN), %o2;                             \
->>>           mov     %o0, r_TMP;                             \
->>>           cmp     %o0, 0;                                 \
->>>           BE_PTR(bpf_error);                              \
->>>            restore;
->>
->> Argh, good catch. Thanks Daniel.
->>
->> I'll drop the removal of bpf_internal_load_pointer_neg_helper from the patch.
-> 
-> add a 'deprecated only used by sparc32 comment'
-> 
-> hopefully someone that knows sparc32 assembly can fix it
+Jesper Dangaard Brouer <hawk@kernel.org> writes:
 
-Alternatively, the bpf_internal_load_pointer_neg_helper() could be moved entirely
-over into arch/sparc/net/ so that others won't be tempted to reuse.
+> In production, we're seeing TX drops on veth devices when the ptr_ring
+> fills up. This can occur when NAPI mode is enabled, though it's
+> relatively rare. However, with threaded NAPI - which we use in
+> production - the drops become significantly more frequent.
+>
+> The underlying issue is that with threaded NAPI, the consumer often runs
+> on a different CPU than the producer. This increases the likelihood of
+> the ring filling up before the consumer gets scheduled, especially under
+> load, leading to drops in veth_xmit() (ndo_start_xmit()).
+>
+> This patch introduces backpressure by returning NETDEV_TX_BUSY when the
+> ring is full, signaling the qdisc layer to requeue the packet. The txq
+> (netdev queue) is stopped in this condition and restarted once
+> veth_poll() drains entries from the ring, ensuring coordination between
+> NAPI and qdisc.
 
-Cheers,
-Daniel
+Right, I definitely agree that this is the right solution; having no
+backpressure and a fixed-size ringbuffer is obviously not ideal.
+
+> Backpressure is only enabled when a qdisc is attached. Without a qdisc,
+> the driver retains its original behavior - dropping packets immediately
+> when the ring is full. This avoids unexpected behavior changes in setups
+> without a configured qdisc.
+
+Not sure I like this bit, though; see below.
+
+> With a qdisc in place (e.g. fq, sfq) this allows Active Queue Management
+> (AQM) to fairly schedule packets across flows and reduce collateral
+> damage from elephant flows.
+>
+> A known limitation of this approach is that the full ring sits in front
+> of the qdisc layer, effectively forming a FIFO buffer that introduces
+> base latency. While AQM still improves fairness and mitigates flow
+> dominance, the latency impact is measurable.
+>
+> In hardware drivers, this issue is typically addressed using BQL (Byte
+> Queue Limits), which tracks in-flight bytes needed based on physical link
+> rate. However, for virtual drivers like veth, there is no fixed bandwidth
+> constraint - the bottleneck is CPU availability and the scheduler's ability
+> to run the NAPI thread. It is unclear how effective BQL would be in this
+> context.
+
+So the BQL algorithm tries to tune the maximum number of outstanding
+bytes to be ~twice the maximum that can be completed in one batch. Since
+we're not really limited by bytes in the same sense here (as you point
+out), an approximate equivalent would be the NAPI budget, I guess? I.e.,
+as a first approximation, we could have veth stop the queue once the
+ringbuffer has 2x the NAPI budget packets in it?
+
+> This patch serves as a first step toward addressing TX drops. Future work
+> may explore adapting a BQL-like mechanism to better suit virtual devices
+> like veth.
+>
+> Reported-by: Yan Zhai <yan@cloudflare.com>
+> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+
+[...]
+
+> +/* Does specific txq have a real qdisc attached? - see noqueue_init() */
+> +static inline bool txq_has_qdisc(struct netdev_queue *txq)
+> +{
+> +	struct Qdisc *q;
+> +
+> +	q = rcu_dereference(txq->qdisc);
+> +	if (q->enqueue)
+> +		return true;
+> +	else
+> +		return false;
+> +}
+
+This seems like a pretty ugly layering violation, inspecting the qdisc
+like this in the driver?
+
+AFAICT, __dev_queue_xmit() turns a stopped queue into drops anyway, but
+emits a warning (looks like this, around line 4640 in dev.c):
+
+			net_crit_ratelimited("Virtual device %s asks to queue packet!\n",
+					     dev->name);
+
+As this patch shows, it can clearly be appropriate for a virtual device
+to stop the queue even if there's no qdisc, so how about we just get rid
+of that warning? Then this logic won't be needed at all in the driver..
+
+-Toke
+
 
