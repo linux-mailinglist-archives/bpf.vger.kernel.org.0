@@ -1,197 +1,113 @@
-Return-Path: <bpf+bounces-55379-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55380-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFE06A7D28C
-	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 05:40:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06A7AA7D2C1
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 05:58:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85D5516A11F
-	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 03:40:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7BBE16AD8A
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 03:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDAB2217F3D;
-	Mon,  7 Apr 2025 03:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1064221DBA;
+	Mon,  7 Apr 2025 03:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q0/xjha2"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="czGodIH4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94ED9217F27;
-	Mon,  7 Apr 2025 03:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 984622AF12
+	for <bpf@vger.kernel.org>; Mon,  7 Apr 2025 03:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743997233; cv=none; b=I/M2hmmGgaJ/whDjl4N0w0/yhHOipoyAMaQx7m1QH8YIIDK88T9CVCR1RXQmVQX+ruSxsGpPahVFXE6rK8K2KstOXkPpM1OSph8Kf9gpjTyBi2+NAa71/RXWWIWB+zeBB/n//dIehxM+3pCAekOi2ViMLs/vX3+/euAPFB4QR88=
+	t=1743998307; cv=none; b=R2RvDicdF9TnDClxE7E88MpSCUiuOrUJ/VxCE4km05FeF3HioOP4VxxRoxgWnuRKH0dPmQM2SjV3FJ3P1EWHq+mrqMqdJqG0Tm7HZfCT+pP6lF3WCBdLqlINVHpryK+NvQ1Ac/NxexYOxRbJ36xoA99VKJM06QlHniIhNFtq0Dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743997233; c=relaxed/simple;
-	bh=SdoG5YNAjCxpTafOFN7GwWzMdHLTICWuHEusYEHOpb8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pr/DS0DmuRAq8/XYJrxvJeYrU6+w5LpJWqaFwOR6izYXo7jS3mXruZk/R23639VZE+iHMcJaCvEsEslR54v4UBcRVJF7AmvDASh05lVZOj2n+Kjqj55LX2FpZnH7JvubsCE/+YamRqJMiZVN5OQO9/AAROQMIO84uDWKpN96Dm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q0/xjha2; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5e5e0caa151so7016384a12.0;
-        Sun, 06 Apr 2025 20:40:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743997230; x=1744602030; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PWCbdplBrRTzOviOYcUnPBAjZP7jVF7GFhY7bPt8iew=;
-        b=Q0/xjha2oZtBKGYxu8PXxQUIDm7aT8J3B6B00KPuy/GeOCOvild29Pdg0egN/5RX2W
-         F3HW+ZRM7zSCrlc0FEyNWleisB8ohyMGrK4gSiKxUpz+tTo19Lv8SMmSyDCatNe5H8l5
-         76ssPRBsVi0E6rVwOh107hRzG4HDcuU5b9DDt92fUIkv0a72a0yS+QbOGR1UAW+5smHD
-         UMMilZDcssbVLWj9b7ljM2RNWlJQQ685y+EW1Bof1eg2hHPQcXU9MMzD3dn93QDt9mwP
-         mOYckhTBrONov1DKJ6jqWLDmU4Qj6VfKuNa+UFfO4zJo6wTKaDY0HDkU7RbqZR+8UX8B
-         UvLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743997230; x=1744602030;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PWCbdplBrRTzOviOYcUnPBAjZP7jVF7GFhY7bPt8iew=;
-        b=VsbhDqz6RlLo+KKimU6YJb7y3NjdNZUtiDPPdo7qGf8d/IQlmdVY1abP+ehPzXgmnA
-         IQORmK1VYHr+rotSF76WxBs0dJen6uk/L17KXkhKUWm5isqksUGgp6YWED3mUUVQjZqG
-         AUk6Z5VT79qROImCpL/6jL2kCvedN1vtG6GkJs+iBVv+ccGAfupXR4PG+l3f6+kOLPOR
-         JY6T/L9ueBPEvciBEuVoZTGjI/zTH9bNCWZmpvX70XWhxxfATfTk95/+KpH77GISi/AU
-         isLx2FAG08CQd1hhwUkLd2b7BllPJQa//yTJcw+jrJDG7ZO3UC5X9n5gfKmG+s1ou0MX
-         g8vA==
-X-Forwarded-Encrypted: i=1; AJvYcCWC32clL62KmPwN4j2dWSxMeweKz7qUJSxcbsYpG60kuE7TDLLuv0FqrN1EkRjoVLEuRMA=@vger.kernel.org, AJvYcCWiNpnHNiGKOo7ydCc7HmOpEQOzJ5XZz8iUdQzIWnwb/boAlur3B4OKM5jsi0coE3xQHts5R2vdQ3YcJxWUDA7b@vger.kernel.org, AJvYcCX/mj67HG7ikKA6P+k+wdBvJs+kq6qWuHvjpfrvbwvVhH95i31Kv4yHfYfX7j8L8vhGJf1loUVruSmMZIAJ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxsu2dxXXfDfHfu8jV6dBNx4W/zglA6b5wUalJpBvASvLzk8ucD
-	w4R6E5/oEnr6xj6D0TR+uJBl6eSycmE7liqi+6P4I5r08N6DdwKTtRD4TE3J3tKUf6jZMzrcWj4
-	LgRyFyMP3MkbXN+ak0lYIUy7FL0Q=
-X-Gm-Gg: ASbGncv9AZ3SxUnJ6lGee8hy6kfOHd75jBlI7+a9tsHFqxLlCeF0JfDeStDPDkH+cgR
-	jVILElTdfkH9KUpEbb7lWBibGuQMeG7xkjo1GlFyldnKB5Ahdp5Oss1RQomaR4lEXiK8eVB9GtX
-	rzq68oW19lS7hd/36Y0nYkKJ3tekvy
-X-Google-Smtp-Source: AGHT+IEEPNITxLvpL2EswjSjCquWWq6DhRueSEwahn5r7wFxZUYdPPng1ePscZSaHs0ndW/XkopHICpYNo5ccc1LV/E=
-X-Received: by 2002:a17:907:a05:b0:ac7:322d:779c with SMTP id
- a640c23a62f3a-ac7d6ec2f2cmr844094266b.50.1743997229691; Sun, 06 Apr 2025
- 20:40:29 -0700 (PDT)
+	s=arc-20240116; t=1743998307; c=relaxed/simple;
+	bh=KHlz4rXnqQ+ecI/CPSK09l1Xo/uUS/AZmlEWjL33yxA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VFHKybAsDRc5jAJE3Rx4Fyn2uZU5y41nf1FiUz+2JmDOz2rXB7uAJWfiMryCYvSAF0uR9SJS+0Rkma4FQvwsOAWR+NnmyhotN54sB5cITsI/ut14jsJVSQ6TtvS2efVGXhw/z7AlJXhxJhpYat7KCn8qqfNZhkingyAzhIL34+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=czGodIH4; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1743998302;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=dsPS1ukzaRmmzRZaoJiWc+UdrLWIkrWTXCj5BDKYrtM=;
+	b=czGodIH4P9ibT2cB4kOInm6jCe9DSn+W6ApATCSeTJUJiumLGtsJjqMZ9k3NXathJv0YFh
+	z0PdHNU4m+cYTP7X4iQ8Fj4e2UtXvOvFTdXD9Y305xLCC8SGiTrlZNO0Y8uwwC/RvinoCT
+	6+o7BPyczyS1DZ2GZc+VTgsTvsB+ASw=
+From: Tao Chen <chen.dylane@linux.dev>
+To: song@kernel.org,
+	jolsa@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	laoar.shao@gmail.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Tao Chen <chen.dylane@linux.dev>
+Subject: [PATCH bpf-next v2 1/2] bpf: Check link_create parameter for multi_kprobe
+Date: Mon,  7 Apr 2025 11:57:51 +0800
+Message-Id: <20250407035752.1108927-1-chen.dylane@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <malayarout91@gmail.com> <20250324064234.853591-1-malayarout91@gmail.com>
- <CAEf4BzagSxO-fNeeWfFPu2vpnbEUBnS7Y2P=ODGks_zVEg1mkg@mail.gmail.com>
- <CAE2+fR83Y8ZKk8fqM0WgZeK4Zm4PZjBzoPMyMptVHfk81eXEtw@mail.gmail.com> <e255897a-30d8-5745-b89b-eb801e0864a9@huaweicloud.com>
-In-Reply-To: <e255897a-30d8-5745-b89b-eb801e0864a9@huaweicloud.com>
-From: malaya kumar rout <malayarout91@gmail.com>
-Date: Mon, 7 Apr 2025 09:10:18 +0530
-X-Gm-Features: ATxdqUGULLoheNb0ptDa_1GMfr9lfLGY3rLDLZqgYYn38THywJlix-OS_VKP5z0
-Message-ID: <CAE2+fR992BprqDXkZTqi3Mgtq9WErSFvOtxvc16ZT9ufiBLNNQ@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: close the file descriptor to avoid
- resource leaks
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Geliang Tang <geliang@kernel.org>, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Apr 7, 2025 at 7:07=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wro=
-te:
->
-> Hi,
->
-> On 4/5/2025 1:59 PM, malaya kumar rout wrote:
-> > On Fri, Apr 4, 2025 at 9:22=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >> On Sun, Mar 23, 2025 at 11:43=E2=80=AFPM Malaya Kumar Rout
-> >> <malayarout91@gmail.com> wrote:
-> >>> Static Analyis for bench_htab_mem.c with cppcheck:error
-> >>> tools/testing/selftests/bpf/benchs/bench_htab_mem.c:284:3:
-> >>> error: Resource leak: fd [resourceLeak]
-> >>> tools/testing/selftests/bpf/prog_tests/sk_assign.c:41:3:
-> >>> error: Resource leak: tc [resourceLeak]
-> >>>
-> >>> fix the issue  by closing the file descriptor (fd & tc) when
-> >>> read & fgets operation fails.
-> >>>
-> >>> Signed-off-by: Malaya Kumar Rout <malayarout91@gmail.com>
-> >>> ---
-> >>>  tools/testing/selftests/bpf/benchs/bench_htab_mem.c | 1 +
-> >>>  tools/testing/selftests/bpf/prog_tests/sk_assign.c  | 4 +++-
-> >>>  2 files changed, 4 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/to=
-ols/testing/selftests/bpf/benchs/bench_htab_mem.c
-> >>> index 926ee822143e..59746fd2c23a 100644
-> >>> --- a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-> >>> +++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-> >>> @@ -281,6 +281,7 @@ static void htab_mem_read_mem_cgrp_file(const cha=
-r *name, unsigned long *value)
-> >>>         got =3D read(fd, buf, sizeof(buf) - 1);
-> >> It could be a bit cleaner to add close(fd) here and drop the one we
-> >> have at the end of the function.
-> >>
-> > Here, close(fd)  is now positioned within the error handling block,
-> > guaranteeing that
-> > the file descriptor will be closed prior to returning from the
-> > function in the event of a read error.
-> > Meanwhile, the final close(fd) at the end of the function is retained
-> > for successful execution,
-> > thereby avoiding any potential resource leaks.
-> > Hence, It is essential to add the close(fd) in both locations to
-> > prevent resource leakage.
->
-> I think Andrii was proposing the following solution:
->
-> {
->         /* ...... */
->         got =3D read(fd, buf, sizeof(buf) - 1);
->         close(fd);
->         if (got <=3D 0) {
->                 *value =3D 0;
->                 return;
->         }
->         buf[got] =3D 0;
->
->         *value =3D strtoull(buf, NULL, 0);
-> }
->
-> It only invokes close(fd) once to handle both the failed case and the
-> successful case.
-> >
-I greatly appreciate your insightful feedback on the review.
-I will proceed to share the updated patch that includes the modifications.
-> >> pw-bot: cr
-> >>
-> >>>         if (got <=3D 0) {
-> >>>                 *value =3D 0;
-> >>> +               close(fd);
-> >>>                 return;
-> >>>         }
-> >>>         buf[got] =3D 0;
-> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/too=
-ls/testing/selftests/bpf/prog_tests/sk_assign.c
-> >>> index 0b9bd1d6f7cc..10a0ab954b8a 100644
-> >>> --- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> >>> +++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> >>> @@ -37,8 +37,10 @@ configure_stack(void)
-> >>>         tc =3D popen("tc -V", "r");
-> >>>         if (CHECK_FAIL(!tc))
-> >>>                 return false;
-> >>> -       if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc)))
-> >>> +       if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc))) {
-> >>> +               pclose(tc);
-> >> this one looks good
-> >>
-> >>>                 return false;
-> >>> +       }
-> >>>         if (strstr(tc_version, ", libbpf "))
-> >>>                 prog =3D "test_sk_assign_libbpf.bpf.o";
-> >>>         else
-> >>> --
-> >>> 2.43.0
-> >>>
-> > .
->
+The flags in link_create no used in multi_kprobe, return -EINVAL if
+they assigned, keep it same as other link attach apis. Perhaps due to
+their usage habits, users may set the target_fd to -1. Therefore, no
+check is carried out here, and it is kept consistent with the multi_uprobe.
+
+Fixes: 0dcac2725406 ("bpf: Add multi kprobe link")
+Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+---
+ kernel/trace/bpf_trace.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+Change list:
+- v1 -> v2:
+    - remove target_fd check suggested by jiri.
+- v1:
+    https://lore.kernel.org/bpf/20250331094745.336010-1-chen.dylane@linux.dev/
+
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 13bef2462..5cd0af80f 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2992,6 +2992,12 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 	/* no support for 32bit archs yet */
+ 	if (sizeof(u64) != sizeof(void *))
+ 		return -EOPNOTSUPP;
++	/*
++	 * Perhaps due to their usage habits, users may set the target_fd to -1. Therefore,
++	 * no check is carried out here, and it is kept consistent with the multi_uprobe.
++	 */
++	if (attr->link_create.flags)
++		return -EINVAL;
+ 
+ 	if (!is_kprobe_multi(prog))
+ 		return -EINVAL;
+-- 
+2.43.0
+
 
