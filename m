@@ -1,341 +1,197 @@
-Return-Path: <bpf+bounces-55378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C693A7D234
-	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 04:47:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFE06A7D28C
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 05:40:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A1707A38D1
-	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 02:46:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85D5516A11F
+	for <lists+bpf@lfdr.de>; Mon,  7 Apr 2025 03:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDF719C56C;
-	Mon,  7 Apr 2025 02:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDAB2217F3D;
+	Mon,  7 Apr 2025 03:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q0/xjha2"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E115279FD
-	for <bpf@vger.kernel.org>; Mon,  7 Apr 2025 02:47:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94ED9217F27;
+	Mon,  7 Apr 2025 03:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743994025; cv=none; b=Hxz2tea3xWZWYl5zPwoxCFek4gofofnsUFmnTFeBDrh/pOv0SJtCyjGJkNg0eAu5HnOXiXbT6ayB5YizANFA/e8ev92eoMBBQHo/uO7uz14mM3y1nfRiFOZl2+UDf6BSSCsImWpCQStaht0aWgnQU38utdwcGdRw97UG3aFXddY=
+	t=1743997233; cv=none; b=I/M2hmmGgaJ/whDjl4N0w0/yhHOipoyAMaQx7m1QH8YIIDK88T9CVCR1RXQmVQX+ruSxsGpPahVFXE6rK8K2KstOXkPpM1OSph8Kf9gpjTyBi2+NAa71/RXWWIWB+zeBB/n//dIehxM+3pCAekOi2ViMLs/vX3+/euAPFB4QR88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743994025; c=relaxed/simple;
-	bh=3tXwFH/5vB3NscpFbewVD7LOhI531iTJyek0QnlH8ME=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=k8daEUBo8KkzzGb1fkxn5sL3fTEsdtcm07uYNXYfXc3d4J5ncWXkANhRy7d7tNxU+y/qmRyCvm/G6mJJ/r/E3vs5ZJj2BNl1ItKU7p3nzFdXcjOAEEBGDYh0sJ1Ytswz2hr4K1zhzRFbwjFRa+3g5TYoYaXh2QxeI59lo5WwYmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZWDB71mYRz4f3jt7
-	for <bpf@vger.kernel.org>; Mon,  7 Apr 2025 10:46:39 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 318051A1B78
-	for <bpf@vger.kernel.org>; Mon,  7 Apr 2025 10:46:57 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgBnF3idPPNnGDdvIg--.26211S2;
-	Mon, 07 Apr 2025 10:46:56 +0800 (CST)
-Subject: Re: [PATCH bpf-next v3 15/16] selftests/bpf: Add test cases for hash
- map with dynptr key
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-References: <20250327083455.848708-1-houtao@huaweicloud.com>
- <20250327083455.848708-16-houtao@huaweicloud.com>
- <CAEf4BzY6Y=40NHs12r3Jb7u_N8CVapwRuF09+dmxBH85J2t88w@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <34a1d3a2-0b63-7f11-9da2-5966b24e179b@huaweicloud.com>
-Date: Mon, 7 Apr 2025 10:46:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1743997233; c=relaxed/simple;
+	bh=SdoG5YNAjCxpTafOFN7GwWzMdHLTICWuHEusYEHOpb8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pr/DS0DmuRAq8/XYJrxvJeYrU6+w5LpJWqaFwOR6izYXo7jS3mXruZk/R23639VZE+iHMcJaCvEsEslR54v4UBcRVJF7AmvDASh05lVZOj2n+Kjqj55LX2FpZnH7JvubsCE/+YamRqJMiZVN5OQO9/AAROQMIO84uDWKpN96Dm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q0/xjha2; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5e5e0caa151so7016384a12.0;
+        Sun, 06 Apr 2025 20:40:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743997230; x=1744602030; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PWCbdplBrRTzOviOYcUnPBAjZP7jVF7GFhY7bPt8iew=;
+        b=Q0/xjha2oZtBKGYxu8PXxQUIDm7aT8J3B6B00KPuy/GeOCOvild29Pdg0egN/5RX2W
+         F3HW+ZRM7zSCrlc0FEyNWleisB8ohyMGrK4gSiKxUpz+tTo19Lv8SMmSyDCatNe5H8l5
+         76ssPRBsVi0E6rVwOh107hRzG4HDcuU5b9DDt92fUIkv0a72a0yS+QbOGR1UAW+5smHD
+         UMMilZDcssbVLWj9b7ljM2RNWlJQQ685y+EW1Bof1eg2hHPQcXU9MMzD3dn93QDt9mwP
+         mOYckhTBrONov1DKJ6jqWLDmU4Qj6VfKuNa+UFfO4zJo6wTKaDY0HDkU7RbqZR+8UX8B
+         UvLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743997230; x=1744602030;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PWCbdplBrRTzOviOYcUnPBAjZP7jVF7GFhY7bPt8iew=;
+        b=VsbhDqz6RlLo+KKimU6YJb7y3NjdNZUtiDPPdo7qGf8d/IQlmdVY1abP+ehPzXgmnA
+         IQORmK1VYHr+rotSF76WxBs0dJen6uk/L17KXkhKUWm5isqksUGgp6YWED3mUUVQjZqG
+         AUk6Z5VT79qROImCpL/6jL2kCvedN1vtG6GkJs+iBVv+ccGAfupXR4PG+l3f6+kOLPOR
+         JY6T/L9ueBPEvciBEuVoZTGjI/zTH9bNCWZmpvX70XWhxxfATfTk95/+KpH77GISi/AU
+         isLx2FAG08CQd1hhwUkLd2b7BllPJQa//yTJcw+jrJDG7ZO3UC5X9n5gfKmG+s1ou0MX
+         g8vA==
+X-Forwarded-Encrypted: i=1; AJvYcCWC32clL62KmPwN4j2dWSxMeweKz7qUJSxcbsYpG60kuE7TDLLuv0FqrN1EkRjoVLEuRMA=@vger.kernel.org, AJvYcCWiNpnHNiGKOo7ydCc7HmOpEQOzJ5XZz8iUdQzIWnwb/boAlur3B4OKM5jsi0coE3xQHts5R2vdQ3YcJxWUDA7b@vger.kernel.org, AJvYcCX/mj67HG7ikKA6P+k+wdBvJs+kq6qWuHvjpfrvbwvVhH95i31Kv4yHfYfX7j8L8vhGJf1loUVruSmMZIAJ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxsu2dxXXfDfHfu8jV6dBNx4W/zglA6b5wUalJpBvASvLzk8ucD
+	w4R6E5/oEnr6xj6D0TR+uJBl6eSycmE7liqi+6P4I5r08N6DdwKTtRD4TE3J3tKUf6jZMzrcWj4
+	LgRyFyMP3MkbXN+ak0lYIUy7FL0Q=
+X-Gm-Gg: ASbGncv9AZ3SxUnJ6lGee8hy6kfOHd75jBlI7+a9tsHFqxLlCeF0JfDeStDPDkH+cgR
+	jVILElTdfkH9KUpEbb7lWBibGuQMeG7xkjo1GlFyldnKB5Ahdp5Oss1RQomaR4lEXiK8eVB9GtX
+	rzq68oW19lS7hd/36Y0nYkKJ3tekvy
+X-Google-Smtp-Source: AGHT+IEEPNITxLvpL2EswjSjCquWWq6DhRueSEwahn5r7wFxZUYdPPng1ePscZSaHs0ndW/XkopHICpYNo5ccc1LV/E=
+X-Received: by 2002:a17:907:a05:b0:ac7:322d:779c with SMTP id
+ a640c23a62f3a-ac7d6ec2f2cmr844094266b.50.1743997229691; Sun, 06 Apr 2025
+ 20:40:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzY6Y=40NHs12r3Jb7u_N8CVapwRuF09+dmxBH85J2t88w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgBnF3idPPNnGDdvIg--.26211S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Wryftr1UWr4fZw4fXr1rXrb_yoWftF1UpF
-	Z5G342kr4kXF1Iqw13Ww4xZF4Fyr4kXw4UGrZ5t348Ar15uF9avF18KF4rCFsYy3909r4S
-	v3yjqr98ua1kA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <malayarout91@gmail.com> <20250324064234.853591-1-malayarout91@gmail.com>
+ <CAEf4BzagSxO-fNeeWfFPu2vpnbEUBnS7Y2P=ODGks_zVEg1mkg@mail.gmail.com>
+ <CAE2+fR83Y8ZKk8fqM0WgZeK4Zm4PZjBzoPMyMptVHfk81eXEtw@mail.gmail.com> <e255897a-30d8-5745-b89b-eb801e0864a9@huaweicloud.com>
+In-Reply-To: <e255897a-30d8-5745-b89b-eb801e0864a9@huaweicloud.com>
+From: malaya kumar rout <malayarout91@gmail.com>
+Date: Mon, 7 Apr 2025 09:10:18 +0530
+X-Gm-Features: ATxdqUGULLoheNb0ptDa_1GMfr9lfLGY3rLDLZqgYYn38THywJlix-OS_VKP5z0
+Message-ID: <CAE2+fR992BprqDXkZTqi3Mgtq9WErSFvOtxvc16ZT9ufiBLNNQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: close the file descriptor to avoid
+ resource leaks
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Geliang Tang <geliang@kernel.org>, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On 4/5/2025 1:58 AM, Andrii Nakryiko wrote:
-> On Thu, Mar 27, 2025 at 1:23 AM Hou Tao <houtao@huaweicloud.com> wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> Add three positive test cases to test the basic operations on the
->> dynptr-keyed hash map. The basic operations include lookup, update,
->> delete and get_next_key. These operations are exercised both through
->> bpf syscall and bpf program. These three test cases use different map
->> keys. The first test case uses both bpf_dynptr and a struct with only
->> bpf_dynptr as map key, the second one uses a struct with an integer and
->> a bpf_dynptr as map key, and the last one use a struct with two
->> bpf_dynptr as map key: one in the struct itself and another is nested in
->> another struct.
->>
->> Also add multiple negative test cases for dynptr-keyed hash map. These
->> test cases mainly check whether the layout of dynptr and non-dynptr in
->> the stack is matched with the definition of map->key_record.
->>
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->>  .../bpf/prog_tests/htab_dynkey_test.c         | 446 ++++++++++++++++++
->>  .../bpf/progs/htab_dynkey_test_failure.c      | 266 +++++++++++
->>  .../bpf/progs/htab_dynkey_test_success.c      | 382 +++++++++++++++
->>  3 files changed, 1094 insertions(+)
->>  create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_dynkey_test.c
->>  create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_failure.c
->>  create mode 100644 tools/testing/selftests/bpf/progs/htab_dynkey_test_success.c
->>
-> [...]
+On Mon, Apr 7, 2025 at 7:07=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wro=
+te:
 >
->> diff --git a/tools/testing/selftests/bpf/progs/htab_dynkey_test_success.c b/tools/testing/selftests/bpf/progs/htab_dynkey_test_success.c
->> new file mode 100644
->> index 0000000000000..84e6931cc19c0
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/htab_dynkey_test_success.c
->> @@ -0,0 +1,382 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright (C) 2025. Huawei Technologies Co., Ltd */
->> +#include <linux/types.h>
->> +#include <linux/bpf.h>
->> +#include <bpf/bpf_helpers.h>
->> +#include <bpf/bpf_tracing.h>
->> +#include <errno.h>
->> +
->> +#include "bpf_misc.h"
->> +
->> +char _license[] SEC("license") = "GPL";
->> +
->> +struct pure_dynptr_key {
->> +       struct bpf_dynptr name;
->> +};
->> +
->> +struct mixed_dynptr_key {
->> +       int id;
->> +       struct bpf_dynptr name;
->> +};
->> +
->> +struct multiple_dynptr_key {
->> +       struct pure_dynptr_key f_1;
->> +       unsigned long f_2;
->> +       struct mixed_dynptr_key f_3;
->> +       unsigned long f_4;
->> +};
->> +
-> [...]
+> Hi,
 >
->> +       /* Delete the newly-inserted key */
->> +       bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(systemd_name), 0, &key.f_3.name);
->> +       err = bpf_dynptr_write(&key.f_3.name, 0, (void *)systemd_name, sizeof(systemd_name), 0);
->> +       if (err) {
->> +               bpf_ringbuf_discard_dynptr(&key.f_3.name, 0);
->> +               err = 10;
->> +               goto out;
->> +       }
->> +       err = bpf_map_delete_elem(htab, &key);
->> +       if (err) {
->> +               bpf_ringbuf_discard_dynptr(&key.f_3.name, 0);
->> +               err = 11;
->> +               goto out;
->> +       }
->> +
->> +       /* Lookup it again */
->> +       value = bpf_map_lookup_elem(htab, &key);
->> +       bpf_ringbuf_discard_dynptr(&key.f_3.name, 0);
->> +       if (value) {
->> +               err = 12;
->> +               goto out;
->> +       }
->> +out:
->> +       return err;
->> +}
+> On 4/5/2025 1:59 PM, malaya kumar rout wrote:
+> > On Fri, Apr 4, 2025 at 9:22=E2=80=AFPM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> >> On Sun, Mar 23, 2025 at 11:43=E2=80=AFPM Malaya Kumar Rout
+> >> <malayarout91@gmail.com> wrote:
+> >>> Static Analyis for bench_htab_mem.c with cppcheck:error
+> >>> tools/testing/selftests/bpf/benchs/bench_htab_mem.c:284:3:
+> >>> error: Resource leak: fd [resourceLeak]
+> >>> tools/testing/selftests/bpf/prog_tests/sk_assign.c:41:3:
+> >>> error: Resource leak: tc [resourceLeak]
+> >>>
+> >>> fix the issue  by closing the file descriptor (fd & tc) when
+> >>> read & fgets operation fails.
+> >>>
+> >>> Signed-off-by: Malaya Kumar Rout <malayarout91@gmail.com>
+> >>> ---
+> >>>  tools/testing/selftests/bpf/benchs/bench_htab_mem.c | 1 +
+> >>>  tools/testing/selftests/bpf/prog_tests/sk_assign.c  | 4 +++-
+> >>>  2 files changed, 4 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/to=
+ols/testing/selftests/bpf/benchs/bench_htab_mem.c
+> >>> index 926ee822143e..59746fd2c23a 100644
+> >>> --- a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+> >>> +++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+> >>> @@ -281,6 +281,7 @@ static void htab_mem_read_mem_cgrp_file(const cha=
+r *name, unsigned long *value)
+> >>>         got =3D read(fd, buf, sizeof(buf) - 1);
+> >> It could be a bit cleaner to add close(fd) here and drop the one we
+> >> have at the end of the function.
+> >>
+> > Here, close(fd)  is now positioned within the error handling block,
+> > guaranteeing that
+> > the file descriptor will be closed prior to returning from the
+> > function in the event of a read error.
+> > Meanwhile, the final close(fd) at the end of the function is retained
+> > for successful execution,
+> > thereby avoiding any potential resource leaks.
+> > Hence, It is essential to add the close(fd) in both locations to
+> > prevent resource leakage.
 >
-> So, I'm not a big fan of this approach of literally embedding struct
-> bpf_dynptr into map key type and actually initializing and working
-> with it directly, like you do here with
-> bpf_ringbuf_reserve_dynptr(..., &key.f_3.name).
+> I think Andrii was proposing the following solution:
 >
-> Here's why. This approach only works for *map keys* (not map values)
-> and only when **the copy of the key** is on the stack (i.e., for map
-> lookups/updates/deletes). This approach won't work for having dynptrs
-> inside map value (for variable sized map values), nor does it really
-> work when you get a direct pointer to map key in
-> bpf_for_each_map_elem().
-
-Yes. The reason why the key should be on the stack is due to the
-limitation (or the design) of bpf_dynptr. However I didn't understand
-why it doesn't work for map value just like other special field in the
-map value (e.g., bpf_timer) ?
->
-> Curiously, you do have bpf_for_each_map_elem() "example" in patch #16
-> in benchmarks, but you are carefully avoiding actually touching the
-> `void *key` passed to your callback. Instead you create a local key,
-> do lookup, and then compare the pointers to value to know that you
-> "guessed" the key right.
->
-> This doesn't seem to be how bpf_for_each_map_elem() is really meant to
-> work: you'd want to be able to work with that key for real, get its
-> data, etc. Not guess and confirm, like you do.
-
-Er, bpf_for_each_map_elem() for dynptr-keyed hash map has not been
-implemented yet (as said in the cover letter), so I used the values in
-the array map as the lookup key for the hash map.
->
-> And in case it's not obvious why this approach won't work when dynptrs
-> are stored inside map value. Dynptr itself relies on not being
-> modified concurrently. We achieve that through *always* keeping it on
-> BPF programs stack, guaranteeing that no concurrently running BPF
-> program (BPF program sharing the map, or same program on different
-> CPU) can touch the dynptr. This is pretty fundamental. And I don't
-> think we should add more locking to dynptr itself just to enable this.
-
-I didn't follow that. Even dynptr is kept in map value, how will it be
-modified concurrently ? When there are special fields in the map value,
-the update of the map value will be out-of-place update and the old
-dynptr will be kept as intact.
-
->
-> So I have an alternative proposal that will extend to map values and
-> real map keys (not they local copy on the stack).
->
-> I say, we stop pretending that it's an actual dynptr that is stored in
-> the key. It should be some sort of "dynptr impression" (I don't want
-> to bikeshed right now), and user would have to put it into map key for
-> lookup/update/delete through a special kfunc (let's call this
-> "bpf_dynptr_stash" for now). When working with an existing map key
-> (and map value in the future), we need to create a local real dynptr
-> from its map key/value "impression", say, with "bpf_dynptr_unstash".
->
-> bpf_dynptr_stash() is effectively bpf_dynptr_clone() (so all the
-> mechanics is already supported by verifier). bpf_dynptr_unstash() is
-> effectively bpf_dynptr_from_mem(). But they might need a slight change
-> to accommodate a different actual struct type we'll use for that
-> stashed dynptr.
->
-> So just to show what I mean on pseudo example:
->
->
-> struct bpf_stashed_dynptr {
->    __bpf_md_ptr(void *, data);
->    __u32 size;
->    __u32 reserved;
-> }
-
-It will be an ABI for both bpf program and bpf syscall just like
-bpf_dynptr, right ? Therefore, when bpf_stashed_dynptr is used in the
-bpf program, we need to implement something similar for the struct just
-like dynptr, because we need to ensure both ->data and ->size are valid,
-right ? If it may be not safe to keep dynptr in the map key/value, how
-will it be safe to keep bpf_stashed_dynptr in the map key/value ?
->
-> struct id_dname_key {
->        int id;
->        struct bpf_stashed_dynptr name;
-> };
->
-> struct {
->        __uint(type, BPF_MAP_TYPE_HASH);
->        __uint(max_entries, 10);
->        __uint(map_flags, BPF_F_NO_PREALLOC);
->        __type(key, struct id_dname_key);
->        __type(value, unsigned long);
-> } htab SEC(".maps");
->
-> int bpf_dynptr_stash(const struct bpf_dynptr *src, struct
-> stashed_dynptr *dst) SEC(".ksyms"); /* kfunc */
-> int bpf_dynptr_unstash(const struct stashed_dynptr *dst, struct
-> bpf_dynptr *dst) SEC(".ksyms"); /* kfunc */
->
->
-> /* LOOKUP/UPDATE/DELETE APPROACH */
->
-> struct id_name_key my_key = { .id = 123 };
-> char buf[128] = "my_string";
-> struct bpf_dynptr dptr;
->
-> /* create real dynptr */
-> bpf_dynptr_from_mem(buf, sizeof(buf), 0, &dptr);
-> /* stash it into our on-the-stack key copy */
-> bpf_dynptr_stash(&dptr, &my_key.name);
->
-> /* here, kernel will read "my_string" through "stashed dynptr"
->  * my_key.name pointing to buf, same as dptr
->  */
-> bpf_map_update_elem(&htab, &my_key, BPF_ANY);
->
->
-> /* FOR_EACH_MAP_ELEM_KEY READING */
-> static int cb(void *map, void *key, void *value, void *ctx)
 > {
->     struct id_dname_key *k = key;
->     struct bpf_dynptr dptr;
->     const void *name;
+>         /* ...... */
+>         got =3D read(fd, buf, sizeof(buf) - 1);
+>         close(fd);
+>         if (got <=3D 0) {
+>                 *value =3D 0;
+>                 return;
+>         }
+>         buf[got] =3D 0;
 >
->     /* create local real dynptr from stashed one in the key in the map */
->     bpf_dynptr_unstash(&k->name, &dptr);
->
->     /* get direct memory access to the data stored in the key, NO COPIES! */
->     name = bpf_dynptr_slice(&dptr, ....);
->     if (name)
->         bpf_printk("my_key.name: %s", name);
+>         *value =3D strtoull(buf, NULL, 0);
 > }
-
-The point here is to avoid keeping bpf_dynptr in the map key and to save
-it in the stack instead, right ?
 >
-> ...
+> It only invokes close(fd) once to handle both the failed case and the
+> successful case.
+> >
+I greatly appreciate your insightful feedback on the review.
+I will proceed to share the updated patch that includes the modifications.
+> >> pw-bot: cr
+> >>
+> >>>         if (got <=3D 0) {
+> >>>                 *value =3D 0;
+> >>> +               close(fd);
+> >>>                 return;
+> >>>         }
+> >>>         buf[got] =3D 0;
+> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/too=
+ls/testing/selftests/bpf/prog_tests/sk_assign.c
+> >>> index 0b9bd1d6f7cc..10a0ab954b8a 100644
+> >>> --- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> >>> +++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> >>> @@ -37,8 +37,10 @@ configure_stack(void)
+> >>>         tc =3D popen("tc -V", "r");
+> >>>         if (CHECK_FAIL(!tc))
+> >>>                 return false;
+> >>> -       if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc)))
+> >>> +       if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc))) {
+> >>> +               pclose(tc);
+> >> this one looks good
+> >>
+> >>>                 return false;
+> >>> +       }
+> >>>         if (strstr(tc_version, ", libbpf "))
+> >>>                 prog =3D "test_sk_assign_libbpf.bpf.o";
+> >>>         else
+> >>> --
+> >>> 2.43.0
+> >>>
+> > .
 >
-> bpf_for_each_map_elem(&htab, cb, NULL, 0); /* iterate */
->
->
->
-> And I'm too lazy to write this for hypothetical map value use case.
-> Map value has an extra challenge of making sure stashing/unstashing
-> handle racy updates from other CPUs, which I believe you can do with
-> seqcount-like approach (no heavy-weight locking).
->
-> BTW, this dedicated `struct bpf_stashed_dynptr` completely avoids that
-> double-defined `struct bpf_dynptr` you do in patch #6. Kernel will
-> know it's something like a real dynptr when doing update/lookup/delete
-> from on-the-stack key copy, and that it's a completely different thing
-> when it's actually stored inside the map in the key (and, eventually,
-> in the value). And in user space it will be a still different
-> definition, which kernel will provide when doing lookups from user
-> space.
->
-> Hope this makes sense.
-
-Thanks for the suggestion.
-> [...]
-
 
