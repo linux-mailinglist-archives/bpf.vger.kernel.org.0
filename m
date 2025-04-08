@@ -1,203 +1,148 @@
-Return-Path: <bpf+bounces-55441-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55442-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B39A7F658
-	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 09:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2110AA7F677
+	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 09:37:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B84B43B3A90
-	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 07:32:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 088873B802D
+	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 07:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A95263C6F;
-	Tue,  8 Apr 2025 07:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6196F2641C3;
+	Tue,  8 Apr 2025 07:34:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vAF6DArQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EvZlmC67"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7578125F99E
-	for <bpf@vger.kernel.org>; Tue,  8 Apr 2025 07:32:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F78126139C
+	for <bpf@vger.kernel.org>; Tue,  8 Apr 2025 07:34:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744097531; cv=none; b=mQ4tKaSlTg+kfllTqhgN8F4uIUCuA6AVBI1pU5TuX+YjwFtBzgF1KK79pDi8Myjvb+E/sBu97RQJL/Y7OCLRwmjiTvsVyeLuh2ct6HTDcg1QABtC8mxxRwy4bcMSM02dKhXyC4iOr/xWuHQFTfuZ7NjcfKVBNAH6K/JzfV4BGdM=
+	t=1744097691; cv=none; b=GopgAUcnqbKc57Z8IJ64HmWrvbPKB8AOBgtGXnnqNBA3g3pumux4rTKeyRPFhpNXyckkrlgXDBmCppFXJVoSIUP7TjOpu/cZoE0M/abLNrUK1Xql4UPMvVdYBYmXpxYeC7O3s+nbxG1MbtJngxjVJHiw+Evn6RftphrnTk2VDmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744097531; c=relaxed/simple;
-	bh=ZOHoR1DVLuoqBGux5wOEYgvMSK5hDjDDqM2npNWq+30=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ImWL0uZy/XCJ6MvRIxu0cIcVksNFj7hL/JM/QqzWP/AY1ugB49yJ2c4QJAaF6GK1CXVCR9vV/3SFgOdTPCnPwMJ8bVbAXTAB3ARZRT596y5uhDO7Wjydu8YJAoLec6UOOHdfXjWczcbH7tm9ICtwpWgNHQHtpzm8asaOB+1DaAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vAF6DArQ; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744097527;
+	s=arc-20240116; t=1744097691; c=relaxed/simple;
+	bh=Zw+nvfP4oH7YCpjyBFjQXUE7wWFGLtslccfPR5HCSeE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AfA3HpeBv7NB6lAnkwOFdOHvMV5kIE3eY9sPQ5CMGjh6+hl/wLjdkGLjOzXCXKh5qwxUMAp4DiU56zv1Aj+5WLVUNKCsu1KM6extbq2qgBPyOZMc0+IWOFqqa6A6f8Bn0pGGgj5cm7jrs7o8wMkO8/JIoL5xJx3ZqkRNKiT60gI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EvZlmC67; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744097689;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BLSYPFz/nwodbHpxtrd6necAV0xMxciGJi0Eu7RL7/E=;
-	b=vAF6DArQxICiHwPXm3kZnG6hCFPfTSX4JcMnXXDJ1UL60dr3mPnIXNE5zna9W9KVTAQuk3
-	BC5omLqJaoKkUI53/UjzTIBU+a4JSPhJEVFbbgXGsJYb6Qs4TtJ++eq+2W1HdnV++Sxx/y
-	jCc8DGGtk4d9o53hjXvnBLxd0Pl2ea8=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: bpf@vger.kernel.org
-Cc: mrpre@163.com,
-	Jiayuan Chen <jiayuan.chen@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Michal Luczaj <mhal@rbox.co>,
-	Cong Wang <cong.wang@bytedance.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v4 3/3] selftests/bpf: Add edge case tests for sockmap
-Date: Tue,  8 Apr 2025 15:29:54 +0800
-Message-ID: <20250408073033.60377-4-jiayuan.chen@linux.dev>
-In-Reply-To: <20250408073033.60377-1-jiayuan.chen@linux.dev>
-References: <20250408073033.60377-1-jiayuan.chen@linux.dev>
+	bh=TgX/95pHI72BHQsp4Gb1Pk041dCapFrrBn2uranICwk=;
+	b=EvZlmC67CykixpE2Ell4fSedXehwJHGU1lwhsQt9fo6jflnpRKstIA1iNn9nJC0qmkViVw
+	tYSVul3aMqRX6uRZ6Xkttd8SOlGzANZQo1SznS9BQIEl2I7H3kLbQIog/yqTkOQt22DXGl
+	BRqhmSqRx27GRnYImLH6FgWh8jCzAOM=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-376-iZOIhx8tPS-QrzGvLj6L6Q-1; Tue, 08 Apr 2025 03:34:47 -0400
+X-MC-Unique: iZOIhx8tPS-QrzGvLj6L6Q-1
+X-Mimecast-MFC-AGG-ID: iZOIhx8tPS-QrzGvLj6L6Q_1744097687
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-736abba8c5cso6748710b3a.2
+        for <bpf@vger.kernel.org>; Tue, 08 Apr 2025 00:34:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744097687; x=1744702487;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TgX/95pHI72BHQsp4Gb1Pk041dCapFrrBn2uranICwk=;
+        b=KblN+o00qK0dQ823shTbSqlxmDE0a+PK+qCODgtNgvforgPmPVimeqd+xWsbs9j/5L
+         eS0xC4ltoBkH9vVurMtA0IbHFdkZFDLllPe6Qv32fWnl7VqLARUz1jUSqWZwCSQevizM
+         jD96CGshmH27HiU+ZwDYLFtjBaV1z8e4xq2FxzakTQ2DQf1/bw2GK+QtukYrjFThl2Eu
+         H9Tm5pk1LJIFX3yXsyxSw/4QAB8Lb7u6Q5xzSTIMfvIrhBBLYQTWQsdJIKw8+7SWQssH
+         PaF1KSl0TZhxvnA69kScRSpIBchi7Dn84aHYVtKV5LSnuoD9nrbZ73/BLSnTllD2F9dX
+         p6Yw==
+X-Forwarded-Encrypted: i=1; AJvYcCXzmZSmqZ/QwVr0oLGaQnyWiI+GJ7P28qzzOsnJnMX6y2R5wwQWXJIuaB4TSy6vxuPwxsA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+ua2FSYmka7b/x0hNqM4Vb0acKXlvhnnXvwExFimzX4DztKR8
+	NehJxUzdeGlvx7gOqXi898JEzSm9BKTdsWeBmLGPFrOgLTPf2771JYkmy/Wqinq27FTlJsBUiVH
+	zU82H96JOlLLSwKKASYZNrfAr1F2eg6zWVZHI/IkNWoiBVaTXtVNm6nklZvvPzj+hAGQxSAI4UR
+	IdWtMnbij/dFkHfqoUTyLeApR7
+X-Gm-Gg: ASbGnctJl8QGSSH+wAhWZBERzq48Iw2vqdVh5HEfJ17ioWoIiP0rlc2q11aaVI0XRIW
+	1EGHRC0D4suQ3go/o+b1YlFQTu5AkGwFnbJM7DBS+r+4tuV+ORaVj5yiSnIwY1ZgDKl0QYO+P
+X-Received: by 2002:a05:6a00:181d:b0:736:520a:58f9 with SMTP id d2e1a72fcca58-739e71136bemr15844024b3a.17.1744097686696;
+        Tue, 08 Apr 2025 00:34:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEebzBktuzT34vutceE0Q+8ZimqM8gtaIQXLjH55vRIG5tqmEkA55owC0umuPvdKpOAEVEgy7rBakY9cJp/e3c=
+X-Received: by 2002:a05:6a00:181d:b0:736:520a:58f9 with SMTP id
+ d2e1a72fcca58-739e71136bemr15843995b3a.17.1744097686309; Tue, 08 Apr 2025
+ 00:34:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250404093903.37416-1-minhquangbui99@gmail.com>
+ <1743987836.9938157-1-xuanzhuo@linux.alibaba.com> <30419bd6-13b1-4426-9f93-b38b66ef7c3a@gmail.com>
+In-Reply-To: <30419bd6-13b1-4426-9f93-b38b66ef7c3a@gmail.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Tue, 8 Apr 2025 15:34:33 +0800
+X-Gm-Features: ATxdqUHgOtXPv8x4ai3wnnr72S-UplgKPeU7AsldG5nqKrldqkZgJy1CXzhAwHI
+Message-ID: <CACGkMEs7O7D5sztwJVn45c+1pap20Oi5f=02Sy_qxFjbeHuYiQ@mail.gmail.com>
+Subject: Re: [PATCH] virtio-net: disable delayed refill when pausing rx
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, "Michael S . Tsirkin" <mst@redhat.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, 
+	"David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, virtualization@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add edge case tests for sockmap.
+On Mon, Apr 7, 2025 at 10:27=E2=80=AFAM Bui Quang Minh <minhquangbui99@gmai=
+l.com> wrote:
+>
+> On 4/7/25 08:03, Xuan Zhuo wrote:
+> > On Fri,  4 Apr 2025 16:39:03 +0700, Bui Quang Minh <minhquangbui99@gmai=
+l.com> wrote:
+> >> When pausing rx (e.g. set up xdp, xsk pool, rx resize), we call
+> >> napi_disable() on the receive queue's napi. In delayed refill_work, it
+> >> also calls napi_disable() on the receive queue's napi. This can leads =
+to
+> >> deadlock when napi_disable() is called on an already disabled napi. Th=
+is
+> >> scenario can be reproducible by binding a XDP socket to virtio-net
+> >> interface without setting up the fill ring. As a result, try_fill_recv
+> >> will fail until the fill ring is set up and refill_work is scheduled.
+> >
+> > So, what is the problem? The refill_work is waiting? As I know, that th=
+read
+> > will sleep some time, so the cpu can do other work.
+>
+> When napi_disable is called on an already disabled napi, it will sleep
+> in napi_disable_locked while still holding the netdev_lock. As a result,
+> later napi_enable gets stuck too as it cannot acquire the netdev_lock.
+> This leads to refill_work and the pause-then-resume tx are stuck altogeth=
+er.
 
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
----
- .../selftests/bpf/prog_tests/socket_helpers.h | 13 +++-
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 60 +++++++++++++++++++
- 2 files changed, 72 insertions(+), 1 deletion(-)
+This needs to be added to the chagelog. And it looks like this is a fix for
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/socket_helpers.h b/tools/testing/selftests/bpf/prog_tests/socket_helpers.h
-index 1bdfb79ef009..a805143dd84f 100644
---- a/tools/testing/selftests/bpf/prog_tests/socket_helpers.h
-+++ b/tools/testing/selftests/bpf/prog_tests/socket_helpers.h
-@@ -313,11 +313,22 @@ static inline int recv_timeout(int fd, void *buf, size_t len, int flags,
- 
- static inline int create_pair(int family, int sotype, int *p0, int *p1)
- {
--	__close_fd int s, c = -1, p = -1;
-+	__close_fd int s = -1, c = -1, p = -1;
- 	struct sockaddr_storage addr;
- 	socklen_t len = sizeof(addr);
- 	int err;
- 
-+	if (family == AF_UNIX) {
-+		int fds[2];
-+
-+		err = socketpair(family, sotype, 0, fds);
-+		if (!err) {
-+			*p0 = fds[0];
-+			*p1 = fds[1];
-+		}
-+		return err;
-+	}
-+
- 	s = socket_loopback(family, sotype);
- 	if (s < 0)
- 		return s;
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 1e3e4392dcca..c72357f41035 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -1042,6 +1042,59 @@ static void test_sockmap_vsock_unconnected(void)
- 	xclose(map);
- }
- 
-+void *close_thread(void *arg)
-+{
-+	int *fd = (int *)arg;
-+
-+	sleep(1);
-+	close(*fd);
-+	*fd = -1;
-+	return NULL;
-+}
-+
-+void test_sockmap_with_close_on_write(int family, int sotype)
-+{
-+	struct test_sockmap_pass_prog *skel;
-+	int err, map, verdict;
-+	pthread_t tid;
-+	int zero = 0;
-+	int c = -1, p = -1;
-+
-+	skel = test_sockmap_pass_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-+	map = bpf_map__fd(skel->maps.sock_map_rx);
-+
-+	err = bpf_prog_attach(verdict, map, BPF_SK_SKB_STREAM_VERDICT, 0);
-+	if (!ASSERT_OK(err, "bpf_prog_attach"))
-+		goto out;
-+
-+	err = create_pair(family, sotype, &c, &p);
-+	if (!ASSERT_OK(err, "create_pair"))
-+		goto out;
-+
-+	err = bpf_map_update_elem(map, &zero, &p, BPF_ANY);
-+	if (!ASSERT_OK(err, "bpf_map_update_elem"))
-+		goto out;
-+
-+	err = pthread_create(&tid, 0, close_thread, &p);
-+	if (!ASSERT_OK(err, "pthread_create"))
-+		goto out;
-+
-+	while (p > 0)
-+		send(c, "a", 1, MSG_NOSIGNAL);
-+
-+	pthread_join(tid, NULL);
-+out:
-+	if (c > 0)
-+		close(c);
-+	if (p > 0)
-+		close(p);
-+	test_sockmap_pass_prog__destroy(skel);
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -1108,4 +1161,11 @@ void test_sockmap_basic(void)
- 		test_sockmap_skb_verdict_vsock_poll();
- 	if (test__start_subtest("sockmap vsock unconnected"))
- 		test_sockmap_vsock_unconnected();
-+	if (test__start_subtest("sockmap with write on close")) {
-+		test_sockmap_with_close_on_write(AF_UNIX, SOCK_STREAM);
-+		test_sockmap_with_close_on_write(AF_UNIX, SOCK_DGRAM);
-+		test_sockmap_with_close_on_write(AF_INET, SOCK_STREAM);
-+		test_sockmap_with_close_on_write(AF_INET, SOCK_DGRAM);
-+		test_sockmap_with_close_on_write(AF_VSOCK, SOCK_STREAM);
-+	}
- }
--- 
-2.47.1
+commit 413f0271f3966e0c73d4937963f19335af19e628
+Author: Jakub Kicinski <kuba@kernel.org>
+Date:   Tue Jan 14 19:53:14 2025 -0800
+
+    net: protect NAPI enablement with netdev_lock()
+
+?
+
+I wonder if it's simpler to just hold the netdev lock in resize or xsk
+binding instead of this.
+
+Thanks
+
+>
+> Thanks,
+> Quang Minh.
+>
 
 
