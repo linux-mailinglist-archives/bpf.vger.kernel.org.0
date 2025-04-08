@@ -1,105 +1,56 @@
-Return-Path: <bpf+bounces-55479-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55480-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8772DA814AD
-	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 20:33:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E836A814D5
+	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 20:41:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55A07886E6D
-	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 18:33:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C86017B2823
+	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 18:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE4723E350;
-	Tue,  8 Apr 2025 18:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F1B23E35C;
+	Tue,  8 Apr 2025 18:41:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dzK+xfLR"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MgFgflu6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75F8235374;
-	Tue,  8 Apr 2025 18:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647CB20FA83
+	for <bpf@vger.kernel.org>; Tue,  8 Apr 2025 18:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744137180; cv=none; b=ZwbIsc3wSPQgGyEV0cgClwLiHIniFWJoNfnUmgOG6THLIL3ay29ELvYTX5z20A4q8cRyLTn5lvwWu8S3E0OPducV+j4Uk8Ak+14vJHyRDu2snQcXq4yfnj8yT5BCbnC4MNgvyvrP4wJJTDv4XBL3rTDZYBchNMHM/yhXXLujSXk=
+	t=1744137677; cv=none; b=JeCtfj0aWPZGjkkJg64cTxiaZjsUWu9XADoOSiLCHdJe7JkcgYHgSVueBltQ3rxIOSNuWs2A/VfZAzhwSYdmrmQgNVnpz0ivdgmlUUzpP4w96Cy6Evq4OTY8k+xCDWsLfD7Iccl3mtSPMK9uVrOmxZeearrmysqbqyKG5N6hupM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744137180; c=relaxed/simple;
-	bh=cz0sFymjpfC/h77fzceNQsL/NvczhkEObHLXu7XO1kY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bDNPqP3A92YuXn3w/2sIjHJSgxleSJOYjxxVd+jOYb3NFYMRN0TJpuQir7vIv28uCsLoksrKt5ndP8aMn5cOHbLAVj0aShxjDcSgaBpkenPMUPFtop5RkFJ78oKeFl21Yd6rGMn8+nCNjDJmPiooyRRYsKVQD9rxZwciomQuJn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dzK+xfLR; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2295d78b433so59274235ad.2;
-        Tue, 08 Apr 2025 11:32:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744137178; x=1744741978; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CsXm6MV5K5BRVbJnpoBwjC4UXp/lFGi2onPtWmwIMd4=;
-        b=dzK+xfLRa7wxYJ0LfdmytMFM4VZ3X28FogVVWRspPQitkXLPa1llfD5Dkwgf/l1rji
-         bPCOc/YDkBxjnIyj30wj/SWovLmvelD79r1E3Zdlb0/FWYD7hRn3GrABNaqzdbBfRJe3
-         GGh3tL9In8pFty7AET0TTcapswFSS4Er+Q4C7oxQ1GZLeq1ZCR0quBkzhZVupur1YfhX
-         xdw1koCnSXSiftqcl1q7ltHHyjrqBeyk4Arn3z13ALt4IdMda1v6fHD2qOLx15SriZHL
-         vm6MlU2oDApzWXcDD4TIFH9NTAcChZpbim7cfK029+/0V9s0FlynIdMNMQWfP6tqbzyX
-         DD+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744137178; x=1744741978;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CsXm6MV5K5BRVbJnpoBwjC4UXp/lFGi2onPtWmwIMd4=;
-        b=YrtRcqUZGWmytxZvdVA8DZk98ph4SLtX0p+McpA44G70OlGdbyOsxVMlFhAl+3QIte
-         Fw8uEU0Q4LVQ7/h2yKwEfz1YbTz5RkYMZ0v+jNOUMgHzzsL61EckDRxuocqewDo4LMVV
-         Kl/r/+V0LdxKIE6D0YObI0kPG51CW6Yw1TgfkKzeE7gVZkXUu2fCsDqJ4vFToZ9R6HAd
-         dHs2fTbT6cq/vpRBhbLEjHiQpi9HVBVVdn6Rajz37w8wrYUSL4riWkj/Mwqybyf6xF8s
-         2VoAS6DLFhE/jlXc/OpZ6Uy6S1icPfvJYoS415wQrYksXlZKkBbbHBxfPJlW0uJ0PiNR
-         Y7Xw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJ31foE3Kpasz0wVc7wum5YiGJjm+qpcIilWaeza7ny1j67c9YalvyvyojCOEEg7cLeKg=@vger.kernel.org, AJvYcCVY60Z5xYY031PRv1UPjlPeS5sax/J6jm5PV4fVUbR5pWK2Zja+sEN9qQFgUCVvc4zbVm/PrxPccEFtkDS5NPB1@vger.kernel.org, AJvYcCWwaIPwPB3Q0bMme7LL2g8qkg2IF2qP00rVqu0z4qPghs8GPgoaaIVuIT1x7+vwPQHf9HL9azY4OAQiUvFw@vger.kernel.org
-X-Gm-Message-State: AOJu0YzygH8xQAPSC2GDYgmJw/NQ6zlGxoCrRyZAECsmqnRovwNKxadl
-	ysuPdb7IVustweK4MnyexgfYTYn++fA3niOB8hSUJWzhyISe+T1s
-X-Gm-Gg: ASbGncs/L8B1XhhFBIw8IEt0U9vaPYKme92CRthTWpOt3LAiMcnCXfX0kA0p2ZhLCEn
-	X+anCRgpIrIyJlHTzMxnfQyYta+HZz2GgexzSdvGOHpE9dCXMCJ08wNG2x/XaJfT6ieDgbUg6D1
-	j3HdUFFUMl4dn75+9P7/HAZhX8A/vZzWwu6tG/pbhK9umnwHmow0TwXhpfwen5uDAa98y2+LNLf
-	9/e4qlhuKVSVoGdwyWOuYgOJtPcDsc/PBbZBTWtQgAGlmm6Ykd2DPEhwO9PU25d1zHwRVOm4PWB
-	j08U+sx33VoKQweHi1c595flQ+Z4+GjZbBknXdeGyYB06w6tqSoU3XLJCgG2dLOqK259hw/kUWP
-	wqOnEHlsvCBV3r6At
-X-Google-Smtp-Source: AGHT+IFFgN7WMzBD5HsfPDqJ2wUPAWRl9kp6owNScncUOYS4nasPvN1eVgLjKMFFQTsakeZjjrHQxg==
-X-Received: by 2002:a17:902:f686:b0:223:faf5:c82 with SMTP id d9443c01a7336-22ac295cfe8mr2454945ad.8.1744137177911;
-        Tue, 08 Apr 2025 11:32:57 -0700 (PDT)
-Received: from malayaVM.mrout-thinkpadp16vgen1.punetw6.csb ([103.133.229.222])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2297865fa98sm103806325ad.140.2025.04.08.11.32.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Apr 2025 11:32:57 -0700 (PDT)
-From: Malaya Kumar Rout <malayarout91@gmail.com>
-To: houtao@huaweicloud.com
-Cc: Malaya Kumar Rout <malayarout91@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re:[PATCH RESEND bpf-next v2] selftests/bpf: close the file descriptor to avoid resource leaks
-Date: Wed,  9 Apr 2025 00:01:40 +0530
-Message-ID: <20250408183214.6437-1-malayarout91@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <92596c82-4a12-3afc-6cb2-21a11bef3739@huaweicloud.com>
-References: <92596c82-4a12-3afc-6cb2-21a11bef3739@huaweicloud.com>
+	s=arc-20240116; t=1744137677; c=relaxed/simple;
+	bh=bZvzt96Zp4RjiGtXBqIhCZqsKKtFoqIdU0+4Utszp3U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sMtvNN0aMMU4Dvp4gOX9E2xQ3z/lYEmutfhSS00wqHOpZrcxhFRGQ0IOjt14zEzx1L0rg3WpIGNXWaDJZ5FEB/rtOzS+jht4ZrXX1zK8rWz0xF9fw7g17NIlUFXSlBM3t8pJ4rsIukzKYQYndFQYzeSf8KqZgECzBc2J6oxcwdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MgFgflu6; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1744137672;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=yuFlAKi86HFuahtreKRLJDL3TXgxNcQBKy3nJVD0LNU=;
+	b=MgFgflu6lER0I6M56dPzdq4vKEf4V2lugmBxBG+X4SMezmXC7eN+007Onkqin+fOZENs0e
+	34ebrZG7TgAXHuHBc6oMKC5wapZTDrQZX0U2rXtiQ97qLJ12GYQn24Pol50UU41SUW6JbK
+	+0RQqRkR2/r71KgSsXaTmuaoXl+164k=
+From: Ihor Solodrai <ihor.solodrai@linux.dev>
+To: andrii@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com
+Cc: bpf@vger.kernel.org,
+	mykolal@fb.com,
+	kernel-team@meta.com
+Subject: [PATCH] libbpf: check for empty BTF data section in btf_parse_elf
+Date: Tue,  8 Apr 2025 11:41:04 -0700
+Message-ID: <20250408184104.3962949-1-ihor.solodrai@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -107,60 +58,39 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Static Analyis for bench_htab_mem.c with cppcheck:error
-tools/testing/selftests/bpf/benchs/bench_htab_mem.c:284:3:
-error: Resource leak: fd [resourceLeak]
-tools/testing/selftests/bpf/prog_tests/sk_assign.c:41:3:
-error: Resource leak: tc [resourceLeak]
+A valid ELF file may contain a SHT_NOBITS .BTF section. This case is
+not handled correctly in btf_parse_elf, which leads to a segfault.
 
-fix the issue  by closing the file descriptor (fd & tc) when
-read & fgets operation fails.
+Add a null check for a buffer returned by elf_getdata() before
+proceeding with its processing.
 
-Signed-off-by: Malaya Kumar Rout <malayarout91@gmail.com>
+Bug report: https://github.com/libbpf/libbpf/issues/894
+
+Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
 ---
- tools/testing/selftests/bpf/benchs/bench_htab_mem.c | 3 +--
- tools/testing/selftests/bpf/prog_tests/sk_assign.c  | 4 +++-
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ tools/lib/bpf/btf.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-index 926ee822143e..297e32390cd1 100644
---- a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-@@ -279,6 +279,7 @@ static void htab_mem_read_mem_cgrp_file(const char *name, unsigned long *value)
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 38bc6b14b066..90599f0311bd 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -1201,6 +1201,12 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+ 		goto done;
  	}
  
- 	got = read(fd, buf, sizeof(buf) - 1);
-+	close(fd);
- 	if (got <= 0) {
- 		*value = 0;
- 		return;
-@@ -286,8 +287,6 @@ static void htab_mem_read_mem_cgrp_file(const char *name, unsigned long *value)
- 	buf[got] = 0;
- 
- 	*value = strtoull(buf, NULL, 0);
--
--	close(fd);
- }
- 
- static void htab_mem_measure(struct bench_res *res)
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-index 0b9bd1d6f7cc..10a0ab954b8a 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-@@ -37,8 +37,10 @@ configure_stack(void)
- 	tc = popen("tc -V", "r");
- 	if (CHECK_FAIL(!tc))
- 		return false;
--	if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc)))
-+	if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc))) {
-+		pclose(tc);
- 		return false;
++	if (!secs.btf_data->d_buf) {
++		pr_warn("BTF data is empty in %s\n", path);
++		err = -ENODATA;
++		goto done;
 +	}
- 	if (strstr(tc_version, ", libbpf "))
- 		prog = "test_sk_assign_libbpf.bpf.o";
- 	else
++
+ 	if (secs.btf_base_data) {
+ 		dist_base_btf = btf_new(secs.btf_base_data->d_buf, secs.btf_base_data->d_size,
+ 					NULL);
 -- 
-2.43.0
+2.49.0
 
 
