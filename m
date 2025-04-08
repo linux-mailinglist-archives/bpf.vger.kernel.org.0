@@ -1,111 +1,126 @@
-Return-Path: <bpf+bounces-55463-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55464-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D9CAA80EA2
-	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 16:44:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A83A80F04
+	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 16:57:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2727C4A600F
-	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 14:39:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 061C67A52E6
+	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 14:56:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A862522D789;
-	Tue,  8 Apr 2025 14:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA9839ACF;
+	Tue,  8 Apr 2025 14:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lixf5KHG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oGmqxoT0"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ECA71B6CE5;
-	Tue,  8 Apr 2025 14:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE6215F330
+	for <bpf@vger.kernel.org>; Tue,  8 Apr 2025 14:57:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744123032; cv=none; b=ty9F/Ic0H0dRzpnLGf2e6aUWvfUDrIzBO859CjdcsFDgBeUX8JBpTsWUGEgUuZ6SbPsI29kte5NVNvGghqgH8bvgnzTJWJEPH1idlUqfAoVxjGcWF1vZC18YdplCoMOPvHYftxnAryHI8y278kHT4iHZJdEbPI1Ra+0/1hmcvVM=
+	t=1744124259; cv=none; b=UyQcbsTggDIArW2l/d2zwT6nN8etGIjmyYqh5t9sqQq/EcGyP3lnyn/V2TiT3tI0WMsJwJB9YZQwsodhGyGhC1jl7WcT7ztmTeIttsWR9o6BAoe2V/kNPCi+vOacP72FfKEIM/I5XlSpolDwJkZNoWjNb5Xd7Strw5FEf+hh0t8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744123032; c=relaxed/simple;
-	bh=ge7Yi7sJL1C7pl6511bZFnXdwJzMPUqWBNRdwjkzS8c=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=o9jGt39TbYodSK1bGU8HKNBlNumda9WRJskdme7UimiXGwdOCIXjIn4lDpzYEfabfAJuWLIErhhpLEKrYa7vONu7KbjTtbo3oataJ9ohrvpWTWwUAxm7lrxG6B5wj71ozt8bZc4ZK/nyiRhfXx+MtjWaOoh9eoy6MKCJE0WSmFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lixf5KHG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF7F3C4CEEB;
-	Tue,  8 Apr 2025 14:37:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744123031;
-	bh=ge7Yi7sJL1C7pl6511bZFnXdwJzMPUqWBNRdwjkzS8c=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lixf5KHGMLgrJHRF0vXObNxfQVuWjjQKvS6Run+Q0sxRNDh7nGg00pGvTON5bejy6
-	 /H7zP+PKgO3AHBvFDlScfylFFrPXBMO8ZPTzA7qhFrX/YngpDVbcmc43jbX+Ac720W
-	 2bRlb54Z7mRBel+jUzTAeNYDeY9IQmEWj1G99Y7vo/aChGUUuxqxKDzgHmGuU2A4ce
-	 yugvuVQLVYxKc3sEZ8mCz4Bbs419T+/fdcPZlSBWGG7xEQqI7q+U4xzhNnhOuCbHNK
-	 +L9TAM5bHfROj51JGapXbzojYT4Hdwbm3Wz1SU40PAi2EgIFZwWhgHUL08EN4A4x2v
-	 aYjeRT+sIt9Uw==
-Date: Tue, 8 Apr 2025 07:37:09 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>, Bui Quang Minh
- <minhquangbui99@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- "Michael S . Tsirkin" <mst@redhat.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Eugenio =?UTF-8?B?UMOpcmV6?=
- <eperezma@redhat.com>, "David S . Miller" <davem@davemloft.net>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- virtualization@lists.linux.dev
-Subject: Re: [PATCH] virtio-net: disable delayed refill when pausing rx
-Message-ID: <20250408073709.4e054636@kernel.org>
-In-Reply-To: <1b78c63b-7c07-4d25-8785-bfb0e28c71ad@redhat.com>
-References: <20250404093903.37416-1-minhquangbui99@gmail.com>
-	<1743987836.9938157-1-xuanzhuo@linux.alibaba.com>
-	<30419bd6-13b1-4426-9f93-b38b66ef7c3a@gmail.com>
-	<CACGkMEs7O7D5sztwJVn45c+1pap20Oi5f=02Sy_qxFjbeHuYiQ@mail.gmail.com>
-	<1b78c63b-7c07-4d25-8785-bfb0e28c71ad@redhat.com>
+	s=arc-20240116; t=1744124259; c=relaxed/simple;
+	bh=UdQjo7GX3+JoHxf1FCW1rvspbShM7CTaNouAZV4fgUk=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=FMJ9pxgvAH+5JXWdidr7JeGIOF2X+5ehSqCFsa0fcp7h4SpQSr4lUKkLuLN8xfbAhhSPW1axeB7L6fT2TSrGx00NZyrSzNRcw/3tcEYmlZA6bkcA+RmEndBl+wN6a9V43HIORxBrLF3syImWzZ6VFuSOGJgADs0m3R/tTXh+8kY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oGmqxoT0; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1744124253;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2VRMkAdXCE8Xz+ZVJqgl2Gets4GXYhybM2zk48uTnfE=;
+	b=oGmqxoT07NQyejq3aH5h02F4c2zBmQPIsf6QnKSuYQ23Asn6guo1iwqQpkfDzQYjcGD9mW
+	+UY5pS8A9X5kqN2+oG0cZ587M7TLVN3Pd1BgMFu/X3jr31RZwWqPxDwX6RGiW+OA95CqhR
+	u6Ah9TZgqERxHcfo3ZkdkpM6jSloR94=
+Date: Tue, 08 Apr 2025 14:57:29 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <46c9a3cd5888df36ec17bcc5bfd57aab687d4273@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH RESEND net-next v3 2/2] tcp: add
+ LINUX_MIB_PAWS_TW_REJECTED counter
+To: "Eric Dumazet" <edumazet@google.com>
+Cc: bpf@vger.kernel.org, mrpre@163.com, "David S. Miller"
+ <davem@davemloft.net>, "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni"
+ <pabeni@redhat.com>, "Simon Horman" <horms@kernel.org>, "Jonathan Corbet"
+ <corbet@lwn.net>, "Neal Cardwell" <ncardwell@google.com>, "Kuniyuki
+ Iwashima" <kuniyu@amazon.com>, "David Ahern" <dsahern@kernel.org>,
+ "Steffen Klassert" <steffen.klassert@secunet.com>, "Sabrina Dubroca"
+ <sd@queasysnail.net>, "Nicolas Dichtel" <nicolas.dichtel@6wind.com>,
+ "Antony Antony" <antony.antony@secunet.com>, "Christian Hopps"
+ <chopps@labn.net>, netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <CANn89iJRyEkfiUWbxhpCuKjEm0J+g7DiEa2JQPBQdqBmLBJq+w@mail.gmail.com>
+References: <20250407140001.13886-1-jiayuan.chen@linux.dev>
+ <20250407140001.13886-3-jiayuan.chen@linux.dev>
+ <CANn89iJRyEkfiUWbxhpCuKjEm0J+g7DiEa2JQPBQdqBmLBJq+w@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 8 Apr 2025 11:28:54 +0200 Paolo Abeni wrote:
-> >> When napi_disable is called on an already disabled napi, it will sleep
-> >> in napi_disable_locked while still holding the netdev_lock. As a result,
-> >> later napi_enable gets stuck too as it cannot acquire the netdev_lock.
-> >> This leads to refill_work and the pause-then-resume tx are stuck altogether.  
-> > 
-> > This needs to be added to the chagelog. And it looks like this is a fix for
-> > 
-> > commit 413f0271f3966e0c73d4937963f19335af19e628
-> > Author: Jakub Kicinski <kuba@kernel.org>
-> > Date:   Tue Jan 14 19:53:14 2025 -0800
-> > 
-> >     net: protect NAPI enablement with netdev_lock()
-> > 
-> > ?
-> > 
-> > I wonder if it's simpler to just hold the netdev lock in resize or xsk
-> > binding instead of this.  
-> 
-> Setting:
-> 
-> 	dev->request_ops_lock = true;
-> 
-> in virtnet_probe() before calling register_netdevice() should achieve
-> the above. Could you please have a try?
+April 8, 2025 at 22:18, "Eric Dumazet" <edumazet@google.com> wrote:
 
-Can we do that or do we need a more tailored fix? request_ops_lock only
-appeared in 6.15 and the bug AFAIU dates back to 6.14. We don't normally
-worry about given the stream of fixes - request_ops_lock is a bit risky.
-Jason's suggestion AFAIU is just to wrap the disable/enable pairs in
-the lock. We can try request_ops_lock in -next ?
 
-Bui Quang Minh, could you add a selftest for this problem?
-See tools/testing/selftests/drivers/net/virtio_net/
-You can re-use / extend the XSK helper from
-tools/testing/selftests/drivers/net/xdp_helper.c ?
-(move it to tools/testing/selftests/net/lib for easier access)
+
+>=20
+>=20On Mon, Apr 7, 2025 at 4:00 PM Jiayuan Chen <jiayuan.chen@linux.dev> =
+wrote:
+>=20
+>=20>=20
+>=20> When TCP is in TIME_WAIT state, PAWS verification uses
+> >  LINUX_PAWSESTABREJECTED, which is ambiguous and cannot be distinguis=
+hed
+> >  from other PAWS verification processes.
+> >  Moreover, when PAWS occurs in TIME_WAIT, we typically need to pay sp=
+ecial
+> >  attention to upstream network devices, so we added a new counter, li=
+ke the
+> >  existing PAWS_OLD_ACK one.
+> >=20
+>=20
+> I really dislike the repetition of "upstream network devices".
+> Is it mentioned in some RFC ?
+
+I used this term to refer to devices that are located in the path of the
+TCP connection, such as firewalls, NATs, or routers, which can perform
+SNAT or DNAT and these network devices use addresses from their own limit=
+ed
+address pools to masquerade the source address during forwarding, this
+can cause PAWS verification to fail more easily.
+
+You are right that this term is not mentioned in RFC but it's commonly us=
+ed
+in IT infrastructure contexts. Sorry to have caused misunderstandings.
+
+Thanks.
+> >=20
+>=20> Also we update the doc with previously missing PAWS_OLD_ACK.
+> >  usage:
+> >=20
+>=20>  '''
+> >  nstat -az | grep PAWSTimewait
+> >  TcpExtPAWSTimewait 1 0.0
+> >  '''
+> >=20
+>=20>  Suggested-by: Eric Dumazet <edumazet@google.com>
+> >  Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+> >=20
+>=20
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
+>
 
