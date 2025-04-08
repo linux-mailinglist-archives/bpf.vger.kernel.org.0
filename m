@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-55490-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55491-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA4F0A8197E
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 01:46:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A866AA8197D
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 01:45:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AF534C5EBA
-	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 23:45:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 681E51BA5B19
+	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 23:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6607255254;
-	Tue,  8 Apr 2025 23:45:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A70C256C68;
+	Tue,  8 Apr 2025 23:45:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CxtWGDW6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e6bspLCE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978C8225405
-	for <bpf@vger.kernel.org>; Tue,  8 Apr 2025 23:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A4A255252
+	for <bpf@vger.kernel.org>; Tue,  8 Apr 2025 23:45:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744155936; cv=none; b=MxPIGZt735TQfLIVxh8yFFohN7wklyuz8S59FMjGqvZElmR32c2D9gJNEMb2fi5g0l0PIPPAo0hf1bv+lQWdStOnplb1M0U3P7hl4InFvMiyX/MMUScH/aQfgznGgClNEawAD86py1Gyd/XvRY4JAsKzNN79pakSyADaM4Pgze0=
+	t=1744155937; cv=none; b=r4qp7ZafLC6/HzuMazbRBZ9xrHAxNy6enIXHTm5LvVhf2H5ZiT8FxdyhdUY9NG7I3G9RCKyeDrdvUQwDgH41YqDb1Jl3F3AsBUc/k1LCI5ZKem1VLtzuQIBtuycZ+1rkzXaisRSzdthv/zOmqaMt7qrX7wTOs5uTS+aN7eWSsrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744155936; c=relaxed/simple;
-	bh=KWaY+/cOB1D+dX+j2sLnWloyPm85RyrhH4tNk0LCeSo=;
+	s=arc-20240116; t=1744155937; c=relaxed/simple;
+	bh=TthG+ZHnUklh73JqMrZRWQqaSpdoqfXY+I1Qa+H63Mk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kLJdTyJElbaFE8hnR/PFVjfxfAIRXMec5YwUP2gtVjrYFajKrjaka4vXA5TnN1HQnXMy2Y+THbjSjJradZkh0uLUOVn9kCJudJ+GooEK8hpH3+J7JKDTPSO3MzQS2VZW+t6y4GIAnm6/IjOcFUj9MX6hzMJTEurzg1hjVBS/+VI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CxtWGDW6; arc=none smtp.client-ip=209.85.221.44
+	 MIME-Version; b=B2yv1NEnMLjHAq/Jxb+yYCe9pS2hoK/bARdMemX0JRmlMQOxkugJCdx6HLbFwcj4LQwEk4tDIjdOwwtPtfy+O027JOsHZ5w2UsAaUZ/Vg7XEPQia0YSS8D8lW3zsWCtAUFCCM/NvB2YkfGY2tT6zZ5Pe7uqOQml7qpxiRIIr3YM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e6bspLCE; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-39129fc51f8so5015776f8f.0
-        for <bpf@vger.kernel.org>; Tue, 08 Apr 2025 16:45:34 -0700 (PDT)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43d04dc73b7so65494815e9.3
+        for <bpf@vger.kernel.org>; Tue, 08 Apr 2025 16:45:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744155933; x=1744760733; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744155934; x=1744760734; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0xIBmhW+FIJLCI1Rfo8vhwrALknx8oL9oRsgu3k5kgw=;
-        b=CxtWGDW6Fz6LoV/E9fqHhFWB5a9bAkvi2ir2icuYMOUQdNrw0QSOThVSud1wubevNW
-         zeUcqJ6xGYAvsNt5nDb+fXhEhzaMu/sazN8xKcBq6xZDzsM+hrzzRmrbCzAUWmz6u6QA
-         z5N9BMDUBKMYzFnaIM605knp0nN12KZ2g00+6jhY770aBMh82egEyf+IBK4VmFPnK1oc
-         WxjwGCvsRwEdRnqqtdCPrC1uwzc1UelMIbrgZ9E+rGBv+LWV8vnbXb7R/PSpeeMMMUdw
-         rfeb9Wwf7/8ZT0UPmPP4EAxdm+YtQVQA16dmBfbTyAY2OMUQR+ZU8e927bXCsvMglRdX
-         LsSQ==
+        bh=iONg82zMQemNPbgxA7jxSH2JC9My7h5OhxwLdjI1R2I=;
+        b=e6bspLCEjN3RkYsE1QOiz4zYnwUzuN32rKwlciSnWrsnRuqOGz89CBNSDf+S8I2YJ8
+         2KVaL2b2Ukt/t/dYzQVPxfJj1AP445htTfd8ZOi8MivelSHEZALwVM9z585BXp18qy03
+         1F/Kcne7ajT2lxbH2TeJ8cZrlB4Z2RaVg4uracruSV5jKHM5mUxQz8eT7bh+NuLtMakn
+         tAQeLcSPEh0BF+HCqIB7PD0VCCMtXjl+zD3xHSOuiAkc+E3XGR7/U3VRoWsaUVXHUOlN
+         7cJ6A8ey7YnribleS6sOwTAZ/6YG9HgS02LWn6p6wEzIOJv6fbge7Z2jCtBXVGUmnSuT
+         8UoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744155933; x=1744760733;
+        d=1e100.net; s=20230601; t=1744155934; x=1744760734;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0xIBmhW+FIJLCI1Rfo8vhwrALknx8oL9oRsgu3k5kgw=;
-        b=WVVwjNwYbbJ7eVtQYDrTg2+aprbscJfoKEbaN4p3v4AYAyn5/7HVc2IX4Qb47uMfRZ
-         pfStNgx/4uEQrxiA4K2S6Imm2VZq995ytUv5ucbjA7JJqPJiv1Gt0lTq/UMrhv2gMyZI
-         e4tS7zmE+XMnYuPavF+zGd9rGPIqwc6ahIHEWeot3xqzDSiYlUcbZ32F9hMCn8y5Egas
-         uKGKZ8j9TzScTWAsbqPEXrnEqqFDMMCv4rBYzxA3SpjGNwiAgN7CKSxDzS1OWiADCZqc
-         h2qsVZEgORp5xaGhqOGjHjaThNUz0jcZVa8hXyj6bKWOwfuqDoNjAmFmXFRTwDEuEzRr
-         f70w==
-X-Gm-Message-State: AOJu0Yx/S3CxwbGPf5RwWs9Qa6ufJyIDZ7uxOkz65iYPwX8P9ki1CuUH
-	vGaZ/pRoR08bbBaY77Wi8MANqkJJiTf71WS9faGArppnTibuDmiCd+Xgew==
-X-Gm-Gg: ASbGncuCjhOGoBxs9hX8U/Jy0cKjTKy92q/JRqJBV7TFTeYIBnZYibbddi4dThXn68c
-	iP3EIz1Q70WTN7JTlCa2c9MQxIFls0Emg8p5SU20zzkaka8i6KpzVbQAKcUUWw3bwFYcDJrYDJC
-	QUNjUgz2G5vIjrqSMpEVaD3ipRhCAqMyslqjBB2Cfpb3eJW6pE5GusT4rx1wx91NkopLFvufGML
-	aFN7nYBX73kTVwlFu+89tDQs82IEtn6WuQGaoklJFGsawT0llN5VfxwWmWTEjDXsBR3NLCB6McT
-	/l0D8XOx3P01QRrvdffz43gmKv8f/iXnyMV6NYlO043o1SLFe9rxxSx+aRkBbEA=
-X-Google-Smtp-Source: AGHT+IH+8WMbLmR0hnujLYIv7cEDx48GdVVuAdmRHMjRCmU9JIuN7xF1R/1bA33DAhXTR0cI5hlA6w==
-X-Received: by 2002:a05:6000:22c1:b0:38d:e584:81ea with SMTP id ffacd0b85a97d-39d87cd68a2mr733189f8f.45.1744155932827;
-        Tue, 08 Apr 2025 16:45:32 -0700 (PDT)
+        bh=iONg82zMQemNPbgxA7jxSH2JC9My7h5OhxwLdjI1R2I=;
+        b=CQLAQR211Z3mK7dDQaOR3Wp84X0Mx5zzanvsNdDZBYcD3o22iN3tE40LV2O8sSpkEE
+         0UI4A9rLVXmwWL9C4HBgmgBrVB0jshf+4JzVEG99tHurrvsHWuItCiUR8+c0nSWJTSAp
+         ZhOxdbse1P2bTbwgQ68hiamXMCSnfAy6huUtgEJa3S/yegqrkzD6miJ4Qu3IFXaYuzDe
+         4+oAEO2ZzMovJaeq/VLdiF3aoqZQVb5v4vAjNNZuX+1R9LnIpI9Djq0neHPMieZ+SfN/
+         52ZxJ5nmx35dIa40RDaTcJAPORLGXIlkcMMwtV/Isy6w4ny9WVUl+xgyy8RCwxhjH/ey
+         /oeA==
+X-Gm-Message-State: AOJu0Yw93gJh7p0yCxp1iikAX1WuWOoVCxBp3FGUBQ/gTXky/AMI1y/X
+	p0lU1yW5181xOvhBSJt7qkmThNHO/UjxUir9XEwEzWE3vbEBkn6hb33sJQ==
+X-Gm-Gg: ASbGncv1LL2JIrpIJnYV2MtJdBkj92n/VcQxrQfMsFXlt6NzQuDeDsg7KG2AnjAataa
+	nJQO9mWwvbSStRymRSQSvMBHSEuus73SzQxaW53m153L8HtKZfDUZk4DeEYe58/vFWek+gbJ4PC
+	QxOPVPX7tdb1HYXH07R3T5FFTfR7uBr+WQwGkEb2SmbJn5XoAhYGkiY3erf6GKdUb9m0PxLkqU9
+	+u3uvJdV44ffZgRKHKVoGoKXe6ICjpUkG7oo6QbvMCYxv9izXl8u0pM775dpaH8XE1aC/PX5YF1
+	0Nfti76eCU3SwD9c8j30bE1WWODSut/NuUuHlKh5/eZ8q0YAoZDb/rCwmC0NUR4=
+X-Google-Smtp-Source: AGHT+IHN90+lzDZ8rLpxr02KU0fHQumMkTgwxLgCESMdPHkG9sZhv4ljsmCWAVhc1QnrW1GRpkY5zw==
+X-Received: by 2002:a05:600c:4e13:b0:43c:f597:d582 with SMTP id 5b1f17b1804b1-43f20686d54mr2969335e9.1.1744155934119;
+        Tue, 08 Apr 2025 16:45:34 -0700 (PDT)
 Received: from msi-laptop.mynet ([2a01:4b00:bf28:2e00:ff96:2dac:a39:3e10])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43f205ec97csm3012485e9.6.2025.04.08.16.45.31
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43f205ec97csm3012485e9.6.2025.04.08.16.45.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Apr 2025 16:45:31 -0700 (PDT)
+        Tue, 08 Apr 2025 16:45:33 -0700 (PDT)
 From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -80,9 +80,9 @@ To: bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	eddyz87@gmail.com
 Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next v5 1/2] libbpf: add getters for BTF.ext func and line info
-Date: Wed,  9 Apr 2025 00:44:16 +0100
-Message-ID: <20250408234417.452565-2-mykyta.yatsenko5@gmail.com>
+Subject: [PATCH bpf-next v5 2/2] selftests/bpf: add BTF.ext line/func info getter tests
+Date: Wed,  9 Apr 2025 00:44:17 +0100
+Message-ID: <20250408234417.452565-3-mykyta.yatsenko5@gmail.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250408234417.452565-1-mykyta.yatsenko5@gmail.com>
 References: <20250408234417.452565-1-mykyta.yatsenko5@gmail.com>
@@ -96,93 +96,115 @@ Content-Transfer-Encoding: 8bit
 
 From: Mykyta Yatsenko <yatsenko@meta.com>
 
-Introducing new libbpf API getters for BTF.ext func and line info,
-namely:
-  bpf_program__func_info
-  bpf_program__func_info_cnt
-  bpf_program__line_info
-  bpf_program__line_info_cnt
-
-This change enables scenarios, when user needs to load bpf_program
-directly using `bpf_prog_load`, instead of higher-level
-`bpf_object__load`. Line and func info are required for checking BTF
-info in verifier; verification may fail without these fields if, for
-example, program calls `bpf_obj_new`.
+Add selftests checking that line and func info retrieved by newly added
+libbpf APIs are the same as returned by kernel via bpf_prog_get_info_by_fd.
 
 Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
 ---
- tools/lib/bpf/libbpf.c   | 24 ++++++++++++++++++++++++
- tools/lib/bpf/libbpf.h   |  6 ++++++
- tools/lib/bpf/libbpf.map |  4 ++++
- 3 files changed, 34 insertions(+)
+ .../selftests/bpf/prog_tests/test_btf_ext.c   | 64 +++++++++++++++++++
+ .../selftests/bpf/progs/test_btf_ext.c        | 22 +++++++
+ 2 files changed, 86 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_btf_ext.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_btf_ext.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6b85060f07b3..551a8514dc7d 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9455,6 +9455,30 @@ int bpf_program__set_log_buf(struct bpf_program *prog, char *log_buf, size_t log
- 	return 0;
- }
- 
-+struct bpf_func_info *bpf_program__func_info(const struct bpf_program *prog)
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_btf_ext.c b/tools/testing/selftests/bpf/prog_tests/test_btf_ext.c
+new file mode 100644
+index 000000000000..7d1b478c99a0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_btf_ext.c
+@@ -0,0 +1,64 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms Inc. */
++#include <test_progs.h>
++#include "test_btf_ext.skel.h"
++#include "btf_helpers.h"
++
++static void subtest_line_func_info(void)
 +{
-+	if (prog->func_info_rec_size != sizeof(struct bpf_func_info))
-+		return libbpf_err_ptr(-EOPNOTSUPP);
-+	return prog->func_info;
++	struct test_btf_ext *skel;
++	struct bpf_prog_info info;
++	struct bpf_line_info line_info[128], *libbpf_line_info;
++	struct bpf_func_info func_info[128], *libbpf_func_info;
++	__u32 info_len = sizeof(info), libbbpf_line_info_cnt, libbbpf_func_info_cnt;
++	int err, fd;
++
++	skel = test_btf_ext__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
++		return;
++
++	fd = bpf_program__fd(skel->progs.global_func);
++
++	memset(&info, 0, sizeof(info));
++	info.line_info = ptr_to_u64(&line_info);
++	info.nr_line_info = sizeof(line_info);
++	info.line_info_rec_size = sizeof(*line_info);
++	err = bpf_prog_get_info_by_fd(fd, &info, &info_len);
++	if (!ASSERT_OK(err, "prog_line_info"))
++		goto out;
++
++	libbpf_line_info = bpf_program__line_info(skel->progs.global_func);
++	libbbpf_line_info_cnt = bpf_program__line_info_cnt(skel->progs.global_func);
++
++	memset(&info, 0, sizeof(info));
++	info.func_info = ptr_to_u64(&func_info);
++	info.nr_func_info = sizeof(func_info);
++	info.func_info_rec_size = sizeof(*func_info);
++	err = bpf_prog_get_info_by_fd(fd, &info, &info_len);
++	if (!ASSERT_OK(err, "prog_func_info"))
++		goto out;
++
++	libbpf_func_info = bpf_program__func_info(skel->progs.global_func);
++	libbbpf_func_info_cnt = bpf_program__func_info_cnt(skel->progs.global_func);
++
++	if (!ASSERT_OK_PTR(libbpf_line_info, "bpf_program__line_info"))
++		goto out;
++	if (!ASSERT_EQ(libbbpf_line_info_cnt, info.nr_line_info, "line_info_cnt"))
++		goto out;
++	if (!ASSERT_OK_PTR(libbpf_func_info, "bpf_program__func_info"))
++		goto out;
++	if (!ASSERT_EQ(libbbpf_func_info_cnt, info.nr_func_info, "func_info_cnt"))
++		goto out;
++	ASSERT_MEMEQ(libbpf_line_info, line_info, libbbpf_line_info_cnt * sizeof(*line_info),
++		     "line_info");
++	ASSERT_MEMEQ(libbpf_func_info, func_info, libbbpf_func_info_cnt * sizeof(*func_info),
++		     "func_info");
++out:
++	test_btf_ext__destroy(skel);
 +}
 +
-+__u32 bpf_program__func_info_cnt(const struct bpf_program *prog)
++void test_btf_ext(void)
 +{
-+	return prog->func_info_cnt;
++	if (test__start_subtest("line_func_info"))
++		subtest_line_func_info();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_btf_ext.c b/tools/testing/selftests/bpf/progs/test_btf_ext.c
+new file mode 100644
+index 000000000000..cdf20331db04
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_btf_ext.c
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2025 Meta Platforms Inc. */
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++char _license[] SEC("license") = "GPL";
++
++__noinline static void f0(void)
++{
++	__u64 a = 1;
++
++	__sink(a);
 +}
 +
-+struct bpf_line_info *bpf_program__line_info(const struct bpf_program *prog)
++SEC("xdp")
++__u64 global_func(struct xdp_md *xdp)
 +{
-+	if (prog->line_info_rec_size != sizeof(struct bpf_line_info))
-+		return libbpf_err_ptr(-EOPNOTSUPP);
-+	return prog->line_info;
++	f0();
++	return XDP_DROP;
 +}
-+
-+__u32 bpf_program__line_info_cnt(const struct bpf_program *prog)
-+{
-+	return prog->line_info_cnt;
-+}
-+
- #define SEC_DEF(sec_pfx, ptype, atype, flags, ...) {			    \
- 	.sec = (char *)sec_pfx,						    \
- 	.prog_type = BPF_PROG_TYPE_##ptype,				    \
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index e0605403f977..d39f19c8396d 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -940,6 +940,12 @@ LIBBPF_API int bpf_program__set_log_level(struct bpf_program *prog, __u32 log_le
- LIBBPF_API const char *bpf_program__log_buf(const struct bpf_program *prog, size_t *log_size);
- LIBBPF_API int bpf_program__set_log_buf(struct bpf_program *prog, char *log_buf, size_t log_size);
- 
-+LIBBPF_API struct bpf_func_info *bpf_program__func_info(const struct bpf_program *prog);
-+LIBBPF_API __u32 bpf_program__func_info_cnt(const struct bpf_program *prog);
-+
-+LIBBPF_API struct bpf_line_info *bpf_program__line_info(const struct bpf_program *prog);
-+LIBBPF_API __u32 bpf_program__line_info_cnt(const struct bpf_program *prog);
-+
- /**
-  * @brief **bpf_program__set_attach_target()** sets BTF-based attach target
-  * for supported BPF program types:
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index d8b71f22f197..1205f9a4fe04 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -437,6 +437,10 @@ LIBBPF_1.6.0 {
- 		bpf_linker__add_fd;
- 		bpf_linker__new_fd;
- 		bpf_object__prepare;
-+		bpf_program__func_info;
-+		bpf_program__func_info_cnt;
-+		bpf_program__line_info;
-+		bpf_program__line_info_cnt;
- 		btf__add_decl_attr;
- 		btf__add_type_attr;
- } LIBBPF_1.5.0;
 -- 
 2.49.0
 
