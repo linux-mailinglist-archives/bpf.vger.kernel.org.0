@@ -1,83 +1,85 @@
-Return-Path: <bpf+bounces-55446-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55447-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF7C2A7F8F6
-	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 11:06:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8918FA7F8CD
+	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 11:01:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13C133B8EAC
-	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 09:00:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 450247A9A89
+	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 09:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C49A826461C;
-	Tue,  8 Apr 2025 09:00:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1459264610;
+	Tue,  8 Apr 2025 09:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mTtdDgRC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iTKH22s+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F5326461D
-	for <bpf@vger.kernel.org>; Tue,  8 Apr 2025 09:00:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797B92641D7
+	for <bpf@vger.kernel.org>; Tue,  8 Apr 2025 09:00:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744102811; cv=none; b=iPS1DLZv9nXRUmb0RJRC/+5kJVLj2/ESxSCr+JT7P7n4ReoD42EprkoJKJmCgSLMR6qOyI+NZ6h4Y7mlUUzmGM7u6HFya954rNWR9nzSGrhxHRsSsbnwkCxyWF3WqRzlEh29vNgCb5li6FzBVT1himDqLSAUteB00tkYcIWVtcI=
+	t=1744102858; cv=none; b=s0YULN6jn0LslCJs7gEAD5PHV8TgKkPTFrRd5Unq6jdXe5k2jHpCF4uGcSYKkAJ85c2OO0L8Fng0LHTJV/JFafgVciRdX8SUjhcDB9x8fpEPNng3iDrpopvf4pETk2EaIwMmGPxQiNodu3S5M1Iei22+TNAeTEb7evKb+8bYxyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744102811; c=relaxed/simple;
-	bh=IOBaPhBPQn243ogcXRBwDDvATe+ezveJxDBto5NgdQs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=PsvaRWWfqR23VuZqxCkLOEe8oREjdAKNLfI3OJIDyxTof6SGYgT8emRnss5eWPUuJu5bW1auK9TUSQL+24hNEisuLuZKkG/R0InF3uqSWcyWu51wBrk+7Bu/Zd4/q5G3yTPFiBtGnSXUXUEYa5oft9guMq8JnGW7gO0RwSGDFrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mTtdDgRC; arc=none smtp.client-ip=209.85.221.54
+	s=arc-20240116; t=1744102858; c=relaxed/simple;
+	bh=c83TZ4jSKABzhkQCUXoca9OE9cP3DZ7PDolQQhKJPDU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HIKviGcvRQVvnHvFyf+0u9mGJjFH8e+upAOQ8evjCi63LvRWNnIeYbVfnK5d/ARE0BGd12Tx9IhmE2KoPldnB1fkSC9jICx3N1w3mH+TobR31g2PXzYbRh4CspdGNFQBRxCfNyb9QJa+ZtDE7feEhK8TRAqdNXQ/rR+PIFJ3PL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iTKH22s+; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-39c30d9085aso3100361f8f.1
-        for <bpf@vger.kernel.org>; Tue, 08 Apr 2025 02:00:09 -0700 (PDT)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-39ac8e7688aso3923140f8f.2
+        for <bpf@vger.kernel.org>; Tue, 08 Apr 2025 02:00:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744102808; x=1744707608; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k0RtXYV55mAwNkiErUaiSZF4QXdkRd5ukBwSAyasdVQ=;
-        b=mTtdDgRCFCqMnDanLZY0umehsglfT1ghe9gKFAGfhF3aQ9ZI3G9lxpVOS6RzEBZJxx
-         W/K9kNylgCM/FO2Sh0YQV8LVsSCDCpP77ph0w7q9YOLReZQo1ouj/uQXxqp2Ma+gGz3D
-         Kg5jzTVuvtI19N4c+mPdn62LHultv2++/0G0j42s531JCaAJeCziZG9y+lqcM5SBh0HK
-         ep6cwz31XJt2+YVIpJR5XJkitqL5UdPdq4teuTaJXlRKLc9UqpEs37RLKksQxnFKem+i
-         ZJHUPi6gtOtX/v+hOQx7I/2w05CZeKn3dX+Y8BDoz6MuQQbb8FmZbPuPxvKaRnbwLw3/
-         NQ0Q==
+        d=gmail.com; s=20230601; t=1744102854; x=1744707654; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FtVaHJRwJKxr5rNrk6bl6iL6//WQ89HK4FME6lsGodE=;
+        b=iTKH22s+BDmJny6mPsqZSljps+CW9CoU2UVaF8ay+99xYFLOWO9mtwWSMlBBMxBgjR
+         NdZm/1M0XzDZBEPsSDpyRmeHwfvW/+sYPENfNq+n0DAQT7r/05GpWqGB9WSQOvJxZ2J3
+         YXVAnpfAaS+YFTCsXg0XG41aqzvfb4RkALx0UKhMkbPs0qw5vn6CZWhiQe3Klv6eF788
+         1HXHhhNBJfvNlW+OfOOXbvP8xVO8LOKigLcqoFUWbioEgb7ol2AR2dMhpk8zM7TEERo5
+         x4iIf5QwmHxBzuvadNDNiCOO9FmM005hhvpP4xgBC1inKswdxb3mt7d0EkE00ao3Jf/R
+         juNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744102808; x=1744707608;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k0RtXYV55mAwNkiErUaiSZF4QXdkRd5ukBwSAyasdVQ=;
-        b=wzq3ocVQSC9AV+xOGXztunt9BGOOWig/6J5Xcb9yObbjRSGJzn1E5RWy/80OjemfEb
-         +wGQ1/OveGO2UPciQ4rXdQHGX1n/bkMgWLSSzv1PYVFl4ZdJZPoEG44NmF1h2KOGP7Rj
-         Uwz1IEQONbPh6ZPuqpc1+4HTnOhNdcQZlAj31OmCzJkzpyAr85RH4+6/4Fi5ReJldKgC
-         SvnOmTnazfG45fMyIYFfsOpuwPt/gux9+RiDR8uR6Zb26CNpo3mAlmYFjx2PXWhPrjmI
-         qxylLBLjCApeUY6qwrPO4DiPG3mEZd/JcXamFhgo/kIW9m3ejMQvHykn7dkiAmJOrhbA
-         Y2RQ==
-X-Gm-Message-State: AOJu0YzF44vZGRryRsbFyGh4sMgRV8C7M/3ifXcc1Lro4Eu0rgQTXugh
-	5/lYlqIyQeMzLQaUKRkgU+T0F9cUwI6bLkuwtne3mgpOIANKKBRBeZjCfQ==
-X-Gm-Gg: ASbGnct0RAfZc29dS+lzOfDVEyFFsLdzgHZ7jjXnQCr8I8m1Ob/w2ormEb9WSofQHJ6
-	F6z970gm4KancLmGX3U1JN7rIk43uIz6p2bkShkAzF1LqI1+OqcKI4sjX6V4C6hcd/lVlNyKi6N
-	xs97ai5QRZZwcxnJOcpSqgTySeCi6hX1q/GXJ7SHCY5T6S/HXv+/PAShzkptBJ465VOv+AWHGsq
-	4904yEyD34poy/DbYRPRoAVQ6srmC6eyB42OBZbbXR7QDQ4cPTKGu3nuv5a0YJ/0DAMNIhARub6
-	V3sbQMaPKGBzD9pQXANWdAN+NcaVAYSc+EpoPl/ENRWC6PhvdBILGHxj+vUBKq+2EZQxmcmEW56
-	b7rEq9OcpBt9EvWFdt8yMAh5j6oTR81K/Ai/sBsOfovI=
-X-Google-Smtp-Source: AGHT+IGPkPGzMYBymYfGMbSXwRJVFOrnPha+/4SLcSH/jn3Bq1ITGLwoMrUNK4f/OjQQ6LQMS2n1UA==
-X-Received: by 2002:a05:6000:2406:b0:38f:3a89:fdb5 with SMTP id ffacd0b85a97d-39cb3575d97mr13413751f8f.11.1744102807493;
-        Tue, 08 Apr 2025 02:00:07 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1744102854; x=1744707654;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FtVaHJRwJKxr5rNrk6bl6iL6//WQ89HK4FME6lsGodE=;
+        b=wqxktYPQfLeqS/+derAggqSpLmwWXgVuyGC7kWYIcm9ft4HnUK/lYkY7hNTcyYRZDo
+         PMtcIRSHppNnQ4oe3ffXfyYpV+SBsiQj7BkSsCcV0D8p6Bww3kbZrRObu61Srgf9kqjC
+         dxcKR5nFTopTcfHSX/ytFbGHfq718a/6M8or3ooo9eS28p1ndhnAgQZX8QhGS4Uy1Fmw
+         bmfT3Lw06dAhJcxVkZHG4b0v1iI6SJL5l7/mJcSfLX/61+GiQ+2/gAuZ5O3sNO8pemE8
+         WWingtYjh/2Vl/jQvZB5ui1QSGTdnVUM7un4vhHbrQJKo7UcAdI9kpGlZ5DyySBsztXz
+         1uCg==
+X-Gm-Message-State: AOJu0YyWRb7Pn85kPzKcXbexKiEedHPSl+lREqVqb075JvBeoztG3ItF
+	c3RoKkyttljkeSfm3GUaV0ED6cnZxbKvWLn5OmPuWiHyeBO3msf0n8cASw==
+X-Gm-Gg: ASbGncvrgq/a0N3hviWQfFe8oF30j0aKZfKCk1VldiBVRFV+vWmD6CtZOgaCFZRp+uW
+	OHcnSQktaMp2UTCHYEuQgDFODK/4CWpESnFCBBO8Ig2SlO/3uP+fi/5TbzE+sJ1U/sOFG9D5CYV
+	5hH9GQz90ncoOiyOqZ3vYwpxfMz/UDEbmeTOgZYL3hHz1PXrSy4u6H2CnXDGWEXdIvml8o5QnEs
+	SYO4XrXDxaD8qkfTsB8toYJLiN4sujbpHOJ59b/1WPZJNfm0zRL3uMur+tuO+rzFDeE9JmYJqaw
+	QwgYMWemzCms+5qurxhkq6hNj/UPNoBOGZU+9kYnvYD226VYBuj9TLuQulCK1bjMZXDo16fuje/
+	xI04XTi9icyQ2UTlJTxUNAGsx2LHd7FC7/dex92K3y7M=
+X-Google-Smtp-Source: AGHT+IHXJf8gSaWjXnDrr44PODMB74onV6GCNLHm4O4PiKf1pGxwVv5dXIc/qcmDLZmQyjDEQneAfw==
+X-Received: by 2002:a05:6000:4310:b0:391:3bba:7f18 with SMTP id ffacd0b85a97d-39d6fc01096mr9650589f8f.12.1744102853563;
+        Tue, 08 Apr 2025 02:00:53 -0700 (PDT)
 Received: from mail.gmail.com (2a01cb0889497e0024496da6ab48450e.ipv6.abo.wanadoo.fr. [2a01:cb08:8949:7e00:2449:6da6:ab48:450e])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c3020da22sm14555925f8f.68.2025.04.08.02.00.05
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43ec34af0e6sm156518475e9.16.2025.04.08.02.00.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Apr 2025 02:00:06 -0700 (PDT)
-Date: Tue, 8 Apr 2025 11:00:04 +0200
+        Tue, 08 Apr 2025 02:00:52 -0700 (PDT)
+Date: Tue, 8 Apr 2025 11:00:51 +0200
 From: Paul Chaignon <paul.chaignon@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next 1/2] bpf: Clarify role of BPF_F_RECOMPUTE_CSUM
-Message-ID: <ff6895d42936f03dbb82334d8bcfd50e00c79086.1744102490.git.paul.chaignon@gmail.com>
+Subject: [PATCH bpf-next 2/2] bpf: Clarify the meaning of BPF_F_PSEUDO_HDR
+Message-ID: <5126ef84ba75425b689482cbc98bffe75e5d8ab0.1744102490.git.paul.chaignon@gmail.com>
+References: <ff6895d42936f03dbb82334d8bcfd50e00c79086.1744102490.git.paul.chaignon@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,67 +88,47 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <ff6895d42936f03dbb82334d8bcfd50e00c79086.1744102490.git.paul.chaignon@gmail.com>
 
-BPF_F_RECOMPUTE_CSUM doesn't update the actual L3 and L4 checksums in
-the packet, but simply updates skb->csum (according to skb->ip_summed).
-This patch clarifies that to avoid confusions.
+In the bpf_l4_csum_replace helper, the BPF_F_PSEUDO_HDR flag should only
+be set if the modified header field is part of the pseudo-header.
+
+If you modify for example the UDP ports and pass BPF_F_PSEUDO_HDR,
+inet_proto_csum_replace4 will update skb->csum even though it shouldn't
+(the port and the UDP checksum updates null each other).
 
 Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
 ---
- include/uapi/linux/bpf.h       | 14 +++++++++-----
- tools/include/uapi/linux/bpf.h | 14 +++++++++-----
- 2 files changed, 18 insertions(+), 10 deletions(-)
+ include/uapi/linux/bpf.h       | 2 +-
+ tools/include/uapi/linux/bpf.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 28705ae67784..9c184a66ebcd 100644
+index 9c184a66ebcd..0cebb0a83541 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -1995,11 +1995,15 @@ union bpf_attr {
-  * long bpf_skb_store_bytes(struct sk_buff *skb, u32 offset, const void *from, u32 len, u64 flags)
-  * 	Description
-  * 		Store *len* bytes from address *from* into the packet
-- * 		associated to *skb*, at *offset*. *flags* are a combination of
-- * 		**BPF_F_RECOMPUTE_CSUM** (automatically recompute the
-- * 		checksum for the packet after storing the bytes) and
-- * 		**BPF_F_INVALIDATE_HASH** (set *skb*\ **->hash**, *skb*\
-- * 		**->swhash** and *skb*\ **->l4hash** to 0).
-+ * 		associated to *skb*, at *offset*. The *flags* are a combination
-+ * 		of the following values:
-+ *
-+ * 		**BPF_F_RECOMPUTE_CSUM**
-+ * 			Automatically update *skb*\ **->csum** after storing the
-+ * 			bytes.
-+ * 		**BPF_F_INVALIDATE_HASH**
-+ * 			Set *skb*\ **->hash**, *skb*\ **->swhash** and *skb*\
-+ * 			**->l4hash** to 0.
+@@ -2055,7 +2055,7 @@ union bpf_attr {
+  * 		untouched (unless **BPF_F_MARK_ENFORCE** is added as well), and
+  * 		for updates resulting in a null checksum the value is set to
+  * 		**CSUM_MANGLED_0** instead. Flag **BPF_F_PSEUDO_HDR** indicates
+- * 		the checksum is to be computed against a pseudo-header.
++ * 		that the modified header field is part of the pseudo-header.
   *
-  * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		This helper works in combination with **bpf_csum_diff**\ (),
+  * 		which does not update the checksum in-place, but offers more
 diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 28705ae67784..9c184a66ebcd 100644
+index 9c184a66ebcd..0cebb0a83541 100644
 --- a/tools/include/uapi/linux/bpf.h
 +++ b/tools/include/uapi/linux/bpf.h
-@@ -1995,11 +1995,15 @@ union bpf_attr {
-  * long bpf_skb_store_bytes(struct sk_buff *skb, u32 offset, const void *from, u32 len, u64 flags)
-  * 	Description
-  * 		Store *len* bytes from address *from* into the packet
-- * 		associated to *skb*, at *offset*. *flags* are a combination of
-- * 		**BPF_F_RECOMPUTE_CSUM** (automatically recompute the
-- * 		checksum for the packet after storing the bytes) and
-- * 		**BPF_F_INVALIDATE_HASH** (set *skb*\ **->hash**, *skb*\
-- * 		**->swhash** and *skb*\ **->l4hash** to 0).
-+ * 		associated to *skb*, at *offset*. The *flags* are a combination
-+ * 		of the following values:
-+ *
-+ * 		**BPF_F_RECOMPUTE_CSUM**
-+ * 			Automatically update *skb*\ **->csum** after storing the
-+ * 			bytes.
-+ * 		**BPF_F_INVALIDATE_HASH**
-+ * 			Set *skb*\ **->hash**, *skb*\ **->swhash** and *skb*\
-+ * 			**->l4hash** to 0.
+@@ -2055,7 +2055,7 @@ union bpf_attr {
+  * 		untouched (unless **BPF_F_MARK_ENFORCE** is added as well), and
+  * 		for updates resulting in a null checksum the value is set to
+  * 		**CSUM_MANGLED_0** instead. Flag **BPF_F_PSEUDO_HDR** indicates
+- * 		the checksum is to be computed against a pseudo-header.
++ * 		that the modified header field is part of the pseudo-header.
   *
-  * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		This helper works in combination with **bpf_csum_diff**\ (),
+  * 		which does not update the checksum in-place, but offers more
 -- 
 2.43.0
 
