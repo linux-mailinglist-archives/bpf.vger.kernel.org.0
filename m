@@ -1,211 +1,189 @@
-Return-Path: <bpf+bounces-55484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55485-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9873A81636
-	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 22:01:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB3EEA816C3
+	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 22:22:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7857219E0C56
-	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 20:01:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E7293B49E7
+	for <lists+bpf@lfdr.de>; Tue,  8 Apr 2025 20:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC0B254AF6;
-	Tue,  8 Apr 2025 20:00:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CCC92528ED;
+	Tue,  8 Apr 2025 20:22:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rXnlvhcn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FJ0LmU+x"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65E2254840;
-	Tue,  8 Apr 2025 20:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC9B241CA3;
+	Tue,  8 Apr 2025 20:22:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744142411; cv=none; b=ksesjlad1f3iPSZLk/HtiRbrF9xRFIqDGjdi8qgeIKB5D8GZD/xkCH2J3AOKv7J5MUrHrHgfh8puLYisqqL50vuwPZIMcxO+jTX0TGaK8Veg2xab2ftaLhDctZg9BTUNsCSdh2Av6bzlM4Sfb+nkZAUTAvCo3yniSvihIAj3M0Y=
+	t=1744143724; cv=none; b=E/8ncXEv/weVAPvzN+kWMDvf8jES9W+2fHveskWK2t0IlmPAdElDx+8t8y98UiQVsvjk51ba/rwhLA3wyQ/yeg1zBVZBG2ftTaS2Oax8u6Adyrg8BuWbg5rMCUIdx/k3Hm+OgR/nvESBMiaaOkp9Ekbj5piUU4cI6gXNIBZ4kn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744142411; c=relaxed/simple;
-	bh=DxJbKtG/Yz4PpeU3tbXajF1XYBa8WDoJkNgKlsLBPfs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A4XumG7mduiUlec01+UOk8DZ221EfdgPUAAiXNe3S00A9kfVcf1MAsWKEq8VZ4ft7BxytFosKxn9bRk1qVCmJgRDfWgiO+Hj8UpIQUYHC9OsXEHeC0gLsbO9g+YXeGYr6Krf4oEu/1QKqt0BpShgo54U36FiJtO4m2g7vb0gDNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rXnlvhcn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 991CAC4CEEC;
-	Tue,  8 Apr 2025 20:00:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744142410;
-	bh=DxJbKtG/Yz4PpeU3tbXajF1XYBa8WDoJkNgKlsLBPfs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rXnlvhcnmtm9IDbNuGhMpqYuf+9vPnMKXFtefxE/cumIm3uBYyYL21d3/ZK/MIl7Q
-	 Kfct9jEsts0cy/GUfaWZPpYQh1iAwkQRfYy3LRSBSpcd6Sbj/2YRpse9PyPp3tW9ql
-	 QiZzhWHW1XgnpZ9oVPfk0bYhjHrF9B21dkoWyIzWNzK+77/djHi4qAItlv2UnIo8SL
-	 OAL8zTAGjDB3DhLC/xE+h8mwWsZ8awmOqlk1/T9zlTGnciTVBTlIViXrcx09gY/bCI
-	 C7UAbfibb/Fi6jTkkvrhik9ZxivySAtaA2rV8Y0iJAi9dxR7A8SrcVD8hj+GXj7FTJ
-	 WaGo1UgB+3/4g==
-From: Jakub Kicinski <kuba@kernel.org>
-To: davem@davemloft.net
-Cc: netdev@vger.kernel.org,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	andrew+netdev@lunn.ch,
-	horms@kernel.org,
-	sdf@fomichev.me,
-	hramamurthy@google.com,
-	kuniyu@amazon.com,
-	jdamato@fastly.com,
-	Jakub Kicinski <kuba@kernel.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH net-next v2 5/8] xdp: double protect netdev->xdp_flags with netdev->lock
-Date: Tue,  8 Apr 2025 12:59:52 -0700
-Message-ID: <20250408195956.412733-6-kuba@kernel.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250408195956.412733-1-kuba@kernel.org>
-References: <20250408195956.412733-1-kuba@kernel.org>
+	s=arc-20240116; t=1744143724; c=relaxed/simple;
+	bh=umrs8nf1yHNtTlHW+5uJsZQYBs+rN/lSC5eqcpjo5J0=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eMm3eELzTRYauY2mcaEa6bENMLt+lPx4f7Bnqn7uXxx5zkJXzeFPx/bDqrcsW8/pa68I/2KRYLuBI8mS7TY7vT2XwbCp+Q047HrIV7xXvQL/tTWRkRYgTa0hAbGggqbxjSzBicyqtAmZCxR15+ePfDMoeYW/dStNNrFaoFzDrXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FJ0LmU+x; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ac29fd22163so1045235266b.3;
+        Tue, 08 Apr 2025 13:22:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744143721; x=1744748521; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=iMt1r/F2XNN27MwBAL3KuI/cRUpPDfyeHOKGNdC7QJM=;
+        b=FJ0LmU+xLqk/XDKAtqt+EnVawddlAboTK/rVKSgL+kFR4Q+LPQIk4cJblGImmbSnDV
+         A9X9mXJwyIlv7T+1fdRRj13kkFu7z1+iYLGKwwc0cow5rJSZkFBmyfsme1zufkBVttfv
+         S0oMI+lXGsgP2VJJD4g+3IXuoHmlOQf2VnFf05SWvK+OwcKY2UIE10wB7SljVXxAnOHs
+         AWjI6iszD4g8obq/AG6+wpwRjmVYn9FlUzxIdFfMuyBKOKEQyQ08TqRKlWFI2OsDCQvF
+         OY0SbG2YmCtfvUhO9aMv/Q16dIja+y8dkHjQbI3lrTm7UX8DuSwdBBa48jXEEwYuwRJF
+         CQlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744143721; x=1744748521;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iMt1r/F2XNN27MwBAL3KuI/cRUpPDfyeHOKGNdC7QJM=;
+        b=rLJslD44c3jkG56DQx35Wn51HpxAtNxSa0vuuKdlf33FcISy1GYABbr32fEW3cvGb5
+         41iYL9dz17uiFU+xWJCN0cnRjDrMex3G+Mgy3rx62XrjudH3bgeZpLKBZnmdYhXwHBwW
+         oc1Z3q0JXjHwtQxHR+n3r/YJzhxUZBkFMY21FK8DpATXmtRUW5pZZZCaOvxkpKPNGN1K
+         b7cwSHht2LPP/9gWtAPwgTIbH969VI71HdbBR6UgS3Mn4paGivg+iQQikmKQ2ELeZiwc
+         2S1XYwRx7TAc8IHmuTHpJiOJKgQ4mF3K7CHFWpbb4wHG6aiNpELhUIJXvrZDt1G5uFLe
+         v7eg==
+X-Forwarded-Encrypted: i=1; AJvYcCVTrWbG3Z1FcJkdC4lG7IlKHCJzTI2cw580/7GfwS+c/tllfmpQ1JmxSU3rxksWkxxkIbU=@vger.kernel.org, AJvYcCWOZnTHJg183sn4lfctd0v37QA4fUW9QQFqkTHKRm9STAWV86AcWdYi7LcTCGjQFR5rMIhYwh+d6pm9+2JB@vger.kernel.org, AJvYcCXxaKdjHWWKSA1y1p3uvwzYKn44k7Mrcfh1+l6nc512a/H2HsBm/dx5GOpn98bfkkXlCuzSJ/pUgAz0EjuFqzompt3V@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoyApPVKHp85AnGFfD4pQO3CbL+4E4dFsECMPfux7mUUtwmiXZ
+	gbyFUyMGeP/uXunXrB8KhZoJt2xqO1tjXmS8b0ZnxJOODRSvwlyB
+X-Gm-Gg: ASbGncv7He1L1cGe2DJb5tjyVY8QgcArKVmwgxHFP21i5jTrviDcTU9nEiqlBNvBsqw
+	IB0zaCyxfxlJWfL1IzxiDUi/MF+ZL6sWh+NErUFNi4/NW+aHUYi624/LAdWZDX7/2OudVCr+9yY
+	AfxLF2v01/ZhZ687eULQAQ3BDELCWzElPps0E9vCpNF1mmfuL8ezFX5S0380gx7/eepW5Wp27D2
+	q4pXyYSm5hnDoN/V060GlPXQozCdmCWhTviHR4junsFZ6IuovTg4nwByLUOQhyfhpUfWOPEBMGT
+	OgvdI7w9qN/DdpDgr4UvHVxL+qeqT1Ksm5kYVebR7moanuIRdCU=
+X-Google-Smtp-Source: AGHT+IHQON87cPPvrYmjqYx0pWOKi6qv9xnfs2gXXYPnfEV4LpZ6EgpJixyC3wJVZaC1H/fq4IyIjA==
+X-Received: by 2002:a17:907:968b:b0:ac6:ff34:d046 with SMTP id a640c23a62f3a-aca9b614b22mr63937766b.2.1744143720387;
+        Tue, 08 Apr 2025 13:22:00 -0700 (PDT)
+Received: from krava (85-193-35-57.rib.o2.cz. [85.193.35.57])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac7db5eb6e9sm787644066b.21.2025.04.08.13.21.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Apr 2025 13:21:59 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 8 Apr 2025 22:21:57 +0200
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	David Laight <David.Laight@aculab.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
+Subject: Re: [PATCH RFCv3 10/23] uprobes/x86: Add support to emulate nop5
+ instruction
+Message-ID: <Z_WFZT3rZtjts3u-@krava>
+References: <20250320114200.14377-1-jolsa@kernel.org>
+ <20250320114200.14377-11-jolsa@kernel.org>
+ <CAEf4BzY8z8r5uGEFjtNVm0L2JBwQ1ZPP2gqgsVqheqBkPiJ-9g@mail.gmail.com>
+ <Z_Ox7ibkULkJ_2Lx@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z_Ox7ibkULkJ_2Lx@krava>
 
-Protect xdp_features with netdev->lock. This way pure readers
-no longer have to take rtnl_lock to access the field.
+On Mon, Apr 07, 2025 at 01:07:26PM +0200, Jiri Olsa wrote:
+> On Fri, Apr 04, 2025 at 01:33:11PM -0700, Andrii Nakryiko wrote:
+> > On Thu, Mar 20, 2025 at 4:43 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > Adding support to emulate nop5 as the original uprobe instruction.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  arch/x86/kernel/uprobes.c | 16 ++++++++++++++++
+> > >  1 file changed, 16 insertions(+)
+> > >
+> > 
+> > This optimization is independent from the sys_uprobe, right? Maybe
+> > send it as a stand-alone patch and let's land it sooner?
+> 
+> ok, will send it separately
+> 
+> > Also, how hard would it be to do the same for other nopX instructions?
+> 
+> will check, might be easy
 
-This includes calling NETDEV_XDP_FEAT_CHANGE under the lock.
-Looks like that's fine for bonding, the only "real" listener,
-it's the same as ethtool feature change.
+we can't do all at the moment, nop1-nop8 are fine, but uprobe won't
+attach on nop9/10/11 due unsupported prefix.. I guess insn decode
+would need to be updated first
 
-In terms of normal drivers - only GVE need special consideration
-(other drivers don't use instance lock or don't support XDP).
-It calls xdp_set_features_flag() helper from gve_init_priv() which
-in turn is called from gve_reset_recovery() (locked), or prior
-to netdev registration. So switch to _locked.
+I'll send the nop5 emulation change, because of above and also I don't
+see practical justification to emulate other nops
 
-Reviewed-by: Joe Damato <jdamato@fastly.com>
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+jirka
+
+
 ---
-CC: bpf@vger.kernel.org
----
- Documentation/networking/netdevices.rst    |  1 +
- include/linux/netdevice.h                  |  2 +-
- include/net/xdp.h                          |  1 +
- drivers/net/ethernet/google/gve/gve_main.c |  2 +-
- net/core/lock_debug.c                      |  2 +-
- net/core/xdp.c                             | 12 +++++++++++-
- 6 files changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/networking/netdevices.rst b/Documentation/networking/netdevices.rst
-index 6c2d8945f597..d6357472d3f1 100644
---- a/Documentation/networking/netdevices.rst
-+++ b/Documentation/networking/netdevices.rst
-@@ -354,6 +354,7 @@ For devices with locked ops, currently only the following notifiers are
- running under the lock:
- * ``NETDEV_REGISTER``
- * ``NETDEV_UP``
-+* ``NETDEV_XDP_FEAT_CHANGE``
- 
- The following notifiers are running without the lock:
- * ``NETDEV_UNREGISTER``
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 7242fb8a22fc..dece2ae396a1 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -2526,7 +2526,7 @@ struct net_device {
- 	 *	@net_shaper_hierarchy, @reg_state, @threaded
- 	 *
- 	 * Double protects:
--	 *	@up, @moving_ns, @nd_net
-+	 *	@up, @moving_ns, @nd_net, @xdp_flags
- 	 *
- 	 * Double ops protects:
- 	 *	@real_num_rx_queues, @real_num_tx_queues
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 48efacbaa35d..20e41b5ff319 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -616,6 +616,7 @@ struct xdp_metadata_ops {
- u32 bpf_xdp_metadata_kfunc_id(int id);
- bool bpf_dev_bound_kfunc_id(u32 btf_id);
- void xdp_set_features_flag(struct net_device *dev, xdp_features_t val);
-+void xdp_set_features_flag_locked(struct net_device *dev, xdp_features_t val);
- void xdp_features_set_redirect_target(struct net_device *dev, bool support_sg);
- void xdp_features_clear_redirect_target(struct net_device *dev);
- #else
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index f9a73c956861..7a249baee316 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -2185,7 +2185,7 @@ static void gve_set_netdev_xdp_features(struct gve_priv *priv)
- 		xdp_features = 0;
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 9194695662b2..6616cc9866cc 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -608,6 +608,21 @@ static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ 		*sr = utask->autask.saved_scratch_register;
  	}
- 
--	xdp_set_features_flag(priv->dev, xdp_features);
-+	xdp_set_features_flag_locked(priv->dev, xdp_features);
  }
- 
- static int gve_init_priv(struct gve_priv *priv, bool skip_describe_device)
-diff --git a/net/core/lock_debug.c b/net/core/lock_debug.c
-index b7f22dc92a6f..598c443ef2f3 100644
---- a/net/core/lock_debug.c
-+++ b/net/core/lock_debug.c
-@@ -20,6 +20,7 @@ int netdev_debug_event(struct notifier_block *nb, unsigned long event,
- 	switch (cmd) {
- 	case NETDEV_REGISTER:
- 	case NETDEV_UP:
-+	case NETDEV_XDP_FEAT_CHANGE:
- 		netdev_ops_assert_locked(dev);
- 		fallthrough;
- 	case NETDEV_DOWN:
-@@ -58,7 +59,6 @@ int netdev_debug_event(struct notifier_block *nb, unsigned long event,
- 	case NETDEV_OFFLOAD_XSTATS_DISABLE:
- 	case NETDEV_OFFLOAD_XSTATS_REPORT_USED:
- 	case NETDEV_OFFLOAD_XSTATS_REPORT_DELTA:
--	case NETDEV_XDP_FEAT_CHANGE:
- 		ASSERT_RTNL();
- 		break;
- 
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index f86eedad586a..3cd0db9c9d2d 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -17,6 +17,7 @@
- #include <net/page_pool/helpers.h>
- 
- #include <net/hotdata.h>
-+#include <net/netdev_lock.h>
- #include <net/xdp.h>
- #include <net/xdp_priv.h> /* struct xdp_mem_allocator */
- #include <trace/events/xdp.h>
-@@ -991,17 +992,26 @@ static int __init xdp_metadata_init(void)
- }
- late_initcall(xdp_metadata_init);
- 
--void xdp_set_features_flag(struct net_device *dev, xdp_features_t val)
-+void xdp_set_features_flag_locked(struct net_device *dev, xdp_features_t val)
- {
- 	val &= NETDEV_XDP_ACT_MASK;
- 	if (dev->xdp_features == val)
- 		return;
- 
-+	netdev_assert_locked_or_invisible(dev);
- 	dev->xdp_features = val;
- 
- 	if (dev->reg_state == NETREG_REGISTERED)
- 		call_netdevice_notifiers(NETDEV_XDP_FEAT_CHANGE, dev);
- }
-+EXPORT_SYMBOL_GPL(xdp_set_features_flag_locked);
 +
-+void xdp_set_features_flag(struct net_device *dev, xdp_features_t val)
++static bool emulate_nop_insn(struct arch_uprobe *auprobe)
 +{
-+	netdev_lock(dev);
-+	xdp_set_features_flag_locked(dev, val);
-+	netdev_unlock(dev);
++	unsigned int i;
++
++	/*
++	 * Uprobe is only allowed to be attached on nop1 through nop8. Further nop
++	 * instructions have unsupported prefix and uprobe fails to attach on them.
++	 */
++	for (i = 1; i < 9; i++) {
++		if (!memcmp(&auprobe->insn, x86_nops[i], i))
++			return true;
++	}
++	return false;
 +}
- EXPORT_SYMBOL_GPL(xdp_set_features_flag);
+ #else /* 32-bit: */
+ /*
+  * No RIP-relative addressing on 32-bit
+@@ -621,6 +636,10 @@ static void riprel_pre_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
+ {
+ }
++static bool emulate_nop_insn(struct arch_uprobe *auprobe)
++{
++	return false;
++}
+ #endif /* CONFIG_X86_64 */
  
- void xdp_features_set_redirect_target(struct net_device *dev, bool support_sg)
--- 
-2.49.0
-
+ struct uprobe_xol_ops {
+@@ -840,6 +859,9 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+ 	insn_byte_t p;
+ 	int i;
+ 
++	if (emulate_nop_insn(auprobe))
++		goto setup;
++
+ 	switch (opc1) {
+ 	case 0xeb:	/* jmp 8 */
+ 	case 0xe9:	/* jmp 32 */
 
