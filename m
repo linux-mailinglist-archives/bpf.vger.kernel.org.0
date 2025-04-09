@@ -1,114 +1,74 @@
-Return-Path: <bpf+bounces-55579-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55580-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10ED3A82FDF
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 21:00:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68670A83039
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 21:17:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BEAF1B61531
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 19:00:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E01451667B5
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 19:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 419F027BF7B;
-	Wed,  9 Apr 2025 18:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 496171E3DCD;
+	Wed,  9 Apr 2025 19:17:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AwT0vyUS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qJI2/Xoi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A36278140;
-	Wed,  9 Apr 2025 18:59:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5891C6BE;
+	Wed,  9 Apr 2025 19:17:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744225193; cv=none; b=D7ClpPcVh9STuUormj2hj/gU+5T8IWzxfzQ2TAGUzecmD8KymJACKMm/oaIelZsdcH5QqAk2+6ZjK1A5ZGqFZgBVc8cmd/+G809XmEQWhUZEy0PE1d5jupD/2qGV2S079qVY9BmS/esw666uMHSIrPKDBWeqsyjgp9UoAAR2QOU=
+	t=1744226234; cv=none; b=WlclO+1eE9cJsdyU3MIJTMniEy+CzW/vgTZBz8bsHSqAHwT08dsKofOj9whlC72tmHSy/+p9IKEoRC/q9JZuTSvvNvcKfMzHJ3XPGj/wMw3yXslCIeqgfQDjBuHGBwOqG/JjETXsT5T7/3/lW9B+MWk2Tq+zmb0zS3Uov/66R+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744225193; c=relaxed/simple;
-	bh=fHNugPqL3BXm983hBsCCRppe6yhgx8ucgV3hPzNfx+o=;
+	s=arc-20240116; t=1744226234; c=relaxed/simple;
+	bh=bF03VxvTsU+BqmHsQq0q+S9ppRrCc1/KlnD8PJitqk8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EBRknq1Z1ThyZD1IYaz/Nt2/2j/xmsSaTuzgEzCh0oTKL7ZB8LiYODNEeorvBb+Dhmb0lZ7Cblt6SS4XmGbypt/xifIWmS/amUyT2uRT4vEAX5CqKbMpH9ZAYaz73qdQAOOOZlMBy7JIARi+m7QztoOICDHjCcIqtKcMm15TJqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AwT0vyUS; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-736dd9c4b40so1029229b3a.0;
-        Wed, 09 Apr 2025 11:59:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744225191; x=1744829991; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=n1wi01EF8Z0TS5kAzJp4gC5MlmlCKp8z1jxkmp6i2uY=;
-        b=AwT0vyUSeHMVxMxGaqX85h5+Ycr3cchqWcwIPZFsvl7NqVw3M6oTiQKTkKpFD3nXvv
-         wJk+vP4LTW5PHzeNvGWRCbo2HuJoji7ebpq7oiVQFm/HnQW5A/DjnVgqBmkXM+V+HUou
-         M/PmFwETyOZfdRvbMFLxP6bfDKFSWcd8otC7pcGmSIQo9V3/mnB4Sc96Zrh4yapBd9C/
-         X8Enpts2d/ZmcpnT62AIzjPengeYJliEb2iypUFasFmtz/FHQ89AYXogmIEw+9XuYnRx
-         pUvMJdBhAbO9GDOsI5iI6H3fAJtpaAYC2jSMJ2pPfUrJyGbod/eSL5GhdpwfLRaeTfuG
-         wc9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744225191; x=1744829991;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n1wi01EF8Z0TS5kAzJp4gC5MlmlCKp8z1jxkmp6i2uY=;
-        b=YLN5IsLSSUMakVOEpzm1RTsPsGLCOsHaSdrYLuak0VlkP1v49UUDoMFys933sCS/A5
-         WVmMl3dunwHF6sK85Pl217HfMbLOFgt+mqni8u5yu+w2nz+2nIiptGTOfW6PMI6o+8HL
-         029YYzENSHwCL+uJ6vpQjAG44Wx+4uMnpps1UPycoZbJIatRhTjBrE7vbH4C1DlzPDaP
-         orE4ZOPZ9Bv9EBtC+ztrgAa6ZWlHHIFmS+DtQJ1vrv+k1s4u0Oaq9EtDKfKaw6WNZdUj
-         sYmXdOo88VcKeOo8AfhjnJIplcxDIawUTeC364rJb3ROjFTN7BeJkfaFoniSYkskHz81
-         fgEw==
-X-Forwarded-Encrypted: i=1; AJvYcCU2FelnGjbus29wJNXi67yTXwWNbYCCxmnYOUOyMC8qqXRRAwnQBfJIvZNLUzeFIPDGIHryt0cFDF+ayFya@vger.kernel.org, AJvYcCUHZBZV6aYCzvcmutUgm+nydHjmUZUreCcqfEmm4Y2vUQ3uPkJBneOXoA4QcGB7WPz8ak7UkzDV8jouHpg=@vger.kernel.org, AJvYcCUcug4n1Y58esBgOa5ao9oFsakBUhHmYSijakeW8i18+H/zs9VoSNxS/74npG0UXtOSYVmlBLLSDqrHMZE=@vger.kernel.org, AJvYcCVdzGav0lmh54HtuoBbf0GJFV9FltSolQQA9USMTqfTJRShlHEyuXgoFxNEMKpm9c/nsMLm/ws86o4JiKJ0Kc8=@vger.kernel.org, AJvYcCVwIK8kCiBi1jLW4lYbe2sH+n+1cZcMMFM5bGDeI8dg7Ly4U1BP+49x4bY/6EwgSOacFPY=@vger.kernel.org, AJvYcCX9sSeBxegsDPjU1Pjm9YcNuZKSwFu9DV2dcGKovMK7BXh0JM/wSnL6S0ZYk4df1vWTJpY5Jad8@vger.kernel.org, AJvYcCXEMJ83qpThn4HUkyM/9v/5MDFLU78ifhGg4hSRbmPPRvGTMw4pTm0nYJtbK0FlqxTpx71F0gafDNVkDGkC@vger.kernel.org, AJvYcCXG/5SOyLIDs+IXCjJ4JKD+hBxUYdpo3r3THacTvJXAeBERQZDqnOn0SxumvYyKdh9zPdyM06u0w4F+zgQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwD+HpNf/oCVgs5BBDeLrmBA5Otcsbr1d67Cyyg/OpSEgd4igu9
-	r8yzbj6A5cNGkup89dIhhc4wbzgSmD4WE3D0Bv8wtcTTyHHw7Vxg
-X-Gm-Gg: ASbGncuMsp+EiD0LXxAV6VZ6Bex1YMDVTI1w7c9vMbCbA9VW/RF4llJ2nOSLXI0VYG+
-	5FU0P5bBLtx3qlRatWIYOUnjRZc58Abrxda/Fcky773X6kTSDbU3Q2wyGf46JHdiYQuJq9WU3X3
-	JIqxsSRqNfDM6QqyYfulIRvwS13bhMk1MUsDAdzWxO/8BdP4Eg0JCe3N1bEu2RAH0NtJxZogwg6
-	XP+dDtYLzd65LW+SBrqbc5OcHz1ryI98jGogKbWcX1n2F6plSsJVe3u1FVCvZ4sD7OwyMFqToga
-	z+Q4h+qNeorPqo2GavWFMAqKsdLSZJmm/YsV7gtLGCx9ra8cfkTTwVZwEyFmemLBnnjkN0B2Y/k
-	EU+A=
-X-Google-Smtp-Source: AGHT+IECCxkkYx11FRXflSmygxg09UKvf+V06wtQrEcsVk2bA1aQzXREqWD22vkpXtX6pPvgieHcAA==
-X-Received: by 2002:a05:6a00:22d4:b0:73b:ac3d:9d6b with SMTP id d2e1a72fcca58-73bbcc568a5mr921360b3a.4.1744225191359;
-        Wed, 09 Apr 2025 11:59:51 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bb1e53e92sm1699061b3a.156.2025.04.09.11.59.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 11:59:50 -0700 (PDT)
-Date: Thu, 10 Apr 2025 02:59:40 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
-	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org, rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-	dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, johannes@sipsolutions.net,
-	gregkh@linuxfoundation.org, jirislaby@kernel.org,
-	yury.norov@gmail.com, akpm@linux-foundation.org, jdelvare@suse.com,
-	linux@roeck-us.net, alexandre.belloni@bootlin.com, pgaj@cadence.com,
-	hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-	jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw, Frank.Li@nxp.com,
-	linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
-	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v4 03/13] media: pci: cx18-av-vbi: Replace open-coded
- parity calculation with parity_odd()
-Message-ID: <Z/bDnLzcajzIxey3@visitorckw-System-Product-Name>
-References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-4-visitorckw@gmail.com>
- <25b7888d-f704-493b-a2d7-c5e8fff9cfb4@broadcom.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ROzE8dUwHA2d2YtFV8hBxnZ3kqekwy9ziKop/gM1fL8/EsljRzVzABCUuiCVmBV+Bfo2Kwc6mJNZCq4ZtEG7mJhVw+Hgvhu+b2vP4XPb4r5YVxNrxKcDmevQRYWMpt4i8Oim0xoCwqnlfcJwUIxyuOiYY0oxGQ5nXnJY5ilBBhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qJI2/Xoi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE2B7C4CEE2;
+	Wed,  9 Apr 2025 19:17:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744226234;
+	bh=bF03VxvTsU+BqmHsQq0q+S9ppRrCc1/KlnD8PJitqk8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qJI2/XoironzsJaz+i80e/WQ5Qp9VcugyrJtl/YBj3oj0+B7CR2sHsGtWpizK6yO4
+	 VBHn2aUCKN25vPTBjtUJ5ErBpW2uZ0Nr7njrQYPiJXVIm5JOFP/Aa8E5gmKRCoJxm0
+	 2vFvQqbHpIzkDxqkRul6nNrkQNGD3XqtCFeaHlXiWlZ71xy8f9NAVNkpTbM33mpsn2
+	 gk6Zv+IScY5WaKqKDsrRvA4EyHwyJNofhELmFBXXaSUa90cRftnriGKZcCivNb5MT/
+	 7CNvC3GIEekiFTO9pLOuthuuJFylF+HSeUIxKp18BpylKcbyjrBpuCpkk/cUVDn0Ei
+	 6TKBITTbXPjew==
+Date: Wed, 9 Apr 2025 21:17:02 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Xin Li <xin@zytor.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	virtualization@lists.linux.dev, linux-edac@vger.kernel.org,
+	kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-ide@vger.kernel.org, linux-pm@vger.kernel.org,
+	bpf@vger.kernel.org, llvm@lists.linux.dev, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org, jgross@suse.com, andrew.cooper3@citrix.com,
+	peterz@infradead.org, acme@kernel.org, namhyung@kernel.org,
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com, wei.liu@kernel.org,
+	ajay.kaher@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+	tony.luck@intel.com, pbonzini@redhat.com, vkuznets@redhat.com,
+	seanjc@google.com, luto@kernel.org, boris.ostrovsky@oracle.com,
+	kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH] x86/msr: Standardize on 'u32' MSR indices in <asm/msr.h>
+Message-ID: <Z_bHrjUKKWN28TX9@gmail.com>
+References: <20250331082251.3171276-1-xin@zytor.com>
+ <20250331082251.3171276-2-xin@zytor.com>
+ <Z-pruogreCuU66wm@gmail.com>
+ <9D15DE81-2E68-4FCD-A133-4963602E18C9@zytor.com>
+ <Z-ubVFyoOzwKhI53@gmail.com>
+ <c316a6c6-b97c-48b2-9598-d44e2ec72fbc@zytor.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -117,49 +77,183 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <25b7888d-f704-493b-a2d7-c5e8fff9cfb4@broadcom.com>
+In-Reply-To: <c316a6c6-b97c-48b2-9598-d44e2ec72fbc@zytor.com>
 
-On Wed, Apr 09, 2025 at 08:43:09PM +0200, Arend van Spriel wrote:
-> On 4/9/2025 5:43 PM, Kuan-Wei Chiu wrote:
-> > Refactor parity calculations to use the standard parity_odd() helper.
-> > This change eliminates redundant implementations.
-> > 
-> > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > ---
-> >   drivers/media/pci/cx18/cx18-av-vbi.c | 12 ++----------
-> >   1 file changed, 2 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/media/pci/cx18/cx18-av-vbi.c b/drivers/media/pci/cx18/cx18-av-vbi.c
-> > index 65281d40c681..15b515b95956 100644
-> > --- a/drivers/media/pci/cx18/cx18-av-vbi.c
-> > +++ b/drivers/media/pci/cx18/cx18-av-vbi.c
-> 
-> [...]
-> 
-> > @@ -278,7 +270,7 @@ int cx18_av_decode_vbi_line(struct v4l2_subdev *sd,
-> >   		break;
-> >   	case 6:
-> >   		sdid = V4L2_SLICED_CAPTION_525;
-> > -		err = !odd_parity(p[0]) || !odd_parity(p[1]);
-> > +		err = !parity_odd(p[0]) || !parity_odd(p[1]);
-> 
-> No need to call parity_odd() twice here. Instead you could do:
-> 
-> 		err = !parity_odd(p[0] ^ p[1]);
-> 
-> This is orthogonal to the change to parity_odd() though. More specific to
-> the new parity_odd() you can now do following as parity_odd() argument is
-> u64:
-> 
-> 		err = !parity_odd(*(u16 *)p);
-> 
-> 
-Thanks for the feedback!
-Would you prefer this change to be part of the parity() conversion
-patch, or in a separate one?
 
-Regards,
-Kuan-Wei
+* Xin Li <xin@zytor.com> wrote:
+
+> On 4/1/2025 12:52 AM, Ingo Molnar wrote:
+> > > Should we rename the *msrl() functions to *msrq() as part of this
+> > > overhaul?
+> > Yeah, that's a good idea, and because talk is cheap I just implemented
+> > this in the tip:WIP.x86/msr branch with a couple of other cleanups in
+> > this area (see the shortlog & diffstat below), but the churn is high:
+> > 
+> >    144 files changed, 1034 insertions(+), 1034 deletions(-)
+> 
+> Hi Ingo,
+> 
+> I noticed that you keep the type of MSR index in these patches as
+> "unsigned int".
+> 
+> I'm thinking would it be better to standardize it as "u32"?
+> 
+> Because:
+> 1) MSR index is placed in ECX to execute MSR instructions, and the
+>    high-order 32 bits of RCX are ignored on 64-bit.
+> 2) MSR index is encoded as a 32-bit immediate in the new immediate form
+>    MSR instructions.
+
+Makes sense - something like the attached patch?
+
+Thanks,
+
+	Ingo
+
+=====================>
+From: Ingo Molnar <mingo@kernel.org>
+Date: Wed, 9 Apr 2025 21:12:39 +0200
+Subject: [PATCH] x86/msr: Standardize on 'u32' MSR indices in <asm/msr.h>
+
+This is the customary type used for hardware ABIs.
+
+Suggested-by: Xin Li <xin@zytor.com>
+Suggested-by: "H. Peter Anvin" <hpa@zytor.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ arch/x86/include/asm/msr.h | 29 ++++++++++++++---------------
+ arch/x86/lib/msr.c         |  4 ++--
+ 2 files changed, 16 insertions(+), 17 deletions(-)
+
+diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
+index 4ee9ae734c08..20deb58308e5 100644
+--- a/arch/x86/include/asm/msr.h
++++ b/arch/x86/include/asm/msr.h
+@@ -63,12 +63,12 @@ struct saved_msrs {
+ DECLARE_TRACEPOINT(read_msr);
+ DECLARE_TRACEPOINT(write_msr);
+ DECLARE_TRACEPOINT(rdpmc);
+-extern void do_trace_write_msr(unsigned int msr, u64 val, int failed);
+-extern void do_trace_read_msr(unsigned int msr, u64 val, int failed);
++extern void do_trace_write_msr(u32 msr, u64 val, int failed);
++extern void do_trace_read_msr(u32 msr, u64 val, int failed);
+ extern void do_trace_rdpmc(u32 msr, u64 val, int failed);
+ #else
+-static inline void do_trace_write_msr(unsigned int msr, u64 val, int failed) {}
+-static inline void do_trace_read_msr(unsigned int msr, u64 val, int failed) {}
++static inline void do_trace_write_msr(u32 msr, u64 val, int failed) {}
++static inline void do_trace_read_msr(u32 msr, u64 val, int failed) {}
+ static inline void do_trace_rdpmc(u32 msr, u64 val, int failed) {}
+ #endif
+ 
+@@ -79,7 +79,7 @@ static inline void do_trace_rdpmc(u32 msr, u64 val, int failed) {}
+  * think of extending them - you will be slapped with a stinking trout or a frozen
+  * shark will reach you, wherever you are! You've been warned.
+  */
+-static __always_inline u64 __rdmsr(unsigned int msr)
++static __always_inline u64 __rdmsr(u32 msr)
+ {
+ 	DECLARE_ARGS(val, low, high);
+ 
+@@ -91,7 +91,7 @@ static __always_inline u64 __rdmsr(unsigned int msr)
+ 	return EAX_EDX_VAL(val, low, high);
+ }
+ 
+-static __always_inline void __wrmsr(unsigned int msr, u32 low, u32 high)
++static __always_inline void __wrmsr(u32 msr, u32 low, u32 high)
+ {
+ 	asm volatile("1: wrmsr\n"
+ 		     "2:\n"
+@@ -113,7 +113,7 @@ do {							\
+ 	__wrmsr((msr), (u32)((u64)(val)),		\
+ 		       (u32)((u64)(val) >> 32))
+ 
+-static inline u64 native_read_msr(unsigned int msr)
++static inline u64 native_read_msr(u32 msr)
+ {
+ 	u64 val;
+ 
+@@ -125,8 +125,7 @@ static inline u64 native_read_msr(unsigned int msr)
+ 	return val;
+ }
+ 
+-static inline u64 native_read_msr_safe(unsigned int msr,
+-						      int *err)
++static inline u64 native_read_msr_safe(u32 msr, int *err)
+ {
+ 	DECLARE_ARGS(val, low, high);
+ 
+@@ -142,7 +141,7 @@ static inline u64 native_read_msr_safe(unsigned int msr,
+ 
+ /* Can be uninlined because referenced by paravirt */
+ static inline void notrace
+-native_write_msr(unsigned int msr, u32 low, u32 high)
++native_write_msr(u32 msr, u32 low, u32 high)
+ {
+ 	__wrmsr(msr, low, high);
+ 
+@@ -152,7 +151,7 @@ native_write_msr(unsigned int msr, u32 low, u32 high)
+ 
+ /* Can be uninlined because referenced by paravirt */
+ static inline int notrace
+-native_write_msr_safe(unsigned int msr, u32 low, u32 high)
++native_write_msr_safe(u32 msr, u32 low, u32 high)
+ {
+ 	int err;
+ 
+@@ -251,7 +250,7 @@ do {								\
+ 	(void)((high) = (u32)(__val >> 32));			\
+ } while (0)
+ 
+-static inline void wrmsr(unsigned int msr, u32 low, u32 high)
++static inline void wrmsr(u32 msr, u32 low, u32 high)
+ {
+ 	native_write_msr(msr, low, high);
+ }
+@@ -259,13 +258,13 @@ static inline void wrmsr(unsigned int msr, u32 low, u32 high)
+ #define rdmsrq(msr, val)			\
+ 	((val) = native_read_msr((msr)))
+ 
+-static inline void wrmsrq(unsigned int msr, u64 val)
++static inline void wrmsrq(u32 msr, u64 val)
+ {
+ 	native_write_msr(msr, (u32)(val & 0xffffffffULL), (u32)(val >> 32));
+ }
+ 
+ /* wrmsr with exception handling */
+-static inline int wrmsr_safe(unsigned int msr, u32 low, u32 high)
++static inline int wrmsr_safe(u32 msr, u32 low, u32 high)
+ {
+ 	return native_write_msr_safe(msr, low, high);
+ }
+@@ -280,7 +279,7 @@ static inline int wrmsr_safe(unsigned int msr, u32 low, u32 high)
+ 	__err;							\
+ })
+ 
+-static inline int rdmsrq_safe(unsigned int msr, u64 *p)
++static inline int rdmsrq_safe(u32 msr, u64 *p)
+ {
+ 	int err;
+ 
+diff --git a/arch/x86/lib/msr.c b/arch/x86/lib/msr.c
+index e18925899f13..4ef7c6dcbea6 100644
+--- a/arch/x86/lib/msr.c
++++ b/arch/x86/lib/msr.c
+@@ -122,14 +122,14 @@ int msr_clear_bit(u32 msr, u8 bit)
+ EXPORT_SYMBOL_GPL(msr_clear_bit);
+ 
+ #ifdef CONFIG_TRACEPOINTS
+-void do_trace_write_msr(unsigned int msr, u64 val, int failed)
++void do_trace_write_msr(u32 msr, u64 val, int failed)
+ {
+ 	trace_write_msr(msr, val, failed);
+ }
+ EXPORT_SYMBOL(do_trace_write_msr);
+ EXPORT_TRACEPOINT_SYMBOL(write_msr);
+ 
+-void do_trace_read_msr(unsigned int msr, u64 val, int failed)
++void do_trace_read_msr(u32 msr, u64 val, int failed)
+ {
+ 	trace_read_msr(msr, val, failed);
+ }
 
