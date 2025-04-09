@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-55590-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55591-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1112A8339A
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 23:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 052E9A833A1
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 23:47:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F5471B63B12
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 21:46:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FD2A189197E
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 21:46:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F76421A95D;
-	Wed,  9 Apr 2025 21:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A332921B8F5;
+	Wed,  9 Apr 2025 21:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DJc1SjD2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LhxPZfYq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA05218E92;
-	Wed,  9 Apr 2025 21:46:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D68F215770;
+	Wed,  9 Apr 2025 21:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744235174; cv=none; b=rlmBZwVJDysuKjP/EvDHIX5YojQT6wc5+Itr3WrhPQkVAhwM69Q8o2PXl0XBDtYGujYMuXpJ9l7XGhk2NZZVu+8tjnc1gDIMzjt8JumhHh07c5ZSSCm3Pdce6hFOg28k6aU0/C4op35iqDcKMy/8LRZ+trixBQLGy1IBctC4zRg=
+	t=1744235175; cv=none; b=VvUxKsxDso/0fXquWqbskEpWCygf5lnGMSdHH2TqYDxfdrT2uLgTcp3qyiigkesLPg/KgDdBiDqnmvIld+LEn14l5KinWGfAaeWHzImPuCEF0aoD7O2qBXItDJ7/H9njh9ZP1ig//7PD6wDwbJygge9B5KTrK8aekQBlHURg7lM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744235174; c=relaxed/simple;
-	bh=HtpmPOfCekbXG4UayHfNUkrx4xFGghDA7+xcxJ/7hSk=;
+	s=arc-20240116; t=1744235175; c=relaxed/simple;
+	bh=uap6ui5lIiEAhHFejCXpS20PeCAU94lncSy4ptxcXlY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=vGBMlApGBL1fTl5eFOfU+b6ybwtx0gpsTitqgIf5AAPoTB9z/BztwA42ySoGgU76zZMkhYL4sn2Elmlrljm55/WLme4y2AX+4C9l1b7Amb/Ys/k48wbr6AZ+X9YOhgZ1ylsC3l/qnWSaumykUg39JCN6zw24WAOjzSl35JgD4Wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DJc1SjD2; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version:Content-Type; b=oWwSvOJKBbIer7WW8O8ew0YRXG4HM2XJCwo8btcBq4ewZ1aMrc3dthNGwarMPgbV1X/NCHuNmd31hxgcFTdDtPsedlsSTTcvD3DwQERyWNXphJKsIH+NHn8TMSC7SbrpMArIrTxYJzmSlb43ddAEwoVft4WVkkTaNPd+3wRymV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LhxPZfYq; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2264aefc45dso1893545ad.0;
-        Wed, 09 Apr 2025 14:46:12 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-af9a6b3da82so133066a12.0;
+        Wed, 09 Apr 2025 14:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744235171; x=1744839971; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744235173; x=1744839973; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fhvff8xITZZMdar9HZn0Dny8IHdsn0Mdqy7WvvccQvQ=;
-        b=DJc1SjD2U18rFsKZv+S8ZdkCqOWETwAYT+eSh6S7ALby0tB/SH1Mj6xkkIrIhd5CZR
-         a0sQHGtpL5tVAHgfXHS0NFkUCAQ60bq2WEln3vSEzv/S2nkZTURsp8gwrAhojT+0hNIt
-         sjcD/9mQnzoEIwe7l5YduM8Yh5Cy4fXtlWJv522ItffNzdpapjROAwiPy4Jqz6Qlj7ef
-         KdJ08wj+eooV8y49Wd2rJFXhAIPwWZdOAjdWsz42lOouc5JjKAzsbF8Y8cKQhGetNKTl
-         SOcrofaC5RixqrhoEBnuPNLwoaFGkxCt/1vqugGj4bUxGz8qZJ70GnRLsZGy5XZ3yB+C
-         Nhbw==
+        bh=5Cs84tRrnFA4DuDv2H6jTSlOH1U7N2PREqr2phBkCU8=;
+        b=LhxPZfYq0AlF7wzuBa0v54XZjeMpQMAXGpUHu5x9jj+fYN7wJ+Nay6xu2eowPzbvwX
+         N3uSTM5ErudCc+1sH79Vg7vSL96Ear74RaKC1b1tXGPwx/TnHqN2o44LTtkbfjToBy1V
+         Q6FvxdN75+xdNoJTRTpwCoYnqkzVAs5KguNlRl+AEr9JuPhlGsA5NPjHcAlCD2v9jAHd
+         hMtp/yKPiQZvYPVJcLmC5d3tYubnZX8bLJ/FTEU8H+zHhpbnlSUZfFtpd1tv0ss+dRYk
+         UY/w7FuYTkbBdB6AxehpFaBh4F9ovzAI+RgVXaTzNA7D3g3snbvymOD22EhJImA2r1tA
+         nScA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744235171; x=1744839971;
+        d=1e100.net; s=20230601; t=1744235173; x=1744839973;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fhvff8xITZZMdar9HZn0Dny8IHdsn0Mdqy7WvvccQvQ=;
-        b=JvR138+qkA2fcD5e4EzOP0gQ6prEKJKSSJknChfXUUszyZDfJSShF5ldUkNl0KnE5C
-         5HBOTOupn0Y8FEO+r1z400e1MO6JHNJpk073OhSR9RsIIwDzthnET0BqG4Tcv7p1HoKq
-         4f75CMMz3wKHeQpc3RpfGycEIwK7uU28+78XoD4eFOjTwr5dJVSduso1JuxktTkUnQzX
-         JeqcseF4Wt+aOjP8K8V7xaaGIqe2peOcjp28nT5FFPt8RBryQg+t2ZPaJ2DiSVxxUZmk
-         YXZtROpfuiT0EUDdLoYMFph4GcDz92m4eR+66FAXaRTLVHEx1wubHg61O9bHL1D1y0Cv
-         FPXw==
-X-Gm-Message-State: AOJu0YzxAYIHM/U0KIr46uQ989v5YVNFEVdmVezLzOCFobIx7WTd9PSu
-	q3DnDy1S0T5ET9cy2whTXpFFYgLIZq0E6S7jBSzfiUzo4VMOq3vKSuxeewBS
-X-Gm-Gg: ASbGncsaLBVZmv15JlhKCBH/ml69gLKP+6ieXIzUcaMjiC1cWb/AUJ0h+TN65Q7mmtr
-	q/9cNdP667/tWtlPGSSIPPzi5lbU7Fz5rocKy9L97vuaFYOMKiNxipt0AWJi+VCki6u0ulI98J2
-	H1qZg91azRBN2nGM55OECasCMXSneWW1sSY9GewLm7sPa9DQ/iKQIIpJPRw7H+L/BiRi6YTccpB
-	VAwCbmGmkvWGwywPRnv2mgI6aqeZzschjbxOA1tYD18pMdOYOoKhNHlEdzNfNlzXGrrUhUlyCFQ
-	pwX+pajRmak9Zrfl0FklKm2BP7ps
-X-Google-Smtp-Source: AGHT+IFmXKyOzdXQn1H9izB+vFA1ys1tHlNVWFdP2LA+S9r8mEbbN0QueMdEZFJdepNGyfohrV8Nsw==
-X-Received: by 2002:a17:902:d48f:b0:224:376:7a21 with SMTP id d9443c01a7336-22b42ca8b8fmr4598645ad.42.1744235171562;
-        Wed, 09 Apr 2025 14:46:11 -0700 (PDT)
+        bh=5Cs84tRrnFA4DuDv2H6jTSlOH1U7N2PREqr2phBkCU8=;
+        b=C9QIH5W4em6SkbDUwVPvKzi21SRHJv50tQwWcs7ddUeKqVvPvYYoS3mUNW3bT3ZE4M
+         67Nm/Mu5bZTFq3UBpNmIu2VrNYJb/+0qw9gVZ4/ZHQxfw9YYF3gVQa95kxAGMWHKCn7n
+         /vFhQy2h1WfsN2HbiEZDgAUdFk3nyKRoOj19LNTs3+1iaO5+OacoNRgfOsOvfqSigeUI
+         gFkUntRHEUzndI+jas5lUXZuwO9FR0RxnaN4YYYP7B7dD4R/q+ev3NiZGoPoJIiHRFxk
+         Xp+NScviugXx15kDGfPqBA82gmMAdHTSXOd3cCQonUdmUANXLmywjYuRduWPjsUmgNSR
+         wLDQ==
+X-Gm-Message-State: AOJu0YyL2K2BWhO3x/su7FjUeM/W/BDdM6dUh/F0t8S9hxmDAw3Jedei
+	4PQyjWvwMXDd3uTcnnfYg2wHqWX40uL7Z4izYaRsbJYMyybQg/BRvJznVhS6
+X-Gm-Gg: ASbGncsj4yqE0qrPtrIN6ASpUKf9hiSn07zd69Ar4ZkyAl/B2FciV2M7+r5Mpl9WyAr
+	s08EgBLdJJ3VlAy+ABxd9hrMDy8yuJPvmUChWm/qcR415t+J4a/jHBsBPsa7OEIONO/gsnfgRCY
+	1hr/QYt4V1P2bcEc5+XpVzFbloIB4LIvhiQxLumTYtR3iyga0MPdw6y78mu/K15pooKZsI1c/zX
+	XWjmHws2b0tnWhxlRk1u/bJQIgMg6/WLr29ZRjYaqiU7rPtoOMgwJ8xSyNX+zV3DxVGJkX1LGzF
+	A4o1ewAvhQKCY2NiVSbuRBOUT2qZazc+LBrylDw=
+X-Google-Smtp-Source: AGHT+IGTCdaJXN2t7bxGqHedWnyNTQALh1PRKPiLpxow6JubQi/2EcrvJoKISRcCTQnx/cA7gSok4w==
+X-Received: by 2002:a05:6a21:730a:b0:1f5:59e5:8ad2 with SMTP id adf61e73a8af0-201694dec7bmr1062982637.24.1744235172843;
+        Wed, 09 Apr 2025 14:46:12 -0700 (PDT)
 Received: from localhost ([2a03:2880:ff::])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bb1d465d7sm1866589b3a.47.2025.04.09.14.46.11
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b02a0cf38dasm1497117a12.23.2025.04.09.14.46.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 14:46:11 -0700 (PDT)
+        Wed, 09 Apr 2025 14:46:12 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -90,9 +90,9 @@ Cc: netdev@vger.kernel.org,
 	yangpeihao@sjtu.edu.cn,
 	yepeilin.cs@gmail.com,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v7 03/10] bpf: net_sched: Add basic bpf qdisc kfuncs
-Date: Wed,  9 Apr 2025 14:45:59 -0700
-Message-ID: <20250409214606.2000194-4-ameryhung@gmail.com>
+Subject: [PATCH bpf-next v7 04/10] bpf: net_sched: Add a qdisc watchdog timer
+Date: Wed,  9 Apr 2025 14:46:00 -0700
+Message-ID: <20250409214606.2000194-5-ameryhung@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250409214606.2000194-1-ameryhung@gmail.com>
 References: <20250409214606.2000194-1-ameryhung@gmail.com>
@@ -107,162 +107,197 @@ Content-Transfer-Encoding: 8bit
 
 From: Amery Hung <amery.hung@bytedance.com>
 
-Add basic kfuncs for working on skb in qdisc.
+Add a watchdog timer to bpf qdisc. The watchdog can be used to schedule
+the execution of qdisc through kfunc, bpf_qdisc_schedule(). It can be
+useful for building traffic shaping scheduling algorithm, where the time
+the next packet will be dequeued is known.
 
-Both bpf_qdisc_skb_drop() and bpf_kfree_skb() can be used to release
-a reference to an skb. However, bpf_qdisc_skb_drop() can only be called
-in .enqueue where a to_free skb list is available from kernel to defer
-the release. bpf_kfree_skb() should be used elsewhere. It is also used
-in bpf_obj_free_fields() when cleaning up skb in maps and collections.
-
-bpf_skb_get_hash() returns the flow hash of an skb, which can be used
-to build flow-based queueing algorithms.
-
-Finally, allow users to create read-only dynptr via bpf_dynptr_from_skb().
+The implementation relies on struct_ops gen_prologue/epilogue to patch bpf
+programs provided by users. Operator specific prologue/epilogue kfuncs
+are introduced instead of watchdog kfuncs so that it is easier to extend
+prologue/epilogue in the future (writing C vs BPF bytecode).
 
 Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- net/sched/bpf_qdisc.c | 111 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 110 insertions(+), 1 deletion(-)
+ net/sched/bpf_qdisc.c | 106 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 105 insertions(+), 1 deletion(-)
 
 diff --git a/net/sched/bpf_qdisc.c b/net/sched/bpf_qdisc.c
-index 7eca556a3782..d812a72ca032 100644
+index d812a72ca032..5f4ab4877535 100644
 --- a/net/sched/bpf_qdisc.c
 +++ b/net/sched/bpf_qdisc.c
-@@ -8,6 +8,9 @@
- #include <net/pkt_sched.h>
- #include <net/pkt_cls.h>
+@@ -13,6 +13,10 @@
  
-+#define QDISC_OP_IDX(op)	(offsetof(struct Qdisc_ops, op) / sizeof(void (*)(void)))
-+#define QDISC_MOFF_IDX(moff)	(moff / sizeof(void (*)(void)))
-+
  static struct bpf_struct_ops bpf_Qdisc_ops;
  
++struct bpf_sched_data {
++	struct qdisc_watchdog watchdog;
++};
++
  struct bpf_sk_buff_ptr {
-@@ -139,6 +142,95 @@ static int bpf_qdisc_btf_struct_access(struct bpf_verifier_log *log,
+ 	struct sk_buff *skb;
+ };
+@@ -142,6 +146,56 @@ static int bpf_qdisc_btf_struct_access(struct bpf_verifier_log *log,
  	return 0;
  }
  
-+__bpf_kfunc_start_defs();
++BTF_ID_LIST(bpf_qdisc_init_prologue_ids)
++BTF_ID(func, bpf_qdisc_init_prologue)
 +
-+/* bpf_skb_get_hash - Get the flow hash of an skb.
-+ * @skb: The skb to get the flow hash from.
-+ */
-+__bpf_kfunc u32 bpf_skb_get_hash(struct sk_buff *skb)
++static int bpf_qdisc_gen_prologue(struct bpf_insn *insn_buf, bool direct_write,
++				  const struct bpf_prog *prog)
 +{
-+	return skb_get_hash(skb);
-+}
++	struct bpf_insn *insn = insn_buf;
 +
-+/* bpf_kfree_skb - Release an skb's reference and drop it immediately.
-+ * @skb: The skb whose reference to be released and dropped.
-+ */
-+__bpf_kfunc void bpf_kfree_skb(struct sk_buff *skb)
-+{
-+	kfree_skb(skb);
-+}
-+
-+/* bpf_qdisc_skb_drop - Drop an skb by adding it to a deferred free list.
-+ * @skb: The skb whose reference to be released and dropped.
-+ * @to_free_list: The list of skbs to be dropped.
-+ */
-+__bpf_kfunc void bpf_qdisc_skb_drop(struct sk_buff *skb,
-+				    struct bpf_sk_buff_ptr *to_free_list)
-+{
-+	__qdisc_drop(skb, (struct sk_buff **)to_free_list);
-+}
-+
-+__bpf_kfunc_end_defs();
-+
-+BTF_KFUNCS_START(qdisc_kfunc_ids)
-+BTF_ID_FLAGS(func, bpf_skb_get_hash, KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_kfree_skb, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_qdisc_skb_drop, KF_RELEASE)
-+BTF_ID_FLAGS(func, bpf_dynptr_from_skb, KF_TRUSTED_ARGS)
-+BTF_KFUNCS_END(qdisc_kfunc_ids)
-+
-+BTF_SET_START(qdisc_common_kfunc_set)
-+BTF_ID(func, bpf_skb_get_hash)
-+BTF_ID(func, bpf_kfree_skb)
-+BTF_ID(func, bpf_dynptr_from_skb)
-+BTF_SET_END(qdisc_common_kfunc_set)
-+
-+BTF_SET_START(qdisc_enqueue_kfunc_set)
-+BTF_ID(func, bpf_qdisc_skb_drop)
-+BTF_SET_END(qdisc_enqueue_kfunc_set)
-+
-+enum qdisc_ops_kf_flags {
-+	QDISC_OPS_KF_COMMON		= 0,
-+	QDISC_OPS_KF_ENQUEUE		= 1 << 0,
-+};
-+
-+static const u32 qdisc_ops_context_flags[] = {
-+	[QDISC_OP_IDX(enqueue)]		= QDISC_OPS_KF_ENQUEUE,
-+	[QDISC_OP_IDX(dequeue)]		= QDISC_OPS_KF_COMMON,
-+	[QDISC_OP_IDX(init)]		= QDISC_OPS_KF_COMMON,
-+	[QDISC_OP_IDX(reset)]		= QDISC_OPS_KF_COMMON,
-+	[QDISC_OP_IDX(destroy)]		= QDISC_OPS_KF_COMMON,
-+};
-+
-+static int bpf_qdisc_kfunc_filter(const struct bpf_prog *prog, u32 kfunc_id)
-+{
-+	u32 moff, flags;
-+
-+	if (!btf_id_set8_contains(&qdisc_kfunc_ids, kfunc_id))
++	if (prog->aux->attach_st_ops_member_off != offsetof(struct Qdisc_ops, init))
 +		return 0;
 +
-+	if (prog->aux->st_ops != &bpf_Qdisc_ops)
-+		return -EACCES;
++	/* r6 = r1; // r6 will be "u64 *ctx". r1 is "u64 *ctx".
++	 * r1 = r1[0]; // r1 will be "struct Qdisc *sch"
++	 * r0 = bpf_qdisc_init_prologue(r1);
++	 * r1 = r6; // r1 will be "u64 *ctx".
++	 */
++	*insn++ = BPF_MOV64_REG(BPF_REG_6, BPF_REG_1);
++	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0);
++	*insn++ = BPF_CALL_KFUNC(0, bpf_qdisc_init_prologue_ids[0]);
++	*insn++ = BPF_MOV64_REG(BPF_REG_1, BPF_REG_6);
++	*insn++ = prog->insnsi[0];
 +
-+	moff = prog->aux->attach_st_ops_member_off;
-+	flags = qdisc_ops_context_flags[QDISC_MOFF_IDX(moff)];
-+
-+	if ((flags & QDISC_OPS_KF_ENQUEUE) &&
-+	    btf_id_set_contains(&qdisc_enqueue_kfunc_set, kfunc_id))
-+		return 0;
-+
-+	if (btf_id_set_contains(&qdisc_common_kfunc_set, kfunc_id))
-+		return 0;
-+
-+	return -EACCES;
++	return insn - insn_buf;
 +}
 +
-+static const struct btf_kfunc_id_set bpf_qdisc_kfunc_set = {
-+	.owner = THIS_MODULE,
-+	.set   = &qdisc_kfunc_ids,
-+	.filter = bpf_qdisc_kfunc_filter,
-+};
++BTF_ID_LIST(bpf_qdisc_reset_destroy_epilogue_ids)
++BTF_ID(func, bpf_qdisc_reset_destroy_epilogue)
 +
- static const struct bpf_verifier_ops bpf_qdisc_verifier_ops = {
- 	.get_func_proto		= bpf_base_func_proto,
- 	.is_valid_access	= bpf_qdisc_is_valid_access,
-@@ -225,8 +317,25 @@ static struct bpf_struct_ops bpf_Qdisc_ops = {
- 	.owner = THIS_MODULE,
++static int bpf_qdisc_gen_epilogue(struct bpf_insn *insn_buf, const struct bpf_prog *prog,
++				  s16 ctx_stack_off)
++{
++	struct bpf_insn *insn = insn_buf;
++
++	if (prog->aux->attach_st_ops_member_off != offsetof(struct Qdisc_ops, reset) &&
++	    prog->aux->attach_st_ops_member_off != offsetof(struct Qdisc_ops, destroy))
++		return 0;
++
++	/* r1 = stack[ctx_stack_off]; // r1 will be "u64 *ctx"
++	 * r1 = r1[0]; // r1 will be "struct Qdisc *sch"
++	 * r0 = bpf_qdisc_reset_destroy_epilogue(r1);
++	 * BPF_EXIT;
++	 */
++	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_FP, ctx_stack_off);
++	*insn++ = BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0);
++	*insn++ = BPF_CALL_KFUNC(0, bpf_qdisc_reset_destroy_epilogue_ids[0]);
++	*insn++ = BPF_EXIT_INSN();
++
++	return insn - insn_buf;
++}
++
+ __bpf_kfunc_start_defs();
+ 
+ /* bpf_skb_get_hash - Get the flow hash of an skb.
+@@ -170,6 +224,36 @@ __bpf_kfunc void bpf_qdisc_skb_drop(struct sk_buff *skb,
+ 	__qdisc_drop(skb, (struct sk_buff **)to_free_list);
+ }
+ 
++/* bpf_qdisc_watchdog_schedule - Schedule a qdisc to a later time using a timer.
++ * @sch: The qdisc to be scheduled.
++ * @expire: The expiry time of the timer.
++ * @delta_ns: The slack range of the timer.
++ */
++__bpf_kfunc void bpf_qdisc_watchdog_schedule(struct Qdisc *sch, u64 expire, u64 delta_ns)
++{
++	struct bpf_sched_data *q = qdisc_priv(sch);
++
++	qdisc_watchdog_schedule_range_ns(&q->watchdog, expire, delta_ns);
++}
++
++/* bpf_qdisc_init_prologue - Hidden kfunc called in prologue of .init. */
++__bpf_kfunc void bpf_qdisc_init_prologue(struct Qdisc *sch)
++{
++	struct bpf_sched_data *q = qdisc_priv(sch);
++
++	qdisc_watchdog_init(&q->watchdog, sch);
++}
++
++/* bpf_qdisc_reset_destroy_epilogue - Hidden kfunc called in epilogue of .reset
++ * and .destroy
++ */
++__bpf_kfunc void bpf_qdisc_reset_destroy_epilogue(struct Qdisc *sch)
++{
++	struct bpf_sched_data *q = qdisc_priv(sch);
++
++	qdisc_watchdog_cancel(&q->watchdog);
++}
++
+ __bpf_kfunc_end_defs();
+ 
+ BTF_KFUNCS_START(qdisc_kfunc_ids)
+@@ -177,6 +261,9 @@ BTF_ID_FLAGS(func, bpf_skb_get_hash, KF_TRUSTED_ARGS)
+ BTF_ID_FLAGS(func, bpf_kfree_skb, KF_RELEASE)
+ BTF_ID_FLAGS(func, bpf_qdisc_skb_drop, KF_RELEASE)
+ BTF_ID_FLAGS(func, bpf_dynptr_from_skb, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_qdisc_watchdog_schedule, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_qdisc_init_prologue, KF_TRUSTED_ARGS)
++BTF_ID_FLAGS(func, bpf_qdisc_reset_destroy_epilogue, KF_TRUSTED_ARGS)
+ BTF_KFUNCS_END(qdisc_kfunc_ids)
+ 
+ BTF_SET_START(qdisc_common_kfunc_set)
+@@ -187,16 +274,22 @@ BTF_SET_END(qdisc_common_kfunc_set)
+ 
+ BTF_SET_START(qdisc_enqueue_kfunc_set)
+ BTF_ID(func, bpf_qdisc_skb_drop)
++BTF_ID(func, bpf_qdisc_watchdog_schedule)
+ BTF_SET_END(qdisc_enqueue_kfunc_set)
+ 
++BTF_SET_START(qdisc_dequeue_kfunc_set)
++BTF_ID(func, bpf_qdisc_watchdog_schedule)
++BTF_SET_END(qdisc_dequeue_kfunc_set)
++
+ enum qdisc_ops_kf_flags {
+ 	QDISC_OPS_KF_COMMON		= 0,
+ 	QDISC_OPS_KF_ENQUEUE		= 1 << 0,
++	QDISC_OPS_KF_DEQUEUE		= 1 << 1,
  };
  
-+BTF_ID_LIST(bpf_sk_buff_dtor_ids)
-+BTF_ID(func, bpf_kfree_skb)
+ static const u32 qdisc_ops_context_flags[] = {
+ 	[QDISC_OP_IDX(enqueue)]		= QDISC_OPS_KF_ENQUEUE,
+-	[QDISC_OP_IDX(dequeue)]		= QDISC_OPS_KF_COMMON,
++	[QDISC_OP_IDX(dequeue)]		= QDISC_OPS_KF_DEQUEUE,
+ 	[QDISC_OP_IDX(init)]		= QDISC_OPS_KF_COMMON,
+ 	[QDISC_OP_IDX(reset)]		= QDISC_OPS_KF_COMMON,
+ 	[QDISC_OP_IDX(destroy)]		= QDISC_OPS_KF_COMMON,
+@@ -219,6 +312,10 @@ static int bpf_qdisc_kfunc_filter(const struct bpf_prog *prog, u32 kfunc_id)
+ 	    btf_id_set_contains(&qdisc_enqueue_kfunc_set, kfunc_id))
+ 		return 0;
+ 
++	if ((flags & QDISC_OPS_KF_DEQUEUE) &&
++	    btf_id_set_contains(&qdisc_dequeue_kfunc_set, kfunc_id))
++		return 0;
 +
- static int __init bpf_qdisc_kfunc_init(void)
- {
--	return register_bpf_struct_ops(&bpf_Qdisc_ops, Qdisc_ops);
-+	int ret;
-+	const struct btf_id_dtor_kfunc skb_kfunc_dtors[] = {
-+		{
-+			.btf_id       = bpf_sk_buff_ids[0],
-+			.kfunc_btf_id = bpf_sk_buff_dtor_ids[0]
-+		},
-+	};
-+
-+	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &bpf_qdisc_kfunc_set);
-+	ret = ret ?: register_btf_id_dtor_kfuncs(skb_kfunc_dtors,
-+						 ARRAY_SIZE(skb_kfunc_dtors),
-+						 THIS_MODULE);
-+	ret = ret ?: register_bpf_struct_ops(&bpf_Qdisc_ops, Qdisc_ops);
-+
-+	return ret;
- }
- late_initcall(bpf_qdisc_kfunc_init);
+ 	if (btf_id_set_contains(&qdisc_common_kfunc_set, kfunc_id))
+ 		return 0;
+ 
+@@ -235,6 +332,8 @@ static const struct bpf_verifier_ops bpf_qdisc_verifier_ops = {
+ 	.get_func_proto		= bpf_base_func_proto,
+ 	.is_valid_access	= bpf_qdisc_is_valid_access,
+ 	.btf_struct_access	= bpf_qdisc_btf_struct_access,
++	.gen_prologue		= bpf_qdisc_gen_prologue,
++	.gen_epilogue		= bpf_qdisc_gen_epilogue,
+ };
+ 
+ static int bpf_qdisc_init_member(const struct btf_type *t,
+@@ -250,6 +349,11 @@ static int bpf_qdisc_init_member(const struct btf_type *t,
+ 
+ 	moff = __btf_member_bit_offset(t, member) / 8;
+ 	switch (moff) {
++	case offsetof(struct Qdisc_ops, priv_size):
++		if (uqdisc_ops->priv_size)
++			return -EINVAL;
++		qdisc_ops->priv_size = sizeof(struct bpf_sched_data);
++		return 1;
+ 	case offsetof(struct Qdisc_ops, peek):
+ 		qdisc_ops->peek = qdisc_peek_dequeued;
+ 		return 0;
 -- 
 2.47.1
 
