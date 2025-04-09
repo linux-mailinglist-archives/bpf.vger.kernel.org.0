@@ -1,129 +1,138 @@
-Return-Path: <bpf+bounces-55512-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55513-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95056A820E8
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 11:19:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D390A8217A
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 11:58:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E5EF19E83AB
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 09:20:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFE208A7108
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 09:57:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F5025D1FB;
-	Wed,  9 Apr 2025 09:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98ECC25D538;
+	Wed,  9 Apr 2025 09:57:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ron52JK5"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ye2+qP4p"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8259325A338
-	for <bpf@vger.kernel.org>; Wed,  9 Apr 2025 09:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E5B25B67E;
+	Wed,  9 Apr 2025 09:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744190362; cv=none; b=nUZXAns7U6eQSJBKXRbnQYw8QyNoRcBemKiknTfkoc/S0ZchSohBrTXiYl7q/fLMG817loFIU4bGe6xskFRxKLUaZ5bi1imwuKvg+mx5Xv+GAcnmJsUF9Ke8/ioL/hSh1LtJtRwSLW3vLr/fJqOa44Qik5vNtwM47nEHtvwg/IE=
+	t=1744192641; cv=none; b=petsJ6bwwftdRR+vkaU8ktNR1mgidjosT/+E7O1Tv2jFCo9SZpuhTeMjq9h7eFkZ/jgQEv+IBHyM23ZT0GvT9qU5eXlv/45LyNyMA6XbcVbLfPEiv5tYWKA9gXbZPYrfDhKZ834EVXf5h3A/50QfBKNu7x2piPthf41IRffTI8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744190362; c=relaxed/simple;
-	bh=Cfd6taZ1XReawrgJXmD5rJvLa2bX28eDDbODjWV3A7M=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=MqNmtUQcLViqffyfHKHPCxOQPaO3clMKAc7dhApJxosLUkPItGT4jK8TMrVTbLGHRtrA2I8O/Cp/bWHi5y1bTsVJhWrv0b/lMgh9fVJjpi5BUN+qPaXS9GBUj5kayMGssWfvve0vW+y0dUk3Xzg9eDdTrKi+nQ5nobwSUep32Ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ron52JK5; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-39c1efc4577so3559913f8f.0
-        for <bpf@vger.kernel.org>; Wed, 09 Apr 2025 02:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1744190359; x=1744795159; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BnvAuD5LYuYp+IrGs5WCzF6uFd7AghllYpVWvB/imFY=;
-        b=ron52JK5l48UYgA1b6Z8AwfLI8k+dCXa8kaJXfoHly9kb7EoFNqPPu2+YnRYH1UzwI
-         m+SxwgB6c85gcrDPINkGzsBp/n26taZ9/XNhh/ysCb07Jek5RXXbZHe8ZXg6G3dLdrdb
-         3XN7c/R5kUoObRKIszKi+0fSVRc9xRQak65E0FIOM5w5cYaqV54pQBg/7JGLBxtBxSow
-         sCU2rzJElEGMNyu9K3FKxwe8crLmx9f2kjpQip9aoP+TzcXYkEEsQoFDyJNeCcWY015K
-         uxSybcgyCF2jK6TlMoaUeFHGLusV5J+eilzfixUrbO1NIQ0zu8Cu796aSjITIcHvDrxg
-         dyDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744190359; x=1744795159;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BnvAuD5LYuYp+IrGs5WCzF6uFd7AghllYpVWvB/imFY=;
-        b=COvvall5VJelVsl+VmXwE8d70H/HL4yzWd5chirIcpJ/gVtXhA+4Vqo4LjRFP+SL8t
-         J4QUB6I+ZHf+b3SO3tcuesnyWjghg0fKOI8XAkXMzBqRQ9EZHNMAnxFTXGGEBVpmryGK
-         Wp/xdbZCn1FpUsW9arHbPyMPsq26qrcG0kcI6Gi9OY1aW36uKWojQi9tAULffGg7SUTL
-         yMn5xvZhvxR86YeoggWxgq7WiRfzV8xgQAwkZnXtTkGczpj9fIMp2hMfIHiOrJDdHaw3
-         O2vLsPJkptmrriIyFFREjnypbHR0mq9aaNcnsjUgTa/Qv3DCLMZNEyUW2ogZRM8/pY2q
-         nurQ==
-X-Gm-Message-State: AOJu0Ywn7gowuA82NNPxBf0I8FVrUJdhIKlTjdtrZP40CQiV+aWrQUqi
-	fxaqlwr9X2pGMh3D6UXGlFqYygEvhipIPH9F+BW1NPpGRKoZqQTz3DzCQOqkMWE=
-X-Gm-Gg: ASbGncviUKTvMXByY1mL6UA08lEI6fQCSoZneeEQQvk9dYZR7VtuF9Qs7HarIEpnLKK
-	fOYWBPAldeR+4iMVorOP/U2QWNoiCx6Zsq9+28R3qgJpn7dOWXDWP59UypsqeSVM3LgvFmcCmYg
-	XtVAubO2DTM7Dv6jpSHGqG9fTP7XJ9QzFJIepVUAPblV6TNGnnXKgmhMc91fPkJm0NF2tkSBxeV
-	VrwbcNfrLpudE0V+JmFdkjjhFfomVyZ3iPUrQpA/H2UO4o6T9lZjrjxrNg/kF6JLDvZgVtMD6MP
-	jc1JhIsysSR7BSjwCtbpSK6YQjAZ8S5k+FlJP/Jp6BKFiw==
-X-Google-Smtp-Source: AGHT+IE4ppIX6lojvphZF721IXqNkby2jKURMZ2AEr6A+yNFFriezPurU8sORfsHksfqW0Pmeg8uAg==
-X-Received: by 2002:a5d:648a:0:b0:39c:1257:feb9 with SMTP id ffacd0b85a97d-39d87ce3c43mr1922196f8f.57.1744190358674;
-        Wed, 09 Apr 2025 02:19:18 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-39d893f0a3dsm1048659f8f.78.2025.04.09.02.19.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 02:19:18 -0700 (PDT)
-Date: Wed, 9 Apr 2025 12:19:14 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org
-Subject: [bug report] bpf: Augment raw_tp arguments with PTR_MAYBE_NULL
-Message-ID: <843a3b94-d53d-42db-93d4-be10a4090146@stanley.mountain>
+	s=arc-20240116; t=1744192641; c=relaxed/simple;
+	bh=C4LvSLwfHxGG+LmOO+Hpl1aLG1vB5gD8OXyfnJnLO1M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ngvp2qLyvwkobLOu2leA/Nf7ycacqKg1Ody+ykzw8icI1nO5yGH3sHX5eRo9wCUm58/Q3NJIlNqXZKEl66dUG4DQCGk7KkexAW1Ki3ze4CdOZyxpfwAYt3H+JUQPGs/KfbjsKSmP7yjeRnHneBg5egaYBdg6LSJ/pkK9JkJ9k14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ye2+qP4p; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5393kBAE008172;
+	Wed, 9 Apr 2025 09:56:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=4IR01w7c6IYyecb9RKBfcm9aMGadajgq/bwfVU/wi
+	ao=; b=Ye2+qP4pv/lSf/aJtBdatJTpTYUpjm2AWThgYGvADEZ1BXydQ06s9mcZH
+	zPHNoNxxGekMffFxzm0XkxcrxKQ+R3aI7VW8m84/VMeKD8NEzIXOp0T6X7QYKfZu
+	EiH2ZPlMYW/vraGxmZzF8I7MUIzw1NZI8CClLlp6ac+7R7dBBMXlbZmdihZph0HF
+	+hiMekLaXHIlwe6B7beIUWyCHyFmf0074EFOO4CX6jqDvetHIZ2q/APWnSJpnRaQ
+	aykP5XxHho3zdEuIShIXbsP2pYyXo5yXO9tTssPaz0Od77pwU7jutPOuRqd7AWk2
+	F1bxCwsM70KdKZYlyXZQQqkI61Pow==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45wh99hhx9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 09 Apr 2025 09:56:54 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 5399nf86007566;
+	Wed, 9 Apr 2025 09:56:54 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45wh99hhue-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 09 Apr 2025 09:56:54 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5398VO7d024610;
+	Wed, 9 Apr 2025 09:56:42 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 45ueutfa3p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 09 Apr 2025 09:56:42 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5399ueB112517822
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 9 Apr 2025 09:56:40 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8A52520071;
+	Wed,  9 Apr 2025 09:56:40 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 244BC20073;
+	Wed,  9 Apr 2025 09:56:36 +0000 (GMT)
+Received: from li-621bac4c-27c7-11b2-a85c-c2bf7c4b3c07.ibm.com.com (unknown [9.43.46.171])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  9 Apr 2025 09:56:35 +0000 (GMT)
+From: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+To: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc: ast@kernel.org, hbathini@linux.ibm.com, andrii@kernel.org,
+        daniel@iogearbox.net, mykolal@fb.com, martin.lau@linux.dev,
+        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org
+Subject: [PATCH] selftests/bpf: Fix bpf_nf selftest failure
+Date: Wed,  9 Apr 2025 15:26:33 +0530
+Message-ID: <20250409095633.33653-1-skb99@linux.ibm.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: _7bzi4MxnXVnTmd88qLeJOkXEz8b-KVA
+X-Proofpoint-ORIG-GUID: PCihOu802yJC6FMZmplOTIec5oujlP-z
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-04-09_03,2025-04-08_04,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=716 bulkscore=0 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2502280000
+ definitions=main-2504090054
 
-Hello Kumar Kartikeya Dwivedi,
+For systems with missing iptables-legacy tool, this selftest fails.
 
-Commit 838a10bd2ebf ("bpf: Augment raw_tp arguments with
-PTR_MAYBE_NULL") from Dec 13, 2024 (linux-next), leads to the
-following Smatch static checker warning:
+Add check to find if iptables-legacy tool is available and skip the
+test if the tool is missing.
 
-kernel/bpf/btf.c:6832 btf_ctx_access() warn: should '(1 << (arg * 4))' be a 64 bit type?
-kernel/bpf/btf.c:6835 btf_ctx_access() warn: should '(2 << (arg * 4))' be a 64 bit type?
+Fixes: de9c8d848d90 ("selftests/bpf: S/iptables/iptables-legacy/ in the bpf_nf and xdp_synproxy test")
+Signed-off-by: Saket Kumar Bhaskar <skb99@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/prog_tests/bpf_nf.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-kernel/bpf/btf.c
-    6822                         return false;
-    6823                 tname = btf_name_by_offset(btf, t->name_off);
-    6824                 if (!tname)
-    6825                         return false;
-    6826                 /* Checked by bpf_check_attach_target */
-    6827                 tname += sizeof("btf_trace_") - 1;
-    6828                 for (i = 0; i < ARRAY_SIZE(raw_tp_null_args); i++) {
-    6829                         /* Is this a func with potential NULL args? */
-    6830                         if (strcmp(tname, raw_tp_null_args[i].func))
-    6831                                 continue;
---> 6832                         if (raw_tp_null_args[i].mask & (0x1 << (arg * 4)))
-                                                         ^^^^
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+index dbd13f8e42a7..dd6512fa652b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+@@ -63,6 +63,12 @@ static void test_bpf_nf_ct(int mode)
+ 		.repeat = 1,
+ 	);
+ 
++	if (SYS_NOFAIL("iptables-legacy --version")) {
++		fprintf(stdout, "Missing required iptables-legacy tool\n");
++		test__skip();
++		return;
++	}
++
+ 	skel = test_bpf_nf__open_and_load();
+ 	if (!ASSERT_OK_PTR(skel, "test_bpf_nf__open_and_load"))
+ 		return;
+-- 
+2.43.5
 
-    6833                                 info->reg_type |= PTR_MAYBE_NULL;
-    6834                         /* Is the current arg IS_ERR? */
-    6835                         if (raw_tp_null_args[i].mask & (0x2 << (arg * 4)))
-                                                         ^^^^
-.mask is a u64 but "(0x2 << (arg * 4))" will shift wrap if arg is more
-than 7.
-
-    6836                                 ptr_err_raw_tp = true;
-    6837                         break;
-    6838                 }
-    6839                 /* If we don't know NULL-ness specification and the tracepoint
-    6840                  * is coming from a loadable module, be conservative and mark
-    6841                  * argument as PTR_MAYBE_NULL.
-    6842                  */
-    6843                 if (i == ARRAY_SIZE(raw_tp_null_args) && btf_is_module(btf))
-    6844                         info->reg_type |= PTR_MAYBE_NULL;
-
-regards,
-dan carpenter
 
