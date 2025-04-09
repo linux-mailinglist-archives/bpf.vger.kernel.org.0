@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-55547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82BD1A82B6E
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 17:56:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65012A82B88
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 17:58:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12BA0465063
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 15:52:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 778261BA2190
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 15:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D74278161;
-	Wed,  9 Apr 2025 15:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E29FA279338;
+	Wed,  9 Apr 2025 15:46:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZBfd1OOs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iSLouCSY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E53226A1C8;
-	Wed,  9 Apr 2025 15:46:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014CE267B15;
+	Wed,  9 Apr 2025 15:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744213607; cv=none; b=psj42xA43HgRn1wNt7emD07s6b5YIeyKFITS9YlvfBSiOyTFOB2dpiuOGO5IKxNw7CiQgpCbc8M5tZ7QgJARJWqtqYqEuSs7s1RBA/mq1QdTHpb+jvpj3dDPV95Sc17EyA+4s21YFZxKta9tdzu2NJhrPHB+HcScfvm298oCYuk=
+	t=1744213617; cv=none; b=ljnHNnrBYdUv1PHmVo+cBLwCoVrQ1IKajXr7P+Ec1oYEOq+1fR/kITmgDsuj5R8j9lo0K9vJZmm8BqPZjryNf4Ve2wkvw0wC7KyKg/MFVWJYyJLcaGlhpc1StwYyfojGLlaTlVvG0ueU+IJX4VVj5PUE09NsA4qsyrM2xiVJalE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744213607; c=relaxed/simple;
-	bh=86K6PMYrG4Yc7WDoGSRLur+je0yhJ/i79zL8gF3HsR4=;
+	s=arc-20240116; t=1744213617; c=relaxed/simple;
+	bh=X8Vvsxqf+8EVtFmpaknjrToXsmDQI1ClPOYdeJUSaXg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NzVI2sSRbkGRAZe8Dl3Opgd2Bf4dmBEuO+mPTYkDsJWa2QU017jxaAwZx5AhBVioLMPvz8MmJ8c4OndbxWyYwEopkR+79Pj7Odt13jIBwKS3+yuBvjC9vTveBU2VcCaskLvpJT3JM/UxNOjQJxsXWp3h+wrIXr/MkG9Ar2xwrl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZBfd1OOs; arc=none smtp.client-ip=209.85.216.48
+	 MIME-Version; b=jjYJiTKBh3NcfmapDDOo8BOAA8c5sTaKTHmWqxxRykXkZc0nJTpQVz5/LcvQHOzLCD45i/hMv+splIVlQxg5AXbblZ4XpIcN2TM1WCVr/Dlbk2Pa1SGih9V3+mzM2Im25ZsWVmnzJ66BAh3nlndXnuvKoa/QgFMZjhkikkc/YK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iSLouCSY; arc=none smtp.client-ip=209.85.215.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-303a66af07eso5487887a91.2;
-        Wed, 09 Apr 2025 08:46:44 -0700 (PDT)
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-ad51f427054so4793613a12.1;
+        Wed, 09 Apr 2025 08:46:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744213604; x=1744818404; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744213615; x=1744818415; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+BuIdzO9eB2TbumWIHS4Jh+TQPJAfCKqhpNNx8Z0il0=;
-        b=ZBfd1OOsGeB6Rxuk3EZhcqH2cKcIQIzZS4jgA1gpyT3sYCqqFKLuXfCo8OsCazCRmo
-         L68dKQ1rH2YZjyvOE5QBCLssmFmBsDFqmR6M0mCfK/soOFAwKGqCDOsBxtAzS5r0ZaH3
-         p9w4S+WOXkFXbkha987dos6Xe4meca1XVhFVw2neLAv9ImoeIan2zHSJS7KImH2a/eVF
-         yCeBO0AHNNM+ZP+B+97eVi4cEOJc8jWOdhHVhoL1/xSNJv+HVdp1CDFwqbwkIYKdIP8K
-         PHficpw4QYyfZHQIJ85hUgupentM4VVbodkgbY44WIsWXr/i9cfLVEjNBCZUfWnOBcva
-         OhlQ==
+        bh=qmHMxU2w78+CVBOj7SKK51/xntQtWaTeeSMBQ6WnTFU=;
+        b=iSLouCSYc7YlieviFnZjaNIJ8Oc4LB01ee2CDdQ8Jsk+OsDSXeBZnx0h5ql25Z2kQ7
+         O/Xyz/pVv0NdZf2/Bug7HBEF5vHzbC8EAFP7gIGLer0wKf77iXaX6IXMxgd5I8RH/7jj
+         TKWK1dDq2BN2iD0acfP8UhMnmKSzfwqYPUZjp+7aCvW3RDu3whXcNc+O70AHebk+hQoe
+         5NSVz1fEpX6lYcSdasl10PVOvpAQcuuJ3dUg8zQLAQCNbISosS6hQ/zn3SB8eFrt88nT
+         PQRo/VEWI+NlvkfPK0WQ13nlSygDLe5c5tPNDE/axMXHlmP2Y+qGxUGD8tOQ7gaPyxH9
+         tg7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744213604; x=1744818404;
+        d=1e100.net; s=20230601; t=1744213615; x=1744818415;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+BuIdzO9eB2TbumWIHS4Jh+TQPJAfCKqhpNNx8Z0il0=;
-        b=D82vb4HJZZilsbP6KMf58HOSdUxcKKJCDzvLWx3u8PmguLuh85uMIDjPcXk3uvXqAX
-         7Z/fwOPLRxRYoLXvr7ZsMLAR1oIGfC72lrDHhr0JpCijqXjzUe82H4Tb0OmZn5lo1DF3
-         PWaHXrzKbo909i9Vn85MwZkFhktaTFpNIO+brN9TdC54O2Z9QEFpijGY5m666Nf2Nz+3
-         HDaVESamVFvyB5Q9K92/kUMCKxP5+foob9w8Slwen913zb/ogaNiEPQyzqJkBoGkfW9Q
-         w2UwPZncdzpKHpNe6H9Yv9WGfh5UJFIg+TpV+OBFGXnrNi2cxprO7OJhpXCiZqgaf++h
-         i9ZA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6s6CuNZUDZhnHKzaKNx/EV2SWSLalYhkTjWP23dQMhj8PjgFSoDj+VvfGxMbLQqm0eBioLHvP@vger.kernel.org, AJvYcCUjdnckgfgMCcNks7+BQlMwOOFuXJuoo9iAXaZQezn0lmsQlXjN85GnA6WlD2NeYQZMTCmNLfRXbGC5LDg0iLg=@vger.kernel.org, AJvYcCUmrv9FgzqvOCFk+iM436OHmsjOJJGDh4ksjYwH5dYPbTL2CL7+Hj3y2JSyKgRYWysv7t2FSOFZ3T5Vs6kB@vger.kernel.org, AJvYcCVC1jGZ+nGa3QKWkLXQaWfgo7/e30T2RZRNTsuOkxlBULW5ce7XuMfI2NIfdiaG5ECi25DuGHYAuWfA5Cg=@vger.kernel.org, AJvYcCVYd4tgMrepp3Y2KiL3jMLPo+bvtBnwINUfyO7Gm1hypc6afCtYl0V/9SCwbp/ZamB+2WNaGAkHL5xgLR5F@vger.kernel.org, AJvYcCWgDQ+gbTiCwRioNTEjPxeSOyMhWd17/yDcxqrHvClWo0biYMJdEYmFTTySEhf97Ahe/LpvetzPTZWWGyI=@vger.kernel.org, AJvYcCXBewpRU4OZFHul9CY+6ecKo2HyT3hS+WfnYmTmrfRhGgQvPEwViq9sLmJqyGQ5URxy7kM=@vger.kernel.org, AJvYcCXFx/QAuQTZ9E6frQoYxtPIFCBfyWqzirGwS59yfL00YLQFQvH0FI8DLRdk5vVxW97+HM+/vaU54k4vYdg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7VtMSlqzp1ClhUCLZyKcYNu4QGh0yXGUznHyd/ntOqErAS9ja
-	yG63SExBOO3oGeR4LEWGAK25yWGzVtgO/hfhrut2+nmz2+8SFQgg
-X-Gm-Gg: ASbGncsEFHA1FA1iIBDz5U4hiFup5upzCltpZPXz5fSSyCBrQ3V8rcKFAVtFGHh4tR6
-	LX8k5jSVJa7T11BPl5iDi1/E9tGGU57n+Prx1BVbBBunKuss9wdcse4JQZSno16CmPdzBPkeBy5
-	+aTq8CZbDRiD1OPDKNtB0wiLMm7KvlDaS4T5aZFGFZZlE13qrnUW7gfbENGXnFoSOpKH09ucvrC
-	QqSso6uwOVPAlNJVfb2eZNno/8EbE8nCtJ1fwhOo3rBPBnYKaQWKSE6BdNZg3L2gxk7ERara2R/
-	62WJJON/M5s5lhVSSF/b8G5WKTFi5MLiy2vj+sc1PqwN+LMy8/AmZFaqr818HN5AR8c8lCQ=
-X-Google-Smtp-Source: AGHT+IHJFVNSWnOegw3VgIiiuGFrSpWrUrgalLTX98dIPQMejjp36YTfz+PTZSsEbZDfgQmuBjYI5A==
-X-Received: by 2002:a17:90b:2b8e:b0:2ee:90a1:5d42 with SMTP id 98e67ed59e1d1-306dba636c9mr5272799a91.0.1744213603675;
-        Wed, 09 Apr 2025 08:46:43 -0700 (PDT)
+        bh=qmHMxU2w78+CVBOj7SKK51/xntQtWaTeeSMBQ6WnTFU=;
+        b=aymmGej54usPaJmUjmXJhJ6XpXVjDmL7GEFv9BALeXolP4akLpfN7XemU0clBbbonq
+         OytMhIzDgaWWshaEUSpP61S65/l87gFF71UuqfsPrBgEXEtCH7RZWklPVaaaSzIbSv1m
+         xNig8Lh09dSBrqSAJZwdKUwbgXchJbnZeV/7eiPgwZx3RPsWRNsMblvD0rrOUGWoeJOg
+         f87QKgn9Ytwoa+2NifsxpuT5tHUkbuCxLlQAN7byUs94rj1H9T/0y69JSe/xEYtCINda
+         4pjSucBaqc5LptN3c5ZKxNvYj6xPAWeIUxYKegeKuYFhgJuIn5/ol4i2ho1HVmLzaLVf
+         DeiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUI04uD5ZUGbVDI2Hmev89ydrbhwdBwaekIKRWAPF+9i72mNvLdNtGFcGpRHQO8g9qObgldAyLhZ7m0qbIe@vger.kernel.org, AJvYcCUXCpCkzX7co9m7GHmtZhuv+OVWHGaY6wKhiPsNccVKbf833rwsEb58dUYLlL/UdWVkLPJwHLkN0F0PtKo=@vger.kernel.org, AJvYcCUm+bqWWXl0WESGQZJa2e+YzbdZSMLTscqFf1jHxTN2rnl69yywYiUBY7RW2K/yqQOoTStD4SXj@vger.kernel.org, AJvYcCUt6BciCYQ4LGi3mgmiGNlFYywbzS08S98Livp4cRV0SNMJeYNbkAG5yr9UUOwla7aFcSI=@vger.kernel.org, AJvYcCV9st7Z7ex3aLCUna93NMaBH/LFnEjzPAB6RhlSs2HJYc7/mD0lM3XIwaGrJ8wdxTm7V+AHWHqfl7AH+rA1@vger.kernel.org, AJvYcCW+qTCLHhy1mNOzTvOerBPNruv7BNGsaA2xqG6gdVii6Y5AXZVSXRm9ihfCz84nt0ySCFD7qQ7BjyKpbIs=@vger.kernel.org, AJvYcCW6ue4jtk+jbn2x2oxfMsJUB5IsjOcusuBYLqKckVc4hIvuqKt3PLqGXKKdULJU4m8Qhzr81MnJ/x+qMBY=@vger.kernel.org, AJvYcCWH38XCgdGZxb2WKUs3NEcWbJWkdwbf28wTjHSnaY52AA9BrsMPrF+CpVAniunkYudGXeqqLpJXqwXOjOK0mVw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxKCSpH0MypNXGTMfppU4nb2wq+EQlYpMG0E2HGDnYzunTl5FyH
+	6xBg4326ub3YhkEqLJHygL4h0Ycyvi11ld//d3zIiupfiDg4GXPo
+X-Gm-Gg: ASbGncvfpIsK8qXzUztMbVsWdKBffb6mxrbU3xriROWXMNPnx7P78Kw4cfLsiaJASWB
+	dB6ZE8NL2CA0T29lVa3H5qFx/dUU3VJE1o7ACBt8PVQ9GpcE47T1TmN0fZbBou3FtG0v3P6ISjz
+	temsyAG4rL4gxBs2aya2zITJ32gs86sm7BsL8XkFgRUFn2HxvqkX1ppcmvLvABEdvANJhlA8UmG
+	JuPqZrd5hC4ZS0olGWFidi3NzwHGx74PrhMGYQNpYqH5ItqSxMuKTVtM6UD9cSa5HIMXei2AyGj
+	vtRBMxOE3mTkCdE7uECidyGiKBjK/RRaf1iMktNNAFhigyl5sOtbcBDVyeRrFmF/8BGRlOs=
+X-Google-Smtp-Source: AGHT+IFODj+q3bMay4dU940pWbrerSwhoQdYamKxEyheU1FRVVU9x2vDvw1G0LxNRVOTtBzOvt8phw==
+X-Received: by 2002:a17:90b:2e4b:b0:2eb:140d:f6df with SMTP id 98e67ed59e1d1-306dd3247b3mr3476749a91.1.1744213615281;
+        Wed, 09 Apr 2025 08:46:55 -0700 (PDT)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306dd171991sm1952304a91.37.2025.04.09.08.46.34
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306dd171991sm1952304a91.37.2025.04.09.08.46.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 08:46:43 -0700 (PDT)
+        Wed, 09 Apr 2025 08:46:54 -0700 (PDT)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -140,9 +140,9 @@ Cc: hpa@zytor.com,
 	andrew.cooper3@citrix.com,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v4 11/13] mtd: ssfdc: Replace open-coded parity calculation with parity_odd()
-Date: Wed,  9 Apr 2025 23:43:54 +0800
-Message-Id: <20250409154356.423512-12-visitorckw@gmail.com>
+Subject: [PATCH v4 12/13] fsi: i2cr: Replace open-coded parity calculation with parity_odd()
+Date: Wed,  9 Apr 2025 23:43:55 +0800
+Message-Id: <20250409154356.423512-13-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250409154356.423512-1-visitorckw@gmail.com>
 References: <20250409154356.423512-1-visitorckw@gmail.com>
@@ -161,57 +161,51 @@ Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- drivers/mtd/ssfdc.c | 20 ++++----------------
- 1 file changed, 4 insertions(+), 16 deletions(-)
+ drivers/fsi/fsi-master-i2cr.c | 20 +++-----------------
+ 1 file changed, 3 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
-index 46c01fa2ec46..0db4776424d0 100644
---- a/drivers/mtd/ssfdc.c
-+++ b/drivers/mtd/ssfdc.c
-@@ -7,6 +7,7 @@
-  * Based on NTFL and MTDBLOCK_RO drivers
-  */
+diff --git a/drivers/fsi/fsi-master-i2cr.c b/drivers/fsi/fsi-master-i2cr.c
+index 40f1f4d231e5..692d73e892e3 100644
+--- a/drivers/fsi/fsi-master-i2cr.c
++++ b/drivers/fsi/fsi-master-i2cr.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (C) IBM Corporation 2023 */
  
 +#include <linux/bitops.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/init.h>
-@@ -178,24 +179,11 @@ static int read_raw_oob(struct mtd_info *mtd, loff_t offs, uint8_t *buf)
- 	return 0;
+ #include <linux/device.h>
+ #include <linux/fsi.h>
+ #include <linux/i2c.h>
+@@ -38,27 +39,12 @@ static const u8 i2cr_cfam[] = {
+ 
+ static bool i2cr_check_parity32(u32 v, bool parity)
+ {
+-	u32 i;
+-
+-	for (i = 0; i < 32; ++i) {
+-		if (v & (1u << i))
+-			parity = !parity;
+-	}
+-
+-	return parity;
++	return parity != parity_odd(v);
  }
  
--/* Parity calculator on a word of n bit size */
--static int get_parity(int number, int size)
--{
-- 	int k;
--	int parity;
--
--	parity = 1;
--	for (k = 0; k < size; k++) {
--		parity += (number >> k);
--		parity &= 1;
--	}
--	return parity;
--}
--
- /* Read and validate the logical block address field stored in the OOB */
- static int get_logical_address(uint8_t *oob_buf)
+ static bool i2cr_check_parity64(u64 v)
  {
--	int block_address, parity;
-+	int block_address;
-+	bool parity;
- 	int offset[2] = {6, 11}; /* offset of the 2 address fields within OOB */
- 	int j;
- 	int ok = 0;
-@@ -215,7 +203,7 @@ static int get_logical_address(uint8_t *oob_buf)
- 			block_address &= 0x7FF;
- 			block_address >>= 1;
+-	u32 i;
+-	bool parity = I2CR_INITIAL_PARITY;
+-
+-	for (i = 0; i < 64; ++i) {
+-		if (v & (1llu << i))
+-			parity = !parity;
+-	}
+-
+-	return parity;
++	return parity_odd(v) != I2CR_INITIAL_PARITY;
+ }
  
--			if (get_parity(block_address, 10) != parity) {
-+			if (parity_odd(block_address & 0x3ff) == parity) {
- 				pr_debug("SSFDC_RO: logical address field%d"
- 					"parity error(0x%04X)\n", j+1,
- 					block_address);
+ static u32 i2cr_get_command(u32 address, bool parity)
 -- 
 2.34.1
 
