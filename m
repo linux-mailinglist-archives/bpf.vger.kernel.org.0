@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-55545-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55546-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E9A7A82BA2
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 18:01:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E33AAA82B35
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 17:52:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 690423BDCE0
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 15:51:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02EE67B6093
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 15:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A4F27703A;
-	Wed,  9 Apr 2025 15:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F3827780D;
+	Wed,  9 Apr 2025 15:46:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OCE9UgMB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Acq5Z1In"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA13267B1F;
-	Wed,  9 Apr 2025 15:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B36E5267B1F;
+	Wed,  9 Apr 2025 15:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744213584; cv=none; b=t1D0IJBRDtS8P1WXgk6dzYxiN8Ko3d/0ZQCP37rCTrk/j26Gj0oF+i8ZDsbdGBrCClvXt8BbhhbHeoQJT2k47JDcAgke1k89u9QEippnGUzD2vVFc01RsrP++Ha17gtEiwhmr+AyFmPnajTCjzxDfck1OHNvGkngnPf6XjNFuTk=
+	t=1744213595; cv=none; b=NsqBZdaJh+8cRgbAWBqF7c3d97NyTGry4lEBi+zoI0FdyjRTDg9vdlwJUgsjO+3cCUww3DyS8W+ewRYkjKqSgcZEqb3bGzqw4MnsZOoOiVbF7lGjduT0YePnfxkh75M4ZNNZuoATbKDAcl09PsUR/kr0P9H4HcxgJnfmYzkCu78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744213584; c=relaxed/simple;
-	bh=rxppiQbYDlsjNOLABuc/VVmyhqbUYZOfS3L0zA2RDZ0=;
+	s=arc-20240116; t=1744213595; c=relaxed/simple;
+	bh=QBWyEkuiMWNVhDuO1rQlnUBmammNz6BWECv9ZgXDmxY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=APTUgvcrugto+hFcI0xV/MbtHl1ioMonJQ0GJUNQ2cGeTr8dfJQUlozmC058XKk656UYkOLhwZIsEhG1v3cNSERB1j8qCpb9ev/3Zy8f/yCNdqdyjXgwE+OMiAG/b1EQ6DbZy6xkn3l2uf3Pv+MP9+fjeZNObKEGq+TpSAYHaXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OCE9UgMB; arc=none smtp.client-ip=209.85.216.47
+	 MIME-Version; b=HvfGJuAXMXDly/lC8K+jiivUnMpgarrFrswxmcv8MeSsRIsBFNkTKMjbcAIoRe9sLoLxPXHkznJCncM7tgYscXRxZNnLikU2Y/4dszjREsJtT7zdslba09XpIzTwsZBlg4z/Nj7RrWLl+mz3GLY4Bcxy/6rXLOk4NDSZWmLt2kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Acq5Z1In; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-301cda78d48so6369862a91.0;
-        Wed, 09 Apr 2025 08:46:22 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-301c4850194so5658576a91.2;
+        Wed, 09 Apr 2025 08:46:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744213582; x=1744818382; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744213593; x=1744818393; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jbWQUZQwY5O/XbpqxBGOs/Motht++mnKBdeylhl46Ro=;
-        b=OCE9UgMBW8wwa4M4Pqcuc6JXkE2gN5fDOnaQNhvnY4FKAb9v8Egth2NYJnUD0X2L4r
-         mOoNNWeg6LtSfvjyLIhXka/6y00HQSJwwseGxDzhfAMJe6OhJaNv/5B6ShuNjND2tnDO
-         3PB5a7ipQHCJqBctpyBNDsbePwPMUuYvJgMJOSYp8SczZvdqm3/pJH59c0N7wqPqYd3C
-         w4RnJ66n65pu751585Dw1YcJSM4PWpzTuyIEfd7SOjwAU9ZwhjfWW4ae/XcducmjG+m+
-         D4e+hda8ueYZ+QdNH/gZKqfDb1AEirYHbZ+lJaxjBJ4aEatB2JYg47tRiiaV22E3le5M
-         ZGvw==
+        bh=GxwU2Eo6SZITicqBQinN6iBaz5ky/0lGxu1bDy42GZ4=;
+        b=Acq5Z1Inv1aSe4NrQgTz6p9RBQ7R2/6Va4Qs+dM9/5P3L3HTVXPBabdTT5YUXlrDqA
+         OmGPunnP9ijqP7u0JsEyg7sKwf9UzflsmdOOYYWli5+4VxI3ao2GhMSfIAIruw0wLzFt
+         l6fRf21L0afjODm1FMrerpOoY1iVN+xBfUFgAY5e0tUI9ZWYGfzUk45rjMbcDo+fxdAi
+         VZF5PmK8H8qRRT/oI5b3HHL8FddTgEMFXI36cPFzxA0Uohl8W8KTJJeMnOVwQEVm62P+
+         hMeGUDzqbscd14mgdP0Qn7z8ZBzVArh5XHX6Q5sh834ihhnweZtZHNCt3zE1Gfem41VV
+         pLhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744213582; x=1744818382;
+        d=1e100.net; s=20230601; t=1744213593; x=1744818393;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jbWQUZQwY5O/XbpqxBGOs/Motht++mnKBdeylhl46Ro=;
-        b=T4I/p/jlaGyAdcVfGlq2hC+Q5tZHYyxBeLNCYPk5nGDJ0ppfPUFRlxLT0VwJlQpbIu
-         ZU0uaK6PLYp7YHDYyhJxbIaHnkglXvWfEfsm5KNfGAKOBSeSq+jraJLhD5j5Kv5cpwNK
-         R4ZsdmlGuNYWYg1cQ/OEdOGeDau6lnsEmYPwkT5VbxF9V5Me9njsXsFqs/NmS0sMOiiP
-         tDJ1K3J6ak3vxBV2aQhNDRKk7JbDtXBjKnD58zD7oxrUl5/LZ5xGPpeAe8bHKRE2ufZg
-         5SX676ZYqRL/Ea5EvPsaA5usfOWGqBfQ1tkaZpg4W8aizEkpGcWzfwwyKRj2GkgUi98d
-         dVYA==
-X-Forwarded-Encrypted: i=1; AJvYcCU7LwZB9ZsqmlvX/RjTjAzo2OUr0ulf+sZ8+9MH5Bvg5u+iRGI7YFK5JUOa9T2N0EO2gJPZsYLkX67PO9jn@vger.kernel.org, AJvYcCUlatCt4PSkS0yX+StbSyAPY5JOnCFSiPo0HZjRcJguAwOArsYaHyoIH9/JoUwBwx+53p0rTUd7SYrmsbg=@vger.kernel.org, AJvYcCUltoYOX3ge2wbrn69YKRBdao0MEk/oe9c2SfogEL2SsTbCQB9Waw2+jmrocfwvi5wyIP7td0MK3qgPkaM=@vger.kernel.org, AJvYcCVDtSY+xW2C4Ypd2DT4GhIo4tcvoAzLKySugIbmO6esVgcW2O2anF5HBjIt9SNybprXFUw=@vger.kernel.org, AJvYcCVwHWKjgmSXAtyOskv5xXsd+OhtCMjvm930U3foWYANzo2tKepxMs66ZiZMrlLByW2PyU903VTLvObc4IinzUU=@vger.kernel.org, AJvYcCX5I4Gue1UibJiGt+/liBFtC2d/G0rdIKjM2nhs/hHvBfQ0TqNPmXtYDgTIxtgAfpSTaF5Z/PLh@vger.kernel.org, AJvYcCX8zFxIcSXigSaaElhzJ0bEL3ELs8oh24eeLS68OeTPO+GhVg6ba4a5CboQfbJ4yD6qhhYN480GnlDzcGY=@vger.kernel.org, AJvYcCXv21nQ4w+2fVIDx3wLd6h8aZU9KfGIG23zJ0gkPWZhMjOFTRSiTOIQtf/3EbYnEJujGI4QYxMQ95HUN178@vger.kernel.org
-X-Gm-Message-State: AOJu0YyFQmdrm3JqHRoNCBoPEm2+uMaetbMufPCiP0tKVFQwD0jxJO2h
-	teA0zkE9eF0IyChuPh/9Ldx8ZAyM09SEgme2r244YA8aQhkm0ilA
-X-Gm-Gg: ASbGncvqQtWq//hKs8/ff5IEw9o71J16Vv19XgjlcsTnbmoPKewMhnuUuId+deZCxb+
-	R0BzQ2STytJJWlRyt0y1uLhuOHU9itv7UuGQZEhLQCVKbHQpqng4uYvqT8suBr+cvh0iNhxoXxK
-	GAd1nrMXEJBQ6I25/G+NeaoaV3XOxO1o+p/1byUZnQivVWrb+cY5hQdTh+aV3pdg4iShfNmZtvP
-	ZNy7A9FKvf1MIYCj2pH1ZnmwRWbit+LBYrn17qIJzSAjz4kuTKp5zMGEZb9cACWLZxq86n0kJE1
-	pxn1DUfpRFk2UXo91oYW6OaCTwmpRuV2kwRx+RteHQ7dUMDuKmx2rzkhURGUF4znVGkzsiM=
-X-Google-Smtp-Source: AGHT+IEd3EC/Z0ac7A9mI3otjelgXE3L0dUH+HAICIEWTo12gF8GwwD4nirjVp0rJrYl27/5nkbmDA==
-X-Received: by 2002:a17:90a:d60e:b0:2f4:4003:f3d4 with SMTP id 98e67ed59e1d1-306dbc2a7dbmr4740684a91.30.1744213582002;
-        Wed, 09 Apr 2025 08:46:22 -0700 (PDT)
+        bh=GxwU2Eo6SZITicqBQinN6iBaz5ky/0lGxu1bDy42GZ4=;
+        b=haaqMLyeM1J4zPU9xpOgzhHGRx6D6/8Qlmy3J1PVOW9+ao3iB377s7SSYoacC+NTjj
+         vFMQgodGW+HWo3xpDTvZ9RQEAiHMeojMDBbXa8HUUA6q2eOFrluc9FpQsc8iI3O2dWjB
+         gDMbQwOcg2JbbX1vIkrNlX4x58UzVFNk3buTQ6yWIRfeyU+Sl+cGzWRfPYr4ens7Lb4G
+         M69dU3MAEAZanHz3RH5iCtF0RxQVrDTjfFHbYJPQlPEvkneMSwhDXox5Z6qxsU4hLoP4
+         hAtXUND34ZXB4yEO5Z4muIvETp3Jeuz8tKGPrSuQtExdRCPTm66+R2fgCJyH+i/NDAdi
+         5NRw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+Yws+FJxrSkBManGDElfoJubSv0WpH20nr+YF8soUKLVTW+A+nSL8FUau0Qir+wgsAC0maIclBlr4SlQ=@vger.kernel.org, AJvYcCV7kQYXNYhypDrgDJ5Sb3lvgLlOOf+Hu+03Ngj5T0Ghm0e2JkVHPcc57Hipkh1u3WrEwA4flNb/@vger.kernel.org, AJvYcCVqDhbIt3pUPnPPPFCJ9qrLNHiYKEnQPheZkJnuv2Kh3ZW59gv/4BFWKcIVIk+m1Lqr4yhVTEWtk9TOL6E=@vger.kernel.org, AJvYcCWJcXobDL8F5xKb+nkejv4jjzWZT3erDCvd+leprNy+97Gd6uTWRZoN88pKrgwHVt27HVehTehX6Lj7ShASBVc=@vger.kernel.org, AJvYcCWdv3BFga9tR+MlRDuCReReUOfO7HYc9xaLlRXAsapu83pLVOir/brkf84GYcj5rpJ3V+vg3Zmgx4uH+UK/@vger.kernel.org, AJvYcCWtX5MOMCzUO/oP25LHqe7YBWl7jIyXpMPoVzivByKY+dgaBjwt7VNSuuaYjSxU4oGVRIY/D4sKRkI1/MQ=@vger.kernel.org, AJvYcCX6JphosHhUbHBjUvqizBB0cLk4/5ckFUng1khXL9AhQ+48md1rTu6NMG1XdOnOjd6dg1nC8H5CcS+UWoSr@vger.kernel.org, AJvYcCXwQBlboEroVVG6aB5qsL7XEE2ZwfbIQ5fyxubq2dKVACbAEumqiPvHJMmjN+l6V+3ONew=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxlXavA8v8Xf3bvJN4889NlPXv0LF4K6ChIyW42mRSdff5M52Nv
+	ByVsiy4VNQ7o/MOpZ0P3kur8K+R4vliWYXvIlEQmpvDPxx0oZbNh
+X-Gm-Gg: ASbGnct+hVrDRJlravWRr1COL5/U3XW5AjLtL619fqbmEFjfX3NdtQ4vPufKVGVQfPv
+	Md9rBoV9xS0YXMUUVA6EDYuORcbn+0U8s1g3Jwo/ju+98K2GdhSfIXsmz/bZK++R+EP7ZWN0oNm
+	+QCaJzt5h3NfGaduwlstPi74ArA05J4lDHaPMWemb/wtGf1w9u+2E8gS0gu21SpVXD+eDmp05ts
+	cjmk31I88o+Ig5km+Dbyp/nSXnhxUPFAyu526/WuuAFCBg8N2WFjoQzhi7cyx+uPHhiQAObJ3wo
+	FsK1bfbG7RZE0NUUIGeF+bWPR0KSTV2+qpGPgYAq1oVZ/AwkiyTusVYIIgdxdBD6ldy2Zcg=
+X-Google-Smtp-Source: AGHT+IGJskC9aR+5Dgsn/0q7tVfn/b9wEb0pUAkxSpjYPK7zbEkvmX2PCK7JdW0DCG7ccVky18srmw==
+X-Received: by 2002:a17:90a:c887:b0:301:a0e9:66f with SMTP id 98e67ed59e1d1-306dd521d88mr4820575a91.14.1744213592804;
+        Wed, 09 Apr 2025 08:46:32 -0700 (PDT)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306dd171991sm1952304a91.37.2025.04.09.08.46.12
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306dd171991sm1952304a91.37.2025.04.09.08.46.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 08:46:21 -0700 (PDT)
+        Wed, 09 Apr 2025 08:46:32 -0700 (PDT)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: tglx@linutronix.de,
 	mingo@redhat.com,
@@ -140,9 +140,9 @@ Cc: hpa@zytor.com,
 	andrew.cooper3@citrix.com,
 	Kuan-Wei Chiu <visitorckw@gmail.com>,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: [PATCH v4 09/13] wifi: brcm80211: Replace open-coded parity calculation with parity_odd()
-Date: Wed,  9 Apr 2025 23:43:52 +0800
-Message-Id: <20250409154356.423512-10-visitorckw@gmail.com>
+Subject: [PATCH v4 10/13] drm/bridge: dw-hdmi: Replace open-coded parity calculation with parity_odd()
+Date: Wed,  9 Apr 2025 23:43:53 +0800
+Message-Id: <20250409154356.423512-11-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250409154356.423512-1-visitorckw@gmail.com>
 References: <20250409154356.423512-1-visitorckw@gmail.com>
@@ -160,49 +160,36 @@ This change eliminates redundant implementations.
 Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
 ---
- .../wireless/broadcom/brcm80211/brcmsmac/dma.c | 18 ++----------------
- 1 file changed, 2 insertions(+), 16 deletions(-)
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-index 80c35027787a..5d7500ee2d3b 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-@@ -17,6 +17,7 @@
- #include <linux/slab.h>
- #include <linux/delay.h>
- #include <linux/pci.h>
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
+index cf1f66b7b192..abf2c72be622 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
+@@ -4,6 +4,7 @@
+  *
+  * Written and tested against the Designware HDMI Tx found in iMX6.
+  */
 +#include <linux/bitops.h>
- #include <net/cfg80211.h>
- #include <net/mac80211.h>
+ #include <linux/io.h>
+ #include <linux/interrupt.h>
+ #include <linux/module.h>
+@@ -171,12 +172,7 @@ static void dw_hdmi_reformat_iec958(struct snd_dw_hdmi *dw,
  
-@@ -283,24 +284,9 @@ struct dma_info {
- 	bool aligndesc_4k;
- };
- 
--/* Check for odd number of 1's */
--static u32 parity32(__le32 data)
--{
--	/* no swap needed for counting 1's */
--	u32 par_data = *(u32 *)&data;
--
--	par_data ^= par_data >> 16;
--	par_data ^= par_data >> 8;
--	par_data ^= par_data >> 4;
--	par_data ^= par_data >> 2;
--	par_data ^= par_data >> 1;
--
--	return par_data & 1;
--}
--
- static bool dma64_dd_parity(struct dma64desc *dd)
+ static u32 parity(u32 sample)
  {
--	return parity32(dd->addrlow ^ dd->addrhigh ^ dd->ctrl1 ^ dd->ctrl2);
-+	return parity_odd(dd->addrlow ^ dd->addrhigh ^ dd->ctrl1 ^ dd->ctrl2);
+-	sample ^= sample >> 16;
+-	sample ^= sample >> 8;
+-	sample ^= sample >> 4;
+-	sample ^= sample >> 2;
+-	sample ^= sample >> 1;
+-	return (sample & 1) << 27;
++	return parity_odd(sample) << 27;
  }
  
- /* descriptor bumping functions */
+ static void dw_hdmi_reformat_s24(struct snd_dw_hdmi *dw,
 -- 
 2.34.1
 
