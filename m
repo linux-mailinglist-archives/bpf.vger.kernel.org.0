@@ -1,154 +1,143 @@
-Return-Path: <bpf+bounces-55507-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BAC2A81B94
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 05:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37AC2A81D53
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 08:44:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2624E4A8FF1
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 03:38:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1168817F607
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 06:44:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953CB1E32A3;
-	Wed,  9 Apr 2025 03:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 283F41DF75C;
+	Wed,  9 Apr 2025 06:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="gCtNNbOc";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Oy6zLfoL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UCjoTyZ7"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0BB1E1A31;
-	Wed,  9 Apr 2025 03:35:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 522311DE4E7;
+	Wed,  9 Apr 2025 06:44:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744169710; cv=none; b=QTCg9vm6H85ltvKOQFXBvP4eE8RYnqXbPsuLOuPw2IgvL8Wz2x8WpkkawPAdn24yedRpNHm4He29cjSoSlKsxu0274hQJ54h1Xq6X5jZ9RCzwo33Uds9Q+6kBKjLxUJgplZmS7TGazvXPm3rrfh5VAEWATCpP1uuKVB2+xC/Vvc=
+	t=1744181057; cv=none; b=aEEsOKqMmXeNY/1Jmh3e/3hHnTtVLB039as1yfC44YAY43J+iO8zZs6Bfoudhr1U0O8+y+sDkyhG+80T7okOQci/ePJtJQLoetPXuaok4h9jRPOIa2TBGhX17UvpoiPVELyhnS3/uEPlXIBiC5ouH8/O0yBqRo5RQUHOxblyWYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744169710; c=relaxed/simple;
-	bh=LI7NYAjX+L6pI6lrYv+zsW4Fv3P3XhRIzbOFvBz3RfY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PGTRKf8eDu/xIUgtpvsnMOksfvIbenQbXBQgHb+KKVcOggILJw5N0TX8CKqCCBJQV0ji+awkWBW8OfQf9nvvpKcKXBN6xfcgv0tLpNXF8IslWZJG4Nw0YFSCzlitUOYHya9+bLe4xggKvD6csnWi/DzYCBHlcBRpcYBBrjWDPeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=gCtNNbOc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Oy6zLfoL; arc=none smtp.client-ip=103.168.172.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 878D91140257;
-	Tue,  8 Apr 2025 23:35:06 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-02.internal (MEProxy); Tue, 08 Apr 2025 23:35:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1744169706; x=
-	1744256106; bh=kC0vrcJINgsqsxDD2H7/EW5cKA10S1wnC+ZsymZ0u5M=; b=g
-	CtNNbOcFECi2zHw6l7ItGoFG3J5th6+zX93oydIf37LI3TwY6fIsaeNra7Jp9Peg
-	MWQR1Pkl1C4BoSP0WsVtiwo0xQqJ/VTKJXBR7QqiIzU9SwmEtmHJa+LQf+8nfAlq
-	01i1OprWCrmHXLPis/g1YHDBDP8EF3H7sYyHLjvkdf8oaFEwLeD/9Fgo5b6Fekgo
-	TpU8yqwXXaGruzpfkt4ZngkxhAh99XUerAAkVQ0WIUtychbygPa4W4CeF9p8oMsX
-	8s2CZVd902sXCid5YbVJ+vBsvIoRSlg6EHZUqFiEQEArSDKG2p+d22CGOZjzSjCs
-	inWpMk69jyV3isGCex5bQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm2; t=1744169706; x=1744256106; bh=k
-	C0vrcJINgsqsxDD2H7/EW5cKA10S1wnC+ZsymZ0u5M=; b=Oy6zLfoLBHSxYvSZq
-	MDdhUDwXScvJaxgmCWuUwqAo8bj8Key87v878LCckrKvfGLi15/wpIr3oc5FwyJn
-	uM8Hvf213h+EmCIU0KJyvTsbm+sOAOx/GGpjsml1YhmdM852kg2xjZVkGcd1AEe9
-	K4yv4KHM80BWnSelJxkZRhWBtl+Ld4QVWEfhwVLMBwiTbnlWWXPSB2GDY8oLucVO
-	19qSo6Djx7TYoRSt1pDPivaHiBHUzKOg+c7n0xUQT+bMwSvfjTu6B+MECKHJDEiZ
-	sHuG0daGAbRYawOV0IJ8OxnI26q0mWGAoseaE57Sj+PRfyh+ZZX85uohUllWWhCV
-	VDj7Q==
-X-ME-Sender: <xms:6ur1Z29uV6ou0GkYo13zkr9t0ECaIFJKAF7HAJs9Pcdllj06Q5GpwA>
-    <xme:6ur1Z2vbu2w6irf_DwND5y93wVixdyLDFNvguOHjhaas5MOXOckHrxMLfn1r-h2PS
-    ttK98VP2msrO_mN1Q>
-X-ME-Received: <xmr:6ur1Z8DmIhvbuWblNP4fGHHLAPyrRl36EFUcCR8jRTtVsBtd3vZL3SnuUvxh867an487sFlIhPC_zAhsk8GWFImMfh9rXN9YMj2-f-yyImRdi6k381D1>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvtdegledvucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffuc
-    dljedtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhm
-    peffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvg
-    hrnhepgfefgfegjefhudeikedvueetffelieefuedvhfehjeeljeejkefgffeghfdttdet
-    necuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehmrghilhhfrhhomhepugiguh
-    esugiguhhuuhdrgiihiidpnhgspghrtghpthhtohepudegpdhmohguvgepshhmthhpohhu
-    thdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprg
-    hstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgs
-    ohigrdhnvghtpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpd
-    hrtghpthhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopehsohhn
-    gheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngheslh
-    hinhhugidruggvvhdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghi
-    lhdrtghomhdprhgtphhtthhopehkphhsihhnghhhsehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:6ur1Z-crEGde0Eo7hj_t-uHfZ4cZfoxL8qTuuWwThJ6KbPy8BqYvxg>
-    <xmx:6ur1Z7P_i3D0R5gW3iJzlIATtGPqUkw06u16ZeF6vnwzXiEUNOZu_A>
-    <xmx:6ur1Z4lNQScSO1MLoZhR3O5frRyAYc0Y7akbKpEXyAq0KyOaoS8rDQ>
-    <xmx:6ur1Z9uqYB2S55vIw_BbMPEoTjr7tAxkD4sj7j774qIo8b83iC1VtA>
-    <xmx:6ur1Z45TuAu2_bYOHOdrHA4JPDDZ1xHc_wqVKWXTcAhkQkQo1iTteYN8>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 8 Apr 2025 23:35:04 -0400 (EDT)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: andrii@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net
-Cc: martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [RFC bpf-next 13/13] bpf: Supporting building verifier.ko out-of-tree
-Date: Tue,  8 Apr 2025 21:34:08 -0600
-Message-ID: <2e31904051277ecff988530b50373d11efdcfaee.1744169424.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <cover.1744169424.git.dxu@dxuuu.xyz>
-References: <cover.1744169424.git.dxu@dxuuu.xyz>
+	s=arc-20240116; t=1744181057; c=relaxed/simple;
+	bh=EA2abmK970vc5VUSwknSZAbpfozmiJ2WLu2yC0Rm9Q8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G+iBxptMY39zla1sf2g0IDBWeQgpOFpQu2ZPZp07f7t30NzaZav4WfRL88zk5nIBod8Qrlh6nFtBq/K69rJcsriI7S1C0oAW67SPLKqz/lZT8Oi+C7hGzj/BhylPjUdJ8DixsP9Ry6DI77CuT8XzFprg1JRKTkwxgIoAe9bqrM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UCjoTyZ7; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-306bf444ba2so2921946a91.1;
+        Tue, 08 Apr 2025 23:44:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744181055; x=1744785855; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zFnPHqAViJTArLLnMbNb1yqvVoshG4R2mnj5u2i0toE=;
+        b=UCjoTyZ7n8tvGR7OjR7tS9Ro8L6DZwRuJrPXMXc0xYRDuSBjkVrXWTFGds+H1WQgfk
+         Cw8H8bFkttNmiWr0SkDD4d0ub/uTIlEey5XyoJlu5OeKZmfVmXl5qwo2rsavYFKLg3yQ
+         UCFG7H0G13HgI95y2pp0HayFIU3KMNkU58fypUztZHcanuF14xDNsvgT+kodRqefKlDd
+         m1CFbvPnOqpieeNvWkDFeUraia1KI1JU9YLB++Gji1oXn/3WGhoXFJGCUtDcQrvFNeAC
+         b9boKIxtjNKpTZv2GJGSOFprw3lPe8+4pqSghfe12fvjbYM4NItRj7d9j83Tkuf9zjTa
+         TlFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744181055; x=1744785855;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zFnPHqAViJTArLLnMbNb1yqvVoshG4R2mnj5u2i0toE=;
+        b=OQ2enlJ411P2VUcc1F9WQlnCjPh0rvXYq5os0OAujFdDezIhkZQGzNh0VjoWA5MWmc
+         DrOLzJOqIemG+2jMYf7Was/W/S0fSAepk3txAPPkNMIOv25HZlrV9UIKCmw/6IIf3Kti
+         HXGm/LOi23iEiktDscbdWlgd1aS2KVjBVOQbCFuuDNvf9CgusCKsTwiY+VfVgtG6bJir
+         AFn1RcRmGicYQWhzemyFnpHWI/h80TTfJtSexteLvBiotFYtlJeupNFw4jyX6LeW3qKS
+         RxML25+hUH585ZH2GjSFUZvkYyMc0Hw6NkPPY131JcrVbgsQR7TGg87aYi9SCKGQway2
+         /VZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUEexOdK9qCPYZhGyULaaX5xXql0mPZ1WT38S6QbreWmoSaGMMZqqRLhlh06TtdN8OdjBnRtMCh@vger.kernel.org, AJvYcCUuKXJsKYqwjQErzh/Wxfc9cS4OKEPyBKaXclXWqK1usyGbMki0wMieocSTAZd1xoMVa8o=@vger.kernel.org, AJvYcCWxPsPKgl8iqnUFTxILAMzUBFIJuFKf7xKXa/hBSMrrnckZt/IgQy4ndfvh7o8wNUGUrIsZGzCCXNUrDfaf@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVs00Dro6bD73Lzk4Oakg95dvYnwgg/sLaTQLisIEBwPjNf5jK
+	ozKTnLpdB1DqV6+yqt0Bw/6aBgg4DffkUsl90/gNCWvnk79l6Cek
+X-Gm-Gg: ASbGncssGAHIzNeIQWr6+2uIo3cJHX7KoICN+ZEiVL8K/7jw3fwJQ6XoLFmP2VN2vXj
+	ypaglAht/e6lNVkYHvGq8jSUQfrfIaeJTDCAzA6HTpJToQrNGbk7xJW9443DCfSZcOKkv1CuGxc
+	W7xiR4yiMe6pqMeOaTIMkgwWvqRfTYCu1WUUo2QAGhomNLBisOf9Uqn72V1HIpIIZE2oFG0fe+/
+	Tyzl9dnDCH1Ruabapkp1d1cKXY8OowF9f5CxTxTTGRvzy9NNPccOKuiuE1DgL0G/PdNUYtj21Pj
+	2JaI5K47dfrf3vRHKa4dAtuKVuwHDT+zoKO6GRlrqbd1ifp0yQ==
+X-Google-Smtp-Source: AGHT+IFEFBrVdU4Z60J6u9c77Kly+wSwU0+rEdmF+faACzLEkBXEARmQGsGuz7F6mtlkCJR4WkAuvA==
+X-Received: by 2002:a17:90a:d00b:b0:2fe:9783:afd3 with SMTP id 98e67ed59e1d1-306dbb8e8a5mr2762085a91.2.1744181055366;
+        Tue, 08 Apr 2025 23:44:15 -0700 (PDT)
+Received: from [192.168.0.118] ([14.169.40.45])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7b8c617sm4321055ad.67.2025.04.08.23.44.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Apr 2025 23:44:14 -0700 (PDT)
+Message-ID: <4195db62-db43-4d61-88c3-7a7fbb164726@gmail.com>
+Date: Wed, 9 Apr 2025 13:44:07 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] virtio-net: disable delayed refill when pausing rx
+To: Jason Wang <jasowang@redhat.com>
+Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ "Michael S . Tsirkin" <mst@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ virtualization@lists.linux.dev
+References: <20250404093903.37416-1-minhquangbui99@gmail.com>
+ <1743987836.9938157-1-xuanzhuo@linux.alibaba.com>
+ <30419bd6-13b1-4426-9f93-b38b66ef7c3a@gmail.com>
+ <CACGkMEs7O7D5sztwJVn45c+1pap20Oi5f=02Sy_qxFjbeHuYiQ@mail.gmail.com>
+Content-Language: en-US
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <CACGkMEs7O7D5sztwJVn45c+1pap20Oi5f=02Sy_qxFjbeHuYiQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-This supports out-of-tree builds against the in-tree verifier.ko. This
-is intended to be used to build newer upstream verifiers against older
-kernel sources.
+On 4/8/25 14:34, Jason Wang wrote:
+> On Mon, Apr 7, 2025 at 10:27 AM Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+>> On 4/7/25 08:03, Xuan Zhuo wrote:
+>>> On Fri,  4 Apr 2025 16:39:03 +0700, Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+>>>> When pausing rx (e.g. set up xdp, xsk pool, rx resize), we call
+>>>> napi_disable() on the receive queue's napi. In delayed refill_work, it
+>>>> also calls napi_disable() on the receive queue's napi. This can leads to
+>>>> deadlock when napi_disable() is called on an already disabled napi. This
+>>>> scenario can be reproducible by binding a XDP socket to virtio-net
+>>>> interface without setting up the fill ring. As a result, try_fill_recv
+>>>> will fail until the fill ring is set up and refill_work is scheduled.
+>>> So, what is the problem? The refill_work is waiting? As I know, that thread
+>>> will sleep some time, so the cpu can do other work.
+>> When napi_disable is called on an already disabled napi, it will sleep
+>> in napi_disable_locked while still holding the netdev_lock. As a result,
+>> later napi_enable gets stuck too as it cannot acquire the netdev_lock.
+>> This leads to refill_work and the pause-then-resume tx are stuck altogether.
+> This needs to be added to the chagelog. And it looks like this is a fix for
+>
+> commit 413f0271f3966e0c73d4937963f19335af19e628
+> Author: Jakub Kicinski <kuba@kernel.org>
+> Date:   Tue Jan 14 19:53:14 2025 -0800
+>
+>      net: protect NAPI enablement with netdev_lock()
+>
+> ?
 
-You can also do an "in-tree out-of-tree" build as proof of concept:
+I'm not aware of this, will update the fix tags in the next patch.
 
-    $ make clean
-    $ make modules_prepare
-    $ cd kernel/bpf
-    $ make -C ../.. M=$PWD
+> I wonder if it's simpler to just hold the netdev lock in resize or xsk
+> binding instead of this.
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- kernel/bpf/Kbuild | 8 ++++++++
- 1 file changed, 8 insertions(+)
- create mode 100644 kernel/bpf/Kbuild
+That looks cleaner, let me try that approach.
 
-diff --git a/kernel/bpf/Kbuild b/kernel/bpf/Kbuild
-new file mode 100644
-index 000000000000..0b4a9ce14c6f
---- /dev/null
-+++ b/kernel/bpf/Kbuild
-@@ -0,0 +1,8 @@
-+# Because Kbuild is preferred over Makefile for in-tree builds
-+# but Kbuild is necessary for an out-of-tree module, we need an
-+# explicit dispatch to Makefile if doing an in-tree build.
-+ifneq ($(M),)
-+	obj-m = verifier.o
-+else
-+	include $(src)/Makefile
-+endif
--- 
-2.47.1
-
+Thanks,
+Quang Minh
 
