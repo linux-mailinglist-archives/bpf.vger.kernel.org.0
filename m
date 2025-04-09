@@ -1,145 +1,129 @@
-Return-Path: <bpf+bounces-55511-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79D65A820DF
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 11:19:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95056A820E8
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 11:19:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE00B8A23A9
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 09:17:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E5EF19E83AB
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 09:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3071325A62D;
-	Wed,  9 Apr 2025 09:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F5025D1FB;
+	Wed,  9 Apr 2025 09:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iGMIQvFw"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ron52JK5"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A53611DE3A5;
-	Wed,  9 Apr 2025 09:17:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8259325A338
+	for <bpf@vger.kernel.org>; Wed,  9 Apr 2025 09:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744190269; cv=none; b=oHX50oYO8M4PIxpqgUMM1y+0tLKtZQRElbX2hGGD422Ch4MsbEZJ73VmtvQi4Oi/ZZ2BtrnmAajAwSIDCqBVtOfJEea4LZZKiumQNnJi/OGtoClSDd4TjnC35MNMxfUHmXKYo2tguAlSmhMaO78yLqeLAdicfm/k/eyIntskkmg=
+	t=1744190362; cv=none; b=nUZXAns7U6eQSJBKXRbnQYw8QyNoRcBemKiknTfkoc/S0ZchSohBrTXiYl7q/fLMG817loFIU4bGe6xskFRxKLUaZ5bi1imwuKvg+mx5Xv+GAcnmJsUF9Ke8/ioL/hSh1LtJtRwSLW3vLr/fJqOa44Qik5vNtwM47nEHtvwg/IE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744190269; c=relaxed/simple;
-	bh=hqEQ77fSXiZu3N5SWCg2WjfSPbGTcCLVEwpTTrz/2xg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nM7Fa8BAWenyqhub1rb6te0v0l9UwiXBCJObX/soPADK30AMmLeeT53xY+Tbp8ahmrfV8vWtBScqJ/vugFDmhnBjD4cObYeA+oKBVEdIGl977f5HQSBkzrD1y6ZCNquWk9WIVtkVz7fuRXJ/udaq785y0XZr7zphXACah4DQe9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iGMIQvFw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90096C4CEE3;
-	Wed,  9 Apr 2025 09:17:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744190269;
-	bh=hqEQ77fSXiZu3N5SWCg2WjfSPbGTcCLVEwpTTrz/2xg=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=iGMIQvFwdJCtmyVMtv1xeIy2DraOwP6Ba/h6zAEN+wsvrAiubvTkQOtfy9s6ipwDk
-	 /mC3296UDFwck7Fh+lRo+EvGvnmmX5znY6NWR1ORehE9yuEqwhe86vEHzf1HkLYNm7
-	 rAwhHVN5J5IByZFNVCTNz+MUyLgTnRiD77NVtkhZuq9SDpwEeAcooYDaAl3e9VEI+k
-	 EHbka3139/bdYlI/mB38AFgsDPkhfHdEFD2znKL+qGxMoNgUR1YvmAGdh8Ba8qbkZQ
-	 iLX8iQrdhRjgZT1f7VA/eaclHqrTx2nTNCxoIF3+xjWJOb7e3teMU/ZaQouTXNky4h
-	 7OSTDC2m7te3Q==
-Message-ID: <1cc54fa0f517f387563263bb90ef1628244778df.camel@kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: Allow error injection for
- update_socket_protocol
-From: Geliang Tang <geliang@kernel.org>
-To: Yonghong Song <yonghong.song@linux.dev>, Gang Yan
- <gang_yan@foxmail.com>,  Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, mptcp@lists.linux.dev
-Date: Wed, 09 Apr 2025 17:17:43 +0800
-In-Reply-To: <dee07a8c-aed2-4125-a4f0-1bd76ca1e4ac@linux.dev>
-References: <tmcxv429u9-tmgrokbfbm@nsmail7.0.0--kylin--1>
-	 <tencent_EB51CDCA4E189E271032DFEC7E042B752008@qq.com>
-	 <dee07a8c-aed2-4125-a4f0-1bd76ca1e4ac@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.52.3-0ubuntu1 
+	s=arc-20240116; t=1744190362; c=relaxed/simple;
+	bh=Cfd6taZ1XReawrgJXmD5rJvLa2bX28eDDbODjWV3A7M=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=MqNmtUQcLViqffyfHKHPCxOQPaO3clMKAc7dhApJxosLUkPItGT4jK8TMrVTbLGHRtrA2I8O/Cp/bWHi5y1bTsVJhWrv0b/lMgh9fVJjpi5BUN+qPaXS9GBUj5kayMGssWfvve0vW+y0dUk3Xzg9eDdTrKi+nQ5nobwSUep32Ec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ron52JK5; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-39c1efc4577so3559913f8f.0
+        for <bpf@vger.kernel.org>; Wed, 09 Apr 2025 02:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1744190359; x=1744795159; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BnvAuD5LYuYp+IrGs5WCzF6uFd7AghllYpVWvB/imFY=;
+        b=ron52JK5l48UYgA1b6Z8AwfLI8k+dCXa8kaJXfoHly9kb7EoFNqPPu2+YnRYH1UzwI
+         m+SxwgB6c85gcrDPINkGzsBp/n26taZ9/XNhh/ysCb07Jek5RXXbZHe8ZXg6G3dLdrdb
+         3XN7c/R5kUoObRKIszKi+0fSVRc9xRQak65E0FIOM5w5cYaqV54pQBg/7JGLBxtBxSow
+         sCU2rzJElEGMNyu9K3FKxwe8crLmx9f2kjpQip9aoP+TzcXYkEEsQoFDyJNeCcWY015K
+         uxSybcgyCF2jK6TlMoaUeFHGLusV5J+eilzfixUrbO1NIQ0zu8Cu796aSjITIcHvDrxg
+         dyDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744190359; x=1744795159;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BnvAuD5LYuYp+IrGs5WCzF6uFd7AghllYpVWvB/imFY=;
+        b=COvvall5VJelVsl+VmXwE8d70H/HL4yzWd5chirIcpJ/gVtXhA+4Vqo4LjRFP+SL8t
+         J4QUB6I+ZHf+b3SO3tcuesnyWjghg0fKOI8XAkXMzBqRQ9EZHNMAnxFTXGGEBVpmryGK
+         Wp/xdbZCn1FpUsW9arHbPyMPsq26qrcG0kcI6Gi9OY1aW36uKWojQi9tAULffGg7SUTL
+         yMn5xvZhvxR86YeoggWxgq7WiRfzV8xgQAwkZnXtTkGczpj9fIMp2hMfIHiOrJDdHaw3
+         O2vLsPJkptmrriIyFFREjnypbHR0mq9aaNcnsjUgTa/Qv3DCLMZNEyUW2ogZRM8/pY2q
+         nurQ==
+X-Gm-Message-State: AOJu0Ywn7gowuA82NNPxBf0I8FVrUJdhIKlTjdtrZP40CQiV+aWrQUqi
+	fxaqlwr9X2pGMh3D6UXGlFqYygEvhipIPH9F+BW1NPpGRKoZqQTz3DzCQOqkMWE=
+X-Gm-Gg: ASbGncviUKTvMXByY1mL6UA08lEI6fQCSoZneeEQQvk9dYZR7VtuF9Qs7HarIEpnLKK
+	fOYWBPAldeR+4iMVorOP/U2QWNoiCx6Zsq9+28R3qgJpn7dOWXDWP59UypsqeSVM3LgvFmcCmYg
+	XtVAubO2DTM7Dv6jpSHGqG9fTP7XJ9QzFJIepVUAPblV6TNGnnXKgmhMc91fPkJm0NF2tkSBxeV
+	VrwbcNfrLpudE0V+JmFdkjjhFfomVyZ3iPUrQpA/H2UO4o6T9lZjrjxrNg/kF6JLDvZgVtMD6MP
+	jc1JhIsysSR7BSjwCtbpSK6YQjAZ8S5k+FlJP/Jp6BKFiw==
+X-Google-Smtp-Source: AGHT+IE4ppIX6lojvphZF721IXqNkby2jKURMZ2AEr6A+yNFFriezPurU8sORfsHksfqW0Pmeg8uAg==
+X-Received: by 2002:a5d:648a:0:b0:39c:1257:feb9 with SMTP id ffacd0b85a97d-39d87ce3c43mr1922196f8f.57.1744190358674;
+        Wed, 09 Apr 2025 02:19:18 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-39d893f0a3dsm1048659f8f.78.2025.04.09.02.19.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Apr 2025 02:19:18 -0700 (PDT)
+Date: Wed, 9 Apr 2025 12:19:14 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org
+Subject: [bug report] bpf: Augment raw_tp arguments with PTR_MAYBE_NULL
+Message-ID: <843a3b94-d53d-42db-93d4-be10a4090146@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Yonghong,
+Hello Kumar Kartikeya Dwivedi,
 
-On Sun, 2024-08-25 at 21:05 -0700, Yonghong Song wrote:
-> 
-> On 8/25/24 8:29 PM, Gang Yan wrote:
-> > Hi Alexei:
-> > It's my honor to recieve your reply. The response to your concerns
-> > is attached below
-> > for your review.
-> > On Mon, Aug 26, 2024 at 10:57:12AM +0800, Gang Yan wrote:
-> > > On Thu, Aug 22, 2024 at 8:33 AM Jakub Kicinski wrote:
-> > > > On Thu, 22 Aug 2024 14:08:57 +0800 Gang Yan wrote:
-> > > > > diff --git a/net/socket.c b/net/socket.c
-> > > > > index fcbdd5bc47ac..63ce1caf75eb 100644
-> > > > > --- a/net/socket.c
-> > > > > +++ b/net/socket.c
-> > > > > @@ -1695,6 +1695,7 @@ __weak noinline int
-> > > > > update_socket_protocol(int family, int type, int protocol)
-> > > > > {
-> > > > > return protocol;
-> > > > > }
-> > > > > +ALLOW_ERROR_INJECTION(update_socket_protocol, ERRNO);
-> > > > IDK if this falls under BPF or directly net, but could you
-> > > > explain
-> > > > what test will use this? I'd prefer not to add test hooks into
-> > > > the
-> > > > kernel unless they are exercised by in-tree tests.
-> > > This looks unnecessary.
-> > > update_socket_protocol is already registered as fmodret.
-> > > There is even selftest that excises this feature:
-> > > tools/testing/selftests/bpf/progs/mptcpify.c
-> > > 
-> > > It doesn't need to be part of the error-inject.
-> > The 'update_socket_protocol' is a BPF interface designed primarily
-> > to
-> > fix the socket protocol from TCP protocol to MPTCP protocol without
-> > requiring modifications to user-space application codes. However,
-> > when attempting to achieve this using the BCC tool in user-space,
-> > the BCC tool doesn't support 'fmod_ret'. Therefore, this patch aims
-> > to
-> > further expand capabilities, enabling the 'kprobe' method can
-> > overriding
-> > the update_socket_protocol interface.
-> 
-> Gang Yan, could you explore to add fmod_ret support in bcc? It should
-> be
-> similar to kfunc/kretfunc support. I am happy to review your patches.
+Commit 838a10bd2ebf ("bpf: Augment raw_tp arguments with
+PTR_MAYBE_NULL") from Dec 13, 2024 (linux-next), leads to the
+following Smatch static checker warning:
 
-It took us some time to add this support in bcc, and we have recently
-completed it in [1]. We would be grateful if you could help review
-these patches.
+kernel/bpf/btf.c:6832 btf_ctx_access() warn: should '(1 << (arg * 4))' be a 64 bit type?
+kernel/bpf/btf.c:6835 btf_ctx_access() warn: should '(2 << (arg * 4))' be a 64 bit type?
 
-Thanks,
--Geliang
+kernel/bpf/btf.c
+    6822                         return false;
+    6823                 tname = btf_name_by_offset(btf, t->name_off);
+    6824                 if (!tname)
+    6825                         return false;
+    6826                 /* Checked by bpf_check_attach_target */
+    6827                 tname += sizeof("btf_trace_") - 1;
+    6828                 for (i = 0; i < ARRAY_SIZE(raw_tp_null_args); i++) {
+    6829                         /* Is this a func with potential NULL args? */
+    6830                         if (strcmp(tname, raw_tp_null_args[i].func))
+    6831                                 continue;
+--> 6832                         if (raw_tp_null_args[i].mask & (0x1 << (arg * 4)))
+                                                         ^^^^
 
-[1]
-https://github.com/iovisor/bcc/pull/5274
+    6833                                 info->reg_type |= PTR_MAYBE_NULL;
+    6834                         /* Is the current arg IS_ERR? */
+    6835                         if (raw_tp_null_args[i].mask & (0x2 << (arg * 4)))
+                                                         ^^^^
+.mask is a u64 but "(0x2 << (arg * 4))" will shift wrap if arg is more
+than 7.
 
-> 
-> Thanks,
-> Yonghong
-> 
-> > 
-> > As a Python developer, the BCC tool is a commonly utilized
-> > instrument for
-> > interacting with the kernel. If the kernel could permit the use of
-> > an
-> > error-inject method to modify the `update_socket_protocol`, it
-> > would significantly
-> > benefit the subsequent promotion and development of MPTCP
-> > applications.
-> > Thank you for considering this enhancement.
-> > 
-> > Best wishes!
-> > Gang Yan
-> > 
-> > 
-> 
+    6836                                 ptr_err_raw_tp = true;
+    6837                         break;
+    6838                 }
+    6839                 /* If we don't know NULL-ness specification and the tracepoint
+    6840                  * is coming from a loadable module, be conservative and mark
+    6841                  * argument as PTR_MAYBE_NULL.
+    6842                  */
+    6843                 if (i == ARRAY_SIZE(raw_tp_null_args) && btf_is_module(btf))
+    6844                         info->reg_type |= PTR_MAYBE_NULL;
 
+regards,
+dan carpenter
 
