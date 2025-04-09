@@ -1,169 +1,116 @@
-Return-Path: <bpf+bounces-55520-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55521-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24167A82394
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 13:29:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8637DA8239D
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 13:31:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13B0A4487E0
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 11:29:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E02211B625B2
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 11:31:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6237C25E448;
-	Wed,  9 Apr 2025 11:29:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03EB325DD14;
+	Wed,  9 Apr 2025 11:31:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XcN+u0A9"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="c7FFw26W"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C8025DB17
-	for <bpf@vger.kernel.org>; Wed,  9 Apr 2025 11:29:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EED625DCE9;
+	Wed,  9 Apr 2025 11:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744198172; cv=none; b=SQv65/ebv0obwa5d4xC2wRPIMO9zenm8EqJa7U2Hw9N8qsazYj0T4YRwLEC9Ncu0vGrMeJY46g4wsloAjHHiZAm3yyfeAlCnZoy0oGEK+STS9ttZJP0BNIxnFNzmeOpMe8lHPEgf4BnWDO441kgs3H7YU2g868SgnonSXjrwkkM=
+	t=1744198283; cv=none; b=fLOOWmC4H1qaYc38LL2DMaqxIgkjhktl0w6h/y7rp10j7ky0nelGoDcZkHoj3gU8iZtTJKGakch9nrj9J1x//NhxwWWBtZokFY1urBZEdKRAkpsMbYNNTPHSWgwJkZwVa79j4m675Bczpw/BXOyTDoHdNGUF5thfAZ4v9umgdDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744198172; c=relaxed/simple;
-	bh=zXYaCCk7Xexl/noIb6OuPUIMVrNTYDA8ydr6oeZbr1Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CL9nlIlSPIUzh2DqJ9k0sChUbEHopy+a8EbTIlEFOIN1Cerc4G1WyYgrkNaKcVrAunfCaJb28SpOD0u0TcylYIVpCSbXNrVQ57mcrv5tXZIbOjmAD50e3L5n3Nt3vubv1KvS+QfTHpxZBLLa4IXykQV5d/hIgvxtmqWCj0sra+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XcN+u0A9; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744198169;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L9Of+gzTbsEE9FaHMGyGpxjiy7YHu1Oa9tXAD/zDQnY=;
-	b=XcN+u0A9A+esPM0geR1yEjY+BR0j8s3FLa/h/XdxedkAc81HRYTieAn78aGwXIr6mQP/wI
-	8CUWtv6uvVrbu2UT0qeMFGmR8LgAH9oTx60bXuOjoT/8EIZ8KNxM3oCamC6+w9k/FxW7b/
-	LNx/x2eyAns5f17aHyv7IgN0xXt8nqw=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-547-2Sb6ZC_POsi-lpR4UKm0UQ-1; Wed,
- 09 Apr 2025 07:29:23 -0400
-X-MC-Unique: 2Sb6ZC_POsi-lpR4UKm0UQ-1
-X-Mimecast-MFC-AGG-ID: 2Sb6ZC_POsi-lpR4UKm0UQ_1744198161
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 06B321800257;
-	Wed,  9 Apr 2025 11:29:21 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.44.34.54])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 18DE1180B487;
-	Wed,  9 Apr 2025 11:29:15 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed,  9 Apr 2025 13:28:45 +0200 (CEST)
-Date: Wed, 9 Apr 2025 13:28:39 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCH 1/2] uprobes/x86: Add support to emulate nop5 instruction
-Message-ID: <20250409112839.GA32748@redhat.com>
-References: <20250408211310.51491-1-jolsa@kernel.org>
+	s=arc-20240116; t=1744198283; c=relaxed/simple;
+	bh=FLV91CEpQSeUuhyrf6X7Y7S8BnEVeMNhFp42arzdGXU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AaLzr1q3DDJeywLw1dG2tyLwRE/3G7pjr7jr/j03RJcJuh10TW03M0zBXCA1TMf6LppRlgjxoHZSKoDwQhU51pc8UCQuwPg5LLFrTioYUJrCL+nbhvTrrn/Y0+lMJCUnHrbXYzuKiReAWBPxN4WFnGh3tr8nqYlPjqsXrYqeTt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=c7FFw26W; arc=none smtp.client-ip=178.60.130.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=FLV91CEpQSeUuhyrf6X7Y7S8BnEVeMNhFp42arzdGXU=; b=c7FFw26WRc/QcDvoT6DswQt2BF
+	pjsKo96k8Jhg6DT1jL3A3zD7qVhGe56ZplefRjSMaFlWqNTwbLQVraOPY49tPDM7zeU44PESHMfKG
+	a59aze3NrikVXGDVi4+CrVzjqoWsgU7OGjCTRVcdk+VPwWVwA2UAXDKxq+vFcWmOs+DIFo2q9r+XK
+	eSrJ8D+dW0Tfh3UD5XamwRVfJSKNz+CMdWCkDyNXcf+MTE3Pd05g6qYN9pQ5F3vzXTtd3ySDlnBFa
+	8wcaYPrekUWunloaKUrUeOwDomnHCLi0UXfRP2Lt/LbuaND8CCQeZBvZMZG77BT7guBdM/HYNq1Hs
+	NvbHA9ww==;
+Received: from [223.233.71.56] (helo=[192.168.1.12])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1u2TeA-00E4Ri-Pl; Wed, 09 Apr 2025 13:31:11 +0200
+Message-ID: <35b4fe2a-606c-f25c-0d5c-1abb6e7b3003@igalia.com>
+Date: Wed, 9 Apr 2025 17:01:05 +0530
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250408211310.51491-1-jolsa@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v2 1/3] exec: Dynamically allocate memory to store task's
+ full name
+Content-Language: en-US
+To: Kees Cook <kees@kernel.org>
+Cc: Bhupesh <bhupesh@igalia.com>, akpm@linux-foundation.org,
+ kernel-dev@igalia.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, oliver.sang@intel.com, lkp@intel.com,
+ laoar.shao@gmail.com, pmladek@suse.com, rostedt@goodmis.org,
+ mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
+ alexei.starovoitov@gmail.com, andrii.nakryiko@gmail.com,
+ mirq-linux@rere.qmqm.pl, peterz@infradead.org, willy@infradead.org,
+ david@redhat.com, viro@zeniv.linux.org.uk, ebiederm@xmission.com,
+ brauner@kernel.org, jack@suse.cz, mingo@redhat.com, juri.lelli@redhat.com,
+ bsegall@google.com, mgorman@suse.de, vschneid@redhat.com
+References: <20250331121820.455916-1-bhupesh@igalia.com>
+ <20250331121820.455916-2-bhupesh@igalia.com>
+ <202504030924.50896AD12@keescook>
+ <3202d24e-b155-ab0a-86cd-0a3204ec52dd@igalia.com>
+ <202504041023.A21FA17DDC@keescook>
+From: Bhupesh Sharma <bhsharma@igalia.com>
+In-Reply-To: <202504041023.A21FA17DDC@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 04/08, Jiri Olsa wrote:
+Hi Kees,
+
+Sorry for the delay - I was out for a couple of days.
+
+On 4/4/25 10:54 PM, Kees Cook wrote:
+> On Fri, Apr 04, 2025 at 12:18:56PM +0530, Bhupesh Sharma wrote:
+>> In another review for this series, Yafang mentioned the following cleanup +
+>> approach suggested by Linus (see [0]).
+>> Also I have summarized my understanding on the basis of the suggestions
+>> Linus shared and the accompanying background threads (please see [1]).
+>>
+>> Kindly share your views on the same, so that I can change the implementation
+>> in v3 series accordingly.
+> In thinking about this a little more I think we can't universally change
+> all the APIs to use the new full_name since it is a pointer, which may
+> be getting changed out from under readers if a setter changes it. So
+> this may need some careful redesign, likely with RCU. hmm.
 >
-> --- a/arch/x86/kernel/uprobes.c
-> +++ b/arch/x86/kernel/uprobes.c
-> @@ -608,6 +608,16 @@ static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
->  		*sr = utask->autask.saved_scratch_register;
->  	}
->  }
-> +
-> +static int is_nop5_insn(uprobe_opcode_t *insn)
-> +{
-> +	return !memcmp(insn, x86_nops[5], 5);
-> +}
-> +
-> +static bool emulate_nop5_insn(struct arch_uprobe *auprobe)
-> +{
-> +	return is_nop5_insn((uprobe_opcode_t *) &auprobe->insn);
-> +}
 
-Why do we need 2 functions? Can't branch_setup_xol_ops() just use
-is_nop5_insn(insn->kaddr) ?
+Thinking more about this, Linus mentioned in [0]:
 
->  #else /* 32-bit: */
->  /*
->   * No RIP-relative addressing on 32-bit
-> @@ -621,6 +631,10 @@ static void riprel_pre_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
->  static void riprel_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
->  {
->  }
-> +static bool emulate_nop5_insn(struct arch_uprobe *auprobe)
-> +{
-> +	return false;
-> +}
+'Since user space can randomly change their names anyway, using locking
+was always wrong for readers (for writers it probably does make sense
+to have some lock'
 
-Hmm, why? I mean, why we can't emulate x86_nops[5] if !CONFIG_X86_64 ?
+So, if we go with the union approach, probably we can do with just a writer-lock, whereas if we go with a task->full_name like pointer one, we would probably need a rcu lock.
 
-OTOH. What if the kernel is 64-bit, but the probed task is 32-bit and it
-uses the 64-bit version of BYTES_NOP5?
+Please let me know your comments.
 
-Perhaps this is fine, I simply don't know, so let me ask...
-
-> @@ -852,6 +866,8 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
->  		break;
->
->  	case 0x0f:
-> +		if (emulate_nop5_insn(auprobe))
-> +			goto setup;
-
-I think this will work, but if we want to emulate nop5, then perhaps
-we can do the same for other nops?
-
-For the moment, lets forget about compat tasks on a 64-bit kernel, can't
-we simply do something like below?
-
-Oleg.
----
-
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 9194695662b2..76d2cceca6c4 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -840,12 +840,16 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
- 	insn_byte_t p;
- 	int i;
- 
-+	/* prefix* + nop[i]; same as jmp with .offs = 0 */
-+	for (i = 1; i <= ASM_NOP_MAX; ++i) {
-+		if (!memcmp(insn->kaddr, x86_nops[i], i))
-+			goto setup;
-+	}
-+
- 	switch (opc1) {
- 	case 0xeb:	/* jmp 8 */
- 	case 0xe9:	/* jmp 32 */
- 		break;
--	case 0x90:	/* prefix* + nop; same as jmp with .offs = 0 */
--		goto setup;
- 
- 	case 0xe8:	/* call relative */
- 		branch_clear_offset(auprobe, insn);
+[0]. https://lore.kernel.org/all/CAHk-=wivfrF0_zvf+oj6==Sh=-npJooP8chLPEfaFV0oNYTTBA@mail.gmail.com/
 
 
