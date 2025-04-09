@@ -1,84 +1,82 @@
-Return-Path: <bpf+bounces-55560-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55561-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45E66A82E0C
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 19:54:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73BF2A82E17
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 19:59:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD5B31B62C97
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 17:54:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE83A3BB915
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 17:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16471276046;
-	Wed,  9 Apr 2025 17:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B177270EDF;
+	Wed,  9 Apr 2025 17:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ebmd7KGB"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TMncm1TX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EDF626B966;
-	Wed,  9 Apr 2025 17:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127AB18CBE1
+	for <bpf@vger.kernel.org>; Wed,  9 Apr 2025 17:59:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744221280; cv=none; b=SMEJd6LMhrcba1xG6VXLo2o+COySCtiyghSacueo4LxKHbfzF2MkTXzmelGWO57wM74Clf7PvB6NCgeS3MriFmTwUlYrkQJaA5aN3k3hGofYMqqBiBGMpvLNEpWi4h1t9IHcHqwQRPx8Ra106jviQ08hlF73c4kbc+jDX1v1qRo=
+	t=1744221548; cv=none; b=bVZXqyvO07xaE6le3n4WWrZcus1dmur7QoiIxQcUW6O7tfr0SKQQgRzXycIyB23P+7egkLwhEUg4cgaMAJaQS5LNDJu5/MzsVln1XSvv3Dr1XJSCvc0sa+OsSoIYGsy17JQBAMv5clo6Q2OaQUxCGLFltfuSfb2YGXPV1U3NRpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744221280; c=relaxed/simple;
-	bh=KV8Gr6aibJsRtpeVHbUAUlRhB0veTfaY3cN18G/7Szo=;
+	s=arc-20240116; t=1744221548; c=relaxed/simple;
+	bh=2IVHJf7ar/rNWEmTTIZ8rQp5BCVRHkVPJ+ZwK/9yBjI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pi9jIWCK7Q69PwD23DhiRrAxubk2B43akp8mU68OaoWqdTCRZh6t9nfbiEu7sMm2OIas0nNPqMJzB3TWJuY/fXwiBCbzOMthOR2otSMDUDUhiM+ww2IsH0jjMlS3LKoZT4VAOV156Ecl7G4yGcVyYgWl9Q+ICN4EjglHFCk2AuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ebmd7KGB; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7399838db7fso7099b3a.0;
-        Wed, 09 Apr 2025 10:54:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744221278; x=1744826078; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zIQZXyBX0AytvzBB0OOKXXRLrUfu5UCGT9piUz6hbi0=;
-        b=Ebmd7KGBfnEKhZ0NsiYYxx/iZYVfhhbMbHfC+X1D+4L3Jq8OzVhwx4su2u1/b8Fu5X
-         AghstD9zcfC0RGl+21CMYx23zpIEHMsf3pSrQU9omlGDYoCvyRG+5+b4GtgS+V8ZHr2/
-         UysGHANe8OnEksIfprEAUFwatEcRnt8UvJt+lM607704jeW6AgHxdSD9NNDqeeQMoPt9
-         8qTN12uUbFS3Qem3kvsJbSIeDOJVLWlf4XPhpuVkoCcfshNNCekxsth604R6hzF/s4mV
-         /Vi62WvZlMiIGiRV1Fx6x4w7JHKesN7qrrfJ5Fj4BXUaFY8OaOf5JJBSVnm463ndevzF
-         u7xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744221278; x=1744826078;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zIQZXyBX0AytvzBB0OOKXXRLrUfu5UCGT9piUz6hbi0=;
-        b=jfNYPUIhUmHAnX/urSNbbb/MgOms2b40X9LHDAEXtX5QeW2aVQ0kbIK12pIvKxboyw
-         cdjHWq2rxA/Cr5Jhfg5Bh65YVorEzTIkHH9fZ0fMds+JzuXNH9UP8SeyskijP7Pv6ECj
-         thKJfX4eQLrHZRCLjwhEywUVRN1ZQKc5jwInvx756WNu0cGjy2AXTMfaCxva9qKW9oRs
-         4NymP2St1RrmSG5uS1RSUnmlYkuLU916zwl3bUxNw2rEBlY0Gd4J4D2M8pRUP77cmyXt
-         /sEF4SzLxjRhzmE3bRvAgeynnmSLkLRNWrSuhjFUduJo+K1aKNuOjZ6at7TNTSPfcoqL
-         vuww==
-X-Gm-Message-State: AOJu0YyqalGGr0lKL/WaWdsBormer0cvyOO2dskKp1mt1AaCvQ3Pf8IZ
-	LYRdefTHSBpwsm8xe4uxUe6wt/bNi39ONjWLCVsztnAuPO0VKs87uQvy0A==
-X-Gm-Gg: ASbGncszS3GU6VtzWOPxarzmDpU0BFrhFPtOznIYOdal0ArfJCE+b4b0a0Jq32b4xOd
-	qGqO+0FL3ZCyknGbh/pbaPVhgDvo34frdYSp6OlghBvPR6BgUGI+zQ6cp9qJHCuPMugVYuAlbwQ
-	nbBE1bwGkKbTjnvJx2d6XWJ17iV/Im5wLoJgglSCvYs+bttXD5103+H6xDXl1f2Ki2vyLsINf1z
-	cJeT44byRwKr2qxkceYzn0gTMxMM8idOnB7rac1RJtmO3Yf3nobu0Vu6Jb3VWCO0W29foO12UK4
-	7x1vu/2AAip+pBIrLq+QsJs1tvvRKyonFrACt+outUJHd+aMVqPXl4I=
-X-Google-Smtp-Source: AGHT+IHNuuFWf1d3sRu2voHSJ5IXdWmy4lcV/fLgSMmiaLE2NiLd18OYO2sW+28FFfhx3FHsD4tDtg==
-X-Received: by 2002:a05:6a00:1411:b0:736:4d05:2e35 with SMTP id d2e1a72fcca58-73bbcc1425bmr510930b3a.3.1744221278109;
-        Wed, 09 Apr 2025 10:54:38 -0700 (PDT)
-Received: from localhost ([129.210.115.104])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bb1e3824asm1693952b3a.103.2025.04.09.10.54.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 10:54:37 -0700 (PDT)
-Date: Wed, 9 Apr 2025 10:54:36 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org, jakub@cloudflare.com, john.fastabend@gmail.com,
-	zhoufeng.zf@bytedance.com
-Subject: Re: [Patch bpf-next v2 0/4] tcp_bpf: improve ingress redirection
- performance with message corking
-Message-ID: <Z/a0XH5lqh7raKd6@pop-os.localdomain>
-References: <20250306220205.53753-1-xiyou.wangcong@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cv/6YAybIlpzHVU7KrHiOBFlXwf8j0f0nTrcxKSjphA9DxgeHODMjESp8Pqx6g30mrHG/Q1+gIPxAROnG+AqUmpFm+v6lSoOVGFNFzcAlDfLuI68SlXPKliXf1x2VFhsTCPhkdYkVZRAtPLHQ3qE0a/mnfliosyA/kZNq3I4FPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TMncm1TX; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744221546;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1KffZz9Dem6U0r6zjOlio/dUN4rNSBX5e2RmuPvDORI=;
+	b=TMncm1TXTvc/6VaQ7F32Atb1N3hJz3amxlt9cix+P71gB9f4zzQ4x802Cmlo/Uauq77g+s
+	yUKxxmgt+/fGN7xcgyd8dnSrPXvGRIb7qRjckxoFFWRWUaSyd6YOLcgGWo8HcUM27dpYQ/
+	Z2AS6a4XXMMBOG9HnPoMGYLS4MzME+M=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-637-LdkqEh4uOg2XhSJJaFnvvg-1; Wed,
+ 09 Apr 2025 13:59:02 -0400
+X-MC-Unique: LdkqEh4uOg2XhSJJaFnvvg-1
+X-Mimecast-MFC-AGG-ID: LdkqEh4uOg2XhSJJaFnvvg_1744221540
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0C07F195608B;
+	Wed,  9 Apr 2025 17:59:00 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.44.34.54])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 307211955DCE;
+	Wed,  9 Apr 2025 17:58:54 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed,  9 Apr 2025 19:58:24 +0200 (CEST)
+Date: Wed, 9 Apr 2025 19:58:19 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>
+Subject: Re: [PATCH 1/2] uprobes/x86: Add support to emulate nop5 instruction
+Message-ID: <20250409175818.GE32748@redhat.com>
+References: <20250408211310.51491-1-jolsa@kernel.org>
+ <20250409112839.GA32748@redhat.com>
+ <Z_ZjIerx-QvY7BSI@krava>
+ <20250409131115.GD32748@redhat.com>
+ <Z_aiWdks8SA3mtX6@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,28 +85,69 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250306220205.53753-1-xiyou.wangcong@gmail.com>
+In-Reply-To: <Z_aiWdks8SA3mtX6@krava>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-Hi John,
+On 04/09, Jiri Olsa wrote:
+>
+> > Just it looks a bit strange to me. Even if we do not have a use-case
+> > for other nops, why we can't emulate them all just for consistency?
+>
+> we can, I went with nop5 just for simplicity, if you think
+> having all nops support is better, let's do that
 
-On Thu, Mar 06, 2025 at 02:02:01PM -0800, Cong Wang wrote:
-> This patchset improves skmsg ingress redirection performance by a)
-> sophisticated batching with kworker; b) skmsg allocation caching with
-> kmem cache.
-> 
-> As a result, our patches significantly outperforms the vanilla kernel
-> in terms of throughput for almost all packet sizes. The percentage
-> improvement in throughput ranges from 3.13% to 160.92%, with smaller
-> packets showing the highest improvements.
-> 
-> For latency, it induces slightly higher latency across most packet sizes
-> compared to the vanilla, which is also expected since this is a natural
-> side effect of batching.
-> 
+Well... Let me repeat, I am not really arguing and I do not want to delay
+your next changes. We can always cleanup this code later. Please see below.
 
-Per our in-person conversation at LSF/MM/BPF, you are okay with this
-patchset. If so, may we get your ACK here? If not, please let us know
-what changes you prefer to make for V3?
+> I checked and compact process executes 64bit nops just fine,
+> so we should be ok there
 
-Thanks!
+OK. Then, for your original patch:
+
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+
+I'd only ask to define is_nop5_insn/emulate_nop5_insn regardless of
+CONFIG_X86_64.  I understand that we have no reason to emulate nop5
+on the 32-bit kernel, but at the same time I don't see any reason to
+complicate this code to explicitly "nack" nop5 in this case.
+
+As for the new version below:
+
+> --- a/arch/x86/kernel/uprobes.c
+> +++ b/arch/x86/kernel/uprobes.c
+> @@ -840,12 +840,16 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+>  	insn_byte_t p;
+>  	int i;
+>
+> +	/* x86_nops[i]; same as jmp with .offs = 0 */
+> +	for (i = 1; i <= ASM_NOP_MAX; ++i) {
+> +		if (!memcmp(insn->kaddr, x86_nops[i], i))
+> +			goto setup;
+> +	}
+
+Well, yes, I'd personally obviously prefer this version ;) Just because
+it looks a bit more clear/consistent to me. But this is subjective.
+
+And,
+
+> -	case 0x90:	/* prefix* + nop; same as jmp with .offs = 0 */
+> -		goto setup;
+
+No, this is wrong. Please see my reply to myself,
+https://lore.kernel.org/all/20250409114950.GB32748@redhat.com/
+
+This way we can no longer emulate, say, "rep; nop". Exactly because
+either way memcmp(x86_nops[i]) checks the whole instruction.
+
+Probably we don't really care, but still this patch shouldn't add any
+"regression".
+
+So, let me repeat. Up to you. Whatever you prefer. I just tried to
+understand your patch.
+
+You have my ACK in any case.
+
+Oleg.
+
 
