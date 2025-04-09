@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-55572-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55573-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96C99A82EC0
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 20:31:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC35A82ED2
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 20:33:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 682661B680B7
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 18:31:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CFA77A7177
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 18:32:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB706277811;
-	Wed,  9 Apr 2025 18:31:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E66AD27781F;
+	Wed,  9 Apr 2025 18:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C0B38VKj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A9v2pL24"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF1C1C5F2C;
-	Wed,  9 Apr 2025 18:31:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB76C1D432D;
+	Wed,  9 Apr 2025 18:33:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744223464; cv=none; b=iTRarqsrjKqenT2AousRc1V17+Nm5AzA9+O5go6HEcU6qswlRFTKxdyqGDUyxpSDVay961W0okxdxKzBXU9gqEV8Nv3yM/YN2N27M0fBgozL4I8suoQmJ22LO9POOCCsr4MTlvAsF9kRKuTxQGABKR2UPoW++4oojn7nbagvtJQ=
+	t=1744223591; cv=none; b=NMbHNBKoL/XIIGN39V9ZDBI+rucKqAfVeqxR+9kmNSfCPqJxDkrAvSqTlCR4FiK7Zlf15/xqb08yXNPAl4euxATcH8990ebcqPkjYtkTk6sbo/L83/Plgs8uKD3xppfYcABJMiIbewV6M88RmHY6YWyDprB+AqV1z1n1xTQu9no=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744223464; c=relaxed/simple;
-	bh=YU9+Qliy0QOX2sgsuyWGCNBJntINoefQp4KfR0TS7Cg=;
+	s=arc-20240116; t=1744223591; c=relaxed/simple;
+	bh=MGeq7y7ME+KPgk832sLNyoOePOBNHMNAWhFiPL63pr4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aRszfdWfpfonOkCNZVSYKMPu6rCgFHfKMLuizgdAXkEAounOoamyjeIjhk4EtCAlfemRQcOmj25nnLW39IxFpnCrhRWk/OBoAVX27ul3HgRbmWx237oZ2d/e8yxd3jsd7TK8VxOduSRpX9GpijdKep4ki4QeIBjU92N/tA3exw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C0B38VKj; arc=none smtp.client-ip=209.85.215.180
+	 Content-Type:Content-Disposition:In-Reply-To; b=V5LHIbhTXFheNIkWXuZLX0pJaO6uzEqFSzPSyFrs1vHaS86g8HL6hrTmAlKIfjGHNFfntYB/aj2rkSzZOLy818Im+p9pMvu+Obl07TTV3pnswLZ6Wjuxl/DezfL8VJAua6v/RebafZus32WT3XbHrWOzsm0mdKAdKUmh7VGYCBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A9v2pL24; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-af9925bbeb7so25367a12.3;
-        Wed, 09 Apr 2025 11:31:02 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-22403cbb47fso77158175ad.0;
+        Wed, 09 Apr 2025 11:33:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744223462; x=1744828262; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744223589; x=1744828389; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yWp8HcqQEiUK9VmrP5Fyuyk5glVIpEEzW3GEoFZN0j0=;
-        b=C0B38VKjU6ZJ/DQF0hBrocyih9iFhh5sEwILDd7b+pghaupOMc24Tw/2Lr/sxMYRHo
-         ojM7oPoib5GfthhIjjkCJjpJG9YcTxZkukbIHSiFCkQg3z7cyo0D48P7Pmx7q2GWv6EP
-         sg+XYERIzRAu0cQfDy10/oUaq6cwMQOWekvCC8ZPoFS2AscFmuaSK3EE8Ld2mk394P4I
-         /r1NfAdxoTKr9wBLjLDm8sxhglmWMlrScNNWVRBpZ9TNqs6rgwiNyD3K7apZ8F7yseBZ
-         eyayWavWbDAU3OhueVsIngYdXIZnrGCXcYhRyLCRYQzBkjKuwwyom0BYDNEZD61rJhyJ
-         svww==
+        bh=pEZZtQmHxD6cS3JefhP/59PsGmANbj8tqGBgctIT62U=;
+        b=A9v2pL24auIE5Um8q6USerrL3w7QVAt/Q9kIQKSuqTkfp7RA2n4hxDkZjFRWv5tpKY
+         TLJUz97U5pMQOVbRXtQLHCI5pUQhKCmrnJpV1QVHCbd+AIB/SybJw6wivfIHshckpffq
+         sGeYn5StCzmBcKzAZ5k4Y5d38tJno8ZzRTWVNxyN3/Gw+tfS14dNNI8YgSLuHryBlwpY
+         w4cb6q/PJsv8M/7jTOLuTRjnTevNihXM+TF485ywWEpV5nZRdiN08Y8bgZUdwXED9Qe8
+         Pq2BVXi4mBbBTNveKwa3Opp3+qDZ2vTCSOSP0qa7jGicncvvTQqdP6m2JPNMWx9vHpf4
+         J0hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744223462; x=1744828262;
+        d=1e100.net; s=20230601; t=1744223589; x=1744828389;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yWp8HcqQEiUK9VmrP5Fyuyk5glVIpEEzW3GEoFZN0j0=;
-        b=DiDQULtxgdL1aFNZXCC+FT+xzWMlvaUOzZhKnBRzK4Mk+cL3xOvpCx3Bk/LgugAZ2g
-         KeI1CSnxTKffT1RqVfGWqA9U1x+xgNCaonVVNqDhWUrrQM4PdcheS/w5scL/xO42nB1W
-         REhX8mj0zp8wIAzkzwwHP0jqEBwb5oTKdTb4YLG7tXpWpNx+wxfby4VlgnmvN4zkqefo
-         1sjK0gzxMsxC3Ipm8SP7HX/g+kxB/6Zz7IJ2GDcF+iSffKnHx3b9yrx0/6gL/QiAgvM2
-         xnGibif4jhNhJLZG4zQZF1npSW2oCU9LK8z2VRZZNs4CNdIpOM9VpPJ8ac3/930CTJPV
-         WpBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUAMyOVW/LWFqlQxs8VkrD1gxdAPHP5Uyg6BqDsefvn9rLt2of2s6BNl2ydt9Qlb0GZkmu7ejEOIKWU0yhl@vger.kernel.org, AJvYcCVK+KrAK8mbtZ3liQlltGjnGXFDla/DpoaGuqbdLvO6WpSBhFHY0RsOI7XjjBtBCWZT//paFy9AWtJgW0M=@vger.kernel.org, AJvYcCVKoJjgdx2if7uqcNY+TNNhlTHfgh4+pS8AMGKDK1H/Fu1gb3WFLW1A0uM/82+W4+RqkBXpJhbq@vger.kernel.org, AJvYcCVLi+/6QOR5kyrXe1uLuwDDQU6XfdugRdH0OFV/IRVyw5gQJXpI2YDFc1YDSSM4NlunR/8=@vger.kernel.org, AJvYcCVRnSlreNp+7c4WFLC2tCTXn0qf4GkQo5HSnL+UIYPQcrs9+WouNNPJZJmTsmHW9SvetCusfhoZyO63D4A=@vger.kernel.org, AJvYcCWMsS6PUa0NHqfJqGV36y9QjTFNDCWpbpFEIp+HanKIwpGUfWTdX52XOvKeAKtQ5cUmRkrZ00Fs+nZehsZM@vger.kernel.org, AJvYcCX5D83aWP/RAyEOmEz9CZA0MKtrRC3zFDBKM16U9SME/yhhaHv+DGFLoeoKy4LTFuOBLrGkW0xxyz5F7/IaFW4=@vger.kernel.org, AJvYcCXjSpFz3iDcrBmeadmDIDj52RmsPp0kXBhxB3/rwcab52Q1eJjrsJ/J0pXhwODPlcSYouPykA7f0/fTHDs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywzy48iytOj6ujp4WHyG39zGD3pkLnq9Kn8VukTMLn0mWJLifXD
-	h7TbL9kqu/RMO7OAvu4lC0oEDOaNmHU67OhzQDnl+AlGDu+UB39E
-X-Gm-Gg: ASbGncvIzD4BX89Fa09A2pFMgHc0qck6SOOyD8vToa6AIf4Ub3P1IxhFR4IczUQW/wc
-	PeGionZVeFcrPau7lloonv1bzDdDDWEua7gJUBNHqdNlYAn95N+EMNjVIgxHDzwQP5J/TeZHHZD
-	5oBmkHDfB8IiivkzKcfp0dyyP3u+oW3MTtDgtMLbeI8382fX7zWJCs6yJ3HyG8xrIjb/7jpbsh5
-	EiudvWJidSvyf4gh4KoK20ahc/CgW6HYgCmdE6Rg+vZSVA8zW2YAJJi15VtIQ8GJ/F1WQ1xde7b
-	d/kD9Bqk+P98/jfO8/+tCkG3Pk7bes/F2dQqAV1geIGUmdtUzyM86ftql9mkrB05vWhI
-X-Google-Smtp-Source: AGHT+IEojffDEHS0j3whbiNP8KyNCEs3sfRNMc8qkUsRgVj5cXjPuj6Pe0BT8ErsKVVmpVlb9KZMXw==
-X-Received: by 2002:a17:90b:548b:b0:2fe:a742:51b0 with SMTP id 98e67ed59e1d1-306dd5789bbmr4467876a91.31.1744223461782;
-        Wed, 09 Apr 2025 11:31:01 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306eaec023asm436047a91.33.2025.04.09.11.30.52
+        bh=pEZZtQmHxD6cS3JefhP/59PsGmANbj8tqGBgctIT62U=;
+        b=H4+hT+uj/nxliOb6bR8fG+vjpnRLulb8knYN6VahfoSVtYNi4CZY/Y/vIGHyluCGyr
+         WjqgWXpskvCjdUJDgk5miRJ/zdetSmyoQkdtYuHTeytPsawuHZ6TvWYevWsWyKcP55pE
+         M7s7TTn46j7MEpaEK89sTgQp1vtvKnqZdFfeP65iziOEWsfBjuv7SpCdl5UeG/ryCFdm
+         oj2Ms/H6V34R+i8EElrXRLErYU4Webvf84XGtDMxI2us3Jzu1rwwj5Z879ZgtTkx8MzJ
+         4Ien8+Ep4ZgrRmnTYlowMyTUqP88Yhu5PgKWR/1k4VMwSYlJS1RyPCqN5YBy/qqsaQ5J
+         6I4w==
+X-Forwarded-Encrypted: i=1; AJvYcCUgi0ab4ZhxJSTJuf2YxZzLeDfiZB9ZaouxPSEVIAydSjqgAeeg9ph+cPv0RrHgAnWQgR1N8rsn5OIgU0c=@vger.kernel.org, AJvYcCUtiAVxVw6m70AONoYa5yPVS+fTmBogUQE0mOs/MXKPz+da1MHcUPN+w49J1dRdZDO2MI764kVEF8KvF+09y6E=@vger.kernel.org, AJvYcCVjnII4DlZdNfOh2nFbzS7b9lsCMW54Izpgtwgz6MzvJ9R6lRg75j+GL/KCxn/2/N6RdK9xn9CyKOE4MfY=@vger.kernel.org, AJvYcCVm7elTPjdld7ThmjlPf1o818karFrrZlUCZUKQnjf1NYW0Gq5cVRCY4I+FSnB5z2H7sjtxOHRxWI18Xc+D@vger.kernel.org, AJvYcCVtGuAkeBAiKIFZurTjOuhsI7Oo7Ps4jDA4gQ5DYil0MX+J+nzYGpiQx07oAUyjsPnrLfp/eiajQstWBr41@vger.kernel.org, AJvYcCWESMN/FYvBo7Q2qYCGIvzVocGQ8MSAAH0K3h2r4Ku55Sg7eFn3UYlJm8Nq73prYAsfJxc=@vger.kernel.org, AJvYcCX344eXCuQYhv9c7BsxLVTQX53d6mjG7ep5OjCHLBHWhRDCf2EXJmv8sjhTU3piSU4JDkHHfSNo2UFh8aM=@vger.kernel.org, AJvYcCXYZsdWUar81LM3ReyLu+6M7joQUeHbAOIB73rlo/VkA3JPZ9JCXpQfa19pisMgrlTDdUVaHRzR@vger.kernel.org
+X-Gm-Message-State: AOJu0YzD7IAIyLmPU/JOGMXg5CDsi8dF/yIO++a1elZCMsunbo855ss8
+	kUHYK2fKTbACT/jaCi/QWCQfOYsNRE/3/PB1wmXDlTl2eAMFZUd8
+X-Gm-Gg: ASbGncuVaxee7EFtP0oYPeH7/wNXgdokfASRZqj5kZ4uHf4CSlmOB61oIBg1mI6K7ND
+	O4KBeFBY1HEqw6Beb07ZSS4SuAHteng9105NeRK2hAnEvpaEmxjCzQbtsHu0y2W1E4UJzW0V6g7
+	l0PaL1VK5zxlB6V6omCpMiJKX2Maek7vhqhEwmi21Pntgv1pWOROCEqvmKda3ln0zkMtMTyF6pd
+	TK2lwYcT4NmI9iO2h3Bmaf3HvqmmGrOSO2Kx+3BoAOxDbJoCgZt0d819oTrzNXJLJDDi0sDFJ00
+	GUQzvIibs32L/z7fADewmahsxCYmPc1i33JpYdP4
+X-Google-Smtp-Source: AGHT+IE8wK8xLsT0Kpo2+eqnCnHqRBL6GoNWR5XNtZUkQwRprgm7rO+knOmPkUYsLXDP1SYqhAYEsw==
+X-Received: by 2002:a17:903:2f86:b0:224:10a2:cae1 with SMTP id d9443c01a7336-22ac2a25780mr61351915ad.37.1744223589016;
+        Wed, 09 Apr 2025 11:33:09 -0700 (PDT)
+Received: from localhost ([216.228.127.131])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b02a0817f2dsm1575586a12.11.2025.04.09.11.33.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Apr 2025 11:31:01 -0700 (PDT)
-Date: Thu, 10 Apr 2025 02:30:50 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Yury Norov <yury.norov@gmail.com>
+        Wed, 09 Apr 2025 11:33:08 -0700 (PDT)
+Date: Wed, 9 Apr 2025 14:33:06 -0400
+From: Yury Norov <yury.norov@gmail.com>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
 Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
 	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
 	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
@@ -102,12 +102,12 @@ Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
 	linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
 	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
 	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v4 05/13] serial: max3100: Replace open-coded parity
- calculation with parity_odd()
-Message-ID: <Z/a82sdjEDaqE9v0@visitorckw-System-Product-Name>
+Subject: Re: [PATCH v4 00/13] Introduce parity_odd() and refactor redundant
+ parity code
+Message-ID: <Z_a9YpE46Xf8581l@yury>
 References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-6-visitorckw@gmail.com>
- <Z_atODqZDkff5sjj@yury>
+ <Z_amQp3gK5Dm8Qz3@yury>
+ <Z/a5Qh/OeLT8JBS4@visitorckw-System-Product-Name>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -116,79 +116,75 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z_atODqZDkff5sjj@yury>
+In-Reply-To: <Z/a5Qh/OeLT8JBS4@visitorckw-System-Product-Name>
 
-On Wed, Apr 09, 2025 at 01:24:08PM -0400, Yury Norov wrote:
-> On Wed, Apr 09, 2025 at 11:43:48PM +0800, Kuan-Wei Chiu wrote:
-> > Refactor parity calculations to use the standard parity_odd() helper.
-> > This change eliminates redundant implementations.
+On Thu, Apr 10, 2025 at 02:15:30AM +0800, Kuan-Wei Chiu wrote:
+> On Wed, Apr 09, 2025 at 12:54:35PM -0400, Yury Norov wrote:
+> > On Wed, Apr 09, 2025 at 11:43:43PM +0800, Kuan-Wei Chiu wrote:
+> > > Several parts of the kernel contain open-coded and redundant
+> > > implementations of parity calculation. This patch series introduces
+> > > a unified helper, parity_odd(), to simplify and standardize these
+> > > cases.
+> > > 
+> > > The first patch renames parity8() to parity_odd(), changes its argument
 > > 
-> > Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > ---
-> >  drivers/tty/serial/max3100.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > Alright, if it's an extension of the area of applicability, it should be
+> > renamed to just parity(). I already shared a table that summarized the
+> > drivers authors' view on that, and they clearly prefer not to add the
+> > suffix - 13 vs 2. The __builtin_parity() doesn't care of suffix as well. 
 > > 
-> > diff --git a/drivers/tty/serial/max3100.c b/drivers/tty/serial/max3100.c
-> > index f2dd83692b2c..36ed41eef7b1 100644
-> > --- a/drivers/tty/serial/max3100.c
-> > +++ b/drivers/tty/serial/max3100.c
-> > @@ -16,6 +16,7 @@
-> >  /* 4 MAX3100s should be enough for everyone */
-> >  #define MAX_MAX3100 4
-> >  
-> > +#include <linux/bitops.h>
-> >  #include <linux/container_of.h>
-> >  #include <linux/delay.h>
-> >  #include <linux/device.h>
-> > @@ -133,7 +134,7 @@ static int max3100_do_parity(struct max3100_port *s, u16 c)
-> >  	else
-> >  		c &= 0xff;
-> >  
-> > -	parity = parity ^ (hweight8(c) & 1);
-> > +	parity = parity ^ parity_odd(c);
-> 
-> This can be simplified for more unless I misunderstand something...
-> 
-I usually don't change the existing coding style since each subsystem
-may have its own preferred style.  
+> > https://lore.kernel.org/all/Z9GtcNJie8TRKywZ@thinkpad/
+> > 
+> > Yes, the argument that boolean function should explain itself sounds
+> > correct, but in this case, comment on top of the function looks enough
+> > to me.
+> > 
+> > The existing codebase doesn't care about the suffix as well. If no
+> > strong preference, let's just pick a short and sweet name?
+> > 
+> I don't have a strong preference for the name, but if I had to guess
+> the return value from the function prototype, I would intuitively
+> expect an int to return "0 for even and 1 for odd," and a bool to
+> return "true for even, false for odd." I recall Jiri and Jacob shared
+> similar thoughts, which is why I felt adding _odd could provide better
+> clarity.
 
-But yeah, if this is the preferred way, I can make this change in the
-next version.
+I think they said they are convinced that parity should return 1 for
+odd because of folding and __builtin_parity() arguments.
+ 
+> However, I agree that if the kernel doc comment is clear, it might not
+> be a big issue. But David previously mentioned that he doesn't want to
+> rely on checking the function's documentation every time while reading
+> the code.
 
-Regards,
-Kuan-Wei
+He's wrong. Kernel engineers _must_ read documentation, regardless.
+ 
+> Regardless, I'm flexible as long as we all reach a consensus on the
+> naming.
+> 
+> > > type from u8 to u64 for broader applicability, and updates its return
+> > > type from int to bool to make its usage and return semantics more
+> > > intuitive-returning true for odd parity and false for even parity. It
+> > > also adds __attribute_const__ to enable compiler optimizations.
+> > 
+> > That's correct and nice, but can you support it with a bloat-o-meter's
+> > before/after and/or asm snippets? I also think it worth to be a separate
+> > patch, preferably the last patch in the series.
+> > 
+> I quickly tested it with the x86 defconfig, and it appears that the
+> generated code doesn't change. I forgot who requested the addition
+> during the review process, but I initially thought it would either
+> improve the generated code or leave it unchanged without significantly
+> increasing the source code size.
 
-> From: Yury Norov <yury.norov@gmail.com>
-> Date:   Wed Apr 9 13:22:04 2025 -0400
-> 
-> serial: max3100: Replace open-coded parity
-> 
-> diff --git a/drivers/tty/serial/max3100.c b/drivers/tty/serial/max3100.c
-> index f2dd83692b2c..07d332b8e87d 100644
-> --- a/drivers/tty/serial/max3100.c
-> +++ b/drivers/tty/serial/max3100.c
-> @@ -121,20 +121,12 @@ static DEFINE_MUTEX(max3100s_lock);		   /* race on probe */
->  
->  static int max3100_do_parity(struct max3100_port *s, u16 c)
->  {
-> -	int parity;
-> -
-> -	if (s->parity & MAX3100_PARITY_ODD)
-> -		parity = 1;
-> -	else
-> -		parity = 0;
-> -
->  	if (s->parity & MAX3100_7BIT)
->  		c &= 0x7f;
->  	else
->  		c &= 0xff;
->  
-> -	parity = parity ^ (hweight8(c) & 1);
-> -	return parity;
-> +	return s->parity & MAX3100_PARITY_ODD ? !parity(c) : parity(c);
->  }
->  
->  static int max3100_check_parity(struct max3100_port *s, u16 c)
+That's what I actually expected, but was shy to guess openly. :). It's
+hard to imagine how compiler may improve code generation in this case...
+
+This attribute is used when there's an asm block, or some non-trivial
+function call. In this case, the function is self-consistent and makes
+no calls. And you see, const annotation raises more questions than
+solves problems. Let's drop it.
+
+Thanks,
+Yury
 
