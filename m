@@ -1,298 +1,157 @@
-Return-Path: <bpf+bounces-55514-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55515-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AD96A82218
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 12:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89523A8224F
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 12:36:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D27471BA50D5
-	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 10:31:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2C92189453A
+	for <lists+bpf@lfdr.de>; Wed,  9 Apr 2025 10:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1308825E46F;
-	Wed,  9 Apr 2025 10:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CB125D21E;
+	Wed,  9 Apr 2025 10:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="URr6BBK3"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dEynIQql"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A3E25D8ED
-	for <bpf@vger.kernel.org>; Wed,  9 Apr 2025 10:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75CDF245012
+	for <bpf@vger.kernel.org>; Wed,  9 Apr 2025 10:36:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744194602; cv=none; b=qKP63caiTQw2g3eKLIHtJyt/FL+diAQVE4yKwQhi8jiHXGW2iBzsnE2tl+S37Yf8kWCxlxhVzXdS+PHHqs/0Ba21+XOXcvv1PuE+d1CYePPEb+vs0OgP95CCv3yfnMt9fzAnOrylq7P9t6kiapEqYFSv2XEcop7JKaFELVnGfS0=
+	t=1744194979; cv=none; b=O+xC81QOhRpW0d+ojSZs03kp//PKHMmnj6vcPuzMjRDcmA/aFNYK6+IunjdWbIObQtqAOt0j0nOvVXTPlZkvLYL518C4LejqdZXcUlxZolEXHW1OoSmMo2610wt2s2mDhdaQmygtj7b54c/CfdvVsr33kQk6YhGa5CTeN8UDkRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744194602; c=relaxed/simple;
-	bh=WQk83JuPuQX2fSNl/OKOGc35+sSgfnC9FLi+eV/1Z4A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mDk13b+E4ru+0X8/LUNjXKPj3fJN13Dp7f39k5XxYBRYkof9uP/KmqyP1soJ8fV9VKLGKVqf9BlwnIoO8hXfV0DtO1S/nCm/ln2t3yzNBAQooTBJhADb6+yIXLsin/NWU9dFYIzggRIh+baw+i9HEonvFDyM8B9d23fOvd5bfT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=URr6BBK3; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744194596;
+	s=arc-20240116; t=1744194979; c=relaxed/simple;
+	bh=i4ww+FDuhBq9K89tHk8yHaDJA0LXhNvp9fAushoG6jQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=efAVh+kLBiFwEu9AIixeG5WHUD/o9oTlf/4wRD6AHYra2P2C9butnMjd2btPPmDdDWtushjmiS9ylByGbLLbdFN+znCGWDv5Kds0UQfOkDtA/iphFLeKuNiXVhR08PX629MQOGte0sJhlLM+EsGDWJVDqg/D2zLiat/WmllLa2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dEynIQql; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744194976;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=tVjoel3accGTvriYfDQCUCAxB4fdnEejpHrDGJrVaco=;
-	b=URr6BBK36GF8FRT9ASyYKMCuY2UJLHSxLZu4gdJzyjDDmhSvKVSruxFiPU64s3ACJIP+vr
-	A8QaJ+YG9O447840kX6fdKi+j8V7tSZKg+qx2hkfTC6YOKa8IRz4jZnU0ePs117q9KWUfd
-	26m7vdffmeNppHNYwAbukuQ1kg+Nf8s=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: bpf@vger.kernel.org
-Cc: mrpre@163.com,
-	Jiayuan Chen <jiayuan.chen@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v1] bpf, sockmap: Introduce tracing capability for sockmap
-Date: Wed,  9 Apr 2025 18:29:33 +0800
-Message-ID: <20250409102937.15632-1-jiayuan.chen@linux.dev>
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+5kKiovjW0ZhkYwq0PKT65H3P9L8h+uzV491ftb4psU=;
+	b=dEynIQql6sA9ab6nLmZxi7ERSqLbCiMSlmcODiFU0ZvJ7ZrikmTt1edzIX01Fo8c24G5GB
+	7nGeOVaQMb8hwlMjpzkkWPFLZXB8Al5PNsQ++xjYyeWC1EkED3hfxCPFHSWeo8dYSPA0AC
+	q5nf32BW67JWarMoZtXV87hKJOhqYkQ=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-55-XWremiNFN62lv0qiy4Vnsg-1; Wed, 09 Apr 2025 06:36:15 -0400
+X-MC-Unique: XWremiNFN62lv0qiy4Vnsg-1
+X-Mimecast-MFC-AGG-ID: XWremiNFN62lv0qiy4Vnsg_1744194974
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-ac710ace217so504628766b.1
+        for <bpf@vger.kernel.org>; Wed, 09 Apr 2025 03:36:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744194974; x=1744799774;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+5kKiovjW0ZhkYwq0PKT65H3P9L8h+uzV491ftb4psU=;
+        b=JcGaEyFLuIgL098VOZzmnmv6ZKsciWR1RWKnnkHrU+ul0juqWm4u0WSDg2QRCPqqQx
+         yt3KZ/nKfZTiKz5jf7CTSp0Tt1+vaOpjc4P/9lvWg6cxqOAFix8Qayv1I+GkAqM55h/4
+         t9kRwNjSNCOsE04oK8p4GSJ3Etvk8Wfit91kslEKyPgalkZH3mtRxN4NASv+QMPegysU
+         ixnOFI/iF+AVYqppCaA0Wype18u8GUYN+YM9oaIE+HKw8LCaZzhRn/foap87elah40D1
+         n8DWZ6olJf7Qe/di1GzB7t5DJ/xJ3hrN18p2M4G0nsxMaxECN2B1zTwzSiOFSx/zvrSy
+         vQsw==
+X-Forwarded-Encrypted: i=1; AJvYcCV2Sb5SdnGYGnbtFN6apAov/0U74ZtoimEBGLaUTwbx5qdEmYD+Rl1Rezh/2QT4A/7sEMU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYcjAjsCB8T7otEtSWT8KlYP98gWQbrjMkwHnKfAlJ30IXzKBm
+	0j3Q3mmaG+FT3iXLQzaCx4JkPgFP0V/NbpGbbUrYhfd5yGGqVjtznluP1aQ8l3lYFUeqDNIIcoa
+	qqPRcMFMdy7zVNilly5F1l1txrYeR8Vx5UNzpXmnWP2HB8t4bTg==
+X-Gm-Gg: ASbGncvvXJtf0oVZp2YaTR97G4CkDMu9H1laE6kwoB7uDe8lVgz4gDvkoVyPKdZO8Hh
+	lTbRrI8qTI+ZW4m1R8A9bAlMU85TsIlWSMlIH1jIbG3LhZVSMwl+PC6AYijstBsfmzS7zWWOg8m
+	mw+XKvA6t9odm6BnkZhChewUSrlw6wBZW0GCw19mNa0Yv2pa4PJBBGqZKoMJUvuepQ8ctiziaAI
+	pwHq5PexrvTAfvcqQwJ8QA9gRS9jCl8J0nICYXMrNaCle+Xblg5P4hUNkEWDvNO5unSv+Pim6PZ
+	4FG43HvD
+X-Received: by 2002:a17:907:7ea6:b0:ac2:dfcf:3e09 with SMTP id a640c23a62f3a-aca9b719b0cmr234859866b.43.1744194974081;
+        Wed, 09 Apr 2025 03:36:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGQCZRAFJMcL3NkxF41e8trgIRpTjzQOtQoBDKD5Ijj+qm+kAuHuUYYu1XdMXJhDmFnpSmJJA==
+X-Received: by 2002:a17:907:7ea6:b0:ac2:dfcf:3e09 with SMTP id a640c23a62f3a-aca9b719b0cmr234857166b.43.1744194973699;
+        Wed, 09 Apr 2025 03:36:13 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acaa1cb43b6sm74653666b.93.2025.04.09.03.36.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Apr 2025 03:36:13 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id DCF4B19920AD; Wed, 09 Apr 2025 12:36:11 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+ <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
+ Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
+ Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>, Pavel Begunkov
+ <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-mm@kvack.org
+Subject: Re: [PATCH net-next v8 1/2] page_pool: Move pp_magic check into
+ helper functions
+In-Reply-To: <20250408121352.6a2349a9@kernel.org>
+References: <20250407-page-pool-track-dma-v8-0-da9500d4ba21@redhat.com>
+ <20250407-page-pool-track-dma-v8-1-da9500d4ba21@redhat.com>
+ <20250408121352.6a2349a9@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 09 Apr 2025 12:36:11 +0200
+Message-ID: <87o6x5vcys.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Sockmap has the same high-performance forwarding capability as XDP, but
-operates at Layer 7.
+Jakub Kicinski <kuba@kernel.org> writes:
 
-Introduce tracing capability for sockmap, similar to XDP, to trace the
-execution results of BPF programs without modifying the programs
-themselves, similar to the existing trace_xdp_redirect{_map}.
+> On Mon, 07 Apr 2025 18:53:28 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>> index b7f13f087954bdccfe1e263d39a59bfd1d738ab6..6f9ef1634f75701ae0be146a=
+dd1ea2c11beb6e48 100644
+>> --- a/include/linux/mm.h
+>> +++ b/include/linux/mm.h
+>> @@ -4248,4 +4248,25 @@ int arch_lock_shadow_stack_status(struct task_str=
+uct *t, unsigned long=20
+>
+>> +static inline bool page_pool_page_is_pp(struct page *page)
+>> +{
+>> +	return false;
+>> +}
+>> +#endif
+>> +
+>> +
+>
+> extra empty line here
+>
+>>  #endif /* _LINUX_MM_H */
+>> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types=
+.h
+>> index 36eb57d73abc6cfc601e700ca08be20fb8281055..31e6c5c6724b1cffbf5ad253=
+5b3eaee5dec54d9d 100644
+>> --- a/include/net/page_pool/types.h
+>> +++ b/include/net/page_pool/types.h
+>> @@ -264,6 +264,7 @@ void page_pool_destroy(struct page_pool *pool);
+>>  void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(v=
+oid *),
+>>  			   const struct xdp_mem_info *mem);
+>>  void page_pool_put_netmem_bulk(netmem_ref *data, u32 count);
+>> +
+>
+> and here
 
-It is crucial for debugging BPF programs, especially in production
-environments.
+Ugh, got sloppy when moving things around; sorry about that. Will
+respin.
 
-Additionally, a header file was added to bpf_trace.h to automatically
-generate tracepoints.
-
-Test results:
-$ echo "1" > /sys/kernel/tracing/events/sockmap/enable
-
-skb:
-sockmap_redirect: sk=00000000d3266a8d, type=skb, family=2, protocol=6, \
-prog_id=73, length=256, action=PASS
-
-msg:
-sockmap_redirect: sk=00000000528c7614, type=msg, family=2, protocol=6, \
-prog_id=185, length=5, action=REDIRECT
-
-tls:
-sockmap_redirect: sk=00000000d04d2224, type=skb, family=2, protocol=6, \
-prog_id=143, length=35, action=PASS
-
-strparser:
-sockmap_skb_strp_parse: sk=00000000ecab0b30, family=2, protocol=6, \
-prog_id=170, size=5
-
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
----
- MAINTAINERS                    |  1 +
- include/linux/bpf_trace.h      |  2 +-
- include/trace/events/sockmap.h | 89 ++++++++++++++++++++++++++++++++++
- net/core/skmsg.c               |  6 +++
- 4 files changed, 97 insertions(+), 1 deletion(-)
- create mode 100644 include/trace/events/sockmap.h
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a7a1d121a83e..578e16d86853 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4420,6 +4420,7 @@ L:	netdev@vger.kernel.org
- L:	bpf@vger.kernel.org
- S:	Maintained
- F:	include/linux/skmsg.h
-+F:	include/trace/events/sockmap.h
- F:	net/core/skmsg.c
- F:	net/core/sock_map.c
- F:	net/ipv4/tcp_bpf.c
-diff --git a/include/linux/bpf_trace.h b/include/linux/bpf_trace.h
-index ddf896abcfb6..896346fb2b46 100644
---- a/include/linux/bpf_trace.h
-+++ b/include/linux/bpf_trace.h
-@@ -3,5 +3,5 @@
- #define __LINUX_BPF_TRACE_H__
- 
- #include <trace/events/xdp.h>
--
-+#include <trace/events/sockmap.h>
- #endif /* __LINUX_BPF_TRACE_H__ */
-diff --git a/include/trace/events/sockmap.h b/include/trace/events/sockmap.h
-new file mode 100644
-index 000000000000..2a69b011e88f
---- /dev/null
-+++ b/include/trace/events/sockmap.h
-@@ -0,0 +1,89 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM sockmap
-+
-+#if !defined(_TRACE_SOCKMAP_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_SOCKMAP_H
-+
-+#include <linux/filter.h>
-+#include <linux/tracepoint.h>
-+#include <linux/bpf.h>
-+#include <linux/skmsg.h>
-+
-+TRACE_DEFINE_ENUM(__SK_DROP);
-+TRACE_DEFINE_ENUM(__SK_PASS);
-+TRACE_DEFINE_ENUM(__SK_REDIRECT);
-+TRACE_DEFINE_ENUM(__SK_NONE);
-+
-+#define show_act(x) \
-+	__print_symbolic(x, \
-+		{ __SK_DROP,		"DROP" }, \
-+		{ __SK_PASS,		"PASS" }, \
-+		{ __SK_REDIRECT,	"REDIRECT" }, \
-+		{ __SK_NONE,		"NONE" })
-+
-+#define trace_sockmap_skmsg_redirect(sk, prog, msg, act)	\
-+	trace_sockmap_redirect((sk), "msg", (prog), (msg)->sg.size, (act))
-+
-+#define trace_sockmap_skb_redirect(sk, prog, skb, act)		\
-+	trace_sockmap_redirect((sk), "skb", (prog), (skb)->len, (act))
-+
-+TRACE_EVENT(sockmap_redirect,
-+	    TP_PROTO(const struct sock *sk, const char *type,
-+		     const struct bpf_prog *prog, int length, int act),
-+	    TP_ARGS(sk, type, prog, length, act),
-+
-+	TP_STRUCT__entry(
-+		__field(const void *, sk)
-+		__field(const char *, type)
-+		__field(__u16, family)
-+		__field(__u16, protocol)
-+		__field(int, prog_id)
-+		__field(int, length)
-+		__field(int, act)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->sk		= sk;
-+		__entry->type		= type;
-+		__entry->family		= sk->sk_family;
-+		__entry->protocol	= sk->sk_protocol;
-+		__entry->prog_id	= prog->aux->id;
-+		__entry->length		= length;
-+		__entry->act		= act;
-+	),
-+
-+	TP_printk("sk=%p, type=%s, family=%d, protocol=%d, prog_id=%d, length=%d, action=%s",
-+		  __entry->sk, __entry->type, __entry->family, __entry->protocol,
-+		  __entry->prog_id, __entry->length,
-+		  show_act(__entry->act))
-+);
-+
-+TRACE_EVENT(sockmap_skb_strp_parse,
-+	    TP_PROTO(const struct sock *sk, const struct bpf_prog *prog,
-+		     int size),
-+	    TP_ARGS(sk, prog, size),
-+
-+	TP_STRUCT__entry(
-+		__field(const void *, sk)
-+		__field(__u16, family)
-+		__field(__u16, protocol)
-+		__field(int, prog_id)
-+		__field(int, size)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->sk		= sk;
-+		__entry->family		= sk->sk_family;
-+		__entry->protocol	= sk->sk_protocol;
-+		__entry->prog_id	= prog->aux->id;
-+		__entry->size		= size;
-+	),
-+
-+	TP_printk("sk=%p, family=%d, protocol=%d, prog_id=%d, size=%d",
-+		  __entry->sk, __entry->family, __entry->protocol,
-+		  __entry->prog_id, __entry->size)
-+);
-+#endif /* _TRACE_SOCKMAP_H */
-+
-+#include <trace/define_trace.h>
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 0ddc4c718833..9fb948f3b1eb 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -9,6 +9,7 @@
- #include <net/tcp.h>
- #include <net/tls.h>
- #include <trace/events/sock.h>
-+#include <trace/events/sockmap.h>
- 
- static bool sk_msg_try_coalesce_ok(struct sk_msg *msg, int elem_first_coalesce)
- {
-@@ -904,6 +905,7 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
- 		sock_hold(psock->sk_redir);
- 	}
- out:
-+	trace_sockmap_skmsg_redirect(sk, prog, msg, ret);
- 	rcu_read_unlock();
- 	return ret;
- }
-@@ -975,6 +977,7 @@ int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb)
- 		ret = bpf_prog_run_pin_on_cpu(prog, skb);
- 		ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
- 		skb->sk = NULL;
-+		trace_sockmap_skb_redirect(psock->sk, prog, skb, ret);
- 	}
- 	sk_psock_tls_verdict_apply(skb, psock, ret);
- 	rcu_read_unlock();
-@@ -1084,6 +1087,7 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
- 		skb_bpf_set_strparser(skb);
- 		ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
- 		skb->sk = NULL;
-+		trace_sockmap_skb_redirect(sk, prog, skb, ret);
- 	}
- 	sk_psock_verdict_apply(psock, skb, ret);
- out:
-@@ -1107,6 +1111,7 @@ static int sk_psock_strp_parse(struct strparser *strp, struct sk_buff *skb)
- 		skb->sk = psock->sk;
- 		ret = bpf_prog_run_pin_on_cpu(prog, skb);
- 		skb->sk = NULL;
-+		trace_sockmap_skb_strp_parse(psock->sk, prog, ret);
- 	}
- 	rcu_read_unlock();
- 	return ret;
-@@ -1211,6 +1216,7 @@ static int sk_psock_verdict_recv(struct sock *sk, struct sk_buff *skb)
- 		skb_bpf_redirect_clear(skb);
- 		ret = bpf_prog_run_pin_on_cpu(prog, skb);
- 		ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
-+		trace_sockmap_skb_redirect(psock->sk, prog, skb, ret);
- 	}
- 	ret = sk_psock_verdict_apply(psock, skb, ret);
- 	if (ret < 0)
--- 
-2.47.1
+-Toke
 
 
