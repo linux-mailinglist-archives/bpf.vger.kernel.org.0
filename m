@@ -1,225 +1,358 @@
-Return-Path: <bpf+bounces-55634-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55635-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 548B8A83A32
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 09:05:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBEF9A83A53
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 09:09:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04EE11B82324
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 07:04:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E353A3B1B4D
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 07:06:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD648204C0A;
-	Thu, 10 Apr 2025 07:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69A6205E0A;
+	Thu, 10 Apr 2025 07:06:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="V1clprFc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dZ6ygRtj"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90E51DFDE;
-	Thu, 10 Apr 2025 07:03:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B97D205ACB;
+	Thu, 10 Apr 2025 07:06:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744268628; cv=none; b=Rf3n5j25zTZWVar0KZ7Dzctw86ls8OHq8bSSIr58VLOJhgFC53ocYcj2OWHzlY5SJ/OTTL2jDnB5pKiGU4gIl2eiAktfrexHSzDVcN4GCBYtRQcmSQgEhxz/vkxLotQJjm/ZJ39HadbpyPo/59RY+oydSwEEW2fJ+hLmUd5Vhh4=
+	t=1744268768; cv=none; b=UUgp3dfFwx1Jhf1dFU9eQqnuG3uvWOaof/Am6S+BTK66OLzpubx+G8tnu8M5AriP2luPeeC+D+U702lMgWKJr9GpE/xtNb14JpUcH2d+lqDt9KeRB2USjj1obgPCcGxJHZGBJlpkZv6GDQCTt7xEg2kzaR1b1hlIeRaLbLIKhUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744268628; c=relaxed/simple;
-	bh=bZLY15UrVGK7p97LG2OmtwjcZajPk3Fv1tuBhvNIjMg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QkuSt4iwjVmdbLnWVpHywQkFks8Am0XmioKGvVbebAJebf1+4NindtuLH3iB5IBgEh3MhaBVxt1/U4mI1YS6f29vP1Tuk4/udUR6vRUq53gz9m7pww0Yl0OrE68wSqOPx7CxvC2+3VegD01C0yB3I6TtM/z0bhg4Mxa34VXJQjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=V1clprFc; arc=none smtp.client-ip=117.135.210.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=CnPiI
-	i+40Nq8IcPg6K0qCX4b4qsQqX8RZrW3I0ARU+w=; b=V1clprFcSYL5hj6EdrKA/
-	ZvKFdBpjr6yT9+dg7+1YdX+thh8ahiBMaJT4MVUdw/U7dpVGGafHBkkfCB3VWhvf
-	iTo3Ic8iK1g6yaC1qQOTeF+l84ndxcoEIZ2HkP/wu6O1RH2sJdkjRqj/O4IrCCS/
-	xio5MB4R5GF2TMerhFUzJE=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wD3f7EibfdnHOEjFg--.20679S2;
-	Thu, 10 Apr 2025 15:02:59 +0800 (CST)
-From: Feng Yang <yangfeng59949@163.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mattbobrowski@google.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v3] bpf: Remove redundant checks
-Date: Thu, 10 Apr 2025 15:02:58 +0800
-Message-Id: <20250410070258.276759-1-yangfeng59949@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1744268768; c=relaxed/simple;
+	bh=H29HGz5dCVdWsyu4NNvoXXnk11dPJ6OVdf1MoeVHmj0=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=WvPgYxdI/A4BezWbRb5AIqiVpBoS+QHj5j7dVzQ+NFnz2Sq5bgkCEmDmZnChMJgROFdaBGT1hpNi0ebNIqyS2bNAdyI8RJdCpaJpKxSusxOYxT61/HUnXr0YXZVgqj7KyWsROwlWwA7yrDMqYZO/Qpe7RwNCUtk1QTVqppRKJfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dZ6ygRtj; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-af51596da56so473427a12.0;
+        Thu, 10 Apr 2025 00:06:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744268765; x=1744873565; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mtO4Cd3eyEjzyUiq+HOYkzpvu70Qjvaf96k0H5Kwoi8=;
+        b=dZ6ygRtjrth67PYYLgtH/Ze4Bil0q+t4JMMVKJWV8szGEI8pBLKoag0vRgwTjlkRxJ
+         uydXLOmr8CCKwIvbudmhBljV3C+1JpmTykTZMGHjZK0H/7M5OAaCah2FKH0V2lcaDlYL
+         NY6wSQNSjGgE6zvN7Ej71AP8LtxbpMyC9cc1pJwauhfFEATVEy6pL3cZVgZ7UTtHG1tt
+         0GoZsyCuPCAaNyHfH0qblV/lbAePzFS+A8yOv6FSaH8447um9JvKSTAR+LmEk1RdsihI
+         4QTzuTHXDOO+W9tS19A6ihsPrDiCiEEp5yGvuX4YVV5+koER5M5l1rFcV2TxNsZxZWSV
+         Y8dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744268765; x=1744873565;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mtO4Cd3eyEjzyUiq+HOYkzpvu70Qjvaf96k0H5Kwoi8=;
+        b=ZnVaVaR9MEWSVRT1wBRZHxVqDWcQCbCDHkYlBru+nJPZRGzpVANN9/B3gM7LRlBY+7
+         T7yipq16KreUPXMoZr0Yyi0rU/8Rv4YFJDgXAauSnTfTl3pATi+X7V4NeepyMPsbvxxt
+         opbHbXtb+ovcjqXznHaYaFjauIrKupDC2kmVIrY0Mmbuf8XxcfnczqmV+kxX3BXQDVre
+         9G/nI6pdRg+aQY9jI51BjaVUhnRSJYpickXmqZMAnSXp/9Xmg5L3US0yAZ5EpBsMD7O/
+         K3hVZFc06lm9ZgYwfFK3xyXd4rvINAJCLnDsRoCiECtKGwHp++UGvi6FRkFtQa3t4Z+u
+         WrYg==
+X-Forwarded-Encrypted: i=1; AJvYcCVRcWVskZ4Z4PbBPG1nm1AUCW6wa6/3uoOxuD6biFE0eyiDdISW/SeDS1WNGwVHpJTlmXHN2MU8qgRYa658@vger.kernel.org, AJvYcCWI10Nm9jGK5MkGeghItihOTQw7TqdwajqhKUGApIA0ve9HQAWs7txCy1uWe0ympUMf/03t20dp@vger.kernel.org, AJvYcCXSSysX5vcBjWJHPVUMYJm00lv/HcKPcq12xJhUmhFVRLN53u7DMNPXEiF8vPT+Iy6M2Lw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOig1cn1H2UYW0nBCs7uPxBZBc//lbPtrQblOiY2DCtICAdK7B
+	NVvzk92TXWzgzIKm8/bwtAdTeiWxTn55s88uNq+lF+FuOe0IoGN2
+X-Gm-Gg: ASbGncvsBRmK5z2Wj4Tcy6Yok36yWUP3G+ymMaNjXjlG/3uwknWxbkgTvLqDZNjpc0U
+	Rzk+VUnbqrByS5fJx2I5nvRiaiMIikU2k97vCKIjqKSEZUnL6MrJ/Zs9KYCIzMv7V/wv4smjDYl
+	z8qrXSkZH4Ljt912bjVaTX533IiXQsiS+G0N2KiYxyO8z5cvwFObrryyECvUhVXxmCYBP6AIHMg
+	3LCvw/o0d2nx7GcJ8S/oAAvy/4uioyt9Vpo7ceCrDU4XOxeHNzHAMUar/X3wHFKJsbMxNMt0r3v
+	Sllmm52+wST/bjBloK1TzY7tYuLxnMFACVvnlDCIXz+6D8TiLSJsyBhKsOv75zmlF38g4NDW2tR
+	tABpgh/BTE0kcXjRdHY0=
+X-Google-Smtp-Source: AGHT+IFC012ePYdg9YU5IJdv9OMsXwY8Yly4PrymASzDBwjSbXzE/FE47Ok1P78B+yqAZ9Z6q4iZ6w==
+X-Received: by 2002:a05:6a21:9007:b0:1f5:93b1:6a58 with SMTP id adf61e73a8af0-2016cc5eedbmr2153249637.8.1744268765300;
+        Thu, 10 Apr 2025 00:06:05 -0700 (PDT)
+Received: from ?IPV6:2001:ee0:4f0e:fb30:959f:bd4a:33b6:cab1? ([2001:ee0:4f0e:fb30:959f:bd4a:33b6:cab1])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b02a322117bsm1978174a12.64.2025.04.10.00.05.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Apr 2025 00:06:04 -0700 (PDT)
+Message-ID: <4d3a1478-b6fc-47a3-8d77-7eca6a973a06@gmail.com>
+Date: Thu, 10 Apr 2025 14:05:57 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH] virtio-net: hold netdev_lock when pausing rx
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ "Michael S . Tsirkin" <mst@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ virtualization@lists.linux.dev
+References: <20250404093903.37416-1-minhquangbui99@gmail.com>
+ <1743987836.9938157-1-xuanzhuo@linux.alibaba.com>
+ <30419bd6-13b1-4426-9f93-b38b66ef7c3a@gmail.com>
+ <CACGkMEs7O7D5sztwJVn45c+1pap20Oi5f=02Sy_qxFjbeHuYiQ@mail.gmail.com>
+ <4195db62-db43-4d61-88c3-7a7fbb164726@gmail.com>
+ <b7b1f5de-7003-4960-a9d1-883bf2f1aa77@gmail.com>
+Content-Language: en-US
+In-Reply-To: <b7b1f5de-7003-4960-a9d1-883bf2f1aa77@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3f7EibfdnHOEjFg--.20679S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxKr4kJFy8XF15Zr1rWw13twb_yoW7tF1rpF
-	sxtrZxCrs2vw42qFy7Jr1fZa4Yy3srX3y5WaykKw18ur4UZr47tF12kF42gF1rAr98G347
-	u3yvvFZ0kFyI93JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jerWrUUUUU=
-X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiwgMreGf3aJu3wAAAsG
 
-From: Feng Yang <yangfeng@kylinos.cn>
+When pausing rx (e.g. set up xdp, xsk pool, rx resize), we call
+napi_disable() on the receive queue's napi. In delayed refill_work, it
+also calls napi_disable() on the receive queue's napi. When
+napi_disable() is called on an already disabled napi, it will sleep in
+napi_disable_locked while still holding the netdev_lock. As a result,
+later napi_enable gets stuck too as it cannot acquire the netdev_lock.
+This leads to refill_work and the pause-then-resume tx are stuck
+altogether.
 
-Many conditional checks in switch-case are redundant
-with bpf_base_func_proto and should be removed.
+This scenario can be reproducible by binding a XDP socket to virtio-net
+interface without setting up the fill ring. As a result, try_fill_recv
+will fail until the fill ring is set up and refill_work is scheduled.
 
-Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
-Acked-by: Song Liu <song@kernel.org>
+This commit makes the pausing rx path hold the netdev_lock until
+resuming, prevent any napi_disable() to be called on a temporarily
+disabled napi.
+
+Fixes: 413f0271f396 ("net: protect NAPI enablement with netdev_lock()")
+Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
 ---
-Changes in v3:
-- Only modify patch description information.
-- Link to v2: https://lore.kernel.org/all/20250408071151.229329-1-yangfeng59949@163.com/
+  drivers/net/virtio_net.c | 74 +++++++++++++++++++++++++---------------
+  1 file changed, 47 insertions(+), 27 deletions(-)
 
-Changes in v2:
-- Only modify patch description information.
-- Link to v1: https://lore.kernel.org/all/20250320032258.116156-1-yangfeng59949@163.com/
----
- kernel/trace/bpf_trace.c | 72 ----------------------------------------
- 1 file changed, 72 deletions(-)
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 7e4617216a4b..74bd1065c586 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -2786,9 +2786,13 @@ static void skb_recv_done(struct virtqueue *rvq)
+  }
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 6b07fa7081d9..c89b25344422 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1443,56 +1443,14 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	const struct bpf_func_proto *func_proto;
- 
- 	switch (func_id) {
--	case BPF_FUNC_map_lookup_elem:
--		return &bpf_map_lookup_elem_proto;
--	case BPF_FUNC_map_update_elem:
--		return &bpf_map_update_elem_proto;
--	case BPF_FUNC_map_delete_elem:
--		return &bpf_map_delete_elem_proto;
--	case BPF_FUNC_map_push_elem:
--		return &bpf_map_push_elem_proto;
--	case BPF_FUNC_map_pop_elem:
--		return &bpf_map_pop_elem_proto;
--	case BPF_FUNC_map_peek_elem:
--		return &bpf_map_peek_elem_proto;
--	case BPF_FUNC_map_lookup_percpu_elem:
--		return &bpf_map_lookup_percpu_elem_proto;
--	case BPF_FUNC_ktime_get_ns:
--		return &bpf_ktime_get_ns_proto;
--	case BPF_FUNC_ktime_get_boot_ns:
--		return &bpf_ktime_get_boot_ns_proto;
--	case BPF_FUNC_tail_call:
--		return &bpf_tail_call_proto;
--	case BPF_FUNC_get_current_task:
--		return &bpf_get_current_task_proto;
--	case BPF_FUNC_get_current_task_btf:
--		return &bpf_get_current_task_btf_proto;
--	case BPF_FUNC_task_pt_regs:
--		return &bpf_task_pt_regs_proto;
- 	case BPF_FUNC_get_current_uid_gid:
- 		return &bpf_get_current_uid_gid_proto;
- 	case BPF_FUNC_get_current_comm:
- 		return &bpf_get_current_comm_proto;
--	case BPF_FUNC_trace_printk:
--		return bpf_get_trace_printk_proto();
- 	case BPF_FUNC_get_smp_processor_id:
- 		return &bpf_get_smp_processor_id_proto;
--	case BPF_FUNC_get_numa_node_id:
--		return &bpf_get_numa_node_id_proto;
- 	case BPF_FUNC_perf_event_read:
- 		return &bpf_perf_event_read_proto;
--	case BPF_FUNC_get_prandom_u32:
--		return &bpf_get_prandom_u32_proto;
--	case BPF_FUNC_probe_read_user:
--		return &bpf_probe_read_user_proto;
--	case BPF_FUNC_probe_read_kernel:
--		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
--		       NULL : &bpf_probe_read_kernel_proto;
--	case BPF_FUNC_probe_read_user_str:
--		return &bpf_probe_read_user_str_proto;
--	case BPF_FUNC_probe_read_kernel_str:
--		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
--		       NULL : &bpf_probe_read_kernel_str_proto;
- #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	case BPF_FUNC_probe_read:
- 		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
-@@ -1502,10 +1460,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		       NULL : &bpf_probe_read_compat_str_proto;
- #endif
- #ifdef CONFIG_CGROUPS
--	case BPF_FUNC_cgrp_storage_get:
--		return &bpf_cgrp_storage_get_proto;
--	case BPF_FUNC_cgrp_storage_delete:
--		return &bpf_cgrp_storage_delete_proto;
- 	case BPF_FUNC_current_task_under_cgroup:
- 		return &bpf_current_task_under_cgroup_proto;
- #endif
-@@ -1513,20 +1467,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_send_signal_proto;
- 	case BPF_FUNC_send_signal_thread:
- 		return &bpf_send_signal_thread_proto;
--	case BPF_FUNC_perf_event_read_value:
--		return &bpf_perf_event_read_value_proto;
--	case BPF_FUNC_ringbuf_output:
--		return &bpf_ringbuf_output_proto;
--	case BPF_FUNC_ringbuf_reserve:
--		return &bpf_ringbuf_reserve_proto;
--	case BPF_FUNC_ringbuf_submit:
--		return &bpf_ringbuf_submit_proto;
--	case BPF_FUNC_ringbuf_discard:
--		return &bpf_ringbuf_discard_proto;
--	case BPF_FUNC_ringbuf_query:
--		return &bpf_ringbuf_query_proto;
--	case BPF_FUNC_jiffies64:
--		return &bpf_jiffies64_proto;
- 	case BPF_FUNC_get_task_stack:
- 		return prog->sleepable ? &bpf_get_task_stack_sleepable_proto
- 				       : &bpf_get_task_stack_proto;
-@@ -1534,12 +1474,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_copy_from_user_proto;
- 	case BPF_FUNC_copy_from_user_task:
- 		return &bpf_copy_from_user_task_proto;
--	case BPF_FUNC_snprintf_btf:
--		return &bpf_snprintf_btf_proto;
--	case BPF_FUNC_per_cpu_ptr:
--		return &bpf_per_cpu_ptr_proto;
--	case BPF_FUNC_this_cpu_ptr:
--		return &bpf_this_cpu_ptr_proto;
- 	case BPF_FUNC_task_storage_get:
- 		if (bpf_prog_check_recur(prog))
- 			return &bpf_task_storage_get_recur_proto;
-@@ -1548,18 +1482,12 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		if (bpf_prog_check_recur(prog))
- 			return &bpf_task_storage_delete_recur_proto;
- 		return &bpf_task_storage_delete_proto;
--	case BPF_FUNC_for_each_map_elem:
--		return &bpf_for_each_map_elem_proto;
--	case BPF_FUNC_snprintf:
--		return &bpf_snprintf_proto;
- 	case BPF_FUNC_get_func_ip:
- 		return &bpf_get_func_ip_proto_tracing;
- 	case BPF_FUNC_get_branch_snapshot:
- 		return &bpf_get_branch_snapshot_proto;
- 	case BPF_FUNC_find_vma:
- 		return &bpf_find_vma_proto;
--	case BPF_FUNC_trace_vprintk:
--		return bpf_get_trace_vprintk_proto();
- 	default:
- 		break;
- 	}
+  static void virtnet_napi_do_enable(struct virtqueue *vq,
+-                   struct napi_struct *napi)
++                   struct napi_struct *napi,
++                   bool netdev_locked)
+  {
+-    napi_enable(napi);
++    if (netdev_locked)
++        napi_enable_locked(napi);
++    else
++        napi_enable(napi);
+
+      /* If all buffers were filled by other side before we napi_enabled, we
+       * won't get another interrupt, so process any outstanding packets 
+now.
+@@ -2799,16 +2803,16 @@ static void virtnet_napi_do_enable(struct 
+virtqueue *vq,
+      local_bh_enable();
+  }
+
+-static void virtnet_napi_enable(struct receive_queue *rq)
++static void virtnet_napi_enable(struct receive_queue *rq, bool 
+netdev_locked)
+  {
+      struct virtnet_info *vi = rq->vq->vdev->priv;
+      int qidx = vq2rxq(rq->vq);
+
+-    virtnet_napi_do_enable(rq->vq, &rq->napi);
++    virtnet_napi_do_enable(rq->vq, &rq->napi, netdev_locked);
+      netif_queue_set_napi(vi->dev, qidx, NETDEV_QUEUE_TYPE_RX, &rq->napi);
+  }
+
+-static void virtnet_napi_tx_enable(struct send_queue *sq)
++static void virtnet_napi_tx_enable(struct send_queue *sq, bool 
+netdev_locked)
+  {
+      struct virtnet_info *vi = sq->vq->vdev->priv;
+      struct napi_struct *napi = &sq->napi;
+@@ -2825,11 +2829,11 @@ static void virtnet_napi_tx_enable(struct 
+send_queue *sq)
+          return;
+      }
+
+-    virtnet_napi_do_enable(sq->vq, napi);
++    virtnet_napi_do_enable(sq->vq, napi, netdev_locked);
+      netif_queue_set_napi(vi->dev, qidx, NETDEV_QUEUE_TYPE_TX, napi);
+  }
+
+-static void virtnet_napi_tx_disable(struct send_queue *sq)
++static void virtnet_napi_tx_disable(struct send_queue *sq, bool 
+netdev_locked)
+  {
+      struct virtnet_info *vi = sq->vq->vdev->priv;
+      struct napi_struct *napi = &sq->napi;
+@@ -2837,18 +2841,24 @@ static void virtnet_napi_tx_disable(struct 
+send_queue *sq)
+
+      if (napi->weight) {
+          netif_queue_set_napi(vi->dev, qidx, NETDEV_QUEUE_TYPE_TX, NULL);
+-        napi_disable(napi);
++        if (netdev_locked)
++            napi_disable_locked(napi);
++        else
++            napi_disable(napi);
+      }
+  }
+
+-static void virtnet_napi_disable(struct receive_queue *rq)
++static void virtnet_napi_disable(struct receive_queue *rq, bool 
+netdev_locked)
+  {
+      struct virtnet_info *vi = rq->vq->vdev->priv;
+      struct napi_struct *napi = &rq->napi;
+      int qidx = vq2rxq(rq->vq);
+
+      netif_queue_set_napi(vi->dev, qidx, NETDEV_QUEUE_TYPE_RX, NULL);
+-    napi_disable(napi);
++    if (netdev_locked)
++        napi_disable_locked(napi);
++    else
++        napi_disable(napi);
+  }
+
+  static void refill_work(struct work_struct *work)
+@@ -2875,9 +2885,11 @@ static void refill_work(struct work_struct *work)
+           *     instance lock)
+           *   - check netif_running() and return early to avoid a race
+           */
+-        napi_disable(&rq->napi);
++        netdev_lock(vi->dev);
++        napi_disable_locked(&rq->napi);
+          still_empty = !try_fill_recv(vi, rq, GFP_KERNEL);
+-        virtnet_napi_do_enable(rq->vq, &rq->napi);
++        virtnet_napi_do_enable(rq->vq, &rq->napi, true);
++        netdev_unlock(vi->dev);
+
+          /* In theory, this can happen: if we don't get any buffers in
+           * we will *never* try to fill again.
+@@ -3074,8 +3086,8 @@ static int virtnet_poll(struct napi_struct *napi, 
+int budget)
+
+  static void virtnet_disable_queue_pair(struct virtnet_info *vi, int 
+qp_index)
+  {
+-    virtnet_napi_tx_disable(&vi->sq[qp_index]);
+-    virtnet_napi_disable(&vi->rq[qp_index]);
++    virtnet_napi_tx_disable(&vi->sq[qp_index], false);
++    virtnet_napi_disable(&vi->rq[qp_index], false);
+      xdp_rxq_info_unreg(&vi->rq[qp_index].xdp_rxq);
+  }
+
+@@ -3094,8 +3106,8 @@ static int virtnet_enable_queue_pair(struct 
+virtnet_info *vi, int qp_index)
+      if (err < 0)
+          goto err_xdp_reg_mem_model;
+
+-    virtnet_napi_enable(&vi->rq[qp_index]);
+-    virtnet_napi_tx_enable(&vi->sq[qp_index]);
++    virtnet_napi_enable(&vi->rq[qp_index], false);
++    virtnet_napi_tx_enable(&vi->sq[qp_index], false);
+
+      return 0;
+
+@@ -3347,7 +3359,8 @@ static void virtnet_rx_pause(struct virtnet_info 
+*vi, struct receive_queue *rq)
+      bool running = netif_running(vi->dev);
+
+      if (running) {
+-        virtnet_napi_disable(rq);
++        netdev_lock(vi->dev);
++        virtnet_napi_disable(rq, true);
+          virtnet_cancel_dim(vi, &rq->dim);
+      }
+  }
+@@ -3359,8 +3372,10 @@ static void virtnet_rx_resume(struct virtnet_info 
+*vi, struct receive_queue *rq)
+      if (!try_fill_recv(vi, rq, GFP_KERNEL))
+          schedule_delayed_work(&vi->refill, 0);
+
+-    if (running)
+-        virtnet_napi_enable(rq);
++    if (running) {
++        virtnet_napi_enable(rq, true);
++        netdev_unlock(vi->dev);
++    }
+  }
+
+  static int virtnet_rx_resize(struct virtnet_info *vi,
+@@ -3389,7 +3404,7 @@ static void virtnet_tx_pause(struct virtnet_info 
+*vi, struct send_queue *sq)
+      qindex = sq - vi->sq;
+
+      if (running)
+-        virtnet_napi_tx_disable(sq);
++        virtnet_napi_tx_disable(sq, false);
+
+      txq = netdev_get_tx_queue(vi->dev, qindex);
+
+@@ -3423,7 +3438,7 @@ static void virtnet_tx_resume(struct virtnet_info 
+*vi, struct send_queue *sq)
+      __netif_tx_unlock_bh(txq);
+
+      if (running)
+-        virtnet_napi_tx_enable(sq);
++        virtnet_napi_tx_enable(sq, false);
+  }
+
+  static int virtnet_tx_resize(struct virtnet_info *vi, struct 
+send_queue *sq,
+@@ -5961,9 +5976,10 @@ static int virtnet_xdp_set(struct net_device 
+*dev, struct bpf_prog *prog,
+
+      /* Make sure NAPI is not using any XDP TX queues for RX. */
+      if (netif_running(dev)) {
++        netdev_lock(dev);
+          for (i = 0; i < vi->max_queue_pairs; i++) {
+-            virtnet_napi_disable(&vi->rq[i]);
+-            virtnet_napi_tx_disable(&vi->sq[i]);
++            virtnet_napi_disable(&vi->rq[i], true);
++            virtnet_napi_tx_disable(&vi->sq[i], true);
+          }
+      }
+
+@@ -6000,11 +6016,14 @@ static int virtnet_xdp_set(struct net_device 
+*dev, struct bpf_prog *prog,
+          if (old_prog)
+              bpf_prog_put(old_prog);
+          if (netif_running(dev)) {
+-            virtnet_napi_enable(&vi->rq[i]);
+-            virtnet_napi_tx_enable(&vi->sq[i]);
++            virtnet_napi_enable(&vi->rq[i], true);
++            virtnet_napi_tx_enable(&vi->sq[i], true);
+          }
+      }
+
++    if (netif_running(dev))
++        netdev_unlock(dev);
++
+      return 0;
+
+  err:
+@@ -6016,9 +6035,10 @@ static int virtnet_xdp_set(struct net_device 
+*dev, struct bpf_prog *prog,
+
+      if (netif_running(dev)) {
+          for (i = 0; i < vi->max_queue_pairs; i++) {
+-            virtnet_napi_enable(&vi->rq[i]);
+-            virtnet_napi_tx_enable(&vi->sq[i]);
++            virtnet_napi_enable(&vi->rq[i], true);
++            virtnet_napi_tx_enable(&vi->sq[i], true);
+          }
++        netdev_unlock(dev);
+      }
+      if (prog)
+          bpf_prog_sub(prog, vi->max_queue_pairs - 1);
 -- 
 2.43.0
+
 
 
