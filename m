@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-55681-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55682-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15DF0A84B33
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 19:39:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01B94A84B3A
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 19:41:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 824CE19E8666
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:39:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79DCA4E34AE
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:39:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587A5290BCD;
-	Thu, 10 Apr 2025 17:37:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C81729345B;
+	Thu, 10 Apr 2025 17:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IZODvNjD"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="h3fKEn+P"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17EE8290BAA
-	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 17:36:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1636A290BC4
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 17:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744306621; cv=none; b=o1FdrfsyKC+GnEA9nMXRc9BKpoftvd99qpDy1jBXjWjSxzmYR7tOXhuH95dSkaySfThhMEeYYydjs+qkEwgogQKyOPZQxTGhRpjQUFCxz4AUCgAzH/JeYwYbk3a+YFF7vRTBhZeNyuSMuctEiLbQQvfXcpTLLzM7gSUzFm7qmjo=
+	t=1744306623; cv=none; b=qZMMpkQQepa2StCDiGLlg9uc2TNIZA3nmyMBoMtVDxABtKvL/VgDq+hyKvYQSuGxR5aojd8YNJghhKj1fWNlKhwBrtKSQHrtBITnp1nB996ZMhv/WiK+dBl8hEkyVblhsqEbpREvuulP7/lnj8LPzKMKHhavczMzG0GFjOCkYzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744306621; c=relaxed/simple;
-	bh=s5GHscAETkUAKivN7aAi7TLoUIfwAcyInliqpu10XeA=;
+	s=arc-20240116; t=1744306623; c=relaxed/simple;
+	bh=pwnF8n7mqD7yk9oNBMquJdU4/lh8MdFnDzv/GA7kVio=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=iar/ksxoWGh8inWap2Oud2PF/Z7JIozQXkocrhGBWL2GQLlk2tYi2NyFoyOmCSA3G+9ugu+J6DZx7rn3XFaGvpBTyOVxhPLGejHV3FQmLlqb6uf+xSjm+/YnGo/+OMaY2IKkCrgxoD+xAbpLarw5ZQRnB6gYLsqpz3buOFpIqIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IZODvNjD; arc=none smtp.client-ip=209.85.214.202
+	 To:Content-Type; b=e6G0X6EVKQ/GODO2108HDrKdPixe7vmAH/X/pbfU04jWFNmNkHpSLjFGbOb96v2R0cNPRZfZ9FYC68eXK6mkUKH8IA/qh99BQGlAHoviUT/Svm2Rkcz2J0JPZlOmhciAYe5qFcB1ug/VDUtJQJDm2rh4MtBHrwbPTD6dCArwq3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=h3fKEn+P; arc=none smtp.client-ip=209.85.214.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-22650077995so15012065ad.3
-        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 10:36:59 -0700 (PDT)
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-229668c8659so8597715ad.3
+        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 10:37:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1744306619; x=1744911419; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1744306621; x=1744911421; darn=vger.kernel.org;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZpYG+riLDNowuBXALSOK3FRVNiACEEuoxpGzRk7BH3E=;
-        b=IZODvNjDHhp0hVT1YiiOpynOIh0lai1bmUA25aAwSe2DiF8tmSDoMXP+6IA6TfJe7C
-         alnO7R1SeMQzjnn0HlRsMCKP73WXdV6cgSXQjUgXLLRXx5nGSR6MB8AT1sfWlQRuv8Dj
-         n/vN7pZAamWmH0eGWnQhZXedti7u1FWP+CncjYUf7CIzdFEnu89O/efi02OBzBYhEmGX
-         vVnyKcsEDULqUM/IeuGouj8GXqvNqAjwy9/PtYS2kBoFVWFDvz+2eNzT+MqfOSWwuKVK
-         iLKBK2qGw0JJNe+3FacBkw9AJiI1SSntNucpFhum3zS5fgckYb0QYoaKZ6DeaFWEgtA6
-         3h8Q==
+        bh=XpiUUvwlwp9tVCnJZ3TZUgEjsv1IVM8EEnnesVuXazs=;
+        b=h3fKEn+Pz6OSFVCpDOszljZHfQXr0dLfzJkdBcKvgw+KCKrIsC8oXNEnmAsSqd9rEf
+         JsmxFNiaOJRHgiYwgxRXodaSSnIs1hr5cDAri1SxncQ/BpUsvBqXNtW3IrExpseTdSz3
+         QmNbeiQ+bw2+aRuD1TAt/k4m89qeFxvhZLSHgrzKwq6zPlOEMzPHk68PBwMjpPjTmoO9
+         Mek7uXnINWAXZspY8ey7YOW+xQtODVaeCKzoEe07KFsCU2XTCuX7Nl8/gFGGCmDcRGpR
+         T8HgJiYrvAlRIfhKkvcoqm4N3JLm7jiQbv1O7jENLfE7pvjmp/BhVIFiBT+RJ3PbpnAj
+         wg2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744306619; x=1744911419;
+        d=1e100.net; s=20230601; t=1744306621; x=1744911421;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZpYG+riLDNowuBXALSOK3FRVNiACEEuoxpGzRk7BH3E=;
-        b=o6uwPXaswni2zTtWmCjD8oqKwgaU+I5Le0ZnoH92c+XZImedCKq8lXj1uq0l27QA1t
-         Ayva3Ev3EXVSTPu8Yog+iG3JGSSDngsqvArAlSA4GenzuQeDcJvwuO+9cRNt7rGLNxdd
-         zbqdMPM3yeHusbCVpzsVpgrIugdpxW3MhJ6G7OFPTUxH854oibdLxs1k4+vGcl+Hvsk6
-         oKuOFmAsNV8kTVsqGkJxVCeTY90SlhotjVjZ7JYENKcU6Zc4pn9lZs5oNkKeBPevq0AP
-         Ldhesv288kD7jbs9/m9nV9Nr9gSiUM2/MjmoBwu/+MK4xgnq1OsnwUg0yN06mVVXnHnS
-         L7+w==
-X-Forwarded-Encrypted: i=1; AJvYcCU45p1dTbLjza3nzNIxFNQM3gwOKSu7r27p6N+aXO01vh1XX5K5ezQXhLM/v5HgV2dAChI=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+mr6pj6ehzAqbpji2xO7y/vZsFSxPgGY/i2eBXWh2YGIXtKdr
-	8nn2TZMREk2nb7AdplGJFdzjCEfmfGZmc4mFmJuWOuFEYVjeLtT9Yl8sSK/2YtlHqckL0C5Z8hf
-	64qye1Q==
-X-Google-Smtp-Source: AGHT+IGzIUP6D1cwLaSTj/gUi3pDoC4nLxOcZuHx9s7cibZ6nls36gURzWSfZGyGYDQBNmN1hxObG/FtTqx1
-X-Received: from plge17.prod.google.com ([2002:a17:902:cf51:b0:223:242b:480a])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:948:b0:224:10a2:cad5
- with SMTP id d9443c01a7336-22b2eda468bmr66678385ad.10.1744306619427; Thu, 10
- Apr 2025 10:36:59 -0700 (PDT)
-Date: Thu, 10 Apr 2025 10:36:27 -0700
+        bh=XpiUUvwlwp9tVCnJZ3TZUgEjsv1IVM8EEnnesVuXazs=;
+        b=pgRX10SNxfRV68S3/TBc9BFJaaYKLBrRVMVTGyDnWzX3ovIALnxFr9QQTE4D5bv8pU
+         nFzdwwVHsrGpTWWHrTQ8yhyJTGWuJcctWH6Ex3XPZf73JyA6QhxfKkkz93upzGnJbc5q
+         tSxNRL5ubXNSaI4Bphcp3KmgTI4Xa0pkQC3pepsblExUNIISHS8O0mFT/0RPWHm6pK32
+         p3p2SntWhtV5lkw9wyaSUbIzAUVoDQx6zKp54fNoSOklRto0p3CwZ7OF8iMKAyz05uQJ
+         WEmhkpg2O25+tWP7LBwc5Nt//XVelsVybL65PnwqEnM36JPrTgNMd4y7eURq8oDTAZbb
+         23KA==
+X-Forwarded-Encrypted: i=1; AJvYcCXF7f37Y1CJDqVvEnos0rS9c1wrh0ZELgzZMRp465Cl3HgKQ8FAwgXEkuO8wGc33jBFQwo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw02NX8Vcucb7W9yR6akNjsV8iIA3DOPi6uhnHEeLY+2Fd9jA8T
+	SV6V8zhPDAsRfuHOk9iEFESRH5DvH7UARB+bnePcalAdAfGPXuw+up7gBfy85ZGoIpfoc371PbW
+	arptFvQ==
+X-Google-Smtp-Source: AGHT+IFwaCb2cDgkGC1n4/9Wz8pIMyxoLX83dVD19SJR7ZPEQ36S8XM3cNeUAEqdxlEjEYtd+dxtn/hNSjdL
+X-Received: from plbml15.prod.google.com ([2002:a17:903:34cf:b0:227:b826:af9e])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:120a:b0:216:2bd7:1c2f
+ with SMTP id d9443c01a7336-22be02f73bamr41067965ad.18.1744306621413; Thu, 10
+ Apr 2025 10:37:01 -0700 (PDT)
+Date: Thu, 10 Apr 2025 10:36:28 -0700
 In-Reply-To: <20250410173631.1713627-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250410173631.1713627-1-irogers@google.com>
 X-Mailer: git-send-email 2.49.0.604.gff1f9ca942-goog
-Message-ID: <20250410173631.1713627-9-irogers@google.com>
-Subject: [PATCH v2 08/12] perf top: Switch user option to use BPF filter
+Message-ID: <20250410173631.1713627-10-irogers@google.com>
+Subject: [PATCH v2 09/12] perf trace: Switch user option to use BPF filter
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -94,91 +94,72 @@ Content-Type: text/plain; charset="UTF-8"
 
 Finding user processes by scanning /proc is inherently racy and
 results in perf_event_open failures. Use a BPF filter to drop samples
-where the uid doesn't match.
+where the uid doesn't match. Ensure adding the BPF filter forces
+system-wide.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-top.c | 22 ++++++++++++----------
- tools/perf/util/top.c    |  4 ++--
- tools/perf/util/top.h    |  1 +
- 3 files changed, 15 insertions(+), 12 deletions(-)
+ tools/perf/builtin-trace.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-index 1061f4eebc3f..9a7af69b7c73 100644
---- a/tools/perf/builtin-top.c
-+++ b/tools/perf/builtin-top.c
-@@ -642,7 +642,7 @@ static void *display_thread_tui(void *arg)
- 	 */
- 	evlist__for_each_entry(top->evlist, pos) {
- 		struct hists *hists = evsel__hists(pos);
--		hists->uid_filter_str = top->record_opts.target.uid_str;
-+		hists->uid_filter_str = top->uid_str;
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 6ac51925ea42..1f7d2b3d8b3d 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -240,6 +240,7 @@ struct trace {
+ 		struct ordered_events	data;
+ 		u64			last;
+ 	} oe;
++	const char		*uid_str;
+ };
+ 
+ static void trace__load_vmlinux_btf(struct trace *trace __maybe_unused)
+@@ -4401,8 +4402,8 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
+ 		evlist__add(evlist, pgfault_min);
  	}
  
- 	ret = evlist__tui_browse_hists(top->evlist, help, &hbt, top->min_percent,
-@@ -1566,7 +1566,7 @@ int cmd_top(int argc, const char **argv)
- 		    "Add prefix to source file path names in programs (with --prefix-strip)"),
- 	OPT_STRING(0, "prefix-strip", &annotate_opts.prefix_strip, "N",
- 		    "Strip first N entries of source file path name in programs (with --prefix)"),
--	OPT_STRING('u', "uid", &target->uid_str, "user", "user to profile"),
-+	OPT_STRING('u', "uid", &top.uid_str, "user", "user to profile"),
- 	OPT_CALLBACK(0, "percent-limit", &top, "percent",
- 		     "Don't show entries under that percent", parse_percent_limit),
- 	OPT_CALLBACK(0, "percentage", NULL, "relative|absolute",
-@@ -1757,15 +1757,17 @@ int cmd_top(int argc, const char **argv)
- 		ui__warning("%s\n", errbuf);
+-	/* Enable ignoring missing threads when -u/-p option is defined. */
+-	trace->opts.ignore_missing_thread = trace->opts.target.uid != UINT_MAX || trace->opts.target.pid;
++	/* Enable ignoring missing threads when -p option is defined. */
++	trace->opts.ignore_missing_thread = trace->opts.target.pid;
+ 
+ 	if (trace->sched &&
+ 	    evlist__add_newtp(evlist, "sched", "sched_stat_runtime", trace__sched_stat_runtime))
+@@ -5420,8 +5421,7 @@ int cmd_trace(int argc, const char **argv)
+ 		    "child tasks do not inherit counters"),
+ 	OPT_CALLBACK('m', "mmap-pages", &trace.opts.mmap_pages, "pages",
+ 		     "number of mmap data pages", evlist__parse_mmap_pages),
+-	OPT_STRING('u', "uid", &trace.opts.target.uid_str, "user",
+-		   "user to profile"),
++	OPT_STRING('u', "uid", &trace.uid_str, "user", "user to profile"),
+ 	OPT_CALLBACK(0, "duration", &trace, "float",
+ 		     "show only events with duration > N.M ms",
+ 		     trace__set_duration),
+@@ -5762,11 +5762,19 @@ int cmd_trace(int argc, const char **argv)
+ 		goto out_close;
  	}
  
--	status = target__parse_uid(target);
--	if (status) {
--		int saved_errno = errno;
--
--		target__strerror(target, status, errbuf, BUFSIZ);
--		ui__error("%s\n", errbuf);
-+	if (top.uid_str) {
-+		uid_t uid = parse_uid(top.uid_str);
- 
--		status = -saved_errno;
--		goto out_delete_evlist;
+-	err = target__parse_uid(&trace.opts.target);
+-	if (err) {
+-		target__strerror(&trace.opts.target, err, bf, sizeof(bf));
+-		fprintf(trace.output, "%s", bf);
+-		goto out_close;
++	if (trace.uid_str) {
++		uid_t uid = parse_uid(trace.uid_str);
++
 +		if (uid == UINT_MAX) {
-+			ui__error("Invalid User: %s", top.uid_str);
-+			status = -EINVAL;
-+			goto out_delete_evlist;
++			ui__error("Invalid User: %s", trace.uid_str);
++			err = -EINVAL;
++			goto out_close;
 +		}
-+		status = parse_uid_filter(top.evlist, uid);
-+		if (status)
-+			goto out_delete_evlist;
++		err = parse_uid_filter(trace.evlist, uid);
++		if (err)
++			goto out_close;
++
++		trace.opts.target.system_wide = true;
  	}
  
- 	if (target__none(target))
-diff --git a/tools/perf/util/top.c b/tools/perf/util/top.c
-index 4db3d1bd686c..b06e10a116bb 100644
---- a/tools/perf/util/top.c
-+++ b/tools/perf/util/top.c
-@@ -88,9 +88,9 @@ size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size)
- 	else if (target->tid)
- 		ret += SNPRINTF(bf + ret, size - ret, " (target_tid: %s",
- 				target->tid);
--	else if (target->uid_str != NULL)
-+	else if (top->uid_str != NULL)
- 		ret += SNPRINTF(bf + ret, size - ret, " (uid: %s",
--				target->uid_str);
-+				top->uid_str);
- 	else
- 		ret += SNPRINTF(bf + ret, size - ret, " (all");
- 
-diff --git a/tools/perf/util/top.h b/tools/perf/util/top.h
-index 4c5588dbb131..04ff926846be 100644
---- a/tools/perf/util/top.h
-+++ b/tools/perf/util/top.h
-@@ -48,6 +48,7 @@ struct perf_top {
- 	const char	   *sym_filter;
- 	float		   min_percent;
- 	unsigned int	   nr_threads_synthesize;
-+	const char	   *uid_str;
- 
- 	struct {
- 		struct ordered_events	*in;
+ 	if (!argc && target__none(&trace.opts.target))
 -- 
 2.49.0.604.gff1f9ca942-goog
 
