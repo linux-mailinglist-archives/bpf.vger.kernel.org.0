@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-55680-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 320C8A84B31
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 19:39:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15DF0A84B33
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 19:39:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C74AB3A49A7
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:39:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 824CE19E8666
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:39:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D1028A400;
-	Thu, 10 Apr 2025 17:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587A5290BCD;
+	Thu, 10 Apr 2025 17:37:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yPri3aqD"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IZODvNjD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f73.google.com (mail-ot1-f73.google.com [209.85.210.73])
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3EF72900B2
-	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 17:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17EE8290BAA
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 17:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744306620; cv=none; b=ShbJbBXZyNU7e8BuOuwW/u4vBmBO2eVem7atlVn2oxAhA6wuTsg6rWPYzaEfGz2Ho4WigHs3zWo/zWNr21EvCKU5BEh67V5FlRxX0y7OAZVrUO4iLbzhS+XSc0Zj4h3DMuxUuur+PGCI8+RLMshVWrpBpXjKAM1LaZFOpR9W3oo=
+	t=1744306621; cv=none; b=o1FdrfsyKC+GnEA9nMXRc9BKpoftvd99qpDy1jBXjWjSxzmYR7tOXhuH95dSkaySfThhMEeYYydjs+qkEwgogQKyOPZQxTGhRpjQUFCxz4AUCgAzH/JeYwYbk3a+YFF7vRTBhZeNyuSMuctEiLbQQvfXcpTLLzM7gSUzFm7qmjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744306620; c=relaxed/simple;
-	bh=wJHIkRUIijzHQJBAsZiYEC1oHduXPch9ZBc0/MkA4lo=;
+	s=arc-20240116; t=1744306621; c=relaxed/simple;
+	bh=s5GHscAETkUAKivN7aAi7TLoUIfwAcyInliqpu10XeA=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=uJyPK/UTJW+jUvBH0jSJYfFkG7WoDnBLIgkYKQMGlmwv4ac5aGPnGuKu0RUuRRxTCY+ac7VLr/qFJ0E9peI/aoaq8vy5snLvcNPN0grNITv07URFYg1SNrHuXPwnoghAG/zP01p6wCWwIjpz6hygHhgq21OUCw8HOIvZ+wEtv1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yPri3aqD; arc=none smtp.client-ip=209.85.210.73
+	 To:Content-Type; b=iar/ksxoWGh8inWap2Oud2PF/Z7JIozQXkocrhGBWL2GQLlk2tYi2NyFoyOmCSA3G+9ugu+J6DZx7rn3XFaGvpBTyOVxhPLGejHV3FQmLlqb6uf+xSjm+/YnGo/+OMaY2IKkCrgxoD+xAbpLarw5ZQRnB6gYLsqpz3buOFpIqIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IZODvNjD; arc=none smtp.client-ip=209.85.214.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-ot1-f73.google.com with SMTP id 46e09a7af769-72e26093f05so399775a34.2
-        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 10:36:58 -0700 (PDT)
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-22650077995so15012065ad.3
+        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 10:36:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1744306618; x=1744911418; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1744306619; x=1744911419; darn=vger.kernel.org;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JBDFVNGJcg1Y5m+EPEDSUnPka56smnza49QJdWAufsI=;
-        b=yPri3aqDj2yB7C68rY2E/Edl2CJEzflgF6Yf01m6snkij8wIqZVxr+MUbXAyRO3h1H
-         tQQQAeWMOZHyHin1JQ1aFvH6Z3plMFC0SmhEv+1O/qu8KWIMgm+47jcbyMaq9bcVgYOs
-         vq1899GiD7ziTxe/j8tN86MpUtWU4MdevnNm4hyimVYoLDpQ5LrlnOsg4aoYRhFPVMZ8
-         lFpyvvtwlMBiq6q368mAByuPLk98krUIgyaFomKoIDKZ3jpvbMIw71H1eANF1af3+Kwc
-         CkjWFWE37Frdg1hmL1uF9X/R1Dd1Cr3ho7M7do57NXBzFzn3mO/SWgwubCoFeiBl1Ml/
-         xZBw==
+        bh=ZpYG+riLDNowuBXALSOK3FRVNiACEEuoxpGzRk7BH3E=;
+        b=IZODvNjDHhp0hVT1YiiOpynOIh0lai1bmUA25aAwSe2DiF8tmSDoMXP+6IA6TfJe7C
+         alnO7R1SeMQzjnn0HlRsMCKP73WXdV6cgSXQjUgXLLRXx5nGSR6MB8AT1sfWlQRuv8Dj
+         n/vN7pZAamWmH0eGWnQhZXedti7u1FWP+CncjYUf7CIzdFEnu89O/efi02OBzBYhEmGX
+         vVnyKcsEDULqUM/IeuGouj8GXqvNqAjwy9/PtYS2kBoFVWFDvz+2eNzT+MqfOSWwuKVK
+         iLKBK2qGw0JJNe+3FacBkw9AJiI1SSntNucpFhum3zS5fgckYb0QYoaKZ6DeaFWEgtA6
+         3h8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744306618; x=1744911418;
+        d=1e100.net; s=20230601; t=1744306619; x=1744911419;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JBDFVNGJcg1Y5m+EPEDSUnPka56smnza49QJdWAufsI=;
-        b=sBphi2kJgjP0n2AJ41WX+23LMbEVCCjLf2qQo7tvJwmZIxyA66WoDkaQS3mvI1O+yt
-         G+I86Fcb24AH0iwAg+Aynjg2W7STggK0b5vCKtjPq6BRMD/sFDd6bcZ2dIk7wUr0PhPo
-         Di/Z2f+zlUM9iLE/FCx8A+cqggXY0CAzQ8hy7HlQwwR1zZ/cky7BiGm/O0OYj5ZdFQPx
-         Rl4IFqEQb1e2mEVdMizwWXGSE/ImbVUo0ghrgAKCXzoI0Fc82S7vfHNFWVr5/Xjj2xqz
-         UkX5fwtEhoLCZeYXuz80REPk8fG7dht0/UjbIvuCNbrG/z7ZOlSZjMm2ZLKKYPji7dl8
-         IvIg==
-X-Forwarded-Encrypted: i=1; AJvYcCUxFi8TrU6ovziGNYN9NGinZkJxCobdJTZMiTQ3MOkXB+tgp0NNZVjp3hXdlzwblw/lHy4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKfLyEhLXzplS70suB3FWTgGgpZzIRYarFPodKReDRWg+MIuYs
-	PpD7+6E22MONx+XF9s/k/lGu+IFXKCuuOgh2zeTD8Uicf4kSiGcaSyD9XTf/Mw2NrBAsfmuEHRQ
-	4wQACKA==
-X-Google-Smtp-Source: AGHT+IGIJT3nBwE7M1dGVt30ERQq3AjXXnVx4s5MM+wszH3uXona+1qYuAeQPVpntfIHhto8vkCtb9wcOwoq
-X-Received: from oabvp10.prod.google.com ([2002:a05:6871:a00a:b0:2c1:5f7a:eba8])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6871:4102:b0:29e:684d:2739
- with SMTP id 586e51a60fabf-2d0b38e1c47mr2153869fac.32.1744306617846; Thu, 10
- Apr 2025 10:36:57 -0700 (PDT)
-Date: Thu, 10 Apr 2025 10:36:26 -0700
+        bh=ZpYG+riLDNowuBXALSOK3FRVNiACEEuoxpGzRk7BH3E=;
+        b=o6uwPXaswni2zTtWmCjD8oqKwgaU+I5Le0ZnoH92c+XZImedCKq8lXj1uq0l27QA1t
+         Ayva3Ev3EXVSTPu8Yog+iG3JGSSDngsqvArAlSA4GenzuQeDcJvwuO+9cRNt7rGLNxdd
+         zbqdMPM3yeHusbCVpzsVpgrIugdpxW3MhJ6G7OFPTUxH854oibdLxs1k4+vGcl+Hvsk6
+         oKuOFmAsNV8kTVsqGkJxVCeTY90SlhotjVjZ7JYENKcU6Zc4pn9lZs5oNkKeBPevq0AP
+         Ldhesv288kD7jbs9/m9nV9Nr9gSiUM2/MjmoBwu/+MK4xgnq1OsnwUg0yN06mVVXnHnS
+         L7+w==
+X-Forwarded-Encrypted: i=1; AJvYcCU45p1dTbLjza3nzNIxFNQM3gwOKSu7r27p6N+aXO01vh1XX5K5ezQXhLM/v5HgV2dAChI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+mr6pj6ehzAqbpji2xO7y/vZsFSxPgGY/i2eBXWh2YGIXtKdr
+	8nn2TZMREk2nb7AdplGJFdzjCEfmfGZmc4mFmJuWOuFEYVjeLtT9Yl8sSK/2YtlHqckL0C5Z8hf
+	64qye1Q==
+X-Google-Smtp-Source: AGHT+IGzIUP6D1cwLaSTj/gUi3pDoC4nLxOcZuHx9s7cibZ6nls36gURzWSfZGyGYDQBNmN1hxObG/FtTqx1
+X-Received: from plge17.prod.google.com ([2002:a17:902:cf51:b0:223:242b:480a])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:948:b0:224:10a2:cad5
+ with SMTP id d9443c01a7336-22b2eda468bmr66678385ad.10.1744306619427; Thu, 10
+ Apr 2025 10:36:59 -0700 (PDT)
+Date: Thu, 10 Apr 2025 10:36:27 -0700
 In-Reply-To: <20250410173631.1713627-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250410173631.1713627-1-irogers@google.com>
 X-Mailer: git-send-email 2.49.0.604.gff1f9ca942-goog
-Message-ID: <20250410173631.1713627-8-irogers@google.com>
-Subject: [PATCH v2 07/12] perf tests record: Add basic uid filtering test
+Message-ID: <20250410173631.1713627-9-irogers@google.com>
+Subject: [PATCH v2 08/12] perf top: Switch user option to use BPF filter
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -92,59 +92,93 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Based on the system-wide test with changes around how failure is
-handled as BPF permissions are a bigger issue than perf event
-paranoia.
+Finding user processes by scanning /proc is inherently racy and
+results in perf_event_open failures. Use a BPF filter to drop samples
+where the uid doesn't match.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/shell/record.sh | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ tools/perf/builtin-top.c | 22 ++++++++++++----------
+ tools/perf/util/top.c    |  4 ++--
+ tools/perf/util/top.h    |  1 +
+ 3 files changed, 15 insertions(+), 12 deletions(-)
 
-diff --git a/tools/perf/tests/shell/record.sh b/tools/perf/tests/shell/record.sh
-index 05d91a663fda..308916f9c292 100755
---- a/tools/perf/tests/shell/record.sh
-+++ b/tools/perf/tests/shell/record.sh
-@@ -231,6 +231,31 @@ test_cgroup() {
-   echo "Cgroup sampling test [Success]"
- }
+diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+index 1061f4eebc3f..9a7af69b7c73 100644
+--- a/tools/perf/builtin-top.c
++++ b/tools/perf/builtin-top.c
+@@ -642,7 +642,7 @@ static void *display_thread_tui(void *arg)
+ 	 */
+ 	evlist__for_each_entry(top->evlist, pos) {
+ 		struct hists *hists = evsel__hists(pos);
+-		hists->uid_filter_str = top->record_opts.target.uid_str;
++		hists->uid_filter_str = top->uid_str;
+ 	}
  
-+test_uid() {
-+  echo "Uid sampling test"
-+  if ! perf record -aB --synth=no --uid "$(id -u)" -o "${perfdata}" ${testprog} \
-+    > "${script_output}" 2>&1
-+  then
-+    if grep -q "libbpf.*EPERM" "${script_output}"
-+    then
-+      echo "Uid sampling [Skipped permissions]"
-+      return
-+    else
-+      echo "Uid sampling [Failed to record]"
-+      err=1
-+      # cat "${script_output}"
-+      return
-+    fi
-+  fi
-+  if ! perf report -i "${perfdata}" -q | grep -q "${testsym}"
-+  then
-+    echo "Uid sampling [Failed missing output]"
-+    err=1
-+    return
-+  fi
-+  echo "Uid sampling test [Success]"
-+}
-+
- test_leader_sampling() {
-   echo "Basic leader sampling test"
-   if ! perf record -o "${perfdata}" -e "{cycles,cycles}:Su" -- \
-@@ -324,6 +349,7 @@ test_system_wide
- test_workload
- test_branch_counter
- test_cgroup
-+test_uid
- test_leader_sampling
- test_topdown_leader_sampling
- test_precise_max
+ 	ret = evlist__tui_browse_hists(top->evlist, help, &hbt, top->min_percent,
+@@ -1566,7 +1566,7 @@ int cmd_top(int argc, const char **argv)
+ 		    "Add prefix to source file path names in programs (with --prefix-strip)"),
+ 	OPT_STRING(0, "prefix-strip", &annotate_opts.prefix_strip, "N",
+ 		    "Strip first N entries of source file path name in programs (with --prefix)"),
+-	OPT_STRING('u', "uid", &target->uid_str, "user", "user to profile"),
++	OPT_STRING('u', "uid", &top.uid_str, "user", "user to profile"),
+ 	OPT_CALLBACK(0, "percent-limit", &top, "percent",
+ 		     "Don't show entries under that percent", parse_percent_limit),
+ 	OPT_CALLBACK(0, "percentage", NULL, "relative|absolute",
+@@ -1757,15 +1757,17 @@ int cmd_top(int argc, const char **argv)
+ 		ui__warning("%s\n", errbuf);
+ 	}
+ 
+-	status = target__parse_uid(target);
+-	if (status) {
+-		int saved_errno = errno;
+-
+-		target__strerror(target, status, errbuf, BUFSIZ);
+-		ui__error("%s\n", errbuf);
++	if (top.uid_str) {
++		uid_t uid = parse_uid(top.uid_str);
+ 
+-		status = -saved_errno;
+-		goto out_delete_evlist;
++		if (uid == UINT_MAX) {
++			ui__error("Invalid User: %s", top.uid_str);
++			status = -EINVAL;
++			goto out_delete_evlist;
++		}
++		status = parse_uid_filter(top.evlist, uid);
++		if (status)
++			goto out_delete_evlist;
+ 	}
+ 
+ 	if (target__none(target))
+diff --git a/tools/perf/util/top.c b/tools/perf/util/top.c
+index 4db3d1bd686c..b06e10a116bb 100644
+--- a/tools/perf/util/top.c
++++ b/tools/perf/util/top.c
+@@ -88,9 +88,9 @@ size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size)
+ 	else if (target->tid)
+ 		ret += SNPRINTF(bf + ret, size - ret, " (target_tid: %s",
+ 				target->tid);
+-	else if (target->uid_str != NULL)
++	else if (top->uid_str != NULL)
+ 		ret += SNPRINTF(bf + ret, size - ret, " (uid: %s",
+-				target->uid_str);
++				top->uid_str);
+ 	else
+ 		ret += SNPRINTF(bf + ret, size - ret, " (all");
+ 
+diff --git a/tools/perf/util/top.h b/tools/perf/util/top.h
+index 4c5588dbb131..04ff926846be 100644
+--- a/tools/perf/util/top.h
++++ b/tools/perf/util/top.h
+@@ -48,6 +48,7 @@ struct perf_top {
+ 	const char	   *sym_filter;
+ 	float		   min_percent;
+ 	unsigned int	   nr_threads_synthesize;
++	const char	   *uid_str;
+ 
+ 	struct {
+ 		struct ordered_events	*in;
 -- 
 2.49.0.604.gff1f9ca942-goog
 
