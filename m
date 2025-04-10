@@ -1,251 +1,167 @@
-Return-Path: <bpf+bounces-55638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55639-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C669CA83C31
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 10:13:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC83EA83C8B
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 10:21:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1BD93A2CF8
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 08:09:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AC78189E00E
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 08:21:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9041EBA03;
-	Thu, 10 Apr 2025 08:09:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08A7820E70E;
+	Thu, 10 Apr 2025 08:16:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UqiiYjQ+"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UPeLUG/u"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F151B85F8;
-	Thu, 10 Apr 2025 08:09:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 686671E98FB
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 08:16:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744272563; cv=none; b=HMvF49VGJNBJAdf7I1xOMTO+5QpZz9fk8OvtbvYonGDDWLFnIXleqZX/K7JKUqektL/ufBgokXn9Hb2nA2D1ymTwyCUT62BDt7cf9ziaLDjOalIqpSA5V9zb4J0LPphZvI5hka6ABXy7/KnWXeFXnan/U7sH87vDThXrsd+1B28=
+	t=1744272993; cv=none; b=Fub7K8UmQ6fXVLblm2rN2Gc+jFGPz4SPbfc5ms4Z9vZi7bmPGFxOuC6HL7fXkYcjgtvnAnmyOa7ni3WuKrGsvs2ZzdEkHcSDgndHZiTFt1AN4NZuPNNALIjhLUj5M0RQd94gZyMx086iVhBDg5tPLQsRjVOwH9PoVPnIbXoYgO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744272563; c=relaxed/simple;
-	bh=Vyno924JZezqTnFi39JNlTWkIO0+AmDF/Z/qP+4RgJ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AqhA6P1ygwuytcrIHzc8hYed89nIe32zqK9HEuD4ZKvYK5jVMubYSk8E4qRtWoVsdDI5MyYffB5mRFi0i0H75ZnAYn4JUK7xVCwQ8KBaqIL++he0Qj/ZavvJAS5Y6h6Qcfc6LYZ803Vs3059It8c20LQ2chtG+rAEwKegbWQJGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UqiiYjQ+; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-af6a315b491so555700a12.1;
-        Thu, 10 Apr 2025 01:09:21 -0700 (PDT)
+	s=arc-20240116; t=1744272993; c=relaxed/simple;
+	bh=7CmYkxx6rt0G4QMbALwTqCMAh/ACJX3SZ8HUGLB3kFY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CnD6ZsYWCZcoSy3ADRbbYgeQJivT2WA3q2KqMAS9QXekQtqCAdPnYQPgNqOod+SyJUhCFPKthPx4dfiI61gF30HcYgH8jwHaw7wzFG5KXNbuVHAKkk0L3CHxlqls+ez1ltuw84RUdh1o6jpIBpLgVTr0lgu6w41DQBtV3IJ1NAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UPeLUG/u; arc=none smtp.client-ip=209.85.221.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-399749152b4so178866f8f.3
+        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 01:16:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744272561; x=1744877361; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AjG0X0ILsaEZt1vBf8MVQgDYPYTp29VUnEYLYjosri4=;
-        b=UqiiYjQ+DKxd5CciMNKBKpygRw1wjcqh2lMMMNLIVQKJm4LGb1u8gS5KMBYEEY3Hlc
-         zQpf1skvMLeHbDuUAFYt6YTvbQIJSTkPYR70x0IZKWF5hT7Ry+cSkWueokxflcTTSl29
-         /2otoLCUlFi9Pq8u2NPANayjWz0FBTD8HcKBjo8TlFpHM7tmI8tAqxrbEiyQcf0whs5T
-         n/Ad+PD5oyS0f5Ot4mHpJkExXq4LN0o8LHLuzBGg486xfVNhYTSDGuurdxl7sJCUB6cS
-         uOOpF6PQ7DD7kRIrGXs1gBYL/qC86hB6WbnbZXWeJ/nELvjDQ0WLMxkwEJCEYSAsBZTl
-         t1Fw==
+        d=suse.com; s=google; t=1744272989; x=1744877789; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/rrqz5rkfOLr6XUt3+MxTFJmjLPocpjQbDQvqiurqBY=;
+        b=UPeLUG/uI/10bskEu/C47kKk5KbsfA9AvLdQPGFstPGFX6iDEVytyR6GskPIyyyv/H
+         81Kx7BnyigCvtbbLzGMNb6E0n14ADGGFyLIjD3Vyr5Vqd0mWD2SkwCxcORl3RJBsiW+S
+         5q+0b/8B6HhaA61ZR8JaIZUTcig1rSk1PDjlpSqcMyXKhACfY1mgn5szC+dxB30sqYZF
+         ydm0nqLHH96X9u4dvo3PdWtMefz6lZeMlD1SjJfMKk+z0I8m71XCePMUDbmtk7Jr42UE
+         b4lxOg9nDPl+Bxz8k5dxM+ErUcupASLxGME3XZ4LyPMdDVHJFkGyym2VZwAnh4JCL3RI
+         XNIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744272561; x=1744877361;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AjG0X0ILsaEZt1vBf8MVQgDYPYTp29VUnEYLYjosri4=;
-        b=n2Db9YvA1pqoumJwlw2EZqYl3AOp0GQuTM/9unhFrf9WXDim4D3WOv336AGhXmHdHP
-         aJk6UcZ/CgZLCYkFmc1GoqsWLBeo7PG/bQpjb6gMVKuqk6nnTNm461SmyYj/0vAwx/c2
-         JmxRXiNfhu2FDhbXjB00JeqBy5ROg98U6wVYGEqZQMwuMBeiwgDrfrjwlLPVZxxkJezs
-         xLEOLBN342AsVNO1AIqz4hA/kWRXO+1W9IaL+EzlgHGKc3XuT1FehCS4r/6gb3MTMaPk
-         gDIdX3rAJuXB72SQSBc2tG8GTz26Npfoitm6NjGlAwjmjUhd/FxQTwK0BJk5f+XixLSR
-         l4Og==
-X-Forwarded-Encrypted: i=1; AJvYcCVi2CiBE2PQgdT6kTHA2vtc33fZd8UjILS2NV/ggy9QOyn9zUIX53Lt4crhkQ7x7CIQRiH00ouN@vger.kernel.org, AJvYcCWBGz5hBWwMhGKz+EyduqqyYgDrAvy91gJCibpFHUKWcEWYoeYYgnj42pw+WWRXEPNenp+HtmjnAX4EVOiA@vger.kernel.org, AJvYcCXHBEBZHjHN4GcVd6ujqUVDo9T+kq7Mse0zQLlF+rvmaYpW+QVMqtaZDGuAdGAfuXiH9zY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyG5EmjKWnMe+USi7tZrbmxdofvrXjvxyFjOtdAi38fUPIB4Z2X
-	hfrfSSEHN64yCiusmpSVf9YaE56ZeV6Nd+5tj1SHNcZ05Fy5o+8L
-X-Gm-Gg: ASbGncvvbHmpFiGLYuddaEYhW9MFWegjsYEa7RjNNpf4rDo4ljjjVJUGFiJ30HQk+Yf
-	mlCE/QluMFEkeMolMHBuX1piWW69ZJCH+SmB/YQ+PbYeQfmxQaeb2hwh/dPsBKeIDBOeF7ZPh78
-	zo1baX4ViaPy8KWJRMlnlipO6reSlRksJ1nMnbtn7JEE1VW7ynX7tg6SvV+7nYjOz9+fADOSSSy
-	NfIEOft/4jsrNK2wVCBA1x6ejjQCDiI6cG1iMbWhQyJrq9ULyv9KHwc7v+eIIV5Bdte0Ku2/r/p
-	soCpOTvislZ+yNJ1tKtKqJfJqD+oOsS6X1Mv/Q/Ih99YNrok/5SEiNi5kqC43uAILFkqHwwYd+H
-	MtvsdD3YbY7DgultaeJg=
-X-Google-Smtp-Source: AGHT+IGlFaX35JSmF5xXiiSbldTiaLvL6d+ktyX+51i5YLyTONObh2bMZLgvRVqMK1AZZfqqaQtgRg==
-X-Received: by 2002:a17:90a:d64b:b0:2ee:f687:6acb with SMTP id 98e67ed59e1d1-30718b76a8emr2884244a91.13.1744272560461;
-        Thu, 10 Apr 2025 01:09:20 -0700 (PDT)
-Received: from ?IPV6:2001:ee0:4f0e:fb30:959f:bd4a:33b6:cab1? ([2001:ee0:4f0e:fb30:959f:bd4a:33b6:cab1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7b8b2absm24625785ad.83.2025.04.10.01.09.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Apr 2025 01:09:20 -0700 (PDT)
-Message-ID: <84adec63-0ccd-449c-babf-994d579f3677@gmail.com>
-Date: Thu, 10 Apr 2025 15:09:13 +0700
+        d=1e100.net; s=20230601; t=1744272989; x=1744877789;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/rrqz5rkfOLr6XUt3+MxTFJmjLPocpjQbDQvqiurqBY=;
+        b=I/ZSrv/ccAWh4Rpwwko/jVVVBciJ0eboXZxdAuQNrjHRvKB6z9b1+bT3UnCGSSHQWh
+         dZ1HnVzPwVEhfVE6XrkHQu2vpqj7WfLRL16Newmoc8Hdsw5NmVICJF1io8tbQm24+sEP
+         jg1KPPND0g1XLZYfBp0734lNC1RQ2BngT1h42JnmMD+seNM4t3308fk8FCYh2MUH3iBY
+         geFSAVMaOYk/In8gc3wKQ3HTj20bJGXjaceuM4m8ZedQ04a6f7Z0Xh4WpVnhDUviNzLt
+         OeU617PQEmWOE1scf2nxHowBhtPNR4NjmbmYnavY6khwhRLUbfcOs9obySg9fbVjbgy6
+         JPcQ==
+X-Gm-Message-State: AOJu0YwVu2wq1aJcgKBkrhlZdY3VhY47Q4Uc4osu7M2hu0qA4vDYskIZ
+	wdSYTEI6PzL995k7d6ggMgp+s0JZ3DxjvgDNw5xThP8tsfOyqvm8rWU04E7frvs=
+X-Gm-Gg: ASbGnctsfVhhFIoPmDkytGEshFvGnDRL0X8STzNy3EOy51DQH0V7MD1WJHt1mLpIMs2
+	1jF0V41Dtg+ZJMjaSQ4BRXa3a+hGhbRR3Iwhwgq3IjOy9urX0BNXZW7pqKyo8zaH/BO2qSKn7Ll
+	dv56g39okph4JFYkQ2AH5mCQpGtchhmtPfwzi2ku+CWkFodX4hNvPS83ZiZ33FM7EK1p9nYtm04
+	cIMpnWXHdmUyTfxShiEHamOs6xwe8XfBusZoWpPvKMpLPwyCt1kkPwZyy1zoQ4Hmc/8PFm/adg8
+	AvKBGvTxWpYu8emhO/PkBXpPIEvCks8FWXY=
+X-Google-Smtp-Source: AGHT+IEvKKW9icy/pe8XSxok/8wLYDgiOyDoHRTCOxr30RPCWYWhe03HsnHx1wObXNUXdugb3/xWHw==
+X-Received: by 2002:a05:6000:4022:b0:390:d796:b946 with SMTP id ffacd0b85a97d-39d8f4dcebfmr1303895f8f.44.1744272989521;
+        Thu, 10 Apr 2025 01:16:29 -0700 (PDT)
+Received: from u94a ([2401:e180:8d6c:a9cc:a5be:1621:ded:f4b6])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bb1d465d7sm2651714b3a.47.2025.04.10.01.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Apr 2025 01:16:28 -0700 (PDT)
+Date: Thu, 10 Apr 2025 16:16:01 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Viktor Malik <vmalik@redhat.com>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH bpf] libbpf: Fix buffer overflow in bpf_object__init_prog
+Message-ID: <b5yyvqbzff6pf4lyducvu7m3aw4wskoakz2l75aedte5lubtvd@327tjmlssvbk>
+References: <20250410073407.131211-1-vmalik@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] virtio-net: hold netdev_lock when pausing rx
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- virtualization@lists.linux.dev
-References: <20250404093903.37416-1-minhquangbui99@gmail.com>
- <1743987836.9938157-1-xuanzhuo@linux.alibaba.com>
- <30419bd6-13b1-4426-9f93-b38b66ef7c3a@gmail.com>
- <CACGkMEs7O7D5sztwJVn45c+1pap20Oi5f=02Sy_qxFjbeHuYiQ@mail.gmail.com>
- <4195db62-db43-4d61-88c3-7a7fbb164726@gmail.com>
- <b7b1f5de-7003-4960-a9d1-883bf2f1aa77@gmail.com>
- <4d3a1478-b6fc-47a3-8d77-7eca6a973a06@gmail.com>
- <20250410035158-mutt-send-email-mst@kernel.org>
-Content-Language: en-US
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-In-Reply-To: <20250410035158-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250410073407.131211-1-vmalik@redhat.com>
 
-On 4/10/25 14:58, Michael S. Tsirkin wrote:
-> On Thu, Apr 10, 2025 at 02:05:57PM +0700, Bui Quang Minh wrote:
->> When pausing rx (e.g. set up xdp, xsk pool, rx resize), we call
->> napi_disable() on the receive queue's napi. In delayed refill_work, it
->> also calls napi_disable() on the receive queue's napi. When
->> napi_disable() is called on an already disabled napi, it will sleep in
->> napi_disable_locked while still holding the netdev_lock. As a result,
->> later napi_enable gets stuck too as it cannot acquire the netdev_lock.
->> This leads to refill_work and the pause-then-resume tx are stuck
->> altogether.
->>
->> This scenario can be reproducible by binding a XDP socket to virtio-net
->> interface without setting up the fill ring. As a result, try_fill_recv
->> will fail until the fill ring is set up and refill_work is scheduled.
->>
->> This commit makes the pausing rx path hold the netdev_lock until
->> resuming, prevent any napi_disable() to be called on a temporarily
->> disabled napi.
->>
->> Fixes: 413f0271f396 ("net: protect NAPI enablement with netdev_lock()")
->> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
->> ---
->>   drivers/net/virtio_net.c | 74 +++++++++++++++++++++++++---------------
->>   1 file changed, 47 insertions(+), 27 deletions(-)
->>
->> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->> index 7e4617216a4b..74bd1065c586 100644
->> --- a/drivers/net/virtio_net.c
->> +++ b/drivers/net/virtio_net.c
->> @@ -2786,9 +2786,13 @@ static void skb_recv_done(struct virtqueue *rvq)
->>   }
->>
->>   static void virtnet_napi_do_enable(struct virtqueue *vq,
->> -                   struct napi_struct *napi)
->> +                   struct napi_struct *napi,
->> +                   bool netdev_locked)
->>   {
->> -    napi_enable(napi);
->> +    if (netdev_locked)
->> +        napi_enable_locked(napi);
->> +    else
->> +        napi_enable(napi);
->>
->>       /* If all buffers were filled by other side before we napi_enabled, we
->>        * won't get another interrupt, so process any outstanding packets now.
->> @@ -2799,16 +2803,16 @@ static void virtnet_napi_do_enable(struct virtqueue
->> *vq,
->
->
->
-> Your patch is line-wrapped, unfortunately. Here and elsewhere.
->
->
->
->
->>       local_bh_enable();
->>   }
->>
->> -static void virtnet_napi_enable(struct receive_queue *rq)
->> +static void virtnet_napi_enable(struct receive_queue *rq, bool
->> netdev_locked)
->>   {
->>       struct virtnet_info *vi = rq->vq->vdev->priv;
->>       int qidx = vq2rxq(rq->vq);
->>
->> -    virtnet_napi_do_enable(rq->vq, &rq->napi);
->> +    virtnet_napi_do_enable(rq->vq, &rq->napi, netdev_locked);
->>       netif_queue_set_napi(vi->dev, qidx, NETDEV_QUEUE_TYPE_RX, &rq->napi);
->>   }
->>
->> -static void virtnet_napi_tx_enable(struct send_queue *sq)
->> +static void virtnet_napi_tx_enable(struct send_queue *sq, bool
->> netdev_locked)
->>   {
->>       struct virtnet_info *vi = sq->vq->vdev->priv;
->>       struct napi_struct *napi = &sq->napi;
->> @@ -2825,11 +2829,11 @@ static void virtnet_napi_tx_enable(struct send_queue
->> *sq)
->>           return;
->>       }
->>
->> -    virtnet_napi_do_enable(sq->vq, napi);
->> +    virtnet_napi_do_enable(sq->vq, napi, netdev_locked);
->>       netif_queue_set_napi(vi->dev, qidx, NETDEV_QUEUE_TYPE_TX, napi);
->>   }
->>
->> -static void virtnet_napi_tx_disable(struct send_queue *sq)
->> +static void virtnet_napi_tx_disable(struct send_queue *sq, bool
->> netdev_locked)
->>   {
->>       struct virtnet_info *vi = sq->vq->vdev->priv;
->>       struct napi_struct *napi = &sq->napi;
->> @@ -2837,18 +2841,24 @@ static void virtnet_napi_tx_disable(struct
->> send_queue *sq)
->>
->>       if (napi->weight) {
->>           netif_queue_set_napi(vi->dev, qidx, NETDEV_QUEUE_TYPE_TX, NULL);
->> -        napi_disable(napi);
->> +        if (netdev_locked)
->> +            napi_disable_locked(napi);
->> +        else
->> +            napi_disable(napi);
->>       }
->>   }
->>
->> -static void virtnet_napi_disable(struct receive_queue *rq)
->> +static void virtnet_napi_disable(struct receive_queue *rq, bool
->> netdev_locked)
->>   {
->>       struct virtnet_info *vi = rq->vq->vdev->priv;
->>       struct napi_struct *napi = &rq->napi;
->>       int qidx = vq2rxq(rq->vq);
->>
->>       netif_queue_set_napi(vi->dev, qidx, NETDEV_QUEUE_TYPE_RX, NULL);
->> -    napi_disable(napi);
->> +    if (netdev_locked)
->> +        napi_disable_locked(napi);
->> +    else
->> +        napi_disable(napi);
->>   }
->>
->>   static void refill_work(struct work_struct *work)
->> @@ -2875,9 +2885,11 @@ static void refill_work(struct work_struct *work)
->>            *     instance lock)
->>            *   - check netif_running() and return early to avoid a race
->>            */
->> -        napi_disable(&rq->napi);
->> +        netdev_lock(vi->dev);
->> +        napi_disable_locked(&rq->napi);
->>           still_empty = !try_fill_recv(vi, rq, GFP_KERNEL);
->
-> This does mean netdev_lock is held potentially for a long while,
-> while try_fill_recv and processing inside virtnet_napi_do_enable
-> finish. Better ideas?
-I prefer the first patch in this thread where we disable delayed refill 
-and cancel all inflight refill_work before pausing rx.
+I was about to sent my fix, just to realize I got beaten by half and
+hour+ even with my 6 hour timezone advantage :)
 
-Thanks,
-Quang Minh.
+On Thu, Apr 10, 2025 at 09:34:07AM +0200, Viktor Malik wrote:
+> As reported by CVE-2025-29481 (link below), it is possible to corrupt a
+> BPF ELF file such that arbitrary BPF instructions are loaded by libbpf.
+> This can be done by setting a symbol (BPF program) section offset to a
+> sufficiently large (unsigned) number such <section_start+symbol_offset>
+> overflows and points before the section.
+> 
+> Consider the situation below where:
+> - prog_start = sec_start + symbol_offset    <-- size_t overflow here
+> - prog_end   = prog_start + prog_size
+> 
+>     prog_start        sec_start        prog_end        sec_end
+>         |                |                 |              |
+>         v                v                 v              v
+>     .....................|################################|............
+> 
+> Currently, libbpf only checks that prog_end is within the section
+> bounds. Add a check that prog_start is also within the bounds to avoid
+> the potential buffer overflow.
 
+I would add
+
+Reported-by: lmarch2 <2524158037@qq.com>
+Cc: stable@vger.kernel.org
+Fixes: 6245947c1b3c ("libbpf: Allow gaps in BPF program sections to support overriden weak functions")
+
+There used to be a 'while (sec_off < sec_sz)' check that would prevent
+this issue, but with commit 6245947c1b3c that was removed.
+
+---
+
+Nit: it would be nice if some concrete values from the reproducer is
+included
+
+  Section Headers:
+    [Nr] Name              				Type            Address          	Off    	Size   	ES Flg Lk Inf Al
+    ...
+    [ 2] uretprobe.multi.snter_write 		PROGBITS        0000000000000000 	000040 	000068 	00  AX  0   0  8
+
+  Symbol table '.symtab' contains 8 entries:
+     Num:    Value          Size Type    Bind   Vis      Ndx Name
+       ...
+       6: ffffffffffffffb8   104 FUNC    GLOBAL DEFAULT    2 handle_tp
+
+As well as AddressSanitizer output:
+
+  libbpf: loading object from crash-04573b0232eeaed1b2cd9f10e4fadc122c560e7a
+  libbpf: elf: section(2) uretprobe.multi.snter_write, size 104, link 0, flags 6, type=1
+  libbpf: sec 'uretprobe.multi.snter_write': found program 'handle_tp' at insn offset 0 (0 bytes), code size 13 insns (104 bytes)
+  libbpf: sec 'uretprobe.multi.snter_write': found program 'handle_tp' at insn offset 2305843009213693943 (18446744073709551544 bytes), code size 13 insns (104 bytes)
+  =================================================================
+  ==169293==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7c1fc6be0000 at pc 0x7f6fc831f877 bp 0x7ffc89800a30 sp 0x7ffc898001f0
+  READ of size 104 at 0x7c1fc6be0000 thread T0
+      #0 0x7f6fc831f876 in memcpy (/lib64/libasan.so.8+0x11f876) (BuildId: 7a83eb8b5639d83795773bfac12481d6f3243469)
+      #1 0x00000040fcbf in bpf_object__init_prog ./tools/lib/bpf/libbpf.c:856
+      #2 0x00000040fcbf in bpf_object__add_programs ./tools/lib/bpf/libbpf.c:928
+      #3 0x00000040fcbf in bpf_object__elf_collect ./tools/lib/bpf/libbpf.c:3930
+      #4 0x00000040fcbf in bpf_object_open ./tools/lib/bpf/libbpf.c:8067
+      #5 0x000000411b83 in bpf_object__open_file ./tools/lib/bpf/libbpf.c:8090
+      #6 0x000000403966 in main (../poc/libbpf/poc+0x403966) (BuildId: 9d80b3f3edc46b2a3684427aad5fe2bcda2b5ea4)
+      ...
+
+> Link: https://github.com/lmarch2/poc/blob/main/libbpf/libbpf.md
+> Link: https://www.cve.org/CVERecord?id=CVE-2025-29481
+> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+
+Code-wise LGTM
+
+Reviewed-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 
