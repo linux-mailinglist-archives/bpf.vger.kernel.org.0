@@ -1,119 +1,176 @@
-Return-Path: <bpf+bounces-55695-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8A86A84F75
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 00:03:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D378EA8500D
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 01:24:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5B1B9C1C7C
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 22:02:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C00061B816AF
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 23:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D65320AF9B;
-	Thu, 10 Apr 2025 22:03:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 160962147EE;
+	Thu, 10 Apr 2025 23:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G8huhjL8"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3u7Ky+9f"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6F5EEB1
-	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 22:03:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E65120FA85
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 23:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744322588; cv=none; b=JYPv6m3nRV0ztf1PAylTIJFAyGHlXyCso1cXplJgHXAXXL5s59OfbIwF+9iJQdzbs/mPaSG0Wjxstwk95eEJZ8XUFQtE9wUjTm6Z5JN3IHAgU7Ul+iYsnhBgIy+qj/Rib2rrrTznjY9yizCxufg0XtsbffivpbitLOsy0fPe1NI=
+	t=1744327463; cv=none; b=RLsaOnfLYDvJxt67J6m21i4svsvrEVnqIJ9/9diLkJQFhQdo0Z6GAqVOKFufHEydGLUUuvQeA8Olt6eM5a3kR6si3loTJMAT7PFEOMWnwin5RGYJRsBdLkhCJ4HIoBIQHW0l2ifM82VdH6S4TNk+vKAEnItXzMLYDXhc4XUST10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744322588; c=relaxed/simple;
-	bh=QzXDUMj/I0TBotcEzTfmIqBhyGKaU6oA5yHqZSqh/fw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aQjLp33QAyE9vYfenudCVcWt4vqM9157X8krybs3lASCo9s2kftOwQo9ZSurHH6A7CGqdFGKLwxI+Nr0HylYPtWuyJIz92gxrwmp8L4FHxvlEtZAITBiuYWcsXMuWlyYeC+RxazWn5kHVUjiqgDE3gz7Y9cwec+5FpbiDNnmecE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G8huhjL8; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-399749152b4so634279f8f.3
-        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 15:03:06 -0700 (PDT)
+	s=arc-20240116; t=1744327463; c=relaxed/simple;
+	bh=fRu1wIpBkqC/PAC+6Z3ide0GL77+kwaEESC4lKY2HQM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=PQU6pZsWA+CPsfvlwZ5Fus+6LFJEsk5ixy5S05G4JC89m+OLE1jh0LM4GMvbgb3xCapr52LFkqICg4zCdPch39euEu+MdGFbcHda8GwvBlgH5Tuq8xdYhGYHbyfdAVAUaHhm1Tu7kLksxLqdfTH2Oqkd9E44vcQ68rceaed57/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3u7Ky+9f; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-736cd36189bso1663707b3a.2
+        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 16:24:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744322585; x=1744927385; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D1veiUQeA1tZVO6nh/HvXphFXWbkVbQzDBxXFOuO4/4=;
-        b=G8huhjL8Ej3TUhI5lwx1mIOjK2HcGMUp9TWjzBKgwm532q53KQabq7vnUtIasuUGuW
-         jdcdaUA1noLMuVxe0FbDTRS3CBkaxSkgqYnrpXuzNcbaAOlJtwEEywifWsoDvq8S7Obw
-         HjofyEe6b7CvJKE8yBVEqQIUTHqKHP3P4a+B5eOCu3x8x3oK6uzopUJKE4FkUvZDq+z2
-         apJK+jY7nPlXlZXnM1zmH+NjVZWKSKv/neDf4hkXXadqS+nF3AhHI9VYVY+rhlvdvJK4
-         VnC56Y6SRvIMGWjJUGHxtT66CiIQIeS4pgQ5YkQzL0u2yasIUKuFT78sX/xVC2ikUAEW
-         Qzqw==
+        d=google.com; s=20230601; t=1744327461; x=1744932261; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+8Hj0FhxYq298MEgk+A50ezX9To9apyasGONCk8/EIY=;
+        b=3u7Ky+9frkNfCSvunj3hgyXaCVhwQWpsJbi1kvWmQtcGe+GsRD598bauPycpTprcD6
+         XGD+aPRexvyp8B8N5R+Y40IN+xBJMgfvd2vo8wEWcDIFLVunLWkQCGQTP1OF8+5Of5tY
+         h4gTalndOQUdDo50dGBtpP9O9VAPvw2fFnSmo1ySO1fzEWNakHbU3PYx2wpMv1Ig9YW5
+         v06Qe7baAARVR3deBAk9aM2bEqc2ROzGrDzz6/tvmsLuBFYWsfqD3K2l1WKJX3SnbqDD
+         H7Sxc+25sn/E2kpmCWLuUQi/Iq7M8NHLMtgELvTYk+iLGHNJbb+0cw3ePrc8PkUVEz8J
+         Ij7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744322585; x=1744927385;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D1veiUQeA1tZVO6nh/HvXphFXWbkVbQzDBxXFOuO4/4=;
-        b=Rh6gzljjBFpnB2G62Nq2uCV68y9D5kANO+LXQC75XmdUxYNPv/EpNwPDF5j3crSGPW
-         yRPVz5rzZGG2hMb5gARbFQWpw42t0MEfcmCRv/dAplpWFnVHCXh2cPPF3EeINjkxmXNA
-         bUBy2TTTW8xSCSxr5m8L/j378lkkYLXPjYx2lnsmRAl5r58PmLHmaGNTgghwHCSbi8KB
-         AzGcio6LtSIQejtuQRCKmo/rtdusHnFptxn47kN8WlCRqS2ODD9aUsQZamIEHoh5mc4h
-         YfURtlmKgqgRQZhoiHNZwNceMOu/Zgujzsko5PCNcVXwAhhLmjTxegOHzzBdvnXErQ/J
-         zKAw==
-X-Gm-Message-State: AOJu0YwhjFpuLJ1fSTezytZNOukMIUr2stgOnFOSA3cGJIv73vGSvnaK
-	n+pWE071HRsFcjHMcsq83GTM/IrbuI2X3ssltnctRH/HX/KkBprtzxCXGiG8fHhUqfSsT7+SLtw
-	xX7t+x1dCrBuK4460vT8Evq5YKTA=
-X-Gm-Gg: ASbGnct/GF8exUZWomwBOQdxz7Ij+Ien2J9eG1t3TnuIbQqfIioXgER8asBlHvI9qGn
-	QCzqGhjZ0t4BRWZni6Uh5f3/hocJYtT4R0B+2fEhV6lf8QFF+VlH+H5eqgUGtKZvG8p23nNU3sJ
-	FE9KU1yD+/wPsnwYHNmEdB5a5ilbuzdVQIFsAxIA==
-X-Google-Smtp-Source: AGHT+IEtCGnJjnBfyTwiJZbD3zAPoRs6hzzUACmZRi+bHS+EOP8EeO8ItOfuIMDSynM9v8r1gofJd4YVdjZ1fO17m/M=
-X-Received: by 2002:a05:6000:2906:b0:399:71d4:a9 with SMTP id
- ffacd0b85a97d-39eaaed5709mr171209f8f.52.1744322584644; Thu, 10 Apr 2025
- 15:03:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1744327461; x=1744932261;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+8Hj0FhxYq298MEgk+A50ezX9To9apyasGONCk8/EIY=;
+        b=uLiPOYSZbzgQW9E6j6/MEhsSKOqHp84Jqr9mmz/CaFt0D7pTywiIg2X408NCW8ne+V
+         YT0R7ZSFEMEtbZh17gd0YFVw3Fm9QZDo9MKAFDZwooqMaE4twTbtegrzG/RAu0ApSg8t
+         KilERv6pUI+qmq+0SppXE4jpTet5Md5+9g77rgEqiMsFBltoEeNxV+/UrXcObOawhK5J
+         6oWloGeWOw85q4fJDSjybgXMcEi2ul6lXrRwAINAVp3IMUL+HuUfSY0HJ8Sr0wqpY8Uf
+         R4gFtlDVW7+plG8lJw8/Hb69zsryinC4gYrPHT0n3C7QMSkWlT8NHcXisfwGLq9VUfgp
+         qRrg==
+X-Forwarded-Encrypted: i=1; AJvYcCWKz9PtHY6oQ3SunzFwZYzO6dajaHIwyvMkQntjT6ViIln/tZ4RgoScRpoPg3cdesUu9MQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyghqOL0xR751HWTjWBEZTZhdQuOfIo3/CL5Fe2/WYzLdV8i/45
+	aDJALf+z2B/SL5O+dUrCfcyIpfmBHRPU8mtbTf4oCcpNAdgg1QeuEnI73loqz4xtJvZWDhmGNEZ
+	ARQ==
+X-Google-Smtp-Source: AGHT+IHWYnK2BwFW7Mr5VmhaaxwX1jXjykj9i9MFxC3vV2mlnL+NePMyv0dJBUjVtFSac3MvKiuBJyLqfxA=
+X-Received: from pfbfj37.prod.google.com ([2002:a05:6a00:3a25:b0:730:8b4c:546c])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:21c7:b0:736:5c8e:baaa
+ with SMTP id d2e1a72fcca58-73bd119427emr706022b3a.2.1744327460939; Thu, 10
+ Apr 2025 16:24:20 -0700 (PDT)
+Date: Thu, 10 Apr 2025 16:24:19 -0700
+In-Reply-To: <20250331082251.3171276-11-xin@zytor.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250410145512.1876745-1-memxor@gmail.com>
-In-Reply-To: <20250410145512.1876745-1-memxor@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 10 Apr 2025 15:02:53 -0700
-X-Gm-Features: ATxdqUF4bxcYe5gzOnZzP27v1jmMidTznwm-OY9doyaOxUzmrIhl-1pKc6zXa8M
-Message-ID: <CAADnVQKUS1DXosTUYF4GE9D_cb94tbRCXED9KOkWt_NDiOZ43w@mail.gmail.com>
-Subject: Re: [PATCH bpf v1] bpf: Use architecture provided res_smp_cond_load_acquire
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, 
-	Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20250331082251.3171276-1-xin@zytor.com> <20250331082251.3171276-11-xin@zytor.com>
+Message-ID: <Z_hTI8ywa3rTxFaz@google.com>
+Subject: Re: [RFC PATCH v1 10/15] KVM: VMX: Use WRMSRNS or its immediate form
+ when available
+From: Sean Christopherson <seanjc@google.com>
+To: "Xin Li (Intel)" <xin@zytor.com>
+Cc: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-hyperv@vger.kernel.org, virtualization@lists.linux.dev, 
+	linux-edac@vger.kernel.org, kvm@vger.kernel.org, 
+	xen-devel@lists.xenproject.org, linux-ide@vger.kernel.org, 
+	linux-pm@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev, 
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, jgross@suse.com, 
+	andrew.cooper3@citrix.com, peterz@infradead.org, acme@kernel.org, 
+	namhyung@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
+	kan.liang@linux.intel.com, wei.liu@kernel.org, ajay.kaher@broadcom.com, 
+	alexey.amakhalov@broadcom.com, bcm-kernel-feedback-list@broadcom.com, 
+	tony.luck@intel.com, pbonzini@redhat.com, vkuznets@redhat.com, 
+	luto@kernel.org, boris.ostrovsky@oracle.com, kys@microsoft.com, 
+	haiyangz@microsoft.com, decui@microsoft.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Thu, Apr 10, 2025 at 7:55=E2=80=AFAM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> In v2 of rqspinlock [0], we fixed potential problems with WFE usage in
-> arm64 to fallback to a version copied from Ankur's series [1]. This
-> logic was moved into arch-specific headers in v3 [2].
->
-> However, we missed using the arch-provided res_smp_cond_load_acquire
-> in commit ebababcd0372 ("rqspinlock: Hardcode cond_acquire loops for arm6=
-4")
-> due to a rebasing mistake between v2 and v3 of the rqspinlock series.
-> Fix the typo to fallback to the arm64 definition as we did in v2.
->
->   [0]: https://lore.kernel.org/bpf/20250206105435.2159977-18-memxor@gmail=
-.com
->   [1]: https://lore.kernel.org/lkml/20250203214911.898276-1-ankur.a.arora=
-@oracle.com
->   [2]: https://lore.kernel.org/bpf/20250303152305.3195648-9-memxor@gmail.=
-com
->
-> Fixes: ebababcd0372 ("rqspinlock: Hardcode cond_acquire loops for arm64")
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+On Mon, Mar 31, 2025, Xin Li (Intel) wrote:
+> Signed-off-by: Xin Li (Intel) <xin@zytor.com>
 > ---
->  arch/arm64/include/asm/rqspinlock.h | 2 +-
->  kernel/bpf/rqspinlock.c             | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  arch/x86/include/asm/msr-index.h |  6 ++++++
+>  arch/x86/kvm/vmx/vmenter.S       | 28 ++++++++++++++++++++++++----
+>  2 files changed, 30 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index e6134ef2263d..04244c3ba374 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -1226,4 +1226,10 @@
+>  						* a #GP
+>  						*/
+>  
+> +/* Instruction opcode for WRMSRNS supported in binutils >= 2.40 */
+> +#define ASM_WRMSRNS		_ASM_BYTES(0x0f,0x01,0xc6)
+> +
+> +/* Instruction opcode for the immediate form RDMSR/WRMSRNS */
+> +#define ASM_WRMSRNS_RAX		_ASM_BYTES(0xc4,0xe7,0x7a,0xf6,0xc0)
+> +
+>  #endif /* _ASM_X86_MSR_INDEX_H */
+> diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+> index f6986dee6f8c..9fae43723c44 100644
+> --- a/arch/x86/kvm/vmx/vmenter.S
+> +++ b/arch/x86/kvm/vmx/vmenter.S
+> @@ -64,6 +64,29 @@
+>  	RET
+>  .endm
+>  
+> +/*
+> + * Write EAX to MSR_IA32_SPEC_CTRL.
+> + *
+> + * Choose the best WRMSR instruction based on availability.
+> + *
+> + * Replace with 'wrmsrns' and 'wrmsrns %rax, $MSR_IA32_SPEC_CTRL' once binutils support them.
+> + */
+> +.macro WRITE_EAX_TO_MSR_IA32_SPEC_CTRL
+> +	ALTERNATIVE_2 __stringify(mov $MSR_IA32_SPEC_CTRL, %ecx;		\
+> +				  xor %edx, %edx;				\
+> +				  mov %edi, %eax;				\
+> +				  ds wrmsr),					\
+> +		      __stringify(mov $MSR_IA32_SPEC_CTRL, %ecx;		\
+> +				  xor %edx, %edx;				\
+> +				  mov %edi, %eax;				\
+> +				  ASM_WRMSRNS),					\
+> +		      X86_FEATURE_WRMSRNS,					\
+> +		      __stringify(xor %_ASM_AX, %_ASM_AX;			\
+> +				  mov %edi, %eax;				\
+> +				  ASM_WRMSRNS_RAX; .long MSR_IA32_SPEC_CTRL),	\
+> +		      X86_FEATURE_MSR_IMM
+> +.endm
 
-This one and two other selftest patches were applied.
+This is quite hideous.  I have no objection to optimizing __vmx_vcpu_run(), but
+I would much prefer that a macro like this live in generic code, and that it be
+generic.  It should be easy enough to provide an assembly friendly equivalent to
+__native_wrmsr_constant().
+
+
+> +
+>  .section .noinstr.text, "ax"
+>  
+>  /**
+> @@ -123,10 +146,7 @@ SYM_FUNC_START(__vmx_vcpu_run)
+>  	movl PER_CPU_VAR(x86_spec_ctrl_current), %esi
+>  	cmp %edi, %esi
+>  	je .Lspec_ctrl_done
+> -	mov $MSR_IA32_SPEC_CTRL, %ecx
+> -	xor %edx, %edx
+> -	mov %edi, %eax
+> -	wrmsr
+> +	WRITE_EAX_TO_MSR_IA32_SPEC_CTRL
+>  
+>  .Lspec_ctrl_done:
+>  
+> -- 
+> 2.49.0
+> 
 
