@@ -1,125 +1,119 @@
-Return-Path: <bpf+bounces-55694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55695-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 661EFA84F74
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 00:02:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8A86A84F75
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 00:03:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B5CE4482AB
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 22:02:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5B1B9C1C7C
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 22:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81012202F7B;
-	Thu, 10 Apr 2025 22:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D65320AF9B;
+	Thu, 10 Apr 2025 22:03:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dPmFKTzm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G8huhjL8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DE3EEB1
-	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 22:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6F5EEB1
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 22:03:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744322551; cv=none; b=WlcUMccQ4i/KHOUgrrOuAIxv+Bv75HsQ66Ml9MOe1hZ2OxeCyW6Fy/hYMdn5Ym4xif0swrmMEYO8fqXHWh7kVTt6teIwrzWc8v9TLEQe7FgxbMi0XX8fnr3J2rKmqucHQoP9shTQ7/Sx2rCL9wPASErLQRJYmcqumr5gSsVb1yc=
+	t=1744322588; cv=none; b=JYPv6m3nRV0ztf1PAylTIJFAyGHlXyCso1cXplJgHXAXXL5s59OfbIwF+9iJQdzbs/mPaSG0Wjxstwk95eEJZ8XUFQtE9wUjTm6Z5JN3IHAgU7Ul+iYsnhBgIy+qj/Rib2rrrTznjY9yizCxufg0XtsbffivpbitLOsy0fPe1NI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744322551; c=relaxed/simple;
-	bh=IZYGw+95dlQpZ71EvfbN2r6k9R2LiBt8kel24Dwzi14=;
+	s=arc-20240116; t=1744322588; c=relaxed/simple;
+	bh=QzXDUMj/I0TBotcEzTfmIqBhyGKaU6oA5yHqZSqh/fw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YLx97TTlkgpjpWYT8dFGyBEwV7QebKDwHacrsOuuekoTXkV3ly4kyg+5R/DIk6BD7YOhz2CI8JjyOOho/uyTc7l9xfqDETfHAnG+jFMHn0WFIWkJZoUZN4nkAaVzKmRa7QC+Tg3lwFZHHYPSf42jIh2tyOFLZwdcT9zLKt/AJNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dPmFKTzm; arc=none smtp.client-ip=209.85.128.52
+	 To:Cc:Content-Type; b=aQjLp33QAyE9vYfenudCVcWt4vqM9157X8krybs3lASCo9s2kftOwQo9ZSurHH6A7CGqdFGKLwxI+Nr0HylYPtWuyJIz92gxrwmp8L4FHxvlEtZAITBiuYWcsXMuWlyYeC+RxazWn5kHVUjiqgDE3gz7Y9cwec+5FpbiDNnmecE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G8huhjL8; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4394a0c65fcso14547485e9.1
-        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 15:02:29 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-399749152b4so634279f8f.3
+        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 15:03:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744322548; x=1744927348; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744322585; x=1744927385; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tPMpa+oLAKEPdnb134Ebp7PsiMxwFdAwiTYRw3R/N1c=;
-        b=dPmFKTzmeu7lPRVc34MCi8cilSS/JdD6RtKnOlQ4JTAhrz7+vzFYHpe+ufyHc1/PMd
-         YkZvYPj/ynQSU7p0Wh/0UKSPTKaIgWlmpcjLiVd7CHjxKiIk/RcGfX7AzsthGQHeW+Wr
-         vCk8f1n5R1LSdqUxkIgrRKNwpj0tH9H0zH8uP0Bbo13bn/XKBGSFVIAgdKk2zw3mTXh3
-         l7YJRbUBlGlc33WGM//GR4s54VsOm6+tBMMY/xOEzeMUSKxa85oQ2nWJsClFNFarPggT
-         qtxMGeVEb6SXx1QDLgi78Kzj4K6aGVlyDbG9iteVWDJBBsfCLxsSb1ZRKzpfyaGhFplX
-         IQBA==
+        bh=D1veiUQeA1tZVO6nh/HvXphFXWbkVbQzDBxXFOuO4/4=;
+        b=G8huhjL8Ej3TUhI5lwx1mIOjK2HcGMUp9TWjzBKgwm532q53KQabq7vnUtIasuUGuW
+         jdcdaUA1noLMuVxe0FbDTRS3CBkaxSkgqYnrpXuzNcbaAOlJtwEEywifWsoDvq8S7Obw
+         HjofyEe6b7CvJKE8yBVEqQIUTHqKHP3P4a+B5eOCu3x8x3oK6uzopUJKE4FkUvZDq+z2
+         apJK+jY7nPlXlZXnM1zmH+NjVZWKSKv/neDf4hkXXadqS+nF3AhHI9VYVY+rhlvdvJK4
+         VnC56Y6SRvIMGWjJUGHxtT66CiIQIeS4pgQ5YkQzL0u2yasIUKuFT78sX/xVC2ikUAEW
+         Qzqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744322548; x=1744927348;
+        d=1e100.net; s=20230601; t=1744322585; x=1744927385;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tPMpa+oLAKEPdnb134Ebp7PsiMxwFdAwiTYRw3R/N1c=;
-        b=c1R16uDrX1o3dlbluCi+ISvL2jMtpEP3wJCik+suz75gyPYcxPv40zcAauIe06UIq+
-         7MglNq5coTmmEHwzXUl4Hdj4qWsk8HqZfMFNJveZJAe8tG93mut6Zh60Yd5fjU3C3nKf
-         0S2qETxPR33HjUhy2CSJOznylbkykKvDoJLcfA1IhTqOMEFBE7rSZyLDy6phZdTWeZ3Y
-         IWgrE4PVOH9ZrOjZiSsvKI71npZl6nJOuGUWOFs9twT2wUAl8H+57mK7/H0xb117aEgX
-         p8cY1nNS8gQw4cYR3/hO2t2xwq4eNmOoKS0wk9yX0h0eH84sYxzHrwJ11fXLmUMFh4xZ
-         AVgw==
-X-Gm-Message-State: AOJu0YxhY68teVgclElVjkc/NkpcXt2ooE7UF45MYB25c253yQFH4l4Z
-	1AdcsbNkUwGVbgnjZXZexiBISjQ43gpmskLSx/x46BaN///yvmW4q7yEQnNyT8tP0LVqGALpDDh
-	rWjSSGP8/LC77RyzIb1oPJZZwg24XjA==
-X-Gm-Gg: ASbGncs9LKobgh9ZLYXuUrR/QhVJV6U/BgWN1MJpDHxW6YpBgAfsb4gP3A30POJwlBs
-	8To+swFBJhRzzriOHm5fVQmI3shU2ZfIP95GdLbgq4PpzaK489P5Hvss5DUxCUTjD1UGRzJYd5/
-	45qTnb6nk5Joe+t6og/9uwYpTYAKEXr8YfCFYpjg==
-X-Google-Smtp-Source: AGHT+IH8gRjycYuA1H7Sigfd7BuhVKS0cpkyKGOK9SBmHLj/g7EavxT8QR8rLA1fxLJ9T18ljjHnDG0H+HvFF8J0Yr0=
-X-Received: by 2002:a5d:64e6:0:b0:391:2d76:baaa with SMTP id
- ffacd0b85a97d-39eaaec75cbmr235194f8f.46.1744322547446; Thu, 10 Apr 2025
- 15:02:27 -0700 (PDT)
+        bh=D1veiUQeA1tZVO6nh/HvXphFXWbkVbQzDBxXFOuO4/4=;
+        b=Rh6gzljjBFpnB2G62Nq2uCV68y9D5kANO+LXQC75XmdUxYNPv/EpNwPDF5j3crSGPW
+         yRPVz5rzZGG2hMb5gARbFQWpw42t0MEfcmCRv/dAplpWFnVHCXh2cPPF3EeINjkxmXNA
+         bUBy2TTTW8xSCSxr5m8L/j378lkkYLXPjYx2lnsmRAl5r58PmLHmaGNTgghwHCSbi8KB
+         AzGcio6LtSIQejtuQRCKmo/rtdusHnFptxn47kN8WlCRqS2ODD9aUsQZamIEHoh5mc4h
+         YfURtlmKgqgRQZhoiHNZwNceMOu/Zgujzsko5PCNcVXwAhhLmjTxegOHzzBdvnXErQ/J
+         zKAw==
+X-Gm-Message-State: AOJu0YwhjFpuLJ1fSTezytZNOukMIUr2stgOnFOSA3cGJIv73vGSvnaK
+	n+pWE071HRsFcjHMcsq83GTM/IrbuI2X3ssltnctRH/HX/KkBprtzxCXGiG8fHhUqfSsT7+SLtw
+	xX7t+x1dCrBuK4460vT8Evq5YKTA=
+X-Gm-Gg: ASbGnct/GF8exUZWomwBOQdxz7Ij+Ien2J9eG1t3TnuIbQqfIioXgER8asBlHvI9qGn
+	QCzqGhjZ0t4BRWZni6Uh5f3/hocJYtT4R0B+2fEhV6lf8QFF+VlH+H5eqgUGtKZvG8p23nNU3sJ
+	FE9KU1yD+/wPsnwYHNmEdB5a5ilbuzdVQIFsAxIA==
+X-Google-Smtp-Source: AGHT+IEtCGnJjnBfyTwiJZbD3zAPoRs6hzzUACmZRi+bHS+EOP8EeO8ItOfuIMDSynM9v8r1gofJd4YVdjZ1fO17m/M=
+X-Received: by 2002:a05:6000:2906:b0:399:71d4:a9 with SMTP id
+ ffacd0b85a97d-39eaaed5709mr171209f8f.52.1744322584644; Thu, 10 Apr 2025
+ 15:03:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250410153142.2064340-1-memxor@gmail.com>
-In-Reply-To: <20250410153142.2064340-1-memxor@gmail.com>
+References: <20250410145512.1876745-1-memxor@gmail.com>
+In-Reply-To: <20250410145512.1876745-1-memxor@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 10 Apr 2025 15:02:16 -0700
-X-Gm-Features: ATxdqUGBl3hZfOmrje5smR0uf4HhSjux73rfCKnfrQMk32gyitt_OcZZFSeGp7w
-Message-ID: <CAADnVQ+uMU6x_FUTJchuzwPenAYCcwUy8FtUhU+7YvgGD-OhHQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v1] bpf: Convert queue_stack_maps.c to rqspinlock
+Date: Thu, 10 Apr 2025 15:02:53 -0700
+X-Gm-Features: ATxdqUF4bxcYe5gzOnZzP27v1jmMidTznwm-OY9doyaOxUzmrIhl-1pKc6zXa8M
+Message-ID: <CAADnVQKUS1DXosTUYF4GE9D_cb94tbRCXED9KOkWt_NDiOZ43w@mail.gmail.com>
+Subject: Re: [PATCH bpf v1] bpf: Use architecture provided res_smp_cond_load_acquire
 To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, 
-	syzbot+8bdfc2c53fb2b63e1871@syzkaller.appspotmail.com, 
-	syzbot+252bc5c744d0bba917e1@syzkaller.appspotmail.com, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, Kernel Team <kernel-team@meta.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, 
+	Kernel Team <kernel-team@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 10, 2025 at 8:31=E2=80=AFAM Kumar Kartikeya Dwivedi
+On Thu, Apr 10, 2025 at 7:55=E2=80=AFAM Kumar Kartikeya Dwivedi
 <memxor@gmail.com> wrote:
 >
-> Replace all usage of raw_spinlock_t in queue_stack_maps.c with
-> rqspinlock. This is a map type with a set of open syzbot reports
-> reproducing possible deadlocks. Prior attempt to fix the issues
-> was at [0], but was dropped in favor of this approach.
+> In v2 of rqspinlock [0], we fixed potential problems with WFE usage in
+> arm64 to fallback to a version copied from Ankur's series [1]. This
+> logic was moved into arch-specific headers in v3 [2].
 >
-> Make sure we return the -EBUSY error in case of possible deadlocks or
-> timeouts, just to make sure user space or BPF programs relying on the
-> error code to detect problems do not break.
+> However, we missed using the arch-provided res_smp_cond_load_acquire
+> in commit ebababcd0372 ("rqspinlock: Hardcode cond_acquire loops for arm6=
+4")
+> due to a rebasing mistake between v2 and v3 of the rqspinlock series.
+> Fix the typo to fallback to the arm64 definition as we did in v2.
 >
-> With these changes, the map should be safe to access in any context,
-> including NMIs.
+>   [0]: https://lore.kernel.org/bpf/20250206105435.2159977-18-memxor@gmail=
+.com
+>   [1]: https://lore.kernel.org/lkml/20250203214911.898276-1-ankur.a.arora=
+@oracle.com
+>   [2]: https://lore.kernel.org/bpf/20250303152305.3195648-9-memxor@gmail.=
+com
 >
->   [0]: https://lore.kernel.org/all/20240429165658.1305969-1-sidchintamane=
-ni@gmail.com
->
-> Reported-by: syzbot+8bdfc2c53fb2b63e1871@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/0000000000004c3fc90615f37756@google.c=
-om
-> Reported-by: syzbot+252bc5c744d0bba917e1@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/000000000000c80abd0616517df9@google.c=
-om
+> Fixes: ebababcd0372 ("rqspinlock: Hardcode cond_acquire loops for arm64")
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  kernel/bpf/queue_stack_maps.c | 35 ++++++++++++-----------------------
->  1 file changed, 12 insertions(+), 23 deletions(-)
+>  arch/arm64/include/asm/rqspinlock.h | 2 +-
+>  kernel/bpf/rqspinlock.c             | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-pw-bot and pw are down.
-
-This patch was applied.
+This one and two other selftest patches were applied.
 
