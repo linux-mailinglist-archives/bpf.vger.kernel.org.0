@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-55682-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55683-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01B94A84B3A
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 19:41:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3768A84B34
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 19:40:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79DCA4E34AE
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:39:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E818A9C314B
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C81729345B;
-	Thu, 10 Apr 2025 17:37:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A2F293B49;
+	Thu, 10 Apr 2025 17:37:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="h3fKEn+P"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KjzC/Au8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1636A290BC4
-	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 17:37:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C18AE20371E
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 17:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744306623; cv=none; b=qZMMpkQQepa2StCDiGLlg9uc2TNIZA3nmyMBoMtVDxABtKvL/VgDq+hyKvYQSuGxR5aojd8YNJghhKj1fWNlKhwBrtKSQHrtBITnp1nB996ZMhv/WiK+dBl8hEkyVblhsqEbpREvuulP7/lnj8LPzKMKHhavczMzG0GFjOCkYzg=
+	t=1744306625; cv=none; b=blTnsNfHNVdk7eR0lVL8BNDrPDxD+zGgA6K4bVjmvuWCQ9C8RxtrHwTebUtweKfVl1yTGgaznO3YADHbE3N5Jan0VvHfYy9DuHtVm2Yx8wt0qoCfpUipGD03emuOfwckZFwkofwA+yi5jMdMG6NDTG30JG3AL43WlR3g2Ayx2vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744306623; c=relaxed/simple;
-	bh=pwnF8n7mqD7yk9oNBMquJdU4/lh8MdFnDzv/GA7kVio=;
+	s=arc-20240116; t=1744306625; c=relaxed/simple;
+	bh=OqTPFhQNMqA0kroRrrIFZ7VNgDyIrdQDv7/85+I3Vh0=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=e6G0X6EVKQ/GODO2108HDrKdPixe7vmAH/X/pbfU04jWFNmNkHpSLjFGbOb96v2R0cNPRZfZ9FYC68eXK6mkUKH8IA/qh99BQGlAHoviUT/Svm2Rkcz2J0JPZlOmhciAYe5qFcB1ug/VDUtJQJDm2rh4MtBHrwbPTD6dCArwq3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=h3fKEn+P; arc=none smtp.client-ip=209.85.214.202
+	 To:Content-Type; b=cEXXUlOI52q/gtp480SBNouGiA6+oLw5pTBIMzq3i2xXsbxdZQhufegmulshohjIqj0+5nnnxSNFsZlKE9uqItqPyjbGfJLChRBKloycmHDwUlKh1slu5b+ekf8ZCCNhKTTfwPXzou+KmWib3LvDHhyyheq22Jmy4w1WPEDvPHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KjzC/Au8; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-229668c8659so8597715ad.3
-        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 10:37:01 -0700 (PDT)
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-af51d92201fso1308219a12.0
+        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 10:37:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1744306621; x=1744911421; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1744306623; x=1744911423; darn=vger.kernel.org;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=XpiUUvwlwp9tVCnJZ3TZUgEjsv1IVM8EEnnesVuXazs=;
-        b=h3fKEn+Pz6OSFVCpDOszljZHfQXr0dLfzJkdBcKvgw+KCKrIsC8oXNEnmAsSqd9rEf
-         JsmxFNiaOJRHgiYwgxRXodaSSnIs1hr5cDAri1SxncQ/BpUsvBqXNtW3IrExpseTdSz3
-         QmNbeiQ+bw2+aRuD1TAt/k4m89qeFxvhZLSHgrzKwq6zPlOEMzPHk68PBwMjpPjTmoO9
-         Mek7uXnINWAXZspY8ey7YOW+xQtODVaeCKzoEe07KFsCU2XTCuX7Nl8/gFGGCmDcRGpR
-         T8HgJiYrvAlRIfhKkvcoqm4N3JLm7jiQbv1O7jENLfE7pvjmp/BhVIFiBT+RJ3PbpnAj
-         wg2A==
+        bh=xQvK5ga6mbdGcs60cOEjaVt2CnhMO3nnFtvXgnIjviw=;
+        b=KjzC/Au8vXIxBFBfTXNzYvpfxfOJ42hstGXxbLbN1yEeSKk3cbTZKP4bNgzWCO8Ois
+         ZVVsk/742/NWKsnKTeyuSSbcUGSMmolp+rRhUEWhLKW80rsvaPkx9UlhFrBWDJqep5pl
+         +3MvNKF/JTzQIvQPz1CA+cS7iPnrEpnmLuAh+/bi7wJ5n+xl0LtTfkxMEGObEkkPaLci
+         0Qmv/U5V203AHa9I+szW5n0ndeSigAO8OqAtUUtQDO9hSO05eGwwC6PCKRTZ/V9Q7eCI
+         KMEKudWTVOtOyzUsdi0QtDIe+6PfrRH8VOZnh96arIIYIlh+wvXU9hTC/8Vs8Tkr8yds
+         2Pjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744306621; x=1744911421;
+        d=1e100.net; s=20230601; t=1744306623; x=1744911423;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XpiUUvwlwp9tVCnJZ3TZUgEjsv1IVM8EEnnesVuXazs=;
-        b=pgRX10SNxfRV68S3/TBc9BFJaaYKLBrRVMVTGyDnWzX3ovIALnxFr9QQTE4D5bv8pU
-         nFzdwwVHsrGpTWWHrTQ8yhyJTGWuJcctWH6Ex3XPZf73JyA6QhxfKkkz93upzGnJbc5q
-         tSxNRL5ubXNSaI4Bphcp3KmgTI4Xa0pkQC3pepsblExUNIISHS8O0mFT/0RPWHm6pK32
-         p3p2SntWhtV5lkw9wyaSUbIzAUVoDQx6zKp54fNoSOklRto0p3CwZ7OF8iMKAyz05uQJ
-         WEmhkpg2O25+tWP7LBwc5Nt//XVelsVybL65PnwqEnM36JPrTgNMd4y7eURq8oDTAZbb
-         23KA==
-X-Forwarded-Encrypted: i=1; AJvYcCXF7f37Y1CJDqVvEnos0rS9c1wrh0ZELgzZMRp465Cl3HgKQ8FAwgXEkuO8wGc33jBFQwo=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw02NX8Vcucb7W9yR6akNjsV8iIA3DOPi6uhnHEeLY+2Fd9jA8T
-	SV6V8zhPDAsRfuHOk9iEFESRH5DvH7UARB+bnePcalAdAfGPXuw+up7gBfy85ZGoIpfoc371PbW
-	arptFvQ==
-X-Google-Smtp-Source: AGHT+IFwaCb2cDgkGC1n4/9Wz8pIMyxoLX83dVD19SJR7ZPEQ36S8XM3cNeUAEqdxlEjEYtd+dxtn/hNSjdL
-X-Received: from plbml15.prod.google.com ([2002:a17:903:34cf:b0:227:b826:af9e])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:903:120a:b0:216:2bd7:1c2f
- with SMTP id d9443c01a7336-22be02f73bamr41067965ad.18.1744306621413; Thu, 10
- Apr 2025 10:37:01 -0700 (PDT)
-Date: Thu, 10 Apr 2025 10:36:28 -0700
+        bh=xQvK5ga6mbdGcs60cOEjaVt2CnhMO3nnFtvXgnIjviw=;
+        b=FZKR4/ww4p3PZ/zCL3JyxrmjslEChMQf/5RaJdRSSHvjTAyopU2Z5r4xqRvXM7ekpv
+         +L2rKy6EX0ssZHs+4U2Aqlm/aob6WexwcwhgnqAw08qkl12ssfmyZCOruBwEklk3tWjT
+         DynGWKOn6NCQI687Oh815nLE1AtT+yPelHWwE8TzAErrhXC5UIc6HqbTjWQmTtcJLrkH
+         s6fJXZuJ9Q5TdPp0c0sjEgrzMmNsgXZ18R+OnoXkNP1X8kj6aHcr6njHI+/PaFYvDsLZ
+         SucsXXJ6yJCs1wVzb3Q4KSA5lOm0PUC9NCpSW8Rm1e3TTEp7O7ZNomRvD71o1GIiDzaw
+         uUBg==
+X-Forwarded-Encrypted: i=1; AJvYcCV7vIUM9qCIv/T299JVFUAHST2pbXkEjo12ZE/SDNXsEOVVRV8IXcQpeUIz8ql7vXoUT7Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZFHeJ7neHslCLsw39dfQp+fBCGokR9K/jkjzFfv2NpedNb18Q
+	0mAEecG6WbqIYyA/sWm7PMIdb2sYxiLA9oAdbmI3LFv9gznaBSBHN1moKDegnj3bNG5ykgppumW
+	wW9b4GA==
+X-Google-Smtp-Source: AGHT+IELrMq7P3XO/BVtHJWWdlGWFYztHi/XhtOisl5L5h9RCt8GE54ixzv6LneO4zsw6KvJO4vaiirkoA6p
+X-Received: from pjyd8.prod.google.com ([2002:a17:90a:dfc8:b0:2fa:284f:adb2])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:6c6:b0:2ee:7411:ca99
+ with SMTP id 98e67ed59e1d1-30718b64bb2mr5111942a91.1.1744306623335; Thu, 10
+ Apr 2025 10:37:03 -0700 (PDT)
+Date: Thu, 10 Apr 2025 10:36:29 -0700
 In-Reply-To: <20250410173631.1713627-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250410173631.1713627-1-irogers@google.com>
 X-Mailer: git-send-email 2.49.0.604.gff1f9ca942-goog
-Message-ID: <20250410173631.1713627-10-irogers@google.com>
-Subject: [PATCH v2 09/12] perf trace: Switch user option to use BPF filter
+Message-ID: <20250410173631.1713627-11-irogers@google.com>
+Subject: [PATCH v2 10/12] perf bench evlist-open-close: Switch user option to
+ use BPF filter
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -94,72 +95,111 @@ Content-Type: text/plain; charset="UTF-8"
 
 Finding user processes by scanning /proc is inherently racy and
 results in perf_event_open failures. Use a BPF filter to drop samples
-where the uid doesn't match. Ensure adding the BPF filter forces
-system-wide.
+where the uid doesn't match.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-trace.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+ tools/perf/bench/evlist-open-close.c | 36 ++++++++++++++++------------
+ 1 file changed, 21 insertions(+), 15 deletions(-)
 
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index 6ac51925ea42..1f7d2b3d8b3d 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -240,6 +240,7 @@ struct trace {
- 		struct ordered_events	data;
- 		u64			last;
- 	} oe;
-+	const char		*uid_str;
- };
+diff --git a/tools/perf/bench/evlist-open-close.c b/tools/perf/bench/evlist-open-close.c
+index 79cedcf94a39..bfaf50e4e519 100644
+--- a/tools/perf/bench/evlist-open-close.c
++++ b/tools/perf/bench/evlist-open-close.c
+@@ -57,7 +57,7 @@ static int evlist__count_evsel_fds(struct evlist *evlist)
+ 	return cnt;
+ }
  
- static void trace__load_vmlinux_btf(struct trace *trace __maybe_unused)
-@@ -4401,8 +4402,8 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
- 		evlist__add(evlist, pgfault_min);
+-static struct evlist *bench__create_evlist(char *evstr)
++static struct evlist *bench__create_evlist(char *evstr, const char *uid_str)
+ {
+ 	struct parse_events_error err;
+ 	struct evlist *evlist = evlist__new();
+@@ -78,6 +78,18 @@ static struct evlist *bench__create_evlist(char *evstr)
+ 		goto out_delete_evlist;
  	}
- 
--	/* Enable ignoring missing threads when -u/-p option is defined. */
--	trace->opts.ignore_missing_thread = trace->opts.target.uid != UINT_MAX || trace->opts.target.pid;
-+	/* Enable ignoring missing threads when -p option is defined. */
-+	trace->opts.ignore_missing_thread = trace->opts.target.pid;
- 
- 	if (trace->sched &&
- 	    evlist__add_newtp(evlist, "sched", "sched_stat_runtime", trace__sched_stat_runtime))
-@@ -5420,8 +5421,7 @@ int cmd_trace(int argc, const char **argv)
- 		    "child tasks do not inherit counters"),
- 	OPT_CALLBACK('m', "mmap-pages", &trace.opts.mmap_pages, "pages",
- 		     "number of mmap data pages", evlist__parse_mmap_pages),
--	OPT_STRING('u', "uid", &trace.opts.target.uid_str, "user",
--		   "user to profile"),
-+	OPT_STRING('u', "uid", &trace.uid_str, "user", "user to profile"),
- 	OPT_CALLBACK(0, "duration", &trace, "float",
- 		     "show only events with duration > N.M ms",
- 		     trace__set_duration),
-@@ -5762,11 +5762,19 @@ int cmd_trace(int argc, const char **argv)
- 		goto out_close;
- 	}
- 
--	err = target__parse_uid(&trace.opts.target);
--	if (err) {
--		target__strerror(&trace.opts.target, err, bf, sizeof(bf));
--		fprintf(trace.output, "%s", bf);
--		goto out_close;
-+	if (trace.uid_str) {
-+		uid_t uid = parse_uid(trace.uid_str);
+ 	parse_events_error__exit(&err);
++	if (uid_str) {
++		uid_t uid = parse_uid(uid_str);
 +
 +		if (uid == UINT_MAX) {
-+			ui__error("Invalid User: %s", trace.uid_str);
-+			err = -EINVAL;
-+			goto out_close;
++			pr_err("Invalid User: %s", uid_str);
++			ret = -EINVAL;
++			goto out_delete_evlist;
 +		}
-+		err = parse_uid_filter(trace.evlist, uid);
-+		if (err)
-+			goto out_close;
-+
-+		trace.opts.target.system_wide = true;
++		ret = parse_uid_filter(evlist, uid);
++		if (ret)
++			goto out_delete_evlist;
++	}
+ 	ret = evlist__create_maps(evlist, &opts.target);
+ 	if (ret < 0) {
+ 		pr_err("Not enough memory to create thread/cpu maps\n");
+@@ -117,10 +129,10 @@ static int bench__do_evlist_open_close(struct evlist *evlist)
+ 	return 0;
+ }
+ 
+-static int bench_evlist_open_close__run(char *evstr)
++static int bench_evlist_open_close__run(char *evstr, const char *uid_str)
+ {
+ 	// used to print statistics only
+-	struct evlist *evlist = bench__create_evlist(evstr);
++	struct evlist *evlist = bench__create_evlist(evstr, uid_str);
+ 	double time_average, time_stddev;
+ 	struct timeval start, end, diff;
+ 	struct stats time_stats;
+@@ -142,7 +154,7 @@ static int bench_evlist_open_close__run(char *evstr)
+ 
+ 	for (i = 0; i < iterations; i++) {
+ 		pr_debug("Started iteration %d\n", i);
+-		evlist = bench__create_evlist(evstr);
++		evlist = bench__create_evlist(evstr, uid_str);
+ 		if (!evlist)
+ 			return -ENOMEM;
+ 
+@@ -206,6 +218,7 @@ static char *bench__repeat_event_string(const char *evstr, int n)
+ 
+ int bench_evlist_open_close(int argc, const char **argv)
+ {
++	const char *uid_str = NULL;
+ 	const struct option options[] = {
+ 		OPT_STRING('e', "event", &event_string, "event",
+ 			   "event selector. use 'perf list' to list available events"),
+@@ -221,7 +234,7 @@ int bench_evlist_open_close(int argc, const char **argv)
+ 			   "record events on existing process id"),
+ 		OPT_STRING('t', "tid", &opts.target.tid, "tid",
+ 			   "record events on existing thread id"),
+-		OPT_STRING('u', "uid", &opts.target.uid_str, "user", "user to profile"),
++		OPT_STRING('u', "uid", &uid_str, "user", "user to profile"),
+ 		OPT_BOOLEAN(0, "per-thread", &opts.target.per_thread, "use per-thread mmaps"),
+ 		OPT_END()
+ 	};
+@@ -245,15 +258,8 @@ int bench_evlist_open_close(int argc, const char **argv)
+ 		goto out;
  	}
  
- 	if (!argc && target__none(&trace.opts.target))
+-	err = target__parse_uid(&opts.target);
+-	if (err) {
+-		target__strerror(&opts.target, err, errbuf, sizeof(errbuf));
+-		pr_err("%s", errbuf);
+-		goto out;
+-	}
+-
+-	/* Enable ignoring missing threads when -u/-p option is defined. */
+-	opts.ignore_missing_thread = opts.target.uid != UINT_MAX || opts.target.pid;
++	/* Enable ignoring missing threads when -p option is defined. */
++	opts.ignore_missing_thread = opts.target.pid;
+ 
+ 	evstr = bench__repeat_event_string(event_string, nr_events);
+ 	if (!evstr) {
+@@ -261,7 +267,7 @@ int bench_evlist_open_close(int argc, const char **argv)
+ 		goto out;
+ 	}
+ 
+-	err = bench_evlist_open_close__run(evstr);
++	err = bench_evlist_open_close__run(evstr, uid_str);
+ 
+ 	free(evstr);
+ out:
 -- 
 2.49.0.604.gff1f9ca942-goog
 
