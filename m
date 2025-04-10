@@ -1,118 +1,140 @@
-Return-Path: <bpf+bounces-55623-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55624-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D72DEA83738
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 05:29:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 582A1A83797
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 06:01:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FB101B61794
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 03:29:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD61444003D
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 04:01:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 375F61F09A8;
-	Thu, 10 Apr 2025 03:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93F41EF0A6;
+	Thu, 10 Apr 2025 04:01:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KBa7mlap"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gelP1Yn3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0EF738F80;
-	Thu, 10 Apr 2025 03:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E66D54A04;
+	Thu, 10 Apr 2025 04:01:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744255739; cv=none; b=fKa5Kxmh0bPwCdUbF9W5Wgo40uPsm169A1GGarCrL0ZNNgg4XciL7GMTKDe/h6/8+jlSuE4j7zLsxLxyrkMvx7dNakt+9tF5u27QZT+zPIP/zsy/DGSeIjJoaV5DsPJsk7eoG84Y6ODRYbYhTx2/WInBI6qEyhJxbEs8HaDOr20=
+	t=1744257662; cv=none; b=hqO3G3zcViZhSnETPFPrfZgva7LeRUWTjx4gl+yZrjPc2PYInWt8G2kf53cfgjmyj7qwODIr3lKcmxftct32dyLEF65rpK3uRa2Ss//w4h9jJbuz/sAJGUIJhQJFA+TeMEzUE3zK7X3FRjxGQtI+YYy3wwMObvg2yqpQ+khhu7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744255739; c=relaxed/simple;
-	bh=1qT4p9/yASHkVfBVycY5L9QDkHM4BA+IQXyvAReAm0g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c7hNMKhoF23aIELNjaMt3pGTFwbElweZqLRM1tHefrEuyxK9dh0OqsIOg4+I2KbUvzsvnUwnBhP5s8mdwMiSHJEuKeQmVCho199wk5Sa1MIfaoQMR9EkMpxWtnLq4Ynn9jwjAkY9hbOFlsa9xrra6rik+PJs3x3tFkcV1Ami2zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KBa7mlap; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43d0c18e84eso1515135e9.3;
-        Wed, 09 Apr 2025 20:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744255736; x=1744860536; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1qT4p9/yASHkVfBVycY5L9QDkHM4BA+IQXyvAReAm0g=;
-        b=KBa7mlapEi+XYZ1G7ob00H/Gj6IZR9kKJIdqFmUo6VVVd8/FQkz1YsC0fu8oaJGJL1
-         tedgv52S8CqvFC516b9w3ulePMJ0kn4VG+OD+bA4UcIQJoYPII4zqpzjJmeE7UWl0s+q
-         rGuJoxeGQ1e4bCemEY51xPtLZvzvMZV6dYSv174XPnIiIOolVA8H4YLMGHms0QFA2bZx
-         XbSHY1MY0O+8pesPoRBY20BP9Zj3qM9vo9QFG4x9UA+FLdP0LUIBe7NER4z7JejZqJzq
-         UN16u9W0C3ggnAusQml0NKGOImlOljkrF2Vu6yUXIFI6t5HOdaU+PQtAv5E0QvXlYTUS
-         e1Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744255736; x=1744860536;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1qT4p9/yASHkVfBVycY5L9QDkHM4BA+IQXyvAReAm0g=;
-        b=RElQqV90WDiuMLP228tLhZE5wnyPZTnM4RQLoXcVFra5vhCp+7pwtBIZDY8a7iwL85
-         759vCzmTpztSe8ke+mqp5mgJGw+yOCwkpZidkA0QqzBA2yH3qzawI4plELcney3mUt7d
-         KvySYtNa0nPJsyudyXPfKh/mqSZ2Rel2eryG1kkIYMabylc7LAwZBdoaVr75+16McZRX
-         B6v0Nhx8F77e6XDckuEGOzQImBwGy6Uag6Ipr3FMiT/PwnBCnYOektrvpC3o72MHAzDo
-         Z2YhQ+pROvkZA8KgVAHYSxEZMvnUtilarsDTwaCrhwNCrdBMLn2p8lEOPTvFCFQMCeRl
-         Gkeg==
-X-Forwarded-Encrypted: i=1; AJvYcCUpE0xz8wZgSL0iUodjVorMlb6IcNiLjPJAcZC0im4sztH5UicDqbbqNbhFI46ZGjBA6Qu2czyATnX7oYA5@vger.kernel.org, AJvYcCV2nlneVOcm71IZmDT5YjXfd30mETWCHV8ubZToGvBRtpy/VWMM1uVSnt2UJV3T2VeOwOo=@vger.kernel.org, AJvYcCXL6En3dPo16G21GwAROZt/xFIlhsQEN9UwbBlJIjNYnri1FfQpPZnoIlUb8w9Pn7epTUQwDA/vL904JcJ3ST1fCwjE@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxa/N9Bm2xWoEQQjVG9VepVyqK9xCygcCUex24iNXfARKaXmxe8
-	1EBR3lcrj2objFf6ofCI2KWWYdA3ZjWT9WveDh6+Hcb/3a3V33TXZhwjSV3ue2leQQa7fxyTAmt
-	EzPrS6DnWJS8X3KQ5D5QqjlM21Ag=
-X-Gm-Gg: ASbGncscjpcKgldVdBUQR4cwzN6wjukgqZV9dPk+sMrab7csXDlM4/9s2KKkFoDk8vV
-	63IVcyzuNvVPPunzBKOJnJb9dDOyG9k1BBQ6+J0DxKJ5UXIBbxOGQgUv4a9akD28WUOc/3YSCX4
-	wmkfGZzdeAyp2e7GBZlYEZEsjtxipPy23bVm1liQ==
-X-Google-Smtp-Source: AGHT+IGaWEojXqplR70DbA9KIqtKUCqO8VdfLfrSloms0d9yOELhm5b7xSv8e9WS2CXXMJ/1dZ+1aka/ieMX4Fqfd8o=
-X-Received: by 2002:a05:600c:1c86:b0:43d:160:cd97 with SMTP id
- 5b1f17b1804b1-43f2ff9afa2mr3886615e9.25.1744255735922; Wed, 09 Apr 2025
- 20:28:55 -0700 (PDT)
+	s=arc-20240116; t=1744257662; c=relaxed/simple;
+	bh=18pdtt5fs99KJ9QicksFmYejw3j6l4JDHi7+23rM2wY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ggJca/eOwbaa7xy7oRD7rlgyROoSvAvLqnQsjEGhAF4rY18c9m+2G1zXcQccUSzjK+Vxnviu91KhCb/X90Upor9LFqYa07lrKRAvxiZggy120D1EjuYxktwlt9XAPp8T10UnqAgmhoGF9HDaz2FZmQXGr1zf8q72kaMBKmZl6N8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gelP1Yn3; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1744257661; x=1775793661;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=18pdtt5fs99KJ9QicksFmYejw3j6l4JDHi7+23rM2wY=;
+  b=gelP1Yn3tz8vQIc4Q2ugec/fnKTb1UTHHJIODIoCHX0Zt6/cp/kD8TIU
+   ZvOeOGyK3V4+SGgBq/4HclOY8tAE6kmbNUoUXkiAG/tp45ssrEnH4KfkS
+   HAJQ+Ji9AFE1YwhFm3y1sgSVZuo6nd6ip0PrtntnWvGLZmbpTbm5EpIPe
+   8yzj0PaanDvZ3gmrfpoIztZpb5AAIm63LdRo0JrqglK6EyYnXJZsDdoxU
+   /0GYnu/VF/IFuAhWmzay56OQhP0dogtzg59l2GLDh5Lb4N4F21lMESbdR
+   tE/hJGjeh9jwXzdlys+IgFR/wCsDvmia9cw4gHw/UxyfMlh6uiXOuVfkF
+   g==;
+X-CSE-ConnectionGUID: p8l/m+5qTXCmqk0AX+h3OQ==
+X-CSE-MsgGUID: LU572m4RScW0lpicTvmKEg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11399"; a="33365741"
+X-IronPort-AV: E=Sophos;i="6.15,201,1739865600"; 
+   d="scan'208";a="33365741"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2025 21:01:00 -0700
+X-CSE-ConnectionGUID: BFy7tdapRh+f4erHTC5plA==
+X-CSE-MsgGUID: c3NAGAkNRsehu+OFzJZZLQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,201,1739865600"; 
+   d="scan'208";a="159744143"
+Received: from brc05.iind.intel.com (HELO brc05..) ([10.190.162.156])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2025 21:00:56 -0700
+From: Tushar Vyavahare <tushar.vyavahare@intel.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	tirthendu.sarkar@intel.com,
+	tushar.vyavahare@intel.com
+Subject: [PATCH bpf-next v4 0/2] selftests/xsk: Add tests for XDP tail adjustment in AF_XDP
+Date: Thu, 10 Apr 2025 03:31:14 +0000
+Message-Id: <20250410033116.173617-1-tushar.vyavahare@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250408071151.229329-1-yangfeng59949@163.com>
-In-Reply-To: <20250408071151.229329-1-yangfeng59949@163.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 9 Apr 2025 20:28:44 -0700
-X-Gm-Features: ATxdqUECZ8hBo3V-Su9Z4qQwgeWEVH-SqaCOC-Ef80OY_wkuUAeTqwDGyTS9qH8
-Message-ID: <CAADnVQKAUWaiV-D1noBnWvLgvXCr1PNQvby+0arFei+tSwzz1w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Remove duplicate judgments
-To: Feng Yang <yangfeng59949@163.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard <eddyz87@gmail.com>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 8, 2025 at 12:13=E2=80=AFAM Feng Yang <yangfeng59949@163.com> w=
-rote:
->
-> From: Feng Yang <yangfeng@kylinos.cn>
->
-> Many judgments and bpf_base_func_proto functions are repetitive, remove t=
-hem.
+This patch series adds tests to validate the XDP tail adjustment
+functionality, focusing on its use within the AF_XDP context. The tests
+verify dynamic packet size manipulation using the bpf_xdp_adjust_tail()
+helper function, covering both single and multi-buffer scenarios.
 
-Judgments?!
+v1 -> v2:
+1. Retain and extend stream replacement: Keep `pkt_stream_replace`
+   unchanged. Add `pkt_stream_replace_ifobject` for targeted ifobject
+   handling.
 
-"
-A judgment is a court's official ruling that resolves a legal case,
-determining the rights and obligations of the parties involved
-"
+2. Consolidate patches: Merge patches 2 to 6 for tail adjustment tests and
+   check.
 
-Please use AI or human help to make commit log readable.
+v2 -> v3:
+1. Introduce `adjust_value` to replace `count` for clearer communication
+   with userspace.
 
-English is a second language for lots of developers and maintainers,
-but please try harder.
+v3 -> v4:
+1. Remove `testapp_adjust_tail_common()`. [Maciej]
 
-pw-bot: cr
+2. Add comments and modify code for buffer resizing logic in test cases
+   (shrink/grow by specific byte sizes for testing purposes). [Maciej]
+
+---
+Patch Summary:
+
+1. Packet stream replacement: Add `pkt_stream_replace_ifobject` to manage
+   packet streams efficiently.
+
+2. Tail adjustment tests and support check: Implement dynamic packet
+   resizing in xskxceiver by adding `xsk_xdp_adjust_tail` and extend this
+   functionality to userspace with `testapp_xdp_adjust_tail` for
+   validation. Ensure support by adding `is_adjust_tail_supported` to
+   verify the availability of `bpf_xdp_adjust_tail()`. Introduce tests for
+   shrinking and growing packets using `bpf_xdp_adjust_tail()`, covering
+   both single and multi-buffer scenarios when used with AF_XDP.
+---
+
+Tushar Vyavahare (2):
+  selftests/xsk: Add packet stream replacement function
+  selftests/xsk: Add tail adjustment tests and support check
+
+Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+
+ .../selftests/bpf/progs/xsk_xdp_progs.c       |  50 ++++++++
+ tools/testing/selftests/bpf/xsk_xdp_common.h  |   1 +
+ tools/testing/selftests/bpf/xskxceiver.c      | 118 ++++++++++++++++--
+ tools/testing/selftests/bpf/xskxceiver.h      |   2 +
+ 4 files changed, 163 insertions(+), 8 deletions(-)
+
+-- 
+2.34.1
+
 
