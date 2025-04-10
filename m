@@ -1,107 +1,91 @@
-Return-Path: <bpf+bounces-55655-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55656-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47C22A8438D
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 14:46:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A0D6A843C0
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 14:54:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5B551BA0BDC
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 12:43:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C020617EF2D
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 12:53:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D6F285411;
-	Thu, 10 Apr 2025 12:43:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C5J44iI1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37BCB285414;
+	Thu, 10 Apr 2025 12:53:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A02A26B2BA;
-	Thu, 10 Apr 2025 12:43:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62700283CBA
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 12:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744289000; cv=none; b=Irldb9aE0rKStVcUsDU5/KZ3Yv4LgoYYLncRysofM8NaBivfooBH5eqv4cbpqWkxmV5Jfahfi+Lf/Hc0bERLrcd5juu/HMZEMsluzt3TbW+lOJyEIN8YtjBOh+JSNd0BUjDOJ+gxxiInWsG0yx0uG4aIdo/TBEsZxOCUqljTywU=
+	t=1744289585; cv=none; b=AvP0luzMXtK4mAX+Fa0TAL0owRzFFYmqJOhjA6OFg3P1qsyLGakai7W7xEqUmcJeKNlMsXAHxYyC77rnHhMvFLWkaW4Xck3KpJsM+oQkVqhJj6nGLCklWw6WrG+h/xbLV17SOpci0G+sdAqXiUhwU13DUjwpilsp1Yn9fSfwigQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744289000; c=relaxed/simple;
-	bh=FdnbocKbRHhtLFIRneUZ+/1khNFKq2SMICJ8698GBPY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eWJsg3O657Sj0/QJ3ws9JfHsmTrg3YN1hSD3hWgYRXNKZQWuHahrGqvH4gWhpMo0+M4SxuHQR1wEuiN0/TPRaXq4AXHhl1EciY9TcQ+0rHlSZDiosZZqnat4RtFtbNzCM7PSaRM9TYW+/E41LCcmDoUlTdxYuSkEOcIz+kj5qW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C5J44iI1; arc=none smtp.client-ip=209.85.128.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-43cf05f0c3eso5825115e9.0;
-        Thu, 10 Apr 2025 05:43:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744288997; x=1744893797; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FdnbocKbRHhtLFIRneUZ+/1khNFKq2SMICJ8698GBPY=;
-        b=C5J44iI1FaqQ7HdWFzHc5dJptGqV+HQA+UguaaRUI4ZdeMT+1D2hSYJ4JEvJL3zlxP
-         ifDjgUaxTgv9Iqb3Uc3AkJxmrWWbigd88FfuQH6NfgsXm0KXv0HNJN8AXPh+C2MNJfwJ
-         7gFeNLPN9/DkHe/BrzngKfvWbGs5j8AnsxkzI0Nrope6vpXdJzYoJlhbMbFxB8Vub0ZT
-         YKusjr2s0YCXVzGN173jTWdlbqBRpld/q5J0STeCgnN6J2DYkPjnFREJZY6ednwsX6my
-         cncXRUV1qwjqLwwmcz3gcUIsL3ryNgeKV+BRo9ArabVrEsNsEYBAgTVb+PqnjE/ZSYWY
-         +zoQ==
+	s=arc-20240116; t=1744289585; c=relaxed/simple;
+	bh=vDEmMGrUTM8yYCrPqwhQCEL4t02ezZbeVW8VUbU3L6A=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=PSKanLkZM3KWUt5e8ifw6r4yyxsSdEaA4yuIalT9gVZCx14sWHVzLPBzLz/cR0ijmPyUrLeaM12QYATG/vHXx8MQTnysWnLkpX3FXylfmyNZ3LoMVPBkqkYpHhBHrYeM/flGin8aHTwvkg4jRsM4fPxDjXnPeYer/8WiUZ68SHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3d5da4fd944so16767445ab.2
+        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 05:53:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744288997; x=1744893797;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FdnbocKbRHhtLFIRneUZ+/1khNFKq2SMICJ8698GBPY=;
-        b=V75Bibr/UkVa2HIiDHV9CewYQg0AH11sEwDowW7XRVQoA73HsVClTNhL4FrPhksCam
-         lWR0ff5rafJ+l3XIdn76iKWyEibaOy9Hf5KXVcYOI6fwyzwvTKa1+CBAkqCwr1+Ecx94
-         mpyrInzteneeeMf1Uokzb9iJars5qtBYJkdySbvkOK3gwk+KaZ0Gx1G3YMwqWCTX10vd
-         KC60W9b3cwUEQSaoCBgRq1xLSP/bEmchBnVRIlgadSC5CXLywHSEsPrzUPMmHIH6a3CX
-         AazWyXfvaT3AYq/1ulbi9Ppn3QfwCnn0MeEEwHw2rS/OTnpKtj0b1GfjMqHD+3Ea0Bk0
-         nXQw==
-X-Forwarded-Encrypted: i=1; AJvYcCU/sdqANdfsKlkYpViFmyZPVDJFPhdcf/WRr1jMMeSccRdqLNRlRyAUg5/9IRVJd9EkvPE=@vger.kernel.org, AJvYcCUrz+5wFzztzPS9NvVwIkHMH4k5kaqGjcS+nJh+89H47fVXE84t6EoXFGQZxnMd+3mRnk7eXlzF@vger.kernel.org, AJvYcCVENS/HShnsp4CYID3Q3UBqu9PtDlkDkUvcnz6mwwZMfb4JtkTcF/Hqu17WBs1YlSHF0dtpyH8ul47jP4te@vger.kernel.org
-X-Gm-Message-State: AOJu0YwnD/9Ql8AJQYxO/qmG7M9/g4U3NyKjSlMUJodSYSShyYQg2XBa
-	jP31LDqyD3Ssbuf90usXf3waJeTKBjaju/uCc+mYu458u+zciYFg
-X-Gm-Gg: ASbGncvCRmOWy0jg7rPrgHSzm3MzWSnO6AhSnlqId0X0uoLXy9mDFJGsCOoXQWNWdE1
-	XjQ0ln8bjcpro9VuhZCSJv6qZoWoiZAi1bBmBVryPIm1O9wpYqeQ1bQO2ZymSlh4Ki7sqcns+Px
-	DGObEJKY/jEL/0OQ+ZIGbNewroxSudJJVqx/fhTuLzfqZo1bUeEkbkra2prDfLo29/olnad43Jz
-	PF4cos8Ql246FXPyFnOpHwrJWYzQ3uJf89HZuRXmu0rVTIoJXOznqmxpcl7gFBQnS2WnsenrLbF
-	w51f5yZHJFK4wG1Xf9ImRIuMGykYmg==
-X-Google-Smtp-Source: AGHT+IE1O/g9eSCNeD9X1PupioWSc5DczuV6yqkTZrHoR7wnetv602/KyAnSaHmO/djaQj3YLxmu3A==
-X-Received: by 2002:a05:600c:1f8d:b0:43d:fa59:cc8f with SMTP id 5b1f17b1804b1-43f2ffa3188mr16121285e9.33.1744288996732;
-        Thu, 10 Apr 2025 05:43:16 -0700 (PDT)
-Received: from localhost ([2a03:2880:31ff:7::])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43f205ecc73sm54187835e9.8.2025.04.10.05.43.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Apr 2025 05:43:16 -0700 (PDT)
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To: syzbot+8bdfc2c53fb2b63e1871@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: [syzbot] [bpf?] possible deadlock in __queue_map_get
-Date: Thu, 10 Apr 2025 05:43:15 -0700
-Message-ID: <20250410124315.1201290-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <0000000000004c3fc90615f37756@google.com>
-References: <0000000000004c3fc90615f37756@google.com>
+        d=1e100.net; s=20230601; t=1744289583; x=1744894383;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uwjKGeyplOihDN5WsNx76P9DgKNh/A9aQGFHVxRsKGg=;
+        b=QOoMbHbMKS3dO5f2RqnOnWOLo9oDdSf5cR2D3sySA8W0oSoUP/kXG5pAveVet7A4nm
+         6Ov4c2svoCep2w+zlyPjCBMdn9mUyOIQUXDY5fRPt8Sl0cclpk29itkFMGULioOcMwGr
+         1IQ2xiscwY6xpHXIoTmh7lgkh4EokwnkbLDbRq1NPYg+FZl+4PJICKqqII0bJhTq2S3z
+         ATOss4AlemFGhrjDCMlE6Zdpar+AohSrS2r6FzFhAMbuLSLZ12vz272eK+lF/2jspUPX
+         OJcrLn7O4l5wT6vHV+0hfIiZ0yCEUSyN5Iy8FRB1bCT6N6Kr6HvJUFu+yhF9BLhLlQuZ
+         72Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCXGG3GhWt/K9COYzoT5o+00tjyN9u6dcy4/SXjvj6jdmcyXQChnkfm0vzGvnJgrpSfPnJc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywj2oK8UZDmBZNuxsHX/vLjzef04Bu25D1A00/EOL+QT5uLKB/v
+	tSqXDY1ojKtEThMBrqT98ROiF6yO9/EWEurzMqnJHoPlWRkZQ7SX9Aax7LEKTzh+sbX7u419WiX
+	0WLOj3t/jGbxEbjXvK6bBmyBoaHmXYZ7XZTFkO1/djlIMzWpSz1pBfYU=
+X-Google-Smtp-Source: AGHT+IGKKvMad2D5Pe7llo9yGvnZqkSWQ75yF6Q9NeHzwi5dN9/T+3XSEVg7DE3sdhjQgF2SnCDod5Ae6v+BONjR4ZkMlLmcJfpQ
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:2588:b0:3d4:2306:a875 with SMTP id
+ e9e14a558f8ab-3d7e46f8e1dmr32898695ab.8.1744289583571; Thu, 10 Apr 2025
+ 05:53:03 -0700 (PDT)
+Date: Thu, 10 Apr 2025 05:53:03 -0700
+In-Reply-To: <20250410123831.1164580-1-memxor@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67f7bf2f.050a0220.355867.0001.GAE@google.com>
+Subject: Re: [syzbot] [bpf?] possible deadlock in __bpf_ringbuf_reserve
+From: syzbot <syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
+	martin.lau@linux.dev, memxor@gmail.com, netdev@vger.kernel.org, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-#syz test: https://github.com/kkdwivedi/linux.git res-lock-next
+Hello,
+
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+unregister_netdevice: waiting for DEV to become free
+
+unregister_netdevice: waiting for batadv0 to become free. Usage count = 3
+
+
+Tested on:
+
+commit:         e403941b bpf: Convert ringbuf.c to rqspinlock
+git tree:       https://github.com/kkdwivedi/linux.git res-lock-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f46c04580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ea2b297a0891c87e
+dashboard link: https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
 
