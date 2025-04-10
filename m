@@ -1,183 +1,144 @@
-Return-Path: <bpf+bounces-55661-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55662-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6E66A8472F
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:01:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 634EEA8471B
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 16:59:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25EF11BC05F7
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 14:56:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA7E44A6BA5
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 14:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08D828EA69;
-	Thu, 10 Apr 2025 14:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2CE728EA4D;
+	Thu, 10 Apr 2025 14:55:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="baLKlXrw"
 X-Original-To: bpf@vger.kernel.org
-Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C3228CF53;
-	Thu, 10 Apr 2025 14:54:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB6C314F9D6
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 14:55:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744296893; cv=none; b=ohuvyWI03hITdeYqGi8X1dNp2XBjOmpHSsWgMVqwW+errYRzJcyvm4RQWWc5R0fXOMAbPD3Llj7HUzh2Wc/ZYMGFNU+kyWhc5Nlrs3Q09iMXkLZn6EguEgrwdkAnjbqWh09VZWZPHtA+6ctSMTyea1Cww0y6f02Ur6Ot+m92rds=
+	t=1744296922; cv=none; b=K1ADgCbqXSZjHlegaJSKmM1xWT2HBK94q0Ti6WEuJF4t3A7T+AW8++5NntiCkmC1+iGKA2D9jB+hXVEvvHegpp8OS1ls7k0zIj5JYuHCA2VfaEnt4PzevV1mV+uMZHRU9Fly2cuVDLCOYRxe3kov2LKHNa4yoWeMYmbLqTG+2bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744296893; c=relaxed/simple;
-	bh=zuz3T/1PyoNFOubzZPdbLb5UbtDaeeumVWQCB/KASwo=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
-	 In-Reply-To:Content-Type; b=FdrsyP0bWnv1vmooHo00Fz+rqyUzCtsGjvu2er92xx5do6ziJgXqKo4/ec52UixiKGto8f3e7ocxiH8k92Q9930K3nAQiAkXs2iwoFnWGKGQl7JEwLYuAMeosw7lVTHH++Cyx/3ggxziTw5l6weCfKV1vAuzDt85H46vH8YKjLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1u2tIc-000FfK-Nh; Thu, 10 Apr 2025 16:54:38 +0200
-Received: from [2a0d:3344:1523:1f10:f118:b2d4:edbb:54af]
-	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <marcus.wichelmann@hetzner-cloud.de>)
-	id 1u2tIc-000H9S-1X;
-	Thu, 10 Apr 2025 16:54:38 +0200
-Message-ID: <ff7ca6ea-a122-4d7d-9ef2-d091cbdd96d2@hetzner-cloud.de>
-Date: Thu, 10 Apr 2025 16:54:35 +0200
+	s=arc-20240116; t=1744296922; c=relaxed/simple;
+	bh=hmoJjXU7D/59AUWk9B2Ey6kH7kkheqn+KejcVNEUnxo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QWbM5EKGYydoCR/9qv1No8hiBGGP8VDS+oqjBcJXgu7AAzJgFWLuur6uzVnzpzGW9XyWMWQOHen9l7WtMzCfLZM/VtoqVXWxmJZH1Y5xTI4jkbq4XY+nJ/MjEYCUony88Ubj9PC3NxdS0lZ2GpIJqaFmF9Fod4aB5Ks4Yq74UN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=baLKlXrw; arc=none smtp.client-ip=209.85.221.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-39c2688619bso547018f8f.1
+        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 07:55:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744296917; x=1744901717; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R8nU6F/O9pk2Ml1KvUpatFBvafF8j6XKOTJI0jsGIJo=;
+        b=baLKlXrwZqU25/bVg9vzE3mn5SvBvetie8FOzCjB0LTUa6M10xuaZW2zfU248ndt7N
+         kaieogN/2E2DuGqdcprBhs17pwfHjleF1B1XI3xTGvOcQp2wxLKpigf08JnP1ag/ergE
+         jb/jL283AkNsZWKruTjKh+OLYWlvvPZQ1rDXe0UW0Qa/RHPXGTdurEd1jg3dM1Bhyjhg
+         /zryZrs/7U3lUXmt3j9CnW4pzeG+2ub4f3aP7Lop7WOrNqtFY9guq4KnMBvojtfx6uVw
+         HKWuNimzwTvCG6S/Yb/Nid+AFbrhs/GlAL3lm1/GUD4hywjz5CUXTBXZvQIBKcmB3nAZ
+         KW4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744296917; x=1744901717;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R8nU6F/O9pk2Ml1KvUpatFBvafF8j6XKOTJI0jsGIJo=;
+        b=ZKyRPo1/cg4r6PTYaU59QYe+633islFSph0dVTAUh+sK9Qmmk2Q16C6IiFt7FVU96q
+         ZwYQkar1Zv0vk9Jl+04aGujDg8hqJPOMLK/qFuZCPidJrRuIhp8j73A7OdXudyI0w3ox
+         HLKt3rERQ92bxPsrXQX36MjKGXKOvzPO7gfbfRtqVKEhEoCrqUb/1RxvMlphXcGIZqy1
+         bXgP68glQSnUCB9Rc+1yJcKCJGK4ju3JgLp2VPQzr5Ecb6qnetHH98HARn3CU4u9qbf2
+         SxZVXbDOoVS8v6GTN4jpcb3m1ivWYK4e4RLQoyFVGxltAdTX0rhNajAiyfdRmz46D95t
+         8ANg==
+X-Gm-Message-State: AOJu0Ywds3dZYePRulrcmAedg1/hNvT3ZWWEbHNQfB9aLvYiTcBZRyzD
+	dl5+vqafy83yNOZEGBxQotiF41ccP8WMGKQlzoTUX5Ah07KbeplL+Q9mrBH9Ks4=
+X-Gm-Gg: ASbGncsNK1YZThPIGAjFsA6vdCkCHdwWy4l7vV2cVN4pgD8JxpR0+lmIbEAB1D0xkqg
+	kg1h8MmwAEpkr89q+3MESWmWb26ZY8ym8l7JuTquRQ33uYwXLWWt6eCO58xrmdYFuJVzYMin9r9
+	arLjn044et+QV6wEg5liMilL9Zxsvka9+mQ7XxpHjICAa2LhJxRt2dmxtW0WwqPB0k9kx9Gn/lY
+	g1yCdjKWXw7+NxK/7aeytcTUFVQdxNagOf3dHmte+EWGMPW/gbC0IaSLDAeH6WBB7EfwlfwJMrj
+	I73XZS82aMKGOCji89v9WoOsqX9iW+ehmvEKa/z7yA==
+X-Google-Smtp-Source: AGHT+IH2K0jIHosh9oCXB2/nZdWpuZv/sgcJ7vFDdTe4dV66vI+Nn53fCMmKXJ2Z8cgxuNxKizu6ZA==
+X-Received: by 2002:a5d:5888:0:b0:39d:724f:a8bf with SMTP id ffacd0b85a97d-39d8f275e77mr2064852f8f.4.1744296916396;
+        Thu, 10 Apr 2025 07:55:16 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff:72::])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39d8940012asm5023718f8f.94.2025.04.10.07.55.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Apr 2025 07:55:15 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf v1] bpf: Use architecture provided res_smp_cond_load_acquire
+Date: Thu, 10 Apr 2025 07:55:12 -0700
+Message-ID: <20250410145512.1876745-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Michal Kubiak <michal.kubiak@intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, Jay Vosburgh
- <jv@jvosburgh.net>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, intel-wired-lan@lists.osuosl.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- sdn@hetzner-cloud.de
-References: <d33f0ab4-4dc4-49cd-bbd0-055f58dd6758@hetzner-cloud.de>
- <Z/fWHYETBYQuCno5@localhost.localdomain>
-Content-Language: en-US
-From: Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Autocrypt: addr=marcus.wichelmann@hetzner-cloud.de; keydata=
- xsFNBGJGrHIBEADXeHfBzzMvCfipCSW1oRhksIillcss321wYAvXrQ03a9VN2XJAzwDB/7Sa
- N2Oqs6JJv4u5uOhaNp1Sx8JlhN6Oippc6MecXuQu5uOmN+DHmSLObKVQNC9I8PqEF2fq87zO
- DCDViJ7VbYod/X9zUHQrGd35SB0PcDkXE5QaPX3dpz77mXFFWs/TvP6IvM6XVKZce3gitJ98
- JO4pQ1gZniqaX4OSmgpHzHmaLCWZ2iU+Kn2M0KD1+/ozr/2bFhRkOwXSMYIdhmOXx96zjqFV
- vIHa1vBguEt/Ax8+Pi7D83gdMCpyRCQ5AsKVyxVjVml0e/FcocrSb9j8hfrMFplv+Y43DIKu
- kPVbE6pjHS+rqHf4vnxKBi8yQrfIpQqhgB/fgomBpIJAflu0Phj1nin/QIqKfQatoz5sRJb0
- khSnRz8bxVM6Dr/T9i+7Y3suQGNXZQlxmRJmw4CYI/4zPVcjWkZyydq+wKqm39SOo4T512Nw
- fuHmT6SV9DBD6WWevt2VYKMYSmAXLMcCp7I2EM7aYBEBvn5WbdqkamgZ36tISHBDhJl/k7pz
- OlXOT+AOh12GCBiuPomnPkyyIGOf6wP/DW+vX6v5416MWiJaUmyH9h8UlhlehkWpEYqw1iCA
- Wn6TcTXSILx+Nh5smWIel6scvxho84qSZplpCSzZGaidHZRytwARAQABzTZNYXJjdXMgV2lj
- aGVsbWFubiA8bWFyY3VzLndpY2hlbG1hbm5AaGV0em5lci1jbG91ZC5kZT7CwZgEEwEIAEIW
- IQQVqNeGYUnoSODnU2dJ0we/n6xHDgUCYkascgIbAwUJEswDAAULCQgHAgMiAgEGFQoJCAsC
- BBYCAwECHgcCF4AACgkQSdMHv5+sRw4BNxAAlfufPZnHm+WKbvxcPVn6CJyexfuE7E2UkJQl
- s/JXI+OGRhyqtguFGbQS6j7I06dJs/whj9fOhOBAHxFfMG2UkraqgAOlRUk/YjA98Wm9FvcQ
- RGZe5DhAekI5Q9I9fBuhxdoAmhhKc/g7E5y/TcS1s2Cs6gnBR5lEKKVcIb0nFzB9bc+oMzfV
- caStg+PejetxR/lMmcuBYi3s51laUQVCXV52bhnv0ROk0fdSwGwmoi2BDXljGBZl5i5n9wuQ
- eHMp9hc5FoDF0PHNgr+1y9RsLRJ7sKGabDY6VRGp0MxQP0EDPNWlM5RwuErJThu+i9kU6D0e
- HAPyJ6i4K7PsjGVE2ZcvOpzEr5e46bhIMKyfWzyMXwRVFuwE7erxvvNrSoM3SzbCUmgwC3P3
- Wy30X7NS5xGOCa36p2AtqcY64ZwwoGKlNZX8wM0khaVjPttsynMlwpLcmOulqABwaUpdluUg
- soqKCqyijBOXCeRSCZ/KAbA1FOvs3NnC9nVqeyCHtkKfuNDzqGY3uiAoD67EM/R9N4QM5w0X
- HpxgyDk7EC1sCqdnd0N07BBQrnGZACOmz8pAQC2D2coje/nlnZm1xVK1tk18n6fkpYfR5Dnj
- QvZYxO8MxP6wXamq2H5TRIzfLN1C2ddRsPv4wr9AqmbC9nIvfIQSvPMBx661kznCacANAP/O
- wU0EYkascgEQAK15Hd7arsIkP7knH885NNcqmeNnhckmu0MoVd11KIO+SSCBXGFfGJ2/a/8M
- y86SM4iL2774YYMWePscqtGNMPqa8Uk0NU76ojMbWG58gow2dLIyajXj20sQYd9RbNDiQqWp
- RNmnp0o8K8lof3XgrqjwlSAJbo6JjgdZkun9ZQBQFDkeJtffIv6LFGap9UV7Y3OhU+4ZTWDM
- XH76ne9u2ipTDu1pm9WeejgJIl6A7Z/7rRVpp6Qlq4Nm39C/ReNvXQIMT2l302wm0xaFQMfK
- jAhXV/2/8VAAgDzlqxuRGdA8eGfWujAq68hWTP4FzRvk97L4cTu5Tq8WIBMpkjznRahyTzk8
- 7oev+W5xBhGe03hfvog+pA9rsQIWF5R1meNZgtxR+GBj9bhHV+CUD6Fp+M0ffaevmI5Untyl
- AqXYdwfuOORcD9wHxw+XX7T/Slxq/Z0CKhfYJ4YlHV2UnjIvEI7EhV2fPhE4WZf0uiFOWw8X
- XcvPA8u0P1al3EbgeHMBhWLBjh8+Y3/pm0hSOZksKRdNR6PpCksa52ioD+8Z/giTIDuFDCHo
- p4QMLrv05kA490cNAkwkI/yRjrKL3eGg26FCBh2tQKoUw2H5pJ0TW67/Mn2mXNXjen9hDhAG
- 7gU40lS90ehhnpJxZC/73j2HjIxSiUkRpkCVKru2pPXx+zDzABEBAAHCwXwEGAEIACYWIQQV
- qNeGYUnoSODnU2dJ0we/n6xHDgUCYkascgIbDAUJEswDAAAKCRBJ0we/n6xHDsmpD/9/4+pV
- IsnYMClwfnDXNIU+x6VXTT/8HKiRiotIRFDIeI2skfWAaNgGBWU7iK7FkF/58ys8jKM3EykO
- D5lvLbGfI/jrTcJVIm9bXX0F1pTiu3SyzOy7EdJur8Cp6CpCrkD+GwkWppNHP51u7da2zah9
- CQx6E1NDGM0gSLlCJTciDi6doAkJ14aIX58O7dVeMqmabRAv6Ut45eWqOLvgjzBvdn1SArZm
- 7AQtxT7KZCz1yYLUgA6TG39bhwkXjtcfT0J4967LuXTgyoKCc969TzmwAT+pX3luMmbXOBl3
- mAkwjD782F9sP8D/9h8tQmTAKzi/ON+DXBHjjqGrb8+rCocx2mdWLenDK9sNNsvyLb9oKJoE
- DdXuCrEQpa3U79RGc7wjXT9h/8VsXmA48LSxhRKn2uOmkf0nCr9W4YmrP+g0RGeCKo3yvFxS
- +2r2hEb/H7ZTP5PWyJM8We/4ttx32S5ues5+qjlqGhWSzmCcPrwKviErSiBCr4PtcioTBZcW
- VUssNEOhjUERfkdnHNeuNBWfiABIb1Yn7QC2BUmwOvN2DsqsChyfyuknCbiyQGjAmj8mvfi/
- 18FxnhXRoPx3wr7PqGVWgTJD1pscTrbKnoI1jI1/pBCMun+q9v6E7JCgWY181WjxgKSnen0n
- wySmewx3h/yfMh0aFxHhvLPxrO2IEQ==
-Subject: Re: [BUG] ixgbe: Detected Tx Unit Hang (XDP)
-In-Reply-To: <Z/fWHYETBYQuCno5@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: marcus.wichelmann@hetzner-cloud.de
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27604/Thu Apr 10 10:55:17 2025)
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1928; h=from:subject; bh=q14YDwmfcou4rwUmystGuYR82T9Dm2DF0VUjMbI0f0Y=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBn96i+RNXh4slWpCFXLMiIArZE21r2HVHaIBlqm/Ib 36CawqGJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ/eovgAKCRBM4MiGSL8RytMYEA CMAfdxp58j6x/Kl57RDshYezjZO3Iedxo8LlE25tMs4wLeaNbg7ZpxpoJ9yvE8N9Nzl742hsyvF5Tg vsoOgdgX3ni2ze1wAGsfWm1dSnERcl0KQTbnKH/SfmorHPCxBpnwaEUY0fPeb3+eVx9gTXOahmBbQd FwlNyoVcmKlUylIxpNNe36kuHuPI4uK3NpBCIbgssA5nU4h/UIjHzQs7PZvsHPdJEx52Yoacl/rWWo W2VJZgTEaxFObreFDdijYIkrgipeOl/Lb5duSFtfP//Dn7sJUGE8ZNi/zUFuz5hepilSloJkIb4jfF yGDfV7ZY9Dpocz33qCk1/GxRkcoln6qZ/5eWwsRGFp/79mzcFmtQ/PHnlYI+H7e2yMK5e1w3aZjrOa w2qSSR4ZUSCfYnGaNl8WsB95b1Q/zXixOSmCD4JhcDRIUXNbr7f8BrEmOz29ftKM5kKdIWRyeLuZTJ xkLyI1ZqWmIA8H1gig+fyANpG8O+3FmtpcxibZK4zewnXlGf1gEz/qKT6HLGKMt2dgVgRvrbOxhcXR kgZK2lmrteylY4dm/Z/gLVHeoeq90rtF30rRgunmeKD6wXMhmWAQKIMyGuamEqoc2Ob5c6RHdJHePw WTf2qxl04WtN+6xX+dJc1qN/Vq00AIoCQEyEcirOMbgFBtNcEWyqt5ODlhWw==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 
-Am 10.04.25 um 16:30 schrieb Michal Kubiak:
-> On Wed, Apr 09, 2025 at 05:17:49PM +0200, Marcus Wichelmann wrote:
->> Hi,
->>
->> in a setup where I use native XDP to redirect packets to a bonding interface
->> that's backed by two ixgbe slaves, I noticed that the ixgbe driver constantly
->> resets the NIC with the following kernel output:
->>
->>   ixgbe 0000:01:00.1 ixgbe-x520-2: Detected Tx Unit Hang (XDP)
->>     Tx Queue             <4>
->>     TDH, TDT             <17e>, <17e>
->>     next_to_use          <181>
->>     next_to_clean        <17e>
->>   tx_buffer_info[next_to_clean]
->>     time_stamp           <0>
->>     jiffies              <10025c380>
->>   ixgbe 0000:01:00.1 ixgbe-x520-2: tx hang 19 detected on queue 4, resetting adapter
->>   ixgbe 0000:01:00.1 ixgbe-x520-2: initiating reset due to tx timeout
->>   ixgbe 0000:01:00.1 ixgbe-x520-2: Reset adapter
->>
->> This only occurs in combination with a bonding interface and XDP, so I don't
->> know if this is an issue with ixgbe or the bonding driver.
->> I first discovered this with Linux 6.8.0-57, but kernel 6.14.0 and 6.15.0-rc1
->> show the same issue.
->>
->>
->> I managed to reproduce this bug in a lab environment. Here are some details
->> about my setup and the steps to reproduce the bug:
->>
->> [...]
->>
->> Do you have any ideas what may be causing this issue or what I can do to
->> diagnose this further?
->>
->> Please let me know when I should provide any more information.
->>
->>
->> Thanks!
->> Marcus
->>
-> 
-> Hi Marcus,
+In v2 of rqspinlock [0], we fixed potential problems with WFE usage in
+arm64 to fallback to a version copied from Ankur's series [1]. This
+logic was moved into arch-specific headers in v3 [2].
 
-Hi Michal,
+However, we missed using the arch-provided res_smp_cond_load_acquire
+in commit ebababcd0372 ("rqspinlock: Hardcode cond_acquire loops for arm64")
+due to a rebasing mistake between v2 and v3 of the rqspinlock series.
+Fix the typo to fallback to the arm64 definition as we did in v2.
 
-thank you for looking into it. And not even 24 hours after my report, I'm
-very impressed! ;)
+  [0]: https://lore.kernel.org/bpf/20250206105435.2159977-18-memxor@gmail.com
+  [1]: https://lore.kernel.org/lkml/20250203214911.898276-1-ankur.a.arora@oracle.com
+  [2]: https://lore.kernel.org/bpf/20250303152305.3195648-9-memxor@gmail.com
 
-> I have just successfully reproduced the problem on our lab machine. What
-> is interesting is that I do not seem to have to use a bonding interface
-> to get the "Tx timeout" that causes the adapter to reset.
+Fixes: ebababcd0372 ("rqspinlock: Hardcode cond_acquire loops for arm64")
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ arch/arm64/include/asm/rqspinlock.h | 2 +-
+ kernel/bpf/rqspinlock.c             | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Interesting. I just tried again but had no luck yet with reproducing it
-without a bonding interface. May I ask how your setup looks like?
+diff --git a/arch/arm64/include/asm/rqspinlock.h b/arch/arm64/include/asm/rqspinlock.h
+index 5b80785324b6..9ea0a74e5892 100644
+--- a/arch/arm64/include/asm/rqspinlock.h
++++ b/arch/arm64/include/asm/rqspinlock.h
+@@ -86,7 +86,7 @@
 
-> I will try to debug the problem more closely and let you know of any
-> updates.
-> 
-> Thanks,
-> Michal
+ #endif
 
-Great!
+-#define res_smp_cond_load_acquire_timewait(v, c) smp_cond_load_acquire_timewait(v, c, 0, 1)
++#define res_smp_cond_load_acquire(v, c) smp_cond_load_acquire_timewait(v, c, 0, 1)
 
-Marcus
+ #include <asm-generic/rqspinlock.h>
+
+diff --git a/kernel/bpf/rqspinlock.c b/kernel/bpf/rqspinlock.c
+index b896c4a75a5c..338305c8852c 100644
+--- a/kernel/bpf/rqspinlock.c
++++ b/kernel/bpf/rqspinlock.c
+@@ -253,7 +253,7 @@ static noinline int check_timeout(rqspinlock_t *lock, u32 mask,
+ 	})
+ #else
+ #define RES_CHECK_TIMEOUT(ts, ret, mask)			      \
+-	({ (ret) = check_timeout(&(ts)); })
++	({ (ret) = check_timeout((lock), (mask), &(ts)); })
+ #endif
+
+ /*
+--
+2.47.1
 
 
