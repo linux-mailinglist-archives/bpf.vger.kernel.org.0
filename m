@@ -1,161 +1,224 @@
-Return-Path: <bpf+bounces-55664-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55665-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88945A8474D
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 118ADA847FD
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:33:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 611274A2D6A
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 15:07:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7A884E0A66
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 15:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1CCA1DEFE7;
-	Thu, 10 Apr 2025 15:07:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2F131E883E;
+	Thu, 10 Apr 2025 15:31:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="amDTfSbD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I281slPa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C114A1DD0F2;
-	Thu, 10 Apr 2025 15:07:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16A31E5711
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 15:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744297655; cv=none; b=WJpkS3pfTeWRpTZAWfQjJrFtQqpJ0y9644gItdMV7RYn15yFH4SycGf1MjUNkqvxQR0xlPOKC8a4QpNBiLAHUi+oYL3SD0orjsAUae1WdqjBGVoHFhQuQkW39E9QnrTIZPD+I7o0sLmxraTssnHjnmhpf42uHridDrF3m7SykkI=
+	t=1744299109; cv=none; b=dNujk2h2/kOxRHi+h1GApKGQh558mGvyHKxrWqijTknOGuOOFelAohEOZf9vqU4hhWmZKi7/18c8AnAFUcf8rp8tmrPBuKbtsBA/2PGBDS2UanZoaIkTl6laToXsuQAuYwMVRfGyFGTkxALz53OSXnonN1pNoeaVIeHwqhlYMWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744297655; c=relaxed/simple;
-	bh=29zjlfK0mXnUdbnnsCXfS6Oi8Qrp5HNYmCj3Q7Up+6s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZFA8T5/E69kW2ox6TRFwZyRUP84kZPN1lVaB59MAnI4jQ2pRjrag3T/vyEpCa82OxjT1c1VYojosoK0TWZxB6FhZa+AQ/PDIXLHSjCRPQE0A5hIBaI/4Kn90cNLAZn6hjAjdD/p130JtWi7dentQLMFmZRoYNOHs9A13WxQjysc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=amDTfSbD; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1744299109; c=relaxed/simple;
+	bh=PMs4rk/Tqsirb7Pbos5AdTMXb+cE8EHw15I2J+YtdYk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k5bp7Ey/mAdHnbjNPjzXYFP9M5jo8y4yTrO7l9LPFsUAzGTB+Xn+rJREHHAMRHyyiqLQSv58OLYQ2DSGR5PiHIKIvaX+XEZ3dlXsyuqkVFRFCMzEx9N+ttoXMknCUlq5aS7+A+5nF82cjF4xNAtjxRsQ80wxNRjygxzsRIXdDjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I281slPa; arc=none smtp.client-ip=209.85.128.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7390d21bb1cso925995b3a.2;
-        Thu, 10 Apr 2025 08:07:33 -0700 (PDT)
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-43edecbfb46so8066635e9.0
+        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 08:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744297653; x=1744902453; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3D5EegHjNXWtRqs7oVUZyDcWwG0k9rfQtFHn9dOK4Lo=;
-        b=amDTfSbD53YThn8o+gHPCYOPaXb3ht5o+9iKLu1o8PGhl4GpZUUeanQNe27NLA8QqB
-         O4WVra5EoYRlYnIuhpRllVhR8IRIqI/2JiLnhZm/D7QD0t8pCjCQpp+THJGEXWLj3Qg8
-         OkZTXtaSwuzjyQZhtPFNBvEkOv5bBPo7Q9v+yFcMmjQfJwh1u8IC7aAyMvzgDUf4fiMp
-         7u1kVUArdSUPogbagebUmlDBxKcr15uUCVS2BPetFHz11bXGdg9YCXx/OTyrqOJiXM2f
-         +FS8Hr6MaSXRd4iikSg7hTTfnDZtHtKYwHBnK9FSzklkFdYGRDB9erLEXwDGwdwIdMkG
-         qRog==
+        d=gmail.com; s=20230601; t=1744299106; x=1744903906; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PJuWJh7Em0gsPfnccn0OcI1FF2lD8GoEmE7F08ShsRU=;
+        b=I281slParzwErYjCZCaPXGgDJHXc3kCaeUFsnwTV0G+h3Pun2z+ueVe2Qbf6JPiCUc
+         p6D9DiMcHpcBCtDznL9yAUh7A01Q3QCQJukYx61OSeomOx1egkZRiVy9RO27bGoPxBPQ
+         QaZtnTLSso+COxLnWyzylpEbA6fFip0O24Xz1OAXQ/7Nmj8GmVFJkt0Q/xdfUx9qatRT
+         tiby6+gHlg6qkerecStz+UIjqv7wFZiZTqjLDRyvrqtWQfIr4aETcYNtmKKpzyGl6pcP
+         +mySApYnA8W0hP/mAdQfWgYUk2OeAdDXhlC7lvZhtFWdXHEbXtD35j6LIAaaZhFntWTI
+         xonA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744297653; x=1744902453;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3D5EegHjNXWtRqs7oVUZyDcWwG0k9rfQtFHn9dOK4Lo=;
-        b=Rwbnt88uwAgdeZE/7/6ZPxWrmiAB5+XBCF5NxE64049+Lozqgcr8uVXedjUKTiVpCl
-         7/G3uVjQCIkbzgiGOnXhBDH3jQ++xuadQueY9ox5UGiJlYAgSn8oxvLXGNnCjhqFfY2M
-         GXiNQVCV9KvRKq5CyRE3d53loMR4aIEfIDdrwX02ZS1I+HguoxvLJPVGYF0I2FF3okCV
-         SbjdvXaITe8fnK/BE7ipjTkJXWCz4R8PyGJXNTLRrLl9zbXhsl2t9wyQcqFi5iUmmL6v
-         5kSiw49H0sRrRJjQIwOkpIJCWksNkEEyNSc+Q7hKwypqPZgr3y9t+sAsZw4V2j1X0j9o
-         Tqxw==
-X-Forwarded-Encrypted: i=1; AJvYcCUOXZc/jSHOaGYJZ8V9U3oGXV91M2rU7mUlsWvjjXce98piQd0KgaaUsC5biHt6u1HQBN/A8pnb6VxDFNo=@vger.kernel.org, AJvYcCUtV5dT5rk3w9GBdMX/eau0G0v3F2jG+O2VW4uINRyUHWb2/Qg+FS11+mJR7sfN3d+xvQlcQWErHRgozTlfyq8=@vger.kernel.org, AJvYcCUvp9CHFBXUToar8Pc6Id4+IT0PAhwXBfnNhDeCl1xFoyB4dxcVLqHm4aLo/UG47gAQlYi0LjO+YXmUJiA=@vger.kernel.org, AJvYcCV8/8EubvyJx+OkrdRqrgGX0xdbf6V4OtpPhaON/RaRLZNmVnf2dYSmy9bGeSKhweIGt+PAyUSQcNbZTvim@vger.kernel.org, AJvYcCVa6OSqmh4AqIVHFOKC7ASrcX+jCf4kOprby2u2Q8RyfNCU2+y5GVn5WnX7eE3t0ADQrZ9+HQWr@vger.kernel.org, AJvYcCWMEYGjekVzJ+XYFaYRw9Q5QiJsTdJBipT1nKrKqthRDzIVtwzuYVKiciVqSfyOGRYg8hXJEo4Gp35fuog=@vger.kernel.org, AJvYcCX40BhYTeD5D25GEcix4kPLNhNREHZW1Chb3JtiEzNqXXxqg8GGwYnJsKDx9tWWVm2q8es=@vger.kernel.org, AJvYcCXD8go/IeqNJ4ZtWOfTUg2nK00VdAJDxJI0jmEIhBI4ySF/0u3uVLOtFpbc2r0WUdfyu7aWoewHufQThMOm@vger.kernel.org
-X-Gm-Message-State: AOJu0YxRNV0Ni7lrRayLQw40texyWx54h8br7248G9tHz1Eo4QJTICMS
-	EQ8ftGmiZwLPqb/q4lG59kQEHuFQfZEj05olQCzA0nndfiHRnM6K
-X-Gm-Gg: ASbGncsNSYc5k9RpBlkjv2zau/fW183kDN8nqJFcxJMoH4mXEQCezpJTmUtcGZrzaw6
-	krbqntr0f3+7VEO4fKCLNbBkoU5Cd5ZjA1HMyicVMoRHaw496/VQo3aB5oCDM5WPeSSpMakN/rC
-	iD8R5Knw8TmlxQYtOfQ9IlLVoeFug2RwuIPwRk3C0iLbegi4Q8zeKhZuq0uaglHklUf14BvKZVF
-	bnZLEQdAHlj+QUidSeLqx/NDqKtwcE2pGaB8nsPa8AHe/EtqUfa2AM045i/cZoxTa8iVa30eRNW
-	SvmP8diy5i4+3ZeAgQEXn7CeEmpSYNM1csAmLnzH
-X-Google-Smtp-Source: AGHT+IFy1ewRYIQi2QM4ZSLkQhokapTj0gR7Ltj5GpPkDsZlOlyCTjP19Ec1IKFhcZrwo1l74Iw4rg==
-X-Received: by 2002:a05:6a00:240a:b0:736:ab1d:83c4 with SMTP id d2e1a72fcca58-73bbec49f99mr4365817b3a.0.1744297652831;
-        Thu, 10 Apr 2025 08:07:32 -0700 (PDT)
-Received: from localhost ([216.228.127.131])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bb1e51f1csm3501019b3a.145.2025.04.10.08.07.31
+        d=1e100.net; s=20230601; t=1744299106; x=1744903906;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PJuWJh7Em0gsPfnccn0OcI1FF2lD8GoEmE7F08ShsRU=;
+        b=SWfLKkRtgK6dDznxJNC2OrIubqfAD0BIb3+kDVS7R10yHF/lfAJXJa9eMkJobZzhxT
+         8q8THA/fQzqo8pbVX+u1Bk/IAfJpLzj4iLkoKF60WA2l8z0XBkle0qPTERK4Z2/cFvgr
+         iP5b6Fuckyj9WDZ+USsKw0cwc6XEo9qOuU6eY5Bf6NtCYIDGGzmdOpAgxrhWo2qkOnsU
+         UbJgLWUYSaCoomUKENfSaEt5kvGhvxQTqbgXy7XCQDSrLYcMPGyv13tPNy3C/Lhc7Ejk
+         7ISEURmiFh2N13Mi2FBiQwFyaK0BKNj+ibIEXCro+u2UAIJzqFeEz0xPltBFkfzFvkFC
+         Oqiw==
+X-Gm-Message-State: AOJu0Yx0LMR0EV/2zjXAI1yj3Sp8BvxJtk2kpQl0oqWRmBRHS6mW1oxO
+	o8cnjjfoAKd5U3A4TY63F6ep6cNyxf5WmLDTh8B9ltRXH+xrHO+sOkI4s733htM=
+X-Gm-Gg: ASbGncv+bkAQgpPlir7cKRc6eY5GV5UnJ00Z6VsucMvQ4l7AY86zagPOXQyXPPPRKDj
+	ziNOcVRCJE08eFlMi89xQF2XyoY+P6iG9sKLbJUYFARJkega9tIuXw331N6LHlfPKAtgsL9/TR5
+	Eh4LxE6/DrGDx7hu+ZGbYwt2PhcO0HlD0QvrhMgECerq7sxfDYPqmOwcM16bWNgj7gtY/Iyp4cO
+	d569CjNHerteL69qhg5waUWkD0YA0lREcTRZRIdOlcE/+M978WAwYcSwzM6AiaYLJbnhW/0YgQu
+	yFgfdQuyAOweti2bhqzWi0p/DZw=
+X-Google-Smtp-Source: AGHT+IFFBYI+7lz+KAKXB+wn4nKFNzR5Gr4ZNfxE9nr2GMTbCge5tZcaiaev6pDGapFvrTbDO5IAzQ==
+X-Received: by 2002:a05:600c:154c:b0:43b:ce36:7574 with SMTP id 5b1f17b1804b1-43f2d7bc1a3mr29445735e9.11.1744299103977;
+        Thu, 10 Apr 2025 08:31:43 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43f205ecf30sm58758485e9.1.2025.04.10.08.31.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Apr 2025 08:07:31 -0700 (PDT)
-Date: Thu, 10 Apr 2025 11:07:29 -0400
-From: Yury Norov <yury.norov@gmail.com>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
-	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org, rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-	dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, akpm@linux-foundation.org, jdelvare@suse.com,
-	linux@roeck-us.net, alexandre.belloni@bootlin.com, pgaj@cadence.com,
-	hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-	jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw, Frank.Li@nxp.com,
-	linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
-	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v4 02/13] media: media/test_drivers: Replace open-coded
- parity calculation with parity_odd()
-Message-ID: <Z_fesYbCnSjAo-K4@yury>
-References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-3-visitorckw@gmail.com>
- <Z_aobrK3t7zdwZRK@yury>
- <Z/a7DecDljuLtKeS@visitorckw-System-Product-Name>
- <Z_a_PzmNnvC2z7se@yury>
- <Z/bC6cygo0hem5IO@visitorckw-System-Product-Name>
+        Thu, 10 Apr 2025 08:31:43 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: syzbot+8bdfc2c53fb2b63e1871@syzkaller.appspotmail.com,
+	syzbot+252bc5c744d0bba917e1@syzkaller.appspotmail.com,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf v1] bpf: Convert queue_stack_maps.c to rqspinlock
+Date: Thu, 10 Apr 2025 08:31:42 -0700
+Message-ID: <20250410153142.2064340-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z/bC6cygo0hem5IO@visitorckw-System-Product-Name>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3970; h=from:subject; bh=XwReuk8KitiwSUv0J7Gi6WLqcG5HRiT1aL6I4XU4vZQ=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBn9+Q2SbGWdog5+PieuS88pBivKMTPvghiekYnvsTg 6q/vAm+JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ/fkNgAKCRBM4MiGSL8RyjtWD/ 9C+Joc1tw5ubTBqI8L84wpka3kH5IcnwGjBumDJlscNMDCIrQf0uEnfVlR/+5+dAIUsR3rv8cIXnUh WfzSUyMco4wNG1A2r4JEw8jboBy3mlsbP7li2ebrbCxxwfnCKdLw+NHYocetQJdcAohFS7KbJ9Lw2J bhLPQVKoafqS0U88Uq0jIUqOZ7C543OfjyNekVQKN9TMvVq6vxKN6R8Lb2FREytH4a0D9718M+Q7oM jdQX51CuMRLjZ1ZD3FedUP7gxfKwAlUCWM/RUbDl8k/6lXuk1l+sN+9MAGF3YnBzUHTiRNd36l/3wc oJRCFHxWfUTpoKtjLfTklgAYOefqKQPBRWttbAmz1ml4eNXL3Sm1LLD3O0NRMzWXcE+fr9ncaB6sKa im7BCWHwMZYKsEitIityI86GUm6Nr0Cgv5QuRavTjX9o+/lHKrfxBT3klBn0TrkfjOb1zujNx0nKrU SDqoISVeihOVtr4Xt8Wmvto3TITcIv5W2IDn/fD2e3mlq2Vtisaohk2zOhUkQGxt+/JVT2JLzw9X0g yWqO9M8sjbxBINvE0ZLrI1MrW9hom0wl6aGpzNlfTwjNtzR2guOkKA+w0aBktOJoIU02A2PHaLuItB x7MSNShlmokfV73jCHEEGd4c0lQvlK9bvrBWQl1mHDQZu2L8qpgDahZ6CoNw==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 10, 2025 at 02:56:41AM +0800, Kuan-Wei Chiu wrote:
-> On Wed, Apr 09, 2025 at 02:41:03PM -0400, Yury Norov wrote:
-> > On Thu, Apr 10, 2025 at 02:23:09AM +0800, Kuan-Wei Chiu wrote:
-> > > On Wed, Apr 09, 2025 at 01:03:42PM -0400, Yury Norov wrote:
-> > > > On Wed, Apr 09, 2025 at 11:43:45PM +0800, Kuan-Wei Chiu wrote:
+Replace all usage of raw_spinlock_t in queue_stack_maps.c with
+rqspinlock. This is a map type with a set of open syzbot reports
+reproducing possible deadlocks. Prior attempt to fix the issues
+was at [0], but was dropped in favor of this approach.
 
-> > > > So, if val == 0 than parity_odd(val) is also 0, and this can be
-> > > > simplified just to:
-> > > >         return parity(val) ? 0 : 0x80;
-> > > > Or I miss something?
-> > > >
-> > > If val == 0x01, the return value of calc_parity() will remain 0x01.
-> > > If changed to return parity_odd(val) ? 0 : 0x80;, the return value will
-> > > be changed to 0x00.
-> > 
-> > Sorry, I meant
-> >         return val ? 0 : 0x80;
-> > 
-> > This 'val | (parity_odd(val)' is only false when val == 0, right?
-> > When val != 0, compiler will return true immediately, not even calling
-> > parity().
-> >
-> I'm still confused.
-> 
-> Maybe you're interpreting the code as:
-> 
-> 	(val | parity(val)) ? 0 : 0x80
-> 
-> But what we're trying to do is:
-> 
-> 	val | (parity(val) ? 0 : 0x80)
-> 
-> So, for example, if val == 0x06, the return value will be 0x86.
-> Only returning 0 or 0x80 seems wrong to me.
-> Or did I misunderstand something?
+Make sure we return the -EBUSY error in case of possible deadlocks or
+timeouts, just to make sure user space or BPF programs relying on the
+error code to detect problems do not break.
 
-I misread the whole construction. Sorry, you're right. Scratch this.
+With these changes, the map should be safe to access in any context,
+including NMIs.
+
+  [0]: https://lore.kernel.org/all/20240429165658.1305969-1-sidchintamaneni@gmail.com
+
+Reported-by: syzbot+8bdfc2c53fb2b63e1871@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/0000000000004c3fc90615f37756@google.com
+Reported-by: syzbot+252bc5c744d0bba917e1@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000c80abd0616517df9@google.com
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ kernel/bpf/queue_stack_maps.c | 35 ++++++++++++-----------------------
+ 1 file changed, 12 insertions(+), 23 deletions(-)
+
+diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
+index d869f51ea93a..9a5f94371e50 100644
+--- a/kernel/bpf/queue_stack_maps.c
++++ b/kernel/bpf/queue_stack_maps.c
+@@ -9,13 +9,14 @@
+ #include <linux/slab.h>
+ #include <linux/btf_ids.h>
+ #include "percpu_freelist.h"
++#include <asm/rqspinlock.h>
+
+ #define QUEUE_STACK_CREATE_FLAG_MASK \
+ 	(BPF_F_NUMA_NODE | BPF_F_ACCESS_MASK)
+
+ struct bpf_queue_stack {
+ 	struct bpf_map map;
+-	raw_spinlock_t lock;
++	rqspinlock_t lock;
+ 	u32 head, tail;
+ 	u32 size; /* max_entries + 1 */
+
+@@ -78,7 +79,7 @@ static struct bpf_map *queue_stack_map_alloc(union bpf_attr *attr)
+
+ 	qs->size = size;
+
+-	raw_spin_lock_init(&qs->lock);
++	raw_res_spin_lock_init(&qs->lock);
+
+ 	return &qs->map;
+ }
+@@ -98,12 +99,8 @@ static long __queue_map_get(struct bpf_map *map, void *value, bool delete)
+ 	int err = 0;
+ 	void *ptr;
+
+-	if (in_nmi()) {
+-		if (!raw_spin_trylock_irqsave(&qs->lock, flags))
+-			return -EBUSY;
+-	} else {
+-		raw_spin_lock_irqsave(&qs->lock, flags);
+-	}
++	if (raw_res_spin_lock_irqsave(&qs->lock, flags))
++		return -EBUSY;
+
+ 	if (queue_stack_map_is_empty(qs)) {
+ 		memset(value, 0, qs->map.value_size);
+@@ -120,7 +117,7 @@ static long __queue_map_get(struct bpf_map *map, void *value, bool delete)
+ 	}
+
+ out:
+-	raw_spin_unlock_irqrestore(&qs->lock, flags);
++	raw_res_spin_unlock_irqrestore(&qs->lock, flags);
+ 	return err;
+ }
+
+@@ -133,12 +130,8 @@ static long __stack_map_get(struct bpf_map *map, void *value, bool delete)
+ 	void *ptr;
+ 	u32 index;
+
+-	if (in_nmi()) {
+-		if (!raw_spin_trylock_irqsave(&qs->lock, flags))
+-			return -EBUSY;
+-	} else {
+-		raw_spin_lock_irqsave(&qs->lock, flags);
+-	}
++	if (raw_res_spin_lock_irqsave(&qs->lock, flags))
++		return -EBUSY;
+
+ 	if (queue_stack_map_is_empty(qs)) {
+ 		memset(value, 0, qs->map.value_size);
+@@ -157,7 +150,7 @@ static long __stack_map_get(struct bpf_map *map, void *value, bool delete)
+ 		qs->head = index;
+
+ out:
+-	raw_spin_unlock_irqrestore(&qs->lock, flags);
++	raw_res_spin_unlock_irqrestore(&qs->lock, flags);
+ 	return err;
+ }
+
+@@ -203,12 +196,8 @@ static long queue_stack_map_push_elem(struct bpf_map *map, void *value,
+ 	if (flags & BPF_NOEXIST || flags > BPF_EXIST)
+ 		return -EINVAL;
+
+-	if (in_nmi()) {
+-		if (!raw_spin_trylock_irqsave(&qs->lock, irq_flags))
+-			return -EBUSY;
+-	} else {
+-		raw_spin_lock_irqsave(&qs->lock, irq_flags);
+-	}
++	if (raw_res_spin_lock_irqsave(&qs->lock, irq_flags))
++		return -EBUSY;
+
+ 	if (queue_stack_map_is_full(qs)) {
+ 		if (!replace) {
+@@ -227,7 +216,7 @@ static long queue_stack_map_push_elem(struct bpf_map *map, void *value,
+ 		qs->head = 0;
+
+ out:
+-	raw_spin_unlock_irqrestore(&qs->lock, irq_flags);
++	raw_res_spin_unlock_irqrestore(&qs->lock, irq_flags);
+ 	return err;
+ }
+
+--
+2.47.1
+
 
