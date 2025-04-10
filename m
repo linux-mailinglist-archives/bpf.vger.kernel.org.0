@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-55684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49609A84B3D
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 19:42:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D209A84B36
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 19:40:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2F1A443B61
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:40:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79D8319E5F44
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0070E293B7A;
-	Thu, 10 Apr 2025 17:37:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CED028CF47;
+	Thu, 10 Apr 2025 17:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ca7UbY30"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UAtJe1sx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E613E293B4F
-	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 17:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4266928C5D7
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 17:37:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744306628; cv=none; b=DBjnDrciml4cfQJxwo8a0s4fizfzmBQVVBLClDDFKdy3feKblJIyyF0P9Ly/QyZaIdaivnVrYaY2HQbpEfJIGD7tPxpw2ByIqP0adh1KLqaHMp4vrwct8tNKqT6PFYltAaGcNWp62CAIsn9hTQz0PljZ+kO2MJViNeC+Q/y1ZDA=
+	t=1744306630; cv=none; b=P3SuT/BxMHL6KJfhYTHFJWkZ6ZzAgrxU9ZFfoNK9hpP2QPLDDKx3zJqgCtRPXBiLSArAHNcvEQ91Yb6+j909mwmCMzgAg28Em+LIp0sZGvA6xdIe9hlMJ/KwGt5lZQ2QrELudrBqiaDAzebLIvzXA75vnkv/8p1o2wDwGfPktrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744306628; c=relaxed/simple;
-	bh=Bej04MyJsrdcV+Qp3WUuLZDsRwPz0V7gB+75yBJO4Po=;
+	s=arc-20240116; t=1744306630; c=relaxed/simple;
+	bh=+ixP1qHJBFjj59ZtGOMdYOK7HgE7wWblrGVYMQO0l7I=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=etZedK6XxbsXuJpPvs33eiUabqz3e36uy4e5Souhv+TmIwg5n16gi7flM5O9LIoUnJTetPfqTARgaeRrV43dxgChb7ZIhahjhPzWKTBFMMha5OEbvLJ/jvbkKd/uVgjOm+gsSbFL93SKgiHPVV3HWRcvvYxThlvUEIGX5fuqJLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ca7UbY30; arc=none smtp.client-ip=209.85.215.201
+	 To:Content-Type; b=C/fyD3rfRN1pIP0UHeB3jdj3Dn8pmCXKprQjEvl0YOXtxySr/DGqUHb283rpw3UJgGLReOh9QQYx+JotMzeKm8WIQTeGOBrsvZ9VjkIdY2+84xT1vRIqeO6a4aIV1MH2Hbea7m5HYoRrwClQgrB6XOY+fprFq/dOv5m2tb+9eNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UAtJe1sx; arc=none smtp.client-ip=209.85.216.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-af5268afde2so480576a12.2
-        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 10:37:05 -0700 (PDT)
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ff8340d547so962287a91.2
+        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 10:37:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1744306625; x=1744911425; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1744306627; x=1744911427; darn=vger.kernel.org;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8wRgy6qZn0MUN5UByz3xQmmdwU9nj6FopesVn3TNXNM=;
-        b=Ca7UbY30Xgclo8rkRVOimv7711/FVIkGLNwNZEQScmQkxImuyZ6PgsT/FiB8puoWCy
-         FSfbhsreAtKp4O0B9HXXcbLbrZBn4T7Jz2F97XtOzYXYQnHOe2KlzTZd3jpajh3kc6B5
-         ykdYldr/+umWg7TVIAgUcIcDX97J2PfPMJcSyLFpMZka7zgrxZqXllMfAoRo05wWNkLD
-         zKWBQHWlHBV0yEgwFuvcMI4rbtSSjFyRaizhQvnh3hiSsSlixt1HJ5HzZBwY9E8cm79R
-         dXZdwM13TOrWyXbxu46o7yZxYfR54nDpSAg7yUvVqafW3yvxiSY8XTgFGrSHxB80XKWy
-         u9rQ==
+        bh=ckBZYcyyJUN9FjcUaUL5/ekJZ+dJKWbrJB0EF0qu50A=;
+        b=UAtJe1sxMef7RiCPyfLSDNtLGATsM0Zgoa/S3eZypn5bvgWP9IVrPzgfcWy2BYVeQB
+         BlRF0eCcVLGWKv3Mu4bJd3xc6vR5pr1ywEl9dRYsHMcEO3XyKYAbdtJWMHBDvZC7YVtC
+         cuYNxqOJi6f+GoeZcPHNtr4P2qAJbVNqOi+ygO7OENKW3VJ/wEP6zFGrNiX0hGxlt8Lp
+         OkD37m1uD1vWLniDg5qzj9rna+fRRZ86dCRD5CdgDhj2AIEwtJSeRMW5CQinVeue77hZ
+         gHqBMmp56Am7HrXl8z+PXRkBQaM/6w90Jccz7SdEf8zCCu9G8VxZXYt0VDuankWRITSo
+         vjuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744306625; x=1744911425;
+        d=1e100.net; s=20230601; t=1744306627; x=1744911427;
         h=to:from:subject:message-id:references:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8wRgy6qZn0MUN5UByz3xQmmdwU9nj6FopesVn3TNXNM=;
-        b=S3M1HvY/BGgvjrPvXOQLgoQY2LJxK16T9fyvULSQnC2J8FHfXyjq0dcNR6v8JCb05I
-         n7peOII2gB2kVoftuNSSRqvOeOxcS/2SQwuJMEThxj8sz0oa0F3MCSxh1jkB4bk+G6Kl
-         K0wFTExzyWr6HIlhcFkWItr2M7QE5O1JVYSpBa0rqOADC+zPBEDXo9iquM6Zzl8Ih21Y
-         Rx0SMrHoDX3My/m3B59s7lNNqTq09o1BX3bq0dxcjRg0fLgrBri249euBJu/NtBRaLPb
-         BhRv2Vzddltr0+MfWLrNb04luhgN0rx2iKCyIWCfuKCemVQ7Yr0UW7RQeYlDg+cPwqiJ
-         g93w==
-X-Forwarded-Encrypted: i=1; AJvYcCWzStjdqwbD/o8d3aqxBKrzaxnDySwuqjTuMA1gW8lWTRInQj8RCmC1G5IflWGmstlaF6I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxVK9zYymng30l1r0EIIGmHRH9RvpIeWvWa1wXd5S6AsZIQBO4W
-	bgrnh4hmjAraa15xpKib/beFZ+dzaMoB9wQdH0g2pCTay0ALY5XNEeBBXzFp7BVARE4Pi9Uvjd1
-	dC4vbjw==
-X-Google-Smtp-Source: AGHT+IGwzdSEoZrbjGfvRdfYeF1YnLx54YlVys0YEVqHBYv0YviwgXIHn/5uA7xwE2RZKnmyH8fOzMvVcfs5
-X-Received: from pjbsw3.prod.google.com ([2002:a17:90b:2c83:b0:301:a339:b558])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:2804:b0:2fe:d766:ad8e
- with SMTP id 98e67ed59e1d1-307e590a8b3mr5281918a91.4.1744306625275; Thu, 10
- Apr 2025 10:37:05 -0700 (PDT)
-Date: Thu, 10 Apr 2025 10:36:30 -0700
+        bh=ckBZYcyyJUN9FjcUaUL5/ekJZ+dJKWbrJB0EF0qu50A=;
+        b=A+vQy+Rpo1dyktkXv8PfwvUA9dGXrohN1oMBBrOPZF4CjGIJI8lULH8TUBacUUyyhg
+         pfSY2imxLiWVXTbMJXqedXGWXgta2w7dxXjPISK8ivhH0aPv0N2Fv+ObZCUzVTt3Buvi
+         QeIi9nMSrkaZIVUXO4EQamN+erVxNungbczx7eO/PsVjYhxzNGadhMMiccSgISyOTFLv
+         6/QZAK1xAmBW6bUnt/EzhOzzb1pFtyQPRM/zf7Ug2KJScQI4q2dS8mr8ofVfDLtjGbml
+         /WG14q34hEDVIimu4NH81HfA+VoWPE+HVlN0P9CCFkAAO2+6WLe3/6yNguGZxit4yU9t
+         +JOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUo5ZM90HMxo1vnJWuP7ktm+wzHufMA4GhsuTw3r9DxyP9FXr8v3DiKGMpbh23HmkZslOM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrzNddOM7THjwlyuANRG3in1R6Rzq8qkqbjlLe02Jd7JAuq9A3
+	JumGeHs9iAnOKOes0+R5SFyiV7DfRsNgymhRt6ld+P0E+likT/p6ge3BWQQYMEn6mSWfbTl23pk
+	gSUzOJA==
+X-Google-Smtp-Source: AGHT+IG1qOFPzSDf9Ewl3xwJO7ONlzQPJXL9CVsc0lXzOmGKPKFYYwMJamiZf+cuyQopWHvr1ogG7wLUF1hJ
+X-Received: from pjbsd3.prod.google.com ([2002:a17:90b:5143:b0:2ea:3a1b:f493])
+ (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:3a46:b0:2ee:af31:a7bd
+ with SMTP id 98e67ed59e1d1-30718b547a9mr5165280a91.5.1744306627554; Thu, 10
+ Apr 2025 10:37:07 -0700 (PDT)
+Date: Thu, 10 Apr 2025 10:36:31 -0700
 In-Reply-To: <20250410173631.1713627-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250410173631.1713627-1-irogers@google.com>
 X-Mailer: git-send-email 2.49.0.604.gff1f9ca942-goog
-Message-ID: <20250410173631.1713627-12-irogers@google.com>
-Subject: [PATCH v2 11/12] perf target: Remove uid from target
+Message-ID: <20250410173631.1713627-13-irogers@google.com>
+Subject: [PATCH v2 12/12] perf thread_map: Remove uid options
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -92,315 +92,268 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Gathering threads with a uid by scanning /proc is inherently racy
-leading to perf_event_open failures that quit perf. All users of the
-functionality now use BPF filters, so remove uid and uid_str from
-target.
+Now the target doesn't have a uid, it is handled through BPF filters,
+remove the uid options to thread_map creation. Tidy up the functions
+used in tests to avoid passing unused arguments.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-ftrace.c                 |  1 -
- tools/perf/builtin-kvm.c                    |  2 -
- tools/perf/builtin-stat.c                   |  4 +-
- tools/perf/builtin-trace.c                  |  1 -
- tools/perf/tests/backward-ring-buffer.c     |  1 -
- tools/perf/tests/event-times.c              |  4 +-
- tools/perf/tests/openat-syscall-tp-fields.c |  1 -
- tools/perf/tests/perf-record.c              |  1 -
- tools/perf/tests/task-exit.c                |  1 -
- tools/perf/util/bpf-filter.c                |  2 +-
- tools/perf/util/evlist.c                    |  3 +-
- tools/perf/util/target.c                    | 46 +--------------------
- tools/perf/util/target.h                    | 12 +-----
- 13 files changed, 6 insertions(+), 73 deletions(-)
+ tools/perf/tests/event-times.c             |  4 +--
+ tools/perf/tests/keep-tracking.c           |  2 +-
+ tools/perf/tests/mmap-basic.c              |  2 +-
+ tools/perf/tests/openat-syscall-all-cpus.c |  2 +-
+ tools/perf/tests/openat-syscall.c          |  2 +-
+ tools/perf/tests/perf-time-to-tsc.c        |  2 +-
+ tools/perf/tests/switch-tracking.c         |  2 +-
+ tools/perf/tests/thread-map.c              |  2 +-
+ tools/perf/util/evlist.c                   |  2 +-
+ tools/perf/util/python.c                   | 10 +++----
+ tools/perf/util/thread_map.c               | 32 ++--------------------
+ tools/perf/util/thread_map.h               |  6 ++--
+ 12 files changed, 20 insertions(+), 48 deletions(-)
 
-diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-index 7caa18d5ffc3..ae901f2a18ef 100644
---- a/tools/perf/builtin-ftrace.c
-+++ b/tools/perf/builtin-ftrace.c
-@@ -1590,7 +1590,6 @@ int cmd_ftrace(int argc, const char **argv)
- 	int (*cmd_func)(struct perf_ftrace *) = NULL;
- 	struct perf_ftrace ftrace = {
- 		.tracer = DEFAULT_TRACER,
--		.target = { .uid = UINT_MAX, },
- 	};
- 	const struct option common_options[] = {
- 	OPT_STRING('p', "pid", &ftrace.target.pid, "pid",
-diff --git a/tools/perf/builtin-kvm.c b/tools/perf/builtin-kvm.c
-index 67fd2b006b0b..d75bd3684980 100644
---- a/tools/perf/builtin-kvm.c
-+++ b/tools/perf/builtin-kvm.c
-@@ -1871,8 +1871,6 @@ static int kvm_events_live(struct perf_kvm_stat *kvm,
- 	kvm->opts.user_interval = 1;
- 	kvm->opts.mmap_pages = 512;
- 	kvm->opts.target.uses_mmap = false;
--	kvm->opts.target.uid_str = NULL;
--	kvm->opts.target.uid = UINT_MAX;
- 
- 	symbol__init(NULL);
- 	disable_buildid_cache();
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 68ea7589c143..22ec1d0702e7 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -108,9 +108,7 @@ static struct parse_events_option_args parse_events_option_args = {
- 
- static bool all_counters_use_bpf = true;
- 
--static struct target target = {
--	.uid	= UINT_MAX,
--};
-+static struct target target;
- 
- static volatile sig_atomic_t	child_pid			= -1;
- static int			detailed_run			=  0;
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index 1f7d2b3d8b3d..aa0a27dd7d21 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -5374,7 +5374,6 @@ int cmd_trace(int argc, const char **argv)
- 	struct trace trace = {
- 		.opts = {
- 			.target = {
--				.uid	   = UINT_MAX,
- 				.uses_mmap = true,
- 			},
- 			.user_freq     = UINT_MAX,
-diff --git a/tools/perf/tests/backward-ring-buffer.c b/tools/perf/tests/backward-ring-buffer.c
-index 79a980b1e786..c5e7999f2817 100644
---- a/tools/perf/tests/backward-ring-buffer.c
-+++ b/tools/perf/tests/backward-ring-buffer.c
-@@ -91,7 +91,6 @@ static int test__backward_ring_buffer(struct test_suite *test __maybe_unused, in
- 	struct parse_events_error parse_error;
- 	struct record_opts opts = {
- 		.target = {
--			.uid = UINT_MAX,
- 			.uses_mmap = true,
- 		},
- 		.freq	      = 0,
 diff --git a/tools/perf/tests/event-times.c b/tools/perf/tests/event-times.c
-index deefe5003bfc..2148024b4f4a 100644
+index 2148024b4f4a..ae3b98bb42cf 100644
 --- a/tools/perf/tests/event-times.c
 +++ b/tools/perf/tests/event-times.c
-@@ -17,9 +17,7 @@
- static int attach__enable_on_exec(struct evlist *evlist)
- {
- 	struct evsel *evsel = evlist__last(evlist);
--	struct target target = {
--		.uid = UINT_MAX,
--	};
-+	struct target target = {};
- 	const char *argv[] = { "true", NULL, };
- 	char sbuf[STRERR_BUFSIZE];
- 	int err;
-diff --git a/tools/perf/tests/openat-syscall-tp-fields.c b/tools/perf/tests/openat-syscall-tp-fields.c
-index 0ef4ba7c1571..2a139d2781a8 100644
---- a/tools/perf/tests/openat-syscall-tp-fields.c
-+++ b/tools/perf/tests/openat-syscall-tp-fields.c
-@@ -28,7 +28,6 @@ static int test__syscall_openat_tp_fields(struct test_suite *test __maybe_unused
- {
- 	struct record_opts opts = {
- 		.target = {
--			.uid = UINT_MAX,
- 			.uses_mmap = true,
- 		},
- 		.no_buffering = true,
-diff --git a/tools/perf/tests/perf-record.c b/tools/perf/tests/perf-record.c
-index 0958c7c8995f..0b3c37e66871 100644
---- a/tools/perf/tests/perf-record.c
-+++ b/tools/perf/tests/perf-record.c
-@@ -45,7 +45,6 @@ static int test__PERF_RECORD(struct test_suite *test __maybe_unused, int subtest
- {
- 	struct record_opts opts = {
- 		.target = {
--			.uid = UINT_MAX,
- 			.uses_mmap = true,
- 		},
- 		.no_buffering = true,
-diff --git a/tools/perf/tests/task-exit.c b/tools/perf/tests/task-exit.c
-index 8e328bbd509d..4053ff2813bb 100644
---- a/tools/perf/tests/task-exit.c
-+++ b/tools/perf/tests/task-exit.c
-@@ -46,7 +46,6 @@ static int test__task_exit(struct test_suite *test __maybe_unused, int subtest _
- 	struct evsel *evsel;
- 	struct evlist *evlist;
- 	struct target target = {
--		.uid		= UINT_MAX,
- 		.uses_mmap	= true,
- 	};
- 	const char *argv[] = { "true", NULL };
-diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
-index a4fdf6911ec1..ed4845ff4a10 100644
---- a/tools/perf/util/bpf-filter.c
-+++ b/tools/perf/util/bpf-filter.c
-@@ -449,7 +449,7 @@ int perf_bpf_filter__prepare(struct evsel *evsel, struct target *target)
- 	struct bpf_program *prog;
- 	struct bpf_link *link;
- 	struct perf_bpf_filter_entry *entry;
--	bool needs_idx_hash = !target__has_cpu(target) && !target->uid_str;
-+	bool needs_idx_hash = !target__has_cpu(target);
+@@ -62,7 +62,7 @@ static int attach__current_disabled(struct evlist *evlist)
  
- 	entry = calloc(MAX_FILTERS, sizeof(*entry));
- 	if (entry == NULL)
+ 	pr_debug("attaching to current thread as disabled\n");
+ 
+-	threads = thread_map__new(-1, getpid(), UINT_MAX);
++	threads = thread_map__new_by_tid(getpid());
+ 	if (threads == NULL) {
+ 		pr_debug("thread_map__new\n");
+ 		return -1;
+@@ -88,7 +88,7 @@ static int attach__current_enabled(struct evlist *evlist)
+ 
+ 	pr_debug("attaching to current thread as enabled\n");
+ 
+-	threads = thread_map__new(-1, getpid(), UINT_MAX);
++	threads = thread_map__new_by_tid(getpid());
+ 	if (threads == NULL) {
+ 		pr_debug("failed to call thread_map__new\n");
+ 		return -1;
+diff --git a/tools/perf/tests/keep-tracking.c b/tools/perf/tests/keep-tracking.c
+index 5a3b2bed07f3..eafb49eb0b56 100644
+--- a/tools/perf/tests/keep-tracking.c
++++ b/tools/perf/tests/keep-tracking.c
+@@ -78,7 +78,7 @@ static int test__keep_tracking(struct test_suite *test __maybe_unused, int subte
+ 	int found, err = -1;
+ 	const char *comm;
+ 
+-	threads = thread_map__new(-1, getpid(), UINT_MAX);
++	threads = thread_map__new_by_tid(getpid());
+ 	CHECK_NOT_NULL__(threads);
+ 
+ 	cpus = perf_cpu_map__new_online_cpus();
+diff --git a/tools/perf/tests/mmap-basic.c b/tools/perf/tests/mmap-basic.c
+index bd2106628b34..04b547c6bdbe 100644
+--- a/tools/perf/tests/mmap-basic.c
++++ b/tools/perf/tests/mmap-basic.c
+@@ -46,7 +46,7 @@ static int test__basic_mmap(struct test_suite *test __maybe_unused, int subtest
+ 	char sbuf[STRERR_BUFSIZE];
+ 	struct mmap *md;
+ 
+-	threads = thread_map__new(-1, getpid(), UINT_MAX);
++	threads = thread_map__new_by_tid(getpid());
+ 	if (threads == NULL) {
+ 		pr_debug("thread_map__new\n");
+ 		return -1;
+diff --git a/tools/perf/tests/openat-syscall-all-cpus.c b/tools/perf/tests/openat-syscall-all-cpus.c
+index fb114118c876..3644d6f52c07 100644
+--- a/tools/perf/tests/openat-syscall-all-cpus.c
++++ b/tools/perf/tests/openat-syscall-all-cpus.c
+@@ -28,7 +28,7 @@ static int test__openat_syscall_event_on_all_cpus(struct test_suite *test __mayb
+ 	struct evsel *evsel;
+ 	unsigned int nr_openat_calls = 111, i;
+ 	cpu_set_t cpu_set;
+-	struct perf_thread_map *threads = thread_map__new(-1, getpid(), UINT_MAX);
++	struct perf_thread_map *threads = thread_map__new_by_tid(getpid());
+ 	char sbuf[STRERR_BUFSIZE];
+ 	char errbuf[BUFSIZ];
+ 
+diff --git a/tools/perf/tests/openat-syscall.c b/tools/perf/tests/openat-syscall.c
+index 131b62271bfa..b54cbe5f1808 100644
+--- a/tools/perf/tests/openat-syscall.c
++++ b/tools/perf/tests/openat-syscall.c
+@@ -20,7 +20,7 @@ static int test__openat_syscall_event(struct test_suite *test __maybe_unused,
+ 	int err = TEST_FAIL, fd;
+ 	struct evsel *evsel;
+ 	unsigned int nr_openat_calls = 111, i;
+-	struct perf_thread_map *threads = thread_map__new(-1, getpid(), UINT_MAX);
++	struct perf_thread_map *threads = thread_map__new_by_tid(getpid());
+ 	char sbuf[STRERR_BUFSIZE];
+ 	char errbuf[BUFSIZ];
+ 
+diff --git a/tools/perf/tests/perf-time-to-tsc.c b/tools/perf/tests/perf-time-to-tsc.c
+index d3e40fa5482c..d4437410c99f 100644
+--- a/tools/perf/tests/perf-time-to-tsc.c
++++ b/tools/perf/tests/perf-time-to-tsc.c
+@@ -90,7 +90,7 @@ static int test__perf_time_to_tsc(struct test_suite *test __maybe_unused, int su
+ 	struct mmap *md;
+ 
+ 
+-	threads = thread_map__new(-1, getpid(), UINT_MAX);
++	threads = thread_map__new_by_tid(getpid());
+ 	CHECK_NOT_NULL__(threads);
+ 
+ 	cpus = perf_cpu_map__new_online_cpus();
+diff --git a/tools/perf/tests/switch-tracking.c b/tools/perf/tests/switch-tracking.c
+index 8df3f9d9ffd2..96f880c922d1 100644
+--- a/tools/perf/tests/switch-tracking.c
++++ b/tools/perf/tests/switch-tracking.c
+@@ -351,7 +351,7 @@ static int test__switch_tracking(struct test_suite *test __maybe_unused, int sub
+ 	const char *comm;
+ 	int err = -1;
+ 
+-	threads = thread_map__new(-1, getpid(), UINT_MAX);
++	threads = thread_map__new_by_tid(getpid());
+ 	if (!threads) {
+ 		pr_debug("thread_map__new failed!\n");
+ 		goto out_err;
+diff --git a/tools/perf/tests/thread-map.c b/tools/perf/tests/thread-map.c
+index 1fe521466bf4..54209592168d 100644
+--- a/tools/perf/tests/thread-map.c
++++ b/tools/perf/tests/thread-map.c
+@@ -115,7 +115,7 @@ static int test__thread_map_remove(struct test_suite *test __maybe_unused, int s
+ 	TEST_ASSERT_VAL("failed to allocate map string",
+ 			asprintf(&str, "%d,%d", getpid(), getppid()) >= 0);
+ 
+-	threads = thread_map__new_str(str, NULL, 0, false);
++	threads = thread_map__new_str(str, /*tid=*/NULL, /*all_threads=*/false);
+ 	free(str);
+ 
+ 	TEST_ASSERT_VAL("failed to allocate thread_map",
 diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index c1a04141aed0..2e1f14bc8461 100644
+index 2e1f14bc8461..8a7ec845a611 100644
 --- a/tools/perf/util/evlist.c
 +++ b/tools/perf/util/evlist.c
-@@ -1006,8 +1006,7 @@ int evlist__create_maps(struct evlist *evlist, struct target *target)
+@@ -1006,7 +1006,7 @@ int evlist__create_maps(struct evlist *evlist, struct target *target)
  	 * per-thread data. thread_map__new_str will call
  	 * thread_map__new_all_cpus to enumerate all threads.
  	 */
--	threads = thread_map__new_str(target->pid, target->tid, target->uid,
--				      all_threads);
-+	threads = thread_map__new_str(target->pid, target->tid, UINT_MAX, all_threads);
+-	threads = thread_map__new_str(target->pid, target->tid, UINT_MAX, all_threads);
++	threads = thread_map__new_str(target->pid, target->tid, all_threads);
  
  	if (!threads)
  		return -1;
-diff --git a/tools/perf/util/target.c b/tools/perf/util/target.c
-index f3ad59ccfa99..8cf71bea295a 100644
---- a/tools/perf/util/target.c
-+++ b/tools/perf/util/target.c
-@@ -28,20 +28,6 @@ enum target_errno target__validate(struct target *target)
- 			ret = TARGET_ERRNO__PID_OVERRIDE_CPU;
- 	}
+diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
+index f3c05da25b4a..56f8ae4cebf7 100644
+--- a/tools/perf/util/python.c
++++ b/tools/perf/util/python.c
+@@ -566,14 +566,14 @@ struct pyrf_thread_map {
+ static int pyrf_thread_map__init(struct pyrf_thread_map *pthreads,
+ 				 PyObject *args, PyObject *kwargs)
+ {
+-	static char *kwlist[] = { "pid", "tid", "uid", NULL };
+-	int pid = -1, tid = -1, uid = UINT_MAX;
++	static char *kwlist[] = { "pid", "tid", NULL };
++	int pid = -1, tid = -1;
  
--	/* UID and PID are mutually exclusive */
--	if (target->tid && target->uid_str) {
--		target->uid_str = NULL;
--		if (ret == TARGET_ERRNO__SUCCESS)
--			ret = TARGET_ERRNO__PID_OVERRIDE_UID;
--	}
--
--	/* UID and CPU are mutually exclusive */
--	if (target->uid_str && target->cpu_list) {
--		target->cpu_list = NULL;
--		if (ret == TARGET_ERRNO__SUCCESS)
--			ret = TARGET_ERRNO__UID_OVERRIDE_CPU;
--	}
--
- 	/* PID and SYSTEM are mutually exclusive */
- 	if (target->tid && target->system_wide) {
- 		target->system_wide = false;
-@@ -49,13 +35,6 @@ enum target_errno target__validate(struct target *target)
- 			ret = TARGET_ERRNO__PID_OVERRIDE_SYSTEM;
- 	}
+-	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iii",
+-					 kwlist, &pid, &tid, &uid))
++	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|ii",
++					 kwlist, &pid, &tid))
+ 		return -1;
  
--	/* UID and SYSTEM are mutually exclusive */
--	if (target->uid_str && target->system_wide) {
--		target->system_wide = false;
--		if (ret == TARGET_ERRNO__SUCCESS)
--			ret = TARGET_ERRNO__UID_OVERRIDE_SYSTEM;
--	}
--
- 	/* BPF and CPU are mutually exclusive */
- 	if (target->bpf_str && target->cpu_list) {
- 		target->cpu_list = NULL;
-@@ -70,13 +49,6 @@ enum target_errno target__validate(struct target *target)
- 			ret = TARGET_ERRNO__BPF_OVERRIDE_PID;
- 	}
- 
--	/* BPF and UID are mutually exclusive */
--	if (target->bpf_str && target->uid_str) {
--		target->uid_str = NULL;
--		if (ret == TARGET_ERRNO__SUCCESS)
--			ret = TARGET_ERRNO__BPF_OVERRIDE_UID;
--	}
--
- 	/* BPF and THREADS are mutually exclusive */
- 	if (target->bpf_str && target->per_thread) {
- 		target->per_thread = false;
-@@ -124,31 +96,19 @@ uid_t parse_uid(const char *str)
- 	return result->pw_uid;
+-	pthreads->threads = thread_map__new(pid, tid, uid);
++	pthreads->threads = thread_map__new(pid, tid);
+ 	if (pthreads->threads == NULL)
+ 		return -1;
+ 	return 0;
+diff --git a/tools/perf/util/thread_map.c b/tools/perf/util/thread_map.c
+index b5f12390c355..ca193c1374ed 100644
+--- a/tools/perf/util/thread_map.c
++++ b/tools/perf/util/thread_map.c
+@@ -72,7 +72,7 @@ struct perf_thread_map *thread_map__new_by_tid(pid_t tid)
+ 	return threads;
  }
  
--enum target_errno target__parse_uid(struct target *target)
--{
--	target->uid = parse_uid(target->uid_str);
+-static struct perf_thread_map *__thread_map__new_all_cpus(uid_t uid)
++static struct perf_thread_map *thread_map__new_all_cpus(void)
+ {
+ 	DIR *proc;
+ 	int max_threads = 32, items, i;
+@@ -98,15 +98,6 @@ static struct perf_thread_map *__thread_map__new_all_cpus(uid_t uid)
+ 		if (*end) /* only interested in proper numerical dirents */
+ 			continue;
+ 
+-		snprintf(path, sizeof(path), "/proc/%s", dirent->d_name);
 -
--	return target->uid != UINT_MAX ? TARGET_ERRNO__SUCCESS : TARGET_ERRNO__INVALID_UID;
+-		if (uid != UINT_MAX) {
+-			struct stat st;
+-
+-			if (stat(path, &st) != 0 || st.st_uid != uid)
+-				continue;
+-		}
+-
+ 		snprintf(path, sizeof(path), "/proc/%d/task", pid);
+ 		items = scandir(path, &namelist, filter, NULL);
+ 		if (items <= 0) {
+@@ -157,24 +148,11 @@ static struct perf_thread_map *__thread_map__new_all_cpus(uid_t uid)
+ 	goto out_closedir;
+ }
+ 
+-struct perf_thread_map *thread_map__new_all_cpus(void)
+-{
+-	return __thread_map__new_all_cpus(UINT_MAX);
 -}
 -
- /*
-  * This must have a same ordering as the enum target_errno.
-  */
- static const char *target__error_str[] = {
- 	"PID/TID switch overriding CPU",
--	"PID/TID switch overriding UID",
--	"UID switch overriding CPU",
- 	"PID/TID switch overriding SYSTEM",
--	"UID switch overriding SYSTEM",
- 	"SYSTEM/CPU switch overriding PER-THREAD",
- 	"BPF switch overriding CPU",
- 	"BPF switch overriding PID/TID",
--	"BPF switch overriding UID",
- 	"BPF switch overriding THREAD",
--	"Invalid User: %s",
- };
- 
--int target__strerror(struct target *target, int errnum,
-+int target__strerror(struct target *target __maybe_unused, int errnum,
- 			  char *buf, size_t buflen)
- {
- 	int idx;
-@@ -173,10 +133,6 @@ int target__strerror(struct target *target, int errnum,
- 		snprintf(buf, buflen, "%s", msg);
- 		break;
- 
--	case TARGET_ERRNO__INVALID_UID:
--		snprintf(buf, buflen, msg, target->uid_str);
--		break;
+-struct perf_thread_map *thread_map__new_by_uid(uid_t uid)
+-{
+-	return __thread_map__new_all_cpus(uid);
+-}
 -
- 	default:
- 		/* cannot reach here */
- 		break;
-diff --git a/tools/perf/util/target.h b/tools/perf/util/target.h
-index e082bda990fb..84ebb9c940c6 100644
---- a/tools/perf/util/target.h
-+++ b/tools/perf/util/target.h
-@@ -9,9 +9,7 @@ struct target {
- 	const char   *pid;
- 	const char   *tid;
- 	const char   *cpu_list;
--	const char   *uid_str;
- 	const char   *bpf_str;
--	uid_t	     uid;
- 	bool	     system_wide;
- 	bool	     uses_mmap;
- 	bool	     default_per_cpu;
-@@ -36,32 +34,24 @@ enum target_errno {
- 
- 	/* for target__validate() */
- 	TARGET_ERRNO__PID_OVERRIDE_CPU	= __TARGET_ERRNO__START,
--	TARGET_ERRNO__PID_OVERRIDE_UID,
--	TARGET_ERRNO__UID_OVERRIDE_CPU,
- 	TARGET_ERRNO__PID_OVERRIDE_SYSTEM,
--	TARGET_ERRNO__UID_OVERRIDE_SYSTEM,
- 	TARGET_ERRNO__SYSTEM_OVERRIDE_THREAD,
- 	TARGET_ERRNO__BPF_OVERRIDE_CPU,
- 	TARGET_ERRNO__BPF_OVERRIDE_PID,
--	TARGET_ERRNO__BPF_OVERRIDE_UID,
- 	TARGET_ERRNO__BPF_OVERRIDE_THREAD,
- 
--	/* for target__parse_uid() */
--	TARGET_ERRNO__INVALID_UID,
--
- 	__TARGET_ERRNO__END,
- };
- 
- enum target_errno target__validate(struct target *target);
- 
- uid_t parse_uid(const char *str);
--enum target_errno target__parse_uid(struct target *target);
- 
- int target__strerror(struct target *target, int errnum, char *buf, size_t buflen);
- 
- static inline bool target__has_task(struct target *target)
+-struct perf_thread_map *thread_map__new(pid_t pid, pid_t tid, uid_t uid)
++struct perf_thread_map *thread_map__new(pid_t pid, pid_t tid)
  {
--	return target->tid || target->pid || target->uid_str;
-+	return target->tid || target->pid;
+ 	if (pid != -1)
+ 		return thread_map__new_by_pid(pid);
+ 
+-	if (tid == -1 && uid != UINT_MAX)
+-		return thread_map__new_by_uid(uid);
+-
+ 	return thread_map__new_by_tid(tid);
  }
  
- static inline bool target__has_cpu(struct target *target)
+@@ -289,15 +267,11 @@ struct perf_thread_map *thread_map__new_by_tid_str(const char *tid_str)
+ 	goto out;
+ }
+ 
+-struct perf_thread_map *thread_map__new_str(const char *pid, const char *tid,
+-				       uid_t uid, bool all_threads)
++struct perf_thread_map *thread_map__new_str(const char *pid, const char *tid, bool all_threads)
+ {
+ 	if (pid)
+ 		return thread_map__new_by_pid_str(pid);
+ 
+-	if (!tid && uid != UINT_MAX)
+-		return thread_map__new_by_uid(uid);
+-
+ 	if (all_threads)
+ 		return thread_map__new_all_cpus();
+ 
+diff --git a/tools/perf/util/thread_map.h b/tools/perf/util/thread_map.h
+index 00ec05fc1656..fc16d87f32fb 100644
+--- a/tools/perf/util/thread_map.h
++++ b/tools/perf/util/thread_map.h
+@@ -11,13 +11,11 @@ struct perf_record_thread_map;
+ struct perf_thread_map *thread_map__new_dummy(void);
+ struct perf_thread_map *thread_map__new_by_pid(pid_t pid);
+ struct perf_thread_map *thread_map__new_by_tid(pid_t tid);
+-struct perf_thread_map *thread_map__new_by_uid(uid_t uid);
+-struct perf_thread_map *thread_map__new_all_cpus(void);
+-struct perf_thread_map *thread_map__new(pid_t pid, pid_t tid, uid_t uid);
++struct perf_thread_map *thread_map__new(pid_t pid, pid_t tid);
+ struct perf_thread_map *thread_map__new_event(struct perf_record_thread_map *event);
+ 
+ struct perf_thread_map *thread_map__new_str(const char *pid,
+-		const char *tid, uid_t uid, bool all_threads);
++		const char *tid, bool all_threads);
+ 
+ struct perf_thread_map *thread_map__new_by_tid_str(const char *tid_str);
+ 
 -- 
 2.49.0.604.gff1f9ca942-goog
 
