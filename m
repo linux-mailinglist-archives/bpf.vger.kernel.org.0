@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-55620-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55621-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC61EA8370C
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 05:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C074A8370E
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 05:10:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33A031B65604
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 03:10:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 165091B655C9
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 03:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2F71EF363;
-	Thu, 10 Apr 2025 03:10:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADEB91EF39F;
+	Thu, 10 Apr 2025 03:10:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ROdXnBIo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h6l8orUO"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 139A01519B9;
-	Thu, 10 Apr 2025 03:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F521EF382
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 03:10:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744254601; cv=none; b=HeYiPuwiL4AvKJgKOxfKa/BSUy5Kdq4l7qL7zv+Tmxyl1+nLRuPRtdya8tAPZKxVLBHh95JAQTgyBRZgGTFtY6JbxJ0JSl5JjXibh1dXGft6KrIQNTCxVdxQzWlh7JhaCUbXs9qRnhrdk5G9knElnNBOU1Pec92qzbDoxBlq8Ns=
+	t=1744254602; cv=none; b=fSCp6iyv8v6e1MhltBTqV3+pbEK2YgE+YP9+xuVEFEvpwTmsUyTX5BOaWEKK43YeuT5Flm6/pfrZt+OfWomG3sMR3y+tKwDq6LIlhLe14+OUyGzRFE30SPVHYd7o5T+8mEgIDaYf3c3VcfPTz5qokhnXEZM/tFfwSTXCyD/tJsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744254601; c=relaxed/simple;
-	bh=+x4N2KddczS3M2cHECoSS1dKNDFNd/yQmKExhiectpI=;
+	s=arc-20240116; t=1744254602; c=relaxed/simple;
+	bh=ziK3GjMY+H6kixgmVl7nA+H61ZUoURZcP2dqYtT9VEE=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=sCX+4wE/iRu/d4NJB7h+h+Xs4nn0sltMjn4g1v0Ht8lOgWnChXlEIoReWPA5hiBl8dv49Xj4hSUlNo1Wkosr/Jdu8uy+WUgKudD6PnE4p8DoL7kFHMUfVJsH36ZpWgjgYYgXZ3HEzUiVlJd+7J358XaBPM7rlMug7GcIydTviss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ROdXnBIo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7598DC4CEE2;
-	Thu, 10 Apr 2025 03:10:00 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=f8SjNNok7LhFezPSLZ+ynwfIe8TB3Y5C7QRVC36BZYBZea+6WDgqKkAniMEP0BK94cOePYXeXognvyvqcr6I6Zq6IB9pQv+2yrRb1J4C68gGXSrc2JgKIubGs/dQmU1JbUGiQW8Xr6H+ka/4fl0pQaHk3FPPVtT1zEo5rzx9520=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h6l8orUO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A82FCC4CEE7;
+	Thu, 10 Apr 2025 03:10:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744254600;
-	bh=+x4N2KddczS3M2cHECoSS1dKNDFNd/yQmKExhiectpI=;
+	s=k20201202; t=1744254601;
+	bh=ziK3GjMY+H6kixgmVl7nA+H61ZUoURZcP2dqYtT9VEE=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ROdXnBIoGfSQnZutmUYLq205AAvoPagEkqWsBjdtNeobBK9N/WZAy3lFcwPKHHSK4
-	 Fn2pYLli3pLZV+LN1wyzRA58A7t9UJAKjfYyl14FsFbDaJe1Ooks0Ga9By3ZYJugZS
-	 3CJm7rs5UFcW4QFaqt/n/u7OSyL3kOqaYyDNJsyp18BsNFttH9Hcjgk3zEW4duOnBe
-	 i5DKwzVmXpw/UA4PlOXmuwRcCF7Hw5VItsEzA/Br0RR7eEQeEon82QgnriFVxE9Ou/
-	 5jEeq+U2rSQiKj2buqeKYuZJXRW6LFltJ66r5eHCgDqPIwlct2i38l2mZbEtkrjcy+
-	 GuHlxsfgQk4cg==
+	b=h6l8orUORv7SFNsRrPEyYrS++JUyhug8Cp8GPMd1PFlNyYUQ7CfNSbZcS0SpGTNLW
+	 ecif3K7xrJp5PWRr7syzW9WDYJDN6UubzCNb1hYPclDHs5KluwUrtbqdDsqiIKf3V5
+	 +xinW3btcelWkDRRwt2kbXcVXQSAJwmt+VV5TERgPUnEz4K8L8KFa2XffKtZnqDcVE
+	 ezEA/JXoPMA3GbVSfO1/dDmZoWLiH/sJDr6LK6qz1PYfvHHv0EL1I6YjN+lW2Oe0CC
+	 MDtybxYNR4IkXQzXVt4YHM8TV/HiMnf1BBcPlXx/n4OGhgnAWoOfIFgCl6EYyRprXO
+	 rRv7ul0Am14ZQ==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 2C38F380CEF9;
-	Thu, 10 Apr 2025 03:10:39 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 5F144380CEF9;
+	Thu, 10 Apr 2025 03:10:40 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,51 +52,38 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v1 0/4] bpf, sockmap: Fix data loss and panic issues
+Subject: Re: [PATCH bpf-next 1/2] bpf: Clarify role of BPF_F_RECOMPUTE_CSUM
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <174425463772.3131897.3560283890937950515.git-patchwork-notify@kernel.org>
-Date: Thu, 10 Apr 2025 03:10:37 +0000
-References: <20250407142234.47591-1-jiayuan.chen@linux.dev>
-In-Reply-To: <20250407142234.47591-1-jiayuan.chen@linux.dev>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: bpf@vger.kernel.org, mrpre@163.com, john.fastabend@gmail.com,
- jakub@cloudflare.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- mykolal@fb.com, shuah@kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+ <174425463922.3131897.5068814594178596418.git-patchwork-notify@kernel.org>
+Date: Thu, 10 Apr 2025 03:10:39 +0000
+References: <ff6895d42936f03dbb82334d8bcfd50e00c79086.1744102490.git.paul.chaignon@gmail.com>
+In-Reply-To: <ff6895d42936f03dbb82334d8bcfd50e00c79086.1744102490.git.paul.chaignon@gmail.com>
+To: Paul Chaignon <paul.chaignon@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org
 
 Hello:
 
 This series was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Mon,  7 Apr 2025 22:21:19 +0800 you wrote:
-> I was writing a benchmark based on sockmap + TCP and discovered several
-> issues:
+On Tue, 8 Apr 2025 11:00:04 +0200 you wrote:
+> BPF_F_RECOMPUTE_CSUM doesn't update the actual L3 and L4 checksums in
+> the packet, but simply updates skb->csum (according to skb->ip_summed).
+> This patch clarifies that to avoid confusions.
 > 
-> 1. When EAGAIN occurs, the direction of skb is incorrect, causing data
->    loss when retry.
-> 2. When sending partial data, the offset is not recorded, leading to
->    duplicate data being sent when retry.
-> 3. An unexpected BUG_ON() judgment in skb_linearize is triggered.
-> 4. The memory of psock->ingress_skb is not limited by the socket buffer
->    and memcg.
-> 
-> [...]
+> Signed-off-by: Paul Chaignon <paul.chaignon@gmail.com>
+> ---
+>  include/uapi/linux/bpf.h       | 14 +++++++++-----
+>  tools/include/uapi/linux/bpf.h | 14 +++++++++-----
+>  2 files changed, 18 insertions(+), 10 deletions(-)
 
 Here is the summary with links:
-  - [bpf-next,v1,1/4] bpf, sockmap: Fix data lost during EAGAIN retries
-    https://git.kernel.org/bpf/bpf-next/c/7683167196bd
-  - [bpf-next,v1,2/4] bpf, sockmap: fix duplicated data transmission
-    https://git.kernel.org/bpf/bpf-next/c/3b4f14b79428
-  - [bpf-next,v1,3/4] bpf, sockmap: Fix panic when calling skb_linearize
-    https://git.kernel.org/bpf/bpf-next/c/5ca2e29f6834
-  - [bpf-next,v1,4/4] selftest/bpf/benchs: Add benchmark for sockmap usage
-    https://git.kernel.org/bpf/bpf-next/c/7b2fa44de5e7
+  - [bpf-next,1/2] bpf: Clarify role of BPF_F_RECOMPUTE_CSUM
+    https://git.kernel.org/bpf/bpf-next/c/b412fd6bcc4c
+  - [bpf-next,2/2] bpf: Clarify the meaning of BPF_F_PSEUDO_HDR
+    https://git.kernel.org/bpf/bpf-next/c/5a15a050df71
 
 You are awesome, thank you!
 -- 
