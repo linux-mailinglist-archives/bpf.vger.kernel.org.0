@@ -1,56 +1,73 @@
-Return-Path: <bpf+bounces-55688-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55689-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2AEBA84C18
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 20:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB20EA84CF5
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 21:27:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B6621BA165A
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 18:28:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46C301895AAD
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 19:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB65428CF59;
-	Thu, 10 Apr 2025 18:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68AD328FFD8;
+	Thu, 10 Apr 2025 19:26:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jg5w0OB7"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="u9dgxLfF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 358B72857CB
-	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 18:28:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5074D70830;
+	Thu, 10 Apr 2025 19:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.184.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744309712; cv=none; b=Y4dja7p7MqpBT8WFaJ5kZVPHAFl3FfnPoyZj8pxZdh7fnAxlBkUjqeWn2I9Go+4Rz8ZwwFIOKgkScgvVZlkOsisdhXErBW2JtNszSPNlPWctFjicgQvWGpJBx5hGRP4USY4NMH4uJTYWrV4+MAXs/OirW2Ay2e8KtSJ84LwtgS0=
+	t=1744313163; cv=none; b=euPKyo/nb99jAs1q6KCNLTUp+bYqUhmeE8kgSFwZ5hWWOoC12rL6M5T12zQH93JegLpP8Ked9IgS5Pmqs8Xgux0dYgJflh6q1KPOSUMS/1zDPD08LMKHm7Lt9L/oxrgDvWPcEN6ZkB1J3me6FtOOb2K0T+cfAKMdfjPMJEjbqds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744309712; c=relaxed/simple;
-	bh=/BnKlXJvhUz9buot2udoeMw7GHCWQXxORqzLsDjY7jI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ED5Zi7kchkuZOoL3viKquq4kJqZM35KvZXhDFW/HJbDiklP6iZ6M+m62IhvowYtOTCNK80Rr0SkyPK+P5GV5Zexoy7mAaDCT66CPXD2AkR/ZkMjIoyB4OR0aGOSeikeKMuOpgUG9fpcMXZd4f0H2SSh8Ryev+ZB1SswMAq6RiMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jg5w0OB7; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744309708;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=b/5+Pkee7y01U7yc3FWGKpZG6sTW7FAG9nzjBKB6sAU=;
-	b=jg5w0OB781EIudlEm4l75NnctwmAnNOGtonh7K+r75zK0MtLzCC0t49b5wp6C6gkse8oJP
-	GVvCnW8i0fcPpKWe8ac6YvrvJ2t2v04dH0HamRdWBNrWFUmQa6ek5HoACNdDxTGo91abMK
-	amcMRlwSkCaTED7r/MT1JpWxvHOm1xM=
-From: Ihor Solodrai <ihor.solodrai@linux.dev>
-To: andrii@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com
-Cc: bpf@vger.kernel.org,
-	mykolal@fb.com,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next v2] libbpf: verify section type in btf_find_elf_sections
-Date: Thu, 10 Apr 2025 11:28:23 -0700
-Message-ID: <20250410182823.1591681-1-ihor.solodrai@linux.dev>
+	s=arc-20240116; t=1744313163; c=relaxed/simple;
+	bh=k8RFiI/x6UxupfW1UUmtnhPewcoXjLqm7EjG3qPoxxo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aHmKS598PDDz8sY272J02o9lA1NKc9hOJNjWzG31LHqKdXo+uoGk7oSnwTiZoOHiigRW23Yk7Xyo+pFiwIxl/e5S8OCGV7HSQC3FQGmPYWGWznX2eQLolt1cCqU90iFyguc0UV6GsZ9Zuc+WOgAS0drvq9hJeDxN8OlKWCU3kbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=u9dgxLfF; arc=none smtp.client-ip=207.171.184.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1744313163; x=1775849163;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=0l1LQFW7fzsNRJ7rHIC6JfuWXS1d6idcutFACZv5Txw=;
+  b=u9dgxLfFqj8A9vhJ0DrNQt2d5iTRAO/rVVaSdDsb4MZGBJJx9JWUGC8r
+   DzRWI/MLs3zwgeTGeqyQJTkPqxwPzuFVGr+Uh8xLL9vSd4d7nhhnzTgp0
+   m7+kaXA/MXJVI3biip1Gd/lbB2ssKWxI0g1IbCou5rkLnmbHXWdJhdc2m
+   A=;
+X-IronPort-AV: E=Sophos;i="6.15,203,1739836800"; 
+   d="scan'208";a="510568203"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2025 19:25:57 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.21.151:43177]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.25.120:2525] with esmtp (Farcaster)
+ id c8f9aa91-2435-413f-a495-a915702a0546; Thu, 10 Apr 2025 19:25:56 +0000 (UTC)
+X-Farcaster-Flow-ID: c8f9aa91-2435-413f-a495-a915702a0546
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Thu, 10 Apr 2025 19:25:55 +0000
+Received: from 6c7e67bfbae3.amazon.com (10.106.100.21) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Thu, 10 Apr 2025 19:25:53 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <jordan@jrife.io>
+CC: <aditi.ghag@isovalent.com>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+	<kuniyu@amazon.com>, <martin.lau@linux.dev>, <netdev@vger.kernel.org>,
+	<willemdebruijn.kernel@gmail.com>
+Subject: Re: [PATCH v1 bpf-next 1/5] bpf: udp: Use bpf_udp_iter_batch_item for bpf_udp_iter_state batch items
+Date: Thu, 10 Apr 2025 12:25:40 -0700
+Message-ID: <20250410192543.99383-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250409182237.441532-2-jordan@jrife.io>
+References: <20250409182237.441532-2-jordan@jrife.io>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -58,41 +75,17 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D041UWA001.ant.amazon.com (10.13.139.124) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-A valid ELF file may contain a SHT_NOBITS .BTF section. This case is
-not handled correctly in btf_parse_elf, which leads to a segfault.
+From: Jordan Rife <jordan@jrife.io>
+Date: Wed,  9 Apr 2025 11:22:30 -0700
+> Prepare for the next commit that tracks cookies between iterations by
+> converting struct sock **batch to union bpf_udp_iter_batch_item *batch
+> inside struct bpf_udp_iter_state.
+> 
+> Signed-off-by: Jordan Rife <jordan@jrife.io>
 
-Before attempting to load BTF section data, check that the section
-type is SHT_PROGBITS, which is the expected type for BTF data.  Fail
-with an error if the type is different.
-
-Bug report: https://github.com/libbpf/libbpf/issues/894
-v1: https://lore.kernel.org/bpf/20250408184104.3962949-1-ihor.solodrai@linux.dev/
-
-Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
----
- tools/lib/bpf/btf.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 38bc6b14b066..24fc71ce5631 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -1148,6 +1148,12 @@ static int btf_find_elf_sections(Elf *elf, const char *path, struct btf_elf_secs
- 		else
- 			continue;
- 
-+		if (sh.sh_type != SHT_PROGBITS) {
-+			pr_warn("unexpected section type (%d) of section(%d, %s) from %s\n",
-+				sh.sh_type, idx, name, path);
-+			goto err;
-+		}
-+
- 		data = elf_getdata(scn, 0);
- 		if (!data) {
- 			pr_warn("failed to get section(%d, %s) data from %s\n",
--- 
-2.49.0
-
+Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
 
