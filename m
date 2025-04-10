@@ -1,112 +1,143 @@
-Return-Path: <bpf+bounces-55629-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55630-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6EB2A83819
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 07:10:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C34DA83842
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 07:30:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02BB444636B
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 05:09:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 069BD3B1EB3
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 05:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F751FBCAA;
-	Thu, 10 Apr 2025 05:09:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718701F2BA4;
+	Thu, 10 Apr 2025 05:28:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Nhyg+23K"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="dsoXoiGe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681F11EB190
-	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 05:09:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939B64D8C8;
+	Thu, 10 Apr 2025 05:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744261760; cv=none; b=Iiy1tNQL8CB8y2MNMfGoOB+UZm09TVs7SlKiGcdnFKHpzNc6pnpA91Vy2otnd4Pd/6mBx4P8ic3WLWdnyGw7UDinx0cEeoEkh68H/kQDkDmwpAWahW+vfL5ZchN3LDOFsO70WBvPhYrOose0sjcZ2LI4CyIrnrR+770XujculOM=
+	t=1744262904; cv=none; b=hiXoFOE3qC8FTm803/X0DYm+0Lgw1YvfdkzybQkkmqsAo9P/oVs2JNi3Q5q/NqIYtVW3RptF/6XqIfOI4f7a25iZFgYlVUEdpL9q1FGfbzxd/jvGTqt0201xcIGDORBiNHcQUChkdtsed4Yqr7NGnIoP2sQ/Ec54/mS1rpTH9hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744261760; c=relaxed/simple;
-	bh=G16oVcschOk1bCBWwdD3ZsJUcsex2zjDzFXRZC7O9eo=;
-	h=From:To:CC:Date:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=fhUxBR27rahQz77ZGzQrdrcryOUdkUZHpgwot8x8RFnBj7SBRTf//ysydEeZne69NB65Xo+X2qf4zX0jPBa5YaC3KIsSaMEmMyLFtPw1zymQgMxW888A2YusBrWTt4GYH3zWl0iFrrQX7XG1bl3IedmVVrb+ei/W90NGcT/TE/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Nhyg+23K; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-2d0920c6f96so232365fac.1
-        for <bpf@vger.kernel.org>; Wed, 09 Apr 2025 22:09:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1744261757; x=1744866557; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G16oVcschOk1bCBWwdD3ZsJUcsex2zjDzFXRZC7O9eo=;
-        b=Nhyg+23KIvdj2ds/dNoqaEQBtAsf+l8ko22/0+4jtvRN2tw9Xc7oxEI8f8BdnYDTiE
-         wy/7saWqUY6bU6A6WaAv1yLARvwdxE1XGz4cX1LXU3HkjRenBGaTqV/cwhECJall2SEs
-         b3T7jLsPsW0YtLGXBqKsEw1OfECpoBHejRrc8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744261757; x=1744866557;
-        h=content-transfer-encoding:mime-version:subject:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G16oVcschOk1bCBWwdD3ZsJUcsex2zjDzFXRZC7O9eo=;
-        b=JcAHOTUc7864QBeEpm2mZ+SCOyblLLxJ6kXSu0OsVbLJkB8ua2Dm2k9IYC2c3hi5CW
-         PhCW2yOWicHyHVs6mGfWgznSuHpvmfLfa2LICx/heDi1GYzV2HMntx4Dom2MtpsCuBnH
-         5Vu5jOcsMldVzGCt//IyI+HQpGS77VJzUVWF1aj5+cYiCRZc5G1x7isqv/Q3G+SQnvMt
-         LT2z4qKSb/cikJTMPFQ4Z7ZKGRHQyqcySHjzmlF/fDfbMpCQsOv1Q+ZqodpSN4emCTP9
-         fiXElhDXH3S41XWZduQ7f4eYEWcTfSq0fdCpx0KR3Q93DTIvImDSd4JXA3MtrgB1v6eX
-         tObQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUGRfOvL4I0duHMnUt3xVxeqKVKdAmIPoAurrVnUckdoV3fz7pc+4SyB4l1fDCDtPVvljA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxpEip5m+3iPbQr391yhgs5fCEkLIa/eydkfrsP8CKUyaGn0qXd
-	HxGtSooJipXZT8r4MYX/+JsnLAWs4+i4Vg1bCIGZBSTq6/gPzVqaDORDM1Gbyw==
-X-Gm-Gg: ASbGncsiZ491mNpCPS3FOsx1qPPLIRj5z86FVLg2OaNPL+udqRBpF1q5BaCR4yReYJQ
-	UQyQPE+r2ziuK/9cHRHQJ2RryoKy6caxMNeylhRHGqy8FwAmjcNeAwJog0epinmRDz4AGAkuWSH
-	bDDsSf+iEeENdWiBBuCFKkUKyTAN+7WFb+22w9s+Hrm2KT8wm5SGTU1UD2cWSLtdUnJ/UdH4hOM
-	RvYAVvvF+zvd0d+JJQyZp51Uhv8F5eGW5hR9ZZS5PogWMSk7uNCpW5QBWTjL9fN1mxE87r0y+4O
-	rFhPojpFvEPbGkE07SLb2WdVwrQU7szd8c/TAoxwDN5bv5tfqAj5GE8d67lIS59BoQwCBWb++wo
-	9tzE=
-X-Google-Smtp-Source: AGHT+IHf2dIBsgMwlqUxzHqfg0izmCh/XeIh4+y37IHWa4xRZwCt6+2s0H2VCnvp55v7eCTsGxhXjQ==
-X-Received: by 2002:a05:6871:3320:b0:27b:61df:2160 with SMTP id 586e51a60fabf-2d0b383616dmr840067fac.31.1744261757422;
-        Wed, 09 Apr 2025 22:09:17 -0700 (PDT)
-Received: from [192.168.178.39] (f215227.upc-f.chello.nl. [80.56.215.227])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-2d096cd3764sm534917fac.31.2025.04.09.22.09.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Apr 2025 22:09:16 -0700 (PDT)
-From: Arend Van Spriel <arend.vanspriel@broadcom.com>
-To: Johannes Berg <johannes@sipsolutions.net>, "Kuan-Wei Chiu" <visitorckw@gmail.com>, <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>, <jk@ozlabs.org>, <joel@jms.id.au>, <eajames@linux.ibm.com>, <andrzej.hajda@intel.com>, <neil.armstrong@linaro.org>, <rfoss@kernel.org>, <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>, <tzimmermann@suse.de>, <airlied@gmail.com>, <simona@ffwll.ch>, <dmitry.torokhov@gmail.com>, <mchehab@kernel.org>, <awalls@md.metrocast.net>, <hverkuil@xs4all.nl>, <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>, <louis.peens@corigine.com>, <andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>, <parthiban.veerasooran@microchip.com>, <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>, <yury.norov@gmail.com>, <akpm@linux-foundation.org>, <jdelvare@suse.com>, <linux@roeck-us.net>, <alexandre.belloni@bootlin.com>, <pgaj@cadence.com>
-CC: <hpa@zytor.com>, <alistair@popple.id.au>, <linux@rasmusvillemoes.dk>, <Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>, <jernej.skrabec@gmail.com>, <kuba@kernel.org>, <linux-kernel@vger.kernel.org>, <linux-fsi@lists.ozlabs.org>, <dri-devel@lists.freedesktop.org>, <linux-input@vger.kernel.org>, <linux-media@vger.kernel.org>, <linux-mtd@lists.infradead.org>, <oss-drivers@corigine.com>, <netdev@vger.kernel.org>, <linux-wireless@vger.kernel.org>, <brcm80211@lists.linux.dev>, <brcm80211-dev-list.pdl@broadcom.com>, <linux-serial@vger.kernel.org>, <bpf@vger.kernel.org>, <jserv@ccns.ncku.edu.tw>, <Frank.Li@nxp.com>, <linux-hwmon@vger.kernel.org>, <linux-i3c@lists.infradead.org>, <david.laight.linux@gmail.com>, <andrew.cooper3@citrix.com>, "Yu-Chun Lin" <eleanor15x@gmail.com>
-Date: Thu, 10 Apr 2025 07:08:58 +0200
-Message-ID: <1961e19ee10.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
-In-Reply-To: <740c7de894d39249665c6333aa3175762cfb13c6.camel@sipsolutions.net>
-References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-4-visitorckw@gmail.com>
- <25b7888d-f704-493b-a2d7-c5e8fff9cfb4@broadcom.com>
- <740c7de894d39249665c6333aa3175762cfb13c6.camel@sipsolutions.net>
-User-Agent: AquaMail/1.54.1 (build: 105401536)
-Subject: Re: [PATCH v4 03/13] media: pci: cx18-av-vbi: Replace open-coded parity calculation with parity_odd()
+	s=arc-20240116; t=1744262904; c=relaxed/simple;
+	bh=r13HzLnnnGYMiA3liGPYfe/3ZdAJuSzluQ91kjJQ0Zw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oBhRqjgANIrU7gQDIr0iN06DwJBU8926AwQUm0G4KtbQQNTQynRZP+QYCAh7ECDNUCJ/NU8Md8xFx8Jn6ysjTcxcJwuTL+YtXzp0C32dkhR8KrQd4uoJVNfbOGaTdExEnY+idPgQlwC1+RGups01f3S/UGPWG3E2JKMoRk9/eDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=dsoXoiGe; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=9QsxC
+	LTiTjSTysgAZSg7DSX0ieMGdtT108G49aJTHBA=; b=dsoXoiGe+sEOEYuQsxM/8
+	tCixFnVWVFhtfWUey7LjAfrfFoyXPpmayTPEF6Ku9E74Kph6btfkKzacGxFY2Zkr
+	GDPg9g8djt4hD4BloUPHju+cBZXuNxdojpW+2CXsuUUSWA3EqeN76Or1FEroDXS0
+	+z7qm1/olSQrIGnK4kRbAM=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wCXZjO5VvdnzwkJFQ--.14350S2;
+	Thu, 10 Apr 2025 13:27:23 +0800 (CST)
+From: Feng Yang <yangfeng59949@163.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] libbpf: Fix event name too long error
+Date: Thu, 10 Apr 2025 13:27:12 +0800
+Message-Id: <20250410052712.206785-1-yangfeng59949@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wCXZjO5VvdnzwkJFQ--.14350S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZrW7Ww47Gw4xJw1rtw1UKFg_yoW8uw4rpF
+	s0yr9Ykr1Yqa12qFZxGr4Fkw1Fkas7GryUKrZrAry3WrsxZ3yUXa1IkFs09r1aq3ykC34a
+	vwsa9ry3JF97Xa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jjuWLUUUUU=
+X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiThUreGf3UTe3pQAAss
 
-On April 10, 2025 12:06:52 AM Johannes Berg <johannes@sipsolutions.net> wrote:
+From: Feng Yang <yangfeng@kylinos.cn>
 
-> On Wed, 2025-04-09 at 20:43 +0200, Arend van Spriel wrote:
->>
->> This is orthogonal to the change to parity_odd() though. More specific
->> to the new parity_odd() you can now do following as parity_odd()
->> argument is u64:
->>
->> err = !parity_odd(*(u16 *)p);
->
-> Can it though? Need to be careful with alignment with that, I'd think.
+If the event name is too long, it will cause an EINVAL error.
 
-My bad. You are absolutely right.
+The kernel error path is
+probes_write
+    trace_parse_run_command
+        create_or_delete_trace_uprobe
+            trace_uprobe_create
+                trace_probe_create
+                    __trace_uprobe_create
+                        traceprobe_parse_event_name
+                            else if (len >= MAX_EVENT_NAME_LEN)
+Requires less than 64 bytes.
 
-Gr. AvS
->
+Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+---
+ tools/lib/bpf/libbpf.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index b2591f5cab65..8e48ba99f06c 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -12227,6 +12227,16 @@ bpf_program__attach_uprobe_multi(const struct bpf_program *prog,
+ 	return libbpf_err_ptr(err);
+ }
+ 
++static const char *get_last_part(const char *path)
++{
++	const char *last_slash = strrchr(path, '/');
++
++	if (last_slash != NULL)
++		return last_slash + 1;
++	else
++		return path;
++}
++
+ LIBBPF_API struct bpf_link *
+ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ 				const char *binary_path, size_t func_offset,
+@@ -12241,7 +12251,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ 	size_t ref_ctr_off;
+ 	int pfd, err;
+ 	bool retprobe, legacy;
+-	const char *func_name;
++	const char *func_name, *binary_name;
+ 
+ 	if (!OPTS_VALID(opts, bpf_uprobe_opts))
+ 		return libbpf_err_ptr(-EINVAL);
+@@ -12254,6 +12264,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ 	if (!binary_path)
+ 		return libbpf_err_ptr(-EINVAL);
+ 
++	binary_name = get_last_part(binary_path);
+ 	/* Check if "binary_path" refers to an archive. */
+ 	archive_sep = strstr(binary_path, "!/");
+ 	if (archive_sep) {
+@@ -12318,7 +12329,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ 			return libbpf_err_ptr(-EINVAL);
+ 
+ 		gen_uprobe_legacy_event_name(probe_name, sizeof(probe_name),
+-					     binary_path, func_offset);
++					     binary_name, func_offset);
+ 
+ 		legacy_probe = strdup(probe_name);
+ 		if (!legacy_probe)
+-- 
+2.43.0
 
 
