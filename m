@@ -1,134 +1,117 @@
-Return-Path: <bpf+bounces-55697-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55698-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9721A85043
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 01:49:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9BE7A85048
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 01:50:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C2497ABD3F
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 23:48:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B4D04C6546
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 23:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31BDA214228;
-	Thu, 10 Apr 2025 23:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5090F2147F8;
+	Thu, 10 Apr 2025 23:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vr9aFZVu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ODI6pEIm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F2E1DED40;
-	Thu, 10 Apr 2025 23:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F8025634;
+	Thu, 10 Apr 2025 23:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744328966; cv=none; b=gQnPr6Z0JrFyOpLFjsDkm1SE/cdnG0bFAae43NG/iqSO479/gvefz+4NWl0h3VjB9QK0rpcD0dq7fQZ4BthzoVOHLxEA+xNr9t12fH5tkUNZs9hhpitsrRM9DH+yKlLNaWvj86QDDuOgP1RSBVg6BNOcLEI9DkjM8NEKhsAh+2M=
+	t=1744328999; cv=none; b=NWo7vrGNdQt+MIrfxccfWfVQke2qfkedwKIw5YhgdHXrDu70bZG6P7ohbyi/bEW6gQUJS6OUuehxi1sxGvNeXMfIJ0O5+NL/qKf1UdcKDiMJOD9EFVVglqwXCfe6BZ193qiHAi0cms0wq3agZSm1qi6g/87NdWkcJgjVuDqrCRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744328966; c=relaxed/simple;
-	bh=Wv9BgshAQXkLEPWk0F3rEd4hX9E17rxBZnp3n9Ec2BA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l9wy5ZB3VZlTl8sAtHC8ROhM27/+0l4Mk9qtX9fAnySt6e9k2PO9a45hYel0pO3ejukm0b9uIyOXWTyJj/UBogJwczTFA62KDkO9EDyTKKQFIaPj+WCky+PS3kokL2QgM2ORJNMPBJgq1KNJQZIoK6aMh3HxkdFhvpet0EmHqjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vr9aFZVu; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-af19b9f4c8cso1065769a12.2;
-        Thu, 10 Apr 2025 16:49:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744328964; x=1744933764; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zZltvLjC47FSqzOziDmU6/UE1HQXkh/eAOUz3qtoXhE=;
-        b=Vr9aFZVuk/0GkhLa8svDWi7oQ9DC79WJkja7H1qhlEiMHcG3RSbW/zQEZ4kxqXjysz
-         eS6BpnZFDx+Ilv55RXnoy64XGtpQJ8VnGcsrQ3ZlxQA8H1uzOcoml0vppyfd4ezbPUWo
-         aSrTubb5HZY4972gfprb+Bw/meaErGj4gOmssoSa4iyk+DyIuBCT+q6geQwA0I8D/Wr4
-         0NxvjYA+1sGjgMb/MVKF8lJHZnDH6aQXI2yGD+EIHw727jX6WOAjtPrB6owr4fuEdJ93
-         f5Bc/ES+ytKLZjySgEd0aTxTtlkNmSynQOz9Rg/2KrRK4J601n8FAfbHvXQFkbJiox7O
-         S11Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744328964; x=1744933764;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zZltvLjC47FSqzOziDmU6/UE1HQXkh/eAOUz3qtoXhE=;
-        b=vtfdppqINhlg5Tz4TRJekpFFy4VUp0+GidPnbbFy/AdhBeNmP188R47scClB+ruLCY
-         Qi7ZqZfpRiwq5JFLkvqysMbELrNRF2+AszwXq+Zy6Vv1KXoLXQ/bsTvTwJC7bpGkTCBE
-         XsynoW0vSsF/gYWpWOYztl/LnNYwrTvspJ/rRCa6RJsYLT/+LVdWSn5R68YFrIdNMSZk
-         feTrPRY79hGAN5XD0NfRcUPIev7h6mxVAxUPzenlE3lacSCKrMMdHUIoBqZFin1Ib7U5
-         xXbEU3u80MFfMsWoXnz0J28WBaPxY4gTAUV+Hdx93pDCJKW1FNzi03WiFMq0ActJnJMB
-         u6eg==
-X-Forwarded-Encrypted: i=1; AJvYcCVGWO2ucQwPuJcbZCMbUoCeY5MBoDUFUjgXLnabsAWaLq+rkG/+ZG6trJ1hSc/9GLPTpzv0ucQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzR1lQXdI/9xP1ahiauRv6N3y4an2raYVUuGXYptQ0k3mOtE4Hk
-	vyVmeNTNGtQJemuToVqilThItfslXhFawkilceqDy8ypOvOQWtxvy79gase4yGd4DcjNosmN5p2
-	7PA3y3A7GVLcM3s9zgXzF3kwVyic=
-X-Gm-Gg: ASbGncucLwsAWGinUZr4epC/LpgMPSQ6h+ID9ZGwDxIyjY/IRTBZ72/mFN84tod/LqL
-	nxNpMyVTHmiB6nL4baAN2b56HK33InYJoR1y/DQe9f/m9FxhdI8Qv9xhJ7Ki0KhSJ8dRfn6PF2R
-	FmUqtLz0d9FiVIn+ponnMq15tUVf7awXo0wbdJP6/DfwNg9x+F0vKimA==
-X-Google-Smtp-Source: AGHT+IFnPCpg+Af9AMFY/kI0/iRf/8XUIv9CBVfmUTJEeDLGMNoTipIJvQoH/SZ8e/AhZo8jHnbCpmrBdGDwC3D6A4Q=
-X-Received: by 2002:a17:90b:2e4b:b0:2ee:741c:e9f4 with SMTP id
- 98e67ed59e1d1-308236344acmr1237773a91.11.1744328964490; Thu, 10 Apr 2025
- 16:49:24 -0700 (PDT)
+	s=arc-20240116; t=1744328999; c=relaxed/simple;
+	bh=nCO1u3KxlnXicjQs2ZMDIznduE5lzcYRi4H+ojdvQM0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=hSy+C1HO6F7dHwG4NlSM4O6kXRPPWm5paPd3/g5GHVyEPny+AIyoc8RIJYegqOe4URKnuX3nc/5biADGB3JvnZZLe+QSxWqs8v9qbrCUgpSg7laLW7rQZYcEINegXj+1aXVR6taTu+yL5TTTCH9iYODsINEcaH6YEIPh6yGr7m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ODI6pEIm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B3EBC4CEDD;
+	Thu, 10 Apr 2025 23:49:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744328999;
+	bh=nCO1u3KxlnXicjQs2ZMDIznduE5lzcYRi4H+ojdvQM0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ODI6pEIm1rJrGfkB6/3qgWFybzSN9rUi6au+XuctU5B5zEU/JsXSJWGHQ1XO47YGZ
+	 3jbFxEGq9KYvt2kcpBQtiS2sQEfktgZTNLZePsuNRokIsj1n3B8IIx69KEGJB67mVA
+	 gT//7YXjA0QqylSpyRy9SYlGozEmy2O1bY6oqyKHmp783dOO69ucOLmF/FZ4zZtr2j
+	 uN8mZL8NCXK0Hi1/hBuZ75gBA/RfhBo8+Kfn3v+dWjh+7D7IxuoMEDuzBToOqUlXB/
+	 GcU4tsd/bS5rjPK6qJtshsOY0M5HarbGWPyQOmXI2yagbtDy320AsHuYrLKbZuMKhY
+	 s9GESfV+/JuQA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAE23380CEF4;
+	Thu, 10 Apr 2025 23:50:37 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250409214606.2000194-1-ameryhung@gmail.com> <20250409214606.2000194-3-ameryhung@gmail.com>
-In-Reply-To: <20250409214606.2000194-3-ameryhung@gmail.com>
-From: Martin KaFai Lau <iamkafai@gmail.com>
-Date: Thu, 10 Apr 2025 16:49:13 -0700
-X-Gm-Features: ATxdqUFrWO9PLHRjLCTTC5S2G2xd8VCDlI-waSfkXYK8iJuYiS5rqEWzv_9a8zQ
-Message-ID: <CABx7vpWv7+q6zhPF_3acKGgThrzs+6r4=PtqJFndfWie8miOWg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 02/10] bpf: net_sched: Support implementation
- of Qdisc_ops in bpf
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v7 00/10] bpf qdisc
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174432903676.3863413.8348102163001498736.git-patchwork-notify@kernel.org>
+Date: Thu, 10 Apr 2025 23:50:36 +0000
+References: <20250409214606.2000194-1-ameryhung@gmail.com>
+In-Reply-To: <20250409214606.2000194-1-ameryhung@gmail.com>
 To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, edumazet@google.com, kuba@kernel.org, 
-	xiyou.wangcong@gmail.com, jhs@mojatatu.com, martin.lau@kernel.org, 
-	jiri@resnulli.us, stfomichev@gmail.com, toke@redhat.com, sinquersw@gmail.com, 
-	ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn, 
-	yepeilin.cs@gmail.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com,
+ andrii@kernel.org, daniel@iogearbox.net, edumazet@google.com,
+ kuba@kernel.org, xiyou.wangcong@gmail.com, jhs@mojatatu.com,
+ martin.lau@kernel.org, jiri@resnulli.us, stfomichev@gmail.com,
+ toke@redhat.com, sinquersw@gmail.com, ekarani.silvestre@ccc.ufcg.edu.br,
+ yangpeihao@sjtu.edu.cn, yepeilin.cs@gmail.com, kernel-team@meta.com
 
-On Wed, Apr 9, 2025 at 2:47=E2=80=AFPM Amery Hung <ameryhung@gmail.com> wro=
-te:
-> +static int bpf_qdisc_sk_buff_access(struct bpf_verifier_log *log,
-> +                                   const struct bpf_reg_state *reg,
-> +                                   int off, size_t *end)
-> +{
-> +       switch (off) {
-> +       case offsetof(struct sk_buff, tstamp):
-> +               *end =3D offsetofend(struct sk_buff, tstamp);
-> +               break;
-> +       case offsetof(struct sk_buff, priority):
-> +               *end =3D offsetofend(struct sk_buff, priority);
-> +               break;
-> +       case offsetof(struct sk_buff, mark):
-> +               *end =3D offsetofend(struct sk_buff, mark);
-> +               break;
-> +       case offsetof(struct sk_buff, queue_mapping):
-> +               *end =3D offsetofend(struct sk_buff, queue_mapping);
-> +               break;
-> +       case offsetof(struct sk_buff, cb) + offsetof(struct qdisc_skb_cb,=
- tc_classid):
-> +               *end =3D offsetof(struct sk_buff, cb) +
-> +                      offsetofend(struct qdisc_skb_cb, tc_classid);
-> +               break;
-> +       case offsetof(struct sk_buff, cb) + offsetof(struct qdisc_skb_cb,=
- data[0]) ...
-> +            offsetof(struct sk_buff, cb) + offsetof(struct qdisc_skb_cb,
-> +                                                    data[QDISC_CB_PRIV_L=
-EN - 1]):
-> +               *end =3D offsetof(struct sk_buff, cb) +
-> +                      offsetofend(struct qdisc_skb_cb, data[QDISC_CB_PRI=
-V_LEN - 1]);
-> +               break;
-> +       case offsetof(struct sk_buff, tc_index):
-> +               *end =3D offsetofend(struct sk_buff, tc_index);
-> +               break;
+Hello:
 
-I only kept the WRITE access to tstamp and data[]. Removed everything
-else. It can be revisited when they are really needed in the future.
+This series was applied to bpf/bpf-next.git (net)
+by Martin KaFai Lau <martin.lau@kernel.org>:
+
+On Wed,  9 Apr 2025 14:45:56 -0700 you wrote:
+> Hi all,
+> 
+> This patchset aims to support implementing qdisc using bpf struct_ops.
+> This version takes a step back and only implements the minimum support
+> for bpf qdisc. 1) support of adding skb to bpf_list and bpf_rbtree
+> directly and 2) classful qdisc are deferred to future patchsets. In
+> addition, we only allow attaching bpf qdisc to root or mq for now.
+> This is to prevent accidentally breaking exisiting classful qdiscs
+> that rely on data in a child qdisc. This limit may be lifted in the
+> future after careful inspection.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v7,01/10] bpf: Prepare to reuse get_ctx_arg_idx
+    https://git.kernel.org/bpf/bpf-next/c/a5c234d9bac6
+  - [bpf-next,v7,02/10] bpf: net_sched: Support implementation of Qdisc_ops in bpf
+    (no matching commit)
+  - [bpf-next,v7,03/10] bpf: net_sched: Add basic bpf qdisc kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/81bb1c2c3e8e
+  - [bpf-next,v7,04/10] bpf: net_sched: Add a qdisc watchdog timer
+    https://git.kernel.org/bpf/bpf-next/c/f2ccce960e92
+  - [bpf-next,v7,05/10] bpf: net_sched: Support updating bstats
+    https://git.kernel.org/bpf/bpf-next/c/9658e4249727
+  - [bpf-next,v7,06/10] bpf: net_sched: Disable attaching bpf qdisc to non root
+    https://git.kernel.org/bpf/bpf-next/c/0ddc97ad5337
+  - [bpf-next,v7,07/10] libbpf: Support creating and destroying qdisc
+    https://git.kernel.org/bpf/bpf-next/c/8c52471cd771
+  - [bpf-next,v7,08/10] selftests/bpf: Add a basic fifo qdisc test
+    https://git.kernel.org/bpf/bpf-next/c/cb7e598ef547
+  - [bpf-next,v7,09/10] selftests/bpf: Add a bpf fq qdisc to selftest
+    https://git.kernel.org/bpf/bpf-next/c/69dfd77a5adc
+  - [bpf-next,v7,10/10] selftests/bpf: Test attaching bpf qdisc to mq and non root
+    https://git.kernel.org/bpf/bpf-next/c/93cb5375fb16
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
