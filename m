@@ -1,360 +1,176 @@
-Return-Path: <bpf+bounces-55685-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55686-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D209A84B36
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 19:40:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3F50A84B4D
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 19:43:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79D8319E5F44
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:40:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DF484E3EBF
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 17:41:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CED028CF47;
-	Thu, 10 Apr 2025 17:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F1CA28EA74;
+	Thu, 10 Apr 2025 17:40:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UAtJe1sx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="la11uUvA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4266928C5D7
-	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 17:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E9827EC7C
+	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 17:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744306630; cv=none; b=P3SuT/BxMHL6KJfhYTHFJWkZ6ZzAgrxU9ZFfoNK9hpP2QPLDDKx3zJqgCtRPXBiLSArAHNcvEQ91Yb6+j909mwmCMzgAg28Em+LIp0sZGvA6xdIe9hlMJ/KwGt5lZQ2QrELudrBqiaDAzebLIvzXA75vnkv/8p1o2wDwGfPktrg=
+	t=1744306809; cv=none; b=r7a6QEYcLLQojxCYcjZ3CylbQGZtYtL+fCTlTQpbBnmyIEjBX9EktmkwztF3k3r2h3Somy678YcuGsaH4LeCc928BE+rXMfcO0TkUBqYDp8M/SekuzLjhTuxll2yMy+WNyQGz8prELIVgfVdZF0eNhNuwTsR+BDt/kPSuYeGnFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744306630; c=relaxed/simple;
-	bh=+ixP1qHJBFjj59ZtGOMdYOK7HgE7wWblrGVYMQO0l7I=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=C/fyD3rfRN1pIP0UHeB3jdj3Dn8pmCXKprQjEvl0YOXtxySr/DGqUHb283rpw3UJgGLReOh9QQYx+JotMzeKm8WIQTeGOBrsvZ9VjkIdY2+84xT1vRIqeO6a4aIV1MH2Hbea7m5HYoRrwClQgrB6XOY+fprFq/dOv5m2tb+9eNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UAtJe1sx; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ff8340d547so962287a91.2
-        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 10:37:07 -0700 (PDT)
+	s=arc-20240116; t=1744306809; c=relaxed/simple;
+	bh=/QY0OUD74xC6ub9tTN7cXB+XDq5m9DDuxwRk2aSbyjM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=T5zGviMmUyihYVDwO0CSKlye2gZYPb0KRB+L28D6FGCgI1J1n0exCr8lZrWjX13/hS2Hi/GQBowKo5A0zWPkUmwVUJcm3s1bawNjI2cKbZxgZfou2SD8tmzDygZwNgvykze7s2JJTT1LhIgQQ0OBsceXJJhGHDDfoJzFX/zStRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=la11uUvA; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-73972a54919so1087432b3a.3
+        for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 10:40:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1744306627; x=1744911427; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ckBZYcyyJUN9FjcUaUL5/ekJZ+dJKWbrJB0EF0qu50A=;
-        b=UAtJe1sxMef7RiCPyfLSDNtLGATsM0Zgoa/S3eZypn5bvgWP9IVrPzgfcWy2BYVeQB
-         BlRF0eCcVLGWKv3Mu4bJd3xc6vR5pr1ywEl9dRYsHMcEO3XyKYAbdtJWMHBDvZC7YVtC
-         cuYNxqOJi6f+GoeZcPHNtr4P2qAJbVNqOi+ygO7OENKW3VJ/wEP6zFGrNiX0hGxlt8Lp
-         OkD37m1uD1vWLniDg5qzj9rna+fRRZ86dCRD5CdgDhj2AIEwtJSeRMW5CQinVeue77hZ
-         gHqBMmp56Am7HrXl8z+PXRkBQaM/6w90Jccz7SdEf8zCCu9G8VxZXYt0VDuankWRITSo
-         vjuA==
+        d=gmail.com; s=20230601; t=1744306807; x=1744911607; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VWLxg7YSdy1xycho3fz494JGp1UvdqfonTlamsRaPUg=;
+        b=la11uUvAhpKUCpOkbQK6SgjymjzZfNXin0wbq5rSVwqjKyOqi3qHF1KUg78DEd44+B
+         oOHRcbRq9NBMwq0ns56X7+QfM8Z8AXpb6cxoZfUiQYvfGewMO+bcK4XTOPaQfDhfVfiI
+         nYc2tgfArFhwtyicmDurjoTzA/OAr3DrDjhu4mDakpvwbA6oGbbDJk66LFk36QiSRAuC
+         AJKOda4xSIRSFDRQ/OJoYEpAtH3ouALecCpeX3OYjv/J+9kRUrPEn7xSz2+eO0HATN8d
+         WO72Mf4oLbNp3uGoTH6TMzdIgcS5WVI0EYt8/++NUcug/yz0LME1oLNY+dSpSOBVGaHz
+         mJeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744306627; x=1744911427;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ckBZYcyyJUN9FjcUaUL5/ekJZ+dJKWbrJB0EF0qu50A=;
-        b=A+vQy+Rpo1dyktkXv8PfwvUA9dGXrohN1oMBBrOPZF4CjGIJI8lULH8TUBacUUyyhg
-         pfSY2imxLiWVXTbMJXqedXGWXgta2w7dxXjPISK8ivhH0aPv0N2Fv+ObZCUzVTt3Buvi
-         QeIi9nMSrkaZIVUXO4EQamN+erVxNungbczx7eO/PsVjYhxzNGadhMMiccSgISyOTFLv
-         6/QZAK1xAmBW6bUnt/EzhOzzb1pFtyQPRM/zf7Ug2KJScQI4q2dS8mr8ofVfDLtjGbml
-         /WG14q34hEDVIimu4NH81HfA+VoWPE+HVlN0P9CCFkAAO2+6WLe3/6yNguGZxit4yU9t
-         +JOg==
-X-Forwarded-Encrypted: i=1; AJvYcCUo5ZM90HMxo1vnJWuP7ktm+wzHufMA4GhsuTw3r9DxyP9FXr8v3DiKGMpbh23HmkZslOM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyrzNddOM7THjwlyuANRG3in1R6Rzq8qkqbjlLe02Jd7JAuq9A3
-	JumGeHs9iAnOKOes0+R5SFyiV7DfRsNgymhRt6ld+P0E+likT/p6ge3BWQQYMEn6mSWfbTl23pk
-	gSUzOJA==
-X-Google-Smtp-Source: AGHT+IG1qOFPzSDf9Ewl3xwJO7ONlzQPJXL9CVsc0lXzOmGKPKFYYwMJamiZf+cuyQopWHvr1ogG7wLUF1hJ
-X-Received: from pjbsd3.prod.google.com ([2002:a17:90b:5143:b0:2ea:3a1b:f493])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:3a46:b0:2ee:af31:a7bd
- with SMTP id 98e67ed59e1d1-30718b547a9mr5165280a91.5.1744306627554; Thu, 10
- Apr 2025 10:37:07 -0700 (PDT)
-Date: Thu, 10 Apr 2025 10:36:31 -0700
-In-Reply-To: <20250410173631.1713627-1-irogers@google.com>
+        d=1e100.net; s=20230601; t=1744306807; x=1744911607;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VWLxg7YSdy1xycho3fz494JGp1UvdqfonTlamsRaPUg=;
+        b=MrPyMIztvTVCuusfVH7cClc3PZnHtbepFN9sd2kaOBXPL5jMIAyFcZrJu6rCNtkzF0
+         +H/RadlwzYof02dYvMwCD69tAIbNNDz75cvCIPDShSJ20kdn2Y//dfoDhb4aOdv2vcvf
+         yBuqRazdpeA90lQpD+Qwrw6rw2na8vdaiDn5OQZA9r4cENGm18MMpRjpbWUQpCI5y/sZ
+         c+1clOVML1VBVQpveB54n+77tOvaxAeM4hMNUvjya99zZv3K9yT2WFhInKYeJhsTYRn2
+         LqZwfTXhEe7rfxSl+2k5enirPd41y/7BS4REwtbax5Q9bv91wi2UMGwS8h/gTuVvxGa2
+         tY3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXaKmSCNQIU55kaBe5vYoBfHGZ4Br7CznBsf4phY1SfhMWE4t9kHMI1nmSOasox3nIykTU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxIgoA/JX+968LY68KTmgzKbNNgedqIWAZigvhtOMxf2YBYMjWH
+	DbWZAPmgBFO4T1ANJMNdssa3tYRaMA0btYnArpvx9Dhhw0uRn5z6lQ5///IRmMm6cWK+xXCueUB
+	KCgpC3zYvQnJKxu5SqTr5DfTSXC0=
+X-Gm-Gg: ASbGncv4GNuyWy9DUJgBJ9pBg8ugo1rlL2hQgznTKYFwAPxYMmHKNuGoM348adSMqfO
+	rEdw+0oIh2OIWyH5eVbR3nTYIvEmaXmG9wUZHFw9URxxCZp+RY4uxsYSWl92lRNohdvHI6yMrVV
+	eTLY6KuUJUUbYlNyTz5hX5fP0uJRAHCdHfVH7L
+X-Google-Smtp-Source: AGHT+IG4ZbBgQEBk8v2yBCa7NjcYqsAouaZfGP0ajqx40CotAzYVGnSEQfXLnzWDrTtq1K3MDPPftTxasCgVt/yRvT4=
+X-Received: by 2002:a05:6a00:1147:b0:736:4abf:2961 with SMTP id
+ d2e1a72fcca58-73bc0b8f4famr4316165b3a.17.1744306807423; Thu, 10 Apr 2025
+ 10:40:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250410173631.1713627-1-irogers@google.com>
-X-Mailer: git-send-email 2.49.0.604.gff1f9ca942-goog
-Message-ID: <20250410173631.1713627-13-irogers@google.com>
-Subject: [PATCH v2 12/12] perf thread_map: Remove uid options
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, James Clark <james.clark@linaro.org>, 
-	Dapeng Mi <dapeng1.mi@linux.intel.com>, Thomas Richter <tmricht@linux.ibm.com>, 
-	Veronika Molnarova <vmolnaro@redhat.com>, Hao Ge <gehao@kylinos.cn>, 
-	Howard Chu <howardchu95@gmail.com>, Weilin Wang <weilin.wang@intel.com>, 
-	Levi Yun <yeoreum.yun@arm.com>, "Dr. David Alan Gilbert" <linux@treblig.org>, 
-	Dominique Martinet <asmadeus@codewreck.org>, Xu Yang <xu.yang_2@nxp.com>, 
-	Tengda Wu <wutengda@huaweicloud.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+MIME-Version: 1.0
+References: <20250408184104.3962949-1-ihor.solodrai@linux.dev>
+ <CAEf4BzYwLHDMgWW8m2_exZvGmU7otODRueJx3CvbUPoMGEPNuA@mail.gmail.com> <9cc4191bf68d1943c49b68d8fefe89db8a114d2f@linux.dev>
+In-Reply-To: <9cc4191bf68d1943c49b68d8fefe89db8a114d2f@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 10 Apr 2025 10:39:55 -0700
+X-Gm-Features: ATxdqUFoo0rbj-ppQs0XKfBQ3Zov7mzfWw7kwKY_Mxb6v6vwq0J7L8J5Cki4S0w
+Message-ID: <CAEf4BzYDJM4MCHFAGhZaV9p4xByYuuWi-ZxXT1TDu4YTd9iZMQ@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: check for empty BTF data section in btf_parse_elf
+To: Ihor Solodrai <ihor.solodrai@linux.dev>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, 
+	bpf@vger.kernel.org, mykolal@fb.com, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Now the target doesn't have a uid, it is handled through BPF filters,
-remove the uid options to thread_map creation. Tidy up the functions
-used in tests to avoid passing unused arguments.
+On Thu, Apr 10, 2025 at 10:34=E2=80=AFAM Ihor Solodrai <ihor.solodrai@linux=
+.dev> wrote:
+>
+> On 4/9/25 4:14 PM, Andrii Nakryiko wrote:
+> > On Tue, Apr 8, 2025 at 11:41=E2=80=AFAM Ihor Solodrai <ihor.solodrai@li=
+nux.dev> wrote:
+> >>
+> >> A valid ELF file may contain a SHT_NOBITS .BTF section. This case is
+> >> not handled correctly in btf_parse_elf, which leads to a segfault.
+> >>
+> >> Add a null check for a buffer returned by elf_getdata() before
+> >> proceeding with its processing.
+> >>
+> >> Bug report: https://github.com/libbpf/libbpf/issues/894
+> >>
+> >> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
+> >> ---
+> >>  tools/lib/bpf/btf.c | 6 ++++++
+> >>  1 file changed, 6 insertions(+)
+> >>
+> >> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> >> index 38bc6b14b066..90599f0311bd 100644
+> >> --- a/tools/lib/bpf/btf.c
+> >> +++ b/tools/lib/bpf/btf.c
+> >> @@ -1201,6 +1201,12 @@ static struct btf *btf_parse_elf(const char *pa=
+th, struct btf *base_btf,
+> >>                 goto done;
+> >>         }
+> >>
+> >> +       if (!secs.btf_data->d_buf) {
+> >> +               pr_warn("BTF data is empty in %s\n", path);
+> >> +               err =3D -ENODATA;
+> >> +               goto done;
+> >> +       }
+> >> +
+> >
+> > let's handle this more generally for all BTF data sections in
+> > btf_find_elf_sections()?
+>
+> Sure. I think it makes sense to check for the section type before
+> attempting to load a buffer like this:
+>
+> @@ -1148,6 +1148,12 @@ static int btf_find_elf_sections(Elf *elf, const c=
+har *path, struct btf_elf_secs
+>                 else
+>                         continue;
+>
+> +               if (sh.sh_type =3D=3D SHT_NOBITS) {
+> +                       pr_warn("failed to get section(%d, %s) data from =
+%s\n",
+> +                               idx, name, path);
+> +                       goto err;
+> +               }
+> +
+>
+> But then we might as well test for the expected section type, which is
+> supposed to be SHT_PROGBITS, if I understand correctly.
+>
+> What I don't know is whether this is *the only* possible expected type
+> (for ".BTF", ".BTF.ext" and ".BTF.base"), or are there others?
+>
+> Andrii, do you know if that's the case?
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/event-times.c             |  4 +--
- tools/perf/tests/keep-tracking.c           |  2 +-
- tools/perf/tests/mmap-basic.c              |  2 +-
- tools/perf/tests/openat-syscall-all-cpus.c |  2 +-
- tools/perf/tests/openat-syscall.c          |  2 +-
- tools/perf/tests/perf-time-to-tsc.c        |  2 +-
- tools/perf/tests/switch-tracking.c         |  2 +-
- tools/perf/tests/thread-map.c              |  2 +-
- tools/perf/util/evlist.c                   |  2 +-
- tools/perf/util/python.c                   | 10 +++----
- tools/perf/util/thread_map.c               | 32 ++--------------------
- tools/perf/util/thread_map.h               |  6 ++--
- 12 files changed, 20 insertions(+), 48 deletions(-)
+yeah, I think it has to be SHT_PROGBITS, everything else is either
+zero-initialized section (SHT_NOBITS), which is useless for BTF data.
+Or it's some other special type of section.
 
-diff --git a/tools/perf/tests/event-times.c b/tools/perf/tests/event-times.c
-index 2148024b4f4a..ae3b98bb42cf 100644
---- a/tools/perf/tests/event-times.c
-+++ b/tools/perf/tests/event-times.c
-@@ -62,7 +62,7 @@ static int attach__current_disabled(struct evlist *evlist)
- 
- 	pr_debug("attaching to current thread as disabled\n");
- 
--	threads = thread_map__new(-1, getpid(), UINT_MAX);
-+	threads = thread_map__new_by_tid(getpid());
- 	if (threads == NULL) {
- 		pr_debug("thread_map__new\n");
- 		return -1;
-@@ -88,7 +88,7 @@ static int attach__current_enabled(struct evlist *evlist)
- 
- 	pr_debug("attaching to current thread as enabled\n");
- 
--	threads = thread_map__new(-1, getpid(), UINT_MAX);
-+	threads = thread_map__new_by_tid(getpid());
- 	if (threads == NULL) {
- 		pr_debug("failed to call thread_map__new\n");
- 		return -1;
-diff --git a/tools/perf/tests/keep-tracking.c b/tools/perf/tests/keep-tracking.c
-index 5a3b2bed07f3..eafb49eb0b56 100644
---- a/tools/perf/tests/keep-tracking.c
-+++ b/tools/perf/tests/keep-tracking.c
-@@ -78,7 +78,7 @@ static int test__keep_tracking(struct test_suite *test __maybe_unused, int subte
- 	int found, err = -1;
- 	const char *comm;
- 
--	threads = thread_map__new(-1, getpid(), UINT_MAX);
-+	threads = thread_map__new_by_tid(getpid());
- 	CHECK_NOT_NULL__(threads);
- 
- 	cpus = perf_cpu_map__new_online_cpus();
-diff --git a/tools/perf/tests/mmap-basic.c b/tools/perf/tests/mmap-basic.c
-index bd2106628b34..04b547c6bdbe 100644
---- a/tools/perf/tests/mmap-basic.c
-+++ b/tools/perf/tests/mmap-basic.c
-@@ -46,7 +46,7 @@ static int test__basic_mmap(struct test_suite *test __maybe_unused, int subtest
- 	char sbuf[STRERR_BUFSIZE];
- 	struct mmap *md;
- 
--	threads = thread_map__new(-1, getpid(), UINT_MAX);
-+	threads = thread_map__new_by_tid(getpid());
- 	if (threads == NULL) {
- 		pr_debug("thread_map__new\n");
- 		return -1;
-diff --git a/tools/perf/tests/openat-syscall-all-cpus.c b/tools/perf/tests/openat-syscall-all-cpus.c
-index fb114118c876..3644d6f52c07 100644
---- a/tools/perf/tests/openat-syscall-all-cpus.c
-+++ b/tools/perf/tests/openat-syscall-all-cpus.c
-@@ -28,7 +28,7 @@ static int test__openat_syscall_event_on_all_cpus(struct test_suite *test __mayb
- 	struct evsel *evsel;
- 	unsigned int nr_openat_calls = 111, i;
- 	cpu_set_t cpu_set;
--	struct perf_thread_map *threads = thread_map__new(-1, getpid(), UINT_MAX);
-+	struct perf_thread_map *threads = thread_map__new_by_tid(getpid());
- 	char sbuf[STRERR_BUFSIZE];
- 	char errbuf[BUFSIZ];
- 
-diff --git a/tools/perf/tests/openat-syscall.c b/tools/perf/tests/openat-syscall.c
-index 131b62271bfa..b54cbe5f1808 100644
---- a/tools/perf/tests/openat-syscall.c
-+++ b/tools/perf/tests/openat-syscall.c
-@@ -20,7 +20,7 @@ static int test__openat_syscall_event(struct test_suite *test __maybe_unused,
- 	int err = TEST_FAIL, fd;
- 	struct evsel *evsel;
- 	unsigned int nr_openat_calls = 111, i;
--	struct perf_thread_map *threads = thread_map__new(-1, getpid(), UINT_MAX);
-+	struct perf_thread_map *threads = thread_map__new_by_tid(getpid());
- 	char sbuf[STRERR_BUFSIZE];
- 	char errbuf[BUFSIZ];
- 
-diff --git a/tools/perf/tests/perf-time-to-tsc.c b/tools/perf/tests/perf-time-to-tsc.c
-index d3e40fa5482c..d4437410c99f 100644
---- a/tools/perf/tests/perf-time-to-tsc.c
-+++ b/tools/perf/tests/perf-time-to-tsc.c
-@@ -90,7 +90,7 @@ static int test__perf_time_to_tsc(struct test_suite *test __maybe_unused, int su
- 	struct mmap *md;
- 
- 
--	threads = thread_map__new(-1, getpid(), UINT_MAX);
-+	threads = thread_map__new_by_tid(getpid());
- 	CHECK_NOT_NULL__(threads);
- 
- 	cpus = perf_cpu_map__new_online_cpus();
-diff --git a/tools/perf/tests/switch-tracking.c b/tools/perf/tests/switch-tracking.c
-index 8df3f9d9ffd2..96f880c922d1 100644
---- a/tools/perf/tests/switch-tracking.c
-+++ b/tools/perf/tests/switch-tracking.c
-@@ -351,7 +351,7 @@ static int test__switch_tracking(struct test_suite *test __maybe_unused, int sub
- 	const char *comm;
- 	int err = -1;
- 
--	threads = thread_map__new(-1, getpid(), UINT_MAX);
-+	threads = thread_map__new_by_tid(getpid());
- 	if (!threads) {
- 		pr_debug("thread_map__new failed!\n");
- 		goto out_err;
-diff --git a/tools/perf/tests/thread-map.c b/tools/perf/tests/thread-map.c
-index 1fe521466bf4..54209592168d 100644
---- a/tools/perf/tests/thread-map.c
-+++ b/tools/perf/tests/thread-map.c
-@@ -115,7 +115,7 @@ static int test__thread_map_remove(struct test_suite *test __maybe_unused, int s
- 	TEST_ASSERT_VAL("failed to allocate map string",
- 			asprintf(&str, "%d,%d", getpid(), getppid()) >= 0);
- 
--	threads = thread_map__new_str(str, NULL, 0, false);
-+	threads = thread_map__new_str(str, /*tid=*/NULL, /*all_threads=*/false);
- 	free(str);
- 
- 	TEST_ASSERT_VAL("failed to allocate thread_map",
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 2e1f14bc8461..8a7ec845a611 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -1006,7 +1006,7 @@ int evlist__create_maps(struct evlist *evlist, struct target *target)
- 	 * per-thread data. thread_map__new_str will call
- 	 * thread_map__new_all_cpus to enumerate all threads.
- 	 */
--	threads = thread_map__new_str(target->pid, target->tid, UINT_MAX, all_threads);
-+	threads = thread_map__new_str(target->pid, target->tid, all_threads);
- 
- 	if (!threads)
- 		return -1;
-diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
-index f3c05da25b4a..56f8ae4cebf7 100644
---- a/tools/perf/util/python.c
-+++ b/tools/perf/util/python.c
-@@ -566,14 +566,14 @@ struct pyrf_thread_map {
- static int pyrf_thread_map__init(struct pyrf_thread_map *pthreads,
- 				 PyObject *args, PyObject *kwargs)
- {
--	static char *kwlist[] = { "pid", "tid", "uid", NULL };
--	int pid = -1, tid = -1, uid = UINT_MAX;
-+	static char *kwlist[] = { "pid", "tid", NULL };
-+	int pid = -1, tid = -1;
- 
--	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iii",
--					 kwlist, &pid, &tid, &uid))
-+	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|ii",
-+					 kwlist, &pid, &tid))
- 		return -1;
- 
--	pthreads->threads = thread_map__new(pid, tid, uid);
-+	pthreads->threads = thread_map__new(pid, tid);
- 	if (pthreads->threads == NULL)
- 		return -1;
- 	return 0;
-diff --git a/tools/perf/util/thread_map.c b/tools/perf/util/thread_map.c
-index b5f12390c355..ca193c1374ed 100644
---- a/tools/perf/util/thread_map.c
-+++ b/tools/perf/util/thread_map.c
-@@ -72,7 +72,7 @@ struct perf_thread_map *thread_map__new_by_tid(pid_t tid)
- 	return threads;
- }
- 
--static struct perf_thread_map *__thread_map__new_all_cpus(uid_t uid)
-+static struct perf_thread_map *thread_map__new_all_cpus(void)
- {
- 	DIR *proc;
- 	int max_threads = 32, items, i;
-@@ -98,15 +98,6 @@ static struct perf_thread_map *__thread_map__new_all_cpus(uid_t uid)
- 		if (*end) /* only interested in proper numerical dirents */
- 			continue;
- 
--		snprintf(path, sizeof(path), "/proc/%s", dirent->d_name);
--
--		if (uid != UINT_MAX) {
--			struct stat st;
--
--			if (stat(path, &st) != 0 || st.st_uid != uid)
--				continue;
--		}
--
- 		snprintf(path, sizeof(path), "/proc/%d/task", pid);
- 		items = scandir(path, &namelist, filter, NULL);
- 		if (items <= 0) {
-@@ -157,24 +148,11 @@ static struct perf_thread_map *__thread_map__new_all_cpus(uid_t uid)
- 	goto out_closedir;
- }
- 
--struct perf_thread_map *thread_map__new_all_cpus(void)
--{
--	return __thread_map__new_all_cpus(UINT_MAX);
--}
--
--struct perf_thread_map *thread_map__new_by_uid(uid_t uid)
--{
--	return __thread_map__new_all_cpus(uid);
--}
--
--struct perf_thread_map *thread_map__new(pid_t pid, pid_t tid, uid_t uid)
-+struct perf_thread_map *thread_map__new(pid_t pid, pid_t tid)
- {
- 	if (pid != -1)
- 		return thread_map__new_by_pid(pid);
- 
--	if (tid == -1 && uid != UINT_MAX)
--		return thread_map__new_by_uid(uid);
--
- 	return thread_map__new_by_tid(tid);
- }
- 
-@@ -289,15 +267,11 @@ struct perf_thread_map *thread_map__new_by_tid_str(const char *tid_str)
- 	goto out;
- }
- 
--struct perf_thread_map *thread_map__new_str(const char *pid, const char *tid,
--				       uid_t uid, bool all_threads)
-+struct perf_thread_map *thread_map__new_str(const char *pid, const char *tid, bool all_threads)
- {
- 	if (pid)
- 		return thread_map__new_by_pid_str(pid);
- 
--	if (!tid && uid != UINT_MAX)
--		return thread_map__new_by_uid(uid);
--
- 	if (all_threads)
- 		return thread_map__new_all_cpus();
- 
-diff --git a/tools/perf/util/thread_map.h b/tools/perf/util/thread_map.h
-index 00ec05fc1656..fc16d87f32fb 100644
---- a/tools/perf/util/thread_map.h
-+++ b/tools/perf/util/thread_map.h
-@@ -11,13 +11,11 @@ struct perf_record_thread_map;
- struct perf_thread_map *thread_map__new_dummy(void);
- struct perf_thread_map *thread_map__new_by_pid(pid_t pid);
- struct perf_thread_map *thread_map__new_by_tid(pid_t tid);
--struct perf_thread_map *thread_map__new_by_uid(uid_t uid);
--struct perf_thread_map *thread_map__new_all_cpus(void);
--struct perf_thread_map *thread_map__new(pid_t pid, pid_t tid, uid_t uid);
-+struct perf_thread_map *thread_map__new(pid_t pid, pid_t tid);
- struct perf_thread_map *thread_map__new_event(struct perf_record_thread_map *event);
- 
- struct perf_thread_map *thread_map__new_str(const char *pid,
--		const char *tid, uid_t uid, bool all_threads);
-+		const char *tid, bool all_threads);
- 
- struct perf_thread_map *thread_map__new_by_tid_str(const char *tid_str);
- 
--- 
-2.49.0.604.gff1f9ca942-goog
-
+>
+> >
+> > let's also use similar style of warning messaging to others, maybe
+> > something like
+> >
+> > "failed to get section(%s, %d) data from %s\n" ?
+> >
+> >
+> > pw-bot: cr
+> >
+> >>         if (secs.btf_base_data) {
+> >>                 dist_base_btf =3D btf_new(secs.btf_base_data->d_buf, s=
+ecs.btf_base_data->d_size,
+> >>                                         NULL);
+> >> --
+> >> 2.49.0
+> >>
+> >>
 
