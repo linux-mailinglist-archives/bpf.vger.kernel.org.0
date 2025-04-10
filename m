@@ -1,170 +1,254 @@
-Return-Path: <bpf+bounces-55612-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55613-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 403F3A835AB
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 03:22:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C531A83649
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 04:15:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 904F28C118F
-	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 01:21:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3244D176413
+	for <lists+bpf@lfdr.de>; Thu, 10 Apr 2025 02:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ECE31E7C10;
-	Thu, 10 Apr 2025 01:19:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC391C863A;
+	Thu, 10 Apr 2025 02:13:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GAcXiJHG"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="oGXzMqPn"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A173D1E3DEB
-	for <bpf@vger.kernel.org>; Thu, 10 Apr 2025 01:19:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FED918A6A9;
+	Thu, 10 Apr 2025 02:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744247958; cv=none; b=sdJMAousrqeuL5QaSrT5+jJOhVk29ZF42I+7RK0IJNwnpqRaAHIR+SSzmWpcZ/qVgYnPRsnPRuBjQtb8H3PUxrqzH42URa47NNh1bLaXr39jDQuvJH6SZojSGZVvviyWCrsovplf/rFfCdsMTukij+A5i9LFm0wZqitTNNaSRXI=
+	t=1744251237; cv=none; b=a/pEaPkaba+nukECgiKUCZY32D5OhIy/l1P8ArZyevcKgHeSkDcFWC2yapcaFRWClSzf0sUJyA7df3bo9USZdDUgLmLb7VKC99OxYUW/OtpE3SG1iQau2UtkHOGYKvU9n2CMUODyBcMG+MKMNjDkz5a0RLV/Bm63yS23Uy7JhiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744247958; c=relaxed/simple;
-	bh=+695x7pXlPBW4JoEVk0G/GsLItaAy4Iw2gNHwnHxeKU=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=IEKuKG2dr+EvqcrL2tkh55aFymem+vns/aI/LGWDhsctRzwS5u6I0ybphO53cxomT6z5Z7BLK5W8WCDd1iwwChP2gjraBSbwYFp+GhwDAyfMYF8fHs/JTMuyoVunhpkA9lgJwprIvmo8l/P+HPtZMLlgmgvigYgtAc7f2xk8ykk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GAcXiJHG; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1744251237; c=relaxed/simple;
+	bh=9u60sO7OOT1oWOmjPwikFu4rY64oDd58zik3I0OmYfo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jyrx9vcKh3bQBwlFUn5MCd03clO2cOnKXN0/VHVawSfJhx3OrL+vuYxCQixECWJov5lKBt9rI+r8GLFYxoRz9760wpu7sDj1ao+nLg7LgGmSn6bqt7pXWP/0AL3taPtxaXDAeo+2/qUhQxoOHG/dBa4OQKDjm6r/E2KJKIRCd1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=oGXzMqPn; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [IPV6:2601:646:8081:1f94:9d5:a0c2:3619:62ac] ([IPv6:2601:646:8081:1f94:9d5:a0c2:3619:62ac])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 53A29YJd3849252
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 9 Apr 2025 19:09:34 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 53A29YJd3849252
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025032001; t=1744250985;
+	bh=sYPb2HJP4fVpfYUaFUUZ0pgxUHfO2I9/b7H7IqJmj3c=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=oGXzMqPnDihlvH8csOG6X1vYEL5+OkVYip8jhTPp6IM9qVTa+TE2DQN/NL7CCufbI
+	 W70VoP5+eXYAecjlqh+Tn7MRcWyYYPY6ri9KgXYwsAfXP39A5RG5P/1U2MrIrPxIl4
+	 LgNJ7p5qe7PlXd1brGtIHKI9TjgO8NyN/0p80ooXB7kFpxcUb3DSe2qpaXbL6MYH5Y
+	 jkbPJIJLpQn1W597tFm89pO6yOJzSzHl/UbpTIyOav94ZVlYeTk/+v6ZOvSDveTwGk
+	 3WaanUXTgaBtSBGsUrLEl+lM6ukmEGPsrkHUnC15nBvJNz4rVyDO7jHqYWigKmp0ks
+	 M5Uu5VvWQnEFA==
+Message-ID: <e97a83a2-dabd-4dc3-b69a-840ca17d70b5@zytor.com>
+Date: Wed, 9 Apr 2025 19:09:28 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744247952;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VwjIhL5eq5nuQH6KgO5e7NYXc2vM8c1wzFZaJmX6O2s=;
-	b=GAcXiJHGnyDBkayIqUeCiyu7aMXAjter9wJQKpd97FONtEJHyKqKoDubyMXwzB1eWQfFoL
-	/83eZu+U7YthXohR6oeZYn4FdhhjnTIS3NqIVs/NexOPxf24HlwtTMd73gYpb3NwLJPisK
-	IkrroqAAaGWUJnaEeTYmMIJqFKlOUGM=
-Date: Thu, 10 Apr 2025 01:19:09 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
-Message-ID: <b560604b7b97a58d13c60655747b30a5b9f27a4d@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH bpf-next v1] bpf, sockmap: Introduce tracing capability
- for sockmap
-To: "Cong Wang" <xiyou.wangcong@gmail.com>
-Cc: bpf@vger.kernel.org, mrpre@163.com, "Alexei Starovoitov"
- <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>, "John
- Fastabend" <john.fastabend@gmail.com>, "Andrii Nakryiko"
- <andrii@kernel.org>, "Martin KaFai Lau" <martin.lau@linux.dev>, "Eduard
- Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong
- Song" <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>,
- "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
- "Jiri Olsa" <jolsa@kernel.org>, "Jakub Sitnicki" <jakub@cloudflare.com>,
- "Steven Rostedt" <rostedt@goodmis.org>, "Masami Hiramatsu"
- <mhiramat@kernel.org>, "Mathieu Desnoyers"
- <mathieu.desnoyers@efficios.com>, "David S. Miller"
- <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>, "Jakub
- Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>, "Simon
- Horman" <horms@kernel.org>, "Jesper Dangaard Brouer" <hawk@kernel.org>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-In-Reply-To: <Z/aosJ3uvzTZTEXS@pop-os.localdomain>
-References: <20250409102937.15632-1-jiayuan.chen@linux.dev>
- <Z/aosJ3uvzTZTEXS@pop-os.localdomain>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/13] Introduce parity_odd() and refactor redundant
+ parity code
+To: Yury Norov <yury.norov@gmail.com>, Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
+        joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
+        neil.armstrong@linaro.org, rfoss@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
+        dmitry.torokhov@gmail.com, mchehab@kernel.org, awalls@md.metrocast.net,
+        hverkuil@xs4all.nl, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, louis.peens@corigine.com, andrew+netdev@lunn.ch,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+        johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, akpm@linux-foundation.org, jdelvare@suse.com,
+        linux@roeck-us.net, alexandre.belloni@bootlin.com, pgaj@cadence.com,
+        alistair@popple.id.au, linux@rasmusvillemoes.dk,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+        oss-drivers@corigine.com, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+        brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
+        bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw, Frank.Li@nxp.com,
+        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+        david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
+        Yu-Chun Lin <eleanor15x@gmail.com>
+References: <20250409154356.423512-1-visitorckw@gmail.com>
+ <Z_amQp3gK5Dm8Qz3@yury> <Z/a5Qh/OeLT8JBS4@visitorckw-System-Product-Name>
+ <Z_a9YpE46Xf8581l@yury>
+Content-Language: en-US
+From: "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <Z_a9YpE46Xf8581l@yury>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-April 10, 2025 at 01:04, "Cong Wang" <xiyou.wangcong@gmail.com> wrote:
->=20
->=20On Wed, Apr 09, 2025 at 06:29:33PM +0800, Jiayuan Chen wrote:
->=20
->=20>=20
->=20> Sockmap has the same high-performance forwarding capability as XDP,=
- but
-> >=20
->=20>  operates at Layer 7.
-> >=20
->=20>=20=20
->=20>=20
->=20>  Introduce tracing capability for sockmap, similar to XDP, to trace=
- the
-> >=20
->=20>  execution results of BPF programs without modifying the programs
-> >=20
->=20>  themselves, similar to the existing trace_xdp_redirect{_map}.
-> >=20
->=20>=20=20
->=20>=20
->=20>  It is crucial for debugging BPF programs, especially in production
-> >=20
->=20>  environments.
-> >=20
->=20>=20=20
->=20>=20
->=20>  Additionally, a header file was added to bpf_trace.h to automatica=
-lly
-> >=20
->=20>  generate tracepoints.
-> >=20
->=20>=20=20
->=20>=20
->=20>  Test results:
-> >=20
->=20>  $ echo "1" > /sys/kernel/tracing/events/sockmap/enable
-> >=20
->=20>=20=20
->=20>=20
->=20>  skb:
-> >=20
->=20>  sockmap_redirect: sk=3D00000000d3266a8d, type=3Dskb, family=3D2, p=
-rotocol=3D6, \
-> >=20
->=20>  prog_id=3D73, length=3D256, action=3DPASS
-> >=20
->=20>=20=20
->=20>=20
->=20>  msg:
-> >=20
->=20>  sockmap_redirect: sk=3D00000000528c7614, type=3Dmsg, family=3D2, p=
-rotocol=3D6, \
-> >=20
->=20>  prog_id=3D185, length=3D5, action=3DREDIRECT
-> >=20
->=20>=20=20
->=20>=20
->=20>  tls:
-> >=20
->=20>  sockmap_redirect: sk=3D00000000d04d2224, type=3Dskb, family=3D2, p=
-rotocol=3D6, \
-> >=20
->=20>  prog_id=3D143, length=3D35, action=3DPASS
-> >=20
->=20>=20=20
->=20>=20
->=20>  strparser:
-> >=20
->=20>  sockmap_skb_strp_parse: sk=3D00000000ecab0b30, family=3D2, protoco=
-l=3D6, \
-> >=20
->=20>  prog_id=3D170, size=3D5
-> >=20
->=20
-> Nice work!
->=20
->=20While you are on it, could we also trace skb->_sk_redir bits too? It =
-is
->=20
->=20very useful to distinguish, at least, ingress from egress redirection=
-.
->=20
->=20Thanks!
->
+On 4/9/25 11:33, Yury Norov wrote:
+>>>
+>> I don't have a strong preference for the name, but if I had to guess
+>> the return value from the function prototype, I would intuitively
+>> expect an int to return "0 for even and 1 for odd," and a bool to
+>> return "true for even, false for odd." I recall Jiri and Jacob shared
+>> similar thoughts, which is why I felt adding _odd could provide better
+>> clarity.
+> 
+> I think they said they are convinced that parity should return 1 for
+> odd because of folding and __builtin_parity() arguments.
+> 
 
-Thanks for your suggestion!
-The skb->_sk_redir contains a lot of important information about
-redirection, so it's definitely worth including.
+And for bool, 0 == false, and 1 == true. In fact, the *definitions* for 
+false and true in C (but not C++) is:
+
+<stdbool.h>:
+typedef _Bool bool;
+#define false	0
+#define true	1
+
+If someone wants to make more clear, it would be better to put "typedef 
+bool bit_t" in a common header, but that personally seems ridiculous to me.
+   >>>> type from u8 to u64 for broader applicability, and updates its 
+return
+>>>> type from int to bool to make its usage and return semantics more
+>>>> intuitive-returning true for odd parity and false for even parity. It
+>>>> also adds __attribute_const__ to enable compiler optimizations.
+>>>
+>>> That's correct and nice, but can you support it with a bloat-o-meter's
+>>> before/after and/or asm snippets? I also think it worth to be a separate
+>>> patch, preferably the last patch in the series.
+>>>
+>> I quickly tested it with the x86 defconfig, and it appears that the
+>> generated code doesn't change. I forgot who requested the addition
+>> during the review process, but I initially thought it would either
+>> improve the generated code or leave it unchanged without significantly
+>> increasing the source code size.
+> 
+> That's what I actually expected, but was shy to guess openly. :). It's
+> hard to imagine how compiler may improve code generation in this case...
+> 
+> This attribute is used when there's an asm block, or some non-trivial
+> function call. In this case, the function is self-consistent and makes
+> no calls. And you see, const annotation raises more questions than
+> solves problems. Let's drop it.
+
+Ah yes; one of the quirks about gcc asm is that an asm is implicitly 
+assumed "const" (with no memory operands) or "pure" (with memory 
+operands) unless declared volatile or given an explicit "memory" clobber.
+
+So yes, the compiler can most definitely derive the constness from the 
+form of the function even in the variable case.
+
+I would still like to see __builtin_parity() being used as an 
+architecture opt-in; it can, of course, also be unconditionally used in 
+the constant case.
+
+So in the end one of these two become my preferred implementation, and I 
+really don't think it is very complicated:
+
+#ifndef use_builtin_parity
+#define use_builtin_parity(x) __builtin_constant_p(x)
+#endif
+
+static inline bool parity8(u8 val)
+{
+	if (use_builtin_parity(val))
+		return __builtin_parity(val);
+	val ^= val >> 4;
+	return (0x6996 >> (val & 0xf)) & 1;
+}
+
+static inline bool parity16(u16 val)
+{
+	if (use_builtin_parity(val))
+		return __builtin_parity(val);
+	return parity8(val ^ (val >> 8));
+}
+
+static inline bool parity32(u32 val)
+{
+	if (use_builtin_parity(val))
+		return __builtin_parity(val);
+	return parity16(val ^ (val >> 16));
+}
+
+static inline bool parity64(u64 val)
+{
+	if (use_builtin_parity(val))
+		return __builtin_parityll(val);
+	return parity32(val ^ (val >> 32));
+}
+
+This means that an architecture -- in particular, x86 -- can still ask 
+to use __builtin_parity*() directly. It means that architectures on 
+which __builtin_parity*() produces bad code should either complain to 
+the gcc/clang team and have it fixed, or we can add additional mechanism 
+for them to override the implementation at that time.
+
+The alternative is to stop worrying about overengineering, and just do 
+it once and for all:
+
+#ifndef parity8
+static inline bool parity8(u8 val)
+{
+	val ^= val >> 4;
+	return (0x6996 >> (val & 0xf)) & 1;
+}
+#endif
+
+#ifndef parity16
+static inline bool parity16(u16 val)
+{
+	return parity8(val ^ (val >> 8));
+}
+#endif
+
+#ifndef parity32
+static inline bool parity32(u32 val)
+{
+	return parity16(val ^ (val >> 16));
+}
+#endif
+
+#ifndef parity64
+static inline bool parity64(u64 val)
+{
+	return parity32(val ^ (val >> 32));
+}
+#endif
+
+In either case, instead of packing the cascade into one function, make 
+good use of it.
+
+In the latter case, __builtin_constant_p() isn't necessary as it puts 
+the onus on the architecture to separate out const and non-const cases, 
+if it matters -- which it doesn't if the architecture simply wants to 
+use __builtin_parity:
+
+#define parity8(x)  ((bool) __builtin_parity((u8)(x)))
+#define parity16(x) ((bool) __builtin_parity((u16)(x)))
+#define parity32(x) ((bool) __builtin_parity((u32)(x)))
+#define parity64(x) ((bool) __builtin_parityll((u64)(x)))
+
+As stated before, I don't really see that the parity function itself 
+would be very suitable for a generic helper, but if it were to, then 
+using the "standard" macro construct for it would seem to be the better 
+option.
+
+(And I would be very much in favor of not open-coding the helper 
+everywhere but to macroize it; effectively creating a C++ template 
+equivalent. It is out of scope for this project, though.)
+
+	-hpa
+
 
