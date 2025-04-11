@@ -1,94 +1,115 @@
-Return-Path: <bpf+bounces-55700-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55701-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD62A850C3
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 02:50:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C68AA8511E
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 03:15:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B4F57B2A07
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 00:48:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C33297B3AFC
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 01:14:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B822F26F475;
-	Fri, 11 Apr 2025 00:49:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RtCnq414"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDCC7225D6;
+	Fri, 11 Apr 2025 01:15:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35FAD26F44F;
-	Fri, 11 Apr 2025 00:49:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8141469D
+	for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 01:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.144.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744332594; cv=none; b=dBHoyBvZARuTGp/qhnDYCN2x26YoT/bYup0WuQgE4i7y8+5sRkH15kXdbbr3GybbWOOLgz8iqKPItvtPHfoiSYLBUe8KXoxZeIAcQNvuOiCI2gRnzhTncGgvL3APCt8ygirDhIPthl6DCupZMdF31CW1HrGd+hF5GdfxI2/uhCM=
+	t=1744334140; cv=none; b=lJAJiMltG73JlCcm6pKUcGAQbLZYo6y49i2jukXD2Jt5ksBBU0/ltiuULjDxyfyRezf6mgL9Tcys/+BMMMcU8HWUFz2QUFT7eVafq3poGePvpP9zN55GAQFGzZnAy/JmcdWZ+JNoWvWNNQQVugjnmB0mPOw7RjyQsaxZ1qcQt9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744332594; c=relaxed/simple;
-	bh=qxLkRPGGCz0k3o8LbxhXlIhdlTIWT3NdMzYjQvJrCIQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=nZFQfJKClDBKbbAvWyAK975zTleLoLcIy2HyVjTcHdew44tThe/THFc1m2zErtfepypewgIcrra5fT2mHnxi0ciAlUEjf9YQ35AaB1B7rv3ignHPcJfQn6dLIY25TFPL0iwFAkiHUnjtGZAHaAPxeaE8+PLnsPBF7HIimkZvsKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RtCnq414; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A58DCC4CEDD;
-	Fri, 11 Apr 2025 00:49:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744332593;
-	bh=qxLkRPGGCz0k3o8LbxhXlIhdlTIWT3NdMzYjQvJrCIQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=RtCnq414HjjFly8X9uOWM5kZDpK85zUC9+8LSr06+agBwwfQs71eYNTa2yuchvS1q
-	 yacbwWe6VyUEpSRO9+Ns6TZj6cJqjun8GHn8sxV9Rqsd8bh3OtIiH5ariR44pUUkXN
-	 1M1//r3IHDiFOgzd23Ff2tajPL4jgP19kPYNypp1Yqfxe7aI8JxDKOsh7kFnXYo3A/
-	 vy1OQSs2CZ2l+YfhmnLJITB9AkAWssAnokAewLAB3fSjxVFavHCqjQgjBVQh5vuyXA
-	 zYHJnKnhKd2LM3POetOIAmxCxHxPecXldZ7xT52fRHNPYNwHv6ImNSE8mXSzwaYMf9
-	 fFg2+9zpEenPQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 710E2380CEF4;
-	Fri, 11 Apr 2025 00:50:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1744334140; c=relaxed/simple;
+	bh=tI/jwp1zc3vqgUHBcLEzYXi2iVxZszWUCFmSOsJw+Sc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X0b4xI/tFH3jY+IEGaD7zuy15P6gp1sIBdydU6UvX7eOWpSoLINZCbsCLz3xYtvgnKJFQTaMJuynAvoz7fPeFA8JH8vlHLab97aWVSXXs4ZJSr/SvX8X1vZE5XkUvfb01sUZzUCEN7XAALyRqxDzfezkNHu4WZk6frGn1s9scmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.144.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devvm16039.vll0.facebook.com (Postfix, from userid 128203)
+	id CBE2C514902F; Thu, 10 Apr 2025 18:15:23 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [RFC PATCH bpf-next 0/4] bpf: Implement mprog API on top of existing cgroup progs
+Date: Thu, 10 Apr 2025 18:15:23 -0700
+Message-ID: <20250411011523.1838771-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] af_unix: Remove unix_unhash()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174433263104.3877366.17329943918437576552.git-patchwork-notify@kernel.org>
-Date: Fri, 11 Apr 2025 00:50:31 +0000
-References: <20250409-cleanup-drop-unix-unhash-v1-1-1659e5b8ee84@rbox.co>
-In-Reply-To: <20250409-cleanup-drop-unix-unhash-v1-1-1659e5b8ee84@rbox.co>
-To: Michal Luczaj <mhal@rbox.co>
-Cc: kuniyu@amazon.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+Current cgroup prog ordering is appending at attachment time. This is not
+ideal. In some cases, users want specific ordering at a particular cgroup
+level. For example, in Meta, we have a case where three different
+applications all have cgroup/setsockopt progs and they require specific
+ordering. Current approach is to use a bpfchainer where one bpf prog
+contains multiple global functions and each global function can be
+freplaced by a prog for a specific application. The ordering of global
+functions decides the ordering of those application specific bpf progs.
+Using bpftrainer is a centralized approach and is not desirable as
+one of applications acts as a deamon. The decentralized attachment
+approach is more favorable for those applications.
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+To address this, the existing mprog API ([2]) seems an ideal solution wit=
+h
+supporting BPF_F_BEFORE and BPF_F_AFTER flags on top of existing cgroup
+bpf implementation. More specifically, the support is added for prog/link
+attachment with BPF_F_BEFORE and BPF_F_AFTER. The kernel mprog
+interface ([2]) is not used and the implementation is directly done in
+cgroup bpf code base. The mprog 'revision' is also implemented in
+attach/detach/replace, so users can query revision number to check the
+change of cgroup prog list.
 
-On Wed, 09 Apr 2025 14:50:58 +0200 you wrote:
-> Dummy unix_unhash() was introduced for sockmap in commit 94531cfcbe79
-> ("af_unix: Add unix_stream_proto for sockmap"), but there's no need to
-> implement it anymore.
-> 
-> ->unhash() is only called conditionally: in unix_shutdown() since commit
-> d359902d5c35 ("af_unix: Fix NULL pointer bug in unix_shutdown"), and in BPF
-> proto's sock_map_unhash() since commit 5b4a79ba65a1 ("bpf, sockmap: Don't
-> let sock_map_{close,destroy,unhash} call itself").
-> 
-> [...]
+The patch set contains 4 patches. Patch 1 adds revision support for
+cgroup bpf progs. Patch 2 implements mprog API implementation for
+prog/link attach and revision update. Patch 3 adds a new libbpf
+API to do cgroup link attach with flags like BPF_F_BEFORE/BPF_F_AFTER.
+Patch 4 adds two tests to validate the implementation.
 
-Here is the summary with links:
-  - [net-next] af_unix: Remove unix_unhash()
-    https://git.kernel.org/netdev/net-next/c/709894c52c1c
+  [1] https://lore.kernel.org/r/20250224230116.283071-1-yonghong.song@lin=
+ux.dev
+  [2] https://lore.kernel.org/r/20230719140858.13224-2-daniel@iogearbox.n=
+et
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Yonghong Song (4):
+  cgroup: Add bpf prog revisions to struct cgroup_bpf
+  bpf: Implement mprog API on top of existing cgroup progs
+  libbpf: Support link-based cgroup attach with options
+  selftests/bpf: Add two selftests for mprog API based cgroup progs
 
+ include/linux/bpf-cgroup-defs.h               |   1 +
+ include/uapi/linux/bpf.h                      |   7 +
+ kernel/bpf/cgroup.c                           | 151 +++-
+ kernel/bpf/syscall.c                          |  58 +-
+ kernel/cgroup/cgroup.c                        |   5 +-
+ tools/include/uapi/linux/bpf.h                |   7 +
+ tools/lib/bpf/bpf.c                           |  44 +
+ tools/lib/bpf/bpf.h                           |   5 +
+ tools/lib/bpf/libbpf.c                        |  28 +
+ tools/lib/bpf/libbpf.h                        |  15 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../bpf/prog_tests/cgroup_mprog_opts.c        | 752 ++++++++++++++++++
+ .../bpf/prog_tests/cgroup_mprog_ordering.c    |  77 ++
+ .../selftests/bpf/progs/cgroup_mprog.c        |  30 +
+ 14 files changed, 1138 insertions(+), 43 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
+pts.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
+rdering.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_mprog.c
+
+--=20
+2.47.1
 
 
