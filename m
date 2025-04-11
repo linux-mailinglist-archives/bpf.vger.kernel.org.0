@@ -1,379 +1,230 @@
-Return-Path: <bpf+bounces-55713-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55714-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E900A857CD
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 11:18:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E7EBA8597A
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 12:22:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED6234A5822
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 09:18:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 328101BC0B9F
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 10:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19E5F29AB0A;
-	Fri, 11 Apr 2025 09:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26B829DB76;
+	Fri, 11 Apr 2025 10:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i9Dfdnbj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gCK6hLMk"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84915298994
-	for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 09:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C1629CB4E
+	for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 10:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744363041; cv=none; b=RTdxBKT9vniqz6R3VsSFt3tc9gdA4fsTaSy/9je/Je2UnxB6wH0iakCD0p0pdIc8hgxP+ZdL53raxTxZEZg0qMQ5/F8ryhS8dhd7AjfthO1RloPVyGspZY/D3ISEA5j36Y6KVqtXT42H91joMI90s2Xs9GUwttDq9MKhHoNY/sU=
+	t=1744366685; cv=none; b=OxGgTrjbk0ZalqMPnFQoCdnANsiHKSSDzYM+PyQpmjozHeaeDnpUOr6v3wARd7WZhANf88U2pMCG5a5Qf3qYuEqQglPkNtZ/t3whJy59yDqM5BtBdXUuEVT6Dp3bTO5VYujvu6HtOAkTBsOE13pznoonT+h40H18rrfBZiW5wHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744363041; c=relaxed/simple;
-	bh=waTV4W4W4Y7WAqy8/VrjgUu6ulw5og4Qi7BkKhrhQGA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BI6+HNvCdpjyzPQLA9WjUPAvMQSI5rUEnE5bOGS9rQxv/Atyj0xlBWnf0ai+zGnbY7ybVW9UStyWLmdZz/iUgIBg+NBaVuACgxmzSTrVfeaQhswSA3Dw+j6/csZWF/CSUvERgXqQU1i1GrShaaVvi0WQ3tYjMYT7SBkF2nZSdMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i9Dfdnbj; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744363024;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Mpa79OmJSgJ5vTxFFXbdRGzlB9MZL+A6yTIZNihZ5xI=;
-	b=i9DfdnbjhiWGlUnfMzG2swUTEHm8EB6o9vhMUcYyLi+M3Pos0UH2Fxi7E0ySAPEfoczTAw
-	oWcP8wtQ7rGmeFUcrG2ssXuKuTvw1Cn6sKTQHul7/VB2/9zTkXEuRa/8qloqP6ezEolQal
-	EpnKEVqJnRn2x13vlF5NshhYiziV1og=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
+	s=arc-20240116; t=1744366685; c=relaxed/simple;
+	bh=cJ+CNU5qSe30UllGTTAsdTpxx+tzZZRU4F1XRz9tJJk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=F3fbiiYXf9RyM9qHsBdSA76yHNtSEAQSB/E0hKyrd4Pxbv0fyHJOBuvqjzr0vIctJziONl3QuFKE2C1WVZ6Ad4JgUGlR2qAtHw4g776v2dah/FoLoO4vJIGGUS3meiDXgWQbYyKlP2mWaMDgZZ4Mmv713QxfNrvYDj42Q46duys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gCK6hLMk; arc=none smtp.client-ip=209.85.128.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-43cfe574976so13157885e9.1
+        for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 03:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744366681; x=1744971481; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Py+dbqfEcf4oOwg3oQo6diC0Wa5k7KBq21XmI17sVU=;
+        b=gCK6hLMkDXBLbavG3x9GRNqq7EgJ7H1liN8VHNEboqATYlu0XFn2uTSkR+qKF/Ji3V
+         jF0SRWA6Q+5jzOmfv1WyhwMxV7QtbPWRt6wL70u4JxrSRsgni+gf8lYdz0AXtc9jTxd1
+         NJ4c4qUXbny5HlhkOoqCti9mM3DCAayDXy8WwTIs0M01DIVcM+CCdGRo9uQApQB3nQWD
+         boqmRrF0zZvkeNbEexVeKv2rMEiFtlmA+3iuu2yr+9w5ezqgBSXfTDR+GOnGps4MQc8L
+         /WxN3qMTVZX4HHaapLvnZvpeIGVA/2O6MnpQHDL9E5HKwMJ6UM/uob8Y577SlpZSPfJQ
+         6xXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744366681; x=1744971481;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4Py+dbqfEcf4oOwg3oQo6diC0Wa5k7KBq21XmI17sVU=;
+        b=m5ata0H+n3GgK4cprxi+TAALrxW5Nzh8pAnc5b+QNSUyuHTDL1t/piyN51Js57UAgU
+         CX95+tBEPwCjDcozR+j2DITnEHzlnVvJHEouBMtB37MKizcA/yERQlYg4o9ndfh8yWev
+         bJqbB6RBjud6ayNi7bkdBgpKlBq2EWkghEAbZN8Y4KaX/J8EA0YgRFXcrL1t3k/6VyX4
+         QQLXufc+UUx82h+6tD9rMvaGnGkr7vsl2Q13a4/Uv65MgbRiYZyGfTX0qcLaHRVEisAZ
+         fZO3SqKzz99v3Cd4jLooh85375dRIKc59aGsHWvQltrdQzYo+8xcMgc6/ORwzXg4eqfn
+         +aNA==
+X-Gm-Message-State: AOJu0YzhMcV6VTyUSRum/cxkmYhBgZ5Dcb0O7yEUoDNMBesfWO7CuDXz
+	ohVBh3ru73KPT/RKkn++ONBxRRXy2MNykAW8xwW7yS2DCvvbgtaWltvlw6GklE4=
+X-Gm-Gg: ASbGncs3axF6MztwaQfuJZFikwhZ/VRBNcdF6bE9gRKgKThk5n8ffY6AImcWaFokBUA
+	PxZk4D12fcpHA73GWaCzOU8NcVuMO/PzaLJBFkxUT3R4mfskoyKOvU7ooVo55ldFylzGFWtVcWE
+	SHE7Y95EVK65qsARNCHXYBPmyTScHyKLHGL7pfT82Gfei2Xc8pFnDXMO9JJx/tAWhD0oNsfgMie
+	kZx0K8puiqJfYammog9eQ8I5X3aw28FsJuSrshyJ1CByqrvhvz/cW3CgDgMDZ3+UrUPebVUz2z0
+	rFxstF91Rx1d74wfy1FBYWyYACbGCZQ=
+X-Google-Smtp-Source: AGHT+IHH49aaEldEwOJ6b9aird7tsWefVc2Kl3XMwb3LP7A7D71tezKKQVdufWamNd9BoH7lzd0/kA==
+X-Received: by 2002:a05:6000:2ca:b0:391:48d4:bcf2 with SMTP id ffacd0b85a97d-39ea51eede3mr1736015f8f.12.1744366680852;
+        Fri, 11 Apr 2025 03:18:00 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff:4b::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43f20a0bf4esm39852315e9.1.2025.04.11.03.18.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Apr 2025 03:18:00 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
-Cc: mrpre@163.com,
-	Jiayuan Chen <jiayuan.chen@linux.dev>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
+Cc: syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com,
 	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2] bpf, sockmap: Introduce tracing capability for sockmap
-Date: Fri, 11 Apr 2025 17:16:30 +0800
-Message-ID: <20250411091634.336371-1-jiayuan.chen@linux.dev>
+	kkd@meta.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf v1] bpf: Convert ringbuf.c to rqspinlock
+Date: Fri, 11 Apr 2025 03:17:59 -0700
+Message-ID: <20250411101759.4061366-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5853; h=from:subject; bh=w6TZNP0TgDbH7c38Tv4GJH8/u3XCEzzuBM/1BbH69f0=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBn+Ow8P9S9WDx/ECKacR6GrUGxMu6kUlN+TBhUpkj6 /oVYr0WJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ/jsPAAKCRBM4MiGSL8RyklXD/ 9oK6AhK8Jhq6Hd3Ts7/ppsbSD9p04NjU/ujqSQB7fG8H3bE4Xv+hq8sepr6AiVEGZgx/cq06LAIs45 VuR7ekB0Ij6roEK/9mv1Ez/Awg7bgb02ErCiy6zZiT2j5Ata2r2Y5kgFmU6u/JqNG++qebwdsi/HcT lEIkzkY8saJ03DW0uwBW36AzHRZ/UPZpDJvuz5w5JVXdheo0dxih2KRFHAfVMVGVVkVOCdTYKNw6fv o1TAJlzB5QFlIUW66Mki2EIklF2WVpKVhjBZzvmpyqELXUdqqzJqrmXiv+oCV365HsgvcQvOVDw3t5 WHBkw45Vy30uJ/c2L2HJrQjx1vPO12zuhklYmNEei+y4kcRC3F90nl4w4PisgWBczcDOp0OuBcO2pt NIfDFum1pKs0eLk35VKnkuvJHREi8ZsNUJ2TcLvl3rZtRxZ/LxXnnefAlUlqByakbZx6F5joGXo6a4 0v+KqZdN8LbF9ep9tbEz88fuWToTxKfyYwUj+kEwn8UODJWMcltyg9eSqjtDooEgilwO7OQL/n1OlV bDFk5MI8d0rzDvwq69AZKwEC1gHciGHHp5iU9HOvgvH8edb5qGv+1DibBzTOj0E3x4l3COcUG3CvCk uIMnm0bN8djbKikWhMkrHqPCiPydHWyNZ01n7ep3Bun2w6TTEVWCTyLmZvMg==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Sockmap has the same high-performance forwarding capability as XDP, but
-operates at Layer 7.
+Convert the raw spinlock used by BPF ringbuf to rqspinlock. Currently,
+we have an open syzbot report of a potential deadlock. In addition, the
+ringbuf can fail to reserve spuriously under contention from NMI
+context.
 
-Introduce tracing capability for sockmap, to trace the execution results
-of BPF programs without modifying the programs themselves, similar to
-the existing trace_xdp_redirect{_map}.
+It is potentially attractive to enable unconstrained usage (incl. NMIs)
+while ensuring no deadlocks manifest at runtime, perform the conversion
+to rqspinlock to achieve this.
 
-It is crucial for debugging sockmap programs, especially in production
-environments.
+This change was benchmarked for BPF ringbuf's multi-producer contention
+case on an Intel Sapphire Rapids server, with hyperthreading disabled
+and performance governor turned on. 5 warm up runs were done for each
+case before obtaining the results.
 
-Additionally, the new header file has to be added to bpf_trace.h to
-automatically generate tracepoints.
+Before (raw_spinlock_t):
 
-Test results:
-$ echo "1" > /sys/kernel/tracing/events/sockmap/enable
+Ringbuf, multi-producer contention
+==================================
+rb-libbpf nr_prod 1  11.440 ± 0.019M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 2  2.706 ± 0.010M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 3  3.130 ± 0.004M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 4  2.472 ± 0.003M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 8  2.352 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 12 2.813 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 16 1.988 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 20 2.245 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 24 2.148 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 28 2.190 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 32 2.490 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 36 2.180 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 40 2.201 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 44 2.226 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 48 2.164 ± 0.001M/s (drops 0.000 ± 0.000M/s)
+rb-libbpf nr_prod 52 1.874 ± 0.001M/s (drops 0.000 ± 0.000M/s)
 
-msg/skb:
-'''
-sockmap_redirect: sk=000000000ec02a93, netns=4026531840, inode=318, \
-family=2, protocol=6, prog_id=59, len=8192, type=msg, action=REDIRECT, \
-redirect_type=ingress
+After (rqspinlock_t):
 
-sockmap_redirect: sk=00000000d5d9c931, netns=4026531840, inode=64731, \
-family=2, protocol=6, prog_id=91, len=8221, type=skb, action=REDIRECT, \
-redirect_type=egress
+Ringbuf, multi-producer contention
+==================================
+rb-libbpf nr_prod 1  11.078 ± 0.019M/s (drops 0.000 ± 0.000M/s) (-3.16%)
+rb-libbpf nr_prod 2  2.801 ± 0.014M/s (drops 0.000 ± 0.000M/s) (3.51%)
+rb-libbpf nr_prod 3  3.454 ± 0.005M/s (drops 0.000 ± 0.000M/s) (10.35%)
+rb-libbpf nr_prod 4  2.567 ± 0.002M/s (drops 0.000 ± 0.000M/s) (3.84%)
+rb-libbpf nr_prod 8  2.468 ± 0.001M/s (drops 0.000 ± 0.000M/s) (4.93%)
+rb-libbpf nr_prod 12 2.510 ± 0.001M/s (drops 0.000 ± 0.000M/s) (-10.77%)
+rb-libbpf nr_prod 16 2.075 ± 0.001M/s (drops 0.000 ± 0.000M/s) (4.38%)
+rb-libbpf nr_prod 20 2.640 ± 0.001M/s (drops 0.000 ± 0.000M/s) (17.59%)
+rb-libbpf nr_prod 24 2.092 ± 0.001M/s (drops 0.000 ± 0.000M/s) (-2.61%)
+rb-libbpf nr_prod 28 2.426 ± 0.005M/s (drops 0.000 ± 0.000M/s) (10.78%)
+rb-libbpf nr_prod 32 2.331 ± 0.004M/s (drops 0.000 ± 0.000M/s) (-6.39%)
+rb-libbpf nr_prod 36 2.306 ± 0.003M/s (drops 0.000 ± 0.000M/s) (5.78%)
+rb-libbpf nr_prod 40 2.178 ± 0.002M/s (drops 0.000 ± 0.000M/s) (-1.04%)
+rb-libbpf nr_prod 44 2.293 ± 0.001M/s (drops 0.000 ± 0.000M/s) (3.01%)
+rb-libbpf nr_prod 48 2.022 ± 0.001M/s (drops 0.000 ± 0.000M/s) (-6.56%)
+rb-libbpf nr_prod 52 1.809 ± 0.001M/s (drops 0.000 ± 0.000M/s) (-3.47%)
 
-sockmap_redirect: sk=00000000106fc281, netns=4026531840, inode=64729, \
-family=2, protocol=6, prog_id=94, len=8192, type=msg, action=PASS, \
-redirect_type=none
-'''
+There's a fair amount of noise in the benchmark, with numbers on reruns
+going up and down by 10%, so all changes are in the range of this
+disturbance, and we see no major regressions.
 
-strparser:
-'''
-sockmap_strparser: sk=00000000f15fc1c8, netns=4026531840, inode=52396, \
-family=2, protocol=6, prog_id=143, in_len=1000, full_len=10
-'''
-
-Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
-Suggested-by: Cong Wang <xiyou.wangcong@gmail.com>
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-
+Reported-by: syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/0000000000004aa700061379547e@google.com
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
-v1 -> v2: Print more valuable information as suggested by the maintainer.
----
- MAINTAINERS                    |   1 +
- include/linux/bpf_trace.h      |   1 +
- include/trace/events/sockmap.h | 158 +++++++++++++++++++++++++++++++++
- net/core/skmsg.c               |   6 ++
- 4 files changed, 166 insertions(+)
- create mode 100644 include/trace/events/sockmap.h
+ kernel/bpf/ringbuf.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a7a1d121a83e..578e16d86853 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4420,6 +4420,7 @@ L:	netdev@vger.kernel.org
- L:	bpf@vger.kernel.org
- S:	Maintained
- F:	include/linux/skmsg.h
-+F:	include/trace/events/sockmap.h
- F:	net/core/skmsg.c
- F:	net/core/sock_map.c
- F:	net/ipv4/tcp_bpf.c
-diff --git a/include/linux/bpf_trace.h b/include/linux/bpf_trace.h
-index ddf896abcfb6..d559be0a79c5 100644
---- a/include/linux/bpf_trace.h
-+++ b/include/linux/bpf_trace.h
-@@ -3,5 +3,6 @@
- #define __LINUX_BPF_TRACE_H__
- 
- #include <trace/events/xdp.h>
-+#include <trace/events/sockmap.h>
- 
- #endif /* __LINUX_BPF_TRACE_H__ */
-diff --git a/include/trace/events/sockmap.h b/include/trace/events/sockmap.h
-new file mode 100644
-index 000000000000..79784e8d5866
---- /dev/null
-+++ b/include/trace/events/sockmap.h
-@@ -0,0 +1,158 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM sockmap
-+
-+#if !defined(_TRACE_SOCKMAP_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_SOCKMAP_H
-+
-+#include <linux/tracepoint.h>
-+#include <linux/bpf.h>
-+#include <linux/skmsg.h>
-+
-+#ifndef __TRACE_SOCKMAP_HELPER_ONCE_ONLY
-+#define __TRACE_SOCKMAP_HELPER_ONCE_ONLY
-+
-+enum sockmap_direct_type {
-+	SOCKMAP_REDIR_NONE	= 0,
-+	SOCKMAP_REDIR_INGRESS,
-+	SOCKMAP_REDIR_EGRESS,
-+};
-+
-+enum sockmap_data_type {
-+	SOCKMAP_MSG		= 0,
-+	SOCKMAP_SKB,
-+};
-+
-+#endif /* end __TRACE_SOCKMAP_HELPER_ONCE_ONLY */
-+
-+TRACE_DEFINE_ENUM(SOCKMAP_MSG);
-+TRACE_DEFINE_ENUM(SOCKMAP_SKB);
-+TRACE_DEFINE_ENUM(SOCKMAP_REDIR_NONE);
-+TRACE_DEFINE_ENUM(SOCKMAP_REDIR_INGRESS);
-+TRACE_DEFINE_ENUM(SOCKMAP_REDIR_EGRESS);
-+
-+TRACE_DEFINE_ENUM(__SK_DROP);
-+TRACE_DEFINE_ENUM(__SK_PASS);
-+TRACE_DEFINE_ENUM(__SK_REDIRECT);
-+TRACE_DEFINE_ENUM(__SK_NONE);
-+
-+#define show_redirect_type(x)					\
-+	__print_symbolic(x,					\
-+		{ SOCKMAP_REDIR_NONE,		"none" },	\
-+		{ SOCKMAP_REDIR_INGRESS,	"ingress" },	\
-+		{ SOCKMAP_REDIR_EGRESS,		"egress" })
-+
-+#define show_act(x)						\
-+	__print_symbolic(x,					\
-+		{ __SK_DROP,			"DROP" },	\
-+		{ __SK_PASS,			"PASS" },	\
-+		{ __SK_REDIRECT,		"REDIRECT" },	\
-+		{ __SK_NONE,			"NONE" })
-+
-+#define show_data_type(x)					\
-+	__print_symbolic(x,					\
-+		{ SOCKMAP_MSG,			"msg" },	\
-+		{ SOCKMAP_SKB,			"skb" })
-+
-+#define trace_sockmap_skmsg_redirect(sk, prog, msg, act)	\
-+	trace_sockmap_redirect((sk), SOCKMAP_MSG, (prog),	\
-+			       (msg)->sg.size, (act),		\
-+			       sk_msg_to_ingress(msg))
-+
-+#define trace_sockmap_skb_redirect(sk, prog, skb, act)		\
-+	trace_sockmap_redirect((sk), SOCKMAP_SKB, (prog),	\
-+			       (skb)->len, (act),		\
-+			       skb_bpf_ingress(skb))
-+
-+#define trace_sockmap_skb_strp_parse(sk, prog, skb, ret)	\
-+	trace_sockmap_strparser((sk), (prog), (skb)->len, (ret))
-+
-+TRACE_EVENT(sockmap_redirect,
-+
-+	TP_PROTO(const struct sock *sk, enum sockmap_data_type type,
-+		 const struct bpf_prog *prog, int len, int act,
-+		 bool ingress),
-+
-+	TP_ARGS(sk, type, prog, len, act, ingress),
-+
-+	TP_STRUCT__entry(
-+		__field(const void *, sk)
-+		__field(unsigned long, ino)
-+		__field(unsigned int, netns_ino)
-+		__field(__u16, family)
-+		__field(__u16, protocol)
-+		__field(int, prog_id)
-+		__field(int, len)
-+		__field(int, act)
-+		__field(enum sockmap_data_type, type)
-+		__field(enum sockmap_direct_type, redir)
-+	),
-+
-+	TP_fast_assign(
-+		/* 'redir' is undefined if action is not REDIRECT */
-+		enum sockmap_direct_type redir = SOCKMAP_REDIR_NONE;
-+
-+		if (act == __SK_REDIRECT) {
-+			if (ingress)
-+				redir = SOCKMAP_REDIR_INGRESS;
-+			else
-+				redir = SOCKMAP_REDIR_EGRESS;
-+		}
-+		__entry->sk		= sk;
-+		__entry->ino		= sock_i_ino((struct sock *)sk);
-+		__entry->netns_ino	= sock_net(sk)->ns.inum;
-+		__entry->type		= type;
-+		__entry->family		= sk->sk_family;
-+		__entry->protocol	= sk->sk_protocol;
-+		__entry->prog_id	= prog->aux->id;
-+		__entry->len		= len;
-+		__entry->act		= act;
-+		__entry->redir		= redir;
-+	),
-+
-+	TP_printk("sk=%p, netns=%u, inode=%lu, family=%u, protocol=%u,"
-+		  " prog_id=%d, len=%d, type=%s, action=%s, redirect_type=%s",
-+		  __entry->sk, __entry->netns_ino, __entry->ino,
-+		  __entry->family, __entry->protocol, __entry->prog_id,
-+		  __entry->len, show_data_type(__entry->type),
-+		  show_act(__entry->act), show_redirect_type(__entry->redir))
-+);
-+
-+TRACE_EVENT(sockmap_strparser,
-+
-+	TP_PROTO(const struct sock *sk, const struct bpf_prog *prog,
-+		 int in_len, int full_len),
-+
-+	TP_ARGS(sk, prog, in_len, full_len),
-+
-+	TP_STRUCT__entry(
-+		__field(const void *, sk)
-+		__field(unsigned long, ino)
-+		__field(unsigned int, netns_ino)
-+		__field(__u16, family)
-+		__field(__u16, protocol)
-+		__field(int, prog_id)
-+		__field(int, in_len)
-+		__field(int, full_len)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->sk		= sk;
-+		__entry->ino		= sock_i_ino((struct sock *)sk);
-+		__entry->netns_ino	= sock_net(sk)->ns.inum;
-+		__entry->family		= sk->sk_family;
-+		__entry->protocol	= sk->sk_protocol;
-+		__entry->prog_id	= prog->aux->id;
-+		__entry->in_len		= in_len;
-+		__entry->full_len	= full_len;
-+	),
-+
-+	TP_printk("sk=%p, netns=%u, inode=%lu, family=%u, protocol=%u,"
-+		  " prog_id=%d, in_len=%d, full_len=%d",
-+		  __entry->sk, __entry->netns_ino, __entry->ino,
-+		  __entry->family, __entry->protocol, __entry->prog_id,
-+		  __entry->in_len, __entry->full_len)
-+);
-+#endif /* _TRACE_SOCKMAP_H */
-+
-+#include <trace/define_trace.h>
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 276934673066..517596efafa8 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -9,6 +9,7 @@
- #include <net/tcp.h>
- #include <net/tls.h>
- #include <trace/events/sock.h>
-+#include <trace/events/sockmap.h>
- 
- static bool sk_msg_try_coalesce_ok(struct sk_msg *msg, int elem_first_coalesce)
- {
-@@ -910,6 +911,7 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
- 		sock_hold(psock->sk_redir);
+diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+index 1499d8caa9a3..719d73299397 100644
+--- a/kernel/bpf/ringbuf.c
++++ b/kernel/bpf/ringbuf.c
+@@ -11,6 +11,7 @@
+ #include <linux/kmemleak.h>
+ #include <uapi/linux/btf.h>
+ #include <linux/btf_ids.h>
++#include <asm/rqspinlock.h>
+
+ #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
+
+@@ -29,7 +30,7 @@ struct bpf_ringbuf {
+ 	u64 mask;
+ 	struct page **pages;
+ 	int nr_pages;
+-	raw_spinlock_t spinlock ____cacheline_aligned_in_smp;
++	rqspinlock_t spinlock ____cacheline_aligned_in_smp;
+ 	/* For user-space producer ring buffers, an atomic_t busy bit is used
+ 	 * to synchronize access to the ring buffers in the kernel, rather than
+ 	 * the spinlock that is used for kernel-producer ring buffers. This is
+@@ -173,7 +174,7 @@ static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t data_sz, int numa_node)
+ 	if (!rb)
+ 		return NULL;
+
+-	raw_spin_lock_init(&rb->spinlock);
++	raw_res_spin_lock_init(&rb->spinlock);
+ 	atomic_set(&rb->busy, 0);
+ 	init_waitqueue_head(&rb->waitq);
+ 	init_irq_work(&rb->work, bpf_ringbuf_notify);
+@@ -416,12 +417,8 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+
+ 	cons_pos = smp_load_acquire(&rb->consumer_pos);
+
+-	if (in_nmi()) {
+-		if (!raw_spin_trylock_irqsave(&rb->spinlock, flags))
+-			return NULL;
+-	} else {
+-		raw_spin_lock_irqsave(&rb->spinlock, flags);
+-	}
++	if (raw_res_spin_lock_irqsave(&rb->spinlock, flags))
++		return NULL;
+
+ 	pend_pos = rb->pending_pos;
+ 	prod_pos = rb->producer_pos;
+@@ -446,7 +443,7 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+ 	 */
+ 	if (new_prod_pos - cons_pos > rb->mask ||
+ 	    new_prod_pos - pend_pos > rb->mask) {
+-		raw_spin_unlock_irqrestore(&rb->spinlock, flags);
++		raw_res_spin_unlock_irqrestore(&rb->spinlock, flags);
+ 		return NULL;
  	}
- out:
-+	trace_sockmap_skmsg_redirect(sk, prog, msg, ret);
- 	rcu_read_unlock();
- 	return ret;
+
+@@ -458,7 +455,7 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+ 	/* pairs with consumer's smp_load_acquire() */
+ 	smp_store_release(&rb->producer_pos, new_prod_pos);
+
+-	raw_spin_unlock_irqrestore(&rb->spinlock, flags);
++	raw_res_spin_unlock_irqrestore(&rb->spinlock, flags);
+
+ 	return (void *)hdr + BPF_RINGBUF_HDR_SZ;
  }
-@@ -981,6 +983,7 @@ int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb)
- 		ret = bpf_prog_run_pin_on_cpu(prog, skb);
- 		ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
- 		skb->sk = NULL;
-+		trace_sockmap_skb_redirect(psock->sk, prog, skb, ret);
- 	}
- 	sk_psock_tls_verdict_apply(skb, psock, ret);
- 	rcu_read_unlock();
-@@ -1090,6 +1093,7 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
- 		skb_bpf_set_strparser(skb);
- 		ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
- 		skb->sk = NULL;
-+		trace_sockmap_skb_redirect(sk, prog, skb, ret);
- 	}
- 	sk_psock_verdict_apply(psock, skb, ret);
- out:
-@@ -1113,6 +1117,7 @@ static int sk_psock_strp_parse(struct strparser *strp, struct sk_buff *skb)
- 		skb->sk = psock->sk;
- 		ret = bpf_prog_run_pin_on_cpu(prog, skb);
- 		skb->sk = NULL;
-+		trace_sockmap_skb_strp_parse(psock->sk, prog, skb, ret);
- 	}
- 	rcu_read_unlock();
- 	return ret;
-@@ -1217,6 +1222,7 @@ static int sk_psock_verdict_recv(struct sock *sk, struct sk_buff *skb)
- 		skb_bpf_redirect_clear(skb);
- 		ret = bpf_prog_run_pin_on_cpu(prog, skb);
- 		ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
-+		trace_sockmap_skb_redirect(psock->sk, prog, skb, ret);
- 	}
- 	ret = sk_psock_verdict_apply(psock, skb, ret);
- 	if (ret < 0)
--- 
+--
 2.47.1
 
 
