@@ -1,179 +1,151 @@
-Return-Path: <bpf+bounces-55757-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55758-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BB87A86412
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 19:09:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09186A8646A
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 19:16:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90DB81B80B47
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 17:06:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70A321BC7AA5
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 17:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3616227BAA;
-	Fri, 11 Apr 2025 17:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1656A233D88;
+	Fri, 11 Apr 2025 17:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MeQLV6rX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EUqmUT2L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com [209.85.208.65])
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF072253BC
-	for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 17:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA352221FA5;
+	Fri, 11 Apr 2025 17:08:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744391126; cv=none; b=AKioZQwGkIGZkQyDaaRzkZArg9ZGa2njgXaadbRvwiTws3p66YDM58FJgFjRRiPBwY8YGIVR2GcP3Fh4jmyvYq0XfX+f6P/6SuhSfrh5yQqT4erM5ZmvpwemHviSb0ymmo8kv5poate0qgrARV4v7z+o+FMhRNbXfo2qhLbjd2I=
+	t=1744391320; cv=none; b=PiTiu+PuwZHNtNWLBO1UryMcj5tHdVQidI/yup8agLs1lo3WDRCVONcdDMySCmQ3CBdR/yTAW/q+7MOFkY4f+kV0+gCUJM1lWb/BN7+Qcyn5QIClibXBnDwnWMpsd97joJpxgTMJ3PDsEIMv2epgoG1UjEghM28e6f61HPDRrEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744391126; c=relaxed/simple;
-	bh=XFwzrG/jxILlu52UW5ELUFhfR0khU+mcnxEkPM6ZD5Q=;
+	s=arc-20240116; t=1744391320; c=relaxed/simple;
+	bh=D3KtKMQYdkJYf2YN9ITQ1Y9ff9xFw8ASy+2JgvutajA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ifil2IXwekyuytc9P0KkQz+/HfERwxHCZD6Gm90d3fRiBW7diygIMgdxKXF+6zf52XhLUt2VmIVtiaVtoqLM3m+k5Ogjb3n+bw2I1QUj9L/Q6vXYf4tJ0lA8puo2GL4xLg2nrca5Dex1UB4j6WvTwysORsqGVmdQ6KSv7mFqTyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MeQLV6rX; arc=none smtp.client-ip=209.85.208.65
+	 To:Cc:Content-Type; b=OoJUujYsWCMP9XykE7gUtiVNvlTdAYhAyVh1uJ87G0gKia/R5g6Lu4AZA6PH+nKINQwpJvT6d9AAxsAtY1g+0Un4k8Wu1kZFeIlV2ssKTXZiPZP7mdiIQdxCZ/UN+/9NUOLrK0xz2yBVo3cM+riQ5bn4LfOZDvAOywEufSEeK0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EUqmUT2L; arc=none smtp.client-ip=209.85.218.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f65.google.com with SMTP id 4fb4d7f45d1cf-5efe8d9eb1eso3865510a12.0
-        for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 10:05:24 -0700 (PDT)
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-ac2ab99e16eso449641366b.0;
+        Fri, 11 Apr 2025 10:08:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744391122; x=1744995922; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744391317; x=1744996117; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZJq/0FuQnd4sUTTMaysGbny7PSd15zSD4nZZVRNrKdQ=;
-        b=MeQLV6rXzc2NIV9qH8Sxn3tyZL8upbs6MKTHtS3tikv39U/dGDdyOT9S+93hxXWKVe
-         Lj5TQNi9jSynWg34OFZ3Nzhfzw5u5UZRbfMtVRtjlZgFfn7E1T4DcFk0AFvamtBewSKO
-         pockwSLzCoJqsWXv5YbGLsYduWKZLJTM9A8Pk7fCscTvH6AniYNoikqhNgT8dMACVdrk
-         nQaQihr+Q6gaFIrNFctaeMHzH0V/D8X8o3WOe1y8TTQpvWGTQBA1A+H4bJk/BrLiHg04
-         vrRtlKpjPm6Ha7w6dCKDa8oFT+PvpYaWu1e4GTJg2+9DhVuEurD8KSJ1SRR2iI4UjdO0
-         Vcng==
+        bh=KVl+L+m1ll7TwdhJXg0KpefIZfJmTlR1fTVGe/qAkw0=;
+        b=EUqmUT2LQkBA3j9g6CLILP9ZS62loqDVtAt3U9OFniFtJPSLVjACOWHLODNHTi/8mW
+         VX7EVLc228v6egc7X5uS/PDDFvJ4ow094RtDxh3x3Xop0vzOOs2NZe2IF0vj5V4/qjH0
+         znBjio1o78UwIL5c1bs84j1MXfcD7eUXfx2J9c+WrLk3nDyuqBgS5h6RZCbevsDMCc6U
+         6IQTVqYPifq6UW/IiIYaOMQbif3TQMpY9wk6frLh/X9f33uJ7iHUKhKuQ9ulz9RtYVup
+         TfaT5wHP7lxDu4osPI/XZLbdycwKFUCvBTlK6ifOQoIvIpeNescus+XgkVavVywqWw36
+         w7kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744391122; x=1744995922;
+        d=1e100.net; s=20230601; t=1744391317; x=1744996117;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZJq/0FuQnd4sUTTMaysGbny7PSd15zSD4nZZVRNrKdQ=;
-        b=Rq+8cdkkYa2lh68gTZcX2izXeLVdIVXhYTPgi3HQKdaeu/GQUWqPgsaH4p6Y/RURC2
-         cxFYIW4yRth6Ufz8fgx5R4Wac7S57wVYq5CClkqDMxQcutkxlp4NbcyRjO1//ua9K+FA
-         KDsxNWmUfNDzuiDu32UcJ7oLeSvLxfjZ0KAaaT2E6ylsMP7o8cMW8Ub7oaN6vlxBv8aQ
-         B79P/9P0RdohRLXXD1GCrx5hE4h4o3sBz2nYKTmAJqHJCTZCdZ+RIAGOlrw/z9eQxhYu
-         1ZbAUaDbzGZJ3vngzQnk+q+rOQeMwvXKno+o68R98gNHaOimoZDwDrO3uyQq/IO8r60H
-         GeSQ==
-X-Gm-Message-State: AOJu0Yw/QsN5Xix6W/A8ICW5Z+x2vLr1OHqia/OAsyeqfH9W2hoaZPPV
-	L6xUnnWw//Jj37E/aKB4SBEpMr3MyZ72HbGEcgMgdKIuTnSqtsAIKsFHPN3FpNsKnw5FvV9Hqnu
-	7a/H+aUOlrm+jIJL+KwkMEBTBm0fq/IJbWMg=
-X-Gm-Gg: ASbGncsNAsida8BE1pRV3p35vyhGr84yg8+PlhmRIXxg2AaecDDYXO7oU3UXzq6LN6p
-	BFLmLjspxVoD8459yhqL5AsOjE3T09IRE1dqqr40WqkGvxftGTVNvjzECS+LWANjnWjedJxjRL1
-	PLJeepiKw0CSGNZK9AMsJnyMWYgPySaCzLIzPJcP3j/BViDF68mLk1PzaB
-X-Google-Smtp-Source: AGHT+IFtYnKOYYzIviAsn/g5w1jiCJAmVcnzkcTQzVQs/luBrCE4dYGx67fGGw5pouSXWfC0n69krpuoWahNylmjgSc=
-X-Received: by 2002:a05:6402:1ec9:b0:5ec:8aeb:812a with SMTP id
- 4fb4d7f45d1cf-5f3637e58d1mr3872097a12.14.1744391121931; Fri, 11 Apr 2025
- 10:05:21 -0700 (PDT)
+        bh=KVl+L+m1ll7TwdhJXg0KpefIZfJmTlR1fTVGe/qAkw0=;
+        b=LO6yBpySbsIHzaPvatJn3zT2ciuXlrpNzvSkba2AMydYRbaMzwYONsi/KEgTnYyGNS
+         3A4lfHLNDZkwLXnGUgDbV5B7Rfa4u1TMLUpnmHLPRJIPzAXCP/Q6S8ZH7+HA5+/P9ZSq
+         PjcFUEVCvexlqw4b9rBPD65YgYa0Buktu14Mq3Uc3g5iuqnTB5gEn6zJY3CitZgZ9Ij/
+         VcEv9AXr8lne7tQmI10ouS7/UYrYTI0SjkPv2AAiiTRdBdAc3/79gHtGM1mYkZHsZpP8
+         XkKVsHc519Z3xG75LKJ63MfhwBKcYaOuiN6vrSZYeLC391opOHwTzPEJ5cj6ikCygkFO
+         VQMA==
+X-Forwarded-Encrypted: i=1; AJvYcCUuRQK+BZNBVMnGGHjQQR+ARAB1qcoIGynFZGQdZXTf6wzcbcTBhof5W9H0jbfPSceRBizbTh4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyTzyOpKCELNvTSfSMFMezOq9JZvyxileE+IEFLNoG7XJjNRJ3C
+	4dS/EekUkAFO9539lnRnrsV8/6+d2yNP6nWR+z3W7JUSPvf1yXNzUDggZ4NhXAzMMsuCYUurxNb
+	j3hypGxXmTrzPow+TO/PSMytc4Dc=
+X-Gm-Gg: ASbGnctkMGDGRaAI+hDZWekEOl44IqRkiIRR9PKEAIvGdoI9pwW7rWWlWtvhfeI5CSe
+	00IcXp81QDv7Ikp0eOZ9/v8CISBT4gM1EVIswatEGDwZrbQVysyDkVrhDml2p//BVH1ESGwcskE
+	WQwJNuGYli4iYPQsYLtCSs/13MA95N375Z6WyJB9Ndl0LUCnjyMm+CmimrNUIdxUAfm1Y=
+X-Google-Smtp-Source: AGHT+IE1S5/pMfPq8srWnliFtQB++Im0wBa1VUhuq3j7YbNBfngu2Iana4iKCogFdkJCJeU0B4F77hTTSk+V3vr6aHI=
+X-Received: by 2002:a17:906:dc94:b0:ac7:3a23:569c with SMTP id
+ a640c23a62f3a-acad34468e4mr374508366b.1.1744391316810; Fri, 11 Apr 2025
+ 10:08:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250411101759.4061366-1-memxor@gmail.com>
-In-Reply-To: <20250411101759.4061366-1-memxor@gmail.com>
+References: <20250409214606.2000194-1-ameryhung@gmail.com> <20250409214606.2000194-4-ameryhung@gmail.com>
+ <CAP01T77ibGcEhwsyJb1WVaH-vhbZB_M2yVA8Uyv9b5fy=ErWQQ@mail.gmail.com> <CAMB2axNqfBpneVc9unn7S65Ewb1u6EpLudjtiq00-sqbfnSY7w@mail.gmail.com>
+In-Reply-To: <CAMB2axNqfBpneVc9unn7S65Ewb1u6EpLudjtiq00-sqbfnSY7w@mail.gmail.com>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 11 Apr 2025 19:04:45 +0200
-X-Gm-Features: ATxdqUFny2RTRzXuqj3-zWgOdQqB5mCYzMAYuxZFrGQvvh6qVYwzStdHbeDgLEM
-Message-ID: <CAP01T76CVtC=z=JYP+HFtVrfkrZjuiR20xLWtHkshGjoA77MwA@mail.gmail.com>
-Subject: Re: [PATCH bpf v1] bpf: Convert ringbuf.c to rqspinlock
-To: bpf@vger.kernel.org
-Cc: syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, kernel-team@meta.com
+Date: Fri, 11 Apr 2025 19:08:00 +0200
+X-Gm-Features: ATxdqUEovh7GnQ8DIeoN0dqTqbyrGAL3wyyGR0LW_E-rCblthR5o6-ehz6zduiY
+Message-ID: <CAP01T76oTKg5H2nqd5ppyLhk1rNjPY0DcYVELmyZU+Du8izbbA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 03/10] bpf: net_sched: Add basic bpf qdisc kfuncs
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
+	andrii@kernel.org, daniel@iogearbox.net, edumazet@google.com, kuba@kernel.org, 
+	xiyou.wangcong@gmail.com, jhs@mojatatu.com, martin.lau@kernel.org, 
+	jiri@resnulli.us, stfomichev@gmail.com, toke@redhat.com, sinquersw@gmail.com, 
+	ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn, 
+	yepeilin.cs@gmail.com, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 11 Apr 2025 at 12:18, Kumar Kartikeya Dwivedi <memxor@gmail.com> wr=
-ote:
+On Fri, 11 Apr 2025 at 18:59, Amery Hung <ameryhung@gmail.com> wrote:
 >
-> Convert the raw spinlock used by BPF ringbuf to rqspinlock. Currently,
-> we have an open syzbot report of a potential deadlock. In addition, the
-> ringbuf can fail to reserve spuriously under contention from NMI
-> context.
+> On Fri, Apr 11, 2025 at 6:32=E2=80=AFAM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > On Wed, 9 Apr 2025 at 23:46, Amery Hung <ameryhung@gmail.com> wrote:
+> > >
+> > > From: Amery Hung <amery.hung@bytedance.com>
+> > >
+> > > Add basic kfuncs for working on skb in qdisc.
+> > >
+> > > Both bpf_qdisc_skb_drop() and bpf_kfree_skb() can be used to release
+> > > a reference to an skb. However, bpf_qdisc_skb_drop() can only be call=
+ed
+> > > in .enqueue where a to_free skb list is available from kernel to defe=
+r
+> > > the release. bpf_kfree_skb() should be used elsewhere. It is also use=
+d
+> > > in bpf_obj_free_fields() when cleaning up skb in maps and collections=
+.
+> > >
+> > > bpf_skb_get_hash() returns the flow hash of an skb, which can be used
+> > > to build flow-based queueing algorithms.
+> > >
+> > > Finally, allow users to create read-only dynptr via bpf_dynptr_from_s=
+kb().
+> > >
+> > > Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> > > Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> > > ---
+> >
+> > How do we prevent UAF when dynptr is accessed after bpf_kfree_skb?
+> >
 >
-> It is potentially attractive to enable unconstrained usage (incl. NMIs)
-> while ensuring no deadlocks manifest at runtime, perform the conversion
-> to rqspinlock to achieve this.
+> Good question...
 >
-> This change was benchmarked for BPF ringbuf's multi-producer contention
-> case on an Intel Sapphire Rapids server, with hyperthreading disabled
-> and performance governor turned on. 5 warm up runs were done for each
-> case before obtaining the results.
+> Maybe we can add a ref_obj_id field to bpf_reg_state->dynptr to track
+> the ref_obj_id of the object underlying a dynptr?
 >
-> Before (raw_spinlock_t):
+> Then, in release_reference(), in addition to finding ref_obj_id in
+> registers, verifier will also search stack slots and invalidate all
+> dynptrs with the ref_obj_id.
 >
-> Ringbuf, multi-producer contention
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> rb-libbpf nr_prod 1  11.440 =C2=B1 0.019M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 2  2.706 =C2=B1 0.010M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 3  3.130 =C2=B1 0.004M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 4  2.472 =C2=B1 0.003M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 8  2.352 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 12 2.813 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 16 1.988 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 20 2.245 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 24 2.148 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 28 2.190 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 32 2.490 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 36 2.180 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 40 2.201 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 44 2.226 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 48 2.164 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
-> rb-libbpf nr_prod 52 1.874 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
->
-> After (rqspinlock_t):
->
-> Ringbuf, multi-producer contention
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> rb-libbpf nr_prod 1  11.078 =C2=B1 0.019M/s (drops 0.000 =C2=B1 0.000M/s)=
- (-3.16%)
-> rb-libbpf nr_prod 2  2.801 =C2=B1 0.014M/s (drops 0.000 =C2=B1 0.000M/s) =
-(3.51%)
-> rb-libbpf nr_prod 3  3.454 =C2=B1 0.005M/s (drops 0.000 =C2=B1 0.000M/s) =
-(10.35%)
-> rb-libbpf nr_prod 4  2.567 =C2=B1 0.002M/s (drops 0.000 =C2=B1 0.000M/s) =
-(3.84%)
-> rb-libbpf nr_prod 8  2.468 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
-(4.93%)
-> rb-libbpf nr_prod 12 2.510 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
-(-10.77%)
-> rb-libbpf nr_prod 16 2.075 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
-(4.38%)
-> rb-libbpf nr_prod 20 2.640 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
-(17.59%)
-> rb-libbpf nr_prod 24 2.092 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
-(-2.61%)
-> rb-libbpf nr_prod 28 2.426 =C2=B1 0.005M/s (drops 0.000 =C2=B1 0.000M/s) =
-(10.78%)
-> rb-libbpf nr_prod 32 2.331 =C2=B1 0.004M/s (drops 0.000 =C2=B1 0.000M/s) =
-(-6.39%)
-> rb-libbpf nr_prod 36 2.306 =C2=B1 0.003M/s (drops 0.000 =C2=B1 0.000M/s) =
-(5.78%)
-> rb-libbpf nr_prod 40 2.178 =C2=B1 0.002M/s (drops 0.000 =C2=B1 0.000M/s) =
-(-1.04%)
-> rb-libbpf nr_prod 44 2.293 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
-(3.01%)
-> rb-libbpf nr_prod 48 2.022 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
-(-6.56%)
-> rb-libbpf nr_prod 52 1.809 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
-(-3.47%)
->
-> There's a fair amount of noise in the benchmark, with numbers on reruns
-> going up and down by 10%, so all changes are in the range of this
-> disturbance, and we see no major regressions.
->
-> Reported-by: syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/0000000000004aa700061379547e@google.c=
-om
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
+> Does this sound like a feasible solution?
 
-#syz test
+Yes, though I talked with Andrii and he has better ideas for doing
+this generically, but for now I think we can make this fix as a
+stopgap.
+I will add a fixes tag, asked the question because I had the same
+question when implementing a similar pattern for my patch, and was
+wondering how you solved it.
+
+I made a similar fix to what you described for now.
+
+>
+> > >  [...]
 
