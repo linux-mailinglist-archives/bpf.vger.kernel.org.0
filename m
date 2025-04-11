@@ -1,135 +1,104 @@
-Return-Path: <bpf+bounces-55754-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55755-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0649A863E9
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 19:03:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BC69A863DC
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 19:00:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14D6B3B5220
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 16:58:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33438188D6E8
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 17:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C683321D5A7;
-	Fri, 11 Apr 2025 16:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S1WZgEZ1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AE7221F0F;
+	Fri, 11 Apr 2025 17:00:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B545A42A9E;
-	Fri, 11 Apr 2025 16:59:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118FE218AA3;
+	Fri, 11 Apr 2025 17:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744390746; cv=none; b=E6HbkfMmG+vqT+67zMr9mnboO2fvnbj1H8+UZrTJSzLJtsQrAKEa932qwSc/5GrYHEZws17511HXVEg0D5auWubzwQ3wMP0O6BZBJB73xAG2T8IsPDU6JwWjBoGn0NQKs7jK2hGMWotPeKKDCh+Vpy1cUNyNEfr+gwRQeDFNC7w=
+	t=1744390838; cv=none; b=KqHkc4F6/gf0PVRT6vfn+whAYBobVnYjvC5vOgdjqezLh1YC78/lYdh/hD74Iiig6a7mxjapoF4mG1oT2K5taYkxX7w9k1l5JWlf3ZdW4/qGhsi9kAOmTtCk0ovW2sfo8emGkYLaUBU/nsNX4dk4fJTB/vIifGU7fpQxhi5SMa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744390746; c=relaxed/simple;
-	bh=TXguka1bEhW/OHWrpUMccWeFPNHgfSXHr9J3Q6OxMjA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sn2rY7se1wy++aBkqbseqrVI6AubYB/4hefsufZ/sAScg/0TFpe04tvvwMTxu6T0tmLgP4RXpmKIiX0o8oTw3uxzjndv32bDt28vw7Y8PhPP0KnvQ/E16+LmRzExe2hSQm/fOn2emLRFGzXRK+AmUqxHYybSp1lV4qFx3n4UhEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S1WZgEZ1; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-7020d8b110aso20424777b3.1;
-        Fri, 11 Apr 2025 09:59:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744390743; x=1744995543; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l9wYNM5kK2YRTaOQeR6MwQqR01LW7U5j8+pp86cogLY=;
-        b=S1WZgEZ1xHsCcAq+Kl4MClVfqMG2aZFAlvjrb146YF3+cj8aPDamDj3jygxqc7imI9
-         upEeiipyb7jdquJJQNEm5JGVtRXGY9maFD7RvIjeyA4X93m09AbHy5cawoqVFvMiZiHS
-         42qUqAVkm/Df9TVw+ngaUrplBNaPqI8blBDwu/7y3w2miNntVe9mSJ+1u5XIAZ2S+2J5
-         JVOGTiWmWZH7aT9cRb2Pr1A8v9998YeVObS+0hLAlvO6Pc/cytE509oidJQ6hkWsjk6C
-         vU9JzIb6Nl45NgPzsF2UWvTju/pW472obmtD+rehUS+6CA5wcEn7D2ObfSHxppVgiZ7z
-         Yayw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744390743; x=1744995543;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l9wYNM5kK2YRTaOQeR6MwQqR01LW7U5j8+pp86cogLY=;
-        b=UEpxV7hUQTsvY48+hfDZdeFtBAMQ7M8T248Ouq3bikGLSMf19r2kGsw+uhDycrDGve
-         LYmDjrHPWbICMu2+5MFkjB9WtqnDdNGGPTqd40CPgX1MfBV7pQlN+QYdpDvoiVC7osG5
-         16+0Vu35KuXZjTEnY6xY5qzpesFt6Y6inUaaym0CK56qLMvNjyfg/nWw+ls3wwHhncQd
-         gtyS0mxR2D17jvjsPF9GRy9G6Vn+IlKCQKQ31Ft/zaHTcPHvjbzZv8fJw5HMrUaGiy2W
-         VLnbAR8DbevZLfakRNHFlBxNSXN4Fcw9apvY5q4MXcnp+xzH5e/5OKaGnJkb7pcMhAf3
-         al0A==
-X-Forwarded-Encrypted: i=1; AJvYcCUdWMhqJfkaP6fKmqP+Exke5hFODhYXxJXiPSwfgVDbQ62ltM3wg/QoSMOojqbC4O475JUpW7M=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yze7ZVUIG44R+NrFNllr9ogcA2XyhxQsQ/hofwBK9/b2/WjevB0
-	BBG8Wwe+ocEiN/8CkK5bOi8GiMrALMDvIM6SBFKv/BR8mXzPDJih6NdpIZT10yOk9Esv8ZPVpMv
-	cEGN7BdpRPb3qGVYsBSRsn4rwKpc=
-X-Gm-Gg: ASbGncuYOO4LdFqF3yXvH62pfcvlqUIadckMNrCWY40JSNbRFIbLalFDjjXanm64kUV
-	y7KcF76gNK6GZUcgY5xHEFC7rzY5REdJACjJtxefwnhMzA96CKORvrvBbBsUGqSrcjwh+7GPzxp
-	hr2clBABqCRSuNj4gbKCkdUQ==
-X-Google-Smtp-Source: AGHT+IFFL0OBNk4q3Xx/8gsghlkM5EJAbMEtydztzkVsPNRGh+usvNlI3uYWfyGi940JQ+RcxXcW6LCbMvqlLOAluHU=
-X-Received: by 2002:a05:690c:c02:b0:6fe:bfb7:68bd with SMTP id
- 00721157ae682-7055998f0e4mr63218647b3.1.1744390743596; Fri, 11 Apr 2025
- 09:59:03 -0700 (PDT)
+	s=arc-20240116; t=1744390838; c=relaxed/simple;
+	bh=hO4XGME8TAzrE0q5v6+x5le7ATOxe1KHXdX7KCcunQ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CUXPRZdOZhQgcxvzgJv4Cq3wjdeK6e/SOQGgtdEyf2hFnCjhGA+EtP+ZS/EgZapnE5xVWgpzr0KiQzPb0tiWOJGAT1PdWqaP+4llJ9FsoDkj0TlL4fBjzm9dEYB37sIkuk4wKCnbkos+tyd2ZPYfn6TXHGLWOaYV+IStFfF3w9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE6DAC4CEE2;
+	Fri, 11 Apr 2025 17:00:35 +0000 (UTC)
+Date: Fri, 11 Apr 2025 13:02:00 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Sven Schnelle
+ <svens@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Guo Ren
+ <guoren@kernel.org>, Donglin Peng <dolinux.peng@gmail.com>, Zheng Yejian
+ <zhengyejian@huaweicloud.com>, Aishwarya.TCV@arm.com
+Subject: Re: [PATCH v4 2/4] ftrace: Add support for function argument to
+ graph tracer
+Message-ID: <20250411130200.76b52a61@gandalf.local.home>
+In-Reply-To: <20250411124849.30d612ed@gandalf.local.home>
+References: <20250227185804.639525399@goodmis.org>
+	<20250227185822.810321199@goodmis.org>
+	<ccc40f2b-4b9e-4abd-8daf-d22fce2a86f0@sirena.org.uk>
+	<20250410131745.04c126eb@gandalf.local.home>
+	<c41e5ee7-18ba-40cf-8a31-19062d94f7b9@sirena.org.uk>
+	<20250411124552.36564a07@gandalf.local.home>
+	<20250411124849.30d612ed@gandalf.local.home>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250409214606.2000194-1-ameryhung@gmail.com> <20250409214606.2000194-4-ameryhung@gmail.com>
- <CAP01T77ibGcEhwsyJb1WVaH-vhbZB_M2yVA8Uyv9b5fy=ErWQQ@mail.gmail.com>
-In-Reply-To: <CAP01T77ibGcEhwsyJb1WVaH-vhbZB_M2yVA8Uyv9b5fy=ErWQQ@mail.gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Fri, 11 Apr 2025 09:58:52 -0700
-X-Gm-Features: ATxdqUH3ayEfczkYeFQ0l0roYDPt92wGNdJePCEj05yJ95tTtgaQyJo5IEPvGEg
-Message-ID: <CAMB2axNqfBpneVc9unn7S65Ewb1u6EpLudjtiq00-sqbfnSY7w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 03/10] bpf: net_sched: Add basic bpf qdisc kfuncs
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, edumazet@google.com, kuba@kernel.org, 
-	xiyou.wangcong@gmail.com, jhs@mojatatu.com, martin.lau@kernel.org, 
-	jiri@resnulli.us, stfomichev@gmail.com, toke@redhat.com, sinquersw@gmail.com, 
-	ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn, 
-	yepeilin.cs@gmail.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 11, 2025 at 6:32=E2=80=AFAM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Wed, 9 Apr 2025 at 23:46, Amery Hung <ameryhung@gmail.com> wrote:
-> >
-> > From: Amery Hung <amery.hung@bytedance.com>
-> >
-> > Add basic kfuncs for working on skb in qdisc.
-> >
-> > Both bpf_qdisc_skb_drop() and bpf_kfree_skb() can be used to release
-> > a reference to an skb. However, bpf_qdisc_skb_drop() can only be called
-> > in .enqueue where a to_free skb list is available from kernel to defer
-> > the release. bpf_kfree_skb() should be used elsewhere. It is also used
-> > in bpf_obj_free_fields() when cleaning up skb in maps and collections.
-> >
-> > bpf_skb_get_hash() returns the flow hash of an skb, which can be used
-> > to build flow-based queueing algorithms.
-> >
-> > Finally, allow users to create read-only dynptr via bpf_dynptr_from_skb=
-().
-> >
-> > Signed-off-by: Amery Hung <amery.hung@bytedance.com>
-> > Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> > ---
->
-> How do we prevent UAF when dynptr is accessed after bpf_kfree_skb?
->
+On Fri, 11 Apr 2025 12:48:49 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Good question...
+> On Fri, 11 Apr 2025 12:45:52 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > Also, is it possible to just enable function_graph tarcing and see if it
+> > adds these blank lines between events?  
+> 
+> Never mind. When I enable the funcgraph-retval option, I get the blank
+> lines too.
+> 
+> There's likely an added '\n' that shouldn't be. Let me go look.
+> 
 
-Maybe we can add a ref_obj_id field to bpf_reg_state->dynptr to track
-the ref_obj_id of the object underlying a dynptr?
+Found it, and yes it is the commit you bisected it to:
 
-Then, in release_reference(), in addition to finding ref_obj_id in
-registers, verifier will also search stack slots and invalidate all
-dynptrs with the ref_obj_id.
+It added a '\n' when the retval option would print one too.
 
-Does this sound like a feasible solution?
+This should fix it:
 
-> >  [...]
+diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
+index 2f077d4158e5..718f6e84cc83 100644
+--- a/kernel/trace/trace_functions_graph.c
++++ b/kernel/trace/trace_functions_graph.c
+@@ -971,11 +971,10 @@ print_graph_entry_leaf(struct trace_iterator *iter,
+ 
+ 		if (args_size >= FTRACE_REGS_MAX_ARGS * sizeof(long)) {
+ 			print_function_args(s, entry->args, ret_func);
+-			trace_seq_putc(s, ';');
++			trace_seq_puts(s, ";\n");
+ 		} else
+-			trace_seq_puts(s, "();");
++			trace_seq_puts(s, "();\n");
+ 	}
+-	trace_seq_printf(s, "\n");
+ 
+ 	print_graph_irq(iter, graph_ret->func, TRACE_GRAPH_RET,
+ 			cpu, iter->ent->pid, flags);
+-- Steve
 
