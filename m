@@ -1,130 +1,111 @@
-Return-Path: <bpf+bounces-55725-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55726-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28265A85C21
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 13:45:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21FA8A85CE1
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 14:20:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEA0D442EEB
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 11:45:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8EFA4A5639
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 12:18:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186F8298CCB;
-	Fri, 11 Apr 2025 11:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF14F29AB14;
+	Fri, 11 Apr 2025 12:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="K4DhqlWO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mPZJSolU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8DB0296172;
-	Fri, 11 Apr 2025 11:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B61215171;
+	Fri, 11 Apr 2025 12:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744371933; cv=none; b=deUq4Yzr/4MkU4cN+LAQajJA+qjNZjPScAuAlEW6wslk+ZiO8szaWC1LyJvwiGLV3HCfnN4onzA+jF7tqJqz6GXlPDEEpZV7NMgq0G5uS+w65Fi9L+E4TOQUYW6z03Ek1qDpEtOI8wS8blqNFi8S/712FpU/m+YU0gYbIwEplSY=
+	t=1744373886; cv=none; b=SghSIglPpXVlBkh9jp73gosWFuMH6o+bcLLrdfPZieS7tlPDX7apgAzPrVWdhx21n+/uOSQ8i0zysDQVEuMKgn50f425bqBepyVufL/95zsSZWF82pxdx6LeHfIqmX4VO0wBPCgOzu68axS17WREXB6Cy6ir3Gwj8x7pp8UNNnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744371933; c=relaxed/simple;
-	bh=O0N+6GXXWBWmxO5Ai1rMinbW2jzeIAui0qM9ywV+tto=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AXE8NIRmfW+KvqwwYARGSJ/TyfL0XIemeX2jOXAnCLUjzQ1tdmnoEC5iNVPCX5zGFaa7cXCEzJpbeOG965aEQOvAbGVs5eyrObzT8CoECOuSOWvqDr6TmJeq9RHVwnZz9I5jbEP/dKYgtt9ZAn+qpbXrDYpv5YvhJbNZpRvU0Nk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=K4DhqlWO; arc=none smtp.client-ip=185.226.149.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
-	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1u3Cow-005rnG-UL; Fri, 11 Apr 2025 13:45:18 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector1; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=bQZGP4rGJ3pEUvgfbYcy86zaGN9DlYadoqfiCi3oZ60=; b=K4DhqlWOkE/ovz9FA4jn6i1Yb+
-	+aLYPnJfySrff6fydwmssBbGbeWPry3LwIGfju+62saMuCcF9zjNmmuwlvFKUA2GL2hjsh/svGubW
-	ol9u8YC5pYUQ/OfDJ+9OOwRu8HSkxCL+kfX2cwsRHBcrjGE2SnQ3KbRJYtpkakIiS85DdMzg/Ka7t
-	Cwtn/HU1345cqIZk/L0yV7gugH2NuHbqTXxsnucc+6/LwEDAVT3LWcw9zDb0+UK1udK71TpRmjc3h
-	21A++sIeYsFQWv8XB+anuwW2+3h/CryPdoiQbSAPJxH3zX3s0WCucyg0YWr/ka5x6OWJZvahGFToB
-	Um1WcFAA==;
-Received: from [10.9.9.73] (helo=submission02.runbox)
-	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1u3Cow-0000MV-2k; Fri, 11 Apr 2025 13:45:18 +0200
-Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1u3Coe-00D8D3-1r; Fri, 11 Apr 2025 13:45:00 +0200
-Message-ID: <07d453c8-7790-4b45-a18a-a416bea94e34@rbox.co>
-Date: Fri, 11 Apr 2025 13:44:53 +0200
+	s=arc-20240116; t=1744373886; c=relaxed/simple;
+	bh=dH7AAWDa+xz7kvgKmNUKXkT5xXxX2wU24nwi1bWLMqE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oJWj6G9Wm3UTulXC1CVtjUUmlbnmK5VwFQX4bImJhTRrLiafkAkOk0OrY/u4A2zQN9qLQckiSqjAUXXWuxvyVLshQALsq2s75EWWUV0m8KYCNAzGudyDRvYpdZ1ZYT/Y7HrsyYg6pZeoaa7t8JjHlWeExk4yUW224nXmJonMewU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mPZJSolU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27F07C4CEE2;
+	Fri, 11 Apr 2025 12:17:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744373885;
+	bh=dH7AAWDa+xz7kvgKmNUKXkT5xXxX2wU24nwi1bWLMqE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=mPZJSolUIVJWGAGYbzrq6l4MUM9L7k22UzQ8utQhDRRuPKo4eQC+FfoXVNqHs+M53
+	 /5xSkzIewqKJDlJgh577tWRxXJZmPYpZKs387C+qOiBhD4VCFNScU2kQIkeoHorAn+
+	 JU/MStqK198rUEQBZKU+YJ8+In2Cvz0ieXymS0LhBY0mXGXCHBLljqpPD9H6HfDBly
+	 eWMcF7UOxJhp9aocmg6zeXL4cMnUarOTZG3dW8b8jJkhkw6cxnO5yoF4JItaYpVBhT
+	 x2JKiHivfg4yRC+tz9430jyHNu9YCZOy0rqX7x8RLrDv8EVxajpC7oI/5jSrHsc+HH
+	 1vDZJfuJTSkag==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCHv2 perf/core 1/2] uprobes/x86: Add support to emulate nop instructions
+Date: Fri, 11 Apr 2025 14:17:55 +0200
+Message-ID: <20250411121756.567274-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 0/6] selftests/bpf: Various sockmap-related
- fixes
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
- <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240731-selftest-sockmap-fixes-v2-0-08a0c73abed2@rbox.co>
- <87y159yi5m.fsf@cloudflare.com>
- <249a7dc3-34e2-4579-aae7-8b38b145e4bb@rbox.co>
- <87ttfxy28s.fsf@cloudflare.com>
- <42939687-20f9-4a45-b7c2-342a0e11a014@rbox.co>
- <877cccqnvj.fsf@cloudflare.com>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <877cccqnvj.fsf@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 8/19/24 22:05, Jakub Sitnicki wrote:
-> On Wed, Aug 14, 2024 at 06:14 PM +02, Michal Luczaj wrote:
->> On 8/6/24 19:45, Jakub Sitnicki wrote:
->>> On Tue, Aug 06, 2024 at 07:18 PM +02, Michal Luczaj wrote:
->>>> Great, thanks for the review. With this completed, I guess we can unwind
->>>> the (mail) stack to [1]. Is that ingress-to-local et al. something you
->>>> wanted to take care of yourself or can I give it a try?
->>>> [1] https://lore.kernel.org/netdev/87msmqn9ws.fsf@cloudflare.com/
->>>
->>> I haven't stated any work on. You're welcome to tackle that.
->>>
->>> All I have is a toy test that I've used to generate the redirect matrix.
->>> Perhaps it can serve as inspiration:
->>>
->>> https://github.com/jsitnicki/sockmap-redir-matrix
->>
->> All right, please let me know if this is more or less what you meant and
->> I'll post the whole series for a review (+patch to purge sockmap_listen of
->> redir tests, fix misnomers). [...]
-> 
-> Gave it a look as promised. It makes sense to me as well to put these
-> tests in a new module. There will be some overlap with sockmap_listen,
-> which has diverged from its inital scope, but we can dedup that later.
->> One thought that I had is that it could make sense to test the not
-> supported redirect combos (and expect an error). Sometimes folks make
-> changes and enable some parts of the API by accient.
-> 
-> Just a suggestion. This will be a nice improvement to the test coverage
-> even without the negative tests.
-> ...
+Adding support to emulate all nop instructions as the original uprobe
+instruction.
 
-So this took me for a bit of a journey (sorry for delay), but after
-tweaking some things here and there, here's v2 [1]. There are not that many
-changes, but I did try introducing negative tests and deduping vs.
-sockmap_listen. Please let me know what you think.
+This change speeds up uprobe on top of all nop instructions and is a
+preparation for usdt probe optimization, that will be done on top of
+nop5 instruction.
 
-https://lore.kernel.org/bpf/20250411-selftests-sockmap-redir-v2-0-5f9b018d6704@rbox.co/
+With this change the usdt probe on top of nop5 won't take the performance
+hit compared to usdt probe on top of standard nop instruction.
 
-Thanks,
-Michal
+Suggested-by: Oleg Nesterov <oleg@redhat.com>
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+v2 changes:
+- follow Adndrii/Oleg's suggestion and emulate all the nops
+
+ arch/x86/kernel/uprobes.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 9194695662b2..262960189a1c 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -840,6 +840,12 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+ 	insn_byte_t p;
+ 	int i;
+ 
++	/* x86_nops[i]; same as jmp with .offs = 0 */
++	for (i = 1; i <= ASM_NOP_MAX; ++i) {
++		if (!memcmp(insn->kaddr, x86_nops[i], i))
++			goto setup;
++	}
++
+ 	switch (opc1) {
+ 	case 0xeb:	/* jmp 8 */
+ 	case 0xe9:	/* jmp 32 */
+-- 
+2.49.0
 
 
