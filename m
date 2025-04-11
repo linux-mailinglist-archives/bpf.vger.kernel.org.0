@@ -1,149 +1,179 @@
-Return-Path: <bpf+bounces-55756-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F584A8640C
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 19:08:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BB87A86412
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 19:09:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 862D84C47FE
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 17:05:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90DB81B80B47
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 17:06:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 285C42222AF;
-	Fri, 11 Apr 2025 17:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3616227BAA;
+	Fri, 11 Apr 2025 17:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="XvJet4ta"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MeQLV6rX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com [209.85.208.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D736A221FAC
-	for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 17:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF072253BC
+	for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 17:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744391108; cv=none; b=n57b1i5/x3yjnct5woqD46kvAzKgDs3IIAYNGfuuG5Ly7rpoOYz7H4/yKXBOe0xE20pYnnatHG43JoI9mCHOOFCK4gaUgXcupaC1D7FoNXLm1g9brIaWXJ6djddHru/7AfnLXxo41dhmlU/tfj2u/EHdcOYQDTU4nx/twELK8sU=
+	t=1744391126; cv=none; b=AKioZQwGkIGZkQyDaaRzkZArg9ZGa2njgXaadbRvwiTws3p66YDM58FJgFjRRiPBwY8YGIVR2GcP3Fh4jmyvYq0XfX+f6P/6SuhSfrh5yQqT4erM5ZmvpwemHviSb0ymmo8kv5poate0qgrARV4v7z+o+FMhRNbXfo2qhLbjd2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744391108; c=relaxed/simple;
-	bh=Zs24uJAaPNdL7CMzi1gfleFstPNRatFfxR2lJdWyGy0=;
-	h=From:To:CC:Date:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=D0gyhFxJpb4CMWw5HPmPe6Qw5DcBgFs33IYFR2cYTutjpzfj8Dhlo+5T4AhqHcGXZ/TLMbkzfAyvl9gUh3YAzfap0i9kp7h0Mhu2DAFHY16u1sipDOxuL8EDRznPLDLRAtsU0M0NTFRiQOqg+LOKPEtO9hLO0w47CnrIICdAamQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=XvJet4ta; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-afc857702d1so2100383a12.3
-        for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 10:05:06 -0700 (PDT)
+	s=arc-20240116; t=1744391126; c=relaxed/simple;
+	bh=XFwzrG/jxILlu52UW5ELUFhfR0khU+mcnxEkPM6ZD5Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ifil2IXwekyuytc9P0KkQz+/HfERwxHCZD6Gm90d3fRiBW7diygIMgdxKXF+6zf52XhLUt2VmIVtiaVtoqLM3m+k5Ogjb3n+bw2I1QUj9L/Q6vXYf4tJ0lA8puo2GL4xLg2nrca5Dex1UB4j6WvTwysORsqGVmdQ6KSv7mFqTyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MeQLV6rX; arc=none smtp.client-ip=209.85.208.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f65.google.com with SMTP id 4fb4d7f45d1cf-5efe8d9eb1eso3865510a12.0
+        for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 10:05:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1744391106; x=1744995906; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zs24uJAaPNdL7CMzi1gfleFstPNRatFfxR2lJdWyGy0=;
-        b=XvJet4ta3eOAGfjticpH7ME4nff2cHJhtanIpB14HhW8IVhET2Y1kRk0kqzRmPh/BM
-         blSgj6Ffn8llUOpzv31KfC7s2UtlOobR4Udy1S05gKBDD7S+r1wt8PwfFvVr0HyyoWUQ
-         H1ur6WZhKsvsVyDP9bbHVUq1VUcqBAcWW7lcc=
+        d=gmail.com; s=20230601; t=1744391122; x=1744995922; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZJq/0FuQnd4sUTTMaysGbny7PSd15zSD4nZZVRNrKdQ=;
+        b=MeQLV6rXzc2NIV9qH8Sxn3tyZL8upbs6MKTHtS3tikv39U/dGDdyOT9S+93hxXWKVe
+         Lj5TQNi9jSynWg34OFZ3Nzhfzw5u5UZRbfMtVRtjlZgFfn7E1T4DcFk0AFvamtBewSKO
+         pockwSLzCoJqsWXv5YbGLsYduWKZLJTM9A8Pk7fCscTvH6AniYNoikqhNgT8dMACVdrk
+         nQaQihr+Q6gaFIrNFctaeMHzH0V/D8X8o3WOe1y8TTQpvWGTQBA1A+H4bJk/BrLiHg04
+         vrRtlKpjPm6Ha7w6dCKDa8oFT+PvpYaWu1e4GTJg2+9DhVuEurD8KSJ1SRR2iI4UjdO0
+         Vcng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744391106; x=1744995906;
-        h=content-transfer-encoding:mime-version:subject:user-agent
-         :references:in-reply-to:message-id:date:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zs24uJAaPNdL7CMzi1gfleFstPNRatFfxR2lJdWyGy0=;
-        b=hNTnNFtnLeMPpEhkwqfXKqi0nprzleXszvq0AV7zhNxVvDC4XQGlF4WVZOHsGgR2Gx
-         GzjK/8kKbF3vGXM9jul/DoYkCNYs0VxxHDqwmp2MmyHeyyPbS7yDdsWEACGtbE1PMZHc
-         ceXzuP4XgT7EkAcNoQPSN7kss5lDGLbgB/A4+JBHtkVvOe5HcFO2kMbg+OPXvrNaocZ2
-         FSXDtbf9deUlaf/0KcyAmHwCQgvgdAE//RZ8v2XWShRTpk/983S5FoqrLYYE7hY4Sy2+
-         +i3QuolbqKK/4a0yTJiLdTVYuMf5qxfHxeuzWyKZ+aZkMDZ2DRoF9cis3kTacZ5qAr2Y
-         dOjA==
-X-Forwarded-Encrypted: i=1; AJvYcCUPIWPyxaTlzqGB8QFBLAFpeyvKiGOsuqRahJteDbGuRvqHHa3uwnmfASui4REgnCvftjs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9TIgbP+X6nMVawBel1PpQyCql4Ai6KuY/MFQlUIo34KbSEkGO
-	urIo9Gal8tighNHvHAwPJGB3TEX8xryDGIDZTvpq6dArF/5TuFIDN3sx5rUoGA==
-X-Gm-Gg: ASbGncuaRzEtUZ8H7FtN4T0SaWpBeGKEub4Sq4cScn5mQlGTykXPQvc6+YtmK0M1pBY
-	7b1IQ7xHRWuo3vKo8BxKsXDv/7a72O5DynJXHQ7Me+ZeOU8YXf8X+piTRPf5p9ip0KZsFAScIK2
-	snnJGUNELffU7PtwWrI97dhYqJXmbhao1WrEx3m1/fDKDEKLDXpLPscL91GlmS7UkxHNgia00yh
-	2N4hdhAxPEGcjdwBbUJ32Gq/EqAOH0ux9UajEBcJ+ibU8TRv6pmNUOiyB8r+Gk1DczfltviKqtQ
-	bqj9hzmUesqLvIHMgj56DNMLt38cePEYDaRSFjVJcDobPUweQqYWXJlONO8ZVuBponJ/4vZaKVt
-	U+V4=
-X-Google-Smtp-Source: AGHT+IFsxw8IYiWvCcCfohL9OR/GeWdiXtYFPHAC7JyqV95Ksyc9aMccKi6WlaMRFkxD3Uw+BXU/BA==
-X-Received: by 2002:a17:902:e5cf:b0:215:94eb:adb6 with SMTP id d9443c01a7336-22bea4efe58mr64393975ad.40.1744391105389;
-        Fri, 11 Apr 2025 10:05:05 -0700 (PDT)
-Received: from [192.168.178.39] (f215227.upc-f.chello.nl. [80.56.215.227])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7c93aa3sm52081595ad.149.2025.04.11.10.04.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Apr 2025 10:05:04 -0700 (PDT)
-From: Arend Van Spriel <arend.vanspriel@broadcom.com>
-To: "Kuan-Wei Chiu" <visitorckw@gmail.com>
-CC: Johannes Berg <johannes@sipsolutions.net>, <tglx@linutronix.de>, <mingo@redhat.com>, 
-	<bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>, 
-	<jk@ozlabs.org>, <joel@jms.id.au>, <eajames@linux.ibm.com>, 
-	<andrzej.hajda@intel.com>, <neil.armstrong@linaro.org>, <rfoss@kernel.org>, 
-	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>, 
-	<tzimmermann@suse.de>, <airlied@gmail.com>, <simona@ffwll.ch>, 
-	<dmitry.torokhov@gmail.com>, <mchehab@kernel.org>, <awalls@md.metrocast.net>, 
-	<hverkuil@xs4all.nl>, <miquel.raynal@bootlin.com>, <richard@nod.at>, 
-	<vigneshr@ti.com>, <louis.peens@corigine.com>, <andrew+netdev@lunn.ch>, 
-	<davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>, 
-	<parthiban.veerasooran@microchip.com>, <gregkh@linuxfoundation.org>, 
-	<jirislaby@kernel.org>, <yury.norov@gmail.com>, <akpm@linux-foundation.org>, 
-	<jdelvare@suse.com>, <linux@roeck-us.net>, <alexandre.belloni@bootlin.com>, 
-	<pgaj@cadence.com>, <hpa@zytor.com>, <alistair@popple.id.au>, 
-	<linux@rasmusvillemoes.dk>, <Laurent.pinchart@ideasonboard.com>, 
-	<jonas@kwiboo.se>, <jernej.skrabec@gmail.com>, <kuba@kernel.org>, 
-	<linux-kernel@vger.kernel.org>, <linux-fsi@lists.ozlabs.org>, 
-	<dri-devel@lists.freedesktop.org>, <linux-input@vger.kernel.org>, 
-	<linux-media@vger.kernel.org>, <linux-mtd@lists.infradead.org>, 
-	<oss-drivers@corigine.com>, <netdev@vger.kernel.org>, 
-	<linux-wireless@vger.kernel.org>, <brcm80211@lists.linux.dev>, 
-	<brcm80211-dev-list.pdl@broadcom.com>, <linux-serial@vger.kernel.org>, 
-	<bpf@vger.kernel.org>, <jserv@ccns.ncku.edu.tw>, <Frank.Li@nxp.com>, 
-	<linux-hwmon@vger.kernel.org>, <linux-i3c@lists.infradead.org>, 
-	<david.laight.linux@gmail.com>, <andrew.cooper3@citrix.com>, 
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Date: Fri, 11 Apr 2025 19:04:43 +0200
-Message-ID: <19625cf93f8.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
-In-Reply-To: <Z/lFQ85vhSQiFDBm@visitorckw-System-Product-Name>
-References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-4-visitorckw@gmail.com>
- <25b7888d-f704-493b-a2d7-c5e8fff9cfb4@broadcom.com>
- <740c7de894d39249665c6333aa3175762cfb13c6.camel@sipsolutions.net>
- <1961e19ee10.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
- <Z/lFQ85vhSQiFDBm@visitorckw-System-Product-Name>
-User-Agent: AquaMail/1.54.1 (build: 105401536)
-Subject: Re: [PATCH v4 03/13] media: pci: cx18-av-vbi: Replace open-coded parity calculation with parity_odd()
+        d=1e100.net; s=20230601; t=1744391122; x=1744995922;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZJq/0FuQnd4sUTTMaysGbny7PSd15zSD4nZZVRNrKdQ=;
+        b=Rq+8cdkkYa2lh68gTZcX2izXeLVdIVXhYTPgi3HQKdaeu/GQUWqPgsaH4p6Y/RURC2
+         cxFYIW4yRth6Ufz8fgx5R4Wac7S57wVYq5CClkqDMxQcutkxlp4NbcyRjO1//ua9K+FA
+         KDsxNWmUfNDzuiDu32UcJ7oLeSvLxfjZ0KAaaT2E6ylsMP7o8cMW8Ub7oaN6vlxBv8aQ
+         B79P/9P0RdohRLXXD1GCrx5hE4h4o3sBz2nYKTmAJqHJCTZCdZ+RIAGOlrw/z9eQxhYu
+         1ZbAUaDbzGZJ3vngzQnk+q+rOQeMwvXKno+o68R98gNHaOimoZDwDrO3uyQq/IO8r60H
+         GeSQ==
+X-Gm-Message-State: AOJu0Yw/QsN5Xix6W/A8ICW5Z+x2vLr1OHqia/OAsyeqfH9W2hoaZPPV
+	L6xUnnWw//Jj37E/aKB4SBEpMr3MyZ72HbGEcgMgdKIuTnSqtsAIKsFHPN3FpNsKnw5FvV9Hqnu
+	7a/H+aUOlrm+jIJL+KwkMEBTBm0fq/IJbWMg=
+X-Gm-Gg: ASbGncsNAsida8BE1pRV3p35vyhGr84yg8+PlhmRIXxg2AaecDDYXO7oU3UXzq6LN6p
+	BFLmLjspxVoD8459yhqL5AsOjE3T09IRE1dqqr40WqkGvxftGTVNvjzECS+LWANjnWjedJxjRL1
+	PLJeepiKw0CSGNZK9AMsJnyMWYgPySaCzLIzPJcP3j/BViDF68mLk1PzaB
+X-Google-Smtp-Source: AGHT+IFtYnKOYYzIviAsn/g5w1jiCJAmVcnzkcTQzVQs/luBrCE4dYGx67fGGw5pouSXWfC0n69krpuoWahNylmjgSc=
+X-Received: by 2002:a05:6402:1ec9:b0:5ec:8aeb:812a with SMTP id
+ 4fb4d7f45d1cf-5f3637e58d1mr3872097a12.14.1744391121931; Fri, 11 Apr 2025
+ 10:05:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+References: <20250411101759.4061366-1-memxor@gmail.com>
+In-Reply-To: <20250411101759.4061366-1-memxor@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Fri, 11 Apr 2025 19:04:45 +0200
+X-Gm-Features: ATxdqUFny2RTRzXuqj3-zWgOdQqB5mCYzMAYuxZFrGQvvh6qVYwzStdHbeDgLEM
+Message-ID: <CAP01T76CVtC=z=JYP+HFtVrfkrZjuiR20xLWtHkshGjoA77MwA@mail.gmail.com>
+Subject: Re: [PATCH bpf v1] bpf: Convert ringbuf.c to rqspinlock
+To: bpf@vger.kernel.org
+Cc: syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, kkd@meta.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On April 11, 2025 6:37:35 PM Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
-
-> On Thu, Apr 10, 2025 at 07:08:58AM +0200, Arend Van Spriel wrote:
->> On April 10, 2025 12:06:52 AM Johannes Berg <johannes@sipsolutions.net> wrote:
->>
->>> On Wed, 2025-04-09 at 20:43 +0200, Arend van Spriel wrote:
->>>>
->>>> This is orthogonal to the change to parity_odd() though. More specific
->>>> to the new parity_odd() you can now do following as parity_odd()
->>>> argument is u64:
->>>>
->>>> err = !parity_odd(*(u16 *)p);
->>>
->>> Can it though? Need to be careful with alignment with that, I'd think.
->>
->> My bad. You are absolutely right.
-> Then maybe we can still go with:
+On Fri, 11 Apr 2025 at 12:18, Kumar Kartikeya Dwivedi <memxor@gmail.com> wr=
+ote:
 >
-> err = !parity_odd(p[0] ^ p[1]);
+> Convert the raw spinlock used by BPF ringbuf to rqspinlock. Currently,
+> we have an open syzbot report of a potential deadlock. In addition, the
+> ringbuf can fail to reserve spuriously under contention from NMI
+> context.
 >
-> I believe this should still be a fairly safe approach?
+> It is potentially attractive to enable unconstrained usage (incl. NMIs)
+> while ensuring no deadlocks manifest at runtime, perform the conversion
+> to rqspinlock to achieve this.
+>
+> This change was benchmarked for BPF ringbuf's multi-producer contention
+> case on an Intel Sapphire Rapids server, with hyperthreading disabled
+> and performance governor turned on. 5 warm up runs were done for each
+> case before obtaining the results.
+>
+> Before (raw_spinlock_t):
+>
+> Ringbuf, multi-producer contention
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> rb-libbpf nr_prod 1  11.440 =C2=B1 0.019M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 2  2.706 =C2=B1 0.010M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 3  3.130 =C2=B1 0.004M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 4  2.472 =C2=B1 0.003M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 8  2.352 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 12 2.813 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 16 1.988 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 20 2.245 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 24 2.148 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 28 2.190 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 32 2.490 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 36 2.180 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 40 2.201 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 44 2.226 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 48 2.164 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+> rb-libbpf nr_prod 52 1.874 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s)
+>
+> After (rqspinlock_t):
+>
+> Ringbuf, multi-producer contention
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> rb-libbpf nr_prod 1  11.078 =C2=B1 0.019M/s (drops 0.000 =C2=B1 0.000M/s)=
+ (-3.16%)
+> rb-libbpf nr_prod 2  2.801 =C2=B1 0.014M/s (drops 0.000 =C2=B1 0.000M/s) =
+(3.51%)
+> rb-libbpf nr_prod 3  3.454 =C2=B1 0.005M/s (drops 0.000 =C2=B1 0.000M/s) =
+(10.35%)
+> rb-libbpf nr_prod 4  2.567 =C2=B1 0.002M/s (drops 0.000 =C2=B1 0.000M/s) =
+(3.84%)
+> rb-libbpf nr_prod 8  2.468 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
+(4.93%)
+> rb-libbpf nr_prod 12 2.510 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
+(-10.77%)
+> rb-libbpf nr_prod 16 2.075 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
+(4.38%)
+> rb-libbpf nr_prod 20 2.640 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
+(17.59%)
+> rb-libbpf nr_prod 24 2.092 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
+(-2.61%)
+> rb-libbpf nr_prod 28 2.426 =C2=B1 0.005M/s (drops 0.000 =C2=B1 0.000M/s) =
+(10.78%)
+> rb-libbpf nr_prod 32 2.331 =C2=B1 0.004M/s (drops 0.000 =C2=B1 0.000M/s) =
+(-6.39%)
+> rb-libbpf nr_prod 36 2.306 =C2=B1 0.003M/s (drops 0.000 =C2=B1 0.000M/s) =
+(5.78%)
+> rb-libbpf nr_prod 40 2.178 =C2=B1 0.002M/s (drops 0.000 =C2=B1 0.000M/s) =
+(-1.04%)
+> rb-libbpf nr_prod 44 2.293 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
+(3.01%)
+> rb-libbpf nr_prod 48 2.022 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
+(-6.56%)
+> rb-libbpf nr_prod 52 1.809 =C2=B1 0.001M/s (drops 0.000 =C2=B1 0.000M/s) =
+(-3.47%)
+>
+> There's a fair amount of noise in the benchmark, with numbers on reruns
+> going up and down by 10%, so all changes are in the range of this
+> disturbance, and we see no major regressions.
+>
+> Reported-by: syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/0000000000004aa700061379547e@google.c=
+om
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
 
-Yes. Or whatever the name will be ;-)
-
-Regards,
-Arend
-
-
+#syz test
 
