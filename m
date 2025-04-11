@@ -1,161 +1,124 @@
-Return-Path: <bpf+bounces-55738-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55740-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CC36A85FC0
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 15:56:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5CF5A860B5
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 16:34:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78B2D1B863DD
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 13:56:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1655C467B36
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 14:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7038E1E5B78;
-	Fri, 11 Apr 2025 13:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD851F4CB5;
+	Fri, 11 Apr 2025 14:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K0ztdXrg"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="pcj7niJK"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E566D27450;
-	Fri, 11 Apr 2025 13:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17C5E45948;
+	Fri, 11 Apr 2025 14:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744379768; cv=none; b=NhqHf6mqx9f+bdjaFwN7ztlLQOrER/LfUIMJiiPWP5p0a+PVTd+1pcf/Aap9VaM0mLw6525VK+uM5iGxaj3cARC024Up3IuKVea/gC+y+/rwvZRNXjqESfdahZGCbDCOFgvplAa+kLuPQfZQv3PZnm2QmfnDiw73bS+2OgWebT8=
+	t=1744382027; cv=none; b=e4qKsjNrfkVzLH4KQ9NF4tg8WVp3Uu/YpwQyHstnw8LBU7Yh4K21DEyVlTpINCk6Jfhv8ni+xjtOOPq6LZz/59eKVNTG7jfMVHfKnUepWfEv2GEhwUEpUwYZhT5l+eMp5Vw2HP2OPSfGHBk216gg6iRrEcQAcuXZ2PhuFCjURpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744379768; c=relaxed/simple;
-	bh=inwvGyrmwNfdaC2wcLr+MuXx7P3IP3jwjTpSVV/B//c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=frrB24ugUygNAJzBayMn4Uh57tsvUk0fzgdqvdxHhi7m9IGS7+ZjzdU9zpu7VoKl5BNt0Y3VCXJUWv7K63jL8nEYz5S1Y7twpSrJcbVtxrEN6ERHvj9ptIfftZRCwaLKUx9xWRBvf+ZxOQcvbq/RvUYmEocQP9IelfnuwpLIxdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K0ztdXrg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D4DEC4CEE2;
-	Fri, 11 Apr 2025 13:56:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744379767;
-	bh=inwvGyrmwNfdaC2wcLr+MuXx7P3IP3jwjTpSVV/B//c=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=K0ztdXrgFR21LrIFCy0jZAxrlwOxCEYWkgGgj+98Go1/BDdoveogWRGdenEIRjip2
-	 uITk+Xs9QkojzWNJ0bUnWtK5NLh9W8w/TXKcWZGIpAwQZ6WszNAtEu9mr/SLQnJlfN
-	 YUaMTy6oCsAoWOkhtnKWCed+zQkhVaHN1+oPx5b9AVqjr3qKewJU4uCVtbqam0ZGQA
-	 e/J2Orv/AZK3BxWLZoLp3W/qhU2UuRHCJ10j+NwiZ1yv7DFeYYD4KYDO5M4ya2NjFX
-	 UTG7VkPnuYi8S7dDhVUx2gMB18GdZAwpOs0e9+3fUO5ZhIiZaPnz1G4thn+KDa9RnJ
-	 sRH3514UnCCbg==
-Message-ID: <ff5e6185-0dcb-4879-8031-bdb0b0edcec6@kernel.org>
-Date: Fri, 11 Apr 2025 15:56:02 +0200
+	s=arc-20240116; t=1744382027; c=relaxed/simple;
+	bh=oVuRtuSjG5JGh6JU+d825kCCzZGN6r/zZRQW1ttQVdQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R5yBdJvx9lqhlPBxaHiYEkQhjpl09ijG3IKaeMf9jknfta8NWuSZgHgB1crxHlfr78F0fVQJBoQz9b1KCPLZb+qreU4Oj/vhC5BcJqGhNSUCpQB1UjNIlSh1lcaB8EmbWfxV7iuP1uZHqsDdJOZSmh3DLMRSeIaUTDl/PT3Se30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=pcj7niJK; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=ItP1aVb1e+h9azvx3WYwQtH0ZEUzn4mgScjro0lkdMU=;
+	b=pcj7niJKjKWu9W5yhl0cVbt1ENSSl//cUrActJg0c539Uvm/1E21WWyHnVFheF
+	ItMczQoOy6DKtOl6/D74wxp0xrsBUnjnYAeuIDgvoCd911ec6jh2LDPCPF5EpODu
+	vI1htwPdi7cQYHE2+2M6S3+bwdMwe7gAbPWqFmMpnWheM=
+Received: from iZj6c3ewsy61ybpk7hrb16Z (unknown [])
+	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wCHg23NJ_lnU8isFg--.61454S2;
+	Fri, 11 Apr 2025 22:31:44 +0800 (CST)
+Date: Fri, 11 Apr 2025 22:31:41 +0800
+From: Jiayuan Chen <mrpre@163.com>
+To: Michal Luczaj <mhal@rbox.co>
+Cc: Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Jakub Sitnicki <jakub@cloudflare.com>
+Subject: Re: [PATCH bpf-next v2 5/9] selftests/bpf: Add selftest for
+ sockmap/hashmap redirection
+Message-ID: <ghhz3pi3oh3rylyd5t6gfa3x7m35q4ei5liwytmcbfit4r4pit@4al5vrpx7exl>
+References: <20250411-selftests-sockmap-redir-v2-0-5f9b018d6704@rbox.co>
+ <20250411-selftests-sockmap-redir-v2-5-5f9b018d6704@rbox.co>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next V2 1/2] veth: apply qdisc backpressure on full
- ptr_ring to reduce TX drops
-To: Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
- bpf@vger.kernel.org, tom@herbertland.com,
- Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
- dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp, kernel-team@cloudflare.com
-References: <174412623473.3702169.4235683143719614624.stgit@firesoul>
- <174412627898.3702169.3326405632519084427.stgit@firesoul>
- <20250411124553.GD395307@horms.kernel.org>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20250411124553.GD395307@horms.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250411-selftests-sockmap-redir-v2-5-5f9b018d6704@rbox.co>
+X-CM-TRANSID:_____wCHg23NJ_lnU8isFg--.61454S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uF43Ar45KrWUWF1DCrW8Xrb_yoW8Xr45pa
+	40gFZ7GFWSq3W5XryYqws2grZrZw1FvrWDX343GrW3Jw1q9r9rWrn5GFWYyr4fAFnxCr17
+	XFn5CF47K3s29F7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UiNV9UUUUU=
+X-CM-SenderInfo: xpus2vi6rwjhhfrp/1tbiOhwsp2f5JzcV7gAAsY
 
+On Fri, Apr 11, 2025 at 01:32:41PM +0200, Michal Luczaj wrote:
+> +static void test_send_redir_recv(int sd_send, int send_flags, int sd_peer,
+> +				 int sd_in, int sd_out, int sd_recv,
+> +				 struct maps *maps, int status)
+> +{
+> +	unsigned int drop, pass;
+> +	char *send_buf = "ab";
+> +	char recv_buf = '\0';
+> +	ssize_t n, len = 1;
+> +	/* Zero out the verdict map */
+> +	if (xbpf_map_update_elem(maps->verd, &u32(SK_DROP), &u32(0), BPF_ANY) ||
+> +	    xbpf_map_update_elem(maps->verd, &u32(SK_PASS), &u32(0), BPF_ANY))
+> +		return;
+> +
+> +	if (xbpf_map_update_elem(maps->in, &u32(0), &u64(sd_in), BPF_NOEXIST))
+> +		return;
+> +
+> +	if (xbpf_map_update_elem(maps->out, &u32(0), &u64(sd_out), BPF_NOEXIST))
+> +		goto del_in;
+> +
+> +	/* Last byte is OOB data when send_flags has MSG_OOB bit set */
+> +	if (send_flags & MSG_OOB)
+> +		len++;
+> +	n = send(sd_send, send_buf, len, send_flags);
+> +	if (n >= 0 && n < len)
+> +		FAIL("incomplete send");
+> +	if (n < 0) {
+> +		/* sk_msg redirect combo not supported? */
+> +		if (status & SUPPORTED || errno != EACCES)
+> +			FAIL_ERRNO("send");
+> +		goto out;
+> +	}
+> +
+> +	if (!(status & SUPPORTED)) {
+> +		handle_unsupported(sd_send, sd_peer, sd_in, sd_out, sd_recv,
+> +				   maps->verd, status);
+> +		goto out;
+> +	}
+> +
+> +	errno = 0;
+> +	n = recv_timeout(sd_recv, &recv_buf, 1, 0, IO_TIMEOUT_SEC);
+> +	if (n != 1) {
+> +		FAIL_ERRNO("recv_timeout()");
+> +		goto out;
+> +	}
+I prefer multiple send and receive operations, or implementing a loop at
+the outer level.
 
+Thanks.
 
-On 11/04/2025 14.45, Simon Horman wrote:
-> On Tue, Apr 08, 2025 at 05:31:19PM +0200, Jesper Dangaard Brouer wrote:
->> In production, we're seeing TX drops on veth devices when the ptr_ring
->> fills up. This can occur when NAPI mode is enabled, though it's
->> relatively rare. However, with threaded NAPI - which we use in
->> production - the drops become significantly more frequent.
->>
->> The underlying issue is that with threaded NAPI, the consumer often runs
->> on a different CPU than the producer. This increases the likelihood of
->> the ring filling up before the consumer gets scheduled, especially under
->> load, leading to drops in veth_xmit() (ndo_start_xmit()).
->>
->> This patch introduces backpressure by returning NETDEV_TX_BUSY when the
->> ring is full, signaling the qdisc layer to requeue the packet. The txq
->> (netdev queue) is stopped in this condition and restarted once
->> veth_poll() drains entries from the ring, ensuring coordination between
->> NAPI and qdisc.
->>
->> Backpressure is only enabled when a qdisc is attached. Without a qdisc,
->> the driver retains its original behavior - dropping packets immediately
->> when the ring is full. This avoids unexpected behavior changes in setups
->> without a configured qdisc.
->>
->> With a qdisc in place (e.g. fq, sfq) this allows Active Queue Management
->> (AQM) to fairly schedule packets across flows and reduce collateral
->> damage from elephant flows.
->>
->> A known limitation of this approach is that the full ring sits in front
->> of the qdisc layer, effectively forming a FIFO buffer that introduces
->> base latency. While AQM still improves fairness and mitigates flow
->> dominance, the latency impact is measurable.
->>
->> In hardware drivers, this issue is typically addressed using BQL (Byte
->> Queue Limits), which tracks in-flight bytes needed based on physical link
->> rate. However, for virtual drivers like veth, there is no fixed bandwidth
->> constraint - the bottleneck is CPU availability and the scheduler's ability
->> to run the NAPI thread. It is unclear how effective BQL would be in this
->> context.
->>
->> This patch serves as a first step toward addressing TX drops. Future work
->> may explore adapting a BQL-like mechanism to better suit virtual devices
->> like veth.
->>
->> Reported-by: Yan Zhai <yan@cloudflare.com>
->> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> 
-> Thanks Jesper,
-> 
-> It's very nice to see backpressure support being added here.
-> 
-> ...
-> 
->> @@ -874,9 +909,16 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
->>   			struct veth_xdp_tx_bq *bq,
->>   			struct veth_stats *stats)
->>   {
->> +	struct veth_priv *priv = netdev_priv(rq->dev);
->> +	int queue_idx = rq->xdp_rxq.queue_index;
->> +	struct netdev_queue *peer_txq;
->> +	struct net_device *peer_dev;
->>   	int i, done = 0, n_xdpf = 0;
->>   	void *xdpf[VETH_XDP_BATCH];
->>   
->> +	peer_dev = priv->peer;
-> 
-> I think you need to take into account RCU here.
-> 
-> Sparse says:
-> 
->    .../veth.c:919:18: warning: incorrect type in assignment (different address spaces)
->    .../veth.c:919:18:    expected struct net_device *peer_dev
->    .../veth.c:919:18:    got struct net_device [noderef] __rcu *peer
-> 
-
-Is it correctly understood that I need an:
-
-   peer_dev = rcu_dereference(priv->peer);
-
-And also wrap this in a RCU section (rcu_read_lock()) ?
-
-> 
->> +	peer_txq = netdev_get_tx_queue(peer_dev, queue_idx);
->> +
->>   	for (i = 0; i < budget; i++) {
->>   		void *ptr = __ptr_ring_consume(&rq->xdp_ring);
->>   
-> 
-> ...
 
