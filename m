@@ -1,119 +1,161 @@
-Return-Path: <bpf+bounces-55737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ED17A85F28
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 15:37:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CC36A85FC0
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 15:56:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C7A0173814
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 13:34:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78B2D1B863DD
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 13:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA9A1E0E13;
-	Fri, 11 Apr 2025 13:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7038E1E5B78;
+	Fri, 11 Apr 2025 13:56:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xx+P+TWN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K0ztdXrg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9415618A93F;
-	Fri, 11 Apr 2025 13:32:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E566D27450;
+	Fri, 11 Apr 2025 13:56:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744378360; cv=none; b=kQsMqgNOJRtOpdmeK0AgiZ7yx6lSPVxnpfPKAT8INPyiwq0yoLewFL7I7QEl9REsBHN7QoU7dKRj0AycqKsT6KmKHGhWe8rNKEUpoFlpKXDT5+LyLXZYi7qgGqCBSkrI3XHAxesh38CnQyUHuX/XgVZCGW51Xo9Oug92sxZP9eg=
+	t=1744379768; cv=none; b=NhqHf6mqx9f+bdjaFwN7ztlLQOrER/LfUIMJiiPWP5p0a+PVTd+1pcf/Aap9VaM0mLw6525VK+uM5iGxaj3cARC024Up3IuKVea/gC+y+/rwvZRNXjqESfdahZGCbDCOFgvplAa+kLuPQfZQv3PZnm2QmfnDiw73bS+2OgWebT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744378360; c=relaxed/simple;
-	bh=6auAeTvEbGMRITZyY4M5w7DUVgwBUd9Oo/zM3cb3fiM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f/c7B65ljYZTBDLFDBe9NJf9+VW9w0qmNvbIo6J8UVyjuwW/oG1ny38kq73rycgg9hHqOXvTfnNbwFu2z+MVPps4Gtdmb/XCpIizAZMFa5vWObBJXWzmcTuzwQSyApA84shpXCZuAH7FTvuwpBlc4oIHRW59gUC16OTX1u7MAvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xx+P+TWN; arc=none smtp.client-ip=209.85.218.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-ac2963dc379so325173366b.2;
-        Fri, 11 Apr 2025 06:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744378357; x=1744983157; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0GlathsTjceQi/t2GjCVPqqGTc//79C9q6C7CdCvnNE=;
-        b=Xx+P+TWNMQnpKK4OYe94JVYWP+eDL3Wepho2zznRqhcUeFD2QXH4SSKccevu9U3nuI
-         tBRJJpeUvcH9Jig9P4P44WRNFvRqQs8yQsazM1A8mVIUur4ny8G/HBU5+dtHyQz8jbcr
-         GiJbRSxOko4JHdl65yZzi7Io9VfGsaPoq69GyycTAb3wFYkGk2TntEPUOUagEim6GesL
-         buQAc3hBB/XIPLwCcscv1qEZNjtb62K43wxIqgPMKP9yhF2bWJVQj8AthsSICOsr18ck
-         h+uWWBj8Y3PXXEJNEkMzkfTqptzwUK1pmpxR/btl+9DTpwnTGumftepEMC2T9mAYlWzo
-         wmFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744378357; x=1744983157;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0GlathsTjceQi/t2GjCVPqqGTc//79C9q6C7CdCvnNE=;
-        b=TGO8BhbJxhG1nPd/9AqhijHboiKAZ8Rlvb5weXRGyEdbVm2uatrq+3JiAARq2djZ/T
-         3Tu3qEqc5vuI9NDByA6lBose33QU6K+Td+Qo71bi/mbOG1LjBSDYlQwjNTBY7hgkf1SP
-         Vgu3GZf8LEs0folSphMqzL5xa+LHODycPihgUAHqnFnndq2E4gUjcGGk7q1jdrbZGLS3
-         9DNrzlrRGMWoJcqZhzg2AqcidEbQbwN8dS5VQgs5zxTBO1WGnFM2eI166Pw5/1A4b07L
-         gOw6srpYuNLh7A5WhnSNyEQJgEWKp+/B4Kk05i366Bj/044Mqccg1JrtwzhoZbCHAfNN
-         VJlg==
-X-Forwarded-Encrypted: i=1; AJvYcCVLcrXLLa7HABPb1SIw7umybQPMVlwOIUJs/gsvgYIvwAbVaac7xQgDXeeNSCpE1q1ajFnVg7M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWA98PEuAQmGUKhzYyLJIdwZHMsEQBvZACgzv0MGphM3VxkAVU
-	sbQeNZOw7NbG2ucRJMT5E0dwm/d4VzPOxqqNyR9n1MpZI9WTTnbMyrWnS7d6GReku07FK51SRrK
-	wqxNWyVBoZJm7/ZhObMY2uH0PDTo=
-X-Gm-Gg: ASbGncs1ydLcn26tDd8arkb2qZEy4VKDzUmLczNS26zCiodNBdTBsfq5lvzguQ8KvF0
-	8MtojtVQ/+j2Mm9F5seAF53RN+V+5w+Ui4csdyqh8liiRbtT6syuvi5YbY44C1yadFtAdSnys3/
-	e8hxzF1+MUbNcI19B6k9LGL0pv3198TKQzsufzleaQyYHsxG/DTd2bh6gwRP5f3YG3Vo4=
-X-Google-Smtp-Source: AGHT+IEef5n8uwBF/gIUihQgoeIsWcFRzHG+hVacnglE/XMRvf9In/DoYsn+f4JZmYDYh06uIq7IcjNU8SxXxMY52sQ=
-X-Received: by 2002:a17:907:6d0b:b0:ac7:31a4:d4e9 with SMTP id
- a640c23a62f3a-acad343a069mr261189666b.4.1744378356705; Fri, 11 Apr 2025
- 06:32:36 -0700 (PDT)
+	s=arc-20240116; t=1744379768; c=relaxed/simple;
+	bh=inwvGyrmwNfdaC2wcLr+MuXx7P3IP3jwjTpSVV/B//c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=frrB24ugUygNAJzBayMn4Uh57tsvUk0fzgdqvdxHhi7m9IGS7+ZjzdU9zpu7VoKl5BNt0Y3VCXJUWv7K63jL8nEYz5S1Y7twpSrJcbVtxrEN6ERHvj9ptIfftZRCwaLKUx9xWRBvf+ZxOQcvbq/RvUYmEocQP9IelfnuwpLIxdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K0ztdXrg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D4DEC4CEE2;
+	Fri, 11 Apr 2025 13:56:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744379767;
+	bh=inwvGyrmwNfdaC2wcLr+MuXx7P3IP3jwjTpSVV/B//c=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=K0ztdXrgFR21LrIFCy0jZAxrlwOxCEYWkgGgj+98Go1/BDdoveogWRGdenEIRjip2
+	 uITk+Xs9QkojzWNJ0bUnWtK5NLh9W8w/TXKcWZGIpAwQZ6WszNAtEu9mr/SLQnJlfN
+	 YUaMTy6oCsAoWOkhtnKWCed+zQkhVaHN1+oPx5b9AVqjr3qKewJU4uCVtbqam0ZGQA
+	 e/J2Orv/AZK3BxWLZoLp3W/qhU2UuRHCJ10j+NwiZ1yv7DFeYYD4KYDO5M4ya2NjFX
+	 UTG7VkPnuYi8S7dDhVUx2gMB18GdZAwpOs0e9+3fUO5ZhIiZaPnz1G4thn+KDa9RnJ
+	 sRH3514UnCCbg==
+Message-ID: <ff5e6185-0dcb-4879-8031-bdb0b0edcec6@kernel.org>
+Date: Fri, 11 Apr 2025 15:56:02 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250409214606.2000194-1-ameryhung@gmail.com> <20250409214606.2000194-4-ameryhung@gmail.com>
-In-Reply-To: <20250409214606.2000194-4-ameryhung@gmail.com>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 11 Apr 2025 15:32:00 +0200
-X-Gm-Features: ATxdqUGWpUTEathunBsuySzmg3x2f27Znxy4IMfqg7gdZwufPJ91_5KJ5tt-gns
-Message-ID: <CAP01T77ibGcEhwsyJb1WVaH-vhbZB_M2yVA8Uyv9b5fy=ErWQQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 03/10] bpf: net_sched: Add basic bpf qdisc kfuncs
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, alexei.starovoitov@gmail.com, 
-	andrii@kernel.org, daniel@iogearbox.net, edumazet@google.com, kuba@kernel.org, 
-	xiyou.wangcong@gmail.com, jhs@mojatatu.com, martin.lau@kernel.org, 
-	jiri@resnulli.us, stfomichev@gmail.com, toke@redhat.com, sinquersw@gmail.com, 
-	ekarani.silvestre@ccc.ufcg.edu.br, yangpeihao@sjtu.edu.cn, 
-	yepeilin.cs@gmail.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V2 1/2] veth: apply qdisc backpressure on full
+ ptr_ring to reduce TX drops
+To: Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ bpf@vger.kernel.org, tom@herbertland.com,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp, kernel-team@cloudflare.com
+References: <174412623473.3702169.4235683143719614624.stgit@firesoul>
+ <174412627898.3702169.3326405632519084427.stgit@firesoul>
+ <20250411124553.GD395307@horms.kernel.org>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250411124553.GD395307@horms.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 9 Apr 2025 at 23:46, Amery Hung <ameryhung@gmail.com> wrote:
->
-> From: Amery Hung <amery.hung@bytedance.com>
->
-> Add basic kfuncs for working on skb in qdisc.
->
-> Both bpf_qdisc_skb_drop() and bpf_kfree_skb() can be used to release
-> a reference to an skb. However, bpf_qdisc_skb_drop() can only be called
-> in .enqueue where a to_free skb list is available from kernel to defer
-> the release. bpf_kfree_skb() should be used elsewhere. It is also used
-> in bpf_obj_free_fields() when cleaning up skb in maps and collections.
->
-> bpf_skb_get_hash() returns the flow hash of an skb, which can be used
-> to build flow-based queueing algorithms.
->
-> Finally, allow users to create read-only dynptr via bpf_dynptr_from_skb()=
-.
->
-> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
-> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
 
-How do we prevent UAF when dynptr is accessed after bpf_kfree_skb?
 
->  [...]
+On 11/04/2025 14.45, Simon Horman wrote:
+> On Tue, Apr 08, 2025 at 05:31:19PM +0200, Jesper Dangaard Brouer wrote:
+>> In production, we're seeing TX drops on veth devices when the ptr_ring
+>> fills up. This can occur when NAPI mode is enabled, though it's
+>> relatively rare. However, with threaded NAPI - which we use in
+>> production - the drops become significantly more frequent.
+>>
+>> The underlying issue is that with threaded NAPI, the consumer often runs
+>> on a different CPU than the producer. This increases the likelihood of
+>> the ring filling up before the consumer gets scheduled, especially under
+>> load, leading to drops in veth_xmit() (ndo_start_xmit()).
+>>
+>> This patch introduces backpressure by returning NETDEV_TX_BUSY when the
+>> ring is full, signaling the qdisc layer to requeue the packet. The txq
+>> (netdev queue) is stopped in this condition and restarted once
+>> veth_poll() drains entries from the ring, ensuring coordination between
+>> NAPI and qdisc.
+>>
+>> Backpressure is only enabled when a qdisc is attached. Without a qdisc,
+>> the driver retains its original behavior - dropping packets immediately
+>> when the ring is full. This avoids unexpected behavior changes in setups
+>> without a configured qdisc.
+>>
+>> With a qdisc in place (e.g. fq, sfq) this allows Active Queue Management
+>> (AQM) to fairly schedule packets across flows and reduce collateral
+>> damage from elephant flows.
+>>
+>> A known limitation of this approach is that the full ring sits in front
+>> of the qdisc layer, effectively forming a FIFO buffer that introduces
+>> base latency. While AQM still improves fairness and mitigates flow
+>> dominance, the latency impact is measurable.
+>>
+>> In hardware drivers, this issue is typically addressed using BQL (Byte
+>> Queue Limits), which tracks in-flight bytes needed based on physical link
+>> rate. However, for virtual drivers like veth, there is no fixed bandwidth
+>> constraint - the bottleneck is CPU availability and the scheduler's ability
+>> to run the NAPI thread. It is unclear how effective BQL would be in this
+>> context.
+>>
+>> This patch serves as a first step toward addressing TX drops. Future work
+>> may explore adapting a BQL-like mechanism to better suit virtual devices
+>> like veth.
+>>
+>> Reported-by: Yan Zhai <yan@cloudflare.com>
+>> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> 
+> Thanks Jesper,
+> 
+> It's very nice to see backpressure support being added here.
+> 
+> ...
+> 
+>> @@ -874,9 +909,16 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+>>   			struct veth_xdp_tx_bq *bq,
+>>   			struct veth_stats *stats)
+>>   {
+>> +	struct veth_priv *priv = netdev_priv(rq->dev);
+>> +	int queue_idx = rq->xdp_rxq.queue_index;
+>> +	struct netdev_queue *peer_txq;
+>> +	struct net_device *peer_dev;
+>>   	int i, done = 0, n_xdpf = 0;
+>>   	void *xdpf[VETH_XDP_BATCH];
+>>   
+>> +	peer_dev = priv->peer;
+> 
+> I think you need to take into account RCU here.
+> 
+> Sparse says:
+> 
+>    .../veth.c:919:18: warning: incorrect type in assignment (different address spaces)
+>    .../veth.c:919:18:    expected struct net_device *peer_dev
+>    .../veth.c:919:18:    got struct net_device [noderef] __rcu *peer
+> 
+
+Is it correctly understood that I need an:
+
+   peer_dev = rcu_dereference(priv->peer);
+
+And also wrap this in a RCU section (rcu_read_lock()) ?
+
+> 
+>> +	peer_txq = netdev_get_tx_queue(peer_dev, queue_idx);
+>> +
+>>   	for (i = 0; i < budget; i++) {
+>>   		void *ptr = __ptr_ring_consume(&rq->xdp_ring);
+>>   
+> 
+> ...
 
