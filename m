@@ -1,241 +1,123 @@
-Return-Path: <bpf+bounces-55746-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55747-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC16A8634F
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 18:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 053E4A86352
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 18:34:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47A071BA76DA
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 16:32:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE5D71BA808A
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 16:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9642521CC51;
-	Fri, 11 Apr 2025 16:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04DB521CC7C;
+	Fri, 11 Apr 2025 16:33:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HT/pLSkT"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fm9S5nmg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9611326AD9;
-	Fri, 11 Apr 2025 16:32:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CBCC2063D2
+	for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 16:33:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744389150; cv=none; b=tM5GBRCig3JsPru4Sq+Mqib8C4HkENRUjeOnUF/9xQuDqmvdapU5CzgipR9qAJWGlzcSvWQ20kGf3IFCojFvp8QsKg+UOfFJr6YKP1RbL3ir7aGTB63FYf6yToOVGcfWqCESuPTtyw1U7ObU5plEVNRbxxPKGfOxb4Nz8kD5oEc=
+	t=1744389215; cv=none; b=HU0dyIYvcktNDCENxK95JfP2zz6mK3R1GVXOo+RVGfULEwhUsSTQ2GFBwTbq+EgOt866J+otgZh7jgRLjhtFK556t6wfAUtvZ+0UdQ/iK4WXgSubqj21z9GoiOwLEYqzZAQei1j5Jsg7SmN7fGyr242i+fun29FiS7qAf/4f8qA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744389150; c=relaxed/simple;
-	bh=wHac6W2NgppYgVoyLWVJivgCtoAx3DGKYTpMWQcOhyQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a53oxsldYDAzNbJjVPRdwcA7iJueq2/aJ4ybrd6BFt5IuGW9Haqz20lwm2MYsxVywteP44r+bthjcEoiuwavlk5fq+7fJwAWB4Pw87V+9KRM5QAhua6Dahn5JCciI8aabY7TJLz8vN29s3WoVtyiVmnNG6a3TYPzTlWYf3xe6ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HT/pLSkT; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-73972a54919so2116007b3a.3;
-        Fri, 11 Apr 2025 09:32:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744389148; x=1744993948; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7GF3J6Lndx8cb8ODBZJmGjbPMmgsw0v3H56tZJV1cy8=;
-        b=HT/pLSkT0faOl4LtRWUA7MbRvemjgD2/SVFLbO48TuW5TYB6QqhvAonHoyGRT/SGuP
-         BUc5TJN2vrKfKtbCSsLRiuTznHrm1fixF4SO1zprDnJEMPe8Dqk7yCMzeFXTORudUxQ/
-         xnoH8azKTOawNK7NqYbEUenor4yzmY70jY/H9r5JFVS8qOM+6MuBRHLZxPi8K/i69HeA
-         XOQAkOR1fNzwQHwd99SFYrgziPfRwRp4b5D9IjbtErfPcNeXlJ+hpU0eVP3ugnpmuxCz
-         LNxiZXA4g+ydKD1IiX5Ohcy3d0gy6bHDvoynyT9x/AjHkexKvoLLzzpj8X+UqVej8UmM
-         liGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744389148; x=1744993948;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7GF3J6Lndx8cb8ODBZJmGjbPMmgsw0v3H56tZJV1cy8=;
-        b=VoN0qNJH7xzSsXOPidKUHT0cOWszxTsqtkA/vK6H54GfBI564JbzdoY4ViDy0umzgf
-         8Gx0JXAVh9c/gA+JYdcyDgUTu+Z6+bOmf0GvaJ5oue7sTf3ATVj7/FaGp8AgqHPUV8lg
-         +Cz+3+Eyn7vMknuhTiGoTip6nFAjsBABSd8x9s/JSdAg3CrcmjK+RbOlrFz0vDOOo9W+
-         lLlWv5MaZ0xPhnzuWhPEKDIUwLaR/0HoaQashWejmwoAFcW/dIucm4YqY5j3fv0Ap3XE
-         M9nH6RWrzJ4RS8PlJpWFARqSiEb7EYl//TTGj8h60GB7IBJcHA6ciSAAOeQaNG652BtU
-         yjNA==
-X-Forwarded-Encrypted: i=1; AJvYcCWqvrgX4+TED3SAIAbYEodDc5LVx5rE3AYw4mQzUwecXASDRjoVsD8A30Mh9P+Uq4vSS9TiAicCqfOq7gsh@vger.kernel.org, AJvYcCXomatzDH3731SrDVYIhvT/ba98cCJCfHk/8vd2PJThCcptDueQ3PDtUmIidZda9sYR2Lo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKJC4m2nKrdUxCH2hUz7tpFiW4P4ZF9HtickS3QXVYuU5zK6gn
-	qcpJxTQEtCTzul6rCx8E1e5lnWFIxIWCeXKMI0BV9vonLiflI7S81Htn/AZEu5E7JVXucHEY+ai
-	tjyWcgqa++n7f5OAbhvMOOhazrfMfBshk
-X-Gm-Gg: ASbGnctD7hQL7iWSPZ4CZqqhCdhEo3Y8oIUy5AK3fCSgpTl9Pal43uB+Hv/sew9t+QB
-	iUC+YJPodWAONenPDZPSanqArsC9PYzIoMBjQyAMXjBNcbwSoFUgJZiwV1dPXJ8uIHXewC7ImBC
-	++6gKddA6lYbDp1pn2oMSY42IW9bfzpZRaJ8nm
-X-Google-Smtp-Source: AGHT+IFwsEaUJBjhq3whMZfOWk8HUpO+a7m+FFlYHZcVzJOtHiRY1wX2tM8zi8HsPcZuAT1PT8mLmkgcvWyeINQeBa0=
-X-Received: by 2002:a05:6a00:14c6:b0:736:41ec:aaad with SMTP id
- d2e1a72fcca58-73bd1202d91mr4552264b3a.14.1744389147660; Fri, 11 Apr 2025
- 09:32:27 -0700 (PDT)
+	s=arc-20240116; t=1744389215; c=relaxed/simple;
+	bh=om9nbYY+KdTzhbx+Sci7wStJf0iLFQJL8AB1prjTKfM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oWfPNcS1XWXj0czLPum+PXCKuaSKdS16PZPheHtml8QI6p6caRnlSPhdl6W5MO2KFBqZsHtzMHo8MIWbgBWb4EoymuqoL+Ay2sa1/3YA2/uQhBZlry25Vf1vvnSSaWip9J9HMNAr9Dv2hJVYx4lphEYl+41MvZ8garV5j58Vws0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fm9S5nmg; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744389212;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QaXhGD+EESkN0U5oQ1NX+Je+maGDUC3Z+TV9kV3doiU=;
+	b=Fm9S5nmg1RwwvCvp9Q5BUviklhZ9LF6HBSG2xR4xjEGdK7pTwOEbZvizRucB7MHeFM7Eib
+	wqhOdFvEJgz3HE5APvkIYlUD9HUxZzXUctecgBOJ6BwYcXYp3Betzb+2ypGoEymMh2ZlG1
+	IbsyRHil6kysWEc2VG8vidaFnBMbDrg=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-575-ZH1NnPKVPMW98a8LUrDwLQ-1; Fri,
+ 11 Apr 2025 12:33:27 -0400
+X-MC-Unique: ZH1NnPKVPMW98a8LUrDwLQ-1
+X-Mimecast-MFC-AGG-ID: ZH1NnPKVPMW98a8LUrDwLQ_1744389205
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3A75A1954B36;
+	Fri, 11 Apr 2025 16:33:25 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.222])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id A5DB91955DCE;
+	Fri, 11 Apr 2025 16:33:19 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri, 11 Apr 2025 18:32:49 +0200 (CEST)
+Date: Fri, 11 Apr 2025 18:32:43 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>
+Subject: Re: [PATCHv2 perf/core 1/2] uprobes/x86: Add support to emulate nop
+ instructions
+Message-ID: <20250411163242.GI5322@redhat.com>
+References: <20250411121756.567274-1-jolsa@kernel.org>
+ <CAEf4BzbvMYJf5LLxwamYpzzu=Sewzti-FR-9o4AGfU+KZu0b1Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250411080545.319865-1-yangfeng59949@163.com>
-In-Reply-To: <20250411080545.319865-1-yangfeng59949@163.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 11 Apr 2025 09:32:15 -0700
-X-Gm-Features: ATxdqUG5W5eIRBd-yEOQgalk9EWcqjOsk_dKd992HEp_M1aa9qxKmAYlGT9OrMU
-Message-ID: <CAEf4BzZaFzLZLEDhuGjLdp0sbjOHpE0zA7FURBexQo3=2uk1zA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] libbpf: Fix event name too long error
-To: Feng Yang <yangfeng59949@163.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, hengqi.chen@gmail.com, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbvMYJf5LLxwamYpzzu=Sewzti-FR-9o4AGfU+KZu0b1Q@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-On Fri, Apr 11, 2025 at 1:06=E2=80=AFAM Feng Yang <yangfeng59949@163.com> w=
-rote:
+On 04/11, Andrii Nakryiko wrote:
 >
-> From: Feng Yang <yangfeng@kylinos.cn>
+> > --- a/arch/x86/kernel/uprobes.c
+> > +++ b/arch/x86/kernel/uprobes.c
+> > @@ -840,6 +840,12 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
+> >         insn_byte_t p;
+> >         int i;
+> >
+> > +       /* x86_nops[i]; same as jmp with .offs = 0 */
+> > +       for (i = 1; i <= ASM_NOP_MAX; ++i) {
 >
-> When the binary path is excessively long, the generated probe_name in lib=
-bpf
-> exceeds the kernel's MAX_EVENT_NAME_LEN limit (64 bytes).
-> This causes legacy uprobe event attachment to fail with error code -22.
+> i <= ASM_NOP_MAX && i <= insn->length
 >
-> Use basename() to extract the base filename from the full binary path, re=
-moving directory prefixes.
-> Example: /root/loooooooooooooooooooooooooooooooooooong_name -> looooooooo=
-ooooooooooooooooooooooooooong_name.
+> ?
 >
-> String Length Limitation: Apply %.32s in snprintf to truncate the base fi=
-lename to 32 characters.
-> Example: loooooooooooooooooooooooooooooooooooong_name -> looooooooooooooo=
-oooooooooooooooo.
->
-> Before Fix:
->         libbpf: binary_path: /root/loooooooooooooooooooooooooooooooooooon=
-g_name
->         libbpf: probe_name: libbpf_32296__root_looooooooooooooooooooooooo=
-ooooooooooong_name_0x1106
->         libbpf: failed to add legacy uprobe event for /root/loooooooooooo=
-oooooooooooooooooooooooong_name:0x1106: -22
->
-> After Fix:
->         libbpf: binary_path: /root/loooooooooooooooooooooooooooooooooooon=
-g_name
->         libbpf: probe_name: libbpf_36178_looooooooooooooooooooooooooooooo=
-_0x1106
->
-> Fixes: 46ed5fc33db9 ("libbpf: Refactor and simplify legacy kprobe code")
-> Fixes: cc10623c6810 ("libbpf: Add legacy uprobe attaching support")
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
-> ---
-> Changes in v2:
-> - Use basename() and %.32s to fix. Thanks, Hengqi Chen!
-> - Link to v1: https://lore.kernel.org/all/20250410052712.206785-1-yangfen=
-g59949@163.com/
-> ---
->  tools/lib/bpf/libbpf.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
->
+> otherwise what prevents us from reading past the actual instruction bytes?
 
-Please add a selftest demonstrating a problem in the next revision.
+Well, copy_insn() just copies MAX_UINSN_BYTES into arch_uprobe.insn[].
+If, say, the 1st 11 bytes of arch_uprobe.insn (or insn->kaddr) match
+x86_nops[11] then insn->length must be 11, or insn_decode() is buggy?
 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index b2591f5cab65..7e10c7c66819 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -60,6 +60,8 @@
->  #define BPF_FS_MAGIC           0xcafe4a11
->  #endif
->
-> +#define MAX_EVENT_NAME_LEN     64
-> +
->  #define BPF_FS_DEFAULT_PATH "/sys/fs/bpf"
->
->  #define BPF_INSN_SZ (sizeof(struct bpf_insn))
-> @@ -11142,10 +11144,10 @@ static void gen_kprobe_legacy_event_name(char *=
-buf, size_t buf_sz,
->         static int index =3D 0;
->         int i;
->
-> -       snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx_%d", getpid(), kfunc_na=
-me, offset,
-> -                __sync_fetch_and_add(&index, 1));
-> +       snprintf(buf, buf_sz, "libbpf_%u_%.32s_0x%zx_%d", getpid(), kfunc=
-_name,
-> +                offset, __sync_fetch_and_add(&index, 1));
+> or, actually, shouldn't we just check memcmp(x86_nops[insn->length])
+> if insn->length < ASM_NOP_MAX ?
 
-libbpf_%u_%.32s_0x%zx_%d -> we have 12 fixed characters, offset's %zx
-can be up to 16, pid is easily 6-7 characters, and then index probably
-1-2 digits... so 63 - 12 - 6 - 16 - 2 =3D 27, so if kfunc_name length is
-32, we'll be stripping out that index meant to make event name unique
-(with high probability).
+Hmm... agreed.
 
-Let's swap around the order, and put index before %.32s_%zx, shall we?
+Either way this check can't (doesn't even try to) detect, say,
+"rep; BYTES_NOP5", so we do not care if insn->length == 6 in this case.
 
-And I'd just get rid of .32, and let snprintf() do the trimming, if necessa=
-ry.
+Good point!
 
+Oleg.
 
-pw-bot: cr
-
->
-> -       /* sanitize binary_path in the probe name */
-> +       /* sanitize kfunc_name in the probe name */
->         for (i =3D 0; buf[i]; i++) {
->                 if (!isalnum(buf[i]))
->                         buf[i] =3D '_';
-> @@ -11270,7 +11272,7 @@ int probe_kern_syscall_wrapper(int token_fd)
->
->                 return pfd >=3D 0 ? 1 : 0;
->         } else { /* legacy mode */
-> -               char probe_name[128];
-> +               char probe_name[MAX_EVENT_NAME_LEN];
->
->                 gen_kprobe_legacy_event_name(probe_name, sizeof(probe_nam=
-e), syscall_name, 0);
->                 if (add_kprobe_event_legacy(probe_name, false, syscall_na=
-me, 0) < 0)
-> @@ -11328,7 +11330,7 @@ bpf_program__attach_kprobe_opts(const struct bpf_=
-program *prog,
->                                             func_name, offset,
->                                             -1 /* pid */, 0 /* ref_ctr_of=
-f */);
->         } else {
-> -               char probe_name[256];
-> +               char probe_name[MAX_EVENT_NAME_LEN];
->
->                 gen_kprobe_legacy_event_name(probe_name, sizeof(probe_nam=
-e),
->                                              func_name, offset);
-> @@ -11880,7 +11882,8 @@ static void gen_uprobe_legacy_event_name(char *bu=
-f, size_t buf_sz,
->  {
->         int i;
->
-> -       snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx", getpid(), binary_path=
-, (size_t)offset);
-> +       snprintf(buf, buf_sz, "libbpf_%u_%.32s_0x%zx", getpid(),
-> +                basename((void *)binary_path), (size_t)offset);
->
-
-let's add that __sync_fetch_and_add(&index) here as well?
-
->         /* sanitize binary_path in the probe name */
->         for (i =3D 0; buf[i]; i++) {
-> @@ -12312,7 +12315,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_=
-program *prog, pid_t pid,
->                 pfd =3D perf_event_open_probe(true /* uprobe */, retprobe=
-, binary_path,
->                                             func_offset, pid, ref_ctr_off=
-);
->         } else {
-> -               char probe_name[PATH_MAX + 64];
-> +               char probe_name[MAX_EVENT_NAME_LEN];
->
->                 if (ref_ctr_off)
->                         return libbpf_err_ptr(-EINVAL);
-> --
-> 2.43.0
->
 
