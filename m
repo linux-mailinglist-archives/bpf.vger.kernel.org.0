@@ -1,90 +1,121 @@
-Return-Path: <bpf+bounces-55778-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4370CA86577
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 20:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A8D3A86585
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 20:31:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08DF94610C2
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 18:26:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C01C1442972
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 18:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5E125B678;
-	Fri, 11 Apr 2025 18:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ABBF25D1E0;
+	Fri, 11 Apr 2025 18:29:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JtaGs9lI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB9F25A647
-	for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 18:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC3C32367DC;
+	Fri, 11 Apr 2025 18:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744395965; cv=none; b=geq8vrLiZ0cg5am4eAqnsDQ5qI6VlzXmy/HUPjVNsckzwyr0bzzrPOyk2O2GOWK6WZqx/e/obIlEmPxswqIhR8O9raKpv3uhQr7XSfBxvUUELMQ3Uxb3fBSKPGj5t5JqMxzwqLm51pFY6713vbDbjtS3cCjU3wPPyOQBwP59pd0=
+	t=1744396180; cv=none; b=IuyUuA9JNh0AaqhIE+NqXyRJHRjnxDyAtmBFZmdbRS8LdAn5/I0UR5OkZHeX92FyUNmmAcqhLcpcoNhvRk2zzy3UR9PjWcd8DcgNzD6Cr04WijGFnoCe+IogpaxDsN0w4yYUicdtR666mil1j4HeeRKJhpI97pmNOgXB/xYGObU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744395965; c=relaxed/simple;
-	bh=FbuPgtFhOayFXRCeRx4jaZPr2zr7ESJ0SMJ61nHuDP0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=meoNbDB5CpUbMTFG8kPUP6hSjYVxVoOEQjGTQqfy0ZbWHzhJFxSKyu2DcQ8RB9hOE7O2Kf35fBC+Ti4JzBC+jVsSzhN7zS6nLvcVQXp4+t2sM39EgcVG/jMPB0ZyZX001ONfAAE+BGWXuwj40n1FVQQy3wlCOs5jiuGtrylW+yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3d43d1df18bso23808325ab.0
-        for <bpf@vger.kernel.org>; Fri, 11 Apr 2025 11:26:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744395963; x=1745000763;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oep1B6SY2KQszl07sbFPKf10Dwezvq6DfuJGojLWC/Q=;
-        b=H5XdS6Yr/ktivn3Gzw8nrqrT2PLLAh/Jx2bmViaSq8+ylxCG220HpGu8aLUyPA1qQG
-         xlZ3uVL0XT6aKv6B9Iw/1Rv3DguedRHYwpeqp69iRF4ZEIElC0XDDBM60GAa51pjoMSW
-         5f2cZh7JjmupENMFJ0xi272xzMVpRxKgiJ5OFwWHchMj0bG0cwoZiJin8ynXDjO/GDho
-         c+h0HVsQ6a+Vnp6FqCAoVCONiHE9y9Z/UO5rx8uyaIGnU0/cJPSKe+ddzbkoKfLhvYQO
-         GaKuwwZsstw28wPwoDkw1pvcGH+YFgfCZsfXbcP5RWbkt9XIXy4mbIho9r6AI5ac1M0G
-         2IOw==
-X-Forwarded-Encrypted: i=1; AJvYcCV8WMqX6MPvDO2aUHedwoq0BSlzp1jOBw0X7BbaQzlko4dgvzfuP9p6COBe6UEJW56lwjk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yytu5lBBT6eWgmqGxUB1XTmfaMzT/Fbd1MDaAq7qnBaaPm/U6R/
-	+S1WElXiRgpIQODKxQ/QiOa9hAGrwkt8mfvj6UWqhdFUe+h6DHgNVox2+1oCUEIqE+CTO+OtKmD
-	jKaMuOJeVAg2eZ4JM9yBaDygUsF4Z2LcJ3WtV88lMoDKkSzU12KF7Beo=
-X-Google-Smtp-Source: AGHT+IEF8NVjcw48tJ2IzsNR2+B21DrKyj5N3+MwQw+yUyD3QPh0wu7ffoDgBXqWyuUk2peJinJNkjCNdJMxdaiJbpaISygUlD6M
+	s=arc-20240116; t=1744396180; c=relaxed/simple;
+	bh=u2G2avLNzeJZIWuSk3EYSAjDjFZH5u/1BD15kdtjQQ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DL3gh41jo+1qn2AYb2WPBc8fraLwyZpgmxA76LItE3iYdBO3CVcuEcMNo4bXuHxYkNY07cDKrJ9aMieQ38jrKG369zqfWoQ4sFUV9f08gOm8nj900FZ/eE5EZkuysMZJu3m2nVs4r5Be1nSV8FiuQYnh+bwkOsQ5mQ7gILZ0SbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JtaGs9lI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD8CBC4CEE2;
+	Fri, 11 Apr 2025 18:29:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744396180;
+	bh=u2G2avLNzeJZIWuSk3EYSAjDjFZH5u/1BD15kdtjQQ8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JtaGs9lIoHjXpi6ccBKGqovtaDk2y7dhiKpm+X/zlpYXEaAtxtRCmqodAc7w9sBva
+	 VSG6OKjYlCcv0L1lvJcnhgMlaGBeYG17ELO5AOgjciphVVp7KENusO6x0Xvet63mEU
+	 4P1lTqMX+FRRDKzXxI5M5KlfjRRXxJQo18H5ybOdXREGs9Pr1csv9ePepY/YMLQqZL
+	 RlpD3Q4ulsZkO+6Ncgk++ARkkHZQZLBWhwsMgdPoMpRI27Qlp00bJRm12N6S0o7Ld2
+	 2sP7hfOQ7joPgry+5FYHvGuuAdX1CZWd1Vkfdi2NLJ2zfKGJ023lzrn7aLD0X3pCMo
+	 oSReWJTH0YwXQ==
+Date: Fri, 11 Apr 2025 19:29:34 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Donglin Peng <dolinux.peng@gmail.com>,
+	Zheng Yejian <zhengyejian@huaweicloud.com>, Aishwarya.TCV@arm.com
+Subject: Re: [PATCH v4 2/4] ftrace: Add support for function argument to
+ graph tracer
+Message-ID: <714c7710-0a09-456d-98af-7ad054e610f4@sirena.org.uk>
+References: <20250227185822.810321199@goodmis.org>
+ <ccc40f2b-4b9e-4abd-8daf-d22fce2a86f0@sirena.org.uk>
+ <20250410131745.04c126eb@gandalf.local.home>
+ <c41e5ee7-18ba-40cf-8a31-19062d94f7b9@sirena.org.uk>
+ <20250411124552.36564a07@gandalf.local.home>
+ <2edc0ba8-2f45-40dc-86d9-5ab7cea8938c@sirena.org.uk>
+ <20250411131254.3e6155ea@gandalf.local.home>
+ <350786cc-9e40-4396-ab95-4f10d69122fb@sirena.org.uk>
+ <9dafc156-1272-4039-a9c0-3448a1bd6d1f@sirena.org.uk>
+ <20250411142427.3abfb3c3@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1521:b0:3cf:bc71:94f5 with SMTP id
- e9e14a558f8ab-3d7ec27b01amr48319985ab.22.1744395963111; Fri, 11 Apr 2025
- 11:26:03 -0700 (PDT)
-Date: Fri, 11 Apr 2025 11:26:03 -0700
-In-Reply-To: <CAP01T74p7xy9riqMYiaZ563p0xd=QUWyPseHkNe_037wAdnu3Q@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67f95ebb.050a0220.2c5fcf.0007.GAE@google.com>
-Subject: Re: [syzbot] [bpf?] possible deadlock in __bpf_ringbuf_reserve
-From: syzbot <syzbot+850aaf14624dc0c6d366@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, kernel-team@meta.com, kkd@meta.com, 
-	linux-kernel@vger.kernel.org, martin.lau@kernel.org, memxor@gmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-unregister_netdevice: waiting for DEV to become free
-
-unregister_netdevice: waiting for batadv0 to become free. Usage count = 3
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="u6fO85aT4x8pct6g"
+Content-Disposition: inline
+In-Reply-To: <20250411142427.3abfb3c3@gandalf.local.home>
+X-Cookie: You will be awarded some great honor.
 
 
-Tested on:
+--u6fO85aT4x8pct6g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-commit:         a650d389 bpf: Convert ringbuf map to rqspinlock
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=17928870580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ea2b297a0891c87e
-dashboard link: https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+On Fri, Apr 11, 2025 at 02:24:27PM -0400, Steven Rostedt wrote:
+> Mark Brown <broonie@kernel.org> wrote:
 
-Note: no patches were applied.
+> > Yeah, if I bodge ftracetest to be a bash script then the test runs fine
+> > so it'll be a bashism.  We're running the tests in a Debian rootfs so
+> > /bin/sh will be dash.
+
+> Interesting, as one of the ftracetests checks for bashisms:
+
+>   test.d/selftest/bashisms.tc
+
+> Did it not catch something?
+
+# not ok 90 Meta-selftest: Checkbashisms # UNRESOLVED
+
+Which will be because checkbashishms is not installed.
+
+--u6fO85aT4x8pct6g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmf5X40ACgkQJNaLcl1U
+h9BmIAf+ODoY7TzuFhRRTzmjkPd+DbEYSXAnImqyi79A7/afX9vx1S5fm8Hh1Cg9
+s1RY93bWd2PvCyIm1qVw9dZHgVE5gTYmswlSpkgdp+u7C0BKXHVBD0vtC00heOva
+XnKUSX+H3KA0/q90CU0BEYRiOBq587tu7ZnOKKSaFnYUafk7Nng1iHJikHvpQUW4
+qbTNB3zPHSxX57/E2bIk03UlFKQXJm5vvxXvobpyYi5a+XAubXGPT43NvSd6kDe7
+HBcaVO2cKP+TGIip81JouI2HH3CAAk2QjvK8pgxJ1czeTgoJ+KC4CRedC98lHVsJ
+0KAmjwCL9xv4e2DBC5DR4xwvgJ7C/g==
+=snXU
+-----END PGP SIGNATURE-----
+
+--u6fO85aT4x8pct6g--
 
