@@ -1,61 +1,62 @@
-Return-Path: <bpf+bounces-55710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E58AA85501
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 09:11:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F200FA85628
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 10:06:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 250B61BA79CB
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 07:11:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CA279A5491
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 08:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0A627D791;
-	Fri, 11 Apr 2025 07:11:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B561329347D;
+	Fri, 11 Apr 2025 08:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="SnvHmIab"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25BFD1E98FB;
-	Fri, 11 Apr 2025 07:11:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DBB41DDC04;
+	Fri, 11 Apr 2025 08:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744355473; cv=none; b=QW/a2QQWhkl4PW3lJ3A6tacNL/jBSXH5nLVCh03vOznQapXYTo//1W/Fla7Hg7XTtea8YSQVTvzsFs3um4bHzGBkM8CePZXp3LuCYEkbGU5/c/Tn7eXrvj1yf2eawxESLXfav/13TvwlwywKNKtBCGqrYT5U4o/FvDOGfXBFzLE=
+	t=1744358793; cv=none; b=Pl+txfD5o/mS5Fpp9oIaEXa4TMU4k5tMO+urjuMC9q0h2vYdqr6FRbkz8xqhnAN3sgVojCC7VIB23yW1a7xSLeOzlibZVOgKKXSXHzUokBN8qlXO+a+f7ntMgcnQZQKftZkAMBXC8pHvZh6T4YDEpDJwRvhxqJoNv1l9m/kqGBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744355473; c=relaxed/simple;
-	bh=d1asBId/vImwN+l9IIgHITylI4P4oM+6PNnKpdlyGyY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Kj5k9D71BbVYlQdSlxAvjhVQwvJZdg0UPMq2l7252XNrGPqx2udBWnuUmUZUEYTpkjq2Wvy9w1ri3dqVkJJnasYhyB1bQUxl+5qjTj1PrggMXSOqPs1FD/GWCtk0fv+QWpCfWdsLHhN8Qx9IRdH1ZE8xMtt5pRAASoQK47V7mPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53B5AfLo028040;
-	Fri, 11 Apr 2025 07:10:22 GMT
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 45tug8qxyh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Fri, 11 Apr 2025 07:10:22 +0000 (GMT)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.43; Fri, 11 Apr 2025 00:10:21 -0700
-Received: from pek-lpg-core1.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.43 via Frontend Transport; Fri, 11 Apr 2025 00:10:16 -0700
-From: <jianqi.ren.cn@windriver.com>
-To: <stable@vger.kernel.org>
-CC: <patches@lists.linux.dev>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <jianqi.ren.cn@windriver.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-        <haoluo@google.com>, <jolsa@kernel.org>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <hawk@kernel.org>, <bpf@vger.kernel.org>,
-        <xukuohai@huawei.com>
-Subject: [PATCH 6.1.y] bpf: Prevent tail call between progs attached to different hooks
-Date: Fri, 11 Apr 2025 15:10:15 +0800
-Message-ID: <20250411071015.3418413-1-jianqi.ren.cn@windriver.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1744358793; c=relaxed/simple;
+	bh=aZHzk9mHUHuKkgLKuqiBfClbxLb+SK7ytOYvOtjiLf0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mv1ymbOJXEra/+dP/8kyW1XKUjiPd+SW1Bv/9xYibPE2mwWOjiv7/Z7tGQZVhw8oeYW1NwS3RR8lmoogOTLcfLiSIqjRgrDINtSVUoYSKTFrzuka0Bi1EoxU/xn2p+3sDXwTjQf/ODrZ/t9CXTlyCg+wCunr7J2c+eWnraRwh+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=SnvHmIab; arc=none smtp.client-ip=117.135.210.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=k59//
+	27XfCXLpT5e958gSQ/VKTUfEmYdEQyopnj+B54=; b=SnvHmIab6pNEVafcatzk2
+	ZibxD6yxP2GlhMEtMENj/4S89JeO/sgIZYOejBhb0hDGnKi2lucgRgl1j0RT73sd
+	8cH2MX6RjfBiisuDfuUDQJMeFHp9jrVGf//dmWDn8ocN+CF3gZTLTPyqk/avaiYE
+	pPi5auaRouYooz5+ZtHTCA=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wD3n7Bazfhn_vEoFw--.59222S2;
+	Fri, 11 Apr 2025 16:05:47 +0800 (CST)
+From: Feng Yang <yangfeng59949@163.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	hengqi.chen@gmail.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2] libbpf: Fix event name too long error
+Date: Fri, 11 Apr 2025 16:05:45 +0800
+Message-Id: <20250411080545.319865-1-yangfeng59949@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,122 +64,111 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: tT9gAepxN9zNWcm2eSIYEBdIy9MSnCNk
-X-Authority-Analysis: v=2.4 cv=YJefyQGx c=1 sm=1 tr=0 ts=67f8c05e cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=XR8D0OoHHMoA:10 a=VwQbUJbxAAAA:8 a=AiHppB-aAAAA:8 a=i0EeH86SAAAA:8 a=t7CeM3EgAAAA:8 a=iaREAby1aPJEnX_tXCEA:9
- a=FdTzh2GWekK77mhwV6Dw:22
-X-Proofpoint-ORIG-GUID: tT9gAepxN9zNWcm2eSIYEBdIy9MSnCNk
-X-Sensitive_Customer_Information: Yes
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-04-11_02,2025-04-10_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 bulkscore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0
- mlxscore=0 clxscore=1011 impostorscore=0 phishscore=0 spamscore=0
- suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.21.0-2502280000
- definitions=main-2504110049
+X-CM-TRANSID:_____wD3n7Bazfhn_vEoFw--.59222S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCF1DCr4rur45tw15tFW5Wrg_yoWrWFy3pF
+	s8Ar1YyF4ftr42qF95Jr18ZryFvw4kJr1UJr1DArsxAF4xWF4UX3W2kF45Gr15XrnFv345
+	Xa1UGry7Jry7JrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jjuWLUUUUU=
+X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiTQ4seGf4y1RSBwAAsC
 
-From: Xu Kuohai <xukuohai@huawei.com>
+From: Feng Yang <yangfeng@kylinos.cn>
 
-[ Upstream commit 28ead3eaabc16ecc907cfb71876da028080f6356 ]
+When the binary path is excessively long, the generated probe_name in libbpf
+exceeds the kernel's MAX_EVENT_NAME_LEN limit (64 bytes).
+This causes legacy uprobe event attachment to fail with error code -22.
 
-bpf progs can be attached to kernel functions, and the attached functions
-can take different parameters or return different return values. If
-prog attached to one kernel function tail calls prog attached to another
-kernel function, the ctx access or return value verification could be
-bypassed.
+Use basename() to extract the base filename from the full binary path, removing directory prefixes.
+Example: /root/loooooooooooooooooooooooooooooooooooong_name -> loooooooooooooooooooooooooooooooooooong_name.
 
-For example, if prog1 is attached to func1 which takes only 1 parameter
-and prog2 is attached to func2 which takes two parameters. Since verifier
-assumes the bpf ctx passed to prog2 is constructed based on func2's
-prototype, verifier allows prog2 to access the second parameter from
-the bpf ctx passed to it. The problem is that verifier does not prevent
-prog1 from passing its bpf ctx to prog2 via tail call. In this case,
-the bpf ctx passed to prog2 is constructed from func1 instead of func2,
-that is, the assumption for ctx access verification is bypassed.
+String Length Limitation: Apply %.32s in snprintf to truncate the base filename to 32 characters.
+Example: loooooooooooooooooooooooooooooooooooong_name -> looooooooooooooooooooooooooooooo.
 
-Another example, if BPF LSM prog1 is attached to hook file_alloc_security,
-and BPF LSM prog2 is attached to hook bpf_lsm_audit_rule_known. Verifier
-knows the return value rules for these two hooks, e.g. it is legal for
-bpf_lsm_audit_rule_known to return positive number 1, and it is illegal
-for file_alloc_security to return positive number. So verifier allows
-prog2 to return positive number 1, but does not allow prog1 to return
-positive number. The problem is that verifier does not prevent prog1
-from calling prog2 via tail call. In this case, prog2's return value 1
-will be used as the return value for prog1's hook file_alloc_security.
-That is, the return value rule is bypassed.
+Before Fix:
+	libbpf: binary_path: /root/loooooooooooooooooooooooooooooooooooong_name
+	libbpf: probe_name: libbpf_32296__root_loooooooooooooooooooooooooooooooooooong_name_0x1106
+	libbpf: failed to add legacy uprobe event for /root/loooooooooooooooooooooooooooooooooooong_name:0x1106: -22
 
-This patch adds restriction for tail call to prevent such bypasses.
+After Fix:
+	libbpf: binary_path: /root/loooooooooooooooooooooooooooooooooooong_name
+	libbpf: probe_name: libbpf_36178_looooooooooooooooooooooooooooooo_0x1106
 
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Link: https://lore.kernel.org/r/20240719110059.797546-4-xukuohai@huaweicloud.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-[Minor conflict resolved due to code context change.]
-Signed-off-by: Jianqi Ren <jianqi.ren.cn@windriver.com>
-Signed-off-by: He Zhe <zhe.he@windriver.com>
+Fixes: 46ed5fc33db9 ("libbpf: Refactor and simplify legacy kprobe code")
+Fixes: cc10623c6810 ("libbpf: Add legacy uprobe attaching support")
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
 ---
-Verified the build test
+Changes in v2:
+- Use basename() and %.32s to fix. Thanks, Hengqi Chen!
+- Link to v1: https://lore.kernel.org/all/20250410052712.206785-1-yangfeng59949@163.com/
 ---
- include/linux/bpf.h |  1 +
- kernel/bpf/core.c   | 19 +++++++++++++++++--
- 2 files changed, 18 insertions(+), 2 deletions(-)
+ tools/lib/bpf/libbpf.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 2189c0d18fa7..e9c1338851e3 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -250,6 +250,7 @@ struct bpf_map {
- 	 * same prog type, JITed flag and xdp_has_frags flag.
- 	 */
- 	struct {
-+		const struct btf_type *attach_func_proto;
- 		spinlock_t lock;
- 		enum bpf_prog_type type;
- 		bool jited;
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 83b416af4da1..c281f5b8705e 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2121,6 +2121,7 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
- {
- 	enum bpf_prog_type prog_type = resolve_prog_type(fp);
- 	bool ret;
-+	struct bpf_prog_aux *aux = fp->aux;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index b2591f5cab65..7e10c7c66819 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -60,6 +60,8 @@
+ #define BPF_FS_MAGIC		0xcafe4a11
+ #endif
  
- 	if (fp->kprobe_override)
- 		return false;
-@@ -2132,12 +2133,26 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
- 		 */
- 		map->owner.type  = prog_type;
- 		map->owner.jited = fp->jited;
--		map->owner.xdp_has_frags = fp->aux->xdp_has_frags;
-+		map->owner.xdp_has_frags = aux->xdp_has_frags;
-+		map->owner.attach_func_proto = aux->attach_func_proto;
- 		ret = true;
++#define MAX_EVENT_NAME_LEN	64
++
+ #define BPF_FS_DEFAULT_PATH "/sys/fs/bpf"
+ 
+ #define BPF_INSN_SZ (sizeof(struct bpf_insn))
+@@ -11142,10 +11144,10 @@ static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
+ 	static int index = 0;
+ 	int i;
+ 
+-	snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx_%d", getpid(), kfunc_name, offset,
+-		 __sync_fetch_and_add(&index, 1));
++	snprintf(buf, buf_sz, "libbpf_%u_%.32s_0x%zx_%d", getpid(), kfunc_name,
++		 offset, __sync_fetch_and_add(&index, 1));
+ 
+-	/* sanitize binary_path in the probe name */
++	/* sanitize kfunc_name in the probe name */
+ 	for (i = 0; buf[i]; i++) {
+ 		if (!isalnum(buf[i]))
+ 			buf[i] = '_';
+@@ -11270,7 +11272,7 @@ int probe_kern_syscall_wrapper(int token_fd)
+ 
+ 		return pfd >= 0 ? 1 : 0;
+ 	} else { /* legacy mode */
+-		char probe_name[128];
++		char probe_name[MAX_EVENT_NAME_LEN];
+ 
+ 		gen_kprobe_legacy_event_name(probe_name, sizeof(probe_name), syscall_name, 0);
+ 		if (add_kprobe_event_legacy(probe_name, false, syscall_name, 0) < 0)
+@@ -11328,7 +11330,7 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
+ 					    func_name, offset,
+ 					    -1 /* pid */, 0 /* ref_ctr_off */);
  	} else {
- 		ret = map->owner.type  == prog_type &&
- 		      map->owner.jited == fp->jited &&
--		      map->owner.xdp_has_frags == fp->aux->xdp_has_frags;
-+		      map->owner.xdp_has_frags == aux->xdp_has_frags;
-+		if (ret &&
-+		    map->owner.attach_func_proto != aux->attach_func_proto) {
-+			switch (prog_type) {
-+			case BPF_PROG_TYPE_TRACING:
-+			case BPF_PROG_TYPE_LSM:
-+			case BPF_PROG_TYPE_EXT:
-+			case BPF_PROG_TYPE_STRUCT_OPS:
-+				ret = false;
-+				break;
-+			default:
-+				break;
-+			}
-+		}
- 	}
- 	spin_unlock(&map->owner.lock);
+-		char probe_name[256];
++		char probe_name[MAX_EVENT_NAME_LEN];
  
+ 		gen_kprobe_legacy_event_name(probe_name, sizeof(probe_name),
+ 					     func_name, offset);
+@@ -11880,7 +11882,8 @@ static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
+ {
+ 	int i;
+ 
+-	snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx", getpid(), binary_path, (size_t)offset);
++	snprintf(buf, buf_sz, "libbpf_%u_%.32s_0x%zx", getpid(),
++		 basename((void *)binary_path), (size_t)offset);
+ 
+ 	/* sanitize binary_path in the probe name */
+ 	for (i = 0; buf[i]; i++) {
+@@ -12312,7 +12315,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ 		pfd = perf_event_open_probe(true /* uprobe */, retprobe, binary_path,
+ 					    func_offset, pid, ref_ctr_off);
+ 	} else {
+-		char probe_name[PATH_MAX + 64];
++		char probe_name[MAX_EVENT_NAME_LEN];
+ 
+ 		if (ref_ctr_off)
+ 			return libbpf_err_ptr(-EINVAL);
 -- 
-2.34.1
+2.43.0
 
 
