@@ -1,115 +1,121 @@
-Return-Path: <bpf+bounces-55791-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A74AA86733
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 22:32:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18957A867A5
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 22:52:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 784B4467329
-	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 20:32:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B52FB7AC1B8
+	for <lists+bpf@lfdr.de>; Fri, 11 Apr 2025 20:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBAA028D827;
-	Fri, 11 Apr 2025 20:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCB2B290BD9;
+	Fri, 11 Apr 2025 20:52:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="bUWKuQ0E"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="MaUaGM8p"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C25678F45;
-	Fri, 11 Apr 2025 20:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB7B2857E3;
+	Fri, 11 Apr 2025 20:52:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744403550; cv=none; b=uPWVVQnBbma+um1Teb7FxqWW1DDVAdXOhp6e8PGIjNbXi0KEsjgXOt61u4is+pc0ptoU9FDRFr1DkSXeGn1jI/GZVB0mJ8xGdulrw+AdhwhE6JtcNS++6qZ6dnS7tNSmoGpsggx4tBT2shzHtRzJaGmmvn1382ZmSqZFVndfL84=
+	t=1744404734; cv=none; b=gKIivrK99KlmnuQqS6T9y6B+g0NRg4zCi2N+H2Rvi5U2xoz1JmBYrkSwfydllclTPngXazdwuLLu/hXvIp9QAt8z3U1IEmsn3+A6tda56xaBD9Y7flznimh0ztDsnFxv5i1O2RyxrDELbTRIOmNK6rc/wmeaLySwgADS05VnKEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744403550; c=relaxed/simple;
-	bh=ZeVDLiQI9RmmI4E45qBwDAYffUDqetaFi3++XzpfqNU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FB0C1zHjMiqMb0XY2b/0YJMwZC6AGf9bN3srCkH2vTCqfmttIfCYkcEXm/tWu5mUwFVPyxT6jNgwprdMg6Rdlnx3YgqDoqaRhv8EVwbLU+Gj8rGwi4u8JAG1MNB5lTcgmOxSwU0oAtKRGO73NMdQhzy2H8nuGbqH+TJkgy8WoFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=bUWKuQ0E; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0E33A439F7;
-	Fri, 11 Apr 2025 20:32:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1744403545;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ubuKm8CEtpcOaMisxU9dLcEBpCyqH9xv+s9t40knzhQ=;
-	b=bUWKuQ0Ec7Enbe5JweK3jfBowxndLsuHmjklLcqXu/lZEHUjGcp7upJ6wZH1C1BqVyxaJA
-	1VPtBdBvfNwDNGMbavInD66RnojP+d3tiYiz4rQ/rfU7+VjZCw7t0z4SUf0A2dl28VsMlW
-	bKj/3cl9+WRGD/o2iarX2ut3XCzdcFnNdWIrZ7cNtjwotm+sgGc4nMAXVrcPbFQxXRc+wq
-	3/JAjqYxwxUE538Z89Y7ex+mSgfcx6hT0KxhkGBmLX4q+0rUNkmyzzrUWRkwJj21wBet18
-	ubu/5mUcIQ4t8Azcc6pWFR+X6dBQMewHzeMmXAsJ0vTxWwv33GBClEG/GXJQRg==
-From: =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Date: Fri, 11 Apr 2025 22:32:13 +0200
-Subject: [PATCH RFC bpf-next 4/4] bpf/selftests: enable tracing tests for
- ARM64
+	s=arc-20240116; t=1744404734; c=relaxed/simple;
+	bh=kxTCj2K40xus1IkV+DNiWTNVByJ6Z3Ovx9rtSTGdTRk=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=ozyC7CivqUL25/ybZe33nFUC8jejRF3xi5PVIuPIu22b8qheLCU87KN3l6O9Mer1VbeaEVyNSbfVz3M9ELXf+OitH9J/3uyn/qgrdpRvUszinTBOkhkb5iPz/0BNntfuxoLOnwLWKLy91R78nhMFspvgW3bKYSAj9K6Hr092rYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=MaUaGM8p; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 53BKokUU689207
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Fri, 11 Apr 2025 13:50:46 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 53BKokUU689207
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025032001; t=1744404648;
+	bh=RSxA6WjXfzTzp9cSLSXzWSj0aQbPDgdMx3rGgv5vZFo=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=MaUaGM8ptiyNi5JNPWt6NXDw8PAuW9ldRndGnP2Ms2a5WhDxGDZmG9wZSREChComZ
+	 5WZ/ACqI8QPIApW2H+3S60a8ZuhEXXT3/4CoGujji3jvmFlwVOFHC9tj+gJU0zYj76
+	 fLPUlJt1NAlnsIICrT1IBvg8ssoIvqY4BrCd0zWR2qJWd/gvqDxfJWqsioW+lcez2s
+	 0OjBs72/2ECaksg5m8Zdd+dsabWYMF97MvLqFSlWKKuRnrqMJtIZxV9Y2X0uNN/Twt
+	 qct8mM81m1xNoj3uyJYNXFGbNRMRc88O5YTcpLTHLdVRgYOnAL34JelLSSB8abrZsj
+	 FVc2EtkpGepIg==
+Date: Fri, 11 Apr 2025 13:50:45 -0700
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Xin Li <xin@zytor.com>, Sean Christopherson <seanjc@google.com>
+CC: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, virtualization@lists.linux.dev,
+        linux-edac@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-ide@vger.kernel.org,
+        linux-pm@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, jgross@suse.com,
+        andrew.cooper3@citrix.com, peterz@infradead.org, acme@kernel.org,
+        namhyung@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
+        wei.liu@kernel.org, ajay.kaher@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, tony.luck@intel.com,
+        pbonzini@redhat.com, vkuznets@redhat.com, luto@kernel.org,
+        boris.ostrovsky@oracle.com, kys@microsoft.com, haiyangz@microsoft.com,
+        decui@microsoft.com
+Subject: =?US-ASCII?Q?Re=3A_=5BRFC_PATCH_v1_10/15=5D_KVM=3A_VMX=3A_Use_WR?=
+ =?US-ASCII?Q?MSRNS_or_its_immediate_form_when_available?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <41eb2d08-1b2d-4ca8-bcb7-f5f4611f91a9@zytor.com>
+References: <20250331082251.3171276-1-xin@zytor.com> <20250331082251.3171276-11-xin@zytor.com> <Z_hTI8ywa3rTxFaz@google.com> <41eb2d08-1b2d-4ca8-bcb7-f5f4611f91a9@zytor.com>
+Message-ID: <39ECA4CA-9CBC-4F72-B52E-9BD06DBF9B6D@zytor.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20250411-many_args_arm64-v1-4-0a32fe72339e@bootlin.com>
-References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
-In-Reply-To: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Puranjay Mohan <puranjay@kernel.org>, 
- Xu Kuohai <xukuohai@huaweicloud.com>, 
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Florent Revest <revest@chromium.org>
-Cc: Bastien Curutchet <bastien.curutchet@bootlin.com>, 
- ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-kselftest@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com, 
- =?utf-8?q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.14.2
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvuddvjeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthekredtredtjeenucfhrhhomheptehlvgigihhsucfnohhthhhorhorucdlvgeurffhucfhohhunhgurghtihhonhdmuceorghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeeljeektefffeevleegkeelhfethffgieegudevffejheelieeffeejtddujeegueenucfkphepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemfhekheenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepihhnvghtpedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmehfkeehpdhhvghloheplgduledvrdduieekrddurdduleejngdpmhgrihhlfhhrohhmpegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepfedtpdhrtghpthhtohepshgufhesfhhomhhitghhvghvrdhmvgdprhgtphhtthhopehmrghrthhinhdrlhgruheslhhinhhugidruggvvhdprhgtphhtthhopeiguhhkuhhohhgriheshhhurgifvghitghlohhuugdrtghomhdprhgtphhtthhopehjohhlshgrsehkvghrnhgvl
- hdrohhrghdprhgtphhtthhopegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdprhgtphhtthhopehmhihkohhlrghlsehfsgdrtghomhdprhgtphhtthhopeifihhllheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgtohhquhgvlhhinhdrshhtmhefvdesghhmrghilhdrtghomh
-X-GND-Sasl: alexis.lothore@bootlin.com
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-The fentry_many_args, fexit_many_args and struct_many_args tests were
-disabled on ARM64 due to the lack of many args support.
+On April 11, 2025 9:18:08 AM PDT, Xin Li <xin@zytor=2Ecom> wrote:
+>On 4/10/2025 4:24 PM, Sean Christopherson wrote:
+>>> +/*
+>>> + * Write EAX to MSR_IA32_SPEC_CTRL=2E
+>>> + *
+>>> + * Choose the best WRMSR instruction based on availability=2E
+>>> + *
+>>> + * Replace with 'wrmsrns' and 'wrmsrns %rax, $MSR_IA32_SPEC_CTRL' onc=
+e binutils support them=2E
+>>> + */
+>>> +=2Emacro WRITE_EAX_TO_MSR_IA32_SPEC_CTRL
+>>> +	ALTERNATIVE_2 __stringify(mov $MSR_IA32_SPEC_CTRL, %ecx;		\
+>>> +				  xor %edx, %edx;				\
+>>> +				  mov %edi, %eax;				\
+>>> +				  ds wrmsr),					\
+>>> +		      __stringify(mov $MSR_IA32_SPEC_CTRL, %ecx;		\
+>>> +				  xor %edx, %edx;				\
+>>> +				  mov %edi, %eax;				\
+>>> +				  ASM_WRMSRNS),					\
+>>> +		      X86_FEATURE_WRMSRNS,					\
+>>> +		      __stringify(xor %_ASM_AX, %_ASM_AX;			\
+>>> +				  mov %edi, %eax;				\
+>>> +				  ASM_WRMSRNS_RAX; =2Elong MSR_IA32_SPEC_CTRL),	\
+>>> +		      X86_FEATURE_MSR_IMM
+>>> +=2Eendm
+>> This is quite hideous=2E  I have no objection to optimizing __vmx_vcpu_=
+run(), but
+>> I would much prefer that a macro like this live in generic code, and th=
+at it be
+>> generic=2E  It should be easy enough to provide an assembly friendly eq=
+uivalent to
+>> __native_wrmsr_constant()=2E
+>
+>Will do=2E
 
-With the previous commits bringing in this missing support, drop the
-last denied tests.
-
-Signed-off-by: Alexis Lothoré (eBPF Foundation) <alexis.lothore@bootlin.com>
----
- tools/testing/selftests/bpf/DENYLIST.aarch64 | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-deleted file mode 100644
-index 6d8feda27ce9de07d77d6e384666082923e3dc76..0000000000000000000000000000000000000000
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ /dev/null
-@@ -1,3 +0,0 @@
--fentry_test/fentry_many_args                     # fentry_many_args:FAIL:fentry_many_args_attach unexpected error: -524
--fexit_test/fexit_many_args                       # fexit_many_args:FAIL:fexit_many_args_attach unexpected error: -524
--tracing_struct/struct_many_args                  # struct_many_args:FAIL:tracing_struct_many_args__attach unexpected error: -524
-
--- 
-2.49.0
-
+This should be coming anyway, right?
 
