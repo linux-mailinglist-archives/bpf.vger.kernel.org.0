@@ -1,105 +1,87 @@
-Return-Path: <bpf+bounces-55821-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55822-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81B6DA86E45
-	for <lists+bpf@lfdr.de>; Sat, 12 Apr 2025 19:07:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FCA8A86ED8
+	for <lists+bpf@lfdr.de>; Sat, 12 Apr 2025 20:39:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AAB71751D9
-	for <lists+bpf@lfdr.de>; Sat, 12 Apr 2025 17:07:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E3148C032E
+	for <lists+bpf@lfdr.de>; Sat, 12 Apr 2025 18:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3C3203710;
-	Sat, 12 Apr 2025 17:06:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05AD021A447;
+	Sat, 12 Apr 2025 18:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D7bXo9Un"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lrqIsWg2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03301662E7;
-	Sat, 12 Apr 2025 17:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340D6193402;
+	Sat, 12 Apr 2025 18:38:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744477610; cv=none; b=k4JBP+iqWED0L9dTaK6NCvNwcJI9IqXVB6oYZmVxfD+4SkMQDYqC9Yyq4b1d5xzLwF/8S+BV8ec8pWv2dDnjDT8leAR/xKVjCy1lLt3fhUw5JvFhQaWFg+X+dvS6ouKOZJTc5PQkfoPMk36kq+NgcPwGMjYTBHDYJtVWfrXUkyU=
+	t=1744483090; cv=none; b=p9GLqSmdSutLjpKjqaKjFL3iF1rmvgFD1HYysKaUinkWQoCbuJdIunxD1fb2m3eVH1oEvBxfnWipTLGdgUcZr5Rp0EKtK/izHWPqLPrj1Rjhw1A9JrcqWXE7k6EZoY/zVNY4I63hZCjKJBTt8qTb9nlvH60YWXnwhotMzFg2LmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744477610; c=relaxed/simple;
-	bh=xFYhN6FwRAsyWFqlpeGlTcvXCPwLaEf5hlQEci9C0+k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JRPxORjKnDFSSu/zIbp0821T6MwWHophCrhi30ryGGEI3M94qOByAF1P7+qIQ682Wlf6kr++8dUjszIMvgQyWaFvci0NQy/J9ooEwbRBWzYifqwV5/x+eiswn3L5luQixy9fPgGEagg7VrRVOfFJuuwAGZh2kliXNH5zO0GvI4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D7bXo9Un; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1744483090; c=relaxed/simple;
+	bh=DB3ehN9uGhewpt+zV2BiPfCcLuTfwl7hGoU5BtcOe2Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=du+mtEfBX4L96VDOoMjMp1HljUCoA2rnTW4M8ljQu0bUmG2/bt3PMQIblSa7n2aUeU5hfVPf/m+g/KkWjTNNtZi9rTnLEmnj50+g7ElGFM/8Owrn6ZwENIanNDf0TG5X7vCfl9ehE6z7b1eGDbWGFaapgXVXGJEarMKgHIeMhK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lrqIsWg2; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7369ce5d323so2490060b3a.1;
-        Sat, 12 Apr 2025 10:06:48 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2240b4de12bso41960205ad.2;
+        Sat, 12 Apr 2025 11:38:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744477608; x=1745082408; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hWvWft/Ilf3Ni77MiBJ218Cck/EYMRSjxeQtmM2Wmk8=;
-        b=D7bXo9UnXh9O3jOVfE4wlWRhkoiCUga7MXJCA6nyR9AN5RA5x9uUb9bgGnNSUEkBwN
-         /bK6fr4B6bQArjdqpLzNGOgSgV2DFilvNZ51sqMJXzzorBAXpNiN2zHGe/2o1sHlBUvR
-         wk49SFt9VlrJZQ5NLfM9M6DZNVj2+OXpar/ORYXgUfk9V4on66PxmVJq6w21TpyrUgSj
-         kL8HkeskFECOrSnchooqt4dBPIgh190gX8XFHzgnl/Sj81GspiDq4Ts6Cj6xoZRnvkQz
-         WbbhLUzn1W8rDvwS0TGZtGWCg9smxYwPhsWARRDtMa37tmJA3DawnQ2o7zvQDGYXiNus
-         4rGA==
+        d=gmail.com; s=20230601; t=1744483088; x=1745087888; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qQM8fmMFppc/FCmln+vq9h3fENBqnRGQqbR3PeHRC9g=;
+        b=lrqIsWg2xe+eIWuzWtSTGa7NTwDGQKTA7i5IGIy6tJ7ZD5SpVqut509YhqiIbA+Ta4
+         sNXGal1yutKybawH5NrWEQlBeIjVpBgvCO+vcjGqwqYvb9J6FSitsa7JjyD1T/4OQswD
+         s6UOzfDhdAeMtRwcNBR7qu4eEIsMdKmIXdHlUru5jM+s0Z5y99iOXC9IXbp/o6u9i1UK
+         pqgkRHb7lzMP040/JdAyCYY9L5k1gP1Wqis1HfvtdvF8bE3cHSZytS0fAYqgrexegJ8c
+         mL79m2lb7BLL8H4bv4IjBRKyRRmQ5tm9KJ5RZY1ISK78b3z0FyfuULkqz5Fk/at9hTzr
+         rkyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744477608; x=1745082408;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hWvWft/Ilf3Ni77MiBJ218Cck/EYMRSjxeQtmM2Wmk8=;
-        b=Sjo213MRdZoy05jigNCHxJKcc9Z0iZ1ESXe+5Dyq43kmI+H7dLoYCBNAeiY6orh9K9
-         +O0Ruc1uTWwkEz5Mj8Qpl/Rji4Ju7d8h0swouo/fZ/wHrveRFHtLcIs8Ne3Lf+MT0U0u
-         2rZ14L9AaEiYLUBDOPCZ7rrOYeVf6/LRxa6qMzVYUzVyri69Wz91j2mxNuunALcpqmfL
-         p7NOsp1VothFc8trowi3G+Y8VMp0A2eUjxAq36yG1KOhjjx1lw7m2/83LOrl5j0OuTbD
-         JF4alXDyedz5VIuk+n13j1TXhrNbTTcXObs7hsa8I6Sd4zGRb4ZTaXygq/Liqsug6552
-         VSSA==
-X-Forwarded-Encrypted: i=1; AJvYcCW4cF4un2UQQTKzLqlvXeTVanjY7MLSuiV+2lf11lrZ/2yLlUxsz9ustbTTXjRrDrCEVV/bc+NOmS8Dm1aXmLAQ@vger.kernel.org, AJvYcCWj36nswBjzg12RLh7/de+sokovwDBPkxTZpm2CoubRcevYrEg5TkM5zqyvcsY5WdDHuGVHjrUazOIlWN8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzT9qyu49wpw1HSPT9JDQBfLb77vMUcOVuRD+EgzXrOa/qrYrec
-	pcXpKkqQ19I0wzYcB0DVc1VoXxc4r4J+3pTmXqoOLHUfsq8J1tJp
-X-Gm-Gg: ASbGncsOa1AxOLPyEZszznoVyNzulRmnLpJ0z7XiXPMFx4PhDLbMo5mHtcUL76sr6BT
-	ATjOICC41Rui1nDzGQiH7oK0QrRj3Ie3SJxvPkaOaVVOQv5EUagCT5atUuGsaMM5olh+h0KKslm
-	bxDEA17p7XfiJ9/97REjddsw5ZZBbOo+6VEK99Snj2DaxkAePVeokWOOv0RNIvmKA0Vyyk3kBEC
-	GTZUd9ga9+0IHL90TjMzdJFWQ+FJ04SW/LRCzEPEyHd+iOP9Fst0z+pJbyWQvqNcDtm+QBvfUXK
-	qL0/IWJTJftZXOEwWSCZmi3W349MaCQjjEAlMis91FyF
-X-Google-Smtp-Source: AGHT+IFF9kQVXw4HN+npCAkPkNtd1zKYV9lEhCojLLriVZO+7NCdzgR6hv2pjLwmrj5MuNCYLsPKyw==
-X-Received: by 2002:a05:6a00:1387:b0:730:75b1:7219 with SMTP id d2e1a72fcca58-73bd1202f32mr8107832b3a.12.1744477607784;
-        Sat, 12 Apr 2025 10:06:47 -0700 (PDT)
-Received: from ubuntu2404.. ([125.121.98.110])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bd21c20f3sm3610710b3a.39.2025.04.12.10.06.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Apr 2025 10:06:47 -0700 (PDT)
-From: KaFai Wan <mannkafai@gmail.com>
-X-Google-Original-From: KaFai Wan <kafai.wan@hotmail.com>
-To: martin.lau@linux.dev,
-	ast@kernel.org,
+        d=1e100.net; s=20230601; t=1744483088; x=1745087888;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qQM8fmMFppc/FCmln+vq9h3fENBqnRGQqbR3PeHRC9g=;
+        b=TUkc5UkA6O77b+NgtgVHwxhME4muMnUTcH5bj5eB1gV6bfRH03+G7v2Qcd+do2fMd4
+         gWyMMXf7W0WaWC6s3h6wVfPx5ai55IK4JmjszuyD3i4FyzmIzmGKgdc2HiyiZAY5me9Q
+         Fa//dQiebZ8UVv7nJkGbkwjewYS1ChbIIB2Tk5bt/wHmkDnbrgLS7kmTBXrNh/woGeym
+         E5A/yXUUNhvizP45KMpoDvgBbsw0RA8POZmYomDgCDQEj6z+SQsHBmAkY0GQC9tKsLn+
+         CqNq9TwTSUWobPvCS+KCHA4yC46tm+mU30r1ev1quyzSVKghq2zTDyt9x5BBd4Zo3B1v
+         fsZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUHbylFJ5zgMTodNCoa5xP7pSpiNCZkB1cjBSmFEANrywzmA9PWcbQuqSP9x2KoDD5IeWMKnXc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywq5+i7yXXsRdFZMnNxhFTsoIWQYZBThaWCkmkZNa0aQ4X6m5jP
+	yNk6dTGq3PUwGBalxQCFDTAb/5gaMOtKOD27pfsDf+aFWrLH9xf6
+X-Gm-Gg: ASbGncuP0T0/12P3PenTjjw1eDfc7YMhLpSjvu23ZfEphyv43wY/DB4tvog4r/I/cfo
+	egzD3QLOqVR7CWeEvmaksJnTmXqrntO5jkrU1dePZN2dHwr/RhjU43qnB0GAWR06BdN8Bvc/QRN
+	J/DYU9lEwm6bRnl9zY754jzG16j1gygLtjNcxo7eryJoACkEk76NvadYIpGvlp9PzSfMu29sDvT
+	VdT3UebrWlVtnDRFDfeAl8sM//hFU0a8r2XlKeYZ592uIt0CvO7Zrtzb+at35kJ+hGCWrMOiSw9
+	iloHkLMNqRDdkNMaLM8qJV+Jd7FmXZ3haJk7YFKDJ3w7SHJOFHa/VRWCZhGIfI1zQXhUseGe4g=
+	=
+X-Google-Smtp-Source: AGHT+IHSywlzTeWPXiJ6eCS/vmFZYOxJH3s1j9ZXTbS+pQJjjWRL9LMRKY9z3kRM4vP86uBPI3R7VQ==
+X-Received: by 2002:a17:903:fae:b0:223:37ec:63d5 with SMTP id d9443c01a7336-22bea4c6beemr117609235ad.28.1744483088169;
+        Sat, 12 Apr 2025 11:38:08 -0700 (PDT)
+Received: from localhost.localdomain ([2620:10d:c090:400::5:67d1])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7c9c59dsm70251615ad.151.2025.04.12.11.38.06
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sat, 12 Apr 2025 11:38:07 -0700 (PDT)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: torvalds@linux-foundation.org
+Cc: bpf@vger.kernel.org,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	memxor@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	kafai.wan@hotmail.com,
-	leon.hwang@linux.dev
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add test to access const void pointer argument in tracing program
-Date: Sun, 13 Apr 2025 01:06:26 +0800
-Message-ID: <20250412170626.3638516-3-kafai.wan@hotmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250412170626.3638516-1-kafai.wan@hotmail.com>
-References: <20250412170626.3638516-1-kafai.wan@hotmail.com>
+	martin.lau@kernel.org,
+	netdev@vger.kernel.org
+Subject: [GIT PULL] BPF fixes for 6.15-rc2
+Date: Sat, 12 Apr 2025 11:38:04 -0700
+Message-Id: <20250412183804.36400-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -108,36 +90,60 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding verifier test for accessing const void pointer argument in
-tracing programs.
+Hi Linus,
 
-The test program loads 2nd argument of kfree tp_btf which is
-const void pointer and checks that verifier allows that.
+The following changes since commit a8662bcd2ff152bfbc751cab20f33053d74d0963:
 
-Signed-off-by: KaFai Wan <kafai.wan@hotmail.com>
----
- .../selftests/bpf/progs/verifier_btf_ctx_access.c        | 9 +++++++++
- 1 file changed, 9 insertions(+)
+  Merge tag 'v6.15-p3' of git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6 (2025-04-04 19:34:38 -0700)
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-index 28b939572cda..a6cec7f73dcd 100644
---- a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-@@ -65,4 +65,13 @@ __naked void ctx_access_u32_pointer_reject_8(void)
- "	::: __clobber_all);
- }
- 
-+SEC("tp_btf/kfree")
-+__description("btf_ctx_access const void pointer accept")
-+int ctx_access_const_void_pointer_accept(void)
-+{
-+	/* load 2nd argument value (const void pointer) */
-+	asm volatile ("r2 = *(u64 *)(r1 + 8); ");
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.43.0
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/bpf-fixes
+
+for you to fetch changes up to a650d38915c194b87616a0747a339b20958d17db:
+
+  bpf: Convert ringbuf map to rqspinlock (2025-04-11 10:28:26 -0700)
+
+----------------------------------------------------------------
+- Followup fixes for resilient spinlock (Kumar Kartikeya Dwivedi)
+  . Make res_spin_lock test less verbose, since it was spamming
+    BPF CI on failure, and make the check for AA deadlock stronger
+  . Fix rebasing mistake and use architecture provided
+    res_smp_cond_load_acquire
+  . Convert BPF maps (queue_stack and ringbuf) to resilient
+    spinlock to address long standing syzbot reports
+
+- Make sure that classic BPF load instruction from SKF_[NET|LL]_OFF
+  offsets works when skb is fragmeneted (Willem de Bruijn) 
+
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+----------------------------------------------------------------
+Alexei Starovoitov (1):
+      Merge branch 'support-skf_net_off-and-skf_ll_off-on-skb-frags'
+
+Kumar Kartikeya Dwivedi (5):
+      selftests/bpf: Make res_spin_lock test less verbose
+      selftests/bpf: Make res_spin_lock AA test condition stronger
+      bpf: Use architecture provided res_smp_cond_load_acquire
+      bpf: Convert queue_stack map to rqspinlock
+      bpf: Convert ringbuf map to rqspinlock
+
+Willem de Bruijn (2):
+      bpf: support SKF_NET_OFF and SKF_LL_OFF on skb frags
+      selftests/net: test sk_filter support for SKF_NET_OFF on frags
+
+ arch/arm64/include/asm/rqspinlock.h                |   2 +-
+ kernel/bpf/queue_stack_maps.c                      |  35 +--
+ kernel/bpf/ringbuf.c                               |  17 +-
+ kernel/bpf/rqspinlock.c                            |   2 +-
+ net/core/filter.c                                  |  80 ++++---
+ .../selftests/bpf/prog_tests/res_spin_lock.c       |   7 +-
+ tools/testing/selftests/bpf/progs/res_spin_lock.c  |  10 +-
+ tools/testing/selftests/net/.gitignore             |   1 +
+ tools/testing/selftests/net/Makefile               |   2 +
+ tools/testing/selftests/net/skf_net_off.c          | 244 +++++++++++++++++++++
+ tools/testing/selftests/net/skf_net_off.sh         |  30 +++
+ 11 files changed, 354 insertions(+), 76 deletions(-)
+ create mode 100644 tools/testing/selftests/net/skf_net_off.c
+ create mode 100755 tools/testing/selftests/net/skf_net_off.sh
 
