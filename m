@@ -1,124 +1,174 @@
-Return-Path: <bpf+bounces-55812-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55813-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF25AA86D4D
-	for <lists+bpf@lfdr.de>; Sat, 12 Apr 2025 15:34:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BFC6A86D65
+	for <lists+bpf@lfdr.de>; Sat, 12 Apr 2025 15:58:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 909BE19E6D46
-	for <lists+bpf@lfdr.de>; Sat, 12 Apr 2025 13:34:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E79444681F
+	for <lists+bpf@lfdr.de>; Sat, 12 Apr 2025 13:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7288B1EA7C8;
-	Sat, 12 Apr 2025 13:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D981EA7C8;
+	Sat, 12 Apr 2025 13:58:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QYfqEYQy"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ctRJGxUn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A174F1E2852;
-	Sat, 12 Apr 2025 13:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0DA9142E86;
+	Sat, 12 Apr 2025 13:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744464840; cv=none; b=uCGmLi5NDfpgWa23wffcl/j3inSjFrmSjJ4568iSF3Fm6l1ICumP4ggbog8Qs1mjNffNDUrNc2XQ6eYjFB2zCuzALfgMGnj9YDusCsCtP0WJnUNZAgsA6gi3PykV4S0Q9vKJ4l+fPdtXwAXRB6NvPkLP2mEd9xYAbF3Evp0HH8U=
+	t=1744466297; cv=none; b=uxtpnsz0+5+8dekw2y4gv6B3Pwslsplz8f/yIWuzsHc26V5EQhgMS9S4NLj8VYM/o+wr0rBjUzl50hc8fd1XTPqBHPPimsmwYUV1LnIigLCLtqsa+j4yk4KrPQ2cmEmwPSW1zarDP1EhlwBh1mOqfBp07OEDNKxonyEn12KA8x8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744464840; c=relaxed/simple;
-	bh=h0IwcTng9sclCvcywK+wNMxJpwXXKHjRD7dMWtaA31g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Od+2Vp4Z0XB6UE/zXFBWJ0uUSBN2Nu63Hf4AiadG5nvd/JbcKvr86VsT4TUyp+sXDWPufgqdi+m7IG6oSzDPnWPjXQ6QFjwHG3F1W2bKWUIlxCE56evUHZsWjuO7SgknO3bQHuPWHbnrylsK51QnqYnK6eYK+0OK3mThoXXash8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QYfqEYQy; arc=none smtp.client-ip=209.85.210.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-739be717eddso2227652b3a.2;
-        Sat, 12 Apr 2025 06:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744464838; x=1745069638; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PikjTMv10qhp5875nc5HxqEEn+j7NbvWOkALbBYBqJI=;
-        b=QYfqEYQyo5hUPP/RgpLOPp9eKP7NJhbKV1G32UdtK+m+yopsLEtYr23EeabVkFj4EX
-         Lv/1byYFwhMuTNTEOPu3tyswWqmHAzYs2YA6HOIliICEqraeRmiWU1moIZA0rAsh3t3C
-         FKwp1T855vGVhcdlrKkq72N+saRCV8ZQ9UPT2+TpXmRJkZt+T1WCb2BsEJ/h2ZzGCMNJ
-         atctHHFXNQg/O2hryL9GcpSgJIFWITFTbni+qElHzuZPwTVta8vUfOFH8W0ChIPxLs0B
-         hhgwVh8rtTd4pbGY/r0oICz+4qQFQGPnVnrcqVTY0icWzO2/Vm3pKiRqGAbHch8gVMC6
-         7j7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744464838; x=1745069638;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PikjTMv10qhp5875nc5HxqEEn+j7NbvWOkALbBYBqJI=;
-        b=DKryjsO3fLByaYBtaNjyNMO7Fp6TObuqFGbnqxCG7PeR2AZearedoyMqIAcFPcHhgy
-         2lR8hgptXEWbrPUo/uDwcXvwBhFOpS9Wo/TZ05tWRpt8G2IWfPyDv/EFIhI0JhiX4GTM
-         XZNhKl5lk5Rh2XlU1eQxbHRhFVmokZV5l9+bQA08sj1ZiGAXV2sLxsMymyKiR9RErUa8
-         IklSwp6M7O87+pGLEysBZkqpI6KofcIDS+W5O6OSg5Bh7kVb48oM1+KYQUh6stn88lxw
-         2hvu0S7GtntNzrlwAr6v8w2zgahpZE/JhUI+p9+yOA2yUSiTGmraKTEZiWHNtjb3lux5
-         I1hA==
-X-Forwarded-Encrypted: i=1; AJvYcCVOWLD+zvDVfrltagng8uoIhPZ2y4ELewc2/0GO8VGLEhW8B0SF6oAzqkjZWv51rcnI3Pmdcut6s8j+juw8@vger.kernel.org, AJvYcCVQFy70YID1YKKP5LSWZHv6JEwqltcCihqfMl4Q10mWsemEclZCvT0hXIrvGZxmnhXwrkM=@vger.kernel.org, AJvYcCWM7fzNuyIl3T3IKJCWcsMdnI+QgX7l7EYyVhhr9Bsk/zIpT+9TxSPT6On2Lf3/82J4G5me7jedHCpNNfrV9mlNPDOo@vger.kernel.org
-X-Gm-Message-State: AOJu0YwfAkIUYHLjZy8V7iokJYU1t8psMBMIXSfUzhRi+AD+myRKJzFf
-	F1u/oIEHiTw6X5RzNbKggdmoLOCIIXgIfKe5KTmixvvLqOWpcAjs
-X-Gm-Gg: ASbGncu7sAH0itwVtkLM1M0ZZQGSkzX8G6ak9QBbKfDilXbQtQCPcqnlH6JWxO8+3x9
-	mU9TUZZcLiSKVBzD44L32EvMLsYFFGzA9Ch95L+9iSgNstcYwodoBKRfZtAnMfyqcNXthqE62WR
-	1LqnbLfMkaqECFXtlevWkKbR+O1tugMNyyzBgdAm0SGDGdQlCyU18kL2F5faYuSAQ/stIugOB9X
-	DZSIazeXc2j8TMacZQs6Q8wLdaZajAQS08DYdF1yAh+mbNdpfuwRRC+pS2+DIyp3zSxnql0btrS
-	IRC5mgyF0Fy2s5TKJVYzrEMDd38bcaizVm4IxHDGQD1NBCGnnh/tr5hjxw==
-X-Google-Smtp-Source: AGHT+IGYYIUq1yejVEDqyycBAs4SDGA//9qNS7UbRYVxxKNawUS4ATaqgEWFUwX7Xip1qOlbiA/U3Q==
-X-Received: by 2002:a05:6300:210b:b0:1f5:7873:3041 with SMTP id adf61e73a8af0-201797a39aemr8992770637.18.1744464837671;
-        Sat, 12 Apr 2025 06:33:57 -0700 (PDT)
-Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b02a12c8ac4sm6473395a12.46.2025.04.12.06.33.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Apr 2025 06:33:57 -0700 (PDT)
-From: Menglong Dong <menglong8.dong@gmail.com>
-X-Google-Original-From: Menglong Dong <dongml2@chinatelecom.cn>
-To: rostedt@goodmis.org
-Cc: mhiramat@kernel.org,
-	mark.rutland@arm.com,
-	mathieu.desnoyers@efficios.com,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Menglong Dong <dongml2@chinatelecom.cn>
-Subject: [PATCH bpf] ftrace: fix incorrect hash size in register_ftrace_direct()
-Date: Sat, 12 Apr 2025 21:33:48 +0800
-Message-Id: <20250412133348.92718-1-dongml2@chinatelecom.cn>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1744466297; c=relaxed/simple;
+	bh=ClLf6pd9bTzI1Zy4+TxzeK0uSIR+DiZghc9j4o2x+1o=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=hpb2x9cTH1yObEWkY3L70xyAqfXUz3H1Wgx5Y5lwW/0JtPztVCKdoNZzNReAxJWq0cnTlwKFBYKRP+OFVvQbraTbaG6h7b0hPQa9Hapsx5OW4mpFwENKvbkAVkluAylAnrgWtIgLbKoCW9XWjaSJwIFAB3wzw0iDDTDqJfv9kW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ctRJGxUn; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [167.220.2.28])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 25D6621165B8;
+	Sat, 12 Apr 2025 06:58:00 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 25D6621165B8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1744466289;
+	bh=zu0xtIux+vB60++y6tlbnAcAeCnE8i9Dvqd2crr17VQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=ctRJGxUnarL1x3rwLFV8mBmNc3kTQ8bmhzgl86pwB64rU7x4F0uR0RbSDZRhN8fWK
+	 6NogRPkUANeXVftTcHYLC9sqh+m90vMBzrg0ZVAZkdyJn9b+Qn84ZMDf/eNxvrDQZW
+	 KQKb2GNF3XL4OSER5Fbnwana9xHXUnJlDRHrDfW4=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller"
+ <davem@davemloft.net>, Paul Moore <paul@paul-moore.com>, James Morris
+ <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Masahiro Yamada
+ <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nicolas
+ Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>, =?utf-8?Q?Mick?=
+ =?utf-8?Q?a=C3=ABl_Sala=C3=BCn?=
+ <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Nick
+ Desaulniers
+ <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>,
+ Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen
+ <jarkko@kernel.org>, Jan Stancek <jstancek@redhat.com>, Neal Gompa
+ <neal@gompa.dev>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, keyrings@vger.kernel.org, Linux
+ Crypto Mailing List <linux-crypto@vger.kernel.org>, LSM List
+ <linux-security-module@vger.kernel.org>, Linux Kbuild mailing list
+ <linux-kbuild@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK"
+ <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+ clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com, Matteo Croce
+ <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, Cong Wang
+ <xiyou.wangcong@gmail.com>
+Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
+In-Reply-To: <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
+References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
+ <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
+ <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
+Date: Sat, 12 Apr 2025 06:57:58 -0700
+Message-ID: <87semdjxcp.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-The max ftrace hash bits is made fls(32) in register_ftrace_direct(),
-which seems illogical, and it seems to be a spelling mistake.
+TAlexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Just fix it.
+> On Fri, Apr 4, 2025 at 2:56=E2=80=AFPM Blaise Boscaccy
+> <bboscaccy@linux.microsoft.com> wrote:
+>> +
+>> +static int hornet_find_maps(struct bpf_prog *prog, struct hornet_maps *=
+maps)
+>> +{
+>> +       struct bpf_insn *insn =3D prog->insnsi;
+>> +       int insn_cnt =3D prog->len;
+>> +       int i;
+>> +       int err;
+>> +
+>> +       for (i =3D 0; i < insn_cnt; i++, insn++) {
+>> +               if (insn[0].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW)) {
+>> +                       switch (insn[0].src_reg) {
+>> +                       case BPF_PSEUDO_MAP_IDX_VALUE:
+>> +                       case BPF_PSEUDO_MAP_IDX:
+>> +                               err =3D add_used_map(maps, insn[0].imm);
+>> +                               if (err < 0)
+>> +                                       return err;
+>> +                               break;
+>> +                       default:
+>> +                               break;
+>> +                       }
+>> +               }
+>> +       }
+>
+> ...
+>
+>> +               if (!map->frozen) {
+>> +                       attr.map_fd =3D fd;
+>> +                       err =3D kern_sys_bpf(BPF_MAP_FREEZE, &attr, size=
+of(attr));
+>
+> Sorry for the delay. Still swamped after conferences and the merge window.
+>
 
-(Do I misunderstand something?)
+No worries.
 
-Fixes: d05cb470663a ("ftrace: Fix modification of direct_function hash while in use")
-Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
----
- kernel/trace/ftrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Above are serious layering violations.
+> LSMs should not be looking that deep into bpf instructions.
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 1a48aedb5255..7697605a41e6 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5914,7 +5914,7 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
- 
- 	/* Make a copy hash to place the new and the old entries in */
- 	size = hash->count + direct_functions->count;
--	if (size > 32)
-+	if (size < 32)
- 		size = 32;
- 	new_hash = alloc_ftrace_hash(fls(size));
- 	if (!new_hash)
--- 
-2.39.5
+These aren't BPF internals; this is data passed in from
+userspace. Inspecting userspace function inputs is definitely within the
+purview of an LSM.
 
+Lskel signature verification doesn't actually need a full disassembly,
+but it does need all the maps used by the lskel. Due to API design
+choices, this unfortunately requires disassembling the program to see
+which array indexes are being used.
+
+> Calling into sys_bpf from LSM is plain nack.
+>
+
+kern_sys_bpf is an EXPORT_SYMBOL, which means that it should be callable
+from a module. Lskels without frozen maps are vulnerable to a TOCTOU
+attack from a sufficiently privileged user. Lskels currently pass
+unfrozen maps into the kernel, and there is nothing stopping someone
+from modifying them between BPF_PROG_LOAD and BPF_PROG_RUN.
+
+> The verification of module signatures is a job of the module loading proc=
+ess.
+> The same thing should be done by the bpf system.
+> The signature needs to be passed into sys_bpf syscall
+> as a part of BPF_PROG_LOAD command.
+> It probably should be two new fields in union bpf_attr
+> (signature and length),
+> and the whole thing should be processed as part of the loading
+> with human readable error reported back through the verifier log
+> in case of signature mismatch, etc.
+>
+
+I don't necessarily disagree, but my main concern with this is that
+previous code signing patchsets seem to get gaslit or have the goalposts
+moved until they die or are abandoned.
+
+Are you saying that at this point, you would be amenable to an in-tree
+set of patches that enforce signature verification of lskels during
+BPF_PROG_LOAD that live in syscall.c, without adding extra non-code
+signing requirements like attachment point verification, completely
+eBPF-based solutions, or rich eBPF-based program run-time policy
+enforcement?
+
+Our entire use case for this is simply "we've signed all code running in
+ring 0," nothing more. I'm concerned that code signing may be blocked
+forever while eBPF attempts to reinvent its own runtime policy framework
+that has absolutely nothing to do with proving code provenance.
+
+> What LSM can do in addition is to say that if the signature is not
+> specified in the prog_load command then deny such request outright.
+> bpf syscall itself will deny program loading if signature is incorrect.
 
