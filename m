@@ -1,250 +1,272 @@
-Return-Path: <bpf+bounces-55834-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55835-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13DE9A87696
-	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 05:54:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04248A8771D
+	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 06:59:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A84B63B21F3
-	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 03:53:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 990BC3AF74D
+	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 04:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D65F19E971;
-	Mon, 14 Apr 2025 03:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFBF819E806;
+	Mon, 14 Apr 2025 04:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IoTYxfNA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB61319539F
-	for <bpf@vger.kernel.org>; Mon, 14 Apr 2025 03:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD1C8155C83
+	for <bpf@vger.kernel.org>; Mon, 14 Apr 2025 04:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744602753; cv=none; b=KJIOJ6xH6VGcxdX9Tm771uqYmEAZADA+HM/67mmpulIeaepowPOIGHxA5ocVVbjRJo62VIQ0ZP19rYGlaeLYLrMjnJpMACB5ekYf+satM1UlxGFBf5lGiZPRI/AGoVOdcUj4sJKy+1AuP76386uWg6MPvAxMSej7F3FXj8+1lhU=
+	t=1744606783; cv=none; b=nXn737AOYAFrN/nv+KpWzGS/a9U14eUIwvDshJJp3Jvvh5Aatckyj165YZjoJ7HMdprhLmX09qPfKzlDzpG98dFywuIh+FfeLdjbnjwZlweY6zhYtModmuwbgPpvsTvROC9sesRwr/d4I/AMXTllrlIVnk4wTX44J1oxlKj6NwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744602753; c=relaxed/simple;
-	bh=XVwDcAEiYeJPSRKRhxnWs+iE9GLlQGh60EoL7fXPtNA=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=H8/fl85wHq8LQAYxYzp1SZLB+TQhhXgWK73+SdP/5hjbL/SiL4YpKWENElOHiGTmr8XJIO7AJ+SqwHkqmA6w+vegOy0Q640WUivtzZF9Clf0UJo+45+oe0kGFilJ1/SqKeFoz9K8QISo4Gp0BTlxyKs8tEIcW5+8tfeOPoSh9JU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3d43d333855so30831715ab.0
-        for <bpf@vger.kernel.org>; Sun, 13 Apr 2025 20:52:31 -0700 (PDT)
+	s=arc-20240116; t=1744606783; c=relaxed/simple;
+	bh=ACWZLJupa25jfFCxMpR9Xs9uVwnapZ24uhwEct9sX20=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rG8ISCdGINVAOpvQGP610qNaKQQwtzVxjMMw8m9WZaQaEcxGRzC3AUJv6UqNR6nVjbjv4S855966HzTS2Ii1lfExrzqq/tctTabr07DPJJvpqVzDFfNxJftYVtWRtqSqVT+xN6q5cqJRY5eLErwt0KwI0ghOsr0gc6fwgTGHooA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IoTYxfNA; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744606780;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O1VnfrOH4OkYtjGJfeu1RCRHY0/ALwH6gZrfWL+zW1w=;
+	b=IoTYxfNAT/UgT/t9/hbG5Ts1UAfWFOAbhqKvYxkqiTyDdfk8mcxLtkjBmjP7l+bm1ANvS8
+	tOzTvBcT4F90zB5XYsNoy+1uTh20K7087cdF/aAvDEYryh8PNnuCmoyMeU6MdYFBDpM/wS
+	zoiPZIQbJTGIheW7+3KcAx9PEAO+gW4=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-447-4iadCVIsN66OZEuNPpmbZA-1; Mon, 14 Apr 2025 00:59:38 -0400
+X-MC-Unique: 4iadCVIsN66OZEuNPpmbZA-1
+X-Mimecast-MFC-AGG-ID: 4iadCVIsN66OZEuNPpmbZA_1744606778
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-ac297c7a0c2so293756366b.3
+        for <bpf@vger.kernel.org>; Sun, 13 Apr 2025 21:59:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744602751; x=1745207551;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K4ofJTsYjACcwFNdnN4T1b9Qb1iA3eXa6RaUP9UE9Sw=;
-        b=Ec3422HG0AJAFiestGxIsidxgpM658/hc5N9EP6BBWtpy1JrgwR4+A55TgEz2qyDSm
-         xlCiUN/gV9rsG40IigwhZshEr7P0hplSzQJIlzzqwQTE0HJv42ucy5Lpj37/Tprc+mKZ
-         usf8SKN4ijB6cxg23cmE5dn1K262Zcu8TOSfnQMpohix8TxZCQBC7xKQDcYxzOovhPu5
-         d5YLTKFcpguWpf5UMqZKUyNcEhe07qd+VlrdJq+8XtqsXMgxHWlJd3MofxC51E4Aqvgb
-         KGgC/5ccoEbWR7aoD+lK6jfCGBgFch+aoMyfAqpBA3j5/RRbD2R4YVG0xLwR3mOV9/Nt
-         SeQg==
-X-Forwarded-Encrypted: i=1; AJvYcCUbfA93cwDoczeGw51GeLVsqywyhqWK1loWIGkqfFUlSLjFI32YUzfolNRZcLR6KnvBnCw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YydmSPE6VCyCYp3yqPvFjrtB70MvXHWcR3p5iuroapA/aq/78Wa
-	WXojp983ZjrX6IRRo3WN9AFNFBtJpgYX8wXkZJHOhEbjdvJh0qu8HcrkIKT+OtDyIlDuyDHqzEi
-	wfFEvbaEsOVdRCLZnqoSX/puXhh2r4X/N5hTc6naW4ylM/OnvZFma8xY=
-X-Google-Smtp-Source: AGHT+IE2kHDWEk+9Czb/Bn6XO2ZdybEoOcL+OFcO7jwto5GoDRPRfYJqLsmsbQa9cztf4P/M/TDJAgE+S6eS2adjS9NW3TWIlkMA
+        d=1e100.net; s=20230601; t=1744606774; x=1745211574;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O1VnfrOH4OkYtjGJfeu1RCRHY0/ALwH6gZrfWL+zW1w=;
+        b=K8pCJZgK5AZdkNQN0JtLGjRhugVcHYTTZjxz6zngMrmua0+FIrOQJtpxPZ3/i/fM9h
+         o/UbQ2qoIW61BXMwIddDPHG8LcDlnuJLPpEam8xYx6DJwPhkDQLUEZhjPVPjp0BJSeYN
+         3jPdvwtR1Lh3zj5WroYmVDx4lG4x84nKfC9RI4g/we9ncDEpgWlxBz3cFPXash7RmKqi
+         wam8bRDSFFdXk/UDHNWE0FnNLz6rJnthq01SGRc6rTX7afQLdiAEa662REE5kb/Q2Q0E
+         JkNDgHVrLT/DV9vpTqPL4dqxI+l3u04rmlZot9NdXId7I/Ka/DO1QmEEzs1bZvRdfUpp
+         d7oQ==
+X-Gm-Message-State: AOJu0YzfVAVcFzjU1RUQUvqhjpsuZ2GZPi/czITFdMbLv3azXqUejbDs
+	gRIZVz8yck3mMz4VGKUzx5AouSHS2v9cF9b4ayb/ihVNBwCiVuzu6ecINfEUnmLkObbY76vT+hY
+	/Fb5Xndo/7UFDzRTaWFBx0eHO4z2TPTY7W4N0aOwaOLqBWVBJ
+X-Gm-Gg: ASbGncvTF2fDWwGLjy88Qqa0iECMorrTIcAeOa3JfNlObtYNo4cjY5bcPQFuUavC2Zn
+	o8OqXCVe53D2sHCgGrjbxZT/xbQFoah/qEUln2iWyLRFsHPJr+to0ZqwYkH3c0lOvLlsNdrD+F5
+	JN/TU1SqSqe9l/X5sqJPMjVzRfp/SxOeCdTMsOpMp6HDxtpA/GOrHv8ewZkemmPAcFtFnabQ3OY
+	Dnfi3RZSSBvgYyj6NE2Eh1rz/rZr6v6lP0SWYUhu3kgPhvV/DskZOy3WQ1GmyLmpjvc4HO3PfbA
+	MLlUqM75M8XlLzHIEGg7D5jg0VGDpVP1Sqlg9pqB54Hfzg==
+X-Received: by 2002:a17:907:3fa2:b0:ac7:edc4:3d42 with SMTP id a640c23a62f3a-acad349a039mr946481066b.24.1744606774086;
+        Sun, 13 Apr 2025 21:59:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEQHfzSeAUj/TqqAU+tVLfI9UaIU4wpXQagNEC/sSIHQzzK1OE7CO/dsuYzuDxtr7NOkU2wVQ==
+X-Received: by 2002:a17:907:3fa2:b0:ac7:edc4:3d42 with SMTP id a640c23a62f3a-acad349a039mr946478666b.24.1744606773610;
+        Sun, 13 Apr 2025 21:59:33 -0700 (PDT)
+Received: from [192.168.0.102] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acaa1cb4070sm847644766b.102.2025.04.13.21.59.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 13 Apr 2025 21:59:32 -0700 (PDT)
+Message-ID: <d87e3ed0-5731-4738-a1c6-420c557c3048@redhat.com>
+Date: Mon, 14 Apr 2025 06:59:31 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1582:b0:3d4:414c:6073 with SMTP id
- e9e14a558f8ab-3d7ec1fd045mr117519705ab.8.1744602750917; Sun, 13 Apr 2025
- 20:52:30 -0700 (PDT)
-Date: Sun, 13 Apr 2025 20:52:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67fc867e.050a0220.2970f9.03b8.GAE@google.com>
-Subject: [syzbot] [bpf?] general protection fault in bpf_get_local_storage
-From: syzbot <syzbot+e6e8f6618a2d4b35e4e0@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf v2] libbpf: Fix buffer overflow in
+ bpf_object__init_prog
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, lmarch2 <2524158037@qq.com>,
+ stable@vger.kernel.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>
+References: <20250410095517.141271-1-vmalik@redhat.com>
+ <CAEf4Bzb2S+1TonOp9UH86r0e6aGG2LEA4kwbQhJWr=9Xju=NEw@mail.gmail.com>
+From: Viktor Malik <vmalik@redhat.com>
+Content-Language: en-US
+In-Reply-To: <CAEf4Bzb2S+1TonOp9UH86r0e6aGG2LEA4kwbQhJWr=9Xju=NEw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+On 4/11/25 18:22, Andrii Nakryiko wrote:
+> On Thu, Apr 10, 2025 at 2:55 AM Viktor Malik <vmalik@redhat.com> wrote:
+>>
+>> As reported by CVE-2025-29481 [1], it is possible to corrupt a BPF ELF
+>> file such that arbitrary BPF instructions are loaded by libbpf. This can
+>> be done by setting a symbol (BPF program) section offset to a large
+>> (unsigned) number such that <section start + symbol offset> overflows
+>> and points before the section data in the memory.
+>>
+>> Consider the situation below where:
+>> - prog_start = sec_start + symbol_offset    <-- size_t overflow here
+>> - prog_end   = prog_start + prog_size
+>>
+>>     prog_start        sec_start        prog_end        sec_end
+>>         |                |                 |              |
+>>         v                v                 v              v
+>>     .....................|################################|............
+>>
+>> The CVE report in [1] also provides a corrupted BPF ELF which can be
+>> used as a reproducer:
+>>
+>>     $ readelf -S crash
+>>     Section Headers:
+>>       [Nr] Name              Type             Address           Offset
+>>            Size              EntSize          Flags  Link  Info  Align
+>>     ...
+>>       [ 2] uretprobe.mu[...] PROGBITS         0000000000000000  00000040
+>>            0000000000000068  0000000000000000  AX       0     0     8
+>>
+>>     $ readelf -s crash
+>>     Symbol table '.symtab' contains 8 entries:
+>>        Num:    Value          Size Type    Bind   Vis      Ndx Name
+>>     ...
+>>          6: ffffffffffffffb8   104 FUNC    GLOBAL DEFAULT    2 handle_tp
+>>
+>> Here, the handle_tp prog has section offset ffffffffffffffb8, i.e. will
+>> point before the actual memory where section 2 is allocated.
+>>
+>> This is also reported by AddressSanitizer:
+>>
+>>     =================================================================
+>>     ==1232==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7c7302fe0000 at pc 0x7fc3046e4b77 bp 0x7ffe64677cd0 sp 0x7ffe64677490
+>>     READ of size 104 at 0x7c7302fe0000 thread T0
+>>         #0 0x7fc3046e4b76 in memcpy (/lib64/libasan.so.8+0xe4b76)
+>>         #1 0x00000040df3e in bpf_object__init_prog /src/libbpf/src/libbpf.c:856
+>>         #2 0x00000040df3e in bpf_object__add_programs /src/libbpf/src/libbpf.c:928
+>>         #3 0x00000040df3e in bpf_object__elf_collect /src/libbpf/src/libbpf.c:3930
+>>         #4 0x00000040df3e in bpf_object_open /src/libbpf/src/libbpf.c:8067
+>>         #5 0x00000040f176 in bpf_object__open_file /src/libbpf/src/libbpf.c:8090
+>>         #6 0x000000400c16 in main /poc/poc.c:8
+>>         #7 0x7fc3043d25b4 in __libc_start_call_main (/lib64/libc.so.6+0x35b4)
+>>         #8 0x7fc3043d2667 in __libc_start_main@@GLIBC_2.34 (/lib64/libc.so.6+0x3667)
+>>         #9 0x000000400b34 in _start (/poc/poc+0x400b34)
+>>
+>>     0x7c7302fe0000 is located 64 bytes before 104-byte region [0x7c7302fe0040,0x7c7302fe00a8)
+>>     allocated by thread T0 here:
+>>         #0 0x7fc3046e716b in malloc (/lib64/libasan.so.8+0xe716b)
+>>         #1 0x7fc3045ee600 in __libelf_set_rawdata_wrlock (/lib64/libelf.so.1+0xb600)
+>>         #2 0x7fc3045ef018 in __elf_getdata_rdlock (/lib64/libelf.so.1+0xc018)
+>>         #3 0x00000040642f in elf_sec_data /src/libbpf/src/libbpf.c:3740
+>>
+>> The problem here is that currently, libbpf only checks that the program
+>> end is within the section bounds. There used to be a check
+>> `while (sec_off < sec_sz)` in bpf_object__add_programs, however, it was
+>> removed by commit 6245947c1b3c ("libbpf: Allow gaps in BPF program
+>> sections to support overriden weak functions").
+>>
+>> Put the above condition back to bpf_object__init_prog to make sure that
+>> the program start is also within the bounds of the section to avoid the
+>> potential buffer overflow.
+>>
+>> [1] https://github.com/lmarch2/poc/blob/main/libbpf/libbpf.md
+>>
+>> Reported-by: lmarch2 <2524158037@qq.com>
+>> Cc: stable@vger.kernel.org
+> 
+> Libbpf is packaged and consumed from Github mirror, which is produced
+> from latest bpf-next and bpf trees, so there is no point in
+> backporting fixes like this to stable kernel branches. Please drop the
+> CC: stable in the next revision.
 
-syzbot found the following issue on:
+Ack, will drop it.
 
-HEAD commit:    4d872d51bc9d Merge tag 'x86-urgent-2025-03-10' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=128e67a8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f71f17a9b92472b2
-dashboard link: https://syzkaller.appspot.com/bug?extid=e6e8f6618a2d4b35e4e0
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1385b074580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1785b074580000
+> 
+>> Fixes: 6245947c1b3c ("libbpf: Allow gaps in BPF program sections to support overriden weak functions")
+>> Link: https://github.com/lmarch2/poc/blob/main/libbpf/libbpf.md
+>> Link: https://www.cve.org/CVERecord?id=CVE-2025-29481
+> 
+> libbpf is meant to load BPF programs under root. It's a
+> highly-privileged operation, and libbpf is not meant, designed, and
+> actually explicitly discouraged from loading untrusted ELF files. As
+> such, this is just a normal bug fix, like lots of others. So let's
+> drop the CVE link as well.
+> 
+> Again, no one in their sane mind should be passing untrusted ELF files
+> into libbpf while running under root. Period.
+> 
+> All production use cases load ELF that they generated and control
+> (usually embedded into their memory through BPF skeleton header). And
+> if that ELF file is corrupted, you have problems somewhere else,
+> libbpf is not a culprit.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-4d872d51.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0ca94bd3aed2/vmlinux-4d872d51.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/da3cc5389139/bzImage-4d872d51.xz
+While I couldn't agree more, I'm a bit on the fence here. On one hand,
+unless the CVE is revoked (see the other thread), people may still run
+across it and, without sufficient knowledge of libbpf, think that they
+are vulnerable. Having a CVE reference in the patch could help them
+recognize that they are using a patched version of libbpf or at least
+read an explanation why the vulnerability is not real.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e6e8f6618a2d4b35e4e0@syzkaller.appspotmail.com
+On the other hand, since it's just a bug, I agree that it doesn't make
+much sense to reference a CVE from it. So, I'm ok both ways. I can
+reference the CVE and provide some better explanation why this should
+not be considered a vulnerability.
 
-Oops: general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 UID: 0 PID: 5934 Comm: sshd Not tainted 6.14.0-rc6-syzkaller-00003-g4d872d51bc9d #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:____bpf_get_local_storage kernel/bpf/cgroup.c:1587 [inline]
-RIP: 0010:bpf_get_local_storage+0x17b/0x260 kernel/bpf/cgroup.c:1569
-Code: 48 8d 7b 10 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 bb 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 10 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 a6 00 00 00 48 8b 1b e8 13 90 73 09 83 f8 07 89
-RSP: 0018:ffffc900006c0120 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81e40b82
-RDX: 0000000000000000 RSI: ffffffff81e40c38 RDI: ffff8880356f2ca0
-RBP: ffffc900006c0140 R08: 0000000000000005 R09: 0000000000000015
-R10: 0000000000000015 R11: 0000000000000005 R12: ffff88802ae052c0
-R13: ffffc90000d36002 R14: 0000000000000000 R15: ffff88802ae052f0
-FS:  00007fb06dfb0d00(0000) GS:ffff88806a700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000400000001c40 CR3: 0000000025fd8000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- bpf_prog_3647604f6c8667e9+0x2e/0x41
- bpf_dispatcher_nop_func include/linux/bpf.h:1290 [inline]
- __bpf_prog_run include/linux/filter.h:701 [inline]
- bpf_prog_run include/linux/filter.h:708 [inline]
- __bpf_prog_run_save_cb+0x11f/0x330 include/linux/filter.h:938
- bpf_prog_run_array_cg kernel/bpf/cgroup.c:68 [inline]
- __cgroup_bpf_run_filter_skb+0x470/0xe60 kernel/bpf/cgroup.c:1425
- sk_filter_trim_cap+0x234/0xac0 net/core/filter.c:147
- tcp_filter net/ipv4/tcp_ipv4.c:2144 [inline]
- tcp_v4_rcv+0x28fd/0x4380 net/ipv4/tcp_ipv4.c:2332
- ip_protocol_deliver_rcu+0xba/0x4c0 net/ipv4/ip_input.c:205
- ip_local_deliver_finish+0x316/0x570 net/ipv4/ip_input.c:233
- NF_HOOK include/linux/netfilter.h:314 [inline]
- NF_HOOK include/linux/netfilter.h:308 [inline]
- ip_local_deliver+0x18e/0x1f0 net/ipv4/ip_input.c:254
- dst_input include/net/dst.h:469 [inline]
- ip_sublist_rcv_finish+0x2c1/0x620 net/ipv4/ip_input.c:578
- ip_list_rcv_finish+0x559/0x720 net/ipv4/ip_input.c:627
- ip_sublist_rcv net/ipv4/ip_input.c:635 [inline]
- ip_list_rcv+0x339/0x450 net/ipv4/ip_input.c:669
- __netif_receive_skb_list_ptype net/core/dev.c:5936 [inline]
- __netif_receive_skb_list_core+0x755/0x950 net/core/dev.c:5983
- __netif_receive_skb_list net/core/dev.c:6035 [inline]
- netif_receive_skb_list_internal+0x753/0xdb0 net/core/dev.c:6126
- gro_normal_list include/net/gro.h:518 [inline]
- gro_normal_list include/net/gro.h:514 [inline]
- napi_complete_done+0x218/0x940 net/core/dev.c:6493
- e1000_clean+0xa28/0x2700 drivers/net/ethernet/intel/e1000/e1000_main.c:3815
- __napi_poll.constprop.0+0xb7/0x550 net/core/dev.c:7188
- napi_poll net/core/dev.c:7257 [inline]
- net_rx_action+0xa94/0x1010 net/core/dev.c:7379
- handle_softirqs+0x213/0x8f0 kernel/softirq.c:561
- do_softirq kernel/softirq.c:462 [inline]
- do_softirq+0xb2/0xf0 kernel/softirq.c:449
- </IRQ>
- <TASK>
- __local_bh_enable_ip+0x100/0x120 kernel/softirq.c:389
- local_bh_enable include/linux/bottom_half.h:33 [inline]
- rcu_read_unlock_bh include/linux/rcupdate.h:919 [inline]
- __dev_queue_xmit+0x8b0/0x43e0 net/core/dev.c:4676
- dev_queue_xmit include/linux/netdevice.h:3313 [inline]
- neigh_hh_output include/net/neighbour.h:523 [inline]
- neigh_output include/net/neighbour.h:537 [inline]
- ip_finish_output2+0xc34/0x2180 net/ipv4/ip_output.c:236
- __ip_finish_output net/ipv4/ip_output.c:314 [inline]
- __ip_finish_output+0x49e/0x950 net/ipv4/ip_output.c:296
- ip_finish_output+0x35/0x380 net/ipv4/ip_output.c:324
- NF_HOOK_COND include/linux/netfilter.h:303 [inline]
- ip_output+0x13b/0x2a0 net/ipv4/ip_output.c:434
- dst_output include/net/dst.h:459 [inline]
- ip_local_out net/ipv4/ip_output.c:130 [inline]
- __ip_queue_xmit+0x1a8d/0x22d0 net/ipv4/ip_output.c:528
- __tcp_transmit_skb+0x2b39/0x3ec0 net/ipv4/tcp_output.c:1471
- tcp_transmit_skb net/ipv4/tcp_output.c:1489 [inline]
- tcp_write_xmit+0x12b1/0x8560 net/ipv4/tcp_output.c:2832
- __tcp_push_pending_frames+0xaf/0x390 net/ipv4/tcp_output.c:3015
- tcp_push+0x221/0x6f0 net/ipv4/tcp.c:751
- tcp_sendmsg_locked+0x290f/0x37c0 net/ipv4/tcp.c:1326
- tcp_sendmsg+0x2e/0x50 net/ipv4/tcp.c:1358
- inet_sendmsg+0xb9/0x140 net/ipv4/af_inet.c:851
- sock_sendmsg_nosec net/socket.c:718 [inline]
- __sock_sendmsg net/socket.c:733 [inline]
- sock_write_iter+0x4ac/0x5b0 net/socket.c:1137
- new_sync_write fs/read_write.c:586 [inline]
- vfs_write+0x5ae/0x1150 fs/read_write.c:679
- ksys_write+0x207/0x250 fs/read_write.c:731
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fb06db16bf2
-Code: 89 c7 48 89 44 24 08 e8 7b 34 fa ff 48 8b 44 24 08 48 83 c4 28 c3 c3 64 8b 04 25 18 00 00 00 85 c0 75 20 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 76 6f 48 8b 15 07 a2 0d 00 f7 d8 64 89 02 48 83
-RSP: 002b:00007fff72e409a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000034 RCX: 00007fb06db16bf2
-RDX: 0000000000000034 RSI: 000055e211330970 RDI: 0000000000000004
-RBP: 000055e211339400 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000055e1e6312aa4
-R13: 000000000000002b R14: 000055e1e63133e8 R15: 00007fff72e40a18
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:____bpf_get_local_storage kernel/bpf/cgroup.c:1587 [inline]
-RIP: 0010:bpf_get_local_storage+0x17b/0x260 kernel/bpf/cgroup.c:1569
-Code: 48 8d 7b 10 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 bb 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 10 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 a6 00 00 00 48 8b 1b e8 13 90 73 09 83 f8 07 89
-RSP: 0018:ffffc900006c0120 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81e40b82
-RDX: 0000000000000000 RSI: ffffffff81e40c38 RDI: ffff8880356f2ca0
-RBP: ffffc900006c0140 R08: 0000000000000005 R09: 0000000000000015
-R10: 0000000000000015 R11: 0000000000000005 R12: ffff88802ae052c0
-R13: ffffc90000d36002 R14: 0000000000000000 R15: ffff88802ae052f0
-FS:  00007fb06dfb0d00(0000) GS:ffff88806a700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000400000001c40 CR3: 0000000025fd8000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	48 8d 7b 10          	lea    0x10(%rbx),%rdi
-   4:	48 89 fa             	mov    %rdi,%rdx
-   7:	48 c1 ea 03          	shr    $0x3,%rdx
-   b:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   f:	0f 85 bb 00 00 00    	jne    0xd0
-  15:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  1c:	fc ff df
-  1f:	48 8b 5b 10          	mov    0x10(%rbx),%rbx
-  23:	48 89 da             	mov    %rbx,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e:	0f 85 a6 00 00 00    	jne    0xda
-  34:	48 8b 1b             	mov    (%rbx),%rbx
-  37:	e8 13 90 73 09       	call   0x973904f
-  3c:	83 f8 07             	cmp    $0x7,%eax
-  3f:	89                   	.byte 0x89
+>> Signed-off-by: Viktor Malik <vmalik@redhat.com>
+>> Reviewed-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+>> ---
+>>  tools/lib/bpf/libbpf.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 6b85060f07b3..d0ece3c9618e 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -896,7 +896,7 @@ bpf_object__add_programs(struct bpf_object *obj, Elf_Data *sec_data,
+>>                         return -LIBBPF_ERRNO__FORMAT;
+>>                 }
+>>
+>> -               if (sec_off + prog_sz > sec_sz) {
+>> +               if (sec_off >= sec_sz || sec_off + prog_sz > sec_sz) {
+> 
+> So the thing we are protecting against is that sec_off + prog_sz can
+> overflow and turn out to be < sec_sz (even though the sum is actually
+> bigger), right?
+> 
+> If my understanding is correct, then I'd find it much more obviously
+> expressed as:
+> 
+> 
+> if (sec_off + prog_sz > sec_sz || sec_off + prog_sz < sec_off)
+> 
+> We have such an overflow detection checking pattern used in a few
+> places already, I believe. WDYT?
 
+Sure, since we're dealing with unsigned numbers, the above is an
+equivalent condition. And you're right that it better expresses the
+intent so let me use it.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Thanks!
+Viktor
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> pw-bot: cr
+> 
+>>                         pr_warn("sec '%s': program at offset %zu crosses section boundary\n",
+>>                                 sec_name, sec_off);
+>>                         return -LIBBPF_ERRNO__FORMAT;
+>> --
+>> 2.49.0
+>>
+> 
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
