@@ -1,71 +1,48 @@
-Return-Path: <bpf+bounces-55865-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55867-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E8CDA88828
-	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 18:13:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71529A8882E
+	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 18:13:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E5E317D777
-	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 16:10:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA0603B48DC
+	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 16:12:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E41D284660;
-	Mon, 14 Apr 2025 16:09:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F31D27FD73;
+	Mon, 14 Apr 2025 16:12:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NVMZrJCr"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wcS5/gP5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB2B27990D;
-	Mon, 14 Apr 2025 16:09:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16AEA2580F9
+	for <bpf@vger.kernel.org>; Mon, 14 Apr 2025 16:12:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744646975; cv=none; b=HE7XJNZhvjqMPAQdP8FA435kfUvpjEwKCNVqZ6PxSwFK4abjyqNlh+NglsQ/4nKRUJBRaUAi1QHm/PinaOL/BaMKvspUBVeF2+Q2+Bj1mmgzRoIEFSp94JUQ1yn6/e6DzQkS8jm4a75FD9+jxmGnb+4m+MeEofloHCFRvO1WV4M=
+	t=1744647146; cv=none; b=dYMp7rOKUwLDGL1VVAOmv9Y8fYSGUnl3xfpubYGRBQASWMRtc21e5/vw8ixK8+Xo6lyzkhZPcACOG7zK7yzIWAbMt5CvCSM+1tbeRof+Z1NAO7V4BKkQg2Gn+fHfPr02KiPlBcLtPQcdJbGkrN+4jj6L60REdJiQxorevRWsqxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744646975; c=relaxed/simple;
-	bh=o098pNY1KIdzMyd0dCjsn6jbyXgc1lerA3ii2JKfdFw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O10DVgDxXl/WgqKRiS0lfyzII7G7CUsf8EL54tWCADxz4rGWWdbXWO4JkK9DFAMNrtOYaWFAaufcs/kczhacat1MLQLLSiMDSXkAZGGyAQxbzu6AyWJiq6LjuCphqFQAVrwF6zJHvej5FxNV3QpdNB+GbcmMADdgSp5bfS1d5pU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NVMZrJCr; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1744646974; x=1776182974;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=o098pNY1KIdzMyd0dCjsn6jbyXgc1lerA3ii2JKfdFw=;
-  b=NVMZrJCr47sW/2QD/HualWcnhfbUl/T45lblRYJGI8fhoJiXEwQgO6ba
-   md2tAQFrl2zY0rl7B1eAFpkbhKLGQiQDwx1q9kXG3eXBMABoXpFHlGhXd
-   9J5JsWKD7hLyMGuVFSDhgix66EVe1pjenIFnlU9b2SjKVS10dA1j9WFFh
-   ZV+MDkQW1dozWEV5WT1LuIPz/S5DEBzC1hiWGCKq07vffGZEwWT2QNSXq
-   qPg04jh+3i9flFoThedDWovXCZmz63AmGENRzWXcfCjWY8bqkc1LMP1Bl
-   HcCsYyiQNrJduYVuffbXLDukr5FVJkMGX66Bi9Pd9rVU+VN1FNL/57wxU
-   g==;
-X-CSE-ConnectionGUID: LUGI8wkKR7yRrXdoAa7r4A==
-X-CSE-MsgGUID: UTknH2NcSR6ySoKDWx3cNg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11403"; a="49782700"
-X-IronPort-AV: E=Sophos;i="6.15,212,1739865600"; 
-   d="scan'208";a="49782700"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2025 09:09:33 -0700
-X-CSE-ConnectionGUID: CnMxJUlmSIiTzbm9YFg+pA==
-X-CSE-MsgGUID: 9cu2Bq3oQ4CxIuDdss/0dw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,212,1739865600"; 
-   d="scan'208";a="130836760"
-Received: from lkp-server01.sh.intel.com (HELO b207828170a5) ([10.239.97.150])
-  by orviesa008.jf.intel.com with ESMTP; 14 Apr 2025 09:09:26 -0700
-Received: from kbuild by b207828170a5 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1u4MN9-000ER0-2g;
-	Mon, 14 Apr 2025 16:09:23 +0000
-Date: Tue, 15 Apr 2025 00:08:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, mrpre@163.com,
+	s=arc-20240116; t=1744647146; c=relaxed/simple;
+	bh=waTV4W4W4Y7WAqy8/VrjgUu6ulw5og4Qi7BkKhrhQGA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W7iHIE+zRZWycBpr5Y8bkAglfBrZucCgfMFrsZN6Nh88WIINLcWXD2gy9y8ZZTWX9BIYE+lXVwbHWFaZcERtU5wJcDW1XJXQ4M0MUXM/4l6WSsN7a9+LcFlgARCiGMp80FcHc1q+A2JhLYLr5eQzWA3ogPVIA+5Uh33PM6kR47w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wcS5/gP5; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1744647130;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Mpa79OmJSgJ5vTxFFXbdRGzlB9MZL+A6yTIZNihZ5xI=;
+	b=wcS5/gP5FuhLDaJxE+CShM0aNYvbeDwDU/BYWhHbePWcWDuJPGKq+89f9tL6u9UQsw4l0B
+	/mRW2CdnIf8xsWBFYCNwDCjfuz/gyf6sP8ipAF/ldYSzYEk2crbHvdyy42Z9K0SaBCuva7
+	t7oSEatr8KzsQmCu0kzogHHlDjm4eN0=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: bpf@vger.kernel.org
+Cc: mrpre@163.com,
 	Jiayuan Chen <jiayuan.chen@linux.dev>,
 	Jakub Sitnicki <jakub@cloudflare.com>,
 	Cong Wang <xiyou.wangcong@gmail.com>,
@@ -75,64 +52,328 @@ Cc: oe-kbuild-all@lists.linux.dev, mrpre@163.com,
 	John Fastabend <john.fastabend@gmail.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Simon Horman <horms@kernel.org>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2] bpf, sockmap: Introduce tracing capability
- for sockmap
-Message-ID: <202504142349.tfXMGMOg-lkp@intel.com>
-References: <20250411091634.336371-1-jiayuan.chen@linux.dev>
+Subject: [PATCH bpf-next v3 1/2] bpf, sockmap: Introduce tracing capability for sockmap
+Date: Tue, 15 Apr 2025 00:11:45 +0800
+Message-ID: <20250414161153.14990-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250411091634.336371-1-jiayuan.chen@linux.dev>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Jiayuan,
+Sockmap has the same high-performance forwarding capability as XDP, but
+operates at Layer 7.
 
-kernel test robot noticed the following build errors:
+Introduce tracing capability for sockmap, to trace the execution results
+of BPF programs without modifying the programs themselves, similar to
+the existing trace_xdp_redirect{_map}.
 
-[auto build test ERROR on bpf-next/master]
+It is crucial for debugging sockmap programs, especially in production
+environments.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jiayuan-Chen/bpf-sockmap-Introduce-tracing-capability-for-sockmap/20250414-093146
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250411091634.336371-1-jiayuan.chen%40linux.dev
-patch subject: [PATCH bpf-next v2] bpf, sockmap: Introduce tracing capability for sockmap
-config: csky-randconfig-001-20250414 (https://download.01.org/0day-ci/archive/20250414/202504142349.tfXMGMOg-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250414/202504142349.tfXMGMOg-lkp@intel.com/reproduce)
+Additionally, the new header file has to be added to bpf_trace.h to
+automatically generate tracepoints.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202504142349.tfXMGMOg-lkp@intel.com/
+Test results:
+$ echo "1" > /sys/kernel/tracing/events/sockmap/enable
 
-All errors (new ones prefixed by >>):
+msg/skb:
+'''
+sockmap_redirect: sk=000000000ec02a93, netns=4026531840, inode=318, \
+family=2, protocol=6, prog_id=59, len=8192, type=msg, action=REDIRECT, \
+redirect_type=ingress
 
-   csky-linux-ld: kernel/bpf/core.o: in function `trace_event_raw_event_sockmap_redirect':
->> core.c:(.text+0x15e0): undefined reference to `sock_i_ino'
-   csky-linux-ld: kernel/bpf/core.o: in function `trace_event_raw_event_sockmap_strparser':
-   core.c:(.text+0x1684): undefined reference to `sock_i_ino'
->> csky-linux-ld: core.c:(.text+0x1688): undefined reference to `init_net'
->> csky-linux-ld: core.c:(.text+0x16a8): undefined reference to `sock_i_ino'
-   csky-linux-ld: kernel/bpf/core.o: in function `___bpf_prog_run':
-   core.c:(.text+0x1838): undefined reference to `sock_i_ino'
-   csky-linux-ld: core.c:(.text+0x183c): undefined reference to `init_net'
+sockmap_redirect: sk=00000000d5d9c931, netns=4026531840, inode=64731, \
+family=2, protocol=6, prog_id=91, len=8221, type=skb, action=REDIRECT, \
+redirect_type=egress
 
+sockmap_redirect: sk=00000000106fc281, netns=4026531840, inode=64729, \
+family=2, protocol=6, prog_id=94, len=8192, type=msg, action=PASS, \
+redirect_type=none
+'''
+
+strparser:
+'''
+sockmap_strparser: sk=00000000f15fc1c8, netns=4026531840, inode=52396, \
+family=2, protocol=6, prog_id=143, in_len=1000, full_len=10
+'''
+
+Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+Suggested-by: Cong Wang <xiyou.wangcong@gmail.com>
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+
+---
+v1 -> v2: Print more valuable information as suggested by the maintainer.
+---
+ MAINTAINERS                    |   1 +
+ include/linux/bpf_trace.h      |   1 +
+ include/trace/events/sockmap.h | 158 +++++++++++++++++++++++++++++++++
+ net/core/skmsg.c               |   6 ++
+ 4 files changed, 166 insertions(+)
+ create mode 100644 include/trace/events/sockmap.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a7a1d121a83e..578e16d86853 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4420,6 +4420,7 @@ L:	netdev@vger.kernel.org
+ L:	bpf@vger.kernel.org
+ S:	Maintained
+ F:	include/linux/skmsg.h
++F:	include/trace/events/sockmap.h
+ F:	net/core/skmsg.c
+ F:	net/core/sock_map.c
+ F:	net/ipv4/tcp_bpf.c
+diff --git a/include/linux/bpf_trace.h b/include/linux/bpf_trace.h
+index ddf896abcfb6..d559be0a79c5 100644
+--- a/include/linux/bpf_trace.h
++++ b/include/linux/bpf_trace.h
+@@ -3,5 +3,6 @@
+ #define __LINUX_BPF_TRACE_H__
+ 
+ #include <trace/events/xdp.h>
++#include <trace/events/sockmap.h>
+ 
+ #endif /* __LINUX_BPF_TRACE_H__ */
+diff --git a/include/trace/events/sockmap.h b/include/trace/events/sockmap.h
+new file mode 100644
+index 000000000000..79784e8d5866
+--- /dev/null
++++ b/include/trace/events/sockmap.h
+@@ -0,0 +1,158 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM sockmap
++
++#if !defined(_TRACE_SOCKMAP_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_SOCKMAP_H
++
++#include <linux/tracepoint.h>
++#include <linux/bpf.h>
++#include <linux/skmsg.h>
++
++#ifndef __TRACE_SOCKMAP_HELPER_ONCE_ONLY
++#define __TRACE_SOCKMAP_HELPER_ONCE_ONLY
++
++enum sockmap_direct_type {
++	SOCKMAP_REDIR_NONE	= 0,
++	SOCKMAP_REDIR_INGRESS,
++	SOCKMAP_REDIR_EGRESS,
++};
++
++enum sockmap_data_type {
++	SOCKMAP_MSG		= 0,
++	SOCKMAP_SKB,
++};
++
++#endif /* end __TRACE_SOCKMAP_HELPER_ONCE_ONLY */
++
++TRACE_DEFINE_ENUM(SOCKMAP_MSG);
++TRACE_DEFINE_ENUM(SOCKMAP_SKB);
++TRACE_DEFINE_ENUM(SOCKMAP_REDIR_NONE);
++TRACE_DEFINE_ENUM(SOCKMAP_REDIR_INGRESS);
++TRACE_DEFINE_ENUM(SOCKMAP_REDIR_EGRESS);
++
++TRACE_DEFINE_ENUM(__SK_DROP);
++TRACE_DEFINE_ENUM(__SK_PASS);
++TRACE_DEFINE_ENUM(__SK_REDIRECT);
++TRACE_DEFINE_ENUM(__SK_NONE);
++
++#define show_redirect_type(x)					\
++	__print_symbolic(x,					\
++		{ SOCKMAP_REDIR_NONE,		"none" },	\
++		{ SOCKMAP_REDIR_INGRESS,	"ingress" },	\
++		{ SOCKMAP_REDIR_EGRESS,		"egress" })
++
++#define show_act(x)						\
++	__print_symbolic(x,					\
++		{ __SK_DROP,			"DROP" },	\
++		{ __SK_PASS,			"PASS" },	\
++		{ __SK_REDIRECT,		"REDIRECT" },	\
++		{ __SK_NONE,			"NONE" })
++
++#define show_data_type(x)					\
++	__print_symbolic(x,					\
++		{ SOCKMAP_MSG,			"msg" },	\
++		{ SOCKMAP_SKB,			"skb" })
++
++#define trace_sockmap_skmsg_redirect(sk, prog, msg, act)	\
++	trace_sockmap_redirect((sk), SOCKMAP_MSG, (prog),	\
++			       (msg)->sg.size, (act),		\
++			       sk_msg_to_ingress(msg))
++
++#define trace_sockmap_skb_redirect(sk, prog, skb, act)		\
++	trace_sockmap_redirect((sk), SOCKMAP_SKB, (prog),	\
++			       (skb)->len, (act),		\
++			       skb_bpf_ingress(skb))
++
++#define trace_sockmap_skb_strp_parse(sk, prog, skb, ret)	\
++	trace_sockmap_strparser((sk), (prog), (skb)->len, (ret))
++
++TRACE_EVENT(sockmap_redirect,
++
++	TP_PROTO(const struct sock *sk, enum sockmap_data_type type,
++		 const struct bpf_prog *prog, int len, int act,
++		 bool ingress),
++
++	TP_ARGS(sk, type, prog, len, act, ingress),
++
++	TP_STRUCT__entry(
++		__field(const void *, sk)
++		__field(unsigned long, ino)
++		__field(unsigned int, netns_ino)
++		__field(__u16, family)
++		__field(__u16, protocol)
++		__field(int, prog_id)
++		__field(int, len)
++		__field(int, act)
++		__field(enum sockmap_data_type, type)
++		__field(enum sockmap_direct_type, redir)
++	),
++
++	TP_fast_assign(
++		/* 'redir' is undefined if action is not REDIRECT */
++		enum sockmap_direct_type redir = SOCKMAP_REDIR_NONE;
++
++		if (act == __SK_REDIRECT) {
++			if (ingress)
++				redir = SOCKMAP_REDIR_INGRESS;
++			else
++				redir = SOCKMAP_REDIR_EGRESS;
++		}
++		__entry->sk		= sk;
++		__entry->ino		= sock_i_ino((struct sock *)sk);
++		__entry->netns_ino	= sock_net(sk)->ns.inum;
++		__entry->type		= type;
++		__entry->family		= sk->sk_family;
++		__entry->protocol	= sk->sk_protocol;
++		__entry->prog_id	= prog->aux->id;
++		__entry->len		= len;
++		__entry->act		= act;
++		__entry->redir		= redir;
++	),
++
++	TP_printk("sk=%p, netns=%u, inode=%lu, family=%u, protocol=%u,"
++		  " prog_id=%d, len=%d, type=%s, action=%s, redirect_type=%s",
++		  __entry->sk, __entry->netns_ino, __entry->ino,
++		  __entry->family, __entry->protocol, __entry->prog_id,
++		  __entry->len, show_data_type(__entry->type),
++		  show_act(__entry->act), show_redirect_type(__entry->redir))
++);
++
++TRACE_EVENT(sockmap_strparser,
++
++	TP_PROTO(const struct sock *sk, const struct bpf_prog *prog,
++		 int in_len, int full_len),
++
++	TP_ARGS(sk, prog, in_len, full_len),
++
++	TP_STRUCT__entry(
++		__field(const void *, sk)
++		__field(unsigned long, ino)
++		__field(unsigned int, netns_ino)
++		__field(__u16, family)
++		__field(__u16, protocol)
++		__field(int, prog_id)
++		__field(int, in_len)
++		__field(int, full_len)
++	),
++
++	TP_fast_assign(
++		__entry->sk		= sk;
++		__entry->ino		= sock_i_ino((struct sock *)sk);
++		__entry->netns_ino	= sock_net(sk)->ns.inum;
++		__entry->family		= sk->sk_family;
++		__entry->protocol	= sk->sk_protocol;
++		__entry->prog_id	= prog->aux->id;
++		__entry->in_len		= in_len;
++		__entry->full_len	= full_len;
++	),
++
++	TP_printk("sk=%p, netns=%u, inode=%lu, family=%u, protocol=%u,"
++		  " prog_id=%d, in_len=%d, full_len=%d",
++		  __entry->sk, __entry->netns_ino, __entry->ino,
++		  __entry->family, __entry->protocol, __entry->prog_id,
++		  __entry->in_len, __entry->full_len)
++);
++#endif /* _TRACE_SOCKMAP_H */
++
++#include <trace/define_trace.h>
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 276934673066..517596efafa8 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -9,6 +9,7 @@
+ #include <net/tcp.h>
+ #include <net/tls.h>
+ #include <trace/events/sock.h>
++#include <trace/events/sockmap.h>
+ 
+ static bool sk_msg_try_coalesce_ok(struct sk_msg *msg, int elem_first_coalesce)
+ {
+@@ -910,6 +911,7 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
+ 		sock_hold(psock->sk_redir);
+ 	}
+ out:
++	trace_sockmap_skmsg_redirect(sk, prog, msg, ret);
+ 	rcu_read_unlock();
+ 	return ret;
+ }
+@@ -981,6 +983,7 @@ int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb)
+ 		ret = bpf_prog_run_pin_on_cpu(prog, skb);
+ 		ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
+ 		skb->sk = NULL;
++		trace_sockmap_skb_redirect(psock->sk, prog, skb, ret);
+ 	}
+ 	sk_psock_tls_verdict_apply(skb, psock, ret);
+ 	rcu_read_unlock();
+@@ -1090,6 +1093,7 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
+ 		skb_bpf_set_strparser(skb);
+ 		ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
+ 		skb->sk = NULL;
++		trace_sockmap_skb_redirect(sk, prog, skb, ret);
+ 	}
+ 	sk_psock_verdict_apply(psock, skb, ret);
+ out:
+@@ -1113,6 +1117,7 @@ static int sk_psock_strp_parse(struct strparser *strp, struct sk_buff *skb)
+ 		skb->sk = psock->sk;
+ 		ret = bpf_prog_run_pin_on_cpu(prog, skb);
+ 		skb->sk = NULL;
++		trace_sockmap_skb_strp_parse(psock->sk, prog, skb, ret);
+ 	}
+ 	rcu_read_unlock();
+ 	return ret;
+@@ -1217,6 +1222,7 @@ static int sk_psock_verdict_recv(struct sock *sk, struct sk_buff *skb)
+ 		skb_bpf_redirect_clear(skb);
+ 		ret = bpf_prog_run_pin_on_cpu(prog, skb);
+ 		ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
++		trace_sockmap_skb_redirect(psock->sk, prog, skb, ret);
+ 	}
+ 	ret = sk_psock_verdict_apply(psock, skb, ret);
+ 	if (ret < 0)
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.47.1
+
 
