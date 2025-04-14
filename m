@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-55881-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55882-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D6EEA88843
-	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 18:15:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86C99A8884C
+	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 18:16:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38A051899602
-	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 16:15:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABA3917C64F
+	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 16:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDEA27FD66;
-	Mon, 14 Apr 2025 16:15:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BAF0284685;
+	Mon, 14 Apr 2025 16:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nBf7wUrX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nYKZaJ3O"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958202820CE
-	for <bpf@vger.kernel.org>; Mon, 14 Apr 2025 16:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0DF527F742
+	for <bpf@vger.kernel.org>; Mon, 14 Apr 2025 16:15:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744647303; cv=none; b=BWA95/0li/9JFa1yMc2KPSJc+zWKKxDrS8S/aI3qYDNhL6RIR+JGP04EeTprY31V8KHxbxmJdEA89i1g8xmjBINNuSHbb+UOQRAnoLwoeSf7z7I4EdL+Z8b5zc93A32xu8hRnKKvb6YFnXupp2or2dx4G8puqSTGdJv6FjUjevs=
+	t=1744647304; cv=none; b=CxHlp3onTovSSqGARMvOa/ILEWyKOMjsC51Cc5z8rSL3ywu/2JMUyLERBrZrUUVSHPOaLxd72guyemT+pdsT3qncFi3Ptez+L73Gk/CU6yVeyKSgiQSmo08aht6wWYab6TolatFWNgVzGeLcFD99Ic+4A03HS4qV78fThJLBI3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744647303; c=relaxed/simple;
-	bh=Fakd8E6hdqYi9tcLwHZWfOI4zjzjypm5Gw+5gE76nxA=;
+	s=arc-20240116; t=1744647304; c=relaxed/simple;
+	bh=Cp3upDhesnS43wX5nAYNbho/4UvxGnwfR+P736Z+yl4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=icoWMhCezhl/v5/XT7GtB6dkrArA5raY5sBvZjgN4vvz+0WXtzbfYWWu7tpU8oTuWTh803oOVI+hVGvgZBXoNcAC/gfjxHu9POPvVJgRsQv+IPhba+QTd3E/yFBK1/gsGjtcszdVGDK8OCOLSCh/x15MA61EbEfw/DSYuIkMSvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nBf7wUrX; arc=none smtp.client-ip=209.85.221.68
+	 MIME-Version; b=JWyefL97Kf3eyrzckVyT642Lp36h6g+lZ8gKTKMqwsDOUqGL0Ayyum/lFFVmZyr84H2D2V2lhkqrD72CTIbXuw69Ar5+40Qw+d0w54lWmDqLAcPxih0xHUY23yd3+uBZQLhOfMFXvsTyk9PABoFxcFXNr6IMURHM4c4VdxvPkeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nYKZaJ3O; arc=none smtp.client-ip=209.85.128.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-38f2f391864so2546745f8f.3
-        for <bpf@vger.kernel.org>; Mon, 14 Apr 2025 09:15:01 -0700 (PDT)
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-43cfecdd8b2so37095865e9.2
+        for <bpf@vger.kernel.org>; Mon, 14 Apr 2025 09:15:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744647299; x=1745252099; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744647301; x=1745252101; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cdeln5z98wGmOquGNGMVXeyam+S+fxRqhxcGae2eHeM=;
-        b=nBf7wUrXPvvNrR7tLoNt9L3waZvsPrqy4u1tYgqiYfn8Yg/XbHXA8+tuymZKWiRLFz
-         5MF2BjIslXKqVLAlGb49JP43z55BWA9QSUsA1BOG9VQVvpJPCyysgdVLX3T2Uv+L0tvb
-         hOx/9l098JbVc7tF5T4mpMCHQPU0y8pkVQYlQcyveQ9falWkf8jG2xdOrXKtjCIRLN+0
-         ZVMuSJTQwZ8DhqJN3azq9zT1lB/epGPsO0hHHPSZ6W9QYxFrpwRFD2Xb9wH68O/VbnlT
-         IWA8Lh1awDgVVynvY05JPpOVZpiBEOei4MrqNWFJ1f7ssC/45/Sg1PU3LdHQeQw55DJ5
-         HUFw==
+        bh=52w6kA4jGbf1DSoxm/zsOz6TRz5VtIMuCeWUJu+mRjE=;
+        b=nYKZaJ3OPHuffGl8sHiGRh7uPmGVmRO9OjlgiisDBzPSyWzw/gBMwacaqO3sR25kXa
+         Qfr4iOKV/ISUKR5n/hKcnWNbu7UVnlLkM+y5esZj3tReucaW0HtkHTRrH2ebfwrW6NoI
+         Fpwh0ChKuzLOYLDldk1WRXz2HVB3cg9I5rhxYRgUnGlPdLYnKx0Ljp7ilrDltgJ1OCHd
+         qmgQQSd+e7KfzxvV3yDiCoFFR1ahFvC7eAVo35kSdhqhK3gAsJKyNyLGKCDjkXPa8YRv
+         z1ZG8OJTjG5JxbCbqY+rQQD3Bac93LnzQznuez1weQKsFAsFD8J8/p5XeAoEfzKVWJhP
+         IriA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744647299; x=1745252099;
+        d=1e100.net; s=20230601; t=1744647301; x=1745252101;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cdeln5z98wGmOquGNGMVXeyam+S+fxRqhxcGae2eHeM=;
-        b=ZmaUa3tmfR4de5Rkh9Bl5my9SI0QHt0x8SfkCewMh2Itzm5jlMXlK8wnNv/UkNdrDR
-         oahlIqgbtOtZgL4kuiTxyqtLXeXbNqLOBy97stmiNuQqivV0857OHgC2tIm7Bt6wyOxn
-         GmVNk7jRPYb+RvSceZXYrLFsu4KigF2gk0uMX89WZ49LMw0DufDVJj99siCwL2rsDZY1
-         gN+vt4TN90GifN8VW7e8JUCS1yxj/o3I4zOcrMq76ECZMVhw4HnZNSSOMqqKyGL6TdOa
-         u4B4YTGX17Np+rQM2/D5Z7RHRRMIU0ADZmqxqS26FvBNNNfWPPPNgTBhqTPsIjYdDB5D
-         K1MA==
-X-Gm-Message-State: AOJu0YzpeJZbJBUeLZUbMS/KWRcBK6S04J6OMe4GZSfwd5qacQlrm1t8
-	BDFn7f0MuA0LncBN1u6XkytvLTusZ9/DXxFviEhnJzGqkZ3+CX8TCCXPqqyxHxw=
-X-Gm-Gg: ASbGnctwQfzA6sZwxmmA05QzNeNUIHA4WVWunRHgIsVxIkZB+xO6WdmuyYux8xuscGj
-	iT2ULDLpvEzKjXkPK0bPpaHXZ5uQW17smVRBLj4cezUZNDaCvZX7tFfLEVYttbVihTTBdGcUL3b
-	eIdaykvPS5GhophIzCCETD1dFFx75YJZvpeKMWqTh3FwusXlQkDb2OiADx4BUNxkGmSaEWJvQiU
-	4t2Y24DjfU60Kb5dr48LAhOKPszuLdJefdGUM8cniQbEAJo72xjL5QfjYn1iQJqu/aIKAoquhc/
-	8F0d23dFb8XkX5kT4bDWjCKu+ZPP7hY=
-X-Google-Smtp-Source: AGHT+IF0znboNtgIPkjE8vnnDMPZv1kpON9v91qbP1FdsNk9hLu4nEw16ysamNa7BCe4KDcYEZYe7w==
-X-Received: by 2002:a05:6000:1787:b0:39c:2665:2bfc with SMTP id ffacd0b85a97d-39eaaed2ba0mr11107867f8f.52.1744647298947;
-        Mon, 14 Apr 2025 09:14:58 -0700 (PDT)
-Received: from localhost ([2a03:2880:31ff:72::])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39eae978018sm11297389f8f.49.2025.04.14.09.14.58
+        bh=52w6kA4jGbf1DSoxm/zsOz6TRz5VtIMuCeWUJu+mRjE=;
+        b=hPEdniCEJEkjyM7k0qrrzOqxx0TdK9Mla911dKP99MvJzWNgCyTOIuIdljOpibsqjA
+         BX16+GUrDsdt07LePprSzjN4YlC3Iasbr0xkD/fM9nDj3uOpPRYl3nr5wo7TyAZJ/E77
+         ZenYIOKqvM0s0NBIEXEXlimV1eWiZVOOx/Q2DbfGGTJDzTGtCYffkEcg5dHL/RLHiugg
+         egBQWO51TTZQqhphGDkWMEvMk9/xv4WFfQqhrIi5WySRbtIKQI/1X5vmpjOYrOIHX7QJ
+         Qa4sK2s2ZfBsZV7wwBmZNtFTN2GWYlhkvRn9pkksk9d01OcmIwApDsfT8LwuOYXcJJch
+         jiYg==
+X-Gm-Message-State: AOJu0YxGUFbTSN2t1F2kd457h0E6GXzz3oaAeCzcqh6/+k+/pqbUb3a0
+	DNUAvNN/LiKdTA4Nz1QgWnz8ZNCY++yA0zNqyPC6/IJiYpfLZrdO8GjAsGZdBgE=
+X-Gm-Gg: ASbGncu9LTy8/uSGroz2SuEM5Lv30OaUF7L+5JoJFC9blq5w4hbbLpmcNXr6j8XPMjv
+	HlBwoHscDa++bFxFSK+/nCve4vxiwBap6y06iBnh8T7jlQIhSh6ThGXPHsT+c4zTi2Y2QrZ2HF2
+	2oWBynMy5LUIK46cBshJndSkasGhYpQUu3gH1U+Dy6fiAHcmwUgGao+xFIoZqVtycgJdamwL6Hm
+	fOJ3rZGsIVcwa1VdLiDso+5+Kq2335eghbfu1VpFMfWVZB78J96THj7jNXOt5jz3eaWA520x8Rm
+	zP+8oQv1kW8YJeiAsBGQdlZYOnR3Vw==
+X-Google-Smtp-Source: AGHT+IHlNMsaNnxnRGiy4D0ntYn0r647kJyVCpNabceAxmdh4wBfUSRPD4yrSxy4X/ujKU7Rp5d25g==
+X-Received: by 2002:a05:600c:1d88:b0:43d:7588:6688 with SMTP id 5b1f17b1804b1-43f3a94c5a0mr122750865e9.12.1744647300600;
+        Mon, 14 Apr 2025 09:15:00 -0700 (PDT)
+Received: from localhost ([2a03:2880:31ff:9::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43f2338dc13sm187520335e9.3.2025.04.14.09.14.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Apr 2025 09:14:58 -0700 (PDT)
+        Mon, 14 Apr 2025 09:14:59 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -82,9 +82,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Barret Rhoden <brho@google.com>,
 	kkd@meta.com,
 	kernel-team@meta.com
-Subject: [RFC PATCH bpf-next/net v1 11/13] bpf: Report arena faults to BPF stderr
-Date: Mon, 14 Apr 2025 09:14:41 -0700
-Message-ID: <20250414161443.1146103-12-memxor@gmail.com>
+Subject: [RFC PATCH bpf-next/net v1 12/13] bpftool: Add support for dumping streams
+Date: Mon, 14 Apr 2025 09:14:42 -0700
+Message-ID: <20250414161443.1146103-13-memxor@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250414161443.1146103-1-memxor@gmail.com>
 References: <20250414161443.1146103-1-memxor@gmail.com>
@@ -94,109 +94,266 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3611; h=from:subject; bh=Fakd8E6hdqYi9tcLwHZWfOI4zjzjypm5Gw+5gE76nxA=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBn/TOKspt2ceV4dB3/czBnYNGNj+yxfnHL7jov9B54 NAK50qKJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ/0zigAKCRBM4MiGSL8RyslVD/ 93ILHMpAd6Ax04/cFNlAj433Kdn1UjVGv2RBStM7xilrm/Zv9ZzqGdqTyLuDVSUnK3mZTvOVzPTPBW u/VzByD0RkGMxVyNauEOXFgOkKUgAbQlZaRdf69AY7A2DAGYvoMwSpYnevXSUZErwTQaUQA4cyiAhL SLXNuPaXKzsbmdy0JYNo4E4Dy46rjpat1bro/X0wBGM0nh64DcNK466TZ7ToeL6wB5GKF5RVWs2kCp aiUKq1UqpPGjcT++LfljnctoNO0OSfhIo/YzgSD3I3JQSh40HXnCDuK7LkE5DjY82RlunCDo1dyPL+ ev3cyPtdRqyYVQZoR9IpA2PLXQeJCzpZrPpHv1pU5+vVqtDJoxLE7kGxc4hPGgJlGKVEe6z/q4LKbz X4WPN0wFE4w0Upi3l8fcYLBov19b4snket8O4PNGy62POv2GqirIvM+R47CZ9HvrckQzJcJSnnxhrG 5xocDYIJgi+0E2UMHJD3ceOr1lmVGWs4iJtw+nk8w+JgVIc46UYyDX0KbU/ZxxZKXQxlE8QO41dXul stgTDPwbbw3MqMEI3QBpA529HlcxIpnBqzAGoLAGdOFV/lYhD3BFQ2PB8tzMy+x1XKYcqGS2DgY+4o NaZqjtEehfqaC9RF++gpymO63ksJZ9H3y4HeLpvxcws2/m0pMauRq7L9B9rA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7824; h=from:subject; bh=Cp3upDhesnS43wX5nAYNbho/4UvxGnwfR+P736Z+yl4=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBn/TOKUwJ++rSH0cRqrh1XGSMo1fuUH8TgzXOYvB0d 0rwTlomJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZ/0zigAKCRBM4MiGSL8RyufcD/ 4gScGL4Y9o2Gq11b4ZUVnrtoZWZtqR1D/FGtwVK4k5I9ZfRaEimdeUpVlCj2CmR4iMCdM6iebz1mf7 zDzFeca4f1sI+VlNn/O6HWmXcb04opT+0AXdrBpSkMVE8bCKAtlDjvlLuly9mShv/XRrw7PRUtNXp0 KrOHJivodObfyC2LPn+Lu2GKvHY1t+7rz0hLwFwhrUeEACqfN+Vdv/aAfwtociMftTJb99Ik6HihmX fcZgTdRc0FgCRly8TxeFIZCeQWSmsEnFw/GLN9rXHSGDflIRmS8TD3EkhQ/1Fx8Je6J1bunezBktTr VX07caNMmB946q9m2CsUJsPNsY6hREv1/fBGX3h8f2vzO7aoz+EN3MXokLs7ruUZRrl43vfcDoKSD+ eA/VmU91IcmrloYxW+QUgIvXOhU6dKRBFDTYexGxrWI3BlvxevBwZabYD6YkeC/mhdyIeMxQJSK4rf 337Nbl+oc0iG1jJPFzSkPZOWPX1puOhoBFDvNRMasGOcfXBDOZwyrb+rp6Rjee2eNKMOe37Ka2Ut0A Pr+81MEnYXg8+GaNYC84cXGgzMtu7qu3sfIr50MHs7Z0PYc2rcOT0vVLHg5TN1ftFTh0XSVbTbhvZB GbYmHf4hvJlxreRDQRo4Q4JV9V95weznTZlZkOI/PL+dWSjCN6/9vC9Pi/8A==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Begin reporting arena page faults and the faulting address to BPF
-program's stderr, for now limited to x86, but arm64 support should
-be easy to add.
+Add bpftool support for dumping streams of a given BPF program.
+TODO: JSON and filepath support.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- arch/x86/net/bpf_jit_comp.c | 21 ++++++++++++++++++---
- include/linux/bpf.h         |  1 +
- kernel/bpf/arena.c          | 14 ++++++++++++++
- 3 files changed, 33 insertions(+), 3 deletions(-)
+ tools/bpf/bpftool/Makefile              |  2 +-
+ tools/bpf/bpftool/prog.c                | 71 +++++++++++++++++-
+ tools/bpf/bpftool/skeleton/stream.bpf.c | 96 +++++++++++++++++++++++++
+ 3 files changed, 166 insertions(+), 3 deletions(-)
+ create mode 100644 tools/bpf/bpftool/skeleton/stream.bpf.c
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 9e5fe2ba858f..434a6eae4621 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1384,15 +1384,27 @@ static int emit_atomic_ld_st_index(u8 **pprog, u32 atomic_op, u32 size,
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 9e9a5f006cd2..eb908223c3bb 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -234,7 +234,7 @@ $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
+ $(OUTPUT)%.skel.h: $(OUTPUT)%.bpf.o $(BPFTOOL_BOOTSTRAP)
+ 	$(QUIET_GEN)$(BPFTOOL_BOOTSTRAP) gen skeleton $< > $@
+ 
+-$(OUTPUT)prog.o: $(OUTPUT)profiler.skel.h
++$(OUTPUT)prog.o: $(OUTPUT)profiler.skel.h $(OUTPUT)stream.skel.h
+ 
+ $(OUTPUT)pids.o: $(OUTPUT)pid_iter.skel.h
+ 
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index f010295350be..d0800fec9c3d 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -35,12 +35,16 @@
+ #include "main.h"
+ #include "xlated_dumper.h"
+ 
++#include "stream.skel.h"
++
+ #define BPF_METADATA_PREFIX "bpf_metadata_"
+ #define BPF_METADATA_PREFIX_LEN (sizeof(BPF_METADATA_PREFIX) - 1)
+ 
+ enum dump_mode {
+ 	DUMP_JITED,
+ 	DUMP_XLATED,
++	DUMP_STDOUT,
++	DUMP_STDERR,
+ };
+ 
+ static const bool attach_types[] = {
+@@ -697,6 +701,55 @@ static int do_show(int argc, char **argv)
+ 	return err;
  }
  
- #define DONT_CLEAR 1
-+#define ARENA_FAULT (1 << 8)
- 
- bool ex_handler_bpf(const struct exception_table_entry *x, struct pt_regs *regs)
- {
--	u32 reg = x->fixup >> 8;
-+	u32 arena_reg = (x->fixup >> 8) & 0xff;
-+	bool is_arena = !!arena_reg;
-+	u32 reg = x->fixup >> 16;
-+	unsigned long addr;
-+
-+	/* Read here, if src_reg is dst_reg for load, we'll write 0 to it. */
-+	if (is_arena)
-+		addr = *(unsigned long *)((void *)regs + arena_reg);
- 
- 	/* jump over faulting load and clear dest register */
- 	if (reg != DONT_CLEAR)
- 		*(unsigned long *)((void *)regs + reg) = 0;
- 	regs->ip += x->fixup & 0xff;
-+
-+	if (is_arena)
-+		bpf_prog_report_arena_violation(reg == DONT_CLEAR, addr);
-+
- 	return true;
- }
- 
-@@ -2043,7 +2055,10 @@ st:			if (is_imm8(insn->off))
- 				ex->data = EX_TYPE_BPF;
- 
- 				ex->fixup = (prog - start_of_ldx) |
--					((BPF_CLASS(insn->code) == BPF_LDX ? reg2pt_regs[dst_reg] : DONT_CLEAR) << 8);
-+					((BPF_CLASS(insn->code) == BPF_LDX ? reg2pt_regs[dst_reg] : DONT_CLEAR) << 16)
-+					| ((BPF_CLASS(insn->code) == BPF_LDX ? reg2pt_regs[src_reg] : reg2pt_regs[dst_reg])<< 8);
-+				/* Ensure src_reg offset fits in 1 byte. */
-+				BUILD_BUG_ON(sizeof(struct pt_regs) > U8_MAX);
- 			}
- 			break;
- 
-@@ -2161,7 +2176,7 @@ st:			if (is_imm8(insn->off))
- 				 * End result: x86 insn "mov rbx, qword ptr [rax+0x14]"
- 				 * of 4 bytes will be ignored and rbx will be zero inited.
- 				 */
--				ex->fixup = (prog - start_of_ldx) | (reg2pt_regs[dst_reg] << 8);
-+				ex->fixup = (prog - start_of_ldx) | (reg2pt_regs[dst_reg] << 16);
- 			}
- 			break;
- 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index cf057327798c..9fae22dde926 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -3593,6 +3593,7 @@ __printf(2, 3)
- int bpf_prog_stderr_printk(struct bpf_prog *prog, const char *fmt, ...);
- struct bpf_prog *bpf_prog_find_from_stack(void);
- void bpf_prog_stderr_dump_stack(struct bpf_prog *prog);
-+void bpf_prog_report_arena_violation(bool write, unsigned long addr);
- 
- #ifdef CONFIG_BPF_LSM
- void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype);
-diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-index 0d56cea71602..593a93195cdc 100644
---- a/kernel/bpf/arena.c
-+++ b/kernel/bpf/arena.c
-@@ -590,3 +590,17 @@ static int __init kfunc_init(void)
- 	return register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &common_kfunc_set);
- }
- late_initcall(kfunc_init);
-+
-+void bpf_prog_report_arena_violation(bool write, unsigned long addr)
++static int process_stream_sample(void *ctx, void *data, size_t len)
 +{
-+	struct bpf_prog *prog;
++	FILE *file = ctx;
 +
-+	prog = bpf_prog_find_from_stack();
-+	if (!prog)
-+		return;
-+	if (atomic_long_fetch_add(1, &prog->aux->error_count) >= BPF_PROG_ERROR_COUNT_MAX)
-+		return;
-+	bpf_prog_stderr_printk(prog, "ERROR: Arena %s access at unmapped address 0x%lx\n",
-+			       write ? "WRITE" : "READ", addr);
-+	bpf_prog_stderr_dump_stack(prog);
++	fprintf(file, "%s", (char *)data);
++	fflush(file);
++	return 0;
 +}
++
++static int
++prog_dump_stream(struct bpf_prog_info *info, enum dump_mode mode, const char *filepath)
++{
++	FILE *file = mode == DUMP_STDOUT ? stdout : stderr;
++	LIBBPF_OPTS(bpf_test_run_opts, opts);
++	struct ring_buffer *ringbuf;
++	struct stream_bpf *skel;
++	int map_fd, ret = -1;
++
++	__u32 prog_id = info->id;
++	__u32 stream_id = mode == DUMP_STDOUT ? 1 : 2;
++
++	skel = stream_bpf__open_and_load();
++	if (!skel)
++		return -errno;
++	skel->bss->prog_id = prog_id;
++	skel->bss->stream_id = stream_id;
++
++	//TODO(kkd): Filepath handling
++	map_fd = bpf_map__fd(skel->maps.ringbuf);
++	ringbuf = ring_buffer__new(map_fd, process_stream_sample, file, NULL);
++	if (!ringbuf) {
++		ret = -errno;
++		goto end;
++	}
++	do {
++		skel->bss->written_count = skel->bss->written_size = 0;
++		ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.bpftool_dump_prog_stream), &opts);
++		ret = -EINVAL;
++		if (ring_buffer__consume_n(ringbuf, skel->bss->written_count) != skel->bss->written_count)
++			goto end;
++	} while (!ret && opts.retval == EAGAIN);
++
++	if (opts.retval != 0)
++		ret = -EINVAL;
++end:
++	stream_bpf__destroy(skel);
++	return ret;
++}
++
+ static int
+ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
+ 	  char *filepath, bool opcodes, bool visual, bool linum)
+@@ -719,13 +772,15 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
+ 		}
+ 		buf = u64_to_ptr(info->jited_prog_insns);
+ 		member_len = info->jited_prog_len;
+-	} else {	/* DUMP_XLATED */
++	} else if (mode == DUMP_XLATED) {	/* DUMP_XLATED */
+ 		if (info->xlated_prog_len == 0 || !info->xlated_prog_insns) {
+ 			p_err("error retrieving insn dump: kernel.kptr_restrict set?");
+ 			return -1;
+ 		}
+ 		buf = u64_to_ptr(info->xlated_prog_insns);
+ 		member_len = info->xlated_prog_len;
++	} else if (mode == DUMP_STDOUT || mode == DUMP_STDERR) {
++		return prog_dump_stream(info, mode, filepath);
+ 	}
+ 
+ 	if (info->btf_id) {
+@@ -898,8 +953,10 @@ static int do_dump(int argc, char **argv)
+ 		mode = DUMP_JITED;
+ 	} else if (is_prefix(*argv, "xlated")) {
+ 		mode = DUMP_XLATED;
++	} else if (is_prefix(*argv, "stdout") || is_prefix(*argv, "stderr")) {
++		mode = is_prefix(*argv, "stdout") ? DUMP_STDOUT : DUMP_STDERR;
+ 	} else {
+-		p_err("expected 'xlated' or 'jited', got: %s", *argv);
++		p_err("expected 'stdout', 'stderr', 'xlated' or 'jited', got: %s", *argv);
+ 		return -1;
+ 	}
+ 	NEXT_ARG();
+@@ -950,6 +1007,14 @@ static int do_dump(int argc, char **argv)
+ 		}
+ 	}
+ 
++	if (mode == DUMP_STDOUT || mode == DUMP_STDERR) {
++		if (opcodes || visual || linum) {
++			p_err("'%s' is not compatible with 'opcodes', 'visual', or 'linum'",
++			      mode == DUMP_STDOUT ? "stdout" : "stderr");
++			goto exit_close;
++		}
++	}
++
+ 	if (filepath && (opcodes || visual || linum)) {
+ 		p_err("'file' is not compatible with 'opcodes', 'visual', or 'linum'");
+ 		goto exit_close;
+@@ -2468,6 +2533,8 @@ static int do_help(int argc, char **argv)
+ 		"Usage: %1$s %2$s { show | list } [PROG]\n"
+ 		"       %1$s %2$s dump xlated PROG [{ file FILE | [opcodes] [linum] [visual] }]\n"
+ 		"       %1$s %2$s dump jited  PROG [{ file FILE | [opcodes] [linum] }]\n"
++		"	%1$s %2$s dump stdout PROG [{ file FILE }]\n"
++		"	%1$s %2$s dump stderr PROG [{ file FILE }]\n"
+ 		"       %1$s %2$s pin   PROG FILE\n"
+ 		"       %1$s %2$s { load | loadall } OBJ  PATH \\\n"
+ 		"                         [type TYPE] [{ offload_dev | xdpmeta_dev } NAME] \\\n"
+diff --git a/tools/bpf/bpftool/skeleton/stream.bpf.c b/tools/bpf/bpftool/skeleton/stream.bpf.c
+new file mode 100644
+index 000000000000..31b5933e0384
+--- /dev/null
++++ b/tools/bpf/bpftool/skeleton/stream.bpf.c
+@@ -0,0 +1,96 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, 1024 * 1024);
++} ringbuf SEC(".maps");
++
++struct value {
++	struct bpf_stream_elem_batch __kptr *batch;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, int);
++	__type(value, struct value);
++	__uint(max_entries, 1);
++} array SEC(".maps");
++
++int written_size;
++int written_count;
++int stream_id;
++int prog_id;
++
++#define ENOENT 2
++#define EAGAIN 11
++#define EFAULT 14
++
++SEC("syscall")
++int bpftool_dump_prog_stream(void *ctx)
++{
++	struct bpf_stream_elem_batch *elem_batch;
++	struct bpf_stream_elem *elem;
++	struct bpf_stream *stream;
++	bool cont = false;
++	struct value *v;
++	bool ret = 0;
++
++	stream = bpf_prog_stream_get(BPF_STDERR, prog_id);
++	if (!stream)
++		return ENOENT;
++
++	v = bpf_map_lookup_elem(&array, &(int){0});
++
++	if (v->batch)
++		elem_batch = bpf_kptr_xchg(&v->batch, NULL);
++	else
++		elem_batch = bpf_stream_next_elem_batch(stream);
++	if (!elem_batch)
++		goto end;
++
++	bpf_repeat(BPF_MAX_LOOPS) {
++		struct bpf_dynptr dst_dptr, src_dptr;
++		int size;
++
++		elem = bpf_stream_next_elem(elem_batch);
++		if (!elem)
++			break;
++		size = elem->mem_slice.len;
++
++		if (bpf_dynptr_from_mem_slice(&elem->mem_slice, 0, &src_dptr))
++			ret = EFAULT;
++		if (bpf_ringbuf_reserve_dynptr(&ringbuf, size, 0, &dst_dptr))
++			ret = EFAULT;
++		if (bpf_dynptr_copy(&dst_dptr, 0, &src_dptr, 0, size))
++			ret = EFAULT;
++		bpf_ringbuf_submit_dynptr(&dst_dptr, 0);
++
++		written_count++;
++		written_size += size;
++
++		bpf_stream_free_elem(elem);
++
++		/* Probe and exit if no more space, probe for twice the typical size.*/
++		if (bpf_ringbuf_reserve_dynptr(&ringbuf, 2048, 0, &dst_dptr))
++			cont = true;
++		bpf_ringbuf_discard_dynptr(&dst_dptr, 0);
++
++		if (ret || cont)
++			break;
++	}
++
++	if (cont)
++		elem_batch = bpf_kptr_xchg(&v->batch, elem_batch);
++	if (elem_batch)
++		bpf_stream_free_elem_batch(elem_batch);
++end:
++	bpf_prog_stream_put(stream);
++
++	return ret ?: (cont ? EAGAIN : 0);
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.47.1
 
