@@ -1,96 +1,92 @@
-Return-Path: <bpf+bounces-55830-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55831-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD687A87378
-	for <lists+bpf@lfdr.de>; Sun, 13 Apr 2025 21:05:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCAA1A874EA
+	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 02:02:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C00E116C1C8
-	for <lists+bpf@lfdr.de>; Sun, 13 Apr 2025 19:05:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D13437A6076
+	for <lists+bpf@lfdr.de>; Mon, 14 Apr 2025 00:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A922F1EA7F9;
-	Sun, 13 Apr 2025 19:05:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB16233FD;
+	Mon, 14 Apr 2025 00:02:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BhnlpVey"
+	dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b="t6GWOy2B"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B17B433CB;
-	Sun, 13 Apr 2025 19:05:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BD217E4
+	for <bpf@vger.kernel.org>; Mon, 14 Apr 2025 00:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744571139; cv=none; b=DKeLTbAUBR+7fkVSKcEUahc3GUViKcvkS+y4zLeAgbcsKLGqNnzarPT/XSPviyXxqYXy8Qkgcw0gGNztIWb8GfBUjQRI9ZsDTlPjD6U1lUsH9g0LVcsxQLG8+BIC4IsXVAUuLI4QESQXitRGOm19/45rZ5XcfBhfHSz84U1gboQ=
+	t=1744588939; cv=none; b=QF85WWtKdHhn+5xvOMBvGN6+yxzZhNXDBXA+tUgl8elFNV4BpZe6SViEYO7CGrQ9f902Enl/iNB3dmc1mXN5GVBjcKtDuDFtKPWANdcojV2n/24ZX6OblM6r1/ky6aFYQivg8NifNlD2ghKxRgsa927i9CMfKJ8gmDj8795N2L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744571139; c=relaxed/simple;
-	bh=xUnKC2hZKUmPIBqtRRkzkS6vfis+UZR9gckCd7oR4K8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ftmKiJAe3qtvxEVKoKenjbCdUiZ6g9LpHGMuNfYHvP4zV1MDtd/D1pX95KF1rgzURbgXZtvFVS9ubHjQ8RNpBdI7EFC/T+IiWGNEqcwxIwri8lmmOUDHnnL7IMWkN1pj7FHfItfc4xBi+R9RV/rjJmCzXq0siNf0vH0F4lOo4lc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BhnlpVey; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5e686d39ba2so6600808a12.2;
-        Sun, 13 Apr 2025 12:05:37 -0700 (PDT)
+	s=arc-20240116; t=1744588939; c=relaxed/simple;
+	bh=4Oqkr+rpv7H6kt3IBhANjW0bZ7rBvBjcskA+y6OqtEs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mawDw2RbdpO/CjR/RuFMJ96vq1EKa66fr1wAdDtu1+W7uIWrBmVwqTLX2ewzhwgCpAt6nq5H7thmXHoQ0RvpX2aLyC+Ri1iAlK/rQHUuQkrGOGXD5kNOiawND85rKSaRClGmOmgk5ObNIN1YfQ9DF8FMfW1WI0QCYUcQl+iKKws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io; spf=none smtp.mailfrom=jrife.io; dkim=pass (2048-bit key) header.d=jrife-io.20230601.gappssmtp.com header.i=@jrife-io.20230601.gappssmtp.com header.b=t6GWOy2B; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrife.io
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jrife.io
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-739ab4447c7so250276b3a.0
+        for <bpf@vger.kernel.org>; Sun, 13 Apr 2025 17:02:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744571136; x=1745175936; darn=vger.kernel.org;
+        d=jrife-io.20230601.gappssmtp.com; s=20230601; t=1744588937; x=1745193737; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FFn3MVQl1YlknMdPpZVW/TuKNAh9MSgO8m58OGfYfe0=;
-        b=BhnlpVeyglx58XPSlQkG//ZwTYH6JyI3mqy9UNgxidsAt1IMiaGOyRxp+dibFnF/f9
-         vi/B1KdEo1jLxO+uFb/Obi34cGUXKfNOUUBmrpac95jkFIxqU08yWF7jIbpGYJZi6RkJ
-         mClf3RBEFrf8kkoLETfWijnJ1qJlijIZ4FghVoBeusqIMLnZ5KPq5jbdV0B+cvoIF6cN
-         3MG5K/h625KWyLj/4I6PdyciY9uO+XjnRgo4GzjbU3wAFcgYt1s9RmTGg/tt6kCfauMe
-         sS919Ir57G/+WBBamFOl5yW/3mdzWOK0/7KWCMhYkoq7tBYyiWH3jcqpGWjQVojpHewT
-         eXuw==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1pBqpLJXRxqlQHWXQGJzDZjxbJdMmmwZFwpMlsJTNtM=;
+        b=t6GWOy2BNlDBXP9E8Ur0wyB5+OfBkAIxUAPe3yBNQe4bDqVt3/+PCO2H4jiQ51CM+3
+         vgjMmz67rifd4KIzIrWZpwyDoy0xtukwQJmybPgvis9GXL9ld0rOLixytohyxyzI56FG
+         MfiHe4sQyBzDn5wopQUYeLZHFH29jfo1seaEaK0Y9+8OkaoMF6BmWeunRY1KyYLGEkuT
+         QGX+KSuv9o3O2ypqxVDfgTGOK6To36YUa+AkUlsnwlVEPPEcS5LSo4Os5tkiTea0lP3u
+         YloNisojNyvqeN2w8PjSTDBC97VLDBufAnB7B0bH43lQPrgx2VyteqmZav8JDrMt9vBT
+         a0NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744571136; x=1745175936;
+        d=1e100.net; s=20230601; t=1744588937; x=1745193737;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FFn3MVQl1YlknMdPpZVW/TuKNAh9MSgO8m58OGfYfe0=;
-        b=AS6BB2j5MOmw+7BvISJy/Tm6WMt9RgJ6hv3UNkDHnzaERD7qOUEP23Y5XCNsPPjOaH
-         9SoeKoOC17UcTiYYMpSxH5Vt8mdR9id653/OcD5Q2kMvV3QS0O0eklJKBa5JMB76jsYq
-         b/t70LPnQ3ucKpaAycwJIqIqj3w8DOGUpCMy4xM0kOGT5SftIpTFgkqCgl+Iqtt7O2JC
-         nRzeuDGPiVRDsNJP+LGP4e1/iyc6lqZttIZFnyUjsyqOaNiJg1vGhcLz8RiJlj4KsjHg
-         HVIgteYYbECBNKws6ZevjhNiaxmgyhgcK8eUtaxLs/cjy85gp7TVQcbBtzP/QVq0In4e
-         yxCw==
-X-Forwarded-Encrypted: i=1; AJvYcCV7lNZ1REzoeqChNDd+ZMmcUq1OVrX0FtFcah6FCnYzvqMnPwQp5ZrpdIVncRgAMaCqO9p6lau6zUztqX6wpojYEnuu@vger.kernel.org, AJvYcCWjh2/A1lxr6UJ5JFItuq276PXUvn6xG/ryUPI64xUCN4RVYVdbA9RPCTiOCIYNT2AfQDMuh3p1bDlhBrKM@vger.kernel.org, AJvYcCXcHjIHX1c5hjZEqYb6/RW6a6D2N828sDfc2q9M5BM4r+oGBOfMLs67Szu7OAL+S7bQaLs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8aGtCsqfAOR9ulX81XBPdCdjoF/Zl2ECmWKceccslmwGglHL6
-	8MJgekR9KsR0FXZHUS5vck/OUOvF1aWDziI0rQ7cDICADWNZsDSL
-X-Gm-Gg: ASbGncu6ZbUELqfUmLvata9pH2CIn+CaefsDBeWBODHOr+i+JjSjBV1CJoZ9mmL8Xjg
-	Et6p2S0jgyq0gFx6yye0/oEtfalTX82bqTegMncGEVtYa2iBUEYpoOWbbSZW5Q9lGtDEER0vlE1
-	xpOptDA/fck5MBZkFidA9Dj+XBwYpNqPZp72+AvIAMMXfyDgkHeyPbf0V1uN/HkbiqxYKeN8fhy
-	Y5Hc5PHvy0ATNnJNT6MnNdFMjErmsBLGoxts0BMEQ8qHuqhqsiHxzL0DW6qBhawqLOZNWrXesZm
-	tSxVVuNty9twv2T6/laoNhGCsMf9yl0hUma5+x2Pt5LEJJCPLGkjb6In
-X-Google-Smtp-Source: AGHT+IE2rlqatkj2ISFm4XV3Kag3gIMpJ+YFGxMKfNE+sdEV9FSc5wiV5XyQ+8Jv6lyEPxkR4AdsRw==
-X-Received: by 2002:a05:6402:27cd:b0:5ed:3228:d005 with SMTP id 4fb4d7f45d1cf-5f36f876401mr7080158a12.6.1744571135454;
-        Sun, 13 Apr 2025 12:05:35 -0700 (PDT)
-Received: from krava (ip4-95-82-160-96.cust.nbox.cz. [95.82.160.96])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5f36f069dedsm3810613a12.41.2025.04.13.12.05.34
+        bh=1pBqpLJXRxqlQHWXQGJzDZjxbJdMmmwZFwpMlsJTNtM=;
+        b=QDvJUgcxTudfJ2RGigJyoqoJZ/3NfKKRTm7agcccWD+ab4WeqRD1XvV7350P86lbyY
+         OeoC6m12eUUETOn7GTY+xW5S9Czjdii5JEaB580bKGh1Z3nc3tZ/4G93iKOaMlGaBP7U
+         nHFlvlv67OvaAh4Kkl9SwrqGyKYT0yaPoh4XrDhaM3r9eT5l5AraJ5yXyujytjNLclh1
+         mbkfBlmC5C3r4JVYyBXzx2dUaFyJmaGX3jc9UvStXTwGMVP3eENS6f8iSJHeQNcIlK55
+         k2qrcAbKLAk3kQRzy67VubYbC8TpJC/X+flLbSrX3IVbFYRwzQ+Sp5/PB1Jpo9ba/duD
+         mx8A==
+X-Forwarded-Encrypted: i=1; AJvYcCU09IFE11Z5UTGA6Cbea033+nxNn9lTaJCocOADtUZsqPCdKYSG/w0VOFQGBMJ5wTGFfXY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxE3dFyIaCOEN8XW1RVBZMmb11+hAu8h/E9JdIjvGGToQUvmOWj
+	vfRazhVdrnRRWwFQZGL4E8RYSpkXO0Y/jv2s1CfC05RikPMJd4u2T4S8bKwBFIo=
+X-Gm-Gg: ASbGnctke+19wqcB1npC+jJihEPS672X27mZK+VOrnD79O5jhcNkivUGlg688OK5XWn
+	GdwF2fZZUvQtEP8fGGtgYmNrx/PMzt/E4C+DLz9IHXiorU6XxAfeCcT47RAozVGlHRv56+5+5Vm
+	osfnBBHKyxZ9v9zyTynn0nkeUIGtONkdci3Sd/CJIB/1RilQTizaPMvj0t1YMMN5rDKf5P0TgIj
+	O5hmRelTtc+zpp/Y+pyuHdNXWNkywSQsMAZCE341AYvKoMF6cBz78kNN/zXsqxTbr5GoHDh5DG6
+	dzWimDAdDXk9/k5zl8MBrZWg
+X-Google-Smtp-Source: AGHT+IEwTQ8n/oq4WA0TVwMdQlA7DuR7NSHWr2cz0ehvbqPQNZ2jrjdjgyjx7z4YfsFctHmdzgEMSQ==
+X-Received: by 2002:a05:6a00:3a0c:b0:730:9989:d2d4 with SMTP id d2e1a72fcca58-73bd126b0f0mr5430376b3a.3.1744588936403;
+        Sun, 13 Apr 2025 17:02:16 -0700 (PDT)
+Received: from t14 ([2601:643:8b00:2360:f92:4f6:9504:a65a])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bd233554asm5490923b3a.180.2025.04.13.17.02.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Apr 2025 12:05:34 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 13 Apr 2025 21:05:29 +0200
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCHv2 perf/core 1/2] uprobes/x86: Add support to emulate nop
- instructions
-Message-ID: <Z_wK-XUmQtx1xybs@krava>
-References: <20250411121756.567274-1-jolsa@kernel.org>
- <CAEf4BzbvMYJf5LLxwamYpzzu=Sewzti-FR-9o4AGfU+KZu0b1Q@mail.gmail.com>
- <20250411163242.GI5322@redhat.com>
+        Sun, 13 Apr 2025 17:02:16 -0700 (PDT)
+Date: Sun, 13 Apr 2025 17:02:14 -0700
+From: Jordan Rife <jordan@jrife.io>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Aditi Ghag <aditi.ghag@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>, bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v2 bpf-next 2/5] bpf: udp: Propagate ENOMEM up from
+ bpf_iter_udp_batch
+Message-ID: <Z_xQhm4aLW9UBykJ@t14>
+References: <20250411173551.772577-1-jordan@jrife.io>
+ <20250411173551.772577-3-jordan@jrife.io>
+ <7ed28273-a716-4638-912d-f86f965e54bb@linux.dev>
+ <CABi4-ojQVb=8SKGNubpy=bG4pg1o=tNaz9UspYDTbGTPZTu8gQ@mail.gmail.com>
+ <daa3f02a-c982-4a7a-afcd-41f5e9b2f79c@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -99,64 +95,115 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250411163242.GI5322@redhat.com>
+In-Reply-To: <daa3f02a-c982-4a7a-afcd-41f5e9b2f79c@linux.dev>
 
-On Fri, Apr 11, 2025 at 06:32:43PM +0200, Oleg Nesterov wrote:
-> On 04/11, Andrii Nakryiko wrote:
-> >
-> > > --- a/arch/x86/kernel/uprobes.c
-> > > +++ b/arch/x86/kernel/uprobes.c
-> > > @@ -840,6 +840,12 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
-> > >         insn_byte_t p;
-> > >         int i;
-> > >
-> > > +       /* x86_nops[i]; same as jmp with .offs = 0 */
-> > > +       for (i = 1; i <= ASM_NOP_MAX; ++i) {
-> >
-> > i <= ASM_NOP_MAX && i <= insn->length
-> >
-> > ?
-> >
-> > otherwise what prevents us from reading past the actual instruction bytes?
-> 
-> Well, copy_insn() just copies MAX_UINSN_BYTES into arch_uprobe.insn[].
-> If, say, the 1st 11 bytes of arch_uprobe.insn (or insn->kaddr) match
-> x86_nops[11] then insn->length must be 11, or insn_decode() is buggy?
-> 
-> > or, actually, shouldn't we just check memcmp(x86_nops[insn->length])
-> > if insn->length < ASM_NOP_MAX ?
+> static void *bpf_iter_udp_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+> {
+>         if (iter->cur_sk < iter->end_sk) {
+>                 u64 cookie;
+>
+>                 cookie = iter->st_bucket_done ?
+>                         0 : __sock_gen_cookie(iter->batch[iter->cur_sk].sock);
+>                 sock_put(iter->batch[iter->cur_sk].sock);
+>                 iter->batch[iter->cur_sk++].cookie = cookie;
+>         }
+>
+>         /* ... */
+> }
+>
+> In bpf_iter_udp_resume(), if it cannot find the first sk from find_cookie to
+> end_cookie, then it searches backward from find_cookie to 0. If nothing found,
+> then it should start from the beginning of the resume_bucket. Would it work?
 
-nice, did not think of that
+It seems like the intent here is to avoid repeating sockets that we've
+already visited?
 
-> 
-> Hmm... agreed.
-> 
-> Either way this check can't (doesn't even try to) detect, say,
-> "rep; BYTES_NOP5", so we do not care if insn->length == 6 in this case.
-> 
-> Good point!
+This would work if you need to process a bucket in two batches or less,
+but it would still be possible to repeat a socket if you have to process
+a bucket in more than two batches: during the transition from batch two
+to batch three you don't have any context about what you saw in batch
+one, so in the worst case where all the cookies we remembered from batch
+two are not found, we restart from the beginning of the list where we
+might revisit sockets from batch one. I guess you can say this reduces
+the probability of repeats but doesn't eliminate it.
 
-I'll run tests and send formal patch for change below
+e.g.: socket A gets repeated in batch three after two consecutive calls
+      to bpf_iter_udp_batch() hit the resized == true case due to heavy
+      churn in the current bucket.
 
-thanks,
-jirka
+|               Thread 1            Thread 2   Batch State    List State
+|  -------------------------------  ---------  ------------   ----------
+|                                              [_]            A->B
+|  bpf_iter_udp_batch()                        "              "
+|    spin_lock_bh(&hslot2->lock)               "              "
+|    ...                                       [A]            "
+|    spin_unlock_bh(&hslot2->lock)             "              "
+|                                   add C,D    "              A->B->C->D
+|    bpf_iter_udp_realloc_batch(3)             "              "
+|    spin_lock_bh(&hslot2->lock)               [A,_,_]        "
+|    ...                                       [A,B,C]        "
+|    spin_unlock_bh(&hslot2->lock)             "              "
+|    resized == true                           "              "
+|    return A                                  "              "
+|                                   del B,C    "              A->D
+|                                   add E,F,G  "              A->D->E->
+t                                                             F->G
+i  bpf_iter_udp_batch()                        "              "
+m    spin_lock_bh(&hslot2->lock)               "              "
+e    ...                                       [D,E,F]        "
+|    spin_unlock_bh(&hslot2->lock)             "              "
+|                                   add H,I,J  "              A->D->E->
+|                                                             F->G->H->
+|                                                             I->J
+|    bpf_iter_udp_realloc_batch(6)             [D,E,F,_,_,_]  "
+|    spin_lock_bh(&hslot2->lock)               "              "
+|    ...                                       [D,E,F,G,H,I]  "
+|    spin_unlock_bh(&hslot2->lock)             "              "
+|    resized == true                           "              "
+|    return D                                  "              "
+|                                   del D,E,   "              A->J
+|                                       F,G,                   
+|                                       H,I,                   
+|  bpf_iter_udp_batch()                        "              "
+|    spin_lock_bh(&hslot2->lock)               "              "
+|    ...                                       [A,J,_,_,_,_]  "
+|                         !!! A IS REPEATED !!! ^
+|    spin_unlock_bh(&hslot2->lock)             "              "
+|    return A                                  "              "
+v
 
+There's a fundamental limitation where if we have to process a bucket in
+more than two batches, we can lose context about what we've visited
+before, so there's always some edge case like this. The choice is
+basically:
 
----
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 9194695662b2..6d383839e839 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -840,6 +840,11 @@ static int branch_setup_xol_ops(struct arch_uprobe *auprobe, struct insn *insn)
- 	insn_byte_t p;
- 	int i;
- 
-+	/* x86_nops[insn->length]; same as jmp with .offs = 0 */
-+	if (insn->length <= ASM_NOP_MAX &&
-+	    !memcmp(insn->kaddr, x86_nops[insn->length], insn->length))
-+		goto setup;
-+
- 	switch (opc1) {
- 	case 0xeb:	/* jmp 8 */
- 	case 0xe9:	/* jmp 32 */
+(1) Make a best-effort attempt to avoid repeating sockets, and accept
+    that repeats can still happen in rare cases. Maybe the chances are
+    close enough to zero to never actually happen, although it's hard to
+    say; it may be more probable in some scenarios.
+
+or
+
+(2) Guarantee that repeats can't happen by requiring that a bucket
+    completely fits into one (or two?) batches: either error out in the
+    resized == true case or prevent it altogether by holding onto the
+    lock across reallocs with GFP_ATOMIC to prevent races.
+
+All things being equal, (2) is a nice guarantee to have, but I sense
+some hesitance to hold onto hslot2->lock any longer than we already are.
+Is there a high performance cost I'm not seeing there? I guess there's a
+higher chance of lock contention, and with GFP_ATOMIC allocation is more
+likely to fail, but reallocs should be fairly rare? Maybe we could
+reduce the chance of reallocs during iteration by "right-sizing" the
+batch from the start, e.g. on iterator init, allocate the batch size to
+be 3/2 * the maximum list length currently in the UDP table, since you
+know you'll eventually need it to be that size anyway. Of course, lists
+might grow after that point requiring a realloc somewhere along the way,
+but it would avoid any reallocs in cases where the lengths are mostly
+stable. I'm fine with (1) if that's the only viable option, but I just
+wanted to make sure I'm accurately understanding the constraints here.
+
+Thanks!
+
+-Jordan
 
