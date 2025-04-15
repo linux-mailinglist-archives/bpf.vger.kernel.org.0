@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-55926-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55927-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08AF7A8957A
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 09:45:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D02D9A8957D
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 09:45:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5378A178AFE
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 07:45:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 787393B58CB
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 07:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2D027EC83;
-	Tue, 15 Apr 2025 07:44:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C1A27A135;
+	Tue, 15 Apr 2025 07:45:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KLinOZqG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l8Zm+FLG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 567DA27A926;
-	Tue, 15 Apr 2025 07:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ACFF27A926;
+	Tue, 15 Apr 2025 07:45:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744703096; cv=none; b=r+Y/hURmanQeK2o+Bp/dt15DFwJQ8bAreVgHw7Kk+iO3KjCEs4xx8a+Clar96ow5DjfLC3J2JXR396O/CvqhkO9D3Lfp5w1LTPOs7OnnG1p0EqjWGYj+8jR2WByOf9lhR0WRdsxSJ9qzGrkHxaXC7fvFvTrtAiLxOlF+vSto1JU=
+	t=1744703102; cv=none; b=N0/AckDZV/O2STCgBHeYXCAfKInQi98CylW+hB2sjep+2mCh+MkGeymTcdCoj9WDWLFqI5xb9VtfxeTIDyRxyXWjHY2BB6bnKnXZEsHv4HJNriao3iHIsPZWKOzWqkP8p5zJ3T8AggorokCsEMvAqETFLu885hDlXQHJMTcznD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744703096; c=relaxed/simple;
-	bh=TQNugo0K71UvLT1P/YjiGCL+NFPk7lPg6uFlzx2wBLA=;
+	s=arc-20240116; t=1744703102; c=relaxed/simple;
+	bh=fm0FD+nFpM4KIujT0zC25XQeJrJxwhYW3rijMoqQ0r0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CMpFKdgFoRRoQbuqVbnPAmMkm2vCmn9R3P0drIoQzrAhHVwTfJtmDnT2gk4spdoLCVTCPI03pqsWjnW0Vp3iC6aFFIwb8fltMFi67GGziLAqJq5r3Nh6rt+toAh5crj91k/BdNc/+CrZM25T+sfXtb7yWyQa1S4lI7glWWM/Zo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KLinOZqG; arc=none smtp.client-ip=209.85.216.50
+	 MIME-Version; b=SWsI8t8YT/5Q3FZ/O4uJ4EJJcLyfBQNCd28JaWDvcmq+/E3ZMgMXlV0Aj2ghGxdSULIF1Ky5pEuLwD8u/v/1zgtZMvPPY+4LltnklrvkF7Jpmggd3rKgK23ZnqyacscXQuhPqldtjgHq5mowlgivdP3P8D6CcAWeOgpCOKkFuHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l8Zm+FLG; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-30820167b47so4366055a91.0;
-        Tue, 15 Apr 2025 00:44:55 -0700 (PDT)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b041afe0ee1so4286906a12.1;
+        Tue, 15 Apr 2025 00:45:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744703094; x=1745307894; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744703100; x=1745307900; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W0BuxBO6iaPS0ZXIsdpeH3MOTczu0p1v62QqIcPv2fQ=;
-        b=KLinOZqG/JvbNzZjMzxu8fIEwI/Lvi8fvQdiUtZKniWlroky8f63CUCuYYOfXGfbe9
-         qt7uelyLGrT88F5GtkshrFtq4m9LZX03Orkp+tnNbqCNUlnINyesIYQN5SaYPN55bIf4
-         zrvXIirYXIpxfZI48LKhmO3XyzKl4HZJbdTt0iKaF6uUFyMb/vtlicFlCqqlF9TnZtVz
-         sIHj6AJjXzTOZm8tLQI+fD2uuy9ZNPPYnmyh5oymT3MIWO+n0lQD+BYepjhhy9y57gl4
-         DaKu+/tfN98yDLO/ImaV7xq+X7gdJXQ0y9ANn8giVnRq2umBCbJLHKLVP2MGxR9MPM/H
-         mvDQ==
+        bh=CcTGqksFhMMv7htGFoe+A1pXwVfny33zxtLopOer7xA=;
+        b=l8Zm+FLGaC21oIwXJTOa31vpx6q3t/hDk41oCGzZDFzHVRJlQwfP57++nfd7RyKGo8
+         CwLR6WSJ4uLnUKbzj55H9v3g2/TbqCCMPF4vs8DBt0VZLaMnEP1Vaf3Iu4liSXJjiLLz
+         eP/JenyukfdS1AdEZqi5WJxo7P2lQVv9i+DKh5huBh2weT8Pxs2GzvCgzKSXYXBD2FOh
+         OjKKvh4oj1ZnkuuXoJT2lcv26+bFGOqBGXTh7fPIyEk59VzMSPrfUFUpTwPo66MKQ4Pw
+         ZC69b32wn2vTsAnYgwmjGk07Ksw9A3pl9RTE5HkK2yN4PWwUE6VTR4CT1mgi+YdKtFTZ
+         mwvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744703094; x=1745307894;
+        d=1e100.net; s=20230601; t=1744703100; x=1745307900;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=W0BuxBO6iaPS0ZXIsdpeH3MOTczu0p1v62QqIcPv2fQ=;
-        b=IZkT/KkgvYb+PnT8OJ+ZQxF6HzQnB9sdFvlr0hMXv/mn7DnS8/RyXu9NKbc+ninsbF
-         jL6vNa7Ee6LIXF4nz3KPCxwzk6PqOhqQfQktkiu3CuAgmw0FtLoTprlAne/dNUUT5Tqi
-         aYuKMrxGvXXPsw4jqINNNj7GgqotvVuf3WX9sAhr0gZrvEBihd5pIZvx1nLPSXYrzNJQ
-         ZGy8p9Nf1QEqjriAxK+43FOHKmwl0PSq9RdmHsPz3bLu9BGyKfRIuYXLLG7/o22bu4Fk
-         u0Em9vzRLf5a7Lko8/Z0zdyHEqPbcMgex9LsO6NCxRYMhpJPTqYKMAva7E4GM7w04t7A
-         MjDw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQ0px5aNODTLk/TzYY4x+foD+9ebIgQo6SNrBNbe7o8/MRbyzQupRGPANw3t+0YrcWCC/9T5yWyJkKgJ/m@vger.kernel.org, AJvYcCWaVSiQCgzgqpcFqo3sIsxuPRZxWx4j9MGlrEWLbd/66yiKjZ3rVTWY+Pt8ILptXyhpN/jfIWd4@vger.kernel.org, AJvYcCWfkLGTurXQ1ofjsCgtYyXt3E8XuIao9j9vRYbFq/LcQARmx0GOeYJUfA84W1w5AYPxhHI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzKnTL/aIdp9VyTtddDMKs/Hg63yAUiOivP06lMn/zpgATQ4Imn
-	c+7C6aLZ60EUkr5mp9BCtOnFqG3axXKuMqxYz98Iflgek61NqVWF
-X-Gm-Gg: ASbGncuCwHw/jwSwquiHOik92i0vEN59Rvv4Wtec2D71P8r8MCgsSoMYwaxfo+CYSwd
-	kIjjoy1cgad7sq22+256PeZ2pXU6NekHHlMfFouVkKVNI98ulU+++aaYs75Q4LpwvysN0+uUV6O
-	c9OkXUs+dTff5i5IV007vaIESAvhahhFwsskkVmvPTa4xa8ux5vjpDj2zNFVsMeUkoy6cyGzqBj
-	YYdsSK9lIpo7yBEkvxu9tthA0DlHhfsrMiinMu6vhDz3tDkNZXo4lPJs1LQk35GQFBd5BUqo6fV
-	gf0JtL/2pPgTSPISpkYvRIqF4uTc5UaStDn/xieOBjsw9/rs51uz1R4D
-X-Google-Smtp-Source: AGHT+IG+Rq4oA4NHax9MoQL4s8ibl0K0uceDso9aOf4QFKgwlgevfFSrAYI79zgALh+QoTOylI+6ow==
-X-Received: by 2002:a17:90b:2708:b0:2fe:b907:5e5a with SMTP id 98e67ed59e1d1-3084f33a421mr3512890a91.10.1744703094422;
-        Tue, 15 Apr 2025 00:44:54 -0700 (PDT)
+        bh=CcTGqksFhMMv7htGFoe+A1pXwVfny33zxtLopOer7xA=;
+        b=gCaofrTRoL3REYd42uN4mV8wnnT386kUCpTFpJOTREaun6brUc2/gbxHhwqE5CrfaD
+         j71eWKjHCB2UKWnERTkLXQJNinuZ0hAXMRpjQRCRXNt0Ez43Zp8TdTFMOO1aFEEvNvcu
+         GJJVgiZKU1b4j1ZTLpzhMl5PxENTKN415K+GzudmfeJU2HLMY/HdGeYYtlq6JNPQCEyM
+         h1abtks+jlkTRDwufsDVkIx7BIuTgib0bGHDqcSixVX267zQbX+yVy539O6jO2bCumUj
+         qlegW83aCevlw/IbZtqStLVPOnP/WcF7y1gGIdjaahCG/CoRPBQQP0qeaikjjc5qsZPt
+         vqHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUcLBX2I6bPETu+FYzCm8QnU+hUo9p8KfYhWKa02ZgwQLpICwqZ0qqTcd8CQrhJX1PuTd8E2le60HAcga30@vger.kernel.org, AJvYcCUgVvyAcZXDoKi6wblgZLRfodQsq8WaM4/eONOB6Bix+SaT8vnHZGBwQ/rF1cvhdFDtDpYG7DGk@vger.kernel.org, AJvYcCVd6u2bCg7jI9v3CU1NUDhHrDsFTlsfbZcZrL0TB+gihSTCE8sjEZacD0QVLs69xnHh094=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBWqFCcsa+c7RZMMZQj/PIJ0mFt1fqqPzLl23gpqGnG2n//xZO
+	jIksd2B2Ew7S0bToC1biFpQpMmjAZomdvZwE+GamG2tFEYjINeWt
+X-Gm-Gg: ASbGncuxP5xYOwLrIm+DCu1bVPEkM7JiA35FbSxhRFO2vVhEefKC+OSvVscAIJdtqYf
+	kV349anMQh8lMWPsVGRMtbtkKqGV50kpiJMwrpX1n2lKxfcATMw8aN1z8CUQnXTaIUv7Q4XULp5
+	mu74qouHANrvnvRMQocxtR2fvLY/xvCX+YUG8yh6CkFU15psJ3AZ1ybaoiW/nJBdeq855x3HSqS
+	fWjX2G3CVGCEe9H/X3R/TxtFETCv95L65CL83srHv0Eynei59PWEFtwQiz45mGnY21YSuFUvfRs
+	VGrm63AbejAzghn3y1qpFCD1KpKguryna2LK7dyQ5qEtRlNvrfkrY8Z8
+X-Google-Smtp-Source: AGHT+IHE5AgDxSwyyov8xJNfUO5lrXFsO91K7n/gdu3YFirq9QCYmY1aQyWqJKPh15l+AnvruQPQBA==
+X-Received: by 2002:a17:90b:3cc6:b0:2ff:7c2d:6ff3 with SMTP id 98e67ed59e1d1-3082367fc07mr21477127a91.35.1744703100354;
+        Tue, 15 Apr 2025 00:45:00 -0700 (PDT)
 Received: from minh.192.168.1.1 ([2001:ee0:4f0e:fb30:2e0b:88f9:a491:c18a])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-306df401ac8sm12299767a91.45.2025.04.15.00.44.48
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-306df401ac8sm12299767a91.45.2025.04.15.00.44.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Apr 2025 00:44:54 -0700 (PDT)
+        Tue, 15 Apr 2025 00:44:59 -0700 (PDT)
 From: Bui Quang Minh <minhquangbui99@gmail.com>
 To: virtualization@lists.linux.dev
 Cc: "Michael S . Tsirkin" <mst@redhat.com>,
@@ -91,9 +91,9 @@ Cc: "Michael S . Tsirkin" <mst@redhat.com>,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Bui Quang Minh <minhquangbui99@gmail.com>
-Subject: [PATCH v3 1/3] virtio-net: disable delayed refill when pausing rx
-Date: Tue, 15 Apr 2025 14:43:39 +0700
-Message-ID: <20250415074341.12461-2-minhquangbui99@gmail.com>
+Subject: [PATCH v3 2/3] selftests: net: move xdp_helper to net/lib
+Date: Tue, 15 Apr 2025 14:43:40 +0700
+Message-ID: <20250415074341.12461-3-minhquangbui99@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250415074341.12461-1-minhquangbui99@gmail.com>
 References: <20250415074341.12461-1-minhquangbui99@gmail.com>
@@ -105,155 +105,76 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When pausing rx (e.g. set up xdp, xsk pool, rx resize), we call
-napi_disable() on the receive queue's napi. In delayed refill_work, it
-also calls napi_disable() on the receive queue's napi.  When
-napi_disable() is called on an already disabled napi, it will sleep in
-napi_disable_locked while still holding the netdev_lock. As a result,
-later napi_enable gets stuck too as it cannot acquire the netdev_lock.
-This leads to refill_work and the pause-then-resume tx are stuck
-altogether.
+Move xdp_helper to net/lib to make it easier for other selftests to use
+the helper.
 
-This scenario can be reproducible by binding a XDP socket to virtio-net
-interface without setting up the fill ring. As a result, try_fill_recv
-will fail until the fill ring is set up and refill_work is scheduled.
-
-This commit adds virtnet_rx_(pause/resume)_all helpers and fixes up the
-virtnet_rx_resume to disable future and cancel all inflights delayed
-refill_work before calling napi_disable() to pause the rx.
-
-Fixes: 413f0271f396 ("net: protect NAPI enablement with netdev_lock()")
 Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
 ---
- drivers/net/virtio_net.c | 69 +++++++++++++++++++++++++++++++++-------
- 1 file changed, 57 insertions(+), 12 deletions(-)
+ tools/testing/selftests/drivers/net/Makefile                  | 2 --
+ tools/testing/selftests/drivers/net/queues.py                 | 4 ++--
+ tools/testing/selftests/net/lib/.gitignore                    | 1 +
+ tools/testing/selftests/net/lib/Makefile                      | 1 +
+ tools/testing/selftests/{drivers/net => net/lib}/xdp_helper.c | 0
+ 5 files changed, 4 insertions(+), 4 deletions(-)
+ rename tools/testing/selftests/{drivers/net => net/lib}/xdp_helper.c (100%)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 7e4617216a4b..848fab51dfa1 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -3342,7 +3342,8 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return NETDEV_TX_OK;
- }
+diff --git a/tools/testing/selftests/drivers/net/Makefile b/tools/testing/selftests/drivers/net/Makefile
+index 0c95bd944d56..cd74f1eb3193 100644
+--- a/tools/testing/selftests/drivers/net/Makefile
++++ b/tools/testing/selftests/drivers/net/Makefile
+@@ -6,8 +6,6 @@ TEST_INCLUDES := $(wildcard lib/py/*.py) \
+ 		 ../../net/net_helper.sh \
+ 		 ../../net/lib.sh \
  
--static void virtnet_rx_pause(struct virtnet_info *vi, struct receive_queue *rq)
-+static void __virtnet_rx_pause(struct virtnet_info *vi,
-+			       struct receive_queue *rq)
- {
- 	bool running = netif_running(vi->dev);
+-TEST_GEN_FILES := xdp_helper
+-
+ TEST_PROGS := \
+ 	netcons_basic.sh \
+ 	netcons_fragmented_msg.sh \
+diff --git a/tools/testing/selftests/drivers/net/queues.py b/tools/testing/selftests/drivers/net/queues.py
+index 06abd3f233e1..236005290a33 100755
+--- a/tools/testing/selftests/drivers/net/queues.py
++++ b/tools/testing/selftests/drivers/net/queues.py
+@@ -26,13 +26,13 @@ def nl_get_queues(cfg, nl, qtype='rx'):
  
-@@ -3352,17 +3353,63 @@ static void virtnet_rx_pause(struct virtnet_info *vi, struct receive_queue *rq)
- 	}
- }
+ def check_xsk(cfg, nl, xdp_queue_id=0) -> None:
+     # Probe for support
+-    xdp = cmd(f'{cfg.test_dir / "xdp_helper"} - -', fail=False)
++    xdp = cmd(f'{cfg.net_lib_dir / "xdp_helper"} - -', fail=False)
+     if xdp.ret == 255:
+         raise KsftSkipEx('AF_XDP unsupported')
+     elif xdp.ret > 0:
+         raise KsftFailEx('unable to create AF_XDP socket')
  
--static void virtnet_rx_resume(struct virtnet_info *vi, struct receive_queue *rq)
-+static void virtnet_rx_pause_all(struct virtnet_info *vi)
-+{
-+	int i;
-+
-+	/*
-+	 * Make sure refill_work does not run concurrently to
-+	 * avoid napi_disable race which leads to deadlock.
-+	 */
-+	disable_delayed_refill(vi);
-+	cancel_delayed_work_sync(&vi->refill);
-+	for (i = 0; i < vi->max_queue_pairs; i++)
-+		__virtnet_rx_pause(vi, &vi->rq[i]);
-+}
-+
-+static void virtnet_rx_pause(struct virtnet_info *vi, struct receive_queue *rq)
-+{
-+	/*
-+	 * Make sure refill_work does not run concurrently to
-+	 * avoid napi_disable race which leads to deadlock.
-+	 */
-+	disable_delayed_refill(vi);
-+	cancel_delayed_work_sync(&vi->refill);
-+	__virtnet_rx_pause(vi, rq);
-+}
-+
-+static void __virtnet_rx_resume(struct virtnet_info *vi,
-+				struct receive_queue *rq,
-+				bool refill)
- {
- 	bool running = netif_running(vi->dev);
+-    with bkg(f'{cfg.test_dir / "xdp_helper"} {cfg.ifindex} {xdp_queue_id}',
++    with bkg(f'{cfg.net_lib_dir / "xdp_helper"} {cfg.ifindex} {xdp_queue_id}',
+              ksft_wait=3):
  
--	if (!try_fill_recv(vi, rq, GFP_KERNEL))
-+	if (refill && !try_fill_recv(vi, rq, GFP_KERNEL))
- 		schedule_delayed_work(&vi->refill, 0);
+         rx = tx = False
+diff --git a/tools/testing/selftests/net/lib/.gitignore b/tools/testing/selftests/net/lib/.gitignore
+index 1ebc6187f421..bbc97d6bf556 100644
+--- a/tools/testing/selftests/net/lib/.gitignore
++++ b/tools/testing/selftests/net/lib/.gitignore
+@@ -1,2 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ csum
++xdp_helper
+diff --git a/tools/testing/selftests/net/lib/Makefile b/tools/testing/selftests/net/lib/Makefile
+index c22623b9a2a5..88c4bc461459 100644
+--- a/tools/testing/selftests/net/lib/Makefile
++++ b/tools/testing/selftests/net/lib/Makefile
+@@ -10,6 +10,7 @@ TEST_FILES += ../../../../net/ynl
  
- 	if (running)
- 		virtnet_napi_enable(rq);
- }
+ TEST_GEN_FILES += csum
+ TEST_GEN_FILES += $(patsubst %.c,%.o,$(wildcard *.bpf.c))
++TEST_GEN_FILES += xdp_helper
  
-+static void virtnet_rx_resume_all(struct virtnet_info *vi)
-+{
-+	int i;
-+
-+	enable_delayed_refill(vi);
-+	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		if (i < vi->curr_queue_pairs)
-+			__virtnet_rx_resume(vi, &vi->rq[i], true);
-+		else
-+			__virtnet_rx_resume(vi, &vi->rq[i], false);
-+	}
-+}
-+
-+static void virtnet_rx_resume(struct virtnet_info *vi, struct receive_queue *rq)
-+{
-+	enable_delayed_refill(vi);
-+	__virtnet_rx_resume(vi, rq, true);
-+}
-+
- static int virtnet_rx_resize(struct virtnet_info *vi,
- 			     struct receive_queue *rq, u32 ring_num)
- {
-@@ -5959,12 +6006,12 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 	if (prog)
- 		bpf_prog_add(prog, vi->max_queue_pairs - 1);
+ TEST_INCLUDES := $(wildcard py/*.py sh/*.sh)
  
-+	virtnet_rx_pause_all(vi);
-+
- 	/* Make sure NAPI is not using any XDP TX queues for RX. */
- 	if (netif_running(dev)) {
--		for (i = 0; i < vi->max_queue_pairs; i++) {
--			virtnet_napi_disable(&vi->rq[i]);
-+		for (i = 0; i < vi->max_queue_pairs; i++)
- 			virtnet_napi_tx_disable(&vi->sq[i]);
--		}
- 	}
- 
- 	if (!prog) {
-@@ -5996,13 +6043,12 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 		vi->xdp_enabled = false;
- 	}
- 
-+	virtnet_rx_resume_all(vi);
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
- 		if (old_prog)
- 			bpf_prog_put(old_prog);
--		if (netif_running(dev)) {
--			virtnet_napi_enable(&vi->rq[i]);
-+		if (netif_running(dev))
- 			virtnet_napi_tx_enable(&vi->sq[i]);
--		}
- 	}
- 
- 	return 0;
-@@ -6014,11 +6060,10 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 			rcu_assign_pointer(vi->rq[i].xdp_prog, old_prog);
- 	}
- 
-+	virtnet_rx_resume_all(vi);
- 	if (netif_running(dev)) {
--		for (i = 0; i < vi->max_queue_pairs; i++) {
--			virtnet_napi_enable(&vi->rq[i]);
-+		for (i = 0; i < vi->max_queue_pairs; i++)
- 			virtnet_napi_tx_enable(&vi->sq[i]);
--		}
- 	}
- 	if (prog)
- 		bpf_prog_sub(prog, vi->max_queue_pairs - 1);
+diff --git a/tools/testing/selftests/drivers/net/xdp_helper.c b/tools/testing/selftests/net/lib/xdp_helper.c
+similarity index 100%
+rename from tools/testing/selftests/drivers/net/xdp_helper.c
+rename to tools/testing/selftests/net/lib/xdp_helper.c
 -- 
 2.43.0
 
