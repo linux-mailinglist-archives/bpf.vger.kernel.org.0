@@ -1,236 +1,158 @@
-Return-Path: <bpf+bounces-55948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C91F6A89E79
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 14:45:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78277A89F04
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 15:10:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCBCD1764CE
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 12:45:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53BC77A77A5
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 13:09:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D98296D1A;
-	Tue, 15 Apr 2025 12:45:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EBD297A40;
+	Tue, 15 Apr 2025 13:09:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BDcm8UIN"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20BBE22F01;
-	Tue, 15 Apr 2025 12:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80EC9201017;
+	Tue, 15 Apr 2025 13:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744721135; cv=none; b=k6Jv4qJlj/MS2pLlC5OXiy3zxpZ/GMsVEbCYaIFlHPkVembEYIh3k2JYKL+uS3lzfNFWa6gjdRTCtdKPITKePTrTPaHxd8OoDi8NUgmLiLD24I/GPa4rh6dCj8hFhYDnPCRAtaRNos26ItgJghFgxF2fSRYrIr1MboICrGe5LcM=
+	t=1744722599; cv=none; b=JP5xTPMYj32PeKHVjjloFB940OB8kE/tsnTGb+8N5aDK/rM37NlufUD2wdhXx++B2/k2NLSUtpT9Qjra8S9Wc+L8a8Z5Qjtxz8AlORC7WX6jK4WvfrGJ60tQTTocf5bqxFAQDxb7SQuI7yRidXTn71SbQ1/sXKh/U6cQ3mW3xqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744721135; c=relaxed/simple;
-	bh=E5XQcw4IEaB0LKYRVD7ZDLH2kh1PfwrDrSF+4CKaanw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=DGsijTsC2fBPEP2QGzcylRWKtPJpNFCAVqonJXR2YlUvg0iTmktJBv7Xbqd8VEPvs8J7fgbu9zyBv8XyNcbq+no5o0lOeD5OrYjfI6id9B1KE/ZTveWWkbarE3kFYPkHzRZg1aj0XpIJdURkCcDZWCk/MkL+clG8YUEc9OwMbKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ZcP374bdHz1R7gs;
-	Tue, 15 Apr 2025 20:43:31 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id D4EBE1A016C;
-	Tue, 15 Apr 2025 20:45:27 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 15 Apr 2025 20:45:27 +0800
-Message-ID: <28772dbe-1ae9-4ff7-91ef-c45d174b88d6@huawei.com>
-Date: Tue, 15 Apr 2025 20:45:22 +0800
+	s=arc-20240116; t=1744722599; c=relaxed/simple;
+	bh=1MnuAkRdhCY1WfObz2NT8vubDqZjZ18y0GbOgq9+SWQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WTunjmnx7tZ83t7O01/QRzr6s2F7BBsU4VVSDpYGIa/FQNIEnEQn6JLYTfG8EY5JoUFC8/9UMks/LX+r495KgcdZUnbOYMojyJTtM++nr5MHPR722TfAkgzvNJizTGcwZ1oJ4Ho3z4WWZ9J/wwHTTalXblP/R7AqVJ5WX0d9dDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BDcm8UIN; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-306b6ae4fb2so5437616a91.3;
+        Tue, 15 Apr 2025 06:09:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744722597; x=1745327397; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ROffXuJEF8DX7Dlw1Sl0/VWDxHt96RQSrGxvBnC8v/I=;
+        b=BDcm8UINpjEhFe27ASFYbp48saamQdLKaGjD6oSy+Gqtk0t2mX7INj/tK8m5Z5BtZQ
+         ou4ZSRD+kFBKEjQkc3EaUQCZiCZKYDFIqKviQ4wkaMdMt0eQh/bg5v9uAr7dzOReUjf0
+         xPAJVCpzEUTwBTd9jqFgeYRBcgCr9lAMzF0GtK9rzYdWUAIhFf+weMKaAYL6CnaImXUu
+         TSlFm8dq6FhGm1xi5SuXmUJLk7ioX+GgSTKpD2Kgc1zE9Um826Rh1ojYkrJW5lFCcus0
+         RA/xPGlME8ufILx6Xp5yMEkafa+PD1HyrDNydI9TGj6fIquy/Yh3ENd9JAS9erVHOg6q
+         C5yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744722597; x=1745327397;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ROffXuJEF8DX7Dlw1Sl0/VWDxHt96RQSrGxvBnC8v/I=;
+        b=AnOAzzf2WuxxAbi5M76QIbVMZOUET0WDpvyXoss1cvyMMkP6htIBS4wgaihS+kFQMg
+         gyN8kgo/K//NX5677HMxbEU1CNpkpJKdYbHUdKkiz4wchIa2Gae8aQyyWuodFpYA/PYq
+         bnfsGqY/akC95Jm56WOc4b1YdQP/fmDj7ZKiKCPMECis/g/Z/ztUw03SSc5IlYQXp6sZ
+         8SJeDbbtFQxxYDazuMUwmxi5skKfbMmyulxLhLPXKdArmzGZc293zs8SZc/iH7GGDG4S
+         vtq7XesJ4fYE3TxfGPGU4FRQ1FfhfyusZtHGObIotNk8KxuC7blfpePnPtkRQU7U0vs5
+         OBvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU11zhXxiRxiPlk7cYl6u2rxISAoJPPkX7RUBjj58OkqeECTETHHrZdOPGYjgkXmFqZnCQHNZVshpEG+5cR@vger.kernel.org, AJvYcCUSFdDsxOdSvGj8U1pOfJYOrjZjCTafePrYfkbxgaCb3KTC4+4MWLlOWgnj5u6NPcid0nJAUF7L@vger.kernel.org, AJvYcCX0Md82/w5c9aDoD/WlbomDPPkwKVU3R+fCXi+JIZRs8OdSbwe512uwAbS4Po7Qy7CLRqE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUPOAEktlrlSMlFj+ABYgiqDkPhmJvtBdsqHDSu4+4FC7v/dZs
+	pPQ+3JKt9pum/KJlinAe8NcakwK1jQ3gnHzogGHP1x38Uuilfl4C
+X-Gm-Gg: ASbGncvIUpe7/ZlQsVYv5FsK79C1cEzHF2u0t6dk6fV/nKkq16J/vLpAheQi3/3+Hu8
+	E4lKY12BVzb6Ct7/xpx7HqT/2a4MuJxxzDqnMpErhPx4wNSBZrRWsa4qulYp7BCJEr4k38pCK+e
+	Ar2ycrPqnRozCVIZ5aTkyVi3g5fMdXtrcPLMBFBd291VhkrJ/oR9WMlLaTs98fb076pdqldBmYZ
+	ngvSTS/Xt+4N/gCEakR0lS3MaCQDGyi9pzOC9MHitUOlxLTTUocuuOwyIgLn+c4LC0tvscGqGjZ
+	fnuiX0kizi2benA+CewTJ+EW423RRDcidQKMtMt1
+X-Google-Smtp-Source: AGHT+IGrbakp3gdJT5engsJp7bS+mmyQ7Q/b+yLZmtwIiI2SeohFbA98WC/ZpRR+orkfQ0nPSrONVQ==
+X-Received: by 2002:a17:90b:5190:b0:2ff:4bac:6fba with SMTP id 98e67ed59e1d1-3082367ccebmr25337882a91.24.1744722596523;
+        Tue, 15 Apr 2025 06:09:56 -0700 (PDT)
+Received: from fedora.nitk.ac.in ([2a09:bac5:3d50:16b4::243:2a])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-306dd10dc4bsm13165254a91.1.2025.04.15.06.09.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Apr 2025 06:09:55 -0700 (PDT)
+From: Devaansh Kumar <devaanshk840@gmail.com>
+To: gregkh@linuxfoundation.org,
+	sashal@kernel.org,
+	stable@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net
+Cc: Devaansh Kumar <devaanshk840@gmail.com>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	linux-kernel-mentees@lists.linuxfoundation.org,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH] bpf: Remove tracing program restriction on map types
+Date: Tue, 15 Apr 2025 18:39:07 +0530
+Message-ID: <20250415130910.2326537-1-devaanshk840@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] mm: alloc_pages_bulk: support both simple and
- full-featured API
-To: Chuck Lever <chuck.lever@oracle.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Yishai Hadas <yishaih@nvidia.com>, Jason
- Gunthorpe <jgg@ziepe.ca>, Shameer Kolothum
-	<shameerali.kolothum.thodi@huawei.com>, Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>, Chris Mason <clm@fb.com>, Josef
- Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Gao Xiang
-	<xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>,
-	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>,
-	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga
- Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
-	<tom@talpey.com>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
-	<mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
- Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jesper Dangaard Brouer
-	<hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
-	<horms@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker
-	<anna@kernel.org>
-CC: Luiz Capitulino <luizcap@redhat.com>, Mel Gorman
-	<mgorman@techsingularity.net>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <virtualization@lists.linux.dev>,
-	<linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
-	<linux-mm@kvack.org>, <linux-nfs@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<netdev@vger.kernel.org>
-References: <20250414120819.3053967-1-linyunsheng@huawei.com>
- <18713073-342e-48b2-9864-24004445e234@oracle.com>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <18713073-342e-48b2-9864-24004445e234@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Content-Transfer-Encoding: 8bit
 
-On 2025/4/15 1:39, Chuck Lever wrote:
-> On 4/14/25 8:08 AM, Yunsheng Lin wrote:
->> As mentioned in [1], it seems odd to check NULL elements in
->> the middle of page bulk allocating, and it seems caller can
->> do a better job of bulk allocating pages into a whole array
->> sequentially without checking NULL elements first before
->> doing the page bulk allocation for most of existing users
->> by passing 'page_array + allocated' and 'nr_pages - allocated'
->> when calling subsequent page bulk alloc API so that NULL
->> checking can be avoided, see the pattern in mm/mempolicy.c.
->>
->> Through analyzing of existing bulk allocation API users, it
->> seems only the fs users are depending on the assumption of
->> populating only NULL elements, see:
->> commit 91d6ac1d62c3 ("btrfs: allocate page arrays using bulk page allocator")
->> commit d6db47e571dc ("erofs: do not use pagepool in z_erofs_gbuf_growsize()")
->> commit f6e70aab9dfe ("SUNRPC: refresh rq_pages using a bulk page allocator")
->> commit 88e4d41a264d ("SUNRPC: Use __alloc_bulk_pages() in svc_init_buffer()")
->>
->> The current API adds a mental burden for most users. For most
->> users, their code would be much cleaner if the interface accepts
->> an uninitialised array with length, and were told how many pages
->> had been stored in that array, so support one simple and one
->> full-featured to meet the above different use cases as below:
->> - alloc_pages_bulk() would be given an uninitialised array of page
->>   pointers and a required count and would return the number of
->>   pages that were allocated.
->> - alloc_pages_bulk_refill() would be given an initialised array
->>   of page pointers some of which might be NULL. It would attempt
->>   to allocate pages for the non-NULL pointers, return 0 if all
->>   pages are allocated, -EAGAIN if at least one page allocated,
->>   ok to try again immediately or -ENOMEM if don't bother trying
->>   again soon, which provides a more consistent semantics than the
->>   current API as mentioned in [2], at the cost of the pages might
->>   be getting re-ordered to make the implementation simpler.
->>
->> Change the existing fs users to use the full-featured API, except
->> for the one for svc_init_buffer() in net/sunrpc/svc.c. Other
->> existing callers can use the simple API as they seems to be passing
->> all NULL elements via memset, kzalloc, etc, only remove unnecessary
->> memset for existing users calling the simple API in this patch.
->>
->> The test result for xfstests full test:
->> Before this patch:
->> btrfs/default: 1061 tests, 3 failures, 290 skipped, 13152 seconds
->>   Failures: btrfs/012 btrfs/226
->>   Flaky: generic/301: 60% (3/5)
->> Totals: 1073 tests, 290 skipped, 13 failures, 0 errors, 12540s
->>
->> nfs/loopback: 530 tests, 3 failures, 392 skipped, 3942 seconds
->>   Failures: generic/464 generic/551
->>   Flaky: generic/650: 40% (2/5)
->> Totals: 542 tests, 392 skipped, 12 failures, 0 errors, 3799s
->>
->> After this patch:
->> btrfs/default: 1061 tests, 2 failures, 290 skipped, 13446 seconds
->>   Failures: btrfs/012 btrfs/226
->> Totals: 1069 tests, 290 skipped, 10 failures, 0 errors, 12853s
->>
->> nfs/loopback: 530 tests, 3 failures, 392 skipped, 4103 seconds
->>   Failures: generic/464 generic/551
->>   Flaky: generic/650: 60% (3/5)
->> Totals: 542 tests, 392 skipped, 13 failures, 0 errors, 3933s
-> 
-> Hi -
-> 
-> The "after" run for NFS took longer, and not by a little bit. Can you
-> explain the difference?
+[ Upstream commit 96da3f7d489d11b43e7c1af90d876b9a2492cca8 ]
 
-Ah, I overlooked the difference as I was not looking to have a performance
-comparasion using xfstest full test due to possible noise, so the above test
-might be done with other job like kernel compiling behind the scenes as it
-was tested with the same machine where I was doing some kernel compiling.
+The hash map is now fully converted to bpf_mem_alloc. Its implementation is not
+allocating synchronously and not calling call_rcu() directly. It's now safe to
+use non-preallocated hash maps in all types of tracing programs including
+BPF_PROG_TYPE_PERF_EVENT that runs out of NMI context.
 
-And I used a temporary patch to enable the using of full-featured API in
-page_pool to test if the full-featured API will cause performance regression
-for the existing users in fs as mentioned at the end of commit log.
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20220902211058.60789-13-alexei.starovoitov@gmail.com
+Signed-off-by: Devaansh Kumar <devaanshk840@gmail.com>
+---
+ kernel/bpf/verifier.c | 29 -----------------------------
+ 1 file changed, 29 deletions(-)
 
-> 
-> You can expunge the flakey test (generic/650) to help make the results
-> more directly comparable. 650 is a CPU hot-plugging test.
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 7049a85a78ab..77a75ccaae5e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11700,35 +11700,6 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 
+ {
+ 	enum bpf_prog_type prog_type = resolve_prog_type(prog);
+-	/*
+-	 * Validate that trace type programs use preallocated hash maps.
+-	 *
+-	 * For programs attached to PERF events this is mandatory as the
+-	 * perf NMI can hit any arbitrary code sequence.
+-	 *
+-	 * All other trace types using preallocated hash maps are unsafe as
+-	 * well because tracepoint or kprobes can be inside locked regions
+-	 * of the memory allocator or at a place where a recursion into the
+-	 * memory allocator would see inconsistent state.
+-	 *
+-	 * On RT enabled kernels run-time allocation of all trace type
+-	 * programs is strictly prohibited due to lock type constraints. On
+-	 * !RT kernels it is allowed for backwards compatibility reasons for
+-	 * now, but warnings are emitted so developers are made aware of
+-	 * the unsafety and can fix their programs before this is enforced.
+-	 */
+-	if (is_tracing_prog_type(prog_type) && !is_preallocated_map(map)) {
+-		if (prog_type == BPF_PROG_TYPE_PERF_EVENT) {
+-			verbose(env, "perf_event programs can only use preallocated hash map\n");
+-			return -EINVAL;
+-		}
+-		if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+-			verbose(env, "trace type programs can only use preallocated hash map\n");
+-			return -EINVAL;
+-		}
+-		WARN_ONCE(1, "trace type BPF program uses run-time allocation\n");
+-		verbose(env, "trace type programs with run-time allocated hash maps are unsafe. Switch to preallocated hash maps.\n");
+-	}
+ 
+ 	if (map_value_has_spin_lock(map)) {
+ 		if (prog_type == BPF_PROG_TYPE_SOCKET_FILTER) {
+-- 
+2.49.0
 
-I retested in a newer and more powerful machine without obvious heavy job
-behind the scenes based on linux-next-20250411, and the flakey test seems
-gone too.
-
-before:
--------------------- Summary report
-KERNEL:    kernel 6.15.0-rc1-next-20250411-xfstests #369 SMP PREEMPT_DYNAMIC Tue Apr 15 16:17:08 CST 2025 x86_64
-CMDLINE:   full
-CPUS:      2
-MEM:       1972.54
-
-nfs/loopback: 539 tests, 4 failures, 400 skipped, 2364 seconds
-  Failures: generic/169 generic/363 generic/464 generic/551
-Totals: 555 tests, 400 skipped, 20 failures, 0 errors, 2205s
-
-after:
--------------------- Summary report
-KERNEL:    kernel 6.15.0-rc1-next-20250411-xfstests-00001-g316d17a7f7bb #370 SMP PREEMPT_DYNAMIC Tue Apr 15 19:57:48 CST 2025 x86_64
-CMDLINE:   full
-CPUS:      2
-MEM:       1972.54
-
-nfs/loopback: 539 tests, 4 failures, 400 skipped, 2327 seconds
-  Failures: generic/169 generic/363 generic/464 generic/551
-Totals: 555 tests, 400 skipped, 20 failures, 0 errors, 2148s
-
-> 
-> 
->> The stress test also suggest there is no regression for the erofs
->> too.
->>
->> Using the simple API also enable the caller to not zero the array
->> before calling the page bulk allocating API, which has about 1~2 ns
->> performance improvement for time_bench_page_pool03_slow() test case
->> of page_pool in a x86 vm system, this reduces some performance impact
->> of fixing the DMA API misuse problem in [3], performance improves
->> from 87.886 ns to 86.429 ns.
->>
->> Also a temporary patch to enable the using of full-featured API in
->> page_pool suggests that the new full-featured API doesn't seem to have
->> noticeable performance impact for the existing users, like SUNRPC, btrfs
->> and erofs.
->>
->> 1. https://lore.kernel.org/all/bd8c2f5c-464d-44ab-b607-390a87ea4cd5@huawei.com/
->> 2. https://lore.kernel.org/all/180818a1-b906-4a0b-89d3-34cb71cc26c9@huawei.com/
->> 3. https://lore.kernel.org/all/20250212092552.1779679-1-linyunsheng@huawei.com/
->> CC: Jesper Dangaard Brouer <hawk@kernel.org>
->> CC: Luiz Capitulino <luizcap@redhat.com>
->> CC: Mel Gorman <mgorman@techsingularity.net>
->> Suggested-by: Neil Brown <neilb@suse.de>
->> Acked-by: Jeff Layton <jlayton@kernel.org>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> ---
->> V3:
->> 1. Provide both simple and full-featured API as suggested by NeilBrown.
->> 2. Do the fs testing as suggested in V2.
->>
->> V2:
->> 1. Drop RFC tag.
->> 2. Fix a compile error for xfs.
->> 3. Defragmemt the page_array for SUNRPC and btrfs.
 
