@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-55954-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55955-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06AAFA89FCD
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 15:45:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12AE6A89FD1
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 15:45:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55C46441916
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 13:45:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C13953BBFDE
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 13:45:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED699192D70;
-	Tue, 15 Apr 2025 13:45:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3D319F424;
+	Tue, 15 Apr 2025 13:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kn0vo6CQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CpxtbAfT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F36818FDD2;
-	Tue, 15 Apr 2025 13:45:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904151A01B9;
+	Tue, 15 Apr 2025 13:45:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744724704; cv=none; b=eahQxvgzy8iXncZx9YX5Ap82Fy6xpfQ5/abeQPEnLMjBox72Q4YRsxv13UtFvzbK+/cYjd7GafE56Xt5H9UYkqI8R56JTr9IyMoXLX8g+usF8nxklSr6CO/+CA2/9A7PCbFzElcktTWoJPnROVGw6TT3ULHXudOXODl8M7j3Cqo=
+	t=1744724711; cv=none; b=cuDPxPKR/t6DETq9mt58kLW5P+4pPaQ0crTqxxbycXy51MKKfLQikdVVxgT8C3aEtuMZ7Wmn95pENUMNgiR7CK0kURBtktJlucyn2r/+McDTSvsP0TeIbWV5RoAy4tLquyp44Hc4eSs2h5mPoQUizgObuxNNYdwf3xhiBMf253o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744724704; c=relaxed/simple;
-	bh=xfvsE+GJNMhvR7Eb4Cnn6O5Db8UHQokNj7BMnN4xdUY=;
+	s=arc-20240116; t=1744724711; c=relaxed/simple;
+	bh=09n41sAwNzc7e+AzUroN4DWMfr4cfaNM1Q/w7HysFUk=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QUt0hDUW+c2/tJDhxJWiRZxOfocXDMzuxXlShsZOmaMaDelhuYINOpWY0qBDfzNGZS8OzKFPElXNLcOuiyvh2631vQ3kkx+YHcWggc+fHQGTjZDtJx+N40L9gaf0/aFvYQI2bVPyLXK5PA2s5kmyihNWgJy4oSqddTtq7tOaQXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kn0vo6CQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61691C4CEEC;
-	Tue, 15 Apr 2025 13:45:01 +0000 (UTC)
+	 MIME-Version:Content-Type; b=JpB35sa6lUX7QZzLvMIkw3fIUBG61P0dIWDNw6/R7NnTS2rhYu7+8mZjuU3oLWpNfVwt0FhXLBHYb2oVZJ7wABrIAS1mp1N2HFD5xY2FJ6XgoJuR9OOiLtk33f8P5DcjZC6EP0ZLrZojwlhMnkkWMpGq1/XJ+t7NGuzqodqe8fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CpxtbAfT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86C7DC4CEEC;
+	Tue, 15 Apr 2025 13:45:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744724703;
-	bh=xfvsE+GJNMhvR7Eb4Cnn6O5Db8UHQokNj7BMnN4xdUY=;
+	s=k20201202; t=1744724710;
+	bh=09n41sAwNzc7e+AzUroN4DWMfr4cfaNM1Q/w7HysFUk=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=kn0vo6CQtzndmcD4GwSJaDAJGs/pgCAbP4/T0EStG0b2ubZiyYjCbZInh1v+MH+oM
-	 alsUW2jiC4uf1aCHqw76Vfk0mlm3Wi96dfpaSSp3+xEYo+fmYMGCYKntDKOh9McbES
-	 +ZHL079abH0RSSr6BFbDmMc3MBTIvGfQ/UqxOPqkT8uNZ7TUtALbtR9XqPbjlseIx1
-	 99f5v/b0iwU4SlRQHRsKj2SHnlMAnJPjyoonLchfs37SSs7rwvi0cJZnWENNKRPaJs
-	 5SFHKKWgFFnsUxqU9fzdgXMq3WbvDKWjT6vsXacH96nHb/fVCGA2C85Rmn65CEey9c
-	 kIMvmOQwGXC5A==
-Subject: [PATCH net-next V4 1/2] net: sched: generalize check for no-queue
- qdisc on TX queue
+	b=CpxtbAfTLTUN0WYxbCVSmFAM+3VTKiyy+ALcLI3FSjPn4HE+GYFwLSuAE8G6rXeEE
+	 cjxnfHpbE+mV5PUPHxhCI0kF66EsJr9yXKwzGP+pPjERA6FygX5LTceFVqZQmUncYo
+	 0cDhI53MbzQYm0e2OX4zPjuKVAINfYRgJcbWQVfjSO1rlyA63RAorvFE77yQ373gbk
+	 CXxcX1yWeCoRuAiqpBY4z3dwiKSr04L+3Ls3rv4LlymnKt9HI/VeLp2zBNFbRNvwj2
+	 DdrzI+bAa+6znCaFginqfFyfdBsdvRpmj7VBhFziIXEzNpl97jCyCtjRGgPOUQfg4v
+	 EglHeN91BAscQ==
+Subject: [PATCH net-next V4 2/2] veth: apply qdisc backpressure on full
+ ptr_ring to reduce TX drops
 From: Jesper Dangaard Brouer <hawk@kernel.org>
 To: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
 Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
@@ -51,8 +51,8 @@ Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
  =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
  dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
  kernel-team@cloudflare.com, phil@nwl.cc
-Date: Tue, 15 Apr 2025 15:44:59 +0200
-Message-ID: <174472469906.274639.14909448343817900822.stgit@firesoul>
+Date: Tue, 15 Apr 2025 15:45:05 +0200
+Message-ID: <174472470529.274639.17026526070544068280.stgit@firesoul>
 In-Reply-To: <174472463778.274639.12670590457453196991.stgit@firesoul>
 References: <174472463778.274639.12670590457453196991.stgit@firesoul>
 User-Agent: StGit/1.5
@@ -65,78 +65,157 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-The "noqueue" qdisc can either be directly attached, or get default
-attached if net_device priv_flags has IFF_NO_QUEUE. In both cases, the
-allocated Qdisc structure gets it's enqueue function pointer reset to
-NULL by noqueue_init() via noqueue_qdisc_ops.
+In production, we're seeing TX drops on veth devices when the ptr_ring
+fills up. This can occur when NAPI mode is enabled, though it's
+relatively rare. However, with threaded NAPI - which we use in
+production - the drops become significantly more frequent.
 
-This is a common case for software virtual net_devices. For these devices
-with no-queue, the transmission path in __dev_queue_xmit() will bypass
-the qdisc layer. Directly invoking device drivers ndo_start_xmit (via
-dev_hard_start_xmit).  In this mode the device driver is not allowed to
-ask for packets to be queued (either via returning NETDEV_TX_BUSY or
-stopping the TXQ).
+The underlying issue is that with threaded NAPI, the consumer often runs
+on a different CPU than the producer. This increases the likelihood of
+the ring filling up before the consumer gets scheduled, especially under
+load, leading to drops in veth_xmit() (ndo_start_xmit()).
 
-The simplest and most reliable way to identify this no-queue case is by
-checking if enqueue == NULL.
+This patch introduces backpressure by returning NETDEV_TX_BUSY when the
+ring is full, signaling the qdisc layer to requeue the packet. The txq
+(netdev queue) is stopped in this condition and restarted once
+veth_poll() drains entries from the ring, ensuring coordination between
+NAPI and qdisc.
 
-The vrf driver currently open-codes this check (!qdisc->enqueue). While
-functionally correct, this low-level detail is better encapsulated in a
-dedicated helper for clarity and long-term maintainability.
+Backpressure is only enabled when a qdisc is attached. Without a qdisc,
+the driver retains its original behavior - dropping packets immediately
+when the ring is full. This avoids unexpected behavior changes in setups
+without a configured qdisc.
 
-To make this behavior more explicit and reusable, this patch introduce a
-new helper: qdisc_txq_has_no_queue(). Helper will also be used by the
-veth driver in the next patch, which introduces optional qdisc-based
-backpressure.
+With a qdisc in place (e.g. fq, sfq) this allows Active Queue Management
+(AQM) to fairly schedule packets across flows and reduce collateral
+damage from elephant flows.
 
-This is a non-functional change.
+A known limitation of this approach is that the full ring sits in front
+of the qdisc layer, effectively forming a FIFO buffer that introduces
+base latency. While AQM still improves fairness and mitigates flow
+dominance, the latency impact is measurable.
 
+In hardware drivers, this issue is typically addressed using BQL (Byte
+Queue Limits), which tracks in-flight bytes needed based on physical link
+rate. However, for virtual drivers like veth, there is no fixed bandwidth
+constraint - the bottleneck is CPU availability and the scheduler's ability
+to run the NAPI thread. It is unclear how effective BQL would be in this
+context.
+
+This patch serves as a first step toward addressing TX drops. Future work
+may explore adapting a BQL-like mechanism to better suit virtual devices
+like veth.
+
+Reported-by: Yan Zhai <yan@cloudflare.com>
 Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 ---
- drivers/net/vrf.c         |    4 +---
- include/net/sch_generic.h |    8 ++++++++
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ drivers/net/veth.c |   49 +++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 41 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/vrf.c b/drivers/net/vrf.c
-index 7168b33adadb..9a4beea6ee0c 100644
---- a/drivers/net/vrf.c
-+++ b/drivers/net/vrf.c
-@@ -343,15 +343,13 @@ static int vrf_ifindex_lookup_by_table_id(struct net *net, u32 table_id)
- static bool qdisc_tx_is_default(const struct net_device *dev)
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 7bb53961c0ea..a419d5e198d8 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -308,11 +308,10 @@ static void __veth_xdp_flush(struct veth_rq *rq)
+ static int veth_xdp_rx(struct veth_rq *rq, struct sk_buff *skb)
  {
- 	struct netdev_queue *txq;
--	struct Qdisc *qdisc;
+ 	if (unlikely(ptr_ring_produce(&rq->xdp_ring, skb))) {
+-		dev_kfree_skb_any(skb);
+-		return NET_RX_DROP;
++		return NETDEV_TX_BUSY; /* signal qdisc layer */
+ 	}
  
- 	if (dev->num_tx_queues > 1)
- 		return false;
- 
- 	txq = netdev_get_tx_queue(dev, 0);
--	qdisc = rcu_access_pointer(txq->qdisc);
- 
--	return !qdisc->enqueue;
-+	return qdisc_txq_has_no_queue(txq);
+-	return NET_RX_SUCCESS;
++	return NET_RX_SUCCESS; /* same as NETDEV_TX_OK */
  }
  
- /* Local traffic destined to local address. Reinsert the packet to rx
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index d48c657191cd..b6c177f7141c 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -803,6 +803,14 @@ static inline bool qdisc_tx_changing(const struct net_device *dev)
- 	return false;
+ static int veth_forward_skb(struct net_device *dev, struct sk_buff *skb,
+@@ -346,11 +345,11 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct veth_priv *rcv_priv, *priv = netdev_priv(dev);
+ 	struct veth_rq *rq = NULL;
+-	int ret = NETDEV_TX_OK;
++	struct netdev_queue *txq;
+ 	struct net_device *rcv;
+ 	int length = skb->len;
+ 	bool use_napi = false;
+-	int rxq;
++	int ret, rxq;
+ 
+ 	rcu_read_lock();
+ 	rcv = rcu_dereference(priv->peer);
+@@ -373,17 +372,41 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	}
+ 
+ 	skb_tx_timestamp(skb);
+-	if (likely(veth_forward_skb(rcv, skb, rq, use_napi) == NET_RX_SUCCESS)) {
++
++	ret = veth_forward_skb(rcv, skb, rq, use_napi);
++	switch(ret) {
++	case NET_RX_SUCCESS: /* same as NETDEV_TX_OK */
+ 		if (!use_napi)
+ 			dev_sw_netstats_tx_add(dev, 1, length);
+ 		else
+ 			__veth_xdp_flush(rq);
+-	} else {
++		break;
++	case NETDEV_TX_BUSY:
++		/* If a qdisc is attached to our virtual device, returning
++		 * NETDEV_TX_BUSY is allowed.
++		 */
++		txq = netdev_get_tx_queue(dev, rxq);
++
++		if (qdisc_txq_has_no_queue(txq)) {
++			dev_kfree_skb_any(skb);
++			goto drop;
++		}
++		netif_tx_stop_queue(txq);
++		/* Restore Eth hdr pulled by dev_forward_skb/eth_type_trans */
++		__skb_push(skb, ETH_HLEN);
++		if (use_napi)
++			__veth_xdp_flush(rq);
++
++		break;
++	case NET_RX_DROP: /* same as NET_XMIT_DROP */
+ drop:
+ 		atomic64_inc(&priv->dropped);
+ 		ret = NET_XMIT_DROP;
++		break;
++	default:
++		net_crit_ratelimited("veth_xmit(%s): Invalid return code(%d)",
++				     dev->name, ret);
+ 	}
+-
+ 	rcu_read_unlock();
+ 
+ 	return ret;
+@@ -874,9 +897,16 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+ 			struct veth_xdp_tx_bq *bq,
+ 			struct veth_stats *stats)
+ {
++	struct veth_priv *priv = netdev_priv(rq->dev);
++	int queue_idx = rq->xdp_rxq.queue_index;
++	struct netdev_queue *peer_txq;
++	struct net_device *peer_dev;
+ 	int i, done = 0, n_xdpf = 0;
+ 	void *xdpf[VETH_XDP_BATCH];
+ 
++	peer_dev = rcu_dereference(priv->peer);
++	peer_txq = netdev_get_tx_queue(peer_dev, queue_idx);
++
+ 	for (i = 0; i < budget; i++) {
+ 		void *ptr = __ptr_ring_consume(&rq->xdp_ring);
+ 
+@@ -925,6 +955,9 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+ 	rq->stats.vs.xdp_packets += done;
+ 	u64_stats_update_end(&rq->stats.syncp);
+ 
++	if (unlikely(netif_tx_queue_stopped(peer_txq)))
++		netif_tx_wake_queue(peer_txq);
++
+ 	return done;
  }
  
-+/* "noqueue" qdisc identified by not having any enqueue, see noqueue_init() */
-+static inline bool qdisc_txq_has_no_queue(const struct netdev_queue *txq)
-+{
-+	struct Qdisc *qdisc = rcu_access_pointer(txq->qdisc);
-+
-+	return qdisc->enqueue == NULL;
-+}
-+
- /* Is the device using the noop qdisc on all queues?  */
- static inline bool qdisc_tx_is_noop(const struct net_device *dev)
- {
 
 
 
