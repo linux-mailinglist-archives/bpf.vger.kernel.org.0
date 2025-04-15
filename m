@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-55991-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55992-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CA6AA8A5A1
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 19:34:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5F5FA8A5A5
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 19:34:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ECEB16986E
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 17:34:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AAE417089C
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 17:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1E223875D;
-	Tue, 15 Apr 2025 17:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350EE23957C;
+	Tue, 15 Apr 2025 17:30:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ecEqm8Qs"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="afLdpFAw"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B04A3238167;
-	Tue, 15 Apr 2025 17:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0257D238C09;
+	Tue, 15 Apr 2025 17:30:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744738198; cv=none; b=ob6kqIZBxVQW2gmCXd6fa3GDAAqk6qx0m85eKJ/9gu3N+XqrUqaojLYMlLMkFEYKCuUY8wL89MbIVcuTEVhWxN+9XA2Ct2d/OiHNKXONF3wSuUFBXX41Krlo564vTwB/8b0twXCqxFub6Mlez5KL8ldQgAVV/SVFB5k71QKkiic=
+	t=1744738202; cv=none; b=RpQhnjkTZwXF5rkh88oA5XJKIxBoyKPoaZ8EuMB8FVdVMtQeFHihryoWpLCvtCQv0n+k0yMoXB1jEiBL1Uai4GG4m6DLpvisEvV1jCLt7LJ9rBKIjpwvmqjree9rQpNlPi8owxNPNQ89ELN9YL80arzmKiZkRpp3UQ/o0r4zF6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744738198; c=relaxed/simple;
-	bh=zQGudSTedXdsYMOds2lX3WMuu6HvdX0YUUhoa0vfzl4=;
+	s=arc-20240116; t=1744738202; c=relaxed/simple;
+	bh=T7zvRwYUz24J7zyCwHHnzE4WhBWvlthCh4Hi7fmj6Mo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EkDqoSF9pAG5BTRA2CJfn1xOpoy5iKM58BuR3+xpegNCWeyDyAsBpLhcDPwOQb/DNZsNgy27SBIzJI/n8edz6VvG/AzH5K97JK0fKJq2hSqYkdx6bpOKAptz375EJ0B1vu7Ld3nN0KNKWbOlQjMOjlei67wghwJDqcx84N2Lz7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ecEqm8Qs; arc=none smtp.client-ip=198.175.65.17
+	 MIME-Version; b=CTHBcmjTiyylrM3b3wGHdwEj6jKLOscqTKN8SH6jiDuInHRjVORR+KsnR4WyciLTrBuXOEnGVhFtW/npGvdUI9hwKLRQCOA1LeSrMDSkPCdLK9xPG/pA0mM3d3XAtqWs3aKDOKc+/sjK/1Jikj28WDyHdZ7gXMlkexwXpNckX6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=afLdpFAw; arc=none smtp.client-ip=198.175.65.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1744738197; x=1776274197;
+  t=1744738201; x=1776274201;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=zQGudSTedXdsYMOds2lX3WMuu6HvdX0YUUhoa0vfzl4=;
-  b=ecEqm8QsC3rcqo3BEAUt71TRSob3V0UnoOQrwVMA6M9nX5HlMJzYzQhN
-   x2DFYck08evbjWNTQHhJ2Q0gnAGM7yUb25Jnio01ZjsvOE8lWLe368bWx
-   ajpc3/eCFnQ2qUQ06rE3llIuQa3Ra1g0gWnGgOjxSekjCQEqWWPRDHZnJ
-   6B9T9iK7uvt0YRSKur+fkQ+RLZ/w7H6VxmFvlnmEtgXyE7Pks9Foi9vTo
-   XE4Foy1usvGURxZGU9YQeqEQTkgJAmBJEWzRO4mI1ruNOQCT28d2cf/GX
-   eaD3+X5fKpRM38suuLYC/1GOwfU82o3V0JzLAxAbGoWzK+cEFf54kZRGz
-   w==;
-X-CSE-ConnectionGUID: BOK0NYvKQXablLtuZ/JuFw==
-X-CSE-MsgGUID: UxGbScenQJugIs3YyIpAUg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11404"; a="46275815"
+  bh=T7zvRwYUz24J7zyCwHHnzE4WhBWvlthCh4Hi7fmj6Mo=;
+  b=afLdpFAwNBgGrX6u3CuCBbegQ5tkk+32620Cz1sttnASlDxn8mQBvngk
+   e7M858HdWdZ8SW8qFDkCEdJsB/9ei7WCZPiBVyQ+MZQlyvKgon3gpV6se
+   cjiJy+uiqS1JV88/cQ5KE9S4T5xW5erpb/7ZgPq/RrB2ePkNGIZDCH6Qv
+   Mt/vG7FLZSZzPkghzcG/SyzZKS6X/TBYWQGjzVE3iVaT3QJhlC/7ZZd/H
+   fWCacraky3SdvX+yvvPK2iOl6d6Kxa+VadOpVT/AD9r/wsSj0AhWqx+Al
+   hnRjOC2Fsqc3cyhNK+/DktSVIpJ91GkxDO0yttoLyYetCReSKfnThnJnD
+   Q==;
+X-CSE-ConnectionGUID: n4HUb78ESUGSz6V4afYg5Q==
+X-CSE-MsgGUID: rICofsqnSAeetmIwLtOqig==
+X-IronPort-AV: E=McAfee;i="6700,10204,11404"; a="46275829"
 X-IronPort-AV: E=Sophos;i="6.15,213,1739865600"; 
-   d="scan'208";a="46275815"
+   d="scan'208";a="46275829"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2025 10:29:57 -0700
-X-CSE-ConnectionGUID: hmAMpvMHRGWFBWG+1tobeg==
-X-CSE-MsgGUID: sCe0nvVFSfKxP5Ga7n+vuA==
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2025 10:30:01 -0700
+X-CSE-ConnectionGUID: eGFNhxI4SMagQ5uVy8xXWQ==
+X-CSE-MsgGUID: K+Iyi2CpRyayfvmeNdNDmA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,213,1739865600"; 
-   d="scan'208";a="130729884"
+   d="scan'208";a="130729927"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa010.fm.intel.com with ESMTP; 15 Apr 2025 10:29:53 -0700
+  by fmviesa010.fm.intel.com with ESMTP; 15 Apr 2025 10:29:58 -0700
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: intel-wired-lan@lists.osuosl.org
 Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -78,9 +78,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH iwl-next 15/16] libeth: xsk: add XSkFQ refill and XSk wakeup helpers
-Date: Tue, 15 Apr 2025 19:28:24 +0200
-Message-ID: <20250415172825.3731091-16-aleksander.lobakin@intel.com>
+Subject: [PATCH iwl-next 16/16] libeth: xdp, xsk: access adjacent u32s as u64 where applicable
+Date: Tue, 15 Apr 2025 19:28:25 +0200
+Message-ID: <20250415172825.3731091-17-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250415172825.3731091-1-aleksander.lobakin@intel.com>
 References: <20250415172825.3731091-1-aleksander.lobakin@intel.com>
@@ -92,260 +92,134 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-XSkFQ refill is pretty generic across the drivers minus FQ descriptor
-filling and can easily be unified with one inline callback.
-XSk wakeup is usually not, but here, instead of commonly used
-"SW interrupts", I picked firing an IPI. In most tests, it showed better
-performance; it also provides better control for userspace on which CPU
-will handle the xmit, as SW interrupts honor IRQ affinity no matter
-which core produces XSk xmit descs (while XDPSQs are associated 1:1
-with cores having the same ID).
+On 64-bit systems, writing/reading one u64 is faster than two u32s even
+when they're are adjacent in a struct. The compilers won't guarantee
+they will combine those; I observed both successful and unsuccessful
+attempts with both GCC and Clang, and it's not easy to say what it
+depends on.
+There's a few places in libeth_xdp winning up to several percent from
+combined access (both performance and object code size, especially
+when unrolling). Add __LIBETH_WORD_ACCESS and use it there on LE.
+Drivers are free to optimize HW-specific callbacks under the same
+definition.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/net/libeth/xsk.h                |  98 +++++++++++++++++++
- drivers/net/ethernet/intel/libeth/xsk.c | 124 ++++++++++++++++++++++++
- 2 files changed, 222 insertions(+)
+ include/net/libeth/xdp.h | 29 ++++++++++++++++++++++++++---
+ include/net/libeth/xsk.h | 10 +++++-----
+ 2 files changed, 31 insertions(+), 8 deletions(-)
 
+diff --git a/include/net/libeth/xdp.h b/include/net/libeth/xdp.h
+index 85f058482fc7..6d15386aff31 100644
+--- a/include/net/libeth/xdp.h
++++ b/include/net/libeth/xdp.h
+@@ -464,6 +464,21 @@ struct libeth_xdp_tx_desc {
+ 	((const void *)(uintptr_t)(priv));				      \
+ })
+ 
++/*
++ * On 64-bit systems, assigning one u64 is faster than two u32s. When ::len
++ * occupies lowest 32 bits (LE), whole ::opts can be assigned directly instead.
++ */
++#ifdef __LITTLE_ENDIAN
++#define __LIBETH_WORD_ACCESS		1
++#endif
++#ifdef __LIBETH_WORD_ACCESS
++#define __libeth_xdp_tx_len(flen, ...)					      \
++	.opts = ((flen) | FIELD_PREP(GENMASK_ULL(63, 32), (__VA_ARGS__ + 0)))
++#else
++#define __libeth_xdp_tx_len(flen, ...)					      \
++	.len = (flen), .flags = (__VA_ARGS__ + 0)
++#endif
++
+ /**
+  * libeth_xdp_tx_xmit_bulk - main XDP Tx function
+  * @bulk: array of frames to send
+@@ -863,8 +878,7 @@ static inline u32 libeth_xdp_xmit_queue_head(struct libeth_xdp_tx_bulk *bq,
+ 
+ 	bq->bulk[bq->count++] = (typeof(*bq->bulk)){
+ 		.xdpf	= xdpf,
+-		.len	= xdpf->len,
+-		.flags	= LIBETH_XDP_TX_FIRST,
++		__libeth_xdp_tx_len(xdpf->len, LIBETH_XDP_TX_FIRST),
+ 	};
+ 
+ 	if (!xdp_frame_has_frags(xdpf))
+@@ -895,7 +909,7 @@ static inline bool libeth_xdp_xmit_queue_frag(struct libeth_xdp_tx_bulk *bq,
+ 
+ 	bq->bulk[bq->count++] = (typeof(*bq->bulk)){
+ 		.dma	= dma,
+-		.len	= skb_frag_size(frag),
++		__libeth_xdp_tx_len(skb_frag_size(frag)),
+ 	};
+ 
+ 	return true;
+@@ -1253,6 +1267,7 @@ bool libeth_xdp_buff_add_frag(struct libeth_xdp_buff *xdp,
+  * Internal, use libeth_xdp_process_buff() instead. Initializes XDP buffer
+  * head with the Rx buffer data: data pointer, length, headroom, and
+  * truesize/tailroom. Zeroes the flags.
++ * Uses faster single u64 write instead of per-field access.
+  */
+ static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
+ 					   const struct libeth_fqe *fqe,
+@@ -1260,7 +1275,15 @@ static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
+ {
+ 	const struct page *page = __netmem_to_page(fqe->netmem);
+ 
++#ifdef __LIBETH_WORD_ACCESS
++	static_assert(offsetofend(typeof(xdp->base), flags) -
++		      offsetof(typeof(xdp->base), frame_sz) ==
++		      sizeof(u64));
++
++	*(u64 *)&xdp->base.frame_sz = fqe->truesize;
++#else
+ 	xdp_init_buff(&xdp->base, fqe->truesize, xdp->base.rxq);
++#endif
+ 	xdp_prepare_buff(&xdp->base, page_address(page) + fqe->offset,
+ 			 page->pp->p.offset, len, true);
+ }
 diff --git a/include/net/libeth/xsk.h b/include/net/libeth/xsk.h
-index f3f338e566fc..213778a68476 100644
+index 213778a68476..481a7b28e6f2 100644
 --- a/include/net/libeth/xsk.h
 +++ b/include/net/libeth/xsk.h
-@@ -584,4 +584,102 @@ __libeth_xsk_run_pass(struct libeth_xdp_buff *xdp,
- #define LIBETH_XSK_DEFINE_FINALIZE(name, flush, finalize)		     \
- 	__LIBETH_XDP_DEFINE_FINALIZE(name, flush, finalize, xsk)
+@@ -26,8 +26,8 @@ static inline bool libeth_xsk_tx_queue_head(struct libeth_xdp_tx_bulk *bq,
+ {
+ 	bq->bulk[bq->count++] = (typeof(*bq->bulk)){
+ 		.xsk	= xdp,
+-		.len	= xdp->base.data_end - xdp->data,
+-		.flags	= LIBETH_XDP_TX_FIRST,
++		__libeth_xdp_tx_len(xdp->base.data_end - xdp->data,
++				    LIBETH_XDP_TX_FIRST),
+ 	};
  
-+/* Refilling */
-+
-+/**
-+ * struct libeth_xskfq - structure representing an XSk buffer (fill) queue
-+ * @fp: hotpath part of the structure
-+ * @pool: &xsk_buff_pool for buffer management
-+ * @fqes: array of XSk buffer pointers
-+ * @descs: opaque pointer to the HW descriptor array
-+ * @ntu: index of the next buffer to poll
-+ * @count: number of descriptors/buffers the queue has
-+ * @pending: current number of XSkFQEs to refill
-+ * @thresh: threshold below which the queue is refilled
-+ * @buf_len: HW-writeable length per each buffer
-+ * @nid: ID of the closest NUMA node with memory
-+ */
-+struct libeth_xskfq {
-+	struct_group_tagged(libeth_xskfq_fp, fp,
-+		struct xsk_buff_pool	*pool;
-+		struct libeth_xdp_buff	**fqes;
-+		void			*descs;
-+
-+		u32			ntu;
-+		u32			count;
-+	);
-+
-+	/* Cold fields */
-+	u32			pending;
-+	u32			thresh;
-+
-+	u32			buf_len;
-+	int			nid;
-+};
-+
-+int libeth_xskfq_create(struct libeth_xskfq *fq);
-+void libeth_xskfq_destroy(struct libeth_xskfq *fq);
-+
-+/**
-+ * libeth_xsk_buff_xdp_get_dma - get DMA address of XSk &libeth_xdp_buff
-+ * @xdp: buffer to get the DMA addr for
-+ */
-+#define libeth_xsk_buff_xdp_get_dma(xdp)				     \
-+	xsk_buff_xdp_get_dma(&(xdp)->base)
-+
-+/**
-+ * libeth_xskfqe_alloc - allocate @n XSk Rx buffers
-+ * @fq: hotpath part of the XSkFQ, usually onstack
-+ * @n: number of buffers to allocate
-+ * @fill: driver callback to write DMA addresses to HW descriptors
-+ *
-+ * Note that @fq->ntu gets updated, but ::pending must be recalculated
-+ * by the caller.
-+ *
-+ * Return: number of buffers refilled.
-+ */
-+static __always_inline u32
-+libeth_xskfqe_alloc(struct libeth_xskfq_fp *fq, u32 n,
-+		    void (*fill)(const struct libeth_xskfq_fp *fq, u32 i))
-+{
-+	u32 this, ret, done = 0;
-+	struct xdp_buff **xskb;
-+
-+	this = fq->count - fq->ntu;
-+	if (likely(this > n))
-+		this = n;
-+
-+again:
-+	xskb = (typeof(xskb))&fq->fqes[fq->ntu];
-+	ret = xsk_buff_alloc_batch(fq->pool, xskb, this);
-+
-+	for (u32 i = 0, ntu = fq->ntu; likely(i < ret); i++)
-+		fill(fq, ntu + i);
-+
-+	done += ret;
-+	fq->ntu += ret;
-+
-+	if (likely(fq->ntu < fq->count) || unlikely(ret < this))
-+		goto out;
-+
-+	fq->ntu = 0;
-+
-+	if (this < n) {
-+		this = n - this;
-+		goto again;
-+	}
-+
-+out:
-+	return done;
-+}
-+
-+/* .ndo_xsk_wakeup */
-+
-+void libeth_xsk_init_wakeup(call_single_data_t *csd, struct napi_struct *napi);
-+void libeth_xsk_wakeup(call_single_data_t *csd, u32 qid);
-+
-+/* Pool setup */
-+
-+int libeth_xsk_setup_pool(struct net_device *dev, u32 qid, bool enable);
-+
- #endif /* __LIBETH_XSK_H */
-diff --git a/drivers/net/ethernet/intel/libeth/xsk.c b/drivers/net/ethernet/intel/libeth/xsk.c
-index ecb038f20df5..9a510a509dcd 100644
---- a/drivers/net/ethernet/intel/libeth/xsk.c
-+++ b/drivers/net/ethernet/intel/libeth/xsk.c
-@@ -143,3 +143,127 @@ u32 __cold libeth_xsk_prog_exception(struct libeth_xdp_buff *xdp,
- 
- 	return __ret;
+ 	if (likely(!xdp_buff_has_frags(&xdp->base)))
+@@ -48,7 +48,7 @@ static inline void libeth_xsk_tx_queue_frag(struct libeth_xdp_tx_bulk *bq,
+ {
+ 	bq->bulk[bq->count++] = (typeof(*bq->bulk)){
+ 		.xsk	= frag,
+-		.len	= frag->base.data_end - frag->data,
++		__libeth_xdp_tx_len(frag->base.data_end - frag->data),
+ 	};
  }
-+
-+/* Refill */
-+
-+/**
-+ * libeth_xskfq_create - create an XSkFQ
-+ * @fq: fill queue to initialize
-+ *
-+ * Allocates the FQEs and initializes the fields used by libeth_xdp: number
-+ * of buffers to refill, refill threshold and buffer len.
-+ *
-+ * Return: %0 on success, -errno otherwise.
-+ */
-+int libeth_xskfq_create(struct libeth_xskfq *fq)
-+{
-+	fq->fqes = kvcalloc_node(fq->count, sizeof(*fq->fqes), GFP_KERNEL,
-+				 fq->nid);
-+	if (!fq->fqes)
-+		return -ENOMEM;
-+
-+	fq->pending = fq->count;
-+	fq->thresh = libeth_xdp_queue_threshold(fq->count);
-+	fq->buf_len = xsk_pool_get_rx_frame_size(fq->pool);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(libeth_xskfq_create);
-+
-+/**
-+ * libeth_xskfq_destroy - destroy an XSkFQ
-+ * @fq: fill queue to destroy
-+ *
-+ * Zeroes the used fields and frees the FQEs array.
-+ */
-+void libeth_xskfq_destroy(struct libeth_xskfq *fq)
-+{
-+	fq->buf_len = 0;
-+	fq->thresh = 0;
-+	fq->pending = 0;
-+
-+	kvfree(fq->fqes);
-+}
-+EXPORT_SYMBOL_GPL(libeth_xskfq_destroy);
-+
-+/* .ndo_xsk_wakeup */
-+
-+static void libeth_xsk_napi_sched(void *info)
-+{
-+	__napi_schedule_irqoff(info);
-+}
-+
-+/**
-+ * libeth_xsk_init_wakeup - initialize libeth XSk wakeup structure
-+ * @csd: struct to initialize
-+ * @napi: NAPI corresponding to this queue
-+ *
-+ * libeth_xdp uses inter-processor interrupts to perform XSk wakeups. In order
-+ * to do that, the corresponding CSDs must be initialized when creating the
-+ * queues.
-+ */
-+void libeth_xsk_init_wakeup(call_single_data_t *csd, struct napi_struct *napi)
-+{
-+	INIT_CSD(csd, libeth_xsk_napi_sched, napi);
-+}
-+EXPORT_SYMBOL_GPL(libeth_xsk_init_wakeup);
-+
-+/**
-+ * libeth_xsk_wakeup - perform an XSk wakeup
-+ * @csd: CSD corresponding to the queue
-+ * @qid: the stack queue index
-+ *
-+ * Try to mark the NAPI as missed first, so that it could be rescheduled.
-+ * If it's not, schedule it on the corresponding CPU using IPIs (or directly
-+ * if already running on it).
-+ */
-+void libeth_xsk_wakeup(call_single_data_t *csd, u32 qid)
-+{
-+	struct napi_struct *napi = csd->info;
-+
-+	if (napi_if_scheduled_mark_missed(napi) ||
-+	    unlikely(!napi_schedule_prep(napi)))
-+		return;
-+
-+	if (unlikely(qid >= nr_cpu_ids))
-+		qid %= nr_cpu_ids;
-+
-+	if (qid != raw_smp_processor_id() && cpu_online(qid))
-+		smp_call_function_single_async(qid, csd);
-+	else
-+		__napi_schedule(napi);
-+}
-+EXPORT_SYMBOL_GPL(libeth_xsk_wakeup);
-+
-+/* Pool setup */
-+
-+#define LIBETH_XSK_DMA_ATTR					\
-+	(DMA_ATTR_WEAK_ORDERING | DMA_ATTR_SKIP_CPU_SYNC)
-+
-+/**
-+ * libeth_xsk_setup_pool - setup or destroy an XSk pool for a queue
-+ * @dev: target &net_device
-+ * @qid: stack queue index to configure
-+ * @enable: whether to enable or disable the pool
-+ *
-+ * Check that @qid is valid and then map or unmap the pool.
-+ *
-+ * Return: %0 on success, -errno otherwise.
-+ */
-+int libeth_xsk_setup_pool(struct net_device *dev, u32 qid, bool enable)
-+{
-+	struct xsk_buff_pool *pool;
-+
-+	pool = xsk_get_pool_from_qid(dev, qid);
-+	if (!pool)
-+		return -EINVAL;
-+
-+	if (enable)
-+		return xsk_pool_dma_map(pool, dev->dev.parent,
-+					LIBETH_XSK_DMA_ATTR);
-+	else
-+		xsk_pool_dma_unmap(pool, LIBETH_XSK_DMA_ATTR);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(libeth_xsk_setup_pool);
+ 
+@@ -199,7 +199,7 @@ __libeth_xsk_xmit_fill_buf_md(const struct xdp_desc *xdesc,
+ 	ctx = xsk_buff_raw_get_ctx(sq->pool, xdesc->addr);
+ 	desc = (typeof(desc)){
+ 		.addr	= ctx.dma,
+-		.len	= xdesc->len,
++		__libeth_xdp_tx_len(xdesc->len),
+ 	};
+ 
+ 	BUILD_BUG_ON(!__builtin_constant_p(tmo == libeth_xsktmo));
+@@ -226,7 +226,7 @@ __libeth_xsk_xmit_fill_buf(const struct xdp_desc *xdesc,
+ {
+ 	return (struct libeth_xdp_tx_desc){
+ 		.addr	= xsk_buff_raw_get_dma(sq->pool, xdesc->addr),
+-		.len	= xdesc->len,
++		__libeth_xdp_tx_len(xdesc->len),
+ 	};
+ }
+ 
 -- 
 2.49.0
 
