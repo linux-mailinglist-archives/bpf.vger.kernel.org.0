@@ -1,156 +1,195 @@
-Return-Path: <bpf+bounces-56013-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56014-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39A9EA8ABEE
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 01:14:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EBAAA8ABF1
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 01:15:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD84D441603
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 23:14:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66C361903888
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 23:15:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5A62D8DAA;
-	Tue, 15 Apr 2025 23:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC4A2741BB;
+	Tue, 15 Apr 2025 23:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dFMAlPjP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VYY5qa29"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E62F2D8DA0;
-	Tue, 15 Apr 2025 23:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B942517B7
+	for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 23:15:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744758856; cv=none; b=FtqaWqDmQPqtMs/+ZrtKCmL9x5JVqzdLfsKZiOoVE1fl//Pf4OSxT5nlayMsNZCEC1wvcnyK7e/zDQ/u+JUWmTh6YcsGuwCWda4y2q9ES7fh6jR8D5/mcVxXKmITP9rR+AUkS0NPjPv6PFwu/m6Zx8W+eANH0VgM/Y89qQh1DN0=
+	t=1744758930; cv=none; b=Nf8gjI1/kuKtj1Cd65XuKmiChot8wwp+3S7JHExHdAGPIt4fh+lLK+DUgmZ9cA2Xiee1zvmlcbZrYpJ8Fi+L6HLAEf2o+0BEWg0e5sQoIaryHHBLAUmW0D0vnEpTFpwmAxch3e532B3Y67q8HQiwpvMRoFFm42Z30gsupGFltfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744758856; c=relaxed/simple;
-	bh=zCpIDGFs2MI6JDqwoAKjdYAM75z0bLJsxlg2XtGnRx0=;
+	s=arc-20240116; t=1744758930; c=relaxed/simple;
+	bh=0Y+LMgOhLtt/fYrLPC3xn0mxyoK5KHtoI/uhkP5gPrE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gzx48lhzncuSRl0ZXH1ppoTpdRc2fsVYYVF3v6TxNyiVu+wOmSzaSBZx2jcODcdGoB4bYkwSsBoClVmfCHS1JBZ+TqqC3nZ5xW1iM6Bth3oypEgazJh8T//0EQsJf4bu2wFW5WmHzCgIIZ0bJUuLa1j8zUTs5fIU0odNRbJqwtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dFMAlPjP; arc=none smtp.client-ip=209.85.216.44
+	 To:Cc:Content-Type; b=gojdWPxslM//I7gbknyAgqEcl++GnGoBkOogISQex1mEQtMeLd1k9NKkTvhl8IVMCAep+xYbAzyK+oM26u8xCrseHHe14H6LV6wasm0XXWj1SAu6of/dsw5rbsGlQo2FunyWM0gCognQsnN6CbcTHCLBF4sm5uYObM7xCw7f/Fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VYY5qa29; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-301d6cbbd5bso6236432a91.3;
-        Tue, 15 Apr 2025 16:14:14 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-224171d6826so86507665ad.3
+        for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 16:15:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744758854; x=1745363654; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744758928; x=1745363728; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PRKGyTCLCkh+hncjT8M1rmbcW8JfhBSDz6kNDmOfBHI=;
-        b=dFMAlPjP3IC+txSIvnYG5qLBjgC8Ghd2xVJhIRd/l46FNmwqOIKYQxHLxUUZ49FKTm
-         nRc51SeusJQkGELfjhcdhER2YwuyDxd2lovqf5bDlvGlDBzcFjj+/Zvi9fcFsON8rHGV
-         3TjV2BptrmBUJP5mIBZawJQXNLeB2Mua4wsXgEyITIe27EFT6pgKnYp+igOJ43f41YAd
-         7P1W8SP2visVLLdsGaDqC0JX/rsiFp9F2W9r8kybyz1mziAdv8BTnL2C5n6OfBw6T2/8
-         Mjcff+G0BxsMo9zrT5nNMsUOBxA/h952+4yy93YfvaE1EX9BlvTvU9VuTO19x5o6tVV3
-         wqSA==
+        bh=KJYh0QpalVdPz7ieuI+35tJkBPIpy9V4gRTATuks4xA=;
+        b=VYY5qa29uMiCaoVpNZcPnv1SsV1GVyEaj930/sfB75LjGauuAXjxkqr3FwMKW2jiJb
+         hxuIbD7yq15HA+vcYLTj++mHB8M0gwzhwTN2tBtomjMxm1y8Yxa1Qchy/6VoSzVyXatJ
+         tJabGJELaT9ZEtA7UKp1CewZN4FEwXXjOeI8+GiTNhPUSchvLxhJjk3eQ3YoEhNrrKL8
+         iamzZWVF3kSf3ENxm+OLyWVhHtPioWKD/MlSQTUlb76EFggbvhE0o8L4IM13YzQr8tcr
+         v1yN86qua+vPX0hDNXF1JnV51BfpCcma9iaM84v+S7OmV/plq9xXTigUelnWw69jT/Rs
+         cLEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744758854; x=1745363654;
+        d=1e100.net; s=20230601; t=1744758928; x=1745363728;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PRKGyTCLCkh+hncjT8M1rmbcW8JfhBSDz6kNDmOfBHI=;
-        b=pYyQcWUC+QDt5ky5QY01FBf+Kt9DbyoyliUacL6MfOsbPR/MSs8cgmZH3NVLWBCd3H
-         nLRqKEwIv+irFabwh8FSVdY+6aAR+gPoKLqD7a4F6wpaCEm6VtW6mzv+yf/pUCs9kway
-         rOYLLDP6HCafMvc2k1mCuAHdD1FqS+MnLdbj6ImXvUT2nxNTICIvxh/sZmmV1TQHDZra
-         7EcZ7pZQOHaEqi1TyyH/nqq+2ZXuEkWWTBY/gUTYsLKH7EXzzMU7o2btx54rb2d/24DO
-         Ic2MS84pYvGa+e/gBlz9XCUspRrTmXotnz9iKSk9FJrJcTpp/+XOww7R4AdhS31RAVfI
-         iQ2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUVjPF02a70KPsiYxt2xGA3u5PBEFYGOjU2U9M5r2CxfMx3b2NYk1EIGLzmYR/WSE1EPY4LCE1WzXUHsspZ@vger.kernel.org, AJvYcCUfQrZvMnKFPlHtKHW6AdhYOA/ipdJg6QW8TxhHN5rxFZ1EO/zkedMGutFc4tZKtb4KYTI=@vger.kernel.org, AJvYcCWO8hYGGRlxlyHuX3ERi5NBJMVIKBeD0PHrmtC/PgjBo2H3RiG4d4YR+xr5ti1Xs5B0/SiO2tr3tTAFX8MclfAvtdWh@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlUDDiTg9an/yxiSWO03Kxs+duQxjXz+1uGjFeakwzNUJnkdmA
-	yTgoDYlFe6P2jclR/V0MJ9eAb0j12EuCtO9Zk6jZIEkp2dlRfQCvoNzxZ4RbN/wHiMv0x1ty3LR
-	yn2RVqvy/9SXgdK7LThY8boGjYS/Pqg==
-X-Gm-Gg: ASbGncvhKVzFTgnYx9BzBLLgUXfQI0AIjZME6tXnr/RHcIpF4VY6Oq5c+4aXAtz8OMq
-	uRq8Qh9zGJfSu8BeZdTgmZ2c2TK9jpjQiBm2Q2QUCFN1bgVVvYz+1teF2U9EHG+aAfMj1l6KfcA
-	1ArzdmmH1f8n+Se9OikUa31EnOT9gvgXWoC6/jXA==
-X-Google-Smtp-Source: AGHT+IFZfWmP8O8dyWubwAzXvc5NO6Xm7sJPqAU2vM5adnZ9hKvqzRlxDmYr31KsnnAkgi+t+pW2vCnDknhLhrWoXyk=
-X-Received: by 2002:a17:90b:2b45:b0:2f8:49ad:4079 with SMTP id
- 98e67ed59e1d1-3085ee96ca6mr1354317a91.6.1744758853747; Tue, 15 Apr 2025
- 16:14:13 -0700 (PDT)
+        bh=KJYh0QpalVdPz7ieuI+35tJkBPIpy9V4gRTATuks4xA=;
+        b=K0p1nSTuMQ54o9Sd2gxeeFS8kjmPe0r4VfTGz++rbErscrwhegItocJkYcaLaRn9hz
+         tsb1sBxLgPdpk8kHguj6yl1u6+p4jGCcTUe5S4x46IAqlIX1sgP9E/R27rEFaDbek3Kk
+         gk+ZVhZYWkSJXfIpvTjlRctKY+k6ws7KP3IV2I+thnhT0OrNjpK7hny4RxNcNFozAhQh
+         9pYI4Xrv93PfqOyjOeHOTSB8th9JFlnr6QefPhNjv+k6xdTfH4qHKz+jaZm8ZLtFqJHK
+         dlEaVdbRNMscUelMJKKGOqaonBZPYtUEq6jMCXtI60XOcYKnpabpVs/R+uehz45Esbsh
+         T2CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXEKLNsYe9pEVHqoKsWQ9mkTPZ9T+7CtL96p6g/8H44lHQ4z2/w1yyLJdVqgEZGgLBMdBc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwP96j9AzeB4Ux51g04lIg+MbH4nKrImr1x3thxeiS7d1MmkysY
+	HIfuhzTnMfqkr0b0gH7D560OAkZzj3xJa8LEH6i/5oXmx1c0kVCCnurzD4ya/z0toVzmiQhl6wi
+	Zik/nIfTXyTqsmU2+zHEeRFGFAX0=
+X-Gm-Gg: ASbGncvBMx1G0m150DOEk6iPlWvYPJ+qxdLW+xP5Mm7td6E/vrQaI3D8NysXeHKqBzN
+	mPBBjYJVxphiHo6VlobzoA+yK3J3bvCYwfF5SgXEdw/6i9oe8pmVWiv+E1ZVfj7Lv3jC29Hw7jr
+	s/O9PFmhZHj2JyPREz6yIuzo5Kq4BCLE8lQyxORw==
+X-Google-Smtp-Source: AGHT+IGSHHqeJk3/JiLcfzolmJdGXwLDoxBDCrdQMQcqb+zxk1ntWjGH8keHCLMsXYF5JQhYayswKaBDB+jN7Dakg0A=
+X-Received: by 2002:a17:902:ce92:b0:22c:33b2:e420 with SMTP id
+ d9443c01a7336-22c33b2e66dmr5394235ad.7.1744758928579; Tue, 15 Apr 2025
+ 16:15:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250413014444.36724-1-dongml2@chinatelecom.cn> <20250414160528.3fd76062ad194bdffff515b5@kernel.org>
-In-Reply-To: <20250414160528.3fd76062ad194bdffff515b5@kernel.org>
+References: <CAADnVQJbBOK25Fx3zEG-ZH=zTFRfPNQye673b5TnpdTdMEXAUA@mail.gmail.com>
+ <20250410103804.49250-1-malayarout91@gmail.com> <CAEf4BzaogUrvCxga36F1_o-h53Ur0mAaG9im1JsPfAhutxSYuQ@mail.gmail.com>
+ <CAE2+fR-QvJqL0VkqPufLL+r7FLaOSTRt2_xXjq=fdpk0yAGj2w@mail.gmail.com>
+In-Reply-To: <CAE2+fR-QvJqL0VkqPufLL+r7FLaOSTRt2_xXjq=fdpk0yAGj2w@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 15 Apr 2025 16:14:01 -0700
-X-Gm-Features: ATxdqUERe79cDUWqxs-YYWqHkNaH3OT9MoqFhzb9dJh8p3Rnu2DrlpQQVxahrVc
-Message-ID: <CAEf4BzbyqNAPrOR7cR+2PKCy+cXoEftWufFbhMv73QPFZM+ysw@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] ftrace: fix incorrect hash size in register_ftrace_direct()
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Menglong Dong <menglong8.dong@gmail.com>, rostedt@goodmis.org, mark.rutland@arm.com, 
-	mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Menglong Dong <dongml2@chinatelecom.cn>
+Date: Tue, 15 Apr 2025 16:15:15 -0700
+X-Gm-Features: ATxdqUF7-iz1_-OloN7wbfhplMYUgm_PNyMzX9L1vZfkBlOdg07mm2-i99fxF04
+Message-ID: <CAEf4BzZGCfrEJpqbd=j11poDHyHqfobRvQeQB0FLEpBg9Bf_XQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND bpf-next v3] selftests/bpf: close the file
+ descriptor to avoid resource leaks
+To: malaya kumar rout <malayarout91@gmail.com>
+Cc: alexei.starovoitov@gmail.com, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 14, 2025 at 12:05=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.=
-org> wrote:
+On Sat, Apr 12, 2025 at 11:45=E2=80=AFAM malaya kumar rout
+<malayarout91@gmail.com> wrote:
 >
-> On Sun, 13 Apr 2025 09:44:44 +0800
-> Menglong Dong <menglong8.dong@gmail.com> wrote:
+> Malaya Kumar Rout
+> Ph. No:  +91-9778203508
+>              +91-7008245249
 >
-> > The maximum of the ftrace hash bits is made fls(32) in
-> > register_ftrace_direct(), which seems illogical. So, we fix it by makin=
-g
-> > the max hash bits FTRACE_HASH_MAX_BITS instead.
+> On Thu, Apr 10, 2025 at 11:03=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
->
-> Loogs good to me.
->
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
-> Thanks!
+> > On Thu, Apr 10, 2025 at 3:38=E2=80=AFAM Malaya Kumar Rout
+> > <malayarout91@gmail.com> wrote:
+> > >
+> > > Static analysis found an issue in bench_htab_mem.c
+> > >
+> > > cppcheck output before this patch:
+> > > tools/testing/selftests/bpf/benchs/bench_htab_mem.c:284:3: error: Res=
+ource leak: fd [resourceLeak]
+> > > tools/testing/selftests/bpf/prog_tests/sk_assign.c:41:3: error: Resou=
+rce leak: tc [resourceLeak]
+> > >
+> > > cppcheck output after this patch:
+> > > No resource leaks found
+> > >
+> > > Fix the issue by closing the file descriptors fd and tc.
+> > >
+> > > Signed-off-by: Malaya Kumar Rout <malayarout91@gmail.com>
+> > > ---
+> >
+> > I still don't see this patch in our Patchworks.
+> >
+> > But I noticed that the subject is:
+> >
+> > RE:[PATCH RESEND bpf-next v3] selftests/bpf: close the file descriptor
+> > to avoid resource leaks
+> >
+> > and there is
+> >
+> > In-Reply-To: <CAADnVQJbBOK25Fx3zEG-ZH=3DzTFRfPNQye673b5TnpdTdMEXAUA@mai=
+l.gmail.com>
+> >
+> > email header, so I suspect bot ignores this because it's a reply.
+> >
+> > Please send it as a stand-alone email with `git send-email`, hopefully
+> > that works.
+> >
+> I have shared a stand-alone email with 'git send-email'.Kindly confirm
+> at your earliest convenience. If any issues arise again, please permit
+> me to share two separate patches, as we have modifications in two
+> distinct files.
 >
 
-I'm a bit confused by the "[PATCH bpf]" prefix... This fix doesn't
-seem to be BPF-related, so I'm not sure why it would go through the
-bpf tree. I presume Masami or Steven will route it through their tree,
-is that right?
+Yes, this time email arrived into Patchworks, but you had pclose ->
+close mistake, please fix, test, and resubmit.
 
-
-> > Fixes: d05cb470663a ("ftrace: Fix modification of direct_function hash =
-while in use")
-> > Signed-off-by: Menglong Dong <dongml2@chinatelecom.cn>
-> > ---
-> > v2:
-> > - thanks for Steven's advice, we fix the problem by making the max hash
-> >   bits FTRACE_HASH_MAX_BITS instead.
-> > ---
-> >  kernel/trace/ftrace.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> > index 1a48aedb5255..d153ad13e0e0 100644
-> > --- a/kernel/trace/ftrace.c
-> > +++ b/kernel/trace/ftrace.c
-> > @@ -5914,9 +5914,10 @@ int register_ftrace_direct(struct ftrace_ops *op=
-s, unsigned long addr)
-> >
-> >       /* Make a copy hash to place the new and the old entries in */
-> >       size =3D hash->count + direct_functions->count;
-> > -     if (size > 32)
-> > -             size =3D 32;
-> > -     new_hash =3D alloc_ftrace_hash(fls(size));
-> > +     size =3D fls(size);
-> > +     if (size > FTRACE_HASH_MAX_BITS)
-> > +             size =3D FTRACE_HASH_MAX_BITS;
-> > +     new_hash =3D alloc_ftrace_hash(size);
-> >       if (!new_hash)
-> >               goto out_unlock;
-> >
-> > --
-> > 2.39.5
-> >
-> >
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
+> > >  tools/testing/selftests/bpf/benchs/bench_htab_mem.c | 3 +--
+> > >  tools/testing/selftests/bpf/prog_tests/sk_assign.c  | 4 +++-
+> > >  2 files changed, 4 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/to=
+ols/testing/selftests/bpf/benchs/bench_htab_mem.c
+> > > index 926ee822143e..297e32390cd1 100644
+> > > --- a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+> > > +++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+> > > @@ -279,6 +279,7 @@ static void htab_mem_read_mem_cgrp_file(const cha=
+r *name, unsigned long *value)
+> > >         }
+> > >
+> > >         got =3D read(fd, buf, sizeof(buf) - 1);
+> > > +       close(fd);
+> > >         if (got <=3D 0) {
+> > >                 *value =3D 0;
+> > >                 return;
+> > > @@ -286,8 +287,6 @@ static void htab_mem_read_mem_cgrp_file(const cha=
+r *name, unsigned long *value)
+> > >         buf[got] =3D 0;
+> > >
+> > >         *value =3D strtoull(buf, NULL, 0);
+> > > -
+> > > -       close(fd);
+> > >  }
+> > >
+> > >  static void htab_mem_measure(struct bench_res *res)
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/too=
+ls/testing/selftests/bpf/prog_tests/sk_assign.c
+> > > index 0b9bd1d6f7cc..10a0ab954b8a 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> > > @@ -37,8 +37,10 @@ configure_stack(void)
+> > >         tc =3D popen("tc -V", "r");
+> > >         if (CHECK_FAIL(!tc))
+> > >                 return false;
+> > > -       if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc)))
+> > > +       if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc))) {
+> > > +               pclose(tc);
+> > >                 return false;
+> > > +       }
+> > >         if (strstr(tc_version, ", libbpf "))
+> > >                 prog =3D "test_sk_assign_libbpf.bpf.o";
+> > >         else
+> > > --
+> > > 2.43.0
+> > >
 
