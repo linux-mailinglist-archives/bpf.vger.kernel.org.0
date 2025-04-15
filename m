@@ -1,119 +1,158 @@
-Return-Path: <bpf+bounces-55929-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55930-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EEB6A895D0
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 09:59:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B7BAA8968B
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 10:29:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07BE83A2C83
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 07:58:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 349813B9393
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 08:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA2492750E7;
-	Tue, 15 Apr 2025 07:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0492951B3;
+	Tue, 15 Apr 2025 08:24:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sfc2ZjPM"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MR0YZedr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB34A27466A
-	for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 07:58:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5152E284672
+	for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 08:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744703930; cv=none; b=VP0W2tLWu5mliAZeRo4h+JAZRHqIPTyRsu5V6/cd3LeSKiV2YHLPzUtf3hlb/GXrh0LUbysnElv+IC+kcw2MyPxkv/vueIoRCmhXOlqEAJGD9buvdVMP/QxecKIGwAJXtG8FXc5jPznu5xnloM2E23L1p5WLtu613jHyoPngjFs=
+	t=1744705479; cv=none; b=uKpixa80MVPHl7DJkil3xroIeurTfKxjLl/nVfPECNipECUoAhBBlBHcILUd2DjxOvqR2RGf2RT3mFUH3TfQtFsJVxuwC89lUs2pY7w1eqTy/fCZF4ndATnBYukhuR2hz2bQBzu0nv++/EXO7L/3B7rfgpJyfAJkQn/JEsLoU9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744703930; c=relaxed/simple;
-	bh=bdmtVKAqRx11srxPm/69BLczxPQcpovNWs44y/mYzAU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=cmlBuM0oeazV+3Fpm4ioYzdJwSZjISpzmmLmzzF4JbO4Jl7GebYxUbpkH7mw7hDTzN9y4bUAVZbEVV8t3vPxAM+4MXjyDh/VrqJtJu4FQXMVvNUVGzTZvK+Rayyfc8/sy/1tDbK0kTB7WUWjC5kxNMjsrKYCKKUMtc2RZ500njg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sfc2ZjPM; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-224191d92e4so50272625ad.3
-        for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 00:58:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744703928; x=1745308728; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WB+Vn1WbKpIt+E0RXCw7dAnLJBAK0Bz3EQzAPVv7Kzc=;
-        b=Sfc2ZjPMjSmLSG2w+aFpICx/6ZsRRxF9nynxMRzM7ebU3/MKGUUfN4TjeK5GoaOu8K
-         BNE2MiCm2aQe5+IFklFByvy9IIj5ZzbyZyz5tYhAVRDo8KrPmF2rJVLHzghBxyRKiw09
-         5ETk+nZ7P6wvhCl6idIhE9+iEpeel7dmRfJrgbl0w4PbMelzhGraLdIDOwlke/rcRvQk
-         IEVrhyGmGAAJml1jAkLehUQ10N+0tczKhy9QiU3pv7zWmcnDjsVcyfNUULMfqO5oedaq
-         gVgVj9uHrtqz1aOEIJZ3s1IHfLX7WZOjDIiMQvziW7gM5g8khWBoG6Wf9gIla3wtsE6q
-         S9Fw==
+	s=arc-20240116; t=1744705479; c=relaxed/simple;
+	bh=vKYv/M9ajhjCM9oA8bR/2eWFDBzWCgzTfxFv/jPwpuQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BsfG6N8bCrRGxDhtVCD4ZbWiZn6IzlISIGVALC9WhMaSsmJd7YnuYkvZMNSNYKA9yYGXKKga1cTCZ9gjlOJ+f0ovg9/H84drg/qKEpGvSeLtqHjXezJaR6HODgedGD2rI/F/7szqaZJQZT6RA1wSxdfOWzjge4NRUVn/ysi4LAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MR0YZedr; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744705476;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fNUQZdJEfgBW55jJBNwuJY4OjuVE5fjTLKdKD/g6/bM=;
+	b=MR0YZedrLhhVp9APbeEYfOM2m5nKGxjZkg4xxeYh6LzulYurGd1/S/YpyAtHYJGJL2E2dq
+	zpXIFmTQ7o7Qs2h8OgHm4nUFelkL3MRt3hCsnAr7QR4QDvMyEfEXJlBY2wN/k6spp6QZLy
+	IAnplaO1navzK8QxrAVcXB6sUelGxxc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-370-88l2eKoaPaWzfxLzJNtcNQ-1; Tue, 15 Apr 2025 04:24:35 -0400
+X-MC-Unique: 88l2eKoaPaWzfxLzJNtcNQ-1
+X-Mimecast-MFC-AGG-ID: 88l2eKoaPaWzfxLzJNtcNQ_1744705474
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43d733063cdso42807755e9.0
+        for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 01:24:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744703928; x=1745308728;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WB+Vn1WbKpIt+E0RXCw7dAnLJBAK0Bz3EQzAPVv7Kzc=;
-        b=cJmoivaEGigUnxG8Kq8P2QWgJLENRCyoLwzje20Qh3/IoEjVS7uZzajCYmTeLchUmC
-         yNk0fBZyTsxSsUlLUU2iqjp9fKrct+qucL8huScfAMapu8eTERIJ99BOmxg0B8lmAU8f
-         I73/hXY9c023Y/7UzPFF5A8c1I40L16ihcokRD0TqM6swr5wpHAgIZqdN+U+W4YMQN3B
-         GbF2sQxlQkKeLPrE+Wk0kYj7EREfSlHg3yoi1klYKhXkIdpVnW4TKxHng5OsIvM3XXFj
-         Ke+Kiu1rwsq+O7Ql2Yp00zxghRraQiQVavpM4baEwnfOn94RxpDkWBVNbVmf2nIi8nDj
-         JrBw==
-X-Forwarded-Encrypted: i=1; AJvYcCXq+gfWEMbX7KlhvtT6SA9Tmp6dnAc2atgbsTX9bt/hQ/Hi083mlglgLiWxNURXp71Oi+M=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzs96DyBdNja86umC1GAUUP8vnSHKCo1qzLEuKocz9x4w57E+Ev
-	F/RjE9sdvyNX7n+tqCW5B/yDUX3pxxzpjpavp7NrNsIqqXsFZKb8
-X-Gm-Gg: ASbGncua7fBJp+Ge4fRi7wHrKk7p30e9PNFVjObevZNTP7af1SfR+GDmfY2l/YNFbqx
-	11u5EVriz5shAeMAXMbgcy8gleqre26bSkrJJflRiTlZQBenb2DWRZPGqKdHM4Lh/Hswy60tZgR
-	IkGlDZkasB43Qv7Mih2RjU+sU5DBpWE1+Xne00D5F+uC5aSzbtgFBC9cCboIf/hTNh9TKWZpYjK
-	Aatohw3JD2ZWjwYX/tN69RK1EW5+qL20aYuZrXfjfpLj+ln5cf1PxiJLWX8atyOgXjgC5Jtkzsn
-	wBuC4eJmQQ5oicU/7voMSxfiNWDg+aCnXQ==
-X-Google-Smtp-Source: AGHT+IFFw0VHfUVoHAxx6oiw9lR0kpnPL5dSLfuP5UmIxgyQe4lQDZIxnUgrm1d+9YpJ7ewEegJffg==
-X-Received: by 2002:a17:903:1c4:b0:223:4341:a994 with SMTP id d9443c01a7336-22bea49e9d9mr201924565ad.9.1744703927913;
-        Tue, 15 Apr 2025 00:58:47 -0700 (PDT)
-Received: from honey-badger ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-308535bb05asm454124a91.1.2025.04.15.00.58.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Apr 2025 00:58:47 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: andrii@kernel.org,  ast@kernel.org,  daniel@iogearbox.net,
-  bpf@vger.kernel.org,  mykolal@fb.com,  kernel-team@meta.com
-Subject: Re: [PATCH bpf-next] kbuild, bpf: enable --btf_features=attributes
-In-Reply-To: <20250414185918.538195-1-ihor.solodrai@linux.dev> (Ihor
-	Solodrai's message of "Mon, 14 Apr 2025 11:59:18 -0700")
-References: <20250414185918.538195-1-ihor.solodrai@linux.dev>
-Date: Tue, 15 Apr 2025 00:58:43 -0700
-Message-ID: <87zfgh26vg.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        d=1e100.net; s=20230601; t=1744705473; x=1745310273;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fNUQZdJEfgBW55jJBNwuJY4OjuVE5fjTLKdKD/g6/bM=;
+        b=UqpI5sFIxKK+J07V7nm4U2Z933eNYMDVxqrmwWeW2wRLrwaaW0idyV7QDypL8QjT4t
+         XD6v/L0tXNujInT/X9fqCE907ldJlTgmFgCZcAaA8hOouwbeZuxjz8aS08Kr0thNHobE
+         kRA28dA5Xktopp7LM31RAUcchIjrtSRW7KlnNeb6UrNcyszu8xNi6+hrpWJxWIsbbhFq
+         z3eAvZ5WM9Ob7M5dRHD9fsLMV7ErTm7P9AsOnMZ3R5jvarv0E1jqC+6tG+7fr/cv6oX7
+         n6VAQ5xPae+EJkZsN5253afqte2vvj6JZTOf1uyw3iwxHC42EDSDVZo7dtymoEjEg8DS
+         f6xg==
+X-Forwarded-Encrypted: i=1; AJvYcCVWV0HH+PobBhYqo9FB59tXql/39W+RFMu0l7LO9vT/6S5F/KJcz8d8xDU5oV7KkMgDOiQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6LuvjSEAaACXCgIEGJKk5S6tAPjyPspcWogvmUFN6cgx2fWeL
+	cfbU32ygnANlXRk195ppc73U2/u/joW15igz+05S7uJ7+5LEXoT9jF24rBhkOt7EgDDHUBmN/tu
+	8H1BS971SF8/Xs7wS64ov6pUZ1D5aqiziG+rjjVad/KY5s+7YNw==
+X-Gm-Gg: ASbGncv0qaXu4s6TqCK3aGabOAaPho6eJR2lfPRl1uHCu8HnD4g2jzgTAT1ZbO0Aht5
+	7A4pvdF8dssyfR5yQNgJL59rKxOoFOCYUsv7cwjqjBCSfeozWxjQNmWyM1MX8/RvrOZp23LBjW0
+	i+nOFZBtgUtn3ednegsGJN3qIRNDCp7uGyAOTmNfdBXSEgp2jw75qsIwO52OuU75VYH+iFlXMlS
+	0hEAvjXCafjAU0lK/dvOZKb0D9Uw0WVNTI/GeJCyCWasquQWHZERRqdAISR4Gq2WrQKdbgIOZfg
+	wHFAEmgJJ9TYnoTMR2bezLzZ/PNtcdRIj5cMn8Q=
+X-Received: by 2002:a05:600c:a53:b0:43d:fa59:af97 with SMTP id 5b1f17b1804b1-43f3a9aedd2mr137483015e9.32.1744705472725;
+        Tue, 15 Apr 2025 01:24:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF9p2z4UapZcr7Xqst3QaiQ7S8RXnCmG/NalHMoIBtWDxFXLmzHcbd+AlPzv4FdLt/ZCrgM4Q==
+X-Received: by 2002:a05:600c:a53:b0:43d:fa59:af97 with SMTP id 5b1f17b1804b1-43f3a9aedd2mr137482755e9.32.1744705472321;
+        Tue, 15 Apr 2025 01:24:32 -0700 (PDT)
+Received: from [192.168.88.253] (146-241-34-52.dyn.eolo.it. [146.241.34.52])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43f206332d9sm201428715e9.13.2025.04.15.01.24.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Apr 2025 01:24:31 -0700 (PDT)
+Message-ID: <0a239bd2-b943-473b-ac3d-d3bf0401df34@redhat.com>
+Date: Tue, 15 Apr 2025 10:24:29 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 1/2] net: tls: explicitly disallow disconnect
+To: Ihor Solodrai <ihor.solodrai@linux.dev>, Jakub Kicinski
+ <kuba@kernel.org>, davem@davemloft.net
+Cc: netdev@vger.kernel.org, edumazet@google.com, andrew+netdev@lunn.ch,
+ horms@kernel.org, borisp@nvidia.com, john.fastabend@gmail.com,
+ sd@queasysnail.net, syzbot+b4cd76826045a1eb93c1@syzkaller.appspotmail.com,
+ bpf@vger.kernel.org, jiayuan.chen@linux.dev,
+ Alexei Starovoitov <ast@kernel.org>
+References: <20250404180334.3224206-1-kuba@kernel.org>
+ <e0ea9f710fde34bdce42515f8c68722015403ab9@linux.dev>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <e0ea9f710fde34bdce42515f8c68722015403ab9@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Ihor Solodrai <ihor.solodrai@linux.dev> writes:
+On 4/15/25 5:16 AM, Ihor Solodrai wrote:
+> On 4/4/25 11:03 AM, Jakub Kicinski wrote:
+>> syzbot discovered that it can disconnect a TLS socket and then
+>> run into all sort of unexpected corner cases. I have a vague
+>> recollection of Eric pointing this out to us a long time ago.
+>> Supporting disconnect is really hard, for one thing if offload
+>> is enabled we'd need to wait for all packets to be _acked_.
+>> Disconnect is not commonly used, disallow it.
+>>
+>> The immediate problem syzbot run into is the warning in the strp,
+>> but that's just the easiest bug to trigger:
+>>
+>>   WARNING: CPU: 0 PID: 5834 at net/tls/tls_strp.c:486 tls_strp_msg_load+0x72e/0xa80 net/tls/tls_strp.c:486
+>>   RIP: 0010:tls_strp_msg_load+0x72e/0xa80 net/tls/tls_strp.c:486
+>>   Call Trace:
+>>    <TASK>
+>>    tls_rx_rec_wait+0x280/0xa60 net/tls/tls_sw.c:1363
+>>    tls_sw_recvmsg+0x85c/0x1c30 net/tls/tls_sw.c:2043
+>>    inet6_recvmsg+0x2c9/0x730 net/ipv6/af_inet6.c:678
+>>    sock_recvmsg_nosec net/socket.c:1023 [inline]
+>>    sock_recvmsg+0x109/0x280 net/socket.c:1045
+>>    __sys_recvfrom+0x202/0x380 net/socket.c:2237
+>>
+>> Fixes: 3c4d7559159b ("tls: kernel TLS support")
+>> Reported-by: syzbot+b4cd76826045a1eb93c1@syzkaller.appspotmail.com
+>> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> 
+> Hi everyone.
+> 
+> This patch has broken a BPF selftest and as a result BPF CI:
+> * https://github.com/kernel-patches/bpf/actions/runs/14458537639
+> * https://github.com/kernel-patches/bpf/actions/runs/14457178732
+> 
+> The test in question is test_sockmap_ktls_disconnect_after_delete
+> (tools/testing/selftests/bpf/prog_tests/sockmap_ktls.c) [1].
+> 
+> Since the test is about disconnect use-case, and the patch disallows
+> it, I assume it's appropriate to simply remove the test?
 
-> pahole v1.30 has a BTF encoding feature for arbitrary attributes, used
-> in particular for tagging bpf_arena_alloc_pages and
-> bpf_arena_free_pages BPF kfuncs [1][2].
->
-> Enable it for the kernel build.
->
-> [1] https://lore.kernel.org/bpf/20250130201239.1429648-1-ihor.solodrai@linux.dev/
-> [2] https://lore.kernel.org/bpf/20250228194654.1022535-1-ihor.solodrai@linux.dev/
->
-> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> ---
+Ideally, yes. disconnect() implementation by its own nature error and
+race prone, I guess  TLS adds some more spice to it. Unless there is a
+real end-user scenario behind it, removing the disconnect()
+implementation is by far the best option.
 
-With this patch and a new pahole I see the following text in vmlinux.h:
+Still the test presence hints at some possible use-case[???]. Was it
+created using the plain tcp test cases as a template?
 
-  ...
-  extern void __attribute__((address_space(1))) *bpf_arena_alloc_pages(void *p__map, void __attribute__((address_space(1))) *addr__ign, u32 page_cnt, int node_id, u64 flags) __weak __ksym;
-  extern void bpf_arena_free_pages(void *p__map, void __attribute__((address_space(1))) *ptr__ign, u32 page_cnt) __weak __ksym;
-  ...
+Thanks,
 
-test_progs are compiling and passing w/o issues.
+Paolo
 
-Tested-by: Eduard Zingerman <eddyz87@gmail.com>
-
-[...]
 
