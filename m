@@ -1,195 +1,231 @@
-Return-Path: <bpf+bounces-56014-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56015-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EBAAA8ABF1
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 01:15:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8FEAA8AC03
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 01:22:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66C361903888
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 23:15:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 974AD7A810D
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 23:21:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC4A2741BB;
-	Tue, 15 Apr 2025 23:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D80A2D8DC1;
+	Tue, 15 Apr 2025 23:22:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VYY5qa29"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iDZKXGII"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B942517B7
-	for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 23:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 318552D8DA3;
+	Tue, 15 Apr 2025 23:22:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744758930; cv=none; b=Nf8gjI1/kuKtj1Cd65XuKmiChot8wwp+3S7JHExHdAGPIt4fh+lLK+DUgmZ9cA2Xiee1zvmlcbZrYpJ8Fi+L6HLAEf2o+0BEWg0e5sQoIaryHHBLAUmW0D0vnEpTFpwmAxch3e532B3Y67q8HQiwpvMRoFFm42Z30gsupGFltfY=
+	t=1744759352; cv=none; b=BoSTYxED4TAFK1wn6qflD4pHofu3bNLrS+EPG3iFBgIh2Axi1eeSaKXVBFZ20H2AeWKhp9W3fIok0kxXdlUnJNwrtCTVDftw2TdzAeG+kDLAarwF6idj2Wn4tO1+2UfewZVtUz95AS9F/xmlITQ2xnU9iScnJWqszM9DN6vwOs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744758930; c=relaxed/simple;
-	bh=0Y+LMgOhLtt/fYrLPC3xn0mxyoK5KHtoI/uhkP5gPrE=;
+	s=arc-20240116; t=1744759352; c=relaxed/simple;
+	bh=h0R5L6nVvByYez5eHmbu8mdtkQsLFhJhqXTOtvcyBAg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gojdWPxslM//I7gbknyAgqEcl++GnGoBkOogISQex1mEQtMeLd1k9NKkTvhl8IVMCAep+xYbAzyK+oM26u8xCrseHHe14H6LV6wasm0XXWj1SAu6of/dsw5rbsGlQo2FunyWM0gCognQsnN6CbcTHCLBF4sm5uYObM7xCw7f/Fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VYY5qa29; arc=none smtp.client-ip=209.85.214.177
+	 To:Cc:Content-Type; b=ANbJmiqqNJR780s2vfxS7h6yNctaI1Jd8/xfgYz7h+SkAdFamIuYXXCiF5f/TtfAlQuyg0IlBX4Gf9SxSHhiG+NSaKTbpjxd249CDPl3vNCYDbuq+CfqQfQDSd3ThfBItPUnavM4pHUUdLl2GyxrCWPjqZwTwJ03hepgEetXjIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iDZKXGII; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-224171d6826so86507665ad.3
-        for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 16:15:29 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-b03bc416962so4305975a12.0;
+        Tue, 15 Apr 2025 16:22:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744758928; x=1745363728; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744759350; x=1745364150; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KJYh0QpalVdPz7ieuI+35tJkBPIpy9V4gRTATuks4xA=;
-        b=VYY5qa29uMiCaoVpNZcPnv1SsV1GVyEaj930/sfB75LjGauuAXjxkqr3FwMKW2jiJb
-         hxuIbD7yq15HA+vcYLTj++mHB8M0gwzhwTN2tBtomjMxm1y8Yxa1Qchy/6VoSzVyXatJ
-         tJabGJELaT9ZEtA7UKp1CewZN4FEwXXjOeI8+GiTNhPUSchvLxhJjk3eQ3YoEhNrrKL8
-         iamzZWVF3kSf3ENxm+OLyWVhHtPioWKD/MlSQTUlb76EFggbvhE0o8L4IM13YzQr8tcr
-         v1yN86qua+vPX0hDNXF1JnV51BfpCcma9iaM84v+S7OmV/plq9xXTigUelnWw69jT/Rs
-         cLEw==
+        bh=OD+viivAmrV9Ri8tXcGexdXaVsd+qYre9jyq6k6JI+s=;
+        b=iDZKXGIIDp0QdbreRLOwMpP5bdpdNZh5JL8Z4JWjyFkSnrCDYDuNyPogJbYBSfaLcF
+         vRMDsuHazPGgUaa2EwUA1s4rtCVZ20SGYE9ZhPoOHMkwRZGF9+oqJt3qIT9KsNjeSYIH
+         cEXd0teJL5pBMRDX8roXcYAAI3ox8EKZ7kWkfbqzxIsI9ayj6qXOY462DkyHsBX9Be7K
+         a7Op0mI3C9SF6wDlWRCTPUAJKW956INNRWctdFbULdDhwjExpsYBbVy2m8tqo0V8UKQa
+         gCglnvl8DWSUxKPSn6YfzSXE2Dggz+AEAZaUb6oKJgE1570KYKnUavyNfUWRD59cjDow
+         WMvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744758928; x=1745363728;
+        d=1e100.net; s=20230601; t=1744759350; x=1745364150;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KJYh0QpalVdPz7ieuI+35tJkBPIpy9V4gRTATuks4xA=;
-        b=K0p1nSTuMQ54o9Sd2gxeeFS8kjmPe0r4VfTGz++rbErscrwhegItocJkYcaLaRn9hz
-         tsb1sBxLgPdpk8kHguj6yl1u6+p4jGCcTUe5S4x46IAqlIX1sgP9E/R27rEFaDbek3Kk
-         gk+ZVhZYWkSJXfIpvTjlRctKY+k6ws7KP3IV2I+thnhT0OrNjpK7hny4RxNcNFozAhQh
-         9pYI4Xrv93PfqOyjOeHOTSB8th9JFlnr6QefPhNjv+k6xdTfH4qHKz+jaZm8ZLtFqJHK
-         dlEaVdbRNMscUelMJKKGOqaonBZPYtUEq6jMCXtI60XOcYKnpabpVs/R+uehz45Esbsh
-         T2CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXEKLNsYe9pEVHqoKsWQ9mkTPZ9T+7CtL96p6g/8H44lHQ4z2/w1yyLJdVqgEZGgLBMdBc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwP96j9AzeB4Ux51g04lIg+MbH4nKrImr1x3thxeiS7d1MmkysY
-	HIfuhzTnMfqkr0b0gH7D560OAkZzj3xJa8LEH6i/5oXmx1c0kVCCnurzD4ya/z0toVzmiQhl6wi
-	Zik/nIfTXyTqsmU2+zHEeRFGFAX0=
-X-Gm-Gg: ASbGncvBMx1G0m150DOEk6iPlWvYPJ+qxdLW+xP5Mm7td6E/vrQaI3D8NysXeHKqBzN
-	mPBBjYJVxphiHo6VlobzoA+yK3J3bvCYwfF5SgXEdw/6i9oe8pmVWiv+E1ZVfj7Lv3jC29Hw7jr
-	s/O9PFmhZHj2JyPREz6yIuzo5Kq4BCLE8lQyxORw==
-X-Google-Smtp-Source: AGHT+IGSHHqeJk3/JiLcfzolmJdGXwLDoxBDCrdQMQcqb+zxk1ntWjGH8keHCLMsXYF5JQhYayswKaBDB+jN7Dakg0A=
-X-Received: by 2002:a17:902:ce92:b0:22c:33b2:e420 with SMTP id
- d9443c01a7336-22c33b2e66dmr5394235ad.7.1744758928579; Tue, 15 Apr 2025
- 16:15:28 -0700 (PDT)
+        bh=OD+viivAmrV9Ri8tXcGexdXaVsd+qYre9jyq6k6JI+s=;
+        b=axGkY02Dobhhc4km3gsSK7kY7FUds94cXY7I411GEvPhElGBO2O8Q0O39Aw7NQGbkj
+         F//bQRPZ0J4DhV1JuR5CldZwBlxQ4U5Arbs+4TV2FkraAG4jhubKM2YvlauRynj2bzyB
+         YU5uno/kIJDKJ9EDz31rhj/MKPnRsULwvRwKeVxvwbXcqj3QrLjuyzO/nwuZIiH59aFF
+         HLJxW5dYDvlQh8D1IAHHlkblaTkzb5n16ejy5N7KSc91Bt46Irh6spY2Msr+vqUvy+03
+         WxtmouECSVfy0nTQkKqmmmElbohv3NaEkJtXgaUEDbFVUxYGCn7cTjWSq8VlU9rqBwfh
+         fCtg==
+X-Forwarded-Encrypted: i=1; AJvYcCUJq/oWpomfA0C7aawQzGPHoad+S9DgVQpp0zI8tcjuz4lngRHtEPowqQCPq1RDssChK5C0hVAhBZC49Ig=@vger.kernel.org, AJvYcCVyRk995dO0JqnGiEJkib8tUjnSPaq5USgaKFqIsYWGxgP92VHhdnyq6OZWub4/7xWvn3ithz3fmyDiIw==@vger.kernel.org, AJvYcCWEFDamiVrs4L2zjE6Z8P22GkM5Nl26i6oFUTK+HLwNtUXQ+9hVWh80wPjofYZuigzKF3YzdS0H@vger.kernel.org
+X-Gm-Message-State: AOJu0YwG0dP2WNSVJ37d+IbdHIi16WLtuXGPerCGp4W/aWF2BN0BEWAx
+	n4/6fxgdpXpJmFHX/F0OFWAhC3l/eZnTqBVAogElOe58VQpW7+k/00YuGp0KRDeuRXWxcsJTeyE
+	de5HSZy0IQQCfKduzORvjDaFBgTU=
+X-Gm-Gg: ASbGncuTxP7qDhRmF2OWmM5sSL8lPU0HZj6CHVrMaSZVz6Bub/qjAXnLbQwDza/3fDY
+	PakeNBxf+52giPy64yXIdtm3BvXnX8L2fASQkCUMuyyS6HwiUScHoYQ75aeHw+Di95pbqbnqNg7
+	E//zaeJE+y0FCDkTRlhrqHXDia4Bvivicn6KkpuA==
+X-Google-Smtp-Source: AGHT+IFQsC/LtlCHl7jX6jCGG1cUKpJ83xO1W3hXxizLj/9OZJRvgT/SxBeX8k1UK5SbPpc6U6ToeYujQXggHIyGXiA=
+X-Received: by 2002:a17:90b:58c3:b0:2ff:702f:7172 with SMTP id
+ 98e67ed59e1d1-3085efeadd5mr1689216a91.33.1744759350389; Tue, 15 Apr 2025
+ 16:22:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAADnVQJbBOK25Fx3zEG-ZH=zTFRfPNQye673b5TnpdTdMEXAUA@mail.gmail.com>
- <20250410103804.49250-1-malayarout91@gmail.com> <CAEf4BzaogUrvCxga36F1_o-h53Ur0mAaG9im1JsPfAhutxSYuQ@mail.gmail.com>
- <CAE2+fR-QvJqL0VkqPufLL+r7FLaOSTRt2_xXjq=fdpk0yAGj2w@mail.gmail.com>
-In-Reply-To: <CAE2+fR-QvJqL0VkqPufLL+r7FLaOSTRt2_xXjq=fdpk0yAGj2w@mail.gmail.com>
+References: <c9816983-7162-47e6-8758-2daaa8c8ccc3@linux.ibm.com> <d79d19b3-8dc5-4d2c-900e-a273ce317e24@linux.ibm.com>
+In-Reply-To: <d79d19b3-8dc5-4d2c-900e-a273ce317e24@linux.ibm.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 15 Apr 2025 16:15:15 -0700
-X-Gm-Features: ATxdqUF7-iz1_-OloN7wbfhplMYUgm_PNyMzX9L1vZfkBlOdg07mm2-i99fxF04
-Message-ID: <CAEf4BzZGCfrEJpqbd=j11poDHyHqfobRvQeQB0FLEpBg9Bf_XQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND bpf-next v3] selftests/bpf: close the file
- descriptor to avoid resource leaks
-To: malaya kumar rout <malayarout91@gmail.com>
-Cc: alexei.starovoitov@gmail.com, bpf@vger.kernel.org
+Date: Tue, 15 Apr 2025 16:22:18 -0700
+X-Gm-Features: ATxdqUHDtDXg02nyYEfqX04Fjl1FO8dOnsI6GySbXtdgeBeUPsKA4XM8rGso4Mg
+Message-ID: <CAEf4BzbiP2RY1FyRtCJBcmC6_ngjSFua_Vt0zAcZ=AGc-u_7aw@mail.gmail.com>
+Subject: Re: [mainline]Kernel Warnings at kernel/bpf/syscall.c:3374
+To: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Cc: bpf <bpf@vger.kernel.org>, Saket Kumar Bhaskar <skb99@linux.ibm.com>, 
+	Hari Bathini <hbathini@linux.ibm.com>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-next@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 12, 2025 at 11:45=E2=80=AFAM malaya kumar rout
-<malayarout91@gmail.com> wrote:
+On Wed, Apr 9, 2025 at 9:51=E2=80=AFPM Venkat Rao Bagalkote
+<venkat88@linux.ibm.com> wrote:
 >
-> Malaya Kumar Rout
-> Ph. No:  +91-9778203508
->              +91-7008245249
+> + LKML, netdev
 >
-> On Thu, Apr 10, 2025 at 11:03=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On 10/04/25 10:17 am, Venkat Rao Bagalkote wrote:
+> > Hello!!
 > >
-> > On Thu, Apr 10, 2025 at 3:38=E2=80=AFAM Malaya Kumar Rout
-> > <malayarout91@gmail.com> wrote:
-> > >
-> > > Static analysis found an issue in bench_htab_mem.c
-> > >
-> > > cppcheck output before this patch:
-> > > tools/testing/selftests/bpf/benchs/bench_htab_mem.c:284:3: error: Res=
-ource leak: fd [resourceLeak]
-> > > tools/testing/selftests/bpf/prog_tests/sk_assign.c:41:3: error: Resou=
-rce leak: tc [resourceLeak]
-> > >
-> > > cppcheck output after this patch:
-> > > No resource leaks found
-> > >
-> > > Fix the issue by closing the file descriptors fd and tc.
-> > >
-> > > Signed-off-by: Malaya Kumar Rout <malayarout91@gmail.com>
-> > > ---
 > >
-> > I still don't see this patch in our Patchworks.
+> > I am observing below kernel warnings on IBM Power9 server, while
+> > running bpf selftest on mainline kernel.
 > >
-> > But I noticed that the subject is:
+> > This issue never seen before good commit[1], and seen intermetently
+> > after bad commit[2], and this is not reproducible everytime.
 > >
-> > RE:[PATCH RESEND bpf-next v3] selftests/bpf: close the file descriptor
-> > to avoid resource leaks
+> > So likely issue got introduced b/w these two commits.
 > >
-> > and there is
+> > [1]GoodCommit: 7f2ff7b6261742ed52aa973ccdf99151b7cc3a50
+> > [2]Bad Commit: 08733088b566b58283f0f12fb73f5db6a9a9de30
 > >
-> > In-Reply-To: <CAADnVQJbBOK25Fx3zEG-ZH=3DzTFRfPNQye673b5TnpdTdMEXAUA@mai=
-l.gmail.com>
 > >
-> > email header, so I suspect bot ignores this because it's a reply.
+> > Traces:
 > >
-> > Please send it as a stand-alone email with `git send-email`, hopefully
-> > that works.
 > >
-> I have shared a stand-alone email with 'git send-email'.Kindly confirm
-> at your earliest convenience. If any issues arise again, please permit
-> me to share two separate patches, as we have modifications in two
-> distinct files.
->
+> > [34208.591723] ------------[ cut here ]------------
+> > [34208.591738] WARNING: CPU: 9 PID: 375502 at
+> > kernel/bpf/syscall.c:3374 bpf_tracing_link_release+0x90/0xa0
 
-Yes, this time email arrived into Patchworks, but you had pclose ->
-close mistake, please fix, test, and resubmit.
+This seems to be due to an error returned from
+bpf_trampoline_unlink_prog(), which can happen for a multitude of
+reasons. If you can reproduce this reasonably easily, it would be nice
+if you can help understand where exactly it's coming from. You could
+try using retsnoop ([0]) for this. Or bpftrace, if you can't use
+retsnoop for some reason.
 
-> > >  tools/testing/selftests/bpf/benchs/bench_htab_mem.c | 3 +--
-> > >  tools/testing/selftests/bpf/prog_tests/sk_assign.c  | 4 +++-
-> > >  2 files changed, 4 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/to=
-ols/testing/selftests/bpf/benchs/bench_htab_mem.c
-> > > index 926ee822143e..297e32390cd1 100644
-> > > --- a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-> > > +++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-> > > @@ -279,6 +279,7 @@ static void htab_mem_read_mem_cgrp_file(const cha=
-r *name, unsigned long *value)
-> > >         }
-> > >
-> > >         got =3D read(fd, buf, sizeof(buf) - 1);
-> > > +       close(fd);
-> > >         if (got <=3D 0) {
-> > >                 *value =3D 0;
-> > >                 return;
-> > > @@ -286,8 +287,6 @@ static void htab_mem_read_mem_cgrp_file(const cha=
-r *name, unsigned long *value)
-> > >         buf[got] =3D 0;
-> > >
-> > >         *value =3D strtoull(buf, NULL, 0);
-> > > -
-> > > -       close(fd);
-> > >  }
-> > >
-> > >  static void htab_mem_measure(struct bench_res *res)
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/too=
-ls/testing/selftests/bpf/prog_tests/sk_assign.c
-> > > index 0b9bd1d6f7cc..10a0ab954b8a 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-> > > @@ -37,8 +37,10 @@ configure_stack(void)
-> > >         tc =3D popen("tc -V", "r");
-> > >         if (CHECK_FAIL(!tc))
-> > >                 return false;
-> > > -       if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc)))
-> > > +       if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc))) {
-> > > +               pclose(tc);
-> > >                 return false;
-> > > +       }
-> > >         if (strstr(tc_version, ", libbpf "))
-> > >                 prog =3D "test_sk_assign_libbpf.bpf.o";
-> > >         else
-> > > --
-> > > 2.43.0
-> > >
+  [0] https://github.com/anakryiko/retsnoop
+
+> > [34208.591750] Modules linked in: bpf_testmod(OE) 8021q(E) garp(E)
+> > mrp(E) vrf(E) tun(E) rpadlpar_io(E) rpaphp(E) vfat(E) fat(E) isofs(E)
+> > ext4(E) crc16(E) mbcache(E) jbd2(E) nft_masq(E) veth(E) bridge(E)
+> > stp(E) llc(E) overlay(E) bonding(E) nft_fib_inet(E) nft_fib_ipv4(E)
+> > nft_fib_ipv6(E) nft_fib(E) nft_reject_inet(E) nf_reject_ipv4(E)
+> > nf_reject_ipv6(E) nft_reject(E) nft_ct(E) nft_chain_nat(E) rfkill(E)
+> > ip_set(E) mlx5_ib(E) ib_uverbs(E) ib_core(E) mlx5_core(E) mlxfw(E)
+> > psample(E) tls(E) ibmveth(E) pseries_rng(E) sg(E) vmx_crypto(E) drm(E)
+> > fuse(E) dm_mod(E) drm_panel_orientation_quirks(E) xfs(E) lpfc(E)
+> > nvmet_fc(E) nvmet(E) sr_mod(E) sd_mod(E) cdrom(E) nvme_fc(E)
+> > nvme_fabrics(E) ibmvscsi(E) nvme_core(E) scsi_transport_srp(E)
+> > scsi_transport_fc(E) [last unloaded: bpf_test_modorder_x(OE)]
+> > [34208.591838] CPU: 9 UID: 0 PID: 375502 Comm: test_progs-no_a
+> > Tainted: G        W  OE       6.15.0-rc1-ga24588245776 #1 VOLUNTARY
+> > [34208.591848] Tainted: [W]=3DWARN, [O]=3DOOT_MODULE, [E]=3DUNSIGNED_MO=
+DULE
+> > [34208.591852] Hardware name: IBM,8375-42A POWER9 (architected)
+> > 0x4e0202 0xf000005 of:IBM,FW950.80 (VL950_131) hv:phyp pSeries
+> > [34208.591857] NIP:  c00000000049c830 LR: c00000000049c7cc CTR:
+> > 0000000000000070
+> > [34208.591863] REGS: c00000000eb07a60 TRAP: 0700   Tainted: G
+> > W  OE        (6.15.0-rc1-ga24588245776)
+> > [34208.591869] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR:
+> > 84002482  XER: 00000000
+> > [34208.591882] CFAR: c00000000049c7d4 IRQMASK: 0
+> > [34208.591882] GPR00: c00000000049c7cc c00000000eb07d00
+> > c000000001da8100 fffffffffffffff2
+> > [34208.591882] GPR04: 0000000000014ed8 c00000103965d480
+> > c0000003415ca800 c0000000b247c900
+> > [34208.591882] GPR08: 0000000000000000 0000000000000000
+> > c0000000b247c900 0000000000002000
+> > [34208.591882] GPR12: c00000000eb078a8 c000000017ff5300
+> > 0000000000000000 0000000000000000
+> > [34208.591882] GPR16: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> > [34208.591882] GPR20: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> > [34208.591882] GPR24: 0000000000000000 0000000000000000
+> > 0000000000000000 c0000003893d6780
+> > [34208.591882] GPR28: c00000000369a6a0 0000000000000fa4
+> > c00000000135d988 c0000000c224bf00
+> > [34208.591945] NIP [c00000000049c830] bpf_tracing_link_release+0x90/0xa=
+0
+> > [34208.591953] LR [c00000000049c7cc] bpf_tracing_link_release+0x2c/0xa0
+> > [34208.591960] Call Trace:
+> > [34208.591963] [c00000000eb07d00] [c00000000049c7cc]
+> > bpf_tracing_link_release+0x2c/0xa0 (unreliable)
+> > [34208.591973] [c00000000eb07d30] [c00000000049c614]
+> > bpf_link_free+0x94/0x160
+> > [34208.591981] [c00000000eb07d70] [c00000000049c780]
+> > bpf_link_release+0x50/0x70
+> > [34208.591989] [c00000000eb07d90] [c0000000006ee75c] __fput+0x11c/0x3c0
+> > [34208.591997] [c00000000eb07de0] [c0000000006e46bc] sys_close+0x4c/0xa=
+0
+> > [34208.592003] [c00000000eb07e10] [c0000000000325a4]
+> > system_call_exception+0x114/0x300
+> > [34208.592012] [c00000000eb07e50] [c00000000000d05c]
+> > system_call_vectored_common+0x15c/0x2ec
+> > [34208.592020] --- interrupt: 3000 at 0x7fff9c40d8a4
+> > [34208.592030] NIP:  00007fff9c40d8a4 LR: 00007fff9c40d8a4 CTR:
+> > 0000000000000000
+> > [34208.592035] REGS: c00000000eb07e80 TRAP: 3000   Tainted: G
+> > W  OE        (6.15.0-rc1-ga24588245776)
+> > [34208.592041] MSR:  800000000280f033
+> > <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 48002886  XER: 00000000
+> > [34208.592057] IRQMASK: 0
+> > [34208.592057] GPR00: 0000000000000006 00007fffcce2d650
+> > 00007fff9c527100 0000000000000066
+> > [34208.592057] GPR04: 0000000000000000 0000000000000007
+> > 0000000000000004 00007fff9ce5efc0
+> > [34208.592057] GPR08: 00007fff9ce57908 0000000000000000
+> > 0000000000000000 0000000000000000
+> > [34208.592057] GPR12: 0000000000000000 00007fff9ce5efc0
+> > 0000000000000000 0000000000000000
+> > [34208.592057] GPR16: 0000000000000000 0000000000000000
+> > 0000000000000000 0000000000000000
+> > [34208.592057] GPR20: 0000000000000000 0000000000000000
+> > 0000000000000000 00007fff9ce4f470
+> > [34208.592057] GPR24: 0000000010610b6c 00007fff9ce50000
+> > 00007fffcce2e098 0000000000000001
+> > [34208.592057] GPR28: 00007fffcce2e250 00007fffcce2e088
+> > 0000000000000000 0000000000000066
+> > [34208.592118] NIP [00007fff9c40d8a4] 0x7fff9c40d8a4
+> > [34208.592122] LR [00007fff9c40d8a4] 0x7fff9c40d8a4
+> > [34208.592127] --- interrupt: 3000
+> > [34208.592130] Code: 4bfffc28 60000000 60000000 60000000 38210030
+> > e8010010 ebe1fff8 7c0803a6 4e800020 60000000 60000000 60000000
+> > <0fe00000> 4bffffa4 60000000 60000000
+> > [34208.592152] ---[ end trace 0000000000000000 ]---
+> >
+> >
+> > If you happen to fix this issue, please add below tag.
+> >
+> >
+> > Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+> >
+> >
+> > Regards,
+> >
+> > Venkat.
+> >
+>
 
