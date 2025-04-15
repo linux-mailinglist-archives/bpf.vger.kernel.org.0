@@ -1,265 +1,218 @@
-Return-Path: <bpf+bounces-55917-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55918-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44288A89181
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 03:38:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E148BA891B9
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 04:02:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63FBC3AE79D
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 01:38:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B341A189C3FB
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 02:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42431F4CA8;
-	Tue, 15 Apr 2025 01:38:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D5C161310;
+	Tue, 15 Apr 2025 02:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="msD5sJlj"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Iz8u20+O"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4643719E7FA;
-	Tue, 15 Apr 2025 01:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51122DFA3B;
+	Tue, 15 Apr 2025 02:02:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744681109; cv=none; b=ghVtBe/DndQ39bckxOLOEZBVJrRXsecQHtK1Vxkp/al+kb5HQmYXgi3FziBz9bf9NP8LaxrIgOrHhuTPqJSffKmZ7ORbJIo0HKT7zoEF9hf4n5dUiWquGtUiZ+KBNvB9QpV6sVGK9f7bCdfJJw/dpcaS9CDpgpXnLEVCMe3E864=
+	t=1744682536; cv=none; b=Z17xjpwwZUldgvmqraX6gIHNReF54qHgUWUsVCtAZGxB1zLSXTpoIkeBYXfkTg6rPrwY1CEegfwji0f17ppunriE1d/9R9MFuzE5fY7/0Gvj7l+ruOXZe1mcm152HVBaXOUCnOAp1h5DlN2mM27Aq/SbpSi2gFFZg+PIq8QnhIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744681109; c=relaxed/simple;
-	bh=D9/copwN8Vi93hcXVQLwm6TV1oCBKCuDxgsjassI+4c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PRi+IMK8erC2fD5IW/wm7Rq9wDBY9vexJ2xqWzgt5ioyyryRi1owQRFcBJ5HGJtoeh6ilrNBrQj+r369N668pBqaiR5hYDhyBIezVgYx3bvURsBZXxebRSve7u60lgWEyysw4X9WT9/JzgzwDL8zTA368VOi5bXq7RTvjuVt1yU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=msD5sJlj; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-39c0e0bc733so4290509f8f.1;
-        Mon, 14 Apr 2025 18:38:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744681105; x=1745285905; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hstID7d8ycIqCdy0S2HoM/NmlIdP9WL4OFhfgrftQOQ=;
-        b=msD5sJljC6I/EtHN9goTu0a7djeRR60OSMmISChLeHmJTw9Y0KJnL8AvVLHalqfarI
-         PKkGy2Ij9fCBteFprt4IEfWqMDZ4lQN2489qO9ZuGUVHCG4A2wkmCdMc0TQojZQ3VRvd
-         BEZc7W6BA3/peO+QG9ysnmYwY8cG+wc5GF9IPSCG6UP3j9MdVercRYLr1UtShV/EVKrE
-         IHaIWG6Ic3J/I6MqvQyQu5u5oxgoNOQh2yYaDI6kkfiYyvzRv4PYs+eWwWmkGLC00qvE
-         sS/ny6qOgQVzKVqnngjCHjtZ7+jK8dZ71TXU6rwhFJw3qxSv4WizCnArvI/AJA2CBvnY
-         e+uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744681105; x=1745285905;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hstID7d8ycIqCdy0S2HoM/NmlIdP9WL4OFhfgrftQOQ=;
-        b=CcfEqANc3tbTf0O2c+jpsFJv0yPAeopSm/clItGdyo8A9BYzqAVJDCJ9Yc7QorPmT7
-         0nh+2GybxBQc/W6fHuTJ3yazJinM4dbTm8n+x87MoeVoyb/hBS5xIM19qKH/02ChvHLj
-         Cuh5aDNZC29jknrwYHVNupnmqN7rhlaBTsQZHXbyF1zHgCtfpW42kEPeDxU3oNdD4MP7
-         OCNR3oXMovsSYD+6cgjG7IORcqiOi+Ngen1E5E6DM62bx3ma6cxX3658bU+z17wgJKTI
-         Guho1p0/sxCUz/absYke+ksnhO1kOMNSOuwXmE/DTwkY0LfoFGv9uKErMFCogIIZM2+V
-         PlYw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5AV1GI4Ha+rltlJgm9CX5//Up2x1MJvNNcYJQ6//lCCSURacegyg6QLw8FpnLbU21xUNKRhLQ4+X0@vger.kernel.org, AJvYcCUxEByZ9/VYp44U44XcxjIr2kMyW12uZVj7vOY491FMAk2rtDCfGH7Z3/7YTm4bWk+i2RtPvstErKC8/nWg@vger.kernel.org, AJvYcCV7E/Rvf0ttQnmtVIiA97ckfEW58Ehtg/jIWDstE0LrFzMo2nPQPAR7KepP8rM1KfLAjvQhI3B6gsko+YkU@vger.kernel.org, AJvYcCVLswzPF+nqt8yuJrX3DRc1Jr5qP+iunQPhr6F+P3gXuimi89eh3gorfztzzTK6PRUlDqo=@vger.kernel.org, AJvYcCVrpRMjxs5cSqz6owxfuN3Ke2I5zk7BzqZxwKR5m52ejECbqBPlukf/vDyUC/abv4h0Aq0kPxSONSw=@vger.kernel.org, AJvYcCW07wT5BBwKwYqQy3PhydDxgXwf8Wym78+GaKiyM+0bMlkqhKQv1pq0NA5hAdnqzoD6CcAzcUnoaQu6CV6mvTOv@vger.kernel.org, AJvYcCWJbNpMghIoHTDImjc1eDIw8LdaE3IJZek/MDNUBvuQiFCMAgyW6N7Mx4+i4azrajflI6hixx4Yp0N4K/k+@vger.kernel.org, AJvYcCXIOom3JmViMNY4HFNymzxGKCo0X+uB57m+daOgmkFqZPU1XNat680+mzEN2VVbjki+akn5QPvAcrzabFHx0w+9t07tIAY+@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw0goiS4OKwq3dtorXP3jIamJMVdB2nabBFilStG4elw3uzExq3
-	5TPsRbS+JNm39YZHMxy8y4MNO3/1O5YlLCpJHzOzz7j2+VHDIjbZCHfjSHn3Lblal8OhBbsb2LS
-	JLKToUgX7iMhg90yh3vosu63Cn2s=
-X-Gm-Gg: ASbGncuOL7upgNNj/NwoGGubh/LqkfEqRBZDOkGuBYnR4Yc9rBe9f2iwNAQDtohPtSq
-	Hg+Iwe28qY5Nr6AtSlYheItSXhJf/i3kbAlGpwTOs4rVCWnu9ZP7S86G2jH4h8o8YsedoBhfxKa
-	FK6S6bB8kadjlZMHOTlLSBtoKwpnv6NCKG63uZvg==
-X-Google-Smtp-Source: AGHT+IE13LNRwKepLhiR5HgiMZISHCOnuS/exoyNGmTnGn08SGCoosF3MkOhQ4I61FeJBNHAP0KCBKG0KSg/y+VQIDA=
-X-Received: by 2002:a5d:5c84:0:b0:391:2e7:67ff with SMTP id
- ffacd0b85a97d-39ea51f47e0mr10937877f8f.10.1744681105142; Mon, 14 Apr 2025
- 18:38:25 -0700 (PDT)
+	s=arc-20240116; t=1744682536; c=relaxed/simple;
+	bh=U7t9nA21JGw2dEj6klZs5Ynjd7/8AjiE9+hqAxg1odk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=K2PlKw8u/cR0RcdVP7H2Jnmta1twnTqLpa+Kl0hrclni6WWUHZ8+ve034EJdcGeiew2rXeMF4o0fq3Cn+yOuJYrkm3n42l0EAVfFyI0WRi0lvY3aFxXrzLDAXFOfDek2gjNhePRcBcrrlzZ6uh4E1o8MvT9CLbboOb8LEYSXd7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Iz8u20+O; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=9hkWe
+	q/VxV+O58HqndGEkufimFjxKtOCASpcTil7Loc=; b=Iz8u20+OWWPfzCB5Nof84
+	0ZjWVEW42hVYiakCLtSsqPTT2Ay/22rbcMouzfQ3Wr+7M7a2FnWBOu+2Mwz48mAe
+	sVDS5+99A0IAHgzgPnkItLr+QOFCVAIFa3NN51WOMzp08yWs0GtitGb7g2kArK7a
+	Ph+rNb5027gLNmP00jcM9c=
+Received: from localhost.localdomain (unknown [])
+	by gzsmtp5 (Coremail) with SMTP id QCgvCgAX7wT0vf1nh27NAQ--.14S2;
+	Tue, 15 Apr 2025 10:01:26 +0800 (CST)
+From: Feng Yang <yangfeng59949@163.com>
+To: olsajiri@gmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	hengqi.chen@gmail.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	sdf@fomichev.me,
+	song@kernel.org,
+	yangfeng59949@163.com,
+	yonghong.song@linux.dev
+Subject: Re: [PATCH v3 bpf-next 1/3] libbpf: Fix event name too long error
+Date: Tue, 15 Apr 2025 10:01:15 +0800
+Message-Id: <20250415020115.35450-1-yangfeng59949@163.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <Z_z06uND92kzrXfJ@krava>
+References: <Z_z06uND92kzrXfJ@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
- <20250404215527.1563146-2-bboscaccy@linux.microsoft.com> <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
- <87semdjxcp.fsf@microsoft.com> <CAADnVQ+JGfwRgsoe2=EHkXdTyQ8ycn0D9nh1k49am++4oXUPHg@mail.gmail.com>
- <87friajmd5.fsf@microsoft.com>
-In-Reply-To: <87friajmd5.fsf@microsoft.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 14 Apr 2025 18:38:13 -0700
-X-Gm-Features: ATxdqUHye6neCty12upWdoIVJgMpLkd6THftJdEFKQdyUAliYMBWVcY1MoiFP1Q
-Message-ID: <CAADnVQKb3gPBFz+n+GoudxaTrugVegwMb8=kUfxOea5r2NNfUA@mail.gmail.com>
-Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
-To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen <jarkko@kernel.org>, 
-	Jan Stancek <jstancek@redhat.com>, Neal Gompa <neal@gompa.dev>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	keyrings@vger.kernel.org, 
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, 
-	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com, 
-	Matteo Croce <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
-	Cong Wang <xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:QCgvCgAX7wT0vf1nh27NAQ--.14S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3AF1fZFyxJF1xuFW7trWUJwb_yoW7KFW8pF
+	4DZrn0yF4ftay29F9Iqw18Z3409w4kJF4UJr1Dtr98ZF48WF4DAa42kF4DC3Z8XrZ29w13
+	Za1jgry3XFyxAFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUDxhQUUUUU=
+X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiwgsweGf9vXsZZgAAsi
 
-On Mon, Apr 14, 2025 at 5:32=E2=80=AFPM Blaise Boscaccy
-<bboscaccy@linux.microsoft.com> wrote:
->
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->
-> > On Sat, Apr 12, 2025 at 6:58=E2=80=AFAM Blaise Boscaccy
-> > <bboscaccy@linux.microsoft.com> wrote:
-> >>
-> >> TAlexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >>
-> >> > On Fri, Apr 4, 2025 at 2:56=E2=80=AFPM Blaise Boscaccy
-> >> > <bboscaccy@linux.microsoft.com> wrote:
-> >> >> +
-> >> >> +static int hornet_find_maps(struct bpf_prog *prog, struct hornet_m=
-aps *maps)
-> >> >> +{
-> >> >> +       struct bpf_insn *insn =3D prog->insnsi;
-> >> >> +       int insn_cnt =3D prog->len;
-> >> >> +       int i;
-> >> >> +       int err;
-> >> >> +
-> >> >> +       for (i =3D 0; i < insn_cnt; i++, insn++) {
-> >> >> +               if (insn[0].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW)=
-) {
-> >> >> +                       switch (insn[0].src_reg) {
-> >> >> +                       case BPF_PSEUDO_MAP_IDX_VALUE:
-> >> >> +                       case BPF_PSEUDO_MAP_IDX:
-> >> >> +                               err =3D add_used_map(maps, insn[0].=
-imm);
-> >> >> +                               if (err < 0)
-> >> >> +                                       return err;
-> >> >> +                               break;
-> >> >> +                       default:
-> >> >> +                               break;
-> >> >> +                       }
-> >> >> +               }
-> >> >> +       }
-> >> >
-> >> > ...
-> >> >
-> >> >> +               if (!map->frozen) {
-> >> >> +                       attr.map_fd =3D fd;
-> >> >> +                       err =3D kern_sys_bpf(BPF_MAP_FREEZE, &attr,=
- sizeof(attr));
-> >> >
-> >> > Sorry for the delay. Still swamped after conferences and the merge w=
-indow.
-> >> >
-> >>
-> >> No worries.
-> >>
-> >> > Above are serious layering violations.
-> >> > LSMs should not be looking that deep into bpf instructions.
-> >>
-> >> These aren't BPF internals; this is data passed in from
-> >> userspace. Inspecting userspace function inputs is definitely within t=
-he
-> >> purview of an LSM.
-> >>
-> >> Lskel signature verification doesn't actually need a full disassembly,
-> >> but it does need all the maps used by the lskel. Due to API design
-> >> choices, this unfortunately requires disassembling the program to see
-> >> which array indexes are being used.
-> >>
-> >> > Calling into sys_bpf from LSM is plain nack.
-> >> >
-> >>
-> >> kern_sys_bpf is an EXPORT_SYMBOL, which means that it should be callab=
-le
-> >> from a module.
-> >
-> > It's a leftover.
-> > kern_sys_bpf() is not something that arbitrary kernel
-> > modules should call.
-> > It was added to work for cases where kernel modules
-> > carry their own lskels.
-> > That use case is gone, so EXPORT_SYMBOL will be removed.
-> >
->
-> I'm not following that at all. You recommended using module-based lskels
-> to get around code signing requirements at lsfmmbpf and now you want to
-> nuke that entire feature? And further, skel_internal will no longer be
-> usable from within the kernel and bpf_preload is no longer going to be
-> supported?
+On Mon, 14 Apr 2025 13:43:38 +0200 Jiri Olsa <olsajiri@gmail.com> wrote:
+> On Mon, Apr 14, 2025 at 05:34:00PM +0800, Feng Yang wrote:
+> > From: Feng Yang <yangfeng@kylinos.cn>
+> > 
+> > When the binary path is excessively long, the generated probe_name in libbpf
+> > exceeds the kernel's MAX_EVENT_NAME_LEN limit (64 bytes).
+> > This causes legacy uprobe event attachment to fail with error code -22.
+> > 
+> > Before Fix:
+> > 	./test_progs -t attach_probe/kprobe-long_name
+> > 	......
+> > 	libbpf: failed to add legacy kprobe event for 'bpf_kfunc_looooooooooooooooooooooooooooooong_name+0x0': -EINVAL
+> > 	libbpf: prog 'handle_kprobe': failed to create kprobe 'bpf_kfunc_looooooooooooooooooooooooooooooong_name+0x0' perf event: -EINVAL
+> > 	test_attach_kprobe_long_event_name:FAIL:attach_kprobe_long_event_name unexpected error: -22
+> > 	test_attach_probe:PASS:uprobe_ref_ctr_cleanup 0 nsec
+> > 	#13/11   attach_probe/kprobe-long_name:FAIL
+> > 	#13      attach_probe:FAIL
+> > 
+> > 	./test_progs -t attach_probe/uprobe-long_name
+> > 	......
+> > 	libbpf: failed to add legacy uprobe event for /root/linux-bpf/bpf-next/tools/testing/selftests/bpf/test_progs:0x13efd9: -EINVAL
+> > 	libbpf: prog 'handle_uprobe': failed to create uprobe '/root/linux-bpf/bpf-next/tools/testing/selftests/bpf/test_progs:0x13efd9' perf event: -EINVAL
+> > 	test_attach_uprobe_long_event_name:FAIL:attach_uprobe_long_event_name unexpected error: -22
+> > 	#13/10   attach_probe/uprobe-long_name:FAIL
+> > 	#13      attach_probe:FAIL
+> > After Fix:
+> > 	./test_progs -t attach_probe/uprobe-long_name
+> > 	#13/10   attach_probe/uprobe-long_name:OK
+> > 	#13      attach_probe:OK
+> > 	Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+> > 
+> > 	./test_progs -t attach_probe/kprobe-long_name
+> > 	#13/11   attach_probe/kprobe-long_name:OK
+> > 	#13      attach_probe:OK
+> > 	Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+> > 
+> > Fixes: 46ed5fc33db9 ("libbpf: Refactor and simplify legacy kprobe code")
+> > Fixes: cc10623c6810 ("libbpf: Add legacy uprobe attaching support")
+> > Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> > Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+> > ---
+> >  tools/lib/bpf/libbpf.c | 19 ++++++++++++-------
+> >  1 file changed, 12 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index b2591f5cab65..9e047641e001 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -60,6 +60,8 @@
+> >  #define BPF_FS_MAGIC		0xcafe4a11
+> >  #endif
+> >  
+> > +#define MAX_EVENT_NAME_LEN	64
+> > +
+> >  #define BPF_FS_DEFAULT_PATH "/sys/fs/bpf"
+> >  
+> >  #define BPF_INSN_SZ (sizeof(struct bpf_insn))
+> > @@ -11142,10 +11144,10 @@ static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
+> >  	static int index = 0;
+> >  	int i;
+> >  
+> > -	snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx_%d", getpid(), kfunc_name, offset,
+> > -		 __sync_fetch_and_add(&index, 1));
+> > +	snprintf(buf, buf_sz, "libbpf_%u_%d_%s_0x%zx", getpid(),
+> > +		 __sync_fetch_and_add(&index, 1), kfunc_name, offset);
+> 
+> so the fix is to move unique id before kfunc_name to make sure it gets
+> to the event name right? would be great to have it in changelog
+> 
 
-It was exported to modules to run lskel-s from modules.
-It's bpf internal api, but seeing how you want to abuse it
-the feature has to go. Sadly.
+Yes, defining MAX_EVENT_NAME_LEN ensures event names are truncated via snprintf
+to prevent exceeding the maximum length limit.
+Moving the unique id before kfunc_name avoids truncating the id.
+Regarding the changelog: Should this information go into the commit message of the patch, or somewhere else?
 
-> >> Lskels without frozen maps are vulnerable to a TOCTOU
-> >> attack from a sufficiently privileged user. Lskels currently pass
-> >> unfrozen maps into the kernel, and there is nothing stopping someone
-> >> from modifying them between BPF_PROG_LOAD and BPF_PROG_RUN.
-> >>
-> >> > The verification of module signatures is a job of the module loading=
- process.
-> >> > The same thing should be done by the bpf system.
-> >> > The signature needs to be passed into sys_bpf syscall
-> >> > as a part of BPF_PROG_LOAD command.
-> >> > It probably should be two new fields in union bpf_attr
-> >> > (signature and length),
-> >> > and the whole thing should be processed as part of the loading
-> >> > with human readable error reported back through the verifier log
-> >> > in case of signature mismatch, etc.
-> >> >
-> >>
-> >> I don't necessarily disagree, but my main concern with this is that
-> >> previous code signing patchsets seem to get gaslit or have the goalpos=
-ts
-> >> moved until they die or are abandoned.
-> >
-> > Previous attempts to add signing failed because
-> > 1. It's a difficult problem to solve
-> > 2. people only cared about their own narrow use case and not
-> > considering the needs of bpf ecosystem as a whole.
-> >
-> >> Are you saying that at this point, you would be amenable to an in-tree
-> >> set of patches that enforce signature verification of lskels during
-> >> BPF_PROG_LOAD that live in syscall.c,
-> >
-> > that's the only way to do it.
-> >
->
-> So the notion of forcing people into writing bpf-based gatekeeper program=
-s
-> is being abandoned? e.g.
->
-> https://lore.kernel.org/bpf/bqxgv2tqk3hp3q3lcdqsw27btmlwqfkhyg6kohsw7lwdg=
-beol7@nkbxnrhpn7qr/#t
-> https://lore.kernel.org/bpf/61aae2da8c7b0_68de0208dd@john.notmuch/
+> 
+> >  
+> > -	/* sanitize binary_path in the probe name */
+> > +	/* sanitize kfunc_name in the probe name */
+> >  	for (i = 0; buf[i]; i++) {
+> >  		if (!isalnum(buf[i]))
+> >  			buf[i] = '_';
+> > @@ -11270,7 +11272,7 @@ int probe_kern_syscall_wrapper(int token_fd)
+> >  
+> >  		return pfd >= 0 ? 1 : 0;
+> >  	} else { /* legacy mode */
+> > -		char probe_name[128];
+> > +		char probe_name[MAX_EVENT_NAME_LEN];
+> >  
+> >  		gen_kprobe_legacy_event_name(probe_name, sizeof(probe_name), syscall_name, 0);
+> >  		if (add_kprobe_event_legacy(probe_name, false, syscall_name, 0) < 0)
+> > @@ -11328,7 +11330,7 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
+> >  					    func_name, offset,
+> >  					    -1 /* pid */, 0 /* ref_ctr_off */);
+> >  	} else {
+> > -		char probe_name[256];
+> > +		char probe_name[MAX_EVENT_NAME_LEN];
+> >  
+> >  		gen_kprobe_legacy_event_name(probe_name, sizeof(probe_name),
+> >  					     func_name, offset);
+> > @@ -11878,9 +11880,12 @@ static int attach_uprobe_multi(const struct bpf_program *prog, long cookie, stru
+> >  static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
+> >  					 const char *binary_path, uint64_t offset)
+> >  {
+> > +	static int index = 0;
+> >  	int i;
+> >  
+> > -	snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx", getpid(), binary_path, (size_t)offset);
+> > +	snprintf(buf, buf_sz, "libbpf_%u_%d_%s_0x%zx", getpid(),
+> > +		 __sync_fetch_and_add(&index, 1),
+> > +		 basename((void *)binary_path), (size_t)offset);
+> 
+> gen_kprobe_legacy_event_name and gen_uprobe_legacy_event_name seem to
+> be identical now, maybe we can have just one ?
+> 
+> thanks,
+> jirka
+> 
 
-Not abandoned.
-bpf-based tuning of load conditions is still necessary.
-The bpf_prog_load command will check the signature only.
-It won't start rejecting progs that don't have a signature.
-For that a one liner bpf-lsm or C-based lsm would be needed
-to address your dont-trust-root use case.
+The gen_uprobe_legacy_event_name function includes an extra basename compared to gen_kprobe_legacy_event_name,
+as the prefixes of binary_path are often too similar to distinguish easily.
+When merging these two into a single function, is it acceptable to pass basename((void *)binary_path)
+directly during the uprobe invocation, or should we remove the addition of basename? Thank you!
 
->
-> >> without adding extra non-code
-> >> signing requirements like attachment point verification, completely
-> >> eBPF-based solutions, or rich eBPF-based program run-time policy
-> >> enforcement?
-> >
-> > Those are secondary considerations that should also be discussed.
-> > Not necessarily a blocker.
->
-> Again, I'm confused here since you recently stated this whole thing
-> was "questionable" without attachment point verification.
+> >  
+> >  	/* sanitize binary_path in the probe name */
+> >  	for (i = 0; buf[i]; i++) {
+> > @@ -12312,7 +12317,7 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+> >  		pfd = perf_event_open_probe(true /* uprobe */, retprobe, binary_path,
+> >  					    func_offset, pid, ref_ctr_off);
+> >  	} else {
+> > -		char probe_name[PATH_MAX + 64];
+> > +		char probe_name[MAX_EVENT_NAME_LEN];
+> >  
+> >  		if (ref_ctr_off)
+> >  			return libbpf_err_ptr(-EINVAL);
+> > -- 
+> > 2.43.0
+> > 
 
-Correct.
-For fentry prog type the attachment point is checked during the load,
-but for tracepoints it's not, and anyone who is claiming that
-their system is secure because the tracepoint prog was signed
-is simply clueless in how bpf works.
 
