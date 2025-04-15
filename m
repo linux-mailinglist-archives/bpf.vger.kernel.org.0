@@ -1,272 +1,181 @@
-Return-Path: <bpf+bounces-55965-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55966-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390E6A8A347
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 17:45:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64106A8A361
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 17:50:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F41371892A8A
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 15:46:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9938189F5F4
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 15:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66C5217660;
-	Tue, 15 Apr 2025 15:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA781DED69;
+	Tue, 15 Apr 2025 15:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="BLgKTF0Q"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R8qDTDU8"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A98B526296;
-	Tue, 15 Apr 2025 15:45:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38316C2F2
+	for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 15:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744731939; cv=none; b=tMUtChBT3VbCvbWxbK876WYT24f1CR8FAoogie1UBVSPul3+Jy9FLpNfSfYv28cmR6LfNdaBRscbfjtd/Nfxag3cIo7eqqXTLTEyNpw3BpRhkkWTb8mfikcRrMVmizTXeho8CIcT368p3KJsT0dE4y5X0Z5OaDkWh09yXFgIIcA=
+	t=1744732231; cv=none; b=MfwdCpNnky7JeeduE3RmjJna2TeeKf+FJSa8CajPbIDpkaHzSLxMv2vrtJ6kI+6tNQKQXEM0gdLshpcZkb9HCfN6a/jzkP9eNAUVrKLC4OI8vOEzZtQ4V9EtXxN+VLKshAUW7L0pvDqcizgGifQ49EXkHYczsJe3qTn8Vg85uoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744731939; c=relaxed/simple;
-	bh=o0Eg9TfT7BJvamHuPbuu03I8bpxbABShuJ3X8yYmfcI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=SNKCabfjrPcgqDUMyAKlaaC2ojelHMm88g/lHrtzniC4LOXeyhSlGx7Y4A+erlxYBpHmZCcVyClhoI+x4+YAoJc2YxGUtF68qZr3whRXl7WLQSFq+hH4nI3ZrubQQ/AeKB5oiZEh970vv1qYln/ZFmchFbCYsJMhnAJz6LRUwpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=BLgKTF0Q; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia (unknown [167.220.2.28])
-	by linux.microsoft.com (Postfix) with ESMTPSA id A3E9A210C443;
-	Tue, 15 Apr 2025 08:45:27 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A3E9A210C443
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1744731937;
-	bh=QuJyjod+PaXXHNfCMhPGMW9mLvFTWCWAv7e+voj8vdo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=BLgKTF0QYGwhBiUKzBI83CwLp6uOuqH/rY3yqMfbDQX4A4kaUL3UWtisXJDrRAnDR
-	 mOrfD3P30AUwXj+9OBwC3yLw9XRi0+CidxFNAOizuUezj6gsmGYe4ZnSuUO8GlsZjy
-	 mW0p4dYmbkkAV5SouL1VVFtRwgjmhvezJoV+fGAw=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller"
- <davem@davemloft.net>, Paul Moore <paul@paul-moore.com>, James Morris
- <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Masahiro Yamada
- <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nicolas
- Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>, =?utf-8?Q?Mick?=
- =?utf-8?Q?a=C3=ABl_Sala=C3=BCn?=
- <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Nick
- Desaulniers
- <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>,
- Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen
- <jarkko@kernel.org>, Jan Stancek <jstancek@redhat.com>, Neal Gompa
- <neal@gompa.dev>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, keyrings@vger.kernel.org, Linux
- Crypto Mailing List <linux-crypto@vger.kernel.org>, LSM List
- <linux-security-module@vger.kernel.org>, Linux Kbuild mailing list
- <linux-kbuild@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK"
- <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com, Matteo Croce
- <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, Cong Wang
- <xiyou.wangcong@gmail.com>
-Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
-In-Reply-To: <CAADnVQKb3gPBFz+n+GoudxaTrugVegwMb8=kUfxOea5r2NNfUA@mail.gmail.com>
-References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
- <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
- <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
- <87semdjxcp.fsf@microsoft.com>
- <CAADnVQ+JGfwRgsoe2=EHkXdTyQ8ycn0D9nh1k49am++4oXUPHg@mail.gmail.com>
- <87friajmd5.fsf@microsoft.com>
- <CAADnVQKb3gPBFz+n+GoudxaTrugVegwMb8=kUfxOea5r2NNfUA@mail.gmail.com>
-Date: Tue, 15 Apr 2025 08:45:25 -0700
-Message-ID: <87a58hjune.fsf@microsoft.com>
+	s=arc-20240116; t=1744732231; c=relaxed/simple;
+	bh=dBCkQDypi3WGL1Nwg3QqDFHMrvmmFZ7CgnA/RGrsQ/A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q4wo1JB+QaYapjxzYiXUdSOn2WmepoL0t8d6KuNoDlGD+5m7yuAvzFmzdWCDvHrg6AzwmOlXMuz3LbAhYevjCvs0r80p/lYLJy9j+RA4FmM4t3PuTtW3odEmTIx5rNeXJ33uGqogU2DoyalulnNvnhOgHteZwSGxRiwOdll6WhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R8qDTDU8; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744732229;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=KpcED6GuxmfgtAG9Ne1xhgqi4SuqYDZm4KpgRgDJFGE=;
+	b=R8qDTDU803tmzwDLmuYekrlVZO0M6YqAzoBbVjLfjd6ktv9ow8E88oLb6030lHnU+kVRbN
+	hes4R/+hS+kL6/yrPCBxMBrxqGcQsC0dHK2OWjS022AtKnJbKVwc0JQ+/9YQYkQ8I7778e
+	P7opsQFhh8ta7QRyqSRuZU239LWK1ao=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-154-xEm157yHPUut1fUhF76S9Q-1; Tue,
+ 15 Apr 2025 11:50:25 -0400
+X-MC-Unique: xEm157yHPUut1fUhF76S9Q-1
+X-Mimecast-MFC-AGG-ID: xEm157yHPUut1fUhF76S9Q_1744732223
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1E5FE1955BC9;
+	Tue, 15 Apr 2025 15:50:23 +0000 (UTC)
+Received: from vmalik-fedora.brq.redhat.com (unknown [10.43.17.17])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 71D7D19560AD;
+	Tue, 15 Apr 2025 15:50:18 +0000 (UTC)
+From: Viktor Malik <vmalik@redhat.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Viktor Malik <vmalik@redhat.com>,
+	lmarch2 <2524158037@qq.com>,
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Subject: [PATCH bpf v3] libbpf: Fix buffer overflow in bpf_object__init_prog
+Date: Tue, 15 Apr 2025 17:50:14 +0200
+Message-ID: <20250415155014.397603-1-vmalik@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+As shown in [1], it is possible to corrupt a BPF ELF file such that
+arbitrary BPF instructions are loaded by libbpf. This can be done by
+setting a symbol (BPF program) section offset to a large (unsigned)
+number such that <section start + symbol offset> overflows and points
+before the section data in the memory.
 
-> On Mon, Apr 14, 2025 at 5:32=E2=80=AFPM Blaise Boscaccy
-> <bboscaccy@linux.microsoft.com> wrote:
->>
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->>
->> > On Sat, Apr 12, 2025 at 6:58=E2=80=AFAM Blaise Boscaccy
->> > <bboscaccy@linux.microsoft.com> wrote:
->> >>
->> >> TAlexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->> >>
->> >> > On Fri, Apr 4, 2025 at 2:56=E2=80=AFPM Blaise Boscaccy
->> >> > <bboscaccy@linux.microsoft.com> wrote:
->> >> >> +
->> >> >> +static int hornet_find_maps(struct bpf_prog *prog, struct hornet_=
-maps *maps)
->> >> >> +{
->> >> >> +       struct bpf_insn *insn =3D prog->insnsi;
->> >> >> +       int insn_cnt =3D prog->len;
->> >> >> +       int i;
->> >> >> +       int err;
->> >> >> +
->> >> >> +       for (i =3D 0; i < insn_cnt; i++, insn++) {
->> >> >> +               if (insn[0].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW=
-)) {
->> >> >> +                       switch (insn[0].src_reg) {
->> >> >> +                       case BPF_PSEUDO_MAP_IDX_VALUE:
->> >> >> +                       case BPF_PSEUDO_MAP_IDX:
->> >> >> +                               err =3D add_used_map(maps, insn[0]=
-.imm);
->> >> >> +                               if (err < 0)
->> >> >> +                                       return err;
->> >> >> +                               break;
->> >> >> +                       default:
->> >> >> +                               break;
->> >> >> +                       }
->> >> >> +               }
->> >> >> +       }
->> >> >
->> >> > ...
->> >> >
->> >> >> +               if (!map->frozen) {
->> >> >> +                       attr.map_fd =3D fd;
->> >> >> +                       err =3D kern_sys_bpf(BPF_MAP_FREEZE, &attr=
-, sizeof(attr));
->> >> >
->> >> > Sorry for the delay. Still swamped after conferences and the merge =
-window.
->> >> >
->> >>
->> >> No worries.
->> >>
->> >> > Above are serious layering violations.
->> >> > LSMs should not be looking that deep into bpf instructions.
->> >>
->> >> These aren't BPF internals; this is data passed in from
->> >> userspace. Inspecting userspace function inputs is definitely within =
-the
->> >> purview of an LSM.
->> >>
->> >> Lskel signature verification doesn't actually need a full disassembly,
->> >> but it does need all the maps used by the lskel. Due to API design
->> >> choices, this unfortunately requires disassembling the program to see
->> >> which array indexes are being used.
->> >>
->> >> > Calling into sys_bpf from LSM is plain nack.
->> >> >
->> >>
->> >> kern_sys_bpf is an EXPORT_SYMBOL, which means that it should be calla=
-ble
->> >> from a module.
->> >
->> > It's a leftover.
->> > kern_sys_bpf() is not something that arbitrary kernel
->> > modules should call.
->> > It was added to work for cases where kernel modules
->> > carry their own lskels.
->> > That use case is gone, so EXPORT_SYMBOL will be removed.
->> >
->>
->> I'm not following that at all. You recommended using module-based lskels
->> to get around code signing requirements at lsfmmbpf and now you want to
->> nuke that entire feature? And further, skel_internal will no longer be
->> usable from within the kernel and bpf_preload is no longer going to be
->> supported?
+Consider the situation below where:
+- prog_start = sec_start + symbol_offset    <-- size_t overflow here
+- prog_end   = prog_start + prog_size
 
-The eBPF dev community has spent what, 4-5 years on this, with little to
-no progress. I have little faith that this is going to progress on your
-end in a timely manner or at all, and frankly we (and others) needed
-this yesterday. Hornet has zero impact on the bpf subsystem, yet you
-seem viscerally opposed to us doing this. Why are you trying to stop us
-from securing our cloud?
+    prog_start        sec_start        prog_end        sec_end
+        |                |                 |              |
+        v                v                 v              v
+    .....................|################################|............
 
->
-> It was exported to modules to run lskel-s from modules.
-> It's bpf internal api, but seeing how you want to abuse it
-> the feature has to go. Sadly.
->
+The report in [1] also provides a corrupted BPF ELF which can be used as
+a reproducer:
 
-Are we in preschool again? You don't like how others are playing with
-your toys so you want to take them away from everyone. Forever.=20
+    $ readelf -S crash
+    Section Headers:
+      [Nr] Name              Type             Address           Offset
+           Size              EntSize          Flags  Link  Info  Align
+    ...
+      [ 2] uretprobe.mu[...] PROGBITS         0000000000000000  00000040
+           0000000000000068  0000000000000000  AX       0     0     8
 
->> >> Lskels without frozen maps are vulnerable to a TOCTOU
->> >> attack from a sufficiently privileged user. Lskels currently pass
->> >> unfrozen maps into the kernel, and there is nothing stopping someone
->> >> from modifying them between BPF_PROG_LOAD and BPF_PROG_RUN.
->> >>
->> >> > The verification of module signatures is a job of the module loadin=
-g process.
->> >> > The same thing should be done by the bpf system.
->> >> > The signature needs to be passed into sys_bpf syscall
->> >> > as a part of BPF_PROG_LOAD command.
->> >> > It probably should be two new fields in union bpf_attr
->> >> > (signature and length),
->> >> > and the whole thing should be processed as part of the loading
->> >> > with human readable error reported back through the verifier log
->> >> > in case of signature mismatch, etc.
->> >> >
->> >>
->> >> I don't necessarily disagree, but my main concern with this is that
->> >> previous code signing patchsets seem to get gaslit or have the goalpo=
-sts
->> >> moved until they die or are abandoned.
->> >
->> > Previous attempts to add signing failed because
->> > 1. It's a difficult problem to solve
->> > 2. people only cared about their own narrow use case and not
->> > considering the needs of bpf ecosystem as a whole.
->> >
->> >> Are you saying that at this point, you would be amenable to an in-tree
->> >> set of patches that enforce signature verification of lskels during
->> >> BPF_PROG_LOAD that live in syscall.c,
->> >
->> > that's the only way to do it.
->> >
->>
->> So the notion of forcing people into writing bpf-based gatekeeper progra=
-ms
->> is being abandoned? e.g.
->>
->> https://lore.kernel.org/bpf/bqxgv2tqk3hp3q3lcdqsw27btmlwqfkhyg6kohsw7lwd=
-gbeol7@nkbxnrhpn7qr/#t
->> https://lore.kernel.org/bpf/61aae2da8c7b0_68de0208dd@john.notmuch/
->
-> Not abandoned.
-> bpf-based tuning of load conditions is still necessary.
-> The bpf_prog_load command will check the signature only.
-> It won't start rejecting progs that don't have a signature.
-> For that a one liner bpf-lsm or C-based lsm would be needed
-> to address your dont-trust-root use case.
->
+    $ readelf -s crash
+    Symbol table '.symtab' contains 8 entries:
+       Num:    Value          Size Type    Bind   Vis      Ndx Name
+    ...
+         6: ffffffffffffffb8   104 FUNC    GLOBAL DEFAULT    2 handle_tp
 
-Since this will require an LSM no matter what, there is zero reason for
-us not to proceed with Hornet. If or when you actually figure out how to
-sign an lskel and upstream updated LSM hooks, I can always rework Hornet
-to use that instead.
+Here, the handle_tp prog has section offset ffffffffffffffb8, i.e. will
+point before the actual memory where section 2 is allocated.
 
->>
->> >> without adding extra non-code
->> >> signing requirements like attachment point verification, completely
->> >> eBPF-based solutions, or rich eBPF-based program run-time policy
->> >> enforcement?
->> >
->> > Those are secondary considerations that should also be discussed.
->> > Not necessarily a blocker.
->>
->> Again, I'm confused here since you recently stated this whole thing
->> was "questionable" without attachment point verification.
->
-> Correct.
-> For fentry prog type the attachment point is checked during the load,
-> but for tracepoints it's not, and anyone who is claiming that
-> their system is secure because the tracepoint prog was signed
-> is simply clueless in how bpf works.
+This is also reported by AddressSanitizer:
 
-No one is making that claim, although I do appreciate the lovely
-ad-hominem attack and absolutist standpoint. It's not like we invented
-code signing last week. All we are trying to do is make our cloud
-ever-so-slightly more secure and share the results with the community.
+    =================================================================
+    ==1232==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7c7302fe0000 at pc 0x7fc3046e4b77 bp 0x7ffe64677cd0 sp 0x7ffe64677490
+    READ of size 104 at 0x7c7302fe0000 thread T0
+        #0 0x7fc3046e4b76 in memcpy (/lib64/libasan.so.8+0xe4b76)
+        #1 0x00000040df3e in bpf_object__init_prog /src/libbpf/src/libbpf.c:856
+        #2 0x00000040df3e in bpf_object__add_programs /src/libbpf/src/libbpf.c:928
+        #3 0x00000040df3e in bpf_object__elf_collect /src/libbpf/src/libbpf.c:3930
+        #4 0x00000040df3e in bpf_object_open /src/libbpf/src/libbpf.c:8067
+        #5 0x00000040f176 in bpf_object__open_file /src/libbpf/src/libbpf.c:8090
+        #6 0x000000400c16 in main /poc/poc.c:8
+        #7 0x7fc3043d25b4 in __libc_start_call_main (/lib64/libc.so.6+0x35b4)
+        #8 0x7fc3043d2667 in __libc_start_main@@GLIBC_2.34 (/lib64/libc.so.6+0x3667)
+        #9 0x000000400b34 in _start (/poc/poc+0x400b34)
 
-The attack vectors I'm looking at are things like CVE-2021-33200. ACLs
-for attachment points do nothing to stop that whereas code signing is a
-possible countermeasure. This kind of thing is probably a non-issue with
-your private cloud, but it's a very real issue with publicly accessible
-ones.=20=20
+    0x7c7302fe0000 is located 64 bytes before 104-byte region [0x7c7302fe0040,0x7c7302fe00a8)
+    allocated by thread T0 here:
+        #0 0x7fc3046e716b in malloc (/lib64/libasan.so.8+0xe716b)
+        #1 0x7fc3045ee600 in __libelf_set_rawdata_wrlock (/lib64/libelf.so.1+0xb600)
+        #2 0x7fc3045ef018 in __elf_getdata_rdlock (/lib64/libelf.so.1+0xc018)
+        #3 0x00000040642f in elf_sec_data /src/libbpf/src/libbpf.c:3740
+
+The problem here is that currently, libbpf only checks that the program
+end is within the section bounds. There used to be a check
+`while (sec_off < sec_sz)` in bpf_object__add_programs, however, it was
+removed by commit 6245947c1b3c ("libbpf: Allow gaps in BPF program
+sections to support overriden weak functions").
+
+Add a check for detecting the overflow of `sec_off + prog_sz` to
+bpf_object__init_prog to fix this issue.
+
+[1] https://github.com/lmarch2/poc/blob/main/libbpf/libbpf.md
+
+Reported-by: lmarch2 <2524158037@qq.com>
+Link: https://github.com/lmarch2/poc/blob/main/libbpf/libbpf.md
+Fixes: 6245947c1b3c ("libbpf: Allow gaps in BPF program sections to support overriden weak functions")
+Signed-off-by: Viktor Malik <vmalik@redhat.com>
+Reviewed-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6b85060f07b3..b8e61d9dcd84 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -896,7 +896,7 @@ bpf_object__add_programs(struct bpf_object *obj, Elf_Data *sec_data,
+ 			return -LIBBPF_ERRNO__FORMAT;
+ 		}
+ 
+-		if (sec_off + prog_sz > sec_sz) {
++		if (sec_off + prog_sz > sec_sz || sec_off + prog_sz < sec_off) {
+ 			pr_warn("sec '%s': program at offset %zu crosses section boundary\n",
+ 				sec_name, sec_off);
+ 			return -LIBBPF_ERRNO__FORMAT;
+-- 
+2.49.0
+
 
