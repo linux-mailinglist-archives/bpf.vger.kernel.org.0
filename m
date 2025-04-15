@@ -1,100 +1,214 @@
-Return-Path: <bpf+bounces-55913-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55914-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C59CA890A9
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 02:32:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4924AA890AF
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 02:32:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A1873B70CD
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 00:31:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49B0017D4AD
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 00:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C04355C603;
-	Tue, 15 Apr 2025 00:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A045336D;
+	Tue, 15 Apr 2025 00:32:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qj1wBfQI"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="YfJ5re8I"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381BD15B0EC;
-	Tue, 15 Apr 2025 00:30:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A19D1F61C;
+	Tue, 15 Apr 2025 00:32:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744677003; cv=none; b=HIWZr8WViCKaDn6hnx9ebWfgIqiBsaAdw20OQHNGfwZQhNG4Ddwo2g2B1ntPXtofusKppqvFyiXclVXvSskwtKJOOvx/jSA8R5DqLwXZ0bAWGNVoJATxAPI+4dTqZ8Cx9F4bcnu9yjuxQfQR9G/5SMU/tVP6uko5YxiyRTgo4NI=
+	t=1744677138; cv=none; b=hzlN/+NuY6qSesxM7D1GbiPIaiOJWcla45vgXhNYHQzllY+uNtqIWoH3OhcaUtU3ZfLM5CZ13RNZXYNlhWX2qLtfrm7CrqM6icUIpld1qQ+hM5CBFwNDUyluTtZZONjq6PUpuNa6tnHMWJjyiwAA2mMpUDHBTAU+z/ku7gAEirQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744677003; c=relaxed/simple;
-	bh=0oPDaEmyb/WuLrJv9s3KJnIn+Cx28n2/ul2slgmjxZQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=FyW62ckkcTd8GngNHKXZHSxMYQLquqz/70ETzrP9THED9fBcwcMsExvvHbBSjCrmTmNPS7BThIXlR3PE3tpIFmYUPDqUdjnNAbGJwXNGDe1rMCX4FtRte0RxfFkjWC0hQvsvnnSzHBYyoQt19uVajz3XW3HLmUgkOZ47gemJefE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qj1wBfQI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FBA0C4CEEC;
-	Tue, 15 Apr 2025 00:30:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744677002;
-	bh=0oPDaEmyb/WuLrJv9s3KJnIn+Cx28n2/ul2slgmjxZQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=qj1wBfQIyitI7hxvb1Qo521IfMwFI0VeaIBV/zt6uCgxj+NRnAzq24lQik9pDMKzQ
-	 eJr2TedueP/ttgY+cs1jnmHSVneDS0j2wBDqk9j4xA417f2r5pTF6qiN/Z13jq23X7
-	 dANHpqov8hebemGjPcF0eIVge4adRQcAaxjjkW9Xh4TeuVEeJZoh4Ig7uUUJAAjtpX
-	 1Mb1uMBF3wGJNcskmeUtQxYz6mDLlQ6OImS5+2j02r1tMpJU+Kps004v9ioef8F6r3
-	 j491MsjnF8o564h+nWDetCHUtHkVcTyD40ybP7BTgdNomrPiXwL+fW1aVfEzt5p2MO
-	 F2y9xw2lZJ+Fw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE0D83822D1A;
-	Tue, 15 Apr 2025 00:30:41 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1744677138; c=relaxed/simple;
+	bh=vI/xD/nrTGecQl3y389fRgZ/tck2vMLKZPV4brJj6LE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GJ/IiZ+dPd8+aLdorGS8dwfCz5pl9SASLdcCCt7jtas5vPvuu6EGBA2MuC2B6acSACuiILYutFhuflavkngTMg0Kc2I7CXahk4VObwoboksv7ZDd5e2zIM/rUVJZMwN0wwWHqJy3qw38596Nczah13+eUZZR0r9mX9UN88vtpa0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=YfJ5re8I; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [167.220.2.28])
+	by linux.microsoft.com (Postfix) with ESMTPSA id E107E210C430;
+	Mon, 14 Apr 2025 17:32:08 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E107E210C430
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1744677136;
+	bh=k60Z/kqlCkeZutWGyU4+etQMD6oqlirPCtjxFVZ+g6w=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=YfJ5re8IR3FnKDYCN5qrGYoU/+IkxYxrMaJ0i9vLUi7ndhbq2fgr/SO4ndfNToJwD
+	 TawWKs7ImDCktfiL3GpIIffFv8bxMkEymbxUNw7B9OEt1Ju1tLD/et5L71FmUEE1oh
+	 u3REw27PIsT0rXMVqc34Syu9qqy0hxmH0FrN5FbY=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller"
+ <davem@davemloft.net>, Paul Moore <paul@paul-moore.com>, James Morris
+ <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Masahiro Yamada
+ <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nicolas
+ Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>, =?utf-8?Q?Mick?=
+ =?utf-8?Q?a=C3=ABl_Sala=C3=BCn?=
+ <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Nick
+ Desaulniers
+ <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>,
+ Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen
+ <jarkko@kernel.org>, Jan Stancek <jstancek@redhat.com>, Neal Gompa
+ <neal@gompa.dev>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, keyrings@vger.kernel.org, Linux
+ Crypto Mailing List <linux-crypto@vger.kernel.org>, LSM List
+ <linux-security-module@vger.kernel.org>, Linux Kbuild mailing list
+ <linux-kbuild@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK"
+ <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+ clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com, Matteo Croce
+ <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, Cong Wang
+ <xiyou.wangcong@gmail.com>
+Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
+In-Reply-To: <CAADnVQ+JGfwRgsoe2=EHkXdTyQ8ycn0D9nh1k49am++4oXUPHg@mail.gmail.com>
+References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
+ <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
+ <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
+ <87semdjxcp.fsf@microsoft.com>
+ <CAADnVQ+JGfwRgsoe2=EHkXdTyQ8ycn0D9nh1k49am++4oXUPHg@mail.gmail.com>
+Date: Mon, 14 Apr 2025 17:32:06 -0700
+Message-ID: <87friajmd5.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v9 0/2] Fix late DMA unmap crash for page pool
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174467704049.2083973.15012533617497766841.git-patchwork-notify@kernel.org>
-Date: Tue, 15 Apr 2025 00:30:40 +0000
-References: <20250409-page-pool-track-dma-v9-0-6a9ef2e0cba8@redhat.com>
-In-Reply-To: <20250409-page-pool-track-dma-v9-0-6a9ef2e0cba8@redhat.com>
-To: =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@codeaurora.org
-Cc: davem@davemloft.net, kuba@kernel.org, hawk@kernel.org, saeedm@nvidia.com,
- leon@kernel.org, tariqt@nvidia.com, andrew+netdev@lunn.ch,
- edumazet@google.com, pabeni@redhat.com, ilias.apalodimas@linaro.org,
- horms@kernel.org, akpm@linux-foundation.org, almasrymina@google.com,
- liuyonglong@huawei.com, linyunsheng@huawei.com, asml.silence@gmail.com,
- willy@infradead.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-mm@kvack.org, qren@redhat.com,
- yuma@redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+> On Sat, Apr 12, 2025 at 6:58=E2=80=AFAM Blaise Boscaccy
+> <bboscaccy@linux.microsoft.com> wrote:
+>>
+>> TAlexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>
+>> > On Fri, Apr 4, 2025 at 2:56=E2=80=AFPM Blaise Boscaccy
+>> > <bboscaccy@linux.microsoft.com> wrote:
+>> >> +
+>> >> +static int hornet_find_maps(struct bpf_prog *prog, struct hornet_map=
+s *maps)
+>> >> +{
+>> >> +       struct bpf_insn *insn =3D prog->insnsi;
+>> >> +       int insn_cnt =3D prog->len;
+>> >> +       int i;
+>> >> +       int err;
+>> >> +
+>> >> +       for (i =3D 0; i < insn_cnt; i++, insn++) {
+>> >> +               if (insn[0].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW)) {
+>> >> +                       switch (insn[0].src_reg) {
+>> >> +                       case BPF_PSEUDO_MAP_IDX_VALUE:
+>> >> +                       case BPF_PSEUDO_MAP_IDX:
+>> >> +                               err =3D add_used_map(maps, insn[0].im=
+m);
+>> >> +                               if (err < 0)
+>> >> +                                       return err;
+>> >> +                               break;
+>> >> +                       default:
+>> >> +                               break;
+>> >> +                       }
+>> >> +               }
+>> >> +       }
+>> >
+>> > ...
+>> >
+>> >> +               if (!map->frozen) {
+>> >> +                       attr.map_fd =3D fd;
+>> >> +                       err =3D kern_sys_bpf(BPF_MAP_FREEZE, &attr, s=
+izeof(attr));
+>> >
+>> > Sorry for the delay. Still swamped after conferences and the merge win=
+dow.
+>> >
+>>
+>> No worries.
+>>
+>> > Above are serious layering violations.
+>> > LSMs should not be looking that deep into bpf instructions.
+>>
+>> These aren't BPF internals; this is data passed in from
+>> userspace. Inspecting userspace function inputs is definitely within the
+>> purview of an LSM.
+>>
+>> Lskel signature verification doesn't actually need a full disassembly,
+>> but it does need all the maps used by the lskel. Due to API design
+>> choices, this unfortunately requires disassembling the program to see
+>> which array indexes are being used.
+>>
+>> > Calling into sys_bpf from LSM is plain nack.
+>> >
+>>
+>> kern_sys_bpf is an EXPORT_SYMBOL, which means that it should be callable
+>> from a module.
+>
+> It's a leftover.
+> kern_sys_bpf() is not something that arbitrary kernel
+> modules should call.
+> It was added to work for cases where kernel modules
+> carry their own lskels.
+> That use case is gone, so EXPORT_SYMBOL will be removed.
+>
 
-On Wed, 09 Apr 2025 12:41:35 +0200 you wrote:
-> This series fixes the late dma_unmap crash for page pool first reported
-> by Yonglong Liu in [0]. It is an alternative approach to the one
-> submitted by Yunsheng Lin, most recently in [1]. The first commit just
-> wraps some tests in a helper function, in preparation of the main change
-> in patch 2. See the commit message of patch 2 for the details.
-> 
-> -Toke
-> 
-> [...]
+I'm not following that at all. You recommended using module-based lskels
+to get around code signing requirements at lsfmmbpf and now you want to
+nuke that entire feature? And further, skel_internal will no longer be
+usable from within the kernel and bpf_preload is no longer going to be
+supported?
 
-Here is the summary with links:
-  - [net-next,v9,1/2] page_pool: Move pp_magic check into helper functions
-    https://git.kernel.org/netdev/net-next/c/cd3c93167da0
-  - [net-next,v9,2/2] page_pool: Track DMA-mapped pages and unmap them when destroying the pool
-    https://git.kernel.org/netdev/net-next/c/ee62ce7a1d90
+>> Lskels without frozen maps are vulnerable to a TOCTOU
+>> attack from a sufficiently privileged user. Lskels currently pass
+>> unfrozen maps into the kernel, and there is nothing stopping someone
+>> from modifying them between BPF_PROG_LOAD and BPF_PROG_RUN.
+>>
+>> > The verification of module signatures is a job of the module loading p=
+rocess.
+>> > The same thing should be done by the bpf system.
+>> > The signature needs to be passed into sys_bpf syscall
+>> > as a part of BPF_PROG_LOAD command.
+>> > It probably should be two new fields in union bpf_attr
+>> > (signature and length),
+>> > and the whole thing should be processed as part of the loading
+>> > with human readable error reported back through the verifier log
+>> > in case of signature mismatch, etc.
+>> >
+>>
+>> I don't necessarily disagree, but my main concern with this is that
+>> previous code signing patchsets seem to get gaslit or have the goalposts
+>> moved until they die or are abandoned.
+>
+> Previous attempts to add signing failed because
+> 1. It's a difficult problem to solve
+> 2. people only cared about their own narrow use case and not
+> considering the needs of bpf ecosystem as a whole.
+>
+>> Are you saying that at this point, you would be amenable to an in-tree
+>> set of patches that enforce signature verification of lskels during
+>> BPF_PROG_LOAD that live in syscall.c,
+>
+> that's the only way to do it.
+>
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+So the notion of forcing people into writing bpf-based gatekeeper programs
+is being abandoned? e.g.
+
+https://lore.kernel.org/bpf/bqxgv2tqk3hp3q3lcdqsw27btmlwqfkhyg6kohsw7lwdgbe=
+ol7@nkbxnrhpn7qr/#t
+https://lore.kernel.org/bpf/61aae2da8c7b0_68de0208dd@john.notmuch/
 
 
+>> without adding extra non-code
+>> signing requirements like attachment point verification, completely
+>> eBPF-based solutions, or rich eBPF-based program run-time policy
+>> enforcement?
+>
+> Those are secondary considerations that should also be discussed.
+> Not necessarily a blocker.
+
+Again, I'm confused here since you recently stated this whole thing
+was "questionable" without attachment point verification.
 
