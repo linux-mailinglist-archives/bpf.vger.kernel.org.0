@@ -1,156 +1,144 @@
-Return-Path: <bpf+bounces-55967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69679A8A3D0
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 18:14:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF4C5A8A42D
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 18:30:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4A193BEBB6
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 16:13:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C50F189C4D6
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 16:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B5229B212;
-	Tue, 15 Apr 2025 16:13:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC2F1DF963;
+	Tue, 15 Apr 2025 16:30:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Iwf/xepf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JFN3xWrF"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E52296D1C;
-	Tue, 15 Apr 2025 16:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3D7946F;
+	Tue, 15 Apr 2025 16:30:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744733632; cv=none; b=qldK0s1lxbg7c//gX1wpFmGP5Nk0CCRR5yXi6Wsu1BbSqC23+lm1pUCshydSd3yZRi9O9gY7MGnQ8RAPjY3WJkZTgUqE8FY2+xal/hJB5ZDGE3H3exniu45AijLancNMksZGRy7ZXeno9K2Ma5uL2YYKQsM/oBTlWahR2PEn16Q=
+	t=1744734644; cv=none; b=vFSXtwcBb+Z+hK38zlonMdOOIaeSYLAYtT85BXcRWzz2NAv7y4zspH1Q/7jY4ji8Dp2QBMOAdfXTh80cDYmhhSIcxV0ErImcAoMpjq57oem5/BvPjI7HQYr1v6iPCmNB/f7s7Rl6A9UNHtDtYvR8guqS1/mC86Q9vH7zWl8UTDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744733632; c=relaxed/simple;
-	bh=1jFrBy0lzqpyUKpmfkbxvJvV2QeeBiFeu/gLSlD6DXw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X7h7e48Rg0EVMvLug2TXBcg7hFYStYFsb2Tqve7syzw2nBkNI64Dc0XKQOyo+9RcWYYK00PZ1sxt6258ZS+eUoUjTyDSUos5LlnSnsCH4qNv93VCA+g7VxXB9BjxV4cMygi7xDbgC5wGqedteRDIno6ubvWuhXhV7cp3F88xIeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Iwf/xepf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 382BAC4CEEB;
-	Tue, 15 Apr 2025 16:13:40 +0000 (UTC)
+	s=arc-20240116; t=1744734644; c=relaxed/simple;
+	bh=weFLulQd64Nt8wSZqx8JH29VMOiyErt5HVf/jr1Jwis=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y7bo50L0am4sZipl/gX9cnjzc1pASFsHoax7UKErX41NkMfi5vco83xuvG37WdfJvHbl4NmP9qdgBo5bCT7E4iOsiaTk1gIcjzSv6dRrz5TPoHzJpFZvWPzEs482qNmfE+Y4eOeLptire1hi01toJYm0qJzDrroWdS9Svlrj9Fs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JFN3xWrF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39342C4CEEB;
+	Tue, 15 Apr 2025 16:30:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744733631;
-	bh=1jFrBy0lzqpyUKpmfkbxvJvV2QeeBiFeu/gLSlD6DXw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Iwf/xepfn8XdaQPkl3OXO2pziEP0MlRo4kLwGSJsiPog0Lg5Q1zc16D6DMGJwuihR
-	 wFxPHaCtVDUNGtTLwsWTrCyK5ML3+2kHLLu+hLOI9049UI/1wvm6ANh7f1RkqDDqZE
-	 sfK6i25rKsc+rZPzOJjQiMNZCqS9qAsXy/ekUZsqbaFi5M/YNucILhk7ZNjcpj8xhR
-	 cTpu1IqsMZdWOGrrLhNg9KBwOnjf8is+U1vUkxZI9HftXGggDq4mt6mtnKRdxCOmja
-	 JYxKuYVHbxzBtX6yyWjjBDmrCV6qBEG+qekX20hC4nqmB77hh3oQmv7Pech6xvsaet
-	 8MiIM487OnzWg==
-Date: Tue, 15 Apr 2025 17:13:37 +0100
-From: Simon Horman <horms@kernel.org>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org,
-	joel@jms.id.au, eajames@linux.ibm.com, andrzej.hajda@intel.com,
-	neil.armstrong@linaro.org, rfoss@kernel.org,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
-	dmitry.torokhov@gmail.com, mchehab@kernel.org,
-	awalls@md.metrocast.net, hverkuil@xs4all.nl,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	louis.peens@corigine.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
-	johannes@sipsolutions.net, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, yury.norov@gmail.com,
-	akpm@linux-foundation.org, jdelvare@suse.com, linux@roeck-us.net,
-	alexandre.belloni@bootlin.com, pgaj@cadence.com, hpa@zytor.com,
-	alistair@popple.id.au, linux@rasmusvillemoes.dk,
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-	jernej.skrabec@gmail.com, kuba@kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-	dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
-	oss-drivers@corigine.com, netdev@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
-	bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw, Frank.Li@nxp.com,
-	linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
-	david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
-	Yu-Chun Lin <eleanor15x@gmail.com>
-Subject: Re: [PATCH v4 09/13] wifi: brcm80211: Replace open-coded parity
- calculation with parity_odd()
-Message-ID: <20250415161337.GZ395307@horms.kernel.org>
-References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-10-visitorckw@gmail.com>
+	s=k20201202; t=1744734643;
+	bh=weFLulQd64Nt8wSZqx8JH29VMOiyErt5HVf/jr1Jwis=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=JFN3xWrFVTdxpPrfi7cXgOlUtYWAdqvI481ubvKvsdOizS7JomWgFGpl2+12Oshwn
+	 5h598+LtreCcO9iIK3DuomULfVKJu0mQzjtedtTcL+n+gD9tduCC/YjA/zA1VTTKFV
+	 tI8rsh1xksUtIABS4AhaDhzy1+WX5RscTdXqLPQNlAW5ycK2ImdSP4qrHDhu1GaFzI
+	 IAtCM+ZodyWa7+A4/qgSrvSov6DXtZ4vyxjByIBZC+rHO5JAOHSZDHh6e4Fe2AecW1
+	 fxCINsp6qCnQzts3iPpoMzLv9r93UHArtxtXFRp+qB/qdny1l8msQu79Z9A65kZa6A
+	 0k3WKQ3N0p/FQ==
+Message-ID: <a9af244c-37c5-460a-9128-c020173c591d@kernel.org>
+Date: Tue, 15 Apr 2025 18:30:38 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250409154356.423512-10-visitorckw@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V4 1/2] net: sched: generalize check for no-queue
+ qdisc on TX queue
+To: David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+ Jakub Kicinski <kuba@kernel.org>
+Cc: bpf@vger.kernel.org, tom@herbertland.com,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ makita.toshiaki@lab.ntt.co.jp, kernel-team@cloudflare.com, phil@nwl.cc
+References: <174472463778.274639.12670590457453196991.stgit@firesoul>
+ <174472469906.274639.14909448343817900822.stgit@firesoul>
+ <f448fcb8-6330-4517-863f-4bf0a2242313@kernel.org>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <f448fcb8-6330-4517-863f-4bf0a2242313@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 09, 2025 at 11:43:52PM +0800, Kuan-Wei Chiu wrote:
-> Refactor parity calculations to use the standard parity_odd() helper.
-> This change eliminates redundant implementations.
-> 
-> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-> ---
->  .../wireless/broadcom/brcm80211/brcmsmac/dma.c | 18 ++----------------
->  1 file changed, 2 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-> index 80c35027787a..5d7500ee2d3b 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/dma.c
-> @@ -17,6 +17,7 @@
->  #include <linux/slab.h>
->  #include <linux/delay.h>
->  #include <linux/pci.h>
-> +#include <linux/bitops.h>
->  #include <net/cfg80211.h>
->  #include <net/mac80211.h>
->  
-> @@ -283,24 +284,9 @@ struct dma_info {
->  	bool aligndesc_4k;
->  };
->  
-> -/* Check for odd number of 1's */
-> -static u32 parity32(__le32 data)
-> -{
-> -	/* no swap needed for counting 1's */
-> -	u32 par_data = *(u32 *)&data;
-> -
-> -	par_data ^= par_data >> 16;
-> -	par_data ^= par_data >> 8;
-> -	par_data ^= par_data >> 4;
-> -	par_data ^= par_data >> 2;
-> -	par_data ^= par_data >> 1;
-> -
-> -	return par_data & 1;
-> -}
-> -
->  static bool dma64_dd_parity(struct dma64desc *dd)
->  {
-> -	return parity32(dd->addrlow ^ dd->addrhigh ^ dd->ctrl1 ^ dd->ctrl2);
-> +	return parity_odd(dd->addrlow ^ dd->addrhigh ^ dd->ctrl1 ^ dd->ctrl2);
->  }
 
-parity32 expected a little-endian integer as it's argument
-while parity_odd expects a host byte order value.
 
-I realise that the existing code just casts-away the endianness
-annotation, but this patch adds a Sparse warning.
-
- .../brcmsmac/dma.c:289:66: warning: incorrect type in argument 1 (different base types)
- .../brcmsmac/dma.c:289:66:    expected unsigned long long [usertype] val
- .../brcmsmac/dma.c:289:66:    got restricted __le32
-
->  
->  /* descriptor bumping functions */
-> -- 
-> 2.34.1
+On 15/04/2025 17.43, David Ahern wrote:
+> On 4/15/25 7:44 AM, Jesper Dangaard Brouer wrote:
+>> The "noqueue" qdisc can either be directly attached, or get default
+>> attached if net_device priv_flags has IFF_NO_QUEUE. In both cases, the
+>> allocated Qdisc structure gets it's enqueue function pointer reset to
+>> NULL by noqueue_init() via noqueue_qdisc_ops.
+>>
+>> This is a common case for software virtual net_devices. For these devices
+>> with no-queue, the transmission path in __dev_queue_xmit() will bypass
+>> the qdisc layer. Directly invoking device drivers ndo_start_xmit (via
+>> dev_hard_start_xmit).  In this mode the device driver is not allowed to
+>> ask for packets to be queued (either via returning NETDEV_TX_BUSY or
+>> stopping the TXQ).
+>>
+>> The simplest and most reliable way to identify this no-queue case is by
+>> checking if enqueue == NULL.
+>>
+>> The vrf driver currently open-codes this check (!qdisc->enqueue). While
+>> functionally correct, this low-level detail is better encapsulated in a
+>> dedicated helper for clarity and long-term maintainability.
+>>
+>> To make this behavior more explicit and reusable, this patch introduce a
+>> new helper: qdisc_txq_has_no_queue(). Helper will also be used by the
+>> veth driver in the next patch, which introduces optional qdisc-based
+>> backpressure.
+>>
+>> This is a non-functional change.
+>>
+>> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+>> ---
+>>   drivers/net/vrf.c         |    4 +---
+>>   include/net/sch_generic.h |    8 ++++++++
+>>   2 files changed, 9 insertions(+), 3 deletions(-)
+>>
 > 
 > 
+>>   /* Local traffic destined to local address. Reinsert the packet to rx
+>> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+>> index d48c657191cd..b6c177f7141c 100644
+>> --- a/include/net/sch_generic.h
+>> +++ b/include/net/sch_generic.h
+>> @@ -803,6 +803,14 @@ static inline bool qdisc_tx_changing(const struct net_device *dev)
+>>   	return false;
+>>   }
+>>   
+>> +/* "noqueue" qdisc identified by not having any enqueue, see noqueue_init() */
+>> +static inline bool qdisc_txq_has_no_queue(const struct netdev_queue *txq)
+>> +{
+>> +	struct Qdisc *qdisc = rcu_access_pointer(txq->qdisc);
+>> +
+>> +	return qdisc->enqueue == NULL;
+> 
+> Did checkpatch not complain that this should be '!qdisc->enqueue' ?
+> 
+
+Nope:
+
+./scripts/checkpatch.pl 
+patches-veth_pushback_to_qdisc03/01-0001-net-sched-generalize-noop.patch
+total: 0 errors, 0 warnings, 30 lines checked
+
+patches-veth_pushback_to_qdisc03/01-0001-net-sched-generalize-noop.patch 
+has no obvious style problems and is ready for submission.
+
+> 
+> Reviewed-by: David Ahern <dsahern@kernel.org>
+
+Thx for review :-)
+
+--Jesper
+
 
