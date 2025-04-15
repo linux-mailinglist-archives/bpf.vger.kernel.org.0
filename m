@@ -1,97 +1,95 @@
-Return-Path: <bpf+bounces-55922-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55923-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71707A893B8
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 08:15:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73FB8A8944D
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 08:58:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08A2C177AE2
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 06:15:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3E783A88D2
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 06:57:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9052E27511B;
-	Tue, 15 Apr 2025 06:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E236227511C;
+	Tue, 15 Apr 2025 06:57:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="VRn/5uPt"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="YCTksIhB"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74FD274642;
-	Tue, 15 Apr 2025 06:15:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95CE18DB2F;
+	Tue, 15 Apr 2025 06:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744697712; cv=none; b=GdFv9G1aVCG9ZMC/HEwvPHuGrE9kfUk0UMNv8A4QarfrEZHhoYF6+bcBfWe1C8cbfcAECJyDCBY8U132VxPHxzPf5M8h3kHeMEo3yjnN7qd2Md4079f19tX7SGB1d6HDZyYLHnLJp92iLG+UssgH7yISkFFBpg9rSydNgkII11s=
+	t=1744700271; cv=none; b=OSz7f2Odq+Ge9h0XuAFBFSxLbP4ZEAFNtbiiE0HQcyaplQY433rygBqM6kiB/LXqPAZ1bppTvOJ2QrgfncPDd3WOo+TZj7BdaEOZMi1uzoJfvdqSWq3CN3o0pXqMZ1KRtHBjUL6bTUZjJ6LO/mMq0UlP22l0MVhImz+Cpx29KRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744697712; c=relaxed/simple;
-	bh=Jj+9El0gv9RJRnKdz5Z6J1EoU0iho4atfdClLS8c21Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iQguCoT0RX56tIyivAoNKmif4lCZ2vyeXB8kroKfv+rQYqcPyRnKom3PgEH3gbFlXMglqVCi6BUxnEZqmdFRnfe5ghQRMIYUuF6CsQyzOaxNNoEOSK4OYNUbumSLXIAaVGGqjkAkNT80Q8CYHWUzYMMFn8eC2IsNfSB7xg+N2LY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=VRn/5uPt; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1744697705; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=+2LZ3sbql60OCXVn+A8aGl6V+b4sdyQtm8MhWSm6Pv8=;
-	b=VRn/5uPtZZRO+nAIim3MOiE2c6fI6LxqKx5+d+/nT8bdwM/eHVY2HgHQs3miQA6bDOvNUVoe/YQKFSpD9beg8RLoWIIgji0FE9Zhzfrpsl/XIarvT2drm5kvkFIrZ5OS6Hq2x61As5IMFZeAym4WuykK5igXxMWdL5bbDILmjik=
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0WX3bW8J_1744697699 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 15 Apr 2025 14:15:05 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: ast@kernel.org
-Cc: daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH -next] selftest/bpf/benchs: Remove duplicate sys/types.h header
-Date: Tue, 15 Apr 2025 14:14:59 +0800
-Message-Id: <20250415061459.11644-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+	s=arc-20240116; t=1744700271; c=relaxed/simple;
+	bh=tEL///cSukVzcGZZ+2nvW1x1tC0cDrQQQifctHJH11o=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=EJnZD9txx1Hr5BYWgGsO+m3VtFHIpbVUakQ5AsrG0vRUYGDXl0ugxohBY+Xa5fANwsdkoN5MxWb9GB/HkVsiLjlx5kvRU644DINu0nTv8NxX8pSEoOESyeogBbERHMRbORSnLj6ammLceC6DULPK13+QquCNN8HfwUNq9H8Q9tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=YCTksIhB; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 53F6unIB2639618
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Mon, 14 Apr 2025 23:56:50 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 53F6unIB2639618
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025032001; t=1744700212;
+	bh=tEL///cSukVzcGZZ+2nvW1x1tC0cDrQQQifctHJH11o=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=YCTksIhBMy5xplKGhKrpvDh+Gt4mtL5UACeLF4lslUD1VbrgQuefYVuMy0mei/Q60
+	 vdGgLY87TG/KgIIPPcUrpz6SBT/6R3SCkZ+mQgyRjw0lb2t8Z6V/DQuBdKKBVkDe+6
+	 dRzEAkOrIYGAMUNvTt4/aZ57QFtr4kcQPeum8uV8El7RCdX3ykwKs8rLpr1awvDFX1
+	 umsqFcRaAuHx6n2uvOGXI6BLdb5fvTagOGQLqqGtBW5qmxwGylfYFOFTGabqO9jMtD
+	 +PmCyVIUbPX92wEig0ZdnACF2Cws0xiPBLd5Sq9WMGFTT/VPR9E/iDGKXpwNHIR5BM
+	 tHMRkCne6bI6g==
+Date: Mon, 14 Apr 2025 23:56:47 -0700
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Xin Li <xin@zytor.com>, Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>
+CC: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, virtualization@lists.linux.dev,
+        linux-edac@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-ide@vger.kernel.org,
+        linux-pm@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, jgross@suse.com,
+        andrew.cooper3@citrix.com, peterz@infradead.org, acme@kernel.org,
+        namhyung@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
+        wei.liu@kernel.org, ajay.kaher@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, tony.luck@intel.com,
+        pbonzini@redhat.com, vkuznets@redhat.com, luto@kernel.org,
+        boris.ostrovsky@oracle.com, kys@microsoft.com, haiyangz@microsoft.com,
+        decui@microsoft.com
+Subject: =?US-ASCII?Q?Re=3A_=5BRFC_PATCH_v1_10/15=5D_KVM=3A_VMX=3A_Use_WR?=
+ =?US-ASCII?Q?MSRNS_or_its_immediate_form_when_available?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <0cad1e0b-2bfd-4258-90cd-8d319bf0e74a@zytor.com>
+References: <20250331082251.3171276-1-xin@zytor.com> <20250331082251.3171276-11-xin@zytor.com> <Z_hTI8ywa3rTxFaz@google.com> <CALMp9eRJkzA2YXf1Dfxt3ONP+P9aTA=WPraOPJPJ6C6j677+6Q@mail.gmail.com> <fa16949e-7842-45f7-9715-1bdda13b762a@zytor.com> <EAB44BB2-99BB-4D4A-8306-0235D2931E72@zytor.com> <0cad1e0b-2bfd-4258-90cd-8d319bf0e74a@zytor.com>
+Message-ID: <D212FABE-38FE-45D3-A082-CA819CCFFF95@zytor.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-./tools/testing/selftests/bpf/benchs/bench_sockmap.c: sys/types.h is included more than once.
+On April 14, 2025 10:48:47 AM PDT, Xin Li <xin@zytor=2Ecom> wrote:
+>On 4/12/2025 4:10 PM, H=2E Peter Anvin wrote:
+>> Also,*in this specific case* IA32_SPEC_CTRL is architecturally nonseria=
+lizing, i=2Ee=2E WRMSR executes as WRMSRNS anyway=2E
+>
+>While the immediate form WRMSRNS could be faster because the MSR index
+>is available *much* earlier in the pipeline, right?
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=20436
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- tools/testing/selftests/bpf/benchs/bench_sockmap.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/benchs/bench_sockmap.c b/tools/testing/selftests/bpf/benchs/bench_sockmap.c
-index 54f4e7c03cd2..8ebf563a67a2 100644
---- a/tools/testing/selftests/bpf/benchs/bench_sockmap.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_sockmap.c
-@@ -3,7 +3,6 @@
- #include <error.h>
- #include <sys/types.h>
- #include <sys/socket.h>
--#include <sys/types.h>
- #include <netinet/in.h>
- #include <sys/sendfile.h>
- #include <arpa/inet.h>
--- 
-2.32.0.3.g01195cf9f
-
+Yes, but then it would be redundant with the virtualization support=2E
 
