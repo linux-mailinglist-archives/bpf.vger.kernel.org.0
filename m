@@ -1,276 +1,180 @@
-Return-Path: <bpf+bounces-55936-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55937-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80C1EA8977B
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 11:07:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A33EA89791
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 11:10:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F036216C1BB
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 09:07:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E9311894C85
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 09:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8152227E1A7;
-	Tue, 15 Apr 2025 09:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E78C3284697;
+	Tue, 15 Apr 2025 09:10:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Ub4eQxzW"
+	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="FdYpkC8r"
 X-Original-To: bpf@vger.kernel.org
-Received: from fllvem-ot04.ext.ti.com (fllvem-ot04.ext.ti.com [198.47.19.246])
+Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC2A289357;
-	Tue, 15 Apr 2025 09:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.246
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07E51624CE;
+	Tue, 15 Apr 2025 09:10:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744707991; cv=none; b=sP/sm/gq9zHDsuix2LFym018CLh6WCRaYgxn8sALxqgWhxULYo7ehHMT0iJI0MyISunByjVhjy+7Xb27NoPzpOtkjF8Rc14xRUOSeiL5qfNperjjLO0at9p7gMTMsdRCya6Wnd0PsCyLnXgyjgGUxBpMyehUHt4jSoC7qpqgKaA=
+	t=1744708213; cv=none; b=U6rL9J/luxsZK1G2rf+G+py1CBb1g3NqvVtTyrlCqWObPiJsHEX3Tyf0Y4CZ0DxbmBa1OBs6A7e2LbOAU8xkrJKmm6s1Q8Bo1eu7EMp4Xds9tU9qkNdYdOM7WDrx6uPS76XN6PHVzxYI24sLFtQErAZoS9qjUT8MccwS9Oa+ab0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744707991; c=relaxed/simple;
-	bh=SwqYHKdJdLoovSs29qeQIztDbSM1TuvqLAVPWM0G19Q=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Je5Hc9x26+ehFm484adAJCo/wXEyLWUv7avkLDrT1uzezWir9ll24haZ+M/XHs0OWTlYz32jZz4WVcd9v3CQt8TQhjWhGMcRFfkEgVEjlCxnBCEHZH/I8nNpN3n0TpTXhZB1JUuc7zPPMRnDDXBQo6aRNWVi5mmaNoINJWsUMmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Ub4eQxzW; arc=none smtp.client-ip=198.47.19.246
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 53F95wGH2996245
-	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 15 Apr 2025 04:05:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1744707958;
-	bh=zbbMws7/JHr51qmHgB5wtBPMnAvtKhFkR+q7a0rSNgo=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=Ub4eQxzWW27JJe6N0qadN8dFErC+Lhph4tzFUZi5nNBT8/Cwlw74266Y72rDSgjjj
-	 fzq9+wFEhh5JK9HFxuPL60pPI589jFMtfH60pstnROOeddhzyRM8zc4OrllXNMF8WU
-	 VWwl6ljMNLKy3tLW62AK6D3NRFeaocOWqwzOZpvw=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 53F95wUn012296
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 15 Apr 2025 04:05:58 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 15
- Apr 2025 04:05:57 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 15 Apr 2025 04:05:57 -0500
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 53F95v1N029324;
-	Tue, 15 Apr 2025 04:05:57 -0500
-Received: from localhost (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
-	by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 53F95uu5010969;
-	Tue, 15 Apr 2025 04:05:57 -0500
-From: Meghana Malladi <m-malladi@ti.com>
-To: <dan.carpenter@linaro.org>, <javier.carrasco.cruz@gmail.com>,
-        <diogo.ivo@siemens.com>, <horms@kernel.org>,
-        <jacob.e.keller@intel.com>, <m-malladi@ti.com>,
-        <john.fastabend@gmail.com>, <hawk@kernel.org>, <daniel@iogearbox.net>,
-        <ast@kernel.org>, <richardcochran@gmail.com>, <pabeni@redhat.com>,
-        <kuba@kernel.org>, <edumazet@google.com>, <davem@davemloft.net>,
-        <andrew+netdev@lunn.ch>
-CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Roger Quadros
-	<rogerq@kernel.org>, <danishanwar@ti.com>
-Subject: [PATCH net v4 3/3] net: ti: icss-iep: Fix possible NULL pointer dereference for perout request
-Date: Tue, 15 Apr 2025 14:35:43 +0530
-Message-ID: <20250415090543.717991-4-m-malladi@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250415090543.717991-1-m-malladi@ti.com>
-References: <20250415090543.717991-1-m-malladi@ti.com>
+	s=arc-20240116; t=1744708213; c=relaxed/simple;
+	bh=h2ArVH3qZFGXjdMX8JG6QGs7L/Tfo41LxNCQU2OMTBs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QkO4c7ly+QemX53s724CAgcLryZDoFDR4Q/k2nmIx8XLEPFWEc8DzDaRIjquZPc+EgbBu/5coAQDfQhmsBgasr7rC+2yAePKW22vQrY3t+vyHQz6BwxdLGCUFLg0w8++dMH1Srx7GSpCCxDuXCqwZk9LRdcXoqGtIKSwqhsSsDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=FdYpkC8r; arc=none smtp.client-ip=139.165.32.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
+Received: from [192.168.1.58] (220.24-245-81.adsl-dyn.isp.belgacom.be [81.245.24.220])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id C9DDF200CCEB;
+	Tue, 15 Apr 2025 11:10:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be C9DDF200CCEB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
+	s=ulg20190529; t=1744708202;
+	bh=eQufNntKfiHJqzsIZr8O0/rtd7FT0xn0S2YrcLl34kI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=FdYpkC8rMJkBVj1bXwAPxx4JiDcZ6DpAMA0O8lNf+yg8ZnnBcpMcPO5nM4ByYUXeF
+	 bc+p22UWjqM+En1zCAuPgelRf5tHX8ejJRDzMZppiDsDpd+b+SgcZ5c1dbiXL1dCzV
+	 Bl3dagddNHjIcPmrWXmlg8yGo9tC/HetcpDJ10L/WOJ0JThpfYpZ98UsAeLIyQy5Nh
+	 bzkYvijjW8WxwFUyAWctwMe9KK8ul6LHoCQqJxVXMSl8FrmZq60qhb4Y/8T51eaTky
+	 t6NMTw95FwCMwKnxNakpBQeZ7XPpZI4g2KF0BZo78Nc333/aEwez7aXFCbl5b6Sr/f
+	 7HETdTlM25kXA==
+Message-ID: <3cee5141-c525-4e83-830e-bf21828aed51@uliege.be>
+Date: Tue, 15 Apr 2025 11:10:01 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net: lwtunnel: disable preemption when required
+To: Andrea Mayer <andrea.mayer@uniroma2.it>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Sebastian Sewior <bigeasy@linutronix.de>,
+ Stanislav Fomichev <stfomichev@gmail.com>,
+ Network Development <netdev@vger.kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>,
+ bpf <bpf@vger.kernel.org>, Stefano Salsano <stefano.salsano@uniroma2.it>,
+ Paolo Lungaroni <paolo.lungaroni@uniroma2.it>
+References: <20250403083956.13946-1-justin.iurman@uliege.be>
+ <Z-62MSCyMsqtMW1N@mini-arch> <cb0df409-ebbf-4970-b10c-4ea9f863ff00@uliege.be>
+ <CAADnVQLiM5MA3Xyrkqmubku6751ZPrDk6v-HmC1jnOaL47=t+g@mail.gmail.com>
+ <20250404141955.7Rcvv7nB@linutronix.de>
+ <85eefdd9-ec5d-4113-8a50-5d9ea11c8bf5@uliege.be>
+ <CAADnVQK7vNPbMS7T9TUOW7s6HNbfr4H8CWbjPgVXW7xa+ybPsw@mail.gmail.com>
+ <d326726d-7050-4e88-b950-f49cf5901d34@uliege.be>
+ <20250415025416.0273812f0322a6b1728d9c7b@uniroma2.it>
+Content-Language: en-US
+From: Justin Iurman <justin.iurman@uliege.be>
+In-Reply-To: <20250415025416.0273812f0322a6b1728d9c7b@uniroma2.it>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The ICSS IEP driver tracks perout and pps enable state with flags.
-Currently when disabling pps and perout signals during icss_iep_exit(),
-results in NULL pointer dereference for perout.
+On 4/15/25 02:54, Andrea Mayer wrote:> I have been looking into the 
+behavior of the lwtunnel_xmit() function in both
+> task and softirq contexts. To facilitate this investigation, I have written a
+> simple eBPF program that only prints messages to the trace pipe. This program
+> is attached to the LWT BPF XMIT hook by configuring a route (on my test node)
+> with a destination address (DA) pointing to an external node, referred to as
+> x.x.x.x, within my testbed network.
+> 
+> To trigger that LWT BPF XMIT instance from a softirq context, it is sufficient
+> to receive (on the test node) a packet with a DA matching x.x.x.x. This packet
+> is then processed through the forwarding path, eventually leading to the
+> ip_output() function. Processing ends with a call to ip_finish_output2(), which
+> then calls lwtunnel_xmit().
+> 
+> Below is the stack trace from my testing machine, highlighting the key
+> functions involved in this processing path:
+> 
+>   ============================================
+>    <IRQ>
+>    ...
+>    lwtunnel_xmit+0x18/0x3f0
+>    ip_finish_output2+0x45a/0xcc0
+>    ip_output+0xe2/0x380
+>    NF_HOOK.constprop.0+0x7e/0x2f0
+>    ip_rcv+0x4bf/0x4d0
+>    __netif_receive_skb_one_core+0x11c/0x130
+>    process_backlog+0x277/0x980
+>    __napi_poll.constprop.0+0x58/0x260
+>    net_rx_action+0x396/0x6e0
+>    handle_softirqs+0x116/0x640
+>    do_softirq+0xa9/0xe0
+>    </IRQ>
+>   ============================================
+> 
+> Conversely, to trigger lwtunnel_xmit() from the task context, simply ping
+> x.x.x.x on the same testing node. Below is the corresponding stack trace:
+> 
+>   ============================================
+>    <TASK>
+>    ...
+>    lwtunnel_xmit+0x18/0x3f0
+>    ip_finish_output2+0x45a/0xcc0
+>    ip_output+0xe2/0x380
+>    ip_push_pending_frames+0x17a/0x200
+>    raw_sendmsg+0x9fa/0x1060
+>    __sys_sendto+0x294/0x2e0
+>    __x64_sys_sendto+0x6d/0x80
+>    do_syscall_64+0x64/0x140
+>    entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>    </TASK>
+>   ============================================
+> 
+> So also for the lwtunnel_xmit(), we need to make sure that the functions
+> dev_xmit_recursion{_inc/dec}() and the necessary logic to avoid lwt recursion
+> are protected, i.e. inside a local_bh_{disable/enable} block.
 
-To fix the null pointer dereference issue, the icss_iep_perout_enable_hw
-function can be modified to directly clear the IEP CMP registers when
-disabling PPS or PEROUT, without referencing the ptp_perout_request
-structure, as its contents are irrelevant in this case.
+That's correct, and I ended up with the same conclusion as yours on the 
+possible paths for lwtunnel_xmit() depending on the context (task vs 
+irq). Based on your description, we're using a similar approach with 
+eBPF :-) Note that paths are similar for lwtunnel_output() (see below).
 
-Fixes: 9b115361248d ("net: ti: icssg-prueth: Fix clearing of IEP_CMP_CFG registers during iep_init")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/all/7b1c7c36-363a-4085-b26c-4f210bee1df6@stanley.mountain/
-Signed-off-by: Meghana Malladi <m-malladi@ti.com>
----
+> In a non-preemptible real-time environment (i.e., when !PREEMPT_RT), the
+> in_softirq() expands to softirq_count(), which in turn uses the preempt_count()
+> function. On my x86 architecture, preempt_count() accesses the per-CPU
+> __preempt_count variable.
+> 
+> If in_softirq() returns 0, it indicates that no softirqs are currently being
+> processed on the local CPU and BH are not disabled. Therefore, following the
+> logic above, we disable bottom halves (BH) on that particular CPU.
+> 
+> However, there is my opinion an issue that can occur: between the check on
+> in_softirq() and the call to local_bh_disable(), the task may be scheduled on
+> another CPU. As a result, the check on in_softirq() becomes ineffective because
+> we may end up disabling BH on a CPU that is not the one we just checked (with
+> if (in_softirq()) { ... }).
 
-Changes from v3 (v4-v3):
-- Fix the logic in icss_iep_perout_enable_hw() to clear IEP registers
-  when disabling periodic signal
+Hmm, I think it's correct... good catch. I went for this solution to (i) 
+avoid useless nested BHs disable calls; and (ii) avoid ending up with a 
+spaghetti graph of possible paths with or without BHs disabled (i.e., 
+with single entry points, namely lwtunnel_xmit() and lwtunnel_output()), 
+which otherwise makes it hard to maintain the code IMO.
 
- drivers/net/ethernet/ti/icssg/icss_iep.c | 121 +++++++++++------------
- 1 file changed, 58 insertions(+), 63 deletions(-)
+So, if we want to follow what Alexei suggests (see his last response), 
+we'd need to disable BHs in both ip_local_out() and ip6_local_out(). 
+These are the common functions which are closest in depth, and so for 
+both lwtunnel_xmit() and lwtunnel_output(). But... at the "cost" of 
+disabling BHs even when it may not be required. Indeed, ip_local_out() 
+and ip6_local_out() both call dst_output(), which one is usually not 
+lwtunnel_output() (and there may not even be a lwtunnel_xmit() to call 
+either).
 
-diff --git a/drivers/net/ethernet/ti/icssg/icss_iep.c b/drivers/net/ethernet/ti/icssg/icss_iep.c
-index b4a34c57b7b4..2a1c43316f46 100644
---- a/drivers/net/ethernet/ti/icssg/icss_iep.c
-+++ b/drivers/net/ethernet/ti/icssg/icss_iep.c
-@@ -412,6 +412,22 @@ static int icss_iep_perout_enable_hw(struct icss_iep *iep,
- 	int ret;
- 	u64 cmp;
- 
-+	if (!on) {
-+		/* Disable CMP 1 */
-+		regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
-+				   IEP_CMP_CFG_CMP_EN(1), 0);
-+
-+		/* clear CMP regs */
-+		regmap_write(iep->map, ICSS_IEP_CMP1_REG0, 0);
-+		if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
-+			regmap_write(iep->map, ICSS_IEP_CMP1_REG1, 0);
-+
-+		/* Disable sync */
-+		regmap_write(iep->map, ICSS_IEP_SYNC_CTRL_REG, 0);
-+
-+		return 0;
-+	}
-+
- 	/* Calculate width of the signal for PPS/PEROUT handling */
- 	ts.tv_sec = req->on.sec;
- 	ts.tv_nsec = req->on.nsec;
-@@ -430,64 +446,39 @@ static int icss_iep_perout_enable_hw(struct icss_iep *iep,
- 		if (ret)
- 			return ret;
- 
--		if (on) {
--			/* Configure CMP */
--			regmap_write(iep->map, ICSS_IEP_CMP1_REG0, lower_32_bits(cmp));
--			if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
--				regmap_write(iep->map, ICSS_IEP_CMP1_REG1, upper_32_bits(cmp));
--			/* Configure SYNC, based on req on width */
--			regmap_write(iep->map, ICSS_IEP_SYNC_PWIDTH_REG,
--				     div_u64(ns_width, iep->def_inc));
--			regmap_write(iep->map, ICSS_IEP_SYNC0_PERIOD_REG, 0);
--			regmap_write(iep->map, ICSS_IEP_SYNC_START_REG,
--				     div_u64(ns_start, iep->def_inc));
--			regmap_write(iep->map, ICSS_IEP_SYNC_CTRL_REG, 0); /* one-shot mode */
--			/* Enable CMP 1 */
--			regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
--					   IEP_CMP_CFG_CMP_EN(1), IEP_CMP_CFG_CMP_EN(1));
--		} else {
--			/* Disable CMP 1 */
--			regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
--					   IEP_CMP_CFG_CMP_EN(1), 0);
--
--			/* clear regs */
--			regmap_write(iep->map, ICSS_IEP_CMP1_REG0, 0);
--			if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
--				regmap_write(iep->map, ICSS_IEP_CMP1_REG1, 0);
--		}
-+		/* Configure CMP */
-+		regmap_write(iep->map, ICSS_IEP_CMP1_REG0, lower_32_bits(cmp));
-+		if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
-+			regmap_write(iep->map, ICSS_IEP_CMP1_REG1, upper_32_bits(cmp));
-+		/* Configure SYNC, based on req on width */
-+		regmap_write(iep->map, ICSS_IEP_SYNC_PWIDTH_REG,
-+			     div_u64(ns_width, iep->def_inc));
-+		regmap_write(iep->map, ICSS_IEP_SYNC0_PERIOD_REG, 0);
-+		regmap_write(iep->map, ICSS_IEP_SYNC_START_REG,
-+			     div_u64(ns_start, iep->def_inc));
-+		regmap_write(iep->map, ICSS_IEP_SYNC_CTRL_REG, 0); /* one-shot mode */
-+		/* Enable CMP 1 */
-+		regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
-+				   IEP_CMP_CFG_CMP_EN(1), IEP_CMP_CFG_CMP_EN(1));
- 	} else {
--		if (on) {
--			u64 start_ns;
--
--			iep->period = ((u64)req->period.sec * NSEC_PER_SEC) +
--				      req->period.nsec;
--			start_ns = ((u64)req->period.sec * NSEC_PER_SEC)
--				   + req->period.nsec;
--			icss_iep_update_to_next_boundary(iep, start_ns);
--
--			regmap_write(iep->map, ICSS_IEP_SYNC_PWIDTH_REG,
--				     div_u64(ns_width, iep->def_inc));
--			regmap_write(iep->map, ICSS_IEP_SYNC_START_REG,
--				     div_u64(ns_start, iep->def_inc));
--			/* Enable Sync in single shot mode  */
--			regmap_write(iep->map, ICSS_IEP_SYNC_CTRL_REG,
--				     IEP_SYNC_CTRL_SYNC_N_EN(0) | IEP_SYNC_CTRL_SYNC_EN);
--			/* Enable CMP 1 */
--			regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
--					   IEP_CMP_CFG_CMP_EN(1), IEP_CMP_CFG_CMP_EN(1));
--		} else {
--			/* Disable CMP 1 */
--			regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
--					   IEP_CMP_CFG_CMP_EN(1), 0);
--
--			/* clear CMP regs */
--			regmap_write(iep->map, ICSS_IEP_CMP1_REG0, 0);
--			if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
--				regmap_write(iep->map, ICSS_IEP_CMP1_REG1, 0);
--
--			/* Disable sync */
--			regmap_write(iep->map, ICSS_IEP_SYNC_CTRL_REG, 0);
--		}
-+		u64 start_ns;
-+
-+		iep->period = ((u64)req->period.sec * NSEC_PER_SEC) +
-+				req->period.nsec;
-+		start_ns = ((u64)req->period.sec * NSEC_PER_SEC)
-+				+ req->period.nsec;
-+		icss_iep_update_to_next_boundary(iep, start_ns);
-+
-+		regmap_write(iep->map, ICSS_IEP_SYNC_PWIDTH_REG,
-+			     div_u64(ns_width, iep->def_inc));
-+		regmap_write(iep->map, ICSS_IEP_SYNC_START_REG,
-+			     div_u64(ns_start, iep->def_inc));
-+		/* Enable Sync in single shot mode  */
-+		regmap_write(iep->map, ICSS_IEP_SYNC_CTRL_REG,
-+			     IEP_SYNC_CTRL_SYNC_N_EN(0) | IEP_SYNC_CTRL_SYNC_EN);
-+		/* Enable CMP 1 */
-+		regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
-+				   IEP_CMP_CFG_CMP_EN(1), IEP_CMP_CFG_CMP_EN(1));
- 	}
- 
- 	return 0;
-@@ -498,11 +489,21 @@ static int icss_iep_perout_enable(struct icss_iep *iep,
- {
- 	int ret = 0;
- 
-+	if (!on)
-+		goto disable;
-+
- 	/* Reject requests with unsupported flags */
- 	if (req->flags & ~(PTP_PEROUT_DUTY_CYCLE |
- 			  PTP_PEROUT_PHASE))
- 		return -EOPNOTSUPP;
- 
-+	/* Set default "on" time (1ms) for the signal if not passed by the app */
-+	if (!(req->flags & PTP_PEROUT_DUTY_CYCLE)) {
-+		req->on.sec = 0;
-+		req->on.nsec = NSEC_PER_MSEC;
-+	}
-+
-+disable:
- 	mutex_lock(&iep->ptp_clk_mutex);
- 
- 	if (iep->pps_enabled) {
-@@ -513,12 +514,6 @@ static int icss_iep_perout_enable(struct icss_iep *iep,
- 	if (iep->perout_enabled == !!on)
- 		goto exit;
- 
--	/* Set default "on" time (1ms) for the signal if not passed by the app */
--	if (!(req->flags & PTP_PEROUT_DUTY_CYCLE)) {
--		req->on.sec = 0;
--		req->on.nsec = NSEC_PER_MSEC;
--	}
--
- 	ret = icss_iep_perout_enable_hw(iep, req, on);
- 	if (!ret)
- 		iep->perout_enabled = !!on;
--- 
-2.43.0
+The other solution is to always call local_bh_disable() in both 
+lwtunnel_xmit() and lwtunnel_output(), at the cost of disabling BHs when 
+they were already. Which was basically -v1 and received a NACK from Alexei.
 
+At the moment, I'm not sure what's best.
 
