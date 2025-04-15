@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-55986-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55987-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69476A8A593
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 19:32:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 083F3A8A597
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 19:33:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C61244353B
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 17:32:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9121819030DB
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 17:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480A4233D65;
-	Tue, 15 Apr 2025 17:29:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC858233729;
+	Tue, 15 Apr 2025 17:29:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NKyH1bBi"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tz9j3XMn"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C056A221702;
-	Tue, 15 Apr 2025 17:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74615221D83;
+	Tue, 15 Apr 2025 17:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744738180; cv=none; b=uSOCxkjAzSc17ttoAzX2mbxrJrQYLBzhh/zAJhih6L0mvpZrUbbUAsep2JM6pEbQ0rY3bot9kVGLrv130zDgcO0KJerjhs5wiHPEUxRSYrCzh82EAIH1aBZ6dj4FOLFRk8v7mcCO3fH33xELlNKoTvDQxJOB5kE16J+S10jzO00=
+	t=1744738182; cv=none; b=pQQY8aXsNbsjdjYh22T29aFr86/UU/kTJV2UrF0q2xjpJizGycEvosvo5QW8nF3AzRZP8S8woX0/MERwl/aInA+2M1Gkj7tSiC7J05P36JQM8uQAyiHHrTIAeBi/ddHgZapxtXjOGwQk6In+l6Pvw72xsXRCaRT9wBGJW1Lnmio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744738180; c=relaxed/simple;
-	bh=5hrhWZJgnjKQfFC++nTM/jCtOnI7N/Xn83OmaTwcQmY=;
+	s=arc-20240116; t=1744738182; c=relaxed/simple;
+	bh=7ne9x5DYOXVhNLNI7e4lJs8pi9J798b2PE8fgyt3Mh4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U1C1WsXK0nxYXDcO+umFX6RuDoDIMBISfHquHeMKd7iM6UaD8Tw3sTbSbmyrItwDwI5AGlEDhHKJ6santHW2zaTdCIZbXcuQmVpoTBZDr2Ao8ixRhWCG2ezWyXqQ1iyPpsi+Yd3v6H1AsKmjIHO9EGcoFg3UglAh5o6B6FWW2qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NKyH1bBi; arc=none smtp.client-ip=198.175.65.17
+	 MIME-Version; b=dPP4L7h2IDHcmIlhYzGfwgaLxDe+bXwZaUEiMXjDEbE8hWn4EBFXKX6zpbHAh+DqIC+SY62TJ0H2ZFiUU+uoDcvi916fCLtXA7S9eC1uCjuojmavq9/KT4G1os8C9AqGmhuth1FWi6Rq8vqvOK0xoxxtKblY667TtlV9Ov0nxLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Tz9j3XMn; arc=none smtp.client-ip=198.175.65.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1744738176; x=1776274176;
+  t=1744738181; x=1776274181;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=5hrhWZJgnjKQfFC++nTM/jCtOnI7N/Xn83OmaTwcQmY=;
-  b=NKyH1bBimnOIkgcTxBtGU/lYTX6RkkbpkF6HwGS+W8ye4EqYt7mUfz3T
-   iLRhN7UKzDMlwWYC7H4fFMoLGpwAl0aEQ1wblYBjKWq8qJ2dIi3M+YX9l
-   TWIGqspRd+t78HgpgsVkq+b3FZNTzvZebUc7lqsyODgao2qAcsI+OmqKu
-   Jht/Y4vf6DGnTyj48tylS0mvY++uHjb9zzH1GyhyYYqMvUwA5jHfaIVpY
-   pitw87i1VePlglUe5Cw7IgztgpytHgXS9AWpPPvvxpAyKJyKbQSkIclH0
-   vFOsz2shjDJ6Z7413u3rn/qdbbYauPZTKN7vt5FKwwKHmGsOK/4z6meQw
+  bh=7ne9x5DYOXVhNLNI7e4lJs8pi9J798b2PE8fgyt3Mh4=;
+  b=Tz9j3XMnbhBUC3NdDLS6HgoFxoioDsvGw/QpWmiI6EpdW12NxoIbS+vW
+   icEHpppQJMxqchGQykJC8+Cu/GQgsmRpzI1ESk1SesrnDx3mfpuhB0HTA
+   R7jlCBlVIDPLIV8uBySIYDd18u2vSTUrppVCmQyajzON9/UaU1iXSfyVf
+   QaNg3Kqm2p9S7+FCZurrrpt1aFxPu9bhCLYai0LLBkyuv7TCEmE83BPkl
+   WFsjCgZog7YXdyv+8HvggeWzfRae/BoOfdUtKVdARLdmTtJC8T7YDRswS
+   iPreZLBRSBULugEZDXHo0WPGlRQ4pfAOb0AncgUaYS9jtVJbVgeRoxFiI
    g==;
-X-CSE-ConnectionGUID: +SDFD77kQWmQ/kNIIJ8ViQ==
-X-CSE-MsgGUID: WhZf3rXgSAqourtTE2/ZKg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11404"; a="46275753"
+X-CSE-ConnectionGUID: pHNJBn60TzqX2S1bSPRl0w==
+X-CSE-MsgGUID: Ko1PmbfPRS6IEtK+aB0pjg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11404"; a="46275766"
 X-IronPort-AV: E=Sophos;i="6.15,213,1739865600"; 
-   d="scan'208";a="46275753"
+   d="scan'208";a="46275766"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2025 10:29:36 -0700
-X-CSE-ConnectionGUID: lITRbMybRQ+wSgyqQ8lRiA==
-X-CSE-MsgGUID: zxgPunYXRgO4Ng42jP0G2A==
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2025 10:29:40 -0700
+X-CSE-ConnectionGUID: TihOLHW3Tme1zl764xGDlg==
+X-CSE-MsgGUID: jOCW74qxTw6nIlb935hAPg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,213,1739865600"; 
-   d="scan'208";a="130729806"
+   d="scan'208";a="130729817"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa010.fm.intel.com with ESMTP; 15 Apr 2025 10:29:31 -0700
+  by fmviesa010.fm.intel.com with ESMTP; 15 Apr 2025 10:29:36 -0700
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: intel-wired-lan@lists.osuosl.org
 Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -78,9 +78,9 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH iwl-next 10/16] libeth: xdp: add templates for building driver-side callbacks
-Date: Tue, 15 Apr 2025 19:28:19 +0200
-Message-ID: <20250415172825.3731091-11-aleksander.lobakin@intel.com>
+Subject: [PATCH iwl-next 11/16] libeth: xdp: add RSS hash hint and XDP features setup helpers
+Date: Tue, 15 Apr 2025 19:28:20 +0200
+Message-ID: <20250415172825.3731091-12-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250415172825.3731091-1-aleksander.lobakin@intel.com>
 References: <20250415172825.3731091-1-aleksander.lobakin@intel.com>
@@ -92,266 +92,202 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Defining driver-specific functions to pass to libeth_xdp functions can
-induce boilerplates and/or look a bit cryptic with all those layers of
-indirection. On the other hand, this indirection is needed to allow
-compilers to uninline big functions even when passed to __always_inline
-helpers (too much inlining also hurts performance in some cases), plus
-to reuse some XDP helpers in XSk code.
-Add macros to quickly build them, with the detailed kdoc. They take
-names of the actual callbacks for filling a Tx descriptor and other
-purely HW-specific things and wrap them appropriately.
-
-LIBETH_XDP_DEFINE_{BEGIN,END}() is needed for GCC 8+ unfortunately to
-let the drivers control which functions will be static and which global
-without hitting `-Wold-style-declaration`.
+End the XDP section by adding helpers to setup XDP features, flipping
+.ndo_xdp_xmit() support at runtime (in case when it's not always on),
+and calculating the queue clean/refill threshold.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/net/libeth/xdp.h | 195 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 195 insertions(+)
+ include/net/libeth/xdp.h                | 90 +++++++++++++++++++++++++
+ drivers/net/ethernet/intel/libeth/xdp.c | 69 +++++++++++++++++++
+ 2 files changed, 159 insertions(+)
 
 diff --git a/include/net/libeth/xdp.h b/include/net/libeth/xdp.h
-index 104210da921e..643b0a8acab3 100644
+index 643b0a8acab3..f0b1160bee51 100644
 --- a/include/net/libeth/xdp.h
 +++ b/include/net/libeth/xdp.h
-@@ -735,6 +735,9 @@ __libeth_xdp_tx_flush_bulk(struct libeth_xdp_tx_bulk *bq, u32 flags,
-  * @flags: Tx flags, see above
-  * @prep: driver callback to prepare the queue
-  * @xmit: driver callback to fill a HW descriptor
-+ *
-+ * Use via LIBETH_XDP_DEFINE_FLUSH_TX() to define an ``XDP_TX`` driver
-+ * callback.
-  */
- #define libeth_xdp_tx_flush_bulk(bq, flags, prep, xmit)			      \
- 	__libeth_xdp_tx_flush_bulk(bq, flags, prep, libeth_xdp_tx_fill_buf,   \
-@@ -742,6 +745,25 @@ __libeth_xdp_tx_flush_bulk(struct libeth_xdp_tx_bulk *bq, u32 flags,
+@@ -1624,6 +1624,51 @@ void name(struct libeth_xdp_tx_bulk *bq)				      \
  
- /* .ndo_xdp_xmit() implementation */
+ #define LIBETH_XDP_DEFINE_END()		__diag_pop()
  
-+/**
-+ * libeth_xdp_xmit_init_bulk - internal helper to initialize bulk for XDP xmit
-+ * @bq: bulk to initialize
-+ * @dev: target &net_device
-+ * @xdpsqs: array of driver-specific XDPSQ structs
-+ * @num: number of active XDPSQs (the above array length)
-+ */
-+#define libeth_xdp_xmit_init_bulk(bq, dev, xdpsqs, num)			      \
-+	__libeth_xdp_xmit_init_bulk(bq, dev, (xdpsqs)[libeth_xdpsq_id(num)])
++/* XMO */
 +
-+static inline void __libeth_xdp_xmit_init_bulk(struct libeth_xdp_tx_bulk *bq,
-+					       struct net_device *dev,
-+					       void *xdpsq)
++/**
++ * libeth_xdp_buff_to_rq - get RQ pointer from an XDP buffer pointer
++ * @xdp: &libeth_xdp_buff corresponding to the queue
++ * @type: typeof() of the driver Rx queue structure
++ * @member: name of &xdp_rxq_info inside @type
++ *
++ * Often times, pointer to the RQ is needed when reading/filling metadata from
++ * HW descriptors. The helper can be used to quickly jump from an XDP buffer
++ * to the queue corresponding to its &xdp_rxq_info without introducing
++ * additional fields (&libeth_xdp_buff is precisely 1 cacheline long on x64).
++ */
++#define libeth_xdp_buff_to_rq(xdp, type, member)			      \
++	container_of_const((xdp)->base.rxq, type, member)
++
++/**
++ * libeth_xdpmo_rx_hash - convert &libeth_rx_pt to an XDP RSS hash metadata
++ * @hash: pointer to the variable to write the hash to
++ * @rss_type: pointer to the variable to write the hash type to
++ * @val: hash value from the HW descriptor
++ * @pt: libeth parsed packet type
++ *
++ * Handle zeroed/non-available hash and convert libeth parsed packet type to
++ * the corresponding XDP RSS hash type. To be called at the end of
++ * xdp_metadata_ops idpf_xdpmo::xmo_rx_hash() implementation.
++ * Note that if the driver doesn't use a constant packet type lookup table but
++ * generates it at runtime, it must call libeth_rx_pt_gen_hash_type(pt) to
++ * generate XDP RSS hash type for each packet type.
++ *
++ * Return: 0 on success, -ENODATA when the hash is not available.
++ */
++static inline int libeth_xdpmo_rx_hash(u32 *hash,
++				       enum xdp_rss_hash_type *rss_type,
++				       u32 val, struct libeth_rx_pt pt)
 +{
-+	bq->dev = dev;
-+	bq->xdpsq = xdpsq;
-+	bq->count = 0;
++	if (unlikely(!val))
++		return -ENODATA;
++
++	*hash = val;
++	*rss_type = pt.hash_type;
++
++	return 0;
 +}
-+
- /**
-  * libeth_xdp_xmit_frame_dma - internal helper to access DMA of an &xdp_frame
-  * @xf: pointer to the XDP frame
-@@ -934,6 +956,9 @@ libeth_xdp_xmit_fill_buf(struct libeth_xdp_tx_frame frm, u32 i,
-  * @flags: Tx flags, see __libeth_xdp_tx_flush_bulk()
-  * @prep: driver callback to prepare the queue
-  * @xmit: driver callback to fill a HW descriptor
-+ *
-+ * Use via LIBETH_XDP_DEFINE_FLUSH_XMIT() to define an XDP xmit driver
-+ * callback.
-  */
- #define libeth_xdp_xmit_flush_bulk(bq, flags, prep, xmit)		      \
- 	__libeth_xdp_tx_flush_bulk(bq, (flags) | LIBETH_XDP_TX_NDO, prep,     \
-@@ -993,6 +1018,44 @@ __libeth_xdp_xmit_do_bulk(struct libeth_xdp_tx_bulk *bq,
- 	return nxmit;
- }
- 
-+/**
-+ * libeth_xdp_xmit_do_bulk - implement full .ndo_xdp_xmit() in driver
-+ * @dev: target &net_device
-+ * @n: number of frames to send
-+ * @fr: XDP frames to send
-+ * @f: flags passed by the stack
-+ * @xqs: array of XDPSQs driver structs
-+ * @nqs: number of active XDPSQs, the above array length
-+ * @fl: driver callback to flush an XDP xmit bulk
-+ * @fin: driver cabback to finalize the queue
-+ *
-+ * If the driver has active XDPSQs, perform common checks and send the frames.
-+ * Finalize the queue, if requested.
-+ *
-+ * Return: number of frames sent or -errno on error.
-+ */
-+#define libeth_xdp_xmit_do_bulk(dev, n, fr, f, xqs, nqs, fl, fin)	      \
-+	_libeth_xdp_xmit_do_bulk(dev, n, fr, f, xqs, nqs, fl, fin,	      \
-+				 __UNIQUE_ID(bq_), __UNIQUE_ID(ret_),	      \
-+				 __UNIQUE_ID(nqs_))
-+
-+#define _libeth_xdp_xmit_do_bulk(d, n, fr, f, xqs, nqs, fl, fin, ub, ur, un)  \
-+({									      \
-+	u32 un = (nqs);							      \
-+	int ur;								      \
-+									      \
-+	if (likely(un)) {						      \
-+		struct libeth_xdp_tx_bulk ub;				      \
-+									      \
-+		libeth_xdp_xmit_init_bulk(&ub, d, xqs, un);		      \
-+		ur = __libeth_xdp_xmit_do_bulk(&ub, fr, n, f, fl, fin);	      \
-+	} else {							      \
-+		ur = -ENXIO;						      \
-+	}								      \
-+									      \
-+	ur;								      \
-+})
-+
- /* Rx polling path */
- 
- /**
-@@ -1298,6 +1361,7 @@ __libeth_xdp_run_flush(struct libeth_xdp_buff *xdp,
-  * @fl: driver ``XDP_TX`` bulk flush callback
-  *
-  * Run the attached XDP program and handle all possible verdicts.
-+ * Prefer using it via LIBETH_XDP_DEFINE_RUN{,_PASS,_PROG}().
-  *
-  * Return: true if the buffer should be passed up the stack, false if the poll
-  * should go to the next buffer.
-@@ -1429,6 +1493,137 @@ __libeth_xdp_finalize_rx(struct libeth_xdp_tx_bulk *bq, u32 flags,
- 	rcu_read_unlock();
- }
- 
-+/*
-+ * Helpers to reduce boilerplate code in drivers.
-+ *
-+ * Typical driver Rx flow would be (excl. bulk and buff init, frag attach):
-+ *
-+ * LIBETH_XDP_DEFINE_START();
-+ * LIBETH_XDP_DEFINE_FLUSH_TX(static driver_xdp_flush_tx, driver_xdp_tx_prep,
-+ *			      driver_xdp_xmit);
-+ * LIBETH_XDP_DEFINE_RUN(static driver_xdp_run, driver_xdp_run_prog,
-+ *			 driver_xdp_flush_tx, driver_populate_skb);
-+ * LIBETH_XDP_DEFINE_FINALIZE(static driver_xdp_finalize_rx,
-+ *			      driver_xdp_flush_tx, driver_xdp_finalize_sq);
-+ * LIBETH_XDP_DEFINE_END();
-+ *
-+ * This will build a set of 4 static functions. The compiler is free to decide
-+ * whether to inline them.
-+ * Then, in the NAPI polling function:
-+ *
-+ *	while (packets < budget) {
-+ *		// ...
-+ *		driver_xdp_run(xdp, &bq, napi, &rs, desc);
-+ *	}
-+ *	driver_xdp_finalize_rx(&bq);
-+ */
-+
-+#define LIBETH_XDP_DEFINE_START()					      \
-+	__diag_push();							      \
-+	__diag_ignore(GCC, 8, "-Wold-style-declaration",		      \
-+		      "Allow specifying \'static\' after the return type")
-+
-+/**
-+ * LIBETH_XDP_DEFINE_TIMER - define a driver XDPSQ cleanup timer callback
-+ * @name: name of the function to define
-+ * @poll: Tx polling/completion function
-+ */
-+#define LIBETH_XDP_DEFINE_TIMER(name, poll)				      \
-+void name(struct work_struct *work)					      \
-+{									      \
-+	libeth_xdpsq_run_timer(work, poll);				      \
-+}
-+
-+/**
-+ * LIBETH_XDP_DEFINE_FLUSH_TX - define a driver ``XDP_TX`` bulk flush function
-+ * @name: name of the function to define
-+ * @prep: driver callback to clean an XDPSQ
-+ * @xmit: driver callback to write a HW Tx descriptor
-+ */
-+#define LIBETH_XDP_DEFINE_FLUSH_TX(name, prep, xmit)			      \
-+	__LIBETH_XDP_DEFINE_FLUSH_TX(name, prep, xmit, xdp)
-+
-+#define __LIBETH_XDP_DEFINE_FLUSH_TX(name, prep, xmit, pfx)		      \
-+bool name(struct libeth_xdp_tx_bulk *bq, u32 flags)			      \
-+{									      \
-+	return libeth_##pfx##_tx_flush_bulk(bq, flags, prep, xmit);	      \
-+}
-+
-+/**
-+ * LIBETH_XDP_DEFINE_FLUSH_XMIT - define a driver XDP xmit bulk flush function
-+ * @name: name of the function to define
-+ * @prep: driver callback to clean an XDPSQ
-+ * @xmit: driver callback to write a HW Tx descriptor
-+ */
-+#define LIBETH_XDP_DEFINE_FLUSH_XMIT(name, prep, xmit)			      \
-+bool name(struct libeth_xdp_tx_bulk *bq, u32 flags)			      \
-+{									      \
-+	return libeth_xdp_xmit_flush_bulk(bq, flags, prep, xmit);	      \
-+}
-+
-+/**
-+ * LIBETH_XDP_DEFINE_RUN_PROG - define a driver XDP program run function
-+ * @name: name of the function to define
-+ * @flush: driver callback to flush an ``XDP_TX`` bulk
-+ */
-+#define LIBETH_XDP_DEFINE_RUN_PROG(name, flush)				      \
-+	bool __LIBETH_XDP_DEFINE_RUN_PROG(name, flush, xdp)
-+
-+#define __LIBETH_XDP_DEFINE_RUN_PROG(name, flush, pfx)			      \
-+name(struct libeth_xdp_buff *xdp, struct libeth_xdp_tx_bulk *bq)	      \
-+{									      \
-+	return libeth_##pfx##_run_prog(xdp, bq, flush);			      \
-+}
-+
-+/**
-+ * LIBETH_XDP_DEFINE_RUN_PASS - define a driver buffer process + pass function
-+ * @name: name of the function to define
-+ * @run: driver callback to run XDP program (above)
-+ * @populate: driver callback to fill an skb with HW descriptor info
-+ */
-+#define LIBETH_XDP_DEFINE_RUN_PASS(name, run, populate)			      \
-+	void __LIBETH_XDP_DEFINE_RUN_PASS(name, run, populate, xdp)
-+
-+#define __LIBETH_XDP_DEFINE_RUN_PASS(name, run, populate, pfx)		      \
-+name(struct libeth_xdp_buff *xdp, struct libeth_xdp_tx_bulk *bq,	      \
-+     struct napi_struct *napi, struct libeth_rq_napi_stats *ss,		      \
-+     const void *desc)							      \
-+{									      \
-+	return libeth_##pfx##_run_pass(xdp, bq, napi, ss, desc, run,	      \
-+				       populate);			      \
-+}
-+
-+/**
-+ * LIBETH_XDP_DEFINE_RUN - define a driver buffer process, run + pass function
-+ * @name: name of the function to define
-+ * @run: name of the XDP prog run function to define
-+ * @flush: driver callback to flush an ``XDP_TX`` bulk
-+ * @populate: driver callback to fill an skb with HW descriptor info
-+ */
-+#define LIBETH_XDP_DEFINE_RUN(name, run, flush, populate)		      \
-+	__LIBETH_XDP_DEFINE_RUN(name, run, flush, populate, XDP)
-+
-+#define __LIBETH_XDP_DEFINE_RUN(name, run, flush, populate, pfx)	      \
-+	LIBETH_##pfx##_DEFINE_RUN_PROG(static run, flush);		      \
-+	LIBETH_##pfx##_DEFINE_RUN_PASS(name, run, populate)
-+
-+/**
-+ * LIBETH_XDP_DEFINE_FINALIZE - define a driver Rx NAPI poll finalize function
-+ * @name: name of the function to define
-+ * @flush: driver callback to flush an ``XDP_TX`` bulk
-+ * @finalize: driver callback to finalize an XDPSQ and run the timer
-+ */
-+#define LIBETH_XDP_DEFINE_FINALIZE(name, flush, finalize)		      \
-+	__LIBETH_XDP_DEFINE_FINALIZE(name, flush, finalize, xdp)
-+
-+#define __LIBETH_XDP_DEFINE_FINALIZE(name, flush, finalize, pfx)	      \
-+void name(struct libeth_xdp_tx_bulk *bq)				      \
-+{									      \
-+	libeth_##pfx##_finalize_rx(bq, flush, finalize);		      \
-+}
-+
-+#define LIBETH_XDP_DEFINE_END()		__diag_pop()
 +
  /* Tx buffer completion */
  
  void libeth_xdp_return_buff_bulk(const struct skb_shared_info *sinfo,
+@@ -1690,4 +1735,49 @@ static inline void libeth_xdp_complete_tx(struct libeth_sqe *sqe,
+ 	__libeth_xdp_complete_tx(sqe, cp, libeth_xdp_return_buff_bulk);
+ }
+ 
++/* Misc */
++
++u32 libeth_xdp_queue_threshold(u32 count);
++
++void __libeth_xdp_set_features(struct net_device *dev,
++			       const struct xdp_metadata_ops *xmo);
++void libeth_xdp_set_redirect(struct net_device *dev, bool enable);
++
++/**
++ * libeth_xdp_set_features - set XDP features for netdev
++ * @dev: &net_device to configure
++ * @...: optional params, see __libeth_xdp_set_features()
++ *
++ * Set all the features libeth_xdp supports, including .ndo_xdp_xmit(). That
++ * said, it should be used only when XDPSQs are always available regardless
++ * of whether an XDP prog is attached to @dev.
++ */
++#define libeth_xdp_set_features(dev, ...)				      \
++	CONCATENATE(__libeth_xdp_feat,					      \
++		    COUNT_ARGS(__VA_ARGS__))(dev, ##__VA_ARGS__)
++
++#define __libeth_xdp_feat0(dev)						      \
++	__libeth_xdp_set_features(dev, NULL)
++#define __libeth_xdp_feat1(dev, xmo)					      \
++	__libeth_xdp_set_features(dev, xmo)
++
++/**
++ * libeth_xdp_set_features_noredir - enable all libeth_xdp features w/o redir
++ * @dev: target &net_device
++ * @...: optional params, see __libeth_xdp_set_features()
++ *
++ * Enable everything except the .ndo_xdp_xmit() feature, use when XDPSQs are
++ * not available right after netdev registration.
++ */
++#define libeth_xdp_set_features_noredir(dev, ...)			      \
++	__libeth_xdp_set_features_noredir(dev, __UNIQUE_ID(dev_),	      \
++					  ##__VA_ARGS__)
++
++#define __libeth_xdp_set_features_noredir(dev, ud, ...) do {		      \
++	struct net_device *ud = (dev);					      \
++									      \
++	libeth_xdp_set_features(ud, ##__VA_ARGS__);			      \
++	libeth_xdp_set_redirect(ud, false);				      \
++} while (0)
++
+ #endif /* __LIBETH_XDP_H */
+diff --git a/drivers/net/ethernet/intel/libeth/xdp.c b/drivers/net/ethernet/intel/libeth/xdp.c
+index a20ba2478097..975c34af2f0f 100644
+--- a/drivers/net/ethernet/intel/libeth/xdp.c
++++ b/drivers/net/ethernet/intel/libeth/xdp.c
+@@ -338,6 +338,75 @@ void libeth_xdp_return_buff_bulk(const struct skb_shared_info *sinfo,
+ }
+ EXPORT_SYMBOL_GPL(libeth_xdp_return_buff_bulk);
+ 
++/* Misc */
++
++/**
++ * libeth_xdp_queue_threshold - calculate XDP queue clean/refill threshold
++ * @count: number of descriptors in the queue
++ *
++ * The threshold is the limit at which RQs start to refill (when the number of
++ * empty buffers exceeds it) and SQs get cleaned up (when the number of free
++ * descriptors goes below it). To speed up hotpath processing, threshold is
++ * always pow-2, closest to 1/4 of the queue length.
++ * Don't call it on hotpath, calculate and cache the threshold during the
++ * queue initialization.
++ *
++ * Return: the calculated threshold.
++ */
++u32 libeth_xdp_queue_threshold(u32 count)
++{
++	u32 quarter, low, high;
++
++	if (likely(is_power_of_2(count)))
++		return count >> 2;
++
++	quarter = DIV_ROUND_CLOSEST(count, 4);
++	low = rounddown_pow_of_two(quarter);
++	high = roundup_pow_of_two(quarter);
++
++	return high - quarter <= quarter - low ? high : low;
++}
++EXPORT_SYMBOL_GPL(libeth_xdp_queue_threshold);
++
++/**
++ * __libeth_xdp_set_features - set XDP features for netdev
++ * @dev: &net_device to configure
++ * @xmo: XDP metadata ops (Rx hints)
++ *
++ * Set all the features libeth_xdp supports. Only the first argument is
++ * necessary.
++ * Use the non-underscored versions in drivers instead.
++ */
++void __libeth_xdp_set_features(struct net_device *dev,
++			       const struct xdp_metadata_ops *xmo)
++{
++	xdp_set_features_flag(dev,
++			      NETDEV_XDP_ACT_BASIC |
++			      NETDEV_XDP_ACT_REDIRECT |
++			      NETDEV_XDP_ACT_NDO_XMIT |
++			      NETDEV_XDP_ACT_RX_SG |
++			      NETDEV_XDP_ACT_NDO_XMIT_SG);
++	dev->xdp_metadata_ops = xmo;
++}
++EXPORT_SYMBOL_GPL(__libeth_xdp_set_features);
++
++/**
++ * libeth_xdp_set_redirect - toggle the XDP redirect feature
++ * @dev: &net_device to configure
++ * @enable: whether XDP is enabled
++ *
++ * Use this when XDPSQs are not always available to dynamically enable
++ * and disable redirect feature.
++ */
++void libeth_xdp_set_redirect(struct net_device *dev, bool enable)
++{
++	if (enable)
++		xdp_features_set_redirect_target(dev, true);
++	else
++		xdp_features_clear_redirect_target(dev);
++}
++EXPORT_SYMBOL_GPL(libeth_xdp_set_redirect);
++
+ /* Module */
+ 
+ static const struct libeth_xdp_ops xdp_ops __initconst = {
 -- 
 2.49.0
 
