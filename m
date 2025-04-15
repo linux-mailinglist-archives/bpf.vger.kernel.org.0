@@ -1,95 +1,111 @@
-Return-Path: <bpf+bounces-55952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F279A89F63
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 15:26:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 118F7A89FCB
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 15:45:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 186FE44484B
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 13:26:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E29D3BBE32
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 13:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D962629A3D6;
-	Tue, 15 Apr 2025 13:25:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D8217A2EE;
+	Tue, 15 Apr 2025 13:44:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sudt9UFk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jVQ0cT9X"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45D52DFA2F;
-	Tue, 15 Apr 2025 13:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4377E14B96E;
+	Tue, 15 Apr 2025 13:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744723543; cv=none; b=gQ6cdLxW4YlcNsDzXVO/7uBqG8N7eFUNIxQpLFZGsfBaimkKMnh7uxpWyTtOCv0e1c0/hil3o4e6uJBsPHIS+q862AQqhLeyA+tyNVY1gwF3mIJTbeDSm4yrd4AWvFrfv/kHX6ttCK2UoFgq9gHp4MBT3PhCrB30C1kF9IeHW00=
+	t=1744724698; cv=none; b=EPmLZLvzbr7A+IS9QBSSL2d+TRhzKb+64dbOmrMz0NrPzW7L8A02hnK7P8eJHpue6h7bglTpDI1X6gco0Rem3O00xcgox8GutSAnuFZBXb4sTvKKBbQ8WKTaO73bFwoWBi8iU4oeLZI/TeGKSzoMboWKmio7i5OBvYbjg4O/pGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744723543; c=relaxed/simple;
-	bh=UYUxPCQcFjA73UAxP9WXueMfGm86K1IfqKd8pR+K0JM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j2NtYJ8zZ+BQjqdM6BGlhbUN/8wvYx+F52/Lhw0Sp+7kv0qYtwNScl+HmZjtWtmhrzVd5sN0VXXLneOB37NTw31MNRCMRvT0XgSSX6qgiQSPVzjJxAVlm2A2dlod3pzgtNmsPzpG+/7WCU6KE1VgdgcZeSzGvMSd+8CHGWtcxAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sudt9UFk; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7c58974ed57so517868885a.2;
-        Tue, 15 Apr 2025 06:25:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744723540; x=1745328340; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UYUxPCQcFjA73UAxP9WXueMfGm86K1IfqKd8pR+K0JM=;
-        b=Sudt9UFkwOm3iC6+0xFtcz5wyp1qXSzlMEe/5DOwGNUiTfdmjKVgRmPMaOicE0JgZf
-         qzUH/Mplas2/Pm2M+Gj7dB0ouRTOk6pxOqk87r9XjF4IXNWYWCauc3s+ilJAuSYLVv6m
-         DfceQ5jWRF5SgK64UrnGQXD3CTSgqCz1La9aO0oZqHdsS0Mgzvp55W5/YY9HLPQix+XQ
-         TjJeTsIZaZ+FhwFKYjxIC9rUX5I4v/v1Uah7ZyStIYk/ko1udApYMBaP2vz+v09MjP2Y
-         6JMzln2A53JHOlqHKsO4QtQCjSSyGl0PdwgL0p+F3cvp3v6AsANCqVYoUfBsRSDSvr3G
-         4Njw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744723540; x=1745328340;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UYUxPCQcFjA73UAxP9WXueMfGm86K1IfqKd8pR+K0JM=;
-        b=D7QDiNpkpUlOlHBByU4MeoCUzvyc+8BIvUGspYRVw6Ab5TV1rSFe+Whan7jix5pbqQ
-         QkpFgY2yghKR6BpY2uwrww9PY4vPJv+iBwLnsTqfwOcCNoU0DkrVw6sSv17XXECJxylE
-         6JTvc+t109k/+kUqhlMmhH5geqwFOHOE7jW68ELuxMeGg8M7EJnj7lj6z0VKlhjEWJEo
-         u5Yz6t5Ua5Z3ctVTNd684HoVg6Ocsjw00/aIp/RFlz7/cwTVySUQKHV2MpXaYG4kzo4A
-         zUFkNARRIIganKe6Nxukl4RMTyuR/bJNgmBaVvUFf5KQ4ekxfR7ebn8HRoz3no6koZNx
-         FtIw==
-X-Forwarded-Encrypted: i=1; AJvYcCUDWCoXp4FJpAY6i4wPOscGZe8kT1HLfJRO/cuuIC626F8DjFomtt/OnE5CXOIhNqH8kqzZcAh9@vger.kernel.org, AJvYcCX4MWdpsOy8Ic2GfnUTfHU/toIz45Km/6A1DeTBiKmBpLVV3x9cvGPvTmDqEJ3STa/kgIvwvvFYJLr8m0iL@vger.kernel.org, AJvYcCXV0PREWSz/wzT27adM+Q3KcGiiI9JiDWMbj47F/V5xXIYOEAijhP+u2W6dQgdBNH5tdAE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzu22IoYl54cHYd2SprVDKaiz5KJ++IDpLO6M3geN/uSo5eqEhH
-	rIRn5TIMshtb8hp62sBalzzQvtc4I/OtNtxu8hDgGbZ4NhphgFHUCTE7hNpoLfF1K0CtD9CY4bW
-	/YWw8cUHNNiXZAZpm80VgN5VTJHk=
-X-Gm-Gg: ASbGncvGs/0TuSts9Jtnrd1JRKLPZaH3D9owQyBQyzb8hmQHEJ1nzQyNP0gDczHrVBX
-	P4oid/aEMKhBmOjRBBMSP1TmoaUOYMLFeiWVWqxlupmbSVIaiC4eLmBgNIZQRNEm2YyPJ/8npq5
-	W4oUjLhW1sK6y+AFei0ZBy9QVuRBs6AFKvIvbpjCyE
-X-Google-Smtp-Source: AGHT+IENUN3q9zUEpgp0yO+rQb1K6OiXAS8mHfuVjSa2hIIBeaF+kQ/tbXuTPbB9DLJpwa+uw5WeJlKVWmA3cg4aR3k=
-X-Received: by 2002:a05:6214:23cd:b0:6e8:fb8c:e6dd with SMTP id
- 6a1803df08f44-6f230d55533mr226917916d6.5.1744723540626; Tue, 15 Apr 2025
- 06:25:40 -0700 (PDT)
+	s=arc-20240116; t=1744724698; c=relaxed/simple;
+	bh=wvOZ/SKOc7gQNU/q6AtBQ+SEWm/lhwPgfJk6z9WhYr4=;
+	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=DTF/UbA474y/N5L5K7ZFiONZXtCF2fdIImHO7DJ6xpmpS75p9VQzm+ZDyyWGyW6FrSCPezlucD9rjRiO4r2jdzUdwxxLwpenvR/lzAG7r9dXRTUSiIZSps5h9oWx5FsNwVb2IOKyCv6hnZeeIg1HgG1dzLrA1jMrXxv3N+shOY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jVQ0cT9X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42270C4CEEB;
+	Tue, 15 Apr 2025 13:44:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744724697;
+	bh=wvOZ/SKOc7gQNU/q6AtBQ+SEWm/lhwPgfJk6z9WhYr4=;
+	h=Subject:From:To:Cc:Date:From;
+	b=jVQ0cT9XWaiXBT/gRKFhQOqpzkP/peXvklQV4RsCWHeLj7KwcjMO/nnEeMdgV4YTA
+	 1mSgwipePwDb+mRqKsghhb0ams0uUv1OodHsT+cWqHG5tKOl/UNTsZGPkBv96GTZqq
+	 DbQ3j8OWIYxynG4ZAmcMcLNYjwmojEXvcsMmNCaslQBz8A8SPL7rZTBWWC/yb2FEVO
+	 kDg1ZJU436sNVZhR7tAWK/SxdpK1uxp5Ao5D300T+B9ZQs+fXlYy76rOsl2npoCw0A
+	 2B09cNW/1rjInT8w4UxXp0cLwOPtIqGqlI20RG0I2caqyN0Nwby27aRJgbEu3bqdIw
+	 ER7BelnowdUaw==
+Subject: [PATCH net-next V4 0/2] veth: qdisc backpressure and qdisc check
+ refactor
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+To: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
+ tom@herbertland.com, Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
+ kernel-team@cloudflare.com, phil@nwl.cc
+Date: Tue, 15 Apr 2025 15:44:52 +0200
+Message-ID: <174472463778.274639.12670590457453196991.stgit@firesoul>
+User-Agent: StGit/1.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250415130910.2326537-1-devaanshk840@gmail.com> <2025041517-semicolon-aloft-9910@gregkh>
-In-Reply-To: <2025041517-semicolon-aloft-9910@gregkh>
-From: Devaansh Kumar <devaanshk840@gmail.com>
-Date: Tue, 15 Apr 2025 18:55:28 +0530
-X-Gm-Features: ATxdqUE4dS_DLldbw8HBu898mJglnFnspTU3D7RHe1XAP46zEEX3kVq6zmxadGs
-Message-ID: <CA+RTe_hfdgPTwVX_pizHVnsDDFJoEOQD=dH3KuBXuDbycU0yXQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Remove tracing program restriction on map types
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: sashal@kernel.org, stable@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	skhan@linuxfoundation.org, linux-kernel-mentees@lists.linuxfoundation.org, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 15 Apr 2025 at 18:49, Greg KH <gregkh@linuxfoundation.org> wrote:
-> what kernel tree(s) is this for?
+This patch series addresses TX drops seen on veth devices under load,
+particularly when using threaded NAPI, which is our setup in production.
 
-This backport is for v5.15.y stable version. My bad, I should have
-mentioned it in the subject.
+The root cause is that the NAPI consumer often runs on a different CPU
+than the producer. Combined with scheduling delays or simply slower
+consumption, this increases the chance that the ptr_ring fills up before
+packets are drained, resulting in drops from veth_xmit() (ndo_start_xmit()).
+
+To make this easier to reproduce, we’ve created a script that sets up a
+test scenario using network namespaces. The script inserts 1000 iptables
+rules in the consumer namespace to slow down packet processing and
+amplify the issue. Reproducer script:
+
+https://github.com/xdp-project/xdp-project/blob/main/areas/core/veth_setup01_NAPI_TX_drops.sh
+
+This series first introduces a helper to detect no-queue qdiscs and then
+uses it in the veth driver to conditionally apply qdisc-level
+backpressure when a real qdisc is attached. The behavior is off by
+default and opt-in, ensuring minimal impact and easy activation.
+
+---
+V4:
+ - Check against no-queue instead of no-op qdisc
+ - Link to V3: https://lore.kernel.org/all/174464549885.20396.6987653753122223942.stgit@firesoul/
+V3:
+ - Reorder patches, generalize check for no-op qdisc as first patch
+   - RFC: As testing show this is incorrect
+ - rcu_dereference(priv->peer) in veth_xdp_rcv as this runs in NAPI
+   context rcu_read_lock() is implicit.
+ - Link to V2: https://lore.kernel.org/all/174412623473.3702169.4235683143719614624.stgit@firesoul/
+V2:
+ - Generalize check for no-op qdisc
+ - Link to RFC-V1: https://lore.kernel.org/all/174377814192.3376479.16481605648460889310.stgit@firesoul/
+
+Jesper Dangaard Brouer (2):
+      net: sched: generalize check for no-queue qdisc on TX queue
+      veth: apply qdisc backpressure on full ptr_ring to reduce TX drops
+
+
+ drivers/net/veth.c        | 49 ++++++++++++++++++++++++++++++++-------
+ drivers/net/vrf.c         |  4 +---
+ include/net/sch_generic.h |  8 +++++++
+ 3 files changed, 50 insertions(+), 11 deletions(-)
+
+--
+
 
