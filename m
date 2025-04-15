@@ -1,86 +1,48 @@
-Return-Path: <bpf+bounces-55963-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55964-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D0DEA8A2D7
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 17:34:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5004CA8A32E
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 17:43:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08A2D189FDB5
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 15:35:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29BE33A7C56
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 15:43:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0BE535D8;
-	Tue, 15 Apr 2025 15:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441952144DB;
+	Tue, 15 Apr 2025 15:43:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bDAabWjG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ifTFX7Ua"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F54129A3DB
-	for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 15:32:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4C920E003;
+	Tue, 15 Apr 2025 15:43:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744731160; cv=none; b=VOBUfcge7kB2QWgxZZ0gHr62FeeMGOn7p8P3EKA+ThQVv+l92fdCD6FpIcpLCJNJrXRSqB2KEhxDIwmUjwxf9viQolL7LGTt7FWBNAKmO4CB9BkNLiz0HqPU41Zby1fctxeA+/cfGJs+ffk59cFvT04OTyR8ENU/QD98BlwVZF4=
+	t=1744731808; cv=none; b=Nhk12nXV1LuyiPl31+rNeTDM7QvenOBqsgTJ3BXuU6hGyDef0qCfkGQeArXXcZKgYLLjpPk+3j7cLUf8qBQ+c27g6hj/VLZqcDAaIFSB1aKVAakjtJfk/iYssdqio+T2HVwCG7QuT9LsHUJDCgmKi/DPrwnWgl4n1TgdiIAljXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744731160; c=relaxed/simple;
-	bh=R6nb1WtwqXXDQ3ClWsF6yGGhXHStpqBbxtkHC5WZgPE=;
+	s=arc-20240116; t=1744731808; c=relaxed/simple;
+	bh=ccucVTibC96ZiE4Hr+vlu4U/HFUEw1R8eJ/1QIq1PMQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DjZEuy3B9h73XbxGj0HI+96nei6jYLDMNkzMtd0eKgYUagETUjPVVSenL99NUUP25XFefyLFMZtAAEcCavxuhCkE4GaO7TZr+P07678Mgz3V8+SDURIclMowx2pldomoM5GuCuMeGzSOGZU6/Y0qjX7NXbb3XNGqWazxfgIeTrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bDAabWjG; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744731157;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZLkZ5gholN7KlxjnLx3i2hbL4WFISW/okrptF23XIxk=;
-	b=bDAabWjG27oivJFDPJQO4t3Cia6ZQ0eRwhROStZa2aZ/J5if5Ezc96WfMX80v4EgGUxXMn
-	ip2Cqpt8Nz8Ye5ExTwOZjMA2LAAgC5QSSA/fxsZldHWgD0jtJYlQAcc8/BXzKCi4gjtZgU
-	2kXHiBmtgIpwbBYW0bDAOc6RnR9F6cY=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-588-0gqUI3PIPOCE25VDdUIFNw-1; Tue, 15 Apr 2025 11:32:35 -0400
-X-MC-Unique: 0gqUI3PIPOCE25VDdUIFNw-1
-X-Mimecast-MFC-AGG-ID: 0gqUI3PIPOCE25VDdUIFNw_1744731154
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43d0830c3f7so43816865e9.2
-        for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 08:32:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744731154; x=1745335954;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZLkZ5gholN7KlxjnLx3i2hbL4WFISW/okrptF23XIxk=;
-        b=h1VV7IaRpfAfJxVFbowMD5CU++gIOKQXMWx5WksID3NsXb6KJJ9J+7nonYss4vhhEr
-         OwZ+J6DQR4u6XG+qv4O8/74gX02mVg2k02jOo3MYHHbnFqKwz7IyOWo3nYaf3iKEBDJe
-         pifkelxPNjiX+VwKLukD3Y4vS2ehJLKOtq5zKd+3cmHBMQbUKe0wODaVK8DScx2X2ino
-         A+kebprI+QUOrYuzf+tGOsKVoXOdiffM2+5GdjAAnkxmpws+nCcUwwwwjb3zDsyHgwWe
-         lv6b35kBvR9UUenxr/be+j3O3XfkaSx8Td70ZlizVGUCLkN3614u4D4fXq5irA8o/oBN
-         u9KQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXMjY39vvrE1gVXTAvR+6IPW1u8hLmUpM6Xc0KO9Wfvb6iePDwSowridcZSLtQ8EMcMlVU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxR9Excb/GuKVsbiJAOyRuhz5EekgDRHBEWfOaQUDCEhgV01cnD
-	rMzo7AVBShn/x+kO8szQaGakO4oSGd2WMcB3ugFEhwyN6NnZ/e3qGeTnW3rT6bOuLOsPqzkob/w
-	77LKGGtkDHxUuQMsMbMkSM6W74gp9Us9+0H/3qhKucYOnLtUp
-X-Gm-Gg: ASbGnct2Pi4OvwFU6Kb/icyQ+HzDJrwBAhC0RRreoeM4M6pkAMVvskIptKAkFccR1Hu
-	byi+bSGwd0ZrCVBddo3cRRxHSST70f+rMDgmkgeRYKl8ztpZzBt81re0FTc6T6TXy2ffwtHp0vS
-	KlUAmDabLd3R4GDUXCG9uGeoFxtHgKvlZQ4ngluz38egMZW0hN9tmU+ASq5RogoQrb97C24Wfsn
-	0ZbOnjAvERuCaiam5RfZBFoV0i18dMwItvVjoG3q7Blt04KYWc+erEvCtq2+IQyqeM1JovUwnJx
-	tAOKPPU=
-X-Received: by 2002:a05:600c:5107:b0:43c:fcbc:9680 with SMTP id 5b1f17b1804b1-43f3a9ab43dmr120467045e9.25.1744731154376;
-        Tue, 15 Apr 2025 08:32:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGRjeC2kuGKTaahnlrFEdz75Knh/1d9p/NZOXVLHXeVVZL6e2q4QqFnMwGpFsfU6hWzkN7f1g==
-X-Received: by 2002:a05:600c:5107:b0:43c:fcbc:9680 with SMTP id 5b1f17b1804b1-43f3a9ab43dmr120466645e9.25.1744731153917;
-        Tue, 15 Apr 2025 08:32:33 -0700 (PDT)
-Received: from [10.43.17.17] ([85.93.96.130])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43f233c81f6sm209710005e9.20.2025.04.15.08.32.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Apr 2025 08:32:33 -0700 (PDT)
-Message-ID: <183cb732-3c52-4057-97a7-632941c7a8f3@redhat.com>
-Date: Tue, 15 Apr 2025 17:32:32 +0200
+	 In-Reply-To:Content-Type; b=elEZ0qfqdlfXCt02D6F/5gNyYObDy9kWUG4qnjzsoSchVzHHj/vYIXwlQ2aj0b8c1Ilu5zHIGUoS1Oj77TcyFllzxxzf6cRbqU/hIKkUf7pSHeauYFntYdXldA4SL4Wv83VDFaVtCOVVhsBL61xsPWrRDJeGRqb4EIi8vgQ8cOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ifTFX7Ua; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A4B8C4CEEB;
+	Tue, 15 Apr 2025 15:43:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744731808;
+	bh=ccucVTibC96ZiE4Hr+vlu4U/HFUEw1R8eJ/1QIq1PMQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ifTFX7Ua7Nbn0m/QP8+nFy/VLJx29jtfQVfAth5qMaRqnLiKKiVhnU7p2Z2PovKQo
+	 uChH/Esdx8AnHOV3oQ4/4geGq/LY74Y5FmXH2gGpkmhushoEeFh5xReUjl1JFbyQld
+	 syxlCD2xV3YT8wp8aKBwOFZDKCo2L68q4PNPsdlAzBO8Yk9AzTHcMZ0JtzeTdxwp8K
+	 RDju9zjvaGHhktQ7BwU44t5hBezPXGhC/K831x0jH/wk4a+dSK54dr5xPcd7/dxKzC
+	 rkDUNEiWtewS8loLsWu0iGFgdYGCCC8Aa85w7j2huxFBmv4tO26xCpK8tG1U77jTYZ
+	 RqiwlFKmxyy/A==
+Message-ID: <f448fcb8-6330-4517-863f-4bf0a2242313@kernel.org>
+Date: Tue, 15 Apr 2025 08:43:27 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,97 +50,77 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf v2] libbpf: Fix buffer overflow in
- bpf_object__init_prog
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, lmarch2 <2524158037@qq.com>,
- stable@vger.kernel.org
-References: <20250410095517.141271-1-vmalik@redhat.com>
- <CAEf4Bzb2S+1TonOp9UH86r0e6aGG2LEA4kwbQhJWr=9Xju=NEw@mail.gmail.com>
- <d87e3ed0-5731-4738-a1c6-420c557c3048@redhat.com>
- <gaebflcrzdszes6febvrf43dgllpemg3ghcgbwmd2klfaj7p4t@cmg2los3ahla>
+Subject: Re: [PATCH net-next V4 1/2] net: sched: generalize check for no-queue
+ qdisc on TX queue
 Content-Language: en-US
-From: Viktor Malik <vmalik@redhat.com>
-In-Reply-To: <gaebflcrzdszes6febvrf43dgllpemg3ghcgbwmd2klfaj7p4t@cmg2los3ahla>
+To: Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
+ Jakub Kicinski <kuba@kernel.org>
+Cc: bpf@vger.kernel.org, tom@herbertland.com,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ makita.toshiaki@lab.ntt.co.jp, kernel-team@cloudflare.com, phil@nwl.cc
+References: <174472463778.274639.12670590457453196991.stgit@firesoul>
+ <174472469906.274639.14909448343817900822.stgit@firesoul>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <174472469906.274639.14909448343817900822.stgit@firesoul>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 4/15/25 11:30, Shung-Hsi Yu wrote:
-> On Mon, Apr 14, 2025 at 06:59:31AM +0200, Viktor Malik wrote:
->> On 4/11/25 18:22, Andrii Nakryiko wrote:
->>> On Thu, Apr 10, 2025 at 2:55 AM Viktor Malik <vmalik@redhat.com> wrote:
->>>> As reported by CVE-2025-29481 [1], it is possible to corrupt a BPF ELF
->>>> file such that arbitrary BPF instructions are loaded by libbpf. This can
->>>> be done by setting a symbol (BPF program) section offset to a large
->>>> (unsigned) number such that <section start + symbol offset> overflows
->>>> and points before the section data in the memory.
-> ...
->>>> Cc: stable@vger.kernel.org
->>>
->>> Libbpf is packaged and consumed from Github mirror, which is produced
->>> from latest bpf-next and bpf trees, so there is no point in
->>> backporting fixes like this to stable kernel branches. Please drop the
->>> CC: stable in the next revision.
->>
->> Ack, will drop it.
+On 4/15/25 7:44 AM, Jesper Dangaard Brouer wrote:
+> The "noqueue" qdisc can either be directly attached, or get default
+> attached if net_device priv_flags has IFF_NO_QUEUE. In both cases, the
+> allocated Qdisc structure gets it's enqueue function pointer reset to
+> NULL by noqueue_init() via noqueue_qdisc_ops.
 > 
-> Sorry for blindly suggesting the CC. I'll keep that in mind.
+> This is a common case for software virtual net_devices. For these devices
+> with no-queue, the transmission path in __dev_queue_xmit() will bypass
+> the qdisc layer. Directly invoking device drivers ndo_start_xmit (via
+> dev_hard_start_xmit).  In this mode the device driver is not allowed to
+> ask for packets to be queued (either via returning NETDEV_TX_BUSY or
+> stopping the TXQ).
 > 
->>>> Fixes: 6245947c1b3c ("libbpf: Allow gaps in BPF program sections to support overriden weak functions")
->>>> Link: https://github.com/lmarch2/poc/blob/main/libbpf/libbpf.md
->>>> Link: https://www.cve.org/CVERecord?id=CVE-2025-29481
->>>
->>> libbpf is meant to load BPF programs under root. It's a
->>> highly-privileged operation, and libbpf is not meant, designed, and
->>> actually explicitly discouraged from loading untrusted ELF files. As
->>> such, this is just a normal bug fix, like lots of others. So let's
->>> drop the CVE link as well.
->>>
->>> Again, no one in their sane mind should be passing untrusted ELF files
->>> into libbpf while running under root. Period.
->>>
->>> All production use cases load ELF that they generated and control
->>> (usually embedded into their memory through BPF skeleton header). And
->>> if that ELF file is corrupted, you have problems somewhere else,
->>> libbpf is not a culprit.
->>
->> While I couldn't agree more, I'm a bit on the fence here. On one hand,
->> unless the CVE is revoked (see the other thread), people may still run
->> across it and, without sufficient knowledge of libbpf, think that they
->> are vulnerable. Having a CVE reference in the patch could help them
->> recognize that they are using a patched version of libbpf or at least
->> read an explanation why the vulnerability is not real.
->>
->> On the other hand, since it's just a bug, I agree that it doesn't make
->> much sense to reference a CVE from it. So, I'm ok both ways. I can
->> reference the CVE and provide some better explanation why this should
->> not be considered a vulnerability.
+> The simplest and most reliable way to identify this no-queue case is by
+> checking if enqueue == NULL.
 > 
-> While I also see other colleagues that reference CVE number in the
-> commit message in other subsystems, personally I would drop CVE
-> reference here. This CVE entry doesn't have techinical detail in itself
-> beside mentioning that the issue being buffer overflow, and is
-> disputed/on the way to being rejected as far as this thread is
-> concerned.
+> The vrf driver currently open-codes this check (!qdisc->enqueue). While
+> functionally correct, this low-level detail is better encapsulated in a
+> dedicated helper for clarity and long-term maintainability.
+> 
+> To make this behavior more explicit and reusable, this patch introduce a
+> new helper: qdisc_txq_has_no_queue(). Helper will also be used by the
+> veth driver in the next patch, which introduces optional qdisc-based
+> backpressure.
+> 
+> This is a non-functional change.
+> 
+> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> ---
+>  drivers/net/vrf.c         |    4 +---
+>  include/net/sch_generic.h |    8 ++++++++
+>  2 files changed, 9 insertions(+), 3 deletions(-)
+> 
 
-Good point, I agree that dropping the reference is probably the best
-approach here. It will allow us to merge this fix while we discuss the
-next steps wrt. the CVE in the other thread.
 
-I'll send a new version.
+>  /* Local traffic destined to local address. Reinsert the packet to rx
+> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+> index d48c657191cd..b6c177f7141c 100644
+> --- a/include/net/sch_generic.h
+> +++ b/include/net/sch_generic.h
+> @@ -803,6 +803,14 @@ static inline bool qdisc_tx_changing(const struct net_device *dev)
+>  	return false;
+>  }
+>  
+> +/* "noqueue" qdisc identified by not having any enqueue, see noqueue_init() */
+> +static inline bool qdisc_txq_has_no_queue(const struct netdev_queue *txq)
+> +{
+> +	struct Qdisc *qdisc = rcu_access_pointer(txq->qdisc);
+> +
+> +	return qdisc->enqueue == NULL;
 
-Thanks.
-Viktor
+Did checkpatch not complain that this should be '!qdisc->enqueue' ?
 
-> 
-> ...
-> 
+
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
 
