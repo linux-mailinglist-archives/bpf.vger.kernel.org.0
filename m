@@ -1,107 +1,108 @@
-Return-Path: <bpf+bounces-55959-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55960-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94CFBA8A158
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 16:38:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 530A1A8A25E
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 17:05:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A219119021D5
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 14:38:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E7C93ACA68
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 15:02:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7613296D0D;
-	Tue, 15 Apr 2025 14:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89985296173;
+	Tue, 15 Apr 2025 15:02:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aLvh2l++"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LKaasSAX"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59ACB29117F;
-	Tue, 15 Apr 2025 14:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D23136349;
+	Tue, 15 Apr 2025 15:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744727900; cv=none; b=jPkakJNHitGT47baeQ3Hlr3xB32TZaKckcw6hhQN1D/0cU7nUTYqMoPmCHbdln2rbcbwPMiMZ0zU+Q04eYDp5h27DVFWjLSh9grUtcYPxuadW1E6zMjbgvjKj4YeXPgWWi5XqQy8ikjJNfAfyExacls8HczO2H8EoMd/pBttFT8=
+	t=1744729325; cv=none; b=qusMk+hNjKkMvslH0ygfV0ezv09d7pspOXu2J3XrJ3JRJmkJ61ibEq+9BRPYLSV1hMO06Ef6N7ZzHn/CagvWPzbs8G0JedQgAUStkjrz5jHLa/g067kQDZUURsqh3fqspONNi16ICTFdBa1XEDR54WE/M8zVky5d2nrzW4jEMcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744727900; c=relaxed/simple;
-	bh=ZpM58jgXe8P92kBPX7QG3YnkqxXt6Jj4oTEvwlNQdFw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bfnh9mxS3kSv4Fk7CTB8G9QvXP02wABsFMrBmb75Ir+aFuSy4nzHj8d9kjZe2Wicty2griAdhtco6J4Ol0I2CDEgS4aglz3b7ewto+vHISx34yCR2UAFeNqxE9G7wbo0t5yQEZBFegYE4Ra7q2YfkcUBGc6uLRDOwL4iuU+HAd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aLvh2l++; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EB03C4CEEB;
-	Tue, 15 Apr 2025 14:38:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744727899;
-	bh=ZpM58jgXe8P92kBPX7QG3YnkqxXt6Jj4oTEvwlNQdFw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=aLvh2l++VPeBifQEm59TW5nGAWgkqgrhThC69VZ+qGGNKet/quUjw7ZGXXruuqzlP
-	 lkaaH7JvQvawKe+inV2Ll+4rZghPzYQ+tz74EExAZgF7i6MUV+KeuJMTZe5PvRyM8i
-	 CWBNkjomCVpwT2vKF5hnS1DnTA4uZGGf4viZAnFz3pa6QWJ2KNXUEMpVJdJOe4CT1c
-	 Cb/9JHU8PBQD80eXLDzuoMkSK3rW/avVPCt+3D0VTZH6NgKHa/890EPWkN1clv7DgF
-	 kG/fHZIDp/cbDeHEpDPhsYpljSUyJYjmUaKOD/EmhbdT82jZxbXcs824I8I9gqe7IQ
-	 YnDC/jbkyH7kQ==
-Date: Tue, 15 Apr 2025 07:38:18 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Justin Iurman <justin.iurman@uliege.be>
-Cc: Andrea Mayer <andrea.mayer@uniroma2.it>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Sebastian Sewior <bigeasy@linutronix.de>,
- Stanislav Fomichev <stfomichev@gmail.com>, Network Development
- <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon
- Horman <horms@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>, bpf
- <bpf@vger.kernel.org>, Stefano Salsano <stefano.salsano@uniroma2.it>, Paolo
- Lungaroni <paolo.lungaroni@uniroma2.it>
-Subject: Re: [PATCH net] net: lwtunnel: disable preemption when required
-Message-ID: <20250415073818.06ea327c@kernel.org>
-In-Reply-To: <3cee5141-c525-4e83-830e-bf21828aed51@uliege.be>
-References: <20250403083956.13946-1-justin.iurman@uliege.be>
-	<Z-62MSCyMsqtMW1N@mini-arch>
-	<cb0df409-ebbf-4970-b10c-4ea9f863ff00@uliege.be>
-	<CAADnVQLiM5MA3Xyrkqmubku6751ZPrDk6v-HmC1jnOaL47=t+g@mail.gmail.com>
-	<20250404141955.7Rcvv7nB@linutronix.de>
-	<85eefdd9-ec5d-4113-8a50-5d9ea11c8bf5@uliege.be>
-	<CAADnVQK7vNPbMS7T9TUOW7s6HNbfr4H8CWbjPgVXW7xa+ybPsw@mail.gmail.com>
-	<d326726d-7050-4e88-b950-f49cf5901d34@uliege.be>
-	<20250415025416.0273812f0322a6b1728d9c7b@uniroma2.it>
-	<3cee5141-c525-4e83-830e-bf21828aed51@uliege.be>
+	s=arc-20240116; t=1744729325; c=relaxed/simple;
+	bh=GsenEpf9zvk5P2NHlMMGuoKKYYE9yPtrUU9/iOPSsZw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FtYokKqgWfOIzwftRKtBqAA+jHJBgPZVHx79Sn1O4JA11Pzg21HpgJvSXeZIw0S6sI/ryczIcDfJ+I7S91ijhKNcrSYz3BAamGIThokNqsM8+ukA+GZ7WcSlE9DphwfIQFsGnV1gwoFEmgX6Neo2o0oMsh/cKC0NZJ0oyz0tcGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LKaasSAX; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43cf58eea0fso29249685e9.0;
+        Tue, 15 Apr 2025 08:02:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744729322; x=1745334122; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GsenEpf9zvk5P2NHlMMGuoKKYYE9yPtrUU9/iOPSsZw=;
+        b=LKaasSAXYYJqNFACIKOiULXkiFaxhBiUOAa2r8nqCgWOCGtnFrpZI7rpu5/9IC67UU
+         24qXJRE/LEEOwAYKibK3bXJXmSAgfaEsW00J9npcYPtlaAyO1RwrzMlukVKaQGfx9s0G
+         dn07asAW0uNMUiofaZipPNEgO7gv3iFumJboIF1EgO1ZfbT04EOhxrzeWjcFFgbodYjt
+         YLgBSEVDA1xoYmhNfQtepwIEGgeCK3kMvyaehs0epn55D2KsotsKXlzuPXPfgZ+CDRyu
+         yHBxHz3IEparpTY2poKIEgbRxlTJMfBcGjo8bmtAYx6dQZYiWER+URxv7PWAjsoxb7yL
+         GrfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744729322; x=1745334122;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GsenEpf9zvk5P2NHlMMGuoKKYYE9yPtrUU9/iOPSsZw=;
+        b=hmwnouogNwqvOwkLmqfn6nbvW5FXbBqDK7KDgeOcTQk97p39+B1mj07t1b29xgVOgf
+         TzxPyd/Ave4Wbepb9pBjPL62x1JALHGfaxClXnai7PhycBjCv2tdgSrA7G/K18Xx/MaJ
+         gKqYkuAsiqLRsIJqHXJ/m3J8eCodMgeMhUDaZw3aOkVvBOopPvx/g3gYbmyo/efK2y3X
+         CWjnmqwzF7LZIE1hGKnjBf7mzud3f8zkG3MDWKuVJDf1HkUhQ4aWLfN2xttWH/wa0r79
+         2V6bxMcZlOK3FFmgxKWO4L0v34/fZ4lGWL24vmRj6LC1Upgxtwd01paTmPbr2++tBxfT
+         QVig==
+X-Forwarded-Encrypted: i=1; AJvYcCUUdAlCyrut+3mezjr8fricmyI/z8OHqV8fhFZISwIsQPvc7lUtZasuG2CWWRIpoQ8mJck=@vger.kernel.org, AJvYcCWMBGsR+boeRCGn9+PyuFxeXnTh6ODsuhLMeu2FCUrpcf4MP4u6xAOiT4brbttgIgQAJQayNCwAXPtLclbK@vger.kernel.org, AJvYcCWQQogQmzhXt4An/IlXNuFDMIfdGZDmw8ixRcuOeqSie11cVUJNBe/Dgpi04hZqbK0JAsHPQEiQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YyA6nbeHsHgKDuIMeJ2TYQFO2R1eQIm6po14/S6wVGOtYittskm
+	gr5ZkzggaN2HXC/iBgxR7Il/9tfQB9uxC36DtFxmr1fbTt6u13ugmPgxrShu5tXEjb5tfyo694F
+	Ftkao0YWanRtcglMbkfaWFs0sfqA=
+X-Gm-Gg: ASbGnct7kC5Ua11Mzd/h/6Ki/IMOUjw6Vnl1APu9EmHY6t1O1NZnr3Hnn5BtP9sfBCu
+	bdQbqpBvaiYFd/ua5ywQQC9ZY34p1n16hlc0U+a07YaHxNH+jMeDkd9yihdQiub3352wgxDqLAS
+	mwh7GL/V1TtqnJxWfR2e5k8Qn6itLyg/y7lsdm
+X-Google-Smtp-Source: AGHT+IEEhlDJ89C3taeDQubyKWfbYArOMdjq8xhOrlVTpBQsoWre14ibe31rWsDsbwAwV9z2K2Ku82lM0PdbZnwrGCM=
+X-Received: by 2002:a05:600c:502a:b0:43c:e6d1:efe7 with SMTP id
+ 5b1f17b1804b1-43f3a9a70famr126994785e9.26.1744729321032; Tue, 15 Apr 2025
+ 08:02:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20250415130910.2326537-1-devaanshk840@gmail.com>
+ <2025041517-semicolon-aloft-9910@gregkh> <CA+RTe_hfdgPTwVX_pizHVnsDDFJoEOQD=dH3KuBXuDbycU0yXQ@mail.gmail.com>
+In-Reply-To: <CA+RTe_hfdgPTwVX_pizHVnsDDFJoEOQD=dH3KuBXuDbycU0yXQ@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 15 Apr 2025 08:01:49 -0700
+X-Gm-Features: ATxdqUGwfpjQ3TEoIluDDdRzEK7VnkQJBv8D-i6PQJaXxr2L8ySLffMkEFa_6W4
+Message-ID: <CAADnVQK=z2eWgcH2duiwkkVC-4RctPVZ+fqdC9KYiV7HUy0i8g@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Remove tracing program restriction on map types
+To: Devaansh Kumar <devaanshk840@gmail.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, Sasha Levin <sashal@kernel.org>, 
+	stable <stable@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Shuah Khan <skhan@linuxfoundation.org>, 
+	linux-kernel-mentees@lists.linuxfoundation.org, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 15 Apr 2025 11:10:01 +0200 Justin Iurman wrote:
-> > However, there is my opinion an issue that can occur: between the check on
-> > in_softirq() and the call to local_bh_disable(), the task may be scheduled on
-> > another CPU. As a result, the check on in_softirq() becomes ineffective because
-> > we may end up disabling BH on a CPU that is not the one we just checked (with
-> > if (in_softirq()) { ... }).  
+On Tue, Apr 15, 2025 at 6:25=E2=80=AFAM Devaansh Kumar <devaanshk840@gmail.=
+com> wrote:
+>
+> On Tue, 15 Apr 2025 at 18:49, Greg KH <gregkh@linuxfoundation.org> wrote:
+> > what kernel tree(s) is this for?
+>
+> This backport is for v5.15.y stable version. My bad, I should have
+> mentioned it in the subject.
 
-The context is not affected by migration. The context is fully defined
-by the execution stack.
+Nack.
 
-> Hmm, I think it's correct... good catch. I went for this solution to (i) 
-> avoid useless nested BHs disable calls; and (ii) avoid ending up with a 
-> spaghetti graph of possible paths with or without BHs disabled (i.e., 
-> with single entry points, namely lwtunnel_xmit() and lwtunnel_output()), 
-> which otherwise makes it hard to maintain the code IMO.
-> 
-> So, if we want to follow what Alexei suggests (see his last response), 
-> we'd need to disable BHs in both ip_local_out() and ip6_local_out(). 
-> These are the common functions which are closest in depth, and so for 
-> both lwtunnel_xmit() and lwtunnel_output(). But... at the "cost" of 
-> disabling BHs even when it may not be required. Indeed, ip_local_out() 
-> and ip6_local_out() both call dst_output(), which one is usually not 
-> lwtunnel_output() (and there may not even be a lwtunnel_xmit() to call 
-> either).
-> 
-> The other solution is to always call local_bh_disable() in both 
-> lwtunnel_xmit() and lwtunnel_output(), at the cost of disabling BHs when 
-> they were already. Which was basically -v1 and received a NACK from Alexei.
-
-I thought he nacked preempt_disable()
+5.15 doesn't have bpf_mem_alloc.
+This backport makes no sense.
 
