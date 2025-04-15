@@ -1,165 +1,161 @@
-Return-Path: <bpf+bounces-55938-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55939-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B19AA897DC
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 11:26:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EBB4A89805
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 11:31:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DD3D16A813
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 09:26:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D0D47A4ABF
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 09:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32CC22820DA;
-	Tue, 15 Apr 2025 09:25:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A744027E1D5;
+	Tue, 15 Apr 2025 09:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="UEIM/HiP"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AfGdYt5K"
 X-Original-To: bpf@vger.kernel.org
-Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C0027FD68;
-	Tue, 15 Apr 2025 09:25:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744709157; cv=none; b=hBLZmiZI54PqJ+Qdv/jMgwBSj8/dm3UUIoUrSs9QXdngGIlgYQlacAKR7Soh42BjtcCCDVf4x8qZ7jenmDJO5ALzm8qO6lVnOryvS2P5jXgVhSSpOW3+muth8r+8b+9Ije2YHAXBJxS6karMart+V3TpoXL2HkyDUZ7TkeOTVcQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744709157; c=relaxed/simple;
-	bh=ytDuicykfqxTsQX4cJhgtKs+BJvoEITplUzVLGWV8L0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=itN/3MHIT69+ttb8WFD0UPyUiQJiEkVxbW5OKVHUkFFBeI9F4DVIbh9vr4/+RqpPSB6jw0flPTq+vpMc9BviqQaqfLmeZN1olrFZq9qSLPwQVFIyiUayiyTKs5NwPKMDC909MtRzRVkAKy5+3TKTK3+RU+Xtedw+HojS94xygiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=UEIM/HiP; arc=none smtp.client-ip=139.165.32.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
-Received: from [192.168.1.58] (220.24-245-81.adsl-dyn.isp.belgacom.be [81.245.24.220])
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id 19DCE200DF84;
-	Tue, 15 Apr 2025 11:25:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be 19DCE200DF84
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
-	s=ulg20190529; t=1744709153;
-	bh=VIyob7deFo4f05HYLzENtLpGESAZmECjGyEhhqncH/A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=UEIM/HiP26jXRWjeojcOwTwPOCRGdGwA8KXJwKirLK/UsvB8NKP17B5FIaWn1Qmuw
-	 AthgCwJ4KvE3cMiDEOGMHz/3EJRAzKJ3DguqsR4OYlEx9ZHiXHUfi3ZNhxIEpSCfn9
-	 DnYKq4E0yNMj9akNoXi/BfQluBFZp/mdlbEQDbmSCZvhmSOb/ZmkLsazMHIpOWF9yM
-	 +jseXHsgOTLUIgeAhLe9pumt49GS1rV1rMXs3E9EW+zwigkc/kRG56o1bGRcOJmi6U
-	 ouywGZ0NWwILViEOjc3qmLP929SSh9dnz6TlgwW7Djur0AR9xlIis8ZZcPiCryjks7
-	 /pDpO0fKM2y0w==
-Message-ID: <89c7c05b-096a-4db9-b1dc-d2a95e89f160@uliege.be>
-Date: Tue, 15 Apr 2025 11:25:52 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B6D41EF37F
+	for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 09:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744709462; cv=none; b=WKnr8lNUCpDZpkca0YKcVET2Rv5+FaEsZuE4vhpS9BP8RfFR1OvzQ20GgggzOqjoaC9e++4wZBWD6VmhaZHd26DaaNnqc2j+n/AYNBjBFjgh1e1WV4WrehmeYZKyCO6x9XLxHld6kgLnGipnIzgbPjMY9C7cgVnQHalSFo7yals=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744709462; c=relaxed/simple;
+	bh=COsaRIuvxnkua8HwmzqjmXwFKFAVEQs3llUnp+yyRGw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l0zLL7OWbDEH2grkC2gK+wTyuTtcYMVRVq3D8eHBrNKoHEv7HUjv73FmghXQFRYWOuUqf+eepglMu+xRQjoEvSVL6tWwMUVgpAXJ2bIdChOvZvJAIqhm1pXycudiW1ynejSwz4RFAsPyuuCNTZlOmekLvn54vewFlOuWTTNsXU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AfGdYt5K; arc=none smtp.client-ip=209.85.221.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-39c14016868so4862436f8f.1
+        for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 02:30:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1744709458; x=1745314258; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=t5p/bRbKfGu9zt0PYKNZNkRZvCOD+RuypWosHSES6Sk=;
+        b=AfGdYt5KwMeDqSr3flGaW594aFpTelPBvMu5r9km71F2xNro+xZ56Gx8w6TcFLoA2L
+         gwhwzS96IhpFHzPG+aRJEIRsWDMGWJz+S3i05o1TOBpgenn5XPRcYcVnwXEhc8hvZBaF
+         t+mdE8nDFk7zXUlgVQscaRDlNpTCFpy/QbSrvYcDct1B+FMXAjFsxCh3brHpsA4eXFvW
+         CJSiyvL7Bh0QTftP+gTgfMK5Ztv5AHJjE1qpyLNPzdOHdYQ6pDTG5ACvat96qREntjJE
+         9DwgiJ1QhXFK62fZNgthuQUfNciXC64ZtHqdpHXVJz45Nt+Ivy55yqs/4wZ/hwQJkzcL
+         F0xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744709458; x=1745314258;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t5p/bRbKfGu9zt0PYKNZNkRZvCOD+RuypWosHSES6Sk=;
+        b=rRk+5tj4vk3qw4QXbB/x9lArU6+sqSQDpLSLkmqlS+mo37KyoGwfyzokYtHNd3tzgN
+         vdaP1bgQLGsS0ePGPsjClyBL0opoEWhrGGHPRglXSS4XpuTKOOgIwQBp9M0a8t9Gb6yl
+         EZYSFnReWlaSgbYkYtOIS2I8AMRrjxP5NGXmDE74Gdq+iRIN/QZHPH/6hvWlWQiTvYth
+         HRQDRSQaQg9oDxdHjnwd4hshIme/IphrHmhUDednKPzEjY8N3ymgStFB79YAerzGHqF/
+         KticRu9z9NrlGlwW3XOodLxihQCJHH429AP41GgbQreFZd/npQ/8WB7kSI0Vgl28TdS3
+         Z/5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW8EbB6xlSjN8s9+lhmbUj93AS5ipMai/GwltDImHnUUsJ4naeQSpY4yOLGQzB8AeiK7ak=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTzbn7y9dWjv+PT/yfn5PeuRTeNvQrOMX0Cv3Fs9A2czs4f05J
+	9I1UI7agSyrBdcnYDmTa1CG8EAUH4W/ow+koCK09AQCoviPHl//5Hv0WoAt7h24=
+X-Gm-Gg: ASbGnctfpKSwu03ZCvNlMWPZkqB75CxASuX62YPkFSOBrGrqNHfcPhC2rK/Rwyv2sjQ
+	em0R2dU0Dy8AqMt0QZyVUbz5DrzjUsQoHzvv3UvjZWLf2eyjTNXj4hQk4G+IgKm9nbF8OtUOWFO
+	aDJN/Hz84k5a3EIwp6pjdYtZArIED4/BvaQutsTT5gLiurK1rEXr4FunJummbeyIkh0Vp3UcN8h
+	AH6j9BHCPEemMxh4w2lfJkdmuLn9OHsVft5ApFj+M8Vz/+3q/dU1DwmckcRvd+8ZkCGyULQyuVo
+	vDEUIXmNBlb10JCJcM/ViyXLGhX+4p0gH9UqfVG3mJssCA==
+X-Google-Smtp-Source: AGHT+IFP/8/ehvnOlG0x/DX32B7q3RBAFlaoRAWXR6v+kbGywYJdun4oe9Fh5KKW2bpD3AzaY3WOhg==
+X-Received: by 2002:a05:6000:430a:b0:39c:1257:cd3e with SMTP id ffacd0b85a97d-39eaaedcf62mr13305491f8f.56.1744709458272;
+        Tue, 15 Apr 2025 02:30:58 -0700 (PDT)
+Received: from u94a ([2401:e180:8d68:75f9:2464:4043:4f92:fce])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22ac7c95c8esm112943125ad.145.2025.04.15.02.30.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Apr 2025 02:30:57 -0700 (PDT)
+Date: Tue, 15 Apr 2025 17:30:30 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Viktor Malik <vmalik@redhat.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, lmarch2 <2524158037@qq.com>, 
+	stable@vger.kernel.org
+Subject: Re: [PATCH bpf v2] libbpf: Fix buffer overflow in
+ bpf_object__init_prog
+Message-ID: <gaebflcrzdszes6febvrf43dgllpemg3ghcgbwmd2klfaj7p4t@cmg2los3ahla>
+References: <20250410095517.141271-1-vmalik@redhat.com>
+ <CAEf4Bzb2S+1TonOp9UH86r0e6aGG2LEA4kwbQhJWr=9Xju=NEw@mail.gmail.com>
+ <d87e3ed0-5731-4738-a1c6-420c557c3048@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net: lwtunnel: disable preemption when required
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Sebastian Sewior <bigeasy@linutronix.de>,
- Stanislav Fomichev <stfomichev@gmail.com>,
- Network Development <netdev@vger.kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>,
- bpf <bpf@vger.kernel.org>, Andrea Mayer <andrea.mayer@uniroma2.it>
-References: <20250403083956.13946-1-justin.iurman@uliege.be>
- <Z-62MSCyMsqtMW1N@mini-arch> <cb0df409-ebbf-4970-b10c-4ea9f863ff00@uliege.be>
- <CAADnVQLiM5MA3Xyrkqmubku6751ZPrDk6v-HmC1jnOaL47=t+g@mail.gmail.com>
- <20250404141955.7Rcvv7nB@linutronix.de>
- <85eefdd9-ec5d-4113-8a50-5d9ea11c8bf5@uliege.be>
- <CAADnVQK7vNPbMS7T9TUOW7s6HNbfr4H8CWbjPgVXW7xa+ybPsw@mail.gmail.com>
- <d326726d-7050-4e88-b950-f49cf5901d34@uliege.be>
- <CAADnVQ++4Lf0ucHjfyK0OakPYsbN2Q9yX0Ru3ymWo4YtLOi-HA@mail.gmail.com>
-Content-Language: en-US
-From: Justin Iurman <justin.iurman@uliege.be>
-In-Reply-To: <CAADnVQ++4Lf0ucHjfyK0OakPYsbN2Q9yX0Ru3ymWo4YtLOi-HA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <d87e3ed0-5731-4738-a1c6-420c557c3048@redhat.com>
 
-On 4/15/25 01:13, Alexei Starovoitov wrote:
-> On Fri, Apr 11, 2025 at 11:34 AM Justin Iurman <justin.iurman@uliege.be> wrote:
->>
->> On 4/7/25 19:54, Alexei Starovoitov wrote:
->>> On Sun, Apr 6, 2025 at 1:59 AM Justin Iurman <justin.iurman@uliege.be> wrote:
->>>>
->>>> On 4/4/25 16:19, Sebastian Sewior wrote:
->>>>> Alexei, thank you for the Cc.
->>>>>
->>>>> On 2025-04-03 13:35:10 [-0700], Alexei Starovoitov wrote:
->>>>>> Stating the obvious...
->>>>>> Sebastian did a lot of work removing preempt_disable from the networking
->>>>>> stack.
->>>>>> We're certainly not adding them back.
->>>>>> This patch is no go.
->>>>>
->>>>> While looking through the code, it looks as if lwtunnel_xmit() lacks a
->>>>> local_bh_disable().
->>>>
->>>> Thanks Sebastian for the confirmation, as the initial idea was to use
->>>> local_bh_disable() as well. Then I thought preempt_disable() would be
->>>> enough in this context, but I didn't realize you made efforts to remove
->>>> it from the networking stack.
->>>>
->>>> @Alexei, just to clarify: would you ACK this patch if we do
->>>> s/preempt_{disable|enable}()/local_bh_{disable|enable}()/g ?
->>>
->>> You need to think it through and not sprinkle local_bh_disable in
->>> every lwt related function.
->>> Like lwtunnel_input should be running with bh disabled already.
->>
->> Having nested calls to local_bh_{disable|enable}() is fine (i.e.,
->> disabling BHs when they're already disabled), but I guess it's cleaner
->> to avoid it here as you suggest. And since lwtunnel_input() is indeed
->> (always) running with BHs disabled, no changes needed. Thanks for the
->> reminder.
->>
->>> I don't remember the exact conditions where bh is disabled in xmit path.
->>
->> Right. Not sure for lwtunnel_xmit(), but lwtunnel_output() can
->> definitely run with or without BHs disabled. So, what I propose is the
->> following logic (applied to lwtunnel_xmit() too): if BHs disabled then
->> NOP else local_bh_disable(). Thoughts on this new version? (sorry, my
->> mailer messes it up, but you got the idea):
->>
->> diff --git a/net/core/lwtunnel.c b/net/core/lwtunnel.c
->> index e39a459540ec..d44d341683c5 100644
->> --- a/net/core/lwtunnel.c
->> +++ b/net/core/lwtunnel.c
->> @@ -331,8 +331,13 @@ int lwtunnel_output(struct net *net, struct sock
->> *sk, struct sk_buff *skb)
->>          const struct lwtunnel_encap_ops *ops;
->>          struct lwtunnel_state *lwtstate;
->>          struct dst_entry *dst;
->> +       bool in_softirq;
->>          int ret;
->>
->> +       in_softirq = in_softirq();
->> +       if (!in_softirq)
->> +               local_bh_disable();
->> +
+On Mon, Apr 14, 2025 at 06:59:31AM +0200, Viktor Malik wrote:
+> On 4/11/25 18:22, Andrii Nakryiko wrote:
+> > On Thu, Apr 10, 2025 at 2:55 AM Viktor Malik <vmalik@redhat.com> wrote:
+> >> As reported by CVE-2025-29481 [1], it is possible to corrupt a BPF ELF
+> >> file such that arbitrary BPF instructions are loaded by libbpf. This can
+> >> be done by setting a symbol (BPF program) section offset to a large
+> >> (unsigned) number such that <section start + symbol offset> overflows
+> >> and points before the section data in the memory.
+...
+> >> Cc: stable@vger.kernel.org
+> > 
+> > Libbpf is packaged and consumed from Github mirror, which is produced
+> > from latest bpf-next and bpf trees, so there is no point in
+> > backporting fixes like this to stable kernel branches. Please drop the
+> > CC: stable in the next revision.
 > 
-> This looks like a hack to me.
+> Ack, will drop it.
+
+Sorry for blindly suggesting the CC. I'll keep that in mind.
+
+> >> Fixes: 6245947c1b3c ("libbpf: Allow gaps in BPF program sections to support overriden weak functions")
+> >> Link: https://github.com/lmarch2/poc/blob/main/libbpf/libbpf.md
+> >> Link: https://www.cve.org/CVERecord?id=CVE-2025-29481
+> > 
+> > libbpf is meant to load BPF programs under root. It's a
+> > highly-privileged operation, and libbpf is not meant, designed, and
+> > actually explicitly discouraged from loading untrusted ELF files. As
+> > such, this is just a normal bug fix, like lots of others. So let's
+> > drop the CVE link as well.
+> > 
+> > Again, no one in their sane mind should be passing untrusted ELF files
+> > into libbpf while running under root. Period.
+> > 
+> > All production use cases load ELF that they generated and control
+> > (usually embedded into their memory through BPF skeleton header). And
+> > if that ELF file is corrupted, you have problems somewhere else,
+> > libbpf is not a culprit.
 > 
-> Instead analyze the typical xmit path. If bh is not disabled
+> While I couldn't agree more, I'm a bit on the fence here. On one hand,
+> unless the CVE is revoked (see the other thread), people may still run
+> across it and, without sufficient knowledge of libbpf, think that they
+> are vulnerable. Having a CVE reference in the patch could help them
+> recognize that they are using a patched version of libbpf or at least
+> read an explanation why the vulnerability is not real.
+> 
+> On the other hand, since it's just a bug, I agree that it doesn't make
+> much sense to reference a CVE from it. So, I'm ok both ways. I can
+> reference the CVE and provide some better explanation why this should
+> not be considered a vulnerability.
 
-This is already what I did, and it's exactly the reason why I ended up 
-with the above proposal. It's not only about the xmit path but also the 
-output path. Of course, having BHs disabled only where they need to 
-without useless nested calls would be nice, but in reality the solution 
-is not perfect and makes it even more difficult to visualize the path(s) 
-with or without BHs disabled IMO.
+While I also see other colleagues that reference CVE number in the
+commit message in other subsystems, personally I would drop CVE
+reference here. This CVE entry doesn't have techinical detail in itself
+beside mentioning that the issue being buffer overflow, and is
+disputed/on the way to being rejected as far as this thread is
+concerned.
 
-For both lwtunnel_xmit() and lwtunnel_output(), the common functions 
-which are closest in depth and where BHs should be disabled are 
-ip_local_out() and ip6_local_out(). And even when it's not required 
-(which is the tradeoff). The other solution was -v1, which you NACK'ed. 
-Please see my reply to Andrea for the whole story. To summarize, I'd say 
-that it's either (a) what you suggest, i.e., non-required BH disable 
-calls vs. (b) nested BH disable calls. With tradeoffs for each.
-
-> then add local_bh_disable(). It's fine if it happens to be nested
-> in some cases.
+...
 
