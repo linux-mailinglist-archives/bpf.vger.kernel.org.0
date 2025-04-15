@@ -1,96 +1,89 @@
-Return-Path: <bpf+bounces-55999-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56000-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86C15A8A677
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 20:10:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E980FA8A67A
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 20:12:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A14516DF6C
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 18:10:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07A7C16D36F
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 18:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868A92309BD;
-	Tue, 15 Apr 2025 18:09:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08C8E22171E;
+	Tue, 15 Apr 2025 18:12:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tMpN/2ek"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Lt4tN0mI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4FE722B5A5;
-	Tue, 15 Apr 2025 18:09:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B0C96FC3
+	for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 18:12:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744740596; cv=none; b=VwN3psm0NMEqJT6fqHhTKl2DQeceNEs1o8oR36W0johoAxafGgyad/fJQJN4mgV/fsfz0eIcMShQ2PRtrO4VkljMAMVFGF20+xbD6q9LnrTZ7A2H8kIR1qleyGN8B+kntOo+VtXRzPemyReBu3CaCHhI4tSmG1ZTfRMbB5kfSpk=
+	t=1744740729; cv=none; b=emCXMHhPE7gsuhZ9mKOAMvRqmeK8BNG/gOLlTU0k0wAUEO586i05M68rhL5liVN7D1YksI5pCdRbu9DEEsWaX1sRAn+uBscMrRI86vNXOzGEhcIlyHgb4n4c2qy7VaTtt5bPx6t4CpMe+U+ldgI50ogli6J7RaZ1n8UBHb78BOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744740596; c=relaxed/simple;
-	bh=xQI2GKkQoI1TZdmJHVrd8rELK0VEmYKP62keOuNrboA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=jHJ4ylMR9Bx+Vm5tg0YbL6xdSe2JXNX5ZBlBF4dk9Zk0g0xWC7HORyYmcwiOGlEIj+UUOue9SPhXEeq+mm5qervTaFDvGKnv6HNMnjF+CVMaeuoMzXos0+7aa9oUzqx5IeBXBl8gsfqx/u1g8ZU6ro0YaLAqBh7cfvBcjM3VbaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tMpN/2ek; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5475DC4CEEC;
-	Tue, 15 Apr 2025 18:09:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744740595;
-	bh=xQI2GKkQoI1TZdmJHVrd8rELK0VEmYKP62keOuNrboA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=tMpN/2ekG1hx0UQ/ca4rxxiLY1vvV5V8BVb3qna4ar4C3NAmjtoDzQYY53rlKZzJT
-	 PQQVFUhN/HJMlZsIQiKy5YhcnNPwSME0K1wPo9s8rjaHN7auIVDzJmOtlq4L0XG/oI
-	 kONJMibGRiTI6eV+2T7uFJyMIrjltiW8EpK975nMRB2sEIcwmrsBiGe98fzbH8rrJf
-	 Xto5cW0tm/5vShx/DoYu/Xp6hVYJOYiSM0uqDa5Dc1i1JfWGdWSD6yAb8WKPuFBwW+
-	 4jAf2667QBhRSax/Y16gfFUuy8/RxezF/AtDJKE2qkhEpwCgd+SlxJWqNeeLoe6NN0
-	 gf9BP+4nJN8MA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 7108B3822D55;
-	Tue, 15 Apr 2025 18:10:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1744740729; c=relaxed/simple;
+	bh=uw2LPhcebkesXfbZ7BpKtReHdk81nUGZ/NAABXsn32M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m+5h+dx1xjkD7828KeI0kMvl7y8s394sZRoTKo7DDZIngWGrkItRaGKOdx1tGFrbqthLfjXCcUBe2FltqdDabFoYt9D3fov/TNF4suEUrEI+bna1hesVmbsthwQ53YbXeEGqrAiCaBYtn95ErhZTQSRLOE7ZcRJBwPPmB4A/qLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Lt4tN0mI; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d6b24457-2217-46ec-81eb-bd0b9013d20b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1744740723;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W1rgoV+IPqOTHC6lFkBTgUDPa9A5kn3tcNPcRtDm7CA=;
+	b=Lt4tN0mIg6t9+XuTQrp5vQf0yl4FhlwBm1mB+80q6oDRowD4s4WRhgdtq0G8Y+PN5oR1Ae
+	XcLyxiZWKL+gfuMHIJt5or4iTcwhLb5opFGbXDJxO1lyp46Zrk5E1fPtuHHwuxxreDMorE
+	oaWOX4v82rUoPUG6fWzVm7JdqgvgghM=
+Date: Tue, 15 Apr 2025 11:11:58 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH -next] selftest/bpf/benchs: Remove duplicate sys/types.h
- header
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174474063327.2730246.12931886216738044879.git-patchwork-notify@kernel.org>
-Date: Tue, 15 Apr 2025 18:10:33 +0000
-References: <20250415061459.11644-1-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <20250415061459.11644-1-jiapeng.chong@linux.alibaba.com>
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, abaci@linux.alibaba.com
+Subject: Re: [PATCH] selftests/bpf: close the file descriptor to avoid
+ resource leaks
+To: Malaya Kumar Rout <malayarout91@gmail.com>
+Cc: bpf@vger.kernel.org, andrii.nakryiko@gmail.com,
+ alexei.starovoitov@gmail.com
+References: <20250412183847.9054-1-malayarout91@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250412183847.9054-1-malayarout91@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+On 4/12/25 11:38 AM, Malaya Kumar Rout wrote:
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> index 0b9bd1d6f7cc..05cf66265cf1 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> @@ -37,8 +37,10 @@ configure_stack(void)
+>   	tc = popen("tc -V", "r");
+>   	if (CHECK_FAIL(!tc))
+>   		return false;
+> -	if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc)))
+> +	if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc))) {
+> +		close(tc);
 
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+It is not even compiler tested.
 
-On Tue, 15 Apr 2025 14:14:59 +0800 you wrote:
-> ./tools/testing/selftests/bpf/benchs/bench_sockmap.c: sys/types.h is included more than once.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=20436
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  tools/testing/selftests/bpf/benchs/bench_sockmap.c | 1 -
->  1 file changed, 1 deletion(-)
+pw-bot: cr
 
-Here is the summary with links:
-  - [-next] selftest/bpf/benchs: Remove duplicate sys/types.h header
-    https://git.kernel.org/bpf/bpf-next/c/7d0b43b68d1c
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+>   		return false;
+> +	}
+>   	if (strstr(tc_version, ", libbpf "))
+>   		prog = "test_sk_assign_libbpf.bpf.o";
+>   	else
 
 
