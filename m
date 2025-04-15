@@ -1,181 +1,107 @@
-Return-Path: <bpf+bounces-55958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64537A8A153
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 16:38:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94CFBA8A158
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 16:38:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6843244047D
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 14:38:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A219119021D5
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 14:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB282951C8;
-	Tue, 15 Apr 2025 14:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7613296D0D;
+	Tue, 15 Apr 2025 14:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gs2ht0Z1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aLvh2l++"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109932949EB;
-	Tue, 15 Apr 2025 14:37:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59ACB29117F;
+	Tue, 15 Apr 2025 14:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744727876; cv=none; b=re+2L6Vjbvk3hn9kZsbN33kPr8udp5PMuq3jAO/IgpjROzZcqUfEtIeBcNBft6xHWe0tMbsPyM+k4Jz7yH/FewMLUOazmY7qARAkr4IwXSdXvi+Qc18qAvMxSEmwVuBR1+EoI1zPG4tP5VXN1ZyuXgLsE3wzP/kn5ooNkqDJf5w=
+	t=1744727900; cv=none; b=jPkakJNHitGT47baeQ3Hlr3xB32TZaKckcw6hhQN1D/0cU7nUTYqMoPmCHbdln2rbcbwPMiMZ0zU+Q04eYDp5h27DVFWjLSh9grUtcYPxuadW1E6zMjbgvjKj4YeXPgWWi5XqQy8ikjJNfAfyExacls8HczO2H8EoMd/pBttFT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744727876; c=relaxed/simple;
-	bh=V/a25hNDB5z+WSFk0T0WLV9zb5V5Bm1HJTIXWRoF3Aw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pJiYoi5CuHMyTbYkaP1tvnQdR16CCww5VvetHT+Lratx1tGYsG9j2RCLIzwmqx/Mi1hL1mFFfnkT0US4GxFu4IQwlgqlDFvNbayN2/p+9TTrGg6D3dj5dH21+azbmGghTNzwQ0O0P+1owp2EG+SX0bTp4IlKCAz1W9fTL0xENj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gs2ht0Z1; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6febf391132so53012517b3.1;
-        Tue, 15 Apr 2025 07:37:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744727874; x=1745332674; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SwIcbrCFSkjJ99K0oqnE440Z8NS7MO6dY71VBSoxwu4=;
-        b=gs2ht0Z1D7HKJsnKwjsguX87p00wVQOXeIBr10Tsm8xLfiPrxeFc0cT1ckxP6LhtJo
-         vmEYzj08zyQXj/OxsbMQ7h0+OkL5iQJql8XWsiM7SWPHo5M2y9gPy3z6Gy89E2OJYnrw
-         sQ8BZR87KSPQDuAzcH2KcUTA9ZBSFQISvOtMZK+FyhFpyijw0QXBoC88zcoMf1M3npOX
-         wK6peapQiz5MvMPXSxnUkc2/BYpgTJvKETdoHmTweRHMbTB8LlhdKAED9iZdQPaHtQeT
-         g2/dimH8T47MZo2266BbaejYupjRf/UEcV4nPWTENCK8c4dDNEemNsGlda5pWEK879DE
-         u+rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744727874; x=1745332674;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SwIcbrCFSkjJ99K0oqnE440Z8NS7MO6dY71VBSoxwu4=;
-        b=KQWGS1rJPs5epi+z9zCYm0+Q+V59qr4IvWEBsoXKphgm5zyUX5eQfhankMnOHmomgT
-         7mF7JGff37aqiYhkOgPjB0oLEojSHj+A9spSrboSaPUWcy5lKR6bFnNWUoBS7phQ++Z9
-         R/zxwdAztyU31u82+0w6JF53SP0Q/OYd6fJHIgyEprqzpu3e0RKpKleqs6DeDoUweHaM
-         krlT42xTyRn3f3li+Iz9KpxY04dkAWZ/N7qYtIzl3sNFBMZK6b2X0EKKlc6FaZw+8/M8
-         loS1DZQSqeHmlenR6y4DkjMQFdhYF210QrcCuQuDmJyFDZZBD3NdMFwY/GNEjSo9Camq
-         m+rQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUNHRuhpGQ57friAEfCwbpLUAkG226iK+hf26/4QTX1BBkYxVi0dxWKlqjixFgiuks/iYajeCoMKqpZFIP2@vger.kernel.org, AJvYcCVDjydCm41IMlLScYB2/gqJHtfmZeMSDCg8462GSVpMJ/1rvUf80P8ghtA1X5liSI/dP6Y7BqXCRo9nor7QAde2@vger.kernel.org, AJvYcCWEYbtBq5/ltax2vkIgsDaqRASPicfKQoPo8+zKJ9iiSXsn3qnZi7U4VGH0aGjo5MoQBWQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRxnK7NxXW9hUkg47sRNa1hWXXeiJMtPBQ1xmgU8IF5iBeGKHC
-	M2MnjZlMGEZP70pEWzSboy3mSuaXRp3+K4lpMyBllsTcT4qjgPSUfx54lM8NcbQnlbPlyKuYhN6
-	tONIKhuwSakO7Dy45MzrVaaX84TI=
-X-Gm-Gg: ASbGncvGQCGnNinLAXO9sA8Ztvvf6Xqw+v1tR+/hHNbsLN18opGmldSDrsSsBhFtK6Z
-	cDm0B2clpTFrMPQjUm1YmrE4M8XKNZ7H5bLeenrFp1kfqhDbTE6aCyMOnnpCJpZ6E9at+5GXlL7
-	572eYcwUEUiCvmdNFnvzsjsg==
-X-Google-Smtp-Source: AGHT+IHUMxvu/aOeLKk2k5l1s/fZpbZMV26GOgsy8sNTFTBpovDHd4DLx4JmGn+hEKfCP1n08IvUdhwvV3xwn980+GM=
-X-Received: by 2002:a05:690c:38b:b0:6ff:1fac:c502 with SMTP id
- 00721157ae682-705599819femr253641937b3.6.1744727873793; Tue, 15 Apr 2025
- 07:37:53 -0700 (PDT)
+	s=arc-20240116; t=1744727900; c=relaxed/simple;
+	bh=ZpM58jgXe8P92kBPX7QG3YnkqxXt6Jj4oTEvwlNQdFw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bfnh9mxS3kSv4Fk7CTB8G9QvXP02wABsFMrBmb75Ir+aFuSy4nzHj8d9kjZe2Wicty2griAdhtco6J4Ol0I2CDEgS4aglz3b7ewto+vHISx34yCR2UAFeNqxE9G7wbo0t5yQEZBFegYE4Ra7q2YfkcUBGc6uLRDOwL4iuU+HAd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aLvh2l++; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EB03C4CEEB;
+	Tue, 15 Apr 2025 14:38:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744727899;
+	bh=ZpM58jgXe8P92kBPX7QG3YnkqxXt6Jj4oTEvwlNQdFw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=aLvh2l++VPeBifQEm59TW5nGAWgkqgrhThC69VZ+qGGNKet/quUjw7ZGXXruuqzlP
+	 lkaaH7JvQvawKe+inV2Ll+4rZghPzYQ+tz74EExAZgF7i6MUV+KeuJMTZe5PvRyM8i
+	 CWBNkjomCVpwT2vKF5hnS1DnTA4uZGGf4viZAnFz3pa6QWJ2KNXUEMpVJdJOe4CT1c
+	 Cb/9JHU8PBQD80eXLDzuoMkSK3rW/avVPCt+3D0VTZH6NgKHa/890EPWkN1clv7DgF
+	 kG/fHZIDp/cbDeHEpDPhsYpljSUyJYjmUaKOD/EmhbdT82jZxbXcs824I8I9gqe7IQ
+	 YnDC/jbkyH7kQ==
+Date: Tue, 15 Apr 2025 07:38:18 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Justin Iurman <justin.iurman@uliege.be>
+Cc: Andrea Mayer <andrea.mayer@uniroma2.it>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Sebastian Sewior <bigeasy@linutronix.de>,
+ Stanislav Fomichev <stfomichev@gmail.com>, Network Development
+ <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon
+ Horman <horms@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>, bpf
+ <bpf@vger.kernel.org>, Stefano Salsano <stefano.salsano@uniroma2.it>, Paolo
+ Lungaroni <paolo.lungaroni@uniroma2.it>
+Subject: Re: [PATCH net] net: lwtunnel: disable preemption when required
+Message-ID: <20250415073818.06ea327c@kernel.org>
+In-Reply-To: <3cee5141-c525-4e83-830e-bf21828aed51@uliege.be>
+References: <20250403083956.13946-1-justin.iurman@uliege.be>
+	<Z-62MSCyMsqtMW1N@mini-arch>
+	<cb0df409-ebbf-4970-b10c-4ea9f863ff00@uliege.be>
+	<CAADnVQLiM5MA3Xyrkqmubku6751ZPrDk6v-HmC1jnOaL47=t+g@mail.gmail.com>
+	<20250404141955.7Rcvv7nB@linutronix.de>
+	<85eefdd9-ec5d-4113-8a50-5d9ea11c8bf5@uliege.be>
+	<CAADnVQK7vNPbMS7T9TUOW7s6HNbfr4H8CWbjPgVXW7xa+ybPsw@mail.gmail.com>
+	<d326726d-7050-4e88-b950-f49cf5901d34@uliege.be>
+	<20250415025416.0273812f0322a6b1728d9c7b@uniroma2.it>
+	<3cee5141-c525-4e83-830e-bf21828aed51@uliege.be>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250412170626.3638516-1-kafai.wan@hotmail.com>
- <20250412170626.3638516-2-kafai.wan@hotmail.com> <Z_zk2ZaG5fRRFQio@krava>
-In-Reply-To: <Z_zk2ZaG5fRRFQio@krava>
-From: Kafai Wan <mannkafai@gmail.com>
-Date: Tue, 15 Apr 2025 22:37:42 +0800
-X-Gm-Features: ATxdqUFfDAA6h_yahdP12xKT_OlDfjXjxWcEGnJt25PijmtECR6HpfsyjMNRKAw
-Message-ID: <CALqUS-76D5ywRC6EUnd2O=L5VLuQBaOJOgnJeOLZxJpArqomtQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Allow access to const void pointer
- arguments in tracing programs
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@fomichev.me, haoluo@google.com, mykolal@fb.com, shuah@kernel.org, 
-	memxor@gmail.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, kafai.wan@hotmail.com, leon.hwang@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 14, 2025 at 6:35=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Sun, Apr 13, 2025 at 01:06:25AM +0800, KaFai Wan wrote:
-> > Adding support to access arguments with const void pointer arguments
-> > in tracing programs.
-> >
-> > Currently we allow tracing programs to access void pointers. If we try =
-to
-> > access argument which is pointer to const void like 2nd argument in kfr=
-ee,
-> > verifier will fail to load the program with;
-> >
-> > 0: R1=3Dctx() R10=3Dfp0
-> > ; asm volatile ("r2 =3D *(u64 *)(r1 + 8); ");
-> > 0: (79) r2 =3D *(u64 *)(r1 +8)
-> > func 'kfree' arg1 type UNKNOWN is not a struct
-> >
-> > Adding is_void_ptr to generic void  pointer check.
-> >
-> > Cc: Leon Hwang <leon.hwang@linux.dev>
-> > Signed-off-by: KaFai Wan <kafai.wan@hotmail.com>
-> > ---
-> >  kernel/bpf/btf.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 16ba36f34dfa..e11d3afd0562 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -6383,6 +6383,14 @@ struct btf *bpf_prog_get_target_btf(const struct=
- bpf_prog *prog)
-> >               return prog->aux->attach_btf;
-> >  }
-> >
-> > +static bool is_void_ptr(struct btf *btf, const struct btf_type *t)
-> > +{
-> > +     /* skip modifiers */
-> > +     t =3D btf_type_skip_modifiers(btf, t->type, NULL);
-> > +
-> > +     return t->type =3D=3D 0;
->
-> I think you can use btf_type_is_void in here
->
+On Tue, 15 Apr 2025 11:10:01 +0200 Justin Iurman wrote:
+> > However, there is my opinion an issue that can occur: between the check on
+> > in_softirq() and the call to local_bh_disable(), the task may be scheduled on
+> > another CPU. As a result, the check on in_softirq() becomes ineffective because
+> > we may end up disabling BH on a CPU that is not the one we just checked (with
+> > if (in_softirq()) { ... }).  
 
-Yes, I will use btf_type_is_void.
+The context is not affected by migration. The context is fully defined
+by the execution stack.
 
-> > +}
-> > +
-> >  static bool is_int_ptr(struct btf *btf, const struct btf_type *t)
-> >  {
-> >       /* skip modifiers */
-> > @@ -6776,7 +6784,7 @@ bool btf_ctx_access(int off, int size, enum bpf_a=
-ccess_type type,
-> >               }
-> >       }
-> >
-> > -     if (t->type =3D=3D 0)
-> > +     if (is_void_ptr(btf, t))
->
-> lgtm,
->
-> nit, the is_void_ptr name suggest there's also ptr check in the helper fu=
-nction,
-> which is not the case. I understand it follows is_int_ptr name, but perha=
-ps we
-> could rename both helpers to is_void and is_int ... feel free to ignore ;=
--)
+> Hmm, I think it's correct... good catch. I went for this solution to (i) 
+> avoid useless nested BHs disable calls; and (ii) avoid ending up with a 
+> spaghetti graph of possible paths with or without BHs disabled (i.e., 
+> with single entry points, namely lwtunnel_xmit() and lwtunnel_output()), 
+> which otherwise makes it hard to maintain the code IMO.
+> 
+> So, if we want to follow what Alexei suggests (see his last response), 
+> we'd need to disable BHs in both ip_local_out() and ip6_local_out(). 
+> These are the common functions which are closest in depth, and so for 
+> both lwtunnel_xmit() and lwtunnel_output(). But... at the "cost" of 
+> disabling BHs even when it may not be required. Indeed, ip_local_out() 
+> and ip6_local_out() both call dst_output(), which one is usually not 
+> lwtunnel_output() (and there may not even be a lwtunnel_xmit() to call 
+> either).
+> 
+> The other solution is to always call local_bh_disable() in both 
+> lwtunnel_xmit() and lwtunnel_output(), at the cost of disabling BHs when 
+> they were already. Which was basically -v1 and received a NACK from Alexei.
 
-you are right, I will rename it. but I'm not sure if it's possible to merge
-these two functions into one like is_void_or_int, they both skip modifiers.
-
->
-> jirka
->
->
-> >               /* This is a pointer to void.
-> >                * It is the same as scalar from the verifier safety pov.
-> >                * No further pointer walking is allowed.
-> > --
-> > 2.43.0
-> >
-
-thanks,
-kafai
+I thought he nacked preempt_disable()
 
