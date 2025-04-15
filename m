@@ -1,161 +1,256 @@
-Return-Path: <bpf+bounces-55931-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55932-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1978CA89736
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 10:55:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7DADA89760
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 11:03:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E8DB3BA294
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 08:55:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 871073B8055
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 09:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EDE927F750;
-	Tue, 15 Apr 2025 08:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B950C27C879;
+	Tue, 15 Apr 2025 09:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f/uIJOrO"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="LaaKi+6L"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2046.outbound.protection.outlook.com [40.107.244.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55CE427A934
-	for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 08:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744707303; cv=none; b=bukl88jHk2FqDbmewZXLQd4ou3+i8IoBDy7FGskTPUiLI320kczHda3SH22YDrwd51u86tOqHIHit43G4jU929jDjIBPPu9z9urEnlJ0XpS4nZ3K+EpXxAIu/l2M3TQlTN254+sxtQXM60Suk4/+2SyMw2a5GSkr02jtjKhrUyY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744707303; c=relaxed/simple;
-	bh=RSqWOdoFr0u66m5eQa01m+O5DLVAmNRlh5QbF0HmMXg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rT6tmxFv2732dX9zMTs2kM5Gt0edlSuEOnf9vX9UwaA6JY645YyBnxVrP8upvbRcBauAj01FtoWHZJlXADH7rhlpfBKbewXcnkJy0Qcmyckx0OhvCMSnuw5gHW68mKqvBYiIrZDSzLCEvksjJHr2IJsd0FUoOaFJZnxKlxYoqBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f/uIJOrO; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-39c1efc457bso3480194f8f.2
-        for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 01:55:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744707299; x=1745312099; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NaWFPSspZuLK4FBCBF9Z4n8Z4KQi2qnKP4PHZXiiDwo=;
-        b=f/uIJOrO4K0ASwshJwyxTv75R1FtRI5zTjg2QdDCABOu19ol5x/4R0LbAPoZLRWS6n
-         pbfG7zeakrgVoqWMVsSthHDY7kSkLTKcGvD5LCXF06dZ10495O7MVgz/TIaPJLPNINtF
-         DkChAiDXkq2CfbjZMWoiZt1ocyjBPFzUac7rNGpXEHvwRps4aV/kj7v0BQ/zvoUGtobU
-         1gasUNUU5qaD1aQDmdBzwcp1QHwLP3x3x2h1DF52P+lP4og/XwSeN6B/43ashKMzRjd5
-         VLM3nXXDWg62yUEEHBP2E2kHkOWDIj3KyjGdYB951oDVgRSupCc2BJ0k2TS7HKYrWROr
-         MlYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744707299; x=1745312099;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NaWFPSspZuLK4FBCBF9Z4n8Z4KQi2qnKP4PHZXiiDwo=;
-        b=uDsmTMjymdUmjXRTDNdhAft+b3gbPHyCL069WoeA8ZRxFOmdJQC8t5HW70Eu4ZBSKr
-         ZSQgzZHx9z2D2XEv2udWQKVBV+RcJrH5HzxR0TkGDWw4tBmONmFQVGolL52EjFQp+Yl1
-         ee8wDqnOr4x/5Uxq4hmNrFu4D65WKz8kKZM5hsCeXJ27cCNkfOsP3bIO0Aq4FjjxKalu
-         qaP7XFTI52SH9cAPGFoaOvRtGBMiTYZRbjXnartvUw73RIWzKGyzVOSoJkZqfmNrFUhe
-         sGoVkm2oOvuCsm1OenxYhVf5EBs5x6gSzaMvWkMiWh/Ecqx0Y5CklbDlGwxImr7v77MH
-         L0nQ==
-X-Gm-Message-State: AOJu0YySYzeVeWL9TjqFlavUx4N+CZmjSfTUJ+tOfviQmc7boFkgsjO/
-	wNdK9xOdWSVWWCz80AY4Q1g1ZNwKBuzXNWe8R1/iPi4hcCvxzjTk
-X-Gm-Gg: ASbGncs36lNWxiJQ1U3148JYvZjLeVHJ/igQ15yvYG4VC9xogqKLKfr+06fCLTUNkLe
-	7I07nbyYM8CzAfPj5w8EUk7PoChh61zZogZb0HX66S5UVWcb379/v929z377wN5uR84RqXS7EXt
-	rWLvwQD+x3uMcOCuc73tg3dOL7BQyqLchJNeDem5NlA9LjHi9CRgEv7UbH5qZQ8OoNg5LouAR/3
-	FSCerDiXusvAv+26ShFm+l38G7rVdMIretzGZycqGyvyugcHAG4xMoQUq362rXSYY0eE83vG6IO
-	dnYoq+KvmPyGx8fZdZNtsV/hzeZ4UXYzU0A+5B854TS3Lv2EE58UG6BjxFlGKbOAyycSiphNTU6
-	RBTb4pX45P1bHaH7d46gxBRVWFTimuRwIFr6Mz4YqQEnqxoK5mPjJ1/bkiIqBDHIplCv5cQ==
-X-Google-Smtp-Source: AGHT+IHEtXUQK+b0IsoXTcTy6AUsrPVAwie0F8qOWBDqstmBjNH106GtVPYQoJw4MfnvKZkjaqH/RQ==
-X-Received: by 2002:a05:6000:1865:b0:39c:1424:2827 with SMTP id ffacd0b85a97d-39ea5200a08mr13114101f8f.15.1744707299327;
-        Tue, 15 Apr 2025 01:54:59 -0700 (PDT)
-Received: from ?IPV6:2003:ed:7734:bbff:9028:3352:1f33:d30d? (p200300ed7734bbff902833521f33d30d.dip0.t-ipconnect.de. [2003:ed:7734:bbff:9028:3352:1f33:d30d])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39eae963f2bsm13823419f8f.18.2025.04.15.01.54.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Apr 2025 01:54:58 -0700 (PDT)
-Message-ID: <13ff2689-a17a-4403-8399-7c04d40e8c93@gmail.com>
-Date: Tue, 15 Apr 2025 10:54:57 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC1E1DE8A0;
+	Tue, 15 Apr 2025 09:03:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744707798; cv=fail; b=uLXaalmP7htVeX4l5vsuRGZVC459RL1mSUXoGpyhg+olx2WS1s+rENzFB7vLRgt55Ebflp8K1Hs2oZHkiyXnwcgFQ+D2axuFYvesbCkgTvRZwv57h6XMM/V7xJLcIoM+nB3Y8QD4VkTQCkFrLQFNEAORzSOqOn0YVqjIi+LzkqY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744707798; c=relaxed/simple;
+	bh=oTl9UZkIYCNYkFFfYk659AUBbE6sx8KUzALLWIzIiA4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=YyCqiQYPQeno5dap9vxUgB+7KWd/MOlmFyxo0Ar6kJg4S6o8xdmMikTrqIKxz1KzU3MOj2nH/qiVk/h1ndfQNst/iDbpJcckmeXc0tSso9v0IuCO6Prp0ZIWFVwo+9bMhEb4ZIbv5D3czca4sf4CIcaI061ERj3/CwfuMTRIm2E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=LaaKi+6L; arc=fail smtp.client-ip=40.107.244.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HPxrGfwX+kfiBkNhH3ADsV+TYED26MGVBQ6YupXa73HxG6Txz4Z3rvEPGxWO+S8u/YO1541g6WKhv0NkXgRLS1R5iOj/B0ZStRVu8h+7G5FWifnyCupHG3Z9rP+yEEZ4ySEzgLz8yrPxLRxOx2dLfboakT0h6CXbrkCO56MlCrMee/qmSebZbG19z1aH02XlH0a6dgFAl9kDw23yGDe4UpDfD3PV9HyvE8AuoE+8oKJeTVnIs+u2sEY2TknUmzkJoB3PWFfDjjDZdzqYOiPRwrWi4Yts1TjRvhvLUZ3+b0g4FDCIqx6G3skzOJTEXAZj5WSdKf4nBx3ifn1yAoTjRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cPui5XTIbJxAqfJUuvtVo0pM5WZSfhQ29CX9ENnXIh4=;
+ b=gZkBm9DDfpysVdetsa45YqsnzSswkRzjV3jc3vuSD0ecyoRzmnWhvFyCXPW5HgB82CrGdLe8ccK/843SWODdKFQu+GEUc6puykZ6bIa0NCU/Q2M8WOMlDXEcaayGxwPKhenYUpUgiC3VrqN1E1CI4Y8IsKQWxT45TkSVejRFHiPbY+kruEAcZIr8jbUwuOWVfC3/5Tm0O6ghAGvOclkpns1HgjCayCavl/lgmLqPHmDbTgtM1ENQ6uOY24AlK9ZuedG3QVKt6yPfrT1pTeUeQVYm8ilVJ0CwVTPFTfWVqVCjusLC3TBs+cCnikQEVC1xo0HmGnMM2+WjhKeMEw6epA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cPui5XTIbJxAqfJUuvtVo0pM5WZSfhQ29CX9ENnXIh4=;
+ b=LaaKi+6LbALtHanedG0xxkN7e2yhRiP0DUP0//7dFaPuRBUwl1N+Nc1pLZYD/TXkEXU4ar/T0tNxSD6OsqBhyNI0Qq76YpLPm+aq1T2A7fR4C3KbtfZrMlERLA60IMdqR4o3y5ZNQeRFL7BIPZz4E5ZCoAdMWSSTaFKppCSJvcI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by DS0PR12MB8071.namprd12.prod.outlook.com (2603:10b6:8:df::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8632.33; Tue, 15 Apr 2025 09:03:12 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5%5]) with mapi id 15.20.8632.025; Tue, 15 Apr 2025
+ 09:03:12 +0000
+Message-ID: <1d94316f-3336-4d40-bd18-e4703c7037e8@amd.com>
+Date: Tue, 15 Apr 2025 11:03:04 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/4] Replace CONFIG_DMABUF_SYSFS_STATS with BPF
+To: "T.J. Mercier" <tjmercier@google.com>, sumit.semwal@linaro.org,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, skhan@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+ linux-doc@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, android-mm@google.com, simona@ffwll.ch,
+ corbet@lwn.net, eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me,
+ jolsa@kernel.org, mykolal@fb.com
+References: <20250414225227.3642618-1-tjmercier@google.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20250414225227.3642618-1-tjmercier@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0066.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:4b::17) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net: filter: remove dead instructions in filter
- code
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-References: <525d54bc-5259-49f2-acbf-7396bab48dec@gmail.com>
- <CAADnVQ+ip7yB-8deWjHNBQxZHhV1Xi-5gTiYJVRy4gU5+Chkqw@mail.gmail.com>
- <aa2e2b6f-5db8-4ef9-bad9-dddf699afae5@gmail.com>
- <CAADnVQJD1yc=ymX54fjON9ti4DpzOy7M10YE2T1nw750f3FcFQ@mail.gmail.com>
-Content-Language: en-US
-From: Lion Ackermann <nnamrec@gmail.com>
-In-Reply-To: <CAADnVQJD1yc=ymX54fjON9ti4DpzOy7M10YE2T1nw750f3FcFQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|DS0PR12MB8071:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7c7e4921-ec18-4153-580d-08dd7bfc5974
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?eXVjZlZBaGhySFlLQWwzMldKWmNHVUI2YVNmcjR2bWJjR00rVEhpSVUxakVW?=
+ =?utf-8?B?RTJobW1PQ0lSSDdtbDBZWmk5dldadExNNzNDNFc3b3pqYU9qWEZwTlNUaHFa?=
+ =?utf-8?B?OHdxOWJMSzc4NTNOQytYOFZ2eW93RDhuK21IM3BvQ3JPZ1daKzhVSUNRcmhI?=
+ =?utf-8?B?eGFkWUhtQjc4MUhPSHQ1dDYxbUM2ZXJnRlU1NE4wZ2FaVGw2cGozS1UvNFhw?=
+ =?utf-8?B?TnhTdWZzK3VIZFJ5UEJtSTgxbkJXbElSUStRcEYvY1ZaeHZqaEtKK3lkSmJB?=
+ =?utf-8?B?R0p6UUZrcm9qQ1hqNGU2dzRrV0xsWlM1a25YbktGUlNraGNlYVJVcHpvcmZC?=
+ =?utf-8?B?Qi9VbFVwRldDRmt3RnZXNEJnVi9xRkxnV0FQUzdkQWs1dHVWRy9GckNtQmdC?=
+ =?utf-8?B?Ujk4ZUs2ZVo5Vyt3R0tPNE9Hd3ErSEZqQjFjVkdaUWpFWmNQbnhidFl5SHFB?=
+ =?utf-8?B?OS9oRTJDaDhMUWgzaDlJdC9yZ3Q3TWo0V2tmcHhDYnVQcENXa21NQ1NidE9F?=
+ =?utf-8?B?WGVTMThzd3c2bjRCVFVUUHEwQ1A2bTlRVWZrV0gxRS94NFc5Tlh4QVYxRkNh?=
+ =?utf-8?B?Q1d0ODlYUDRSZDB0dStPNE5MTWxwYTE4QjVYMk1kUU1OcGFiZnpnek8yb3pU?=
+ =?utf-8?B?elNQSGdzekd1ZllBU29DclAzNjFiclZWSXBBZ0diLzFwS0QzM04rSXVBK2pz?=
+ =?utf-8?B?eVNPUUNQY2Y5K0tXWmU0ZG1obVF2SktlR0dLd0lKS093UERmY0NlNjlsSGJq?=
+ =?utf-8?B?MklDaHVsbWNha3hWenlkMUt1RWtGeU5vaWdUQ0szbkRXSUxPOWppVy85ZlpM?=
+ =?utf-8?B?VWFYUEl4M1dEOTIya1hjSmhQaGhwUVRCYUY4eHhLbjA0SU9CNi9aaGlORjc3?=
+ =?utf-8?B?Um1VektjQVlObFJaOWVpTFdqY08zNlU5NUNmYjJEbTV5R0EwVDV2SUxqUWtZ?=
+ =?utf-8?B?ZGcxSEdOb01MSFFSWTVoZndHME1GUWtLb0tTRUZqc09DN2xWRFdqK3Q4V0tH?=
+ =?utf-8?B?RmZwRG5QN1VzbjdoNzRLc09nWDRuQ29SbVV5cGMvb1ppNHllVlEzSGo0Z08y?=
+ =?utf-8?B?ZVFPaE9sYlhaVDI4SGV3YjNRemtEL2ZZT3RKZElxTndYaGprZW9aWlh3UDdB?=
+ =?utf-8?B?S01yTlNyUElub1JORGljc0ovRm1oUGtVK2NzazczckFYeFFiaW9RZGp5dlVx?=
+ =?utf-8?B?Q0tqMkJWT0Z3dmM3Rml1VTh6YVBtczRKVFFoNnF5dUxRbWYva2VFM2JUTzRR?=
+ =?utf-8?B?Tno3SDU3UGwwU3ZUWnhuMEsvd3F4Umt6Q2RRbTZOY25aTFhndGRnMWQ0bWVI?=
+ =?utf-8?B?NXUybjFSZG8yMWE5dnd0a285UFhIWEZ3eEExSnRXbkg2MHZTakhvb212UFNO?=
+ =?utf-8?B?VTRmRVUreVRvZXgvS01hV3ZjdENrQlFHUm81a1JWZk1iMjBwQmRiR2JKaEpH?=
+ =?utf-8?B?NGYyZ0tJeEt3eDdQM3ljWXdBWU9GMGc0K292UWFCWFpXYnY4bHBaaml4UDBw?=
+ =?utf-8?B?WUwyckJRK3l4cmJpK2h1OWNscVB1cFdTSnpPa2IzeU1CRkxVV00rN2lYTVlV?=
+ =?utf-8?B?RWJhQ0FXVVAvT2xEM2FMVGkzb1k2akxjalF3ZUMxOHdVTjlEU1VvM3dNaXI3?=
+ =?utf-8?B?UkV0eDRySEJOOGV4TUZad3V6Tmp1OVRrbjlDSHpxcVdFeWUxNTc1UFo1MkEz?=
+ =?utf-8?B?K0VRUmZYZ0RXdjBkNkZFRmdLOEgzS2VRV2ZEeWZnSVpjL3VzKzZEY3hRTlFt?=
+ =?utf-8?B?Q0tlWkZjOEVWRnE5MEpYNk5EQ09GUzJhWFh6a1BTcldHOFJSMUE0cjlqMVNX?=
+ =?utf-8?B?bTV4c0RhK3BHcGwvUUZSTXRxZlhGS3JMdVBZUHFRU25vZi8zbEVuUjgxT2Z1?=
+ =?utf-8?B?Vm0wa0FnZkdWZjNsejArOUtUNVhQSGR5bUxGaEEzY3ZyRituT21yVWk4MDJj?=
+ =?utf-8?Q?PLYDg9vXDiE=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?V1Frc3hScnVPZkJ1Zmw2a1JZdHlmQXN2ZUg5RkZDaWhIUUlXRDBYWmE1c1dv?=
+ =?utf-8?B?SUtib2tqdDNnTFZlK2NUT0VTYURaT1JWRTRjdm8vQmR3eWhpZTNlNHNQY3lJ?=
+ =?utf-8?B?RmUzQlRhMTBQRjNzV010QUszR1pRcDVrSW1GS0dUdktSZWhnMFk4bXhvU2Va?=
+ =?utf-8?B?MnQ5YzFGKzkwUEp0UU1FbFAvbE9KQmRtWVZIalhOMlVwNnBKQjNiblc1YjVC?=
+ =?utf-8?B?Tm5aNnpXZzlISTV3Y0hDOUZOTU9EVWF0dllCcGRxMitQM0xZaWJncFhFanZ4?=
+ =?utf-8?B?NTEwMXdkOHl3RTRyQkxKZFpJZW1yWGRuaURMNk5PVGpCTzdXSWRoWCsyNTY4?=
+ =?utf-8?B?d3dPMFJuQ28vaHp3TGRqN0tMQS8wSDNJN1ZPTXVVdGJERDY5QWJZYjVleGRL?=
+ =?utf-8?B?cGNIZkFidkViT0xOV1BzdWdqcFgxbUJKcG5PUEdXeFlDWm43dmtGRFdtUll5?=
+ =?utf-8?B?NmsrR3JVOEJ6WmlLREp5c0JjY2VzUjZkVkc4MDBmdkh1TTVucXBiZ3NiT2c0?=
+ =?utf-8?B?ZFQvQjVMNDFtSlJJenR6eUdaU0tYN1hUNWxLdnVFcElNM3lSNVplcmJEWklN?=
+ =?utf-8?B?S1hMWFBwRmZja2UrU3V2NVZEZ3ViME1ZT0g1SmZBemVwMUErb2l5VXo4MmxB?=
+ =?utf-8?B?OXBQRDVtNUVta05FSFdSYzc4WTBMRnYwWUZYZHNWbm1UMzFtYVZWK2ErSGlm?=
+ =?utf-8?B?RjlKcjNWckoyL0YzNFNVL2wyRTNEUlQ0L1hmVFdQZ0ZDRXQ1V2RIVEtMY0Nk?=
+ =?utf-8?B?QXZjZDJuNWxFT0JtMUxEb0M5NzZXOWRQbndTU1ZVWjBCbDlnVzIzaFBuTmVh?=
+ =?utf-8?B?VFpnc0gyVFQ3bHdEWkgreU9lNHphVUxjVENMamZUZTh4MHRpRThzTHpkVVFO?=
+ =?utf-8?B?UHBHelB4SjJ4Ymg0MXlnS0RJMWt6N1NGNWxBclV5RmdsTVcrZ1poUmRwVVJN?=
+ =?utf-8?B?MkJHOEpGUjNtZFdYVjRMd0NPUTJPNE9uQjFPUnc3NytCalppOXJhdnJlc1Y3?=
+ =?utf-8?B?VWlkUlZPYVVYeUhkRW9qR2p5YXltaFpwanRPRXBDMk5VeGk4QXZFY0tiUVBF?=
+ =?utf-8?B?bEVkOWxHZE9GUVVweUtIV1FuclpxaFpxM2lwQTdVb3N0SnFLaUFOeFNvam1j?=
+ =?utf-8?B?a3Fia0VRUzVXNEVvZGJ4S00yYlpJRVVXMzlxa25TcGZFWnoreWE1M2JXY0hk?=
+ =?utf-8?B?cjBPblY5SEtTU3owUUt2ZmtBN240UisyL0diSUgvcEZiVTJKdm1ZNk1KclJi?=
+ =?utf-8?B?dWdlanJDLysrSVZ5UDJRT2RUaHU2OTlqVTk2Z3grb3F3QkhhTFVpcU0vQVJF?=
+ =?utf-8?B?di9Oemo0TUk1dUFsZEdaOFg2T3JDUThtdG84ejMvb1phNWNvNmlpN0tDbFhT?=
+ =?utf-8?B?ZXhBcnAxcjRBVlJQWnp3WFBRVW0yak1EKzQrbStrNDlmYXpoY3BJQ004aHFK?=
+ =?utf-8?B?dnZYd3M3WjRJRDc3THdLMldDNE9yNlVCY1lNNjByekJNdjNONFlQbzNuN1dR?=
+ =?utf-8?B?TVhidGEyZ2R3dmhoNmx0TjhCWGt2aEVJQ2JUbjRoTDl5VUtSU2ppWURMb2tm?=
+ =?utf-8?B?WWdmdks0TkhLNVRJVWQ3ODdPODR2T0FHZktDcEdsN3Q5bnRpWUU1NUcrVmpi?=
+ =?utf-8?B?STA5S2Z5dEVCVnJmMm12MGtXa3JuQTRqVVJwa1ZoRUx4Tzl2MUpaVlB5bUFT?=
+ =?utf-8?B?M2pwcE1FQ2JOTGMwVVRETUZsblBWNXQrOStFTjk3YVhGR1g5WmMydXdkdWhT?=
+ =?utf-8?B?eVcrSVVrZXhCVCtvQkpiNWZ1NTZSMVl3MzMxV1dxU2VsblEvWHAwUm9PYU54?=
+ =?utf-8?B?VmwvTkN5UUdZRFJjL1pLeUJrS2YvYUZJSUprMHFKU3F3NDl6Q3NLZEh1TzEy?=
+ =?utf-8?B?K2hEcVdwc05zQ0N0dFNBQ3kwYUsvV2R1R0szdy9TVFBwdi92Yk52bTRRc3cz?=
+ =?utf-8?B?TEpubW1XeDZqdWUxc0VvL3k2bENUNHRKUDB2dlZkODJHbTVhaENhNDFMS29Z?=
+ =?utf-8?B?aEMyZWphUnlKNnZrUEpHeGdZcEhDN3I3amljaFBpNWNOZ0hCOU52OXp2bnNt?=
+ =?utf-8?B?UEVycTFQRyttS1RCVUs2dUYxK3M5WjhVUTM3TkFZWmRtZDJpdEEra2JmZWRI?=
+ =?utf-8?Q?BSzE=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c7e4921-ec18-4153-580d-08dd7bfc5974
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2025 09:03:12.0694
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AhgzVhF1olvEdjW++nUblWRVZ0acSOOLDH0dIPpwjk5MI5Yn+IR+oLZY7O2YybQj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8071
 
+Am 15.04.25 um 00:52 schrieb T.J. Mercier:
+> Until CONFIG_DMABUF_SYSFS_STATS was added [1] it was only possible to
+> perform per-buffer accounting with debugfs which is not suitable for
+> production environments. Eventually we discovered the overhead with
+> per-buffer sysfs file creation/removal was significantly impacting
+> allocation and free times, and exacerbated kernfs lock contention. [2]
+> dma_buf_stats_setup() is responsible for 39% of single-page buffer
+> creation duration, or 74% of single-page dma_buf_export() duration when
+> stressing dmabuf allocations and frees.
+>
+> I prototyped a change from per-buffer to per-exporter statistics with a
+> RCU protected list of exporter allocations that accommodates most (but
+> not all) of our use-cases and avoids almost all of the sysfs overhead.
+> While that adds less overhead than per-buffer sysfs, and less even than
+> the maintenance of the dmabuf debugfs_list, it's still *additional*
+> overhead on top of the debugfs_list and doesn't give us per-buffer info.
+>
+> This series uses the existing dmabuf debugfs_list to implement a BPF
+> dmabuf iterator, which adds no overhead to buffer allocation/free and
+> provides per-buffer info.
 
-On 4/11/25 5:20 PM, Alexei Starovoitov wrote:
-> On Thu, Apr 10, 2025 at 11:24 PM Lion Ackermann <nnamrec@gmail.com> wrote:
->>
->> On 4/10/25 5:05 PM, Alexei Starovoitov wrote:
->>> On Thu, Apr 10, 2025 at 1:32 AM Lion Ackermann <nnamrec@gmail.com> wrote:
->>>>
->>>> It is well-known to be possible to abuse the eBPF JIT to construct
->>>> gadgets for code re-use attacks. To hinder this constant blinding was
->>>> added in "bpf: add generic constant blinding for use in jits". This
->>>> mitigation has one weakness though: It ignores jump instructions due to
->>>> their correct offsets not being known when constant blinding is applied.
->>>> This can be abused to construct "jump-chains" with crafted offsets so
->>>> that certain desirable instructions are generated by the JIT compiler.
->>>> F.e. two consecutive BPF_JMP | BPF_JA codes with an appropriate offset
->>>> might generate the following jumps:
->>>>
->>>>     ...
->>>>     0xffffffffc000f822:    jmp    0xffffffffc00108df
->>>>     0xffffffffc000f827:    jmp    0xffffffffc0010861
->>>>     ...
->>>>
->>>> If those are hit unaligned we can get two consecutive useful
->>>> instructions:
->>>>
->>>>     ...
->>>>     0xffffffffc000f823:    mov    $0xe9000010,%eax
->>>>     0xffffffffc000f828:    xor    $0xe9000010,%eax
->>>>     ...
->>>
->>> Nack.
->>> This is not exploitable.
->>> We're not going to complicate classic bpf because of theoretical concerns.
->>>
->>> pw-bot: cr
->>
->> This is not a theoretical concern, it is actually very practical. Sorry
->> for not making this clearer. I would rather not share full payloads
->> publicly at this point, though.
-> 
-> Do share.
+Really interesting suggestion. I was expecting something like cgroups, but bpf is certainly an option as well.
 
-I am not sure if sharing adds any particular value here. The mitigation
-targets the 5-byte-variant of the x86 jmp instruction as stated above.
-You would only get more examples of the same instruction.
-Also note that the mitigation does not prevent the 2-byte-variant.
-Beside jumps, there are a couple of other possible instructions that
-allow a 1 byte payload encoding, so I did not bother.
+How do you then use bpf to account the buffers? E.g. are you interacting with cgroups or have sysfs procedure to expose the list or how does that work?
 
-> JIT spraying is nothing new. Blinding only made it harder.
-> There are lots of usable gadgets without it as well.
-> Turn off JIT completely and nothing changes from security pov.
+Additional to that why using DMA-buf for accounting in the first place? See DMA-buf is for sharing buffers and only a minimal fraction of buffers usually need to get shared. Everything else is just massive overhead.
 
-True, the proposal only has an effect if blinding+jit is enabled. 
-Otherwise it's useless.
-If that is not good enough to add complexity to the cBPF code, then
-I suppose we should take this back to the drawing board?
+> While the kernel must have CONFIG_DEBUG_FS for
+> the dmabuf_iter to be available, debugfs does not need to be mounted.
+> The BPF program loaded by userspace that extracts per-buffer information
+> gets to define its own interface which avoids the lack of ABI stability
+> with debugfs (even if it were mounted).
 
-Thanks,
-Lion
+I think we can make the buffer list independent of CONFIG_DEBUG_FS.
+
+> As this is a replacement for our use of CONFIG_DMABUF_SYSFS_STATS, the
+> last patch is a RFC for removing it from the kernel. Please see my
+> suggestion there regarding the timeline for that.
+
+Oh, yes please!
+
+Regards,
+Christian.
+
+>
+> [1] https://lore.kernel.org/linux-media/20201210044400.1080308-1-hridya@google.com/
+> [2] https://lore.kernel.org/all/20220516171315.2400578-1-tjmercier@google.com/
+>
+> T.J. Mercier (4):
+>   dma-buf: Rename and expose debugfs symbols
+>   bpf: Add dmabuf iterator
+>   selftests/bpf: Add test for dmabuf_iter
+>   RFC: dma-buf: Remove DMA-BUF statistics
+>
+>  .../ABI/testing/sysfs-kernel-dmabuf-buffers   |  24 ---
+>  Documentation/driver-api/dma-buf.rst          |   5 -
+>  drivers/dma-buf/Kconfig                       |  15 --
+>  drivers/dma-buf/Makefile                      |   1 -
+>  drivers/dma-buf/dma-buf-sysfs-stats.c         | 202 ------------------
+>  drivers/dma-buf/dma-buf-sysfs-stats.h         |  35 ---
+>  drivers/dma-buf/dma-buf.c                     |  40 +---
+>  include/linux/btf_ids.h                       |   1 +
+>  include/linux/dma-buf.h                       |   6 +
+>  kernel/bpf/Makefile                           |   3 +
+>  kernel/bpf/dmabuf_iter.c                      | 130 +++++++++++
+>  tools/testing/selftests/bpf/config            |   1 +
+>  .../selftests/bpf/prog_tests/dmabuf_iter.c    | 116 ++++++++++
+>  .../testing/selftests/bpf/progs/dmabuf_iter.c |  31 +++
+>  14 files changed, 299 insertions(+), 311 deletions(-)
+>  delete mode 100644 Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers
+>  delete mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.c
+>  delete mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.h
+>  create mode 100644 kernel/bpf/dmabuf_iter.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/dmabuf_iter.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/dmabuf_iter.c
+>
 
 
