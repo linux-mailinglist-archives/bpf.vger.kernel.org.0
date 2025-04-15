@@ -1,127 +1,132 @@
-Return-Path: <bpf+bounces-55972-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55973-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77342A8A4EB
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 19:05:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A7B4A8A4F5
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 19:07:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87D2B17FA4D
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 17:05:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4532D7A7D33
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 17:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24401ACEBE;
-	Tue, 15 Apr 2025 17:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 809CC21504D;
+	Tue, 15 Apr 2025 17:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fD+wIOA0"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Oez1Mv79"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E30AD84FAD;
-	Tue, 15 Apr 2025 17:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83A812DFA4F;
+	Tue, 15 Apr 2025 17:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744736746; cv=none; b=Yx/H4Je6r7gZyrmBmEuN3eWpq9AZyXgLMX5fz8DHc8vYhFYpVQioafWkx9gNX4b5X8DLWJ2FZ6eOCHE6DhKkvEf72Fe6+KOVg83zV8nsOBQ1o+K1VCmNbMfG5wItGswqDnJiGPBDkf6x7qvS6KkWTZD51DsbgoA0J0H779Qsn3s=
+	t=1744736831; cv=none; b=Ne1k8EA//ceRYj7RxfVItwqvifZzXET6kaZL1f3NJ0jQopx2lLYRQ5gPRwMaGYWKkREPM+hsXqDuGVtJl0wHJibueJNiuyKZ48ZaF18A3dKOFpLrNfWy+ia3onPi1BMkPYV+BHbrt2vGP/JzW1SsU/xYFqGM9XQ4MoP0/Q2UFLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744736746; c=relaxed/simple;
-	bh=ZkblCK2OfPSPmJSFFzHT0HQx5TYG9c06icogDcimMQs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UJKJuMEJbGFUsQpBbY5ZyRHlnpAbk3fHySq+vmLKcXz/KSKrSiAhYwLymAISntjF8Q+/CasrdcMabIKNuxSg+7Z9OWAG1xBg0ewz+gb6QV20aDebayExl1Vyn2DhwLHczK4aquwiZMOUawNG9eHDe5hGkLy2mb6qlgJ+e/aucLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fD+wIOA0; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43cfba466b2so61125265e9.3;
-        Tue, 15 Apr 2025 10:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744736743; x=1745341543; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZkblCK2OfPSPmJSFFzHT0HQx5TYG9c06icogDcimMQs=;
-        b=fD+wIOA0UEluB3RuE4SYKlMdpU4IO9alrnYUOJs6e8OllFfOOlUw9TenqbtoMBni5g
-         A+fcJF0ZTXXQfkqpw4lSn+VSLv5BtXtRq3CBPtBhDFwJwT074/pUXpVudqVRR6SL3Jrf
-         86qIA016GOYaZiXOr6RIQjCeDP3sqDjGzCoh2iwek2VIYLRJcAZejlmt3xHE5Z+yUsq8
-         UgCX+7Ap1U4Y5e66VCNSfRkr10gYqk+VaxEAoFcT2SY8Ms4FiR326+Cwx5EVFDj/GS5b
-         7Gv8/yJneDBrRfVAPNKp41re3Jl0CvkGxlbZ8dFfDBBrkWoSzyu9yeE5MlO7+60vI5gb
-         Q5wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744736743; x=1745341543;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZkblCK2OfPSPmJSFFzHT0HQx5TYG9c06icogDcimMQs=;
-        b=Yca+S5L2wiRLzW3vtWFFRdbiGSbux57C1GO9fHurr9tVX6hPQYhTYwjSBhykf+ZwB+
-         V1+zOkX6NH1ucCuMJIeOImpMhGgTWUZoV0QARkAelmBnXACdIBuRM+CWVQdhO+Ob51ah
-         dimPyRpTzOF8tz/vYB7xt0VYe+wOeVMDDGTcLYCh0h1EGiqii8U46u6DJCKFpalrWhLR
-         r3NWhzka0kKBS3PP1q39h6iAJSEyPS8zPl204kwUSYNhvvmusmkZxwTve7WotHQu3cVd
-         DgD/J1Eunr4Rzl3ArUcKrYYReAcBvpYnTcVERrHmJysJZAQjcXb05E6ZZkQ4iorl4y4L
-         at9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWSt+oLZruLTlTXM2zqVx97J62D2SClA9+ldMTqvqduoWazoYaQJIELJWzKYbF1U+Wwwm/lyNcC@vger.kernel.org, AJvYcCXhtP/viNl51tjv+FejQsKqWZsUXWB9Q3DM8UiuDRByT4mDcogKcLkaoyiYwRVXHcA+Li8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyckvJksAqeVABSj+vc/HCx/RxFCNPHh/bCOfn9eMEtOsRlUfSq
-	V+O0Sg46U01i6Due1/4Z088hzBktjJLGnHdFQjyLAqW3XNwfKaNOw8Hq1bg+xwSPqtzOUqHidoM
-	oKHMGilLdln2Wy3n82BVDSZAIS4Q=
-X-Gm-Gg: ASbGncuy53cJD4GUeV0wXz3+J7liRc+6NY6zv1O6oSHTBE51BIHud/jUD6zocFAh4cE
-	TaTHJM30JA9hwCClC4LKhCHku5+7unhijSGkQh+TgFo/ReEdH/76s4s5OVsCo2xEO2rnwgIiaXQ
-	fWl2k2dw7sh3ByBfwtR2tuBlEQpwSLB+daUYRX
-X-Google-Smtp-Source: AGHT+IHdBCvqQXZzDYomPgk55GCxp8UVjtV4CQ8xrapURgs4B5z8euqZezmpznKTnioXbjbWqdFdwFvwxCgqny1kEwE=
-X-Received: by 2002:a05:600c:1e8f:b0:43d:683:8cb2 with SMTP id
- 5b1f17b1804b1-43f3a93f78amr158399225e9.14.1744736742921; Tue, 15 Apr 2025
- 10:05:42 -0700 (PDT)
+	s=arc-20240116; t=1744736831; c=relaxed/simple;
+	bh=EI47d3gLk6JDxnelrUCIkAxqsrSEus0fpZccWjnVwFQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=llI9lHERNMboiK7Taekz7UAm51/efkiGBI61Bham3ZVzSBfO1LfJWOl9O/yX9j2vn2AZcyio7ttOCzC4ZCVpV+QnpRb6JPq+Kk/Og+68c4SqioegNmnvfjQ/4I/owcB1GIXFZnTPjnL9aE13QG6nLjH/JORE6Tnj+rxx+DZLq8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Oez1Mv79; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.202] ([71.202.166.45])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 53FH62kZ2924897
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Tue, 15 Apr 2025 10:06:03 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 53FH62kZ2924897
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025032001; t=1744736765;
+	bh=sYVoLqxhxOeFaKrerdeOEPvZqIzHi1P++Hlli5LIh8I=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Oez1Mv79N+ydfKx6xAF2IhxGVRPH744Tz9xe/ds8eZLye00UTUDRQr+nmsg6htH8Z
+	 dJIuHKFrlBSaQRmppmSoydyVEHWAjfH1LRFJ0tPi++p4djXQ9kM7L/FSKvPnLORy9O
+	 uUA0vHWVGCFl199JsokZ7L10iZbM7X7Ji7p2HTVg+spStWMWLpkz8cGsabxNnk/v71
+	 mi+bbMfyHnLXhRZT4cXYqQeTfaoVE0YRSX4FhgS+LxkUsGHFcsok+rlQcFZRI9JGGJ
+	 rQO2cnYPosLU/30b5tFrYvNIfW1NsM6vvi8POkxKCS7u6Kww+QXA4xUcdjCMvTtfrj
+	 HGOfFWfg60zNQ==
+Message-ID: <c4fcb208-ee5d-4781-85ce-3b75e651d047@zytor.com>
+Date: Tue, 15 Apr 2025 10:06:01 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250415163332.1836826-1-ihor.solodrai@linux.dev>
- <3cb523bc8eb334cb420508a84f3f1d37543f4253@linux.dev> <02aa843af95ad3413fb37f898007cb17723dd1aa@linux.dev>
-In-Reply-To: <02aa843af95ad3413fb37f898007cb17723dd1aa@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 15 Apr 2025 10:05:31 -0700
-X-Gm-Features: ATxdqUHcb7bcMj8apUeK-XfKrRx216OshBplciVzk_clunJ_ecSIlG9tQ2HJ98g
-Message-ID: <CAADnVQ+5_mqEGnEs-RwBwh7+v2aeCotrbxKRC2qrzoo2hz_1Hw@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests/bpf: remove sockmap_ktls
- disconnect_after_delete test
-To: Ihor Solodrai <ihor.solodrai@linux.dev>
-Cc: Jiayuan Chen <jiayuan.chen@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Eduard <eddyz87@gmail.com>, 
-	bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 10/15] KVM: VMX: Use WRMSRNS or its immediate form
+ when available
+To: "H. Peter Anvin" <hpa@zytor.com>, Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, virtualization@lists.linux.dev,
+        linux-edac@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-ide@vger.kernel.org,
+        linux-pm@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, jgross@suse.com,
+        andrew.cooper3@citrix.com, peterz@infradead.org, acme@kernel.org,
+        namhyung@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
+        wei.liu@kernel.org, ajay.kaher@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, tony.luck@intel.com,
+        pbonzini@redhat.com, vkuznets@redhat.com, luto@kernel.org,
+        boris.ostrovsky@oracle.com, kys@microsoft.com, haiyangz@microsoft.com,
+        decui@microsoft.com
+References: <20250331082251.3171276-1-xin@zytor.com>
+ <20250331082251.3171276-11-xin@zytor.com> <Z_hTI8ywa3rTxFaz@google.com>
+ <CALMp9eRJkzA2YXf1Dfxt3ONP+P9aTA=WPraOPJPJ6C6j677+6Q@mail.gmail.com>
+ <fa16949e-7842-45f7-9715-1bdda13b762a@zytor.com>
+ <EAB44BB2-99BB-4D4A-8306-0235D2931E72@zytor.com>
+ <0cad1e0b-2bfd-4258-90cd-8d319bf0e74a@zytor.com>
+ <D212FABE-38FE-45D3-A082-CA819CCFFF95@zytor.com>
+Content-Language: en-US
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <D212FABE-38FE-45D3-A082-CA819CCFFF95@zytor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 15, 2025 at 10:01=E2=80=AFAM Ihor Solodrai <ihor.solodrai@linux=
-.dev> wrote:
->
-> On 4/15/25 9:53 AM, Jiayuan Chen wrote:
-> > April 16, 2025 at 24:33, "Ihor Solodrai" <ihor.solodrai@linux.dev> wrot=
-e:
-> >>
-> >> "sockmap_ktls disconnect_after_delete" test has been failing on BPF CI
-> >> after recent merges from netdev:
-> >> * https://github.com/kernel-patches/bpf/actions/runs/14458537639
-> >> * https://github.com/kernel-patches/bpf/actions/runs/14457178732
-> >> It happens because disconnect has been disabled for TLS [1], and it
-> >> renders the test case invalid. Remove it from the suite.
-> >> [1] https://lore.kernel.org/netdev/20250404180334.3224206-1-kuba@kerne=
-l.org/
-> >> Signed-off-by: Ihor Solodrai <ihor.solodrai@linux.dev>
-> >
-> > Reviewed-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-> >
-> > The original selftest patch used disconnect to re-produce the endless
-> > loop caused by tcp_bpf_unhash, which has already been removed.
-> >
-> > I hope this doesn't conflict with bpf-next...
->
-> I just tried applying to bpf-next, and it does indeed have a
-> conflict... Although kdiff3 merged it automatically.
->
-> What's the right way to resolve this? Send for bpf-next?
+On 4/14/2025 11:56 PM, H. Peter Anvin wrote:
+>> arlier in the pipeline, right?
+> Yes, but then it would be redundant with the virtualization support.
+> 
 
-What commit in bpf-next does it conflict with ?
-
-In general, avoiding merge conflicts is preferred.
+So better to drop this patch then.
 
