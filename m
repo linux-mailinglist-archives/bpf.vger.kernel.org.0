@@ -1,169 +1,236 @@
-Return-Path: <bpf+bounces-55947-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-55948-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8655EA89D2D
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 14:10:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C91F6A89E79
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 14:45:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6E2B189F5C6
-	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 12:10:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCBCD1764CE
+	for <lists+bpf@lfdr.de>; Tue, 15 Apr 2025 12:45:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2266A2951AA;
-	Tue, 15 Apr 2025 12:10:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ej6UeVBp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D98296D1A;
+	Tue, 15 Apr 2025 12:45:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A04C1E9B06
-	for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 12:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20BBE22F01;
+	Tue, 15 Apr 2025 12:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744719023; cv=none; b=MbsAuQmfE4TanbqfhfW9hngHEDDwWLYe/XdYFkYCZex2E8ldMlTRKvUTNS7ujJqkNpakT/7eNJVT/Eos/9WJh0pH0WkJLQUTOov/cignSzXCQnkKLuoTwI6A+V0eTKTgriZSCD5lrqjRaG1tjE3AxCqXsBWpxVfvIATiLmLjcZY=
+	t=1744721135; cv=none; b=k6Jv4qJlj/MS2pLlC5OXiy3zxpZ/GMsVEbCYaIFlHPkVembEYIh3k2JYKL+uS3lzfNFWa6gjdRTCtdKPITKePTrTPaHxd8OoDi8NUgmLiLD24I/GPa4rh6dCj8hFhYDnPCRAtaRNos26ItgJghFgxF2fSRYrIr1MboICrGe5LcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744719023; c=relaxed/simple;
-	bh=TS/NkXPc+RGkVoSBxSzwUeEBb0kJbsvf5fQX3rUmvMc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PtPhZjpJsXibXNHKWE+DjE7t+jP3pSd/VltYbr67CFTeKKxZax90q+db9Nn0ApV3qxIr/XRZh4xlldeZhkgiKn6tNxdkcsHtNiGirClPxD3aBbcVd+r7k/bEB2iL2T1d/H7eFg8SRaEA796SPN5LMTvzYW40wZXpmMOpyobiFvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ej6UeVBp; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ee8a41c8-9500-4ff9-bffb-e6c764da6e3e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744719018;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hMeS6Prrho83qVgpHmCFKE+Gf2ByHSCiRH7UJDMJW8k=;
-	b=ej6UeVBp2CxDsdAKz6vfFxnfJgp3dU1CMPqcAHuNUBzqiCx9wULL8ZxHdrMmIyR+5ZbMO8
-	mshiopDHUFWA+0Bg/4T+TWO6cxU3oANwUP6IG0wVKAAjTRGCEzdyC5KJPxLAOkYB56OywH
-	6mkr5rIQgBdGXbLEdwiwO1oL/t62oZU=
-Date: Tue, 15 Apr 2025 20:10:09 +0800
+	s=arc-20240116; t=1744721135; c=relaxed/simple;
+	bh=E5XQcw4IEaB0LKYRVD7ZDLH2kh1PfwrDrSF+4CKaanw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DGsijTsC2fBPEP2QGzcylRWKtPJpNFCAVqonJXR2YlUvg0iTmktJBv7Xbqd8VEPvs8J7fgbu9zyBv8XyNcbq+no5o0lOeD5OrYjfI6id9B1KE/ZTveWWkbarE3kFYPkHzRZg1aj0XpIJdURkCcDZWCk/MkL+clG8YUEc9OwMbKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ZcP374bdHz1R7gs;
+	Tue, 15 Apr 2025 20:43:31 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id D4EBE1A016C;
+	Tue, 15 Apr 2025 20:45:27 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 15 Apr 2025 20:45:27 +0800
+Message-ID: <28772dbe-1ae9-4ff7-91ef-c45d174b88d6@huawei.com>
+Date: Tue, 15 Apr 2025 20:45:22 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Question: fentry on kernel func optimized by compiler
-To: Alan Maguire <alan.maguire@oracle.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- bpf <bpf@vger.kernel.org>
-References: <7e46c811-e85b-4001-8fac-b16aa0e9815f@linux.dev>
- <CAEf4BzaEg1mPag0-bAPVeJhj-BL_ssABBAOc_AhFvOLi2GkrEg@mail.gmail.com>
- <3c6f539b-b498-4587-b0dc-5fdeba717600@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <3c6f539b-b498-4587-b0dc-5fdeba717600@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] mm: alloc_pages_bulk: support both simple and
+ full-featured API
+To: Chuck Lever <chuck.lever@oracle.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Yishai Hadas <yishaih@nvidia.com>, Jason
+ Gunthorpe <jgg@ziepe.ca>, Shameer Kolothum
+	<shameerali.kolothum.thodi@huawei.com>, Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>, Chris Mason <clm@fb.com>, Josef
+ Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Gao Xiang
+	<xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>,
+	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga
+ Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
+	<tom@talpey.com>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+	<mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
+ Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jesper Dangaard Brouer
+	<hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman
+	<horms@kernel.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker
+	<anna@kernel.org>
+CC: Luiz Capitulino <luizcap@redhat.com>, Mel Gorman
+	<mgorman@techsingularity.net>, <kvm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <virtualization@lists.linux.dev>,
+	<linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
+	<linux-mm@kvack.org>, <linux-nfs@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<netdev@vger.kernel.org>
+References: <20250414120819.3053967-1-linyunsheng@huawei.com>
+ <18713073-342e-48b2-9864-24004445e234@oracle.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <18713073-342e-48b2-9864-24004445e234@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-在 2025/3/31 18:13, Alan Maguire 写道:
-> On 28/03/2025 17:21, Andrii Nakryiko wrote:
->> On Thu, Mar 27, 2025 at 9:03 AM Tao Chen <chen.dylane@linux.dev> wrote:
->>>
->>> Hi,
->>>
->>> I recently encountered a problem when using fentry to trace kernel
->>> functions optimized by compiler, the specific situation is as follows:
->>> https://github.com/bpftrace/bpftrace/issues/3940
->>>
->>> Simply put, some functions have been optimized by the compiler. The
->>> original function names are found through BTF, but the optimized
->>> functions are the ones that exist in kallsyms_lookup_name. Therefore,
->>> the two do not match.
->>>
->>>           func_proto = btf_type_by_id(desc_btf, func->type);
->>>           if (!func_proto || !btf_type_is_func_proto(func_proto)) {
->>>                   verbose(env, "kernel function btf_id %u does not have a
->>> valid func_proto\n",
->>>                           func_id);
->>>                   return -EINVAL;
->>>           }
->>>
->>>           func_name = btf_name_by_offset(desc_btf, func->name_off);
->>>           addr = kallsyms_lookup_name(func_name);
->>>           if (!addr) {
->>>                   verbose(env, "cannot find address for kernel function
->>> %s\n",
->>>                           func_name);
->>>                   return -EINVAL;
->>>           }
->>>
->>> I have made a simple statistics and there are approximately more than
->>> 2,000 functions in Ubuntu 24.04.
->>>
->>> dylane@2404:~$ cat /proc/kallsyms | grep isra | wc -l
->>> 2324
->>>
->>> So can we add a judgment from libbpf. If it is an optimized function,
+On 2025/4/15 1:39, Chuck Lever wrote:
+> On 4/14/25 8:08 AM, Yunsheng Lin wrote:
+>> As mentioned in [1], it seems odd to check NULL elements in
+>> the middle of page bulk allocating, and it seems caller can
+>> do a better job of bulk allocating pages into a whole array
+>> sequentially without checking NULL elements first before
+>> doing the page bulk allocation for most of existing users
+>> by passing 'page_array + allocated' and 'nr_pages - allocated'
+>> when calling subsequent page bulk alloc API so that NULL
+>> checking can be avoided, see the pattern in mm/mempolicy.c.
 >>
->> No, we cannot. It's a different function at that point and libbpf
->> isn't going to be in the business of guessing on behalf of the user
->> whether it's ok to do or not.
+>> Through analyzing of existing bulk allocation API users, it
+>> seems only the fs users are depending on the assumption of
+>> populating only NULL elements, see:
+>> commit 91d6ac1d62c3 ("btrfs: allocate page arrays using bulk page allocator")
+>> commit d6db47e571dc ("erofs: do not use pagepool in z_erofs_gbuf_growsize()")
+>> commit f6e70aab9dfe ("SUNRPC: refresh rq_pages using a bulk page allocator")
+>> commit 88e4d41a264d ("SUNRPC: Use __alloc_bulk_pages() in svc_init_buffer()")
 >>
->> But the user can use multi-kprobe with `prefix*` naming, if they
->> encountered (or are anticipating) this situation and think it's fine
->> for them.
+>> The current API adds a mental burden for most users. For most
+>> users, their code would be much cleaner if the interface accepts
+>> an uninitialised array with length, and were told how many pages
+>> had been stored in that array, so support one simple and one
+>> full-featured to meet the above different use cases as below:
+>> - alloc_pages_bulk() would be given an uninitialised array of page
+>>   pointers and a required count and would return the number of
+>>   pages that were allocated.
+>> - alloc_pages_bulk_refill() would be given an initialised array
+>>   of page pointers some of which might be NULL. It would attempt
+>>   to allocate pages for the non-NULL pointers, return 0 if all
+>>   pages are allocated, -EAGAIN if at least one page allocated,
+>>   ok to try again immediately or -ENOMEM if don't bother trying
+>>   again soon, which provides a more consistent semantics than the
+>>   current API as mentioned in [2], at the cost of the pages might
+>>   be getting re-ordered to make the implementation simpler.
 >>
->> As for fentry/fexit, you need to have the correct BTF ID associated
->> with that function anyways, so I'm not sure that currently you can
->> attach fentry/fexit to such compiler-optimized functions at all
->> (pahole won't produce BTF for such functions, right?).
+>> Change the existing fs users to use the full-featured API, except
+>> for the one for svc_init_buffer() in net/sunrpc/svc.c. Other
+>> existing callers can use the simple API as they seems to be passing
+>> all NULL elements via memset, kzalloc, etc, only remove unnecessary
+>> memset for existing users calling the simple API in this patch.
 >>
+>> The test result for xfstests full test:
+>> Before this patch:
+>> btrfs/default: 1061 tests, 3 failures, 290 skipped, 13152 seconds
+>>   Failures: btrfs/012 btrfs/226
+>>   Flaky: generic/301: 60% (3/5)
+>> Totals: 1073 tests, 290 skipped, 13 failures, 0 errors, 12540s
+>>
+>> nfs/loopback: 530 tests, 3 failures, 392 skipped, 3942 seconds
+>>   Failures: generic/464 generic/551
+>>   Flaky: generic/650: 40% (2/5)
+>> Totals: 542 tests, 392 skipped, 12 failures, 0 errors, 3799s
+>>
+>> After this patch:
+>> btrfs/default: 1061 tests, 2 failures, 290 skipped, 13446 seconds
+>>   Failures: btrfs/012 btrfs/226
+>> Totals: 1069 tests, 290 skipped, 10 failures, 0 errors, 12853s
+>>
+>> nfs/loopback: 530 tests, 3 failures, 392 skipped, 4103 seconds
+>>   Failures: generic/464 generic/551
+>>   Flaky: generic/650: 60% (3/5)
+>> Totals: 542 tests, 392 skipped, 13 failures, 0 errors, 3933s
 > 
-> Yep, BTF will not be there for all cases, but ever since we've had the
-> "optimized_func" BTF feature, we've have encoded BTF for suffixed
-> functions as long as their parameters are not optimized away and as long
-> as we don't have multiple inconsistent representations associated with a
-> function (say two differing function signatures for the same name).
-> Optimization away of parameters happens quite frequently, but not always
-> for .isra.0 functions so they are potentially sometimes safe for fentry.
+> Hi -
 > 
-> The complication here is that - by design - the function name in BTF
-> will be the prefix; i.e. "foo" not "foo.isra.0". So how we match up the
-> BTF with the right suffixed function is an issue; a single function
-> prefix can have ".isra.0" and ".cold.0" suffixes associated for example.
-> The latter isn't really a function entry point (in the C code at least);
-> it's just a split of the function into common path and less common path
-> for better code locality for the more commonly-executed code.
-> 
-> Yonghong and I talked about this a bit last year in Plumbers, but it did
-> occur to me that there are conditions where we could match up the prefix
-> from BTF with a guaranteed fentry point for the function using info we
-> have today.
-> 
-> /sys/kernel/tracing/available_filter_functions_addr has similar info to
-> /proc/kallysyms but as far as I understand it we are also guaranteed
-> that the associated addresses correspond to real function entry points.
-> So because the BTF representation currently ensures consistency _and_
-> available function parameters, I think we could use
-> available_filter_functions_addr to carry out the match and provide the
-> right function address for the BTF representation.
-> 
+> The "after" run for NFS took longer, and not by a little bit. Can you
+> explain the difference?
 
-Hi, Alan
-Sorry for not replying in time. As you said，it seems much simpler when 
-use the func addr from available_filter_functions_addr. It seems to be a 
-bit similar to the way of passing function addresses in kprobe_multi. 
-@Andrii @Jiri what do you think?
+Ah, I overlooked the difference as I was not looking to have a performance
+comparasion using xfstest full test due to possible noise, so the above test
+might be done with other job like kernel compiling behind the scenes as it
+was tested with the same machine where I was doing some kernel compiling.
 
-> In the future, the hope is we can handle inconsistent representations
-> too in BTF, but the above represents a possible approach we could
-> implement today I think, though I may be missing something. Thanks!
+And I used a temporary patch to enable the using of full-featured API in
+page_pool to test if the full-featured API will cause performance regression
+for the existing users in fs as mentioned at the end of commit log.
+
 > 
-> Alan
+> You can expunge the flakey test (generic/650) to help make the results
+> more directly comparable. 650 is a CPU hot-plugging test.
 
+I retested in a newer and more powerful machine without obvious heavy job
+behind the scenes based on linux-next-20250411, and the flakey test seems
+gone too.
 
--- 
-Best Regards
-Tao Chen
+before:
+-------------------- Summary report
+KERNEL:    kernel 6.15.0-rc1-next-20250411-xfstests #369 SMP PREEMPT_DYNAMIC Tue Apr 15 16:17:08 CST 2025 x86_64
+CMDLINE:   full
+CPUS:      2
+MEM:       1972.54
+
+nfs/loopback: 539 tests, 4 failures, 400 skipped, 2364 seconds
+  Failures: generic/169 generic/363 generic/464 generic/551
+Totals: 555 tests, 400 skipped, 20 failures, 0 errors, 2205s
+
+after:
+-------------------- Summary report
+KERNEL:    kernel 6.15.0-rc1-next-20250411-xfstests-00001-g316d17a7f7bb #370 SMP PREEMPT_DYNAMIC Tue Apr 15 19:57:48 CST 2025 x86_64
+CMDLINE:   full
+CPUS:      2
+MEM:       1972.54
+
+nfs/loopback: 539 tests, 4 failures, 400 skipped, 2327 seconds
+  Failures: generic/169 generic/363 generic/464 generic/551
+Totals: 555 tests, 400 skipped, 20 failures, 0 errors, 2148s
+
+> 
+> 
+>> The stress test also suggest there is no regression for the erofs
+>> too.
+>>
+>> Using the simple API also enable the caller to not zero the array
+>> before calling the page bulk allocating API, which has about 1~2 ns
+>> performance improvement for time_bench_page_pool03_slow() test case
+>> of page_pool in a x86 vm system, this reduces some performance impact
+>> of fixing the DMA API misuse problem in [3], performance improves
+>> from 87.886 ns to 86.429 ns.
+>>
+>> Also a temporary patch to enable the using of full-featured API in
+>> page_pool suggests that the new full-featured API doesn't seem to have
+>> noticeable performance impact for the existing users, like SUNRPC, btrfs
+>> and erofs.
+>>
+>> 1. https://lore.kernel.org/all/bd8c2f5c-464d-44ab-b607-390a87ea4cd5@huawei.com/
+>> 2. https://lore.kernel.org/all/180818a1-b906-4a0b-89d3-34cb71cc26c9@huawei.com/
+>> 3. https://lore.kernel.org/all/20250212092552.1779679-1-linyunsheng@huawei.com/
+>> CC: Jesper Dangaard Brouer <hawk@kernel.org>
+>> CC: Luiz Capitulino <luizcap@redhat.com>
+>> CC: Mel Gorman <mgorman@techsingularity.net>
+>> Suggested-by: Neil Brown <neilb@suse.de>
+>> Acked-by: Jeff Layton <jlayton@kernel.org>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> ---
+>> V3:
+>> 1. Provide both simple and full-featured API as suggested by NeilBrown.
+>> 2. Do the fs testing as suggested in V2.
+>>
+>> V2:
+>> 1. Drop RFC tag.
+>> 2. Fix a compile error for xfs.
+>> 3. Defragmemt the page_array for SUNRPC and btrfs.
 
