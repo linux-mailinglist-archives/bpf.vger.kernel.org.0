@@ -1,166 +1,295 @@
-Return-Path: <bpf+bounces-56032-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56033-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92F7EA8B4A0
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 11:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 57855A8B6D2
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 12:33:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE4133ABC47
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 09:00:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 071823BA1E2
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 10:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C23B8234966;
-	Wed, 16 Apr 2025 09:01:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971742327A1;
+	Wed, 16 Apr 2025 10:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aJbmPB5V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Da2JERO3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90E020E6E4;
-	Wed, 16 Apr 2025 09:00:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831FB221549;
+	Wed, 16 Apr 2025 10:33:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744794060; cv=none; b=h67ylQRuB8EBueGUVovYKEhPp/nALMOeWvHd/V0nWCBmh7M31EWtmJLajKFb52SJoXlMA/PLpR6pgxvAWRji8Vtqxh1Wz/414kn/jQkMEUoJU0Bb1GP85r+cwFfkPSeRVVszw/h48WYiCnhtB6LxJCnywuPQxITJI4QCnefSsU8=
+	t=1744799598; cv=none; b=Nh5r1Btx3zBUzxWRfA6OReHqazp+WbkWPUSLQnZHfzNGjTlAbeaNzD8pzMZDyT7u75zI8Nlh2FgJXe0UgTeEluOhjMga+BI9ylwbPd32iwbIkZAXUfrze8+zlaBSeLZiBzZVJmihIF59UITf4YjiqDEybLSB6b6mYyBYQMTM1Ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744794060; c=relaxed/simple;
-	bh=LkkRxVsKuChlvoYMnjLCZHxahJRvcKvpegCE7X/JCx4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iGzqebanb/Huvp8fHvXszZrpHvFTevuGJAIOnYFjmSNqYeAZRy3+Ee/eDKhCN28IxTKTzHGQMcXPjV+0yjeu54x0EGDl/2Yu4rMIyxYn8UhTqcM+5AV0brM/Jpi7zMF/PXilmsO7qXyZmBwPb08wj7U+Y6In68bUGNNribUSr8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aJbmPB5V; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1744799598; c=relaxed/simple;
+	bh=JzYUMkBuCes1Dw/7ZiXiwcmaGeSyNdDzr7GNHEveqL0=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jRLjFwoghcoHcO2KJP074MrfCkXO173V7RH43OcP5IHhX1C3oVIdhLyEd6zU0AeBLSxvlaKMKViQ7sblUSd09ocwi8/b7fnIO43YV3m4TGNe2NlAGsdnFGYhmZum3UpnNemEAWQrt9/z6YkQZzpzRI2m7BurxkXEgcSJZ9uSwZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Da2JERO3; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-227b828de00so60574605ad.1;
-        Wed, 16 Apr 2025 02:00:58 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-22c33ac23edso5485295ad.0;
+        Wed, 16 Apr 2025 03:33:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744794058; x=1745398858; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MmG5wLnCycwNioKCuXAaZLGjYi/ybga0dH9UjvjLbBQ=;
-        b=aJbmPB5Vncf0a/tUZhWmsq4UGTLJnmKn3/NWRjAz7YvVecQUC4/iQgvypOLZMO8Koi
-         eKazaAILvw/w6rVdOoLU9MTo8p0x11IysAGOEFkERDAvUIZ/YCimHv7pOW2SWyyjFC3U
-         UPeZY8KnftJUbEO81h2MvrBTz2ptJW8umNFFCjnFkzDeRIyuay/ZPCpX1ytBQsljJWEM
-         /jY9YFGE0A7jRYOtLNNHS9rK+4OQI+FDiSDhSHKE31bxxA9fObIEMYdUlp8Wwb8rp8T/
-         AEoBf5Gko6IZ0lMJb9ME8oUcBzBlqbRC72ZpK9Jcv92lH5mZnoCTi0IsC0st4OIDhdwa
-         7QIA==
+        d=gmail.com; s=20230601; t=1744799596; x=1745404396; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=H3VNWkLuqpNZQi8O9NIwCqmZy36u8O1N/mhwm+SrP2s=;
+        b=Da2JERO31uM/57pac/tncHUg9BtjJWRrARJ503IwK2oY4BtYm7n3TDgriH7aq4tEcp
+         Q74RTqNlLsuvSEsz+oQ1SLD/3jyEVP0ySSGAhuHIgD4CNiH19MXBWfIQK50/o/Gp58Pn
+         GLX5I9lq+q8pi1PvwAygLSGUkwFnptYIFF1FVGhoyI5MVx2DwicHS44n+lchcxS3CHcD
+         efkBoM2dNrYxUC4xrCUaLiW8NX+YKFrLx8f4cu7AWB9Zev4K6pJt5bxrekRHt3uSstiU
+         9z+fxVntdHW0uZmW0wCcke/gvHN38eEP8UQCx9bK61f5Q8ZJqzUwROyi+IjAK0jFiD2/
+         L6qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744794058; x=1745398858;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MmG5wLnCycwNioKCuXAaZLGjYi/ybga0dH9UjvjLbBQ=;
-        b=QndeAT/mlcGwmYkjF5BwwFV9DVWa2OmB9gaUOEYyWm/AzV3NBChO6CXzhiOSLC2npQ
-         LBw+2+CjTXCoMCbQUCaQL3thrvhYkWT+FWmj+hCadsC6yR8z995uC6IXN1vwjsZ/dpB2
-         9d+KEcl0L9nlBQjB/1yp69IVBXG/inG7RavY8LMMzhJxwd1m49i20elsOBqjb+2H+Fph
-         E1Pqegas0IzgHwM7MUxLK/5JIs5D2G2s8g0RBi73SEEvG73kVWYyD9icXS0qutFqv1O7
-         ff+xGtHqCHTpa2Xl9Fup6wvY/7VMquMkMw8weqBnYk9XAtOSgifPiRmdsYOVO/qMGbPL
-         QMiA==
-X-Forwarded-Encrypted: i=1; AJvYcCUBCFlufYl2/qz06ZLUY4DeJs3Hmlr4PWP9msyxU5qFZsWRbL8zAOoWz8P/Bu0twdFWL+y9+IqS@vger.kernel.org, AJvYcCW5RuUmXiCfNXJIlPH9eRhSIstttin/4H1sg4MF0TqSfxgWiaJXCCWNXSwWKZcfAHf4UtQ=@vger.kernel.org, AJvYcCWkg4dW/11ulOxa9qOKgaWqulKPyd+wn+gDLShwzCb6GaTnWDzzxfdbjlZhBgoq1avWsHfLvIIJEGg5SosW@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxeM1Q9PcGibpaAs0ye/HBBqp+9n1uVRLjWQJgLiyqKIWYW5W4
-	++uZVqJySu+MLCHp/uqE2NRIoagW/sC70XHVnmU/9pxEVSYk0LoS
-X-Gm-Gg: ASbGncvN3CFeCZ1mTnFOWahuIY6dEk38M/xqCKBP7eY950rCu5KgU+UFOps4n9yQa1S
-	Y8jAgPZH5TpCbtqWTpOmtDYscsfvvIMMbpvBY77RYci9lHAdE/a7265L9EwkbmlgsXgvd0dLh63
-	b7vfR6iyHV1OjQrZLNKrctezCJIcf9GRW2EYwHvfSKwibHuEZ+02zcmMEjZTCTjhrmfVg90TUYF
-	4PU2CJSJdF8UC+DxLF9X6isWHe19dbbg9shPFV/eqLdT6vtYK6RFe4AqwCzV+BSWp8pm8OB4jZe
-	dyKyrH/Li1/0vFVtpi/2x5EftXlNS+Dw/MLGyieFDebP3mUZukXBrN5Q4Ig=
-X-Google-Smtp-Source: AGHT+IFKvp8JSTcKdJ90nG6KVwZddhuAz0H9jshWa+isMyWM0doLGpZ4rJFIqTTHy7XwTHyjEXrxRg==
-X-Received: by 2002:a17:902:ccc8:b0:22c:2492:b96b with SMTP id d9443c01a7336-22c358d9c65mr20545865ad.15.1744794058037;
-        Wed, 16 Apr 2025 02:00:58 -0700 (PDT)
-Received: from [172.16.0.99] ([113.161.92.19])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bd22f8253sm10208920b3a.93.2025.04.16.02.00.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Apr 2025 02:00:57 -0700 (PDT)
-Message-ID: <e5369006-1439-4936-9193-3f931f8a6f29@gmail.com>
-Date: Wed, 16 Apr 2025 16:00:51 +0700
+        d=1e100.net; s=20230601; t=1744799596; x=1745404396;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H3VNWkLuqpNZQi8O9NIwCqmZy36u8O1N/mhwm+SrP2s=;
+        b=hu0ke6v+HsRYWp2zWRMi5cF9U6KB58q8pzhTHqLF/tAHxkl+ucMy0y+pRtMTQn8P64
+         YJdlwNf/YH2xgvRSo0sRibGD0A2j0BD4VlHr0dyhQ9nwIIhQfUEBouau/2ffK4yksfm7
+         XX4dLiEe64IZKxAN3yTj9H91UbPdOji/dOH/UF0UeoK/JLsgBf9tgof3Sh7wmaQeCH/t
+         2vGtI0bgE4AcfGBfo8Or7JwKGitw30VJT/U9K6JAWijPHcx+cq16mfxrHCps3I44y38J
+         76jrjeSEJPk/wWpMQ3mGd7mypDbThjgNvGJT7uG0hcRZ51KOw6Huk4rBnVEhv4quKVXA
+         lqgA==
+X-Forwarded-Encrypted: i=1; AJvYcCUbOFdoaU3Vc4i4RENSsNJH2QfNclZHnaPAhe2H+3X7RdQiALng/Fc7wrMtH0aHJbmT4BQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwCex6I5mX9KHzxeO9VbAvPhrYze2s+zP6Rc1sZZcxOXpVOcoUM
+	V0cPvmwtRJiE1KnHeiCPf6h3nvFd+ljCVRq9Jw7IGnl1q6wYikPd
+X-Gm-Gg: ASbGncuy94XcfPCxcSNGX61Xo+5vd7GC1j1tf+IqAxVpZlSsH0BFiubMLbgTO8SO4Vv
+	E9YlOoUbyVVpWJ+GXd5EQg+m7W5Ur7DzvZmSiw0QaTJUj6609VFWZY5XTvj7uKqdzlecOXebjps
+	nZp4Yb6bDEGzIeKyBShllWwOBEWKnVNrNRx6VqH3o28uJ5ffoyPBqS1SL+hoi050w1jZfz7enX9
+	IuNAPANtDvUpZ0Tb7bUtHeOJIbrI3EAwmzILslmpaC4oTine5suqp7ekVbq49K2gPxWz1Kgkzx2
+	GvWVBOkFJXNybdHQyxpQgZ6j0eNI7Rw9Ri/M4raloHsOkri4mTqXFLj0XQde2g/ZS1uhcp/KKqz
+	zBUzfsVU=
+X-Google-Smtp-Source: AGHT+IGxd0uduOpWaghN84/5O70fkOe1L9JQeaHvV7YXMLmIQuGCnT3QGkqLXmtBDFh8WX3/Tq8Zng==
+X-Received: by 2002:a17:902:d2c7:b0:224:23ab:b88b with SMTP id d9443c01a7336-22c358c526cmr19518175ad.8.1744799595485;
+        Wed, 16 Apr 2025 03:33:15 -0700 (PDT)
+Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bd22f0fc5sm10350115b3a.91.2025.04.16.03.33.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Apr 2025 03:33:14 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
+Date: Wed, 16 Apr 2025 03:33:11 -0700
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: [PATCH dwarves v1] dwarf_loader: Fix skipped encoding of
+ function BTF on 32-bit systems
+Message-ID: <Z/+HZ3w2KmbK5OAi@kodidev-ubuntu>
+References: <20250410083359.198724-1-tony.ambardar@gmail.com>
+ <07d92da1-36f3-44d2-a0a4-cf7dabf278c6@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] selftests: net: add a virtio_net deadlock selftest
-To: Jason Wang <jasowang@redhat.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, virtualization@lists.linux.dev,
- "Michael S . Tsirkin" <mst@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
- "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20250415074341.12461-1-minhquangbui99@gmail.com>
- <20250415074341.12461-4-minhquangbui99@gmail.com>
- <20250415212709.39eafdb5@kernel.org>
- <1603c373-024d-4ec2-b655-b9e7fb942bba@gmail.com>
- <CACGkMEvceXT+=HJRRe6D3Zk3k40E2ADJiXNb4qqAYm=PZnxNpQ@mail.gmail.com>
-Content-Language: en-US
-From: Bui Quang Minh <minhquangbui99@gmail.com>
-In-Reply-To: <CACGkMEvceXT+=HJRRe6D3Zk3k40E2ADJiXNb4qqAYm=PZnxNpQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <07d92da1-36f3-44d2-a0a4-cf7dabf278c6@oracle.com>
 
-On 4/16/25 14:46, Jason Wang wrote:
-> On Wed, Apr 16, 2025 at 2:54 PM Bui Quang Minh <minhquangbui99@gmail.com> wrote:
->> On 4/16/25 11:27, Jakub Kicinski wrote:
->>> On Tue, 15 Apr 2025 14:43:41 +0700 Bui Quang Minh wrote:
->>>> +def setup_xsk(cfg, xdp_queue_id = 0) -> bkg:
->>>> +    # Probe for support
->>>> +    xdp = cmd(f'{cfg.net_lib_dir / "xdp_helper"} - -', fail=False)
->>>> +    if xdp.ret == 255:
->>>> +        raise KsftSkipEx('AF_XDP unsupported')
->>>> +    elif xdp.ret > 0:
->>>> +        raise KsftFailEx('unable to create AF_XDP socket')
->>>> +
->>>> +    return bkg(f'{cfg.net_lib_dir / "xdp_helper"} {cfg.ifindex} {xdp_queue_id}',
->>>> +               ksft_wait=3)
->>>> +
->>>> +def check_xdp_bind(cfg):
->>>> +    ip(f"link set dev %s xdp obj %s sec xdp" %
->>>> +       (cfg.ifname, cfg.net_lib_dir / "xdp_dummy.bpf.o"))
->>>> +    ip(f"link set dev %s xdp off" % cfg.ifname)
->>>> +
->>>> +def check_rx_resize(cfg, queue_size = 128):
->>>> +    rx_ring = _get_rx_ring_entries(cfg)
->>>> +    ethtool(f"-G %s rx %d" % (cfg.ifname, queue_size))
->>>> +    ethtool(f"-G %s rx %d" % (cfg.ifname, rx_ring))
->>> Unfortunately this doesn't work on a basic QEMU setup:
->>>
->>> # ethtool -G eth0 rx 128
->>> [   15.680655][  T287] virtio_net virtio2 eth0: resize rx fail: rx queue index: 0 err: -2
->>> netlink error: No such file or directory
->>>
->>> Is there a way to enable more capable virtio_net with QEMU?
-> What's the qemu command line and version?
->
-> Resize depends on queue_reset which should be supported from Qemu 7.2
->
->> I guess that virtio-pci-legacy is used in your setup.
-> Note that modern devices are used by default.
->
->> Here is how I setup virtio-net with Qemu
->>
->>       -netdev tap,id=hostnet1,vhost=on,script=$NETWORK_SCRIPT,downscript=no \
->>       -device
->> virtio-net-pci,netdev=hostnet1,iommu_platform=on,disable-legacy=on \
->>
->> The iommu_platform=on is necessary to make vring use dma API which is a
->> requirement to enable xsk_pool in virtio-net (XDP socket will be in
->> zerocopy mode for this case). Otherwise, the XDP socket will fallback to
->> copy mode, xsk_pool is not enabled in virtio-net that makes the
->> probability to reproduce bug to be very small. Currently, when you don't
->> have iommu_platform=on, you can pass the test even before the fix, so I
->> think I will try to harden the selftest to make it return skip in this case.
-> I would like to keep the resize test as it doesn't require iommu_platform.
+On Thu, Apr 10, 2025 at 01:20:45PM +0100, Alan Maguire wrote:
+> On 10/04/2025 09:33, Tony Ambardar wrote:
+> > While doing JIT development on armhf BTF kernels, I hit a strange issue
+> > where some functions were missing in BTF data. This required considerable
+> > debugging but can be reproduced simply:
+> > 
+> > $ bpftool --version
+> > bpftool v7.6.0
+> > using libbpf v1.6
+> > features: llvm, skeletons
+> > 
+> > $ pahole --version
+> > v1.29
+> > 
+> > $ pahole -J -j --btf_features=decl_tag,consistent_func,decl_tag_kfuncs .tmp_vmlinux_armhf
+> > btf_encoder__tag_kfunc: failed to find kfunc 'scx_bpf_select_cpu_dfl' in BTF
+> > btf_encoder__tag_kfuncs: failed to tag kfunc 'scx_bpf_select_cpu_dfl'
+> > 
+> > $ pfunct -Fbtf -E -f scx_bpf_select_cpu_dfl .tmp_vmlinux_armhf
+> > <nothing>
+> > 
+> > $ pfunct -Fdwarf -E -f scx_bpf_select_cpu_dfl .tmp_vmlinux_armhf
+> > s32 scx_bpf_select_cpu_dfl(struct task_struct * p, s32 prev_cpu, u64 wake_flags, bool * is_idle);
+> > 
+> > $ pahole -J -j --btf_features=decl_tag,decl_tag_kfuncs .tmp_vmlinux_armhf
+> > 
+> > $ pfunct -Fbtf -E -f scx_bpf_select_cpu_dfl .tmp_vmlinux_armhf
+> > bpf_kfunc s32 scx_bpf_select_cpu_dfl(struct task_struct * p, s32 prev_cpu, u64 wake_flags, bool * is_idle);
+> > 
+> > The key things to note are the pahole 'consistent_func' feature and the u64
+> > 'wake_flags' parameter vs. arm 32-bit registers. These point to existing
+> > code handling arguments larger than register-size, but only structs.
+> > 
+> > Generalize the code for any type of argument exceeding register size (i.e.
+> > cu->addr_size). This should work for integral or aggregate types, and also
+> > avoids a bug in the current code where a register-sized struct could be
+> > mistaken for larger.
+> > 
+> > Fixes: a53c58158b76 ("dwarf_loader: Mark functions that do not use expected registers for params")
+> > Signed-off-by: Tony Ambardar <tony.ambardar@gmail.com>
+> 
+> Thanks for investigating this! I've tested this versus baseline on
+> x86_64 and aarch64. I'm seeing some small divergence in functions
+> encoded; for example on aarch64 we don't get a representation for
+> 
+> static int __io_run_local_work(struct io_ring_ctx *ctx, io_tw_token_t
+> tw, int min_events, int max_events);
+> 
+> The reason for that is the second argument is a typedef io_tw_token_t,
+> which is in turn a typedef for:
+> 
+> struct io_tw_state {
+> };
+> 
+> i.e. an empty struct.
+> 
+> The reason is with your patch we've moved from type-centric to
+> size-centric criteria used to allow functions into BTF that have
+> unexpected register usage; because the above function uses unexpected
+> registers _and_ does not exceed the address size, the function is marked
+> as having an inconsistent reg mapping. In this case, that seems
+> reasonable since it is true; there is no register needed to represent
+> the second argument.
+> 
+> The deeper rationale here in allowing functions that have structs that
+> may be represented by multiple registers is that we can handle this
+> outcome; the BPF_PROG2() macro was added to handle such cases and seems
+> to handle multi-register representation but _not_ representations where
+> a register is not needed at all. I'm basing that on the
+> ___bpf_union_arg() macro in bpf_tracing.h so please correct me if I'm
+> wrong (we could potentially add a sizeof(t) == 0 clause here perhaps).
+> 
+> So in other words, though we see small divergences in representation I
+> _think_ they are consistent with our expectations.
+> 
+> I'd really like to see wider testing of this patch before it lands
+> however so we can shake out other problematic cases if any. If folks
+> could try this and compare BTF representations to baseline that would be
+> great! In particular comparing raw BTF is necessary since vmlinux.h
+> representations don't include functions (aside from kfuncs). Now that we
+> have always-reproducible BTF a simple diff of "bpftool btf dump file
+> vmlinux" can be used to make such comparisons.
+> 
+> However perhaps we could also think about enhancing the bpf_tracing.h
+> macro to handle zero-sized parameters like empty structs such that later
+> parameters are mapped to registers correctly (presuming that's
+> possible)? Yonghong, what do you think?
 
-Okay, in next version I will force the XDP socket binding to zerocopy to 
-setup xsk_pool. When the binding fails, 2 tests still run but I will 
-print a warning message.
+Hi Alan,
 
-Thanks,
-Quang Minh.
+Thanks so much for the additional context. I pressed pause to consider
+this while waiting for further testing news or feedback, but haven't seen
+anything since. Have you heard anything OOB?
+
+I also understood dwarves could have CI working now, so wondering how
+those tests with the patch might have gone. In fact, it would be great to
+have a regular arm32 CI running if that's possible. Could you share how
+the CI changes are being managed? I've recently been trying to update
+the arm32 JIT and test_progs in tandem, with the goal of having a working
+32-bit target for kernel-patches/bpf CI, but some baby-steps with dwarves
+or libbpf could be very helpful.
+
+As far as type-based vs size-based criteria, I'm not wedded to either, and
+did look at the type-based route as currently exists. I needed to add
+cases for DW_TAG_base_type (for ints), DW_TAG_volatile_type (recursive),
+DW_TAG_union_type (same issues as structs), and then we still need size
+tests anyway. Sticking with size-based (and a zero-test as you suggested)
+seemed the simplest and preserved the functions you noticed missing.
+
+Cheers,
+Tony
+
+> 
+> Thanks!
+> 
+> Alan
+> 
+> > ---
+> >  dwarf_loader.c | 37 ++++++++++++-------------------------
+> >  1 file changed, 12 insertions(+), 25 deletions(-)
+> > 
+> > diff --git a/dwarf_loader.c b/dwarf_loader.c
+> > index e1ba7bc..22abfdb 100644
+> > --- a/dwarf_loader.c
+> > +++ b/dwarf_loader.c
+> > @@ -2914,23 +2914,9 @@ out:
+> >  	return 0;
+> >  }
+> >  
+> > -static bool param__is_struct(struct cu *cu, struct tag *tag)
+> > +static bool param__is_wide(struct cu *cu, struct tag *tag)
+> >  {
+> > -	struct tag *type = cu__type(cu, tag->type);
+> > -
+> > -	if (!type)
+> > -		return false;
+> > -
+> > -	switch (type->tag) {
+> > -	case DW_TAG_structure_type:
+> > -		return true;
+> > -	case DW_TAG_const_type:
+> > -	case DW_TAG_typedef:
+> > -		/* handle "typedef struct", const parameter */
+> > -		return param__is_struct(cu, type);
+> > -	default:
+> > -		return false;
+> > -	}
+> > +	return tag__size(tag, cu) > cu->addr_size;
+> >  }
+> >  
+> >  static int cu__resolve_func_ret_types_optimized(struct cu *cu)
+> > @@ -2942,9 +2928,9 @@ static int cu__resolve_func_ret_types_optimized(struct cu *cu)
+> >  		struct tag *tag = pt->entries[i];
+> >  		struct parameter *pos;
+> >  		struct function *fn = tag__function(tag);
+> > -		bool has_unexpected_reg = false, has_struct_param = false;
+> > +		bool has_unexpected_reg = false, has_wide_param = false;
+> >  
+> > -		/* mark function as optimized if parameter is, or
+> > +		/* Mark function as optimized if parameter is, or
+> >  		 * if parameter does not have a location; at this
+> >  		 * point location presence has been marked in
+> >  		 * abstract origins for cases where a parameter
+> > @@ -2953,10 +2939,11 @@ static int cu__resolve_func_ret_types_optimized(struct cu *cu)
+> >  		 *
+> >  		 * Also mark functions which, due to optimization,
+> >  		 * use an unexpected register for a parameter.
+> > -		 * Exception is functions which have a struct
+> > -		 * as a parameter, as multiple registers may
+> > -		 * be used to represent it, throwing off register
+> > -		 * to parameter mapping.
+> > +		 * Exception is functions which have a wide
+> > +		 * parameter, as multiple registers may be used
+> > +		 * to represent it, throwing off register to
+> > +		 * parameter mapping. Examples could include
+> > +		 * structs or 64-bit types on a 32-bit arch.
+> >  		 */
+> >  		ftype__for_each_parameter(&fn->proto, pos) {
+> >  			if (pos->optimized || !pos->has_loc)
+> > @@ -2967,11 +2954,11 @@ static int cu__resolve_func_ret_types_optimized(struct cu *cu)
+> >  		}
+> >  		if (has_unexpected_reg) {
+> >  			ftype__for_each_parameter(&fn->proto, pos) {
+> > -				has_struct_param = param__is_struct(cu, &pos->tag);
+> > -				if (has_struct_param)
+> > +				has_wide_param = param__is_wide(cu, &pos->tag);
+> > +				if (has_wide_param)
+> >  					break;
+> >  			}
+> > -			if (!has_struct_param)
+> > +			if (!has_wide_param)
+> >  				fn->proto.unexpected_reg = 1;
+> >  		}
+> >  
+> 
 
