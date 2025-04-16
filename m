@@ -1,164 +1,141 @@
-Return-Path: <bpf+bounces-56038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A971A8B999
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 14:49:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26E16A90467
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 15:32:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B1A93B2F44
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 12:49:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6E3E17E5E7
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 13:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A21155C88;
-	Wed, 16 Apr 2025 12:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5644A4174A;
+	Wed, 16 Apr 2025 13:32:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oo/LSp24"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="feYyS6ms"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18229F9D9
-	for <bpf@vger.kernel.org>; Wed, 16 Apr 2025 12:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC134409
+	for <bpf@vger.kernel.org>; Wed, 16 Apr 2025 13:32:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744807747; cv=none; b=k5CNZtDyTagQG8wB+yXcNZWCmxOHYxufzKOx5F/1TxWg7bhvjy+PzxpN9/xGY+rsU36uLcFwkMThtNNhPDSTQaJDWB96aJo6uBjfKa0KGLeoKKM9MD2NdsYan4Vq3sX0C6rRSHffBGC4FC3Zy7SumYKf8zfvMkuTpw/Z6qER04I=
+	t=1744810341; cv=none; b=k2UugJUNGZ1bMuWBs3a7GwNMoud3WG2uqxaUUahvFdNXlNm52pPw+qUxuZJU1O1Va+L36M+NivXtri+odeptamON/Wa2JVFECi4i+s2fPZoIC+olJ5NXMBH3G2GvbLw27G6PS5RYg3eFmebagAR9aKWDzAW2qp9ypHkk0yaQWwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744807747; c=relaxed/simple;
-	bh=3x80OKswAWW4KUgCkDm9O/j1aGGjjTqwqDTe6oTvHxU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cTFBs+e3FUCZnU5Sqx9XIlF1SalLPq+bnMdAdRzfMEQuIKZb587nAqOaylTZufA9qulULGDxlmAcPtEUemqqFJgxAkLOeLq4iyIPgqb6Com5Li6QAaIOfHExNMqGdgag4jGMFuplInc26s1hss+/e8mSLmxy4OovFzxWk2voLIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oo/LSp24; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53GB1daJ028300;
-	Wed, 16 Apr 2025 12:48:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=p71ODjKWKQIFuclx+Be1WcttQ6L0HU7dyH9IpNUJh
-	a8=; b=oo/LSp24lujhIWTFYoUlOixHFKCpIkuhqFeBjQY+ubY9ocQxtv5ewS6K1
-	oPEEDG7zDRDVj2u6Zk1ko6d5xOqoXPF9VzDEShN2vvID4d3/gOjDY2yd57r7kOir
-	2Rsa6OJV1N4Nk4/OqMwlBRReMQi86UFw7dqTayuM5grPwEHESVso5fXwByyH7A8S
-	Y6NOFJDHhfJTofVqie4gJtmG4dQXrZfrWzZZUOOuFcRbOtn58uc5CN7S/IQT4UIJ
-	UQbQC1h7i41IevVGFeMsg82ORHSBrmin29QoN3dVRJwhHhClRYUN8trTsx2EHiqG
-	Vs2P7zBwFjIoww0t7n6LMDc2yFIjw==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4621dxb4hj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Apr 2025 12:48:51 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 53G9p340001255;
-	Wed, 16 Apr 2025 12:48:51 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4602w00hbb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Apr 2025 12:48:51 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 53GCmllY28836292
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 16 Apr 2025 12:48:47 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 68CBD20043;
-	Wed, 16 Apr 2025 12:48:47 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 271BF20040;
-	Wed, 16 Apr 2025 12:48:47 +0000 (GMT)
-Received: from heavy.boeblingen.de.ibm.com (unknown [9.155.201.197])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 16 Apr 2025 12:48:47 +0000 (GMT)
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH] selftests/bpf: Set MACs during veth creation in tc_redirect
-Date: Wed, 16 Apr 2025 14:47:58 +0200
-Message-ID: <20250416124845.584362-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.49.0
+	s=arc-20240116; t=1744810341; c=relaxed/simple;
+	bh=+Bprm+jQzK2Qk5tEcCyXJHdixjHkT+diGVHI+2AhPjo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YSAvxTc87nLUyL4yoAmfKRAEzIcYONvHI6dRvXlSM7Mx/F3degSWWsbzu+gCrt7OsMP/MNUm+uJHT33qliw2cDnc/nnf66W1dUt8+SHcloGqeZSl31wiEvPo3L0yCWYBR7RYV5ClPllKqW6wcbutyZx1eHuOcV3825az6fRXgfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=feYyS6ms; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744810333;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=457zR3h8UGkE04gyb0Jb3zcqH2gPSSk6srV8sYhzz3U=;
+	b=feYyS6msNMNVRz6itsiu/uFx1rWJoVS38THbtOWr4VbRq3vGJ00SHOWP5whCU84iWVtmUe
+	d+FLLDWY+m3snEUuzPR6ij8Bi4MlKKAVexp8npSEaKb/Gvh05KhVyAet/RJmSdlaF3Xv8j
+	JkAQ/Z06Xv4/u2Oh+hoQUIm/4ELhSw4=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-269-YI8nRAqWNQuBLIGtX-5qzw-1; Wed, 16 Apr 2025 09:32:10 -0400
+X-MC-Unique: YI8nRAqWNQuBLIGtX-5qzw-1
+X-Mimecast-MFC-AGG-ID: YI8nRAqWNQuBLIGtX-5qzw_1744810328
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-30c04c54f11so33999291fa.0
+        for <bpf@vger.kernel.org>; Wed, 16 Apr 2025 06:32:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744810328; x=1745415128;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=457zR3h8UGkE04gyb0Jb3zcqH2gPSSk6srV8sYhzz3U=;
+        b=VRcxwS0GwOPhr48aqbY20Ot+iTEP62QqLElWkQgLaXDjUBQhLD6CMb16oKTJHfkzvA
+         Ya6cc96RulTmABi99hq6mm6DzpOCpkQzYexua5UO5qVcfrcHMhRh9I5tK8kLeJ36LeZu
+         AXzDKUNhFMu1JniGjCMquorxwk4QbPUq5eOK50WxuBeQxIv6J1cijUW27XgqsRw+EbpJ
+         DfrXvbAN08utD8/6BPAQD8U01JVkThnsSTBMVJUl7lKg4rkmK+p1s4LWO+XlpeNzclpb
+         ielgV3mI6Q8wSV3t5jaLzdey1EcP3jeOSWmx5iCzbDvLmkcKZxJdR8j60Hsru1YfSB1t
+         3KSw==
+X-Forwarded-Encrypted: i=1; AJvYcCVKaf8vxP8SSW0v1cF0gmibisFqg9sV3TeSDQnfGba14cj9rOlcxw7X1pK3IOnjBnIOQc0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyx+aATdG0gE8QQ4W4qPqY8WJ8LwJpgfars00m0gCpQwrETWouZ
+	PbdPn26u86ZcrGLvZ5MRLVGWgOJ1A2NDd3EYMxRDfl2M/gfbjOmuJ3WI3TeC/1Z9UkRT1tHntUU
+	963RhcMmpyFdr6zPvr0TsbYxk24uOx7Z8z5yWtANbcpo/Box/fw==
+X-Gm-Gg: ASbGncv7Mv3ihlY29sEBxBsTv93jAj5U87092zh/MijK7vlt+RjoK8p5GpQsF94jQqz
+	O3ty6UGGo1gW11Hts22p5oC7npgbHNlZ5yCfIM9osWQFs+upJpCAGpFTmYAskMGYE6fwR+7tDsj
+	Q+r7dPAXnMGlDv/CcO/K0ZyKnS33wCPJTJp/yxG6ATYnyHnsfdJTIQnhFqwCZ3IjxiG/GG44my2
+	WpFJWLQkUsFjADQYKw8oV+O7QqVhoXP2ddMv0SNj6ASm+AZW2dOrF30Mea2tIIYeA6ymtYnlHyV
+	fLz8ZT+9
+X-Received: by 2002:a05:651c:884:b0:30b:a187:44ad with SMTP id 38308e7fff4ca-3107f718b00mr6731521fa.26.1744810328188;
+        Wed, 16 Apr 2025 06:32:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IElnOK3S9qd1KXpmFsBs94VTvypJz/yoSSnw9dvy8ZTso1V7fPWo4L2fDiSjHn120HodO1hjg==
+X-Received: by 2002:a05:651c:884:b0:30b:a187:44ad with SMTP id 38308e7fff4ca-3107f718b00mr6731411fa.26.1744810327763;
+        Wed, 16 Apr 2025 06:32:07 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-30f464cc461sm23907401fa.32.2025.04.16.06.32.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Apr 2025 06:32:07 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 2B5101992930; Wed, 16 Apr 2025 15:32:06 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org, Jakub
+ Kicinski <kuba@kernel.org>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
+ tom@herbertland.com, Eric Dumazet <eric.dumazet@gmail.com>, "David S.
+ Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
+ kernel-team@cloudflare.com, phil@nwl.cc
+Subject: Re: [PATCH net-next V4 1/2] net: sched: generalize check for
+ no-queue qdisc on TX queue
+In-Reply-To: <174472469906.274639.14909448343817900822.stgit@firesoul>
+References: <174472463778.274639.12670590457453196991.stgit@firesoul>
+ <174472469906.274639.14909448343817900822.stgit@firesoul>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 16 Apr 2025 15:32:05 +0200
+Message-ID: <87wmbki65m.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 53ZWg3MMkvJR0yZoWnb0vXA5scYKL1YK
-X-Proofpoint-GUID: 53ZWg3MMkvJR0yZoWnb0vXA5scYKL1YK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-04-16_04,2025-04-15_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 bulkscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
- adultscore=0 clxscore=1011 mlxscore=0 suspectscore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2502280000 definitions=main-2504160103
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-tc_redirect/tc_redirect_dtime fails intermittently on some systems
-with:
+Jesper Dangaard Brouer <hawk@kernel.org> writes:
 
-   (network_helpers.c:303: errno: Operation now in progress) Failed to connect to server
+> The "noqueue" qdisc can either be directly attached, or get default
+> attached if net_device priv_flags has IFF_NO_QUEUE. In both cases, the
+> allocated Qdisc structure gets it's enqueue function pointer reset to
+> NULL by noqueue_init() via noqueue_qdisc_ops.
+>
+> This is a common case for software virtual net_devices. For these devices
+> with no-queue, the transmission path in __dev_queue_xmit() will bypass
+> the qdisc layer. Directly invoking device drivers ndo_start_xmit (via
+> dev_hard_start_xmit).  In this mode the device driver is not allowed to
+> ask for packets to be queued (either via returning NETDEV_TX_BUSY or
+> stopping the TXQ).
+>
+> The simplest and most reliable way to identify this no-queue case is by
+> checking if enqueue =3D=3D NULL.
+>
+> The vrf driver currently open-codes this check (!qdisc->enqueue). While
+> functionally correct, this low-level detail is better encapsulated in a
+> dedicated helper for clarity and long-term maintainability.
+>
+> To make this behavior more explicit and reusable, this patch introduce a
+> new helper: qdisc_txq_has_no_queue(). Helper will also be used by the
+> veth driver in the next patch, which introduces optional qdisc-based
+> backpressure.
+>
+> This is a non-functional change.
+>
+> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
-The problem is that on these systems systemd-networkd and systemd-udevd
-are installed in the default configuration, which includes:
-
-    /usr/lib/systemd/network/99-default.link
-    /usr/lib/udev/rules.d/80-net-setup-link.rules
-
-These configs instruct systemd to change MAC addresses of newly created
-interfaces, which includes the ones created by BPF selftests. In this
-particular case it causes SYN+ACK packets to be dropped, because they
-get the PACKET_OTHERHOST type - the fact that this causes a connect()
-on a blocking socket to return -EINPROGRESS looks like a bug, which
-needs to be investigated separately.
-
-systemd won't change the MAC address if the kernel reports that it was
-already set by userspace; the NET_ADDR_SET check in
-link_generate_new_hw_addr() is responsible for this.
-
-In order to eliminate the race window between systemd and the test,
-set MAC addresses during link creation. Ignore checkpatch's "quoted
-string split across lines" warning, since it points to a command line,
-and not a user-visible message.
-
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/bpf/prog_tests/tc_redirect.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-index c85798966aec..76d72a59365e 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-@@ -56,6 +56,8 @@
- 
- #define MAC_DST_FWD "00:11:22:33:44:55"
- #define MAC_DST "00:22:33:44:55:66"
-+#define MAC_SRC_FWD "00:33:44:55:66:77"
-+#define MAC_SRC "00:44:55:66:77:88"
- 
- #define IFADDR_STR_LEN 18
- #define PING_ARGS "-i 0.2 -c 3 -w 10 -q"
-@@ -207,11 +209,10 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
- 	int err;
- 
- 	if (result->dev_mode == MODE_VETH) {
--		SYS(fail, "ip link add src type veth peer name src_fwd");
--		SYS(fail, "ip link add dst type veth peer name dst_fwd");
--
--		SYS(fail, "ip link set dst_fwd address " MAC_DST_FWD);
--		SYS(fail, "ip link set dst address " MAC_DST);
-+		SYS(fail, "ip link add src address " MAC_SRC " type veth "
-+			  "peer name src_fwd address " MAC_SRC_FWD);
-+		SYS(fail, "ip link add dst address " MAC_DST " type veth "
-+			  "peer name dst_fwd address " MAC_DST_FWD);
- 	} else if (result->dev_mode == MODE_NETKIT) {
- 		err = create_netkit(NETKIT_L3, "src", "src_fwd");
- 		if (!ASSERT_OK(err, "create_ifindex_src"))
--- 
-2.49.0
+Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
 
