@@ -1,81 +1,91 @@
-Return-Path: <bpf+bounces-56051-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56052-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB4A5A90A03
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 19:31:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8E7EA90A41
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 19:39:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9510446083
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 17:31:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBFF97AD1C7
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 17:37:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7BEB217F34;
-	Wed, 16 Apr 2025 17:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41902236FF;
+	Wed, 16 Apr 2025 17:36:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="TJVRAyam"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZRkWJ3MJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E32884E1C;
-	Wed, 16 Apr 2025 17:31:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19952222DF
+	for <bpf@vger.kernel.org>; Wed, 16 Apr 2025 17:36:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744824691; cv=none; b=D112bay0m7XE+Vj/hkzkE9hZPnuUGUwfGZ2xTZipyOp3LYwMVcpZRUH+pnjEbJfZva1suW8uQj6sB94tv2xyZmdnzK711dqhzkNFbLIRmnjhKP/O2uuvv7+r8A20fBHAVw+7S0tUQDUzY4DsfFhN5NLW8VVqp8vKkR6ZAoaOZMI=
+	t=1744824996; cv=none; b=I6tAOO6+pJEgyZ78j2FXY/q9zwM3TDMJ7onRPU6X2yvurFn9/+yk3OMHPDwatlUCEi4TChAXPaWwOOKmKX6n4TdxDYHgEURktKkWRzK7bci9RYlgC4zaXu6nZ4KLs0qaY9DuoSPot8c+85lSx535LOFWPNurCLnhPCe1Ljo0amY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744824691; c=relaxed/simple;
-	bh=5Pv3Hc0R8ZXL+oH8n2b7z3OtCOacHKIR1ANqXH+K9c0=;
+	s=arc-20240116; t=1744824996; c=relaxed/simple;
+	bh=n8cbLzOV3EPlbIIwO98qWuR5dBGTmSbM8oKxxCOOOQQ=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Z6xAiaGvNQheyQ613Gf8n2WutwhQB4Ggf/OdQ9ZWAejineJRBApQhgWc3kPaOzvAb9+pl5V+zXfDL33JkEkj+Ub/Kwc6kz9o+vEh27VTA5OxVJPRTGd+i46sezK5If3i7vEs8J4bohK+yf8Jje/gFqSX/zb20N+OYJniVzMq8dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=TJVRAyam; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia (unknown [167.220.2.28])
-	by linux.microsoft.com (Postfix) with ESMTPSA id CA0032052508;
-	Wed, 16 Apr 2025 10:31:20 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CA0032052508
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1744824689;
-	bh=b7cZx62sBqiNAK+Z5g1uUfPSpgmxvu8T11NIoXrTY/o=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=TJVRAyamNt8PTaChjPR4KaTuMaecAOHx9O2mwAnlkPR9lulk07gjnRGoxXT/5rHwB
-	 ZlrItUV1NU7JpKbyzk/UEEXb1e+ROAv34a6ZYR5OoptpDpkfF+e1fJEz/jPiDVMnTN
-	 ekQqoaiXnzkMd9ip4K/kRhdBVUggBCaWt16+ZVoo=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller"
- <davem@davemloft.net>, Paul Moore <paul@paul-moore.com>, James Morris
- <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Masahiro Yamada
- <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Nicolas
- Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>, =?utf-8?Q?Mick?=
- =?utf-8?Q?a=C3=ABl_Sala=C3=BCn?=
- <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Nick
- Desaulniers
- <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>,
- Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen
- <jarkko@kernel.org>, Jan Stancek <jstancek@redhat.com>, Neal Gompa
- <neal@gompa.dev>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, keyrings@vger.kernel.org, Linux
- Crypto Mailing List <linux-crypto@vger.kernel.org>, LSM List
- <linux-security-module@vger.kernel.org>, Linux Kbuild mailing list
- <linux-kbuild@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK"
- <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com, Matteo Croce
- <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, Cong Wang
- <xiyou.wangcong@gmail.com>
-Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
-In-Reply-To: <CAADnVQ+LMAnyT4yV5iuJ=vswgtUu97cHKnvysipc6o7HZfEbUA@mail.gmail.com>
-References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
- <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
- <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
- <87semdjxcp.fsf@microsoft.com>
- <CAADnVQ+JGfwRgsoe2=EHkXdTyQ8ycn0D9nh1k49am++4oXUPHg@mail.gmail.com>
- <87friajmd5.fsf@microsoft.com>
- <CAADnVQKb3gPBFz+n+GoudxaTrugVegwMb8=kUfxOea5r2NNfUA@mail.gmail.com>
- <87a58hjune.fsf@microsoft.com>
- <CAADnVQ+LMAnyT4yV5iuJ=vswgtUu97cHKnvysipc6o7HZfEbUA@mail.gmail.com>
-Date: Wed, 16 Apr 2025 10:31:18 -0700
-Message-ID: <87y0w0hv2x.fsf@microsoft.com>
+	 MIME-Version:Content-Type; b=Z1BfXeOHxdVidmTOhhItOrZJ2HLg3U4toWzoV2KP6+EWN0l8Q6f2TiWhxBCith1dCEKCOx2jCT7CxuTA4HCrR02jlLmgilHgl9zqfsZciHlAxZ87OaQ057TglFupGebfPJctgHzaAPNaEtw71ULfGA5DtABq0UFa0qW2m09CcBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZRkWJ3MJ; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-4775ce8a4b0so106567961cf.1
+        for <bpf@vger.kernel.org>; Wed, 16 Apr 2025 10:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744824993; x=1745429793; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n8cbLzOV3EPlbIIwO98qWuR5dBGTmSbM8oKxxCOOOQQ=;
+        b=ZRkWJ3MJNBSGbg3v6hP4All7JiKV5NmQKdQ/B5AoZa6Vk0n0Eohj4B4qGls8B6lSUA
+         ak7IvF/mPZzEaGndz/lVHuBDXUsUYBWlFa48+kGZYVbfGMIVf/ED8xylbbQbug5COXjd
+         /2wujuwdXFLIfkUCWikjAoNM8bKstttJw4Wf4cdFwC5yzk8ySCugDQsEM8gKuH8ucdFI
+         oi3vde+5naJvX7G/tSweojyV8p34sCeBO/UxngLza+f7I5yAPeEA4x8Un/39lj9ELXza
+         bA7ltwmgZX4VVV+o+FTgdAiS4W2nFcD2R4+ZleOfihNqXMQP/SofNkbbV8W66eWrrfJB
+         CTqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744824993; x=1745429793;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n8cbLzOV3EPlbIIwO98qWuR5dBGTmSbM8oKxxCOOOQQ=;
+        b=UTGV/ik6zLQ3kyVnsbBHIttqBG6L6Kxx9FYSWrP9aWZgGN/dsAOu+ui9e2MijXxSGP
+         4zUiV8UwJ7UTGZR8OlwnY+kF0Ftm0K+wdKU1nrm87WWEZnxCwGUIepoLLOQoYXa/9PKs
+         YTPCfRKhfrlbFQDzp9cjB/NCxzvquLu7wxo+UsyecPFRDBr5A81GZMe9JEYg45wGDpJQ
+         lsMTip4KIwGgHe2p7Yl5ZMSLqpKl/HVtJNsEn20jTUL7umaWS+/o3dh9EcrjXg1a0eP+
+         SUB42OAvuosC5ZNNy0rbh18djgPtl27IynWhxqERcWYrn14KMIXeF0FcZ0m3FBCYQRC7
+         2fHA==
+X-Gm-Message-State: AOJu0Yx0lAAM+kenUY/EdHt0rIHZRwljbrNPhHQkKl/hIi35lQfAEJsO
+	FzgyiJq8znTGgZAGn9E8K/pcIYx/4gMxfomr6Bh3NeXuwwvPe9V1
+X-Gm-Gg: ASbGncthSQKXWD03dVDY6N2bVTORjHB060TDsvzf4S8dK7VexAOXwxnPNdoDq/iAVIc
+	+UXm0JepeFgwbmopW9DgKMwpBnXlJxkBf4DrVQCr12FjnUbKFbKKD5zBgtLBktrmpCUCUj8gKAI
+	D0yjAZhdiYTgc5qaSKIS+SGIDZCjkCdlMO2OcH94uC5xXkIp65nn8M9Pc2DdPkJgJdrYDj8wGm0
+	vr/Yex+CqIU/quyQyEcfqQDisXL/y4nUSziLZufrRxB+ZshtUvb7veV+P8dpxRrM2w9j5qcoTRh
+	6BddeTwAfWs4rvIjAdXwS1Dv2IRWjxFW5jomxHZJhKU=
+X-Google-Smtp-Source: AGHT+IGivaBuasCykHPZ34/sZC/9W1+Mg3Zgufd51i8FsDIaC4TpJWJI6TC1bX0Njq4hDNEJXoPueA==
+X-Received: by 2002:a05:622a:1495:b0:476:6a3d:de44 with SMTP id d75a77b69052e-47ad80b5ba9mr41881051cf.18.1744824993567;
+        Wed, 16 Apr 2025 10:36:33 -0700 (PDT)
+Received: from ezingerman-mba ([2620:10d:c090:500::4:24a])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4796edc1af2sm110366571cf.69.2025.04.16.10.36.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Apr 2025 10:36:33 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,  Andrii
+ Nakryiko <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
+  Martin KaFai Lau <martin.lau@kernel.org>,  Emil Tsalapatis
+ <emil@etsalapatis.com>,  Barret Rhoden <brho@google.com>,  kkd@meta.com,
+  kernel-team@meta.com
+Subject: Re: [RFC PATCH bpf-next/net v1 06/13] bpf: Introduce
+ bpf_dynptr_from_mem_slice
+In-Reply-To: <20250414161443.1146103-7-memxor@gmail.com> (Kumar Kartikeya
+	Dwivedi's message of "Mon, 14 Apr 2025 09:14:36 -0700")
+References: <20250414161443.1146103-1-memxor@gmail.com>
+	<20250414161443.1146103-7-memxor@gmail.com>
+Date: Wed, 16 Apr 2025 10:36:27 -0700
+Message-ID: <m2r01suhyc.fsf@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,28 +94,25 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
 
-> History repeats itself.
-> 1. the problem is hard.
-> 2. you're only interested in addressing your own use case.
-> There is no end-to-end design here and no attempt to
-> think it through how it will work for others.
+> Add a new bpf_dynptr_from_mem_slice kfunc to create a dynptr from a
+> PTR_TO_BTF_ID exposing a variable-length slice of memory, represented by
+> the new bpf_mem_slice type. This slice is read-only, for a read-write
+> slice we can expose a distinct type in the future.
 >
+> We rely on the previous commits ensuring source objects underpinning
+> dynptr memory are tracked correctly for invalidation to ensure when a
+> PTR_TO_BTF_ID holding a memory slice goes away, it's corresponding
+> dynptrs get invalidated.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-Well, I suppose anything worth doing is going to be hard :)
+If I remove KF_TRUSTED_ARGS flag from the function nothing fails.
+But that's because with current interface slices will always have a
+ref_obj_id, right? And pointers with ref_obj_id are always trusted.
 
-The end-to-end design for this is the same end-to-end design that exists
-for signing kernel modules today. We envisioned it working for others
-the same way module signing works for others. 
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-> Hacking into bpf internal objects like maps is not acceptable.
-
-We've heard your concerns about kern_sys_bpf and we agree that the LSM
-should not be calling it. The proposal in this email should meet both of
-our needs
-https://lore.kernel.org/bpf/874iypjl8t.fsf@microsoft.com/
-
-
--blaise
+[...]
 
