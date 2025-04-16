@@ -1,136 +1,154 @@
-Return-Path: <bpf+bounces-56025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56026-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 225F3A8AFDC
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 07:53:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 900BBA8B14C
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 08:57:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 381B4440B3F
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 05:53:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAD493B06D2
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 06:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2EC22AE5D;
-	Wed, 16 Apr 2025 05:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC21230277;
+	Wed, 16 Apr 2025 06:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z4it5G4F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jRUvoqXr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DAE224B05
-	for <bpf@vger.kernel.org>; Wed, 16 Apr 2025 05:53:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23A522F3BE;
+	Wed, 16 Apr 2025 06:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744782785; cv=none; b=cbsP+XH/MzkrjqUP3qeauz1fHYJzfVaLmqvxPCE5WWeHV1E9QAsX80J+s4b72Mgau1eshTlkuRIHxNVC4Qx1V/g+qrxonPZIBcl8eglOvKEvjwU9wXDbRDFJlZmi8SHoSNy8VfTqVuOd8MBtf3MgpZURFNewq6iq+dQEqMj6AzY=
+	t=1744786482; cv=none; b=akvSOeDR64bhgpwjsutuzEJu7Jv6/JdkD9IeoXNrW07mFRAecVhZ7DS71IC/S6wyR1gIZMbruG+yYdnEGDTN50Ec3IU7OQe3xV2N5AwFQfN+tz9/5Lx95IOES6tIhehYYuHo3f6fVOw/0V17rko3Q1xFH7LLvLLolD8U5ORdrd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744782785; c=relaxed/simple;
-	bh=cYJUsqsgINWinwFf7iSqtrHzQ0ACKvleub567qWW2Hc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Ed5A8tyjmuSGhkPKkp/qCS0WflMJtnqfEWV/x5k7nB1LGP6MZ48DObdTF5mxDZ/YL/V/KXJyDu5GeJOAM4wahJnD8BS1rJsAnUC2dE/aohd2AzbXPxuGXx5u721UESvKI5kpsUUIZ0Eg+1tQ70A9/7hNqGGafFgiZ0O8GUze7gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z4it5G4F; arc=none smtp.client-ip=209.85.210.174
+	s=arc-20240116; t=1744786482; c=relaxed/simple;
+	bh=eMwxxrI/yqh3c02Xa/Zji/ZDs6jaXH0UXIImJ6rzu0A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pZjqAY09ERRBIAyO/khCMbRox8Ysj7faMGMLA/RMeXYp/2wNKa6Sh0yXwIUzfQ4mtC7r6nlJiKCNku7+XguJbLIm7YkTZtlu76+yZH4Zm8Ju9mttQoH10G5gCNEqLo+IkLaZtyp6v+8GfIxZYVloqfvzmRk12gaK8kzmHlpNpAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jRUvoqXr; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-73bb647eb23so5714272b3a.0
-        for <bpf@vger.kernel.org>; Tue, 15 Apr 2025 22:53:03 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-af519c159a8so5820423a12.3;
+        Tue, 15 Apr 2025 23:54:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744782783; x=1745387583; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fsXVti7zgiA+XVZuOBVnTzbK6+V7JyUsGyiAETDDEmc=;
-        b=Z4it5G4F9cED9o5Sn+8nBofVm/LUHg7Eg5AQk4KRbYb13Iecz1nGEQZZRbz4OwQB5l
-         cv2yZS2eZFDcD8Lx4skt3HBqFJr93TO+3uHp0svhvVITCCEFNSSrUWxNwZijUU+XYLvv
-         Pb7qd+cbAVOs6oFRz3hdUe2Nfv0g0l/s3pM7/UztpBA8FL363hXMkeAcK+2s2cV9Si99
-         TZ5mJnMPF6jDkLFqDCvMTAVScfa3jXYH4xxy8um/fwJrwR/dhSjVZ42AU0ePTvXv6F//
-         Z5v3zKZporRYmPWtegXamsCxJZIL46BsQrAJ3L6IsPJGZc3TL1dM6OywpgzgGQuJjhPL
-         vwuQ==
+        d=gmail.com; s=20230601; t=1744786480; x=1745391280; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wwHFx2X+LzqDnaO5ScRT2dnEDpqIh6CuLMeABnbFK/o=;
+        b=jRUvoqXrzbyJW8DlJ/fcYmP8PsQ0XwJf6MhsyzMxm/gyKGiUn3kCQFTj8LOKPNe3Qm
+         ovEkU4v5opK2yfg6RLovIo4RnoO62gQE81a/4L6knBBreGpMdJcBS1JH8p2+rXejHKrN
+         INuGpmvNyaCqEM2K+J/EtwhRM8A7Tv5ss4dJWbjBC6NLNME3mdam0pMqDfxfjbTn21MK
+         pwdsDbXUBt8ZJnlI5TeG9L+I+eQzhrJ2DV4oBiPi6Hb7S+wGf/30wWxr/FM0Y3N/SoeJ
+         pMPTsX00wf4/jqwb4Z+DKeA3vkAOtwVq/TQ12tnMFppFq/9JTjh+n33AH0iAFYkIf9nX
+         /Jog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744782783; x=1745387583;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fsXVti7zgiA+XVZuOBVnTzbK6+V7JyUsGyiAETDDEmc=;
-        b=mxeXnQRpWq9xJH18uHptvbTRyR9AasMoEBg+lgZ/Pfqar+x8Y1FUyMSIvG36S58THO
-         +7DbydlewUWOK9/xsCpmawuY0lBDPxITzujFKws8Rh1SicFu1w95+Vyg0Tsgk4RFVdYX
-         RDK+CCZAFMyvoo6zvDHVoTtl7WrM3nqe2HRFThCyWaHkWZbUfvhnLckwANI8NU1dciHf
-         JlCurejj3zPmXteCnW2ZN3HJy8d4qs7A4sQNUHoeaFQNcdxTJ/PCXuZ9gsr9lpW7ZPWc
-         D1SIi4260Oe7G8y6agpxzN1FMQ/gj89khlbvf3Nww3rKHW/V/mhJepQ1rL3R81ZwdvSJ
-         jWNg==
-X-Gm-Message-State: AOJu0YxwJRlmil1qVNck11KU4pJWk9LtU92tswg4ps6v2D15Ee+yR53v
-	q+eIfAYNuSCdfvN2V3OlGSGmq51lROUrkJcc6PXIxd6DiY/6uGWz
-X-Gm-Gg: ASbGncvfNMrW/tjWIPZEdeq0Tcpcks3KzX/+fG685u7WYoknzPVJ9nkv+h6lY6SBoXG
-	NZife1dJiBboZRvBvSPFO35zkmoNoxs1t+2tH42ZAXY7F6fS59wmDS0DVMngZybMSQpk0nzBAlR
-	kFy4LIoxw++9iQrhqjMic5BRwxmXSQfan7ciIFeamUP1pP2rmJ1z+qeIDmqhUCqmfkkFitQCV2W
-	WsOHTEFy13MAcYoEJzHinyaDFU1wvKFkO0/43jch680gO//78wMR98R0kl0O+gHZpf6bcfTE+6y
-	TC7UO9liJ1Q21PBhOGLCupORRpXJ57Siij0NgvULBho2ndY=
-X-Google-Smtp-Source: AGHT+IGkteEobQ4QfpZYKw9DnZXKixXt/J1fJBNt1jVA2msLjA5Ha9huSmZ+n8uBnHSGseTuQGT9rQ==
-X-Received: by 2002:a05:6a00:10d0:b0:736:5c8e:bab8 with SMTP id d2e1a72fcca58-73c266b9b28mr833504b3a.3.1744782782856;
-        Tue, 15 Apr 2025 22:53:02 -0700 (PDT)
-Received: from ezingerman-mba ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bd2335208sm9488286b3a.166.2025.04.15.22.53.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Apr 2025 22:53:02 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org,  Amery Hung <ameryhung@gmail.com>,  Alexei
- Starovoitov <ast@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>,
-  Daniel Borkmann <daniel@iogearbox.net>,  Martin KaFai Lau
- <martin.lau@kernel.org>,  Emil Tsalapatis <emil@etsalapatis.com>,  Barret
- Rhoden <brho@google.com>,  kkd@meta.com,  kernel-team@meta.com
-Subject: Re: [RFC PATCH bpf-next/net v1 01/13] bpf: Tie dynptrs to
- referenced source objects
-In-Reply-To: <20250414161443.1146103-2-memxor@gmail.com> (Kumar Kartikeya
-	Dwivedi's message of "Mon, 14 Apr 2025 09:14:31 -0700")
-References: <20250414161443.1146103-1-memxor@gmail.com>
-	<20250414161443.1146103-2-memxor@gmail.com>
-Date: Tue, 15 Apr 2025 22:52:57 -0700
-Message-ID: <m234e8wt3a.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        d=1e100.net; s=20230601; t=1744786480; x=1745391280;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wwHFx2X+LzqDnaO5ScRT2dnEDpqIh6CuLMeABnbFK/o=;
+        b=Bn7NsGjs7ya80ku8pUEK1wAEnnFAGgF0ZjwWAEmIi2EmCaGVrygNOcDlzkRAdPASQ0
+         coShWohCZICpJ3OtW53N44rkbY3sErhpRWHiAgueZVZfjEdmQ8feoO+U+LyD/cSNF3j9
+         oimbcg1U4z5qnibgV0QZ+Yl3XtXgzlqL4dDMxi96GUSQiJQRmqXbgioP34D1SPob3+nK
+         bBJ4AitK2eJjrKdE0y3DGB1JjbuVaPTyuTHJKwRVunhJ70g7A1yKnTESvE0nvhVBQ1xv
+         ojAV9RW53z9JI82QDB3eA5X6vF4KNmZFUQGNK8bFhwPqBadDwbHkh5RXZ1fKFKXhzvL2
+         8/5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUQtz2mOIAdhpHDWUd2CGEtURc8fc+9ugA8vbpIfaTkJmC9HtqyrsAx9QPY/ifVgSkhZSU=@vger.kernel.org, AJvYcCVGDEWiAfqHkDGH4rYD6befZ0owyepljUP6XDhMmeiIWxQRObFqXJ7yMLC7Cm2NC7L2H6vHh2lepeta2CVL@vger.kernel.org, AJvYcCXysh+SkNgsigSQtK0CIkSV6BoKsX5RVgc2ZFvbB6QOPU4QwIDTpHuZE61HcNfQHA3bsmfYg7z2@vger.kernel.org
+X-Gm-Message-State: AOJu0YzjYTzmyWxpr73kB7DsW1RUYDAXZjVsLLClYs7jKoXKIcS2dFi6
+	xBiePwRdcV63suiTtK3EmvoS0lJcMel17d37g9WJvsgeoHMWRUuf
+X-Gm-Gg: ASbGncs1xMfPgEwEN/c4WZD4ArCbepiKdqPNX2nWGzhorJ4YUoPdQm7hG70ZHsfvA6t
+	5n2ukm160ckdxuuf+HhydYVNR8WLJLO/htdWwg1zYgk4wy0BdFlv3GO3y5VB9ZEqS2BR6ACFJ3X
+	+DqyJJea9BtMQgULoaaapJtgB+HJBe2psWOxRsCCy2wknwLE9YJkBdpiFETeULYAk2kqb98OS1Q
+	I7owSoPQH42weTNEGvAiwKpTvVVhIlNIYrEvBcxGCiNuI/YgLnPUBQWOkw6DxR7Pl1Mjdr8KLMs
+	CBfQZZRoQk+/xydWALUvOX8TtROCCRcNKc9+Glz77X5uIbyDp81/BLYqyBEJVhxABENl2W9SQRB
+	nMuv/BVdoivGWDSpj8j4=
+X-Google-Smtp-Source: AGHT+IF8/C/bE/M8V11NAS4DjSmBrO99vSahBnCYSkXY7IEd2nQ+G+Lw7PFE5CD5FqU81B6JmzCipg==
+X-Received: by 2002:a17:90b:254d:b0:2ff:6fc3:79c3 with SMTP id 98e67ed59e1d1-30863f1b878mr1169706a91.9.1744786479803;
+        Tue, 15 Apr 2025 23:54:39 -0700 (PDT)
+Received: from ?IPV6:2001:ee0:4f0e:fb30:bc8e:5d77:bf95:efb6? ([2001:ee0:4f0e:fb30:bc8e:5d77:bf95:efb6])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-308613b2ff9sm785083a91.30.2025.04.15.23.54.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Apr 2025 23:54:39 -0700 (PDT)
+Message-ID: <1603c373-024d-4ec2-b655-b9e7fb942bba@gmail.com>
+Date: Wed, 16 Apr 2025 13:54:31 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] selftests: net: add a virtio_net deadlock selftest
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: virtualization@lists.linux.dev, "Michael S . Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250415074341.12461-1-minhquangbui99@gmail.com>
+ <20250415074341.12461-4-minhquangbui99@gmail.com>
+ <20250415212709.39eafdb5@kernel.org>
+Content-Language: en-US
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <20250415212709.39eafdb5@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+On 4/16/25 11:27, Jakub Kicinski wrote:
+> On Tue, 15 Apr 2025 14:43:41 +0700 Bui Quang Minh wrote:
+>> +def setup_xsk(cfg, xdp_queue_id = 0) -> bkg:
+>> +    # Probe for support
+>> +    xdp = cmd(f'{cfg.net_lib_dir / "xdp_helper"} - -', fail=False)
+>> +    if xdp.ret == 255:
+>> +        raise KsftSkipEx('AF_XDP unsupported')
+>> +    elif xdp.ret > 0:
+>> +        raise KsftFailEx('unable to create AF_XDP socket')
+>> +
+>> +    return bkg(f'{cfg.net_lib_dir / "xdp_helper"} {cfg.ifindex} {xdp_queue_id}',
+>> +               ksft_wait=3)
+>> +
+>> +def check_xdp_bind(cfg):
+>> +    ip(f"link set dev %s xdp obj %s sec xdp" %
+>> +       (cfg.ifname, cfg.net_lib_dir / "xdp_dummy.bpf.o"))
+>> +    ip(f"link set dev %s xdp off" % cfg.ifname)
+>> +
+>> +def check_rx_resize(cfg, queue_size = 128):
+>> +    rx_ring = _get_rx_ring_entries(cfg)
+>> +    ethtool(f"-G %s rx %d" % (cfg.ifname, queue_size))
+>> +    ethtool(f"-G %s rx %d" % (cfg.ifname, rx_ring))
+> Unfortunately this doesn't work on a basic QEMU setup:
+>
+> # ethtool -G eth0 rx 128
+> [   15.680655][  T287] virtio_net virtio2 eth0: resize rx fail: rx queue index: 0 err: -2
+> netlink error: No such file or directory
+>
+> Is there a way to enable more capable virtio_net with QEMU?
 
-[...]
+I guess that virtio-pci-legacy is used in your setup.
 
-> @@ -818,22 +819,19 @@ static void invalidate_dynptr(struct bpf_verifier_env *env, struct bpf_func_stat
->  	state->stack[spi - 1].spilled_ptr.live |= REG_LIVE_WRITTEN;
->  }
->  
-> -static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-> +static int __unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_func_state *state,
-> +				       int spi, bool slice)
->  {
-> -	struct bpf_func_state *state = func(env, reg);
-> -	int spi, ref_obj_id, i;
-> +	u32 ref_obj_id;
-> +	int i;
->  
-> -	spi = dynptr_get_spi(env, reg);
-> -	if (spi < 0)
-> -		return spi;
-> +	ref_obj_id = state->stack[spi].spilled_ptr.ref_obj_id;
->  
-> -	if (!dynptr_type_refcounted(state->stack[spi].spilled_ptr.dynptr.type)) {
-> +	if (!dynptr_type_refcounted(state->stack[spi].spilled_ptr.dynptr.type) && !ref_obj_id) {
+Here is how I setup virtio-net with Qemu
 
-If dynptr_type_refcounted is true, does this mean that ref_obj_id is set?
-If it does, the check could be simplified to just `if (!ref_obj_id)`.
+     -netdev tap,id=hostnet1,vhost=on,script=$NETWORK_SCRIPT,downscript=no \
+     -device 
+virtio-net-pci,netdev=hostnet1,iommu_platform=on,disable-legacy=on \
 
->  		invalidate_dynptr(env, state, spi);
->  		return 0;
->  	}
->  
-> -	ref_obj_id = state->stack[spi].spilled_ptr.ref_obj_id;
-> -
->  	/* If the dynptr has a ref_obj_id, then we need to invalidate
->  	 * two things:
->  	 *
+The iommu_platform=on is necessary to make vring use dma API which is a 
+requirement to enable xsk_pool in virtio-net (XDP socket will be in 
+zerocopy mode for this case). Otherwise, the XDP socket will fallback to 
+copy mode, xsk_pool is not enabled in virtio-net that makes the 
+probability to reproduce bug to be very small. Currently, when you don't 
+have iommu_platform=on, you can pass the test even before the fix, so I 
+think I will try to harden the selftest to make it return skip in this case.
 
-[...]
+Thanks,
+Quang Minh.
 
