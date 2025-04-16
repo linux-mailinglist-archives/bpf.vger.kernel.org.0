@@ -1,92 +1,70 @@
-Return-Path: <bpf+bounces-56059-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56060-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E16C3A90C77
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 21:41:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13736A90CBE
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 22:08:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBBA117C06A
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 19:41:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8036E5A03E3
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 20:08:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC782253A4;
-	Wed, 16 Apr 2025 19:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776CA226CE6;
+	Wed, 16 Apr 2025 20:08:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Um/0J/Em"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P+ads7lG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D211E1C29;
-	Wed, 16 Apr 2025 19:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED466189915;
+	Wed, 16 Apr 2025 20:08:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744832474; cv=none; b=PUfNJJYEp8rpFxwnwqFUgyVXlTIIDRuyHj3tT2ts/+qEOxHtYoUs8bfsLcXi2bKXvqY9z7yK1VZMZwXjXZ+P/DXwT0SX3EZe0h7znAlVPkgalk/AvUDA1L0hegc/Xo/jFOIccQrThT03zKeP77V5aW7SHKpxIh26yNIzI5o7iUg=
+	t=1744834124; cv=none; b=lpcjd8wQpXN0+6PO9ioL54sqpPnW88FtlGus4oxaeUFjGusmX/rLaHVgWkmM5auzP1wEAdFvxLgzFt/P8PyVKVZCezTBBwMvA2x9Uvt+HoVi6klnYIRlCzaR+60mTJv4L71lkrNsfk4TnMNkNwwMxrHEpftCOqbs8KKRyysb+YM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744832474; c=relaxed/simple;
-	bh=uH4QXfcg6yP8Ogtn+Ty17ETSI8pwQM0YZCE0BQGrkVs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GPyY/WCmaZpj6lyCqc4rBIXEpZEetPTjD/5jbdnDafPGFW3dwPS2D9cAGwXmHgTRM7C1WkzVdzGmeEspkondEriVxKpyWQWcrnyWyEngVrgqLiyy1hu+QOsxX4hvnsMky1fFihj/p7njRUeKt74ATp1JQSX1IQBPnNVJeFq2hhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Um/0J/Em; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53GIYDE8020363;
-	Wed, 16 Apr 2025 19:40:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=PYgvIimAY4RQmpa6T8DIstLC6ljNJ0UI3ypmqJEDK
-	g8=; b=Um/0J/EmFc4AyDS2vh2eZ7pQnWbVW3cUsZE3npMlx20dmVpBWThEltVMa
-	biVhnGNVJ5j0wGFV26w41YccnfvQ/E0Hgon72iX4e6hMrAoXRWRU38zmX6fcTGmP
-	v1IzDKIA4SxSp8Wk4JdIIlT4PEIT2kEa4apv/LxW6/DYAgDUHIM/aX+v6cv3a+VT
-	nZM7VhTVioJvfF2n88LExzvWJG8YR/tkfby+lwjbd9ENVA63TfF2yAgpBCcjjN6G
-	lD+KJdNt+qtKoo1KGy/0wCVc1xK21bYsYtCHGRmGH/fmvdtCf55QeEXQ3MepJDSx
-	1Dbz8nb7aTY0XHuvRDMU/p6VQOxLw==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 462b0q2s4c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Apr 2025 19:40:46 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 53GJejnL015593;
-	Wed, 16 Apr 2025 19:40:45 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 462b0q2s48-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Apr 2025 19:40:45 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 53GGWmQM024880;
-	Wed, 16 Apr 2025 19:40:44 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4602gtjbmr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Apr 2025 19:40:44 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 53GJefDH41943428
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 16 Apr 2025 19:40:41 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 12C8F20043;
-	Wed, 16 Apr 2025 19:40:41 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6F69B20040;
-	Wed, 16 Apr 2025 19:40:38 +0000 (GMT)
-Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.ibm.com.com (unknown [9.43.31.13])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 16 Apr 2025 19:40:38 +0000 (GMT)
-From: Hari Bathini <hbathini@linux.ibm.com>
-To: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org
-Cc: Madhavan Srinivasan <maddy@linux.ibm.com>,
-        "Naveen N. Rao" <naveen@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Venkat Rao Bagalkote <venkat88@linux.ibm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH v2] powerpc64/bpf: fix JIT code size calculation of bpf trampoline
-Date: Thu, 17 Apr 2025 01:10:37 +0530
-Message-ID: <20250416194037.204424-1-hbathini@linux.ibm.com>
+	s=arc-20240116; t=1744834124; c=relaxed/simple;
+	bh=myn9l6kJUr4LlnxmB5t1FTNKJEK82xQpx8D8fFOMGOQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pD/OgpTEVuz3stp0vqnREdGawvRudW6URgc408NFu/+U+06KjGPop7677Ideo/3vxi8QkK0NDQJEcIVyzMxFXUACctfxTIifPrCpQWC3alIdC9tkVTGP2daLFQnMEaMCnSTuvclBxj0dGW04dNncLu4OgpboFHF8DsR5ELmyze8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P+ads7lG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D90E4C4CEE2;
+	Wed, 16 Apr 2025 20:08:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744834123;
+	bh=myn9l6kJUr4LlnxmB5t1FTNKJEK82xQpx8D8fFOMGOQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=P+ads7lGKJ1lCvha1d5WHeYFNeu5qDF0MK3SXLkZWK1vKCoGrXTrZFYYEjFYQHW9S
+	 FhfZKOfhGhJVwSpHts3AoiQH9gyri77Ykcm14PNFy1YrTYUZrFinQi0s/Om/JrrfD7
+	 Ssj2qqPIvuYHtympM4+gLhUr7vzRBV11KDrxwN96E8qfMA2PKkQoqEp72p0/bs3cQz
+	 L8Dy3LFdIz/iK5EbP/89TyHzvGCkkYxhz3UEqmEoI4D1VF0LYlft/0G3WmT2fAqrfu
+	 leuFwfvgo5vg0aeowu2Hl5KnXJixbM2Q6ooALWbz/qaR5cdtYW73Ybpsnf7AaocuqM
+	 j01mBXu72g1WA==
+From: Jakub Kicinski <kuba@kernel.org>
+To: davem@davemloft.net
+Cc: netdev@vger.kernel.org,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	andrew+netdev@lunn.ch,
+	horms@kernel.org,
+	Jakub Kicinski <kuba@kernel.org>,
+	m.grzeschik@pengutronix.de,
+	jv@jvosburgh.net,
+	willemdebruijn.kernel@gmail.com,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	nhorman@tuxdriver.com,
+	kernelxing@tencent.com,
+	jhs@mojatatu.com,
+	xiyou.wangcong@gmail.com,
+	jiri@resnulli.us,
+	idosch@nvidia.com,
+	gnault@redhat.com,
+	petrm@nvidia.com,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next] net: add UAPI to the header guard in various network headers
+Date: Wed, 16 Apr 2025 13:08:40 -0700
+Message-ID: <20250416200840.1338195-1-kuba@kernel.org>
 X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -95,193 +73,370 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: IAeXY20ySMFhHiUxiyd8fkPTVhbuoGpQ
-X-Proofpoint-GUID: lp4tVGEzo_PLNOLF70mUGvIZt95OUI2q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1095,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-04-16_07,2025-04-15_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 suspectscore=0 clxscore=1015 spamscore=0 mlxscore=0
- bulkscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=680
- impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2502280000 definitions=main-2504160159
 
-arch_bpf_trampoline_size() provides JIT size of the BPF trampoline
-before the buffer for JIT'ing it is allocated. The total number of
-instructions emitted for BPF trampoline JIT code depends on where
-the final image is located. So, the size arrived at with the dummy
-pass in arch_bpf_trampoline_size() can vary from the actual size
-needed in  arch_prepare_bpf_trampoline().  When the instructions
-accounted in  arch_bpf_trampoline_size() is less than the number of
-instructions emitted during the actual JIT compile of the trampoline,
-the below warning is produced:
+fib_rule, ip6_tunnel, and a whole lot of if_* headers lack the customary
+_UAPI in the header guard. Without it YNL build can't protect from in tree
+and system headers both getting included. YNL doesn't need most of these
+but it's annoying to have to fix them one by one.
 
-  WARNING: CPU: 8 PID: 204190 at arch/powerpc/net/bpf_jit_comp.c:981 __arch_prepare_bpf_trampoline.isra.0+0xd2c/0xdcc
+Note that header installation strips this _UAPI prefix so this should
+result in no change to the end user.
 
-which is:
-
-  /* Make sure the trampoline generation logic doesn't overflow */
-  if (image && WARN_ON_ONCE(&image[ctx->idx] >
-  			(u32 *)rw_image_end - BPF_INSN_SAFETY)) {
-
-So, during the dummy pass, instead of providing some arbitrary image
-location, account for maximum possible instructions if and when there
-is a dependency with image location for JIT'ing.
-
-Fixes: d243b62b7bd3 ("powerpc64/bpf: Add support for bpf trampolines")
-Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Closes: https://lore.kernel.org/all/6168bfc8-659f-4b5a-a6fb-90a916dde3b3@linux.ibm.com/
-Cc: stable@vger.kernel.org # v6.13+
-Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
+CC: m.grzeschik@pengutronix.de
+CC: jv@jvosburgh.net
+CC: willemdebruijn.kernel@gmail.com
+CC: magnus.karlsson@intel.com
+CC: maciej.fijalkowski@intel.com
+CC: nhorman@tuxdriver.com
+CC: kernelxing@tencent.com
+CC: jhs@mojatatu.com
+CC: xiyou.wangcong@gmail.com
+CC: jiri@resnulli.us
+CC: idosch@nvidia.com
+CC: gnault@redhat.com
+CC: petrm@nvidia.com
+CC: bpf@vger.kernel.org
+---
+ include/uapi/linux/fib_rules.h    | 4 ++--
+ include/uapi/linux/if_addr.h      | 4 ++--
+ include/uapi/linux/if_addrlabel.h | 4 ++--
+ include/uapi/linux/if_alg.h       | 6 +++---
+ include/uapi/linux/if_arcnet.h    | 6 +++---
+ include/uapi/linux/if_bonding.h   | 6 +++---
+ include/uapi/linux/if_fc.h        | 6 +++---
+ include/uapi/linux/if_hippi.h     | 6 +++---
+ include/uapi/linux/if_packet.h    | 4 ++--
+ include/uapi/linux/if_plip.h      | 4 ++--
+ include/uapi/linux/if_slip.h      | 4 ++--
+ include/uapi/linux/if_x25.h       | 6 +++---
+ include/uapi/linux/if_xdp.h       | 6 +++---
+ include/uapi/linux/ip6_tunnel.h   | 4 ++--
+ include/uapi/linux/net_dropmon.h  | 4 ++--
+ include/uapi/linux/net_tstamp.h   | 6 +++---
+ include/uapi/linux/netlink_diag.h | 4 ++--
+ include/uapi/linux/pkt_cls.h      | 4 ++--
+ include/uapi/linux/pkt_sched.h    | 4 ++--
+ 19 files changed, 46 insertions(+), 46 deletions(-)
 
-Changes since v1:
-- Pass NULL for image during intial pass and account for max. possible
-  instruction during this pass as Naveen suggested.
-
-
- arch/powerpc/net/bpf_jit.h        | 20 ++++++++++++++++---
- arch/powerpc/net/bpf_jit_comp.c   | 33 ++++++++++---------------------
- arch/powerpc/net/bpf_jit_comp64.c |  9 +++++++++
- 3 files changed, 36 insertions(+), 26 deletions(-)
-
-diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
-index 6beacaec63d3..4c26912c2e3c 100644
---- a/arch/powerpc/net/bpf_jit.h
-+++ b/arch/powerpc/net/bpf_jit.h
-@@ -51,8 +51,16 @@
- 		EMIT(PPC_INST_BRANCH_COND | (((cond) & 0x3ff) << 16) | (offset & 0xfffc));					\
- 	} while (0)
+diff --git a/include/uapi/linux/fib_rules.h b/include/uapi/linux/fib_rules.h
+index 2df6e4035d50..418c4be697ad 100644
+--- a/include/uapi/linux/fib_rules.h
++++ b/include/uapi/linux/fib_rules.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-#ifndef __LINUX_FIB_RULES_H
+-#define __LINUX_FIB_RULES_H
++#ifndef _UAPI__LINUX_FIB_RULES_H
++#define _UAPI__LINUX_FIB_RULES_H
  
--/* Sign-extended 32-bit immediate load */
-+/*
-+ * Sign-extended 32-bit immediate load
-+ *
-+ * If this is a dummy pass (!image), account for
-+ * maximum possible instructions.
-+ */
- #define PPC_LI32(d, i)		do {					      \
-+	if (!image)							      \
-+		ctx->idx += 2;						      \
-+	else {								      \
- 		if ((int)(uintptr_t)(i) >= -32768 &&			      \
- 				(int)(uintptr_t)(i) < 32768)		      \
- 			EMIT(PPC_RAW_LI(d, i));				      \
-@@ -60,10 +68,15 @@
- 			EMIT(PPC_RAW_LIS(d, IMM_H(i)));			      \
- 			if (IMM_L(i))					      \
- 				EMIT(PPC_RAW_ORI(d, d, IMM_L(i)));	      \
--		} } while(0)
-+		}							      \
-+	} } while (0)
+ #include <linux/types.h>
+ #include <linux/rtnetlink.h>
+diff --git a/include/uapi/linux/if_addr.h b/include/uapi/linux/if_addr.h
+index 1c392dd95a5e..aa7958b4e41d 100644
+--- a/include/uapi/linux/if_addr.h
++++ b/include/uapi/linux/if_addr.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-#ifndef __LINUX_IF_ADDR_H
+-#define __LINUX_IF_ADDR_H
++#ifndef _UAPI__LINUX_IF_ADDR_H
++#define _UAPI__LINUX_IF_ADDR_H
  
- #ifdef CONFIG_PPC64
-+/* If dummy pass (!image), account for maximum possible instructions */
- #define PPC_LI64(d, i)		do {					      \
-+	if (!image)							      \
-+		ctx->idx += 5;						      \
-+	else {								      \
- 		if ((long)(i) >= -2147483648 &&				      \
- 				(long)(i) < 2147483648)			      \
- 			PPC_LI32(d, i);					      \
-@@ -84,7 +97,8 @@
- 			if ((uintptr_t)(i) & 0x000000000000ffffULL)	      \
- 				EMIT(PPC_RAW_ORI(d, d, (uintptr_t)(i) &       \
- 							0xffff));             \
--		} } while (0)
-+		}							      \
-+	} } while (0)
- #define PPC_LI_ADDR	PPC_LI64
+ #include <linux/types.h>
+ #include <linux/netlink.h>
+diff --git a/include/uapi/linux/if_addrlabel.h b/include/uapi/linux/if_addrlabel.h
+index d1f5974c76e1..e69db764fbba 100644
+--- a/include/uapi/linux/if_addrlabel.h
++++ b/include/uapi/linux/if_addrlabel.h
+@@ -8,8 +8,8 @@
+  *	YOSHIFUJI Hideaki @ USAGI/WIDE <yoshfuji@linux-ipv6.org>
+  */
  
- #ifndef CONFIG_PPC_KERNEL_PCREL
-diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-index 2991bb171a9b..c0684733e9d6 100644
---- a/arch/powerpc/net/bpf_jit_comp.c
-+++ b/arch/powerpc/net/bpf_jit_comp.c
-@@ -504,10 +504,11 @@ static int invoke_bpf_prog(u32 *image, u32 *ro_image, struct codegen_context *ct
- 	EMIT(PPC_RAW_ADDI(_R3, _R1, regs_off));
- 	if (!p->jited)
- 		PPC_LI_ADDR(_R4, (unsigned long)p->insnsi);
--	if (!create_branch(&branch_insn, (u32 *)&ro_image[ctx->idx], (unsigned long)p->bpf_func,
--			   BRANCH_SET_LINK)) {
--		if (image)
--			image[ctx->idx] = ppc_inst_val(branch_insn);
-+	/* Account for max possible instructions during dummy pass for size calculation */
-+	if (image && !create_branch(&branch_insn, (u32 *)&ro_image[ctx->idx],
-+				    (unsigned long)p->bpf_func,
-+				    BRANCH_SET_LINK)) {
-+		image[ctx->idx] = ppc_inst_val(branch_insn);
- 		ctx->idx++;
- 	} else {
- 		EMIT(PPC_RAW_LL(_R12, _R25, offsetof(struct bpf_prog, bpf_func)));
-@@ -889,7 +890,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
- 			bpf_trampoline_restore_tail_call_cnt(image, ctx, func_frame_offset, r4_off);
+-#ifndef __LINUX_IF_ADDRLABEL_H
+-#define __LINUX_IF_ADDRLABEL_H
++#ifndef _UAPI__LINUX_IF_ADDRLABEL_H
++#define _UAPI__LINUX_IF_ADDRLABEL_H
  
- 		/* Reserve space to patch branch instruction to skip fexit progs */
--		im->ip_after_call = &((u32 *)ro_image)[ctx->idx];
-+		if (ro_image) /* image is NULL for dummy pass */
-+			im->ip_after_call = &((u32 *)ro_image)[ctx->idx];
- 		EMIT(PPC_RAW_NOP());
- 	}
+ #include <linux/types.h>
  
-@@ -912,7 +914,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
- 		}
+diff --git a/include/uapi/linux/if_alg.h b/include/uapi/linux/if_alg.h
+index 0824fbc026a1..b35871cbeed7 100644
+--- a/include/uapi/linux/if_alg.h
++++ b/include/uapi/linux/if_alg.h
+@@ -11,8 +11,8 @@
+  *
+  */
  
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
--		im->ip_epilogue = &((u32 *)ro_image)[ctx->idx];
-+		if (ro_image) /* image is NULL for dummy pass */
-+			im->ip_epilogue = &((u32 *)ro_image)[ctx->idx];
- 		PPC_LI_ADDR(_R3, im);
- 		ret = bpf_jit_emit_func_call_rel(image, ro_image, ctx,
- 						 (unsigned long)__bpf_tramp_exit);
-@@ -973,25 +976,9 @@ int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
- 			     struct bpf_tramp_links *tlinks, void *func_addr)
- {
- 	struct bpf_tramp_image im;
--	void *image;
- 	int ret;
+-#ifndef _LINUX_IF_ALG_H
+-#define _LINUX_IF_ALG_H
++#ifndef _UAPI_LINUX_IF_ALG_H
++#define _UAPI_LINUX_IF_ALG_H
  
--	/*
--	 * Allocate a temporary buffer for __arch_prepare_bpf_trampoline().
--	 * This will NOT cause fragmentation in direct map, as we do not
--	 * call set_memory_*() on this buffer.
--	 *
--	 * We cannot use kvmalloc here, because we need image to be in
--	 * module memory range.
--	 */
--	image = bpf_jit_alloc_exec(PAGE_SIZE);
--	if (!image)
--		return -ENOMEM;
--
--	ret = __arch_prepare_bpf_trampoline(&im, image, image + PAGE_SIZE, image,
--					    m, flags, tlinks, func_addr);
--	bpf_jit_free_exec(image);
--
-+	ret = __arch_prepare_bpf_trampoline(&im, NULL, NULL, NULL, m, flags, tlinks, func_addr);
- 	return ret;
- }
+ #include <linux/types.h>
  
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 233703b06d7c..91f9efe8b8d7 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -225,6 +225,15 @@ int bpf_jit_emit_func_call_rel(u32 *image, u32 *fimage, struct codegen_context *
- 	}
+@@ -58,4 +58,4 @@ struct af_alg_iv {
+ #define ALG_OP_DECRYPT			0
+ #define ALG_OP_ENCRYPT			1
  
- #ifdef CONFIG_PPC_KERNEL_PCREL
-+	/*
-+	 * If fimage is NULL (the initial pass to find image size),
-+	 * account for the maximum no. of instructions possible.
-+	 */
-+	if (!fimage) {
-+		ctx->idx += 7;
-+		return 0;
-+	}
-+
- 	reladdr = func_addr - local_paca->kernelbase;
+-#endif	/* _LINUX_IF_ALG_H */
++#endif	/* _UAPI_LINUX_IF_ALG_H */
+diff --git a/include/uapi/linux/if_arcnet.h b/include/uapi/linux/if_arcnet.h
+index b122cfac7128..473569eaf692 100644
+--- a/include/uapi/linux/if_arcnet.h
++++ b/include/uapi/linux/if_arcnet.h
+@@ -14,8 +14,8 @@
+  *              2 of the License, or (at your option) any later version.
+  */
  
- 	if (reladdr < (long)SZ_8G && reladdr >= -(long)SZ_8G) {
+-#ifndef _LINUX_IF_ARCNET_H
+-#define _LINUX_IF_ARCNET_H
++#ifndef _UAPI_LINUX_IF_ARCNET_H
++#define _UAPI_LINUX_IF_ARCNET_H
+ 
+ #include <linux/types.h>
+ #include <linux/if_ether.h>
+@@ -127,4 +127,4 @@ struct archdr {
+ 	} soft;
+ };
+ 
+-#endif				/* _LINUX_IF_ARCNET_H */
++#endif				/* _UAPI_LINUX_IF_ARCNET_H */
+diff --git a/include/uapi/linux/if_bonding.h b/include/uapi/linux/if_bonding.h
+index d174914a837d..3bcc03f3aa4f 100644
+--- a/include/uapi/linux/if_bonding.h
++++ b/include/uapi/linux/if_bonding.h
+@@ -41,8 +41,8 @@
+  *      - added definitions for various XOR hashing policies
+  */
+ 
+-#ifndef _LINUX_IF_BONDING_H
+-#define _LINUX_IF_BONDING_H
++#ifndef _UAPI_LINUX_IF_BONDING_H
++#define _UAPI_LINUX_IF_BONDING_H
+ 
+ #include <linux/if.h>
+ #include <linux/types.h>
+@@ -152,4 +152,4 @@ enum {
+ };
+ #define BOND_3AD_STAT_MAX (__BOND_3AD_STAT_MAX - 1)
+ 
+-#endif /* _LINUX_IF_BONDING_H */
++#endif /* _UAPI_LINUX_IF_BONDING_H */
+diff --git a/include/uapi/linux/if_fc.h b/include/uapi/linux/if_fc.h
+index 3e3173282cc3..ff5ab92d16c2 100644
+--- a/include/uapi/linux/if_fc.h
++++ b/include/uapi/linux/if_fc.h
+@@ -18,8 +18,8 @@
+  *		as published by the Free Software Foundation; either version
+  *		2 of the License, or (at your option) any later version.
+  */
+-#ifndef _LINUX_IF_FC_H
+-#define _LINUX_IF_FC_H
++#ifndef _UAPI_LINUX_IF_FC_H
++#define _UAPI_LINUX_IF_FC_H
+ 
+ #include <linux/types.h>
+ 
+@@ -49,4 +49,4 @@ struct fcllc {
+ 	__be16 ethertype;		/* ether type field */
+ };
+ 
+-#endif	/* _LINUX_IF_FC_H */
++#endif	/* _UAPI_LINUX_IF_FC_H */
+diff --git a/include/uapi/linux/if_hippi.h b/include/uapi/linux/if_hippi.h
+index 785a1452a66c..42c4ffd11dae 100644
+--- a/include/uapi/linux/if_hippi.h
++++ b/include/uapi/linux/if_hippi.h
+@@ -20,8 +20,8 @@
+  *		2 of the License, or (at your option) any later version.
+  */
+  
+-#ifndef _LINUX_IF_HIPPI_H
+-#define _LINUX_IF_HIPPI_H
++#ifndef _UAPI_LINUX_IF_HIPPI_H
++#define _UAPI_LINUX_IF_HIPPI_H
+ 
+ #include <linux/types.h>
+ #include <asm/byteorder.h>
+@@ -151,4 +151,4 @@ struct hippi_hdr {
+ 	struct hippi_snap_hdr	snap;
+ } __attribute__((packed));
+ 
+-#endif	/* _LINUX_IF_HIPPI_H */
++#endif	/* _UAPI_LINUX_IF_HIPPI_H */
+diff --git a/include/uapi/linux/if_packet.h b/include/uapi/linux/if_packet.h
+index 1d2718dd9647..6cd1d7a41dfb 100644
+--- a/include/uapi/linux/if_packet.h
++++ b/include/uapi/linux/if_packet.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-#ifndef __LINUX_IF_PACKET_H
+-#define __LINUX_IF_PACKET_H
++#ifndef _UAPI__LINUX_IF_PACKET_H
++#define _UAPI__LINUX_IF_PACKET_H
+ 
+ #include <asm/byteorder.h>
+ #include <linux/types.h>
+diff --git a/include/uapi/linux/if_plip.h b/include/uapi/linux/if_plip.h
+index 495a366112f2..054d86a9c6e6 100644
+--- a/include/uapi/linux/if_plip.h
++++ b/include/uapi/linux/if_plip.h
+@@ -9,8 +9,8 @@
+  *
+  */
+  
+-#ifndef _LINUX_IF_PLIP_H
+-#define _LINUX_IF_PLIP_H
++#ifndef _UAPI_LINUX_IF_PLIP_H
++#define _UAPI_LINUX_IF_PLIP_H
+ 
+ #include <linux/sockios.h>
+ 
+diff --git a/include/uapi/linux/if_slip.h b/include/uapi/linux/if_slip.h
+index 65937be53103..299bf7adc862 100644
+--- a/include/uapi/linux/if_slip.h
++++ b/include/uapi/linux/if_slip.h
+@@ -6,8 +6,8 @@
+  *	KISS TNC driver.
+  */
+  
+-#ifndef __LINUX_SLIP_H
+-#define __LINUX_SLIP_H
++#ifndef _UAPI__LINUX_SLIP_H
++#define _UAPI__LINUX_SLIP_H
+ 
+ #define		SL_MODE_SLIP		0
+ #define		SL_MODE_CSLIP		1
+diff --git a/include/uapi/linux/if_x25.h b/include/uapi/linux/if_x25.h
+index 3a5938e38370..861cfa983db4 100644
+--- a/include/uapi/linux/if_x25.h
++++ b/include/uapi/linux/if_x25.h
+@@ -13,8 +13,8 @@
+  *  GNU General Public License for more details.
+  */
+ 
+-#ifndef _IF_X25_H
+-#define _IF_X25_H
++#ifndef _UAPI_IF_X25_H
++#define _UAPI_IF_X25_H
+ 
+ #include <linux/types.h>
+ 
+@@ -24,4 +24,4 @@
+ #define X25_IFACE_DISCONNECT	0x02
+ #define X25_IFACE_PARAMS	0x03
+ 
+-#endif /* _IF_X25_H */
++#endif /* _UAPI_IF_X25_H */
+diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
+index 42869770776e..44f2bb93e7e6 100644
+--- a/include/uapi/linux/if_xdp.h
++++ b/include/uapi/linux/if_xdp.h
+@@ -7,8 +7,8 @@
+  *	      Magnus Karlsson <magnus.karlsson@intel.com>
+  */
+ 
+-#ifndef _LINUX_IF_XDP_H
+-#define _LINUX_IF_XDP_H
++#ifndef _UAPI_LINUX_IF_XDP_H
++#define _UAPI_LINUX_IF_XDP_H
+ 
+ #include <linux/types.h>
+ 
+@@ -180,4 +180,4 @@ struct xdp_desc {
+ /* TX packet carries valid metadata. */
+ #define XDP_TX_METADATA (1 << 1)
+ 
+-#endif /* _LINUX_IF_XDP_H */
++#endif /* _UAPI_LINUX_IF_XDP_H */
+diff --git a/include/uapi/linux/ip6_tunnel.h b/include/uapi/linux/ip6_tunnel.h
+index 0245269b037c..85182a839d42 100644
+--- a/include/uapi/linux/ip6_tunnel.h
++++ b/include/uapi/linux/ip6_tunnel.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-#ifndef _IP6_TUNNEL_H
+-#define _IP6_TUNNEL_H
++#ifndef _UAPI_IP6_TUNNEL_H
++#define _UAPI_IP6_TUNNEL_H
+ 
+ #include <linux/types.h>
+ #include <linux/if.h>		/* For IFNAMSIZ. */
+diff --git a/include/uapi/linux/net_dropmon.h b/include/uapi/linux/net_dropmon.h
+index 84f622a66a7a..9dd41c2f58a6 100644
+--- a/include/uapi/linux/net_dropmon.h
++++ b/include/uapi/linux/net_dropmon.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-#ifndef __NET_DROPMON_H
+-#define __NET_DROPMON_H
++#ifndef _UAPI__NET_DROPMON_H
++#define _UAPI__NET_DROPMON_H
+ 
+ #include <linux/types.h>
+ #include <linux/netlink.h>
+diff --git a/include/uapi/linux/net_tstamp.h b/include/uapi/linux/net_tstamp.h
+index 383213de612a..a93e6ea37fb3 100644
+--- a/include/uapi/linux/net_tstamp.h
++++ b/include/uapi/linux/net_tstamp.h
+@@ -7,8 +7,8 @@
+  *
+  */
+ 
+-#ifndef _NET_TIMESTAMPING_H
+-#define _NET_TIMESTAMPING_H
++#ifndef _UAPI_NET_TIMESTAMPING_H
++#define _UAPI_NET_TIMESTAMPING_H
+ 
+ #include <linux/types.h>
+ #include <linux/socket.h>   /* for SO_TIMESTAMPING */
+@@ -216,4 +216,4 @@ struct sock_txtime {
+ 	__u32			flags;	/* as defined by enum txtime_flags */
+ };
+ 
+-#endif /* _NET_TIMESTAMPING_H */
++#endif /* _UAPI_NET_TIMESTAMPING_H */
+diff --git a/include/uapi/linux/netlink_diag.h b/include/uapi/linux/netlink_diag.h
+index dfa61be43d2f..ff28200204bb 100644
+--- a/include/uapi/linux/netlink_diag.h
++++ b/include/uapi/linux/netlink_diag.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-#ifndef __NETLINK_DIAG_H__
+-#define __NETLINK_DIAG_H__
++#ifndef _UAPI__NETLINK_DIAG_H__
++#define _UAPI__NETLINK_DIAG_H__
+ 
+ #include <linux/types.h>
+ 
+diff --git a/include/uapi/linux/pkt_cls.h b/include/uapi/linux/pkt_cls.h
+index 2c32080416b5..490821364165 100644
+--- a/include/uapi/linux/pkt_cls.h
++++ b/include/uapi/linux/pkt_cls.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-#ifndef __LINUX_PKT_CLS_H
+-#define __LINUX_PKT_CLS_H
++#ifndef _UAPI__LINUX_PKT_CLS_H
++#define _UAPI__LINUX_PKT_CLS_H
+ 
+ #include <linux/types.h>
+ #include <linux/pkt_sched.h>
+diff --git a/include/uapi/linux/pkt_sched.h b/include/uapi/linux/pkt_sched.h
+index 25a9a47001cd..9ea874395717 100644
+--- a/include/uapi/linux/pkt_sched.h
++++ b/include/uapi/linux/pkt_sched.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+-#ifndef __LINUX_PKT_SCHED_H
+-#define __LINUX_PKT_SCHED_H
++#ifndef _UAPI__LINUX_PKT_SCHED_H
++#define _UAPI__LINUX_PKT_SCHED_H
+ 
+ #include <linux/const.h>
+ #include <linux/types.h>
 -- 
 2.49.0
 
