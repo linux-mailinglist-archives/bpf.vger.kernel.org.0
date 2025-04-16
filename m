@@ -1,206 +1,242 @@
-Return-Path: <bpf+bounces-56065-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 221C6A90DC8
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 23:24:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30558A90DFD
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 23:49:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29E18443017
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 21:24:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A86D1906342
+	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 21:49:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7BF22FE1F;
-	Wed, 16 Apr 2025 21:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036BF22B8C1;
+	Wed, 16 Apr 2025 21:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CCkZ8aMI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rvph1z7H"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8BC214235;
-	Wed, 16 Apr 2025 21:24:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCCAD1DA634
+	for <bpf@vger.kernel.org>; Wed, 16 Apr 2025 21:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744838679; cv=none; b=FSHsfy8VU6U1DX6lNUl0mmzHBgQfJwDZUbtxylxbky/waclaID1akKBvD0/VfmGecrKeDYacHSx7p1ALa8IXRs0CYr/leGkiEv/EAF3iIfQYM38jD+vaCHhP2h9RCvgNM9xOM4BP8awFk+1oM+mfzpELYOTE7HOH0Kspq90mua4=
+	t=1744840167; cv=none; b=Tis2fEf9JIkb9aQGxlmejKppnQJUR+VJge864S083eYn0YpMx4PZsHwVorEp04eeNQIlv94jwLnmc+FxVJQnpY00lqGPkznZYoK1pXECID9hWqVdLGJeINdJdGNLMGe/STrBOUIeFOISJF2me9Pfe33tLFGC7oqMNyES6atM4y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744838679; c=relaxed/simple;
-	bh=ZbU5fzt0/AJB5zorsnKBlFwoeqC1M5ychog/yn4bL34=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kF92PBdaYziRjVhD5jpNOM6VNSNVrzKb9cBl2We3sCK6zSRIcAnx0IgoSgXW9ciSf5i0pWwMIkQkAZKhi6DJ/kRLjJX2YuEPfX5/ALhblkbI+msB4L49oH0Y8KnBIubRG2MtC73o620PrS5XDVzbRRCpT8wVU4YRX7A5IMcSFmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CCkZ8aMI; arc=none smtp.client-ip=209.85.210.182
+	s=arc-20240116; t=1744840167; c=relaxed/simple;
+	bh=irvfiROJJ77zWKlczfqntZIzHYDqKMhCVQAloRfizMk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=L6ANVUZv+zTV2gDz8iUsamzOkKirqFC2ZXai4n2mHyHtEcTqfmsaHBzZSSbIEjC9rdQ2RbpODogGEVk/NUaR32Ro/Iab98Ia08g+7bkCM/XSDtS3Pus9v5/11hIrqutEoZ3qdjZMV9J6dZlzfDgGgiHHnjtggrDkxNA2mFxccl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rvph1z7H; arc=none smtp.client-ip=209.85.160.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7399a2dc13fso67675b3a.2;
-        Wed, 16 Apr 2025 14:24:36 -0700 (PDT)
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4775ce8a4b0so1738611cf.1
+        for <bpf@vger.kernel.org>; Wed, 16 Apr 2025 14:49:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744838676; x=1745443476; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4jVAyA2MpizhxtQwsOdID7gg2xhGq08cVN7SZQ9jXqk=;
-        b=CCkZ8aMIhpyAG7jLKCxaF7MEutEYVNIRj7Lr2FXP4SgQs5mOfO5OBo+R2vJgj1UfWC
-         G2sN6t5XYIqa48J2SR7ssTvIUoCGlF0by6sN9Bhwi2oONvl5mlmaoK9c/iDsuznRBHaR
-         kuaFLC0z7K0xiXkD4uYswTG1GotKNV0GPGVov8CU32lzt7E4SMjQbzVGLwHuC96ZY0Ka
-         dLKKW6uzLdiRRj/Vdk57EakObcDI1ZUF93UlxTq2A/KpiOoZhs/j20vrzWCgrUAgBsKk
-         ArTrbczVLVIsNbyBwAilMrVp0rKXwJGRmEM6bnT/QPRXCfLnYClt37pRHI9Oand8OpwJ
-         MpPg==
+        d=gmail.com; s=20230601; t=1744840165; x=1745444965; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=I4CRCQSoaegLuDEy8cGx9LkacxrXKJuujWiVoIKBCW4=;
+        b=Rvph1z7HCVD32VMUiHSV7W3n3bWR5Voh3suZO8HrB8dIhLWBAJjaLUEKA6LVeAj+E8
+         YOo4sIUBQ+uLVbldJIprBwLmoRzs3qesH3Y5TEh2Q5Cq2XoNP3yl/FI6BeNKtEEN2Fil
+         Tbri5UmGH7ZyuUBU+3nJoA6joaVETS6ImLBhKq9tNjPMtE2gssjLBwxc6WvTVCciWhhr
+         z8yy+CzuIvfkNmhEt4tm6ySrEVuCAgLDAXg+9S3F+wyRDbi9ovUq9TzqjK3UOsglqldD
+         l/icCCHpS0CdIvTsgSb9W/99TyNWwCbKhU6zPnFfZTYXLH2Af6Q6s/GrcTW+XwYzLjQz
+         A/tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744838676; x=1745443476;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4jVAyA2MpizhxtQwsOdID7gg2xhGq08cVN7SZQ9jXqk=;
-        b=tR3ijv+7ta3hmXZzyfp5t47NcUepfaeBbc9/MySJBfZKpFzzGf8IZouCfM7wbSKrFc
-         lc62dhtUDOP184q/IN6eLwordZMyQlxgCS2p0D7mSPBgbJiCh0qqOxR/rhifN0mftSwp
-         M3emehvwK8vRFU4mGuZ888lFdTceqUf/LwqOy1Qi6qsZJcmpsNf6Hz0mzxIOokxzx/Dg
-         8XJ//XWbASUSQuWWPV4PqJRMCoghuhwzUnxzzzT4ZwBdakhYWxYTugEgtHTbUEmVcoO8
-         KnUXBArfTJu+ZshVlQ1EFO9SThiSel5u8M+vmaC3+dqGZr5fU3AvwfrZcwGy1dJHD3vm
-         2dCg==
-X-Forwarded-Encrypted: i=1; AJvYcCUMB3fFq6CgteFNDRI8REVmyYMzDEFNEjt9AJb0uFOj+jDqikcpbnP5wQ0z5uknpJWAL/5RA/XwYpmh2SBIJugx@vger.kernel.org, AJvYcCV9Oa9S0Wkx8hoVOk+bTNG+i6jfn6HN1ydV+OUwTBn3uZPxxnJsuaMtaj4gUSJsfdP+f0KrN1oq557U39Cd@vger.kernel.org, AJvYcCXEawT4tO723illNgVbhUOof70OVg2F71j+k6VCWmRB7lYjNWx0Q9imZ0kP89hECQ+EL3Q=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3JuWmx1nfP+vOEncUwq8ef06tsynbT6UAuLZZkJcR6dm9Z0e2
-	5kbVCIyzPnWyi3l17N/MOvuayy8l2OHnuRJsXiJv2Pn7IHX/OayNkVwZfmgWIljDFDGtJzdex3Y
-	X9ZoRtial2rSKW2P33oH3gG7MIoc=
-X-Gm-Gg: ASbGncuY27lckYoDuvcWhVNG2WVjuZ2189atKplirWfdwvxyNziqKC+gLLEiHMpXtjg
-	TMBwuDUDDfGYF5RkVZdUKMMjVlaTMA929vEzDqEwJ1c8jUW1XfVWR6mmjj++dITXBGJQkY4yVZZ
-	UWl0N5x0SWY9ME5nAVDj1cBcGWYh/kcxKdeA3d5w==
-X-Google-Smtp-Source: AGHT+IGP0KP8Iix57A7pNCwQp1k9B+JFkxfWiQwRVI0u7EuoGlinHX/1dVpIRADFn6P7r1WHtj3Ss+TZRQvR2I4Bbg8=
-X-Received: by 2002:a05:6a00:aa8d:b0:736:a973:748 with SMTP id
- d2e1a72fcca58-73c267f8ba4mr4955120b3a.22.1744838675753; Wed, 16 Apr 2025
- 14:24:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1744840165; x=1745444965;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I4CRCQSoaegLuDEy8cGx9LkacxrXKJuujWiVoIKBCW4=;
+        b=di71Sgn9HPPN8PMB1odituJR7zMN84a038tVjRMU9k1lqAdmysFInRHFgdCllS1cQJ
+         k1NDLIhpworem1+xpi9rPq90ZpPJuMeQKZRWR2NUXYShsEhrY0c+Rt3BXC9A7XE5DiqL
+         IjVd6ZE6jaXtRMHNPBXbqEfHgc4axiuobPWIS4aPZ/UNy2p/o2faipPkf+mjQ+5YPSJH
+         oeLnJTnIe4txzsYVp5ZBt4GnMq5AMZTZq5ee5Rk+voW82n4B/y4G8aKkpKqWTL/lTcha
+         ocmjbBJJSGjCg0MEXg68fF6IJfS77auINmw0b/jkCsrfnDVdJ0kin9u/8+d78KBypRXq
+         /ZfA==
+X-Gm-Message-State: AOJu0YwQ2qwx7JWXeTJ7TL/WHRghyHDWkxMb1AK94WAP2hHnSboFpDTF
+	HEA1+F7oTU+Dc6gWGoPwJ84vnqbIa5q6io1XpCHrezKSLEHah2CX
+X-Gm-Gg: ASbGncs2LdBTRCcGYb2kWLDwNz7mXYKFjvjsHu/6oWFCYAiyY4otV6Oq+FEmpZxkPJ5
+	YuPFxoAfZjkJ/h6Iw0vRAS7fpjkHqVYkb51oP2S0Lc4InjfxDlOfqcv53c5CQ70xfYwUpjPd+Y+
+	eOaf4LyraDXdLGiC/B6S1O0Kv7Mfpvl21fRVAI0MfMqVZQJdF61D8W6qAiCZB3vFm2BYlCMs1uj
+	NNMSJllDfaVuY+auU5794tlR0IWS2EhHuYNtjr8ntlpDkDu46L+1sA21Ca09FSwn2PjEwO7sgfy
+	bBK6ceVpNGl8y3u5dK7LwVHHcB76u3f9WmepcDknnbY=
+X-Google-Smtp-Source: AGHT+IFS0NNt618AFSuv644GrG8/w9XR6TIxDTlUtMCq4nbHkqUj4aCokEunfEyHLe/NvfAvURKVXA==
+X-Received: by 2002:a05:622a:1a24:b0:476:add4:d2cf with SMTP id d75a77b69052e-47ad80b5b13mr49485521cf.16.1744840164735;
+        Wed, 16 Apr 2025 14:49:24 -0700 (PDT)
+Received: from ezingerman-mba ([2620:10d:c090:500::4:24a])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c7a8a0dcfbsm1100815085a.98.2025.04.16.14.49.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Apr 2025 14:49:24 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,  Andrii
+ Nakryiko <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
+  Martin KaFai Lau <martin.lau@kernel.org>,  Emil Tsalapatis
+ <emil@etsalapatis.com>,  Barret Rhoden <brho@google.com>,  kkd@meta.com,
+  kernel-team@meta.com
+Subject: Re: [RFC PATCH bpf-next/net v1 07/13] bpf: Introduce per-prog
+ stdout/stderr streams
+In-Reply-To: <20250414161443.1146103-8-memxor@gmail.com> (Kumar Kartikeya
+	Dwivedi's message of "Mon, 14 Apr 2025 09:14:37 -0700")
+References: <20250414161443.1146103-1-memxor@gmail.com>
+	<20250414161443.1146103-8-memxor@gmail.com>
+Date: Wed, 16 Apr 2025 14:49:20 -0700
+Message-ID: <m2plhbu68v.fsf@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com> <20250411-many_args_arm64-v1-1-0a32fe72339e@bootlin.com>
-In-Reply-To: <20250411-many_args_arm64-v1-1-0a32fe72339e@bootlin.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 16 Apr 2025 14:24:23 -0700
-X-Gm-Features: ATxdqUE6pVn0ZTMRWW3NJojzYizvIX7ZuQkUbJrKxsRI8DDdQqgnpzQYLgypGws
-Message-ID: <CAEf4Bzbn6BdXTOb0dTcsQmOMZpp5=DzGS2hHHQ3+dwcja=gv+w@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 1/4] bpf: add struct largest member size in
- func model
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9_=28eBPF_Foundation=29?= <alexis.lothore@bootlin.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Puranjay Mohan <puranjay@kernel.org>, Xu Kuohai <xukuohai@huaweicloud.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Florent Revest <revest@chromium.org>, Bastien Curutchet <bastien.curutchet@bootlin.com>, 
-	ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kselftest@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Fri, Apr 11, 2025 at 1:32=E2=80=AFPM Alexis Lothor=C3=A9 (eBPF Foundatio=
-n)
-<alexis.lothore@bootlin.com> wrote:
+Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+
+> Introduce a set of kfuncs to implement per BPF program stdout and stderr
+> streams. This is implemented as a linked list of dynamically allocated
+> strings whenever a message is printed. This can be done by the kernel or
+> the program itself using the bpf_prog_stream_vprintk kfunc. In-kernel
+> wrappers are provided over streams to ease the process.
 >
-> In order to properly JIT the trampolines needed to attach BPF programs
-> to functions, some architectures like ARM64 need to know about the
-> alignment needed for the function arguments. Such alignment can
-> generally be deduced from the argument size, but that's not completely
-> true for composite types. In the specific case of ARM64, the AAPCS64 ABI
-> defines that a composite type which needs to be passed through stack
-> must be aligned on the maximum between 8 and the largest alignment
-> constraint of its first-level members. So the JIT compiler needs more
-> information about the arguments to make sure to generate code that
-> respects those alignment constraints.
+> The idea is that everytime messages need to be dumped, the reader would
+> pull out the whole batch of messages from the stream at once, and then
+> pop each string one by one and start printing it out (how exactly is
+> left up to the BPF program reading the log, but usually it will be
+> streaming data back into a ring buffer that is consumed by user space).
 >
-> For struct arguments, add information about the size of the largest
-> first-level member in the struct btf_func_model to allow the JIT
-> compiler to guess the needed alignment. The information is quite
-
-I might be missing something, but how can the *size* of the field be
-used to calculate that argument's *alignment*? i.e., I don't
-understand why arg_largest_member_size needs to be calculated instead
-of arg_largest_member_alignment...
-
-> specific, but it allows to keep arch-specific concerns (ie: guessing the
-> final needed alignment for an argument) isolated in each JIT compiler.
-
-couldn't all this information be calculated in the JIT compiler (if
-JIT needs that) from BTF?
-
+> The use of a lockless list warrants that we be careful about the
+> ordering of messages. When being added, the order maintained is new to
+> old, therefore after deletion, we must reverse the list before iterating
+> and popping out elements from it.
 >
-> Signed-off-by: Alexis Lothor=C3=A9 (eBPF Foundation) <alexis.lothore@boot=
-lin.com>
+> Overall, this infrastructure provides NMI-safe any context printing
+> built on top of the NMI-safe any context bpf_mem_alloc() interface.
+>
+> Later patches will add support for printing splats in case of BPF arena
+> page faults, rqspinlock deadlocks, and cond_break timeouts.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  include/linux/bpf.h |  1 +
->  kernel/bpf/btf.c    | 25 +++++++++++++++++++++++++
->  2 files changed, 26 insertions(+)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 3f0cc89c0622cb1a097999afb78c17102593b6bb..8b34dcf60a0ce09228ff761b9=
-62ab67b6a3e2263 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1106,6 +1106,7 @@ struct btf_func_model {
->         u8 nr_args;
->         u8 arg_size[MAX_BPF_FUNC_ARGS];
->         u8 arg_flags[MAX_BPF_FUNC_ARGS];
-> +       u8 arg_largest_member_size[MAX_BPF_FUNC_ARGS];
->  };
->
->  /* Restore arguments before returning from trampoline to let original fu=
-nction
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 16ba36f34dfab7531babf5753cab9f368cddefa3..5d40911ec90210086a6175d56=
-9abb6e52d75ad17 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -7318,6 +7318,29 @@ static int __get_type_size(struct btf *btf, u32 bt=
-f_id,
->         return -EINVAL;
->  }
->
-> +static u8 __get_largest_member_size(struct btf *btf, const struct btf_ty=
-pe *t)
+
+[...]
+
+> diff --git a/kernel/bpf/stream.c b/kernel/bpf/stream.c
+> new file mode 100644
+> index 000000000000..2019ce134310
+> --- /dev/null
+> +++ b/kernel/bpf/stream.c
+
+[...]
+
+> +static int bpf_stream_page_check_room(struct bpf_stream_page *stream_page, int len)
+                                                                              ^^^^^^^
+                                                                     len is never used
 > +{
-> +       const struct btf_member *member;
-> +       const struct btf_type *mtype;
-> +       u8 largest_member_size =3D 0;
-> +       int i;
+> +	int min = offsetof(struct bpf_stream_elem, str[0]);
+> +	int consumed = stream_page->consumed;
+> +	int total = BPF_STREAM_PAGE_SZ;
+> +	int rem = max(0, total - consumed - min);
 > +
-> +       if (!__btf_type_is_struct(t))
-> +               return largest_member_size;
+> +	/* Let's give room of at least 8 bytes. */
+> +	WARN_ON_ONCE(rem % 8 != 0);
+> +	return rem < 8 ? 0 : rem;
+> +}
+
+[...]
+
+> +static struct bpf_stream_elem *bpf_stream_elem_alloc(int len)
+> +{
+> +	const int max_len = ARRAY_SIZE((struct bpf_bprintf_buffers){}.buf);
+> +	struct bpf_stream_elem *elem;
 > +
-> +       for_each_member(i, t, member) {
-> +               mtype =3D btf_type_by_id(btf, member->type);
-> +               while (mtype && btf_type_is_modifier(mtype))
-> +                       mtype =3D btf_type_by_id(btf, mtype->type);
-> +               if (!mtype)
-> +                       return -EINVAL;
-> +               if (mtype->size > largest_member_size)
-> +                       largest_member_size =3D mtype->size;
-> +       }
+> +	/*
+> +	 * We may overflow, but we should never need more than one page size
+> +	 * worth of memory. This can be lifted, but we'd need to adjust the
+> +	 * other code to keep allocating more pages to overflow messages.
+> +	 */
+> +	BUILD_BUG_ON(max_len > BPF_STREAM_PAGE_SZ);
+> +	/*
+> +	 * Length denotes the amount of data to be written as part of stream element,
+> +	 * thus includes '\0' byte. We're capped by how much bpf_bprintf_buffers can
+> +	 * accomodate, therefore deny allocations that won't fit into them.
+> +	 */
+> +	if (len < 0 || len > max_len)
+> +		return NULL;
 > +
-> +       return largest_member_size;
+> +	elem = bpf_stream_elem_alloc_from_bpf_ma(len);
+> +	if (!elem)
+> +		elem = bpf_stream_elem_alloc_from_stream_page(len);
+
+So, the stream page is a backup mechanism, right?
+I'm curious, did you compare how many messages are dropped if there is
+no such backup? Also, how much memory is wasted if there is no
+"spillover" mechanism (BPF_STREAM_ELEM_F_NEXT).
+Are these complications absolutely necessary?
+
+> +	return elem;
 > +}
 > +
->  static u8 __get_type_fmodel_flags(const struct btf_type *t)
->  {
->         u8 flags =3D 0;
-> @@ -7396,6 +7419,8 @@ int btf_distill_func_proto(struct bpf_verifier_log =
-*log,
->                 }
->                 m->arg_size[i] =3D ret;
->                 m->arg_flags[i] =3D __get_type_fmodel_flags(t);
-> +               m->arg_largest_member_size[i] =3D
-> +                       __get_largest_member_size(btf, t);
->         }
->         m->nr_args =3D nargs;
->         return 0;
->
-> --
-> 2.49.0
->
+> +__bpf_kfunc_start_defs();
+> +
+> +static int bpf_stream_push_str(struct bpf_stream *stream, const char *str, int len)
+> +{
+
+This function accumulates elements in &stream->log w/o a cap.
+Why is this not a problem if e.g. user space never flushes streams for
+the program?
+
+> +	struct bpf_stream_elem *elem, *next = NULL;
+> +	int room = 0, rem = 0;
+> +
+> +	/*
+> +	 * Allocate a bpf_prog_stream_elem and push it to the bpf_prog_stream
+> +	 * log, elements will be popped at once and reversed to print the log.
+> +	 */
+> +	elem = bpf_stream_elem_alloc(len);
+> +	if (!elem)
+> +		return -ENOMEM;
+> +	room = elem->mem_slice.len;
+> +	if (elem->flags & BPF_STREAM_ELEM_F_NEXT) {
+> +		next = (struct bpf_stream_elem *)((unsigned long)elem->next & ~BPF_STREAM_ELEM_F_MASK);
+> +		rem = next->mem_slice.len;
+> +	}
+> +
+> +	memcpy(elem->str, str, room);
+> +	if (next)
+> +		memcpy(next->str, str + room, rem);
+> +
+> +	if (next) {
+> +		elem->node.next = &next->node;
+> +		next->node.next = NULL;
+> +
+> +		llist_add_batch(&elem->node, &next->node, &stream->log);
+> +	} else {
+> +		llist_add(&elem->node, &stream->log);
+> +	}
+> +
+> +	return 0;
+> +}
+
+[...]
+
+> +BTF_KFUNCS_START(stream_consumer_kfunc_set)
+> +BTF_ID_FLAGS(func, bpf_stream_next_elem_batch, KF_ACQUIRE | KF_RET_NULL | KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_stream_free_elem_batch, KF_RELEASE)
+> +BTF_ID_FLAGS(func, bpf_stream_next_elem, KF_ACQUIRE | KF_RET_NULL | KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_stream_free_elem, KF_RELEASE)
+> +BTF_ID_FLAGS(func, bpf_prog_stream_get, KF_ACQUIRE | KF_RET_NULL)
+> +BTF_ID_FLAGS(func, bpf_prog_stream_put, KF_RELEASE)
+> +BTF_KFUNCS_END(stream_consumer_kfunc_set)
+
+This is a complicated API.
+If we anticipate that users intend to write this info to ring buffers
+maybe just provide a function doing that and do not expose complete API?
+
+[...]
+
+I'll continue reading the patch-set tomorrow...
 
