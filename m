@@ -1,133 +1,112 @@
-Return-Path: <bpf+bounces-56204-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56205-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87A31A92DCE
-	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 01:12:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83C03A92DDB
+	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 01:14:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41F1E7A43E0
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 23:11:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 864048E5ADB
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 23:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 214892571CE;
-	Thu, 17 Apr 2025 23:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8CF621E0AC;
+	Thu, 17 Apr 2025 23:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ssB2vQJy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bltAVD6Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7D9256C6D
-	for <bpf@vger.kernel.org>; Thu, 17 Apr 2025 23:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FBEF21D3EE
+	for <bpf@vger.kernel.org>; Thu, 17 Apr 2025 23:13:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744931316; cv=none; b=nXIsGz+4kQAjM2pz1Q2imfCQyVfGV/hboCL1pJ39iFH20adANRQ8iPx1oUFU1SPnhleXZXvjOAfeC2f3fa1+GoC7aJD2YSubuOF6JLBXSZGDGfK0kwRhWBbaySOi2w2bT95B0k/+4lnpEei/perbgPi2y2JAgdLeFp2PjdUAIGA=
+	t=1744931593; cv=none; b=sPNeWb2dVEOIiZi08X4kwMH/wppHbGYhbWMXDaQeinOoNdlG+4HDWZvQ9AFLXv+FAGZsCPWf32GJFkX5zgzrq1aqhGJG+VENZYdZmK4eOTk3GKAXdfZIVtJB01BjxHbYFv/3dJ42uZlSou3VdRgHv9i4bp+SU+/PkXcDiJHl34k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744931316; c=relaxed/simple;
-	bh=BMIYhQe06B1m/m1VG1ijiI+0phHw0fLo69Q/i9qHTls=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=EHQyA0y+dRyccXsvdFwWf6mM4T6YN4ZYMRuyGf5/2ADVVZD6RrBh6yYhMCi1I9s0+k+XdIzwfLGioCk7XS58hDxQR5mEXoO9dk3RY6gEbuv5eT14ZXKvJyJQnZs12NfQDffBfDI7eaq9VunNZNkLSRO2kCQC87g3cGvujkJ1EaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ssB2vQJy; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-22c31b55ac6so20059265ad.0
-        for <bpf@vger.kernel.org>; Thu, 17 Apr 2025 16:08:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1744931314; x=1745536114; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OWFtkFZGIqy5t/lwfSWZdekY1UZ0W7H50S3h5IILNr0=;
-        b=ssB2vQJybKGPyWCD1t5Y+aDP5S7146o8l6tysGdfMLs9s0zRCjBh41+tNHGXTkc8JA
-         sqXk0S8GLNpS6rQmKBflWXV3h4FGGxhoP/khDjHqKrS5UjBTxp7g2u0hVDQsiPLxlgnZ
-         Ev6aMU/ZTo6eYyMIxB1dUaT+y2yb9y3hhPtTKBqjxv3yT2ZCIC/jwp/P1XrfP5p3sX++
-         aHC3JxvUGxI1RUZm6oPvyqTouuc1y+8qInjnvmp2gRDrhWImgFniLyvLGR7+VoRGXwW5
-         EtVUNk0ccSJXVSG00EjgcJojpcVNfHfFysqDVcDsYkZOCKj33sFvyGzyjyolJRqWyd8s
-         D4yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744931314; x=1745536114;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OWFtkFZGIqy5t/lwfSWZdekY1UZ0W7H50S3h5IILNr0=;
-        b=ZBrxp//cA5IZKU4RMbp95eYpaXoz/mHH5WneypPf72GO+4BDkq29PlcRs7kutD4tzr
-         k6WamsSCF25m/c81rR//nXXhSTMSfXc55P6uctqyPE0rQk8vb1j9S/rFVjNwscRMmxD3
-         L0uRzJt80nVR7gsXi/MNJlxIolybbvl2jWCw4Z4nAHxec+LZwroy+hlF9B6dK0eLbOnD
-         rlQKJGl7elOQ9XR9ztMn8J8N1FHOVEGSiGYlt8HoKbPCjEuEoFf6nreP2xMVVL5qqvVX
-         //cz9I6VMDgdvOiTnkkJGzBbuMS4nqFBTfguqpe0XhFGqFB6OyfsnTeD/NfmYzvb1kLa
-         HPSw==
-X-Forwarded-Encrypted: i=1; AJvYcCU64QD6HbczCaxDvNzbKwGKat9cPmTOtorHl6C5KUMok466Wim8q8nMoQC4qeohk0hXP2g=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxrAF4VIAyLLtdB2OaLOmoB/we4zyiF/tVsnexN2EzNmzM0uYBt
-	wlhN4Msi+rZaeF5Ls5sYXwFCIoXQkYJvt3V3My588xzdHQMMOxHsvqAr+SQOgQyl08Tyz1ocRPK
-	r96CWsQ==
-X-Google-Smtp-Source: AGHT+IEViYHLkFOWXw+5kwQsGXZZ/Zsx+Y2Lhd4vhaB6w7nKZkxVtdfZ8HyaZrzD+J1xMdknmkgOW1xEQGPK
-X-Received: from plbaz2.prod.google.com ([2002:a17:902:a582:b0:220:eaf6:fcbf])
- (user=irogers job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:d4cd:b0:21f:35fd:1b6c
- with SMTP id d9443c01a7336-22c5364235fmr8482205ad.45.1744931314420; Thu, 17
- Apr 2025 16:08:34 -0700 (PDT)
-Date: Thu, 17 Apr 2025 16:07:40 -0700
-In-Reply-To: <20250417230740.86048-1-irogers@google.com>
+	s=arc-20240116; t=1744931593; c=relaxed/simple;
+	bh=0D/rQR6IhUPn0TtjizCjo+zMfPUn+vWzDoKE4aDPFP4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AO1fD2fcIwmnkrDRgyUyMwmw5wAwhVIjVopsynPM4gi0WbbvAQw7ZSc2mDiCP2IhnyNw2ZcqeoFhWGbqnJSzaWK4gWKB4OGjrw4sQJdmEuELLyAe1I6eBNpgC2QYZ6HBPZe4jX7oK5wYNL6PsUFYrr+vTpFuTQXRB0ybqGWTYjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bltAVD6Y; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <42b84ea3-b3c1-4839-acfc-bd182e7af313@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1744931587;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=12vwvfTShIFMR6Uotw1VByzGmiKPJQSKRMkHoLSjpwI=;
+	b=bltAVD6Y3y7CAzSIqsFTZlpE52r0ncfFgFfo0SuAWsJZxI51OeH+jv8PEMXOZmmTcYszCW
+	g+HC6s6e0vWDBnUSKlv6daOGs6clNHtJSDGkvSxVINt2ZOG1l/GWK9MRGtRzRcM9+kQL4c
+	h+XiuVjcl5mARV48rDwhxWlNBrwNNxA=
+Date: Thu, 17 Apr 2025 16:12:57 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250417230740.86048-1-irogers@google.com>
-X-Mailer: git-send-email 2.49.0.805.g082f7c87e0-goog
-Message-ID: <20250417230740.86048-20-irogers@google.com>
-Subject: [PATCH v4 19/19] perf disasm: Remove unused evsel from annotate_args
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Aditya Gupta <adityag@linux.ibm.com>, 
-	"Steinar H. Gunderson" <sesse@google.com>, Charlie Jenkins <charlie@rivosinc.com>, 
-	Changbin Du <changbin.du@huawei.com>, "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, 
-	James Clark <james.clark@linaro.org>, Kajol Jain <kjain@linux.ibm.com>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Li Huafei <lihuafei1@huawei.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Andi Kleen <ak@linux.intel.com>, 
-	Chaitanya S Prakash <chaitanyas.prakash@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, llvm@lists.linux.dev, 
-	Song Liu <song@kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Subject: Re: [PATCH v3 bpf-next 2/6] bpf: udp: Make sure iter->batch always
+ contains a full bucket snapshot
+To: Kuniyuki Iwashima <kuniyu@amazon.com>, jordan@jrife.io
+Cc: aditi.ghag@isovalent.com, bpf@vger.kernel.org, daniel@iogearbox.net,
+ netdev@vger.kernel.org, willemdebruijn.kernel@gmail.com
+References: <20250416233622.1212256-3-jordan@jrife.io>
+ <20250417224219.29946-1-kuniyu@amazon.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250417224219.29946-1-kuniyu@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Set in symbol__annotate but never used.
+On 4/17/25 3:41 PM, Kuniyuki Iwashima wrote:
+> From: Jordan Rife <jordan@jrife.io>
+> Date: Wed, 16 Apr 2025 16:36:17 -0700
+>> Require that iter->batch always contains a full bucket snapshot. This
+>> invariant is important to avoid skipping or repeating sockets during
+>> iteration when combined with the next few patches. Before, there were
+>> two cases where a call to bpf_iter_udp_batch may only capture part of a
+>> bucket:
+>>
+>> 1. When bpf_iter_udp_realloc_batch() returns -ENOMEM [1].
+>> 2. When more sockets are added to the bucket while calling
+>>     bpf_iter_udp_realloc_batch(), making the updated batch size
+>>     insufficient [2].
+>>
+>> In cases where the batch size only covers part of a bucket, it is
+>> possible to forget which sockets were already visited, especially if we
+>> have to process a bucket in more than two batches. This forces us to
+>> choose between repeating or skipping sockets, so don't allow this:
+>>
+>> 1. Stop iteration and propagate -ENOMEM up to userspace if reallocation
+>>     fails instead of continuing with a partial batch.
+>> 2. Retry bpf_iter_udp_realloc_batch() up to two times if we fail to
+>>     capture the full bucket. On the third attempt, hold onto the bucket
+>>     lock (hslot2->lock) through bpf_iter_udp_realloc_batch() with
+>>     GFP_ATOMIC to guarantee that the bucket size doesn't change before
+>>     our next attempt. Try with GFP_USER first to improve the chances
+>>     that memory allocation succeeds; only use GFP_ATOMIC as a last
+>>     resort.
+> 
+> kvmalloc() tries the kmalloc path, 1. slab and 2. page allocator, and
+> if both of them fails, then tries 3. vmalloc().  But, vmalloc() does not
+> support GFP_ATOMIC, __kvmalloc_node_noprof() returns at
+> !gfpflags_allow_blocking().
+> 
+> So, falling back to GFP_ATOMIC is most unlikely to work as the last resort.
+> 
+> GFP_ATOMIC first and falling back to GFP_USER few more times, or not using
+> GFP_ATOMIC makes more sense to me.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/annotate.c | 1 -
- tools/perf/util/disasm.h   | 1 -
- 2 files changed, 2 deletions(-)
-
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 264a212b47df..a2a2849a5b79 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -1013,7 +1013,6 @@ int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
- 	struct symbol *sym = ms->sym;
- 	struct annotation *notes = symbol__annotation(sym);
- 	struct annotate_args args = {
--		.evsel		= evsel,
- 		.options	= &annotate_opts,
- 	};
- 	struct arch *arch = NULL;
-diff --git a/tools/perf/util/disasm.h b/tools/perf/util/disasm.h
-index 09c86f540f7f..d2cb555e4a3b 100644
---- a/tools/perf/util/disasm.h
-+++ b/tools/perf/util/disasm.h
-@@ -98,7 +98,6 @@ struct ins_ops {
- struct annotate_args {
- 	struct arch		  *arch;
- 	struct map_symbol	  ms;
--	struct evsel		  *evsel;
- 	struct annotation_options *options;
- 	s64			  offset;
- 	char			  *line;
--- 
-2.49.0.805.g082f7c87e0-goog
+If I read it correctly, the last retry with GFP_ATOMIC is not because of the 
+earlier GFP_USER allocation failure but the size of the bucket has changed a lot 
+that it is doing one final attempt to get the whole bucket and this requires to 
+hold the bucket lock to ensure the size stays the same which then must use 
+GFP_ATOMIC.
 
 
