@@ -1,178 +1,143 @@
-Return-Path: <bpf+bounces-56145-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56146-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 904BCA92123
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 17:17:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50164A92231
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 18:05:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 337287AF240
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 15:15:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16D285A216E
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 16:04:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05735253B5E;
-	Thu, 17 Apr 2025 15:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2121254859;
+	Thu, 17 Apr 2025 16:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E2dajMOr"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="05T8qUJ8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4562522A1;
-	Thu, 17 Apr 2025 15:16:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5AF62522B7
+	for <bpf@vger.kernel.org>; Thu, 17 Apr 2025 16:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744902998; cv=none; b=QgywTL1djHQMV4QRaWjuKedr4jIvyI1qkO81Iiuv4+Tx7PgLu4wYHYN3ecD6QAKbkVKr8g9t3gqgHrAaw4iwANwulB4ZyzubM1thQFcnrN6F03gsftoqW9Shb4DWPz/Za1mV13/OUGHNKKkEFfMRCFLUMbCZqvHEK2eeX5T7ebc=
+	t=1744905906; cv=none; b=Q3Re23xsSDquWoYyzLgndNMl/Sh2Knb30zEt3p6Oyq40hv8Vn0QVb4TY/07Un60oqFJVnYh7AAejr76ZMAWd5TAI54sbvR8hGux05Bw4MqiCcGnoR4iIFKmBXLxt3C3ntxiHNnpBsGTY0nmye+/pN/OSl5luAMAs9x4/oZpWyIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744902998; c=relaxed/simple;
-	bh=M0ps3LCBKc62FNAWPHwB1zPZkFhqRXORCQuoBC88wcU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mpYAObaiO2Fk3Rqf8Lm1Jvg6dOwGS3BZrC5JRYSucQySKXYhASRg7grAW/id7s+8GSYdsJbgxx0g/bpUYqNVmCvMqUy3Q6vYX7rIex5kl0G2DiB9HZBse5OzBsdUXvqjVpiJa9/Ocv8fpG8L7Yi5w7u1ngikIMxZ1uJzOvvskg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E2dajMOr; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-227d6b530d8so10837255ad.3;
-        Thu, 17 Apr 2025 08:16:36 -0700 (PDT)
+	s=arc-20240116; t=1744905906; c=relaxed/simple;
+	bh=W8qDOiyv1h4pWlH3g88O7C4xDqIzRDAqgGgkiAByMFA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ebS28A/gZD6StuemC4RHZiL9L9NJeUH9smIaj1ulBkkfAlh/X7FOVDY3BERfxRHXwezNymAWnip+KeI9GDHvkHD+P/gDFh4pXHvh9lp3LQyj0wd0g67fnXYzyV4p/fA0JbkiGMY0S6qvyHeiOwgvLAtUGvGqw3Qcn7EjNQw4JaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=05T8qUJ8; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-43ef83a6bfaso64925e9.1
+        for <bpf@vger.kernel.org>; Thu, 17 Apr 2025 09:05:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744902996; x=1745507796; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1744905903; x=1745510703; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=euLZUslJNu0pFdN7EJCQ7RkSALSAl6XKyINO0kuIYTs=;
-        b=E2dajMOrTdOr/Jx1UrCzpySxQFE001XakA1NihBiobKum2GMsvT4rJKjE3WD+aXyA/
-         3p21IOu+n8Mdh+X8Kw1TR8sffvKe3F6COpG2ufSAEJKLkd85y+QbrzjOWXalWWf/zn9L
-         GCcQGlyzgACUXVbKP6wac0kXfp6BDatdD28tZUvCbpIM44lXk7bYPnuPqnhmiOrM4ZQ1
-         y3O0qW1uZ7NBZsumt6FoA+rdTMOFNevtGEILhPhRVVi7V2gGv4y3UaC0MJ5BTdOkb9Aa
-         gOqeUUxwNOpuXen+6hJhoVuKXaTqTJEw/Z4Db8mBVwwFJwKKq1Nz7V2+l+uIkL+1AWGL
-         SCEw==
+        bh=W8qDOiyv1h4pWlH3g88O7C4xDqIzRDAqgGgkiAByMFA=;
+        b=05T8qUJ8RoX5tk45LI7g4c39PTyk5OSEfS5W7exQ5fG9bISBxuDnOWbP8RqIYV/KF6
+         Ol6CSpSsyUGmbn3e6GPGa+gftSEpY91LDcfFZ43bpOcdbltJIadnEhoCbUXGqcXLhoSj
+         UZgPtAvH9uYXzMZXR95hazlrI8KI+JNcrhSCR+zoI7MyIbJjj/dulsuNpTLbL7Iy/0cy
+         yepyFRLzt/XMP79Cp6wYU8wC2eCu6KWYQRac6/gQmkPr6faMqUiRlfJ44bCqNhdx+0AR
+         oxI9kkVBz/KUZ+ns1F/vu0IJojmOqe9sNa9JuPf1pt3BWdUlCDNcYSxBIIJaRL9KmUGt
+         gPMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744902996; x=1745507796;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1744905903; x=1745510703;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=euLZUslJNu0pFdN7EJCQ7RkSALSAl6XKyINO0kuIYTs=;
-        b=dUOj/RPwz+3vbw6fOBfDn/Uxs68vmY2ttHUfN1rFFmgkfGTrrnp0t/3+dmzxmv9Tar
-         Z8qywiPKVwud3no7GbReyT+Yua5sou/NAXNSHjzaMzHNUFUkzH8drIQt6KX0yGaXBAnh
-         ixYtNmHamiaknDA70t/3yyRXS3RJvjkQZvkuJ6OkPOGmbXtTT1D+S+bzOydhg7pFM8I0
-         FxYJkjxHpzuTyf59tn9QOVHWK+G3ebwIAVfNAU10R+KABm3urIWAIubnrz+mJzrYcMBM
-         Q75wE5phykSZHp/oPklY0PZYMaj8fWLW1zllJkLUWikheoCLizSniVF/c392tGrZKpJX
-         Uvjg==
-X-Forwarded-Encrypted: i=1; AJvYcCVrmy1Ftf0sZO6zRIwhkEc7nl9p1svKZTL6i8jNs3QDMnuyAcrjE6N83LHOCOj3WkxAfNKIRs8L+H3hFzY=@vger.kernel.org, AJvYcCXZZR/g8gsQF7LYsEcuuyGDO8rIF40GFykrTrAzX5DFq0hC81f/o6em7OvQX3i3bdaDP+juweGGs697ohDyuHA8@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHJz7XaskQhTmWs39gmn63MYN+M9nd1I9u6xwV0RuXPJA9kCWZ
-	tjqcAjcW0tE+rKQ0fIWxnlvuy1EEmpkYoUP5USkQ/+gEu2JGaXMp
-X-Gm-Gg: ASbGncutx33uKFhk6t95FmJ84jSKxI/vDzdHYvuZR0zGVHiW5lW7ejo7Ol2mmIFj3Av
-	Bh0YQ21cpZJAeYfzFSG3cF87/mQK04kxxwOfd0iUOLK97FvYp5WzmjHnwnLKQDEly5G61BrB6rd
-	LD7OCpz0Bv9/hTYnGxuN4FNZkQNb6YFerir6ICLHnhZ/ZhrqZgPdAs0AXuoAj0OpMV4SNe6JFgQ
-	urlIn4mxVnP2r5IHA6AGd+ehwbUygtg/URvzDZBvVXhiGqWansZBfXBcD5J0Kapje4eYF38Y+uI
-	/tyiFD/qqswMRP6dU7q0M+r0lkbBFLJpDV1A5xdYkKLB
-X-Google-Smtp-Source: AGHT+IHdPEu5kbBaAs5vfqhKwIrxObiM0Xt+eP4UF3dnlnAkulaDLzvj5C3+dLSU1yVNOeewy/DbxQ==
-X-Received: by 2002:a17:903:1b26:b0:224:13a4:d62e with SMTP id d9443c01a7336-22c3597ec4bmr120492105ad.35.1744902995986;
-        Thu, 17 Apr 2025 08:16:35 -0700 (PDT)
-Received: from ubuntu2404.. ([125.121.98.233])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22c50fdb97esm773125ad.219.2025.04.17.08.16.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Apr 2025 08:16:35 -0700 (PDT)
-From: KaFai Wan <mannkafai@gmail.com>
-X-Google-Original-From: KaFai Wan <kafai.wan@hotmail.com>
-To: martin.lau@linux.dev,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	memxor@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	kafai.wan@hotmail.com,
-	leon.hwang@linux.dev
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: Add test to access const void pointer argument in tracing program
-Date: Thu, 17 Apr 2025 23:15:48 +0800
-Message-ID: <20250417151548.1276279-3-kafai.wan@hotmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250417151548.1276279-1-kafai.wan@hotmail.com>
-References: <20250417151548.1276279-1-kafai.wan@hotmail.com>
+        bh=W8qDOiyv1h4pWlH3g88O7C4xDqIzRDAqgGgkiAByMFA=;
+        b=iyhBdMdp1E/wt6Vf5jaSWpbjNIbQiUl6ENx2e1b6zYcif1/QDsB5sObmRUrZ+KCnjy
+         RuE6wPWDsE3YEG88Dh3f9McCDOmaoT8NguyppAk+J7wi8hRTAAtB5LSOpB3Do8RpzLFQ
+         V57rJ3jZ4Ei/dgKBB3l3uF2K5ksYAKJxFzxJZvgdQaMMl7D9BXD+HP1q+CXJ/ZgdHNS/
+         /k94czSXUoqajy9ZnEKPQPKAsWugUFlHxM4qjtPL6Q5Iw7CiY3OnS1et71d+3sJSsigs
+         zVMHOjnH7YloOtfKKN3T1v4H06N2rrTWf6vrGYWYfKUALDoF89yQuA/+7jnb1uWAF6XX
+         /V9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU/BCNX2lIDxm3u/5+gqmG3YQJoDS8uL/p86C4zWUf9yf0GCiUACdQMNhMjDMSdgTvkrKc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwggEzmUpQo744W1HvWPLrqYOsInr2DJ25Zw7CwvWT6q2OK6fjp
+	8AttvQidD9JpEE63CBAO9iyXYwpVXsPVEB+v4tCkokSqUE0a3zvT1SZO7x/dZGX/sVPGXcklqxB
+	Bm204mxEiyz/QK3Zr4Q0UECUbHxI/r0W/4w6S
+X-Gm-Gg: ASbGnct3DBEfI19tGwehmStgCuA6WTmA4cTgpl4sFN7ftmPPTxqB3z11SHzDCyjflx3
+	Q6CjmF0em7NApBnxYZYPZlDQTOrM5sfJZmkGaUiefa5QlVQ92MXUsekPUjiizX9eSKLnV6gpONd
+	PfgTyJDYHn0gNpikeVC1kPYBpccb3GJDYeKw2Kkon4jqZRdYmxcjk=
+X-Google-Smtp-Source: AGHT+IHPxO/HoUoGfRA0x5PPvATzdMA6UAFEJv1oRfObulb1rUcdqwGzvQUiketg6T4NXeqjA4RD4Ot7mU9EPOGp8HE=
+X-Received: by 2002:a05:600c:1c1e:b0:439:7fc2:c7ad with SMTP id
+ 5b1f17b1804b1-44063d6fe78mr983735e9.7.1744905902735; Thu, 17 Apr 2025
+ 09:05:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250414225227.3642618-1-tjmercier@google.com>
+ <20250414225227.3642618-3-tjmercier@google.com> <CAPhsuW6sgGvjeAcciskmGO7r6+eeDo_KVS3y7C8fCDPptzCebw@mail.gmail.com>
+ <CABdmKX0bgxZFYuvQvQPK0AnAHEE3FebY_eA1+Vo=ScH1MbfzMg@mail.gmail.com>
+ <CAPhsuW72Q2--E9tQQY8xADghTV6bYy9vHpFQoCWNh0V_QBWafA@mail.gmail.com>
+ <CABdmKX1tDv3fSFURDN7=txFSbQ1xTjp8ZhLP8tFAvLcO9_-4_A@mail.gmail.com>
+ <CAPhsuW7xvSYjWvy8K9Ev_tMwDRy2dpEiBcHYai3n-wAa0xvLow@mail.gmail.com>
+ <CABdmKX1p0KgbipTSW1Ywi4bTBabQmsg21gA14Bp5atYHg8FeXQ@mail.gmail.com> <CAPhsuW4f2=M_K553+BVnGJq=ddZ7sXj4CfCAHeYQ=4cpihBCzA@mail.gmail.com>
+In-Reply-To: <CAPhsuW4f2=M_K553+BVnGJq=ddZ7sXj4CfCAHeYQ=4cpihBCzA@mail.gmail.com>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Thu, 17 Apr 2025 09:04:48 -0700
+X-Gm-Features: ATxdqUG71xXjeNh_Y--IqcHwHgbok8UYG45JYmWjM55y53LlzggibWtxWiJMWb4
+Message-ID: <CABdmKX0P1tpa-jxzN1_TCyk6Cw6drYM+KRZQ5YQcjNOBFtOFJw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] bpf: Add dmabuf iterator
+To: Song Liu <song@kernel.org>
+Cc: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	skhan@linuxfoundation.org, linux-kernel@vger.kernel.org, 
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linaro-mm-sig@lists.linaro.org, linux-doc@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com, 
+	simona@ffwll.ch, corbet@lwn.net, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	jolsa@kernel.org, mykolal@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Adding verifier test for accessing const void pointer argument in
-tracing programs.
+On Wed, Apr 16, 2025 at 9:56=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> On Wed, Apr 16, 2025 at 7:09=E2=80=AFPM T.J. Mercier <tjmercier@google.co=
+m> wrote:
+> >
+> > On Wed, Apr 16, 2025 at 6:26=E2=80=AFPM Song Liu <song@kernel.org> wrot=
+e:
+> [...]
+> > >
+> > > Here is another rookie question, it appears to me there is a file des=
+criptor
+> > > associated with each DMA buffer, can we achieve the same goal with
+> > > a task-file iterator?
+> >
+> > That would find almost all of them, but not the kernel-only
+> > allocations. (kernel_rss in the dmabuf_dump output I attached earlier.
+> > If there's a leak, it's likely to show up in kernel_rss because some
+> > driver forgot to release its reference(s).) Also wouldn't that be a
+> > ton more iterations since we'd have to visit every FD to find the
+> > small portion that are dmabufs? I'm not actually sure if buffers that
+> > have been mapped, and then have had their file descriptors closed
+> > would show up in task_struct->files; if not I think that would mean
+> > scanning both files and vmas for each task.
+>
+> I don't think scanning all FDs to find a small portion of specific FDs
+> is a real issue. We have a tool that scans all FDs in the system and
+> only dump data for perf_event FDs. I think it should be easy to
+> prototype a tool by scanning all files and all vmas. If that turns out
+> to be very slow, which I highly doubt will be, we can try other
+> approaches.
 
-The test program loads 1st argument of bpf_fentry_test10 function
-which is const void pointer and checks that verifier allows that.
+But this will not find *all* the buffers, and that defeats the purpose
+of having the iterator.
 
-Signed-off-by: KaFai Wan <kafai.wan@hotmail.com>
----
- net/bpf/test_run.c                                   |  8 +++++++-
- .../selftests/bpf/progs/verifier_btf_ctx_access.c    | 12 ++++++++++++
- 2 files changed, 19 insertions(+), 1 deletion(-)
+> OTOH, I am wondering whether we can build a more generic iterator
+> for a list of objects. Adding a iterator for each important kernel lists
+> seems not scalable in the long term.
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 7cb192cbd65f..aaf13a7d58ed 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -569,6 +569,11 @@ __bpf_kfunc u32 bpf_fentry_test9(u32 *a)
- 	return *a;
- }
- 
-+int noinline bpf_fentry_test10(const void *a)
-+{
-+	return (long)a;
-+}
-+
- void noinline bpf_fentry_test_sinfo(struct skb_shared_info *sinfo)
- {
- }
-@@ -699,7 +704,8 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 		    bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, 21) != 111 ||
- 		    bpf_fentry_test7((struct bpf_fentry_test_t *)0) != 0 ||
- 		    bpf_fentry_test8(&arg) != 0 ||
--		    bpf_fentry_test9(&retval) != 0)
-+		    bpf_fentry_test9(&retval) != 0 ||
-+		    bpf_fentry_test10((void *)0) != 0)
- 			goto out;
- 		break;
- 	case BPF_MODIFY_RETURN:
-diff --git a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-index 28b939572cda..03942cec07e5 100644
---- a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-@@ -65,4 +65,16 @@ __naked void ctx_access_u32_pointer_reject_8(void)
- "	::: __clobber_all);
- }
- 
-+SEC("fentry/bpf_fentry_test10")
-+__description("btf_ctx_access const void pointer accept")
-+__success __retval(0)
-+__naked void ctx_access_const_void_pointer_accept(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u64 *)(r1 + 0);		/* load 1st argument value (const void pointer) */\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.43.0
-
+I think the wide variety of differences in locking for different
+objects would make this difficult to do in a generic way.
 
