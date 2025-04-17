@@ -1,160 +1,185 @@
-Return-Path: <bpf+bounces-56090-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56093-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA661A9115C
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 03:51:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B9E8A91177
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 04:09:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 384E21892D8D
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 01:51:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 174A3441989
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 02:09:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A67401C84C1;
-	Thu, 17 Apr 2025 01:51:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0071C5D70;
+	Thu, 17 Apr 2025 02:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="H6j4Z3ZQ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JzYLMow2"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B378185935;
-	Thu, 17 Apr 2025 01:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 487BD1A5B9F
+	for <bpf@vger.kernel.org>; Thu, 17 Apr 2025 02:09:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744854683; cv=none; b=RJ07XYNSVB6UgqG3tyFdnDG++4eOHyDm3uru80HeYPcjJdeUdX5cOB1VhRKKy8alQ3FCaI7ljGlOwQbg3NhyvW0g95AVSOZCQ+OjFby+g4uYwyqOlLGEsREN7J8ehRi17CkoFTEldlhwIl/vMfiWMg1KXcpwFBlsUTJkwzhFGe8=
+	t=1744855760; cv=none; b=dRdZ2ctNB1jY/9mHRA/4MOBFVoJEaSI2dfkGdfsqWkS0abp5b/cC1OLv9iM7URqYEgX4WEnHA170ajmFmIMvICx5aN2mFruMcZMnNGi9BLltw580WPL0rjtPupm/C9TByDN7YQYgJcJVxKT4ZD1ez4lEUXPP+N774TE4fB7b6rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744854683; c=relaxed/simple;
-	bh=ejenr1IlbFkwAZlQzP67Mm+QohganpUA2+i6veMbS8c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mnWcTaJZlQrdeGT/iCYjdwDJCwT+sb3SdKvvz+bUYtIDXUzM9TOs9rXxL1s0WrzaKNvfAHEKJJavMwCvdlfL4YeuxFWSxU+wnbJNxPb5IGBAgzpgYVJ20oOyEm68024JfnZRtEZ4tbN46nFF3lDPqqzwzMkDv3p2L1ZdrQPiM+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=H6j4Z3ZQ; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=EjXsv
-	QkFD1by3AcR8i+7PjuCNVtIggElZ4f9qddqVTs=; b=H6j4Z3ZQmGePk01xlioxO
-	qbr5+9KQEN3Nh5daiJwM2/6og+Y4ZUigHKy9PRvtusDt1WubDKsSPFc+IOkQdWIw
-	B2s5tQ040QLFQ2q5oXKvjKskreBaZUPaajL0U5LZwXNq5KoJMI6ljRKvUBDwtu1X
-	Rbz5APqDu7oCQ7q3WhLuCw=
-Received: from localhost.localdomain (unknown [])
-	by gzsmtp5 (Coremail) with SMTP id QCgvCgA3kaEGXgBopyyzAg--.31710S5;
-	Thu, 17 Apr 2025 09:49:00 +0800 (CST)
-From: Feng Yang <yangfeng59949@163.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	hengqi.chen@gmail.com,
-	olsajiri@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 bpf-next 3/3] selftests/bpf: Add test for attaching kprobe with long event names
-Date: Thu, 17 Apr 2025 09:48:48 +0800
-Message-Id: <20250417014848.59321-4-yangfeng59949@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20250417014848.59321-1-yangfeng59949@163.com>
-References: <20250417014848.59321-1-yangfeng59949@163.com>
+	s=arc-20240116; t=1744855760; c=relaxed/simple;
+	bh=KSelZMOHGBCAC6ffhylcs5ml2BXN3psxianAepa1Pw0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KAnlYW/Q+Bsa8F89YyWNZHmnQxaKl1tlvQWax15MRTYH8l/VytkpXIStGmp/17RUWlZjXO4GliCJv7XqFK+UzLNow0uTpDTPjWi326QC1XESa/S82LrYfAd/PQmbGeuzjaMB38K+yd/wV2DPmyRnx9mSg+wiSg+KUFrVZW2M+R0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JzYLMow2; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43d5f10e1aaso33565e9.0
+        for <bpf@vger.kernel.org>; Wed, 16 Apr 2025 19:09:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1744855756; x=1745460556; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KSelZMOHGBCAC6ffhylcs5ml2BXN3psxianAepa1Pw0=;
+        b=JzYLMow2LkLFPXSefmx1gmC72CSr7O902d+IMLLKHcYAnh4cz8Z42hzFCxR278ZFOh
+         rgTm2RhJ8s4j9zKTKcCTzvxUeqkG2ffMfGvV2NpV9o3YnmhZbd6HAWygJywKPPHOBQHT
+         v6GIose+LN7ZeN91pXPT1Szt17BECGMYNYtx6/0mCaBNr13XKGiBlBj+5a5QNHqerh+x
+         4QXhYYFltm1e2vCJOOijX/HmedyvwaQHIb4WuFedgAfA2W9bVYAgvet+0f1ILZloSDi+
+         jgdGGbsEFNJwAzwz7c5kGbLAugnCQp+WN9XRSo8wN4tV3uHaAP2EiTZbCGdRkqhwKqmI
+         TI6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744855756; x=1745460556;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KSelZMOHGBCAC6ffhylcs5ml2BXN3psxianAepa1Pw0=;
+        b=bRFqJoBc9keJSsiTl7H+KDVA8hpch1VKEbSOeKJGg80ze3DTPf3xvdWKh4oWLbIF+G
+         z9neuPMIyMFwR2Nz8j34PawFSoeceOo6vt9Q+wIbEgfvxGLbj4rxO2AVJ8mKq13x60yQ
+         JI6RDAwseInQXaoYhNlDIrx0MOQmG04HxmxqIcqyao4Tsj88d8OnZIm5pKSKyx65IOs9
+         65pLhCuBJ6uICFe27/dj2WeipCZtD0LbhWa17wTjZuKXj8PJ++0GVahPO9fYCnudMNBK
+         wEOQ5KGzoa0tsPuz+qFYLSo1Q/Npw4BN3DBoxN/Ycc3fafmnrkdk7a5d+AgaDkmVjcNC
+         ybZw==
+X-Forwarded-Encrypted: i=1; AJvYcCV+JkyOyuHY4kUFMIMe90bEGq4+SBCrUV/mIxyDb5wcOJ7K52YnEMhvAIfKMQVrGcXeO4I=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3DY5G9SB5vtxhYpvYpBnh4dXQPv3yWM8BDXL82PL//hFX9fIR
+	JPhwVXib8jMFO0HsfTopoYj2AMXjEqp10OmbvQ1JVl+tqXBnr/ix2NA3kzM7jD1NoROJV0JUdHX
+	eHQzk69z6vyBKzoyz32cr37yVaxFfqHbiE/4y
+X-Gm-Gg: ASbGnctrGOtAWc7+FTho3OrA+3iUr+7bOQMGpRmSPbdC2g2G/P9wiaWac1S+whI75j7
+	0t/kvItmKg4U6A/zeuv4vKDrRiJ/30EIsYhOiFlcQzFg2RbHji9TCJ1PX/Vpls4q5/lWJnMfbmL
+	PkvQoj39cLz5ah4nLHuLPALrWH5Ibdkqw=
+X-Google-Smtp-Source: AGHT+IFrppytZV5cSJfrYgzaifTbDrHqkypNt5Bohd7JB9cXbxaDZ8Ylu35PtX/6cVUznzvu+dDy2IZggStg9q0OeRc=
+X-Received: by 2002:a05:600c:3042:b0:439:9434:1b66 with SMTP id
+ 5b1f17b1804b1-44063d2802cmr294225e9.1.1744855756423; Wed, 16 Apr 2025
+ 19:09:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:QCgvCgA3kaEGXgBopyyzAg--.31710S5
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXF1DGw18Zr18Ary3Kr1rJFb_yoW5ZF1Upa
-	yDZ34Ykr4rX3W7WF98G34UZr4Fvr1kur17CF1Dtrn8ZF4UWw1xXF17tF4jyrn8JrZaq3Wa
-	va1Utry5uayxZFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jSOJ5UUUUU=
-X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiwhUyeGgAXDhKBAAAsf
+References: <20250414225227.3642618-1-tjmercier@google.com>
+ <20250414225227.3642618-3-tjmercier@google.com> <CAPhsuW6sgGvjeAcciskmGO7r6+eeDo_KVS3y7C8fCDPptzCebw@mail.gmail.com>
+ <CABdmKX0bgxZFYuvQvQPK0AnAHEE3FebY_eA1+Vo=ScH1MbfzMg@mail.gmail.com>
+ <CAPhsuW72Q2--E9tQQY8xADghTV6bYy9vHpFQoCWNh0V_QBWafA@mail.gmail.com>
+ <CABdmKX1tDv3fSFURDN7=txFSbQ1xTjp8ZhLP8tFAvLcO9_-4_A@mail.gmail.com> <CAPhsuW7xvSYjWvy8K9Ev_tMwDRy2dpEiBcHYai3n-wAa0xvLow@mail.gmail.com>
+In-Reply-To: <CAPhsuW7xvSYjWvy8K9Ev_tMwDRy2dpEiBcHYai3n-wAa0xvLow@mail.gmail.com>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Wed, 16 Apr 2025 19:09:04 -0700
+X-Gm-Features: ATxdqUFLL37LKBoNbpt1TbRt2xDWynqShrVasUjLiM1tjzZW-eK8x-aahsy-M1I
+Message-ID: <CABdmKX1p0KgbipTSW1Ywi4bTBabQmsg21gA14Bp5atYHg8FeXQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] bpf: Add dmabuf iterator
+To: Song Liu <song@kernel.org>
+Cc: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	skhan@linuxfoundation.org, linux-kernel@vger.kernel.org, 
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linaro-mm-sig@lists.linaro.org, linux-doc@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com, 
+	simona@ffwll.ch, corbet@lwn.net, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
+	jolsa@kernel.org, mykolal@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Feng Yang <yangfeng@kylinos.cn>
+On Wed, Apr 16, 2025 at 6:26=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+>
+> On Wed, Apr 16, 2025 at 4:40=E2=80=AFPM T.J. Mercier <tjmercier@google.co=
+m> wrote:
+> >
+> > On Wed, Apr 16, 2025 at 4:08=E2=80=AFPM Song Liu <song@kernel.org> wrot=
+e:
+> > >
+> > > On Wed, Apr 16, 2025 at 3:51=E2=80=AFPM T.J. Mercier <tjmercier@googl=
+e.com> wrote:
+> > > [...]
+> > > > >
+> > > > > IIUC, the iterator simply traverses elements in a linked list. I =
+feel it is
+> > > > > an overkill to implement a new BPF iterator for it.
+> > > >
+> > > > Like other BPF iterators such as kmem_cache_iter or task_iter.
+> > > > Cgroup_iter iterates trees instead of lists. This is iterating over
+> > > > kernel objects just like the docs say, "A BPF iterator is a type of
+> > > > BPF program that allows users to iterate over specific types of ker=
+nel
+> > > > objects". More complicated iteration should not be a requirement he=
+re.
+> > > >
+> > > > > Maybe we simply
+> > > > > use debugging tools like crash or drgn for this? The access with
+> > > > > these tools will not be protected by the mutex. But from my perso=
+nal
+> > > > > experience, this is not a big issue for user space debugging tool=
+s.
+> > > >
+> > > > drgn is *way* too slow, and even if it weren't the dependencies for
+> > > > running it aren't available. crash needs debug symbols which also
+> > > > aren't available on user builds. This is not just for manual
+> > > > debugging, it's for reporting memory use in production. Or anything
+> > > > else someone might care to extract like attachment info or refcount=
+s.
+> > >
+> > > Could you please share more information about the use cases and
+> > > the time constraint here, and why drgn is too slow. Is most of the de=
+lay
+> > > comes from parsing DWARF? This is mostly for my curiosity, because
+> > > I have been thinking about using drgn to do some monitoring in
+> > > production.
+> > >
+> > > Thanks,
+> > > Song
+> >
+> > These RunCommands have 10 second timeouts for example. It's rare that
+> > I see them get exceeded but it happens occasionally.:
+> > https://cs.android.com/android/platform/superproject/main/+/main:framew=
+orks/native/cmds/dumpstate/dumpstate.cpp;drc=3D98bdc04b7658fde0a99403fc052d=
+1d18e7d48ea6;l=3D2008
+>
+> Thanks for sharing this information.
+>
+> > The last time I used drgn (admittedly back in 2023) it took over a
+> > minute to iterate through less than 200 cgroups. I'm not sure what the
+> > root cause of the slowness was, but I'd expect the DWARF processing to
+> > be done up-front once and the slowness I experienced was not just at
+> > startup. Eventually I switched over to tracefs for that issue, which
+> > we still use for some telemetry.
+>
+> I haven't tried drgn on Android. On server side, iterating should 200
+> cgroups should be fairly fast (< 5 seconds, where DWARF parsing is
+> the most expensive part).
+>
+> > Other uses are by statsd for telemetry, memory reporting on app kills
+> > or death, and for "dumpsys meminfo".
+>
+> Here is another rookie question, it appears to me there is a file descrip=
+tor
+> associated with each DMA buffer, can we achieve the same goal with
+> a task-file iterator?
 
-This test verifies that attaching kprobe/kretprobe with long event names
-does not trigger EINVAL errors.
-
-Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
----
- .../selftests/bpf/prog_tests/attach_probe.c   | 35 +++++++++++++++++++
- .../selftests/bpf/test_kmods/bpf_testmod.c    |  4 +++
- 2 files changed, 39 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-index 9b7f36f39c32..cabc51c2ca6b 100644
---- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-+++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-@@ -168,6 +168,39 @@ static void test_attach_uprobe_long_event_name(void)
- 	test_attach_probe_manual__destroy(skel);
- }
- 
-+/* attach kprobe/kretprobe long event name testings */
-+static void test_attach_kprobe_long_event_name(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, kprobe_opts);
-+	struct bpf_link *kprobe_link, *kretprobe_link;
-+	struct test_attach_probe_manual *skel;
-+
-+	skel = test_attach_probe_manual__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_kprobe_manual_open_and_load"))
-+		return;
-+
-+	/* manual-attach kprobe/kretprobe */
-+	kprobe_opts.attach_mode = PROBE_ATTACH_MODE_LEGACY;
-+	kprobe_opts.retprobe = false;
-+	kprobe_link = bpf_program__attach_kprobe_opts(skel->progs.handle_kprobe,
-+						      "bpf_testmod_looooooooooooooooooooooooooooooong_name",
-+						      &kprobe_opts);
-+	if (!ASSERT_OK_PTR(kprobe_link, "attach_kprobe_long_event_name"))
-+		goto cleanup;
-+	skel->links.handle_kprobe = kprobe_link;
-+
-+	kprobe_opts.retprobe = true;
-+	kretprobe_link = bpf_program__attach_kprobe_opts(skel->progs.handle_kretprobe,
-+							 "bpf_testmod_looooooooooooooooooooooooooooooong_name",
-+							 &kprobe_opts);
-+	if (!ASSERT_OK_PTR(kretprobe_link, "attach_kretprobe_long_event_name"))
-+		goto cleanup;
-+	skel->links.handle_kretprobe = kretprobe_link;
-+
-+cleanup:
-+	test_attach_probe_manual__destroy(skel);
-+}
-+
- static void test_attach_probe_auto(struct test_attach_probe *skel)
- {
- 	struct bpf_link *uprobe_err_link;
-@@ -371,6 +404,8 @@ void test_attach_probe(void)
- 
- 	if (test__start_subtest("uprobe-long_name"))
- 		test_attach_uprobe_long_event_name();
-+	if (test__start_subtest("kprobe-long_name"))
-+		test_attach_kprobe_long_event_name();
- 
- cleanup:
- 	test_attach_probe__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-index f38eaf0d35ef..2e54b95ad898 100644
---- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
-@@ -134,6 +134,10 @@ bpf_testmod_test_arg_ptr_to_struct(struct bpf_testmod_struct_arg_1 *a) {
- 	return bpf_testmod_test_struct_arg_result;
- }
- 
-+__weak noinline void bpf_testmod_looooooooooooooooooooooooooooooong_name(void)
-+{
-+}
-+
- __bpf_kfunc void
- bpf_testmod_test_mod_kfunc(int i)
- {
--- 
-2.43.0
-
+That would find almost all of them, but not the kernel-only
+allocations. (kernel_rss in the dmabuf_dump output I attached earlier.
+If there's a leak, it's likely to show up in kernel_rss because some
+driver forgot to release its reference(s).) Also wouldn't that be a
+ton more iterations since we'd have to visit every FD to find the
+small portion that are dmabufs? I'm not actually sure if buffers that
+have been mapped, and then have had their file descriptors closed
+would show up in task_struct->files; if not I think that would mean
+scanning both files and vmas for each task.
 
