@@ -1,153 +1,147 @@
-Return-Path: <bpf+bounces-56081-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56082-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC126A90FC0
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 01:40:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B381A90FFF
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 02:09:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45D571902B6A
-	for <lists+bpf@lfdr.de>; Wed, 16 Apr 2025 23:40:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12B8546040C
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 00:09:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD25B24BBF8;
-	Wed, 16 Apr 2025 23:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E43846C;
+	Thu, 17 Apr 2025 00:09:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ch8in/eh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hr7E1RmL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738C923C8CB
-	for <bpf@vger.kernel.org>; Wed, 16 Apr 2025 23:40:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C042479CF;
+	Thu, 17 Apr 2025 00:08:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744846838; cv=none; b=oHnP9lCh0j1ett8oQ4/jfYpDfxDh8d3A6+JTbRg/0mMVV1mmeob52FgrP78KLAq9kOfkmzY4fTftqCQdXMGCzxDofG33whVDrQDloodhnSydFt6X4ZIIG+46uQWO3TFIw1Xlsuqs2zTf+pGfQwwYLwSUVGGPBC+Bwj8LcohiObA=
+	t=1744848539; cv=none; b=BaJ3Ryej6OupE+K2VoFtl+hfhN+q13sL9+haIJAe+o0PkOPsKUaRs4VgNLyZN+uEDZvZUAtMZ6ZrrQnzDPybiGJtmszgFqrEzSmVEQRsb/TIEy0k8O8o7AF9mXYbMCQkwCbUusRd6pgr/tCu7p1llJ3bdtPNeauY08fqdeSE2rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744846838; c=relaxed/simple;
-	bh=6Mxjt3rihuzILbcLl043WrZ7HaX9/u729SBhzDpJcjw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lB/QjuIsWr+7RL+0phg8rI3/+UMjPRpEbWNgrc4eUS3QF8gKriEvis+bVDfnEswAPlGb5+xIpKNui37Fi9ePR9+VyWH8vC6EfpAtisEv710MzqQRc7t50H47uChZsHpXrEN7jXYlHrz76M47XRC2j8s/Nu5aYRE5KC3D+9h4MsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ch8in/eh; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43ef83a6bfaso13575e9.1
-        for <bpf@vger.kernel.org>; Wed, 16 Apr 2025 16:40:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1744846835; x=1745451635; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Mxjt3rihuzILbcLl043WrZ7HaX9/u729SBhzDpJcjw=;
-        b=Ch8in/eh3ikaKrLW1WquO1Qu7R15IWcKwsqxcI4AXdM+nY4ks5HEojSssKb6uX5VYB
-         YcJ+BtKD7odQgXwJLQUpGYk4FX9Qpub/q5u8dCmeVz7FF6pUZMmSY6MR+jnD5fh9OMLw
-         c2dcmFmsig2d7azQCOuz6WfB4myhN6cumc2k11KWHdbIn+qWKkJwi0FulYQ8UQmg+LkZ
-         Ah+dVxv8ckXzJRGF4X4So4jzLkBGF1cw7GNMhXbTeZJfTwuNhBpOV7rCytVDhHoj0V31
-         TilqLxYuEvsJllVh5jWaWa8f4H+naD0BcOXeV5ZMaVmVe33JENh0SU73UVJTBO7PEKLr
-         L+og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744846835; x=1745451635;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6Mxjt3rihuzILbcLl043WrZ7HaX9/u729SBhzDpJcjw=;
-        b=e4iawKC9y/C0syLIjwfYJBKaWIX/WWEpH2Ht9qlwLeAWy9A+WTC7l2+/S6uVbHL4nR
-         WXWKZ/52X3IQ9cLhoUYbyWGuXaOsV7L4XbecOD5nJu9pIw9+GWT2uPtRPffpFrRsYGOx
-         csKd7GTTJcD8KTmhHnhIfgnYEQ/367pMIQEBOxBAsI6lq0Tm49RvBM9DFHBqIpQrE0cj
-         F2/TWBpVzZp62yg39hOgXMn/XAyog04vAig8jzBdSHaWS9qQOfRDnIv070IPrwSGiwQy
-         9Nx1Twbo/TyMiyckpjJUyVsZe5KID5G9zFWvfKem4mO5uXJdPz32Uzot3L3PWTp5QUZc
-         v17w==
-X-Forwarded-Encrypted: i=1; AJvYcCU4zW3flhONqREO7aShqL/3RELTS9ZvSns/4CBt+6E/g5R7SM5gYpytyPGitASyGccQpns=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxHJBiPvBX2ztqAhkK0z72p4m0yBBgAM8gO1AO++4AUtFsrccQF
-	BWCRZd73RCzed00RwDDh9kgoofrrUjVHSTYSkIno15rmDJEPaX79Ab9cNDAI8J4sdsPCIEZMsMu
-	nTi8wzeT6xTAwMNcDZgQUWIgwZNU36bquAict
-X-Gm-Gg: ASbGncsPlvyKRw41J8tgvm9YE1BKNjDblMsCZzRJ4Wl7vhaxPL/pL5h8PxjMYJnPbcd
-	gbWtkbSRO9ujrN5uwa1gc5HRG+dNNJnyyUQeeIh7+Jdb2qtIR3nUwfCuHndP0JWVp/6DpubrK+X
-	uMzk+f1ZYjd2jpqPumEr31Fg1bp6uiMQxOuHmdr7JnjvZ8E8CvVeg=
-X-Google-Smtp-Source: AGHT+IHYwzghKbnTQryW+DgZnRoQaoVXvuuAUTPz6qIMWx+I2V7QXqmb5/BgPuRKmM0AahWplsMUsAlWl25L3C8nIj0=
-X-Received: by 2002:a05:600c:1910:b0:43d:409c:6142 with SMTP id
- 5b1f17b1804b1-44062a3eddamr573455e9.0.1744846834549; Wed, 16 Apr 2025
- 16:40:34 -0700 (PDT)
+	s=arc-20240116; t=1744848539; c=relaxed/simple;
+	bh=VS3LVZY+zuP2UHLVuC8I4hhS1Y2XmPsmcUWcoKDowOo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DZ6XgzXz+2sz4PFuEdrnINPH8QufcU+BzoUyB8RjjPw3SpUenWOwJzsr6CeQ2y6rvQRsY/1/vCUUuoGz/MfGqsqz1AUwy+/M84mjLJFKsqU9SusoPwtNOJPVCA2DM3uqSKpYFr9+ThxIwNWjzUV6zgGAMR4Xodki8bQixCS2Pc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hr7E1RmL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDC42C4CEE2;
+	Thu, 17 Apr 2025 00:08:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744848539;
+	bh=VS3LVZY+zuP2UHLVuC8I4hhS1Y2XmPsmcUWcoKDowOo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Hr7E1RmL3siQy77g4rph6xqk3Z7uUq3Db/Xd0QyNX1Op3j7rxby2YwRkDQU69deBB
+	 ZsHplT6FQJX5LMfKcUyOJvfOrpRtogg7cSSgCFbFDz7TgmVTFq3pCSWLjsjEk1OV+d
+	 XL555eA1dURtyZ8dvsSMVmNx8VeQrLsOkv7zVmT783inykrCqkIo8v/QU7vvSqsjdu
+	 okljT38q0x/nhqiZLfcJV/nEkxWhmzMWdhQYp/5Q5MCiG6wz0D0FJzpuE/bSxPwMx/
+	 LPfzAwGaOm6jGojbOBhqd1xokqt37vnhoLY7kw0juH8FuHN4RK8bFMJ6SdeKpEwtGB
+	 0hcT/T2H3RJvQ==
+Date: Wed, 16 Apr 2025 17:08:57 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jason Wang <jasowang@redhat.com>
+Cc: Bui Quang Minh <minhquangbui99@gmail.com>,
+ virtualization@lists.linux.dev, "Michael S . Tsirkin" <mst@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>, Eugenio =?UTF-8?B?UMOpcmV6?=
+ <eperezma@redhat.com>, "David S . Miller" <davem@davemloft.net>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] selftests: net: add a virtio_net deadlock
+ selftest
+Message-ID: <20250416170857.2e46a3be@kernel.org>
+In-Reply-To: <CACGkMEvceXT+=HJRRe6D3Zk3k40E2ADJiXNb4qqAYm=PZnxNpQ@mail.gmail.com>
+References: <20250415074341.12461-1-minhquangbui99@gmail.com>
+	<20250415074341.12461-4-minhquangbui99@gmail.com>
+	<20250415212709.39eafdb5@kernel.org>
+	<1603c373-024d-4ec2-b655-b9e7fb942bba@gmail.com>
+	<CACGkMEvceXT+=HJRRe6D3Zk3k40E2ADJiXNb4qqAYm=PZnxNpQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250414225227.3642618-1-tjmercier@google.com>
- <20250414225227.3642618-3-tjmercier@google.com> <CAPhsuW6sgGvjeAcciskmGO7r6+eeDo_KVS3y7C8fCDPptzCebw@mail.gmail.com>
- <CABdmKX0bgxZFYuvQvQPK0AnAHEE3FebY_eA1+Vo=ScH1MbfzMg@mail.gmail.com> <CAPhsuW72Q2--E9tQQY8xADghTV6bYy9vHpFQoCWNh0V_QBWafA@mail.gmail.com>
-In-Reply-To: <CAPhsuW72Q2--E9tQQY8xADghTV6bYy9vHpFQoCWNh0V_QBWafA@mail.gmail.com>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Wed, 16 Apr 2025 16:40:22 -0700
-X-Gm-Features: ATxdqUFLZu_g7cAHhskZ0L5MamFR6bpu5Vd8u8TDIC07BpRPPZAKqsf2Wefu0qw
-Message-ID: <CABdmKX1tDv3fSFURDN7=txFSbQ1xTjp8ZhLP8tFAvLcO9_-4_A@mail.gmail.com>
-Subject: Re: [PATCH 2/4] bpf: Add dmabuf iterator
-To: Song Liu <song@kernel.org>
-Cc: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	skhan@linuxfoundation.org, linux-kernel@vger.kernel.org, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linaro-mm-sig@lists.linaro.org, linux-doc@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com, 
-	simona@ffwll.ch, corbet@lwn.net, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	jolsa@kernel.org, mykolal@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 16, 2025 at 4:08=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Wed, Apr 16, 2025 at 3:51=E2=80=AFPM T.J. Mercier <tjmercier@google.co=
-m> wrote:
-> [...]
+On Wed, 16 Apr 2025 15:46:42 +0800 Jason Wang wrote:
+> On Wed, Apr 16, 2025 at 2:54=E2=80=AFPM Bui Quang Minh <minhquangbui99@gm=
+ail.com> wrote:
+> > On 4/16/25 11:27, Jakub Kicinski wrote: =20
+> > > Unfortunately this doesn't work on a basic QEMU setup:
 > > >
-> > > IIUC, the iterator simply traverses elements in a linked list. I feel=
- it is
-> > > an overkill to implement a new BPF iterator for it.
+> > > # ethtool -G eth0 rx 128
+> > > [   15.680655][  T287] virtio_net virtio2 eth0: resize rx fail: rx qu=
+eue index: 0 err: -2
+> > > netlink error: No such file or directory
+> > >
+> > > Is there a way to enable more capable virtio_net with QEMU? =20
+>=20
+> What's the qemu command line and version?
+>=20
+> Resize depends on queue_reset which should be supported from Qemu 7.2
+
+I'm using virtme-ng with --net loop and:
+
+QEMU emulator version 9.1.3 (qemu-9.1.3-2.fc41)
+
+--net loop resolves to:
+
+	-device virtio-net-device,netdev=3Dn0 \
+	-netdev hubport,id=3Dn0,hubid=3D0 \
+	-device virtio-net-device,netdev=3Dn1 \
+	-netdev hubport,id=3Dn1,hubid=3D0
+
+> > I guess that virtio-pci-legacy is used in your setup. =20
+>=20
+> Note that modern devices are used by default.
+>=20
 > >
-> > Like other BPF iterators such as kmem_cache_iter or task_iter.
-> > Cgroup_iter iterates trees instead of lists. This is iterating over
-> > kernel objects just like the docs say, "A BPF iterator is a type of
-> > BPF program that allows users to iterate over specific types of kernel
-> > objects". More complicated iteration should not be a requirement here.
+> > Here is how I setup virtio-net with Qemu
 > >
-> > > Maybe we simply
-> > > use debugging tools like crash or drgn for this? The access with
-> > > these tools will not be protected by the mutex. But from my personal
-> > > experience, this is not a big issue for user space debugging tools.
-> >
-> > drgn is *way* too slow, and even if it weren't the dependencies for
-> > running it aren't available. crash needs debug symbols which also
-> > aren't available on user builds. This is not just for manual
-> > debugging, it's for reporting memory use in production. Or anything
-> > else someone might care to extract like attachment info or refcounts.
->
-> Could you please share more information about the use cases and
-> the time constraint here, and why drgn is too slow. Is most of the delay
-> comes from parsing DWARF? This is mostly for my curiosity, because
-> I have been thinking about using drgn to do some monitoring in
-> production.
->
-> Thanks,
-> Song
+> >      -netdev tap,id=3Dhostnet1,vhost=3Don,script=3D$NETWORK_SCRIPT,down=
+script=3Dno \
+> >      -device
+> > virtio-net-pci,netdev=3Dhostnet1,iommu_platform=3Don,disable-legacy=3Do=
+n \
 
-These RunCommands have 10 second timeouts for example. It's rare that
-I see them get exceeded but it happens occasionally.:
-https://cs.android.com/android/platform/superproject/main/+/main:frameworks=
-/native/cmds/dumpstate/dumpstate.cpp;drc=3D98bdc04b7658fde0a99403fc052d1d18=
-e7d48ea6;l=3D2008
+That works! I rejigged the CI, for posterity I used two times:
 
-The last time I used drgn (admittedly back in 2023) it took over a
-minute to iterate through less than 200 cgroups. I'm not sure what the
-root cause of the slowness was, but I'd expect the DWARF processing to
-be done up-front once and the slowness I experienced was not just at
-startup. Eventually I switched over to tracefs for that issue, which
-we still use for some telemetry.
+	-device	virtio-net-pci,netdev=3Dn0,iommu_platform=3Don,disable-legacy=3Don=
+,mq=3Don,vectors=3D18
+	-netdev tap,id=3Dn0,ifname=3Dtap4,vhost=3Don,script=3Dno,downscript=3Dno,q=
+ueues=3D8=20
 
-Other uses are by statsd for telemetry, memory reporting on app kills
-or death, and for "dumpsys meminfo".
+and then manually bridged the taps together on the hypervisor side.
 
-Thanks,
-T.J.
+> > The iommu_platform=3Don is necessary to make vring use dma API which is=
+ a
+> > requirement to enable xsk_pool in virtio-net (XDP socket will be in
+> > zerocopy mode for this case). Otherwise, the XDP socket will fallback to
+> > copy mode, xsk_pool is not enabled in virtio-net that makes the
+> > probability to reproduce bug to be very small. Currently, when you don't
+> > have iommu_platform=3Don, you can pass the test even before the fix, so=
+ I
+> > think I will try to harden the selftest to make it return skip in this =
+case. =20
+>=20
+> I would like to keep the resize test as it doesn't require iommu_platform.
+
+Sounds good but lets just add them to the drivers/net/hw directory.
+I don't think there's anything virtio specific in the test itself?
+
+Right now drivers/net/virtio_net has a test which expects to see
+both netdevs in the VM, while drivers / Python based tests expect
+to have the env prepared where only one end is on the local machine,=20
+and the other is accessible over SSH or in another netns. So it's a bit
+painful to marry the two kinds of tests in the CI. At least our netdev
+CI does not know how to figure this out :( It preps the env and then
+runs the whole kselftest TARGET in the same setup.
 
