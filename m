@@ -1,217 +1,229 @@
-Return-Path: <bpf+bounces-56132-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56133-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FAA3A91D0D
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 14:56:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E68AA91D1E
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 15:00:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F21C2169FFB
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 12:56:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B870F19E6835
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 13:00:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8889B188CDB;
-	Thu, 17 Apr 2025 12:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A56B017A2E3;
+	Thu, 17 Apr 2025 13:00:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="m/9HznJM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sqIQnUAX"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4114735979
-	for <bpf@vger.kernel.org>; Thu, 17 Apr 2025 12:56:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2399F219ED;
+	Thu, 17 Apr 2025 13:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744894568; cv=none; b=DR+CM7U6qCLvmvSAliWAvACEgkQabIXqlq2RbZhHLCn9G3uZ+CBT6GoDXz7HEx0t2GG6EGeJtPllWNtozu91U3ttoJUwZjpJHQ5cnnpY5PfZ77/BP110Fo4jM5U/dt1p8tneQYjXwbgYnVYqOmUH6BdCjoeK4KxMSUaPfc0GPa8=
+	t=1744894833; cv=none; b=UFow5QyEDXfxF9KciQFgwzWDQ9O+/cgGgW45jKYBdPu8YEtJlnq7YNXt9siwu/Hvz+gA7pa46kpSw0ZuYk5Wod/c0qyLMaTA7UGXvYK8DzoXd7n7rSh0M/mp4wa7aZsegAdMrID4RQZLwyB5augvupFOEABXHkPZIk5a4SV64qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744894568; c=relaxed/simple;
-	bh=tKAiwNOF/uN5H0L2knS1GDGDXBAMddJoBtxd6RkJbGg=;
+	s=arc-20240116; t=1744894833; c=relaxed/simple;
+	bh=tN6VlwhVY6GBDMPbwg6AndCI7gOWs6KugYPq9CK+uXY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EhebJiTZuX0u1DWeaDgGF3uSaQLGJEUpDdl+LmTfrNeJnbY4l3u95OuRiyb15p2hLew0tDJPyDH7Dx67zCSVGtJbNrtzS8TLYoFgYCZO3wwisJ+AeqNHsO5IbSA48nryh6S0l0NycCfzbQdhvmSKFkWA/ZE5zYmodcq1O+hP6hI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=m/9HznJM; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <361850e7-1d1b-4502-9e5a-91638fa481b6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744894561;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DpU1p5EGeHFOZwOo9244niXunZi2VshoCd+nsS3sWUE=;
-	b=m/9HznJMTrbhxUfScQwifgSkDMcctb3ZmPbrmPZdE5XPB6KwapG2Pnenvm+XbsqKL210GT
-	XSUXX0IpGqA7NIoVN/w2h7ttUBTG1Bk3Y1eVvPRTfD4EICrCpzdfMM7kKj1e1u8dEGixIG
-	CmOUnuygCVtACyThR1UEckbJfhQHHic=
-Date: Thu, 17 Apr 2025 20:55:50 +0800
+	 In-Reply-To:Content-Type; b=Dvzgk++ShpgVAVFnMOaGPdnYvEIB1HvOnX0DpEab8JXZ+0iVyy/WHRZoHY0/p2bhKkMwIlVPv5PCVZQiHALekDKff16vGkCns7bJERJLabsSgFHYReLiUk1Vh52bBj8GdthofiE6lry8ln5QFqLqUUxtqV/F4HW2sriXGxqVxAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sqIQnUAX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B652DC4CEE4;
+	Thu, 17 Apr 2025 13:00:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744894832;
+	bh=tN6VlwhVY6GBDMPbwg6AndCI7gOWs6KugYPq9CK+uXY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=sqIQnUAXbunEI71xsjgRpLF2/CBTQPBCebxfpCc2yvzlnXCyEZiI3hocb+oIvVWuL
+	 o5YHKilGWLAZoEEdLG1ntJVOffQtNPm/KACZiHF9F2pr/oJQrBjO1hWntDa+GV+cEF
+	 PMwZdyoz5ZZAA4oT09q8NLXDvucjilg5223kEUpfGE0uLBEFGsAvYKmVYA4s75ArbP
+	 FOfY7ug1G06I7o5Pa+6WiyqqgZL4scIlpqKAp2qY8P8qMkEdkFp7/kTs0vgORoFHQL
+	 2j5TIqwNrMLopLDfnfyf8Zqi7Z0yPvig+Ept/d8Nu+7cnOZzM4IznebdRoVDPMMjS6
+	 RC5W81WW7Kb+g==
+Message-ID: <12d6fe78-6638-4340-83a1-70b6e77b4d38@kernel.org>
+Date: Thu, 17 Apr 2025 15:00:27 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Question: fentry on kernel func optimized by compiler
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
-References: <7e46c811-e85b-4001-8fac-b16aa0e9815f@linux.dev>
- <CAEf4BzaEg1mPag0-bAPVeJhj-BL_ssABBAOc_AhFvOLi2GkrEg@mail.gmail.com>
- <3c6f539b-b498-4587-b0dc-5fdeba717600@oracle.com>
- <ee8a41c8-9500-4ff9-bffb-e6c764da6e3e@linux.dev> <Z_6x1CH38clO_OTV@krava>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <Z_6x1CH38clO_OTV@krava>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V4 2/2] veth: apply qdisc backpressure on full
+ ptr_ring to reduce TX drops
+To: Toshiaki Makita <toshiaki.makita1@gmail.com>
+Cc: bpf@vger.kernel.org, tom@herbertland.com,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
+ kernel-team@cloudflare.com, phil@nwl.cc, netdev@vger.kernel.org,
+ Jakub Kicinski <kuba@kernel.org>
+References: <174472463778.274639.12670590457453196991.stgit@firesoul>
+ <174472470529.274639.17026526070544068280.stgit@firesoul>
+ <882f14f9-99e7-44ac-a325-ad809bf0ccff@gmail.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <882f14f9-99e7-44ac-a325-ad809bf0ccff@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-在 2025/4/16 03:21, Jiri Olsa 写道:
-> On Tue, Apr 15, 2025 at 08:10:09PM +0800, Tao Chen wrote:
->> 在 2025/3/31 18:13, Alan Maguire 写道:
->>> On 28/03/2025 17:21, Andrii Nakryiko wrote:
->>>> On Thu, Mar 27, 2025 at 9:03 AM Tao Chen <chen.dylane@linux.dev> wrote:
->>>>>
->>>>> Hi,
-> 
-> hi, sorry for late reply
-> 
->>>>>
->>>>> I recently encountered a problem when using fentry to trace kernel
->>>>> functions optimized by compiler, the specific situation is as follows:
->>>>> https://github.com/bpftrace/bpftrace/issues/3940
->>>>>
->>>>> Simply put, some functions have been optimized by the compiler. The
->>>>> original function names are found through BTF, but the optimized
->>>>> functions are the ones that exist in kallsyms_lookup_name. Therefore,
->>>>> the two do not match.
-> 
-> hum, would you have example BTF/kernel/config with such case? I'd think
-> if function is in BTF you should find it through kallsyms, the other way
-> around is not garanteed
-> 
 
-It seems that there is no special configuration. I am using the official 
-Ubuntu 24.04. The issue link is: 
-https://github.com/bpftrace/bpftrace/issues/3940
 
->>>>>
->>>>>            func_proto = btf_type_by_id(desc_btf, func->type);
->>>>>            if (!func_proto || !btf_type_is_func_proto(func_proto)) {
->>>>>                    verbose(env, "kernel function btf_id %u does not have a
->>>>> valid func_proto\n",
->>>>>                            func_id);
->>>>>                    return -EINVAL;
->>>>>            }
->>>>>
->>>>>            func_name = btf_name_by_offset(desc_btf, func->name_off);
->>>>>            addr = kallsyms_lookup_name(func_name);
->>>>>            if (!addr) {
->>>>>                    verbose(env, "cannot find address for kernel function
->>>>> %s\n",
->>>>>                            func_name);
->>>>>                    return -EINVAL;
->>>>>            }
->>>>>
->>>>> I have made a simple statistics and there are approximately more than
->>>>> 2,000 functions in Ubuntu 24.04.
->>>>>
->>>>> dylane@2404:~$ cat /proc/kallsyms | grep isra | wc -l
->>>>> 2324
->>>>>
->>>>> So can we add a judgment from libbpf. If it is an optimized function,
->>>>
->>>> No, we cannot. It's a different function at that point and libbpf
->>>> isn't going to be in the business of guessing on behalf of the user
->>>> whether it's ok to do or not.
->>>>
->>>> But the user can use multi-kprobe with `prefix*` naming, if they
->>>> encountered (or are anticipating) this situation and think it's fine
->>>> for them.
->>>>
->>>> As for fentry/fexit, you need to have the correct BTF ID associated
->>>> with that function anyways, so I'm not sure that currently you can
->>>> attach fentry/fexit to such compiler-optimized functions at all
->>>> (pahole won't produce BTF for such functions, right?).
->>>>
->>>
->>> Yep, BTF will not be there for all cases, but ever since we've had the
->>> "optimized_func" BTF feature, we've have encoded BTF for suffixed
->>> functions as long as their parameters are not optimized away and as long
->>> as we don't have multiple inconsistent representations associated with a
->>> function (say two differing function signatures for the same name).
->>> Optimization away of parameters happens quite frequently, but not always
->>> for .isra.0 functions so they are potentially sometimes safe for fentry.
->>>
->>> The complication here is that - by design - the function name in BTF
->>> will be the prefix; i.e. "foo" not "foo.isra.0". So how we match up the
->>> BTF with the right suffixed function is an issue; a single function
->>> prefix can have ".isra.0" and ".cold.0" suffixes associated for example.
->>> The latter isn't really a function entry point (in the C code at least);
->>> it's just a split of the function into common path and less common path
->>> for better code locality for the more commonly-executed code.
->>>
->>> Yonghong and I talked about this a bit last year in Plumbers, but it did
->>> occur to me that there are conditions where we could match up the prefix
->>> from BTF with a guaranteed fentry point for the function using info we
->>> have today.
->>>
->>> /sys/kernel/tracing/available_filter_functions_addr has similar info to
->>> /proc/kallysyms but as far as I understand it we are also guaranteed
->>> that the associated addresses correspond to real function entry points.
-> 
-> available_filter_functions_addr contains exactly the same functions as
-> available_filter_functions (all functions managed by ftrace), it just
-> adds address value for each function as a hint to user space
-> 
-> it's used in kprobe_multi bench test to get all traceable addresses,
-> and passed to kprobe_multi link, which uses following fprobe interface
-> to attach:
-> 
->          err = register_fprobe_ips(&link->fp, addrs, cnt);
-> 
->>> So because the BTF representation currently ensures consistency _and_
->>> available function parameters, I think we could use
->>> available_filter_functions_addr to carry out the match and provide the
->>> right function address for the BTF representation.
-> 
-> where would you do the match to available_filter_functions_addr?
-
-maybe in libbpf? If it is the situation encountered above, use the 
-passed-in address from user; otherwise, still use the original logic.
-
-	func_name = btf_name_by_offset(desc_btf, func->name_off);
-	addr = kallsyms_lookup_name(func_name);
-> 
-> also not sure how it's connected to the original issue, that seems
-> to be related to pahole eliminating unsafe functions in BTF?
-> 
-> jirka
-> 
-> 
->>>
+On 16/04/2025 14.44, Toshiaki Makita wrote:
+> On 2025/04/15 22:45, Jesper Dangaard Brouer wrote:
+>> In production, we're seeing TX drops on veth devices when the ptr_ring
+>> fills up. This can occur when NAPI mode is enabled, though it's
+>> relatively rare. However, with threaded NAPI - which we use in
+>> production - the drops become significantly more frequent.
 >>
->> Hi, Alan
->> Sorry for not replying in time. As you said，it seems much simpler when use
->> the func addr from available_filter_functions_addr. It seems to be a bit
->> similar to the way of passing function addresses in kprobe_multi. @Andrii
->> @Jiri what do you think?
+>> The underlying issue is that with threaded NAPI, the consumer often runs
+>> on a different CPU than the producer. This increases the likelihood of
+>> the ring filling up before the consumer gets scheduled, especially under
+>> load, leading to drops in veth_xmit() (ndo_start_xmit()).
 >>
->>> In the future, the hope is we can handle inconsistent representations
->>> too in BTF, but the above represents a possible approach we could
->>> implement today I think, though I may be missing something. Thanks!
->>>
->>> Alan
+>> This patch introduces backpressure by returning NETDEV_TX_BUSY when the
+>> ring is full, signaling the qdisc layer to requeue the packet. The txq
+>> (netdev queue) is stopped in this condition and restarted once
+>> veth_poll() drains entries from the ring, ensuring coordination between
+>> NAPI and qdisc.
 >>
+>> Backpressure is only enabled when a qdisc is attached. Without a qdisc,
+>> the driver retains its original behavior - dropping packets immediately
+>> when the ring is full. This avoids unexpected behavior changes in setups
+>> without a configured qdisc.
 >>
->> -- 
->> Best Regards
->> Tao Chen
+>> With a qdisc in place (e.g. fq, sfq) this allows Active Queue Management
+>> (AQM) to fairly schedule packets across flows and reduce collateral
+>> damage from elephant flows.
 >>
+>> A known limitation of this approach is that the full ring sits in front
+>> of the qdisc layer, effectively forming a FIFO buffer that introduces
+>> base latency. While AQM still improves fairness and mitigates flow
+>> dominance, the latency impact is measurable.
+>>
+>> In hardware drivers, this issue is typically addressed using BQL (Byte
+>> Queue Limits), which tracks in-flight bytes needed based on physical link
+>> rate. However, for virtual drivers like veth, there is no fixed bandwidth
+>> constraint - the bottleneck is CPU availability and the scheduler's 
+>> ability
+>> to run the NAPI thread. It is unclear how effective BQL would be in this
+>> context.
+>>
+>> This patch serves as a first step toward addressing TX drops. Future work
+>> may explore adapting a BQL-like mechanism to better suit virtual devices
+>> like veth.
+> 
+> Thank you for the patch.
+> 
+>> Reported-by: Yan Zhai <yan@cloudflare.com>
+>> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+>> ---
+>>   drivers/net/veth.c |   49 
+>> +++++++++++++++++++++++++++++++++++++++++--------
+>>   1 file changed, 41 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+>> index 7bb53961c0ea..a419d5e198d8 100644
+>> --- a/drivers/net/veth.c
+>> +++ b/drivers/net/veth.c
+>> @@ -308,11 +308,10 @@ static void __veth_xdp_flush(struct veth_rq *rq)
+>>   static int veth_xdp_rx(struct veth_rq *rq, struct sk_buff *skb)
+>>   {
+>>       if (unlikely(ptr_ring_produce(&rq->xdp_ring, skb))) {
+>> -        dev_kfree_skb_any(skb);
+>> -        return NET_RX_DROP;
+>> +        return NETDEV_TX_BUSY; /* signal qdisc layer */
+>>       }
+> 
+> You don't need this braces any more?
+> 
+> if (...)
+>      return ...;
+> 
 
+Correct, fixed for V5.
 
--- 
-Best Regards
-Tao Chen
+>> -    return NET_RX_SUCCESS;
+>> +    return NET_RX_SUCCESS; /* same as NETDEV_TX_OK */
+>>   }
+>>   static int veth_forward_skb(struct net_device *dev, struct sk_buff 
+>> *skb,
+>> @@ -346,11 +345,11 @@ static netdev_tx_t veth_xmit(struct sk_buff 
+>> *skb, struct net_device *dev)
+>>   {
+>>       struct veth_priv *rcv_priv, *priv = netdev_priv(dev);
+>>       struct veth_rq *rq = NULL;
+>> -    int ret = NETDEV_TX_OK;
+>> +    struct netdev_queue *txq;
+>>       struct net_device *rcv;
+>>       int length = skb->len;
+>>       bool use_napi = false;
+>> -    int rxq;
+>> +    int ret, rxq;
+>>       rcu_read_lock();
+>>       rcv = rcu_dereference(priv->peer);
+>> @@ -373,17 +372,41 @@ static netdev_tx_t veth_xmit(struct sk_buff 
+>> *skb, struct net_device *dev)
+>>       }
+>>       skb_tx_timestamp(skb);
+>> -    if (likely(veth_forward_skb(rcv, skb, rq, use_napi) == 
+>> NET_RX_SUCCESS)) {
+>> +
+>> +    ret = veth_forward_skb(rcv, skb, rq, use_napi);
+>> +    switch(ret) {
+>> +    case NET_RX_SUCCESS: /* same as NETDEV_TX_OK */
+>>           if (!use_napi)
+>>               dev_sw_netstats_tx_add(dev, 1, length);
+>>           else
+>>               __veth_xdp_flush(rq);
+>> -    } else {
+>> +        break;
+>> +    case NETDEV_TX_BUSY:
+>> +        /* If a qdisc is attached to our virtual device, returning
+>> +         * NETDEV_TX_BUSY is allowed.
+>> +         */
+>> +        txq = netdev_get_tx_queue(dev, rxq);
+>> +
+>> +        if (qdisc_txq_has_no_queue(txq)) {
+>> +            dev_kfree_skb_any(skb);
+>> +            goto drop;
+>> +        }
+>> +        netif_tx_stop_queue(txq);
+>> +        /* Restore Eth hdr pulled by dev_forward_skb/eth_type_trans */
+>> +        __skb_push(skb, ETH_HLEN);
+>> +        if (use_napi)
+>> +            __veth_xdp_flush(rq);
+> 
+> You did not add a packet to the ring.
+> No need for flush here?
+
+IMHO we do need a flush here.
+This is related to the netif_tx_stop_queue(txq) call, that stops the
+TXQ, and that need to be started again by NAPI side.
+
+This is need to handle a very unlikely race, but if the race happens
+then it can cause the TXQ to stay stopped (blocking all traffic).
+
+Given we arrive at NETDEV_TX_BUSY, when ptr_ring is full, it is very
+likely that someone else have called flush and NAPI veth_poll is
+running.  Thus, the extra flush will likely be a no-op as
+rx_notify_masked is true.
+
+The race is that before calling netif_tx_stop_queue(txq) the other CPU
+running NAPI veth_poll manages to NAPI complete and empty the ptr_ring.
+In this case, the flush will avoid race, as it will have an effect as
+rx_notify_masked will be false.
+
+Looking closer at code: There is still a possible race, in veth_poll,
+after calling veth_xdp_rcv() and until rq->rx_notify_masked is set to
+false (via smp_store_mb).  If netif_tx_stop_queue(txq) is executed in
+this window, then we still have the race, where TXQ stays stopped
+forever. (There is a optional call to xdp_do_flush that can increase
+race window).
+
+I'll add something in V5 that also handles the second race window.
+
+--Jesper
 
