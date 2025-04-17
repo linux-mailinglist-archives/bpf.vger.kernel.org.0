@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-56152-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56153-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37D9BA924E3
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 19:59:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7444A926FF
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 20:18:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62B854634AF
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 17:58:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5B3E4A1652
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 18:18:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3A0725D1F5;
-	Thu, 17 Apr 2025 17:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578D61DEFD4;
+	Thu, 17 Apr 2025 18:18:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="B0EFgszK"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="qyvMLo0H"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D83A256C6E;
-	Thu, 17 Apr 2025 17:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2B93594D;
+	Thu, 17 Apr 2025 18:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744912561; cv=none; b=bwbDaeuC5pel7GF6wZ0HDJQd17W0Kjtduob7qRWV1rDUqNPPnz8mpW/ze+vhbZZou9LbINFyehyrd5QEJiUd+8BJiQMKzALkqu/r/nuu38jwLgcOaexpVAxcfC9NVKnmMzgGYNvBDx4rzVL2+j3AzDDuh2eQWGY0qXVUfmgGGIg=
+	t=1744913919; cv=none; b=dRqa+9fb3e93KqNEXACXZ2E9HU9NGvWE2ill8NuTt/KpqS0ijrGDqBTUdpGMdPTKYH2RDu6q7r8YsFsu7q3cTXC04pSbi4N3f/oRGKNrQ5yuqW2fspOtQm7HE5FTx+IGhViSsQCGvBbiKfWGr0F0URnRp8J2frhx0b3S5ueGuMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744912561; c=relaxed/simple;
-	bh=eaxbHNubJ/EzZQo6aqRuDiaf9TjtyXrV0m8iLBfAgJc=;
+	s=arc-20240116; t=1744913919; c=relaxed/simple;
+	bh=OreKoswsgRh0tRYPp78h7Q54/sxidBFbdVUbtLms3PI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jTasLEBMRauJFbGy0qqBjyV19O7xEom+uayGDBN2AOU1XTDtDXx8Tx/SLXyUJqKraGGgDIl9AhfyWBElMF4y4e+BAuXp2J5w6mvyusKciMSCiRH6EIpUiH4G3n60YQ7ugo8kaGjG6xMjSHOfJeGHxSmF+2s+PCfFLJcCYZEEfY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=B0EFgszK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDCC4C4CEE4;
-	Thu, 17 Apr 2025 17:56:00 +0000 (UTC)
+	 MIME-Version; b=MFOZHtaIEPrBX5UaeE7AB90lAhW19qC/eTIcWVEL93IyN4C81E5ySYJszc3etOiyBSVbWf4J0BZiazgqLV3OGvkFLBTxt4h+3Ct9R+itQ2qltECqyWt32gQ5TPprJUilFwD8H6+4L+eMsYs0GhRWs/hI2ePEdXddF/cNaeNJUNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=qyvMLo0H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EF85C4CEE4;
+	Thu, 17 Apr 2025 18:18:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1744912561;
-	bh=eaxbHNubJ/EzZQo6aqRuDiaf9TjtyXrV0m8iLBfAgJc=;
+	s=korg; t=1744913919;
+	bh=OreKoswsgRh0tRYPp78h7Q54/sxidBFbdVUbtLms3PI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=B0EFgszKv5lxMny78R4IIrTAOuhLc7a8eMpvOjdqLlJWRQNqdL3mu+VTD+c+vdFlM
-	 SK6uDYd6r2r2PtbEl2Xs+2Pe4+Pk21ZxyOI2u/jXBfS/VwJnpwg/cZHZgmu1aX1YJB
-	 uP2hqM7p6wfuo/0MmC50aqX44BeD0m20KgBfcD8U=
+	b=qyvMLo0HLMPll6WNgrvZT3ufPHo5cQfSDY59c+RDFkrS5XE5JA3rz8hzJHMFbEgW9
+	 462MFfw9azwzSErR/5Q8lFmSsm8R/P+QGXEeLZOcy17PAXHtYK7UvsO4PxG8JY6VZO
+	 HDPBz4ZNZQ2TJS4H5DVIh71lBTQc9ol0Eor0l0w4=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -51,12 +51,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	bpf@vger.kernel.org,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.14 051/449] srcu: Force synchronization for srcu_get_delay()
-Date: Thu, 17 Apr 2025 19:45:39 +0200
-Message-ID: <20250417175120.039482205@linuxfoundation.org>
+Subject: [PATCH 6.13 044/414] srcu: Force synchronization for srcu_get_delay()
+Date: Thu, 17 Apr 2025 19:46:42 +0200
+Message-ID: <20250417175113.186374969@linuxfoundation.org>
 X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250417175117.964400335@linuxfoundation.org>
-References: <20250417175117.964400335@linuxfoundation.org>
+In-Reply-To: <20250417175111.386381660@linuxfoundation.org>
+References: <20250417175111.386381660@linuxfoundation.org>
 User-Agent: quilt/0.68
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -68,7 +68,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-6.14-stable review patch.  If anyone has any objections, please let me know.
+6.13-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -101,7 +101,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index b83c74c4dcc0d..2d8f3329023c5 100644
+index 5e2e534647946..c5419e97bd97b 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
 @@ -647,6 +647,7 @@ static unsigned long srcu_get_delay(struct srcu_struct *ssp)
