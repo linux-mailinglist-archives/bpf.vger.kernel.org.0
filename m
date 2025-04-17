@@ -1,154 +1,161 @@
-Return-Path: <bpf+bounces-56123-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56124-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79A9EA91A61
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 13:16:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDC07A91A8D
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 13:20:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1219719E539C
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 11:16:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D0D946237B
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 11:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 368DC238D35;
-	Thu, 17 Apr 2025 11:16:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2BC23BCF8;
+	Thu, 17 Apr 2025 11:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NOld4/TR"
+	dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b="IP1EghCx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.nppct.ru (mail.nppct.ru [195.133.245.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B195523817B;
-	Thu, 17 Apr 2025 11:16:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15E8523959A
+	for <bpf@vger.kernel.org>; Thu, 17 Apr 2025 11:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.133.245.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744888575; cv=none; b=PejLLbjEoLGOECt9Pq6N9Oq1Il2nA0DN0XyGQb8dVwr3S62Def0r4eRnIy4eMZ6n294OKY2lu0uXxPHbZR8Kpb1HFLcOsiMpUy8cM5/bNyYCDwZlQ67IEb0tuzGONRtLXfF8hxkX7YSq7GXL5+2KI9xmsYgGmOJ/x3suANuPGFY=
+	t=1744888799; cv=none; b=T9g011Jo/sC1iDFb98GODWc3zZfzjZKGMxGLh6j/uWb7LAdYHYz99P0AaCXtOCLPnT44bJHdnOlOxhaDaX3qQ4aH/fgAHGnltctbRIzXIi26Xid/BLxFlIvw9tQ+vUqZzh9EPYzNlsjyBpcEznyiDH39EwG9YISGmdwMGPHn2f0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744888575; c=relaxed/simple;
-	bh=R5O71Js30BHfakH/NEkLiIkAkq1QV6lpTAlKWsMZPn4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K9dDHlXNNVfKgbiTTVuyi/fZI00Oq2s71JGdfhEgYm0WxMuv6dHi3eHVp6NQRHsuzwd3LbX+egfSN4ld3mse/cUIq5yWPGUAph9bBJGNfvuF3BqfWOjisj4rbLJt4amS4Xma32x/BWrTXwqH0uhidwdq9jlg/jCC813A/rkK38Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NOld4/TR; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-43d2d952eb1so4269725e9.1;
-        Thu, 17 Apr 2025 04:16:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744888572; x=1745493372; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nska21crBmdz6JojasinsB56GkEwbIFHHV+nNujavCA=;
-        b=NOld4/TRVEJcC9boGAK+SKtmdj2ESZavuRjCih8qFZj3xIcCig34v1P4x0Ho0r2Uq9
-         dS+O0RoCXDpeKxqODhlS8ihiw6kPAFamjyTJH9jmNI2JyQtlnqJspA/jJCHQ96h6wzku
-         kyB/ERCiTSMKVGT0rcSa7bruTsFoDO8HWkfZVlF4b5J4ATqEY/wTT7nZeJnD7L5MHtmL
-         +e6Vof0aii5tNKO0ceSkdhJ58UDrO3BsnfuBOaQppgH4mG+OzrmXOn3LJYe6ABLm5M4J
-         CuifZjxs99XHSlNdyxqAcA79xJF9Sia6leK8NiAPUNzc4E8DzHnzI0JZHLOGxJrmYWvT
-         ycOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744888572; x=1745493372;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nska21crBmdz6JojasinsB56GkEwbIFHHV+nNujavCA=;
-        b=ZCkcSWtlm/fBnFgEPHOTJgx+wLseYPCVym58KhhLS81gwnAfOhPbxVjGqKL/hqZlNc
-         c6V2SnNsWGKkt68S4ly8jp5edADWM6ViQzPQDE9wV6gE80lC4WZgpfy2NiE0jNgo9U2t
-         ygqhFZhHAF+ytHP1vNIUPgReEfxRzBIaBbtfVZtgK5MH6MCz+wxoQhtc2p35fcIEsZkA
-         sl2H4DU9/AKggcBAJvQ2NO7MVWE1sEKgVqbXp1IYInbKyMDTKk8xZWWTCzEQa0MDX685
-         OW/C1sHPiZJGKQo62lJMM36h2QNCI2qL5pe2YIfyIxGtNx45MB8Ys6ymSA9hQo8I9FpU
-         TGDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1s5XcbVeZfW6T20o3jm4CXCobIWPWfewaW/4Y7dRuQ9APoR68IDO7Ob/UQbQMuJOsZLnthRDusRCHY56n@vger.kernel.org, AJvYcCU6ATjMKBgxJWhE1/gKvwS+N10mL7/JttR3ctI0nTDrbxeS8DA6k7NIMHFGXdBDQ4y9PWM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YySXqBWAsfyR2M4Zdo2oOey2H/0jXW53CIbiSeZQlBBIksDWrBr
-	WFg1PJMBoalWuOdVeijju+qgwi4ZNCHZViUCt2IHDLojoqQR2EfO
-X-Gm-Gg: ASbGnctuOVcYAL0JQRMAcQpo4i0mY1ZTFzeiDMNEFcvdHVWsL/ySlv1gFGKlD7HDtjt
-	a4+YCJ7HTrBIYiFDc3gCyLTnP5NujH5us/AZjWXTP6pO7U2vGWqNlRXZeelVWIKcF9+vjzMIkHC
-	D48joT1qY6+/1xCHGkMverrSyvxjzkZ60XF8QFvDNgaI2F5Xgd6WLQHAHMdkAXq+OmrwCz8ogLX
-	VkJ5FHY2oZ/zIBKERmVS3AX/pQ6fynEB6O7FRCTlmGZC+5NYi94+VxbhFgw/yBwTkds7ibOetXC
-	XEZ77O5+rnKcQmnOJqfiidgT7EVLh9wq
-X-Google-Smtp-Source: AGHT+IHb9v83zlnCd8nEWcdCrNOaKQ7h/prAuXYrbjfN/0KrYcDFFbB3UDQBtoUx6diru6/n01SsQA==
-X-Received: by 2002:a05:600c:354c:b0:43c:e70d:4504 with SMTP id 5b1f17b1804b1-4405d636637mr44515535e9.19.1744888571754;
-        Thu, 17 Apr 2025 04:16:11 -0700 (PDT)
-Received: from krava ([2a00:102a:400b:c830:675c:d00d:19b9:1f1c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4405b54224bsm49227705e9.38.2025.04.17.04.16.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Apr 2025 04:16:11 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 17 Apr 2025 13:16:08 +0200
-To: Feng Yang <yangfeng59949@163.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	hengqi.chen@gmail.com, olsajiri@gmail.com, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 bpf-next 0/3] libbpf: Fix event name too long error
- and add tests
-Message-ID: <aADi-FfI-PljQzcO@krava>
-References: <20250417014848.59321-1-yangfeng59949@163.com>
+	s=arc-20240116; t=1744888799; c=relaxed/simple;
+	bh=EaA/y+zhy5Or9j5JTA2kf0Ms6ZLviEs08ZXslBXBvVU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VPOuOfqWLe1E1cEJXbNrsYPXUxHhmN3q8m/n6S3u6WNUIPuGMeAkfOiuWG58T/+zSlZeaG6qiLKq7KPpxyUtANI9y40WaRcatL5CnA1vQPcpTS8xrWbwIQD5p70QgRvm+27S3B3Yr8sCHvS7Mllipac2uUw6xXzYPJpmW0RMM+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru; spf=pass smtp.mailfrom=nppct.ru; dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b=IP1EghCx; arc=none smtp.client-ip=195.133.245.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nppct.ru
+Received: from mail.nppct.ru (localhost [127.0.0.1])
+	by mail.nppct.ru (Postfix) with ESMTP id 48A7F1C0E76
+	for <bpf@vger.kernel.org>; Thu, 17 Apr 2025 14:19:54 +0300 (MSK)
+Authentication-Results: mail.nppct.ru (amavisd-new); dkim=pass (1024-bit key)
+	reason="pass (just generated, assumed good)" header.d=nppct.ru
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nppct.ru; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:to:subject:subject
+	:user-agent:mime-version:date:date:message-id; s=dkim; t=
+	1744888789; x=1745752790; bh=EaA/y+zhy5Or9j5JTA2kf0Ms6ZLviEs08ZX
+	slBXBvVU=; b=IP1EghCxVJNI5E2m5ldGSukylBB3RN/tu4US6WnQjAFDWET3qo4
+	QAs5O1VMXXaTUmzo1qJsjh4XrVLJdr4E02h8gV08f74iCtUfCUuwOvSai2h46gCW
+	P7WCAXV9t3Q9GhXVwRIRrHtocNKnVWFjr/pSRLvlpbDlyWeEVs/mHPzo=
+X-Virus-Scanned: Debian amavisd-new at mail.nppct.ru
+Received: from mail.nppct.ru ([127.0.0.1])
+	by mail.nppct.ru (mail.nppct.ru [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id et47TbGKQby5 for <bpf@vger.kernel.org>;
+	Thu, 17 Apr 2025 14:19:49 +0300 (MSK)
+Received: from [172.16.0.185] (unknown [176.59.174.214])
+	by mail.nppct.ru (Postfix) with ESMTPSA id 750791C08C3;
+	Thu, 17 Apr 2025 14:19:37 +0300 (MSK)
+Message-ID: <ff6eed52-5f1f-4070-90dc-8cf057f35e41@nppct.ru>
+Date: Thu, 17 Apr 2025 14:19:36 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250417014848.59321-1-yangfeng59949@163.com>
-
-On Thu, Apr 17, 2025 at 09:48:45AM +0800, Feng Yang wrote:
-> From: Feng Yang <yangfeng@kylinos.cn>
-> 
-> Hi everyone,
-> 
-> This series tries to fix event name too long error and add tests.
-> 
-> When the binary path is excessively long, the generated probe_name in libbpf
-> exceeds the kernel's MAX_EVENT_NAME_LEN limit (64 bytes).
-> This causes legacy uprobe event attachment to fail with error code -22.
-> 
-> The fix reorders the fields to place the unique ID before the name.
-> This ensures that even if truncation occurs via snprintf, the unique ID
-> remains intact, preserving event name uniqueness. Additionally, explicit
-> checks with MAX_EVENT_NAME_LEN are added to enforce length constraints.
-> ---
-> Changes in v5:
-> - use strrchr instead of basename.
-> - kprobe_test add __weak. Thanks, Andrii Nakryiko!
-> - Link to v4: https://lore.kernel.org/all/20250415093907.280501-1-yangfeng59949@163.com/
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-thanks,
-jirka
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] xen-netfront: handle NULL returned by
+ xdp_convert_buff_to_frame()
+To: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+ Jakub Kicinski <kuba@kernel.org>
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, xen-devel@lists.xenproject.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ lvc-project@linuxtesting.org, stable@vger.kernel.org
+References: <20250414183403.265943-1-sdl@nppct.ru>
+ <20250416175835.687a5872@kernel.org>
+ <fa91aad9-f8f3-4b27-81b3-4c963e2e64aa@nppct.ru>
+ <0c29a3f9-9e22-4e44-892d-431f06555600@suse.com>
+ <452bac2e-2840-4db7-bbf4-c41e94d437a8@nppct.ru>
+ <ed8dec2a-f507-49be-a6f3-fb8a91bfef01@suse.com>
+ <8264519a-d58a-486e-b3c5-dba400658513@nppct.ru>
+ <4679ca25-572b-44aa-bc00-cb9dc1c0080c@suse.com>
+Content-Language: en-US
+From: Alexey <sdl@nppct.ru>
+In-Reply-To: <4679ca25-572b-44aa-bc00-cb9dc1c0080c@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-> 
-> Changes in v4:
-> - add changelog. 
-> - gen_uprobe_legacy_event_name and gen_kprobe_legacy_event_name are combined into a function
-> - kprobe_test use normal module function. Thanks, Jiri Olsa!
-> - Link to v3: https://lore.kernel.org/bpf/20250414093402.384872-1-yangfeng59949@163.com/
-> 
-> Changes in v3:
-> - add __sync_fetch_and_add(&index) and let snprintf() do the trimming. Thanks, Andrii Nakryiko!
-> - add selftests.
-> - Link to v2: https://lore.kernel.org/all/20250411080545.319865-1-yangfeng59949@163.com/
-> 
-> Changes in v2:
-> - Use basename() and %.32s to fix. Thanks, Hengqi Chen!
-> - Link to v1: https://lore.kernel.org/all/20250410052712.206785-1-yangfeng59949@163.com/
-> 
-> Feng Yang (3):
->   libbpf: Fix event name too long error
->   selftests/bpf: Add test for attaching uprobe with long event names
->   selftests/bpf: Add test for attaching kprobe with long event names
-> 
->  tools/lib/bpf/libbpf.c                        | 43 ++++------
->  .../selftests/bpf/prog_tests/attach_probe.c   | 84 +++++++++++++++++++
->  .../selftests/bpf/test_kmods/bpf_testmod.c    |  4 +
->  3 files changed, 104 insertions(+), 27 deletions(-)
-> 
-> -- 
-> 2.43.0
-> 
+On 17.04.2025 13:23, Jürgen Groß wrote:
+> On 17.04.25 12:06, Alexey wrote:
+>>
+>> On 17.04.2025 11:51, Juergen Gross wrote:
+>>> On 17.04.25 10:45, Alexey wrote:
+>>>>
+>>>> On 17.04.2025 10:12, Jürgen Groß wrote:
+>>>>> On 17.04.25 09:00, Alexey wrote:
+>>>>>>
+>>>>>> On 17.04.2025 03:58, Jakub Kicinski wrote:
+>>>>>>> On Mon, 14 Apr 2025 18:34:01 +0000 Alexey Nepomnyashih wrote:
+>>>>>>>>           get_page(pdata);
+>>>>>>> Please notice this get_page() here.
+>>>>>>>
+>>>>>>>>           xdpf = xdp_convert_buff_to_frame(xdp);
+>>>>>>>> +        if (unlikely(!xdpf)) {
+>>>>>>>> + trace_xdp_exception(queue->info->netdev, prog, act);
+>>>>>>>> +            break;
+>>>>>>>> +        }
+>>>>>> Do you mean that it would be better to move the get_page(pdata) 
+>>>>>> call lower,
+>>>>>> after checking for NULL in xdpf, so that the reference count is 
+>>>>>> only increased
+>>>>>> after a successful conversion?
+>>>>>
+>>>>> I think the error handling here is generally broken (or at least very
+>>>>> questionable).
+>>>>>
+>>>>> I suspect that in case of at least some errors the get_page() is 
+>>>>> leaking
+>>>>> even without this new patch.
+>>>>>
+>>>>> In case I'm wrong a comment reasoning why there is no leak should be
+>>>>> added.
+>>>>>
+>>>>>
+>>>>> Juergen
+>>>>
+>>>> I think pdata is freed in xdp_return_frame_rx_napi() -> __xdp_return()
+>>>
+>>> Agreed. But what if xennet_xdp_xmit() returns an error < 0?
+>>>
+>>> In this case xdp_return_frame_rx_napi() won't be called.
+>>>
+>>>
+>>> Juergen
+>>
+>> Agreed. There is no explicit freed pdata in the calling function
+>> xennet_get_responses(). Without this, the page referenced by pdata
+>> could be leaked.
+>>
+>> I suggest:
+>
+> Could you please merge the two if () blocks, as they share the
+> call of xdp_return_frame_rx_napi() now? Something like:
+>
+> if (unlikely(err <= 0)) {
+>     if (err < 0)
+>         trace_xdp_exception(queue->info->netdev, prog, act);
+>     xdp_return_frame_rx_napi(xdpf);
+> }
+>
+> Juergen
+>
+> P.S.: please don't use HTML in emails
+
+I can't do this because xennet_xdp_xmit() can return a value > 0
+
+
 
