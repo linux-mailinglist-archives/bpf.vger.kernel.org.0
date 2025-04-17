@@ -1,102 +1,135 @@
-Return-Path: <bpf+bounces-56121-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56122-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB71DA9195A
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 12:30:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB83AA91A32
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 13:12:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5101619E3E38
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 10:30:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 714395A09C1
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 11:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6375722D7B9;
-	Thu, 17 Apr 2025 10:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3D32376EC;
+	Thu, 17 Apr 2025 11:12:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uniyKtCW"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="ZIADA/NB"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D631F1CAA97;
-	Thu, 17 Apr 2025 10:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C20C23645F;
+	Thu, 17 Apr 2025 11:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744885799; cv=none; b=kML2fjVVSS1+NUzGaX99Lm/4xrznRSB40DAO9n2pA4Zp/xP3rXArCq5wAlwXUseKBh5dg2LScjSM5Ub7meN4ye8OJgJHQ3I5sCmbvwNCd92yoK7UBOML2TzMTkELvP2cB4wSYz5w2XxL/tZCTR2tSSefJ5icpgZ5c6XjyjZ2Mu8=
+	t=1744888345; cv=none; b=S9227j0ssDDFMosFj1z5u3/q2oW9pB/sY8vL4Xsl7GinHmaJt00rrWM4WFCifZjoLgC3A6Lr1uGERavvtv/7vnJigoPhTtozjifZiuSJT1ZhtwbRIZ+DI47ZPZ/m4QJh097o9iHc8zNSCewucGItmiE3EC73j8FSXmhCvCLWDz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744885799; c=relaxed/simple;
-	bh=L5TNFNCZpdgfPBk8qeoQJb7+QsGbPtI7TchHnfcbQNU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=qcG6uy5THOhqaNtz4Pb7xjsKLhNQTl728FI+gx+nYaDOi7gD9wC1R5+pjAOCsdvorQf3fEMuEufm57MDYQd44jEUGOU11C6MMAFaHTm47MpC8zT/nIWHfSHY5Uyfi69zeRN1Atqr27kYnSGlEk6ElFh0K4Rig6YyXwZ7dUqJWXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uniyKtCW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DDEDC4CEE4;
-	Thu, 17 Apr 2025 10:29:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744885798;
-	bh=L5TNFNCZpdgfPBk8qeoQJb7+QsGbPtI7TchHnfcbQNU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=uniyKtCWsLKK16Ju1bjUvXKSGXeCqgHUMzg1TNc286Rzwr7Lp5j0SscODw4pAXa6N
-	 1v2jxCLsgYolN3IKD6dBiqS3Ok+haDxTViJR/eCTLnS8wwiYSmco7ueUgSTMweIihs
-	 +WyX2b8KF+Ta8RRaqAZFIJ5hLlZjHT5dQAL28iodHsY149mL4gxSlDICY1+lZZjD6v
-	 aKzRta9RFXjVu9Iyi97ILJMjAX7saeh1MXav44JDMKTeiNayxc/l6OgC+JVMTy7fcU
-	 Em5SiAc649kjGF5GmR/fe7c4wK/FX8JbrQQQoTC+8vUUoQUtDbDncnUP1/W7taFRdh
-	 sjCHZRYpfJQwA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 71884380664C;
-	Thu, 17 Apr 2025 10:30:37 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1744888345; c=relaxed/simple;
+	bh=zKR49UWsXQlKIMA1VnL+BkqgO+3iF8iLPVDDfF2KoTE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qJv86Il9HqLtscLyVepF/2S8m/x0VJulXPSa8zvBWZuchr/O4G6UWUyWFznvNE8KjgnwSqRoajoPJpzF2/wy4MpHHYFytP+KKoPa/sfquDczEHSfMFI+RNlieWHMDIr/7cCW3iixL2DS6JcI2oLoGR6XHX/tZxPEdTqhAfK/izs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=ZIADA/NB; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.202] ([71.202.166.45])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 53HBB0dU3967739
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Thu, 17 Apr 2025 04:11:01 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 53HBB0dU3967739
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025032001; t=1744888264;
+	bh=zKR49UWsXQlKIMA1VnL+BkqgO+3iF8iLPVDDfF2KoTE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZIADA/NBWFdjMUgJTKpv9M9Wy2YG9IZEPFByL8wYabsxbBoRuZfKRlm/KXHCD1Dct
+	 p+vwf14YsIuc+VHp9bDfack/1J0ZEDi3/LMHCo05xDW9TD4JrJ0GM5fVVA/piqxPhD
+	 UyV8JWSU0hR2PMwkuYuHLcqgii53bDcW9KmA0ITTnJZG4RxQYf1Gr8LMHk+DKpR9xo
+	 v/L3GNQ4ChUSYncpwgOQsPYYlB/v/0qZd/JiW4t/kLzx/6ZLdqruZ97wB6zyl1mziC
+	 tKwEE+12hM3fNBR36tO17t9Oq8pShTsP2t1ihwsRhIESP8RHTn9IcCLiPfhw0jeR7+
+	 9wRv9KyfJmA3A==
+Message-ID: <edbeb41d-3c38-4778-9a7c-255edc7cd5fb@zytor.com>
+Date: Thu, 17 Apr 2025 04:10:59 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v4 0/3] Bug fixes from XDP and perout series
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174488583626.4024823.6954419136495228052.git-patchwork-notify@kernel.org>
-Date: Thu, 17 Apr 2025 10:30:36 +0000
-References: <20250415090543.717991-1-m-malladi@ti.com>
-In-Reply-To: <20250415090543.717991-1-m-malladi@ti.com>
-To: Meghana Malladi <m-malladi@ti.com>
-Cc: dan.carpenter@linaro.org, javier.carrasco.cruz@gmail.com,
- diogo.ivo@siemens.com, horms@kernel.org, jacob.e.keller@intel.com,
- john.fastabend@gmail.com, hawk@kernel.org, daniel@iogearbox.net,
- ast@kernel.org, richardcochran@gmail.com, pabeni@redhat.com, kuba@kernel.org,
- edumazet@google.com, davem@davemloft.net, andrew+netdev@lunn.ch,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, srk@ti.com, vigneshr@ti.com,
- rogerq@kernel.org, danishanwar@ti.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 13/15] x86/msr: Use the alternatives mechanism to
+ read MSR
+To: Francesco Lavra <francescolavra.fl@gmail.com>
+Cc: acme@kernel.org, adrian.hunter@intel.com, ajay.kaher@broadcom.com,
+        alexander.shishkin@linux.intel.com, andrew.cooper3@citrix.com,
+        bcm-kernel-feedback-list@broadcom.com, boris.ostrovsky@oracle.com,
+        bp@alien8.de, bpf@vger.kernel.org, dave.hansen@linux.intel.com,
+        decui@microsoft.com, haiyangz@microsoft.com, hpa@zytor.com,
+        irogers@google.com, jgross@suse.com, jolsa@kernel.org,
+        kan.liang@linux.intel.com, kvm@vger.kernel.org, kys@microsoft.com,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        llvm@lists.linux.dev, luto@kernel.org, mark.rutland@arm.com,
+        mingo@redhat.com, namhyung@kernel.org, pbonzini@redhat.com,
+        peterz@infradead.org, seanjc@google.com, tglx@linutronix.de,
+        tony.luck@intel.com, virtualization@lists.linux.dev,
+        vkuznets@redhat.com, wei.liu@kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org
+References: <0f4f2ed70829fffb2eb816e34e26be22681705a5.camel@gmail.com>
+Content-Language: en-US
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <0f4f2ed70829fffb2eb816e34e26be22681705a5.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On 4/14/2025 10:13 AM, Francesco Lavra wrote:
+> This works only if this function has been called directly (e.g. via
+> `call asm_xen_write_msr`), but doesn't work with alternative call types
+> (like indirect calls). Not sure why one might want to use an indirect
+> call to invoke asm_xen_write_msr, but this creates a hidden coupling
+> between caller and callee.
+> I don't have a suggestion on how to get rid of this coupling, other
+> than setting ipdelta in _ASM_EXTABLE_FUNC_REWIND() to 0 and adjusting
+> the _ASM_EXTABLE_TYPE entries at the call sites to consider the
+> instruction that follows the function call (instead of the call
+> instruction) as the faulting instruction (which seems pretty ugly, at
+> least because what follows the function call could be an instruction
+> that might itself fault). But you may want to make this caveat explicit
+> in the comment.
 
-This series was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Tue, 15 Apr 2025 14:35:40 +0530 you wrote:
-> This patch series consists of bug fixes from the XDP series:
-> 1. Fixes a kernel warning that occurs when bringing down the
->    network interface.
-> 2. Resolves a potential NULL pointer dereference in the
->    emac_xmit_xdp_frame() function.
-> 3. Resolves a potential NULL pointer dereference in the
->    icss_iep_perout_enable() function
-> 
-> [...]
-
-Here is the summary with links:
-  - [net,v4,1/3] net: ti: icssg-prueth: Fix kernel warning while bringing down network interface
-    https://git.kernel.org/netdev/net/c/75bc74446644
-  - [net,v4,2/3] net: ti: icssg-prueth: Fix possible NULL pointer dereference inside emac_xmit_xdp_frame()
-    https://git.kernel.org/netdev/net/c/8ed2fa661350
-  - [net,v4,3/3] net: ti: icss-iep: Fix possible NULL pointer dereference for perout request
-    https://git.kernel.org/netdev/net/c/7349c9e99793
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Good idea, will state that in the comment.
 
