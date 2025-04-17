@@ -1,135 +1,154 @@
-Return-Path: <bpf+bounces-56122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB83AA91A32
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 13:12:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79A9EA91A61
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 13:16:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 714395A09C1
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 11:12:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1219719E539C
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 11:16:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3D32376EC;
-	Thu, 17 Apr 2025 11:12:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 368DC238D35;
+	Thu, 17 Apr 2025 11:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="ZIADA/NB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NOld4/TR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C20C23645F;
-	Thu, 17 Apr 2025 11:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B195523817B;
+	Thu, 17 Apr 2025 11:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744888345; cv=none; b=S9227j0ssDDFMosFj1z5u3/q2oW9pB/sY8vL4Xsl7GinHmaJt00rrWM4WFCifZjoLgC3A6Lr1uGERavvtv/7vnJigoPhTtozjifZiuSJT1ZhtwbRIZ+DI47ZPZ/m4QJh097o9iHc8zNSCewucGItmiE3EC73j8FSXmhCvCLWDz4=
+	t=1744888575; cv=none; b=PejLLbjEoLGOECt9Pq6N9Oq1Il2nA0DN0XyGQb8dVwr3S62Def0r4eRnIy4eMZ6n294OKY2lu0uXxPHbZR8Kpb1HFLcOsiMpUy8cM5/bNyYCDwZlQ67IEb0tuzGONRtLXfF8hxkX7YSq7GXL5+2KI9xmsYgGmOJ/x3suANuPGFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744888345; c=relaxed/simple;
-	bh=zKR49UWsXQlKIMA1VnL+BkqgO+3iF8iLPVDDfF2KoTE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qJv86Il9HqLtscLyVepF/2S8m/x0VJulXPSa8zvBWZuchr/O4G6UWUyWFznvNE8KjgnwSqRoajoPJpzF2/wy4MpHHYFytP+KKoPa/sfquDczEHSfMFI+RNlieWHMDIr/7cCW3iixL2DS6JcI2oLoGR6XHX/tZxPEdTqhAfK/izs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=ZIADA/NB; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [192.168.7.202] ([71.202.166.45])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 53HBB0dU3967739
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Thu, 17 Apr 2025 04:11:01 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 53HBB0dU3967739
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025032001; t=1744888264;
-	bh=zKR49UWsXQlKIMA1VnL+BkqgO+3iF8iLPVDDfF2KoTE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZIADA/NBWFdjMUgJTKpv9M9Wy2YG9IZEPFByL8wYabsxbBoRuZfKRlm/KXHCD1Dct
-	 p+vwf14YsIuc+VHp9bDfack/1J0ZEDi3/LMHCo05xDW9TD4JrJ0GM5fVVA/piqxPhD
-	 UyV8JWSU0hR2PMwkuYuHLcqgii53bDcW9KmA0ITTnJZG4RxQYf1Gr8LMHk+DKpR9xo
-	 v/L3GNQ4ChUSYncpwgOQsPYYlB/v/0qZd/JiW4t/kLzx/6ZLdqruZ97wB6zyl1mziC
-	 tKwEE+12hM3fNBR36tO17t9Oq8pShTsP2t1ihwsRhIESP8RHTn9IcCLiPfhw0jeR7+
-	 9wRv9KyfJmA3A==
-Message-ID: <edbeb41d-3c38-4778-9a7c-255edc7cd5fb@zytor.com>
-Date: Thu, 17 Apr 2025 04:10:59 -0700
+	s=arc-20240116; t=1744888575; c=relaxed/simple;
+	bh=R5O71Js30BHfakH/NEkLiIkAkq1QV6lpTAlKWsMZPn4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K9dDHlXNNVfKgbiTTVuyi/fZI00Oq2s71JGdfhEgYm0WxMuv6dHi3eHVp6NQRHsuzwd3LbX+egfSN4ld3mse/cUIq5yWPGUAph9bBJGNfvuF3BqfWOjisj4rbLJt4amS4Xma32x/BWrTXwqH0uhidwdq9jlg/jCC813A/rkK38Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NOld4/TR; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-43d2d952eb1so4269725e9.1;
+        Thu, 17 Apr 2025 04:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744888572; x=1745493372; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nska21crBmdz6JojasinsB56GkEwbIFHHV+nNujavCA=;
+        b=NOld4/TRVEJcC9boGAK+SKtmdj2ESZavuRjCih8qFZj3xIcCig34v1P4x0Ho0r2Uq9
+         dS+O0RoCXDpeKxqODhlS8ihiw6kPAFamjyTJH9jmNI2JyQtlnqJspA/jJCHQ96h6wzku
+         kyB/ERCiTSMKVGT0rcSa7bruTsFoDO8HWkfZVlF4b5J4ATqEY/wTT7nZeJnD7L5MHtmL
+         +e6Vof0aii5tNKO0ceSkdhJ58UDrO3BsnfuBOaQppgH4mG+OzrmXOn3LJYe6ABLm5M4J
+         CuifZjxs99XHSlNdyxqAcA79xJF9Sia6leK8NiAPUNzc4E8DzHnzI0JZHLOGxJrmYWvT
+         ycOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744888572; x=1745493372;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nska21crBmdz6JojasinsB56GkEwbIFHHV+nNujavCA=;
+        b=ZCkcSWtlm/fBnFgEPHOTJgx+wLseYPCVym58KhhLS81gwnAfOhPbxVjGqKL/hqZlNc
+         c6V2SnNsWGKkt68S4ly8jp5edADWM6ViQzPQDE9wV6gE80lC4WZgpfy2NiE0jNgo9U2t
+         ygqhFZhHAF+ytHP1vNIUPgReEfxRzBIaBbtfVZtgK5MH6MCz+wxoQhtc2p35fcIEsZkA
+         sl2H4DU9/AKggcBAJvQ2NO7MVWE1sEKgVqbXp1IYInbKyMDTKk8xZWWTCzEQa0MDX685
+         OW/C1sHPiZJGKQo62lJMM36h2QNCI2qL5pe2YIfyIxGtNx45MB8Ys6ymSA9hQo8I9FpU
+         TGDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU1s5XcbVeZfW6T20o3jm4CXCobIWPWfewaW/4Y7dRuQ9APoR68IDO7Ob/UQbQMuJOsZLnthRDusRCHY56n@vger.kernel.org, AJvYcCU6ATjMKBgxJWhE1/gKvwS+N10mL7/JttR3ctI0nTDrbxeS8DA6k7NIMHFGXdBDQ4y9PWM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YySXqBWAsfyR2M4Zdo2oOey2H/0jXW53CIbiSeZQlBBIksDWrBr
+	WFg1PJMBoalWuOdVeijju+qgwi4ZNCHZViUCt2IHDLojoqQR2EfO
+X-Gm-Gg: ASbGnctuOVcYAL0JQRMAcQpo4i0mY1ZTFzeiDMNEFcvdHVWsL/ySlv1gFGKlD7HDtjt
+	a4+YCJ7HTrBIYiFDc3gCyLTnP5NujH5us/AZjWXTP6pO7U2vGWqNlRXZeelVWIKcF9+vjzMIkHC
+	D48joT1qY6+/1xCHGkMverrSyvxjzkZ60XF8QFvDNgaI2F5Xgd6WLQHAHMdkAXq+OmrwCz8ogLX
+	VkJ5FHY2oZ/zIBKERmVS3AX/pQ6fynEB6O7FRCTlmGZC+5NYi94+VxbhFgw/yBwTkds7ibOetXC
+	XEZ77O5+rnKcQmnOJqfiidgT7EVLh9wq
+X-Google-Smtp-Source: AGHT+IHb9v83zlnCd8nEWcdCrNOaKQ7h/prAuXYrbjfN/0KrYcDFFbB3UDQBtoUx6diru6/n01SsQA==
+X-Received: by 2002:a05:600c:354c:b0:43c:e70d:4504 with SMTP id 5b1f17b1804b1-4405d636637mr44515535e9.19.1744888571754;
+        Thu, 17 Apr 2025 04:16:11 -0700 (PDT)
+Received: from krava ([2a00:102a:400b:c830:675c:d00d:19b9:1f1c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4405b54224bsm49227705e9.38.2025.04.17.04.16.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Apr 2025 04:16:11 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 17 Apr 2025 13:16:08 +0200
+To: Feng Yang <yangfeng59949@163.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	hengqi.chen@gmail.com, olsajiri@gmail.com, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 bpf-next 0/3] libbpf: Fix event name too long error
+ and add tests
+Message-ID: <aADi-FfI-PljQzcO@krava>
+References: <20250417014848.59321-1-yangfeng59949@163.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 13/15] x86/msr: Use the alternatives mechanism to
- read MSR
-To: Francesco Lavra <francescolavra.fl@gmail.com>
-Cc: acme@kernel.org, adrian.hunter@intel.com, ajay.kaher@broadcom.com,
-        alexander.shishkin@linux.intel.com, andrew.cooper3@citrix.com,
-        bcm-kernel-feedback-list@broadcom.com, boris.ostrovsky@oracle.com,
-        bp@alien8.de, bpf@vger.kernel.org, dave.hansen@linux.intel.com,
-        decui@microsoft.com, haiyangz@microsoft.com, hpa@zytor.com,
-        irogers@google.com, jgross@suse.com, jolsa@kernel.org,
-        kan.liang@linux.intel.com, kvm@vger.kernel.org, kys@microsoft.com,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        llvm@lists.linux.dev, luto@kernel.org, mark.rutland@arm.com,
-        mingo@redhat.com, namhyung@kernel.org, pbonzini@redhat.com,
-        peterz@infradead.org, seanjc@google.com, tglx@linutronix.de,
-        tony.luck@intel.com, virtualization@lists.linux.dev,
-        vkuznets@redhat.com, wei.liu@kernel.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org
-References: <0f4f2ed70829fffb2eb816e34e26be22681705a5.camel@gmail.com>
-Content-Language: en-US
-From: Xin Li <xin@zytor.com>
-Autocrypt: addr=xin@zytor.com; keydata=
- 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
- l75w1xInsg==
-In-Reply-To: <0f4f2ed70829fffb2eb816e34e26be22681705a5.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250417014848.59321-1-yangfeng59949@163.com>
 
-On 4/14/2025 10:13 AM, Francesco Lavra wrote:
-> This works only if this function has been called directly (e.g. via
-> `call asm_xen_write_msr`), but doesn't work with alternative call types
-> (like indirect calls). Not sure why one might want to use an indirect
-> call to invoke asm_xen_write_msr, but this creates a hidden coupling
-> between caller and callee.
-> I don't have a suggestion on how to get rid of this coupling, other
-> than setting ipdelta in _ASM_EXTABLE_FUNC_REWIND() to 0 and adjusting
-> the _ASM_EXTABLE_TYPE entries at the call sites to consider the
-> instruction that follows the function call (instead of the call
-> instruction) as the faulting instruction (which seems pretty ugly, at
-> least because what follows the function call could be an instruction
-> that might itself fault). But you may want to make this caveat explicit
-> in the comment.
+On Thu, Apr 17, 2025 at 09:48:45AM +0800, Feng Yang wrote:
+> From: Feng Yang <yangfeng@kylinos.cn>
+> 
+> Hi everyone,
+> 
+> This series tries to fix event name too long error and add tests.
+> 
+> When the binary path is excessively long, the generated probe_name in libbpf
+> exceeds the kernel's MAX_EVENT_NAME_LEN limit (64 bytes).
+> This causes legacy uprobe event attachment to fail with error code -22.
+> 
+> The fix reorders the fields to place the unique ID before the name.
+> This ensures that even if truncation occurs via snprintf, the unique ID
+> remains intact, preserving event name uniqueness. Additionally, explicit
+> checks with MAX_EVENT_NAME_LEN are added to enforce length constraints.
+> ---
+> Changes in v5:
+> - use strrchr instead of basename.
+> - kprobe_test add __weak. Thanks, Andrii Nakryiko!
+> - Link to v4: https://lore.kernel.org/all/20250415093907.280501-1-yangfeng59949@163.com/
 
-Good idea, will state that in the comment.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
+jirka
+
+
+> 
+> Changes in v4:
+> - add changelog. 
+> - gen_uprobe_legacy_event_name and gen_kprobe_legacy_event_name are combined into a function
+> - kprobe_test use normal module function. Thanks, Jiri Olsa!
+> - Link to v3: https://lore.kernel.org/bpf/20250414093402.384872-1-yangfeng59949@163.com/
+> 
+> Changes in v3:
+> - add __sync_fetch_and_add(&index) and let snprintf() do the trimming. Thanks, Andrii Nakryiko!
+> - add selftests.
+> - Link to v2: https://lore.kernel.org/all/20250411080545.319865-1-yangfeng59949@163.com/
+> 
+> Changes in v2:
+> - Use basename() and %.32s to fix. Thanks, Hengqi Chen!
+> - Link to v1: https://lore.kernel.org/all/20250410052712.206785-1-yangfeng59949@163.com/
+> 
+> Feng Yang (3):
+>   libbpf: Fix event name too long error
+>   selftests/bpf: Add test for attaching uprobe with long event names
+>   selftests/bpf: Add test for attaching kprobe with long event names
+> 
+>  tools/lib/bpf/libbpf.c                        | 43 ++++------
+>  .../selftests/bpf/prog_tests/attach_probe.c   | 84 +++++++++++++++++++
+>  .../selftests/bpf/test_kmods/bpf_testmod.c    |  4 +
+>  3 files changed, 104 insertions(+), 27 deletions(-)
+> 
+> -- 
+> 2.43.0
+> 
 
