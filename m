@@ -1,226 +1,191 @@
-Return-Path: <bpf+bounces-56139-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56140-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57E95A91EEE
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 15:56:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77240A91F31
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 16:10:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E3DB465770
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 13:55:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 239E416D676
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 14:10:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3AF22512C6;
-	Thu, 17 Apr 2025 13:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AS8S5WRt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57ADD2505B9;
+	Thu, 17 Apr 2025 14:10:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4496D250C05;
-	Thu, 17 Apr 2025 13:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AA7524EF6C;
+	Thu, 17 Apr 2025 14:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744898120; cv=none; b=s+4f4tEPYnnMLdd3x8ctu0Z0p6O6B2/fCcgwuLtSp4qC4nabjV+/IbWra60RmginvsHxpviOpIY22Ztq9ukUi2UzbBUhYzIlybGqo/TsV0FLjvc2MOlQj8Dix6Cx2aCYtp3Cd3+l29GuFIkGKpXzRqAx3i9iHbkjPU6NAiZBssQ=
+	t=1744899015; cv=none; b=NxCe6Ige+jD8Dg1nW5s4LQue6ebOX5Azq4BizbxLaNA1567HEkZFmVd2nCNwbEJAhNWPPzaqIledwuj5rebsvKs0iYS7mDmj69T+yd372XR3vX9rmspURpqbmepKPdmh6Sm82Sc6kz4x1z0deYSubXmBOtnnMGwRnUHbjTn+pYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744898120; c=relaxed/simple;
-	bh=UZKqP3+llQ3QOmeT2lY8PQ4zeXE9rf8nCh9ro5bpbvM=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=F0KiiFtrf18jLm9so1Hy9jPmz62RAa34ywqpFg6dODpu9eSMUq/4cEctegBt0wdZGBvzCb3zMDQ7L+lXJ9yI2SaUFYV0ppbPCqxDdGNJYhKXjmbMKYLZzx2ATNO+DNLc8hucyP+S5NbhiHbx0pA8zU2AgXzLDwaU5Jd4l9uqSN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AS8S5WRt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53774C4CEE4;
-	Thu, 17 Apr 2025 13:55:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744898119;
-	bh=UZKqP3+llQ3QOmeT2lY8PQ4zeXE9rf8nCh9ro5bpbvM=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=AS8S5WRta1v0mmBnURA1c2CaZ8hWnrGT5VBjw1PPq5hQanBTjr/oVS9ZV3pH11YzD
-	 D4iOpaKImuBnrX6/PpbuNsrr4VCeU+4vtbIVSZU/WZU/nDWfP28SKaJTkcEWGGCUes
-	 QTUefpV2qqgkVJz0wfMOPEq6LKlNlUxrGkOsanVeFaOlxQH1waq1be+GRB+vLTnmx3
-	 PTwaJn27X7jl/7+u/T4woUZpQFBmlhUSk+2UrEl/2xnU7w26IpZLo/WnGEGmcGJMWX
-	 u7CtzOQ66MDh2Kmn+ssZ1SqmSdTgnqoBQThKXr3GxJCFiOj5PVfNuJCjAyZ+HlEs/C
-	 Vt4DNitGO31yg==
-Subject: [PATCH net-next V5 2/2] veth: apply qdisc backpressure on full
- ptr_ring to reduce TX drops
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-To: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
- tom@herbertland.com, Eric Dumazet <eric.dumazet@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
- dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
- kernel-team@cloudflare.com, phil@nwl.cc
-Date: Thu, 17 Apr 2025 15:55:15 +0200
-Message-ID: <174489811513.355490.8155513147018728621.stgit@firesoul>
-In-Reply-To: <174489803410.355490.13216831426556849084.stgit@firesoul>
-References: <174489803410.355490.13216831426556849084.stgit@firesoul>
-User-Agent: StGit/1.5
+	s=arc-20240116; t=1744899015; c=relaxed/simple;
+	bh=grUKcXQg7P2JBY8UPMAZIicOLz6vwNYpw2r6RoZTR4g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MMAlv2s5YhQav5rxvZIj7RHmmitc1DTtc52ZQkdfV7q8KLdtXTR+T/FhcikrIxWtIHMR4yUrod4EtHS/dSADwa7Gb7pNoUeUvm3qKCBkcfwMrRwYnUl0M38WGNMLuHV6KJJ9OjTFbyBW7iSUb8n03ZoftXRA0Rj5oatqEFS8sEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Zdfsg1t9Bz4f3m6s;
+	Thu, 17 Apr 2025 22:09:43 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 847D41A17B9;
+	Thu, 17 Apr 2025 22:10:08 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP2 (Coremail) with SMTP id Syh0CgDHhGe+CwFowTzCJg--.63259S2;
+	Thu, 17 Apr 2025 22:10:08 +0800 (CST)
+Message-ID: <9da88811-cce0-41df-8069-2e8b67541c39@huaweicloud.com>
+Date: Thu, 17 Apr 2025 22:10:06 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC bpf-next 1/4] bpf: add struct largest member size in
+ func model
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Puranjay Mohan <puranjay@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Florent Revest <revest@chromium.org>,
+ Bastien Curutchet <bastien.curutchet@bootlin.com>, ebpf@linuxfoundation.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kselftest@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
+References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
+ <20250411-many_args_arm64-v1-1-0a32fe72339e@bootlin.com>
+ <CAEf4Bzbn6BdXTOb0dTcsQmOMZpp5=DzGS2hHHQ3+dwcja=gv+w@mail.gmail.com>
+ <D98Q8BRNUVS9.11J60C67L1ALR@bootlin.com>
+Content-Language: en-US
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <D98Q8BRNUVS9.11J60C67L1ALR@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgDHhGe+CwFowTzCJg--.63259S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr18Kw48WrWftF1kJF47urg_yoWrGw4fpF
+	ZYg3Z8tF4kJr4xua1qy3yUZrWSq34rCryUCry3tw17tFWDGF1kKFW7KF45ury5Gr1kG342
+	vF42qF45Aa43ZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	4xRDUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-In production, we're seeing TX drops on veth devices when the ptr_ring
-fills up. This can occur when NAPI mode is enabled, though it's
-relatively rare. However, with threaded NAPI - which we use in
-production - the drops become significantly more frequent.
+On 4/17/2025 3:14 PM, Alexis Lothoré wrote:
+> Hi Andrii,
+> 
+> On Wed Apr 16, 2025 at 11:24 PM CEST, Andrii Nakryiko wrote:
+>> On Fri, Apr 11, 2025 at 1:32 PM Alexis Lothoré (eBPF Foundation)
+>> <alexis.lothore@bootlin.com> wrote:
+>>>
+>>> In order to properly JIT the trampolines needed to attach BPF programs
+>>> to functions, some architectures like ARM64 need to know about the
+>>> alignment needed for the function arguments. Such alignment can
+>>> generally be deduced from the argument size, but that's not completely
+>>> true for composite types. In the specific case of ARM64, the AAPCS64 ABI
+>>> defines that a composite type which needs to be passed through stack
+>>> must be aligned on the maximum between 8 and the largest alignment
+>>> constraint of its first-level members. So the JIT compiler needs more
+>>> information about the arguments to make sure to generate code that
+>>> respects those alignment constraints.
+>>>
+>>> For struct arguments, add information about the size of the largest
+>>> first-level member in the struct btf_func_model to allow the JIT
+>>> compiler to guess the needed alignment. The information is quite
+>>
+>> I might be missing something, but how can the *size* of the field be
+>> used to calculate that argument's *alignment*? i.e., I don't
+>> understand why arg_largest_member_size needs to be calculated instead
+>> of arg_largest_member_alignment...
+> 
+> Indeed I initially checked whether I could return directly some alignment
+> info from btf, but it then involves the alignment computation in the btf
+> module. Since there could be minor differences between architectures about
+> alignment requirements, I though it would be better to in fact keep alignment
+> computation out of the btf module. For example, I see that 128 bits values
+> are aligned on 16 bytes on ARM64, while being aligned on 8 bytes on S390.
+> 
+> And since for ARM64, all needed alignments are somehow derived from size
+> (it is either directly size for fundamental types, or alignment of the
+> largest member for structs, which is then size of largest member),
+> returning the size seems to be enough to allow the JIT side to compute
+> alignments.
+>
 
-The underlying issue is that with threaded NAPI, the consumer often runs
-on a different CPU than the producer. This increases the likelihood of
-the ring filling up before the consumer gets scheduled, especially under
-load, leading to drops in veth_xmit() (ndo_start_xmit()).
+Not exactly. The compiler's "packed" and "alignment" attributes cause a
+structure to be aligned differently from its natural alignment.
 
-This patch introduces backpressure by returning NETDEV_TX_BUSY when the
-ring is full, signaling the qdisc layer to requeue the packet. The txq
-(netdev queue) is stopped in this condition and restarted once
-veth_poll() drains entries from the ring, ensuring coordination between
-NAPI and qdisc.
+For example, with the following three structures:
 
-Backpressure is only enabled when a qdisc is attached. Without a qdisc,
-the driver retains its original behavior - dropping packets immediately
-when the ring is full. This avoids unexpected behavior changes in setups
-without a configured qdisc.
+struct s0 {
+     __int128 x;
+};
 
-With a qdisc in place (e.g. fq, sfq) this allows Active Queue Management
-(AQM) to fairly schedule packets across flows and reduce collateral
-damage from elephant flows.
+struct s1 {
+     __int128 x;
+} __attribute__((packed));
 
-A known limitation of this approach is that the full ring sits in front
-of the qdisc layer, effectively forming a FIFO buffer that introduces
-base latency. While AQM still improves fairness and mitigates flow
-dominance, the latency impact is measurable.
+struct s2 {
+     __int128 x;
+} __attribute__((aligned(64)));
 
-In hardware drivers, this issue is typically addressed using BQL (Byte
-Queue Limits), which tracks in-flight bytes needed based on physical link
-rate. However, for virtual drivers like veth, there is no fixed bandwidth
-constraint - the bottleneck is CPU availability and the scheduler's ability
-to run the NAPI thread. It is unclear how effective BQL would be in this
-context.
+Even though the largest member size is the same, s0 will be aligned to 16
+bytes, s1 and s2 are not aligned the same way. s1 has no alignment due to
+the "packed" attribute, while s2 will be aligned to 64 bytes.
 
-This patch serves as a first step toward addressing TX drops. Future work
-may explore adapting a BQL-like mechanism to better suit virtual devices
-like veth.
+When these three structures are passed as function arguments, they will be
+located on different positions on the stack.
 
-Reported-by: Yan Zhai <yan@cloudflare.com>
-Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
----
- drivers/net/veth.c |   55 +++++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 45 insertions(+), 10 deletions(-)
+For the following three functions:
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 7bb53961c0ea..55be225c4e20 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -307,12 +307,10 @@ static void __veth_xdp_flush(struct veth_rq *rq)
- 
- static int veth_xdp_rx(struct veth_rq *rq, struct sk_buff *skb)
- {
--	if (unlikely(ptr_ring_produce(&rq->xdp_ring, skb))) {
--		dev_kfree_skb_any(skb);
--		return NET_RX_DROP;
--	}
-+	if (unlikely(ptr_ring_produce(&rq->xdp_ring, skb)))
-+		return NETDEV_TX_BUSY; /* signal qdisc layer */
- 
--	return NET_RX_SUCCESS;
-+	return NET_RX_SUCCESS; /* same as NETDEV_TX_OK */
- }
- 
- static int veth_forward_skb(struct net_device *dev, struct sk_buff *skb,
-@@ -346,11 +344,11 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct veth_priv *rcv_priv, *priv = netdev_priv(dev);
- 	struct veth_rq *rq = NULL;
--	int ret = NETDEV_TX_OK;
-+	struct netdev_queue *txq;
- 	struct net_device *rcv;
- 	int length = skb->len;
- 	bool use_napi = false;
--	int rxq;
-+	int ret, rxq;
- 
- 	rcu_read_lock();
- 	rcv = rcu_dereference(priv->peer);
-@@ -373,17 +371,43 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
- 	}
- 
- 	skb_tx_timestamp(skb);
--	if (likely(veth_forward_skb(rcv, skb, rq, use_napi) == NET_RX_SUCCESS)) {
-+
-+	ret = veth_forward_skb(rcv, skb, rq, use_napi);
-+	switch (ret) {
-+	case NET_RX_SUCCESS: /* same as NETDEV_TX_OK */
- 		if (!use_napi)
- 			dev_sw_netstats_tx_add(dev, 1, length);
- 		else
- 			__veth_xdp_flush(rq);
--	} else {
-+		break;
-+	case NETDEV_TX_BUSY:
-+		/* If a qdisc is attached to our virtual device, returning
-+		 * NETDEV_TX_BUSY is allowed.
-+		 */
-+		txq = netdev_get_tx_queue(dev, rxq);
-+
-+		if (qdisc_txq_has_no_queue(txq)) {
-+			dev_kfree_skb_any(skb);
-+			goto drop;
-+		}
-+		netif_tx_stop_queue(txq);
-+		/* Restore Eth hdr pulled by dev_forward_skb/eth_type_trans */
-+		__skb_push(skb, ETH_HLEN);
-+		if (use_napi)
-+			__veth_xdp_flush(rq);
-+		/* Cancel TXQ stop for very unlikely race */
-+		if (unlikely(__ptr_ring_empty(&rq->xdp_ring)))
-+			netif_tx_wake_queue(txq);
-+		break;
-+	case NET_RX_DROP: /* same as NET_XMIT_DROP */
- drop:
- 		atomic64_inc(&priv->dropped);
- 		ret = NET_XMIT_DROP;
-+		break;
-+	default:
-+		net_crit_ratelimited("%s(%s): Invalid return code(%d)",
-+				     __func__, dev->name, ret);
- 	}
--
- 	rcu_read_unlock();
- 
- 	return ret;
-@@ -874,9 +898,17 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
- 			struct veth_xdp_tx_bq *bq,
- 			struct veth_stats *stats)
- {
-+	struct veth_priv *priv = netdev_priv(rq->dev);
-+	int queue_idx = rq->xdp_rxq.queue_index;
-+	struct netdev_queue *peer_txq;
-+	struct net_device *peer_dev;
- 	int i, done = 0, n_xdpf = 0;
- 	void *xdpf[VETH_XDP_BATCH];
- 
-+	/* NAPI functions as RCU section */
-+	peer_dev = rcu_dereference_check(priv->peer, rcu_read_lock_bh_held());
-+	peer_txq = netdev_get_tx_queue(peer_dev, queue_idx);
-+
- 	for (i = 0; i < budget; i++) {
- 		void *ptr = __ptr_ring_consume(&rq->xdp_ring);
- 
-@@ -925,6 +957,9 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
- 	rq->stats.vs.xdp_packets += done;
- 	u64_stats_update_end(&rq->stats.syncp);
- 
-+	if (unlikely(netif_tx_queue_stopped(peer_txq)))
-+		netif_tx_wake_queue(peer_txq);
-+
- 	return done;
- }
- 
+int f0(__int128 a, __int128 b, __int128 c, int64_t d, __int128 e, int64_t f, struct s0 g);
+int f1(__int128 a, __int128 b, __int128 c, int64_t d, __int128 e, int64_t f, struct s1 g);
+int f2(__int128 a, __int128 b, __int128 c, int64_t d, __int128 e, int64_t f, struct s2 g);
 
+g will be located at sp+32 in f0, sp + 24 in f1, and some 64-byte aligned
+stack address in f2.
+
+>>> specific, but it allows to keep arch-specific concerns (ie: guessing the
+>>> final needed alignment for an argument) isolated in each JIT compiler.
+>>
+>> couldn't all this information be calculated in the JIT compiler (if
+>> JIT needs that) from BTF?
+> 
+>>From what I understand, the JIT compiler does not have access to BTF info,
+> only a substract from it, arranged in a struct btf_func_model ? This
+> struct btf_func_model already has size info for standard types, but for
+> structs we need some additional info about the members, hence this
+> arg_largest_member_alignment addition in btf_func_model.
+> 
+> Thanks,
+> 
+> Alexis
+> 
 
 
