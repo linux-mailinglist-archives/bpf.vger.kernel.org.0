@@ -1,147 +1,80 @@
-Return-Path: <bpf+bounces-56082-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B381A90FFF
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 02:09:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15E2EA910F4
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 02:58:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12B8546040C
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 00:09:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BC6B1907181
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 00:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E43846C;
-	Thu, 17 Apr 2025 00:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7AE4190485;
+	Thu, 17 Apr 2025 00:58:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hr7E1RmL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="asR2gNEl"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C042479CF;
-	Thu, 17 Apr 2025 00:08:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202774A05;
+	Thu, 17 Apr 2025 00:58:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744848539; cv=none; b=BaJ3Ryej6OupE+K2VoFtl+hfhN+q13sL9+haIJAe+o0PkOPsKUaRs4VgNLyZN+uEDZvZUAtMZ6ZrrQnzDPybiGJtmszgFqrEzSmVEQRsb/TIEy0k8O8o7AF9mXYbMCQkwCbUusRd6pgr/tCu7p1llJ3bdtPNeauY08fqdeSE2rQ=
+	t=1744851517; cv=none; b=ZZXWMpdWoAhdxDV0Z1OLwMPF6rUMc07ENRgms0z6JpXA24fxSEZz+pIzT+h2jpdtN47hzjLsIpq2+dy0gQz7EAKsGsyMoEkixYIQr3qm1Fp8ANcBzgbnimt2CFNhu/cM4iNCUvqFaaoV+aX0vYAO32c4yL+kARHy++wjy1tPhrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744848539; c=relaxed/simple;
-	bh=VS3LVZY+zuP2UHLVuC8I4hhS1Y2XmPsmcUWcoKDowOo=;
+	s=arc-20240116; t=1744851517; c=relaxed/simple;
+	bh=IJ60gUMEGTmb8XxC1mQ13En+4ayrfd2OTpbrOX8ZN1A=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DZ6XgzXz+2sz4PFuEdrnINPH8QufcU+BzoUyB8RjjPw3SpUenWOwJzsr6CeQ2y6rvQRsY/1/vCUUuoGz/MfGqsqz1AUwy+/M84mjLJFKsqU9SusoPwtNOJPVCA2DM3uqSKpYFr9+ThxIwNWjzUV6zgGAMR4Xodki8bQixCS2Pc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hr7E1RmL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDC42C4CEE2;
-	Thu, 17 Apr 2025 00:08:58 +0000 (UTC)
+	 MIME-Version:Content-Type; b=cN/yuDYc303I5MoQfhiOOUPmeog5Or9T4nogwRToqJhMFKdNy6tCxjEuGYJ3pVu/3bEglSPIPDp0C+Hr3apEi0B20I+DI0joaXp8/1RFRPiyddpcWaih1C9zupT+aAZ1aNQBaDYGztyFZUF2F+eVA4Tl+EhqeF8tpnOa5rj78/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=asR2gNEl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FE9CC4CEE2;
+	Thu, 17 Apr 2025 00:58:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744848539;
-	bh=VS3LVZY+zuP2UHLVuC8I4hhS1Y2XmPsmcUWcoKDowOo=;
+	s=k20201202; t=1744851516;
+	bh=IJ60gUMEGTmb8XxC1mQ13En+4ayrfd2OTpbrOX8ZN1A=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Hr7E1RmL3siQy77g4rph6xqk3Z7uUq3Db/Xd0QyNX1Op3j7rxby2YwRkDQU69deBB
-	 ZsHplT6FQJX5LMfKcUyOJvfOrpRtogg7cSSgCFbFDz7TgmVTFq3pCSWLjsjEk1OV+d
-	 XL555eA1dURtyZ8dvsSMVmNx8VeQrLsOkv7zVmT783inykrCqkIo8v/QU7vvSqsjdu
-	 okljT38q0x/nhqiZLfcJV/nEkxWhmzMWdhQYp/5Q5MCiG6wz0D0FJzpuE/bSxPwMx/
-	 LPfzAwGaOm6jGojbOBhqd1xokqt37vnhoLY7kw0juH8FuHN4RK8bFMJ6SdeKpEwtGB
-	 0hcT/T2H3RJvQ==
-Date: Wed, 16 Apr 2025 17:08:57 -0700
+	b=asR2gNEl/7FkbuQ+3UP4beLzsskFfi/ipeAnceSSj7rL1aTmcmirHu0ADrFJl1nA8
+	 NmEEUbzJaHKbo/cypO19YlgFaH0l/Y69kfC5sc1VXmOVwHN17FWQxnjaThmZvG6keA
+	 WUBp2Ozj8xPdpuJgpZfzk19Ftd3wsieylcIL2PESPXlY9WM2IwclfL9ln625Ie1xYW
+	 5oNMh/4Kp9JYKR1e5qdre3WUUOyNO66b94MbZMIa8uP1poMII5p/iK1vqRziVmhFga
+	 UqVdL1MpQB5cN0VUkZDBrs3HTR1J1VxPjI76RUpkT16+QpXkTTDI+Wa92QEvL+mK8/
+	 tEc7ZZS/i3oTw==
+Date: Wed, 16 Apr 2025 17:58:35 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Jason Wang <jasowang@redhat.com>
-Cc: Bui Quang Minh <minhquangbui99@gmail.com>,
- virtualization@lists.linux.dev, "Michael S . Tsirkin" <mst@redhat.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Eugenio =?UTF-8?B?UMOpcmV6?=
- <eperezma@redhat.com>, "David S . Miller" <davem@davemloft.net>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] selftests: net: add a virtio_net deadlock
- selftest
-Message-ID: <20250416170857.2e46a3be@kernel.org>
-In-Reply-To: <CACGkMEvceXT+=HJRRe6D3Zk3k40E2ADJiXNb4qqAYm=PZnxNpQ@mail.gmail.com>
-References: <20250415074341.12461-1-minhquangbui99@gmail.com>
-	<20250415074341.12461-4-minhquangbui99@gmail.com>
-	<20250415212709.39eafdb5@kernel.org>
-	<1603c373-024d-4ec2-b655-b9e7fb942bba@gmail.com>
-	<CACGkMEvceXT+=HJRRe6D3Zk3k40E2ADJiXNb4qqAYm=PZnxNpQ@mail.gmail.com>
+To: Alexey Nepomnyashih <sdl@nppct.ru>
+Cc: Juergen Gross <jgross@suse.com>, Stefano Stabellini
+ <sstabellini@kernel.org>, Oleksandr Tyshchenko
+ <oleksandr_tyshchenko@epam.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, xen-devel@lists.xenproject.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ lvc-project@linuxtesting.org, stable@vger.kernel.org
+Subject: Re: [PATCH] xen-netfront: handle NULL returned by
+ xdp_convert_buff_to_frame()
+Message-ID: <20250416175835.687a5872@kernel.org>
+In-Reply-To: <20250414183403.265943-1-sdl@nppct.ru>
+References: <20250414183403.265943-1-sdl@nppct.ru>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, 16 Apr 2025 15:46:42 +0800 Jason Wang wrote:
-> On Wed, Apr 16, 2025 at 2:54=E2=80=AFPM Bui Quang Minh <minhquangbui99@gm=
-ail.com> wrote:
-> > On 4/16/25 11:27, Jakub Kicinski wrote: =20
-> > > Unfortunately this doesn't work on a basic QEMU setup:
-> > >
-> > > # ethtool -G eth0 rx 128
-> > > [   15.680655][  T287] virtio_net virtio2 eth0: resize rx fail: rx qu=
-eue index: 0 err: -2
-> > > netlink error: No such file or directory
-> > >
-> > > Is there a way to enable more capable virtio_net with QEMU? =20
->=20
-> What's the qemu command line and version?
->=20
-> Resize depends on queue_reset which should be supported from Qemu 7.2
+On Mon, 14 Apr 2025 18:34:01 +0000 Alexey Nepomnyashih wrote:
+>  		get_page(pdata);
 
-I'm using virtme-ng with --net loop and:
+Please notice this get_page() here.
 
-QEMU emulator version 9.1.3 (qemu-9.1.3-2.fc41)
-
---net loop resolves to:
-
-	-device virtio-net-device,netdev=3Dn0 \
-	-netdev hubport,id=3Dn0,hubid=3D0 \
-	-device virtio-net-device,netdev=3Dn1 \
-	-netdev hubport,id=3Dn1,hubid=3D0
-
-> > I guess that virtio-pci-legacy is used in your setup. =20
->=20
-> Note that modern devices are used by default.
->=20
-> >
-> > Here is how I setup virtio-net with Qemu
-> >
-> >      -netdev tap,id=3Dhostnet1,vhost=3Don,script=3D$NETWORK_SCRIPT,down=
-script=3Dno \
-> >      -device
-> > virtio-net-pci,netdev=3Dhostnet1,iommu_platform=3Don,disable-legacy=3Do=
-n \
-
-That works! I rejigged the CI, for posterity I used two times:
-
-	-device	virtio-net-pci,netdev=3Dn0,iommu_platform=3Don,disable-legacy=3Don=
-,mq=3Don,vectors=3D18
-	-netdev tap,id=3Dn0,ifname=3Dtap4,vhost=3Don,script=3Dno,downscript=3Dno,q=
-ueues=3D8=20
-
-and then manually bridged the taps together on the hypervisor side.
-
-> > The iommu_platform=3Don is necessary to make vring use dma API which is=
- a
-> > requirement to enable xsk_pool in virtio-net (XDP socket will be in
-> > zerocopy mode for this case). Otherwise, the XDP socket will fallback to
-> > copy mode, xsk_pool is not enabled in virtio-net that makes the
-> > probability to reproduce bug to be very small. Currently, when you don't
-> > have iommu_platform=3Don, you can pass the test even before the fix, so=
- I
-> > think I will try to harden the selftest to make it return skip in this =
-case. =20
->=20
-> I would like to keep the resize test as it doesn't require iommu_platform.
-
-Sounds good but lets just add them to the drivers/net/hw directory.
-I don't think there's anything virtio specific in the test itself?
-
-Right now drivers/net/virtio_net has a test which expects to see
-both netdevs in the VM, while drivers / Python based tests expect
-to have the env prepared where only one end is on the local machine,=20
-and the other is accessible over SSH or in another netns. So it's a bit
-painful to marry the two kinds of tests in the CI. At least our netdev
-CI does not know how to figure this out :( It preps the env and then
-runs the whole kselftest TARGET in the same setup.
+>  		xdpf = xdp_convert_buff_to_frame(xdp);
+> +		if (unlikely(!xdpf)) {
+> +			trace_xdp_exception(queue->info->netdev, prog, act);
+> +			break;
+> +		}
 
