@@ -1,150 +1,117 @@
-Return-Path: <bpf+bounces-56136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56137-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2D7EA91E89
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 15:46:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 050BFA91EE8
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 15:55:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F5894648A7
-	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 13:46:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FF178A31AB
+	for <lists+bpf@lfdr.de>; Thu, 17 Apr 2025 13:55:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37AD424E018;
-	Thu, 17 Apr 2025 13:46:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D2F52505B4;
+	Thu, 17 Apr 2025 13:55:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MTwdbrmV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iOdsGfKo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9523384D2B;
-	Thu, 17 Apr 2025 13:46:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A2624EABC;
+	Thu, 17 Apr 2025 13:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744897577; cv=none; b=BKdSom44jUB+xOqszNVUgK9dfSM13lvqESxu7/VTaL+PLb17n0UsRwiINZi8CVeewdCPjhsBgLLF0AHGFK5HW0B/lH7d5T2W/FX+gM6SnJnlhWwnrYeRZGDJUHBHQFd3PrINdRG/Lz3lA2YYV9RqRPIkuNJMrPsWfPidQcIFSbg=
+	t=1744898107; cv=none; b=KgpB2UxK3FM0kXoh3j2jIJ/H1XZJpZsgRBngbVvjdtsxB2LtMqYTIMhYb1dlXpwy+c1ITIJ6uiVoj6n7YSysKSdaUywOiGKP0RziRYXsfAWZGuO4lNSQN1bNlr0l2xBYs7FlseID95n+aLguyf0Ut9M4+NtQlkLX0uhLxhneokk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744897577; c=relaxed/simple;
-	bh=Jp3P1IDKrogJGTyaRjCD0IYiY+Sdkq83T+tFKxCJJQ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SE16Eiul40UqpIwMGttoebrHgzUIHlqaHdRpgZtLBXg+OA3fIvgbPS2sOMIkQ1cfokQJD+SLwqnG/zexZXBg9jzEw+styEm8TRdHUIlSNwGfmsV3JamFMhfSo+N1wSbqSsHRIC7HkNZncuqqvS1X0BRP5I9vHTiTfortEouiQM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MTwdbrmV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA693C4CEEA;
-	Thu, 17 Apr 2025 13:46:16 +0000 (UTC)
+	s=arc-20240116; t=1744898107; c=relaxed/simple;
+	bh=kikyls/Flbvvf3iZL5T+aAZQiRp9n1HQT7ciNWS5aG4=;
+	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=mXcCuHswq7CKTQFiR//nxcgWiwDTRXu4QSfUBbn6+E7e/RsNWj9rcicXEg94H4r72vZ+54kyYSGo6ZOAmLENqrlnsQssBctKe1O2cnabNha1/VYPRHOzlvhJhkXiYGtVy1MmKRpJtRQY93/hquFLktdAVctS5JXGmvnkmaLhtJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iOdsGfKo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29781C4CEEB;
+	Thu, 17 Apr 2025 13:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744897577;
-	bh=Jp3P1IDKrogJGTyaRjCD0IYiY+Sdkq83T+tFKxCJJQ0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=MTwdbrmVnx/M2TbvYbZ1GVcbtAT0j+KoA5FAy3SJuooWpGRktgfCWNigxhu9BEAp6
-	 /5lMiXr2O9F6XsfL2P8GppZp/cknJHc5pg77zkVv1rCK8c2o8VdBJOz3YfGDtMP3+0
-	 GYL0SHYq9V8X/mH58MQAi4h8urcpYfwblYninyUILl8B8fya2kbFTJA0H4rnbCjwp4
-	 ZpI9QH4ppUDY1tZ/dV4fsDty1hXctTShuEpmCwzIrHilcBGNG/JoVTeNFcBEGnji8K
-	 nU0fRLK2sJACJwDkK8aaE04rYAjGxoOk2ktwDuFFKfNKYjmCgGWL3eHiLf1iILyxJe
-	 OMUvaQvq2Dr3g==
-Date: Thu, 17 Apr 2025 06:46:15 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: netdev@vger.kernel.org, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, linux-kernel@vger.kernel.org (open list),
- linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
- bpf@vger.kernel.org (open list:XDP (eXpress Data
- Path):Keyword:(?:\b|_)xdp(?:\b|_))
-Subject: Re: [PATCH net-next v2 4/4] selftests: drv-net: Test that NAPI ID
- is non-zero
-Message-ID: <20250417064615.10aba96b@kernel.org>
-In-Reply-To: <20250417013301.39228-5-jdamato@fastly.com>
-References: <20250417013301.39228-1-jdamato@fastly.com>
-	<20250417013301.39228-5-jdamato@fastly.com>
+	s=k20201202; t=1744898107;
+	bh=kikyls/Flbvvf3iZL5T+aAZQiRp9n1HQT7ciNWS5aG4=;
+	h=Subject:From:To:Cc:Date:From;
+	b=iOdsGfKoABtNFQhGJqce6/BZwC45sVmtLczYZs/tEvnqgiXOkUgkk0KpfiE3ebgR7
+	 wO4LFjTXaKV26G+Hm1xw+8YnsEjMRJJxdK+B3RcQYIezP+JoUuRPeuRNariARlj0zO
+	 vgWBbKijfZDADuZx3Cnbg8BhCJSDbWNfGYKkSQhxbWQ1TecmmKMIhPx74O3JGyugLQ
+	 K+X/dmwBysshOM4Y9J66P2qFJVg+xz4k86ot+JtUNlFF6ry0Bqq4AFMOyU1geOOJf4
+	 XdOCQkkzJZBB/v4Gv+gkjnD7h0//0QOxkmW5D46Q06OuOAWgy98Jr4VDa2bAU0E8xj
+	 N6/Y6vY9TvPYA==
+Subject: [PATCH net-next V5 0/2] veth: qdisc backpressure and qdisc check
+ refactor
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+To: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
+ tom@herbertland.com, Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
+ kernel-team@cloudflare.com, phil@nwl.cc
+Date: Thu, 17 Apr 2025 15:55:02 +0200
+Message-ID: <174489803410.355490.13216831426556849084.stgit@firesoul>
+User-Agent: StGit/1.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 17 Apr 2025 01:32:42 +0000 Joe Damato wrote:
-> Test that the SO_INCOMING_NAPI_ID of a network file descriptor is
-> non-zero. This ensures that either the core networking stack or, in some
-> cases like netdevsim, the driver correctly sets the NAPI ID.
-> 
-> Signed-off-by: Joe Damato <jdamato@fastly.com>
-> ---
->  .../testing/selftests/drivers/net/.gitignore  |  1 +
->  tools/testing/selftests/drivers/net/Makefile  |  6 +-
->  .../testing/selftests/drivers/net/napi_id.py  | 24 ++++++
->  .../selftests/drivers/net/napi_id_helper.c    | 83 +++++++++++++++++++
->  4 files changed, 113 insertions(+), 1 deletion(-)
->  create mode 100755 tools/testing/selftests/drivers/net/napi_id.py
->  create mode 100644 tools/testing/selftests/drivers/net/napi_id_helper.c
-> 
-> diff --git a/tools/testing/selftests/drivers/net/.gitignore b/tools/testing/selftests/drivers/net/.gitignore
-> index ec746f374e85..71bd7d651233 100644
-> --- a/tools/testing/selftests/drivers/net/.gitignore
-> +++ b/tools/testing/selftests/drivers/net/.gitignore
-> @@ -1,2 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  xdp_helper
-> +napi_id_helper
+This patch series addresses TX drops seen on veth devices under load,
+particularly when using threaded NAPI, which is our setup in production.
 
-sort alphabetically, pls
+The root cause is that the NAPI consumer often runs on a different CPU
+than the producer. Combined with scheduling delays or simply slower
+consumption, this increases the chance that the ptr_ring fills up before
+packets are drained, resulting in drops from veth_xmit() (ndo_start_xmit()).
 
-> diff --git a/tools/testing/selftests/drivers/net/Makefile b/tools/testing/selftests/drivers/net/Makefile
-> index 0c95bd944d56..47247c2ef948 100644
-> --- a/tools/testing/selftests/drivers/net/Makefile
-> +++ b/tools/testing/selftests/drivers/net/Makefile
-> @@ -6,9 +6,13 @@ TEST_INCLUDES := $(wildcard lib/py/*.py) \
->  		 ../../net/net_helper.sh \
->  		 ../../net/lib.sh \
->  
-> -TEST_GEN_FILES := xdp_helper
-> +TEST_GEN_FILES := \
-> +	napi_id_helper \
-> +	xdp_helper \
+To make this easier to reproduce, we’ve created a script that sets up a
+test scenario using network namespaces. The script inserts 1000 iptables
+rules in the consumer namespace to slow down packet processing and
+amplify the issue. Reproducer script:
 
-like you did here
+https://github.com/xdp-project/xdp-project/blob/main/areas/core/veth_setup01_NAPI_TX_drops.sh
 
-> +# end of TEST_GEN_FILES
->  
->  TEST_PROGS := \
-> +	napi_id.py \
->  	netcons_basic.sh \
->  	netcons_fragmented_msg.sh \
->  	netcons_overflow.sh \
-> diff --git a/tools/testing/selftests/drivers/net/napi_id.py b/tools/testing/selftests/drivers/net/napi_id.py
-> new file mode 100755
-> index 000000000000..aee6f90be49b
-> --- /dev/null
-> +++ b/tools/testing/selftests/drivers/net/napi_id.py
-> @@ -0,0 +1,24 @@
-> +#!/usr/bin/env python3
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +from lib.py import ksft_run, ksft_exit
-> +from lib.py import ksft_eq, NetDrvEpEnv
-> +from lib.py import bkg, cmd, rand_port, NetNSEnter
-> +
-> +def test_napi_id(cfg) -> None:
-> +    port = rand_port()
-> +    listen_cmd = f'{cfg.test_dir / "napi_id_helper"} {cfg.addr_v['4']} {port}'
+This series first introduces a helper to detect no-queue qdiscs and then
+uses it in the veth driver to conditionally apply qdisc-level
+backpressure when a real qdisc is attached. The behavior is off by
+default and opt-in, ensuring minimal impact and easy activation.
 
-you need to deploy, in case test is running with a real remote machine
-and the binary has to be copied over:
+---
 
-	bin_remote = cfg.remote.deploy(cfg.test_dir / "napi_id_helper")
-	listen_cmd = f'{bin_remote} {cfg.addr_v['4']} {port}' 
+V5:
+ - use rcu_dereference_check to signal that NAPI is a RCU section
+ - whitespace fixes reported by checkpatch.pl
+ - handle unlikely race
+ - Link to V4 https://lore.kernel.org/all/174472463778.274639.12670590457453196991.stgit@firesoul/
+V4:
+ - Check against no-queue instead of no-op qdisc
+ - Link to V3: https://lore.kernel.org/all/174464549885.20396.6987653753122223942.stgit@firesoul/
+V3:
+ - Reorder patches, generalize check for no-op qdisc as first patch
+   - RFC: As testing show this is incorrect
+ - rcu_dereference(priv->peer) in veth_xdp_rcv as this runs in NAPI
+   context rcu_read_lock() is implicit.
+ - Link to V2: https://lore.kernel.org/all/174412623473.3702169.4235683143719614624.stgit@firesoul/
+V2:
+ - Generalize check for no-op qdisc
+ - Link to RFC-V1: https://lore.kernel.org/all/174377814192.3376479.16481605648460889310.stgit@firesoul/
 
-> +    with bkg(listen_cmd, ksft_wait=3) as server:
-> +        with NetNSEnter('net', '/proc/self/ns/'):
-> +          cmd(f"echo a | socat - TCP:{cfg.addr_v['4']}:{port}", host=cfg.remote, shell=True)
+Jesper Dangaard Brouer (2):
+      net: sched: generalize check for no-queue qdisc on TX queue
+      veth: apply qdisc backpressure on full ptr_ring to reduce TX drops
 
-Like Xiao Liang said, just host=cfg.remote should work.
 
-> +    ksft_eq(0, server.ret)
-> +
+ drivers/net/veth.c        | 55 ++++++++++++++++++++++++++++++++-------
+ drivers/net/vrf.c         |  4 +--
+ include/net/sch_generic.h |  8 ++++++
+ 3 files changed, 54 insertions(+), 13 deletions(-)
+
+--
+
 
