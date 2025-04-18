@@ -1,172 +1,109 @@
-Return-Path: <bpf+bounces-56233-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56234-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89168A93992
-	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 17:25:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E35FA93A4E
+	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 18:07:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C65546482E
-	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 15:25:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 241053B0905
+	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 16:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39C4211A05;
-	Fri, 18 Apr 2025 15:25:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA62A21480D;
+	Fri, 18 Apr 2025 16:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TcOkHnZp"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="f4qIYwQc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B045720E706
-	for <bpf@vger.kernel.org>; Fri, 18 Apr 2025 15:25:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A28842116F1
+	for <bpf@vger.kernel.org>; Fri, 18 Apr 2025 16:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744989940; cv=none; b=TnvqpKfNtvxyJAZBGS1+ixSlkx2nitkjEE3O9BECz1kHZ4oZB1D1271CaZsRqGOm5dAOxW37CF/ErzzqZlaXvrK/g/VxQzcfib4vfPXT4tbx/9r/yndW1vm40rWHBebsmYxzkTZxHs7hvxm75VWBwfIOvXkuqscUrPj1rh0waGg=
+	t=1744992431; cv=none; b=JaRZU1xkZLD15heHaZG6/F3Ybtwugb12r4MyM56Ujko4h7C1VcOravSiFNzL5VpzjKQdXyO+W+JqpD1IG+sjJJuVegxe/XhYIDVNJAgR0/r+a3nnz8hasnr/0nKHyD+5QZNY/r1Ne34FFSz8nwR6OAbu4jXsDrnQ9mRxuCbJGKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744989940; c=relaxed/simple;
-	bh=KLMQ/sPbd3/qPx9kvWI7kwA5vqce0csvK2YZ+gn9jtw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E2Y+vqYRNE0cV6+XUrVvCRUSguRrUiCvFyA4kjY0nlVx80QfoqJWTWFiUY8nIsG229ecYQtJR5P/Q7eSa7f5M0xevRIpHjnBuj/gRVD8QE+6ZdTCO5fTiU521HThmoD8TuFZPSinXry7Nno91Z68xCD5rcs2UgJ5GbF4Iw5zy1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TcOkHnZp; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-47666573242so481781cf.0
-        for <bpf@vger.kernel.org>; Fri, 18 Apr 2025 08:25:38 -0700 (PDT)
+	s=arc-20240116; t=1744992431; c=relaxed/simple;
+	bh=mJDJYr7lVaC8wf49jlEbGffCUgODVQ8wlaVjxXpd9NU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ILnFL8Zd7regReQi2M0g5BOQPn1mXwoKt9FC9f8uxAboztQ/MCu5XOUZ5ugpnZWdcwRligDzytIiH9kmsxlO1VibB/Y/+5o8zdSOuOg1bduKJ0h1+Te6Jd8IxDy/cNjszsXYxJA5Zyu7ljCHhD0oQNAKZVq/T/K0M8lnHGc9u9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=f4qIYwQc; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5e5e8274a74so3042626a12.1
+        for <bpf@vger.kernel.org>; Fri, 18 Apr 2025 09:07:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1744989937; x=1745594737; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KLMQ/sPbd3/qPx9kvWI7kwA5vqce0csvK2YZ+gn9jtw=;
-        b=TcOkHnZpnJ9dkfJMStaG1k/k2pUOgZYR5/wmSGKGVaznHzK+pz/+4Dk+XZfRdAlRUN
-         ArH+pOQtKump/RD0EbQCgdFigzdgeuQNM33Z6L3npWgHMdjtWSpYxAg6O1CY7AA4eNXd
-         inQULd+tuAbSsNMdht9dtK7ngE0FhD0yKrVlWBJR/Wg419WceL1J8khMh+vZdTOnh5g9
-         ignjP3/ytx+dDhPT29BQeVL+I+dl8LmEtdBWe3DJ++CpCZLx0zBhPAe8GzwFsi9zeg37
-         jKxiQvwy94yLvmNGcROJUrbKrwznovvOlZTz/v1+Ju/AowQ4iDtTNQPML9xUwvc+KIeV
-         88Jg==
+        d=cloudflare.com; s=google09082023; t=1744992428; x=1745597228; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mJDJYr7lVaC8wf49jlEbGffCUgODVQ8wlaVjxXpd9NU=;
+        b=f4qIYwQcWNfstcEj05cGQ6wxM6ZVHkbgt2n8qZ3xy5J5HxdCEqKcsnWGOZrvjMRT1I
+         a6x2Ko6aVbvtiDzRGEveqOi3v3ciEG31INr1o/O9VkwlPy25yYLK/r3zEnym7lgzP9aD
+         is4fHwXQupWP7/coXFHK0uFfKSHeW9hVADg8zEl5GYHN0ev3XCBzYEhH8lUOkQstrF4T
+         nRq/kdKQWdJ41TEiznqhRPugV1fNG+ZDBu49p+5mF4z+6WaQdtcNVrn9WOOit/OikQ+T
+         rjw4SxM5scU7cbvD8Z8icpnZgetRXCbk/LMlWNfnhA/dozN2T3PTUEzN+r5BI+hBfDvR
+         PRTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744989937; x=1745594737;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KLMQ/sPbd3/qPx9kvWI7kwA5vqce0csvK2YZ+gn9jtw=;
-        b=FzPiFGJHxU3FR9xFhYUjyjgbSFnH5geF5WFUPpTohp0zUiSUvkWNWSLPNMd6qKvLTM
-         AvFYlYow5yAtYBypiQ1c5estcaVwSL1bFSMvy68cOljFmz8JAY997Na99Gt2SouC31Dh
-         WTDQWyw2FHx+BmI/HnOQJvkr79LCUBORVWUvAqNvD6QXSoR7dUc3b7QqEXIP0QRkWdEg
-         85mMqWF0CL39DALxvK/+Sjkq0+YWmCgxGiqRU8aC9l59cm5nhKzQ8AkRIq3EsgQSxxF6
-         UzexoPdgoOMHSNrdcUeBDMDnYyP0GcJqcytNuOz3vhjnPjJWmFZ4U2VAAv91PD+mIBb/
-         oUqw==
-X-Forwarded-Encrypted: i=1; AJvYcCUAfyQsb6XxGokfeJk+VL5w3vqiG9fK8TBhCMI18FEUDDzkTDvQLKxN6bspXIqT51eGP2E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyapJf3D8c02x/0sNzXprNa9rMEvInV3Gi4AzZ//s8jBK+i/lVy
-	iAgWatTCtRgL4ReqRe2tj3+s8czL5m6dNpXfvWiuhT0mV3At62/DZJgruyCEZHfXD+AKkJWWl/G
-	puF+WOEM49tCjvhsQ3aM9OJNb3TKxPqh6S9+R
-X-Gm-Gg: ASbGncs6Irp0WGhyNvcjh0hB5noTkPYKvQtV1IVAdCXUr62UroQwxJSKxJXv24X37BT
-	QXx8cmjlc1S8z7eqmSqE8FZQiop6KH2WX0JA4uLo8RHCS1xjdZfIPa2CmCOhvxba7laS2d//D+n
-	/110WhxVC/hlh+BaRzhqGs
-X-Google-Smtp-Source: AGHT+IG8hFCpUPixQxkgnzGIXz1u9OtkRLiT9un/wX7YdVEX+ucM013ElGjUErTcY8lmL4vrTIPIJfqi3eMA/XDrm6c=
-X-Received: by 2002:a05:622a:24f:b0:477:63b7:3523 with SMTP id
- d75a77b69052e-47aeb10f6a4mr3977681cf.4.1744989937094; Fri, 18 Apr 2025
- 08:25:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1744992428; x=1745597228;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mJDJYr7lVaC8wf49jlEbGffCUgODVQ8wlaVjxXpd9NU=;
+        b=Pp+h1/MpTtUdOlpW172aRzqaAlyEdN7Em1Sh39TPNyCAY3xUxPg/mwQLWKEdHx+U4I
+         +QrY4Jtj07WqPcNlihkvSD+1jGmU68H9m+s1YADXNVWUnqiYQ3jQqh77ypvhNJD/Y0hX
+         oaM4WjfJjOvnhrudhHrDA9u/XDIlVJK+ZVLqjuEIUpE+vvqrfOlyaSbhWpQugciCpzcX
+         RVkh3WJv+y6BLKDB45c/Bm11dEAYiqC9ChSOPPOSuJfcx2vfOv2/cPhylTTSfsoEGrxj
+         5VbMTtN9XuwzIw5eXU4vgK6ZyC1Y0WTTHaYUfDFoBtibftXWD82bgzvATIAIroybnRJt
+         CLCw==
+X-Forwarded-Encrypted: i=1; AJvYcCWJQm5GmSPjKeYVlqjUsEU6/lOSVrHvBDF23Rnrc0mpy+F9cs3q4GRjnYXDDWX/hpG5p6g=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHvTPmLON+CW8q3TquGZ4V4B5xE40NEw57GRrUHHRia4FF+V7H
+	oMIX/uCtYKzwrTCQASZ2Vc2t6E1SPuPD0qBl8wzoyF0qlVM43+e9qjdJvblc7Ak=
+X-Gm-Gg: ASbGnctHaVzVZhgAS7E8HAmj9r+DrwMdqRm36JW6MyZxqabxr/z8K+Q0UZ+FU9QJoFd
+	H1BbyLA5Pal7VOjver4IReXTrwInpdrPvk3/VViWtXTtvhixNzlZUFAj/ke/aP0ux/UIvQXlfpJ
+	rruHJVBLAlUrVqvOxjSBBfQ5OlMUk+ERDYN8wn3S97c6EWNZIeFZn6VqhknvdDsuJy/H2v4Js5x
+	59Q8RwyQZtFrVXntwI1CBjnDVo91A6kLcwfDDG662cMUElb+NwNSY4G02yLmDxD/4M4HxvEiT9U
+	be5bN1NPDxm0xPiGQux6Z9vyzBrO0NyDSg==
+X-Google-Smtp-Source: AGHT+IGA0mJvYWhzAc0oNHZeKO+KGsF+25BJMfzQI0JM3A/aTXEi+UCjUxCGApuU0msTc2ARl0raKw==
+X-Received: by 2002:a17:907:1b22:b0:aca:c6db:2586 with SMTP id a640c23a62f3a-acb74b18d90mr295654566b.14.1744992427833;
+        Fri, 18 Apr 2025 09:07:07 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:506a:2387::38a:4e])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acb6ec10011sm139200266b.14.2025.04.18.09.07.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Apr 2025 09:07:07 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Michal Luczaj <mhal@rbox.co>
+Cc: Andrii Nakryiko <andrii@kernel.org>,  Eduard Zingerman
+ <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>,  Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,  Martin KaFai
+ Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong Song
+ <yonghong.song@linux.dev>,  John Fastabend <john.fastabend@gmail.com>,  KP
+ Singh <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao
+ Luo <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>,  Jonathan Corbet <corbet@lwn.net>,
+  bpf@vger.kernel.org,  linux-kselftest@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  linux-doc@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/9] selftests/bpf: Support af_unix
+ SOCK_DGRAM socket pair creation
+In-Reply-To: <20250411-selftests-sockmap-redir-v2-1-5f9b018d6704@rbox.co>
+	(Michal Luczaj's message of "Fri, 11 Apr 2025 13:32:37 +0200")
+References: <20250411-selftests-sockmap-redir-v2-0-5f9b018d6704@rbox.co>
+	<20250411-selftests-sockmap-redir-v2-1-5f9b018d6704@rbox.co>
+Date: Fri, 18 Apr 2025 18:07:05 +0200
+Message-ID: <87ldrxa1xy.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250414225227.3642618-1-tjmercier@google.com>
- <20250414225227.3642618-3-tjmercier@google.com> <CAPhsuW6sgGvjeAcciskmGO7r6+eeDo_KVS3y7C8fCDPptzCebw@mail.gmail.com>
- <CABdmKX0bgxZFYuvQvQPK0AnAHEE3FebY_eA1+Vo=ScH1MbfzMg@mail.gmail.com>
- <CAPhsuW72Q2--E9tQQY8xADghTV6bYy9vHpFQoCWNh0V_QBWafA@mail.gmail.com>
- <CABdmKX1tDv3fSFURDN7=txFSbQ1xTjp8ZhLP8tFAvLcO9_-4_A@mail.gmail.com>
- <CAPhsuW7xvSYjWvy8K9Ev_tMwDRy2dpEiBcHYai3n-wAa0xvLow@mail.gmail.com>
- <CABdmKX1p0KgbipTSW1Ywi4bTBabQmsg21gA14Bp5atYHg8FeXQ@mail.gmail.com>
- <CAPhsuW4f2=M_K553+BVnGJq=ddZ7sXj4CfCAHeYQ=4cpihBCzA@mail.gmail.com>
- <CABdmKX0P1tpa-jxzN1_TCyk6Cw6drYM+KRZQ5YQcjNOBFtOFJw@mail.gmail.com> <CAPhsuW5bgBNu6zY0rn7ZH4VK54nruryU4bS4LrDDsxnCfqQicQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW5bgBNu6zY0rn7ZH4VK54nruryU4bS4LrDDsxnCfqQicQ@mail.gmail.com>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Fri, 18 Apr 2025 08:25:18 -0700
-X-Gm-Features: ATxdqUFe9V2DPeKz_fCeXdwNGaeIYNCwZNnBebHg8eIdjjPIFTp9wITPuXs7j_A
-Message-ID: <CABdmKX3XaVFJEQRav1COi7_1rkMsx1ZhrJoGLB_wtywZ0O-jug@mail.gmail.com>
-Subject: Re: [PATCH 2/4] bpf: Add dmabuf iterator
-To: Song Liu <song@kernel.org>
-Cc: sumit.semwal@linaro.org, christian.koenig@amd.com, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	skhan@linuxfoundation.org, linux-kernel@vger.kernel.org, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linaro-mm-sig@lists.linaro.org, linux-doc@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com, 
-	simona@ffwll.ch, corbet@lwn.net, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	jolsa@kernel.org, mykolal@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Thu, Apr 17, 2025 at 1:26=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+On Fri, Apr 11, 2025 at 01:32 PM +02, Michal Luczaj wrote:
+> Handle af_unix in init_addr_loopback(). For pair creation, bind() the peer
+> socket to make SOCK_DGRAM connect() happy.
 >
-> On Thu, Apr 17, 2025 at 9:05=E2=80=AFAM T.J. Mercier <tjmercier@google.co=
-m> wrote:
-> >
-> > On Wed, Apr 16, 2025 at 9:56=E2=80=AFPM Song Liu <song@kernel.org> wrot=
-e:
-> > >
-> > > On Wed, Apr 16, 2025 at 7:09=E2=80=AFPM T.J. Mercier <tjmercier@googl=
-e.com> wrote:
-> > > >
-> > > > On Wed, Apr 16, 2025 at 6:26=E2=80=AFPM Song Liu <song@kernel.org> =
-wrote:
-> > > [...]
-> > > > >
-> > > > > Here is another rookie question, it appears to me there is a file=
- descriptor
-> > > > > associated with each DMA buffer, can we achieve the same goal wit=
-h
-> > > > > a task-file iterator?
-> > > >
-> > > > That would find almost all of them, but not the kernel-only
-> > > > allocations. (kernel_rss in the dmabuf_dump output I attached earli=
-er.
-> > > > If there's a leak, it's likely to show up in kernel_rss because som=
-e
-> > > > driver forgot to release its reference(s).) Also wouldn't that be a
-> > > > ton more iterations since we'd have to visit every FD to find the
-> > > > small portion that are dmabufs? I'm not actually sure if buffers th=
-at
-> > > > have been mapped, and then have had their file descriptors closed
-> > > > would show up in task_struct->files; if not I think that would mean
-> > > > scanning both files and vmas for each task.
-> > >
-> > > I don't think scanning all FDs to find a small portion of specific FD=
-s
-> > > is a real issue. We have a tool that scans all FDs in the system and
-> > > only dump data for perf_event FDs. I think it should be easy to
-> > > prototype a tool by scanning all files and all vmas. If that turns ou=
-t
-> > > to be very slow, which I highly doubt will be, we can try other
-> > > approaches.
-> >
-> > But this will not find *all* the buffers, and that defeats the purpose
-> > of having the iterator.
->
-> Do you mean this approach cannot get kernel only allocations? If
-> that's the case, we probably do need a separate iterator. I am
-> interested in other folks thoughts on this.
+> Signed-off-by: Michal Luczaj <mhal@rbox.co>
+> ---
 
-Correct.
-
-> > > OTOH, I am wondering whether we can build a more generic iterator
-> > > for a list of objects. Adding a iterator for each important kernel li=
-sts
-> > > seems not scalable in the long term.
-> >
-> > I think the wide variety of differences in locking for different
-> > objects would make this difficult to do in a generic way.
->
-> Agreed it is not easy to build a generic solution. But with the
-> help from BTF, we can probably build something that covers
-> a large number of use cases.
-
-I'm curious what this would look like. I guess a good test would be to
-see if anything would work for some subset of the already existing
-iterators.
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 
