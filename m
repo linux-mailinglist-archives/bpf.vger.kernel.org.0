@@ -1,111 +1,185 @@
-Return-Path: <bpf+bounces-56236-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56237-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9BF0A93A7A
-	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 18:15:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16231A93B08
+	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 18:38:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7CE97B5094
-	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 16:14:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A3D7189CBB1
+	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 16:39:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F332215070;
-	Fri, 18 Apr 2025 16:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E0B215F6A;
+	Fri, 18 Apr 2025 16:38:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="QaT3PONR"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B3Uwi3Iu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D24214818
-	for <bpf@vger.kernel.org>; Fri, 18 Apr 2025 16:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D93E213E89;
+	Fri, 18 Apr 2025 16:38:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744992816; cv=none; b=BzRyo5J/YJXn+O83I9IT+4gSSAMstai+QqEV4LfIk8b/k+G3kxIOYcs/7Q7r50gml8BUCjAQ9SaVATQIXDC9/FbZtKgwV+f0Qn7vbi5Vsxc+B1/B8t/MqZB7VrSxkA9lTrK8c21f2lI0+4/iTGUgDWREBEZWDTdOsCf1ywg2xNU=
+	t=1744994316; cv=none; b=G29Wgh+QtMbaAR9mog60tu/IoJRzws6ASlGbAHKQHxm+BCTK3xW7xKbZnUSF3QPVccN4YSiwAT+/yLM2OtNwpFa6ijUI0/foMd/Av4lt816REIIwbPu0zItMUw8riqNjHZ5oR9JH1AArdH+0YjBTtd3OeTsrU/nAa5zfnwS7lZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744992816; c=relaxed/simple;
-	bh=dnPlx1v/5+9ztyxM4DD3uu2rXOji5rsQEo270rydr7I=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=jDi+JvCBI5Bd+IKb3zmthxTNz9hmUnT7FSPP4xnHT5bBFbo75h+MqKy7QWBvOaax6DhZiMBbhMKoK7GBhTA2VEHvkaVlXDOyMzzp1nrERgu+BO2J/rG217Y6KWArBDYRPB2EgmeE2wWZlgr38l38vSwQcPV6wh34j3U+2SMib28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=QaT3PONR; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5ec9d24acfbso5478658a12.0
-        for <bpf@vger.kernel.org>; Fri, 18 Apr 2025 09:13:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1744992813; x=1745597613; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dnPlx1v/5+9ztyxM4DD3uu2rXOji5rsQEo270rydr7I=;
-        b=QaT3PONRArsY3lLNVeDHfsE4UhO014kmIrTkSySDTiTJP7iFtTJyvR2447yF6y5lKF
-         ulPWpPmzKAB8TuHdfWNprw0fCGljGVYNKNVSPOxB8nqhHaE2ysaYPC8NjpX7Hn0tOj0Q
-         hi3WDjmr/8XFEqtt9NqG+yO/ko1ceBNf+4eXuFXqzHFHCOxivcBixorgyMzB1AgWp3PX
-         m5cqqTnz0HTMAEzNsyB/+iO1iJurK6T8GglOuGzIOj4tEduqWiFyBmOuWLEOETtopxN1
-         OrNAbA7tAr+txv7ZCFLwmXxVlB3RKNj6AwnFEQE2bhFdwxhAmpPD1ZDcgTnZeX6R0lqu
-         fDkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744992813; x=1745597613;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dnPlx1v/5+9ztyxM4DD3uu2rXOji5rsQEo270rydr7I=;
-        b=k7CSj4+0FPFAiJ4jm5yWZwhooUErDsFgj01MPr4ciIccItNN6BDpxcqDYfpf36aS6A
-         9/mXvXwZMTG6u9O92NdtYziB6T+JrqTpIypbd892POPK+bjwB6P9F0GCYKpbG7hy7QG/
-         Vu/2HjxSy9ITPvDNpVkwA7Y9n+QfS9RMcDIXWbAI8RzENmgRuwwFRp+0lYVcWICyeClk
-         tuyyhgVTBpT+yB1diXZBRya8JgftdlXkRJSSHcC0d4lM9lLy6LVJ6Juooi4tbzuZGtX9
-         it/e5rK2iMxuB1lSXkvfd8iWZK15ijxljMj9mV3emhIEy2KujSBQyLlb0qgbopIiE1hC
-         X+7g==
-X-Forwarded-Encrypted: i=1; AJvYcCWoJncDEIZClXYiiFE7jBckY83VcCY9HVNEktlRWVNpHEL7rmgNlNg2qfGqraeyfA6JOGg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7iAbifRtgX3ZRt+/y2D1kAKXQiwt2Ktoouu0n2s2M9Ve3JxeY
-	a2NItQR4bz96tNTl1YAeeBRbcOXZ1XM84ATVJtM8QdPRYaZyDrcUWu313ObV8Rg=
-X-Gm-Gg: ASbGnctxhrx2l3TvuBIHkG6qjujl8lLq92ayODNx+auejb627BK8VOP7CTk849uhMMO
-	6MEaCL1M6dulV0VnuD4MHhm32HQD90z1+AiOLGBF7eMuQma9QykqoamLRJ1U8nQgJQdyeqzYx5c
-	bhDl4f0/nF144JsCKDlt4UJ8a7Yo2/NCI3XKaVm/jPEHdgnRVa9JQENvAAR++k29b5MrmgWQr9g
-	qG9NYEGTbgjV7O95i7/ZMFmuBZcJlTFbVSTBKm/hdvpTbX7N189K0LKErE7vn7pynN/8jgaJN7j
-	L8xG0CGUytmfVSUzmuYGgwYXabshlZVWjQ==
-X-Google-Smtp-Source: AGHT+IFLgbP7tACquxzJP1RHEXNOH/DlqDIlfnCrIa/5xv6iI7vhI+s5eVpkRTeUtU+t5K/5B3t8Fw==
-X-Received: by 2002:a17:907:6e9e:b0:ac1:17fe:c74f with SMTP id a640c23a62f3a-acb7534d843mr242424666b.21.1744992813109;
-        Fri, 18 Apr 2025 09:13:33 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:506a:2387::38a:4e])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acb6eefcfb8sm137109166b.111.2025.04.18.09.13.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Apr 2025 09:13:32 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Michal Luczaj <mhal@rbox.co>
-Cc: Andrii Nakryiko <andrii@kernel.org>,  Eduard Zingerman
- <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>,  Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,  Martin KaFai
- Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong Song
- <yonghong.song@linux.dev>,  John Fastabend <john.fastabend@gmail.com>,  KP
- Singh <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao
- Luo <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>,  Jonathan Corbet <corbet@lwn.net>,
-  bpf@vger.kernel.org,  linux-kselftest@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  linux-doc@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 3/9] selftests/bpf: Add u32()/u64() to
- sockmap_helpers
-In-Reply-To: <20250411-selftests-sockmap-redir-v2-3-5f9b018d6704@rbox.co>
-	(Michal Luczaj's message of "Fri, 11 Apr 2025 13:32:39 +0200")
-References: <20250411-selftests-sockmap-redir-v2-0-5f9b018d6704@rbox.co>
-	<20250411-selftests-sockmap-redir-v2-3-5f9b018d6704@rbox.co>
-Date: Fri, 18 Apr 2025 18:13:30 +0200
-Message-ID: <87cyd9a1n9.fsf@cloudflare.com>
+	s=arc-20240116; t=1744994316; c=relaxed/simple;
+	bh=xqgpaY93D1rOJgzOV/8X2FRs9Z+GmQNa/gFVzslPY8c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qy1XLi+t4Tb06/W73dRsZKXItKggQA7UeNcHDOpSuWG976NRKL2iVJjHw7OPad3Go0O1heE8BMkyMT5jNgb/vV5K0NLbEVNf9YBpWIRi+siARf0kc7MSmT0kwqeyzoUXcMxHq6jB+8orCfq82y5DNbuLmXcS6nQ8A8l0q0/940Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B3Uwi3Iu; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1744994314; x=1776530314;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xqgpaY93D1rOJgzOV/8X2FRs9Z+GmQNa/gFVzslPY8c=;
+  b=B3Uwi3IumUCg2y5MqqUFpwZ9A5mdyDHzEn9I7+728DGEok6iB3+L882G
+   KtSalUQwQmqlOJQPvLOHNyBnUwLUgLiXcn6eTabtB5xXKTNgGCoHTm6NO
+   qqH8ynHMEkwq++Y7/9bInFQYkvNNEC62/SSE7TCh7CalX8eWfzG+isMuF
+   MI4qy2nWFgdVHNOr0wI5/C2EWhCxk1ZsVNzi0WmzChLh3Dy71uz4SyST3
+   3VrXN9LRNKMnzrJfF76uk3E2KtfqTBqy+BL/FOwq5R34t4L0HMQkPSYHB
+   6NhrG9kwJR6k5ma2/sTvBd+u6Y+UF7eAyN3bzpGfMiuDbOGjne3uezk0n
+   A==;
+X-CSE-ConnectionGUID: O959xCboTKmnlUkJgpBLgg==
+X-CSE-MsgGUID: /m6X2oIgQRaXwwXrgQYXTw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11407"; a="50454246"
+X-IronPort-AV: E=Sophos;i="6.15,222,1739865600"; 
+   d="scan'208";a="50454246"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2025 09:38:32 -0700
+X-CSE-ConnectionGUID: +Tbp8mEFSiePHVO4giZG7g==
+X-CSE-MsgGUID: erEenTHARDWNKFJ8TG/WsQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,222,1739865600"; 
+   d="scan'208";a="130892216"
+Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
+  by orviesa009.jf.intel.com with ESMTP; 18 Apr 2025 09:38:32 -0700
+From: Tony Nguyen <anthony.l.nguyen@intel.com>
+To: davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	andrew+netdev@lunn.ch,
+	netdev@vger.kernel.org
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>,
+	faizal.abdul.rahim@linux.intel.com,
+	vinicius.gomes@intel.com,
+	vitaly.lifshits@intel.com,
+	dima.ruinskiy@intel.com,
+	przemyslaw.kitszel@intel.com,
+	chwee.lin.choong@intel.com,
+	yong.liang.choong@linux.intel.com,
+	vladimir.oltean@nxp.com,
+	horms@kernel.org,
+	linux@armlinux.org.uk,
+	xiaolei.wang@windriver.com,
+	hayashi.kunihiko@socionext.com,
+	ast@kernel.org,
+	jesper.nilsson@axis.com,
+	mcoquelin.stm32@gmail.com,
+	rmk+kernel@armlinux.org.uk,
+	fancer.lancer@gmail.com,
+	kory.maincent@bootlin.com,
+	linux-stm32@st-md-mailman.stormreply.com,
+	hkelam@marvell.com,
+	alexandre.torgue@foss.st.com,
+	daniel@iogearbox.net,
+	linux-arm-kernel@lists.infradead.org,
+	hawk@kernel.org,
+	quic_jsuraj@quicinc.com,
+	gal@nvidia.com,
+	john.fastabend@gmail.com,
+	0x1207@gmail.com,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next 00/14][pull request] igc: Add support for Frame Preemption
+Date: Fri, 18 Apr 2025 09:38:06 -0700
+Message-ID: <20250418163822.3519810-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 11, 2025 at 01:32 PM +02, Michal Luczaj wrote:
-> Add integer wrappers for convenient sockmap usage.
->
-> While there, fix misaligned trailing slashes.
->
-> Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
-> Signed-off-by: Michal Luczaj <mhal@rbox.co>
-> ---
+Faizal Rahim says:
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+Introduce support for the FPE feature in the IGC driver.
+
+The patches aligns with the upstream FPE API:
+https://patchwork.kernel.org/project/netdevbpf/cover/20230220122343.1156614-1-vladimir.oltean@nxp.com/
+https://patchwork.kernel.org/project/netdevbpf/cover/20230119122705.73054-1-vladimir.oltean@nxp.com/
+
+It builds upon earlier work:
+https://patchwork.kernel.org/project/netdevbpf/cover/20220520011538.1098888-1-vinicius.gomes@intel.com/
+
+The patch series adds the following functionalities to the IGC driver:
+a) Configure FPE using `ethtool --set-mm`.
+b) Display FPE settings via `ethtool --show-mm`.
+c) View FPE statistics using `ethtool --include-statistics --show-mm'.
+e) Block setting preemptible tc in taprio since it is not supported yet.
+   Existing code already blocks it in mqprio.
+
+Tested:
+Enabled CONFIG_PROVE_LOCKING, CONFIG_DEBUG_ATOMIC_SLEEP, CONFIG_DMA_API_DEBUG, and CONFIG_KASAN
+1) selftests
+2) netdev down/up cycles
+3) suspend/resume cycles
+4) fpe verification
+
+No bugs or unusual dmesg logs were observed.
+Ran 1), 2) and 3) with and without the patch series, compared dmesg and selftest logs - no differences found.
+---
+IWL: https://lore.kernel.org/intel-wired-lan/20250318030742.2567080-1-faizal.abdul.rahim@linux.intel.com/
+
+The following are changes since commit 8066e388be48f1ad62b0449dc1d31a25489fa12a:
+  net: add UAPI to the header guard in various network headers
+and are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue 1GbE
+
+Faizal Rahim (13):
+  net: stmmac: move frag_size handling out of spin_lock
+  net: ethtool: mm: reset verification status when link is down
+  igc: rename xdp_get_tx_ring() for non-xdp usage
+  igc: rename I225_RXPBSIZE_DEFAULT and I225_TXPBSIZE_DEFAULT
+  igc: use FIELD_PREP and GENMASK for existing TX packet buffer size
+  igc: optimize TX packet buffer utilization for TSN mode
+  igc: use FIELD_PREP and GENMASK for existing RX packet buffer size
+  igc: set the RX packet buffer size for TSN mode
+  igc: add support for frame preemption verification
+  igc: add support to set tx-min-frag-size
+  igc: block setting preemptible traffic class in taprio
+  igc: add support to get MAC Merge data via ethtool
+  igc: add support to get frame preemption statistics via ethtool
+
+Vladimir Oltean (1):
+  net: ethtool: mm: extract stmmac verification logic into common
+    library
+
+ drivers/net/ethernet/intel/Kconfig            |   1 +
+ drivers/net/ethernet/intel/igc/igc.h          |  15 +-
+ drivers/net/ethernet/intel/igc/igc_base.h     |   1 +
+ drivers/net/ethernet/intel/igc/igc_defines.h  |  55 +++-
+ drivers/net/ethernet/intel/igc/igc_ethtool.c  |  81 +++++
+ drivers/net/ethernet/intel/igc/igc_main.c     |  69 ++++-
+ drivers/net/ethernet/intel/igc/igc_regs.h     |  16 +
+ drivers/net/ethernet/intel/igc/igc_tsn.c      | 210 ++++++++++++-
+ drivers/net/ethernet/intel/igc/igc_tsn.h      |  52 ++++
+ drivers/net/ethernet/stmicro/stmmac/Kconfig   |   1 +
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  16 +-
+ .../ethernet/stmicro/stmmac/stmmac_ethtool.c  |  41 +--
+ .../net/ethernet/stmicro/stmmac/stmmac_fpe.c  | 174 +++--------
+ .../net/ethernet/stmicro/stmmac/stmmac_fpe.h  |   5 -
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   8 +-
+ include/linux/ethtool.h                       |  73 +++++
+ net/ethtool/mm.c                              | 279 +++++++++++++++++-
+ 17 files changed, 876 insertions(+), 221 deletions(-)
+
+-- 
+2.47.1
+
 
