@@ -1,158 +1,129 @@
-Return-Path: <bpf+bounces-56256-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56257-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A7DAA93E55
-	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 21:35:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F8AAA93EAB
+	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 22:08:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1EC2463AB7
-	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 19:35:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09D5A3BEEE2
+	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 20:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEDF22E002;
-	Fri, 18 Apr 2025 19:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B286722D7AB;
+	Fri, 18 Apr 2025 20:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t+Guq4Hd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qy17wIAw"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E014221B9CD;
-	Fri, 18 Apr 2025 19:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 298981B4243;
+	Fri, 18 Apr 2025 20:08:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745004920; cv=none; b=NMuH8N8rJ3c4dccSE827yDvO+W3aucRPAzeXC5Ob2fXTUP4V082KKSiQduZ0SeovcuCXKLmDYTXEMrjiqBuCgrEelhVgDNhM6sY5GW1wI1A+Gp1bzqJe/LHAc6+9b+7KeND3DQn4ptBf+7IMB1qRcfBWJnwCtsUQwyMrANmG9b4=
+	t=1745006891; cv=none; b=Lmg+RtjdN3s8DDwDldOggZ4e3911NMUIBOz25Vi5O1ruCMrnY0Txk3gS5JhDI84bVHuML2RsMtdrNysXVNrE/NvKj4LEJVLdFNi6tNr5W2ZCJue2KQCk8jT3WJjCUb0nYFxpL0st3O0qO4r5TxI6bDxT49EycLgmzQk7C8LNO/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745004920; c=relaxed/simple;
-	bh=vqFTFt0YdGYWN8vJdkEKbxx2rEmZzIS+iVRiY+3yqbA=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=X/fBnj2XObodHFV3BExMhxHC1o+1s5bzmMRJQlsaX47Y9IhyNkLhPUbzcBEpwehU9mjrAfuvezQlifddS71jI83VevXAAKQ8O+tR5dxSu+ckB/7lqBmxrtk4H68FgYEeabCdB+eJgiWMZymbA1lhR/FfME0xy4oiJTXrpUmEhik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t+Guq4Hd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3408FC4CEE2;
-	Fri, 18 Apr 2025 19:35:19 +0000 (UTC)
+	s=arc-20240116; t=1745006891; c=relaxed/simple;
+	bh=0ocz98/xK/N6V2PmfKx8ugmIQC4yHJEOYGGLuWJ6Pt0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kFgeSsH8obihnTUg45IyqCsBPA7MkZZdB5YxYHBbTBFAG5c7+ePNagjSC27Ks2QWtS0pIdh4OoWYFX55EwEGqXDa8sXJEFt+3p9MG/JnuphxWx/W108kDYUDfHGAAJEMcsjU0fOOjMukebCMlXK5Ns9mCtsWFc0ZI+Gz+Bvw7s0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qy17wIAw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06E63C4CEE7;
+	Fri, 18 Apr 2025 20:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745004919;
-	bh=vqFTFt0YdGYWN8vJdkEKbxx2rEmZzIS+iVRiY+3yqbA=;
-	h=From:Date:To:cc:Subject:In-Reply-To:References:From;
-	b=t+Guq4HdbFUo9uT75wS5MjZjkC3Sw3cOGuDQdPVem3HUypF9TPKt9aTC/HkNc6W7y
-	 7c5vdu8roXMQSijR8tG9LSDG7Eg8ubRoNLLLYodxUh8CZFtiyjNRWZrM3O7CC2Lfwb
-	 +WR7LFSy5KbsS5cQcnS5ZNmGCbEj2FsKAaxdNHCfPeCTyiviwLITVLjDqlqr5rNfO8
-	 YDqdfr2PVB1MT88gqbsH4ACSPnumDlI8xPCwTpT1oCerPSZ1hMoKZxW2PHc2CrQwH0
-	 popJOmX4YEoBS1hteJW8V5faCmjXOOJvz03JigPoQxyV7mWbtHBVXVbEr+W/6LyL6o
-	 f6Byy6CPguHgQ==
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ij@kernel.org>
-Date: Fri, 18 Apr 2025 22:35:14 +0300 (EEST)
-To: Simon Horman <horms@kernel.org>
-cc: chia-yu.chang@nokia-bell-labs.com, dsahern@kernel.org, kuniyu@amazon.com, 
-    bpf@vger.kernel.org, netdev@vger.kernel.org, dave.taht@gmail.com, 
-    pabeni@redhat.com, jhs@mojatatu.com, kuba@kernel.org, 
-    stephen@networkplumber.org, xiyou.wangcong@gmail.com, jiri@resnulli.us, 
-    davem@davemloft.net, edumazet@google.com, andrew+netdev@lunn.ch, 
-    donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
-    shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org, 
-    ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com, 
-    g.white@cablelabs.com, ingemar.s.johansson@ericsson.com, 
-    mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at, 
-    Jason_Livingood@comcast.com, vidhi_goel@apple.com
-Subject: Re: [PATCH v4 net-next 09/15] tcp: accecn: AccECN option
-In-Reply-To: <20250418183138.GE2676982@horms.kernel.org>
-Message-ID: <8b6f580b-d682-91f7-f958-1806ee6e8bbe@kernel.org>
-References: <20250417230029.21905-1-chia-yu.chang@nokia-bell-labs.com> <20250417230029.21905-10-chia-yu.chang@nokia-bell-labs.com> <20250418183138.GE2676982@horms.kernel.org>
+	s=k20201202; t=1745006890;
+	bh=0ocz98/xK/N6V2PmfKx8ugmIQC4yHJEOYGGLuWJ6Pt0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=qy17wIAwGhuK9p5LIzKMxtQHQrfc4C+xKeOIvDuoojz5p3b68zmHWqB3dEkDY417i
+	 5db4qe0uhaTPTC/+1SsnElTyoVYEAD/VAoVYDV/4DTiHXqKiUfMmLrzmqT1tseVYiZ
+	 QUikgUZoRs4FxDZXpxPVozvmO9e45logQ6eLcI6xxrmUGrTitP7YzXD0pSzIjFHMW5
+	 U/B+XYv85QC8SF8Wxtw5eDa0dXT/TwmaD9Wq5R6J3CHYi8R39rIOl6EOes9ec5LN9H
+	 6vVhWKdYmahYDBVR+ptcj73DbeKVN60Nk1pyV0ExNOqlsaxEf+ajYZe2jAu29jekTv
+	 WkBuvvSDkWE6Q==
+Message-ID: <e49b96fa-6b2c-4722-adcc-7639f1a9a66a@kernel.org>
+Date: Fri, 18 Apr 2025 22:08:05 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V5 2/2] veth: apply qdisc backpressure on full
+ ptr_ring to reduce TX drops
+To: Toshiaki Makita <toshiaki.makita1@gmail.com>
+Cc: bpf@vger.kernel.org, tom@herbertland.com,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
+ kernel-team@cloudflare.com, phil@nwl.cc, netdev@vger.kernel.org,
+ Jakub Kicinski <kuba@kernel.org>
+References: <174489803410.355490.13216831426556849084.stgit@firesoul>
+ <174489811513.355490.8155513147018728621.stgit@firesoul>
+ <8265c592-a51f-4b26-9e6d-df69c16aebf4@gmail.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <8265c592-a51f-4b26-9e6d-df69c16aebf4@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, 18 Apr 2025, Simon Horman wrote:
 
-> On Fri, Apr 18, 2025 at 01:00:23AM +0200, chia-yu.chang@nokia-bell-labs.com wrote:
-> 
+
+On 18/04/2025 14.38, Toshiaki Makita wrote:
+> On 2025/04/17 22:55, Jesper Dangaard Brouer wrote:
 > ...
+>> +    case NETDEV_TX_BUSY:
+>> +        /* If a qdisc is attached to our virtual device, returning
+>> +         * NETDEV_TX_BUSY is allowed.
+>> +         */
+>> +        txq = netdev_get_tx_queue(dev, rxq);
+>> +
+>> +        if (qdisc_txq_has_no_queue(txq)) {
+>> +            dev_kfree_skb_any(skb);
+>> +            goto drop;
+>> +        }
+>> +        netif_tx_stop_queue(txq);
+>> +        /* Restore Eth hdr pulled by dev_forward_skb/eth_type_trans */
+>> +        __skb_push(skb, ETH_HLEN);
+>> +        if (use_napi)
+>> +            __veth_xdp_flush(rq);
+>> +        /* Cancel TXQ stop for very unlikely race */
+>> +        if (unlikely(__ptr_ring_empty(&rq->xdp_ring)))
+>> +            netif_tx_wake_queue(txq);
 > 
-> > diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+> xdp_ring is only initialized when use_napi is not NULL.
+> Should add "if (use_napi)" ?
 > 
-> ...
+
+We actually don't need the "if (use_napi)" check, because this code path
+cannot be invoked without use_name set.  This also means the check
+before __veth_xdp_flush() is unnecessary.  I still added it, because it
+is subtle that this isn't needed and if code change slightly is will be
+needed.
+
+Regarding xdp_ring is only initialized when use_napi is not NULL, I'm
+considering not adding a if(use_napi) check, because this code path
+cannot be called without use_napi is true, and if that change in the
+future, then it's better that the code crash.  Different opinions are
+welcomed...
+
+> BTW, you added a check for the ring_empty here. so
 > 
-> > @@ -766,6 +769,47 @@ static void tcp_options_write(struct tcphdr *th, struct tcp_sock *tp,
-> >  		*ptr++ = htonl(opts->tsecr);
-> >  	}
-> >  
-> > +	if (OPTION_ACCECN & options) {
-> > +		const u8 ect0_idx = INET_ECN_ECT_0 - 1;
-> > +		const u8 ect1_idx = INET_ECN_ECT_1 - 1;
-> > +		const u8 ce_idx = INET_ECN_CE - 1;
-> > +		u32 e0b;
-> > +		u32 e1b;
-> > +		u32 ceb;
-> > +		u8 len;
-> > +
-> > +		e0b = opts->ecn_bytes[ect0_idx] + TCP_ACCECN_E0B_INIT_OFFSET;
-> > +		e1b = opts->ecn_bytes[ect1_idx] + TCP_ACCECN_E1B_INIT_OFFSET;
-> > +		ceb = opts->ecn_bytes[ce_idx] + TCP_ACCECN_CEB_INIT_OFFSET;
-> > +		len = TCPOLEN_ACCECN_BASE +
-> > +		      opts->num_accecn_fields * TCPOLEN_ACCECN_PERFIELD;
-> > +
-> > +		if (opts->num_accecn_fields == 2) {
-> > +			*ptr++ = htonl((TCPOPT_ACCECN1 << 24) | (len << 16) |
-> > +				       ((e1b >> 8) & 0xffff));
-> > +			*ptr++ = htonl(((e1b & 0xff) << 24) |
-> > +				       (ceb & 0xffffff));
-> > +		} else if (opts->num_accecn_fields == 1) {
-> > +			*ptr++ = htonl((TCPOPT_ACCECN1 << 24) | (len << 16) |
-> > +				       ((e1b >> 8) & 0xffff));
-> > +			leftover_bytes = ((e1b & 0xff) << 8) |
-> > +					 TCPOPT_NOP;
-> > +			leftover_size = 1;
-> > +		} else if (opts->num_accecn_fields == 0) {
-> > +			leftover_bytes = (TCPOPT_ACCECN1 << 8) | len;
-> > +			leftover_size = 2;
-> > +		} else if (opts->num_accecn_fields == 3) {
-> > +			*ptr++ = htonl((TCPOPT_ACCECN1 << 24) | (len << 16) |
-> > +				       ((e1b >> 8) & 0xffff));
-> > +			*ptr++ = htonl(((e1b & 0xff) << 24) |
-> > +				       (ceb & 0xffffff));
-> > +			*ptr++ = htonl(((e0b & 0xffffff) << 8) |
-> > +				       TCPOPT_NOP);
-> > +		}
-> > +		if (tp)
-> > +			tp->accecn_minlen = 0;
+> if empty:
+>    this function starts the queue by itself
+> else:
+>    it is guaranteed that veth_xdp_rcv() consumes the ring after this point.
+>    so the rcv side definitely starts the queue.
 > 
-> Hi,
-> 
-> I'm sorry if this is a false positive: Smatch flags that here we assume
-> that tp might be NULL, while elsewhere in this function tp is dereferenced
-> unconditionally. So my question is, can tp be NULL here?
+> With that, __veth_xdp_flush invocation seems to be unnecessary,
+> if your concern is starting the queue.
 
-Hi Simon,
+That is actually correct. I'm trying to catch the race in two different
+ways. The __ptr_ring_empty() will be sufficient, to cover both cases.
+I'll try to think of a good comment that explains, the parring with the
+!__ptr_ring_empty() check in veth_poll().
 
-Thanks for taking look!
-
-This looks a false positive. It's because tcp_options_write() is shared by 
-the handshake and established connections. A direct caller from the 
-handshake path passes NULL as tp:
-
-	tcp_options_write(th, NULL, tcp_rsk(req), &opts, &key);
-
-The thing that smatch doesn't know is that some TCP options are not going 
-to be present during handshake. Those code paths that only deal with 
-options that are for an established connection can assume full sk/tp has 
-been already instantiated so they don't need to check tp. In addition, 
-some funcs tcp_options_write() calls to make the opposite check by 
-checking tcprsk instead but it has the same effect.
-
--- 
- i.
-
-> > +	}
-> > +
-> >  	if (unlikely(OPTION_SACK_ADVERTISE & options)) {
-> >  		*ptr++ = htonl((leftover_bytes << 16) |
-> >  			       (TCPOPT_SACK_PERM << 8) |
-> 
-> ...
-> 
+--Jesper
 
