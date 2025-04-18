@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-56244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38923A93B18
-	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 18:40:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECC55A93B1A
+	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 18:40:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0708A44647D
-	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 16:39:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86CF48A2D04
+	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 16:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB6921C9F0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97A52219EAD;
 	Fri, 18 Apr 2025 16:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Hk9zEWpb"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="APSexM6j"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C57E214225;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5384321ABC5;
 	Fri, 18 Apr 2025 16:38:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744994321; cv=none; b=NH3/9XHD9YQTibNYR/LdwUaha3P+8X1iajlhkFmWfT7777T7qhQrSq5AwmtnxEGrUt/rVhuxXxAdhTuiF1LZSj6pi5osoHxJVHN4zyjDUJsSraK4keXoxhU4dnX9tNqC5pXmrK3QJ9mf6wBzk+wtr+TUXWowpuJmzUhKbO/mJDE=
+	t=1744994322; cv=none; b=kKf2QJaKqah+r7Fp+GyxRRFEYCySnOqWev8ztSGIotdPr1217LdKdRE9Iq5KsIWZpZIyZowx1sqQRzWFMEvlnWFet/REBo3oUczw8sU5Oa13cz1fiqLFG+c7T8uDE5kSHXrtQ8+DmCIco744o/QV2J3LKMk77+de/3aRsdHqsug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744994321; c=relaxed/simple;
-	bh=2hcr7RkzabYlbqbjd/UmRQGPg75CpH7103MgtxpOV5U=;
+	s=arc-20240116; t=1744994322; c=relaxed/simple;
+	bh=Q7xILmCUIdiQQUv2BVkO4pHZIFRPAtA5ohjA3TYi4Dw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GOpKl8xidaUL91xDOsj6rupCw2n9vQrxhcuZ+3DqRxzc/6zMl1Uh1fYqutvoOtHy0Txqlz19j3LBWdJdFT7+GgU/XbUJhk9H1zfDFxo2dbdmJ4lYt/b+7ndATjKSGUWamqor7j1J7IndlxjAj/6epwkAyxkzInwgaQEyLJJi9ik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Hk9zEWpb; arc=none smtp.client-ip=192.198.163.12
+	 MIME-Version; b=tSQKj2I5V1NaBUqNtULvtFgMQ7z41s0Huwv54uQFtlMa75M4q4TP2bzPeMkyrLzI7NC9yK7m1UNNhVKMhHQrJf8foCWZ/qJTB4NbzeHtm39sVXv4P2EFv3icOeMYji5+5My7YSuSCTI+vIIN/CO9C4oaLygBaWGDqyi+ZzzV/wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=APSexM6j; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1744994320; x=1776530320;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=2hcr7RkzabYlbqbjd/UmRQGPg75CpH7103MgtxpOV5U=;
-  b=Hk9zEWpb5U2YGYZvo+q6j6fs+zf+xUBg+xa6RENgUJkRafRU1uCp0Aes
-   VcGLPlJDCLvn+NOx9W8ow40/c32HDlT3niEtiEraPHovjW4k4K1JowaVc
-   9IvC02v+Mptkd6pa61Y6LBPgdwr8TZTNybd95CzB+YWWsx3Ti90Si3Kdc
-   qglEp7kt8O5EDOhFpsgzMHXBumvJ0bd9AWXV9X0ztZOW6gNmmWcjp53rk
-   BdQwTvSjnUKrKItzgRaC9CnDdjUPObPm4DTtKLNKvDLqXv9uIOEcEwr8W
-   ZpWcItpdUxgqakiZAVCb6P8Zo7tFURobh0Ey7EZbPVnAWn8IEXhNtV7Wy
-   w==;
-X-CSE-ConnectionGUID: SEDBQARKTVmcrIFEfl5mPg==
-X-CSE-MsgGUID: iJPAu37LTYeT/UbWyxl1oA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11407"; a="50454392"
+  bh=Q7xILmCUIdiQQUv2BVkO4pHZIFRPAtA5ohjA3TYi4Dw=;
+  b=APSexM6jDcQbVbRfeCjwLa8m5iriVlXZro/S98WMsatg/NPXBz0Za1r9
+   QWBuGzKDs1i7KSO73iSpnnpnANYLapFfwMJdkK35EJFG5TjoZsDHHmv6v
+   viqmDa6Tibss6UeA9J6qSmh/FI0BSrzXaDoJTEQz9OH9pHpx8pKtSXPD9
+   X5oqWNl1+M04M7/gqQKPNdqL5jRzO2/vRCjwf7MJaYz2auEmac7HHyuay
+   iczy+KQE0EgVB6RLf0O0NJ4JOEIkAkv87rqYv4CVR9WgpR75SGuc1Vsl9
+   JpAg5lV86JH+NEyUfO/wbcl3tDhGGKJrh0nUPBYDo9Gdbo1M/sNs9wnuH
+   A==;
+X-CSE-ConnectionGUID: ngAc+fVrQE29qDHN601HQQ==
+X-CSE-MsgGUID: SR7/MPSwQhe57QPa/ydSkw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11407"; a="50454412"
 X-IronPort-AV: E=Sophos;i="6.15,222,1739865600"; 
-   d="scan'208";a="50454392"
+   d="scan'208";a="50454412"
 Received: from orviesa009.jf.intel.com ([10.64.159.149])
   by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2025 09:38:36 -0700
-X-CSE-ConnectionGUID: IStYbDlET/60oIESx3FNNg==
-X-CSE-MsgGUID: 5y2ycaERQ4ykVJ2he9yAeg==
+X-CSE-ConnectionGUID: bUoT+eHZQxO+bo78FB1r8w==
+X-CSE-MsgGUID: QPxAPYuNQympF3jUo5HBDQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,222,1739865600"; 
-   d="scan'208";a="130892266"
+   d="scan'208";a="130892274"
 Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
   by orviesa009.jf.intel.com with ESMTP; 18 Apr 2025 09:38:35 -0700
 From: Tony Nguyen <anthony.l.nguyen@intel.com>
@@ -96,9 +96,9 @@ Cc: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>,
 	0x1207@gmail.com,
 	bpf@vger.kernel.org,
 	Mor Bar-Gabay <morx.bar.gabay@intel.com>
-Subject: [PATCH net-next 07/14] igc: optimize TX packet buffer utilization for TSN mode
-Date: Fri, 18 Apr 2025 09:38:13 -0700
-Message-ID: <20250418163822.3519810-8-anthony.l.nguyen@intel.com>
+Subject: [PATCH net-next 08/14] igc: use FIELD_PREP and GENMASK for existing RX packet buffer size
+Date: Fri, 18 Apr 2025 09:38:14 -0700
+Message-ID: <20250418163822.3519810-9-anthony.l.nguyen@intel.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250418163822.3519810-1-anthony.l.nguyen@intel.com>
 References: <20250418163822.3519810-1-anthony.l.nguyen@intel.com>
@@ -112,41 +112,54 @@ Content-Transfer-Encoding: 8bit
 
 From: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 
-In preparation for upcoming frame preemption patches, optimize the TX
-packet buffer size. The total packet buffer size (RX + TX) is 64KB, with
-a maximum of 34KB for either RX or TX. Split the buffer evenly,
-allocating 32KB to each.
+Prepare for an upcoming patch that modifies the RX buffer size in TSN mode.
+Refactor IGC_RXPBSIZE_EXP_BMC_DEFAULT and IGC_RXPBS_CFG_TS_EN using
+FIELD_PREP and GENMASK to improve clarity and maintainability. Refactor
+both macros for consistency, even though the upcoming patch only use
+IGC_RXPBSIZE_EXP_BMC_DEFAULT.
 
-For TX, assign 7KB to each of the four TX packet buffers (total 28KB)
-and reserve 4KB for BMC.
+The newly introduced macros follow the naming from the i226 SW User Manual
+for easy reference.
 
-References:
-I225/I226 SW User Manual Section 4.7.9, Section 8.3.2
+I've tested IGC_RXPBSIZE_EXP_BMC_DEFAULT and IGC_RXPBS_CFG_TS_EN before
+and after the refactoring, and their values remain unchanged.
 
-Co-developed-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 Tested-by: Mor Bar-Gabay <morx.bar.gabay@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 ---
- drivers/net/ethernet/intel/igc/igc_defines.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/igc/igc_defines.h | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/intel/igc/igc_defines.h b/drivers/net/ethernet/intel/igc/igc_defines.h
-index ec8f926362eb..5502edd6261f 100644
+index 5502edd6261f..12a16a7acb03 100644
 --- a/drivers/net/ethernet/intel/igc/igc_defines.h
 +++ b/drivers/net/ethernet/intel/igc/igc_defines.h
-@@ -419,8 +419,8 @@
- 	IGC_TXPB0SIZE(20) | IGC_TXPB1SIZE(0) | IGC_TXPB2SIZE(0) | \
- 	IGC_TXPB3SIZE(0) | IGC_OS2BMCPBSIZE(4))
- #define IGC_TXPBSIZE_TSN ( \
--	IGC_TXPB0SIZE(5) | IGC_TXPB1SIZE(5) | IGC_TXPB2SIZE(5) | \
--	IGC_TXPB3SIZE(5) | IGC_OS2BMCPBSIZE(4))
-+	IGC_TXPB0SIZE(7) | IGC_TXPB1SIZE(7) | IGC_TXPB2SIZE(7) | \
-+	IGC_TXPB3SIZE(7) | IGC_OS2BMCPBSIZE(4))
+@@ -396,9 +396,20 @@
+ #define IGC_RCTL_PMCF		0x00800000 /* pass MAC control frames */
+ #define IGC_RCTL_SECRC		0x04000000 /* Strip Ethernet CRC */
  
- #define IGC_DTXMXPKTSZ_TSN	0x19 /* 1600 bytes of max TX DMA packet size */
- #define IGC_DTXMXPKTSZ_DEFAULT	0x98 /* 9728-byte Jumbo frames */
+-/* RXPBSIZE default value for Express and BMC buffer */
+-#define IGC_RXPBSIZE_EXP_BMC_DEFAULT	0x000000A2
+-#define IGC_RXPBS_CFG_TS_EN		0x80000000 /* Timestamp in Rx buffer */
++/* Mask for RX packet buffer size */
++#define IGC_RXPBSIZE_EXP_MASK		GENMASK(5, 0)
++#define IGC_BMC2OSPBSIZE_MASK		GENMASK(11, 6)
++/* Mask for timestamp in RX buffer */
++#define IGC_RXPBS_CFG_TS_EN_MASK	GENMASK(31, 31)
++/* High-priority RX packet buffer size (KB). Used for Express traffic when preemption is enabled */
++#define IGC_RXPBSIZE_EXP(x)		FIELD_PREP(IGC_RXPBSIZE_EXP_MASK, (x))
++/* BMC to OS packet buffer size in KB */
++#define IGC_BMC2OSPBSIZE(x)		FIELD_PREP(IGC_BMC2OSPBSIZE_MASK, (x))
++/* Enable RX packet buffer for timestamp descriptor, saving 16 bytes per packet if set */
++#define IGC_RXPBS_CFG_TS_EN		FIELD_PREP(IGC_RXPBS_CFG_TS_EN_MASK, 1)
++/* Default value following I225/I226 SW User Manual Section 8.3.1 */
++#define IGC_RXPBSIZE_EXP_BMC_DEFAULT ( \
++	IGC_RXPBSIZE_EXP(34) | IGC_BMC2OSPBSIZE(2))
+ 
+ /* Mask for TX packet buffer size */
+ #define IGC_TXPB0SIZE_MASK		GENMASK(5, 0)
 -- 
 2.47.1
 
