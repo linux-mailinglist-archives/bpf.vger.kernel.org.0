@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-56235-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56236-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 195ACA93A55
-	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 18:09:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9BF0A93A7A
+	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 18:15:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BFF0178FE7
-	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 16:08:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7CE97B5094
+	for <lists+bpf@lfdr.de>; Fri, 18 Apr 2025 16:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3B7214A7D;
-	Fri, 18 Apr 2025 16:08:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F332215070;
+	Fri, 18 Apr 2025 16:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="OUc7G6LQ"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="QaT3PONR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C264211261
-	for <bpf@vger.kernel.org>; Fri, 18 Apr 2025 16:08:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D24214818
+	for <bpf@vger.kernel.org>; Fri, 18 Apr 2025 16:13:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744992525; cv=none; b=UrTLukJg6zLKyeaAoliXAj9RgewQ1UIa6wARzI4OtLwKYjQ6Lt+MDeZR+PPI1yMkXAed+KN2hTz75IY+QwxPY1P4LRZOEu0dqv5CJgI+pjJVClIbwNJE6ROho0YR7Eg5CGyOIj/s47dYZhjokcYIxVMRhH1kBSZLyKXZVuVd0XQ=
+	t=1744992816; cv=none; b=BzRyo5J/YJXn+O83I9IT+4gSSAMstai+QqEV4LfIk8b/k+G3kxIOYcs/7Q7r50gml8BUCjAQ9SaVATQIXDC9/FbZtKgwV+f0Qn7vbi5Vsxc+B1/B8t/MqZB7VrSxkA9lTrK8c21f2lI0+4/iTGUgDWREBEZWDTdOsCf1ywg2xNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744992525; c=relaxed/simple;
-	bh=GTRsdQyPhwEI7P5aYqr8HqSfKQVDCSCnob+lAcXVoLw=;
+	s=arc-20240116; t=1744992816; c=relaxed/simple;
+	bh=dnPlx1v/5+9ztyxM4DD3uu2rXOji5rsQEo270rydr7I=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=K1lpGzO6rUDTc+K/IKKFhNzcSKGNtf5Nd3edna6fRJxbr/hKn236G429/KapZtg6SbZfr7Xwskypk1AtK1Kc0OlijP/qHZZZVUnMs26RTRl0nbDWM7NCNh1tujh//01zapCXEKLKIznu+Y2Dw5i3z8duXNohRWpB3q+McMM4kAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=OUc7G6LQ; arc=none smtp.client-ip=209.85.218.45
+	 MIME-Version:Content-Type; b=jDi+JvCBI5Bd+IKb3zmthxTNz9hmUnT7FSPP4xnHT5bBFbo75h+MqKy7QWBvOaax6DhZiMBbhMKoK7GBhTA2VEHvkaVlXDOyMzzp1nrERgu+BO2J/rG217Y6KWArBDYRPB2EgmeE2wWZlgr38l38vSwQcPV6wh34j3U+2SMib28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=QaT3PONR; arc=none smtp.client-ip=209.85.208.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ac289147833so378020166b.2
-        for <bpf@vger.kernel.org>; Fri, 18 Apr 2025 09:08:43 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5ec9d24acfbso5478658a12.0
+        for <bpf@vger.kernel.org>; Fri, 18 Apr 2025 09:13:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1744992522; x=1745597322; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1744992813; x=1745597613; darn=vger.kernel.org;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GTRsdQyPhwEI7P5aYqr8HqSfKQVDCSCnob+lAcXVoLw=;
-        b=OUc7G6LQ73mGB3DSetYq+jgZEbW4ByPEhGZOhVLDWDlIX11Khz3KdmAJaLD7k+vveH
-         q8oOBBBvxNkk0J9aApAIkkhXudc7L+kKIPlwaaV4IPHmUJjnAGwhneydTEl69jaIB+OR
-         z1bIt9HDDFLliHRvUMG85CID1HNVNR+pSNWgJu1vqrszyX7PpCLNi1Nclg/sr8wYVpOz
-         rckvt6+U1/KJ3XqkdeXsLQPh1a2pD+I0SSTBuAMbrkhHfUfpy/PiZ354IzR6NqFFd6/o
-         5ZUzB38NSdvc4a1Eawm3VUeV87ROkIF/Zl5oIwm08/8NQTaZWzbN4V1BivP7hpiyzCwA
-         N2yA==
+        bh=dnPlx1v/5+9ztyxM4DD3uu2rXOji5rsQEo270rydr7I=;
+        b=QaT3PONRArsY3lLNVeDHfsE4UhO014kmIrTkSySDTiTJP7iFtTJyvR2447yF6y5lKF
+         ulPWpPmzKAB8TuHdfWNprw0fCGljGVYNKNVSPOxB8nqhHaE2ysaYPC8NjpX7Hn0tOj0Q
+         hi3WDjmr/8XFEqtt9NqG+yO/ko1ceBNf+4eXuFXqzHFHCOxivcBixorgyMzB1AgWp3PX
+         m5cqqTnz0HTMAEzNsyB/+iO1iJurK6T8GglOuGzIOj4tEduqWiFyBmOuWLEOETtopxN1
+         OrNAbA7tAr+txv7ZCFLwmXxVlB3RKNj6AwnFEQE2bhFdwxhAmpPD1ZDcgTnZeX6R0lqu
+         fDkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744992522; x=1745597322;
+        d=1e100.net; s=20230601; t=1744992813; x=1745597613;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GTRsdQyPhwEI7P5aYqr8HqSfKQVDCSCnob+lAcXVoLw=;
-        b=gGeZ7fz8TOesxq5AMLXh7T6Iig/NVbgXNIf6bRku/L9OrEYCwLQ4JeNusflLjDEEZr
-         U2w7gj4+gX5O0VvrIKJWtziOavVE4mG5u1N2PJc7IeWXqh2WOrXuvQV8n2Wt1RwTzgze
-         G9do0GJvuuhZJUHuOK/8EfjJy4q80jxil1pjYxeYKcczIHhMqVdMkIphER/u69ZK0kCu
-         7LPAS99HU0oXoIaguOvCGcMq9f4CBMZXhEv5iJJA0NAhP1uxX7EoRn69/93ZQI0B7Pt6
-         wJlmoapmKr/pfUFZNEvlfAsKsEKRtaP4Ry54FZuauO9l688cOWqSZ/oIH742PYf5XlcN
-         lX+w==
-X-Forwarded-Encrypted: i=1; AJvYcCUi1pU49HykWRvrecFoTEqpW/9BKlv7Hlw4O2Fcxuu4L+7XhYF/vbUcErcPNb92HQyndXw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZCQoEV2RUSqSW2ZtCN50VdRXw5l8TYUyQMLw7oVHPZ3RkyAOn
-	fnRz78kqfOI2FDA8B8lW1ZmHBp66BtFO6j4Bw+Gvs2tvz85NYO7TOv1mTQngbDU=
-X-Gm-Gg: ASbGncsEqoh3v5ybzlkfMYkvc3IulXCuZ7WSJCBoqcVcVJsz1ZP+ZSLLcNOTUvJYqvp
-	pGhqWLBWPpc7jrZ0DNkjd8Z5mFfz7MV82u3tz/AgR1hNqd94P520bSUGkmh5ao+boUOAovrvpTj
-	dFkhcDoSW9U1YGL2gk6qdWLjEsrAftg7hi3926TiWWRM8dGMvNpbum/GEwJCoQEB3OuGSz8t9qM
-	vodAfDkR7ua8lXy8NusgvUnVNg0xNaY0b/WGwJBf0vw7Hchdxlx53bBsMKa1AzTTNat+lU5gYTa
-	J5qY1QDhwltmFtJCUgVAzV/u8RVHpGOmEUoLfCsmXKQM
-X-Google-Smtp-Source: AGHT+IHa4TgX8s0MmpF8GB8R16O010Ve/qC4qv/99ZOSj9/ybMOt/qI/ikL+RDoyJZEPVnEbqnzHwA==
-X-Received: by 2002:a17:907:3fa1:b0:ac6:d0f6:c85c with SMTP id a640c23a62f3a-acb74b36c70mr264464766b.20.1744992521672;
-        Fri, 18 Apr 2025 09:08:41 -0700 (PDT)
+        bh=dnPlx1v/5+9ztyxM4DD3uu2rXOji5rsQEo270rydr7I=;
+        b=k7CSj4+0FPFAiJ4jm5yWZwhooUErDsFgj01MPr4ciIccItNN6BDpxcqDYfpf36aS6A
+         9/mXvXwZMTG6u9O92NdtYziB6T+JrqTpIypbd892POPK+bjwB6P9F0GCYKpbG7hy7QG/
+         Vu/2HjxSy9ITPvDNpVkwA7Y9n+QfS9RMcDIXWbAI8RzENmgRuwwFRp+0lYVcWICyeClk
+         tuyyhgVTBpT+yB1diXZBRya8JgftdlXkRJSSHcC0d4lM9lLy6LVJ6Juooi4tbzuZGtX9
+         it/e5rK2iMxuB1lSXkvfd8iWZK15ijxljMj9mV3emhIEy2KujSBQyLlb0qgbopIiE1hC
+         X+7g==
+X-Forwarded-Encrypted: i=1; AJvYcCWoJncDEIZClXYiiFE7jBckY83VcCY9HVNEktlRWVNpHEL7rmgNlNg2qfGqraeyfA6JOGg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy7iAbifRtgX3ZRt+/y2D1kAKXQiwt2Ktoouu0n2s2M9Ve3JxeY
+	a2NItQR4bz96tNTl1YAeeBRbcOXZ1XM84ATVJtM8QdPRYaZyDrcUWu313ObV8Rg=
+X-Gm-Gg: ASbGnctxhrx2l3TvuBIHkG6qjujl8lLq92ayODNx+auejb627BK8VOP7CTk849uhMMO
+	6MEaCL1M6dulV0VnuD4MHhm32HQD90z1+AiOLGBF7eMuQma9QykqoamLRJ1U8nQgJQdyeqzYx5c
+	bhDl4f0/nF144JsCKDlt4UJ8a7Yo2/NCI3XKaVm/jPEHdgnRVa9JQENvAAR++k29b5MrmgWQr9g
+	qG9NYEGTbgjV7O95i7/ZMFmuBZcJlTFbVSTBKm/hdvpTbX7N189K0LKErE7vn7pynN/8jgaJN7j
+	L8xG0CGUytmfVSUzmuYGgwYXabshlZVWjQ==
+X-Google-Smtp-Source: AGHT+IFLgbP7tACquxzJP1RHEXNOH/DlqDIlfnCrIa/5xv6iI7vhI+s5eVpkRTeUtU+t5K/5B3t8Fw==
+X-Received: by 2002:a17:907:6e9e:b0:ac1:17fe:c74f with SMTP id a640c23a62f3a-acb7534d843mr242424666b.21.1744992813109;
+        Fri, 18 Apr 2025 09:13:33 -0700 (PDT)
 Received: from cloudflare.com ([2a09:bac5:506a:2387::38a:4e])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acb6ec51601sm137723466b.74.2025.04.18.09.08.40
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acb6eefcfb8sm137109166b.111.2025.04.18.09.13.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Apr 2025 09:08:40 -0700 (PDT)
+        Fri, 18 Apr 2025 09:13:32 -0700 (PDT)
 From: Jakub Sitnicki <jakub@cloudflare.com>
 To: Michal Luczaj <mhal@rbox.co>
 Cc: Andrii Nakryiko <andrii@kernel.org>,  Eduard Zingerman
@@ -82,14 +82,14 @@ Cc: Andrii Nakryiko <andrii@kernel.org>,  Eduard Zingerman
  <shuah@kernel.org>,  Jonathan Corbet <corbet@lwn.net>,
   bpf@vger.kernel.org,  linux-kselftest@vger.kernel.org,
   linux-kernel@vger.kernel.org,  linux-doc@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 2/9] selftests/bpf: Add socket_kind_to_str()
- to socket_helpers
-In-Reply-To: <20250411-selftests-sockmap-redir-v2-2-5f9b018d6704@rbox.co>
-	(Michal Luczaj's message of "Fri, 11 Apr 2025 13:32:38 +0200")
+Subject: Re: [PATCH bpf-next v2 3/9] selftests/bpf: Add u32()/u64() to
+ sockmap_helpers
+In-Reply-To: <20250411-selftests-sockmap-redir-v2-3-5f9b018d6704@rbox.co>
+	(Michal Luczaj's message of "Fri, 11 Apr 2025 13:32:39 +0200")
 References: <20250411-selftests-sockmap-redir-v2-0-5f9b018d6704@rbox.co>
-	<20250411-selftests-sockmap-redir-v2-2-5f9b018d6704@rbox.co>
-Date: Fri, 18 Apr 2025 18:08:30 +0200
-Message-ID: <87h62la1vl.fsf@cloudflare.com>
+	<20250411-selftests-sockmap-redir-v2-3-5f9b018d6704@rbox.co>
+Date: Fri, 18 Apr 2025 18:13:30 +0200
+Message-ID: <87cyd9a1n9.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -99,7 +99,9 @@ MIME-Version: 1.0
 Content-Type: text/plain
 
 On Fri, Apr 11, 2025 at 01:32 PM +02, Michal Luczaj wrote:
-> Add function that returns string representation of socket's domain/type.
+> Add integer wrappers for convenient sockmap usage.
+>
+> While there, fix misaligned trailing slashes.
 >
 > Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
 > Signed-off-by: Michal Luczaj <mhal@rbox.co>
