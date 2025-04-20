@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-56284-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56285-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E457A94784
-	for <lists+bpf@lfdr.de>; Sun, 20 Apr 2025 12:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D628A94785
+	for <lists+bpf@lfdr.de>; Sun, 20 Apr 2025 12:56:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F7F53AF8AF
-	for <lists+bpf@lfdr.de>; Sun, 20 Apr 2025 10:55:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 278273AF4F1
+	for <lists+bpf@lfdr.de>; Sun, 20 Apr 2025 10:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812141E377F;
-	Sun, 20 Apr 2025 10:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 734601E570A;
+	Sun, 20 Apr 2025 10:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bGORTJ7z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h2zBdvGj"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745811BD4F7
-	for <bpf@vger.kernel.org>; Sun, 20 Apr 2025 10:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4AC1E0E0D
+	for <bpf@vger.kernel.org>; Sun, 20 Apr 2025 10:56:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745146568; cv=none; b=A7VQXxYCWmKlP+gXF1TsnIMFG8g9JpXYhrWcRQlZFBX6royCkZ8uEe+IEMuZZTTgbfZHApWelBa65IGnoEKf/YeIDkx2dl187EnLt8V7w4EV8K+shm2jLOgA9N0kl9DgiIFHb/uwMDKr1aThEoD8a0UBcSSrDLq1Wx87o41UW1o=
+	t=1745146569; cv=none; b=IUWUamo4uuCy2VNQV3ZVrB2tjoPzfNGGU2J71T5I2L9xOD0GLbUiz2EC2uXvNxP1hCi61a8jFOOsSyxbdIC0eyZ4ZOzObRhGrgtjdTAjoTJ986+MdO3wi33/dnfOmj7sB7F+H035ngJfPpV8MLngciQpex+D9nH7N7FFUL1tjSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745146568; c=relaxed/simple;
-	bh=2flmpj4ggNBo6NEYaFIGRGEfc2qaLDOdu1Pf3Pfit3I=;
+	s=arc-20240116; t=1745146569; c=relaxed/simple;
+	bh=Hjw/si8/6UpYIIqiV+wShdHr6ktaRv3NfD7q2Dmmxa8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mZtgrVCok77QnuqEsE0CuEDCXxhk50CUmdAMhy/4ZAqlXSNsH1pijSb3VKtNtRi/u3RRLkfgiHsZjvXimKIZYJHI0jVMBAce87fdz+u31r2qAgmJDMF68tnScFcPv+KZ413fmLiABxZbhEdnP7/vtZJfm04HgcBirdI4O9pV9YU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bGORTJ7z; arc=none smtp.client-ip=209.85.160.173
+	 MIME-Version; b=ZnstG/gQywb+NglewD1FNcTL6YWUytb18b7nCr18QmlfiaULPilNAFipcnn7C0d5DSzQwnMGtlWO8AsRHsBquj5665oUQRjH/MpYQN4V/rnR3qdYLm56+f+Zanv+hQinWw9BkMOgVTaTPPZXDa1+0Aa0jztcmH3yXAuuBhl26Yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h2zBdvGj; arc=none smtp.client-ip=209.85.160.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-477296dce76so27834221cf.3
-        for <bpf@vger.kernel.org>; Sun, 20 Apr 2025 03:56:06 -0700 (PDT)
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-476a720e806so28942781cf.0
+        for <bpf@vger.kernel.org>; Sun, 20 Apr 2025 03:56:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745146565; x=1745751365; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745146566; x=1745751366; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dKS18w5jPtthAClr/qzcbbJeJ2idJTNr68ummcX/Ugg=;
-        b=bGORTJ7zGeHy8pqIb8Bj2UMuo+uRpSSUYh6MuFf9aXWSWejhFBoSlRT6wWZr5J996R
-         qEIhGEq9hUKSe+pJXTuB2pTt4Bnf4oFUHkhW39xkifW78gS0EKAmlYFY6prrMpkELWxz
-         qjcfzS1zb4XMzKDXFgAKiA9+lVD91tGTUMHsjNg+b1aL3J1zx6EjnroeuUyUbhfX0Kkx
-         KOwm/MWK4y6pDhHLD8qKvm/KN/bHwkJhtb2vqSOEASqFXogdds2i3oTOonOlUJ5bny3d
-         c8qp1gCFY8OSbvm9Eee38jxCGmvGCJmoV7eDxvtWiz9SNs0eceV5ncFey2YZQf5/QSLH
-         b4gw==
+        bh=G9tnsbtdRqh42D4kpVAB7LzejKhTV9IwvJWD0iGoO1c=;
+        b=h2zBdvGjWOrudeDgXmHypq2edTI6jovMUp5D5JWMZamBJWulEd2PexNZhWq0EA88qk
+         JOJfVwS4NS0WiS0wzDeBI5GSmIDdgypdxDwEHgFrZ/cb+1iKUDQUTOd+FqvEG0NK9wLc
+         vMXc41WytKRtlk7+QafzsPsuL9d06JiUOK+n/8EIy9arY2DE4nniE2g64ymdz8XS8c4l
+         MWdsLim2Uyw59LVqwssK1Vej5qqXips4Edax1k9U/CgNvIJ5hNzfZIBEH5rBiDzJAUIn
+         q9CjNcH5B1kKJiTAcGI9UKEmtD4CCqwoggigIo6JhQ+pSRnY1Xvm+knslSHXoV1MToW9
+         Czzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745146565; x=1745751365;
+        d=1e100.net; s=20230601; t=1745146566; x=1745751366;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dKS18w5jPtthAClr/qzcbbJeJ2idJTNr68ummcX/Ugg=;
-        b=jw3T/tYzuJAlAwPV2BnwHdNkaOE90PTzBC1ENm2RhjrD7adMBUJEdUIVNWBQ8Scf/O
-         2ro54yp3v3xFGrrrLeeyZ7kbcq9jCwyQcBzv/lY77iReeGBroX/OLRGk2Kf43fKCKMr2
-         ro1rpoW17Aj8cmt58GNSVjVgUCgvbTacwmyxOKniMOqrb51oUCCNOVkgu3UIGUxePer8
-         bYGhfF1vUp8JFe7x2TDKNvCpUshqSX/ZAwix+SEVWWIplILjozHtvstZpxshgNMY7QjJ
-         cnr2+c+2WaTYxhqMZf90MsbX4KFY3OnryR/TZrWEsgyPdSUt2qi2qjcqBsAgJQ1+aXTM
-         D3sA==
-X-Gm-Message-State: AOJu0YxiZIv2CWOHRXViEmAr1mpq5zS+knDDtqlyFoxDeMzsqR8KXE0a
-	sv5X9BjF/cFezjLa1wtk6esqxTpYNYgLkSF7BmNUmz1hsNK9uHIoDMYyZwyL
-X-Gm-Gg: ASbGncurRocnPJ9JXAElazjkwEmLvw1TzcmRD4kUs0e42nLJgXhXxhC7iKcnrvCzAI0
-	pRljW9g8oUT3nm2nbfkbXqXDDKurPGUWCxMc3SeV6YkOswjEUXcEdq+hseq5pelsA2h4lxu0m/o
-	2Eu7/BK9iYJI3RFNtkryM9vH3VttwlHO23xxFiaEbUKOMoUc9+g59ZSr7vJNfvei/ceEN+nayMK
-	hSHq35EIsjp1ELBKbwcVJvNnsSv9yDu8PvT4uAUZ73Rzzl4d8a7JnZUb7SDCHmayYWXBOAucfIR
-	eY4Qtgh3YKzEDDsRD+vncp9Ez8EYrCMHKl4jmDRMtbQLbOqv
-X-Google-Smtp-Source: AGHT+IH4ez4PNX+ibIIx+4pXEOeZiHdcqOqTaY54OcYYY4s1LyG/w8+FmTjq3KO/MBrxuK1brMweXw==
-X-Received: by 2002:a05:622a:1a06:b0:476:b783:c94d with SMTP id d75a77b69052e-47aec4a1173mr115644621cf.35.1745146564965;
-        Sun, 20 Apr 2025 03:56:04 -0700 (PDT)
+        bh=G9tnsbtdRqh42D4kpVAB7LzejKhTV9IwvJWD0iGoO1c=;
+        b=RW/9hwctTQ2rM1CYzclpZs+L+PwulnAa8sNdQtxdKipL/lBaX7Lmuw2tcFh6K3a3Yw
+         lOKol+I8rBprldxaCkU/SXiP8H/mMQvxU2nCzdex9R12WLJWgpUKulJst16hTorSzpJ+
+         iiNKRp51v9m9621ozMjlB4pcqT3ksJ02fsWz4ZfGlgzlpV6BP7ZG7MDYJoi73pjfaYSd
+         e2bclJv885UeQ5ZLNlmwZgZ3ZIn2NHIZ2goyIx3YeXIwLN26+DTxI4IsjT2rz07huPab
+         X+zoGag7F3BqWIFZTyQgV4RMeBGOFjnL67CrGWRhomRjIlNQK1iKFpKYA1/JvBLbCImJ
+         pyVg==
+X-Gm-Message-State: AOJu0Yz0NYFigDmeK75YbKeeg7n5gCEr4YAtJwXi0DpVz7PhoffPOVgb
+	GCJqFL5R4dospJ/4O+iHQWKrBpRRJiTPAH7gf0FPApxKfMrD86rKUsLlY1QA
+X-Gm-Gg: ASbGncsZQBzbVuHeSYsGbk9ZzuiZdnrQdVszyu4Wk1sWD49dnYqsx5yia5I+m6FibED
+	23SMZDbEds44qQGyabM2NL7qbLGf1nmI26lIedDVchE0ral0E5lyqopjab0ClK9vmjyEnHXiPfm
+	Y7cax3so19iFyzxxAncfbxaP8CF1UNSDdv1bZrBFvH632MCI0LRTmGNyGwGps6nPmPRjC4PGDF9
+	avLZ+rX4XZ8cwbDYMgrTEaynSRDG4RRcEt4iJSDHyH8qfvEWnMqx492nrL5CU59kCDVGvBK++xH
+	vKGoLJVL8zaL4osl43Vh0woRGKYXNvhlTQKcfzO2aRw/Hoyq
+X-Google-Smtp-Source: AGHT+IFBWHZc7Eg7fiq8BTG3MKe9iC8KqBTK9IrqUH5QHEfYtOe5UXaWLr9eChVWDmoAQr2iXuUFcQ==
+X-Received: by 2002:ac8:5947:0:b0:477:c04:b511 with SMTP id d75a77b69052e-47aec3cbf5cmr137555561cf.31.1745146566081;
+        Sun, 20 Apr 2025 03:56:06 -0700 (PDT)
 Received: from rajGilbertMachine.. ([2607:b400:30:a100:a5e9:b904:d3d9:b816])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-47ae9c4c608sm30851771cf.41.2025.04.20.03.56.04
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-47ae9c4c608sm30851771cf.41.2025.04.20.03.56.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Apr 2025 03:56:04 -0700 (PDT)
+        Sun, 20 Apr 2025 03:56:05 -0700 (PDT)
 From: Raj Sahu <rjsu26@gmail.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -96,9 +96,9 @@ Cc: ast@kernel.org,
 	memxor@gmail.com,
 	sidchintamaneni <sidchintamaneni@vt.edu>,
 	Raj <rjsu26@gmail.com>
-Subject: [RFC bpf-next 1/4] bpf: Introduce new structs and struct fields
-Date: Sun, 20 Apr 2025 06:55:19 -0400
-Message-ID: <20250420105524.2115690-2-rjsu26@gmail.com>
+Subject: [RFC bpf-next 2/4] bpftool/libbpf : Introduce bpf_prog_termination to trigger termination signal
+Date: Sun, 20 Apr 2025 06:55:20 -0400
+Message-ID: <20250420105524.2115690-3-rjsu26@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250420105524.2115690-1-rjsu26@gmail.com>
 References: <20250420105524.2115690-1-rjsu26@gmail.com>
@@ -112,136 +112,191 @@ Content-Transfer-Encoding: 8bit
 
 From: sidchintamaneni <sidchintamaneni@vt.edu>
 
-Introduces the definition of struct termination_aux_states
-required to support fast-path termination of BPF programs.
-Adds the memory allocation and free logic for newly added
-termination_states feild in struct bpf_prog.
+Introduces bpf_prog_termination API in libbpf to trigger termination
+signal from userspace. Adds do_terminate functionality to bpftool to
+use cmd line interface.
+
+cmd - bpftool prog terminate id [] cpu []
+
+Will split this commit to two (bpftool/ libbpf) while sending the
+patches
 
 Signed-off-by: Raj <rjsu26@gmail.com>
 Signed-off-by: Siddharth <sidchintamaneni@gmail.com>
 ---
- include/linux/bpf.h | 14 ++++++++++++++
- kernel/bpf/core.c   | 42 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 56 insertions(+)
+ include/uapi/linux/bpf.h       |  5 +++++
+ tools/bpf/bpftool/prog.c       | 40 ++++++++++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h |  5 +++++
+ tools/lib/bpf/bpf.c            | 15 +++++++++++++
+ tools/lib/bpf/bpf.h            | 10 +++++++++
+ tools/lib/bpf/libbpf.map       |  1 +
+ 6 files changed, 76 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3f0cc89c0622..5141f189b79b 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -57,6 +57,7 @@ struct cgroup;
- struct bpf_token;
- struct user_namespace;
- struct super_block;
-+struct termination_aux_states;
- struct inode;
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 71d5ac83cf5d..9b9061b9b8e1 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -961,6 +961,7 @@ enum bpf_cmd {
+ 	BPF_LINK_DETACH,
+ 	BPF_PROG_BIND_MAP,
+ 	BPF_TOKEN_CREATE,
++	BPF_PROG_TERMINATE,
+ 	__MAX_BPF_CMD,
+ };
  
- extern struct idr btf_idr;
-@@ -1518,6 +1519,18 @@ struct btf_mod_pair {
+@@ -1842,6 +1843,10 @@ union bpf_attr {
+ 		__u32		bpffs_fd;
+ 	} token_create;
  
- struct bpf_kfunc_desc_tab;
++	struct { /* struct used by BPF_PROG_TERMINATE command */
++		__u32		prog_id;
++		__u32		term_cpu_id;
++	} prog_terminate;
+ } __attribute__((aligned(8)));
  
-+struct cpu_aux {
-+	u8 cpu_flag;
-+	spinlock_t lock;
-+};
-+
-+struct termination_aux_states {
-+	struct cpu_aux *per_cpu_state;
-+	struct pt_regs *pre_execution_state;
-+	struct bpf_prog *patch_prog;
-+	bool is_termination_prog;
-+};
-+
- struct bpf_prog_aux {
- 	atomic64_t refcnt;
- 	u32 used_map_cnt;
-@@ -1656,6 +1669,7 @@ struct bpf_prog {
- 					    const struct bpf_insn *insn);
- 	struct bpf_prog_aux	*aux;		/* Auxiliary fields */
- 	struct sock_fprog_kern	*orig_prog;	/* Original BPF program */
-+	struct termination_aux_states *termination_states;
- 	/* Instructions for interpreter */
- 	union {
- 		DECLARE_FLEX_ARRAY(struct sock_filter, insns);
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index ba6b6118cf50..27dcf59f4445 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -99,6 +99,7 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
- 	gfp_t gfp_flags = bpf_memcg_flags(GFP_KERNEL | __GFP_ZERO | gfp_extra_flags);
- 	struct bpf_prog_aux *aux;
- 	struct bpf_prog *fp;
-+	struct termination_aux_states *termination_states = NULL;
- 
- 	size = round_up(size, __PAGE_SIZE);
- 	fp = __vmalloc(size, gfp_flags);
-@@ -117,11 +118,35 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
- 		return NULL;
- 	}
- 
-+	termination_states = kzalloc(sizeof(*termination_states),
-+					bpf_memcg_flags(GFP_KERNEL | gfp_extra_flags));
-+	if (!termination_states)
-+		goto free_bpf_struct_ptr_alloc;
-+
-+	termination_states->per_cpu_state = kzalloc(sizeof(struct cpu_aux) * NR_CPUS,
-+					bpf_memcg_flags(GFP_KERNEL | gfp_extra_flags));
-+	if (!termination_states->per_cpu_state)
-+		goto free_bpf_termination_states;
-+
-+	for (int i = 0; i < NR_CPUS; i++) {
-+		termination_states->per_cpu_state[i].cpu_flag = 0;
-+		spin_lock_init(&termination_states->per_cpu_state[i].lock);
-+	}
-+
-+	termination_states->pre_execution_state = kzalloc(
-+					sizeof(struct pt_regs) * NR_CPUS,
-+					bpf_memcg_flags(GFP_KERNEL | gfp_extra_flags)
-+					);
-+	if (!termination_states->pre_execution_state)
-+		goto free_per_cpu_state;
-+
-+	termination_states->is_termination_prog = false;
- 	fp->pages = size / PAGE_SIZE;
- 	fp->aux = aux;
- 	fp->aux->prog = fp;
- 	fp->jit_requested = ebpf_jit_enabled();
- 	fp->blinding_requested = bpf_jit_blinding_enabled(fp);
-+	fp->termination_states = termination_states;
- #ifdef CONFIG_CGROUP_BPF
- 	aux->cgroup_atype = CGROUP_BPF_ATTACH_TYPE_INVALID;
- #endif
-@@ -135,6 +160,16 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
- 	mutex_init(&fp->aux->dst_mutex);
- 
- 	return fp;
-+
-+free_per_cpu_state:
-+	kfree(termination_states->per_cpu_state);
-+free_bpf_termination_states:
-+	kfree(termination_states);
-+free_bpf_struct_ptr_alloc:
-+	free_percpu(fp->active);
-+	vfree(fp);
-+	kfree(aux);
-+	return NULL;
+ /* The description below is an attempt at providing documentation to eBPF
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index f010295350be..77bf3fa10d46 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1968,6 +1968,44 @@ static int do_loadall(int argc, char **argv)
+ 	return load_with_options(argc, argv, false);
  }
  
- struct bpf_prog *bpf_prog_alloc(unsigned int size, gfp_t gfp_extra_flags)
-@@ -282,6 +317,13 @@ void __bpf_prog_free(struct bpf_prog *fp)
- 		kfree(fp->aux->poke_tab);
- 		kfree(fp->aux);
- 	}
++static int do_terminate(int argc, char **argv)
++{
++	int prog_id, cpu_id;
 +
-+	if (fp->termination_states) {
-+		kfree(fp->termination_states->pre_execution_state);
-+		kfree(fp->termination_states->per_cpu_state);
-+		kfree(fp->termination_states);
++	if (!REQ_ARGS(4))
++		return BAD_ARG();
++
++	if (!is_prefix(*argv, "id")) {
++		p_err("expected 'id', got: %s", *argv);
++		return -1;
++	}
++	NEXT_ARG();
++
++	prog_id = atoi(argv[0]);
++	if (prog_id <= 0) {
++		p_err("Invalid prog_id: %d\n", prog_id);
++		return -1;
++	}
++	NEXT_ARG();
++
++	if (!is_prefix(*argv, "cpu")) {
++		p_err("expected 'cpu', got: %s", *argv);
++		return -1;
++	}
++	NEXT_ARG();
++
++	cpu_id = atoi(argv[0]);
++	if (cpu_id < 0) {
++		p_err("Invalid cpu_id: %d\n", cpu_id);
++		return -1;
 +	}
 +
- 	free_percpu(fp->stats);
- 	free_percpu(fp->active);
- 	vfree(fp);
++	bpf_prog_terminate(prog_id, cpu_id);
++
++	return 0;
++
++}
++
+ #ifdef BPFTOOL_WITHOUT_SKELETONS
+ 
+ static int do_profile(int argc, char **argv)
+@@ -2466,6 +2504,7 @@ static int do_help(int argc, char **argv)
+ 
+ 	fprintf(stderr,
+ 		"Usage: %1$s %2$s { show | list } [PROG]\n"
++		"	%1$s %2$s terminate PROG CPU\n"
+ 		"       %1$s %2$s dump xlated PROG [{ file FILE | [opcodes] [linum] [visual] }]\n"
+ 		"       %1$s %2$s dump jited  PROG [{ file FILE | [opcodes] [linum] }]\n"
+ 		"       %1$s %2$s pin   PROG FILE\n"
+@@ -2525,6 +2564,7 @@ static const struct cmd cmds[] = {
+ 	{ "tracelog",	do_tracelog },
+ 	{ "run",	do_run },
+ 	{ "profile",	do_profile },
++	{ "terminate",	do_terminate },
+ 	{ 0 }
+ };
+ 
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 71d5ac83cf5d..9b9061b9b8e1 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -961,6 +961,7 @@ enum bpf_cmd {
+ 	BPF_LINK_DETACH,
+ 	BPF_PROG_BIND_MAP,
+ 	BPF_TOKEN_CREATE,
++	BPF_PROG_TERMINATE,
+ 	__MAX_BPF_CMD,
+ };
+ 
+@@ -1842,6 +1843,10 @@ union bpf_attr {
+ 		__u32		bpffs_fd;
+ 	} token_create;
+ 
++	struct { /* struct used by BPF_PROG_TERMINATE command */
++		__u32		prog_id;
++		__u32		term_cpu_id;
++	} prog_terminate;
+ } __attribute__((aligned(8)));
+ 
+ /* The description below is an attempt at providing documentation to eBPF
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index a9c3e33d0f8a..0b9dc9b16e02 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -1331,3 +1331,18 @@ int bpf_token_create(int bpffs_fd, struct bpf_token_create_opts *opts)
+ 	fd = sys_bpf_fd(BPF_TOKEN_CREATE, &attr, attr_sz);
+ 	return libbpf_err_errno(fd);
+ }
++
++int bpf_prog_terminate(int prog_id, int cpu_id)
++{
++	int fd;
++	union bpf_attr attr;
++	const size_t attr_sz = offsetofend(union bpf_attr, prog_terminate);
++
++	memset(&attr, 0, sizeof(attr));
++	attr.prog_terminate.prog_id = prog_id;
++	attr.prog_terminate.term_cpu_id = cpu_id;
++
++	fd = sys_bpf(BPF_PROG_TERMINATE, &attr, attr_sz);
++
++	return libbpf_err_errno(fd);
++}
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 777627d33d25..6d09d17467b7 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -704,6 +704,16 @@ struct bpf_token_create_opts {
+ LIBBPF_API int bpf_token_create(int bpffs_fd,
+ 				struct bpf_token_create_opts *opts);
+ 
++
++/**
++ * @brief **bpf_prog_terminate()** when provided with prog id and cpu id
++ * of the running prog, it terminated the running BPF program.
++ *
++ * @param BPF program file descriptor
++ * @cpu_id cpu id of the running program
++ */
++LIBBPF_API int bpf_prog_terminate(int prog_id, int cpu_id);
++
+ #ifdef __cplusplus
+ } /* extern "C" */
+ #endif
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 1205f9a4fe04..80793f215464 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -443,4 +443,5 @@ LIBBPF_1.6.0 {
+ 		bpf_program__line_info_cnt;
+ 		btf__add_decl_attr;
+ 		btf__add_type_attr;
++		bpf_prog_terminate;
+ } LIBBPF_1.5.0;
 -- 
 2.43.0
 
