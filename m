@@ -1,76 +1,76 @@
-Return-Path: <bpf+bounces-56285-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56287-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D628A94785
-	for <lists+bpf@lfdr.de>; Sun, 20 Apr 2025 12:56:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE35AA94787
+	for <lists+bpf@lfdr.de>; Sun, 20 Apr 2025 12:56:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 278273AF4F1
-	for <lists+bpf@lfdr.de>; Sun, 20 Apr 2025 10:55:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A86E16A6DD
+	for <lists+bpf@lfdr.de>; Sun, 20 Apr 2025 10:56:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 734601E570A;
-	Sun, 20 Apr 2025 10:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01C771BF37;
+	Sun, 20 Apr 2025 10:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h2zBdvGj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LpOwkumT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4AC1E0E0D
-	for <bpf@vger.kernel.org>; Sun, 20 Apr 2025 10:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3981E32A0
+	for <bpf@vger.kernel.org>; Sun, 20 Apr 2025 10:56:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745146569; cv=none; b=IUWUamo4uuCy2VNQV3ZVrB2tjoPzfNGGU2J71T5I2L9xOD0GLbUiz2EC2uXvNxP1hCi61a8jFOOsSyxbdIC0eyZ4ZOzObRhGrgtjdTAjoTJ986+MdO3wi33/dnfOmj7sB7F+H035ngJfPpV8MLngciQpex+D9nH7N7FFUL1tjSc=
+	t=1745146570; cv=none; b=spdY/Q5fkQNIvcsUe0bySOiSNMhrfyTrXQNTsz+VEDyRlGddySf1pIeqGiMg2w/DoHL8soi2TG/Cf6X4a0I7vobIeDkFTNj5yaS4a8bocZgaDZ9wRCJ0y2/QT0Y7epBodMKMF0WUJ03H0Jhjhw9Yh6BjE94LTKvn2AUkLWR/UvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745146569; c=relaxed/simple;
-	bh=Hjw/si8/6UpYIIqiV+wShdHr6ktaRv3NfD7q2Dmmxa8=;
+	s=arc-20240116; t=1745146570; c=relaxed/simple;
+	bh=d+o5PYxfBQseV4QcvQ0p293KgwfzP+u3uIboLYy5ppQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZnstG/gQywb+NglewD1FNcTL6YWUytb18b7nCr18QmlfiaULPilNAFipcnn7C0d5DSzQwnMGtlWO8AsRHsBquj5665oUQRjH/MpYQN4V/rnR3qdYLm56+f+Zanv+hQinWw9BkMOgVTaTPPZXDa1+0Aa0jztcmH3yXAuuBhl26Yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h2zBdvGj; arc=none smtp.client-ip=209.85.160.173
+	 MIME-Version; b=g5lcMNKNvSoBU31Ov0PdL28xeG1gB46bto6pmDdX0ritUtWRNSSyuy0QoME/PjJkGpRGDHvTKSllyn/hGAaJXUs6qcUcSOTfTMqF4aODdRbE8c+Up/+W1Ws/ZW9X4HwP0GnSHIk2wa6HEy1sdJ0mZPWt/0++2ifWIXx7wvsqZiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LpOwkumT; arc=none smtp.client-ip=209.85.160.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-476a720e806so28942781cf.0
-        for <bpf@vger.kernel.org>; Sun, 20 Apr 2025 03:56:07 -0700 (PDT)
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4774193fdffso45564101cf.1
+        for <bpf@vger.kernel.org>; Sun, 20 Apr 2025 03:56:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745146566; x=1745751366; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745146567; x=1745751367; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=G9tnsbtdRqh42D4kpVAB7LzejKhTV9IwvJWD0iGoO1c=;
-        b=h2zBdvGjWOrudeDgXmHypq2edTI6jovMUp5D5JWMZamBJWulEd2PexNZhWq0EA88qk
-         JOJfVwS4NS0WiS0wzDeBI5GSmIDdgypdxDwEHgFrZ/cb+1iKUDQUTOd+FqvEG0NK9wLc
-         vMXc41WytKRtlk7+QafzsPsuL9d06JiUOK+n/8EIy9arY2DE4nniE2g64ymdz8XS8c4l
-         MWdsLim2Uyw59LVqwssK1Vej5qqXips4Edax1k9U/CgNvIJ5hNzfZIBEH5rBiDzJAUIn
-         q9CjNcH5B1kKJiTAcGI9UKEmtD4CCqwoggigIo6JhQ+pSRnY1Xvm+knslSHXoV1MToW9
-         Czzg==
+        bh=7RCt5Bpm8sCGuMPV1vexYhG2Sgi3wKCbATe8Qq3sT4I=;
+        b=LpOwkumTskzd0iHNoR7HtVulMiMEADWZNpeTYTwLo6rskQBSoTma/PglvQNIaOsiFA
+         k6HenNkkMiVsdG5umW28FqTz6ctLe7O4WQRwamurCTgLMvAf8Edxl++BeqyZXAk5S5Q/
+         G4/YCFiOk4sNylaVj/XucYovCgU8g0ilIwGrEID4ee8ALphrU8lhm7NfKxee9SH0RJJt
+         GOzDynswokf/9+EQUodshNe1cVkfo3PBpiyTzBY/leY5uDKgCJIedXA52XUppQhsOvka
+         5aWmQmvthlWa52lO/x+ePR6YO9l2nezQcfWDix0lPjU6oTPVyBZJRCjFy8h7HJd1/z2h
+         b03w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745146566; x=1745751366;
+        d=1e100.net; s=20230601; t=1745146567; x=1745751367;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G9tnsbtdRqh42D4kpVAB7LzejKhTV9IwvJWD0iGoO1c=;
-        b=RW/9hwctTQ2rM1CYzclpZs+L+PwulnAa8sNdQtxdKipL/lBaX7Lmuw2tcFh6K3a3Yw
-         lOKol+I8rBprldxaCkU/SXiP8H/mMQvxU2nCzdex9R12WLJWgpUKulJst16hTorSzpJ+
-         iiNKRp51v9m9621ozMjlB4pcqT3ksJ02fsWz4ZfGlgzlpV6BP7ZG7MDYJoi73pjfaYSd
-         e2bclJv885UeQ5ZLNlmwZgZ3ZIn2NHIZ2goyIx3YeXIwLN26+DTxI4IsjT2rz07huPab
-         X+zoGag7F3BqWIFZTyQgV4RMeBGOFjnL67CrGWRhomRjIlNQK1iKFpKYA1/JvBLbCImJ
-         pyVg==
-X-Gm-Message-State: AOJu0Yz0NYFigDmeK75YbKeeg7n5gCEr4YAtJwXi0DpVz7PhoffPOVgb
-	GCJqFL5R4dospJ/4O+iHQWKrBpRRJiTPAH7gf0FPApxKfMrD86rKUsLlY1QA
-X-Gm-Gg: ASbGncsZQBzbVuHeSYsGbk9ZzuiZdnrQdVszyu4Wk1sWD49dnYqsx5yia5I+m6FibED
-	23SMZDbEds44qQGyabM2NL7qbLGf1nmI26lIedDVchE0ral0E5lyqopjab0ClK9vmjyEnHXiPfm
-	Y7cax3so19iFyzxxAncfbxaP8CF1UNSDdv1bZrBFvH632MCI0LRTmGNyGwGps6nPmPRjC4PGDF9
-	avLZ+rX4XZ8cwbDYMgrTEaynSRDG4RRcEt4iJSDHyH8qfvEWnMqx492nrL5CU59kCDVGvBK++xH
-	vKGoLJVL8zaL4osl43Vh0woRGKYXNvhlTQKcfzO2aRw/Hoyq
-X-Google-Smtp-Source: AGHT+IFBWHZc7Eg7fiq8BTG3MKe9iC8KqBTK9IrqUH5QHEfYtOe5UXaWLr9eChVWDmoAQr2iXuUFcQ==
-X-Received: by 2002:ac8:5947:0:b0:477:c04:b511 with SMTP id d75a77b69052e-47aec3cbf5cmr137555561cf.31.1745146566081;
-        Sun, 20 Apr 2025 03:56:06 -0700 (PDT)
+        bh=7RCt5Bpm8sCGuMPV1vexYhG2Sgi3wKCbATe8Qq3sT4I=;
+        b=Iv/vjeAplYbwzYZWaBEyPWcOyoGkTvyfvXBDtvnNRV9gWhwyd1v7SJWmy8QqW6621k
+         /guRhMO/PYTYL2CpqfUmrp/FwkXVnYnBlmEwol4GEu1QJvi/kEGMBCsV2z5TeqY2NW8Z
+         5/gpsz4jMNNblVbp6ZXqEdL7TMsB0PowbuyC+1NeKz7GiBAYQh8Z5m72or2wX9DyzIse
+         xeQCihR5A+NcdhfLjkbf7gAjDche/DGtL2wSqrVjCXjJanCU/eUDYz6ZLX6NvcIhElU5
+         1dyoOi2gM2iQ6MLgCMeYu9m0fcaVGFB12QOI3+wd/m3r/3PIoEQxPbHjr/3Ig4GlhNbM
+         drCA==
+X-Gm-Message-State: AOJu0Yz3aGaW7hnW7GAcIBKoQ8HkeOey7zfFFKNRgfJd7nz+ANQ/h7xg
+	z39Zxhu7ZHxDQjRbHe0Lf+5r5HR1V2mOoajCpoDPicW7MazS4YMepnF2t4x4
+X-Gm-Gg: ASbGncuh9aFjwRgmcXGavkjHUvo4wxjLyyW+CEJFTBePJXs4CcVlZ1MbcU9FjZRtNvB
+	X5ghqmnMPyOAzIzQdQ0bAg2DSo9GO0W8yhq84cPmAoZcJvMiYPoVUJjRq7jNSF8olmEKNkzKFyX
+	s5Qx14tyii02ja9pUkfD+G//rig3mQ6yO89rXct+fcm0yemmv1lyRxOkViArIWQFFjqUhr1b/WL
+	gnL8c26H1urzXML2nE3+DGrByXZp71g+ccmt40wyloaQ7h3ZyZSYPXgVSCzlN74z8AKBgl74dje
+	qHppoCLwhQlZu6/AxfrcqxGFiOwJTQ1qSJK4oM/k0KrGZhsJ
+X-Google-Smtp-Source: AGHT+IHL+wcX1r9d2OTNySr9cBRWl5XNiZRbslcfYKXI7uQvW1fsTe7uPGXRpK0uAebg34O9Otw4/w==
+X-Received: by 2002:a05:622a:18aa:b0:476:add4:d2bf with SMTP id d75a77b69052e-47aec3b755dmr113012021cf.22.1745146567049;
+        Sun, 20 Apr 2025 03:56:07 -0700 (PDT)
 Received: from rajGilbertMachine.. ([2607:b400:30:a100:a5e9:b904:d3d9:b816])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-47ae9c4c608sm30851771cf.41.2025.04.20.03.56.05
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-47ae9c4c608sm30851771cf.41.2025.04.20.03.56.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Apr 2025 03:56:05 -0700 (PDT)
+        Sun, 20 Apr 2025 03:56:06 -0700 (PDT)
 From: Raj Sahu <rjsu26@gmail.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -94,11 +94,10 @@ Cc: ast@kernel.org,
 	jinghao7@illinois.edu,
 	sidchintamaneni@gmail.com,
 	memxor@gmail.com,
-	sidchintamaneni <sidchintamaneni@vt.edu>,
 	Raj <rjsu26@gmail.com>
-Subject: [RFC bpf-next 2/4] bpftool/libbpf : Introduce bpf_prog_termination to trigger termination signal
-Date: Sun, 20 Apr 2025 06:55:20 -0400
-Message-ID: <20250420105524.2115690-3-rjsu26@gmail.com>
+Subject: [RFC bpf-next 3/4] bpf: Generating a stubbed version of BPF program for termination
+Date: Sun, 20 Apr 2025 06:55:21 -0400
+Message-ID: <20250420105524.2115690-4-rjsu26@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250420105524.2115690-1-rjsu26@gmail.com>
 References: <20250420105524.2115690-1-rjsu26@gmail.com>
@@ -110,193 +109,506 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: sidchintamaneni <sidchintamaneni@vt.edu>
+From: Raj <rjsu26@gmail.com>
 
-Introduces bpf_prog_termination API in libbpf to trigger termination
-signal from userspace. Adds do_terminate functionality to bpftool to
-use cmd line interface.
+Introduces patch_generator which generates patch for each BPF
+program, iterate through all helper calls and stub them with
+a lightweight dummy function.
 
-cmd - bpftool prog terminate id [] cpu []
-
-Will split this commit to two (bpftool/ libbpf) while sending the
-patches
+Also introduces a new patched version of bpf_loop namely
+bpf_loop_termination for early exit from the loop.
+For bpf_loop inlining case, we modify the return value of
+the callback function to terminate early.
 
 Signed-off-by: Raj <rjsu26@gmail.com>
 Signed-off-by: Siddharth <sidchintamaneni@gmail.com>
 ---
- include/uapi/linux/bpf.h       |  5 +++++
- tools/bpf/bpftool/prog.c       | 40 ++++++++++++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h |  5 +++++
- tools/lib/bpf/bpf.c            | 15 +++++++++++++
- tools/lib/bpf/bpf.h            | 10 +++++++++
- tools/lib/bpf/libbpf.map       |  1 +
- 6 files changed, 76 insertions(+)
+ include/linux/bpf.h      |   4 +
+ include/uapi/linux/bpf.h |   8 ++
+ kernel/bpf/bpf_iter.c    |  65 ++++++++++++
+ kernel/bpf/core.c        |   3 +
+ kernel/bpf/helpers.c     |   8 ++
+ kernel/bpf/syscall.c     | 216 +++++++++++++++++++++++++++++++++++++++
+ kernel/bpf/verifier.c    |  16 ++-
+ 7 files changed, 318 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 5141f189b79b..5a174b536190 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -3400,12 +3400,16 @@ extern const struct bpf_func_proto bpf_unlocked_sk_setsockopt_proto;
+ extern const struct bpf_func_proto bpf_unlocked_sk_getsockopt_proto;
+ extern const struct bpf_func_proto bpf_find_vma_proto;
+ extern const struct bpf_func_proto bpf_loop_proto;
++extern const struct bpf_func_proto bpf_loop_termination_proto;
+ extern const struct bpf_func_proto bpf_copy_from_user_task_proto;
+ extern const struct bpf_func_proto bpf_set_retval_proto;
+ extern const struct bpf_func_proto bpf_get_retval_proto;
+ extern const struct bpf_func_proto bpf_user_ringbuf_drain_proto;
+ extern const struct bpf_func_proto bpf_cgrp_storage_get_proto;
+ extern const struct bpf_func_proto bpf_cgrp_storage_delete_proto;
++extern const struct bpf_func_proto bpf_dummy_void_proto;
++extern const struct bpf_func_proto bpf_dummy_int_proto;
++extern const struct bpf_func_proto bpf_dummy_ptr_to_map_proto;
+ 
+ const struct bpf_func_proto *tracing_prog_func_proto(
+   enum bpf_func_id func_id, const struct bpf_prog *prog);
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 71d5ac83cf5d..9b9061b9b8e1 100644
+index 9b9061b9b8e1..d1d1795eefd4 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -961,6 +961,7 @@ enum bpf_cmd {
- 	BPF_LINK_DETACH,
- 	BPF_PROG_BIND_MAP,
- 	BPF_TOKEN_CREATE,
-+	BPF_PROG_TERMINATE,
- 	__MAX_BPF_CMD,
+@@ -6033,6 +6033,14 @@ union bpf_attr {
+ 	FN(user_ringbuf_drain, 209, ##ctx)		\
+ 	FN(cgrp_storage_get, 210, ##ctx)		\
+ 	FN(cgrp_storage_delete, 211, ##ctx)		\
++	FN(dummy_void, 212, ##ctx)			\
++	FN(dummy_int, 213, ##ctx)			\
++	FN(dummy_ptr_to_map, 214, ##ctx)		\
++	FN(loop_termination, 215, ##ctx)		\
++	/*
++	 * TODO: Remove these dummy helper interface because we
++	 * are not exposing them to userspace
++	 */
+ 	/* This helper list is effectively frozen. If you are trying to	\
+ 	 * add a new helper, you should add a kfunc instead which has	\
+ 	 * less stability guarantees. See Documentation/bpf/kfuncs.rst	\
+diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+index 380e9a7cac75..e5dceebfb302 100644
+--- a/kernel/bpf/bpf_iter.c
++++ b/kernel/bpf/bpf_iter.c
+@@ -6,6 +6,7 @@
+ #include <linux/filter.h>
+ #include <linux/bpf.h>
+ #include <linux/rcupdate_trace.h>
++#include <asm/unwind.h>
+ 
+ struct bpf_iter_target_info {
+ 	struct list_head list;
+@@ -775,6 +776,70 @@ const struct bpf_func_proto bpf_loop_proto = {
+ 	.arg4_type	= ARG_ANYTHING,
  };
  
-@@ -1842,6 +1843,10 @@ union bpf_attr {
- 		__u32		bpffs_fd;
- 	} token_create;
- 
-+	struct { /* struct used by BPF_PROG_TERMINATE command */
-+		__u32		prog_id;
-+		__u32		term_cpu_id;
-+	} prog_terminate;
- } __attribute__((aligned(8)));
- 
- /* The description below is an attempt at providing documentation to eBPF
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index f010295350be..77bf3fa10d46 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1968,6 +1968,44 @@ static int do_loadall(int argc, char **argv)
- 	return load_with_options(argc, argv, false);
- }
- 
-+static int do_terminate(int argc, char **argv)
++BPF_CALL_4(bpf_loop_termination, u32, nr_loops, void *, callback_fn,
++		void *, callback_ctx, u64, flags)
 +{
-+	int prog_id, cpu_id;
++	/* Since a patched BPF program for termination will want
++	 * to finish as fast as possible,
++	 * we simply don't run any loop in here.
++	 */
 +
-+	if (!REQ_ARGS(4))
-+		return BAD_ARG();
++	/* Restoring the callee-saved registers and exit.
++	 * Hacky/ err prone way of restoring the registers.
++	 * We are figuring out a way to have arch independent
++	 * way to do this.
++	 */
 +
-+	if (!is_prefix(*argv, "id")) {
-+		p_err("expected 'id', got: %s", *argv);
-+		return -1;
-+	}
-+	NEXT_ARG();
-+
-+	prog_id = atoi(argv[0]);
-+	if (prog_id <= 0) {
-+		p_err("Invalid prog_id: %d\n", prog_id);
-+		return -1;
-+	}
-+	NEXT_ARG();
-+
-+	if (!is_prefix(*argv, "cpu")) {
-+		p_err("expected 'cpu', got: %s", *argv);
-+		return -1;
-+	}
-+	NEXT_ARG();
-+
-+	cpu_id = atoi(argv[0]);
-+	if (cpu_id < 0) {
-+		p_err("Invalid cpu_id: %d\n", cpu_id);
-+		return -1;
-+	}
-+
-+	bpf_prog_terminate(prog_id, cpu_id);
++	asm volatile(
++	"pop %rbx\n\t"
++	"pop %rbp\n\t"
++	"pop %r12\n\t"
++	"pop %r13\n\t"
++	);
 +
 +	return 0;
-+
 +}
 +
- #ifdef BPFTOOL_WITHOUT_SKELETONS
- 
- static int do_profile(int argc, char **argv)
-@@ -2466,6 +2504,7 @@ static int do_help(int argc, char **argv)
- 
- 	fprintf(stderr,
- 		"Usage: %1$s %2$s { show | list } [PROG]\n"
-+		"	%1$s %2$s terminate PROG CPU\n"
- 		"       %1$s %2$s dump xlated PROG [{ file FILE | [opcodes] [linum] [visual] }]\n"
- 		"       %1$s %2$s dump jited  PROG [{ file FILE | [opcodes] [linum] }]\n"
- 		"       %1$s %2$s pin   PROG FILE\n"
-@@ -2525,6 +2564,7 @@ static const struct cmd cmds[] = {
- 	{ "tracelog",	do_tracelog },
- 	{ "run",	do_run },
- 	{ "profile",	do_profile },
-+	{ "terminate",	do_terminate },
- 	{ 0 }
- };
- 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 71d5ac83cf5d..9b9061b9b8e1 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -961,6 +961,7 @@ enum bpf_cmd {
- 	BPF_LINK_DETACH,
- 	BPF_PROG_BIND_MAP,
- 	BPF_TOKEN_CREATE,
-+	BPF_PROG_TERMINATE,
- 	__MAX_BPF_CMD,
- };
- 
-@@ -1842,6 +1843,10 @@ union bpf_attr {
- 		__u32		bpffs_fd;
- 	} token_create;
- 
-+	struct { /* struct used by BPF_PROG_TERMINATE command */
-+		__u32		prog_id;
-+		__u32		term_cpu_id;
-+	} prog_terminate;
- } __attribute__((aligned(8)));
- 
- /* The description below is an attempt at providing documentation to eBPF
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index a9c3e33d0f8a..0b9dc9b16e02 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -1331,3 +1331,18 @@ int bpf_token_create(int bpffs_fd, struct bpf_token_create_opts *opts)
- 	fd = sys_bpf_fd(BPF_TOKEN_CREATE, &attr, attr_sz);
- 	return libbpf_err_errno(fd);
- }
++const struct bpf_func_proto bpf_loop_termination_proto = {
++       .func           = bpf_loop_termination,
++       .gpl_only       = false,
++       .ret_type       = RET_INTEGER,
++       .arg1_type      = ARG_ANYTHING,
++       .arg2_type      = ARG_PTR_TO_FUNC,
++       .arg3_type      = ARG_PTR_TO_STACK_OR_NULL,
++       .arg4_type      = ARG_ANYTHING,
++};
 +
-+int bpf_prog_terminate(int prog_id, int cpu_id)
++BPF_CALL_0(bpf_dummy_void) {
++	return 0;
++}
++
++const struct bpf_func_proto bpf_dummy_void_proto = {
++	.func           = bpf_dummy_void,
++	.gpl_only	= false,
++	.ret_type	= RET_VOID,
++};
++
++BPF_CALL_0(bpf_dummy_int) {
++	return -1;
++}
++
++const struct bpf_func_proto bpf_dummy_int_proto = {
++	.func		= bpf_dummy_int,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++};
++
++BPF_CALL_0(bpf_dummy_ptr_to_map) {
++	return 0;
++}
++
++const struct bpf_func_proto bpf_dummy_ptr_to_map_proto = {
++	.func		= bpf_dummy_ptr_to_map,
++	.gpl_only	= false,
++	.ret_type	= RET_PTR_TO_MAP_VALUE_OR_NULL,
++};
++
+ struct bpf_iter_num_kern {
+ 	int cur; /* current value, inclusive */
+ 	int end; /* final value, exclusive */
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 27dcf59f4445..acc490155b87 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -3003,6 +3003,9 @@ const struct bpf_func_proto bpf_snprintf_btf_proto __weak;
+ const struct bpf_func_proto bpf_seq_printf_btf_proto __weak;
+ const struct bpf_func_proto bpf_set_retval_proto __weak;
+ const struct bpf_func_proto bpf_get_retval_proto __weak;
++const struct bpf_func_proto bpf_dummy_void __weak;
++const struct bpf_func_proto bpf_dummy_int __weak;
++const struct bpf_func_proto bpf_dummy_ptr_to_map __weak;
+ 
+ const struct bpf_func_proto * __weak bpf_get_trace_printk_proto(void)
+ {
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index e3a2662f4e33..9106c63b9851 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1965,6 +1965,12 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_current_pid_tgid_proto;
+ 	case BPF_FUNC_get_ns_current_pid_tgid:
+ 		return &bpf_get_ns_current_pid_tgid_proto;
++	case BPF_FUNC_dummy_void:
++		return &bpf_dummy_void_proto;
++	case BPF_FUNC_dummy_int:
++		return &bpf_dummy_int_proto;
++	case BPF_FUNC_dummy_ptr_to_map:
++		return &bpf_dummy_ptr_to_map_proto;
+ 	default:
+ 		break;
+ 	}
+@@ -1997,6 +2003,8 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_for_each_map_elem_proto;
+ 	case BPF_FUNC_loop:
+ 		return &bpf_loop_proto;
++	case BPF_FUNC_loop_termination:
++		return &bpf_loop_termination_proto;
+ 	case BPF_FUNC_user_ringbuf_drain:
+ 		return &bpf_user_ringbuf_drain_proto;
+ 	case BPF_FUNC_ringbuf_reserve_dynptr:
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 9794446bc8c6..fb54c5e948ff 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -36,6 +36,7 @@
+ #include <linux/memcontrol.h>
+ #include <linux/trace_events.h>
+ #include <linux/tracepoint.h>
++#include <asm/unwind.h>
+ 
+ #include <net/netfilter/nf_bpf_link.h>
+ #include <net/netkit.h>
+@@ -51,6 +52,17 @@
+ 
+ #define BPF_OBJ_FLAG_MASK   (BPF_F_RDONLY | BPF_F_WRONLY)
+ 
++static const struct bpf_verifier_ops * const bpf_verifier_ops[] = {
++#define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type) \
++	[_id] = & _name ## _verifier_ops,
++#define BPF_MAP_TYPE(_id, _ops)
++#define BPF_LINK_TYPE(_id, _name)
++#include <linux/bpf_types.h>
++#undef BPF_PROG_TYPE
++#undef BPF_MAP_TYPE
++#undef BPF_LINK_TYPE
++};
++
+ DEFINE_PER_CPU(int, bpf_prog_active);
+ static DEFINE_IDR(prog_idr);
+ static DEFINE_SPINLOCK(prog_idr_lock);
+@@ -2756,6 +2768,207 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
+ /* last field in 'union bpf_attr' used by this command */
+ #define BPF_PROG_LOAD_LAST_FIELD fd_array_cnt
+ 
++static int clone_bpf_prog(struct bpf_prog *patch_prog, struct bpf_prog *prog)
 +{
-+	int fd;
-+	union bpf_attr attr;
-+	const size_t attr_sz = offsetofend(union bpf_attr, prog_terminate);
++	int err = 0;
++	patch_prog->expected_attach_type = prog->expected_attach_type;
++	patch_prog->len = prog->len;
++	patch_prog->gpl_compatible = prog->gpl_compatible;
 +
-+	memset(&attr, 0, sizeof(attr));
-+	attr.prog_terminate.prog_id = prog_id;
-+	attr.prog_terminate.term_cpu_id = cpu_id;
++	memcpy(patch_prog->insnsi, prog->insnsi,  bpf_prog_insn_size(prog));
 +
-+	fd = sys_bpf(BPF_PROG_TERMINATE, &attr, attr_sz);
++	patch_prog->orig_prog = NULL;
++	patch_prog->jited = 0;
++	patch_prog->type = prog->type;
 +
-+	return libbpf_err_errno(fd);
++	char *patch_prefix = "patch_";
++	strncpy(patch_prog->aux->name, patch_prefix, strlen(patch_prefix));
++	strncat(patch_prog->aux->name, prog->aux->name, sizeof(prog->aux->name));
++
++	return err;
 +}
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 777627d33d25..6d09d17467b7 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -704,6 +704,16 @@ struct bpf_token_create_opts {
- LIBBPF_API int bpf_token_create(int bpffs_fd,
- 				struct bpf_token_create_opts *opts);
++
++static bool is_verifier_inlined_function(int func_id) {
++	switch (func_id) {
++		case BPF_FUNC_get_smp_processor_id:
++		case BPF_FUNC_jiffies64:
++		case BPF_FUNC_get_func_arg:
++		case BPF_FUNC_get_func_ret:
++		case BPF_FUNC_get_func_arg_cnt:
++		case BPF_FUNC_get_func_ip:
++		case BPF_FUNC_get_branch_snapshot:
++		case BPF_FUNC_kptr_xchg:
++		case BPF_FUNC_map_lookup_elem:
++			return true;
++		default:
++			return false;
++	}
++}
++
++static bool is_debug_function(int func_id) {
++	switch (func_id) {
++		case BPF_FUNC_trace_printk:
++			return true;
++		default:
++			return false;
++	}
++}
++
++static bool is_resource_release_function(int func_id) {
++	switch (func_id) {
++		case BPF_FUNC_spin_unlock:
++		case BPF_FUNC_ringbuf_submit:
++		case BPF_FUNC_ringbuf_discard:
++			return true;
++		default:
++			return false;
++	}
++}
++
++static bool find_in_skiplist(int func_id) {
++	return is_verifier_inlined_function(func_id) ||
++	       is_debug_function(func_id) ||
++	       is_resource_release_function(func_id);
++}
++
++static int get_replacement_helper(int func_id, enum bpf_return_type ret_type) {
++
++	switch (func_id) {
++		case BPF_FUNC_loop:
++			return BPF_FUNC_loop_termination;
++		case BPF_FUNC_for_each_map_elem:
++		case BPF_FUNC_user_ringbuf_drain:
++			return -ENOTSUPP;
++	}
++
++	switch (ret_type) {
++		case RET_VOID:
++			return BPF_FUNC_dummy_void;
++		case RET_INTEGER:
++			return BPF_FUNC_dummy_int;
++		case RET_PTR_TO_MAP_VALUE_OR_NULL:
++			return BPF_FUNC_dummy_ptr_to_map;
++		case RET_PTR_TO_SOCKET_OR_NULL:
++		case RET_PTR_TO_TCP_SOCK_OR_NULL:
++		case RET_PTR_TO_SOCK_COMMON_OR_NULL:
++		case RET_PTR_TO_RINGBUF_MEM_OR_NULL:
++		case RET_PTR_TO_DYNPTR_MEM_OR_NULL:
++		case RET_PTR_TO_BTF_ID_OR_NULL:
++		case RET_PTR_TO_BTF_ID_TRUSTED:
++		case RET_PTR_TO_MAP_VALUE:
++		case RET_PTR_TO_SOCKET:
++		case RET_PTR_TO_TCP_SOCK:
++		case RET_PTR_TO_SOCK_COMMON:
++		case RET_PTR_TO_MEM:
++		case RET_PTR_TO_MEM_OR_BTF_ID:
++		case RET_PTR_TO_BTF_ID:
++		default:
++			return -ENOTSUPP;
++	}
++}
++
++static void patch_generator(struct bpf_prog *prog)
++{
++	struct call_insn_aux{
++		int insn_idx;
++		int replacement_helper;
++	};
++
++	struct call_insn_aux *call_indices;
++	int num_calls=0;
++	call_indices = vmalloc(sizeof(call_indices) * prog->len);
++
++	/* Find all call insns */
++	for(int insn_idx =0 ;insn_idx < prog->len; insn_idx++)
++	{
++		struct bpf_insn *insn = &prog->insnsi[insn_idx] ;
++		u8 class = BPF_CLASS(insn->code);
++		if (class == BPF_JMP || class == BPF_JMP32) {
++			if (BPF_OP(insn->code) == BPF_CALL){
++				if (insn->src_reg == BPF_PSEUDO_CALL) {
++					continue;
++				}
++				if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL){ /*kfunc */
++					// TODO Need to use btf for getting proto
++					// If release function --> skip
++					// If acquire function --> find return type and add to list
++				}
++				else {
++					int func_id = insn->imm;
++					const struct bpf_func_proto *fn = NULL;
++					int new_helper_id = -1;
++
++					if (find_in_skiplist(func_id)) {
++						continue;
++					}
++
++					fn = bpf_verifier_ops[prog->type]->get_func_proto(func_id, prog);
++					if (!fn && !fn->func) {
++						continue;
++					}
++
++					new_helper_id = get_replacement_helper(func_id, fn->ret_type);
++					if (new_helper_id < 0) {
++						continue;
++					}
++
++					call_indices[num_calls].insn_idx = insn_idx;
++					call_indices[num_calls].replacement_helper= new_helper_id;
++					num_calls++;
++				}
++			}
++		}
++	}
++
++	/* Patch all call insns */
++	for(int k =0; k < num_calls; k++){
++		prog->insnsi[call_indices[k].insn_idx].imm = call_indices[k].replacement_helper;
++	}
++}
++
++static bool create_termination_prog(struct bpf_prog *prog,
++					union bpf_attr *attr,
++					bpfptr_t uattr,
++					u32 uattr_size)
++{
++	if (prog->len < 10)
++		return false;
++
++	int err;
++	struct bpf_prog *patch_prog;
++	patch_prog = bpf_prog_alloc_no_stats(bpf_prog_size(prog->len), 0);
++	if (!patch_prog) {
++		return false;
++	}
++
++	patch_prog->termination_states->is_termination_prog = true;
++
++	err = clone_bpf_prog(patch_prog, prog);
++	if (err)
++			goto free_termination_prog;
++
++	patch_generator(patch_prog);
++
++	err = bpf_check(&patch_prog, attr, uattr, uattr_size);
++	if (err) {
++		goto free_termination_prog;
++	}
++
++	patch_prog = bpf_prog_select_runtime(patch_prog, &err);
++	if (err) {
++		goto free_termination_prog;
++	}
++
++	prog->termination_states->patch_prog = patch_prog;
++	return true;
++
++free_termination_prog:
++	free_percpu(patch_prog->stats);
++	free_percpu(patch_prog->active);
++	kfree(patch_prog->aux);
++	return false;
++}
++
+ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+ {
+ 	enum bpf_prog_type type = attr->prog_type;
+@@ -2765,6 +2978,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+ 	bool bpf_cap;
+ 	int err;
+ 	char license[128];
++	bool have_termination_prog = false;
  
+ 	if (CHECK_ATTR(BPF_PROG_LOAD))
+ 		return -EINVAL;
+@@ -2967,6 +3181,8 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+ 	if (err)
+ 		goto free_prog_sec;
+ 
++	have_termination_prog = create_termination_prog( prog, attr, uattr, uattr_size);
 +
-+/**
-+ * @brief **bpf_prog_terminate()** when provided with prog id and cpu id
-+ * of the running prog, it terminated the running BPF program.
-+ *
-+ * @param BPF program file descriptor
-+ * @cpu_id cpu id of the running program
-+ */
-+LIBBPF_API int bpf_prog_terminate(int prog_id, int cpu_id);
+ 	/* run eBPF verifier */
+ 	err = bpf_check(&prog, attr, uattr, uattr_size);
+ 	if (err < 0)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 54c6953a8b84..57b4fd1f6a72 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -513,6 +513,7 @@ static bool is_sync_callback_calling_function(enum bpf_func_id func_id)
+ 	return func_id == BPF_FUNC_for_each_map_elem ||
+ 	       func_id == BPF_FUNC_find_vma ||
+ 	       func_id == BPF_FUNC_loop ||
++	       func_id == BPF_FUNC_loop_termination ||
+ 	       func_id == BPF_FUNC_user_ringbuf_drain;
+ }
+ 
+@@ -11424,6 +11425,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 		err = check_bpf_snprintf_call(env, regs);
+ 		break;
+ 	case BPF_FUNC_loop:
++	case BPF_FUNC_loop_termination:
+ 		update_loop_inline_state(env, meta.subprogno);
+ 		/* Verifier relies on R1 value to determine if bpf_loop() iteration
+ 		 * is finished, thus mark it precise.
+@@ -22470,10 +22472,12 @@ static struct bpf_prog *inline_bpf_loop(struct bpf_verifier_env *env,
+ 
+ 	struct bpf_insn *insn_buf = env->insn_buf;
+ 	struct bpf_prog *new_prog;
++	struct termination_aux_states *termination_states;
+ 	u32 callback_start;
+ 	u32 call_insn_offset;
+ 	s32 callback_offset;
+ 	u32 cnt = 0;
++	termination_states = env->prog->termination_states;
+ 
+ 	/* This represents an inlined version of bpf_iter.c:bpf_loop,
+ 	 * be careful to modify this code in sync.
+@@ -22502,7 +22506,14 @@ static struct bpf_prog *inline_bpf_loop(struct bpf_verifier_env *env,
+ 	 */
+ 	insn_buf[cnt++] = BPF_MOV64_REG(BPF_REG_1, reg_loop_cnt);
+ 	insn_buf[cnt++] = BPF_MOV64_REG(BPF_REG_2, reg_loop_ctx);
+-	insn_buf[cnt++] = BPF_CALL_REL(0);
 +
- #ifdef __cplusplus
- } /* extern "C" */
- #endif
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 1205f9a4fe04..80793f215464 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -443,4 +443,5 @@ LIBBPF_1.6.0 {
- 		bpf_program__line_info_cnt;
- 		btf__add_decl_attr;
- 		btf__add_type_attr;
-+		bpf_prog_terminate;
- } LIBBPF_1.5.0;
++	if (termination_states && termination_states->is_termination_prog) {
++		/* In a termination BPF prog, we want to exit - set R0 = 1 */
++		insn_buf[cnt++] = BPF_MOV64_IMM(BPF_REG_0, 1);
++	} else {
++		insn_buf[cnt++] = BPF_CALL_REL(0);
++	}
++
+ 	/* increment loop counter */
+ 	insn_buf[cnt++] = BPF_ALU64_IMM(BPF_ADD, reg_loop_cnt, 1);
+ 	/* jump to loop header if callback returned 0 */
+@@ -22535,7 +22546,8 @@ static bool is_bpf_loop_call(struct bpf_insn *insn)
+ {
+ 	return insn->code == (BPF_JMP | BPF_CALL) &&
+ 		insn->src_reg == 0 &&
+-		insn->imm == BPF_FUNC_loop;
++		(insn->imm == BPF_FUNC_loop
++		 || insn->imm == BPF_FUNC_loop_termination);
+ }
+ 
+ /* For all sub-programs in the program (including main) check
 -- 
 2.43.0
 
