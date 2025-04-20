@@ -1,695 +1,536 @@
-Return-Path: <bpf+bounces-56306-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56307-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E963A94F18
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 11:57:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B517A950A3
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 14:15:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8C0A1892970
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 09:58:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13222172037
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 12:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ABDC25D8F3;
-	Mon, 21 Apr 2025 09:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3580B264A65;
+	Mon, 21 Apr 2025 12:15:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="WBK1WhDO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DnDpLrr1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [131.188.11.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F825234;
-	Mon, 21 Apr 2025 09:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 881B31E489;
+	Mon, 21 Apr 2025 12:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745229467; cv=none; b=jJN+dgnZDf8JnjfRi8qvkXwifdv8+JIx0hJsqQvclmhAtX2RsGiI7ky4z67nXoJJio+aWZTai+/QRVw+fgHnGTSgZiZ+O3K+tmt9fuOZSwzY6kYtYLLqj5teVGc9a7mMjYpR3pEppt4Oue2jLgWovLZ1DaKZ8gZYfl+Eh6gb7AQ=
+	t=1745237712; cv=none; b=HZvh/gZ0eCKP2SaP/MhriDx1Jtm80c7qlsJCpCDzg+tcFoCE3YypuKskTNmtM9bEVlPyz8p2diVamLQT4uaetarywsPCkrPr3YcoHkD1fcCRkP7/ZC9XsChEUHHsxTWKcV/drAU4lVobJ4pySksaAZF6oWahpupA3NeP32Ly17Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745229467; c=relaxed/simple;
-	bh=+wSBnl4/4hr4cu0BUjr7l+G7GziO3v/j3EBObLNVff4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VQW2MoAnBtVckx/s1Ua7ze4tKrsWAe0EFc6FRPgGwMA5ecjaxf66wiZUlgX5riLhJEGujwkrHwPw1RYTledpyDdAKSmrGYc1wvhwcG+OI4ofTd0VOWm1jqB2VXPJuZw1os49IuszHqaLhG2wAxhQ7subD6mHHjcz+ZJxEj3fhz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=WBK1WhDO; arc=none smtp.client-ip=131.188.11.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1745229461; bh=pqy7Y53MjokgxCyA1JDI71cenRrWt2fEOcMikrsgnSQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From:To:CC:
-	 Subject;
-	b=WBK1WhDO0CT4iK2qviwFwSyLDWJpoNEX6nPWaXAIncN0g4U3bwNS3ZKq9gb30FD6A
-	 CHjq9e7VgMLjWLPIlwt0OctO138FYB8vET2y7w0Z0BY4lpOOO832XdulAYwNo5EKQK
-	 eLajGtDPf6yyEDs+lVtnLcP2aaZgs99UcQxD2/d/TjoKkL/Og8Z70kikG42w6PdtQq
-	 EfTzqrvVJKPQ664A4ZVGvtaJwCUPxVvG+1AnMFJDrtqM+yhWbJkqsxCwqrpUcPYDJm
-	 iQuCNzfNEfnbRpyO2RSwQZQ/XNsFjB6eLrwIJlGJjZiPbijT76ww+JBAbAo7OCCDmg
-	 uFel/EGS/HDkw==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Zh1514GRVzPkSh;
-	Mon, 21 Apr 2025 11:57:41 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:9e8:3600:7e00:5b67:6b9c:caeb:75c
-Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3600:7e00:5b67:6b9c:caeb:75c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX1+6KIe6iaMyPgryklu81TAOmx13qGZ6kkE=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Zh14w5rzwzPk5Y;
-	Mon, 21 Apr 2025 11:57:36 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1745237712; c=relaxed/simple;
+	bh=NWY7vWz9LzFUvuTqvqdXLpzUQJzDyIOXn3ZAziazYMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QGZPYuSxFSE3Vl4iqXCTrulFaLUUWdj28gy51UOEAxQG1SRjw/F0rhNVeMQ6vk+zs/uPFIkzibLVeQ3wknpO2y48b1FvmQExzBSEfcWmqEhFgybd9KkAPm9EXwXjXgCoz1peg3zXdciQqRD3KUTUb1tyzTesM/IgZH5oE4hI1ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DnDpLrr1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FFD2C4CEE4;
+	Mon, 21 Apr 2025 12:15:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745237712;
+	bh=NWY7vWz9LzFUvuTqvqdXLpzUQJzDyIOXn3ZAziazYMw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DnDpLrr1aHd6v+YaqiTVi2NrCjjqZu8qRp4T5eBxEGHEGLls9Xv56HZnNIu1x6t0f
+	 dl+gI15q1YitWz+mjG7ItcVAvLiKl6QBqOdWtJqcd+y6fYesCChZ0PO0KBWzqORQwl
+	 B5j03gVqzZ/7JkWoPuTIoRDfvgQkSsUzc7fGCxgSmu0CW4oDj789SP3RnY1mVvkgab
+	 XbdEqHCD2yky9eaO2m4+0OUvRO8bs9+5fl5EdTZFONbgZykPs7lxvp2su+DzZiHlWn
+	 S5V3c/DOm3VClEII7k2kPf1/a6kI0/jT+Q9VJI4gxtOdCP4Ch+9yFGVU+3uAYqhjMe
+	 KmhiBG/k+m5Kw==
+Date: Sun, 20 Apr 2025 14:21:10 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Sandeep Dhavale <dhavale@google.com>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Xu Kuohai <xukuohai@huaweicloud.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Hari Bathini <hbathini@linux.ibm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Luis Gerhorst <luis.gerhorst@fau.de>,
-	Henriette Herzog <henriette.herzog@rub.de>,
-	Saket Kumar Bhaskar <skb99@linux.ibm.com>,
-	Cupertino Miranda <cupertino.miranda@oracle.com>,
-	Jiayuan Chen <mrpre@163.com>,
-	Matan Shachnai <m.shachnai@gmail.com>,
-	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-	Daniel Xu <dxu@dxuuu.xyz>,
-	bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kselftest@vger.kernel.org
-Cc: Maximilian Ott <ott@cs.fau.de>,
-	Milan Stephan <milan.stephan@fau.de>
-Subject: [PATCH bpf-next v2 11/11] bpf: Fall back to nospec for sanitization-failures
-Date: Mon, 21 Apr 2025 11:18:02 +0200
-Message-ID: <20250421091802.3234859-12-luis.gerhorst@fau.de>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250421091802.3234859-1-luis.gerhorst@fau.de>
-References: <20250421091802.3234859-1-luis.gerhorst@fau.de>
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	Luiz Capitulino <luizcap@redhat.com>,
+	Mel Gorman <mgorman@techsingularity.net>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+	linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v3] mm: alloc_pages_bulk: support both simple and
+ full-featured API
+Message-ID: <20250420112110.GA32613@unreal>
+References: <20250414120819.3053967-1-linyunsheng@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250414120819.3053967-1-linyunsheng@huawei.com>
 
-ALU sanitization was introduced to ensure that a subsequent ptr access
-can never go OOB, even under speculation. This is required because we
-currently allow speculative scalar confusion. Spec. scalar confusion is
-possible because Spectre v4 sanitization only adds a nospec after
-critical stores (e.g., scalar overwritten with a pointer).
+On Mon, Apr 14, 2025 at 08:08:11PM +0800, Yunsheng Lin wrote:
+> As mentioned in [1], it seems odd to check NULL elements in
+> the middle of page bulk allocating, and it seems caller can
+> do a better job of bulk allocating pages into a whole array
+> sequentially without checking NULL elements first before
+> doing the page bulk allocation for most of existing users
+> by passing 'page_array + allocated' and 'nr_pages - allocated'
+> when calling subsequent page bulk alloc API so that NULL
+> checking can be avoided, see the pattern in mm/mempolicy.c.
+> 
+> Through analyzing of existing bulk allocation API users, it
+> seems only the fs users are depending on the assumption of
+> populating only NULL elements, see:
+> commit 91d6ac1d62c3 ("btrfs: allocate page arrays using bulk page allocator")
+> commit d6db47e571dc ("erofs: do not use pagepool in z_erofs_gbuf_growsize()")
+> commit f6e70aab9dfe ("SUNRPC: refresh rq_pages using a bulk page allocator")
+> commit 88e4d41a264d ("SUNRPC: Use __alloc_bulk_pages() in svc_init_buffer()")
+> 
+> The current API adds a mental burden for most users. For most
+> users, their code would be much cleaner if the interface accepts
+> an uninitialised array with length, and were told how many pages
+> had been stored in that array, so support one simple and one
+> full-featured to meet the above different use cases as below:
+> - alloc_pages_bulk() would be given an uninitialised array of page
+>   pointers and a required count and would return the number of
+>   pages that were allocated.
+> - alloc_pages_bulk_refill() would be given an initialised array
+>   of page pointers some of which might be NULL. It would attempt
+>   to allocate pages for the non-NULL pointers, return 0 if all
+>   pages are allocated, -EAGAIN if at least one page allocated,
+>   ok to try again immediately or -ENOMEM if don't bother trying
+>   again soon, which provides a more consistent semantics than the
+>   current API as mentioned in [2], at the cost of the pages might
+>   be getting re-ordered to make the implementation simpler.
+> 
+> Change the existing fs users to use the full-featured API, except
+> for the one for svc_init_buffer() in net/sunrpc/svc.c. Other
+> existing callers can use the simple API as they seems to be passing
+> all NULL elements via memset, kzalloc, etc, only remove unnecessary
+> memset for existing users calling the simple API in this patch.
+> 
+> The test result for xfstests full test:
+> Before this patch:
+> btrfs/default: 1061 tests, 3 failures, 290 skipped, 13152 seconds
+>   Failures: btrfs/012 btrfs/226
+>   Flaky: generic/301: 60% (3/5)
+> Totals: 1073 tests, 290 skipped, 13 failures, 0 errors, 12540s
+> 
+> nfs/loopback: 530 tests, 3 failures, 392 skipped, 3942 seconds
+>   Failures: generic/464 generic/551
+>   Flaky: generic/650: 40% (2/5)
+> Totals: 542 tests, 392 skipped, 12 failures, 0 errors, 3799s
+> 
+> After this patch:
+> btrfs/default: 1061 tests, 2 failures, 290 skipped, 13446 seconds
+>   Failures: btrfs/012 btrfs/226
+> Totals: 1069 tests, 290 skipped, 10 failures, 0 errors, 12853s
+> 
+> nfs/loopback: 530 tests, 3 failures, 392 skipped, 4103 seconds
+>   Failures: generic/464 generic/551
+>   Flaky: generic/650: 60% (3/5)
+> Totals: 542 tests, 392 skipped, 13 failures, 0 errors, 3933s
+> 
+> The stress test also suggest there is no regression for the erofs
+> too.
+> 
+> Using the simple API also enable the caller to not zero the array
+> before calling the page bulk allocating API, which has about 1~2 ns
+> performance improvement for time_bench_page_pool03_slow() test case
+> of page_pool in a x86 vm system, this reduces some performance impact
+> of fixing the DMA API misuse problem in [3], performance improves
+> from 87.886 ns to 86.429 ns.
+> 
+> Also a temporary patch to enable the using of full-featured API in
+> page_pool suggests that the new full-featured API doesn't seem to have
+> noticeable performance impact for the existing users, like SUNRPC, btrfs
+> and erofs.
+> 
+> 1. https://lore.kernel.org/all/bd8c2f5c-464d-44ab-b607-390a87ea4cd5@huawei.com/
+> 2. https://lore.kernel.org/all/180818a1-b906-4a0b-89d3-34cb71cc26c9@huawei.com/
+> 3. https://lore.kernel.org/all/20250212092552.1779679-1-linyunsheng@huawei.com/
+> CC: Jesper Dangaard Brouer <hawk@kernel.org>
+> CC: Luiz Capitulino <luizcap@redhat.com>
+> CC: Mel Gorman <mgorman@techsingularity.net>
+> Suggested-by: Neil Brown <neilb@suse.de>
+> Acked-by: Jeff Layton <jlayton@kernel.org>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+> V3:
+> 1. Provide both simple and full-featured API as suggested by NeilBrown.
+> 2. Do the fs testing as suggested in V2.
+> 
+> V2:
+> 1. Drop RFC tag.
+> 2. Fix a compile error for xfs.
+> 3. Defragmemt the page_array for SUNRPC and btrfs.
+> ---
+>  drivers/vfio/pci/mlx5/cmd.c       |  2 --
+>  drivers/vfio/pci/virtio/migrate.c |  2 --
+>  fs/btrfs/extent_io.c              | 21 +++++++++---------
+>  fs/erofs/zutil.c                  | 11 +++++----
+>  include/linux/gfp.h               | 37 +++++++++++++++++++++++++++++++
+>  include/trace/events/sunrpc.h     | 12 +++++-----
+>  kernel/bpf/arena.c                |  1 -
+>  mm/page_alloc.c                   | 32 +++++---------------------
+>  net/core/page_pool.c              |  3 ---
+>  net/sunrpc/svc_xprt.c             | 12 ++++++----
+>  10 files changed, 72 insertions(+), 61 deletions(-)
+> 
+> diff --git a/drivers/vfio/pci/mlx5/cmd.c b/drivers/vfio/pci/mlx5/cmd.c
+> index 11eda6b207f1..fb094527715f 100644
+> --- a/drivers/vfio/pci/mlx5/cmd.c
+> +++ b/drivers/vfio/pci/mlx5/cmd.c
+> @@ -446,8 +446,6 @@ static int mlx5vf_add_migration_pages(struct mlx5_vhca_data_buffer *buf,
+>  		if (ret)
+>  			goto err_append;
+>  		buf->allocated_length += filled * PAGE_SIZE;
+> -		/* clean input for another bulk allocation */
+> -		memset(page_list, 0, filled * sizeof(*page_list));
+>  		to_fill = min_t(unsigned int, to_alloc,
+>  				PAGE_SIZE / sizeof(*page_list));
 
-If we add a nospec before the ALU op, none of the operands can be
-subject to scalar confusion. As an ADD/SUB can not introduce scalar
-confusion itself, the result will also not be subject to scalar
-confusion. Therefore, the subsequent ptr access is always safe.
+If it is possible, let's drop this hunk to reduce merge conflicts.
+The whole mlx5vf_add_migration_pages() is planned to be rewritten.
+https://lore.kernel.org/linux-rdma/076a3991e663fe07c1a5395f5805c514b63e4d94.1744825142.git.leon@kernel.org/
 
-We directly fall back to nospec for the sanitization errors
-REASON_BOUNDS, _TYPE, _PATHS, and _LIMIT, even if we are not on a
-speculative path.
+Thanks
 
-For REASON_STACK, we return the error -ENOMEM directly now. Previously,
-sanitize_err() returned -EACCES for this case but we change it to
--ENOMEM because doing so prevents do_check() from falling back to a
-nospec if we are on a speculative path. This would not be a serious
-issue (the verifier would probably run into the -ENOMEM again shortly on
-the next non-speculative path and still abort verification), but -ENOMEM
-is more fitting here anyway. An alternative would be -EFAULT, which is
-also returned for some of the other cases where push_stack() fails, but
-this is more frequently used for verifier-internal bugs.
 
-Signed-off-by: Luis Gerhorst <luis.gerhorst@fau.de>
-Acked-by: Henriette Herzog <henriette.herzog@rub.de>
-Cc: Maximilian Ott <ott@cs.fau.de>
-Cc: Milan Stephan <milan.stephan@fau.de>
----
- kernel/bpf/verifier.c                         | 85 +++++-----------
- .../selftests/bpf/progs/verifier_bounds.c     |  5 +-
- .../bpf/progs/verifier_bounds_deduction.c     | 45 ++++++---
- .../selftests/bpf/progs/verifier_map_ptr.c    | 20 +++-
- .../bpf/progs/verifier_value_ptr_arith.c      | 97 ++++++++++++++++---
- 5 files changed, 156 insertions(+), 96 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2cd925b915e0..180cab806199 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -13967,14 +13967,6 @@ static bool check_reg_sane_offset(struct bpf_verifier_env *env,
- 	return true;
- }
- 
--enum {
--	REASON_BOUNDS	= -1,
--	REASON_TYPE	= -2,
--	REASON_PATHS	= -3,
--	REASON_LIMIT	= -4,
--	REASON_STACK	= -5,
--};
--
- static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
- 			      u32 *alu_limit, bool mask_to_left)
- {
-@@ -13997,11 +13989,13 @@ static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
- 			     ptr_reg->umax_value) + ptr_reg->off;
- 		break;
- 	default:
--		return REASON_TYPE;
-+		/* Register has pointer with unsupported alu operation. */
-+		return -EOPNOTSUPP;
- 	}
- 
-+	/* Register tried access beyond pointer bounds. */
- 	if (ptr_limit >= max)
--		return REASON_LIMIT;
-+		return -EOPNOTSUPP;
- 	*alu_limit = ptr_limit;
- 	return 0;
- }
-@@ -14022,8 +14016,12 @@ static int update_alu_sanitation_state(struct bpf_insn_aux_data *aux,
- 	 */
- 	if (aux->alu_state &&
- 	    (aux->alu_state != alu_state ||
--	     aux->alu_limit != alu_limit))
--		return REASON_PATHS;
-+	     aux->alu_limit != alu_limit)) {
-+		/* Tried to perform alu op from different maps, paths or scalars */
-+		aux->nospec = true;
-+		aux->alu_state = 0;
-+		return 0;
-+	}
- 
- 	/* Corresponding fixup done in do_misc_fixups(). */
- 	aux->alu_state = alu_state;
-@@ -14104,16 +14102,24 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 
- 	if (!commit_window) {
- 		if (!tnum_is_const(off_reg->var_off) &&
--		    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
--			return REASON_BOUNDS;
-+		    (off_reg->smin_value < 0) != (off_reg->smax_value < 0)) {
-+			/* Register has unknown scalar with mixed signed bounds. */
-+			aux->nospec = true;
-+			aux->alu_state = 0;
-+			return 0;
-+		}
- 
- 		info->mask_to_left = (opcode == BPF_ADD &&  off_is_neg) ||
- 				     (opcode == BPF_SUB && !off_is_neg);
- 	}
- 
- 	err = retrieve_ptr_limit(ptr_reg, &alu_limit, info->mask_to_left);
--	if (err < 0)
--		return err;
-+	if (err) {
-+		WARN_ON_ONCE(err != -EOPNOTSUPP);
-+		aux->nospec = true;
-+		aux->alu_state = 0;
-+		return 0;
-+	}
- 
- 	if (commit_window) {
- 		/* In commit phase we narrow the masking window based on
-@@ -14166,7 +14172,7 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 					env->insn_idx);
- 	if (!ptr_is_dst_reg && ret)
- 		*dst_reg = tmp;
--	return !ret ? REASON_STACK : 0;
-+	return !ret ? -ENOMEM : 0;
- }
- 
- static void sanitize_mark_insn_seen(struct bpf_verifier_env *env)
-@@ -14182,45 +14188,6 @@ static void sanitize_mark_insn_seen(struct bpf_verifier_env *env)
- 		env->insn_aux_data[env->insn_idx].seen = env->pass_cnt;
- }
- 
--static int sanitize_err(struct bpf_verifier_env *env,
--			const struct bpf_insn *insn, int reason,
--			const struct bpf_reg_state *off_reg,
--			const struct bpf_reg_state *dst_reg)
--{
--	static const char *err = "pointer arithmetic with it prohibited for !root";
--	const char *op = BPF_OP(insn->code) == BPF_ADD ? "add" : "sub";
--	u32 dst = insn->dst_reg, src = insn->src_reg;
--
--	switch (reason) {
--	case REASON_BOUNDS:
--		verbose(env, "R%d has unknown scalar with mixed signed bounds, %s\n",
--			off_reg == dst_reg ? dst : src, err);
--		break;
--	case REASON_TYPE:
--		verbose(env, "R%d has pointer with unsupported alu operation, %s\n",
--			off_reg == dst_reg ? src : dst, err);
--		break;
--	case REASON_PATHS:
--		verbose(env, "R%d tried to %s from different maps, paths or scalars, %s\n",
--			dst, op, err);
--		break;
--	case REASON_LIMIT:
--		verbose(env, "R%d tried to %s beyond pointer bounds, %s\n",
--			dst, op, err);
--		break;
--	case REASON_STACK:
--		verbose(env, "R%d could not be pushed for speculative verification, %s\n",
--			dst, err);
--		break;
--	default:
--		verbose(env, "verifier internal error: unknown reason (%d)\n",
--			reason);
--		break;
--	}
--
--	return -EACCES;
--}
--
- /* check that stack access falls within stack limits and that 'reg' doesn't
-  * have a variable offset.
-  *
-@@ -14386,7 +14353,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg,
- 				       &info, false);
- 		if (ret < 0)
--			return sanitize_err(env, insn, ret, off_reg, dst_reg);
-+			return ret;
- 	}
- 
- 	switch (opcode) {
-@@ -14514,7 +14481,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 		ret = sanitize_ptr_alu(env, insn, dst_reg, off_reg, dst_reg,
- 				       &info, true);
- 		if (ret < 0)
--			return sanitize_err(env, insn, ret, off_reg, dst_reg);
-+			return ret;
- 	}
- 
- 	return 0;
-@@ -15108,7 +15075,7 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 	if (sanitize_needed(opcode)) {
- 		ret = sanitize_val_alu(env, insn);
- 		if (ret < 0)
--			return sanitize_err(env, insn, ret, NULL, NULL);
-+			return ret;
- 	}
- 
- 	/* Calculate sign/unsigned bounds and tnum for alu32 and alu64 bit ops.
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-index 30e16153fdf1..f2ee6d7febda 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
-@@ -47,9 +47,12 @@ SEC("socket")
- __description("subtraction bounds (map value) variant 2")
- __failure
- __msg("R0 min value is negative, either use unsigned index or do a if (index >=0) check.")
--__msg_unpriv("R1 has unknown scalar with mixed signed bounds")
-+__msg_unpriv("R0 pointer arithmetic of map value goes out of range, prohibited for !root")
- __naked void bounds_map_value_variant_2(void)
- {
-+	/* unpriv: nospec inserted to prevent "R1 has unknown scalar with mixed
-+	 * signed bounds".
-+	 */
- 	asm volatile ("					\
- 	r1 = 0;						\
- 	*(u64*)(r10 - 8) = r1;				\
-diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
-index c506afbdd936..24ecaf89004e 100644
---- a/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_bounds_deduction.c
-@@ -8,22 +8,26 @@
- SEC("socket")
- __description("check deducing bounds from const, 1")
- __failure __msg("R0 tried to subtract pointer from scalar")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __naked void deducing_bounds_from_const_1(void)
- {
- 	asm volatile ("					\
- 	r0 = 1;						\
- 	if r0 s>= 1 goto l0_%=;				\
--l0_%=:	r0 -= r1;					\
-+l0_%=:	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
-+	r0 -= r1;					\
- 	exit;						\
- "	::: __clobber_all);
- }
- 
- SEC("socket")
- __description("check deducing bounds from const, 2")
--__success __failure_unpriv
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 has pointer with unsupported alu operation` */
-+__xlated_unpriv("r1 -= r0")
-+#endif
- __naked void deducing_bounds_from_const_2(void)
- {
- 	asm volatile ("					\
-@@ -40,22 +44,26 @@ l1_%=:	r1 -= r0;					\
- SEC("socket")
- __description("check deducing bounds from const, 3")
- __failure __msg("R0 tried to subtract pointer from scalar")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __naked void deducing_bounds_from_const_3(void)
- {
- 	asm volatile ("					\
- 	r0 = 0;						\
- 	if r0 s<= 0 goto l0_%=;				\
--l0_%=:	r0 -= r1;					\
-+l0_%=:	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
-+	r0 -= r1;					\
- 	exit;						\
- "	::: __clobber_all);
- }
- 
- SEC("socket")
- __description("check deducing bounds from const, 4")
--__success __failure_unpriv
--__msg_unpriv("R6 has pointer with unsupported alu operation")
-+__success __success_unpriv
- __retval(0)
-+#ifdef SPEC_V1
-+__xlated_unpriv("nospec") /* inserted to prevent `R6 has pointer with unsupported alu operation` */
-+__xlated_unpriv("r6 -= r0")
-+#endif
- __naked void deducing_bounds_from_const_4(void)
- {
- 	asm volatile ("					\
-@@ -73,12 +81,13 @@ l1_%=:	r6 -= r0;					\
- SEC("socket")
- __description("check deducing bounds from const, 5")
- __failure __msg("R0 tried to subtract pointer from scalar")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __naked void deducing_bounds_from_const_5(void)
- {
- 	asm volatile ("					\
- 	r0 = 0;						\
- 	if r0 s>= 1 goto l0_%=;				\
-+	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
- 	r0 -= r1;					\
- l0_%=:	exit;						\
- "	::: __clobber_all);
-@@ -87,14 +96,15 @@ l0_%=:	exit;						\
- SEC("socket")
- __description("check deducing bounds from const, 6")
- __failure __msg("R0 tried to subtract pointer from scalar")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __naked void deducing_bounds_from_const_6(void)
- {
- 	asm volatile ("					\
- 	r0 = 0;						\
- 	if r0 s>= 0 goto l0_%=;				\
- 	exit;						\
--l0_%=:	r0 -= r1;					\
-+l0_%=:	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
-+	r0 -= r1;					\
- 	exit;						\
- "	::: __clobber_all);
- }
-@@ -102,14 +112,15 @@ l0_%=:	r0 -= r1;					\
- SEC("socket")
- __description("check deducing bounds from const, 7")
- __failure __msg("dereference of modified ctx ptr")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __flag(BPF_F_ANY_ALIGNMENT)
- __naked void deducing_bounds_from_const_7(void)
- {
- 	asm volatile ("					\
- 	r0 = %[__imm_0];				\
- 	if r0 s>= 0 goto l0_%=;				\
--l0_%=:	r1 -= r0;					\
-+l0_%=:	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
-+	r1 -= r0;					\
- 	r0 = *(u32*)(r1 + %[__sk_buff_mark]);		\
- 	exit;						\
- "	:
-@@ -121,13 +132,14 @@ l0_%=:	r1 -= r0;					\
- SEC("socket")
- __description("check deducing bounds from const, 8")
- __failure __msg("negative offset ctx ptr R1 off=-1 disallowed")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __flag(BPF_F_ANY_ALIGNMENT)
- __naked void deducing_bounds_from_const_8(void)
- {
- 	asm volatile ("					\
- 	r0 = %[__imm_0];				\
- 	if r0 s>= 0 goto l0_%=;				\
-+	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
- 	r1 += r0;					\
- l0_%=:	r0 = *(u32*)(r1 + %[__sk_buff_mark]);		\
- 	exit;						\
-@@ -140,13 +152,14 @@ l0_%=:	r0 = *(u32*)(r1 + %[__sk_buff_mark]);		\
- SEC("socket")
- __description("check deducing bounds from const, 9")
- __failure __msg("R0 tried to subtract pointer from scalar")
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__failure_unpriv
- __naked void deducing_bounds_from_const_9(void)
- {
- 	asm volatile ("					\
- 	r0 = 0;						\
- 	if r0 s>= 0 goto l0_%=;				\
--l0_%=:	r0 -= r1;					\
-+l0_%=:	/* unpriv: nospec (inserted to prevent `R1 has pointer with unsupported alu operation`) */\
-+	r0 -= r1;					\
- 	exit;						\
- "	::: __clobber_all);
- }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_map_ptr.c b/tools/testing/selftests/bpf/progs/verifier_map_ptr.c
-index 11a079145966..a540f29b7532 100644
---- a/tools/testing/selftests/bpf/progs/verifier_map_ptr.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_map_ptr.c
-@@ -110,9 +110,17 @@ __naked void ptr_read_ops_field_accepted(void)
- 
- SEC("socket")
- __description("bpf_map_ptr: r = 0, map_ptr = map_ptr + r")
--__success __failure_unpriv
--__msg_unpriv("R1 has pointer with unsupported alu operation")
-+__success __success_unpriv
- __retval(0)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r1 = 0x") /* r0 = %[map_hash_16b] ll */
-+/* This nospec is not really needed here, because there is no bypassable
-+ * branch/store that could lead to r0 not containing 0 when `r1 += r0` executes.
-+ * We still keep it like this to not complicate the verifier.
-+ */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 has pointer with unsupported alu operation` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void map_ptr_map_ptr_r(void)
- {
- 	asm volatile ("					\
-@@ -134,9 +142,13 @@ __naked void map_ptr_map_ptr_r(void)
- 
- SEC("socket")
- __description("bpf_map_ptr: r = 0, r = r + map_ptr")
--__success __failure_unpriv
--__msg_unpriv("R0 has pointer with unsupported alu operation")
-+__success __success_unpriv
- __retval(0)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r0 = 0x") /* r0 = %[map_hash_16b] ll */
-+__xlated_unpriv("nospec") /* inserted to prevent `R0 has pointer with unsupported alu operation` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void _0_r_r_map_ptr(void)
- {
- 	asm volatile ("					\
-diff --git a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c b/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-index fcea9819e359..a35090e3de2b 100644
---- a/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_value_ptr_arith.c
-@@ -41,9 +41,17 @@ struct {
- 
- SEC("socket")
- __description("map access: known scalar += value_ptr unknown vs const")
--__success __failure_unpriv
--__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r1 &= 7")
-+__xlated_unpriv("goto pc+1")
-+/* l3_%=: */
-+__xlated_unpriv("r1 = 3")
-+/* l4_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 tried to add from different maps, paths or scalars` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void value_ptr_unknown_vs_const(void)
- {
- 	asm volatile ("					\
-@@ -79,9 +87,14 @@ l2_%=:	r0 = 1;						\
- 
- SEC("socket")
- __description("map access: known scalar += value_ptr const vs unknown")
--__success __failure_unpriv
--__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r1 &= 7")
-+/* l4_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 tried to add from different maps, paths or scalars` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void value_ptr_const_vs_unknown(void)
- {
- 	asm volatile ("					\
-@@ -117,9 +130,16 @@ l2_%=:	r0 = 1;						\
- 
- SEC("socket")
- __description("map access: known scalar += value_ptr const vs const (ne)")
--__success __failure_unpriv
--__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("goto pc+1") /* to l4, must not be pc+2 as this would skip nospec */
-+/* l3_%=: */
-+__xlated_unpriv("r1 = 5")
-+/* l4_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 tried to add from different maps, paths or scalars` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void ptr_const_vs_const_ne(void)
- {
- 	asm volatile ("					\
-@@ -225,9 +245,18 @@ l2_%=:	r0 = 1;						\
- 
- SEC("socket")
- __description("map access: known scalar += value_ptr unknown vs unknown (lt)")
--__success __failure_unpriv
--__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r1 &= 3")
-+__xlated_unpriv("goto pc+3") /* must go to l4 (nospec) */
-+__xlated_unpriv("r1 = 6")
-+__xlated_unpriv("r1 = -r1")
-+__xlated_unpriv("r1 &= 7")
-+/* l4_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 tried to add from different maps, paths or scalars` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void ptr_unknown_vs_unknown_lt(void)
- {
- 	asm volatile ("					\
-@@ -265,9 +294,14 @@ l2_%=:	r0 = 1;						\
- 
- SEC("socket")
- __description("map access: known scalar += value_ptr unknown vs unknown (gt)")
--__success __failure_unpriv
--__msg_unpriv("R1 tried to add from different maps, paths or scalars")
-+__success __success_unpriv
- __retval(1)
-+#ifdef SPEC_V1
-+__xlated_unpriv("r1 &= 3")
-+/* l4_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R1 tried to add from different maps, paths or scalars` */
-+__xlated_unpriv("r1 += r0")
-+#endif
- __naked void ptr_unknown_vs_unknown_gt(void)
- {
- 	asm volatile ("					\
-@@ -398,9 +432,27 @@ l2_%=:	r0 = 1;						\
- 
- SEC("socket")
- __description("map access: mixing value pointer and scalar, 1")
--__success __failure_unpriv
--__msg_unpriv("R2 tried to add from different maps, paths or scalars, pointer arithmetic with it prohibited for !root")
-+__success __success_unpriv
- __retval(0)
-+#ifdef SPEC_V1
-+__xlated_unpriv("goto pc+2") /* to l2, must not be pc+3 as this would skip nospec */
-+__xlated_unpriv("r2 = 0")
-+__xlated_unpriv("r3 = 1048576")
-+/* l2_%=: */
-+__xlated_unpriv("nospec") /* inserted to prevent `R2 tried to add from different maps, paths or scalars, pointer arithmetic with it prohibited for !root` */
-+__xlated_unpriv("r2 += r3")
-+__xlated_unpriv("if r1 != 0x0 goto pc+1")
-+__xlated_unpriv("goto pc+5") /* to l4 */
-+/* l3_%=: */
-+__xlated_unpriv("r0 = 322376503")
-+__xlated_unpriv("nospec") /* inserted to prevent `R2 pointer comparison prohibited` */
-+__xlated_unpriv("if r2 != 0x100000 goto pc+2") /* to l4 */
-+__xlated_unpriv("r0 = 0")
-+__xlated_unpriv("exit")
-+/* l4_%=: */
-+__xlated_unpriv("nospec")
-+__xlated_unpriv("r0 = *(u8 *)(r0 +0)")
-+#endif
- __naked void value_pointer_and_scalar_1(void)
- {
- 	asm volatile ("					\
-@@ -434,7 +486,6 @@ l2_%=:	/* common instruction */			\
- l3_%=:	/* branch B */					\
- 	r0 = 0x13371337;				\
- 	/* verifier follows fall-through */		\
--	/* unpriv: nospec (inserted to prevent `R2 pointer comparison prohibited`) */\
- 	if r2 != 0x100000 goto l4_%=;			\
- 	r0 = 0;						\
- 	exit;						\
-@@ -452,9 +503,24 @@ l4_%=:	/* fake-dead code; targeted from branch A to	\
- 
- SEC("socket")
- __description("map access: mixing value pointer and scalar, 2")
--__success __failure_unpriv
--__msg_unpriv("R2 tried to add from different maps, paths or scalars, pointer arithmetic with it prohibited for !root")
-+__success __success_unpriv
- __retval(0)
-+#ifdef SPEC_V1
-+__xlated_unpriv("goto pc+2")
-+__xlated_unpriv("r2 = r0")
-+__xlated_unpriv("r3 = 0")
-+__xlated_unpriv("nospec")
-+__xlated_unpriv("r2 += r3")
-+__xlated_unpriv("if r1 != 0x0 goto pc+1")
-+__xlated_unpriv("goto pc+5")
-+__xlated_unpriv("r0 = 322376503")
-+__xlated_unpriv("nospec")
-+__xlated_unpriv("if r2 != 0x100000 goto pc+2")
-+__xlated_unpriv("r0 = 0")
-+__xlated_unpriv("exit")
-+__xlated_unpriv("nospec") /* inserted to prevent `R0 invalid mem access 'scalar'` */
-+__xlated_unpriv("r0 = *(u8 *)(r0 +0)")
-+#endif
- __naked void value_pointer_and_scalar_2(void)
- {
- 	asm volatile ("					\
-@@ -495,7 +561,6 @@ l4_%=:	/* fake-dead code; targeted from branch A to	\
- 	 * prevent dead code sanitization, rejected	\
- 	 * via branch B however				\
- 	 */						\
--	/* unpriv: nospec (inserted to prevent `R0 invalid mem access 'scalar'`) */\
- 	r0 = *(u8*)(r0 + 0);				\
- 	r0 = 0;						\
- 	exit;						\
--- 
-2.49.0
-
+>  	} while (to_alloc > 0);
+> diff --git a/drivers/vfio/pci/virtio/migrate.c b/drivers/vfio/pci/virtio/migrate.c
+> index ba92bb4e9af9..9f003a237dec 100644
+> --- a/drivers/vfio/pci/virtio/migrate.c
+> +++ b/drivers/vfio/pci/virtio/migrate.c
+> @@ -91,8 +91,6 @@ static int virtiovf_add_migration_pages(struct virtiovf_data_buffer *buf,
+>  		if (ret)
+>  			goto err_append;
+>  		buf->allocated_length += filled * PAGE_SIZE;
+> -		/* clean input for another bulk allocation */
+> -		memset(page_list, 0, filled * sizeof(*page_list));
+>  		to_fill = min_t(unsigned int, to_alloc,
+>  				PAGE_SIZE / sizeof(*page_list));
+>  	} while (to_alloc > 0);
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 197f5e51c474..51ef15703900 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -623,21 +623,22 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
+>  			   bool nofail)
+>  {
+>  	const gfp_t gfp = nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NOFS;
+> -	unsigned int allocated;
+> -
+> -	for (allocated = 0; allocated < nr_pages;) {
+> -		unsigned int last = allocated;
+> +	int ret;
+>  
+> -		allocated = alloc_pages_bulk(gfp, nr_pages, page_array);
+> -		if (unlikely(allocated == last)) {
+> +	do {
+> +		ret = alloc_pages_bulk_refill(gfp, nr_pages, page_array);
+> +		if (unlikely(ret == -ENOMEM)) {
+>  			/* No progress, fail and do cleanup. */
+> -			for (int i = 0; i < allocated; i++) {
+> -				__free_page(page_array[i]);
+> -				page_array[i] = NULL;
+> +			for (int i = 0; i < nr_pages; i++) {
+> +				if (page_array[i]) {
+> +					__free_page(page_array[i]);
+> +					page_array[i] = NULL;
+> +				}
+>  			}
+>  			return -ENOMEM;
+>  		}
+> -	}
+> +	} while (ret == -EAGAIN);
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/fs/erofs/zutil.c b/fs/erofs/zutil.c
+> index 55ff2ab5128e..6ce11a8a261c 100644
+> --- a/fs/erofs/zutil.c
+> +++ b/fs/erofs/zutil.c
+> @@ -68,7 +68,7 @@ int z_erofs_gbuf_growsize(unsigned int nrpages)
+>  	struct page **tmp_pages = NULL;
+>  	struct z_erofs_gbuf *gbuf;
+>  	void *ptr, *old_ptr;
+> -	int last, i, j;
+> +	int ret, i, j;
+>  
+>  	mutex_lock(&gbuf_resize_mutex);
+>  	/* avoid shrinking gbufs, since no idea how many fses rely on */
+> @@ -86,12 +86,11 @@ int z_erofs_gbuf_growsize(unsigned int nrpages)
+>  		for (j = 0; j < gbuf->nrpages; ++j)
+>  			tmp_pages[j] = gbuf->pages[j];
+>  		do {
+> -			last = j;
+> -			j = alloc_pages_bulk(GFP_KERNEL, nrpages,
+> -					     tmp_pages);
+> -			if (last == j)
+> +			ret = alloc_pages_bulk_refill(GFP_KERNEL, nrpages,
+> +						      tmp_pages);
+> +			if (ret == -ENOMEM)
+>  				goto out;
+> -		} while (j != nrpages);
+> +		} while (ret == -EAGAIN);
+>  
+>  		ptr = vmap(tmp_pages, nrpages, VM_MAP, PAGE_KERNEL);
+>  		if (!ptr)
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index c9fa6309c903..cf6100981fd6 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -244,6 +244,43 @@ unsigned long alloc_pages_bulk_mempolicy_noprof(gfp_t gfp,
+>  #define alloc_pages_bulk(_gfp, _nr_pages, _page_array)		\
+>  	__alloc_pages_bulk(_gfp, numa_mem_id(), NULL, _nr_pages, _page_array)
+>  
+> +/*
+> + * alloc_pages_bulk_refill_noprof - Refill order-0 pages to an array
+> + * @gfp: GFP flags for the allocation when refilling
+> + * @nr_pages: The size of refilling array
+> + * @page_array: The array to refill order-0 pages
+> + *
+> + * Note that only NULL elements are populated with pages and the pages might
+> + * get re-ordered.
+> + *
+> + * Return 0 if all pages are refilled, -EAGAIN if at least one page is refilled,
+> + * ok to try again immediately or -ENOMEM if no page is refilled and don't
+> + * bother trying again soon.
+> + */
+> +static inline int alloc_pages_bulk_refill_noprof(gfp_t gfp, int nr_pages,
+> +						 struct page **page_array)
+> +{
+> +	int allocated = 0, i;
+> +
+> +	for (i = 0; i < nr_pages; i++) {
+> +		if (page_array[i]) {
+> +			swap(page_array[allocated], page_array[i]);
+> +			allocated++;
+> +		}
+> +	}
+> +
+> +	i = alloc_pages_bulk_noprof(gfp, numa_mem_id(), NULL,
+> +				    nr_pages - allocated,
+> +				    page_array + allocated);
+> +	if (likely(allocated + i == nr_pages))
+> +		return 0;
+> +
+> +	return i ? -EAGAIN : -ENOMEM;
+> +}
+> +
+> +#define alloc_pages_bulk_refill(...)				\
+> +	alloc_hooks(alloc_pages_bulk_refill_noprof(__VA_ARGS__))
+> +
+>  static inline unsigned long
+>  alloc_pages_bulk_node_noprof(gfp_t gfp, int nid, unsigned long nr_pages,
+>  				   struct page **page_array)
+> diff --git a/include/trace/events/sunrpc.h b/include/trace/events/sunrpc.h
+> index 5d331383047b..cb8899f1cbdc 100644
+> --- a/include/trace/events/sunrpc.h
+> +++ b/include/trace/events/sunrpc.h
+> @@ -2143,23 +2143,23 @@ TRACE_EVENT(svc_wake_up,
+>  TRACE_EVENT(svc_alloc_arg_err,
+>  	TP_PROTO(
+>  		unsigned int requested,
+> -		unsigned int allocated
+> +		int ret
+>  	),
+>  
+> -	TP_ARGS(requested, allocated),
+> +	TP_ARGS(requested, ret),
+>  
+>  	TP_STRUCT__entry(
+>  		__field(unsigned int, requested)
+> -		__field(unsigned int, allocated)
+> +		__field(int, ret)
+>  	),
+>  
+>  	TP_fast_assign(
+>  		__entry->requested = requested;
+> -		__entry->allocated = allocated;
+> +		__entry->ret = ret;
+>  	),
+>  
+> -	TP_printk("requested=%u allocated=%u",
+> -		__entry->requested, __entry->allocated)
+> +	TP_printk("requested=%u ret=%d",
+> +		__entry->requested, __entry->ret)
+>  );
+>  
+>  DECLARE_EVENT_CLASS(svc_deferred_event,
+> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+> index 0d56cea71602..9022c4440814 100644
+> --- a/kernel/bpf/arena.c
+> +++ b/kernel/bpf/arena.c
+> @@ -445,7 +445,6 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
+>  			return 0;
+>  	}
+>  
+> -	/* zeroing is needed, since alloc_pages_bulk() only fills in non-zero entries */
+>  	pages = kvcalloc(page_cnt, sizeof(struct page *), GFP_KERNEL);
+>  	if (!pages)
+>  		return 0;
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index d7cfcfa2b077..59a4fe23e62a 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -4784,9 +4784,6 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+>   * This is a batched version of the page allocator that attempts to
+>   * allocate nr_pages quickly. Pages are added to the page_array.
+>   *
+> - * Note that only NULL elements are populated with pages and nr_pages
+> - * is the maximum number of pages that will be stored in the array.
+> - *
+>   * Returns the number of pages in the array.
+>   */
+>  unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
+> @@ -4802,29 +4799,18 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
+>  	struct alloc_context ac;
+>  	gfp_t alloc_gfp;
+>  	unsigned int alloc_flags = ALLOC_WMARK_LOW;
+> -	int nr_populated = 0, nr_account = 0;
+> -
+> -	/*
+> -	 * Skip populated array elements to determine if any pages need
+> -	 * to be allocated before disabling IRQs.
+> -	 */
+> -	while (nr_populated < nr_pages && page_array[nr_populated])
+> -		nr_populated++;
+> +	int nr_populated = 0;
+>  
+>  	/* No pages requested? */
+>  	if (unlikely(nr_pages <= 0))
+>  		goto out;
+>  
+> -	/* Already populated array? */
+> -	if (unlikely(nr_pages - nr_populated == 0))
+> -		goto out;
+> -
+>  	/* Bulk allocator does not support memcg accounting. */
+>  	if (memcg_kmem_online() && (gfp & __GFP_ACCOUNT))
+>  		goto failed;
+>  
+>  	/* Use the single page allocator for one page. */
+> -	if (nr_pages - nr_populated == 1)
+> +	if (nr_pages == 1)
+>  		goto failed;
+>  
+>  #ifdef CONFIG_PAGE_OWNER
+> @@ -4896,24 +4882,16 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
+>  	/* Attempt the batch allocation */
+>  	pcp_list = &pcp->lists[order_to_pindex(ac.migratetype, 0)];
+>  	while (nr_populated < nr_pages) {
+> -
+> -		/* Skip existing pages */
+> -		if (page_array[nr_populated]) {
+> -			nr_populated++;
+> -			continue;
+> -		}
+> -
+>  		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
+>  								pcp, pcp_list);
+>  		if (unlikely(!page)) {
+>  			/* Try and allocate at least one page */
+> -			if (!nr_account) {
+> +			if (!nr_populated) {
+>  				pcp_spin_unlock(pcp);
+>  				goto failed_irq;
+>  			}
+>  			break;
+>  		}
+> -		nr_account++;
+>  
+>  		prep_new_page(page, 0, gfp, 0);
+>  		set_page_refcounted(page);
+> @@ -4923,8 +4901,8 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
+>  	pcp_spin_unlock(pcp);
+>  	pcp_trylock_finish(UP_flags);
+>  
+> -	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+> -	zone_statistics(zonelist_zone(ac.preferred_zoneref), zone, nr_account);
+> +	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_populated);
+> +	zone_statistics(zonelist_zone(ac.preferred_zoneref), zone, nr_populated);
+>  
+>  out:
+>  	return nr_populated;
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index 7745ad924ae2..2431d2f6d610 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -541,9 +541,6 @@ static noinline netmem_ref __page_pool_alloc_pages_slow(struct page_pool *pool,
+>  	if (unlikely(pool->alloc.count > 0))
+>  		return pool->alloc.cache[--pool->alloc.count];
+>  
+> -	/* Mark empty alloc.cache slots "empty" for alloc_pages_bulk */
+> -	memset(&pool->alloc.cache, 0, sizeof(void *) * bulk);
+> -
+>  	nr_pages = alloc_pages_bulk_node(gfp, pool->p.nid, bulk,
+>  					 (struct page **)pool->alloc.cache);
+>  	if (unlikely(!nr_pages))
+> diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
+> index ae25405d8bd2..1191686fc0af 100644
+> --- a/net/sunrpc/svc_xprt.c
+> +++ b/net/sunrpc/svc_xprt.c
+> @@ -653,7 +653,8 @@ static bool svc_alloc_arg(struct svc_rqst *rqstp)
+>  {
+>  	struct svc_serv *serv = rqstp->rq_server;
+>  	struct xdr_buf *arg = &rqstp->rq_arg;
+> -	unsigned long pages, filled, ret;
+> +	unsigned long pages;
+> +	int ret;
+>  
+>  	pages = (serv->sv_max_mesg + 2 * PAGE_SIZE) >> PAGE_SHIFT;
+>  	if (pages > RPCSVC_MAXPAGES) {
+> @@ -663,9 +664,12 @@ static bool svc_alloc_arg(struct svc_rqst *rqstp)
+>  		pages = RPCSVC_MAXPAGES;
+>  	}
+>  
+> -	for (filled = 0; filled < pages; filled = ret) {
+> -		ret = alloc_pages_bulk(GFP_KERNEL, pages, rqstp->rq_pages);
+> -		if (ret > filled)
+> +	while (true) {
+> +		ret = alloc_pages_bulk_refill(GFP_KERNEL, pages, rqstp->rq_pages);
+> +		if (!ret)
+> +			break;
+> +
+> +		if (ret == -EAGAIN)
+>  			/* Made progress, don't sleep yet */
+>  			continue;
+>  
+> -- 
+> 2.33.0
+> 
 
