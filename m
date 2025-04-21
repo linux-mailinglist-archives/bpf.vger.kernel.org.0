@@ -1,53 +1,51 @@
-Return-Path: <bpf+bounces-56329-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56330-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AB4DA95828
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 23:44:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E48DA9582A
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 23:45:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 081173B269F
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 21:44:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29DF97A4BBC
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 21:43:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DDC1D63D3;
-	Mon, 21 Apr 2025 21:44:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9421A21A445;
+	Mon, 21 Apr 2025 21:44:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LkKFs5yn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s4tTdWbw"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E9A2F2E;
-	Mon, 21 Apr 2025 21:44:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AAEB219A93;
+	Mon, 21 Apr 2025 21:44:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745271871; cv=none; b=KTLVqZ/rqjlzxDMf0QtBMEfoTigW2qlcJLpJuDyaqI9xFW8O/3wbe37pLtOwMVHUlFPqapGkPvLMAK/8za38lMLnyqzCFKKKgRjc6Jw2MUPt2j0rGKPlxwbRqYjOvBrcMMWsB9EKAMPGXG8lUj4EI21H7McBN9lx9R1YZYDBt28=
+	t=1745271884; cv=none; b=uPMcBThKGnf+zpFNbda71Npy/K8S+hpTHeFVXxqOEFhdcOoM+NZX6OD541wyiEezSR3ZalVkCwJilyYYDCRhllr3xhcWAGXMHayO67rpupQdQ2vB3e5I0/WZtsv9Xx8oeuFLv8clMJXkKJsVOTV+9VL7qJVra+W0nKkUMRpDVfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745271871; c=relaxed/simple;
-	bh=OhIDORsvF4Hd87+Ah7pIJiQUPLISHeUuZgSde1xTbwM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TI8XPAYNLnBFfWEaLSLxktobXKHiGYJypgCOIhu7s4wQW+8R8gi19t6zDbuoAwvhNfqUGiaHWF3CPib1iu0aXGOCdrQjxGpQjwKm8bqvE9fNPSivHzcnLMdGAKtSqJX3bo5rmT1QJl7nz4/gheyGeKbCBlAqpIrxnps+jfMer08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LkKFs5yn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6539C4CEE4;
-	Mon, 21 Apr 2025 21:44:25 +0000 (UTC)
+	s=arc-20240116; t=1745271884; c=relaxed/simple;
+	bh=ozxOQG7S4Db/4oOGw6R6e/Vcd0TPftjqn1miU1qB/8w=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=P2Sos+0bpQY+k8WmN+UFf3lw8ee2/z+9NH+PrmrsuFQGjT5F31a12MXT1+ub1VEOS+oVM26k6a2WlC9Fa1dy5ivfc/2Rqy5+9NhkrxKjKu9iTfWKjdXUqQBB3DF7s52HX6+daMCxDuk2uSZLH7dJjQmmlj8RdG/pr8QHGUh9w3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s4tTdWbw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 730B3C4CEE4;
+	Mon, 21 Apr 2025 21:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745271870;
-	bh=OhIDORsvF4Hd87+Ah7pIJiQUPLISHeUuZgSde1xTbwM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=LkKFs5ynlE8yCGGN0kzcBR8nuhqXpD4M55nQ+NV4wK+Ky0r02a+F6PIJEvEIfaEa0
-	 OdeHVyB6zrmo/KDfuUhAJZw3eFrh0z+hVROTxsUoEn6ebp5siUTvnfjJ/mKt25yh8+
-	 yOEi/8LXpVz7JB2uijZ3fH8QN3TgaQprEAjmyG2Qko+B4drbp5aJMjeKtqX2xAQ9SM
-	 vWA8glkqR3gZ+iHdrLAXpcj9+pVAWx90xEPyDFu7iCz0FyJJ5iFXO+ZiK4levA19kx
-	 2rT6FMXT2RFOzUMku8Ge1AJzwdhSkjLz47q3diG626XXHfmPNDNTP2css6ZwETJ4qu
-	 W3sqLaNE6s3sw==
+	s=k20201202; t=1745271883;
+	bh=ozxOQG7S4Db/4oOGw6R6e/Vcd0TPftjqn1miU1qB/8w=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=s4tTdWbwM5h15iwNHXqBLIFn5Bwp1Bo3lGjoG2TUdrH1qgL2l1D9reFtXhh6YQCWV
+	 5FUg9QtFIyCI7ze6GzYY1L14djqclSMDSI99I7dIs5Hanxpa9A/QBgpQ+av48U5Ujy
+	 oCK0mEVHdlKylTdUKzb2P4FWABqnrfLzK/B8j0jgmo4cvw3EOi+lqgJRq5N2EmjeuH
+	 nWxH6oztd8Kdp7j0eqYj8e04UAlqEdr2E8DeypPAIBH9z5zsCDjo+c8EqACZL04H+C
+	 8qobOGgH0Kjm5lP/fNoEMxuE26PTZZq3Mr/PyXJD1OMjakO+eXqVZvm7eEwSZA6E7v
+	 UT55MMHSVrWvQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Andrii Nakryiko <andrii@kernel.org>
-Cc: Alejandro Colomar <alx@kernel.org>,
-	Eyal Birger <eyal.birger@gmail.com>,
-	kees@kernel.org,
-	bpf@vger.kernel.org,
+Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	x86@kernel.org,
@@ -61,189 +59,79 @@ Cc: Alejandro Colomar <alx@kernel.org>,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH perf/core 00/22] uprobes: Add support to optimize usdt probes on x86_64
-Date: Mon, 21 Apr 2025 23:44:00 +0200
-Message-ID: <20250421214423.393661-1-jolsa@kernel.org>
+Subject: [PATCH perf/core 01/22] uprobes: Rename arch_uretprobe_trampoline function
+Date: Mon, 21 Apr 2025 23:44:01 +0200
+Message-ID: <20250421214423.393661-2-jolsa@kernel.org>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250421214423.393661-1-jolsa@kernel.org>
+References: <20250421214423.393661-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-hi,
-this patchset adds support to optimize usdt probes on top of 5-byte
-nop instruction.
+We are about to add uprobe trampoline, so cleaning up the namespace.
 
-The generic approach (optimize all uprobes) is hard due to emulating
-possible multiple original instructions and its related issues. The
-usdt case, which stores 5-byte nop seems much easier, so starting
-with that.
-
-The basic idea is to replace breakpoint exception with syscall which
-is faster on x86_64. For more details please see changelog of patch 8.
-
-The run_bench_uprobes.sh benchmark triggers uprobe (on top of different
-original instructions) in a loop and counts how many of those happened
-per second (the unit below is million loops).
-
-There's big speed up if you consider current usdt implementation
-(uprobe-nop) compared to proposed usdt (uprobe-nop5):
-
-current:
-        usermode-count :  152.501 ± 0.012M/s
-        syscall-count  :   14.463 ± 0.062M/s
--->     uprobe-nop     :    3.160 ± 0.005M/s
-        uprobe-push    :    3.003 ± 0.003M/s
-        uprobe-ret     :    1.100 ± 0.003M/s
-        uprobe-nop5    :    3.132 ± 0.012M/s
-        uretprobe-nop  :    2.103 ± 0.002M/s
-        uretprobe-push :    2.027 ± 0.004M/s
-        uretprobe-ret  :    0.914 ± 0.002M/s
-        uretprobe-nop5 :    2.115 ± 0.002M/s
-
-after the change:
-        usermode-count :  152.343 ± 0.400M/s
-        syscall-count  :   14.851 ± 0.033M/s
-        uprobe-nop     :    3.204 ± 0.005M/s
-        uprobe-push    :    3.040 ± 0.005M/s
-        uprobe-ret     :    1.098 ± 0.003M/s
--->     uprobe-nop5    :    7.286 ± 0.017M/s
-        uretprobe-nop  :    2.144 ± 0.001M/s
-        uretprobe-push :    2.069 ± 0.002M/s
-        uretprobe-ret  :    0.922 ± 0.000M/s
-        uretprobe-nop5 :    3.487 ± 0.001M/s
-
-I see bit more speed up on Intel (above) compared to AMD. The big nop5
-speed up is partly due to emulating nop5 and partly due to optimization.
-
-The key speed up we do this for is the USDT switch from nop to nop5:
-	uprobe-nop     :    3.160 ± 0.005M/s
-	uprobe-nop5    :    7.286 ± 0.017M/s
-
-
-Changes from last rfc:
-- change to emulate all nops got in
-- rebased on top of tip/perf/core,mm/unstable,bpf-next/master to get latest
-  uprobe and bpf changes 
-- used guard(rcu_tasks_trace) in handle_syscall_uprobe [Andrii]
-- patch#6 change orig argument to is_register, which turned
-  out to be less changes
-
-
-This patchset is adding new syscall, here are notes to check list items
-in Documentation/process/adding-syscalls.rst:
-
-- System Call Alternatives
-  New syscall seems like the best way in here, because we need
-  just to quickly enter kernel with no extra arguments processing,
-  which we'd need to do if we decided to use another syscall.
-
-- Designing the API: Planning for Extension
-  The uprobe syscall is very specific and most likely won't be
-  extended in the future.
-
-- Designing the API: Other Considerations
-  N/A because uprobe syscall does not return reference to kernel
-  object.
-
-- Proposing the API
-  Wiring up of the uprobe system call is in separate change,
-  selftests and man page changes are part of the patchset.
-
-- Generic System Call Implementation
-  There's no CONFIG option for the new functionality because it
-  keeps the same behaviour from the user POV.
-
-- x86 System Call Implementation
-  It's 64-bit syscall only.
-
-- Compatibility System Calls (Generic)
-  N/A uprobe syscall has no arguments and is not supported
-  for compat processes.
-
-- Compatibility System Calls (x86)
-  N/A uprobe syscall is not supported for compat processes.
-
-- System Calls Returning Elsewhere
-  N/A.
-
-- Other Details
-  N/A.
-
-- Testing
-  Adding new bpf selftests.
-
-- Man Page
-  Attached.
-
-- Do not call System Calls in the Kernel
-  N/A
-
-pending todo (or follow ups):
-- use PROCMAP_QUERY in tests
-- alloc 'struct uprobes_state' for mm_struct only when needed [Andrii]
-
-
-thanks,
-jirka
-
-
-Cc: Alejandro Colomar <alx@kernel.org>
-Cc: Eyal Birger <eyal.birger@gmail.com>
-Cc: kees@kernel.org
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
-Jiri Olsa (21):
-      uprobes: Rename arch_uretprobe_trampoline function
-      uprobes: Make copy_from_page global
-      uprobes: Move ref_ctr_offset update out of uprobe_write_opcode
-      uprobes: Add uprobe_write function
-      uprobes: Add nbytes argument to uprobe_write
-      uprobes: Add is_register argument to uprobe_write and uprobe_write_opcode
-      uprobes: Remove breakpoint in unapply_uprobe under mmap_write_lock
-      uprobes/x86: Add mapping for optimized uprobe trampolines
-      uprobes/x86: Add uprobe syscall to speed up uprobe
-      uprobes/x86: Add support to optimize uprobes
-      selftests/bpf: Use 5-byte nop for x86 usdt probes
-      selftests/bpf: Reorg the uprobe_syscall test function
-      selftests/bpf: Rename uprobe_syscall_executed prog to test_uretprobe_multi
-      selftests/bpf: Add uprobe/usdt syscall tests
-      selftests/bpf: Add hit/attach/detach race optimized uprobe test
-      selftests/bpf: Add uprobe syscall sigill signal test
-      selftests/bpf: Add optimized usdt variant for basic usdt test
-      selftests/bpf: Add uprobe_regs_equal test
-      selftests/bpf: Change test_uretprobe_regs_change for uprobe and uretprobe
-      seccomp: passthrough uprobe systemcall without filtering
-      selftests/seccomp: validate uprobe syscall passes through seccomp
+ arch/x86/kernel/uprobes.c | 2 +-
+ include/linux/uprobes.h   | 2 +-
+ kernel/events/uprobes.c   | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
- arch/arm/probes/uprobes/core.c                              |   2 +-
- arch/x86/entry/syscalls/syscall_64.tbl                      |   1 +
- arch/x86/include/asm/uprobes.h                              |   7 ++
- arch/x86/kernel/uprobes.c                                   | 532 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- include/linux/syscalls.h                                    |   2 +
- include/linux/uprobes.h                                     |  20 +++-
- kernel/events/uprobes.c                                     | 147 +++++++++++++++++--------
- kernel/fork.c                                               |   1 +
- kernel/seccomp.c                                            |  32 ++++--
- kernel/sys_ni.c                                             |   1 +
- tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c     | 478 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------
- tools/testing/selftests/bpf/prog_tests/usdt.c               |  38 ++++---
- tools/testing/selftests/bpf/progs/uprobe_syscall.c          |   4 +-
- tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c |  41 ++++++-
- tools/testing/selftests/bpf/sdt.h                           |   9 +-
- tools/testing/selftests/bpf/test_kmods/bpf_testmod.c        |  11 +-
- tools/testing/selftests/seccomp/seccomp_bpf.c               | 107 +++++++++++++++----
- 17 files changed, 1299 insertions(+), 134 deletions(-)
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 6d383839e839..77050e5a4680 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -338,7 +338,7 @@ extern u8 uretprobe_trampoline_entry[];
+ extern u8 uretprobe_trampoline_end[];
+ extern u8 uretprobe_syscall_check[];
+ 
+-void *arch_uprobe_trampoline(unsigned long *psize)
++void *arch_uretprobe_trampoline(unsigned long *psize)
+ {
+ 	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
+ 	struct pt_regs *regs = task_pt_regs(current);
+diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+index 516217c39094..01112f27cd21 100644
+--- a/include/linux/uprobes.h
++++ b/include/linux/uprobes.h
+@@ -224,7 +224,7 @@ extern bool arch_uprobe_ignore(struct arch_uprobe *aup, struct pt_regs *regs);
+ extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
+ 					 void *src, unsigned long len);
+ extern void uprobe_handle_trampoline(struct pt_regs *regs);
+-extern void *arch_uprobe_trampoline(unsigned long *psize);
++extern void *arch_uretprobe_trampoline(unsigned long *psize);
+ extern unsigned long uprobe_get_trampoline_vaddr(void);
+ #else /* !CONFIG_UPROBES */
+ struct uprobes_state {
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 4c965ba77f9f..8415c087a71f 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -1727,7 +1727,7 @@ static int xol_add_vma(struct mm_struct *mm, struct xol_area *area)
+ 	return ret;
+ }
+ 
+-void * __weak arch_uprobe_trampoline(unsigned long *psize)
++void * __weak arch_uretprobe_trampoline(unsigned long *psize)
+ {
+ 	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
+ 
+@@ -1759,7 +1759,7 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
+ 	init_waitqueue_head(&area->wq);
+ 	/* Reserve the 1st slot for get_trampoline_vaddr() */
+ 	set_bit(0, area->bitmap);
+-	insns = arch_uprobe_trampoline(&insns_size);
++	insns = arch_uretprobe_trampoline(&insns_size);
+ 	arch_uprobe_copy_ixol(area->page, 0, insns, insns_size);
+ 
+ 	if (!xol_add_vma(mm, area))
+-- 
+2.49.0
 
-
-Jiri Olsa (1):
-      man2: Add uprobe syscall page
-
- man/man2/uprobe.2    | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
- man/man2/uretprobe.2 |  2 ++
- 2 files changed, 51 insertions(+)
- create mode 100644 man/man2/uprobe.2
 
