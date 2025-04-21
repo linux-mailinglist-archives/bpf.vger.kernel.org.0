@@ -1,95 +1,129 @@
-Return-Path: <bpf+bounces-56354-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56355-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B63EA959B0
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 01:05:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06985A959D4
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 01:39:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 074FC1896FBF
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 23:05:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF9833B56EA
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 23:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E97DB22B8D5;
-	Mon, 21 Apr 2025 23:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CA122E002;
+	Mon, 21 Apr 2025 23:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WvY33TMN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z164GCh4"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF3FBA4A;
-	Mon, 21 Apr 2025 23:05:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D745E1E5209;
+	Mon, 21 Apr 2025 23:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745276700; cv=none; b=RQ+08R73Q6G9CpHY32n27SYurPHZCX3xVQtzDUPmpuBGPgcwdpWA4r4yxeQAh+IwkLChUt2gIw9Ft+3fzqZDSQUUTvY1nl3WeQunO/Hfa4tBcGbdVeciFh3iZgQTVTQ+Yv7D5pcrJnvWZvu7qwLpFgq86MLYCno4+omWSvhwD4k=
+	t=1745278757; cv=none; b=b237X+QZtUIATsHENH+KEAM9qxxG0/26nG83/+7i3CXPMPpKqMcQi2jRaaVVd8qG4OT0TzWg9F6PC/bsH94HKHLyLxwyTa6Atsl6ouQj3EukbftE/GQFt4H2xNALCMdzMLo4X2wLWZqPam0wIHLfKt1KhTUqgKF0lvqT/rEe/IU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745276700; c=relaxed/simple;
-	bh=MSYcz0q0reBMe686swMNM5aO4qi5W4b7KHGRS+QY/aQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YOc7c1/qmNk8J4xYkdaUuq54+mLtCvMbuiMszB2VsicfWZCr2m5LclzfIav6d9OBdCfa3OjOmAM5/ic0lPCF93tT6Q6yogMQV+QulKsANmCq2c4UbRpQFlDb+bIAo3DUh8bncP1C/Ru2mdDJUO7rp0O9ceLaABPzCaGb2HQK0Jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WvY33TMN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D726FC4CEE4;
-	Mon, 21 Apr 2025 23:04:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745276699;
-	bh=MSYcz0q0reBMe686swMNM5aO4qi5W4b7KHGRS+QY/aQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WvY33TMNO+wEQp16zMY+6W6xN63ydpyG9Ot5mdwCkdRl19vOywISNinOtMt0vpXut
-	 +nFaBcsyrm8hcYdNKiWnVb1bEKfp3hVL5UMhpr9Gvshp2lyuVTRN9sT/9y1uz/9D4Z
-	 HoJdKb3hj5K6p9LD5maq/zxHV96FCnJFAPaIImNM+scY6IRTRniQxDuIgtPgp6m8Jl
-	 QiaQIEMCY/QsI4qjYosehKr9mDSLL96fZ8rRUTTW/ctWMwBoUtmRbV0kvBKQ8B9rj5
-	 Pcj/8Kjq8mUSuzWpIaZp1KnZ65B9NIGfJF36DE2832Eg2sovg4etplEX6vS4wFKjkG
-	 it9XOL0OyGLiQ==
-Date: Mon, 21 Apr 2025 16:04:56 -0700
-From: Kees Cook <kees@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eyal Birger <eyal.birger@gmail.com>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH perf/core 20/22] seccomp: passthrough uprobe systemcall
- without filtering
-Message-ID: <202504211604.EE9BD62F@keescook>
-References: <20250421214423.393661-1-jolsa@kernel.org>
- <20250421214423.393661-21-jolsa@kernel.org>
+	s=arc-20240116; t=1745278757; c=relaxed/simple;
+	bh=OLQyzlmtzCKjMQFUfXFaxjQdUeb3bxIoaWmWJX2UWp0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ucw0w/f5SOL7wXsMrq1RKF5Tkl7Ep9SbGLd6qHhADaYKP4YSkIwkI0wh+BxSUGukg9DICAc8997IUj8R+AmnHEGGW3qozEaN5iev/JiALYAqCkL7H3tRiIYgA4el++MHZb4EvTJCM8s+B8kE29nmFYqAFEDH4qS3lLQa+shoDUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z164GCh4; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-39ee5a5bb66so3091791f8f.3;
+        Mon, 21 Apr 2025 16:39:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745278751; x=1745883551; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IOyh0KRZOP78elpx9kgGmLRnKlT+oLZaZTHETWW34WA=;
+        b=Z164GCh4row5O7PhSduGeHT9qrokg+pXkELoC1YEG/3vYNwZPbhbdMA+OPj9tSXMGF
+         odRljqPizs/rshVdKeQHTocHVfOBsuyTIQ0fZq2RoZfAIbE9+SI35WPCcBwhDu/JFOPt
+         OQlJ4iwXUL16bE0pmumj4tzqSNVHU7d/z5MFec+mGa4xLjLe/hqFfkfzfq53lqkJKKTH
+         /bA6tLx10o6qcXYCFHWjkyS5nCysUiTztFSxRvhB+DA5HCaNUkMt55H28bs3EZnJG1xV
+         YJSlsZuEZ0pJzJzONyn+SDAeV5cD8jnd2xhgHGAZWGJJfzseiCyxkeMISYxasPM5kQN7
+         PXkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745278751; x=1745883551;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IOyh0KRZOP78elpx9kgGmLRnKlT+oLZaZTHETWW34WA=;
+        b=g2giNYnSySrA1/WedG7O6nBmStLRfEvmUa1TJV+IvDhni/akvNxJSAuyAtFx1xcLOz
+         zcm4u2sgJlRSysGrrlclnic2fglG7nrQBf9496Bzx4XbNlZwFdUdygOzEsVbQE7+Jfg5
+         PjQWSFFsm0++Itl6oFQleJpxCsVZ8g8NC1buhOYBYEq8woOF5Yc5syulcx6fDEdZwzvA
+         DVJBjgJ2APkn6CxbAYIwo01wjMMxzcC0xqzn9VckwF+zEFvH0tKHDHUNEwIVFan+cKRD
+         O71ghqJqjr1JIGvHyFUZD5JWH0nxPtD17K2y82ObjS4SVdOIUAP8ABq5jVP5yJUJ/F7O
+         VtTA==
+X-Forwarded-Encrypted: i=1; AJvYcCUSVU+QnjFBxTzSSWd5Y4CfWZXBIDzVK6zt2GByKJZ/G+fpWToSrGZJX6jYbdWaxd4xa+OcUmrCFy4oxz8=@vger.kernel.org, AJvYcCUenX2PQFbSb5lvPMskargdf6fsfMSqCzui+SvHZwD1l9YSZAexWL02C7a7Ze1iGm3Ukyo3wDyYdSXWxhexW+N+@vger.kernel.org, AJvYcCUnMMLevFd5tg9rS0LxkK9NCRFQ4qzr8zJHX9Yp3Ki/9khfnlrPLWbfQD6tAQOq7vriUdFGkcmaTisj@vger.kernel.org, AJvYcCVA6BJBRhw8CSJheDnxG35WxvWn2SDPVoktK5bV7NG7zmNC8iUlSsT6pMYG+n9UkCdFbCE=@vger.kernel.org, AJvYcCW0OdNHyx6R2KUQJwFcIOY9MlKABDZYKfHo7KSISMO7KB1Go9sC2PPv0XYcsIRUsDSeqH0XAepZJPmzsjy6@vger.kernel.org
+X-Gm-Message-State: AOJu0YzP7Wu0uoci+T8W/ReZ+0KX2gRjjhOIHzD4eAdbDzSC1jJrE93W
+	J1XPprgV1GqRYpSzXV/gHr99aUOgkmf8DNb03gwvvLI0faPSfV+FAHeDTJ29zZ0uX8MB2qRMfX0
+	H4cPkaF77JReyBbRMDDM+YVcDuMo=
+X-Gm-Gg: ASbGncvT70+0m+P7B+aKtGxltFAckkWoMTgJm/DwRmqzcG5UwNj72+8uFU6GUjmFPwt
+	DBxzB1EvUP5xepRTtoz4f4MBFz52H9ctxAWQ7kklZ7p/i/1xfXwamcw3RxRgagF0Q+rff
+X-Google-Smtp-Source: AGHT+IH0SrvREf3muergkKdQkak0YZ+ohqfk7d6fakRaBVQUXizurH1NfGeAwSFOPUHkhRWTHwrrpnJQpvzHziO1Ss0=
+X-Received: by 2002:a05:6000:2510:b0:39c:30f9:339c with SMTP id
+ ffacd0b85a97d-39efba5a84dmr10142882f8f.28.1745278750922; Mon, 21 Apr 2025
+ 16:39:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250421214423.393661-21-jolsa@kernel.org>
+References: <20250414225227.3642618-1-tjmercier@google.com>
+ <20250414225227.3642618-3-tjmercier@google.com> <CAPhsuW54g5YCmLVX=cc3m2nfQTZrMH+6ZMBgouEMMfqcccOtww@mail.gmail.com>
+ <CABdmKX1OqLLsY5+LSMU-c=DDUxTFaivNcyXG3ntD8D0ty1Pwig@mail.gmail.com>
+In-Reply-To: <CABdmKX1OqLLsY5+LSMU-c=DDUxTFaivNcyXG3ntD8D0ty1Pwig@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 21 Apr 2025 16:38:59 -0700
+X-Gm-Features: ATxdqUEjOlk2AFAGVhVlgaGgehsi4nkoJpm1iJUvAg9lN7-7SyoelglTBprP5Ug
+Message-ID: <CAADnVQ+0PXgm_VuSJDKwr9iomxFLuG-=Chi2Ya3k0YPnKaex_w@mail.gmail.com>
+Subject: Re: [PATCH 2/4] bpf: Add dmabuf iterator
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Song Liu <song@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Shuah Khan <skhan@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linaro-mm-sig@lists.linaro.org, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, android-mm@google.com, simona@ffwll.ch, 
+	Jonathan Corbet <corbet@lwn.net>, Eduard <eddyz87@gmail.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 21, 2025 at 11:44:20PM +0200, Jiri Olsa wrote:
-> Adding uprobe as another exception to the seccomp filter alongside
-> with the uretprobe syscall.
-> 
-> Same as the uretprobe the uprobe syscall is installed by kernel as
-> replacement for the breakpoint exception and is limited to x86_64
-> arch and isn't expected to ever be supported in i386.
-> 
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Eyal Birger <eyal.birger@gmail.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On Mon, Apr 21, 2025 at 1:40=E2=80=AFPM T.J. Mercier <tjmercier@google.com>=
+ wrote:
+>
+> > > new file mode 100644
+> > > index 000000000000..b4b8be1d6aa4
+> > > --- /dev/null
+> > > +++ b/kernel/bpf/dmabuf_iter.c
+> >
+> > Maybe we should add this file to drivers/dma-buf. I would like to
+> > hear other folks thoughts on this.
+>
+> This is fine with me, and would save us the extra
+> CONFIG_DMA_SHARED_BUFFER check that's currently needed in
+> kernel/bpf/Makefile but would require checking CONFIG_BPF instead.
+> Sumit / Christian any objections to moving the dmabuf bpf iterator
+> implementation into drivers/dma-buf?
 
-<insert standard grumbling>
+The driver directory would need to 'depends on BPF_SYSCALL'.
+Are you sure you want this?
+imo kernel/bpf/ is fine for this.
 
-Going forward, how can we avoid this kind of thing?
+You also probably want
+.feature                =3D BPF_ITER_RESCHED
+in bpf_dmabuf_reg_info.
 
-Reviewed-by: Kees Cook <kees@kernel.org>
-
--- 
-Kees Cook
+Also have you considered open coded iterator for dmabufs?
+Would it help with the interface to user space?
 
