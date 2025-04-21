@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-56343-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56344-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D70EA95880
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 23:56:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09BDCA95856
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 23:49:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B2D0188D5F8
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 21:57:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 997313B7A50
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 21:48:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6480221CC6A;
-	Mon, 21 Apr 2025 21:47:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CD4421B9F4;
+	Mon, 21 Apr 2025 21:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5eTMU59"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u979u3Wd"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C3D21CC44;
-	Mon, 21 Apr 2025 21:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2A31D63D3;
+	Mon, 21 Apr 2025 21:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745272041; cv=none; b=WWmSUg4jK5vIG/dBTIsVQAf44Xk706MF8aN0pkQEZkvcy12SeL9pVaSiM8un0oRdSLRSCs5L4pURfkqDgPf5VfMOF/xkcgo4v6tOkg+Ze5XLjyy2claEHs6cSNUt3QmHCNcpEZjQ+9+g/gjlip29Fuu7CW0C0FrU5QAXCM644v0=
+	t=1745272053; cv=none; b=Z9tAMJPufDlcPbLUueqJOWVZS3j4NqIt5l3Oduarnmrzq+BDOYtkHSAFmtzHZWRiEDaubtPSUnOXj3a0woQD7E0iKOg2eqHUcb4GAiaNxprs53XtlIzAmxSVAtqSnhnS43F/PoQDQZlT6CU1O4zWuKLzMI11jwRIISgCuIRtDRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745272041; c=relaxed/simple;
-	bh=+nZREEM3gS258RP/nFqPYiILlPVFY0mElLL3BfF6IUU=;
+	s=arc-20240116; t=1745272053; c=relaxed/simple;
+	bh=aI9whqPW5DtGUUIX0VMcRWnf+t2wx4QcdG0DrI/uDXs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=a8UOVoMn8JT70ikyryq/4wyoGWc3Z0ZhE4qcipovEL3CSn0p/gNJa5vKuHfSBC36u+untWZTkk/x0oRCctccHF8i3UKeGkPZwlq7VsDxzWt+d+/GQHYCom6V7ib4BzHjMcuO1s6oUN1TJHbf6Srvgc0H/vVKux2eyaErH3yZr8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5eTMU59; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65BA2C4CEE4;
-	Mon, 21 Apr 2025 21:47:16 +0000 (UTC)
+	 MIME-Version; b=qqbVI5EzCZPFMz3INxxY411mWCGarhg70enDrIwgSZ61Jzje0Qg24NyV/98DWgwuP1u3nl7L3UAy4v/Bi8vdHoAZYamRwi/dD3D/uAsPLZ36QHkexLnplgRRnFNML/rzpJSqk8lyafNiKkq0x4aQlmtxOwYgg+h9B4TYpiPrkMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u979u3Wd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1C61C4CEE4;
+	Mon, 21 Apr 2025 21:47:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745272041;
-	bh=+nZREEM3gS258RP/nFqPYiILlPVFY0mElLL3BfF6IUU=;
+	s=k20201202; t=1745272053;
+	bh=aI9whqPW5DtGUUIX0VMcRWnf+t2wx4QcdG0DrI/uDXs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b5eTMU59tRibTLxHH03Y2h6I7Lcd47vV9/QU0Pge3QkZtO6qfEOdBLu3IPvOH6dJD
-	 guVKSYvBH1LMvaqCCFIy3BqQj58avYgc01i4nw+BtJ/mT/UUjip3Q7NRsAtsZTK1Tt
-	 zm7cKYWr4GW6/z3B4eBxIE+uz5ej0LPvSevMU2z+yM8Ys5yCxdUfviejxF3mWIPd1P
-	 JGjhF7IH313fHV1di8gQr996QVT9MOVzEfDwdzNQ0Z6NEywBBoAw/icSnd8oCl5KgJ
-	 7noY5ZmmJfDXmjtBc7E55kkq5iSNT5oZrI8b/2OhI5OMZV3+9cV0mSMtCHUHW5Rvxo
-	 5SBK+ZipFMAvg==
+	b=u979u3WdPag7zDwXfjeoNiYIqVhIYNhB+6laUxSASVVcK4pap7B6BAA8y5w/WVxWT
+	 LsTHMTbC/Iez77n+fDo2oceSNi93VP6vNArd3La4UMWo9A3fhjsfO5mBddXLHTZcv+
+	 BS9iJ6zDoRCkVdpGSrw8Xu0eoI8LzNG8ZkzuV8Q15cbdvIt2TJaa9U5aFZ69NDyIVU
+	 I+DpRcKU+4p9tGpeuNpqTFVIppl8IuTSbI8ZcGqeiW1KkSCvnctbWGshZtAr4vQKIT
+	 gXwkve0/MfGaIj0B9rJs59FucfuzK9e7uXXdR2Nx5409+/rczHLsI6KPHW6Benuv+3
+	 +fg+rdrPVSibA==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH perf/core 14/22] selftests/bpf: Add uprobe/usdt syscall tests
-Date: Mon, 21 Apr 2025 23:44:14 +0200
-Message-ID: <20250421214423.393661-15-jolsa@kernel.org>
+Subject: [PATCH perf/core 15/22] selftests/bpf: Add hit/attach/detach race optimized uprobe test
+Date: Mon, 21 Apr 2025 23:44:15 +0200
+Message-ID: <20250421214423.393661-16-jolsa@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250421214423.393661-1-jolsa@kernel.org>
 References: <20250421214423.393661-1-jolsa@kernel.org>
@@ -73,389 +73,106 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding tests for optimized uprobe/usdt probes.
-
-Checking that we get expected trampoline and attached bpf programs
-get executed properly.
+Adding test that makes sure parallel execution of the uprobe and
+attach/detach of optimized uprobe on it works properly.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/prog_tests/uprobe_syscall.c | 278 +++++++++++++++++-
- .../bpf/progs/uprobe_syscall_executed.c       |  37 +++
- 2 files changed, 314 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/uprobe_syscall.c | 74 +++++++++++++++++++
+ 1 file changed, 74 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-index 3c74a079e6d9..16effe0bca1d 100644
+index 16effe0bca1d..57ef1207c3f5 100644
 --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
 +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-@@ -14,6 +14,9 @@
- #include <asm/prctl.h>
- #include "uprobe_syscall.skel.h"
- #include "uprobe_syscall_executed.skel.h"
-+#include "sdt.h"
-+
-+#pragma GCC diagnostic ignored "-Wattributes"
- 
- __naked unsigned long uretprobe_regs_trigger(void)
- {
-@@ -301,6 +304,262 @@ static void test_uretprobe_syscall_call(void)
- 	close(go[0]);
- }
- 
-+#define TRAMP "[uprobes-trampoline]"
-+
-+__attribute__((aligned(16)))
-+__nocf_check __weak __naked void uprobe_test(void)
-+{
-+	asm volatile ("					\n"
-+		".byte 0x0f, 0x1f, 0x44, 0x00, 0x00	\n"
-+		"ret					\n"
-+	);
-+}
-+
-+__attribute__((aligned(16)))
-+__nocf_check __weak void usdt_test(void)
-+{
-+	STAP_PROBE(optimized_uprobe, usdt);
-+}
-+
-+static int find_uprobes_trampoline(void **start, void **end)
-+{
-+	char line[128];
-+	int ret = -1;
-+	FILE *maps;
-+
-+	maps = fopen("/proc/self/maps", "r");
-+	if (!maps) {
-+		fprintf(stderr, "cannot open maps\n");
-+		return -1;
-+	}
-+
-+	while (fgets(line, sizeof(line), maps)) {
-+		int m = -1;
-+
-+		/* We care only about private r-x mappings. */
-+		if (sscanf(line, "%p-%p r-xp %*x %*x:%*x %*u %n", start, end, &m) != 2)
-+			continue;
-+		if (m < 0)
-+			continue;
-+		if (!strncmp(&line[m], TRAMP, sizeof(TRAMP)-1)) {
-+			ret = 0;
-+			break;
-+		}
-+	}
-+
-+	fclose(maps);
-+	return ret;
-+}
-+
-+static unsigned char nop5[5] = { 0x0f, 0x1f, 0x44, 0x00, 0x00 };
-+
-+static void *find_nop5(void *fn)
-+{
-+	int i;
-+
-+	for (i = 0; i < 10; i++) {
-+		if (!memcmp(nop5, fn + i, 5))
-+			return fn + i;
-+	}
-+	return NULL;
-+}
-+
-+typedef void (__attribute__((nocf_check)) *trigger_t)(void);
-+
-+static bool shstk_is_enabled;
-+
-+static void check_attach(struct uprobe_syscall_executed *skel, trigger_t trigger,
-+			 void *addr, int executed)
-+{
-+	void *tramp_start, *tramp_end;
-+	struct __arch_relative_insn {
-+		u8 op;
-+		s32 raddr;
-+	} __packed *call;
-+	s32 delta;
-+	u8 *bp;
-+
-+	/* Uprobe gets optimized after first trigger, so let's press twice. */
-+	trigger();
-+	trigger();
-+
-+	if (!shstk_is_enabled &&
-+	    !ASSERT_OK(find_uprobes_trampoline(&tramp_start, &tramp_end), "uprobes_trampoline"))
-+		return;
-+
-+	/* Make sure bpf program got executed.. */
-+	ASSERT_EQ(skel->bss->executed, executed, "executed");
-+
-+	if (shstk_is_enabled) {
-+		/* .. and check optimization is disabled under shadow stack. */
-+		bp = (u8 *) addr;
-+		ASSERT_EQ(*bp, 0xcc, "int3");
-+	} else {
-+		/* .. and check the trampoline is as expected. */
-+		call = (struct __arch_relative_insn *) addr;
-+		delta = (unsigned long) tramp_start - ((unsigned long) addr + 5);
-+
-+		ASSERT_EQ(call->op, 0xe8, "call");
-+		ASSERT_EQ(call->raddr, delta, "delta");
-+		ASSERT_EQ(tramp_end - tramp_start, 4096, "size");
-+	}
-+}
-+
-+static void check_detach(struct uprobe_syscall_executed *skel, trigger_t trigger, void *addr)
-+{
-+	void *tramp_start, *tramp_end;
-+
-+	/* [uprobes_trampoline] stays after detach */
-+	ASSERT_OK(!shstk_is_enabled &&
-+		  find_uprobes_trampoline(&tramp_start, &tramp_end), "uprobes_trampoline");
-+	ASSERT_OK(memcmp(addr, nop5, 5), "nop5");
-+}
-+
-+static void check(struct uprobe_syscall_executed *skel, struct bpf_link *link,
-+		  trigger_t trigger, void *addr, int executed)
-+{
-+	check_attach(skel, trigger, addr, executed);
-+	bpf_link__destroy(link);
-+	check_detach(skel, trigger, addr);
-+}
-+
-+static void test_uprobe_legacy(void)
-+{
-+	struct uprobe_syscall_executed *skel = NULL;
-+	LIBBPF_OPTS(bpf_uprobe_opts, opts,
-+		.retprobe = true,
-+	);
-+	struct bpf_link *link;
-+	unsigned long offset;
-+
-+	offset = get_uprobe_offset(&uprobe_test);
-+	if (!ASSERT_GE(offset, 0, "get_uprobe_offset"))
-+		goto cleanup;
-+
-+	/* uprobe */
-+	skel = uprobe_syscall_executed__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_syscall_executed__open_and_load"))
-+		return;
-+
-+	link = bpf_program__attach_uprobe_opts(skel->progs.test_uprobe,
-+				0, "/proc/self/exe", offset, NULL);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_opts"))
-+		goto cleanup;
-+
-+	check(skel, link, uprobe_test, uprobe_test, 2);
-+
-+	/* uretprobe */
-+	skel->bss->executed = 0;
-+
-+	link = bpf_program__attach_uprobe_opts(skel->progs.test_uretprobe,
-+				0, "/proc/self/exe", offset, &opts);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_opts"))
-+		goto cleanup;
-+
-+	check(skel, link, uprobe_test, uprobe_test, 2);
-+
-+cleanup:
-+	uprobe_syscall_executed__destroy(skel);
-+}
-+
-+static void test_uprobe_multi(void)
-+{
-+	struct uprobe_syscall_executed *skel = NULL;
-+	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
-+	struct bpf_link *link;
-+	unsigned long offset;
-+
-+	offset = get_uprobe_offset(&uprobe_test);
-+	if (!ASSERT_GE(offset, 0, "get_uprobe_offset"))
-+		goto cleanup;
-+
-+	opts.offsets = &offset;
-+	opts.cnt = 1;
-+
-+	skel = uprobe_syscall_executed__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_syscall_executed__open_and_load"))
-+		return;
-+
-+	/* uprobe.multi */
-+	link = bpf_program__attach_uprobe_multi(skel->progs.test_uprobe_multi,
-+				0, "/proc/self/exe", NULL, &opts);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_multi"))
-+		goto cleanup;
-+
-+	check(skel, link, uprobe_test, uprobe_test, 2);
-+
-+	/* uretprobe.multi */
-+	skel->bss->executed = 0;
-+	opts.retprobe = true;
-+	link = bpf_program__attach_uprobe_multi(skel->progs.test_uretprobe_multi,
-+				0, "/proc/self/exe", NULL, &opts);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_multi"))
-+		goto cleanup;
-+
-+	check(skel, link, uprobe_test, uprobe_test, 2);
-+
-+cleanup:
-+	uprobe_syscall_executed__destroy(skel);
-+}
-+
-+static void test_uprobe_session(void)
-+{
-+	struct uprobe_syscall_executed *skel = NULL;
-+	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts,
-+		.session = true,
-+	);
-+	struct bpf_link *link;
-+	unsigned long offset;
-+
-+	offset = get_uprobe_offset(&uprobe_test);
-+	if (!ASSERT_GE(offset, 0, "get_uprobe_offset"))
-+		goto cleanup;
-+
-+	opts.offsets = &offset;
-+	opts.cnt = 1;
-+
-+	skel = uprobe_syscall_executed__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_syscall_executed__open_and_load"))
-+		return;
-+
-+	link = bpf_program__attach_uprobe_multi(skel->progs.test_uprobe_session,
-+				0, "/proc/self/exe", NULL, &opts);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_uprobe_multi"))
-+		goto cleanup;
-+
-+	check(skel, link, uprobe_test, uprobe_test, 4);
-+
-+cleanup:
-+	uprobe_syscall_executed__destroy(skel);
-+}
-+
-+static void test_uprobe_usdt(void)
-+{
-+	struct uprobe_syscall_executed *skel;
-+	struct bpf_link *link;
-+	void *addr;
-+
-+	errno = 0;
-+	addr = find_nop5(usdt_test);
-+	if (!ASSERT_OK_PTR(addr, "find_nop5"))
-+		return;
-+
-+	skel = uprobe_syscall_executed__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_syscall_executed__open_and_load"))
-+		return;
-+
-+	link = bpf_program__attach_usdt(skel->progs.test_usdt,
-+				-1 /* all PIDs */, "/proc/self/exe",
-+				"optimized_uprobe", "usdt", NULL);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_usdt"))
-+		goto cleanup;
-+
-+	check(skel, link, usdt_test, addr, 2);
-+
-+cleanup:
-+	uprobe_syscall_executed__destroy(skel);
-+}
-+
- /*
-  * Borrowed from tools/testing/selftests/x86/test_shadow_stack.c.
-  *
-@@ -343,11 +602,20 @@ static void test_uretprobe_shadow_stack(void)
- 		return;
- 	}
- 
--	/* Run all of the uretprobe tests. */
-+	/* Run all the tests with shadow stack in place. */
-+	shstk_is_enabled = true;
-+
- 	test_uretprobe_regs_equal();
- 	test_uretprobe_regs_change();
- 	test_uretprobe_syscall_call();
- 
-+	test_uprobe_legacy();
-+	test_uprobe_multi();
-+	test_uprobe_session();
-+	test_uprobe_usdt();
-+
-+	shstk_is_enabled = false;
-+
+@@ -619,6 +619,78 @@ static void test_uretprobe_shadow_stack(void)
  	ARCH_PRCTL(ARCH_SHSTK_DISABLE, ARCH_SHSTK_SHSTK);
  }
  
-@@ -361,6 +629,14 @@ static void __test_uprobe_syscall(void)
- 		test_uretprobe_syscall_call();
- 	if (test__start_subtest("uretprobe_shadow_stack"))
- 		test_uretprobe_shadow_stack();
-+	if (test__start_subtest("uprobe_legacy"))
-+		test_uprobe_legacy();
-+	if (test__start_subtest("uprobe_multi"))
-+		test_uprobe_multi();
-+	if (test__start_subtest("uprobe_session"))
-+		test_uprobe_session();
-+	if (test__start_subtest("uprobe_usdt"))
-+		test_uprobe_usdt();
++static volatile bool race_stop;
++
++static void *worker_trigger(void *arg)
++{
++	unsigned long rounds = 0;
++
++	while (!race_stop) {
++		uprobe_test();
++		rounds++;
++	}
++
++	printf("tid %d trigger rounds: %lu\n", gettid(), rounds);
++	return NULL;
++}
++
++static void *worker_attach(void *arg)
++{
++	struct uprobe_syscall_executed *skel;
++	unsigned long rounds = 0, offset;
++
++	offset = get_uprobe_offset(&uprobe_test);
++	if (!ASSERT_GE(offset, 0, "get_uprobe_offset"))
++		return NULL;
++
++	skel = uprobe_syscall_executed__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_syscall_executed__open_and_load"))
++		return NULL;
++
++	while (!race_stop) {
++		skel->links.test_uprobe = bpf_program__attach_uprobe_opts(skel->progs.test_uprobe,
++					0, "/proc/self/exe", offset, NULL);
++		if (!ASSERT_OK_PTR(skel->links.test_uprobe, "bpf_program__attach_uprobe_opts"))
++			break;
++
++		bpf_link__destroy(skel->links.test_uprobe);
++		skel->links.test_uprobe = NULL;
++		rounds++;
++	}
++
++	printf("tid %d attach rounds: %lu hits: %d\n", gettid(), rounds, skel->bss->executed);
++	uprobe_syscall_executed__destroy(skel);
++	return NULL;
++}
++
++static void test_uprobe_race(void)
++{
++	int err, i, nr_threads;
++	pthread_t *threads;
++
++	nr_threads = libbpf_num_possible_cpus();
++	if (!ASSERT_GE(nr_threads, 0, "libbpf_num_possible_cpus"))
++		return;
++
++	threads = malloc(sizeof(*threads) * nr_threads);
++	if (!ASSERT_OK_PTR(threads, "malloc"))
++		return;
++
++	for (i = 0; i < nr_threads; i++) {
++		err = pthread_create(&threads[i], NULL, i % 2 ? worker_trigger : worker_attach,
++				     NULL);
++		if (!ASSERT_OK(err, "pthread_create"))
++			goto cleanup;
++	}
++
++	sleep(4);
++
++cleanup:
++	race_stop = true;
++	for (nr_threads = i, i = 0; i < nr_threads; i++)
++		pthread_join(threads[i], NULL);
++}
++
+ static void __test_uprobe_syscall(void)
+ {
+ 	if (test__start_subtest("uretprobe_regs_equal"))
+@@ -637,6 +709,8 @@ static void __test_uprobe_syscall(void)
+ 		test_uprobe_session();
+ 	if (test__start_subtest("uprobe_usdt"))
+ 		test_uprobe_usdt();
++	if (test__start_subtest("uprobe_race"))
++		test_uprobe_race();
  }
  #else
  static void __test_uprobe_syscall(void)
-diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c b/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c
-index 2e1b689ed4fb..7bb4338c3ee2 100644
---- a/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c
-+++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- #include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/usdt.bpf.h>
- #include <string.h>
- 
- struct pt_regs regs;
-@@ -9,9 +11,44 @@ char _license[] SEC("license") = "GPL";
- 
- int executed = 0;
- 
-+SEC("uprobe")
-+int BPF_UPROBE(test_uprobe)
-+{
-+	executed++;
-+	return 0;
-+}
-+
-+SEC("uretprobe")
-+int BPF_URETPROBE(test_uretprobe)
-+{
-+	executed++;
-+	return 0;
-+}
-+
-+SEC("uprobe.multi")
-+int test_uprobe_multi(struct pt_regs *ctx)
-+{
-+	executed++;
-+	return 0;
-+}
-+
- SEC("uretprobe.multi")
- int test_uretprobe_multi(struct pt_regs *ctx)
- {
- 	executed++;
- 	return 0;
- }
-+
-+SEC("uprobe.session")
-+int test_uprobe_session(struct pt_regs *ctx)
-+{
-+	executed++;
-+	return 0;
-+}
-+
-+SEC("usdt")
-+int test_usdt(struct pt_regs *ctx)
-+{
-+	executed++;
-+	return 0;
-+}
 -- 
 2.49.0
 
