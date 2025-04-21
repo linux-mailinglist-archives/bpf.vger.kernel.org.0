@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-56341-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2235A9584E
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 23:49:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37A5AA9584F
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 23:49:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E3A63B0646
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 21:48:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 401183B6C17
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 21:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4290B21C190;
-	Mon, 21 Apr 2025 21:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA23F21C9FF;
+	Mon, 21 Apr 2025 21:47:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qWTKbciV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S3ref8Qx"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C9021A421;
-	Mon, 21 Apr 2025 21:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F33821B909;
+	Mon, 21 Apr 2025 21:47:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745272017; cv=none; b=mb6Kta4QWXeZEi6/ikl13sHz3V/rQP8CV8hE/CHTKdyrROwQgMBQV06bD0O3v/yhT9Ez9eJp/OA9OpCHP22jkOggNIIbjlc5vUXV9GCZWsPIzE7bfurx0+TAfcWLT5aErcliyB/fHc61TuUlfTWHr4TfdKv/ZKDHwnqeS7D6AT0=
+	t=1745272029; cv=none; b=Jfb3hfoTt6rO66DjcevkbyJyQT5k4B+sf7NhNcNsMGneftinTREo5b4JiodUKnp6cGzcyCIvLoCAfS7jpFPwIV/++DWwFdNtdCnjJz52cKUqplrfinVW17Himdhc9pPb1o4Ln7MZ7tZ4BI/kcYd9cTQ0O8k5uwWhOpWRAj/1w5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745272017; c=relaxed/simple;
-	bh=QHeRP+3vFIU4kzTD64Z50sxitOHVSEPLwnAxE9SvpDo=;
+	s=arc-20240116; t=1745272029; c=relaxed/simple;
+	bh=QVQ6qfmvUrSx0DydWdPijoOQliv6RaIe4HgM86uPyfU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bDHnH61Zy1tCVtbvCqOZAA6sV+t8lbIWUH+UnqFfy2tmD4+R+ckdqD4qSsDSIgrROEQAR65ExhASfdmcHOWKLA+VVJiIHyJmFYuhRjNm7Qg3f2oxlI0PygqHLe4nslJ5+1xun2Qj13xSF8EXO/NUpVAURB58LVjyXTAOAL47aZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qWTKbciV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B944EC4CEE4;
-	Mon, 21 Apr 2025 21:46:52 +0000 (UTC)
+	 MIME-Version; b=fpNZBMk845/qX6BExU5SiG01ECrryT5JxiXc4bUyvQ3jM8vPDDnlAaie1NA2IaYvOybUb9hz/VMYxyVugrzgb5Thh6U0Di7whDPJNFXaOl5aD86QwFEJWWTB0VGePUrKtB99bBNd/lWNqiEzn2YqLoW8b0HRXmeQGmm2e3t8cCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S3ref8Qx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B480DC4CEE4;
+	Mon, 21 Apr 2025 21:47:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745272017;
-	bh=QHeRP+3vFIU4kzTD64Z50sxitOHVSEPLwnAxE9SvpDo=;
+	s=k20201202; t=1745272029;
+	bh=QVQ6qfmvUrSx0DydWdPijoOQliv6RaIe4HgM86uPyfU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qWTKbciVgJUk4YqDNH6wXkskafiaPg5xNbUEjP8L8y89AXwTJpUfzZmt7Qi5blWzb
-	 yLM5TN3u4Hsqy+HAzpBS1AscYTO4IrX4QObhNLHKGaGK7TucNjVCtGgOrGlM7FfqJJ
-	 ysAIF+dRH0zJ7RlaYu9QEHDAHLwuH8qCVbrUNeeaU0NBX9FWyLS8VhurN7qJCxItpS
-	 NR/ARwZ5SDlR4rkCmQDtPfFC3zdXcWxw47g7stC3CexXjrzOYm7liRwNjaa7HmAhWN
-	 dRmP1dlPhRQz2JzF0u3tipdb/u9uZCT9b80jc8HLQtYlgNP3FfbEJ2eooeBYfX/lxt
-	 FIjEa+qP9rnYQ==
+	b=S3ref8QxeNdSlGO49mcYKZDWNLyPqc7ezuxj8vPUPuWH4HA95NObE8dnpxIC0Fla3
+	 WXGQk6YwBTgFEdGr8OEvZqVS7d1Jro7DbM59Ys3xgx0l9lJPO066Eg8zTMDGgY/3UY
+	 0MsR0dmNjl5/+uWTzQhJECP8vQC7RSEGvm00jWSe3WKYGxL/BoyEpUiSyZnZ0Poobm
+	 LrHwA3f7yfVCvmu+gFkYFRHE0rMUNaULmepbscTEfqLpxh0GkulslN1/kNF82YtRjO
+	 mU6iqn0E8FrZFnydT7FfDTT75Lb1UR3YugYvLicSxJ+U+qzbgjgsHUkZ8quC5ntVIJ
+	 aWh+xP9aLDLNw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH perf/core 12/22] selftests/bpf: Reorg the uprobe_syscall test function
-Date: Mon, 21 Apr 2025 23:44:12 +0200
-Message-ID: <20250421214423.393661-13-jolsa@kernel.org>
+Subject: [PATCH perf/core 13/22] selftests/bpf: Rename uprobe_syscall_executed prog to test_uretprobe_multi
+Date: Mon, 21 Apr 2025 23:44:13 +0200
+Message-ID: <20250421214423.393661-14-jolsa@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250421214423.393661-1-jolsa@kernel.org>
 References: <20250421214423.393661-1-jolsa@kernel.org>
@@ -73,64 +73,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding __test_uprobe_syscall with non x86_64 stub to execute all the tests,
-so we don't need to keep adding non x86_64 stub functions for new tests.
+Renaming uprobe_syscall_executed prog to test_uretprobe_multi
+to fit properly in the following changes that add more programs.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/prog_tests/uprobe_syscall.c | 34 +++++++------------
- 1 file changed, 12 insertions(+), 22 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c   | 8 ++++----
+ .../testing/selftests/bpf/progs/uprobe_syscall_executed.c | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-index c397336fe1ed..2b00f16406c8 100644
+index 2b00f16406c8..3c74a079e6d9 100644
 --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
 +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-@@ -350,29 +350,8 @@ static void test_uretprobe_shadow_stack(void)
+@@ -277,10 +277,10 @@ static void test_uretprobe_syscall_call(void)
+ 		_exit(0);
+ 	}
  
- 	ARCH_PRCTL(ARCH_SHSTK_DISABLE, ARCH_SHSTK_SHSTK);
- }
--#else
--static void test_uretprobe_regs_equal(void)
--{
--	test__skip();
--}
--
--static void test_uretprobe_regs_change(void)
--{
--	test__skip();
--}
--
--static void test_uretprobe_syscall_call(void)
--{
--	test__skip();
--}
+-	skel->links.test = bpf_program__attach_uprobe_multi(skel->progs.test, pid,
+-							    "/proc/self/exe",
+-							    "uretprobe_syscall_call", &opts);
+-	if (!ASSERT_OK_PTR(skel->links.test, "bpf_program__attach_uprobe_multi"))
++	skel->links.test_uretprobe_multi = bpf_program__attach_uprobe_multi(skel->progs.test_uretprobe_multi,
++							pid, "/proc/self/exe",
++							"uretprobe_syscall_call", &opts);
++	if (!ASSERT_OK_PTR(skel->links.test_uretprobe_multi, "bpf_program__attach_uprobe_multi"))
+ 		goto cleanup;
  
--static void test_uretprobe_shadow_stack(void)
--{
--	test__skip();
--}
--#endif
--
--void test_uprobe_syscall(void)
-+static void __test_uprobe_syscall(void)
+ 	/* kick the child */
+diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c b/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c
+index 0d7f1a7db2e2..2e1b689ed4fb 100644
+--- a/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c
++++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c
+@@ -10,8 +10,8 @@ char _license[] SEC("license") = "GPL";
+ int executed = 0;
+ 
+ SEC("uretprobe.multi")
+-int test(struct pt_regs *regs)
++int test_uretprobe_multi(struct pt_regs *ctx)
  {
- 	if (test__start_subtest("uretprobe_regs_equal"))
- 		test_uretprobe_regs_equal();
-@@ -383,3 +362,14 @@ void test_uprobe_syscall(void)
- 	if (test__start_subtest("uretprobe_shadow_stack"))
- 		test_uretprobe_shadow_stack();
+-	executed = 1;
++	executed++;
+ 	return 0;
  }
-+#else
-+static void __test_uprobe_syscall(void)
-+{
-+	test__skip();
-+}
-+#endif
-+
-+void test_uprobe_syscall(void)
-+{
-+	__test_uprobe_syscall();
-+}
 -- 
 2.49.0
 
