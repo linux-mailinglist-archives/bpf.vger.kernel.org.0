@@ -1,147 +1,204 @@
-Return-Path: <bpf+bounces-56320-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56321-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA536A9556E
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 19:44:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD68CA95583
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 19:48:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05AD0173668
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 17:44:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92E0F188F455
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 17:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925B71E5B6A;
-	Mon, 21 Apr 2025 17:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846091E3DEF;
+	Mon, 21 Apr 2025 17:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BnjmrFuw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="flnuzB9w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F202F3E
-	for <bpf@vger.kernel.org>; Mon, 21 Apr 2025 17:44:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454961E32DD
+	for <bpf@vger.kernel.org>; Mon, 21 Apr 2025 17:48:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745257455; cv=none; b=g15Ci68oDI4fbhRkVHv94qhz3JeQADrZff9IB8RmF+erZRvGdHPOtLlClmoUobN3Pra3E/SkNnWROvmRpura99nFWX3bGg9p4ovGpRcUj1qpmmfvtxehc70PuZDas1i9ry0Akm4poeqWFzwbKLPemB7gw5ym2Y4sZmNjepzdRkQ=
+	t=1745257723; cv=none; b=XxYzL1GmHVoKdU9KuaMBgolHA8t0hyIPd+w7GdWNVpA+MOyz4tzkqe2llolvA8OmS5f018uSH+nhAMPmg+YdT+kitmzmB3luirUXCjL3oV0AvTsm39xTDfwQnwJOVWJ8c387YLd3+QmFVQWnYvfyuVsDVMdfgmBSkb0mE9apZUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745257455; c=relaxed/simple;
-	bh=Y3ZEz6kcPZGieiyNmVJvxEZSi2ZZRlk88a7+rPAs1oA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h2940DsrxOHg+mx2Y8u0JaJlShR2B2oVCzA//4emOeojlD1kCKxKE8vNfuUuMt5l/JDj1RLuvPGLdbqS6crLYM2T/ciJZo03brX2mI/G9lyVyiBGxBTVYYJqybw5zy5S3Di0Igc3vZB/keEGvjWmGdJxQWqDZ+oMB/bm7eJnzyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BnjmrFuw; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1745257723; c=relaxed/simple;
+	bh=y1JLkcgSPHCx3oMbHA6Te0jRNcfkUi068ij9puXCCWQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QXdVRmmqO95vyFIep9xZEASkolL8PE+VoTeVqQOjZpuozCkV95G/VIK2gxqbGUmQLdSWuMkze+OqdsnAKvV5zozcN/U8/Li3jgLOi+Gi8MvJKE1X7ru7pZsxQQ2gI9v3gx1oUow+ZELctQRyZSFl0xG4TrzWQ1PKZuXFlLmy98Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=flnuzB9w; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7370a2d1981so3371166b3a.2
-        for <bpf@vger.kernel.org>; Mon, 21 Apr 2025 10:44:13 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-ac2c663a3daso733606666b.2
+        for <bpf@vger.kernel.org>; Mon, 21 Apr 2025 10:48:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745257453; x=1745862253; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nShN0409dtapHAeX0L4ILysvxpF/FPLpDWe3d4DVeTs=;
-        b=BnjmrFuwtw0Uncbr/ZPSZLGx40K86rzHNSn85RCMEMbSZtqbHiL3aJPyoaznf16stM
-         ctpJNnTGV0+a3DrQxIv8FD16LuJSL80IHbg/OSZv+yPj3shdh7kJ85T0lG/d/hSzA5PP
-         XKHdcmqBehPSLABoU2Ci0Ipml1GroGx9SZHvdAR6MmOKH/0aq96TLfK7UB+jgLB/AGWA
-         fgOTTFu4xIIJtdpWzjT5pj93Ngku00PyDNBp4K+mWdWoTIzhX66L+0m5EomFi4RIys3i
-         PIfv+tuRz+gwCR7k/ahnWsxZBKC+9+zfgE2tXHcVScX7ZPVSxTAWmKRUMmu/lWfm7xYM
-         5OoQ==
+        d=gmail.com; s=20230601; t=1745257719; x=1745862519; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EgEvatn+1Htqs7q914iQ+Tb6ZeYd0ENqoEC4hmRDOwQ=;
+        b=flnuzB9wfaQzwTokIQ3n+52JITwfsyFaB5J0E/DbEQ7FFRm4ij2GI1ykdIPdjyZnzE
+         sZy+hC6XLDgKg4pzG27dArnNW7wdpKDip7S6bTaW9DAqj9zce4iKLP7r7HR0/ygbw1lO
+         XvgO8p5pmKPPeXYKxmDZEAGqPTBXWTFyzGfcq0M4IeS6k6NcRaLmFQ0P+eilG7AT0AQw
+         Smfu76BP1kJkWFYe3wwdVPTEfNx/ZJfDR3xLjDLMkGePTbt/TYvIfddO09r34XKbXGsD
+         +yYHVJkgAJsALdKXnvM7hTzv25n8WCE45U6blEUxBM3wIon8tboTdzqmiEXrfZc1HYOK
+         MwOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745257453; x=1745862253;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nShN0409dtapHAeX0L4ILysvxpF/FPLpDWe3d4DVeTs=;
-        b=jYI5MukG+3nHif67kH8LeNzqXZNjvu37+LntGDExf2iCi/Ie1WFPFXtjLrNWzMLunY
-         JBqI7Etxf6CNtq/HCpY42Euxz249y/ws4MJUcLWfH4hizlkWe1UzAhBIGjqQ0f8lM/aC
-         eeWkDsdBogVU/46rz6JRldyUQ0hcSYmG+jChXN82F1B3wYFDD2LqMUdZdIL/2SH/eOLW
-         epfHC7bW7eG4b+v2qvdpuoTbpW08dzzoYqT/bV4UXX4rwAvrK4KNThh1MTbNJJ5iyD+k
-         Dxzoy/qfhPn0/DX+r6IifydUIh0pkCi8dEuuEbm+aKsssHopSsF8h5g0gdJLkjAqmqvZ
-         O0HQ==
-X-Gm-Message-State: AOJu0YzDIGWDK57FvUKTNmYmYEPEmUkCxPOpDLBksT01Wcj1wuLB66iC
-	tN6W9bjcsnADgKfH6C9MMOAgp0oiQEvGdBAmvpBOeZey+CElPyikYXnr2F3C
-X-Gm-Gg: ASbGnctrnHsF+x6i9NfUEoGEv/0bCY2xbriF8Jxs8sQTwiltXLgqmIjTnGNXfSu/YdP
-	4rFQ51BE5Qb6oYHI/CF5rkdHCV6J18jikov9APxPV98bIx/ukdUt0BjwQad7z50TPeYYt/g5iM4
-	Vr5dbK683Drvv5T1Q8q7LbGeyJdRDPhg+1om8zs+aMfH+ErhCuZ6UfCShDtL+n2QuvoGyzKHaZx
-	kzUWcMTUjIrsLFo2mx34/rqAEnWyNsjHRtPda6crh3AK/sfQEqeDLITo7VVUpwLQq4kkk8O0CtY
-	oiifTVZ7x/zMd15L2mN8Uk7AhziuvPGBj41UIP4EQ1zXl3tHfCqsPapjsIE65f+b8TZ8O2SoW4f
-	/e+9Xm/heH1n6
-X-Google-Smtp-Source: AGHT+IExN8R2qGaKppOm7D+tFa2VIQjqb9Ykwq1eG40OGH9wVJf1UqkzKuJ0xr8AT8fwEdfghKEGAw==
-X-Received: by 2002:a05:6a00:4484:b0:736:5725:59b4 with SMTP id d2e1a72fcca58-73dc14439f4mr15782010b3a.3.1745257452834;
-        Mon, 21 Apr 2025 10:44:12 -0700 (PDT)
-Received: from malayaVM.mrout-thinkpadp16vgen1.punetw6.csb ([106.215.151.199])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73dbfa58871sm7158010b3a.102.2025.04.21.10.44.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Apr 2025 10:44:12 -0700 (PDT)
-From: Malaya Kumar Rout <malayarout91@gmail.com>
-To: andrii.nakryiko@gmail.com,
-	alexei.starovoitov@gmail.com
-Cc: bpf@vger.kernel.org,
-	Malaya Kumar Rout <malayarout91@gmail.com>
-Subject: [PATCH] selftests/bpf: close the file descriptor to avoid resource leaks
-Date: Mon, 21 Apr 2025 23:14:05 +0530
-Message-ID: <20250421174405.26080-1-malayarout91@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1745257719; x=1745862519;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EgEvatn+1Htqs7q914iQ+Tb6ZeYd0ENqoEC4hmRDOwQ=;
+        b=qalpJq+YF/oSB5trNPT7ve9r3S0qV7xZqz1j/mY095FBpqZYbM2pNYU6hwyzR8123h
+         hHeiyJ44OXeGpAF8io8fXk/m274ulXd4FGoSELzCHAxzgceJkQQSbFkS01ffXVz8r9B9
+         s7RHLzdFnKgAmNhvvPpT4wRylyAfS1U+7dhrNYHDya9BXs8JzMApU6Yi86HSIbxcQ8us
+         iTI3jqKVADbbFnLQGLwuoCDm7VUBb5trsb+YvqoTDEdajyl0i9pQPugyOoSEpizzQwl5
+         P+Uk5iYVVhFxpMAm3Xl1BwLjg7dAdNU3ZASCGfnxO+jcS68+eBOMs3eJDdV50vxkF6SU
+         1RvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW81wTgyfA7+oI+LdbMKEVYYnArjkUUVx6iCj5G5bJnK7uQXygbhanbo4azXq4LpTYdRUI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzr8DbyBrGiWH0gC1SRsIpP/UnikunTAsQJWshQ6SIv5f2lttL2
+	4N1DPDT/VlnHu54sXw3ap6E9Kl6qejYb58zHe5LVfxidvacsKxxH5kOcZH2u4kmZrxyWCPFwHsO
+	O8tcU8nkYWBQlAw7sDRopDb/EVjETpKJu9u4=
+X-Gm-Gg: ASbGnctDjD9WOfTBic/ZieLfda4M7Ch2y43BPTAbfPDgkVIHG1Vt9MaM6CrE5BboWku
+	okiJuZbU+D236EFBLIUNcpJGoBj8qMsjy53DgIKYpY3X26qLkwnqE1GtEekYKJD+bYGFwXc019l
+	orODHu699IQtQtlWU+v13t+2Hd
+X-Google-Smtp-Source: AGHT+IGRnGJqU7jGMAnF9mMpjz1sCIFPLTpyxI3YIjNcIf6g1t3mXAii2MmHyGNaBSTwRJSZETLTKqdURq6wBrtAK2g=
+X-Received: by 2002:a17:906:7c43:b0:acb:b381:c28b with SMTP id
+ a640c23a62f3a-acbb381cc4dmr178624866b.47.1745257719034; Mon, 21 Apr 2025
+ 10:48:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAADnVQJbBOK25Fx3zEG-ZH=zTFRfPNQye673b5TnpdTdMEXAUA@mail.gmail.com>
+ <20250410103804.49250-1-malayarout91@gmail.com> <CAEf4BzaogUrvCxga36F1_o-h53Ur0mAaG9im1JsPfAhutxSYuQ@mail.gmail.com>
+ <CAE2+fR-QvJqL0VkqPufLL+r7FLaOSTRt2_xXjq=fdpk0yAGj2w@mail.gmail.com> <CAEf4BzZGCfrEJpqbd=j11poDHyHqfobRvQeQB0FLEpBg9Bf_XQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZGCfrEJpqbd=j11poDHyHqfobRvQeQB0FLEpBg9Bf_XQ@mail.gmail.com>
+From: malaya kumar rout <malayarout91@gmail.com>
+Date: Mon, 21 Apr 2025 23:18:27 +0530
+X-Gm-Features: ATxdqUGIyJCl7sblZYcZx8mqLjgTgMyNCpV4vsr3dwmVU_mrOGVNlxUfLwObSwM
+Message-ID: <CAE2+fR8vXac0=0FQsH8S+fkGF4GBcKz=mCTdCezb8FMo1iMFAA@mail.gmail.com>
+Subject: Re: [PATCH RESEND bpf-next v3] selftests/bpf: close the file
+ descriptor to avoid resource leaks
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: alexei.starovoitov@gmail.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Static analysis found an issue in bench_htab_mem.c and sk_assign.c
+On Wed, Apr 16, 2025 at 4:45=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sat, Apr 12, 2025 at 11:45=E2=80=AFAM malaya kumar rout
+> <malayarout91@gmail.com> wrote:
+> >
+> > Malaya Kumar Rout
+> > Ph. No:  +91-9778203508
+> >              +91-7008245249
+> >
+> > On Thu, Apr 10, 2025 at 11:03=E2=80=AFPM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Thu, Apr 10, 2025 at 3:38=E2=80=AFAM Malaya Kumar Rout
+> > > <malayarout91@gmail.com> wrote:
+> > > >
+> > > > Static analysis found an issue in bench_htab_mem.c
+> > > >
+> > > > cppcheck output before this patch:
+> > > > tools/testing/selftests/bpf/benchs/bench_htab_mem.c:284:3: error: R=
+esource leak: fd [resourceLeak]
+> > > > tools/testing/selftests/bpf/prog_tests/sk_assign.c:41:3: error: Res=
+ource leak: tc [resourceLeak]
+> > > >
+> > > > cppcheck output after this patch:
+> > > > No resource leaks found
+> > > >
+> > > > Fix the issue by closing the file descriptors fd and tc.
+> > > >
+> > > > Signed-off-by: Malaya Kumar Rout <malayarout91@gmail.com>
+> > > > ---
+> > >
+> > > I still don't see this patch in our Patchworks.
+> > >
+> > > But I noticed that the subject is:
+> > >
+> > > RE:[PATCH RESEND bpf-next v3] selftests/bpf: close the file descripto=
+r
+> > > to avoid resource leaks
+> > >
+> > > and there is
+> > >
+> > > In-Reply-To: <CAADnVQJbBOK25Fx3zEG-ZH=3DzTFRfPNQye673b5TnpdTdMEXAUA@m=
+ail.gmail.com>
+> > >
+> > > email header, so I suspect bot ignores this because it's a reply.
+> > >
+> > > Please send it as a stand-alone email with `git send-email`, hopefull=
+y
+> > > that works.
+> > >
+> > I have shared a stand-alone email with 'git send-email'.Kindly confirm
+> > at your earliest convenience. If any issues arise again, please permit
+> > me to share two separate patches, as we have modifications in two
+> > distinct files.
+> >
+>
+> Yes, this time email arrived into Patchworks, but you had pclose ->
+> close mistake, please fix, test, and resubmit.
+>
+I have submitted the patch in a separate email once more, following
+thorough testing.
 
-cppcheck output before this patch:
-tools/testing/selftests/bpf/benchs/bench_htab_mem.c:284:3: error: Resource leak: fd [resourceLeak]
-tools/testing/selftests/bpf/prog_tests/sk_assign.c:41:3: error: Resource leak: tc [resourceLeak]
-
-cppcheck output after this patch:
-No resource leaks found
-
-Fix the issue by closing the file descriptors fd and tc.
-
-Signed-off-by: Malaya Kumar Rout <malayarout91@gmail.com>
----
- tools/testing/selftests/bpf/benchs/bench_htab_mem.c | 3 +--
- tools/testing/selftests/bpf/prog_tests/sk_assign.c  | 4 +++-
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-index 926ee822143e..297e32390cd1 100644
---- a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-@@ -279,6 +279,7 @@ static void htab_mem_read_mem_cgrp_file(const char *name, unsigned long *value)
- 	}
- 
- 	got = read(fd, buf, sizeof(buf) - 1);
-+	close(fd);
- 	if (got <= 0) {
- 		*value = 0;
- 		return;
-@@ -286,8 +287,6 @@ static void htab_mem_read_mem_cgrp_file(const char *name, unsigned long *value)
- 	buf[got] = 0;
- 
- 	*value = strtoull(buf, NULL, 0);
--
--	close(fd);
- }
- 
- static void htab_mem_measure(struct bench_res *res)
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-index 0b9bd1d6f7cc..10a0ab954b8a 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-@@ -37,8 +37,10 @@ configure_stack(void)
- 	tc = popen("tc -V", "r");
- 	if (CHECK_FAIL(!tc))
- 		return false;
--	if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc)))
-+	if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc))) {
-+		pclose(tc);
- 		return false;
-+	}
- 	if (strstr(tc_version, ", libbpf "))
- 		prog = "test_sk_assign_libbpf.bpf.o";
- 	else
--- 
-2.43.0
-
+> > > >  tools/testing/selftests/bpf/benchs/bench_htab_mem.c | 3 +--
+> > > >  tools/testing/selftests/bpf/prog_tests/sk_assign.c  | 4 +++-
+> > > >  2 files changed, 4 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/=
+tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+> > > > index 926ee822143e..297e32390cd1 100644
+> > > > --- a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+> > > > +++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
+> > > > @@ -279,6 +279,7 @@ static void htab_mem_read_mem_cgrp_file(const c=
+har *name, unsigned long *value)
+> > > >         }
+> > > >
+> > > >         got =3D read(fd, buf, sizeof(buf) - 1);
+> > > > +       close(fd);
+> > > >         if (got <=3D 0) {
+> > > >                 *value =3D 0;
+> > > >                 return;
+> > > > @@ -286,8 +287,6 @@ static void htab_mem_read_mem_cgrp_file(const c=
+har *name, unsigned long *value)
+> > > >         buf[got] =3D 0;
+> > > >
+> > > >         *value =3D strtoull(buf, NULL, 0);
+> > > > -
+> > > > -       close(fd);
+> > > >  }
+> > > >
+> > > >  static void htab_mem_measure(struct bench_res *res)
+> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/t=
+ools/testing/selftests/bpf/prog_tests/sk_assign.c
+> > > > index 0b9bd1d6f7cc..10a0ab954b8a 100644
+> > > > --- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> > > > +++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> > > > @@ -37,8 +37,10 @@ configure_stack(void)
+> > > >         tc =3D popen("tc -V", "r");
+> > > >         if (CHECK_FAIL(!tc))
+> > > >                 return false;
+> > > > -       if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc)))
+> > > > +       if (CHECK_FAIL(!fgets(tc_version, sizeof(tc_version), tc)))=
+ {
+> > > > +               pclose(tc);
+> > > >                 return false;
+> > > > +       }
+> > > >         if (strstr(tc_version, ", libbpf "))
+> > > >                 prog =3D "test_sk_assign_libbpf.bpf.o";
+> > > >         else
+> > > > --
+> > > > 2.43.0
+> > > >
 
