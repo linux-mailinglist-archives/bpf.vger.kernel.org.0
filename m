@@ -1,318 +1,263 @@
-Return-Path: <bpf+bounces-56294-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56295-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67201A94C60
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 08:05:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A54F8A94E99
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 11:26:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F3751891FD3
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 06:05:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C80FB171003
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 09:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7B92586ED;
-	Mon, 21 Apr 2025 06:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BF9255E2F;
+	Mon, 21 Apr 2025 09:26:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="ikO6o66n"
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="VS2mJam0"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2072.outbound.protection.outlook.com [40.107.241.72])
+Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [131.188.11.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF77257AD1;
-	Mon, 21 Apr 2025 06:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.72
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745215530; cv=fail; b=Q6rcVusRYfCfn5OYM+UwjTMyNLsDHDHTtk2mO1OTWXCFTAKFuRyeO7ZuT1Bv70QS6DvdIm0UDl5adr2+NV5E1aKQUnaxaqyMbuo02vYCbD5lAire8SPa4FdF+O0chDVklLBHzCYCebL+Po/B0t1t2DUISclwGT1qx7p6KYvIqT8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745215530; c=relaxed/simple;
-	bh=nqDebAl0o0u4Qu7ax2a7wIc2briry/Usnmo4UiHVgbM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XPKqR9PA9umDlNkOpoA/QXIEEU8w7wAiFJsjY9yxdJk6O9ZdqA3WrVGr7NXrHk8x++qbtQ+Q4/CKrZ9heegk51Sa75f45r2w0TQWZWQS6CutDCEgtcuO3dXw6oRkBH/m745CCkvoWFlLznamAtYVj5yY8OhiCRlia8ykvBpzMpI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=ikO6o66n; arc=fail smtp.client-ip=40.107.241.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=TPFzBrgHF7+PmIAeWPRj6BJc6R5UidyskYhG4seveeYFR09Zo9FYP46hYv6jnbg7JnU1paAcvCiNrveb17dDgR9nds8yajqJ3vpJCJ9ZpKHwfU01CT3IErhN7q8gl/Z02HuMyN+UU9w83H5NUzoHPY+AAM7VehoDz+mt/Krhq5msd97kwpGStNhowp2SgS2n43yTtZAZl1Z4szTAIT+XfVVtT9T3fhW78jN+bz7eHWd0TcK9cbaOiTpCTFNUWTacYPQR/IRB2S5ziior19sQTydsbXm0nmcXRi+RklHSAm+tmEqt5Wtm46QDHyCN2za46HMeWBYu0dGu0nTcybeOgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s9+JII1Gxcdnor7JjYtsmO3QAahmGY4Dpx7nHQpFs74=;
- b=QnH3pZMLyinem7O0HZkQCw3YNElitjVj55uybsE9XHrZj4jBEXPqLOmch7BJnRwoqMt5jaQgDo/pzOvoJfUXWWw1Qh83NWAEl/8orRP8tCe2ORn4qTp2Rf8UyOUUTHvbV4NUw9pvu0PDG+SJGWp5zJ3ZHxO4ly2bM8ZFqlwAqwZEnT+6OK2GqxWY4bzodrrCWgFu28K/3qECKIs6uxEsIDWwxsLG0jCkJp07lReCDXx90DsC+3rz+5YfKMCGYtFr2gUkAY49YRUeaVlnb3+vXT5qx67IjEY1Hu5Q8bIeMu+W7uevQS+u1dpd+4Si3O7GuQgS5rk3REgwIftFGEg0iA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s9+JII1Gxcdnor7JjYtsmO3QAahmGY4Dpx7nHQpFs74=;
- b=ikO6o66nvfhwKd+ZP9NoyLdS/0xPklLwjLcd0JNntJvF4neuQ059KybDz5l5C8Z0UcEgptuhY+nXFRQvaUR1FUcjM5EG7GYFt+jDJ/1NRQ454pFJkjtFbjI2SlL9fqOkU9hSnYszDybYfRJ2tLn4ue0lUt4upQfxR6xg/7IjdEApUuBFKXuxURvn/AxhTeKMy8nc8DBqtJkM+IayXdBjaTl4BVTla0Hq1qPbC0Tz9fCdsWM7d7ou8MQqDkCXw6aG0etiwi51R0R3pA7yCbcwwwlMsa8pg2KWr4fljOniCz6ROZv0hPv5F7hXIIIvk6Ug/f1y9TjGITosQery1QUFBQ==
-Received: from PAXPR04MB8510.eurprd04.prod.outlook.com (2603:10a6:102:211::7)
- by AM9PR04MB7683.eurprd04.prod.outlook.com (2603:10a6:20b:2d7::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8655.33; Mon, 21 Apr
- 2025 06:05:23 +0000
-Received: from PAXPR04MB8510.eurprd04.prod.outlook.com
- ([fe80::a7c2:e2fa:8e04:40db]) by PAXPR04MB8510.eurprd04.prod.outlook.com
- ([fe80::a7c2:e2fa:8e04:40db%4]) with mapi id 15.20.8655.033; Mon, 21 Apr 2025
- 06:05:23 +0000
-From: Wei Fang <wei.fang@nxp.com>
-To: Vladimir Oltean <vladimir.oltean@nxp.com>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>
-CC: Claudiu Manoil <claudiu.manoil@nxp.com>, Clark Wang
-	<xiaoning.wang@nxp.com>, Vlatko Markovikj <vlatko.markovikj@etas.com>, Andrew
- Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
-	Toke Hoiland-Jorgensen <toke@redhat.com>, Alexander Lobakin
-	<aleksander.lobakin@intel.com>, "imx@lists.linux.dev" <imx@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH net 3/3] net: enetc: fix frame corruption on
- bpf_xdp_adjust_head/tail() and XDP_PASS
-Thread-Topic: [PATCH net 3/3] net: enetc: fix frame corruption on
- bpf_xdp_adjust_head/tail() and XDP_PASS
-Thread-Index: AQHbr5BYnVjPia7reEWdyDcAvBVpdbOtp2ow
-Date: Mon, 21 Apr 2025 06:05:22 +0000
-Message-ID:
- <PAXPR04MB85109A26C0636F3EF33174D188B82@PAXPR04MB8510.eurprd04.prod.outlook.com>
-References: <20250417120005.3288549-1-vladimir.oltean@nxp.com>
- <20250417120005.3288549-4-vladimir.oltean@nxp.com>
-In-Reply-To: <20250417120005.3288549-4-vladimir.oltean@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR04MB8510:EE_|AM9PR04MB7683:EE_
-x-ms-office365-filtering-correlation-id: abc04234-09a8-49da-bb1a-08dd809a80d3
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|376014|7416014|366016|1800799024|38070700018;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?J6cngWZDFEiUlsmCklJ3/qDMl7DEdHZCZWKumwPT02HY8Tbvw36iv1myUtBm?=
- =?us-ascii?Q?sjk/Wszw8iGpWcTSHE4aloPr2L/LGq6sMBK1AxPdl9zg5qnl8xVpJ4+WfTU3?=
- =?us-ascii?Q?t/b5iHr/5KMvjwRfFoaj8q0Sm/6uKoZaltwsuKloZTDtKLYpZjiONfoVZF38?=
- =?us-ascii?Q?4oAHJ7bcxcg7/sDPNeNjxfQOKsHA/plQfjNbjqtLsm5JyZQQBw7wWm2km19K?=
- =?us-ascii?Q?hu9fJMX5sflL0A3Ln60FYzyvLG0iq1xElFw5N+rM4OGx5HTC0Q/A0C63vh+l?=
- =?us-ascii?Q?3vLVRoYbBnFobBzbnxIM4BDHpcDB2oOnQCb0ggBaOkZmi1yg+BF7/B+sPudT?=
- =?us-ascii?Q?hNXya1h5Xgrl7JkzPeOoxUd0VLjmBSmfbDyhEHsol3ux8UaUUy9DpjSq3ae2?=
- =?us-ascii?Q?CdvB2mst3lRQdJxBaKxtMoHGHQkClN68yexW7LM5HGTmSbqxoOmZ5SqOq0mc?=
- =?us-ascii?Q?9OegtmPBLLY9YjSVEuZsCDpLaEMXbBv4WgqLcI5JAXX7i+iGJpNm+MFgtXH6?=
- =?us-ascii?Q?LZgsZso/Gu9mgSaQEyuZELvBeF95W/y/wkECkTbQLR9MyJZJdcf+SB6VB+89?=
- =?us-ascii?Q?Ga4uurrfMZIS8HjU8cg0KDKDZghT0DfdXzZ5noGwlZv9ySxVeC5P0Kt2H2Xn?=
- =?us-ascii?Q?mLDN2xJBJVVFxLJfwpN1VOAUIKsn6pQPXS0x4n3yP0Sgx1V5xuwCnOJ8GESF?=
- =?us-ascii?Q?q54nqL9CwNFn0HUKupPrh1iDiAD5yZPLJ5WUtir6zlnkk9DpKV5qvVr/fpCK?=
- =?us-ascii?Q?ftHFaFsrr49DMknvp2spy2HaIS6yfDHdZShTjR6V2qthP6aD1qxA6tGly2Sh?=
- =?us-ascii?Q?O6+J14A5TKFOg6r9pKhDfID92pu79TKtx7wsZeodbfO/98ty2K1x1/oX2iFP?=
- =?us-ascii?Q?zTySzHgocYkrAyBqRt69hfYe5eD6QBRP/KJhxxi5vdOxKeW1p5l+CrgHV6ve?=
- =?us-ascii?Q?GJXeCO9XhXU9dBR3NLR3kGXkdcHlXvzm9uCgCOsQlNjIFUg14Vpvt7SZVI14?=
- =?us-ascii?Q?qhETm97VyjwDhGOrQ/PqUiQAqsc7+I6rDTvZb+HfVCuzF3cdaiBaGp14Pcpq?=
- =?us-ascii?Q?RJox4MJArvdKz6gh8oUciQAozzyNpYBESiYQTtFHUec70ZCWcBzIrRvj9ENd?=
- =?us-ascii?Q?vMbiAl1+JdaS3kxd48WrmBFy32Og+YY3IK+AADFhg3lqx71uL0bxHRcmvIDU?=
- =?us-ascii?Q?gvp2ANW5Goan1U/oRctP7WMxXIxIq9ECuxYrDJYvhCZ9xsaH2muazcKFoc3M?=
- =?us-ascii?Q?m82t7F3n8uC9ihg9kmJe4y9KwGlcdFtEIeDtXGITn1khsXldWh/tFxc6jhEX?=
- =?us-ascii?Q?fgfMyMTyQq0z0lnYaI+qnyE2Q3jCZbbar3xefARzIqJEnMr/yK3hAh51Jxc4?=
- =?us-ascii?Q?YKC7t70N8/NHqbiNge/QDpKUsRE0vGnABUnkDgpvZ+gDskciL3AYxJdnXAp2?=
- =?us-ascii?Q?v25Qd5unDj8Evtcha/KKAMJ8Kfl+WztChojIhYsVqX0j5CstYH+xBQ=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB8510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?lZt1gXKNTmO/vn8z4MSutCH90V+ewtkBSEAXnmNOvI2Cg0s6Dl1/rlUzdCNY?=
- =?us-ascii?Q?73SylAWQgwUSRzshlFj4dDTK2Cp1UTfnkx4SlcLcUtlWXv5vnOFBNmqOwZgP?=
- =?us-ascii?Q?O1HCazl1DiX3R7KcD7jF6in6mmCTdo6Xl/6fJre+tagsqxDUdcle+tcswD8N?=
- =?us-ascii?Q?GzHwNo3SEN3r40P5F9g+UiXu86hkkgjTxtv0NZm1kgBeJCI1QMRR3xg4/onL?=
- =?us-ascii?Q?/EJp3AX8JIo3plPJ/+rlTuQb4CkaicNikK6pFdaU5E0JZz7nG25h+QywHto4?=
- =?us-ascii?Q?JevKA6KWf7JqafB5Q+zX16sS5L/JRD/dLBTx95aFwB0Ta4n+cs3XXLfbAMy3?=
- =?us-ascii?Q?roKGjitRajeLlm6WWHcnDZUaVlEIlD9feOR9254wrP9y2YcSjcsr40aBKOiu?=
- =?us-ascii?Q?HPM+MT1A7e8Et/1Zg+ZA6NFJk7GYnQeCh1+NO9OqB0oAzjfGjkLpU6owtgpQ?=
- =?us-ascii?Q?429P5D3dntwY76neVQoojaVcdqqVhinEYNAC/tWYBOtJlTK6qnxFGL+pO1j6?=
- =?us-ascii?Q?6pjg+BcbJRR7XdB8uNQNeSYCdt14q2l7O4A0Av15dXFOicWDau8L24TwO+Zw?=
- =?us-ascii?Q?s2ZjN9zOh1PGM2xe1+0UlojuDECCqVP0Fs44n3SrwMPu4rT93iWflG3k7gwF?=
- =?us-ascii?Q?gXMAqTXrXQyQvIoxmKt+HoD2u1Fjf5ArLjEL/Mc1ghcgCS7SLNPKIkHa+wB4?=
- =?us-ascii?Q?9ZkNlVegNsXEqKQWV1/TpvzEoYsTfH4svh7HNm/oZ6bVTQnUXjfdxcioFvlY?=
- =?us-ascii?Q?jU+Rle7EfEMNrVjLnykMdUyxr7FWLkPqOBb6150wFeXy3QXLmbJLvU9NAiD/?=
- =?us-ascii?Q?KV8t5r15GlnbPwgO6hfAkPPLtSik2XTMaYxKmMbwxyfNxtwIXuyHhy98MqFu?=
- =?us-ascii?Q?qdTWRZjg/MHNlnY2Fc5eEzi2J1KmqQF9ATe6nRQ9SM1JuZUE3oPhkOkJ7jNE?=
- =?us-ascii?Q?iS1Z+iIpsOLP2cA2PSNNvs73p6wf+h2v17ImGgH+xes8sYmiii+IYI17jCLw?=
- =?us-ascii?Q?KSC5ckakYwIPpT7iuusxigrYZV+DHgEhtBSJfr8Q2ST3CBaAzOeYXcW9E/UU?=
- =?us-ascii?Q?FWJRHJySTWMyuxvGKryFOqRBJtKthnbJ9h8enkakCft1LW5JK7yGOz+wAmbY?=
- =?us-ascii?Q?sQcToS2jlBNWoGlRGV90CXS4gCFB/u3+HCC9Mleymq+MGIarT2pY43OmOwZB?=
- =?us-ascii?Q?6r0wYI/4hOkGGtnqZEUa1z2omIXy+XRP2MZUa8Ce8mFKvRcJSafDo7ohGZV6?=
- =?us-ascii?Q?DfiPrr/eE4vfVwxZh45yZ2yWXpVxZqh68Cd2Oa/KbolP2fK7dczYXvz3pk/J?=
- =?us-ascii?Q?QhNBFdIeJB9XwDED/QdztCl5Fcjkc4IhBrgNPNwCiCESr6jlu6GEpc7H33vr?=
- =?us-ascii?Q?nS/u4JfMkDB5eCo60aPRbiusTstIPMQRNB7eFxuIBZtpFxWyej9UQGoPN9Z6?=
- =?us-ascii?Q?Uinb1S0LtS9tYb3/qhzOH4sQwP8CtlBnET2Z/YyrFPonzhjS0LCxCYM7snQ9?=
- =?us-ascii?Q?Gl/+4IthKeE2qVPITSQuIsz5Y87HMVR1uunUjeRRhGRvfFn3sk+JaOlFnFW3?=
- =?us-ascii?Q?KElPwHdop4RG3ZxSa8E=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F9C729D0E;
+	Mon, 21 Apr 2025 09:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.21
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745227568; cv=none; b=cKV7I5jlHKSkn7rw7HnblBcFF0ent3eGfj7ShEbNAnHu7CVe4HZSP+Gowp5onYO98qqjYxNsK4nDGSKxfeEys5V02d3H19Uzsm6a1SBNMB1FDZSy8xSfL0kdKJghG+4k11HA7jPO3ArJ8tGOKiyQxHhp8hcAj4li3SuCpM7AR+c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745227568; c=relaxed/simple;
+	bh=611jvmCQHlCUPz7EoOHM9aKgOp5uDflVzySqqLlbM7Q=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=u7/LFvjvP7c9CD++ksI2x2RdNNEffKm7F55xwoJlVoh23RTHPyz2euAMUuSxK1Gcs7qlP7+NKkzpItLXSYTw84/tZhDJQwVpMplC85yXOMyOFbHUer2XwGf8PWTNlIXk89fEJg89j1/hUStjNM1t/KUA8vg3QnmsI734SrSFhRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=VS2mJam0; arc=none smtp.client-ip=131.188.11.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1745227143; bh=H5mNs6wkUPpShHBjzWqPXg/CTZR+zhRcGli4jivScJg=;
+	h=From:To:Subject:Date:From:To:CC:Subject;
+	b=VS2mJam05lKtIllOSjFVKaKP3ybdRpz+6G2EQfijWxh8uPX27Pg7Lx9ratrCwrlas
+	 steviKZ5DXLYqbPR3hOyePjB6tGiMts/1oWt1cEuVuFHR2s6uC5hB5VCXZza86NeBz
+	 D+yEP9Aosf1auu2MNbYXJnTZx3+YZ5njcCN+Bk+xi8/LJXvpbL4Mo/B4QJSWC3NHtx
+	 5itFD5LxgDpELHbMkx2y9p5PjpaVc7rL4Db/rWWckdY0vXwXwR7oD7AVwCLUKgE1LC
+	 LTrqJFt4XxomA8Yc2kho4jXBDAPD34K6rJbMvF1nzm9sFKpeNtTmexJtzPr7YoAv+S
+	 bncuuSArgCbCA==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Zh0DR30XlzPkPh;
+	Mon, 21 Apr 2025 11:19:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:9e8:3600:7e00:5b67:6b9c:caeb:75c
+Received: from luis-tp.fritz.box (unknown [IPv6:2001:9e8:3600:7e00:5b67:6b9c:caeb:75c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX18vbVa5xbc3cNKXhg/8u1S1T3dJ1m45p/M=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Zh0DM2r9jzPk5q;
+	Mon, 21 Apr 2025 11:18:59 +0200 (CEST)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Hari Bathini <hbathini@linux.ibm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Luis Gerhorst <luis.gerhorst@fau.de>,
+	Henriette Herzog <henriette.herzog@rub.de>,
+	Saket Kumar Bhaskar <skb99@linux.ibm.com>,
+	Cupertino Miranda <cupertino.miranda@oracle.com>,
+	Jiayuan Chen <mrpre@163.com>,
+	Matan Shachnai <m.shachnai@gmail.com>,
+	Dimitar Kanaliev <dimitar.kanaliev@siteground.com>,
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+	Daniel Xu <dxu@dxuuu.xyz>,
+	bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v2 00/11] bpf: Mitigate Spectre v1 using barriers
+Date: Mon, 21 Apr 2025 11:17:51 +0200
+Message-ID: <20250421091802.3234859-1-luis.gerhorst@fau.de>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB8510.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: abc04234-09a8-49da-bb1a-08dd809a80d3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Apr 2025 06:05:23.0560
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WTsuq62Ux5mE2tUQkE09Zm1nin4qp16LeITt/6V+67Ipw7CmmLCVU+3Ii1h57pkQfO6Z9MJGj+j/BWXfiIFfjQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB7683
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> Vlatko Markovikj reported that XDP programs attached to ENETC do not
-> work well if they use bpf_xdp_adjust_head() or bpf_xdp_adjust_tail(),
-> combined with the XDP_PASS verdict. A typical use case is to add or
-> remove a VLAN tag.
->=20
-> The resulting sk_buff passed to the stack is corrupted, because the
-> algorithm used by the driver for XDP_PASS is to unwind the current
-> buffer pointer in the RX ring and to re-process the current frame with
-> enetc_build_skb() as if XDP hadn't run. That is incorrect because XDP
-> may have modified the geometry of the buffer, which we then are
-> completely unaware of. We are looking at a modified buffer with the
-> original geometry.
->=20
-> The initial reaction, both from me and from Vlatko, was to shop around
-> the kernel for code to steal that would calculate a delta between the
-> old and the new XDP buffer geometry, and apply that to the sk_buff too.
-> We noticed that veth and generic xdp have such code.
->=20
-> The headroom adjustment is pretty uncontroversial, but what turned out
-> severely problematic is the tailroom.
->=20
-> veth has this snippet:
->=20
-> 		__skb_put(skb, off); /* positive on grow, negative on shrink */
->=20
-> which on first sight looks decent enough, except __skb_put() takes an
-> "unsigned int" for the second argument, and the arithmetic seems to only
-> work correctly by coincidence. Second issue, __skb_put() contains a
-> SKB_LINEAR_ASSERT(). It's not a great pattern to make more widespread.
-> The skb may still be nonlinear at that point - it only becomes linear
-> later when resetting skb->data_len to zero.
->=20
-> To avoid the above, bpf_prog_run_generic_xdp() does this instead:
->=20
-> 		skb_set_tail_pointer(skb, xdp->data_end - xdp->data);
-> 		skb->len +=3D off; /* positive on grow, negative on shrink */
->=20
-> which is more open-coded, uses lower-level functions and is in general a
-> bit too much to spread around in driver code.
->=20
-> Then there is the snippet:
->=20
-> 	if (xdp_buff_has_frags(xdp))
-> 		skb->data_len =3D skb_shinfo(skb)->xdp_frags_size;
-> 	else
-> 		skb->data_len =3D 0;
->=20
-> One would have expected __pskb_trim() to be the function of choice for
-> this task. But it's not used in veth/xdpgeneric because the extraneous
-> fragments were _already_ freed by bpf_xdp_adjust_tail() ->
-> bpf_xdp_frags_shrink_tail() -> ... -> __xdp_return() - the backing
-> memory for the skb frags and the xdp frags is the same, but they don't
-> keep individual references.
->=20
-> In fact, that is the biggest reason why this snippet cannot be reused
-> as-is, because ENETC temporarily constructs an skb with the original len
-> and the original number of frags. Because the extraneous frags are
-> already freed by bpf_xdp_adjust_tail() and returned to the page
-> allocator, it means the entire approach of using enetc_build_skb() is
-> questionable for XDP_PASS. To avoid that, one would need to elevate the
-> page refcount of all frags before calling bpf_prog_run_xdp() and drop it
-> after XDP_PASS.
->=20
-> There are other things that are missing in ENETC's handling of XDP_PASS,
-> like for example updating skb_shinfo(skb)->meta_len.
->=20
-> These are all handled correctly and cleanly in commit 539c1fba1ac7
-> ("xdp: add generic xdp_build_skb_from_buff()"), added to net-next in
-> Dec 2024, and in addition might even be quicker that way. I have a very
-> strong preference towards backporting that commit for "stable", and that
-> is what is used to fix the handling bugs. It is way too messy to go
-> this deep into the guts of an sk_buff from the code of a device driver.
->=20
-> Fixes: d1b15102dd16 ("net: enetc: add support for XDP_DROP and XDP_PASS")
-> Reported-by: Vlatko Markovikj <vlatko.markovikj@etas.com>
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
->  drivers/net/ethernet/freescale/enetc/enetc.c | 26 +++++++++++---------
->  1 file changed, 15 insertions(+), 11 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c
-> b/drivers/net/ethernet/freescale/enetc/enetc.c
-> index 74721995cb1f..3ee52f4b1166 100644
-> --- a/drivers/net/ethernet/freescale/enetc/enetc.c
-> +++ b/drivers/net/ethernet/freescale/enetc/enetc.c
-> @@ -1878,11 +1878,10 @@ static int enetc_clean_rx_ring_xdp(struct enetc_b=
-dr
-> *rx_ring,
->=20
->  	while (likely(rx_frm_cnt < work_limit)) {
->  		union enetc_rx_bd *rxbd, *orig_rxbd;
-> -		int orig_i, orig_cleaned_cnt;
->  		struct xdp_buff xdp_buff;
->  		struct sk_buff *skb;
-> +		int orig_i, err;
->  		u32 bd_status;
-> -		int err;
->=20
->  		rxbd =3D enetc_rxbd(rx_ring, i);
->  		bd_status =3D le32_to_cpu(rxbd->r.lstatus);
-> @@ -1897,7 +1896,6 @@ static int enetc_clean_rx_ring_xdp(struct enetc_bdr
-> *rx_ring,
->  			break;
->=20
->  		orig_rxbd =3D rxbd;
-> -		orig_cleaned_cnt =3D cleaned_cnt;
->  		orig_i =3D i;
->=20
->  		enetc_build_xdp_buff(rx_ring, bd_status, &rxbd, &i,
-> @@ -1925,15 +1923,21 @@ static int enetc_clean_rx_ring_xdp(struct enetc_b=
-dr
-> *rx_ring,
->  			rx_ring->stats.xdp_drops++;
->  			break;
->  		case XDP_PASS:
-> -			rxbd =3D orig_rxbd;
-> -			cleaned_cnt =3D orig_cleaned_cnt;
-> -			i =3D orig_i;
-> -
-> -			skb =3D enetc_build_skb(rx_ring, bd_status, &rxbd,
-> -					      &i, &cleaned_cnt,
-> -					      ENETC_RXB_DMA_SIZE_XDP);
-> -			if (unlikely(!skb))
-> +			skb =3D xdp_build_skb_from_buff(&xdp_buff);
-> +			/* Probably under memory pressure, stop NAPI */
-> +			if (unlikely(!skb)) {
-> +				enetc_xdp_drop(rx_ring, orig_i, i);
-> +				rx_ring->stats.xdp_drops++;
->  				goto out;
-> +			}
-> +
-> +			enetc_get_offloads(rx_ring, orig_rxbd, skb);
-> +
-> +			/* These buffers are about to be owned by the stack.
-> +			 * Update our buffer cache (the rx_swbd array elements)
-> +			 * with their other page halves.
-> +			 */
-> +			enetc_bulk_flip_buff(rx_ring, orig_i, i);
->=20
->  			napi_gro_receive(napi, skb);
->  			break;
-> --
-> 2.34.1
+This improves the expressiveness of unprivileged BPF by inserting
+speculation barriers instead of rejecting the programs.
 
-Reviewed-by: Wei Fang <wei.fang@nxp.com>
+The approach was previously presented at LPC'24 [1] and RAID'24 [2].
+
+To mitigate the Spectre v1 (PHT) vulnerability, the kernel rejects
+potentially-dangerous unprivileged BPF programs as of
+commit 9183671af6db ("bpf: Fix leakage under speculation on mispredicted
+branches"). In [2], we have analyzed 364 object files from open source
+projects (Linux Samples and Selftests, BCC, Loxilb, Cilium, libbpf
+Examples, Parca, and Prevail) and found that this affects 31% to 54% of
+programs.
+
+To resolve this in the majority of cases this patchset adds a fall-back
+for mitigating Spectre v1 using speculation barriers. The kernel still
+optimistically attempts to verify all speculative paths but uses
+speculation barriers against v1 when unsafe behavior is detected. This
+allows for more programs to be accepted without disabling the BPF
+Spectre mitigations (e.g., by setting cpu_mitigations_off()).
+
+For this, it relies on the fact that speculation barriers prevent all
+later instructions if the speculation was not correct:
+
+* On x86_64, lfence acts as full speculation barrier, not only as a
+  load fence [3]:
+
+	  An LFENCE instruction or a serializing instruction will ensure that
+	  no later instructions execute, even speculatively, until all prior
+	  instructions complete locally. [...] Inserting an LFENCE instruction
+	  after a bounds check prevents later operations from executing before
+	  the bound check completes.
+
+  This was experimentally confirmed in [4].
+
+* ARM's SB speculation barrier instruction also affects "any instruction
+  that appears later in the program order than the barrier" [5].
+
+In [1] we have measured the overhead of this approach relative to having
+mitigations off and including the upstream Spectre v4 mitigations. For
+event tracing and stack-sampling profilers, we found that mitigations
+increase BPF program execution time by 0% to 62%. For the Loxilb network
+load balancer, we have measured a 14% slowdown in SCTP performance but
+no significant slowdown for TCP. This overhead only applies to programs
+that were previously rejected.
+
+I reran the expressiveness-evaluation with v6.14 and made sure the main
+results still match those from [1] and [2] (which used v6.5).
+
+Main design decisions are:
+
+* Do not use separate bytecode insns for v1 and v4 barriers. This
+  simplifies the verifier significantly and has the only downside that
+  performance on PowerPC is not as high as it could be.
+
+* Allow archs to still disable v1/v4 mitigations separately by setting
+  bpf_jit_bypass_spec_v1/v4(). This has the benefit that archs can
+  benefit from improved BPF expressiveness / performance if they are not
+  vulnerable (e.g., ARM64 for v4 in the kernel).
+
+* Do not remove the empty BPF_NOSPEC implementation for backends for
+  which it is unknown whether they are vulnerable to Spectre v1.
+
+[1] https://lpc.events/event/18/contributions/1954/ ("Mitigating
+    Spectre-PHT using Speculation Barriers in Linux eBPF")
+[2] https://arxiv.org/pdf/2405.00078 ("VeriFence: Lightweight and
+    Precise Spectre Defenses for Untrusted Linux Kernel Extensions")
+[3] https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/technical-documentation/runtime-speculative-side-channel-mitigations.html
+    ("Managed Runtime Speculative Execution Side Channel Mitigations")
+[4] https://dl.acm.org/doi/pdf/10.1145/3359789.3359837 ("Speculator: a
+    tool to analyze speculative execution attacks and mitigations" -
+    Section 4.6 "Stopping Speculative Execution")
+[5] https://developer.arm.com/documentation/ddi0597/2020-12/Base-Instructions/SB--Speculation-Barrier-
+    ("SB - Speculation Barrier - Arm Armv8-A A32/T32 Instruction Set Architecture (2020-12)")
+
+Changes:
+
+* v1 -> v2:
+  - Drop former commits 9 ("bpf: Return PTR_ERR from push_stack()") and 11
+    ("bpf: Fall back to nospec for spec path verification") as suggested
+    by Alexei. This series therefore no longer changes push_stack() to
+    return PTR_ERR.
+  - Add detailed explanation of how lfence works internally and how it
+    affects the algorithm.
+  - Add tests checking that nospec instructions are inserted in expected
+    locations using __xlated_unpriv as suggested by Eduard (also,
+    include a fix for __xlated_unpriv)
+  - Add a test for the mitigations from the description of
+    commit 9183671af6db ("bpf: Fix leakage under speculation on
+    mispredicted branches")
+  - Remove unused variables from do_check[_insn]() as suggested by
+    Eduard.
+  - Remove INSN_IDX_MODIFIED to improve readability as suggested by
+    Eduard. This also causes the nospec_result-check to run (and fail)
+    for jumping-ops. Add a warning to assert that this check must never
+    succeed in that case.
+  - Add details on the safety of patch 10 ("bpf: Allow nospec-protected
+    var-offset stack access") based on the feedback on v1.
+  - Rebase to bpf-next-250420
+  - Link to v1: https://lore.kernel.org/all/20250313172127.1098195-1-luis.gerhorst@fau.de/
+
+* RFC -> v1:
+  - rebase to bpf-next-250313
+  - tests: mark expected successes/new errors
+  - add bpt_jit_bypass_spec_v1/v4() to avoid #ifdef in
+    bpf_bypass_spec_v1/v4()
+  - ensure that nospec with v1-support is implemented for archs for
+    which GCC supports speculation barriers, except for MIPS
+  - arm64: emit speculation barrier
+  - powerpc: change nospec to include v1 barrier
+  - discuss potential security (archs that do not impl. BPF nospec) and
+    performance (only PowerPC) regressions
+  - Linkt to RFC: https://lore.kernel.org/bpf/20250224203619.594724-1-luis.gerhorst@fau.de/
+
+Luis Gerhorst (11):
+  selftests/bpf: Fix caps for __xlated/jited_unpriv
+  bpf: Move insn if/else into do_check_insn()
+  bpf: Return -EFAULT on misconfigurations
+  bpf: Return -EFAULT on internal errors
+  bpf, arm64, powerpc: Add bpf_jit_bypass_spec_v1/v4()
+  bpf, arm64, powerpc: Change nospec to include v1 barrier
+  bpf: Rename sanitize_stack_spill to nospec_result
+  bpf: Fall back to nospec for Spectre v1
+  selftests/bpf: Add test for Spectre v1 mitigation
+  bpf: Allow nospec-protected var-offset stack access
+  bpf: Fall back to nospec for sanitization-failures
+
+ arch/arm64/net/bpf_jit.h                      |   5 +
+ arch/arm64/net/bpf_jit_comp.c                 |  28 +-
+ arch/powerpc/net/bpf_jit_comp64.c             |  79 ++-
+ include/linux/bpf.h                           |  11 +-
+ include/linux/bpf_verifier.h                  |   3 +-
+ include/linux/filter.h                        |   2 +-
+ kernel/bpf/core.c                             |  32 +-
+ kernel/bpf/verifier.c                         | 648 ++++++++++--------
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   4 +
+ .../selftests/bpf/progs/verifier_and.c        |   8 +-
+ .../selftests/bpf/progs/verifier_bounds.c     |  66 +-
+ .../bpf/progs/verifier_bounds_deduction.c     |  45 +-
+ .../selftests/bpf/progs/verifier_map_ptr.c    |  20 +-
+ .../selftests/bpf/progs/verifier_movsx.c      |  16 +-
+ .../selftests/bpf/progs/verifier_unpriv.c     |  65 +-
+ .../bpf/progs/verifier_value_ptr_arith.c      | 101 ++-
+ tools/testing/selftests/bpf/test_loader.c     |  14 +-
+ .../selftests/bpf/verifier/dead_code.c        |   3 +-
+ tools/testing/selftests/bpf/verifier/jmp32.c  |  33 +-
+ tools/testing/selftests/bpf/verifier/jset.c   |  10 +-
+ 20 files changed, 765 insertions(+), 428 deletions(-)
+
+
+base-commit: 8582d9ab3efdebb88e0cd8beed8e0b9de76443e7
+-- 
+2.49.0
 
 
