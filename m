@@ -1,210 +1,249 @@
-Return-Path: <bpf+bounces-56328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8FC1A9576D
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 22:40:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AB4DA95828
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 23:44:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 818361895F7F
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 20:41:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 081173B269F
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 21:44:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D0531F0E3A;
-	Mon, 21 Apr 2025 20:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DDC1D63D3;
+	Mon, 21 Apr 2025 21:44:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dausynZJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LkKFs5yn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36AC313FEE
-	for <bpf@vger.kernel.org>; Mon, 21 Apr 2025 20:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E9A2F2E;
+	Mon, 21 Apr 2025 21:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745268049; cv=none; b=E4OHsWtuDcKSBE24XFVJ4OYXGF1L49hAPvITnjmtlmDaBepmU7iRpoOni11NLNcYmtqdDBg03VfUWQ+lf3VvIhX/Lb75lM1AWIrOY5qAs673P3jNWj4TMF9JCmh9zH9OLENQmwKnMAv+wpzH9hsCEqwCMDhJJH476vR6PCQMacU=
+	t=1745271871; cv=none; b=KTLVqZ/rqjlzxDMf0QtBMEfoTigW2qlcJLpJuDyaqI9xFW8O/3wbe37pLtOwMVHUlFPqapGkPvLMAK/8za38lMLnyqzCFKKKgRjc6Jw2MUPt2j0rGKPlxwbRqYjOvBrcMMWsB9EKAMPGXG8lUj4EI21H7McBN9lx9R1YZYDBt28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745268049; c=relaxed/simple;
-	bh=HPo1U1bOEBIqpKO3dXYxoCWodJ4tVhT3FiOemlOnrz8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KQrvb+6wpMSL2OcLHZcvd6nPm4bSn7nAUDmRVv2G2LJfJfQLIJXqGC3cDqaRX2bpRB27SrtZxNxN80Kt+PlLqCr1QQDc8nhWpRO5Vxqt7mgQeP81ABHfglmt2hjtv+oqMFcDYkk/M+Ye6ezFheb1T12/6Y6LWsf6c20T2zqLASs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dausynZJ; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-43ef83a6bfaso173695e9.1
-        for <bpf@vger.kernel.org>; Mon, 21 Apr 2025 13:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1745268045; x=1745872845; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/hk3KoCQ3cfNcS9T6WIJOvBbJ6pbk94kV2LEPNPjexo=;
-        b=dausynZJgBKI3+nPgYAJpN6vp/vHVH+hAWPpkz+ODVCKFsD1Uva0khcagArMClc/lV
-         WlN6CIN7RN5nSSh2iylmURg5eM/MnA3XgSCRhjhR8OZNuNoxHs7hju2LRPnpg82UZWkw
-         fu1SDBfrfyahOOVRVPtWAyYQKHiQAO2ZPr5ZFAr6w88sQ3Y5G2X1CWDmPNXSUL+d4hjl
-         TPTHKA2+Bl84yr42rVA/EWN12RdDDuWDiMMrDSZy6JmUsaGC4UyOMs9c94iWsFWs3TPe
-         qoGr/N//G07ss4JtKTwTlhxpwtdpcD3hDvT2Tca0eysPu1qarLrgjvjREASwIYOTh82Q
-         WFIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745268045; x=1745872845;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/hk3KoCQ3cfNcS9T6WIJOvBbJ6pbk94kV2LEPNPjexo=;
-        b=uHMqpynWeOlg+Sds3HM7YcVuoE9Eo2C37ZzYjU1nnWLWHsL7bFS28MMleW6iUA5jxW
-         c0RQ4qsslsbJSnXuT1KcrNrYdqHtV5XPjqIN5CUZ+P8NQW13rNqBPX4mePe1R37disYL
-         ptFmTOvOYxzjBgSnLjVUpRWHaImXv4yHmLq3hPSJHXOHh/GULMi2ZE477j2i8F+H7q4K
-         xaLgC1koZO53TOx5iDm/q64jAqH1C7j7E3iSZ8roSqTRw/0Skfj4HGIsvA6/BwtBl5NC
-         1TmJTwXsFA7ykqprAMl5SdAy22p1lBckdWs69wQV4yiObKlUqqg9oQ3s0jcFSwyKjQ5A
-         BuuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVmKpF8LzL+djyo90JVr34DmSqgnNjcOsCAOwX+k5QWktU/+2dv1arbo1kF67bXA12OCEQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyXrvVY0NsqQr3ThUnSyuymphfKVozz7d5ii9kz16UZoIiLR9oL
-	eyAt2FFta5sqLaVKeg/EKCTMaYyViihlvPjyjg7O/618fBTn7ReUxI0zpwzVJ1VlWnOs1S/+gkS
-	nEV9tJlZx0R3do9zTtSkgSitdxL+gUtmfKc28
-X-Gm-Gg: ASbGncsKtJMPxMgOTwyrf8jNeCSrAnwIwlTx3v6k/aUrk8A/+RY4m2KtG3W/+OsL76i
-	S/qq4pCnnkxCtAqlN8nk9sI8DcbBvxBplMG22Wn1RGxtwyEIU6CiwDXwEgqcQ3Au5nn8SHeKs3l
-	PFtpD5eYhN0ZXEDpQD1H6JUtqVDi2qaJJ0
-X-Google-Smtp-Source: AGHT+IGWcp45aLSZt8FM85c+hC9w5ExOa3HAud/x2yrnqew4c284QGEuar9sexOtbZfwcaDamqAvguiKQzmIHXztEi0=
-X-Received: by 2002:a05:600c:4e47:b0:43d:169e:4d75 with SMTP id
- 5b1f17b1804b1-4406b5e061dmr4739435e9.1.1745268045300; Mon, 21 Apr 2025
- 13:40:45 -0700 (PDT)
+	s=arc-20240116; t=1745271871; c=relaxed/simple;
+	bh=OhIDORsvF4Hd87+Ah7pIJiQUPLISHeUuZgSde1xTbwM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TI8XPAYNLnBFfWEaLSLxktobXKHiGYJypgCOIhu7s4wQW+8R8gi19t6zDbuoAwvhNfqUGiaHWF3CPib1iu0aXGOCdrQjxGpQjwKm8bqvE9fNPSivHzcnLMdGAKtSqJX3bo5rmT1QJl7nz4/gheyGeKbCBlAqpIrxnps+jfMer08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LkKFs5yn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6539C4CEE4;
+	Mon, 21 Apr 2025 21:44:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745271870;
+	bh=OhIDORsvF4Hd87+Ah7pIJiQUPLISHeUuZgSde1xTbwM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=LkKFs5ynlE8yCGGN0kzcBR8nuhqXpD4M55nQ+NV4wK+Ky0r02a+F6PIJEvEIfaEa0
+	 OdeHVyB6zrmo/KDfuUhAJZw3eFrh0z+hVROTxsUoEn6ebp5siUTvnfjJ/mKt25yh8+
+	 yOEi/8LXpVz7JB2uijZ3fH8QN3TgaQprEAjmyG2Qko+B4drbp5aJMjeKtqX2xAQ9SM
+	 vWA8glkqR3gZ+iHdrLAXpcj9+pVAWx90xEPyDFu7iCz0FyJJ5iFXO+ZiK4levA19kx
+	 2rT6FMXT2RFOzUMku8Ge1AJzwdhSkjLz47q3diG626XXHfmPNDNTP2css6ZwETJ4qu
+	 W3sqLaNE6s3sw==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: Alejandro Colomar <alx@kernel.org>,
+	Eyal Birger <eyal.birger@gmail.com>,
+	kees@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	x86@kernel.org,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	David Laight <David.Laight@ACULAB.COM>,
+	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
+	Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH perf/core 00/22] uprobes: Add support to optimize usdt probes on x86_64
+Date: Mon, 21 Apr 2025 23:44:00 +0200
+Message-ID: <20250421214423.393661-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250414225227.3642618-1-tjmercier@google.com>
- <20250414225227.3642618-3-tjmercier@google.com> <CAPhsuW54g5YCmLVX=cc3m2nfQTZrMH+6ZMBgouEMMfqcccOtww@mail.gmail.com>
-In-Reply-To: <CAPhsuW54g5YCmLVX=cc3m2nfQTZrMH+6ZMBgouEMMfqcccOtww@mail.gmail.com>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Mon, 21 Apr 2025 13:40:32 -0700
-X-Gm-Features: ATxdqUHzaEdOwMz7Tlm_8h9gjvDy0ZSo4bia9-RfsuFhcpdkvxrkrY5bpFAEPyo
-Message-ID: <CABdmKX1OqLLsY5+LSMU-c=DDUxTFaivNcyXG3ntD8D0ty1Pwig@mail.gmail.com>
-Subject: Re: [PATCH 2/4] bpf: Add dmabuf iterator
-To: Song Liu <song@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, skhan@linuxfoundation.org, linux-kernel@vger.kernel.org, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linaro-mm-sig@lists.linaro.org, linux-doc@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, android-mm@google.com, 
-	simona@ffwll.ch, corbet@lwn.net, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, 
-	jolsa@kernel.org, mykolal@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 21, 2025 at 10:58=E2=80=AFAM Song Liu <song@kernel.org> wrote:
->
-> On Mon, Apr 14, 2025 at 3:53=E2=80=AFPM T.J. Mercier <tjmercier@google.co=
-m> wrote:
-> >
-> > The dmabuf iterator traverses the list of all DMA buffers. The list is
-> > maintained only when CONFIG_DEBUG_FS is enabled.
-> >
-> > DMA buffers are refcounted through their associated struct file. A
-> > reference is taken on each buffer as the list is iterated to ensure eac=
-h
-> > buffer persists for the duration of the bpf program execution without
-> > holding the list mutex.
-> >
-> > Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> > ---
-> >  include/linux/btf_ids.h  |   1 +
-> >  kernel/bpf/Makefile      |   3 +
-> >  kernel/bpf/dmabuf_iter.c | 130 +++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 134 insertions(+)
-> >  create mode 100644 kernel/bpf/dmabuf_iter.c
-> >
-> > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> > index 139bdececdcf..899ead57d89d 100644
-> > --- a/include/linux/btf_ids.h
-> > +++ b/include/linux/btf_ids.h
-> > @@ -284,5 +284,6 @@ extern u32 bpf_cgroup_btf_id[];
-> >  extern u32 bpf_local_storage_map_btf_id[];
-> >  extern u32 btf_bpf_map_id[];
-> >  extern u32 bpf_kmem_cache_btf_id[];
-> > +extern u32 bpf_dmabuf_btf_id[];
->
-> This is not necessary. See below.
->
-> >
-> >  #endif
-> > diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> > index 70502f038b92..5b30d37ef055 100644
-> > --- a/kernel/bpf/Makefile
-> > +++ b/kernel/bpf/Makefile
-> > @@ -53,6 +53,9 @@ obj-$(CONFIG_BPF_SYSCALL) +=3D relo_core.o
-> >  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_iter.o
-> >  obj-$(CONFIG_BPF_SYSCALL) +=3D btf_relocate.o
-> >  obj-$(CONFIG_BPF_SYSCALL) +=3D kmem_cache_iter.o
-> > +ifeq ($(CONFIG_DEBUG_FS),y)
-> > +obj-$(CONFIG_BPF_SYSCALL) +=3D dmabuf_iter.o
-> > +endif
-> >
-> >  CFLAGS_REMOVE_percpu_freelist.o =3D $(CC_FLAGS_FTRACE)
-> >  CFLAGS_REMOVE_bpf_lru_list.o =3D $(CC_FLAGS_FTRACE)
-> > diff --git a/kernel/bpf/dmabuf_iter.c b/kernel/bpf/dmabuf_iter.c
-> > new file mode 100644
-> > index 000000000000..b4b8be1d6aa4
-> > --- /dev/null
-> > +++ b/kernel/bpf/dmabuf_iter.c
->
-> Maybe we should add this file to drivers/dma-buf. I would like to
-> hear other folks thoughts on this.
+hi,
+this patchset adds support to optimize usdt probes on top of 5-byte
+nop instruction.
 
-This is fine with me, and would save us the extra
-CONFIG_DMA_SHARED_BUFFER check that's currently needed in
-kernel/bpf/Makefile but would require checking CONFIG_BPF instead.
-Sumit / Christian any objections to moving the dmabuf bpf iterator
-implementation into drivers/dma-buf?
+The generic approach (optimize all uprobes) is hard due to emulating
+possible multiple original instructions and its related issues. The
+usdt case, which stores 5-byte nop seems much easier, so starting
+with that.
 
-> > @@ -0,0 +1,130 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/* Copyright (c) 2025 Google LLC */
-> > +#include <linux/bpf.h>
-> > +#include <linux/btf_ids.h>
-> > +#include <linux/dma-buf.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/seq_file.h>
-> > +
-> > +BTF_ID_LIST_GLOBAL_SINGLE(bpf_dmabuf_btf_id, struct, dma_buf)
->
-> Use BTF_ID_LIST_SINGLE(), then we don't need this in btf_ids.h
->
-> > +DEFINE_BPF_ITER_FUNC(dmabuf, struct bpf_iter_meta *meta, struct dma_bu=
-f *dmabuf)
-> > +
-> > +static void *dmabuf_iter_seq_start(struct seq_file *seq, loff_t *pos)
-> > +{
-> > +       struct dma_buf *dmabuf, *ret =3D NULL;
-> > +
-> > +       if (*pos) {
-> > +               *pos =3D 0;
-> > +               return NULL;
-> > +       }
-> > +       /* Look for the first buffer we can obtain a reference to.
-> > +        * The list mutex does not protect a dmabuf's refcount, so it c=
-an be
-> > +        * zeroed while we are iterating. Therefore we cannot call get_=
-dma_buf()
-> > +        * since the caller of this program may not already own a refer=
-ence to
-> > +        * the buffer.
-> > +        */
->
-> We should use kernel comment style for new code. IOW,
-> /*
->  * Look for ...
->  */
->
->
-> Thanks,
-> Song
+The basic idea is to replace breakpoint exception with syscall which
+is faster on x86_64. For more details please see changelog of patch 8.
 
-Thanks, I have incorporated all of your comments and retested. I will
-give some time for more feedback before sending a v2.
->
-> [...]
+The run_bench_uprobes.sh benchmark triggers uprobe (on top of different
+original instructions) in a loop and counts how many of those happened
+per second (the unit below is million loops).
+
+There's big speed up if you consider current usdt implementation
+(uprobe-nop) compared to proposed usdt (uprobe-nop5):
+
+current:
+        usermode-count :  152.501 ± 0.012M/s
+        syscall-count  :   14.463 ± 0.062M/s
+-->     uprobe-nop     :    3.160 ± 0.005M/s
+        uprobe-push    :    3.003 ± 0.003M/s
+        uprobe-ret     :    1.100 ± 0.003M/s
+        uprobe-nop5    :    3.132 ± 0.012M/s
+        uretprobe-nop  :    2.103 ± 0.002M/s
+        uretprobe-push :    2.027 ± 0.004M/s
+        uretprobe-ret  :    0.914 ± 0.002M/s
+        uretprobe-nop5 :    2.115 ± 0.002M/s
+
+after the change:
+        usermode-count :  152.343 ± 0.400M/s
+        syscall-count  :   14.851 ± 0.033M/s
+        uprobe-nop     :    3.204 ± 0.005M/s
+        uprobe-push    :    3.040 ± 0.005M/s
+        uprobe-ret     :    1.098 ± 0.003M/s
+-->     uprobe-nop5    :    7.286 ± 0.017M/s
+        uretprobe-nop  :    2.144 ± 0.001M/s
+        uretprobe-push :    2.069 ± 0.002M/s
+        uretprobe-ret  :    0.922 ± 0.000M/s
+        uretprobe-nop5 :    3.487 ± 0.001M/s
+
+I see bit more speed up on Intel (above) compared to AMD. The big nop5
+speed up is partly due to emulating nop5 and partly due to optimization.
+
+The key speed up we do this for is the USDT switch from nop to nop5:
+	uprobe-nop     :    3.160 ± 0.005M/s
+	uprobe-nop5    :    7.286 ± 0.017M/s
+
+
+Changes from last rfc:
+- change to emulate all nops got in
+- rebased on top of tip/perf/core,mm/unstable,bpf-next/master to get latest
+  uprobe and bpf changes 
+- used guard(rcu_tasks_trace) in handle_syscall_uprobe [Andrii]
+- patch#6 change orig argument to is_register, which turned
+  out to be less changes
+
+
+This patchset is adding new syscall, here are notes to check list items
+in Documentation/process/adding-syscalls.rst:
+
+- System Call Alternatives
+  New syscall seems like the best way in here, because we need
+  just to quickly enter kernel with no extra arguments processing,
+  which we'd need to do if we decided to use another syscall.
+
+- Designing the API: Planning for Extension
+  The uprobe syscall is very specific and most likely won't be
+  extended in the future.
+
+- Designing the API: Other Considerations
+  N/A because uprobe syscall does not return reference to kernel
+  object.
+
+- Proposing the API
+  Wiring up of the uprobe system call is in separate change,
+  selftests and man page changes are part of the patchset.
+
+- Generic System Call Implementation
+  There's no CONFIG option for the new functionality because it
+  keeps the same behaviour from the user POV.
+
+- x86 System Call Implementation
+  It's 64-bit syscall only.
+
+- Compatibility System Calls (Generic)
+  N/A uprobe syscall has no arguments and is not supported
+  for compat processes.
+
+- Compatibility System Calls (x86)
+  N/A uprobe syscall is not supported for compat processes.
+
+- System Calls Returning Elsewhere
+  N/A.
+
+- Other Details
+  N/A.
+
+- Testing
+  Adding new bpf selftests.
+
+- Man Page
+  Attached.
+
+- Do not call System Calls in the Kernel
+  N/A
+
+pending todo (or follow ups):
+- use PROCMAP_QUERY in tests
+- alloc 'struct uprobes_state' for mm_struct only when needed [Andrii]
+
+
+thanks,
+jirka
+
+
+Cc: Alejandro Colomar <alx@kernel.org>
+Cc: Eyal Birger <eyal.birger@gmail.com>
+Cc: kees@kernel.org
+---
+Jiri Olsa (21):
+      uprobes: Rename arch_uretprobe_trampoline function
+      uprobes: Make copy_from_page global
+      uprobes: Move ref_ctr_offset update out of uprobe_write_opcode
+      uprobes: Add uprobe_write function
+      uprobes: Add nbytes argument to uprobe_write
+      uprobes: Add is_register argument to uprobe_write and uprobe_write_opcode
+      uprobes: Remove breakpoint in unapply_uprobe under mmap_write_lock
+      uprobes/x86: Add mapping for optimized uprobe trampolines
+      uprobes/x86: Add uprobe syscall to speed up uprobe
+      uprobes/x86: Add support to optimize uprobes
+      selftests/bpf: Use 5-byte nop for x86 usdt probes
+      selftests/bpf: Reorg the uprobe_syscall test function
+      selftests/bpf: Rename uprobe_syscall_executed prog to test_uretprobe_multi
+      selftests/bpf: Add uprobe/usdt syscall tests
+      selftests/bpf: Add hit/attach/detach race optimized uprobe test
+      selftests/bpf: Add uprobe syscall sigill signal test
+      selftests/bpf: Add optimized usdt variant for basic usdt test
+      selftests/bpf: Add uprobe_regs_equal test
+      selftests/bpf: Change test_uretprobe_regs_change for uprobe and uretprobe
+      seccomp: passthrough uprobe systemcall without filtering
+      selftests/seccomp: validate uprobe syscall passes through seccomp
+
+ arch/arm/probes/uprobes/core.c                              |   2 +-
+ arch/x86/entry/syscalls/syscall_64.tbl                      |   1 +
+ arch/x86/include/asm/uprobes.h                              |   7 ++
+ arch/x86/kernel/uprobes.c                                   | 532 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ include/linux/syscalls.h                                    |   2 +
+ include/linux/uprobes.h                                     |  20 +++-
+ kernel/events/uprobes.c                                     | 147 +++++++++++++++++--------
+ kernel/fork.c                                               |   1 +
+ kernel/seccomp.c                                            |  32 ++++--
+ kernel/sys_ni.c                                             |   1 +
+ tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c     | 478 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------
+ tools/testing/selftests/bpf/prog_tests/usdt.c               |  38 ++++---
+ tools/testing/selftests/bpf/progs/uprobe_syscall.c          |   4 +-
+ tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c |  41 ++++++-
+ tools/testing/selftests/bpf/sdt.h                           |   9 +-
+ tools/testing/selftests/bpf/test_kmods/bpf_testmod.c        |  11 +-
+ tools/testing/selftests/seccomp/seccomp_bpf.c               | 107 +++++++++++++++----
+ 17 files changed, 1299 insertions(+), 134 deletions(-)
+
+
+Jiri Olsa (1):
+      man2: Add uprobe syscall page
+
+ man/man2/uprobe.2    | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ man/man2/uretprobe.2 |  2 ++
+ 2 files changed, 51 insertions(+)
+ create mode 100644 man/man2/uprobe.2
 
