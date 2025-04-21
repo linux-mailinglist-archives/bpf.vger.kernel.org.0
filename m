@@ -1,132 +1,161 @@
-Return-Path: <bpf+bounces-56326-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56327-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F0DFA9566F
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 21:04:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DE33A9570E
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 22:13:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94655167280
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 19:03:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 257263B0F30
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 20:13:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC531EB1AB;
-	Mon, 21 Apr 2025 19:03:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3FC21F03D7;
+	Mon, 21 Apr 2025 20:13:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="PZsAF9i4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F0+rLbLe"
 X-Original-To: bpf@vger.kernel.org
-Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6E8C2ED;
-	Mon, 21 Apr 2025 19:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CAA1EF090;
+	Mon, 21 Apr 2025 20:13:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745262224; cv=none; b=OYN5d8DiHleq7EZStHKBvRl8cmflrgIYbO+blwYBfPtUKMF6VokW5PdPtLp/ECfpIcTlhQd4VvMVifygjVDp5nyndA9OPMGoWP1k/jU5Oc6NQT+st9WL1hV7AHNZwKLfkfVYM4lOJkxMzGAL80D6X0u+y5HepLJe5z6LtxRX3DI=
+	t=1745266388; cv=none; b=snZ3DF1Q7Ri4bUZR3oE13o4gZHsCl85yusITwP2qf8RtCxVd/UGsN5Nm7fRh4YrlM9JBRH5qiY6IC2rVHF4ARTwMw4D5AlwDr/IH//sznoJPwiay2l7R35YruSTHU6B1rtcr3IcfP3KhhNBh9lklqU3LRYeAuOOK26J/gCJ9wQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745262224; c=relaxed/simple;
-	bh=Cd4SW+Oc0bEvRsoW/aOYTmKQv4ZwdE7lNdg8ngRNZwM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=tjcRaHkOlSxL9AMIaA3DDrFY3V+ZUu6LAaEp39PCaQDxcz8QOqhwe8t3qAg/QKVB5PS4cANM9XZ8pJpK7xKCmKxp+++S8LeNXhaIj4nJf+haO5aHvC0oI5XdLxFaFr+Ch26a1F5f9PDu7gkOou0TBwrVG7wG8Od/e5yv9C7Vg9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=PZsAF9i4; arc=none smtp.client-ip=198.37.111.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1745262221;
-	bh=Cd4SW+Oc0bEvRsoW/aOYTmKQv4ZwdE7lNdg8ngRNZwM=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=PZsAF9i4mlCFypkpD6ljMR5jyXvJKjVjAhW5exe13TmB2yczFLqTY/QPfNclURclH
-	 XAME0r3cSIeQmImNTE5Hz1uVWzazofha6FZ8qoD0n1+6DUExP520MjyyLUNQco0yww
-	 w36nq9YToi4EdKewa2ccYiF22EmdDKg+lrCp8xKU=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 849261C0246;
-	Mon, 21 Apr 2025 15:03:40 -0400 (EDT)
-Message-ID: <9ce709dbf9249c9880ca16953a3f17bfc5206284.camel@HansenPartnership.com>
-Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, Jonathan Corbet
- <corbet@lwn.net>, David Howells <dhowells@redhat.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
- James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
- Masahiro Yamada <masahiroy@kernel.org>,  Nathan Chancellor
- <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Shuah Khan
- <shuah@kernel.org>, =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>, 
- =?ISO-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>, Nick Desaulniers
- <nick.desaulniers+lkml@gmail.com>,  Bill Wendling <morbo@google.com>,
- Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen <jarkko@kernel.org>,
-  Jan Stancek <jstancek@redhat.com>, Neal Gompa <neal@gompa.dev>,
- linux-doc@vger.kernel.org,  linux-kernel@vger.kernel.org,
- keyrings@vger.kernel.org,  linux-crypto@vger.kernel.org,
- linux-security-module@vger.kernel.org,  linux-kbuild@vger.kernel.org,
- linux-kselftest@vger.kernel.org,  bpf@vger.kernel.org,
- llvm@lists.linux.dev, nkapron@google.com, teknoraver@meta.com, 
- roberto.sassu@huawei.com, xiyou.wangcong@gmail.com
-Date: Mon, 21 Apr 2025 15:03:39 -0400
-In-Reply-To: <CAHC9VhSu_tn6d2A4-CYQn_Kr4mdRKEBXLabbPkLZuwQcC2KhJA@mail.gmail.com>
-References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
-	 <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
-	 <64859c5c8fd969186c1997a340ed6307e2c70f06.camel@HansenPartnership.com>
-	 <CAHC9VhSu_tn6d2A4-CYQn_Kr4mdRKEBXLabbPkLZuwQcC2KhJA@mail.gmail.com>
-Autocrypt: addr=James.Bottomley@HansenPartnership.com;
- prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1745266388; c=relaxed/simple;
+	bh=KuPglRXXva+tRt/1RLlrTkqN4JV8/fN1ppPKTXytjUk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oKB5HQHt4FlOOsFz2zy6+Mvj67FKk62ZPilJvETQqwYGmHRWT6i0OxYgL3jUjG3CIMcL6bfno8YKhI1kyRK/QF382cA63rgxp/R973aFCv3U+bKutPWlmYqOTKoBJlYbVCGACVVo1jwS0AyYHyjqMeuuCFqUFZRWv1J6Jp5mf6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F0+rLbLe; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-39c1ef4ae3aso2595004f8f.1;
+        Mon, 21 Apr 2025 13:13:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745266385; x=1745871185; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KuPglRXXva+tRt/1RLlrTkqN4JV8/fN1ppPKTXytjUk=;
+        b=F0+rLbLeNxQmLiUHq6UehsU1hKKU5uiV/66bpZ/3eECH/iIVwfQdG+MkziMC3tk5NV
+         tf/EDEhNkM3qC0gkYwOCifXrWe6G4I2hwFWx8zhDnEuXKhv+mx/ohAAtjriveQeGVDWf
+         q1jWR5WB1asYQoUIrE+VGDGINRf3DA4iKYrapgPPE44L6lzh716WQjawxJEFxKCs1SG/
+         cUawQO8uKiqxEcnM8VNkRm+frBR/6PjV7XUd8HScSsU5WJrnoll612b0d+dqemz0nwC6
+         Gq2QWH9fK6Ku3s7sOVVcbvKcGuu5oPYBh6If6yErVXbGfnLpRw7bQ198mazKUch43GAL
+         83fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745266385; x=1745871185;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KuPglRXXva+tRt/1RLlrTkqN4JV8/fN1ppPKTXytjUk=;
+        b=SKgBrUGZSH7a6hLyWp5pu5+Qr3QIv5E1qrrHU8Mgt6ydMGHDdbO4jFcC1GasnDq/6g
+         repBvstjIQGJeh8/8Bat+OtWY4bC/yv4g9Adr9kwRlDxb4cSNwPanc60IE4Ulcc/Pi7V
+         yqoLgj/70sjKsoZq0XA82cO2PX/NbqA2RFWo6X7Zdk45cPF9ayP4YjkrmrX+rYJk4Yi5
+         JdWPahs/0GHEy48DyVptWN0xvPLdZkrEJcna0z746YIUmxf7mhtgRkkEfCj5vTh4nFgz
+         8Rsj1DOU60983UGazl70rO6n6xypiTHxEDMzmmAf4gGD2lrgBfct7iJvnDR83N1h9iGz
+         zaUg==
+X-Forwarded-Encrypted: i=1; AJvYcCV8u6r+03YZDmt7EbER9u44Wn6SsGTmz4jtAUWxvbttFp31XvWj1XltYqWl9AyiBCrdwDJx5XqFUUtlUz6t@vger.kernel.org, AJvYcCWB4vwcbu5eKUokyhVxsQ40Phy2doFob1PhEK2sp1OXCU65fNWXC7rpZCbtfqftBCO5xqU=@vger.kernel.org, AJvYcCWH+T3xX3e7fZQMPdhY4idcK72UEPRI4VishyR239cIqpM/DKiydhzxy0tupOgRlGuoAGCWNaO18j8ztsTY@vger.kernel.org, AJvYcCWXsMKeBPw+9TLCsJHBnCQ7xtEfOD/gGgfwGwUmznoGlVGfUrJY0tbMlcJnc6Hn8do1IixhhYvUmn8W@vger.kernel.org, AJvYcCWbSRf4UQc1mN6qA31CseskaHRSwIr/Fzd9wJtmikk3thFfRjYKS9Fc9V6nfHkOk8x2RAaBMAusBgwu95/r@vger.kernel.org, AJvYcCWmdIQaOxVg0PPa+NqVqRtvTW+qUb1TBj6WDh9tbKLVtvUkP+KGUEx9zOWNV4A/tOhvgPO3JjBMtyT6IXtOHODMbnzvYr27@vger.kernel.org, AJvYcCX1f2eas/YJS4C48ZN0GwEw+bD1oZHLfHy/liBMr7NIPWdlJSIRTP9jm4cZRsmhd3XKwHHPWqRCtLE=@vger.kernel.org, AJvYcCXE0Dzfu1SXnGdwNdwwrXYZGUkG1u9xe73H2o9gOHKH7pMO45DL24HoweEsd3qw/fVDFVEI6MXyvBE4NzUlJ/td@vger.kernel.org
+X-Gm-Message-State: AOJu0YzORCojolxKqUy2dXwYqWrVqVGtya7MGaM+OF1b6JfMzewYNrhu
+	5UgRUQ+7z2suCA5vapa/tGShlCiIgDjxa05zGcvqC67lDszC2EtXC9rEjO6Yqb8B4egKF3gmZKB
+	I4QPoZrYqQPvhXlLZjrRYtR7HmP8=
+X-Gm-Gg: ASbGncuS1MKLmCN1hoOmym+I2gItZ9QV3rXmxoUvLvK/YysQv/jdkBcHvPNgyzc1Ydb
+	jdZBRl48OGjztfJkvcYVvV7Caa/2mrkKPcnDzxsKoXmqS6qyorg90mvCeW6ZlhSDYdDiX4OuwJd
+	yZmqbEkts8qirQs5RSJSNEZq3cKwSuXVX5KmZiQg==
+X-Google-Smtp-Source: AGHT+IENKQ7OPTDyXPDMm1eLtepnMBhG5YwiFzhKG6wQNnttfR2T/r01wwOVnACt/7hy7lkYefJ9i7RiLoFp/wuHfL0=
+X-Received: by 2002:a05:6000:2285:b0:39e:cbca:74cf with SMTP id
+ ffacd0b85a97d-39efbd5a34bmr10154288f8f.6.1745266384670; Mon, 21 Apr 2025
+ 13:13:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
+ <20250404215527.1563146-2-bboscaccy@linux.microsoft.com> <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
+ <87semdjxcp.fsf@microsoft.com> <CAADnVQ+JGfwRgsoe2=EHkXdTyQ8ycn0D9nh1k49am++4oXUPHg@mail.gmail.com>
+ <87friajmd5.fsf@microsoft.com> <CAADnVQKb3gPBFz+n+GoudxaTrugVegwMb8=kUfxOea5r2NNfUA@mail.gmail.com>
+ <87a58hjune.fsf@microsoft.com> <CAADnVQ+LMAnyT4yV5iuJ=vswgtUu97cHKnvysipc6o7HZfEbUA@mail.gmail.com>
+ <87y0w0hv2x.fsf@microsoft.com>
+In-Reply-To: <87y0w0hv2x.fsf@microsoft.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 21 Apr 2025 13:12:53 -0700
+X-Gm-Features: ATxdqUHHcxXreT9hXAZ5WwrofB06M_gd4QuHmZEieMGyBqtir206iJME0ypgG-U
+Message-ID: <CAADnVQKF+B_YYwOCFsPBbrTBGKe4b22WVJFb8C0PHGmRAjbusQ@mail.gmail.com>
+Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen <jarkko@kernel.org>, 
+	Jan Stancek <jstancek@redhat.com>, Neal Gompa <neal@gompa.dev>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	keyrings@vger.kernel.org, 
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, 
+	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com, 
+	Matteo Croce <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2025-04-21 at 14:52 -0400, Paul Moore wrote:
-> On Sat, Apr 19, 2025 at 2:43=E2=80=AFPM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > On Fri, 2025-04-04 at 14:54 -0700, Blaise Boscaccy wrote:
-> > [...]
-> > > diff --git a/include/linux/kernel_read_file.h
-> > > b/include/linux/kernel_read_file.h
-> > > index 90451e2e12bd..7ed9337be542 100644
-> > > --- a/include/linux/kernel_read_file.h
-> > > +++ b/include/linux/kernel_read_file.h
-> > > @@ -14,6 +14,7 @@
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 id(KEXEC_INITRAMFS, kexec-initramfs)=
-=C2=A0=C2=A0=C2=A0 \
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 id(POLICY, security-policy)=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 id(X509_CERTIFICATE, x509-certificate)=
-=C2=A0 \
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 id(EBPF, ebpf)=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 \
-> >=20
-> > This causes a BUILD_BUG_ON for me in security/selinux/hooks.c with
-> > CONFIG_SECURITY_SELINUX=3Dy because READING_MAX_ID and LOADING_MAX_ID
-> > become 8.
-> >=20
-> > Below is what I had to do to get the compile to work.
->=20
-> That code was updated during the v6.15 merge window, depending on
-> what kernel sources Blaise is using for development it's possible he
-> didn't bump into this even if he was building with SELinux enabled.
+On Wed, Apr 16, 2025 at 10:31=E2=80=AFAM Blaise Boscaccy
+<bboscaccy@linux.microsoft.com> wrote:
+>
+> > Hacking into bpf internal objects like maps is not acceptable.
+>
+> We've heard your concerns about kern_sys_bpf and we agree that the LSM
+> should not be calling it. The proposal in this email should meet both of
+> our needs
+> https://lore.kernel.org/bpf/874iypjl8t.fsf@microsoft.com/
 
-Sorry I should have said I pulled the patches into 6.15-rc2 to play
-with them (hence I did pick up everything in the recent merge window).
+kern_sys_bpf was one example of a layering violation.
+Calling bpf_map_get() and
+map->ops->map_lookup_elem() from a module is not ok either.
 
-Regards,
+lskel doing skel_map_freeze is not solving the issue.
+It is still broken from TOCTOU pov.
+freeze only makes a map readonly to user space.
+Any program can still read/write it.
+That's why freeze wasn't done back then when lskel was introduced.
+There is still work to do to make signing practical.
+One needs to think of libbpf equivalent loaders in golang and rust.
+The solution has to work for them too.
+In that sense bpf signing is not analogous to kernel module signing.
+Programs are not distributed as elf files.
+elf is an intermediate step in a build process.
+bpftool takes elf and generates skel or lskel and
+user space does #include <skel.h>
+to access maps and global variables directly.
+See how systemd does it.
+bpf progs are part of various skel.h-s in there.
+systemd is also using an old style bpf progs written in bpf assembly.
+We need to figure out how to make them signed too.
 
-James
-
+The signing problem is big and difficult.
+It will take time to figure out all these challenges.
+Introduction of lskel back in 2021 was the first step towards signing
+(as the commit log clearly states).
+lskel approach is likely a solution for a large class of bpf users,
+but not for all. It won't work for bpftrace and bcc.
+lskel loading is also opaque.
+The verifier errors are not propagated from the loader prog back to the use=
+r.
+To load normal skeleton the user space can do:
+LIBBPF_OPTS(bpf_object_open_opts, opts);
+opts.kernel_log_buf =3D my_verifier_log_buf;
+myskel__open_opts(&opts);
+There is no __open_opts() equivalent for lskel.
+It needs to be fixed before we can recommend lksel as a solution
+to signing.
 
