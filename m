@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-56331-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56332-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E76D3A9582D
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 23:45:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 906DAA9582F
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 23:45:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B33907A54E9
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 21:44:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10B053B3B2E
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 21:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B3121A420;
-	Mon, 21 Apr 2025 21:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1209219A68;
+	Mon, 21 Apr 2025 21:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pENTG4xi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S4GYO0ZF"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019B8217F5C;
-	Mon, 21 Apr 2025 21:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C03219A93;
+	Mon, 21 Apr 2025 21:45:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745271896; cv=none; b=BzHqLwifZZEICsj1kBCA2eVNdbSDrUBg17DYqRbLiZ7x5ddKCEkWmfxLnwdisY7cwDsdXXm0NSXiZ+7Qg9LOYA18HQmy6ZjtFT4aHzUXEMbcH2exnlNDVbyLXwNoMFbi/eR6jUmp1wrGkJgw85FFvFCxbQV/8c+Y5kL5DKTRVBI=
+	t=1745271909; cv=none; b=jvr4Ab436v3IQsq6hjI8xpQm4UbvbC9FpFV8BK3QD0tlXe2vNXBoiAeWsXL9RQXNcuNRydCgyuwm1o4N1Ogo39cUwoGXfJEwhqzME/C7rHG4k20uYe52DhpBsXwC9Zbk09VAwtf19l7wHU3Im8rFIAKC695q4VpFqTt/A/FEXr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745271896; c=relaxed/simple;
-	bh=dz+mPw0D7ZbQlws9G+xf9kwzc3zEDB0hb7VnLDfl2zU=;
+	s=arc-20240116; t=1745271909; c=relaxed/simple;
+	bh=D85w/y2lUcAbxKEDuMXy3+L9hQ9+AnyRAYn+0nFXS8g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SIUIo48AFk8YobQZE3XatqttOCG2/lpMv4ZaKl3PVez9GQ5pqOyvqjMUrlq6nGGNT6vfUtL/iX36GmtqKwa+difIgRCFLiTPnggjfXy6rrsS9CuRR5uFUPYMkkn4sgCddTioSgDMwtDT5bLQFU9ZdZFyQwShEQbqt/fg60zjctU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pENTG4xi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 017B5C4CEE4;
-	Mon, 21 Apr 2025 21:44:50 +0000 (UTC)
+	 MIME-Version; b=dFeKv3dER6bvkc5L7VFOi2Ay4id4tCWEwdOKrfVMOoBvEp1gN0xjnv8LfuDllEPrknZDadcec48i1ij9S56m5BWgVKJQZFc06ox4qPAY5nXbIj0UvZr3VzNjtZ14o3lNiwJWsn0EsQbDB9N5M5GE21tmMVcYHPr2Z7GRxvUNUiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S4GYO0ZF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C48F9C4CEE4;
+	Mon, 21 Apr 2025 21:45:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745271895;
-	bh=dz+mPw0D7ZbQlws9G+xf9kwzc3zEDB0hb7VnLDfl2zU=;
+	s=k20201202; t=1745271908;
+	bh=D85w/y2lUcAbxKEDuMXy3+L9hQ9+AnyRAYn+0nFXS8g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pENTG4xiQaWzhixahCVTsfXrBtVy2nCOwb+dFWdIvbZ/JqSVaCjBM9TXYNE+B6+wT
-	 CQwjNzd6ybMkcEWrtrVU0/JMXgxY6KfPgXus9hN4wgIkgj6qi1f5VPh0LWKQuquR0s
-	 /PwWbVEY9LWV6YyDXCp2aYraYEkO9c3/l+wAxPXs577zPMcQCEMWnbWgpPdv9lrdBy
-	 QPBB2FgWA9tdR0DjoaaK1gc7FByeGJxVkadeeerRRfz1vG9LlWZPDbV1GDX5RU9mS/
-	 sfXCtrsU8BQlBWKEEr4N2MGuAShcOkgM/R6bJbjPQOoCXbJabhbkua++HDw0ykcbjE
-	 nZJMKCuGpkWfw==
+	b=S4GYO0ZFCjWwCtSf6ycECRA7aobFCWH9bFn4ePzcVZpcTiUBMwY1v5tuYZLa1lGUD
+	 wRhyfYWqiXtT4+MzdaPKcmBEq4WVaxveto3CaWTqrtH0GBw8rQed3eYhbz659YDdnV
+	 LBYJD3X1LOksgccgyUlOsAIlEMv+w8eyVoJpFkxKTjMoMBjyhH2G8vIf9+YZIimJN6
+	 EsNiopzOSuv/qT3q2YtAb3QHb2gXUmmCMtf5OwDTjIE2hTkRZ74UJ/n4oycPxQo0CL
+	 c0aYCFFpPS5GsvMzNnal/uh30uENikRweX8XShrQ3C7MVZbR+xGtDPnmHgFHbYIdCy
+	 2f9napgds6dnQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	David Laight <David.Laight@ACULAB.COM>,
 	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH perf/core 02/22] uprobes: Make copy_from_page global
-Date: Mon, 21 Apr 2025 23:44:02 +0200
-Message-ID: <20250421214423.393661-3-jolsa@kernel.org>
+Subject: [PATCH perf/core 03/22] uprobes: Move ref_ctr_offset update out of uprobe_write_opcode
+Date: Mon, 21 Apr 2025 23:44:03 +0200
+Message-ID: <20250421214423.393661-4-jolsa@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <20250421214423.393661-1-jolsa@kernel.org>
 References: <20250421214423.393661-1-jolsa@kernel.org>
@@ -73,77 +73,160 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Making copy_from_page global and adding uprobe prefix.
-Adding the uprobe prefix to copy_to_page as well for symmetry.
+The uprobe_write_opcode function currently updates also refctr offset
+if there's one defined for uprobe.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+This is not handy for following changes which needs to make several
+updates (writes) to install or remove uprobe, but update refctr offset
+just once.
+
+Adding set_swbp_refctr/set_orig_refctr which makes sure refctr offset
+is updated.
+
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/linux/uprobes.h |  1 +
- kernel/events/uprobes.c | 10 +++++-----
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ include/linux/uprobes.h |  2 +-
+ kernel/events/uprobes.c | 62 ++++++++++++++++++++++++-----------------
+ 2 files changed, 38 insertions(+), 26 deletions(-)
 
 diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index 01112f27cd21..7447e15559b8 100644
+index 7447e15559b8..d3496f7bc583 100644
 --- a/include/linux/uprobes.h
 +++ b/include/linux/uprobes.h
-@@ -226,6 +226,7 @@ extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
- extern void uprobe_handle_trampoline(struct pt_regs *regs);
- extern void *arch_uretprobe_trampoline(unsigned long *psize);
- extern unsigned long uprobe_get_trampoline_vaddr(void);
-+extern void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len);
- #else /* !CONFIG_UPROBES */
- struct uprobes_state {
- };
+@@ -194,7 +194,7 @@ extern bool is_swbp_insn(uprobe_opcode_t *insn);
+ extern bool is_trap_insn(uprobe_opcode_t *insn);
+ extern unsigned long uprobe_get_swbp_addr(struct pt_regs *regs);
+ extern unsigned long uprobe_get_trap_addr(struct pt_regs *regs);
+-extern int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma, unsigned long vaddr, uprobe_opcode_t);
++extern int uprobe_write_opcode(struct vm_area_struct *vma, unsigned long vaddr, uprobe_opcode_t opcode);
+ extern struct uprobe *uprobe_register(struct inode *inode, loff_t offset, loff_t ref_ctr_offset, struct uprobe_consumer *uc);
+ extern int uprobe_apply(struct uprobe *uprobe, struct uprobe_consumer *uc, bool);
+ extern void uprobe_unregister_nosync(struct uprobe *uprobe, struct uprobe_consumer *uc);
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 8415c087a71f..87bca004ee6a 100644
+index 87bca004ee6a..8b31340ed1c3 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -177,7 +177,7 @@ bool __weak is_trap_insn(uprobe_opcode_t *insn)
- 	return is_swbp_insn(insn);
+@@ -486,13 +486,12 @@ static int __uprobe_write_opcode(struct vm_area_struct *vma,
+  * Called with mm->mmap_lock held for read or write.
+  * Return 0 (success) or a negative errno.
+  */
+-int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+-		const unsigned long opcode_vaddr, uprobe_opcode_t opcode)
++int uprobe_write_opcode(struct vm_area_struct *vma, const unsigned long opcode_vaddr,
++			uprobe_opcode_t opcode)
+ {
+ 	const unsigned long vaddr = opcode_vaddr & PAGE_MASK;
+ 	struct mm_struct *mm = vma->vm_mm;
+-	struct uprobe *uprobe;
+-	int ret, is_register, ref_ctr_updated = 0;
++	int ret, is_register;
+ 	unsigned int gup_flags = FOLL_FORCE;
+ 	struct mmu_notifier_range range;
+ 	struct folio_walk fw;
+@@ -500,7 +499,6 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+ 	struct page *page;
+ 
+ 	is_register = is_swbp_insn(&opcode);
+-	uprobe = container_of(auprobe, struct uprobe, arch);
+ 
+ 	if (WARN_ON_ONCE(!is_cow_mapping(vma->vm_flags)))
+ 		return -EINVAL;
+@@ -528,17 +526,6 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+ 		goto out;
+ 	}
+ 
+-	/* We are going to replace instruction, update ref_ctr. */
+-	if (!ref_ctr_updated && uprobe->ref_ctr_offset) {
+-		ret = update_ref_ctr(uprobe, mm, is_register ? 1 : -1);
+-		if (ret) {
+-			folio_put(folio);
+-			goto out;
+-		}
+-
+-		ref_ctr_updated = 1;
+-	}
+-
+ 	ret = 0;
+ 	if (unlikely(!folio_test_anon(folio))) {
+ 		VM_WARN_ON_ONCE(is_register);
+@@ -580,10 +567,6 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+ 	}
+ 
+ out:
+-	/* Revert back reference counter if instruction update failed. */
+-	if (ret < 0 && is_register && ref_ctr_updated)
+-		update_ref_ctr(uprobe, mm, -1);
+-
+ 	/* try collapse pmd for compound page */
+ 	if (ret > 0)
+ 		collapse_pte_mapped_thp(mm, vaddr, false);
+@@ -603,7 +586,27 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+ int __weak set_swbp(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+ 		unsigned long vaddr)
+ {
+-	return uprobe_write_opcode(auprobe, vma, vaddr, UPROBE_SWBP_INSN);
++	return uprobe_write_opcode(vma, vaddr, UPROBE_SWBP_INSN);
++}
++
++static int set_swbp_refctr(struct uprobe *uprobe, struct vm_area_struct *vma, unsigned long vaddr)
++{
++	struct mm_struct *mm = vma->vm_mm;
++	int err;
++
++	/* We are going to replace instruction, update ref_ctr. */
++	if (uprobe->ref_ctr_offset) {
++		err = update_ref_ctr(uprobe, mm, 1);
++		if (err)
++			return err;
++	}
++
++	err = set_swbp(&uprobe->arch, vma, vaddr);
++
++	/* Revert back reference counter if instruction update failed. */
++	if (err && uprobe->ref_ctr_offset)
++		update_ref_ctr(uprobe, mm, -1);
++	return err;
  }
  
--static void copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len)
-+void uprobe_copy_from_page(struct page *page, unsigned long vaddr, void *dst, int len)
+ /**
+@@ -618,8 +621,17 @@ int __weak set_swbp(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
+ int __weak set_orig_insn(struct arch_uprobe *auprobe,
+ 		struct vm_area_struct *vma, unsigned long vaddr)
  {
- 	void *kaddr = kmap_atomic(page);
- 	memcpy(dst, kaddr + (vaddr & ~PAGE_MASK), len);
-@@ -205,7 +205,7 @@ static int verify_opcode(struct page *page, unsigned long vaddr, uprobe_opcode_t
- 	 * is a trap variant; uprobes always wins over any other (gdb)
- 	 * breakpoint.
- 	 */
--	copy_from_page(page, vaddr, &old_opcode, UPROBE_SWBP_INSN_SIZE);
-+	uprobe_copy_from_page(page, vaddr, &old_opcode, UPROBE_SWBP_INSN_SIZE);
- 	is_swbp = is_swbp_insn(&old_opcode);
+-	return uprobe_write_opcode(auprobe, vma, vaddr,
+-			*(uprobe_opcode_t *)&auprobe->insn);
++	return uprobe_write_opcode(vma, vaddr, *(uprobe_opcode_t *)&auprobe->insn);
++}
++
++static int set_orig_refctr(struct uprobe *uprobe, struct vm_area_struct *vma, unsigned long vaddr)
++{
++	int err = set_orig_insn(&uprobe->arch, vma, vaddr);
++
++	/* Revert back reference counter even if instruction update failed. */
++	if (uprobe->ref_ctr_offset)
++		update_ref_ctr(uprobe, vma->vm_mm, -1);
++	return err;
+ }
  
- 	if (is_swbp_insn(new_opcode)) {
-@@ -1052,7 +1052,7 @@ static int __copy_insn(struct address_space *mapping, struct file *filp,
- 	if (IS_ERR(page))
- 		return PTR_ERR(page);
+ /* uprobe should have guaranteed positive refcount */
+@@ -1158,7 +1170,7 @@ static int install_breakpoint(struct uprobe *uprobe, struct vm_area_struct *vma,
+ 	if (first_uprobe)
+ 		set_bit(MMF_HAS_UPROBES, &mm->flags);
  
--	copy_from_page(page, offset, insn, nbytes);
-+	uprobe_copy_from_page(page, offset, insn, nbytes);
- 	put_page(page);
+-	ret = set_swbp(&uprobe->arch, vma, vaddr);
++	ret = set_swbp_refctr(uprobe, vma, vaddr);
+ 	if (!ret)
+ 		clear_bit(MMF_RECALC_UPROBES, &mm->flags);
+ 	else if (first_uprobe)
+@@ -1173,7 +1185,7 @@ static int remove_breakpoint(struct uprobe *uprobe, struct vm_area_struct *vma,
+ 	struct mm_struct *mm = vma->vm_mm;
  
- 	return 0;
-@@ -1398,7 +1398,7 @@ struct uprobe *uprobe_register(struct inode *inode,
- 		return ERR_PTR(-EINVAL);
+ 	set_bit(MMF_RECALC_UPROBES, &mm->flags);
+-	return set_orig_insn(&uprobe->arch, vma, vaddr);
++	return set_orig_refctr(uprobe, vma, vaddr);
+ }
  
- 	/*
--	 * This ensures that copy_from_page(), copy_to_page() and
-+	 * This ensures that uprobe_copy_from_page(), copy_to_page() and
- 	 * __update_ref_ctr() can't cross page boundary.
- 	 */
- 	if (!IS_ALIGNED(offset, UPROBE_SWBP_INSN_SIZE))
-@@ -2394,7 +2394,7 @@ static int is_trap_at_addr(struct mm_struct *mm, unsigned long vaddr)
- 	if (result < 0)
- 		return result;
- 
--	copy_from_page(page, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE);
-+	uprobe_copy_from_page(page, vaddr, &opcode, UPROBE_SWBP_INSN_SIZE);
- 	put_page(page);
-  out:
- 	/* This needs to return true for any variant of the trap insn */
+ struct map_info {
 -- 
 2.49.0
 
