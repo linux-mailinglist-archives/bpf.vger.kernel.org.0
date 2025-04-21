@@ -1,193 +1,153 @@
-Return-Path: <bpf+bounces-56290-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56291-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A3C5A94AAB
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 04:15:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A34F4A94B35
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 04:53:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6932C3ACFC9
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 02:14:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F73C7A296B
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 02:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CCC2561D4;
-	Mon, 21 Apr 2025 02:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130D8256C90;
+	Mon, 21 Apr 2025 02:53:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2A7645;
-	Mon, 21 Apr 2025 02:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD97256C7B;
+	Mon, 21 Apr 2025 02:53:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745201700; cv=none; b=dqkJ3aZHqqbpRAGADDNSR5j1vW2XcZUhXIPUQ9jKjJN5Z6FB426pTzqKMLuI3j5J+fZWlBV4hVcPM9we69vhoNiaEvxQ144qKB91Ol01Ul2R+XdYbC4baUB7K5JNEguBhMDI1SguguZwRQSeVeYfJDzQ8BcMD9uH3z00ewWDC7I=
+	t=1745204005; cv=none; b=dXvQ70Gys248267kr+xknBu9KxpN7MatGu8nOQO9GBavWDKgvaxDJStHFIXrSvbG2XJLJhfYGmtxvhN80svg4bv2hc6fEm6zUU+Pq3dM9sKvF2Hnohi2UhUvcvoxXuFoa9CubpnFPIj6SwHpZNef4WiGAzQG7UCARr6qXjpN3Lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745201700; c=relaxed/simple;
-	bh=alVflVCr762SqWXcb/aZKIF/Wu6wTJ2sggCUoOYmktA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XJ464hygFsHOe69lY7N6JMxohXjz8rVQ57nUhTkfovAYkUWc1/Prh6n6xPityIV2Hmiav2cn0uVdr1bOXH3Mxyb6nmHSeQfRAjJSIpPejKY6aCJfxVZXcE41oRLwy5UUiCH1EExcehRWzsN2Zep2Pk9JcJCb2S44zTCp4iaifvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ZgppM6SDzz4f3mJ6;
-	Mon, 21 Apr 2025 10:14:19 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 4CDB81A158E;
-	Mon, 21 Apr 2025 10:14:45 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP2 (Coremail) with SMTP id Syh0CgDX4WQTqgVo5dAZKA--.45218S2;
-	Mon, 21 Apr 2025 10:14:44 +0800 (CST)
-Message-ID: <8b800c09-eade-4dcf-90f6-2f5a78170bc4@huaweicloud.com>
-Date: Mon, 21 Apr 2025 10:14:43 +0800
+	s=arc-20240116; t=1745204005; c=relaxed/simple;
+	bh=ohoYy81jPOBHi3Kl/yJ0GpN9kR2CeXImpedVkpQqUl8=;
+	h=To:From:Cc:Subject:Message-ID:Date:MIME-Version:Content-Type; b=RQN7Gcc9PEhOteCZXWnDmTdCmhIiPMAzLezINQ1tcA6GPf/YHnnNWOpwMA8aB9n+KLVbI5jVxVfjDqceqHZqgBEUC9n9F+STQyi7+xdT65cxID4De/s446JQpek7aYF+8Au7JYm1gtEew3mWI8jhH7p1LG8TB71pygfAgyXgq2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.62])
+	by gateway (Coremail) with SMTP id _____8CxieAaswVoDy_DAA--.16802S3;
+	Mon, 21 Apr 2025 10:53:15 +0800 (CST)
+Received: from [10.20.42.62] (unknown [10.20.42.62])
+	by front1 (Coremail) with SMTP id qMiowMDx_MQUswVoS6yNAA--.21709S3;
+	Mon, 21 Apr 2025 10:53:13 +0800 (CST)
+To: yangtiezhu <yangtiezhu@loongson.cn>, Huacai Chen <chenhuacai@loongson.cn>
+From: bibo mao <maobibo@loongson.cn>
+Cc: bpf@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>
+Subject: BUG: bpf test case fails to run on LoongArch
+Message-ID: <32989acf-93ef-b90f-c3ba-2a3c07dee4a3@loongson.cn>
+Date: Mon, 21 Apr 2025 10:52:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC bpf-next 1/4] bpf: add struct largest member size in
- func model
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
- Xu Kuohai <xukuohai@huaweicloud.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Puranjay Mohan <puranjay@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Florent Revest <revest@chromium.org>,
- Bastien Curutchet <bastien.curutchet@bootlin.com>, ebpf@linuxfoundation.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kselftest@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
-References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
- <20250411-many_args_arm64-v1-1-0a32fe72339e@bootlin.com>
- <CAEf4Bzbn6BdXTOb0dTcsQmOMZpp5=DzGS2hHHQ3+dwcja=gv+w@mail.gmail.com>
- <D98Q8BRNUVS9.11J60C67L1ALR@bootlin.com>
- <9da88811-cce0-41df-8069-2e8b67541c39@huaweicloud.com>
- <D9BLCJSCHE9A.1IKHK3XBPF8MU@bootlin.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <D9BLCJSCHE9A.1IKHK3XBPF8MU@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgDX4WQTqgVo5dAZKA--.45218S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWrW3JryUGw4rWryDXr4fZrb_yoWrJw18pF
-	ZxX3Z8tF4kJr1xZa1qy3yxZrWSq348KryUCrW5tw13trn8GF1xJFW2gF4Y9Fy5Gr1kG3W2
-	vF1jqFy3Za4fZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvE14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-	1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-	AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI
-	42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-	evJa73UjIFyTuYvjTRM6wCDUUUU
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:qMiowMDx_MQUswVoS6yNAA--.21709S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxAFyrKFyUJry3tFW8KF1fXwc_yoW5tr4xpr
+	y3Jr1UGr4kJr17Ar1UJr1UJr15J3ZrAF18Jr1UJryUCr15Gr1UJr1UtrW7JryUJr4UJr17
+	Jw1Dtr1Utr1DGwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
+	67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
+	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw
+	1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
+	xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
+	4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j8
+	sqAUUUUU=
 
-On 4/21/2025 12:02 AM, Alexis Lothoré wrote:
-> Hi Xu,
-> 
-> On Thu Apr 17, 2025 at 4:10 PM CEST, Xu Kuohai wrote:
->> On 4/17/2025 3:14 PM, Alexis Lothoré wrote:
->>> Hi Andrii,
->>>
->>> On Wed Apr 16, 2025 at 11:24 PM CEST, Andrii Nakryiko wrote:
->>>> On Fri, Apr 11, 2025 at 1:32 PM Alexis Lothoré (eBPF Foundation)
->>>> <alexis.lothore@bootlin.com> wrote:
-> 
-> [...]
-> 
->>>> I might be missing something, but how can the *size* of the field be
->>>> used to calculate that argument's *alignment*? i.e., I don't
->>>> understand why arg_largest_member_size needs to be calculated instead
->>>> of arg_largest_member_alignment...
->>>
->>> Indeed I initially checked whether I could return directly some alignment
->>> info from btf, but it then involves the alignment computation in the btf
->>> module. Since there could be minor differences between architectures about
->>> alignment requirements, I though it would be better to in fact keep alignment
->>> computation out of the btf module. For example, I see that 128 bits values
->>> are aligned on 16 bytes on ARM64, while being aligned on 8 bytes on S390.
->>>
->>> And since for ARM64, all needed alignments are somehow derived from size
->>> (it is either directly size for fundamental types, or alignment of the
->>> largest member for structs, which is then size of largest member),
->>> returning the size seems to be enough to allow the JIT side to compute
->>> alignments.
->>>
->>
->> Not exactly. The compiler's "packed" and "alignment" attributes cause a
->> structure to be aligned differently from its natural alignment.
->>
->> For example, with the following three structures:
->>
->> struct s0 {
->>       __int128 x;
->> };
->>
->> struct s1 {
->>       __int128 x;
->> } __attribute__((packed));
->>
->> struct s2 {
->>       __int128 x;
->> } __attribute__((aligned(64)));
->>
->> Even though the largest member size is the same, s0 will be aligned to 16
->> bytes, s1 and s2 are not aligned the same way. s1 has no alignment due to
->> the "packed" attribute, while s2 will be aligned to 64 bytes.
->>
->> When these three structures are passed as function arguments, they will be
->> located on different positions on the stack.
->>
->> For the following three functions:
->>
->> int f0(__int128 a, __int128 b, __int128 c, int64_t d, __int128 e, int64_t f, struct s0 g);
->> int f1(__int128 a, __int128 b, __int128 c, int64_t d, __int128 e, int64_t f, struct s1 g);
->> int f2(__int128 a, __int128 b, __int128 c, int64_t d, __int128 e, int64_t f, struct s2 g);
->>
->> g will be located at sp+32 in f0, sp + 24 in f1, and some 64-byte aligned
->> stack address in f2.
-> 
-> Ah, thanks for those clear examples, I completely overlooked this
-> possibility. And now that you mention it, I feel a bit dumb because I now
-> remember that you mentioned this in Puranjay's series...
-> 
-> I took a quick look at the x86 JIT compiler for reference, and saw no code
-> related to this specific case neither. So I searched in the kernel for
-> actual functions taking struct arguments by value AND being declared with some
-> packed or aligned attribute. I only found a handful of those, and none
-> seems to take enough arguments to have the corresponding struct passed on the
-> stack. So rather than supporting this very specific case, I am tempted
-> to just return an error for now during trampoline creation if we detect such
-> structure (and then the JIT compiler can keep using data size to compute
-> alignment, now that it is sure not to receive custom alignments). Or am I
-> missing some actual cases involving those very specific alignments ?
-> 
+Hi,
 
-How can we reliably 'detect' the case? If a function has such a parameter
-but we fail to detect it, the BPF trampoline will pass an incorrect value
-to the function, which is also unacceptable.
+When I run built-in bpf test case with lib/test_bpf.c,
+it reports such error, I do not know whether it is a problem.
 
-> Thanks,
-> 
-> Alexis
-> 
+  test_bpf: #843 ALU32_RSH_X: all shift values jited:1 239 PASS
+  test_bpf: #844 ALU32_ARSH_X: all shift values jited:1 237 PASS
+  test_bpf: #845 ALU64_LSH_X: all shift values with the same register
+  ------------[ cut here ]------------
+  kernel BUG at lib/test_bpf.c:794!
+  Oops - BUG[#1]:
+  CPU: 15 UID: 0 PID: 2323 Comm: insmod Not tainted 6.15.0-rc2+ #297 
+PREEMPT(full)
+  Hardware name: QEMU QEMU Virtual Machine, BIOS unknown 2/2/2022
+  pc ffff80000272c0e0 ra ffff80000272bf90 tp 900000013defc000 sp 
+900000013deffb40
+  a0 0000000000000000 a1 900000013deffb80 a2 900000010aa4fbf8 a3 
+900000013deffb88
+  a4 900000013deffb80 a5 900000010aa4fbf0 a6 0000000000000218 a7 
+8000000000000000
+  t0 00000000000000c0 t1 0000000000000c10 t2 00000000000000c0 t3 
+0000000000000000
+  t4 0000000000000095 t5 0000000000000c08 t6 00000000000000c0 t7 
+00000001000000b7
+  t8 0000000000000183 u0 0000000000010000 s9 0000000000000040 s0 
+0000000000000c00
+  s1 0000000000000181 s2 0000000000000000 s3 0000000000000040 s4 
+000000000001211d
+  s5 0000000000000218 s6 0000000000000011 s7 00000000000001b7 s8 
+900000010aa4f000
+    ra: ffff80000272bf90 __bpf_fill_alu_shift_same_reg+0x118/0x298 
+[test_bpf]
+    ERA: ffff80000272c0e0 __bpf_fill_alu_shift_same_reg+0x268/0x298 
+[test_bpf]
+   CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
+   PRMD: 00000004 (PPLV0 +PIE -PWE)
+   EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
+   ECFG: 00071c1d (LIE=0,2-4,10-12 VS=7)
+  ESTAT: 000c0000 [BRK] (IS= ECode=12 EsubCode=0)
+   PRID: 0014c010 (Loongson-64bit, Loongson-3A5000)
+  Modules linked in: test_bpf(+) snd_seq_dummy snd_seq snd_seq_device 
+rfkill vfat fat virtio_net virtio_gpu net_failover virtio_balloon 
+failover virtio_dma_buf efi_pstore virtio_scsi pstore dm_multipath fuse 
+nfnetlink efivarfs
+  Process insmod (pid: 2323, threadinfo=000000006d91be37, 
+task=00000000064df522)
+  Stack : 9000000002018bc0 0000000000000060 000000000000006f 
+000000000000006c
+          0000000000000183 ffff800002ba1c40 8000000000000000 
+0000000000000218
+          8000000000000000 545a35de324f71ab 900000013deffbb8 
+ffff800002808080
+          9000000002018bc0 0000000000000000 0000000000000000 
+000000000000034d
+          0000000000000000 ffff80001d438000 ffff800002ba0b08 
+ffff800002ba2c40
+          000000000000034d ffff8000027807e8 0000000000000001 
+0000000000000341
+          ffff800002808100 0000000000000341 00000000000003e8 
+0000000000000001
+          ffff800002ba1b09 ffff800002ba1bb4 9000000002c30140 
+9000000002b240b8
+          0000000000000000 0000000000000000 ffff80001d438000 
+0000000000000000
+          0000000000000000 545a35de324f71ab 0000000000000000 
+000000000000002f
+          ...
+  Call Trace:
+  [<ffff80000272c0e0>] __bpf_fill_alu_shift_same_reg+0x268/0x298 [test_bpf]
+  [<ffff8000027807e4>] test_bpf_init+0x39c/0x3bb8 [test_bpf]
+  [<9000000000240154>] do_one_initcall+0x74/0x200
+  [<9000000000327764>] do_init_module+0x54/0x2a0
+  [<9000000000329ccc>] __do_sys_init_module+0x204/0x2a8
+  [<90000000015b17a0>] do_syscall+0xa0/0x188
+  [<90000000002413b8>] handle_syscall+0xb8/0x158
+
+  Code: 03400000  03400000  03400000 <002a0001> 29c28076  29c26077 
+29c24078  29c1e07b  29c1c07c
+
+  ---[ end trace 0000000000000000 ]---
 
 
