@@ -1,94 +1,94 @@
-Return-Path: <bpf+bounces-56307-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56308-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B517A950A3
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 14:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E7F4A95133
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 14:44:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13222172037
-	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 12:15:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 284711711C0
+	for <lists+bpf@lfdr.de>; Mon, 21 Apr 2025 12:44:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3580B264A65;
-	Mon, 21 Apr 2025 12:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09980265605;
+	Mon, 21 Apr 2025 12:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DnDpLrr1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b6B9ZQBE"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 881B31E489;
-	Mon, 21 Apr 2025 12:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3F52905;
+	Mon, 21 Apr 2025 12:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745237712; cv=none; b=HZvh/gZ0eCKP2SaP/MhriDx1Jtm80c7qlsJCpCDzg+tcFoCE3YypuKskTNmtM9bEVlPyz8p2diVamLQT4uaetarywsPCkrPr3YcoHkD1fcCRkP7/ZC9XsChEUHHsxTWKcV/drAU4lVobJ4pySksaAZF6oWahpupA3NeP32Ly17Q=
+	t=1745239469; cv=none; b=TS8GAQU8dJVSV/loIbE0Z9wqfEy0ltvD6NOheMc0/6AmgatEk0H9t5BwcVlsUW/lRo3p0PltcGEwUzONS1B52mWNYwTG4EIpoQ6oRyxuUiB6W5se2+sdo5v/FghZag2zAEC80hCqsICv/h5XFa0O9aT1DYu/lMo00KSMwMNmQeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745237712; c=relaxed/simple;
-	bh=NWY7vWz9LzFUvuTqvqdXLpzUQJzDyIOXn3ZAziazYMw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QGZPYuSxFSE3Vl4iqXCTrulFaLUUWdj28gy51UOEAxQG1SRjw/F0rhNVeMQ6vk+zs/uPFIkzibLVeQ3wknpO2y48b1FvmQExzBSEfcWmqEhFgybd9KkAPm9EXwXjXgCoz1peg3zXdciQqRD3KUTUb1tyzTesM/IgZH5oE4hI1ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DnDpLrr1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FFD2C4CEE4;
-	Mon, 21 Apr 2025 12:15:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745237712;
-	bh=NWY7vWz9LzFUvuTqvqdXLpzUQJzDyIOXn3ZAziazYMw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DnDpLrr1aHd6v+YaqiTVi2NrCjjqZu8qRp4T5eBxEGHEGLls9Xv56HZnNIu1x6t0f
-	 dl+gI15q1YitWz+mjG7ItcVAvLiKl6QBqOdWtJqcd+y6fYesCChZ0PO0KBWzqORQwl
-	 B5j03gVqzZ/7JkWoPuTIoRDfvgQkSsUzc7fGCxgSmu0CW4oDj789SP3RnY1mVvkgab
-	 XbdEqHCD2yky9eaO2m4+0OUvRO8bs9+5fl5EdTZFONbgZykPs7lxvp2su+DzZiHlWn
-	 S5V3c/DOm3VClEII7k2kPf1/a6kI0/jT+Q9VJI4gxtOdCP4Ch+9yFGVU+3uAYqhjMe
-	 KmhiBG/k+m5Kw==
-Date: Sun, 20 Apr 2025 14:21:10 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, Gao Xiang <xiang@kernel.org>,
-	Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>,
-	Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Sandeep Dhavale <dhavale@google.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-	Olga Kornievskaia <okorniev@redhat.com>,
-	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
+	s=arc-20240116; t=1745239469; c=relaxed/simple;
+	bh=msmr++qMaRrpMwocl7aVdZOHFvpjPy35z+sljXfcCqs=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IAMyBk0RH1xfgbotu+t2F6PfoUOFAnmBaRojGYHTFpu+fTjlHoV2U8uNod3+w7D7csaLE78F17zq/oWY6wiOoxjGVm9n0acQ/+/v8yfGuTONASZ7Iz+QC//+w80/C0yexwVfEPag5PwOBDWEczXkjiEORXbngwpMreYgLOWxSYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b6B9ZQBE; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5e6c18e2c7dso7392620a12.3;
+        Mon, 21 Apr 2025 05:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745239466; x=1745844266; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q8wgu7iDQ+eyYe+Yv9pFlAr+skkcnHXb23MdhqN0e3I=;
+        b=b6B9ZQBEDNciquwjZkli2pyforkDvngEnRzLTlhSdpxbiL7hw12JVnjuNoM/9fEBqC
+         QxHdDp/IVFJvMzG3ffyIoiMvbh0jshaNZ1AHPRkE9BpfIaNsjRWVJknn8O2vCdgqXGma
+         xq6Lpu7hI7/0+hxkU/hGSHzFaUTYJGM5LfwNNVlOdkUmGZtQUCfMgAbqPlI6uMZP/9uH
+         y/ChHxwJrBgEva57KWYKuJhm1f8aGhajNzw6mkHIv4dCgsYJ6Qxjn6g8VbrBUnreJqJB
+         bcOpeeB5dOPDWAibqiLOTqJ6bm2hAxu3ycOEhabdre7TsX0gexaBYTNY9PSqAqfLZcV+
+         ElAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745239466; x=1745844266;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q8wgu7iDQ+eyYe+Yv9pFlAr+skkcnHXb23MdhqN0e3I=;
+        b=cDwK1eNC8DAXZRL1sPKyYcdIdTeDYlY6L2F4kFws1ZubZ6ANWlQfTH++VdxeNeZYZC
+         OGP1tOsqV6O51cBOktjV7UFA4D9N8PFZwGD76UxgF5vauXn/f3MIk6mXkmc/W2xhFb77
+         y1lF4ycCNSfrnVj+KdL0HvSldvHD10zKJb2oVW1nsWKRvR0U3ynQTqZ/8DAz4RzxPFX3
+         udhPqb/p5etLnDk4LuzwSdxGUF2MzdKxuSUxY/vY7gOntYigu084Hvr2G0yW8SBjsVjG
+         mwJmcunLNSxtHx4yFlGQRI8DSbFgwMeIFhAIijyJZ8zIMfb2qLZ+JTsm5rU9odPAXvTa
+         QCww==
+X-Forwarded-Encrypted: i=1; AJvYcCW+qitfpT7qFU2GnrZff5Ygfx2AGQ4/jQ2ZQ3h6aoYF2X1vGiajhMLIEnJGQqQC0xRxSrxAR6HWjvQtxLxOfCxnxzhP@vger.kernel.org, AJvYcCWOngqATotedxnWYVJOuexdtzd9EtAESy6c+Pj1IJcLk4Kg1dUuavTnGRPdDO5+IyDyMp0=@vger.kernel.org, AJvYcCXtB7UV1IVX7wOZj0OTidlZPFcm7/t7Vj1N5J4jmhJmJhG1Cm3W9Ms9dx72iEJdT8dqoq4xalH9@vger.kernel.org
+X-Gm-Message-State: AOJu0YykVN33eofjSiSHWhAn/3fJ1jlEEN/npIPVe5wFCiJV80GIrSd5
+	wuHe4OrReN8YOpkbO2SR2pSr2rCjLqsgZ4YkzQ9qf/3rtHunO7Lm
+X-Gm-Gg: ASbGncuUzcekS/fBP9y0ODPf/5+qto/l16l27LCIDa7oSltRHzhpcEqLcRqo6bQT9kz
+	7sNNbKo1Bg+71ZI/mc2b9maOtMYirMBCoizupY9kLFd7mzs7xQQAEZ2+UFkTtB0PiYiJLabg3ZP
+	IpwCpzI0ZhCjEJgNhjH1DdzyUoecry8HzZZgzyZMf9FJDu98TMP8CJ3LRllzOEzPPNPLMsfDlPU
+	zRR/vS/Hem68NZ1/3wOgwznyMLFDWNxj0M/+Bcu13kD2ROmBr6egmfV1ZgUhnmvDPuuiKg7Gbhz
+	uCAKZIABso8G1O+27yMeO8Zr1TMZiymAfVWf0wBmC1RUvfk=
+X-Google-Smtp-Source: AGHT+IFKOfPK1H0jKNo8rpw2hwhKgxQI2qhVac83pOeQAKMWP+1BKJj1LGWSLFV72pzppkcN9eu4lw==
+X-Received: by 2002:a17:907:2ce6:b0:abf:6ec7:65e9 with SMTP id a640c23a62f3a-acb74d9b35dmr900858166b.43.1745239465528;
+        Mon, 21 Apr 2025 05:44:25 -0700 (PDT)
+Received: from krava (85-193-35-57.rib.o2.cz. [85.193.35.57])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acb6ec4c673sm513175466b.52.2025.04.21.05.44.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Apr 2025 05:44:25 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 21 Apr 2025 14:44:21 +0200
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	Luiz Capitulino <luizcap@redhat.com>,
-	Mel Gorman <mgorman@techsingularity.net>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
-	linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH v3] mm: alloc_pages_bulk: support both simple and
- full-featured API
-Message-ID: <20250420112110.GA32613@unreal>
-References: <20250414120819.3053967-1-linyunsheng@huawei.com>
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	David Ahern <dsahern@kernel.org>, Juri Lelli <juri.lelli@gmail.com>,
+	Breno Leitao <leitao@debian.org>, netdev@vger.kernel.org,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
+	Gabriele Monaco <gmonaco@redhat.com>
+Subject: Re: [RFC][PATCH] tracepoint: Have tracepoints created with
+ DECLARE_TRACE() have _tp suffix
+Message-ID: <aAY9pcvYHkYKFwZ5@krava>
+References: <20250418110104.12af6883@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,440 +97,211 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250414120819.3053967-1-linyunsheng@huawei.com>
+In-Reply-To: <20250418110104.12af6883@gandalf.local.home>
 
-On Mon, Apr 14, 2025 at 08:08:11PM +0800, Yunsheng Lin wrote:
-> As mentioned in [1], it seems odd to check NULL elements in
-> the middle of page bulk allocating, and it seems caller can
-> do a better job of bulk allocating pages into a whole array
-> sequentially without checking NULL elements first before
-> doing the page bulk allocation for most of existing users
-> by passing 'page_array + allocated' and 'nr_pages - allocated'
-> when calling subsequent page bulk alloc API so that NULL
-> checking can be avoided, see the pattern in mm/mempolicy.c.
+On Fri, Apr 18, 2025 at 11:01:04AM -0400, Steven Rostedt wrote:
+> From: Steven Rostedt <rostedt@goodmis.org>
 > 
-> Through analyzing of existing bulk allocation API users, it
-> seems only the fs users are depending on the assumption of
-> populating only NULL elements, see:
-> commit 91d6ac1d62c3 ("btrfs: allocate page arrays using bulk page allocator")
-> commit d6db47e571dc ("erofs: do not use pagepool in z_erofs_gbuf_growsize()")
-> commit f6e70aab9dfe ("SUNRPC: refresh rq_pages using a bulk page allocator")
-> commit 88e4d41a264d ("SUNRPC: Use __alloc_bulk_pages() in svc_init_buffer()")
+> Most tracepoints in the kernel are created with TRACE_EVENT(). The
+> TRACE_EVENT() macro (and DECLARE_EVENT_CLASS() and DEFINE_EVENT() where in
+> reality, TRACE_EVENT() is just a helper macro that calls those other two
+> macros), will create not only a tracepoint (the function trace_<event>()
+> used in the kernel), it also exposes the tracepoint to user space along
+> with defining what fields will be saved by that tracepoint.
 > 
-> The current API adds a mental burden for most users. For most
-> users, their code would be much cleaner if the interface accepts
-> an uninitialised array with length, and were told how many pages
-> had been stored in that array, so support one simple and one
-> full-featured to meet the above different use cases as below:
-> - alloc_pages_bulk() would be given an uninitialised array of page
->   pointers and a required count and would return the number of
->   pages that were allocated.
-> - alloc_pages_bulk_refill() would be given an initialised array
->   of page pointers some of which might be NULL. It would attempt
->   to allocate pages for the non-NULL pointers, return 0 if all
->   pages are allocated, -EAGAIN if at least one page allocated,
->   ok to try again immediately or -ENOMEM if don't bother trying
->   again soon, which provides a more consistent semantics than the
->   current API as mentioned in [2], at the cost of the pages might
->   be getting re-ordered to make the implementation simpler.
+> There are a few places that tracepoints are created in the kernel that are
+> not exposed to userspace via tracefs. They can only be accessed from code
+> within the kernel. These tracepoints are created with DEFINE_TRACE()
 > 
-> Change the existing fs users to use the full-featured API, except
-> for the one for svc_init_buffer() in net/sunrpc/svc.c. Other
-> existing callers can use the simple API as they seems to be passing
-> all NULL elements via memset, kzalloc, etc, only remove unnecessary
-> memset for existing users calling the simple API in this patch.
+> Most of these tracepoints end with "_tp". This is useful as when the
+> developer sees that, they know that the tracepoint is for in-kernel only
+> and is not exposed to user space.
 > 
-> The test result for xfstests full test:
-> Before this patch:
-> btrfs/default: 1061 tests, 3 failures, 290 skipped, 13152 seconds
->   Failures: btrfs/012 btrfs/226
->   Flaky: generic/301: 60% (3/5)
-> Totals: 1073 tests, 290 skipped, 13 failures, 0 errors, 12540s
+> Instead of making this only a process to add "_tp", enforce it by making
+> the DECLARE_TRACE() append the "_tp" suffix to the tracepoint. This
+> requires adding DECLARE_TRACE_EVENT() macros for the TRACE_EVENT() macro
+> to use that keeps the original name.
 > 
-> nfs/loopback: 530 tests, 3 failures, 392 skipped, 3942 seconds
->   Failures: generic/464 generic/551
->   Flaky: generic/650: 40% (2/5)
-> Totals: 542 tests, 392 skipped, 12 failures, 0 errors, 3799s
+> Link: https://lore.kernel.org/all/20250418083351.20a60e64@gandalf.local.home/
 > 
-> After this patch:
-> btrfs/default: 1061 tests, 2 failures, 290 skipped, 13446 seconds
->   Failures: btrfs/012 btrfs/226
-> Totals: 1069 tests, 290 skipped, 10 failures, 0 errors, 12853s
-> 
-> nfs/loopback: 530 tests, 3 failures, 392 skipped, 4103 seconds
->   Failures: generic/464 generic/551
->   Flaky: generic/650: 60% (3/5)
-> Totals: 542 tests, 392 skipped, 13 failures, 0 errors, 3933s
-> 
-> The stress test also suggest there is no regression for the erofs
-> too.
-> 
-> Using the simple API also enable the caller to not zero the array
-> before calling the page bulk allocating API, which has about 1~2 ns
-> performance improvement for time_bench_page_pool03_slow() test case
-> of page_pool in a x86 vm system, this reduces some performance impact
-> of fixing the DMA API misuse problem in [3], performance improves
-> from 87.886 ns to 86.429 ns.
-> 
-> Also a temporary patch to enable the using of full-featured API in
-> page_pool suggests that the new full-featured API doesn't seem to have
-> noticeable performance impact for the existing users, like SUNRPC, btrfs
-> and erofs.
-> 
-> 1. https://lore.kernel.org/all/bd8c2f5c-464d-44ab-b607-390a87ea4cd5@huawei.com/
-> 2. https://lore.kernel.org/all/180818a1-b906-4a0b-89d3-34cb71cc26c9@huawei.com/
-> 3. https://lore.kernel.org/all/20250212092552.1779679-1-linyunsheng@huawei.com/
-> CC: Jesper Dangaard Brouer <hawk@kernel.org>
-> CC: Luiz Capitulino <luizcap@redhat.com>
-> CC: Mel Gorman <mgorman@techsingularity.net>
-> Suggested-by: Neil Brown <neilb@suse.de>
-> Acked-by: Jeff Layton <jlayton@kernel.org>
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 > ---
-> V3:
-> 1. Provide both simple and full-featured API as suggested by NeilBrown.
-> 2. Do the fs testing as suggested in V2.
+>  include/linux/tracepoint.h   | 38 ++++++++++++++++++++++++------------
+>  include/trace/bpf_probe.h    |  4 ++--
+>  include/trace/define_trace.h | 17 +++++++++++++++-
+>  include/trace/events/sched.h | 30 ++++++++++++++--------------
+>  include/trace/events/tcp.h   |  2 +-
+>  5 files changed, 60 insertions(+), 31 deletions(-)
 > 
-> V2:
-> 1. Drop RFC tag.
-> 2. Fix a compile error for xfs.
-> 3. Defragmemt the page_array for SUNRPC and btrfs.
-> ---
->  drivers/vfio/pci/mlx5/cmd.c       |  2 --
->  drivers/vfio/pci/virtio/migrate.c |  2 --
->  fs/btrfs/extent_io.c              | 21 +++++++++---------
->  fs/erofs/zutil.c                  | 11 +++++----
->  include/linux/gfp.h               | 37 +++++++++++++++++++++++++++++++
->  include/trace/events/sunrpc.h     | 12 +++++-----
->  kernel/bpf/arena.c                |  1 -
->  mm/page_alloc.c                   | 32 +++++---------------------
->  net/core/page_pool.c              |  3 ---
->  net/sunrpc/svc_xprt.c             | 12 ++++++----
->  10 files changed, 72 insertions(+), 61 deletions(-)
-> 
-> diff --git a/drivers/vfio/pci/mlx5/cmd.c b/drivers/vfio/pci/mlx5/cmd.c
-> index 11eda6b207f1..fb094527715f 100644
-> --- a/drivers/vfio/pci/mlx5/cmd.c
-> +++ b/drivers/vfio/pci/mlx5/cmd.c
-> @@ -446,8 +446,6 @@ static int mlx5vf_add_migration_pages(struct mlx5_vhca_data_buffer *buf,
->  		if (ret)
->  			goto err_append;
->  		buf->allocated_length += filled * PAGE_SIZE;
-> -		/* clean input for another bulk allocation */
-> -		memset(page_list, 0, filled * sizeof(*page_list));
->  		to_fill = min_t(unsigned int, to_alloc,
->  				PAGE_SIZE / sizeof(*page_list));
+> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+> index a351763e6965..826ce3f8e1f8 100644
+> --- a/include/linux/tracepoint.h
+> +++ b/include/linux/tracepoint.h
+> @@ -464,16 +464,30 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  #endif
+>  
+>  #define DECLARE_TRACE(name, proto, args)				\
+> -	__DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),		\
+> +	__DECLARE_TRACE(name##_tp, PARAMS(proto), PARAMS(args),		\
+>  			cpu_online(raw_smp_processor_id()),		\
+>  			PARAMS(void *__data, proto))
+>  
+>  #define DECLARE_TRACE_CONDITION(name, proto, args, cond)		\
+> -	__DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),		\
+> +	__DECLARE_TRACE(name##_tp, PARAMS(proto), PARAMS(args),		\
+>  			cpu_online(raw_smp_processor_id()) && (PARAMS(cond)), \
+>  			PARAMS(void *__data, proto))
+>  
+>  #define DECLARE_TRACE_SYSCALL(name, proto, args)			\
+> +	__DECLARE_TRACE_SYSCALL(name##_tp, PARAMS(proto), PARAMS(args),	\
+> +				PARAMS(void *__data, proto))
+> +
+> +#define DECLARE_TRACE_EVENT(name, proto, args)				\
+> +	__DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),		\
+> +			cpu_online(raw_smp_processor_id()),		\
+> +			PARAMS(void *__data, proto))
+> +
+> +#define DECLARE_TRACE_EVENT_CONDITION(name, proto, args, cond)		\
+> +	__DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),		\
+> +			cpu_online(raw_smp_processor_id()) && (PARAMS(cond)), \
+> +			PARAMS(void *__data, proto))
+> +
+> +#define DECLARE_TRACE_EVENT_SYSCALL(name, proto, args)			\
+>  	__DECLARE_TRACE_SYSCALL(name, PARAMS(proto), PARAMS(args),	\
+>  				PARAMS(void *__data, proto))
+>  
+> @@ -591,32 +605,32 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  
+>  #define DECLARE_EVENT_CLASS(name, proto, args, tstruct, assign, print)
+>  #define DEFINE_EVENT(template, name, proto, args)		\
+> -	DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+> +	DECLARE_TRACE_EVENT(name, PARAMS(proto), PARAMS(args))
+>  #define DEFINE_EVENT_FN(template, name, proto, args, reg, unreg)\
+> -	DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+> +	DECLARE_TRACE_EVENT(name, PARAMS(proto), PARAMS(args))
+>  #define DEFINE_EVENT_PRINT(template, name, proto, args, print)	\
+> -	DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+> +	DECLARE_TRACE_EVENT(name, PARAMS(proto), PARAMS(args))
+>  #define DEFINE_EVENT_CONDITION(template, name, proto,		\
+>  			       args, cond)			\
+> -	DECLARE_TRACE_CONDITION(name, PARAMS(proto),		\
+> +	DECLARE_TRACE_EVENT_CONDITION(name, PARAMS(proto),	\
+>  				PARAMS(args), PARAMS(cond))
+>  
+>  #define TRACE_EVENT(name, proto, args, struct, assign, print)	\
+> -	DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+> +	DECLARE_TRACE_EVENT(name, PARAMS(proto), PARAMS(args))
+>  #define TRACE_EVENT_FN(name, proto, args, struct,		\
+>  		assign, print, reg, unreg)			\
+> -	DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+> -#define TRACE_EVENT_FN_COND(name, proto, args, cond, struct,		\
+> +	DECLARE_TRACE_EVENT(name, PARAMS(proto), PARAMS(args))
+> +#define TRACE_EVENT_FN_COND(name, proto, args, cond, struct,	\
+>  		assign, print, reg, unreg)			\
+> -	DECLARE_TRACE_CONDITION(name, PARAMS(proto),	\
+> +	DECLARE_TRACE_EVENT_CONDITION(name, PARAMS(proto),	\
+>  			PARAMS(args), PARAMS(cond))
+>  #define TRACE_EVENT_CONDITION(name, proto, args, cond,		\
+>  			      struct, assign, print)		\
+> -	DECLARE_TRACE_CONDITION(name, PARAMS(proto),		\
+> +	DECLARE_TRACE_EVENT_CONDITION(name, PARAMS(proto),	\
+>  				PARAMS(args), PARAMS(cond))
+>  #define TRACE_EVENT_SYSCALL(name, proto, args, struct, assign,	\
+>  			    print, reg, unreg)			\
+> -	DECLARE_TRACE_SYSCALL(name, PARAMS(proto), PARAMS(args))
+> +	DECLARE_TRACE_EVENT_SYSCALL(name, PARAMS(proto), PARAMS(args))
+>  
+>  #define TRACE_EVENT_FLAGS(event, flag)
+>  
+> diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+> index 183fa2aa2935..fbfe83b939ac 100644
+> --- a/include/trace/bpf_probe.h
+> +++ b/include/trace/bpf_probe.h
+> @@ -119,8 +119,8 @@ static inline void bpf_test_buffer_##call(void)				\
+>  
+>  #undef DECLARE_TRACE
+>  #define DECLARE_TRACE(call, proto, args)				\
+> -	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))		\
+> -	__DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), 0)
+> +	__BPF_DECLARE_TRACE(call##_tp, PARAMS(proto), PARAMS(args))		\
+> +	__DEFINE_EVENT(call##_tp, call##_tp, PARAMS(proto), PARAMS(args), 0)
+>  
+>  #undef DECLARE_TRACE_WRITABLE
+>  #define DECLARE_TRACE_WRITABLE(call, proto, args, size) \
 
-If it is possible, let's drop this hunk to reduce merge conflicts.
-The whole mlx5vf_add_migration_pages() is planned to be rewritten.
-https://lore.kernel.org/linux-rdma/076a3991e663fe07c1a5395f5805c514b63e4d94.1744825142.git.leon@kernel.org/
+hi,
+do we need the change also for DECLARE_TRACE_WRITABLE?
+I needed change below for bpf selftest kmod
 
-Thanks
+jirka
 
 
->  	} while (to_alloc > 0);
-> diff --git a/drivers/vfio/pci/virtio/migrate.c b/drivers/vfio/pci/virtio/migrate.c
-> index ba92bb4e9af9..9f003a237dec 100644
-> --- a/drivers/vfio/pci/virtio/migrate.c
-> +++ b/drivers/vfio/pci/virtio/migrate.c
-> @@ -91,8 +91,6 @@ static int virtiovf_add_migration_pages(struct virtiovf_data_buffer *buf,
->  		if (ret)
->  			goto err_append;
->  		buf->allocated_length += filled * PAGE_SIZE;
-> -		/* clean input for another bulk allocation */
-> -		memset(page_list, 0, filled * sizeof(*page_list));
->  		to_fill = min_t(unsigned int, to_alloc,
->  				PAGE_SIZE / sizeof(*page_list));
->  	} while (to_alloc > 0);
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 197f5e51c474..51ef15703900 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -623,21 +623,22 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
->  			   bool nofail)
->  {
->  	const gfp_t gfp = nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NOFS;
-> -	unsigned int allocated;
-> -
-> -	for (allocated = 0; allocated < nr_pages;) {
-> -		unsigned int last = allocated;
-> +	int ret;
->  
-> -		allocated = alloc_pages_bulk(gfp, nr_pages, page_array);
-> -		if (unlikely(allocated == last)) {
-> +	do {
-> +		ret = alloc_pages_bulk_refill(gfp, nr_pages, page_array);
-> +		if (unlikely(ret == -ENOMEM)) {
->  			/* No progress, fail and do cleanup. */
-> -			for (int i = 0; i < allocated; i++) {
-> -				__free_page(page_array[i]);
-> -				page_array[i] = NULL;
-> +			for (int i = 0; i < nr_pages; i++) {
-> +				if (page_array[i]) {
-> +					__free_page(page_array[i]);
-> +					page_array[i] = NULL;
-> +				}
->  			}
->  			return -ENOMEM;
->  		}
-> -	}
-> +	} while (ret == -EAGAIN);
-> +
->  	return 0;
->  }
->  
-> diff --git a/fs/erofs/zutil.c b/fs/erofs/zutil.c
-> index 55ff2ab5128e..6ce11a8a261c 100644
-> --- a/fs/erofs/zutil.c
-> +++ b/fs/erofs/zutil.c
-> @@ -68,7 +68,7 @@ int z_erofs_gbuf_growsize(unsigned int nrpages)
->  	struct page **tmp_pages = NULL;
->  	struct z_erofs_gbuf *gbuf;
->  	void *ptr, *old_ptr;
-> -	int last, i, j;
-> +	int ret, i, j;
->  
->  	mutex_lock(&gbuf_resize_mutex);
->  	/* avoid shrinking gbufs, since no idea how many fses rely on */
-> @@ -86,12 +86,11 @@ int z_erofs_gbuf_growsize(unsigned int nrpages)
->  		for (j = 0; j < gbuf->nrpages; ++j)
->  			tmp_pages[j] = gbuf->pages[j];
->  		do {
-> -			last = j;
-> -			j = alloc_pages_bulk(GFP_KERNEL, nrpages,
-> -					     tmp_pages);
-> -			if (last == j)
-> +			ret = alloc_pages_bulk_refill(GFP_KERNEL, nrpages,
-> +						      tmp_pages);
-> +			if (ret == -ENOMEM)
->  				goto out;
-> -		} while (j != nrpages);
-> +		} while (ret == -EAGAIN);
->  
->  		ptr = vmap(tmp_pages, nrpages, VM_MAP, PAGE_KERNEL);
->  		if (!ptr)
-> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> index c9fa6309c903..cf6100981fd6 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -244,6 +244,43 @@ unsigned long alloc_pages_bulk_mempolicy_noprof(gfp_t gfp,
->  #define alloc_pages_bulk(_gfp, _nr_pages, _page_array)		\
->  	__alloc_pages_bulk(_gfp, numa_mem_id(), NULL, _nr_pages, _page_array)
->  
-> +/*
-> + * alloc_pages_bulk_refill_noprof - Refill order-0 pages to an array
-> + * @gfp: GFP flags for the allocation when refilling
-> + * @nr_pages: The size of refilling array
-> + * @page_array: The array to refill order-0 pages
-> + *
-> + * Note that only NULL elements are populated with pages and the pages might
-> + * get re-ordered.
-> + *
-> + * Return 0 if all pages are refilled, -EAGAIN if at least one page is refilled,
-> + * ok to try again immediately or -ENOMEM if no page is refilled and don't
-> + * bother trying again soon.
-> + */
-> +static inline int alloc_pages_bulk_refill_noprof(gfp_t gfp, int nr_pages,
-> +						 struct page **page_array)
-> +{
-> +	int allocated = 0, i;
-> +
-> +	for (i = 0; i < nr_pages; i++) {
-> +		if (page_array[i]) {
-> +			swap(page_array[allocated], page_array[i]);
-> +			allocated++;
-> +		}
-> +	}
-> +
-> +	i = alloc_pages_bulk_noprof(gfp, numa_mem_id(), NULL,
-> +				    nr_pages - allocated,
-> +				    page_array + allocated);
-> +	if (likely(allocated + i == nr_pages))
-> +		return 0;
-> +
-> +	return i ? -EAGAIN : -ENOMEM;
-> +}
-> +
-> +#define alloc_pages_bulk_refill(...)				\
-> +	alloc_hooks(alloc_pages_bulk_refill_noprof(__VA_ARGS__))
-> +
->  static inline unsigned long
->  alloc_pages_bulk_node_noprof(gfp_t gfp, int nid, unsigned long nr_pages,
->  				   struct page **page_array)
-> diff --git a/include/trace/events/sunrpc.h b/include/trace/events/sunrpc.h
-> index 5d331383047b..cb8899f1cbdc 100644
-> --- a/include/trace/events/sunrpc.h
-> +++ b/include/trace/events/sunrpc.h
-> @@ -2143,23 +2143,23 @@ TRACE_EVENT(svc_wake_up,
->  TRACE_EVENT(svc_alloc_arg_err,
->  	TP_PROTO(
->  		unsigned int requested,
-> -		unsigned int allocated
-> +		int ret
->  	),
->  
-> -	TP_ARGS(requested, allocated),
-> +	TP_ARGS(requested, ret),
->  
->  	TP_STRUCT__entry(
->  		__field(unsigned int, requested)
-> -		__field(unsigned int, allocated)
-> +		__field(int, ret)
->  	),
->  
->  	TP_fast_assign(
->  		__entry->requested = requested;
-> -		__entry->allocated = allocated;
-> +		__entry->ret = ret;
->  	),
->  
-> -	TP_printk("requested=%u allocated=%u",
-> -		__entry->requested, __entry->allocated)
-> +	TP_printk("requested=%u ret=%d",
-> +		__entry->requested, __entry->ret)
->  );
->  
->  DECLARE_EVENT_CLASS(svc_deferred_event,
-> diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-> index 0d56cea71602..9022c4440814 100644
-> --- a/kernel/bpf/arena.c
-> +++ b/kernel/bpf/arena.c
-> @@ -445,7 +445,6 @@ static long arena_alloc_pages(struct bpf_arena *arena, long uaddr, long page_cnt
->  			return 0;
->  	}
->  
-> -	/* zeroing is needed, since alloc_pages_bulk() only fills in non-zero entries */
->  	pages = kvcalloc(page_cnt, sizeof(struct page *), GFP_KERNEL);
->  	if (!pages)
->  		return 0;
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index d7cfcfa2b077..59a4fe23e62a 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4784,9 +4784,6 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
->   * This is a batched version of the page allocator that attempts to
->   * allocate nr_pages quickly. Pages are added to the page_array.
->   *
-> - * Note that only NULL elements are populated with pages and nr_pages
-> - * is the maximum number of pages that will be stored in the array.
-> - *
->   * Returns the number of pages in the array.
->   */
->  unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
-> @@ -4802,29 +4799,18 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
->  	struct alloc_context ac;
->  	gfp_t alloc_gfp;
->  	unsigned int alloc_flags = ALLOC_WMARK_LOW;
-> -	int nr_populated = 0, nr_account = 0;
-> -
-> -	/*
-> -	 * Skip populated array elements to determine if any pages need
-> -	 * to be allocated before disabling IRQs.
-> -	 */
-> -	while (nr_populated < nr_pages && page_array[nr_populated])
-> -		nr_populated++;
-> +	int nr_populated = 0;
->  
->  	/* No pages requested? */
->  	if (unlikely(nr_pages <= 0))
->  		goto out;
->  
-> -	/* Already populated array? */
-> -	if (unlikely(nr_pages - nr_populated == 0))
-> -		goto out;
-> -
->  	/* Bulk allocator does not support memcg accounting. */
->  	if (memcg_kmem_online() && (gfp & __GFP_ACCOUNT))
->  		goto failed;
->  
->  	/* Use the single page allocator for one page. */
-> -	if (nr_pages - nr_populated == 1)
-> +	if (nr_pages == 1)
->  		goto failed;
->  
->  #ifdef CONFIG_PAGE_OWNER
-> @@ -4896,24 +4882,16 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
->  	/* Attempt the batch allocation */
->  	pcp_list = &pcp->lists[order_to_pindex(ac.migratetype, 0)];
->  	while (nr_populated < nr_pages) {
-> -
-> -		/* Skip existing pages */
-> -		if (page_array[nr_populated]) {
-> -			nr_populated++;
-> -			continue;
-> -		}
-> -
->  		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
->  								pcp, pcp_list);
->  		if (unlikely(!page)) {
->  			/* Try and allocate at least one page */
-> -			if (!nr_account) {
-> +			if (!nr_populated) {
->  				pcp_spin_unlock(pcp);
->  				goto failed_irq;
->  			}
->  			break;
->  		}
-> -		nr_account++;
->  
->  		prep_new_page(page, 0, gfp, 0);
->  		set_page_refcounted(page);
-> @@ -4923,8 +4901,8 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
->  	pcp_spin_unlock(pcp);
->  	pcp_trylock_finish(UP_flags);
->  
-> -	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
-> -	zone_statistics(zonelist_zone(ac.preferred_zoneref), zone, nr_account);
-> +	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_populated);
-> +	zone_statistics(zonelist_zone(ac.preferred_zoneref), zone, nr_populated);
->  
->  out:
->  	return nr_populated;
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 7745ad924ae2..2431d2f6d610 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -541,9 +541,6 @@ static noinline netmem_ref __page_pool_alloc_pages_slow(struct page_pool *pool,
->  	if (unlikely(pool->alloc.count > 0))
->  		return pool->alloc.cache[--pool->alloc.count];
->  
-> -	/* Mark empty alloc.cache slots "empty" for alloc_pages_bulk */
-> -	memset(&pool->alloc.cache, 0, sizeof(void *) * bulk);
-> -
->  	nr_pages = alloc_pages_bulk_node(gfp, pool->p.nid, bulk,
->  					 (struct page **)pool->alloc.cache);
->  	if (unlikely(!nr_pages))
-> diff --git a/net/sunrpc/svc_xprt.c b/net/sunrpc/svc_xprt.c
-> index ae25405d8bd2..1191686fc0af 100644
-> --- a/net/sunrpc/svc_xprt.c
-> +++ b/net/sunrpc/svc_xprt.c
-> @@ -653,7 +653,8 @@ static bool svc_alloc_arg(struct svc_rqst *rqstp)
->  {
->  	struct svc_serv *serv = rqstp->rq_server;
->  	struct xdr_buf *arg = &rqstp->rq_arg;
-> -	unsigned long pages, filled, ret;
-> +	unsigned long pages;
-> +	int ret;
->  
->  	pages = (serv->sv_max_mesg + 2 * PAGE_SIZE) >> PAGE_SHIFT;
->  	if (pages > RPCSVC_MAXPAGES) {
-> @@ -663,9 +664,12 @@ static bool svc_alloc_arg(struct svc_rqst *rqstp)
->  		pages = RPCSVC_MAXPAGES;
->  	}
->  
-> -	for (filled = 0; filled < pages; filled = ret) {
-> -		ret = alloc_pages_bulk(GFP_KERNEL, pages, rqstp->rq_pages);
-> -		if (ret > filled)
-> +	while (true) {
-> +		ret = alloc_pages_bulk_refill(GFP_KERNEL, pages, rqstp->rq_pages);
-> +		if (!ret)
-> +			break;
-> +
-> +		if (ret == -EAGAIN)
->  			/* Made progress, don't sleep yet */
->  			continue;
->  
-> -- 
-> 2.33.0
-> 
+---
+diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+index fbfe83b939ac..9391d54d3f12 100644
+--- a/include/trace/bpf_probe.h
++++ b/include/trace/bpf_probe.h
+@@ -125,8 +125,8 @@ static inline void bpf_test_buffer_##call(void)				\
+ #undef DECLARE_TRACE_WRITABLE
+ #define DECLARE_TRACE_WRITABLE(call, proto, args, size) \
+ 	__CHECK_WRITABLE_BUF_SIZE(call, PARAMS(proto), PARAMS(args), size) \
+-	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args)) \
+-	__DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), size)
++	__BPF_DECLARE_TRACE(call##_tp, PARAMS(proto), PARAMS(args)) \
++	__DEFINE_EVENT(call##_tp, call##_tp, PARAMS(proto), PARAMS(args), size)
+ 
+ #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+ 
+diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h b/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
+index aeef86b3da74..2bac14ef507f 100644
+--- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
++++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod-events.h
+@@ -42,7 +42,7 @@ DECLARE_TRACE(bpf_testmod_test_nullable_bare,
+ 
+ struct sk_buff;
+ 
+-DECLARE_TRACE(bpf_testmod_test_raw_tp_null,
++DECLARE_TRACE(bpf_testmod_test_raw_null,
+ 	TP_PROTO(struct sk_buff *skb),
+ 	TP_ARGS(skb)
+ );
+diff --git a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+index f38eaf0d35ef..dd9b806d255e 100644
+--- a/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/test_kmods/bpf_testmod.c
+@@ -413,7 +413,7 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+ 
+ 	(void)bpf_testmod_test_arg_ptr_to_struct(&struct_arg1_2);
+ 
+-	(void)trace_bpf_testmod_test_raw_tp_null(NULL);
++	(void)trace_bpf_testmod_test_raw_null_tp(NULL);
+ 
+ 	bpf_testmod_test_struct_ops3();
+ 
+@@ -431,14 +431,14 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+ 	if (bpf_testmod_loop_test(101) > 100)
+ 		trace_bpf_testmod_test_read(current, &ctx);
+ 
+-	trace_bpf_testmod_test_nullable_bare(NULL);
++	trace_bpf_testmod_test_nullable_bare_tp(NULL);
+ 
+ 	/* Magic number to enable writable tp */
+ 	if (len == 64) {
+ 		struct bpf_testmod_test_writable_ctx writable = {
+ 			.val = 1024,
+ 		};
+-		trace_bpf_testmod_test_writable_bare(&writable);
++		trace_bpf_testmod_test_writable_bare_tp(&writable);
+ 		if (writable.early_ret)
+ 			return snprintf(buf, len, "%d\n", writable.val);
+ 	}
+@@ -470,7 +470,7 @@ bpf_testmod_test_write(struct file *file, struct kobject *kobj,
+ 		.len = len,
+ 	};
+ 
+-	trace_bpf_testmod_test_write_bare(current, &ctx);
++	trace_bpf_testmod_test_write_bare_tp(current, &ctx);
+ 
+ 	return -EIO; /* always fail */
+ }
 
