@@ -1,154 +1,183 @@
-Return-Path: <bpf+bounces-56460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA403A97AC5
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 00:58:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5272FA97AD5
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 01:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A7A57A745E
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 22:57:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02294188C942
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 23:01:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7029E2C2AD6;
-	Tue, 22 Apr 2025 22:58:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3A42D1F7F;
+	Tue, 22 Apr 2025 23:01:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Enc5uyOm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pfq9132/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAE31EE7DD;
-	Tue, 22 Apr 2025 22:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F591F1513;
+	Tue, 22 Apr 2025 23:01:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745362692; cv=none; b=mNf6vsl9l+WzX2IK3QVzjwxuu0ogtfj3JBDhC7pE6ojCLUGMplW5ftDokHbfAV/d09rZHagZAJ4wITDpm/rzuwVB2E6/z7iJFfuC1ijXefxnjxgZ07Btda7bM7QHmDP/BehVxrr/Vpx3KzTTgMY3UEYkY+Xiacaqao/kE/UoMuE=
+	t=1745362865; cv=none; b=YueWqgxHvLVbF9Cda8axlOMLEtwTLV+1Fw9pa4l08AHUj8ZIZM3BfmkVjUeYXGh+QAz00D/JCkJLUQi4R4XLzwQBYQLho59k6dshuCcrKQXARn/s6gHChtnRQUJYJbF9zo9L6wHCiZFIb1jB8/HVtiu8YzxdWuF0dt7rPC29RdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745362692; c=relaxed/simple;
-	bh=qhoCRr6iJ4JDLDgkjS7q5wQsu+zo9f5E/xP7W721KYM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S2DKYlDkhIpSIb12FtLfKef3BJB2ZM7pp0Wdy3n9HFDZj/XoZe2e/CMZ3DU2LrSEYynJ/JkWxfI34tqy27YGYH2/iYAqetBV4xxHHtTc6Cas5HkJz2J3FQKnDQQXvsUgLyPRrKBohhnDphJhX9v/Arpda1paq4keqQp9tdpz4nA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Enc5uyOm; arc=none smtp.client-ip=209.85.214.171
+	s=arc-20240116; t=1745362865; c=relaxed/simple;
+	bh=8JLF2kTnUxbyf0UW2316oQSHAYFIYLkSY+DWIkmWLOQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nTrRNaYtk40s7XM7tRHkpL/Kod3t7/4GlUKkjDralBaVz5b6DdX5Os8W/WnBeodwUfxz2jROgRissFvVYDp6DiCd/7gdJTOxglLd6E9W6Yx9vQA8iABdUdV1rsIWDF718+ZtTpzymcn0oM6NiQtzbCQwMRxW2lka7eJSbZSSMBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pfq9132/; arc=none smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-227c7e57da2so50486765ad.0;
-        Tue, 22 Apr 2025 15:58:10 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-39efc1365e4so2074374f8f.1;
+        Tue, 22 Apr 2025 16:01:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745362690; x=1745967490; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=g4+iUhVe7p621IQ4rwytm2VMPB/Jrbhsqc2u60r7Vr8=;
-        b=Enc5uyOmJyyj6YrMRhlPm9GHn0rVAAinO1qWl7tfHs/1VYoyelSY6whgqhart3+T0y
-         iKkUvwFN5098bH4sYBTM7G5ODFeOEfvBQjfeM7L7lpu3qwt59LqY+jbSfSDDElnvh8Vs
-         PrSvSiChT9j1A3iI5Il4tW35ZKMKRnju6u7OqsKZIWwr/+mQSET6f7DOVCFhXYpJZYws
-         LCH6DktUg/AFrq75PxaoaJDoAM/11DvaHVDYIGeKH5Ui9EVmz5wCl7GC/ImwhbC+wW/b
-         jtV1uGKiCUtrzNItYjsFZYIgpn+/76YPFgttsK6/xkdABu+z9EdNdMUWBIPnLqGsIscQ
-         XMsg==
+        d=gmail.com; s=20230601; t=1745362862; x=1745967662; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5DZZs3urMIkgKkax6S198AR9JC9qXI5Y4B01yv+Q6cc=;
+        b=Pfq9132/PjhJwq3WGF+mT9DBmJDwBGb8glcX7P+SyBY3pba9HjnoWSdB3pgLiwnJJR
+         +2bDM/qYxY6H0gjoF5B2TWenmjUCNY09+7oO/Ug/UGOacIgkop+PbhJQFm7+9Ft1c3IT
+         Qiv2bOMxHaOhntm2IYffB7hAkfguc1cbVKeUx/KDXCa+53LP+ecAfjQaW8Ie8XBQuxda
+         Z+nAkvLsDB7xPrvZhk2rmOhP7zXiamBdJx8BjzX0HwX2cFO5Il0NxgL3Mq5ZcuAtFx4J
+         sKEDIbKfF34LKeFTbdoRF7hH+NE14waCxpgrw9pFgnYnItGcFE+ItToUy5ceTXU3g+DT
+         lKQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745362690; x=1745967490;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g4+iUhVe7p621IQ4rwytm2VMPB/Jrbhsqc2u60r7Vr8=;
-        b=syPfK4bsH8nbD/GQ/A4TZveHSadf9Jw9tsvL1ng96UewjvLlG5l84wljAnYbZqy65P
-         aZ5a1GOoJMG7hmvpIiGET6F0xFKL2dOGoBA5swxzonkCl8lf8a+zwTTTaxAWA1YACPtr
-         xPrTLlEOPxnrYNeihua5Zjq0ymD1SiRuLwkmbV6sUNvUFvcpJdH8BhAVGKOhGYiH3VrP
-         aa4xXQiMyBKKTT0QlfGgWUDCwMN+E+TbDge5ZAmSjpgAmPz4qc/eyfjglck+orJXgDzi
-         IocxGA77IizIeZQBi4nGkH5a3Z4phRLCpuvtIN82oZOq5CknDnEsc+0tuIip5du0Zh/J
-         BcxQ==
-X-Gm-Message-State: AOJu0YyDKgd7qqm/cXGFQtFKnwiXtSarGgYjG4aRiw+DUUgylTgkPts2
-	TdsISnh3X6/QQKUHOLMCKA7Y/CtVtvOTzUkUHdn1zIoZDydX7SYs7qJVEQ==
-X-Gm-Gg: ASbGncu+ihrzOVjryW4OwzG3BcJoCBcLTgOyKn2x93JHkS0UH6H4KhoGd4xRUYUhHSo
-	mpMKsAxBeeEmBTZFTJe8ZbH1PuuRC/v5ktS/crrhfFo3HIu4cg2jf+hr/P8cAri4PuuXYNcvlEP
-	mDNkFTqDf7Oa5s1c77HlYnoDAD+ChH8GzbRI8tWWyhTcuR655yUnFbiXVevHoRfPn9HmFWobCxt
-	U7uxlqF0g5Ys4jsKAYJgs4DYvjL2JB2CkUga2iM8dW7I0IIBEVUG5OV8vU9i0R6KulSvKAJzC2I
-	jhjEaItfbQjEeqDZ2BJufte/nWOz+Yqj3ZGGa9MTqA==
-X-Google-Smtp-Source: AGHT+IFwK/lAXaOceQuK5Hi0GaDdk7yxxO7EC4ESy6jL8Ksqb4no5JEI1f7zjK7yyRvDNqWW40Ia8w==
-X-Received: by 2002:a17:902:ea07:b0:223:88af:2c30 with SMTP id d9443c01a7336-22c5357f3b2mr224090895ad.16.1745362689627;
-        Tue, 22 Apr 2025 15:58:09 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:6::])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22c50bde12bsm91100035ad.40.2025.04.22.15.58.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Apr 2025 15:58:09 -0700 (PDT)
-From: Amery Hung <ameryhung@gmail.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	alexei.starovoitov@gmail.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org,
-	xiyou.wangcong@gmail.com,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next/net] bpf: net_sched: Fix using bpf qdisc as default qdisc
-Date: Tue, 22 Apr 2025 15:58:08 -0700
-Message-ID: <20250422225808.3900221-1-ameryhung@gmail.com>
-X-Mailer: git-send-email 2.47.1
+        d=1e100.net; s=20230601; t=1745362862; x=1745967662;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5DZZs3urMIkgKkax6S198AR9JC9qXI5Y4B01yv+Q6cc=;
+        b=J4DTII4Jdz45/K3P79r8L3zg9qAtiyZlTLuz1QyRXEmM2ng5t0bHZE/WQXhJBjcF4M
+         242NV0pg6P2IBVMqLa2/xTvE6Qtr87vH0z1usX6SXIXuswHcBG0Q/No7qBQV+Ly67wx3
+         UnF/58N1WGwPnO9HwhFi05l0kX+fiYdCgulsLnWFd77cF9aDLD1n45dHD8mZ78Bw8URb
+         9M7iU5fYcKbRPOmyU3sR/8YktXjM8wTg7IUqqV34SC0y3iGPh7xzwmGdzp945Oa30VPA
+         wpJvlVQE4lG/cwIlZPA3KaR4iSi+Aw6/zHZXeHHJDv56/5Atvk3YDS1XatMCpSi3WXkQ
+         WYmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUFFa6BxPvBAn/KQ0Wtoc0pKo88RJl2Xcy1eBaplOUvJXCZclAe9vJZLYwpRq9BjhOnp8bkOxYV4xHHmWI=@vger.kernel.org, AJvYcCUTpH20dLPnwyDAjMHoQv8oCt9IiSvfZvQcdhK3/gIf0tRqrC1c+dxfi1RD84ssb/TiKiSo93L+AsQ2NZu1@vger.kernel.org, AJvYcCVGkd6S9C+aSJ5ODVdM4d+U6htSpQHKQrNG1yjDnL2TroOxUo16sWB8hS24zAlhjA7ikCaJvj5w/RI68weu6Z9Q@vger.kernel.org, AJvYcCW1QHMsP/gJdAAHk0l2t6jInP2uGCWE9Xbe9MN10rBNfwX/legrzFNnpG8cUFfCLiAS5gw=@vger.kernel.org, AJvYcCWU4jLV8aWI4aGdOha7dc+PQLEEkHrodj5y8bRk4RwgDEido3gVo7tqjfI80vqSFRshRo6PUa+o6G4l@vger.kernel.org
+X-Gm-Message-State: AOJu0YzvARnjr7LmBFUco04rDfjevlvs3z6Tic31vt9kFSNcBBNdVt7g
+	rMNO4wssghAnd5wmVAqx7Rb1/0CNh66A38/Ax5jTzpzUKJdP7egycx2Y8HYEWR0zQSfmX0xiuIz
+	msM4uwKvY1eAvn57FjvvQ8nx/KS4=
+X-Gm-Gg: ASbGncuroFtncHULWIfWhjVRSkqKXbcVoDu+4PHc5s7SjMxGmwTBn56wXC+l/agGPmk
+	wjIDhOtyiN66RSOm2+Jxv/itJMlDgNC3xsI7RUpZ4kj7P0/JANEdMaQDPXg4b+XulktaMLuVdHP
+	ksTEn98mmDfLBI95zAQWC5XodQHJr9axXh+a5byw==
+X-Google-Smtp-Source: AGHT+IGt6+T2kc0TlT5ebzJdvJefOqUojkLn0RGemaQgYEJUKgmj/RrlmcHqYXf+vn/5+dgoo13LpO7auPqItYTUqRE=
+X-Received: by 2002:a5d:5983:0:b0:39f:ef3:b51b with SMTP id
+ ffacd0b85a97d-39f0ef3b57amr4988601f8f.32.1745362861514; Tue, 22 Apr 2025
+ 16:01:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250414225227.3642618-1-tjmercier@google.com>
+ <20250414225227.3642618-3-tjmercier@google.com> <CAPhsuW54g5YCmLVX=cc3m2nfQTZrMH+6ZMBgouEMMfqcccOtww@mail.gmail.com>
+ <CABdmKX1OqLLsY5+LSMU-c=DDUxTFaivNcyXG3ntD8D0ty1Pwig@mail.gmail.com>
+ <CAADnVQ+0PXgm_VuSJDKwr9iomxFLuG-=Chi2Ya3k0YPnKaex_w@mail.gmail.com> <CABdmKX1aMuyPTNXD72wXyXAfOi6f58DfcaBDh6uDo0EQ7pKChw@mail.gmail.com>
+In-Reply-To: <CABdmKX1aMuyPTNXD72wXyXAfOi6f58DfcaBDh6uDo0EQ7pKChw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 22 Apr 2025 16:00:50 -0700
+X-Gm-Features: ATxdqUFV6-ZmprAqwitymw1JEAl4xKZ0kwOCrx-SEEYutS3W3o6khh6mDKj5Uhw
+Message-ID: <CAADnVQ+AesNdq_LB+MWxLnHbU08Zrn-8VgwY4+0PKuk7PmRd+w@mail.gmail.com>
+Subject: Re: [PATCH 2/4] bpf: Add dmabuf iterator
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Song Liu <song@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Shuah Khan <skhan@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linaro-mm-sig@lists.linaro.org, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, android-mm@google.com, simona@ffwll.ch, 
+	Jonathan Corbet <corbet@lwn.net>, Eduard <eddyz87@gmail.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Use bpf_try_module_get()/bpf_module_put() instead of try_module_get()/
-module_put() when handling default qdisc since users can assign a bpf
-qdisc to it.
+On Tue, Apr 22, 2025 at 12:57=E2=80=AFPM T.J. Mercier <tjmercier@google.com=
+> wrote:
+>
+> On Mon, Apr 21, 2025 at 4:39=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Apr 21, 2025 at 1:40=E2=80=AFPM T.J. Mercier <tjmercier@google.=
+com> wrote:
+> > >
+> > > > > new file mode 100644
+> > > > > index 000000000000..b4b8be1d6aa4
+> > > > > --- /dev/null
+> > > > > +++ b/kernel/bpf/dmabuf_iter.c
+> > > >
+> > > > Maybe we should add this file to drivers/dma-buf. I would like to
+> > > > hear other folks thoughts on this.
+> > >
+> > > This is fine with me, and would save us the extra
+> > > CONFIG_DMA_SHARED_BUFFER check that's currently needed in
+> > > kernel/bpf/Makefile but would require checking CONFIG_BPF instead.
+> > > Sumit / Christian any objections to moving the dmabuf bpf iterator
+> > > implementation into drivers/dma-buf?
+> >
+> > The driver directory would need to 'depends on BPF_SYSCALL'.
+> > Are you sure you want this?
+> > imo kernel/bpf/ is fine for this.
+>
+> I don't have a strong preference so either way is fine with me. The
+> main difference I see is maintainership.
+>
+> > You also probably want
+> > .feature                =3D BPF_ITER_RESCHED
+> > in bpf_dmabuf_reg_info.
+>
+> Thank you, this looks like a good idea.
+>
+> > Also have you considered open coded iterator for dmabufs?
+> > Would it help with the interface to user space?
+>
+> I read through the open coded iterator patches, and it looks like they
+> would be slightly more efficient by avoiding seq_file overhead. As far
+> as the interface to userspace, for the purpose of replacing what's
+> currently exposed by CONFIG_DMABUF_SYSFS_STATS I don't think there is
+> a difference. However it looks like if I were to try to replace all of
+> our userspace analysis of dmabufs with a single bpf program then an
+> open coded iterator would make that much easier. I had not considered
+> attempting that.
+>
+> One problem I see with open coded iterators is that support is much
+> more recent (2023 vs 2020). We support longterm stable kernels (back
+> to 5.4 currently but probably 5.10 by the time this would be used), so
+> it seems like it would be harder to backport the kernel support for an
+> open-coded iterator that far since it only goes back as far as 6.6
+> now. Actually it doesn't look like it is possible while also
+> maintaining the stable ABI we provide to device vendors. Which means
+> we couldn't get rid of the dmabuf sysfs stats userspace dependency
+> until 6.1 EOL in Dec. 2027. :\ So I'm in favor of a traditional bpf
+> iterator here for now.
 
-To trigger the bug:
-$ bpftool struct_ops register bpf_qdisc_fq.bpf.o /sys/fs/bpf
-$ echo bpf_fq > /proc/sys/net/core/default_qdisc
+Fair enough, but please implement both and backport only
+the old style pinned iterator.
+The code will be mostly shared between them.
+bpf_iter_dmabuf_new/_next will be more flexible with more
+options to return data to user space. Like android can invent
+their own binary format. Pack into it in a bpf prog, send to
+bpf ringbuf and unmarshal efficiently in user space.
+Instead of being limited to text output that pinned iterators
+are supposed to do usually.
+You can do binary with bpf_seq_write() too, but it's rare.
 
-Fixes: c8240344956e (bpf: net_sched: Support implementation of Qdisc_ops in bpf)
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
----
- net/sched/sch_api.c     | 4 ++--
- net/sched/sch_generic.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Also please provide full bpf prog that you'll use in production
+in a selftest instead of trivial:
++SEC("iter/dmabuf")
++int dmabuf_collector(struct bpf_iter__dmabuf *ctx)
 
-diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
-index db6330258dda..1cda7e7feb32 100644
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -208,7 +208,7 @@ static struct Qdisc_ops *qdisc_lookup_default(const char *name)
- 
- 	for (q = qdisc_base; q; q = q->next) {
- 		if (!strcmp(name, q->id)) {
--			if (!try_module_get(q->owner))
-+			if (!bpf_try_module_get(q, q->owner))
- 				q = NULL;
- 			break;
- 		}
-@@ -238,7 +238,7 @@ int qdisc_set_default(const char *name)
- 
- 	if (ops) {
- 		/* Set new default */
--		module_put(default_qdisc_ops->owner);
-+		bpf_module_put(ops, default_qdisc_ops->owner);
- 		default_qdisc_ops = ops;
- 	}
- 	write_unlock(&qdisc_mod_lock);
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index e6fda9f20272..7d2836d66043 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -1002,14 +1002,14 @@ struct Qdisc *qdisc_create_dflt(struct netdev_queue *dev_queue,
- {
- 	struct Qdisc *sch;
- 
--	if (!try_module_get(ops->owner)) {
-+	if (!bpf_try_module_get(ops, ops->owner)) {
- 		NL_SET_ERR_MSG(extack, "Failed to increase module reference counter");
- 		return NULL;
- 	}
- 
- 	sch = qdisc_alloc(dev_queue, ops, extack);
- 	if (IS_ERR(sch)) {
--		module_put(ops->owner);
-+		bpf_module_put(ops, ops->owner);
- 		return NULL;
- 	}
- 	sch->parent = parentid;
--- 
-2.47.1
+just to make sure it's tested end to end and future changes
+won't break it.
 
+pw-bot: cr
 
