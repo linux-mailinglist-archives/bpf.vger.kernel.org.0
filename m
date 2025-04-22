@@ -1,87 +1,87 @@
-Return-Path: <bpf+bounces-56465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11FC9A97B3F
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 01:49:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57B29A97B58
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 01:50:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 973147A6BD1
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 23:47:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87860173827
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 23:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D219E220699;
-	Tue, 22 Apr 2025 23:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A17B921D00E;
+	Tue, 22 Apr 2025 23:49:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GGvtO5Bz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NUkHJLgT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F337B21C176;
-	Tue, 22 Apr 2025 23:48:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78EDD21ADCC;
+	Tue, 22 Apr 2025 23:49:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745365718; cv=none; b=THG5h5UL3F5QYegCNiozpm8XlyPWQSIY8YTR2viNDhNcxlF0ApBPgF1R4R99BNg6Dsxvty7CTd0VPpwt0jFWY+/qPMvmsQoK9gO+veiU+sshiQkUsoczyk1ocgdliTP1Ws/G0zIKJu5Aeypgmpnp4cNJ5sz+vhcwXIaxQ4HF3mg=
+	t=1745365744; cv=none; b=ewU0Lp/vM0I50ndkPzx0YpGnxGi+pEyugBpA/tDTS4+65JkZbfWAPzRxeo9oeBQaIEeu1NPkElS3iip51zvBnXGBpS5l7kbxSgFgOYCbmzL2s1RMD53DAVJet7r8QqkEsuhZURfSXINBBPITjoXZnoR+QyYDh6VXZB3Yk+uUx2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745365718; c=relaxed/simple;
-	bh=jz42MlIKhtm94v2zdrmyWguLYxer1bUQEKTQjrZnkh8=;
+	s=arc-20240116; t=1745365744; c=relaxed/simple;
+	bh=uCrFfvmY1BWeKTC4R7IzOKHCm6s+8c+i+P3vgFxqjbM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HIsf1MymWBYEi7BSFWymymkjyP8mHg7hHYl6OP9o7qA2I8RQZxweDpCl9nBPMIUblmHDyRxDFeUdzXkOhyBcf1417nTajLP1b9S7Qy4H7dsBUkn4vy5Lg8xGL7rPv9f2mq/KKzR7iJIaLLCkehYnfN3uGq7sbTLumOuSLUoriDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GGvtO5Bz; arc=none smtp.client-ip=209.85.214.169
+	 To:Cc:Content-Type; b=RtyPv/aDY8Mlx2jS0GCTdj/otKQIUd3HSnCbdFAUz7hDpijDwKL8Jj6BcxTbBFM91okideuNFBm/9XC73CjooS/asKmt433KTea1DDR6TkccLLSrENa2SY3NJQR2kj/PsIg+jRl+eJ0KTIQKMs1KYvg1orG5n0NN665547u9X5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NUkHJLgT; arc=none smtp.client-ip=209.85.218.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-22c33677183so68157445ad.2;
-        Tue, 22 Apr 2025 16:48:36 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-aca99fc253bso823692166b.0;
+        Tue, 22 Apr 2025 16:49:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745365716; x=1745970516; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745365741; x=1745970541; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/T4n7eT2yvThTB4kxOGVUmvDFNy5zFwlyk//MmWtzN8=;
-        b=GGvtO5BznzMDrCdUrOFR92W3rDWYVr6kY7eZk2+KS7ZyHES4eqTgCY/9GbK+t2Dwom
-         PaVEkzLR6JOwlKQ/T5VFf/tdu9izEoUdQ5H+VWyAJpUoENFWAxe37t4S/W6nj0/1H4nb
-         VSqtdVjdp/60HwSQHvJ6D+0Tpi9ozjbGRE8HUbWw+zJnoONv1/XOUea0RwxtWeuHfoUy
-         dyI1+bTJm4MLvtHDAc+xVgnVsr9RgIRmS+GrFJuiW7ks2cnsi27f2I7gp8JWeW/d+6XY
-         uI4Nlq1MhbRPWTsLWIU9AKbT1DtW4OkUNe8cx3siynw8DBwtrw5yFx1LfoMkFT+eUDoi
-         p0vQ==
+        bh=GtAP/RpD8stbdGj2PAPKdLKPGruPCzPaX6EBxNabXGQ=;
+        b=NUkHJLgTgdmBjXTpk8reQq1XJYDPAKs/jcKf0LCzAKg/gxcN3Z0qvuwlWKntBo8v0/
+         Q3S/8t3Lv9Twd4yzSizGx8UI4UUsY4EA93hp9fH6L+ENQjgEQ7DlAhvjP5kW8sWvhfZ0
+         V9LWfn2M1c3HLE9R7EMItWkEbnWWrIffPhRbiK9RGok1ECqrjpq61MyiPfAk4FS/GojR
+         CsIo5T446IdVQjNMZEFseCK9yVdUcZT7Rw84ejMIP2KSq1KF5kOMqd+jP8j/YxXYJbh8
+         b55DN7hoCt++qlFzr8YqyBItKxD+DhuOZ6H2E77H/6p92MNN8mT/4KqlVcxXLn5SNjNd
+         euhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745365716; x=1745970516;
+        d=1e100.net; s=20230601; t=1745365741; x=1745970541;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/T4n7eT2yvThTB4kxOGVUmvDFNy5zFwlyk//MmWtzN8=;
-        b=J383FH66E18MJhwW5y+pULtUG3yKEaa6TlVFJg9xbZ+68IXAv5Hj/9+Hwb263vLzp4
-         a+OAUO67IWDCun/V0kOSXBk8rj59QvN8u+4X2IjWLvZJcdNt8wg40eBggYmx7i52cMUX
-         qYsh6UOPRaTSOfAdHMihC2A7IR3wSqGjWCcY6eJeuLBKuA3uCg3yUm5qF43cOiIsVHqZ
-         L1uFVhEhioaMhWUdTZTw1Gkib3+S7Hj4knsoiyr7ZfpT7fAZoPOMo3+BK6F4BF4zodI5
-         RJrwoz5Km/7atWRoN+SEYjWygRcb8NTHG2JDTz7RsOCY/w61NkYAcdYWxPU92PqGAM7n
-         EcNw==
-X-Forwarded-Encrypted: i=1; AJvYcCU2gY90jre/FmvmQd6fACr8Zqdcqyg5a/3EytnzUFuMCjdlE1Hy0OC8QzCKFwewYQVU9rQV3rL5QKUku7Ey6OisJv7s@vger.kernel.org, AJvYcCVKbVej5njMAy1p8Q1DJdOvpl/sZTf1I/C3kDJ7w/yVjpAYMjoe8mxEnhJRPoGz/gY30Fs=@vger.kernel.org, AJvYcCVQvmk5YouQaYMdBqNpis4lXgLpzXrg+qKsL3wdODRaA+0CSqb5EJsAyHuUToTCXI/xXTL1dj9tLd2M8H0W@vger.kernel.org
-X-Gm-Message-State: AOJu0YzExomLMbUwH+oxG7BNFb8vtTw/So+Up97JDMwSyMvEK958XKxF
-	1lmKRVidHUu3bqyxh7hVWnHRaJKAYvsP/p2wlIgZ9E4xmhdnbZF+ewcyBtL7BP9dL8vdNRCuDaB
-	m/NpAmW8IRBDeJUzVaQanbkSC/dc=
-X-Gm-Gg: ASbGnctdJloYWFr/lDV6ObHMcY5Jw2ualr0AGFAiiQQv1IBX3JIwSYAAkDVqbdmky9a
-	iL0b7/cKoMV0F+LX3jfH6+9yeHVHHNxeJKma0IgjdkpZHaINi7nRIu18DyHSR/hCFGm6FLs4W2K
-	yXembeW+Yn6e9bP0/UTxY8iIlj2RnTUtZGy7w02CKXtZKVt/xd
-X-Google-Smtp-Source: AGHT+IE/cfyW320QN7e2YH8z4VwCt+2g17zoxlHkihvKARmmChOcfHoT1nkyOotigKo3cVljNO16ENdC/KODxI5jmmk=
-X-Received: by 2002:a17:902:f682:b0:224:912:153 with SMTP id
- d9443c01a7336-22c53573d25mr279635655ad.5.1745365716243; Tue, 22 Apr 2025
- 16:48:36 -0700 (PDT)
+        bh=GtAP/RpD8stbdGj2PAPKdLKPGruPCzPaX6EBxNabXGQ=;
+        b=XYEKLbC5hZeQ5fdXqbtF4vx1mbX/u1vWwqBUTkLLq2F2/zgCKPvJWBTdaIu3ixGg/l
+         eIJk2liwx9ZoKJ10mz94EvEMuV2CJzzLdbnQkJJDPXm6PdddneRowIFOb9vkvmPuk4bi
+         KWRIcKwIXlID2ZZ0OKuIFpsV5Dzuac8JXkKcAk3Kw/2PEklblQRQ9g4H6z4tGW4+eZgv
+         kASkXg7nOfnrI9pZhq3KFacuWLSClo5PU2j76DNzifdntC7tR7Mm2YK9jR10fEYvL5JL
+         KOkEockLRvd1JzaAfsI2MYKyrxMvrUYHdbD1JVHiMwLX9vcWVFbYDe5+XI3fviuzowfA
+         TuBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWkQgPcwv2/AOGTsTZVoaacQAeOcZinR+YZp8bn3/j2H+I4o63KJ2KgrS4WoN276vPfbzCSWs5S7ej5o4Ks@vger.kernel.org, AJvYcCXhlGu9B58IjIOLDChsW3nQhacCt2CPPO7he64SmSpEDk19HIVdAz65uViAEBFbsjFntxg=@vger.kernel.org, AJvYcCXs+EV2fqZNSy1Je4NL2WvxY4xhh64vTrI1+hIdp7C0Hd8n38WKN0jT1KrhQ88+3DyhKBWNOaPGTbsECE43u639ndaj@vger.kernel.org
+X-Gm-Message-State: AOJu0YwpJKcEHsxqJJVhGUs6hCtVvUIDO/J4p8gLRrl0lxs1wtPaaaLC
+	RlWR89yAd/qVQud0fanDVB3FmG0VZuy8nXb6/3cRdhfDpJiMSlT2K4jBO2IxBqWxpJ9xzxMZWIQ
+	7TU33jZaHcpob0dmTJCFNjZBHOXI=
+X-Gm-Gg: ASbGnctlQMbFyMyETLR3TxT+WzscPD5hRYsXRJo9qTjZjXiWSQpdMf4VI1CpXqR9JAc
+	sVOWUj1w7DLckdVm1nkzg8YAHEnpVFV21zPl8lKk47IL5pO/ddMb7QrQVsIS6B4a06orogk8iad
+	hh+uHU4jjB5JTlZFwFopGfUS6faxRd3eab63g4WA==
+X-Google-Smtp-Source: AGHT+IGNstO+C4N74G28rymkR+8fQJxcFUcHnCcmnL0LBDEAN+PiVtK/evW1vnuqN6yEh8T+DV/sbCOLnag7SG9RYuQ=
+X-Received: by 2002:a17:906:f58e:b0:ace:3c0b:1947 with SMTP id
+ a640c23a62f3a-ace3c0b20f4mr109777866b.4.1745365740500; Tue, 22 Apr 2025
+ 16:49:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250421214423.393661-1-jolsa@kernel.org> <20250421214423.393661-7-jolsa@kernel.org>
-In-Reply-To: <20250421214423.393661-7-jolsa@kernel.org>
+References: <20250421214423.393661-1-jolsa@kernel.org> <20250421214423.393661-8-jolsa@kernel.org>
+In-Reply-To: <20250421214423.393661-8-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 22 Apr 2025 16:48:19 -0700
-X-Gm-Features: ATxdqUGKqzGrekv4T_CT4GfXqWxqXqp67BVlWdwUn5g5QkGiHwxAY7ax8NyaRKI
-Message-ID: <CAEf4Bza9e1ixnLZgNjWrMZYZwrz2pByVnyfDywX7bUe5p5Kw3g@mail.gmail.com>
-Subject: Re: [PATCH perf/core 06/22] uprobes: Add is_register argument to
- uprobe_write and uprobe_write_opcode
+Date: Tue, 22 Apr 2025 16:48:24 -0700
+X-Gm-Features: ATxdqUFWNCbaUTk_sukSB1n225IEm5eGMWbID4RHtc4FUhdzAtpifAa7AsJvsjE
+Message-ID: <CAEf4BzbtUMCCY8FPjRjc8i5newEoKkz7S-j-LOpD6TJzOogNtg@mail.gmail.com>
+Subject: Re: [PATCH perf/core 07/22] uprobes: Remove breakpoint in
+ unapply_uprobe under mmap_write_lock
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -97,24 +97,50 @@ Content-Transfer-Encoding: quoted-printable
 
 On Mon, Apr 21, 2025 at 2:45=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> The uprobe_write has special path to restore the original page when we
-> write original instruction back. This happens when uprobe_write detects
-> that we want to write anything else but breakpoint instruction.
+> Currently unapply_uprobe takes mmap_read_lock, but it might call
+> remove_breakpoint which eventually changes user pages.
 >
-> Moving the detection away and passing it to uprobe_write as argument,
-> so it's possible to write different instructions (other than just
-> breakpoint and rest).
+> Current code writes either breakpoint or original instruction, so
+> it can probably go away with that, but with the upcoming change that
+> writes multiple instructions on the probed address we need to ensure
+> that any update to mm's pages is exclusive.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  arch/arm/probes/uprobes/core.c |  2 +-
->  include/linux/uprobes.h        |  5 +++--
->  kernel/events/uprobes.c        | 22 +++++++++++-----------
->  3 files changed, 15 insertions(+), 14 deletions(-)
+>  kernel/events/uprobes.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
+
+Makes sense.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
 
-[...]
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index c8d88060dfbf..d256c695d7ff 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -1483,7 +1483,7 @@ static int unapply_uprobe(struct uprobe *uprobe, st=
+ruct mm_struct *mm)
+>         struct vm_area_struct *vma;
+>         int err =3D 0;
+>
+> -       mmap_read_lock(mm);
+> +       mmap_write_lock(mm);
+>         for_each_vma(vmi, vma) {
+>                 unsigned long vaddr;
+>                 loff_t offset;
+> @@ -1500,7 +1500,7 @@ static int unapply_uprobe(struct uprobe *uprobe, st=
+ruct mm_struct *mm)
+>                 vaddr =3D offset_to_vaddr(vma, uprobe->offset);
+>                 err |=3D remove_breakpoint(uprobe, vma, vaddr);
+>         }
+> -       mmap_read_unlock(mm);
+> +       mmap_write_unlock(mm);
+>
+>         return err;
+>  }
+> --
+> 2.49.0
+>
 
