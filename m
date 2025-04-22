@@ -1,183 +1,151 @@
-Return-Path: <bpf+bounces-56461-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56462-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5272FA97AD5
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 01:01:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E91D1A97B36
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 01:48:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02294188C942
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 23:01:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F16A3ABC4F
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 23:48:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3A42D1F7F;
-	Tue, 22 Apr 2025 23:01:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0614621B9C5;
+	Tue, 22 Apr 2025 23:48:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pfq9132/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g5AKWUg7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F591F1513;
-	Tue, 22 Apr 2025 23:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4652153F1;
+	Tue, 22 Apr 2025 23:48:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745362865; cv=none; b=YueWqgxHvLVbF9Cda8axlOMLEtwTLV+1Fw9pa4l08AHUj8ZIZM3BfmkVjUeYXGh+QAz00D/JCkJLUQi4R4XLzwQBYQLho59k6dshuCcrKQXARn/s6gHChtnRQUJYJbF9zo9L6wHCiZFIb1jB8/HVtiu8YzxdWuF0dt7rPC29RdA=
+	t=1745365699; cv=none; b=lQtBKKUu5Yosv5e2mt0BKi0oBi+HOrcFTRCqsTqU42Zde+Z76Wpmf322xi3t9oEA/vPPAMafFA95uS5AoDCS5W6F0RHS7wRkPTVjB4CEUEA09gZxhwvHhf5bZXCnLhYDcvXBxkOLPhJIYn29KcpHk0F4ReMgK+TCacdIcIp+Swc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745362865; c=relaxed/simple;
-	bh=8JLF2kTnUxbyf0UW2316oQSHAYFIYLkSY+DWIkmWLOQ=;
+	s=arc-20240116; t=1745365699; c=relaxed/simple;
+	bh=+40hAu3bUXUJIbm4+VNTCNA9aMW+tanXGfKUVrMO/Xk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nTrRNaYtk40s7XM7tRHkpL/Kod3t7/4GlUKkjDralBaVz5b6DdX5Os8W/WnBeodwUfxz2jROgRissFvVYDp6DiCd/7gdJTOxglLd6E9W6Yx9vQA8iABdUdV1rsIWDF718+ZtTpzymcn0oM6NiQtzbCQwMRxW2lka7eJSbZSSMBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pfq9132/; arc=none smtp.client-ip=209.85.221.52
+	 To:Cc:Content-Type; b=dmWqROntsTyycKNH+sdcdS8g2ktLurmH5pXHuzhhdXlltBMULCAEyNBp3Y9fG/wJSTgj2CXh5JSkO1/jKVolSyQbd7XPJ4WDRD7DmHltmC990hErdOK7UvxHOQTlxncolXAsIZpuB+to7+Dtuk5CFs1Jxb+HtkH/moXAoC6N3/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g5AKWUg7; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-39efc1365e4so2074374f8f.1;
-        Tue, 22 Apr 2025 16:01:03 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-736ab1c43c4so6058478b3a.1;
+        Tue, 22 Apr 2025 16:48:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745362862; x=1745967662; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745365697; x=1745970497; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5DZZs3urMIkgKkax6S198AR9JC9qXI5Y4B01yv+Q6cc=;
-        b=Pfq9132/PjhJwq3WGF+mT9DBmJDwBGb8glcX7P+SyBY3pba9HjnoWSdB3pgLiwnJJR
-         +2bDM/qYxY6H0gjoF5B2TWenmjUCNY09+7oO/Ug/UGOacIgkop+PbhJQFm7+9Ft1c3IT
-         Qiv2bOMxHaOhntm2IYffB7hAkfguc1cbVKeUx/KDXCa+53LP+ecAfjQaW8Ie8XBQuxda
-         Z+nAkvLsDB7xPrvZhk2rmOhP7zXiamBdJx8BjzX0HwX2cFO5Il0NxgL3Mq5ZcuAtFx4J
-         sKEDIbKfF34LKeFTbdoRF7hH+NE14waCxpgrw9pFgnYnItGcFE+ItToUy5ceTXU3g+DT
-         lKQw==
+        bh=eShSuHzF8zRgOXJ9h+TKKwhpFe0OJ/PDxiZ/WuLMR9g=;
+        b=g5AKWUg7aqKa5XXCFOFjdWm69yI2kTQuIXdKRV905AzQzzBghdRNBSnISF9Om9yf4H
+         FzuOvTbyZIgyGSmUGKtUuLbf5XQl65ICe9aP3jnHIm7GDArBt60qpegC0LlrfzSjtpsY
+         3w3d7FruKmrxfwJ2iXd3/kEy+QyQPyB61L+UVDwH0fFL5Thws2HQkDcSVYqIZ15etck/
+         bjZeHWxHChJ+ycCpTAbQ3iOODL1DOMaQ5noSVJ8AvaMu0qwcO4E3j7e7tsgHTmLUPpGZ
+         v93bhC9jCTon2V/4g6JOxlQxmnXApXn5Iqz0LzqeNxK9EO4DLCicbFO5ufqpdi2P+utr
+         GURw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745362862; x=1745967662;
+        d=1e100.net; s=20230601; t=1745365697; x=1745970497;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5DZZs3urMIkgKkax6S198AR9JC9qXI5Y4B01yv+Q6cc=;
-        b=J4DTII4Jdz45/K3P79r8L3zg9qAtiyZlTLuz1QyRXEmM2ng5t0bHZE/WQXhJBjcF4M
-         242NV0pg6P2IBVMqLa2/xTvE6Qtr87vH0z1usX6SXIXuswHcBG0Q/No7qBQV+Ly67wx3
-         UnF/58N1WGwPnO9HwhFi05l0kX+fiYdCgulsLnWFd77cF9aDLD1n45dHD8mZ78Bw8URb
-         9M7iU5fYcKbRPOmyU3sR/8YktXjM8wTg7IUqqV34SC0y3iGPh7xzwmGdzp945Oa30VPA
-         wpJvlVQE4lG/cwIlZPA3KaR4iSi+Aw6/zHZXeHHJDv56/5Atvk3YDS1XatMCpSi3WXkQ
-         WYmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUFFa6BxPvBAn/KQ0Wtoc0pKo88RJl2Xcy1eBaplOUvJXCZclAe9vJZLYwpRq9BjhOnp8bkOxYV4xHHmWI=@vger.kernel.org, AJvYcCUTpH20dLPnwyDAjMHoQv8oCt9IiSvfZvQcdhK3/gIf0tRqrC1c+dxfi1RD84ssb/TiKiSo93L+AsQ2NZu1@vger.kernel.org, AJvYcCVGkd6S9C+aSJ5ODVdM4d+U6htSpQHKQrNG1yjDnL2TroOxUo16sWB8hS24zAlhjA7ikCaJvj5w/RI68weu6Z9Q@vger.kernel.org, AJvYcCW1QHMsP/gJdAAHk0l2t6jInP2uGCWE9Xbe9MN10rBNfwX/legrzFNnpG8cUFfCLiAS5gw=@vger.kernel.org, AJvYcCWU4jLV8aWI4aGdOha7dc+PQLEEkHrodj5y8bRk4RwgDEido3gVo7tqjfI80vqSFRshRo6PUa+o6G4l@vger.kernel.org
-X-Gm-Message-State: AOJu0YzvARnjr7LmBFUco04rDfjevlvs3z6Tic31vt9kFSNcBBNdVt7g
-	rMNO4wssghAnd5wmVAqx7Rb1/0CNh66A38/Ax5jTzpzUKJdP7egycx2Y8HYEWR0zQSfmX0xiuIz
-	msM4uwKvY1eAvn57FjvvQ8nx/KS4=
-X-Gm-Gg: ASbGncuroFtncHULWIfWhjVRSkqKXbcVoDu+4PHc5s7SjMxGmwTBn56wXC+l/agGPmk
-	wjIDhOtyiN66RSOm2+Jxv/itJMlDgNC3xsI7RUpZ4kj7P0/JANEdMaQDPXg4b+XulktaMLuVdHP
-	ksTEn98mmDfLBI95zAQWC5XodQHJr9axXh+a5byw==
-X-Google-Smtp-Source: AGHT+IGt6+T2kc0TlT5ebzJdvJefOqUojkLn0RGemaQgYEJUKgmj/RrlmcHqYXf+vn/5+dgoo13LpO7auPqItYTUqRE=
-X-Received: by 2002:a5d:5983:0:b0:39f:ef3:b51b with SMTP id
- ffacd0b85a97d-39f0ef3b57amr4988601f8f.32.1745362861514; Tue, 22 Apr 2025
- 16:01:01 -0700 (PDT)
+        bh=eShSuHzF8zRgOXJ9h+TKKwhpFe0OJ/PDxiZ/WuLMR9g=;
+        b=HRAYntO1n3GR8ElJ/v+L6lICSwbibOyO+LNaNxrFoBPwOPSZvX/nNqRqz8q3qZGdp7
+         TMaNY0yoOWwuxWa2HfM8EaBKxDqFQYPUV05tPRaOxSaDD4Qz+UB8u8U0jF5DnEijk0fS
+         mEug9mJMFtEirzck3le3I35UDxuGCX10UfYWl5UNZbrz1Mu6A4RoAnXuPxiGn7PbC2m2
+         kWpIR1rGiEi18HqVCHhq8XUAANastmX8nLgJ7JDJXDvg9yAwuUmuEhirJE2j1T4RytI3
+         tSsEb0EIcqVtdVVKvMFgrmGl00tMPUKFuY06wkmh3a0MxKmO+q0OMNAh5ETO9muKzHSb
+         EKJg==
+X-Forwarded-Encrypted: i=1; AJvYcCUu2E3edlScLFc4cgEFEfHT37DVicrMduS/G+J7U4fZGZRnsbXrNc4XAcz4MQ7vVypdq6+J7Xl3tXGh5rdiPP0Vl3O9@vger.kernel.org, AJvYcCVKb7we+9tKKcyGeHDlxUERyOsjxhRGZ2aa9tF1jy6xE6m93NX3NK+uLrAwEf/5OTh8xoA=@vger.kernel.org, AJvYcCWP+lqvjh3XRmg4AzasIgZ+KATidq+5YYbzaTMvjAtzIx15+CE6nnMsceZxKZJryNo6OsggXaHBE1hfxFd+@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFqK6SyyEWGSdUibCQdcwSSFF4rm/oBWCICisz+8cJLSs0hDG/
+	bcsmj7XhdUzBak1L2zijTb6GiVvA9UM9zDsYF5qRS3e7w51H7PMd/JkZ8xoP8qlseKew9JQwhuv
+	ldcvUo3lV/UBfKSfF/zmDMaWlj6A=
+X-Gm-Gg: ASbGnctOvRD7TaGnYdUIqc4UkuoE8BwzU4STiEwBK2dfmc94l/ErKiwSrbtIc2pF6id
+	9PKgXk1sDLK6IIAs0eDGpATWlqmj3AH/tl7Z1DXRld//ph6RMpSIXE8o6De4VFoiIL7Jh5aAIRp
+	Wo5GoI+EI3+V6cYHno0qSUlPNPq3h/3kOGB6dkwg==
+X-Google-Smtp-Source: AGHT+IEu0yYtokeCyy8Mo5SZuFzYNZEwB7ykdkZ1iVrZgv0wCrDda5aqI83NKuD++K7zVDpzIO0QFYdy19cyM8m7r1A=
+X-Received: by 2002:a05:6a20:9f46:b0:1f5:9d5d:bcdd with SMTP id
+ adf61e73a8af0-203cbc056f1mr29761096637.1.1745365697332; Tue, 22 Apr 2025
+ 16:48:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250414225227.3642618-1-tjmercier@google.com>
- <20250414225227.3642618-3-tjmercier@google.com> <CAPhsuW54g5YCmLVX=cc3m2nfQTZrMH+6ZMBgouEMMfqcccOtww@mail.gmail.com>
- <CABdmKX1OqLLsY5+LSMU-c=DDUxTFaivNcyXG3ntD8D0ty1Pwig@mail.gmail.com>
- <CAADnVQ+0PXgm_VuSJDKwr9iomxFLuG-=Chi2Ya3k0YPnKaex_w@mail.gmail.com> <CABdmKX1aMuyPTNXD72wXyXAfOi6f58DfcaBDh6uDo0EQ7pKChw@mail.gmail.com>
-In-Reply-To: <CABdmKX1aMuyPTNXD72wXyXAfOi6f58DfcaBDh6uDo0EQ7pKChw@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 22 Apr 2025 16:00:50 -0700
-X-Gm-Features: ATxdqUFV6-ZmprAqwitymw1JEAl4xKZ0kwOCrx-SEEYutS3W3o6khh6mDKj5Uhw
-Message-ID: <CAADnVQ+AesNdq_LB+MWxLnHbU08Zrn-8VgwY4+0PKuk7PmRd+w@mail.gmail.com>
-Subject: Re: [PATCH 2/4] bpf: Add dmabuf iterator
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Song Liu <song@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Shuah Khan <skhan@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linaro-mm-sig@lists.linaro.org, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, android-mm@google.com, simona@ffwll.ch, 
-	Jonathan Corbet <corbet@lwn.net>, Eduard <eddyz87@gmail.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>
+References: <20250421214423.393661-1-jolsa@kernel.org> <20250421214423.393661-10-jolsa@kernel.org>
+In-Reply-To: <20250421214423.393661-10-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 22 Apr 2025 16:48:04 -0700
+X-Gm-Features: ATxdqUG6y22eK7OqIgrCK3eoJYN6m_lwL1AWftBr4wBZAjPZkXExZ4GLtq-CVoE
+Message-ID: <CAEf4Bzb9tTQMR2C+kpFxKqaXabTZN91LX-6hSyqknp4=aLcXtQ@mail.gmail.com>
+Subject: Re: [PATCH perf/core 09/22] uprobes/x86: Add uprobe syscall to speed
+ up uprobe
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, David Laight <David.Laight@aculab.com>, 
+	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
+	Ingo Molnar <mingo@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 22, 2025 at 12:57=E2=80=AFPM T.J. Mercier <tjmercier@google.com=
-> wrote:
+On Mon, Apr 21, 2025 at 2:46=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On Mon, Apr 21, 2025 at 4:39=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Apr 21, 2025 at 1:40=E2=80=AFPM T.J. Mercier <tjmercier@google.=
-com> wrote:
-> > >
-> > > > > new file mode 100644
-> > > > > index 000000000000..b4b8be1d6aa4
-> > > > > --- /dev/null
-> > > > > +++ b/kernel/bpf/dmabuf_iter.c
-> > > >
-> > > > Maybe we should add this file to drivers/dma-buf. I would like to
-> > > > hear other folks thoughts on this.
-> > >
-> > > This is fine with me, and would save us the extra
-> > > CONFIG_DMA_SHARED_BUFFER check that's currently needed in
-> > > kernel/bpf/Makefile but would require checking CONFIG_BPF instead.
-> > > Sumit / Christian any objections to moving the dmabuf bpf iterator
-> > > implementation into drivers/dma-buf?
-> >
-> > The driver directory would need to 'depends on BPF_SYSCALL'.
-> > Are you sure you want this?
-> > imo kernel/bpf/ is fine for this.
+> Adding new uprobe syscall that calls uprobe handlers for given
+> 'breakpoint' address.
 >
-> I don't have a strong preference so either way is fine with me. The
-> main difference I see is maintainership.
+> The idea is that the 'breakpoint' address calls the user space
+> trampoline which executes the uprobe syscall.
 >
-> > You also probably want
-> > .feature                =3D BPF_ITER_RESCHED
-> > in bpf_dmabuf_reg_info.
+> The syscall handler reads the return address of the initial call
+> to retrieve the original 'breakpoint' address. With this address
+> we find the related uprobe object and call its consumers.
 >
-> Thank you, this looks like a good idea.
+> Adding the arch_uprobe_trampoline_mapping function that provides
+> uprobe trampoline mapping. This mapping is backed with one global
+> page initialized at __init time and shared by the all the mapping
+> instances.
 >
-> > Also have you considered open coded iterator for dmabufs?
-> > Would it help with the interface to user space?
+> We do not allow to execute uprobe syscall if the caller is not
+> from uprobe trampoline mapping.
 >
-> I read through the open coded iterator patches, and it looks like they
-> would be slightly more efficient by avoiding seq_file overhead. As far
-> as the interface to userspace, for the purpose of replacing what's
-> currently exposed by CONFIG_DMABUF_SYSFS_STATS I don't think there is
-> a difference. However it looks like if I were to try to replace all of
-> our userspace analysis of dmabufs with a single bpf program then an
-> open coded iterator would make that much easier. I had not considered
-> attempting that.
+> The uprobe syscall ensures the consumer (bpf program) sees registers
+> values in the state before the trampoline was called.
 >
-> One problem I see with open coded iterators is that support is much
-> more recent (2023 vs 2020). We support longterm stable kernels (back
-> to 5.4 currently but probably 5.10 by the time this would be used), so
-> it seems like it would be harder to backport the kernel support for an
-> open-coded iterator that far since it only goes back as far as 6.6
-> now. Actually it doesn't look like it is possible while also
-> maintaining the stable ABI we provide to device vendors. Which means
-> we couldn't get rid of the dmabuf sysfs stats userspace dependency
-> until 6.1 EOL in Dec. 2027. :\ So I'm in favor of a traditional bpf
-> iterator here for now.
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  arch/x86/entry/syscalls/syscall_64.tbl |   1 +
+>  arch/x86/kernel/uprobes.c              | 122 +++++++++++++++++++++++++
+>  include/linux/syscalls.h               |   2 +
+>  include/linux/uprobes.h                |   1 +
+>  kernel/events/uprobes.c                |  17 ++++
+>  kernel/sys_ni.c                        |   1 +
+>  6 files changed, 144 insertions(+)
+>
 
-Fair enough, but please implement both and backport only
-the old style pinned iterator.
-The code will be mostly shared between them.
-bpf_iter_dmabuf_new/_next will be more flexible with more
-options to return data to user space. Like android can invent
-their own binary format. Pack into it in a bpf prog, send to
-bpf ringbuf and unmarshal efficiently in user space.
-Instead of being limited to text output that pinned iterators
-are supposed to do usually.
-You can do binary with bpf_seq_write() too, but it's rare.
+LGTM
 
-Also please provide full bpf prog that you'll use in production
-in a selftest instead of trivial:
-+SEC("iter/dmabuf")
-+int dmabuf_collector(struct bpf_iter__dmabuf *ctx)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-just to make sure it's tested end to end and future changes
-won't break it.
+> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/sysc=
+alls/syscall_64.tbl
+> index cfb5ca41e30d..9fd1291e7bdf 100644
+> --- a/arch/x86/entry/syscalls/syscall_64.tbl
+> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
+> @@ -345,6 +345,7 @@
+>  333    common  io_pgetevents           sys_io_pgetevents
+>  334    common  rseq                    sys_rseq
+>  335    common  uretprobe               sys_uretprobe
+> +336    common  uprobe                  sys_uprobe
+>  # don't use numbers 387 through 423, add new calls after the last
+>  # 'common' entry
+>  424    common  pidfd_send_signal       sys_pidfd_send_signal
 
-pw-bot: cr
+[...]
 
