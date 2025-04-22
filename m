@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-56403-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56404-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F07CFA96C91
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 15:26:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AC8FA96C9B
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 15:27:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B86E83BA5EB
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 13:26:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04B05188047C
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 13:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5561E28A3EA;
-	Tue, 22 Apr 2025 13:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB91F28A401;
+	Tue, 22 Apr 2025 13:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="SFoiyn8t";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="O9Za5txq"
+	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="LUdvd5Er";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="vn218qhe"
 X-Original-To: bpf@vger.kernel.org
 Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393FA289348;
-	Tue, 22 Apr 2025 13:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D2928A3F2;
+	Tue, 22 Apr 2025 13:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745328261; cv=none; b=I23nfq47E/xcJm41suGUJgUzlWGpU6UMoTznl1AsqCXXcwT9XpuHPzSK8Mstx2kBQFPpzfikb7UhwG7z0fp8/HU+OpBMZMcex/GWDEyqTAzCYHqgFyhbT4wkbUxh3SgPQqpBZZFR33mCeKR53UfyxdOYTYCIzmxUMZkftvjOsiY=
+	t=1745328264; cv=none; b=Z/XQpSgNfI78o35f8Nh6NWw7/s/wyNb6/aiTYnFW7OSobA+VUfq8RyzGIq59og4dbTXU4rIb9HxbsJ1hKbwTe0a71y+t+yRgGM9XGkQGCQXZ/TgQTS7I0GP904+D94FnaG1fiT9+r9ielWIVmhN3v9FZn24fOhU3CXNnXVcdRJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745328261; c=relaxed/simple;
-	bh=BW3hXUj8bfhbUNZlGI0u/c+RhDUaklfbTQKhI1SCDKE=;
+	s=arc-20240116; t=1745328264; c=relaxed/simple;
+	bh=VYl+mgsH8AbFAL9YQ8fGujAVtuPWPeKY2yG7V7Mjsbc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=P3wjsXzUyj7GpOHYLStFWfd29EB9zs2f1dgNJ8k0CDCapMGwj8lK5oF8cyU0f2eN0K1WhUohthqVM4XmyTuij+qGMy0LNAjlxJZq5NKiwMKBTfOUkBVDVN3iNmABvPGPgJqYSgkTkuXJXQrX7OThOVRQFYeRKmBeJAOHeiR1uhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=SFoiyn8t; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=O9Za5txq; arc=none smtp.client-ip=202.12.124.147
+	 In-Reply-To:To:Cc; b=si6bTHyAlmxkKfwFUCU2Hs0qHnxtDFqBFjNYpG3fsXJ1QQjZw3l17HClCagyAhjrK+iao+9cb4eaOVThimxErtpBJ+N3+he5zpFJcl2GcwTRCZnGpwEMg2+LQaO1wpoIQApoiSX8Klbc55Hlwy1LrHnYCRuN45/0MojMmuOX650=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=LUdvd5Er; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=vn218qhe; arc=none smtp.client-ip=202.12.124.147
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arthurfabre.com
 Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfout.stl.internal (Postfix) with ESMTP id 379D011401AF;
-	Tue, 22 Apr 2025 09:24:19 -0400 (EDT)
+	by mailfout.stl.internal (Postfix) with ESMTP id A664D11401B2;
+	Tue, 22 Apr 2025 09:24:21 -0400 (EDT)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Tue, 22 Apr 2025 09:24:19 -0400
+  by phl-compute-01.internal (MEProxy); Tue, 22 Apr 2025 09:24:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arthurfabre.com;
 	 h=cc:cc:content-transfer-encoding:content-type:content-type
 	:date:date:from:from:in-reply-to:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=fm1;
-	 t=1745328259; x=1745414659; bh=yzfJQEkP7X6AZ+/ZbI2fPOyFJBcPHEtU
-	bHNmDxMaBhs=; b=SFoiyn8tdyyoMXhOU2yVkCAKKhe2V+X1L+QkatWUpXGwpQ8H
-	/T5OmPuBB62KZYtUf/8dJfwDIkrKjBp5TAxc2ZEzv3op+ZzKQ4wuiBWs6Y266GD9
-	LTBib5zUnylcMTY1hf1IF//NquEuLv6tZkFTDQKt+IujLezVnTlGATFUEx66PrcO
-	Zl/iTjw1jzniR1nmEd54G+maxKJQVK+d5Wu96ZJyRq4AjHdcITBZdnuxk8nJWB5h
-	uLSTY8KjQiAc0aoj7RHadJ6hsVKI4rcz4d3k/RBOGgqE28qEo2mIGMBLYTXhv0Bb
-	TxOiTGvy+Sn2UEDfgPZmZTdDbaJR1G2MVxo3Wg==
+	 t=1745328261; x=1745414661; bh=rbk6t+Go/2tKzNcY9KPcY3SySRqrsIsP
+	Vj3JFcPsPdE=; b=LUdvd5ErkuEeT/zWMMxNN7mYl+Gj3YDEdo8cnPswcXqDM89D
+	tqPLBvEvz98XM+77U53QgaN8OS7OgfSaWRomPaFkuZwCwFSbvSl9lJPtyzzu3isP
+	4Nxe4lFcL3y+2Ja1isEkOGugY6d7kL6wUgFHV4byOMhpAMZWc5PeJkLsxIh7ob59
+	kRl9E1Z6cUrANvUjHn/sftSWoDdHFnZyrgy/3TUgB8mkbi6SyABVcet8S2//uwHM
+	+yzMs3bQedTTyxdZzJRk2klyigbyZcwFEpqyyYc50s4ZDJ8CpZY7fgMLXq8ljE07
+	58kOxe63lJFKOqJl+atKkJJn8/TlNZXx/jFO2Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1745328259; x=
-	1745414659; bh=yzfJQEkP7X6AZ+/ZbI2fPOyFJBcPHEtUbHNmDxMaBhs=; b=O
-	9Za5txqbeSpTfNqEFjHEZkTtxszYvud10VeZNgT679TThZcclltTFpnX0CNORYtm
-	Z+5ExRobtraIsDZUpqKtEb8x6j836pc3pSkVfz2OXs+V3jBW+ws3aB7SZHutr1yj
-	VdlJMbAADEkh1RO/cGEvcN9NBO7ZmGqSVMnYAkUevEggMkccnJfxmQavO5JKuP4N
-	g2sRg+GjcND5/n7fnpZNvDSFh3R8XRi8B2DbP9YZegIZ1gp4sa5D/+fAKUSGm/PO
-	z/4MmxpkB7M4PHSNQBBT+344J34EZ0EI7nHckVoWGomEAEXI/rUeQ5LdfWDy7Nu9
-	RXcVM4pyjXOa936oGtnzw==
-X-ME-Sender: <xms:gpgHaElNL5Lm1PPSsVR-1O2ppoq6SakuWcGLWHO9PdW0sEsvbuwLxA>
-    <xme:gpgHaD2a1ZLPY8YxaIqSAKbM9AEg58zemF8QVr_RCcJbJFPCZ4LkN2rBP6u7IfktK
-    u3PvjsijgA_5Jkk7a0>
-X-ME-Received: <xmr:gpgHaCrSIXt2cHiUyxgkhv53HhvW6GFryfDsSOKNmXx23tx0S1TsPWHgPD6m-eWerY5Fnhm-XnfTJUQgyWI>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1745328261; x=
+	1745414661; bh=rbk6t+Go/2tKzNcY9KPcY3SySRqrsIsPVj3JFcPsPdE=; b=v
+	n218qhe/0BWYf74A78WJK6aT60+GqogpAVP4DcL5noFbofhxZfRWLhelLswiUcjU
+	B8A2ISVvAmcsNVtUd8KIU1iykLB24taYoAOkoSyPScKLbAJ6xOoy28GS8TWay+K0
+	vZngnRGQpKSXl5nM12gNnUulmkwawX3KM2aHqVfwRI3MDDhBLAGuQfOf7teP2bBs
+	K9dO41safYz6k8zUpdEqZQLseGyLw/25RAuN9EEkQAa5J+BLdd2wRLhdOIwtSH6E
+	d3aQ/BmLHxgndvQgpe/oTNeFCdd5IlfJa7futr3aubD2nCqH361gXA5nRHLu//tq
+	UjtayD4FWr6ldYzBWSztA==
+X-ME-Sender: <xms:hZgHaOhy4vXY7jZ1gVfXharxveG9EXEI2nm9ROBoMyKf56bInmpP9Q>
+    <xme:hZgHaPB4fYq9WHydzPagXMXkgvjB-49KjYh1O2FgzmJSlMBABn8CeXKmj2tBXTghT
+    NlwB8II0sy-lK6S54c>
+X-ME-Received: <xmr:hZgHaGF2tEb-rCFM4tVUICL_R7juL8TPBHDCmmkic6pXjQy2bxDHlPTnblhUW53ZUBAtaS_q9m4O3gTdvg4>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvgeefkeehucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
     pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhff
     fugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomheptehrthhhuhhrucfhrggs
     rhgvuceorghrthhhuhhrsegrrhhthhhurhhfrggsrhgvrdgtohhmqeenucggtffrrghtth
     gvrhhnpeejkeehffejvdefhedtleetgfeivdetgfefffetkeelieefvdefhfeuveevhffh
-    ueenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    ueenucevlhhushhtvghrufhiiigvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
     hthhhurhesrghrthhhuhhrfhgrsghrvgdrtghomhdpnhgspghrtghpthhtohepuddvpdhm
     ohguvgepshhmthhpohhuthdprhgtphhtthhopehkuhgsrgeskhgvrhhnvghlrdhorhhgpd
     hrtghpthhtohephigrnhestghlohhuughflhgrrhgvrdgtohhmpdhrtghpthhtohepnhgv
@@ -81,18 +81,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvgeefkeehucetufdote
     hjsghrrghnuggvsghurhhgsegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopegs
     phhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghstheskhgvrhhnvg
     hlrdhorhhg
-X-ME-Proxy: <xmx:gpgHaAmk0z-eZxgZ4Eng0YnsgCED6hLFXQLuhavKh7b7YteIymiAug>
-    <xmx:gpgHaC2yDJVDl2-THG5Ql3PHfNGQ8KfsNOq_VTUJgpc-as4wmVN1Uw>
-    <xmx:gpgHaHvn3qZeeerMzuDRBEEGxXjlpoi4SCwqvio_y7RRmCPWW_ax6Q>
-    <xmx:gpgHaOWi4tJdjwoYwXAZq-4oOJeOCeysRYn1hJWcvnywp8AC0LIH1w>
-    <xmx:g5gHaOJJQThSQGpFQdRFHND3qfk_k9pjQvxhR7QpEZqcYrVZmGzGxPMy>
+X-ME-Proxy: <xmx:hZgHaHT5gMFRL8d4r4RwH3deYqbMxbjucN70rOk35LuQRysaKlOc7Q>
+    <xmx:hZgHaLwyPA-fWIcHWp9KnUnCL0Z2C9uLtaxJw8i1D1aqZ6ogBD_Idw>
+    <xmx:hZgHaF4ebeANcFVskEIbPSKlgHGbOo_el1IUvcqqBbJWvRMML0HwIQ>
+    <xmx:hZgHaIzzA43zsaOJqnJyol2J_i4UxNk4l-LLzEFhzjXPjoS_uJQoxA>
+    <xmx:hZgHaLqmWRcWoSSreQfZNRs1YAytru4FvjiUIpHtR8wseM4igzZF1azn>
 Feedback-ID: i25f1493c:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 22 Apr 2025 09:24:17 -0400 (EDT)
+ 22 Apr 2025 09:24:19 -0400 (EDT)
 From: Arthur Fabre <arthur@arthurfabre.com>
-Date: Tue, 22 Apr 2025 15:23:41 +0200
-Subject: [PATCH RFC bpf-next v2 12/17] veth: Propagate trait presence to
- skb
+Date: Tue, 22 Apr 2025 15:23:42 +0200
+Subject: [PATCH RFC bpf-next v2 13/17] virtio_net: Propagate trait presence
+ to skb
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,7 +101,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250422-afabre-traits-010-rfc2-v2-12-92bcc6b146c9@arthurfabre.com>
+Message-Id: <20250422-afabre-traits-010-rfc2-v2-13-92bcc6b146c9@arthurfabre.com>
 References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com>
 In-Reply-To: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com>
 To: netdev@vger.kernel.org, bpf@vger.kernel.org
@@ -115,31 +115,56 @@ Call the common xdp_buff_update_skb() / xdp_frame_update_skb() helpers.
 
 Signed-off-by: Arthur Fabre <arthur@arthurfabre.com>
 ---
- drivers/net/veth.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/virtio_net.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 7bb53961c0eaf4de642d20e49c9e47770dc367dd..a0f70aa145790700eed37349b337b723edc7612e 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -703,6 +703,8 @@ static void veth_xdp_rcv_bulk_skb(struct veth_rq *rq, void **frames,
- 			stats->rx_drops++;
- 			continue;
- 		}
-+
-+		xdp_frame_update_skb(frames[i], skb);
- 		napi_gro_receive(&rq->xdp_napi, skb);
- 	}
- }
-@@ -855,6 +857,8 @@ static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
- 	metalen = xdp->data - xdp->data_meta;
- 	if (metalen)
- 		skb_metadata_set(skb, metalen);
-+
-+	xdp_buff_update_skb(xdp, skb);
- out:
- 	return skb;
- drop:
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 7e4617216a4bd5bd52557109e252e2e00268062b..a709587382e97b8f1518b58301807dbbb00f1a0f 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -1186,6 +1186,7 @@ static struct sk_buff *virtnet_receive_xsk_small(struct net_device *dev, struct
+ 						 struct virtnet_rq_stats *stats)
+ {
+ 	struct bpf_prog *prog;
++	struct sk_buff *skb;
+ 	u32 ret;
+ 
+ 	ret = XDP_PASS;
+@@ -1197,7 +1198,9 @@ static struct sk_buff *virtnet_receive_xsk_small(struct net_device *dev, struct
+ 
+ 	switch (ret) {
+ 	case XDP_PASS:
+-		return xsk_construct_skb(rq, xdp);
++		skb = xsk_construct_skb(rq, xdp);
++		xdp_buff_update_skb(xdp, skb);
++		return skb;
+ 
+ 	case XDP_TX:
+ 	case XDP_REDIRECT:
+@@ -1319,6 +1322,7 @@ static struct sk_buff *virtnet_receive_xsk_merge(struct net_device *dev, struct
+ 		skb = xsk_construct_skb(rq, xdp);
+ 		if (!skb)
+ 			goto drop_bufs;
++		xdp_buff_update_skb(xdp, skb);
+ 
+ 		if (xsk_append_merge_buffer(vi, rq, skb, num_buf, hdr, stats)) {
+ 			dev_kfree_skb(skb);
+@@ -1952,6 +1956,7 @@ static struct sk_buff *receive_small_xdp(struct net_device *dev,
+ 	skb = virtnet_build_skb(buf, buflen, xdp.data - buf, len);
+ 	if (unlikely(!skb))
+ 		goto err;
++	xdp_buff_update_skb(&xdp, skb);
+ 
+ 	if (metasize)
+ 		skb_metadata_set(skb, metasize);
+@@ -2320,6 +2325,7 @@ static struct sk_buff *receive_mergeable_xdp(struct net_device *dev,
+ 		head_skb = build_skb_from_xdp_buff(dev, vi, &xdp, xdp_frags_truesz);
+ 		if (unlikely(!head_skb))
+ 			break;
++		xdp_buff_update_skb(&xdp, head_skb);
+ 		return head_skb;
+ 
+ 	case XDP_TX:
 
 -- 
 2.43.0
