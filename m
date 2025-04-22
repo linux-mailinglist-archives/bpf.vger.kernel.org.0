@@ -1,132 +1,86 @@
-Return-Path: <bpf+bounces-56441-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56442-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 736BCA97479
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 20:23:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F959A974A3
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 20:49:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1177F3BB0DD
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 18:23:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9BF4175FFF
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 18:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608332980B8;
-	Tue, 22 Apr 2025 18:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DCB27BF86;
+	Tue, 22 Apr 2025 18:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GiTAfIyg"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MtMK2l6Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8948B283C9F;
-	Tue, 22 Apr 2025 18:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5962980CA
+	for <bpf@vger.kernel.org>; Tue, 22 Apr 2025 18:49:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745346227; cv=none; b=GUH4YL8eOKvL5Azmliop4ilsIxzCcDxnKW0+h8Q40LlI+fnFISTqa3A1EURFyfbNMIafhGKkeYkCYv6YMijG0tkhZu/FaRdpkTlOrh87m8ZhhDK1Sc9OI7/Z1cKf0QxlodHv9VrXfiat3hA9qLeQ9GTgCN5iMWOrFK5hAnHEh/w=
+	t=1745347776; cv=none; b=XYrXghnu304RgHtxS9UafPCbFubgWKx1OeVaLq/IuwwO26x/6P+Cz6MCuBzx7Z+WTXnsZ0g3PX8E2M6iD3cdjPkTLHoQzQDMoO0FwWtdBAOz1OOVNxjpE+gWuZd0zFVmsjSHFn/bXKpWi95Ao9Jgy6JdTmPVXrzbJaP0eq2LFi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745346227; c=relaxed/simple;
-	bh=Z/1vCzlj2/D/r6wL5ZfrlT39ra+H2330JJbpjgDMZTw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nNDcHEVq3CWZIBPGiOcMDFRYnpMm29wMN/Z+De/nH9EnEUyV+rDXFdyboFcmc3OfR+/7EgDa7sHv11vHm+8YDyiGifbdWHZz6I0rvCAc46e2dsn4Gdalp489rqfLhaKKBgR4Nx6K+hDwVh8V6xxKGAlr0AcCPpU/Z2KjCj/cZDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GiTAfIyg; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2254e0b4b79so84001285ad.2;
-        Tue, 22 Apr 2025 11:23:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745346226; x=1745951026; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hQgTAxdLo2w0MTTOpuUp7zAa1il5ojmf6ztbr/SCn24=;
-        b=GiTAfIygOoKcJY1ZzMY8PmzXYWNm/lK1FLSo2r/u2842Sknig0rn5wVpbh34SFlXfW
-         heIwa05EPuoM/9smeJgCRjGC/7Dm+9eK62GMIyldjIxn6/Db3Pku37PxzHQgH9P6F+uf
-         /Mui+KWzP8y7PQMJH2KTjI3nlb6O2Kyh/Uv8DQPERqvi8CM76v02DbDWxIZwymQshK6a
-         fisTPDj/ieIe9IakFvPbN8rpf08xjzssjoNmQW74ylw+7t5SrFqsKJFVXM06+LTEcFW6
-         s6A0UCBQ7Oagsbl65Ynt0ykN6ZiJ+VbT+lBcWhNtfcTO4YUsSYRGHaAYP3mpBgxSR9EL
-         3DiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745346226; x=1745951026;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hQgTAxdLo2w0MTTOpuUp7zAa1il5ojmf6ztbr/SCn24=;
-        b=YRA91b+s9wDJuaQJQdsCpdxQ/zPEaH6mbM9nOFXhHHWjo/mYCHrguAFtJ3noqY9UEV
-         nEx7IheqDXKm9D2g7aiToSYfDQXcQlPXdpbdMjST6+ZFlI26DuSQAZPtBJZQeOeEXwAW
-         pSNLE69eyMHhUpFcP9zhbeU1PXYYICFHAKYPBBOJN7X1Ke0fBNi2XrFZv5uQ7gbpFqEO
-         zxV6fICOGgn+tPCr/jkBciirMfJEJwg+Bgas9aDEioyUfznEagIet3XtVbzMzmbrS8Ug
-         KC+DUOu0ZWnd860VSY/5HuZsXj1rtNQFWeOG42aGeEfcrsH6fCGM77cXsfnrpC53fm8Z
-         NzeA==
-X-Forwarded-Encrypted: i=1; AJvYcCVK3wlskwB/GcMy+B9VEQX/vIJ3zR7gArSJjx7Kq/YB+mn8uP7/qZNZiE3DEjAwIxG8Rd8=@vger.kernel.org, AJvYcCVz3e3sFtKGGf1HhVpMW1LgLWZAu1r6gkEV8eFsr9zh3BU0+30EjdD33538P2lkCTPURSZXOkEQfOAucVk5@vger.kernel.org, AJvYcCWLUnDh0Vxo+nB8ONSZb1BixulG+x4dho1PgS8xG3rax8yKgGVKAcXMkTAMscsv7a9k0Xj/j2piF7aI5Nu7OwQT@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxoc/1fIXq7clcr2lbTbVHfsKvYvg2m1kkqXXJFB1Upcjh2pl+F
-	OlZSTymfJ9aNCuZtjWjDL7x6z3aXTXSPMxsBUZ/UgHmyXuRb4Df+
-X-Gm-Gg: ASbGncsafNjk7tm5KYfLTSt8YKNUi8LR0AoPg6ihKzZ8sza/dEAE/BsuUC0JH1T+hBX
-	zoYOF9ri0lQTea33DyukbxyRGG/bQH0t+K0c7VyTki2ufk3p5niv2wzJGo0EzNka7+eqBfcbVgb
-	DlxSadEtEULEiDcGUF38t8tN4HL2dFO+l51YsyNAJWxu78jFRIPE5562Dg1RsoMPFc+RXwScdB4
-	ZNagWhXT5/Xskssk6vW7Q/yfuoHw+vzdheaJ3d1tnqGMOB6x97yYXZdtZclVMqBl3hpkWlCflAt
-	/j/N/jWE09fdZCA2KeJLZ1YrDCsxQfWkV2FHPhL1g3E=
-X-Google-Smtp-Source: AGHT+IEj2yElv7S+OtDn6fj50+VwciUKjquK168mw1EyDz48lDwHksHN7ry6AtQT0gpO588nDSMHwg==
-X-Received: by 2002:a17:903:2349:b0:224:584:6f05 with SMTP id d9443c01a7336-22c53607668mr249398665ad.41.1745346225666;
-        Tue, 22 Apr 2025 11:23:45 -0700 (PDT)
-Received: from prabhav.. ([115.99.163.92])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22c50eb48e0sm88620045ad.155.2025.04.22.11.23.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Apr 2025 11:23:44 -0700 (PDT)
-From: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org
-Cc: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/bpf: Fix null pointer check in skb_pkt_end.c
-Date: Tue, 22 Apr 2025 23:53:31 +0530
-Message-Id: <20250422182331.1188338-1-pvkumar5749404@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1745347776; c=relaxed/simple;
+	bh=RWoWEtAf7f+7io/364/s7GfQqzo3lkhR6B0rZgvXcxE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ysp3ECD5b9RBy3wRokP9vE645kKlceTTm8WpepP0vDhZaZf5imsA90Vj5ZmDGbW8ThlHHlJSmlrFvn/CVyzeQbq1t4mcvKQ6dhx1fDHiAMgK/qb2gO7na+g2GaVQPsCEVK2c/8KWowR34+kxmDVrjnyr0de9ltqLrSPkHp0zQ5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MtMK2l6Q; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <35f0089e-57a6-4f40-a278-aee4bcfeafac@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745347771;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EhgdkHrICyQW4O8yX6lvFSiloeTjU1LbOh9CjFLXlJs=;
+	b=MtMK2l6QIMZPloVF21C6KQJolqy0G8ntUQXZ4lS9zmRs3ehhc80XRUdfeLE9NqlKFdYzOk
+	d9lXh55ryL0zBNg4j5HVok/jLP0TuiN2ywklnaYc01st5fnLf2KpLJSppDXND/uNCKCjdT
+	VK0Sn+INywGbY6xtbx9S3uFfSsi8QCQ=
+Date: Tue, 22 Apr 2025 11:49:26 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf-next 2025-04-17
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: David Miller <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@kernel.org>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, Amery Hung <ameryhung@gmail.com>
+References: <20250417184338.3152168-1-martin.lau@linux.dev>
+ <20250421185450.6fde6f84@kernel.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250421185450.6fde6f84@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Ensure that 'tcp' is checked for NULL before dereferencing. This resolves
-a potential null pointer dereference warning reported by static analysis.
+On 4/21/25 6:54 PM, Jakub Kicinski wrote:
+> On Thu, 17 Apr 2025 11:43:37 -0700 Martin KaFai Lau wrote:
+>> 1) bpf qdisc support, from Amery Hung.
+>>     A qdisc can be implemented in bpf struct_ops programs and
+>>     can be used the same as other existing qdiscs in the
+>>     "tc qdisc" command.
+> 
+> Hm, it doesn't build in allmodconfig. Is there a strong reason for it?
 
-Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
----
- tools/testing/selftests/bpf/progs/skb_pkt_end.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The bpf_qdisc.c is enforcing some correctness in the bpf 
+Qdisc_op.{init,reset,destroy}. For example, it ensures that 
+qdisc_watchdog_cancel is done in reset/destroy.
 
-diff --git a/tools/testing/selftests/bpf/progs/skb_pkt_end.c b/tools/testing/selftests/bpf/progs/skb_pkt_end.c
-index 3bb4451524a1..db33ff2839f7 100644
---- a/tools/testing/selftests/bpf/progs/skb_pkt_end.c
-+++ b/tools/testing/selftests/bpf/progs/skb_pkt_end.c
-@@ -45,10 +45,10 @@ int main_prog(struct __sk_buff *skb)
- 		goto out;
- 
- 	tcp = (void*)(ip + 1);
--	if (tcp->dest != 0)
--		goto out;
- 	if (!tcp)
- 		goto out;
-+	if (tcp->dest != 0)
-+		goto out;
- 
- 	urg_ptr = tcp->urg_ptr;
- 
--- 
-2.34.1
-
+It is done by patching the bpf .reset prog and call a kfunc to ensure the 
+cleanup work is done. Patching with mod kfunc is not supported now. We can 
+consider to directly use BPF_EMIT_CALL to support mod helper call which should 
+be simpler verifier changes.
 
