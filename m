@@ -1,112 +1,120 @@
-Return-Path: <bpf+bounces-56443-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56444-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80AA1A9751F
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 21:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CEC6A9752B
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 21:12:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D3201B61A6D
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 19:06:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AAB01B60D7D
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 19:12:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B72290BCF;
-	Tue, 22 Apr 2025 19:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C029F284B43;
+	Tue, 22 Apr 2025 19:12:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G470giim"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kI2QUaBD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFEFA1AE875;
-	Tue, 22 Apr 2025 19:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0212F191F6D
+	for <bpf@vger.kernel.org>; Tue, 22 Apr 2025 19:12:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745348758; cv=none; b=eQHUlcu/gB5OmevoaT+I86t8be2BY7ssgPsWp9DcOPJF7rVAJSrP0xUUvKVTMljIentSmNumEDSj7zcDW3YAFiMTwuG20NUZw9FzWNsSN/eqZmlOzzXP9oR4zfd6aV2zU8nehPQFZGGmDenIDh7UuzsZ/Cd9yX9RvBW3cl+wYzI=
+	t=1745349133; cv=none; b=KkGSfOajjLdClNRI+yWs2BwfqRlljClluOZdzE3e6Y35Fx/q2d4Fa92IbywrlQ5yXlOjc7sjYMOS7ckgZWx5xndE0emKzALEVs/x9KHExNuWPvJlJ+GHI+LFuH7c1MlMixYuGryIXt0zZJiZGGsDDwuiGZZXMuvI0o+KXobBmHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745348758; c=relaxed/simple;
-	bh=ox3n7vqTRmaUjl5zlNSMs/7SpZ+Hew6klvq5n7FcVKY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tfgwsppoSIV/c0V6cn+b7tWe/pT3Qmhq+jkZOw+zfsyTMc3CREpU0nvRTT6BfjrFf2in1XXRsJt7uSWbZpkPqmy0GFlGM/Jh5pe96yiMH0vDtApcGayPhagl83T/tN0jcFn1ZpmBcbdw9ddSzHl6J4PD6dAn2F31xqhlZRQlh34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G470giim; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFA95C4CEEB;
-	Tue, 22 Apr 2025 19:05:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745348757;
-	bh=ox3n7vqTRmaUjl5zlNSMs/7SpZ+Hew6klvq5n7FcVKY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=G470giimj570BGdmzoDFkKc9naA3AhDoFLWk4AK+FuKz5IXJkbOU8UPsnD0/JBcMU
-	 uuS6niscYbR2kK/3GncoczZ+FFwL0lyl+AqPDRiOr/T1v8RkPhdkLQYjf5YMCP/gft
-	 g1Hz80742PRImiE2f3CZcP2tMMQ0P3RBs9+GGKeQbI6wTJUXZXzOuEaZLGPfl17Nem
-	 GxQ+zZctAEzH45GpQL74v96XmeJQb/sfev8MBgl3HbTvoLuSARUwd0Bf1zONtOCZqS
-	 xw3bjQMK1Z/UTrC4Kr7lqHQ7FgLEUN1bGfHmAx50AHjhFrCdJ3daBtDDD6ijT4dgY1
-	 UQFdIHANME10w==
-Date: Tue, 22 Apr 2025 12:05:55 -0700
-From: Namhyung Kim <namhyung@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Tao Chen <chen.dylane@linux.dev>, andrii@kernel.org, eddyz87@gmail.com,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next] libbpf: remove sample_period init in
- perf_buffer
-Message-ID: <aAfok3ha8QQkP8VB@google.com>
-References: <20250422091558.2834622-1-chen.dylane@linux.dev>
- <aAedDw7fWAF2ej1f@krava>
+	s=arc-20240116; t=1745349133; c=relaxed/simple;
+	bh=OGL0H9akpplPD+nHP7FTaOrTAgjt2QZuk6+08TMcics=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=lQHQn4dEyUOK4lCOLLWeBMRohYSZkcIyOl3pzifVhTlgd5ql3XY4UkE6WkHuH9HYzLFRpStcBmDqyxmF/MZaBiCUGj5MjYWa2PcNNVE00UL+RCGgPtA4wdnrTLC5fC3jHtA7ReWtv+4ZiKj4bzfrZTfPYnzokWxnkYM8lsIFlxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kI2QUaBD; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7390d21bb1cso5191174b3a.2
+        for <bpf@vger.kernel.org>; Tue, 22 Apr 2025 12:12:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745349130; x=1745953930; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OGL0H9akpplPD+nHP7FTaOrTAgjt2QZuk6+08TMcics=;
+        b=kI2QUaBDRHxrHzI9n2wcJSpP3kjPnBEQ1bshQdp5TZaKh9utLZSHhtzuKppKddtj3t
+         dtesLn6jj99PRVzgoBUrzJm+HptqvE6ldL8gFPQWG24Mn7INkhVPtnfnW43WHF35+Gdw
+         F4RFoGwhezKEWg1KGpNLV9gnCP76FjC7NAzmkEmIordwFrEixeycvYQgiFC8EargWJz7
+         7sF7x29u51qWmLV2MJjBcT3FEUkwkDpfAH47C8rM8xEUljLaav0yEC2kdUFmEkf2bEaR
+         JDC/jyW0U8A8Dou2uXhXueum5u4rsnyQnbprUQBsMd0B8wZQ90AV9/YTUki51ck3D4Ku
+         7Nwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745349130; x=1745953930;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OGL0H9akpplPD+nHP7FTaOrTAgjt2QZuk6+08TMcics=;
+        b=LVvzJyr3Fn8zaNrWdBpmXqQh0c78WCPQ3zxpCo9TwY691ihUtv150T+alLQriMctlC
+         mqgkKQEFrhVg/Rb31hII3SeAw1p6lLNxx1KaEst/ncZAJ6gN/iI62xflTUkFnjZyF48p
+         NdyWj6R3NkRTvq6ZVjmdA5HMv9JnoLr/MIsuZp3x6joJXYhVopZkeSLj6/wpDKxt1m7r
+         AI8i34hWLcykjEQpUWuBiVQnpdWtOyHDqmubx4MnS8RMS+0tqLl5B9EDAvmaY8JZuUqs
+         Fr0yXpXixBLgH5Jx4a6GTs+Ryl+gfa4vRPCbG243/cKaI/PYq9me6l3KQcuUqECZqT+/
+         Uulw==
+X-Gm-Message-State: AOJu0YxwIL0KsKUkfBS2C9uG7Q8ysrokYFiCWA6zFdiaZb/sSTG55QXz
+	QrCXRaLaNNbsAINd5ab6ZtA6IMkaiKVVLMq9df1CQ7hpFzh0BQX0
+X-Gm-Gg: ASbGncsR0JtyIjLMEUIAkdpCh4fe6w1s7omrlvpZuF1UaFmiupHGsZN8ySYl2uFMv96
+	nJcCGf5okUyiJjmNIIxFwYY5m6pLfUu5vOFZOz1YSVQHmv6sy6r/bjlaPzthJNo2tSlP5nnbEkl
+	bEb2UF6/l9gykT0pEYrTwR5K1HpIIgDBbRYja3hXWOaHS+x38cAbB4xOIAzO/M8a7FvJ7aajzc3
+	KjGO6RjiSGNHt8HVUjCr3I/iXzFePbTu041o1eg25CQEQti9HHPBZhykg2Fdh5cjKa7x0i+A5UZ
+	RiD/FaJaWSOLjdFhQSKhXSRRxnXzJPWWdez1QhoKqR46
+X-Google-Smtp-Source: AGHT+IEzNENV3SZctjXDKp0+6607z/78bZ0ir1pdTvLBXZLC1OptwJtkmg7lby/iKKH3aYAzGJofJg==
+X-Received: by 2002:a05:6a00:4608:b0:730:4c55:4fdf with SMTP id d2e1a72fcca58-73dc14a8851mr23079378b3a.7.1745349130028;
+        Tue, 22 Apr 2025 12:12:10 -0700 (PDT)
+Received: from ezingerman-mba ([2620:10d:c090:500::6:9822])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73dbfaad031sm9250450b3a.139.2025.04.22.12.12.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Apr 2025 12:12:09 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,  Andrii
+ Nakryiko <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
+  Martin KaFai Lau <martin.lau@kernel.org>,  Emil Tsalapatis
+ <emil@etsalapatis.com>,  Barret Rhoden <brho@google.com>,  kkd@meta.com,
+  kernel-team@meta.com
+Subject: Re: [RFC PATCH bpf-next/net v1 13/13] selftests/bpf: Add tests for
+ prog streams
+In-Reply-To: <20250414161443.1146103-14-memxor@gmail.com> (Kumar Kartikeya
+	Dwivedi's message of "Mon, 14 Apr 2025 09:14:43 -0700")
+References: <20250414161443.1146103-1-memxor@gmail.com>
+	<20250414161443.1146103-14-memxor@gmail.com>
+Date: Tue, 22 Apr 2025 12:12:07 -0700
+Message-ID: <m2bjsoroxk.fsf@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aAedDw7fWAF2ej1f@krava>
+Content-Type: text/plain
 
-Hello,
+Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
 
-On Tue, Apr 22, 2025 at 03:43:43PM +0200, Jiri Olsa wrote:
-> On Tue, Apr 22, 2025 at 05:15:58PM +0800, Tao Chen wrote:
-> > It seems that sample_period no used in perf buffer, actually only
-> > wakeup_events valid about events aggregation for wakeup. So remove
-> > it to avoid causing confusion.
-> 
-> I don't see too much confusion in keeping it, but I think it
-> should be safe to remove it
-> 
-> PERF_COUNT_SW_BPF_OUTPUT is "trigered" by bpf_perf_event_output,
-> AFAICS there's no path checking on sample_period for this event
-> used in context of perf_buffer__new, Namhyung, thoughts?
+[...]
 
-It seems to be ok to call mmap(2) for non-sampling events.
+> diff --git a/tools/testing/selftests/bpf/progs/stream_bpftool.c b/tools/testing/selftests/bpf/progs/stream_bpftool.c
+> new file mode 100644
+> index 000000000000..438c01a96efc
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/stream_bpftool.c
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+This file is almost identical to ./tools/bpf/bpftool/skeleton/stream.bpf.c
+except it also adds a function `foo` that exhausts may goto budget,
+as far as I can tell. What is the point of adding it?
 
-Thanks,
-Namhyung
+In general, I don't think we run bpftool tests on the CI,
+so it would be good to test stream.bpf.c itself e.g. by
+creating a symlink to it in selftests and adding a corresponding
+prog_tests/<smth>.c as you do here.
 
-> 
-> > 
-> > Fixes: fb84b8224655 ("libbpf: add perf buffer API")
-> > Signed-off-by: Tao Chen <chen.dylane@linux.dev>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 194809da5172..1830e3c011a5 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -13306,7 +13306,6 @@ struct perf_buffer *perf_buffer__new(int map_fd, size_t page_cnt,
-> >  	attr.config = PERF_COUNT_SW_BPF_OUTPUT;
-> >  	attr.type = PERF_TYPE_SOFTWARE;
-> >  	attr.sample_type = PERF_SAMPLE_RAW;
-> > -	attr.sample_period = sample_period;
-> >  	attr.wakeup_events = sample_period;
-> >  
-> >  	p.attr = &attr;
-> > -- 
-> > 2.43.0
-> > 
+Also, it would be good if some of the tests checked the content read
+from the stream. I think existing tests only check the size.
+
+[...]
 
