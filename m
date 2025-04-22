@@ -1,86 +1,87 @@
-Return-Path: <bpf+bounces-56464-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56465-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CC43A97B3A
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 01:48:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11FC9A97B3F
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 01:49:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5F59189DFB4
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 23:49:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 973147A6BD1
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 23:47:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E0EA21C179;
-	Tue, 22 Apr 2025 23:48:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D219E220699;
+	Tue, 22 Apr 2025 23:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DoWQVisN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GGvtO5Bz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4116921C176;
-	Tue, 22 Apr 2025 23:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F337B21C176;
+	Tue, 22 Apr 2025 23:48:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745365713; cv=none; b=q6arfVlodiloEvIse+21DvejKzrpvGfcCbb6w+tbxMXNj+LdQg23S9H9P6tjt++NepqWQXlocikbGp+SRZuVeb1KWsao9kBU2sa3vPZQKHGyDMl//3dXSEiV6sx3STdPn5Z2Kt+ljkaAIqypTmGwzeCUp3EQgycKUB3gY+amO4Y=
+	t=1745365718; cv=none; b=THG5h5UL3F5QYegCNiozpm8XlyPWQSIY8YTR2viNDhNcxlF0ApBPgF1R4R99BNg6Dsxvty7CTd0VPpwt0jFWY+/qPMvmsQoK9gO+veiU+sshiQkUsoczyk1ocgdliTP1Ws/G0zIKJu5Aeypgmpnp4cNJ5sz+vhcwXIaxQ4HF3mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745365713; c=relaxed/simple;
-	bh=O6mAv6ifp9X0QBL6dEs1CrXtSoPxPRuE19/CKtNagmQ=;
+	s=arc-20240116; t=1745365718; c=relaxed/simple;
+	bh=jz42MlIKhtm94v2zdrmyWguLYxer1bUQEKTQjrZnkh8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ftmLvbqHNWbd3fKe3E2S9iHPM1XKOwz42qlu/fUBR1XHWZTDQAacoXNgG/R89z2smq0SvC/EWeUlapNAF3U5pugYDLY9FhjG/mYPON40WJXDOZqNx8d2r0he2mpTGQTxdQfYGyIOLy/k1kqh1NKxnNath9H2tfp/gnER7b6q1Go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DoWQVisN; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=HIsf1MymWBYEi7BSFWymymkjyP8mHg7hHYl6OP9o7qA2I8RQZxweDpCl9nBPMIUblmHDyRxDFeUdzXkOhyBcf1417nTajLP1b9S7Qy4H7dsBUkn4vy5Lg8xGL7rPv9f2mq/KKzR7iJIaLLCkehYnfN3uGq7sbTLumOuSLUoriDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GGvtO5Bz; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-306b78ae2d1so4637852a91.3;
-        Tue, 22 Apr 2025 16:48:31 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-22c33677183so68157445ad.2;
+        Tue, 22 Apr 2025 16:48:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745365711; x=1745970511; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745365716; x=1745970516; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/GyEww2Ss/PfF8uYlDoiHPB7h0OHExkiJN3If+wg1Bo=;
-        b=DoWQVisNXzg6HvohJO3mhaeWyCFZxtX8ckph0xmO167FRca/tdbFYLsTjepJufWViu
-         3vhfWpicyEZ1QvFAuUdWSzqO/TdHDUAn7FU32VGrBWb9UUpAjgh5iN4CnPONjdiKwAu8
-         Yu5EQNQAx9Q6EaJ5x8LtwCxzqeZ/zsdRV6CTyP+Df6luupb58gqXb6d/f/Igkb73GTYU
-         LQy/yrj1ejWKASuQ8+4zxd2V3bEAYIoMGNX7hATcyipT0DJAlGpipCbpY+8TQnQ0lwd3
-         IPa1/2BS3kMo8qJ1mMdMz7cAJIMBiRXf5RNxudvhkqTPsmRZEmfGQ2Odb3zXy676+hcA
-         QbpA==
+        bh=/T4n7eT2yvThTB4kxOGVUmvDFNy5zFwlyk//MmWtzN8=;
+        b=GGvtO5BznzMDrCdUrOFR92W3rDWYVr6kY7eZk2+KS7ZyHES4eqTgCY/9GbK+t2Dwom
+         PaVEkzLR6JOwlKQ/T5VFf/tdu9izEoUdQ5H+VWyAJpUoENFWAxe37t4S/W6nj0/1H4nb
+         VSqtdVjdp/60HwSQHvJ6D+0Tpi9ozjbGRE8HUbWw+zJnoONv1/XOUea0RwxtWeuHfoUy
+         dyI1+bTJm4MLvtHDAc+xVgnVsr9RgIRmS+GrFJuiW7ks2cnsi27f2I7gp8JWeW/d+6XY
+         uI4Nlq1MhbRPWTsLWIU9AKbT1DtW4OkUNe8cx3siynw8DBwtrw5yFx1LfoMkFT+eUDoi
+         p0vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745365711; x=1745970511;
+        d=1e100.net; s=20230601; t=1745365716; x=1745970516;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/GyEww2Ss/PfF8uYlDoiHPB7h0OHExkiJN3If+wg1Bo=;
-        b=LeVa0rtAaIwpwFEhFYVuXNj3ExxdSFxidsgj3tdl0Zaas9MEIj47tkT3oSXvM5nAVI
-         q2eToTPnkZtc4PBI8Wh3KNqG5AquW1If9vf1XUXN4eU/rBWxqIIMebmtus1uEECXW6hL
-         M+t04O4d7MpANVTpNHfJynvmUd4u3yH2eiTfAMv2/EDB1x3825jWyMzkvZDC0IViL6IN
-         gzermx2r7ZgTzbZaIbliqa1g2gfcnm/dOtOa30ZLBZhI5d1fuJnESoFltuc4SjefJ1Au
-         MAriBQwBrrZ8H8XWf/S8PurSWd3xcWmSnZqI0avLwdKm+6PbTVZTyUvjOlSd3MViyHwO
-         faWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVgTYen7argvLF/8iSa6+5SzxoMCLkUcgrqidzTXEgsHKaRRfe1wA2xZAlf0YGNSSQtSlQ=@vger.kernel.org, AJvYcCWoNanordgkTXbQvSl9iiZmnmrgsO+O7Q9BcqQ/ya7swavI2FeCZEBZWp1ws6QJnfk2M8htl6qyeeZ2GiKs@vger.kernel.org, AJvYcCXLL1YbG+jITVgwDCVhsW43EJvhEPjMJZ3b2kOyhXY7VMVzPWPIoD3nlfheedwkgoYJW8nLykcO0+KrZgJ2p1LZOdEV@vger.kernel.org
-X-Gm-Message-State: AOJu0YywTMnagS9sDYQ/aagHKCLod59Cm1s+ZWcn2ux0u7rE5/6TXNYw
-	knZbXpFf1b2r2dqCLx2uv/Bfd2PHCtIAfHgKc3yW/kkVpqI8UMKCDxt/AVaZ75fDUiRhhhl9p6a
-	Z/WiiUsAfLsBcIGSk6/InMipvDFE=
-X-Gm-Gg: ASbGnctBSvNhcuzThgLHHSCmhG7ooqNAoDCQiyNDBPhTQgtVsih+Yr4WJolb/20dZW/
-	T2ILJjiS8XATxuOGe/OZyKecASHsKpvKPWqbnJf9uwOLT0+JhhGnQ5Tp4Bb03IeY4WsHdTV8YTQ
-	X8ssV+Z653rqEuLmRQJUTl81PFuLvDgfaJ9OKIGQ==
-X-Google-Smtp-Source: AGHT+IHURaMcxvopFeNZ1Zl/jsjQeK0UDSBJ+gPJZohjrjYJK1fbwtQ/dsNOUD7Z38+i/PMC27/6najHtrGxjm/FgBM=
-X-Received: by 2002:a17:90a:dfc5:b0:2fa:1a23:c01d with SMTP id
- 98e67ed59e1d1-3087bb6bcaamr24531723a91.21.1745365711458; Tue, 22 Apr 2025
- 16:48:31 -0700 (PDT)
+        bh=/T4n7eT2yvThTB4kxOGVUmvDFNy5zFwlyk//MmWtzN8=;
+        b=J383FH66E18MJhwW5y+pULtUG3yKEaa6TlVFJg9xbZ+68IXAv5Hj/9+Hwb263vLzp4
+         a+OAUO67IWDCun/V0kOSXBk8rj59QvN8u+4X2IjWLvZJcdNt8wg40eBggYmx7i52cMUX
+         qYsh6UOPRaTSOfAdHMihC2A7IR3wSqGjWCcY6eJeuLBKuA3uCg3yUm5qF43cOiIsVHqZ
+         L1uFVhEhioaMhWUdTZTw1Gkib3+S7Hj4knsoiyr7ZfpT7fAZoPOMo3+BK6F4BF4zodI5
+         RJrwoz5Km/7atWRoN+SEYjWygRcb8NTHG2JDTz7RsOCY/w61NkYAcdYWxPU92PqGAM7n
+         EcNw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2gY90jre/FmvmQd6fACr8Zqdcqyg5a/3EytnzUFuMCjdlE1Hy0OC8QzCKFwewYQVU9rQV3rL5QKUku7Ey6OisJv7s@vger.kernel.org, AJvYcCVKbVej5njMAy1p8Q1DJdOvpl/sZTf1I/C3kDJ7w/yVjpAYMjoe8mxEnhJRPoGz/gY30Fs=@vger.kernel.org, AJvYcCVQvmk5YouQaYMdBqNpis4lXgLpzXrg+qKsL3wdODRaA+0CSqb5EJsAyHuUToTCXI/xXTL1dj9tLd2M8H0W@vger.kernel.org
+X-Gm-Message-State: AOJu0YzExomLMbUwH+oxG7BNFb8vtTw/So+Up97JDMwSyMvEK958XKxF
+	1lmKRVidHUu3bqyxh7hVWnHRaJKAYvsP/p2wlIgZ9E4xmhdnbZF+ewcyBtL7BP9dL8vdNRCuDaB
+	m/NpAmW8IRBDeJUzVaQanbkSC/dc=
+X-Gm-Gg: ASbGnctdJloYWFr/lDV6ObHMcY5Jw2ualr0AGFAiiQQv1IBX3JIwSYAAkDVqbdmky9a
+	iL0b7/cKoMV0F+LX3jfH6+9yeHVHHNxeJKma0IgjdkpZHaINi7nRIu18DyHSR/hCFGm6FLs4W2K
+	yXembeW+Yn6e9bP0/UTxY8iIlj2RnTUtZGy7w02CKXtZKVt/xd
+X-Google-Smtp-Source: AGHT+IE/cfyW320QN7e2YH8z4VwCt+2g17zoxlHkihvKARmmChOcfHoT1nkyOotigKo3cVljNO16ENdC/KODxI5jmmk=
+X-Received: by 2002:a17:902:f682:b0:224:912:153 with SMTP id
+ d9443c01a7336-22c53573d25mr279635655ad.5.1745365716243; Tue, 22 Apr 2025
+ 16:48:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250421214423.393661-1-jolsa@kernel.org> <20250421214423.393661-6-jolsa@kernel.org>
-In-Reply-To: <20250421214423.393661-6-jolsa@kernel.org>
+References: <20250421214423.393661-1-jolsa@kernel.org> <20250421214423.393661-7-jolsa@kernel.org>
+In-Reply-To: <20250421214423.393661-7-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 22 Apr 2025 16:48:14 -0700
-X-Gm-Features: ATxdqUEMo0_fA58o4v09I-sv2UgVEm5CJQx06RmTe1s2Rm3JMF3nLPbpEyU3xrk
-Message-ID: <CAEf4BzZxMxK3KO91jn5M--+=2QerNJZic8xFTYir04SGs6DZGQ@mail.gmail.com>
-Subject: Re: [PATCH perf/core 05/22] uprobes: Add nbytes argument to uprobe_write
+Date: Tue, 22 Apr 2025 16:48:19 -0700
+X-Gm-Features: ATxdqUGKqzGrekv4T_CT4GfXqWxqXqp67BVlWdwUn5g5QkGiHwxAY7ax8NyaRKI
+Message-ID: <CAEf4Bza9e1ixnLZgNjWrMZYZwrz2pByVnyfDywX7bUe5p5Kw3g@mail.gmail.com>
+Subject: Re: [PATCH perf/core 06/22] uprobes: Add is_register argument to
+ uprobe_write and uprobe_write_opcode
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -96,19 +97,24 @@ Content-Transfer-Encoding: quoted-printable
 
 On Mon, Apr 21, 2025 at 2:45=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding nbytes argument to uprobe_write and related functions as
-> preparation for writing whole instructions in following changes.
+> The uprobe_write has special path to restore the original page when we
+> write original instruction back. This happens when uprobe_write detects
+> that we want to write anything else but breakpoint instruction.
 >
-> Also renaming opcode arguments to insn, which seems to fit better.
+> Moving the detection away and passing it to uprobe_write as argument,
+> so it's possible to write different instructions (other than just
+> breakpoint and rest).
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  include/linux/uprobes.h |  6 +++---
->  kernel/events/uprobes.c | 27 ++++++++++++++-------------
->  2 files changed, 17 insertions(+), 16 deletions(-)
+>  arch/arm/probes/uprobes/core.c |  2 +-
+>  include/linux/uprobes.h        |  5 +++--
+>  kernel/events/uprobes.c        | 22 +++++++++++-----------
+>  3 files changed, 15 insertions(+), 14 deletions(-)
 >
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
 
 [...]
 
