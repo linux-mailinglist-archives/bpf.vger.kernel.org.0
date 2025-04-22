@@ -1,359 +1,158 @@
-Return-Path: <bpf+bounces-56377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C06FA95EC8
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 09:00:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4B17A9607B
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 10:06:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7240D3A4A0B
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 07:00:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42FE7189AB8D
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 08:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F55822D4C0;
-	Tue, 22 Apr 2025 07:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 461D82528E9;
+	Tue, 22 Apr 2025 08:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u3vozAG4"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="enGmkuWH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F343BCA64;
-	Tue, 22 Apr 2025 07:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8677149C7D;
+	Tue, 22 Apr 2025 08:04:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745305227; cv=none; b=HQlm8zb9QX1G+BPWw4DdkmTZRthbfDESt3i9hJ3Hftb7JcK1YFSH2RnCVjzLCS1udDgpBHwi8Rz6nQEifWuL5E+Nj7PCYuON/7JpSGtxqbwZaXEF6kPJpYn0kYB7GMgvMKh9dmOeLdF0mP12Q8/1vmbe/tSW4ogZGyQ6yPTA12s=
+	t=1745309090; cv=none; b=vBJUSWM8hs/iRXHDlP2fp5k4gv0AugQFoIOHfFwvI0n5JSlhduBvB+8ChKjTPu0kTfFyc46lNwqL3hhymUO4oG03sHi24YtuFrtqgJ9ZGiUnO3YRBvnEE55Vv7VxM7RJdYoAvva7oL2+qEP21X1Q7q7RopOod6pvyJJAJClwsxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745305227; c=relaxed/simple;
-	bh=9UlJ4qWtAN1HujoOVpR0ZontGjwWd/yVLwxzn+LakOo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RA2bUrOP0M4JbgjzqzGvdU0ccZWlusQpfktpCEDaTWK7/t3d91jyeyVDBEczGWJZP7EI4rs9pDqH/CVbimelG9cnj9mZtaGPw/Eq4LDKgq8aXqDdqf36PX4iWgfULSkzEenWJHqrlcXzErHaXHH0MpL5ygQT/8UUznZCWaN6Ruo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u3vozAG4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67C63C4CEEA;
-	Tue, 22 Apr 2025 07:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745305226;
-	bh=9UlJ4qWtAN1HujoOVpR0ZontGjwWd/yVLwxzn+LakOo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=u3vozAG4K/lyUG2o9UmOfmxzYlzQ7ZOkcFnRK0HFG/fdMVPHTI9PSMeKHepsLLmLV
-	 DM8twuZcqbhtHAEhWOF+6d+UgJ88HUjNt/00s4v47CZXMW6QYLTYRJEB8zcFnBw+aw
-	 fcnz6Lk0JO/QnKvEDUrLbxlC8We8jmBLcKVluIseOZIVRWL8iDBCH65qTqGyKPRbuM
-	 LSQ+PEeOdOtZKGTjgNOjmjcg3X8eTA6iOchxY+hUR6/z9mZexWDP1pJy9tXv4PDo7Z
-	 THT4msqE2adqjD2EIue3S6quKxY0cbskeB7A8dgBpHlALahfSVrr1Es27NRxklK8/S
-	 XGhiZ7qP2TRow==
-Date: Tue, 22 Apr 2025 09:00:17 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	David Laight <David.Laight@aculab.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 22/22] man2: Add uprobe syscall page
-Message-ID: <42yzod7olktnj4meijj57j5peiojywo2d47d5gefnbmbwxfz4b@5ek6puondmck>
-References: <20250421214423.393661-1-jolsa@kernel.org>
- <20250421214423.393661-23-jolsa@kernel.org>
+	s=arc-20240116; t=1745309090; c=relaxed/simple;
+	bh=dKg2iMASpZKlpSKiCHccH+FM4Cc+jvpjBNHcnykSyl4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Cq5DtR9FpytH2os2GN9aO8J0FTVUgyOHx0RSHfykiDFB8K/v4aRyNWmwq5kZ5NW3GnNCoYSUqEbEBvCHX8FMZJWNDOyW6vouszxxjbg8KtYoRZDxlp91Pl4NUWWlAfxcFPc+bOvBg4bieUKTC9ZRtU+c+CEpfq83aqjE50b3Ftw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=enGmkuWH; arc=none smtp.client-ip=117.135.210.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=jhwxs
+	X7bT2boAjm5LCgWVLRdP11jribrR6xBUttHT2I=; b=enGmkuWHo4kn5hs42kTQo
+	RXk0rfNiJPybF1+3puHxHV6tKuyZhXVBJOFgaizbheuToAlnjR/f9e3If7KTZxnB
+	4q8aDBpZ705wabm6FBz5fKhjR864aN0lcUHkrqVxPMuYCMSayp9tYzHXOZ4cLclf
+	C7VZxQT8f94ZFDzMU0Ljck=
+Received: from localhost.localdomain (unknown [])
+	by gzsmtp1 (Coremail) with SMTP id PCgvCgAHGGuDTQdoB12hAg--.4613S2;
+	Tue, 22 Apr 2025 16:04:21 +0800 (CST)
+From: Feng Yang <yangfeng59949@163.com>
+To: alexei.starovoitov@gmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eddyz87@gmail.com,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	song@kernel.org,
+	yangfeng59949@163.com,
+	yangfeng@kylinos.cn,
+	yonghong.song@linux.dev
+Subject: 
+Date: Tue, 22 Apr 2025 16:04:19 +0800
+Message-Id: <20250422080419.322136-1-yangfeng59949@163.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAADnVQLnij-d3Hif1x8ocoYD=8sZG67qACXPZhK78cpYKczwkw@mail.gmail.com>
+References: <CAADnVQLnij-d3Hif1x8ocoYD=8sZG67qACXPZhK78cpYKczwkw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gecymmelcfbq645p"
-Content-Disposition: inline
-In-Reply-To: <20250421214423.393661-23-jolsa@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:PCgvCgAHGGuDTQdoB12hAg--.4613S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCF4xurW8ZFyxAF4xZr1xuFg_yoW5tw1fpa
+	15AFy3Cr4kJF4aqwnrGr40vFW5Gw4Uu3yxCasrK34agr4qvF9rXr1UJr1S9F9Yvry2k34f
+	AayvqrZ8KrW0qa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UVKZAUUUUU=
+X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiTRM3eGgG8cnG3QABsd
 
+Subject: Re: [PATCH bpf-next] bpf: Remove bpf_get_smp_processor_id_proto
 
---gecymmelcfbq645p
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	David Laight <David.Laight@aculab.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 22/22] man2: Add uprobe syscall page
-References: <20250421214423.393661-1-jolsa@kernel.org>
- <20250421214423.393661-23-jolsa@kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20250421214423.393661-23-jolsa@kernel.org>
+On Mon, 21 Apr 2025 18:53:07 -0700 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Hi Jiri,
+> On Thu, Apr 17, 2025 at 8:41 PM Feng Yang <yangfeng59949@163.com> wrote:
+> >
+> > From: Feng Yang <yangfeng@kylinos.cn>
+> >
+> > All BPF programs either disable CPU preemption or CPU migration,
+> > so the bpf_get_smp_processor_id_proto can be safely removed,
+> > and the bpf_get_raw_smp_processor_id_proto in bpf_base_func_proto works perfectly.
+> >
+> > Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+> > ---
+> >  include/linux/bpf.h      |  1 -
+> >  kernel/bpf/core.c        |  1 -
+> >  kernel/bpf/helpers.c     | 12 ------------
+> >  kernel/trace/bpf_trace.c |  2 --
+> >  net/core/filter.c        |  6 ------
+> >  5 files changed, 22 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 3f0cc89c0622..36e525141556 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -3316,7 +3316,6 @@ extern const struct bpf_func_proto bpf_map_peek_elem_proto;
+> >  extern const struct bpf_func_proto bpf_map_lookup_percpu_elem_proto;
+> >
+> >  extern const struct bpf_func_proto bpf_get_prandom_u32_proto;
+> > -extern const struct bpf_func_proto bpf_get_smp_processor_id_proto;
+> >  extern const struct bpf_func_proto bpf_get_numa_node_id_proto;
+> >  extern const struct bpf_func_proto bpf_tail_call_proto;
+> >  extern const struct bpf_func_proto bpf_ktime_get_ns_proto;
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index ba6b6118cf50..1ad41a16b86e 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -2943,7 +2943,6 @@ const struct bpf_func_proto bpf_spin_unlock_proto __weak;
+> >  const struct bpf_func_proto bpf_jiffies64_proto __weak;
+> >
+> >  const struct bpf_func_proto bpf_get_prandom_u32_proto __weak;
+> > -const struct bpf_func_proto bpf_get_smp_processor_id_proto __weak;
+> >  const struct bpf_func_proto bpf_get_numa_node_id_proto __weak;
+> >  const struct bpf_func_proto bpf_ktime_get_ns_proto __weak;
+> >  const struct bpf_func_proto bpf_ktime_get_boot_ns_proto __weak;
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index e3a2662f4e33..2d2bfb2911f8 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -149,18 +149,6 @@ const struct bpf_func_proto bpf_get_prandom_u32_proto = {
+> >         .ret_type       = RET_INTEGER,
+> >  };
+> >
+> > -BPF_CALL_0(bpf_get_smp_processor_id)
+> > -{
+> > -       return smp_processor_id();
+> > -}
+> > -
+> > -const struct bpf_func_proto bpf_get_smp_processor_id_proto = {
+> > -       .func           = bpf_get_smp_processor_id,
+> > -       .gpl_only       = false,
+> > -       .ret_type       = RET_INTEGER,
+> > -       .allow_fastcall = true,
+> > -};
+> > -
+> 
+> bpf_get_raw_smp_processor_id_proto doesn't have
+> allow_fastcall = true
+> 
+> so this breaks tests.
+> 
+> Instead of removing BPF_CALL_0(bpf_get_smp_processor_id)
+> we should probably remove BPF_CALL_0(bpf_get_raw_cpu_id)
+> and adjust SKF_AD_OFF + SKF_AD_CPU case.
+> I don't recall why raw_ version was used back in 2014.
+> 
 
-On Mon, Apr 21, 2025 at 11:44:22PM +0200, Jiri Olsa wrote:
-> Adding man page for new uprobe syscall.
->=20
-> Cc: Alejandro Colomar <alx@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  man/man2/uprobe.2    | 49 ++++++++++++++++++++++++++++++++++++++++++++
->  man/man2/uretprobe.2 |  2 ++
->  2 files changed, 51 insertions(+)
->  create mode 100644 man/man2/uprobe.2
->=20
-> diff --git a/man/man2/uprobe.2 b/man/man2/uprobe.2
-> new file mode 100644
-> index 000000000000..2b01a5ab5f3e
-> --- /dev/null
-> +++ b/man/man2/uprobe.2
-> @@ -0,0 +1,49 @@
-> +.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
-> +.\"
-> +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
-> +.\"
-> +.TH uprobe 2 (date) "Linux man-pages (unreleased)"
-> +.SH NAME
-> +uprobe
-> +\-
-> +execute pending entry uprobes
-> +.SH SYNOPSIS
-> +.nf
-> +.B int uprobe(void);
-> +.fi
-> +.SH DESCRIPTION
-> +.BR uprobe ()
-> +is an alternative to breakpoint instructions
-> +for triggering entry uprobe consumers.
+The following two seem to explain the reason:
+https://lore.kernel.org/all/7103e2085afa29c006cd5b94a6e4a2ac83efc30d.1467106475.git.daniel@iogearbox.net/
+https://lore.kernel.org/all/02fa71ebe1c560cad489967aa29c653b48932596.1474586162.git.daniel@iogearbox.net/
 
-What are breakpoint instructions?
-
-> +.P
-> +Calls to
-> +.BR uprobe ()
-> +are only made from the user-space trampoline provided by the kernel.
-> +Calls from any other place result in a
-> +.BR SIGILL .
-> +.SH RETURN VALUE
-> +The return value is architecture-specific.
-> +.SH ERRORS
-> +.TP
-> +.B SIGILL
-> +.BR uprobe ()
-> +was called by a user-space program.
-> +.SH VERSIONS
-> +The behavior varies across systems.
-> +.SH STANDARDS
-> +None.
-> +.SH HISTORY
-> +TBD
-> +.P
-> +.BR uprobe ()
-> +was initially introduced for the x86_64 architecture
-> +where it was shown to be faster than breakpoint traps.
-> +It might be extended to other architectures.
-> +.SH CAVEATS
-> +.BR uprobe ()
-> +exists only to allow the invocation of entry uprobe consumers.
-> +It should
-> +.B never
-> +be called directly.
-> +.SH SEE ALSO
-> +.BR uretprobe (2)
-
-The pages are almost identical.  Should we document both pages in the
-same page?
-
-> diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
-> index bbbfb0c59335..bb8bf4e32e5d 100644
-> --- a/man/man2/uretprobe.2
-> +++ b/man/man2/uretprobe.2
-> @@ -45,3 +45,5 @@ exists only to allow the invocation of return uprobe co=
-nsumers.
->  It should
->  .B never
->  be called directly.
-> +.SH SEE ALSO
-> +.BR uprobe (2)
-> --=20
-> 2.49.0
-
-
-How about something like the diff below?
-
-
-Have a lovely day!
-Alex
-
----
-diff --git i/man/man2/uretprobe.2 w/man/man2/uretprobe.2
-index bbbfb0c59..df0e5d92e 100644
---- i/man/man2/uretprobe.2
-+++ w/man/man2/uretprobe.2
-@@ -2,22 +2,28 @@
- .\"
- .\" SPDX-License-Identifier: Linux-man-pages-copyleft
- .\"
--.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
-+.TH uprobe 2 (date) "Linux man-pages (unreleased)"
- .SH NAME
-+uprobe,
- uretprobe
- \-
--execute pending return uprobes
-+execute pending entry or return uprobes
- .SH SYNOPSIS
- .nf
-+.B int uprobe(void);
- .B int uretprobe(void);
- .fi
- .SH DESCRIPTION
-+.BR uprobe ()
-+is an alternative to breakpoint instructions
-+for triggering entry uprobe consumers.
-+.P
- .BR uretprobe ()
- is an alternative to breakpoint instructions
- for triggering return uprobe consumers.
- .P
- Calls to
--.BR uretprobe ()
-+these system calls
- are only made from the user-space trampoline provided by the kernel.
- Calls from any other place result in a
- .BR SIGILL .
-@@ -26,22 +32,28 @@ .SH RETURN VALUE
- .SH ERRORS
- .TP
- .B SIGILL
--.BR uretprobe ()
--was called by a user-space program.
-+These system calls
-+were called by a user-space program.
- .SH VERSIONS
- The behavior varies across systems.
- .SH STANDARDS
- None.
- .SH HISTORY
-+.TP
-+.BR uprobe ()
-+TBD
-+.TP
-+.BR uretprobe ()
- Linux 6.11.
- .P
--.BR uretprobe ()
--was initially introduced for the x86_64 architecture
--where it was shown to be faster than breakpoint traps.
--It might be extended to other architectures.
-+These system calls
-+were initially introduced for the x86_64 architecture
-+where they were shown to be faster than breakpoint traps.
-+They might be extended to other architectures.
- .SH CAVEATS
--.BR uretprobe ()
--exists only to allow the invocation of return uprobe consumers.
--It should
-+These system calls
-+exist only to allow the invocation of
-+entry or return uprobe consumers.
-+They should
- .B never
- be called directly.
-
-
-$ MANWIDTH=3D64 diffman-git
---- HEAD:man/man2/uretprobe.2
-+++ ./man/man2/uretprobe.2
-@@ -1,24 +1,30 @@
--uretprobe(2)          System Calls Manual          uretprobe(2)
-+uprobe(2)             System Calls Manual             uprobe(2)
-=20
- NAME
--       uretprobe - execute pending return uprobes
-+       uprobe,  uretprobe - execute pending entry or return up=E2=80=90
-+       robes
-=20
- SYNOPSIS
-+       int uprobe(void);
-        int uretprobe(void);
-=20
- DESCRIPTION
-+       uprobe() is an alternative  to  breakpoint  instructions
-+       for triggering entry uprobe consumers.
-+
-        uretprobe() is an alternative to breakpoint instructions
-        for triggering return uprobe consumers.
-=20
--       Calls  to  uretprobe() are only made from the user=E2=80=90space
--       trampoline provided by the kernel.  Calls from any other
--       place result in a SIGILL.
-+       Calls to these system calls are only made from the user=E2=80=90
-+       space trampoline provided by the kernel.  Calls from any
-+       other place result in a SIGILL.
-=20
- RETURN VALUE
-        The return value is architecture=E2=80=90specific.
-=20
- ERRORS
--       SIGILL uretprobe() was called by a user=E2=80=90space program.
-+       SIGILL These  system  calls  were called by a user=E2=80=90space
-+              program.
-=20
- VERSIONS
-        The behavior varies across systems.
-@@ -27,16 +33,20 @@
-        None.
-=20
- HISTORY
--       Linux 6.11.
-+       uprobe()
-+              TBD
-+
-+       uretprobe()
-+              Linux 6.11.
-=20
--       uretprobe() was initially introduced for the x86_64  ar=E2=80=90
--       chitecture  where  it was shown to be faster than break=E2=80=90
--       point traps.  It might be extended  to  other  architec=E2=80=90
--       tures.
-+       These system calls were  initially  introduced  for  the
-+       x86_64  architecture  where they were shown to be faster
-+       than breakpoint traps.  They might be extended to  other
-+       architectures.
-=20
- CAVEATS
--       uretprobe()  exists  only to allow the invocation of re=E2=80=90
--       turn uprobe consumers.  It should never  be  called  di=E2=80=90
--       rectly.
-+       These system calls exist only to allow the invocation of
-+       entry  or return uprobe consumers.  They should never be
-+       called directly.
-=20
--Linux man=E2=80=90pages (unreleased) (date)                uretprobe(2)
-+Linux man=E2=80=90pages (unreleased) (date)                   uprobe(2)
-
---=20
-<https://www.alejandro-colomar.es/>
-
---gecymmelcfbq645p
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEES7Jt9u9GbmlWADAi64mZXMKQwqkFAmgHPnoACgkQ64mZXMKQ
-wqlClQ//Y7kkJ5hcR1998Pwe4aa6Mhwv059UBO9KejAyrGyUMKN/QkSiSZBJWYmd
-S24z6ahnNCQiHfwld+4jtDr9ah4PuWyLzR5urQT/ciRCSgqtiS4+vmhqlejTBxfP
-pfN9vkjL2GhtWn1RDvKvhBeavf8o9x+eisUq3yxrIfwZyBmkBbGsfdVtys8wytAQ
-TB4YHpuiLpHnUYRjo7nzvY7eJoytWJxkyApJrNT81TW75kGdrOhmBDA4K0tOWZfx
-TGgnfVUV15dUFKnCchE4yvKUlfLWNBZ06ecB8iN6xTwQ13cryrimmujaTYBMQxuX
-p4lvPKoH5IIKI8fv4Cj7GghgPnX7BMZJvcsM4SJYE6pw5tSBe5M5P772Kg2tiDHI
-4fM7HsNv/nvqpOqaRSYEtXfA2V6ObvsX9+uHtUzbxhEWSZtJt8T5B4idobUip67q
-uMkymezMlHVC78nmaPQxgvG68iEcU7SuuJJnWm0FjIa5bru39sg9SMdSo7W/Y/7P
-bSO8is507dRkenY9MOB4/n3Hsf64eB5atbF91vqywT3ADT1duu/fHPq+QYJWgX7w
-0c1/Ix0gf4gNfuiiipq22+MHtkgSViv6O2p+hkdaaFjYbzKLnyQBFb2kZsgsUEDq
-A1oF23V/hM+plakIUTzztBj00JtAHYDRR5CyCU8u1C/om8AnY94=
-=VS/A
------END PGP SIGNATURE-----
-
---gecymmelcfbq645p--
 
