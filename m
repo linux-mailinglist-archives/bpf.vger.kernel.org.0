@@ -1,85 +1,86 @@
-Return-Path: <bpf+bounces-56362-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56363-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61AE6A95A99
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 03:44:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BE26A95A9C
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 03:45:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CDAA189639E
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 01:44:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DCB83B543E
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 01:45:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9352818BC2F;
-	Tue, 22 Apr 2025 01:44:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B7B318D63A;
+	Tue, 22 Apr 2025 01:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FxR+++a5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jUlSRVm5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com [209.85.208.68])
+Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67F82134BD;
-	Tue, 22 Apr 2025 01:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B9C62AD2D;
+	Tue, 22 Apr 2025 01:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745286271; cv=none; b=GBZRxydPzeR/5Vv+LW5iYACV6zPxwyy0MlPUccHIPRnnlBPaPaznqCf2EOUd8SbOAEXIMu2GXDdztjg0DL/ZHC55ssKWpVWz4YudO2LvHKMe1xO8SjrQtXc75zddhGAZ8JYIURN5cLuNkA/q3a3GJeo1GKwg9DO4/vbJh7FbwZI=
+	t=1745286313; cv=none; b=dZ1r9NZtX7YxL9gocm5b7A467KCuZYz60WshsFcbVj74Py1AKi6VfZ/isPrPV98+tLY/Qx/XBRK49/KDtB3P01Ta3wMhShpL8fUF5X1fOJQ2ubV0g0HB4xGoZeA22AUyS8e0+jxis1yTZnWZOJSWHQHr1TYenahBTJGx+5phpjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745286271; c=relaxed/simple;
-	bh=JY1g3/MhFC5jdUryaepPudN/DdnY5dop8+gFTmOow00=;
+	s=arc-20240116; t=1745286313; c=relaxed/simple;
+	bh=c2237zbkihLi7D4ncLnEvgs7dHis7sqZutBBQO+/m+Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iQwSc66+Zfxpeer6KFcOywywcBk9F5cNgDoGS7lsBn1JFu5a7zgY3vmk7OT8iPvExQ5R1LVDNh9Y2W8d+rxE+3DfQQCZ5FluUL6ETxx3TvJ0s2vCG+hRmOA6K5+BzOpz2R5fUz4Y2i08AlmBiPRUMdlQs7xbTcq0RaO+LVTTmq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FxR+++a5; arc=none smtp.client-ip=209.85.208.68
+	 To:Cc:Content-Type; b=C2ZeFOHZTR0vErjpm561a2t2SS5NoEeKRYyG/u0RN8p+DZBTCeFmbgA/ZwjFj7AjWR7mIGBBt5jHNHCj42xs9n7BPjAEOhLNpcm5FbTOc5QAYykWvBkmUwa1QuUpzUmG3MECVAokPqAjuhMl0esqwJ4KvRfHTEdc7xmbSmkhOiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jUlSRVm5; arc=none smtp.client-ip=209.85.208.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f68.google.com with SMTP id 4fb4d7f45d1cf-5f62ef3c383so5806529a12.2;
-        Mon, 21 Apr 2025 18:44:29 -0700 (PDT)
+Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-5f4d6d6aaabso6466919a12.2;
+        Mon, 21 Apr 2025 18:45:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745286268; x=1745891068; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745286309; x=1745891109; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4h4TbY8Znfe/dR8gB7rAZNuUR7bnGOkg0xdG1pb23lI=;
-        b=FxR+++a5AvNloflrUE+3tEaUoAreHqVRXWxxI5/IYg2RL5uP7mxQM5Ce+YtT38J7+Y
-         tM/MWULPnKvaodTEZtXkhGNqzfDK7zTO0cdROw1CFnPuNFtg8aRMHNFKGcfHlVgo16iD
-         h1md1DIaqvlVXh9An5nIL9J5r1W5ZEPczhTjktHi+U7VdTXHc2Qt9f89ROn3aaeO6/X5
-         Ci633wWEC5Cu+fOKi0YGRWG1A3qgPE0e5lKgQxt/Pl90ynKRiHuk675J7OX7mIdRiMQu
-         NPIaQbZJDZidpvBaH6kLGUJdKRhxmCHIw9/L3MjXVio60MS0XGnVIO3VF6v+SlDgekB2
-         kwJA==
+        bh=c2237zbkihLi7D4ncLnEvgs7dHis7sqZutBBQO+/m+Q=;
+        b=jUlSRVm5iL2g3vDcuvR6vvHboIjqboRVmK+XsEhdxO2JGVwfNtJp8uh0AspJoTUEAh
+         B/NHKDTF7iLYhNbrkArgbcn7M/KBHeJLfoRtqcbst2sdDPPzarknQq/C09bMXhz1fk65
+         rdxj4GNJhRgRe0nzJCANeCUUSU27BlOt1kdFwgqI3tRX/4WG4O/gLFZ83E1DhTCQJYjD
+         8iF8Lg0eH69cmyo6XHQh3mI9cJ1tSkUv3Z6Fksfm28UdD1072k54kGggjHzfg+A/o2Te
+         y9wX1hvr4YRVjgm+vW9nrl3naLcuvoyszSTCYoVmiPzuAAQe7GXVAsuupqRE0TRwaEXb
+         OL3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745286268; x=1745891068;
+        d=1e100.net; s=20230601; t=1745286309; x=1745891109;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4h4TbY8Znfe/dR8gB7rAZNuUR7bnGOkg0xdG1pb23lI=;
-        b=IF4OJ8PLJJ8tB9V/1hxxCz9H5n0+SF20SalMRwCVJbfsPhs/wtHCHB4zm3FDej0xiq
-         80pYEnixN8r8m4tGKN/olg9IgfO/QpAfzT/1bEfRM2+cpmo2evE6ccEG4FCjb9h/3vli
-         3HQ23rcpaRF9xFsCuhi3XGJ9jXgpjtnkp+l/sNut96PYDjOVChH9V9b+QyzZF1Fq88sa
-         GFCIraVD1npALCfhXAT8lGFhLMmiw4TJ1DRc+h4kfovr+wDckVpx4mkIRYEIbunuTvON
-         g/QfDvfNzmBdg1xXKjNbsU2hORjVsiaEr6ma73IGJCYQV2N2eQqEpqSOPSB7MtFzhJGM
-         uKhw==
-X-Forwarded-Encrypted: i=1; AJvYcCVqLiAPa+c2xSKTD8wMD9GnLjOeTvZKAA5/B3n/t9XGpyWcDoPa4LkvykcrJK7d9WrvcAgIC48=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzPh9wNEyFMmRY1k53wrdhrPcciZBuxEziByPSDSmtSsNgGm+0K
-	+39oHP5LJYZclq7RGkOPrdOmNYQU/5qPb+aW2IjX6XrXipgAjYBcLyhqnastcFZpJO2SnqeHK4e
-	Q3UnPmk7O2xune3ZoKNdHkNm4+9s=
-X-Gm-Gg: ASbGncsd4gnQqKcSHAGAWtT8bu395E5bKI+4C4X8sOvOP2wRUkTGdz1w8nLb/Vab/9t
-	tYvxpuuukMTwD+cwD5ExhRo+HZN90y/GdtQ2pbJgaBzc/7xZzkgFuaKiY+fWXkXfJcilFZ2pXH2
-	a3lP958rwwYHeK6zyadIIB3fVaZqLA1IM531Kv4GSKrMM=
-X-Google-Smtp-Source: AGHT+IH+3u+Vu4bFaUBa6pl7bA2TSfeNZz9QBKUAwcn5lqpOBVlv4nK6Ywycd4ayshCND08ePMKYBPwWIoDNl2caUew=
-X-Received: by 2002:a17:907:3da7:b0:ac3:c7bd:e436 with SMTP id
- a640c23a62f3a-acb74dd5869mr1209055366b.51.1745286267466; Mon, 21 Apr 2025
- 18:44:27 -0700 (PDT)
+        bh=c2237zbkihLi7D4ncLnEvgs7dHis7sqZutBBQO+/m+Q=;
+        b=FMZ39rQuJ24/nKuEdddrccedAAANUzkyHtRHDTu+AAMEbwLOe3Y2enTpJtg1432gvK
+         I/186GBIck13PlDyds+LReaB4b8Ar/IUyKEFeXpMobQ2ylRztZPioQPHSZ77GBF/6sJe
+         1D2b987JtX0E4o2tbhrr7s+Q2TFjeJJPK+d+XrF6r5KJ6e3wqfGm1Dp6k+aEIG1M0b9L
+         upy3b9d7yJzU32ZkvDuv1Rdv9FcT4178Pvz3pVCmFCM3TTDmjpY9Ih4gJUIjaBAdjX+5
+         bDz0hJw+Gpp/cA30pVNUGkvVGgLrUN23JbeiNNdZfbap4PpgyU3GJWtQqfSBXKAG78rm
+         1mEw==
+X-Forwarded-Encrypted: i=1; AJvYcCUjhSs4P5vmXJXPGjO8e4Xcjf4z9acI6Os5HguJ95n9HgWTHsXOkIfvHMRnG5E8xvYos526Z8k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzrPPEH8NcknNTH/fwGcun3857SaqSpXrsSae0qV04oyxJI/qZq
+	DO2mg1/E4ulBfk7VS6Ina4FkybIRmhDuezGQO2c5GgsAMMvyPvtPHfK7ZFFHysaPepeELjV90fa
+	vAN/6nZXIFxFMrw/1TiOGUNDsvNM=
+X-Gm-Gg: ASbGncs+1DrCfGNTe3+bWBbrC5Uv7kueJi7uePM1ZOKecnMwMJlQFG9HvKS1V8Z2mbo
+	xcye3YDx5vOK/XyOb7qe/mRCwrNXQ32ewno919ITwDhmNCRukVqT/IdeX6Dsw2LdeY7eKfcID/i
+	+xYdQxyINWsmxysFeRY2M4+wi9wER8tIUfv6G2PCNgKEI=
+X-Google-Smtp-Source: AGHT+IH2oL0xOtOo0j0S0gOYluQPMddtCX6ibW5o+PFpyWDdOF64ERR8Ob89bk19gZqnvhDPxtonuF0Ja1d/fg2CIvo=
+X-Received: by 2002:a17:907:6e8c:b0:ac6:b639:5a1c with SMTP id
+ a640c23a62f3a-acb74b5089emr1007990366b.22.1745286308711; Mon, 21 Apr 2025
+ 18:45:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250418224652.105998-1-martin.lau@linux.dev> <20250418224652.105998-4-martin.lau@linux.dev>
-In-Reply-To: <20250418224652.105998-4-martin.lau@linux.dev>
+References: <20250418224652.105998-1-martin.lau@linux.dev> <20250418224652.105998-5-martin.lau@linux.dev>
+In-Reply-To: <20250418224652.105998-5-martin.lau@linux.dev>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 22 Apr 2025 03:43:50 +0200
-X-Gm-Features: ATxdqUGMbONhDBSp6SSFH7_QFy3bmQ8EeY6eI7tGzcGiKYNTh81Zvh9qVz_pTlI
-Message-ID: <CAP01T76vnejd27gaxW1oNiEhT96Yp0j1JEs8iXb13UW6ep5XJQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 03/12] bpf: Add bpf_rbtree_{root,left,right} kfunc
+Date: Tue, 22 Apr 2025 03:44:32 +0200
+X-Gm-Features: ATxdqUF71owxnlguR7ZT8NunMxDeZCzlB9-LZKjDUVYHIcB1xU-tyySxvmkr6TE
+Message-ID: <CAP01T769B_qpkrs9Bgs2ff8o1D0-vonTXHFuSwtUmc9cULZNng@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 04/12] selftests/bpf: Adjust failure message
+ in the rbtree_fail test
 To: Martin KaFai Lau <martin.lau@linux.dev>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, 
@@ -90,92 +91,11 @@ On Sat, 19 Apr 2025 at 00:47, Martin KaFai Lau <martin.lau@linux.dev> wrote:
 >
 > From: Martin KaFai Lau <martin.lau@kernel.org>
 >
-> In the kernel fq qdisc implementation, it requires to traverse a rbtree
-> stored with the networking "flows".
->
-> In the later bpf selftests prog, the much simplified logic that uses
-> the bpf_rbtree_{root,left,right} to traverse the tree is like:
->
-> struct fq_flow {
->         struct bpf_rb_node      fq_node;
->         struct bpf_rb_node      rate_node;
->         struct bpf_refcount     refcount;
->         unsigned long           sk_long;
-> };
->
-> struct fq_flow_root {
->         struct bpf_spin_lock lock;
->         struct bpf_rb_root root __contains(fq_flow, fq_node);
-> };
->
-> struct fq_flow *fq_classify(...)
-> {
->         struct bpf_rb_node *tofree[FQ_GC_MAX];
->         struct fq_flow_root *root;
->         struct fq_flow *gc_f, *f;
->         struct bpf_rb_node *p;
->         int i, fcnt = 0;
->
->         /* ... */
->
->         f = NULL;
->         bpf_spin_lock(&root->lock);
->         p = bpf_rbtree_root(&root->root);
->         while (can_loop) {
->                 if (!p)
->                         break;
->
->                 gc_f = bpf_rb_entry(p, struct fq_flow, fq_node);
->                 if (gc_f->sk_long == sk_long) {
->                         f = bpf_refcount_acquire(gc_f);
->                         break;
->                 }
->
->                 /* To be removed from the rbtree */
->                 if (fcnt < FQ_GC_MAX && fq_gc_candidate(gc_f, jiffies_now))
->                         tofree[fcnt++] = p;
->
->                 if (gc_f->sk_long > sk_long)
->                         p = bpf_rbtree_left(&root->root, p);
->                 else
->                         p = bpf_rbtree_right(&root->root, p);
->         }
->
->         /* remove from the rbtree */
->         for (i = 0; i < fcnt; i++) {
->                 p = tofree[i];
->                 tofree[i] = bpf_rbtree_remove(&root->root, p);
->         }
->
->         bpf_spin_unlock(&root->lock);
->
->         /* bpf_obj_drop the fq_flow(s) that have just been removed
->          * from the rbtree.
->          */
->         for (i = 0; i < fcnt; i++) {
->                 p = tofree[i];
->                 if (p) {
->                         gc_f = bpf_rb_entry(p, struct fq_flow, fq_node);
->                         bpf_obj_drop(gc_f);
->                 }
->         }
->
->         return f;
->
-> }
->
-> The above simplified code needs to traverse the rbtree for two purposes,
-> 1) find the flow with the desired sk_long value
-> 2) while searching for the sk_long, collect flows that are
->    the fq_gc_candidate. They will be removed from the rbtree.
->
-> This patch adds the bpf_rbtree_{root,left,right} kfunc to enable
-> the rbtree traversal. The returned bpf_rb_node pointer will be a
-> non-owning reference which is the same as the returned pointer
-> of the exisiting bpf_rbtree_first kfunc.
+> Some of the failure messages in the rbtree_fail test. The message
+> is now "bpf_rbtree_remove can only take non-owning bpf_rb_node pointer".
 >
 > Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 > ---
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+You need to fold this patch into the previous one to preserve bisection.
 
