@@ -1,148 +1,368 @@
-Return-Path: <bpf+bounces-56456-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28036A97A25
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 00:10:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A1DEA97A2A
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 00:10:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D73F73BDAAD
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 22:09:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F2C016759C
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 22:10:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451B729C34E;
-	Tue, 22 Apr 2025 22:09:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43822C2AD9;
+	Tue, 22 Apr 2025 22:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QXmm5xMB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DBc19jP4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D11F1FF5E3
-	for <bpf@vger.kernel.org>; Tue, 22 Apr 2025 22:09:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6986227056B
+	for <bpf@vger.kernel.org>; Tue, 22 Apr 2025 22:10:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745359787; cv=none; b=fIBpmvMWTc/37fJ1jB6aifcyFn8BdvjHHBhNjBwVVtk2v6qVSltpcnMM6QlD8vYdgCZmeLyaodRnpiUv8Cd390RaYhoAwlvMLd7Oy4NwgBCub97aam3ypYVDafl91NkKQX0Yd6AD3aFHcfn5J2UuvVJo6vlbohbjEpZLCqacyJg=
+	t=1745359810; cv=none; b=oaQvEcYzcRiricCpTmwWItUEkOODKgCurRIMtPPuFOdg0PnaFUKJV7frCdOYYyS3oWmHbw1Z/ZOkGUIkyqHdnU2JuRAFlirroDLHY9XGv8xoMEsgKjfUkHpDEmZZQu03EcnZJpPbnXR6Ges0xkZln37xQ6fBxM8E9vCgU1lhNMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745359787; c=relaxed/simple;
-	bh=6Pov1BS1TmZq7K0vbSry2YqPJik9K73XA20VD0iKSgE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=L7C38TD8AzMiig7USJQHDjK6BcgoPkts829RQd9A3aEunVqBoJl7gjs8pFW2CuUyN3lM8Oj1AqdhA5NWFD0Uk2Qn09EMEGiK29wYAree3p+tyvHkuyuW+d050TmdjaRYUQVn0oD+oY22YUJFzqZMv81v6XJcWGwvCCGcArPIZA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QXmm5xMB; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-736c3e7b390so4988887b3a.2
-        for <bpf@vger.kernel.org>; Tue, 22 Apr 2025 15:09:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745359785; x=1745964585; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yriTxxQZ5vgVX2CV9Mj1FJU4e3xR5XudM1J/tuwcAuI=;
-        b=QXmm5xMBGFtEdHkdsLtIzJXitOn4bY/Z6lgpmU9onnuC23CIXGLlP7ULNSdHrbaieW
-         G74OQqPnwNd0vPCt2T06MJ/HK71K3ok6CE15HSVRvpsx/6AzIwMzmhoMZUBZY47lVfz6
-         OSvx+EZXIFlDmZbekPYXppWF91IrWb0xnoEpzV/JvyabOlDPYSAHHfJxIIkrvObNxlAb
-         yJup05hKRuOrN4z2kzJX3D/x0V1CUS79KQn0bS8Ad/bvp+pzLBIAp01uWdwqLZHfkUrT
-         ryiz1iJ3/8KyhrVbHxD6vcOSrE6I/MgSfsnVHNKuEzx2rjRV8cZwmEhywtffzjVxzKSQ
-         gznQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745359785; x=1745964585;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yriTxxQZ5vgVX2CV9Mj1FJU4e3xR5XudM1J/tuwcAuI=;
-        b=qjqGiEUTXkva5IUn0uAlUiEQ4gqplAV4/0TobmAX/kPnAN3yD/SiVQvKiykBLcoLEO
-         sJkpzfL04HCj0dz9mDw3AURmxgLTsg7nUqh17c1WSYj45XeV/Pu99A11IUvjQTHOBh9Y
-         9PhVXhV58JCYyXsDycjcRPg9eEiekt3YFbRg55+fDq7UGz0QiKe/gYRj1wfblgIyjRFs
-         pK44M1fFsrFghvx9jC8PBcdci1He2UyUPJBBIoczeTyus8QLKLyK8Mb98UinQPBM4kv/
-         GGsMjBYWtOoMlr5hnjuVIrFg3o2ZOfBjTZRHsY87BYoJ41jpYRlctP8JMsRVENwPRtUH
-         hzYQ==
-X-Gm-Message-State: AOJu0YwBiE68HIAltZqsgtfa7WJDVCNs4feqFxV6ug41cEMtzlBLslQV
-	znuStd6W6zrfu+kLMoXnFrJ02UpxP982m29MUgJjXvXDCxntk3BD
-X-Gm-Gg: ASbGncu7kTQRJxDsoVFYwfh4s2FStoagxDI7LCeNIelOSV80gh4JTPo1sVPkSXOzWhC
-	5LAejR9g3fMVaT255sZ9UIVN1ruQRt1u6wpV1ipuVh1B1FNdudy77dqcnaPHipP29YzmbWqYX/W
-	m84cB3wL8JBuBvLzBd0Wr1cV4ABfmNMDH07/dtsqwcrJAzxzT74w5+m97Gk/Mr86sMGR4Qdxcpk
-	fq0h5R0IV9uwZDKFvciny+gEN4Hd4JJctYXcchxRpKd7eyx1z04uGCrAXdXaJCOEy6dH3jQsN8u
-	z93JHS3v8fQjmcrawpFDOOu+nIC7o0bGv9mVWfE4JkV4
-X-Google-Smtp-Source: AGHT+IEkKYv9N/phCZ4jsLIkfGNV40kGxyYZ4GLy1wrH6h5WSqY+hRrW/wIUgMzeu2ByEi1z29oRIA==
-X-Received: by 2002:a05:6a00:1909:b0:730:95a6:375f with SMTP id d2e1a72fcca58-73dc14111d1mr23469639b3a.3.1745359785501;
-        Tue, 22 Apr 2025 15:09:45 -0700 (PDT)
-Received: from ezingerman-mba ([2620:10d:c090:500::6:9822])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73dbfa588b9sm9252133b3a.117.2025.04.22.15.09.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Apr 2025 15:09:45 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org,  Alexei Starovoitov <ast@kernel.org>,  Andrii
- Nakryiko <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
-  Martin KaFai Lau <martin.lau@kernel.org>,  Emil Tsalapatis
- <emil@etsalapatis.com>,  Barret Rhoden <brho@google.com>,  kkd@meta.com,
-  kernel-team@meta.com
-Subject: Re: [RFC PATCH bpf-next/net v1 07/13] bpf: Introduce per-prog
- stdout/stderr streams
-In-Reply-To: <CAP01T77jqjoO3pc-V7qvsck1A9KJ-1u60ryouLL68ctHz2M=mQ@mail.gmail.com>
-	(Kumar Kartikeya Dwivedi's message of "Thu, 17 Apr 2025 22:06:58
-	+0200")
-References: <20250414161443.1146103-1-memxor@gmail.com>
-	<20250414161443.1146103-8-memxor@gmail.com> <m2plhbu68v.fsf@gmail.com>
-	<CAP01T77jqjoO3pc-V7qvsck1A9KJ-1u60ryouLL68ctHz2M=mQ@mail.gmail.com>
-Date: Tue, 22 Apr 2025 15:09:42 -0700
-Message-ID: <m25xivrgpl.fsf@gmail.com>
+	s=arc-20240116; t=1745359810; c=relaxed/simple;
+	bh=WeueD/yDabgCZlKTzmGd8EWiQEgEXztCcpc2Z97i/8k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oaD5s+GB5RLAcUwe6CeLNDBGCyeaN/ZYa6ukYAsu5E3GeBx0Wi5/87jyZhwB3jv3KbOT3J0hJzNpchAZGgZKc85v+hALuyhmWxitowNjssXVSwBevACvYyD/MMappqWB2ApPehbU6L8vilAcXBxvJr84GOIy56ag2De/MidYStM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DBc19jP4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D00B5C4CEEF;
+	Tue, 22 Apr 2025 22:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745359808;
+	bh=WeueD/yDabgCZlKTzmGd8EWiQEgEXztCcpc2Z97i/8k=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=DBc19jP44mnPVdtO+DSJPXAP1WRaxM4RBbQTPz5uZY5O8UH6PN3ClUUxzklD5Renl
+	 a8/O3bpZI+Dhih4TI6A30L0IAGU9lPTjnA6Pwr/iQWN7UMjhtQDjVELGsz0Sa1OOJO
+	 IeACvnDpzpcXoEcsWbDYYR97bQvH2sfk1aYjLZzZbOBHuMpYP4vMFY+xq7dmhLtlZS
+	 eFDJQug/BImGn27U7Hqp15aNHwEeA/kOv921YblG3HsUbz2r6ceIn6xqDiYA2nNsbd
+	 ZsUQzkVivVAZ7jittIJnbSRsacxIFrDx19yS74iQ+GOhLU93Wan8uTgJ0/wADDitHY
+	 iiFSshzZXArew==
+Message-ID: <278df14f-4d2b-4457-94a8-c2f7ff62dd6a@kernel.org>
+Date: Tue, 22 Apr 2025 23:10:05 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next/net v1 12/13] bpftool: Add support for
+ dumping streams
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Emil Tsalapatis
+ <emil@etsalapatis.com>, Barret Rhoden <brho@google.com>, kkd@meta.com,
+ kernel-team@meta.com
+References: <20250414161443.1146103-1-memxor@gmail.com>
+ <20250414161443.1146103-13-memxor@gmail.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20250414161443.1146103-13-memxor@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+2025-04-14 09:14 UTC-0700 ~ Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Add bpftool support for dumping streams of a given BPF program.
 
-[...]
 
-> > > +BTF_KFUNCS_START(stream_consumer_kfunc_set)
-> > > +BTF_ID_FLAGS(func, bpf_stream_next_elem_batch, KF_ACQUIRE | KF_RET_NULL | KF_TRUSTED_ARGS)
-> > > +BTF_ID_FLAGS(func, bpf_stream_free_elem_batch, KF_RELEASE)
-> > > +BTF_ID_FLAGS(func, bpf_stream_next_elem, KF_ACQUIRE | KF_RET_NULL | KF_TRUSTED_ARGS)
-> > > +BTF_ID_FLAGS(func, bpf_stream_free_elem, KF_RELEASE)
-> > > +BTF_ID_FLAGS(func, bpf_prog_stream_get, KF_ACQUIRE | KF_RET_NULL)
-> > > +BTF_ID_FLAGS(func, bpf_prog_stream_put, KF_RELEASE)
-> > > +BTF_KFUNCS_END(stream_consumer_kfunc_set)
-> >
-> > This is a complicated API.
-> > If we anticipate that users intend to write this info to ring buffers
-> > maybe just provide a function doing that and do not expose complete API?
->
-> I don't think anyone will use these functions directly, though they
-> can if they want to.
-> It's meant to be hidden behind bpftool, and macros to print stuff like
-> bpf_printk().
->
-> We cannot pop one message at a time, since they are not in FIFO order.
-> So we need to splice out the whole batch queued and reverse it, before
-> popping things.
-> It's a consequence of using lockless lists.
->
-> The other option is using a lock to protect the list, but using
-> rqspinlock to then report messages about rqspinlock sounds like a
-> circular dependency.
+Thanks for adding bpftool support!
 
-The API exposes 6 kfuncs and 3 data structures.
-If things are exposed these things would be used, I wouldn't assume
-that bpftool would be the only user. I'm sure people would craft their
-own monitoring solutions.
 
-Imo, exposing 9 entities is a lot. What I don't like about it,
-is that API is not abstract:
-- user cares about getting program log to some buffer, stream or file;
-- user does not care how the strings are split internally in order to
-  make logging efficient.
+> TODO: JSON and filepath support.
 
-If at some point we decide to change implementation this API would be
-hard to preserve.
 
-Hence I suggest to instead provide a set of kfuncs that would drain
-message queue into user provided ringbuf or buffer, w/o exposing
-details.
+... plus documentation (man page), and bash completion please.
 
-A question: why exposing this functionality as kfuncs and not BPF
-syscall commands?
+
+> 
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  tools/bpf/bpftool/Makefile              |  2 +-
+>  tools/bpf/bpftool/prog.c                | 71 +++++++++++++++++-
+>  tools/bpf/bpftool/skeleton/stream.bpf.c | 96 +++++++++++++++++++++++++
+>  3 files changed, 166 insertions(+), 3 deletions(-)
+>  create mode 100644 tools/bpf/bpftool/skeleton/stream.bpf.c
+> 
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index 9e9a5f006cd2..eb908223c3bb 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -234,7 +234,7 @@ $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF_BOOTSTRAP)
+>  $(OUTPUT)%.skel.h: $(OUTPUT)%.bpf.o $(BPFTOOL_BOOTSTRAP)
+>  	$(QUIET_GEN)$(BPFTOOL_BOOTSTRAP) gen skeleton $< > $@
+>  
+> -$(OUTPUT)prog.o: $(OUTPUT)profiler.skel.h
+> +$(OUTPUT)prog.o: $(OUTPUT)profiler.skel.h $(OUTPUT)stream.skel.h
+>  
+>  $(OUTPUT)pids.o: $(OUTPUT)pid_iter.skel.h
+>  
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index f010295350be..d0800fec9c3d 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -35,12 +35,16 @@
+>  #include "main.h"
+>  #include "xlated_dumper.h"
+>  
+> +#include "stream.skel.h"
+> +
+>  #define BPF_METADATA_PREFIX "bpf_metadata_"
+>  #define BPF_METADATA_PREFIX_LEN (sizeof(BPF_METADATA_PREFIX) - 1)
+>  
+>  enum dump_mode {
+>  	DUMP_JITED,
+>  	DUMP_XLATED,
+> +	DUMP_STDOUT,
+> +	DUMP_STDERR,
+>  };
+>  
+>  static const bool attach_types[] = {
+> @@ -697,6 +701,55 @@ static int do_show(int argc, char **argv)
+>  	return err;
+>  }
+>  
+> +static int process_stream_sample(void *ctx, void *data, size_t len)
+> +{
+> +	FILE *file = ctx;
+> +
+> +	fprintf(file, "%s", (char *)data);
+> +	fflush(file);
+> +	return 0;
+> +}
+> +
+> +static int
+> +prog_dump_stream(struct bpf_prog_info *info, enum dump_mode mode, const char *filepath)
+> +{
+> +	FILE *file = mode == DUMP_STDOUT ? stdout : stderr;
+> +	LIBBPF_OPTS(bpf_test_run_opts, opts);
+> +	struct ring_buffer *ringbuf;
+> +	struct stream_bpf *skel;
+> +	int map_fd, ret = -1;
+> +
+> +	__u32 prog_id = info->id;
+> +	__u32 stream_id = mode == DUMP_STDOUT ? 1 : 2;
+> +
+> +	skel = stream_bpf__open_and_load();
+> +	if (!skel)
+> +		return -errno;
+> +	skel->bss->prog_id = prog_id;
+> +	skel->bss->stream_id = stream_id;
+> +
+> +	//TODO(kkd): Filepath handling
+> +	map_fd = bpf_map__fd(skel->maps.ringbuf);
+> +	ringbuf = ring_buffer__new(map_fd, process_stream_sample, file, NULL);
+> +	if (!ringbuf) {
+> +		ret = -errno;
+> +		goto end;
+> +	}
+> +	do {
+> +		skel->bss->written_count = skel->bss->written_size = 0;
+> +		ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.bpftool_dump_prog_stream), &opts);
+> +		ret = -EINVAL;
+> +		if (ring_buffer__consume_n(ringbuf, skel->bss->written_count) != skel->bss->written_count)
+> +			goto end;
+> +	} while (!ret && opts.retval == EAGAIN);
+> +
+> +	if (opts.retval != 0)
+> +		ret = -EINVAL;
+> +end:
+> +	stream_bpf__destroy(skel);
+> +	return ret;
+> +}
+> +
+>  static int
+>  prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
+>  	  char *filepath, bool opcodes, bool visual, bool linum)
+> @@ -719,13 +772,15 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
+>  		}
+>  		buf = u64_to_ptr(info->jited_prog_insns);
+>  		member_len = info->jited_prog_len;
+> -	} else {	/* DUMP_XLATED */
+> +	} else if (mode == DUMP_XLATED) {	/* DUMP_XLATED */
+>  		if (info->xlated_prog_len == 0 || !info->xlated_prog_insns) {
+>  			p_err("error retrieving insn dump: kernel.kptr_restrict set?");
+>  			return -1;
+>  		}
+>  		buf = u64_to_ptr(info->xlated_prog_insns);
+>  		member_len = info->xlated_prog_len;
+> +	} else if (mode == DUMP_STDOUT || mode == DUMP_STDERR) {
+> +		return prog_dump_stream(info, mode, filepath);
+>  	}
+>  
+>  	if (info->btf_id) {
+> @@ -898,8 +953,10 @@ static int do_dump(int argc, char **argv)
+>  		mode = DUMP_JITED;
+>  	} else if (is_prefix(*argv, "xlated")) {
+>  		mode = DUMP_XLATED;
+> +	} else if (is_prefix(*argv, "stdout") || is_prefix(*argv, "stderr")) {
+> +		mode = is_prefix(*argv, "stdout") ? DUMP_STDOUT : DUMP_STDERR;
+>  	} else {
+> -		p_err("expected 'xlated' or 'jited', got: %s", *argv);
+> +		p_err("expected 'stdout', 'stderr', 'xlated' or 'jited', got: %s", *argv);
+>  		return -1;
+>  	}
+>  	NEXT_ARG();
+> @@ -950,6 +1007,14 @@ static int do_dump(int argc, char **argv)
+>  		}
+>  	}
+>  
+> +	if (mode == DUMP_STDOUT || mode == DUMP_STDERR) {
+> +		if (opcodes || visual || linum) {
+> +			p_err("'%s' is not compatible with 'opcodes', 'visual', or 'linum'",
+> +			      mode == DUMP_STDOUT ? "stdout" : "stderr");
+> +			goto exit_close;
+> +		}
+> +	}
+> +
+>  	if (filepath && (opcodes || visual || linum)) {
+>  		p_err("'file' is not compatible with 'opcodes', 'visual', or 'linum'");
+>  		goto exit_close;
+> @@ -2468,6 +2533,8 @@ static int do_help(int argc, char **argv)
+>  		"Usage: %1$s %2$s { show | list } [PROG]\n"
+>  		"       %1$s %2$s dump xlated PROG [{ file FILE | [opcodes] [linum] [visual] }]\n"
+>  		"       %1$s %2$s dump jited  PROG [{ file FILE | [opcodes] [linum] }]\n"
+> +		"	%1$s %2$s dump stdout PROG [{ file FILE }]\n"
+> +		"	%1$s %2$s dump stderr PROG [{ file FILE }]\n"
+
+
+I'm not sure "prog dump" is the best subcommand for these features. The
+"dump" has been associated with printing the program itself, either
+translated or as JITed instructions. Here we display something else;
+it's closer to "prog tracelog", that we use to dump the trace pipe. And
+stdout/stderr are streams anyway, I'm not sure that "dumping" them is
+the most accurate term.
+
+How about "prog trace (stdout|stderr)"? Bonus: you don't have to handle
+opcodes/linum/visual, and don't have to add support for "filepath".
+
+
+>  		"       %1$s %2$s pin   PROG FILE\n"
+>  		"       %1$s %2$s { load | loadall } OBJ  PATH \\\n"
+>  		"                         [type TYPE] [{ offload_dev | xdpmeta_dev } NAME] \\\n"
+> diff --git a/tools/bpf/bpftool/skeleton/stream.bpf.c b/tools/bpf/bpftool/skeleton/stream.bpf.c
+> new file mode 100644
+> index 000000000000..31b5933e0384
+> --- /dev/null
+> +++ b/tools/bpf/bpftool/skeleton/stream.bpf.c
+> @@ -0,0 +1,96 @@
+> +// SPDX-License-Identifier: GPL-2.0
+
+
+Bpftool is dual-licensed (GPL-2.0-only OR BSD-2-Clause), please consider
+using the same here.
+
+
+> +/* Copyright (c) 2025 Meta Platforms, Inc. and affiliates. */
+> +#include <vmlinux.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_RINGBUF);
+> +	__uint(max_entries, 1024 * 1024);
+> +} ringbuf SEC(".maps");
+> +
+> +struct value {
+> +	struct bpf_stream_elem_batch __kptr *batch;
+> +};
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_ARRAY);
+> +	__type(key, int);
+> +	__type(value, struct value);
+> +	__uint(max_entries, 1);
+> +} array SEC(".maps");
+> +
+> +int written_size;
+> +int written_count;
+> +int stream_id;
+> +int prog_id;
+> +
+> +#define ENOENT 2
+> +#define EAGAIN 11
+> +#define EFAULT 14
+> +
+> +SEC("syscall")
+> +int bpftool_dump_prog_stream(void *ctx)
+> +{
+> +	struct bpf_stream_elem_batch *elem_batch;
+> +	struct bpf_stream_elem *elem;
+> +	struct bpf_stream *stream;
+> +	bool cont = false;
+> +	struct value *v;
+> +	bool ret = 0;
+> +
+> +	stream = bpf_prog_stream_get(BPF_STDERR, prog_id);
+
+
+Calls to these new kfuncs will break compilation on older systems that
+don't support them yet (and don't have the definition in their
+vmlinux.h). We should provide fallback definitions to make sure that the
+program compiles.
+
+
+> +	if (!stream)
+> +		return ENOENT;
+> +
+> +	v = bpf_map_lookup_elem(&array, &(int){0});
+> +
+> +	if (v->batch)
+> +		elem_batch = bpf_kptr_xchg(&v->batch, NULL);
+> +	else
+> +		elem_batch = bpf_stream_next_elem_batch(stream);
+> +	if (!elem_batch)
+> +		goto end;
+> +
+> +	bpf_repeat(BPF_MAX_LOOPS) {
+> +		struct bpf_dynptr dst_dptr, src_dptr;
+> +		int size;
+> +
+> +		elem = bpf_stream_next_elem(elem_batch);
+> +		if (!elem)
+> +			break;
+> +		size = elem->mem_slice.len;
+> +
+> +		if (bpf_dynptr_from_mem_slice(&elem->mem_slice, 0, &src_dptr))
+> +			ret = EFAULT;
+> +		if (bpf_ringbuf_reserve_dynptr(&ringbuf, size, 0, &dst_dptr))
+> +			ret = EFAULT;
+> +		if (bpf_dynptr_copy(&dst_dptr, 0, &src_dptr, 0, size))
+> +			ret = EFAULT;
+> +		bpf_ringbuf_submit_dynptr(&dst_dptr, 0);
+> +
+> +		written_count++;
+> +		written_size += size;
+> +
+> +		bpf_stream_free_elem(elem);
+> +
+> +		/* Probe and exit if no more space, probe for twice the typical size.*/
+> +		if (bpf_ringbuf_reserve_dynptr(&ringbuf, 2048, 0, &dst_dptr))
+> +			cont = true;
+> +		bpf_ringbuf_discard_dynptr(&dst_dptr, 0);
+> +
+> +		if (ret || cont)
+> +			break;
+> +	}
+> +
+> +	if (cont)
+> +		elem_batch = bpf_kptr_xchg(&v->batch, elem_batch);
+> +	if (elem_batch)
+> +		bpf_stream_free_elem_batch(elem_batch);
+> +end:
+> +	bpf_prog_stream_put(stream);
+> +
+> +	return ret ?: (cont ? EAGAIN : 0);
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+
+
+Same note on the license, other programs used by bpftool have license
+string "Dual BSD/GPL".
 
