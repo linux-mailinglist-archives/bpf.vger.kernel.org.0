@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-56407-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56408-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14C5FA96C9D
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 15:27:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7E96A96CA1
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 15:27:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3427917DF75
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 13:27:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E27C7AB831
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 13:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 141A328CF45;
-	Tue, 22 Apr 2025 13:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D72C28C5D5;
+	Tue, 22 Apr 2025 13:24:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="afjdjW7t";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oTfVggsk"
+	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="JS2+1Mdb";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ExrlHV+z"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
+Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055E128C5C2;
-	Tue, 22 Apr 2025 13:24:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7AE28CF48;
+	Tue, 22 Apr 2025 13:24:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745328271; cv=none; b=ogj9IMxXXbgIlAKoQreQOs07CRmLtfA353/wX5UxiEt/6et/HV2FsoVwnP2xIoQJovi5YvnmWJ5orglQm4OhTB8OE8oDHHhj6QYcDbMptWWvfirQ4t+WeSfbSSgnaXnfzuBI2ck291DqJcaZTdpOA0NVVyo+Trlqgl/YjSUx5C0=
+	t=1745328274; cv=none; b=p+KNDUeo1oOQcsVQzUKihlHQyZmYrn4JM6Tq718OjQCCCTNPt39/jsX8xGPvSmerWm8DfUoAXiGVpnHIUomBiAE77y/D9hEdzBH2rT/G3spkSuGLCy7h+VGjHYr3VTTBeptvbe9DAanQu8xkfnahGXDgJ1GQkljUqgkjn7p6+ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745328271; c=relaxed/simple;
-	bh=e6ZkufKDS21f0UyJqVReDFwnEn4IJ4Hrymtj8Y90gdY=;
+	s=arc-20240116; t=1745328274; c=relaxed/simple;
+	bh=/2Yw9TRyl4gSzs/TF0L8RweFO2kHkMY05k8f34b6AnM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fwTurno/em/Q/pc0CWsG3y9GEMyOg0/JyLyOF9bsKMQQpul1D4dMy/VCSYZLN7MTu31nbAmbV9DTdzfOHdPGgay4phtWpDgOIHn4esPr05dVhv9CIbJ3fGWkE3VU4PQgfI+PNVzGofiPgzOw1eUYgUtg2Ajh1AQs7I725O8I6Nw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=afjdjW7t; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oTfVggsk; arc=none smtp.client-ip=202.12.124.154
+	 In-Reply-To:To:Cc; b=ab88QXL0eB+3Gk0XtGwUef1C7jWBWieDgxzWI9zmIbddAKKzwyG6ISuVtisk5GETruVIiL9nF07x7W4CrUoSw1C/3/nltV1exgtUV+qLjbIL7INdpHcDhmGCGwvddH3VjL/6xID1p3EhuYYFJHB0X1IN3q4LbPJnuGaRG58Y1m0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=JS2+1Mdb; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ExrlHV+z; arc=none smtp.client-ip=202.12.124.147
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arthurfabre.com
-Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id C9A3625401C9;
-	Tue, 22 Apr 2025 09:24:28 -0400 (EDT)
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfout.stl.internal (Postfix) with ESMTP id 3549211401D5;
+	Tue, 22 Apr 2025 09:24:31 -0400 (EDT)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-11.internal (MEProxy); Tue, 22 Apr 2025 09:24:29 -0400
+  by phl-compute-02.internal (MEProxy); Tue, 22 Apr 2025 09:24:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arthurfabre.com;
 	 h=cc:cc:content-transfer-encoding:content-type:content-type
 	:date:date:from:from:in-reply-to:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=fm1;
-	 t=1745328268; x=1745414668; bh=4I2nMgNZvyZouGhriuC4mlMG0byRE+Qf
-	jSVq3kMsmLY=; b=afjdjW7t5VWIXp06IHd2lb20+hTi8cYS7d3G4RYFcnUaF07t
-	NuVkRBIX/iiS3uxiiG9GK/g4J2/xHFlfzWFKFli7vp+rCF5xGGyQrCM2Lmx+W66P
-	cKLrAWisnKffwfMJVaULsN6En/Kxq6iy2SGtlbreaMVVzb57cr/eMLiSYemAFHe9
-	Fxqw82L7F3d+YF6pqYiA8/IC1+RYJPYMK0JjU7mzp11CwWnLDVJcDUJj6T80wlUY
-	cEg4SbGw319aq0YuDUL62WSMtFRN6HPwtqC5LGb4++geALTwqrBwTwth+DeuTOhZ
-	Q2h17bSY3ptIpz1w98HXTavHtvcBbWNBcBSd/g==
+	 t=1745328271; x=1745414671; bh=v6o/ljuPynBVhwWixEM4SLyxpcEFEJ2T
+	GJm/eGTLuYg=; b=JS2+1Mdb6+8hZtpS4jMCP9Xbp/xcVxRev9AxuwXP0OrPW/e0
+	gwOHfxTkKVxidzwdYH7JlB6rALREXreYPGdXUiCNVNpb2irh4lzAIpFoKL+mnTDZ
+	UFMa4sHP5Mm4E4fOg3eh4uyhtk2FusYzMF5ubRU4B+dDHKxkRgrHrz9h0wCZPiSM
+	iWJYLqRejS7FR8muigKtKb1UB1aWFZVzmGud3v+LGteLXJyxMfFDNeRQL4k+nYOl
+	Loug8PRXNXYVWfwJ7g4d5gXVW/r9gFJtnECyXHuvaMEoZeUJsx05ZZ1Xu4NSMJGE
+	jIWHwf9TSsi5RcdsV5nZ8SAPS9w9EKVy9kElTQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1745328268; x=
-	1745414668; bh=4I2nMgNZvyZouGhriuC4mlMG0byRE+QfjSVq3kMsmLY=; b=o
-	TfVggsk5nkoP5Dj2AwKp5akVNkQ07pWMQKByf171h9YywUC5KoxmdsyyaACSP3l4
-	oIjLlCMe15MtRGTJRg6KtQT+EOVY50YUD3hHRChRkya1nfE1K1VklyWkIuzJ/YlN
-	E1J+RX7UQab4xCh5lS8Yfzi46FfRW8Ir0WTtAObrXbTHRFqSHKy2VpyAvYV1q0nV
-	PLsTJ2horUl/NBxeT+9WhzVfCgHRsr+ijiC53hFs5a1lUDp0pdedvm0YXVlxrer9
-	VJO99Ugr74HlWathH8KSVieUenSYSVfxMwAYB25l7UYOUqbgui/djpWOElNbSE26
-	FKUfu0Z28vHVArBlPnSQw==
-X-ME-Sender: <xms:jJgHaG_tZhxwDq2cJaFOo5HFlOptIWsFcm0_7fPenXk5qqkGXJA_9w>
-    <xme:jJgHaGvubv37UYXqLqNs8PGzwBDOTWcv8OMs-rNF-N2qXO1XWDPyYJpBBipgSo8-J
-    hHWfjdztLGOpYpeZdI>
-X-ME-Received: <xmr:jJgHaMD9cx7ualHrWW9cBdKFMFwPuceXJ65a9zBpa9cfz_VXEz5pvFC8T2RrganfhvXGp0OrUX3IToJKGb0>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1745328271; x=
+	1745414671; bh=v6o/ljuPynBVhwWixEM4SLyxpcEFEJ2TGJm/eGTLuYg=; b=E
+	xrlHV+zFQH5UVpuQCbjWoJK8MITE9prozny3LpEN7L9rxG6MS4xPYxbaL1e8DHb0
+	7SlZKTaK1gbmiskIKHkWTB5NEtSl5VQ970b43rWLgR7q+5SzszyIHCAG9WE4GP3V
+	GKS4J3iiHpqPTC+GwK/LmqWrB10LZBNvxbxAKi6ts/JywQ/TcI+/24u+s1Pa9yjP
+	Agg7qhOalBbc3G2RXmm64fbH9tPynolYB/PkwXOHzqlEprWzQiqZJlqemOjQ1pOp
+	LWQps+Yh5csZqu2uTLjdY4ay4RMXPS7kQqabN8fQd71HO+CcrNWmzyDY0hUMx1Fy
+	rHWeXScvquFnGAW+/wYbQ==
+X-ME-Sender: <xms:jpgHaBkItxFq8xV7jbmIrENz0yfqf83TtYtycY9rjQ0yLXkvbME-4w>
+    <xme:jpgHaM0EN2l2dJnzTM3Fra7q8VI9k1O6sTOnonUqU5JUnQSQ8YC6GgPrA5xZl41vP
+    gYLpUNxNtMiLNEJXw0>
+X-ME-Received: <xmr:jpgHaHqRGWW9GrRziKK_4NiGLugjJmlNFDqmJsWsSKO6CZyPl8xqqJnLH6q3r6L9A5oYrnEldzkm6BVdv80>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvgeefkeegucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
     pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucenucfjughrpefhff
     fugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomheptehrthhhuhhrucfhrggs
     rhgvuceorghrthhhuhhrsegrrhhthhhurhhfrggsrhgvrdgtohhmqeenucggtffrrghtth
     gvrhhnpeejkeehffejvdefhedtleetgfeivdetgfefffetkeelieefvdefhfeuveevhffh
-    ueenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    ueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
     hthhhurhesrghrthhhuhhrfhgrsghrvgdrtghomhdpnhgspghrtghpthhtohepuddvpdhm
     ohguvgepshhmthhpohhuthdprhgtphhtthhopehkuhgsrgeskhgvrhhnvghlrdhorhhgpd
     hrtghpthhtohephigrnhestghlohhuughflhgrrhgvrdgtohhmpdhrtghpthhtohepnhgv
@@ -81,18 +81,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvgeefkeegucetufdote
     hjsghrrghnuggvsghurhhgsegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopegs
     phhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghstheskhgvrhhnvg
     hlrdhorhhg
-X-ME-Proxy: <xmx:jJgHaOf2QN-E0_vJm_oV4DAiOQeo2EQ3a8A5CUdi-l1kJmq7iXWxnw>
-    <xmx:jJgHaLNutJfMzY1DRbMwCZ5kaD3U3NEKl7NzmursyVVnS2b-jIihQg>
-    <xmx:jJgHaImQMnvM242__JwfYZovJtRPwx5vHWNDOL9YXPTNNtk1PttSMA>
-    <xmx:jJgHaNsxTGGNUf6rDwVGWYrRfOemQTAcFqBjE03XkxZ-AkQbX0NJzg>
-    <xmx:jJgHaN0QI6W_G0uSzn3UAo-eQ7SNUV6p_zBNlHD18DfB4ACYhgGQ6vrg>
+X-ME-Proxy: <xmx:jpgHaBn58TEl280PcogCsywZGpBY8tzRbvP7FGiOrzyzGqqvaUVV6w>
+    <xmx:jpgHaP1JIzcr7MF9zjqNXPWLWYOYYAtoGJznUJJx7sz3POR6uM25CA>
+    <xmx:jpgHaAtroko9EllO513JDuJWnqxstl41tLGwxsnJ-gLTt4BAWal1MA>
+    <xmx:jpgHaDUHFV6ovzJ8zh6DzDniaJ-aWP-Khere8Q80weXulglVKvPbIQ>
+    <xmx:j5gHaDLmuEdV-a-sOb7phAA63lb5BjDYla-V6XqS67jHYKJrftsRSrnT>
 Feedback-ID: i25f1493c:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 22 Apr 2025 09:24:26 -0400 (EDT)
+ 22 Apr 2025 09:24:29 -0400 (EDT)
 From: Arthur Fabre <arthur@arthurfabre.com>
-Date: Tue, 22 Apr 2025 15:23:45 +0200
-Subject: [PATCH RFC bpf-next v2 16/17] xdp generic: Propagate trait
- presence to skb
+Date: Tue, 22 Apr 2025 15:23:46 +0200
+Subject: [PATCH RFC bpf-next v2 17/17] trait: Allow socket filters to
+ access traits
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -101,7 +101,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250422-afabre-traits-010-rfc2-v2-16-92bcc6b146c9@arthurfabre.com>
+Message-Id: <20250422-afabre-traits-010-rfc2-v2-17-92bcc6b146c9@arthurfabre.com>
 References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com>
 In-Reply-To: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com>
 To: netdev@vger.kernel.org, bpf@vger.kernel.org
@@ -111,25 +111,182 @@ Cc: jakub@cloudflare.com, hawk@kernel.org, yan@cloudflare.com,
  Arthur Fabre <arthur@arthurfabre.com>
 X-Mailer: b4 0.14.2
 
-Call the common xdp_buff_update_skb() / xdp_frame_update_skb() helpers.
+Add kfuncs to allow socket filter programs access to traits in an skb.
+
+To ensure every skb can modify traits independently, copy on write if
+multiple skbs are using the same traits.
+
+To allow new traits to be set (which requires more memory), try to use
+up more of the headroom of the skb if we run out of space setting.
 
 Signed-off-by: Arthur Fabre <arthur@arthurfabre.com>
 ---
- net/core/dev.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/skbuff.h |   9 ++++
+ net/core/skbuff.c      | 112 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 121 insertions(+)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 1be7cb73a6024fda6797b6dfc895e4ce25f43251..4d1ac5442d2ecf3c22186ab264ab54eb7d302708 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -5226,6 +5226,7 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
- 		metalen = xdp->data - xdp->data_meta;
- 		if (metalen)
- 			skb_metadata_set(skb, metalen);
-+		xdp_buff_update_skb(xdp, skb);
- 		break;
- 	}
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index ae569b1b1af83b586e1be6c69439ef74bac38cf3..e573889cf1256e7aff84b488af875a13f558cb01 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -4874,9 +4874,11 @@ void *__skb_ext_set(struct sk_buff *skb, enum skb_ext_id id,
+ 		    struct skb_ext *ext);
+ void *skb_ext_add(struct sk_buff *skb, enum skb_ext_id id);
+ void *skb_ext_from_headroom(struct sk_buff *skb, enum skb_ext_id id, int head_offset, int size);
++bool skb_ext_grow_headroom(const struct sk_buff *skb, int add);
+ void __skb_ext_del(struct sk_buff *skb, enum skb_ext_id id);
+ void __skb_ext_put(struct skb_ext *ext);
+ int __skb_ext_total_size(const struct skb_ext *ext);
++int skb_ext_size(const struct sk_buff *skb, enum skb_ext_id id);
  
+ static inline void skb_ext_put(struct sk_buff *skb)
+ {
+@@ -4960,6 +4962,13 @@ static inline void *skb_traits(const struct sk_buff *skb)
+ #endif
+ }
+ 
++int skb_trait_set(struct sk_buff *skb, u64 key,
++			const void *val, u64 val__sz, u64 flags);
++int skb_trait_is_set(const struct sk_buff *skb, u64 key);
++int skb_trait_get(const struct sk_buff *skb, u64 key,
++			void *val, u64 val__sz);
++int skb_trait_del(const struct sk_buff *skb, u64 key);
++
+ static inline void nf_reset_ct(struct sk_buff *skb)
+ {
+ #if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 9f27caba82af0be7897b68b5fad087f3e9c62955..27e163b83b12ffac973e1e098f035b807e1f4232 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -7148,6 +7148,19 @@ void *skb_ext_from_headroom(struct sk_buff *skb, enum skb_ext_id id, int head_of
+ 	return __skb_ext_set_active(skb, new, id);
+ }
+ 
++bool skb_ext_grow_headroom(const struct sk_buff *skb, int add)
++{
++	if (!skb->active_extensions)
++		return false;
++	if (skb->extensions->mode != SKB_EXT_HEADROOM)
++		return false;
++	if (skb_headroom(skb) < add)
++		return false;
++
++	skb->extensions->chunks += SKB_EXT_CHUNKS(add);
++	return true;
++}
++
+ #ifdef CONFIG_XFRM
+ static void skb_ext_put_sp(struct sec_path *sp)
+ {
+@@ -7215,8 +7228,107 @@ int __skb_ext_total_size(const struct skb_ext *ext)
+ {
+ 	return SKB_EXT_CHUNKS_BYTES(ext->chunks);
+ }
++
++int skb_ext_size(const struct sk_buff *skb, enum skb_ext_id id)
++{
++	if (!skb_ext_exist(skb, id))
++		return 0;
++
++	switch (skb->extensions->mode) {
++	case SKB_EXT_ALLOC:
++		return skb_ext_type_len[id];
++	case SKB_EXT_HEADROOM:
++		return SKB_EXT_CHUNKS_BYTES(skb->extensions->chunks - skb->extensions->offset[id]);
++	}
++}
+ #endif /* CONFIG_SKB_EXTENSIONS */
+ 
++__bpf_kfunc_start_defs();
++
++__bpf_kfunc int skb_trait_set(struct sk_buff *skb, u64 key,
++			      const void *val, u64 val__sz, u64 flags)
++{
++#ifndef CONFIG_SKB_EXTENSIONS
++	return -EOPNOTSUPP;
++#else
++	int err;
++	void *traits = skb_traits(skb);
++
++	if (!traits)
++		return -EOPNOTSUPP;
++
++	/* Traits are shared, get our own copy before modifying */
++	if (refcount_read(&skb->extensions->refcnt) > 1) {
++		traits = skb_ext_add(skb, SKB_EXT_TRAITS);
++		if (!traits)
++			return -ENOMEM;
++	}
++
++	err = trait_set(traits, traits + skb_ext_size(skb, SKB_EXT_TRAITS),
++			key, val, val__sz, flags);
++	if (err == -ENOSPC && skb->extensions->mode == SKB_EXT_HEADROOM) {
++		/* Take more headroom if available */
++		if (!skb_ext_grow_headroom(skb, val__sz))
++			return err;
++
++		err = trait_set(traits, traits + skb_ext_size(skb, SKB_EXT_TRAITS),
++				key, val, val__sz, flags);
++	}
++	return err;
++#endif /* CONFIG_SKB_EXTENSIONS */
++}
++
++__bpf_kfunc int skb_trait_is_set(const struct sk_buff *skb, u64 key)
++{
++	void *traits = skb_traits(skb);
++
++	if (!traits)
++		return -EOPNOTSUPP;
++
++	return trait_is_set(traits, key);
++}
++
++__bpf_kfunc int skb_trait_get(const struct sk_buff *skb, u64 key,
++			      void *val, u64 val__sz)
++{
++	void *traits = skb_traits(skb);
++
++	if (!traits)
++		return -EOPNOTSUPP;
++
++	return trait_get(traits, key, val, val__sz);
++}
++
++__bpf_kfunc int skb_trait_del(const struct sk_buff *skb, u64 key)
++{
++	void *traits = skb_traits(skb);
++
++	if (!traits)
++		return -EOPNOTSUPP;
++
++	return trait_del(traits, key);
++}
++
++__bpf_kfunc_end_defs();
++
++BTF_KFUNCS_START(bpf_skb_traits)
++BTF_ID_FLAGS(func, skb_trait_set)
++BTF_ID_FLAGS(func, skb_trait_is_set)
++BTF_ID_FLAGS(func, skb_trait_get)
++BTF_ID_FLAGS(func, skb_trait_del)
++BTF_KFUNCS_END(bpf_skb_traits)
++
++static const struct btf_kfunc_id_set bpf_traits_kfunc_set = {
++	.owner = THIS_MODULE,
++	.set   = &bpf_skb_traits,
++};
++
++static int init_subsystem(void)
++{
++	return register_btf_kfunc_id_set(BPF_PROG_TYPE_SOCKET_FILTER, &bpf_traits_kfunc_set);
++}
++late_initcall(init_subsystem);
++
+ static void kfree_skb_napi_cache(struct sk_buff *skb)
+ {
+ 	/* if SKB is a clone, don't handle this case */
 
 -- 
 2.43.0
