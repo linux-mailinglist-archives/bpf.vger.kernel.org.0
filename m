@@ -1,155 +1,154 @@
-Return-Path: <bpf+bounces-56459-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56460-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D3C3A97AAB
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 00:50:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA403A97AC5
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 00:58:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDC8516AA79
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 22:50:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A7A57A745E
+	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 22:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1ACF2C2574;
-	Tue, 22 Apr 2025 22:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7029E2C2AD6;
+	Tue, 22 Apr 2025 22:58:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XrfShaRT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Enc5uyOm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13AD68634F;
-	Tue, 22 Apr 2025 22:49:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAE31EE7DD;
+	Tue, 22 Apr 2025 22:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745362195; cv=none; b=HFwf3iNQxnOvTmoyxAsFNeUnKUxJdEbAthUktDIXf7L9dv2MuDK6oFloJJHvSq0KcjYEq/lBGNTrAIfESoYc5x30h3+niPTTnk5mn3pAeksP0JH0Ojt+tbira5V7f+U6XFovvvmRcg5TZH+8dW7kpvCDh+2md6ebcicLGyT4lDk=
+	t=1745362692; cv=none; b=mNf6vsl9l+WzX2IK3QVzjwxuu0ogtfj3JBDhC7pE6ojCLUGMplW5ftDokHbfAV/d09rZHagZAJ4wITDpm/rzuwVB2E6/z7iJFfuC1ijXefxnjxgZ07Btda7bM7QHmDP/BehVxrr/Vpx3KzTTgMY3UEYkY+Xiacaqao/kE/UoMuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745362195; c=relaxed/simple;
-	bh=NQVpfJugMzR1LkjV5816vnGHeZ7+wpVEURecExKe/tw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ys+CH+3Y97AEcqd4K+tro1yWrlZ72YfElRs+EtItC21UmuyhJMM5DkTQezmM4QY3WrYXEDIWciEXO4XkgpbBfK9R1OsaR9n3/f2OIb+1L1bTWMgSqbr7GU2pnCrLQ+yTEGNvDySEMmi+kvQort4lunLmXji0+/YfKOoz3KbvqPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XrfShaRT; arc=none smtp.client-ip=209.85.214.169
+	s=arc-20240116; t=1745362692; c=relaxed/simple;
+	bh=qhoCRr6iJ4JDLDgkjS7q5wQsu+zo9f5E/xP7W721KYM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S2DKYlDkhIpSIb12FtLfKef3BJB2ZM7pp0Wdy3n9HFDZj/XoZe2e/CMZ3DU2LrSEYynJ/JkWxfI34tqy27YGYH2/iYAqetBV4xxHHtTc6Cas5HkJz2J3FQKnDQQXvsUgLyPRrKBohhnDphJhX9v/Arpda1paq4keqQp9tdpz4nA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Enc5uyOm; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-22423adf751so59022235ad.2;
-        Tue, 22 Apr 2025 15:49:54 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-227c7e57da2so50486765ad.0;
+        Tue, 22 Apr 2025 15:58:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745362193; x=1745966993; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D3cn4adHcJd/kIJjKobK35R0hnccjB466Q4g0zrjHPU=;
-        b=XrfShaRTyKsY7M/ALrzHSlgB3q61ceudMPbOcDueO+HAyVbkkEKOI86Nb3u3AVy/Fx
-         cu04Ke2NCN0hw0WD2RZIarcJhixs4TvAfZh1sfCG42eL+inOHawHgiQOBtwjN01FLf8V
-         esuvyYO3pNd5Ri4Mh8dco45K5DZ2dULvfzdrCIb+flBo1Eg2JC2ugJ905oCAeZTVLuXx
-         GjdFxNqklnm1E7m+LJp48iIU2Ny1EQ1bRFEXx1g/jBoJrRkmDUFiAlq6dHOf9S+43NGa
-         xRXUGEPS4Qzhjmrom8URCaTef6IalPCb3O597VHWH2Lbujc9TVqSSjBM+uDpztTicjfW
-         xdRQ==
+        d=gmail.com; s=20230601; t=1745362690; x=1745967490; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g4+iUhVe7p621IQ4rwytm2VMPB/Jrbhsqc2u60r7Vr8=;
+        b=Enc5uyOmJyyj6YrMRhlPm9GHn0rVAAinO1qWl7tfHs/1VYoyelSY6whgqhart3+T0y
+         iKkUvwFN5098bH4sYBTM7G5ODFeOEfvBQjfeM7L7lpu3qwt59LqY+jbSfSDDElnvh8Vs
+         PrSvSiChT9j1A3iI5Il4tW35ZKMKRnju6u7OqsKZIWwr/+mQSET6f7DOVCFhXYpJZYws
+         LCH6DktUg/AFrq75PxaoaJDoAM/11DvaHVDYIGeKH5Ui9EVmz5wCl7GC/ImwhbC+wW/b
+         jtV1uGKiCUtrzNItYjsFZYIgpn+/76YPFgttsK6/xkdABu+z9EdNdMUWBIPnLqGsIscQ
+         XMsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745362193; x=1745966993;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D3cn4adHcJd/kIJjKobK35R0hnccjB466Q4g0zrjHPU=;
-        b=WxbS8E3/EZzJ4rJI5tPHMpsR4xalvCI1dlZeHirpsGE2g3wBIu5p9XY3/vWtReANeo
-         fpWo+8z9bgo4LecXn+kp2M9/vHg871P34ioPLh0kjrWWFHrhBcyhyjAlVFPyVtbTWCkx
-         bLGIN1L3HvwO6kilfHJkvE1b2BXgATWcMnGWUVbzTYShmc6yrTjyKAOpLHAtBazAc9DB
-         NMSq86/ctwythk8OYMq2mfK1haG8vkjgbl10ZEuDsjdNwa4vTo4RlKpzqmm2kc7iXKYr
-         bmp3dZ0b17grw2dMcBglWEHkP0KZsw0J8QNgut3Ezz/z+/mIqAEAPeGL8jP2ldYscwE2
-         B/BQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUBblF+AC6FgN3iP5IYYeVmFTLrc8YfIYE8pmE2uetN9SoRFhYSZjDkZokOScZEn+iAePE=@vger.kernel.org, AJvYcCWmcAixrMY4KjxPE6h1vWI5XRwTss2dPks21kyQG8MaatvMXYnMIAIHKlEMoBmaTh9oVsxzPGai@vger.kernel.org
-X-Gm-Message-State: AOJu0YyImjFDNHpqy4zQBMOGuCPBxaPL4YqjGjexVquxIs/iIuSH0Bg4
-	Jcx1mW8T3B46Crgo54tI11UCnGjxdsjtWJnoOVuGj78HWyi8iNI=
-X-Gm-Gg: ASbGncsE9lTXe7XAL3db1ciWU9p3nfjqMQwgssjc62GuApINypaPNv9emJ8pTjwoKQv
-	59Ms7E4g4ghjqg+XKEc1Gf98MeTlyUwXcRRwlIkLychTXT9ec4dfo8/Lc4tVEYNXZ4+4UTJVT/2
-	9ISjZoG7P0mWBda5FC/eU9PWy0SloQSCHEDTCI3P5ZZ/qB06CJmIpkAOos7zkDnTb7iQeXNVGnZ
-	M6XxQqAcsgJ51Wfst2/mu+DSQQIcPGxp1p1O6rqe+vgE6/lbV54qbn+CyvTWPwtR8k5pmSM2m8H
-	jCMmZRyDg7mKLbYjPLtiOe7VOUFsqf63yNWOAAOF
-X-Google-Smtp-Source: AGHT+IHYoc/VT/NIfCpQwnBCvJZle7AKqAnjl81ibsZtG7n4j4FPahCW7IyewqqOGI7XgO2KUItEhw==
-X-Received: by 2002:a17:903:1aa6:b0:224:2201:84da with SMTP id d9443c01a7336-22c5356de05mr220609175ad.6.1745362193412;
-        Tue, 22 Apr 2025 15:49:53 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-73dbf8beaf2sm9146857b3a.5.2025.04.22.15.49.52
+        d=1e100.net; s=20230601; t=1745362690; x=1745967490;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g4+iUhVe7p621IQ4rwytm2VMPB/Jrbhsqc2u60r7Vr8=;
+        b=syPfK4bsH8nbD/GQ/A4TZveHSadf9Jw9tsvL1ng96UewjvLlG5l84wljAnYbZqy65P
+         aZ5a1GOoJMG7hmvpIiGET6F0xFKL2dOGoBA5swxzonkCl8lf8a+zwTTTaxAWA1YACPtr
+         xPrTLlEOPxnrYNeihua5Zjq0ymD1SiRuLwkmbV6sUNvUFvcpJdH8BhAVGKOhGYiH3VrP
+         aa4xXQiMyBKKTT0QlfGgWUDCwMN+E+TbDge5ZAmSjpgAmPz4qc/eyfjglck+orJXgDzi
+         IocxGA77IizIeZQBi4nGkH5a3Z4phRLCpuvtIN82oZOq5CknDnEsc+0tuIip5du0Zh/J
+         BcxQ==
+X-Gm-Message-State: AOJu0YyDKgd7qqm/cXGFQtFKnwiXtSarGgYjG4aRiw+DUUgylTgkPts2
+	TdsISnh3X6/QQKUHOLMCKA7Y/CtVtvOTzUkUHdn1zIoZDydX7SYs7qJVEQ==
+X-Gm-Gg: ASbGncu+ihrzOVjryW4OwzG3BcJoCBcLTgOyKn2x93JHkS0UH6H4KhoGd4xRUYUhHSo
+	mpMKsAxBeeEmBTZFTJe8ZbH1PuuRC/v5ktS/crrhfFo3HIu4cg2jf+hr/P8cAri4PuuXYNcvlEP
+	mDNkFTqDf7Oa5s1c77HlYnoDAD+ChH8GzbRI8tWWyhTcuR655yUnFbiXVevHoRfPn9HmFWobCxt
+	U7uxlqF0g5Ys4jsKAYJgs4DYvjL2JB2CkUga2iM8dW7I0IIBEVUG5OV8vU9i0R6KulSvKAJzC2I
+	jhjEaItfbQjEeqDZ2BJufte/nWOz+Yqj3ZGGa9MTqA==
+X-Google-Smtp-Source: AGHT+IFwK/lAXaOceQuK5Hi0GaDdk7yxxO7EC4ESy6jL8Ksqb4no5JEI1f7zjK7yyRvDNqWW40Ia8w==
+X-Received: by 2002:a17:902:ea07:b0:223:88af:2c30 with SMTP id d9443c01a7336-22c5357f3b2mr224090895ad.16.1745362689627;
+        Tue, 22 Apr 2025 15:58:09 -0700 (PDT)
+Received: from localhost ([2a03:2880:ff:6::])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22c50bde12bsm91100035ad.40.2025.04.22.15.58.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Apr 2025 15:49:52 -0700 (PDT)
-Date: Tue, 22 Apr 2025 15:49:52 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf: Allow XDP dev bounded program to perform
- XDP_REDIRECT into maps
-Message-ID: <aAgdECkTiP-po7HP@mini-arch>
-References: <20250422-xdp-prog-bound-fix-v1-1-0b581fa186fe@kernel.org>
+        Tue, 22 Apr 2025 15:58:09 -0700 (PDT)
+From: Amery Hung <ameryhung@gmail.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org,
+	xiyou.wangcong@gmail.com,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next/net] bpf: net_sched: Fix using bpf qdisc as default qdisc
+Date: Tue, 22 Apr 2025 15:58:08 -0700
+Message-ID: <20250422225808.3900221-1-ameryhung@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250422-xdp-prog-bound-fix-v1-1-0b581fa186fe@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On 04/22, Lorenzo Bianconi wrote:
-> In the current implementation if the program is bounded to a specific
-> device, it will not be possible to perform XDP_REDIRECT into a DEVMAP
-> or CPUMAP even if the program is not attached to the map entry. This
-> seems in contrast with the explanation available in
-> bpf_prog_map_compatible routine. Fix the issue taking into account
-> even the attach program type and allow XDP dev bounded program to
-> perform XDP_REDIRECT into maps if the attach type is not BPF_XDP_DEVMAP
-> or BPF_XDP_CPUMAP.
-> 
-> Fixes: 3d76a4d3d4e59 ("bpf: XDP metadata RX kfuncs")
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  kernel/bpf/core.c | 22 +++++++++++++++++++++-
->  1 file changed, 21 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index ba6b6118cf504041278d05417c4212d57be6fca0..a33175efffc377edbfe281397017eb467bfbcce9 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2358,6 +2358,26 @@ static unsigned int __bpf_prog_ret0_warn(const void *ctx,
->  	return 0;
->  }
->  
-> +static bool bpf_prog_dev_bound_map_compatible(struct bpf_map *map,
-> +					      const struct bpf_prog *prog)
-> +{
-> +	if (!bpf_prog_is_dev_bound(prog->aux))
-> +		return true;
-> +
-> +	if (map->map_type == BPF_MAP_TYPE_PROG_ARRAY)
-> +		return false;
+Use bpf_try_module_get()/bpf_module_put() instead of try_module_get()/
+module_put() when handling default qdisc since users can assign a bpf
+qdisc to it.
 
-[..]
+To trigger the bug:
+$ bpftool struct_ops register bpf_qdisc_fq.bpf.o /sys/fs/bpf
+$ echo bpf_fq > /proc/sys/net/core/default_qdisc
 
-> +	if (map->map_type == BPF_MAP_TYPE_DEVMAP &&
-> +	    prog->expected_attach_type != BPF_XDP_DEVMAP)
-> +		return true;
-> +
-> +	if (map->map_type == BPF_MAP_TYPE_CPUMAP &&
-> +	    prog->expected_attach_type != BPF_XDP_CPUMAP)
-> +		return true;
+Fixes: c8240344956e (bpf: net_sched: Support implementation of Qdisc_ops in bpf)
+Signed-off-by: Amery Hung <ameryhung@gmail.com>
+---
+ net/sched/sch_api.c     | 4 ++--
+ net/sched/sch_generic.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Not sure I understand, what does it mean exactly? That it's ok to add
-a dev-bound program to the dev/cpumap if the program itself is gonna
-be attached only to the real device? Can you expand more on the specific
-use-case?
+diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
+index db6330258dda..1cda7e7feb32 100644
+--- a/net/sched/sch_api.c
++++ b/net/sched/sch_api.c
+@@ -208,7 +208,7 @@ static struct Qdisc_ops *qdisc_lookup_default(const char *name)
+ 
+ 	for (q = qdisc_base; q; q = q->next) {
+ 		if (!strcmp(name, q->id)) {
+-			if (!try_module_get(q->owner))
++			if (!bpf_try_module_get(q, q->owner))
+ 				q = NULL;
+ 			break;
+ 		}
+@@ -238,7 +238,7 @@ int qdisc_set_default(const char *name)
+ 
+ 	if (ops) {
+ 		/* Set new default */
+-		module_put(default_qdisc_ops->owner);
++		bpf_module_put(ops, default_qdisc_ops->owner);
+ 		default_qdisc_ops = ops;
+ 	}
+ 	write_unlock(&qdisc_mod_lock);
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index e6fda9f20272..7d2836d66043 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -1002,14 +1002,14 @@ struct Qdisc *qdisc_create_dflt(struct netdev_queue *dev_queue,
+ {
+ 	struct Qdisc *sch;
+ 
+-	if (!try_module_get(ops->owner)) {
++	if (!bpf_try_module_get(ops, ops->owner)) {
+ 		NL_SET_ERR_MSG(extack, "Failed to increase module reference counter");
+ 		return NULL;
+ 	}
+ 
+ 	sch = qdisc_alloc(dev_queue, ops, extack);
+ 	if (IS_ERR(sch)) {
+-		module_put(ops->owner);
++		bpf_module_put(ops, ops->owner);
+ 		return NULL;
+ 	}
+ 	sch->parent = parentid;
+-- 
+2.47.1
 
-The existing check makes sure that the dev-bound programs run only in the
-contexts that have hw descriptors. devmap and cpumap don't satisfy
-this constraint afaiu.
 
