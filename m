@@ -1,148 +1,156 @@
-Return-Path: <bpf+bounces-56499-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56500-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95F33A99471
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:14:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02B2AA99486
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:17:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55ACB1BA5E5B
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 15:52:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A6C5924B0A
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 16:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F22290095;
-	Wed, 23 Apr 2025 15:38:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F03428C5DF;
+	Wed, 23 Apr 2025 15:51:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RI7Tw1As"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nKB56hZl"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D7A28A1DB;
-	Wed, 23 Apr 2025 15:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF4AC28BAA9;
+	Wed, 23 Apr 2025 15:51:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745422703; cv=none; b=s+BHgmS/iGw6pFi8//D2ygWqhEvwCeZpI7iL7ZzjwpMa4J+h2BRzhSc7XhZJK3iJFtQwVzzdK8z8BixhLnr+UxywOHLYJK60ZYNT+VFmfTAexCQs4xQn760Rt0Ad1fWIrpVM6z9xTuVJrJHyyNzlqYU2wr/sdsiY9pfKs2P9zv0=
+	t=1745423474; cv=none; b=dIT+h51xFVAjMDF3wE1tbwLmk0UJt5+brXLXzuQqArrN0h9P7AQDzGB4/+CZapVIznNqHOMYaExlD86LbyKGw3EcZtXSxlIovxQlbDNQBKMAiLTXMjBegZkhZqoBWgZj4EibQHz7AL4fkbq+cWwY6Ab1XiFlYZjdNe4AbCsJ+v0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745422703; c=relaxed/simple;
-	bh=Abk3WUggpCh+pV9/jGehaWPhGHzsr5iDxN7IoX5cqEk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=EuPAQzh4QFDodIhDPBSJSI7AOnnLOMHO7A5xlkTFN/qlKZLZc5z/RkNuAqCMDz9tXcMQlLf78bfpq6o1MJfb5drL8lmA3RweaJJLMgttBMsyR97b+12vP+NAKH4fMgrsXAozvK3YCeXYi6qtECCmTyn1M+NEmvMooTZt9DyA0vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RI7Tw1As; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1449D43201;
-	Wed, 23 Apr 2025 15:38:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1745422694;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Abk3WUggpCh+pV9/jGehaWPhGHzsr5iDxN7IoX5cqEk=;
-	b=RI7Tw1As9wOTHmRLRlOtw+97DusGjkgz5iMRLKZN4zcskq36CRb9ussT2NX7gXEdh90q7r
-	POeVrueShYUjYRyn65z8VBjfO7iTqa/ZspwQMggtDMw3E7uMMC48R6WZou47bJ0oCgze/d
-	xb5vD9tIm0T9icAfYRLJuQE1aslLweYHBA0hMYlsY/FV97+ZuevI1AS2ZMiBYPewPNmzHP
-	vroE13/rb7Gl2LXV09Id2Du0mc/S0jjLsyK+HNJgSCKUPB9FLTgL3SLZiwDSQ71MgYofaA
-	OsbniHoJmQ711I/9rNmlgjJpQ10ueCniBFkZSq8VBczxUgBqcTzGumXVtj+Zww==
+	s=arc-20240116; t=1745423474; c=relaxed/simple;
+	bh=aa7/f5Zh9n06yla3BDP8426xRfbXJ+bYThqtSMu5iMI=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UPWiNuIVnO45LCf2WbYeTCKPicb1uOsVTIXUcGTXBO/lZlSKwdLOxzVHQY81wZnuDCS4XW3yN0g2VjImVAswB359HvJGvEfB+y39JZdJ0j5muiUwN5rBwC07c+8k0mhDyS8zBWt9DgauyQMX6WERu8mLN+htRSxzZykuQt7xavM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nKB56hZl; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-43cf848528aso49448855e9.2;
+        Wed, 23 Apr 2025 08:51:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745423471; x=1746028271; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x6aidtYCoBxwfa+luGgigfHv2I9RMSlPDA/HH3ouHUw=;
+        b=nKB56hZl26a06tlMQWcS3UbiFrqStyCqMP6+kL+mcq8jvUP3zRVdW3wbtSyDZabY2P
+         pQ7R+Gcox3dqVpTZt/p/ISqWwZYB1WZ3Mv7YouPiKoWhAot2t9RBLIhZKFn20ju/zvUl
+         +U2ZTSeO7i6pQRIRBh0gA2Oqm+f/ZYbZ3lYPbBW1lq9jJdp+8boZyAvNzoj4sM+Y0zE/
+         A4kwdPVTgndHScp4QzEQuEk2f1nEF2gpFkC6TeQsNyiBODHK+exDOBHK1AlKNktFfuf+
+         cLIFskFo89Qk91zaa9tZq1eRfpHg1bRAXtGXdOaYlzhqfV8Dzmx92LxJwX/Y8tmrjaV/
+         4utA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745423471; x=1746028271;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x6aidtYCoBxwfa+luGgigfHv2I9RMSlPDA/HH3ouHUw=;
+        b=r4EwtPb0V1+wbRfT0QPKsDqAzvE/92jtGc7zfiokgpDaWqid2mt+TQvlXhuoUWvBqQ
+         GKY1e8vLrO0GnZooluJZGj9ZudQ7o1Lp2/mY5UOrOhDNgg6vrV8QKRUi/1f9Ex9uhqI/
+         8Zq5DDnQRv9EFlUCCEGGlQa7b2I/lnwiUbqoX3/4Rp7DnnfHL8EzcJxPsK7kNbUhcmhN
+         JJk8vP2PiRpisS7PId8NgCZXv1UpnUKT1wnEhCbvZqjr7mUMLoPplICxytwhra0wvpNF
+         V0QErintGK1Z6G+BGm6YoAhtJxtgHz+iyh6j2V69cgHs81FrVeLrRajCh7HNeF1YDYRB
+         RKrg==
+X-Forwarded-Encrypted: i=1; AJvYcCUTUPV0hawQJk4W8LuFcOHT5zIoEjErl4kT8iGo5OlF38WeScyy2EE5kf80I7GMHlngS3o3ofB+XIBHnwdI@vger.kernel.org, AJvYcCXmaaQnoJwBkfH/qkOyYB5u9eZ7hf+i4xngXXOPnbr2iFIcgya6GrBDH2Wqf9mma2DDhUg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8VJbTftJ4CZ9UVBe5zUvCju3ACse7CfCix6WOXhDJSGXlvJ4D
+	h/PfE+/mhSxSfjgsAPHxXFTgvMxWgTqfEwrvS4MOfDb2fhnX8GU+
+X-Gm-Gg: ASbGnctELq/y/yjwzKevG7ioQURqsN2exY658VWrZJqY9vqvWIVHPkUOLROX6fHmCf8
+	gTwunLZZU2eeCE/zDrW5vswHVPkByismXZrWBqV4uQCdKu0EkQ07Wimk/Nelp2WcgzJnKb30GN3
+	hm0s1hqgLQkQ8nSY5QfLwc3qCwGVAPDu0ogt0tajieX37N0DD4E+HVXRFXdEueslpBTsuOxefQx
+	LNzs2oX3Rzx6cl2H2V/K49Kf2XO5ehCaILW0ZCvXR/UKftq8xT1CWduIBFGG6XYLOfbjCz+mDg3
+	aQN1cw1saKanKFEsr0899g96q8kQ8M+7bhkzK9CRCCgc/pg=
+X-Google-Smtp-Source: AGHT+IGS33U0SQfEUtTQ/6SINRbclcHrXy1+ioipbh+69IqIa03G439XHh9lBMNutBMrCfUiOq1QHA==
+X-Received: by 2002:a05:6000:cc6:b0:39f:a553:3d98 with SMTP id ffacd0b85a97d-3a06c43f9a4mr23357f8f.56.1745423470916;
+        Wed, 23 Apr 2025 08:51:10 -0700 (PDT)
+Received: from krava (85-193-35-16.rib.o2.cz. [85.193.35.16])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39efa43bee6sm18983897f8f.45.2025.04.23.08.51.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Apr 2025 08:51:10 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 23 Apr 2025 17:51:08 +0200
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Tao Chen <chen.dylane@linux.dev>,
+	andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
+	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@fomichev.me, haoluo@google.com,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next] libbpf: remove sample_period init in
+ perf_buffer
+Message-ID: <aAkMbBdzWX_iE1zM@krava>
+References: <20250422091558.2834622-1-chen.dylane@linux.dev>
+ <aAedDw7fWAF2ej1f@krava>
+ <aAfok3ha8QQkP8VB@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 23 Apr 2025 17:38:09 +0200
-Message-Id: <D9E4PE3RTE37.2LU30RI1ZS6XL@bootlin.com>
-Cc: "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
- <daniel@iogearbox.net>, "John Fastabend" <john.fastabend@gmail.com>,
- "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
- <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu"
- <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "KP Singh"
- <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo"
- <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>, "Puranjay Mohan"
- <puranjay@kernel.org>, "Catalin Marinas" <catalin.marinas@arm.com>, "Will
- Deacon" <will@kernel.org>, "Mykola Lysenko" <mykolal@fb.com>, "Shuah Khan"
- <shuah@kernel.org>, "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
- "Alexandre Torgue" <alexandre.torgue@foss.st.com>, "Florent Revest"
- <revest@chromium.org>, "Bastien Curutchet" <bastien.curutchet@bootlin.com>,
- <ebpf@linuxfoundation.org>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, <bpf@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kselftest@vger.kernel.org>,
- <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH RFC bpf-next 1/4] bpf: add struct largest member size in
- func model
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-To: "Xu Kuohai" <xukuohai@huaweicloud.com>, "Andrii Nakryiko"
- <andrii.nakryiko@gmail.com>
-X-Mailer: aerc 0.20.1-0-g2ecb8770224a
-References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
- <20250411-many_args_arm64-v1-1-0a32fe72339e@bootlin.com>
- <CAEf4Bzbn6BdXTOb0dTcsQmOMZpp5=DzGS2hHHQ3+dwcja=gv+w@mail.gmail.com>
- <D98Q8BRNUVS9.11J60C67L1ALR@bootlin.com>
- <9da88811-cce0-41df-8069-2e8b67541c39@huaweicloud.com>
- <D9BLCJSCHE9A.1IKHK3XBPF8MU@bootlin.com>
- <8b800c09-eade-4dcf-90f6-2f5a78170bc4@huaweicloud.com>
-In-Reply-To: <8b800c09-eade-4dcf-90f6-2f5a78170bc4@huaweicloud.com>
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvgeeileejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpegggfgtfffkvefuhffvofhfjgesthhqredtredtjeenucfhrhhomheptehlvgigihhsucfnohhthhhorhoruceorghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeelkeehiefhfeehvefhtdegueelkeehffffffeuvdekkeekuddvueeguefgieeukeenucffohhmrghinhepsghoohhtlhhinhdrtghomhenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepfedtpdhrtghpthhtohepgihukhhuohhhrghisehhuhgrfigvihgtlhhouhgurdgtohhmpdhrtghpthhtoheprghnughrihhirdhnrghkrhihihhkohesghhmrghilhdrtghomhdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopehjohhhn
- hdrfhgrshhtrggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtohepvgguugihiiekjeesghhmrghilhdrtghomh
-X-GND-Sasl: alexis.lothore@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aAfok3ha8QQkP8VB@google.com>
 
-On Mon Apr 21, 2025 at 4:14 AM CEST, Xu Kuohai wrote:
-> On 4/21/2025 12:02 AM, Alexis Lothor=C3=A9 wrote:
->> Hi Xu,
->>=20
->> On Thu Apr 17, 2025 at 4:10 PM CEST, Xu Kuohai wrote:
->>> On 4/17/2025 3:14 PM, Alexis Lothor=C3=A9 wrote:
->>>> Hi Andrii,
->>>>
->>>> On Wed Apr 16, 2025 at 11:24 PM CEST, Andrii Nakryiko wrote:
->>>>> On Fri, Apr 11, 2025 at 1:32=E2=80=AFPM Alexis Lothor=C3=A9 (eBPF Fou=
-ndation)
->>>>> <alexis.lothore@bootlin.com> wrote:
+On Tue, Apr 22, 2025 at 12:05:55PM -0700, Namhyung Kim wrote:
+> Hello,
+> 
+> On Tue, Apr 22, 2025 at 03:43:43PM +0200, Jiri Olsa wrote:
+> > On Tue, Apr 22, 2025 at 05:15:58PM +0800, Tao Chen wrote:
+> > > It seems that sample_period no used in perf buffer, actually only
+> > > wakeup_events valid about events aggregation for wakeup. So remove
+> > > it to avoid causing confusion.
+> > 
+> > I don't see too much confusion in keeping it, but I think it
+> > should be safe to remove it
+> > 
+> > PERF_COUNT_SW_BPF_OUTPUT is "trigered" by bpf_perf_event_output,
+> > AFAICS there's no path checking on sample_period for this event
+> > used in context of perf_buffer__new, Namhyung, thoughts?
+> 
+> It seems to be ok to call mmap(2) for non-sampling events.
+> 
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-[...]
+Tao Chen,
+could you please resend without rfc tag? plz keeps acks
 
->> Ah, thanks for those clear examples, I completely overlooked this
->> possibility. And now that you mention it, I feel a bit dumb because I no=
-w
->> remember that you mentioned this in Puranjay's series...
->>=20
->> I took a quick look at the x86 JIT compiler for reference, and saw no co=
-de
->> related to this specific case neither. So I searched in the kernel for
->> actual functions taking struct arguments by value AND being declared wit=
-h some
->> packed or aligned attribute. I only found a handful of those, and none
->> seems to take enough arguments to have the corresponding struct passed o=
-n the
->> stack. So rather than supporting this very specific case, I am tempted
->> to just return an error for now during trampoline creation if we detect =
-such
->> structure (and then the JIT compiler can keep using data size to compute
->> alignment, now that it is sure not to receive custom alignments). Or am =
-I
->> missing some actual cases involving those very specific alignments ?
->>=20
->
-> How can we reliably 'detect' the case? If a function has such a parameter
-> but we fail to detect it, the BPF trampoline will pass an incorrect value
-> to the function, which is also unacceptable.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-That's a question I still have to answer :) I imagined being able to detect
-it thanks to some info somewhere in BTF, but I have to dig further to find
-how.
+thanks,
+jirka
 
 
-Alexis
-
---=20
-Alexis Lothor=C3=A9, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+> 
+> Thanks,
+> Namhyung
+> 
+> > 
+> > > 
+> > > Fixes: fb84b8224655 ("libbpf: add perf buffer API")
+> > > Signed-off-by: Tao Chen <chen.dylane@linux.dev>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c | 1 -
+> > >  1 file changed, 1 deletion(-)
+> > > 
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index 194809da5172..1830e3c011a5 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -13306,7 +13306,6 @@ struct perf_buffer *perf_buffer__new(int map_fd, size_t page_cnt,
+> > >  	attr.config = PERF_COUNT_SW_BPF_OUTPUT;
+> > >  	attr.type = PERF_TYPE_SOFTWARE;
+> > >  	attr.sample_type = PERF_SAMPLE_RAW;
+> > > -	attr.sample_period = sample_period;
+> > >  	attr.wakeup_events = sample_period;
+> > >  
+> > >  	p.attr = &attr;
+> > > -- 
+> > > 2.43.0
+> > > 
 
