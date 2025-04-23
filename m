@@ -1,117 +1,108 @@
-Return-Path: <bpf+bounces-56477-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56476-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 136A4A97C89
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 03:52:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B90CDA97C7F
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 03:51:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 514C116F32F
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 01:52:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B197E1B618B6
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 01:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158D7264FB0;
-	Wed, 23 Apr 2025 01:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895F1265CAE;
+	Wed, 23 Apr 2025 01:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oMqDL6ga"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5B42701DB;
-	Wed, 23 Apr 2025 01:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1163263F2B;
+	Wed, 23 Apr 2025 01:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745373110; cv=none; b=AeQczy7dHAcKPdVdH0Cotkb1TlCdJxNwSwoncnQhNtkxDnG5P2fSTA/9apcm2+vFafDiu5GgdtcakEsb0DJ9oZvMqnzooze8R4K1WLYQ+uSlzpvkJe2wyVaq9OfXoUiz/B23rXcQOGniXBW1IHvdWeGW4LT2tg6uP42z2rOL/8k=
+	t=1745372991; cv=none; b=r6tudF9CLgbi9hEw8iE+wH11D4S3hAORNUYZIPuXHJIm07yEFWsVkFd9UIqs2BDoRAD9SgzsDCz/hhtNfyIa0t5lE4evp3c2uEFAznLHVgzg8JCY7YRxHKjmQikvGVXpyd4BTpLi9XhM6QEiTIM3IM6AWQaW6lcs2kjKXa3HFF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745373110; c=relaxed/simple;
-	bh=524B77zUmQ8K7a2shf7Mu+7jo//vmdRuMIeZyo4ImCM=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=jYITZtkp+7yaIKxwAbG4LhbrUiT0p58JSaKTRJqHRwDbkJKF9WLG2x5AIUlVUa318MObPBQJh+MMPgv36uPBeETjOatg2wXMS5rXDK1HEZS/r30bj5uxbP95fvwxGsU6q8ngVmnBnLVW0rRfh6PcxOgcBhbpjOXKRYwyXGmFmAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.62])
-	by gateway (Coremail) with SMTP id _____8CxaWpaRwhoIWLEAA--.65011S3;
-	Wed, 23 Apr 2025 09:50:19 +0800 (CST)
-Received: from [10.20.42.62] (unknown [10.20.42.62])
-	by front1 (Coremail) with SMTP id qMiowMCxrhtYRwhooO2QAA--.47758S3;
-	Wed, 23 Apr 2025 09:50:18 +0800 (CST)
-Subject: Re: BUG: bpf test case fails to run on LoongArch
-To: Tiezhu Yang <yangtiezhu@loongson.cn>, Huacai Chen <chenhuacai@loongson.cn>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- loongarch@lists.linux.dev
-References: <32989acf-93ef-b90f-c3ba-2a3c07dee4a3@loongson.cn>
- <8cd87100-88f3-687d-6704-f4fec0ca48b3@loongson.cn>
-From: bibo mao <maobibo@loongson.cn>
-Message-ID: <c9d7be2b-8c2d-bd5e-b32d-37ed4bb693cc@loongson.cn>
-Date: Wed, 23 Apr 2025 09:49:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1745372991; c=relaxed/simple;
+	bh=QxEqK4cbT808ELsKax+8p0w2UjvmBOkBNaPB8xPHKI0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=FkUmokrMd43VBYmyfgA20UdNPS+Ykyug340Aqv0awR94SxCMy0ckLOVpkA5fHFnzNodPFDvAiSCSIBeS0l9vlmtG19A8R5XlUFUgTCHqGUDYGatj0WnKaQyjV1Wg+VkF8HxVBTFZ/ZzHH/8YhOZJQb2+/UVv8gfHFvBegd2gtjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oMqDL6ga; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44E7AC4CEE9;
+	Wed, 23 Apr 2025 01:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745372990;
+	bh=QxEqK4cbT808ELsKax+8p0w2UjvmBOkBNaPB8xPHKI0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=oMqDL6gaQ1PJBIb8WuncnlC8rKeAuIxBOoptE52dnZSIzFVX2NRF49ZuY2GXBir8q
+	 3G+Mnddyg6c2pzc7MB+7oXQBA1N2tPwUHVjkFFxfM5UcRri/E6DDcYxHoKwXvceLWK
+	 qDE61VAN5rPNCfA6xTBtHpg/JnD3biqsxRoLZ5uFEArHoXnTiRQvIS/Z8+q1YxbZUW
+	 6gVv2nxcoXuB9ACLmK20ieFP2ogZZhSK1oipFZr4BxCrkE1eBVtnInN5fg4nrqCm9M
+	 eY86mTyh+xOXXtWWFtKkHy7Z+N5iOWh25DwgFtCkLNWZsPj5GprJKnTgWD8dn81XqC
+	 mbOedOKZs3f7Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAE67380CEF4;
+	Wed, 23 Apr 2025 01:50:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <8cd87100-88f3-687d-6704-f4fec0ca48b3@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowMCxrhtYRwhooO2QAA--.47758S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7uw1xJry3XF15ZF1ftF4UJrc_yoW8Jw1UpF
-	ZxtryfKw1Yga40qr10qa10yF9YyFsay3y5AryUJ34kGrs5Ar1qqF18Jr1Svr93tryv9rWU
-	A3y0qan0kwnrJFcCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU9Yb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4
-	xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v2
-	6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67
-	vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
-	6r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-	CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
-	0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
-	AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
-	Ja73UjIFyTuYvjxUrNtxDUUUU
+Subject: Re: [PATCH v4 0/4] virtio-net: disable delayed refill when pausing rx
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174537302875.2111809.8543884098526067319.git-patchwork-notify@kernel.org>
+Date: Wed, 23 Apr 2025 01:50:28 +0000
+References: <20250417072806.18660-1-minhquangbui99@gmail.com>
+In-Reply-To: <20250417072806.18660-1-minhquangbui99@gmail.com>
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: virtualization@lists.linux.dev, mst@redhat.com, jasowang@redhat.com,
+ xuanzhuo@linux.alibaba.com, andrew+netdev@lunn.ch, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, eperezma@redhat.com,
+ davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
 
+Hello:
 
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-On 2025/4/23 上午9:28, Tiezhu Yang wrote:
-> On 04/21/2025 10:52 AM, bibo mao wrote:
->> Hi,
->>
->> When I run built-in bpf test case with lib/test_bpf.c,
->> it reports such error, I do not know whether it is a problem.
->>
->>  test_bpf: #843 ALU32_RSH_X: all shift values jited:1 239 PASS
->>  test_bpf: #844 ALU32_ARSH_X: all shift values jited:1 237 PASS
->>  test_bpf: #845 ALU64_LSH_X: all shift values with the same register
->>  ------------[ cut here ]------------
->>  kernel BUG at lib/test_bpf.c:794!
+On Thu, 17 Apr 2025 14:28:02 +0700 you wrote:
+> Hi everyone,
 > 
-> This is a known issue I have ever encountered.
-> I guess your GCC version is 14.1, this is a bug of GCC,
-yes, My gcc version is 14.1
+> This series tries to fix a deadlock in virtio-net when binding/unbinding
+> XDP program, XDP socket or resizing the rx queue.
+> 
+> When pausing rx (e.g. set up xdp, xsk pool, rx resize), we call
+> napi_disable() on the receive queue's napi. In delayed refill_work, it
+> also calls napi_disable() on the receive queue's napi. When
+> napi_disable() is called on an already disabled napi, it will sleep in
+> napi_disable_locked while still holding the netdev_lock. As a result,
+> later napi_enable gets stuck too as it cannot acquire the netdev_lock.
+> This leads to refill_work and the pause-then-resume tx are stuck
+> altogether.
+> 
+> [...]
 
-> it has been fixed in the higher version, you can update
-> you GCC version (14.2+).
-OK, I will update my gcc. And sorry for the noise.
+Here is the summary with links:
+  - [v4,1/4] virtio-net: disable delayed refill when pausing rx
+    https://git.kernel.org/netdev/net/c/4bc12818b363
+  - [v4,2/4] selftests: net: move xdp_helper to net/lib
+    (no matching commit)
+  - [v4,3/4] selftests: net: add flag to force zerocopy mode in xdp_helper
+    (no matching commit)
+  - [v4,4/4] selftests: net: add a virtio_net deadlock selftest
+    (no matching commit)
 
-Regards
-Bibo Mao
-> 
-> $ gcc --version | head -1
-> gcc (GCC) 14.2.1 20241104
-> $ dmesg -t | grep Summary
-> test_bpf: Summary: 1053 PASSED, 0 FAILED, [0/1041 JIT'ed]
-> test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [0/10 JIT'ed]
-> test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-> test_bpf: Summary: 1053 PASSED, 0 FAILED, [1041/1041 JIT'ed]
-> test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
-> test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-> 
-> Thanks,
-> Tiezhu
-> 
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
