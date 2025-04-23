@@ -1,210 +1,136 @@
-Return-Path: <bpf+bounces-56478-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56479-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11FDAA97CC2
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 04:22:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E0CFA97D24
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 05:07:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE0371B620E0
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 02:22:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12C593BDC93
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 03:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192692641E8;
-	Wed, 23 Apr 2025 02:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9BF4264624;
+	Wed, 23 Apr 2025 03:07:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LjwjNV18"
+	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="A9uLzmLD"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from smtpbgsg1.qq.com (smtpbgsg1.qq.com [54.254.200.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0321B2580E7;
-	Wed, 23 Apr 2025 02:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 503712627EC;
+	Wed, 23 Apr 2025 03:07:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745374916; cv=none; b=tUR/sgjy0UJQHzF2ZbQEBHF9Bn89MZFgAUkI2dp6LOo7dZi7E8eKQbBgXYK/41W4+9JqRNI1rqXj/9t9DFPezWhmDbTzSEme2NiDEK04UiTbg8VXRNnRIXCpIqOzHZHok9gs4V3Tou45vN6xKEiJBB9Dgi9ILdLRBPPhekquwR8=
+	t=1745377653; cv=none; b=i99ujQUxLb98NnKXde2OD0TF/a9NSywie7LankKx8fZg8aCUlUEzBgsV9jx/bFmwC9232IbGLTbREkXtr0qCqQAivYsLY/TkPGaV0NJE1PFR51v7k2g+a0cxNCQUbA8aX3ggOeYitlwp1OHljWkGENL02kIrz59tFodVlDDRfks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745374916; c=relaxed/simple;
-	bh=qK1B6jvfJpjhNVBbGzIkwIUA4t2Sc/jOmyAV02x6m9w=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=B2p7pYgOYE3kz1kDF90HjnKGfLijr58qg5erOXdk9Xu7BC0IHXI2ooRKIArMXZXS6RehZfcQ78JQovoyU8ZSlwKWXQiSwy0o8o7wxoFWOpV6O4rIqp+drTh6qjRPpU0tddKr3pTCOmWXVNMyxMDnQ8kqCY2M0p8eqZ9CnMyPDbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LjwjNV18; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1745377653; c=relaxed/simple;
+	bh=hA90ZuESohqk54ATH6Bc81QbVyOvEr18HVCgZ1JaJS8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dhsFN3jqIgSLnxuzZ2gGTHh6w22aXPt1oY7Rhjmm3Aqw+zYZqE6eyCxbFXimpJrk8/PImOCAxvRqFeWj4gxLPo3Isno5ZeTJB4h1uqNfffXyKK2xJSVJsMxmPdZqrVeYGzImSeDiE1IngF6k/+FWOPV9VqpOZgwJhdln5M0aPBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=A9uLzmLD; arc=none smtp.client-ip=54.254.200.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+	s=onoh2408; t=1745377613;
+	bh=YlbavwK4ijk6OQzwlNHVeqYb/SvZ1tfITRJFThEGh80=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=A9uLzmLD+SLBSGe22+Gtf/RISftzJNC1lHj0l6vleVjV+CnxuDV41OCIB/Wp4GAjc
+	 mXq/Do+SlI0iL1ZSFAyk2qJFqDEQXY2wxV/Crcmiqsizxiri1KLaXDp827ojpBcfPx
+	 yPfLTk5OnrIqQidGwqzIP4Q/g29cPPaOQUIfSXUI=
+X-QQ-mid: zesmtpip3t1745377600tadf8fc5c
+X-QQ-Originating-IP: X5Aw6R2DDq/YO33JgpDlNDuCWKFjBcQ+z/6flHw0eNo=
+Received: from localhost.localdomain ( [localhost])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 23 Apr 2025 11:06:37 +0800 (CST)
+X-QQ-SSF: 0002000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 16401725662011210989
+EX-QQ-RecipientCnt: 24
+From: WangYuli <wangyuli@uniontech.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	corbet@lwn.net
+Cc: bpf@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	void@manifault.com,
+	psreep@gmail.com,
+	yhs@fb.com,
+	zhanjun@uniontech.com,
+	niecheng1@uniontech.com,
+	guanwentao@uniontech.com,
+	WangYuli <wangyuli@uniontech.com>,
+	Chen Linxuan <chenlinxuan@uniontech.com>
+Subject: [PATCH] bpf, docs: iterator: Rectify non-standard line break
+Date: Wed, 23 Apr 2025 11:06:32 +0800
+Message-ID: <DB66473733449DB0+20250423030632.17626-1-wangyuli@uniontech.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745374899;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NQ0Kggt3gIz3TlRpiFCQVgKvnBoDfQL2jMrv9qB9Iz8=;
-	b=LjwjNV18VzAy7rjmHeaQ/CMcof1vElFdxNyStaN879ELat4cJzDrGvlOokj8RTLUwkij65
-	NGbYcQc2uCyzpa84E3X2brrHTehsLfONlPpTlaaI0LslBHRJWNlebbl+KA+eieSQ8/L88q
-	Gx7RBeG1HCod+06ojg0R7a7Oo7ot8vA=
-Date: Wed, 23 Apr 2025 02:21:37 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
-Message-ID: <cbb82d78518c251000e8b52e3f3799b0df438210@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: Create cgroup storage if needed
- when updating link
-To: "Martin KaFai Lau" <martin.lau@linux.dev>
-Cc: andrii@kernel.org, alexis.lothore@bootlin.com, mrpre@163.com,
- syzbot+e6e8f6618a2d4b35e4e0@syzkaller.appspotmail.com, "Alexei
- Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
- "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>,
- "Yonghong Song" <yonghong.song@linux.dev>, "John Fastabend"
- <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
- Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
- <jolsa@kernel.org>, "Mykola Lysenko" <mykolal@fb.com>, "Shuah Khan"
- <shuah@kernel.org>, "Alan Maguire" <alan.maguire@oracle.com>,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org
-In-Reply-To: <c6a9b230-f163-4c03-b834-ddcc71c47204@linux.dev>
-References: <20250417044041.252874-1-jiayuan.chen@linux.dev>
- <20250417044041.252874-2-jiayuan.chen@linux.dev>
- <c6a9b230-f163-4c03-b834-ddcc71c47204@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: zesmtpip:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
+X-QQ-XMAILINFO: ORfZ13EUooM/eCcKeC1dM/vs289RsBJavTcKc7grA4nkbIYZZcJAimOk
+	h7lvcr0fqTNfjE4ozS2J7oOBdgY6SImH6+jW0XyhoH+h8ttu9VjZBdrF/flT4OTc4M00nIE
+	kUkBBWmaWt6NTTIO2rOf1v16m7mzLsE7Q6c44oEyvjIFVBRriAWdmMQAnzDjMk+t21PvZA1
+	mBVdhumNXUW1/WuBiu04gjWuGbA2K3yAePwHvWybrbBcTONfsURE9i5+IImo/bzKzrvj3BW
+	EBDJySRxWs1dQkoTP7WGYjEMj/EY+pHiGfpCRSeZ3LNe/dfE5FAeb81Hu3GSBG+i2xo1e2j
+	G1IjBQiyKdfUb2NlbGFVhqYIdxiRadzyIpBEKrA2vSbP7SVJ6ErAkV21u1knsD1JR/n2kiz
+	1Xz5HHaun0wOxHRK9sahxEjC+D19kwetV2rs4eGXK91Ocu7ToB4JG4m/uRd19Ok76Au7TGv
+	DS3YXha3FoW61sg16rrmt6+7sEnPulu6GtZIsF7a4U2nUzDqQtodVXvlFTttUtUMttcMPRV
+	qQFj5rGB8jUFI+PSWjBT6Gx1cW36oihAHoAoAwttNzlV6sEeWngM2t4FtAnubeAHmpQUVbK
+	+9yiyvSsFbuVC2lhAuok15+o2fJIme7x/f8mRzTL1DIQZyLm6D5ZMdF0CTRrTjaWTPxnsvI
+	4OIdFtuJO1dUT6OC6u8lxHQeNTQlJVa9LsCWNlStclxLsONNdKJ2R0qnB6yp2mvtsDkh853
+	91IsB0Rc8C/MSCGtfW0WEfZpegwJK99KMeO2mIO2q73EV1RcWJEgmobgmaFECeCGzzSxyi+
+	DIoFyenp4Y5S+QQ4asfYbLHd6OUP2DFRsoT/EFkWzb6vsnFTpawnMPx9BPmXoYkSwdgAylK
+	UajsxPKCW+R1S9nyGQlE3CDmmywkquKPZ+9+OZt7psrCxoLVa/skr2QbVNk1Os/yNSRy8Ci
+	C2nh2Sit3hj+SC1U8/zPLIHgN4BQ1rveo6TbxbpUaIbUPHuPuZDDLb7gRvQmP4yytvcVjz7
+	K5PeqEChK7uHqDEsXsiccLMh+DP+U=
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+X-QQ-RECHKSPAM: 0
 
-April 23, 2025 at 08:13, "Martin KaFai Lau" <martin.lau@linux.dev> wrote:
+Even though the kernel's coding-style document does not explicitly
+state this, we generally put a newline after the semicolon of every
+C language statement to enhance code readability.
 
->=20
->=20On 4/16/25 9:40 PM, Jiayuan Chen wrote:
->=20
->=20>=20
->=20> when we attach a prog without cgroup_storage map being used,
-> >=20
->=20>  cgroup_storage in struct bpf_prog_array_item is empty. Then, if we=
- use
-> >=20
->=20>  BPF_LINK_UPDATE to replace old prog with a new one that uses the
-> >=20
->=20>  cgroup_storage map, we miss cgroup_storage being initiated.
-> >=20
->=20>  This cause a painc when accessing stroage in bpf_get_local_storage=
-.
-> >=20
->=20>  Reported-by: syzbot+e6e8f6618a2d4b35e4e0@syzkaller.appspotmail.com
-> >=20
->=20>  Closes: https://lore.kernel.org/all/67fc867e.050a0220.2970f9.03b8.=
-GAE@google.com/T/
-> >=20
->=20>  Fixes: 0c991ebc8c69 ("bpf: Implement bpf_prog replacement for an a=
-ctive bpf_cgroup_link")
-> >=20
->=20>  Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-> >=20
->=20>  ---
-> >=20
->=20>  kernel/bpf/cgroup.c | 24 +++++++++++++++++++-----
-> >=20
->=20>  1 file changed, 19 insertions(+), 5 deletions(-)
-> >=20
->=20>  diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> >=20
->=20>  index 84f58f3d028a..cdf0211ddc79 100644
-> >=20
->=20>  --- a/kernel/bpf/cgroup.c
-> >=20
->=20>  +++ b/kernel/bpf/cgroup.c
-> >=20
->=20>  @@ -770,12 +770,14 @@ static int cgroup_bpf_attach(struct cgroup *=
-cgrp,
-> >=20
->=20>  }
-> >=20
->=20>  > /* Swap updated BPF program for given link in effective program =
-arrays across
-> >=20
->=20>  - * all descendant cgroups. This function is guaranteed to succeed=
-.
-> >=20
->=20>  + * all descendant cgroups.
-> >=20
->=20>  */
-> >=20
->=20>  -static void replace_effective_prog(struct cgroup *cgrp,
-> >=20
->=20>  - enum cgroup_bpf_attach_type atype,
-> >=20
->=20>  - struct bpf_cgroup_link *link)
-> >=20
->=20>  +static int replace_effective_prog(struct cgroup *cgrp,
-> >=20
->=20>  + enum cgroup_bpf_attach_type atype,
-> >=20
->=20>  + struct bpf_cgroup_link *link)
-> >=20
->=20>  {
-> >=20
->=20>  + struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TY=
-PE] =3D {};
-> >=20
->=20>  + struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] =
-=3D {};
-> >=20
->=20>  struct bpf_prog_array_item *item;
-> >=20
->=20>  struct cgroup_subsys_state *css;
-> >=20
->=20>  struct bpf_prog_array *progs;
-> >=20
->=20>  @@ -784,6 +786,10 @@ static void replace_effective_prog(struct cgr=
-oup *cgrp,
-> >=20
->=20>  struct cgroup *cg;
-> >=20
->=20>  int pos;
-> >=20
->=20>  > + if (bpf_cgroup_storages_alloc(storage, new_storage, link->type=
-,
-> >=20
->=20>  + link->link.prog, cgrp))
-> >=20
->=20>  + return -ENOMEM;
-> >=20
->=20>  +
-> >=20
->=20>  css_for_each_descendant_pre(css, &cgrp->self) {
-> >=20
->=20>  struct cgroup *desc =3D container_of(css, struct cgroup, self);
-> >=20
->=20>  > @@ -810,8 +816,11 @@ static void replace_effective_prog(struct c=
-group *cgrp,
-> >=20
->=20>  desc->bpf.effective[atype],
-> >=20
->=20>  lockdep_is_held(&cgroup_mutex));
-> >=20
->=20>  item =3D &progs->items[pos];
-> >=20
->=20>  + bpf_cgroup_storages_assign(item->cgroup_storage, storage);
-> >=20
->=20
-> I am still recalling my memory on this older cgroup storage, so I think=
- it will be faster to ask questions.
->=20
->=20What is in the pl->storage (still NULL?), and will the future compute=
-_effective_progs() work?
->=20
+Adjust the placement of newlines to adhere to this convention.
 
-For=20non-link path:
-cgroup_bpf_attach
-	bpf_cgroup_storages_assign(pl->storage, storage); // allocate and set
-	update_effective_progs
-		compute_effective_progs
-			bpf_cgroup_storages_assign(item->cgroup_storage, pl->storage);
+Reported-by: Chen Linxuan <chenlinxuan@uniontech.com>
+Signed-off-by: WangYuli <wangyuli@uniontech.com>
+---
+ Documentation/bpf/bpf_iterators.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/bpf/bpf_iterators.rst b/Documentation/bpf/bpf_iterators.rst
+index 7f514cb6b052..385cd05aabf5 100644
+--- a/Documentation/bpf/bpf_iterators.rst
++++ b/Documentation/bpf/bpf_iterators.rst
+@@ -323,8 +323,8 @@ Now, in the userspace program, pass the pointer of struct to the
+ 
+ ::
+ 
+-  link = bpf_program__attach_iter(prog, &opts); iter_fd =
+-  bpf_iter_create(bpf_link__fd(link));
++  link = bpf_program__attach_iter(prog, &opts);
++  iter_fd = bpf_iter_create(bpf_link__fd(link));
+ 
+ If both *tid* and *pid* are zero, an iterator created from this struct
+ ``bpf_iter_attach_opts`` will include every opened file of every task in the
+-- 
+2.49.0
 
-pl->storage is just as a temporary holder, never freed, and its value wil=
-l
-eventually be assigned to `item->cgroup_storage`.
 
