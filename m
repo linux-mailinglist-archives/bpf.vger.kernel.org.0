@@ -1,207 +1,142 @@
-Return-Path: <bpf+bounces-56541-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56542-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ECFEA999EC
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 23:08:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2632A99AA3
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 23:22:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FCA63ADC00
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 21:07:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C45F188AC8D
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 21:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98A12749C0;
-	Wed, 23 Apr 2025 21:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BB61FBCBE;
+	Wed, 23 Apr 2025 21:21:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PaWAQeun"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cw9nxqTh"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02858265CBD
-	for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 21:08:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55BDA1CD1E1;
+	Wed, 23 Apr 2025 21:21:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745442488; cv=none; b=ILnLCWyC17xwL6MSK8cbvBjPO7U7GeiHpjXS7ano5IyHBj9rvh5J1yQEXsO+/V2GAqPMSqHZ7M1g9GV8C4e3G8W0RAld7B4cYndpnciD9ZYPzhCNFbRoQVIXzh1irBv3DxZQQa93E3spZ9BxOKuCicdOhwVVnolLvLLOxN4yUtM=
+	t=1745443299; cv=none; b=KfYbbjfaoP8zXWClEk+8TUti1cc0ADZQQlCwcar3dK5Q5b0hsbox2xVr7aoATbFac5KzpeJIwNcbsKywkkHzVANFl1zSltoYiwB1DvZtpQTfCiPl24c+rhL5F47YoFlDnXoCWtCx2a+Tza72i9jb+Eb68IoAJgo7v6Oad7kj0OQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745442488; c=relaxed/simple;
-	bh=XxCvCSGFcEdexELGVW8mhB3qx8vE8Ea2qXrgRkY4gSs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tR7Jl9sMLqDPBSZJsOElbD5PXFJVs5QNqLAXgzd/FK9Dn+qNtRziSldIHpfGPLpsgeVmlWck5sWhzjG4MMsgGmYe5UyCgIcjCFWjvVZlZu6xPUE1qcr9nLPIVEyQN77G2wnCnq/vG1Ryf68fwqUr5bvO7zoufRzh9dtrNsR2d54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PaWAQeun; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <057ad3a8-585f-402b-9150-b1b4b930376c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745442483;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Bjt0MCusdjN1plu9XqSKj6jgzlNQD91/w0/f0lrqbwY=;
-	b=PaWAQeunS4p8HrZBWiqQ0EnLqu3loTpbsdp0zjP+10NZfqGCzj3gJMP7VH5TrwtRwtVEKb
-	W5symTunh6PcXGuHpbMvKKY5mJUdo1KdX62hgYC8gs9VhQcSN2FCs8TfKgl74OcZVScheX
-	kSzUfG6oVt7k/G+XpUQWFNj5ZZFNQvk=
-Date: Wed, 23 Apr 2025 14:07:55 -0700
+	s=arc-20240116; t=1745443299; c=relaxed/simple;
+	bh=zkMWQVZ5NbGUhdn187Fzed6/TVqS8qNaX0QVXio25A0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ak92QzXlgTyqbQhbnUH1r1wdNjdlZmGlhfW++r777UKTRdeuWQcNJcc6OKReNmEvPMFs0/XUJFaky2eIRR897hVSxrajxhCR409+s5yEY7x2awn2sxTMyeDYczG5EoCGqIkL6J1/ccYJIe+s/j+huF+3a4JH+qdFmpcx54H6xSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cw9nxqTh; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-736ad42dfd6so217313b3a.3;
+        Wed, 23 Apr 2025 14:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745443297; x=1746048097; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zkMWQVZ5NbGUhdn187Fzed6/TVqS8qNaX0QVXio25A0=;
+        b=cw9nxqThUtzfdJLZaRXrOoNY51RL1DaXKjykaBam5edbsnjMwvj665OzAKv0p1oAc4
+         iXJ2JMeyqTuWLcp5k5NI6xCRL9P9RyB+MbTHZ21Wlz92iAMAxP51jr9xuk73a23hsS41
+         qN6tFKIMOPuIXgmEPVqhyLNyHRdSa6Zkko5Ks6OQ6u9zGhkLXA18bcH/7Cn6YNyLZZta
+         hQCT1OcS0oZeAVCbO5YpZvTtV248W14qby6vVecuZgQzoipJurzWfBUK5xuMAkqa4U1X
+         jMQSqxqOn7iIZulxj+GUNaOs2jl2Q6J1f/XENMpFmT5HMknmUlKCjCjT1U5VnUVudCBv
+         EHew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745443297; x=1746048097;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zkMWQVZ5NbGUhdn187Fzed6/TVqS8qNaX0QVXio25A0=;
+        b=XAbCAIODzHpVO46cYneuJ0Jnqsal5gZJsUt/uYOx8nuEy3DZ8E753zbsaln03FSuXg
+         5SS3XMRpVDAe1beysui7OrYo0UUvpvnXuiNTTK57ci6loteLYynCsshohv5rnh1WGPe0
+         K6XTYKTK492OPs8bSapI7p4hrtb8iAo/p57G/2zEnxC2MxI7p/w451rmnB8JyDZsVsfQ
+         UefZJw7Ncl51zJ+OsBt+40BEw0qXPGJSYqPlxoMMZC5ffZjQE+nvgwRLyq2wgRqKTU8b
+         1Wz/IGuVWfMDQhkW8+s+2g2o1km72HFWuEbR/vy5JxzfQhY79TERe/v5oAnSl/a+Scti
+         JF7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUDuWj5AsiGOXaJVdsiayKU3V7BSnqx9/dXtuG6xodIKxxnW+d2uX1MMzHRztcmH3KiVKEye3qLarr2WQ2YyT/nT1lz@vger.kernel.org, AJvYcCWWBPqKmdg9dlkYG4YSWpCyKZYJuFi0b9Mzl3JziBSORLGV0bRKgbofForen2/99kAm157EAMI0@vger.kernel.org, AJvYcCXzRFaxq++ONqFflnjECu3VCaTNsOX2kNzeEej72bcyoAxTVx2CBdXyOiUEw6gQAcG+/hs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxNeUesecn1YRyUtQE/k6bcDqM0bI2bGk5sMeWiMzNZLuYVgdah
+	++v4SGlQraH3zIKnr0F+8hSKngZiirKEesRZIS2AoGZIuFsF2D9uLSP5z2HqBkJMCFCUedRg5ZQ
+	cS3xW7owWTDPe1VO8U9zo048pOdE=
+X-Gm-Gg: ASbGncvhSrVHaMdFq0OhMRk89GYtGOmIv42mbsbiHnBbPWswlJDZWn/MwiCS3w4oXls
+	nG6vtmExBBYvw382qSc+dVfkwdFQSNRIjYIZcZggZJSXhxrwedRPGeeCr05ROttmM7mnrZjueDz
+	1mF5gEj313sK0gu3LnAV6EicowqcG32KkuvQhcFw==
+X-Google-Smtp-Source: AGHT+IHMVgzBu3sVxMrc73B+N2cs3NjKgQj7wTiQqRzkab9vc14xaKQ7QTbsKDcmFanDK092hZgnQXAnyc5c1bFR7Fo=
+X-Received: by 2002:a05:6a20:9f06:b0:1f5:9961:c40 with SMTP id
+ adf61e73a8af0-20444e68f83mr152177637.8.1745443297369; Wed, 23 Apr 2025
+ 14:21:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: Create cgroup storage if needed when
- updating link
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: andrii@kernel.org, alexis.lothore@bootlin.com, mrpre@163.com,
- syzbot+e6e8f6618a2d4b35e4e0@syzkaller.appspotmail.com,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, Alan Maguire <alan.maguire@oracle.com>,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20250417044041.252874-1-jiayuan.chen@linux.dev>
- <20250417044041.252874-2-jiayuan.chen@linux.dev>
- <c6a9b230-f163-4c03-b834-ddcc71c47204@linux.dev>
- <cbb82d78518c251000e8b52e3f3799b0df438210@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <cbb82d78518c251000e8b52e3f3799b0df438210@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20250418110104.12af6883@gandalf.local.home> <CAEf4BzZfoCV=irWiy1MCY0fkhsJWxq8UGTYCW9Y3pQQP35eBLQ@mail.gmail.com>
+ <20250423145308.5f808ada@gandalf.local.home>
+In-Reply-To: <20250423145308.5f808ada@gandalf.local.home>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 23 Apr 2025 14:21:24 -0700
+X-Gm-Features: ATxdqUHBQ0lXivOozpHUw90J50FwAIlnZQ-4o-9a_BEyGlI23OlVSZ_YRmELz7g
+Message-ID: <CAEf4Bzbwoxsv-oAZoKyFDptWYxHRO2SwAEAmDD+Kym9e5oC_Rg@mail.gmail.com>
+Subject: Re: [RFC][PATCH] tracepoint: Have tracepoints created with
+ DECLARE_TRACE() have _tp suffix
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, David Ahern <dsahern@kernel.org>, 
+	Juri Lelli <juri.lelli@gmail.com>, Breno Leitao <leitao@debian.org>, netdev@vger.kernel.org, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org, 
+	Gabriele Monaco <gmonaco@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/22/25 7:21 PM, Jiayuan Chen wrote:
-> April 23, 2025 at 08:13, "Martin KaFai Lau" <martin.lau@linux.dev> wrote:
-> 
->>
->> On 4/16/25 9:40 PM, Jiayuan Chen wrote:
->>
->>>
->>> when we attach a prog without cgroup_storage map being used,
->>>
->>>   cgroup_storage in struct bpf_prog_array_item is empty. Then, if we use
->>>
->>>   BPF_LINK_UPDATE to replace old prog with a new one that uses the
->>>
->>>   cgroup_storage map, we miss cgroup_storage being initiated.
->>>
->>>   This cause a painc when accessing stroage in bpf_get_local_storage.
->>>
->>>   Reported-by: syzbot+e6e8f6618a2d4b35e4e0@syzkaller.appspotmail.com
->>>
->>>   Closes: https://lore.kernel.org/all/67fc867e.050a0220.2970f9.03b8.GAE@google.com/T/
->>>
->>>   Fixes: 0c991ebc8c69 ("bpf: Implement bpf_prog replacement for an active bpf_cgroup_link")
->>>
->>>   Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
->>>
->>>   ---
->>>
->>>   kernel/bpf/cgroup.c | 24 +++++++++++++++++++-----
->>>
->>>   1 file changed, 19 insertions(+), 5 deletions(-)
->>>
->>>   diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
->>>
->>>   index 84f58f3d028a..cdf0211ddc79 100644
->>>
->>>   --- a/kernel/bpf/cgroup.c
->>>
->>>   +++ b/kernel/bpf/cgroup.c
->>>
->>>   @@ -770,12 +770,14 @@ static int cgroup_bpf_attach(struct cgroup *cgrp,
->>>
->>>   }
->>>
->>>   > /* Swap updated BPF program for given link in effective program arrays across
->>>
->>>   - * all descendant cgroups. This function is guaranteed to succeed.
->>>
->>>   + * all descendant cgroups.
->>>
->>>   */
->>>
->>>   -static void replace_effective_prog(struct cgroup *cgrp,
->>>
->>>   - enum cgroup_bpf_attach_type atype,
->>>
->>>   - struct bpf_cgroup_link *link)
->>>
->>>   +static int replace_effective_prog(struct cgroup *cgrp,
->>>
->>>   + enum cgroup_bpf_attach_type atype,
->>>
->>>   + struct bpf_cgroup_link *link)
->>>
->>>   {
->>>
->>>   + struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
->>>
->>>   + struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
->>>
->>>   struct bpf_prog_array_item *item;
->>>
->>>   struct cgroup_subsys_state *css;
->>>
->>>   struct bpf_prog_array *progs;
->>>
->>>   @@ -784,6 +786,10 @@ static void replace_effective_prog(struct cgroup *cgrp,
->>>
->>>   struct cgroup *cg;
->>>
->>>   int pos;
->>>
->>>   > + if (bpf_cgroup_storages_alloc(storage, new_storage, link->type,
->>>
->>>   + link->link.prog, cgrp))
->>>
->>>   + return -ENOMEM;
->>>
->>>   +
->>>
->>>   css_for_each_descendant_pre(css, &cgrp->self) {
->>>
->>>   struct cgroup *desc = container_of(css, struct cgroup, self);
->>>
->>>   > @@ -810,8 +816,11 @@ static void replace_effective_prog(struct cgroup *cgrp,
->>>
->>>   desc->bpf.effective[atype],
->>>
->>>   lockdep_is_held(&cgroup_mutex));
->>>
->>>   item = &progs->items[pos];
->>>
->>>   + bpf_cgroup_storages_assign(item->cgroup_storage, storage);
->>>
->>
->> I am still recalling my memory on this older cgroup storage, so I think it will be faster to ask questions.
->>
->> What is in the pl->storage (still NULL?), and will the future compute_effective_progs() work?
->>
-> 
-> For non-link path:
-> cgroup_bpf_attach
+On Wed, Apr 23, 2025 at 11:51=E2=80=AFAM Steven Rostedt <rostedt@goodmis.or=
+g> wrote:
+>
+> On Wed, 23 Apr 2025 11:21:25 -0700
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> > The part about accessing only from code within the kernel isn't true.
+> > Can we please drop that? BPF program can be attached to these bare
+> > tracepoints just fine without tracefs (so-called BPF raw tracepoint
+> > program types).
+>
+> Is it possible to see a list of these tracepoints from user space? If not=
+,
+> then it's only available via the kernel. Sure BPF and even trace probes c=
+an
+> attach to them. Just like attaching to functions. The point is, they are
+> not exposed directly to user space. User space only knows about it if the
+> user has access to the kernel.
+>
+> Unless BPF does expose what's avaliable, does it?
+>
 
-fwiw, I don't think this details matter here, but it is not only for non-link 
-path. cgroup_bpf_link_attach also calls cgroup_bpf_attach.
+BPF by itself doesn't have any API to list tracepoints, so in that
+sense, no, BPF doesn't expose *the list* of those tracepoints. But the
+same can be said about kprobes or normal tracepoints. But it is
+allowed to attempt to attach to those tracepoints by just specifying
+their name as a string.
 
-> 	bpf_cgroup_storages_assign(pl->storage, storage); // allocate and set
-> 	update_effective_progs
-> 		compute_effective_progs
-> 			bpf_cgroup_storages_assign(item->cgroup_storage, pl->storage);
+I guess I'm confused about what "accessing only from code within the
+kernel" means. In my mind BPF isn't really "code within the kernel",
+but we are getting into the philosophical area now :) I just wanted to
+point out that this is consumable/attachable with BPF just like any
+other tracepoint, so it's not just kernel/module code that can attach
+to them.
 
-The pl, that the __cgroup_bpf_replace is xchg()-ing its pl->link->link.prog with 
-new_prog, still has a NULL in pl->storage. When another "different" bpf prog is 
-added and attached to the same cgroup "later", compute_effective_progs will be 
-called and it will have the same bug, no?
-
-> 
-> 
-> pl->storage is just as a temporary holder, never freed, and its value will
-> eventually be assigned to `item->cgroup_storage`.
+> >
+> > But I don't have an objection to the change itself, given all of them
+> > currently do have _tp suffix except a few that we have in BPF
+> > selftests's module, just as Jiri mentioned.
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> Thanks,
+>
+> -- Steve
 
