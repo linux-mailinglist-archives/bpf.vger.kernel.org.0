@@ -1,149 +1,169 @@
-Return-Path: <bpf+bounces-56532-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56533-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0FD4A997C0
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 20:22:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09D0EA997E4
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 20:28:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E45D71B838B6
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:22:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E7684A33C6
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA98428E5EA;
-	Wed, 23 Apr 2025 18:21:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E1228E615;
+	Wed, 23 Apr 2025 18:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cl2EDV52"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m8jALydd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861FD28DEEA;
-	Wed, 23 Apr 2025 18:21:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18704263F54;
+	Wed, 23 Apr 2025 18:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745432511; cv=none; b=NMbfTe5h07KbDWFU+pRthOj4sPnfsq8T7N6qMjWxCGrrUeqr18ZO+mO2SaBraCF6bhPdJblAoFaU3r+660T71CN2GOLxYomuSG1MCfFOdDiVfGaVXJwEoHNmjf9wtgBM5LrszKsNqSBlfBVpPb/c9PSMlB++Z8YY3yVHFN5xsH4=
+	t=1745432886; cv=none; b=EYSSCvQgNlXwMKpxMHK1VA7QojPb6eLfQv2JmUFqhRbsEhxk012rLzrkhcoMJUJfr/F6KbilzcjM7+uE5gfAB2JTZGMkEKeFcuydPFPa5juKtSq/RJkr6nVDnMPJIKAk7JGUoUkditNlFnZ3LUGzdcwgaJnHKzjwukforbunXJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745432511; c=relaxed/simple;
-	bh=n5KEgKPWGyndOy8RBM0wXCL7YL1bmrK2XR2keNckLaA=;
+	s=arc-20240116; t=1745432886; c=relaxed/simple;
+	bh=i7eHnOq25ulKjA9Oo8JHto2f6z++0PCfbt9HfXtPDQU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jvZfUW1+2rIeLvQvIm5N//sQ8ZHQEY3F7pFxz5NVnZzByTAu8SZYws3apHmrIWguqq45Yishx3v8+xAg6z5xWxYnpJkfjdHir83wFBenn56C3S9hcdFbsHX2GErOciozQRcvYlXJlZYUO3CXjiVZ2StAIpWj2+P2mjHWgiaTIPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cl2EDV52; arc=none smtp.client-ip=209.85.208.52
+	 To:Cc:Content-Type; b=BXFlkWjrKDmS59mbSlvc5OVgAT/20qDsXlLRCy4X9uul5deWh+Z+AVHC4BM4cv5cwRvfIw43QDXnxHoBDpA4oATuoFEuTwFfGxmENbq2+YS7C/rLsSatiqNjyDEB72c8KryQ2n4Lnmrh1Ru9ktPebuKCoC37a1ua94AwssM3tKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m8jALydd; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5f62d3ed994so172030a12.2;
-        Wed, 23 Apr 2025 11:21:49 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-736dd9c4b40so1194720b3a.0;
+        Wed, 23 Apr 2025 11:28:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745432508; x=1746037308; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745432884; x=1746037684; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NhlqINkYpZZBLzVdSPqg22TCWxPQvkr1ZzGoXFf5r1M=;
-        b=cl2EDV52G7UXR88D2b+Ku+trcK8nub6TC31rjkxsal9iSKRDP1qab3CWKtXBfSIX6W
-         60K0hx1rWKhkLHoljiFmyk7dw/GVdYRVnVxLkNQ7lZb5b+GHIWec338zKDHmqEc38Re0
-         xMvAlkIyAP4EScG/TXCaZOFy0p1wHAjKneP3F4PrRWg5BIWdyRdKjBh/d4PYmqqVnJXW
-         VLrLbsZvBpkhBhuNbLvkK18gElc/wSsbYrBjpqBNMjjo88XlwrInc3x1/4hAjpIizg2M
-         d2eHLeUJ951FByiVyd8YHVzON6k7x3sgRl3UvcT1kslqapQd5nD1v+kEhHuHB5mwRJeC
-         rnBA==
+        bh=W2SR0uKGM0vhthncIe5Y/+JuVpZCEkOEOOgsDc6OPSY=;
+        b=m8jALyddW1jhfnYdSjjUYbWQf2cZu5lE2vEgHsKKovatzcuhqygcq05EvmVI1DIBVo
+         9ZvD0AzbZM8gTganA1+VibTkwlyrtanRyqRzeJ+QSQ9cS0LQpbAtNeqfOrqXAyXoaJ2D
+         AAZ674H0r7ECEbk9tKuxBIlueiQpyVXXJ7tqjw3qmWfRsjEHBVFokHEmBE11VE565IS8
+         6OL5tuMa/ZTbwEpC3c/Id745xs7YFRWTFfRH9RGCUyyM0OvWnFLhpCvFvn79bwCNXwWG
+         y3Fkcjf4CQCxrZoKJeSH9nMPZjlgsLsxHrxayI+KmIWWMjBy0xRSfHHx2uetJSnLBn/m
+         W6Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745432508; x=1746037308;
+        d=1e100.net; s=20230601; t=1745432884; x=1746037684;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NhlqINkYpZZBLzVdSPqg22TCWxPQvkr1ZzGoXFf5r1M=;
-        b=qC4EK7DTEeLMraOJqBcJw0BpHN172I5cyFjE4Y6lRZH44QaxlgvGcs8bQdLLKzBsTk
-         qVvsbRHZK7OW8DsGuB/ZnZn7xNfWG7VO1Jg1u0qvfIHthikEt5uIrDABGMWvSbQhZZe3
-         OcLGvbQK5Z7k18pSQHGUHH6sTdGcVrmfcuhBpkfuNw0NrY6kvtD7mXng2dRix0k6Gmlq
-         t/8lgeIzXfFzzBaZU5cOTOgOe1pxc8pinOpHm3FCr+T8TDY+C6UQpOoVZZa7tcqz7vRt
-         DuLQL+s5IsFExIjLEeThytBMZ/E8ZUt9bzb3XQpVMp55i3c55qqn7EaLWuyVNqPnNE11
-         a/Lg==
-X-Forwarded-Encrypted: i=1; AJvYcCUOYKfKTZZZzdUvlXzkc1h3TAkj3N/IiTvuMjD81/Tjg7ki2X3x1gt1WjcEt8oIOgo2aIE=@vger.kernel.org, AJvYcCVrRN1dM0f/sOstAO88FMHdQfmGfPEDGoymUeKnYXfyLBsuw3SJgyDcEbrU1qJ+IdopraM92qfODv3BiqeVCe9wPkSx@vger.kernel.org, AJvYcCWTn8SUlCBeGXT8asANdWme4bEp+suOB/LwYGcuS7uqM/mkMZihhCVBLHYLq5/ojCqA2QZrFkop@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHlvyDj45bOy4ndQpGp7Wsb4q7Zbnys3mz6d/L35mpn/Lw3b9N
-	65DQSyENTbaWT6w2WzOBjf4JrqIKdekrf9EkxNbUulNoDXMz/3iTRL6YvBvPdN/CDcq4kGQm99a
-	C4MkxZQ8YfQ9nPvrieSdbsbfbm6YtmkWu
-X-Gm-Gg: ASbGncuUBlWEiDPtt3sVqswjuEtHaCNXl0tlCKgPsp+Ng1a9t8r6jhXkoNCjL6fJkCr
-	K6r//g21mgQJyekqnUIr2gCj9quhZf1Hh7TrxBTbg5iH32Heexr+jhAMh628mygUspNkS4AEDFK
-	jMrMYe/Ta7IcTAfGHXcS+T/orZD4em8ud2sCw3FQ==
-X-Google-Smtp-Source: AGHT+IH5HySMSVpWQQiLuLBm1KmGGdctAt+lPhEDR0CAkLYpQS/qWp3FPfJC0WRecO9a0ItoWqyOqKqk1/lb4NE26vI=
-X-Received: by 2002:a17:907:26c3:b0:ac1:f003:be08 with SMTP id
- a640c23a62f3a-ace54e6c8ecmr12271066b.12.1745432507647; Wed, 23 Apr 2025
- 11:21:47 -0700 (PDT)
+        bh=W2SR0uKGM0vhthncIe5Y/+JuVpZCEkOEOOgsDc6OPSY=;
+        b=DWILsNyCGf9IkkIO3T9G6KImpwD7dnHrR/LiYr2VThcFMRMenlX+3LxYx33WMT4gZl
+         +RxunCFTEnoSFA8C7erSTnkiGRNDYJrwWp0AGF69F79R9KSQj8+uRYKmoFYKT+/kD7qR
+         i+DeLTOGt3jOmfHuHaxeIdhQYPEVKuFYeESKLeFUOHsEogg9wF5MGZ3lb0MSsa8qoY+C
+         0RAfAu+tnVmY+JCJ0fzRL8eJ0JneRhAVNu0VPCGGf3Ozm1v9aDHFM7HiaGR60OewpLgJ
+         je85AOVSDuVLmMraXSwSm7a0I28uZ1oy/M0PhoqS5QGcHjTS2Tq2NPSRdOhsxFEaji85
+         AnjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUHkW5l7Cgp7S44Q2WF9BfE6GzM+PFCO6rbEP39Tek20AQefzU7oqKnCJID5/6JNAc6JUGtVuHRY6zy/gCc@vger.kernel.org, AJvYcCVPYMZc2VTq6lCujUR8Uth/4D3Ajln+eIvNfkajgNO7J0IQbcq5YYalZ6sEcxwABTdb/hDidvYJ9lAYfThd520n@vger.kernel.org, AJvYcCVU/MKqLMtVpJT8W4uK8ds2bVBnlGamI6vYdvXOXcIFrj83nB5seVUV6K24M0+DDNF9pLfcmsvg@vger.kernel.org, AJvYcCVxmuvg0k3lZ8uCO9kCW6zFBJqanrfH/MGuaB/o6KY/Wk3xjREdoaVThsOX0IuptWNJSrQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDBC7jhNPJQJ4A/06UFJjHilVlzzf2CDpwFoYVmiJiKfE5EWsW
+	Kx1jGSqLrwHUvhs6kijNvRXd53hNUnY1Qh6BYYgLdZzUpTA0/Ew3HRuHZf1L/YtvW+zuWW+kopS
+	26DrO7fgcQmdSpQuGJcGnv0iYY8w=
+X-Gm-Gg: ASbGncvjEujjIqs2/6S8pbEFvvIGY/+Im3vKbDjbpg3xg8+DVsipXFpxVfV1rNEYfsg
+	eZ1tICsHzt16VUyKxYRX+/NcyF0rwATacJhcOsKTtKK3BcOd6apZ/qO0hLiBQkK4JMwyUaAO/D/
+	7Jj/ilEQIuwkE+kLcB6VmUtbQswjPI1oYZvSYPwQ==
+X-Google-Smtp-Source: AGHT+IHjIZbdBZmeAwLPdKD6FDavuuiRxmwzDpsEsNPjz/QHrVA/etMXlAiTyFnC/5fOB2UDc4R555MT5LHsZ8I/s0A=
+X-Received: by 2002:a05:6a21:6d93:b0:1f3:3864:bbe0 with SMTP id
+ adf61e73a8af0-20442da897amr173428637.8.1745432884380; Wed, 23 Apr 2025
+ 11:28:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250418110104.12af6883@gandalf.local.home>
-In-Reply-To: <20250418110104.12af6883@gandalf.local.home>
+References: <20250423121329.3163461-1-mannkafai@gmail.com> <20250423121329.3163461-2-mannkafai@gmail.com>
+In-Reply-To: <20250423121329.3163461-2-mannkafai@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 23 Apr 2025 11:21:25 -0700
-X-Gm-Features: ATxdqUHQ9RunUOfE64hoOmU3UUAYp4mJ_IcDoTqKsW5Uram8ZVu2YLxD24VGhnk
-Message-ID: <CAEf4BzZfoCV=irWiy1MCY0fkhsJWxq8UGTYCW9Y3pQQP35eBLQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH] tracepoint: Have tracepoints created with
- DECLARE_TRACE() have _tp suffix
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, David Ahern <dsahern@kernel.org>, 
-	Juri Lelli <juri.lelli@gmail.com>, Breno Leitao <leitao@debian.org>, netdev@vger.kernel.org, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org, 
-	Gabriele Monaco <gmonaco@redhat.com>
+Date: Wed, 23 Apr 2025 11:27:52 -0700
+X-Gm-Features: ATxdqUG1OQGWGxprkuBY8mLRZZsqeZGEzZTpl5Cqi_Yfb8QsDm03VOkq41zrZm8
+Message-ID: <CAEf4BzYn0xRf6SwKHLbbqsDTueC-r_UxYOAX3+o-jswq7=a8sA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/2] bpf: Allow access to const void pointer
+ arguments in tracing programs
+To: KaFai Wan <mannkafai@gmail.com>
+Cc: alexei.starovoitov@gmail.com, martin.lau@linux.dev, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, 
+	mykolal@fb.com, shuah@kernel.org, memxor@gmail.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, leon.hwang@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 18, 2025 at 7:59=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
+On Wed, Apr 23, 2025 at 5:14=E2=80=AFAM KaFai Wan <mannkafai@gmail.com> wro=
+te:
 >
-> From: Steven Rostedt <rostedt@goodmis.org>
+> Adding support to access arguments with const void pointer arguments
+> in tracing programs.
 >
-> Most tracepoints in the kernel are created with TRACE_EVENT(). The
-> TRACE_EVENT() macro (and DECLARE_EVENT_CLASS() and DEFINE_EVENT() where i=
-n
-> reality, TRACE_EVENT() is just a helper macro that calls those other two
-> macros), will create not only a tracepoint (the function trace_<event>()
-> used in the kernel), it also exposes the tracepoint to user space along
-> with defining what fields will be saved by that tracepoint.
+> Currently we allow tracing programs to access void pointers. If we try to
+> access argument which is pointer to const void like 2nd argument in kfree=
+,
+> verifier will fail to load the program with;
 >
-> There are a few places that tracepoints are created in the kernel that ar=
-e
-> not exposed to userspace via tracefs. They can only be accessed from code
-> within the kernel. These tracepoints are created with DEFINE_TRACE()
-
-The part about accessing only from code within the kernel isn't true.
-Can we please drop that? BPF program can be attached to these bare
-tracepoints just fine without tracefs (so-called BPF raw tracepoint
-program types).
-
-But I don't have an objection to the change itself, given all of them
-currently do have _tp suffix except a few that we have in BPF
-selftests's module, just as Jiri mentioned.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
+> 0: R1=3Dctx() R10=3Dfp0
+> ; asm volatile ("r2 =3D *(u64 *)(r1 + 8); ");
+> 0: (79) r2 =3D *(u64 *)(r1 +8)
+> func 'kfree' arg1 type UNKNOWN is not a struct
 >
-> Most of these tracepoints end with "_tp". This is useful as when the
-> developer sees that, they know that the tracepoint is for in-kernel only
-> and is not exposed to user space.
+> Changing the is_int_ptr to void and generic integer check and renaming
+> it to is_void_or_int_ptr.
 >
-> Instead of making this only a process to add "_tp", enforce it by making
-> the DECLARE_TRACE() append the "_tp" suffix to the tracepoint. This
-> requires adding DECLARE_TRACE_EVENT() macros for the TRACE_EVENT() macro
-> to use that keeps the original name.
->
-> Link: https://lore.kernel.org/all/20250418083351.20a60e64@gandalf.local.h=
-ome/
->
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Cc: Leon Hwang <leon.hwang@linux.dev>
+> Signed-off-by: KaFai Wan <mannkafai@gmail.com>
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  include/linux/tracepoint.h   | 38 ++++++++++++++++++++++++------------
->  include/trace/bpf_probe.h    |  4 ++--
->  include/trace/define_trace.h | 17 +++++++++++++++-
->  include/trace/events/sched.h | 30 ++++++++++++++--------------
->  include/trace/events/tcp.h   |  2 +-
->  5 files changed, 60 insertions(+), 31 deletions(-)
+>  kernel/bpf/btf.c | 13 +++----------
+>  1 file changed, 3 insertions(+), 10 deletions(-)
 >
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 16ba36f34dfa..14cdefc15f0e 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6383,12 +6383,12 @@ struct btf *bpf_prog_get_target_btf(const struct =
+bpf_prog *prog)
+>                 return prog->aux->attach_btf;
+>  }
+>
+> -static bool is_int_ptr(struct btf *btf, const struct btf_type *t)
+> +static bool is_void_or_int_ptr(struct btf *btf, const struct btf_type *t=
+)
+>  {
+>         /* skip modifiers */
+>         t =3D btf_type_skip_modifiers(btf, t->type, NULL);
+>
+> -       return btf_type_is_int(t);
+> +       return btf_type_is_void(t) || btf_type_is_int(t);
+>  }
+>
+>  static u32 get_ctx_arg_idx(struct btf *btf, const struct btf_type *func_=
+proto,
+> @@ -6776,14 +6776,7 @@ bool btf_ctx_access(int off, int size, enum bpf_ac=
+cess_type type,
+>                 }
+>         }
+>
+> -       if (t->type =3D=3D 0)
+> -               /* This is a pointer to void.
+> -                * It is the same as scalar from the verifier safety pov.
+> -                * No further pointer walking is allowed.
 
-[...]
+I preserved this comment (with slight rewording to make sense in a
+combined check context). Applied to bpf-next, thanks.
+
+> -                */
+> -               return true;
+> -
+> -       if (is_int_ptr(btf, t))
+> +       if (is_void_or_int_ptr(btf, t))
+>                 return true;
+>
+>         /* this is a pointer to another type */
+> --
+> 2.43.0
+>
 
