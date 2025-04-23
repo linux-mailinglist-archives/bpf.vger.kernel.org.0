@@ -1,147 +1,256 @@
-Return-Path: <bpf+bounces-56497-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56498-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72FD4A9910A
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 17:26:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 957F9A991EB
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 17:37:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14640922ED9
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 15:16:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA776467941
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 15:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FBA128CF7F;
-	Wed, 23 Apr 2025 15:10:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC3F293B73;
+	Wed, 23 Apr 2025 15:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="BV467kOY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P+0NWU4p"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF04266B4B
-	for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 15:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4953E293B5A;
+	Wed, 23 Apr 2025 15:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745421044; cv=none; b=MSPr+D0xdtS/cspZgDse43v428ZM5a9cdN9fxOra0xOMP+GYcX0eYveX9SENZILlnUyRpZvwzQ55Is3LY3f8RRZVtsQSpFn2wWa5wQTpBKmbjYLNQL/QH5ry4xVeAIAY2FkJVPqx/s2JzbecKEmkKUUAbrjN4fZhvh4d5KS6/vc=
+	t=1745421651; cv=none; b=hfkH+/4x6csHKvfUCXKMZhWmjyMWt7kQFgIsqm0MELdjcumGuIbAp9PE8FUu4ef0POkUIRngxqn+eFdmmlzgcHx/EvzMR4QWeTYG+JgQsBuU/+XoZD5kiU3gCAMmZUwLt8VEn0Wohiiw9gF6a10TwuxzSScD2F44f9k2o4uWa9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745421044; c=relaxed/simple;
-	bh=uFV3fDxHeTVor0I1L/M53Jf1QkJJii9mgN/m4+mnqe0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YuA61bkbo3M5IiWQCccVoeHOlLl3OH7pd56Q2+AlYYCp1ug4Bg5qBy7CYySU5hYw5j2lgcEeXwl6oCMdxeouufIGDcOsphBahMhsEQHXEKKiGiAl52MUwcqtKWMKdjauGurFfAHTIlsXLB1JMiCdRA2mXScqotsx8ApvYO60uFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=BV467kOY; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-7082ad1355bso49037b3.1
-        for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 08:10:41 -0700 (PDT)
+	s=arc-20240116; t=1745421651; c=relaxed/simple;
+	bh=VDfwmOCVRoGoEsvlBNbRNn+5O+sBsS7veCm7PZofIIQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LuWSobq+eIulT1G9LQQ/XWuVnD4S3jx54LbhR3qbeuP4SUEeb1At5Ri9FW9aFygqKL16zqSDQ4N3N+4+rv3vDfimgwO/SJBZqi5EoWab5dqXq0hXokf9oxe1i1QHhVxNR2tTE4d23ehEClKbKHS9OziVCjLqBIM7DSbV3kBa4Qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P+0NWU4p; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-af28bc68846so5626391a12.1;
+        Wed, 23 Apr 2025 08:20:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1745421041; x=1746025841; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ppDTLRNI5D/DHlJ104+9klrOmugo96Z4EzkqmTSr+tw=;
-        b=BV467kOYvg9v1zan0/6j+x47F8k96sTz/PYM0TdS2w+WeWy7o3I1OK3YpPMw2RYbPn
-         YBo32qVaE2CpT/F0kqYkX6ESu30MQ5Zs4SVO6Ngktc83G8A9DZ52LypKy6vxTaZRnDXv
-         nCvVf9KcnMy3bFIrmJSvtCa5JU5K5bavjj3/uG/IgXj26dO++/pnJtPQzyTlTur5U5E4
-         M27BjyuJxCnK+1YTgD8oA2zvnQoEkgi2Yr8lPHPA/hYOeURaQ2HMRRPT45VNgrE6JOba
-         JVDZYlvx1cuiQ5EbAJTRGFyV9ytozEWODCcZLDQ6CJLlgX0C1fzENfaWaSI3Jc1TGnDg
-         AhnA==
+        d=gmail.com; s=20230601; t=1745421648; x=1746026448; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ay1hJ+xxSveKW4SXff1bMvJ/IKV12NveP9f4RrvhN6c=;
+        b=P+0NWU4p827RUysOZ6f6emFPBXhjR+uHsAF8SZVsLTvNe0nKajbhhnlZUEL+siKpo0
+         rCQq1TPV+MNE+lR44Y7lxYyR9TiAk8I3yKs2455vIIoyjCgJUASx8P2cMkScquNSCLee
+         eKGUVaDx/difRU0xlqCHzLKm59BY4QeE37wAQ12HIcJoZUPOYj5HLRCUK2/g6PzPqGTA
+         wfl4pR6ZLz+sZZf1O/i6KLImnDkW/DpZcYP+WmvNrNVdIEM4z+zgJmBBSODTmu1fTK93
+         w++d4tJ4Wmss1eTHC7kk2UBDuy/bpsWxrfA+X+otekKhdoIAHDFqOm6pfKbYOYkXLGMh
+         5isQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745421041; x=1746025841;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ppDTLRNI5D/DHlJ104+9klrOmugo96Z4EzkqmTSr+tw=;
-        b=lseX2ZQzPcZc2nQ9LwBWRADIh9F4AqNMUC+pYamccogbBxUcYL01NMzO5fvWG1XCw6
-         4JdVid5+m1dw8pibxzd2fpe7KeJEkGGi0A/7Tv6Qa/9G9NWMSi5sOxNAQYycqcn2YhlO
-         lUTX9hhEDb0KACv56Kip0dOh5K641kBpKSfX+SkiVIfUzrG9dxu1a1/kLX7DbAiKHSCP
-         eo104IK8+4ILnz6J2D993QRZs6U37Hymib00HM5M057jKS5Ip4ovV7Jd9udXOOW7kwyw
-         fYOTxatRlZZCKano6f0JYZ5ZkCRpz+OBmJiqHo/EylJRVvsyQJ5NkW5jBu2m3v+3kkqx
-         FMtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX5mTJPFNpQa6DeKbGvazwnfNUZvelWf0tw1BPBmy79i6b11rJjxLjkfN6kFha4mNusjrA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzpp4kvBQfxRqm9lOQoYCdQSmdRa4HxMQ+Np640Aobrcd5ryrCv
-	ZFQCWmT1dgupzjvh97Wcix+QwzZD+PDB8grwCBTy5px8WqUngCdc0XR80w1s2L0yZg/KGLXbrKc
-	TLi1qsVFLl8c4z0u3CjFwHQjozsVftW0ahe2e
-X-Gm-Gg: ASbGncthYT6+n9Hg+9Kow7y/cGAC4j2wnu5yGW8ZuvAI31kbDidFiaBKelI6OL7nAyJ
-	WkFVFm+G0tufsaqlCINHVNM0XtxCSecYLV7GiMui1cPJ31lOFbWn6vKMAv/NVRH7FdX7nKFGQp5
-	nILxZ2+XKi7WGgQA2Hruv5ABEAVorxRVHg
-X-Google-Smtp-Source: AGHT+IHNlf00p8r3DHcmCpgY+IFBhYtAhRgyVsFb6FFk96MPIernB0HKWY5qgWQbLL58D4kTom9itSs/0uIOQcHE5fg=
-X-Received: by 2002:a05:690c:6801:b0:6fd:33a5:59a with SMTP id
- 00721157ae682-706ccd1a5ccmr309843197b3.18.1745421040868; Wed, 23 Apr 2025
- 08:10:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1745421648; x=1746026448;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ay1hJ+xxSveKW4SXff1bMvJ/IKV12NveP9f4RrvhN6c=;
+        b=S+c5U7xOsvguR8rrKMyV4OrBC5K5T2tQgpakp6Kjz3advc8q4uKRDEz8oNr6QMa9U2
+         QKZdlCdaicNshhmW6JH6eSuY2x2muNV8AZclMxLPmDas+eWV9jeRAlSplbLkcj96iXHW
+         THbBzz0g2vI0M9uUHnGMHGecYVr7qjwZ8bqPgWRMAx24XP2ZQ88Jo5WkZdPOQKg+ATP2
+         78wIgS5y8nf1u8K9LF+thBqHz6fnkNFZ/Eng7Z598k+aEtdTDj9BUl1R+0+lG4dMJk9o
+         VKS26TLr2G79dDMDkLlm6v6Qgi5sPuBOTMPfQmqCg/P480lVrI3qGsn9ZuD81tBiUCQl
+         gGdw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDZjf4TW7BISok2+voIgHwABx/p0fseeUa1BG90Qkyvn9Rir94yY7aYUwE5SXcTUDwX4TyoDw76Bh4E5gF@vger.kernel.org, AJvYcCUd1d2gRysVL0MfiKpfXQMmRccJVPa328qTSJ0j1MHWFSf07GbDzbTGO3Jbrj90hiGm3vQ=@vger.kernel.org, AJvYcCVT6sGdRQlPeoFG1/WFt0Prvuz8nno90AbhNKjKWMA2/QENxxPBoiwsrM8JzzsptUUWTUL4kOaE@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/PUV3LmLNALL0tdgi/2Xo9DsNYrd1hKb/UrYxNmve05BF7DQL
+	QnrsVOlYYHtNNRrbvFMqIOxbSFnX3y9gFCTPxOLZdIPgUeyu5DlkREKpTm1N9BQ=
+X-Gm-Gg: ASbGncvvgOTKp+9pZbTWxhHr6cxBedliTZpDUYJJTM39qPwVBYkBzvZzeUZJK356sa6
+	yahtpp2nSLkukqtRMwbMjqk49cCwiDrLUtYV6wCViXW8zkrpC7CHJ8+2HzNbZfQ3aqPuh5MLWx3
+	lr6ZXwNtv0F+idoikEqUa/yLr1q5Jq5mRAyTyeyEFVLIDLu5+nk1hjhyQhaJB4M28f9Y8DVmnt1
+	n4bIzRW1lwsw8ok6V4I1JddG7S1ZIHKKF3m3s4z+KA+6K1PCrIxtzmixzZ7AqBvsszbCke2or3Q
+	yE4/SJa5IlnCJqfa20hIFLva4Nl++quuG4YwHhVRcFZkHbIP0zXcujP3HE20QRrF0HvJoubuL7U
+	1Gheyp6GLNhVroQ==
+X-Google-Smtp-Source: AGHT+IF0njUnwLJs73OxHmEO22W7D/ZiIYfKXmFPNk7S0195rDOuNRKX5c2xxOZE+G0FANmjiFezMw==
+X-Received: by 2002:a05:6a21:3a8d:b0:1f5:8cc8:9cc5 with SMTP id adf61e73a8af0-203cbd27edemr35835560637.34.1745421648443;
+        Wed, 23 Apr 2025 08:20:48 -0700 (PDT)
+Received: from ?IPV6:2001:ee0:4f0e:fb30:933:3ee4:f75:4ee9? ([2001:ee0:4f0e:fb30:933:3ee4:f75:4ee9])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b0db13a3396sm9277066a12.28.2025.04.23.08.20.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Apr 2025 08:20:47 -0700 (PDT)
+Message-ID: <aac402b4-d04c-4d7e-91c8-ab6c20c9a74d@gmail.com>
+Date: Wed, 23 Apr 2025 22:20:41 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
- <20250404215527.1563146-2-bboscaccy@linux.microsoft.com> <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
- <87semdjxcp.fsf@microsoft.com> <CAADnVQ+JGfwRgsoe2=EHkXdTyQ8ycn0D9nh1k49am++4oXUPHg@mail.gmail.com>
- <87friajmd5.fsf@microsoft.com> <CAADnVQKb3gPBFz+n+GoudxaTrugVegwMb8=kUfxOea5r2NNfUA@mail.gmail.com>
- <87a58hjune.fsf@microsoft.com> <CAADnVQ+LMAnyT4yV5iuJ=vswgtUu97cHKnvysipc6o7HZfEbUA@mail.gmail.com>
- <87y0w0hv2x.fsf@microsoft.com> <CAADnVQKF+B_YYwOCFsPBbrTBGKe4b22WVJFb8C0PHGmRAjbusQ@mail.gmail.com>
- <2bd95ca78e836db0775da8237792e8448b8eec62.camel@HansenPartnership.com>
-In-Reply-To: <2bd95ca78e836db0775da8237792e8448b8eec62.camel@HansenPartnership.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 23 Apr 2025 11:10:29 -0400
-X-Gm-Features: ATxdqUEil0O912atUTQeKlUUv4Sfsc4c76L7yegeINodkXYOkWCpNQ86Ynaeoaw
-Message-ID: <CAHC9VhTi6+CHD9OtWj5=pPDrtwF+S9yfBOKqghe=9wXmd7jrxA@mail.gmail.com>
-Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, Jonathan Corbet <corbet@lwn.net>, 
-	David Howells <dhowells@redhat.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	"David S. Miller" <davem@davemloft.net>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen <jarkko@kernel.org>, 
-	Jan Stancek <jstancek@redhat.com>, Neal Gompa <neal@gompa.dev>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	keyrings@vger.kernel.org, 
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, 
-	LSM List <linux-security-module@vger.kernel.org>, 
-	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com, 
-	Matteo Croce <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
-	Cong Wang <xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/4] selftests: net: add a virtio_net deadlock selftest
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: virtualization@lists.linux.dev, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250417072806.18660-1-minhquangbui99@gmail.com>
+ <20250417072806.18660-5-minhquangbui99@gmail.com>
+ <20250422184151.2fb4fffe@kernel.org>
+Content-Language: en-US
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <20250422184151.2fb4fffe@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 23, 2025 at 10:12=E2=80=AFAM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> On Mon, 2025-04-21 at 13:12 -0700, Alexei Starovoitov wrote:
-> [...]
-> > Calling bpf_map_get() and
-> > map->ops->map_lookup_elem() from a module is not ok either.
+On 4/23/25 08:41, Jakub Kicinski wrote:
+> On Thu, 17 Apr 2025 14:28:06 +0700 Bui Quang Minh wrote:
+>> The selftest reproduces the deadlock scenario when binding/unbinding XDP
+>> program, XDP socket, rx ring resize on virtio_net interface.
+>>
+>> Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+>> ---
+>>   .../testing/selftests/drivers/net/hw/Makefile |  1 +
+>>   .../selftests/drivers/net/hw/virtio_net.py    | 65 +++++++++++++++++++
+>>   2 files changed, 66 insertions(+)
+>>   create mode 100755 tools/testing/selftests/drivers/net/hw/virtio_net.py
+>>
+>> diff --git a/tools/testing/selftests/drivers/net/hw/Makefile b/tools/testing/selftests/drivers/net/hw/Makefile
+>> index 07cddb19ba35..b5af7c1412bf 100644
+>> --- a/tools/testing/selftests/drivers/net/hw/Makefile
+>> +++ b/tools/testing/selftests/drivers/net/hw/Makefile
+>> @@ -21,6 +21,7 @@ TEST_PROGS = \
+>>   	rss_ctx.py \
+>>   	rss_input_xfrm.py \
+>>   	tso.py \
+>> +	virtio_net.py \
+> Maybe xsk_reconfig.py ? Other drivers will benefit from this test, too,
+> and that's a more descriptive name.
 >
-> I don't understand this objection.  The program just got passed in to
-> bpf_prog_load() as a set of attributes which, for a light skeleton,
-> directly contain the code as a blob and have the various BTF
-> relocations as a blob in a single element array map.  I think everyone
-> agrees that the integrity of the program would be compromised by
-> modifications to the relocations, so the security_bpf_prog_load() hook
-> can't make an integrity determination without examining both.  If the
-> hook can't use the bpf_maps.. APIs directly is there some other API it
-> should be using to get the relocations, or are you saying that the
-> security_bpf_prog_load() hook isn't fit for purpose and it should be
-> called after the bpf core has loaded the relocations so they can be
-> provided to the hook as an argument?
+>>   	#
+>>   
+>>   TEST_FILES := \
+>> diff --git a/tools/testing/selftests/drivers/net/hw/virtio_net.py b/tools/testing/selftests/drivers/net/hw/virtio_net.py
+>> new file mode 100755
+>> index 000000000000..7cad7ab98635
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/drivers/net/hw/virtio_net.py
+>> @@ -0,0 +1,65 @@
+>> +#!/usr/bin/env python3
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +
+>> +# This is intended to be run on a virtio-net guest interface.
+>> +# The test binds the XDP socket to the interface without setting
+>> +# the fill ring to trigger delayed refill_work. This helps to
+>> +# make it easier to reproduce the deadlock when XDP program,
+>> +# XDP socket bind/unbind, rx ring resize race with refill_work on
+>> +# the buggy kernel.
+>> +#
+>> +# The Qemu command to setup virtio-net
+>> +# -netdev tap,id=hostnet1,vhost=on,script=no,downscript=no
+>> +# -device virtio-net-pci,netdev=hostnet1,iommu_platform=on,disable-legacy=on
+>> +
+>> +from lib.py import ksft_exit, ksft_run
+>> +from lib.py import KsftSkipEx, KsftFailEx
+>> +from lib.py import NetDrvEnv
+>> +from lib.py import bkg, ip, cmd, ethtool
+>> +import re
+>> +
+>> +def _get_rx_ring_entries(cfg):
+>> +    output = ethtool(f"-g {cfg.ifname}").stdout
+>> +    values = re.findall(r'RX:\s+(\d+)', output)
+> no need for the regexps, ethtool -g supports json formatting:
 >
-> The above, by the way, is independent of signing, because it applies to
-> any determination that might be made in the security_bpf_prog_load()
-> hook regardless of purpose.
+> 	output = ethtool(f"-g {cfg.ifname}", json=True)[0]
+> 	return output["rx"]
+>
+> ?
+>
+>> +    return int(values[1])
+>> +
+>> +def setup_xsk(cfg, xdp_queue_id = 0) -> bkg:
+>> +    # Probe for support
+>> +    xdp = cmd(f'{cfg.net_lib_dir / "xdp_helper"} - -', fail=False)
+>> +    if xdp.ret == 255:
+>> +        raise KsftSkipEx('AF_XDP unsupported')
+>> +    elif xdp.ret > 0:
+>> +        raise KsftFailEx('unable to create AF_XDP socket')
+>> +
+>> +    try:
+>> +        xsk_bkg = bkg(f'{cfg.net_lib_dir / "xdp_helper"} {cfg.ifindex} ' \
+>> +                      '{xdp_queue_id} -z', ksft_wait=3)
+> This process will time out after 3 seconds but the test really
+> shouldn't leave things running after it exits. Don't worry about
+> the couple of seconds of execution time. Wrap each test in
+>
+> 	with bkg(f"... the exec info ... "):
+> 		# test code here
+>
+> The bkg() class has an __exit__() handle once the test finishes
+> and leaves the with block it will terminate.
 
-I've also been worrying that some of the unspoken motivation behind
-the objection is simply that Hornet is not BPF.  If/when we get to a
-point where Hornet is sent up to Linus and Alexei's objection to the
-Hornet LSM inspecting BPF maps stands, it seems as though *any* LSM,
-including BPF LSMs, would need to be prevented from accessing BPF
-maps.  I'm fairly certain no one wants to see it come to that.
+I've tried to make the setup_xsk into each test. However, I've an issue 
+that the XDP socket destruct waits for an RCU grace period as I see this 
+sock's flag SOCK_RCU_FREE is set. So if we start the next test right 
+away, we can have the error when setting up XDP socket again because 
+previous XDP socket has not unbound the network interface's queue yet. I 
+can resolve the issue by putting the sleep(1) after closing the socket 
+in xdp_helper:
 
---=20
-paul-moore.com
+diff --git a/tools/testing/selftests/net/lib/xdp_helper.c 
+b/tools/testing/selftests/net/lib/xdp_helper.c
+index f21536ab95ba..e882bb22877f 100644
+--- a/tools/testing/selftests/net/lib/xdp_helper.c
++++ b/tools/testing/selftests/net/lib/xdp_helper.c
+@@ -162,5 +162,6 @@ int main(int argc, char **argv)
+          */
+
+         close(sock_fd);
++       sleep(1);
+         return 0;
+  }
+
+Do you think it's enough or do you have a better suggestion here?
+
+Thanks,
+Quang Minh.
+
+>
+>> +        return xsk_bkg
+>> +    except:
+>> +        raise KsftSkipEx('Failed to bind XDP socket in zerocopy. ' \
+>> +                         'Please consider adding iommu_platform=on ' \
+>> +                         'when setting up virtio-net-pci')
+>> +
+>> +def check_xdp_bind(cfg):
+>> +    ip(f"link set dev %s xdp obj %s sec xdp" %
+>> +       (cfg.ifname, cfg.net_lib_dir / "xdp_dummy.bpf.o"))
+>> +    ip(f"link set dev %s xdp off" % cfg.ifname)
+>> +
+>> +def check_rx_resize(cfg, queue_size = 128):
+>> +    rx_ring = _get_rx_ring_entries(cfg)
+>> +    ethtool(f"-G %s rx %d" % (cfg.ifname, queue_size))
+>> +    ethtool(f"-G %s rx %d" % (cfg.ifname, rx_ring))
+> Why guess the ring size? What if it's already 128? I usually do:
+>
+> 	rx_ring = _get_rx_ring_entries(cfg)
+> 	ethtool(f"-G %s rx %d" % (cfg.ifname, rx_ring / 2))
+> 	ethtool(f"-G %s rx %d" % (cfg.ifname, rx_ring))
+>
+> IOW flip between half or double and current.
+>
+>> +def main():
+>> +    with NetDrvEnv(__file__, nsim_test=False) as cfg:
+>> +        try:
+>> +            xsk_bkg = setup_xsk(cfg)
+>> +        except KsftSkipEx as e:
+>> +            print(f"WARN: xsk pool is not set up, err: {e}")
+>> +
+>> +        ksft_run([check_xdp_bind, check_rx_resize],
+>> +                 args=(cfg, ))
+>> +    ksft_exit()
+>> +
+>> +if __name__ == "__main__":
+>> +    main()
+
 
