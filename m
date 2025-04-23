@@ -1,60 +1,64 @@
-Return-Path: <bpf+bounces-56468-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56469-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0584A97B74
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 01:59:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74EACA97B82
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 02:03:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C13C7A66A9
-	for <lists+bpf@lfdr.de>; Tue, 22 Apr 2025 23:58:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FF551B61424
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 00:03:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A94B21CA07;
-	Tue, 22 Apr 2025 23:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2870A1FAA;
+	Wed, 23 Apr 2025 00:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sBDa2fbN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ddbpABZZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF9C2147F5;
-	Tue, 22 Apr 2025 23:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D97733DB;
+	Wed, 23 Apr 2025 00:03:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745366373; cv=none; b=lGyzpWpUbuqQnoUNEY8nidpVL5ayyF4TFmK/eitJMeegqDK1gSA6kLqO2BdBNoB3EChmxAm9eYIixGlLbQiim2HLaRcH0Ma5pZcI/FSn06JOwce87ocGtFoICNOm4lZSqQPdugG1FQU3k4DHBNegh7KWQdmgHHQiROtyMMuDQ+8=
+	t=1745366612; cv=none; b=PMmub82/vwwX+QoQatnpnUbp2ePNOs+slBdQHsktTs2OqqRlO6OgdF9H0gvaUkO6/58vvmIKdnHCuZYOCvFIsffLvAUtEtoPNR7iIFL53wTka+jisOMmhCr/ZoV3+meckbMmkYcy/8TkKP+KNXNBmZRd0L6H3XJW+Jew8gGNfYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745366373; c=relaxed/simple;
-	bh=ycZjgPaIiTSdeyslN0GksnwwiBHkct0VKuXNWg09bDE=;
+	s=arc-20240116; t=1745366612; c=relaxed/simple;
+	bh=en1R4ZF4hD6JaXdEWowCEJQiD6Q12apOn7tseGVXg44=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ELngTHGGyu0a7uNaKnGzmEwho3UYDkgpAOUm2oAsWEK4I7rr/3W2IisjbNq3wSncXZWRkiCX16M526KS11h4CG9fa8p8i80Exym9mLX23olY9C6QTof9x4OMp1WXV2+yUXgWwHjea/PqK65L36+D2IaEBPqj4MsQnJeeeznSZC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sBDa2fbN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3CBEC4CEE9;
-	Tue, 22 Apr 2025 23:59:31 +0000 (UTC)
+	 MIME-Version:Content-Type; b=tAPYVwcfIyKrtsj8DVmYveFyjk50W1eZWNrjBBumjkcKmCpg3Ohow2xf9x5r856zOVqbbQbVrxdPqVQiDdY7byKr/GKl5xoZqcESbncqVOD2/qRCCrIKgP0/Hy+f1LLPSSNTzeL8zTqiao5TAxWWwbkFAKlmETPy3+ZsRYL2IRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ddbpABZZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53E9DC4CEE9;
+	Wed, 23 Apr 2025 00:03:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745366372;
-	bh=ycZjgPaIiTSdeyslN0GksnwwiBHkct0VKuXNWg09bDE=;
+	s=k20201202; t=1745366612;
+	bh=en1R4ZF4hD6JaXdEWowCEJQiD6Q12apOn7tseGVXg44=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sBDa2fbN+ugcqQjBhKpO4IlzaZyKlCfGckIAIuYOY3SFaKqdJ3mVXIy/C85T5fTqE
-	 RaDxnHkZeYKrQ0FysCEyLN4gWw4SOQTXcrBWuRpCVwtuo8UFahX5E+eHyx38TP8Xy8
-	 OTvsgVYNKgBZu73aLYFt3UwbwZuMcFT5xBnm4k3p4aqsDDQ5kEvhTAzoSMJnLdNx1G
-	 Xdhol7CibXwum+8S5uzAdlI/m1JZ+xc29olHM1RkqMvH6liUna521JE86zejjZaT6C
-	 U9LCMcD6jnimMk3uXrfzy+rpUDwAyDYnKr0PFMYovxmUPdQ5CMmO/l5XNRd4vqvHmU
-	 z+ytFNVZH30IQ==
-Date: Tue, 22 Apr 2025 16:59:31 -0700
+	b=ddbpABZZ8tQT8CUB8SnkBZ3gfqAxgTU22NsG4tAPnSU7nxi6Fsp7LaFKLPV6qvtYJ
+	 20nWbC1PHF7lzRlkdqmjDVyHOn/SIIyJmeu4QCVslwlrV1ytwX1A/k0XT1YDVLJbqf
+	 B4RNOtWMpcY+bF86k0OGuh9LTMw6THrGipTGem4/jAMNy8U1h0M9Njz8leaOAz246u
+	 EkGf3u+tyjElznWP31cbH3loRNhKFjhbDH28sxAtYCLrfCpXa71k7GmSsVx9rD9YBy
+	 pJhl3PiP8smaZs56HFOgUXHrNMYMEXKFe6IMqY8wMdpIdkBbjNWFHdNfNgph8K++Bo
+	 b/GgIjTlNYLVw==
+Date: Tue, 22 Apr 2025 17:03:30 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Justin Iurman <justin.iurman@uliege.be>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, horms@kernel.org, kuniyu@amazon.com, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, bpf
- <bpf@vger.kernel.org>, Stanislav Fomichev <stfomichev@gmail.com>, Sebastian
- Sewior <bigeasy@linutronix.de>, Andrea Mayer <andrea.mayer@uniroma2.it>,
- Stefano Salsano <stefano.salsano@uniroma2.it>, Paolo Lungaroni
- <paolo.lungaroni@uniroma2.it>
-Subject: Re: [PATCH net v3] net: lwtunnel: disable BHs when required
-Message-ID: <20250422165931.6d205a3c@kernel.org>
-In-Reply-To: <20250416160716.8823-1-justin.iurman@uliege.be>
-References: <20250416160716.8823-1-justin.iurman@uliege.be>
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf: Allow XDP dev bounded program to perform
+ XDP_REDIRECT into maps
+Message-ID: <20250422170330.71e47a70@kernel.org>
+In-Reply-To: <aAgdECkTiP-po7HP@mini-arch>
+References: <20250422-xdp-prog-bound-fix-v1-1-0b581fa186fe@kernel.org>
+	<aAgdECkTiP-po7HP@mini-arch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,13 +68,19 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 16 Apr 2025 18:07:16 +0200 Justin Iurman wrote:
-> In lwtunnel_{output|xmit}(), dev_xmit_recursion() may be called in
-> preemptible scope for PREEMPT kernels. This patch disables BHs before
-> calling dev_xmit_recursion(). BHs are re-enabled only at the end, since
-> we must ensure the same CPU is used for both dev_xmit_recursion_inc()
-> and dev_xmit_recursion_dec() (and any other recursion levels in some
-> cases) in order to maintain valid per-cpu counters.
+On Tue, 22 Apr 2025 15:49:52 -0700 Stanislav Fomichev wrote:
+> > +	if (map->map_type == BPF_MAP_TYPE_DEVMAP &&
+> > +	    prog->expected_attach_type != BPF_XDP_DEVMAP)
+> > +		return true;
+> > +
+> > +	if (map->map_type == BPF_MAP_TYPE_CPUMAP &&
+> > +	    prog->expected_attach_type != BPF_XDP_CPUMAP)
+> > +		return true;  
+> 
+> Not sure I understand, what does it mean exactly? That it's ok to add
+> a dev-bound program to the dev/cpumap if the program itself is gonna
+> be attached only to the real device? Can you expand more on the specific
+> use-case?
 
-Applied last night by Paolo, thanks!
+And an upstream offload which supports it..
 
