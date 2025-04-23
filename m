@@ -1,108 +1,210 @@
-Return-Path: <bpf+bounces-56476-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56478-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B90CDA97C7F
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 03:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11FDAA97CC2
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 04:22:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B197E1B618B6
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 01:51:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE0371B620E0
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 02:22:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895F1265CAE;
-	Wed, 23 Apr 2025 01:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192692641E8;
+	Wed, 23 Apr 2025 02:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oMqDL6ga"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LjwjNV18"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1163263F2B;
-	Wed, 23 Apr 2025 01:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0321B2580E7;
+	Wed, 23 Apr 2025 02:21:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745372991; cv=none; b=r6tudF9CLgbi9hEw8iE+wH11D4S3hAORNUYZIPuXHJIm07yEFWsVkFd9UIqs2BDoRAD9SgzsDCz/hhtNfyIa0t5lE4evp3c2uEFAznLHVgzg8JCY7YRxHKjmQikvGVXpyd4BTpLi9XhM6QEiTIM3IM6AWQaW6lcs2kjKXa3HFF0=
+	t=1745374916; cv=none; b=tUR/sgjy0UJQHzF2ZbQEBHF9Bn89MZFgAUkI2dp6LOo7dZi7E8eKQbBgXYK/41W4+9JqRNI1rqXj/9t9DFPezWhmDbTzSEme2NiDEK04UiTbg8VXRNnRIXCpIqOzHZHok9gs4V3Tou45vN6xKEiJBB9Dgi9ILdLRBPPhekquwR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745372991; c=relaxed/simple;
-	bh=QxEqK4cbT808ELsKax+8p0w2UjvmBOkBNaPB8xPHKI0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=FkUmokrMd43VBYmyfgA20UdNPS+Ykyug340Aqv0awR94SxCMy0ckLOVpkA5fHFnzNodPFDvAiSCSIBeS0l9vlmtG19A8R5XlUFUgTCHqGUDYGatj0WnKaQyjV1Wg+VkF8HxVBTFZ/ZzHH/8YhOZJQb2+/UVv8gfHFvBegd2gtjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oMqDL6ga; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44E7AC4CEE9;
-	Wed, 23 Apr 2025 01:49:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745372990;
-	bh=QxEqK4cbT808ELsKax+8p0w2UjvmBOkBNaPB8xPHKI0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=oMqDL6gaQ1PJBIb8WuncnlC8rKeAuIxBOoptE52dnZSIzFVX2NRF49ZuY2GXBir8q
-	 3G+Mnddyg6c2pzc7MB+7oXQBA1N2tPwUHVjkFFxfM5UcRri/E6DDcYxHoKwXvceLWK
-	 qDE61VAN5rPNCfA6xTBtHpg/JnD3biqsxRoLZ5uFEArHoXnTiRQvIS/Z8+q1YxbZUW
-	 6gVv2nxcoXuB9ACLmK20ieFP2ogZZhSK1oipFZr4BxCrkE1eBVtnInN5fg4nrqCm9M
-	 eY86mTyh+xOXXtWWFtKkHy7Z+N5iOWh25DwgFtCkLNWZsPj5GprJKnTgWD8dn81XqC
-	 mbOedOKZs3f7Q==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAE67380CEF4;
-	Wed, 23 Apr 2025 01:50:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1745374916; c=relaxed/simple;
+	bh=qK1B6jvfJpjhNVBbGzIkwIUA4t2Sc/jOmyAV02x6m9w=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=B2p7pYgOYE3kz1kDF90HjnKGfLijr58qg5erOXdk9Xu7BC0IHXI2ooRKIArMXZXS6RehZfcQ78JQovoyU8ZSlwKWXQiSwy0o8o7wxoFWOpV6O4rIqp+drTh6qjRPpU0tddKr3pTCOmWXVNMyxMDnQ8kqCY2M0p8eqZ9CnMyPDbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LjwjNV18; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 0/4] virtio-net: disable delayed refill when pausing rx
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174537302875.2111809.8543884098526067319.git-patchwork-notify@kernel.org>
-Date: Wed, 23 Apr 2025 01:50:28 +0000
-References: <20250417072806.18660-1-minhquangbui99@gmail.com>
-In-Reply-To: <20250417072806.18660-1-minhquangbui99@gmail.com>
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: virtualization@lists.linux.dev, mst@redhat.com, jasowang@redhat.com,
- xuanzhuo@linux.alibaba.com, andrew+netdev@lunn.ch, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
- hawk@kernel.org, john.fastabend@gmail.com, eperezma@redhat.com,
- davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745374899;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NQ0Kggt3gIz3TlRpiFCQVgKvnBoDfQL2jMrv9qB9Iz8=;
+	b=LjwjNV18VzAy7rjmHeaQ/CMcof1vElFdxNyStaN879ELat4cJzDrGvlOokj8RTLUwkij65
+	NGbYcQc2uCyzpa84E3X2brrHTehsLfONlPpTlaaI0LslBHRJWNlebbl+KA+eieSQ8/L88q
+	Gx7RBeG1HCod+06ojg0R7a7Oo7ot8vA=
+Date: Wed, 23 Apr 2025 02:21:37 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <cbb82d78518c251000e8b52e3f3799b0df438210@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: Create cgroup storage if needed
+ when updating link
+To: "Martin KaFai Lau" <martin.lau@linux.dev>
+Cc: andrii@kernel.org, alexis.lothore@bootlin.com, mrpre@163.com,
+ syzbot+e6e8f6618a2d4b35e4e0@syzkaller.appspotmail.com, "Alexei
+ Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>,
+ "Yonghong Song" <yonghong.song@linux.dev>, "John Fastabend"
+ <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
+ Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
+ <jolsa@kernel.org>, "Mykola Lysenko" <mykolal@fb.com>, "Shuah Khan"
+ <shuah@kernel.org>, "Alan Maguire" <alan.maguire@oracle.com>,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
  bpf@vger.kernel.org
+In-Reply-To: <c6a9b230-f163-4c03-b834-ddcc71c47204@linux.dev>
+References: <20250417044041.252874-1-jiayuan.chen@linux.dev>
+ <20250417044041.252874-2-jiayuan.chen@linux.dev>
+ <c6a9b230-f163-4c03-b834-ddcc71c47204@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+April 23, 2025 at 08:13, "Martin KaFai Lau" <martin.lau@linux.dev> wrote:
 
-This series was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+>=20
+>=20On 4/16/25 9:40 PM, Jiayuan Chen wrote:
+>=20
+>=20>=20
+>=20> when we attach a prog without cgroup_storage map being used,
+> >=20
+>=20>  cgroup_storage in struct bpf_prog_array_item is empty. Then, if we=
+ use
+> >=20
+>=20>  BPF_LINK_UPDATE to replace old prog with a new one that uses the
+> >=20
+>=20>  cgroup_storage map, we miss cgroup_storage being initiated.
+> >=20
+>=20>  This cause a painc when accessing stroage in bpf_get_local_storage=
+.
+> >=20
+>=20>  Reported-by: syzbot+e6e8f6618a2d4b35e4e0@syzkaller.appspotmail.com
+> >=20
+>=20>  Closes: https://lore.kernel.org/all/67fc867e.050a0220.2970f9.03b8.=
+GAE@google.com/T/
+> >=20
+>=20>  Fixes: 0c991ebc8c69 ("bpf: Implement bpf_prog replacement for an a=
+ctive bpf_cgroup_link")
+> >=20
+>=20>  Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+> >=20
+>=20>  ---
+> >=20
+>=20>  kernel/bpf/cgroup.c | 24 +++++++++++++++++++-----
+> >=20
+>=20>  1 file changed, 19 insertions(+), 5 deletions(-)
+> >=20
+>=20>  diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> >=20
+>=20>  index 84f58f3d028a..cdf0211ddc79 100644
+> >=20
+>=20>  --- a/kernel/bpf/cgroup.c
+> >=20
+>=20>  +++ b/kernel/bpf/cgroup.c
+> >=20
+>=20>  @@ -770,12 +770,14 @@ static int cgroup_bpf_attach(struct cgroup *=
+cgrp,
+> >=20
+>=20>  }
+> >=20
+>=20>  > /* Swap updated BPF program for given link in effective program =
+arrays across
+> >=20
+>=20>  - * all descendant cgroups. This function is guaranteed to succeed=
+.
+> >=20
+>=20>  + * all descendant cgroups.
+> >=20
+>=20>  */
+> >=20
+>=20>  -static void replace_effective_prog(struct cgroup *cgrp,
+> >=20
+>=20>  - enum cgroup_bpf_attach_type atype,
+> >=20
+>=20>  - struct bpf_cgroup_link *link)
+> >=20
+>=20>  +static int replace_effective_prog(struct cgroup *cgrp,
+> >=20
+>=20>  + enum cgroup_bpf_attach_type atype,
+> >=20
+>=20>  + struct bpf_cgroup_link *link)
+> >=20
+>=20>  {
+> >=20
+>=20>  + struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TY=
+PE] =3D {};
+> >=20
+>=20>  + struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] =
+=3D {};
+> >=20
+>=20>  struct bpf_prog_array_item *item;
+> >=20
+>=20>  struct cgroup_subsys_state *css;
+> >=20
+>=20>  struct bpf_prog_array *progs;
+> >=20
+>=20>  @@ -784,6 +786,10 @@ static void replace_effective_prog(struct cgr=
+oup *cgrp,
+> >=20
+>=20>  struct cgroup *cg;
+> >=20
+>=20>  int pos;
+> >=20
+>=20>  > + if (bpf_cgroup_storages_alloc(storage, new_storage, link->type=
+,
+> >=20
+>=20>  + link->link.prog, cgrp))
+> >=20
+>=20>  + return -ENOMEM;
+> >=20
+>=20>  +
+> >=20
+>=20>  css_for_each_descendant_pre(css, &cgrp->self) {
+> >=20
+>=20>  struct cgroup *desc =3D container_of(css, struct cgroup, self);
+> >=20
+>=20>  > @@ -810,8 +816,11 @@ static void replace_effective_prog(struct c=
+group *cgrp,
+> >=20
+>=20>  desc->bpf.effective[atype],
+> >=20
+>=20>  lockdep_is_held(&cgroup_mutex));
+> >=20
+>=20>  item =3D &progs->items[pos];
+> >=20
+>=20>  + bpf_cgroup_storages_assign(item->cgroup_storage, storage);
+> >=20
+>=20
+> I am still recalling my memory on this older cgroup storage, so I think=
+ it will be faster to ask questions.
+>=20
+>=20What is in the pl->storage (still NULL?), and will the future compute=
+_effective_progs() work?
+>=20
 
-On Thu, 17 Apr 2025 14:28:02 +0700 you wrote:
-> Hi everyone,
-> 
-> This series tries to fix a deadlock in virtio-net when binding/unbinding
-> XDP program, XDP socket or resizing the rx queue.
-> 
-> When pausing rx (e.g. set up xdp, xsk pool, rx resize), we call
-> napi_disable() on the receive queue's napi. In delayed refill_work, it
-> also calls napi_disable() on the receive queue's napi. When
-> napi_disable() is called on an already disabled napi, it will sleep in
-> napi_disable_locked while still holding the netdev_lock. As a result,
-> later napi_enable gets stuck too as it cannot acquire the netdev_lock.
-> This leads to refill_work and the pause-then-resume tx are stuck
-> altogether.
-> 
-> [...]
-
-Here is the summary with links:
-  - [v4,1/4] virtio-net: disable delayed refill when pausing rx
-    https://git.kernel.org/netdev/net/c/4bc12818b363
-  - [v4,2/4] selftests: net: move xdp_helper to net/lib
-    (no matching commit)
-  - [v4,3/4] selftests: net: add flag to force zerocopy mode in xdp_helper
-    (no matching commit)
-  - [v4,4/4] selftests: net: add a virtio_net deadlock selftest
-    (no matching commit)
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+For=20non-link path:
+cgroup_bpf_attach
+	bpf_cgroup_storages_assign(pl->storage, storage); // allocate and set
+	update_effective_progs
+		compute_effective_progs
+			bpf_cgroup_storages_assign(item->cgroup_storage, pl->storage);
 
 
+pl->storage is just as a temporary holder, never freed, and its value wil=
+l
+eventually be assigned to `item->cgroup_storage`.
 
