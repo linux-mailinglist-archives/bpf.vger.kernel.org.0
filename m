@@ -1,103 +1,104 @@
-Return-Path: <bpf+bounces-56544-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56545-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5400A99B7D
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 00:23:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74620A99B8B
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 00:30:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 149B317D7F6
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 22:23:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F7307B0AC7
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 22:29:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D4A201264;
-	Wed, 23 Apr 2025 22:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F30521FF2C;
+	Wed, 23 Apr 2025 22:30:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kwHxWrxI"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dhKTNHhj"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF9471DE4E6;
-	Wed, 23 Apr 2025 22:23:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480031F418D
+	for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 22:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745447015; cv=none; b=GX8WSwZRQPFsCWEL4IW/CzckejVliKHFUkC7NCC4DzooQPmXqMc3jy4pers/ZNstxXgbO2xTq7qKZervLx4b5SqAQXO2TE5gXK6Obxhs5ycTL6HoYWevdbLlR7HfkdXwdYtzfHh89OwjOQHRjXL/ZJ+Fq5ndfsEN8/okl6gz+BA=
+	t=1745447409; cv=none; b=M8hG/n3tCtZTSjXf/Hkqge56alq8cDQna7YFyQStwQxlGPVKzwrtmdbzNs+T+guspdckhrSt4WJoCwmkp/4ejWTWJX3O8XAND5OR++tQJlF60Od5cCQz8zAmUa16vgYAILRFiORi62cbXjhrMx/ss7/uck2lww+9BS+f4tZxdoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745447015; c=relaxed/simple;
-	bh=qqSBEb+/qPVwuJ9A5adUvrR49J/1UvzOCF45ID5ipMA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aOccdRkg8lbHvJvv0rDcDLfFhwtl0iVkcTKY/UsS+QlumS+uNL92Yu+IVqHGGcOX5Smmd/xZn1j4/aOJrc9UcQW4J3yGeK48DfiJEaMaZ6At0rWEN+Niekv/hSFObqJmsIz+ndkwUNMIXXUQXhV+cRiV2HFrP7wLol5f68bqfjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kwHxWrxI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F15BDC4CEE2;
-	Wed, 23 Apr 2025 22:23:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745447014;
-	bh=qqSBEb+/qPVwuJ9A5adUvrR49J/1UvzOCF45ID5ipMA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kwHxWrxIYnB2RawAF8JmxUsZPpPerbNkwWAJDkN7tShsZyr/hzL8LOEFamcjqxae5
-	 CMsYkZZglwWTd9dbqlv9PslT/ckoFLcZ5SppzQtcMCz4Zj6S2F5NbtS0kCfZase2gS
-	 6HS5Q6QcVajj9R2er+oaPald3LQ0+wjb4OS2AVaMQ2l4d6OHDUZUZfrNrTGjdeJOfK
-	 rqaqPXA2w5DnunXDCdtfYc1whn7usIJ7QlimT6xu82Vf7s9hbo1VPg/ulwPKJ7dCZm
-	 p/ymqyz3YKQHHoE6h/TAjAwbcAnRIL1h24LzHBi5FsQ8fwB9ynTW7svac74yb+JUzn
-	 0VvnJtlSdK3Ww==
-Date: Wed, 23 Apr 2025 15:23:33 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Bui Quang Minh <minhquangbui99@gmail.com>
-Cc: virtualization@lists.linux.dev, "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer
- <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Eugenio
- =?UTF-8?B?UMOpcmV6?= <eperezma@redhat.com>, "David S. Miller"
- <davem@davemloft.net>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] selftests: net: add a virtio_net deadlock
- selftest
-Message-ID: <20250423152333.68117196@kernel.org>
-In-Reply-To: <aac402b4-d04c-4d7e-91c8-ab6c20c9a74d@gmail.com>
-References: <20250417072806.18660-1-minhquangbui99@gmail.com>
-	<20250417072806.18660-5-minhquangbui99@gmail.com>
-	<20250422184151.2fb4fffe@kernel.org>
-	<aac402b4-d04c-4d7e-91c8-ab6c20c9a74d@gmail.com>
+	s=arc-20240116; t=1745447409; c=relaxed/simple;
+	bh=PSn2Ym+IrgVLRTNnl+RAsPv/cJDcB9cRnBpKHyLT9ss=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g3yf7+DWWsC9EnczKTQyfgc1ISSTjpmnwGhmy2wjtqfYq0GcOPE34mJ3nPXPmbqBafUQs6QzJgl0z9ZdzNuiaw4ySa8BBLU8sJJzcM3KGKUYyrrFhNQjC7krCBlYHSqSlnBLNu6XavO0yCf38yrENITOLo3KDhQTnVPLepQwMCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dhKTNHhj; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c865305d-b10b-4f67-b466-cc05a57dccfe@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745447402;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BppaMnUaT5ao5D/mw/RQZpbCdeA3kIveXo6RuEuwJPY=;
+	b=dhKTNHhjOqFRp5rH5Wtxb5SOrqw6w5RohSfdq0CVRYUo8/BjCDIySx0agC7qtXvHhvIMPo
+	dSpS91ni0GUM7N7OSgq1DKcwI+ttqFLwIHBMsoiRq5YDykdheghqT8D5ADA/36k2DoHrIJ
+	mQq3i8JWf7/lTjNBrS+O6fK3KHwG6L0=
+Date: Wed, 23 Apr 2025 15:29:53 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v2] bpf: Allow XDP dev-bound programs to perform
+ XDP_REDIRECT into maps
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20250423-xdp-prog-bound-fix-v2-1-51742a5dfbce@kernel.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20250423-xdp-prog-bound-fix-v2-1-51742a5dfbce@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 23 Apr 2025 22:20:41 +0700 Bui Quang Minh wrote:
-> I've tried to make the setup_xsk into each test. However, I've an issue=20
-> that the XDP socket destruct waits for an RCU grace period as I see this=
-=20
-> sock's flag SOCK_RCU_FREE is set. So if we start the next test right=20
-> away, we can have the error when setting up XDP socket again because=20
-> previous XDP socket has not unbound the network interface's queue yet. I=
-=20
-> can resolve the issue by putting the sleep(1) after closing the socket=20
-> in xdp_helper:
->=20
-> diff --git a/tools/testing/selftests/net/lib/xdp_helper.c=20
-> b/tools/testing/selftests/net/lib/xdp_helper.c
-> index f21536ab95ba..e882bb22877f 100644
-> --- a/tools/testing/selftests/net/lib/xdp_helper.c
-> +++ b/tools/testing/selftests/net/lib/xdp_helper.c
-> @@ -162,5 +162,6 @@ int main(int argc, char **argv)
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->=20
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 close(sock_fd);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sleep(1);
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->  =C2=A0}
->=20
-> Do you think it's enough or do you have a better suggestion here?
+On 4/23/25 10:44 AM, Lorenzo Bianconi wrote:
+> In the current implementation if the program is dev-bound to a specific
+> device, it will not be possible to perform XDP_REDIRECT into a DEVMAP
+> or CPUMAP even if the program is running in the driver NAPI context and
+> it is not attached to any map entry. This seems in contrast with the
+> explanation available in bpf_prog_map_compatible routine.
+> Fix the issue introducing __bpf_prog_map_compatible utility routine in
+> order to avoid bpf_prog_is_dev_bound() check running bpf_check_tail_call()
+> at program load time (bpf_prog_select_runtime()).
+> Continue forbidding to attach a dev-bound program to XDP maps
+> (BPF_MAP_TYPE_PROG_ARRAY, BPF_MAP_TYPE_DEVMAP and BPF_MAP_TYPE_CPUMAP).
+> 
+> Fixes: 3d76a4d3d4e59 ("bpf: XDP metadata RX kfuncs")
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+> Changes in v2:
+> - Introduce __bpf_prog_map_compatible() utility routine in order to skip
+>    bpf_prog_is_dev_bound check in bpf_check_tail_call()
+> - Extend xdp_metadata selftest
+> - Link to v1: https://lore.kernel.org/r/20250422-xdp-prog-bound-fix-v1-1-0b581fa186fe@kernel.org
+> ---
+>   kernel/bpf/core.c                                  | 27 +++++++++++++---------
+>   .../selftests/bpf/prog_tests/xdp_metadata.c        | 22 +++++++++++++++++-
+>   tools/testing/selftests/bpf/progs/xdp_metadata.c   | 13 +++++++++++
 
-Interesting :S What errno does the kernel return? EBUSY?
-Perhaps we could loop for a second retrying the bind()
-if kernel returns EBUSY in case it's just a socket waiting
-to be cleaned up?
+The change lgtm. Please separate the selftest changes to patch 2. Thanks.
+
+pw-bot: cr
+
 
