@@ -1,135 +1,129 @@
-Return-Path: <bpf+bounces-56505-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56506-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB756A994F6
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:26:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA0F0A9951E
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:30:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 324007A57F5
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 16:25:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71DFF1B67EAB
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 16:27:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A9B4280CD9;
-	Wed, 23 Apr 2025 16:26:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0112281344;
+	Wed, 23 Apr 2025 16:26:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XqYH8PAR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cAX2ppDU"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A2F45948
-	for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 16:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D5B519E966;
+	Wed, 23 Apr 2025 16:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745425577; cv=none; b=q9D/wk2HcxbCU4qPINh64h99p2MGaR7PcOkRWOixun8llIeHWM/2Z2U7LfnxFavgep/i+AwSgdyB5QAE9vJqFRpWi2Yb6AuiMwlIQKYSfe0LoXJApa2hGn0dg/7vSpdORfCcDKkRidui2KpyxdpRC6a8i1TeLA5F9HVvRQAlxKE=
+	t=1745425612; cv=none; b=q6Dms4etnmErGYADYRPY13T6GHwFzRvJJYIItk7vm+uJNBduMOdHQzfqNRIp2ZPNQe2CjzrBNh1rZgXhr1lNui8QJCEJN3rhIeO7my2yzDX2XT1OLL/9XrgoFznkfQLnQPA5bASybyiBEAfbbiZ7TgYwzUz5I+j/9myaazehMzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745425577; c=relaxed/simple;
-	bh=rTKVGqTcpcHzYg9VIXbq8Jn8TK8RnJF0NhYPERmSdbQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nrHZu1cAbKwfGVj9nrS9QQGez736HUlCRxQSYJpL5kHaaGqHFUWfbvjNATr56K8pfXojUOKDb5h2eI1jG2CIo0dxMQ7fXcawRSAZFh2NgfmeQ/3GfrTTIqmWZsXatKnCrOhVzFjB5orh40lhNDddfOUz5M8K93oZMwOj42PmmXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XqYH8PAR; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <62ea70bf-69e8-4bfa-84ca-f56530ebbed3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745425573;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k6EaVd4uzCBm+InA2v4DBeIfAzSjd2ey57rmT4495uo=;
-	b=XqYH8PARUmRPQtm7gNrZPWnpG4Wc3uxqdq45/YvcSer7UNwP7Az3XAmKbuYW1mRK7dpaGR
-	SF+VzAv1KV1uu+sLVRIWdnWekrqIaqi+U+G18fVoT+jlz7DL2ZO9pQ5PmeoNMblqdd2rKi
-	aQwFZZI7SzndOW/vTJuPLAgrsqIAir4=
-Date: Thu, 24 Apr 2025 00:26:03 +0800
+	s=arc-20240116; t=1745425612; c=relaxed/simple;
+	bh=GUZor68HKAiFhk1CoHF1cPigBjqy7WyQHNIzboArcL0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=otuDPwdjb4x9y+sFJkM4J8Vss4BvZ6btfR5P+7587d8f3h3iyXFFT4M9Shnx3QwHK3Fcee5pp4wbEZp2ZTquKw23nEJHtrMy9dh6pg20XaXGshIAcklZRUg9Jm8fUCRazUKJejdm2u+9L9uKIzvpeqM9/hJEPmbeB+fqnM9fbKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cAX2ppDU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FB64C4CEE2;
+	Wed, 23 Apr 2025 16:26:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745425611;
+	bh=GUZor68HKAiFhk1CoHF1cPigBjqy7WyQHNIzboArcL0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cAX2ppDUspAzzI/coldlB9n2gPLSqST2GWYpV8k4Bz733pJZjW0+LNA9k2sDiY6jU
+	 dQZfPTjK8Qcz/t7yAAGHCA4g40uvt22NhyNDylcLTkkUjUUSR2PbHWNuxnGjYjZn/O
+	 X4HwqpdlsfCsOU+GLJyR2TrLT0mprTc3AVZH2QpRJW1zHDvPyBCfeR6Xez4OFJBudb
+	 frZXPA6GIP3KdyRtIJlBnBUB19W6rES4U7AUBMQr3WMA5ob4URDgdrHI6HbCgOqitf
+	 OmViEctw2ReC/So0/xtlGCJY2jCs9/vEHayVOsAX/MCSwe0Xe4xV2d+zaCjgjqtS6V
+	 3Tf2WI43fBVCA==
+Date: Wed, 23 Apr 2025 13:26:48 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Howard Chu <howardchu95@gmail.com>
+Cc: Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] perf trace: Implement syscall summary in BPF
+Message-ID: <aAkUyFjRFLkS170u@x1>
+References: <20250326044001.3503432-1-namhyung@kernel.org>
+ <CAH0uvojPaZ-byE-quc=sUvXyExaZPU3PUjdTYOzE5iDAT_wNVA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next] libbpf: remove sample_period init in
- perf_buffer
-To: Jiri Olsa <olsajiri@gmail.com>, Namhyung Kim <namhyung@kernel.org>
-Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250422091558.2834622-1-chen.dylane@linux.dev>
- <aAedDw7fWAF2ej1f@krava> <aAfok3ha8QQkP8VB@google.com>
- <aAkMbBdzWX_iE1zM@krava>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Chen <chen.dylane@linux.dev>
-In-Reply-To: <aAkMbBdzWX_iE1zM@krava>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <CAH0uvojPaZ-byE-quc=sUvXyExaZPU3PUjdTYOzE5iDAT_wNVA@mail.gmail.com>
 
-在 2025/4/23 23:51, Jiri Olsa 写道:
-> On Tue, Apr 22, 2025 at 12:05:55PM -0700, Namhyung Kim wrote:
->> Hello,
->>
->> On Tue, Apr 22, 2025 at 03:43:43PM +0200, Jiri Olsa wrote:
->>> On Tue, Apr 22, 2025 at 05:15:58PM +0800, Tao Chen wrote:
->>>> It seems that sample_period no used in perf buffer, actually only
->>>> wakeup_events valid about events aggregation for wakeup. So remove
->>>> it to avoid causing confusion.
->>>
->>> I don't see too much confusion in keeping it, but I think it
->>> should be safe to remove it
->>>
->>> PERF_COUNT_SW_BPF_OUTPUT is "trigered" by bpf_perf_event_output,
->>> AFAICS there's no path checking on sample_period for this event
->>> used in context of perf_buffer__new, Namhyung, thoughts?
->>
->> It seems to be ok to call mmap(2) for non-sampling events.
->>
->> Acked-by: Namhyung Kim <namhyung@kernel.org>
+On Fri, Mar 28, 2025 at 06:46:36PM -0700, Howard Chu wrote:
+> Hello Namhyung,
 > 
-> Tao Chen,
-> could you please resend without rfc tag? plz keeps acks
-> 
+> On Tue, Mar 25, 2025 at 9:40 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > When -s/--summary option is used, it doesn't need (augmented) arguments
+> > of syscalls.  Let's skip the augmentation and load another small BPF
+> > program to collect the statistics in the kernel instead of copying the
+> > data to the ring-buffer to calculate the stats in userspace.  This will
+> > be much more light-weight than the existing approach and remove any lost
+> > events.
+> >
+> > Let's add a new option --bpf-summary to control this behavior.  I cannot
+> > make it default because there's no way to get e_machine in the BPF which
+> > is needed for detecting different ABIs like 32-bit compat mode.
+> >
+> > No functional changes intended except for no more LOST events. :)
+> >
+> >   $ sudo ./perf trace -as --summary-mode=total --bpf-summary sleep 1
+> >
+> >    Summary of events:
+> >
+> >    total, 6194 events
+> >
+> >      syscall            calls  errors  total       min       avg       max       stddev
+> >                                        (msec)    (msec)    (msec)    (msec)        (%)
+> >      --------------- --------  ------ -------- --------- --------- ---------     ------
+> >      epoll_wait           561      0  4530.843     0.000     8.076   520.941     18.75%
+> >      futex                693     45  4317.231     0.000     6.230   500.077     21.98%
+> >      poll                 300      0  1040.109     0.000     3.467   120.928     17.02%
+> >      clock_nanosleep        1      0  1000.172  1000.172  1000.172  1000.172      0.00%
+> >      ppoll                360      0   872.386     0.001     2.423   253.275     41.91%
+> >      epoll_pwait           14      0   384.349     0.001    27.453   380.002     98.79%
+> >      pselect6              14      0   108.130     7.198     7.724     8.206      0.85%
+> >      nanosleep             39      0    43.378     0.069     1.112    10.084     44.23%
+> >      ...
 
-sure, will resend it, thanks.
+I added the following to align sched_[gs]etaffinity,
 
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
-> 
-> thanks,
-> jirka
-> 
-> 
->>
->> Thanks,
->> Namhyung
->>
->>>
->>>>
->>>> Fixes: fb84b8224655 ("libbpf: add perf buffer API")
->>>> Signed-off-by: Tao Chen <chen.dylane@linux.dev>
->>>> ---
->>>>   tools/lib/bpf/libbpf.c | 1 -
->>>>   1 file changed, 1 deletion(-)
->>>>
->>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->>>> index 194809da5172..1830e3c011a5 100644
->>>> --- a/tools/lib/bpf/libbpf.c
->>>> +++ b/tools/lib/bpf/libbpf.c
->>>> @@ -13306,7 +13306,6 @@ struct perf_buffer *perf_buffer__new(int map_fd, size_t page_cnt,
->>>>   	attr.config = PERF_COUNT_SW_BPF_OUTPUT;
->>>>   	attr.type = PERF_TYPE_SOFTWARE;
->>>>   	attr.sample_type = PERF_SAMPLE_RAW;
->>>> -	attr.sample_period = sample_period;
->>>>   	attr.wakeup_events = sample_period;
->>>>   
->>>>   	p.attr = &attr;
->>>> -- 
->>>> 2.43.0
->>>>
+Thanks,
+
+- Arnaldo
 
 
--- 
-Best Regards
-Tao Chen
+diff --git a/tools/perf/util/bpf-trace-summary.c b/tools/perf/util/bpf-trace-summary.c
+index 114d8d9ed9b2d3f3..af37d3bb5f9c42e7 100644
+--- a/tools/perf/util/bpf-trace-summary.c
++++ b/tools/perf/util/bpf-trace-summary.c
+@@ -139,9 +139,9 @@ static int print_common_stats(struct syscall_data *data, FILE *fp)
+ 		/* TODO: support other ABIs */
+ 		name = syscalltbl__name(EM_HOST, node->syscall_nr);
+ 		if (name)
+-			printed += fprintf(fp, "   %-15s", name);
++			printed += fprintf(fp, "   %-17s", name);
+ 		else
+-			printed += fprintf(fp, "   syscall:%-7d", node->syscall_nr);
++			printed += fprintf(fp, "   syscall:%-9d", node->syscall_nr);
+ 
+ 		printed += fprintf(fp, " %8u %6u %9.3f %9.3f %9.3f %9.3f %9.2f%%\n",
+ 				   stat->count, stat->error, total, min, avg, max,
 
