@@ -1,111 +1,66 @@
-Return-Path: <bpf+bounces-56488-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06AC1A98971
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 14:16:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EB34A98BDA
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 15:52:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5496C5A5361
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 12:15:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 251103BC10C
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 13:51:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E05274658;
-	Wed, 23 Apr 2025 12:14:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3581A4E70;
+	Wed, 23 Apr 2025 13:52:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K+msE829"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="khKz/QWp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83BDF2741C8;
-	Wed, 23 Apr 2025 12:14:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1334719F121;
+	Wed, 23 Apr 2025 13:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745410478; cv=none; b=bTouzpJwukleO1D5qT/tVEYac+YQkzKTbAFgkwCC/wK7dE1sqUFhbbTdwsAhEhD6qkN8N55kBgM4UtQZX3lMtwphF+FNaw2p1Ud7SwIp3NVPyZlRKBNJoWtRNtU4HFve4fVL4wnHspWw5MtEgzLuxvwrLM+ClZ+ZuFI51nRsJA4=
+	t=1745416321; cv=none; b=N5hJX6HsaKfOC/+ihhYH590t59k6kqd9VoAATBomzRBBGZSJ/DhLcn5Ji2XnRs3c9hZM+7Bj5NDaPFzlYV9zx2dQWPvyqaG/vwxQr4K3mWDt/HxlAQ1F8NQmV/yTYyVCJdN7o0dO02rkYlBha8Ew90Fs38V2VvfWv3EBD51m9Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745410478; c=relaxed/simple;
-	bh=iI+zOFiPdKwPbL1x/XV2O6KQJB7HnqFPdwL8xUTkTGE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fKcoBWIXw9KKBb8vPQ20J6EgPdz9DtB+puccoPBrtNdUIdpNeQROTUYvJyw+y305ALW8jKdxMvOio7mHF5xZfSJDGPnUir3DuhJL0/kGTsLSVnU03lmVnTTcpKhqCeVm/7YKGeL+6SywiIRX9SfpZF79r3n/omeeSDAe76NP6oU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K+msE829; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2295d78b433so74063275ad.2;
-        Wed, 23 Apr 2025 05:14:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745410476; x=1746015276; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6G/y3HQErml1NMZQNrayd+/BsrgNwWrmomSiPVW0Nsc=;
-        b=K+msE829fzeroKjiXRKf9NS3zVzUUkKOoMMAF9p20Rq7zI3UpFWs/wjPbA1RNLVrOQ
-         vVfAdLWwA9vuVb6mCOospRpxAjWd/UZuJcED8twGKhxdCBd0yVg/D+VMs/TS14NDIvMO
-         lLRsgO6f6j7rOltvdgwFQ2a3ndNnP2+wUebwEjRiSUOMxkGc71ZPSLkhcx+26ivKpVbB
-         cv6CoJPRA8kaZI/fueIeiHRDBavWrKshCJ18Jfc0jQBpfx+RQo+iQtTraMX/MVPJupHf
-         +yJTCc4Ffcu6f1Ke19e/hxFVhMvYphTXdrrKZ+jtnNxc5cjjEd+oanDRajP0fLbMd+Dl
-         gDoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745410476; x=1746015276;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6G/y3HQErml1NMZQNrayd+/BsrgNwWrmomSiPVW0Nsc=;
-        b=nqMkNQeFPvYpqYfzKzqQSX5pRPRjcbZtNJLP1R+/NjAhORUT3jaiaJUsiX5xD1Jb0e
-         nztEZ6YqmMassfoAdfWaf7ki4TB7hAc5V42umgQbNZjoOdNCLry5geHpwmehqVY4GMhV
-         61lucRpRB5LdaNJZ5W4nYOl3TxXAVMTUKya7KUu0aQjcioWOQm+kRLDAxHo4QGbScOmY
-         29tU5X6aQHKzYlk3XkIuCukHAJOxSnhiFBxBs0NjONZJBCQCjl4QFNzGU5wH9KKEwo0z
-         Olu5Quyv0+SiGnVTRriQNHxf03P8I8esLIyI/kKqMR7PG2otKr3spLZVvb14Jj2BbdH7
-         yXaw==
-X-Forwarded-Encrypted: i=1; AJvYcCWBpbA0viVYCT5tmO/CL1M+aTLtyCOr5RepQQ0VvVFOgjYt/5CA/oK+sB9sYmIqUjOlHhMkq/+Tdds8kyw=@vger.kernel.org, AJvYcCWZvOQRiwMOvsXx9CMbAgBwAWx77WlIarNAgdSQTRx0G6RRgTax7fAD9HBGRy0wsVKojI+07+Bz@vger.kernel.org, AJvYcCX7OJgNXnk9u4GHlOkNgwPBuAwgNtGQvGzmie/HY3+LMip/bNEGdcaJWL8mFR04JTJ8FjOhes7JhLasnzzgAYdM@vger.kernel.org
-X-Gm-Message-State: AOJu0YylA7FJTMB22WvdqsUWjt+R9CIY/AVqLbnH2R9Hvo9M0X7nsWYf
-	7IoeRFgiFkGhYpwh0fArEZltD9C2wKRJc6ODmIq70kTWPAAuRkga
-X-Gm-Gg: ASbGnctFG7JQpjWXfL6Vha7WxW5jNi/G0GCz0+LQNWp5xTyF+oblHBXiDStYiBq8sqr
-	1BCCFTB2vM0k4Zsk8cq0ZAYLxvCnmej49bTgg/fHKJFH8ocmZDQR07yLzk0S5wyoJahegY+7vnO
-	UUBaQ/TjlMyXYhnn0KCS30rJ7N8rBh/+4HCOGyaIvnauPSdq1WvRt4CLvbuPgsEpHeLrarVImpg
-	9yXDS5jm//kJgaQORPBEInyLNz3DLOzOXVO+hlz0ZZ5mDVzzJ6Ekw/ouQ7p9sRIt1zWR+GOVyTb
-	9cn+QMNO/GD8dtDIae27jVd1PEsUSymkBXkZ2a4l/lI=
-X-Google-Smtp-Source: AGHT+IF+oB26vPds+B4kBrr2c9xPwwreiL7sTMFTRFvzhefCWoyDXGQln9OtTCMvRnNeQwmY27e4aw==
-X-Received: by 2002:a17:903:234e:b0:215:8d49:e2a7 with SMTP id d9443c01a7336-22c53620bb5mr256277845ad.50.1745410475779;
-        Wed, 23 Apr 2025 05:14:35 -0700 (PDT)
-Received: from ubuntu2404.. ([122.231.145.226])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22c50bf5528sm102647295ad.100.2025.04.23.05.14.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Apr 2025 05:14:34 -0700 (PDT)
-From: KaFai Wan <mannkafai@gmail.com>
-To: alexei.starovoitov@gmail.com,
-	martin.lau@linux.dev,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	memxor@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	leon.hwang@linux.dev,
-	KaFai Wan <mannkafai@gmail.com>
-Subject: [PATCH bpf-next v4 2/2] selftests/bpf: Add test to access const void pointer argument in tracing program
-Date: Wed, 23 Apr 2025 20:13:29 +0800
-Message-ID: <20250423121329.3163461-3-mannkafai@gmail.com>
+	s=arc-20240116; t=1745416321; c=relaxed/simple;
+	bh=vkHUz5Y/Z51TaWRVJXs72kzGY33VaBWtYdjAEAOQWJ8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ExWpWQCXZl5JRVQIEHETtD/bCdOr1fdr5qRkxI5Il47LN065YnXTWe9FtXVwzg3LxOJXj98d+JlVmibZJ/vFmAchGNumvCmQNEHsO3FrwaHHjAi5xIZYbZ+zN5q4gIr9SSH99DFLC6wqpTv0fSpRvOUHgJ3I3C5IbxCapCpg+34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=khKz/QWp; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=IMCPuVA6/i+pUoALfItRP9EV1da9/5LML/7OjIzcryo=; b=khKz/QWpSt9+BEGBkdWgA9dpxk
+	oFqcuci/ch6LseibNN1DNmQYS7rztVj53+GWrU9BnUrOG85m9gLyD/lOG9TTyaGonszuCWCmgN04H
+	10Mh+RN1Og7epCKmxnYXr/LJEsQZwUBiErb2GyMdUT78leboDY8rFJfOSJHZcIaSZ3jYrinrJKHo4
+	8GTApS7C+smSbop94hZfYyk0LVTAZ1O5ksaGzcbHRirhHDL8arV1vXTz3KviX8IWln4dJsz1EhKka
+	8BEyGrcKSAoDsQocgUrp9xuOMaUiK1jMoLp/35kDOGTj/YrH4kfHfC8jHuIBYQhw0nZBE1ctWzK/1
+	Wcj8Qr+A==;
+Received: from 85-195-247-12.fiber7.init7.net ([85.195.247.12] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1u7aGe-0007fK-2p;
+	Wed, 23 Apr 2025 15:36:01 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: kuba@kernel.org
+Cc: netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	bcm-kernel-feedback-list@broadcom.com,
+	Andrew Sauber <andrew.sauber@isovalent.com>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	William Tu <witu@nvidia.com>,
+	Martin Zaharinov <micron10@gmail.com>,
+	Ronak Doshi <ronak.doshi@broadcom.com>
+Subject: [PATCH net] vmxnet3: Fix malformed packet sizing in vmxnet3_process_xdp
+Date: Wed, 23 Apr 2025 15:36:00 +0200
+Message-ID: <20250423133600.176689-1-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250423121329.3163461-1-mannkafai@gmail.com>
-References: <20250423121329.3163461-1-mannkafai@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -113,67 +68,67 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 1.0.7/27617/Wed Apr 23 10:38:53 2025)
 
-Adding verifier test for accessing const void pointer argument in
-tracing programs.
+vmxnet3 driver's XDP handling is buggy for packet sizes using ring0 (that
+is, packet sizes between 128 - 3k bytes).
 
-The test program loads 1st argument of bpf_fentry_test10 function
-which is const void pointer and checks that verifier allows that.
+We noticed MTU-related connectivity issues with Cilium's service load-
+balancing in case of vmxnet3 as NIC underneath. A simple curl to a HTTP
+backend service where the XDP LB was doing IPIP encap led to overly large
+packet sizes but only for *some* of the packets (e.g. HTTP GET request)
+while others (e.g. the prior TCP 3WHS) looked completely fine on the wire.
 
-Signed-off-by: KaFai Wan <mannkafai@gmail.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+In fact, the pcap recording on the backend node actually revealed that the
+node with the XDP LB was leaking uninitialized kernel data onto the wire
+for the affected packets, for example, while the packets should have been
+152 bytes their actual size was 1482 bytes, so the remainder after 152 bytes
+was padded with whatever other data was in that page at the time (e.g. we
+saw user/payload data from prior processed packets).
+
+We only noticed this through an MTU issue, e.g. when the XDP LB node and
+the backend node both had the same MTU (e.g. 1500) then the curl request
+got dropped on the backend node's NIC given the packet was too large even
+though the IPIP-encapped packet normally would never even come close to
+the MTU limit. Lowering the MTU on the XDP LB (e.g. 1480) allowed to let
+the curl request succeed (which also indicates that the kernel ignored the
+padding, and thus the issue wasn't very user-visible).
+
+Commit e127ce7699c1 ("vmxnet3: Fix missing reserved tailroom") was too eager
+to also switch xdp_prepare_buff() from rcd->len to rbi->len. It really needs
+to stick to rcd->len which is the actual packet length from the descriptor.
+The latter we also feed into vmxnet3_process_xdp_small(), by the way, and
+it indicates the correct length needed to initialize the xdp->{data,data_end}
+parts. For e127ce7699c1 ("vmxnet3: Fix missing reserved tailroom") the
+relevant part was adapting xdp_init_buff() to address the warning given the
+xdp_data_hard_end() depends on xdp->frame_sz. With that fixed, traffic on
+the wire looks good again.
+
+Fixes: e127ce7699c1 ("vmxnet3: Fix missing reserved tailroom")
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Andrew Sauber <andrew.sauber@isovalent.com>
+Cc: Anton Protopopov <aspsk@isovalent.com>
+Cc: William Tu <witu@nvidia.com>
+Cc: Martin Zaharinov <micron10@gmail.com>
+Cc: Ronak Doshi <ronak.doshi@broadcom.com>
 ---
- net/bpf/test_run.c                                   |  8 +++++++-
- .../selftests/bpf/progs/verifier_btf_ctx_access.c    | 12 ++++++++++++
- 2 files changed, 19 insertions(+), 1 deletion(-)
+ drivers/net/vmxnet3/vmxnet3_xdp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 7cb192cbd65f..aaf13a7d58ed 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -569,6 +569,11 @@ __bpf_kfunc u32 bpf_fentry_test9(u32 *a)
- 	return *a;
- }
+diff --git a/drivers/net/vmxnet3/vmxnet3_xdp.c b/drivers/net/vmxnet3/vmxnet3_xdp.c
+index 616ecc38d172..5f470499e600 100644
+--- a/drivers/net/vmxnet3/vmxnet3_xdp.c
++++ b/drivers/net/vmxnet3/vmxnet3_xdp.c
+@@ -397,7 +397,7 @@ vmxnet3_process_xdp(struct vmxnet3_adapter *adapter,
  
-+int noinline bpf_fentry_test10(const void *a)
-+{
-+	return (long)a;
-+}
-+
- void noinline bpf_fentry_test_sinfo(struct skb_shared_info *sinfo)
- {
- }
-@@ -699,7 +704,8 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 		    bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, 21) != 111 ||
- 		    bpf_fentry_test7((struct bpf_fentry_test_t *)0) != 0 ||
- 		    bpf_fentry_test8(&arg) != 0 ||
--		    bpf_fentry_test9(&retval) != 0)
-+		    bpf_fentry_test9(&retval) != 0 ||
-+		    bpf_fentry_test10((void *)0) != 0)
- 			goto out;
- 		break;
- 	case BPF_MODIFY_RETURN:
-diff --git a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-index 28b939572cda..03942cec07e5 100644
---- a/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_btf_ctx_access.c
-@@ -65,4 +65,16 @@ __naked void ctx_access_u32_pointer_reject_8(void)
- "	::: __clobber_all);
- }
+ 	xdp_init_buff(&xdp, PAGE_SIZE, &rq->xdp_rxq);
+ 	xdp_prepare_buff(&xdp, page_address(page), rq->page_pool->p.offset,
+-			 rbi->len, false);
++			 rcd->len, false);
+ 	xdp_buff_clear_frags_flag(&xdp);
  
-+SEC("fentry/bpf_fentry_test10")
-+__description("btf_ctx_access const void pointer accept")
-+__success __retval(0)
-+__naked void ctx_access_const_void_pointer_accept(void)
-+{
-+	asm volatile ("					\
-+	r2 = *(u64 *)(r1 + 0);		/* load 1st argument value (const void pointer) */\
-+	r0 = 0;						\
-+	exit;						\
-+"	::: __clobber_all);
-+}
-+
- char _license[] SEC("license") = "GPL";
+ 	xdp_prog = rcu_dereference(rq->adapter->xdp_bpf_prog);
 -- 
 2.43.0
 
