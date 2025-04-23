@@ -1,173 +1,124 @@
-Return-Path: <bpf+bounces-56537-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56538-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6FDFA9986F
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 21:24:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8357A99976
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 22:29:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5E281B86783
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 19:25:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D30B55A2ABD
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 20:28:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07035291173;
-	Wed, 23 Apr 2025 19:24:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F4EE26D4D1;
+	Wed, 23 Apr 2025 20:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="JyMP61V2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kHjT7QE5"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6F22F32;
-	Wed, 23 Apr 2025 19:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8422026B96A;
+	Wed, 23 Apr 2025 20:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745436282; cv=none; b=sudxMfw0imd13WvpIXiCZnIpQKIIOEmRQVt5oeZ3EsxR6nlGHx3uB86DaY3huY5CgfpQ4VC4BxYhMsEU+E3Iu9pfANHXUAqQMrHjhf2WTJm4u0HEsupq7bOlahoGOnCtXAPcLZdHT3pUWbuE8cAn8v6QkxforsvH29qKndp0+Ak=
+	t=1745440144; cv=none; b=fwkty/9rB2SQuEcG1E60MXLHvJoCiE5adH/yYaX/BQ0wafGnf4MWxhght3VQqREC9WU4e8PxIeV68w9GFQEdd1iFk4QLonOa8btMhQxweV6lmWE+SGnyrxvZCCcOBKwjzhXgfDWFusBGdafszE2aZ0og4u45xhnmvOPdIUTfInQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745436282; c=relaxed/simple;
-	bh=VuA5ArutcR/+rBv4LmxZZq5llGuXWDGBdcaQnWcGg3Y=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=ixCa3Y55QzE94dM1thx62xtq2dduLq5np5nXYf4UaXjzfCxVU9tvYMtHXrOwvTQDyKlQNCpZiWALJoacp1EDwft9Sh+dU9krjAZIQe8OJFjhOvRRiDvqCbB8b2NK+vW8zR5TQ8PYiEAjxpUga8HM1iv1qKC70gzXr+uVxAsL1qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=JyMP61V2; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 57DE443D43;
-	Wed, 23 Apr 2025 19:24:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1745436276;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j2tDrkkBQe3JKRslIUmoWfOqe7k2mOTW95nGkd+giIA=;
-	b=JyMP61V2AwXdhFa/MfRsPknQuX+9zLoQUYtqvFgqLxqliWXnPJH34GipEY9qLDu8f7SOwF
-	L8jxLNkDlXpvpCTUahNBDq64T+h8dShffNbUpErWHn1x/hthcTZ5Vhfb+11gcMowNWfteN
-	lMtxy7eNihMWGR1cfiyeiBMHdFAh6/Qkp740gcZF/k3F/n5r2A+L97u2Wp7fBZWy0zuMo+
-	PYecer6KKZ/ZgNu1gqyVkTs47GKuuYwTdT3yWzZ9AXC833zqNXwOSMWk8F7fOivfSBFC1Q
-	gdPEfuqHmDoodf8h5KichaaTG/S7VwJ99WpomEnNl9DoF7NAvN0SmDDj5OvjeA==
+	s=arc-20240116; t=1745440144; c=relaxed/simple;
+	bh=a6J0YZiJf0wIUXDHn7eG6jDQuIrcZmzDIHYFQUg5hv0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gCK7/sua6HbFExtI9rJSFCIkJHbZJRPKaOAoqjfPE9owh4ZfKOtK0XjQWdxkDcndQDTAPpzKustPJvk5oWGrekl/e3ZURX12J44DyrRzajSzt3zXp86FJGhtmk6Epkjqk0/mLWgBgLnBgRGnbot0yKx4r6mLtKlBqzr3ZwBq0JU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kHjT7QE5; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2254e0b4b79so4387905ad.2;
+        Wed, 23 Apr 2025 13:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745440143; x=1746044943; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oyfXWteVf2Uw3jmWN9AEEs2P8ez5YpxAoieteSWvTT0=;
+        b=kHjT7QE534L6vbZRX5cmM/cEozAc1eBzFylEYjIW+RhVoMgybrQ22MJouyiq5MaNra
+         mXia+soSRdpEfU3WOKOU5r9UXoZox4fAvCovCQmRAkz/AERMAZF5T/YYgmL1a8QR65y+
+         gsJiKTo2/w4HatWhCTd1t43+LNgWYbsKVW6sLJ1GTf/vruITguDBRz95jT8dcdEpw49Q
+         Y+6V6mS8NV+wrvtseg1WJm2Sm5x5kyV3JXCo+mdkikpX11BI/Mb2kjYQLpP+zq+M0o26
+         Xu+bv/Eojnbosqm3N+5oLIVfZVVo6qtUdrHSoIQWqWygoulx1Uppji0CQh/qn2c7J2sd
+         el3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745440143; x=1746044943;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oyfXWteVf2Uw3jmWN9AEEs2P8ez5YpxAoieteSWvTT0=;
+        b=GHy0K7ZOhgh/mHShrTuSjBu5MpPUaVE9Xsl7FPdG0Jmab/a6ovS88HJd+mzapYc2Ku
+         /azm9A3cZUIyvVQun7TnLsy8M9bw6rOc63v2EqRDjLczB5AH1x0RAKCoIc4pG7eMfJJT
+         n4u6AEwFOKdspy/z8M+/AbXghqcZLLmkrxNVzYrEugZgSPsR0+MMJQfP46pILHRJBOtO
+         Dz2mMvXUo6ITXW4ZAVDOYM6f8eCQMHjprtTthKIMf5BvwMgJUn/5yp6N5waTLELw5EHT
+         fT8uvUVsu6qdPXDYtIS4V7gClSFQA5QJwxBGvTQDXRCrqPrqQ6jaxt3zSwwtSzeeC2jm
+         9gow==
+X-Forwarded-Encrypted: i=1; AJvYcCUE7ZJxAqofe/a7k/w57BNYG29jwZ7pQESrV/iUodBP29KcI3SEjiULP01KF77wi1WXVF0=@vger.kernel.org, AJvYcCUFOZSX/e1vAGiNankkrZYvAZBVJyMD+nTySpzkIX4tHyKth32uDjKbGblDXnWkaCS68oDGTKzk@vger.kernel.org, AJvYcCUs6jqfHGEPkgVK6L4EQh4STkpf2Vg7v2ABMLcjHu/PFRVg6vhfupk/cKu/ItrszEqmEZfOcyCOcjU/QWwZ07F6@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdKXFLJn9BsNCI97gUVtS/CIt9YuT49dPF71O7kcQ9krg2wwNB
+	LNeTD3uL+M8JMXui5FvKJ1zn2NDBqHs+4SIj5z69J7jt3T61kRM=
+X-Gm-Gg: ASbGncvc/Uf3wtFcMTTQpCMS4uX2RDpLXJrnGP55Hc/teWnpk8nY6ZU5nP4LpLk8NCq
+	lkMYKKQtQybVtcLdncITxnpierl22PfJvuOAXNg5u059+V2pUO4uFOOnVJJ23NaC3LnBJfqwKsP
+	WfR+Vc11y0zOqKYpqoHnqjoSec/VWlZzQtAYfhGPTjL2UCJPzTpwiTCbq1FfplFe8T08UueXZ/k
+	X+VEFXrCvF3+fDVxStIcvcAbwsRaIOsWEgOsPvxJ0MXCEhCQIG5zgW+4dMabn5dflQgE29TupAo
+	oevHgEvrktqfHOQ7bDs9I/PZIsANwwuOptKmjfQL
+X-Google-Smtp-Source: AGHT+IG+I2gupbmugyEQpRKBsCZt2czrIlRva1wVly9xDSObaN4PrDuHgmHsG2fu7u6rVZ4ynoqgrA==
+X-Received: by 2002:a17:902:e54a:b0:223:5ace:eccf with SMTP id d9443c01a7336-22c535acd67mr324263045ad.25.1745440142742;
+        Wed, 23 Apr 2025 13:29:02 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-22c50eb4287sm108976045ad.130.2025.04.23.13.29.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Apr 2025 13:29:02 -0700 (PDT)
+Date: Wed, 23 Apr 2025 13:29:01 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2] bpf: Allow XDP dev-bound programs to perform
+ XDP_REDIRECT into maps
+Message-ID: <aAlNjRGLbUuohQCN@mini-arch>
+References: <20250423-xdp-prog-bound-fix-v2-1-51742a5dfbce@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 23 Apr 2025 21:24:34 +0200
-Message-Id: <D9E9IQQ3QKXM.3UJ17G9CBS1FH@bootlin.com>
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-To: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
-Cc: "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
- <daniel@iogearbox.net>, "John Fastabend" <john.fastabend@gmail.com>,
- "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
- <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu"
- <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "KP Singh"
- <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo"
- <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>, "Puranjay Mohan"
- <puranjay@kernel.org>, "Xu Kuohai" <xukuohai@huaweicloud.com>, "Catalin
- Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>,
- "Mykola Lysenko" <mykolal@fb.com>, "Shuah Khan" <shuah@kernel.org>, "Maxime
- Coquelin" <mcoquelin.stm32@gmail.com>, "Alexandre Torgue"
- <alexandre.torgue@foss.st.com>, "Florent Revest" <revest@chromium.org>,
- "Bastien Curutchet" <bastien.curutchet@bootlin.com>,
- <ebpf@linuxfoundation.org>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, <bpf@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kselftest@vger.kernel.org>,
- <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH RFC bpf-next 1/4] bpf: add struct largest member size in
- func model
-X-Mailer: aerc 0.20.1-0-g2ecb8770224a
-References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
- <20250411-many_args_arm64-v1-1-0a32fe72339e@bootlin.com>
- <CAEf4Bzbn6BdXTOb0dTcsQmOMZpp5=DzGS2hHHQ3+dwcja=gv+w@mail.gmail.com>
- <D98Q8BRNUVS9.11J60C67L1ALR@bootlin.com>
- <CAEf4BzZHMYyGDZ4c4eNXG7Fm=ecxCCbKhKbQTbCjvWmKtdwvBw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZHMYyGDZ4c4eNXG7Fm=ecxCCbKhKbQTbCjvWmKtdwvBw@mail.gmail.com>
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvgeejgeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpegggfgtfffkhffvvefuofhfjgesthhqredtredtjeenucfhrhhomheptehlvgigihhsucfnohhthhhorhoruceorghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeehveevkeelvdejhffhudfhtdevvddvfffgiedtveejiefgveeljeduveetuddtveenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdgsohhothhlihhnrdgtohhmnecukfhppedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmehfkeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemfhekhedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomheprghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopeeftddprhgtphhtthhopegrnhgurhhiihdrnhgrkhhrhihikhhosehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtohepjhhohhhnr
- dhfrghsthgrsggvnhgusehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmrghrthhinhdrlhgruheslhhinhhugidruggvvhdprhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtohepshhonhhgsehkvghrnhgvlhdrohhrgh
-X-GND-Sasl: alexis.lothore@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250423-xdp-prog-bound-fix-v2-1-51742a5dfbce@kernel.org>
 
-Hi Andrii,
+On 04/23, Lorenzo Bianconi wrote:
+> In the current implementation if the program is dev-bound to a specific
+> device, it will not be possible to perform XDP_REDIRECT into a DEVMAP
+> or CPUMAP even if the program is running in the driver NAPI context and
+> it is not attached to any map entry. This seems in contrast with the
+> explanation available in bpf_prog_map_compatible routine.
+> Fix the issue introducing __bpf_prog_map_compatible utility routine in
+> order to avoid bpf_prog_is_dev_bound() check running bpf_check_tail_call()
+> at program load time (bpf_prog_select_runtime()).
+> Continue forbidding to attach a dev-bound program to XDP maps
+> (BPF_MAP_TYPE_PROG_ARRAY, BPF_MAP_TYPE_DEVMAP and BPF_MAP_TYPE_CPUMAP).
+> 
+> Fixes: 3d76a4d3d4e59 ("bpf: XDP metadata RX kfuncs")
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-On Wed Apr 23, 2025 at 7:15 PM CEST, Andrii Nakryiko wrote:
-> On Thu, Apr 17, 2025 at 12:14=E2=80=AFAM Alexis Lothor=C3=A9
-> <alexis.lothore@bootlin.com> wrote:
->>
->> Hi Andrii,
->>
->> On Wed Apr 16, 2025 at 11:24 PM CEST, Andrii Nakryiko wrote:
->> > On Fri, Apr 11, 2025 at 1:32=E2=80=AFPM Alexis Lothor=C3=A9 (eBPF Foun=
-dation)
->> > <alexis.lothore@bootlin.com> wrote:
+Acked-by: Stanislav Fomichev <sdf@fomichev.me>
 
-[...]
-
->> Indeed I initially checked whether I could return directly some alignmen=
-t
->> info from btf, but it then involves the alignment computation in the btf
->> module. Since there could be minor differences between architectures abo=
-ut
->> alignment requirements, I though it would be better to in fact keep alig=
-nment
->> computation out of the btf module. For example, I see that 128 bits valu=
-es
->> are aligned on 16 bytes on ARM64, while being aligned on 8 bytes on S390=
-.
->>
->> And since for ARM64, all needed alignments are somehow derived from size
->> (it is either directly size for fundamental types, or alignment of the
->> largest member for structs, which is then size of largest member),
->> returning the size seems to be enough to allow the JIT side to compute
->> alignments.
->
-> If you mean the size of "primitive" field and/or array element
-> (applied recursively for all embedded structs/unions) then yes, that's
-> close enough. But saying just "largest struct member" is wrong,
-> because for
->
-> struct blah {
->     struct {
->         int whatever[128];
->     } heya;
-> };
->
->
-> blah.heya has a large size, but alignment is still just 4 bytes.
-
-Indeed, that's another case making my proposal fail :)
-
-> I'd suggest looking at btf__align_of() in libbpf (tools/lib/bpf/btf.c)
-> to see how we calculate alignment there. It seems to work decently
-> enough. It won't cover any arch-specific extra rules like double
-> needing 16-byte alignment (I vaguely remember something like that for
-> some architectures, but I might be misremembering), or anything
-> similar. It also won't detect (I don't think it's possible without
-> DWARF) artificially increased alignment with attribute((aligned(N))).
-
-Thanks for the pointer, I'll take a look at it. The more we discuss this
-series, the less member size sounds relevant for what I'm trying to achieve
-here.
-
-Following Xu's comments, I have been thinking about how I could detect the
-custom alignments and packing on structures, and I was wondering if I could
-somehow benefit from __attribute__ encoding in BTF info ([1]). But
-following your hint, I also see some btf_is_struct_packed() in
-tools/lib/bpf/btf_dump.c that could help. I'll dig this further and see if
-I can manage to make something work with all of this.
-
-Thanks,
-
-Alexis
-
-[1] https://lore.kernel.org/bpf/20250130201239.1429648-1-ihor.solodrai@linu=
-x.dev/
-
---=20
-Alexis Lothor=C3=A9, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Thank you!
 
