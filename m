@@ -1,112 +1,182 @@
-Return-Path: <bpf+bounces-56551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56552-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C063DA99BF6
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 01:20:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 839FDA99C22
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 01:45:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 222135A374B
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 23:20:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E29A65A8390
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 23:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 081F322F771;
-	Wed, 23 Apr 2025 23:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EE8022F77E;
+	Wed, 23 Apr 2025 23:45:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rfy2pXGV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MKuPz+oc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30643185B48;
-	Wed, 23 Apr 2025 23:20:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0D1645;
+	Wed, 23 Apr 2025 23:45:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745450426; cv=none; b=HX8RoJ1FFJH0ROtBc8u+R1SDoEUHl0emJn7kitzPaBZbxHe/F5FosgO+1+U3VfitHJmAvqUgQfKH4nGtWnNoWSXg62FnuZk5aRAh4VRVruUuSZfNM1P10Rel9BpA0jKcIQo476L8oWtfz6G5vrc9JOe9cZrMKKcv0LRxWIbQHoI=
+	t=1745451931; cv=none; b=WoVTLWF/LDBHvPshu7Oad+VVjoUy/TtB3G/r5iBEz05ks4KAN0HptcCaAbgRkft0cZr4czkvezynSa6iQMW4A7zrkZccIB452l30YNu2NYZw3ksYRdeqe3Hn1PL6luKP04zaGQ3vcXfauzZSDBzChff58237fye+L+Zd+mDiPBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745450426; c=relaxed/simple;
-	bh=PoLdUM8YKELkgIWFMosRaUPk5GGn1/ct137NlwZgwT4=;
+	s=arc-20240116; t=1745451931; c=relaxed/simple;
+	bh=lsUo/fWRv0v4sn24ChLCCGBcd3jGuEfkjbiFhMYRKu8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DRX8zy7yIvjq3KhTc/3VoxP/A6BCmXYOGmoEdQ/qRu1GqrMjmcWMQ+4cYDM9V+fIY8UoGvxhNoxtPVagO2K7sJ+8vhehafY2UGowNCTTBZ4VE/NQ0huU7s/7Nvjv3MpGwhR7Z+Fb6NnL7eX4UAM8BxRongwZ+Gw/MzKjMV4jqQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rfy2pXGV; arc=none smtp.client-ip=209.85.214.178
+	 Content-Type:Content-Disposition:In-Reply-To; b=oXqLUTPKMTGR4ZaYUdy3nhnLV9wdpKNSyQcweXuHXaEM+vpHLrOM/ps5/Vt9ZzEmrQ2h7kh4vZNF4/kwH9c4TWNvLkqb8rM6T/ratUxoO2q91etYU3jvxnwGi/J9Uw3WMxHDlcPh9LRgH8nNLxdDa/SN5sHGjjxYx6ZmGCcui4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MKuPz+oc; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-22c336fcdaaso4342965ad.3;
-        Wed, 23 Apr 2025 16:20:24 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-30863b48553so1479663a91.0;
+        Wed, 23 Apr 2025 16:45:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745450424; x=1746055224; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745451929; x=1746056729; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=abKOlY2sTzPQ/TusDqq4nfLYAhPWi10xulEUiXcfDms=;
-        b=Rfy2pXGVWbNXH8Uz5YRbqYELc4fFQZPcEubltlUMmlbnHqXcdN0lG1X9dcP7u6Wu38
-         1L3dNwW5kTPiZ73ks6sQYJegl/cNWvkREEM5bO8dfaeUuWUeZCgQm3zMYDEBZZv8/sQK
-         mh8JiLD1O2EJ1K8F1JbhIuytLPNNlI8+RZGQDm/r92HxhLC0mwk8uPiJyb3M9/kf0yA7
-         6sBtLF0q/Tatvjaq5gzqKC29RUig6uREfY3V1sAuxlRZDd5ZSpdCnBu0hPYNErMKEF4L
-         iwx+nxWFVr1xQt653PhcO6CwYvBGxlSu4LMxS37gTgahopQ9HUitCcgeGJesJpmaOXps
-         2efQ==
+        bh=Rd4Ivq0EG97ciT8fUrnEVihqKl+kbekTsPCmJAqV8co=;
+        b=MKuPz+ocd/hrze4Jvsvooh6EoJk86OIJ0Fr0myE/OESIjcna1F7DBikGUt3FeHWhUL
+         I4o0getN08dWU0bH6Rhx8Rz1M8INOwXEJYCRa4H2yiOptcNfbirVSej/5c0pezTSdpCn
+         J/4BTEBrJiYoXc98X4MsP9DTvelKRxIEBYTZ19cfpCfsCRVHJrP19mRtHAwiq61KvQS+
+         4U/sBZJMAWTucIdU1ch3T+uw3bezyI2x3QkON77hWPy/SmQ20C44R3cjBYQHOg59JEep
+         kXTs0OXCPo3PWxbcfbm/4KbMyw7MA7oKgcOiP/GaUvgJ+Ok1Ol7qW5+PAFkb2cOLi/CZ
+         hAqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745450424; x=1746055224;
+        d=1e100.net; s=20230601; t=1745451929; x=1746056729;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=abKOlY2sTzPQ/TusDqq4nfLYAhPWi10xulEUiXcfDms=;
-        b=EstKwIZhWx/slVoJPDBc6mPa3DaKWVnjJ4fxbjUSsXgXi1hc9nxXmmEse4chNJ/LHj
-         M8rC3QPdZb9TOoD3ahCUDcJpJUW6D8fGX6/2rrlOyG9rm7y2QzZlyOy2UMP/JqzLfM7M
-         KvICIe8yd9bcNUXtOgRAqmR59kz7AOrlJCpUC9qj+IKRi8WgI1mgJ4cEKBF8k1vuS22U
-         4env8ep9OS/U/pu4yJxtS5xFpoeM6MgGNa2uAwRYcNJupPAXfEobUQ8FTFxnqaoeYK+X
-         bsecVgXAn0RkIBMbf/cK7/qBhTVdqCHClTuRyIp25uvGKmIsO5TtpYRxrOkZ3NVk1t1F
-         2PwA==
-X-Forwarded-Encrypted: i=1; AJvYcCULA/gU0bk3awnjlM1IOvqjGtelLfXwgugKINO3/9CWhS+JxmlCAi5u98F+8qgOPE0zKsNAf0o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxngTO9DO9+Xz6WBg/srPC0fITBHZtrK5WVshYYU47PV5nG1GEJ
-	L/iAmipQ6cxX/Xz2I1sVLlp4KSbpflCkkKin/B6fSHuZ08+pO5hN
-X-Gm-Gg: ASbGnct/+nEE2DwyW2oNqDw+acGb1RBh0YF4hqEIhyuqCIo4043WvTmnqck+5zP0TFr
-	RHaDLLPzmszJ8PWh+uTaCRPAGws0weHIKhJAe/wU/NB1ggLVQFv5pgFhQ7MtqoXI3dpgY4sXMtS
-	LjazOLu5yQU03umTCj8vPmm3QpBMNNRyLdYfBK/LiPU26bS26o4lIxsOEJFTpmonToqUGJR5Tfj
-	cSpgEWk63zUeVi5Zo8oQFc1Nkl8n8RUH6lssSQ4L9VHUSKV8oZXaG2cnWYk6xmXR7tGqNrN67OV
-	I6v0u66Yvj4hGeiDQ1IgjJuPqECRL7u+CsNw77XSm8qI
-X-Google-Smtp-Source: AGHT+IFwr/EOTneSy/MmI0i3yAi+UxHPrsKvpXlN5lYnm/9UOJ1O9hTphUC9vPeDl7EtkGpDOhXteg==
-X-Received: by 2002:a17:902:e741:b0:220:ec62:7dc8 with SMTP id d9443c01a7336-22db3bd5c77mr5348925ad.2.1745450424348;
-        Wed, 23 Apr 2025 16:20:24 -0700 (PDT)
-Received: from localhost ([129.210.115.104])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db4d770d6sm246945ad.17.2025.04.23.16.20.23
+        bh=Rd4Ivq0EG97ciT8fUrnEVihqKl+kbekTsPCmJAqV8co=;
+        b=uXha3eIB/yDSSZ8t54/nRorn1r5FkvTJHkfWbp2sEGK5/Sih6EjjX9S/HqOTghpxyi
+         tVJoT5DlA2pfcIho7AnCwtCCR94ICI2ow4pukl94RKlr8MS1HIDNnXt0d659zGNZU9DU
+         psttDQ/VHk7Qzyy8XKRRm+drR6c2wefILXGOE68vpCkxVYNIT8x76OkDgyjp5utJ6WVZ
+         mtQ2BgS9nG/DNz+Dm//cnjGnvF9dqTGH7BA/Pzm/0om5Luq9vtxXOaG0CDdGJqgDITvv
+         Cb86HhAveGk7lXUwi0h+9Z0TM9GtAthp6Dr4khbdpSC28Bw/zWOmNghPj4xjeHVX6Aiy
+         HI3A==
+X-Forwarded-Encrypted: i=1; AJvYcCXNDOOSNP6OZuwTcz8Is7eV5kqPXhfTxOll2BM38nU2tR9Ic92zcZ7lbuY8WzV89hPwVuk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWcw6qjIpmUd1TrYfaCPsJufTtR1mb8v0jMAJ28iEbmCPrwLKS
+	jqOoURoG1h0VQ+W8Yb0UvZqkfOGmeSRaQ6D7mJOBwy0gX5o+dnw=
+X-Gm-Gg: ASbGncvovprTZu1WjoeTpQNGmTb0WD5anJQHMF+gHaDuNGILeqkvdhBBQJ/clxncQFk
+	3AugEHzZ86RPTeexG2IP0zUFxpqMtSAbT5mQ51T1Z7gNBTJoS8u+QXb4WRDCke0NZTMnRiJjk2S
+	B4Vg/oylYsv3L25Ncw2rW6rbvdVkdb3h8xdSBj0IkLTK+4ZbtS0LNd2IeRIEr2uSJXXO9cMrmMz
+	dXI6v/22Zmz1XZrDXTcMAcI1stTTE4956NKw+XENKs52tKJ/Xo5iWVlfu7oanwK3h7opziE2XFD
+	t4iVA3ne6LMs1P6WLmEQYmebR5vAQxYdaDhNxLRx
+X-Google-Smtp-Source: AGHT+IHlHUbJTc+JV3ZzF0uBTgtlOhaF0wMNvqfAQsMoChnkk++quFl8sokZ0xoByNTxhWxcW3/jlw==
+X-Received: by 2002:a17:90b:2e0f:b0:2fa:42f3:e3e4 with SMTP id 98e67ed59e1d1-309ee367d8amr352883a91.3.1745451928774;
+        Wed, 23 Apr 2025 16:45:28 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-309df9ef918sm2277406a91.7.2025.04.23.16.45.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Apr 2025 16:20:23 -0700 (PDT)
-Date: Wed, 23 Apr 2025 16:20:22 -0700
-From: Cong Wang <xiyou.wangcong@gmail.com>
-To: Amery Hung <ameryhung@gmail.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
-	alexei.starovoitov@gmail.com, andrii@kernel.org,
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next/net] bpf: net_sched: Fix using bpf qdisc as
- default qdisc
-Message-ID: <aAl1tm5rwB0kq1/Y@pop-os.localdomain>
-References: <20250422225808.3900221-1-ameryhung@gmail.com>
+        Wed, 23 Apr 2025 16:45:28 -0700 (PDT)
+Date: Wed, 23 Apr 2025 16:45:27 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Arthur Fabre <arthur@arthurfabre.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, jakub@cloudflare.com,
+	hawk@kernel.org, yan@cloudflare.com, jbrandeburg@cloudflare.com,
+	thoiland@redhat.com, lbiancon@redhat.com, ast@kernel.org,
+	kuba@kernel.org, edumazet@google.com
+Subject: Re: [PATCH RFC bpf-next v2 10/17] bnxt: Propagate trait presence to
+ skb
+Message-ID: <aAl7lz88_8QohyxK@mini-arch>
+References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com>
+ <20250422-afabre-traits-010-rfc2-v2-10-92bcc6b146c9@arthurfabre.com>
+ <aAkW--LAm5L2oNNn@mini-arch>
+ <D9EBFOPVB4WH.1MCWD4B4VGXGO@arthurfabre.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250422225808.3900221-1-ameryhung@gmail.com>
+In-Reply-To: <D9EBFOPVB4WH.1MCWD4B4VGXGO@arthurfabre.com>
 
-On Tue, Apr 22, 2025 at 03:58:08PM -0700, Amery Hung wrote:
-> Use bpf_try_module_get()/bpf_module_put() instead of try_module_get()/
-> module_put() when handling default qdisc since users can assign a bpf
-> qdisc to it.
+On 04/23, Arthur Fabre wrote:
+> On Wed Apr 23, 2025 at 6:36 PM CEST, Stanislav Fomichev wrote:
+> > On 04/22, Arthur Fabre wrote:
+> > > Call the common xdp_buff_update_skb() helper.
+> > > 
+> > > Signed-off-by: Arthur Fabre <arthur@arthurfabre.com>
+> > > ---
+> > >  drivers/net/ethernet/broadcom/bnxt/bnxt.c | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > > 
+> > > diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> > > index c8e3468eee612ad622bfbecfd7cc1ae3396061fd..0eba3e307a3edbc5fe1abf2fa45e6256d98574c2 100644
+> > > --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> > > +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> > > @@ -2297,6 +2297,10 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
+> > >  			}
+> > >  		}
+> > >  	}
+> > > +
+> > > +	if (xdp_active)
+> > > +		xdp_buff_update_skb(&xdp, skb);
+> >
+> > For me, the preference for reusing existing metadata area was
+> > because of the patches 10-16: we now need to care about two types of
+> > metadata explicitly.
 > 
-> To trigger the bug:
-> $ bpftool struct_ops register bpf_qdisc_fq.bpf.o /sys/fs/bpf
-> $ echo bpf_fq > /proc/sys/net/core/default_qdisc
+> Having to update all the drivers is definitely not ideal. Motivation is:
 > 
+> 1. Avoid trait_set() and xdp_adjust_meta() from corrupting each other's
+>    data. 
+>    But that's not a problem if we disallow trait_set() and
+>    xdp_adjust_meta() to be used at the same time, so maybe not a good
+>    reason anymore (except for maybe 3.)
+> 
+> 2. Not have the traits at the "end" of the headroom (ie right next to
+>    actual packet data).
+>    If it's at the "end", we need to move all of it to make room for
+>    every xdp_adjust_head() call.
+>    It seems more intrusive to the current SKB API: several funcs assume
+>    that there is headroom directly before the packet.
 
-Good to see eBPF Qdisc's can be default as well.
+[..]
 
-> Fixes: c8240344956e (bpf: net_sched: Support implementation of Qdisc_ops in bpf)
-> Signed-off-by: Amery Hung <ameryhung@gmail.com>
+> 3. I'm not sure how this should be exposed with AF_XDP yet. Either:
+>    * Expose raw trait storage, and having it at the "end" of the
+>      headroom is nice. But userspace would need to know how to parse the
+> 	 header.
+>    * Require the XDP program to copy the traits it wants into the XDP
+>      metadata area, which is already exposed to userspace. That would
+> 	 need traits and XDP metadata to coexist.
+ 
+By keeping the traits at the tail we can just expose raw trait storage
+and let userspace deal with it. But anyway, my main point is to avoid
+having drivers to deal with two separate cases. As long as we can hide
+everything behind a common call, we can change the placement later.
 
-Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
+> > If you insist on placing it into the headroom, can we at least have some
+> > common helper to finish xdp->skb conversion? It can call skb_ext_from_headroom
+> > and/or skb_metadata_set:
+> >
+> > xdp_buff_done(*xdp, *skb) {
+> > 	if (have traits) {
+> > 		skb_ext_from_headroom
+> > 		return
+> > 	}
+> >
+> > 	metasize = xdp->data - xdp->data_meta;
+> > 	if (metasize)
+> > 		skb_metadata_set
+> > }
+> >
+> > And then we'll have some common rules for the drivers: call xdp_buff_done
+> > when you're done with the xdp_buff to take care of metadata/traits. And
+> > it might be easier to review: you're gonna (mostly) change existing
+> > calls to skb_metadata_set to your new helper. Maybe we can even
+> > eventually fold all xdp_update_skb_shared_info stuff into that as
+> > well...
+> 
+> Yes! This is what I was going for with xdp_buff_update_skb() - it would be
+> nice for it handle all the SKB updating, including skb_metadata_set().
+> 
+> Should I do that first, and submit it as separate series()?
 
-Thanks!
+Up to you, will be happy to review regardless :-)
 
