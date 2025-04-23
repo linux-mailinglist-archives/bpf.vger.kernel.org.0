@@ -1,164 +1,112 @@
-Return-Path: <bpf+bounces-56550-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56551-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8E43A99BF4
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 01:20:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C063DA99BF6
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 01:20:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57BDF1B814A5
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 23:20:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 222135A374B
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 23:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DB8322F74A;
-	Wed, 23 Apr 2025 23:20:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 081F322F771;
+	Wed, 23 Apr 2025 23:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kAOPDj2y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rfy2pXGV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7AF620297E
-	for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 23:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30643185B48;
+	Wed, 23 Apr 2025 23:20:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745450419; cv=none; b=AgGkRuyGCgvzDW3o27EeR3GZO9aHY8tR0XJMUpNluohBLBTn2NvJUlnAZjOZLVM/5MZRbHd37uIxKWUbhFhw0Vw3WT7nxE33qdJE8kv+5kptbkx3Ts/qxgRbiz06VvuYFf0VI+Oeqe+Q/HubFj6Zz6qzyiawSTEjfS9qp6W+BcQ=
+	t=1745450426; cv=none; b=HX8RoJ1FFJH0ROtBc8u+R1SDoEUHl0emJn7kitzPaBZbxHe/F5FosgO+1+U3VfitHJmAvqUgQfKH4nGtWnNoWSXg62FnuZk5aRAh4VRVruUuSZfNM1P10Rel9BpA0jKcIQo476L8oWtfz6G5vrc9JOe9cZrMKKcv0LRxWIbQHoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745450419; c=relaxed/simple;
-	bh=gBSZcmoKs05GEPOCE/9I2ddkaztZARxqe0cCnsxPbuQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=atx2totUWwwix8zGLQzjNs8GrV4O8aPBFGFSIMiuTxrQ4cFs7lBsPfGKe69Mht5EfUUb/8QJVUumbOAMmja3M/2TkSvV3F6p+Djfzt0CONtwRgr49Syc/rtf547oIqrzsGtKNOyGSxoqUvqbCe6zOLhm99uUzWaTSMEFRGoyUqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kAOPDj2y; arc=none smtp.client-ip=209.85.215.180
+	s=arc-20240116; t=1745450426; c=relaxed/simple;
+	bh=PoLdUM8YKELkgIWFMosRaUPk5GGn1/ct137NlwZgwT4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DRX8zy7yIvjq3KhTc/3VoxP/A6BCmXYOGmoEdQ/qRu1GqrMjmcWMQ+4cYDM9V+fIY8UoGvxhNoxtPVagO2K7sJ+8vhehafY2UGowNCTTBZ4VE/NQ0huU7s/7Nvjv3MpGwhR7Z+Fb6NnL7eX4UAM8BxRongwZ+Gw/MzKjMV4jqQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rfy2pXGV; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-b0b2d1f2845so213086a12.3
-        for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 16:20:16 -0700 (PDT)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-22c336fcdaaso4342965ad.3;
+        Wed, 23 Apr 2025 16:20:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745450416; x=1746055216; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ba3njgXOWb/2IcSn+2bQmLRctjovyKj04CuKA6avBUg=;
-        b=kAOPDj2yjXGmsDZoWoxsZ4m2BsT0pgIFoRrQUSppbPuh/TR5eXBUncRwucIJb4oNkN
-         RrVXyRa6XMgWBdQe9QBsUbP8XGSlRZ4QRfZXB3VuvJWCb/a6Z1JhtrHcTAOokRE3dQgm
-         DjE/iX424zs6rDV05fW8ztclpPjNeBBAQ3tHBvPZ38K6/pFJTe7CIKmSbIa67OTGx/EE
-         WZRwph8Z281INqBQzQx4ihGiDLwqRYercKKFlAXZkkPSntlBQfWs+GLEJcornhYB7jFs
-         GifrGCgkE3onWD8ZVuTZTWZhYU88SKDtoEsrNTBv+3n9OCxqn+Betifq6ARyk0zVm5BI
-         fl2A==
+        d=gmail.com; s=20230601; t=1745450424; x=1746055224; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=abKOlY2sTzPQ/TusDqq4nfLYAhPWi10xulEUiXcfDms=;
+        b=Rfy2pXGVWbNXH8Uz5YRbqYELc4fFQZPcEubltlUMmlbnHqXcdN0lG1X9dcP7u6Wu38
+         1L3dNwW5kTPiZ73ks6sQYJegl/cNWvkREEM5bO8dfaeUuWUeZCgQm3zMYDEBZZv8/sQK
+         mh8JiLD1O2EJ1K8F1JbhIuytLPNNlI8+RZGQDm/r92HxhLC0mwk8uPiJyb3M9/kf0yA7
+         6sBtLF0q/Tatvjaq5gzqKC29RUig6uREfY3V1sAuxlRZDd5ZSpdCnBu0hPYNErMKEF4L
+         iwx+nxWFVr1xQt653PhcO6CwYvBGxlSu4LMxS37gTgahopQ9HUitCcgeGJesJpmaOXps
+         2efQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745450416; x=1746055216;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ba3njgXOWb/2IcSn+2bQmLRctjovyKj04CuKA6avBUg=;
-        b=q1ozWVtrHjvVJ7AB6krrPyxNdLC9JGQ6OPze43CyaUXDJGWeCbQaTpL8hxzn7CLbHn
-         YeEmhCSNN0sC1znjJ91lT95UifFICpmqi/Kjg0LIiLBs6rhFOB1JGd/jpSVI5IAJagZT
-         f8EAt//TsbPTrwwomqqCAsiVja8gANfeFYhVnFlqaObzeRDQuvYvIxqgy+HyAouUlIXT
-         sENu551PDQG/ED6G3PZAJwV+fDVyMBkigeVikLcOtCFaP5AD2fFY+R3hHNZeNowqDmPh
-         zNrcnOsE4+14njCB1tj3/rP+XYahAfqvxyhlIzH9d+xXh+aMLKlJ0aL+Y1MZ5DUgEBy+
-         Anpg==
-X-Gm-Message-State: AOJu0YzE7sLc46uyFYRMUqDnz7ahfOMhdx+t9ZZaXVc0R8Fhm/1UWJ+H
-	OSHlWq9XFSeA0rSxRXV5+ABGpZ+phEz5Wpp7nYHLj4xfZ+eis2tV07Lcsq2+T1DVllqCckk8B91
-	Wf5TGUdIfLer258PA7Kk8VM2UFY8=
-X-Gm-Gg: ASbGncvaHCq/8HnUdOD+MTlB67f6nt7vK1b33czX4BOfows/dV313dbwPjt06+c9X4/
-	L5634xq+PFcGAFD8gU6QFt5rfOHkAMeBRuzg/DSlkBjeWBsQJSLsnKZm4VfmWm/7uk1F876B1AQ
-	dD/Cr/jkrLKQ7ob0TZIoA9V4idJlq4UHPGmaJzdw==
-X-Google-Smtp-Source: AGHT+IGwuUaMVe+at59d4GXmyxcbWTLq/YN5XoEVjb3z/ucLXDh4zpv8BuVnxw+N3iAF8K81/fzNGfEF/hN+yGfb2Ow=
-X-Received: by 2002:a17:90b:5847:b0:2ff:5e4e:861 with SMTP id
- 98e67ed59e1d1-309ed34bb12mr851771a91.24.1745450415892; Wed, 23 Apr 2025
- 16:20:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1745450424; x=1746055224;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=abKOlY2sTzPQ/TusDqq4nfLYAhPWi10xulEUiXcfDms=;
+        b=EstKwIZhWx/slVoJPDBc6mPa3DaKWVnjJ4fxbjUSsXgXi1hc9nxXmmEse4chNJ/LHj
+         M8rC3QPdZb9TOoD3ahCUDcJpJUW6D8fGX6/2rrlOyG9rm7y2QzZlyOy2UMP/JqzLfM7M
+         KvICIe8yd9bcNUXtOgRAqmR59kz7AOrlJCpUC9qj+IKRi8WgI1mgJ4cEKBF8k1vuS22U
+         4env8ep9OS/U/pu4yJxtS5xFpoeM6MgGNa2uAwRYcNJupPAXfEobUQ8FTFxnqaoeYK+X
+         bsecVgXAn0RkIBMbf/cK7/qBhTVdqCHClTuRyIp25uvGKmIsO5TtpYRxrOkZ3NVk1t1F
+         2PwA==
+X-Forwarded-Encrypted: i=1; AJvYcCULA/gU0bk3awnjlM1IOvqjGtelLfXwgugKINO3/9CWhS+JxmlCAi5u98F+8qgOPE0zKsNAf0o=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxngTO9DO9+Xz6WBg/srPC0fITBHZtrK5WVshYYU47PV5nG1GEJ
+	L/iAmipQ6cxX/Xz2I1sVLlp4KSbpflCkkKin/B6fSHuZ08+pO5hN
+X-Gm-Gg: ASbGnct/+nEE2DwyW2oNqDw+acGb1RBh0YF4hqEIhyuqCIo4043WvTmnqck+5zP0TFr
+	RHaDLLPzmszJ8PWh+uTaCRPAGws0weHIKhJAe/wU/NB1ggLVQFv5pgFhQ7MtqoXI3dpgY4sXMtS
+	LjazOLu5yQU03umTCj8vPmm3QpBMNNRyLdYfBK/LiPU26bS26o4lIxsOEJFTpmonToqUGJR5Tfj
+	cSpgEWk63zUeVi5Zo8oQFc1Nkl8n8RUH6lssSQ4L9VHUSKV8oZXaG2cnWYk6xmXR7tGqNrN67OV
+	I6v0u66Yvj4hGeiDQ1IgjJuPqECRL7u+CsNw77XSm8qI
+X-Google-Smtp-Source: AGHT+IFwr/EOTneSy/MmI0i3yAi+UxHPrsKvpXlN5lYnm/9UOJ1O9hTphUC9vPeDl7EtkGpDOhXteg==
+X-Received: by 2002:a17:902:e741:b0:220:ec62:7dc8 with SMTP id d9443c01a7336-22db3bd5c77mr5348925ad.2.1745450424348;
+        Wed, 23 Apr 2025 16:20:24 -0700 (PDT)
+Received: from localhost ([129.210.115.104])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db4d770d6sm246945ad.17.2025.04.23.16.20.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Apr 2025 16:20:23 -0700 (PDT)
+Date: Wed, 23 Apr 2025 16:20:22 -0700
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: Amery Hung <ameryhung@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+	alexei.starovoitov@gmail.com, andrii@kernel.org,
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf-next/net] bpf: net_sched: Fix using bpf qdisc as
+ default qdisc
+Message-ID: <aAl1tm5rwB0kq1/Y@pop-os.localdomain>
+References: <20250422225808.3900221-1-ameryhung@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250411011523.1838771-1-yonghong.song@linux.dev>
-In-Reply-To: <20250411011523.1838771-1-yonghong.song@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 23 Apr 2025 16:20:01 -0700
-X-Gm-Features: ATxdqUHwLcXOuIwu1gV1_J4v237Z-hEg0spJp4YcylEx788CBHXY6VYrXhREpJo
-Message-ID: <CAEf4Bzaa=AYujxnFf3B8ELQWev4ZREz4qXb_=DDoGPEe30iPhw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/4] bpf: Implement mprog API on top of
- existing cgroup progs
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250422225808.3900221-1-ameryhung@gmail.com>
 
-On Thu, Apr 10, 2025 at 6:15=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
-> Current cgroup prog ordering is appending at attachment time. This is not
-> ideal. In some cases, users want specific ordering at a particular cgroup
-> level. For example, in Meta, we have a case where three different
-> applications all have cgroup/setsockopt progs and they require specific
-> ordering. Current approach is to use a bpfchainer where one bpf prog
-> contains multiple global functions and each global function can be
-> freplaced by a prog for a specific application. The ordering of global
-> functions decides the ordering of those application specific bpf progs.
-> Using bpftrainer is a centralized approach and is not desirable as
+On Tue, Apr 22, 2025 at 03:58:08PM -0700, Amery Hung wrote:
+> Use bpf_try_module_get()/bpf_module_put() instead of try_module_get()/
+> module_put() when handling default qdisc since users can assign a bpf
+> qdisc to it.
+> 
+> To trigger the bug:
+> $ bpftool struct_ops register bpf_qdisc_fq.bpf.o /sys/fs/bpf
+> $ echo bpf_fq > /proc/sys/net/core/default_qdisc
+> 
 
-typo: bpfchainer
+Good to see eBPF Qdisc's can be default as well.
 
-> one of applications acts as a deamon. The decentralized attachment
+> Fixes: c8240344956e (bpf: net_sched: Support implementation of Qdisc_ops in bpf)
+> Signed-off-by: Amery Hung <ameryhung@gmail.com>
 
-typo: daemon
+Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
 
-
-> approach is more favorable for those applications.
->
-> To address this, the existing mprog API ([2]) seems an ideal solution wit=
-h
-> supporting BPF_F_BEFORE and BPF_F_AFTER flags on top of existing cgroup
-> bpf implementation. More specifically, the support is added for prog/link
-> attachment with BPF_F_BEFORE and BPF_F_AFTER. The kernel mprog
-> interface ([2]) is not used and the implementation is directly done in
-> cgroup bpf code base. The mprog 'revision' is also implemented in
-> attach/detach/replace, so users can query revision number to check the
-> change of cgroup prog list.
->
-> The patch set contains 4 patches. Patch 1 adds revision support for
-> cgroup bpf progs. Patch 2 implements mprog API implementation for
-> prog/link attach and revision update. Patch 3 adds a new libbpf
-> API to do cgroup link attach with flags like BPF_F_BEFORE/BPF_F_AFTER.
-> Patch 4 adds two tests to validate the implementation.
->
->   [1] https://lore.kernel.org/r/20250224230116.283071-1-yonghong.song@lin=
-ux.dev
->   [2] https://lore.kernel.org/r/20230719140858.13224-2-daniel@iogearbox.n=
-et
->
-> Yonghong Song (4):
->   cgroup: Add bpf prog revisions to struct cgroup_bpf
->   bpf: Implement mprog API on top of existing cgroup progs
->   libbpf: Support link-based cgroup attach with options
->   selftests/bpf: Add two selftests for mprog API based cgroup progs
->
->  include/linux/bpf-cgroup-defs.h               |   1 +
->  include/uapi/linux/bpf.h                      |   7 +
->  kernel/bpf/cgroup.c                           | 151 +++-
->  kernel/bpf/syscall.c                          |  58 +-
->  kernel/cgroup/cgroup.c                        |   5 +-
->  tools/include/uapi/linux/bpf.h                |   7 +
->  tools/lib/bpf/bpf.c                           |  44 +
->  tools/lib/bpf/bpf.h                           |   5 +
->  tools/lib/bpf/libbpf.c                        |  28 +
->  tools/lib/bpf/libbpf.h                        |  15 +
->  tools/lib/bpf/libbpf.map                      |   1 +
->  .../bpf/prog_tests/cgroup_mprog_opts.c        | 752 ++++++++++++++++++
->  .../bpf/prog_tests/cgroup_mprog_ordering.c    |  77 ++
->  .../selftests/bpf/progs/cgroup_mprog.c        |  30 +
->  14 files changed, 1138 insertions(+), 43 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
-pts.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_mprog_o=
-rdering.c
->  create mode 100644 tools/testing/selftests/bpf/progs/cgroup_mprog.c
->
-> --
-> 2.47.1
->
+Thanks!
 
