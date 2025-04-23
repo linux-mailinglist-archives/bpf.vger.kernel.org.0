@@ -1,193 +1,207 @@
-Return-Path: <bpf+bounces-56540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56541-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 459E2A999C3
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 22:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ECFEA999EC
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 23:08:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B63FB5A7C61
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 20:54:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FCA63ADC00
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 21:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E38CF26FA72;
-	Wed, 23 Apr 2025 20:54:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98A12749C0;
+	Wed, 23 Apr 2025 21:08:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="dSDuoWP7";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="E5GcZm1F"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PaWAQeun"
 X-Original-To: bpf@vger.kernel.org
-Received: from fhigh-b6-smtp.messagingengine.com (fhigh-b6-smtp.messagingengine.com [202.12.124.157])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A072701BC;
-	Wed, 23 Apr 2025 20:54:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02858265CBD
+	for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 21:08:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745441682; cv=none; b=PMh1/hl4kUcXMk8vdVIgihRlWiDV6egro3dJlbYxUvfLm28Ff0zsnNvN5t/2j3EGGD1l8C498piZKHen0QPiA8q7+4fb5JVs2reM59pXYohy61E2XU6nMBH8gAfTeUnpX7d+DOT6oC0i17zs9eg9ZIyFYBPfZRlxKeLMTPXAXsE=
+	t=1745442488; cv=none; b=ILnLCWyC17xwL6MSK8cbvBjPO7U7GeiHpjXS7ano5IyHBj9rvh5J1yQEXsO+/V2GAqPMSqHZ7M1g9GV8C4e3G8W0RAld7B4cYndpnciD9ZYPzhCNFbRoQVIXzh1irBv3DxZQQa93E3spZ9BxOKuCicdOhwVVnolLvLLOxN4yUtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745441682; c=relaxed/simple;
-	bh=wp/tmVkOATVLugd1D0jouBtXDou1iJLlFR51aXGWQCg=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=OdBI+mBqw7jkCPfPVRpEhy4l+hEHz8zxuSmIZWikyKxq9cePElxhmMY14HtpSg6pCCWGXFGlzWKtYFSNDKVyg8GSLFBX/TERfc3NODoflWxGhDoBL9pJWjap4zxxqRwtYHCDOl6yMnD2gt/Nk7zvcFVebce3SAFZZOmP6/g45Kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=dSDuoWP7; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=E5GcZm1F; arc=none smtp.client-ip=202.12.124.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arthurfabre.com
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id DBF6125401E4;
-	Wed, 23 Apr 2025 16:54:37 -0400 (EDT)
-Received: from phl-imap-13 ([10.202.2.103])
-  by phl-compute-05.internal (MEProxy); Wed, 23 Apr 2025 16:54:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arthurfabre.com;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm1;
-	 t=1745441677; x=1745528077; bh=g2MVnbEaHajTV+ZwVS0fqv4DkHnJ+QiQ
-	uueDHO49G3g=; b=dSDuoWP7oJGtq3cxmB6LLFAJA97FUvfszsYN0JNDZMM8v9Hw
-	1ehgJ9p4oWrRJHN2NzrvIp2dgm2lTMY0139qTugrOZxupmL8DOa6SmfRieNga6dd
-	xZHkU38Ayq1AwmfAZW0qg0/1GbFh3oMEknUaLo2wD5dHE0pwY3y6UQcPyi61pczx
-	DNYDloleMvSBURilXgKPZn0x6jj4U2NhBu7gLsR64p/ifPej4vO7PdVUGwWAK3Gn
-	BmI4PR6G3MPa/kZSNJlK5+GUkJOzfL0/A/vm7BxCNJLZkUfhgIy7i51/U6PXrDUb
-	w6NWENjAkHOKcDQC364mgh6tVTu4QQSMOHKE+w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1745441677; x=
-	1745528077; bh=g2MVnbEaHajTV+ZwVS0fqv4DkHnJ+QiQuueDHO49G3g=; b=E
-	5GcZm1FWe/wxPNQfQ+uKqkJPH/ITsLVb1NBW4k9h7sFEAn7oevGo/Kx/aTkZG7e2
-	wzxWQWa6MQOcLXpGt1heLaCPRWCYWAYCgLzzdcyuKyFzPxQM/eI9gLa0l9A2AKc0
-	psWijl2dtDeD8zqoe2241NtYE8K1oCXdduyLeVTpRRMtU7fdJYTxSBhWQ70zNBPw
-	19+T+g2BRMxlsE2s24zOvEUtpXK5Fgru/SVwjSfMez8h6668RyU+H8m3D56nZftH
-	m2xDgJ4sauR9b/ATAGwr8sn5xVQU4rtv5kVMNvCPEWhzIbrWX/+biupvJ6oIX7Il
-	gqhfSGFdZKmoR0+biRxvA==
-X-ME-Sender: <xms:jVMJaGVUulHrVbnceCWHHVS7aXcdPU8UMNcmCMCn0R5O2c6fwTSU9A>
-    <xme:jVMJaCnJOt91BN8sfveieTGNgpiAd1EGL6mitkcbCQXwzoaKH_AggQ9WbXeXXaRs6
-    Yc4CaWnaiusHQwz5ro>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvgeejieduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepofgggfgtfffkvefuhffvofhfjgesthhqredt
-    redtjeenucfhrhhomhepfdetrhhthhhurhcuhfgrsghrvgdfuceorghrthhhuhhrsegrrh
-    hthhhurhhfrggsrhgvrdgtohhmqeenucggtffrrghtthgvrhhnpefhfeejgefhhffhveel
-    teehhfffheffvdettdelgfeltefhteelveeuffetfffgjeenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhthhhurhesrghrthhhuhhrfhgr
-    sghrvgdrtghomhdpnhgspghrtghpthhtohepuddvpdhmohguvgepshhmthhpohhuthdprh
-    gtphhtthhopehjrghkuhgssegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopehj
-    sghrrghnuggvsghurhhgsegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopeihrg
-    hnsegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopehsthhfohhmihgthhgvvhes
-    ghhmrghilhdrtghomhdprhgtphhtthhopegvughumhgriigvthesghhoohhglhgvrdgtoh
-    hmpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgrfihk
-    sehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkuhgsrgeskhgvrhhnvghlrdhorhhgpd
-    hrtghpthhtoheplhgsihgrnhgtohhnsehrvgguhhgrthdrtghomh
-X-ME-Proxy: <xmx:jVMJaKbU7tMLZm-lxp3Py8DYsYFxv0582GG0JIHMVdP3T80U_ZqUiA>
-    <xmx:jVMJaNUaqRH3gu9dTi4V8DBrtD6TjP1k4nESttebhop8nbIXsQGjkw>
-    <xmx:jVMJaAmPuyHoxHy0lGvXNo_Ld-yYINMfqHGKrE80AGPZhTpoGGnwJw>
-    <xmx:jVMJaCeZkApXLzVxNUZ95cJ5DUL1D08EG2KclOhEcazcggODQs0d1Q>
-    <xmx:jVMJaKTJx03Z6VAEW8_oDiNQ9_fyT_z-taAyzkQW0K5wZc74We8jrXhZ>
-Feedback-ID: i9179493c:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 598A01F00072; Wed, 23 Apr 2025 16:54:37 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1745442488; c=relaxed/simple;
+	bh=XxCvCSGFcEdexELGVW8mhB3qx8vE8Ea2qXrgRkY4gSs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tR7Jl9sMLqDPBSZJsOElbD5PXFJVs5QNqLAXgzd/FK9Dn+qNtRziSldIHpfGPLpsgeVmlWck5sWhzjG4MMsgGmYe5UyCgIcjCFWjvVZlZu6xPUE1qcr9nLPIVEyQN77G2wnCnq/vG1Ryf68fwqUr5bvO7zoufRzh9dtrNsR2d54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PaWAQeun; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <057ad3a8-585f-402b-9150-b1b4b930376c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745442483;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Bjt0MCusdjN1plu9XqSKj6jgzlNQD91/w0/f0lrqbwY=;
+	b=PaWAQeunS4p8HrZBWiqQ0EnLqu3loTpbsdp0zjP+10NZfqGCzj3gJMP7VH5TrwtRwtVEKb
+	W5symTunh6PcXGuHpbMvKKY5mJUdo1KdX62hgYC8gs9VhQcSN2FCs8TfKgl74OcZVScheX
+	kSzUfG6oVt7k/G+XpUQWFNj5ZZFNQvk=
+Date: Wed, 23 Apr 2025 14:07:55 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 23 Apr 2025 22:54:36 +0200
-Message-Id: <D9EBFOPVB4WH.1MCWD4B4VGXGO@arthurfabre.com>
-Cc: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <jakub@cloudflare.com>,
- <hawk@kernel.org>, <yan@cloudflare.com>, <jbrandeburg@cloudflare.com>,
- <thoiland@redhat.com>, <lbiancon@redhat.com>, <ast@kernel.org>,
- <kuba@kernel.org>, <edumazet@google.com>
-Subject: Re: [PATCH RFC bpf-next v2 10/17] bnxt: Propagate trait presence to
- skb
-From: "Arthur Fabre" <arthur@arthurfabre.com>
-To: "Stanislav Fomichev" <stfomichev@gmail.com>
-X-Mailer: aerc 0.17.0
-References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com> <20250422-afabre-traits-010-rfc2-v2-10-92bcc6b146c9@arthurfabre.com> <aAkW--LAm5L2oNNn@mini-arch>
-In-Reply-To: <aAkW--LAm5L2oNNn@mini-arch>
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: Create cgroup storage if needed when
+ updating link
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: andrii@kernel.org, alexis.lothore@bootlin.com, mrpre@163.com,
+ syzbot+e6e8f6618a2d4b35e4e0@syzkaller.appspotmail.com,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Alan Maguire <alan.maguire@oracle.com>,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20250417044041.252874-1-jiayuan.chen@linux.dev>
+ <20250417044041.252874-2-jiayuan.chen@linux.dev>
+ <c6a9b230-f163-4c03-b834-ddcc71c47204@linux.dev>
+ <cbb82d78518c251000e8b52e3f3799b0df438210@linux.dev>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <cbb82d78518c251000e8b52e3f3799b0df438210@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed Apr 23, 2025 at 6:36 PM CEST, Stanislav Fomichev wrote:
-> On 04/22, Arthur Fabre wrote:
-> > Call the common xdp_buff_update_skb() helper.
-> >=20
-> > Signed-off-by: Arthur Fabre <arthur@arthurfabre.com>
-> > ---
-> >  drivers/net/ethernet/broadcom/bnxt/bnxt.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >=20
-> > diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/et=
-hernet/broadcom/bnxt/bnxt.c
-> > index c8e3468eee612ad622bfbecfd7cc1ae3396061fd..0eba3e307a3edbc5fe1abf2=
-fa45e6256d98574c2 100644
-> > --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> > +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> > @@ -2297,6 +2297,10 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct b=
-nxt_cp_ring_info *cpr,
-> >  			}
-> >  		}
-> >  	}
-> > +
-> > +	if (xdp_active)
-> > +		xdp_buff_update_skb(&xdp, skb);
->
-> For me, the preference for reusing existing metadata area was
-> because of the patches 10-16: we now need to care about two types of
-> metadata explicitly.
+On 4/22/25 7:21 PM, Jiayuan Chen wrote:
+> April 23, 2025 at 08:13, "Martin KaFai Lau" <martin.lau@linux.dev> wrote:
+> 
+>>
+>> On 4/16/25 9:40 PM, Jiayuan Chen wrote:
+>>
+>>>
+>>> when we attach a prog without cgroup_storage map being used,
+>>>
+>>>   cgroup_storage in struct bpf_prog_array_item is empty. Then, if we use
+>>>
+>>>   BPF_LINK_UPDATE to replace old prog with a new one that uses the
+>>>
+>>>   cgroup_storage map, we miss cgroup_storage being initiated.
+>>>
+>>>   This cause a painc when accessing stroage in bpf_get_local_storage.
+>>>
+>>>   Reported-by: syzbot+e6e8f6618a2d4b35e4e0@syzkaller.appspotmail.com
+>>>
+>>>   Closes: https://lore.kernel.org/all/67fc867e.050a0220.2970f9.03b8.GAE@google.com/T/
+>>>
+>>>   Fixes: 0c991ebc8c69 ("bpf: Implement bpf_prog replacement for an active bpf_cgroup_link")
+>>>
+>>>   Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+>>>
+>>>   ---
+>>>
+>>>   kernel/bpf/cgroup.c | 24 +++++++++++++++++++-----
+>>>
+>>>   1 file changed, 19 insertions(+), 5 deletions(-)
+>>>
+>>>   diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+>>>
+>>>   index 84f58f3d028a..cdf0211ddc79 100644
+>>>
+>>>   --- a/kernel/bpf/cgroup.c
+>>>
+>>>   +++ b/kernel/bpf/cgroup.c
+>>>
+>>>   @@ -770,12 +770,14 @@ static int cgroup_bpf_attach(struct cgroup *cgrp,
+>>>
+>>>   }
+>>>
+>>>   > /* Swap updated BPF program for given link in effective program arrays across
+>>>
+>>>   - * all descendant cgroups. This function is guaranteed to succeed.
+>>>
+>>>   + * all descendant cgroups.
+>>>
+>>>   */
+>>>
+>>>   -static void replace_effective_prog(struct cgroup *cgrp,
+>>>
+>>>   - enum cgroup_bpf_attach_type atype,
+>>>
+>>>   - struct bpf_cgroup_link *link)
+>>>
+>>>   +static int replace_effective_prog(struct cgroup *cgrp,
+>>>
+>>>   + enum cgroup_bpf_attach_type atype,
+>>>
+>>>   + struct bpf_cgroup_link *link)
+>>>
+>>>   {
+>>>
+>>>   + struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
+>>>
+>>>   + struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
+>>>
+>>>   struct bpf_prog_array_item *item;
+>>>
+>>>   struct cgroup_subsys_state *css;
+>>>
+>>>   struct bpf_prog_array *progs;
+>>>
+>>>   @@ -784,6 +786,10 @@ static void replace_effective_prog(struct cgroup *cgrp,
+>>>
+>>>   struct cgroup *cg;
+>>>
+>>>   int pos;
+>>>
+>>>   > + if (bpf_cgroup_storages_alloc(storage, new_storage, link->type,
+>>>
+>>>   + link->link.prog, cgrp))
+>>>
+>>>   + return -ENOMEM;
+>>>
+>>>   +
+>>>
+>>>   css_for_each_descendant_pre(css, &cgrp->self) {
+>>>
+>>>   struct cgroup *desc = container_of(css, struct cgroup, self);
+>>>
+>>>   > @@ -810,8 +816,11 @@ static void replace_effective_prog(struct cgroup *cgrp,
+>>>
+>>>   desc->bpf.effective[atype],
+>>>
+>>>   lockdep_is_held(&cgroup_mutex));
+>>>
+>>>   item = &progs->items[pos];
+>>>
+>>>   + bpf_cgroup_storages_assign(item->cgroup_storage, storage);
+>>>
+>>
+>> I am still recalling my memory on this older cgroup storage, so I think it will be faster to ask questions.
+>>
+>> What is in the pl->storage (still NULL?), and will the future compute_effective_progs() work?
+>>
+> 
+> For non-link path:
+> cgroup_bpf_attach
 
-Having to update all the drivers is definitely not ideal. Motivation is:
+fwiw, I don't think this details matter here, but it is not only for non-link 
+path. cgroup_bpf_link_attach also calls cgroup_bpf_attach.
 
-1. Avoid trait_set() and xdp_adjust_meta() from corrupting each other's
-   data.=20
-   But that's not a problem if we disallow trait_set() and
-   xdp_adjust_meta() to be used at the same time, so maybe not a good
-   reason anymore (except for maybe 3.)
+> 	bpf_cgroup_storages_assign(pl->storage, storage); // allocate and set
+> 	update_effective_progs
+> 		compute_effective_progs
+> 			bpf_cgroup_storages_assign(item->cgroup_storage, pl->storage);
 
-2. Not have the traits at the "end" of the headroom (ie right next to
-   actual packet data).
-   If it's at the "end", we need to move all of it to make room for
-   every xdp_adjust_head() call.
-   It seems more intrusive to the current SKB API: several funcs assume
-   that there is headroom directly before the packet.
+The pl, that the __cgroup_bpf_replace is xchg()-ing its pl->link->link.prog with 
+new_prog, still has a NULL in pl->storage. When another "different" bpf prog is 
+added and attached to the same cgroup "later", compute_effective_progs will be 
+called and it will have the same bug, no?
 
-3. I'm not sure how this should be exposed with AF_XDP yet. Either:
-   * Expose raw trait storage, and having it at the "end" of the
-     headroom is nice. But userspace would need to know how to parse the
-	 header.
-   * Require the XDP program to copy the traits it wants into the XDP
-     metadata area, which is already exposed to userspace. That would
-	 need traits and XDP metadata to coexist.
-
->
-> If you insist on placing it into the headroom, can we at least have some
-> common helper to finish xdp->skb conversion? It can call skb_ext_from_hea=
-droom
-> and/or skb_metadata_set:
->
-> xdp_buff_done(*xdp, *skb) {
-> 	if (have traits) {
-> 		skb_ext_from_headroom
-> 		return
-> 	}
->
-> 	metasize =3D xdp->data - xdp->data_meta;
-> 	if (metasize)
-> 		skb_metadata_set
-> }
->
-> And then we'll have some common rules for the drivers: call xdp_buff_done
-> when you're done with the xdp_buff to take care of metadata/traits. And
-> it might be easier to review: you're gonna (mostly) change existing
-> calls to skb_metadata_set to your new helper. Maybe we can even
-> eventually fold all xdp_update_skb_shared_info stuff into that as
-> well...
-
-Yes! This is what I was going for with xdp_buff_update_skb() - it would be
-nice for it handle all the SKB updating, including skb_metadata_set().
-
-Should I do that first, and submit it as separate series()?
+> 
+> 
+> pl->storage is just as a temporary holder, never freed, and its value will
+> eventually be assigned to `item->cgroup_storage`.
 
