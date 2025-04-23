@@ -1,113 +1,149 @@
-Return-Path: <bpf+bounces-56531-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A75D4A9978B
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 20:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0FD4A997C0
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 20:22:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80A781B827E9
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:10:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E45D71B838B6
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:22:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92CEA28F930;
-	Wed, 23 Apr 2025 18:09:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA98428E5EA;
+	Wed, 23 Apr 2025 18:21:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="daQVXA9p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cl2EDV52"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1036926982F;
-	Wed, 23 Apr 2025 18:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861FD28DEEA;
+	Wed, 23 Apr 2025 18:21:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745431790; cv=none; b=iySZk73tkD4+BwNiKtTlybT/3AONnR8Vld/m8NTuEPvocPvOduYQivoemrxCoMBd5TuC0W77We6pCIzGBtAVmL4GDJYImJqV96rTNkD3ZS4C8A2/TgLiCHC2hpBe40krjJbsMH8JhZ2dwAvdcsCI6tOmu28W4sKt9GK6ilDH/vg=
+	t=1745432511; cv=none; b=NMbfTe5h07KbDWFU+pRthOj4sPnfsq8T7N6qMjWxCGrrUeqr18ZO+mO2SaBraCF6bhPdJblAoFaU3r+660T71CN2GOLxYomuSG1MCfFOdDiVfGaVXJwEoHNmjf9wtgBM5LrszKsNqSBlfBVpPb/c9PSMlB++Z8YY3yVHFN5xsH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745431790; c=relaxed/simple;
-	bh=U9F+PeVnBpGsSyekbAgYUh9ERhGGMV7iRfE7ZeUqWsQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=P2pr7QU7ipo0RJ1IABl5AOCCO36rWcJ7VHuB+QLL8Gmm6wnPSdFb6VxMpKLNi1OSLm3n5R7u6MYf7wbNP5ybm9FpTDTgGdvBdj/EEw5RYHXA9BTdycVus+5dTEwPpVoi8WCCngWnZpcg+MKpCPJkiGLvcX2DIFcTdTQsUwkuYdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=daQVXA9p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B918C4CEE2;
-	Wed, 23 Apr 2025 18:09:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745431789;
-	bh=U9F+PeVnBpGsSyekbAgYUh9ERhGGMV7iRfE7ZeUqWsQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=daQVXA9p8n9Fh2VwDQ/9hhp9N7zLF5WAXuy+o4TGyaNSTUAKR4JdlQxjNI2kMvlth
-	 +nPyQbvIv28S+WxkfBWMy7pXNx1fhL8oMMrqH4ViMR17+TUoXRIg04YCI+eFGIl0T4
-	 VCPfg/a59P0rPYZhSWsHSf7CwGiuJD4dUoNarCP8vWyMZsOyG+JRaZI62aGdA9NCHB
-	 Zq0CNSI9/v2AGSIoPUpBHgMDlIzTFhrHZPNkNJAP6ttE1fCi5vy3qJMHkw/cnvNAUU
-	 zdC8fpVlp2EaNfpsHb75e8qju7W089Kci3//gIp30LVORZExRyod4j2xvAoxsdnrIl
-	 kxORYu9o2e0rQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33EF6380CED9;
-	Wed, 23 Apr 2025 18:10:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1745432511; c=relaxed/simple;
+	bh=n5KEgKPWGyndOy8RBM0wXCL7YL1bmrK2XR2keNckLaA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jvZfUW1+2rIeLvQvIm5N//sQ8ZHQEY3F7pFxz5NVnZzByTAu8SZYws3apHmrIWguqq45Yishx3v8+xAg6z5xWxYnpJkfjdHir83wFBenn56C3S9hcdFbsHX2GErOciozQRcvYlXJlZYUO3CXjiVZ2StAIpWj2+P2mjHWgiaTIPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cl2EDV52; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5f62d3ed994so172030a12.2;
+        Wed, 23 Apr 2025 11:21:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745432508; x=1746037308; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NhlqINkYpZZBLzVdSPqg22TCWxPQvkr1ZzGoXFf5r1M=;
+        b=cl2EDV52G7UXR88D2b+Ku+trcK8nub6TC31rjkxsal9iSKRDP1qab3CWKtXBfSIX6W
+         60K0hx1rWKhkLHoljiFmyk7dw/GVdYRVnVxLkNQ7lZb5b+GHIWec338zKDHmqEc38Re0
+         xMvAlkIyAP4EScG/TXCaZOFy0p1wHAjKneP3F4PrRWg5BIWdyRdKjBh/d4PYmqqVnJXW
+         VLrLbsZvBpkhBhuNbLvkK18gElc/wSsbYrBjpqBNMjjo88XlwrInc3x1/4hAjpIizg2M
+         d2eHLeUJ951FByiVyd8YHVzON6k7x3sgRl3UvcT1kslqapQd5nD1v+kEhHuHB5mwRJeC
+         rnBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745432508; x=1746037308;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NhlqINkYpZZBLzVdSPqg22TCWxPQvkr1ZzGoXFf5r1M=;
+        b=qC4EK7DTEeLMraOJqBcJw0BpHN172I5cyFjE4Y6lRZH44QaxlgvGcs8bQdLLKzBsTk
+         qVvsbRHZK7OW8DsGuB/ZnZn7xNfWG7VO1Jg1u0qvfIHthikEt5uIrDABGMWvSbQhZZe3
+         OcLGvbQK5Z7k18pSQHGUHH6sTdGcVrmfcuhBpkfuNw0NrY6kvtD7mXng2dRix0k6Gmlq
+         t/8lgeIzXfFzzBaZU5cOTOgOe1pxc8pinOpHm3FCr+T8TDY+C6UQpOoVZZa7tcqz7vRt
+         DuLQL+s5IsFExIjLEeThytBMZ/E8ZUt9bzb3XQpVMp55i3c55qqn7EaLWuyVNqPnNE11
+         a/Lg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOYKfKTZZZzdUvlXzkc1h3TAkj3N/IiTvuMjD81/Tjg7ki2X3x1gt1WjcEt8oIOgo2aIE=@vger.kernel.org, AJvYcCVrRN1dM0f/sOstAO88FMHdQfmGfPEDGoymUeKnYXfyLBsuw3SJgyDcEbrU1qJ+IdopraM92qfODv3BiqeVCe9wPkSx@vger.kernel.org, AJvYcCWTn8SUlCBeGXT8asANdWme4bEp+suOB/LwYGcuS7uqM/mkMZihhCVBLHYLq5/ojCqA2QZrFkop@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHlvyDj45bOy4ndQpGp7Wsb4q7Zbnys3mz6d/L35mpn/Lw3b9N
+	65DQSyENTbaWT6w2WzOBjf4JrqIKdekrf9EkxNbUulNoDXMz/3iTRL6YvBvPdN/CDcq4kGQm99a
+	C4MkxZQ8YfQ9nPvrieSdbsbfbm6YtmkWu
+X-Gm-Gg: ASbGncuUBlWEiDPtt3sVqswjuEtHaCNXl0tlCKgPsp+Ng1a9t8r6jhXkoNCjL6fJkCr
+	K6r//g21mgQJyekqnUIr2gCj9quhZf1Hh7TrxBTbg5iH32Heexr+jhAMh628mygUspNkS4AEDFK
+	jMrMYe/Ta7IcTAfGHXcS+T/orZD4em8ud2sCw3FQ==
+X-Google-Smtp-Source: AGHT+IH5HySMSVpWQQiLuLBm1KmGGdctAt+lPhEDR0CAkLYpQS/qWp3FPfJC0WRecO9a0ItoWqyOqKqk1/lb4NE26vI=
+X-Received: by 2002:a17:907:26c3:b0:ac1:f003:be08 with SMTP id
+ a640c23a62f3a-ace54e6c8ecmr12271066b.12.1745432507647; Wed, 23 Apr 2025
+ 11:21:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4] bpf: streamline allowed helpers between tracing
- and base sets
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174543182801.2725891.7635648941344459709.git-patchwork-notify@kernel.org>
-Date: Wed, 23 Apr 2025 18:10:28 +0000
-References: <20250423073151.297103-1-yangfeng59949@163.com>
-In-Reply-To: <20250423073151.297103-1-yangfeng59949@163.com>
-To: Feng Yang <yangfeng59949@163.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@fomichev.me, haoluo@google.com, jolsa@kernel.org,
- mattbobrowski@google.com, rostedt@goodmis.org, mhiramat@kernel.org,
- mathieu.desnoyers@efficios.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20250418110104.12af6883@gandalf.local.home>
+In-Reply-To: <20250418110104.12af6883@gandalf.local.home>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 23 Apr 2025 11:21:25 -0700
+X-Gm-Features: ATxdqUHQ9RunUOfE64hoOmU3UUAYp4mJ_IcDoTqKsW5Uram8ZVu2YLxD24VGhnk
+Message-ID: <CAEf4BzZfoCV=irWiy1MCY0fkhsJWxq8UGTYCW9Y3pQQP35eBLQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH] tracepoint: Have tracepoints created with
+ DECLARE_TRACE() have _tp suffix
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, David Ahern <dsahern@kernel.org>, 
+	Juri Lelli <juri.lelli@gmail.com>, Breno Leitao <leitao@debian.org>, netdev@vger.kernel.org, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org, 
+	Gabriele Monaco <gmonaco@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Fri, Apr 18, 2025 at 7:59=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+>
+> From: Steven Rostedt <rostedt@goodmis.org>
+>
+> Most tracepoints in the kernel are created with TRACE_EVENT(). The
+> TRACE_EVENT() macro (and DECLARE_EVENT_CLASS() and DEFINE_EVENT() where i=
+n
+> reality, TRACE_EVENT() is just a helper macro that calls those other two
+> macros), will create not only a tracepoint (the function trace_<event>()
+> used in the kernel), it also exposes the tracepoint to user space along
+> with defining what fields will be saved by that tracepoint.
+>
+> There are a few places that tracepoints are created in the kernel that ar=
+e
+> not exposed to userspace via tracefs. They can only be accessed from code
+> within the kernel. These tracepoints are created with DEFINE_TRACE()
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+The part about accessing only from code within the kernel isn't true.
+Can we please drop that? BPF program can be attached to these bare
+tracepoints just fine without tracefs (so-called BPF raw tracepoint
+program types).
 
-On Wed, 23 Apr 2025 15:31:51 +0800 you wrote:
-> From: Feng Yang <yangfeng@kylinos.cn>
-> 
-> Many conditional checks in switch-case are redundant
-> with bpf_base_func_proto and should be removed.
-> 
-> Regarding the permission checks bpf_base_func_proto:
-> The permission checks in bpf_prog_load (as outlined below)
-> ensure that the trace has both CAP_BPF and CAP_PERFMON capabilities,
-> thus enabling the use of corresponding prototypes
-> in bpf_base_func_proto without adverse effects.
-> bpf_prog_load
-> 	......
-> 	bpf_cap = bpf_token_capable(token, CAP_BPF);
-> 	......
-> 	if (type != BPF_PROG_TYPE_SOCKET_FILTER &&
-> 	    type != BPF_PROG_TYPE_CGROUP_SKB &&
-> 	    !bpf_cap)
-> 		goto put_token;
-> 	......
-> 	if (is_perfmon_prog_type(type) && !bpf_token_capable(token, CAP_PERFMON))
-> 		goto put_token;
-> 	......
-> 
-> [...]
+But I don't have an objection to the change itself, given all of them
+currently do have _tp suffix except a few that we have in BPF
+selftests's module, just as Jiri mentioned.
 
-Here is the summary with links:
-  - [bpf-next,v4] bpf: streamline allowed helpers between tracing and base sets
-    https://git.kernel.org/bpf/bpf-next/c/6aca583f90b0
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+>
+> Most of these tracepoints end with "_tp". This is useful as when the
+> developer sees that, they know that the tracepoint is for in-kernel only
+> and is not exposed to user space.
+>
+> Instead of making this only a process to add "_tp", enforce it by making
+> the DECLARE_TRACE() append the "_tp" suffix to the tracepoint. This
+> requires adding DECLARE_TRACE_EVENT() macros for the TRACE_EVENT() macro
+> to use that keeps the original name.
+>
+> Link: https://lore.kernel.org/all/20250418083351.20a60e64@gandalf.local.h=
+ome/
+>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  include/linux/tracepoint.h   | 38 ++++++++++++++++++++++++------------
+>  include/trace/bpf_probe.h    |  4 ++--
+>  include/trace/define_trace.h | 17 +++++++++++++++-
+>  include/trace/events/sched.h | 30 ++++++++++++++--------------
+>  include/trace/events/tcp.h   |  2 +-
+>  5 files changed, 60 insertions(+), 31 deletions(-)
+>
 
-
+[...]
 
