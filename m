@@ -1,254 +1,147 @@
-Return-Path: <bpf+bounces-56496-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56497-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96046A9910B
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 17:26:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72FD4A9910A
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 17:26:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 195D91B86587
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 15:15:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14640922ED9
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 15:16:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A14328C5D0;
-	Wed, 23 Apr 2025 15:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FBA128CF7F;
+	Wed, 23 Apr 2025 15:10:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WqMHKsDn"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="BV467kOY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0715028B4EA;
-	Wed, 23 Apr 2025 15:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF04266B4B
+	for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 15:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745420986; cv=none; b=OhVLC7zmB6OI4AR4X/9KidhARF9/5Sx98dGQRhw9engUWapbpkxceQoWdM6nog4xPVtJE5gV2voZCdYzv+y7TiiEDTFRgg7vFWjt0nI9ASHzzAMkaClXJAsVdhcdPbqybAyPAwqI4C99mGhXx40C1idpZoy3kqtlR5DGuvNFz7E=
+	t=1745421044; cv=none; b=MSPr+D0xdtS/cspZgDse43v428ZM5a9cdN9fxOra0xOMP+GYcX0eYveX9SENZILlnUyRpZvwzQ55Is3LY3f8RRZVtsQSpFn2wWa5wQTpBKmbjYLNQL/QH5ry4xVeAIAY2FkJVPqx/s2JzbecKEmkKUUAbrjN4fZhvh4d5KS6/vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745420986; c=relaxed/simple;
-	bh=mJ2QmQEFlcsiPq05OXibmnIZMX98xAun/0Bd8vQ8h74=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s8xG9TzH44upn+Eizpj2o8RZtfD1FzN1oPaQL2fGSzjiIt6qCtlsErtNo+EpCinz8gd9N0tAkCavddQFuWRruR1e5AJ/fmwSFJShvPNqUsG9vZgAHgbWp2IWzd/UQScCXTNbeSPsZK8aegQXvibGv7ZDjhxZlT/YRIM82lAQQHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WqMHKsDn; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-af91fc1fa90so5603365a12.0;
-        Wed, 23 Apr 2025 08:09:44 -0700 (PDT)
+	s=arc-20240116; t=1745421044; c=relaxed/simple;
+	bh=uFV3fDxHeTVor0I1L/M53Jf1QkJJii9mgN/m4+mnqe0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YuA61bkbo3M5IiWQCccVoeHOlLl3OH7pd56Q2+AlYYCp1ug4Bg5qBy7CYySU5hYw5j2lgcEeXwl6oCMdxeouufIGDcOsphBahMhsEQHXEKKiGiAl52MUwcqtKWMKdjauGurFfAHTIlsXLB1JMiCdRA2mXScqotsx8ApvYO60uFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=BV467kOY; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-7082ad1355bso49037b3.1
+        for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 08:10:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745420984; x=1746025784; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o3rPa8I79belhuSJBW7U9rJoyeLMEN3HyUU1cJZksbU=;
-        b=WqMHKsDnPB6Yia8cqHkWNOwLt+Vi7z9CpFf0JEe4TFoMwAdyW+7vLOYjz+fvSbEZ01
-         2g8aD12rSKYutKn3NlUEKtab4366zga36SEtO3DSDj8dRVVeno1m+Bw5Go+40Wm1AB+A
-         3Y7Cv8HkjNUWrnUtAzrFNgk1dg4SvFxSWUVqSyyU75CsgIlqBXyPTSnvMIDi68BmuIJG
-         Pmxpn53Lksd/Vv8wNl5jOB7ibVs4LYcYm+iOz6Dc5tydI3E1031sZTFNOjcHBWzjyT7U
-         jVj2gf8joMA0mdwHHBwhO98GQkQfNYYobMI3ihBZP8hXtGVWc6M1dniX2lV5B4y6ZIh6
-         MOXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745420984; x=1746025784;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1745421041; x=1746025841; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o3rPa8I79belhuSJBW7U9rJoyeLMEN3HyUU1cJZksbU=;
-        b=F7P+rjabqdMLPt8fr5e6/c90KueBuiTP6DJQGN/nGEUxpZ+tMuAaUOACVwG+5GU5VI
-         kmZ2+kYEPqyLm2eWD16TiC9Qtemc8cCcEaUgfa47f/sXpSM28HusTXZZ60FBU9A/M3XR
-         AqFk+Io4jODygwHmW32IM2I6YeCTT2RYazvoY2T5YHXBr7TXTfns7+RbJwLE1TEFcWvS
-         Enw3uTAMUvfUBoT0QCOKyW+MieqxjAtrFNXeQ392j7zdAw2W9azK93EwcjmiTl3XgN5a
-         JNrWxPNWv5AFSp5giYjk2dE/QWaJBqEe00Ze8fFpo4g+xTWHCHaBGSc6Refij5GWgrLO
-         JvTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVZ85cB57og0wNiPBC9IvTdtTNlYc3NSsPpRH26WFFbyXexUeI2DlUJsVOHp8kmuP4f/eY=@vger.kernel.org, AJvYcCXBXqbQdDtQ0r4e+nkWaRu+U+tdNaXNPKCbPFOFm6dFclLd9y9LC6CgZWxktuSkhjsiov/XS82Z@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWtQB/R0dibZ8FxgE6LII/oBYAtK6LRYqyLeRBnHmqExwX+YSq
-	E4JQwrozTankebjLTxC3xYsLLKFQ2qjKL+Sjn9SeLk7LbflXeXU=
-X-Gm-Gg: ASbGncvb9np/TJy/L4EbSWAkVUKHSATgtLX2hHTpHjXbfNOhpTrk5pSsUhZqhzGhWp5
-	zi96mQIMd5kzFXMAPMnmthhShmV0lgDr+LRj0NUbgSSMz6ffeK4pESAgzStUplYI3S7Blh96AJm
-	nsQfNTGmpQnjaFzERncU9RyfLDokoACb7+ocPoV0kfWKuHzQ9PF+4mVHq3j0erA0qrvkPS+kTo8
-	PxOalJw0QxfZ3CxDoqmkuzMq4wKxRrtWW7SGVViS31DcpJczweuYqYhd0MAbROPTMwGKu8X2tf6
-	YktHH/TZZ72dx9aEISbzuxETzKcPg1SXUJMyT4yUBH7Q+tF7OF0=
-X-Google-Smtp-Source: AGHT+IGDspR2tsBX6soJVLkGe7DCaFNIoklaYxrABWOUxQL+LlWLIVvZIQPHa6SnLAOOMJoa4Oo2Hw==
-X-Received: by 2002:a17:90b:2b8c:b0:2ee:c91a:acf7 with SMTP id 98e67ed59e1d1-3087bb41235mr28667893a91.4.1745420983963;
-        Wed, 23 Apr 2025 08:09:43 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-309dfa28376sm1730423a91.25.2025.04.23.08.09.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Apr 2025 08:09:43 -0700 (PDT)
-Date: Wed, 23 Apr 2025 08:09:42 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf: Allow XDP dev bounded program to perform
- XDP_REDIRECT into maps
-Message-ID: <aAkCtq4pEi2cTKV3@mini-arch>
-References: <20250422-xdp-prog-bound-fix-v1-1-0b581fa186fe@kernel.org>
- <aAgdECkTiP-po7HP@mini-arch>
- <aAi80as6PpOeuWJU@lore-desk>
- <aAj6IBZ4hsUS12f4@mini-arch>
- <aAj_ELYjc7cFDjSG@lore-desk>
+        bh=ppDTLRNI5D/DHlJ104+9klrOmugo96Z4EzkqmTSr+tw=;
+        b=BV467kOYvg9v1zan0/6j+x47F8k96sTz/PYM0TdS2w+WeWy7o3I1OK3YpPMw2RYbPn
+         YBo32qVaE2CpT/F0kqYkX6ESu30MQ5Zs4SVO6Ngktc83G8A9DZ52LypKy6vxTaZRnDXv
+         nCvVf9KcnMy3bFIrmJSvtCa5JU5K5bavjj3/uG/IgXj26dO++/pnJtPQzyTlTur5U5E4
+         M27BjyuJxCnK+1YTgD8oA2zvnQoEkgi2Yr8lPHPA/hYOeURaQ2HMRRPT45VNgrE6JOba
+         JVDZYlvx1cuiQ5EbAJTRGFyV9ytozEWODCcZLDQ6CJLlgX0C1fzENfaWaSI3Jc1TGnDg
+         AhnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745421041; x=1746025841;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ppDTLRNI5D/DHlJ104+9klrOmugo96Z4EzkqmTSr+tw=;
+        b=lseX2ZQzPcZc2nQ9LwBWRADIh9F4AqNMUC+pYamccogbBxUcYL01NMzO5fvWG1XCw6
+         4JdVid5+m1dw8pibxzd2fpe7KeJEkGGi0A/7Tv6Qa/9G9NWMSi5sOxNAQYycqcn2YhlO
+         lUTX9hhEDb0KACv56Kip0dOh5K641kBpKSfX+SkiVIfUzrG9dxu1a1/kLX7DbAiKHSCP
+         eo104IK8+4ILnz6J2D993QRZs6U37Hymib00HM5M057jKS5Ip4ovV7Jd9udXOOW7kwyw
+         fYOTxatRlZZCKano6f0JYZ5ZkCRpz+OBmJiqHo/EylJRVvsyQJ5NkW5jBu2m3v+3kkqx
+         FMtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX5mTJPFNpQa6DeKbGvazwnfNUZvelWf0tw1BPBmy79i6b11rJjxLjkfN6kFha4mNusjrA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzpp4kvBQfxRqm9lOQoYCdQSmdRa4HxMQ+Np640Aobrcd5ryrCv
+	ZFQCWmT1dgupzjvh97Wcix+QwzZD+PDB8grwCBTy5px8WqUngCdc0XR80w1s2L0yZg/KGLXbrKc
+	TLi1qsVFLl8c4z0u3CjFwHQjozsVftW0ahe2e
+X-Gm-Gg: ASbGncthYT6+n9Hg+9Kow7y/cGAC4j2wnu5yGW8ZuvAI31kbDidFiaBKelI6OL7nAyJ
+	WkFVFm+G0tufsaqlCINHVNM0XtxCSecYLV7GiMui1cPJ31lOFbWn6vKMAv/NVRH7FdX7nKFGQp5
+	nILxZ2+XKi7WGgQA2Hruv5ABEAVorxRVHg
+X-Google-Smtp-Source: AGHT+IHNlf00p8r3DHcmCpgY+IFBhYtAhRgyVsFb6FFk96MPIernB0HKWY5qgWQbLL58D4kTom9itSs/0uIOQcHE5fg=
+X-Received: by 2002:a05:690c:6801:b0:6fd:33a5:59a with SMTP id
+ 00721157ae682-706ccd1a5ccmr309843197b3.18.1745421040868; Wed, 23 Apr 2025
+ 08:10:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aAj_ELYjc7cFDjSG@lore-desk>
+References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
+ <20250404215527.1563146-2-bboscaccy@linux.microsoft.com> <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
+ <87semdjxcp.fsf@microsoft.com> <CAADnVQ+JGfwRgsoe2=EHkXdTyQ8ycn0D9nh1k49am++4oXUPHg@mail.gmail.com>
+ <87friajmd5.fsf@microsoft.com> <CAADnVQKb3gPBFz+n+GoudxaTrugVegwMb8=kUfxOea5r2NNfUA@mail.gmail.com>
+ <87a58hjune.fsf@microsoft.com> <CAADnVQ+LMAnyT4yV5iuJ=vswgtUu97cHKnvysipc6o7HZfEbUA@mail.gmail.com>
+ <87y0w0hv2x.fsf@microsoft.com> <CAADnVQKF+B_YYwOCFsPBbrTBGKe4b22WVJFb8C0PHGmRAjbusQ@mail.gmail.com>
+ <2bd95ca78e836db0775da8237792e8448b8eec62.camel@HansenPartnership.com>
+In-Reply-To: <2bd95ca78e836db0775da8237792e8448b8eec62.camel@HansenPartnership.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 23 Apr 2025 11:10:29 -0400
+X-Gm-Features: ATxdqUEil0O912atUTQeKlUUv4Sfsc4c76L7yegeINodkXYOkWCpNQ86Ynaeoaw
+Message-ID: <CAHC9VhTi6+CHD9OtWj5=pPDrtwF+S9yfBOKqghe=9wXmd7jrxA@mail.gmail.com>
+Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Blaise Boscaccy <bboscaccy@linux.microsoft.com>, Jonathan Corbet <corbet@lwn.net>, 
+	David Howells <dhowells@redhat.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	"David S. Miller" <davem@davemloft.net>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Shuah Khan <shuah@kernel.org>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen <jarkko@kernel.org>, 
+	Jan Stancek <jstancek@redhat.com>, Neal Gompa <neal@gompa.dev>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	keyrings@vger.kernel.org, 
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, 
+	Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com, 
+	Matteo Croce <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 04/23, Lorenzo Bianconi wrote:
-> > On 04/23, Lorenzo Bianconi wrote:
-> > > On Apr 22, Stanislav Fomichev wrote:
-> > > > On 04/22, Lorenzo Bianconi wrote:
-> > > > > In the current implementation if the program is bounded to a specific
-> > > > > device, it will not be possible to perform XDP_REDIRECT into a DEVMAP
-> > > > > or CPUMAP even if the program is not attached to the map entry. This
-> > > > > seems in contrast with the explanation available in
-> > > > > bpf_prog_map_compatible routine. Fix the issue taking into account
-> > > > > even the attach program type and allow XDP dev bounded program to
-> > > > > perform XDP_REDIRECT into maps if the attach type is not BPF_XDP_DEVMAP
-> > > > > or BPF_XDP_CPUMAP.
-> > > > > 
-> > > > > Fixes: 3d76a4d3d4e59 ("bpf: XDP metadata RX kfuncs")
-> > > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > > > ---
-> > > > >  kernel/bpf/core.c | 22 +++++++++++++++++++++-
-> > > > >  1 file changed, 21 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > > > > index ba6b6118cf504041278d05417c4212d57be6fca0..a33175efffc377edbfe281397017eb467bfbcce9 100644
-> > > > > --- a/kernel/bpf/core.c
-> > > > > +++ b/kernel/bpf/core.c
-> > > > > @@ -2358,6 +2358,26 @@ static unsigned int __bpf_prog_ret0_warn(const void *ctx,
-> > > > >  	return 0;
-> > > > >  }
-> > > > >  
-> > > > > +static bool bpf_prog_dev_bound_map_compatible(struct bpf_map *map,
-> > > > > +					      const struct bpf_prog *prog)
-> > > > > +{
-> > > > > +	if (!bpf_prog_is_dev_bound(prog->aux))
-> > > > > +		return true;
-> > > > > +
-> > > > > +	if (map->map_type == BPF_MAP_TYPE_PROG_ARRAY)
-> > > > > +		return false;
-> > > > 
-> > > > [..]
-> > > > 
-> > > > > +	if (map->map_type == BPF_MAP_TYPE_DEVMAP &&
-> > > > > +	    prog->expected_attach_type != BPF_XDP_DEVMAP)
-> > > > > +		return true;
-> > > > > +
-> > > > > +	if (map->map_type == BPF_MAP_TYPE_CPUMAP &&
-> > > > > +	    prog->expected_attach_type != BPF_XDP_CPUMAP)
-> > > > > +		return true;
-> > > > 
-> > > > Not sure I understand, what does it mean exactly? That it's ok to add
-> > > > a dev-bound program to the dev/cpumap if the program itself is gonna
-> > > > be attached only to the real device? Can you expand more on the specific
-> > > > use-case?
-> > > > 
-> > > > The existing check makes sure that the dev-bound programs run only in the
-> > > > contexts that have hw descriptors. devmap and cpumap don't satisfy
-> > > > this constraint afaiu.
-> > > 
-> > > My use-case is to use a hw-metadata kfunc like bpf_xdp_metadata_rx_timestamp()
-> > > to read hw timestamp from the NIC and then redirect the xdp_buff into a DEVMP
-> > > (please note there are no programs attached to any DEVMAP entries):
-> > > 
-> > > extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
-> > > 					 __u64 *timestamp) __ksym;
-> > > 
-> > > struct {
-> > > 	__uint(type, BPF_MAP_TYPE_DEVMAP);
-> > > 	__uint(key_size, sizeof(__u32));
-> > > 	__uint(value_size, sizeof(struct bpf_devmap_val));
-> > > 	__uint(max_entries, 1);
-> > > } dev_map SEC(".maps");
-> > > 
-> > > SEC("xdp")
-> > > int xdp_meta_redirect(struct xdp_md *ctx)
-> > > {
-> > > 	__u64 timestamp;
-> > > 
-> > > 	...
-> > > 	bpf_xdp_metadata_rx_timestamp(ctx, &timestamp);
-> > > 	...
-> > > 
-> > > 	return bpf_redirect_map(&dev_map, ctx->rx_queue_index, XDP_PASS);
-> > > }
-> > > 
-> > > According to my understanding this is feasible just if the "xdp_meta_redirect"
-> > > program is bounded to a device otherwise the program is reject with the following
-> > > error at load time:
-> > > 
-> > > libbpf: prog 'xdp_meta_redirect': BPF program load failed: -EINVAL
-> > > libbpf: prog 'xdp_meta_redirect': -- BEGIN PROG LOAD LOG --
-> > > metadata kfuncs require device-bound program
-> > > processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> > > peak_states 0 mark_read 0
-> > > -- END PROG LOAD LOG --
-> > > 
-> > > in order to fix it:
-> > > 
-> > > 	...
-> > > 	index = if_nametoindex(DEV); 
-> > > 	bpf_program__set_ifindex(prog, index);
-> > > 	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
-> > > 	...
-> > > 
-> > > Doing so the program load still fails for the check in bpf_prog_map_compatible():
-> > > 
-> > > 	bool bpf_prog_map_compatible()
-> > > 	{
-> > > 		...
-> > > 		if (bpf_prog_is_dev_bound(aux))
-> > > 			return false;
-> > > 		...
-> > 
-> > [..]
-> >  
-> > > In other words, a dev-bound XDP program can't interact with a DEVMAP (or
-> > > CPUMAP) even if it is not attached to a map entry.
-> > > I think if the XDP program is just running in the driver NAPI context
-> > > it should be doable to use a hw-metada kfunc and perform a redirect into
-> > > a DEVMAP or CPUMAP, right? Am I missing something?
-> > 
-> > Thanks for the info! Yes, that should work. I wonder if you hit
-> > bpf_prog_select_runtime->bpf_check_tail_call->bpf_prog_map_compatible
-> > path? Looks like we should not do bpf_prog_is_dev_bound in that case (the rest
-> > of the bpf_prog_map_compatible callers should).
-> 
-> yes, the issue occurs at the program load time when we run
-> bpf_prog_map_compatible() following the call path you pointed out:
-> 
-> bpf_prog_select_runtime() -> bpf_check_tail_call() -> bpf_prog_map_compatible()
-> 
-> Do you mean we should get rid of the bpf_prog_is_dev_bound() check in
-> bpf_prog_map_compatible() and move it in the bpf_prog_map_compatible() callers
-> instead? In particular:
-> 
->  - __cpu_map_load_bpf_program()
->  - __dev_map_alloc_node()
->  - prog_fd_array_get_ptr()
+On Wed, Apr 23, 2025 at 10:12=E2=80=AFAM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+> On Mon, 2025-04-21 at 13:12 -0700, Alexei Starovoitov wrote:
+> [...]
+> > Calling bpf_map_get() and
+> > map->ops->map_lookup_elem() from a module is not ok either.
+>
+> I don't understand this objection.  The program just got passed in to
+> bpf_prog_load() as a set of attributes which, for a light skeleton,
+> directly contain the code as a blob and have the various BTF
+> relocations as a blob in a single element array map.  I think everyone
+> agrees that the integrity of the program would be compromised by
+> modifications to the relocations, so the security_bpf_prog_load() hook
+> can't make an integrity determination without examining both.  If the
+> hook can't use the bpf_maps.. APIs directly is there some other API it
+> should be using to get the relocations, or are you saying that the
+> security_bpf_prog_load() hook isn't fit for purpose and it should be
+> called after the bpf core has loaded the relocations so they can be
+> provided to the hook as an argument?
+>
+> The above, by the way, is independent of signing, because it applies to
+> any determination that might be made in the security_bpf_prog_load()
+> hook regardless of purpose.
 
-Maybe move existing bpf_prog_map_compatible parts (except is_dev_bound)
-into some new bpf_prog_map_compatible_type helper?
+I've also been worrying that some of the unspoken motivation behind
+the objection is simply that Hornet is not BPF.  If/when we get to a
+point where Hornet is sent up to Linus and Alexei's objection to the
+Hornet LSM inspecting BPF maps stands, it seems as though *any* LSM,
+including BPF LSMs, would need to be prevented from accessing BPF
+maps.  I'm fairly certain no one wants to see it come to that.
 
-bpf_prog_map_compatible() {
-  if (bpf_prog_is_dev_bound)
-    return false;
-  return bpf_prog_map_compatible_type(...);
-}
-
-And make bpf_check_tail_call call new bpf_prog_map_compatible_type. Not
-sure about the naming though (as usual)..
+--=20
+paul-moore.com
 
