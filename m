@@ -1,318 +1,259 @@
-Return-Path: <bpf+bounces-56526-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 398E7A996F4
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 19:46:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01D46A99700
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 19:50:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B6A04A039E
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 17:46:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1C735A2093
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 17:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88976283689;
-	Wed, 23 Apr 2025 17:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19CF628C5AF;
+	Wed, 23 Apr 2025 17:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fNo9Yx+V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AeOFqkJU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31453DF58;
-	Wed, 23 Apr 2025 17:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAF8041C69
+	for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 17:50:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745430403; cv=none; b=mXIZepleFdPmwRZqBXJlQ7c+DNWAtQm9NngKuOcro+TUH7H9RHL+MKhymbei+1EkpfPj1x+uFY3dRI9ujYTxdEgxeJNDomjSKoxBBqhDUSy+xdu7pZKS5xq7JUXB7vaud7qy3F4qXwHoWZZzQ7ArYdDB9Gj0l4ThIMZS+uaXeVI=
+	t=1745430618; cv=none; b=QhTIblO3jcr8pZC8CjQKBH4gCd9mbQoShTQsjKkGyu1njbvxZtwNpIAG6ui6OIhHZKI7urlxa8Z6WcCFQyuqMae/vhgjB3pGJD/cRd95cQpIHmk9q715OGgk3BAHvWS1dqqJF9ejJWmDO7Qk2JRLToNR+q5fbAOluFYFLBV+Bqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745430403; c=relaxed/simple;
-	bh=biO9qF+r2/A2MlZYQbH8x4xNl8bGQc1c6ERagk4XPzw=;
+	s=arc-20240116; t=1745430618; c=relaxed/simple;
+	bh=jqMKgPVAxLSyiRX9tHcVmDYHE3ODKsr/wBKFpiLQwzE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kAKZ0DKt0Gn0kyfdbVlyw0g3nA4nJY9wc8XOa2kvp2DqZCF2oyL5E3otrVVXblPCQnHb3sPefUB3lMMpecWyyKg+HZqSzbjF2CE/ZWb9dt5qo/SKwwQdZZo5DKgBMIPd+RJa4G61xRo2A4HUChA1Y2R+BUr4H1x9wuvMBkZFPuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fNo9Yx+V; arc=none smtp.client-ip=209.85.208.50
+	 To:Cc:Content-Type; b=FXIJtTQpY6Uc05slrMumH49B1e1WkdTxyUPO+c2tkai9/Yfl7VZawk+RShUf6mTUF0ToOML56/IjxnfXiIupM4U+lczLfN7b5LNZdZnIqVWSIWlCyIHwswr5k/njWYnD9tlay5OWSsEZYu+HefEP9MgJUu/dxSo1qY2T3LzWPsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AeOFqkJU; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5edc07c777eso82671a12.3;
-        Wed, 23 Apr 2025 10:46:40 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-acbb85ce788so28728366b.3
+        for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 10:50:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745430399; x=1746035199; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745430615; x=1746035415; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sXZQn8kvassAzt0nM7Nxq/3bf8QmpImuUiv4Do+uubk=;
-        b=fNo9Yx+VHn0nXuhyZWtSourePGMpALME2vKzyIfeRbDbx3Vydh4v+vSMZh4MRYMy1U
-         s8thpB9O9Pp70ODCr57z6jfjU9gb7yJDkDTp292I6U4+s7PWFZsnLK/ldly2icpvbR+8
-         jKqbg0/Z2T7OQvAK1OWGM4SiI230aVD0jVmm3KqAdMHlO9vcqWNbflKDHBGbPnIV5gS0
-         9MlgF/7ePEjtXQQzV4rZmOJHK2fC0Yk6HGTKUz8BGLTqEbdL9Sge0WytkD0oEBB6OisY
-         1ZgUE+izXWKMWjzEPL0I09XyzBzABgTPVnFmv5rHz2HMcSPIN8FtKHnV7S/ydnr2tCnU
-         iI6w==
+        bh=ezWPNK87OJKj0qBenlKvsjX89ssosWBAW88BwcS7S8E=;
+        b=AeOFqkJU4DNJL9Lbo9YaUkLQH1jyfso0I2Dokpp4/7HI+Ozqdz0bJ1IEVN32ekWVGI
+         uc7anMVIyIkGh+y0u9l4lBDS7ov0TXLLUUQvhITOWS93pilz6Fb5z3n72zfLJPQ5fYyP
+         bF6DyhtRDcigrvgQ/GsuWWO2cWZ1FA8Fwom77/X6VSCtDO9U20c5TfddWz915HyMOjic
+         HmJH43ARsyd/e0bQNg5TejAieHus+bXmYzQt0mCCR+seugTtKZl0n0lm+yvPYPoVkT7f
+         IxmgS34is9LJl2a8yz2Jj7h75UIkKhjmoqTqug+xYpSD9l9BEsL1czUDi+kaI+1/3PTM
+         Skfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745430399; x=1746035199;
+        d=1e100.net; s=20230601; t=1745430615; x=1746035415;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sXZQn8kvassAzt0nM7Nxq/3bf8QmpImuUiv4Do+uubk=;
-        b=d+6oQdK/E1KhvUot0iPnRKTpFkDHVfaA4vQpeF02aJu8zvBMWiX/yKvwOH9nKw1+Uj
-         S2TkWdOZhVrYzT09/K7+ImIzyCPNhlXaxiJyM5RuUvJX/mwnxhU8WZfc5Te0gQprrDOQ
-         csQ4dh3nGpsFsbT76vBY6CIZFmg7VhWQEPxSUEVovilPXXOgBJm8+tCQy2kbS3TskYsr
-         OlbKSR6CZTGHf14iR7Yc/p0b6l9DyF9vbz5amRi42NLC9bwFwhrJ+reasGrZKucD8W7L
-         Jo52I3mrshRbf5s7kpZkUQY1TUYnD08ZNO04sJWHNM0dXwapi2Kht/LT0WIBSdy9V7i1
-         +kTg==
-X-Forwarded-Encrypted: i=1; AJvYcCVKBc0Q74sdpIqy04hQjJb6kgJuRibvem2eJfMiJraUnoYW04HwpYmg4IbWWDNXLHvNx7I=@vger.kernel.org, AJvYcCVY1HKx8g5MyOQQOWs18yAJ6ESdzDb6E3S9MI8VAMySlHAVu9lPbIuVvqlHfXiaDwK4K5UbykVwTAPSg4P/@vger.kernel.org, AJvYcCXCwovlxuYIOC14QF2JK7fTaWi1TuILrOitgjga8iYjMrVfSU3nIDr5ZiOgHq1igLRAjySB1CZHq0widVNXmJpzuK4E@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8V32aHiK9DqO92WxXtgEWwGbVlYYfP551XFSwrQZV4lrUk2HN
-	qHDvxXNsnBEI7XLPIwkq5scXe3eL4Xg0rBi7MKzpPOT0kz6AT5aaed3OYTZVcCQTVZkIpI/vhQ2
-	AEj5t/Ea9z606VsUc9L6q1vudml8=
-X-Gm-Gg: ASbGncs2a7cw4JRiUAm/GX0Ls1y6rJhFl33RwJ5pFP9kkNIcIY+gXUXZALc49rI8asG
-	Fg7Aa0SYW4ZioEqejuhL/agqc2U01f4634aKgRB3Lfutn5g1fDjYnTaNQ8KJpMFtJ9nY+np0JxX
-	ADdGmAMciOAQ8RFpTBygO0qDXcyZp7+Y/NlzLlfg==
-X-Google-Smtp-Source: AGHT+IFlDdIotzZmdGUhuohyhf84/GoWd15MMTbUB7VohF0qWVhNtJbadVXCr5RNeA1/OjEhELyOiYrhVKgH5hVT6dM=
-X-Received: by 2002:a17:907:6e9e:b0:ace:3af9:4294 with SMTP id
- a640c23a62f3a-ace54e6c8cbmr2350066b.12.1745430399311; Wed, 23 Apr 2025
- 10:46:39 -0700 (PDT)
+        bh=ezWPNK87OJKj0qBenlKvsjX89ssosWBAW88BwcS7S8E=;
+        b=W4TyguvmzYkju4w9ciCV92F4cfU86q3j1+xMw43S7sGQkgfewHBX8PAEPz1UZupybX
+         pnLBm7c99A1nBHavGemI8a9hezMmRz17pcjeT9iJQfpSTENSQZr3HKnrmNZ53a+e4ppK
+         TjGuBmVQ4EBMglq4FqsaybiQACPfnDf1mjXow6BU6Ybs74jXf8DbIJz12T1L6k/NKzAq
+         yQMv5kZWBm48wqAJnyP9dS/uq4XOtT2AESoC6K3aT0c7Nu5jC9WTtXnsQz43k8BdlbZL
+         6SVwPUOI3zWEUKNZFHZE4mUglnO5ze4DfFiJfGJbCYCvFGoqhxA8jOaOexn6ADTnXLZS
+         tFnA==
+X-Forwarded-Encrypted: i=1; AJvYcCWNOOZ2CzDr0be7WIdeb48GzMUJpehmd1rSZU/vwg8FtGFDtSI/qMZhEL6XNpyvIu8lYlg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzzHT2qrXujbCZHBc8wXEbo0wsqBUW8Pz9vjj76UvPulIf6DkEp
+	CCGw5miM9ye66no7DTo6E1twy6XLMkG/rXf8pwwsNxkpDQcl+hnAhfTWO41s9ai2DFxjIbL1MOW
+	pzcWVEMg+vgyqC63NEd8ZvBfpjD8=
+X-Gm-Gg: ASbGncss8F7c24tQQtrniEYwLsuIHLxb+e2GrDX1YwrLHl/rr5L2ZU97vVTeRcBhETM
+	skN6NSMIy8Gv+Q1W+S/hElCDcLUHuEhPy3PwgfoVXzLnZyje/nKfq9mvhmKGKckRDUEDmykK7to
+	vMyy5yjZ9NLvEkt7BQR31G+Ju0W4M27uI96XbCJQ==
+X-Google-Smtp-Source: AGHT+IGkVpqRRGnPdAJIB+p2Aw2nMrofCtZ9TLFhScoU9CxS0u5OzCLxVHv04UAH0RrNuEK37a+7G2xv1kZAskSw5F8=
+X-Received: by 2002:a17:907:6e9e:b0:aca:d4af:39ed with SMTP id
+ a640c23a62f3a-ace54e6cceemr2910466b.4.1745430614879; Wed, 23 Apr 2025
+ 10:50:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250421214423.393661-1-jolsa@kernel.org> <20250421214423.393661-19-jolsa@kernel.org>
-In-Reply-To: <20250421214423.393661-19-jolsa@kernel.org>
+References: <CA+icZUW31vpS=R3zM6G4FMkzuiQovqtd+e-8ihwsK_A-QtSSYg@mail.gmail.com>
+In-Reply-To: <CA+icZUW31vpS=R3zM6G4FMkzuiQovqtd+e-8ihwsK_A-QtSSYg@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 23 Apr 2025 10:46:24 -0700
-X-Gm-Features: ATxdqUEi4MHhQHNUnV8CW4TsFrqv9Z3ZPlsGZG8pOa83e1POIp2T2kHGr4gt2l8
-Message-ID: <CAEf4BzZu0T5DLROi6oisneB3PyGDKZrME9+5qvw4aHeyOyNiYQ@mail.gmail.com>
-Subject: Re: [PATCH perf/core 18/22] selftests/bpf: Add uprobe_regs_equal test
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, David Laight <David.Laight@aculab.com>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>
+Date: Wed, 23 Apr 2025 10:50:00 -0700
+X-Gm-Features: ATxdqUG1G0Wk7QrPEwHryEt6dBVL0vbQWLjcs0mglGsPWjEAxLOnYRBoLdqvlK4
+Message-ID: <CAEf4BzadoMS7RPL26J2U_NyQUXnwVEmP+TxHU6D8R4AKvWSGsA@mail.gmail.com>
+Subject: Re: pahole v1.30 and libbpf: Introduce kflag for type_tags and
+ decl_tags in BTF
+To: sedat.dilek@gmail.com
+Cc: Ihor Solodrai <ihor.solodrai@linux.dev>, Alan Maguire <alan.maguire@oracle.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, bpf@vger.kernel.org, sudipm.mukherjee@gmail.com, 
+	cavok@debian.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 21, 2025 at 2:48=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
+On Fri, Apr 18, 2025 at 11:58=E2=80=AFAM Sedat Dilek <sedat.dilek@gmail.com=
+> wrote:
 >
-> Changing uretprobe_regs_trigger to allow the test for both
-> uprobe and uretprobe and renaming it to uprobe_regs_equal.
+> [ QUESTION ]
 >
-> We check that both uprobe and uretprobe probes (bpf programs)
-> see expected registers with few exceptions.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  .../selftests/bpf/prog_tests/uprobe_syscall.c | 58 ++++++++++++++-----
->  .../selftests/bpf/progs/uprobe_syscall.c      |  4 +-
->  2 files changed, 45 insertions(+), 17 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/to=
-ols/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> index f001986981ab..6d88c5b0f6aa 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> @@ -18,15 +18,17 @@
->
->  #pragma GCC diagnostic ignored "-Wattributes"
->
-> -__naked unsigned long uretprobe_regs_trigger(void)
-> +__attribute__((aligned(16)))
-> +__nocf_check __weak __naked unsigned long uprobe_regs_trigger(void)
->  {
->         asm volatile (
-> -               "movq $0xdeadbeef, %rax\n"
-> +               ".byte 0x0f, 0x1f, 0x44, 0x00, 0x00     \n"
+> How to check if libbpf API functions
+>  * btf__add_decl_attr()
+>  * btf__add_type_attr()
+> work as expected with pahole v1.30?
 
-Is it me not being hardcore enough... But is anyone supposed to know
-that this is nop5? ;) maybe add /* nop5 */ comment on the side?
+What does it mean "work as expected"?
 
-> +               "movq $0xdeadbeef, %rax                 \n"
+Can you be a bit more explicit about what is the problem and what
+doesn't work? I didn't get that from the below investigation notes,
+sorry.
 
-ret\n doesn't align newline, and uprobe_regs below don't either. So
-maybe don't align them at all here?
-
->                 "ret\n"
->         );
->  }
 >
-> -__naked void uretprobe_regs(struct pt_regs *before, struct pt_regs *afte=
-r)
-> +__naked void uprobe_regs(struct pt_regs *before, struct pt_regs *after)
->  {
->         asm volatile (
->                 "movq %r15,   0(%rdi)\n"
-> @@ -47,15 +49,17 @@ __naked void uretprobe_regs(struct pt_regs *before, s=
-truct pt_regs *after)
->                 "movq   $0, 120(%rdi)\n" /* orig_rax */
->                 "movq   $0, 128(%rdi)\n" /* rip      */
->                 "movq   $0, 136(%rdi)\n" /* cs       */
-> +               "pushq %rax\n"
->                 "pushf\n"
->                 "pop %rax\n"
->                 "movq %rax, 144(%rdi)\n" /* eflags   */
-> +               "pop %rax\n"
->                 "movq %rsp, 152(%rdi)\n" /* rsp      */
->                 "movq   $0, 160(%rdi)\n" /* ss       */
+> Looks like I need Linux version >=3D v6.15-rc1?
 >
->                 /* save 2nd argument */
->                 "pushq %rsi\n"
-> -               "call uretprobe_regs_trigger\n"
-> +               "call uprobe_regs_trigger\n"
+> dileks@iniza:~/src/linux/git$ git log --oneline -1
+> 51d1b1d42841c557dabde5b140ae20774591e6dc
+> 51d1b1d42841 libbpf: Introduce kflag for type_tags and decl_tags in BTF
 >
->                 /* save  return value and load 2nd argument pointer to ra=
-x */
->                 "pushq %rax\n"
-> @@ -95,25 +99,37 @@ __naked void uretprobe_regs(struct pt_regs *before, s=
-truct pt_regs *after)
->  );
->  }
+> Add the following functions to libbpf API:
+>  * btf__add_type_attr()
+>  * btf__add_decl_attr()
 >
-> -static void test_uretprobe_regs_equal(void)
-> +static void test_uprobe_regs_equal(bool retprobe)
->  {
-> +       LIBBPF_OPTS(bpf_uprobe_opts, opts,
-> +               .retprobe =3D retprobe,
-> +       );
->         struct uprobe_syscall *skel =3D NULL;
->         struct pt_regs before =3D {}, after =3D {};
->         unsigned long *pb =3D (unsigned long *) &before;
->         unsigned long *pa =3D (unsigned long *) &after;
->         unsigned long *pp;
-> +       unsigned long offset;
->         unsigned int i, cnt;
-> -       int err;
-> +
-> +       offset =3D get_uprobe_offset(&uprobe_regs_trigger);
-> +       if (!ASSERT_GE(offset, 0, "get_uprobe_offset"))
-> +               return;
+> dileks@iniza:~/src/linux/git$ git describe --contains
+> 51d1b1d42841c557dabde5b140ae20774591e6dc
+> v6.15-rc1~98^2~87^2~5
 >
->         skel =3D uprobe_syscall__open_and_load();
->         if (!ASSERT_OK_PTR(skel, "uprobe_syscall__open_and_load"))
->                 goto cleanup;
+> Currently, I use Debian-kernel v6.12.22 and want to build a selfmade
+> v6.12.24 (when it is released).
 >
-> -       err =3D uprobe_syscall__attach(skel);
-> -       if (!ASSERT_OK(err, "uprobe_syscall__attach"))
-> +       skel->links.probe =3D bpf_program__attach_uprobe_opts(skel->progs=
-.probe,
-> +                               0, "/proc/self/exe", offset, &opts);
-> +       if (!ASSERT_OK_PTR(skel->links.probe, "bpf_program__attach_uprobe=
-_opts"))
->                 goto cleanup;
+> If you need further information, please let me know.
 >
-> -       uretprobe_regs(&before, &after);
-> +       /* make sure uprobe gets optimized */
-> +       if (!retprobe)
-> +               uprobe_regs_trigger();
-> +
-> +       uprobe_regs(&before, &after);
+> Best Thanks,
+> -Sedat-
 >
->         pp =3D (unsigned long *) &skel->bss->regs;
->         cnt =3D sizeof(before)/sizeof(*pb);
-> @@ -122,7 +138,7 @@ static void test_uretprobe_regs_equal(void)
->                 unsigned int offset =3D i * sizeof(unsigned long);
+> P.S.: My investigations
 >
->                 /*
-> -                * Check register before and after uretprobe_regs_trigger=
- call
-> +                * Check register before and after uprobe_regs_trigger ca=
-ll
->                  * that triggers the uretprobe.
->                  */
->                 switch (offset) {
-> @@ -136,7 +152,7 @@ static void test_uretprobe_regs_equal(void)
+> [ DEBIAN PAHOLE ]
 >
->                 /*
->                  * Check register seen from bpf program and register afte=
-r
-> -                * uretprobe_regs_trigger call
-> +                * uprobe_regs_trigger call (with rax exception, check be=
-low).
->                  */
->                 switch (offset) {
->                 /*
-> @@ -149,6 +165,15 @@ static void test_uretprobe_regs_equal(void)
->                 case offsetof(struct pt_regs, rsp):
->                 case offsetof(struct pt_regs, ss):
->                         break;
-> +               /*
-> +                * uprobe does not see return value in rax, it needs to s=
-ee the
-> +                * original (before) rax value
-> +                */
-> +               case offsetof(struct pt_regs, rax):
-> +                       if (!retprobe) {
-> +                               ASSERT_EQ(pp[i], pb[i], "uprobe rax prog-=
-before value check");
-> +                               break;
-> +                       }
->                 default:
->                         if (!ASSERT_EQ(pp[i], pa[i], "register prog-after=
- value check"))
->                                 fprintf(stdout, "failed register offset %=
-u\n", offset);
-> @@ -186,13 +211,13 @@ static void test_uretprobe_regs_change(void)
->         unsigned long cnt =3D sizeof(before)/sizeof(*pb);
->         unsigned int i, err, offset;
+> Debian/unstable AMD64 ships on my request pahole version 1.30-1.
+> This version was built against libbpf-dev version (1:1.5.0-2)
 >
-> -       offset =3D get_uprobe_offset(uretprobe_regs_trigger);
-> +       offset =3D get_uprobe_offset(uprobe_regs_trigger);
+> Link: https://packages.debian.org/sid/pahole
+> Link: https://packages.debian.org/sid/libbpf-dev
+> Link: https://bugs.debian.org/1103000
 >
->         err =3D write_bpf_testmod_uprobe(offset);
->         if (!ASSERT_OK(err, "register_uprobe"))
->                 return;
 >
-> -       uretprobe_regs(&before, &after);
-> +       uprobe_regs(&before, &after);
+> [ SELFMADE PAHOLE ]
 >
->         err =3D write_bpf_testmod_uprobe(0);
->         if (!ASSERT_OK(err, "unregister_uprobe"))
-> @@ -605,7 +630,8 @@ static void test_uretprobe_shadow_stack(void)
->         /* Run all the tests with shadow stack in place. */
->         shstk_is_enabled =3D true;
+> Prereq: libbpf API version >=3D 1.6.0
 >
-> -       test_uretprobe_regs_equal();
-> +       test_uprobe_regs_equal(false);
-> +       test_uprobe_regs_equal(true);
->         test_uretprobe_regs_change();
->         test_uretprobe_syscall_call();
+> dileks@iniza:~/src/pahole/git$ git describe
+> v1.29-16-gb45268b74da1
 >
-> @@ -728,7 +754,7 @@ static void test_uprobe_sigill(void)
->  static void __test_uprobe_syscall(void)
->  {
->         if (test__start_subtest("uretprobe_regs_equal"))
-> -               test_uretprobe_regs_equal();
-> +               test_uprobe_regs_equal(true);
->         if (test__start_subtest("uretprobe_regs_change"))
->                 test_uretprobe_regs_change();
->         if (test__start_subtest("uretprobe_syscall_call"))
-> @@ -747,6 +773,8 @@ static void __test_uprobe_syscall(void)
->                 test_uprobe_race();
->         if (test__start_subtest("uprobe_sigill"))
->                 test_uprobe_sigill();
-> +       if (test__start_subtest("uprobe_regs_equal"))
-> +               test_uprobe_regs_equal(false);
->  }
->  #else
->  static void __test_uprobe_syscall(void)
-> diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall.c b/tools/t=
-esting/selftests/bpf/progs/uprobe_syscall.c
-> index 8a4fa6c7ef59..e08c31669e5a 100644
-> --- a/tools/testing/selftests/bpf/progs/uprobe_syscall.c
-> +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall.c
-> @@ -7,8 +7,8 @@ struct pt_regs regs;
+> dileks@iniza:~/src/pahole/git$ git log --oneline -1
+> b45268b74da1 (HEAD -> pahole-v1.30, tag: v1.30, origin/next,
+> origin/master, origin/HEAD, master) Prep 1.30
 >
->  char _license[] SEC("license") =3D "GPL";
+> root# /opt/pahole/bin/pahole --version
+> v1.30
 >
-> -SEC("uretprobe//proc/self/exe:uretprobe_regs_trigger")
-> -int uretprobe(struct pt_regs *ctx)
-> +SEC("uprobe")
-> +int probe(struct pt_regs *ctx)
->  {
->         __builtin_memcpy(&regs, ctx, sizeof(regs));
->         return 0;
-> --
-> 2.49.0
+> INFO: git describe should report v1.30
 >
+>
+> [ BUILD INSTRUCTIONS ]
+>
+> VER=3D"1.30"
+> PREFIX=3D"/opt/pahole-$VER"
+> PREFIX_CMAKE_OPTS=3D"-DCMAKE_INSTALL_PREFIX=3D$PREFIX"
+>
+> echo $PREFIX_CMAKE_OPTS
+>
+> cd ..
+> mkdir build
+> cd build
+>
+> # NOTE: See upstream commit "CMakeList.txt: Respect CMAKE_INSTALL_LIBDIR"
+> ##cmake $PREFIX_CMAKE_OPTS -D__LIB=3Dlib ../git
+> LC_ALL=3DC.UTF-8 cmake $PREFIX_CMAKE_OPTS ../git
+> make
+> sudo make install
+>
+> NOTE: Do NOT forget to run `ldconfig` as root (see below).
+>
+>
+> [ LDCONFIG ]
+>
+> File: /etc/ld.so.conf.d/a-local-pahole.conf
+>
+> # pahole lib configuration
+> /opt/pahole/lib
+>
+> root# cd /opt
+> root# ln -sf pahole-$VER pahole
+> root# ldconfig
+> root# ldconfig --print-cache | grep pahole
+>
+>
+> [ PAHOLE - CMAKE LOG (LIBBPF) ]
+>
+> [...]
+> -- Submodule update
+> Submodule 'lib/bpf' (https://github.com/libbpf/libbpf) registered for
+> path 'lib/bpf'
+> Cloning into '/home/dileks/src/pahole/git/lib/bpf'...
+> Submodule path 'lib/bpf': checked out '42a6ef63161a8dc4288172b27f3870e50b=
+3606f7'
+> -- Submodule update - done
+>
+> Link: https://web.git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?=
+h=3Dv1.30&id=3Dfe2dcd28ba9d348744ee93fed43cbed5dc0d6a43
+>
+>
+> [ BTF FEATURES ]
+>
+> root# /opt/pahole/bin/pahole --usage | grep feature
+>            [--btf_encode_force] [--btf_features=3DFEATURE_LIST]
+>            [--btf_features_strict=3DFEATURE_LIST_STRICT] [--btf_gen_all]
+>            [--skip_missing] [--sort] [--structs] [--supported_btf_feature=
+s]
+>
+> NOTE: --btf_feature*s* (all options plural) VS. commit 40e82f5be9a7
+> ("pahole: Introduce --btf_feature=3Dattributes")
+>
+> root# /opt/pahole/bin/pahole --supported_btf_features
+> encode_force,var,float,decl_tag,type_tag,enum64,optimized_func,consistent=
+_func,decl_tag_kfuncs,reproducible_build,distilled_base,global_var,attribut=
+es
+>
+> NOTE: Supported =3D attributes
+>
+>
+> [ LIBBPF API VERSION >=3D 1.6.0 ]
+>
+> Link: https://web.git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?=
+h=3Dv1.30&id=3Dfe2dcd28ba9d348744ee93fed43cbed5dc0d6a43
+>
+> commit fe2dcd28ba9d348744ee93fed43cbed5dc0d6a43 ("pahole: Sync with
+> libbpf mainline")
+>
+> Pull recently added libbpf API functions:
+>  * btf__add_decl_attr()
+>  * btf__add_type_attr()
+>
+> root# llvm-dwarfdump-19 /opt/pahole/bin/pahole | grep btf | grep add
+>                DW_AT_name      ("btf__add_type_attr")
+>                DW_AT_name      ("btf__add_enum64")
+>
+>
+> [ pahole.git - lib/bpf/src/libbpf.map ]
+>
+> LIBBPF_1.6.0 {
+>        global:
+>                bpf_linker__add_buf;
+>                bpf_linker__add_fd;
+>                bpf_linker__new_fd;
+>                btf__add_decl_attr;
+>                btf__add_type_attr;
+> } LIBBPF_1.5.0;
+>
+> -EOT-
 
