@@ -1,246 +1,318 @@
-Return-Path: <bpf+bounces-56525-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56526-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB9E8A996F2
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 19:45:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 398E7A996F4
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 19:46:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDC293B8508
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 17:44:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B6A04A039E
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 17:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E0F28CF78;
-	Wed, 23 Apr 2025 17:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88976283689;
+	Wed, 23 Apr 2025 17:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FDumM00l"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fNo9Yx+V"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA40628C5DC;
-	Wed, 23 Apr 2025 17:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31453DF58;
+	Wed, 23 Apr 2025 17:46:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745430291; cv=none; b=RMtYPtNVftXpO+U+Kd+6QUoBjLbiuKupE6LGoIFZgXxAVsQHfD4k3dd330OBPVBChqIKFbqOTmWT7JH+H5ojUNqoqhlZRPz6MdG4SBc02V9LHeldt6GtC+BHwu6Mz+qlVpPhJ6zwGQalgttPI3suo+SXnTYRgQS2lKgpDANRfNk=
+	t=1745430403; cv=none; b=mXIZepleFdPmwRZqBXJlQ7c+DNWAtQm9NngKuOcro+TUH7H9RHL+MKhymbei+1EkpfPj1x+uFY3dRI9ujYTxdEgxeJNDomjSKoxBBqhDUSy+xdu7pZKS5xq7JUXB7vaud7qy3F4qXwHoWZZzQ7ArYdDB9Gj0l4ThIMZS+uaXeVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745430291; c=relaxed/simple;
-	bh=j5g+IJdeTi7oaYBHai96B2vtfM0fZCVe05C2H8BF/fg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=WEP4AEZSMaDXmCH6dyCwG4AmZ1dEgwJFtVVaHD+ijDI6UpLHUqRc6kQjY4u0AQYFDPwWAZ+3LaGdnKGbq/KAA8aEoqtIMvSl+B0ElPyriZTkTNhQb23qP4GzKF3M4EqlENJacC5UxDv5F5NOQqCI4ipCnQTYs+I9GmTv2ztcWn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FDumM00l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD4FFC4CEE2;
-	Wed, 23 Apr 2025 17:44:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745430291;
-	bh=j5g+IJdeTi7oaYBHai96B2vtfM0fZCVe05C2H8BF/fg=;
-	h=From:Date:Subject:To:Cc:From;
-	b=FDumM00lx6hE0D1ZEoR579wKaSTyFaerBEWavQIW+6EC0orA+bMwQEWLa5lTVkvyF
-	 cBwmyfKcnchiXgLV9+qxQBw/zwuAThrn1lpy3uuoCUoPyTDs/YhsEfkZR3AJzbIvbS
-	 oR3FQmOLv6+8Yb5soh/j/bqDws/p2Lok66R314N8z3ZAB75MI/5ZBmDOZ2cSTSVtE+
-	 3g15mR58HxPuQApZQnrIEJ82QOGYGU02qwBDMbdOJPYcrzQd5SK17KuIpnuwPze34R
-	 OyLjOOo8KpeZ6qZx+ak/UCLdESi/f43VetEl1WXllPuiuxft7GUsZp2beG1CsOJMbT
-	 thhmgRT91QXww==
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-Date: Wed, 23 Apr 2025 19:44:21 +0200
-Subject: [PATCH bpf-next v2] bpf: Allow XDP dev-bound programs to perform
- XDP_REDIRECT into maps
+	s=arc-20240116; t=1745430403; c=relaxed/simple;
+	bh=biO9qF+r2/A2MlZYQbH8x4xNl8bGQc1c6ERagk4XPzw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kAKZ0DKt0Gn0kyfdbVlyw0g3nA4nJY9wc8XOa2kvp2DqZCF2oyL5E3otrVVXblPCQnHb3sPefUB3lMMpecWyyKg+HZqSzbjF2CE/ZWb9dt5qo/SKwwQdZZo5DKgBMIPd+RJa4G61xRo2A4HUChA1Y2R+BUr4H1x9wuvMBkZFPuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fNo9Yx+V; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5edc07c777eso82671a12.3;
+        Wed, 23 Apr 2025 10:46:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745430399; x=1746035199; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sXZQn8kvassAzt0nM7Nxq/3bf8QmpImuUiv4Do+uubk=;
+        b=fNo9Yx+VHn0nXuhyZWtSourePGMpALME2vKzyIfeRbDbx3Vydh4v+vSMZh4MRYMy1U
+         s8thpB9O9Pp70ODCr57z6jfjU9gb7yJDkDTp292I6U4+s7PWFZsnLK/ldly2icpvbR+8
+         jKqbg0/Z2T7OQvAK1OWGM4SiI230aVD0jVmm3KqAdMHlO9vcqWNbflKDHBGbPnIV5gS0
+         9MlgF/7ePEjtXQQzV4rZmOJHK2fC0Yk6HGTKUz8BGLTqEbdL9Sge0WytkD0oEBB6OisY
+         1ZgUE+izXWKMWjzEPL0I09XyzBzABgTPVnFmv5rHz2HMcSPIN8FtKHnV7S/ydnr2tCnU
+         iI6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745430399; x=1746035199;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sXZQn8kvassAzt0nM7Nxq/3bf8QmpImuUiv4Do+uubk=;
+        b=d+6oQdK/E1KhvUot0iPnRKTpFkDHVfaA4vQpeF02aJu8zvBMWiX/yKvwOH9nKw1+Uj
+         S2TkWdOZhVrYzT09/K7+ImIzyCPNhlXaxiJyM5RuUvJX/mwnxhU8WZfc5Te0gQprrDOQ
+         csQ4dh3nGpsFsbT76vBY6CIZFmg7VhWQEPxSUEVovilPXXOgBJm8+tCQy2kbS3TskYsr
+         OlbKSR6CZTGHf14iR7Yc/p0b6l9DyF9vbz5amRi42NLC9bwFwhrJ+reasGrZKucD8W7L
+         Jo52I3mrshRbf5s7kpZkUQY1TUYnD08ZNO04sJWHNM0dXwapi2Kht/LT0WIBSdy9V7i1
+         +kTg==
+X-Forwarded-Encrypted: i=1; AJvYcCVKBc0Q74sdpIqy04hQjJb6kgJuRibvem2eJfMiJraUnoYW04HwpYmg4IbWWDNXLHvNx7I=@vger.kernel.org, AJvYcCVY1HKx8g5MyOQQOWs18yAJ6ESdzDb6E3S9MI8VAMySlHAVu9lPbIuVvqlHfXiaDwK4K5UbykVwTAPSg4P/@vger.kernel.org, AJvYcCXCwovlxuYIOC14QF2JK7fTaWi1TuILrOitgjga8iYjMrVfSU3nIDr5ZiOgHq1igLRAjySB1CZHq0widVNXmJpzuK4E@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy8V32aHiK9DqO92WxXtgEWwGbVlYYfP551XFSwrQZV4lrUk2HN
+	qHDvxXNsnBEI7XLPIwkq5scXe3eL4Xg0rBi7MKzpPOT0kz6AT5aaed3OYTZVcCQTVZkIpI/vhQ2
+	AEj5t/Ea9z606VsUc9L6q1vudml8=
+X-Gm-Gg: ASbGncs2a7cw4JRiUAm/GX0Ls1y6rJhFl33RwJ5pFP9kkNIcIY+gXUXZALc49rI8asG
+	Fg7Aa0SYW4ZioEqejuhL/agqc2U01f4634aKgRB3Lfutn5g1fDjYnTaNQ8KJpMFtJ9nY+np0JxX
+	ADdGmAMciOAQ8RFpTBygO0qDXcyZp7+Y/NlzLlfg==
+X-Google-Smtp-Source: AGHT+IFlDdIotzZmdGUhuohyhf84/GoWd15MMTbUB7VohF0qWVhNtJbadVXCr5RNeA1/OjEhELyOiYrhVKgH5hVT6dM=
+X-Received: by 2002:a17:907:6e9e:b0:ace:3af9:4294 with SMTP id
+ a640c23a62f3a-ace54e6c8cbmr2350066b.12.1745430399311; Wed, 23 Apr 2025
+ 10:46:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250423-xdp-prog-bound-fix-v2-1-51742a5dfbce@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAPQmCWgC/32NQQ7CIBBFr9LM2jFAW1NdeQ/TBbUDJRogg5Kah
- ruLPYDL95L//gaJ2FGCS7MBU3bJBV9BHRq4L9pbQjdXBiVULzqlcJ0jRg4Wp/D2Mxq34tm0wrQ
- k205rqMPIVPUevY2VF5degT/7R5Y/+zeXJUoUUz9Io+VwMnR9EHt6HgNbGEspXzOx6fW1AAAA
-X-Change-ID: 20250422-xdp-prog-bound-fix-9f30f3e134aa
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>
-X-Mailer: b4 0.14.2
+References: <20250421214423.393661-1-jolsa@kernel.org> <20250421214423.393661-19-jolsa@kernel.org>
+In-Reply-To: <20250421214423.393661-19-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 23 Apr 2025 10:46:24 -0700
+X-Gm-Features: ATxdqUEi4MHhQHNUnV8CW4TsFrqv9Z3ZPlsGZG8pOa83e1POIp2T2kHGr4gt2l8
+Message-ID: <CAEf4BzZu0T5DLROi6oisneB3PyGDKZrME9+5qvw4aHeyOyNiYQ@mail.gmail.com>
+Subject: Re: [PATCH perf/core 18/22] selftests/bpf: Add uprobe_regs_equal test
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, David Laight <David.Laight@aculab.com>, 
+	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
+	Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In the current implementation if the program is dev-bound to a specific
-device, it will not be possible to perform XDP_REDIRECT into a DEVMAP
-or CPUMAP even if the program is running in the driver NAPI context and
-it is not attached to any map entry. This seems in contrast with the
-explanation available in bpf_prog_map_compatible routine.
-Fix the issue introducing __bpf_prog_map_compatible utility routine in
-order to avoid bpf_prog_is_dev_bound() check running bpf_check_tail_call()
-at program load time (bpf_prog_select_runtime()).
-Continue forbidding to attach a dev-bound program to XDP maps
-(BPF_MAP_TYPE_PROG_ARRAY, BPF_MAP_TYPE_DEVMAP and BPF_MAP_TYPE_CPUMAP).
+On Mon, Apr 21, 2025 at 2:48=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Changing uretprobe_regs_trigger to allow the test for both
+> uprobe and uretprobe and renaming it to uprobe_regs_equal.
+>
+> We check that both uprobe and uretprobe probes (bpf programs)
+> see expected registers with few exceptions.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  .../selftests/bpf/prog_tests/uprobe_syscall.c | 58 ++++++++++++++-----
+>  .../selftests/bpf/progs/uprobe_syscall.c      |  4 +-
+>  2 files changed, 45 insertions(+), 17 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/to=
+ols/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> index f001986981ab..6d88c5b0f6aa 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> @@ -18,15 +18,17 @@
+>
+>  #pragma GCC diagnostic ignored "-Wattributes"
+>
+> -__naked unsigned long uretprobe_regs_trigger(void)
+> +__attribute__((aligned(16)))
+> +__nocf_check __weak __naked unsigned long uprobe_regs_trigger(void)
+>  {
+>         asm volatile (
+> -               "movq $0xdeadbeef, %rax\n"
+> +               ".byte 0x0f, 0x1f, 0x44, 0x00, 0x00     \n"
 
-Fixes: 3d76a4d3d4e59 ("bpf: XDP metadata RX kfuncs")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
-Changes in v2:
-- Introduce __bpf_prog_map_compatible() utility routine in order to skip
-  bpf_prog_is_dev_bound check in bpf_check_tail_call()
-- Extend xdp_metadata selftest
-- Link to v1: https://lore.kernel.org/r/20250422-xdp-prog-bound-fix-v1-1-0b581fa186fe@kernel.org
----
- kernel/bpf/core.c                                  | 27 +++++++++++++---------
- .../selftests/bpf/prog_tests/xdp_metadata.c        | 22 +++++++++++++++++-
- tools/testing/selftests/bpf/progs/xdp_metadata.c   | 13 +++++++++++
- 3 files changed, 50 insertions(+), 12 deletions(-)
+Is it me not being hardcore enough... But is anyone supposed to know
+that this is nop5? ;) maybe add /* nop5 */ comment on the side?
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index ba6b6118cf504041278d05417c4212d57be6fca0..a3e571688421196c3ceaed62b3b59b62a0258a8c 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2358,8 +2358,8 @@ static unsigned int __bpf_prog_ret0_warn(const void *ctx,
- 	return 0;
- }
- 
--bool bpf_prog_map_compatible(struct bpf_map *map,
--			     const struct bpf_prog *fp)
-+static bool __bpf_prog_map_compatible(struct bpf_map *map,
-+				      const struct bpf_prog *fp)
- {
- 	enum bpf_prog_type prog_type = resolve_prog_type(fp);
- 	bool ret;
-@@ -2368,14 +2368,6 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
- 	if (fp->kprobe_override)
- 		return false;
- 
--	/* XDP programs inserted into maps are not guaranteed to run on
--	 * a particular netdev (and can run outside driver context entirely
--	 * in the case of devmap and cpumap). Until device checks
--	 * are implemented, prohibit adding dev-bound programs to program maps.
--	 */
--	if (bpf_prog_is_dev_bound(aux))
--		return false;
--
- 	spin_lock(&map->owner.lock);
- 	if (!map->owner.type) {
- 		/* There's no owner yet where we could check for
-@@ -2409,6 +2401,19 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
- 	return ret;
- }
- 
-+bool bpf_prog_map_compatible(struct bpf_map *map, const struct bpf_prog *fp)
-+{
-+	/* XDP programs inserted into maps are not guaranteed to run on
-+	 * a particular netdev (and can run outside driver context entirely
-+	 * in the case of devmap and cpumap). Until device checks
-+	 * are implemented, prohibit adding dev-bound programs to program maps.
-+	 */
-+	if (bpf_prog_is_dev_bound(fp->aux))
-+		return false;
-+
-+	return __bpf_prog_map_compatible(map, fp);
-+}
-+
- static int bpf_check_tail_call(const struct bpf_prog *fp)
- {
- 	struct bpf_prog_aux *aux = fp->aux;
-@@ -2421,7 +2426,7 @@ static int bpf_check_tail_call(const struct bpf_prog *fp)
- 		if (!map_type_contains_progs(map))
- 			continue;
- 
--		if (!bpf_prog_map_compatible(map, fp)) {
-+		if (!__bpf_prog_map_compatible(map, fp)) {
- 			ret = -EINVAL;
- 			goto out;
- 		}
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-index 3d47878ef6bfb55c236dc9df2c100fcc449f8de3..19f92affc2daa23fdd869554e7a0475b86350a4f 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-@@ -351,9 +351,10 @@ void test_xdp_metadata(void)
- 	struct xdp_metadata2 *bpf_obj2 = NULL;
- 	struct xdp_metadata *bpf_obj = NULL;
- 	struct bpf_program *new_prog, *prog;
-+	struct bpf_devmap_val devmap_e = {};
-+	struct bpf_map *prog_arr, *devmap;
- 	struct nstoken *tok = NULL;
- 	__u32 queue_id = QUEUE_ID;
--	struct bpf_map *prog_arr;
- 	struct xsk tx_xsk = {};
- 	struct xsk rx_xsk = {};
- 	__u32 val, key = 0;
-@@ -409,6 +410,13 @@ void test_xdp_metadata(void)
- 	bpf_program__set_ifindex(prog, rx_ifindex);
- 	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
- 
-+	/* Make sure we can load a dev-bound program that performs
-+	 * XDP_REDIRECT into a devmap.
-+	 */
-+	new_prog = bpf_object__find_program_by_name(bpf_obj->obj, "redirect");
-+	bpf_program__set_ifindex(new_prog, rx_ifindex);
-+	bpf_program__set_flags(new_prog, BPF_F_XDP_DEV_BOUND_ONLY);
-+
- 	if (!ASSERT_OK(xdp_metadata__load(bpf_obj), "load skeleton"))
- 		goto out;
- 
-@@ -423,6 +431,18 @@ void test_xdp_metadata(void)
- 			"update prog_arr"))
- 		goto out;
- 
-+	/* Make sure we can't add dev-bound programs to devmaps. */
-+	devmap = bpf_object__find_map_by_name(bpf_obj->obj, "dev_map");
-+	if (!ASSERT_OK_PTR(devmap, "no dev_map found"))
-+		goto out;
-+
-+	devmap_e.bpf_prog.fd = val;
-+	if (!ASSERT_ERR(bpf_map__update_elem(devmap, &key, sizeof(key),
-+					     &devmap_e, sizeof(devmap_e),
-+					     BPF_ANY),
-+			"update dev_map"))
-+		goto out;
-+
- 	/* Attach BPF program to RX interface. */
- 
- 	ret = bpf_xdp_attach(rx_ifindex,
-diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata.c b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-index 31ca229bb3c0f182483334a4ab0bd204acae20f3..09bb8a038d528cf26c5b314cc927915ac2796bf0 100644
---- a/tools/testing/selftests/bpf/progs/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-@@ -19,6 +19,13 @@ struct {
- 	__type(value, __u32);
- } prog_arr SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(struct bpf_devmap_val));
-+	__uint(max_entries, 1);
-+} dev_map SEC(".maps");
-+
- extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
- extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
-@@ -95,4 +102,10 @@ int rx(struct xdp_md *ctx)
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
- }
- 
-+SEC("xdp")
-+int redirect(struct xdp_md *ctx)
-+{
-+	return bpf_redirect_map(&dev_map, ctx->rx_queue_index, XDP_PASS);
-+}
-+
- char _license[] SEC("license") = "GPL";
+> +               "movq $0xdeadbeef, %rax                 \n"
 
----
-base-commit: 5cffad0a5c8f0cc53ce9fe7cff7bc67c3a97c406
-change-id: 20250422-xdp-prog-bound-fix-9f30f3e134aa
+ret\n doesn't align newline, and uprobe_regs below don't either. So
+maybe don't align them at all here?
 
-Best regards,
--- 
-Lorenzo Bianconi <lorenzo@kernel.org>
-
+>                 "ret\n"
+>         );
+>  }
+>
+> -__naked void uretprobe_regs(struct pt_regs *before, struct pt_regs *afte=
+r)
+> +__naked void uprobe_regs(struct pt_regs *before, struct pt_regs *after)
+>  {
+>         asm volatile (
+>                 "movq %r15,   0(%rdi)\n"
+> @@ -47,15 +49,17 @@ __naked void uretprobe_regs(struct pt_regs *before, s=
+truct pt_regs *after)
+>                 "movq   $0, 120(%rdi)\n" /* orig_rax */
+>                 "movq   $0, 128(%rdi)\n" /* rip      */
+>                 "movq   $0, 136(%rdi)\n" /* cs       */
+> +               "pushq %rax\n"
+>                 "pushf\n"
+>                 "pop %rax\n"
+>                 "movq %rax, 144(%rdi)\n" /* eflags   */
+> +               "pop %rax\n"
+>                 "movq %rsp, 152(%rdi)\n" /* rsp      */
+>                 "movq   $0, 160(%rdi)\n" /* ss       */
+>
+>                 /* save 2nd argument */
+>                 "pushq %rsi\n"
+> -               "call uretprobe_regs_trigger\n"
+> +               "call uprobe_regs_trigger\n"
+>
+>                 /* save  return value and load 2nd argument pointer to ra=
+x */
+>                 "pushq %rax\n"
+> @@ -95,25 +99,37 @@ __naked void uretprobe_regs(struct pt_regs *before, s=
+truct pt_regs *after)
+>  );
+>  }
+>
+> -static void test_uretprobe_regs_equal(void)
+> +static void test_uprobe_regs_equal(bool retprobe)
+>  {
+> +       LIBBPF_OPTS(bpf_uprobe_opts, opts,
+> +               .retprobe =3D retprobe,
+> +       );
+>         struct uprobe_syscall *skel =3D NULL;
+>         struct pt_regs before =3D {}, after =3D {};
+>         unsigned long *pb =3D (unsigned long *) &before;
+>         unsigned long *pa =3D (unsigned long *) &after;
+>         unsigned long *pp;
+> +       unsigned long offset;
+>         unsigned int i, cnt;
+> -       int err;
+> +
+> +       offset =3D get_uprobe_offset(&uprobe_regs_trigger);
+> +       if (!ASSERT_GE(offset, 0, "get_uprobe_offset"))
+> +               return;
+>
+>         skel =3D uprobe_syscall__open_and_load();
+>         if (!ASSERT_OK_PTR(skel, "uprobe_syscall__open_and_load"))
+>                 goto cleanup;
+>
+> -       err =3D uprobe_syscall__attach(skel);
+> -       if (!ASSERT_OK(err, "uprobe_syscall__attach"))
+> +       skel->links.probe =3D bpf_program__attach_uprobe_opts(skel->progs=
+.probe,
+> +                               0, "/proc/self/exe", offset, &opts);
+> +       if (!ASSERT_OK_PTR(skel->links.probe, "bpf_program__attach_uprobe=
+_opts"))
+>                 goto cleanup;
+>
+> -       uretprobe_regs(&before, &after);
+> +       /* make sure uprobe gets optimized */
+> +       if (!retprobe)
+> +               uprobe_regs_trigger();
+> +
+> +       uprobe_regs(&before, &after);
+>
+>         pp =3D (unsigned long *) &skel->bss->regs;
+>         cnt =3D sizeof(before)/sizeof(*pb);
+> @@ -122,7 +138,7 @@ static void test_uretprobe_regs_equal(void)
+>                 unsigned int offset =3D i * sizeof(unsigned long);
+>
+>                 /*
+> -                * Check register before and after uretprobe_regs_trigger=
+ call
+> +                * Check register before and after uprobe_regs_trigger ca=
+ll
+>                  * that triggers the uretprobe.
+>                  */
+>                 switch (offset) {
+> @@ -136,7 +152,7 @@ static void test_uretprobe_regs_equal(void)
+>
+>                 /*
+>                  * Check register seen from bpf program and register afte=
+r
+> -                * uretprobe_regs_trigger call
+> +                * uprobe_regs_trigger call (with rax exception, check be=
+low).
+>                  */
+>                 switch (offset) {
+>                 /*
+> @@ -149,6 +165,15 @@ static void test_uretprobe_regs_equal(void)
+>                 case offsetof(struct pt_regs, rsp):
+>                 case offsetof(struct pt_regs, ss):
+>                         break;
+> +               /*
+> +                * uprobe does not see return value in rax, it needs to s=
+ee the
+> +                * original (before) rax value
+> +                */
+> +               case offsetof(struct pt_regs, rax):
+> +                       if (!retprobe) {
+> +                               ASSERT_EQ(pp[i], pb[i], "uprobe rax prog-=
+before value check");
+> +                               break;
+> +                       }
+>                 default:
+>                         if (!ASSERT_EQ(pp[i], pa[i], "register prog-after=
+ value check"))
+>                                 fprintf(stdout, "failed register offset %=
+u\n", offset);
+> @@ -186,13 +211,13 @@ static void test_uretprobe_regs_change(void)
+>         unsigned long cnt =3D sizeof(before)/sizeof(*pb);
+>         unsigned int i, err, offset;
+>
+> -       offset =3D get_uprobe_offset(uretprobe_regs_trigger);
+> +       offset =3D get_uprobe_offset(uprobe_regs_trigger);
+>
+>         err =3D write_bpf_testmod_uprobe(offset);
+>         if (!ASSERT_OK(err, "register_uprobe"))
+>                 return;
+>
+> -       uretprobe_regs(&before, &after);
+> +       uprobe_regs(&before, &after);
+>
+>         err =3D write_bpf_testmod_uprobe(0);
+>         if (!ASSERT_OK(err, "unregister_uprobe"))
+> @@ -605,7 +630,8 @@ static void test_uretprobe_shadow_stack(void)
+>         /* Run all the tests with shadow stack in place. */
+>         shstk_is_enabled =3D true;
+>
+> -       test_uretprobe_regs_equal();
+> +       test_uprobe_regs_equal(false);
+> +       test_uprobe_regs_equal(true);
+>         test_uretprobe_regs_change();
+>         test_uretprobe_syscall_call();
+>
+> @@ -728,7 +754,7 @@ static void test_uprobe_sigill(void)
+>  static void __test_uprobe_syscall(void)
+>  {
+>         if (test__start_subtest("uretprobe_regs_equal"))
+> -               test_uretprobe_regs_equal();
+> +               test_uprobe_regs_equal(true);
+>         if (test__start_subtest("uretprobe_regs_change"))
+>                 test_uretprobe_regs_change();
+>         if (test__start_subtest("uretprobe_syscall_call"))
+> @@ -747,6 +773,8 @@ static void __test_uprobe_syscall(void)
+>                 test_uprobe_race();
+>         if (test__start_subtest("uprobe_sigill"))
+>                 test_uprobe_sigill();
+> +       if (test__start_subtest("uprobe_regs_equal"))
+> +               test_uprobe_regs_equal(false);
+>  }
+>  #else
+>  static void __test_uprobe_syscall(void)
+> diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall.c b/tools/t=
+esting/selftests/bpf/progs/uprobe_syscall.c
+> index 8a4fa6c7ef59..e08c31669e5a 100644
+> --- a/tools/testing/selftests/bpf/progs/uprobe_syscall.c
+> +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall.c
+> @@ -7,8 +7,8 @@ struct pt_regs regs;
+>
+>  char _license[] SEC("license") =3D "GPL";
+>
+> -SEC("uretprobe//proc/self/exe:uretprobe_regs_trigger")
+> -int uretprobe(struct pt_regs *ctx)
+> +SEC("uprobe")
+> +int probe(struct pt_regs *ctx)
+>  {
+>         __builtin_memcpy(&regs, ctx, sizeof(regs));
+>         return 0;
+> --
+> 2.49.0
+>
 
