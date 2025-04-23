@@ -1,296 +1,317 @@
-Return-Path: <bpf+bounces-56503-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56504-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB2D1A9946C
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B094A99502
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:27:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 815FA1BC1A34
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 16:07:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 771E41BA31CB
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 16:20:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8654B28BA8E;
-	Wed, 23 Apr 2025 16:02:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4610F27FD7D;
+	Wed, 23 Apr 2025 16:19:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gpvB/gvf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IriTGtjo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3220C28A3F9
-	for <bpf@vger.kernel.org>; Wed, 23 Apr 2025 16:02:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745424123; cv=fail; b=f2cLZV4RL5Wn3m5SqOaoy26U6le3/uCT4EfX+Y26gdK8XuTbK7rhKDTzRhpGkqKfsF76NR/JiETS9Up3TLuI2Imh26QYQHs6Oy2mJNKB3FZSH994HZPveuoM8FkSvJ5XNEtM552VQQ36jwP0pz5UevfxwTsVPbG8ACoXGW/BdYA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745424123; c=relaxed/simple;
-	bh=M7iJiMswMCNR/RZQyy8Aswv8WTpYvtAAxJIFuLtd/dM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ATHQPxHUObVKzR1pDPZgUiBpHjwarsuRh3KiBc5vLd0vGNDu1fIahTD6C2dYwfnhfxNFPrjutzNNAYI4spdzC4PcmlhNoh9Vhv30dNnkRsC87TCdGHyTl2cBUEH3iRZP8D5y7RQsFUu8U6irU40SQem4+BQZHcP5PDr00R32yLI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gpvB/gvf; arc=fail smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1745424121; x=1776960121;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=M7iJiMswMCNR/RZQyy8Aswv8WTpYvtAAxJIFuLtd/dM=;
-  b=gpvB/gvfSP+MV6EqMxt6/wnZX58WVxai4Sld2ntnw5U19NyL2ZF8hUOO
-   EnX0xnVYDBDQFnu9+AYh0qeyP3Zsb+NMaSNryA6twp2OKd3PIj1WBVMtX
-   rjd8n4AZfRrWt6zpfg/MVaWbxqFK8RDuV+tmtQHcCWCqFkB1h8JiL1zFF
-   lWu0sxL72fa9KLMP8kT9Nt9DVyTNyg7V42jIW402Y2nHMrMNyz0cLTFje
-   6Y4KJPv/CahYvkV/KTh7M93gj90ESR+1cIOcAp91Z2E35jHQF4NBBjgRu
-   37kHniK+szcFu5fclkvApKdsT/aqsKrKZo7+1Ak9X4uWzTdDmT62og/Z8
-   Q==;
-X-CSE-ConnectionGUID: bzK1e4DgT+6Mg2tvToiuOQ==
-X-CSE-MsgGUID: UlsCS+SuRUCTqETFsQjOlw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11412"; a="46935232"
-X-IronPort-AV: E=Sophos;i="6.15,233,1739865600"; 
-   d="scan'208";a="46935232"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2025 09:01:48 -0700
-X-CSE-ConnectionGUID: EURhNGKBR72uWSl0/8QVIA==
-X-CSE-MsgGUID: xRaUaIIMQs+LBWgUU94NHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,233,1739865600"; 
-   d="scan'208";a="136428933"
-Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2025 09:01:48 -0700
-Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Wed, 23 Apr 2025 09:01:47 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14 via Frontend Transport; Wed, 23 Apr 2025 09:01:47 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.47) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Wed, 23 Apr 2025 09:01:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=UvQy16vkFcxIznsL8JsTrNGYfmwPvF4dZYaMQYZsRI9mF27j9CXxvxdHOzW8f6YVGU8zbtgak/z9s7PIG1jEtSgx2DfRABOAlxHrOdpQa1ZWCxP2VzrGecQfHRFQQ+Owfx+RRpaxzGSprm8wIk0pukPy589mlgDG0P54Uf/DeSsTyBfjB0vKEWI3RPY/cutHRxPgHrgKaahd2bCZpU7atu+WTS7kB0smp5o+nOVdYzFvRKX7oKGXZ2ZnrUccKYFomA9Ly4NfFZG67oGKWHByF/Qnks6Z+GHSYmLATbosWStX4Urp4YfswstVF91XH78cqlow1VRNjAn5GpaPFSf/3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EcdQJMtqXsKuqlWL0s34bzdn+DAs/MAmp+dkb/BvOq8=;
- b=JKYBgcV+dMme99X3U4lOzhK/d4nRyXlcXu9LyMkiios3LbDKgwbp/iVvCOZOgvm4QVnde4JweBsrCT77r/0PW22XsROxV/2sFtOPDd0q8sRF8ae9NyKIKSj7kvsp3Sc4nuuReWmMTemzFq3hfnRXIayZpcLcon82ZOuRe7lwcACafcdGASf4nvxQw4r4jMuCXlLCID72ndVG6NIP8bV85KFcz6hQ2jnCeFUvvUyKte86ZLml1b4UMnhKtU4EEEvpq0/JrK6a1Qkj0bu4XRbGVQ6Exc8m6vf/P5IVWHKMUl/hV74lAZ9Wt8E1rks2dgmE5/J/hScvW6T4ZlsrgzL8bA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB7050.namprd11.prod.outlook.com (2603:10b6:510:20d::15)
- by IA1PR11MB7811.namprd11.prod.outlook.com (2603:10b6:208:3f9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.22; Wed, 23 Apr
- 2025 16:01:43 +0000
-Received: from PH7PR11MB7050.namprd11.prod.outlook.com
- ([fe80::dbd2:6eb1:7e7:1582]) by PH7PR11MB7050.namprd11.prod.outlook.com
- ([fe80::dbd2:6eb1:7e7:1582%7]) with mapi id 15.20.8655.033; Wed, 23 Apr 2025
- 16:01:43 +0000
-Date: Wed, 23 Apr 2025 12:01:40 -0400
-From: Brandon Kammerdiener <brandon.kammerdiener@intel.com>
-To: <bpf@vger.kernel.org>
-CC: Brandon Kammerdiener <brandon.kammerdiener@intel.com>
-Subject: [PATCH bpf 2/2] selftests/bpf: add test for softlock when modifying
- hashmap while iterating
-Message-ID: <20250423160116.120118-3-brandon.kammerdiener@intel.com>
-X-Mailer: git-send-email 2.49.0
-References: <20250423160116.120118-1-brandon.kammerdiener@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20250423160116.120118-1-brandon.kammerdiener@intel.com>
-X-ClientProxiedBy: SJ0PR13CA0080.namprd13.prod.outlook.com
- (2603:10b6:a03:2c4::25) To PH7PR11MB7050.namprd11.prod.outlook.com
- (2603:10b6:510:20d::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7ED927FD42;
+	Wed, 23 Apr 2025 16:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745425178; cv=none; b=hMoxFZCZ0mPZ6hyadJyHqRvrxHnKYy3qsjQqRcOC5ODaaXEb4wsQ0lCgEkNo4pEzaClequ5rRiluB4jBH2c+Ez2tOSvX7u1eIqdjT6sr2ogPwzDgPJDnvGBXhsfYHl34VudBmS8Vy4RN1x4tz4G+6LDnXx1rpACdGSCXXq2JM2U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745425178; c=relaxed/simple;
+	bh=q6ScX9mWRWztFOA5aq1RyBHqHRm/hPzxoPr1yx5+Sbo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GOblEs0Ttw9sCyEwFe571PhEaeFhF3uobp8pfUezehAjxCDi9JeIob295smsrYiaF2zYFg28SOBWGGwi+jb2086PbClyAInOtDa15P89qMrMb6Y1AN5Q/KHX34v6Nr++4Q7ZC83l7lDJS1tSQjlmWp4NhOzirB9vDUM9yPqiBdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IriTGtjo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BFD6C4CEE8;
+	Wed, 23 Apr 2025 16:19:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745425178;
+	bh=q6ScX9mWRWztFOA5aq1RyBHqHRm/hPzxoPr1yx5+Sbo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IriTGtjo2LqN3oML1AWXEYX7t6sgbaii8sJNCRpB2GEGZykrnN5rAM/2Tez9f1k30
+	 A8SXm0G3RuyJomLqNYomZpZzrd2Xsv4KQoDfnnaRA4WsZ5BZc9xIEV89Untwy9itYn
+	 dTAx9Gq89eDsITq96jX60WqBLMgXaO9UZqyX7p3ZUtZ6cdpa5wQzJfhd7AhqDouw9Q
+	 VU+pSyImBjg1Qe1BC/HwJso6uAsuQpyuIe0iojlbzJYLNhCRh9B0xlPc/Cws187ioL
+	 qK7ai2DW1Jeocqg/oEVEIyttRnQs0OshGM+oFGzqorr5TrAZ9OHDINzO2j+V8EcbAr
+	 B+09mRb4A1MCA==
+Date: Wed, 23 Apr 2025 13:19:35 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Howard Chu <howardchu95@gmail.com>
+Cc: Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] perf trace: Implement syscall summary in BPF
+Message-ID: <aAkTFyihA9bwBx6V@x1>
+References: <20250326044001.3503432-1-namhyung@kernel.org>
+ <CAH0uvojPaZ-byE-quc=sUvXyExaZPU3PUjdTYOzE5iDAT_wNVA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB7050:EE_|IA1PR11MB7811:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8245260b-5f38-41d5-8cf2-08dd82802424
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?cfnhfybbVhYfcqIc5c6JA001OSggrsO6wNzTL6JmSvrvmZEez8TbinZTlRsP?=
- =?us-ascii?Q?o4rS+YBerPHxjcQyH73ixXqwjYYtHr3zBR4+2R5Xzi0aZ8G+3lM1q/ECFxjo?=
- =?us-ascii?Q?hjPwyyUnp0nW4bgFPnU+6HW0/B9rS8Nph5bh+xnVJszDNCes6HUzxTK+iS5B?=
- =?us-ascii?Q?wCx1GLeBYxf+mmgBpiw/++yv5Jq+XqHuQDDxLm1u1DQEFgYE/J88gKvXhOc6?=
- =?us-ascii?Q?Urx8JvmsD//MSQ7DkhkItonS6s9PDIJwMYZVvX3oP2G8cEprY/mQHRHM4CJb?=
- =?us-ascii?Q?r6IRTylkrEf/dUW8j6mniwrMxm3oUXaMMmA99Ef3g3BaSB7aYevvAfBXawfT?=
- =?us-ascii?Q?8zwTz0BwQytnTOXxc8Zgr+5f+qbCUCMfvXspFnmf6ZtVrGLi7m+sXC6M24K2?=
- =?us-ascii?Q?c3Pm5mP69/eftRNjw2WhoLJUEBc0wPmSRSLi7dofj6CTAxyafIxOETeJoDG0?=
- =?us-ascii?Q?SKBGh1L2CQ6/fp9QqPoPOGOc3q+9VBb1yonTnJB6Lq4AEUXk0kCdVqIxL29w?=
- =?us-ascii?Q?4ICcTldRkoOXmjAewwyo6UDQhiiAl4kLoWfzxYhnk4KqR2dUSWSErYfjcGB4?=
- =?us-ascii?Q?KA0rdaaEeXjmFHcVNHFh1S6GYKgXoIZ+PIWtbF4DdtLpigHAt62L+ekU0XzB?=
- =?us-ascii?Q?YCMSA2A3Ri780PiXJZdIaZdXMhms0vCdzzOMQKIU/6DbM5ex1t9MIiASEplr?=
- =?us-ascii?Q?CcNPHuziT8vM0GmSb2FytniPyGg0Ds0CEtLgkKGIk04c4m1cSe0fUEIEDVEO?=
- =?us-ascii?Q?tydc1GYfVCE/JJKW2WkZBRhIJQL71pT83lxwN9MT+r8QD1QPYYivjrijhiK5?=
- =?us-ascii?Q?tuomU7mUf+yH8d3Vkby4zASkngb3k/U9+rKqXp9Y9vEois7513kLim2vEdeb?=
- =?us-ascii?Q?4vbuBzKqe1TmRwlfrCjZB0HGCFnTxKwj+wZ7Pr6SS1CnoWa776gsIGfHP2ok?=
- =?us-ascii?Q?xSaeIdumDrp13ajhoQZ3o3/6GexB3zEWYYWNPHDpbX5ChkSqq6VhZjEaTn+W?=
- =?us-ascii?Q?ilMiRNG7At60irAvCLYzQKhgrOQTSCtbtpEEDQVOKbcB93059vf/I/r4AIid?=
- =?us-ascii?Q?aRLKm9+gJxPmznrMGv8d2SGrvHcPMYMffRhtkdKbOc3EKkb+yns5A0pjcgdW?=
- =?us-ascii?Q?q5Ol9y1KsTgacTKiq663mk4IitdSNHKGTAeujzF8SVitFizLPBJu/gThEE+a?=
- =?us-ascii?Q?MiC4RKJ4Qf+H914hH7Z3NuhAgfOwbRm9K0K8a6KRldgXoB+xlLiuYjEdLObh?=
- =?us-ascii?Q?BuuvEkEjIzwW+7TVP+c82L9cZTwzciw8xErDPLLh8h0cMJK1Sz+iQhOu622Q?=
- =?us-ascii?Q?OK1vMkCuZqR9lb9JpZgNUyWhsAE+XWXU1va5O8FdQr9bIKsKD1JkZubn8gnb?=
- =?us-ascii?Q?P+ObBwOmc+OR674ZMjZY+sJY1xfxhAi3DiSdDBuqf46HVGovRte1ANeCby9J?=
- =?us-ascii?Q?akbv6Sad4CI=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB7050.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?D4pX/RtPkPwHhMfyXZaVwL1sa9buIaVX1H6ioTvMFQtlsKXXVbhOrLR+8wIu?=
- =?us-ascii?Q?jbum11+bHl7JRLvwKm16K6q9rg9Jw5Yrwhr+vvsVnmlOAMAt2Jz5EEHP8X82?=
- =?us-ascii?Q?GxCkgOv7E6TTceZHKX9Bv0M+84AdctJhWg/VXjq1XhkW7sn/rXiLtVFqf6CJ?=
- =?us-ascii?Q?yf1HX/isFgyWpNlTAAasgHK2JOk60OhtfLpOD64UiX9efZK1ewJs61JpQYws?=
- =?us-ascii?Q?EF56imOe50jrUgzCW52kRt5coVd2DZgB8KJ+Pzsn2AdmHz8HVTblFqrUQt7u?=
- =?us-ascii?Q?11ldDF/G62dGcn88TpWXjNmqUrLNrYShAKw1D12vdlT3xS9xfz9cNYBThcGU?=
- =?us-ascii?Q?ZYhHBpsYb9UOBfFCZ+t56IRPdt1pwqWG/T5ko5L3vj39R9aNXkMfuzOJ67EW?=
- =?us-ascii?Q?7TdHhzrHuWf5Ot2nohyDg4fGTSdQ+2pmoxUW6oph1nUR+7Yig+zZgjnsu7hU?=
- =?us-ascii?Q?vqmkIthiJQ+o0iY5NbuZDlYYBYVaFTC+vKSjiMcGBGqWp9YPIZzuTzf2FD2r?=
- =?us-ascii?Q?zimHHRuc8gd1atJQrK0yPDamphsbwcuNBNZeQvmPcGsdq0ajh1Nkh5LpEwed?=
- =?us-ascii?Q?eNJ/hglVW0is/tOfoSURh86eP7WsBskZNKTPVKQNRt8zRUsizFqGDqcQAJb6?=
- =?us-ascii?Q?ntC7hZRKT1iSyzi+PNoht/xxnehzPANEnCc187WhQPiuaeZsB9uY/znk3u8A?=
- =?us-ascii?Q?tFtHPGAIUcR8hjslolvT8FQwgCZAEt+bOGLeTgXtUSMMGXMTcuAuZzgGS83f?=
- =?us-ascii?Q?cnzyqj89M4VhKdeYLm+0QYbBzSoQah0KAKYPE/8xuC+uoaEBV8AaVKZlKGEz?=
- =?us-ascii?Q?rNw2h6QE1oxUVTwGx3KF4FnmfHZugl5W/VOzdINySrpwzO+lTfI+eKbkYwyN?=
- =?us-ascii?Q?d8X1h2W35MHmY4DEEfvICeA84hlFCdmttImXD+wqodmLzJ0ykvf4TV8fjby0?=
- =?us-ascii?Q?OSaDtMa5wEdUxbHrnO5498gu+s9/VxPOSqQ2hmCkanqZZz7Zc0II7udOinwD?=
- =?us-ascii?Q?Ok2c3kdy9xOjnfhoxmkTZOgY2Tvu+05T6FQ0hSe6IjCePlOdLNXp01owa/Pg?=
- =?us-ascii?Q?RVF6ZhnySexo3zdkoJAvAr3M67aD/CKPFWQG3L46jrAkVDstYOJqF33m8LV3?=
- =?us-ascii?Q?V9QdNj6Ve4ep7uVyNNZ1Cw/DjgtQSLEApZjy5svpsz4AQL8J4Qqx51iEmK8x?=
- =?us-ascii?Q?w/E8Gu4+TInw0HOtNBGFcLpMCZuQrAIqKwA6w1hSkrSH1aQCp39LcY/zFJQw?=
- =?us-ascii?Q?xOYt1R0lh8o0xx1BvsqkW+VZp6ow9V7YZK5RMuDDBpR7ci5WlrEjQpZC0L25?=
- =?us-ascii?Q?XcFJVRFpquphBHAQPTD04RjaZlcSoKt24uQhR/jQ02LCuDq96rTfjzuC3p4x?=
- =?us-ascii?Q?sefxWsWO7hJdKekxRNaCiaUcErxpKIBLnBpZ7z4SvuHSY8X8Tj7xAWAH4YqO?=
- =?us-ascii?Q?UT4lNT9xXk3ftZiGqzFYpuF5bSAXYnqm6MbF0dvkLvFLNudTPEWgUtHrElj8?=
- =?us-ascii?Q?csZJt91h4t4UK1McPKXYW3GYP1NUT9Q5CV7csE72TzSPnuKPBb0ZH2QZw0x9?=
- =?us-ascii?Q?+G6ugDvWl68sTgP1wq6bn5BUJUxgFkjGpTBhYzYLntCo9uE047fEb8rWrjlM?=
- =?us-ascii?Q?sg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8245260b-5f38-41d5-8cf2-08dd82802424
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB7050.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2025 16:01:43.2859
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XZM9X27hk6Fj2vQvEHUUaI8SpQ6NQYJCCEjrhFiHg1/NZ7zwC9x/5r7JJ+Ia6EHU6bou0HLCZwof+dChyj5IKAzFMI5H1lc64YUwf66Kd9k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7811
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH0uvojPaZ-byE-quc=sUvXyExaZPU3PUjdTYOzE5iDAT_wNVA@mail.gmail.com>
 
-Add test that modifies the map while it's being iterated in such a way that
-hangs the kernel thread unless the _safe fix is applied to
-bpf_for_each_hash_elem.
+On Fri, Mar 28, 2025 at 06:46:36PM -0700, Howard Chu wrote:
+> Hello Namhyung,
+> 
+> On Tue, Mar 25, 2025 at 9:40 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > When -s/--summary option is used, it doesn't need (augmented) arguments
+> > of syscalls.  Let's skip the augmentation and load another small BPF
+> > program to collect the statistics in the kernel instead of copying the
+> > data to the ring-buffer to calculate the stats in userspace.  This will
+> > be much more light-weight than the existing approach and remove any lost
+> > events.
+> >
+> > Let's add a new option --bpf-summary to control this behavior.  I cannot
+> > make it default because there's no way to get e_machine in the BPF which
+> > is needed for detecting different ABIs like 32-bit compat mode.
+> >
+> > No functional changes intended except for no more LOST events. :)
+> >
+> >   $ sudo ./perf trace -as --summary-mode=total --bpf-summary sleep 1
+> >
+> >    Summary of events:
+> >
+> >    total, 6194 events
+> >
+> >      syscall            calls  errors  total       min       avg       max       stddev
+> >                                        (msec)    (msec)    (msec)    (msec)        (%)
+> >      --------------- --------  ------ -------- --------- --------- ---------     ------
+> >      epoll_wait           561      0  4530.843     0.000     8.076   520.941     18.75%
+> >      futex                693     45  4317.231     0.000     6.230   500.077     21.98%
+> >      poll                 300      0  1040.109     0.000     3.467   120.928     17.02%
+> >      clock_nanosleep        1      0  1000.172  1000.172  1000.172  1000.172      0.00%
+> >      ppoll                360      0   872.386     0.001     2.423   253.275     41.91%
+> >      epoll_pwait           14      0   384.349     0.001    27.453   380.002     98.79%
+> >      pselect6              14      0   108.130     7.198     7.724     8.206      0.85%
+> >      nanosleep             39      0    43.378     0.069     1.112    10.084     44.23%
+> >      ...
+> >
+> > Cc: Howard Chu <howardchu95@gmail.com>
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> > v4)
+> >  * fix segfault on -S  (Howard)
+> >  * correct some comments  (Howard)
+> 
+> + if (!hashmap__find(hash, map_key->nr, &data)) {
+> 
+> I think you should mention the hashmap's map_key->nr update, as this
+> change is actually important for the feature.
+> 
+> >
+> > v3)
+> >  * support -S/--with-summary option too  (Howard)
+> >  * make it work only with -a/--all-cpus  (Howard)
+> >  * fix stddev calculation  (Howard)
+> >  * add some comments about syscall_data  (Howard)
+> >
+> > v2)
+> >  * Rebased on top of Ian's e_machine changes
+> >  * add --bpf-summary option
+> >  * support per-thread summary
+> >  * add stddev calculation  (Howard)
+> >
+> >  tools/perf/Documentation/perf-trace.txt       |   6 +
+> >  tools/perf/Makefile.perf                      |   2 +-
+> >  tools/perf/builtin-trace.c                    |  54 ++-
+> >  tools/perf/util/Build                         |   1 +
+> >  tools/perf/util/bpf-trace-summary.c           | 347 ++++++++++++++++++
+> >  .../perf/util/bpf_skel/syscall_summary.bpf.c  | 118 ++++++
+> >  tools/perf/util/bpf_skel/syscall_summary.h    |  25 ++
+> >  tools/perf/util/trace.h                       |  37 ++
+> >  8 files changed, 577 insertions(+), 13 deletions(-)
+> >  create mode 100644 tools/perf/util/bpf-trace-summary.c
+> >  create mode 100644 tools/perf/util/bpf_skel/syscall_summary.bpf.c
+> >  create mode 100644 tools/perf/util/bpf_skel/syscall_summary.h
+> >  create mode 100644 tools/perf/util/trace.h
+> >
+> > diff --git a/tools/perf/Documentation/perf-trace.txt b/tools/perf/Documentation/perf-trace.txt
+> > index 887dc37773d0f4d6..a8a0d8c33438fef7 100644
+> > --- a/tools/perf/Documentation/perf-trace.txt
+> > +++ b/tools/perf/Documentation/perf-trace.txt
+> > @@ -251,6 +251,12 @@ the thread executes on the designated CPUs. Default is to monitor all CPUs.
+> >         pretty-printing serves as a fallback to hand-crafted pretty printers, as the latter can
+> >         better pretty-print integer flags and struct pointers.
+> >
+> > +--bpf-summary::
+> > +       Collect system call statistics in BPF.  This is only for live mode and
+> > +       works well with -s/--summary option where no argument information is
+> > +       required.
 
----
- .../selftests/bpf/prog_tests/for_each.c       | 37 +++++++++++++++++++
- .../bpf/progs/for_each_hash_modify.c          | 30 +++++++++++++++
- 2 files changed, 67 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/for_each_hash_modify.c
+root@number:~#> 
+> It works with -S as well, doesn't it?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/for_each.c b/tools/testing/selftests/bpf/prog_tests/for_each.c
-index 09f6487f58b9..f4092464d75e 100644
---- a/tools/testing/selftests/bpf/prog_tests/for_each.c
-+++ b/tools/testing/selftests/bpf/prog_tests/for_each.c
-@@ -6,6 +6,7 @@
- #include "for_each_array_map_elem.skel.h"
- #include "for_each_map_elem_write_key.skel.h"
- #include "for_each_multi_maps.skel.h"
-+#include "for_each_hash_modify.skel.h"
+Yes, I tested it:
 
- static unsigned int duration;
+root@number:~# perf trace -aS --summary-mode=total --bpf-summary sleep 0.000000001
+     0.011 ( 0.008 ms): :146484/146484 execve(filename: "/home/acme/libexec/perf-core/sleep", argv: 0x7ffcdf2108f0, envp: 0x37fabf70) = -1 ENOENT (No such file or directory)
+     0.021 ( 0.002 ms): :146484/146484 execve(filename: "/root/.local/bin/sleep", argv: 0x7ffcdf2108f0, envp: 0x37fabf70) = -1 ENOENT (No such file or directory)
+     0.024 ( 0.002 ms): :146484/146484 execve(filename: "/root/bin/sleep", argv: 0x7ffcdf2108f0, envp: 0x37fabf70) = -1 ENOENT (No such file or directory)
+     0.026 ( 0.002 ms): :146484/146484 execve(filename: "/usr/local/sbin/sleep", argv: 0x7ffcdf2108f0, envp: 0x37fabf70) = -1 ENOENT (No such file or directory)
+     0.029 ( 0.001 ms): :146484/146484 execve(filename: "/usr/local/bin/sleep", argv: 0x7ffcdf2108f0, envp: 0x37fabf70) = -1 ENOENT (No such file or directory)
+         ? (         ): sudo/115804  ... [continued]: ppoll())                                            = 1
+     0.032 (         ): :146484/146484 execve(filename: "/usr/sbin/sleep", argv: 0x7ffcdf2108f0, envp: 0x37fabf70) ...
+     0.146 ( 0.002 ms): sudo/115804 rt_sigaction(sig: TTIN, act: (struct sigaction){.sa_handler = (__sighandler_t)0x557bdbdec4c0,.sa_flags = (long unsigned int)67108864,.sa_restorer = (__sigrestore_t)0x7f50c6627bf0,}, oact: 0x7ffff79f7d80, sigsetsize: 8) = 0
+     0.150 ( 0.003 ms): sudo/115804 read(fd: 9</dev/ptmx>, buf: 0x557be6008260, count: 65536)             = 297
+     0.155 ( 0.001 ms): sudo/115804 rt_sigaction(sig: TTIN, act: (struct sigaction){.sa_handler = (__sighandler_t)0x1,.sa_flags = (long unsigned int)335544320,.sa_restorer = (__sigrestore_t)0x7f50c6627bf0,}, sigsetsize: 8) = 0
+     0.158 ( 0.001 ms): sudo/115804 rt_sigprocmask(nset: 0x557bdbe1a6a0, oset: 0x7ffff79f7d70, sigsetsize: 8) = 0
+     0.162 ( 0.001 ms): sudo/115804 rt_sigprocmask(how: SETMASK, nset: 0x7ffff79f7d70, sigsetsize: 8)     = 0
+     0.165 ( 0.002 ms): sudo/115804 ppoll(ufds: 0x557be5f955b0, nfds: 5, sigsetsize: 8)                   = 2
+     0.169 ( 0.001 ms): sudo/115804 rt_sigaction(sig: TTIN, act: (struct sigaction){.sa_handler = (__sighandler_t)0x557bdbdec4c0,.sa_flags = (long unsigned int)67108864,.sa_restorer = (__sigrestore_t)0x7f50c6627bf0,}, oact: 0x7ffff79f7d80, sigsetsize: 8) = 0
+     0.171 ( 0.002 ms): sudo/115804 read(fd: 9</dev/ptmx>, buf: 0x557be6008389, count: 65239)             = 502
+     0.175 ( 0.001 ms): sudo/115804 rt_sigaction(sig: TTIN, act: (struct sigaction){.sa_handler = (__sighandler_t)0x1,.sa_flags = (long unsigned int)335544320,.sa_restorer = (__sigrestore_t)0x7f50c6627bf0,}, sigsetsize: 8) = 0
+     0.177 ( 0.001 ms): sudo/115804 rt_sigprocmask(nset: 0x557bdbe1a6a0, oset: 0x7ffff79f7d70, sigsetsize: 8) = 0
+     0.179 ( 0.001 ms): sudo/115804 rt_sigprocmask(how: SETMASK, nset: 0x7ffff79f7d70, sigsetsize: 8)     = 0
+     0.181 ( 0.001 ms): sudo/115804 rt_sigaction(sig: TTOU, act: (struct sigaction){.sa_handler = (__sighandler_t)0x557bdbdec4d0,.sa_flags = (long unsigned int)67108864,.sa_restorer = (__sigrestore_t)0x7f50c6627bf0,}, oact: 0x7ffff79f7d80, sigsetsize: 8) = 0
+     0.183 ( 0.004 ms): sudo/115804 write(fd: 8</dev/tty>, buf:          ? (         ): :146484/, count: 799) = 799
+     0.189 ( 0.001 ms): sudo/115804 rt_sigaction(sig: TTOU, act: (struct sigaction){.sa_handler = (__sighandler_t)0x1,.sa_flags = (long unsigned int)335544320,.sa_restorer = (__sigrestore_t)0x7f50c6627bf0,}, sigsetsize: 8) = 0
+     0.193 ( 0.002 ms): sudo/115804 ppoll(ufds: 0x557be5f955b0, nfds: 4, sigsetsize: 8)                   = 1
+     0.196 ( 0.001 ms): sudo/115804 rt_sigaction(sig: TTIN, act: (struct sigaction){.sa_handler = (__sighandler_t)0x557bdbdec4c0,.sa_flags = (long unsigned int)67108864,.sa_restorer = (__sigrestore_t)0x7f50c6627bf0,}, oact: 0x7ffff79f7d80, sigsetsize: 8) = 0
+     0.199 ( 0.002 ms): sudo/115804 read(fd: 9</dev/ptmx>, buf: 0x557be6008260, count: 65536)             = 379
+     0.201 ( 0.001 ms): sudo/115804 rt_sigaction(sig: TTIN, act: (struct sigaction){.sa_handler = (__sighandler_t)0x1,.sa_flags = (long unsigned int)335544320,.sa_restorer = (__sigrestore_t)0x7f50c6627bf0,}, sigsetsize: 8) = 0
+     0.203 ( 0.001 ms): sudo/115804 rt_sigprocmask(nset: 0x557bdbe1a6a0, oset: 0x7ffff79f7d70, sigsetsize: 8) = 0
+     0.205 ( 0.001 ms): sudo/115804 rt_sigprocmask(how: SETMASK, nset: 0x7ffff79f7d70, sigsetsize: 8)     = 0
+     0.206 ( 0.002 ms): sudo/115804 ppoll(ufds: 0x557be5f955b0, nfds: 5, sigsetsize: 8)                   = 1
+     0.209 ( 0.001 ms): sudo/115804 rt_sigaction(sig: TTOU, act: (struct sigaction){.sa_handler = (__sighandler_t)0x557bdbdec4d0,.sa_flags = (long unsigned int)67108864,.sa_restorer = (__sigrestore_t)0x7f50c6627bf0,}, oact: 0x7ffff79f7d80, sigsetsize: 8) = 0
+     0.211 ( 0.002 ms): sudo/115804 write(fd: 8</dev/tty>, buf: ): :146484/146484 execve(filenam, count: 379) = 379
+     0.213 ( 0.001 ms): sudo/115804 rt_sigaction(sig: TTOU, act: (struct sigaction){.sa_handler = (__sighandler_t)0x1,.sa_flags = (long unsigned int)335544320,.sa_restorer = (__sigrestore_t)0x7f50c6627bf0,}, sigsetsize: 8) = 0
+         ? (         ): ptyxis/3622  ... [continued]: ppoll())                                            = 1
+     0.215 (         ): sudo/115804 ppoll(ufds: 0x557be5f955b0, nfds: 4, sigsetsize: 8)                ...
+     0.196 ( 0.002 ms): ptyxis/3622 write(fd: 4<anon_inode:[eventfd]>, buf: \1\0\0\0\0\0\0\0, count: 8)   = 8
+     0.206 ( 0.003 ms): ptyxis/3622 read(fd: 41</dev/ptmx>, buf: 0x5586a84ee428, count: 8136)             = 800
+     0.209 ( 0.001 ms): ptyxis/3622 read(fd: 41</dev/ptmx>, buf: 0x5586a84ee747, count: 7337)             = -1 EAGAIN (Resource temporarily unavailable)
+     0.221 ( 0.001 ms): ptyxis/3622 write(fd: 4<anon_inode:[eventfd]>, buf: \1\0\0\0\0\0\0\0, count: 8)   = 8
+     0.224 ( 0.002 ms): ptyxis/3622 ppoll(ufds: 0x5586a7e8f120, nfds: 10, tsp: 0x7ffdd1fbb470, sigsetsize: 8) = 2
+     0.227 ( 0.001 ms): ptyxis/3622 read(fd: 4<anon_inode:[eventfd]>, buf: 0x7ffdd1fbb3a0, count: 8)      = 8
+     0.229 ( 0.001 ms): ptyxis/3622 write(fd: 4<anon_inode:[eventfd]>, buf: \1\0\0\0\0\0\0\0, count: 8)   = 8
+     0.231 ( 0.001 ms): ptyxis/3622 read(fd: 41</dev/ptmx>, buf: 0x5586a84ee747, count: 7337)             = 380
+     0.233 ( 0.001 ms): ptyxis/3622 read(fd: 41</dev/ptmx>, buf: 0x5586a84ee8c2, count: 6958)             = -1 EAGAIN (Resource temporarily unavailable)
+     0.234 ( 0.001 ms): ptyxis/3622 write(fd: 4<anon_inode:[eventfd]>, buf: \1\0\0\0\0\0\0\0, count: 8)   = 8
+     0.236 ( 0.001 ms): ptyxis/3622 ppoll(ufds: 0x5586a7e8f120, nfds: 10, tsp: 0x7ffdd1fbb470, sigsetsize: 8) = 1
+     0.238 ( 0.001 ms): ptyxis/3622 read(fd: 4<anon_inode:[eventfd]>, buf: 0x7ffdd1fbb3a0, count: 8)      = 8
+         ? (         ): mdns_service/5565  ... [continued]: recvfrom())                                         = -1 EAGAIN (Resource temporarily unavailable)
+     0.241 (         ): ptyxis/3622 ppoll(ufds: 0x5586a7e8f120, nfds: 10, tsp: 0x7ffdd1fbb470, sigsetsize: 8) ...
+     0.032 ( 0.627 ms): sleep/146484  ... [continued]: execve())                                           = 0
+     1.059 (         ): mdns_service/5565 recvfrom(fd: 292<socket:[81029]>, ubuf: 0x7f6cfdc454c0, size: 9000, addr: 0x7f6cfdc47b00, addr_len: 0x7f6cfdc47a00) ...
+     0.676 ( 0.001 ms): sleep/146484 brk()                                                                 = 0x56443e2d4000
+     0.689 ( 0.002 ms): sleep/146484 mmap(len: 8192, prot: READ|WRITE, flags: PRIVATE|ANONYMOUS)           = 0x7fe66d41d000
+     0.693 ( 0.002 ms): sleep/146484 access(filename: "/etc/ld.so.preload", mode: R)                       = -1 ENOENT (No such file or directory)
+     0.698 ( 0.002 ms): sleep/146484 openat(dfd: CWD, filename: "/etc/ld.so.cache", flags: RDONLY|CLOEXEC) = 3
+     0.701 ( 0.001 ms): sleep/146484 fstat(fd: 3, statbuf: 0x7ffefb498350)                                 = 0
+     0.704 ( 0.003 ms): sleep/146484 mmap(len: 76091, prot: READ, flags: PRIVATE, fd: 3)                   = 0x7fe66d40a000
+     0.708 ( 0.001 ms): sleep/146484 close(fd: 3)                                                          = 0
+     0.712 ( 0.002 ms): sleep/146484 openat(dfd: CWD, filename: "/lib64/libc.so.6", flags: RDONLY|CLOEXEC) = 3
+     0.715 ( 0.001 ms): sleep/146484 read(fd: 3, buf: 0x7ffefb4984b8, count: 832)                          = 832
+     0.717 ( 0.001 ms): sleep/146484 pread64(fd: 3, buf: 0x7ffefb4980a0, count: 784, pos: 64)              = 784
+     0.719 ( 0.001 ms): sleep/146484 fstat(fd: 3, statbuf: 0x7ffefb498340)                                 = 0
+     0.722 ( 0.001 ms): sleep/146484 pread64(fd: 3, buf: 0x7ffefb497f80, count: 784, pos: 64)              = 784
+     0.723 ( 0.003 ms): sleep/146484 mmap(len: 2038872, prot: READ|EXEC, flags: PRIVATE|DENYWRITE, fd: 3)  = 0x7fe66d218000
+     0.727 ( 0.004 ms): sleep/146484 mmap(addr: 0x7fe66d387000, len: 479232, prot: READ, flags: PRIVATE|FIXED|DENYWRITE, fd: 3, off: 0x16f000) = 0x7fe66d387000
+     0.733 ( 0.003 ms): sleep/146484 mmap(addr: 0x7fe66d3fc000, len: 24576, prot: READ|WRITE, flags: PRIVATE|FIXED|DENYWRITE, fd: 3, off: 0x1e3000) = 0x7fe66d3fc000
+     0.737 ( 0.002 ms): sleep/146484 mmap(addr: 0x7fe66d402000, len: 31832, prot: READ|WRITE, flags: PRIVATE|FIXED|ANONYMOUS) = 0x7fe66d402000
+     0.743 ( 0.001 ms): sleep/146484 close(fd: 3)                                                          = 0
+     0.748 ( 0.002 ms): sleep/146484 mmap(len: 12288, prot: READ|WRITE, flags: PRIVATE|ANONYMOUS)          = 0x7fe66d215000
+     0.753 ( 0.001 ms): sleep/146484 arch_prctl(option: SET_FS, arg2: 0x7fe66d215740)                      = 0
+     0.754 ( 0.001 ms): sleep/146484 set_tid_address(tidptr: 0x7fe66d215a10)                               = 146484 (sleep)
+     0.757 ( 0.001 ms): sleep/146484 set_robust_list(head: (struct robust_list_head){.list = (struct robust_list){.next = (struct robust_list *)0x7fe66d215a20,},.futex_offset = (long int)-32,}, len: 24) = 0
+     0.759 ( 0.001 ms): sleep/146484 rseq(rseq: (struct rseq){.cpu_id = (__u32)4294967295,}, rseq_len: 32, sig: 1392848979) = 0
+     0.780 ( 0.003 ms): sleep/146484 mprotect(start: 0x7fe66d3fc000, len: 16384, prot: READ)               = 0
+     0.788 ( 0.002 ms): sleep/146484 mprotect(start: 0x564438854000, len: 4096, prot: READ)                = 0
+     0.792 ( 0.002 ms): sleep/146484 mprotect(start: 0x7fe66d459000, len: 8192, prot: READ)                = 0
+     0.798 ( 0.001 ms): sleep/146484 prlimit64(resource: STACK, old_rlim: 0x7ffefb498e90)                  = 0
+     0.807 ( 0.003 ms): sleep/146484 munmap(addr: 0x7fe66d40a000, len: 76091)                              = 0
+     0.817 ( 0.001 ms): sleep/146484 getrandom(ubuf: 0x7fe66d407218, len: 8, flags: NONBLOCK)              = 8
+     0.819 ( 0.001 ms): sleep/146484 brk()                                                                 = 0x56443e2d4000
+     0.821 ( 0.003 ms): sleep/146484 brk(brk: 0x56443e2f5000)                                              = 0x56443e2f5000
+     0.827 ( 0.032 ms): sleep/146484 openat(dfd: CWD, filename: "", flags: RDONLY|CLOEXEC)                 = 3
+     0.860 ( 0.001 ms): sleep/146484 fstat(fd: 3, statbuf: 0x7fe66d401800)                                 = 0
+     0.862 ( 0.002 ms): sleep/146484 mmap(len: 233242544, prot: READ, flags: PRIVATE, fd: 3)               = 0x7fe65f200000
+     0.867 ( 0.001 ms): sleep/146484 close(fd: 3)                                                          = 0
+     0.888 ( 0.003 ms): sleep/146484 openat(dfd: CWD, filename: "/usr/share/locale/locale.alias", flags: RDONLY|CLOEXEC) = 3
+     0.892 ( 0.001 ms): sleep/146484 fstat(fd: 3, statbuf: 0x7ffefb498a70)                                 = 0
+     0.895 ( 0.002 ms): sleep/146484 read(fd: 3, buf: 0x56443e2d5680, count: 4096)                         = 2998
+     0.901 ( 0.001 ms): sleep/146484 read(fd: 3, buf: 0x56443e2d5680, count: 4096)                         = 0
+     0.903 ( 0.001 ms): sleep/146484 close(fd: 3)                                                          = 0
+     0.909 ( 0.002 ms): sleep/146484 openat(dfd: CWD, filename: "/usr/share/locale/en_US.UTF-8/LC_MESSAGES/coreutils.mo") = -1 ENOENT (No such file or directory)
+     0.912 ( 0.001 ms): sleep/146484 openat(dfd: CWD, filename: "/usr/share/locale/en_US.utf8/LC_MESSAGES/coreutils.mo") = -1 ENOENT (No such file or directory)
+     0.914 ( 0.002 ms): sleep/146484 openat(dfd: CWD, filename: "/usr/share/locale/en_US/LC_MESSAGES/coreutils.mo") = -1 ENOENT (No such file or directory)
+     0.916 ( 0.001 ms): sleep/146484 openat(dfd: CWD, filename: "/usr/share/locale/en.UTF-8/LC_MESSAGES/coreutils.mo") = -1 ENOENT (No such file or directory)
+     0.918 ( 0.001 ms): sleep/146484 openat(dfd: CWD, filename: "/usr/share/locale/en.utf8/LC_MESSAGES/coreutils.mo") = -1 ENOENT (No such file or directory)
+     0.920 ( 0.002 ms): sleep/146484 openat(dfd: CWD, filename: "/usr/share/locale/en/LC_MESSAGES/coreutils.mo") = -1 ENOENT (No such file or directory)
+     0.930 ( 0.055 ms): sleep/146484 clock_nanosleep(rqtp: { .tv_sec: 0, .tv_nsec: 1 }, rmtp: 0x7ffefb4990f0) = 0
+     0.987 ( 0.001 ms): sleep/146484 close(fd: 1)                                                          = 0
+     0.989 ( 0.001 ms): sleep/146484 close(fd: 2)                                                          = 0
+     0.992 (         ): sleep/146484 exit_group()                                                          = ?
 
-@@ -203,6 +204,40 @@ static void test_multi_maps(void)
- 	for_each_multi_maps__destroy(skel);
- }
+ Summary of events:
 
-+static void test_for_each_hash_modify(void)
-+{
-+	struct for_each_hash_modify *skel;
-+	int max_entries, i, err;
-+	__u64 key, val;
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.repeat = 1
-+	);
-+
-+	skel = for_each_hash_modify__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "for_each_hash_modify__open_and_load"))
-+		return;
-+
-+	max_entries = bpf_map__max_entries(skel->maps.hashmap);
-+	for (i = 0; i < max_entries; i++) {
-+		key = i;
-+		val = i;
-+		err = bpf_map__update_elem(skel->maps.hashmap, &key, sizeof(key),
-+					   &val, sizeof(val), BPF_ANY);
-+		if (!ASSERT_OK(err, "map_update"))
-+			goto out;
-+	}
-+
-+	err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_pkt_access), &topts);
-+	ASSERT_OK(err, "bpf_prog_test_run_opts");
-+	duration = topts.duration;
-+
-+out:
-+	for_each_hash_modify__destroy(skel);
-+}
-+
- void test_for_each(void)
- {
- 	if (test__start_subtest("hash_map"))
-@@ -213,4 +248,6 @@ void test_for_each(void)
- 		test_write_map_key();
- 	if (test__start_subtest("multi_maps"))
- 		test_multi_maps();
-+	if (test__start_subtest("for_each_hash_modify"))
-+		test_for_each_hash_modify();
- }
-diff --git a/tools/testing/selftests/bpf/progs/for_each_hash_modify.c b/tools/testing/selftests/bpf/progs/for_each_hash_modify.c
-new file mode 100644
-index 000000000000..82307166f789
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/for_each_hash_modify.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2025 Intel Corporation */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 128);
-+	__type(key, __u64);
-+	__type(value, __u64);
-+} hashmap SEC(".maps");
-+
-+static int cb(struct bpf_map *map, __u64 *key, __u64 *val, void *arg)
-+{
-+	bpf_map_delete_elem(map, key);
-+	bpf_map_update_elem(map, key, val, 0);
-+	return 0;
-+}
-+
-+SEC("tc")
-+int test_pkt_access(struct __sk_buff *skb)
-+{
-+	(void)skb;
-+
-+	bpf_for_each_map_elem(&hashmap, cb, NULL, 0);
-+
-+	return 0;
-+}
---
-2.49.0
+ total, 3096 events
+
+   syscall            calls  errors  total       min       avg       max       stddev
+                                     (msec)    (msec)    (msec)    (msec)        (%)
+   --------------- --------  ------ -------- --------- --------- ---------     ------
+   ppoll                317      0    47.372     0.000     0.149     3.804     17.80%
+   recvfrom               8      8    18.000     1.986     2.250     2.996      7.19%
+   sched_setaffinity       66      0     0.743     0.001     0.011     0.021      6.16%
+   execve                 6      5     0.644     0.001     0.107     0.630     97.28%
+   write               1268      0     0.548     0.000     0.000     0.005      2.30%
+   read                 390     75     0.158     0.000     0.000     0.012      9.19%
+   ioctl                138      1     0.119     0.000     0.001     0.011     14.79%
+   newfstatat            28     17     0.079     0.001     0.003     0.025     33.91%
+   rt_sigaction         446      0     0.077     0.000     0.000     0.002      4.78%
+   futex                 20      1     0.077     0.000     0.004     0.037     51.43%
+   openat                13      6     0.057     0.001     0.004     0.032     51.97%
+   clock_nanosleep        1      0     0.055     0.055     0.055     0.055      0.00%
+   rt_sigprocmask       290      0     0.047     0.000     0.000     0.002      5.61%
+   mmap                   8      0     0.021     0.002     0.003     0.004     12.60%
+   poll                   4      0     0.015     0.000     0.004     0.014     92.77%
+   readlink               5      0     0.014     0.001     0.003     0.005     28.80%
+   close                 15      0     0.009     0.000     0.001     0.001     12.52%
+   pread64               10      0     0.009     0.000     0.001     0.003     26.77%
+   recvmsg               17     13     0.008     0.000     0.000     0.002     23.80%
+   mprotect               3      0     0.006     0.002     0.002     0.003     15.31%
+   sendmsg                5      0     0.006     0.001     0.001     0.002     21.98%
+   fstat                  6      0     0.005     0.000     0.001     0.001     23.30%
+   brk                    3      0     0.004     0.001     0.001     0.003     39.48%
+   munmap                 1      0     0.003     0.003     0.003     0.003      0.00%
+   access                 1      1     0.002     0.002     0.002     0.002      0.00%
+   timerfd_settime        5      0     0.002     0.000     0.000     0.000     11.96%
+   eventfd2               1      0     0.002     0.002     0.002     0.002      0.00%
+   sched_getaffinity        2      0     0.001     0.001     0.001     0.001      0.96%
+   getrandom              1      0     0.001     0.001     0.001     0.001      0.00%
+   rt_sigreturn           1      0     0.001     0.001     0.001     0.001      0.00%
+   prlimit64              1      0     0.001     0.001     0.001     0.001      0.00%
+   set_tid_address        1      0     0.001     0.001     0.001     0.001      0.00%
+   getpid                 6      0     0.001     0.000     0.000     0.000     14.19%
+   arch_prctl             1      0     0.001     0.001     0.001     0.001      0.00%
+   set_robust_list        1      0     0.001     0.001     0.001     0.001      0.00%
+   rseq                   1      0     0.001     0.001     0.001     0.001      0.00%
+   fcntl                  3      0     0.001     0.000     0.000     0.000     20.48%
+   epoll_wait             2      0     0.001     0.000     0.000     0.000     38.12%
+   uname                  1      0     0.000     0.000     0.000     0.000      0.00%
+ 
+> Anyway, I don't mind adding these details later on, so
+> 
+> Reviewed-by: Howard Chu <howardchu95@gmail.com>
+
+Thanks, applied to perf-tools-next,
+
+- Arnaldo
 
