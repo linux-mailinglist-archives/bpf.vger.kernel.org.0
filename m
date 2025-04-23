@@ -1,60 +1,88 @@
-Return-Path: <bpf+bounces-56506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56507-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA0F0A9951E
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:30:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF209A99561
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 18:37:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71DFF1B67EAB
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 16:27:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B6B6465436
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 16:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0112281344;
-	Wed, 23 Apr 2025 16:26:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAE9C284B4E;
+	Wed, 23 Apr 2025 16:36:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cAX2ppDU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yc1t/qwZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D5B519E966;
-	Wed, 23 Apr 2025 16:26:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEC42580EC;
+	Wed, 23 Apr 2025 16:36:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745425612; cv=none; b=q6Dms4etnmErGYADYRPY13T6GHwFzRvJJYIItk7vm+uJNBduMOdHQzfqNRIp2ZPNQe2CjzrBNh1rZgXhr1lNui8QJCEJN3rhIeO7my2yzDX2XT1OLL/9XrgoFznkfQLnQPA5bASybyiBEAfbbiZ7TgYwzUz5I+j/9myaazehMzQ=
+	t=1745426175; cv=none; b=aNvFjvN6rbrUkXYUHS0VvJ/mNGZBK0s+uQxvsJ8zp0YiaXJjsUVQ8wRlDQ1SxiiVg6MbeA2EcwdJMbVt3C+YCoRnYv13Jc1uN/F+Nz75bROiM6mJbym4WyzpusA8T7ZZcJ682TVmVZ+PmH8UTCRvue0XFGsDoFkdIGenPhbzM9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745425612; c=relaxed/simple;
-	bh=GUZor68HKAiFhk1CoHF1cPigBjqy7WyQHNIzboArcL0=;
+	s=arc-20240116; t=1745426175; c=relaxed/simple;
+	bh=HOTPxIV7oY2bFAVFMFQtXUDVmtsXrhSSoLJeftJCRpY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=otuDPwdjb4x9y+sFJkM4J8Vss4BvZ6btfR5P+7587d8f3h3iyXFFT4M9Shnx3QwHK3Fcee5pp4wbEZp2ZTquKw23nEJHtrMy9dh6pg20XaXGshIAcklZRUg9Jm8fUCRazUKJejdm2u+9L9uKIzvpeqM9/hJEPmbeB+fqnM9fbKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cAX2ppDU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FB64C4CEE2;
-	Wed, 23 Apr 2025 16:26:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745425611;
-	bh=GUZor68HKAiFhk1CoHF1cPigBjqy7WyQHNIzboArcL0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cAX2ppDUspAzzI/coldlB9n2gPLSqST2GWYpV8k4Bz733pJZjW0+LNA9k2sDiY6jU
-	 dQZfPTjK8Qcz/t7yAAGHCA4g40uvt22NhyNDylcLTkkUjUUSR2PbHWNuxnGjYjZn/O
-	 X4HwqpdlsfCsOU+GLJyR2TrLT0mprTc3AVZH2QpRJW1zHDvPyBCfeR6Xez4OFJBudb
-	 frZXPA6GIP3KdyRtIJlBnBUB19W6rES4U7AUBMQr3WMA5ob4URDgdrHI6HbCgOqitf
-	 OmViEctw2ReC/So0/xtlGCJY2jCs9/vEHayVOsAX/MCSwe0Xe4xV2d+zaCjgjqtS6V
-	 3Tf2WI43fBVCA==
-Date: Wed, 23 Apr 2025 13:26:48 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Howard Chu <howardchu95@gmail.com>
-Cc: Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] perf trace: Implement syscall summary in BPF
-Message-ID: <aAkUyFjRFLkS170u@x1>
-References: <20250326044001.3503432-1-namhyung@kernel.org>
- <CAH0uvojPaZ-byE-quc=sUvXyExaZPU3PUjdTYOzE5iDAT_wNVA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PwV4Qi3J2QKNqBAYiCt3UYLceLW35R05MrmQ+Z46iedKmqUXsTLRDUh55uJbYMs9ypT6xoJ/STDQ1vxiCanmKaD/heR+uscTdAIO6Jo6L7kuph/DP5HeRbmL2aZQ3bC7uzxDK6qT0EU8BarYKRp9JBVA2ej9ffmLNgwY9O+Tywg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yc1t/qwZ; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-72d3b48d2ffso5952187b3a.2;
+        Wed, 23 Apr 2025 09:36:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745426173; x=1746030973; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vCCYjEmMzP3gi7G70FORIHySUzwzkQLv5W+jbyiZR9s=;
+        b=Yc1t/qwZUGaIXXj9OMeci6K8xwa4m9SacIv1O3ZI4iJBbYjP71OWrF7+j7y2anfmk3
+         u2eTM5KJyDqKxn28q0aGDPXsaP/iSLUmv3rzjR+f9WFx+rKWrY4nXMpwDERe/dN1M5I9
+         /SA7Y1cthiB4Fs2UEaSc4jYMqlPxP6xDb7BXM7VTnNhKT/h61MgHYewU0BfrjsAzB6Ut
+         lc+9DR2yoTnlRYIjJc4N6LfdmmUbrfCJHDvhRGyc5YveGH5AKEc5Wps1MVqeFMA8+nyP
+         2aqQFKIFYH9Jt+RrMZrVY5R1473YKKOf5XU96KSyE37CD8weesDnvnEL57Okxr+UIUxI
+         T6DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745426173; x=1746030973;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vCCYjEmMzP3gi7G70FORIHySUzwzkQLv5W+jbyiZR9s=;
+        b=EoLLk+7J7dVWjWsZ1s1pM2za4atQnwtHqvgXWpJofXSZPJNmcal0+brIL5wvchYQ6T
+         SCrzMvXsLxl0SeBLo37RT6+V6NVGrqR6/NLIKTobekYXiJ1HzILcR24njzcuPhM9r+nd
+         0/KJHwIYkVIlBo5uRlVIMLcaaFc6vZrptSztInzm6Q6bFu1FFDIF147gP03vrbHAyc3s
+         tsvuxMFM98m3FCGomb+FJrY5BjRc2j5395XNvuzOnU1i7T+7WDP0v6jkAoe/LVtuhQUo
+         0Tnp4Wr87KjsNwRtfuC5Pzl8jg81/L1tgVRSRY55vnFwToPVqqZ9UFd/8cNPNDhGQWLQ
+         4Mhg==
+X-Forwarded-Encrypted: i=1; AJvYcCX6Ocn14tICDTRPoGBBj1bO4IC4gvyNonDUFcZhOhzi5amX82Ez8itX+HqxFndFLdh3UoY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzoLjpQTwypykNMD9jrLTIHCF5eGeNc07kulyuaK2E2s2qAUhYN
+	UbP+5VYVjXRhjLrYpafxpQbtKGOvy0dbhWdJ4LIbSJtAtyYXG+OcdOg1
+X-Gm-Gg: ASbGnctSWrfTNvVQJyUrWra3mcMSRiQhR3B/LnS+PiKAa11dS+hAgzgt5c2PP4oTTlR
+	3nulhUK/J2fLWgbDVlTmHCJf6JDv5LhXmWjQdMDGTl9y6T6mF4+xa7V/JTVigTAiDMZ19cHrq96
+	LMarAKgCneCRV97B1MN9A0ubFsCyceg9mSA0F2trypNBcSLHqjR+OQmyrJHaYZTmFKL3TnrEmOL
+	/aDgZz2xyD6G4pE0/WG8kycNTgmAfvICGslxwrZp4ymdxBrmqXbuiD6M4SEGzfdr5U+ZiQoeZDf
+	DkPuOb2mdSlbXqzY/Ok156eEtIxMlkbhFQDsHzos
+X-Google-Smtp-Source: AGHT+IEhhYzGrqNdp5/f81q3ZA2hRHb/OEfEbMrxA1i7OTo44dzyzvBEEaF6MUV943bzseEzEmzxWA==
+X-Received: by 2002:a05:6a00:18a5:b0:730:9946:5973 with SMTP id d2e1a72fcca58-73dc144bbdamr25018885b3a.5.1745426173006;
+        Wed, 23 Apr 2025 09:36:13 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-73dbf8be3fasm10793171b3a.30.2025.04.23.09.36.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Apr 2025 09:36:12 -0700 (PDT)
+Date: Wed, 23 Apr 2025 09:36:11 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Arthur Fabre <arthur@arthurfabre.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, jakub@cloudflare.com,
+	hawk@kernel.org, yan@cloudflare.com, jbrandeburg@cloudflare.com,
+	thoiland@redhat.com, lbiancon@redhat.com, ast@kernel.org,
+	kuba@kernel.org, edumazet@google.com
+Subject: Re: [PATCH RFC bpf-next v2 10/17] bnxt: Propagate trait presence to
+ skb
+Message-ID: <aAkW--LAm5L2oNNn@mini-arch>
+References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com>
+ <20250422-afabre-traits-010-rfc2-v2-10-92bcc6b146c9@arthurfabre.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,67 +91,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH0uvojPaZ-byE-quc=sUvXyExaZPU3PUjdTYOzE5iDAT_wNVA@mail.gmail.com>
+In-Reply-To: <20250422-afabre-traits-010-rfc2-v2-10-92bcc6b146c9@arthurfabre.com>
 
-On Fri, Mar 28, 2025 at 06:46:36PM -0700, Howard Chu wrote:
-> Hello Namhyung,
+On 04/22, Arthur Fabre wrote:
+> Call the common xdp_buff_update_skb() helper.
 > 
-> On Tue, Mar 25, 2025 at 9:40 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > When -s/--summary option is used, it doesn't need (augmented) arguments
-> > of syscalls.  Let's skip the augmentation and load another small BPF
-> > program to collect the statistics in the kernel instead of copying the
-> > data to the ring-buffer to calculate the stats in userspace.  This will
-> > be much more light-weight than the existing approach and remove any lost
-> > events.
-> >
-> > Let's add a new option --bpf-summary to control this behavior.  I cannot
-> > make it default because there's no way to get e_machine in the BPF which
-> > is needed for detecting different ABIs like 32-bit compat mode.
-> >
-> > No functional changes intended except for no more LOST events. :)
-> >
-> >   $ sudo ./perf trace -as --summary-mode=total --bpf-summary sleep 1
-> >
-> >    Summary of events:
-> >
-> >    total, 6194 events
-> >
-> >      syscall            calls  errors  total       min       avg       max       stddev
-> >                                        (msec)    (msec)    (msec)    (msec)        (%)
-> >      --------------- --------  ------ -------- --------- --------- ---------     ------
-> >      epoll_wait           561      0  4530.843     0.000     8.076   520.941     18.75%
-> >      futex                693     45  4317.231     0.000     6.230   500.077     21.98%
-> >      poll                 300      0  1040.109     0.000     3.467   120.928     17.02%
-> >      clock_nanosleep        1      0  1000.172  1000.172  1000.172  1000.172      0.00%
-> >      ppoll                360      0   872.386     0.001     2.423   253.275     41.91%
-> >      epoll_pwait           14      0   384.349     0.001    27.453   380.002     98.79%
-> >      pselect6              14      0   108.130     7.198     7.724     8.206      0.85%
-> >      nanosleep             39      0    43.378     0.069     1.112    10.084     44.23%
-> >      ...
+> Signed-off-by: Arthur Fabre <arthur@arthurfabre.com>
+> ---
+>  drivers/net/ethernet/broadcom/bnxt/bnxt.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> index c8e3468eee612ad622bfbecfd7cc1ae3396061fd..0eba3e307a3edbc5fe1abf2fa45e6256d98574c2 100644
+> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> @@ -2297,6 +2297,10 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
+>  			}
+>  		}
+>  	}
+> +
+> +	if (xdp_active)
+> +		xdp_buff_update_skb(&xdp, skb);
 
-I added the following to align sched_[gs]etaffinity,
+For me, the preference for reusing existing metadata area was
+because of the patches 10-16: we now need to care about two types of
+metadata explicitly.
 
-Thanks,
+If you insist on placing it into the headroom, can we at least have some
+common helper to finish xdp->skb conversion? It can call skb_ext_from_headroom
+and/or skb_metadata_set:
 
-- Arnaldo
+xdp_buff_done(*xdp, *skb) {
+	if (have traits) {
+		skb_ext_from_headroom
+		return
+	}
 
+	metasize = xdp->data - xdp->data_meta;
+	if (metasize)
+		skb_metadata_set
+}
 
-diff --git a/tools/perf/util/bpf-trace-summary.c b/tools/perf/util/bpf-trace-summary.c
-index 114d8d9ed9b2d3f3..af37d3bb5f9c42e7 100644
---- a/tools/perf/util/bpf-trace-summary.c
-+++ b/tools/perf/util/bpf-trace-summary.c
-@@ -139,9 +139,9 @@ static int print_common_stats(struct syscall_data *data, FILE *fp)
- 		/* TODO: support other ABIs */
- 		name = syscalltbl__name(EM_HOST, node->syscall_nr);
- 		if (name)
--			printed += fprintf(fp, "   %-15s", name);
-+			printed += fprintf(fp, "   %-17s", name);
- 		else
--			printed += fprintf(fp, "   syscall:%-7d", node->syscall_nr);
-+			printed += fprintf(fp, "   syscall:%-9d", node->syscall_nr);
- 
- 		printed += fprintf(fp, " %8u %6u %9.3f %9.3f %9.3f %9.3f %9.2f%%\n",
- 				   stat->count, stat->error, total, min, avg, max,
+And then we'll have some common rules for the drivers: call xdp_buff_done
+when you're done with the xdp_buff to take care of metadata/traits. And
+it might be easier to review: you're gonna (mostly) change existing
+calls to skb_metadata_set to your new helper. Maybe we can even
+eventually fold all xdp_update_skb_shared_info stuff into that as
+well...
 
