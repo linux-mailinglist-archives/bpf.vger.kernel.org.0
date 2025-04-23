@@ -1,217 +1,152 @@
-Return-Path: <bpf+bounces-56484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56486-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D0E9A986D5
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 12:11:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFCF7A98963
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 14:14:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5487443774
-	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 10:11:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF3A31B64EE0
+	for <lists+bpf@lfdr.de>; Wed, 23 Apr 2025 12:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D539726C380;
-	Wed, 23 Apr 2025 10:11:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A565926FA7E;
+	Wed, 23 Apr 2025 12:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I/NsPiYH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hpkOLn9f"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D1026A1B9;
-	Wed, 23 Apr 2025 10:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2A7215795;
+	Wed, 23 Apr 2025 12:14:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745403092; cv=none; b=D/aThDGJ/6/wgb4FMCVJP6kASqF5u67HhoW6m3G8uuJe7WHIZSo3CsSnjIj66VQ2j8LIXJu0FOK+ACHvrGGdOjpvRa+nehSd3QjiFmdy4jlMBA0+CEl660ubduan36Z+AFXNuxYlkNL+Cg5wyeRF0IIRcsrv4J4Noq/OFIAyl90=
+	t=1745410461; cv=none; b=ooJrqd+45lPDtAY9hYkpwLDdRSwNy/cSrWwfL8zV9nOMb+0aXOrWlJf0TzA6yUFBguKRybqVR6ry+f5W08OrBTKsXQL1bviZCLISI0TLwSlNCBAEk36ZbpRfXZDnQT7L1BezRfPRjVoyVtmGsn+4jdkYAmbodzOENYwh66YSmzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745403092; c=relaxed/simple;
-	bh=8MEBVIkWewXw+lwjigr+xfdfHVKvIb/W0Jna6yh7/ro=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FSumJkGQoX/IjMwBYMSHsENRcgw6Cd/onTS51o7ix/cNl7EL/lf+Kv1IQuC/hgxnC/r1XYECxOg+mGPNjuizcLqFOERAlvpxwDwdygY7Z+8Db7ZheMYRFul8FjodjvH2TTJD/jaxp9it0Kd2b7m5pKmuJELaC6Mo+RoCURyf//I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I/NsPiYH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 480D7C4CEE2;
-	Wed, 23 Apr 2025 10:11:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745403091;
-	bh=8MEBVIkWewXw+lwjigr+xfdfHVKvIb/W0Jna6yh7/ro=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I/NsPiYHvoo1IAMVXrqu7tPfgq4gfAZQBbvRfGFCvX72stFxw1bu2WrFfVUthrGPR
-	 gc9nfln249KILmPG27ULPg+iSZOfb/xZHvFwsaMANEhM/VPZU/5o5KbZQXTZEKBmmh
-	 vJsgTGO15AV/GVB4z+czE9HUGVfNpeVIuYN+fgF8NAE/rd4r3FsmZu/Snv/meEzt6p
-	 VQvCw4+gFmiNDoX6LCUgbLgV9d/BA5eSo6xc2Xi+rXrJIhhnXAvuobJDWL+00TQQzI
-	 JF+h9cAfXTzjaS/TtXKOgsdyggHDz6+BTTROTRAhiUDXN0K2oEOxRZfG3nlt+gTrZu
-	 N+vu1ZqcH9Rpw==
-Date: Wed, 23 Apr 2025 12:11:29 +0200
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf: Allow XDP dev bounded program to perform
- XDP_REDIRECT into maps
-Message-ID: <aAi80as6PpOeuWJU@lore-desk>
-References: <20250422-xdp-prog-bound-fix-v1-1-0b581fa186fe@kernel.org>
- <aAgdECkTiP-po7HP@mini-arch>
+	s=arc-20240116; t=1745410461; c=relaxed/simple;
+	bh=MaeSoSWlAm4xCtD8eh/EXsSuw6MtRPVfsDzpLs0HcTs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=s9p0E4vH3zsxphm+bHZ6B2CT2nzhY6saqrfJvS2MoO+p3OH0/ELlIaa6PYGcS9Ta8XyfW7uji1McBBvez9HTu8yf4tibmUWgqOuMV6LVVmRzA0zNvyFOIts9gdP8cofX05UiVGE9y25alc42B9I+vhArrpCqtNFCdU4tSRfy0Dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hpkOLn9f; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2295d78b433so74060455ad.2;
+        Wed, 23 Apr 2025 05:14:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745410459; x=1746015259; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/xp7lM7Rh3BsiOx64d/oS0aSVgZov84XaA8u+TBgH7s=;
+        b=hpkOLn9fm0E6tSZ1EcPRwL9oXCk+B1Kw7QWoWd/4k43bUmkNJ7uC4S0A8ILORTJ9b/
+         wBXMLW60O1eau7KW60XcnqqJhyeudOv91vd14ANMFP0e8MNMMn/WkLc34V8GtjOJjoT9
+         dS6l4t7wti+y7r1PkvJyErOPsh2E8rfY/kvoEeE+slWMAwIjWzuMCWC0oMJgv2dR4Oyd
+         ko++3rdOWwukpONie6lYSKxzGFF0eTm2byNWDBLA/Png20DeVpdWLik+pj6XnanNK0zm
+         Mn14Kg61hOD5vc7CeNRYacdR8DOX9I22Ld7eCr/7Xp8Ruo/sF2Oc8mtC9cB9FG2tSNCZ
+         MlrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745410459; x=1746015259;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/xp7lM7Rh3BsiOx64d/oS0aSVgZov84XaA8u+TBgH7s=;
+        b=OiWPclw3ztrEa2Y/oA6c+Ch8ctMeREtfkFBCUUrRhmL2wjt7WyEOK//39/umCbh66I
+         qggH3E2IG/rds6qMGvrMozSNbF8NZKWh2ApcJDllFpXdAd1z150F5oR6k+Eb9ZTBOqV7
+         FA+XdusFqZ8cYGsHjvrENAN4nzVj0cTWbK/hk0qGI/tinfaIOr3iOVd3wmfJcYfCOUKl
+         30aIO+qWpgdURNVGclEOQsSd97/8iMOpfdo0izPLeLqFPjhoZoyybNng+C52wrTNwUfm
+         AIT3zf01vJ16mbwAHDJQ3mjnQQX8zVPm+FIHjcetoZ2+zYFE40fkJefg8SkrxV+kKvF0
+         is9A==
+X-Forwarded-Encrypted: i=1; AJvYcCV3dSrR9Lky/KgR0Nx8O4KS8VEtyWERpHwuG5UsqlMCyzI1LFnKB23eIKs6wiLdvJEImAjYfChRdc20v34=@vger.kernel.org, AJvYcCVPLMuqGLEp+75mqE0JsVFMh8hOZYczujrb50ZEitX47a/Jcuvo6eIZTJIUSpNeiPOa6gL10hQkWpsPUyOHgDAA@vger.kernel.org, AJvYcCVq/hzfTtWM0wfQ3qMZYRxCE5PK3k0jzNtIiqOdcdhETKAgKfevSwHdKzvkGsrDHd448xkyphd9@vger.kernel.org
+X-Gm-Message-State: AOJu0YxRUvihpnNfdFS8uPd50+ev97nrABfoFG3t67ZBxkHzUd/SxiH7
+	Jmi/W/+4CWGbso4TP6F7Nn9x9C5ErH/0EotlCLC7h+m9qfJ9kyVu
+X-Gm-Gg: ASbGncsBKBHP80vVTp7tHssjwtYGHsHW/KFRZW34BnclZkWIBW6Sh1H12xizcsDY90/
+	+LjA+KoPuZzbtwKaTdkSxL+ze2DW/z3lyu1l2BNC0YMbfDnLRlobX1qTh0J8Q9VTqgp9p2varm8
+	mvkrUf9YNfieqdVF3TCdDQki4GI/BNOPBPNk6uIcD+4rrkscYb/OLl8irGjuwN3fOmtmw7g0rv6
+	3oytG91q1I7npOqsxcYMCdXjntyBr8YlVKhmj1HPQgQBGS0IXXggMkSp4jB5cdULGJFugfuANXC
+	QZ+kSkfAEuQLR4GSK5qBob9OsyTjjtyAtjM6VwvYGyI=
+X-Google-Smtp-Source: AGHT+IHDJ7LCyTaOCeEviSCl6yoxwE65PGOilNvCWQjjpo+schzqn24NE+OxFtHGzsDdduz16UD+6g==
+X-Received: by 2002:a17:903:fad:b0:224:c47:cb7 with SMTP id d9443c01a7336-22c530b581fmr289428275ad.0.1745410458974;
+        Wed, 23 Apr 2025 05:14:18 -0700 (PDT)
+Received: from ubuntu2404.. ([122.231.145.226])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22c50bf5528sm102647295ad.100.2025.04.23.05.14.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Apr 2025 05:14:17 -0700 (PDT)
+From: KaFai Wan <mannkafai@gmail.com>
+To: alexei.starovoitov@gmail.com,
+	martin.lau@linux.dev,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	mykolal@fb.com,
+	shuah@kernel.org,
+	memxor@gmail.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	leon.hwang@linux.dev,
+	KaFai Wan <mannkafai@gmail.com>
+Subject: [PATCH bpf-next v4 0/2] bpf: Allow access to const void pointer arguments in tracing programs
+Date: Wed, 23 Apr 2025 20:13:27 +0800
+Message-ID: <20250423121329.3163461-1-mannkafai@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="zXe39Favfr3JW6LW"
-Content-Disposition: inline
-In-Reply-To: <aAgdECkTiP-po7HP@mini-arch>
+Content-Transfer-Encoding: 8bit
 
+If we try to access argument which is pointer to const void, it's an 
+UNKNOWN type, verifier will fail to load.
 
---zXe39Favfr3JW6LW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Use is_void_or_int_ptr to check if type is void or int pointer. 
+Add a selftest to check it.
 
-On Apr 22, Stanislav Fomichev wrote:
-> On 04/22, Lorenzo Bianconi wrote:
-> > In the current implementation if the program is bounded to a specific
-> > device, it will not be possible to perform XDP_REDIRECT into a DEVMAP
-> > or CPUMAP even if the program is not attached to the map entry. This
-> > seems in contrast with the explanation available in
-> > bpf_prog_map_compatible routine. Fix the issue taking into account
-> > even the attach program type and allow XDP dev bounded program to
-> > perform XDP_REDIRECT into maps if the attach type is not BPF_XDP_DEVMAP
-> > or BPF_XDP_CPUMAP.
-> >=20
-> > Fixes: 3d76a4d3d4e59 ("bpf: XDP metadata RX kfuncs")
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  kernel/bpf/core.c | 22 +++++++++++++++++++++-
-> >  1 file changed, 21 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index ba6b6118cf504041278d05417c4212d57be6fca0..a33175efffc377edbfe2813=
-97017eb467bfbcce9 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -2358,6 +2358,26 @@ static unsigned int __bpf_prog_ret0_warn(const v=
-oid *ctx,
-> >  	return 0;
-> >  }
-> > =20
-> > +static bool bpf_prog_dev_bound_map_compatible(struct bpf_map *map,
-> > +					      const struct bpf_prog *prog)
-> > +{
-> > +	if (!bpf_prog_is_dev_bound(prog->aux))
-> > +		return true;
-> > +
-> > +	if (map->map_type =3D=3D BPF_MAP_TYPE_PROG_ARRAY)
-> > +		return false;
->=20
-> [..]
->=20
-> > +	if (map->map_type =3D=3D BPF_MAP_TYPE_DEVMAP &&
-> > +	    prog->expected_attach_type !=3D BPF_XDP_DEVMAP)
-> > +		return true;
-> > +
-> > +	if (map->map_type =3D=3D BPF_MAP_TYPE_CPUMAP &&
-> > +	    prog->expected_attach_type !=3D BPF_XDP_CPUMAP)
-> > +		return true;
->=20
-> Not sure I understand, what does it mean exactly? That it's ok to add
-> a dev-bound program to the dev/cpumap if the program itself is gonna
-> be attached only to the real device? Can you expand more on the specific
-> use-case?
->=20
-> The existing check makes sure that the dev-bound programs run only in the
-> contexts that have hw descriptors. devmap and cpumap don't satisfy
-> this constraint afaiu.
+---
+KaFai Wan (2):
+  bpf: Allow access to const void pointer arguments in tracing programs
+  selftests/bpf: Add test to access const void pointer argument in
+    tracing program
 
-My use-case is to use a hw-metadata kfunc like bpf_xdp_metadata_rx_timestam=
-p()
-to read hw timestamp from the NIC and then redirect the xdp_buff into a DEV=
-MP
-(please note there are no programs attached to any DEVMAP entries):
+ kernel/bpf/btf.c                                    | 13 +++----------
+ net/bpf/test_run.c                                  |  8 +++++++-
+ .../selftests/bpf/progs/verifier_btf_ctx_access.c   | 12 ++++++++++++
+ 3 files changed, 22 insertions(+), 11 deletions(-)
 
-extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
-					 __u64 *timestamp) __ksym;
+Changelog:
+v3->v4: Addressed comments from Alexei Starovoitov
+- change SOB to match From email address
+- add Acked-by from jirka
+Details in here:
+https://lore.kernel.org/all/20250417151548.1276279-1-kafai.wan@hotmail.com/
 
-struct {
-	__uint(type, BPF_MAP_TYPE_DEVMAP);
-	__uint(key_size, sizeof(__u32));
-	__uint(value_size, sizeof(struct bpf_devmap_val));
-	__uint(max_entries, 1);
-} dev_map SEC(".maps");
+v2->v3: Addressed comments from jirka
+- remove duplicate checks for void pointer
+Details in here:
+https://lore.kernel.org/bpf/20250416161756.1079178-1-kafai.wan@hotmail.com/
 
-SEC("xdp")
-int xdp_meta_redirect(struct xdp_md *ctx)
-{
-	__u64 timestamp;
+v1->v2: Addressed comments from jirka
+- use btf_type_is_void to check if type is void
+- merge is_void_ptr and is_int_ptr to is_void_or_int_ptr
+- fix selftests
+Details in here:
+https://lore.kernel.org/all/20250412170626.3638516-1-kafai.wan@hotmail.com/
 
-	...
-	bpf_xdp_metadata_rx_timestamp(ctx, &timestamp);
-	...
+-- 
+2.43.0
 
-	return bpf_redirect_map(&dev_map, ctx->rx_queue_index, XDP_PASS);
-}
-
-According to my understanding this is feasible just if the "xdp_meta_redire=
-ct"
-program is bounded to a device otherwise the program is reject with the fol=
-lowing
-error at load time:
-
-libbpf: prog 'xdp_meta_redirect': BPF program load failed: -EINVAL
-libbpf: prog 'xdp_meta_redirect': -- BEGIN PROG LOAD LOG --
-metadata kfuncs require device-bound program
-processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-peak_states 0 mark_read 0
--- END PROG LOAD LOG --
-
-in order to fix it:
-
-	...
-	index =3D if_nametoindex(DEV);=20
-	bpf_program__set_ifindex(prog, index);
-	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
-	...
-
-Doing so the program load still fails for the check in bpf_prog_map_compati=
-ble():
-
-	bool bpf_prog_map_compatible()
-	{
-		...
-		if (bpf_prog_is_dev_bound(aux))
-			return false;
-		...
-
-In other words, a dev-bound XDP program can't interact with a DEVMAP (or
-CPUMAP) even if it is not attached to a map entry.
-I think if the XDP program is just running in the driver NAPI context
-it should be doable to use a hw-metada kfunc and perform a redirect into
-a DEVMAP or CPUMAP, right? Am I missing something?
-
-Regards,
-Lorenzo
-
---zXe39Favfr3JW6LW
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCaAi80AAKCRA6cBh0uS2t
-rMmeAQDEEI0jNhsWJFxXoXuacSfeLdOstC7c5vhwS84h2I81bQEAsJztBvMtypYW
-Fu+dhnwtdTOcNlgEIFmwew9LwbBtEwM=
-=CWgW
------END PGP SIGNATURE-----
-
---zXe39Favfr3JW6LW--
 
