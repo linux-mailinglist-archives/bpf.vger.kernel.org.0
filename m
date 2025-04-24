@@ -1,45 +1,86 @@
-Return-Path: <bpf+bounces-56586-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56587-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7DF2A9ACB3
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 14:01:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0B38A9ACC9
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 14:04:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA7635A0CE1
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 12:00:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EADBE443697
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 12:04:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E58E7227E99;
-	Thu, 24 Apr 2025 12:00:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA0A227EAB;
+	Thu, 24 Apr 2025 12:04:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hUWJkPQl"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B6822DFBB;
-	Thu, 24 Apr 2025 12:00:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94986502B1
+	for <bpf@vger.kernel.org>; Thu, 24 Apr 2025 12:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745496048; cv=none; b=pW2ilFm1kh8n7dX87rITtIDHDNrZThaKWWp1PZa2CI8q4eXs6M8ZzkskG/szd+YskyGFTDJaYFnaurEF8z4G98vYOCoTv2IoT2x7jDkm6Z6yrJ8eF7+6a5wf+gMk5iMWzk3VCXqTBsPmS3PK2Ss0CSOuWEMaIAHa45iJIjzP1t4=
+	t=1745496257; cv=none; b=fMZqle7HsxVD3wawEslM2GJl33Wc+30nNiQTaO+6pF1AwEpDXnjuqd854W+/ZYNP5cGtZdxWrbiEjo6U+z8PRMVLoU+U/NFJiNxmFMvEgFQVyBYOBFpOYUmabeZfG45T9YLTrWCEvF753otmoRSasxOvGhNX829b73xjD8Ce4G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745496048; c=relaxed/simple;
-	bh=g6ZhCYqUsjw43UU7D94qUabJWGyv4hN727Jz1O4EMew=;
+	s=arc-20240116; t=1745496257; c=relaxed/simple;
+	bh=U9tXpkXlvhzzOmQducjg/3aquEnpGt33HHWQ/gxaN9g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JHnLBh/zNE/somawXAYL0EGWBRBArnYCz5yOSr3AGsTgqynY3cqA6aqbpxZzURvKiIgqSgpeKgj2rVxCXv7SxQM5e3k+yhVo5PcHhVEm8SGRR7TG9n2VtXGHbRxvR6LACgLa/20n32n5d7ObH64Wg/JBX1xskm7uJ9Q5h9CjqpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Zjvg35YvJz4f3k5x;
-	Thu, 24 Apr 2025 20:00:15 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 6F12B1A18C2;
-	Thu, 24 Apr 2025 20:00:34 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP4 (Coremail) with SMTP id gCh0CgCnVlveJwpoXVW4KQ--.17342S2;
-	Thu, 24 Apr 2025 20:00:32 +0800 (CST)
-Message-ID: <6b6472c3-0718-4e60-9972-c166d51962a3@huaweicloud.com>
-Date: Thu, 24 Apr 2025 20:00:30 +0800
+	 In-Reply-To:Content-Type; b=NePSGKcI6gwudn5wFqHDcPQIA2ItCvifmApAOpc2nPgnRtjEUOB2kNARzKgOCV1cSd0PpZF6jaPqR+qEPNNozFjhdWL/pin7tNH3fTuRQMXXg+ktNo1WcQ5P/kPiyZCtTrLaFQMnIBra6gy34HHU/SEqK+jBWLnQ4u6aI7y9N8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hUWJkPQl; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1745496254;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bh3s53lxnJJO2dUSgO66le/Ri+7+LskKQ0VlwKBl9JU=;
+	b=hUWJkPQlxl1a5FPHlLKfiI7BAdPB0vZi9x7rVztM90JiRyWgzEDgNXLVe9s/Xx1AtE4iJU
+	by2u2gcDNvThVfnPpA09vRwg30q1hlzqyOX+qnzOAc0cBw8pIGjJdbVDvSkW5c3JTMOEeE
+	8JLeA+VoGi3pwBhrPnnhl7de1DEoKAM=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-636-L51W2SJiPpCDg5evqVrm5g-1; Thu, 24 Apr 2025 08:04:13 -0400
+X-MC-Unique: L51W2SJiPpCDg5evqVrm5g-1
+X-Mimecast-MFC-AGG-ID: L51W2SJiPpCDg5evqVrm5g_1745496252
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3912a0439afso311938f8f.3
+        for <bpf@vger.kernel.org>; Thu, 24 Apr 2025 05:04:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745496252; x=1746101052;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bh3s53lxnJJO2dUSgO66le/Ri+7+LskKQ0VlwKBl9JU=;
+        b=qDyTbalqd/atKMpAbeNizDNlZYNMKj95KkRsQ6FwLR1mlB5LIw7nhxUZ1zRkS7G0uL
+         9gEskhs92hOjP9TAh96ZrLtYEceaMk25plFUXeqpm3o6z/nEapqP2vDvRA8o952CtJYl
+         UG7B8NCuEyHfjWXyRMIAiEM/PSJSAKFeWcZ0VTQik4a6rlzWPy9Mj7sXpM+wANir97Le
+         AiPTFtOEAsEhYNA58rOxd3a23kTAIEyfp+NyZ3oaP3zn/lQp4zWIKAqnv3Xw5AW/f2sX
+         y259X4qM+/Q05lM8bWG7t9cjAHzhkN3IWuZ0R7DETSUCna//VleqdPT+lbiEOncRB3Z5
+         se+g==
+X-Forwarded-Encrypted: i=1; AJvYcCXA8+JUTqWl6yWx5Kf61skcp/M2qeTC+yiD8kdhYoiqAlXQFX7Z7MlbykxKzu1CrDZ0u40=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTctl39h1gV/IZctOCv1MqpnJhtwH1sgJXOD2ZGE3oRAdb+mJ4
+	M3+Wt3bGxnFllbI1cPAzP8r70zL6NJs4aHR5gXS3CEIkG0+0KHhCx4+GKR7lcjsLH5h+uaMn3mz
+	cOrEy9XkVwEXQHs6FOqZEBC2WFO9By9p7ZyM0yySktKvZDacg4Q==
+X-Gm-Gg: ASbGncvsu8h18u1DaLwI6Sh0/3iqctAIPuC++u3CcahmgGY0UMge/zw1x3v6rAXVvz4
+	FQsZDm6zHMEXD7YOQ4c+o8USQyJN6JtpLlUq20NWbHYHaR8tX3TVgvJZgaTuRRL9OyF/s7csbqv
+	B9Y2j8wBDbW2unGNYggfb6WbWlluZT7HiQ/69sJAM2OrqSxXjHARQFhrqjk1saiNhj2tfVtV/SH
+	XrbZcbC/V+Td9cW0N/5cYlSFrCFlF/YntzKyExdK7AVRTxjmmyqitK5+cQIFDNgtzSW1vOXbNcm
+	N75eLuqD/NIV4NJEMLTOTbUPP3XdoGE3hoV4aXM=
+X-Received: by 2002:a05:6000:178d:b0:39c:266c:423 with SMTP id ffacd0b85a97d-3a06cecb362mr1842820f8f.0.1745496252006;
+        Thu, 24 Apr 2025 05:04:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGRZkkYGPeYcct/UGZCOBgEUQnsD5s94C5Hyp3c2PijFG72me2Lm433rHFIjvW+57vf1ZeXEA==
+X-Received: by 2002:a05:6000:178d:b0:39c:266c:423 with SMTP id ffacd0b85a97d-3a06cecb362mr1842753f8f.0.1745496251410;
+        Thu, 24 Apr 2025 05:04:11 -0700 (PDT)
+Received: from [192.168.88.253] (146-241-7-183.dyn.eolo.it. [146.241.7.183])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a06d4a8150sm1852436f8f.7.2025.04.24.05.04.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Apr 2025 05:04:10 -0700 (PDT)
+Message-ID: <43ef6713-9ae1-468c-bc43-2c7e463e04f4@redhat.com>
+Date: Thu, 24 Apr 2025 14:04:04 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -47,131 +88,101 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC bpf-next 1/4] bpf: add struct largest member size in
- func model
-Content-Language: en-US
-To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Puranjay Mohan <puranjay@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+Subject: Re: [PATCH net-next v4 1/2] net: stmmac: Refactor VLAN implementation
+To: Boon Khai Ng <boon.khai.ng@altera.com>, netdev@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
  Maxime Coquelin <mcoquelin.stm32@gmail.com>,
  Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Florent Revest <revest@chromium.org>,
- Bastien Curutchet <bastien.curutchet@bootlin.com>, ebpf@linuxfoundation.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kselftest@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
-References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
- <20250411-many_args_arm64-v1-1-0a32fe72339e@bootlin.com>
- <CAEf4Bzbn6BdXTOb0dTcsQmOMZpp5=DzGS2hHHQ3+dwcja=gv+w@mail.gmail.com>
- <D98Q8BRNUVS9.11J60C67L1ALR@bootlin.com>
- <CAEf4BzZHMYyGDZ4c4eNXG7Fm=ecxCCbKhKbQTbCjvWmKtdwvBw@mail.gmail.com>
- <D9E9IQQ3QKXM.3UJ17G9CBS1FH@bootlin.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <D9E9IQQ3QKXM.3UJ17G9CBS1FH@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCnVlveJwpoXVW4KQ--.17342S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw4DtFy5WF18uFW8Wr4xXrb_yoW5CF4fpF
-	WFgF95KF4kGr18Za1vv3W0qrWav34fKry5JrWrtr1rZryDK3Z7JryjgF4Y9FWfCrn7Gw1j
-	vF42qayfur93ZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	4xRDUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+ Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Furong Xu <0x1207@gmail.com>,
+ Matthew Gerlach <matthew.gerlach@altera.com>,
+ Tien Sung Ang <tien.sung.ang@altera.com>,
+ Mun Yew Tham <mun.yew.tham@altera.com>,
+ G Thomas Rohan <rohan.g.thomas@altera.com>
+References: <20250421162930.10237-1-boon.khai.ng@altera.com>
+ <20250421162930.10237-2-boon.khai.ng@altera.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20250421162930.10237-2-boon.khai.ng@altera.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 4/24/2025 3:24 AM, Alexis Lothoré wrote:
-> Hi Andrii,
+On 4/21/25 6:29 PM, Boon Khai Ng wrote:
+> Refactor VLAN implementation by moving common code for DWMAC4 and
+> DWXGMAC IPs into a separate VLAN module. VLAN implementation for
+> DWMAC4 and DWXGMAC differs only for CSR base address, the descriptor
+> for the VLAN ID and VLAN VALID bit field.
 > 
-> On Wed Apr 23, 2025 at 7:15 PM CEST, Andrii Nakryiko wrote:
->> On Thu, Apr 17, 2025 at 12:14 AM Alexis Lothoré
->> <alexis.lothore@bootlin.com> wrote:
->>>
->>> Hi Andrii,
->>>
->>> On Wed Apr 16, 2025 at 11:24 PM CEST, Andrii Nakryiko wrote:
->>>> On Fri, Apr 11, 2025 at 1:32 PM Alexis Lothoré (eBPF Foundation)
->>>> <alexis.lothore@bootlin.com> wrote:
+> The descriptor format for VLAN is not moved to the common code due
+> to hardware-specific differences between DWMAC4 and DWXGMAC.
 > 
-> [...]
+> For the DWMAC4 IP, the Receive Normal Descriptor 0 (RDES0) is
+> formatted as follows:
+>     31                                                0
+>       ------------------------ -----------------------
+> RDES0| Inner VLAN TAG [31:16] | Outer VLAN TAG [15:0] |
+>       ------------------------ -----------------------
 > 
->>> Indeed I initially checked whether I could return directly some alignment
->>> info from btf, but it then involves the alignment computation in the btf
->>> module. Since there could be minor differences between architectures about
->>> alignment requirements, I though it would be better to in fact keep alignment
->>> computation out of the btf module. For example, I see that 128 bits values
->>> are aligned on 16 bytes on ARM64, while being aligned on 8 bytes on S390.
->>>
->>> And since for ARM64, all needed alignments are somehow derived from size
->>> (it is either directly size for fundamental types, or alignment of the
->>> largest member for structs, which is then size of largest member),
->>> returning the size seems to be enough to allow the JIT side to compute
->>> alignments.
->>
->> If you mean the size of "primitive" field and/or array element
->> (applied recursively for all embedded structs/unions) then yes, that's
->> close enough. But saying just "largest struct member" is wrong,
->> because for
->>
->> struct blah {
->>      struct {
->>          int whatever[128];
->>      } heya;
->> };
->>
->>
->> blah.heya has a large size, but alignment is still just 4 bytes.
+> For the DWXGMAC IP, the RDES0 format varies based on the
+> Tunneled Frame bit (TNP):
 > 
-> Indeed, that's another case making my proposal fail :)
+> a) For Non-Tunneled Frame (TNP=0)
 > 
->> I'd suggest looking at btf__align_of() in libbpf (tools/lib/bpf/btf.c)
->> to see how we calculate alignment there. It seems to work decently
->> enough. It won't cover any arch-specific extra rules like double
->> needing 16-byte alignment (I vaguely remember something like that for
->> some architectures, but I might be misremembering), or anything
->> similar. It also won't detect (I don't think it's possible without
->> DWARF) artificially increased alignment with attribute((aligned(N))).
+>     31                                                0
+>       ------------------------ -----------------------
+> RDES0| Inner VLAN TAG [31:16] | Outer VLAN TAG [15:0] |
+>       ------------------------ -----------------------
 > 
-> Thanks for the pointer, I'll take a look at it. The more we discuss this
-> series, the less member size sounds relevant for what I'm trying to achieve
-> here.
+> b) For Tunneled Frame (TNP=1)
 > 
-> Following Xu's comments, I have been thinking about how I could detect the
-> custom alignments and packing on structures, and I was wondering if I could
-> somehow benefit from __attribute__ encoding in BTF info ([1]). But
-> following your hint, I also see some btf_is_struct_packed() in
-> tools/lib/bpf/btf_dump.c that could help. I'll dig this further and see if
-> I can manage to make something work with all of this.
->
+>      31                   8 7                3 2      0
+>       --------------------- ------------------ -------
+> RDES0| VNID/VSID           | Reserved         | OL2L3 |
+>       --------------------- ------------------ ------
+> 
+> The logic for handling tunneled frames is not yet implemented
+> in the dwxgmac2_wrback_get_rx_vlan_tci() function. Therefore,
+> it is prudent to maintain separate functions within their
+> respective descriptor driver files
+> (dwxgmac2_descs.c and dwmac4_descs.c).
+> 
+> Signed-off-by: Boon Khai Ng <boon.khai.ng@altera.com>
+> Reviewed-by: Matthew Gerlach <matthew.gerlach@altera.com>
 
-With DWARF info, we might not need to detect the structure alignment anymore,
-since the DW_AT_location attribute tells us where the structure parameter is
-located on the stack, and DW_AT_byte_size gives us the size of the structure.
+This patch does IMHO too many things together, and should be split in
+several ones, i.e.:
+- just moving the code in a separate file
+- rename functions and simbols.
+- other random changes...
 
-> Thanks,
-> 
-> Alexis
-> 
-> [1] https://lore.kernel.org/bpf/20250130201239.1429648-1-ihor.solodrai@linux.dev/
-> 
+> -	ret = readl_poll_timeout(ioaddr + GMAC_VLAN_TAG, val,
+> -				 !(val & GMAC_VLAN_TAG_CTRL_OB),
+> -				 1000, 500000);
+> -	if (ret) {
+> -		netdev_err(dev, "Timeout accessing MAC_VLAN_Tag_Filter\n");
+> -		return -EBUSY;
+> -	}
+
+> +	for (i = 0; i < timeout; i++) {
+> +		val = readl(ioaddr + VLAN_TAG);
+> +		if (!(val & VLAN_TAG_CTRL_OB))
+> +			return 0;
+> +		udelay(1);
+> +	}
+> +
+> +	netdev_err(dev, "Timeout accessing MAC_VLAN_Tag_Filter\n");
+> +
+> +	return -EBUSY;
+
+... like the above on (which looks unnecessary?!?)
+
+/P
 
 
