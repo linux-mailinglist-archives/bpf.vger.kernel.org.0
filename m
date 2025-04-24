@@ -1,147 +1,229 @@
-Return-Path: <bpf+bounces-56637-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56638-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21FD0A9B6E4
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 20:59:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70AEAA9B8A5
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 22:00:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FB044A7FF8
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 18:59:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C7B01BA2C91
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 20:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0515928FFD5;
-	Thu, 24 Apr 2025 18:59:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="eEcj8RSz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BCC8296178;
+	Thu, 24 Apr 2025 19:59:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA749288C97
-	for <bpf@vger.kernel.org>; Thu, 24 Apr 2025 18:59:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BDF8293B50;
+	Thu, 24 Apr 2025 19:58:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745521146; cv=none; b=pPWotD6g+oPe8sZcGnhg5U352PISy34ptRa/nvMj2a2kdLPbMe88lamJymlfzzJk7fNUdS/Uj/KEVfWUWcbGPeRlDeh2DQnI/XNkbi9sxI6v+HC0E/muMlPgufzfiWU+NSADF3M0OLjBiA4ISjj5Vv0YQsDofMEnaw1T8cdw0KE=
+	t=1745524739; cv=none; b=CBbjqKSyXyyV7zJ721jQsUlw9B/JSKC8D27TO0xAgVDDil3OVJiYq83X0uoeievvYRLFaInfJRZASTnTWnob5pDeIPVMEIfSGjDR3JcPDPrmrztDqhuCHAL89s2xdkdgUwnw/jkvO2sbflB8quYV0KtU/ZohXi3hMxMEupOTPJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745521146; c=relaxed/simple;
-	bh=RZja+27Dkbmbix3QZDuohuCssm2ow08ngePhEHO3fD0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=IAGaJT/2WoR2XzzSmDepc/Rkjr5Jpvyl8/u8k7iMOj++uM3HpAwSdquERLU+ZiRsyObNHhUIcw977CLbt7at6rfGNDFW7FJnYQErr4gs1pxaDIkyW6rgR+I4C1J0v6vhHOj90OB86ffSS8Porf4MArFJgGt4ibwsRy8cytLQvHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=eEcj8RSz; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-acacb8743a7so238719966b.1
-        for <bpf@vger.kernel.org>; Thu, 24 Apr 2025 11:59:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1745521143; x=1746125943; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RZja+27Dkbmbix3QZDuohuCssm2ow08ngePhEHO3fD0=;
-        b=eEcj8RSzy/N/ftU8FV8WUpbEg23lf0GKlw8FpdcGADRGIojt7dVQ4UdWydyAYlc/xO
-         7kTubFJIG/iEo1KOI0zZPWcg9/3TiWaVVJVgMXR3XDK6s8KYG1CIiUCcrdUWhIqAGWyU
-         TjQ/BCm7UVb+Yy4mH/Vl7uKbsu8A6D+Q1RD8c+e+POFDG/Rie+azx3WZSb/H5XDjfXZq
-         7Ng2OTJzggopUc17E/Xg/VDVHnf8cMEjh43H2lFI5F9c0C24EJJxd9MINFw4/c/t4uFl
-         ZEig2Nb9szj6SPokEZMx+CGTyiqg5BzN/6pDJwx3rxnzC3IL7WKPuaH/W5dt5IQvNnHG
-         oxtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745521143; x=1746125943;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RZja+27Dkbmbix3QZDuohuCssm2ow08ngePhEHO3fD0=;
-        b=FloEik70eNVCuJd6L8qBs4nMC+Fpo56WKz0Mld2Lnyt15gLymQIdK1qjJOnvijEV5J
-         Ix/gUP3PmNwCTTldrr9s3hgxaHrIZWI6/BoKRDJEOvhlXiePmFJUP951O4HTivDLDnIO
-         GjSNVlwfgQRzuD0Fx+qFwmzc8mS+6dXi2Hq22jSuDc9tf5YS3lvlOomJJIiQw9OiOUZv
-         dz9Gr8m04zu4FnmB+RVn4PkwJ5e4hpWlZgWERh8N2VSIblR8Pj4a3AaKjAkXp5mYrJzZ
-         6sleXh5SZ2N6LL0wB5LIS1xCd9OJA3wBXRZnCmnLQW6Tw2/QYPon2pdrvaagW2nwupc4
-         8mLA==
-X-Forwarded-Encrypted: i=1; AJvYcCWXwbX8hghK6i8GfaALNer7Y4sEyX4av+YMG8ZrYjOuhHiBO7MSCfwsEFn5k6GlQrG8tRg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzmh/2fCPAr3+/RHSjvGtfUmyf37m4AS3/Su/0s5fXMfiNzmPme
-	d3XqJgXhhMX9sbkclWWNVIn8U/rSugmNM6e0rSB0C9JZWNxIIBBwef+yJ2thfQaQxM7hqoKSdM1
-	T
-X-Gm-Gg: ASbGncvAe5PmAwdDYnNUp+1BDVuPjGBOcF4Qyz6W8jLopDeq8XrGTbxDX3SIm3iTY9+
-	50tfUqYJOzvfhBrNCJgxWvsSF7D5e6diQN6dVQM/YDTTSyGRMfvK9yPNWQah0fL4OymY22CTDe3
-	mHsHov6SELULdVdo4s3Re36W/llzuqyCeZGfEddPcbaAqHwzPj5PGub57X1b37qNhNmJL+0uft1
-	VY1Zb3x5q8Cb4CUeoMeyj9puQT104rr49GyaxYK2TZRFQ1Wd865jfT0paOtNlleGOjawsZrNuFx
-	ffyL26HUixsSPicndew25ZtE35KFQwDGUQ==
-X-Google-Smtp-Source: AGHT+IE1WfJB2yNHVG6dN5YP24a45RQi+2yyfaZDzZalpZ3qP62lfwp2ZK6hXPfRQCwsO6Nbp9kfIw==
-X-Received: by 2002:a17:907:60ca:b0:ac6:e29b:8503 with SMTP id a640c23a62f3a-ace5a124436mr310160866b.1.1745521143004;
-        Thu, 24 Apr 2025 11:59:03 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:506b:2387::38a:30])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace6e4e7a25sm7201166b.52.2025.04.24.11.59.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Apr 2025 11:59:02 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,  Arthur
- Fabre
- <arthur@arthurfabre.com>,  netdev@vger.kernel.org,  bpf@vger.kernel.org,
-  hawk@kernel.org,  yan@cloudflare.com,  jbrandeburg@cloudflare.com,
-  lbiancon@redhat.com,  ast@kernel.org,  kuba@kernel.org,
-  edumazet@google.com, kernel-team@cloudflare.com
-Subject: Re: [PATCH RFC bpf-next v2 10/17] bnxt: Propagate trait presence to
- skb
-In-Reply-To: <aApbI4utFB3riv4i@mini-arch> (Stanislav Fomichev's message of
-	"Thu, 24 Apr 2025 08:39:15 -0700")
-References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com>
-	<20250422-afabre-traits-010-rfc2-v2-10-92bcc6b146c9@arthurfabre.com>
-	<aAkW--LAm5L2oNNn@mini-arch>
-	<D9EBFOPVB4WH.1MCWD4B4VGXGO@arthurfabre.com>
-	<aAl7lz88_8QohyxK@mini-arch> <87tt6d7utp.fsf@toke.dk>
-	<aApbI4utFB3riv4i@mini-arch>
-Date: Thu, 24 Apr 2025 20:59:01 +0200
-Message-ID: <87msc5e68a.fsf@cloudflare.com>
+	s=arc-20240116; t=1745524739; c=relaxed/simple;
+	bh=U+H2Tq8C2+Oan7R7/hmm45bkPDgTuLfOe0pZH4PjNco=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WoI4dagluGuJa+BioN9PPC/9L90MGbYnnTLF0ojkC++/hR7cYIRlCkSg/StFKI6jHK+PRkHxZCX6T9TtG2JOebwkAdatA/P5a6n/vjEhoVHtRJC/wDZTxk2njOAwNrphyUomdos8LQuwKjvwOy3WHm4b4QQC+3S/nK28ZSjCq/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.0.192] (ip5f5af76d.dynamic.kabel-deutschland.de [95.90.247.109])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id D47FA6016243D;
+	Thu, 24 Apr 2025 21:58:31 +0200 (CEST)
+Message-ID: <273137fb-74c3-4c74-b228-099cde3869e7@molgen.mpg.de>
+Date: Thu, 24 Apr 2025 21:58:31 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: die__process: DW_TAG_compile_unit, DW_TAG_type_unit,
+ DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0) @
+ 115a4a9!
+To: Alan Maguire <alan.maguire@oracle.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, dwarves@vger.kernel.org
+References: <2b3986f2-7152-4c11-957a-b08641dfe132@molgen.mpg.de>
+ <03a0ad73-325c-4d6d-ba32-13a4938dc4cf@oracle.com>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <03a0ad73-325c-4d6d-ba32-13a4938dc4cf@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 24, 2025 at 08:39 AM -07, Stanislav Fomichev wrote:
-> On 04/24, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+Dear Alan,
 
-[...]
 
->> Being able to change the placement (and format) of the data store is the
->> reason why we should absolutely *not* expose the internal trait storage
->> to AF_XDP. Once we do that, we effectively make the whole thing UAPI.
->> The trait get/set API very deliberately does not expose any details
->> about the underlying storage for exactly this reason :)
->
-> I was under the impression that we want to eventually expose trait
-> blobs to the userspace via getsockopt (or some other similar means),
-> is it not the case? How is userspace supposed to consume it?
+Thank you for looking into this.
 
-Yes, we definitely want to consume and produce traits from userspace.
 
-Before last Netdev [1], our plan was for the socket glue layer to
-convert between the in-kernel format and a TLV-based stable format for
-uAPI.
+Am 24.04.25 um 20:07 schrieb Alan Maguire:
+> On 22/04/2025 14:33, Paul Menzel wrote:
 
-But then Alexei suggested something that did not occur to us. The traits
-format can be something that BPF and userspace agree on. The kernel just
-passes it back and forth without needing to understand the content. This
-naturally simplifies changes in the socket glue layer.
+>> Trying to build Linux 6.12.23 with BTF and pahole 1.30, I get the build
+>> failure below:
+>>
+>>      $ more .config
+>>      […]
+>>      #
+>>      # Compile-time checks and compiler options
+>>      #
+>>      CONFIG_DEBUG_INFO=y
+>>      CONFIG_AS_HAS_NON_CONST_ULEB128=y
+>>      # CONFIG_DEBUG_INFO_NONE is not set
+>>      # CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT is not set
+>>      # CONFIG_DEBUG_INFO_DWARF4 is not set
+>>      CONFIG_DEBUG_INFO_DWARF5=y
+>>      # CONFIG_DEBUG_INFO_REDUCED is not set
+>>      CONFIG_DEBUG_INFO_COMPRESSED_NONE=y
+>>      # CONFIG_DEBUG_INFO_COMPRESSED_ZLIB is not set
+>>      # CONFIG_DEBUG_INFO_SPLIT is not set
+>>      CONFIG_DEBUG_INFO_BTF=y
+>>      CONFIG_PAHOLE_HAS_SPLIT_BTF=y
+>>      CONFIG_DEBUG_INFO_BTF_MODULES=y
+>>      # CONFIG_MODULE_ALLOW_BTF_MISMATCH is not set
+>>      # CONFIG_GDB_SCRIPTS is not set
+>>      CONFIG_FRAME_WARN=2048
+>>      # CONFIG_STRIP_ASM_SYMS is not set
+>>      # CONFIG_READABLE_ASM is not set
+>>      # CONFIG_HEADERS_INSTALL is not set
+>>      # CONFIG_DEBUG_SECTION_MISMATCH is not set
+>>      CONFIG_SECTION_MISMATCH_WARN_ONLY=y
+>>      CONFIG_OBJTOOL=y
+>>      # CONFIG_DEBUG_FORCE_WEAK_PER_CPU is not set
+>>      # end of Compile-time checks and compiler options
+>>      […]
+>>      $ make -j100
+>>      […]
+>>        LD      .tmp_vmlinux1
+>>        BTF     .tmp_vmlinux1.btf.o
+>>      die__process: DW_TAG_compile_unit, DW_TAG_type_unit,
+>> DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0) @
+>> 115a4a9!
+>>      error decoding cu
+>>      pahole: .tmp_vmlinux1: Invalid argument
+>>        NM      .tmp_vmlinux1.syms
+>>        KSYMS   .tmp_vmlinux1.kallsyms.S
+>>        AS      .tmp_vmlinux1.kallsyms.o
+>>        LD      .tmp_vmlinux2
+>>        NM      .tmp_vmlinux2.syms
+>>        KSYMS   .tmp_vmlinux2.kallsyms.S
+>>        AS      .tmp_vmlinux2.kallsyms.o
+>>        LD      vmlinux
+>>        BTFIDS  vmlinux
+>>      libbpf: failed to find '.BTF' ELF section in vmlinux
+>>      FAILED: load BTF from vmlinux: No data available
+>>      make[2]: *** [scripts/Makefile.vmlinux:34: vmlinux] Error 255
+>>      make[2]: *** Deleting file 'vmlinux'
+>>      make[1]: *** [/dev/shm/linux/Makefile:1179: vmlinux] Error 2
+>>      make: *** [Makefile:224: __sub-make] Error 2
+>>
+>> Help how to get a successful build is much appreciated.
+>>
+> 
+> I haven't been able to reproduce this one yet with your config;
+> I tried with bpf-next + gcc-14, then switched to linux stable 6.12y +
+> gcc 12 as that more closely matched your situation; all works fine for
+> me. I'll try more precisely matching the gcc 12 version; things worked
+> fine with pahole v.130 + gcc 12.2.1; from your config looks like you
+> have gcc 12.3.0.
 
-As Eric pointed out, this is similar to exposing raw TCP SYN headers via
-getsockopt(TCP_SAVED_SYN). BPF can set a custom TCP option, and
-userspace can consume it.
+I also tried gcc 14.1.0, and now Linux origin/master (e72e9e6933071 
+(Merge tag 'net-6.15-rc4' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net)) with gcc 
+12.3.0. We do build GCC ourselves [1]. Maybe there is something missing?
 
-The trade-off is that then the traits can only be used in parts of the
-network stack where a BPF hook exist.
+I built with `make V=1` now, and here are the commands:
 
-Is that an acceptable limitation? That's what we're hoping to hear your
-thoughts on.
+```
+$ make V=1
+[…]
++ ld -m elf_x86_64 -z noexecstack --no-warn-rwx-segments -z 
+max-page-size=0x200000 --build-id=sha1 --orphan-handling=warn 
+--script=./arch/x86/kernel/vmlinux.lds -o .tmp_vmlinux1 --whole-archive 
+vmlinux.o .vmlinux.export.o init/version-timestamp.o --no-whole-archive 
+--start-group --end-group .tmp_vmlinux0.kallsyms.o
++ is_enabled CONFIG_DEBUG_INFO_BTF
++ grep -q '^CONFIG_DEBUG_INFO_BTF=y' include/config/auto.conf
++ gen_btf .tmp_vmlinux1
++ local btf_data=.tmp_vmlinux1.btf.o
++ info BTF .tmp_vmlinux1.btf.o
++ printf '  %-7s %s\n' BTF .tmp_vmlinux1.btf.o
+   BTF     .tmp_vmlinux1.btf.o
++ LLVM_OBJCOPY=objcopy
++ pahole -J -j 
+--btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs 
+--lang_exclude=rust .tmp_vmlinux1
+die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit 
+or DW_TAG_skeleton_unit expected got INVALID (0x0) @ 1229728!
+error decoding cu
+pahole: .tmp_vmlinux1: Invalid argument
+[…]
+```
 
-One concern that comes to mind, since the network stack is unaware of
-traits contents, we will be limited to simple merge strategies (like
-"drop all" or "keep first") in the GRO layer.
+I uploaded `.tmp_vmlinux1` (295 MB) [3].
 
-[1] https://www.netdevconf.info/0x19/sessions/talk/traits-rich-packet-metad=
-ata.html
+Copying this file to a Debian sid/unstable system with *pahole* 1.30-1, 
+and *llvm-19* 1:19.1.7-3, there is no error.
+
+     $ ls -l /usr/bin/llvm-objcopy
+     lrwxrwxrwx 1 root root 31 Nov 11 12:42 /usr/bin/llvm-objcopy -> 
+../lib/llvm-19/bin/llvm-objcopy
+     $ llvm-objcopy --version
+     llvm-objcopy, compatible with GNU objcopy
+     Debian LLVM version 19.1.7
+       Optimized build.
+
+In the problematic environment, we have LLVM 18.1.8 installed:
+
+     $ llvm-objcopy --version
+     llvm-objcopy, compatible with GNU objcopy
+     LLVM (http://llvm.org/):
+       LLVM version 18.1.8
+       Optimized build.
+
+
+Kind regards,
+
+Paul
+
+
+[1]: 
+https://github.molgen.mpg.de/mariux64/bee-files/blob/8cd1999f62d2865372c0240e5a62f7f0099fa615/gcc.be0#L28
+[2]: 
+https://github.molgen.mpg.de/mariux64/pkg-scripts/blob/2c229b222d0ba0794e24e51223aa4768e30884e2/gcc-14.1.0-0.build.sh#L49
+[3]: https://owww.molgen.mpg.de/~pmenzel/.tmp_vmlinux1
+
+>> PS: Using pahole 1.23 I get:
+>>
+>>      $ make -j100
+>>      […]
+>>        LD      .tmp_vmlinux1
+>>        BTF     .tmp_vmlinux1.btf.o
+>>      pahole: Multithreading requires elfutils >= 0.178. Continuing with a single thread...
+>>      Unsupported DW_TAG_unspecified_type(0x3b)
+>>      Encountered error while encoding BTF.
+>>        NM      .tmp_vmlinux1.syms
+>>        KSYMS   .tmp_vmlinux1.kallsyms.S
+>>        AS      .tmp_vmlinux1.kallsyms.o
+>>        LD      .tmp_vmlinux2
+>>        NM      .tmp_vmlinux2.syms
+>>        KSYMS   .tmp_vmlinux2.kallsyms.S
+>>        AS      .tmp_vmlinux2.kallsyms.o
+>>        LD      vmlinux
+>>        BTFIDS  vmlinux
+>>      libbpf: failed to find '.BTF' ELF section in vmlinux
+>>      FAILED: load BTF from vmlinux: No data available
+>>      make[2]: *** [scripts/Makefile.vmlinux:34: vmlinux] Error 255
+>>      make[2]: *** Deleting file 'vmlinux'
+>>      make[1]: *** [/dev/shm/linux/Makefile:1179: vmlinux] Error 2
+>>      make: *** [Makefile:224: __sub-make] Error 2
 
