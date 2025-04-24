@@ -1,79 +1,80 @@
-Return-Path: <bpf+bounces-56591-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56592-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA503A9ADE2
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 14:49:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7F8FA9ADE4
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 14:49:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A23AC1B636FA
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 12:49:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDC174670B3
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 12:49:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14DEE27B500;
-	Thu, 24 Apr 2025 12:49:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABAFB27B507;
+	Thu, 24 Apr 2025 12:49:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pnfe/48D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ewpv/OpJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4972701AA;
-	Thu, 24 Apr 2025 12:49:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 805A92701AA;
+	Thu, 24 Apr 2025 12:49:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745498961; cv=none; b=aoDl/i5iVDJZYpvvTJgKSHw7vyLMn4pBX/G3NgBM9gv4WiGVPqLTEwMFvXWPgyrXrTKaq0Gs1zD0a5rEQKIex4jjdYdivSnlvAuD6vjgeF1NXusoww9Q3UZa3MofMa7iTRRoDArhnNC8c7kkjF60o4r1DLGFcfj8Funx18uxKlg=
+	t=1745498970; cv=none; b=p1AQ4cDpGuZepml+4y7I0CxLn4rjUuJeMhelH8mo21JM0YjFWLy0YVTdgESjN95iCMGlgA3oRD24VVXSZ6fw29pYmIIYuFDnxcw/l3hjMWErQPSK2kmIu27NvDo2m3atYUL6NAx0ZWiiEmXq30IVZHJ6hvFN5y3i3bDpu23ZUNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745498961; c=relaxed/simple;
-	bh=iUgEmDrrdGRxcE2iCV8QXutWLhxWWV5HKvMxz9BWVgE=;
+	s=arc-20240116; t=1745498970; c=relaxed/simple;
+	bh=bapCUSztOVKWJwb+5pwmHdYfJohpxwjaju6SBjsiAbw=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DNZa2B/QjOStSQyqzbjXjQMbbJcnZOG5hQGsg2j1O/W2uUqtfb/v9Yi+DyKanpYpTmBzMl9LAccLP1lRrjT2jBHGEzC2V3nRIRI3ttPyDauLDP3SBwCjIqwh8oLeLW2sXTDOuTgyQsaCnxIWSjV6fpkUWDKIDOvH0vWp6jXbUxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pnfe/48D; arc=none smtp.client-ip=209.85.218.41
+	 Content-Type:Content-Disposition:In-Reply-To; b=gADLTVpY0g29bBNrhgvDxoQ91xNG5ofuGg5Uk7CoGOUpEya3OckTSuH3/PwnN2YwkNP3WCu3hc44UxCUxdzTJbSNZppoIXZtmyVPQZDLR1UYG3nHFINSSfKEtZz7r8hDD1zsOuBjzXDWaiae5ymyzEmjPIyimeZoLyreMEAmbgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ewpv/OpJ; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-ace333d5f7bso177404466b.3;
-        Thu, 24 Apr 2025 05:49:19 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5e61da95244so1677065a12.2;
+        Thu, 24 Apr 2025 05:49:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745498958; x=1746103758; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=x3PREqi5mpIHw6+adDwUcuhHfKjMy7sAKK4QZRG6khE=;
-        b=Pnfe/48DgR6oa9cyR88OlpmkiaMSSqLDgQMlOKcY6kaNRxOO7cWjjGq5iK0iTCs0Qt
-         hWdExC6nIEeMAur9A+53TeLpZc56GlNzqpo/GUQrlA/dfVywhBuMe+WSSeOSHg9IeFby
-         pVFtqfx3LZQq3KW+VGGmgzl/rXqW2Ziv77JJMtiPK/xtqFzXFa4DpXn+9q98sWg+F/up
-         Ay9uqksJz7q9Oh/58v+R9AyrDOi0bPLe8Je3kTInmkQKuZ7yONCth3g2C/rAe7JZL1LS
-         HsymbEPIHaIDhkr52LBt0djqi4huqmMmSdvXOE2kzcYRZlmCiM7VNGrGz0YgzptaHxIJ
-         fp5w==
+        d=gmail.com; s=20230601; t=1745498967; x=1746103767; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=VzmIRZFKUMaF4yUV6r2OHqoHDU/etq8iF8bz/8ZLRl8=;
+        b=Ewpv/OpJ58zXE5S3+qEb99AY/Ip6IO1thqyXbDSCLgunu+Ls/53QOXc3CruSudy6qi
+         YnsOW/OqJyoWTpJT1auUjnRKT0ysTYursLVEzje3fcle9qw9feri/hC5LG3kGTlJM0m8
+         iRdZwo5Xq0IDIJO/TT0qe+pTbydD8WEtI8fBI/SZUT0tq8wmRaE9mtQ+LVKtZqaJShuE
+         AYPiBF34PgJba8+ztZpP8FS/NyhXm+zl1Ahne/12zeRayT6Agpbj2JI1jXDRLtARkISU
+         PdjnjOAm71tYYF9xm97ERgYIxa0UYoWw393H2+odRg0s9AVIDbM1gQpWATfaFEFTokf9
+         2Hag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745498958; x=1746103758;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x3PREqi5mpIHw6+adDwUcuhHfKjMy7sAKK4QZRG6khE=;
-        b=fljQZ6VtG2ucnPgMPvDSURSDKpDWnK1dcO32cUVhKvn6wBGAfA38/9IcIEbZE1gEX2
-         V6TKbE1e0rO8Z67AU8am1Icn45Q1uGXLrYONzNKzYJQPtjtR4XjLT+w3jImgal2CPRBx
-         PFHNwmw5JJ3oefOrqxxzjCjPPMGmKsDrm0xQ0RcxmF8M8DyPZunDQivbAVlBMSkJlFrU
-         7iSK+UvSI96tPKE+qZGT3kgF8Zo1V4RC/ouczdiQqt6eMK3o09rbxDol0p69rET0/tM0
-         QW5NSZggT2gIeaqB93xFnlkWfei9PbvoYQ+tm9EB0s/bOXtTlNnFYn36+BmfLG3Q/BBe
-         lGlw==
-X-Forwarded-Encrypted: i=1; AJvYcCViWBW3/E586+KEpG19f7nsVE1KlODrlPUoPaEhKUh6m23imh1nDMTcf/S1PkPSgwyGrikobv54DGXqly79@vger.kernel.org, AJvYcCWdSNa8sR1TbXxuJZ0H37PCnkyXaChs9+tFDoMBzsMLiDnF5czqsqtQErtEdaLKAn4srjilYux6Y4iDgATULXbWPbAl@vger.kernel.org, AJvYcCXdN481mlu095XXDWhPiw63h9nczW8Sq/0G5PHfFMk9AOhWHfHPsUdgKcyWZgeKBSpf/xw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6rNab0MFIzcC7YXYqh01iuV/qk4l6HGwDkuZDVhUD/wSt/D6I
-	7CEyjDCLcWNE1RXir88fwLtkdF4mKUPI4KK0HCMf77u7Ich4UA1R
-X-Gm-Gg: ASbGnct7KhURawsjgVSixwegOeiXQi7iTQ18v9/I6B1QyDRDNeLnASf/xKRGyzD3U+g
-	ey0ab8EolXZm9KEkPPOXxa6hP/LFvia3IB7b3ZoQ6qUv3lxMWLVyAaC0ev0XuyxHgl68A4jRUx6
-	6UpzZfiNbhEuQPkoIJ+EKqTdl6zWmrzPGfNwwn6+L9WqnJp42ZIZATECa90w2umlpx+9oKF4tln
-	IwxSbfiYw4Kt2SL20/fvXo9WMjOOIkBuh4HIPIxQ3AHeco3TXgo0tiRYp5mEsuMpvae1oAcnXyV
-	1kjJA28BGWHZAarE2RqYkChs24b7OYL7AZfH0g==
-X-Google-Smtp-Source: AGHT+IEqolvyXmoJv9zuVLvctan1U7z5XFIwLUwH3MzFK9iJr7WiPjI5btIHC50iw45YOnZUCA04zA==
-X-Received: by 2002:a17:907:96a9:b0:acb:107e:95af with SMTP id a640c23a62f3a-ace573badbdmr227478666b.39.1745498957806;
-        Thu, 24 Apr 2025 05:49:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1745498967; x=1746103767;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VzmIRZFKUMaF4yUV6r2OHqoHDU/etq8iF8bz/8ZLRl8=;
+        b=rDM82wx8dJzyRH955OF6d0xlB6RG/zs14VKxB5JvVbVu/HLiCjhYt5TcCkd85zOviJ
+         oA4XoBs9tW1LX5N2V3gP+pX33QMiiKBQYHMqJt8+brqCn+3TI4qJOL185fngEXHv/jX+
+         dUaFGea7szw1m/zDWYz2gvyhlQfiSqN9P8GgJBfHCYrH6BNcsmWgZqSoronR8Huf6c9d
+         oqqXQ6GXnegI2RYmxfmKP4AIsYrNC/UVU49uPbgtCzazM9ixmSG5bHs/gkB0NyN4ZDMD
+         17cd0XDfKbr3H7AvfZxwOC5hdS28aGJ+aEN/RzKLrpia40ZyKYcuiEmsMDDO2Ym51dQM
+         6E+g==
+X-Forwarded-Encrypted: i=1; AJvYcCUFA+Mq/53D3yBFtYCRQWhF/zl1SI2rXXA+k6u2egJkymHS391C0nsB8zA4W5ALJvhoUZsNArjAoflBo48O@vger.kernel.org, AJvYcCV7WmLCL6tj8o8LUTiq4xLTgVEV3QMSfHa/4ngRSz0hdcJG8K9R0OQbAEiZHJ68Q+CyNCI=@vger.kernel.org, AJvYcCWMYZeVrxvBmm2qLYj7XxoFIVF9P9OHSfSrj35/fRi/kZPCTWtG+yw+JrYM95ptqeQEn1tN2AUSTM4UlXbwDitzSMzK@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6orHmLRWCfAF1YFV/M1dkYi+FD5BvYnIhf4W12Hudo1GsYrHY
+	4KJqsfR1UiycqogedoanK3U6sxMehk2DG2L4bpaysaA8So0bwASx
+X-Gm-Gg: ASbGncsl76/I99AnOsPq6DRpUYDbbihbESzyvCnn/aaOKKdvghN+8/Iwn+YXl0BC+Hp
+	lSBcW7nD5z2Odu4co5OP6Nrdr7MHlWb/rqekl5tkzgPNsqP0eLLqxeY2jtmkKnVmLEO3DlGKUku
+	d2yNqZHHKiR/TFilJ99FYmMNz5gvhbEbmV0aueuEPrapCsP+ZzZeYKgq2dcBdKMn0TzVtWXVffg
+	SEqshFe5lYgRqfsBKXVNhwD3aFPrnOrjm3Nssb1ia8Y7UearIqy7mQu0NSTiFIxMK41sZZnyYIU
+	c/yrarwsD1A8+XIA1e/skn1GcKj37sMrNqCRkw==
+X-Google-Smtp-Source: AGHT+IH+Cy898lAbutMnyRVhjNZkSE8Zdnp6n2x+yfAHOuR14CPAFq0RKw/wQ2T8cMTfQytRbjY0Ag==
+X-Received: by 2002:a05:6402:84d:b0:5f4:c8b9:cd2c with SMTP id 4fb4d7f45d1cf-5f6df6329a4mr3031881a12.34.1745498966657;
+        Thu, 24 Apr 2025 05:49:26 -0700 (PDT)
 Received: from krava ([173.38.220.55])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace5989b1b6sm104746866b.74.2025.04.24.05.49.16
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5f6ebbfa79csm1099746a12.42.2025.04.24.05.49.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Apr 2025 05:49:17 -0700 (PDT)
+        Thu, 24 Apr 2025 05:49:26 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 24 Apr 2025 14:49:14 +0200
+Date: Thu, 24 Apr 2025 14:49:23 +0200
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
@@ -87,135 +88,92 @@ Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	David Laight <David.Laight@aculab.com>,
 	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH perf/core 10/22] uprobes/x86: Add support to optimize
- uprobes
-Message-ID: <aAozSky7pIIGIB4s@krava>
+Subject: Re: [PATCH perf/core 11/22] selftests/bpf: Use 5-byte nop for x86
+ usdt probes
+Message-ID: <aAozU3alQYU0vNkw@krava>
 References: <20250421214423.393661-1-jolsa@kernel.org>
- <20250421214423.393661-11-jolsa@kernel.org>
- <CAEf4BzbJJuKY+eTaDvwhgmp9jBqYXoLWinBY8vK0oYh0irC07Q@mail.gmail.com>
+ <20250421214423.393661-12-jolsa@kernel.org>
+ <CAEf4BzbxCqgPErQVBV7Ojz23ZEqYKvxi0Y4j8hq6FgXVvdQo9A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbJJuKY+eTaDvwhgmp9jBqYXoLWinBY8vK0oYh0irC07Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbxCqgPErQVBV7Ojz23ZEqYKvxi0Y4j8hq6FgXVvdQo9A@mail.gmail.com>
 
-On Tue, Apr 22, 2025 at 05:04:03PM -0700, Andrii Nakryiko wrote:
-
-SNIP
-
-> >  arch/x86/include/asm/uprobes.h |   7 +
-> >  arch/x86/kernel/uprobes.c      | 281 ++++++++++++++++++++++++++++++++-
-> >  include/linux/uprobes.h        |   6 +-
-> >  kernel/events/uprobes.c        |  15 +-
-> >  4 files changed, 301 insertions(+), 8 deletions(-)
+On Wed, Apr 23, 2025 at 10:33:18AM -0700, Andrii Nakryiko wrote:
+> On Mon, Apr 21, 2025 at 2:46 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Using 5-byte nop for x86 usdt probes so we can switch
+> > to optimized uprobe them.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/testing/selftests/bpf/sdt.h | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
 > >
 > 
-> just minor nits, LGTM
+> So sdt.h is an exact copy/paste from systemtap-sdt sources. I'd prefer
+> to not modify it unnecessarily.
 > 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> How about we copy/paste usdt.h ([0]) and use *that* for your
+> benchmarks? I've already anticipated the need to change nop
+> instruction, so you won't even need to modify the usdt.h file itself,
+> just
 > 
-> > +int set_swbp(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-> > +            unsigned long vaddr)
-> > +{
-> > +       if (should_optimize(auprobe)) {
-> > +               bool optimized = false;
-> > +               int err;
-> > +
-> > +               /*
-> > +                * We could race with another thread that already optimized the probe,
-> > +                * so let's not overwrite it with int3 again in this case.
-> > +                */
-> > +               err = is_optimized(vma->vm_mm, vaddr, &optimized);
-> > +               if (err || optimized)
-> > +                       return err;
+> #define USDT_NOP .byte 0x0f, 0x1f, 0x44, 0x00, 0x00
 > 
-> IMO, this is a bit too clever, I'd go with plain
-> 
-> if (err)
->     return err;
-> if (optimized)
->     return 0; /* we are done */
-> 
+> before #include "usdt.h"
 
-ok
 
-> (and mirror set_orig_insn() structure, consistently)
+sounds good, but it seems we need bit more changes for that,
+so far I ended up with:
 
-set_orig_insn does that already, right?
+-       __usdt_asm1(990:        USDT_NOP)                                                       \
++       __usdt_asm5(990:        USDT_NOP)                                                       \
 
-> 
-> 
-> > +       }
-> > +       return uprobe_write_opcode(vma, vaddr, UPROBE_SWBP_INSN, true);
-> > +}
-> > +
-> > +int set_orig_insn(struct arch_uprobe *auprobe, struct vm_area_struct *vma,
-> > +                 unsigned long vaddr)
-> > +{
-> > +       if (test_bit(ARCH_UPROBE_FLAG_CAN_OPTIMIZE, &auprobe->flags)) {
-> > +               struct mm_struct *mm = vma->vm_mm;
-> > +               bool optimized = false;
-> > +               int err;
-> > +
-> > +               err = is_optimized(mm, vaddr, &optimized);
-> > +               if (err)
-> > +                       return err;
-> > +               if (optimized)
-> > +                       WARN_ON_ONCE(swbp_unoptimize(auprobe, vma, vaddr));
-> > +       }
-> > +       return uprobe_write_opcode(vma, vaddr, *(uprobe_opcode_t *)&auprobe->insn, false);
-> > +}
-> > +
-> > +static int __arch_uprobe_optimize(struct mm_struct *mm, unsigned long vaddr)
-> > +{
-> > +       struct uprobe_trampoline *tramp;
-> > +       struct vm_area_struct *vma;
-> > +       int err = 0;
-> > +
-> > +       vma = find_vma(mm, vaddr);
-> > +       if (!vma)
-> > +               return -1;
-> 
-> this is EPERM, will be confusing to debug... why not -EINVAL?
-> 
-> > +       tramp = uprobe_trampoline_get(vaddr);
-> > +       if (!tramp)
-> > +               return -1;
-> 
-> ditto
-
-so the error value is not exposed to user space in this case,
-we try to optimize in the first hit with:
-
-	handle_swbp()
-	{
-		arch_uprobe_optimize()
-		{
-
-			if (__arch_uprobe_optimize(mm, vaddr))
-				set_bit(ARCH_UPROBE_FLAG_OPTIMIZE_FAIL, &auprobe->flags);
-
-		}
-	}
-
-and set ARCH_UPROBE_FLAG_OPTIMIZE_FAIL flags bit in case of error,
-plus there's WARN for swbp_optimize which should pass in case we
-get that far
+but it still won't compile, will need to spend more time on that,
+unless you have better solution
 
 thanks,
 jirka
 
 > 
-> > +       err = swbp_optimize(vma, vaddr, tramp->vaddr);
-> > +       if (WARN_ON_ONCE(err))
-> > +               uprobe_trampoline_put(tramp);
-> > +       return err;
-> > +}
-> > +
 > 
-> [...]
+>   [0] https://github.com/libbpf/usdt/blob/main/usdt.h
+> 
+> > diff --git a/tools/testing/selftests/bpf/sdt.h b/tools/testing/selftests/bpf/sdt.h
+> > index 1fcfa5160231..1d62c06f5ddc 100644
+> > --- a/tools/testing/selftests/bpf/sdt.h
+> > +++ b/tools/testing/selftests/bpf/sdt.h
+> > @@ -236,6 +236,13 @@ __extension__ extern unsigned long long __sdt_unsp;
+> >  #define _SDT_NOP       nop
+> >  #endif
+> >
+> > +/* Use 5 byte nop for x86_64 to allow optimizing uprobes. */
+> > +#if defined(__x86_64__)
+> > +# define _SDT_DEF_NOP _SDT_ASM_5(990:  .byte 0x0f, 0x1f, 0x44, 0x00, 0x00)
+> > +#else
+> > +# define _SDT_DEF_NOP _SDT_ASM_1(990:  _SDT_NOP)
+> > +#endif
+> > +
+> >  #define _SDT_NOTE_NAME "stapsdt"
+> >  #define _SDT_NOTE_TYPE 3
+> >
+> > @@ -288,7 +295,7 @@ __extension__ extern unsigned long long __sdt_unsp;
+> >
+> >  #define _SDT_ASM_BODY(provider, name, pack_args, args, ...)                  \
+> >    _SDT_DEF_MACROS                                                            \
+> > -  _SDT_ASM_1(990:      _SDT_NOP)                                             \
+> > +  _SDT_DEF_NOP                                                               \
+> >    _SDT_ASM_3(          .pushsection .note.stapsdt,_SDT_ASM_AUTOGROUP,"note") \
+> >    _SDT_ASM_1(          .balign 4)                                            \
+> >    _SDT_ASM_3(          .4byte 992f-991f, 994f-993f, _SDT_NOTE_TYPE)          \
+> > --
+> > 2.49.0
+> >
 
