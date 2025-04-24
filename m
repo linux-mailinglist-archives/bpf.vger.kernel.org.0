@@ -1,88 +1,88 @@
-Return-Path: <bpf+bounces-56624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56625-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A6B2A9B41F
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 18:34:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F5C0A9B41B
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 18:33:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 121183A8911
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 16:30:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 385E21B66460
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 16:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1073928A3E4;
-	Thu, 24 Apr 2025 16:29:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB6728DEE1;
+	Thu, 24 Apr 2025 16:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xbdaz0h6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CQtGz3Zi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07079284688;
-	Thu, 24 Apr 2025 16:29:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF592820DA;
+	Thu, 24 Apr 2025 16:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745512191; cv=none; b=byhM1EtvfVaUGh7S8yfzjfksoadBzv4py80Xdcb7Yj/QIo37llA6Dh61Y3r6TJq73y72j+f6IOv+p3lkxHkXokpW9FDufy7eI0E8Ek+FX8rEB+tbjDObHf27HCMMEUrLoUVaPOAAcuudqvB+x/r1DgWiA3yKJXedQh+S1Gd6FwE=
+	t=1745512235; cv=none; b=jPnkaot1QZePafsz2taokstARPgzRq0yP8YynP7euqRUJG4NFR/qVrGLph+sYmgLtr8avhFioKssZ7BFao71ows6tS39FrdABEe5xW/ME0WTmVJGepA4RJ9eqaR9Ds3xUPgdU0f2SoYGdVGeeyGN48D0Hp3w3uHFQupv9hthPjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745512191; c=relaxed/simple;
-	bh=Olfas3kVvORqUXf9lbxFO0QxdMLUwOPQVx90iYtTBKg=;
+	s=arc-20240116; t=1745512235; c=relaxed/simple;
+	bh=gkgoI29nl3mSGCFDMPiXMHrPP8l/XhPBYatnb/F3jlI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qzWeKukn1NLAzhjqtFdkTy9j3vHkqf3T8NvaIT1msmXHUAjW7A7O+G+LR6GKi6Sc/4ntJHi1X7AR+4Nc3KV6QLjj1M5RHuH3I5N1UHJOXKkDTTcSbEnA+sOCIwRk0DRkGXt7FP8GFrKeESgFiF7FzTpc/k7RRUIX2i1ofM9/tUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xbdaz0h6; arc=none smtp.client-ip=209.85.210.170
+	 To:Cc:Content-Type; b=rRUEdyBDe4Ha8cf2D7d5c9IatQrU5FEwaxnLLhmcI5wXi91XzFvYVzdiaAqQMCTrvOIQGSescpT/dV0Hi+4Cmz39LMaYcw2BRoljuU9mKIOrO1a94a4+agKTPXKOetbhhJyDZM+8MD7ytZ1eFyvmaQFmL3YBK5MI6oBCFHflDbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CQtGz3Zi; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-7399a2dc13fso1696640b3a.2;
-        Thu, 24 Apr 2025 09:29:49 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-736b350a22cso1074562b3a.1;
+        Thu, 24 Apr 2025 09:30:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745512189; x=1746116989; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745512233; x=1746117033; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=svygRFPoJDCFSMtuDuDi9m6ihen4iFSM4c08PMaafg4=;
-        b=Xbdaz0h6XHXTQobCCbs0ReaFjreV4oMSt7DxYgWlXNEGzymC755oGyBuH4mVa4+Y67
-         itRyY1h96Q4z06EI9pVgrGbcwAYEu1Rzjl5ihHVcO6J6rmEABEdidoM88cGi9QZelQOw
-         LC2fNviGbL5eZYWypYLT7vBQXlhsevd1fxpI1rXZrV/4HeBzc4/jZXPnfAEgnyPDTAAn
-         tajxHwDSc/GrPQiG03fo8w2dRVK6/o8X9aNnXnIvpQBeSWi2RUyRRhLMFUHbEX6qIP2W
-         4JKRX1sZUxpd8aobAvLyDdXs34mxl4Hi3OiFijurys891QSkH6ckvBWkaEowVhUOMLLM
-         M6eA==
+        bh=3cssuPsgQyNe41/I1FihzTAF2D9xk/WnUmRiUzzfO9c=;
+        b=CQtGz3ZiVTPqNcfBlFBwYrLZ/ZblkYJTQij9B/RGa7DRPXLeeNvQm7jXxpCWcXZjwd
+         iiAGUVm9NZXOjQqTWGDnLAC4qyKQ0dVwBrnP6sORhuMSACJJOphZx44wd0jtueDgRvLl
+         jlzp0BbutPbxxXp/EMBt3cjsBwSSR2+xj7WlNzp6DIEvM4IwklhrzrRPYSh0NCXit1PV
+         Y0Nb8W8C6UTmXAj9U8FbJdiGBDk3GeFYUuykezvsCARENdrYnVfQ9zM8jvYDJ4NiECO7
+         qUX3+psRtOHnsriD+rR4oDxao2XEDcI/2bHVWXBZ3kZ2QcNm/044czt8lk2ptNE8/HGg
+         FT6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745512189; x=1746116989;
+        d=1e100.net; s=20230601; t=1745512233; x=1746117033;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=svygRFPoJDCFSMtuDuDi9m6ihen4iFSM4c08PMaafg4=;
-        b=fjewjKEqjsyDlRp1GOFDKceMbcT0uCEJqJ8wV/BUQ7knoKBMJLGdiwGk959scLKDSX
-         HDDz8fobl9hrPvqOVFnxR5tCLBw8VLSSehNNJCzAphzahGQEC2pQp+q9V3C+7n9Y5gn8
-         sDXPGbpvCmWQTelSO1zFjhZeZuZaeH4s46AhAlYPWi3vPH5DdzbUuaRpfZcQBFbmctRH
-         pq5JAv++QvzypTztAHe3WyeewxzwQWtRSpZziTM3PU+9F1G+V+QQu7rNYDTKCj95sAxX
-         BHExsvxf5x1JSivyjvm8QdNcXR4Qf6PLwFv6Wh385lFqC9f5IlZaYLBtaxtUdRe9QuF8
-         CKWw==
-X-Forwarded-Encrypted: i=1; AJvYcCV0ZOPxTFAD0YXxJfcjdy6Adk5RpQJ20gxyCmwjyqR97gjR2EuM2nUJy4ne9xiAU53y3TzgTDmLZvlj2Ax5@vger.kernel.org, AJvYcCVZPfEufOudDrXPsBU6+BS/Dskq1nLpt8BznChxm99+PB0yAyNNIe+uizF10fi6qgvG+BykaGWFl6WqSHdhMrUKmE4g@vger.kernel.org, AJvYcCXXMZCP6jZE5zYvfTPB3wzJRnJ1wUzVfTOPILLoQH4Ldun7ZHeM0e+ep0Cf+htJ4PT9U7o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzZ0ziZcyf7TWPfh/jcpB8ABpeEwrAy36SPjCs8vPt6WJD/Wmh
-	0sGOqMKC26OyFXfSyubp+Wb7xzR/AJQfcdSDnVtri+sSsatV6aSNns9wnWBTe90KxhytbNhV8rf
-	iS/R/7+RM+1lj7O26WhIJV28Qjvw=
-X-Gm-Gg: ASbGncvDCVCehniXjhh99B16nN6tTwNUSObQfkKJIBNW7vDALa4RKC75X+IRCXtnU/l
-	5/nxmTvtv6iq8/yqbacC2rfaT2aybCW8+UGBn4odC+ZKk52tN6uc2yWTbmvdT3ucmERkgRPhSbE
-	526t0rKOVWhHJjOlWwy0xA7G+y6X+yZ0U13qCMCg==
-X-Google-Smtp-Source: AGHT+IE/rQQIhva32pBfpB+BSOmHson59ZUUzc3H10bBwmswAMAfAbNO+QRDfnpZKYk1c21Ng7fQ9jcPeUWjEp8hMzs=
-X-Received: by 2002:a05:6a00:4ace:b0:736:34ff:be8 with SMTP id
- d2e1a72fcca58-73e330d38d1mr373044b3a.19.1745512189272; Thu, 24 Apr 2025
- 09:29:49 -0700 (PDT)
+        bh=3cssuPsgQyNe41/I1FihzTAF2D9xk/WnUmRiUzzfO9c=;
+        b=uEN+9DafGDgjvHeKRTdqheSgiib23pryUtQhx0jh6GM4VxhaUzXiJsPdbmdfxcx2FA
+         5QvbJG5i1wndXiybvK5MFWQnILrVaiSpkNzCfHUjgq9kD3R8nZNmDoUbog2GbQ+lA0/4
+         06HMi4Ck7sgnPrhFC69R+egR3+F/PUYNGE5cTg1w3Y0LdcGJR8CIA44ZXr5zsYNOCgBf
+         cSe2Tre8tC/ywdrqwlEDWOClsOFcSuGCLZepYHqBWxfF8jTVlH4WFDkeypqzO/Mfrh28
+         axlcaOZMtq1hypE+xdQU+jBH2zjBlj6EWw7spOwzGv6+XmN0HfYvHUzEBJjglZ3UnH9j
+         dsGA==
+X-Forwarded-Encrypted: i=1; AJvYcCU+xfql2P2my5DK6pYvxo85MONfsIlwLzKQvM9j5Tfp8Yk+HnJzY4L1GkKj6e8w5hBzz/FMHvxltJQVzs1t3dWWiveX@vger.kernel.org, AJvYcCWQhTNUVJYssEo8uPYN1vZvom5TWdKqjj2pJ90ODxkG+oJPNM/OS1b/apteDWTKjq4pe8A=@vger.kernel.org, AJvYcCXJIodXqE3f8rqgb0TngWHwem5zCpt7ubf3OOZOcwpvfU7nFyFxXB+90x/K5hhc+3GKrLHH1qIfImYmE3CY@vger.kernel.org
+X-Gm-Message-State: AOJu0YyoJxck7BBJ9Q9a53jDLX8C+qWAQfLIsfFV7xVp+ECRfuTfFGtg
+	728uhTvUpLZ34z+asB+ieX7KgPV1WSQA/r3Ozv90SI33b4T/m1oQqVoEKdtp6wLvUgbeWFVSphx
+	oX0vSPOLa3+aa1cAzZm8XC99I97/w3D/R
+X-Gm-Gg: ASbGnctwOLsiScdr79u5mjnw+/l4W0HHtj2uO6lt2qMLpu+3Pq89GNNOLZD+Q16awWx
+	M7b5lexH/Z6Shc1nPvcBBaUpSEhLh4/WBSetyIXPph77Y5eM+JfT/GfvqlXNmHsULm+ZT3Ai68j
+	28Gkp+RzisB6WrPKENEQWfGrEvMZO7MmuiM3M9sHrq6cTzSwc+
+X-Google-Smtp-Source: AGHT+IGGekbwvhanq5AjI05sAoEBY5KX4C0V8/x4II22DmZPJubUV3X/sBf6Z53dNjKI/PYB8jlynI6ZpOUX010q0TI=
+X-Received: by 2002:a05:6a00:4642:b0:736:ab1d:83c4 with SMTP id
+ d2e1a72fcca58-73e23ca12aamr4669351b3a.0.1745512233446; Thu, 24 Apr 2025
+ 09:30:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250421214423.393661-1-jolsa@kernel.org> <20250421214423.393661-12-jolsa@kernel.org>
- <CAEf4BzbxCqgPErQVBV7Ojz23ZEqYKvxi0Y4j8hq6FgXVvdQo9A@mail.gmail.com> <aAozU3alQYU0vNkw@krava>
-In-Reply-To: <aAozU3alQYU0vNkw@krava>
+References: <20250421214423.393661-1-jolsa@kernel.org> <20250421214423.393661-16-jolsa@kernel.org>
+ <CAEf4Bzb+LT2nTTjVXi3ATu9AsYSxZJr2XzegA09Cm8izNG=grg@mail.gmail.com> <aAozzY6ls7LLXNSc@krava>
+In-Reply-To: <aAozzY6ls7LLXNSc@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 24 Apr 2025 09:29:37 -0700
-X-Gm-Features: ATxdqUHmgJW-YiXjtRDEVNgydudLQXdw9gxzB8tj7wA1c2MRTKEnTTrY4fDeiOQ
-Message-ID: <CAEf4BzagXsyr-iKB=ZpRZ3kS2FE69jpbWa8EVyFJknUOCGtEEQ@mail.gmail.com>
-Subject: Re: [PATCH perf/core 11/22] selftests/bpf: Use 5-byte nop for x86
- usdt probes
+Date: Thu, 24 Apr 2025 09:30:21 -0700
+X-Gm-Features: ATxdqUG--vTtgMshkP8IXmG-Vh6Vpor73PMkwErJv3g312IkH3n-D6jCNe965e0
+Message-ID: <CAEf4BzbLhc1PO=AfuavYhy+68Rj3u6d4OWpzZcExcOpdqMFMdA@mail.gmail.com>
+Subject: Re: [PATCH perf/core 15/22] selftests/bpf: Add hit/attach/detach race
+ optimized uprobe test
 To: Jiri Olsa <olsajiri@gmail.com>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -96,100 +96,62 @@ Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 24, 2025 at 5:49=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+On Thu, Apr 24, 2025 at 5:51=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
 e:
 >
-> On Wed, Apr 23, 2025 at 10:33:18AM -0700, Andrii Nakryiko wrote:
-> > On Mon, Apr 21, 2025 at 2:46=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wr=
-ote:
-> > >
-> > > Using 5-byte nop for x86 usdt probes so we can switch
-> > > to optimized uprobe them.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/testing/selftests/bpf/sdt.h | 9 ++++++++-
-> > >  1 file changed, 8 insertions(+), 1 deletion(-)
-> > >
+> On Wed, Apr 23, 2025 at 10:42:43AM -0700, Andrii Nakryiko wrote:
+>
+> SNIP
+>
+> > > +
+> > > +static void test_uprobe_race(void)
+> > > +{
+> > > +       int err, i, nr_threads;
+> > > +       pthread_t *threads;
+> > > +
+> > > +       nr_threads =3D libbpf_num_possible_cpus();
+> > > +       if (!ASSERT_GE(nr_threads, 0, "libbpf_num_possible_cpus"))
 > >
-> > So sdt.h is an exact copy/paste from systemtap-sdt sources. I'd prefer
-> > to not modify it unnecessarily.
+> > I hope there are strictly more than zero CPUs... ;)
 > >
-> > How about we copy/paste usdt.h ([0]) and use *that* for your
-> > benchmarks? I've already anticipated the need to change nop
-> > instruction, so you won't even need to modify the usdt.h file itself,
-> > just
+> > > +               return;
+> > > +
+> > > +       threads =3D malloc(sizeof(*threads) * nr_threads);
+> > > +       if (!ASSERT_OK_PTR(threads, "malloc"))
+> > > +               return;
+> > > +
+> > > +       for (i =3D 0; i < nr_threads; i++) {
+> > > +               err =3D pthread_create(&threads[i], NULL, i % 2 ? wor=
+ker_trigger : worker_attach,
+> > > +                                    NULL);
 > >
-> > #define USDT_NOP .byte 0x0f, 0x1f, 0x44, 0x00, 0x00
+> > What happens when three is just one CPU?
 > >
-> > before #include "usdt.h"
 >
+> right, we need at least 2 threads, how about the change below
 >
-> sounds good, but it seems we need bit more changes for that,
-> so far I ended up with:
->
-> -       __usdt_asm1(990:        USDT_NOP)                                =
-                       \
-> +       __usdt_asm5(990:        USDT_NOP)                                =
-                       \
->
-> but it still won't compile, will need to spend more time on that,
-> unless you have better solution
->
-
-Use
-
-#define USDT_NOP .ascii "\x0F\x1F\x44\x00\x00"
-
-for now, I'll need to improve macro magic to handle instructions with
-commas in them...
-
 > thanks,
 > jirka
 >
-> >
-> >
-> >   [0] https://github.com/libbpf/usdt/blob/main/usdt.h
-> >
-> > > diff --git a/tools/testing/selftests/bpf/sdt.h b/tools/testing/selfte=
-sts/bpf/sdt.h
-> > > index 1fcfa5160231..1d62c06f5ddc 100644
-> > > --- a/tools/testing/selftests/bpf/sdt.h
-> > > +++ b/tools/testing/selftests/bpf/sdt.h
-> > > @@ -236,6 +236,13 @@ __extension__ extern unsigned long long __sdt_un=
-sp;
-> > >  #define _SDT_NOP       nop
-> > >  #endif
-> > >
-> > > +/* Use 5 byte nop for x86_64 to allow optimizing uprobes. */
-> > > +#if defined(__x86_64__)
-> > > +# define _SDT_DEF_NOP _SDT_ASM_5(990:  .byte 0x0f, 0x1f, 0x44, 0x00,=
- 0x00)
-> > > +#else
-> > > +# define _SDT_DEF_NOP _SDT_ASM_1(990:  _SDT_NOP)
-> > > +#endif
-> > > +
-> > >  #define _SDT_NOTE_NAME "stapsdt"
-> > >  #define _SDT_NOTE_TYPE 3
-> > >
-> > > @@ -288,7 +295,7 @@ __extension__ extern unsigned long long __sdt_uns=
-p;
-> > >
-> > >  #define _SDT_ASM_BODY(provider, name, pack_args, args, ...)         =
-         \
-> > >    _SDT_DEF_MACROS                                                   =
-         \
-> > > -  _SDT_ASM_1(990:      _SDT_NOP)                                    =
-         \
-> > > +  _SDT_DEF_NOP                                                      =
-         \
-> > >    _SDT_ASM_3(          .pushsection .note.stapsdt,_SDT_ASM_AUTOGROUP=
-,"note") \
-> > >    _SDT_ASM_1(          .balign 4)                                   =
-         \
-> > >    _SDT_ASM_3(          .4byte 992f-991f, 994f-993f, _SDT_NOTE_TYPE) =
-         \
-> > > --
-> > > 2.49.0
-> > >
+>
+> ---
+> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/to=
+ols/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> index d55c3579cebe..c885f097eed4 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> @@ -701,8 +701,9 @@ static void test_uprobe_race(void)
+>         pthread_t *threads;
+>
+>         nr_threads =3D libbpf_num_possible_cpus();
+> -       if (!ASSERT_GE(nr_threads, 0, "libbpf_num_possible_cpus"))
+> +       if (!ASSERT_GT(nr_threads, 0, "libbpf_num_possible_cpus"))
+>                 return;
+> +       nr_threads =3D max(2, nr_threads);
+
+yep, ack
+
+>
+>         threads =3D malloc(sizeof(*threads) * nr_threads);
+>         if (!ASSERT_OK_PTR(threads, "malloc"))
 
