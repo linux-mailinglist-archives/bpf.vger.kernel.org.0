@@ -1,47 +1,80 @@
-Return-Path: <bpf+bounces-56578-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56579-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 137A9A9A9EE
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 12:20:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47D5EA9AA87
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 12:37:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA6177ADDE4
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 10:18:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48CD31941A3B
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 10:37:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E6AB221712;
-	Thu, 24 Apr 2025 10:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE491228CB5;
+	Thu, 24 Apr 2025 10:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cjn9rSzg"
 X-Original-To: bpf@vger.kernel.org
-Received: from dediextern.your-server.de (dediextern.your-server.de [85.10.215.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FCD11E9B32;
-	Thu, 24 Apr 2025 10:19:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.215.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2CF7221FBD;
+	Thu, 24 Apr 2025 10:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745489988; cv=none; b=XDAZ0dmNWH4D0sfcsSpKliRwuD5XliG45SYi3Kcit/OC9DHH0N+bnyyJ/tA99ipzAASwbJIT9Oqb43SqBzYjAaD0NIORUBlL4OHFT2K6VVF282LcH38Jq+bg4RZJMZIsq4M90400zfScTulIDnhKyT8EaeJpnFeSXcWOqjec9Wo=
+	t=1745490841; cv=none; b=JYsex1bZ46ovtAwBPtV4O9SRNNLcN0grYHh/Gt03R/qbD25sJtqrxamHCeiDVKVBIT0T/HPThWuQqAYsGN9YylrKW88oTQoHVSkSDe/rpN2aIVB8zzBxHmDYyF3mCeSXYyG/jA3iE8TpLSDz0OXLDqG2uQvAp+nbbez5l+IDc+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745489988; c=relaxed/simple;
-	bh=8GNCbAnkciZqOac4k7eEDf9GjqfhlA+Yz9at1hSBCz4=;
+	s=arc-20240116; t=1745490841; c=relaxed/simple;
+	bh=Uy+mUasuhKbgXtDTxk3JR8h6eqRQF8rsNoKeGi5WQnw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QmhzgNw/NoWLZIFXIheirRII0fiatC2kZhKVAAV/w38IzDwqiKNe2LdcQ4w/BKnpsnpI4fwBWroJMJwc9xc2wHoG2Q8rmB9ukE18cKZrewssBZeWlDituN3xvQgIaZyqg8VVP5rVI58+UpI4UWZtFTTsuPltXc+eR9nUKJcZG1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de; spf=pass smtp.mailfrom=hetzner-cloud.de; arc=none smtp.client-ip=85.10.215.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hetzner-cloud.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hetzner-cloud.de
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by dediextern.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <tobias.boehm@hetzner-cloud.de>)
-	id 1u7tg9-0002p1-B9; Thu, 24 Apr 2025 12:19:37 +0200
-Received: from [2003:f6:af22:6538:f6a8:dff:fe1e:4c1d]
-	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <tobias.boehm@hetzner-cloud.de>)
-	id 1u7tg9-00093c-0B;
-	Thu, 24 Apr 2025 12:19:37 +0200
-Message-ID: <eca1880f-253a-4955-afe6-732d7c6926ee@hetzner-cloud.de>
-Date: Thu, 24 Apr 2025 12:19:35 +0200
+	 In-Reply-To:Content-Type; b=TiNw0PHBMdp8Wc4hYWxRwvBIgPS9TZBUQI51FXN79lIweOlB/i1vKBpYPABQgc46xB9D4f52gfataykj8x5YU6GKDLlFAIpwq6Cybrs/Wjy8UF+/g9s+YSgLZgdZWOc+UXOm+b0lyoZQspf7gsz6Tb4a40osWC2Mm+mL6sI1Vks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cjn9rSzg; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-af5139ad9a2so493049a12.1;
+        Thu, 24 Apr 2025 03:33:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745490838; x=1746095638; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VS98H9vhuUvesz4nn7FmfvGAmjamAD7zXnYiaxDdLvI=;
+        b=Cjn9rSzgZhzKxCTkD5Y1dbLostMYVv9P8SmrxTOqGa42FLZGUyIJD1ECiDS9yQGNzS
+         mwVy5nYCMi5WpQV5p8BvfWEzhk26Q9pjuAsaHQ6E394ZT5Vu5poQtWF/XpiPHjv6IrHY
+         ho5vmMwVKJJpKwQpoMbVDautjIJq6EL4ZeQpl/LbTyiLIk/nFaktDhxoVKm9I477sZpm
+         37tXi+3wuqIgvb5TncwN0YxOlTSCGENSUCTzNjSLT8Rvr5RNfreDhsWH9B8aAjqojlhV
+         WBViyXoZTjfBxxXIRLtFk2K7s2HNnguDOjar20ONK3Ym2EJMixM/eaKAVJkiC1axeMgk
+         Ko6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745490838; x=1746095638;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VS98H9vhuUvesz4nn7FmfvGAmjamAD7zXnYiaxDdLvI=;
+        b=LgerZmXO8PGGSk6q5X1rRSDHuiFFYD5ciKKgV67xFBsngY/tJbPZvXYkJFkzchdEx8
+         P7rmRtHHjnmQtYUuveOQrOtOxJLtlErSh922kF14W1M0Z35ft8pl2piZweVHJ54FRe+p
+         HQHZP+6T1AsOTIEmfRfvGVJRvGx/X+NgonnXDqaUk1yMaPb/AjBxqPkMHyqhWTNwVwzE
+         lbXQFkAWiyKKcCb9NdtFwVBYCyhOmiBN2VeupGNMPxjZ8QKxDEQ0uI61x+cXQF64lLu+
+         zZz9AIuICpfHudSTUr9XyGjSszSVapYGoReijRY6IrXL6HZ5nJ4vobpeITknmFAI5/yj
+         k7HA==
+X-Forwarded-Encrypted: i=1; AJvYcCUFphkqn5Za+z2ZCWu6WrUQvZ53M1H7MapuGueTtSDO2khsv0pGvxgS2FT4JuQcFbz7ogQFsvjO@vger.kernel.org, AJvYcCX6q+vXYH2qsH3zIJrsmMNU+gb3vUligsCmd5XbuWxpmviqPphp4gzYpRdVpkeIJCJGZpo=@vger.kernel.org, AJvYcCXEEkXrSUaSTrUhC+dRgkWL+0TvTj0GujZ0zD0T234pLGmO/7wNsCjc/ZTlx2R6K7hHVY7fi28KBfdLZJxD@vger.kernel.org
+X-Gm-Message-State: AOJu0YyZjvRtE5OnvYcIAj4F39A539GsXnA6ak/rK67DxURFf74GaprI
+	28JdflIEdrRo7V0unBReZeSOjEd3AAu+RlNAnZLPyBYYmaS48NCQ
+X-Gm-Gg: ASbGnct5iRjXGkTbVimKb1LSpma0YFaXY1+rZpeZVR3kFOttcy/WexMHZFhc3sX++Jp
+	rkFTpUK5EDqIWKQKLmU8BnJGYLIsQMkRQX0mnVkDpezsOCA0EVk6Yloq/zsOmO+/VNcShU0HBaP
+	Lnoc1Vq0OYXsTFFp5EKyxC90iNojh7RhFFZepFWTNBSANOoRhRTyO37JezC9Nv7HhT5+hCqS14/
+	W5SA8XozHlu9I7fI7RD9s6ciqn9gSOw4BARMPk2V6BNnTmM/16GjPgK4DwM/hXmdRhK9KyX1rPj
+	qEzCBvSEbTJC8rlAiG7elDVhnXAu8ENPMvh00i5Z1eqTGnLJDenJHMjVn4IxeMd/NDzWc1nm8gq
+	OeGH1AedW3g6I7XE8jzY=
+X-Google-Smtp-Source: AGHT+IE16otPz//YJ1TEtt4Uv/PnG/T0CeZp27eSS79xfdk9zP1F3OBCyutLV1LXJhRM9Cm0Rt17bg==
+X-Received: by 2002:a17:90a:e7c5:b0:2ff:5357:1c7f with SMTP id 98e67ed59e1d1-309ed3424efmr3084886a91.30.1745490837878;
+        Thu, 24 Apr 2025 03:33:57 -0700 (PDT)
+Received: from ?IPV6:2001:ee0:4f0e:fb30:f632:6238:46f4:702e? ([2001:ee0:4f0e:fb30:f632:6238:46f4:702e])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-309ef03b27asm1086032a91.6.2025.04.24.03.33.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Apr 2025 03:33:57 -0700 (PDT)
+Message-ID: <619bc46d-4acf-4c54-bd47-6b482fb76878@gmail.com>
+Date: Thu, 24 Apr 2025 17:33:49 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -49,275 +82,62 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] ixgbe: Detected Tx Unit Hang (XDP)
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Cc: Michal Kubiak <michal.kubiak@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>, Jay Vosburgh <jv@jvosburgh.net>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+Subject: Re: [PATCH v4 4/4] selftests: net: add a virtio_net deadlock selftest
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: virtualization@lists.linux.dev, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
  Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, intel-wired-lan@lists.osuosl.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- sdn@hetzner-cloud.de
-References: <d33f0ab4-4dc4-49cd-bbd0-055f58dd6758@hetzner-cloud.de>
- <Z/fWHYETBYQuCno5@localhost.localdomain>
- <ff7ca6ea-a122-4d7d-9ef2-d091cbdd96d2@hetzner-cloud.de>
- <Z/jPgceDT4gRu9/R@localhost.localdomain> <aAEUcXIRnWolGWnA@boxer>
- <b06ede77-541b-453f-9e7a-79f3e5591f66@hetzner-cloud.de>
- <aAkz/+Rx5w3OHH4/@boxer>
+ John Fastabend <john.fastabend@gmail.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20250417072806.18660-1-minhquangbui99@gmail.com>
+ <20250417072806.18660-5-minhquangbui99@gmail.com>
+ <20250422184151.2fb4fffe@kernel.org>
+ <aac402b4-d04c-4d7e-91c8-ab6c20c9a74d@gmail.com>
+ <20250423152333.68117196@kernel.org>
 Content-Language: en-US
-From: =?UTF-8?Q?Tobias_B=C3=B6hm?= <tobias.boehm@hetzner-cloud.de>
-Autocrypt: addr=tobias.boehm@hetzner-cloud.de; keydata=
- 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
- p0ms75naziM=
-Organization: Hetzner Cloud GmbH
-In-Reply-To: <aAkz/+Rx5w3OHH4/@boxer>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------FBVEsp19lYY6MiVsUylR0Uiq"
-X-Authenticated-Sender: tobias.boehm@hetzner-cloud.de
-X-Virus-Scanned: Clear (ClamAV 1.0.7/27618/Thu Apr 24 10:40:01 2025)
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------FBVEsp19lYY6MiVsUylR0Uiq
-Content-Type: multipart/mixed; boundary="------------jQtsyF5GJ7I5LYtZkOUCTdnu";
- protected-headers="v1"
-From: =?UTF-8?Q?Tobias_B=C3=B6hm?= <tobias.boehm@hetzner-cloud.de>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Marcus Wichelmann <marcus.wichelmann@hetzner-cloud.de>
-Cc: Michal Kubiak <michal.kubiak@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>, Jay Vosburgh <jv@jvosburgh.net>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, intel-wired-lan@lists.osuosl.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- sdn@hetzner-cloud.de
-Message-ID: <eca1880f-253a-4955-afe6-732d7c6926ee@hetzner-cloud.de>
-Subject: Re: [BUG] ixgbe: Detected Tx Unit Hang (XDP)
-References: <d33f0ab4-4dc4-49cd-bbd0-055f58dd6758@hetzner-cloud.de>
- <Z/fWHYETBYQuCno5@localhost.localdomain>
- <ff7ca6ea-a122-4d7d-9ef2-d091cbdd96d2@hetzner-cloud.de>
- <Z/jPgceDT4gRu9/R@localhost.localdomain> <aAEUcXIRnWolGWnA@boxer>
- <b06ede77-541b-453f-9e7a-79f3e5591f66@hetzner-cloud.de>
- <aAkz/+Rx5w3OHH4/@boxer>
-In-Reply-To: <aAkz/+Rx5w3OHH4/@boxer>
-Autocrypt-Gossip: addr=marcus.wichelmann@hetzner-cloud.de; keydata=
- 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
- wySmewx3h/yfMh0aFxHhvLPxrO2IEQ==
-
---------------jQtsyF5GJ7I5LYtZkOUCTdnu
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <20250423152333.68117196@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 
-QW0gMjMuMDQuMjUgdW0gMjA6Mzkgc2NocmllYiBNYWNpZWogRmlqYWxrb3dza2k6DQo+IE9u
-IFdlZCwgQXByIDIzLCAyMDI1IGF0IDA0OjIwOjA3UE0gKzAyMDAsIE1hcmN1cyBXaWNoZWxt
-YW5uIHdyb3RlOg0KPj4gQW0gMTcuMDQuMjUgdW0gMTY6NDcgc2NocmllYiBNYWNpZWogRmlq
-YWxrb3dza2k6DQo+Pj4gT24gRnJpLCBBcHIgMTEsIDIwMjUgYXQgMTA6MTQ6NTdBTSArMDIw
-MCwgTWljaGFsIEt1YmlhayB3cm90ZToNCj4+Pj4gT24gVGh1LCBBcHIgMTAsIDIwMjUgYXQg
-MDQ6NTQ6MzVQTSArMDIwMCwgTWFyY3VzIFdpY2hlbG1hbm4gd3JvdGU6DQo+Pj4+PiBBbSAx
-MC4wNC4yNSB1bSAxNjozMCBzY2hyaWViIE1pY2hhbCBLdWJpYWs6DQo+Pj4+Pj4gT24gV2Vk
-LCBBcHIgMDksIDIwMjUgYXQgMDU6MTc6NDlQTSArMDIwMCwgTWFyY3VzIFdpY2hlbG1hbm4g
-d3JvdGU6DQo+Pj4+Pj4+IEhpLA0KPj4+Pj4+Pg0KPj4+Pj4+PiBpbiBhIHNldHVwIHdoZXJl
-IEkgdXNlIG5hdGl2ZSBYRFAgdG8gcmVkaXJlY3QgcGFja2V0cyB0byBhIGJvbmRpbmcgaW50
-ZXJmYWNlDQo+Pj4+Pj4+IHRoYXQncyBiYWNrZWQgYnkgdHdvIGl4Z2JlIHNsYXZlcywgSSBu
-b3RpY2VkIHRoYXQgdGhlIGl4Z2JlIGRyaXZlciBjb25zdGFudGx5DQo+Pj4+Pj4+IHJlc2V0
-cyB0aGUgTklDIHdpdGggdGhlIGZvbGxvd2luZyBrZXJuZWwgb3V0cHV0Og0KPj4+Pj4+Pg0K
-Pj4+Pj4+PiAgICBpeGdiZSAwMDAwOjAxOjAwLjEgaXhnYmUteDUyMC0yOiBEZXRlY3RlZCBU
-eCBVbml0IEhhbmcgKFhEUCkNCj4+Pj4+Pj4gICAgICBUeCBRdWV1ZSAgICAgICAgICAgICA8
-ND4NCj4+Pj4+Pj4gICAgICBUREgsIFREVCAgICAgICAgICAgICA8MTdlPiwgPDE3ZT4NCj4+
-Pj4+Pj4gICAgICBuZXh0X3RvX3VzZSAgICAgICAgICA8MTgxPg0KPj4+Pj4+PiAgICAgIG5l
-eHRfdG9fY2xlYW4gICAgICAgIDwxN2U+DQo+Pj4+Pj4+ICAgIHR4X2J1ZmZlcl9pbmZvW25l
-eHRfdG9fY2xlYW5dDQo+Pj4+Pj4+ICAgICAgdGltZV9zdGFtcCAgICAgICAgICAgPDA+DQo+
-Pj4+Pj4+ICAgICAgamlmZmllcyAgICAgICAgICAgICAgPDEwMDI1YzM4MD4NCj4+Pj4+Pj4g
-ICAgaXhnYmUgMDAwMDowMTowMC4xIGl4Z2JlLXg1MjAtMjogdHggaGFuZyAxOSBkZXRlY3Rl
-ZCBvbiBxdWV1ZSA0LCByZXNldHRpbmcgYWRhcHRlcg0KPj4+Pj4+PiAgICBpeGdiZSAwMDAw
-OjAxOjAwLjEgaXhnYmUteDUyMC0yOiBpbml0aWF0aW5nIHJlc2V0IGR1ZSB0byB0eCB0aW1l
-b3V0DQo+Pj4+Pj4+ICAgIGl4Z2JlIDAwMDA6MDE6MDAuMSBpeGdiZS14NTIwLTI6IFJlc2V0
-IGFkYXB0ZXINCj4+Pj4+Pj4NCj4+Pj4+Pj4gVGhpcyBvbmx5IG9jY3VycyBpbiBjb21iaW5h
-dGlvbiB3aXRoIGEgYm9uZGluZyBpbnRlcmZhY2UgYW5kIFhEUCwgc28gSSBkb24ndA0KPj4+
-Pj4+PiBrbm93IGlmIHRoaXMgaXMgYW4gaXNzdWUgd2l0aCBpeGdiZSBvciB0aGUgYm9uZGlu
-ZyBkcml2ZXIuDQo+Pj4+Pj4+IEkgZmlyc3QgZGlzY292ZXJlZCB0aGlzIHdpdGggTGludXgg
-Ni44LjAtNTcsIGJ1dCBrZXJuZWwgNi4xNC4wIGFuZCA2LjE1LjAtcmMxDQo+Pj4+Pj4+IHNo
-b3cgdGhlIHNhbWUgaXNzdWUuDQo+Pj4+Pj4+DQo+Pj4+Pj4+DQo+Pj4+Pj4+IEkgbWFuYWdl
-ZCB0byByZXByb2R1Y2UgdGhpcyBidWcgaW4gYSBsYWIgZW52aXJvbm1lbnQuIEhlcmUgYXJl
-IHNvbWUgZGV0YWlscw0KPj4+Pj4+PiBhYm91dCBteSBzZXR1cCBhbmQgdGhlIHN0ZXBzIHRv
-IHJlcHJvZHVjZSB0aGUgYnVnOg0KPj4+Pj4+Pg0KPj4+Pj4+PiBbLi4uXQ0KPj4+Pj4+Pg0K
-Pj4+Pj4+PiBEbyB5b3UgaGF2ZSBhbnkgaWRlYXMgd2hhdCBtYXkgYmUgY2F1c2luZyB0aGlz
-IGlzc3VlIG9yIHdoYXQgSSBjYW4gZG8gdG8NCj4+Pj4+Pj4gZGlhZ25vc2UgdGhpcyBmdXJ0
-aGVyPw0KPj4+Pj4+Pg0KPj4+Pj4+PiBQbGVhc2UgbGV0IG1lIGtub3cgd2hlbiBJIHNob3Vs
-ZCBwcm92aWRlIGFueSBtb3JlIGluZm9ybWF0aW9uLg0KPj4+Pj4+Pg0KPj4+Pj4+Pg0KPj4+
-Pj4+PiBUaGFua3MhDQo+Pj4+Pj4+IE1hcmN1cw0KPj4+Pj4+Pg0KPj4+Pj4+DQo+Pj4+IFsu
-Li5dDQo+Pj4+DQo+Pj4+IEhpIE1hcmN1cywNCj4+Pj4NCj4+Pj4+IHRoYW5rIHlvdSBmb3Ig
-bG9va2luZyBpbnRvIGl0LiBBbmQgbm90IGV2ZW4gMjQgaG91cnMgYWZ0ZXIgbXkgcmVwb3J0
-LCBJJ20NCj4+Pj4+IHZlcnkgaW1wcmVzc2VkISA7KQ0KPj4+Pg0KPj4+PiBUaGFua3MhIDot
-KQ0KPj4+Pg0KPj4+Pj4gSW50ZXJlc3RpbmcuIEkganVzdCB0cmllZCBhZ2FpbiBidXQgaGFk
-IG5vIGx1Y2sgeWV0IHdpdGggcmVwcm9kdWNpbmcgaXQNCj4+Pj4+IHdpdGhvdXQgYSBib25k
-aW5nIGludGVyZmFjZS4gTWF5IEkgYXNrIGhvdyB5b3VyIHNldHVwIGxvb2tzIGxpa2U/DQo+
-Pj4+DQo+Pj4+IEZvciBub3csIEkndmUganVzdCBncmFiYmVkIHRoZSBmaXJzdCBhdmFpbGFi
-bGUgc3lzdGVtIHdpdGggdGhlIEhXDQo+Pj4+IGNvbnRyb2xsZWQgYnkgdGhlICJpeGdiZSIg
-ZHJpdmVyLiBJbiBteSBjYXNlIGl0IHdhczoNCj4+Pj4NCj4+Pj4gICAgRXRoZXJuZXQgY29u
-dHJvbGxlcjogSW50ZWwgQ29ycG9yYXRpb24gRXRoZXJuZXQgQ29udHJvbGxlciBYNTUwDQo+
-Pj4+DQo+Pj4+IEFsc28sIGZvciBteSBmaXJzdCBhdHRlbXB0LCBJIGRpZG4ndCB1c2UgdGhl
-IHVwc3RyZWFtIGtlcm5lbCAtIEkganVzdCB0cmllZA0KPj4+PiB0aGUga2VybmVsIGluc3Rh
-bGxlZCBvbiB0aGF0IHN5c3RlbS4gSXQgd2FzIHRoZSBGZWRvcmEga2VybmVsOg0KPj4+Pg0K
-Pj4+PiAgICA2LjEyLjgtMjAwLmZjNDEueDg2XzY0DQo+Pj4+DQo+Pj4+DQo+Pj4+IEkgdGhp
-bmsgdGhhdCBtYXkgYmUgdGhlICJiZWF1dHkiIG9mIHRpbWluZyBpc3N1ZXMgLSBzb21ldGlt
-ZXMgeW91IGNhbiBjaGFuZ2UNCj4+Pj4ganVzdCBvbmUgcGllY2UgaW4geW91ciBzeXN0ZW0g
-YW5kIGdldCBhIGNvbXBsZXRlbHkgZGlmZmVyZW50IHJlcGxpY2F0aW9uIHJhdGlvLg0KPj4+
-PiBBbnl3YXksIHRoZSBoaWdoZXIgdGhlIHJlcHJvIHByb2JhYmlsaXR5LCB0aGUgZWFzaWVy
-IGl0IGlzIHRvIGRlYnVnDQo+Pj4+IHRoZSB0aW1pbmcgcHJvYmxlbS4gOi0pDQo+Pj4NCj4+
-PiBIaSBNYXJjdXMsIHRvIGJyZWFrIHRoZSBzaWxlbmNlIGNvdWxkIHlvdSB0cnkgdG8gYXBw
-bHkgdGhlIGRpZmYgYmVsb3cgb24NCj4+PiB5b3VyIHNpZGU/DQo+Pg0KPj4gSGksIHRoYW5r
-IHlvdSBmb3IgdGhlIHBhdGNoLiBXZSd2ZSB0cmllZCBpdCBhbmQgd2l0aCB5b3VyIGNoYW5n
-ZXMgd2UgY2FuIG5vDQo+PiBsb25nZXIgdHJpZ2dlciB0aGUgZXJyb3IgYW5kIHRoZSBOSUMg
-aXMgbm8gbG9uZ2VyIGJlaW5nIHJlc2V0Lg0KPj4NCj4+PiBXZSBzZWUgc2V2ZXJhbCBpc3N1
-ZXMgYXJvdW5kIFhEUCBxdWV1ZXMgaW4gaXhnYmUsIGJ1dCBiZWZvcmUgd2UNCj4+PiBwcm9j
-ZWVkIGxldCdzIHRoaXMgc21hbGwgY2hhbmdlIG9uIHlvdXIgc2lkZS4NCj4+DQo+PiBIb3cg
-Y29uZmlkZW50IGFyZSB5b3UgdGhhdCB0aGlzIHBhdGNoIGlzIHN1ZmZpY2llbnQgdG8gbWFr
-ZSB0aGluZ3Mgc3RhYmxlIGVub3VnaA0KPj4gZm9yIHByb2R1Y3Rpb24gdXNlPyBXYXMgaXQg
-anVzdCB0aGUgVHggaGFuZyBkZXRlY3Rpb24gdGhhdCB3YXMgbWlzYmVoYXZpbmcgZm9yDQo+
-PiB0aGUgWERQIGNhc2UsIG9yIGlzIHRoZXJlIGFuIHVuZGVybHlpbmcgaXNzdWUgd2l0aCB0
-aGUgWERQIHF1ZXVlcyB0aGF0IGlzIG5vdA0KPj4gc29sdmVkIGJ5IGRpc2FibGluZyB0aGUg
-ZGV0ZWN0aW9uIGZvciBpdD8NCj4gDQo+IEkgYmVsaWV2ZSB0aGF0IGNvcnJlY3Qgd2F5IHRv
-IGFwcHJvYWNoIHRoaXMgaXMgdG8gbW92ZSB0aGUgVHggaGFuZw0KPiBkZXRlY3Rpb24gb250
-byBpeGdiZV90eF90aW1lb3V0KCkgYXMgdGhhdCBpcyB0aGUgcGxhY2Ugd2hlcmUgdGhpcyBs
-b2dpYw0KPiBiZWxvbmdzIHRvLiBCeSBkb2luZyBzbyBJIHN1cHBvc2Ugd2Ugd291bGQga2ls
-bCB0d28gYmlyZHMgd2l0aCBvbmUgc3RvbmUNCj4gYXMgbWVudGlvbmVkIG5kbyBpcyBjYWxs
-ZWQgdW5kZXIgbmV0ZGV2IHdhdGNoZG9nIHdoaWNoIGlzIG5vdCBhIHN1YmplY3QNCj4gZm9y
-IFhEUCBUeCBxdWV1ZXMuDQo+IA0KPj4NCj4+IFdpdGggb3VyIGN1cnJlbnQgc2V0dXAgd2Ug
-Y2Fubm90IHZlcmlmeSBhY2N1cmF0ZWx5LCB0aGF0IHdlIGhhdmUgbm8gcGFja2V0IGxvc3MN
-Cj4+IG9yIHN0dWNrIHF1ZXVlcy4gV2UgY2FuIGRvIGFkZGl0aW9uYWwgdGVzdHMgdG8gdmVy
-aWZ5IHRoYXQuDQoNCg0KSGkgTWFjaWVqLA0KDQpJJ20gYSBjb2xsZWFndWUgb2YgTWFyY3Vz
-IGFuZCBpbnZvbHZlZCBpbiB0aGUgdGVzdGluZyBhcyB3ZWxsLg0KPj4+IEFkZGl0aW9uYWwg
-cXVlc3Rpb24sIGRvIHlvdSBoYXZlIGVuYWJsZWQgcGF1c2UgZnJhbWVzIG9uIHlvdXIgc2V0
-dXA/DQo+Pg0KPj4gUGF1c2UgZnJhbWVzIHdlcmUgZW5hYmxlZCwgYnV0IHdlIGNhbiBhbHNv
-IHJlcHJvZHVjZSBpdCBhZnRlciBkaXNhYmxpbmcgdGhlbSwNCj4+IHdpdGhvdXQgeW91ciBw
-YXRjaC4NCj4gDQo+IFBsZWFzZSBnaXZlIHlvdXIgc2V0dXAgYSBnbyB3aXRoIHBhdXNlIGZy
-YW1lcyBlbmFibGVkIGFuZCBhcHBsaWVkIHBhdGNoDQo+IHRoYXQgaSBzaGFyZWQgcHJldmlv
-dXNseSBhbmQgbGV0IHVzIHNlZSB0aGUgcmVzdWx0cy4gQXMgc2FpZCBhYm92ZSBJIGRvDQo+
-IG5vdCB0aGluayBpdCBpcyBjb3JyZWN0IHRvIGNoZWNrIGZvciBodW5nIHF1ZXVlcyBpbiBU
-eCBkZXNjcmlwdG9yIGNsZWFuaW5nDQo+IHJvdXRpbmUuIFRoaXMgaXMgYSBqb2Igb2YgbmRv
-X3R4X3RpbWVvdXQgY2FsbGJhY2suDQo+IA0KDQpXZSBoYXZlIHRlc3RlZCB3aXRoIHBhdXNl
-IGZyYW1lcyBlbmFibGVkIGFuZCBhcHBsaWVkIHBhdGNoIGFuZCBjYW4gbm90IA0KdHJpZ2dl
-ciB0aGUgZXJyb3IgYW55bW9yZSBpbiBvdXIgbGFiIHNldHVwLg0KDQo+Pg0KPj4gVGhhbmtz
-IQ0KPiANCj4gVGhhbmtzIGZvciBmZWVkYmFjayBhbmQgdGVzdGluZy4gSSdsbCBwcm92aWRl
-IGEgcHJvcGVyIGZpeCB0b21vcnJvdyBhbmQgQ0MNCj4geW91IHNvIHlvdSBjb3VsZCB0YWtl
-IGl0IGZvciBhIHNwaW4uDQo+IA0KDQpUaGF0IHNvdW5kcyBncmVhdC4gV2UnZCBiZSBoYXBw
-eSB0byB0ZXN0IHdpdGggdGhlIHByb3BlciBmaXggaW4gb3VyIA0Kb3JpZ2luYWwgc2V0dXAu
-DQoNClRoYW5rcywNClRvYmlhcw0K
+On 4/24/25 05:23, Jakub Kicinski wrote:
+> On Wed, 23 Apr 2025 22:20:41 +0700 Bui Quang Minh wrote:
+>> I've tried to make the setup_xsk into each test. However, I've an issue
+>> that the XDP socket destruct waits for an RCU grace period as I see this
+>> sock's flag SOCK_RCU_FREE is set. So if we start the next test right
+>> away, we can have the error when setting up XDP socket again because
+>> previous XDP socket has not unbound the network interface's queue yet. I
+>> can resolve the issue by putting the sleep(1) after closing the socket
+>> in xdp_helper:
+>>
+>> diff --git a/tools/testing/selftests/net/lib/xdp_helper.c
+>> b/tools/testing/selftests/net/lib/xdp_helper.c
+>> index f21536ab95ba..e882bb22877f 100644
+>> --- a/tools/testing/selftests/net/lib/xdp_helper.c
+>> +++ b/tools/testing/selftests/net/lib/xdp_helper.c
+>> @@ -162,5 +162,6 @@ int main(int argc, char **argv)
+>>            */
+>>
+>>           close(sock_fd);
+>> +       sleep(1);
+>>           return 0;
+>>    }
+>>
+>> Do you think it's enough or do you have a better suggestion here?
+> Interesting :S What errno does the kernel return? EBUSY?
+> Perhaps we could loop for a second retrying the bind()
+> if kernel returns EBUSY in case it's just a socket waiting
+> to be cleaned up?
 
---------------jQtsyF5GJ7I5LYtZkOUCTdnu--
+Yes, the kernel returns EBUSY. Loop and retry sounds good to me but it's 
+not easy to get the return code when using bkg(). So for simplicity, 
+I'll retry with sleep(1) 3 times when the xdp_helper fails.
 
---------------FBVEsp19lYY6MiVsUylR0Uiq
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEEEvXs8kNGp4Ny9+HQq4DXakT3pKoFAmgKEDgFAwAAAAAACgkQq4DXakT3pKrd
-Ow//ThD6VbEvK2eVdSmvypPE9Yo7A4+Qts7Kq0/RdoWa0KJmvrogu6oL4hMHoGzngptREV4Vai/I
-wcCWzhQwRFDwR8e6FKSICtWxQkkRZ1h69C34sI+f3jaYM8ukEOytJttqYvVqI1nih6iZ7mzD/Cw1
-bB0sUEh7rL24ZQHYSVgGFZQsfTtNxCPEB9HCUnm9nxhR60uYcyU2DfNNUeoHQgEs1C1Fy4fMWlPb
-YUDDV+f08jE5VOxKvOcuizioR+3WzrKi949d99MCuIecOhEGfd239xCtth6q84rTyO6EIDZSa6UD
-vxERImn8h8jKWv7bcKUGis2BZPPHViutjZjTkFU8HMOMd/NAgAw4BwcqagJL9ufRi2R6SqY6EZML
-Y2LbprOnWy/XyIQEOm4PAB0TjXiSSbpgbvZdpo5FlLmkf8hjQwN81No3GPswqIgZoJWMiwBeGEKk
-O0krQiH0syuUgOcj3N/tviFd62Eo1b7BUqPnSc2iQclOPW6CvyQ1lUsXuClxZC2ZxoHJAK8YjxtP
-mCrE7bWZz+Ac/mwIV8iGOQQnc3YCuQs0CFAoTWrim/j15n6LUze/LD+tl42a6vxBjJQMBS4ONRfj
-bcBzANi+GAyK3KHEvN/zyCydn68nonYdbZRi8P4Lax/5U5yGaGwEhPnw0n/9YZhBM1CipABWZVzr
-Hd0=
-=d56T
------END PGP SIGNATURE-----
-
---------------FBVEsp19lYY6MiVsUylR0Uiq--
+Thanks,
+Quang Minh.
 
