@@ -1,153 +1,120 @@
-Return-Path: <bpf+bounces-56597-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56598-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 708B2A9ADF9
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 14:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 74D89A9AE0E
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 14:57:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2BB61B60511
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 12:52:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DD6E1B65AC2
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 12:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 738C827B516;
-	Thu, 24 Apr 2025 12:51:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438DB27B51C;
+	Thu, 24 Apr 2025 12:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QLnTmRLC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PVmbfga6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD9427A908;
-	Thu, 24 Apr 2025 12:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1DF12701AA;
+	Thu, 24 Apr 2025 12:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745499100; cv=none; b=lyZsUJJ6er6IriyiicfohL60Ef7r888jKkL7hYfas0j4OL0KYJZE+25rH7T75IledkRbVCzgdoSlBusrCpUib/jU6sXv3IE0ExrlgtXOnbCEG9RA+KtHO8zgC8yMELAODI0qFcoTpDrdcYvzsw2Z5nhdXh69TcWIWOUK7eEGVBo=
+	t=1745499402; cv=none; b=WSgv7+BYyy8NvT0C/R/9w6VwfYxYT7nRDBPFd4WOfSKNyQp79tVDBuu8f7wuCMMOI8DW/rx4H9zbo2KalmRqLiQ6Sv+8RDkrDju+16gZP/tJzo5uWh8OofNo3j592fGrBB2k7iH9VYVeZxBu3Lhz5hs3L8+/Jby1eMxOd0Xu57A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745499100; c=relaxed/simple;
-	bh=MHKn+EdWhAhoB/tNSI0aX59JflxZSZo+kWrmGYyIxlA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l/H+lUejkUnZQEaBzftG+DS0X44eim3AC7npPtdu0foBX0IQkojdiUSBtzw/MF9ST8tp8aPeNFkNP9M1HLJwzhXNVDt6lHnIl8dy+XsHzetVh8f8RAujIz21lMry0Gqy9su83M5b759A1oYUXsQsqt1nMW9DYtUrXjnh5npbNcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QLnTmRLC; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-aaecf50578eso152556466b.2;
-        Thu, 24 Apr 2025 05:51:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745499096; x=1746103896; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WoCqvs1DJYai/uMoUc+wigTMUqKQl+TiJoeJOKS4hLA=;
-        b=QLnTmRLCuiRGqTwilaJFV5VQcGo/vm63fYKjmPUtOoZamZU8+m6sXQDq1K2sQTr/1a
-         nZ08hGeNDPjPKG5ESi5v1Tez2ncP+aiXJRVENrn6ashwQEjjmqGIbBeJpOepmmMfgy0r
-         PCOk0ZXbHYsVLgset81WqTyRlzJU7uymh3gPzSQ+2fNn54aVmywV1kDn4bGA/luCdWYV
-         hZt3Ur45VwUzaaS+6yBOPLAcDupHKZLw/srqPSOaoNy1qvcGBKNPG1rHFY3xRwD13TyP
-         y7glBemejnlCrZ6jwrZ8Z24jUMlIXuCSfXRR8IYIsYJgkBAvSXknMDo+nd02jR3NyBhY
-         iGig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745499096; x=1746103896;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WoCqvs1DJYai/uMoUc+wigTMUqKQl+TiJoeJOKS4hLA=;
-        b=ZTfplFDTfnfJcA/xtPVlKm+hc5UshAkgoaDX2RcTS5L5YsfRoH9E08FGeT6HQfTSSi
-         Gb4OkFMypnguD07SgxDyFqoNRIW0s09PUaArWwhOBeJvFXoJa5qg0pfE4QZkb8D6prfP
-         LAog/dPUAZ2k/mm8IuXOSNhb5ZtZmom0Hbcgajtg6Bi8jDJdvChG89lkUVxYKLHIydYR
-         PcISh8MUkLtRzNQYKED9GzB9iPZf6SAZnsghlWNCpGdS3txdaOua09kxHu378wYA2f+5
-         CT4DgQptOGlAyj/PPU/RLNxhBDoZozq2IzTvzKp5X1LNL/XOdbYz6Mo0ntRgqu9hJTNQ
-         7qPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUF29BMOMxuBupGx/IOyAymV4j5bGKsHHdJ4gKYx/QLSvyvEIKhKPobwtnDEru36nia7zAMhwVeDG50j2+6@vger.kernel.org, AJvYcCWxSbe5cLAQUZrQzWU5T0/Fpx9vZCgjafC8PV1NjBpkQfFCpnXIgVELmj+QstOznZZxENWwXUSC7rAxEwzRXLU7WLIu@vger.kernel.org, AJvYcCXVMNrdIDxGSdDk4bBsnSucoElyQfXEQqWPAE7tCwolMVN0kTAyNHlGGQVXKlKLLOyYvwY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx9drhqxUmqdbAkKNB49St9ORSrIKXzH9u7nDXkVNZY0YRlqM6o
-	v5k9OYCK1udGCie1tBg5teAQz4cL11CZXtlBqukMcHdZHPj2hjwV
-X-Gm-Gg: ASbGncuQm1JuaAyha3p9289FclSHxGVYmNtGWCfhJXX0nIxGc0boMt+1BH48nHksmzJ
-	3ve97FqPB5GeRgy6SScKPKHxLpozLK2VueW61THf7le7JO+datCi+9B4l3UI0+ex+yGfgfvmKjv
-	X5+aBCAJLnd5koR69tT34cYU4dWthfXlA1LDlTUQHUoX1NphTUXloOxQHm9HBuZWVv9eT7K/Jfs
-	zj/TlbQ09r4n6bZi/pK8f2DckWQfGjVPIR9E+cgQeZivl1ayJmHvE1VFpotmj/DOmerxZLngS2u
-	A6zK2waoy0Io40khX0yZjFF4lmH/0KVzzdPUPw==
-X-Google-Smtp-Source: AGHT+IEWuZYGNBXx1lEdhEESLbtbRgcdGI6jeUaJBjEsoBL/886QU1Pi4aziijH3FrEv7xXHvq9Tww==
-X-Received: by 2002:a17:907:2689:b0:abf:6ec7:65e9 with SMTP id a640c23a62f3a-ace573a7236mr256549266b.43.1745499096131;
-        Thu, 24 Apr 2025 05:51:36 -0700 (PDT)
-Received: from krava ([173.38.220.55])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace598205f4sm104200066b.8.2025.04.24.05.51.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Apr 2025 05:51:35 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 24 Apr 2025 14:51:33 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH perf/core 18/22] selftests/bpf: Add uprobe_regs_equal test
-Message-ID: <aAoz1ZBL2WahMa4m@krava>
-References: <20250421214423.393661-1-jolsa@kernel.org>
- <20250421214423.393661-19-jolsa@kernel.org>
- <CAEf4BzZu0T5DLROi6oisneB3PyGDKZrME9+5qvw4aHeyOyNiYQ@mail.gmail.com>
+	s=arc-20240116; t=1745499402; c=relaxed/simple;
+	bh=RWmH8wRKsLF9s3sl2NicF4BvAZMdu1HgMiqbSAOsRxw=;
+	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=WvDLhUW6TBRmKLFiRU9FbYhzmhKJIXNuIJpsNL1tdPq58w8zt2uyr3fek6v2Anrul4ykapVEhRn/Pmcoz6qCIr7VjD5XNE1Jaj2OntXGQw4pKs5s3fgjXar8epGzhAaNFgWzQoC8N/pCA7jSKxWQ2LGvs6SugdahRenXfPLyVHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PVmbfga6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B25E6C4CEE3;
+	Thu, 24 Apr 2025 12:56:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745499402;
+	bh=RWmH8wRKsLF9s3sl2NicF4BvAZMdu1HgMiqbSAOsRxw=;
+	h=Subject:From:To:Cc:Date:From;
+	b=PVmbfga6LPC2iTe4XzIQgU6/mD35HeOqDFVLfINcUkVIOa9zoEr65jQ0ZCX4NaoOP
+	 bcV0/gyMZSzjmJCIftpjeTGi2bF4wxQonH+HI7VRItvUjeOThPwG8swgPCiQTtabID
+	 Gtd4Nph5s3VnjoERv44Bz1GskJqfWyTmLs9ULaM8mJ3jgV7w87phalBxs4l6YvTPUe
+	 PvZvY8kZ0/dRQv0oMONVdLDI6UfV+0THjvZsnDW/hVf9jHwIVgAWG3NS83/UXaNz/H
+	 MmseRbobYtdH+/CsKNVgpwh+7PVHLsDIoETOckX0n6bj3wDAgswj9Omji53XKrWX/l
+	 t6pc0cHM+X/rQ==
+Subject: [PATCH net-next V6 0/2] veth: qdisc backpressure and qdisc check
+ refactor
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+To: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
+ tom@herbertland.com, Eric Dumazet <eric.dumazet@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
+ kernel-team@cloudflare.com, phil@nwl.cc
+Date: Thu, 24 Apr 2025 14:56:37 +0200
+Message-ID: <174549933665.608169.392044991754158047.stgit@firesoul>
+User-Agent: StGit/1.5
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZu0T5DLROi6oisneB3PyGDKZrME9+5qvw4aHeyOyNiYQ@mail.gmail.com>
 
-On Wed, Apr 23, 2025 at 10:46:24AM -0700, Andrii Nakryiko wrote:
-> On Mon, Apr 21, 2025 at 2:48 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Changing uretprobe_regs_trigger to allow the test for both
-> > uprobe and uretprobe and renaming it to uprobe_regs_equal.
-> >
-> > We check that both uprobe and uretprobe probes (bpf programs)
-> > see expected registers with few exceptions.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  .../selftests/bpf/prog_tests/uprobe_syscall.c | 58 ++++++++++++++-----
-> >  .../selftests/bpf/progs/uprobe_syscall.c      |  4 +-
-> >  2 files changed, 45 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > index f001986981ab..6d88c5b0f6aa 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > @@ -18,15 +18,17 @@
-> >
-> >  #pragma GCC diagnostic ignored "-Wattributes"
-> >
-> > -__naked unsigned long uretprobe_regs_trigger(void)
-> > +__attribute__((aligned(16)))
-> > +__nocf_check __weak __naked unsigned long uprobe_regs_trigger(void)
-> >  {
-> >         asm volatile (
-> > -               "movq $0xdeadbeef, %rax\n"
-> > +               ".byte 0x0f, 0x1f, 0x44, 0x00, 0x00     \n"
-> 
-> Is it me not being hardcore enough... But is anyone supposed to know
-> that this is nop5? ;) maybe add /* nop5 */ comment on the side?
+This patch series addresses TX drops seen on veth devices under load,
+particularly when using threaded NAPI, which is our setup in production.
 
-ok, will add the comment :)
+The root cause is that the NAPI consumer often runs on a different CPU
+than the producer. Combined with scheduling delays or simply slower
+consumption, this increases the chance that the ptr_ring fills up before
+packets are drained, resulting in drops from veth_xmit() (ndo_start_xmit()).
 
-> 
-> > +               "movq $0xdeadbeef, %rax                 \n"
-> 
-> ret\n doesn't align newline, and uprobe_regs below don't either. So
-> maybe don't align them at all here?
+To make this easier to reproduce, we’ve created a script that sets up a
+test scenario using network namespaces. The script inserts 1000 iptables
+rules in the consumer namespace to slow down packet processing and
+amplify the issue. Reproducer script:
 
-ok
+https://github.com/xdp-project/xdp-project/blob/main/areas/core/veth_setup01_NAPI_TX_drops.sh
 
-thanks,
-jirka
+This series first introduces a helper to detect no-queue qdiscs and then
+uses it in the veth driver to conditionally apply qdisc-level
+backpressure when a real qdisc is attached. The behavior is off by
+default and opt-in, ensuring minimal impact and easy activation.
+
+---
+V6:
+ - Remove __veth_xdp_flush() and handle race via __ptr_ring_empty instead
+ - Link to V5: https://lore.kernel.org/all/174489803410.355490.13216831426556849084.stgit@firesoul/
+V5:
+ - use rcu_dereference_check to signal that NAPI is a RCU section
+ - whitespace fixes reported by checkpatch.pl
+ - handle unlikely race
+ - Link to V4 https://lore.kernel.org/all/174472463778.274639.12670590457453196991.stgit@firesoul/
+V4:
+ - Check against no-queue instead of no-op qdisc
+ - Link to V3: https://lore.kernel.org/all/174464549885.20396.6987653753122223942.stgit@firesoul/
+V3:
+ - Reorder patches, generalize check for no-op qdisc as first patch
+   - RFC: As testing show this is incorrect
+ - rcu_dereference(priv->peer) in veth_xdp_rcv as this runs in NAPI
+   context rcu_read_lock() is implicit.
+ - Link to V2: https://lore.kernel.org/all/174412623473.3702169.4235683143719614624.stgit@firesoul/
+V2:
+ - Generalize check for no-op qdisc
+ - Link to RFC-V1: https://lore.kernel.org/all/174377814192.3376479.16481605648460889310.stgit@firesoul/
+---
+
+Jesper Dangaard Brouer (2):
+      net: sched: generalize check for no-queue qdisc on TX queue
+      veth: apply qdisc backpressure on full ptr_ring to reduce TX drops
+
+
+ drivers/net/veth.c        | 56 ++++++++++++++++++++++++++++++++-------
+ drivers/net/vrf.c         |  4 +--
+ include/net/sch_generic.h |  8 ++++++
+ 3 files changed, 55 insertions(+), 13 deletions(-)
+
+--
+
 
