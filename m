@@ -1,93 +1,98 @@
-Return-Path: <bpf+bounces-56561-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56562-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37BB4A99C8A
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 02:10:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1060A99CEE
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 02:25:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 979D17AC3CE
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 00:08:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 269713A6712
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 00:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 786FF625;
-	Thu, 24 Apr 2025 00:09:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D41D529;
+	Thu, 24 Apr 2025 00:25:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vf/gaptA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eGkRZzXT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0031C163
-	for <bpf@vger.kernel.org>; Thu, 24 Apr 2025 00:09:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3436A17F7;
+	Thu, 24 Apr 2025 00:25:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745453391; cv=none; b=rcaTvBPFmvH2BlezGyTvm9lVtBI5wyZbcGAx8gnM2iQmOi1Gpu3zjxBKfM637SK/EMyhUtchPYpxCI582xPxA19F4PosPSd7EmDoh4vPvfVvJsY2tDyC3RQdEhXR0sxk96kX0qggqP18MfKnCxiHzldULtHniYbWAk0oDd2/ub4=
+	t=1745454348; cv=none; b=N1TVnD8nmhjpC3Z/xIzp3pwocqZIH9YhbLLzO/1GMMjpNz0fKKcwajXzuBwDfUDHfdnJ//wFYPpRCMo9zj7QhdRXV4HeaWxkkN1Kze6T1k+64wyIxMBDO8TmOO6bJNTSfara9bAAEGAfPSf6MLVovJIf3zqb3fsWBWueNcoauyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745453391; c=relaxed/simple;
-	bh=2AU2Xft7lyv80jpYAC5Q6t5+VYMGCjHhSEt7qXHDBo8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=AsEy1+opzYyxnAJ5OsJ24tqX7IY1IYkt+KzMuyT4j4SRU/vrW7xJ78ot3TSOgvBrk5V03XuhsriAxUmG3PfWd86WIiUlkAP1Kj6UYrbQs4EQ55UAbUJsojkgBLqIzp0jXpfMxrp51xqQvZ9VBWri27Yx5bU7jjwfqfLdRdLxs64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vf/gaptA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65877C4CEE2;
-	Thu, 24 Apr 2025 00:09:50 +0000 (UTC)
+	s=arc-20240116; t=1745454348; c=relaxed/simple;
+	bh=nqx9oEZK27AYuefLV5zlfdxshKo+A8vLCpMYfJ5Zc60=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hVmvMIVJdF0M9Ys6IwhNftCzplk6fHWMuAu6PsIN04jut6DepJHUIKfEfsQtqrehPMaHYvErJhDgiwp7gRACd1pjgQYS3dqvw5jvA/vsssIN9+CBHmVcJBymi8DMg/6mI/J3xiBAmwpqWydsFU0gT6IGavRvgpZNNO7UPUws30w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eGkRZzXT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 341F8C4CEE2;
+	Thu, 24 Apr 2025 00:25:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745453390;
-	bh=2AU2Xft7lyv80jpYAC5Q6t5+VYMGCjHhSEt7qXHDBo8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Vf/gaptAV5IRS4tVEur7GrF7R8OQCG11QUtfEkHF0ekWgmwU1SSzWNWg/RYmrkErG
-	 ApKn+F4H5jiqg4wdvq7jFf/QO+lgsjxDYr0MOHktMp/YMWkv3soBaDSRmBGx/HGbyT
-	 kgikrAo7d0IfFBG4QMKBucYIJOKKHbYsNiJOZYirtQuwXVJPR+rBWR+jBhKFjntgfl
-	 dhlr77gjqGh/1RVTBAATVVJmvxbMmXaGIzRm7vnxvJP8nZZopiGlM87UtRPVmMREx6
-	 A6YHygKdHCr04CpJJ/nWkfLuhT/JZBdUzbj7O2Dto1NY1e2iEwgAJrJIXTmx2ctqws
-	 sGdaT00hXee4w==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33E3B380CED9;
-	Thu, 24 Apr 2025 00:10:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1745454347;
+	bh=nqx9oEZK27AYuefLV5zlfdxshKo+A8vLCpMYfJ5Zc60=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=eGkRZzXTbODmiVhaKrWca5k/M9UOuCrumIQridy4Bl86b52FR4bOLKE6q0k5KIwde
+	 jb9KcPBbpCLCcgtxHWsK/cNtcmTjPJPQZHcELFFsQSfUeuuFjCWgxlfHQINmqs2ni4
+	 +xIwSV870IpGyvxQwueTRqZnLHSa+8loOJ8buZOMheW8j5vkX7MdcExCP5KqfoPcvo
+	 hAmLDQD8uW+Yxyq7nTXscur8h6ulBplo3/ZBijKji6uBByiAUkBJCoICBiQsVmm9av
+	 nIa8HKbHj36YnuLJn5hFOOU5KzuFOQEiK8apJNlGUHDDlqRvJVWoc+I9EcG9zDDSNa
+	 3tybLROGUAZow==
+Date: Wed, 23 Apr 2025 17:25:46 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Joe Damato <jdamato@fastly.com>
+Cc: netdev@vger.kernel.org, pabeni@redhat.com, shaw.leon@gmail.com, Andrew
+ Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Shuah Khan <shuah@kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, open list <linux-kernel@vger.kernel.org>, "open
+ list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, "open
+ list:XDP (eXpress Data Path):Keyword:(?:b|_)xdp(?:b|_)"
+ <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 3/3] selftests: drv-net: Test that NAPI ID
+ is non-zero
+Message-ID: <20250423172546.32d2da09@kernel.org>
+In-Reply-To: <aAmAbcbLMl6IBwpd@LQ3V64L9R2>
+References: <20250418013719.12094-1-jdamato@fastly.com>
+	<20250418013719.12094-4-jdamato@fastly.com>
+	<20250423161612.3dc2923e@kernel.org>
+	<aAmAbcbLMl6IBwpd@LQ3V64L9R2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] selftests/bpf: Set MACs during veth creation in tc_redirect
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174545342902.2807189.3308637278338677255.git-patchwork-notify@kernel.org>
-Date: Thu, 24 Apr 2025 00:10:29 +0000
-References: <20250416124845.584362-1-iii@linux.ibm.com>
-In-Reply-To: <20250416124845.584362-1-iii@linux.ibm.com>
-To: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- bpf@vger.kernel.org, hca@linux.ibm.com, gor@linux.ibm.com,
- agordeev@linux.ibm.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Wed, 23 Apr 2025 17:06:05 -0700 Joe Damato wrote:
+> # Exception| Traceback (most recent call last):
+> # Exception|   File "/home/jdamato/code/net-next/tools/testing/selftests/net/lib/py/ksft.py", line 223, in ksft_run
+> # Exception|     case(*args)
+> # Exception|   File "/home/jdamato/code/net-next/./tools/testing/selftests/drivers/net/napi_id.py", line 13, in test_napi_id
+> # Exception|     with bkg(listen_cmd, ksft_wait=3) as server:
+> # Exception|   File "/home/jdamato/code/net-next/tools/testing/selftests/net/lib/py/utils.py", line 130, in __exit__
+> # Exception|     return self.process(terminate=self.terminate, fail=self.check_fail)
+> # Exception|            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> # Exception|   File "/home/jdamato/code/net-next/tools/testing/selftests/net/lib/py/utils.py", line 78, in process
+> # Exception|     os.write(self.ksft_term_fd, b"1")
+> # Exception| BrokenPipeError: [Errno 32] Broken pipe
 
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+Thanks for testing! Makes sense, I don't think it's worth complicating
+the Python side to handle the "ready but no wait" case if it doesnt
+work as is.
 
-On Wed, 16 Apr 2025 14:47:58 +0200 you wrote:
-> tc_redirect/tc_redirect_dtime fails intermittently on some systems
-> with:
+> LMK how you'd like me to proceed ?
 > 
->    (network_helpers.c:303: errno: Operation now in progress) Failed to connect to server
-> 
-> The problem is that on these systems systemd-networkd and systemd-udevd
-> are installed in the default configuration, which includes:
-> 
-> [...]
+> I'm thinking:
+>   - Leave ksft_wait()
+>   - macro guard
+>   - don't deploy helper to remote machine
 
-Here is the summary with links:
-  - selftests/bpf: Set MACs during veth creation in tc_redirect
-    https://git.kernel.org/bpf/bpf-next/c/60400cd2b9be
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+SG!
 
