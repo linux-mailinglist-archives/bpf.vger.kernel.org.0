@@ -1,160 +1,184 @@
-Return-Path: <bpf+bounces-56645-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56646-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A597A9BA29
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 23:51:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52117A9BA6B
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 00:07:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 645B54C03B3
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 21:51:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C6C83B6E76
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 22:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A09F21ADCC;
-	Thu, 24 Apr 2025 21:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ADC6289343;
+	Thu, 24 Apr 2025 22:06:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lg9qp7L1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y3Z0SvQj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 507A0194A67
-	for <bpf@vger.kernel.org>; Thu, 24 Apr 2025 21:51:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8603019F471;
+	Thu, 24 Apr 2025 22:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745531470; cv=none; b=Y5uTTmkXTvvvgyWqMA87xechkjD3U2nii2jjvVO5kqFnG3jb545IR7UzchtvKPVTxEVKn9dFSZPi9O4xrbob1vHns5FHJbblHCLFuJJ0Tw4wQ1iTA/L/HWnnqyufkmx3Oyuq6MRtoHu/FBVbFfjbPkTs6+jiCmRx/bt+wf5d+uc=
+	t=1745532395; cv=none; b=R3H7sKmqhWLUPx6idzzz5b9VKzNkEXF4Mz9Myx8/ZhkuIr7yyd0Pg0ArkSR0xuBkTLxnVWcG5xaDU9rh5sp0rbsE5gjtAoO1RR7MGd7yEiKoqH0ovmy6r0WHqsWQURE02ZTPDsOq9D28SgDe2YXE4sFesV+Jftcggf971W/kKNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745531470; c=relaxed/simple;
-	bh=iQ/06uIIhR3SWq9qWBtcTkbTzpbW9qgixaSfn9SZvPo=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=Z+o6sAiKFKLTHIqyMHRXlxCQD9dCYOXowyTR4gS/OZX90SXl6sltVfosp9ZLeA1p0N9yPwkZ19Su9hVHvL+H1ma5EAHTs2coXWR9vVMdIU6mh79qxjR4pgmdm4DN/n1U1vfHqVIycSHBOn9KSU65VJ3Nd69Z4FcyDRgeWdwkES4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lg9qp7L1; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7c9376c4bddso178226785a.3
-        for <bpf@vger.kernel.org>; Thu, 24 Apr 2025 14:51:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745531468; x=1746136268; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hXd5/8YF2bBHQedEJV5Rp3LMWb36BqWmBBLcLTs66ts=;
-        b=Lg9qp7L1Rc4wrHUh95Q9Mkul0t18cUNr41S25i3cfuY7QwnaP5SxjXJ2CzqnRtJBO8
-         L8RQcXS2MtYYUe1/rQ17EBTkcL3k/tyUDfa1tAQY/Y5wBOhOdPA4ExO4Gu1S3VJsvyHF
-         QUHv6OzGeGDRSlQryERB/frYXhncUIhbveyQYBZqgswtBToCpuxRQ47+M/zyUrd87sto
-         CadVUzeal+czQ/o9xtZ7dgXKfl2rUicWDe/hZHuvpS39nL0nlc9bkMu7ETD266MBNn9C
-         nTHPrqY4vGwSIJOED3SM1sZ7HF8If+ePRZk2GbWAsSvuuZOY5n71Cb8aWLioby1xxg0J
-         oFMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745531468; x=1746136268;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hXd5/8YF2bBHQedEJV5Rp3LMWb36BqWmBBLcLTs66ts=;
-        b=PEgYGi3EBwb0IT2jvDzcYcA4y0REamotcZdqt3ah1QP6Dd4U3gOy9nBTCVUrIF+jv7
-         E1qVPaF/vzf9W8yavKKQnooullOLeCjAjecLAzfahs+Pdff/Y8hC7zTwYGFZk5TIkwfX
-         rjNFq2c5rKYtsXL/9NCc7S/4jH14dP2zawliUDJ4Xi+pHKcVuMkv/OY964UVtwAL+W7r
-         W69mDe/sBmsFOIEZzvJXhkxEzpkHSPrJuzhmYUxIiTdt2ft3WFt5qGTvfVWEpkmjz1ev
-         VnkV1M+hfoZhOnX4SZEGb4csQtXEMe3mHJ0Ba2uQqTcd/TKM5oq/k0Sta+GEoYesQwz1
-         PGDA==
-X-Gm-Message-State: AOJu0YztWeiDz5Bfzya4Y6fMo2yn/nBQAG+llohcYaO5SVlI9M7mErRK
-	pcgGOASvTBaHsPkKlK+YsXQC+r+/GTY/vx29B0T6LujaIaQNqApONCiwgewgKX5kOT849jssW2q
-	mUQ1twukBtzaryYHb/ecRn2WpDSdiPXST
-X-Gm-Gg: ASbGnctG6wN++d1LKY67/DsxDhUE2OO6ICm4s/x2GmqcnzRPYrb9USqGE4UIfP2DIer
-	qifcq21M0mkMCOcwaFCUvqZuNjJmdwpCW5pIh+/R/mbEjPRVsDNdvObqjotpUBxP+79S838RC97
-	FUje3oNCK02mTKuPHkNT1CBQ==
-X-Google-Smtp-Source: AGHT+IHysK7j294n3TnXlMesJEeXtGnosg6w95ubh3XILaorGa55qwC6TacyBkL7JlvHOIkIyNtvSmDFW4FcRTHbuT4=
-X-Received: by 2002:a05:620a:3948:b0:7c5:9c13:2858 with SMTP id
- af79cd13be357-7c96053f2admr27303785a.0.1745531467953; Thu, 24 Apr 2025
- 14:51:07 -0700 (PDT)
+	s=arc-20240116; t=1745532395; c=relaxed/simple;
+	bh=nHHKm+v7CyTG5oWYNzsXxiimdV4zZ6PRwiC+1/v1Pv4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qg4lDa3pnMAxNFB9hrC9NABujwuYvMvJ7DBh9UB0VOqJ5hUh6VdKD+ssLAP0vL+pc7GLj6bWP2fEQfLKYnVF7+POqyay4tb5GjTZke05pSDx7vB65K3D4Np5cGwZlm7nftaBpwfSsIEn4EsK+Yv0vNzsfbJvDoKVKt2aKC/nc5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y3Z0SvQj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9383EC4CEE3;
+	Thu, 24 Apr 2025 22:06:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745532394;
+	bh=nHHKm+v7CyTG5oWYNzsXxiimdV4zZ6PRwiC+1/v1Pv4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y3Z0SvQjA5m8EnDWin9jfDUq55M6s0VCknvHorR0avtchr+OZ6Zp2wIiDA7+jXUH+
+	 H16y2U4dd47eDCk/LZSUOguDlUeWMPEkwpJTXyjQoOVaxMaYMBZDhnAQsI2O7yqZJN
+	 fgeZN5LJf8rEph/Ste9uQ80H+Z3oFRepJSwoG2K6wUVzLDBqATslxr2B5bFWWH/Oo+
+	 CRCz9jkuPjAqKduHozP44WUZaik8Xo7KdrVIi7YRPlsTsjbVE6g5NCCBKLm3OSJ7ZF
+	 mrCQ/KUXFA8R3u6Eu8xoaM2VxWkVf70HCXxrrOyfa1qpKG3CQ/7mUd9d/eAuJINsre
+	 7rwv8SUJekPMg==
+Date: Thu, 24 Apr 2025 19:06:32 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Howard Chu <howardchu95@gmail.com>, Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] perf trace: Implement syscall summary in BPF
+Message-ID: <aAq16LWBIVr08iSe@x1>
+References: <20250326044001.3503432-1-namhyung@kernel.org>
+ <CAH0uvojPaZ-byE-quc=sUvXyExaZPU3PUjdTYOzE5iDAT_wNVA@mail.gmail.com>
+ <aAkUyFjRFLkS170u@x1>
+ <aAkmY0hLXarmCSIA@google.com>
+ <aAlSqGN9Sx4x6_sI@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Andrei Matei <andreimatei1@gmail.com>
-Date: Thu, 24 Apr 2025 17:50:57 -0400
-X-Gm-Features: ATxdqUE8B95PHqoT-VUFEpkS3xy5Oprec65e5vrUpGerVduVgt0hOPi3Fo-OorI
-Message-ID: <CABWLsevi-OFJ3+K2W1RcTpm8wkHPgOrqHF5TCij4HhyY=vjEVQ@mail.gmail.com>
-Subject: BUG: bpf_loop with limit 0 interacts badly with dead code elimination
- causing assertion failure
-To: bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aAlSqGN9Sx4x6_sI@x1>
 
-Hello bpf,
+On Wed, Apr 23, 2025 at 05:50:51PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Wed, Apr 23, 2025 at 10:41:55AM -0700, Namhyung Kim wrote:
+> > On Wed, Apr 23, 2025 at 01:26:48PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > On Fri, Mar 28, 2025 at 06:46:36PM -0700, Howard Chu wrote:
+> > > > On Tue, Mar 25, 2025 at 9:40 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > > > >      syscall            calls  errors  total       min       avg       max       stddev
 
-I've hit a verifier bug that sometimes prevents the loading of a program
-containing a bpf_loop(0, callback,...) - a loop executing zero times. I've
-debugged and understood the issue, but I'd like to request suggestions for a
-fix.
+> > > > >      --------------- --------  ------ -------- --------- --------- ---------     ------
+> > > > >      epoll_wait           561      0  4530.843     0.000     8.076   520.941     18.75%
+> > > > >      futex                693     45  4317.231     0.000     6.230   500.077     21.98%
+> > > > >      poll                 300      0  1040.109     0.000     3.467   120.928     17.02%
+> > > > >      clock_nanosleep        1      0  1000.172  1000.172  1000.172  1000.172      0.00%
+> > > > >      ppoll                360      0   872.386     0.001     2.423   253.275     41.91%
+> > > > >      epoll_pwait           14      0   384.349     0.001    27.453   380.002     98.79%
+> > > > >      pselect6              14      0   108.130     7.198     7.724     8.206      0.85%
+> > > > >      nanosleep             39      0    43.378     0.069     1.112    10.084     44.23%
+> > > > >      ...
 
-Some such programs fail to load with no good error printed in the verifier
-logs, and with something like the following printed (WARN_ONCE) in the kernel
-log:
-verifier bug. No program starts at insn 34
+> > > I added the following to align sched_[gs]etaffinity,
 
-I have spent a good deal of time understanding the issue; it turns out it's
-superficially pretty simple. The problem is that, because the looping limit is
-0, the verifier never jumps to the callback subprogram (the code in [2] simply
-considers that the loop limit is reached immediately and it doesn't push the
-callback for verification), and so the dead code elimination phase removes the
-respective subprogram.  However, the BPF_PSEUDO_FUNC instruction (loading the
-callback offset into a register) is left alone (and so it is now referencing a
-dangling instruction offset). A subsequent pass over the instructions (in
-jit_subprogs) gets confused by this, as it asserts that all the BPF_PSEUDO_FUNC
-instructions reference offsets that actually correspond to the start of a
-program (the assertion is [1]).
+> > Thanks for processing the patch and updating this.  But I'm afraid there
+> > are more syscalls with longer names and this is not the only place to
+> > print the syscall names.  Also I think we need to update length of the
+> > time fields.  So I prefer handling them in a separate patch later.
+ 
+> Fair enough, I'm leaving the patch as-is.
 
+But, still have to look at this:
 
-FWIW, a bpf_loop() with a limit of zero might seem dubious but, in our case, it
-happened because we generate the BPF code (so, the limit is not always 0).
+toolsbuilder@five:~$ time dm
+   1   114.52 almalinux:8                   : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-26) , clang version 18.1.8 (Red Hat 18.1.8-1.module_el8.10.0+3903+ca21d481) flex 2.6.1
+   2   111.09 almalinux:9                   : Ok   gcc (GCC) 11.5.0 20240719 (Red Hat 11.5.0-5) , clang version 18.1.8 (AlmaLinux OS Foundation 18.1.8-3.el9) flex 2.6.4
+   3: almalinux:9-i386WARNING: image platform (linux/386) does not match the expected platform (linux/amd64)
+WARNING: image platform (linux/386) does not match the expected platform (linux/amd64)
+   132.71 almalinux:9-i386              : Ok   gcc (GCC) 11.4.1 20231218 (Red Hat 11.4.1-3) , clang version 17.0.6 (AlmaLinux OS Foundation 17.0.6-5.el9) flex 2.6.4
+   4    21.54 alpine:3.16                   : FAIL gcc version 11.2.1 20220219 (Alpine 11.2.1_git20220219) 
+    bpf-trace-summary.c:(.text+0xf0760): undefined reference to `syscalltbl__name'
+    collect2: error: ld returned 1 exit status
+   5    16.50 alpine:3.17                   : FAIL gcc version 12.2.1 20220924 (Alpine 12.2.1_git20220924-r4) 
+    bpf-trace-summary.c:(.text+0xf2020): undefined reference to `syscalltbl__name'
+    collect2: error: ld returned 1 exit status
 
-I would like to submit a patch fixing this, but I'm not sure about what the
-best fix is. I suspect we can relax the assertion / have jit_subprogs()
-recognize this case of a dangling BPF_PSEUDO_FUNC and ignore it. But I can't
-tell very clearly what the point of this pass over the instructions in
-jit_subprogs() is exactly, and what the conventions around what insn->off and
-insn->imm need to be set to.
+More info:
 
-Alternatively, perhaps we could keep track of subprograms that were eliminated
-because they were dead, and keep the assertion alive...
+perf-6.15.0-rc2/HEAD
+perf-6.15.0-rc2/PERF-VERSION-FILE
+BUILD_TARBALL_HEAD=24c0c35d4640052c61ed539a777bd3bd60d62bbf
+Using built-in specs.
+COLLECT_GCC=gcc
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-alpine-linux-musl/12.2.1/lto-wrapper
+Target: x86_64-alpine-linux-musl
+Configured with: /home/buildozer/aports/main/gcc/src/gcc-12-20220924/configure --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --build=x86_64-alpine-linux-musl --host=x86_64-alpine-linux-musl --target=x86_64-alpine-linux-musl --enable-checking=release --disable-fixed-point --disable-libstdcxx-pch --disable-multilib --disable-nls --disable-werror --disable-symvers --enable-__cxa_atexit --enable-default-pie --enable-default-ssp --enable-languages=c,c++,d,objc,go,fortran,ada --disable-libssp --disable-libsanitizer --enable-shared --enable-threads --enable-tls --with-bugurl=https://gitlab.alpinelinux.org/alpine/aports/-/issues --with-system-zlib --with-linker-hash-style=gnu --with-pkgversion='Alpine 12.2.1_git20220924-r4'
+Thread model: posix
+Supported LTO compression algorithms: zlib
+gcc version 12.2.1 20220924 (Alpine 12.2.1_git20220924-r4) 
++ make 'NO_LIBTRACEEVENT=1' 'ARCH=' 'CROSS_COMPILE=' 'EXTRA_CFLAGS=' -C tools/perf 'O=/tmp/build/perf'
+make: Entering directory '/git/perf-6.15.0-rc2/tools/perf'
+  BUILD:   Doing 'make -j28' parallel build
+Warning: Skipped check-headers due to missing ../../include
+Makefile.config:563: No elfutils/debuginfod.h found, no debuginfo server support, please install libdebuginfod-dev/elfutils-debuginfod-client-devel or equivalent
+Makefile.config:605: No sys/sdt.h found, no SDT events are defined, please install systemtap-sdt-devel or systemtap-sdt-dev
+Makefile.config:1085: No libbabeltrace found, disables 'perf data' CTF format support, please install libbabeltrace-dev[el]/libbabeltrace-ctf-dev
+Makefile.config:1128: No alternatives command found, you need to set JDIR= to point to the root of your Java directory
+Makefile.config:1159: libpfm4 not found, disables libpfm4 support. Please install libpfm4-dev
 
-I would kindly take suggestions about what to do.
+Auto-detecting system features:
+...                                   libdw: [ on  ]
+...                                   glibc: [ OFF ]
+...                                  libelf: [ on  ]
+...                                 libnuma: [ on  ]
+...                  numa_num_possible_cpus: [ on  ]
+...                                 libperl: [ on  ]
+...                               libpython: [ on  ]
+...                               libcrypto: [ on  ]
+...                             libcapstone: [ on  ]
+...                               llvm-perf: [ on  ]
+...                                    zlib: [ on  ]
+...                                    lzma: [ on  ]
+...                               get_cpuid: [ on  ]
+...                                     bpf: [ on  ]
+...                                  libaio: [ on  ]
+...                                 libzstd: [ on  ]
 
-The bug can be triggered with this simple program:
+  PERF_VERSION = 6.15.rc2.g24c0c35d4640
+  GEN     /tmp/build/perf/common-cmds.h
+  GEN     /tmp/build/perf/arch/arm64/include/generated/asm/sysreg-defs.h
+  GEN     perf-archive
+  GEN     perf-iostat
+<SNIP>
+  CC      /tmp/build/perf/util/bpf-filter-flex.o
+  LD      /tmp/build/perf/util/perf-util-in.o
+  LD      /tmp/build/perf/perf-util-in.o
+  AR      /tmp/build/perf/libperf-util.a
+  CC      /tmp/build/perf/pmu-events/pmu-events.o
+  LD      /tmp/build/perf/pmu-events/pmu-events-in.o
+  AR      /tmp/build/perf/libpmu-events.a
+  LINK    /tmp/build/perf/perf
+  GEN     /tmp/build/perf/python/perf.cpython-310-x86_64-linux-gnu.so
+/usr/lib/gcc/x86_64-alpine-linux-musl/12.2.1/../../../../x86_64-alpine-linux-musl/bin/ld: /tmp/build/perf/libperf-util.a(perf-util-in.o): in function `print_common_stats':
+bpf-trace-summary.c:(.text+0xf2020): undefined reference to `syscalltbl__name'
+collect2: error: ld returned 1 exit status
+make[2]: *** [Makefile.perf:804: /tmp/build/perf/perf] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [Makefile.perf:290: sub-make] Error 2
+make: *** [Makefile:76: all] Error 2
+make: Leaving directory '/git/perf-6.15.0-rc2/tools/perf'
++ exit 1
+toolsbuilder@five:~$ 
 
+I'll take a look tomorrow.
 
-#include "vmlinux.h"
-#include <bpf/bpf_helpers.h>
-#include <bpf/bpf_tracing.h>
-
-// A dummy function so that loop_callback, which gets eliminated, is not the
-// first subprogram; the repro does not work if it is.
-__attribute__((noinline))
-__attribute__((optnone))
-static int dummy(u32 i)
-{
-    return i+42;
-}
-
-static int loop_callback(__u32 index, u32 *key)
-{
-    return 1;
-}
-
-SEC("tracepoint")
-int entrypoint(__attribute__((unused)) void* ctx) {
-    u32 key = dummy(0);
-    bpf_loop(0, loop_callback, &key, 0);
-    return 0;
-}
-
-
-Any thoughts about what the fix should be?
-
-Thanks!
-
-- Andrei
-
-
-[1] https://github.com/torvalds/linux/blob/02ddfb981de88a2c15621115dd7be2431252c568/kernel/bpf/verifier.c#L21044
-[2] https://github.com/torvalds/linux/blob/02ddfb981de88a2c15621115dd7be2431252c568/kernel/bpf/verifier.c#L11440
+- Arnaldo
 
