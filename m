@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-56601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C098A9AE5F
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 15:06:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18309A9AE5D
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 15:06:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67B871B80941
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 13:05:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7B9D7A65AA
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 13:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38635284B4C;
-	Thu, 24 Apr 2025 13:03:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9955927FD53;
+	Thu, 24 Apr 2025 13:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="etTn8cU0";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oYsGUKUR"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xeXzT0Bq";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LH2yWFUy"
 X-Original-To: bpf@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18A99284667;
-	Thu, 24 Apr 2025 13:03:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77FE727F755;
+	Thu, 24 Apr 2025 13:04:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745499799; cv=none; b=MOrHZZ8KoTPNhhnGyHhP79I3ht4GHsM057yVnmge/oYj68DrzqRt0eQAd8hj5Verf8K5eyEcDtP/9aDpLz2f6ptkj2P5WCsHWh8po/pwKpkUlB6X/oB5ftGzQ3b65Qv3NbWAkO6VcoO3FhWU+rtLVDuSfqpd53avLETmtVTt0Io=
+	t=1745499850; cv=none; b=fmYyIJPZudAfwQY/6MW99CisnoK0Pgr9qO9ZUP2NEBiIs98X9KdlBe+X+DaG5QfiAQINT+33xGuODAFCcgOQ0ZRYUbquKrkilwkDGM4BOzpzPwPXGj/AdwVyU7wxVJwKDDmVVY8P2HXbBnFvb+FY4zMF9/JzooL015JpfISFW64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745499799; c=relaxed/simple;
-	bh=+jxdHN9w6058fmKwsIbAeD1FE5biFmWbN0xy0yZYaKs=;
+	s=arc-20240116; t=1745499850; c=relaxed/simple;
+	bh=drF2vzm9wcYfPdR0vfKGjWsPx0rqOEfX6MeVFhWdasU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JpBCPpGZnqm4/hjlQUY8KuyHrK+j4/hahDtZfTQRChJRcCE4Up/V9DSYt8DoJd11c8kYNHPPSLwj3k7Nx7WvOpLw44VNkFBBnYqPrDiVS0sJGmDQsCj0E1WhEi4TcW8dqX9sVjKgb5BPrMFKhuUN8D3eHmU2CWJlNcfdtRmCUg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=etTn8cU0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oYsGUKUR; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZLW9iKvBJi0mCv64+CKLXLYJDs7K9IhVMJtXhMpjxfshWjtAV+vwCrc6LPJuTWvlSNdAUhx2ICC2oeQpvoSWYb07v2rKHZ6eBBMlt8EKw4NIlrAGVL3+rmMI4PeTfYrfwqS1hyHF6Dx/uFei0uD5Opd3sbmiugY3rz5Pfi6Gt0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xeXzT0Bq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LH2yWFUy; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 24 Apr 2025 15:03:14 +0200
+Date: Thu, 24 Apr 2025 15:04:05 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1745499796;
+	s=2020; t=1745499846;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BqK7PllKhCIzrgYgkhlhTeeMaCbSdmEmMtce1oOfVcE=;
-	b=etTn8cU0pXTwMIbc6N0lS1VOiHDVydPDuaSgWUq6awaGiNO/yl7Pw5ulB8wmyfUImk52+1
-	CTBEGy98oJ96NDnuTo6TgZHAx/rF3KxZsHP/hUlGFGpn7Cz6pS1fPneKaLNwXANSoZW69l
-	4EHIQyoeh+4wWENg4k/d0exsFqU6nINR8pcIK9MDFpGS6KjPcHXCCf3Flp0VEA3To0syAX
-	4HXWq7LZ2qTRNjkoBKP3FXVp+n8SQ0q21aaOZFPwP2RJUvM0Ol1ep2SBB7suw5coUTTBgM
-	AoTNkpOlfu/nxqQ7Ex8EJeaF6hRL6/VBqWcE22Ld0MyfQsLkv7dBZF5LjGKjLA==
+	bh=Xt1SVfhG/duIUXQQDAMcUQEfArjPXwXCRLURGs5zZX0=;
+	b=xeXzT0BqmOPqSunHq1Amc/7V5txefJTzrqI5cRSa2eceSjSo6OX1s9zj8NYACkvlK9oI66
+	PSvOSQXBqyxq5B+8zXKCNdFu8Ho74Z8+HDss/DrY7BIn+AI8ieLMPP/0JH6XiueSlbVWA7
+	gE6/B5AAR14EDy7z0Bv4+hj//6oVRqVepfTcL1pTn9eDy95tVOjyWIr2pvRFkBp8KyyIcS
+	BRtlj3G4DAxzhGrLSGLUjlY83+Le7YglPlwcYNyHfU4h3Q5piRyYgLB4UP6HsufBuIiLMa
+	M9Z6lUL5Jnsi9+OzSgLZ0LL+LmWfa1pwz4WS1eBoso8dg1UBumnWk/DSxw9N1Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1745499796;
+	s=2020e; t=1745499846;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BqK7PllKhCIzrgYgkhlhTeeMaCbSdmEmMtce1oOfVcE=;
-	b=oYsGUKURg1lz0s5P+B+D2mqt24fc4sIA1ugmvZLeeeC0BpVOdrxJ09HhsVcQMqa++oGx3e
-	S6tkw7DKDRPzksBw==
+	bh=Xt1SVfhG/duIUXQQDAMcUQEfArjPXwXCRLURGs5zZX0=;
+	b=LH2yWFUyXBr77zNPV/OV8NFcoH30GdtPZ+Mq2pqicc52UgOtw08bDZ2js4OckYJ4VOi3Y5
+	4iWmmTkQ0J7mZvDg==
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To: Greg KH <gregkh@linuxfoundation.org>
 Cc: stable@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
@@ -67,9 +67,9 @@ Cc: stable@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
 	John Fastabend <john.fastabend@gmail.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-Subject: [PATCH stable v6.1 v5.15] xdp: Reset bpf_redirect_info before
- running a xdp's BPF prog.
-Message-ID: <20250424130314.C9jOS1c5@linutronix.de>
+Subject: [PATCH stable v5.10] xdp: Reset bpf_redirect_info before running a
+ xdp's BPF prog.
+Message-ID: <20250424130405.xenRxobI@linutronix.de>
 References: <20250414162120.U-UFSLv8@linutronix.de>
  <2025042223-departed-aids-add9@gregkh>
 Precedence: bulk
@@ -116,32 +116,27 @@ free-read-in-dev_map_enqueue__submit-v3-0-360efec441ba@igalia.com/
 Fixes: 97f91a7cf04ff ("bpf: add bpf_redirect_map helper routine")
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
-backport: function moved to filter.h from xdp.h
+backport: moved to filter.h, replaced map_id and map_type with map
 
- include/linux/filter.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ include/linux/filter.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 01f97956572ce..f3ef1a8965bb2 100644
+index 840b2a05c1b9f..e3aca0dc7d9c6 100644
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
-@@ -775,7 +775,14 @@ static __always_inline u32 bpf_prog_run_xdp(const stru=
+@@ -758,6 +758,10 @@ static __always_inline u32 bpf_prog_run_xdp(const stru=
 ct bpf_prog *prog,
- 	 * under local_bh_disable(), which provides the needed RCU protection
- 	 * for accessing map entries.
+ 	 * already takes rcu_read_lock() when fetching the program, so
+ 	 * it's not necessary here anymore.
  	 */
--	u32 act =3D __bpf_prog_run(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
 +	struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
-+	u32 act;
 +
-+	if (ri->map_id || ri->map_type) {
-+		ri->map_id =3D 0;
-+		ri->map_type =3D BPF_MAP_TYPE_UNSPEC;
-+	}
-+	act =3D __bpf_prog_run(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
++	if (ri->map)
++		ri->map =3D NULL;
+ 	return __BPF_PROG_RUN(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
+ }
 =20
- 	if (static_branch_unlikely(&bpf_master_redirect_enabled_key)) {
- 		if (act =3D=3D XDP_TX && netif_is_bond_slave(xdp->rxq->dev))
 --=20
 2.49.0
 
