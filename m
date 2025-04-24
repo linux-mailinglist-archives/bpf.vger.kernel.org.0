@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-56602-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56603-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18309A9AE5D
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 15:06:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69F43A9AE81
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 15:10:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7B9D7A65AA
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 13:05:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8802E1B81827
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 13:08:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9955927FD53;
-	Thu, 24 Apr 2025 13:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B95402820B6;
+	Thu, 24 Apr 2025 13:05:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xeXzT0Bq";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LH2yWFUy"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hpEgylZT";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ls3SMCCc"
 X-Original-To: bpf@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77FE727F755;
-	Thu, 24 Apr 2025 13:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8F327CB1F;
+	Thu, 24 Apr 2025 13:05:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745499850; cv=none; b=fmYyIJPZudAfwQY/6MW99CisnoK0Pgr9qO9ZUP2NEBiIs98X9KdlBe+X+DaG5QfiAQINT+33xGuODAFCcgOQ0ZRYUbquKrkilwkDGM4BOzpzPwPXGj/AdwVyU7wxVJwKDDmVVY8P2HXbBnFvb+FY4zMF9/JzooL015JpfISFW64=
+	t=1745499933; cv=none; b=rjpiE6r/ySlekDwUrk3nOstT+U2kMFJTv2pXyLqhXxnTqj7jvTk4QiGVh0Cxuryinm1paUNvWmmFYOTzT7M0VjTRr2W6wBvHEW73xJZBY5S5vRS0h1o2gQpVTAvQTiZzgDhcJsCN1ynnmFAg0mZdGYiW8y2tycrGTYpovrZj5Oo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745499850; c=relaxed/simple;
-	bh=drF2vzm9wcYfPdR0vfKGjWsPx0rqOEfX6MeVFhWdasU=;
+	s=arc-20240116; t=1745499933; c=relaxed/simple;
+	bh=JW+B9orkrkPq3ZxeeYF3Job/w/Xzm9zim/HEsbvADVc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZLW9iKvBJi0mCv64+CKLXLYJDs7K9IhVMJtXhMpjxfshWjtAV+vwCrc6LPJuTWvlSNdAUhx2ICC2oeQpvoSWYb07v2rKHZ6eBBMlt8EKw4NIlrAGVL3+rmMI4PeTfYrfwqS1hyHF6Dx/uFei0uD5Opd3sbmiugY3rz5Pfi6Gt0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xeXzT0Bq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LH2yWFUy; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Content-Disposition:In-Reply-To; b=CvhGxEMI21jcu1Cut3FlmPjaZdtarEJDKL0QdRE/NLJqcGxGGFb1CXxnerPBohouU/jofaleL1/RTYijDgl77zRzGobrhqmePz3/waLQ83vBs4JZqVZ6NmODl7gb9ZNBYljN13aFFTkPgyAKsPNjLN403e1vJa7lWcXegqytEvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hpEgylZT; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ls3SMCCc; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 24 Apr 2025 15:04:05 +0200
+Date: Thu, 24 Apr 2025 15:05:28 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1745499846;
+	s=2020; t=1745499929;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Xt1SVfhG/duIUXQQDAMcUQEfArjPXwXCRLURGs5zZX0=;
-	b=xeXzT0BqmOPqSunHq1Amc/7V5txefJTzrqI5cRSa2eceSjSo6OX1s9zj8NYACkvlK9oI66
-	PSvOSQXBqyxq5B+8zXKCNdFu8Ho74Z8+HDss/DrY7BIn+AI8ieLMPP/0JH6XiueSlbVWA7
-	gE6/B5AAR14EDy7z0Bv4+hj//6oVRqVepfTcL1pTn9eDy95tVOjyWIr2pvRFkBp8KyyIcS
-	BRtlj3G4DAxzhGrLSGLUjlY83+Le7YglPlwcYNyHfU4h3Q5piRyYgLB4UP6HsufBuIiLMa
-	M9Z6lUL5Jnsi9+OzSgLZ0LL+LmWfa1pwz4WS1eBoso8dg1UBumnWk/DSxw9N1Q==
+	bh=3TI9W1W5y1kgt0mckRA0mlz2D453GZ7Cs5k0nlq9/3o=;
+	b=hpEgylZTj+yM6okV0vpry1YsAcPYHsqcqzLItcGgstT4NA0IrXAfpIDSDB3Zukvl7Tcgav
+	jBMkIBt+CVIJqSntdcQe00Lidf/FbRjF/aLNVNNYUMz/r0xwSzJ6bN+0QZVMQvyAW2YB2h
+	n7JDbbsoX1yU6cCjp35xxO+KJPzoI/TZro5q8bBzw6OSDnIWPU7yMWZ0M3wu7O0ktiD7DF
+	rXeNVzMJppDeC8Zyglx7ZGuKJrjK0LPx1wYVD1/8/SXHPyUkrXC4vCnczd/1+4XetOLQJ2
+	Yfw0gmBYMRanX10D4F2d077PKg/vlCCM8jWchZG3a2DbNylc19CelPH+BLo4Zg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1745499846;
+	s=2020e; t=1745499929;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Xt1SVfhG/duIUXQQDAMcUQEfArjPXwXCRLURGs5zZX0=;
-	b=LH2yWFUyXBr77zNPV/OV8NFcoH30GdtPZ+Mq2pqicc52UgOtw08bDZ2js4OckYJ4VOi3Y5
-	4iWmmTkQ0J7mZvDg==
+	bh=3TI9W1W5y1kgt0mckRA0mlz2D453GZ7Cs5k0nlq9/3o=;
+	b=Ls3SMCCcqY9X9ARMVpflAaQhzE4KHN9ctiCjZ3A1Xd5R04r8pXED15CdPYDCxy0qCgLb+J
+	Ga2TlRkvg/qBbXBQ==
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To: Greg KH <gregkh@linuxfoundation.org>
 Cc: stable@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
@@ -67,9 +67,9 @@ Cc: stable@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
 	John Fastabend <john.fastabend@gmail.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-Subject: [PATCH stable v5.10] xdp: Reset bpf_redirect_info before running a
+Subject: [PATCH stable v5.4] xdp: Reset bpf_redirect_info before running a
  xdp's BPF prog.
-Message-ID: <20250424130405.xenRxobI@linutronix.de>
+Message-ID: <20250424130528._4Gap8TB@linutronix.de>
 References: <20250414162120.U-UFSLv8@linutronix.de>
  <2025042223-departed-aids-add9@gregkh>
 Precedence: bulk
@@ -122,10 +122,10 @@ backport: moved to filter.h, replaced map_id and map_type with map
  1 file changed, 4 insertions(+)
 
 diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 840b2a05c1b9f..e3aca0dc7d9c6 100644
+index 0bec300b2e516..502b02f531d3f 100644
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
-@@ -758,6 +758,10 @@ static __always_inline u32 bpf_prog_run_xdp(const stru=
+@@ -721,6 +721,10 @@ static __always_inline u32 bpf_prog_run_xdp(const stru=
 ct bpf_prog *prog,
  	 * already takes rcu_read_lock() when fetching the program, so
  	 * it's not necessary here anymore.
@@ -134,7 +134,7 @@ ct bpf_prog *prog,
 +
 +	if (ri->map)
 +		ri->map =3D NULL;
- 	return __BPF_PROG_RUN(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
+ 	return BPF_PROG_RUN(prog, xdp);
  }
 =20
 --=20
