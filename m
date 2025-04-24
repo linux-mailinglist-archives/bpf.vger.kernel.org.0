@@ -1,157 +1,133 @@
-Return-Path: <bpf+bounces-56625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56627-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F5C0A9B41B
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 18:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5540AA9B4B9
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 18:56:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 385E21B66460
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 16:32:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CD9F1BA69CA
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 16:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB6728DEE1;
-	Thu, 24 Apr 2025 16:30:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699C1289355;
+	Thu, 24 Apr 2025 16:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CQtGz3Zi"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="X7O+iB/E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF592820DA;
-	Thu, 24 Apr 2025 16:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EEFF1F3BAB
+	for <bpf@vger.kernel.org>; Thu, 24 Apr 2025 16:55:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745512235; cv=none; b=jPnkaot1QZePafsz2taokstARPgzRq0yP8YynP7euqRUJG4NFR/qVrGLph+sYmgLtr8avhFioKssZ7BFao71ows6tS39FrdABEe5xW/ME0WTmVJGepA4RJ9eqaR9Ds3xUPgdU0f2SoYGdVGeeyGN48D0Hp3w3uHFQupv9hthPjQ=
+	t=1745513747; cv=none; b=PEz2bz50iLIdPk6WiYYTAGmLaxuBlFlAYZs2EZe/3botuYlSb57po7m78yL8+XipdiRE2puutHSSIuV9lkMdnQCjoJCD7Rgrp8JpZTU3C+RiOgnst0Dh+LqCAlCD/WWq4j/CApWtSU6WoyxU2Jwtx5Z8UqJFQETaqaOrVXwDtZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745512235; c=relaxed/simple;
-	bh=gkgoI29nl3mSGCFDMPiXMHrPP8l/XhPBYatnb/F3jlI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rRUEdyBDe4Ha8cf2D7d5c9IatQrU5FEwaxnLLhmcI5wXi91XzFvYVzdiaAqQMCTrvOIQGSescpT/dV0Hi+4Cmz39LMaYcw2BRoljuU9mKIOrO1a94a4+agKTPXKOetbhhJyDZM+8MD7ytZ1eFyvmaQFmL3YBK5MI6oBCFHflDbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CQtGz3Zi; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-736b350a22cso1074562b3a.1;
-        Thu, 24 Apr 2025 09:30:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745512233; x=1746117033; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3cssuPsgQyNe41/I1FihzTAF2D9xk/WnUmRiUzzfO9c=;
-        b=CQtGz3ZiVTPqNcfBlFBwYrLZ/ZblkYJTQij9B/RGa7DRPXLeeNvQm7jXxpCWcXZjwd
-         iiAGUVm9NZXOjQqTWGDnLAC4qyKQ0dVwBrnP6sORhuMSACJJOphZx44wd0jtueDgRvLl
-         jlzp0BbutPbxxXp/EMBt3cjsBwSSR2+xj7WlNzp6DIEvM4IwklhrzrRPYSh0NCXit1PV
-         Y0Nb8W8C6UTmXAj9U8FbJdiGBDk3GeFYUuykezvsCARENdrYnVfQ9zM8jvYDJ4NiECO7
-         qUX3+psRtOHnsriD+rR4oDxao2XEDcI/2bHVWXBZ3kZ2QcNm/044czt8lk2ptNE8/HGg
-         FT6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745512233; x=1746117033;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3cssuPsgQyNe41/I1FihzTAF2D9xk/WnUmRiUzzfO9c=;
-        b=uEN+9DafGDgjvHeKRTdqheSgiib23pryUtQhx0jh6GM4VxhaUzXiJsPdbmdfxcx2FA
-         5QvbJG5i1wndXiybvK5MFWQnILrVaiSpkNzCfHUjgq9kD3R8nZNmDoUbog2GbQ+lA0/4
-         06HMi4Ck7sgnPrhFC69R+egR3+F/PUYNGE5cTg1w3Y0LdcGJR8CIA44ZXr5zsYNOCgBf
-         cSe2Tre8tC/ywdrqwlEDWOClsOFcSuGCLZepYHqBWxfF8jTVlH4WFDkeypqzO/Mfrh28
-         axlcaOZMtq1hypE+xdQU+jBH2zjBlj6EWw7spOwzGv6+XmN0HfYvHUzEBJjglZ3UnH9j
-         dsGA==
-X-Forwarded-Encrypted: i=1; AJvYcCU+xfql2P2my5DK6pYvxo85MONfsIlwLzKQvM9j5Tfp8Yk+HnJzY4L1GkKj6e8w5hBzz/FMHvxltJQVzs1t3dWWiveX@vger.kernel.org, AJvYcCWQhTNUVJYssEo8uPYN1vZvom5TWdKqjj2pJ90ODxkG+oJPNM/OS1b/apteDWTKjq4pe8A=@vger.kernel.org, AJvYcCXJIodXqE3f8rqgb0TngWHwem5zCpt7ubf3OOZOcwpvfU7nFyFxXB+90x/K5hhc+3GKrLHH1qIfImYmE3CY@vger.kernel.org
-X-Gm-Message-State: AOJu0YyoJxck7BBJ9Q9a53jDLX8C+qWAQfLIsfFV7xVp+ECRfuTfFGtg
-	728uhTvUpLZ34z+asB+ieX7KgPV1WSQA/r3Ozv90SI33b4T/m1oQqVoEKdtp6wLvUgbeWFVSphx
-	oX0vSPOLa3+aa1cAzZm8XC99I97/w3D/R
-X-Gm-Gg: ASbGnctwOLsiScdr79u5mjnw+/l4W0HHtj2uO6lt2qMLpu+3Pq89GNNOLZD+Q16awWx
-	M7b5lexH/Z6Shc1nPvcBBaUpSEhLh4/WBSetyIXPph77Y5eM+JfT/GfvqlXNmHsULm+ZT3Ai68j
-	28Gkp+RzisB6WrPKENEQWfGrEvMZO7MmuiM3M9sHrq6cTzSwc+
-X-Google-Smtp-Source: AGHT+IGGekbwvhanq5AjI05sAoEBY5KX4C0V8/x4II22DmZPJubUV3X/sBf6Z53dNjKI/PYB8jlynI6ZpOUX010q0TI=
-X-Received: by 2002:a05:6a00:4642:b0:736:ab1d:83c4 with SMTP id
- d2e1a72fcca58-73e23ca12aamr4669351b3a.0.1745512233446; Thu, 24 Apr 2025
- 09:30:33 -0700 (PDT)
+	s=arc-20240116; t=1745513747; c=relaxed/simple;
+	bh=uDlPN4JXdOoW1+HN3UDnE2WvsvJfZmnRQ5QNUrEJPe4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=geoUMF5O4UDlPg2vm9KVRROX9qWdq9L7wDWzX8Qbdo9GlJpEmHME5LWha1hH44DT6R6MLg24xjNFe+NiKEts+T0fU/AgskK/9z8sl1NWTn+MIa4WII3X7knKV/9V0uo9kyE7XB7Ty2qqxhWW9n3tne85+ZzW921P8hORpiGohok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=X7O+iB/E; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53OAekK7020405;
+	Thu, 24 Apr 2025 16:55:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=grwUh/R83Atl1XMLgCEJRjsjMjCzuBRWIwIkulj/K
+	R0=; b=X7O+iB/EGae6mFEmLVANbZ3sjY87H7spgee+ubJD+0NthBRkS19iiOikg
+	1uX30vQXsrGsQU+g87/e87iGUrQ7K5yTpcD2gANkWY06feww3Zc10njBdYeB+3Ls
+	UdhzqLpzBv/7ZwvqekfmqMEa7h3c8k3um3jZP7kMzVJ4Ozy2lLYGigyEvGniEoOM
+	4ep2dShZleN3AUq7wLCXTbJjGnLDrPGGQ9d5CS4dtCm1Dtj5vsaoYfw+ywjtR3Xl
+	2lHrPM0lwvLKWjBbXLXJmQmbfHAZetJeOIGyb5343MFtAa0GtWVNgeGZFaPunNGu
+	3vTyJ7q6lfB8xyBAGMwJyg4MvR3nw==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 467krssvk0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 24 Apr 2025 16:55:32 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 53OFNlNc001344;
+	Thu, 24 Apr 2025 16:55:31 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 466jfy14xd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 24 Apr 2025 16:55:31 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 53OGtRhk46924058
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 24 Apr 2025 16:55:27 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9430620043;
+	Thu, 24 Apr 2025 16:55:27 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 63FC920040;
+	Thu, 24 Apr 2025 16:55:27 +0000 (GMT)
+Received: from heavy.boeblingen.de.ibm.com (unknown [9.155.201.197])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 24 Apr 2025 16:55:27 +0000 (GMT)
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH 0/3] selftests/bpf: Fix a few issues in arena_spin_lock
+Date: Thu, 24 Apr 2025 18:41:24 +0200
+Message-ID: <20250424165525.154403-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250421214423.393661-1-jolsa@kernel.org> <20250421214423.393661-16-jolsa@kernel.org>
- <CAEf4Bzb+LT2nTTjVXi3ATu9AsYSxZJr2XzegA09Cm8izNG=grg@mail.gmail.com> <aAozzY6ls7LLXNSc@krava>
-In-Reply-To: <aAozzY6ls7LLXNSc@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 24 Apr 2025 09:30:21 -0700
-X-Gm-Features: ATxdqUG--vTtgMshkP8IXmG-Vh6Vpor73PMkwErJv3g312IkH3n-D6jCNe965e0
-Message-ID: <CAEf4BzbLhc1PO=AfuavYhy+68Rj3u6d4OWpzZcExcOpdqMFMdA@mail.gmail.com>
-Subject: Re: [PATCH perf/core 15/22] selftests/bpf: Add hit/attach/detach race
- optimized uprobe test
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Hao Luo <haoluo@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, David Laight <David.Laight@aculab.com>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>, 
-	Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNDI0MDExNCBTYWx0ZWRfX/Z7sGmlYsVNo z2HNhDQFo7Sj1BYugqtZX3GHs2u0BiNWWmJUdI+sr1dJaTcT9bnJlsSoK15Qvf0S1OWW7NifNvd 8oko5coFq+i+mGNOUDvYInt0lfzncPx3J3H8h71DJxHh5jXD3GwcgWtjRxkFZy6lFaKzDvkcx79
+ g+bOQMLQ38QZ1JS2NoP6CiPlqzusFPB4UFSmDfgm/gzu3wgiNoW3EYsWaAchP0vpjohI1gRh16l CUDRrLeNua8CIH7Sb9KB/RIOZYJBZOUA/4+1AA/XXyFtIU/qdoXuVjicYHmmC0E1p++gE6IxXie BRHlMdufvJ2ODP4oJn+q7WeJ+ZK5STklgbKqb9o7+PgnwnnEH9Cx2hOEpCGTzUNxSrWiNaOxJ/2
+ ougVGsnroUgv3LeUjh7yoXunHantR1CYKDwDrmCsRAcldCsCidowsHf/jhF1FD48/Hh8P91/
+X-Proofpoint-GUID: f1xNc-rsVUPReOz2VOmEI0HP6Yd1OuSP
+X-Authority-Analysis: v=2.4 cv=IciHWXqa c=1 sm=1 tr=0 ts=680a6d04 cx=c_pps a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17 a=XR8D0OoHHMoA:10 a=RlltrnpUlQvl6RbA-LAA:9
+X-Proofpoint-ORIG-GUID: f1xNc-rsVUPReOz2VOmEI0HP6Yd1OuSP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-04-24_07,2025-04-24_01,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0
+ phishscore=0 bulkscore=0 clxscore=1015 spamscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2504070000
+ definitions=main-2504240114
 
-On Thu, Apr 24, 2025 at 5:51=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Wed, Apr 23, 2025 at 10:42:43AM -0700, Andrii Nakryiko wrote:
->
-> SNIP
->
-> > > +
-> > > +static void test_uprobe_race(void)
-> > > +{
-> > > +       int err, i, nr_threads;
-> > > +       pthread_t *threads;
-> > > +
-> > > +       nr_threads =3D libbpf_num_possible_cpus();
-> > > +       if (!ASSERT_GE(nr_threads, 0, "libbpf_num_possible_cpus"))
-> >
-> > I hope there are strictly more than zero CPUs... ;)
-> >
-> > > +               return;
-> > > +
-> > > +       threads =3D malloc(sizeof(*threads) * nr_threads);
-> > > +       if (!ASSERT_OK_PTR(threads, "malloc"))
-> > > +               return;
-> > > +
-> > > +       for (i =3D 0; i < nr_threads; i++) {
-> > > +               err =3D pthread_create(&threads[i], NULL, i % 2 ? wor=
-ker_trigger : worker_attach,
-> > > +                                    NULL);
-> >
-> > What happens when three is just one CPU?
-> >
->
-> right, we need at least 2 threads, how about the change below
->
-> thanks,
-> jirka
->
->
-> ---
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/to=
-ols/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> index d55c3579cebe..c885f097eed4 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> @@ -701,8 +701,9 @@ static void test_uprobe_race(void)
->         pthread_t *threads;
->
->         nr_threads =3D libbpf_num_possible_cpus();
-> -       if (!ASSERT_GE(nr_threads, 0, "libbpf_num_possible_cpus"))
-> +       if (!ASSERT_GT(nr_threads, 0, "libbpf_num_possible_cpus"))
->                 return;
-> +       nr_threads =3D max(2, nr_threads);
+Hi,
 
-yep, ack
+I tried running the arena_spin_lock test on s390x and ran into the
+following issues:
 
->
->         threads =3D malloc(sizeof(*threads) * nr_threads);
->         if (!ASSERT_OK_PTR(threads, "malloc"))
+* Changing the header file does not lead to rebuilding the test.
+* The checked for number of CPUs and the actually required number of
+  CPUs are different.
+* Endianness issue in spinlock definition.
+
+This series fixes all three.
+
+Best regards,
+Ilya
+
+Ilya Leoshkevich (3):
+  selftests/bpf: Fix arena_spin_lock.c build dependency
+  selftests/bpf: Fix arena_spin_lock on systems with less than 16 CPUs
+  selftests/bpf: Fix endianness issue in __qspinlock declaration
+
+ .../selftests/bpf/prog_tests/arena_spin_lock.c     | 14 ++++++++------
+ .../bpf/{ => progs}/bpf_arena_spin_lock.h          | 12 ++++++++++++
+ 2 files changed, 20 insertions(+), 6 deletions(-)
+ rename tools/testing/selftests/bpf/{ => progs}/bpf_arena_spin_lock.h (98%)
+
+-- 
+2.49.0
+
 
