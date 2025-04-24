@@ -1,125 +1,171 @@
-Return-Path: <bpf+bounces-56648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD556A9BA7E
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 00:15:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2672DA9BB1D
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 01:15:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12AA5467440
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 22:15:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 202F81BA3CF3
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 23:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F7028A1F3;
-	Thu, 24 Apr 2025 22:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E26EC28E603;
+	Thu, 24 Apr 2025 23:15:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FavL/Zp9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y06bmQHR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB9DD28935D
-	for <bpf@vger.kernel.org>; Thu, 24 Apr 2025 22:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B05AA21B908;
+	Thu, 24 Apr 2025 23:15:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745532904; cv=none; b=tCNuMhMUBAjL904pw2geDz4Nklzj1hcRMj/C42hLjNAlAjADeapT8khLv1WGiQUmWIGBdfcXI5G1wnueaBYH32E7qd6KVsxSE/nm1PIeAx6PQhmHLhoK8XbyGiX+WJV33p4O9rAbeWI5o9RJNPVF9KZkZ1i2CsAFuQTPR9jfC/s=
+	t=1745536502; cv=none; b=bIgKUSokYWRKST/QlCPAIlV/4AmCz2J0jOdpKau2SiVW4wzh3eDLDNFICind85dfVilnzeZX6CCrlVF4mvcFYTGooe3RPmgx7JwCvRptG7RYx0N9K1P96aQJ95iHs3j9KkpSOaAdmXy2HrtQigq8W93Fwx3c+ua/2hfBncVbO+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745532904; c=relaxed/simple;
-	bh=4i3s/2nHarO04+oMVn8Uz7DOdT6EKaS5QhII+voZm7U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OrRoId03FmwoB4gFxPimz4/wXZyRsMRciLRqUgtF3Uz7henKaMP9mL/uHBIHOTzS6eIv62DlTiiCM/e9/2kfnS76WD5y7fg+dI59DHbYJ8nEpN3NaPhcRlJKkP9YyhMwT8kM+wyefdrD9CprAIPw1hNAQrVIHcrLgO0pXwPJvoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FavL/Zp9; arc=none smtp.client-ip=209.85.219.46
+	s=arc-20240116; t=1745536502; c=relaxed/simple;
+	bh=SZmW6NDesJiC4yWM47StZa3pUw3CqjZrbcrvD8G3RfU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S3dYvUrpI57AQyq1BE/WXAfERqiOyqKOMkE06Tn0GMlHgDTRLweggQ3muJM9SBoFLUMeeyzSffa52LEZ4uUGkfe+ZZjYc7xFf4TkveQrYnLCV3Sh7D8L9JKTVdJLt+gmzjNaUZWOzUqwBC5eIoIMFxbNMBp/+33Qx3hWHV76RXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y06bmQHR; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6ed16ce246bso8682956d6.3
-        for <bpf@vger.kernel.org>; Thu, 24 Apr 2025 15:15:02 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-39ee5a5bb66so1009253f8f.3;
+        Thu, 24 Apr 2025 16:15:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745532901; x=1746137701; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PpVfnOEQuZhyZsUzUxECGMMhhgWm8Cay8T+HkujJNpA=;
-        b=FavL/Zp95Udzabj1N+DMMP1h8cqkB42qHM1eDtl1DD5cHhXiqKJIJwgj2tO+J5Iqlr
-         GvCzNzd+V7mkdQ5LJNcNvdx5B5SUa/8zlAZEbqYbrBYVqKcSvNgMmj6Lp4I2E9ianolG
-         lkaGjf4Zc8LZQFqXM43vlPHKW6DAG8iGyLlfyFi+ZbEarFmBxc/Gppk1+vZ+yXve2s1O
-         adhO5B+lVdya2iDtw0BO6oLO2FM9XUWf6Bf9IKXsqrV2ToFrweY8+WYzYJfOZc9CYLCR
-         0NIEr2k35V3qx228BiAci9tuFPvB00AaICJ62gX/Us6AjhhBYOiJBgMRrihfVwFu3r4g
-         bm2A==
+        d=gmail.com; s=20230601; t=1745536499; x=1746141299; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s8gs1eFT2kcTigsEaDxM7aO9zrXV1nvZcJgmjCeGg/s=;
+        b=Y06bmQHRe4qWmUdz3aPwQApw0E8WpNMZXVjbcoP2myBGjpBEu+Q9qULj5JTJ0Kbdx4
+         pmGKqmhCWSjM5fpXcxUg+yObr8wGcdcqMKXvhBIvOhBLOA9OwBk9HfCTcaya7dUB8KB/
+         WqFX+wK33tRhVvg5VgI7Qsw2/6Z37KOKw4dRu5s29ZmXvUKuRcHbTLrETmIBZdCsf/gc
+         4HDxjgVjNn6dLq6TwbplaZw4jJrdlnhyerQKmLNdyZXuehZ23ixa2/iSk//JA41Et9Ny
+         gQYBXUgunGxEBLHHlhOIKkGFgA1ST3sLJmStwgoytZmCVJkXUXF4L7LcvkjOqO2pIrtw
+         WW2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745532901; x=1746137701;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PpVfnOEQuZhyZsUzUxECGMMhhgWm8Cay8T+HkujJNpA=;
-        b=dcebtJBhgOZ9hjI39RaLT4rnG/fd+ir6chweKDGF3g3g0pjB9nlEv7qhshaaPYgLd9
-         vI9Ywj/Op7D9cN/i4Q53vDnNZmlci6G1blA7pHgzRMSaltsh1hIA19v9LMcppFyiPED7
-         yiMe44T5JAHejwaQPBwWmFMfOAAA+Z6+RCb/xgqgspZ9gg0GlPISiQ2aaBrEZd7zd3Ue
-         hXeh5vPBr6zuYUZqnZLgISlwVKZvSrRj7A5bzcII6A1XXQAE0tm2ppt0kl5BcJ95ND0j
-         bERBSY3QQMzbe8dSvXO49NawU1cRrj2uBjjhWbBFQiLBO1KIRrbZP4ddg14/Sa9dcJEF
-         2tig==
-X-Gm-Message-State: AOJu0Yw1yfRXmfPZjlBj6MwuGW9MkLu+caVzK31D5jeGJNqHwP3jguHb
-	1rUI5S2dk93Qy3MkmwRFhcLDyAiAZh+llGGvRchJPTEsQbzZgg7RgmnoONRPiYzQ9A==
-X-Gm-Gg: ASbGncvP8o71lgjIkTVu7LHQUC7fYpNw4pWeZFuSmF7AoxqTR/t0I/L79jsw8LESQo4
-	qYbabRBIp9qFNmo7+lPbRUKe3mIStg1R0GJWavP4V6RcYqQ3ay9WzaUiiMfU0bpeGgGbO7pfA5r
-	RaYXPwQcLqiv+Z7RH8O8E70VKfwELUbSuPIJ0BQv2jR+uM447XBD9qbgZrv3abxQXQQO8N+57+t
-	6j8huMkjP/Za/aKt+xbtwvVndN3bFgc1rgQObjKr/LS6DA/Ach13KDgUSEXM+a42fqJQO5KxlUJ
-	om3gigq7wc9/kvR7QDuG8o9w8E7z2jbC5F66t/roBtGlax6q96gBl5odEcNSJSKt5qJbhJCzDK9
-	/cOjf3QTsh0+/FGADmA==
-X-Google-Smtp-Source: AGHT+IHGuni4azmESJ+k6O6hd05DXiX9R1mzVCFYgdWxlxYR5Nb8mev8lR7glzuiO0DDaruVAbwfVQ==
-X-Received: by 2002:a05:6214:2423:b0:6ed:1651:e8c1 with SMTP id 6a1803df08f44-6f4cb9bedbfmr2398826d6.13.1745532901141;
-        Thu, 24 Apr 2025 15:15:01 -0700 (PDT)
-Received: from localhost (pool-173-68-184-64.nycmny.fios.verizon.net. [173.68.184.64])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-47e9f7a820esm17673281cf.41.2025.04.24.15.15.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Apr 2025 15:15:00 -0700 (PDT)
-From: ">" <jonathan.wiepert@gmail.com>
-X-Google-Original-From: Jonathan Wiepert jonathan.wiepert@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Mykyta Yatsenko <yatsenko@meta.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jordan Rome <linux@jordanrome.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Jonathan Wiepert <jonathan.wiepert@gmail.com>,
-	Kernel Team <kernel-team@fb.com>
-Subject: [PATCH bpf-next] Use thread-safe function pointer in libbpf_print
-Date: Thu, 24 Apr 2025 18:14:57 -0400
-Message-ID: <20250424221457.793068-1-jonathan.wiepert@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        d=1e100.net; s=20230601; t=1745536499; x=1746141299;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s8gs1eFT2kcTigsEaDxM7aO9zrXV1nvZcJgmjCeGg/s=;
+        b=EWMu6+VEBDdh0Wivz7+oiKNsVTfx5dMeKgRt68oD+jW0ffJOlXC0K4n4hYXdqAdLNH
+         AsTM1YX+kJQluYc3n9bdstrapyzAtK1joIquxCuY3MmOAJJQIcCJJEFn3anZcir0f+9R
+         dY43k0XgWDA055vssx2ty0poFrw7eATKhEjrtPA5azhUwMQFzSItcJ1H2Cu32o2gWOc5
+         INPLYPekFpWVOeAeE4nzyqRXSIv/FRUlmzmb/rWMVwSu60krE59dFCFePoO0MDKmGvy0
+         uVVp5yMi22yVoEV6nOZVXn/4YVH2I9x65xsqBT6dKKavVgbqd0YnzDl0b7KbB36aX6/M
+         pQhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUdpMA5lMOL3l0J9kS22iZqI0vFrAZFB5jOz4oruZJPChxGN7s9fbRMWYj98GzNlemdPhLnJJ0GnViXqpW4@vger.kernel.org, AJvYcCVNOaQjxrIs72d67lkgHhzJWhKy+eKJPGZflboTPRlnASbgCFD7Z6UFH1idtPZaeTgI4aVj2Im/ssYXvQJoMufX@vger.kernel.org, AJvYcCXOvktZl6Q2hGrTsZ8sW/pEGMuuo7uv4s3xJsn9Tg1knOKoMmlmSVVZ48ffL+sSxg3YhEY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyjDX5Fx2yak3uEH+tHMUVgjOGp5bAKJnXkNXtEZDYU8OlloeNB
+	1DNuO3psY9Cpup3TWSENccYb2aiMQ6iDfroBBOroXXGvDArc2tcFzhdLbypiZ/Lm4fVc+xzFXrE
+	KauKXyS/44ei6n3QMzRmrhFZrBnQ=
+X-Gm-Gg: ASbGncs1BGteImOxQSUDf1Ga+7LT5nvvYsMekXsAOC8JoxuXLjBvATjRZOW0gRW7NUD
+	w880yolIZBUa7baeDZreMlN6nbGFZ3hWothjBQ06t7IuYnKu4IKoUw9Pwr8QR7s7cACtL9bJ8b7
+	W/0ysQCf0njX3gFLX8C0NMx05FLZPh45zQ0yrXqQ==
+X-Google-Smtp-Source: AGHT+IE/YHe0tNhYaMF75gOnF/79ImQh8cJXhRvuuQQVkEf5Rbn7XpEgOWmmcxAdQyOyipX96Oi3C6Ci8VDp5VFlVyI=
+X-Received: by 2002:a5d:47a9:0:b0:39a:c9ac:cd58 with SMTP id
+ ffacd0b85a97d-3a074e37565mr6270f8f.29.1745536498767; Thu, 24 Apr 2025
+ 16:14:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
+ <20250411-many_args_arm64-v1-1-0a32fe72339e@bootlin.com> <CAEf4Bzbn6BdXTOb0dTcsQmOMZpp5=DzGS2hHHQ3+dwcja=gv+w@mail.gmail.com>
+ <D98Q8BRNUVS9.11J60C67L1ALR@bootlin.com> <CAEf4BzZHMYyGDZ4c4eNXG7Fm=ecxCCbKhKbQTbCjvWmKtdwvBw@mail.gmail.com>
+ <D9E9IQQ3QKXM.3UJ17G9CBS1FH@bootlin.com> <6b6472c3-0718-4e60-9972-c166d51962a3@huaweicloud.com>
+ <D9EWSDXHDGFJ.FIDSHIR1OP80@bootlin.com>
+In-Reply-To: <D9EWSDXHDGFJ.FIDSHIR1OP80@bootlin.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 24 Apr 2025 16:14:47 -0700
+X-Gm-Features: ATxdqUHSd3r3JNAn_frzfTxFj2BJG7Z5GLEC-zQw6e4_nKCYPS6OLcRLFS8EitM
+Message-ID: <CAADnVQJjQLdc_Chvz9v2-huCb9rmi048heK-eEX30AtW10H+-Q@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 1/4] bpf: add struct largest member size in
+ func model
+To: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Cc: Xu Kuohai <xukuohai@huaweicloud.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Puranjay Mohan <puranjay@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Florent Revest <revest@chromium.org>, Bastien Curutchet <bastien.curutchet@bootlin.com>, 
+	ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Jonathan Wiepert <jonathan.wiepert@gmail.com>
+On Thu, Apr 24, 2025 at 6:38=E2=80=AFAM Alexis Lothor=C3=A9
+<alexis.lothore@bootlin.com> wrote:
+>
+> Hi Xu,
+>
+> On Thu Apr 24, 2025 at 2:00 PM CEST, Xu Kuohai wrote:
+> > On 4/24/2025 3:24 AM, Alexis Lothor=C3=A9 wrote:
+> >> Hi Andrii,
+> >>
+> >> On Wed Apr 23, 2025 at 7:15 PM CEST, Andrii Nakryiko wrote:
+> >>> On Thu, Apr 17, 2025 at 12:14=E2=80=AFAM Alexis Lothor=C3=A9
+> >>> <alexis.lothore@bootlin.com> wrote:
+> >>>>
+> >>>> Hi Andrii,
+> >>>>
+> >>>> On Wed Apr 16, 2025 at 11:24 PM CEST, Andrii Nakryiko wrote:
+> >>>>> On Fri, Apr 11, 2025 at 1:32=E2=80=AFPM Alexis Lothor=C3=A9 (eBPF F=
+oundation)
+> >>>>> <alexis.lothore@bootlin.com> wrote:
+>
+> [...]
+>
+> >> Thanks for the pointer, I'll take a look at it. The more we discuss th=
+is
+> >> series, the less member size sounds relevant for what I'm trying to ac=
+hieve
+> >> here.
+> >>
+> >> Following Xu's comments, I have been thinking about how I could detect=
+ the
+> >> custom alignments and packing on structures, and I was wondering if I =
+could
+> >> somehow benefit from __attribute__ encoding in BTF info ([1]). But
+> >> following your hint, I also see some btf_is_struct_packed() in
+> >> tools/lib/bpf/btf_dump.c that could help. I'll dig this further and se=
+e if
+> >> I can manage to make something work with all of this.
+> >>
+> >
+> > With DWARF info, we might not need to detect the structure alignment an=
+ymore,
+> > since the DW_AT_location attribute tells us where the structure paramet=
+er is
+> > located on the stack, and DW_AT_byte_size gives us the size of the stru=
+cture.
+>
+> I am not sure to follow you here, because DWARF info is not accessible
+> from kernel at runtime, right ? Or are you meaning that we could, at buil=
+d
+> time, enrich the BTF info embedded in the kernel thanks to DWARF info ?
 
-This patch fixes a thread safety bug where libbpf_print uses the
-global variable storing the print function pointer rather than the local
-variable that had the print function set via __atomic_load_n.
+Sounds like arm64 has complicated rules for stack alignment and
+stack offset computation for passing 9th+ argument.
 
-Signed-off-by: Jonathan Wiepert <jonathan.wiepert@gmail.com>
----
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Since your analysis shows:
+"there are about 200 functions accept 9 to 12 arguments, so adding support
+for up to 12 function arguments."
+I say, let's keep the existing limitation:
+        if (nregs > 8)
+                return -ENOTSUPP;
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 56250b5ac5b0..ea97a84460cd 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -284,7 +284,7 @@ void libbpf_print(enum libbpf_print_level level, const char *format, ...)
- 	old_errno = errno;
- 
- 	va_start(args, format);
--	__libbpf_pr(level, format, args);
-+	print_fn(level, format, args);
- 	va_end(args);
- 
- 	errno = old_errno;
--- 
-2.42.0
-
+If there is a simple and dumb way to detect that arg9+ are scalars
+with simple stack passing rules, then, sure, let's support those too,
+but fancy packed/align(x)/etc let's ignore.
 
