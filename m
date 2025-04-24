@@ -1,80 +1,80 @@
-Return-Path: <bpf+bounces-56592-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56594-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7F8FA9ADE4
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 14:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC08EA9ADE9
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 14:50:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDC174670B3
-	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 12:49:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F6BC4670BD
+	for <lists+bpf@lfdr.de>; Thu, 24 Apr 2025 12:50:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABAFB27B507;
-	Thu, 24 Apr 2025 12:49:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B3E27C869;
+	Thu, 24 Apr 2025 12:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ewpv/OpJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NDqQZMw0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 805A92701AA;
-	Thu, 24 Apr 2025 12:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3FBD27C178;
+	Thu, 24 Apr 2025 12:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745498970; cv=none; b=p1AQ4cDpGuZepml+4y7I0CxLn4rjUuJeMhelH8mo21JM0YjFWLy0YVTdgESjN95iCMGlgA3oRD24VVXSZ6fw29pYmIIYuFDnxcw/l3hjMWErQPSK2kmIu27NvDo2m3atYUL6NAx0ZWiiEmXq30IVZHJ6hvFN5y3i3bDpu23ZUNY=
+	t=1745498977; cv=none; b=j+Xm0sbi3FTe57uAZ0DC0UtxvNUa7m427to2rQ+qGZsDx0mIl9kE8YvLtWLyHUIH5m3Ne4QCg5ykCqeoGKyeWnRu+y6axgC6y3n2CIb07LkYRIB/l7qNiVtDqc3EmeZXhmDEsD7KO9ZUheXRMy0LSHgrttLMUU2CoRPnMNa0mtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745498970; c=relaxed/simple;
-	bh=bapCUSztOVKWJwb+5pwmHdYfJohpxwjaju6SBjsiAbw=;
+	s=arc-20240116; t=1745498977; c=relaxed/simple;
+	bh=ARVO6wi0rJHAK85dPXs6pHXmFUFswuNoQSAAriQmLMY=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gADLTVpY0g29bBNrhgvDxoQ91xNG5ofuGg5Uk7CoGOUpEya3OckTSuH3/PwnN2YwkNP3WCu3hc44UxCUxdzTJbSNZppoIXZtmyVPQZDLR1UYG3nHFINSSfKEtZz7r8hDD1zsOuBjzXDWaiae5ymyzEmjPIyimeZoLyreMEAmbgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ewpv/OpJ; arc=none smtp.client-ip=209.85.208.51
+	 Content-Type:Content-Disposition:In-Reply-To; b=sKq5DuLxpTOrG57DWaw24ydch8MJeV6c+urJB5lVMizqAdoFcNXP2JD/L4yi9Wrlj4x0sU11ewny7awSm0/8aSnHoI9yvDXkcusbZxiZyb42PMuRxfgZcScJvceKxBW2YaDnpdmat+x1gQ8QFR6ODqq7CUfaBg2qi7SmHW9+NoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NDqQZMw0; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5e61da95244so1677065a12.2;
-        Thu, 24 Apr 2025 05:49:28 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ac345bd8e13so148012466b.0;
+        Thu, 24 Apr 2025 05:49:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745498967; x=1746103767; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745498974; x=1746103774; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=VzmIRZFKUMaF4yUV6r2OHqoHDU/etq8iF8bz/8ZLRl8=;
-        b=Ewpv/OpJ58zXE5S3+qEb99AY/Ip6IO1thqyXbDSCLgunu+Ls/53QOXc3CruSudy6qi
-         YnsOW/OqJyoWTpJT1auUjnRKT0ysTYursLVEzje3fcle9qw9feri/hC5LG3kGTlJM0m8
-         iRdZwo5Xq0IDIJO/TT0qe+pTbydD8WEtI8fBI/SZUT0tq8wmRaE9mtQ+LVKtZqaJShuE
-         AYPiBF34PgJba8+ztZpP8FS/NyhXm+zl1Ahne/12zeRayT6Agpbj2JI1jXDRLtARkISU
-         PdjnjOAm71tYYF9xm97ERgYIxa0UYoWw393H2+odRg0s9AVIDbM1gQpWATfaFEFTokf9
-         2Hag==
+        bh=hhanhASE/YzT68T6Z7r9A1GJR6VWNb/hW+1VEv10VBk=;
+        b=NDqQZMw0TingtmKAKArC73mUb0Ni/CJyP2aRyvXvL3qg8V0A4zj53pWfGCfZ2gStFB
+         TrRdRXQ2XOcIQ7NfLgrYYO+49LJDmUJl0cPiCcxjpJl2R06QD4toNGf3K8aHWW8atbbw
+         TWuaUu/oV8W93qB3txq1kAptDk79IxDPiQSRvjbGXCIwe3DI1SsSEsLa1G/ZpIzpSQxr
+         cZ78G9Td8qveULK2lIBQ4jbJjNPNc+Gdf8z425SXAjqgHQycRSZbjfB0LIrUH8+FGBJo
+         GFFvRkzc2e++RdAddWcaRlwq/VEDoOVDndh23udJLGEkFahdCvcgBj4BSg8xlX/IhPV9
+         wuag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745498967; x=1746103767;
+        d=1e100.net; s=20230601; t=1745498974; x=1746103774;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VzmIRZFKUMaF4yUV6r2OHqoHDU/etq8iF8bz/8ZLRl8=;
-        b=rDM82wx8dJzyRH955OF6d0xlB6RG/zs14VKxB5JvVbVu/HLiCjhYt5TcCkd85zOviJ
-         oA4XoBs9tW1LX5N2V3gP+pX33QMiiKBQYHMqJt8+brqCn+3TI4qJOL185fngEXHv/jX+
-         dUaFGea7szw1m/zDWYz2gvyhlQfiSqN9P8GgJBfHCYrH6BNcsmWgZqSoronR8Huf6c9d
-         oqqXQ6GXnegI2RYmxfmKP4AIsYrNC/UVU49uPbgtCzazM9ixmSG5bHs/gkB0NyN4ZDMD
-         17cd0XDfKbr3H7AvfZxwOC5hdS28aGJ+aEN/RzKLrpia40ZyKYcuiEmsMDDO2Ym51dQM
-         6E+g==
-X-Forwarded-Encrypted: i=1; AJvYcCUFA+Mq/53D3yBFtYCRQWhF/zl1SI2rXXA+k6u2egJkymHS391C0nsB8zA4W5ALJvhoUZsNArjAoflBo48O@vger.kernel.org, AJvYcCV7WmLCL6tj8o8LUTiq4xLTgVEV3QMSfHa/4ngRSz0hdcJG8K9R0OQbAEiZHJ68Q+CyNCI=@vger.kernel.org, AJvYcCWMYZeVrxvBmm2qLYj7XxoFIVF9P9OHSfSrj35/fRi/kZPCTWtG+yw+JrYM95ptqeQEn1tN2AUSTM4UlXbwDitzSMzK@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6orHmLRWCfAF1YFV/M1dkYi+FD5BvYnIhf4W12Hudo1GsYrHY
-	4KJqsfR1UiycqogedoanK3U6sxMehk2DG2L4bpaysaA8So0bwASx
-X-Gm-Gg: ASbGncsl76/I99AnOsPq6DRpUYDbbihbESzyvCnn/aaOKKdvghN+8/Iwn+YXl0BC+Hp
-	lSBcW7nD5z2Odu4co5OP6Nrdr7MHlWb/rqekl5tkzgPNsqP0eLLqxeY2jtmkKnVmLEO3DlGKUku
-	d2yNqZHHKiR/TFilJ99FYmMNz5gvhbEbmV0aueuEPrapCsP+ZzZeYKgq2dcBdKMn0TzVtWXVffg
-	SEqshFe5lYgRqfsBKXVNhwD3aFPrnOrjm3Nssb1ia8Y7UearIqy7mQu0NSTiFIxMK41sZZnyYIU
-	c/yrarwsD1A8+XIA1e/skn1GcKj37sMrNqCRkw==
-X-Google-Smtp-Source: AGHT+IH+Cy898lAbutMnyRVhjNZkSE8Zdnp6n2x+yfAHOuR14CPAFq0RKw/wQ2T8cMTfQytRbjY0Ag==
-X-Received: by 2002:a05:6402:84d:b0:5f4:c8b9:cd2c with SMTP id 4fb4d7f45d1cf-5f6df6329a4mr3031881a12.34.1745498966657;
-        Thu, 24 Apr 2025 05:49:26 -0700 (PDT)
+        bh=hhanhASE/YzT68T6Z7r9A1GJR6VWNb/hW+1VEv10VBk=;
+        b=MK+DgBQTP6iqb0lQf2IK2HT6ZZjolXXMzckzF1aoyil8Mp3WJgE231mc29yDOdmT5E
+         lfI55HtQzcEtS/Mg3p6sKcF9i+a1aAS1MB993AGSN8B1/gQMzjZ9fRHDHqgUkMbyNAKe
+         XUdxmMxKXpS26FrMMQ5Klefqh/HF1GDaHHC1dhaTY0B7Eg2GZogtUVkqQYoeSGAxuWx0
+         ZbGpxV97IioY+5KHKNg4ZqrFZQRUTdJ1Vus+EsruRnq5iHyuSocVY+cY6kFb2Wfj7jkY
+         vY3Bf4tDqbv5XJ6J+U1J9vPhGrtHGdsy6WkPaZ5JqpGvTXMkvb7BGoppqei8o9pVj9c4
+         3BUA==
+X-Forwarded-Encrypted: i=1; AJvYcCUvMLiZh4GPqdSJGeLkX4KmYZcQs5J05RJg+cqC69j+2pNkWSN0VPrmylqUGiTXnXLLRmU=@vger.kernel.org, AJvYcCV/5/xGsBXkYcClAWgfJMXBxjKBSwneWx/jqCXNxZ/2dH2wtqntANoDH/PZo0tnfpX8j3iEZ9rxtnSo3C52@vger.kernel.org, AJvYcCXNqwzJPH4d/mqAeseiyPaUqlhb0su8Dhxv/hJKdctKNmEyNMWmFjCHmadzzqBNMgyQPFKA8eR2D1OLGTDg9EGkTqwA@vger.kernel.org
+X-Gm-Message-State: AOJu0YxLfU/FRaFy4/mgy8KdhpgB9ge07WVHojVkNexTp5fvsSjnPaRM
+	YmJbsNwgT0LMstsgaVLv/GrYo5dUZMHytpVDznyMPAbf5fMtn+PDHLmxlbfy
+X-Gm-Gg: ASbGnctoO/i0mbzW1kdvOh0DKOhopXvFfu7zN6Ps5+s4jF2MttF9Ax8sYaNPzZm7ZIv
+	rWVYHAGywR45ZvL40uRkdy51z9r0dSqg+SKA408ttESFtr436HjDxIiZfzGodW4R/znek6m8uSY
+	QVaaLyb6n3zZFgYHcEmhhbDoWJ2APP4DPUz5QKegLP7/EJEjJoVAeLH7tQRb9pfWgsnHSkP1PDN
+	+V+3z3J3C51fSKa9ROaZ4LfhsXMamOATI2LF651Pcs7KRBrmJDmGYAhpsMiHi1lG23MgFALYsrC
+	8szcN5Yrzm60JeMch2I/49ETg7iJppZmy3U9Sg==
+X-Google-Smtp-Source: AGHT+IErSZdlWG7fDQwXp8ywmMuv6lppaihtTnJ7v0E8AtMrMLKxCub1upgDag7NHTZ8D7sVNZf3dQ==
+X-Received: by 2002:a17:906:4fcd:b0:aca:a347:c050 with SMTP id a640c23a62f3a-ace56df7545mr247774466b.0.1745498973887;
+        Thu, 24 Apr 2025 05:49:33 -0700 (PDT)
 Received: from krava ([173.38.220.55])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5f6ebbfa79csm1099746a12.42.2025.04.24.05.49.25
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace59830f51sm103273466b.5.2025.04.24.05.49.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Apr 2025 05:49:26 -0700 (PDT)
+        Thu, 24 Apr 2025 05:49:33 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 24 Apr 2025 14:49:23 +0200
+Date: Thu, 24 Apr 2025 14:49:31 +0200
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
@@ -88,12 +88,12 @@ Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	David Laight <David.Laight@aculab.com>,
 	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH perf/core 11/22] selftests/bpf: Use 5-byte nop for x86
- usdt probes
-Message-ID: <aAozU3alQYU0vNkw@krava>
+Subject: Re: [PATCH perf/core 13/22] selftests/bpf: Rename
+ uprobe_syscall_executed prog to test_uretprobe_multi
+Message-ID: <aAozW6C9IZULY3CL@krava>
 References: <20250421214423.393661-1-jolsa@kernel.org>
- <20250421214423.393661-12-jolsa@kernel.org>
- <CAEf4BzbxCqgPErQVBV7Ojz23ZEqYKvxi0Y4j8hq6FgXVvdQo9A@mail.gmail.com>
+ <20250421214423.393661-14-jolsa@kernel.org>
+ <CAEf4BzaseiF10Ady4FCCx=ii+es9vkcbRYLBkdaDRZ_tH8NzdQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -103,76 +103,74 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbxCqgPErQVBV7Ojz23ZEqYKvxi0Y4j8hq6FgXVvdQo9A@mail.gmail.com>
+In-Reply-To: <CAEf4BzaseiF10Ady4FCCx=ii+es9vkcbRYLBkdaDRZ_tH8NzdQ@mail.gmail.com>
 
-On Wed, Apr 23, 2025 at 10:33:18AM -0700, Andrii Nakryiko wrote:
-> On Mon, Apr 21, 2025 at 2:46 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Apr 23, 2025 at 10:36:22AM -0700, Andrii Nakryiko wrote:
+> On Mon, Apr 21, 2025 at 2:47 PM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > Using 5-byte nop for x86 usdt probes so we can switch
-> > to optimized uprobe them.
+> > Renaming uprobe_syscall_executed prog to test_uretprobe_multi
+> > to fit properly in the following changes that add more programs.
 > >
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  tools/testing/selftests/bpf/sdt.h | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> >  tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c   | 8 ++++----
+> >  .../testing/selftests/bpf/progs/uprobe_syscall_executed.c | 4 ++--
+> >  2 files changed, 6 insertions(+), 6 deletions(-)
 > >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> > index 2b00f16406c8..3c74a079e6d9 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> > @@ -277,10 +277,10 @@ static void test_uretprobe_syscall_call(void)
+> >                 _exit(0);
+> >         }
+> >
+> > -       skel->links.test = bpf_program__attach_uprobe_multi(skel->progs.test, pid,
+> > -                                                           "/proc/self/exe",
+> > -                                                           "uretprobe_syscall_call", &opts);
+> > -       if (!ASSERT_OK_PTR(skel->links.test, "bpf_program__attach_uprobe_multi"))
+> > +       skel->links.test_uretprobe_multi = bpf_program__attach_uprobe_multi(skel->progs.test_uretprobe_multi,
 > 
-> So sdt.h is an exact copy/paste from systemtap-sdt sources. I'd prefer
-> to not modify it unnecessarily.
+> this is a bit long, maybe
 > 
-> How about we copy/paste usdt.h ([0]) and use *that* for your
-> benchmarks? I've already anticipated the need to change nop
-> instruction, so you won't even need to modify the usdt.h file itself,
-> just
+> struct bpf_link *link;
 > 
-> #define USDT_NOP .byte 0x0f, 0x1f, 0x44, 0x00, 0x00
-> 
-> before #include "usdt.h"
+> link = bpf_program__attach...
+> skel->links.test_uretprobe_multi = link;
 
+ok, thanks
 
-sounds good, but it seems we need bit more changes for that,
-so far I ended up with:
-
--       __usdt_asm1(990:        USDT_NOP)                                                       \
-+       __usdt_asm5(990:        USDT_NOP)                                                       \
-
-but it still won't compile, will need to spend more time on that,
-unless you have better solution
-
-thanks,
 jirka
 
 > 
+> ?
 > 
->   [0] https://github.com/libbpf/usdt/blob/main/usdt.h
+> But other than that
 > 
-> > diff --git a/tools/testing/selftests/bpf/sdt.h b/tools/testing/selftests/bpf/sdt.h
-> > index 1fcfa5160231..1d62c06f5ddc 100644
-> > --- a/tools/testing/selftests/bpf/sdt.h
-> > +++ b/tools/testing/selftests/bpf/sdt.h
-> > @@ -236,6 +236,13 @@ __extension__ extern unsigned long long __sdt_unsp;
-> >  #define _SDT_NOP       nop
-> >  #endif
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> 
+> > +                                                       pid, "/proc/self/exe",
+> > +                                                       "uretprobe_syscall_call", &opts);
+> > +       if (!ASSERT_OK_PTR(skel->links.test_uretprobe_multi, "bpf_program__attach_uprobe_multi"))
+> >                 goto cleanup;
 > >
-> > +/* Use 5 byte nop for x86_64 to allow optimizing uprobes. */
-> > +#if defined(__x86_64__)
-> > +# define _SDT_DEF_NOP _SDT_ASM_5(990:  .byte 0x0f, 0x1f, 0x44, 0x00, 0x00)
-> > +#else
-> > +# define _SDT_DEF_NOP _SDT_ASM_1(990:  _SDT_NOP)
-> > +#endif
-> > +
-> >  #define _SDT_NOTE_NAME "stapsdt"
-> >  #define _SDT_NOTE_TYPE 3
+> >         /* kick the child */
+> > diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c b/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c
+> > index 0d7f1a7db2e2..2e1b689ed4fb 100644
+> > --- a/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c
+> > +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c
+> > @@ -10,8 +10,8 @@ char _license[] SEC("license") = "GPL";
+> >  int executed = 0;
 > >
-> > @@ -288,7 +295,7 @@ __extension__ extern unsigned long long __sdt_unsp;
-> >
-> >  #define _SDT_ASM_BODY(provider, name, pack_args, args, ...)                  \
-> >    _SDT_DEF_MACROS                                                            \
-> > -  _SDT_ASM_1(990:      _SDT_NOP)                                             \
-> > +  _SDT_DEF_NOP                                                               \
-> >    _SDT_ASM_3(          .pushsection .note.stapsdt,_SDT_ASM_AUTOGROUP,"note") \
-> >    _SDT_ASM_1(          .balign 4)                                            \
-> >    _SDT_ASM_3(          .4byte 992f-991f, 994f-993f, _SDT_NOTE_TYPE)          \
+> >  SEC("uretprobe.multi")
+> > -int test(struct pt_regs *regs)
+> > +int test_uretprobe_multi(struct pt_regs *ctx)
+> >  {
+> > -       executed = 1;
+> > +       executed++;
+> >         return 0;
+> >  }
 > > --
 > > 2.49.0
 > >
