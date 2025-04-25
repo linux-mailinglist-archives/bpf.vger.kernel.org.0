@@ -1,219 +1,165 @@
-Return-Path: <bpf+bounces-56696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B7BDA9CB16
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 16:06:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4BA8A9CC0D
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 16:50:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC87A178F7D
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 14:06:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57F773AFFE7
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 14:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEBA9255E26;
-	Fri, 25 Apr 2025 14:06:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 136C82580F9;
+	Fri, 25 Apr 2025 14:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="aueV1I4k"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ej+jyRw/"
 X-Original-To: bpf@vger.kernel.org
-Received: from lamorak.hansenpartnership.com (lamorak.hansenpartnership.com [198.37.111.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4CBE71747;
-	Fri, 25 Apr 2025 14:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.37.111.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E7228EC;
+	Fri, 25 Apr 2025 14:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745589977; cv=none; b=Nlw56Sy4vahi4KdcS3T76yD8agjjUBK2d31Gio7QH6eUe3orp2grWAHrTz+pD+QIM96ISlNYpP3qiMZ72k6T+0nn5oUD0VMFBsWTzyrIDZyFlSCqsIAi1aNBNZy7RWkEE8aQkQe4R0mQ/Fh2Thnq1rbnHIEYueDVTAxWLxO0qYE=
+	t=1745592625; cv=none; b=NGYnkD0J75liADMS8pjMHBo1AbgyHgYRgmQ952kmmxBMRqLmUWIyPk279HMkTdATHJERusIqql0xW6PwrC0uKMbLHinGvkLbWbJFflbUu7fYIMhvgKcIPHeKyCiO8ZI9jX3DnMy5Q9nJjuBM7AqYDnePKEp8mmzIHFJfoAq7Rck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745589977; c=relaxed/simple;
-	bh=JVXq101GNPFZTOl+rkQyon0U67GkQoTv02X7e7Uodus=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=eSdH7xY+8pUb4TrT8wqJB7cKNNTTA89knniZSB/SP98vNlL8Vqx/p+KoyKoesB0g5/g0ZCe7nlLuRFNqrQULc2tF2tn1C9BP4OdL2SBuNG1vyrnbbfnygxpCtPEI1M6xpmpVAc5zQ1ws1JNDkdbhUSi/LAg/uWjKaWcDTmy0dTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=aueV1I4k; arc=none smtp.client-ip=198.37.111.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1745589973;
-	bh=JVXq101GNPFZTOl+rkQyon0U67GkQoTv02X7e7Uodus=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=aueV1I4kFim9LQaM4KOqj4ntSzY7fy9dOjmTKJDHzhyJI3G5sCcOqQnzq9gd4emB0
-	 frqgJBzdWsYwOz7Z1r62KDbHzGcr2GW402bVYD7VS7adgVT/T4Oui0Qbo8m0LKCBfv
-	 SwxoqamWMpC9ECkX12cJffWoE2UV+WRR/I8txh7s=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by lamorak.hansenpartnership.com (Postfix) with ESMTPSA id 6C7841C030C;
-	Fri, 25 Apr 2025 10:06:12 -0400 (EDT)
-Message-ID: <6e086e29d258839e42ef7a83b38571d1882eb77d.camel@HansenPartnership.com>
-Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, Jonathan Corbet
- <corbet@lwn.net>, David Howells <dhowells@redhat.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>,
- Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge
- E. Hallyn" <serge@hallyn.com>, Masahiro Yamada <masahiroy@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>,
- Shuah Khan <shuah@kernel.org>, =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?=
- <mic@digikod.net>,  =?ISO-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,  Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen
- <jarkko@kernel.org>,  Jan Stancek <jstancek@redhat.com>, Neal Gompa
- <neal@gompa.dev>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,  keyrings@vger.kernel.org, Linux
- Crypto Mailing List <linux-crypto@vger.kernel.org>, LSM List
- <linux-security-module@vger.kernel.org>,  Linux Kbuild mailing list
- <linux-kbuild@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK"
- <linux-kselftest@vger.kernel.org>,  bpf <bpf@vger.kernel.org>,
- clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com,  Matteo Croce
- <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, Cong Wang
- <xiyou.wangcong@gmail.com>
-Date: Fri, 25 Apr 2025 10:06:11 -0400
-In-Reply-To: <CAADnVQJ6SRePz7yc5x3BAz7q-e8DVYq=vRdahxCZ4XzpWtnYpQ@mail.gmail.com>
-References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
-	 <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
-	 <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
-	 <87semdjxcp.fsf@microsoft.com>
-	 <CAADnVQ+JGfwRgsoe2=EHkXdTyQ8ycn0D9nh1k49am++4oXUPHg@mail.gmail.com>
-	 <87friajmd5.fsf@microsoft.com>
-	 <CAADnVQKb3gPBFz+n+GoudxaTrugVegwMb8=kUfxOea5r2NNfUA@mail.gmail.com>
-	 <87a58hjune.fsf@microsoft.com>
-	 <CAADnVQ+LMAnyT4yV5iuJ=vswgtUu97cHKnvysipc6o7HZfEbUA@mail.gmail.com>
-	 <87y0w0hv2x.fsf@microsoft.com>
-	 <CAADnVQKF+B_YYwOCFsPBbrTBGKe4b22WVJFb8C0PHGmRAjbusQ@mail.gmail.com>
-	 <2bd95ca78e836db0775da8237792e8448b8eec62.camel@HansenPartnership.com>
-	 <CAADnVQJ6SRePz7yc5x3BAz7q-e8DVYq=vRdahxCZ4XzpWtnYpQ@mail.gmail.com>
-Autocrypt: addr=James.Bottomley@HansenPartnership.com;
- prefer-encrypt=mutual;
- keydata=mQENBE58FlABCADPM714lRLxGmba4JFjkocqpj1/6/Cx+IXezcS22azZetzCXDpm2MfNElecY3qkFjfnoffQiw5rrOO0/oRSATOh8+2fmJ6el7naRbDuh+i8lVESfdlkoqX57H5R8h/UTIp6gn1mpNlxjQv6QSZbl551zQ1nmkSVRbA5TbEp4br5GZeJ58esmYDCBwxuFTsSsdzbOBNthLcudWpJZHURfMc0ew24By1nldL9F37AktNcCipKpC2U0NtGlJjYPNSVXrCd1izxKmO7te7BLP+7B4DNj1VRnaf8X9+VIApCi/l4Kdx+ZR3aLTqSuNsIMmXUJ3T8JRl+ag7kby/KBp+0OpotABEBAAG0N0phbWVzIEJvdHRvbWxleSA8SmFtZXMuQm90dG9tbGV5QEhhbnNlblBhcnRuZXJzaGlwLmNvbT6JAVgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAhkBFiEE1WBuc8i0YnG+rZrfgUrkfCFIVNYFAmBLmY0FCRs1hL0ACgkQgUrkfCFIVNaEiQgAg18F4G7PGWQ68xqnIrccke7Reh5thjUz6kQIii6Dh64BDW6/UvXn20UxK2uSs/0TBLO81k1mV4c6rNE+H8b7IEjieGR9frBsp/+Q01JpToJfzzMUY7ZTDV1IXQZ+AY9L7vRzyimnJHx0Ba4JTlAyHB+Ly5i4Ab2+uZcnNfBXquWrG3oPWz+qPK88LJLya5Jxse1m1QT6R/isDuPivBzntLOooxPk+Cwf5sFAAJND+idTAzWzslexr9j7rtQ1UW6FjO4CvK9yVNz7dgG6FvEZl6J/HOr1rivtGgpCZTBzKNF8jg034n49zGfKkkzWLuXbPUOp3/oGfsKv8pnEu1c2GbQpSmFtZXMgQm90dG9tbGV5IDxqZWpiQGxpbnV4LnZuZXQuaWJtLmNvbT6JAVYEEwEIAEACGwMHCwkIBwMCAQYVC
-	AIJCgsEFgIDAQIeAQIXgBYhBNVgbnPItGJxvq2a34FK5HwhSFTWBQJgS5mXBQkbNYS9AAoJEIFK5HwhSFTWEYEH/1YZpV+1uCI2MVz0wTRlnO/3OW/xnyigrw+K4cuO7MToo0tHJb/qL9CBJ2ddG6q+GTnF5kqUe87t7M7rSrIcAkIZMbJmtIbKk0j5EstyYqlE1HzvpmssGpg/8uJBBuWbU35af1ubKCjUs1+974mYXkfLmS0a6h+cG7atVLmyClIc2frd3o0zHF9+E7BaB+HQzT4lheQAXv9KI+63ksnbBpcZnS44t6mi1lzUE65+Am1z+1KJurF2Qbj4AkICzJjJa0bXa9DmFunjPhLbCU160LppaG3OksxuNOTkGCo/tEotDOotZNBYejWaXN2nr9WrH5hDfQ5zLayfKMtLSd33T9u0IUphbWVzIEJvdHRvbWxleSA8amVqYkBrZXJuZWwub3JnPokBVQQTAQgAPwIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AWIQTVYG5zyLRicb6tmt+BSuR8IUhU1gUCYEuZmAUJGzWEvQAKCRCBSuR8IUhU1gacCAC+QZN+RQd+FOoh5g884HQm8S07ON0/2EMiaXBiL6KQb5yP3w2PKEhug3+uPzugftUfgPEw6emRucrFFpwguhriGhB3pgWJIrTD4JUevrBgjEGOztJpbD73bLLyitSiPQZ6OFVOqIGhdqlc3n0qoNQ45n/w3LMVj6yP43SfBQeQGEdq4yHQxXPs0XQCbmr6Nf2p8mNsIKRYf90fCDmABH1lfZxoGJH/frQOBCJ9bMRNCNy+aFtjd5m8ka5M7gcDvM7TAsKhD5O5qFs4aJHGajF4gCGoWmXZGrISQvrNl9kWUhgsvoPqb2OTTeAQVRuV8C4FQamxzE3MRNH25j6s/qujtCRKYW1lcyBCb3R0b21sZXkgPGplamJAbGludXguaWJtLmNvbT6JAVQEEwEIAD
-	4CGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AWIQTVYG5zyLRicb6tmt+BSuR8IUhU1gUCYEuZmQUJGzWEvQAKCRCBSuR8IUhU1kyHB/9VIOkf8RapONUdZ+7FgEpDgESE/y3coDeeb8jrtJyeefWCA0sWU8GSc9KMcMoSUetUreB+fukeVTe/f2NcJ87Bkq5jUEWff4qsbqf5PPM+wlD873StFc6mP8koy8bb7QcH3asH9fDFXUz7Oz5ubI0sE8+qD+Pdlk5qmLY5IiZ4D98V239nrKIhDymcuL7VztyWfdFSnbVXmumIpi79Ox536P2aMe3/v+1jAsFQOIjThMo/2xmLkQiyacB2veMcBzBkcair5WC7SBgrz2YsMCbC37X7crDWmCI3xEuwRAeDNpmxhVCb7jEvigNfRWQ4TYQADdC4KsilPfuW8Edk/8tPtCVKYW1lcyBCb3R0b21sZXkgPEpCb3R0b21sZXlAT2Rpbi5jb20+iQEfBDABAgAJBQJXI+B0Ah0gAAoJEIFK5HwhSFTWzkwH+gOg1UG/oB2lc0DF3lAJPloSIDBW38D3rezXTUiJtAhenWrH2Cl/ejznjdTukxOcuR1bV8zxR9Zs9jhUin2tgCCxIbrdvFIoYilMMRKcue1q0IYQHaqjd7ko8BHn9UysuX8qltJFar0BOClIlH95gdKWJbK46mw7bsXeD66N9IhAsOMJt6mSJmUdIOMuKy4dD4X3adegKMmoTRvHOndZQClTZHiYt5ECRPO534Lb/gyKAKQkFiwirsgx11ZSx3zGlw28brco6ohSLMBylna/Pbbn5hII86cjrCXWtQ4mE0Y6ofeFjpmMdfSRUxy6LHYd3fxVq9PoAJTv7vQ6bLTDFNa0KkphbWVzIEJvdHRvbWxleSA8SkJvdHRvbWxleUBQYXJhbGxlbHMuY29tPokBHwQwAQIACQUCVyPgjAIdIAAKCRCBSuR8IUhU1tXiB/9D9OOU8qB
-	CZPxkxB6ofp0j0pbZppRe6iCJ+btWBhSURz25DQzQNu5GVBRQt1Us6v3PPGU1cEWi5WL935nw+1hXPIVB3x8hElvdCO2aU61bMcpFd138AFHMHJ+emboKHblnhuY5+L1OlA1QmPw6wQooCor1h113lZiBZGrPFxjRYbWYVQmVaM6zhkiGgIkzQw/g9v57nAzYuBhFjnVHgmmu6/B0N8z6xD5sSPCZSjYSS38UG9w189S8HVr4eg54jReIEvLPRaxqVEnsoKmLisryyaw3EpqZcYAWoX0Am+58CXq3j5OvrCvbyqQIWFElba3Ka/oT7CnTdo/SUL/jPNobtCxKYW1lcyBCb3R0b21sZXkgPGplamJAaGFuc2VucGFydG5lcnNoaXAuY29tPokBVwQTAQgAQRYhBNVgbnPItGJxvq2a34FK5HwhSFTWBQJjg2eQAhsDBQkbNYS9BQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheAAAoJEIFK5HwhSFTWbtAH/087y9vzXYAHMPbjd8etB/I3OEFKteFacXBRBRDKXI9ZqK5F/xvd1fuehwQWl2Y/sivD4cSAP0iM/rFOwv9GLyrr82pD/GV/+1iXt9kjlLY36/1U2qoyAczY+jsS72aZjWwcO7Og8IYTaRzlqif9Zpfj7Q0Q1e9SAefMlakI6dcZTSlZWaaXCefdPBCc7BZ0SFY4kIg0iqKaagdgQomwW61nJZ+woljMjgv3HKOkiJ+rcB/n+/moryd8RnDhNmvYASheazYvUwaF/aMj5rIb/0w5p6IbFax+wGF5RmH2U5NeUlhIkTodUF/P7g/cJf4HCL+RA1KU/xS9o8zrAOeut2+4UgRaZ7bmEwgqhkjOPQMBBwIDBH4GsIgL0yQij5S5ISDZmlR7qDQPcWUxMVx6zVPsAoITdjKFjaDmUATkS+l5zmiCrUBcJ6MBavPiYQ4kqn4/xwaJAbMEGAEIACYCGwIWIQTVYG5zyLRi
-	cb6tmt+BSuR8IUhU1gUCZag0LwUJDwLkSQCBdiAEGRMIAB0WIQTnYEDbdso9F2cI+arnQslM7pishQUCWme25gAKCRDnQslM7pishdi9AQDyOvLYOBkylBqiTlJrMnGCCsWgGZwPpKq3e3s7JQ/xBAEAlx29pPY5z0RLyIDUsjf9mtkSNTaeaQ6TIjDrFa+8XH8JEIFK5HwhSFTWkasH/j7LL9WH9dRfwfTwuMMj1/KGzjU/4KFIu4uKxDaevKpGS7sDx4F56mafCdGD8u4+ri6bJr/3mmuzIdyger0vJdRlTrnpX3ONXvR57p1JHgCljehE1ZB0RCzIk0vKhdt8+CDBQWfKbbKBTmzA7wR68raMQb2D7nQ9d0KXXbtr7Hag29yj92aUAZ/sFoe9RhDOcRUptdYyPKU1JHgJyc0Z7HwNjRSJ4lKJSKP+Px0/XxT3gV3LaDLtHuHa2IujLEAKcPzTr5DOV+xsgA3iSwTYI6H5aEe+ZRv/rA4sdjqRiVpo2d044aCUFUNQ3PiIHPAZR3KK5O64m6+BJMDXBvgSsMy4VgRaZ7clEggqhkjOPQMBBwIDBMfuMuE+PECbOoYjkD0Teno7TDbcgxJNgPV7Y2lQbNBnexMLOEY6/xJzRi1Xm/o9mOyZ+VIj8h4G5V/eWSntNkwDAQgHiQE8BBgBCAAmAhsMFiEE1WBuc8i0YnG+rZrfgUrkfCFIVNYFAmWoNBwFCQ8C4/cACgkQgUrkfCFIVNZs4AgAnIjU1QEPLdpotiy3X01sKUO+hvcT3/Cd6g55sJyKJ5/U0o3f8fdSn6MWPhi1m62zbAxcLJFiTZ3OWNCZAMEvwHrXFb684Ey6yImQ9gm2dG2nVuCzr1+9gIaMSBeZ+4kUJqhdWSJjrNLQG38GbnBuYOJUD+x6oJ2AT10/mQfBVZ3qWDQXr/je2TSf0OIXaWyG6meG5yTqOEv0eaTH22yBb1nbodoZkmlMMb56jzRGZuorhFE06
-	N0Eb0kiGz5cCIrHZoH10dHWoa7/Z+AzfL0caOKjcmsnUPcmcrqmWzJTEibLA81z15GBCrldfQVt+dF7Us2kc0hKUgaWeI8Gv4CzwLkCDQRUdhaZARAApeF9gbNSBBudW8xeMQIiB/CZwK4VOEP7nGHZn3UsWemsvE9lvjbFzbqcIkbUp2V6ExM5tyEgzio2BavLe1ZJGHVaKkL3cKLABoYi/yBLEnogPFzzYfK2fdipm2G+GhLaqfDxtAQ7cqXeo1TCsZLSvjD+kLVV1TvKlaHS8tUCh2oUyR7fTbv6WHi5H8DLyR0Pnbt9E9/Gcs1j11JX+MWJ7jset2FVDsB5U1LM70AjhXiDiQCtNJzKaqKdMei8zazWS50iMKKeo4m/adWBjG/8ld3fQ7/Hcj6Opkh8xPaCnmgDZovYGavw4Am2tjRqE6G6rPQpS0we5I6lSsKNBP/2FhLmI9fnsBnZC1l1NrASRSX1BK0xf4LYB2Ww3fYQmbbApAUBbWZ/1aQoc2ECKbSK9iW0gfZ8rDggfMw8nzpmEEExl0hU6wtJLymyDV+QGoPx5KwYK/6qAUNJQInUYz8z2ERM/HOI09Zu3jiauFBDtouSIraX/2DDvTf7Lfe1+ihARFSlp64kEMAsjKutNBK2u5oj4H7hQ7zD+BvWLHxMgysOtYYtwggweOrM/k3RndsZ/z3nsGqF0ggct1VLuH2eznDksI+KkZ3Bg0WihQyJ7Z9omgaQAyRDFct+jnJsv2Iza+xIvPei+fpbGNAyFvj0e+TsZoQGcC34/ipGwze651UAEQEAAYkBHwQoAQIACQUCVT6BaAIdAwAKCRCBSuR8IUhU1p5QCAC7pgjOM17Hxwqz9mlGELilYqjzNPUoZt5xslcTFGxj/QWNzu0K8gEQPePnc5dTfumzWL077nxhdKYtoqwm2C6fOmXiJBZx6khBfRqctUvN2DlOB6dFf5I+1QT9TRBvceGzw01E4Gi0xjWKAB6OII
-	MAdnPcDVFzaXJdlAAJdjfg/lyJtAyxifflG8NnXJ3elwGqoBso84XBNWWzbc5VKmatzhYLOvXtfzDhu4mNPv/z7S1HTtRguI0NlH5RVBzSvfzybin9hysE3/+r3C0HJ2xiOHzucNAmG03aztzZYDMTbKQW4bQqeD5MJxT68vBYu8MtzfIe41lSLpb/qlwq1qg0iQElBBgBAgAPBQJUdhaZAhsMBQkA7U4AAAoJEIFK5HwhSFTW3YgH/AyJL2rlCvGrkLcas94ND9Pmn0cUlVrPl7wVGcIV+6I4nrw6u49TyqNMmsYam2YpjervJGgbvIbMzoHFCREi6R9XyUsw5w7GCRoWegw2blZYi5A52xe500+/RruG//MKfOtVUotu3N+u7FcXaYAg9gbYeGNZCV70vI+cnFgq0AEJRdjidzfCWVKPjafTo7jHeFxX7Q22kUfWOkMzzhoDbFg0jPhVYNiEXpNyXCwirzvKA7bvFwZPlRkbfihaiXDE7QKIUtQ10i5kw4C9rqDKwx8F0PaWDRF9gGaKd7/IJGHJaac/OcSJ36zxgkNgLsVX5GUroJ2GaZcR7W9Vppj5H+C4UgRkuRyTEwgqhkjOPQMBBwIDBOySomnsW2SkApXv1zUBaD38dFEj0LQeDEMdSE7bm1fnrdjAYt0f/CtbUUiDaPodQk2qeHzOP6wA/2K6rrjwNIWJAT0EGAEIACcDGyAEFiEE1WBuc8i0YnG+rZrfgUrkfCFIVNYFAmWoM/gFCQSxfmUACgkQgUrkfCFIVNZhTgf/VQxtQ5rgu2aoXh2KOH6naGzPKDkYDJ/K7XCJAq3nJYEpYN8G+F8mL/ql0hrihAsHfjmoDOlt+INa3AcG3v0jDZIMEzmcjAlu7g5NcXS3kntcMHgw3dCgE9eYDaKGipUCubdXvBaZWU6AUlTldaB8FE6u7It7+UO+IW4/L+KpLYKs8V5POInu2rqahlm7vgxY5iv4Txz4EvCW2e4dAlG
-	8mT2Eh9SkH+YVOmaKsajgZgrBxA7fWmGoxXswEVxJIFj3vW7yNc0C5HaUdYa5iGOMs4kg2ht4s7yy7NRQuh7BifWjo6BQ6k4S1H+6axZucxhSV1L6zN9d+lr3Xo/vy1unzA==
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1745592625; c=relaxed/simple;
+	bh=rqBDcm5K2es7T/K3mF5QtiO717oSQOuvCM6FWzrNw6o=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=Tyie0vADXhPQFF2JSUvtMpgTETVWPCx5icggAdaHIALQVpiwjVbb54PHqSWxr4ACgL7rHytSNmlKVuBugFFU5VLmPYoct/uV6lzEm9CYpec9NIZWEstt7/gRWJDHlTmZM1ncebcxcl8ekXZoFFaS5DUjD4IY6EdmurSvDiaIuO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ej+jyRw/; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-39c31e4c3e5so1524798f8f.0;
+        Fri, 25 Apr 2025 07:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745592622; x=1746197422; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SfJxTlL3V3a7gTMiYPH62HJiED0ZxboNjSbaytkQxb8=;
+        b=ej+jyRw/lOo7AkbkOSzxwz/1CH2p7XRfuQJKDEH07M31P16o1R3NHamv8R6v9nIGkn
+         4PoCFcwHSXQs1UO7BAvEbunxF7pPBT1dGaC2T9bA4mYjAtqoKI+hO/zQiPtKEGKHZfA6
+         BTskS0GXctkSnEPdCdL+oXq69sylGl8vZv0ySTbOxQ9t4kaao99V/gw5ezk2rmRD+mu0
+         r1OACvkkDUxLYELyUoWK32xObP7hOqtkyp2EPx2D1fPWBYJ97iJ4/03k4Zly7hI0ruAQ
+         1915eQpddvu8F+vKNc2Ol1/WfPsh2EYhXijXHfSqx5w9asUnElM/rWkb20N6QmSFNMTF
+         T/Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745592622; x=1746197422;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SfJxTlL3V3a7gTMiYPH62HJiED0ZxboNjSbaytkQxb8=;
+        b=T56nPCFki+cY0GjHSNQ0qPJNzN8mOhthLjbRA+0QpJ6GsTKCR0/xltX0cHRdNhis6b
+         6ydHqEtVSlyWEa5b8gURTJ5PKsvszpnc4SY7caY64QVUiZdnVwvR+cQ839PBk1L0dzS7
+         evqNyrvEFBDm1mlcge2QVm0ycAMFSxnt2AE9fjsW4afoCiU+aDYj/q7BQR4vR9tBK6+d
+         ButSossyR8hVVupobdUvCQckb5rl3B5WLO7wrZs6k12qIoFonkLY7Ywf1mOm/oH+fu4k
+         RQLZZ2Euw9eKsKFaHbhvxdhgrsCkLjhfOgvvMo7V3bl9RIvlLYj04jeybJtD1ElDf8wF
+         LSZw==
+X-Forwarded-Encrypted: i=1; AJvYcCVyqtKH7jBg1Fs2SMFnloPwnlqFpR0zTewh3xk0v8OpAn2YWVw4skxE8kss1WkF1obSvtzyhQq2sg==@vger.kernel.org, AJvYcCWwdvpkB55TlwjcOHjGlMpwvS+q0OcbFTegKTo+CFnCp8aaLtT/zOCxl+EqK+igDZQ+dBw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYmjOFrw4eNEn22rTN0Blfrg0zJG76MBeCnPU4rBsTq675dNHM
+	ZunZe3DF+028cdYvgU9W+XkVDX9Sadf/1Hx7iZ5jRyL5+eW9s8xx+9+/yUFy68nomcU1TtzSztC
+	cXDmidkhWIAI129rYWJsSd0D/LCo=
+X-Gm-Gg: ASbGnctZ8/KbClM0buWJn95boMh7XVoqmMnQFC2bVe0DJAj17skKncSvIPVzu4NlUWG
+	Hbcup7qJl4hi4G6Yz3F20+sDDAPelPNNvNVPwL9XErSqzU15/iEcAgBVNodv5v4zOAvmOFKbrGz
+	xqG5k0aK+VPb9ypF5lII8FVX88echF7t1Lps/vZg==
+X-Google-Smtp-Source: AGHT+IFCMSIvH/NcaG9Xw17exkXZ0AJPHqDIJQHH7BcdKGAHaFVFSo8buhi5GAOR/b1mJYRNmUB6JPckY7rqHAwMBYg=
+X-Received: by 2002:a5d:5848:0:b0:399:6dc0:f15b with SMTP id
+ ffacd0b85a97d-3a074f79246mr2231396f8f.48.1745592621871; Fri, 25 Apr 2025
+ 07:50:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 25 Apr 2025 07:50:10 -0700
+X-Gm-Features: ATxdqUHu6zJTVSfX4-UMQhvcZPgod5cnqWEF4_l_itkOy51Mlgd-g2rUXZGawNY
+Message-ID: <CAADnVQL+-LiJGXwxD3jEUrOonO-fX0SZC8496dVzUXvfkB7gYQ@mail.gmail.com>
+Subject: pahole and gcc-14 issues
+To: Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 2025-04-24 at 16:41 -0700, Alexei Starovoitov wrote:
-> On Wed, Apr 23, 2025 at 7:12=E2=80=AFAM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > On Mon, 2025-04-21 at 13:12 -0700, Alexei Starovoitov wrote:
-> > [...]
-> > > Calling bpf_map_get() and
-> > > map->ops->map_lookup_elem() from a module is not ok either.
-> >=20
-> > I don't understand this objection.
->=20
-> Consider an LSM that hooks into security_bprm_*(bprm),
-> parses something in linux_binprm, then
-> struct file *file =3D
-> fd_file(fdget(some_random_file_descriptor_in_current));
-> file->f_op->read(..);
->=20
-> Would VFS maintainers approve such usage ?
+Hi All,
 
-This is a bit off topic from the request for clarification but:
+Looks like pahole fails to deduplicate BTF when kernel and
+kernel module are built with gcc-14.
+I see this issue with various kernel .config-s on bpf and
+bpf-next trees.
+I tried pahole 1.28 and the latest master. Same issues.
 
-It's somewhat standard operating procedure for LSMs.  Some do make
-decisions entirely within the data provided by the hook, but some need
-to take external readings, like selinux or IMA consulting the policy in
-the xattr or apparmor the one in the tree etc.
+BTF in bpf_testmod.ko built with gcc-14 has 2849 types.
+When built with gcc-13 it has 454 types.
+So something is confusing dedup logic.
+Would be great if dedup experts can take a look,
+since this dedup issue is breaking a lot of selftests/bpf.
 
-Incidentally, none of them directly does a file->f_op->read(); they all
-use the kernel_read_file() API which is exported from the vfs for that
-purpose.
+Also vmlinux.h generated out of the kernel compiled with gcc-13
+and out of the kernel compiled with gcc-14 shows these differences:
 
-> More so, your LSM does
-> file =3D get_task_exe_file(current);
-> kernel_read_file(file, ...);
->=20
-> This is even worse.
-> You've corrupted the ELF binary with extra garbage at the end.
-> objdump/elfutils will choke on it and you're lucky that binfmt_elf
-> still loads it.
-> The whole approach is a non-starter.
+--- vmlinux13.h    2025-04-24 21:33:50.556884372 -0700
++++ vmlinux14.h    2025-04-24 21:39:10.310488992 -0700
+@@ -148815,7 +148815,6 @@
+ extern int hid_bpf_input_report(struct hid_bpf_ctx *ctx, enum
+hid_report_type type, u8 *buf, const size_t buf__sz) __weak __ksym;
+ extern void hid_bpf_release_context(struct hid_bpf_ctx *ctx) __weak __ksym;
+ extern int hid_bpf_try_input_report(struct hid_bpf_ctx *ctx, enum
+hid_report_type type, u8 *buf, const size_t buf__sz) __weak __ksym;
+-extern bool scx_bpf_consume(u64 dsq_id) __weak __ksym;
+ extern int scx_bpf_cpu_node(s32 cpu) __weak __ksym;
+ extern struct rq *scx_bpf_cpu_rq(s32 cpu) __weak __ksym;
+ extern u32 scx_bpf_cpuperf_cap(s32 cpu) __weak __ksym;
+@@ -148825,12 +148824,8 @@
+ extern void scx_bpf_destroy_dsq(u64 dsq_id) __weak __ksym;
+ extern void scx_bpf_dispatch(struct task_struct *p, u64 dsq_id, u64
+slice, u64 enq_flags) __weak __ksym;
+ extern void scx_bpf_dispatch_cancel(void) __weak __ksym;
+-extern bool scx_bpf_dispatch_from_dsq(struct bpf_iter_scx_dsq
+*it__iter, struct task_struct *p, u64 dsq_id, u64 enq_flags) __weak
+__ksym;
+-extern void scx_bpf_dispatch_from_dsq_set_slice(struct
+bpf_iter_scx_dsq *it__iter, u64 slice) __weak __ksym;
+ extern void scx_bpf_dispatch_from_dsq_set_vtime(struct
+bpf_iter_scx_dsq *it__iter, u64 vtime) __weak __ksym;
+ extern u32 scx_bpf_dispatch_nr_slots(void) __weak __ksym;
+-extern void scx_bpf_dispatch_vtime(struct task_struct *p, u64 dsq_id,
+u64 slice, u64 vtime, u64 enq_flags) __weak __ksym;
+-extern bool scx_bpf_dispatch_vtime_from_dsq(struct bpf_iter_scx_dsq
+*it__iter, struct task_struct *p, u64 dsq_id, u64 enq_flags) __weak
+__ksym;
+ extern void scx_bpf_dsq_insert(struct task_struct *p, u64 dsq_id, u64
+slice, u64 enq_flags) __weak __ksym;
+ extern void scx_bpf_dsq_insert_vtime(struct task_struct *p, u64
+dsq_id, u64 slice, u64 vtime, u64 enq_flags) __weak __ksym;
+ extern bool scx_bpf_dsq_move(struct bpf_iter_scx_dsq *it__iter,
+struct task_struct *p, u64 dsq_id, u64 enq_flags) __weak __ksym;
 
-It's the same approach we use to create kernel modules: ELF with an
-appended signature.  If you recall the kernel summit discussions about
-it, the reason that was chosen for modules is because it's easy and the
-ELF processor simply ignores any data in the file that's not described
-by the header (which means the ELF tools you refer to above are fine
-with this if you actually try them).
+gcc-14's kernel is clearly wrong.
+These 5 kfuncs still exist in the kernel.
+I manually checked there is no if __GNUC__ > 13 in the code.
+Also:
+nm bld/vmlinux|grep -w scx_bpf_consume
+ffffffff8159d4b0 T scx_bpf_consume
+ffffffff8120ea81 t scx_bpf_consume.cold
 
-But it you really want the signature to be part of the ELF,  then the
-patch set can do what David Howells first suggested for modules: it can
-simply put the appended signature into an unloaded ELF section.
+I suspect the second issue is not related to the dedup problem.
+All 5 missing kfuncs have ".cold" optimized bodies.
+But ".cold" maybe a red herring, since
+nm bld/vmlinux|grep -w scx_bpf_dispatch
+ffffffff8159d020 T scx_bpf_dispatch
+ffffffff8120ea0f t scx_bpf_dispatch.cold
+but this kfunc is present in vmlinux14.h
 
-> > The program just got passed in to bpf_prog_load() as a set of
-> > attributes which, for a light skeleton, directly contain the code
-> > as a blob and have the various BTF relocations as a blob in a
-> > single element array map.=C2=A0 I think everyone agrees that the
-> > integrity of the program would be compromised by modifications to
-> > the relocations, so the security_bpf_prog_load() hook can't make an
-> > integrity determination without examining both.=C2=A0 If the hook can't
-> > use the bpf_maps.. APIs directly is there some other API it should
-> > be using to get the relocations, or are you saying that the
-> > security_bpf_prog_load() hook isn't fit for purpose and it should
-> > be called after the bpf core has loaded the relocations so they can
-> > be provided to the hook as an argument?
->=20
-> No. As I said twice already the only place to verify program
-> signature is a bpf subsystem itself.
-
-The above argument is actually independent of signing.  However,
-although we have plenty of subsystems that verify their own signatures,
-it's perfectly valid for a LSM to do it as well: IMA is one of the
-oldest LSMs and it's been verifying signatures over binaries and text
-files since it was first created.
-
-> Hacking into bpf internals from LSM, BPF-LSM program,
-> or any other kernel subsystem is a no go.
-
-All LSMs depend to some extent on the internals of the subsystem where
-the hook is ... the very structures passed into them are often internal
-to that subsystem.  The problem you didn't address was that some of the
-information necessary to determine the integrity properties in the bpf
-hook is in a map file descriptor.  Since the map merely wraps a single
-blob of data, that could easily be passed in to the hook instead of
-having the LSM extract it from the map.  How the hook gets the data is
-an internal implementation detail of the kernel that can be updated
-later.
-
-> > The above, by the way, is independent of signing, because it
-> > applies to any determination that might be made in the
-> > security_bpf_prog_load() hook regardless of purpose.
->=20
-> security_bpf_prog_load() should not access bpf internals.
-> That LSM hook sees the following:
-> security_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_tok=
-en *token, bool kernel);
->=20
-> LSM can look into uapi things there.
-
-Is that the misunderstanding? That's not how LSMs work: they are not
-bound by only the UAPI, they are in kernel and have full access to the
-kernel API so they can introspect stuff and make proper determinations.
-
-> Like prog->sleepable, prog->tag, prog->aux->name,
-> but things like prog->aux->jit_data or prog->aux->used_maps
-> are not ok to access.
-> If in doubt, ask on the mailing list.
-
-I am aren't I? At least the bpf is one of the lists cc'd on this.
-
-Regards,
-
-James
-
+If it makes a difference I have these configs:
+# CONFIG_DEBUG_INFO_DWARF4 is not set
+# CONFIG_DEBUG_INFO_DWARF5 is not set
+# CONFIG_DEBUG_INFO_REDUCED is not set
+CONFIG_DEBUG_INFO_COMPRESSED_NONE=y
+# CONFIG_DEBUG_INFO_COMPRESSED_ZLIB is not set
+# CONFIG_DEBUG_INFO_SPLIT is not set
+CONFIG_DEBUG_INFO_BTF=y
+CONFIG_PAHOLE_HAS_SPLIT_BTF=y
+CONFIG_DEBUG_INFO_BTF_MODULES=y
 
