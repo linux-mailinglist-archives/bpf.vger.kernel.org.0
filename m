@@ -1,344 +1,173 @@
-Return-Path: <bpf+bounces-56679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56680-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD154A9C04F
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 10:02:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 436D8A9C05F
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 10:07:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6615189C1F2
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 08:02:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D1094A66E9
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 08:07:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0F1233136;
-	Fri, 25 Apr 2025 08:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671B8233704;
+	Fri, 25 Apr 2025 08:07:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Tq0BWbZR"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Unv1MIkJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD94D26AEC;
-	Fri, 25 Apr 2025 08:02:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12BF233140
+	for <bpf@vger.kernel.org>; Fri, 25 Apr 2025 08:07:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745568139; cv=none; b=UHZvwDUhcjtM209bj+DW1buPge9+JBAq8GgzbDT5bZ6CH1NC2T3Zz5HB7DHSTsV0cUC/O7ZdOEj2NCAE/wCWcnww5I6KogL2MLH+SfNVBTzIqpSlIpyZTKFhlOWOwtCy6o+E5/pw+BdAT+NpUpquIC6V3LEoMd6ARXjyfgHHy2M=
+	t=1745568425; cv=none; b=D5SbtitIxffXByZanD+TzZ1cwRvpEI/h3Pwm1F3Dd9/RUbmO+6cETXqOSORnnoBL3ng4PwrE5ZrYPX1sT3n4j93KPb3tp1iii6wkniQJZrl0xTeJs2Dk7F7tIYSv1mbz7Um3o41pZjCAT5VL/EAND0Im8Uc8CNUxyLJvSXcFZI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745568139; c=relaxed/simple;
-	bh=oCUcG3o8xYWiupP/5NaC/9IlwbrbnMsu4Ag3g9Bf/SI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Afrfs5Nk/O89G5a89U16RH40AF1pViCT2ZrwY3f7d6hJnzdHAW53z/m2kkJo08lcelzP1VTxa4wSqPRJZFd2uMqF/tuZLHKxPtXk/Qcmcc4+Lc8kKtsaQoVkDxaS0yN+I9m7oAq5wX0KE7laiHAqJmUFsiMNNFaAZwPbM82G5TE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Tq0BWbZR; arc=none smtp.client-ip=117.135.210.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=snh06
-	xH5rGaut6A5VJ9ZVezCog4RyQuNY5yFbN6JYWk=; b=Tq0BWbZRSr6W6ezmB/e4s
-	rO19nCY75j3gcbc6py1hQYCk/wc2gXQSnlWKnrUnmvCPFDmsAHZ3Vg+1igb6ucg4
-	QT/+vyv7FfYfRIxiDhx8ryNJXdGEfmEesZqmHW4qekqTg0ToaG3eP2Cm6mTkmVDG
-	1ucqVtj2nclAcOD2flLkcM=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wBn8FQ8QQtopkvkCA--.25S2;
-	Fri, 25 Apr 2025 16:01:01 +0800 (CST)
-From: Feng Yang <yangfeng59949@163.com>
-To: martin.lau@linux.dev,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mattbobrowski@google.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	davem@davemloft.net
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH bpf-next] bpf: Allow some trace helpers for all prog types
-Date: Fri, 25 Apr 2025 16:00:32 +0800
-Message-Id: <20250425080032.327477-1-yangfeng59949@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1745568425; c=relaxed/simple;
+	bh=C0vEA9hITINUFq21qN7+MPFAG54LSqVcGMT6tYWPCMc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=c5m+4QDjJg6tdb1U7o3Z0ZcVrbDzzdohB9UgNaNVlzqICHNsk+0NwOe/emBMykWHjKiWBQRqjeP6qVKx1OyVnrlLc+gMxfAGb7PNPQxzxcO0PxvzpSrBKEuTNqPb46s5rYObFDCl8eTn3QqKa7dJ1+icqU1tIa1mVW1dLoVzWt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Unv1MIkJ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1745568421;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C0vEA9hITINUFq21qN7+MPFAG54LSqVcGMT6tYWPCMc=;
+	b=Unv1MIkJVr/xCJyAASTeughOIxXgBopEK0gaebTy21lyvAVaDuDuTgEq0GnKOtPXW6YsSr
+	j9vfN1EQxxSNkB33WtmAzsp26VAtqrNjcawhFeazc/hVusbC2XlW89QhVd58G278Ogd8k7
+	Es1JRu6ilvvH0KEELfgVITwnfBLifk0=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-329-YwwiiDwnN9uQhPPp3GZLww-1; Fri, 25 Apr 2025 04:06:57 -0400
+X-MC-Unique: YwwiiDwnN9uQhPPp3GZLww-1
+X-Mimecast-MFC-AGG-ID: YwwiiDwnN9uQhPPp3GZLww_1745568416
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5f620c5f8e4so1914758a12.1
+        for <bpf@vger.kernel.org>; Fri, 25 Apr 2025 01:06:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745568416; x=1746173216;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C0vEA9hITINUFq21qN7+MPFAG54LSqVcGMT6tYWPCMc=;
+        b=RIrQYG/vDTLIWlsOGNUTRSa33VGIMITlrBe7zrcyCTFJ323LfoHUDdQz5Og7Nfsrw4
+         0dDNjK/EXEJGeghBrI57i2azH8JHkzLWD3ul9qFJKQ0bYDAuikjVBjJdTe0pRymQWg23
+         z4CUyGuGWIskzsihf4QSu3D2YUp6g90oCIIcYnRF7DSczcEx3thB7Eex5id1tx2/616f
+         xWoYnJt4GjTYxBqnfxlarPHUvBYwzynn5b7rMSK04KZQYSlL404arhd75Btyh+DoTalx
+         VMnIWrtzzjzOtIUpaI+hK/tD/5KQ5pO0HD7C8SEMO9hGrHqK/WTyJkrgKtfTPkPQ2BNL
+         I1bw==
+X-Forwarded-Encrypted: i=1; AJvYcCXh5cujDA6gaOIywnQuoQuMiH/Qbzov7UDZ7u8q/AGYkvV9/E1qTOcw5kh5xVcAQtoGoog=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCJ4JzpkL67i87G8b0yC9b4NxTNnOno1FLRVsDCpbkN1J1z5QU
+	6Xr35KF3l7LPPCwCO1zbSby3e0f/LlwFimqZd2q3xo0/PKcVH/aahYUaABbZrh4kKM6YGX2uLKS
+	HKv0CF82wP99zYCh4IR3h23P303pqk+psPofbiHDDMtOyRy/pgQ==
+X-Gm-Gg: ASbGncviopQdtZCqStypInWrReCw+u2FRRnkJZ0496mn4PlCziBDJeYjImlrGWc9Oai
+	DGXSLrt+XlDBVrggNG0DluIVJM4cGqlM/CkxF5yjeWDW6MWAcjM7UJLz5sB9Ku2zZdrMBUL+vs8
+	/wxrHKiEh/pMXAD8L4ufoZ6HOKROO8+RtPlA/Ms7g1+CEsc/H9ll1U/3vqr9vQe3TXNsSOVFm8K
+	sWJhvPu02C3ZvCuNqWIfkvG1B00nbds2EN7YoW8I5TiNfeGhCNIeAXpjSTo4ghmGkfcEEamOdpx
+	Abc5r2pKqjzo53cwQTfwP4YBYpOLyeyoQiCm
+X-Received: by 2002:a05:6402:34c2:b0:5ec:cd52:27c9 with SMTP id 4fb4d7f45d1cf-5f723a14ffdmr958910a12.31.1745568415833;
+        Fri, 25 Apr 2025 01:06:55 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHICv/JNk8k7fYInMalFni/XTF4Yka/+A4hIJuXaq1ow5LsmSgtSTJXUqpu3AXRwYa4aMT2jA==
+X-Received: by 2002:a05:6402:34c2:b0:5ec:cd52:27c9 with SMTP id 4fb4d7f45d1cf-5f723a14ffdmr958886a12.31.1745568415400;
+        Fri, 25 Apr 2025 01:06:55 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5f7038340f5sm879917a12.78.2025.04.25.01.06.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Apr 2025 01:06:54 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id AD6661A037D9; Fri, 25 Apr 2025 10:06:52 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Jakub Sitnicki <jakub@cloudflare.com>, Stanislav Fomichev
+ <stfomichev@gmail.com>
+Cc: Arthur Fabre <arthur@arthurfabre.com>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, hawk@kernel.org, yan@cloudflare.com,
+ jbrandeburg@cloudflare.com, lbiancon@redhat.com, ast@kernel.org,
+ kuba@kernel.org, edumazet@google.com, kernel-team@cloudflare.com
+Subject: Re: [PATCH RFC bpf-next v2 10/17] bnxt: Propagate trait presence to
+ skb
+In-Reply-To: <87msc5e68a.fsf@cloudflare.com>
+References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com>
+ <20250422-afabre-traits-010-rfc2-v2-10-92bcc6b146c9@arthurfabre.com>
+ <aAkW--LAm5L2oNNn@mini-arch> <D9EBFOPVB4WH.1MCWD4B4VGXGO@arthurfabre.com>
+ <aAl7lz88_8QohyxK@mini-arch> <87tt6d7utp.fsf@toke.dk>
+ <aApbI4utFB3riv4i@mini-arch> <87msc5e68a.fsf@cloudflare.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Fri, 25 Apr 2025 10:06:52 +0200
+Message-ID: <87cyd07jhf.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wBn8FQ8QQtopkvkCA--.25S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3trW3tr1DKFWrKr47ArykAFb_yoWkJFyxpF
-	nrAry3Ar4ktw4aqr17Jwn7ZryFk34UX3y8GaykGw1xur42qr9rtF1UKF429F1rZr9rW343
-	Z3yqvFZ0kr1xKa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jaHq7UUUUU=
-X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiTg46eGgLQPwKkQAAsG
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Feng Yang <yangfeng@kylinos.cn>
+Jakub Sitnicki <jakub@cloudflare.com> writes:
 
-if it works under NMI and doesn't use any context-dependent things,
-should be fine for any program type. The detailed discussion is in [1].
+> On Thu, Apr 24, 2025 at 08:39 AM -07, Stanislav Fomichev wrote:
+>> On 04/24, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>
+> [...]
+>
+>>> Being able to change the placement (and format) of the data store is the
+>>> reason why we should absolutely *not* expose the internal trait storage
+>>> to AF_XDP. Once we do that, we effectively make the whole thing UAPI.
+>>> The trait get/set API very deliberately does not expose any details
+>>> about the underlying storage for exactly this reason :)
+>>
+>> I was under the impression that we want to eventually expose trait
+>> blobs to the userspace via getsockopt (or some other similar means),
+>> is it not the case? How is userspace supposed to consume it?
+>
+> Yes, we definitely want to consume and produce traits from userspace.
+>
+> Before last Netdev [1], our plan was for the socket glue layer to
+> convert between the in-kernel format and a TLV-based stable format for
+> uAPI.
+>
+> But then Alexei suggested something that did not occur to us. The traits
+> format can be something that BPF and userspace agree on. The kernel just
+> passes it back and forth without needing to understand the content. This
+> naturally simplifies changes in the socket glue layer.
+>
+> As Eric pointed out, this is similar to exposing raw TCP SYN headers via
+> getsockopt(TCP_SAVED_SYN). BPF can set a custom TCP option, and
+> userspace can consume it.
+>
+> The trade-off is that then the traits can only be used in parts of the
+> network stack where a BPF hook exist.
 
-[1] https://lore.kernel.org/all/CAEf4Bza6gK3dsrTosk6k3oZgtHesNDSrDd8sdeQ-GiS6oJixQg@mail.gmail.com/
+It also means that we can't change the format later because it becomes
+an API consumed by userspace. Regardless of whether we deem it "UAPI"
+and not, it is bound to ossify. TCP headers are actually an excellent
+example of this; they are ostensibly modifiable, but it's all but
+impossible to do so in practice, because implementations make
+assumptions on the expected format and break if it changes.
 
-Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
----
- kernel/bpf/cgroup.c      |  6 -----
- kernel/bpf/helpers.c     | 50 +++++++++++++++++++++++++++++++++++++
- kernel/trace/bpf_trace.c | 53 +++++-----------------------------------
- net/core/filter.c        |  2 --
- 4 files changed, 56 insertions(+), 55 deletions(-)
+Also, making the format "agreed upon between BPF and userspace", means
+that the kernel won't be able to use the data stored in traits itself
+(since it does not know the format). We do want fields stored in traits
+to be consumable by the kernel as well, so for this reason it is not a
+good idea to leave it up to BPF to define the format either.
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 84f58f3d028a..dbdad5f42761 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -2607,16 +2607,10 @@ const struct bpf_func_proto *
- cgroup_current_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
- 	switch (func_id) {
--	case BPF_FUNC_get_current_uid_gid:
--		return &bpf_get_current_uid_gid_proto;
--	case BPF_FUNC_get_current_comm:
--		return &bpf_get_current_comm_proto;
- #ifdef CONFIG_CGROUP_NET_CLASSID
- 	case BPF_FUNC_get_cgroup_classid:
- 		return &bpf_get_cgroup_classid_curr_proto;
- #endif
--	case BPF_FUNC_current_task_under_cgroup:
--		return &bpf_current_task_under_cgroup_proto;
- 	default:
- 		return NULL;
- 	}
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index e3a2662f4e33..3b089020c18b 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -23,6 +23,7 @@
- #include <linux/btf_ids.h>
- #include <linux/bpf_mem_alloc.h>
- #include <linux/kasan.h>
-+#include <linux/bpf_verifier.h>
- 
- #include "../../lib/kstrtox.h"
- 
-@@ -1907,11 +1908,21 @@ static const struct bpf_func_proto bpf_dynptr_data_proto = {
- 
- const struct bpf_func_proto bpf_get_current_task_proto __weak;
- const struct bpf_func_proto bpf_get_current_task_btf_proto __weak;
-+#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-+const struct bpf_func_proto bpf_probe_read_compat_proto __weak;
-+const struct bpf_func_proto bpf_probe_read_compat_str_proto __weak;
-+#endif
- const struct bpf_func_proto bpf_probe_read_user_proto __weak;
- const struct bpf_func_proto bpf_probe_read_user_str_proto __weak;
- const struct bpf_func_proto bpf_probe_read_kernel_proto __weak;
- const struct bpf_func_proto bpf_probe_read_kernel_str_proto __weak;
- const struct bpf_func_proto bpf_task_pt_regs_proto __weak;
-+const struct bpf_func_proto bpf_perf_event_read_proto __weak;
-+const struct bpf_func_proto bpf_send_signal_proto __weak;
-+const struct bpf_func_proto bpf_send_signal_thread_proto __weak;
-+const struct bpf_func_proto bpf_get_task_stack_sleepable_proto __weak;
-+const struct bpf_func_proto bpf_get_task_stack_proto __weak;
-+const struct bpf_func_proto bpf_get_branch_snapshot_proto __weak;
- 
- const struct bpf_func_proto *
- bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-@@ -1965,6 +1976,8 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_current_pid_tgid_proto;
- 	case BPF_FUNC_get_ns_current_pid_tgid:
- 		return &bpf_get_ns_current_pid_tgid_proto;
-+	case BPF_FUNC_get_current_uid_gid:
-+		return &bpf_get_current_uid_gid_proto;
- 	default:
- 		break;
- 	}
-@@ -2022,6 +2035,8 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_current_cgroup_id_proto;
- 	case BPF_FUNC_get_current_ancestor_cgroup_id:
- 		return &bpf_get_current_ancestor_cgroup_id_proto;
-+	case BPF_FUNC_current_task_under_cgroup:
-+		return &bpf_current_task_under_cgroup_proto;
- #endif
- 	default:
- 		break;
-@@ -2037,6 +2052,16 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_current_task_proto;
- 	case BPF_FUNC_get_current_task_btf:
- 		return &bpf_get_current_task_btf_proto;
-+	case BPF_FUNC_get_current_comm:
-+		return &bpf_get_current_comm_proto;
-+#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-+	case BPF_FUNC_probe_read:
-+		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
-+		       NULL : &bpf_probe_read_compat_proto;
-+	case BPF_FUNC_probe_read_str:
-+		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
-+		       NULL : &bpf_probe_read_compat_str_proto;
-+#endif
- 	case BPF_FUNC_probe_read_user:
- 		return &bpf_probe_read_user_proto;
- 	case BPF_FUNC_probe_read_kernel:
-@@ -2057,6 +2082,31 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return bpf_get_trace_vprintk_proto();
- 	case BPF_FUNC_perf_event_read_value:
- 		return bpf_get_perf_event_read_value_proto();
-+	case BPF_FUNC_perf_event_read:
-+		return &bpf_perf_event_read_proto;
-+	case BPF_FUNC_send_signal:
-+		return &bpf_send_signal_proto;
-+	case BPF_FUNC_send_signal_thread:
-+		return &bpf_send_signal_thread_proto;
-+	case BPF_FUNC_get_task_stack:
-+		return prog->sleepable ? &bpf_get_task_stack_sleepable_proto
-+				       : &bpf_get_task_stack_proto;
-+	case BPF_FUNC_copy_from_user:
-+		return prog->sleepable ? &bpf_copy_from_user_proto : NULL;
-+	case BPF_FUNC_copy_from_user_task:
-+		return prog->sleepable ? &bpf_copy_from_user_task_proto : NULL;
-+	case BPF_FUNC_task_storage_get:
-+		if (bpf_prog_check_recur(prog))
-+			return &bpf_task_storage_get_recur_proto;
-+		return &bpf_task_storage_get_proto;
-+	case BPF_FUNC_task_storage_delete:
-+		if (bpf_prog_check_recur(prog))
-+			return &bpf_task_storage_delete_recur_proto;
-+		return &bpf_task_storage_delete_proto;
-+	case BPF_FUNC_get_branch_snapshot:
-+		return &bpf_get_branch_snapshot_proto;
-+	case BPF_FUNC_find_vma:
-+		return &bpf_find_vma_proto;
- 	default:
- 		return NULL;
- 	}
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 52c432a44aeb..224f02660e28 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -294,7 +294,7 @@ BPF_CALL_3(bpf_probe_read_compat, void *, dst, u32, size,
- 	return bpf_probe_read_kernel_common(dst, size, unsafe_ptr);
- }
- 
--static const struct bpf_func_proto bpf_probe_read_compat_proto = {
-+const struct bpf_func_proto bpf_probe_read_compat_proto = {
- 	.func		= bpf_probe_read_compat,
- 	.gpl_only	= true,
- 	.ret_type	= RET_INTEGER,
-@@ -313,7 +313,7 @@ BPF_CALL_3(bpf_probe_read_compat_str, void *, dst, u32, size,
- 	return bpf_probe_read_kernel_str_common(dst, size, unsafe_ptr);
- }
- 
--static const struct bpf_func_proto bpf_probe_read_compat_str_proto = {
-+const struct bpf_func_proto bpf_probe_read_compat_str_proto = {
- 	.func		= bpf_probe_read_compat_str,
- 	.gpl_only	= true,
- 	.ret_type	= RET_INTEGER,
-@@ -572,7 +572,7 @@ BPF_CALL_2(bpf_perf_event_read, struct bpf_map *, map, u64, flags)
- 	return value;
- }
- 
--static const struct bpf_func_proto bpf_perf_event_read_proto = {
-+const struct bpf_func_proto bpf_perf_event_read_proto = {
- 	.func		= bpf_perf_event_read,
- 	.gpl_only	= true,
- 	.ret_type	= RET_INTEGER,
-@@ -882,7 +882,7 @@ BPF_CALL_1(bpf_send_signal, u32, sig)
- 	return bpf_send_signal_common(sig, PIDTYPE_TGID, NULL, 0);
- }
- 
--static const struct bpf_func_proto bpf_send_signal_proto = {
-+const struct bpf_func_proto bpf_send_signal_proto = {
- 	.func		= bpf_send_signal,
- 	.gpl_only	= false,
- 	.ret_type	= RET_INTEGER,
-@@ -894,7 +894,7 @@ BPF_CALL_1(bpf_send_signal_thread, u32, sig)
- 	return bpf_send_signal_common(sig, PIDTYPE_PID, NULL, 0);
- }
- 
--static const struct bpf_func_proto bpf_send_signal_thread_proto = {
-+const struct bpf_func_proto bpf_send_signal_thread_proto = {
- 	.func		= bpf_send_signal_thread,
- 	.gpl_only	= false,
- 	.ret_type	= RET_INTEGER,
-@@ -1185,7 +1185,7 @@ BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
- 	return entry_cnt * br_entry_size;
- }
- 
--static const struct bpf_func_proto bpf_get_branch_snapshot_proto = {
-+const struct bpf_func_proto bpf_get_branch_snapshot_proto = {
- 	.func		= bpf_get_branch_snapshot,
- 	.gpl_only	= true,
- 	.ret_type	= RET_INTEGER,
-@@ -1430,51 +1430,10 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	const struct bpf_func_proto *func_proto;
- 
- 	switch (func_id) {
--	case BPF_FUNC_get_current_uid_gid:
--		return &bpf_get_current_uid_gid_proto;
--	case BPF_FUNC_get_current_comm:
--		return &bpf_get_current_comm_proto;
- 	case BPF_FUNC_get_smp_processor_id:
- 		return &bpf_get_smp_processor_id_proto;
--	case BPF_FUNC_perf_event_read:
--		return &bpf_perf_event_read_proto;
--#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
--	case BPF_FUNC_probe_read:
--		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
--		       NULL : &bpf_probe_read_compat_proto;
--	case BPF_FUNC_probe_read_str:
--		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
--		       NULL : &bpf_probe_read_compat_str_proto;
--#endif
--#ifdef CONFIG_CGROUPS
--	case BPF_FUNC_current_task_under_cgroup:
--		return &bpf_current_task_under_cgroup_proto;
--#endif
--	case BPF_FUNC_send_signal:
--		return &bpf_send_signal_proto;
--	case BPF_FUNC_send_signal_thread:
--		return &bpf_send_signal_thread_proto;
--	case BPF_FUNC_get_task_stack:
--		return prog->sleepable ? &bpf_get_task_stack_sleepable_proto
--				       : &bpf_get_task_stack_proto;
--	case BPF_FUNC_copy_from_user:
--		return &bpf_copy_from_user_proto;
--	case BPF_FUNC_copy_from_user_task:
--		return &bpf_copy_from_user_task_proto;
--	case BPF_FUNC_task_storage_get:
--		if (bpf_prog_check_recur(prog))
--			return &bpf_task_storage_get_recur_proto;
--		return &bpf_task_storage_get_proto;
--	case BPF_FUNC_task_storage_delete:
--		if (bpf_prog_check_recur(prog))
--			return &bpf_task_storage_delete_recur_proto;
--		return &bpf_task_storage_delete_proto;
- 	case BPF_FUNC_get_func_ip:
- 		return &bpf_get_func_ip_proto_tracing;
--	case BPF_FUNC_get_branch_snapshot:
--		return &bpf_get_branch_snapshot_proto;
--	case BPF_FUNC_find_vma:
--		return &bpf_find_vma_proto;
- 	default:
- 		break;
- 	}
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 79cab4d78dc3..53bf560354f7 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -8488,8 +8488,6 @@ sk_msg_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_msg_pop_data_proto;
- 	case BPF_FUNC_perf_event_output:
- 		return &bpf_event_output_data_proto;
--	case BPF_FUNC_get_current_uid_gid:
--		return &bpf_get_current_uid_gid_proto;
- 	case BPF_FUNC_sk_storage_get:
- 		return &bpf_sk_storage_get_proto;
- 	case BPF_FUNC_sk_storage_delete:
--- 
-2.43.0
+> Is that an acceptable limitation? That's what we're hoping to hear your
+> thoughts on.
+
+I absolutely don't think this is acceptable, see above.
+
+> One concern that comes to mind, since the network stack is unaware of
+> traits contents, we will be limited to simple merge strategies (like
+> "drop all" or "keep first") in the GRO layer.
+
+Yeah, this is another limitation of the kernel not understanding the
+format, but not the only one.
+
+-Toke
 
 
