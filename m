@@ -1,88 +1,64 @@
-Return-Path: <bpf+bounces-56750-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D033A9D46C
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 23:45:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F6E6A9D482
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 23:51:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E4749C2B96
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 21:44:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 827A816AA56
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 21:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6791226CE6;
-	Fri, 25 Apr 2025 21:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C8B22687A;
+	Fri, 25 Apr 2025 21:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="VVfli0Z9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cXVu+k+l"
 X-Original-To: bpf@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C68EA21CC49;
-	Fri, 25 Apr 2025 21:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 327BF1FC0FE;
+	Fri, 25 Apr 2025 21:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745617494; cv=none; b=k2ztJtthrrQ3Yi64HfONB9zPZI93wrf6STc5TQeFMsmLVFGVc3oaeMnD49dx+anpzYyJ9+BRrOsCfG3NYJOL7P7YyokhjhKOXomdbEuQpc6RGTVMyQMEC1G6tzGcw0KEO8j0+au+azMErLBleISUnP+SDuje9dQrMuNXb+O0MU0=
+	t=1745617895; cv=none; b=WTudG5MfXPWxlU7BMearAWCuzvCnDCorq1UH4u3+zpzEqF1Y/p/BfyWofCtlZxmQRwAaqERe9rKrev6sfXwrDh1CtILiN3nF15ybAYTSrXEh3+kUtcpWpzPNsja5gtmOACczYpzsFLLWkipqC2yzW2wEaIuZhUaypvDy/w2DaY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745617494; c=relaxed/simple;
-	bh=1vYY0G6paJDxqTAFql3Fe/ZoYlYAWMsKFG17ZpHlpB4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=usXlNaPpU+GGl3BJAqPCxJek93fQharcQEjuc5B6y8OY6sujyw4qgEffhQiS0vXtI4FqWJ0V9pQWMvmDK1R3A0eAWBtgRQ9pB5mYhQtSn8Ewp4izbXJ54NygdB0nayp1QJIapjLrccSyMIIF8wI4plnRx3jrrhx6aqEVsWqIt4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=VVfli0Z9; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from narnia (unknown [172.172.34.12])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 0FD7420BCAD1;
-	Fri, 25 Apr 2025 14:44:43 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0FD7420BCAD1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1745617492;
-	bh=RLcGrvY/Ji6RfwBGa0SDop5ZSdaFF8Vony2mUDrwhz8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=VVfli0Z9/uOSWmD2zYfgd/ELGgJQhQObtxaSQgX4AL7uZlqTSEwxa/QkcFRUrFG4L
-	 KJe067jmKGvAEhgwx3y2k+RRnXnuiRFkSXZNrkzp+VuQoskURv0DCiZeNXTaiElj12
-	 7XOVymm5fhm6nTTtITxxB973eE6OhvwrFoFeXnVA=
-From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>, Alexei
- Starovoitov <alexei.starovoitov@gmail.com>, KP Singh <kpsingh@google.com>,
- Paul Moore <paul@paul-moore.com>, Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller"
- <davem@davemloft.net>, Paul Moore <paul@paul-moore.com>, James Morris
- <jmorris@namei.org>, "Serge
- E. Hallyn" <serge@hallyn.com>, Masahiro Yamada <masahiroy@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>,
- Shuah Khan <shuah@kernel.org>, =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=
- <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?=
- Noack <gnoack@google.com>, Nick Desaulniers
- <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>,
- Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen
- <jarkko@kernel.org>, Jan Stancek <jstancek@redhat.com>, Neal Gompa
- <neal@gompa.dev>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, keyrings@vger.kernel.org, Linux
- Crypto Mailing List <linux-crypto@vger.kernel.org>, LSM List
- <linux-security-module@vger.kernel.org>, Linux Kbuild mailing list
- <linux-kbuild@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK"
- <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com, Matteo Croce
- <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, Cong Wang
- <xiyou.wangcong@gmail.com>
-Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
-In-Reply-To: <6e086e29d258839e42ef7a83b38571d1882eb77d.camel@HansenPartnership.com>
-References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
- <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
- <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
- <87semdjxcp.fsf@microsoft.com>
- <CAADnVQ+JGfwRgsoe2=EHkXdTyQ8ycn0D9nh1k49am++4oXUPHg@mail.gmail.com>
- <87friajmd5.fsf@microsoft.com>
- <CAADnVQKb3gPBFz+n+GoudxaTrugVegwMb8=kUfxOea5r2NNfUA@mail.gmail.com>
- <87a58hjune.fsf@microsoft.com>
- <CAADnVQ+LMAnyT4yV5iuJ=vswgtUu97cHKnvysipc6o7HZfEbUA@mail.gmail.com>
- <87y0w0hv2x.fsf@microsoft.com>
- <CAADnVQKF+B_YYwOCFsPBbrTBGKe4b22WVJFb8C0PHGmRAjbusQ@mail.gmail.com>
- <2bd95ca78e836db0775da8237792e8448b8eec62.camel@HansenPartnership.com>
- <CAADnVQJ6SRePz7yc5x3BAz7q-e8DVYq=vRdahxCZ4XzpWtnYpQ@mail.gmail.com>
- <6e086e29d258839e42ef7a83b38571d1882eb77d.camel@HansenPartnership.com>
-Date: Fri, 25 Apr 2025 14:44:10 -0700
-Message-ID: <87bjsjlxw5.fsf@microsoft.com>
+	s=arc-20240116; t=1745617895; c=relaxed/simple;
+	bh=xh1HvSuuUw/U72US+gvLZ4Kex52fTf141EDnd1VUDD4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bclAru4UwCn7m7fboBCpUxIIkwxD22+86eMlhTU7rGw59ucZ5vYWyupIl/fJq827hM7CwW5UAg0sW/GXAKMI83qsI591Aw14hd3sPLZWOWpEoe4N5Zt/4MGqkKfUW+2yxq0wvlDpR//T6WxDBsJfP6kdXK5NqrAhEkYgX2SHmZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cXVu+k+l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F9D4C4CEE4;
+	Fri, 25 Apr 2025 21:51:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745617893;
+	bh=xh1HvSuuUw/U72US+gvLZ4Kex52fTf141EDnd1VUDD4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cXVu+k+la7gq52onV+AVCt/AUgAofpFfu4riRWLuEAqy7dlYRVsMixSF3nuFrFLO1
+	 cgkHhux3Jt3RRShIOySpWH9teWmMV/x2BO5PwfL4MVTWe6hZlhzX5XwtDTpHHuFtYd
+	 0MyTnsJo5qNagQmi6guwSidwRKH27NPBgEEheaYPqCuc7g46F5I/M+fgahVOjw+LEF
+	 l2/clbpIjNwvW6o3nevfgYuRLarcYLETJtyvGr34F9rI8I3PXry3wEdLT4rLYBCLzv
+	 uM4AlfusDhMZTSE/svCo66iN1s1ej/tlEY6xy5F6zq6E/smYM506DtiuTBt4DDi2RT
+	 gRcF1NHQu8GbA==
+Date: Fri, 25 Apr 2025 14:51:30 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Howard Chu <howardchu95@gmail.com>, Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] perf trace: Implement syscall summary in BPF
+Message-ID: <aAwD4idaGnTiQ-ld@google.com>
+References: <20250326044001.3503432-1-namhyung@kernel.org>
+ <CAH0uvojPaZ-byE-quc=sUvXyExaZPU3PUjdTYOzE5iDAT_wNVA@mail.gmail.com>
+ <aAkUyFjRFLkS170u@x1>
+ <aAkmY0hLXarmCSIA@google.com>
+ <aAlSqGN9Sx4x6_sI@x1>
+ <aAq16LWBIVr08iSe@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,131 +66,154 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aAq16LWBIVr08iSe@x1>
 
-James Bottomley <James.Bottomley@HansenPartnership.com> writes:
+Hi Arnaldo,
 
-> On Thu, 2025-04-24 at 16:41 -0700, Alexei Starovoitov wrote:
->> On Wed, Apr 23, 2025 at 7:12=E2=80=AFAM James Bottomley
->> <James.Bottomley@hansenpartnership.com> wrote:
->> > On Mon, 2025-04-21 at 13:12 -0700, Alexei Starovoitov wrote:
->> > [...]
->> > > Calling bpf_map_get() and
->> > > map->ops->map_lookup_elem() from a module is not ok either.
->> >=20
->> > I don't understand this objection.
->>=20
->> Consider an LSM that hooks into security_bprm_*(bprm),
->> parses something in linux_binprm, then
->> struct file *file =3D
->> fd_file(fdget(some_random_file_descriptor_in_current));
->> file->f_op->read(..);
->>=20
->> Would VFS maintainers approve such usage ?
->
-> This is a bit off topic from the request for clarification but:
->
-> It's somewhat standard operating procedure for LSMs.  Some do make
-> decisions entirely within the data provided by the hook, but some need
-> to take external readings, like selinux or IMA consulting the policy in
-> the xattr or apparmor the one in the tree etc.
->
-> Incidentally, none of them directly does a file->f_op->read(); they all
-> use the kernel_read_file() API which is exported from the vfs for that
-> purpose.
->
->> More so, your LSM does
->> file =3D get_task_exe_file(current);
->> kernel_read_file(file, ...);
->>=20
->> This is even worse.
->> You've corrupted the ELF binary with extra garbage at the end.
->> objdump/elfutils will choke on it and you're lucky that binfmt_elf
->> still loads it.
->> The whole approach is a non-starter.
->
-> It's the same approach we use to create kernel modules: ELF with an
-> appended signature.  If you recall the kernel summit discussions about
-> it, the reason that was chosen for modules is because it's easy and the
-> ELF processor simply ignores any data in the file that's not described
-> by the header (which means the ELF tools you refer to above are fine
-> with this if you actually try them).
->
-> But it you really want the signature to be part of the ELF,  then the
-> patch set can do what David Howells first suggested for modules: it can
-> simply put the appended signature into an unloaded ELF section.
->
->> > The program just got passed in to bpf_prog_load() as a set of
->> > attributes which, for a light skeleton, directly contain the code
->> > as a blob and have the various BTF relocations as a blob in a
->> > single element array map.=C2=A0 I think everyone agrees that the
->> > integrity of the program would be compromised by modifications to
->> > the relocations, so the security_bpf_prog_load() hook can't make an
->> > integrity determination without examining both.=C2=A0 If the hook can't
->> > use the bpf_maps.. APIs directly is there some other API it should
->> > be using to get the relocations, or are you saying that the
->> > security_bpf_prog_load() hook isn't fit for purpose and it should
->> > be called after the bpf core has loaded the relocations so they can
->> > be provided to the hook as an argument?
->>=20
->> No. As I said twice already the only place to verify program
->> signature is a bpf subsystem itself.
->
-> The above argument is actually independent of signing.  However,
-> although we have plenty of subsystems that verify their own signatures,
-> it's perfectly valid for a LSM to do it as well: IMA is one of the
-> oldest LSMs and it's been verifying signatures over binaries and text
-> files since it was first created.
->
->> Hacking into bpf internals from LSM, BPF-LSM program,
->> or any other kernel subsystem is a no go.
->
-> All LSMs depend to some extent on the internals of the subsystem where
-> the hook is ... the very structures passed into them are often internal
-> to that subsystem.  The problem you didn't address was that some of the
-> information necessary to determine the integrity properties in the bpf
-> hook is in a map file descriptor.  Since the map merely wraps a single
-> blob of data, that could easily be passed in to the hook instead of
-> having the LSM extract it from the map.  How the hook gets the data is
-> an internal implementation detail of the kernel that can be updated
-> later.
->
->> > The above, by the way, is independent of signing, because it
->> > applies to any determination that might be made in the
->> > security_bpf_prog_load() hook regardless of purpose.
->>=20
->> security_bpf_prog_load() should not access bpf internals.
->> That LSM hook sees the following:
->> security_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_tok=
-en *token, bool kernel);
->>=20
->> LSM can look into uapi things there.
->
-> Is that the misunderstanding? That's not how LSMs work: they are not
-> bound by only the UAPI, they are in kernel and have full access to the
-> kernel API so they can introspect stuff and make proper determinations.
->
->> Like prog->sleepable, prog->tag, prog->aux->name,
->> but things like prog->aux->jit_data or prog->aux->used_maps
->> are not ok to access.
->> If in doubt, ask on the mailing list.
->
-> I am aren't I? At least the bpf is one of the lists cc'd on this.
->
-> Regards,
->
-> James
+On Thu, Apr 24, 2025 at 07:06:32PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Wed, Apr 23, 2025 at 05:50:51PM -0300, Arnaldo Carvalho de Melo wrote:
+> > On Wed, Apr 23, 2025 at 10:41:55AM -0700, Namhyung Kim wrote:
+> > > On Wed, Apr 23, 2025 at 01:26:48PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > > On Fri, Mar 28, 2025 at 06:46:36PM -0700, Howard Chu wrote:
+> > > > > On Tue, Mar 25, 2025 at 9:40 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > > > > >      syscall            calls  errors  total       min       avg       max       stddev
+> 
+> > > > > >      --------------- --------  ------ -------- --------- --------- ---------     ------
+> > > > > >      epoll_wait           561      0  4530.843     0.000     8.076   520.941     18.75%
+> > > > > >      futex                693     45  4317.231     0.000     6.230   500.077     21.98%
+> > > > > >      poll                 300      0  1040.109     0.000     3.467   120.928     17.02%
+> > > > > >      clock_nanosleep        1      0  1000.172  1000.172  1000.172  1000.172      0.00%
+> > > > > >      ppoll                360      0   872.386     0.001     2.423   253.275     41.91%
+> > > > > >      epoll_pwait           14      0   384.349     0.001    27.453   380.002     98.79%
+> > > > > >      pselect6              14      0   108.130     7.198     7.724     8.206      0.85%
+> > > > > >      nanosleep             39      0    43.378     0.069     1.112    10.084     44.23%
+> > > > > >      ...
+> 
+> > > > I added the following to align sched_[gs]etaffinity,
+> 
+> > > Thanks for processing the patch and updating this.  But I'm afraid there
+> > > are more syscalls with longer names and this is not the only place to
+> > > print the syscall names.  Also I think we need to update length of the
+> > > time fields.  So I prefer handling them in a separate patch later.
+>  
+> > Fair enough, I'm leaving the patch as-is.
+> 
+> But, still have to look at this:
+> 
+> toolsbuilder@five:~$ time dm
+>    1   114.52 almalinux:8                   : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-26) , clang version 18.1.8 (Red Hat 18.1.8-1.module_el8.10.0+3903+ca21d481) flex 2.6.1
+>    2   111.09 almalinux:9                   : Ok   gcc (GCC) 11.5.0 20240719 (Red Hat 11.5.0-5) , clang version 18.1.8 (AlmaLinux OS Foundation 18.1.8-3.el9) flex 2.6.4
+>    3: almalinux:9-i386WARNING: image platform (linux/386) does not match the expected platform (linux/amd64)
+> WARNING: image platform (linux/386) does not match the expected platform (linux/amd64)
+>    132.71 almalinux:9-i386              : Ok   gcc (GCC) 11.4.1 20231218 (Red Hat 11.4.1-3) , clang version 17.0.6 (AlmaLinux OS Foundation 17.0.6-5.el9) flex 2.6.4
+>    4    21.54 alpine:3.16                   : FAIL gcc version 11.2.1 20220219 (Alpine 11.2.1_git20220219) 
+>     bpf-trace-summary.c:(.text+0xf0760): undefined reference to `syscalltbl__name'
+>     collect2: error: ld returned 1 exit status
+>    5    16.50 alpine:3.17                   : FAIL gcc version 12.2.1 20220924 (Alpine 12.2.1_git20220924-r4) 
+>     bpf-trace-summary.c:(.text+0xf2020): undefined reference to `syscalltbl__name'
+>     collect2: error: ld returned 1 exit status
+> 
+> More info:
+> 
+> perf-6.15.0-rc2/HEAD
+> perf-6.15.0-rc2/PERF-VERSION-FILE
+> BUILD_TARBALL_HEAD=24c0c35d4640052c61ed539a777bd3bd60d62bbf
+> Using built-in specs.
+> COLLECT_GCC=gcc
+> COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-alpine-linux-musl/12.2.1/lto-wrapper
+> Target: x86_64-alpine-linux-musl
+> Configured with: /home/buildozer/aports/main/gcc/src/gcc-12-20220924/configure --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --build=x86_64-alpine-linux-musl --host=x86_64-alpine-linux-musl --target=x86_64-alpine-linux-musl --enable-checking=release --disable-fixed-point --disable-libstdcxx-pch --disable-multilib --disable-nls --disable-werror --disable-symvers --enable-__cxa_atexit --enable-default-pie --enable-default-ssp --enable-languages=c,c++,d,objc,go,fortran,ada --disable-libssp --disable-libsanitizer --enable-shared --enable-threads --enable-tls --with-bugurl=https://gitlab.alpinelinux.org/alpine/aports/-/issues --with-system-zlib --with-linker-hash-style=gnu --with-pkgversion='Alpine 12.2.1_git20220924-r4'
+> Thread model: posix
+> Supported LTO compression algorithms: zlib
+> gcc version 12.2.1 20220924 (Alpine 12.2.1_git20220924-r4) 
+> + make 'NO_LIBTRACEEVENT=1' 'ARCH=' 'CROSS_COMPILE=' 'EXTRA_CFLAGS=' -C tools/perf 'O=/tmp/build/perf'
+> make: Entering directory '/git/perf-6.15.0-rc2/tools/perf'
+>   BUILD:   Doing 'make -j28' parallel build
+> Warning: Skipped check-headers due to missing ../../include
+> Makefile.config:563: No elfutils/debuginfod.h found, no debuginfo server support, please install libdebuginfod-dev/elfutils-debuginfod-client-devel or equivalent
+> Makefile.config:605: No sys/sdt.h found, no SDT events are defined, please install systemtap-sdt-devel or systemtap-sdt-dev
+> Makefile.config:1085: No libbabeltrace found, disables 'perf data' CTF format support, please install libbabeltrace-dev[el]/libbabeltrace-ctf-dev
+> Makefile.config:1128: No alternatives command found, you need to set JDIR= to point to the root of your Java directory
+> Makefile.config:1159: libpfm4 not found, disables libpfm4 support. Please install libpfm4-dev
+> 
+> Auto-detecting system features:
+> ...                                   libdw: [ on  ]
+> ...                                   glibc: [ OFF ]
+> ...                                  libelf: [ on  ]
+> ...                                 libnuma: [ on  ]
+> ...                  numa_num_possible_cpus: [ on  ]
+> ...                                 libperl: [ on  ]
+> ...                               libpython: [ on  ]
+> ...                               libcrypto: [ on  ]
+> ...                             libcapstone: [ on  ]
+> ...                               llvm-perf: [ on  ]
+> ...                                    zlib: [ on  ]
+> ...                                    lzma: [ on  ]
+> ...                               get_cpuid: [ on  ]
+> ...                                     bpf: [ on  ]
+> ...                                  libaio: [ on  ]
+> ...                                 libzstd: [ on  ]
+> 
+>   PERF_VERSION = 6.15.rc2.g24c0c35d4640
+>   GEN     /tmp/build/perf/common-cmds.h
+>   GEN     /tmp/build/perf/arch/arm64/include/generated/asm/sysreg-defs.h
+>   GEN     perf-archive
+>   GEN     perf-iostat
+> <SNIP>
+>   CC      /tmp/build/perf/util/bpf-filter-flex.o
+>   LD      /tmp/build/perf/util/perf-util-in.o
+>   LD      /tmp/build/perf/perf-util-in.o
+>   AR      /tmp/build/perf/libperf-util.a
+>   CC      /tmp/build/perf/pmu-events/pmu-events.o
+>   LD      /tmp/build/perf/pmu-events/pmu-events-in.o
+>   AR      /tmp/build/perf/libpmu-events.a
+>   LINK    /tmp/build/perf/perf
+>   GEN     /tmp/build/perf/python/perf.cpython-310-x86_64-linux-gnu.so
+> /usr/lib/gcc/x86_64-alpine-linux-musl/12.2.1/../../../../x86_64-alpine-linux-musl/bin/ld: /tmp/build/perf/libperf-util.a(perf-util-in.o): in function `print_common_stats':
+> bpf-trace-summary.c:(.text+0xf2020): undefined reference to `syscalltbl__name'
+> collect2: error: ld returned 1 exit status
+> make[2]: *** [Makefile.perf:804: /tmp/build/perf/perf] Error 1
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [Makefile.perf:290: sub-make] Error 2
+> make: *** [Makefile:76: all] Error 2
+> make: Leaving directory '/git/perf-6.15.0-rc2/tools/perf'
+> + exit 1
+> toolsbuilder@five:~$ 
+> 
+> I'll take a look tomorrow.
 
-I think we may be in the weeds here a bit and starting to get a little
-off-topic. Let's try to back up some and take a different tack. We are
-going to rework this effort into a set of patches that target the bpf
-subsystem and it's tooling directly, performing optional signature
-verification of the inputs to bpf_prog_load, using signature data
-passed in via bpf_attr, which should enough provide metadata so that it
-can be consumed by interested parties to enforce policy decisions around
-code signing and data integrity.
+Thanks for the report.  I think it's because syscalltbl.c depends on
+CONFIG_TRACE but bpf-trace-summary depends on CONFIG_PERF_BPF_SKEL.
 
--blaise
+In the future, I'd like to get rid of dependency to libtraceevent in
+perf trace and make it possible to use BPF/BTF only.
+
+How about this?
+
+Thanks,
+Namhyung
+
+
+---8<---
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index 4f00cde8c3ea63eb..7ae5b4b9330af0ce 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -173,9 +173,12 @@ perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf_off_cpu.o
+ perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf-filter.o
+ perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf-filter-flex.o
+ perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf-filter-bison.o
+-perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf-trace-summary.o
+ perf-util-$(CONFIG_PERF_BPF_SKEL) += btf.o
+ 
++ifeq ($(CONFIG_TRACE),y)
++  perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf-trace-summary.o
++endif
++
+ ifeq ($(CONFIG_LIBTRACEEVENT),y)
+   perf-util-$(CONFIG_PERF_BPF_SKEL) += bpf_lock_contention.o
+ endif
+
 
