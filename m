@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-56670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56671-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01C9DA9BF66
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 09:14:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 251D1A9BF6C
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 09:14:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 066133AAF57
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 07:12:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 143F09A4E84
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 07:13:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0CCA231A3B;
-	Fri, 25 Apr 2025 07:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BFBD233701;
+	Fri, 25 Apr 2025 07:12:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jyvfo3jk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aSE5Wk7g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9896E230BF8;
-	Fri, 25 Apr 2025 07:11:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8FA231A55;
+	Fri, 25 Apr 2025 07:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745565114; cv=none; b=qEbkZHT60VOEYtG1Ps8V2BL9ssjvg3v3K6oQiBd7f/W2h6/Oh0FPyTPSd6v4gXu/ZrxDNl+o+OYe7BxouYExgMRgAYU4yCPP4EsFw4lrmnTrqspnhhrvK85SAd4Hdrl31S26zwpAaXAViHFLoq7YOYFPqNOhQd+wPxmqkTio3KU=
+	t=1745565119; cv=none; b=fy9baytJ4eSnFGgqwFG+RsY0i7G1x2nXROEEJFFhphH/Z3q9BEOHriNK/gvjhaul424jWVfMI9/jQkJYvmO2YBk0qQl4B0bBc7Stt5nLg3oOXy83vriCzA46pMjXBcbT5ZDRXokvoqPZ4nB4OlLN/m6LhB4ye3T5AlDo/sWy50I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745565114; c=relaxed/simple;
-	bh=mAFnFm9FlcZV4NvoQvjfbcmlE0Ubh8CcyejzVeGNsbs=;
+	s=arc-20240116; t=1745565119; c=relaxed/simple;
+	bh=HEECyfZinc+wH1214D5sqHe2jbzMGQUAA//2Fpca0iU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RK7568Solv/Mo5loyldkEXRXaNOkFihqJmiqAwBwGI5QOYgkcxZvdd9D5dOtK7kIhgRdRnmPn5kMyFVXh8LZUEQWaMWwOa9wpKaVbCcptZfwOURIFGZ5U7NGasxChnRVlO76tMI+hqNTZT+xHTxi0io7emra843/X4U7FIIYu5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jyvfo3jk; arc=none smtp.client-ip=209.85.214.173
+	 MIME-Version; b=p8NPXFkxMUYGevJTYMHahZoEu4HsLhzmfAfIEuuxK05XnL4zTMZYOSzQY5VfTTpwF8ulmlhjULdCXWy1Vxlp7mXZNaMQX37uSuloiLvH7t2Vuf8b/Z/EoFpao1NfWKVTG4PBwQMhRS9R0o9EhhjQf1Belzk8oJ9KldXR6mMky04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aSE5Wk7g; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2240b4de12bso29699775ad.2;
-        Fri, 25 Apr 2025 00:11:52 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-22401f4d35aso23437345ad.2;
+        Fri, 25 Apr 2025 00:11:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745565112; x=1746169912; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1745565117; x=1746169917; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+JOGRgGKufTsNtNc5oEXqegFkT9LBJnCqXIPnSP+xEU=;
-        b=Jyvfo3jkns6Wdgy+fKJr8zFyZ0RxXf7atdv9WCDaBntg1jXnwcbA5eRJmItSRhEnxG
-         PH9M69vydG/5ls8tlsr8y0cp9qYnTbMYHo2mHTQdJ8/hMiMGAt1VXmcObUpe/0EIR99A
-         tjHLyOWNNnHj1tCFeU288zTlA1oikK2gmJI3KS4DE24bEaZkwuUzubrP2YlxmDRaIPBp
-         nqeoHg6q7XKIPwpPD/sTOoDDOThLMrjm7S3uQaBSoK7HoSaPrnMwYE4davHb427H4Vwb
-         7HephE3gQ7LnF3M6XVQqUyJszLY5dAGlrp5CoiCYv1EGslnixcAMyGdSN4JhQz2ADTYE
-         h4Ag==
+        bh=LGgNXuFLvWdU6d7kOZ4c8+NmxWqqCA2URptaw+zqZE4=;
+        b=aSE5Wk7gfETGS74gq9ERVmdwYHRum9FtP54DL9L3vPSi7YQtkmwXa86YtLWjgbK6mY
+         YxQPbdCbadHHS1VbhcW+0Gz3CjGHgDT346yrZhKhgnZMC3kiYhs2f+KDsmz82qSk5pDi
+         wyz6Y0haafafkho+e+nOpHdNXkciZ7+AbeCnn1exX8xY82lzDfl9r1FQAy2neLsdXsrL
+         XZWsRIia1TPVoav6JxqCCIrtlR/ElRFX4qEULcaKSJGdqOEHuy+kxiTRkXzLwk+bPkK4
+         Mj/35ivAApanOE+aECmADEsSp2zIH+sS6xADTnCWO3/+KHi+PaVEWCnfl/p+PkTdn90p
+         +s8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745565112; x=1746169912;
+        d=1e100.net; s=20230601; t=1745565117; x=1746169917;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+JOGRgGKufTsNtNc5oEXqegFkT9LBJnCqXIPnSP+xEU=;
-        b=L5TqnjcgRmcBYA3llWpndki/1IGBcTrF1MwRLldW/EFd5wHCDgt/kjm0wdIZ0tRCNS
-         sy7vkMIukbeyzn0JPnYiLAxA3g4c/+V/sA3w/VucDbAPlAfGBQWrv2Trc61HcTQRx4ar
-         XVdn4bMSAagUGLrP8/7n5inFZSFsBK7CnRaAr69JBNDr1UJEdW+dU8CIkUq5I6M2/ofB
-         diFv6C03yVIVSvDsGoQzVGBjVn7wr5rtP1dqbAFLq+GkDTmi4UpkvF5E4nfFaCuibO9f
-         G+KqPJY+yN+nxE8ZUOTgQ/bc9qaDtUKC+OcWNeyeKVD1B83GLtewIN+GqlrezCMK2Ylp
-         20VA==
-X-Forwarded-Encrypted: i=1; AJvYcCU56xzYoB9OdA8ayuB7Bo2onFvwcimXoGyPPJ83pNHtGMRAVxFQI1SZXN7wc9rqBZbE9XM=@vger.kernel.org, AJvYcCV8BvKuPdEsVFcbngySPm1juBDTUwrhQfPJUJGFjnnzyfcA/u2P3PhhghoYUeXCBVKZhUDAyJOm@vger.kernel.org, AJvYcCWWpVnYHCcaDQSZnXw4yCEEY6yXnMWxLSrUgJ5H8F1+ROkvkzq1n5GiArjK3PTWzdSQ6RLGvT7hH00s/Pfc@vger.kernel.org
-X-Gm-Message-State: AOJu0YyObC9IpfyHcrQDxE2t/46h4Ss5h4CKpib4yGAS3GumLGhnF6l9
-	5WQ7ISgL5w2kxiZhMsn/rhw146fOqf/k/55OTgHRKpsbD1snx4ED
-X-Gm-Gg: ASbGnctHyIiODyfvwBzCK0hAzXZXSggjii9pMvrjQN3h2AgJmg+olgyrnvhSoou37fJ
-	020nH5OWsLIiGjdK9lu6DIarFaDFgCxDp44/6AZviC+sEjvFO5UhobQ3BBaz7/7dT2/Yl4xzYXp
-	7AHwZ02obe1TZ8AtrZMZ4iAedoGd45Xz80+I/ZmlX1RER3iarKk/Gv5mYjTrFR/3ArleCXAWEVT
-	M+VEuF21zG4aW1ApuMnXTDSfpHp+as/47ul04Hf3pVCSnl/OknFTuGEKNCD2ZVew589bGUY/Nmx
-	5cGg9cu5yMjT9h/3mJ9W8pYyDnLZIhF6DtWtFa5WGUOQRTRLIlm+Evyv
-X-Google-Smtp-Source: AGHT+IElAol3//I0LM/LyoucdlPuB7fBU0sANzkXGvmGVaSDn+awApeht13o+Gsd2p3PLalBkVxYgw==
-X-Received: by 2002:a17:902:d501:b0:224:5a8:ba29 with SMTP id d9443c01a7336-22dbf6409eemr20756635ad.43.1745565111782;
-        Fri, 25 Apr 2025 00:11:51 -0700 (PDT)
+        bh=LGgNXuFLvWdU6d7kOZ4c8+NmxWqqCA2URptaw+zqZE4=;
+        b=JZN/KivYy2F9Sbq3/lkK+IDUfvSCE5tOINeeVJmf5zj6pWyuRrYuOrS7gn0dt74s6I
+         cqVGje5bL0FmUFm5AhwyVKp5v5+RjeARiRJGf1RApi4Wy9g3mWAHUo28MXaXxCOfhjfv
+         Go8XwHC/D35sghRUKoFKiNyt17DarK10aq59uQUMLXuX4dlSqxuJN5Pra/1R4ZAgiAzR
+         vosDRCZtZWJtJjnpGScCweuSGz/BKbtZay6Hjh4EBa1/oKu6GfxMKYnrlToHcZjogjx/
+         AjjgeLZBXn7XpCKblAsI15mbxWqOsri/IAotxme/qqwr2KmIhQ1vT78XsFY0OR9uqFAL
+         n4cQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVH+/UhInUKeYCpOYliVrhouTux9KBnGAbpbQiTfajc9n4XyTHqDl0F3edNYxIbRTC4Kr4=@vger.kernel.org, AJvYcCVY47bERyRXW/YfGrcBppfn1B0vD13LyYlDOJ5CH3j7mhZMkerpWO6mKz7Q2N1CUVULUizeHQ59@vger.kernel.org, AJvYcCXfZLrpeV61CBNFW1f3A5wcbaWLNcTafWbfj23CqVAN76YjcEiEopxFBxh9aDqPaX7qnIE06TBQzsXGpHH/@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyr+LxrtaPsnIOm8BEqjv8BZuJK3rI8+CYdBPsZx+blNYz65Z5t
+	73d1m46wQBYNOccu6/KLERxrH+bYIyaj18L8kszf+NG/alNWW3E2
+X-Gm-Gg: ASbGncuEMbeo5o9sVd35sSrRIo/QWu0koxeq4FhHnYL50N+p4CJ1GAGwfT+u3la3ep2
+	hDWZPUkREV06OPZE4LoUbp7hwNW/fSShG5YVVMvPzy9YvHP7UhAJ9DMMprxZXiKArR4EVVlWVLI
+	Lmzr6NWJtA/cpeK1w9HWAHUfmYCRoG5WDqHxjtigwsJFcyB2Qj6dArSjQ2iXIEHJcpqigsejNSl
+	Qi1bgrjecnTUWKLDS6Ld1FQyckOwrzqPhgdlLQjo8ecf9Bjp821ocNKgm3B8/JEj7BD5nufnNyW
+	yMUFTYsjY8lyaOy4V3qqSj41V/SwTkaUY+mQ+mL6IllrsUYumjNCRTsqHXD5UMtKFGU=
+X-Google-Smtp-Source: AGHT+IFpuBEDWJ4Jdf5U2gn8bRZq3DJLbe8GQt+jgcamP/LZqySE7mAq8G00x6oy8xUhODZjxUMyRQ==
+X-Received: by 2002:a17:903:2987:b0:223:f408:c3cf with SMTP id d9443c01a7336-22dbf5eaa52mr19859965ad.21.1745565117500;
+        Fri, 25 Apr 2025 00:11:57 -0700 (PDT)
 Received: from minh.192.168.1.1 ([2001:ee0:4f0e:fb30:1c5b:42af:3362:3840])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22db51028basm25322425ad.196.2025.04.25.00.11.46
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22db51028basm25322425ad.196.2025.04.25.00.11.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Apr 2025 00:11:51 -0700 (PDT)
+        Fri, 25 Apr 2025 00:11:57 -0700 (PDT)
 From: Bui Quang Minh <minhquangbui99@gmail.com>
 To: virtualization@lists.linux.dev
 Cc: "Michael S. Tsirkin" <mst@redhat.com>,
@@ -91,9 +91,9 @@ Cc: "Michael S. Tsirkin" <mst@redhat.com>,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Bui Quang Minh <minhquangbui99@gmail.com>
-Subject: [PATCH v6 1/4] selftests: net: move xdp_helper to net/lib
-Date: Fri, 25 Apr 2025 14:10:15 +0700
-Message-ID: <20250425071018.36078-2-minhquangbui99@gmail.com>
+Subject: [PATCH v6 2/4] selftests: net: add flag to force zerocopy mode in xdp_helper
+Date: Fri, 25 Apr 2025 14:10:16 +0700
+Message-ID: <20250425071018.36078-3-minhquangbui99@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250425071018.36078-1-minhquangbui99@gmail.com>
 References: <20250425071018.36078-1-minhquangbui99@gmail.com>
@@ -105,104 +105,58 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Move xdp_helper to net/lib to make it easier for other selftests to use
-the helper.
+This commit adds an optional -z flag to xdp_helper. When this flag is
+provided, the XDP socket binding is forced to be in zerocopy mode.
 
 Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
 ---
- tools/testing/selftests/drivers/net/.gitignore                | 1 -
- tools/testing/selftests/drivers/net/Makefile                  | 1 -
- tools/testing/selftests/drivers/net/napi_id_helper.c          | 2 +-
- tools/testing/selftests/drivers/net/queues.py                 | 4 ++--
- tools/testing/selftests/net/lib/.gitignore                    | 1 +
- tools/testing/selftests/net/lib/Makefile                      | 1 +
- tools/testing/selftests/{drivers/net => net/lib}/ksft.h       | 0
- tools/testing/selftests/{drivers/net => net/lib}/xdp_helper.c | 0
- 8 files changed, 5 insertions(+), 5 deletions(-)
- rename tools/testing/selftests/{drivers/net => net/lib}/ksft.h (100%)
- rename tools/testing/selftests/{drivers/net => net/lib}/xdp_helper.c (100%)
+ tools/testing/selftests/net/lib/xdp_helper.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/drivers/net/.gitignore b/tools/testing/selftests/drivers/net/.gitignore
-index 72d2124fd513..d634d8395d90 100644
---- a/tools/testing/selftests/drivers/net/.gitignore
-+++ b/tools/testing/selftests/drivers/net/.gitignore
-@@ -1,3 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
- napi_id_helper
--xdp_helper
-diff --git a/tools/testing/selftests/drivers/net/Makefile b/tools/testing/selftests/drivers/net/Makefile
-index 47247c2ef948..17db31aa58c9 100644
---- a/tools/testing/selftests/drivers/net/Makefile
-+++ b/tools/testing/selftests/drivers/net/Makefile
-@@ -8,7 +8,6 @@ TEST_INCLUDES := $(wildcard lib/py/*.py) \
+diff --git a/tools/testing/selftests/net/lib/xdp_helper.c b/tools/testing/selftests/net/lib/xdp_helper.c
+index d5bb8ac33efa..6327863cafa6 100644
+--- a/tools/testing/selftests/net/lib/xdp_helper.c
++++ b/tools/testing/selftests/net/lib/xdp_helper.c
+@@ -17,6 +17,12 @@
+ #define NUM_DESC (UMEM_SZ / 2048)
  
- TEST_GEN_FILES := \
- 	napi_id_helper \
--	xdp_helper \
- # end of TEST_GEN_FILES
  
- TEST_PROGS := \
-diff --git a/tools/testing/selftests/drivers/net/napi_id_helper.c b/tools/testing/selftests/drivers/net/napi_id_helper.c
-index 7e8e7d373b61..eecd610c2109 100644
---- a/tools/testing/selftests/drivers/net/napi_id_helper.c
-+++ b/tools/testing/selftests/drivers/net/napi_id_helper.c
-@@ -8,7 +8,7 @@
- #include <arpa/inet.h>
- #include <sys/socket.h>
++static void print_usage(const char *bin)
++{
++	fprintf(stderr, "Usage: %s ifindex queue_id [-z]\n\n"
++		"where:\n\t-z: force zerocopy mode", bin);
++}
++
+ /* this is a simple helper program that creates an XDP socket and does the
+  * minimum necessary to get bind() to succeed.
+  *
+@@ -36,8 +42,8 @@ int main(int argc, char **argv)
+ 	int sock_fd;
+ 	int queue;
  
--#include "ksft.h"
-+#include "../../net/lib/ksft.h"
+-	if (argc != 3) {
+-		fprintf(stderr, "Usage: %s ifindex queue_id\n", argv[0]);
++	if (argc != 3 && argc != 4) {
++		print_usage(argv[0]);
+ 		return 1;
+ 	}
  
- int main(int argc, char *argv[])
- {
-diff --git a/tools/testing/selftests/drivers/net/queues.py b/tools/testing/selftests/drivers/net/queues.py
-index 06abd3f233e1..236005290a33 100755
---- a/tools/testing/selftests/drivers/net/queues.py
-+++ b/tools/testing/selftests/drivers/net/queues.py
-@@ -26,13 +26,13 @@ def nl_get_queues(cfg, nl, qtype='rx'):
+@@ -87,6 +93,15 @@ int main(int argc, char **argv)
+ 	sxdp.sxdp_queue_id = queue;
+ 	sxdp.sxdp_flags = 0;
  
- def check_xsk(cfg, nl, xdp_queue_id=0) -> None:
-     # Probe for support
--    xdp = cmd(f'{cfg.test_dir / "xdp_helper"} - -', fail=False)
-+    xdp = cmd(f'{cfg.net_lib_dir / "xdp_helper"} - -', fail=False)
-     if xdp.ret == 255:
-         raise KsftSkipEx('AF_XDP unsupported')
-     elif xdp.ret > 0:
-         raise KsftFailEx('unable to create AF_XDP socket')
- 
--    with bkg(f'{cfg.test_dir / "xdp_helper"} {cfg.ifindex} {xdp_queue_id}',
-+    with bkg(f'{cfg.net_lib_dir / "xdp_helper"} {cfg.ifindex} {xdp_queue_id}',
-              ksft_wait=3):
- 
-         rx = tx = False
-diff --git a/tools/testing/selftests/net/lib/.gitignore b/tools/testing/selftests/net/lib/.gitignore
-index 1ebc6187f421..bbc97d6bf556 100644
---- a/tools/testing/selftests/net/lib/.gitignore
-+++ b/tools/testing/selftests/net/lib/.gitignore
-@@ -1,2 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
- csum
-+xdp_helper
-diff --git a/tools/testing/selftests/net/lib/Makefile b/tools/testing/selftests/net/lib/Makefile
-index c22623b9a2a5..88c4bc461459 100644
---- a/tools/testing/selftests/net/lib/Makefile
-+++ b/tools/testing/selftests/net/lib/Makefile
-@@ -10,6 +10,7 @@ TEST_FILES += ../../../../net/ynl
- 
- TEST_GEN_FILES += csum
- TEST_GEN_FILES += $(patsubst %.c,%.o,$(wildcard *.bpf.c))
-+TEST_GEN_FILES += xdp_helper
- 
- TEST_INCLUDES := $(wildcard py/*.py sh/*.sh)
- 
-diff --git a/tools/testing/selftests/drivers/net/ksft.h b/tools/testing/selftests/net/lib/ksft.h
-similarity index 100%
-rename from tools/testing/selftests/drivers/net/ksft.h
-rename to tools/testing/selftests/net/lib/ksft.h
-diff --git a/tools/testing/selftests/drivers/net/xdp_helper.c b/tools/testing/selftests/net/lib/xdp_helper.c
-similarity index 100%
-rename from tools/testing/selftests/drivers/net/xdp_helper.c
-rename to tools/testing/selftests/net/lib/xdp_helper.c
++	if (argc > 3) {
++		if (!strcmp(argv[3], "-z")) {
++			sxdp.sxdp_flags = XDP_ZEROCOPY;
++		} else {
++			print_usage(argv[0]);
++			return 1;
++		}
++	}
++
+ 	if (bind(sock_fd, (struct sockaddr *)&sxdp, sizeof(sxdp)) != 0) {
+ 		munmap(umem_area, UMEM_SZ);
+ 		perror("bind failed");
 -- 
 2.43.0
 
