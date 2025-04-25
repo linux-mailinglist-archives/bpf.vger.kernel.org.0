@@ -1,183 +1,344 @@
-Return-Path: <bpf+bounces-56678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41655A9C01B
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 09:50:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD154A9C04F
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 10:02:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD7DB3AE3EE
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 07:49:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6615189C1F2
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 08:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9028B230D1E;
-	Fri, 25 Apr 2025 07:50:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0F1233136;
+	Fri, 25 Apr 2025 08:02:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DCbRrNTi"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Tq0BWbZR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A941DED49;
-	Fri, 25 Apr 2025 07:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD94D26AEC;
+	Fri, 25 Apr 2025 08:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745567403; cv=none; b=jq6d1AUGT0Ks3FPhT6V2DKc0ncg9fRQyyFrpzKUew32+aBS/3pV19dW5t3AY4l4NLqOiHTRcv9aaOMHh0k/M2ERbbkGNlNKTNkavuSEGMkotG9icmOvbIXuFYKDcOX1UAzPh6/Td732hS2lA2MLXHpxWSIq4RS6pzNfaIF3+eLM=
+	t=1745568139; cv=none; b=UHZvwDUhcjtM209bj+DW1buPge9+JBAq8GgzbDT5bZ6CH1NC2T3Zz5HB7DHSTsV0cUC/O7ZdOEj2NCAE/wCWcnww5I6KogL2MLH+SfNVBTzIqpSlIpyZTKFhlOWOwtCy6o+E5/pw+BdAT+NpUpquIC6V3LEoMd6ARXjyfgHHy2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745567403; c=relaxed/simple;
-	bh=QHkZ2w2krqWg8kpw96Vq3sOxWvbIiIYjOXmgILg98Bg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=MK0Wl1zonAzrDsbbm8F5Asex4t+x6zHc5jeXrDVjTZVpEygOaeaFGZEtozGBKFoT7ZOpwz13OaRCxUp/elGkmm+5CjyqCH2mYjuN7KyB2fr9t8Ih0QszSY72E/EPXlit0TH4y2IvjEnyRDRul4W0oBht5xaRBOpNh16KsjFe5Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DCbRrNTi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C0BC4CEE4;
-	Fri, 25 Apr 2025 07:50:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745567402;
-	bh=QHkZ2w2krqWg8kpw96Vq3sOxWvbIiIYjOXmgILg98Bg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=DCbRrNTihtuIYKfP2GPR2CxzfZPocrxdsrAV+3YYKmMmsPv7dU1D4wIrtbglsE8gp
-	 yrMsQCYkeJyYlDvBcH9fBhfucUmh3DxAr7Ifz29YuYTBSLQEy/IcccKdwtEKgCI6Oh
-	 1OuDTFcyg7emDLu3AeswxJ/aGGJwjbmWseyOO/YRDAy4YdAIPuAEd8RHn2uLcAhu16
-	 gjhAH7Ro852nke1poQ7MMF987WecfIXg0cSRN6xWJVrUye8C2F8agOrpk/hTw/6Z9M
-	 s4e2BwZ5Vp123iloCXrGvbhOw5YuKzpIWfQjYbJ3Y6gF2UXaOsRKqr059KixcHyFGH
-	 EALlvzHYVvmIg==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 8E83D1A037D4; Fri, 25 Apr 2025 09:49:49 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
- Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, Jakub
- Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2] bpf: Allow XDP dev-bound programs to
- perform XDP_REDIRECT into maps
-In-Reply-To: <aAqjTz7O4HpuVspL@lore-rh-laptop>
-References: <20250423-xdp-prog-bound-fix-v2-1-51742a5dfbce@kernel.org>
- <87wmb97uyt.fsf@toke.dk> <aAqjTz7O4HpuVspL@lore-rh-laptop>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Fri, 25 Apr 2025 09:49:49 +0200
-Message-ID: <87frhw7k9u.fsf@toke.dk>
+	s=arc-20240116; t=1745568139; c=relaxed/simple;
+	bh=oCUcG3o8xYWiupP/5NaC/9IlwbrbnMsu4Ag3g9Bf/SI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Afrfs5Nk/O89G5a89U16RH40AF1pViCT2ZrwY3f7d6hJnzdHAW53z/m2kkJo08lcelzP1VTxa4wSqPRJZFd2uMqF/tuZLHKxPtXk/Qcmcc4+Lc8kKtsaQoVkDxaS0yN+I9m7oAq5wX0KE7laiHAqJmUFsiMNNFaAZwPbM82G5TE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Tq0BWbZR; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=snh06
+	xH5rGaut6A5VJ9ZVezCog4RyQuNY5yFbN6JYWk=; b=Tq0BWbZRSr6W6ezmB/e4s
+	rO19nCY75j3gcbc6py1hQYCk/wc2gXQSnlWKnrUnmvCPFDmsAHZ3Vg+1igb6ucg4
+	QT/+vyv7FfYfRIxiDhx8ryNJXdGEfmEesZqmHW4qekqTg0ToaG3eP2Cm6mTkmVDG
+	1ucqVtj2nclAcOD2flLkcM=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wBn8FQ8QQtopkvkCA--.25S2;
+	Fri, 25 Apr 2025 16:01:01 +0800 (CST)
+From: Feng Yang <yangfeng59949@163.com>
+To: martin.lau@linux.dev,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	mattbobrowski@google.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	davem@davemloft.net
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: Allow some trace helpers for all prog types
+Date: Fri, 25 Apr 2025 16:00:32 +0800
+Message-Id: <20250425080032.327477-1-yangfeng59949@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wBn8FQ8QQtopkvkCA--.25S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3trW3tr1DKFWrKr47ArykAFb_yoWkJFyxpF
+	nrAry3Ar4ktw4aqr17Jwn7ZryFk34UX3y8GaykGw1xur42qr9rtF1UKF429F1rZr9rW343
+	Z3yqvFZ0kr1xKa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jaHq7UUUUU=
+X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiTg46eGgLQPwKkQAAsG
 
-Lorenzo Bianconi <lorenzo@kernel.org> writes:
+From: Feng Yang <yangfeng@kylinos.cn>
 
->> Lorenzo Bianconi <lorenzo@kernel.org> writes:
->> 
->> > In the current implementation if the program is dev-bound to a specific
->> > device, it will not be possible to perform XDP_REDIRECT into a DEVMAP
->> > or CPUMAP even if the program is running in the driver NAPI context and
->> > it is not attached to any map entry. This seems in contrast with the
->> > explanation available in bpf_prog_map_compatible routine.
->> > Fix the issue introducing __bpf_prog_map_compatible utility routine in
->> > order to avoid bpf_prog_is_dev_bound() check running bpf_check_tail_call()
->> > at program load time (bpf_prog_select_runtime()).
->> > Continue forbidding to attach a dev-bound program to XDP maps
->> > (BPF_MAP_TYPE_PROG_ARRAY, BPF_MAP_TYPE_DEVMAP and BPF_MAP_TYPE_CPUMAP).
->> >
->> > Fixes: 3d76a4d3d4e59 ("bpf: XDP metadata RX kfuncs")
->> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
->> > ---
->> > Changes in v2:
->> > - Introduce __bpf_prog_map_compatible() utility routine in order to skip
->> >   bpf_prog_is_dev_bound check in bpf_check_tail_call()
->> > - Extend xdp_metadata selftest
->> > - Link to v1: https://lore.kernel.org/r/20250422-xdp-prog-bound-fix-v1-1-0b581fa186fe@kernel.org
->> > ---
->> >  kernel/bpf/core.c                                  | 27 +++++++++++++---------
->> >  .../selftests/bpf/prog_tests/xdp_metadata.c        | 22 +++++++++++++++++-
->> >  tools/testing/selftests/bpf/progs/xdp_metadata.c   | 13 +++++++++++
->> >  3 files changed, 50 insertions(+), 12 deletions(-)
->> >
->> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->> > index ba6b6118cf504041278d05417c4212d57be6fca0..a3e571688421196c3ceaed62b3b59b62a0258a8c 100644
->> > --- a/kernel/bpf/core.c
->> > +++ b/kernel/bpf/core.c
->> > @@ -2358,8 +2358,8 @@ static unsigned int __bpf_prog_ret0_warn(const void *ctx,
->> >  	return 0;
->> >  }
->> >  
->> > -bool bpf_prog_map_compatible(struct bpf_map *map,
->> > -			     const struct bpf_prog *fp)
->> > +static bool __bpf_prog_map_compatible(struct bpf_map *map,
->> > +				      const struct bpf_prog *fp)
->> >  {
->> >  	enum bpf_prog_type prog_type = resolve_prog_type(fp);
->> >  	bool ret;
->> > @@ -2368,14 +2368,6 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
->> >  	if (fp->kprobe_override)
->> >  		return false;
->> >  
->> > -	/* XDP programs inserted into maps are not guaranteed to run on
->> > -	 * a particular netdev (and can run outside driver context entirely
->> > -	 * in the case of devmap and cpumap). Until device checks
->> > -	 * are implemented, prohibit adding dev-bound programs to program maps.
->> > -	 */
->> > -	if (bpf_prog_is_dev_bound(aux))
->> > -		return false;
->> > -
->> >  	spin_lock(&map->owner.lock);
->> >  	if (!map->owner.type) {
->> >  		/* There's no owner yet where we could check for
->> > @@ -2409,6 +2401,19 @@ bool bpf_prog_map_compatible(struct bpf_map *map,
->> >  	return ret;
->> >  }
->> >  
->> > +bool bpf_prog_map_compatible(struct bpf_map *map, const struct bpf_prog *fp)
->> > +{
->> > +	/* XDP programs inserted into maps are not guaranteed to run on
->> > +	 * a particular netdev (and can run outside driver context entirely
->> > +	 * in the case of devmap and cpumap). Until device checks
->> > +	 * are implemented, prohibit adding dev-bound programs to program maps.
->> > +	 */
->> > +	if (bpf_prog_is_dev_bound(fp->aux))
->> > +		return false;
->> > +
->> > +	return __bpf_prog_map_compatible(map, fp);
->> > +}
->> > +
->> >  static int bpf_check_tail_call(const struct bpf_prog *fp)
->> >  {
->> >  	struct bpf_prog_aux *aux = fp->aux;
->> > @@ -2421,7 +2426,7 @@ static int bpf_check_tail_call(const struct bpf_prog *fp)
->> >  		if (!map_type_contains_progs(map))
->> >  			continue;
->> >  
->> > -		if (!bpf_prog_map_compatible(map, fp)) {
->> > +		if (!__bpf_prog_map_compatible(map, fp)) {
->> 
->> Hmm, so this allows devbound programs in tail call maps, right? But
->> there's no guarantee that a tail call map will always be used for a
->> particular device, is there? For instance, it could be shared between
->> multiple XDP programs, bound to different devices, thus getting the
->> wrong kfunc.
->
-> According to my understanding the following path will be executed just for
-> dev-bound program that performs XDP_REDIRECT into a BPF_MAP_TYPE_PROG_ARRAY:
->
-> bpf_prog_select_runtime() -> bpf_check_tail_call() -> __bpf_prog_map_compatible()
->
-> while for XDP program inserted into BPF_MAP_TYPE_PROG_ARRAY we will continue
-> running bpf_prog_map_compatible() so we will forbid inserting ev-bound programs.
-> This is even tested into xdp_metadata selftest:
->
-> https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c#L416
->
-> It seems to me v2 is not more relaxed than v1. Am I missing something?
+if it works under NMI and doesn't use any context-dependent things,
+should be fine for any program type. The detailed discussion is in [1].
 
-No, you're right; see my reply to Stanislav - I misremembered the logic :)
+[1] https://lore.kernel.org/all/CAEf4Bza6gK3dsrTosk6k3oZgtHesNDSrDd8sdeQ-GiS6oJixQg@mail.gmail.com/
 
--Toke
+Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
+---
+ kernel/bpf/cgroup.c      |  6 -----
+ kernel/bpf/helpers.c     | 50 +++++++++++++++++++++++++++++++++++++
+ kernel/trace/bpf_trace.c | 53 +++++-----------------------------------
+ net/core/filter.c        |  2 --
+ 4 files changed, 56 insertions(+), 55 deletions(-)
+
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 84f58f3d028a..dbdad5f42761 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -2607,16 +2607,10 @@ const struct bpf_func_proto *
+ cgroup_current_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+ 	switch (func_id) {
+-	case BPF_FUNC_get_current_uid_gid:
+-		return &bpf_get_current_uid_gid_proto;
+-	case BPF_FUNC_get_current_comm:
+-		return &bpf_get_current_comm_proto;
+ #ifdef CONFIG_CGROUP_NET_CLASSID
+ 	case BPF_FUNC_get_cgroup_classid:
+ 		return &bpf_get_cgroup_classid_curr_proto;
+ #endif
+-	case BPF_FUNC_current_task_under_cgroup:
+-		return &bpf_current_task_under_cgroup_proto;
+ 	default:
+ 		return NULL;
+ 	}
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index e3a2662f4e33..3b089020c18b 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -23,6 +23,7 @@
+ #include <linux/btf_ids.h>
+ #include <linux/bpf_mem_alloc.h>
+ #include <linux/kasan.h>
++#include <linux/bpf_verifier.h>
+ 
+ #include "../../lib/kstrtox.h"
+ 
+@@ -1907,11 +1908,21 @@ static const struct bpf_func_proto bpf_dynptr_data_proto = {
+ 
+ const struct bpf_func_proto bpf_get_current_task_proto __weak;
+ const struct bpf_func_proto bpf_get_current_task_btf_proto __weak;
++#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
++const struct bpf_func_proto bpf_probe_read_compat_proto __weak;
++const struct bpf_func_proto bpf_probe_read_compat_str_proto __weak;
++#endif
+ const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_str_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_kernel_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_kernel_str_proto __weak;
+ const struct bpf_func_proto bpf_task_pt_regs_proto __weak;
++const struct bpf_func_proto bpf_perf_event_read_proto __weak;
++const struct bpf_func_proto bpf_send_signal_proto __weak;
++const struct bpf_func_proto bpf_send_signal_thread_proto __weak;
++const struct bpf_func_proto bpf_get_task_stack_sleepable_proto __weak;
++const struct bpf_func_proto bpf_get_task_stack_proto __weak;
++const struct bpf_func_proto bpf_get_branch_snapshot_proto __weak;
+ 
+ const struct bpf_func_proto *
+ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+@@ -1965,6 +1976,8 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_current_pid_tgid_proto;
+ 	case BPF_FUNC_get_ns_current_pid_tgid:
+ 		return &bpf_get_ns_current_pid_tgid_proto;
++	case BPF_FUNC_get_current_uid_gid:
++		return &bpf_get_current_uid_gid_proto;
+ 	default:
+ 		break;
+ 	}
+@@ -2022,6 +2035,8 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_current_cgroup_id_proto;
+ 	case BPF_FUNC_get_current_ancestor_cgroup_id:
+ 		return &bpf_get_current_ancestor_cgroup_id_proto;
++	case BPF_FUNC_current_task_under_cgroup:
++		return &bpf_current_task_under_cgroup_proto;
+ #endif
+ 	default:
+ 		break;
+@@ -2037,6 +2052,16 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_current_task_proto;
+ 	case BPF_FUNC_get_current_task_btf:
+ 		return &bpf_get_current_task_btf_proto;
++	case BPF_FUNC_get_current_comm:
++		return &bpf_get_current_comm_proto;
++#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
++	case BPF_FUNC_probe_read:
++		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
++		       NULL : &bpf_probe_read_compat_proto;
++	case BPF_FUNC_probe_read_str:
++		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
++		       NULL : &bpf_probe_read_compat_str_proto;
++#endif
+ 	case BPF_FUNC_probe_read_user:
+ 		return &bpf_probe_read_user_proto;
+ 	case BPF_FUNC_probe_read_kernel:
+@@ -2057,6 +2082,31 @@ bpf_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return bpf_get_trace_vprintk_proto();
+ 	case BPF_FUNC_perf_event_read_value:
+ 		return bpf_get_perf_event_read_value_proto();
++	case BPF_FUNC_perf_event_read:
++		return &bpf_perf_event_read_proto;
++	case BPF_FUNC_send_signal:
++		return &bpf_send_signal_proto;
++	case BPF_FUNC_send_signal_thread:
++		return &bpf_send_signal_thread_proto;
++	case BPF_FUNC_get_task_stack:
++		return prog->sleepable ? &bpf_get_task_stack_sleepable_proto
++				       : &bpf_get_task_stack_proto;
++	case BPF_FUNC_copy_from_user:
++		return prog->sleepable ? &bpf_copy_from_user_proto : NULL;
++	case BPF_FUNC_copy_from_user_task:
++		return prog->sleepable ? &bpf_copy_from_user_task_proto : NULL;
++	case BPF_FUNC_task_storage_get:
++		if (bpf_prog_check_recur(prog))
++			return &bpf_task_storage_get_recur_proto;
++		return &bpf_task_storage_get_proto;
++	case BPF_FUNC_task_storage_delete:
++		if (bpf_prog_check_recur(prog))
++			return &bpf_task_storage_delete_recur_proto;
++		return &bpf_task_storage_delete_proto;
++	case BPF_FUNC_get_branch_snapshot:
++		return &bpf_get_branch_snapshot_proto;
++	case BPF_FUNC_find_vma:
++		return &bpf_find_vma_proto;
+ 	default:
+ 		return NULL;
+ 	}
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 52c432a44aeb..224f02660e28 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -294,7 +294,7 @@ BPF_CALL_3(bpf_probe_read_compat, void *, dst, u32, size,
+ 	return bpf_probe_read_kernel_common(dst, size, unsafe_ptr);
+ }
+ 
+-static const struct bpf_func_proto bpf_probe_read_compat_proto = {
++const struct bpf_func_proto bpf_probe_read_compat_proto = {
+ 	.func		= bpf_probe_read_compat,
+ 	.gpl_only	= true,
+ 	.ret_type	= RET_INTEGER,
+@@ -313,7 +313,7 @@ BPF_CALL_3(bpf_probe_read_compat_str, void *, dst, u32, size,
+ 	return bpf_probe_read_kernel_str_common(dst, size, unsafe_ptr);
+ }
+ 
+-static const struct bpf_func_proto bpf_probe_read_compat_str_proto = {
++const struct bpf_func_proto bpf_probe_read_compat_str_proto = {
+ 	.func		= bpf_probe_read_compat_str,
+ 	.gpl_only	= true,
+ 	.ret_type	= RET_INTEGER,
+@@ -572,7 +572,7 @@ BPF_CALL_2(bpf_perf_event_read, struct bpf_map *, map, u64, flags)
+ 	return value;
+ }
+ 
+-static const struct bpf_func_proto bpf_perf_event_read_proto = {
++const struct bpf_func_proto bpf_perf_event_read_proto = {
+ 	.func		= bpf_perf_event_read,
+ 	.gpl_only	= true,
+ 	.ret_type	= RET_INTEGER,
+@@ -882,7 +882,7 @@ BPF_CALL_1(bpf_send_signal, u32, sig)
+ 	return bpf_send_signal_common(sig, PIDTYPE_TGID, NULL, 0);
+ }
+ 
+-static const struct bpf_func_proto bpf_send_signal_proto = {
++const struct bpf_func_proto bpf_send_signal_proto = {
+ 	.func		= bpf_send_signal,
+ 	.gpl_only	= false,
+ 	.ret_type	= RET_INTEGER,
+@@ -894,7 +894,7 @@ BPF_CALL_1(bpf_send_signal_thread, u32, sig)
+ 	return bpf_send_signal_common(sig, PIDTYPE_PID, NULL, 0);
+ }
+ 
+-static const struct bpf_func_proto bpf_send_signal_thread_proto = {
++const struct bpf_func_proto bpf_send_signal_thread_proto = {
+ 	.func		= bpf_send_signal_thread,
+ 	.gpl_only	= false,
+ 	.ret_type	= RET_INTEGER,
+@@ -1185,7 +1185,7 @@ BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
+ 	return entry_cnt * br_entry_size;
+ }
+ 
+-static const struct bpf_func_proto bpf_get_branch_snapshot_proto = {
++const struct bpf_func_proto bpf_get_branch_snapshot_proto = {
+ 	.func		= bpf_get_branch_snapshot,
+ 	.gpl_only	= true,
+ 	.ret_type	= RET_INTEGER,
+@@ -1430,51 +1430,10 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	const struct bpf_func_proto *func_proto;
+ 
+ 	switch (func_id) {
+-	case BPF_FUNC_get_current_uid_gid:
+-		return &bpf_get_current_uid_gid_proto;
+-	case BPF_FUNC_get_current_comm:
+-		return &bpf_get_current_comm_proto;
+ 	case BPF_FUNC_get_smp_processor_id:
+ 		return &bpf_get_smp_processor_id_proto;
+-	case BPF_FUNC_perf_event_read:
+-		return &bpf_perf_event_read_proto;
+-#ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+-	case BPF_FUNC_probe_read:
+-		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+-		       NULL : &bpf_probe_read_compat_proto;
+-	case BPF_FUNC_probe_read_str:
+-		return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+-		       NULL : &bpf_probe_read_compat_str_proto;
+-#endif
+-#ifdef CONFIG_CGROUPS
+-	case BPF_FUNC_current_task_under_cgroup:
+-		return &bpf_current_task_under_cgroup_proto;
+-#endif
+-	case BPF_FUNC_send_signal:
+-		return &bpf_send_signal_proto;
+-	case BPF_FUNC_send_signal_thread:
+-		return &bpf_send_signal_thread_proto;
+-	case BPF_FUNC_get_task_stack:
+-		return prog->sleepable ? &bpf_get_task_stack_sleepable_proto
+-				       : &bpf_get_task_stack_proto;
+-	case BPF_FUNC_copy_from_user:
+-		return &bpf_copy_from_user_proto;
+-	case BPF_FUNC_copy_from_user_task:
+-		return &bpf_copy_from_user_task_proto;
+-	case BPF_FUNC_task_storage_get:
+-		if (bpf_prog_check_recur(prog))
+-			return &bpf_task_storage_get_recur_proto;
+-		return &bpf_task_storage_get_proto;
+-	case BPF_FUNC_task_storage_delete:
+-		if (bpf_prog_check_recur(prog))
+-			return &bpf_task_storage_delete_recur_proto;
+-		return &bpf_task_storage_delete_proto;
+ 	case BPF_FUNC_get_func_ip:
+ 		return &bpf_get_func_ip_proto_tracing;
+-	case BPF_FUNC_get_branch_snapshot:
+-		return &bpf_get_branch_snapshot_proto;
+-	case BPF_FUNC_find_vma:
+-		return &bpf_find_vma_proto;
+ 	default:
+ 		break;
+ 	}
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 79cab4d78dc3..53bf560354f7 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -8488,8 +8488,6 @@ sk_msg_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_msg_pop_data_proto;
+ 	case BPF_FUNC_perf_event_output:
+ 		return &bpf_event_output_data_proto;
+-	case BPF_FUNC_get_current_uid_gid:
+-		return &bpf_get_current_uid_gid_proto;
+ 	case BPF_FUNC_sk_storage_get:
+ 		return &bpf_sk_storage_get_proto;
+ 	case BPF_FUNC_sk_storage_delete:
+-- 
+2.43.0
+
 
