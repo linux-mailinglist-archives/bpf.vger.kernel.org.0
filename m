@@ -1,225 +1,130 @@
-Return-Path: <bpf+bounces-56720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D52A9D184
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 21:27:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48392A9D1FD
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 21:41:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E58BF1C00ED1
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 19:27:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED9E460EC0
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 19:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D180E21ADA6;
-	Fri, 25 Apr 2025 19:27:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8D921D3C0;
+	Fri, 25 Apr 2025 19:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b="d00b44Bf";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AiBiVfJC"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="C+Rdr/oo"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256712D78A;
-	Fri, 25 Apr 2025 19:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878D1219313;
+	Fri, 25 Apr 2025 19:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745609226; cv=none; b=T729V4m4k+Rcvyc55Tg/FQ5L+Rgu/EVgXjtmn0BCq85TylT+BZuxo0HBoXGBxE2uc7MMDFj+Rn/PqeXzr1GNhJfFGLVSVNQ3egvqbo/aV0yGMm5nMoFL1RiS0gsSZOqTEksttro4VmQBTkxrabfBAZiujgfleL9l+86vt5sCvuU=
+	t=1745609905; cv=none; b=RJkCCWtQbTHW5iG8Nht5ylDWcurQ3rtGeCF+deZTfjAwgGZEcGXOFYbsuCoKtiSShRINF33YKQM/PdhxEQMnwWj1gT0VAwHS9bAl5E+BCS8PoMtWSX2WVf90RjJwaOcSwSv6NeN8vbU/DAH51qsGOd8OJF0dwguotg5hP7hz0TQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745609226; c=relaxed/simple;
-	bh=RvD5mC4sHD3jGSm/9Cbrj96ZlAKNLWHG1osWOR3rIO4=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=hFaD41ZukTL/SbcwU5oyNKLuqT/BZ7Z/+WhDN720nXOqwFCuR1icKAlQ5QtV+AeCEajYJcDX1LGE1YlmmsZKOvDLaaJk3SPF4YX2QxSZOEO4EAUyME0r9rW/AJaPyhXuJ6wGVxXuHYDTyMrt9A3N/zaPql++Ovt7VySk787MtbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com; spf=pass smtp.mailfrom=arthurfabre.com; dkim=pass (2048-bit key) header.d=arthurfabre.com header.i=@arthurfabre.com header.b=d00b44Bf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=AiBiVfJC; arc=none smtp.client-ip=202.12.124.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=arthurfabre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arthurfabre.com
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfout.stl.internal (Postfix) with ESMTP id A453811401A5;
-	Fri, 25 Apr 2025 15:27:00 -0400 (EDT)
-Received: from phl-imap-13 ([10.202.2.103])
-  by phl-compute-05.internal (MEProxy); Fri, 25 Apr 2025 15:27:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arthurfabre.com;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm1;
-	 t=1745609220; x=1745695620; bh=zQLMxe8QsqJK1fYcw7ILxK9codnxO47h
-	QzxDx+TrHqA=; b=d00b44BfliSIETbJKugb6MlG3MAOWeFHi2Yl6Aymgr1v5H2l
-	l9ID6PkyrHgxJ9VmvkKgcL5auW5SGKV7RTZ7+gp0bQFtjamjFvFzpTkKiDvstswW
-	oWTBt0fUduLwM2EAGOdX47Ems8iYnpR8iuOyhZsyHCokkV1Ef7QHEjhE8zRXtw07
-	GWYX5VvfcDB9chyeStmR0von84KC3HGklf7MhSe9SoZgsFrRjI5VT6tkMxAeSTpu
-	cOYfCndpMatp20ag1vStkvC07Tjac+AqPdRsP5VYkCsaRqqDJERwAoKcHKY+jfCA
-	K6ZJrIVV/Wbq1TxwRV6dtyOO4w7wEUYZxDfIsQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1745609220; x=
-	1745695620; bh=zQLMxe8QsqJK1fYcw7ILxK9codnxO47hQzxDx+TrHqA=; b=A
-	iBiVfJC1hOq3PO4sHUvypNjjP7dnBZM0JWlh98Elm7ZbCIHKM+yi/tj7AiywtPuk
-	U0j6HGc0XDp47XHwSwfu+80Fb81taYnvTxrf5kPxpp1tcjUfOA8NNOGiuHa23nSI
-	U7LVf9vYXMINyBkHaTOgRxVAJ0gtQHtHVLEBWOnixwYniYW5OXGnBNBxjBNOuZ3Y
-	O+t61RDIGxXNlJ/fUoB/FsdquLMxiqWFu1hoTG0gPzgQ3rrYsXiD74dANjzgTep7
-	jGL2d6BikqT/XEZHy/ysn35Wd6MUu1yH4hTiL5roVWPyXEjhp31XWo9d3pHtrsq9
-	RIxTIvHej/zAJXsYbdGOA==
-X-ME-Sender: <xms:BOILaKjnItOguChcis_NH9sdjmjG0IRPJbLAoZKZ8w5Meo4tPaR2IA>
-    <xme:BOILaLCu08h-rpAfHvIqIAi7-J9akmLvnWWpeeZvKnCR6r9OuBhqr5jFFU34kq8Tj
-    ZrF1js8KaN0uw7mzdk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvheefudejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepofgggfgtfffkuffhvfevofhfjgesthhqredt
-    redtjeenucfhrhhomhepfdetrhhthhhurhcuhfgrsghrvgdfuceorghrthhhuhhrsegrrh
-    hthhhurhhfrggsrhgvrdgtohhmqeenucggtffrrghtthgvrhhnpeejfeeiudeijeehtddt
-    leejffetudeuvddvvdeludfhvddtgeefgefhtedtheelueenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhthhhurhesrghrthhhuhhrfhgr
-    sghrvgdrtghomhdpnhgspghrtghpthhtohepuddvpdhmohguvgepshhmthhpohhuthdprh
-    gtphhtthhopehjrghkuhgssegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopehj
-    sghrrghnuggvsghurhhgsegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopeihrg
-    hnsegtlhhouhgufhhlrghrvgdrtghomhdprhgtphhtthhopegrlhgvgigvihdrshhtrghr
-    ohhvohhithhovhesghhmrghilhdrtghomhdprhgtphhtthhopegvughumhgriigvthesgh
-    hoohhglhgvrdgtohhmpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghp
-    thhtohephhgrfihksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkuhgsrgeskhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtoheplhgsihgrnhgtohhnsehrvgguhhgrthdrtghomh
-X-ME-Proxy: <xmx:BOILaCHZs1KaiUO3lVvxpyfnWLUhv5MQXtbYEd5k9YQALBibOW6tVA>
-    <xmx:BOILaDSF9tik_O7EoX3nszlksHE-Tc9kYLHHBEezsd74YTAHTuZd3A>
-    <xmx:BOILaHwz1_wmmJvpJqUzlTVmu1GtSGx7EskFPVZtOv3s2e3SttxdFQ>
-    <xmx:BOILaB7wGH--88AN6G63iVtBoHVIJPDrNX9fuX0SFwyqm1MYyMdTxg>
-    <xmx:BOILaAu3LAg4pUoQmMzsIRdPwlN1pQ8DXahEMVjwLtZPHSG3MmjUFTiM>
-Feedback-ID: i9179493c:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 140D21F00073; Fri, 25 Apr 2025 15:27:00 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1745609905; c=relaxed/simple;
+	bh=wjYY8hD1aR6U/hYht1xTDSyyUul+5U2cO03JezuRPjo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=vEWmgvDpDPkBUf8jmpy/uw0O1MD+IPBri652szM5dLGoa947zRNV08gL4TvyxdoLCasdoLDJX98a/YVQwz2U9uL574fzbVPlcULr3DAI19rFAKhpm1YYwCsYTQevUWC4EUlq/Ux0yDjVNV9LkF7ZJnIGnN4Rg2fA6nx4UUxwur4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=C+Rdr/oo; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [IPV6:2601:646:8081:1f93:3f9b:137e:d2cb:73f7] ([IPv6:2601:646:8081:1f93:3f9b:137e:d2cb:73f7])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 53PJXQqR3199422
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Fri, 25 Apr 2025 12:33:27 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 53PJXQqR3199422
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2025042001; t=1745609615;
+	bh=OLByDl2k8QS7+vMeXGAQllfp+4VYlTCCje7Ox6Pfa4g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=C+Rdr/oohHcjiYl3k1s0a/jc7dixN5R0Mv5Px2j8kDdwJbPFLv4mJw8by+4Oto+F1
+	 tveW9WpgN8ttlpQLpdXcxTyaag9b/7TVjdH+TFVTrbHGQKwFJgak240662L863NwH8
+	 vgd5rhQsraf4buOHAZcbX5elWx80ZG9egeLnGj+ScCeWi6QGr1XXyAHAVnHwSmGqjn
+	 GkUO/NnNKAj8Q2mW/Ez/Vn8NVAPQB+fwhPjMvNjg1RQgr6hZA7HmxZl5MiRxUlxIY9
+	 uDj0XpVrhXq3zSB+OYJgYqNwOTX2giqyzWvO0pM/qCL4rFHYBzL4YJWj3wXsa2EaH3
+	 7hq16GNhLhdyg==
+Message-ID: <8571fd6f-4e71-4a6d-b2e8-16d9d72fa56e@zytor.com>
+Date: Fri, 25 Apr 2025 12:33:21 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 25 Apr 2025 21:26:59 +0200
-Message-Id: <D9FYTORERFI7.36F4WG8G3NHGX@arthurfabre.com>
-Subject: Re: [PATCH RFC bpf-next v2 01/17] trait: limited KV store for
- packet metadata
-From: "Arthur Fabre" <arthur@arthurfabre.com>
-To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-Cc: "Network Development" <netdev@vger.kernel.org>, "bpf"
- <bpf@vger.kernel.org>, "Jakub Sitnicki" <jakub@cloudflare.com>, "Jesper
- Dangaard Brouer" <hawk@kernel.org>, "Yan Zhai" <yan@cloudflare.com>,
- <jbrandeburg@cloudflare.com>, =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
- <thoiland@redhat.com>, <lbiancon@redhat.com>, "Alexei Starovoitov"
- <ast@kernel.org>, "Jakub Kicinski" <kuba@kernel.org>, "Eric Dumazet"
- <edumazet@google.com>
-X-Mailer: aerc 0.17.0
-References: <20250422-afabre-traits-010-rfc2-v2-0-92bcc6b146c9@arthurfabre.com> <20250422-afabre-traits-010-rfc2-v2-1-92bcc6b146c9@arthurfabre.com> <CAADnVQJeCC5j4_ss2+G2zjMbAcn=G3JLeAJCBZRC8uzfsVAjMA@mail.gmail.com>
-In-Reply-To: <CAADnVQJeCC5j4_ss2+G2zjMbAcn=G3JLeAJCBZRC8uzfsVAjMA@mail.gmail.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/13] Introduce parity_odd() and refactor redundant
+ parity code
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: Yury Norov <yury.norov@gmail.com>, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
+        andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
+        dmitry.torokhov@gmail.com, mchehab@kernel.org, awalls@md.metrocast.net,
+        hverkuil@xs4all.nl, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, louis.peens@corigine.com, andrew+netdev@lunn.ch,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        parthiban.veerasooran@microchip.com, arend.vanspriel@broadcom.com,
+        johannes@sipsolutions.net, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, akpm@linux-foundation.org, jdelvare@suse.com,
+        linux@roeck-us.net, alexandre.belloni@bootlin.com, pgaj@cadence.com,
+        alistair@popple.id.au, linux@rasmusvillemoes.dk,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsi@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mtd@lists.infradead.org,
+        oss-drivers@corigine.com, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
+        brcm80211-dev-list.pdl@broadcom.com, linux-serial@vger.kernel.org,
+        bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw, Frank.Li@nxp.com,
+        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+        david.laight.linux@gmail.com, andrew.cooper3@citrix.com,
+        Yu-Chun Lin <eleanor15x@gmail.com>
+References: <20250409154356.423512-1-visitorckw@gmail.com>
+ <Z_amQp3gK5Dm8Qz3@yury> <Z/a5Qh/OeLT8JBS4@visitorckw-System-Product-Name>
+ <Z_a9YpE46Xf8581l@yury> <e97a83a2-dabd-4dc3-b69a-840ca17d70b5@zytor.com>
+ <Z/lEkDwefWvw4ZA3@visitorckw-System-Product-Name>
+Content-Language: en-US
+From: "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <Z/lEkDwefWvw4ZA3@visitorckw-System-Product-Name>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu Apr 24, 2025 at 6:22 PM CEST, Alexei Starovoitov wrote:
-> On Tue, Apr 22, 2025 at 6:23=E2=80=AFAM Arthur Fabre <arthur@arthurfabre.=
-com> wrote:
-> >
-> > +/**
-> > + * trait_set() - Set a trait key.
-> > + * @traits: Start of trait store area.
-> > + * @hard_end: Hard limit the trait store can currently grow up against=
-.
-> > + * @key: The key to set.
-> > + * @val: The value to set.
-> > + * @len: The length of the value.
-> > + * @flags: Unused for now. Should be 0.
-> > + *
-> > + * Return:
-> > + * * %0       - Success.
-> > + * * %-EINVAL - Key or length invalid.
-> > + * * %-EBUSY  - Key previously set with different length.
-> > + * * %-ENOSPC - Not enough room left to store value.
-> > + */
-> > +static __always_inline
-> > +int trait_set(void *traits, void *hard_end, u64 key, const void *val, =
-u64 len, u64 flags)
-> > +{
-> > +       if (!__trait_valid_key(key) || !__trait_valid_len(len))
-> > +               return -EINVAL;
-> > +
-> > +       struct __trait_hdr *h =3D (struct __trait_hdr *)traits;
-> > +
-> > +       /* Offset of value of this key. */
-> > +       int off =3D __trait_offset(*h, key);
-> > +
-> > +       if ((h->high & (1ull << key)) || (h->low & (1ull << key))) {
-> > +               /* Key is already set, but with a different length */
-> > +               if (__trait_total_length(__trait_and(*h, (1ull << key))=
-) !=3D len)
-> > +                       return -EBUSY;
-> > +       } else {
-> > +               /* Figure out if we have enough room left: total length=
- of everything now. */
-> > +               if (traits + sizeof(struct __trait_hdr) + __trait_total=
-_length(*h) + len > hard_end)
-> > +                       return -ENOSPC;
->
-> I'm still not excited about having two metadata-s
-> in front of the packet.
-> Why cannot traits use the same metadata space ?
->
-> For trait_set() you already pass hard_end and have to check it
-> at run-time.
-> If you add the same hard_end to trait_get/del the kfuncs will deal
-> with possible corruption of metadata by the program.
-> Transition from xdp to skb will be automatic. The code won't care that tr=
-aits
-> are there. It will just copy all metadata from xdp to skb. Corrupted or n=
-ot.
-> bpf progs in xdp and skb might even use the same kfuncs
-> (or two different sets if the verifier is not smart enough right now).
+On 4/11/25 09:34, Kuan-Wei Chiu wrote:
+>>
+>> In either case, instead of packing the cascade into one function, make good
+>> use of it.
+>>
+>> In the latter case, __builtin_constant_p() isn't necessary as it puts the
+>> onus on the architecture to separate out const and non-const cases, if it
+>> matters -- which it doesn't if the architecture simply wants to use
+>> __builtin_parity:
+>>
+>> #define parity8(x)  ((bool) __builtin_parity((u8)(x)))
+>> #define parity16(x) ((bool) __builtin_parity((u16)(x)))
+>> #define parity32(x) ((bool) __builtin_parity((u32)(x)))
+>> #define parity64(x) ((bool) __builtin_parityll((u64)(x)))
+>>
+>> As stated before, I don't really see that the parity function itself would
+>> be very suitable for a generic helper, but if it were to, then using the
+>> "standard" macro construct for it would seem to be the better option.
+>>
+>> (And I would be very much in favor of not open-coding the helper everywhere
+>> but to macroize it; effectively creating a C++ template equivalent. It is
+>> out of scope for this project, though.)
+>>
+> IIUC, you prefer using the parity8/16/32/64() interface with
+> __builtin_parity(), regardless of whether there are users on the hot
+> path?
 
-Good idea, that would solve the corruption problem.
+As a per-architecture opt-in, yes.
 
-But I think storing metadata at the "end" of the headroom (ie where=20
-XDP metadata is today) makes it harder to persist in the SKB layer.
-Functions like __skb_push() assume that skb_headroom() bytes are
-available just before skb->data.
+	-hpa
 
-They can be updated to move XDP metadata out of the way, but this
-assumption seems pretty pervasive.
-
-By using the "front" of the headroom, we can hide that from the rest of
-the SKB code. We could even update skb->head to completely hide the
-space used at the front of the headroom.
-It also avoids the cost of moving the metadata around (but maybe that
-would be insignificant).
-
-XDP metadata also doesn't work well with GRO (see below).
-
-> Ideally we add hweight64 as new bpf instructions then maybe
-> we won't need any kernel changes at all.
-> bpf side will do:
-> bpf_xdp_adjust_meta(xdp, -max_offset_for_largest_key);
-> and then
-> trait_set(xdp->data_meta /* pointer to trait header */, xdp->data /*
-> hard end */, ...);
-> can be implemented as bpf prog.
->
-> Same thing for skb progs.
-> netfilter/iptable can use another bpf prog to make decisions.
-
-There are (at least) two reasons for wanting the kernel to understand the
-format:
-
-* GRO: With an opaque binary blob, the kernel can either forbid GRO when
-  the metadata differs (like XDP metadata today), or keep the entire blob
-  of one of the packets.
-  But maybe some users will want to keep a KV of the first packet, or
-  the last packet, eg for receive timestamps.
-  With a KV store we can have a sane default option for merging the
-  different KV stores, and even add a per KV policy in the future if
-  needed.
-
-* Hardware metadata: metadata exposed from NICs (like the receive
-  timestamp, 4 tuple hash...) is currently only exposed to XDP programs
-  (via kfuncs).
-  But that doesn't expose them to the rest of the stack.
-  Storing them in traits would allow XDP, other BPF programs, and the
-  kernel to access and modify them (for example to into account
-  decapsulating a packet).
 
