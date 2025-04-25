@@ -1,181 +1,152 @@
-Return-Path: <bpf+bounces-56722-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56723-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55F06A9D20C
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 21:43:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42E81A9D2CB
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 22:16:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45C113BBAB8
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 19:43:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89A171760EF
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 20:16:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A500821C166;
-	Fri, 25 Apr 2025 19:43:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97AED22068B;
+	Fri, 25 Apr 2025 20:16:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FFgK1mxG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CmnigMN3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE876219303;
-	Fri, 25 Apr 2025 19:43:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 635B5190692;
+	Fri, 25 Apr 2025 20:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745610198; cv=none; b=IRwVcGJynMeaOMzREWrmAKsMRQDEBt1DrfOJ0bIeLQzEPFd5f9kOPmkTbJV+S0MyMLwtWGtn8X3vJ9a8Nn3xAjTweCZRT3pVzHUMj8K0Y88kFsJHmsCFhdU6I5rnWNaiCg9wOSEMngN2OFJlNA48xOW2xP+gzShGRmCIxK4lqtA=
+	t=1745612185; cv=none; b=tG4Xw7msqXlzG54EUr2ldLYMq9n8fId75GXQ3wQXsyuAghFdkEd3Af7U/hBDZvYNSP5kE8dPH152et+NYXZCyrOZoVmJUWxPiA4wifpWutWlzexWeA0lvrwxCDB2sFb9J6ZBOsHwaOABDFiVxU/8ltUa3e+vMO+JZcNs9i9lAYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745610198; c=relaxed/simple;
-	bh=n4kqhT7GqQL7ewcpNVtoptzgVUov77wzYh2GMvFeFLM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=e7sK3PYtXV5IuxAY/SNoBz7v1ew54jm48jibTnzTIcxPyPqjZ78G4vQEFRbx9o7KDa5iq102AblVIIE8kin46be2jkBVkXkMB2MRjArtYENC1OrAt38UE41JBuvWl6lZy9zy+pjIS1II5WQA1lpXy3N1z4by/vqQNG88hYOpc/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FFgK1mxG; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1745612185; c=relaxed/simple;
+	bh=SvQbI9N7Gk1efogbNDjZVBEHSwQPmHTYvGZwdt1PasU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QnZdcGjks9pP868T5noUIfPcdflc8hTi2YUf1vMy3G9cpSb53dRAiBYlORUe7thX2GyNsqvbeZerNflsbDV5p56AeINl7EikL1YhY9He26CgJfYHlLtbk4UfWNu3eC8WaPm84mBoxKFoH8E1cZHOsJXnqLnN6Unb6wWSRn+g+Ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CmnigMN3; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-224019ad9edso39502865ad.1;
-        Fri, 25 Apr 2025 12:43:16 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-43edecbfb94so25549885e9.1;
+        Fri, 25 Apr 2025 13:16:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745610196; x=1746214996; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=O72gn9kR1nz94erxUiMK+2B4889QajzPSc5EcH4w7oQ=;
-        b=FFgK1mxGO3IxmuD6ENS8eyJUf1hRiYo6Z2854eiG5lcPG2F5BlA7H+r+c3HGGLT61h
-         WbJvJcUHxnjSeLPqo28Z4+yipSK63vuyHjtQ69sMCgEw7whWVJAFL+etQ4wsc20KFKyU
-         x66bIaYY4S9YhuOovbudfsxMkfgn0o20vym5eSu6/sT7M29p77KvdNqYDc3IysU2NCAY
-         rT/7YW5vZd6cSiD7pl4CGZkZVArDztI4EmbHcYXN9J79R4Dw2lp3iwDUNIIjbqHHwIS3
-         QStyJ92worhU6jkozzXinc1b3E21FeA1XxZDD/HQP1EYn63+5VRlliktUw9eSzvWrFvv
-         3A4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745610196; x=1746214996;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1745612182; x=1746216982; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O72gn9kR1nz94erxUiMK+2B4889QajzPSc5EcH4w7oQ=;
-        b=BsTnIEiRySPPRO3vXPZA+8018K1rq90VYC1t6a0RNGOkL+LzECQW9V2IobithFUvJQ
-         MImqPtMOtYc864n6sbblmY6ZOAm9fuDmpsiW7XyrEvesOLuBnPxphRK8gqWsTSdqTkAs
-         V8r+IbyAROh3TFxQjSpM/gu9Tu6O9Yckr6fXC2/NK1Awo+UFTTJ8ZCCD+MGB46AKwwt9
-         UfmZ2hcsVAwXp/WXW+ILIYz1AgrWBesqj35L7wUkXQdXTZdI/Ail5V0armiMIwyl225t
-         8i6AYyTqvxbKZkiY638H4AMGe1cVmK1iZDbFIMTiXF+utujpwLe7ujARd+TIZdlFQqsE
-         ucpw==
-X-Forwarded-Encrypted: i=1; AJvYcCUBqoJlyjkx9nGer1Wo/kmogNYq14mh1Rh1YKCXNy1WKYwS/QDojx+6qQLCKf67i5HOaaE=@vger.kernel.org, AJvYcCUI1NT77ApQYLw9cBrW+0DuJ4pHakm9CclRaEqhx1Lf17aFDRYBVcp57lD99vD2ZJVg+Iwtf9dqyg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyQ2SWfBje4c1DFJbBZlug46BWHfrONflz+i/NZ7YG9lP9x+IsS
-	L8RkpaSu2GmOLIYlxNYgVbj1vFoXtLIWuRZoCUoixhGSf+aDsM02vZBHHcyT
-X-Gm-Gg: ASbGnctm33Zir2I5GVlij/43yyc5cy9hToEXi99jEbrARotZHAo4IQnK45PzJbnJw/D
-	0DH71bnDBBEixyNvuh8w8i7KnNzV1fIiXxbCPbMrEKD/m/15+Bur9kwNM01sc3ct5DCG8gfa4U7
-	Ez7+0dHZawnOWTZcF3qM+sOGTOO2JU/JsSiEgSmwlbpQ4A9Yi5ND+QHx0kwK49iRyahmUutiEvR
-	NTenigQ9ZCs+KD5re4TpyfhqIyiwfshT9KQTpVT78tekgmc13qTnxpDTNhtfUtW961vdOK6OUKM
-	ihfceRzmeKHA1t5bSpqDYgmidBWMVO3q72Ms8MHTSj+1Rq+mCg==
-X-Google-Smtp-Source: AGHT+IHpHc9vDl2/wlDzc1r1tDIY6Cg3nbLf1cZp64W7ABpbEeQEXuhbEnsncnRvx4CxA2IbaeMjNg==
-X-Received: by 2002:a17:903:1788:b0:224:1935:d9a3 with SMTP id d9443c01a7336-22dbf5ded71mr53976815ad.21.1745610195837;
-        Fri, 25 Apr 2025 12:43:15 -0700 (PDT)
-Received: from ezingerman-mba ([2620:10d:c090:500::5:5728])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db4d77395sm36502055ad.5.2025.04.25.12.43.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Apr 2025 12:43:15 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>,  Arnaldo Carvalho de Melo
- <acme@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>,  Ihor Solodrai
- <ihor.solodrai@linux.dev>,  bpf <bpf@vger.kernel.org>,
-  dwarves@vger.kernel.org,  Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: pahole and gcc-14 issues
-In-Reply-To: <m2v7qsglbx.fsf@gmail.com> (Eduard Zingerman's message of "Fri,
-	25 Apr 2025 11:14:26 -0700")
-References: <CAADnVQL+-LiJGXwxD3jEUrOonO-fX0SZC8496dVzUXvfkB7gYQ@mail.gmail.com>
-	<m2v7qsglbx.fsf@gmail.com>
-Date: Fri, 25 Apr 2025 12:43:13 -0700
-Message-ID: <m2h62cgh7y.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        bh=2QkeVDV//AI1GukUI8NVNNpHYDyvKY5NhFKebS9C1DM=;
+        b=CmnigMN3j71DzyELT0Bbkvtz8ef+Fr+pDg+aGHIIKSt/lnRzAXVLq4+fnJS2mxqwiv
+         q95ChTfiyFyaov2gL6NlAePdgTt3GhiAhL5eOCw8t8sSq0a+iqAPt7yvAcBhYEpSlu9a
+         beNfcWMGKPSyw00VA+4uOQqz0RI7sPInklsulDWxoZDhVu1ZayeAHjb4XwFP0BRuWBXg
+         aBI6Lpelrec9aQjqYOEIjB1SFObvyMzeLf/AT1o08lEWYGgQRdBms5rqp8Y3LQ93+kis
+         u+/bOg2EAAb4jUs07Z5L8Y8Y5WuFAPAWVsYAaOSN1BrZ3eTjI+WUxA7tphVs3a2HNfdP
+         Rkpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745612182; x=1746216982;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2QkeVDV//AI1GukUI8NVNNpHYDyvKY5NhFKebS9C1DM=;
+        b=w/in32V4N1amkWCJCRqQQQMYCiUat4Qv06/wwSE6CY1dIlqfgLOgC1jFH5BiSU5g9j
+         efEBxQRqmppvcIWJmLahPiau7rZoFjy/9/QL2jXHCA0yMco4CjxO/WH/yo0JGIsfrcsC
+         h5/9qs0Kmbl495wcuYC3EXxXpLQ+z0/+NpqdFuoIKrl0/48q8HyNWX902sPPiXCdQmSK
+         TQyteHStuwGZTFbCzzAJdN4sFExuDyTVyoPRBRji/VrFX7SviWB+easP9OBTxZ5WXHhK
+         CI0+XWWXKBccrIEiZZL04nIpUKta9z9+iUC2ETkRuLh9e3ZiQ2yCnNFhwd1Cdlld/ZBE
+         gIgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUSp57L5t0A2cT1aa2/L8qmutqRz71XEKfhz+tu1SLvZNcu+pBnhzN4daEVQLy0qEegz2M=@vger.kernel.org, AJvYcCW5G0cNgzrL5TDlsJb13aLsZ8AomerE3NS8jRILzzTMOvVn6RG3lY18G8Jl3EwMpL17bsag/Md0zw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHVcqsSY39qxPIESYmASG2QlKAoFFeFoYqJtSFTAW6wUhUN5VY
+	bliPRyB5068HwHxD3EBS+ODrJTKEpziSgHPK+Fz4T5Wm329NekMC05M2+Z5lcPuRm/gtaM/2ROw
+	zojUViLJoDIJLmik3ZzrrcfWCAVE=
+X-Gm-Gg: ASbGnctKBGRBTqytrvBPlXTDNZrVMnWuPP5zCqqbnY9qkOEvxckMQuv9FOj8z6IW+Z1
+	2nZuMVuXzX+bSe2IxnnLCb/5hQk1CbiNS/DGrdooxzUAdtX439D+KZheIB16mvTeyOehKnvntN5
+	EU65fs958t/cs7Cb6+S29F+g/b8FzjTt7G25adgQ==
+X-Google-Smtp-Source: AGHT+IGFLtLfxLdT9KubeFJ5N6f/1w/zt/u6PvxnHMQch7EGTJdiz7sqyKEq8k9WNY9uP/9+6fyL4qsyW7VyqsQr+Jk=
+X-Received: by 2002:a05:600c:3491:b0:43b:ce3c:19d0 with SMTP id
+ 5b1f17b1804b1-440a66b6fb1mr32810365e9.29.1745612181372; Fri, 25 Apr 2025
+ 13:16:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CAADnVQL+-LiJGXwxD3jEUrOonO-fX0SZC8496dVzUXvfkB7gYQ@mail.gmail.com>
+ <m2v7qsglbx.fsf@gmail.com> <m2h62cgh7y.fsf@gmail.com>
+In-Reply-To: <m2h62cgh7y.fsf@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 25 Apr 2025 13:16:10 -0700
+X-Gm-Features: ATxdqUEhYzagOs8qsfw_ZqOoO4tlKaAbYmZG1jZrWm9PiD4-5QOTOx4jELhSaOs
+Message-ID: <CAADnVQJQuAkmE_D_ATp-hZeTtUK4Tn=BOOOx+wPtUB1QpzeQuA@mail.gmail.com>
+Subject: Re: pahole and gcc-14 issues
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Ihor Solodrai <ihor.solodrai@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	dwarves@vger.kernel.org, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Eduard Zingerman <eddyz87@gmail.com> writes:
-
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+On Fri, Apr 25, 2025 at 12:43=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
 >
->> Hi All,
->>
->> Looks like pahole fails to deduplicate BTF when kernel and
->> kernel module are built with gcc-14.
->> I see this issue with various kernel .config-s on bpf and
->> bpf-next trees.
->> I tried pahole 1.28 and the latest master. Same issues.
->>
->> BTF in bpf_testmod.ko built with gcc-14 has 2849 types.
->> When built with gcc-13 it has 454 types.
->> So something is confusing dedup logic.
->> Would be great if dedup experts can take a look,
->> since this dedup issue is breaking a lot of selftests/bpf.
+> Eduard Zingerman <eddyz87@gmail.com> writes:
 >
-> It does not look like the problem is with dedup.
-> Quick glance at structure definitions does not show any duplications,
-> just much more structs compared to clang:
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> >
+> >> Hi All,
+> >>
+> >> Looks like pahole fails to deduplicate BTF when kernel and
+> >> kernel module are built with gcc-14.
+> >> I see this issue with various kernel .config-s on bpf and
+> >> bpf-next trees.
+> >> I tried pahole 1.28 and the latest master. Same issues.
+> >>
+> >> BTF in bpf_testmod.ko built with gcc-14 has 2849 types.
+> >> When built with gcc-13 it has 454 types.
+> >> So something is confusing dedup logic.
+> >> Would be great if dedup experts can take a look,
+> >> since this dedup issue is breaking a lot of selftests/bpf.
+> >
+> > It does not look like the problem is with dedup.
+> > Quick glance at structure definitions does not show any duplications,
+> > just much more structs compared to clang:
+>
+> Or maybe it is.
+> For example, task_struct is added to .ko BTF generated by gcc, but not
+> clang. This can only happen if dedup fails to merge structures in base
+> and module btf, right?
+>
+> Here is an interesting observation:
+>
+> $ bpftool btf dump file ~/tmp/objs-gcc/bpf_testmod.ko format c | awk '/st=
+ruct task_struct \{/ {s=3D1} s {print $0} /^\}/ {s=3D0}' > ~/tmp/task_struc=
+t.ko.c
+>
+> $ bpftool btf dump file ~/tmp/objs-gcc/vmlinux format c | awk '/struct ta=
+sk_struct \{/ {s=3D1} s {print $0} /^\}/ {s=3D0}' > ~/tmp/task_struct.vmlin=
+ux.c
+>
+> $ diff -pruN ~/tmp/task_struct.ko.c ~/tmp/task_struct.vmlinux.c
+> --- /home/ezingerman/tmp/task_struct.ko.c       2025-04-25 12:37:48.31248=
+0603 -0700
+> +++ /home/ezingerman/tmp/task_struct.vmlinux.c  2025-04-25 12:38:03.09664=
+4654 -0700
+> @@ -18,7 +18,6 @@ struct task_struct {
+>         int static_prio;
+>         int normal_prio;
+>         unsigned int rt_priority;
+> -       long: 0;
+>         struct sched_entity se;
 
-Or maybe it is.
-For example, task_struct is added to .ko BTF generated by gcc, but not
-clang. This can only happen if dedup fails to merge structures in base
-and module btf, right?
+I reproed this issue with default .ko build that includes:
+--btf_features=3Ddistilled_base
 
-Here is an interesting observation:
-
-$ bpftool btf dump file ~/tmp/objs-gcc/bpf_testmod.ko format c | awk '/struct task_struct \{/ {s=1} s {print $0} /^\}/ {s=0}' > ~/tmp/task_struct.ko.c
-
-$ bpftool btf dump file ~/tmp/objs-gcc/vmlinux format c | awk '/struct task_struct \{/ {s=1} s {print $0} /^\}/ {s=0}' > ~/tmp/task_struct.vmlinux.c
-
-$ diff -pruN ~/tmp/task_struct.ko.c ~/tmp/task_struct.vmlinux.c
---- /home/ezingerman/tmp/task_struct.ko.c       2025-04-25 12:37:48.312480603 -0700
-+++ /home/ezingerman/tmp/task_struct.vmlinux.c  2025-04-25 12:38:03.096644654 -0700
-@@ -18,7 +18,6 @@ struct task_struct {
-        int static_prio;
-        int normal_prio;
-        unsigned int rt_priority;
--       long: 0;
-        struct sched_entity se;
-        struct sched_rt_entity rt;
-        struct sched_dl_entity dl;
-@@ -46,7 +45,6 @@ struct task_struct {
-        short unsigned int migration_flags;
-        int rcu_read_lock_nesting;
-        union rcu_special rcu_read_unlock_special;
--       long: 0;
-        struct list_head rcu_node_entry;
-        struct rcu_node *rcu_blocked_node;
-        long unsigned int rcu_tasks_nvcsw;
-@@ -55,16 +53,13 @@ struct task_struct {
-        int rcu_tasks_idle_cpu;
-        struct list_head rcu_tasks_holdout_list;
-        int rcu_tasks_exit_cpu;
--       long: 0;
-        struct list_head rcu_tasks_exit_list;
-        int trc_reader_nesting;
-        int trc_ipi_to_cpu;
-        union rcu_special trc_reader_special;
--       long: 0;
-        struct list_head trc_holdout_list;
-        struct list_head trc_blkd_node;
-        int trc_blkd_cpu;
--       long: 0;
-        struct sched_info sched_info;
-        struct list_head tasks;
-        struct plist_node pushable_tasks;
-@@ -166,7 +161,6 @@ struct task_struct {
-        struct mutex_waiter *blocked_on;
-        struct mutex *blocker_mutex;
-        int non_block_count;
--       long: 0;
-        struct irqtrace_events irqtrace;
-        unsigned int hardirq_threaded;
-        u64 hardirq_chain_key;
-@@ -277,7 +271,6 @@ struct task_struct {
-        __u64 __mce_reserved: 62;
-        struct callback_head mce_kill_me;
-        int mce_count;
--       long: 0;
-        struct llist_head kretprobe_instances;
-        struct llist_head rethooks;
-        struct callback_head l1d_flush_kill;
+Once I disabled it and did
+bpftool btf dump file ./bpf_testmod.ko --base-btf .../vmlinux format c
+the task_struct from vmlinux.h and from testmod.h became exactly the same.
+So it sounds like the 3rd issue :)
+bpftool dump of distilled btf needs work.
 
