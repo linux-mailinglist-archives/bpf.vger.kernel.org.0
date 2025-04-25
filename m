@@ -1,258 +1,122 @@
-Return-Path: <bpf+bounces-56732-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DDD1A9D3A6
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 22:59:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B272A9D3BD
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 23:02:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 760461C00D41
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 20:59:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09EB43B9A29
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 21:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12CF9224250;
-	Fri, 25 Apr 2025 20:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F374C2236FB;
+	Fri, 25 Apr 2025 21:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Df0dr2tZ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MoNCXcn6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65B7224225;
-	Fri, 25 Apr 2025 20:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF69D19047A
+	for <bpf@vger.kernel.org>; Fri, 25 Apr 2025 21:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745614708; cv=none; b=Hz5GmHOUsH+HqsDJYa3IyhZAbn4klt+m9vFA6/H8gMhUzN7KDoGMQJQSx7yuXz/jEq0RVskWZi2h14DCMpmWvFleWa8nQ+TRPq72libqBciiPID8eXjVht7/pFbwzLzZCJxQfXGrENK3k41u8ZKX7nAi4OdV6Sn1+ALQticB7ZI=
+	t=1745614938; cv=none; b=WqhhCI8UcGOmxtoULjOezKLjKpKHqYJ7G9PaNmK+3FAsIfjuVV2GECt01zd0pPEWkWhYAlY+Vx0tZ9fEIOoK5s2GjCuzPnPHFzoZb7TRpzxzjnpGmm5JbIRZCaBj5M5AQ93SglnkQqRvOXbsl4NZJEnIPV5tSS11D/pR3MSSPLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745614708; c=relaxed/simple;
-	bh=pxZfBu6NOh1K8xXdxxfWMYR0YDxFURGAeLYEV4Q5PUU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eTFnOc48uv1SSrnn3YR2wCMMoPonqRjsfGyPltpZa2q5FxhuNI8BSC2lYe183+h1JKli0mizMEPvVqvLaxN4LZJ0XtwgKXvsLWXbw/fVtmeJn2HK/nviFeJ49EZILJksJurZRC3R8fI6b0PDmIdMTHyjTD5Iz5Xo8FPASjipvBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Df0dr2tZ; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-309fac646adso933159a91.1;
-        Fri, 25 Apr 2025 13:58:26 -0700 (PDT)
+	s=arc-20240116; t=1745614938; c=relaxed/simple;
+	bh=KZKwkCJpZVNf6MbBy+5zsgDiEFNHLBX8BTzolU6D2tI=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=W2eA1f8vJ0aDzwSn/wM7WKf5IWsPu5spFiwGoyEJJyleARs3SoGTGIWHjx/nocDSG/GNIJUTotPBmw7NZb+SkwuhrAWORlyAto7CiJZk8HMlhmwJqEMuXuJ7mgZjzuTZTxCi/Y7ANIogM7Km7PjJROde0Ydw430AXrArMJUqBZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MoNCXcn6; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43cf3192d8bso4185e9.1
+        for <bpf@vger.kernel.org>; Fri, 25 Apr 2025 14:02:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745614706; x=1746219506; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LZITaaOyEhv72XP9ZJM0D0OjL0yMF9nleZR/L1t/NHA=;
-        b=Df0dr2tZdF4kZfAV1mJrF7U1+6skeQrZosXJP/FO4F03mxQ9Jk/KZzK60Ez1HNBiUl
-         S0uSIkw4WAYeVRiw0+vnrohmAln0K98nSzPsT0PA+oIdGwq3HeQ7fg3s7ATqgIhgQlDW
-         xwdf8g8EExoIxn8dVkM8R3DTwxHXsxHyf5hxyBeA5uhWr5jfPG7gSBxX7O5CrByLwT4/
-         Pzp+wq68BQLaBqZ9HXYBjDGWJl0Qa3TN9xpS5Aq35O6OSkTRLZ88h+TkHZF4q0lKKlfa
-         QaDO9JUsF44fISKdjdffZzFgwQMxmI/deWRrLCo5toSW1sxwWT1TQHrdDWmtxDsSonnV
-         ZvVQ==
+        d=google.com; s=20230601; t=1745614935; x=1746219735; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=L0sBjGiN0aSmxPy5chTnxD+p5qmrnhePbtvMvpVIStA=;
+        b=MoNCXcn6z9gqZPYPO3RTxGlcP4/Zz7w0em5IQN25D12wKHDGVmEpXRG9YCahLN9Nha
+         GWJUyQNk8Xn7dbqdTD/t3X9hvq675ZV7SQHG1iQPhgNAIwFFSUw2U++eQNstb6vlbd8s
+         q1LYb7w0ShYqktux4SUBFMff1mYtnx9sW6EzyVVEqTgvNWK5SPGTol4A/XUd50P6AunT
+         UOPxxvj3pgXsnLO+mM+NirGkA/Zd20w0/T+RMoeFphOO5VPdsAm7XTHPjVPUZdV/ldt2
+         4hreJwOfpAWt8CvkFfVJAOAkzJHMmqwQu6W13Fo4w5K4HhV7Revd5CA84CwN8/pzxibH
+         FUXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745614706; x=1746219506;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LZITaaOyEhv72XP9ZJM0D0OjL0yMF9nleZR/L1t/NHA=;
-        b=oq3Kn8WRgtrR1bH/CgZQUqY14PPPed7m25GynInWUBN87NmdqqRTuyf9DE3r+s4pxZ
-         MLJYOTlBMjgNCArD9t5XiS+r3SUhk8LY389lRi1cWYnOClFDeV/ON41k5nR7VGh7pdmF
-         j+tu+tqYtibjtvDvI4hknMrEnAJEmSh/nGi1qQk5pqxLc/+fQk3Xkg8W7pR+zK+UC2uS
-         UqAVxplrFr/tjdWnOopJ+y7UAoyl1S0tPTlpOLJpOK7AG4mrIAwmT2GKwVQkARrOOCLN
-         3LMPpkIpmSf1h7kbkLyM+H/r5zJABrxZoKS476uuD7voQSQwzZRb6M1vnFOlfVrikyG5
-         LoQg==
-X-Forwarded-Encrypted: i=1; AJvYcCVY34z963MBcx3l0QdJE8uyO0oKbY4TBW9K4zj37cqSZFCmOle6kkUxYVlvHNG5zPXWhEI=@vger.kernel.org, AJvYcCXG+vbrhTHhPMRMk1QlAL04eGWnoH/tB0/B1kM+qyCqPv//w1zP2yyXhbKjszDG8xel+WTVBAJUMA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxR8VxF3K1s0aO9ZsZoY9FqlSQwcUIHJ0zcHVwUMUQpkD7C/GPo
-	ApjACosJpFgfaZfVofVjqvDdnSi8YexHCXNuF8Rosn7Fnoi04NAqt+uARHsszMaWDiLJBFJwWLc
-	Mq4rRHo7ZOugHUKRVSqPM4ZA7e4ROKi9e
-X-Gm-Gg: ASbGnctJqednUNncVekLurizE9gfrbjAGHo96wa3Rm879jQ+6Z2LNnSznsvdaLT0SVs
-	7k0u4PsBkN6Qdc+5hy0kwotucYCrldD/OYuv/d8VrXgzzJ9+LFUDCWa+qAldZY3o2+rE69ph7s7
-	0aygDarN622ImZrpnr83cojQUKv9h793IehMAz/IygxN4psESQ
-X-Google-Smtp-Source: AGHT+IGrr46HR3K9gAlPQ4TJrHwGIted5H0CrcKy0b+MdxozDfpsBuTET1Pd7BuReH6q9kaA6mmzj1kfZRuIUa9mi88=
-X-Received: by 2002:a17:90b:2749:b0:2fa:6793:e860 with SMTP id
- 98e67ed59e1d1-309ee2c9ecemr11193183a91.0.1745614705955; Fri, 25 Apr 2025
- 13:58:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1745614935; x=1746219735;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L0sBjGiN0aSmxPy5chTnxD+p5qmrnhePbtvMvpVIStA=;
+        b=b81Ts7DkHePZcCsbUvLfBFArAY3zC3IVwi3Yhli/O+YZLde9SalVY89li28HZmpss9
+         1aAd0CKDUz7R1CNo8PfFj0rcG7fuXpQanxObvN75sXexYg8MMQEfaYYp4qxd9lK73VFm
+         T/2rsjbTH1OpN1ex97DkEWoEAIBa7URK2U7Lk2bCVrZEhoywEIuLNAi72Wa5bai8gR1x
+         7BwrBJW49OmGM1lamUIX3crJ5J18jMcLedvTd7hdLffoQL4JwkurSEvmrmIN+535ELzg
+         jIh2aVoEce7V9jJChUvFVxSbBXxWKmbyZwSoy8LKeCreJdxE9awa7MXlioGPX3t373nl
+         bZIg==
+X-Forwarded-Encrypted: i=1; AJvYcCWU4kOkuSNjPLA6nWu6nZDKLWb9FhsXh7leLsvyaKo6Zn6oEC4K8pX7fwdJX1LJxY1Y/l0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzFAQJIVMaOLQ/H+xVoDRb4Jc89umZGJGWaKmexkUtC05Z+XM1w
+	pHHWEj/Z49HIJGhqMubwk290NJfrYKC2aG0ABrm7CsFfhO0Tpy/m+XywSzBQIr1GeOjXoAk+ls1
+	ncuf83ejeJYuW3AYNneNHp0wMXkFLxU5aBKZ0
+X-Gm-Gg: ASbGncuoCITqjPwu2k196jMhVQ4lwQzDW7h+4U64jQ89kgeb+Ep16O+G5+ld/GQXq3o
+	x6pgp4fiLATsc844dbDgB2ws/TJxWZQ/t3XWw3CRIEsDENCSOU0IlELmTebnv/X5Eo/3MgqCGwM
+	GDzpIEv6BUjMGSEcz15ozr76qEgboX7fx+XZJ5yByn4yiz0V97AmA=
+X-Google-Smtp-Source: AGHT+IHhfewBD/8ZaYI9xvKFtic87IUGDORQC8sMuQGmHg6O5zs2PXhoNpR3WMfPfJ8eErpHOnoAs6P32OD6UDQVSfE=
+X-Received: by 2002:a05:600c:1387:b0:43b:c2cc:5075 with SMTP id
+ 5b1f17b1804b1-440ad8089e9mr12975e9.5.1745614934981; Fri, 25 Apr 2025 14:02:14
+ -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAADnVQL+-LiJGXwxD3jEUrOonO-fX0SZC8496dVzUXvfkB7gYQ@mail.gmail.com>
- <076e52f6-248a-4a41-a199-3c705cb3d3c5@oracle.com> <CAEf4Bzb9ozx056hm3=zh=4Sh_62EydK_wtJkNpgH9Yy0cuSsUQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb9ozx056hm3=zh=4Sh_62EydK_wtJkNpgH9Yy0cuSsUQ@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 25 Apr 2025 13:58:13 -0700
-X-Gm-Features: ATxdqUHxEuP7_f52QC06XborETk_EUkhbkco5ZGcNaCGcTAM1uw7fg5hIEf6O0Y
-Message-ID: <CAEf4BzYOdta8xmDBMm=SL++Q=dtiVJqYvQQnE8noh6wiPkkO4w@mail.gmail.com>
-Subject: Re: pahole and gcc-14 issues
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
-	Ihor Solodrai <ihor.solodrai@linux.dev>, bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+From: YiFei Zhu <zhuyifei@google.com>
+Date: Fri, 25 Apr 2025 14:02:03 -0700
+X-Gm-Features: ATxdqUHuppnWRBiyUSUJiecJdkhx2t7fTZ7wrAc05TJm-R6brD9mI8rBpPkymMA
+Message-ID: <CAA-VZPm4uD5h1FSgJPuqJAkoKFnou4+UZcxXr3B=EScgfK2BYg@mail.gmail.com>
+Subject: Regression in backward compatibility of "bpftool cgroup tree" on
+ older kernels
+To: Kenta Tada <tadakentaso@gmail.com>, Quentin Monnet <qmo@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Ian Rogers <irogers@google.com>, 
+	Greg Thelen <gthelen@google.com>, Mahesh Bandewar <maheshb@google.com>, 
+	Minh-Anh Nguyen <minhanhdn@google.com>, Sagarika Sharma <sharmasagarika@google.com>, 
+	XuanYao Zhang <xuanyao@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 25, 2025 at 10:58=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Apr 25, 2025 at 10:50=E2=80=AFAM Alan Maguire <alan.maguire@oracl=
-e.com> wrote:
-> >
-> > On 25/04/2025 15:50, Alexei Starovoitov wrote:
-> > > Hi All,
-> > >
-> > > Looks like pahole fails to deduplicate BTF when kernel and
-> > > kernel module are built with gcc-14.
-> > > I see this issue with various kernel .config-s on bpf and
-> > > bpf-next trees.
-> > > I tried pahole 1.28 and the latest master. Same issues.
-> > >
-> > > BTF in bpf_testmod.ko built with gcc-14 has 2849 types.
-> > > When built with gcc-13 it has 454 types.
-> > > So something is confusing dedup logic.
-> > > Would be great if dedup experts can take a look,
-> > > since this dedup issue is breaking a lot of selftests/bpf.
-> > >
-> > > Also vmlinux.h generated out of the kernel compiled with gcc-13
-> > > and out of the kernel compiled with gcc-14 shows these differences:
-> > >
-> > > --- vmlinux13.h    2025-04-24 21:33:50.556884372 -0700
-> > > +++ vmlinux14.h    2025-04-24 21:39:10.310488992 -0700
-> > > @@ -148815,7 +148815,6 @@
-> > >  extern int hid_bpf_input_report(struct hid_bpf_ctx *ctx, enum
-> > > hid_report_type type, u8 *buf, const size_t buf__sz) __weak __ksym;
-> > >  extern void hid_bpf_release_context(struct hid_bpf_ctx *ctx) __weak =
-__ksym;
-> > >  extern int hid_bpf_try_input_report(struct hid_bpf_ctx *ctx, enum
-> > > hid_report_type type, u8 *buf, const size_t buf__sz) __weak __ksym;
-> > > -extern bool scx_bpf_consume(u64 dsq_id) __weak __ksym;
-> > >  extern int scx_bpf_cpu_node(s32 cpu) __weak __ksym;
-> > >  extern struct rq *scx_bpf_cpu_rq(s32 cpu) __weak __ksym;
-> > >  extern u32 scx_bpf_cpuperf_cap(s32 cpu) __weak __ksym;
-> > > @@ -148825,12 +148824,8 @@
-> > >  extern void scx_bpf_destroy_dsq(u64 dsq_id) __weak __ksym;
-> > >  extern void scx_bpf_dispatch(struct task_struct *p, u64 dsq_id, u64
-> > > slice, u64 enq_flags) __weak __ksym;
-> > >  extern void scx_bpf_dispatch_cancel(void) __weak __ksym;
-> > > -extern bool scx_bpf_dispatch_from_dsq(struct bpf_iter_scx_dsq
-> > > *it__iter, struct task_struct *p, u64 dsq_id, u64 enq_flags) __weak
-> > > __ksym;
-> > > -extern void scx_bpf_dispatch_from_dsq_set_slice(struct
-> > > bpf_iter_scx_dsq *it__iter, u64 slice) __weak __ksym;
-> > >  extern void scx_bpf_dispatch_from_dsq_set_vtime(struct
-> > > bpf_iter_scx_dsq *it__iter, u64 vtime) __weak __ksym;
-> > >  extern u32 scx_bpf_dispatch_nr_slots(void) __weak __ksym;
-> > > -extern void scx_bpf_dispatch_vtime(struct task_struct *p, u64 dsq_id=
-,
-> > > u64 slice, u64 vtime, u64 enq_flags) __weak __ksym;
-> > > -extern bool scx_bpf_dispatch_vtime_from_dsq(struct bpf_iter_scx_dsq
-> > > *it__iter, struct task_struct *p, u64 dsq_id, u64 enq_flags) __weak
-> > > __ksym;
-> > >  extern void scx_bpf_dsq_insert(struct task_struct *p, u64 dsq_id, u6=
-4
-> > > slice, u64 enq_flags) __weak __ksym;
-> > >  extern void scx_bpf_dsq_insert_vtime(struct task_struct *p, u64
-> > > dsq_id, u64 slice, u64 vtime, u64 enq_flags) __weak __ksym;
-> > >  extern bool scx_bpf_dsq_move(struct bpf_iter_scx_dsq *it__iter,
-> > > struct task_struct *p, u64 dsq_id, u64 enq_flags) __weak __ksym;
-> > >
-> > > gcc-14's kernel is clearly wrong.
-> > > These 5 kfuncs still exist in the kernel.
-> > > I manually checked there is no if __GNUC__ > 13 in the code.
-> > > Also:
-> > > nm bld/vmlinux|grep -w scx_bpf_consume
-> > > ffffffff8159d4b0 T scx_bpf_consume
-> > > ffffffff8120ea81 t scx_bpf_consume.cold
-> > >
-> > > I suspect the second issue is not related to the dedup problem.
-> > > All 5 missing kfuncs have ".cold" optimized bodies.
-> > > But ".cold" maybe a red herring, since
-> > > nm bld/vmlinux|grep -w scx_bpf_dispatch
-> > > ffffffff8159d020 T scx_bpf_dispatch
-> > > ffffffff8120ea0f t scx_bpf_dispatch.cold
-> > > but this kfunc is present in vmlinux14.h
-> > >
-> > > If it makes a difference I have these configs:
-> > > # CONFIG_DEBUG_INFO_DWARF4 is not set
-> > > # CONFIG_DEBUG_INFO_DWARF5 is not set
-> > > # CONFIG_DEBUG_INFO_REDUCED is not set
-> > > CONFIG_DEBUG_INFO_COMPRESSED_NONE=3Dy
-> > > # CONFIG_DEBUG_INFO_COMPRESSED_ZLIB is not set
-> > > # CONFIG_DEBUG_INFO_SPLIT is not set
-> > > CONFIG_DEBUG_INFO_BTF=3Dy
-> > > CONFIG_PAHOLE_HAS_SPLIT_BTF=3Dy
-> > > CONFIG_DEBUG_INFO_BTF_MODULES=3Dy
-> >
-> > thanks for the report! I've just reproduced this now with gcc 14; my
-> > initial theory was it might be DWARF5-related, but dedup issues occur
-> > for modules with CONFIG_DEBUG_INFO_DWARF4=3Dy also. I'm seeing task_str=
-uct
-> > duplicates in module BTF among other things, so I will try and dig
-> > further and report back when I find something. Like you I suspect the
->
-> This is a bizarre case. I have a custom small tool that recursively
-> traverses two parallel subgraphs of BTF types and prints anything that
-> differs between them ([0]). (I had to disable distilled BTF to make
-> use of this, the issue is present both with distilled BTF and
-> without).
->
-> I see that struct sock both in vmlinux and bpf_testmod.ko are
-> *IDENTICAL*. There is no difference I could detect. So very weird. I'm
-> thinking of bisecting, as this didn't happen before with exactly the
-> same compiler and pahole, so this must be a kernel-side change.
+Hi
 
-Ok, so while you guys had fun chasing distilled BTF quirks... ;)
+We've been using the "bpftool cgroup tree" command in some of our
+regression tests, and recently after a bpftool version bump we saw
+this error popping up that was not previously there:
 
-This is the commit introducing a regression:
+  Error: can't query bpf programs attached to [...]: Invalid argument
 
-eb0ece16027f ("Merge tag 'mm-stable-2025-03-30-16-52' of
-git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm")
+After a quick look at the code I located commit 98b303c9bf05
+("bpftool: Query only cgroup-related attach types"), where this block
+was changed:
 
-Yes, it's a "merge commit", but there is a lot of code introduced in
-it. Among it:
+-       for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
+-               int count = count_attached_bpf_progs(cgroup_fd, type);
++       for (i = 0; i < ARRAY_SIZE(cgroup_attach_types); i++) {
++               int count = count_attached_bpf_progs(cgroup_fd,
+cgroup_attach_types[i]);
 
-+ /*
-+  * Use __typeof_unqual__() when available.
-+  *
-+  * XXX: Remove test for __CHECKER__ once
-+  * sparse learns about __typeof_unqual__().
-+  */
-+ #if CC_HAS_TYPEOF_UNQUAL && !defined(__CHECKER__)
-+ # define USE_TYPEOF_UNQUAL 1
-+ #endif
-+
-+ /*
-+  * Define TYPEOF_UNQUAL() to use __typeof_unqual__() as typeof
-+  * operator when available, to return an unqualified type of the exp.
-+  */
-+ #if defined(USE_TYPEOF_UNQUAL)
-+ # define TYPEOF_UNQUAL(exp) __typeof_unqual__(exp)
-+ #else
-+ # define TYPEOF_UNQUAL(exp) __typeof__(exp)
-+ #endif
-+
+-               if (count < 0 && errno != EINVAL)
++               if (count < 0)
+                        return -1;
 
+It seems that it was suggested [1] to remove the `errno != EINVAL`
+condition since it's no longer necessary, but the kernel we are
+testing against does not yet support  BPF_CGROUP_UNIX_CONNECT, and the
+syscall from count_attached_bpf_progs returned with errno EINVAL,
+causing the function to fail where it previously succeeded.
 
-And that's exactly what causes this divergence. Commenting out that
-USE_TYPEOF_UNQUAL #define fixes issues.
+Would it make sense to restore that condition or is there a better way
+to fix / workaround?
 
-As to why that causes a problem. I suspect __typeof_unqual__() changes
-how GCC generates DWARF information within any given compilation unit
-(CU). Libbpf's BTF dedup relies on a property that compiler won't have
-duplicate definitions of exactly the same type (i.e., DWARF itself
-can't have two `struct blah` definitions), without which it's not
-possible to deduplicate entire clusters of self-referencing BTF types.
-It seems like typeof_unqual breaks this somehow.
+YiFei Zhu
 
-We need to compare DWARF with and without TYPEOF_UNQUAL and see what
-the differences are and how we can prevent or accommodate them.
-
->
->   [0] https://github.com/anakryiko/libbpf-bootstrap/tree/btfdiff-hack
->
-> > issues with missing kfuncs are different; may be an issue with our logi=
-c
-> > handling inconsistent functions getting confused by the .cold
-> > components. But right now understanding dedup issues is the top priorit=
-y.
-> >
-> > Alan
+[1] https://lore.kernel.org/all/e7ca0725-9cf7-49e3-b362-93430e3c649f@kernel.org/
 
