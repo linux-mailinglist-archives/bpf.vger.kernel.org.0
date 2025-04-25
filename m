@@ -1,391 +1,220 @@
-Return-Path: <bpf+bounces-56749-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56750-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9D81A9D45E
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 23:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D033A9D46C
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 23:45:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2F319E778B
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 21:43:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E4749C2B96
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 21:44:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A409279793;
-	Fri, 25 Apr 2025 21:40:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6791226CE6;
+	Fri, 25 Apr 2025 21:44:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bri+qpN4"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="VVfli0Z9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D7226A091;
-	Fri, 25 Apr 2025 21:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C68EA21CC49;
+	Fri, 25 Apr 2025 21:44:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745617247; cv=none; b=QT6jQ3h8XdmA8EihYfsNoxAh5xgoyeYAp/APowXq4xsfhB7HRhLB30+CPdrz9+qdVGpDjncLXWk6PhoHcOzUiWRk+Pj4PyFU6G+ucFPf/hdjxulNr91qXr6UvxS41SZOXhbdpAyx5VOoxPQBoRrhYbb/FviH/YqN8teZGWVqYLI=
+	t=1745617494; cv=none; b=k2ztJtthrrQ3Yi64HfONB9zPZI93wrf6STc5TQeFMsmLVFGVc3oaeMnD49dx+anpzYyJ9+BRrOsCfG3NYJOL7P7YyokhjhKOXomdbEuQpc6RGTVMyQMEC1G6tzGcw0KEO8j0+au+azMErLBleISUnP+SDuje9dQrMuNXb+O0MU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745617247; c=relaxed/simple;
-	bh=LAJe9kljdM0va3v2nWMAIe1qLaSp1Oher7CRxV16W54=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KHNoH0eVkBXx938+3niDQxFTL78ioaRvmXWBDd/q6n2BaGNUcpFWMbvCDEuQfMmjS0hN6o/UAnZiNVIbaUGZmUmBhctSDz2Km8pgWUG6oxhV6SQLWcLsnlYhjUqYpSjDMrjxBjHOt0/DJJXCh3fKIB4ceH+kJWedYeQNND+rsk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bri+qpN4; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-22928d629faso31068155ad.3;
-        Fri, 25 Apr 2025 14:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745617244; x=1746222044; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=59lVFW2/rI0XbXoUNSi7R0MnTUaoQMLeq46MfEUfU1Q=;
-        b=Bri+qpN4tIXIbPH5ildiJVVFICycssSzSgOA791MA8bHnPUnyox+GqHumIcsFXEHpb
-         GuH7hsjsNZuz0GLsrdedClOU7/YEPrXWLSkOonIPt0ELXegqY+EMZZpp++IVGHq4rRwj
-         UkE7jEAw4pJn5R+9yrhuEUeMHVaWHFBs4TzjZRRW5KdulF/Bw9o3eLgIRLUdYtOjFRNC
-         a+A9kfGmUkMeU9azygRAibcY+VPMPZK/SJD7eRS3fy5UW1rjnc1eEcBBQMfrsoGpS3Em
-         2ojchu3UmC1umg42Uxfa/oQG6Df56mRflOI7Y6G1TvqfmXzVTI5KkbgREdvU43sQX6CW
-         msKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745617244; x=1746222044;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=59lVFW2/rI0XbXoUNSi7R0MnTUaoQMLeq46MfEUfU1Q=;
-        b=niyIZVHwwBf+jQZ/fqk8DAPN/CL2bPu7EhpuxUmBbVlQrH3o3tQX5GaD9Af+Vii0fn
-         ocEtj36IMps7xRDhanaDZ+gvzhjZoJD735oYOMkeKpB9o2u7QaoykK/z1xQkA/vlXiFK
-         sdYFH0wjDPthcUn7J3sPPlT/qbRzDVnIgun6NDRojfBlmIigGbbwyypil7V30Lca8KiC
-         WJtFqvZCR/h7+sVZ46+geYynHsXyL/j8j4yuy3QlbFYAIL6892iSEouzzvCJY7Wbp2Sm
-         Nnu8QP+ZkmKewz1DDJs5GJxHy6GNXaRR2Opod7PbUER1gGZfLQxZVOlCIoeH+6mLj0/Z
-         ju+Q==
-X-Gm-Message-State: AOJu0Yz9CINtHKzPrLbKGOLOl8aEtG/H9XJwmazJLmQWUopGvqlA/SKP
-	5KsyZKhlcqJFX5nsaNkJ4GZxLkXpbjJHOTWFpJoWunWww/DzLvgsXMDDXA==
-X-Gm-Gg: ASbGncukIpO8yrvIfQ6NN2GKJ54wbzkPqrinSTJ3UB+cXIfEnIKb0hZ8mmvHMQ0OPn4
-	FgoygpKEs/FgdpOaP5JSBfBwFknwkmAzIIGnr9Koylcp+c66PHQ0EnaDlXp+HNJnQLSQfKLG4Z/
-	J+sQdXu2j4yzwUlhEAynNc52MwwPFLQzoQZtXjDYDaT2Z8M4PQiYVoRUp3frFqLYH45RvvbthZS
-	Pubamu+t9XBoInkICVE6iam8MGpQyP60VaSBpOVq0pDQkHEGI7oMJLaQB5+GiMOLDpIgaZ5lSER
-	btXw4R1k6sDmOLZEljcPcGuDuVbhHsw=
-X-Google-Smtp-Source: AGHT+IFX/IT8/fzTow/fsjz21BqOpQAT2qLAHBQotxV0JnpNEnrAtH8PR68Wh2iHUhlKc63ginSAkA==
-X-Received: by 2002:a17:903:298e:b0:223:fabd:4f99 with SMTP id d9443c01a7336-22dbf5d5211mr61539915ad.5.1745617243583;
-        Fri, 25 Apr 2025 14:40:43 -0700 (PDT)
-Received: from localhost ([2a03:2880:ff:8::])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db4d76e21sm37618625ad.45.2025.04.25.14.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Apr 2025 14:40:43 -0700 (PDT)
-From: Amery Hung <ameryhung@gmail.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	alexei.starovoitov@gmail.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	tj@kernel.org,
-	martin.lau@kernel.org,
-	ameryhung@gmail.com,
-	kernel-team@meta.com
-Subject: [PATCH RFC v3 2/2] selftests/bpf: Test basic workflow of task local data
-Date: Fri, 25 Apr 2025 14:40:34 -0700
-Message-ID: <20250425214039.2919818-3-ameryhung@gmail.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250425214039.2919818-1-ameryhung@gmail.com>
-References: <20250425214039.2919818-1-ameryhung@gmail.com>
+	s=arc-20240116; t=1745617494; c=relaxed/simple;
+	bh=1vYY0G6paJDxqTAFql3Fe/ZoYlYAWMsKFG17ZpHlpB4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=usXlNaPpU+GGl3BJAqPCxJek93fQharcQEjuc5B6y8OY6sujyw4qgEffhQiS0vXtI4FqWJ0V9pQWMvmDK1R3A0eAWBtgRQ9pB5mYhQtSn8Ewp4izbXJ54NygdB0nayp1QJIapjLrccSyMIIF8wI4plnRx3jrrhx6aqEVsWqIt4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=VVfli0Z9; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from narnia (unknown [172.172.34.12])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 0FD7420BCAD1;
+	Fri, 25 Apr 2025 14:44:43 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0FD7420BCAD1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1745617492;
+	bh=RLcGrvY/Ji6RfwBGa0SDop5ZSdaFF8Vony2mUDrwhz8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=VVfli0Z9/uOSWmD2zYfgd/ELGgJQhQObtxaSQgX4AL7uZlqTSEwxa/QkcFRUrFG4L
+	 KJe067jmKGvAEhgwx3y2k+RRnXnuiRFkSXZNrkzp+VuQoskURv0DCiZeNXTaiElj12
+	 7XOVymm5fhm6nTTtITxxB973eE6OhvwrFoFeXnVA=
+From: Blaise Boscaccy <bboscaccy@linux.microsoft.com>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>, Alexei
+ Starovoitov <alexei.starovoitov@gmail.com>, KP Singh <kpsingh@google.com>,
+ Paul Moore <paul@paul-moore.com>, Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jonathan Corbet <corbet@lwn.net>, David Howells <dhowells@redhat.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller"
+ <davem@davemloft.net>, Paul Moore <paul@paul-moore.com>, James Morris
+ <jmorris@namei.org>, "Serge
+ E. Hallyn" <serge@hallyn.com>, Masahiro Yamada <masahiroy@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>,
+ Shuah Khan <shuah@kernel.org>, =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=
+ <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?=
+ Noack <gnoack@google.com>, Nick Desaulniers
+ <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>,
+ Justin Stitt <justinstitt@google.com>, Jarkko Sakkinen
+ <jarkko@kernel.org>, Jan Stancek <jstancek@redhat.com>, Neal Gompa
+ <neal@gompa.dev>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, keyrings@vger.kernel.org, Linux
+ Crypto Mailing List <linux-crypto@vger.kernel.org>, LSM List
+ <linux-security-module@vger.kernel.org>, Linux Kbuild mailing list
+ <linux-kbuild@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK"
+ <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+ clang-built-linux <llvm@lists.linux.dev>, nkapron@google.com, Matteo Croce
+ <teknoraver@meta.com>, Roberto Sassu <roberto.sassu@huawei.com>, Cong Wang
+ <xiyou.wangcong@gmail.com>
+Subject: Re: [PATCH v2 security-next 1/4] security: Hornet LSM
+In-Reply-To: <6e086e29d258839e42ef7a83b38571d1882eb77d.camel@HansenPartnership.com>
+References: <20250404215527.1563146-1-bboscaccy@linux.microsoft.com>
+ <20250404215527.1563146-2-bboscaccy@linux.microsoft.com>
+ <CAADnVQJyNRZVLPj_nzegCyo+BzM1-whbnajotCXu+GW+5-=P6w@mail.gmail.com>
+ <87semdjxcp.fsf@microsoft.com>
+ <CAADnVQ+JGfwRgsoe2=EHkXdTyQ8ycn0D9nh1k49am++4oXUPHg@mail.gmail.com>
+ <87friajmd5.fsf@microsoft.com>
+ <CAADnVQKb3gPBFz+n+GoudxaTrugVegwMb8=kUfxOea5r2NNfUA@mail.gmail.com>
+ <87a58hjune.fsf@microsoft.com>
+ <CAADnVQ+LMAnyT4yV5iuJ=vswgtUu97cHKnvysipc6o7HZfEbUA@mail.gmail.com>
+ <87y0w0hv2x.fsf@microsoft.com>
+ <CAADnVQKF+B_YYwOCFsPBbrTBGKe4b22WVJFb8C0PHGmRAjbusQ@mail.gmail.com>
+ <2bd95ca78e836db0775da8237792e8448b8eec62.camel@HansenPartnership.com>
+ <CAADnVQJ6SRePz7yc5x3BAz7q-e8DVYq=vRdahxCZ4XzpWtnYpQ@mail.gmail.com>
+ <6e086e29d258839e42ef7a83b38571d1882eb77d.camel@HansenPartnership.com>
+Date: Fri, 25 Apr 2025 14:44:10 -0700
+Message-ID: <87bjsjlxw5.fsf@microsoft.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Test the workflow of task local data. A user space program first declares
-task local data using two different APIs. As the test starts, it calls
-bpf_tld_thread_init() for every new thread that would access the
-storage. Then, values can be accessed directly. The user space triggers
-two bpf programs: prog_init and prog_main. prog_init simulates a
-sched_ext_ops::init_task, which runs only once for every new task. It
-caches the offsets of values of the task. prog_main represents bpf
-programs for normal operation. It reads the task local data and write the
-result to global variables for verification.
+James Bottomley <James.Bottomley@HansenPartnership.com> writes:
 
-The user space program will launch 32 threads to make sure not only
-umetadata, but thread-specific udata and udata_start are handled
-correctly. It is verified by writing values in user space, reading
-them the bpf program and checking that they match. Also make sure
-the data are indeed thread-specific. Finally, a large task local data is
-declared to see if the declaration API prevents it from spanning across
-two pages.
+> On Thu, 2025-04-24 at 16:41 -0700, Alexei Starovoitov wrote:
+>> On Wed, Apr 23, 2025 at 7:12=E2=80=AFAM James Bottomley
+>> <James.Bottomley@hansenpartnership.com> wrote:
+>> > On Mon, 2025-04-21 at 13:12 -0700, Alexei Starovoitov wrote:
+>> > [...]
+>> > > Calling bpf_map_get() and
+>> > > map->ops->map_lookup_elem() from a module is not ok either.
+>> >=20
+>> > I don't understand this objection.
+>>=20
+>> Consider an LSM that hooks into security_bprm_*(bprm),
+>> parses something in linux_binprm, then
+>> struct file *file =3D
+>> fd_file(fdget(some_random_file_descriptor_in_current));
+>> file->f_op->read(..);
+>>=20
+>> Would VFS maintainers approve such usage ?
+>
+> This is a bit off topic from the request for clarification but:
+>
+> It's somewhat standard operating procedure for LSMs.  Some do make
+> decisions entirely within the data provided by the hook, but some need
+> to take external readings, like selinux or IMA consulting the policy in
+> the xattr or apparmor the one in the tree etc.
+>
+> Incidentally, none of them directly does a file->f_op->read(); they all
+> use the kernel_read_file() API which is exported from the vfs for that
+> purpose.
+>
+>> More so, your LSM does
+>> file =3D get_task_exe_file(current);
+>> kernel_read_file(file, ...);
+>>=20
+>> This is even worse.
+>> You've corrupted the ELF binary with extra garbage at the end.
+>> objdump/elfutils will choke on it and you're lucky that binfmt_elf
+>> still loads it.
+>> The whole approach is a non-starter.
+>
+> It's the same approach we use to create kernel modules: ELF with an
+> appended signature.  If you recall the kernel summit discussions about
+> it, the reason that was chosen for modules is because it's easy and the
+> ELF processor simply ignores any data in the file that's not described
+> by the header (which means the ELF tools you refer to above are fine
+> with this if you actually try them).
+>
+> But it you really want the signature to be part of the ELF,  then the
+> patch set can do what David Howells first suggested for modules: it can
+> simply put the appended signature into an unloaded ELF section.
+>
+>> > The program just got passed in to bpf_prog_load() as a set of
+>> > attributes which, for a light skeleton, directly contain the code
+>> > as a blob and have the various BTF relocations as a blob in a
+>> > single element array map.=C2=A0 I think everyone agrees that the
+>> > integrity of the program would be compromised by modifications to
+>> > the relocations, so the security_bpf_prog_load() hook can't make an
+>> > integrity determination without examining both.=C2=A0 If the hook can't
+>> > use the bpf_maps.. APIs directly is there some other API it should
+>> > be using to get the relocations, or are you saying that the
+>> > security_bpf_prog_load() hook isn't fit for purpose and it should
+>> > be called after the bpf core has loaded the relocations so they can
+>> > be provided to the hook as an argument?
+>>=20
+>> No. As I said twice already the only place to verify program
+>> signature is a bpf subsystem itself.
+>
+> The above argument is actually independent of signing.  However,
+> although we have plenty of subsystems that verify their own signatures,
+> it's perfectly valid for a LSM to do it as well: IMA is one of the
+> oldest LSMs and it's been verifying signatures over binaries and text
+> files since it was first created.
+>
+>> Hacking into bpf internals from LSM, BPF-LSM program,
+>> or any other kernel subsystem is a no go.
+>
+> All LSMs depend to some extent on the internals of the subsystem where
+> the hook is ... the very structures passed into them are often internal
+> to that subsystem.  The problem you didn't address was that some of the
+> information necessary to determine the integrity properties in the bpf
+> hook is in a map file descriptor.  Since the map merely wraps a single
+> blob of data, that could easily be passed in to the hook instead of
+> having the LSM extract it from the map.  How the hook gets the data is
+> an internal implementation detail of the kernel that can be updated
+> later.
+>
+>> > The above, by the way, is independent of signing, because it
+>> > applies to any determination that might be made in the
+>> > security_bpf_prog_load() hook regardless of purpose.
+>>=20
+>> security_bpf_prog_load() should not access bpf internals.
+>> That LSM hook sees the following:
+>> security_bpf_prog_load(struct bpf_prog *prog, union bpf_attr *attr,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_tok=
+en *token, bool kernel);
+>>=20
+>> LSM can look into uapi things there.
+>
+> Is that the misunderstanding? That's not how LSMs work: they are not
+> bound by only the UAPI, they are in kernel and have full access to the
+> kernel API so they can introspect stuff and make proper determinations.
+>
+>> Like prog->sleepable, prog->tag, prog->aux->name,
+>> but things like prog->aux->jit_data or prog->aux->used_maps
+>> are not ok to access.
+>> If in doubt, ask on the mailing list.
+>
+> I am aren't I? At least the bpf is one of the lists cc'd on this.
+>
+> Regards,
+>
+> James
 
-Signed-off-by: Amery Hung <ameryhung@gmail.com>
----
- .../bpf/prog_tests/test_task_local_data.c     | 156 ++++++++++++++++++
- .../bpf/progs/test_task_local_data_basic.c    |  78 +++++++++
- .../selftests/bpf/task_local_data_common.h    |   8 +
- 3 files changed, 242 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_task_local_data_basic.c
+I think we may be in the weeds here a bit and starting to get a little
+off-topic. Let's try to back up some and take a different tack. We are
+going to rework this effort into a set of patches that target the bpf
+subsystem and it's tooling directly, performing optional signature
+verification of the inputs to bpf_prog_load, using signature data
+passed in via bpf_attr, which should enough provide metadata so that it
+can be consumed by interested parties to enforce policy decisions around
+code signing and data integrity.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
-new file mode 100644
-index 000000000000..5754687026f3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_task_local_data.c
-@@ -0,0 +1,156 @@
-+#include <pthread.h>
-+
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+
-+#include "task_local_data.h"
-+#include "test_task_local_data_basic.skel.h"
-+
-+#define TEST_THREAD_NUM 32
-+
-+/* Used to declare a large tasl local data below to see if bpf_tld_type_var() prevents
-+ * a value from crossing the page boundary
-+ */
-+struct dummy {
-+	char data[1000];
-+};
-+
-+/* Declare task local data */
-+bpf_tld_type_var(int, value1);
-+bpf_tld_type_var(struct test_struct, value2);
-+bpf_tld_type_var(struct dummy, dummy);
-+bpf_tld_key_type_var("test_basic_value3", int, value3);
-+bpf_tld_key_type_var("test_basic_value4", struct test_struct, value4);
-+
-+/* Serialize access to bpf program's global variables */
-+static pthread_mutex_t global_mutex;
-+
-+static void run_prog_init(struct test_task_local_data_basic *skel, int tid)
-+{
-+	skel->bss->target_tid = tid;
-+	(void)syscall(__NR_getuid);
-+	skel->bss->target_tid = -1;
-+}
-+
-+static void run_prog_main(struct test_task_local_data_basic *skel, int tid)
-+{
-+	skel->bss->target_tid = tid;
-+	(void)syscall(__NR_gettid);
-+	skel->bss->target_tid = -1;
-+}
-+
-+void *test_task_local_data_basic_thread(void *arg)
-+{
-+	struct test_task_local_data_basic *skel = (struct test_task_local_data_basic *)arg;
-+	int err, tid;
-+
-+	tid = gettid();
-+
-+	err = bpf_tld_thread_init();
-+	if (!ASSERT_OK(err, "bpf_tld_thread_init"))
-+		return NULL;
-+
-+	value1 = tid + 0;
-+	value2.a = tid + 1;
-+	value2.b = tid + 2;
-+	value2.c = tid + 3;
-+	value2.d = tid + 4;
-+	value3 = tid + 5;
-+	value4.a = tid + 6;
-+	value4.b = tid + 7;
-+	value4.c = tid + 8;
-+	value4.d = tid + 9;
-+
-+	pthread_mutex_lock(&global_mutex);
-+	/* Simulate an initialization bpf prog that runs once for every new task.
-+	 * The program caches data offsets for subsequent bpf programs
-+	 */
-+	run_prog_init(skel, tid);
-+	/* Run main prog that lookup task local data and save to global variables */
-+	run_prog_main(skel, tid);
-+	ASSERT_EQ(skel->bss->test_value1, tid + 0, "bpf_tld_lookup value1");
-+	ASSERT_EQ(skel->bss->test_value2.a, tid + 1, "bpf_tld_lookup value2.a");
-+	ASSERT_EQ(skel->bss->test_value2.b, tid + 2, "bpf_tld_lookup value2.b");
-+	ASSERT_EQ(skel->bss->test_value2.c, tid + 3, "bpf_tld_lookup value2.c");
-+	ASSERT_EQ(skel->bss->test_value2.d, tid + 4, "bpf_tld_lookup value2.d");
-+	ASSERT_EQ(skel->bss->test_value3, tid + 5, "bpf_tld_lookup value3");
-+	ASSERT_EQ(skel->bss->test_value4.a, tid + 6, "bpf_tld_lookup value4.a");
-+	ASSERT_EQ(skel->bss->test_value4.b, tid + 7, "bpf_tld_lookup value4.b");
-+	ASSERT_EQ(skel->bss->test_value4.c, tid + 8, "bpf_tld_lookup value4.c");
-+	ASSERT_EQ(skel->bss->test_value4.d, tid + 9, "bpf_tld_lookup value4.d");
-+	pthread_mutex_unlock(&global_mutex);
-+
-+	/* Make sure valueX are indeed local to threads */
-+	ASSERT_EQ(value1, tid + 0, "value1");
-+	ASSERT_EQ(value2.a, tid + 1, "value2.a");
-+	ASSERT_EQ(value2.b, tid + 2, "value2.b");
-+	ASSERT_EQ(value2.c, tid + 3, "value2.c");
-+	ASSERT_EQ(value2.d, tid + 4, "value2.d");
-+	ASSERT_EQ(value3, tid + 5, "value3");
-+	ASSERT_EQ(value4.a, tid + 6, "value4.a");
-+	ASSERT_EQ(value4.b, tid + 7, "value4.b");
-+	ASSERT_EQ(value4.c, tid + 8, "value4.c");
-+	ASSERT_EQ(value4.d, tid + 9, "value4.d");
-+
-+	value1 = tid + 9;
-+	value2.a = tid + 8;
-+	value2.b = tid + 7;
-+	value2.c = tid + 6;
-+	value2.d = tid + 5;
-+	value3 = tid + 4;
-+	value4.a = tid + 3;
-+	value4.b = tid + 2;
-+	value4.c = tid + 1;
-+	value4.d = tid + 0;
-+
-+	/* Run main prog again */
-+	pthread_mutex_lock(&global_mutex);
-+	run_prog_main(skel, tid);
-+	ASSERT_EQ(skel->bss->test_value1, tid + 9, "bpf_tld_lookup value1");
-+	ASSERT_EQ(skel->bss->test_value2.a, tid + 8, "bpf_tld_lookup value2.a");
-+	ASSERT_EQ(skel->bss->test_value2.b, tid + 7, "bpf_tld_lookup value2.b");
-+	ASSERT_EQ(skel->bss->test_value2.c, tid + 6, "bpf_tld_lookup value2.c");
-+	ASSERT_EQ(skel->bss->test_value2.d, tid + 5, "bpf_tld_lookup value2.d");
-+	ASSERT_EQ(skel->bss->test_value3, tid + 4, "bpf_tld_lookup value3");
-+	ASSERT_EQ(skel->bss->test_value4.a, tid + 3, "bpf_tld_lookup value4.a");
-+	ASSERT_EQ(skel->bss->test_value4.b, tid + 2, "bpf_tld_lookup value4.b");
-+	ASSERT_EQ(skel->bss->test_value4.c, tid + 1, "bpf_tld_lookup value4.c");
-+	ASSERT_EQ(skel->bss->test_value4.d, tid + 0, "bpf_tld_lookup value4.d");
-+	pthread_mutex_unlock(&global_mutex);
-+
-+	pthread_exit(NULL);
-+}
-+
-+static void test_task_local_data_basic(void)
-+{
-+	struct test_task_local_data_basic *skel;
-+	pthread_t thread[TEST_THREAD_NUM];
-+	int i, err;
-+
-+	ASSERT_OK(pthread_mutex_init(&global_mutex, NULL), "pthread_mutex_init");
-+
-+	skel = test_task_local_data_basic__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	err = test_task_local_data_basic__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	for (i = 0; i < TEST_THREAD_NUM; i++) {
-+		err = pthread_create(&thread[i], NULL, test_task_local_data_basic_thread, skel);
-+		if (!ASSERT_OK(err, "pthread_create"))
-+			goto out;
-+	}
-+
-+	for (i = 0; i < TEST_THREAD_NUM; i++)
-+		pthread_join(thread[i], NULL);
-+out:
-+	unlink(TASK_LOCAL_DATA_MAP_PIN_PATH);
-+}
-+
-+void test_task_local_data(void)
-+{
-+	if (test__start_subtest("task_local_data_basic"))
-+		test_task_local_data_basic();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_task_local_data_basic.c b/tools/testing/selftests/bpf/progs/test_task_local_data_basic.c
-new file mode 100644
-index 000000000000..345d7c6e37de
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_task_local_data_basic.c
-@@ -0,0 +1,78 @@
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "task_local_data.h"
-+
-+struct task_local_data_offsets {
-+	short value1;
-+	short value2;
-+	short test_basic_value3;
-+	short test_basic_value4;
-+};
-+
-+pid_t target_tid = 0;
-+int test_value1 = 0;
-+struct test_struct test_value2;
-+int test_value3 = 0;
-+struct test_struct test_value4;
-+
-+SEC("tp/syscalls/sys_enter_getuid")
-+int prog_init(void *ctx)
-+{
-+	struct bpf_task_local_data tld;
-+	struct task_struct *task;
-+	int err;
-+
-+	task = bpf_get_current_task_btf();
-+	if (task->pid != target_tid)
-+		return 0;
-+
-+	err = bpf_tld_init(task, &tld);
-+	if (err)
-+		return 0;
-+
-+	bpf_tld_init_var(&tld, value1);
-+	bpf_tld_init_var(&tld, value2);
-+	bpf_tld_init_var(&tld, test_basic_value3);
-+	bpf_tld_init_var(&tld, test_basic_value4);
-+
-+	return 0;
-+}
-+
-+SEC("tp/syscalls/sys_enter_gettid")
-+int prog_main(void *ctx)
-+{
-+	struct bpf_task_local_data tld;
-+	struct test_struct *struct_p;
-+	struct task_struct *task;
-+	int err, *int_p;
-+
-+	task = bpf_get_current_task_btf();
-+	if (task->pid != target_tid)
-+		return 0;
-+
-+	err = bpf_tld_init(task, &tld);
-+	if (err)
-+		return 0;
-+
-+	int_p = bpf_tld_lookup(&tld, value1, sizeof(int));
-+	if (int_p)
-+		test_value1 = *int_p;
-+
-+	struct_p = bpf_tld_lookup(&tld, value2, sizeof(struct test_struct));
-+	if (struct_p)
-+		test_value2 = *struct_p;
-+
-+	int_p = bpf_tld_lookup(&tld, test_basic_value3, sizeof(int));
-+	if (int_p)
-+		test_value3 = *int_p;
-+
-+	struct_p = bpf_tld_lookup(&tld, test_basic_value4, sizeof(struct test_struct));
-+	if (struct_p)
-+		test_value4 = *struct_p;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
-diff --git a/tools/testing/selftests/bpf/task_local_data_common.h b/tools/testing/selftests/bpf/task_local_data_common.h
-index 2a0bb724c77c..ad99c66d3305 100644
---- a/tools/testing/selftests/bpf/task_local_data_common.h
-+++ b/tools/testing/selftests/bpf/task_local_data_common.h
-@@ -38,4 +38,12 @@ struct task_local_data_map_value {
- 	short udata_start;
- };
- 
-+/* test specific */
-+struct test_struct {
-+	unsigned long a;
-+	unsigned long b;
-+	unsigned long c;
-+	unsigned long d;
-+};
-+
- #endif
--- 
-2.47.1
-
+-blaise
 
