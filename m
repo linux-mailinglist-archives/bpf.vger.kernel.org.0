@@ -1,147 +1,164 @@
-Return-Path: <bpf+bounces-56681-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56682-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72447A9C109
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 10:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 87775A9C1AD
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 10:42:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A22571B867A2
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 08:35:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 174B51BA7CEA
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 08:41:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32308234963;
-	Fri, 25 Apr 2025 08:34:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F89236426;
+	Fri, 25 Apr 2025 08:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=xs4all.nl header.i=@xs4all.nl header.b="t27exWrh"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="islUnSNc"
 X-Original-To: bpf@vger.kernel.org
-Received: from ewsoutbound.kpnmail.nl (ewsoutbound.kpnmail.nl [195.121.94.170])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1618D22D4DA
-	for <bpf@vger.kernel.org>; Fri, 25 Apr 2025 08:34:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.121.94.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79468253946
+	for <bpf@vger.kernel.org>; Fri, 25 Apr 2025 08:35:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745570085; cv=none; b=EI8un8f1BLsJigKMPlTAXG5LlCm6cSdTBiFQHe03xpa6T6KwZoVC4tCdGS1ELq7IFAVzDmWUAqAo0RugfUyuIH+dqTlcCq4px6SKs6OCFaGZmqT0kH2q6GVYWlBqS1w0+GgBvh7bWODmo3hyNwy66130oud5icrs1P79w9iyPC0=
+	t=1745570158; cv=none; b=uPNuekOnoVzQ8bOjWW3z6HTaNWmZJI5URU8+j+rEuAspJiaqY9JEk5LesdhxKOEAWLxHA4FkGImU/BU5SIMnjPxOVWlPG8o7BAelJAByeRQn8X2MNQhn0eg+bT391+QOOz/82TlWb8DxqYmp8Xhhiu9BMLLp4PG6BREdcy+oB4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745570085; c=relaxed/simple;
-	bh=zqsD8xYMTJiUyTNPJ2v23CAoV/EGj6ZV4YLILcwsABc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Prsur8P08hMcuwAfFTgduqQf8h5A673ZbtiOfbYNjM5r+iNVZBhD5rdwL2/Z5d4j6u+/GyMxdsKdNXB9FaTYiKgn5LFW/KN0Wu18OI2jHt+FbUB+zyx21SlYSZW2P6g0YM3i26NYXgb9VT/dKKGj7V8C/hxt4O0EEMaFZjrjgkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xs4all.nl; spf=pass smtp.mailfrom=xs4all.nl; dkim=pass (2048-bit key) header.d=xs4all.nl header.i=@xs4all.nl header.b=t27exWrh; arc=none smtp.client-ip=195.121.94.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xs4all.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xs4all.nl
-X-KPN-MessageId: 38cf2ff0-21b0-11f0-bc2a-005056ab378f
-Received: from smtp.kpnmail.nl (unknown [10.31.155.40])
-	by ewsoutbound.so.kpn.org (Halon) with ESMTPS
-	id 38cf2ff0-21b0-11f0-bc2a-005056ab378f;
-	Fri, 25 Apr 2025 10:35:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=xs4all.nl; s=xs4all01;
-	h=content-type:from:to:subject:mime-version:date:message-id;
-	bh=8/yvxp3z86rFOheLRFHFBHKY1EtIc/D5T7iQnuCrnGI=;
-	b=t27exWrhxfrd/PunXsL+ZON/teXOUj69jJjeYPGfTZDsKbU2UhY6QxA5jZzSC2UfHti+CtC2R3YA1
-	 2IsXKPGHqZyDmXCGVG1ocuiCaZbdz/PbJO+RwQmHPFtqnuQ379ia7IoJ56FXvxR5uyp2HBSvGXU/w1
-	 Z9p2CK+pULqCDhKP67uLZYhiaC3ymBvqV6fhQnTdg/GgMTgy6FvqbFqWiDPwTcQdqha3eAeMvwKqNV
-	 DS29lnDXjD4Qlvsq3awtRnnspWtKmCgoyMZW57lFwVfG6J+bJgoYIoDt5Ndg4YcB2cWAJUJqAqQOPS
-	 /PK7PcEKKutczhZAsCdqyck4dGTG43w==
-X-KPN-MID: 33|RIBl8qxlgmujX1FKwnzX9VyDT0ZAKCskxgm1P0W9jXQ8nZR5BAM8OCvJo8UWjik
- QYKCL9im91mYQLHEnPxtOf00QLEo2aniGRp+aXvEOCRo=
-X-KPN-VerifiedSender: Yes
-X-CMASSUN: 33|kGQgDhys4HLyRALAx1+V9H0952u3JpG31JHo29NpY2zKbQx4XFVTCuo4pjiOlhB
- VdHI+mBwEKxtWXkx1o1G1Nw==
-Received: from [192.168.1.10] (80-60-128-215.fixed.kpn.net [80.60.128.215])
-	by smtp.xs4all.nl (Halon) with ESMTPSA
-	id 0336f9f5-21b0-11f0-855b-005056ab7584;
-	Fri, 25 Apr 2025 10:34:36 +0200 (CEST)
-Message-ID: <a00591dd-0698-4cd1-9715-446f973b877b@xs4all.nl>
-Date: Fri, 25 Apr 2025 10:33:49 +0200
+	s=arc-20240116; t=1745570158; c=relaxed/simple;
+	bh=W0OGvNpepYMtQUI2P000WddWaGAaKqDLXnohX671FZQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mSP1ApYQcEtHDVzBTz6RyAmAa0sQAf7vjwNQsCkJSXRoaNcWveltV0hSkdJUojgN/EvdSPIylaeykZnQM5SaXGuZ1cJsiDrVb+tQ+kPZMFeK5nWvYvG/0M4W2X2GqTXSHfDJtqw+xYRT5OPgsB4KdcDqrYGMBLFFnKTXIWzyfjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=islUnSNc; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1745570155;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VIpzb0kJnabV+/Rbk1AeDaWRoPqgDoiA6nLSqcAP3Qs=;
+	b=islUnSNcmoHVw1oYCIr7DD1r5DIOY0N12VIVvTP6wxn0Umm+snMczVx2tSZytw3G8VrLle
+	aj1hplCxbH8ma5y+pvLvB+iiS2FFc5xBBDUX5+HfaYPD0AoKhqYp7G3RSmkt2YPgk324KL
+	5C15Z7D8U1r7O7wH2j+jsuwnZQgneBs=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-253-_ESF_sPwPMq43Sck7DJJHw-1; Fri, 25 Apr 2025 04:35:53 -0400
+X-MC-Unique: _ESF_sPwPMq43Sck7DJJHw-1
+X-Mimecast-MFC-AGG-ID: _ESF_sPwPMq43Sck7DJJHw_1745570152
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-43eea5a5d80so8644945e9.1
+        for <bpf@vger.kernel.org>; Fri, 25 Apr 2025 01:35:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745570152; x=1746174952;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VIpzb0kJnabV+/Rbk1AeDaWRoPqgDoiA6nLSqcAP3Qs=;
+        b=ORXwIxrE2rsvx2x3ENgOyKSdSoDOCuMNdjSlS9jwTwhcT8Wcj+xn41cC/LId1zKwYc
+         iR5KBWhI6j7VyEzsAZXDDZr4HmRceA0LDgmxsiNd6wWX417z5srOlo8Im9vprHwKTYNp
+         U+Q9UtFGfJmlLPwbvGTUXlGVSJCN1Yq6oXBdljf2/QlwJcpWd0O1DjTjBhcjm5VykFXP
+         BDiH9yAvebbKNg2cQ7cEkXPck9rSKi4s434qk9XSL9W0lnfnSxwCaRAiPszZKYOmElj7
+         K8qHnx/UeX7eFYpWzbyKIkeJV7N+LwrmlFbqo1edVJo/ZUHTlbX18nCWG03cFBKmYubM
+         Ny/w==
+X-Forwarded-Encrypted: i=1; AJvYcCVZyFwuAIZC1sxkPUJnxSxP5hrkJ6sBCtvffADCdLVabcgb6LkuK7tQ+b2wN/fmLq9r/Kg=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzI5OZMbpNawkK5GfmN2dAV4RxgThhmkhrimG0aWe2IECynxTQE
+	n16OY5oPHG+PGmaNqW4x9dRSiWh0eBNrQgqbne3CtjbBTptJTojyU3l9r46w9CJ2oniXN3zMFHm
+	Q7oA+vFy8Fo9aehqlBjqL/pmoeToxltziV7O4AtMXsIY44fnHxA==
+X-Gm-Gg: ASbGncsAC0iUz9BMdHkGP2z/l6fAMp0X+uvnXeitaTFcyIThVW/FjWalnlVjnjB/i2h
+	YadssJawyelQWk8sv9HY2Rd44ZiM7ebat+XpQy3LWQ+6hA5sRCFuIV25kk/AGLqla9mGNLs6Otr
+	6bejI6VumHs6ch5koGceny6qJikLbVcx9xjAFf6mdyWzZfraX6FZzWRyPz69AMyXgdZiZ9NYxi6
+	sTVmbXQ/rdeqBvj6GWaQ/hB//68d8UIQgEYzxE/kLk89I01c68AqU4NM83+7G4WJWWjyMbpAC7b
+	sSSjgw==
+X-Received: by 2002:a05:600d:19:b0:43c:fabf:9146 with SMTP id 5b1f17b1804b1-440a66d9ba5mr12028225e9.17.1745570152502;
+        Fri, 25 Apr 2025 01:35:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEVwMxFD5f3mySi27LmA61xgw9SkI2YEf5bOWu+NSzAJvOJz2O8GeJpN1BaqSOng5t4z7wJTg==
+X-Received: by 2002:a05:600d:19:b0:43c:fabf:9146 with SMTP id 5b1f17b1804b1-440a66d9ba5mr12027935e9.17.1745570152192;
+        Fri, 25 Apr 2025 01:35:52 -0700 (PDT)
+Received: from redhat.com ([2a0d:6fc0:1517:1000:ea83:8e5f:3302:3575])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-440a5310a8fsm17114375e9.22.2025.04.25.01.35.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Apr 2025 01:35:51 -0700 (PDT)
+Date: Fri, 25 Apr 2025 04:35:47 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: virtualization@lists.linux.dev, Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v6 0/4] virtio-net: disable delayed refill when pausing rx
+Message-ID: <20250425043542-mutt-send-email-mst@kernel.org>
+References: <20250425071018.36078-1-minhquangbui99@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 02/13] media: media/test_drivers: Replace open-coded
- parity calculation with parity_odd()
-To: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
- jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
- andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
- mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, parthiban.veerasooran@microchip.com,
- arend.vanspriel@broadcom.com, johannes@sipsolutions.net,
- gregkh@linuxfoundation.org, jirislaby@kernel.org, yury.norov@gmail.com,
- akpm@linux-foundation.org, jdelvare@suse.com, linux@roeck-us.net,
- alexandre.belloni@bootlin.com, pgaj@cadence.com
-Cc: hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
- linux-serial@vger.kernel.org, bpf@vger.kernel.org, jserv@ccns.ncku.edu.tw,
- Frank.Li@nxp.com, linux-hwmon@vger.kernel.org,
- linux-i3c@lists.infradead.org, david.laight.linux@gmail.com,
- andrew.cooper3@citrix.com, Yu-Chun Lin <eleanor15x@gmail.com>
-References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-3-visitorckw@gmail.com>
-Content-Language: en-US, nl
-From: Hans Verkuil <hverkuil@xs4all.nl>
-In-Reply-To: <20250409154356.423512-3-visitorckw@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250425071018.36078-1-minhquangbui99@gmail.com>
 
-On 09/04/2025 17:43, Kuan-Wei Chiu wrote:
-> Refactor parity calculations to use the standard parity_odd() helper.
-> This change eliminates redundant implementations.
+On Fri, Apr 25, 2025 at 02:10:14PM +0700, Bui Quang Minh wrote:
+> Hi everyone,
 > 
-> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-
-Reviewed-by: Hans Verkuil <hverkuil@xs4all.nl>
-
-Regards,
-
-	Hans
-
-> ---
->  drivers/media/test-drivers/vivid/vivid-vbi-gen.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
+> This only includes the selftest for virtio-net deadlock bug. The fix
+> commit has been applied already.
 > 
-> diff --git a/drivers/media/test-drivers/vivid/vivid-vbi-gen.c b/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
-> index 70a4024d461e..5e1b7b1742e4 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-vbi-gen.c
-> @@ -5,6 +5,7 @@
->   * Copyright 2014 Cisco Systems, Inc. and/or its affiliates. All rights reserved.
->   */
->  
-> +#include <linux/bitops.h>
->  #include <linux/errno.h>
->  #include <linux/kernel.h>
->  #include <linux/ktime.h>
-> @@ -165,12 +166,7 @@ static const u8 vivid_cc_sequence2[30] = {
->  
->  static u8 calc_parity(u8 val)
->  {
-> -	unsigned i;
-> -	unsigned tot = 0;
-> -
-> -	for (i = 0; i < 7; i++)
-> -		tot += (val & (1 << i)) ? 1 : 0;
-> -	return val | ((tot & 1) ? 0 : 0x80);
-> +	return val | (parity_odd(val) ? 0 : 0x80);
->  }
->  
->  static void vivid_vbi_gen_set_time_of_day(u8 *packet)
+> Link: https://lore.kernel.org/virtualization/174537302875.2111809.8543884098526067319.git-patchwork-notify@kernel.org/T/
+
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+
+> Version 6 changes:
+> - Rebase on net-next and resolve conflicts
+> - Move the retry logic to xdp_helper
+> 
+> Version 5 changes:
+> - Refactor the selftest
+> 
+> Version 4 changes:
+> - Add force zerocopy mode to xdp_helper
+> - Make virtio_net selftest use force zerocopy mode
+> - Move virtio_net selftest to drivers/net/hw
+> 
+> Version 3 changes:
+> - Patch 1: refactor to avoid code duplication
+> 
+> Version 2 changes:
+> - Add selftest for deadlock scenario
+> 
+> Thanks,
+> Quang Minh.
+> 
+> Bui Quang Minh (4):
+>   selftests: net: move xdp_helper to net/lib
+>   selftests: net: add flag to force zerocopy mode in xdp_helper
+>   selftests: net: retry when bind returns EBUSY in xdp_helper
+>   selftests: net: add a virtio_net deadlock selftest
+> 
+>  .../testing/selftests/drivers/net/.gitignore  |  1 -
+>  tools/testing/selftests/drivers/net/Makefile  |  1 -
+>  .../testing/selftests/drivers/net/hw/Makefile |  1 +
+>  .../selftests/drivers/net/hw/xsk_reconfig.py  | 60 +++++++++++++++++++
+>  .../selftests/drivers/net/napi_id_helper.c    |  2 +-
+>  tools/testing/selftests/drivers/net/queues.py |  4 +-
+>  tools/testing/selftests/net/lib/.gitignore    |  1 +
+>  tools/testing/selftests/net/lib/Makefile      |  1 +
+>  .../selftests/{drivers/net => net/lib}/ksft.h |  0
+>  .../{drivers/net => net/lib}/xdp_helper.c     | 39 +++++++++---
+>  10 files changed, 98 insertions(+), 12 deletions(-)
+>  create mode 100755 tools/testing/selftests/drivers/net/hw/xsk_reconfig.py
+>  rename tools/testing/selftests/{drivers/net => net/lib}/ksft.h (100%)
+>  rename tools/testing/selftests/{drivers/net => net/lib}/xdp_helper.c (78%)
+> 
+> -- 
+> 2.43.0
 
 
