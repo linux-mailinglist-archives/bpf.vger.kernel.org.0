@@ -1,61 +1,36 @@
-Return-Path: <bpf+bounces-56684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FFA1A9C206
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 10:51:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67564A9C220
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 10:52:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51E9E17407F
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 08:51:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 576EF4665A9
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 08:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 301FD21D5B3;
-	Fri, 25 Apr 2025 08:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=xs4all.nl header.i=@xs4all.nl header.b="C05ahXwG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE1D22A800;
+	Fri, 25 Apr 2025 08:52:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from ewsoutbound.kpnmail.nl (ewsoutbound.kpnmail.nl [195.121.94.167])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC01202C26
-	for <bpf@vger.kernel.org>; Fri, 25 Apr 2025 08:51:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.121.94.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74EDB1EB182;
+	Fri, 25 Apr 2025 08:52:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745571072; cv=none; b=W1HCMIseH5RhfDuQx7nmH8Dj2P4O3XijLwst6c601i7BqTD8C1bbHyAsj7lJi1I1Ct/rLS9o8tzS492EmfbwKxeIHiPyWByIXzHYhjxqhJYr00zPGvCOvbV6NGmFliitsxjfyUMKBzg+AtjCNz+a5tS1gZtwLr+XJwnSgNw81bY=
+	t=1745571130; cv=none; b=vGm3VyQZTdiUFwrwGE7OXWEMT2jRnli/dqKZ6PiqmnVZYi96NEC+X4j+P0lUXozWcnLFO4lapYrUnhZi56g325arM1ML5ja/2JixDYx0t1qj+qNeO2JQthop80FUgfk5Z26lk+FVXOkpj1JDIJKvl2tL6vkntEH7YhQEiq0VolA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745571072; c=relaxed/simple;
-	bh=QKM81Z5OKSv3auXVAY478OddXt6QHpbIxR9wosP5Auo=;
+	s=arc-20240116; t=1745571130; c=relaxed/simple;
+	bh=8ZH6zMNlcpVLFG6magXR7gpafd8wfFKx+N3DPWKz6bw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T98RQ5n+5sEbv25hhIwHYFCaX9pJkGQjO2mDN2yMfo/yEsT7pvwI5/f6XgTeOWdypoSljhYzo1tIWhoiwWmw/pElR5ds246l38NkzIRle79h8dkfPCBeihu1TLflWtZrA9U/gFLBW3RnjLwMkmoZ061tC6uAeY8k/nKpy83PVHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xs4all.nl; spf=pass smtp.mailfrom=xs4all.nl; dkim=pass (2048-bit key) header.d=xs4all.nl header.i=@xs4all.nl header.b=C05ahXwG; arc=none smtp.client-ip=195.121.94.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xs4all.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xs4all.nl
-X-KPN-MessageId: 93f16712-21b2-11f0-b9a0-005056abbe64
-Received: from smtp.kpnmail.nl (unknown [10.31.155.38])
-	by ewsoutbound.so.kpn.org (Halon) with ESMTPS
-	id 93f16712-21b2-11f0-b9a0-005056abbe64;
-	Fri, 25 Apr 2025 10:52:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=xs4all.nl; s=xs4all01;
-	h=content-type:from:to:subject:mime-version:date:message-id;
-	bh=ZUUJHctHfNsWNu1EuQFACb2hrUYidSMtniMgESDbRMU=;
-	b=C05ahXwGA4fFgl5pI9IJHaOIC76m8R/+Es89bI5CvWoa6HqeHuMK1mldeMHIPdQDi2kLlgzYGuFDe
-	 D6MuwZeTwD9wDa1XBMVKPiXUdLXcq+GTqnyBHWJmMljRXk48AhzZTUw4w3JcILCX9BZqxzGIjcGt45
-	 rVpMjojPveoEKJh8q2SHsNUin5NrH2hHy2UM/ToU41fRmD9iRhfZFZVHgj6RTwNoFsLryLF3BsJztF
-	 gaTSBezUZK3uueMs3FZ29rF3MDkksrwOCGH4rjzRi2+4egWucO06G46ulnDHCSBicLhtJMzaffZPP7
-	 sV5V8wKP1no2OVYkOrkoy9/F8HuD5EA==
-X-KPN-MID: 33|AF0t4UVO0ldgi6YmnFhYJXqAPxHkuBjosJGcKGQA7S6P7Abi1YftYhe8yCepFKM
- Um9AVCIhpwBzaPi+MzlrzvCTD1SHpo9+IS4F4rFr5JFU=
-X-KPN-VerifiedSender: Yes
-X-CMASSUN: 33|nqQMCrwmB3CHOeiz1JE1vwIQX38ApX4EwzMJX9cEX5ZmT/5GDgIxRdtlrbvDrcJ
- 3U9+ukECS2iUUeZHN8Kv+nQ==
-Received: from [192.168.1.10] (80-60-128-215.fixed.kpn.net [80.60.128.215])
-	by smtp.xs4all.nl (Halon) with ESMTPSA
-	id 6c670738-21b2-11f0-95a4-005056abf0db;
-	Fri, 25 Apr 2025 10:51:06 +0200 (CEST)
-Message-ID: <7d0096ad-a290-4fbc-8c06-dba49e8db8af@xs4all.nl>
-Date: Fri, 25 Apr 2025 10:51:05 +0200
+	 In-Reply-To:Content-Type; b=CEwDdLeyvL2a6pqxqKdFSfZckYLALdJ6MQoNvWBZHzrPnYlbZSsUvdrBu+V5HTGDXI5N+FAsiobwl/9udzjGKK/neqfgXXZ0azA/MeZkSkd/obcEaudrNMhD9aXW9Tsi1D/9Db5K2FeZ53M+G91ruG7NZLaQCVxyOOtjxk17vPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BAE6C4CEE4;
+	Fri, 25 Apr 2025 08:51:58 +0000 (UTC)
+Message-ID: <8c1e6d90-c394-4d98-96f9-eff526a987ed@xs4all.nl>
+Date: Fri, 25 Apr 2025 10:51:56 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,24 +38,23 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 03/13] media: pci: cx18-av-vbi: Replace open-coded
- parity calculation with parity_odd()
-To: Kuan-Wei Chiu <visitorckw@gmail.com>,
- Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, x86@kernel.org, jk@ozlabs.org, joel@jms.id.au,
- eajames@linux.ibm.com, andrzej.hajda@intel.com, neil.armstrong@linaro.org,
- rfoss@kernel.org, maarten.lankhorst@linux.intel.com, mripard@kernel.org,
- tzimmermann@suse.de, airlied@gmail.com, simona@ffwll.ch,
- dmitry.torokhov@gmail.com, mchehab@kernel.org, awalls@md.metrocast.net,
- hverkuil@xs4all.nl, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, louis.peens@corigine.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- parthiban.veerasooran@microchip.com, johannes@sipsolutions.net,
+Subject: Re: [PATCH v4 04/13] media: saa7115: Replace open-coded parity
+ calculation with parity_odd()
+To: Kuan-Wei Chiu <visitorckw@gmail.com>, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+ jk@ozlabs.org, joel@jms.id.au, eajames@linux.ibm.com,
+ andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
+ airlied@gmail.com, simona@ffwll.ch, dmitry.torokhov@gmail.com,
+ mchehab@kernel.org, awalls@md.metrocast.net, hverkuil@xs4all.nl,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ louis.peens@corigine.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, parthiban.veerasooran@microchip.com,
+ arend.vanspriel@broadcom.com, johannes@sipsolutions.net,
  gregkh@linuxfoundation.org, jirislaby@kernel.org, yury.norov@gmail.com,
  akpm@linux-foundation.org, jdelvare@suse.com, linux@roeck-us.net,
- alexandre.belloni@bootlin.com, pgaj@cadence.com, hpa@zytor.com,
- alistair@popple.id.au, linux@rasmusvillemoes.dk,
+ alexandre.belloni@bootlin.com, pgaj@cadence.com
+Cc: hpa@zytor.com, alistair@popple.id.au, linux@rasmusvillemoes.dk,
  Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
  jernej.skrabec@gmail.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
  linux-fsi@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
@@ -93,73 +67,110 @@ Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
  linux-i3c@lists.infradead.org, david.laight.linux@gmail.com,
  andrew.cooper3@citrix.com, Yu-Chun Lin <eleanor15x@gmail.com>
 References: <20250409154356.423512-1-visitorckw@gmail.com>
- <20250409154356.423512-4-visitorckw@gmail.com>
- <25b7888d-f704-493b-a2d7-c5e8fff9cfb4@broadcom.com>
- <Z/bDnLzcajzIxey3@visitorckw-System-Product-Name>
+ <20250409154356.423512-5-visitorckw@gmail.com>
 Content-Language: en-US, nl
 From: Hans Verkuil <hverkuil@xs4all.nl>
-In-Reply-To: <Z/bDnLzcajzIxey3@visitorckw-System-Product-Name>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20250409154356.423512-5-visitorckw@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 09/04/2025 20:59, Kuan-Wei Chiu wrote:
-> On Wed, Apr 09, 2025 at 08:43:09PM +0200, Arend van Spriel wrote:
->> On 4/9/2025 5:43 PM, Kuan-Wei Chiu wrote:
->>> Refactor parity calculations to use the standard parity_odd() helper.
->>> This change eliminates redundant implementations.
->>>
->>> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
->>> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
->>> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
->>> ---
->>>   drivers/media/pci/cx18/cx18-av-vbi.c | 12 ++----------
->>>   1 file changed, 2 insertions(+), 10 deletions(-)
->>>
->>> diff --git a/drivers/media/pci/cx18/cx18-av-vbi.c b/drivers/media/pci/cx18/cx18-av-vbi.c
->>> index 65281d40c681..15b515b95956 100644
->>> --- a/drivers/media/pci/cx18/cx18-av-vbi.c
->>> +++ b/drivers/media/pci/cx18/cx18-av-vbi.c
->>
->> [...]
->>
->>> @@ -278,7 +270,7 @@ int cx18_av_decode_vbi_line(struct v4l2_subdev *sd,
->>>   		break;
->>>   	case 6:
->>>   		sdid = V4L2_SLICED_CAPTION_525;
->>> -		err = !odd_parity(p[0]) || !odd_parity(p[1]);
->>> +		err = !parity_odd(p[0]) || !parity_odd(p[1]);
->>
->> No need to call parity_odd() twice here. Instead you could do:
->>
->> 		err = !parity_odd(p[0] ^ p[1]);
-
-I prefer the original approach, it is easier to understand. Performance
-is not an issue here, clarity of the code is more important.
-
-So for this patch (i.e. this v4 version):
+On 09/04/2025 17:43, Kuan-Wei Chiu wrote:
+> Refactor parity calculations to use the standard parity_odd() helper.
+> This change eliminates redundant implementations.
+> 
+> Co-developed-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> Signed-off-by: Yu-Chun Lin <eleanor15x@gmail.com>
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 
 Reviewed-by: Hans Verkuil <hverkuil@xs4all.nl>
-
->>
->> This is orthogonal to the change to parity_odd() though. More specific to
->> the new parity_odd() you can now do following as parity_odd() argument is
->> u64:
->>
->> 		err = !parity_odd(*(u16 *)p);
->>
->>
-> Thanks for the feedback!
-> Would you prefer this change to be part of the parity() conversion
-> patch, or in a separate one?
-
-Just leave it as-is, as mentioned above.
 
 Regards,
 
 	Hans
 
+> ---
+>  drivers/media/i2c/saa7115.c | 12 ++----------
+>  1 file changed, 2 insertions(+), 10 deletions(-)
 > 
-> Regards,
-> Kuan-Wei
+> diff --git a/drivers/media/i2c/saa7115.c b/drivers/media/i2c/saa7115.c
+> index a1c71187e773..a7886269dcfc 100644
+> --- a/drivers/media/i2c/saa7115.c
+> +++ b/drivers/media/i2c/saa7115.c
+> @@ -25,6 +25,7 @@
+>  
+>  #include "saa711x_regs.h"
+>  
+> +#include <linux/bitops.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/slab.h>
+> @@ -664,15 +665,6 @@ static const unsigned char saa7115_init_misc[] = {
+>  	0x00, 0x00
+>  };
+>  
+> -static int saa711x_odd_parity(u8 c)
+> -{
+> -	c ^= (c >> 4);
+> -	c ^= (c >> 2);
+> -	c ^= (c >> 1);
+> -
+> -	return c & 1;
+> -}
+> -
+>  static int saa711x_decode_vps(u8 *dst, u8 *p)
+>  {
+>  	static const u8 biphase_tbl[] = {
+> @@ -1227,7 +1219,7 @@ static int saa711x_decode_vbi_line(struct v4l2_subdev *sd, struct v4l2_decode_vb
+>  		vbi->type = V4L2_SLICED_TELETEXT_B;
+>  		break;
+>  	case 4:
+> -		if (!saa711x_odd_parity(p[0]) || !saa711x_odd_parity(p[1]))
+> +		if (!parity_odd(p[0]) || !parity_odd(p[1]))
+>  			return 0;
+>  		vbi->type = V4L2_SLICED_CAPTION_525;
+>  		break;
 
 
