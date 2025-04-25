@@ -1,168 +1,130 @@
-Return-Path: <bpf+bounces-56694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56695-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59C8AA9CA0B
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 15:20:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A00E6A9CAE7
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 15:56:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8317D4A612A
-	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 13:20:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87DD71771AC
+	for <lists+bpf@lfdr.de>; Fri, 25 Apr 2025 13:56:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70DF524C06A;
-	Fri, 25 Apr 2025 13:20:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FA72512FC;
+	Fri, 25 Apr 2025 13:55:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lvs1NKtz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tJoIfGIG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5153E2557A;
-	Fri, 25 Apr 2025 13:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527B424A064;
+	Fri, 25 Apr 2025 13:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745587220; cv=none; b=KeOsMG1oLC8Ov/oRilh1/Clg4/FDEwQWq5YQ7fLbbOpk4H70DhjlPDPclU9aNrtR8iB1jrJs3Otoixc3pjmJ3pLUsTWKYY23P73wN0lUSsHDbceNKpp8HqMzdxL3CanRfC3MlehucJzVyMG97YnLO+OzynIrbjxs5icPC8qpSg4=
+	t=1745589358; cv=none; b=PZ4CX0TNqx+i91LCPOvptfeGfIaE8kdqu8i/3YI35cmZNMxtQK7puxctoRlZZRgv8bd50MHub7Ps5gV30Sw8lr5g+jJdkB4NptMzrKGNi0Wr4UH0tdEp8JkONknqBqyD/ZKLLViFujttPE0zBv2R/QG7YxF9rbgxQ7oU7PXCBHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745587220; c=relaxed/simple;
-	bh=SPyeJFPnbHfdtjXp/gNM2HM2zqqL14sTVD1IE9G44cw=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dcQHXXnDbZ/bO3lwYlGVU6JQiJQHHlgrhBvZWUR73GzFS25JZeTveRDSO0Yumby/EL0EfYG1/qU4ZCQysqpeZviazFRSl970SxcpUBWjVppE5C7ftlgMA8jNFjWO9/+I0QxgF72Xy0kLHDGLePdZVW4ieIg2UeLH1cJaGz8kV44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lvs1NKtz; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-ac2bdea5a38so341838666b.0;
-        Fri, 25 Apr 2025 06:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745587214; x=1746192014; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tiDbQOOhMKzPk9TaDla//wQdnnmLWU+xDiPyN3yrQNE=;
-        b=lvs1NKtzqcqElldMA168UMLN8kjU4zRZrC036CXzbMKYlkopxS7UNLfW70mnZ4IkRo
-         8BPpyUxgBQqdeSpJ0ajO+gvCmG/amKl+AS6uGWTLTqMgRLyrVV2Xuf9jS9ok8bvTS3Sw
-         mFkev6qJkAbl1wToVDeM1GnkbBsR20hxeYgukyVZNxBkdx6kLrhHzbO33muTrc7FymPK
-         neVrn1jFwacoDSALxK9E+944qpZImUyk2c3Yqe0IA4dfxu6mmbuvBUQC35eubU/JSkbc
-         DLMQK0rDZtNXk3IyULk/wpeo6xkyL3KQmGDHGHhjSF1dpP+UsI8qiXEmns8YtuoTv8Wu
-         Ijzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745587214; x=1746192014;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tiDbQOOhMKzPk9TaDla//wQdnnmLWU+xDiPyN3yrQNE=;
-        b=Qcjh0JCIKwgqTQ1oMgFtLWCUZmrrXTuosUywKvCECVpT8nmWSSj953MgWuvp7efAnN
-         n2DzGRg7cmyupcMo0LmSISccQSN/Nm252Kg0zDDsHqnSzx2Q5Ev2X0G8FPSKYqauA9o/
-         YaIlk4eYF+YoRMN4uk8Q4l/LJhz/uJpgL9uGetc/AUweZHlp3Mh+jluNAQibh/udQ/M4
-         wUxYhlgei542mNvrXipYg+VfeIvwLzdRZMsON9H4Ri5qpmRGSnysRbvqwm4jQxTmUbJv
-         78c8oL0Om99WDfv8iZ56z7cdv381DY1cYuQYVEeCtv2I9S4q1IPvmZ+PGa92T4Ld3X3W
-         yTww==
-X-Forwarded-Encrypted: i=1; AJvYcCXWpsRKaBlD/bABvgJh5LDgKAMpStIlGcr9tdNUgXXdm0yaTcNVmtpsRIwcimophB9tYwY=@vger.kernel.org, AJvYcCXcxQA33VPcA74itxDkSD4sGNlwHE8pZsn9UkZDj0aaMzlZjoZYjWGExWDadp9MLhMFMRwlMf/sY2UtgWpy@vger.kernel.org, AJvYcCXyghieXVwQFo0l0X3BlhatgboyrQlfJW9df30rf7csgZQRlS1qy4xt4l48hG2swyfrLVR7xzuxmpmlRDa2ATJAQZ20@vger.kernel.org
-X-Gm-Message-State: AOJu0YwKMgvtzgRsjNvodjCTVUF2Wk6p6CqGRBA3wJjK/UfDsrxDl2Qe
-	EvooMrRL/Lt08C6k4ZECSoGNcpPMq6kl3dJmYHgsBCxGA//JcmR2
-X-Gm-Gg: ASbGncvKKEI9jxrU3BUTN3IXQ7CIKdjskv5ppIAOcg3bxPHYA8Ti0ZNtMAR5JNZu15r
-	tn1RlTHCki/jiLIk+H+zOnfzHkbPeWLqClql2oOfeCQvpiXNUMlKUKaXc4X5jwLtACz+M0EXqXq
-	/h79dRk/0q4gjpYLQ0dg6jC1D28NqlZyewBTqdNsQecVxKO7J5Mh6Etm1PXS74l19d6n8Lwab/5
-	ZGfXhcPIM52PNVyIEsDmiSnfAzf0VLKeGMkReYIquPvUX60WTDtlP5QDEkL5p+qUSGuiDrB25Gp
-	rG1FNzVVBi19v7fVrUtXhVE6vus=
-X-Google-Smtp-Source: AGHT+IEGzf+3TOrg5dTtOxaINCOqHwTMbgLBeYUbqcdGafNXT/aTs0JPn43Dy04GGn7+CgBVyLmJhg==
-X-Received: by 2002:a17:907:3f0b:b0:ac3:3e40:e182 with SMTP id a640c23a62f3a-ace7109ff27mr224360066b.19.1745587214242;
-        Fri, 25 Apr 2025 06:20:14 -0700 (PDT)
-Received: from krava ([173.38.220.52])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace6ecf9a17sm135823266b.99.2025.04.25.06.20.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Apr 2025 06:20:13 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 25 Apr 2025 15:20:12 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	x86@kernel.org, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	David Laight <David.Laight@aculab.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH perf/core 11/22] selftests/bpf: Use 5-byte nop for x86
- usdt probes
-Message-ID: <aAuMDEyiahZi6zIa@krava>
-References: <20250421214423.393661-1-jolsa@kernel.org>
- <20250421214423.393661-12-jolsa@kernel.org>
- <CAEf4BzbxCqgPErQVBV7Ojz23ZEqYKvxi0Y4j8hq6FgXVvdQo9A@mail.gmail.com>
- <aAozU3alQYU0vNkw@krava>
- <CAEf4BzagXsyr-iKB=ZpRZ3kS2FE69jpbWa8EVyFJknUOCGtEEQ@mail.gmail.com>
- <CAEf4BzZvwH2GR6cr8EN8Up02tHBkGij_1v6UNPcKaVFATmKvUQ@mail.gmail.com>
+	s=arc-20240116; t=1745589358; c=relaxed/simple;
+	bh=YokcS2D2iQiKHDReHt9kQSlK8t5kwna9CdetyF0P2Ac=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uYunq6CjpGJhl02rcxoDv6TbP34HR6yy/H2g4CF2UdUrL5mtU2YQKTFhQFXYcqmXWbiJQkHF9P0OyETe8zuQD7sU8de+dXEzpFOPWH684NsX3LN8p3yBE7fINWP2dnpWgahwAxMXAnHkNTh0ghGPz3BpcnhGCPKjtYzwihCyADA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tJoIfGIG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A2C5C4CEE4;
+	Fri, 25 Apr 2025 13:55:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745589357;
+	bh=YokcS2D2iQiKHDReHt9kQSlK8t5kwna9CdetyF0P2Ac=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=tJoIfGIGMrHqV1pNdWoAsGy4BopgWNY2ZGOyoCtZx2+vezGAmp+ecFOeVoK83JTJV
+	 m5GdjO7HOKNzBDaG5r7Dow9KaLcfbPn/mIqN4vQULgeBJOadkRqGcqajGSnnn+aWwq
+	 XECyYzMFsV9QiYvaRBxMHm637guqB1cXFnJIE0mU3n4Yx9EM7ZDdfJNyNcJ2jI946D
+	 ZIvp97vhrWvok6rrWJ6qRV+nwZIqLGoMpUN1NEkqLcN4+2F1023RzJ7RI2PsvNRTYQ
+	 VXdKNjPKR2GG5aOd3ZFpWj72Z3LLw+86qBEHUYQHvAtenJtuOOAoGvMIikz/qihGk+
+	 jiP5AtWux5FVw==
+Message-ID: <d36cb5a0-902c-4de5-bdd2-cbf9e1b1c7b1@kernel.org>
+Date: Fri, 25 Apr 2025 15:55:52 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZvwH2GR6cr8EN8Up02tHBkGij_1v6UNPcKaVFATmKvUQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V6 2/2] veth: apply qdisc backpressure on full
+ ptr_ring to reduce TX drops
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, tom@herbertland.com,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
+ kernel-team@cloudflare.com, phil@nwl.cc
+References: <174549933665.608169.392044991754158047.stgit@firesoul>
+ <174549940981.608169.4363875844729313831.stgit@firesoul>
+ <20250424072352.18aa0df1@kernel.org>
+ <c6abaa9f-cd3e-4259-bed6-5e795ff58ecd@kernel.org>
+ <20250424085358.75d817ae@kernel.org>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250424085358.75d817ae@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 24, 2025 at 11:20:11AM -0700, Andrii Nakryiko wrote:
-> On Thu, Apr 24, 2025 at 9:29 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Apr 24, 2025 at 5:49 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > >
-> > > On Wed, Apr 23, 2025 at 10:33:18AM -0700, Andrii Nakryiko wrote:
-> > > > On Mon, Apr 21, 2025 at 2:46 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > > >
-> > > > > Using 5-byte nop for x86 usdt probes so we can switch
-> > > > > to optimized uprobe them.
-> > > > >
-> > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > ---
-> > > > >  tools/testing/selftests/bpf/sdt.h | 9 ++++++++-
-> > > > >  1 file changed, 8 insertions(+), 1 deletion(-)
-> > > > >
-> > > >
-> > > > So sdt.h is an exact copy/paste from systemtap-sdt sources. I'd prefer
-> > > > to not modify it unnecessarily.
-> > > >
-> > > > How about we copy/paste usdt.h ([0]) and use *that* for your
-> > > > benchmarks? I've already anticipated the need to change nop
-> > > > instruction, so you won't even need to modify the usdt.h file itself,
-> > > > just
-> > > >
-> > > > #define USDT_NOP .byte 0x0f, 0x1f, 0x44, 0x00, 0x00
-> > > >
-> > > > before #include "usdt.h"
-> > >
-> > >
-> > > sounds good, but it seems we need bit more changes for that,
-> > > so far I ended up with:
-> > >
-> > > -       __usdt_asm1(990:        USDT_NOP)                                                       \
-> > > +       __usdt_asm5(990:        USDT_NOP)                                                       \
-> > >
-> > > but it still won't compile, will need to spend more time on that,
-> > > unless you have better solution
-> > >
-> >
-> > Use
-> >
-> > #define USDT_NOP .ascii "\x0F\x1F\x44\x00\x00"
-> >
-> > for now, I'll need to improve macro magic to handle instructions with
-> > commas in them...
+
+
+On 24/04/2025 17.53, Jakub Kicinski wrote:
+> On Thu, 24 Apr 2025 17:24:51 +0200 Jesper Dangaard Brouer wrote:
+>>> Looks like I wrote a reply to v5 but didn't hit send. But I may have
+>>> set v5 to Changes Requested because of it :S Here is my comment:
+>>>
+>>>    I think this is missing a memory barrier. When drivers do this dance
+>>>    there's usually a barrier between stop and recheck, to make sure the
+>>>    stop is visible before we check. And vice versa veth_xdp_rcv() needs
+>>>    to make sure other side sees the "empty" indication before it checks
+>>>    if the queue is stopped.
+>>
+>> The call netif_tx_stop_queue(txq); already contains a memory barrier
+>> smp_mb__before_atomic() plus an atomic set_bit operation.  That should
+>> be sufficient.
 > 
-> Ok, fixed in [0]. If you get the latest version, the .byte approach
-> will work (I have tests in CI now to validate this).
+> That barrier is _before_ stopping the queue. I'm saying we need a
+> barrier between stop and emptiness re-check. Note that:
+>   - smp_mb__after_atomic() is enough, and it 'compiles' to nothing
+>     on x86
+
+I see, I will add a smp_mb__after_atomic() after netif_tx_stop_queue()
+and send a V7.  I considered an atomic operation a full memory-barrier,
+which I guess is correct for x86 (as you say this compiled to nothing),
+but I guess other archs need this, so lets add it.
+
+>   - all of this is the unlikely path :) You restart the qdisc
+>     when the ptr ring is completely full so the stopping in absolute
+>     worst case will happen once or twice per full ptr_ring ?
 > 
->   [0] https://github.com/libbpf/usdt/pull/12
 
-yep, works nicely, thanks
+Yes, basically. It should only happen once per full ptr_ring event.
+As soon as TXQ is stopped, the driver code is no-longer called.
+Do remember that remote CPU running veth_poll call, will (re)start the
+TXQ again via qdisc layer, which call veth driver code again, e.g. race
+to fill ptr_ring again and that will stop TXQ again. (Sysadm help: These
+full/TXQ-stop events will be recorded in "requeues" counter by qdisc
+stats).  The remote CPU running NAPI is in a fairly tight loop, so it
+will do it's best to empty the queue, and have a total budget of 300.
+The race is still very unlikely, but it is a race, that would stop the
+TXQ forever for the veth device (we don't recover).
 
-jirka
+
+>> And the other side veth_poll(), have a smp_store_mb() before reading
+>> ptr_ring.
+>>
+>> --Jesper
+>>
+>> p.s.
+>> I actually had an alternative implementation of this, that only calls
+>> stop when it is needed.  See below, it kind of looks prettier, but it
+>> adds an extra memory barrier in the likely path. (And I'm not sure if
+>> read memory barrier is strong enough).
+> 
+> Not sure that works either :S
+
 
