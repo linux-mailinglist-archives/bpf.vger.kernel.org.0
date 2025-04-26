@@ -1,126 +1,149 @@
-Return-Path: <bpf+bounces-56780-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56781-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70692A9DA41
-	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 12:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E235A9DA5B
+	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 13:09:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C23ED9282AD
-	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 10:54:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 755A0928344
+	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 11:09:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF94227581;
-	Sat, 26 Apr 2025 10:54:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D4B5227EBF;
+	Sat, 26 Apr 2025 11:09:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="Y0zaE4Y9"
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="k8Eaj3p0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx-rz-3.rrze.uni-erlangen.de (mx-rz-3.rrze.uni-erlangen.de [131.188.11.22])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CDC18DB24;
-	Sat, 26 Apr 2025 10:54:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0193421C9EF;
+	Sat, 26 Apr 2025 11:09:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745664890; cv=none; b=EgNemFBiPGdn+AHf/ZwFT6W3af71QBzBTnIZkq20iaDt/Xps9Br4mvgs2oW6GIwBh0D027o2KdTftg9tCb5ycQmeGyvaLCwOZSUIIGdI2RoNYWyds+pjkjFa52urAm0x+zJdm9Z+OUnQcY/gcFV947C2VZmQ2KWeEG5pmlngtgY=
+	t=1745665770; cv=none; b=qPGxQONHoVsfS2GvOCMW0iUotTSlxiUw1qGHRMr6CxiE9NPKr+4s3l2TO+xAK3GFS2N6yKn71H5RdwhTqoAOMMHThH2m+zqOXGOzOdikm3Xxy9ox7Dcx8i0I548W0lV1kxSREMxQ+nx3L2cOnI4er+fDlK4c7TVMF61z0LqrxoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745664890; c=relaxed/simple;
-	bh=pfTUN7VblrVWs0X8J5yIVJ7DlvkoxvoG5PUJxWpJ3QI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=MhapexuxKfmoU2pG9KeF7Kn1IYn70Y9XHJcjxUjeH1KM5T5MKEZz8ogzqiuhJxIHZFuaxbKeNw9RBCK/+fr67TjNrV1hM6rvl71gCuC8VM3MC1FoZ0uZd6icK0wieqJXs3sxy6PxVui3dPVTa2fy/J/ozPWvl8J5NdkngRK4Cdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=Y0zaE4Y9; arc=none smtp.client-ip=131.188.11.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-	t=1745664879; bh=Ce0GIrbVfPWC7H8gy4FhbwT9KDZQbFbYWNbCLDBescY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
-	 Subject;
-	b=Y0zaE4Y9YZ0haQY9H50iAWqNCuovbbuQ7R25J9ew8C6QDDjBdXmPhnIaOdR7ckEuH
-	 hMAoEYrWTjho84BJUjxwmy7qHUKTALqbu6vYKqX3ZIP53Pwa6YbZdN+9x+tPs0fk4U
-	 natPf1ZcLG1WRhbeqA9mqq1aEEdOv0vcx5Z0DaGjT9mfjq16B6QFaHno2/nd1hTofx
-	 rTDA7W35vkIwtud31kdGsJcLA+DWKpLTCbcA1quyi48iUmZ5ou3M6AeUJJHiEr2Xxh
-	 yEo7p6HlwHUqb/6Cf5O9+SNrdyGEH9llvJd66rQ2B3AKpu8llaYHx+Pb9+kfW/s/nV
-	 X9PcK+83aAJUg==
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	s=arc-20240116; t=1745665770; c=relaxed/simple;
+	bh=dgjGpipyMoa9Ud54nCP2vbHddyFOBRvn6OgnTHCKbv8=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=vGk6mXzn2jLGJ55XZw3W/eUh54MyflvTu+9rR0OAGAa7jhxk3MPS1cTu7gctUSrs9/mPTITuc0XrRdRhAdvYINCfQh7q4t9AOyTOy6UL3+pEIWWvXhBAMzMeXkEPe++q3d8moNPDkcfPeFyPDodAxLpykOwxmNBvbeA2hg85Dnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=k8Eaj3p0; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 33F2240E01FF;
+	Sat, 26 Apr 2025 11:09:16 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id vr4N2quaIm86; Sat, 26 Apr 2025 11:09:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1745665750; bh=uTZUPbANBn1FT5juyhJpDoDSfFqVfzieIPf+T2BMphw=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=k8Eaj3p0gPnwEf+CsFhhIh4WpbDa9DIP8CuE3FvMDNuS9goYpEVEqj2/y1jsPvNR3
+	 c50CDHMm7LO3cQCZ4XoZVE4NA5JlDqE66RyGmnvwwfVzCvwPbYBjVKlebR7BgdRPbQ
+	 ib2k0uk0/G8EXqfhLjVxcFz/YtJGkIk380dCgqcwOcp6a93YiULEk6XK/NY1OHfrEv
+	 xmaFxRNMzbFfQQ7OsQjMMvO0C510NMxHKEObr/b+kUkhdpBdTF1Sou6G2S8MJ+JLsv
+	 agufLgVWpSveFdSQmM2kYnUSiBhPZEzOhR31hv64jSrOU+xNcbetJhDtzjOzOa/2yS
+	 IOCSqq3hxS1lmC5+PB08+X++1Ra2j2h9LjuTlZloA94KVFS9tyuW2Tq4gTrl82bQud
+	 HU/DLYd8jKst5SRw+yAP9fg8qpBY8410ydmdJRdLCEdklXXsjOClob5vx/TSf2PCnI
+	 n4Ma8FbK/6l/5gMEiJ6CnQGWp+HCCC4r9GCoG8JP80h2MaPSg62fpCH3N0jYZG8Fql
+	 9k830mZL+dtKp81TrHfTA7Jh0loCUrBAOegakV7KN5HaUywWA0YrfHMa1NhkYE1g9F
+	 3p68xYKJ5Pln3e6gmGz2LPohAYuBL6InZD3rMh8mzSHrPB5h2pou+V5jKlry9QSDyh
+	 jGjDsmRkhVxxegmwWVnE1wqI=
+Received: from [IPv6:::1] (unknown [IPv6:2a02:3037:20b:53e8:6ccf:ad1c:d318:e478])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mx-rz-3.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Zl66Q6ybQz1yN6;
-	Sat, 26 Apr 2025 12:54:38 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at boeck2.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:9e8:361b:dc00:c019:e67c:3dc8:e824
-Received: from localhost (unknown [IPv6:2001:9e8:361b:dc00:c019:e67c:3dc8:e824])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: U2FsdGVkX19VP6nuyGgC1ZFJikQ/3jfzd/7EixAh4QE=)
-	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Zl66M4BX7z1xys;
-	Sat, 26 Apr 2025 12:54:35 +0200 (CEST)
-From: Luis Gerhorst <luis.gerhorst@fau.de>
-To: kernel test robot <lkp@intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
- KaFai Lau <martin.lau@linux.dev>,  Eduard Zingerman <eddyz87@gmail.com>,
-  Song Liu <song@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>,
-  John Fastabend <john.fastabend@gmail.com>,  KP Singh
- <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao Luo
- <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Puranjay Mohan
- <puranjay@kernel.org>,  Xu Kuohai <xukuohai@huaweicloud.com>,  Catalin
- Marinas <catalin.marinas@arm.com>,  Will Deacon <will@kernel.org>,  Hari
- Bathini <hbathini@linux.ibm.com>,  Christophe Leroy
- <christophe.leroy@csgroup.eu>,  Naveen N Rao <naveen@kernel.org>,
-  Madhavan Srinivasan <maddy@linux.ibm.com>,  Michael Ellerman
- <mpe@ellerman.id.au>,  Nicholas Piggin <npiggin@gmail.com>,  Mykola
- Lysenko <mykolal@fb.com>,  Shuah Khan <skhan@linuxfoundation.org>,
-  Henriette Herzog <henriette.herzog@rub.de>,  Saket Kumar Bhaskar
- <skb99@linux.ibm.com>,  Cupertino Miranda <cupertino.miranda@oracle.com>,
-  Jiayuan Chen <mrpre@163.com>,  Matan Shachnai <m.shachnai@gmail.com>,
-  oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 06/11] bpf, arm64, powerpc: Change nospec to
- include v1 barrier
-In-Reply-To: <202504220035.SoGveGpj-lkp@intel.com> (kernel test robot's
-	message of "Tue, 22 Apr 2025 00:24:41 +0800")
-References: <20250421091802.3234859-7-luis.gerhorst@fau.de>
-	<202504220035.SoGveGpj-lkp@intel.com>
-User-Agent: mu4e 1.12.8; emacs 29.4
-Date: Sat, 26 Apr 2025 12:54:35 +0200
-Message-ID: <874iyb6vmc.fsf@fau.de>
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9E01D40E01F6;
+	Sat, 26 Apr 2025 11:08:52 +0000 (UTC)
+Date: Sat, 26 Apr 2025 14:08:46 +0300
+From: Borislav Petkov <bp@alien8.de>
+To: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+CC: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Ingo Molnar <mingo@redhat.com>, x86@kernel.org, Kees Cook <kees@kernel.org>,
+ bpf@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+ Julia Lawall <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>,
+ cocci@inria.fr
+Subject: =?US-ASCII?Q?Re=3A_=5BRFC=5D=5BPATCH_1/2=5D_k?=
+ =?US-ASCII?Q?thread=3A_Add_is=5Fuser=5Fthr?=
+ =?US-ASCII?Q?ead=28=29_and_is=5Fkernel=5Fthread=28=29_helper_functions?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20250425204313.616425861@goodmis.org>
+References: <20250425204120.639530125@goodmis.org> <20250425204313.616425861@goodmis.org>
+Message-ID: <26F4E8D1-4DDF-48EC-AE21-478EDF4C65C3@alien8.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-kernel test robot <lkp@intel.com> writes:
-
-> All errors (new ones prefixed by >>):
+On April 25, 2025 11:41:21 PM GMT+03:00, Steven Rostedt <rostedt@goodmis=2E=
+org> wrote:
+>From: Steven Rostedt <rostedt@goodmis=2Eorg>
 >
->    arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
->>> arch/powerpc/net/bpf_jit_comp64.c:814:4: error: a label can only be part of a statement and a declaration is not a statement
->      814 |    bool sync_emitted = false;
->          |    ^~~~
->>> arch/powerpc/net/bpf_jit_comp64.c:815:4: error: expected expression before 'bool'
->      815 |    bool ori31_emitted = false;
->          |    ^~~~
->>> arch/powerpc/net/bpf_jit_comp64.c:833:6: error: 'ori31_emitted' undeclared (first use in this function)
->      833 |      ori31_emitted = true;
->          |      ^~~~~~~~~~~~~
->    arch/powerpc/net/bpf_jit_comp64.c:833:6: note: each undeclared identifier is reported only once for each function it appears in
+>In order to know if a task is a user thread or a kernel thread it is
+>recommended to test the task flags for PF_KTHREAD=2E The old way was to
+>check if the task mm pointer is NULL=2E
+>
+>It is an easy mistake to not test the flag correctly, as:
+>
+>	if (!(task->flag & PF_KTHREAD))
+>
+>Is not immediately obvious that it's testing for a user thread=2E
+>
+>Add helper functions:
+>
+>  is_user_thread()
+>  is_kernel_thread()
+>
+>that can make seeing what is being tested for much more obvious:
+>
+>	if (is_user_thread(task))
+>
+>Link: https://lore=2Ekernel=2Eorg/all/20250425133416=2E63d3e3b8@gandalf=
+=2Elocal=2Ehome/
+>
+>Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis=2Eorg>
+>---
+> include/linux/sched=2Eh | 10 ++++++++++
+> 1 file changed, 10 insertions(+)
+>
+>diff --git a/include/linux/sched=2Eh b/include/linux/sched=2Eh
+>index f96ac1982893=2E=2E823f38b0fd3e 100644
+>--- a/include/linux/sched=2Eh
+>+++ b/include/linux/sched=2Eh
+>@@ -1785,6 +1785,16 @@ static __always_inline bool is_percpu_thread(void)
+> #endif
+> }
+>=20
+>+static __always_inline bool is_user_thread(struct task_struct *task)
+>+{
+>+	return !(task->flags & PF_KTHREAD);
+>+}
+>+
+>+static __always_inline bool is_kernel_thread(struct task_struct *task)
+>+{
+>+	return task->flags & PF_KTHREAD;
 
-Fixed this for v3. For the other archs, the patches also don't add
-declarations in a switch/case.
+return !is_user_thread(task);
 
-I also checked that there are no new W=2 warnings for the touched C
-files on x86 with the vmtest bpf config.
+or the other way around=2E=20
 
-I have not checked that all files that include a touched header don't
-have new warnings. When doing -j $(nproc) the diff does not work and
-with -j 1 it takes forever (e.g., because bpf.h is touched). If you
-think this is required just let me know (and if you have a tip on how to
-do it more quickly that would be great too).
+=F0=9F=99=82
+
+--=20
+Sent from a small device: formatting sucks and brevity is inevitable=2E 
 
