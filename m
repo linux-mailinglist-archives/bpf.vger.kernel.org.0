@@ -1,171 +1,150 @@
-Return-Path: <bpf+bounces-56766-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56767-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88CB7A9D760
-	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 05:23:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEFB5A9D7AE
+	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 07:41:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53DD77A1CDE
-	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 03:22:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E39A31BA0FD5
+	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 05:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA531E1A3F;
-	Sat, 26 Apr 2025 03:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA501AA1E0;
+	Sat, 26 Apr 2025 05:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RrwJWZor"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BJiFvlqW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DBE1401B;
-	Sat, 26 Apr 2025 03:23:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4882613A244;
+	Sat, 26 Apr 2025 05:41:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745637794; cv=none; b=eBRxpEURw2a+kEJphX6UTIxx0zK01c7s9QSfP8a+VtyTW/lZXpVe5bn0ngggrgW8z9CuQPJsXuvUuCBFLMJsnAeGDRjIgtZfoj0kEEh62Li/9nMVtzytKK2Mg+Kzs+11F1+8FzbtDKOjfaHZ3cQY894ZT0n6VAoOSzcWEC7Nq8w=
+	t=1745646062; cv=none; b=j6MNkaY4Hd/8IvSScm007oWRJt8jivC0/lBHeAL87C2kSMoU1LDHNqhhl17IYDbf63yZbHAhAuIwQr4HDJdwbPz49J2aCQA5wOTIKLrQxhstdoUZEDRl7djhTAwN1eV41ZrhyORooO4VcPLTQHDvLzXN+LIVPclKzD4OrS6V56g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745637794; c=relaxed/simple;
-	bh=OorEA4yKuv/EjmOfpY+5Jkej5ZMDx4tSaJq+Ih54/fI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MnZoWw2hJt2QId5P9ioU1155m8hCF0m/oEmGP6TQRgF+/SFFWc6SXSz+irfBZGlD/jO9r2lVkpiXLrw+F4kcfktsWyATbk42v6BwCOliIciKa5UXSzcNxEhNSyCQ8Q+Rw0RtLmGgocnM5E4EFPEeWmr+yRKFUi/9/zQBqgeZgmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RrwJWZor; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1745646062; c=relaxed/simple;
+	bh=HH3A7mhgMlifCWiaK7W/MvoR6SiNymYOgMuSdnRfVrk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HHShV1su9J+2N/V99ZMZSslpR104Es1kJmAzTHvPAfwdxCL2Wt/JftMhR2VLLnzZzKAv16nrSv0PWVo/mpQoSG+guxc8+3/vNEWJ3kQ8vrW7zK17mS87m581hevcq8QWoomjNqjTGF+2K2zN+zxDi/zEWQ3dDsSG3Em946z0xaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BJiFvlqW; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-39ac9aea656so3299921f8f.3;
-        Fri, 25 Apr 2025 20:23:12 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-af908bb32fdso2673500a12.1;
+        Fri, 25 Apr 2025 22:41:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745637791; x=1746242591; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bZ1xXxsW4NeRP98ef78rJYFaU6MaDAYecnV4YcmJ8Kk=;
-        b=RrwJWZorpJu3NRtAetWvJVOUPwLfi9AtPf9MgyhMOyJvV00JZYLQpapIA0j9DNn7Tj
-         UboG1FzJC0julG/rHM/daQyvNjqyHl19rTl28q2+9PySqgIJKayXD2aXVAkaQ8Cuicmj
-         j0LgtW7uSOL+TKtCRqLnQ4S4i4KcXCawdYt7Y670M0yUe0JowISSZTiuX246TsfEMJzo
-         aUMiZVHjsM489rnUQ0nIakgAFbRRneYuWqYUl52xnNe/KqA681NV9WrmZzG78QBN3s7d
-         yx7QBz/lAVDWY1TeXDtYIV72yH9VhmVK3y2MAYCdjeivv4I9t3krJrWykDtDhwYSdmzq
-         jaWw==
+        d=gmail.com; s=20230601; t=1745646060; x=1746250860; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j6M8sMT/t/zz2ZTs7d36Jp6MHx+pTl8jB+zVeFB9UZU=;
+        b=BJiFvlqWF0r1PZNZWZw7H5BrS5PeKiNVutOtnZnHli3Hzd9p+pw8+S18SfCCQ+aEr9
+         lr8SCYlTVvso+7ogK/638p5uedHlP4MsFm9yfGK4M2YxIEnwYuO/2cpXBGxAKfSe1Y8F
+         wti+DAQrKoKWp2m3mWIb+4Ulg3fWDXDU5Dhv8pS6C5Ekj8GsXtc/1/jGi5eivqRDEprS
+         g3ydD0Bx0JRp5eJRxee8tstoF9phfflMVKe1xhjrzZVrhKIJy7YNgmrBwGOqm6urxx+Z
+         RNHZrT2/uyDk6PaLfgXiWH6apyOjH/g4VxBn4mUCy/v47z82guKhMim/aBvHHcMl8LCD
+         dYmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745637791; x=1746242591;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bZ1xXxsW4NeRP98ef78rJYFaU6MaDAYecnV4YcmJ8Kk=;
-        b=tpTVDR2xbOhGy8yiZ0QzzRBcFQvboIao8HOl+6WGMdivXQ0Gr/wquaHrpjCAjvjvoB
-         vL4XawcSPggwDbO604bV34w+KBlw6tLvVp6xg/k6f14Qc50koHSMSKo/IOzGBuO/9u+Z
-         7mb5kqyG1sZAh+Igucz2CJRBjxdHIHxw19suzTSsCLfPJprJWKVwUGT1BJCbZ4qYFhGo
-         B7qmqyI7Dge39MY5LrZNXkJoVbZKYGXFdarCXwYWdYfaOl1N+hW2gOLkCLV/V8ZsOH10
-         83awlk1Fd75No3sac1tlaXdTUgAvFROnN+uUNK8SXKRNZbpu0il7kzX+7LyOGKEO8xNu
-         F4CA==
-X-Forwarded-Encrypted: i=1; AJvYcCW1uo0+HTZkGjc/uMs9dcGjcq7SjYAQXGbwElKamqRSeTR/LXDY3DQcG9pVtXzL3uk6WWV7ipV0UY3myMq9BPry69/6@vger.kernel.org, AJvYcCWna5xgHw3izBMnaPyN4evQVhhvWFGa+02fybhg3Y606dbYdxY+FkgiCi5w0VCmUSF1k5OLRxgf59G5zUze@vger.kernel.org, AJvYcCXesNECBz4dPO7UGyuoPvCFxhMvA/x8K06heN6SOTIogVHOlrFJdVu3L3XD3JxJKlPadSE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2uzW0jy3jCwP5pnm/E/aJHOfCXi6a0YQRHItZid/2u67aFPkA
-	eVzPmtAi09F5OSlXrH/43WrwTS9Y90a21keXD7CbZUcyppipz4UMDrBZxc7+4T0VNMNO5tHIWMl
-	VYkWPOgmvy3kXyhXRWuf8nKTx/a2l7BBf
-X-Gm-Gg: ASbGnctQ+112yoUwlz89husszQndFCT70AmyqgwY0LH6ORABCUIkntIUu8jJl40cM42
-	DH+zSFg4jjrXEHr/3x55da8YPu9K8iecSMmzL2TxMg6RkDuFH3ouf7DvNp0wN2cJKUUG6f1Z8ac
-	cIOKHhE31xYVVlUNl3QZYYywFqRoky5MsA2QbHhQ==
-X-Google-Smtp-Source: AGHT+IE3PHs6T3Jl0OrQH8KbLUj7MwKUzcPm7sefhDzp+dbq+GIago6Zs/rMPPxt/P4f8JZzpV/Z6+OX9kU2Fam6YaQ=
-X-Received: by 2002:a05:6000:178a:b0:390:f4f9:8396 with SMTP id
- ffacd0b85a97d-3a074e4217dmr2985232f8f.28.1745637791026; Fri, 25 Apr 2025
- 20:23:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1745646060; x=1746250860;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j6M8sMT/t/zz2ZTs7d36Jp6MHx+pTl8jB+zVeFB9UZU=;
+        b=Wv9IhXhL1dZOvPSfeV2pEF7BEPlyG67UyuLGUjAIhUKh5GoogtKYHs33vNhXsS7d6R
+         kp90M+ZOgurp9tIbnP6yYkkOSPYYW3D3np8aSemApig3yxF6rw9JDBBYi3lf0HfOIJMt
+         kydMMFKv97MV9FB48jea0RBm+162ACx967z2twQfnTf+2js2KNFTiuQe4DPqZOBoVZsp
+         h7jY6tYtCLS7NMPpOTh/wdk3CSGccPq8FLiMBq7xN9JDwvONav98Xzvkg26B0IN9mm/G
+         4Kqi7mfQy65o66dPrbK5V6Puq4Ex+OzaLPRhIZeLCOYpo/kIy4te/L+7tO2k/r6RvEZu
+         66xQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVpX4bp5AgqKHQKfNBC94mvSaq/USPId4FeErd55jYCryBTjofYpY2OwGOSF0rKMn8/5cbtG9Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUzKEnyyNNPVS+fCT8PlQMn3MKnUr3z5TvzJQ1k0tdd8LO386k
+	kB5e6P1sGoeGT5bqP/aqM835iEyczC/apjnJRcqiZ16pvJGLXD62Lihscg==
+X-Gm-Gg: ASbGncuHitc0l0+ccaH6vJaAu/4HjscX27cHZ6E3fjxmnk/s/pkQXirc8BDbhArNyDu
+	GevjUwRoMXMl9Hy27z2tItoF24+dtriA2uYc1sT0r/ITIPD7SJq4d8BCZjmFRoQphS9At3+lOKy
+	KFm53FkwooNQTtTUUluXo2e+kltuBqv9RALmx8KOF+vzAZeW6p89t2aItN2gRDb+WQVl0Ym3DNd
+	DuP4Mx2JFUa7kT/QhJ5G0HdgFAJz/dP6HN0ZdBUVQjPMcZhlw9SS/rKEXMPRIO13xaA1T5s6Xcf
+	hLDLs20Hm9EIpZAs1KSOKmcRrn6Rx6UcIhfuIM5fHhH16JIthTwVogOWNtksVDL2Zzqzz1JsVh8
+	YFDFIoJ2Fa37ReibfQg0Od+LDjWuiYg==
+X-Google-Smtp-Source: AGHT+IEHNwsRURSvYAbOHEpd/47BldiPls+IGwQEVqteHy87D0s71BxFT1vuHRvBs1gsshcSwtG2aA==
+X-Received: by 2002:a17:90a:fc46:b0:302:fc48:4f0a with SMTP id 98e67ed59e1d1-309f8786e57mr7306071a91.0.1745646060331;
+        Fri, 25 Apr 2025 22:41:00 -0700 (PDT)
+Received: from [192.168.99.14] (i60-34-11-52.s41.a013.ap.plala.or.jp. [60.34.11.52])
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22db51050b8sm42226335ad.202.2025.04.25.22.40.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Apr 2025 22:40:59 -0700 (PDT)
+Message-ID: <c3cdf4bc-f880-4eb4-8a4f-5eef2d670501@gmail.com>
+Date: Sat, 26 Apr 2025 14:40:54 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250425204120.639530125@goodmis.org> <20250425204313.784243618@goodmis.org>
- <202504251558.AA50716@keescook>
-In-Reply-To: <202504251558.AA50716@keescook>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 25 Apr 2025 20:22:59 -0700
-X-Gm-Features: ATxdqUFNS03Ls-N5iHekEa4uNfOcUuKuOiG1gTLIFRDPQEpj5XX7j71ddsDqBts
-Message-ID: <CAADnVQKdWSuDm52GmNor75rFZGNBLcoCto3oecA3D3QHD_MyCQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH 2/2] treewide: Have the task->flags & PF_KTHREAD
- check use the helper functions
-To: Kees Cook <kees@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@redhat.com>, 
-	X86 ML <x86@kernel.org>, bpf <bpf@vger.kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Julia Lawall <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>, cocci@inria.fr
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V7 2/2] veth: apply qdisc backpressure on full
+ ptr_ring to reduce TX drops
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: bpf@vger.kernel.org, tom@herbertland.com,
+ Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+ dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
+ kernel-team@cloudflare.com, phil@nwl.cc, netdev@vger.kernel.org,
+ Jakub Kicinski <kuba@kernel.org>
+References: <174559288731.827981.8748257839971869213.stgit@firesoul>
+ <174559294022.827981.1282809941662942189.stgit@firesoul>
+Content-Language: en-US
+From: Toshiaki Makita <toshiaki.makita1@gmail.com>
+In-Reply-To: <174559294022.827981.1282809941662942189.stgit@firesoul>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 25, 2025 at 4:10=E2=80=AFPM Kees Cook <kees@kernel.org> wrote:
->
-> On Fri, Apr 25, 2025 at 04:41:22PM -0400, Steven Rostedt wrote:
-> > From: Steven Rostedt <rostedt@goodmis.org>
-> >
-> > Getting the check if a task is a kernel thread or a user thread can be
-> > error prone as it's not easy to see the difference.
-> >
-> >       if (!(task->flags & PF_KTHREAD))
-> >
-> > Is not immediately obvious that it's checking for a user thread.
-> >
-> >       if (is_user_thread(task))
-> >
-> > Is much easier to review, as it is obvious that it is checking if the t=
-ask
-> > is a user thread.
-> >
-> > Using a coccinelle script, convert these checks over to using either
-> > is_user_thread() or is_kernel_thread().
-> >
-> >   $ cat kthread.cocci
-> >   @@
-> >   identifier task;
-> >   @@
-> >   -   !(task->flags & PF_KTHREAD)
-> >   +   is_user_thread(task)
-> >   @@
-> >   identifier task;
-> >   @@
-> >   -   (task->flags & PF_KTHREAD) =3D=3D 0
-> >   +   is_user_thread(task)
-> >   @@
-> >   identifier task;
-> >   @@
-> >   -   (task->flags & PF_KTHREAD) !=3D 0
-> >   +   is_kernel_thread(task)
-> >   @@
-> >   identifier task;
-> >   @@
-> >   -   task->flags & PF_KTHREAD
-> >   +   is_kernel_thread(task)
-> >
-> >   $ spatch --dir --include-headers kthread.cocci . > /tmp/t.patch
-> >   $ patch -p1 < /tmp/t.patch
-> >
-> > Make sure to undo the conversion of the helper functions themselves!
-> >
-> >   $ git show include/linux/sched.h | patch -p1 -R
->
-> FYI, the "file in" test can be helpful. I use it to exclude tools and
-> samples regularly, and *I think* it would work for excluding individual
-> files too:
->
-> @name_of_rule depends !(file in "tools") && !(file in "samples")@
->
-> I've been collecting random notes like this here:
->
-> https://github.com/kees/kernel-tools/tree/trunk/coccinelle
->
-> >  tools/sched_ext/scx_central.bpf.c          |  2 +-
-> >  tools/sched_ext/scx_flatcg.bpf.c           |  2 +-
-> >  tools/sched_ext/scx_qmap.bpf.c             |  2 +-
->
-> I think these are fine. The Makefile is pulling in standard kbuild
-> Makefiles, so I think the correct include directories (outside of
-> tools/) are being used.
+On 2025/04/25 23:55, Jesper Dangaard Brouer wrote:
+> In production, we're seeing TX drops on veth devices when the ptr_ring
+> fills up. This can occur when NAPI mode is enabled, though it's
+> relatively rare. However, with threaded NAPI - which we use in
+> production - the drops become significantly more frequent.
+> 
+> The underlying issue is that with threaded NAPI, the consumer often runs
+> on a different CPU than the producer. This increases the likelihood of
+> the ring filling up before the consumer gets scheduled, especially under
+> load, leading to drops in veth_xmit() (ndo_start_xmit()).
+> 
+> This patch introduces backpressure by returning NETDEV_TX_BUSY when the
+> ring is full, signaling the qdisc layer to requeue the packet. The txq
+> (netdev queue) is stopped in this condition and restarted once
+> veth_poll() drains entries from the ring, ensuring coordination between
+> NAPI and qdisc.
+> 
+> Backpressure is only enabled when a qdisc is attached. Without a qdisc,
+> the driver retains its original behavior - dropping packets immediately
+> when the ring is full. This avoids unexpected behavior changes in setups
+> without a configured qdisc.
+> 
+> With a qdisc in place (e.g. fq, sfq) this allows Active Queue Management
+> (AQM) to fairly schedule packets across flows and reduce collateral
+> damage from elephant flows.
+> 
+> A known limitation of this approach is that the full ring sits in front
+> of the qdisc layer, effectively forming a FIFO buffer that introduces
+> base latency. While AQM still improves fairness and mitigates flow
+> dominance, the latency impact is measurable.
+> 
+> In hardware drivers, this issue is typically addressed using BQL (Byte
+> Queue Limits), which tracks in-flight bytes needed based on physical link
+> rate. However, for virtual drivers like veth, there is no fixed bandwidth
+> constraint - the bottleneck is CPU availability and the scheduler's ability
+> to run the NAPI thread. It is unclear how effective BQL would be in this
+> context.
+> 
+> This patch serves as a first step toward addressing TX drops. Future work
+> may explore adapting a BQL-like mechanism to better suit virtual devices
+> like veth.
+> 
+> Reported-by: Yan Zhai <yan@cloudflare.com>
+> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
-I suspect they are not fine.
-I don't think they #include linux/sched.h
-I would drop them for now.
+Reviewed-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
 
-Tejun,
-please double check.
 
