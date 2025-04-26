@@ -1,319 +1,126 @@
-Return-Path: <bpf+bounces-56778-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56780-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 151B6A9DA2D
-	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 12:47:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70692A9DA41
+	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 12:54:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A47199269B3
-	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 10:46:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C23ED9282AD
+	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 10:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A30227BA1;
-	Sat, 26 Apr 2025 10:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF94227581;
+	Sat, 26 Apr 2025 10:54:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PqIJ4zrM"
+	dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b="Y0zaE4Y9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx-rz-3.rrze.uni-erlangen.de (mx-rz-3.rrze.uni-erlangen.de [131.188.11.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3959F224B15
-	for <bpf@vger.kernel.org>; Sat, 26 Apr 2025 10:46:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CDC18DB24;
+	Sat, 26 Apr 2025 10:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=131.188.11.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745664412; cv=none; b=UlpRHmaWu9j6GmhwByTZLvF3d7MCVHG9M1Zez2RxIN0ZFRf65LZmyv+pGSuN+BaDdFeC5KStlZuK1STqqXFLpVjq21dlszGnHwKg0opvmWsntPcyhtadcDfHy9Xh8kR/RXA21cVp9S0D+pLvlk0HSrT//FHvhNsiUt6QFZpVZxY=
+	t=1745664890; cv=none; b=EgNemFBiPGdn+AHf/ZwFT6W3af71QBzBTnIZkq20iaDt/Xps9Br4mvgs2oW6GIwBh0D027o2KdTftg9tCb5ycQmeGyvaLCwOZSUIIGdI2RoNYWyds+pjkjFa52urAm0x+zJdm9Z+OUnQcY/gcFV947C2VZmQ2KWeEG5pmlngtgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745664412; c=relaxed/simple;
-	bh=Y7t+nuM4SpN8zNbGHaakK0w0dR6D0pqiw67XHcn4OSk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HuQNqmywOkiz2hXt1Nhr4AzWUluTZ9yd8E/uQZEHeiGjUsWMqcQVVg1ejyIgtPK/1jIwEwLd7uyDe0NIv3aiTrhf6zty3Ni3zCZUfAgDMLuQxkHirCuEWNn7MYTOzS7LX2fdQR+EsjYfTu2e19J9LRf04n+aPM/3sn7G5VLjvs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PqIJ4zrM; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-22c33677183so33776085ad.2
-        for <bpf@vger.kernel.org>; Sat, 26 Apr 2025 03:46:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745664410; x=1746269210; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZvSDv6geHQnva0tZTlIIVPB3P3hVDgHYHpM1ipg3+Es=;
-        b=PqIJ4zrMUNfxktzp2wBcWhcLDR6C0CDXPydQotXqqLX2VWnsuUtyAUlmQIgBO783lG
-         zcD0HlWLsScQxpbB7Q4ezSGXEsJbnu9kSBw6poIX/1AuX7sUWLZ/LQR/nwa46sKlAL1k
-         MuHInsXN7SM/IOT21gVYx192r/eBtK8H2IJwXpVVUqn0ogcwOgS74Z35sjtzY4diPRUq
-         PTL83xATHx2Xhes/gsODtbXM9FuORya6lcWs7D/8iydtEy39PvDTBOJtWAcWrh+kBLj9
-         WnXtjmZftG/f5g3gv8a2fSQB74K//MGc2DBTpeQfZJvK5NvP0WbkyoLU0GYvGCQptYg1
-         q0ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745664410; x=1746269210;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZvSDv6geHQnva0tZTlIIVPB3P3hVDgHYHpM1ipg3+Es=;
-        b=qL8R6XXoPy0NoojSJcoieSJ2Inq89P58XSLxqmI5+QqWuGWx5LnP/26WjInOMeBQy9
-         CSe5BqaV+j6KfqIeUlgdtWhGQXsY1SJukbYayHSOm/LkUlZIeyP9Pe5dZNodgRMRiVBu
-         MAhlrIcAlA3pe38bNIgEJ/qGOm1l+DBICxVP36LDuyiEfFuofwbojOnztm58eg4dg3g5
-         o+chBpocw47mPk0oyXT8o4uQFiDkXoC3wTcGniwrcTM5QE5/YyOl1uqUwCwcICm7h+3C
-         3zLLKQCIb9jphic6hYJeHdaBBiyzdO3kwQnjLHwLvPqb9cbUeJdJEHMdUTQD7JR2Jley
-         +91Q==
-X-Gm-Message-State: AOJu0YzxbvCr4Y6F0XYjbeWfmwtPm1tRFrVA1Tn73tsX/F46yGQNgcb7
-	gz2VE7RiNB5OgIqU3IDm2xda16dgvC4/NnGeitw8dzLaSfk+8vXkxSv2kWee
-X-Gm-Gg: ASbGnctLbhBAsfNlTIgQfs+DSqfbdZNm2TMR0Sy11jvILS2oPDcwBO/+pnH82ABAa2A
-	/nSGQwbAIhDHu5RpdlwPKVQp9b45HfPQaIku5HX//p9gmmLks9YbLiwxIt7ThNkY6SprEqzh/6k
-	YFdGTdMzlIyuqIX4Y0fmqnO/W8uWcrfa2SxagHR3mHMjiQdQvUkEpZXA1LPRcOG4hFlRbvO+mMA
-	1262KXfgNVqT6tsIH1dgzfAR0OxLx+ll0UX4u7BnFa+Lza03tCQ7uQgmrlpiCsFPKgIjN/0OaVx
-	y8+FuwEUj9U/fHEjCpXEw2d3BR2ZP80dbNkB
-X-Google-Smtp-Source: AGHT+IGvdQqiy8PuIS/mm/2yaE0uIOIqit2Pjy+sWTAJpPvxmTYna2iwt9Qutk5bz/ylfJw//sUCuA==
-X-Received: by 2002:a17:902:cf05:b0:220:e1e6:4457 with SMTP id d9443c01a7336-22dc6a0f26dmr37415125ad.26.1745664410180;
-        Sat, 26 Apr 2025 03:46:50 -0700 (PDT)
-Received: from honey-badger.. ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22db5102e13sm47094115ad.201.2025.04.26.03.46.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Apr 2025 03:46:49 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v1 4/4] selftests/bpf: tests with a loop state missing read/precision mark
-Date: Sat, 26 Apr 2025 03:46:34 -0700
-Message-ID: <20250426104634.744077-5-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250426104634.744077-1-eddyz87@gmail.com>
-References: <20250426104634.744077-1-eddyz87@gmail.com>
+	s=arc-20240116; t=1745664890; c=relaxed/simple;
+	bh=pfTUN7VblrVWs0X8J5yIVJ7DlvkoxvoG5PUJxWpJ3QI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=MhapexuxKfmoU2pG9KeF7Kn1IYn70Y9XHJcjxUjeH1KM5T5MKEZz8ogzqiuhJxIHZFuaxbKeNw9RBCK/+fr67TjNrV1hM6rvl71gCuC8VM3MC1FoZ0uZd6icK0wieqJXs3sxy6PxVui3dPVTa2fy/J/ozPWvl8J5NdkngRK4Cdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de; spf=pass smtp.mailfrom=fau.de; dkim=pass (2048-bit key) header.d=fau.de header.i=@fau.de header.b=Y0zaE4Y9; arc=none smtp.client-ip=131.188.11.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fau.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fau.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
+	t=1745664879; bh=Ce0GIrbVfPWC7H8gy4FhbwT9KDZQbFbYWNbCLDBescY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From:To:CC:
+	 Subject;
+	b=Y0zaE4Y9YZ0haQY9H50iAWqNCuovbbuQ7R25J9ew8C6QDDjBdXmPhnIaOdR7ckEuH
+	 hMAoEYrWTjho84BJUjxwmy7qHUKTALqbu6vYKqX3ZIP53Pwa6YbZdN+9x+tPs0fk4U
+	 natPf1ZcLG1WRhbeqA9mqq1aEEdOv0vcx5Z0DaGjT9mfjq16B6QFaHno2/nd1hTofx
+	 rTDA7W35vkIwtud31kdGsJcLA+DWKpLTCbcA1quyi48iUmZ5ou3M6AeUJJHiEr2Xxh
+	 yEo7p6HlwHUqb/6Cf5O9+SNrdyGEH9llvJd66rQ2B3AKpu8llaYHx+Pb9+kfW/s/nV
+	 X9PcK+83aAJUg==
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-rz-3.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Zl66Q6ybQz1yN6;
+	Sat, 26 Apr 2025 12:54:38 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at boeck2.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:9e8:361b:dc00:c019:e67c:3dc8:e824
+Received: from localhost (unknown [IPv6:2001:9e8:361b:dc00:c019:e67c:3dc8:e824])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: U2FsdGVkX19VP6nuyGgC1ZFJikQ/3jfzd/7EixAh4QE=)
+	by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Zl66M4BX7z1xys;
+	Sat, 26 Apr 2025 12:54:35 +0200 (CEST)
+From: Luis Gerhorst <luis.gerhorst@fau.de>
+To: kernel test robot <lkp@intel.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>,  Martin
+ KaFai Lau <martin.lau@linux.dev>,  Eduard Zingerman <eddyz87@gmail.com>,
+  Song Liu <song@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>,
+  John Fastabend <john.fastabend@gmail.com>,  KP Singh
+ <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@fomichev.me>,  Hao Luo
+ <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Puranjay Mohan
+ <puranjay@kernel.org>,  Xu Kuohai <xukuohai@huaweicloud.com>,  Catalin
+ Marinas <catalin.marinas@arm.com>,  Will Deacon <will@kernel.org>,  Hari
+ Bathini <hbathini@linux.ibm.com>,  Christophe Leroy
+ <christophe.leroy@csgroup.eu>,  Naveen N Rao <naveen@kernel.org>,
+  Madhavan Srinivasan <maddy@linux.ibm.com>,  Michael Ellerman
+ <mpe@ellerman.id.au>,  Nicholas Piggin <npiggin@gmail.com>,  Mykola
+ Lysenko <mykolal@fb.com>,  Shuah Khan <skhan@linuxfoundation.org>,
+  Henriette Herzog <henriette.herzog@rub.de>,  Saket Kumar Bhaskar
+ <skb99@linux.ibm.com>,  Cupertino Miranda <cupertino.miranda@oracle.com>,
+  Jiayuan Chen <mrpre@163.com>,  Matan Shachnai <m.shachnai@gmail.com>,
+  oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 06/11] bpf, arm64, powerpc: Change nospec to
+ include v1 barrier
+In-Reply-To: <202504220035.SoGveGpj-lkp@intel.com> (kernel test robot's
+	message of "Tue, 22 Apr 2025 00:24:41 +0800")
+References: <20250421091802.3234859-7-luis.gerhorst@fau.de>
+	<202504220035.SoGveGpj-lkp@intel.com>
+User-Agent: mu4e 1.12.8; emacs 29.4
+Date: Sat, 26 Apr 2025 12:54:35 +0200
+Message-ID: <874iyb6vmc.fsf@fau.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-The test case absent_mark_in_the_middle_state is equivalent of the
-following C program:
+kernel test robot <lkp@intel.com> writes:
 
-   1: r8 = bpf_get_prandom_u32();
-   2: r6 = -32;
-   3: bpf_iter_num_new(&fp[-8], 0, 10);
-   4: if (unlikely(bpf_get_prandom_u32()))
-   5:   r6 = -31;
-   6: for (;;) {
-   7:   if (!bpf_iter_num_next(&fp[-8]))
-   8:     break;
-   9:   if (unlikely(bpf_get_prandom_u32()))
-  10:     *(u64 *)(fp + r6) = 7;
-  11: }
-  12: bpf_iter_num_destroy(&fp[-8]);
-  13: return 0;
+> All errors (new ones prefixed by >>):
+>
+>    arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
+>>> arch/powerpc/net/bpf_jit_comp64.c:814:4: error: a label can only be part of a statement and a declaration is not a statement
+>      814 |    bool sync_emitted = false;
+>          |    ^~~~
+>>> arch/powerpc/net/bpf_jit_comp64.c:815:4: error: expected expression before 'bool'
+>      815 |    bool ori31_emitted = false;
+>          |    ^~~~
+>>> arch/powerpc/net/bpf_jit_comp64.c:833:6: error: 'ori31_emitted' undeclared (first use in this function)
+>      833 |      ori31_emitted = true;
+>          |      ^~~~~~~~~~~~~
+>    arch/powerpc/net/bpf_jit_comp64.c:833:6: note: each undeclared identifier is reported only once for each function it appears in
 
-W/o a fix that instructs verifier to ignore branches count for loop
-entries verification proceeds as follows:
-- 1-4, state is {r6=-32,fp-8=active};
-- 6, checkpoint A is created with {r6=-32,fp-8=active};
-- 7, checkpoint B is created with {r6=-32,fp-8=active},
-     push state {r6=-32,fp-8=active} from 7 to 9;
-- 8,12,13, {r6=-32,fp-8=drained}, exit;
-- pop state with {r6=-32,fp-8=active} from 7 to 9;
-- 9, push state {r6=-32,fp-8=active} from 9 to 10;
-- 6, checkpoint C is created with {r6=-32,fp-8=active};
-- 7, checkpoint A is hit, no precision propagated for r6 to C;
-- pop state {r6=-32,fp-8=active} from 9 to 10;
-- 10, state is {r6=-31,fp-8=active}, r6 is marked as read and precise,
-      these marks are propagated to checkpoints A and B (but not C, as
-      it is not the parent of current state;
-- 6, {r6=-31,fp-8=active} checkpoint C is hit, because r6 is not
-     marked precise for this checkpoint;
-- the program is accepted, despite a possibility of unaligned u64
-  stack access at offset -31.
+Fixed this for v3. For the other archs, the patches also don't add
+declarations in a switch/case.
 
-The test case absent_mark_in_the_middle_state2 is similar except the
-following change:
+I also checked that there are no new W=2 warnings for the touched C
+files on x86 with the vmtest bpf config.
 
-       r8 = bpf_get_prandom_u32();
-       r6 = -32;
-       bpf_iter_num_new(&fp[-8], 0, 10);
-       if (unlikely(bpf_get_prandom_u32())) {
-         r6 = -31;
- + jump_into_loop:
- +       goto +0;
- +       goto loop;
- +     }
- +     if (unlikely(bpf_get_prandom_u32()))
- +       goto jump_into_loop;
- + loop:
-       for (;;) {
-         if (!bpf_iter_num_next(&fp[-8]))
-           break;
-         if (unlikely(bpf_get_prandom_u32()))
-           *(u64 *)(fp + r6) = 7;
-       }
-       bpf_iter_num_destroy(&fp[-8])
-       return 0
-
-The goal is to check that read/precision marks are propagated to
-checkpoint created at 'goto +0' that resides outside of the loop.
-
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- tools/testing/selftests/bpf/progs/iters.c | 141 ++++++++++++++++++++++
- 1 file changed, 141 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
-index 76adf4a8f2da..646dc0fdd44d 100644
---- a/tools/testing/selftests/bpf/progs/iters.c
-+++ b/tools/testing/selftests/bpf/progs/iters.c
-@@ -1649,4 +1649,145 @@ int clean_live_states(const void *ctx)
- 	return 0;
- }
- 
-+SEC("?raw_tp")
-+__flag(BPF_F_TEST_STATE_FREQ)
-+__failure __msg("misaligned stack access off 0+-31+0 size 8")
-+__naked int absent_mark_in_the_middle_state(void)
-+{
-+	/* This is equivalent to C program below.
-+	 *
-+	 * r8 = bpf_get_prandom_u32();
-+	 * r6 = -32;
-+	 * bpf_iter_num_new(&fp[-8], 0, 10);
-+	 * if (unlikely(bpf_get_prandom_u32()))
-+	 *   r6 = -31;
-+	 * while (bpf_iter_num_next(&fp[-8])) {
-+	 *   if (unlikely(bpf_get_prandom_u32()))
-+	 *     *(fp + r6) = 7;
-+	 * }
-+	 * bpf_iter_num_destroy(&fp[-8])
-+	 * return 0
-+	 */
-+	asm volatile (
-+		"call %[bpf_get_prandom_u32];"
-+		"r8 = r0;"
-+		"r7 = 0;"
-+		"r6 = -32;"
-+		"r0 = 0;"
-+		"*(u64 *)(r10 - 16) = r0;"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"r2 = 0;"
-+		"r3 = 10;"
-+		"call %[bpf_iter_num_new];"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 == r8 goto change_r6_%=;"
-+	"loop_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_next];"
-+		"if r0 == 0 goto loop_end_%=;"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 == r8 goto use_r6_%=;"
-+		"goto loop_%=;"
-+	"loop_end_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r0 = 0;"
-+		"exit;"
-+	"use_r6_%=:"
-+		"r0 = r10;"
-+		"r0 += r6;"
-+		"r1 = 7;"
-+		"*(u64 *)(r0 + 0) = r1;"
-+		"goto loop_%=;"
-+	"change_r6_%=:"
-+		"r6 = -31;"
-+		"goto loop_%=;"
-+		:
-+		: __imm(bpf_iter_num_new),
-+		  __imm(bpf_iter_num_next),
-+		  __imm(bpf_iter_num_destroy),
-+		  __imm(bpf_get_prandom_u32)
-+		: __clobber_all
-+	);
-+}
-+
-+SEC("?raw_tp")
-+__flag(BPF_F_TEST_STATE_FREQ)
-+__failure __msg("misaligned stack access off 0+-31+0 size 8")
-+__naked int absent_mark_in_the_middle_state2(void)
-+{
-+	/* This is equivalent to C program below.
-+	 *
-+	 *     r8 = bpf_get_prandom_u32();
-+	 *     r6 = -32;
-+	 *     bpf_iter_num_new(&fp[-8], 0, 10);
-+	 *     if (unlikely(bpf_get_prandom_u32())) {
-+	 *       r6 = -31;
-+	 * jump_into_loop:
-+	 *       goto +0;
-+	 *       goto loop;
-+	 *     }
-+	 *     if (unlikely(bpf_get_prandom_u32()))
-+	 *       goto jump_into_loop;
-+	 * loop:
-+	 *     while (bpf_iter_num_next(&fp[-8])) {
-+	 *       if (unlikely(bpf_get_prandom_u32()))
-+	 *         *(fp + r6) = 7;
-+	 *     }
-+	 *     bpf_iter_num_destroy(&fp[-8])
-+	 *     return 0
-+	 */
-+	asm volatile (
-+		"call %[bpf_get_prandom_u32];"
-+		"r8 = r0;"
-+		"r7 = 0;"
-+		"r6 = -32;"
-+		"r0 = 0;"
-+		"*(u64 *)(r10 - 16) = r0;"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"r2 = 0;"
-+		"r3 = 10;"
-+		"call %[bpf_iter_num_new];"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 == r8 goto change_r6_%=;"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 == r8 goto jump_into_loop_%=;"
-+	"loop_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_next];"
-+		"if r0 == 0 goto loop_end_%=;"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 == r8 goto use_r6_%=;"
-+		"goto loop_%=;"
-+	"loop_end_%=:"
-+		"r1 = r10;"
-+		"r1 += -8;"
-+		"call %[bpf_iter_num_destroy];"
-+		"r0 = 0;"
-+		"exit;"
-+	"use_r6_%=:"
-+		"r0 = r10;"
-+		"r0 += r6;"
-+		"r1 = 7;"
-+		"*(u64 *)(r0 + 0) = r1;"
-+		"goto loop_%=;"
-+	"change_r6_%=:"
-+		"r6 = -31;"
-+	"jump_into_loop_%=: "
-+		"goto +0;"
-+		"goto loop_%=;"
-+		:
-+		: __imm(bpf_iter_num_new),
-+		  __imm(bpf_iter_num_next),
-+		  __imm(bpf_iter_num_destroy),
-+		  __imm(bpf_get_prandom_u32)
-+		: __clobber_all
-+	);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.48.1
-
+I have not checked that all files that include a touched header don't
+have new warnings. When doing -j $(nproc) the diff does not work and
+with -j 1 it takes forever (e.g., because bpf.h is touched). If you
+think this is required just let me know (and if you have a tip on how to
+do it more quickly that would be great too).
 
