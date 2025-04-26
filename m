@@ -1,229 +1,151 @@
-Return-Path: <bpf+bounces-56785-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56786-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D18ABA9DB7D
-	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 16:46:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73AADA9DC02
+	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 18:00:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 149E54A397B
-	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 14:46:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E3DB923962
+	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 16:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 930181991CF;
-	Sat, 26 Apr 2025 14:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2422A25D20F;
+	Sat, 26 Apr 2025 16:00:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HhduZwDN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QsVvjLcp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16905A920
-	for <bpf@vger.kernel.org>; Sat, 26 Apr 2025 14:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48CFE8488;
+	Sat, 26 Apr 2025 16:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745678776; cv=none; b=AcwH9bEaYGstBmz4t1ShSwKJP/qTsjU+G9IwDRr7nrev+Y7DkwZRAZ7ffEYT4ZJ1M7AbUoPF/HOcDuZrXFVvPJyjh5w3MT+z6+7u/0D1vv4wTxbo222i8FKncJvNxlfYRrs9YyA2cfgEANAUHSCrjGe21uUbzEKp7A/ZRA3d0Xw=
+	t=1745683243; cv=none; b=kJAWN7IgX8haunInpDzJu53Us35ugvt6TsY3PUydlhUaCWNhkKo5YQpQFgAYhombefB44PsoXw8+9BKmyEJ+HgXkFkjLxpk8XxBTb193oDMaC/F5bJW3uNwuz7oEw+h4MxuXpD/h4XrbTDW/4EZHw0lxbq+r8Y/Rb7q7kdXDMag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745678776; c=relaxed/simple;
-	bh=u0XFOZCbUxLTirzcU7SQgvvFhR5eGp7vYanqCWvs+nE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y1QPMYdGQtgmG6jjd6F6mF43n7noCKktnzd1HP4jg/gkh73L/raO+pBvxqN2ie4rBR83Mk24DRGKBG3NKKx0WD7QJhi0mcpl4aeqKUCuj99A7MB6/9kiK/4Y3e9NvKLFhHPT77Xcsdcs/YfdUsLiZbh5QhRvX0NDJqBJeTePbo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HhduZwDN; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1745678774; x=1777214774;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=u0XFOZCbUxLTirzcU7SQgvvFhR5eGp7vYanqCWvs+nE=;
-  b=HhduZwDNWJudeQ2jVWaC9Bu4t7LUIEHfYxq1uteJS4O3yC3QDLSRRQRs
-   QAzh2pVBRvx/2dbc83UNdKc7fGlxx65KNLLWmrsEbqg9ewEKWhFdhL2Y9
-   oObXbMZvM/VmhvvBsVQvcl6P7XJual8myg0TEDxEWx7C5HOUaEg+4Wrmk
-   g6ngdahm6YclMPaMUiar6L51arP7iZSWa7piW4zdW+jDPf9iBOFs7bEfb
-   jdPwmDaQ8eEPie5enzFwhIbryagrN8UsDDv9h+2CYm+lgTBxpleN3q4gj
-   PbAAdAuqJw6l28mrI1aR+HnBJo+sEi4n02BK6sKPydcSQl9WE5La+a8Ys
-   Q==;
-X-CSE-ConnectionGUID: 9wUx2SA5SD+NksYntpH2VQ==
-X-CSE-MsgGUID: 5s3P4xTwR9+eJsL+ZU8m/w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11415"; a="47484012"
-X-IronPort-AV: E=Sophos;i="6.15,241,1739865600"; 
-   d="scan'208";a="47484012"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2025 07:46:13 -0700
-X-CSE-ConnectionGUID: biQ15ZZpRM2+1uiOdM08FQ==
-X-CSE-MsgGUID: 7YM1dqMrSuGytIYV+a9d8w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,241,1739865600"; 
-   d="scan'208";a="156365063"
-Received: from lkp-server01.sh.intel.com (HELO 050dd05385d1) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 26 Apr 2025 07:46:11 -0700
-Received: from kbuild by 050dd05385d1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1u8gnA-0005rp-2i;
-	Sat, 26 Apr 2025 14:46:08 +0000
-Date: Sat, 26 Apr 2025 22:45:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, andrii@kernel.org, daniel@iogearbox.net,
-	martin.lau@linux.dev, kernel-team@fb.com, yonghong.song@linux.dev,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/4] bpf: use SCC info instead of loop_entry
-Message-ID: <202504262235.h5B7vJiB-lkp@intel.com>
-References: <20250426104634.744077-4-eddyz87@gmail.com>
+	s=arc-20240116; t=1745683243; c=relaxed/simple;
+	bh=wGwWAknTOCMxz0RPq8zv6IjjubENWlU5qOlxtfmR5t0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bw1e9dvfXaYxWDgUHk15J1Fk+q/mXNTrg+Veu0MUqwIti8ogsvhvbCF3fW5k5qxWoe64k7snOyn/1camGMMWhGZwbUSOx/KqQSIeKdDPC4CZYLka0ZZKQCpPcRohfDyVGU3GVL8J8awTBsdM2Rh1EzVDSaVYNWzUvQebncyha1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QsVvjLcp; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7396f13b750so3723612b3a.1;
+        Sat, 26 Apr 2025 09:00:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745683241; x=1746288041; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=znOdau2L+/dcZkQ6O6k0/5CeHr55iQYi/h0B2Jyxhy8=;
+        b=QsVvjLcpUWuSmXDhdUa5Cg3pBT0j7m1Be3Ay0GK0Ry4rST89vNLbHjj0ix7WOSIx4B
+         opqQT3A/o5UzNK74vpfnC+g54Motqm+E24ZXmZVpf066Nel9s5a0KvxSQYc24QfJaXFk
+         ewaHWEs4leWsPCRew5PqozsWSjg6TMx9LM+GqHRVlhuZ3bMA8eZjvJahXUUJAmvseeiz
+         TX0dlOZ2CYlJDL4Xyl33jc3AwbaDYh7/x1Q19mLXWY2STy4nJwyPFsO3NMsPSQ/cKKVa
+         E/foO0auvQYkb5oUQS3TCGipkWCv/7C+aG4/aCSnt5Iw9Wz7U8y7iuKAjO8Y99Lh60Fk
+         gH7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745683241; x=1746288041;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=znOdau2L+/dcZkQ6O6k0/5CeHr55iQYi/h0B2Jyxhy8=;
+        b=gRBbPx5PPyryQdRnqf8022gycSIjU4KvdG0CVJHAnM7hRA7hBcP0jSckgDEEJ3C8Y+
+         1ZRXsv81w55KwtEH2Z3V3jN4U2nHFzoBSdrfzxPFCC4Ge2KZ0/UHhmhFnFZdjnZ1TFgT
+         7OyVmpRE3L24Xq7h7BMOD3+wSoruWkyj82WinWiI+pDHw+lFMj16b/osVfbI61ONlfVM
+         inadJ5ZUbrnvrJgzGkpyrjg2XXOXcYxzhOkwdhy8Qidx/Td4WFeAbdtooUGJBVDXXM8W
+         NDOx6xNY9lTUxDu7AVogE6uhuz9WRDDS0XwkPo9UKJrD2l9PLCX2RG5GN8v4jUuYuRY5
+         worA==
+X-Forwarded-Encrypted: i=1; AJvYcCV1HigWYTBiSl2IsbjPMKlGm9KnKmiBaszJlwRkM/iKmBgt3ptokDCpnX+85b4K0l1O774=@vger.kernel.org, AJvYcCV9BP6HuAt8ToBI2+b8ENl5McLD0OhSA9mGdIhQQOGX29lu8y7FKmEQE8s4RWlB28QOzpUE6Aqv@vger.kernel.org, AJvYcCVrFMH4bMmoJ2CdFEx32xWNz4Paqktpk1OwB4CxsaWB4g5Dyg27MINW3QgPczaiJjCu4sUVB9tj64+CTSX5pQLQ@vger.kernel.org, AJvYcCX/+/IU54gc+EPU61Ljd9NzgSkN6Du9SmlBgP68BWbURITPvSWmAPgDSjG6kJ4MniUnq/jHeB2dqtKUdXd3NQkkVtLM@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxr5A0I3gS5xEAGV6GAUi1t3Em3FkNbkwuHrjLCVMDIxd6gtWot
+	xH/8I/kqPCBy93XFex5+92mJ6UR9qy28p2YDw4h8Tgjp3Q+tp7uo
+X-Gm-Gg: ASbGncvFIxs/k6CiZddY2f75cuL/0oLnSjUGYYUxq0ecypkpoOmzuPz8oEJiqXmNeaT
+	8BIgWFW6qd/GFFSgCqPeFU6VPZJiuabEaNX2/GgMbYf6uOE/8tcL3HL5go20blZwXpFmVEUEfrP
+	aMcU398Bkkx2ESsGv41xpnzy1DbzcukvnwbPS6UFNY5jnosVYa8d/cdFW9GLzF21MRLKlTXV0Ju
+	1VcDIFgPZ4TZL3tpi0Zrr9+qIPcF+GydA+sAEB+Ey7fVHzIjM+7SD7/8xwDn5CDcXndWZHgSenQ
+	RPP+DPFiucsIlWfX7CT2JJGWie00/nK1wpppDuYv6fI=
+X-Google-Smtp-Source: AGHT+IGcovqBau2DivQ0yh8b8PJpIgtx+uIrmZAQJE5XOKpzVaC3xkNekpOyApo9s2Jjcrh6mQst/g==
+X-Received: by 2002:a05:6a00:1742:b0:736:5822:74b4 with SMTP id d2e1a72fcca58-73fd8f4e0c7mr8710527b3a.21.1745683241340;
+        Sat, 26 Apr 2025 09:00:41 -0700 (PDT)
+Received: from ubuntu2404.. ([122.231.145.226])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73e25941cc1sm5174760b3a.60.2025.04.26.09.00.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Apr 2025 09:00:40 -0700 (PDT)
+From: KaFai Wan <mannkafai@gmail.com>
+To: song@kernel.org,
+	jolsa@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@fomichev.me,
+	haoluo@google.com,
+	mattbobrowski@google.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	mykolal@fb.com,
+	shuah@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	leon.hwang@linux.dev,
+	mannkafai@gmail.com
+Subject: [PATCH bpf-next 0/4] bpf: Allow get_func_[arg|arg_cnt] helpers in raw tracepoint programs
+Date: Sun, 27 Apr 2025 00:00:23 +0800
+Message-ID: <20250426160027.177173-1-mannkafai@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250426104634.744077-4-eddyz87@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Eduard,
+hi, 
 
-kernel test robot noticed the following build warnings:
+We can use get_func_[arg|arg_cnt] helpers in fentry/fexit/fmod_ret programs
+currently[1]. But they can't be used in raw_tp/tp_btf programs.
 
-[auto build test WARNING on bpf-next/master]
+Adding support to use get_func_[arg|arg_cnt] helpers in raw_tp/tp_btf
+programs.
+Adding BPF_PROG_TEST_RUN for tp_btf.
+Add selftests to check them.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Eduard-Zingerman/bpf-compute-SCCs-in-program-control-flow-graph/20250426-184824
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20250426104634.744077-4-eddyz87%40gmail.com
-patch subject: [PATCH bpf-next v1 3/4] bpf: use SCC info instead of loop_entry
-config: riscv-randconfig-001-20250426 (https://download.01.org/0day-ci/archive/20250426/202504262235.h5B7vJiB-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250426/202504262235.h5B7vJiB-lkp@intel.com/reproduce)
+Thanks,
+KaFai
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202504262235.h5B7vJiB-lkp@intel.com/
+[1] https://lore.kernel.org/bpf/20211208193245.172141-1-jolsa@kernel.org/
+---
+KaFai Wan (4):
+  bpf: Allow get_func_[arg|arg_cnt] helpers in raw tracepoint programs
+  bpf: Enable BPF_PROG_TEST_RUN for tp_btf
+  selftests/bpf: Add raw_tp_test_run for tp_btf
+  selftests/bpf: Add tests for get_func_[arg|arg_cnt] helpers in raw
+    tracepoint programs
 
-All warnings (new ones prefixed by >>):
-
-   kernel/bpf/verifier.c: In function 'mark_all_regs_read_and_precise':
->> kernel/bpf/verifier.c:18238:13: warning: variable 'insn_idx' set but not used [-Wunused-but-set-variable]
-   18238 |         u32 insn_idx;
-         |             ^~~~~~~~
-   At top level:
-   cc1: note: unrecognized command-line option '-Wno-unterminated-string-initialization' may have been intended to silence earlier diagnostics
-
-
-vim +/insn_idx +18238 kernel/bpf/verifier.c
-
- 18154	
- 18155	/* Open coded iterators introduce loops in the verifier state graph.
- 18156	 * State graph loops can result in incomplete read and precision marks
- 18157	 * on individual states. E.g. consider the following states graph:
- 18158	 *
- 18159	 *  .-> A --.  Assume the states are visited in the order A, B, C.
- 18160	 *  |   |   |  Assume that state B reaches a state equivalent to state A.
- 18161	 *  |   v   v  At this point, state C has not been processed yet,
- 18162	 *  '-- B   C  so state A does not have any read or precision marks from C yet.
- 18163	 *             As a result, these marks won't be propagated to B.
- 18164	 *
- 18165	 * If the marks on B are incomplete, it would be unsafe to use it in
- 18166	 * states_equal() checks.
- 18167	 *
- 18168	 * To avoid this safety issue, and since states with incomplete read
- 18169	 * marks can only occur within control flow graph loops, the verifier
- 18170	 * assumes that any state with bpf_verifier_state->insn_idx residing
- 18171	 * in a strongly connected component (SCC) has read and precision
- 18172	 * marks for all registers. This assumption is enforced by the
- 18173	 * function mark_all_regs_read_and_precise(), which assigns
- 18174	 * corresponding marks.
- 18175	 *
- 18176	 * An intuitive point to call mark_all_regs_read_and_precise() would
- 18177	 * be when a new state is created in is_state_visited().
- 18178	 * However, doing so would interfere with widen_imprecise_scalars(),
- 18179	 * which widens scalars in the current state after checking registers in a
- 18180	 * parent state. Registers are not widened if they are marked as precise
- 18181	 * in the parent state.
- 18182	 *
- 18183	 * To avoid interfering with widening logic,
- 18184	 * a call to mark_all_regs_read_and_precise() for state is postponed
- 18185	 * until no widening is possible in any descendant of state S.
- 18186	 *
- 18187	 * Another intuitive spot to call mark_all_regs_read_and_precise()
- 18188	 * would be in update_branch_counts() when S's branches counter
- 18189	 * reaches 0. However, this falls short in the following case:
- 18190	 *
- 18191	 *	sum = 0
- 18192	 *	bpf_repeat(10) {                              // a
- 18193	 *		if (unlikely(bpf_get_prandom_u32()))  // b
- 18194	 *			sum += 1;
- 18195	 *		if (bpf_get_prandom_u32())            // c
- 18196	 *			asm volatile ("");
- 18197	 *		asm volatile ("goto +0;");            // d
- 18198	 *	}
- 18199	 *
- 18200	 * Here a checkpoint is created at (d) with {sum=0} and the branch counter
- 18201	 * for (d) reaches 0, so 'sum' would be marked precise.
- 18202	 * When second branch of (c) reaches (d), checkpoint would be hit,
- 18203	 * and the precision mark for 'sum' propagated to (a).
- 18204	 * When the second branch of (b) reaches (a), the state would be {sum=1},
- 18205	 * no widening would occur, causing verification to continue forever.
- 18206	 *
- 18207	 * To avoid such premature precision markings, the verifier postpones
- 18208	 * the call to mark_all_regs_read_and_precise() for state S even further.
- 18209	 * Suppose state P is a [grand]parent of state S and is the first state
- 18210	 * in the current state chain with state->insn_idx within current SCC.
- 18211	 * mark_all_regs_read_and_precise() for state S is only called once P
- 18212	 * is fully explored.
- 18213	 *
- 18214	 * The struct 'bpf_scc_info' is used to track this condition:
- 18215	 * - bpf_scc_info->branches counts how many states currently
- 18216	 *   in env->cur_state or env->head originate from this SCC;
- 18217	 * - bpf_scc_info->scc_epoch counts how many times 'branches'
- 18218	 *   has reached zero;
- 18219	 * - bpf_verifier_state->scc_epoch records the epoch of the SCC
- 18220	 *   corresponding to bpf_verifier_state->insn_idx at the moment
- 18221	 *   of state creation.
- 18222	 *
- 18223	 * Functions parent_scc_enter() and parent_scc_exit() maintain the
- 18224	 * bpf_scc_info->{branches,scc_epoch} counters.
- 18225	 *
- 18226	 * bpf_scc_info->branches reaching zero indicates that state P is
- 18227	 * fully explored. Its descendants residing in the same SCC have
- 18228	 * state->scc_epoch == scc_info->scc_epoch. parent_scc_exit()
- 18229	 * increments scc_info->scc_epoch, allowing clean_live_states() to
- 18230	 * detect these states and apply mark_all_regs_read_and_precise().
- 18231	 */
- 18232	static void mark_all_regs_read_and_precise(struct bpf_verifier_env *env,
- 18233						   struct bpf_verifier_state *st)
- 18234	{
- 18235		struct bpf_func_state *func;
- 18236		struct bpf_reg_state *reg;
- 18237		u16 live_regs;
- 18238		u32 insn_idx;
- 18239		int i, j;
- 18240	
- 18241		for (i = 0; i <= st->curframe; i++) {
- 18242			insn_idx = frame_insn_idx(st, i);
- 18243			live_regs = env->insn_aux_data[st->insn_idx].live_regs_before;
- 18244			func = st->frame[i];
- 18245			for (j = 0; j < BPF_REG_FP; j++) {
- 18246				reg = &func->regs[j];
- 18247				if (!(BIT(j) & live_regs) || reg->type == NOT_INIT)
- 18248					continue;
- 18249				reg->live |= REG_LIVE_READ64;
- 18250				if (reg->type == SCALAR_VALUE && !is_reg_unbounded(reg))
- 18251					reg->precise = true;
- 18252			}
- 18253			for (j = 0; j < func->allocated_stack / BPF_REG_SIZE; j++) {
- 18254				reg = &func->stack[j].spilled_ptr;
- 18255				reg->live |= REG_LIVE_READ64;
- 18256				if (is_spilled_reg(&func->stack[j]) &&
- 18257				    reg->type == SCALAR_VALUE && !is_reg_unbounded(reg))
- 18258					reg->precise = true;
- 18259			}
- 18260		}
- 18261	}
- 18262	
+ kernel/trace/bpf_trace.c                      | 17 +++++--
+ net/bpf/test_run.c                            | 16 +++----
+ .../bpf/prog_tests/raw_tp_get_func_args.c     | 48 +++++++++++++++++++
+ .../bpf/prog_tests/raw_tp_test_run.c          | 18 ++++++-
+ .../bpf/progs/test_raw_tp_get_func_args.c     | 47 ++++++++++++++++++
+ .../bpf/progs/test_raw_tp_test_run.c          | 16 +++++--
+ 6 files changed, 146 insertions(+), 16 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/raw_tp_get_func_args.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_raw_tp_get_func_args.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
 
