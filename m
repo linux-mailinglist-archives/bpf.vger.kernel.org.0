@@ -1,150 +1,127 @@
-Return-Path: <bpf+bounces-56767-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56768-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEFB5A9D7AE
-	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 07:41:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6D1A9D93C
+	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 10:13:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E39A31BA0FD5
-	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 05:41:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63CD81BC7BC1
+	for <lists+bpf@lfdr.de>; Sat, 26 Apr 2025 08:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA501AA1E0;
-	Sat, 26 Apr 2025 05:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2FD724EF91;
+	Sat, 26 Apr 2025 08:13:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BJiFvlqW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mbKGZZEe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4882613A244;
-	Sat, 26 Apr 2025 05:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0F281922D4;
+	Sat, 26 Apr 2025 08:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745646062; cv=none; b=j6MNkaY4Hd/8IvSScm007oWRJt8jivC0/lBHeAL87C2kSMoU1LDHNqhhl17IYDbf63yZbHAhAuIwQr4HDJdwbPz49J2aCQA5wOTIKLrQxhstdoUZEDRl7djhTAwN1eV41ZrhyORooO4VcPLTQHDvLzXN+LIVPclKzD4OrS6V56g=
+	t=1745655225; cv=none; b=S5bYfEXw89D4rsURb6qVlfrHdpa9g04afoxLXAZv86YJ5cCSlo0hF8IjjAPQIyybbD4SSKOBnCllCyn60RgsWct7U37iX3lElp5YqfZ3uEJka7Enox03zEFxYkQFRn/WeuMFhEOBh6D6YRwjhzHBruxe1zxVocWCT3Gm0a1GhuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745646062; c=relaxed/simple;
-	bh=HH3A7mhgMlifCWiaK7W/MvoR6SiNymYOgMuSdnRfVrk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HHShV1su9J+2N/V99ZMZSslpR104Es1kJmAzTHvPAfwdxCL2Wt/JftMhR2VLLnzZzKAv16nrSv0PWVo/mpQoSG+guxc8+3/vNEWJ3kQ8vrW7zK17mS87m581hevcq8QWoomjNqjTGF+2K2zN+zxDi/zEWQ3dDsSG3Em946z0xaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BJiFvlqW; arc=none smtp.client-ip=209.85.215.171
+	s=arc-20240116; t=1745655225; c=relaxed/simple;
+	bh=NOoqkO+zz1eeFYdOVt3Zh1aQaTUST3R452WF15ma55o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XXGfl+391ct9gcUAEzZb1Nc8M5+vrtYbW45EoO/1eKOG3OyWeJly/0v39yvqv6QdsNM2784XiTW7doJdB6NhqNPuOPpLB1x30D8eqdykwYRjc6jEwUIre+ZiLr/YgzvoPb4SdcWNLT7gzq+n2fax5NrSb2i+LG8nxCZ09nrfmSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mbKGZZEe; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-af908bb32fdso2673500a12.1;
-        Fri, 25 Apr 2025 22:41:00 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-736ad42dfd6so2705909b3a.3;
+        Sat, 26 Apr 2025 01:13:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745646060; x=1746250860; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j6M8sMT/t/zz2ZTs7d36Jp6MHx+pTl8jB+zVeFB9UZU=;
-        b=BJiFvlqWF0r1PZNZWZw7H5BrS5PeKiNVutOtnZnHli3Hzd9p+pw8+S18SfCCQ+aEr9
-         lr8SCYlTVvso+7ogK/638p5uedHlP4MsFm9yfGK4M2YxIEnwYuO/2cpXBGxAKfSe1Y8F
-         wti+DAQrKoKWp2m3mWIb+4Ulg3fWDXDU5Dhv8pS6C5Ekj8GsXtc/1/jGi5eivqRDEprS
-         g3ydD0Bx0JRp5eJRxee8tstoF9phfflMVKe1xhjrzZVrhKIJy7YNgmrBwGOqm6urxx+Z
-         RNHZrT2/uyDk6PaLfgXiWH6apyOjH/g4VxBn4mUCy/v47z82guKhMim/aBvHHcMl8LCD
-         dYmQ==
+        d=gmail.com; s=20230601; t=1745655222; x=1746260022; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OvvbhvACfeE0d7OS1ELo9a7xaL7zTrcX+KxjV9AKeRY=;
+        b=mbKGZZEeugRzHtX8ri6R5nSZ61LDmRbNIg05uR2RB15BUWe8FhgdGoi2Hsx6loeftN
+         1/i1rpUNMk9Te97o5gTlri2wF1ypkeevOCAlcwgor8za57VBpoU+ZDfqa0+hcy9y1u2j
+         zUS2HuLMPgUtrMp8AJqWedoGtAMyHq7hDhB52oVBFdqgsy0a2e/aT000mOnlE3tTIRu5
+         zlAA7nR2tif3lp5tCn53dMFdO+rS4DdEricYpDef7mhgUn2masZTX/lvY2CGupMqYvo5
+         HqnycjSAeL/Cgfy/s8Gh0mLXtUd/OlXHLWmZVEVG+q+2IU1Q7NFNJNoUhzdmv3eyEnaL
+         Dk6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745646060; x=1746250860;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j6M8sMT/t/zz2ZTs7d36Jp6MHx+pTl8jB+zVeFB9UZU=;
-        b=Wv9IhXhL1dZOvPSfeV2pEF7BEPlyG67UyuLGUjAIhUKh5GoogtKYHs33vNhXsS7d6R
-         kp90M+ZOgurp9tIbnP6yYkkOSPYYW3D3np8aSemApig3yxF6rw9JDBBYi3lf0HfOIJMt
-         kydMMFKv97MV9FB48jea0RBm+162ACx967z2twQfnTf+2js2KNFTiuQe4DPqZOBoVZsp
-         h7jY6tYtCLS7NMPpOTh/wdk3CSGccPq8FLiMBq7xN9JDwvONav98Xzvkg26B0IN9mm/G
-         4Kqi7mfQy65o66dPrbK5V6Puq4Ex+OzaLPRhIZeLCOYpo/kIy4te/L+7tO2k/r6RvEZu
-         66xQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVpX4bp5AgqKHQKfNBC94mvSaq/USPId4FeErd55jYCryBTjofYpY2OwGOSF0rKMn8/5cbtG9Q=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwUzKEnyyNNPVS+fCT8PlQMn3MKnUr3z5TvzJQ1k0tdd8LO386k
-	kB5e6P1sGoeGT5bqP/aqM835iEyczC/apjnJRcqiZ16pvJGLXD62Lihscg==
-X-Gm-Gg: ASbGncuHitc0l0+ccaH6vJaAu/4HjscX27cHZ6E3fjxmnk/s/pkQXirc8BDbhArNyDu
-	GevjUwRoMXMl9Hy27z2tItoF24+dtriA2uYc1sT0r/ITIPD7SJq4d8BCZjmFRoQphS9At3+lOKy
-	KFm53FkwooNQTtTUUluXo2e+kltuBqv9RALmx8KOF+vzAZeW6p89t2aItN2gRDb+WQVl0Ym3DNd
-	DuP4Mx2JFUa7kT/QhJ5G0HdgFAJz/dP6HN0ZdBUVQjPMcZhlw9SS/rKEXMPRIO13xaA1T5s6Xcf
-	hLDLs20Hm9EIpZAs1KSOKmcRrn6Rx6UcIhfuIM5fHhH16JIthTwVogOWNtksVDL2Zzqzz1JsVh8
-	YFDFIoJ2Fa37ReibfQg0Od+LDjWuiYg==
-X-Google-Smtp-Source: AGHT+IEHNwsRURSvYAbOHEpd/47BldiPls+IGwQEVqteHy87D0s71BxFT1vuHRvBs1gsshcSwtG2aA==
-X-Received: by 2002:a17:90a:fc46:b0:302:fc48:4f0a with SMTP id 98e67ed59e1d1-309f8786e57mr7306071a91.0.1745646060331;
-        Fri, 25 Apr 2025 22:41:00 -0700 (PDT)
-Received: from [192.168.99.14] (i60-34-11-52.s41.a013.ap.plala.or.jp. [60.34.11.52])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22db51050b8sm42226335ad.202.2025.04.25.22.40.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Apr 2025 22:40:59 -0700 (PDT)
-Message-ID: <c3cdf4bc-f880-4eb4-8a4f-5eef2d670501@gmail.com>
-Date: Sat, 26 Apr 2025 14:40:54 +0900
+        d=1e100.net; s=20230601; t=1745655222; x=1746260022;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OvvbhvACfeE0d7OS1ELo9a7xaL7zTrcX+KxjV9AKeRY=;
+        b=TDuZob9sKnwv94ZGEcN++sIblZDCC+4bTwCPSPIRT5H/e9iz0v3khhHkR8X+hHNjjK
+         Na7UQjqof000VbvYir8fwB1txTpRsiOqTJR/K6kDBTv26O5behtk8T37KGRUIzD3Y5cU
+         x1e7TxZkQc+iAJtqktKD2+Ub18sSyvfy0EfTTyfYf7+fs6gvWgUrMu5LMVqueCn/QRgk
+         Zg0RHsAsaPoqMI6jWoRlajgHreZ0KkrFxOg3JTRTkNsaA5o6f7cqLCxpC5Z3STL/FLIP
+         IX0Z7Gsz9Lyo77tkxy0IZE6B9Ni2OqOfL73+kl0sYHjs5DAwDNSvxvWCzdLWg/AbrT9I
+         eafg==
+X-Forwarded-Encrypted: i=1; AJvYcCWGqlcu9tGpJk02stP7I4OFc8nll5VKqrow+o+em5zbrif79WgaeV8rWMWuo3OYFCGd4UI=@vger.kernel.org, AJvYcCWxkrr3q/u7bKqghLQXzwH25CafsGdmRl7VtNNhS2KD5vIf9qGp3vgZ3BTga6VqCbysPqLHfmgD85EJvDAF@vger.kernel.org
+X-Gm-Message-State: AOJu0YyvBGl6XVs626StNj2FoBnvg80n4PDxtsZ3yDADkLU3qtjVtEna
+	PVbGWOIjTTkhKfdniSmmc4lgW2Vc6p2oHleBI/eqvni+AtF0iPcGRHuNTUMS
+X-Gm-Gg: ASbGncvl5eETVFTlOAh3IUSCpd9J7siBtyZiIQ4EcRfvfdvr7UqIT1cz7CyBjks9QkT
+	//DjG7qVLqQWgjWoDkwyhEDF/d1Eb6a9jURNPVfOUH2jv58Rhv6bq6vWUu5b5Fdo8VKJq2OtKbM
+	cw4WCMLy3Y4v2VGIz9p4fBzS6DSF5BxaB1hHujFDM3ShUI6YuXjZoX48qX19o9jmT38pDWD5EUm
+	Li8LMDUgM2UCUyKHkYhyWbdzrDnRzdpaFVtkZLe/VOwL0t+eZkXi7y30WzIE2DrLKP0Eh/bkfUs
+	QroK/ZxgF2kxmWNjfGEdQnTcCydeNiFZJ+CklZWcOThHtwwkBdOqCgLp
+X-Google-Smtp-Source: AGHT+IFz1ZiIYco42Yj8rxuh0jm8GrjxmOyjIZConlJzyLKDnmQjNC/3puibLi5Qt6eudH1z7jN2AA==
+X-Received: by 2002:a05:6a20:d04e:b0:1f5:52fe:dcf8 with SMTP id adf61e73a8af0-2045b99e15emr8022451637.26.1745655222155;
+        Sat, 26 Apr 2025 01:13:42 -0700 (PDT)
+Received: from minh.192.168.1.1 ([2001:ee0:4f0e:fb30:52b1:1f45:145e:af27])
+        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-73e25941bf7sm4503700b3a.68.2025.04.26.01.13.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Apr 2025 01:13:41 -0700 (PDT)
+From: Bui Quang Minh <minhquangbui99@gmail.com>
+To: netdev@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bui Quang Minh <minhquangbui99@gmail.com>
+Subject: [PATCH net-next v2 0/2] xsk: respect the offsets when copying frags
+Date: Sat, 26 Apr 2025 15:12:18 +0700
+Message-ID: <20250426081220.40689-1-minhquangbui99@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next V7 2/2] veth: apply qdisc backpressure on full
- ptr_ring to reduce TX drops
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: bpf@vger.kernel.org, tom@herbertland.com,
- Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
- dsahern@kernel.org, makita.toshiaki@lab.ntt.co.jp,
- kernel-team@cloudflare.com, phil@nwl.cc, netdev@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>
-References: <174559288731.827981.8748257839971869213.stgit@firesoul>
- <174559294022.827981.1282809941662942189.stgit@firesoul>
-Content-Language: en-US
-From: Toshiaki Makita <toshiaki.makita1@gmail.com>
-In-Reply-To: <174559294022.827981.1282809941662942189.stgit@firesoul>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2025/04/25 23:55, Jesper Dangaard Brouer wrote:
-> In production, we're seeing TX drops on veth devices when the ptr_ring
-> fills up. This can occur when NAPI mode is enabled, though it's
-> relatively rare. However, with threaded NAPI - which we use in
-> production - the drops become significantly more frequent.
-> 
-> The underlying issue is that with threaded NAPI, the consumer often runs
-> on a different CPU than the producer. This increases the likelihood of
-> the ring filling up before the consumer gets scheduled, especially under
-> load, leading to drops in veth_xmit() (ndo_start_xmit()).
-> 
-> This patch introduces backpressure by returning NETDEV_TX_BUSY when the
-> ring is full, signaling the qdisc layer to requeue the packet. The txq
-> (netdev queue) is stopped in this condition and restarted once
-> veth_poll() drains entries from the ring, ensuring coordination between
-> NAPI and qdisc.
-> 
-> Backpressure is only enabled when a qdisc is attached. Without a qdisc,
-> the driver retains its original behavior - dropping packets immediately
-> when the ring is full. This avoids unexpected behavior changes in setups
-> without a configured qdisc.
-> 
-> With a qdisc in place (e.g. fq, sfq) this allows Active Queue Management
-> (AQM) to fairly schedule packets across flows and reduce collateral
-> damage from elephant flows.
-> 
-> A known limitation of this approach is that the full ring sits in front
-> of the qdisc layer, effectively forming a FIFO buffer that introduces
-> base latency. While AQM still improves fairness and mitigates flow
-> dominance, the latency impact is measurable.
-> 
-> In hardware drivers, this issue is typically addressed using BQL (Byte
-> Queue Limits), which tracks in-flight bytes needed based on physical link
-> rate. However, for virtual drivers like veth, there is no fixed bandwidth
-> constraint - the bottleneck is CPU availability and the scheduler's ability
-> to run the NAPI thread. It is unclear how effective BQL would be in this
-> context.
-> 
-> This patch serves as a first step toward addressing TX drops. Future work
-> may explore adapting a BQL-like mechanism to better suit virtual devices
-> like veth.
-> 
-> Reported-by: Yan Zhai <yan@cloudflare.com>
-> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+Hi everyone,
 
-Reviewed-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+In commit 560d958c6c68 ("xsk: add generic XSk &xdp_buff -> skb
+conversion"), we introduce a helper to convert zerocopy xdp_buff to skb.
+However, in the frag copy, we mistakenly ignore the frag's offset. This
+series adds the missing offset when copying frags in
+xdp_copy_frags_from_zc(). This function is not used anywhere so no
+backport is needed.
+
+This series also makes xdp_copy_frags_from_zc() use page allocation API
+page_pool_dev_alloc() instead of page_pool_dev_alloc_netmem() to avoid
+possible confusion of the returned value.
+
+Thanks,
+Quang Minh.
+
+Bui Quang Minh (2):
+  xsk: respect the offsets when copying frags
+  xsk: convert xdp_copy_frags_from_zc() to use page_pool_dev_alloc()
+
+ net/core/xdp.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+-- 
+2.43.0
 
 
