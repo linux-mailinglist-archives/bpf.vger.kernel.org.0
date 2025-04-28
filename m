@@ -1,131 +1,160 @@
-Return-Path: <bpf+bounces-56822-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56823-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45AE8A9E804
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 08:12:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACA1DA9E8B4
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 09:01:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14F1C189B552
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 06:12:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CF913AB25C
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 07:01:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 732171C173F;
-	Mon, 28 Apr 2025 06:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77CA11D5AC0;
+	Mon, 28 Apr 2025 07:01:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RAQlzICX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ehZX5cPa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B65C1714B3;
-	Mon, 28 Apr 2025 06:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C8B1BA34;
+	Mon, 28 Apr 2025 07:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745820727; cv=none; b=fjnNSE0CC30pYkE+10xAQe+bWHDrJW0kgVr5dO2uJS9GBfTuQAwyyskLIuGr8/FDQjIfoskFWc8/YIrdXUsl+113AzLn+owi0RxMMcPVGHZbmHu5wPy5LAnSpGnNsQG/RioDFDXXrz16RYxedw4+Xux96cVKrf2tVsXC+FSTP4w=
+	t=1745823671; cv=none; b=X4DnQUiYBHGZDIPR5Kze0dWtrJGnngOCz/EK7VWyqF+eF9VVeVXcDLC1H2JBDLLmKl+RR4MkFEyqhikM8HHp/Dq8DJZYCmk1DpYOc0uqKPYm3JeVdffEXVz3lEMTVXjrubqnCW/4DvFdaGtYEWF861wcEqYBXg+jH4Z9OezKMGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745820727; c=relaxed/simple;
-	bh=9VFKEeiK6JI4XVbE/KksWzGslEhHpjfYU+UURnodd6M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a98uy6P8oGrnEmYpWPktxgIoytqqLrezveOKFPJmHEZuDG8mxI2qXIZ1Ol7Ng7jX6R45jFXHepS9p63bCLKLLtQF50JnF3qsL/9bBxGBeKk16F1bM7Oi0a1JAboNwNPp3Mz3bLAOlAWe9Gg3mzRebGV8V2AnXaKwGD1d2FyBywM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RAQlzICX; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1745820725; x=1777356725;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9VFKEeiK6JI4XVbE/KksWzGslEhHpjfYU+UURnodd6M=;
-  b=RAQlzICXBchaNII48Xe0MgvbpNJAT8Q4VI7kWFXX2IQcWkiBIyVNg90i
-   oB9Ij3ujtWpRrf9WCRfhk4XVipMCSWo8+Tat6E/SAkUAMKMh3wQtbPD3z
-   hPdg4tkp+SoY3uPYwwMSr+veBc6N0ebKwQeEIR73gP0kLvXOfl7D0C99z
-   QWQAs52WjrNh0R7WtyG/d6K3W+v0SKHhBdW/FBkTGX7yZrnF1HomyqK+R
-   ikcihAPwSC7Y11AzX+rlSbq7iSD62Kge/swsW40Uy5C+u+jB4AP40f/Mc
-   Y9yQb+BqZOlceoNAZqAjXPI75aqWI5eIp6rVDyi7rx2R9yOhO+oodtPcu
-   A==;
-X-CSE-ConnectionGUID: kZJl5FjwT8S1sZMyGyfjBA==
-X-CSE-MsgGUID: H6N5xXFaTQ22j7EgEfKihw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11416"; a="58380874"
-X-IronPort-AV: E=Sophos;i="6.15,245,1739865600"; 
-   d="scan'208";a="58380874"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2025 23:12:04 -0700
-X-CSE-ConnectionGUID: 1+/wircxSC+zaa1j+jwsmw==
-X-CSE-MsgGUID: i3LZolW/SKSAhNUcSdgi4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,245,1739865600"; 
-   d="scan'208";a="133730131"
-Received: from lkp-server01.sh.intel.com (HELO 050dd05385d1) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 27 Apr 2025 23:12:01 -0700
-Received: from kbuild by 050dd05385d1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1u9Hig-0006fZ-25;
-	Mon, 28 Apr 2025 06:11:58 +0000
-Date: Mon, 28 Apr 2025 14:11:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Suren Baghdasaryan <surenb@google.com>,
-	David Rientjes <rientjes@google.com>, Josh Don <joshdon@google.com>,
-	Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org,
-	bpf@vger.kernel.org, Roman Gushchin <roman.gushchin@linux.dev>
-Subject: Re: [PATCH rfc 09/12] sched: psi: bpf hook to handle psi events
-Message-ID: <202504281309.smYiDStM-lkp@intel.com>
-References: <20250428033617.3797686-10-roman.gushchin@linux.dev>
+	s=arc-20240116; t=1745823671; c=relaxed/simple;
+	bh=LxquXLKCLwZcPsxPnxkwIdYRyzBiKzetFpKc+QaqwC8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=dzD6WCZZapxGNtLEhUKlH33ez0FuE1en4s2VN9bYXH9p3R6Y8zjEuLNRM1V1CE58r33lLJ4APE+5jDfBaeayrFw8gvuyQ2fC1dtyadVSdStfZ8DnGvA7ijpQkNucx45wCsFfupi6IUA9g6Pl5TI6wYKjHbquLX8/tidGIQO4Fzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ehZX5cPa; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-736ab1c43c4so4406857b3a.1;
+        Mon, 28 Apr 2025 00:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745823668; x=1746428468; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9yZmW0hn3MrvYOWlnfGa/3CtDPfOpCdnzl3M85GUApc=;
+        b=ehZX5cPa0imdfRHezLMbtXPSRvHhsG3VB/FLbyya0vRK+3aZG5qxFe7jL/lbrj3wEx
+         4ey/JhOtMy8cazQfPMAuMfGW2teao+PBhU+93A5aJ8AlnkBYQq5XUSJqJiGh2dQ622Va
+         vR0eRsSyeL1cBPvit/kPW7E6Dxjnc/BNTlWBIvniu3votmkQgK1HA93R4yAPbWVTgW9N
+         Ixf2CLC8AHqz5VSsZMp+/8eikyBAQFsSXRGv0Eo8a1/bgG2+madAD5RZpYzEQFEaEBQv
+         EwX+4mT/ATJWQ0+fdQG3L4Mxi+Rqa3zFPkQqSYU0FJOqopuT33q0uMXMxsAjPsp35vBd
+         Kaqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745823668; x=1746428468;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9yZmW0hn3MrvYOWlnfGa/3CtDPfOpCdnzl3M85GUApc=;
+        b=YUeR/RUGPHJrD0rCU54MmJXCur+iyk3c2WnchgqN9KmRux204nbPiGUx4cclF7qvni
+         CRsHWq+zW4FAa7MCth+L4QUA623t9MToqKU+pTM3exTwLeqYrBWZ/QjLwImQ/aA7LEqL
+         26eDYx3otyM9j56tPAxl0nUbBtPvAA0gIcIG3YumT1ETa1qmcWlAyC6AhOfWWolrG7wm
+         HN+j5V3m7esyz7LSZQ5ezsx6bDJpcJoPRxkAjteTJDdIsOzTM8a5T4iWjXIHBQptO7A4
+         Yn0ks2P/s1o5Sgf628LiKEfkXddF1Nmi4sgyspo49/Qe8KjzOdZ/3fojhGicNioOSCKV
+         7T0A==
+X-Forwarded-Encrypted: i=1; AJvYcCUAZ5i4M2BPsKZ6KtgrH6rlyalogUqkvGAxNG5hQCDypHNFlj0+qkFLZf897BIuTI0KqQfebzIEI5PtAhx37gTx@vger.kernel.org, AJvYcCVspNc/c+CWlx4pUP1j8lxOmbVeeEMWi9/kW0/WlYLXoQLEPgw0Aes4JN1rtAS6+WzC1URRN5yeK6MAKjC6@vger.kernel.org, AJvYcCX+Ia49FzJ+7EMSfRIGFAcHpskOjcJdCrcrJIqFRT1GrsuBr8iEJophuUn9pzHKpWDregE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGBc11K6Zvi/ub3qxVPTuySwjNIOHqV6Q2AAeFgwBqQHTPZgCB
+	Tk1/L5Qlbo9KlAqagZnnwuWksPyO7d9OgkWnLvxUnca/gIoMgHAX
+X-Gm-Gg: ASbGncvlmmZiRHcEGB5hLh7Ro7vFgmbIgbnobpBHTkXQQRXuw8zr6XXUTsQUVCNF335
+	dMY2/4ALmZ4H1g2R7ZDd9HsMqbFusxO8ItdP7hDOqfFjZ7pXrvi7tRRindc9ovp0X7m2deNdHQL
+	RT3o9CEMZ0TD8waPkh8SSjohcuU4Ruv7o0J7/041ntg83F8+9BNn7/nPfObbfMAs/Qouar8ssIi
+	OA1XWZJh30rPNw7QBq1fOD4USLCWW5Wj1M9nruCtR2qR3+YwyWdIKofJF+Kaxex6queqmkFr5+q
+	ZN7IEZdDpJbqRCadDRPQm0JvtwKkyhcc2HDf
+X-Google-Smtp-Source: AGHT+IGP4IZjA+2oOl5Xp+BcG0TkWdBytzGu1mFgdq9c4ypqmC8f8TKCih+yUOSsexG/Sbbus31DKg==
+X-Received: by 2002:a05:6a00:2e14:b0:736:5664:53f3 with SMTP id d2e1a72fcca58-73ff73bcf1emr9419880b3a.15.1745823668236;
+        Mon, 28 Apr 2025 00:01:08 -0700 (PDT)
+Received: from [192.168.0.56] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73e25a9abf2sm7173316b3a.122.2025.04.28.00.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Apr 2025 00:01:07 -0700 (PDT)
+Message-ID: <3a16fae0346d4f733fb1a67ae6420d8bf935dbd8.camel@gmail.com>
+Subject: Re: [PATCH RFC bpf-next 3/4] bpf/selftests: add tests to validate
+ proper arguments alignment on ARM64
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexis =?ISO-8859-1?Q?Lothor=E9?= "(eBPF Foundation)"	
+ <alexis.lothore@bootlin.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko	 <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu	 <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, KP Singh	 <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo	 <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Puranjay Mohan	 <puranjay@kernel.org>, Xu Kuohai
+ <xukuohai@huaweicloud.com>, Catalin Marinas	 <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Mykola Lysenko	 <mykolal@fb.com>, Shuah Khan
+ <shuah@kernel.org>, Maxime Coquelin	 <mcoquelin.stm32@gmail.com>, Alexandre
+ Torgue <alexandre.torgue@foss.st.com>,  Florent Revest <revest@chromium.org>
+Cc: Bastien Curutchet <bastien.curutchet@bootlin.com>, 
+	ebpf@linuxfoundation.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kselftest@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com
+Date: Mon, 28 Apr 2025 00:01:05 -0700
+In-Reply-To: <20250411-many_args_arm64-v1-3-0a32fe72339e@bootlin.com>
+References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
+	 <20250411-many_args_arm64-v1-3-0a32fe72339e@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250428033617.3797686-10-roman.gushchin@linux.dev>
 
-Hi Roman,
+On Fri, 2025-04-11 at 22:32 +0200, Alexis Lothor=C3=A9 (eBPF Foundation) wr=
+ote:
+> When dealing with large types (>8 bytes), ARM64 trampolines need to take
+> extra care about the arguments alignment to respect the calling
+> convention set by AAPCS64.
+>=20
+> Add two tests ensuring that the BPF trampoline arranges arguments with
+> the relevant layout. The two new tests involve almost the same
+> arguments, except that the second one requires a more specific alignment
+> to be set by the trampoline when preparing arguments before calling the
+> the target function.
+>=20
+> Signed-off-by: Alexis Lothor=C3=A9 (eBPF Foundation) <alexis.lothore@boot=
+lin.com>
+> ---
 
-kernel test robot noticed the following build warnings:
+[...]
 
-[auto build test WARNING on akpm-mm/mm-everything]
+> +SEC("fentry/bpf_testmod_test_struct_arg_11")
+> +int BPF_PROG2(test_struct_many_args_9, struct bpf_testmod_struct_arg_5, =
+a,
+> +	      struct bpf_testmod_struct_arg_5, b,
+> +	      struct bpf_testmod_struct_arg_5, c,
+> +	      struct bpf_testmod_struct_arg_5, d, int, e,
+> +	      struct bpf_testmod_struct_arg_5, f)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Roman-Gushchin/mm-introduce-a-bpf-hook-for-OOM-handling/20250428-113742
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20250428033617.3797686-10-roman.gushchin%40linux.dev
-patch subject: [PATCH rfc 09/12] sched: psi: bpf hook to handle psi events
-config: sh-randconfig-001-20250428 (https://download.01.org/0day-ci/archive/20250428/202504281309.smYiDStM-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 10.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250428/202504281309.smYiDStM-lkp@intel.com/reproduce)
+Hello Alexis,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202504281309.smYiDStM-lkp@intel.com/
+I'm trying to double check the error you've seen for x86.
+I see that tracing_struct/struct_many_args fails with assertion:
+"test_struct_many_args:FAIL:t11:f unexpected t11:f: actual 35 !=3D expected=
+ 43".
+Could you please help me understand this test?
+The function listened to is defined as accepting 'struct bpf_testmod_struct=
+_arg_7',
+at the same time this function uses 'struct bpf_testmod_struct_arg_5'.
+Nevertheless, the assertion persists even with correct types.
 
-All warnings (new ones prefixed by >>):
+> +{
+> +	t11_a =3D a.a;
+> +	t11_b =3D b.a;
+> +	t11_c =3D c.a;
+> +	t11_d =3D d.a;
+> +	t11_e =3D e;
+> +	t11_f =3D f.a;
+> +	return 0;
+> +}
 
-   In file included from kernel/sched/build_utility.c:94:
->> kernel/sched/psi.c:193:38: warning: 'bpf_psi_hook_set' defined but not used [-Wunused-const-variable=]
-     193 | static const struct btf_kfunc_id_set bpf_psi_hook_set = {
-         |                                      ^~~~~~~~~~~~~~~~
+[...]
 
-
-vim +/bpf_psi_hook_set +193 kernel/sched/psi.c
-
-   192	
- > 193	static const struct btf_kfunc_id_set bpf_psi_hook_set = {
-   194		.owner = THIS_MODULE,
-   195		.set   = &bpf_psi_hooks,
-   196	};
-   197	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
