@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-56875-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56876-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AB7AA9FD00
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 00:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4762CA9FD6B
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 01:02:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE3063B1390
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 22:20:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FE0C3AC368
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 23:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D631F211491;
-	Mon, 28 Apr 2025 22:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82146214A8A;
+	Mon, 28 Apr 2025 23:00:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y6bKrC9z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D0lej+TJ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D35620E6EC;
-	Mon, 28 Apr 2025 22:19:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8D52139A4;
+	Mon, 28 Apr 2025 23:00:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745878798; cv=none; b=NxI03NgJr6HkWrZe6AvkgfxHY9MNHxpW++JG8XHT0g7V+LRDgJJWmAGJeitLaV/jR//u826H8DWIN91pJMO+1AL3YACdjvohFqAd6v9hV1U6Tfy+wWagUjDdnZ4mLqCh688uc7aVnqQmZKFKHWD9bFNGgX+HSBnW/kwR+OvUWS4=
+	t=1745881217; cv=none; b=NVnhWMKt14nOyQlK8DpAcuHJIAJ1N/tcbT27GqxMG2VoM/rETE431wsSralhuoGVhE1Oe6PyC1VWMzOxabOQlx6K2ROOaRi3U75SyuXkVG+x8FAtvDK312VWeO3eOPEG+LaoCkOcVDYD8tSbclfsLeWAbB+zCS40x1sbT2pEnu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745878798; c=relaxed/simple;
-	bh=Lahajb51jEfObe1Hyp6/chmzs0TWo8lfU1EyfH2VAgY=;
+	s=arc-20240116; t=1745881217; c=relaxed/simple;
+	bh=+2B8LzZZ1xBH8+FnZOQo4MpOVOaqegI8Rk5fQAZCrxU=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=utwwpBCv8Xv/hdbUScnnRrK/CMhfO5qH1TNHX6N/Td4ASfeqoxRjewQlq5Qc+HKJ4uQ2/xbQS2d/fK+3T2xoODtL2rinsLmNBjoRpYHQSbWjCtkEQ33EKBv8J9ThnP5/2LB4RVeXJTON+RabaCeoM4QsRpcbbUIWoHoC3uwJ1v4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y6bKrC9z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAD0EC4CEE4;
-	Mon, 28 Apr 2025 22:19:57 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=USMHQuzK35hGxgx0uz6cGqbfiuiI1uF2ska+WrMGRmgGp/yyuVE4k7q/XNthM350kcLU0LWWvoaNe5c75yPeGqhA8Mr+L9Rh01PDvwkA7At7vF25fB7qi02j3iGhmYssg1Re/z6MGK0PdcRBUY0t4OtvToZm4KeS8jZPdGM6iyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D0lej+TJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54C25C4CEE4;
+	Mon, 28 Apr 2025 23:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745878797;
-	bh=Lahajb51jEfObe1Hyp6/chmzs0TWo8lfU1EyfH2VAgY=;
+	s=k20201202; t=1745881215;
+	bh=+2B8LzZZ1xBH8+FnZOQo4MpOVOaqegI8Rk5fQAZCrxU=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Y6bKrC9zrywMNQNOy4nFFHbTO4mnCiiv0aDoz5eFkHF9lqtzfX+uYfRI4RnneU/2e
-	 WFRjTOO1cArBxKU3PHyiVgTYgdPmlS7+J91kkPoO0+2C3CYv+Fnf56edyvCEM01ZEE
-	 BnPJqc6L4DladHKFWT0fAOT5R8yPUXHUNCbjFhfRMa4CM0X9IiQI0I26cuW2RrpQ+k
-	 rtSDiFrhPkz6wAS9YsUEobh1QbSwLTFgcj2Q/dc1f2+PRcCvzrtvJSTZPAU8xiNyyJ
-	 opPofMxVl7hTRs95W9zUd7vIi2i6/2lSPBGzDgyjffOomp9iG+0y/ObR03A/sk3g8G
-	 QmfG/hK3MxzSQ==
+	b=D0lej+TJ+TI0L8YjDNDqMVPSRzA16BdGc4qgjE5yZssUxJc8yOyWkPMSeXPlPUzqz
+	 mxfkgZtrd/p9NVYjxTDEj7oZXNmCfKKzWoiAeB334dpsBUUnkJWc+LQO4KnZg/Ax+L
+	 rUiqufgVb/dZcArftRSqTulSNHKCAUUZpy/Ro6KDYpCn/UXPwtCVA8B86qmoONjk1a
+	 F25iGK19a55ivj2YHDnHE1ixV1BQjQP8BfLSP5RlfXMYfEwHjDw3K77IBfbV2Enj22
+	 OKzFs+VD798I5BozYqHuyv7EVyBMr+55ykaPEEA4f/eJ6NpqUjb3pPXiHN38cvLPuu
+	 1A+62pcvx1+2Q==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAD3F3822D43;
-	Mon, 28 Apr 2025 22:20:37 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70D593822D43;
+	Mon, 28 Apr 2025 23:00:55 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,41 +52,45 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next V7 0/2] veth: qdisc backpressure and qdisc check
- refactor
+Subject: Re: [PATCH v6 0/4] virtio-net: disable delayed refill when pausing rx
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <174587883648.1063939.13609783923065664545.git-patchwork-notify@kernel.org>
-Date: Mon, 28 Apr 2025 22:20:36 +0000
-References: <174559288731.827981.8748257839971869213.stgit@firesoul>
-In-Reply-To: <174559288731.827981.8748257839971869213.stgit@firesoul>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: netdev@vger.kernel.org, kuba@kernel.org, bpf@vger.kernel.org,
- tom@herbertland.com, eric.dumazet@gmail.com, davem@davemloft.net,
- pabeni@redhat.com, toke@toke.dk, dsahern@kernel.org,
- makita.toshiaki@lab.ntt.co.jp, kernel-team@cloudflare.com, phil@nwl.cc
+ <174588125398.1071900.5897121305047846367.git-patchwork-notify@kernel.org>
+Date: Mon, 28 Apr 2025 23:00:53 +0000
+References: <20250425071018.36078-1-minhquangbui99@gmail.com>
+In-Reply-To: <20250425071018.36078-1-minhquangbui99@gmail.com>
+To: Bui Quang Minh <minhquangbui99@gmail.com>
+Cc: virtualization@lists.linux.dev, mst@redhat.com, jasowang@redhat.com,
+ xuanzhuo@linux.alibaba.com, andrew+netdev@lunn.ch, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, eperezma@redhat.com,
+ davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
 
 Hello:
 
 This series was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Fri, 25 Apr 2025 16:55:25 +0200 you wrote:
-> This patch series addresses TX drops seen on veth devices under load,
-> particularly when using threaded NAPI, which is our setup in production.
+On Fri, 25 Apr 2025 14:10:14 +0700 you wrote:
+> Hi everyone,
 > 
-> The root cause is that the NAPI consumer often runs on a different CPU
-> than the producer. Combined with scheduling delays or simply slower
-> consumption, this increases the chance that the ptr_ring fills up before
-> packets are drained, resulting in drops from veth_xmit() (ndo_start_xmit()).
+> This only includes the selftest for virtio-net deadlock bug. The fix
+> commit has been applied already.
+> 
+> Link: https://lore.kernel.org/virtualization/174537302875.2111809.8543884098526067319.git-patchwork-notify@kernel.org/T/
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,V7,1/2] net: sched: generalize check for no-queue qdisc on TX queue
-    https://git.kernel.org/netdev/net-next/c/34dd0fecaa02
-  - [net-next,V7,2/2] veth: apply qdisc backpressure on full ptr_ring to reduce TX drops
-    https://git.kernel.org/netdev/net-next/c/dc82a33297fc
+  - [v6,1/4] selftests: net: move xdp_helper to net/lib
+    https://git.kernel.org/netdev/net-next/c/59dd07db92c1
+  - [v6,2/4] selftests: net: add flag to force zerocopy mode in xdp_helper
+    https://git.kernel.org/netdev/net-next/c/5d346179e709
+  - [v6,3/4] selftests: net: retry when bind returns EBUSY in xdp_helper
+    https://git.kernel.org/netdev/net-next/c/b2b4555cf2a6
+  - [v6,4/4] selftests: net: add a virtio_net deadlock selftest
+    https://git.kernel.org/netdev/net-next/c/c347fb0ff844
 
 You are awesome, thank you!
 -- 
