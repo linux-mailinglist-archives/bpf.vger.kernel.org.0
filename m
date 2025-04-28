@@ -1,213 +1,152 @@
-Return-Path: <bpf+bounces-56869-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56870-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE13AA9FAB5
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 22:41:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A626FA9FAC7
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 22:52:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0995F3B1E2C
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 20:41:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02186464E18
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 20:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D221DF980;
-	Mon, 28 Apr 2025 20:41:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D11831F4720;
+	Mon, 28 Apr 2025 20:52:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="aKaQLhaI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lRdyeGBZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF55D26ACD;
-	Mon, 28 Apr 2025 20:41:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21DB101C8;
+	Mon, 28 Apr 2025 20:51:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745872887; cv=none; b=rC1zcXEIdRfw8tVUjfJFV5oWlDu2cF6a2Gs+v9cDYHmdo1zqXsJeg17nER9gAo0Brx0H1wpeF9hpAsiAE9Wcb+op9nKhebGXCcy2uh5b+pIJp2rJDBPYbVtILdCMsTk7Nm42LwQ5byp6YKRA91vUjepC6EC4xOT/9SbXZoo4EE4=
+	t=1745873520; cv=none; b=kEezUe8J638S4vcmf5n+DmImXKd+RT4c1fYBv4/AIDbw6wsZFo8PM9iXcWSjz3sAVFrM/QnYE0UkxHfHeJ8mCqK13DwF24vmZ1IMf4xifAGVxsB1eck58b9Za53mpGyUEAbUteIS5Iu7vTyRUfkOfLv9qqhhr8A2z4wOVN4r5DA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745872887; c=relaxed/simple;
-	bh=VZuoH/BIy2GmMf+g7ruDVxRX6lVlZmL2+nfgqE32ly8=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=cIgk2xy5bQFEe++SsuVasMCiZEuUGlRdbcgn1EE/7mxjR/znj44YNENDklmT6o9S451vrkE1p6/vSIj1d4HxNrQi/EwWYpk//vPcwqOgMjQoc/HBxisjWscr9qWmOnZbUAPsJ5nZj9MS+TtTBBIQL9ONykukO0GaOC+1S/ABRfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=aKaQLhaI; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5B548438B9;
-	Mon, 28 Apr 2025 20:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1745872876;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b4S5NohzcZt8hjZWHfp8WHteVctUQSoPl0lKofU3tDA=;
-	b=aKaQLhaISwSMkAlavm0KAhgbL2bv1f7sjgQSBKhWkB3EbQh+EF8u7bEF4eAVxMVarACoFw
-	xFdlkcS3HVdC9Xqk7e/Bby0QzpfLuppbosJROUureXUuEzaXySDxfm2SC7blF/WcjwaFY5
-	4JWfDaNu9g1yK3AOxPq5ZbYZazSAng+4Dn9TCwM7YhGabMo+iT/zE0Og4JCTK+lFypYNqP
-	sWvVj0apUgJpkdZgbzLKpMw+yFUXoFw1wfNEDwuGlmGBiWoxUBjno0DyVJ7ENZ8cQt8QyH
-	I63KthotL9d/f85B4/Da4IaFzVzGAcdpqvc5CiQj5Ryvcmx8qCOlftgukfq+ZA==
+	s=arc-20240116; t=1745873520; c=relaxed/simple;
+	bh=o8f0HJnyQyuQnDskvFI4YYim73bBglpvcujhzltdE2o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BQKxusZKzTrfsA4GbO3xX2NucqKrv3nltIJ9cTsVyek48BM6lJVBPBQbwskaLKY31SMtjInZMCE3TkaeDoIZIHzToG5HwZWq3nYIXvzb8UoNgRibSiTyaHw49ROMu4qHAThEtzibBZrthXrQV4BH/7ZrnEcZCmbK2nyb/FWGmnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lRdyeGBZ; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-39141ffa9fcso6212800f8f.0;
+        Mon, 28 Apr 2025 13:51:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745873517; x=1746478317; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+/5eVQAfEAmYqimzL4pb9uZj3Ovus2eKagdjKqZf52U=;
+        b=lRdyeGBZhjk/9jERh7h2m34buy1L7FSXG6/xFpmDqy1FYx9VSwmM9THQ8FhMupDMCb
+         g+pMVxZ9L/67qUSqFeaUT4vAn5SV7LQbmAlvs7MV9NOho4lFn0BnxoWo59fTfFPDEb1R
+         vrM7O1S6vN6m0VxALt6UsZ9UcI3cPrRKk8elBqHLikcxc4/LIPRfU72PfU6ms5MGj/Z/
+         6LvQg69Rmi1K+G1YaRmqMukKRN+HVaKK9dr0ZLGckWLOWKOM3PiYUoQyCUJsdBSpGvMW
+         qpAGABLqGpBjOGd6TlZczH1kpTl562RZL+yHImN1I4qY6cJvomQcwOE2UnEDGj2KgGZ4
+         7/uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745873517; x=1746478317;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+/5eVQAfEAmYqimzL4pb9uZj3Ovus2eKagdjKqZf52U=;
+        b=FyQa8Kr8pol0sjjh0Xr//O3ERs90++OmzAwc78lqtCk8BqgM/6Uwn/InLDoixxcPfv
+         ByZWrsfR8yP3FP5izp9ujsf8AJ7q8SPEtteVXcXOrsl1MHsOBQtAvrLrXPTD2qrror3C
+         1Bsm3d5xBopEEq5AdcPZ0yyAQnnSzIYPl0jCfswgZkgywBivTmI68ERQO/7Dly1vE7ve
+         p1M2sqg1ptXVpfoL6Z2OMHVcNiQqzzuJykwCsB6EflpReOGAJUKB7ysmnFem1l1I9LwS
+         8kuyUSBSepvPIMoxXZx1qGUB4IuKs5kDxvvQ/oJJxsRLI3XrXfgQa6jg1GvsDtiCotRt
+         6ZYA==
+X-Forwarded-Encrypted: i=1; AJvYcCW7SK3PHCn5VJjhbbsfC/oehWCsKK6Rdxw0h8d5tqHYlUwBvw2e6exnWo3CcsC7IBXFWeErwC2bkg==@vger.kernel.org, AJvYcCXgklZ7OCe60l62r+1JFHz3eyoHjL3zq/KoHcylJXm/IAd9RDvPB5/bPGa/38WMiHriHns=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzTMdjwO0SewA7xYd5o7KZzwXnwL3EGZbqAtrVc4KbytB7iz6hN
+	dPP9hWR/ClR38Bs4KE3Cizvu7kMf7t0emW+wA7kUYd7trUkDW6NgUW2QbGX205dukPNLMOE+f1e
+	y3uM1KoLuDDlqIQMiTDjWF9JUApg=
+X-Gm-Gg: ASbGncshtadHjGn21/6+dJzhRE4f8gGyLxwBCdN4Ybsbyliq6t9QUZNi0wPdD/TVs4g
+	tcjBax24WomlOojCvrjDXB1zcVOWtqXKykkM6jS2GLuRxJlWbKHIpHBMHRGEmaQPgyx6MvAVetZ
+	nsVuRByMqJQbkGLPA7dUP5Q5DG2nzh++A0CF5GtQ==
+X-Google-Smtp-Source: AGHT+IEIunVHoKcJ+Npb/7qUKwcr9CNRB+2faTDZucDDC0Z7NgOVHyhvv5YcjECnxt4r46qg+Jko0o0ogcieCGCRQOw=
+X-Received: by 2002:a05:6000:4305:b0:390:e62e:f31f with SMTP id
+ ffacd0b85a97d-3a08ad2b5e3mr128195f8f.3.1745873516943; Mon, 28 Apr 2025
+ 13:51:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20250416-btf_inline-v1-0-e4bd2f8adae5@meta.com> <fcjioco2rdnrupme4gixd4vynh52paudcc7br7smqhmdhdr4js@5uolobs4ycsi>
+In-Reply-To: <fcjioco2rdnrupme4gixd4vynh52paudcc7br7smqhmdhdr4js@5uolobs4ycsi>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 28 Apr 2025 13:51:45 -0700
+X-Gm-Features: ATxdqUH5zld_m0cG4z3u3S4RDm0rug81Nl7H7VgQCZMUzqgDLxAnDpvHFiWXbh4
+Message-ID: <CAADnVQJ1y1ktKDgORynENQLC73FZ162XXL2qMSshpb2gKXHBjw@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] list inline expansions in .BTF.inline
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: ttreyer@meta.com, dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@meta.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Ihor Solodrai <ihor.solodrai@linux.dev>, 
+	Song Liu <songliubraving@meta.com>, Alan Maguire <alan.maguire@oracle.com>, 
+	Mykola Lysenko <mykolal@meta.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 28 Apr 2025 22:41:13 +0200
-Message-Id: <D9IKA5K8PFAO.21V0PXVU6VPF1@bootlin.com>
-Cc: "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
- <daniel@iogearbox.net>, "John Fastabend" <john.fastabend@gmail.com>,
- "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
- <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>, "Yonghong Song"
- <yonghong.song@linux.dev>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
- Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
- <jolsa@kernel.org>, "Puranjay Mohan" <puranjay@kernel.org>, "Xu Kuohai"
- <xukuohai@huaweicloud.com>, "Catalin Marinas" <catalin.marinas@arm.com>,
- "Will Deacon" <will@kernel.org>, "Mykola Lysenko" <mykolal@fb.com>, "Shuah
- Khan" <shuah@kernel.org>, "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
- "Alexandre Torgue" <alexandre.torgue@foss.st.com>, "Florent Revest"
- <revest@chromium.org>, "Bastien Curutchet" <bastien.curutchet@bootlin.com>,
- <ebpf@linuxfoundation.org>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, <bpf@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kselftest@vger.kernel.org>,
- <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH RFC bpf-next 3/4] bpf/selftests: add tests to validate
- proper arguments alignment on ARM64
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-To: "Eduard Zingerman" <eddyz87@gmail.com>
-X-Mailer: aerc 0.20.1-0-g2ecb8770224a
-References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
- <20250411-many_args_arm64-v1-3-0a32fe72339e@bootlin.com>
- <3a16fae0346d4f733fb1a67ae6420d8bf935dbd8.camel@gmail.com>
- <D9I6TQN2I6B1.QC4FFHEWAURZ@bootlin.com> <m21ptcmdnw.fsf@gmail.com>
-In-Reply-To: <m21ptcmdnw.fsf@gmail.com>
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvieduleegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpegggfgtfffkvefuhffvofhfjgesthhqredtredtjeenucfhrhhomheptehlvgigihhsucfnohhthhhorhoruceorghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeffvddufffhieffheetfffggeeugedtieduheeilefguddvheegvdeuffeuveeltdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdgsohhothhlihhnrdgtohhmnecukfhppedvrgdtvdemkeegvdekmehfleegtgemvgdttdemmehfkeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdgrtddvmeekgedvkeemfhelgegtmegvtddtmeemfhekhedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomheprghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmpdhnsggprhgtphhtthhopedvledprhgtphhtthhopegvugguhiiikeejsehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghstheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlsehiohhgvggrrhgsohigrdhnvghtpdhrtghpthhtohepjhhohhhnrdhfrghsthgrsggvn
- hgusehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnughrihhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmrghrthhinhdrlhgruheslhhinhhugidruggvvhdprhgtphhtthhopehsohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephihonhhghhhonhhgrdhsohhngheslhhinhhugidruggvvh
-X-GND-Sasl: alexis.lothore@bootlin.com
 
-On Mon Apr 28, 2025 at 6:52 PM CEST, Eduard Zingerman wrote:
-> Alexis Lothor=C3=A9 <alexis.lothore@bootlin.com> writes:
+On Fri, Apr 25, 2025 at 11:41=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> [...]
+> > We propose to re-encode DWARF location expressions into a custom BTF
+> > location expression format. It operates on a stack of values, similar t=
+o
+> > DWARF's location expressions, but is stripped of unused operators,
+> > while allowing future expansions.
 >
->>> The function listened to is defined as accepting 'struct bpf_testmod_st=
-ruct_arg_7',
->>> at the same time this function uses 'struct bpf_testmod_struct_arg_5'.
->>
->> That's not an accidental mistake, those are in fact the same definition.
->> bpf_testmod_struct_arg_7 is the kernel side definition in bpf_testmod.c:
->>
->> struct bpf_testmod_struct_arg_7 {
->> 	__int128 a;
->> };
->>
->> and struct bpf_testmode_struct_arg_5 is the one defined in the bpf test
->> program:
->>
->> struct bpf_testmod_struct_arg_5 {
->> 	__int128 a;
->> };
->
-> Apologies, but I'm still confused:
-> - I apply this series on top of:
->   224ee86639f5 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/=
-bpf after rc4")
->
-> - line 12 of tracing_struct_many_args.c has the following definition:
->
->   struct bpf_testmod_struct_arg_5 {
->          char a;
->          short b;
->          int c;
->          long d;
->   };
->
-> - line 135 of the same file has the following definition:
->
->    SEC("fentry/bpf_testmod_test_struct_arg_11")
->    int BPF_PROG2(test_struct_many_args_9, struct bpf_testmod_struct_arg_5=
-, a,
->                  struct bpf_testmod_struct_arg_5, b,
->                  struct bpf_testmod_struct_arg_5, c,
->                  struct bpf_testmod_struct_arg_5, d, int, e,
->                  struct bpf_testmod_struct_arg_5, f)
->
-> - line 70 of tools/testing/selftests/bpf/test_kmods/bpf_testmod.c:
->
->    struct bpf_testmod_struct_arg_7 {
->          __int128 a;
->    };
->
-> - line 152 of the same file:
->
->   noinline int bpf_testmod_test_struct_arg_11(struct bpf_testmod_struct_a=
-rg_7 a,
->                                               struct bpf_testmod_struct_a=
-rg_7 b,
->                                               struct bpf_testmod_struct_a=
-rg_7 c,
->                                               struct bpf_testmod_struct_a=
-rg_7 d,
->                                               short e,
->                                               struct bpf_testmod_struct_a=
-rg_7 f)
->
-> Do I use a wrong base to apply the series?
+> A stack machine seems overkill. I'm certainly not an expert on DWARF
+> location expressions, but I think we need to get away from arbitrarily
+> complex expressions, even if they are simpler than DWARF ones. I don't
+> think we want consumers implementing any kind of interpreter or VM.
 
-Argh, no, no, you are right, I checked again and I made some confusions
-between progs/tracing_struct.c and progs/tracing_struct_many_args.c. I
-initially did most of the work in tracing_struct.c, and eventually moved
-the code to tracing_struct_many_args.c before sending my series, but I
-apparently forgot to move bpf_testmod_struct_arg_5 declaration in
-tracing_struct_many_args.c (and so, to rename it, since this name is
-already used in there). As a consequence the bpf program is actually using
-the wrong struct layout. So thanks for insisting and spotting this issue !
++1
+This was already brought up at lsfmm.
+stack machine in BTF is not an option.
+I see the appeal of simple inline_encoder__encode_location() logic
+that takes dwarf VM and re-encodes things pretty much as-is.
+This is a wrong trade-off.
+pahole side needs to do full expression analysis and emit
+easy to parse location expression.
 
-I fixed my mess locally in order to re-run the gdb analysis mentioned in my
-previous mail, and the bug seems to be the same (unexpected t11:f: actual
-35 !=3D expected 43), with the same layout issue on the bpf context passed =
-on
-the stack ("lucky" mistake ?). However, thinking more about this, I feel
-like there is still something that I have missed:
+> >  ID | Operator Name        | Operands[...]
+> > ----+----------------------+-------------------------------------------
+> >   0 | LOC_END_OF_EXPR      | _none_
+> >   1 | LOC_SIGNED_CONST_1   |  s8: constant's value
+> >   2 | LOC_SIGNED_CONST_2   | s16: constant's value
+> >   3 | LOC_SIGNED_CONST_4   | s32: constant's value
+> >   4 | LOC_SIGNED_CONST_8   | s64: constant's value
+> >   5 | LOC_UNSIGNED_CONST_1 |  u8: constant's value
+> >   6 | LOC_UNSIGNED_CONST_2 | u16: constant's value
+> >   7 | LOC_UNSIGNED_CONST_4 | u32: constant's value
+> >   8 | LOC_UNSIGNED_CONST_8 | u64: constant's value
+> >   9 | LOC_REGISTER         |  u8: DWARF register number from the ABI
+> >  10 | LOC_REGISTER_OFFSET  |  u8: DWARF register number from the ABI
+> >                            | s64: offset added to the register's value
+> >  11 | LOC_DEREF            |  u8: size of the deref'd type
 
-0xffffc900001dbce8:     38      0       0       0       0       0       0  =
-     0
-0xffffc900001dbcf0:     0       0       0       0       0       0       0  =
-     0
-0xffffc900001dbcf8:     39      0       0       0       0       0       0  =
-     0
-0xffffc900001dbd00:     0       0       0       0       0       0       0  =
-     0
-0xffffc900001dbd08:     40      0       0       0       0       0       0  =
-     0
-0xffffc900001dbd10:     0       0       0       0       0       0       0  =
-     0
-0xffffc900001dbd18:     41      0       0       0       0       0       0  =
-     0
-0xffffc900001dbd20:     0       0       0       0       0       0       0  =
-     0
-0xffffffffc04016a6:     42      0       0       0       0       0       0  =
-     0
-0xffffc900001dbd30:     35      0       0       0       0       0       0  =
-     0
-0xffffc900001dbd38:     43      0       0       0       0       0       0  =
-     0
-0xffffc900001dbd40:     37      0       0       0       0       0       0  =
-     0
+LOC_END_OF_EXPR shouldn't be there. This is just an artifact of stack VM.
+I don't see patch 3 using LOC_DEREF.
+register vs register_offset is another artifact of dwarf.
+It looks to me we only need:
+- register
+- load_from_reg_plus_offset
+- constant
 
-If things really behaved correctly, f would not have the correct value but
-would still be handled as a 16 bytes value, so the test would not fail with
-"actual 35 !=3D 43", but something like "actual
-27254487904906932132179118915584 !=3D 43" (43 << 64 | 35) I guess. I still
-need to sort this out.
+>
+> I think supporting fully inlined functions as part of this work would
+> add a lot of value to users. It doesn't necessarily have to happen in
+> the first patchset, but we probably want to plan on doing it.
+>
+> Regarding BTF, another option is to just leave `callee_id` unset, right?
+> Consumers should be able to recognize BTF for the inlined function isn't
+> available and then act accordingly. For bpftrace, that probably means
+> not allowing function argument access.
 
-Alexis
---=20
-Alexis Lothor=C3=A9, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+For fully inlined we still need callee_id otherwise bpftrace won't know
+argument types. It shouldn't be hard to emit btf even for fully
+inlined functions, but we need to be smart not to bloat BTF to dwarf sizes.
 
