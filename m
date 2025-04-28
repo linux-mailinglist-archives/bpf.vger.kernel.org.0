@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-56810-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56811-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1343FA9E69C
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 05:37:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A3A2A9E69E
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 05:37:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E039B3A581C
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 03:36:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74407178C1A
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 03:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4B61B414A;
-	Mon, 28 Apr 2025 03:36:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF8541A7253;
+	Mon, 28 Apr 2025 03:36:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dygpIniM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rkb+LBSM"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9121A5B9B
-	for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 03:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBCCB1BD9DD
+	for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 03:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745811402; cv=none; b=N+Xv/NvgKYJE+dSDYMWj7K8tqvVSwzaTNNk2dv7QU38Y5vq2CbjYYDOecx7eCigGNIIOGRzLn735pQSzQiN2icXa9CQpMXCEyYTqfuGKrZ+zv4z0ehgLHkVn7ecFDCWbXv5LjMlrH9eDjKLODcMbqe13SZ0weW13uZgQqHqDHDY=
+	t=1745811405; cv=none; b=qK8Vt58wwfV4HMVt+7qo4822rZJm0ATIHF9rwmjdBPSRFTU730qHJP6pAuLTAW5VdAvjzeltow0VouVCodfdwaZFpgDifsWCR2ZslyZ/9pZ8YdiM/ZEaxJsbMlNynOdlyjUNw2QKGJvQPkz7dmQFa4AGfQnF0AtVudUS48urE/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745811402; c=relaxed/simple;
-	bh=kJw6iLbzvnaJTqf9ImsAV2CPxj5CSyBuIfj13anM9xs=;
+	s=arc-20240116; t=1745811405; c=relaxed/simple;
+	bh=2bUbxHD5Dxg5eYui3jDltoOsngL8VyFix5jEfVdSLG0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sBU5alhXGZNu3biTkIb0rqGGugOXm0bU9hA/8/B7JUH+k/FXEOSOUkrgLL+7qz4+ShIZ/Grq4Ei1w+wzl/dLL3MLTV4B7eM2r3WX/1oL91+XIszJ/DDH+BBLhxj+5fychuv5AUN6gJUgjRzwwuipriUKeoU+zyogUSoaNMg06S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dygpIniM; arc=none smtp.client-ip=95.215.58.186
+	 MIME-Version; b=XER4BsF2I3vFBv+8BmIHdrCPDr+HWXiAhoB7EQGdxvehfZ9gxGn+wASL9ijgiI9oF2n0YIldTbfuFSBzl7VjpkD/K0pzg7pAC9LpWFQCIjP46ybbIMxl83TkU+J7okuq3pvPeyQp61iXqJ7+q67nxnCax5BDwm0P7uwEi4njrow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rkb+LBSM; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745811398;
+	t=1745811401;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dQGxdvGT6JUQEBkk90cx9D02VWeJqf+rh/ZdIhrKaXY=;
-	b=dygpIniMefoq4jZCfd010aoExiKB9GnWfMLUmOO4XeAp2wa9ymmL7HiLJo0/JdjtYNsIss
-	+dcL75/+JuBbYlv56lbx/GalFSwZGuY/9SY2yPHoXok1nJgtRmCFY3836KmJ1HRQg76nkO
-	CgIlBVTGbZHsNtf3WEx0fJZw2Ayn4QY=
+	bh=pVLyMgxEgIhuDOYAYLLDexoPQY+fmhXjZ45o9+pIZwY=;
+	b=rkb+LBSMsHwLB7IGdALJ3Zig+Z0TfDZlFUKQ3AjaYNm2NIPMmXkltcH/lgWAMD6KlkYQIQ
+	vOIfLeVlKGKzeNULNK80f3sawYAGn4pFstkoWF6WU0/xMrhgdcSO9i9SJg7Pr8tMV0ovUl
+	pvDbVFOWTc4TPMf3lqk1xTij1KeWzeA=
 From: Roman Gushchin <roman.gushchin@linux.dev>
 To: linux-kernel@vger.kernel.org
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -57,9 +57,9 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-mm@kvack.org,
 	bpf@vger.kernel.org,
 	Roman Gushchin <roman.gushchin@linux.dev>
-Subject: [PATCH rfc 02/12] bpf: mark struct oom_control's memcg field as TRUSTED_OR_NULL
-Date: Mon, 28 Apr 2025 03:36:07 +0000
-Message-ID: <20250428033617.3797686-3-roman.gushchin@linux.dev>
+Subject: [PATCH rfc 03/12] bpf: treat fmodret tracing program's arguments as trusted
+Date: Mon, 28 Apr 2025 03:36:08 +0000
+Message-ID: <20250428033617.3797686-4-roman.gushchin@linux.dev>
 In-Reply-To: <20250428033617.3797686-1-roman.gushchin@linux.dev>
 References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
 Precedence: bulk
@@ -71,41 +71,48 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Struct oom_control is used to describe the OOM context.
-It's memcg field defines the scope of OOM: it's NULL for global
-OOMs and a valid memcg pointer for memcg-scoped OOMs.
-Teach bpf verifier to recognize it as trusted or NULL pointer.
-It will provide the bpf OOM handler a trusted memcg pointer,
-which for example is required for iterating the memcg's subtree.
+*** DO NOT MERGE! ***
+
+This is a temporarily workaround, which will be fixed/replaced
+in the next version.
+
+--
+
+Bpf oom handler hook has to:
+1) have a trusted pointer to the oom_control structure,
+2) return a value,
+3) be sleepable to use cgroup iterator functions.
+
+fmodret tracing programs fulfill 2) and 3).
+This patch enables 1), however this change contradicts
+the commit c6b0337f0120 ("bpf: Don't mark arguments to fentry/fexit
+programs as trusted.").
 
 Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
 ---
- kernel/bpf/verifier.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/bpf/btf.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 54c6953a8b84..d2d9f9b87065 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7047,6 +7047,10 @@ BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket) {
- 	struct sock *sk;
- };
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index a91822bae043..aa86c4eabfa0 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6424,7 +6424,14 @@ static bool prog_args_trusted(const struct bpf_prog *prog)
  
-+BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct oom_control) {
-+	struct mem_cgroup *memcg;
-+};
-+
- static bool type_is_rcu(struct bpf_verifier_env *env,
- 			struct bpf_reg_state *reg,
- 			const char *field_name, u32 btf_id)
-@@ -7087,6 +7091,7 @@ static bool type_is_trusted_or_null(struct bpf_verifier_env *env,
- 				    const char *field_name, u32 btf_id)
- {
- 	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket));
-+	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct oom_control));
- 
- 	return btf_nested_type_is_trusted(&env->log, reg, field_name, btf_id,
- 					  "__safe_trusted_or_null");
+ 	switch (prog->type) {
+ 	case BPF_PROG_TYPE_TRACING:
+-		return atype == BPF_TRACE_RAW_TP || atype == BPF_TRACE_ITER;
++		switch (atype) {
++		case BPF_TRACE_RAW_TP:
++		case BPF_TRACE_ITER:
++		case BPF_MODIFY_RETURN:
++			return true;
++		default:
++			return false;
++		}
+ 	case BPF_PROG_TYPE_LSM:
+ 		return bpf_lsm_is_trusted(prog);
+ 	case BPF_PROG_TYPE_STRUCT_OPS:
 -- 
 2.49.0.901.g37484f566f-goog
 
