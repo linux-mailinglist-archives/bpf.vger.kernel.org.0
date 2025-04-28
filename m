@@ -1,65 +1,65 @@
-Return-Path: <bpf+bounces-56838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56839-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 750FBA9F042
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 14:07:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 274A0A9F041
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 14:07:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DA253B5614
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 12:06:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D982F188D42C
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 12:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2853E2690C0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3A9269AE7;
 	Mon, 28 Apr 2025 12:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="rPAT4xJq"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="i4Y3GbTO"
 X-Original-To: bpf@vger.kernel.org
-Received: from lelvem-ot02.ext.ti.com (lelvem-ot02.ext.ti.com [198.47.23.235])
+Received: from fllvem-ot04.ext.ti.com (fllvem-ot04.ext.ti.com [198.47.19.246])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9A226770A;
-	Mon, 28 Apr 2025 12:05:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.235
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84946267AF3;
+	Mon, 28 Apr 2025 12:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.246
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745841936; cv=none; b=rKT16GYjZGLpwnf3BjvgT7VDdRsq83SCRj7yyxkFvdU9wJ2yK7gh6cQicr6R4KwdFCyVt/+FZ+z0Z9ro7SYHJBB43RZ5XpLoyx+MOB3o4kZgOs8vmbqtjm3cVU/GSJ3S/B99YMaQTBceBr0Oc5cS0zNKr07KioYU4D7eyHv2H7k=
+	t=1745841937; cv=none; b=FJ4sMdSq2yFEK/YtHwXRnqvqGy7/u1iXt5ZkUNCZBahar6zb7PmdTlJisvBxpVK6OShqxqrExGOWXDZ+6dsohXhh9DYYxX2cqDyGcUUtJRBlBJijfcJyFBbjXp84Z1WDnMBqfLz9iqFd6t7LUY7dJ/YJoDee7vj7q09pOVc2HYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745841936; c=relaxed/simple;
-	bh=/T0BK1dAzfiLg7Xv0sUB5J7Ye6WraCyU1wtHgfAosrA=;
+	s=arc-20240116; t=1745841937; c=relaxed/simple;
+	bh=U3vCcy3+Zjk0V0Ir8A5u4CbF8+Bmq1aNjLLAmQ7P9Cs=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HC8rVxDQlepfmgmHTFLHkjpFCVLZiEOvmw7l/C4hBZMzVu1sIpxa8otffkB32CjXfKEO+A+Tut6o7F6LJzaf3tro9k9UizqHrZt7N5Axh9qIqcrQ5lYEqomrFDlFoDI47chyS2UiTDn6x1vXzH0caCo9d8joc7x0U+lvDkIuGt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=rPAT4xJq; arc=none smtp.client-ip=198.47.23.235
+	 MIME-Version:Content-Type; b=PZuKYqjqQrYhU2Z9P4mEePrnhnmhbud2No01oVjC4F1bGi7xSts7EC6rAPaJI27HVkEWPnn1unKxH++OCcJGFkBebY8BTxlHchu/2+/MZSAZiSl83Mi6mlFkaK6JPyvs0ddZKmxxi+S1FGLwRgpTb5Q27VeqS7FBGTK5mlBUfMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=i4Y3GbTO; arc=none smtp.client-ip=198.47.19.246
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelvem-ot02.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 53SC5BI83531559
+	by fllvem-ot04.ext.ti.com (8.15.2/8.15.2) with ESMTPS id 53SC5EVY3393353
 	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 28 Apr 2025 07:05:11 -0500
+	Mon, 28 Apr 2025 07:05:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1745841911;
-	bh=uI+faJIxceA72XkODz4Mw86ruNESeEOpXr0xnsfEFzM=;
+	s=ti-com-17Q1; t=1745841914;
+	bh=JCpjZY3u/ZFHiA2q9iwsB5i+6p8X7uN+a9ZDPipJd7g=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=rPAT4xJqh+Yb/tPaodYVGiunw2ySTAXQfxfUMXG2GjYNMrmgfFPGYen0b8lL5f5GH
-	 gI+OdPgRmnVJvxEZPri39iy6iX1d9HWwGmZbzduZ1F0HrDUqBVzsVi8M6W9PSnSH6P
-	 LfJS3iUmMX8WnfXpSWWOCYecAF6cr/5zxgJynFQs=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 53SC5BO1038306
+	b=i4Y3GbTOdJqLfRgMBJnCUV4HvXYKB+vLXAPHLRz9dcbtumc527NhgNBB8it3K+jYj
+	 YKaIyVUP2Gn3Q9pc2rGXfD4Dw3XQ3b9RpqIC2WnL+YKZdV9NX541GKdT9v1Lt+UBUz
+	 qQXNaM0MvIBPfi3HHGjimuS3Pj9RBaFObguYVjFM=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 53SC5E8K038320
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 28 Apr 2025 07:05:11 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 28 Apr 2025 07:05:14 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 28
- Apr 2025 07:05:11 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2025 07:05:13 -0500
+Received: from fllvsmtp8.itg.ti.com (10.64.41.158) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 28 Apr 2025 07:05:11 -0500
+ Frontend Transport; Mon, 28 Apr 2025 07:05:14 -0500
 Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 53SC5Abt009667;
-	Mon, 28 Apr 2025 07:05:10 -0500
+	by fllvsmtp8.itg.ti.com (8.15.2/8.15.2) with ESMTP id 53SC5DF5098251;
+	Mon, 28 Apr 2025 07:05:13 -0500
 Received: from localhost (meghana-pc.dhcp.ti.com [10.24.69.13] (may be forged))
-	by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 53SC59ag026337;
-	Mon, 28 Apr 2025 07:05:10 -0500
+	by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 53SC5CXv026354;
+	Mon, 28 Apr 2025 07:05:13 -0500
 From: Meghana Malladi <m-malladi@ti.com>
 To: <dan.carpenter@linaro.org>, <m-malladi@ti.com>, <john.fastabend@gmail.com>,
         <hawk@kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
@@ -70,9 +70,9 @@ CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <srk@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         Roger Quadros
 	<rogerq@kernel.org>, <danishanwar@ti.com>
-Subject: [PATCH net 2/4] net: ti: icssg-prueth: Report BQL before sending XDP packets
-Date: Mon, 28 Apr 2025 17:34:57 +0530
-Message-ID: <20250428120459.244525-3-m-malladi@ti.com>
+Subject: [PATCH net 3/4] net: ti: icssg-prueth: Fix race condition for traffic from different network sockets
+Date: Mon, 28 Apr 2025 17:34:58 +0530
+Message-ID: <20250428120459.244525-4-m-malladi@ti.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250428120459.244525-1-m-malladi@ti.com>
 References: <20250428120459.244525-1-m-malladi@ti.com>
@@ -86,66 +86,83 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
 
-When sending out any kind of traffic, it is essential that the driver
-keeps reporting BQL of the number of bytes that have been sent so that
-BQL can track the amount of data in the queue and prevents it from
-overflowing. If BQL is not reported, the driver may continue sending
-packets even when the queue is full, leading to packet loss, congestion
-and decreased network performance. Currently this is missing in
-emac_xmit_xdp_frame() and this patch fixes it.
+When dealing with transmitting traffic from different network
+sockets to a single Tx channel, freeing the DMA descriptors can lead
+to kernel panic with the following error:
+
+[  394.602494] ------------[ cut here ]------------
+[  394.607134] kernel BUG at lib/genalloc.c:508!
+[  394.611485] Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
+
+logs: https://gist.github.com/MeghanaMalladiTI/ad1d1da3b6e966bc6962c105c0b1d0b6
+
+The above error was reproduced when sending XDP traffic from XSK
+socket along with network traffic from BSD socket. This causes
+a race condition leading to corrupted DMA descriptors. Fix this
+by adding spinlock protection while accessing the DMA descriptors
+of a Tx ring.
 
 Fixes: 62aa3246f462 ("net: ti: icssg-prueth: Add XDP support")
 Signed-off-by: Meghana Malladi <m-malladi@ti.com>
 ---
- drivers/net/ethernet/ti/icssg/icssg_common.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/ti/icssg/icssg_common.c | 7 +++++++
+ drivers/net/ethernet/ti/icssg/icssg_prueth.h | 1 +
+ 2 files changed, 8 insertions(+)
 
 diff --git a/drivers/net/ethernet/ti/icssg/icssg_common.c b/drivers/net/ethernet/ti/icssg/icssg_common.c
-index b4be76e13a2f..4f45f2b6b67f 100644
+index 4f45f2b6b67f..a120ff6fec8f 100644
 --- a/drivers/net/ethernet/ti/icssg/icssg_common.c
 +++ b/drivers/net/ethernet/ti/icssg/icssg_common.c
-@@ -187,7 +187,6 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
- 			xdp_return_frame(xdpf);
- 			break;
- 		default:
--			netdev_err(ndev, "tx_complete: invalid swdata type %d\n", swdata->type);
- 			prueth_xmit_free(tx_chn, desc_tx);
- 			ndev->stats.tx_dropped++;
- 			continue;
-@@ -567,6 +566,7 @@ u32 emac_xmit_xdp_frame(struct prueth_emac *emac,
- {
- 	struct cppi5_host_desc_t *first_desc;
- 	struct net_device *ndev = emac->ndev;
-+	struct netdev_queue *netif_txq;
- 	struct prueth_tx_chn *tx_chn;
- 	dma_addr_t desc_dma, buf_dma;
- 	struct prueth_swdata *swdata;
-@@ -620,12 +620,17 @@ u32 emac_xmit_xdp_frame(struct prueth_emac *emac,
- 		swdata->data.xdpf = xdpf;
- 	}
+@@ -157,7 +157,9 @@ int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+ 	tx_chn = &emac->tx_chns[chn];
  
-+	/* Report BQL before sending the packet */
-+	netif_txq = netdev_get_tx_queue(ndev, tx_chn->id);
-+	netdev_tx_sent_queue(netif_txq, xdpf->len);
-+
+ 	while (true) {
++		spin_lock(&tx_chn->lock);
+ 		res = k3_udma_glue_pop_tx_chn(tx_chn->tx_chn, &desc_dma);
++		spin_unlock(&tx_chn->lock);
+ 		if (res == -ENODATA)
+ 			break;
+ 
+@@ -325,6 +327,7 @@ int prueth_init_tx_chns(struct prueth_emac *emac)
+ 		snprintf(tx_chn->name, sizeof(tx_chn->name),
+ 			 "tx%d-%d", slice, i);
+ 
++		spin_lock_init(&tx_chn->lock);
+ 		tx_chn->emac = emac;
+ 		tx_chn->id = i;
+ 		tx_chn->descs_num = PRUETH_MAX_TX_DESC;
+@@ -627,7 +630,9 @@ u32 emac_xmit_xdp_frame(struct prueth_emac *emac,
  	cppi5_hdesc_set_pktlen(first_desc, xdpf->len);
  	desc_dma = k3_cppi_desc_pool_virt2dma(tx_chn->desc_pool, first_desc);
  
++	spin_lock_bh(&tx_chn->lock);
  	ret = k3_udma_glue_push_tx_chn(tx_chn->tx_chn, first_desc, desc_dma);
++	spin_unlock_bh(&tx_chn->lock);
  	if (ret) {
  		netdev_err(ndev, "xdp tx: push failed: %d\n", ret);
-+		netdev_tx_completed_queue(netif_txq, 1, xdpf->len);
- 		goto drop_free_descs;
- 	}
+ 		netdev_tx_completed_queue(netif_txq, 1, xdpf->len);
+@@ -981,7 +986,9 @@ enum netdev_tx icssg_ndo_start_xmit(struct sk_buff *skb, struct net_device *ndev
+ 	/* cppi5_desc_dump(first_desc, 64); */
  
-@@ -979,6 +984,7 @@ enum netdev_tx icssg_ndo_start_xmit(struct sk_buff *skb, struct net_device *ndev
+ 	skb_tx_timestamp(skb);  /* SW timestamp if SKBTX_IN_PROGRESS not set */
++	spin_lock_bh(&tx_chn->lock);
  	ret = k3_udma_glue_push_tx_chn(tx_chn->tx_chn, first_desc, desc_dma);
++	spin_unlock_bh(&tx_chn->lock);
  	if (ret) {
  		netdev_err(ndev, "tx: push failed: %d\n", ret);
-+		netdev_tx_completed_queue(netif_txq, 1, pkt_len);
- 		goto drop_free_descs;
- 	}
- 
+ 		netdev_tx_completed_queue(netif_txq, 1, pkt_len);
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+index b6be4aa57a61..4e5354c2866a 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
++++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+@@ -119,6 +119,7 @@ struct prueth_tx_chn {
+ 	struct k3_cppi_desc_pool *desc_pool;
+ 	struct k3_udma_glue_tx_channel *tx_chn;
+ 	struct prueth_emac *emac;
++	spinlock_t lock; /* protect TX rings in multi-port mode */
+ 	u32 id;
+ 	u32 descs_num;
+ 	unsigned int irq;
 -- 
 2.43.0
 
