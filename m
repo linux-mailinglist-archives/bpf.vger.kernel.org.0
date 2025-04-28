@@ -1,124 +1,100 @@
-Return-Path: <bpf+bounces-56861-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56862-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A17FA9F7F5
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 20:04:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9D0FA9F848
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 20:17:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFB077A86D4
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 18:02:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51C677AE6F1
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 18:16:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA0E294A18;
-	Mon, 28 Apr 2025 18:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B222957B9;
+	Mon, 28 Apr 2025 18:16:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1Dywj3PP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F8A1tUd6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC61289343
-	for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 18:03:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 042BD26AF6;
+	Mon, 28 Apr 2025 18:16:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745863436; cv=none; b=QWL/2LSZVGXqcXMn6671iyP8l8MZwggWMWgdBe6I3fXjUHYWy5oVVJKF2CN0odZ+lWKfHkVApd5WDQ/PtwULsQAi7LrUirVK3MBgU09sIASfouQaVYhJXw5WE3tOlwGVdkrZ5b+QLsoWXn4W2zby1wEX3bGTiJDV/uVQW3OScBw=
+	t=1745864200; cv=none; b=LIX+TFR0OPRaYL1hKpoHY47o+WoXALpy0tXHCQ3DtvjNxTW6SwF4q2IucRNfaZCI0A7UHUUALU9NNQhuVFcswtf8RDQ5er29o1BQta3SSOo/mqc9k/0ytYsMRT61MaWBxMYBfCXTLnoEnjyDObG9VYYAUTEr1KxtiLPjDg9Bw2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745863436; c=relaxed/simple;
-	bh=/mL7HPcjZJGRPYi0Z91nMrxEdW1H1DRgXdBETT/v/m0=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=GxvhdKnXja/t6wzJV0H6mkrRRv/IVlUYO7AEfKWQSZMD1nvGYyfJHNbaq4PhKOyEvetCdVbpAMbrbLFklpXN9TN91M+vU1sK0X1xl4nxLUx6Vg+YdSoIoTO778TvJe9MSL5bK/Uny2/waR/Gn4g9/Wz3t6YetY1h64F6416A19Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1Dywj3PP; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-b0e5f28841dso3111537a12.2
-        for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 11:03:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1745863434; x=1746468234; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Jrm6Nx7Z5Mh8oLM61Urr/bTwwYotksqIY3MvIPdnC9o=;
-        b=1Dywj3PPfwyS/hAzq50dRSIrzoO563wn66dysDIgProw9tQZgfNC1gYviTTWdtKIvf
-         kcxi9ztFBvuQx9QbV2Z+2aRHDkRQP1So6+YGLhY/018YvDJ/qO7OEbXyt2btv3lQUr0Y
-         3Vjibv3a11ZGVgC3WzNVb+KVG5qWG75s0XIQ25V2hicJgmW90ly2vvYNLTOlit6Msfy5
-         ssORyUNZB84qgGzEws2usWK02pjteobEPvXR6H9WKr+Lbs4FaaSM77auC9gaYfa33n2v
-         E8c5imY9gt9CgB8YE5NzegmoBb+lBNbRRnpNnKFabu0CoWwsVAxDHg04luCcPCpP1IY+
-         ldTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745863434; x=1746468234;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Jrm6Nx7Z5Mh8oLM61Urr/bTwwYotksqIY3MvIPdnC9o=;
-        b=EOwZfm7ZwEw6wS/Gbny+lHEd+Fdxh4yABwI+tKny3zzxOnAwCzhKPuzX2ghN5A2VB+
-         p7XBXPW61BMFfcxtv4eYJbnIAUe3YYMHInPj5wXgiXKH11/Gz5gt+aYWElh8Epa3Jo/Z
-         bgk7zlgbEHqTuhf/AcfvBevaSMUgVDF3IibqLDrceftK1dfWBGS2YB/hzoyLneE/Bgdg
-         CxuNlSiPqYLSBrYJZSu1+N0N/u6d1uRXSE3yvuI4Qq4d7D9/ruMRwbKdCiN/s+EhL+su
-         XlgfecGoZa05+viUtf3IWgD9BBQAcEal2jdp3n/JVxcM8EvYbBrxyexLjUJaTMkQz+xK
-         8ECg==
-X-Forwarded-Encrypted: i=1; AJvYcCVRTk3d5ZGFlPZEa2Acsl4x3m87F72me4UuasiBAl3fdNOhR2X6fKzUe8EuuBTqwvWjL1o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlAH2aW1bimmanjNrXtOE3L2pTU7Qdsj9jBQxQ85z1KktFfsDL
-	oQ7qXMX/dgnb3l21E9uvO+ztZulffoMYOdkYbDEq6YW6svmus6d6k4LBpnqA8Y9obmrIJuPUZ2Y
-	25ZM2EAYi69TezQ==
-X-Google-Smtp-Source: AGHT+IGFy7WG9oO3uBh4Wi8t7O9tAPuPJeA5DbCGTeCTVwRypV0To3vLIJ2Ay+WqLvKrHqdhPZuiAH+PfgHZ0k0=
-X-Received: from pjbnt15.prod.google.com ([2002:a17:90b:248f:b0:30a:2020:e2bd])
- (user=tjmercier job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:554f:b0:2fe:dd2c:f8e7 with SMTP id 98e67ed59e1d1-30a21551e90mr1172926a91.10.1745863433996;
- Mon, 28 Apr 2025 11:03:53 -0700 (PDT)
-Date: Mon, 28 Apr 2025 18:02:54 +0000
+	s=arc-20240116; t=1745864200; c=relaxed/simple;
+	bh=LTWucmA5QArXmJiKqCaHcfaGujpFrEweYB221Xdig9E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AFpZOle2oB2PWNG47faRFQ3XErERPpYB1XXuVGDfuziGn1t6zSE/fwr7u3rcu33eo4xMngkQZ7DjG3E26QMpOY5pw1emInOmPZebdwrahxB3815/niZdXrR+z5aJ9aaDNW4JmbFXyaS0fQ9XSKov+nqf8g0AIt1a6D+StgNzl3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F8A1tUd6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F1E1C4CEEE;
+	Mon, 28 Apr 2025 18:16:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745864199;
+	bh=LTWucmA5QArXmJiKqCaHcfaGujpFrEweYB221Xdig9E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=F8A1tUd6vekn0150oPD3r7iCDzXFxcxozbBlK4ubr2loaK8uSlCF5Wi6+2Kl+6Iu/
+	 iVn5p4rA5qmomQD/OjD37QPMu5F8cFOFfXkAz+cXYbhsegS3Fc2qmHj8Uyuhl3BVHL
+	 ggIz4YqfK7pfv4ZqEatUZzSEdYIXZDei/Vwp3bwRjDDxBMF63979359Ab29E66xeci
+	 OJMf6nkI2An0BF4W0Wftaxx2KUeBkqjwiT2iIXOgIHmx7ejFMAcGIqOFwqAoaJjmtN
+	 BJ548IUOVpGL2tStjxg/Yl0+IE0FnlrZQMqvC16ZeSw5Wig1mvY2Sok+bWUTpyoAnR
+	 MIkBPIUSbGbiQ==
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7c559b3eb0bso305234885a.1;
+        Mon, 28 Apr 2025 11:16:39 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU3c60BGEyHG8DXAdA0WopyoSrwXUnkuFike1NbwmkkBvy1q7WRNsox0OciZD+lEK1+iVVhjJYKdhc9evm0@vger.kernel.org, AJvYcCVKdS72NMBZpJnTBWtoJYf8v932uroBR9b/H5n5wyqb5iv4U0iR6Fk1D5NgNl7JOiOUCUBIxOc4zCJpBCruYsm+@vger.kernel.org, AJvYcCVzSVKjYOMY1g50dtEK6Ysx0NzT2j89en79QcPHwxNNOzNMFJGRFDdLlff+U3KU71CSvsE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzhGwFn5WqaSDgSy86yeTd6IRolEnKEiHAy7bnjSHmLaCKkD0ie
+	xWaVbqAJM3nepzcpGyEXWotFu+GFVvPZMRwZaaoWIm+ejZhsESCm5fMt2PFsgTaASjzFPyScuKH
+	xK7vszxvbMhFJqv73MJZJZi5/oes=
+X-Google-Smtp-Source: AGHT+IEG76nmyhkuJhZJM1YlhssBhIEISbVFYcNrAKVYzp5llD/EZQUCazNjmvrM0m4H32FVhUnXAkWHvufEX6CwBsE=
+X-Received: by 2002:a05:620a:4590:b0:7c0:9f12:2b7e with SMTP id
+ af79cd13be357-7cabdd6f780mr104404385a.11.1745864198561; Mon, 28 Apr 2025
+ 11:16:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.49.0.906.g1f30a19c02-goog
-Message-ID: <20250428180256.1482899-1-tjmercier@google.com>
-Subject: [PATCH] selftests/bpf: Fix kmem_cache iterator draining
-From: "T.J. Mercier" <tjmercier@google.com>
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+MIME-Version: 1.0
+References: <20250428180256.1482899-1-tjmercier@google.com>
+In-Reply-To: <20250428180256.1482899-1-tjmercier@google.com>
+From: Song Liu <song@kernel.org>
+Date: Mon, 28 Apr 2025 11:16:26 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5m32t2-7f6EH+A35-htHcL-kQToJ=_Z2BEBe8dK9xyOg@mail.gmail.com>
+X-Gm-Features: ATxdqUEfqMGxBKalVPnccR6NYIdAiyLCB71Tw9QjYzbC0c75PUlTpGO5qpjNSRM
+Message-ID: <CAPhsuW5m32t2-7f6EH+A35-htHcL-kQToJ=_Z2BEBe8dK9xyOg@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: Fix kmem_cache iterator draining
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>
-Cc: "T.J. Mercier" <tjmercier@google.com>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The closing parentheses around the read syscall is misplaced, causing
-single byte reads from the iterator instead of buf sized reads. While
-the end result is the same, many more read calls than necessary are
-performed.
+On Mon, Apr 28, 2025 at 11:03=E2=80=AFAM T.J. Mercier <tjmercier@google.com=
+> wrote:
+>
+> The closing parentheses around the read syscall is misplaced, causing
+> single byte reads from the iterator instead of buf sized reads. While
+> the end result is the same, many more read calls than necessary are
+> performed.
+>
+> $ tools/testing/selftests/bpf/vmtest.sh  "./test_progs -t kmem_cache_iter=
+"
+> 145/1   kmem_cache_iter/check_task_struct:OK
+> 145/2   kmem_cache_iter/check_slabinfo:OK
+> 145/3   kmem_cache_iter/open_coded_iter:OK
+> 145     kmem_cache_iter:OK
+> Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
+>
+> Fixes: a496d0cdc84d ("selftests/bpf: Add a test for kmem_cache_iter")
+> Signed-off-by: T.J. Mercier <tjmercier@google.com>
 
-$ tools/testing/selftests/bpf/vmtest.sh  "./test_progs -t kmem_cache_iter"
-145/1   kmem_cache_iter/check_task_struct:OK
-145/2   kmem_cache_iter/check_slabinfo:OK
-145/3   kmem_cache_iter/open_coded_iter:OK
-145     kmem_cache_iter:OK
-Summary: 1/3 PASSED, 0 SKIPPED, 0 FAILED
-
-Fixes: a496d0cdc84d ("selftests/bpf: Add a test for kmem_cache_iter")
-Signed-off-by: T.J. Mercier <tjmercier@google.com>
----
- tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-index 8e13a3416a21..1de14b111931 100644
---- a/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kmem_cache_iter.c
-@@ -104,7 +104,7 @@ void test_kmem_cache_iter(void)
- 		goto destroy;
- 
- 	memset(buf, 0, sizeof(buf));
--	while (read(iter_fd, buf, sizeof(buf) > 0)) {
-+	while (read(iter_fd, buf, sizeof(buf)) > 0) {
- 		/* Read out all contents */
- 		printf("%s", buf);
- 	}
-
-base-commit: b4432656b36e5cc1d50a1f2dc15357543add530e
--- 
-2.49.0.906.g1f30a19c02-goog
-
+Acked-by: Song Liu <song@kernel.org>
 
