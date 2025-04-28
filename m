@@ -1,66 +1,63 @@
-Return-Path: <bpf+bounces-56807-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56808-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28991A9E694
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 05:35:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A77EA9E696
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 05:36:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 923B4189B0F0
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 03:36:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBA9E188D821
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 03:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D660C15687D;
-	Mon, 28 Apr 2025 03:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131BD189B80;
+	Mon, 28 Apr 2025 03:36:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="D1gnxgpq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Uj5xmv6S"
 X-Original-To: bpf@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CF24431;
-	Mon, 28 Apr 2025 03:35:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14F774431;
+	Mon, 28 Apr 2025 03:36:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745811348; cv=none; b=oyyWI34K0cS1rA0lOHUG1IEOxQvRptRZ2HqQi7W7I8zT+oftTYg46en4hu/vdo1uj3Bjn4emXW6QcgxmyeCeAE8vsXS2DCkPCjZn5L9gYCXQ6JJeAM+YUPYQ/9sTzXA2P4TjdZVOISJ84KrWW0kfPipAEoBoURKI84zqB+RMAnk=
+	t=1745811397; cv=none; b=W+YFCcLtJI+f9JUQP90CqSeKy6FjrPOrjOMcw0Tkho8gsvP2BoVn4kfj/9ZOK4/g3nKUMXWUiWcXHuU7W67If36Izi/YRZGVt25796ugLS71T+0MqUbH93/2Do0obFvviJfZ2PUENnD9w2d16+pBxlEGxjLoNbwNOj5ZvTF/zsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745811348; c=relaxed/simple;
-	bh=Vl74lbaPxao4i+PKCKAVwlqXBb7lIiZC8DAbfSaqGA0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mQJhVGFIR+6L5BiaeRzfkK4LE4oboBGof35unVSNrN3heLkCgwuWJxeEtxCGyusKjJXXhiGdNLI6ObXy8wkEzZMsMNAJyDFRwuKT+svJ5ph1b5GYh6QZH7zQo8+75M8upkp3laCX63uKGh+oYQUPvBtYwiAG5Kdb6bYUctpmpBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=D1gnxgpq; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=xC0ns
-	2DS1YSWPkq7hRW07GpUN9EJ9rep06tDSrSrHRQ=; b=D1gnxgpq5LIoNHemUJeAd
-	bM6TKh9m2vCtmObDVHmkZ0rsmizvA88rnx7ZcWWq9SrKJW3Zq+rS61GcjMk5e+P3
-	WWB/r/T3HebG9ZnVuZ+aFoC+aLZDTe5kvuRIjhgj77RE3xzMEib21a3VmnGYD5fU
-	hcj0RhVIRFXjkmS7I8ViE4=
-Received: from localhost.localdomain (unknown [])
-	by gzsmtp4 (Coremail) with SMTP id PygvCgDX5pZV9w5oNYEeAQ--.47989S2;
-	Mon, 28 Apr 2025 11:34:48 +0800 (CST)
-From: Feng Yang <yangfeng59949@163.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@fomichev.me,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	shuah@kernel.org,
-	toke@redhat.com,
-	amery.hung@bytedance.com
-Cc: bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: Fix compilation errors
-Date: Mon, 28 Apr 2025 11:34:45 +0800
-Message-Id: <20250428033445.58113-1-yangfeng59949@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1745811397; c=relaxed/simple;
+	bh=wkd6vZFx+IhH6EZxtpOK4H28EIt0MitS2iLwZ7iZJp0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LimrnWnObHX77H0WFAVl9j4TfRVY+qGSZtmKlTW90XjBTfizSYkbOmQgwXVpOSYJtlCzIygmFMSD4/+8hXo5RtmLeOuiVw7XY2NxAffOHUpiZfQ+jXn7Tr1LG3zooiYFaKW49JjtGzuVdnlPmTV17brF9FC/CiPdvR44tTZEiz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Uj5xmv6S; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745811393;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=tFWeksBB0juVbpa0rRrrSWdVJEnufM4rtKFQMpJhEFo=;
+	b=Uj5xmv6Snanvh9Ynazp3rYSVNuYCISEFJVrFWlzEle4yNq3AZfGNs8pqoMzgpo04o5kkPT
+	hhQPewkRFVz6yHoHGE/6v5wfhoLLYxGl84shOS2I6dtqMd7Vp5hhYiUpTcc4FQpJ411yLD
+	NV1aUUtsX0TJO4oeJg0moyDezzYWlIg=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Suren Baghdasaryan <surenb@google.com>,
+	David Rientjes <rientjes@google.com>,
+	Josh Don <joshdon@google.com>,
+	Chuyi Zhou <zhouchuyi@bytedance.com>,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	bpf@vger.kernel.org,
+	Roman Gushchin <roman.gushchin@linux.dev>
+Subject: [PATCH rfc 00/12] mm: BPF OOM
+Date: Mon, 28 Apr 2025 03:36:05 +0000
+Message-ID: <20250428033617.3797686-1-roman.gushchin@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,47 +65,116 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PygvCgDX5pZV9w5oNYEeAQ--.47989S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ZrWxJFyrtr18Zr1xWw13XFb_yoW8Aw1fpa
-	4DZw1DCr1Fgr4UWry7trW5u3WI9ws5Wry7Ca1UJ34Ikrn8XaykXr1IgayxWa4agrWY9wsx
-	ZasF9a43Zr1kCFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jerWrUUUUU=
-X-CM-SenderInfo: p1dqww5hqjkmqzuzqiywtou0bp/1tbiTQY8eGgN0ZzHBgABsn
+X-Migadu-Flow: FLOW_OUT
 
-From: Feng Yang <yangfeng@kylinos.cn>
+This patchset adds an ability to customize the out of memory
+handling using bpf.
 
-If the CONFIG_NET_SCH_BPF configuration is not enabled,
-the BPF test compilation will report the following error:
-In file included from progs/bpf_qdisc_fq.c:39:
-progs/bpf_qdisc_common.h:17:51: error: declaration of 'struct bpf_sk_buff_ptr' will not be visible outside of this function [-Werror,-Wvisibility]
-   17 | void bpf_qdisc_skb_drop(struct sk_buff *p, struct bpf_sk_buff_ptr *to_free) __ksym;
-      |                                                   ^
-progs/bpf_qdisc_fq.c:309:14: error: declaration of 'struct bpf_sk_buff_ptr' will not be visible outside of this function [-Werror,-Wvisibility]
-  309 |              struct bpf_sk_buff_ptr *to_free)
-      |                     ^
-progs/bpf_qdisc_fq.c:309:14: error: declaration of 'struct bpf_sk_buff_ptr' will not be visible outside of this function [-Werror,-Wvisibility]
-progs/bpf_qdisc_fq.c:308:5: error: conflicting types for '____bpf_fq_enqueue'
+It focuses on two parts:
+1) OOM handling policy,
+2) PSI-based OOM invocation.
 
-Fixes: 11c701639ba9 ("selftests/bpf: Add a basic fifo qdisc test")
-Signed-off-by: Feng Yang <yangfeng@kylinos.cn>
----
- tools/testing/selftests/bpf/progs/bpf_qdisc_common.h | 2 ++
- 1 file changed, 2 insertions(+)
+The idea to use bpf for customizing the OOM handling is not new, but
+unlike the previous proposal [1], which augmented the existing task
+ranking-based policy, this one tries to be as generic as possible and
+leverage the full power of the modern bpf.
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
-index 65a2c561c0bb..7e7f2fe04f22 100644
---- a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
-@@ -12,6 +12,8 @@
- 
- #define private(name) SEC(".data." #name) __hidden __attribute__((aligned(8)))
- 
-+struct bpf_sk_buff_ptr;
-+
- u32 bpf_skb_get_hash(struct sk_buff *p) __ksym;
- void bpf_kfree_skb(struct sk_buff *p) __ksym;
- void bpf_qdisc_skb_drop(struct sk_buff *p, struct bpf_sk_buff_ptr *to_free) __ksym;
+It provides a generic hook which is called before the existing OOM
+killer code and allows implementing any policy, e.g.  picking a victim
+task or memory cgroup or potentially even releasing memory in other
+ways, e.g. deleting tmpfs files (the last one might require some
+additional but relatively simple changes).
+
+The past attempt to implement memory-cgroup aware policy [2] showed
+that there are multiple opinions on what the best policy is.  As it's
+highly workload-dependent and specific to a concrete way of organizing
+workloads, the structure of the cgroup tree etc, a customizable
+bpf-based implementation is preferable over a in-kernel implementation
+with a dozen on sysctls.
+
+The second part is related to the fundamental question on when to
+declare the OOM event. It's a trade-off between the risk of
+unnecessary OOM kills and associated work losses and the risk of
+infinite trashing and effective soft lockups.  In the last few years
+several PSI-based userspace solutions were developed (e.g. OOMd [3] or
+systemd-OOMd [4]). The common idea was to use userspace daemons to
+implement custom OOM logic as well as rely on PSI monitoring to avoid
+stalls. In this scenario the userspace daemon was supposed to handle
+the majority of OOMs, while the in-kernel OOM killer worked as the
+last resort measure to guarantee that the system would never deadlock
+on the memory. But this approach creates additional infrastructure
+churn: userspace OOM daemon is a separate entity which needs to be
+deployed, updated, monitored. A completely different pipeline needs to
+be built to monitor both types of OOM events and collect associated
+logs. A userspace daemon is more restricted in terms on what data is
+available to it. Implementing a daemon which can work reliably under a
+heavy memory pressure in the system is also tricky.
+
+[1]: https://lwn.net/ml/linux-kernel/20230810081319.65668-1-zhouchuyi@bytedance.com/
+[2]: https://lore.kernel.org/lkml/20171130152824.1591-1-guro@fb.com/
+[3]: https://github.com/facebookincubator/oomd
+[4]: https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
+
+----
+
+This is an RFC version, which is not intended to be merged in the current form.
+Open questions/TODOs:
+1) Program type/attachment type for the bpf_handle_out_of_memory() hook.
+   It has to be able to return a value, to be sleepable (to use cgroup iterators)
+   and to have trusted arguments to pass oom_control down to bpf_oom_kill_process().
+   Current patchset has a workaround (patch "bpf: treat fmodret tracing program's
+   arguments as trusted"), which is not safe. One option is to fake acquire/release
+   semantics for the oom_control pointer. Other option is to introduce a completely
+   new attachment or program type, similar to lsm hooks.
+2) Currently lockdep complaints about a potential circular dependency because
+   sleepable bpf_handle_out_of_memory() hook calls might_fault() under oom_lock.
+   One way to fix it is to make it non-sleepable, but then it will require some
+   additional work to allow it using cgroup iterators. It's intervened with 1).
+3) What kind of hierarchical features are required? Do we want to nest oom policies?
+   Do we want to attach oom policies to cgroups? I think it's too complicated,
+   but if we want a full hierarchical support, it might be required.
+   Patch "mm: introduce bpf_get_root_mem_cgroup() bpf kfunc" exposes the true root
+   memcg, which is potentially outside of the ns of the loading process. Does
+   it require some additional capabilities checks? Should it be removed?
+4) Documentation is lacking and will be added in the next version.
+
+
+Roman Gushchin (12):
+  mm: introduce a bpf hook for OOM handling
+  bpf: mark struct oom_control's memcg field as TRUSTED_OR_NULL
+  bpf: treat fmodret tracing program's arguments as trusted
+  mm: introduce bpf_oom_kill_process() bpf kfunc
+  mm: introduce bpf kfuncs to deal with memcg pointers
+  mm: introduce bpf_get_root_mem_cgroup() bpf kfunc
+  bpf: selftests: introduce read_cgroup_file() helper
+  bpf: selftests: bpf OOM handler test
+  sched: psi: bpf hook to handle psi events
+  mm: introduce bpf_out_of_memory() bpf kfunc
+  bpf: selftests: introduce open_cgroup_file() helper
+  bpf: selftests: psi handler test
+
+ include/linux/memcontrol.h                   |   2 +
+ include/linux/oom.h                          |   5 +
+ kernel/bpf/btf.c                             |   9 +-
+ kernel/bpf/verifier.c                        |   5 +
+ kernel/sched/psi.c                           |  36 ++-
+ mm/Makefile                                  |   3 +
+ mm/bpf_memcontrol.c                          | 108 +++++++++
+ mm/oom_kill.c                                | 140 +++++++++++
+ tools/testing/selftests/bpf/cgroup_helpers.c |  67 ++++++
+ tools/testing/selftests/bpf/cgroup_helpers.h |   3 +
+ tools/testing/selftests/bpf/prog_tests/oom.c | 227 ++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/psi.c | 234 +++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_oom.c | 103 ++++++++
+ tools/testing/selftests/bpf/progs/test_psi.c |  43 ++++
+ 14 files changed, 983 insertions(+), 2 deletions(-)
+ create mode 100644 mm/bpf_memcontrol.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/oom.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/psi.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_oom.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_psi.c
+
 -- 
-2.43.0
+2.49.0.901.g37484f566f-goog
 
 
