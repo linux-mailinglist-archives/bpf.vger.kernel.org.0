@@ -1,133 +1,134 @@
-Return-Path: <bpf+bounces-56873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 739A4A9FC0F
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 23:15:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F163EA9FCC5
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 00:12:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC0D6188A05F
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 21:16:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AB731A869F8
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 22:13:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB601CB31D;
-	Mon, 28 Apr 2025 21:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A93DA210F4D;
+	Mon, 28 Apr 2025 22:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KDljh1YV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZqPSRF+9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D2528399
-	for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 21:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBE215687D;
+	Mon, 28 Apr 2025 22:12:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745874948; cv=none; b=UdLk3NFgEwvCy4l13wM0VYKfzu+AZQxk3IKtUCP3NZyu0h12IaQBD2ZPtIU0X4bSIzvjhq11peJb6HT863BtUSyzCyBzu+/pjGELlB5KxyH8cZ5PZECgqqZ0FhiXZ0rCsSaPIJUwYkaNqKWWA7nEgSkNkfT3/4WX7VblILO2r4I=
+	t=1745878366; cv=none; b=d6qEVFFfVjNbJ+C3UfYubyyTQViH+O9gYYKrRQkFVGt6rK+6G25EA9SkF14WGI1cpPFss9HDvB5yo6kOgWBpX1YeJZ2mFSbfs+1dqJWm6kie2x25TR+co6FWxyUYtdyabLNEClCjxQ0vHbKQ+GwHzQluLXNTTylUDHv2HDxL9N4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745874948; c=relaxed/simple;
-	bh=25zGVl3AzEC5aNZXC7O6v7JpZxO8oCf4x6KmaxKmk34=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=XjnBnn3nonincMrtqJpftA3DTA4sCYArno2rWLpXHg9wGo/4xtby3IbKpPCwrcbk8gGQyTCvN3ScPZ9UE2Fd/n0KKMD+bGkAWTb4ppABsTdv9Ku82AxtuxQ5121Z5ECsIiay2cAp3dzOQ6eTDeyi9TnIqvmGd4Y3s1YLPzluNnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--zhuyifei.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KDljh1YV; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--zhuyifei.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-af5310c1ac1so3016744a12.2
-        for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 14:15:46 -0700 (PDT)
+	s=arc-20240116; t=1745878366; c=relaxed/simple;
+	bh=9ta4DJaVhpLrk8zTbnUw2pDF8ZL8lESUfxz6CGm59qw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EKA/+uW59mRsACTW+/rOnWx3tvjffqXWzlSll2kWCiYirMPfLq6iz0Je9scIMJZUePSleL4QSunfH5mrJZIAkXAnMPtJR6/wmu6iTSQZIbF6ilH4st/dT+4+aNu1vYCyOlNslPzWJqI4TFlGNZfBwEr16kWRLhuswP9xPs+2d3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZqPSRF+9; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-39c1efc4577so3089857f8f.0;
+        Mon, 28 Apr 2025 15:12:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1745874946; x=1746479746; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=b09xnjWb8q+fXsXpXCF/ZFVhMFvSML+V0WFSLdrSB2g=;
-        b=KDljh1YVJ/aSzD2yfY97hx6GEZtElHp6oHoKYKVq7EfROe2F7gistv1BmZqnZAz+L3
-         npciR7Sc9p6sxS4KH8emLtOp1K9i7n5fg4+0X+Rfwr7r7XuNDathvhwwNdXrwMHwKSY8
-         p5ElPIv0Js38cQhceRM8Kfn4nKfNcIDI9Of2GtOkUyZWi528P171e63CtPBpJk7ud6KK
-         xI79jBC/6vBCBE7RQ3B+++IpTKutv7gSAH5ojOBsst8F8694YuEa9eDsDqGBo8rZE0H1
-         cFbBYY4quLHgUI/d41N4aeKppuxwOaSKxP0OljPXecZ6bcb9vx0CewlU3lnuzlNQcLtW
-         ClSQ==
+        d=gmail.com; s=20230601; t=1745878363; x=1746483163; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6x9hW8tIQxDu42gUkc/45R7MiCd7hErxRq3fBIsFKT0=;
+        b=ZqPSRF+9+UsVXGXKyF/YPmxmnrA3/o4QjxsDDf4N8A39JwgEGEY5ewZZe/MgRpMC9H
+         fHcR2uH4AjOhe0J/Zs4Gz1aAOCINz0vrTcSIELTh3MDN62d/0XUjJIA6Iydp30Zq30yS
+         tVoFMqsf8NPTZvnkYciH7xo221uwNBw/Ndcl2+HwI+djkRwkFBG9WXvFEIsrPu3IIe5H
+         wMux/OpOmNWS7odkxU6yH2viORJpwnCvXZ6THPQA1mBo/gp3xm21zy6RCcTGQMloMVPF
+         ChWvXaLI7Ph5CkyWRwDzDPFB0g3jODNaSeUKTRcQQiYvAIKYE3gmpf8SeSlg2xstSVNb
+         fXXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745874946; x=1746479746;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=b09xnjWb8q+fXsXpXCF/ZFVhMFvSML+V0WFSLdrSB2g=;
-        b=BU9irlq4elBdaba0iezsBTp5zMoaaEBZS5RIgCuk3C6o0y/4cjs//bFjMp0oTHFwIR
-         LgyV+1QXs0rfdeipYFKtmQ3LWh0g384pK+SX/2+n6l45YRs/6/fW5cJ+TbTNT7ugADKd
-         6RNYqH9uzaPFtCT56/Sbk/GgI/ADzefOU2caAZcq99673fqGcH6C/zjnN32/Jo2yOKCs
-         ItPctITEV/tC5vBdSule1mj+85AKY0VRsI0+Oovm+ybrBz8SXe7t8hIdyLdhziZTinFW
-         GMG9QKiXFNZ0lFoYF36RfJ3NsvQXsFONp9j9ECXB0TwsKeS6d0t0VT2niweJybvWyr3u
-         4seQ==
-X-Gm-Message-State: AOJu0YyGIYatyeO8hra0yJUnacsOIEL4rh9Qx1lNg9Rxnl1HnwrecaSA
-	7OsUVd7+RvGMgBTKyCvcBITAEaol9ICsEP3hVZSG47sRwbQAZc3KPpHfBg/vX7iqWl9FqaHTPi4
-	F2KKznW4f7lY04VYDfIknVadSVJvDAP066+rnT6+hhWeMFTH1kR7zfGhPhxQa9/8mHdD5utxe/X
-	tSO4M+WNdrI39NtYYhrWMsIj4Ifm8n75k2eWvNcp4=
-X-Google-Smtp-Source: AGHT+IF1AMSEueoDumoRzC1U4wmgH8T+9V8hckhwT3D7T7JMFbtyvOtiyeVNKNXIDbgJuLHPqdeHIuTLhzi1Kw==
-X-Received: from pjbqc17.prod.google.com ([2002:a17:90b:2891:b0:2ef:82c0:cb8d])
- (user=zhuyifei job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:1f88:b0:2f4:49d8:e6f6 with SMTP id 98e67ed59e1d1-30a220b364cmr884634a91.3.1745874946281;
- Mon, 28 Apr 2025 14:15:46 -0700 (PDT)
-Date: Mon, 28 Apr 2025 21:15:36 +0000
+        d=1e100.net; s=20230601; t=1745878363; x=1746483163;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6x9hW8tIQxDu42gUkc/45R7MiCd7hErxRq3fBIsFKT0=;
+        b=e831fxok3v1bmkPO2Cy3W1zE6iifVhgEy6TE3fm0aYSPEKoJ9Ls3tnXiteepCBvD+P
+         6hhRs0dFJukXbTZB3zIA2jxC0C4CVRGliCcIAgPyYh/3UaVeQsWF0aS7XvUpVJ9QlMkr
+         oXDnkRa2RccDBVYAm6xHYJGej9Hvlf08ZhDMFmWf419jKVmChIsKHwtKz42TzU9ziKDQ
+         BThNyCBm9U2x5o/bJw4Xpyvk28Cp350QaJjBhSnuEaOceirToJN3UHB42z9+/UkRwn8P
+         pro22unk+9trbA+tdG3OJw0KSiR9jvtod5V0F104yDofLotx7cv4xhlTSf90ROdlC5Yc
+         q6qA==
+X-Forwarded-Encrypted: i=1; AJvYcCVt25sNac7pueikqxw10NOe8yz9DtwhsuR4DCKtmWzaQgL+18N/co1RP1nTK0LGVz2P1eU=@vger.kernel.org, AJvYcCXEHtxdotFFPnOl1feVZV1dsxGEA/n2zL16jVtMjeOZtk8YK3YKniMfUK+h3kUWyyMXa8KsEUB/BA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzoQtuum8XX9GRTQcslPgs2WfCzvmuVIVHjsUzpJOup7Q2v/bvL
+	mLtyIJa59Dt4GPTBuzkCnyzRj2tQFsl2MqQ3dhs/jhc3havbaj18lGCwlbXsgBzWHmOs9GijmCu
+	dskacglHwBo7e6LX6/4yjcb6YFy0=
+X-Gm-Gg: ASbGncuU429mymK3cRVJiXZRiLyaigiuogiyhgKMC3TmufwyV0mopjs0/d+Mcru5OLu
+	tAaHW8aSA+ij8ytVeW8m8uOPnJwfZmKxp8V3wgvW31Pej0MkhAdgQv5HUOHdU6RScAZ0A0Wkk3F
+	mmz8g5kCRVkplP9iM35CA03v1ozDOceD8dm8MKoeEiqIxWdpKT
+X-Google-Smtp-Source: AGHT+IFXY9oLZdv+0ASZvt5YQPrkJxMiA0v56RHAfDxcbayXhXzO1nSrCsI9uzG9inhYaU2w68iznVUo3nL4wCr+/3k=
+X-Received: by 2002:a05:6000:290b:b0:39c:1257:febb with SMTP id
+ ffacd0b85a97d-3a08a3c977bmr612070f8f.59.1745878362632; Mon, 28 Apr 2025
+ 15:12:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.49.0.901.g37484f566f-goog
-Message-ID: <20250428211536.1651456-1-zhuyifei@google.com>
-Subject: [PATCH bpf] bpftool: Fix regression of "bpftool cgroup tree" EINVAL
- on older kernels
-From: YiFei Zhu <zhuyifei@google.com>
-To: bpf@vger.kernel.org
-Cc: Quentin Monnet <qmo@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Kenta Tada <tadakentaso@gmail.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Greg Thelen <gthelen@google.com>, 
-	Mahesh Bandewar <maheshb@google.com>, Minh-Anh Nguyen <minhanhdn@google.com>, 
-	Sagarika Sharma <sharmasagarika@google.com>, XuanYao Zhang <xuanyao@google.com>, 
-	YiFei Zhu <zhuyifei@google.com>
+MIME-Version: 1.0
+References: <CAADnVQL+-LiJGXwxD3jEUrOonO-fX0SZC8496dVzUXvfkB7gYQ@mail.gmail.com>
+ <076e52f6-248a-4a41-a199-3c705cb3d3c5@oracle.com> <CAEf4Bzb9ozx056hm3=zh=4Sh_62EydK_wtJkNpgH9Yy0cuSsUQ@mail.gmail.com>
+ <4aa02e25-7231-40f4-a0ba-e10db3833d81@oracle.com> <CAEf4BzYRnNGGafWS8XoXRHd3zje=8xY1o5_8aVw6vxrUSbEehg@mail.gmail.com>
+ <c8c4dc05-7fa3-4c1f-a652-a470dd6985c7@oracle.com> <e279abde-f4c1-42d2-bcc0-4df174057431@oracle.com>
+In-Reply-To: <e279abde-f4c1-42d2-bcc0-4df174057431@oracle.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 28 Apr 2025 15:12:30 -0700
+X-Gm-Features: ATxdqUGDHkPAVe36PBqTL8vv9rSD1GEjx3LSXRvmGsG4bxvnJHVJdfRbLh1tphw
+Message-ID: <CAADnVQKi4DARfzQJguZyDQsfXHq7A=QM2FwRwpZe-LJzj+Ujrg@mail.gmail.com>
+Subject: Re: pahole and gcc-14 issues
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-If cgroup_has_attached_progs queries an attach type not supported
-by the running kernel, due to the kernel being older than the bpftool
-build, it would encounter an -EINVAL from BPF_PROG_QUERY syscall.
+On Mon, Apr 28, 2025 at 8:21=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
+om> wrote:
+>
+>  <1><4bd05>: Abbrev Number: 58 (DW_TAG_pointer_type)
+>     <4bd06>   DW_AT_byte_size   : 8
+>     <4bd07>   DW_AT_address_class: 2
+>     <4bd08>   DW_AT_type        : <0x301cd>
+>
+> ...which points at an int
+>
+>  <1><301cd>: Abbrev Number: 214 (DW_TAG_base_type)
+>     <301cf>   DW_AT_byte_size   : 4
+>     <301d0>   DW_AT_encoding    : 5     (signed)
+>     <301d1>   DW_AT_name        : int
+>     <301d5>   DW_AT_name        : int
+>
+> ...but note the the DW_AT_address_class attribute in the latter case and
+> the two DW_AT_name values. We don't use that address attribute in pahole
+> as far as I can see, but it might be enough to cause problems.
 
-Prior to commit 98b303c9bf05 ("bpftool: Query only cgroup-related
-attach types"), this EINVAL would be ignored by the function, allowing
-the function to only consider supported attach types. The commit
-changed so that, instead of querying all attach types, only attach
-types from the array `cgroup_attach_types` is queried. The assumption
-is that because these are only cgroup attach types, they should all
-be supported. Unfortunately this assumption may be false when the
-kernel is older than the bpftool build, where the attach types queried
-by bpftool is not yet implemented in the kernel. This would result in
-errors such as:
+DW_AT_address_class is there because it's an actual address space
+qualifier in C. The dwarf is correct, but I thought pahole
+will ignore it while converting to BTF, so it shouldn't matter
+from dedup pov.
 
-  $ bpftool cgroup tree
-  CgroupPath
-  ID       AttachType      AttachFlags     Name
-  Error: can't query bpf programs attached to /sys/fs/cgroup: Invalid argument
+And since dedup is working for vmlinux BTF, I doubt there are CUs
+where the same type is represented with different dwarf id-s.
+Otherwise dedup wouldn't have worked for vmlinux.
 
-This patch restores the logic of ignoring EINVAL from prior to that patch.
+DW_AT_name is concerning. Sounds like it's a gcc bug, but it
+shouldn't be causing dedup issues for modules.
 
-Fixes: 98b303c9bf05 ("bpftool: Query only cgroup-related attach types")
-Reported-by: Sagarika Sharma <sharmasagarika@google.com>
-Reported-by: Minh-Anh Nguyen <minhanhdn@google.com>
-Signed-off-by: YiFei Zhu <zhuyifei@google.com>
----
- tools/bpf/bpftool/cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So what is the workaround?
 
-diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-index 93b139bfb9880..3f1d6be512151 100644
---- a/tools/bpf/bpftool/cgroup.c
-+++ b/tools/bpf/bpftool/cgroup.c
-@@ -221,7 +221,7 @@ static int cgroup_has_attached_progs(int cgroup_fd)
- 	for (i = 0; i < ARRAY_SIZE(cgroup_attach_types); i++) {
- 		int count = count_attached_bpf_progs(cgroup_fd, cgroup_attach_types[i]);
- 
--		if (count < 0)
-+		if (count < 0 && errno != EINVAL)
- 			return -1;
- 
- 		if (count > 0) {
--- 
-2.49.0.901.g37484f566f-goog
-
+We need to find it asap. Since at present we cannot build
+kernels with gcc-14, since modules won't dedup BTF.
+Hence a bunch of selftests/bpf are failing.
+We want to upgrade BPF CI to gcc-14 to catch nginx-like issues,
+but we cannot until this pahole/dedup issue is resolved.
 
