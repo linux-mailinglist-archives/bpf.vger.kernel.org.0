@@ -1,112 +1,247 @@
-Return-Path: <bpf+bounces-56830-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56831-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97E93A9EB5B
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 11:01:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AEB0A9ED9E
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 12:10:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7472188C83B
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 09:02:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB5283A502A
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 10:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6248725E82E;
-	Mon, 28 Apr 2025 09:01:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79F225F976;
+	Mon, 28 Apr 2025 10:08:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GD72F4Pi"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="n0pN73mO"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D353519CD07
-	for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 09:01:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F9D91F8676;
+	Mon, 28 Apr 2025 10:08:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745830910; cv=none; b=iVdAX2BTfz9NsGxO3d8q4PHCa7aCz9KRKsIqiEjiCdRAWhZcymijjt9G+hmW2kQJKCfVWlCjhPjOolalyrUKIa5HgvHFm7mvczVhrsslz6AIYOAyg8hJQajZsWiRdPLO5ZbCIA25/RzEGwlHUM4MRBa2iDv+lhdpfBnhQsAzJFU=
+	t=1745834921; cv=none; b=eXOe09/YZwxaMT7jqNoqA2a8HuJNNXWj412KeAFchTJiuIeViPUEo7Fko+KwWoENMha5EXS7nUsx5k4YQnewXNcB7cVpU1akowdf2/G/OeehmtJkuIyRl2n/g394b9iX/TUvNDi8DhZ0qs/2r7NBWsJw8BVttn2inmTP+/MxNvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745830910; c=relaxed/simple;
-	bh=gaXr/FlBVU3ERYkwWKBs4eWi0XUK3mSGMtzipa6+gW8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tyjykE2R8JHLu9I1hukoRK9zUqS3qZjAbd8O25BhxxnBB2dfsE0i3AssRz66p8h2FefRVZb710OeYjaZ1OfnwHRyZOvXTID2YkfM1YkQFKmsowtFCoEKxz1nvOwiYKk5jLHtJr/fZf4NH4KpTJwat6ufaiZZRKwiTqAunDcFz9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GD72F4Pi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8C43C4CEE4;
-	Mon, 28 Apr 2025 09:01:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745830910;
-	bh=gaXr/FlBVU3ERYkwWKBs4eWi0XUK3mSGMtzipa6+gW8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=GD72F4PimqPjiRFHoJb041B+77FS0nptY9Mlk4E+pvZoUK5HCMXYxGF9PICs4yVxU
-	 l78QtFb6g5clea+hjDxAZ7ppotA/1e1QuxYJUkG5b2xKwT2GkgvW50TIoVurVQYw1Q
-	 G+5oe4m/gu4hYtfb23Q4FmbSH3ybvTNmnpQ7atZRHfIIXJi3FZtpUxZF6c2OXdxy0l
-	 /Ii1N2rKXP7Nzuw2rV98HDT/Y1GVYbFBW4kEKfBp2/RyrsUSfF+ZvaJtYF52SZIjJR
-	 vkW8kRP29zS5XssmBIyWui9DDgS5qJ+ir36QVubc8ShfQyoDmNk04FlHUGv5amfDR4
-	 mCVmspiNoBf9g==
-Message-ID: <86adf004-b9dc-416c-a7e8-9e2d92b0a469@kernel.org>
-Date: Mon, 28 Apr 2025 10:01:45 +0100
+	s=arc-20240116; t=1745834921; c=relaxed/simple;
+	bh=lr6pQ3NIoD+lRzXdXbL+Byvxr/QgEuEyFJ7ZHAW6OTs=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=jms9nBwEZzPieZAPkh3n64RSgnr7wChsfNDNKrecn09TWpw+dxTYxyid5jHfGNGUszXp6WOtRM+u9YlHJUhY8xkxrIGcsZNTAiGbzSiPJibiCjZgT9rIKihloNPvXaOsM+5lfXOTuu66alj3FijMv5h0Pke6rkLVvVomnwuNGWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=n0pN73mO; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0378941E0D;
+	Mon, 28 Apr 2025 10:08:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1745834916;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EyLLSu+6S+6dxer7LO6vuNlydixelSCtlsd/r01CLYw=;
+	b=n0pN73mOyqcHetOyty577p3pErAzkt7nOjTmTs7YgE7Q0kFnEUjpP51kQxEZbEasxxXrt7
+	JLvkjuOt0AXoXFzIgQigzMagk7hFGPyQUdle3Zb9jKfyz12z4ip3NeyasSIldXmsRciGHI
+	DAPPFmRMZw65TNO0ONyFX1B9VOWdBPbWVfFQRxq7GDgZTyiOu6KiIQmtgUPrBgjq25ltX4
+	fXs7Qr6/wadKGI1e/wzLtxDQu6R/a1PPKI1hnCq8qK3a+JQ9bdUmnQfv6UUGKYpoRgrzG2
+	3kbgk9SijtBUMuGij0XV/jKboUCdiajElMI6QPih9raiz1GLhgDuUXF1++0s5Q==
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Regression in backward compatibility of "bpftool cgroup tree" on
- older kernels
-To: YiFei Zhu <zhuyifei@google.com>, Kenta Tada <tadakentaso@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Ian Rogers <irogers@google.com>, Greg Thelen <gthelen@google.com>,
- Mahesh Bandewar <maheshb@google.com>, Minh-Anh Nguyen
- <minhanhdn@google.com>, Sagarika Sharma <sharmasagarika@google.com>,
- XuanYao Zhang <xuanyao@google.com>
-References: <CAA-VZPm4uD5h1FSgJPuqJAkoKFnou4+UZcxXr3B=EScgfK2BYg@mail.gmail.com>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <CAA-VZPm4uD5h1FSgJPuqJAkoKFnou4+UZcxXr3B=EScgfK2BYg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Date: Mon, 28 Apr 2025 12:08:32 +0200
+Message-Id: <D9I6TQN2I6B1.QC4FFHEWAURZ@bootlin.com>
+Cc: "Bastien Curutchet" <bastien.curutchet@bootlin.com>,
+ <ebpf@linuxfoundation.org>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, <bpf@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kselftest@vger.kernel.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH RFC bpf-next 3/4] bpf/selftests: add tests to validate
+ proper arguments alignment on ARM64
+From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+To: "Eduard Zingerman" <eddyz87@gmail.com>, "Alexei Starovoitov"
+ <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>, "John
+ Fastabend" <john.fastabend@gmail.com>, "Andrii Nakryiko"
+ <andrii@kernel.org>, "Martin KaFai Lau" <martin.lau@linux.dev>, "Song Liu"
+ <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "KP Singh"
+ <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo"
+ <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>, "Puranjay Mohan"
+ <puranjay@kernel.org>, "Xu Kuohai" <xukuohai@huaweicloud.com>, "Catalin
+ Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>,
+ "Mykola Lysenko" <mykolal@fb.com>, "Shuah Khan" <shuah@kernel.org>, "Maxime
+ Coquelin" <mcoquelin.stm32@gmail.com>, "Alexandre Torgue"
+ <alexandre.torgue@foss.st.com>, "Florent Revest" <revest@chromium.org>
+X-Mailer: aerc 0.20.1-0-g2ecb8770224a
+References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
+ <20250411-many_args_arm64-v1-3-0a32fe72339e@bootlin.com>
+ <3a16fae0346d4f733fb1a67ae6420d8bf935dbd8.camel@gmail.com>
+In-Reply-To: <3a16fae0346d4f733fb1a67ae6420d8bf935dbd8.camel@gmail.com>
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddviedtieejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpegggfgtfffkvefuhffvofhfjgesthhqredtredtjeenucfhrhhomheptehlvgigihhsucfnohhthhhorhoruceorghlvgigihhsrdhlohhthhhorhgvsegsohhothhlihhnrdgtohhmqeenucggtffrrghtthgvrhhnpeelkeehiefhfeehvefhtdegueelkeehffffffeuvdekkeekuddvueeguefgieeukeenucffohhmrghinhepsghoohhtlhhinhdrtghomhenucfkphepledtrdekledrudeifedruddvjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeltddrkeelrdduieefrdduvdejpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpegrlhgvgihishdrlhhothhhohhrvgessghoohhtlhhinhdrtghomhdpnhgspghrtghpthhtohepvdelpdhrtghpthhtohepvgguugihiiekjeesghhmrghilhdrtghomhdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghrsghogidrnhgvthdprhgtphhtthhopehjohhhnhdrfhgrshhtrggsvghnugesghhmrghilhdrtghomhdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnv
+ ghlrdhorhhgpdhrtghpthhtohepmhgrrhhtihhnrdhlrghusehlihhnuhigrdguvghvpdhrtghpthhtohepshhonhhgsehkvghrnhgvlhdrohhrghdprhgtphhtthhopeihohhnghhhohhnghdrshhonhhgsehlihhnuhigrdguvghv
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-2025-04-25 14:02 UTC-0700 ~ YiFei Zhu <zhuyifei@google.com>
-> Hi
-> 
-> We've been using the "bpftool cgroup tree" command in some of our
-> regression tests, and recently after a bpftool version bump we saw
-> this error popping up that was not previously there:
-> 
->   Error: can't query bpf programs attached to [...]: Invalid argument
-> 
-> After a quick look at the code I located commit 98b303c9bf05
-> ("bpftool: Query only cgroup-related attach types"), where this block
-> was changed:
-> 
-> -       for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
-> -               int count = count_attached_bpf_progs(cgroup_fd, type);
-> +       for (i = 0; i < ARRAY_SIZE(cgroup_attach_types); i++) {
-> +               int count = count_attached_bpf_progs(cgroup_fd,
-> cgroup_attach_types[i]);
-> 
-> -               if (count < 0 && errno != EINVAL)
-> +               if (count < 0)
->                         return -1;
-> 
-> It seems that it was suggested [1] to remove the `errno != EINVAL`
-> condition since it's no longer necessary, but the kernel we are
-> testing against does not yet support  BPF_CGROUP_UNIX_CONNECT, and the
-> syscall from count_attached_bpf_progs returned with errno EINVAL,
-> causing the function to fail where it previously succeeded.
-> 
-> Would it make sense to restore that condition or is there a better way
-> to fix / workaround?
-> 
-> YiFei Zhu
-> 
-> [1] https://lore.kernel.org/all/e7ca0725-9cf7-49e3-b362-93430e3c649f@kernel.org/
-> 
+Hello Eduard,
 
+On Mon Apr 28, 2025 at 9:01 AM CEST, Eduard Zingerman wrote:
+> On Fri, 2025-04-11 at 22:32 +0200, Alexis Lothor=C3=A9 (eBPF Foundation) =
+wrote:
+>> When dealing with large types (>8 bytes), ARM64 trampolines need to take
+>> extra care about the arguments alignment to respect the calling
+>> convention set by AAPCS64.
+>>=20
+>> Add two tests ensuring that the BPF trampoline arranges arguments with
+>> the relevant layout. The two new tests involve almost the same
+>> arguments, except that the second one requires a more specific alignment
+>> to be set by the trampoline when preparing arguments before calling the
+>> the target function.
+>>=20
+>> Signed-off-by: Alexis Lothor=C3=A9 (eBPF Foundation) <alexis.lothore@boo=
+tlin.com>
+>> ---
+>
+> [...]
+>
+>> +SEC("fentry/bpf_testmod_test_struct_arg_11")
+>> +int BPF_PROG2(test_struct_many_args_9, struct bpf_testmod_struct_arg_5,=
+ a,
+>> +	      struct bpf_testmod_struct_arg_5, b,
+>> +	      struct bpf_testmod_struct_arg_5, c,
+>> +	      struct bpf_testmod_struct_arg_5, d, int, e,
+>> +	      struct bpf_testmod_struct_arg_5, f)
+>
+> Hello Alexis,
+>
+> I'm trying to double check the error you've seen for x86.
 
-Hi, I think it would make sense to restore the check on EINVAL indeed,
-thanks a lot for reporting this. Would you mind sending a patch?
+Thanks for taking a look at this.
 
-Best regards,
-Quentin
+> I see that tracing_struct/struct_many_args fails with assertion:
+> "test_struct_many_args:FAIL:t11:f unexpected t11:f: actual 35 !=3D expect=
+ed 43".
+> Could you please help me understand this test?
+
+Sure. When we attach fentry/fexit programs to a kernel function,  a small
+trampoline is generated to handle the attached programs execution. This
+trampoline has to:
+1. properly read and aggregate the functions arguments into a bpf tracing
+context. Those arguments comes from registers, and possibly from the stack
+if not all function arguments fit in registers
+2. if the trampoline is in charge of calling the target function (that's
+the case for example when we have both a fentry and a fexit programs
+attached), it must prepare the arguments for the target function, by
+filling again the registers, and possibly pushing the additional arguments
+on the stack at the relevant offset.
+
+This test is about validating the first point: ensuring that the trampoline
+has correctly read the initial arguments from the target function and
+forwarded them to the fentry program. So the actual test triggers the
+targeted function, it triggers the attached fentry program which record the
+values passed by the trampoline in t11_a, t11_b, etc, and then the
+test checks back that those "spied" values are the one that it has actually
+passed when executing the target function.
+
+> The function listened to is defined as accepting 'struct bpf_testmod_stru=
+ct_arg_7',
+> at the same time this function uses 'struct bpf_testmod_struct_arg_5'.
+
+That's not an accidental mistake, those are in fact the same definition.
+bpf_testmod_struct_arg_7 is the kernel side definition in bpf_testmod.c:
+
+struct bpf_testmod_struct_arg_7 {
+	__int128 a;
+};
+
+and struct bpf_testmode_struct_arg_5 is the one defined in the bpf test
+program:
+
+struct bpf_testmod_struct_arg_5 {
+	__int128 a;
+};
+
+I agree while being correct, this is confusing :/ I have kind of blindly
+applied the logic I have observed in here for declaring test structs, and
+so declared it twice (in kernel part and in bpf part), just incrementing
+the index of the last defined structure. But I guess it could benefit from
+some index syncing, or better, some refactoring to properly share those
+declarations. I'll think about it for a new rev.
+
+> Nevertheless, the assertion persists even with correct types.
+
+So I digged a bit further to better share my observations here. This is the
+function stack when entering the trampoline after having triggered the
+target function execution:
+
+(gdb) x/64b $rbp+0x18
+0xffffc9000015fd60:     41      0       0       0       0       0       0  =
+     0
+0xffffc9000015fd68:     0       0       0       0       0       0       0  =
+     0
+0xffffc9000015fd70:     42      0       0       0       0       0       0  =
+     0
+0xffffc9000015fd78:     35      0       0       0       0       0       0  =
+     0
+0xffffc9000015fd80:     43      0       0       0       0       0       0  =
+     0
+0xffffc9000015fd88:     0       0       0       0       0       0       0  =
+     0
+
+We see the arguments that did not fit in registers, so d, e and f.
+
+This is the ebpf context generated by the trampoline for the fentry
+program, from the content of the stack above + the registers:
+
+(gdb) x/128b $rbp-60
+0xffffc9000015fce8:     38      0       0       0       0       0       0  =
+     0
+0xffffc9000015fcf0:     0       0       0       0       0       0       0  =
+     0
+0xffffc9000015fcf8:     39      0       0       0       0       0       0  =
+     0
+0xffffc9000015fd00:     0       0       0       0       0       0       0  =
+     0
+0xffffc9000015fd08:     40      0       0       0       0       0       0  =
+     0
+0xffffc9000015fd10:     0       0       0       0       0       0       0  =
+     0
+0xffffc9000015fd18:     41      0       0       0       0       0       0  =
+     0
+0xffffc9000015fd20:     0       0       0       0       0       0       0  =
+     0
+0xffffc9000015fd28:     42      0       0       0       0       0       0  =
+     0
+0xffffc9000015fd30:     35      0       0       0       0       0       0  =
+     0
+0xffffc9000015fd38:     43      0       0       0       0       0       0  =
+     0
+0xffffc9000015fd40:     37      0       0       0       0       0       0  =
+     0
+
+So IIUC, this is wrong because the "e" variable in the bpf program being
+an int (and about to receive value 42), it occupies only 1 "tracing context
+8-byte slot", so the value 43 (representing the content for variable f),
+should be right after it, at 0xffffc9000015fd30. What we have instead is a
+hole, very likely because we copied silently the alignment from the
+original function call (and I guess this 35 value is a remnant from the
+previous test, which uses values from 27 to 37)
+
+Regardless of this issue, based on discussion from last week, I think I'll
+go for the implementation suggested by Alexei: handling the nominal cases,
+and detecting and blocking the non trivial cases (eg: structs passed on
+stack). It sounds reasonable as there seems to be no exisiting kernel
+function currently able to trigger those very specific cases, so it could
+be added later if this changes.
+
+Alexis
+--=20
+Alexis Lothor=C3=A9, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
