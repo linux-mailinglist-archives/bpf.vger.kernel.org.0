@@ -1,383 +1,398 @@
-Return-Path: <bpf+bounces-56820-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56821-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47442A9E6C0
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 05:40:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FE64A9E72D
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 06:42:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD36A3B6817
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 03:39:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8E261897E00
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 04:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A34F1B4138;
-	Mon, 28 Apr 2025 03:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C2019F117;
+	Mon, 28 Apr 2025 04:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WoHk90vS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jM7S0HBK"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364EE20B218
-	for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 03:37:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7704206B;
+	Mon, 28 Apr 2025 04:42:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745811433; cv=none; b=WZF3BCmoTBF19sEsAZbATHu/3qJSlSAdcnIGqsQNRQ4Ph0F7L5QNhvPRyYTMIoqsCcpB3kU6Ecf7DMm4K1zoh/QpW3BcK8EbC06xJE5gdbwzv5+hvm86fTgBsxUY8wKT8ZeOprkbG+MGav+HBZ5CI/4riDtMCCmh9xF9SbdwhJY=
+	t=1745815339; cv=none; b=SGkEW3D3xU2Reg/UOsy3+uHaa1WXijTC40HkaR6h5CS9Lhg/4HooD6te5SyzZG/1eXh0h2sFh7kiOsJcb/wQ2TyU3theQhslhJG7M3w3JTpxZxVdmDrBIr0KdeOqWkpToTmTvuL4x3UurpTAVFgI6ZIzyuIgZ9XNAobf6U5lTt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745811433; c=relaxed/simple;
-	bh=9m6dGm3hgSNWG+2WOSHP2KyLWYLAjePv7Lo4oUqmktU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JtpHlpWzU6T64mXm0tik5LdzVkHfldp+JVakGb7zD+KrPct2L066eiTOn62Z37CK585Z/F3iENmRWqaU3fuJJJ0FFKNloQ11P0PdSqCHLEUcMAZ1jZRJwUqkbsnEfipG5wzS2cEjAH4DoKepXV9iZFKUggIBgXMkvi1jDPQwYh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WoHk90vS; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745811429;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PMD4alSuF/CQrdJat1BcZoxvyxgjdLtWthYldLJYf1E=;
-	b=WoHk90vSsCT6HqUIwr7zPvav48u2HbF9Fj+LO5seyFrEcCAO/yMDiQn7IpkGImXxA5Cx3W
-	jN5br5GN6WKkrp+RIO/MIO4P0oJHADYQOhd7umOi69q0P/NDHaILQKKI3xxLRvkpkvHRIX
-	Rab1/AQR2q1H72iYJeg+PrWNcLnEGGE=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Suren Baghdasaryan <surenb@google.com>,
-	David Rientjes <rientjes@google.com>,
-	Josh Don <joshdon@google.com>,
-	Chuyi Zhou <zhouchuyi@bytedance.com>,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	bpf@vger.kernel.org,
-	Roman Gushchin <roman.gushchin@linux.dev>
-Subject: [PATCH rfc 12/12] bpf: selftests: psi handler test
-Date: Mon, 28 Apr 2025 03:36:17 +0000
-Message-ID: <20250428033617.3797686-13-roman.gushchin@linux.dev>
-In-Reply-To: <20250428033617.3797686-1-roman.gushchin@linux.dev>
-References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
+	s=arc-20240116; t=1745815339; c=relaxed/simple;
+	bh=QmzgfQ06maqti9OHW1JK8Xk6tJKbHqxNWnVy975oDjs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uSrutYNbJFkQoH3TDb08bkKj6BZ4ywarjNa1jXDyMWfYIorocIXylDJanEBbZ3ynVzufD8nCFJFGzI5MiTA6P8xbhldusZdRGPwmRXFW3iW8oO3Rdp/loMNXT8Od8dWgoSYbGZ9G4oOZ82Uz8SULJlxly1bQUCjhx35Dhsfosrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jM7S0HBK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66D20C4CEE4;
+	Mon, 28 Apr 2025 04:42:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745815337;
+	bh=QmzgfQ06maqti9OHW1JK8Xk6tJKbHqxNWnVy975oDjs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jM7S0HBKSlCf3cCWhBzzFT3jcZxFtOggm2CxVmEU1A7dcRWRvWzYiz5DVZoK0c7bh
+	 MC7jm+WHJcxrk2A/jWpzUUwQVCyumJnlZC1jmUg6O1nmLeSd8uUlxACtI08106QBLS
+	 NRcZ8FuafWW2kxuQgWL6457ifOGHMA6FxZW+jwkhrlqMWcr9QcNv8g9VmV+ewQNA8T
+	 9MERD8rqNE5Nr6t6FRu9JTv80HLh1PTY2zEvWbUadGWNRD08TOJWqHEJppjuk8WpZo
+	 V7tOtIS5L3FNPckOUKkKCIHnh+1CFj02wSAKZUGy1b3sHTuxD4zMKMKJWLlIkefsNH
+	 RYBBBuvMlgTeg==
+Date: Sun, 27 Apr 2025 21:42:10 -0700
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>,
+	linux-mm@kvack.org
+Subject: Re: [PATCH] perf lock contention: Symbolize zone->lock using BTF
+Message-ID: <aA8HImKeUutpFoeD@google.com>
+References: <20250401063055.7431-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250401063055.7431-1-namhyung@kernel.org>
 
-Add a psi handler test. The test creates a cgroup with two child
-sub-cgroups, sets up memory.high for one of those and puts
-memory hungry processes in each of them.
+Ping!
 
-Then it sets up a psi trigger for one of cgroups and waits
-till the process in this cgroup will be killed by the OOM killer.
-To make sure there was indeed an OOM event, it checks the
-corresponding memcg statistics.
-
-Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
----
- tools/testing/selftests/bpf/prog_tests/psi.c | 234 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/test_psi.c |  43 ++++
- 2 files changed, 277 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/psi.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_psi.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/psi.c b/tools/testing/selftests/bpf/prog_tests/psi.c
-new file mode 100644
-index 000000000000..99d68bc20eee
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/psi.c
-@@ -0,0 +1,234 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#define _GNU_SOURCE
-+
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <signal.h>
-+#include <sys/stat.h>
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+#include <bpf/bpf.h>
-+#include <errno.h>
-+#include <string.h>
-+
-+#include "cgroup_helpers.h"
-+#include "test_psi.skel.h"
-+
-+struct cgroup_desc {
-+	const char *path;
-+	int fd;
-+	unsigned long long id;
-+	int pid;
-+	size_t target;
-+	size_t high;
-+	bool victim;
-+	bool psi;
-+};
-+
-+#define MB (1024 * 1024)
-+
-+static struct cgroup_desc cgroups[] = {
-+	{ .path = "/oom_test" },
-+	{ .path = "/oom_test/cg1", .target = 100 * MB },
-+	{ .path = "/oom_test/cg2", .target = 500 * MB,
-+	  .high = 40 * MB, .psi = true, .victim = true },
-+};
-+
-+static int spawn_task(struct cgroup_desc *desc)
-+{
-+	char *ptr;
-+	int pid;
-+
-+	pid = fork();
-+	if (pid < 0)
-+		return pid;
-+
-+	if (pid > 0) {
-+		/* parent */
-+		desc->pid = pid;
-+		return 0;
-+	}
-+
-+	/* child */
-+	ptr = (char *)malloc(desc->target);
-+	if (!ptr)
-+		return -ENOMEM;
-+
-+	memset(ptr, 'a', desc->target);
-+
-+	while (1)
-+		sleep(1000);
-+
-+	return 0;
-+}
-+
-+static int setup_psi_alert(struct cgroup_desc *desc)
-+{
-+	const char *trig = "some 100000 1000000";
-+	int fd;
-+
-+	fd = open_cgroup_file(desc->path, "memory.pressure", O_RDWR);
-+	if (fd < 0) {
-+		printf("memory.pressure open error: %s\n", strerror(errno));
-+		return 1;
-+	}
-+
-+	if (write(fd, trig, strlen(trig) + 1) < 0) {
-+		printf("memory.pressure write error: %s\n", strerror(errno));
-+		return 1;
-+	}
-+
-+	/* keep fd open, otherwise the psi trigger will be deleted */
-+	return 0;
-+}
-+
-+static void setup_environment(void)
-+{
-+	int i, err;
-+
-+	err = setup_cgroup_environment();
-+	if (!ASSERT_OK(err, "setup_cgroup_environment"))
-+		goto cleanup;
-+
-+	for (i = 0; i < ARRAY_SIZE(cgroups); i++) {
-+		cgroups[i].fd = create_and_get_cgroup(cgroups[i].path);
-+		if (!ASSERT_GE(cgroups[i].fd, 0, "create_and_get_cgroup"))
-+			goto cleanup;
-+
-+		cgroups[i].id = get_cgroup_id(cgroups[i].path);
-+		if (!ASSERT_GT(cgroups[i].id, 0, "get_cgroup_id"))
-+			goto cleanup;
-+
-+		if (i == 0) {
-+			/* Freeze the top-level cgroup */
-+			err = write_cgroup_file(cgroups[i].path, "cgroup.freeze", "1");
-+			if (!ASSERT_OK(err, "freeze cgroup"))
-+				goto cleanup;
-+		}
-+
-+		if (!cgroups[i].target) {
-+			/* Recursively enable the memory controller */
-+			err = write_cgroup_file(cgroups[i].path, "cgroup.subtree_control",
-+						"+memory");
-+			if (!ASSERT_OK(err, "enable memory controller"))
-+				goto cleanup;
-+		}
-+
-+		if (cgroups[i].high) {
-+			char buf[256];
-+
-+			snprintf(buf, sizeof(buf), "%lu", cgroups[i].high);
-+			err = write_cgroup_file(cgroups[i].path, "memory.high", buf);
-+			if (!ASSERT_OK(err, "set memory.high"))
-+				goto cleanup;
-+
-+			snprintf(buf, sizeof(buf), "0");
-+			write_cgroup_file(cgroups[i].path, "memory.swap.max", buf);
-+		}
-+
-+		if (cgroups[i].target) {
-+			char buf[256];
-+
-+			err = spawn_task(&cgroups[i]);
-+			if (!ASSERT_OK(err, "spawn task"))
-+				goto cleanup;
-+
-+			snprintf(buf, sizeof(buf), "%d", cgroups[i].pid);
-+			err = write_cgroup_file(cgroups[i].path, "cgroup.procs", buf);
-+			if (!ASSERT_OK(err, "put child into a cgroup"))
-+				goto cleanup;
-+		}
-+
-+		if (cgroups[i].psi) {
-+			err = setup_psi_alert(&cgroups[i]);
-+			if (!ASSERT_OK(err, "create psi trigger"))
-+				goto cleanup;
-+		}
-+	}
-+
-+	return;
-+
-+cleanup:
-+	cleanup_cgroup_environment();
-+}
-+
-+static int run_and_wait_for_oom(void)
-+{
-+	int ret = -1;
-+	bool first = true;
-+	char buf[4096] = {};
-+	size_t size;
-+
-+	ret = write_cgroup_file(cgroups[0].path, "cgroup.freeze", "0");
-+	if (!ASSERT_OK(ret, "freeze cgroup"))
-+		return -1;
-+
-+	for (;;) {
-+		int i, status;
-+		pid_t pid = wait(&status);
-+
-+		if (pid == -1) {
-+			if (errno == EINTR)
-+				continue;
-+			/* ECHILD */
-+			break;
-+		}
-+
-+		if (!first)
-+			continue;
-+
-+		first = false;
-+
-+		for (i = 0; i < ARRAY_SIZE(cgroups); i++) {
-+			if (!ASSERT_OK(cgroups[i].victim !=
-+				       (pid == cgroups[i].pid),
-+				       "correct process was killed")) {
-+				ret = -1;
-+				break;
-+			}
-+
-+			if (!cgroups[i].victim)
-+				continue;
-+
-+			size = read_cgroup_file(cgroups[i].path, "memory.events",
-+						buf, sizeof(buf));
-+			if (!ASSERT_OK(size <= 0, "read memory.events")) {
-+				ret = -1;
-+				break;
-+			}
-+
-+			if (!ASSERT_OK(strstr(buf, "oom_kill 1") == NULL,
-+				       "oom_kill count check")) {
-+				ret = -1;
-+				break;
-+			}
-+		}
-+
-+		for (i = 0; i < ARRAY_SIZE(cgroups); i++)
-+			if (cgroups[i].pid && cgroups[i].pid != pid)
-+				kill(cgroups[i].pid, SIGKILL);
-+	}
-+
-+	return ret;
-+}
-+
-+void test_psi(void)
-+{
-+	struct test_psi *skel;
-+	int err;
-+
-+	skel = test_psi__open_and_load();
-+	err = test_psi__attach(skel);
-+	if (!ASSERT_OK(err, "test_psi__attach"))
-+		goto cleanup;
-+
-+	setup_environment();
-+
-+	run_and_wait_for_oom();
-+
-+	cleanup_cgroup_environment();
-+cleanup:
-+	test_psi__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_psi.c b/tools/testing/selftests/bpf/progs/test_psi.c
-new file mode 100644
-index 000000000000..8cbc1e0a5b24
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_psi.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct mem_cgroup *bpf_get_mem_cgroup(struct cgroup_subsys_state *css) __ksym;
-+void bpf_put_mem_cgroup(struct mem_cgroup *memcg) __ksym;
-+int bpf_out_of_memory(struct mem_cgroup *memcg, int order) __ksym;
-+
-+SEC("fmod_ret.s/bpf_handle_psi_event")
-+int BPF_PROG(test_psi_event, struct psi_trigger *t)
-+{
-+	struct cgroup *cgroup = NULL;
-+	struct mem_cgroup *memcg;
-+	u64 cgroup_id;
-+
-+	if (!t->of || !t->of->kn) {
-+		bpf_out_of_memory(NULL, 0);
-+		return 1;
-+	}
-+
-+	cgroup_id = t->of->kn->__parent->id;
-+	cgroup = bpf_cgroup_from_id(cgroup_id);
-+	if (!cgroup)
-+		return 0;
-+
-+	memcg = bpf_get_mem_cgroup(&cgroup->self);
-+	if (!memcg) {
-+		bpf_cgroup_release(cgroup);
-+		return 0;
-+	}
-+
-+	bpf_out_of_memory(memcg, 0);
-+
-+	bpf_put_mem_cgroup(memcg);
-+	bpf_cgroup_release(cgroup);
-+
-+	return 1;
-+}
--- 
-2.49.0.901.g37484f566f-goog
-
+On Mon, Mar 31, 2025 at 11:30:55PM -0700, Namhyung Kim wrote:
+> The struct zone is embedded in struct pglist_data which can be allocated
+> for each NUMA node early in the boot process.  As it's not a slab object
+> nor a global lock, this was not symbolized.
+> 
+> Since the zone->lock is often contended, it'd be nice if we can
+> symbolize it.  On NUMA systems, node_data array will have pointers for
+> struct pglist_data.  By following the pointer, it can calculate the
+> address of each zone and its lock using BTF.  On UMA, it can just use
+> contig_page_data and its zones.
+> 
+> The following example shows the zone lock contention at the end.
+> 
+>   $ sudo ./perf lock con -abl -E 5 -- ./perf bench sched messaging
+>   # Running 'sched/messaging' benchmark:
+>   # 20 sender and receiver processes per group
+>   # 10 groups == 400 processes run
+> 
+>        Total time: 0.038 [sec]
+>    contended   total wait     max wait     avg wait            address   symbol
+> 
+>         5167     18.17 ms     10.27 us      3.52 us   ffff953340052d00   &kmem_cache_node (spinlock)
+>           38     11.75 ms    465.49 us    309.13 us   ffff95334060c480   &sock_inode_cache (spinlock)
+>         3916     10.13 ms     10.43 us      2.59 us   ffff953342aecb40   &kmem_cache_node (spinlock)
+>         2963     10.02 ms     13.75 us      3.38 us   ffff9533d2344098   &kmalloc-rnd-08-2k (spinlock)
+>          216      5.05 ms     99.49 us     23.39 us   ffff9542bf7d65d0   zone_lock (spinlock)
+> 
+> Cc: linux-mm@kvack.org
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/bpf_lock_contention.c         | 88 +++++++++++++++++--
+>  .../perf/util/bpf_skel/lock_contention.bpf.c  | 64 ++++++++++++++
+>  tools/perf/util/bpf_skel/lock_data.h          |  1 +
+>  tools/perf/util/bpf_skel/vmlinux/vmlinux.h    |  9 ++
+>  tools/perf/util/lock-contention.h             |  1 +
+>  5 files changed, 157 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+> index 5af8f6d1bc952613..98395667220e58ee 100644
+> --- a/tools/perf/util/bpf_lock_contention.c
+> +++ b/tools/perf/util/bpf_lock_contention.c
+> @@ -12,6 +12,7 @@
+>  #include "util/lock-contention.h"
+>  #include <linux/zalloc.h>
+>  #include <linux/string.h>
+> +#include <api/fs/fs.h>
+>  #include <bpf/bpf.h>
+>  #include <bpf/btf.h>
+>  #include <inttypes.h>
+> @@ -35,28 +36,26 @@ static bool slab_cache_equal(long key1, long key2, void *ctx __maybe_unused)
+>  
+>  static void check_slab_cache_iter(struct lock_contention *con)
+>  {
+> -	struct btf *btf = btf__load_vmlinux_btf();
+>  	s32 ret;
+>  
+>  	hashmap__init(&slab_hash, slab_cache_hash, slab_cache_equal, /*ctx=*/NULL);
+>  
+> -	if (btf == NULL) {
+> +	con->btf = btf__load_vmlinux_btf();
+> +	if (con->btf == NULL) {
+>  		pr_debug("BTF loading failed: %s\n", strerror(errno));
+>  		return;
+>  	}
+>  
+> -	ret = btf__find_by_name_kind(btf, "bpf_iter__kmem_cache", BTF_KIND_STRUCT);
+> +	ret = btf__find_by_name_kind(con->btf, "bpf_iter__kmem_cache", BTF_KIND_STRUCT);
+>  	if (ret < 0) {
+>  		bpf_program__set_autoload(skel->progs.slab_cache_iter, false);
+>  		pr_debug("slab cache iterator is not available: %d\n", ret);
+> -		goto out;
+> +		return;
+>  	}
+>  
+>  	has_slab_iter = true;
+>  
+>  	bpf_map__set_max_entries(skel->maps.slab_caches, con->map_nr_entries);
+> -out:
+> -	btf__free(btf);
+>  }
+>  
+>  static void run_slab_cache_iter(void)
+> @@ -109,6 +108,75 @@ static void exit_slab_cache_iter(void)
+>  	hashmap__clear(&slab_hash);
+>  }
+>  
+> +static void init_numa_data(struct lock_contention *con)
+> +{
+> +	struct symbol *sym;
+> +	struct map *kmap;
+> +	char *buf = NULL, *p;
+> +	size_t len;
+> +	long last = -1;
+> +	int ret;
+> +
+> +	/*
+> +	 * 'struct zone' is embedded in 'struct pglist_data' as an array.
+> +	 * As we may not have full information of the struct zone in the
+> +	 * (fake) vmlinux.h, let's get the actual size from BTF.
+> +	 */
+> +	ret = btf__find_by_name_kind(con->btf, "zone", BTF_KIND_STRUCT);
+> +	if (ret < 0) {
+> +		pr_debug("cannot get type of struct zone: %d\n", ret);
+> +		return;
+> +	}
+> +
+> +	ret = btf__resolve_size(con->btf, ret);
+> +	if (ret < 0) {
+> +		pr_debug("cannot get size of struct zone: %d\n", ret);
+> +		return;
+> +	}
+> +	skel->rodata->sizeof_zone = ret;
+> +
+> +	/* UMA system doesn't have 'node_data[]' - just use contig_page_data. */
+> +	sym = machine__find_kernel_symbol_by_name(con->machine,
+> +						  "contig_page_data",
+> +						  &kmap);
+> +	if (sym) {
+> +		skel->rodata->contig_page_data_addr = map__unmap_ip(kmap, sym->start);
+> +		map__put(kmap);
+> +		return;
+> +	}
+> +
+> +	/*
+> +	 * The 'node_data' is an array of pointers to struct pglist_data.
+> +	 * It needs to follow the pointer for each node in BPF to get the
+> +	 * address of struct pglist_data and its zones.
+> +	 */
+> +	sym = machine__find_kernel_symbol_by_name(con->machine,
+> +						  "node_data",
+> +						  &kmap);
+> +	if (sym == NULL)
+> +		return;
+> +
+> +	skel->rodata->node_data_addr = map__unmap_ip(kmap, sym->start);
+> +	map__put(kmap);
+> +
+> +	/* get the number of online nodes using the last node number + 1 */
+> +	ret = sysfs__read_str("devices/system/node/online", &buf, &len);
+> +	if (ret < 0) {
+> +		pr_debug("failed to read online node: %d\n", ret);
+> +		return;
+> +	}
+> +
+> +	p = buf;
+> +	while (p && *p) {
+> +		last = strtol(p, &p, 0);
+> +
+> +		if (p && (*p == ',' || *p == '-' || *p == '\n'))
+> +			p++;
+> +	}
+> +	skel->rodata->nr_nodes = last + 1;
+> +	free(buf);
+> +}
+> +
+>  int lock_contention_prepare(struct lock_contention *con)
+>  {
+>  	int i, fd;
+> @@ -218,6 +286,8 @@ int lock_contention_prepare(struct lock_contention *con)
+>  
+>  	bpf_map__set_max_entries(skel->maps.slab_filter, nslabs);
+>  
+> +	init_numa_data(con);
+> +
+>  	if (lock_contention_bpf__load(skel) < 0) {
+>  		pr_err("Failed to load lock-contention BPF skeleton\n");
+>  		return -1;
+> @@ -505,6 +575,11 @@ static const char *lock_contention_get_name(struct lock_contention *con,
+>  				return "rq_lock";
+>  		}
+>  
+> +		if (!bpf_map_lookup_elem(lock_fd, &key->lock_addr_or_cgroup, &flags)) {
+> +			if (flags == LOCK_CLASS_ZONE_LOCK)
+> +				return "zone_lock";
+> +		}
+> +
+>  		/* look slab_hash for dynamic locks in a slab object */
+>  		if (hashmap__find(&slab_hash, flags & LCB_F_SLAB_ID_MASK, &slab_data)) {
+>  			snprintf(name_buf, sizeof(name_buf), "&%s", slab_data->name);
+> @@ -743,6 +818,7 @@ int lock_contention_finish(struct lock_contention *con)
+>  	}
+>  
+>  	exit_slab_cache_iter();
+> +	btf__free(con->btf);
+>  
+>  	return 0;
+>  }
+> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> index 69be7a4234e076e8..6f12c7d978a2e015 100644
+> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> @@ -11,6 +11,9 @@
+>  /* for collect_lock_syms().  4096 was rejected by the verifier */
+>  #define MAX_CPUS  1024
+>  
+> +/* for collect_zone_lock().  It should be more than the actual zones. */
+> +#define MAX_ZONES  10
+> +
+>  /* lock contention flags from include/trace/events/lock.h */
+>  #define LCB_F_SPIN	(1U << 0)
+>  #define LCB_F_READ	(1U << 1)
+> @@ -801,6 +804,11 @@ int contention_end(u64 *ctx)
+>  
+>  extern struct rq runqueues __ksym;
+>  
+> +const volatile __u64 contig_page_data_addr;
+> +const volatile __u64 node_data_addr;
+> +const volatile int nr_nodes;
+> +const volatile int sizeof_zone;
+> +
+>  struct rq___old {
+>  	raw_spinlock_t lock;
+>  } __attribute__((preserve_access_index));
+> @@ -809,6 +817,59 @@ struct rq___new {
+>  	raw_spinlock_t __lock;
+>  } __attribute__((preserve_access_index));
+>  
+> +static void collect_zone_lock(void)
+> +{
+> +	__u64 nr_zones, zone_off;
+> +	__u64 lock_addr, lock_off;
+> +	__u32 lock_flag = LOCK_CLASS_ZONE_LOCK;
+> +
+> +	zone_off = offsetof(struct pglist_data, node_zones);
+> +	lock_off = offsetof(struct zone, lock);
+> +
+> +	if (contig_page_data_addr) {
+> +		struct pglist_data *contig_page_data;
+> +
+> +		contig_page_data = (void *)(long)contig_page_data_addr;
+> +		nr_zones = BPF_CORE_READ(contig_page_data, nr_zones);
+> +
+> +		for (int i = 0; i < MAX_ZONES; i++) {
+> +			__u64 zone_addr;
+> +
+> +			if (i >= nr_zones)
+> +				break;
+> +
+> +			zone_addr = contig_page_data_addr + (sizeof_zone * i) + zone_off;
+> +			lock_addr = zone_addr + lock_off;
+> +
+> +			bpf_map_update_elem(&lock_syms, &lock_addr, &lock_flag, BPF_ANY);
+> +		}
+> +	} else if (nr_nodes > 0) {
+> +		struct pglist_data **node_data = (void *)(long)node_data_addr;
+> +
+> +		for (int i = 0; i < nr_nodes; i++) {
+> +			struct pglist_data *pgdat = NULL;
+> +			int err;
+> +
+> +			err = bpf_core_read(&pgdat, sizeof(pgdat), &node_data[i]);
+> +			if (err < 0 || pgdat == NULL)
+> +				break;
+> +
+> +			nr_zones = BPF_CORE_READ(pgdat, nr_zones);
+> +			for (int k = 0; k < MAX_ZONES; k++) {
+> +				__u64 zone_addr;
+> +
+> +				if (k >= nr_zones)
+> +					break;
+> +
+> +				zone_addr = (__u64)(void *)pgdat + (sizeof_zone * k) + zone_off;
+> +				lock_addr = zone_addr + lock_off;
+> +
+> +				bpf_map_update_elem(&lock_syms, &lock_addr, &lock_flag, BPF_ANY);
+> +			}
+> +		}
+> +	}
+> +}
+> +
+>  SEC("raw_tp/bpf_test_finish")
+>  int BPF_PROG(collect_lock_syms)
+>  {
+> @@ -830,6 +891,9 @@ int BPF_PROG(collect_lock_syms)
+>  		lock_flag = LOCK_CLASS_RQLOCK;
+>  		bpf_map_update_elem(&lock_syms, &lock_addr, &lock_flag, BPF_ANY);
+>  	}
+> +
+> +	collect_zone_lock();
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
+> index 15f5743bd409f2f9..28c5e5aced7fcc91 100644
+> --- a/tools/perf/util/bpf_skel/lock_data.h
+> +++ b/tools/perf/util/bpf_skel/lock_data.h
+> @@ -67,6 +67,7 @@ enum lock_aggr_mode {
+>  enum lock_class_sym {
+>  	LOCK_CLASS_NONE,
+>  	LOCK_CLASS_RQLOCK,
+> +	LOCK_CLASS_ZONE_LOCK,
+>  };
+>  
+>  struct slab_cache_data {
+> diff --git a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+> index 7b81d3173917fdb5..a59ce912be18cd0f 100644
+> --- a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+> +++ b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+> @@ -203,4 +203,13 @@ struct bpf_iter__kmem_cache {
+>  	struct kmem_cache *s;
+>  } __attribute__((preserve_access_index));
+>  
+> +struct zone {
+> +	spinlock_t lock;
+> +} __attribute__((preserve_access_index));
+> +
+> +struct pglist_data {
+> +	struct zone node_zones[6]; /* value for all possible config */
+> +	int nr_zones;
+> +} __attribute__((preserve_access_index));
+> +
+>  #endif // __VMLINUX_H
+> diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
+> index b5d916aa49df6424..d331ce8e3caad4cb 100644
+> --- a/tools/perf/util/lock-contention.h
+> +++ b/tools/perf/util/lock-contention.h
+> @@ -142,6 +142,7 @@ struct lock_contention {
+>  	struct lock_filter *filters;
+>  	struct lock_contention_fails fails;
+>  	struct rb_root cgroups;
+> +	void *btf;
+>  	unsigned long map_nr_entries;
+>  	int max_stack;
+>  	int stack_skip;
+> -- 
+> 2.49.0
+> 
 
