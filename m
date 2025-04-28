@@ -1,226 +1,114 @@
-Return-Path: <bpf+bounces-56871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41675A9FB8D
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 23:06:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DDE3A9FBF3
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 23:12:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B8AF4657E3
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 21:06:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D607188C594
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 21:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A6A203716;
-	Mon, 28 Apr 2025 21:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0431B1F76A5;
+	Mon, 28 Apr 2025 21:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NLfdnED+"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U1T3vtwf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E971DF968
-	for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 21:00:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD73DA94A
+	for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 21:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745874026; cv=none; b=o6v1kBPk3nirJ2VnKxFoI0jXkaVArXB63G2Ba5KFVNMi86JXygENeBE+RFNFeBTsnZi8ZLFTgyF32RXz6KPBGAUJsFW31JMDqgyq+8M0/DBUoANV+wMSUVcUmNQBUrB5Ul8MAmORbTL3banQn//0rkTofISeVxSPBOIYBTf2O2k=
+	t=1745874484; cv=none; b=reQQUTuHHJUB5n7w5rK8yKVrWYxEZ/XBN8aEpwOvPamefKC8jC/63UyRrAT13Qt73v+48ERnf8IaPSoPHgpAkvZZNPumi0i1Emi7+nKOiOyMg82UGMaso3E0w8rBs2jSD8OIQrlQXUlyPUdpZC2HY4JxPHAjtC5121x6YU2jeOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745874026; c=relaxed/simple;
-	bh=jN8SGXgsYZaDfh2rr8w73fkZKncW8PaRrYX31NTTRsg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=uV58eeFc/KliEuBMFWAwC8WG1WJ1yeKNEske1+zpTyFy9K4xlGYUwUvbrEDC+Hw2DnujvkwlKbe+8tDXclyfbD6ZooZcCsokkrHJlQwaXlaih7I+D8wVnyDKf8zMijguYjHTTpLFZMTR+dRjhrJIDZ5T82Hzt+qi13OQxmfW0n8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NLfdnED+; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-af59c920d32so3471423a12.0
-        for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 14:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1745874024; x=1746478824; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:user-agent:message-id:date
-         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZoyKxax2m0tjpWSgEaKAj4VmuPRd0esM3lxn9a853Go=;
-        b=NLfdnED+ozuXD3iP5eYvlTO2wJqw/B+apwks7ih36B/5jXGC1IJprpzvBglr48/g6a
-         1bk5QbDy+1sEoSAxi1sJT0t5NRT1sc1pjCaW29UGLG87/pyg3Q3B+7DohXqZAWthiWWd
-         raoLsd6rbnQ4ukXDJ71lA+pXgbclLHnHgEqPhksgr485QNUO9DixqZDmh272fXn29e3v
-         k2kTdt1dWIiLTrw6a+vzPYxoUe4SgEl9z43SbLYqrurjRQ0BEH9rkwkkuuWoz35gaP+R
-         fjTcKo0I528abYnBcPrQ+V20SfjLExrNKbHV/vhywjwHWBonIPJCQOBFXP3PzynJWEvL
-         2vYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745874024; x=1746478824;
-        h=content-transfer-encoding:mime-version:user-agent:message-id:date
-         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ZoyKxax2m0tjpWSgEaKAj4VmuPRd0esM3lxn9a853Go=;
-        b=sCSgn96LtYMRSZVb7BeIa+wxfp43zQLxY71gqb/34vZdI/ZoGTy+KDnu2xB5iz8UTW
-         Q6/5G4Ky3TBxKjNZYiAqUCnHG2FT/k/P1oPVznfEv/ccDecHKgERsml+Q+3MGZXrFtgq
-         mul9UzJY9OtFLu/lOSQ10n2z60pzJ134dRO19ZFZv5K3y/Y07RisZLvIryeGT3AUoRpr
-         jOeRSR39LUFOn7xV04WyYtpue+cMgiFohayvTOR2BBDoQzHsBu3/IMeS+L5/3TBEgTeo
-         +8gS/Ssir9BAFF53bHwSfQWxHeffycUPA+FkqgEn+ifXHTozD2ieuFU61aGeD70wKfzi
-         /vXw==
-X-Gm-Message-State: AOJu0YwkV3glnQzFTK4BZsomIA8Aks5doKIca0Fft0Dmm95q40dsMMai
-	iDzMwJVGgPU1FCR+S0z5SX58Qq9XHLoq6sfuWjAFCmSPQ1W/NtiO122Eh2Ez
-X-Gm-Gg: ASbGnctgtQdpQYc81PmQHg17oCE0m0XK6p+jdm/pfaz73BQd8N/rDKbvNhIP2QniA3q
-	d4+P7Os1miqlArsxOxEVjMe0GboZGXtvoYbutPWQixlKvIOmAFebvCqguIpjVpyt1esojaRGZGA
-	QQww0CcO0TCAhZqdJatVMWE+B6dcPmi/nIdOZj8KO2xsOQ7wZiAjtgZ0zzIKoCqui1ULxtcPyXw
-	gapePPDSNSaXHCI/hIlrWMwyVrw3f6t1MLF8HXY8L3ux/mwsSxL5q3FdY11a0+BTEHg99eWWJ++
-	bPyUHUQwwMBkjsO/ZMrwhkn6kxqIm/DD2jW9KJdtbDjqkcpdPfn+e7zxAZrV
-X-Google-Smtp-Source: AGHT+IFTkgbbQxYMpWcxrEx9ulb2no7xmg8VsaNx0aBpyhNOPDlhaYAOi7wxvJq4T3UPFRQXrauR7Q==
-X-Received: by 2002:a05:6a21:c98:b0:1f5:86ce:126a with SMTP id adf61e73a8af0-2093e622008mr1236468637.40.1745874023304;
-        Mon, 28 Apr 2025 14:00:23 -0700 (PDT)
-Received: from ezingerman-mba ([2620:10d:c090:500::6:6628])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b15f80ac37asm7693130a12.17.2025.04.28.14.00.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Apr 2025 14:00:22 -0700 (PDT)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>,  Alexei Starovoitov <ast@kernel.org>,  Andrii
- Nakryiko <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
-  Martin KaFai Lau <martin.lau@linux.dev>,  Kernel Team
- <kernel-team@fb.com>,  Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH bpf-next v1 3/4] bpf: use SCC info instead of loop_entry
-In-Reply-To: <CAADnVQLEeFYR2B6DEWxCZ2T8oaNLSg7EyBTcx-8ox4Swb8WOCQ@mail.gmail.com>
-	(Alexei Starovoitov's message of "Mon, 28 Apr 2025 13:25:42 -0700")
-References: <20250426104634.744077-1-eddyz87@gmail.com>
-	<20250426104634.744077-4-eddyz87@gmail.com>
-	<CAADnVQK1tP1_of=pn7HdeZNqmPu=4AqpRETeOVeQMjDfSt0NOw@mail.gmail.com>
-	<m2plgwjdem.fsf@gmail.com>
-	<CAADnVQLEeFYR2B6DEWxCZ2T8oaNLSg7EyBTcx-8ox4Swb8WOCQ@mail.gmail.com>
-Date: Mon, 28 Apr 2025 14:00:20 -0700
-Message-ID: <m2cycwhuhn.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1745874484; c=relaxed/simple;
+	bh=f6Ivb5X5pkMHM4s201C1kB1phD/8VjqDKvpUccGBZXo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aalbqZ4aivDVwve6nFAhBejeRZrGxwqXIGIMBFCTj5n/Ej45xO5ywOgPv6Hz/tqnxpawjWSapqxTJdUbimS3UgRqUnFYsHe7DHslqF84bY9xF0mezq1V7tPt4Ay0ZWBTcm0vloLgO8+OxX34Ay4kcZZLSE5bZtHGlkZJZ8j3HzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=U1T3vtwf; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1745874470;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=jUS0s/tdQHjXzAtC64/fbqpJmBqxqUB4naODkeZs7IA=;
+	b=U1T3vtwfTe5bOElYIfF/krvWpK5HgvnWcdnXVLyZarrrKWxfFXLo9xJmXvcmeMnH2AFG2I
+	kpTxztQwONsX8FRRY2Yvhm8qR/ywGZQi7Ih5eDLUiJIEg1+pKROu4XNCWkU3e/KW2/8+0Q
+	/cmhYKq/mB8Qi73n6JKhrjJEvwsGvYo=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: Replace offsetof() with struct_size()
+Date: Mon, 28 Apr 2025 23:06:39 +0200
+Message-ID: <20250428210638.30219-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Compared to offsetof(), struct_size() provides additional compile-time
+checks for structs with flexible arrays (e.g., __must_be_array()).
 
-> On Mon, Apr 28, 2025 at 12:26=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.=
-com> wrote:
->>
->>
->> It is simmetrical in a way.
->
-> is it possible to make them the same?
->
->> Operations on bpf_verifier_state->branches:
->> - do_check_common() initializes env->cur_state->branches =3D=3D 1
->>   (and this is maintained as invariant);
->> - push_stack() does env->cur_state->parent->branches++;
->> - update_branch_counts() does env->cur_state->parent->branches--
->>   (and continues recursively).
->>
->> Operations on bpf_scc_info->branches:
->> - is_state_visited() does insn_scc(env->cur_state->parent->insn_idx)->br=
-anches++
->
-> But this is not the same as =3D 1 at init time.
-> do_check_common() does it for current state,
-> while this extra parent_scc_enter() in is_state_visited()
-> after a new state is created is doing it for the parent.
-> Which is not the same at all.
-> After new state is created st->branches =3D 1,
-> but scc(cur_idx)->branches =3D 0 while scc(parent->insn_idx) got incremen=
-ted
-> and now may be 1 or higher.
+No functional changes intended.
 
-Right after is_state_visited() for parent -> cur_state pair it is an
-invariant, that:
-- scc(parent)->branches =3D=3D 1
-  (because this state just became a parent it only has one child state atm);
-- scc(cur_state)->branches =3D=3D 0
-
-So, the difference is in a state after is_state_visited() {1,0} vs {1,1}.
-
->> - push_stack() does insn_scc(env->cur_state->parent->insn_idx)->branches=
-++;
->
-> this one is equivalent indeed.
->
->> - update_branch_counts() does
->>   insn_scc(env->cur_state->parent->insn_idx)->branches--
->>   (and continues recursively);
->
-> But this one is not.
-> It's doing scc(parent)->branches-- only after st->branches reaches zero.
-> It's not touching scc(cur_idx)->branches at all.
->
->> The main difference is that bpf_verifier_state->branches is initialized =
-to 1,
->> while bpf_scc_info->branches is initialized to 0.
->> Hence a call to parent_scc_enter() in is_state_visited().
->
-> Hmm, extra scc_enter doesn't look equivalent to init to 1.
-> Maybe scc branches need this different counting logic,
-> but being different from st->branches makes everything harder
-> to understand.
-> Maybe st->branches should be converted to this new counting?
-> Logically they are supposed to count the same thing.
-> Both are counting the number of branches being explored.
-> And push_stack() doing it exactly the same way for both is
-> a sign that they should be the same in decrements too.
-> But they're not.
-
-Ok, I'll try to make these identical to avoid confusion.
-Effectively, what's needed is a ->branches counter of a state
-that entered SCC first for current state chain,
-but I didn't want to store a pointer in bpf_scc_info.
-
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 ---
+ kernel/bpf/syscall.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Here is another bummer.
-I figured out a test to cover my mistake with frame_insn_idx() [1].
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 9794446bc8c6..d7287f3e260b 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -36,6 +36,7 @@
+ #include <linux/memcontrol.h>
+ #include <linux/trace_events.h>
+ #include <linux/tracepoint.h>
++#include <linux/overflow.h>
+ 
+ #include <net/netfilter/nf_bpf_link.h>
+ #include <net/netkit.h>
+@@ -693,7 +694,7 @@ struct btf_record *btf_record_dup(const struct btf_record *rec)
+ 
+ 	if (IS_ERR_OR_NULL(rec))
+ 		return NULL;
+-	size = offsetof(struct btf_record, fields[rec->cnt]);
++	size = struct_size(rec, fields, rec->cnt);
+ 	new_rec = kmemdup(rec, size, GFP_KERNEL | __GFP_NOWARN);
+ 	if (!new_rec)
+ 		return ERR_PTR(-ENOMEM);
+@@ -748,7 +749,7 @@ bool btf_record_equal(const struct btf_record *rec_a, const struct btf_record *r
+ 		return false;
+ 	if (rec_a->cnt != rec_b->cnt)
+ 		return false;
+-	size = offsetof(struct btf_record, fields[rec_a->cnt]);
++	size = struct_size(rec_a, fields, rec_a->cnt);
+ 	/* btf_parse_fields uses kzalloc to allocate a btf_record, so unused
+ 	 * members are zeroed out. So memcmp is safe to do without worrying
+ 	 * about padding/unused fields.
+-- 
+2.49.0
 
-[1] https://lore.kernel.org/bpf/20250426104634.744077-1-eddyz87@gmail.com/T=
-/#me1944d603de3438e5db7266fab5159c6c315268f
-
-A simple modification, really:
-
-  diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/se=
-lftests/bpf/progs/iters.c
-  index 646dc0fdd44d..12030aa340b2 100644
-  --- a/tools/testing/selftests/bpf/progs/iters.c
-  +++ b/tools/testing/selftests/bpf/progs/iters.c
-  @@ -1683,6 +1683,7 @@ __naked int absent_mark_in_the_middle_state(void)
-                  "call %[bpf_get_prandom_u32];"
-                  "if r0 =3D=3D r8 goto change_r6_%=3D;"
-          "loop_%=3D:"
-  +               "call noop;"
-                  "r1 =3D r10;"
-                  "r1 +=3D -8;"
-                  "call %[bpf_iter_num_next];"
-  @@ -1714,6 +1715,15 @@ __naked int absent_mark_in_the_middle_state(void)
-          );
-   }
-=20=20
-  +__used __naked
-  +static int noop(void)
-  +{
-  +       asm volatile (
-  +               "r0 =3D 0;"
-  +               "exit;"
-  +       );
-  +}
-  +
-   SEC("?raw_tp")
-   __flag(BPF_F_TEST_STATE_FREQ)
-   __failure __msg("misaligned stack access off 0+-31+0 size 8")
-
-But it showed a much deeper bug. SCCs are computed for an
-intera-procedural CFG. Which means that verifier is inside a loop if any
-IP in current emulated call stack is in an SCC.
-
-So either:
-(a) each IP in the emulated call stack needs to be checked
-    if it is a member of an SCC;
-(b) or insn_succesors() for SCC construction needs to return
-    called sub-program entry as a successor for bpf pseudo call.
-
-(b) is simpler but might get too pessimistic if same sub-program is
-called both inside and outside the loop. (a) -- needs some thought.
-I'll try (b) and check how it affects selftests and scx.
 
