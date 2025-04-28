@@ -1,167 +1,257 @@
-Return-Path: <bpf+bounces-56849-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56850-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97C28A9F4D4
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 17:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D5AFA9F640
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 18:52:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8E501885A73
-	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 15:44:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 786531899BAA
+	for <lists+bpf@lfdr.de>; Mon, 28 Apr 2025 16:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BE1527A13D;
-	Mon, 28 Apr 2025 15:44:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB2D27FD63;
+	Mon, 28 Apr 2025 16:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U7lHAFJC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ASREfJFa"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FACC14A62B;
-	Mon, 28 Apr 2025 15:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1768C440C;
+	Mon, 28 Apr 2025 16:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745855070; cv=none; b=T+SDAi0NNWOD/02FK45niWuoVz/xz7o70QR4cR6ecPEspaN9o08DN64F169LI5O4ogywNs4loCWl8uIzRluNgB6iUOnxK/zwkGrRhmeqiXlbpz1WZFRvuZQCLRypg+nlig+ARCD3KYBi2gsQ3XkaV5GiZzdzbW1KZINUIvq7L4c=
+	t=1745859161; cv=none; b=aJZGp58z/6ReKVMJmTzIQkAZG6Q3Ximh1dS368RTRKOsGDyzB5GqeHM/zscI+YagCgqBzhQGlLBUDsXkjJENDEYr48jIXqM98gLzWdk/9dYP9+9PVvrFC6BKYr34PBVeL2VnKq9KNDxZrDS7sLQkBmMD9t9P5fnkvJnAjbtqEpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745855070; c=relaxed/simple;
-	bh=kQV9pCkeqJoWytEeFKMkDgD4tbL2ML85RN8n8JEdptg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=AuL8Yup1kBBUBjxcaq9ExZzrxkbbzC5cf1B0lNoQwq48VDr/qckao2Gl77KujkFg4mUe/sXmVCBF0T/ikJPku7n1K6gS4jd6dCAAl3SmXoTQL8Ep/qqzJjziYUAlyMtlnvHI0BWy0CUE+t2rjYIGuUA7RzFsMYdZV5rqwwAN5iY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U7lHAFJC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70363C4CEE4;
-	Mon, 28 Apr 2025 15:44:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745855070;
-	bh=kQV9pCkeqJoWytEeFKMkDgD4tbL2ML85RN8n8JEdptg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=U7lHAFJCgCOpS3U4G0ebvWKla0FHOElBUtwXA0oTMYKVsWfxAPKGPh474TIZQKiGK
-	 taL6E7vrzLLP8yD8xMDTRenW9yZk4lvkKg/kxYYHFZUd36JIn+uuoEzkj5tmlTCDJX
-	 UT2WZhRuuZ9vtfhxjdz0e554B1DTgcVTbvMtJxyMo0GIohLz4xZcsOQydoQidJHIYP
-	 NoqjLPhxNofesbdg1OpqWWVpto5PMQO8FEwgp7oK89GQo/WR2kvF8oTpnPX6rW7Ohv
-	 DAK0VQwibOzY1s4x+2NiVtmgkt9FHwKhHriZvfGKlRayiMx3j81kFrEcGKPt+pK9X6
-	 6uTZpJtqgd3uw==
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-Date: Mon, 28 Apr 2025 17:44:03 +0200
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: xdp_metadata: check
- XDP_REDIRCT support for dev-bound progs
+	s=arc-20240116; t=1745859161; c=relaxed/simple;
+	bh=VUF/o4RE1v1hk1nOAcb1fGdra/R4W25gdM3uBlpyVcs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Xyoznu4tnYGvOKRhHwjgT8VY0v7P2IuOnNU9XaVNft9tHLG/DFv4kv21XTxWIOH36r7QpLhRdxBXMEZklRqhldJbpAJv68x2O3sAnXy9z4Ve+L6e08uxYINbP09s4CUluJgvhGxAA6mKPio3HpX8tPlNNezgSQWnG7/pUg802w4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ASREfJFa; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-223fb0f619dso57045055ad.1;
+        Mon, 28 Apr 2025 09:52:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745859159; x=1746463959; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:user-agent:message-id:date
+         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IjvZYK2d2GAr0o6m4ARn5rvHXuqogyOYirhk7zcNjLo=;
+        b=ASREfJFaiE1Lce4P0fvnoDuCXJBQ3RX0CnAMthRqg6T/5wqC9SS+MTWK0xTpuLx0Gu
+         yMDHQqUzIlKybqYmvVFUOHTD/iR0BG25oUpASZtA+EziAzEOnpPK4ow8iDdlU/NhkDYg
+         JBl6rjJsdx9x9fhDby5/6xQ1cMNYzqDmJdq1h5UxlyldPFXQu3gD1HpnpJDJy9Y4IAOZ
+         aT18eSIMATCLcUL57n+YQNkWOBeEOyAhJyo1Md0V+ubvWIW9RQmnT9t1n3K1Bh533ZDy
+         O239MykPXvceLsnijGxiJ8OVz9rBGMjUdiF+K9hSZrrl1pVPjtwJnj70UzbZciOzX6qc
+         4fKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745859159; x=1746463959;
+        h=content-transfer-encoding:mime-version:user-agent:message-id:date
+         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=IjvZYK2d2GAr0o6m4ARn5rvHXuqogyOYirhk7zcNjLo=;
+        b=v3xA67P1TVsYlrZ4AxxWDltL0nlyBGzjg2d/M17jI+tcB3rCq+i0hdfQBakaxPmzuD
+         nLBAN1pwXYz2GArCkK5SNBun5FjmaHu9Ts02qq8hmkND8N7/22Txq4pDCRScMCE829K2
+         JepsIeT5WOCBu5OIn0vHEsgM3UzC1VVbAjtQ01/iJcniwxgx9nQwd+W9noJuCMvOPmpz
+         p8zvRwP9CHYj08ZA1wTz8SsenP8o6YxQAOaeoclk8DH/7qA3cMgAZRXPdYFJGKaMqQxk
+         jrV5odb+0yfFtqR27HTZf6bimq147VSkh/ZWBvAo5KFm0CzFQfutuGtMeADRMohHwSWg
+         MUjg==
+X-Forwarded-Encrypted: i=1; AJvYcCVTZLSQD6tg10hn5WvKcvLEpx9q+VxUH/DguJbkoA+1Rb3Axr57jxnhCnBzjZH237UKdG8=@vger.kernel.org, AJvYcCVrEXIg/sAreH4bqyTLdTxUTReufzr09HGJE9XVQ2ukvJaaGsFG4Qic0xCZhOsbVw/PnwCEIGb9izxRsaah@vger.kernel.org, AJvYcCWxqbrCqcjY6hqUeISiGPfWwaDFLOrPhw7yzugxyduU7ppqc8jUUOXHXVrb48W0gb7OUH7bgO0gIvhQzAWjyWR3@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx50f4uebkm3bscCqQeOUWAu7tWS9vM55tz6L9eYxlvRPfAusHj
+	c48+tdK1ffuub3qxT3lfnF4gcqmueUU7uP+qYjh/XiS8BOI44MjB
+X-Gm-Gg: ASbGnctwfVEl2yo1wspYw567ArKYOMFFd1pa4S8i6zbNoUHuEj+dvampA3yINK8FXsX
+	OYzILm71ZMBuH4UDFx8v/9ewSJs6VdX0PLpEgUggLKFQIh13YEOxr6ZW54YkW0TqAGdQ6hzBAaB
+	2GPm/WdGbcJeM/sXsD47F9LgQ6kfVTZaHikiUzRP0tecLa2QGEHm0s//yE2AidOsdYY1h+FRJIB
+	/1xMXhm/hkLwKwkGR1fXcgKjXS1Dncb8fdJti6cOq5ryqRG6iS6Xm9J05Hvw39x1WSfR4NzxO5R
+	rfkpIXAkIA2xTFBoKpt+UkQatLGQtb8hkSdvATEJRl+TrUXIbw==
+X-Google-Smtp-Source: AGHT+IGBCRKNAZsf7FtVymPsCdsoGJ/DJafrNa9HOoRlQsbwOsn8q7cEi76BNaSHeHA2zQC4abBnMA==
+X-Received: by 2002:a17:903:40cb:b0:224:1935:fb91 with SMTP id d9443c01a7336-22dbf5fd432mr161245665ad.27.1745859159109;
+        Mon, 28 Apr 2025 09:52:39 -0700 (PDT)
+Received: from ezingerman-mba ([2620:10d:c090:500::6:6628])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22dd86032dcsm25258755ad.181.2025.04.28.09.52.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Apr 2025 09:52:38 -0700 (PDT)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexis =?utf-8?Q?Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Cc: "Alexei Starovoitov" <ast@kernel.org>,  "Daniel Borkmann"
+ <daniel@iogearbox.net>,  "John Fastabend" <john.fastabend@gmail.com>,
+  "Andrii Nakryiko" <andrii@kernel.org>,  "Martin KaFai Lau"
+ <martin.lau@linux.dev>,  "Song Liu" <song@kernel.org>,  "Yonghong Song"
+ <yonghong.song@linux.dev>,  "KP Singh" <kpsingh@kernel.org>,  "Stanislav
+ Fomichev" <sdf@fomichev.me>,  "Hao Luo" <haoluo@google.com>,  "Jiri Olsa"
+ <jolsa@kernel.org>,  "Puranjay Mohan" <puranjay@kernel.org>,  "Xu Kuohai"
+ <xukuohai@huaweicloud.com>,  "Catalin Marinas" <catalin.marinas@arm.com>,
+  "Will Deacon" <will@kernel.org>,  "Mykola Lysenko" <mykolal@fb.com>,
+  "Shuah Khan" <shuah@kernel.org>,  "Maxime Coquelin"
+ <mcoquelin.stm32@gmail.com>,  "Alexandre Torgue"
+ <alexandre.torgue@foss.st.com>,  "Florent Revest" <revest@chromium.org>,
+  "Bastien Curutchet" <bastien.curutchet@bootlin.com>,
+  <ebpf@linuxfoundation.org>,  "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>,  <bpf@vger.kernel.org>,
+  <linux-kernel@vger.kernel.org>,  <linux-arm-kernel@lists.infradead.org>,
+  <linux-kselftest@vger.kernel.org>,
+  <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH RFC bpf-next 3/4] bpf/selftests: add tests to validate
+ proper arguments alignment on ARM64
+In-Reply-To: <D9I6TQN2I6B1.QC4FFHEWAURZ@bootlin.com> ("Alexis =?utf-8?Q?Lo?=
+ =?utf-8?Q?thor=C3=A9=22's?=
+	message of "Mon, 28 Apr 2025 12:08:32 +0200")
+References: <20250411-many_args_arm64-v1-0-0a32fe72339e@bootlin.com>
+	<20250411-many_args_arm64-v1-3-0a32fe72339e@bootlin.com>
+	<3a16fae0346d4f733fb1a67ae6420d8bf935dbd8.camel@gmail.com>
+	<D9I6TQN2I6B1.QC4FFHEWAURZ@bootlin.com>
+Date: Mon, 28 Apr 2025 09:52:35 -0700
+Message-ID: <m21ptcmdnw.fsf@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250428-xdp-prog-bound-fix-v3-2-c9e9ba3300c7@kernel.org>
-References: <20250428-xdp-prog-bound-fix-v3-0-c9e9ba3300c7@kernel.org>
-In-Reply-To: <20250428-xdp-prog-bound-fix-v3-0-c9e9ba3300c7@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>
-X-Mailer: b4 0.14.2
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Improve xdp_metadata bpf selftest in order to check it is possible for a
-XDP dev-bound program to perform XDP_REDIRECT into a DEVMAP but it is still
-not allowed to attach a XDP dev-bound program to a DEVMAP entry.
+Alexis Lothor=C3=A9 <alexis.lothore@bootlin.com> writes:
 
-Acked-by: Stanislav Fomichev <sdf@fomichev.me>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- .../selftests/bpf/prog_tests/xdp_metadata.c        | 22 +++++++++++++++++++++-
- tools/testing/selftests/bpf/progs/xdp_metadata.c   | 13 +++++++++++++
- 2 files changed, 34 insertions(+), 1 deletion(-)
+[...]
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-index 3d47878ef6bfb55c236dc9df2c100fcc449f8de3..19f92affc2daa23fdd869554e7a0475b86350a4f 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-@@ -351,9 +351,10 @@ void test_xdp_metadata(void)
- 	struct xdp_metadata2 *bpf_obj2 = NULL;
- 	struct xdp_metadata *bpf_obj = NULL;
- 	struct bpf_program *new_prog, *prog;
-+	struct bpf_devmap_val devmap_e = {};
-+	struct bpf_map *prog_arr, *devmap;
- 	struct nstoken *tok = NULL;
- 	__u32 queue_id = QUEUE_ID;
--	struct bpf_map *prog_arr;
- 	struct xsk tx_xsk = {};
- 	struct xsk rx_xsk = {};
- 	__u32 val, key = 0;
-@@ -409,6 +410,13 @@ void test_xdp_metadata(void)
- 	bpf_program__set_ifindex(prog, rx_ifindex);
- 	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
- 
-+	/* Make sure we can load a dev-bound program that performs
-+	 * XDP_REDIRECT into a devmap.
-+	 */
-+	new_prog = bpf_object__find_program_by_name(bpf_obj->obj, "redirect");
-+	bpf_program__set_ifindex(new_prog, rx_ifindex);
-+	bpf_program__set_flags(new_prog, BPF_F_XDP_DEV_BOUND_ONLY);
-+
- 	if (!ASSERT_OK(xdp_metadata__load(bpf_obj), "load skeleton"))
- 		goto out;
- 
-@@ -423,6 +431,18 @@ void test_xdp_metadata(void)
- 			"update prog_arr"))
- 		goto out;
- 
-+	/* Make sure we can't add dev-bound programs to devmaps. */
-+	devmap = bpf_object__find_map_by_name(bpf_obj->obj, "dev_map");
-+	if (!ASSERT_OK_PTR(devmap, "no dev_map found"))
-+		goto out;
-+
-+	devmap_e.bpf_prog.fd = val;
-+	if (!ASSERT_ERR(bpf_map__update_elem(devmap, &key, sizeof(key),
-+					     &devmap_e, sizeof(devmap_e),
-+					     BPF_ANY),
-+			"update dev_map"))
-+		goto out;
-+
- 	/* Attach BPF program to RX interface. */
- 
- 	ret = bpf_xdp_attach(rx_ifindex,
-diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata.c b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-index 31ca229bb3c0f182483334a4ab0bd204acae20f3..09bb8a038d528cf26c5b314cc927915ac2796bf0 100644
---- a/tools/testing/selftests/bpf/progs/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-@@ -19,6 +19,13 @@ struct {
- 	__type(value, __u32);
- } prog_arr SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(struct bpf_devmap_val));
-+	__uint(max_entries, 1);
-+} dev_map SEC(".maps");
-+
- extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
- extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
-@@ -95,4 +102,10 @@ int rx(struct xdp_md *ctx)
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
- }
- 
-+SEC("xdp")
-+int redirect(struct xdp_md *ctx)
-+{
-+	return bpf_redirect_map(&dev_map, ctx->rx_queue_index, XDP_PASS);
-+}
-+
- char _license[] SEC("license") = "GPL";
+>> The function listened to is defined as accepting 'struct bpf_testmod_str=
+uct_arg_7',
+>> at the same time this function uses 'struct bpf_testmod_struct_arg_5'.
+>
+> That's not an accidental mistake, those are in fact the same definition.
+> bpf_testmod_struct_arg_7 is the kernel side definition in bpf_testmod.c:
+>
+> struct bpf_testmod_struct_arg_7 {
+> 	__int128 a;
+> };
+>
+> and struct bpf_testmode_struct_arg_5 is the one defined in the bpf test
+> program:
+>
+> struct bpf_testmod_struct_arg_5 {
+> 	__int128 a;
+> };
 
--- 
-2.49.0
+Apologies, but I'm still confused:
+- I apply this series on top of:
+  224ee86639f5 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bp=
+f after rc4")
 
+- line 12 of tracing_struct_many_args.c has the following definition:
+
+  struct bpf_testmod_struct_arg_5 {
+         char a;
+         short b;
+         int c;
+         long d;
+  };
+
+- line 135 of the same file has the following definition:
+
+   SEC("fentry/bpf_testmod_test_struct_arg_11")
+   int BPF_PROG2(test_struct_many_args_9, struct bpf_testmod_struct_arg_5, =
+a,
+                 struct bpf_testmod_struct_arg_5, b,
+                 struct bpf_testmod_struct_arg_5, c,
+                 struct bpf_testmod_struct_arg_5, d, int, e,
+                 struct bpf_testmod_struct_arg_5, f)
+
+- line 70 of tools/testing/selftests/bpf/test_kmods/bpf_testmod.c:
+
+   struct bpf_testmod_struct_arg_7 {
+         __int128 a;
+   };
+
+- line 152 of the same file:
+
+  noinline int bpf_testmod_test_struct_arg_11(struct bpf_testmod_struct_arg=
+_7 a,
+                                              struct bpf_testmod_struct_arg=
+_7 b,
+                                              struct bpf_testmod_struct_arg=
+_7 c,
+                                              struct bpf_testmod_struct_arg=
+_7 d,
+                                              short e,
+                                              struct bpf_testmod_struct_arg=
+_7 f)
+
+Do I use a wrong base to apply the series?
+
+[...]
+
+>> Nevertheless, the assertion persists even with correct types.
+>
+> So I digged a bit further to better share my observations here. This is t=
+he
+> function stack when entering the trampoline after having triggered the
+> target function execution:
+>
+> (gdb) x/64b $rbp+0x18
+> 0xffffc9000015fd60:     41      0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd68:     0       0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd70:     42      0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd78:     35      0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd80:     43      0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd88:     0       0       0       0       0       0       0=
+       0
+>
+> We see the arguments that did not fit in registers, so d, e and f.
+>
+> This is the ebpf context generated by the trampoline for the fentry
+> program, from the content of the stack above + the registers:
+>
+> (gdb) x/128b $rbp-60
+> 0xffffc9000015fce8:     38      0       0       0       0       0       0=
+       0
+> 0xffffc9000015fcf0:     0       0       0       0       0       0       0=
+       0
+> 0xffffc9000015fcf8:     39      0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd00:     0       0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd08:     40      0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd10:     0       0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd18:     41      0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd20:     0       0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd28:     42      0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd30:     35      0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd38:     43      0       0       0       0       0       0=
+       0
+> 0xffffc9000015fd40:     37      0       0       0       0       0       0=
+       0
+>
+> So IIUC, this is wrong because the "e" variable in the bpf program being
+> an int (and about to receive value 42), it occupies only 1 "tracing conte=
+xt
+> 8-byte slot", so the value 43 (representing the content for variable f),
+> should be right after it, at 0xffffc9000015fd30. What we have instead is a
+> hole, very likely because we copied silently the alignment from the
+> original function call (and I guess this 35 value is a remnant from the
+> previous test, which uses values from 27 to 37)
+
+Interesting, thank you for the print outs.
+
+> Regardless of this issue, based on discussion from last week, I think I'll
+> go for the implementation suggested by Alexei: handling the nominal cases,
+> and detecting and blocking the non trivial cases (eg: structs passed on
+> stack). It sounds reasonable as there seems to be no exisiting kernel
+> function currently able to trigger those very specific cases, so it could
+> be added later if this changes.
+
+Yes, this makes sense.
 
