@@ -1,236 +1,161 @@
-Return-Path: <bpf+bounces-56946-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56947-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B557BAA0B38
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 14:11:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CCAFAA0C9D
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 15:03:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71A5E3AC732
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 12:10:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1D9F4830B1
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 13:03:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C56527BF8A;
-	Tue, 29 Apr 2025 12:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C897415747C;
+	Tue, 29 Apr 2025 13:03:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bivDS8PO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HrCMNlVo"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A5927A90A
-	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 12:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D94487BF
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 13:03:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745928617; cv=none; b=W/QD0VV+x8WD8sO8mvbzfvSM6TTF4VpOxYD/zFDDrA8pxv0s1p9qg6RuJWRxB2ZRmfoMlZSRPyLV2qoSXFWxLL7aKeaHoZFHGq9NJ3Auf6UOq8TzhSK/hG+YLfAfK1E9svYMv+Y7egobfF3auKyOZKgL1mSY/lTtSX6+frJfuEw=
+	t=1745931814; cv=none; b=ImAjqao9RkHmLbzBx6md7K6D8iG620T27GRbts5eKuomW0nJTl0ikH8JbgK8RvXIU24aTeNIZ7Rrdy6641Iby/jbanCKhzhbFz+px7uW+xG+FcBKLOGh7wy7drlIVzL5dJdrbhJQ1iUxv+bnGgD8A5hbHV3eF2/h5BUFwUKGURY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745928617; c=relaxed/simple;
-	bh=mb17IOCgVVpSucIMd87jlf64vKog/jviBeBcDvP1YQc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=q6d0tW5/P1zMr4lnEMfvnG2kCMxl4yC9MoCLoaqtEbfw0ZJXLsiE4BjIJ20kXc0DEx+dwLXUakMSn2ejz4NeTZX4a0CFpGHNNz3uaocbRPnHuucrMJZVHpKJiWxZeLHTDSSngKSG/+EbT7d0aTXjNqQ29Jd86pylrDUER0LLROY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bivDS8PO; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1745928614;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TnFM2K3257UGzeSI3eOkJDuCGJ4N6zCW6N/z7ul8q7U=;
-	b=bivDS8POLfDxL44hoB0Z/8FWr1Mdj+a12qZDI3+tdjB9clkc/tEBG7psp8tCx1NK+0kTrj
-	Y7Ykj+PndO4D8x37OWyIen1qMimYHhdEAFKat0n44rzVDQ0rct/D95uoe2eTnpkWz7Oo5i
-	WDG/sYrKqNLj0Z3xrfLJ0T+wlvsHE0s=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-282-SFj-iRFMMzqZXWt0yYVMtQ-1; Tue, 29 Apr 2025 08:10:12 -0400
-X-MC-Unique: SFj-iRFMMzqZXWt0yYVMtQ-1
-X-Mimecast-MFC-AGG-ID: SFj-iRFMMzqZXWt0yYVMtQ_1745928611
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-5f4d2e9cdbdso5084407a12.1
-        for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 05:10:12 -0700 (PDT)
+	s=arc-20240116; t=1745931814; c=relaxed/simple;
+	bh=UVkHcl3aQSvHbDA91XSP5SGl0J5Vx2IuuxjWhC23+VM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HgebdihqDc+zS5opsaeY62x6ppli6x8TFiHGTZkKOI4ZV7Yz1xXQKvXT36STa9+eu9VLEaForlR3fXjEY4qqWDBfPuojkEx5KxILWlgQyUxGnT/bDtYj/n49qM1EH1scvG2mnQUcCt27oW1D61zfXLS7TFr2X+YnbneGkNw4z7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HrCMNlVo; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5f4b7211badso9754085a12.2
+        for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 06:03:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745931810; x=1746536610; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uq8ecgHUyxCS5ksWMNOwpQQuAqPncUrMeyNDshKPs1o=;
+        b=HrCMNlVovpOgtz49qjs5/CcyOQDCs5eanqmT/vDcN38/zUexG5N3dApd43CERzjJwX
+         5LfHxpU7exSHIyudtm1mQutAclGxdvHDii7fE9F4j7SvfrrtVbQmJMNtbawQAahLcIxS
+         c4D30YIe8FmCA9fN8933+cggIkWlNC2xEz3zKbrDidiwy7lisvpRgHH8KsIrqYo+Exge
+         8FVedPjFhAVBhUqcVWerBvA3YYaw4eA+VIuD0l9q94nWS9IRD5veA91q2eevovaoL307
+         Z/+pSCagkZ1jQ9B/umRToLxELforByai0muNJ6vSiGidNA0XxKTlzQyC3zkhw85+/miW
+         /tuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745928611; x=1746533411;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TnFM2K3257UGzeSI3eOkJDuCGJ4N6zCW6N/z7ul8q7U=;
-        b=IHbPSqhqZ8gG5IzL4gxoeoP8yhEKjFeJlB0Mg6F6z7FWjYuSu/X+77vZweOz6ubpxd
-         t3lRn+Lr/7HyzWBbxCn+YXgXTMKYuFokSwDiQPU04pxfdHYyREX/PB1y27M6bsOxHkaW
-         /02aR45UvpKST/mvZpb65Vg/Ct/CjXv7ML3YjqZ2ly7IRA2Wf88fXVzLASLd2bqG7XI1
-         SEOqq71E5EqhOiAl8oCos9MZohvYeH4VFqy+ZfN7VEihP7zKvkKG5PekZsezh8U3P3ST
-         6ig84aTDY2pLt01z2890mrAIh1X5KQKtURQsSaccSHKxNHJV+u1Odf3w1e2HJd0Geg4Q
-         4QtA==
-X-Forwarded-Encrypted: i=1; AJvYcCXIuSR2N8vfjvi+DsGTEKLj/4LWjqgxR3mABowBqhUKLWaifivXuGd07O5noXIwVH2WPUE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3Sk20B3zH29iWKLrjQCj9Sh8z5mlSIabO5k010iAAZu0W24EO
-	KeXAatVOIWfsCAK6hSthNZA7twam7b42FLLo4ihmINl+WLAAUgc2n2fmu6gkXVkTEkDAlQzmioE
-	ivoFnU0alTOyyC+y8kTvHVTzMXKllBqDM0FKi+F+xKAAYCxov6w==
-X-Gm-Gg: ASbGncvp734ZeJUkGEEaX/haGBJQXebeV4XfuR85j8E12t3+2Bm/df6bNJnlyVjUdtx
-	BnLW+2ujqCEbYGpFHA9KabCk5UyOxYmyXFzNW+PrFWbrpEKGlo18KoqD7SSIDaz/ikSKdGQPKaa
-	ucjUM6/M8xWXOlcKhmkbkQDsg3UgwWmcQxuk7c18oIETNqE3Q90imN1U/NJSynirBBNghkKmxRI
-	mXW/RIgsgZqov95JVTVNcFVkvBJOq4cU8GgiA9Ajs0M6/VS1DfnmEFt7v0zxb342MST7EHOmEhb
-	Py56OhsFonB+ahEXHZM3L6HITApokF45LUrE2kR48Dw5lD0JhBYdNWOESZ8=
-X-Received: by 2002:a17:907:3fa5:b0:ac3:3e40:e183 with SMTP id a640c23a62f3a-acec84b7f9amr291015466b.3.1745928611344;
-        Tue, 29 Apr 2025 05:10:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEhPtGWXOZLT3mFaQPhUAK8VlJ77Tme05C3lCQT5D5BXFTuMnjP5AuORU6+ROxdywsJiFjHLQ==
-X-Received: by 2002:a17:907:3fa5:b0:ac3:3e40:e183 with SMTP id a640c23a62f3a-acec84b7f9amr291008666b.3.1745928610750;
-        Tue, 29 Apr 2025 05:10:10 -0700 (PDT)
-Received: from ?IPV6:2a0d:3344:2726:1910:4ca0:1e29:d7a3:b897? ([2a0d:3344:2726:1910:4ca0:1e29:d7a3:b897])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace6e41c736sm787561366b.12.2025.04.29.05.10.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Apr 2025 05:10:10 -0700 (PDT)
-Message-ID: <0a5c7897-ed95-4198-9896-ddae64335083@redhat.com>
-Date: Tue, 29 Apr 2025 14:10:08 +0200
+        d=1e100.net; s=20230601; t=1745931810; x=1746536610;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uq8ecgHUyxCS5ksWMNOwpQQuAqPncUrMeyNDshKPs1o=;
+        b=Xv/h9W3X2L4rxOxeK2znj3xqnVEB/ZcM486uuDAeJ2vcSJ3jFOLd31ZvwHUPWVW7in
+         vfnl/MkvTfaAYha05HgBom8R2HGClC0ALEbU1ovKtEFL4JFEGUZqE25Panph+X/wZ1kC
+         VwHWkG8dPZ8fkKbW04enh2bX2aOoHJUDCLbwUk7OU/tTSSuWKu+s1G51nozkzyKpZHWC
+         IppDLhp9WJOd+R+atKCdhWtTpkN2hNHi5tupReslh/vFqVWHaYXXm3nS9Hs9MvvvgCHD
+         k9EWPW1zzWXaH+x7Pgt3serWkmL6/6qqRZQxAovHS/4nxepFr3W3+a5aT9SILuQPqkEs
+         xSqg==
+X-Gm-Message-State: AOJu0YzftSGLCSDaM8Ae/Ga9Kcvy1i1JEubEELd/zmv4e7f07/1GaSsm
+	Id0AsmoOt6nW8QrH77W2foUW/YyfKx4LiZizDj7MCNd4ecD9LGRXEIbZog==
+X-Gm-Gg: ASbGnctr/lYLYiSiATKv83PqBAuKFwYZEfGS2B6OlDamDD7bihksnVTHrVorQXIS9Sx
+	metxPQlbQNksJzVgIddqMyl3Eppfqs90h+D3i2pNah/cTcj9oE8iNkxd2YpNGzDRkHnvXA3s9wF
+	eQrfIzSUf48iVZZLwt74IFYqo3VS+pB3SlwMwyVsJ7QOsNYAKP9OoiUzS1GlwKCIDsXErqnH7X4
+	6N3H0P1l703+Lq2PSesFBVUghDhvoI+ffBcMBVEVTpjeotozhqRVs6uRq2sKsuiuwKI8JK8+976
+	mVMK6tViJEDQQ1k7Lt+AgUVdfIy0AO+ckoDQRGTI2cDlEsQwsHTpCdrrxTu9e0egP4TtURg=
+X-Google-Smtp-Source: AGHT+IF/57nlPBgOraUhKuRizmX38TFt2Q8u4/gOxDv2gBeK5+vfJ6nlOfiwpYAo/XSPPfNYDQ/BnQ==
+X-Received: by 2002:a05:6402:350c:b0:5f7:eb1e:7f25 with SMTP id 4fb4d7f45d1cf-5f83b0c3d7fmr2211399a12.12.1745931809614;
+        Tue, 29 Apr 2025 06:03:29 -0700 (PDT)
+Received: from localhost.localdomain ([2a04:ee41:4:b2de:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5f7011fc653sm7335905a12.14.2025.04.29.06.03.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Apr 2025 06:03:29 -0700 (PDT)
+From: Anton Protopopov <a.s.protopopov@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Anton Protopopov <a.s.protopopov@gmail.com>
+Subject: [PATCH v1 bpf-next] bpf: fix uninitialized values in BPF_{CORE,PROBE}_READ
+Date: Tue, 29 Apr 2025 13:08:09 +0000
+Message-Id: <20250429130809.1811713-1-a.s.protopopov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 net-next 10/15] tcp: accecn: AccECN option send control
-To: chia-yu.chang@nokia-bell-labs.com, horms@kernel.org, dsahern@kernel.org,
- kuniyu@amazon.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
- dave.taht@gmail.com, jhs@mojatatu.com, kuba@kernel.org,
- stephen@networkplumber.org, xiyou.wangcong@gmail.com, jiri@resnulli.us,
- davem@davemloft.net, edumazet@google.com, andrew+netdev@lunn.ch,
- donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com,
- shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org,
- ncardwell@google.com, koen.de_schepper@nokia-bell-labs.com,
- g.white@cablelabs.com, ingemar.s.johansson@ericsson.com,
- mirja.kuehlewind@ericsson.com, cheshire@apple.com, rs.ietf@gmx.at,
- Jason_Livingood@comcast.com, vidhi_goel@apple.com
-References: <20250422153602.54787-1-chia-yu.chang@nokia-bell-labs.com>
- <20250422153602.54787-11-chia-yu.chang@nokia-bell-labs.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250422153602.54787-11-chia-yu.chang@nokia-bell-labs.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 4/22/25 5:35 PM, chia-yu.chang@nokia-bell-labs.com wrote:
-> From: Ilpo Järvinen <ij@kernel.org>
-> 
-> Instead of sending the option in every ACK, limit sending to
-> those ACKs where the option is necessary:
-> - Handshake
-> - "Change-triggered ACK" + the ACK following it. The
->   2nd ACK is necessary to unambiguously indicate which
->   of the ECN byte counters in increasing. The first
->   ACK has two counters increasing due to the ecnfield
->   edge.
-> - ACKs with CE to allow CEP delta validations to take
->   advantage of the option.
-> - Force option to be sent every at least once per 2^22
->   bytes. The check is done using the bit edges of the
->   byte counters (avoids need for extra variables).
-> - AccECN option beacon to send a few times per RTT even if
->   nothing in the ECN state requires that. The default is 3
->   times per RTT, and its period can be set via
->   sysctl_tcp_ecn_option_beacon.
-> 
-> Signed-off-by: Ilpo Järvinen <ij@kernel.org>
-> Co-developed-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-> Signed-off-by: Chia-Yu Chang <chia-yu.chang@nokia-bell-labs.com>
-> ---
->  include/linux/tcp.h        |  3 +++
->  include/net/netns/ipv4.h   |  1 +
->  include/net/tcp.h          |  1 +
->  net/ipv4/sysctl_net_ipv4.c |  9 ++++++++
->  net/ipv4/tcp.c             |  5 ++++-
->  net/ipv4/tcp_input.c       | 36 +++++++++++++++++++++++++++++++-
->  net/ipv4/tcp_ipv4.c        |  1 +
->  net/ipv4/tcp_minisocks.c   |  2 ++
->  net/ipv4/tcp_output.c      | 42 ++++++++++++++++++++++++++++++--------
->  9 files changed, 90 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-> index 0e032d9631ac..acb0727855f8 100644
-> --- a/include/linux/tcp.h
-> +++ b/include/linux/tcp.h
-> @@ -309,8 +309,11 @@ struct tcp_sock {
->  	u8	received_ce_pending:4, /* Not yet transmit cnt of received_ce */
->  		unused2:4;
->  	u8	accecn_minlen:2,/* Minimum length of AccECN option sent */
-> +		prev_ecnfield:2,/* ECN bits from the previous segment */
-> +		accecn_opt_demand:2,/* Demand AccECN option for n next ACKs */
->  		est_ecnfield:2;/* ECN field for AccECN delivered estimates */
->  	u32	app_limited;	/* limited until "delivered" reaches this val */
-> +	u64	accecn_opt_tstamp;	/* Last AccECN option sent timestamp */
+With the latest LLVM bpf selftests build will fail:
 
-AFAICS this field is only access in the tx path, while this chunk belong
-to the tcp_sock_write_txrx group.
+    progs/profiler.inc.h:710:31: error: default initialization of an object of type 'typeof ((parent_task)->real_cred->uid.val)' (aka 'const unsigned int') leaves the object uninitialized and is incompatible with C++ [-Werror,-Wdefault-const-init-unsafe]
+      710 |         proc_exec_data->parent_uid = BPF_CORE_READ(parent_task, real_cred, uid.val);
+          |                                      ^
+    tools/testing/selftests/bpf/tools/include/bpf/bpf_core_read.h:520:35: note: expanded from macro 'BPF_CORE_READ'
+      520 |         ___type((src), a, ##__VA_ARGS__) __r;                               \
+          |                                          ^
 
-> @@ -740,6 +740,15 @@ static struct ctl_table ipv4_net_table[] = {
->  		.extra1		= SYSCTL_ZERO,
->  		.extra2		= SYSCTL_TWO,
->  	},
-> +	{
-> +		.procname	= "tcp_ecn_option_beacon",
-> +		.data		= &init_net.ipv4.sysctl_tcp_ecn_option_beacon,
-> +		.maxlen		= sizeof(u8),
-> +		.mode		= 0644,
-> +		.proc_handler	= proc_dou8vec_minmax,
-> +		.extra1		= SYSCTL_ZERO,
-> +		.extra2		= SYSCTL_FOUR,
+Fix this by declaring __r to be an array of __u8 of a proper size.
 
-The number of new sysctl is concerning high, and I don't see any
-documentation update yet.
+Fixes: 792001f4f7aa ("libbpf: Add user-space variants of BPF_CORE_READ() family of macros")
+Fixes: a4b09a9ef945 ("libbpf: Add non-CO-RE variants of BPF_CORE_READ() macro family")
+Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+---
+ tools/lib/bpf/bpf_core_read.h | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-> @@ -6291,9 +6294,36 @@ void tcp_ecn_received_counters(struct sock *sk, const struct sk_buff *skb,
->  
->  		if (payload_len > 0) {
->  			u8 minlen = tcp_ecnfield_to_accecn_optfield(ecnfield);
-> +			u32 oldbytes = tp->received_ecn_bytes[ecnfield - 1];
-> +
->  			tp->received_ecn_bytes[ecnfield - 1] += payload_len;
->  			tp->accecn_minlen = max_t(u8, tp->accecn_minlen,
->  						  minlen);
-> +
-> +			/* Demand AccECN option at least every 2^22 bytes to
-> +			 * avoid overflowing the ECN byte counters.
-> +			 */
-> +			if ((tp->received_ecn_bytes[ecnfield - 1] ^ oldbytes) &
-> +			    ~((1 << 22) - 1)) {
-> +				u8 opt_demand = max_t(u8, 1,
-> +						      tp->accecn_opt_demand);
-> +
-> +				tp->accecn_opt_demand = opt_demand;
-> +			}
-
-I guess this explains the u32 values for such counters. Some comments in
-the previous patch could be useful.
-
-> diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-> index 3f3e285fc973..2e95dad66fe3 100644
-> --- a/net/ipv4/tcp_ipv4.c
-> +++ b/net/ipv4/tcp_ipv4.c
-> @@ -3451,6 +3451,7 @@ static int __net_init tcp_sk_init(struct net *net)
->  {
->  	net->ipv4.sysctl_tcp_ecn = 2;
->  	net->ipv4.sysctl_tcp_ecn_option = 2;
-> +	net->ipv4.sysctl_tcp_ecn_option_beacon = 3;
->  	net->ipv4.sysctl_tcp_ecn_fallback = 1;
-
-Human readable macros instead of magic numbers could help.
-
-> @@ -1237,13 +1253,18 @@ static unsigned int tcp_established_options(struct sock *sk, struct sk_buff *skb
->  
->  	if (tcp_ecn_mode_accecn(tp) &&
->  	    sock_net(sk)->ipv4.sysctl_tcp_ecn_option) {
-> -		int saving = opts->num_sack_blocks > 0 ? 2 : 0;
-> -		int remaining = MAX_TCP_OPTION_SPACE - size;
-> -
-> -		opts->ecn_bytes = tp->received_ecn_bytes;
-> -		size += tcp_options_fit_accecn(opts, tp->accecn_minlen,
-> -					       remaining,
-> -					       saving);
-> +		if (sock_net(sk)->ipv4.sysctl_tcp_ecn_option >= 2 ||
-> +		    tp->accecn_opt_demand ||
-> +		    tcp_accecn_option_beacon_check(sk)) {
-
-Why a nested if here and just not expanding the existing one?
-
-/P
+diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
+index c0e13cdf9660..be556ccdc002 100644
+--- a/tools/lib/bpf/bpf_core_read.h
++++ b/tools/lib/bpf/bpf_core_read.h
+@@ -517,9 +517,9 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 btf_id) __ksym __weak;
+  * than enough for any practical purpose.
+  */
+ #define BPF_CORE_READ(src, a, ...) ({					    \
+-	___type((src), a, ##__VA_ARGS__) __r;				    \
+-	BPF_CORE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);		    \
+-	__r;								    \
++	__u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];		    \
++	BPF_CORE_READ_INTO(__r, (src), a, ##__VA_ARGS__);		    \
++	*(___type((src), a, ##__VA_ARGS__) *)__r;			    \
+ })
+ 
+ /*
+@@ -533,16 +533,16 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 btf_id) __ksym __weak;
+  * input argument.
+  */
+ #define BPF_CORE_READ_USER(src, a, ...) ({				    \
+-	___type((src), a, ##__VA_ARGS__) __r;				    \
+-	BPF_CORE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);		    \
+-	__r;								    \
++	__u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];		    \
++	BPF_CORE_READ_USER_INTO(__r, (src), a, ##__VA_ARGS__);		    \
++	*(___type((src), a, ##__VA_ARGS__) *)__r;			    \
+ })
+ 
+ /* Non-CO-RE variant of BPF_CORE_READ() */
+ #define BPF_PROBE_READ(src, a, ...) ({					    \
+-	___type((src), a, ##__VA_ARGS__) __r;				    \
+-	BPF_PROBE_READ_INTO(&__r, (src), a, ##__VA_ARGS__);		    \
+-	__r;								    \
++	__u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];		    \
++	BPF_PROBE_READ_INTO(__r, (src), a, ##__VA_ARGS__);		    \
++	*(___type((src), a, ##__VA_ARGS__) *)__r;			    \
+ })
+ 
+ /*
+@@ -552,9 +552,9 @@ extern void *bpf_rdonly_cast(const void *obj, __u32 btf_id) __ksym __weak;
+  * not restricted to kernel types only.
+  */
+ #define BPF_PROBE_READ_USER(src, a, ...) ({				    \
+-	___type((src), a, ##__VA_ARGS__) __r;				    \
+-	BPF_PROBE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);	    \
+-	__r;								    \
++	__u8 __r[sizeof(___type((src), a, ##__VA_ARGS__))];		    \
++	BPF_PROBE_READ_USER_INTO(__r, (src), a, ##__VA_ARGS__);		    \
++	*(___type((src), a, ##__VA_ARGS__) *)__r;			    \
+ })
+ 
+ #endif
+-- 
+2.34.1
 
 
