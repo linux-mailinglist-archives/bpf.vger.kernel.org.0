@@ -1,202 +1,281 @@
-Return-Path: <bpf+bounces-56954-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56955-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A951AA0F6A
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 16:47:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB029AA100C
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 17:10:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2906D189E44B
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 14:47:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A636484026D
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 15:09:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47B9C21A94D;
-	Tue, 29 Apr 2025 14:45:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B32C21CFFD;
+	Tue, 29 Apr 2025 15:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DMiVA4bg"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="iqWBDe/y"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2063.outbound.protection.outlook.com [40.107.92.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4202222D1
-	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 14:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745937914; cv=none; b=MJVHOJulGoDyomnahlZFWHetbegPwZmGaQXRPI9UhyxzQZsbXYx8hsphGz0RBa/ctghnWREQx0XKBfAqgJzyd8t5egOmT9L7gvfYG+u+ZTnyVP5aj5qjSvr7aoP8DoK9d7CS0GsushO9rGUpcNCgdV2uwRMKlE7N/i+e95XL7xM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745937914; c=relaxed/simple;
-	bh=X4Wo18nxqtTMLDhZsnIwFvvWrKbVcmKLwzzbZn2wAfE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ov3n4njH5RWePSlMQkGfFlIc4xFxxYhpn1ySf2nSkU0dJW4W6w/Lh3X7g3q8PxCSBcoTzcAbsnB3V4OZ0tMt+/f41pHpUwzjxKtgx+YbCURHWIz7m9UpQeTMA9BOtzzfZ+n6wDrKv6JPD2EpB3F6byeuEW0a0uH6P/8YrcHfYso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DMiVA4bg; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745937899;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rOg8kBrXZEnZpRYh6yQ9Avc2ZWUXKTUFukDwMrQ1gOc=;
-	b=DMiVA4bgCsbTpuwrElY5dwht3Cvl2YsSagUxRzi9WTr4aZa0CHe7OYGjmvQ3jkWQYmkdWE
-	Q3nFIx+8SJ9JpafbUVrkIZyQJzlZysFdL+o9xmOJKWxddPO8u5/tSYuRiI5Y08fk72fEqh
-	IK04CZvyhOsWgHGn3BFqlVxYtH0emwE=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Michal Hocko <mhocko@suse.com>
-Cc: linux-kernel@vger.kernel.org,  Andrew Morton
- <akpm@linux-foundation.org>,  Alexei Starovoitov <ast@kernel.org>,
-  Johannes Weiner <hannes@cmpxchg.org>,  Shakeel Butt
- <shakeel.butt@linux.dev>,  Suren Baghdasaryan <surenb@google.com>,  David
- Rientjes <rientjes@google.com>,  Josh Don <joshdon@google.com>,  Chuyi
- Zhou <zhouchuyi@bytedance.com>,  cgroups@vger.kernel.org,
-  linux-mm@kvack.org,  bpf@vger.kernel.org
-Subject: Re: [PATCH rfc 00/12] mm: BPF OOM
-In-Reply-To: <aBC7E487qDSDTdBH@tiehlicka> (Michal Hocko's message of "Tue, 29
-	Apr 2025 13:42:11 +0200")
-References: <20250428033617.3797686-1-roman.gushchin@linux.dev>
-	<aBC7E487qDSDTdBH@tiehlicka>
-Date: Tue, 29 Apr 2025 07:44:52 -0700
-Message-ID: <87selrrpqz.fsf@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06CA2192E2
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 15:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.63
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745939391; cv=fail; b=savA5bb4icxaZ4eFy2jC1Woq9a7lLZX8kJ+GM/ShyIA74b8hmwHc7PBfOfUHsNhCZoGlOybX+4zffgVCJ8FnGkCWbzgujhvSn+wSvci0iSfbVw44IiogNpLwdC6kF7xdBiKtoTuPF1irOCSvrJuEFRvQPlkQbZZQQPWaNlQDdTI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745939391; c=relaxed/simple;
+	bh=ePQyYN1JfjVBcXzJKL1+6u2NR5+CobtXRKZoLcRAt4Y=;
+	h=Content-Type:Date:Message-Id:Cc:To:From:Subject:References:
+	 In-Reply-To:MIME-Version; b=GDWJURSJN2lYPerhSW/Anq1XgaQ23Iiy4GFxKAq/rHVtVaZztQpexoP9ZR7/wVB111JTL0rK4fcqffXmkhQlLl50Ut0O9b7nr5lC7A1q/RT0/pMUMHGBKAY8NVjtu30GBVFQu9yqRfKrdUtskq40D/v0NFaGZYXatv5Rp8WZr4M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=iqWBDe/y; arc=fail smtp.client-ip=40.107.92.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=dTu7OrEZbKaCQkfJu9ZiErY62qELh271HQDRu7IeIZ6Y+zUODptZszzdqNKdZI2sdKcjhH+h9mJR6nq2A/XSUPyCRHrAFlmD0/Ji6gLbmY9DQwvInZK9nq+sac6GKIMuFca5gXUqbOsDmumrThtFguqewOtXSdjB0kyhBpwH2ydqGXSmTzKHqvvTgJ0TlRq1I6iOgcuVmu+z5MWU44c+GmyfbxR4Yqs0JDHRSHBEyOP8jOXVozbSovOP26v1UXOq+WMLoPkOt/yejHRx/RSsFTncDa/Oy0M37DjZcXW8fMfew2nhPyGWmlHm8NmnzSctJZRF1sAFupp0HzbhlNNgfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vmLpCfZOyfTGHhmumthvslnO9rvY4roljJxrXUxYZY0=;
+ b=Di+kex9HVlqloCiX8UhW+gXs+qappEee+TEJpHW64ZuWMa+A+IUBogJ31SKM61yro8u335XLoyWSpGzmbmrsNnEjpLPz050HO8YLMjiuQiRZbXKiL2TdOrqa3uV/hVINGxsOGv3FScYJEogxEiaMfQT42/Uy4DVszObRjPkhhGxLzvATQNitUZu0G+ZZztORo6xEtTG+eg3nIkF0JtOhY6ck3jqxqWuNetwp/cbcKKDKg1AMI4D1uunpDiwBXmslqTTyIkabst8PxoP4/eGo4+EHYili93tSlzd2GdU+oA79/ai59Qqonotef3jvmhanLSJmkdL/gRb/xr5CjiYByw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vmLpCfZOyfTGHhmumthvslnO9rvY4roljJxrXUxYZY0=;
+ b=iqWBDe/y1UZMSlDlF6h2FyPMzkR5vadi5/DFbi+msNollFv+cgDvo6tLNMm+7X5JHRfLNrC7f57x0KHHlZpRrNNhvK/ZbFQQkBLUbg0xR1KvRWmWpMC50yGLkC+Kri0wr09b+rC1FlOGUS3/sZQt+KQjwGt0LAjyaXP1X5wK1+dvwTTID9OeNH7eDeIEZQjjOg92sDyrZnTsunH6VRWfHKy1V+nunK9gHht3+mRFS6hPprCpLa8FdYpPDP0q+z/u1qWrNjnDvo4evsOkdzoiJ4l4XtZ5Tr5eim/x4aRXEGwuFp/Cq6X/IjTDpe7sOa4L1hs+QBVmvGR6Bwq9q8iC9w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com (2603:10b6:8:252::5) by
+ MW6PR12MB8836.namprd12.prod.outlook.com (2603:10b6:303:241::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.33; Tue, 29 Apr
+ 2025 15:09:46 +0000
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a]) by DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a%5]) with mapi id 15.20.8678.028; Tue, 29 Apr 2025
+ 15:09:46 +0000
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 29 Apr 2025 11:09:44 -0400
+Message-Id: <D9J7UWF1S5WH.285Y0GXSUD30W@nvidia.com>
+Cc: <bpf@vger.kernel.org>, <linux-mm@kvack.org>
+To: "Yafang Shao" <laoar.shao@gmail.com>, <akpm@linux-foundation.org>,
+ <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>, "David
+ Hildenbrand" <david@redhat.com>, "Baolin Wang"
+ <baolin.wang@linux.alibaba.com>, "Lorenzo Stoakes"
+ <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ "Nico Pache" <npache@redhat.com>, "Ryan Roberts" <ryan.roberts@arm.com>,
+ "Dev Jain" <dev.jain@arm.com>
+From: "Zi Yan" <ziy@nvidia.com>
+Subject: Re: [RFC PATCH 0/4] mm, bpf: BPF based THP adjustment
+X-Mailer: aerc 0.20.1-60-g87a3b42daac6-dirty
+References: <20250429024139.34365-1-laoar.shao@gmail.com>
+In-Reply-To: <20250429024139.34365-1-laoar.shao@gmail.com>
+X-ClientProxiedBy: BN9PR03CA0431.namprd03.prod.outlook.com
+ (2603:10b6:408:113::16) To DS7PR12MB9473.namprd12.prod.outlook.com
+ (2603:10b6:8:252::5)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB9473:EE_|MW6PR12MB8836:EE_
+X-MS-Office365-Filtering-Correlation-Id: 020e9b26-cd52-4cfb-ba75-08dd872fe0bb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|7416014|376014|366016|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?ckhoNnVDLzd5SVA1SWllT2l3ZjZuOTk3Kzd1UFp3SGRGdnJicktuY1l2Qjd4?=
+ =?utf-8?B?WVQ1M2dBcGtxMDhpYW9YYW93R0hJVmNDa3IvVmNSOW1XMTh1QTBTUkdLNStL?=
+ =?utf-8?B?eDhxNloyZ2d4bFNYem9uazdoM0xxNTBaTkhzS2RGTDRhVWEwVC93RTUvWkN4?=
+ =?utf-8?B?N3hRcHVjTEx6UW04N3VCem8rNjNZalJMaWhMVHBxUVNBU1Z0Z25qSkxEQXpZ?=
+ =?utf-8?B?eXJEaU9BZUhXOS9IZHVHWFJuSUg2MWFqdWNXSUl5SnlnUHZRdkR4dGVoeGR5?=
+ =?utf-8?B?RUVBQzNTbU9KNFhDRUZoT1BZRC9zcDBmV0dCN29IM013ZHRkMy9tbjlYVXB2?=
+ =?utf-8?B?a1FvWklQdnZGRUF6VC90RkVDZVFkcEEyZktJejE1LzVwaklFc01hcTNRVkRi?=
+ =?utf-8?B?bWFKdWpDbHpjekc1Q04rMUxKYkVpTnZ4NFJjRWNOelluZmJMRXRQNVlMNml4?=
+ =?utf-8?B?Skl2dEREZEh3Zm9MQXZDWlNRRVNEc3E2UzB6UjFLbkh4L0hsbnNnTkxiYjRL?=
+ =?utf-8?B?VXdRMm1qeWRLWUg2SXJwY1lwV0gycVlUSy82K2taS0VnWHhxSVJxTzZaSnVv?=
+ =?utf-8?B?S3BrQnd4WlhhNXl5OC9nME9pdCt2ZGU4YUNnK1JWanVkZEtFczNKd1RmQ2NE?=
+ =?utf-8?B?YVoyUHByQUUvRTBHdG5nQit4R3p4STFxeUxSNEdES04xU0c2Q2hyTmZZSVMz?=
+ =?utf-8?B?RlQxOU12Mkgxd3R0aXcyVS9UVlZ2U2p1OUNvb0J6WWpXc0ZteVBJYnp0czg4?=
+ =?utf-8?B?WjYrOHJiNTBqUTcwc1V2K2k5OG13Nzc0YXJhSkl5ZzkyRkpvYmtzRzBxTHZB?=
+ =?utf-8?B?c0FFM2FzVDNUck53bXQ5bTJsUTduZkRKbVJ3OUVWQ1RXdlVJbXVoYkdaL2hV?=
+ =?utf-8?B?d29Jc3lXQkFBYTZiZGJFaEpCcjR1RWJPV1lhV0lDdTUybGV3RmJWcnBUcFFX?=
+ =?utf-8?B?SnVtSHNacWlYMGFVOThGK2ZiV0ZNU09tU094TytUcWdwV3g5SmpqZW9kSFU3?=
+ =?utf-8?B?VngwdjVQM2I0TW9vNG9RSVV3bHZZdW5RYWs0UWFzRitlbHcya1Aya0tFeDVO?=
+ =?utf-8?B?R2MvY2JDY0Y2OWh5NFF3cUFpdGh3SHhEeW5TaXh0bSthSHVOK21WVVlwM3RL?=
+ =?utf-8?B?MWw3cEFVOUd2ZEt2QUs2MUE4bXU1QTg2NzdDMFJjN2ZoOXJVeUdUT1NJd0o3?=
+ =?utf-8?B?eWRLYkRmUVlJL0M4OEcxSWJnaHpaM2dBM0lpOVZXNUVoNDhuRzkzZE9xL1Ju?=
+ =?utf-8?B?STVCMm0zUEovMHhuLy9kckMyV0Z5RXRnR2JVZHhUa3d0ejNtRTdtbytmZnVk?=
+ =?utf-8?B?cVJXOTdIRXRjamRjU1puSkNjRVZIcHRCZlVCaGpQTjEyS0oxcDNKV0VSSURU?=
+ =?utf-8?B?eWExaDEwL1VsdldzRjVZRTkvRWhDYVU3NEoxbnVJV21kVlVZSkdlNDBIQlVt?=
+ =?utf-8?B?YTJwUEgyN1Y5djNKSUt5ZlkwelpCTHZ5dmpEWFY4N0FYOTdiYnVMMjNtZ05Q?=
+ =?utf-8?B?UzAzc0JncjErTFhzNWVkajV5bFhzSkJJZjA3OWlhYThtb1dEcHdmMUlhMU04?=
+ =?utf-8?B?Zm56WDZXMkpjK1RuZkV0cTRRblE4dUFtOGRJRVNHbEU3UHg3Y3lhOXR2RXBq?=
+ =?utf-8?B?b0V6TGp2aExZS2ZzaVJXTnJiY2pORnRHUGdicGthM1BIY3kxdm9JazRIL21j?=
+ =?utf-8?B?T1VwUk5WWGUzYXJnclcyK0QxS1VSTzVIS1B1S1RQSU14YlhjcXIza0lUNDFw?=
+ =?utf-8?B?L0RDMElOZ1Y1azJWK01VNmIvVWRWWk1WOFdsYnROeittQS9GUGIvR2xUcThJ?=
+ =?utf-8?B?alBFV01LQ2VMV3c5VEdsYUFGb2FsRzVUM3ZVWEpXNzVaREtHMFNKZ2pIV2dE?=
+ =?utf-8?B?Ky9tUFFvbGpHd0NvTENLL0dETk5RT0ZsaWl5SmxpdEFHRGtiTWRxZ3E3QkZa?=
+ =?utf-8?B?Z3lTMWhYMmZBWHVqUzRWK2FVMFFLN3FwcFNZNFYzbFpMUGVlKzArRjM5c0N1?=
+ =?utf-8?B?TTRHaGpseW9RPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?d2Vxejc3OFVpVG5xVzkrZEhwWUpSV1lkL0NQKzI4Zk4zVWRPMlVDUHlLZVpo?=
+ =?utf-8?B?Mm8wRkE3VGZ4K1hodjJFejNPMTJaejdtdG1GUStzYVVXUWxMUE5DVFhTVllH?=
+ =?utf-8?B?UGMyY0JlRFBRY0k5djBSQ2MyMDd0MUFEVVpNRVU2YkNveFBzWlpFS2ZIenFn?=
+ =?utf-8?B?Tm9sNGd2WXR4aUF6WjBTVExlemxMSWgxRXdBenhScldkNWZVWVhKMU80OUo0?=
+ =?utf-8?B?WXloWEtSS3JseFRrRkpWNllBWklKWnRFbFlveVFVOWgyWWV6cmY3TWg3ZGJ0?=
+ =?utf-8?B?QVgrd2NyY3h0QUlCaGtSM3Y5UVcwQWd2Q1luRitWUzdNYTUrQmpPeklWTVgx?=
+ =?utf-8?B?emx0VEhRWVp1UkdrMUp3STQzRWR1VWNkRXJhUW1QKzd5U0RJQjdkN3VVaXIx?=
+ =?utf-8?B?WW53S2M5eWtKVlRRZzR0VUFFV2xtVXRQY0lRNW5Ob1Q3M0NxUWlQZVd4ckZX?=
+ =?utf-8?B?Z2Q3Y3IvaVIxaXZ5UG5IdWtrZURDL1ZOUVJ1cUZsOUJZODV4MjBPVE5HU1RH?=
+ =?utf-8?B?dW5wSHBMMUhVMlVwTVQ5akg1QXJ4RDh0YzNwVmVGK0R3c0xQRFo1K1pUdUxl?=
+ =?utf-8?B?c2x3aXo5b1AwNnhVQzdlMTd5MlF2dzdNNFZrVDNoK0RBa3JMRGlkQzhtbEFC?=
+ =?utf-8?B?RjZLcmRuOTNjc2FZVkx5MFhPbFhnanlQcW5uMy95c2sxcllTUEw0V1VaYWQ3?=
+ =?utf-8?B?UEVIQzlQaXRjUGF5dmpQVVVuSU9HWHVjeXRjZ3ZmMzI3VFlqczI4VHFTRFNV?=
+ =?utf-8?B?Qk41dHhUR0VnaTRPSDJQU25NQnk2bWlFME0rWS9sZ3prc3krTllpN1Yyd0tT?=
+ =?utf-8?B?L0M3b3hIajJsa1YwTDNielIzNUowU3pMeU5SUVd0RUtJbEkyalk5YklvUGVE?=
+ =?utf-8?B?bW9YckhkUEVuR1RhVVphOTF4dE15SHJnWTN6eVd3dVo3NkhnUnJnUFhYYXdZ?=
+ =?utf-8?B?RUc0TEpkVTFwRlpER0pFaitONEZROUt4ZzlKeVNJazQ0ZFhndFppR0NIWENa?=
+ =?utf-8?B?MExDM21LdEdGL2NWaEN0Ylk2cldDeWFlb0R4S2FkeG1WNDhzaGpoMDNEaVZ2?=
+ =?utf-8?B?c2F1OWhoRXJ4SDdOM3RaWStPdGlxWFRMSVJPUTRUZmJYenh6T20yWXU1MUJR?=
+ =?utf-8?B?bnFPSVRhZE8vK3B6Mnl1L0NkMFhhR0E0MWdyeFFHUkdBQkFDRGJXdzNWcllt?=
+ =?utf-8?B?bWYzbWkvVkRJcWYydVN4MEdBS1AyTVc2U3YvZjJjcm5VaHRpQ3U1R2xKTVJM?=
+ =?utf-8?B?a2U4OHoxRzdPNHNodEhuMlVOOC9HWDBsYjcrRHFLWHZLYXp1ZDZxbHl2dHRT?=
+ =?utf-8?B?SlBwajluY3RsQmhlNTllUDZQeGtuZE5BaDl5LzQ5NU5Ta0RHYmkrN3VscnNU?=
+ =?utf-8?B?enBEeTQrME9GclNqaXNzdmdURFcrL1pQM3RZMk9OcVdDcXUvdDF6MU5IRk1i?=
+ =?utf-8?B?NDFDaHNrbXBMNS9Ca2RsQlM2QUlEK2xJcndEZVVoT1hLYm55OUYxY3pWejJ2?=
+ =?utf-8?B?V1lUNGdLTXVoRHJhZE5nOTV2WjFWYnpNNHJKMHNsR3RZWlN3WWpUVitBLzFi?=
+ =?utf-8?B?OUx3cWU5Si9LWkJzSkh4MURqZUg2ZVRGalF0U0szSnUvWmw4TUF4cUJNbFVa?=
+ =?utf-8?B?WnBtTkpWMCtpMFhxMWZxQUtGSVdzUGFaeHVzQ3ZGcVo5SEFxZTVFdVR6L25E?=
+ =?utf-8?B?cUxjWnNMY0wzc2tjaUlXWjAwamVUYWc4UE5Fc2FhTGt2QkdwK2pDbSt1MUwy?=
+ =?utf-8?B?OHJQdG9NelFoQWFMcmFEUGppWlZ4Yzh5YjlTbGdjT1ZLS2xjMGhoZlhrU1lk?=
+ =?utf-8?B?Qm00VmlsckZZRmc2dlJ1Si81Y3lHQWJIL3BxR2UyeXlsWjV0YWpMR3R3MWVM?=
+ =?utf-8?B?Ym4rdEdCYkNXNkVueUtBUnlqMS9qUnlqVE16dzcxVG1rWG92TnhxbHBTT2ps?=
+ =?utf-8?B?T1ZZaTFtaXpPYjdhUXR3VFlYWWNSR2x4MW1NUnNVc0lXWGpvWEVLMzZnNTNE?=
+ =?utf-8?B?bVM2bFJpUG1CWXFjM1c3ckNCcUI1UnBHVXovZlpQSTdKK2k5KzIrVjFoZ2lw?=
+ =?utf-8?B?N1RKK1F2QVRTVUxGbTZyWVFjQ20xdndEb0xsWDk1TWNpVGxiSE5KUXh3K0F0?=
+ =?utf-8?Q?ACXncLMkppW7ZFV/zU+grYNW3?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 020e9b26-cd52-4cfb-ba75-08dd872fe0bb
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9473.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2025 15:09:46.1316
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fjldK3zD0+29QNoCwbxgqJeDAz9c02smWxc+N6COLgisM3/A6/NlgU6XeRRMKTte
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8836
 
-Michal Hocko <mhocko@suse.com> writes:
+Hi Yafang,
 
-> On Mon 28-04-25 03:36:05, Roman Gushchin wrote:
->> This patchset adds an ability to customize the out of memory
->> handling using bpf.
->> 
->> It focuses on two parts:
->> 1) OOM handling policy,
->> 2) PSI-based OOM invocation.
->> 
->> The idea to use bpf for customizing the OOM handling is not new, but
->> unlike the previous proposal [1], which augmented the existing task
->> ranking-based policy, this one tries to be as generic as possible and
->> leverage the full power of the modern bpf.
->> 
->> It provides a generic hook which is called before the existing OOM
->> killer code and allows implementing any policy, e.g.  picking a victim
->> task or memory cgroup or potentially even releasing memory in other
->> ways, e.g. deleting tmpfs files (the last one might require some
->> additional but relatively simple changes).
+We recently added a new THP entry in MAINTAINERS file[1], do you mind ccing
+people there in your next version? (I added them here)
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git/tree/MAINTA=
+INERS?h=3Dmm-everything#n15589
+
+On Mon Apr 28, 2025 at 10:41 PM EDT, Yafang Shao wrote:
+> In our container environment, we aim to enable THP selectively=E2=80=94al=
+lowing
+> specific services to use it while restricting others. This approach is
+> driven by the following considerations:
 >
-> Makes sense to me. I still have a slight concern though. We have 3
-> different oom handlers smashed into a single one with special casing
-> involved. This is manageable (although not great) for the in kernel
-> code but I am wondering whether we should do better for BPF based OOM
-> implementations. Would it make sense to have different callbacks for
-> cpuset, memcg and global oom killer handlers?
+> 1. Memory Fragmentation
+>    THP can lead to increased memory fragmentation, so we want to limit it=
+s
+>    use across services.
+> 2. Performance Impact
+>    Some services see no benefit from THP, making its usage unnecessary.
+> 3. Performance Gains
+>    Certain workloads, such as machine learning services, experience
+>    significant performance improvements with THP, so we enable it for the=
+m
+>    specifically.=20
+>
+> Since multiple services run on a single host in a containerized environme=
+nt,
+> enabling THP globally is not ideal. Previously, we set THP to madvise,
+> allowing selected services to opt in via MADV_HUGEPAGE. However, this
+> approach had limitation:
+>
+> - Some services inadvertently used madvise(MADV_HUGEPAGE) through
+>   third-party libraries, bypassing our restrictions.
 
-Yes, it's certainly possible. If we go struct_ops path, we can even
-have both the common hook which handles all types of OOM's and separate
-hooks for each type. The user then can choose what's more convenient.
-Good point.
+Basically, you want more precise control of THP enablement and the
+ability of overriding madvise() from userspace.
+
+In terms of overriding madvise(), do you have any concrete example of
+these third-party libraries? madvise() users are supposed to know what
+they are doing, so I wonder why they are causing trouble in your
+environment.
 
 >
-> I can see you have already added some helper functions to deal with
-> memcgs but I do not see anything to iterate processes or find a process to
-> kill etc. Is that functionality generally available (sorry I am not
-> really familiar with BPF all that much so please bear with me)?
+> To address this issue, we initially hooked the __x64_sys_madvise() syscal=
+l,
+> which is error-injectable, to blacklist unwanted services. While this
+> worked, it was error-prone and ineffective for services needing always mo=
+de,
+> as modifying their code to use madvise was impractical.
+>
+> To achieve finer-grained control, we introduced an fmod_ret-based solutio=
+n.
+> Now, we dynamically adjust THP settings per service by hooking
+> hugepage_global_{enabled,always}() via BPF. This allows us to set THP to
+> enable or disable on a per-service basis without global impact.
 
-Yes, task iterator is available since v6.7:
-https://docs.ebpf.io/linux/kfuncs/bpf_iter_task_new/
+hugepage_global_*() are whole system knobs. How did you use it to
+achieve per-service control? In terms of per-service, does it mean
+you need per-memcg group (I assume each service has its own memcg) THP
+configuration?
 
 >
-> I like the way how you naturalely hooked into existing OOM primitives
-> like oom_kill_process but I do not see tsk_is_oom_victim exposed. Are
-> you waiting for a first user that needs to implement oom victim
-> synchronization or do you plan to integrate that into tasks iterators?
-
-It can be implemented in bpf directly, but I agree that it probably
-deserves at least an example in the test or a separate in-kernel helper.
-In-kernel helper is probably a better idea.
-
-> I am mostly asking because it is exactly these kind of details that
-> make the current in kernel oom handler quite complex and it would be
-> great if custom ones do not have to reproduce that complexity and only
-> focus on the high level policy.
-
-Totally agree.
-
+> The hugepage_global_{enabled,always}() functions currently share the same
+> BPF hook, which limits THP configuration to either always or never. While
+> this suffices for our specific use cases, full support for all three mode=
+s
+> (always, madvise, and never) would require splitting them into separate
+> hooks.
 >
->> The second part is related to the fundamental question on when to
->> declare the OOM event. It's a trade-off between the risk of
->> unnecessary OOM kills and associated work losses and the risk of
->> infinite trashing and effective soft lockups.  In the last few years
->> several PSI-based userspace solutions were developed (e.g. OOMd [3] or
->> systemd-OOMd [4]). The common idea was to use userspace daemons to
->> implement custom OOM logic as well as rely on PSI monitoring to avoid
->> stalls.
+> This is the initial RFC patch=E2=80=94feedback is welcome!
 >
-> This makes sense to me as well. I have to admit I am not fully familiar
-> with PSI integration into sched code but from what I can see the
-> evaluation is done on regular bases from the worker context kicked off
-> from the scheduler code. There shouldn't be any locking constrains which
-> is good. Is there any risk if the oom handler took too long though?
-
-It's a good question. In theory yes, it can affect the timing of other
-PSI events. An option here is to move it into a separate work, however
-I'm not sure if it worth the added complexity. I actually tried this
-approach in an earlier version of this patchset, but the problem was
-that the code for scheduling this work should be dynamically turned
-on/off when a bpf program is attached/detached, otherwise it's an
-obvious cpu overhead.
-It's doable, but Idk if it's justified.
-
+> Yafang Shao (4):
+>   mm: move hugepage_global_{enabled,always}() to internal.h
+>   mm: pass VMA parameter to hugepage_global_{enabled,always}()
+>   mm: add BPF hook for THP adjustment
+>   selftests/bpf: Add selftest for THP adjustment
 >
-> Also an important question. I can see selftests which are using the
-> infrastructure. But have you tried to implement a real OOM handler with
-> this proposed infrastructure?
+>  include/linux/huge_mm.h                       |  54 +-----
+>  mm/Makefile                                   |   3 +
+>  mm/bpf.c                                      |  36 ++++
+>  mm/bpf.h                                      |  21 +++
+>  mm/huge_memory.c                              |  50 ++++-
+>  mm/internal.h                                 |  21 +++
+>  mm/khugepaged.c                               |  18 +-
+>  tools/testing/selftests/bpf/config            |   1 +
+>  .../selftests/bpf/prog_tests/thp_adjust.c     | 176 ++++++++++++++++++
+>  .../selftests/bpf/progs/test_thp_adjust.c     |  32 ++++
+>  10 files changed, 344 insertions(+), 68 deletions(-)
+>  create mode 100644 mm/bpf.c
+>  create mode 100644 mm/bpf.h
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
 
-Not yet. Given the size and complexity of the infrastructure of my
-current employer, it's not a short process. But we're working on it.
 
->
->> [1]: https://lwn.net/ml/linux-kernel/20230810081319.65668-1-zhouchuyi@bytedance.com/
->> [2]: https://lore.kernel.org/lkml/20171130152824.1591-1-guro@fb.com/
->> [3]: https://github.com/facebookincubator/oomd
->> [4]: https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
->> 
->> ----
->> 
->> This is an RFC version, which is not intended to be merged in the current form.
->> Open questions/TODOs:
->> 1) Program type/attachment type for the bpf_handle_out_of_memory() hook.
->>    It has to be able to return a value, to be sleepable (to use cgroup iterators)
->>    and to have trusted arguments to pass oom_control down to bpf_oom_kill_process().
->>    Current patchset has a workaround (patch "bpf: treat fmodret tracing program's
->>    arguments as trusted"), which is not safe. One option is to fake acquire/release
->>    semantics for the oom_control pointer. Other option is to introduce a completely
->>    new attachment or program type, similar to lsm hooks.
->> 2) Currently lockdep complaints about a potential circular dependency because
->>    sleepable bpf_handle_out_of_memory() hook calls might_fault() under oom_lock.
->>    One way to fix it is to make it non-sleepable, but then it will require some
->>    additional work to allow it using cgroup iterators. It's intervened with 1).
->
-> I cannot see this in the code. Could you be more specific please? Where
-> is this might_fault coming from? Is this BPF constrain?
 
-It's in __bpf_prog_enter_sleepable(). But I hope I can make this hook
-non-sleepable (by going struct_ops path) and the problem will go away.
 
->
->> 3) What kind of hierarchical features are required? Do we want to nest oom policies?
->>    Do we want to attach oom policies to cgroups? I think it's too complicated,
->>    but if we want a full hierarchical support, it might be required.
->>    Patch "mm: introduce bpf_get_root_mem_cgroup() bpf kfunc" exposes the true root
->>    memcg, which is potentially outside of the ns of the loading process. Does
->>    it require some additional capabilities checks? Should it be removed?
->
-> Yes, let's start simple and see where we get from there.
+--=20
+Best Regards,
+Yan, Zi
 
-Agree.
-
-Thank you for taking a look and your comments/ideas!
 
