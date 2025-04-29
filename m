@@ -1,133 +1,159 @@
-Return-Path: <bpf+bounces-56882-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56883-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19E1BA9FFD2
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 04:34:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF7CAA0002
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 04:41:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76F1A1A86B3F
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 02:34:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DF023BC11C
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 02:41:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2047329CB43;
-	Tue, 29 Apr 2025 02:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E613E29CB44;
+	Tue, 29 Apr 2025 02:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sguunp6I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dPppCi3P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E66E198845
-	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 02:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0105F2FB2
+	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 02:41:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745894045; cv=none; b=TGXK/6B2Kx6S6Jtmbu4okmJ+rPdahvfeDXwyL0CKZ2cw/kGA6K9EHDaTvCniQtLLrEqGZOUCJCAHO47+wsPhb7+QiPA+btay9zkCS+RFnF3BXyhT5eeDe0tgni3PDNUWc1fNcB6Q2Zyzy9b04fSl2KZICe53RDJ+TBbNqcvexRI=
+	t=1745894511; cv=none; b=kjt7rF6ogor8cpx/BEpJBh02PLpm+GDchS4toWCgOybX8gLt8b2eLKeocNFPC8SYmC0sQqpExHgOMOpRt59eEurQVoA/FTTnNd37JxizlokYyoVjLY8ShJTxOc4AI2TNaIasHWkEaPJLAp3h/iPOv3UP9cqH5s60wZbTvWPIWDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745894045; c=relaxed/simple;
-	bh=GEwqfrDo18i9rwBcepiUpI3TMCd/Z1oRhiO8n/y7VOc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ta1egSy2A7CMQcGMU84nOUPlgtXQPaZHknN/OauWzCRDaVjYB4FPU0ROF9zXip9YQOFlULKuRlmN+TMovzVdwRV811KJM5pEcPoBRbDrExkQnXY34FmTT5nBP0w+HizFq2lDu+6P5RuEf07/OL69CJBmYCSdEICb9kGsndR/zas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sguunp6I; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-47681dba807so54191cf.1
-        for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 19:34:03 -0700 (PDT)
+	s=arc-20240116; t=1745894511; c=relaxed/simple;
+	bh=O+vVVKcfyJpY+s9W+YsL5uugWadPHj4PRx07tT9wh1Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=nf+kXcs6z2xNj8TQSOOwiCnCHbnbnq2cIBu6AJ3kPPhLWm6ubRwJ3sAdP/uLuP1Nh1WJRRrhDoD3wqmozB1K4tfgNMaD8QkBIOBCr2C/IXKT0HND2F6wMCHXeIhR/3XwWvF9hqWnK2sRNqrm5bpbTlS4M6eaGB7htDbGldCLU08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dPppCi3P; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-b0da25f5216so3467683a12.1
+        for <bpf@vger.kernel.org>; Mon, 28 Apr 2025 19:41:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1745894043; x=1746498843; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h24UD2kqcRugcg46PL1Xt9ZtaHWSydfY0GpN06+3MH4=;
-        b=sguunp6IRHxaJ6RlUuID1SUqny8jcR/JNW3gussqd0RssD8sYFfUaDxXzR3R8gaVqT
-         0Bdl+i5pZL5+abyGzSRmwugVzhxiiSE7WK9NqOboLniEa8T+x0XeDAM9KyBso/pchP+5
-         0hb8iX3lrCHQPsWcuHcifyIqeYRclKA67kRj64KkGB95ENBf3tpmXWB9TVbnvK/1VVoz
-         bQ0CW29FS9wbPL5F5CcOp2BaQ/MpNrNTX4XngF/XuLf1ppG7HLs/iHqWTpP68XrdewKC
-         CuJTpcKyRbpH16y6Eta13leE3muUnfYnlhZ6Xw1NQ9B4hi0D4D5VDQuYSPvk61NzHIzS
-         rN5A==
+        d=gmail.com; s=20230601; t=1745894509; x=1746499309; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tmLnEpBuZGcdIcLvXXK/nzmpJRoqGaDvFGAeEREmXmw=;
+        b=dPppCi3PtWfB8dy1WVN0MOViQG/A6ToDIgMtkaGk0vzeIzW4LaVSSWbS190i45Bqwu
+         otNsNgv4Yk04zl54+FugmRtFB6BaenbiWxSjGZ197ZFBiz9/cMWw11QPuoeFugxh/6mL
+         xP585vuXSn/PJ4Q5i+gMhnbk6HHLdiNdS2Jd6cs3WM1AabcbM1yp++gmNVRLt3MngOE0
+         +7v6PTNZH/tN6MdiMvoyV20EmE72evdfLHsCHvtJYOZY7TVCD+6bj03sLsHQtmpZyfVy
+         hxwdw/J+CGfqgt5d8wSEcC7vY+SSKp0yzF7wCmh7mozPMeopE6Ra0P+QhFOLSqIBLPTb
+         6WVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745894043; x=1746498843;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h24UD2kqcRugcg46PL1Xt9ZtaHWSydfY0GpN06+3MH4=;
-        b=ijtqDJfXeaWLr9RVubY6htbb7YDA3brku1c1iLJRlg4/6SEZoCLoOyM7MhxX5F6EQu
-         qR16MoSZGgSp82uyppXl2DjYjDy94u2CiYb2amycwG8DMT919opxcA8MO7+AkHdSEqXT
-         4YgfWxwtHihtW+tLhZVbtB+OF3R8tvix7jNkX4H+KF+wgmxoswmMdpxrUQjfk34QjfdZ
-         jt29El9+ZnJUL/v0hgUTqimLJxJP9b4VKKwPQq0rMxmiAgrsfoNca7GBnHJUT0aFzb0e
-         qtqvEz3/QfTDC8RwTrsiQvNPoco28l8c+WqP29XRErdLyfmFHqaP6cIcpLfbe9/nqZqI
-         79rA==
-X-Forwarded-Encrypted: i=1; AJvYcCUGbwO8E9juO8ZAAx/AEmAlWsfHBsUs56AWByaWyQFyeo4pDoLJMGkhNffhbD5WUPLnJAo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmasSP3YtPeui2ubhGZwt0aXBF8AqVIY+Tqnp2SHysG7fdO00C
-	MD+8QigYPIRgbwnzGE6Xz9gjxk11wAQiazIp/Lw3umyCC4EVFVT5s2hMKZ62qUZyWXQBzhMdY5D
-	icmulg8aqVKmkmLolzRBPVMpQp6eoW06O0NhM
-X-Gm-Gg: ASbGnctK0S4AdigQidaGitQszH6zuzxoXwXn0uGM5exJzuFiEZEbUKZ/qR++UkYOCXw
-	Npi8I4AFlGhXkflubfjgEjvoyIEM4A45WF9uIxFayVul4jNdKBgugiMjqjNiR29RVoJeos/1fOB
-	XqwAxtPgunhyN5AkT0vTfxiOfK4c0Orw/9Gvj7AYazrJPv35HR3BGiFQ==
-X-Google-Smtp-Source: AGHT+IGd1Vq2PpS4C822WzDBZt+4H5h8+8S8bRL+Npul5YH8In/RrEiCACZS+8xBAJNO2kLVC1o+FuzEgGcP7VJmm0U=
-X-Received: by 2002:ac8:5a8b:0:b0:477:2c12:9253 with SMTP id
- d75a77b69052e-4885b57a7e0mr2380541cf.16.1745894042800; Mon, 28 Apr 2025
- 19:34:02 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1745894509; x=1746499309;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tmLnEpBuZGcdIcLvXXK/nzmpJRoqGaDvFGAeEREmXmw=;
+        b=wGqVkfNoOisEu3u+P6Ksg/FcMOFjGXYDiFxOy4g9YdEzfOlg0i1+Una+M+ugxP5iPP
+         qm29iX3FrFINTY+z32QLmeCO3H9LQze2Cd0MMdG7jkcuuZ2lPOKKqpdfZTTypZuhu8ff
+         Oen2dxPVuG2NVFuLEC21X1paIgGBep/KkfqD2NzKWdb8MUFkokjQnOTWB711sOyPATpx
+         3JNrVEl5P0v/dKIMEafgem9cWMx0XhW7Tgj3x72FLQGQ0Cj/IOu5KJgBSl/WHa7X1M07
+         XWrw8sgfw5bK5WWk/GkTSlSW1zmK0p/Yv+mC9omehXr3SwQyEUKlgvMs7NtydXUExJjM
+         Sa6w==
+X-Gm-Message-State: AOJu0YzAb4ZakpmNpsMFCa9dw9WwAM3+odCjB66ML/PuSnDpUR4ZMZz/
+	vsg24yoDzH/REd2YMttt58ua/xP2Dn4OyjdOc5Ype1ND2RWeaoWk
+X-Gm-Gg: ASbGncvfwN0mxEC4CkvDvfAY0ALZeKdGm6RMcfMB1a9KSkH+CRIYbzDcRKoyy0Sh/uM
+	WI3i13mt6afNw8mikl0VazuOdRS6fPaFchHUyqtCwCUflCaBQaN1p1wyyipwy4Rbwvgj95XExcy
+	47lfL4VE+qIMzujx0eJI7pEJxCz9hEPrDWIoR9pbR/9BYFn/OfUa/L77fDPC+22o3TVl58BVlb/
+	A6pnMuCMyc3IWO1D5rBibKlp9OeAYp0j9C/KqSqYLXkSiZauCfX7SInbe6X6WAKhmecXs1aw5q/
+	GG+KD8HSmMJnlkpFXokTJQM9dY/+tDnV1YTLLsqqMQNyq5ZOhgFzHsgu1/HnKUxCKYItAy4ENs2
+	1
+X-Google-Smtp-Source: AGHT+IH0G23aMYvesu02FPqyAxy08qoIZt9Eo0Z4T9po20YNdvXj0iyP+sEk1i1d7qTePy3Q7TEBtw==
+X-Received: by 2002:a17:90b:5870:b0:2fe:ba7f:8032 with SMTP id 98e67ed59e1d1-30a013069f8mr17797743a91.9.1745894509029;
+        Mon, 28 Apr 2025 19:41:49 -0700 (PDT)
+Received: from localhost.localdomain ([39.144.106.153])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-309ef097cb7sm9893211a91.22.2025.04.28.19.41.45
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 28 Apr 2025 19:41:48 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: akpm@linux-foundation.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org
+Cc: bpf@vger.kernel.org,
+	linux-mm@kvack.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH 0/4] mm, bpf: BPF based THP adjustment 
+Date: Tue, 29 Apr 2025 10:41:35 +0800
+Message-Id: <20250429024139.34365-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250422153602.54787-1-chia-yu.chang@nokia-bell-labs.com> <20250425173256.6880ece8@kernel.org>
-In-Reply-To: <20250425173256.6880ece8@kernel.org>
-From: Neal Cardwell <ncardwell@google.com>
-Date: Mon, 28 Apr 2025 22:33:46 -0400
-X-Gm-Features: ATxdqUGBiLgIadxV07HhwjXLweK5cAAHzKgUIwtsUOazWECetvT0S1dyvA2bLxI
-Message-ID: <CADVnQym9vWoDtL6T4kWAMaTiFeEPS3iyLYFYkjg0nAEMt9CjeA@mail.gmail.com>
-Subject: Re: [PATCH v5 net-next 00/15] AccECN protocol patch series
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: chia-yu.chang@nokia-bell-labs.com, horms@kernel.org, dsahern@kernel.org, 
-	kuniyu@amazon.com, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	dave.taht@gmail.com, pabeni@redhat.com, jhs@mojatatu.com, 
-	stephen@networkplumber.org, xiyou.wangcong@gmail.com, jiri@resnulli.us, 
-	davem@davemloft.net, edumazet@google.com, andrew+netdev@lunn.ch, 
-	donald.hunter@gmail.com, ast@fiberby.net, liuhangbin@gmail.com, 
-	shuah@kernel.org, linux-kselftest@vger.kernel.org, ij@kernel.org, 
-	koen.de_schepper@nokia-bell-labs.com, g.white@cablelabs.com, 
-	ingemar.s.johansson@ericsson.com, mirja.kuehlewind@ericsson.com, 
-	cheshire@apple.com, rs.ietf@gmx.at, Jason_Livingood@comcast.com, 
-	vidhi_goel@apple.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 25, 2025 at 8:32=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Tue, 22 Apr 2025 17:35:47 +0200 chia-yu.chang@nokia-bell-labs.com
-> wrote:
-> > Chia-Yu Chang (1):
-> >   tcp: accecn: AccECN option failure handling
-> >
-> > Ilpo J=C3=A4rvinen (14):
-> >   tcp: reorganize SYN ECN code
-> >   tcp: fast path functions later
-> >   tcp: AccECN core
-> >   tcp: accecn: AccECN negotiation
-> >   tcp: accecn: add AccECN rx byte counters
-> >   tcp: accecn: AccECN needs to know delivered bytes
-> >   tcp: allow embedding leftover into option padding
-> >   tcp: sack option handling improvements
-> >   tcp: accecn: AccECN option
-> >   tcp: accecn: AccECN option send control
-> >   tcp: accecn: AccECN option ceb/cep heuristic
-> >   tcp: accecn: AccECN ACE field multi-wrap heuristic
-> >   tcp: accecn: try to fit AccECN option with SACK
-> >   tcp: try to avoid safer when ACKs are thinned
->
-> Hi Neal! Could you pass your judgment on these?
-> Given Eric is AFK / busy.
+In our container environment, we aim to enable THP selectively—allowing
+specific services to use it while restricting others. This approach is
+driven by the following considerations:
 
-Hi Jakub,
+1. Memory Fragmentation
+   THP can lead to increased memory fragmentation, so we want to limit its
+   use across services.
+2. Performance Impact
+   Some services see no benefit from THP, making its usage unnecessary.
+3. Performance Gains
+   Certain workloads, such as machine learning services, experience
+   significant performance improvements with THP, so we enable it for them
+   specifically. 
 
-I'm a bit overloaded at the moment, but will try to get to these reviews AS=
-AP.
+Since multiple services run on a single host in a containerized environment,
+enabling THP globally is not ideal. Previously, we set THP to madvise,
+allowing selected services to opt in via MADV_HUGEPAGE. However, this
+approach had limitation:
 
-Thanks!
-neal
+- Some services inadvertently used madvise(MADV_HUGEPAGE) through
+  third-party libraries, bypassing our restrictions.
+
+To address this issue, we initially hooked the __x64_sys_madvise() syscall,
+which is error-injectable, to blacklist unwanted services. While this
+worked, it was error-prone and ineffective for services needing always mode,
+as modifying their code to use madvise was impractical.
+
+To achieve finer-grained control, we introduced an fmod_ret-based solution.
+Now, we dynamically adjust THP settings per service by hooking
+hugepage_global_{enabled,always}() via BPF. This allows us to set THP to
+enable or disable on a per-service basis without global impact.
+
+The hugepage_global_{enabled,always}() functions currently share the same
+BPF hook, which limits THP configuration to either always or never. While
+this suffices for our specific use cases, full support for all three modes
+(always, madvise, and never) would require splitting them into separate
+hooks.
+
+This is the initial RFC patch—feedback is welcome!
+
+Yafang Shao (4):
+  mm: move hugepage_global_{enabled,always}() to internal.h
+  mm: pass VMA parameter to hugepage_global_{enabled,always}()
+  mm: add BPF hook for THP adjustment
+  selftests/bpf: Add selftest for THP adjustment
+
+ include/linux/huge_mm.h                       |  54 +-----
+ mm/Makefile                                   |   3 +
+ mm/bpf.c                                      |  36 ++++
+ mm/bpf.h                                      |  21 +++
+ mm/huge_memory.c                              |  50 ++++-
+ mm/internal.h                                 |  21 +++
+ mm/khugepaged.c                               |  18 +-
+ tools/testing/selftests/bpf/config            |   1 +
+ .../selftests/bpf/prog_tests/thp_adjust.c     | 176 ++++++++++++++++++
+ .../selftests/bpf/progs/test_thp_adjust.c     |  32 ++++
+ 10 files changed, 344 insertions(+), 68 deletions(-)
+ create mode 100644 mm/bpf.c
+ create mode 100644 mm/bpf.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/thp_adjust.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_thp_adjust.c
+
+-- 
+2.43.5
+
 
