@@ -1,345 +1,318 @@
-Return-Path: <bpf+bounces-56960-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-56961-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2967BAA1085
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 17:31:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74968AA109B
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 17:37:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 419CB46797E
-	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 15:31:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1CC74A2B8C
+	for <lists+bpf@lfdr.de>; Tue, 29 Apr 2025 15:37:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99AE9221717;
-	Tue, 29 Apr 2025 15:31:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1677221DA1;
+	Tue, 29 Apr 2025 15:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="cZkkJ2Ko"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZXsNlQvd"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2047.outbound.protection.outlook.com [40.107.236.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BDC537160
-	for <bpf@vger.kernel.org>; Tue, 29 Apr 2025 15:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745940703; cv=fail; b=gjU+Nii8lLMXxm+7zoANoXA+Y8eRbX2iMXZmkwCcjXrPbqNXiHuHFjBzRAIpiZX/W9wrhPHzKPPxNftwGxDjODTv6+M9r2kB1jbRdbfePsu7snbkSCB7qX2o+E1lShVNMKKYBjE9LFXnFGlFikw6RQAhUbFjf9Obr5/pUCMXQSU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745940703; c=relaxed/simple;
-	bh=gUOcCPwPAVWsEm1mPHuuXLmChPVNA1FQx73Zc0IZQK8=;
-	h=Content-Type:Date:Message-Id:Subject:Cc:To:From:References:
-	 In-Reply-To:MIME-Version; b=kp4wD2S3dShBpjO2E0I+7Ruu7ABbq0UOozNdqpa2bBdDVA/uxXs/k9KFAaR4bV2JUSwHUNPa9F6sprdE5euHxHA1AE6/uEVTv5Zq9e+6epAEkf9V6vYeA6GpTi1M9d8tds5/rVPYLYAcK3d+Qb2CCUz/3hQuk98uvWZJPaYJ2w8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=cZkkJ2Ko; arc=fail smtp.client-ip=40.107.236.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=raFsSsvgMToIimA6+tsG86mtCk5KCiwyyq9fv7kNOZF5PbyDw4vUWJR0VmV7LKAh/dRW4Qk2jBXwFnNs3356VqlNPF0ChoDhvku83OIfSzpb3ih92FG07Gls9c9oS1JhDtvkFNIVVHKwAnQrSKauJJcmHjhq3p22RsgFaYoAVLaFdcrRTzO3BGWalZ39BQgiwskdN8Gh3P2uIhYBbliOMQkCUVkuB/aGIcQwl+nQE8m0GJ4hkQxPTZM3MoZ0EX7S+wO81XqypTliWxJ/5YTY2RrOhnn1aP6dpErTZ86ljsgpcgC6S5twWjBYrR0pwM51uJTgCT2ZNaGI6pAsayCkeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e5JLspYTG0fhLQsuyBbU8Sc/vdGcPYs8wl0Xl/Va6PE=;
- b=nQZUtK+bBImiSqdDL3w8oFr38uuJUeUK1DEHNklkAjLPraqP7wHVU/lQYCC8Uh7OQiwui0YkaMoDmdYCPQhSufZ7fmTWJLArkoyVwcWWQlXZROl3w7s15X8RrJE4hQ8iV8W/1/OwP/KJog4jfcj6bUvFp1OrP0hP/3Eo2ON1hhp5MxUpkQyfhRQcQ9RaCkxVPfpRLwN8GBMLKDjKOMF8+JR0kvAWQIcpp0capi6Vcb2sQUCoedZ0g2XrtToDJKeniXwZb2kkKYML1MB53M4FlPlYxSPydRG3T2+2yieVmhU2cHjRfX1/3Xn2SoS8wb0kimZvdk7WliCmdsN958EDeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e5JLspYTG0fhLQsuyBbU8Sc/vdGcPYs8wl0Xl/Va6PE=;
- b=cZkkJ2KoZppGLt7Nc1bSvftRIH9ujj5S5KmnnnXfMa0JHS7V/gdy8ZHlbinH0zCc4v1b3hVW7XiekxhmqM6GE1R2KchIbWQLwRWS7s55lj4i2IStEqndZuYyLQrK+rLGD3D7hyoABc8XBbvxqytNBv9YzN3pa8mRHhv4P0xJ+7d+ofB/rOXhRBp2py8otkbe/DZ6ohAfG/qe8nO+Kl3WUpUuxYfRIvegWOZBCHhjXwVWuKObbDxLVB/MiMlIGVj0R9n/iGf+OHz85rfGB6b4qp4f8ntKHKMDAmSdZir7Q13JaCWhpCSL/AIYuYVsMCR5Io+mMYGqAYb6vheExEqYIA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB9473.namprd12.prod.outlook.com (2603:10b6:8:252::5) by
- LV2PR12MB5941.namprd12.prod.outlook.com (2603:10b6:408:172::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.33; Tue, 29 Apr
- 2025 15:31:37 +0000
-Received: from DS7PR12MB9473.namprd12.prod.outlook.com
- ([fe80::5189:ecec:d84a:133a]) by DS7PR12MB9473.namprd12.prod.outlook.com
- ([fe80::5189:ecec:d84a:133a%5]) with mapi id 15.20.8678.028; Tue, 29 Apr 2025
- 15:31:37 +0000
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 29 Apr 2025 11:31:35 -0400
-Message-Id: <D9J8BMXE7LDS.3HMRLBRFZJNO0@nvidia.com>
-Subject: Re: [RFC PATCH 2/4] mm: pass VMA parameter to
- hugepage_global_{enabled,always}()
-Cc: <bpf@vger.kernel.org>, <linux-mm@kvack.org>
-To: "Yafang Shao" <laoar.shao@gmail.com>, <akpm@linux-foundation.org>,
- <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>
-From: "Zi Yan" <ziy@nvidia.com>
-X-Mailer: aerc 0.20.1-60-g87a3b42daac6-dirty
-References: <20250429024139.34365-1-laoar.shao@gmail.com>
- <20250429024139.34365-3-laoar.shao@gmail.com>
-In-Reply-To: <20250429024139.34365-3-laoar.shao@gmail.com>
-X-ClientProxiedBy: MN0PR03CA0011.namprd03.prod.outlook.com
- (2603:10b6:208:52f::13) To DS7PR12MB9473.namprd12.prod.outlook.com
- (2603:10b6:8:252::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD7B122172C;
+	Tue, 29 Apr 2025 15:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745941043; cv=none; b=kaEiDcJ1vi2ZPx0KvhXrRqvnQmu//4QKkYnJHJLnwZhGaQehwMhynru6VAfTwFB4IG+s8hyTttCmjPF0sUaDmX+7BkImYP/eUSbXhUMJLxyuYwb454Tm8EdmyzM27LU1uFSsX9PJOmDFvnfjMx0uSttZeONGlvzS097plPGEtcY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745941043; c=relaxed/simple;
+	bh=oXU4dAI3oI7rTg1c1T07P6i1YVzDPmhlHAX15vBKzhk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b0cupEEkAZblIXh0naKWuZs2vEfP6zxpHE6NVTdxgoI6a4xIpMe+T63lE2dmE6jGKtVkEewq99wdwp9LZX/K8ZMOREZjM69OUfB6nuIbu3sf/HZVVr5SyjQDDnDki7MfYOIrgzCcivKyOm1IJf5BwMUrzo0PQ848snF8KsMPxv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZXsNlQvd; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-74019695377so1981969b3a.3;
+        Tue, 29 Apr 2025 08:37:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745941041; x=1746545841; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fjp8ADOAepJmyfR0bVw+dlfU1R3dP8Y3E9Rmk1dFVTM=;
+        b=ZXsNlQvdStfg6FICjsA243kajYev1XrqAxo+WWdH410yVlZViCzDq879Zd+TPk9mZl
+         4Xgn3TsG9pcHd4CpnIqIfIh0wj0unCbDkgb/x1OQhNiEDcZQ3+GpfzfnUl1olWmgIDL4
+         Ay+IwDDoyT+/41jtvgT6KTRfuvH02M1giaITkPijO9QAgu9L8zyuFInEltP0Sklr0luK
+         JRbbHqpzI5qPFAn7vNHfC3+CeR3hcufxL33XAFcN+iHk8hWlwbt5X8aQsaTd36wFfKMj
+         KkYHFdrRuBwY+jusBxVcwpida2mLaZA4JCPJ0pQwcpPWVys1e5d6SutnhCIIiont/4At
+         12NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745941041; x=1746545841;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fjp8ADOAepJmyfR0bVw+dlfU1R3dP8Y3E9Rmk1dFVTM=;
+        b=PANR14SJhLXoqm/AR4dwhhiynJNVysb53ek+qm467wnf9JXfeXZT6VUG2Q6xw+8xxJ
+         rSu0WT9Sde/2DEYZtFLYa/zvPQugoCS0ViVbAifGu5XV6kjDE/mFBISdPmgizW9Z0cFW
+         rFqTFoAb+wvd7g0Nk4tB7NTvq+1wRCtFF4v2A/cea36/SU1nLE6SvNWpgtzMXQXI0yny
+         csYPQ3dvxJbNm13v7+fou512ebs9HFmcxmzZYLdDXvTN9BdX1Od2v9pEe+u3Yp2xPf5i
+         oFkEyEip/8x7GKoPHp4Amu1X4K5VxwSmpmTGvXd+FePb2jxeWaqbdUGO2VONLUp5068i
+         gXmA==
+X-Forwarded-Encrypted: i=1; AJvYcCWn6m7UKDR+9rBxfplK9y2pJdatWUT8VTxMquMCl662uliTQf30v7CmLklBRvFrf/p3ZjukeFSb0w==@vger.kernel.org, AJvYcCXyFKlO5BQBwqn/fJQkAVQua0zRKvjA+JATrAHPQZhrMStpecA1tZAd4QYQlA5x3QNiWfA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8hVUpkQCJuEb6TzAfvKNBTvUk12dqW9GeBUCRN6CSK2igZMoz
+	vegVM5xS3kB3k/yRCdhAf1nUUJa4Ximc7mDDYYbhnsTzHS9XPWClJx0R5E0la0QYfmJENph5Qjk
+	InEJqSuTMemzB7Ncsql1DAidRwko=
+X-Gm-Gg: ASbGncutPxvuaRuXyjVFyQY9FVckVNTP3uWPxDFwJWuh+r2l7UoBQWpO+xv7Y/S7/wb
+	vYmnQIPHOYv3GagBZZmjjNcM9NwTyDdGyDPFOvQaVdK4BoPyx1Gb/7u+5Cp4LZQzqykn11Hi5E+
+	+eEnTNr2J3qtkaMVeW7xYMp/yZCqwNkVFBJ8lZYw==
+X-Google-Smtp-Source: AGHT+IFu3vX9JUBer33ZUeDigmvEvdDd1VnLEYWZ8lOFIjy8i5Sac9nlI3plOSoMaghC226Dv2mOE4O/GveRCL/9iPA=
+X-Received: by 2002:a05:6a20:cfa3:b0:1f5:7007:9eb7 with SMTP id
+ adf61e73a8af0-2093ec162a5mr6155771637.37.1745941040819; Tue, 29 Apr 2025
+ 08:37:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB9473:EE_|LV2PR12MB5941:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7e7d9f83-da76-4c49-1af0-08dd8732ee3e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?TUNlSnQwS3d0bmFJdGdOcUhRb2RLaXhBQTdpaE1uMlRjQzdzUEJQRFdDS2Zy?=
- =?utf-8?B?d1JvblZoNlgxeFhOaTk0RkRXM3ZnNFdlSm14THZDdmdwU0RWbFdCQTd3RjV5?=
- =?utf-8?B?K3VRNVpEVU1zbHZXdGJId0xzWGZUVmlpMWhRemJXaUlhaU5QU2hWRUlkNk1V?=
- =?utf-8?B?N1VwbnZsNWd3Z2I5YTVXZkk3dVhzYklVbHcxY2xpTXY2eVlKMGJYRVN4a1Zw?=
- =?utf-8?B?OTVhb2g0ZXYvS0t6SUZ0ZEpTcHZ3L1pVK0s5OWNqNFRlQ1ZoSmdzUjAxb3Er?=
- =?utf-8?B?M0Z3TjY3RTdGb1RXakEydys5WVNTTHFjSHQ0VGFVSVVWdUI4TlNGeENXWnNz?=
- =?utf-8?B?eGNteFllZmlicXJRUElTTExPWi9JNFVGczV1SzY4V1lkNGZyNFIxaGk4N2hD?=
- =?utf-8?B?Rll5dUJaeFRYSzVEQUxhaEFpU29yamxLcm9PMmNFOUszUk9Tak9SSzU0aU1R?=
- =?utf-8?B?Rjg3SisvZHFxcUlwdDlKdHBNWGtHYmsrM2ZnTXVWYjhZb05uV1RVSFpNRGdu?=
- =?utf-8?B?Wk9LWlh6aEIwRDRKbTJSa1BrZXhXbXc3R0pLbUFzbS81QVh1UGlJWkxJc25Q?=
- =?utf-8?B?cEYyS2t4bEM4cU9zcnB4U0xub2wwaExXb3c0V0VtU1BPODdsTE84SDNzdE1a?=
- =?utf-8?B?YnBWK0N5aGt2VDJtUDBnNGdwb2FhcUJvb1hocURMUTZDTkRKOGFjK0Q3TnlC?=
- =?utf-8?B?bFRMVG1tdE0rd204UFIzaTQ4WW1rYlQ1aHlXZkk5U3BvR2NUSjRRczkzV0Rj?=
- =?utf-8?B?a21ITmp5cVloVWhBczk3V2IrUnhKT0M3K3ArV3lBRWpEWXFBZFhwVFFwSWwx?=
- =?utf-8?B?TjI4QW9keWUxNXVLMUdzc0xHVkxPV0QybFBOQVpqbStSOFdZaHFEUXU1aGN1?=
- =?utf-8?B?TEE5QXVZSWlQUkFQdjlpTnRrc1dCcTVENUpuaDYzWmZlUW9OL0VvRFczeHc1?=
- =?utf-8?B?dTBIQzRLNW5CaDVzSWRHanlwZzZYZm1DRHIyTGlYUjBLVC8wUWNmOUxDblh6?=
- =?utf-8?B?cEFTU05aZTdJZEdKbUpFbDhnWnBEQ2NDUUk5aVVGT2tvNU9MQlUrb2JXdGxs?=
- =?utf-8?B?SERjUDJYWkVoRktzWG9zR0JUMnBCZlhYdE9YU0ZJcFRtRTBZeDdrMGUrK0tl?=
- =?utf-8?B?MHNBd3g3U2pQMUJoSElRTEExbS83T2o5QUYxaU9oL2l1c2F4TzFwbkpnWVEw?=
- =?utf-8?B?enordi9DU1lNQWtrOTFWUmVrOWJZdytKUmJGV2UvaXBmQ2ZDK0xYY1o0R2V6?=
- =?utf-8?B?S1NBeUFnamFIYktlcE8xU3ZrNmlBTkFINkR0T0lpL3lUQWFuTzh1MkdZTzM0?=
- =?utf-8?B?T2s0OVo2ZFE0Y1JwTjRkaUxZWTBrZWptVkVoUm42R1l6dnZmaDhEREdDTEJy?=
- =?utf-8?B?bml2T0pXbUh2ZW8zSVZBZUdMcENSSGozN0Q3cEE4aXQxdWFVcjVEMXVNeC9z?=
- =?utf-8?B?ZVRZaFBzcFpwWTJZNk9RVDd1UGNQcTlycHlSRXI3ZUFRUEhJeERDdGtHekhy?=
- =?utf-8?B?OHMzNE10L09TcDAwL1M4YXREeUhqZ05rOVUzLzNCWFZJK24vMEVlYkdPNTI0?=
- =?utf-8?B?REpWbiswQlZQUHgrNDJUSE9ZbXdEcVNxcHdFcWdmOFdvZWlKRnZVWFQ4VTFE?=
- =?utf-8?B?REZISkc5TURuK1czQjFMdGg5QjY1cjFJWWllU0JBNFVOdk9nSEtSNWNoVERx?=
- =?utf-8?B?U3dTZWUzVHMxMEJYMnZiMFBNSitFemJNZkdRTDk1bkVhNUxTWTJMUEw4UzY0?=
- =?utf-8?B?ODlST1ZCM1FTVFpjUkxkT1dTd25KMGhtSkg1YnJiQmhnTkpkaXloOFhzbDhT?=
- =?utf-8?B?MFhLZU13YXJLMEI1Q1VkRTliK3pxL3czNzVHL0lUUnpOZE9iRDFGMzNic0NB?=
- =?utf-8?B?ZkREQmpHUHBqS3J5Y3VLRE9Nb1dTTERRSGp6T0NaSW1VamxpQkRvdW5UaXlo?=
- =?utf-8?Q?lZADkThDKr4=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eVM3d1BnL0hGTzdISThrdTdFSjZ1ZjQ4QkQ3WCt3TElpSzJXWTlnSk9pMWV6?=
- =?utf-8?B?NUdta2w3eTdreE1TNGYrMnZmZVlDamRaTmxCYzBkYk1rdDRCVUw4ektLK3Z6?=
- =?utf-8?B?NFhNS1lrYi9hQmRCWTYrc1NaVHNVRWpJbXhyM0QrMXdQci9Ib2lrL25Ja3h5?=
- =?utf-8?B?T05HRTBROGZvSTVoMkJVNWhIUVF6NUNmU3ppNHJkSjI5Nk1NTkg4TzIvWUo4?=
- =?utf-8?B?d1E2bXl3dE1OU2JDbi9wVGR3eTVDUUZnYytBTDBIWlBHdUtYTEdCdTlTOWRq?=
- =?utf-8?B?WTZlNFA4Zlpidi9IQmdWellqOGptUitzb1BOQ1krc0hoYWlGQnV0aEdjelVh?=
- =?utf-8?B?RXVWenRYQlYvdUNWSTR1Ui9aUWhOelpDQmVJYWVwSzY4U2FJNXhCdTBPMTlw?=
- =?utf-8?B?a0RhOXl4NCtZODhReUxzcGsyMGk0Wldtclh2TkY0b25BbU40eVZRbWRBV2pR?=
- =?utf-8?B?QjArK1F1UUdZWXpYVGg2TXdhc1FMYjF5bFVFTnhNemhrYm9PbUlzbUFZR3hQ?=
- =?utf-8?B?U0Q0SjYzdm9MelB4UVR6RktjMlZIVXNYaS9yYVJoUlAzMTBRTmswSTUwRnEw?=
- =?utf-8?B?NFI5MW9zcFFuZWpweTBwMW8vdWxpdlB6VnpkbjhlaGxsVm82SGJQL1NGaHhx?=
- =?utf-8?B?aXQ1SzVVeTl0N1Jwck92M0VXZktNdU9NLzluQjNUZ3hsajFnSTNFTGNtZE1k?=
- =?utf-8?B?NmZkUXZtN2phTm9kdEtRbS9SWnR0M2RZbGcyd0NxNXFJbUhjaTlCVnFNc2du?=
- =?utf-8?B?bE8vYktwK1B5UWg5RVhmeVdxeUkvdmxPR1lienVPWmY3aGJjY3FzdlFRMnlX?=
- =?utf-8?B?eWxuZ2JmSW1QVGs2NURkZ3lzU1pzbmJwSUYrTGszaTJ4RWxDRDNaT3NSSWkv?=
- =?utf-8?B?bWRhbVBuYTRlc2VwbXJwNzE0UDVnYjRORnhsVnB4MEppTFp6aENpUW0xWVR2?=
- =?utf-8?B?b2NOZEcraGJvVWtOdmpQME82bzlHY0NVY0Nua01aRjJGR05ORWVsSmhuc0N3?=
- =?utf-8?B?QXhDSFp3bjZRSDEyY2JDeGNkVW1saW9nQmY4WGFSMWxUUm4zdlo4amFoZDV4?=
- =?utf-8?B?Rk8xMjYxY0kxM2pMT1NMZVUvT0VTUmk3TmUyY1VpRGRxZXE2aHRaY2Z1dkJT?=
- =?utf-8?B?WGhSNXNJQjREbmVMamxJMC96RnRGVmRWVU1oWlZqZHprZ0ZFNVptVE15TEFN?=
- =?utf-8?B?bnBINlltR0JKaVIzUlBlaVVuSjVkUzVSNkR4SHgreEgyU3RWK2RBUFBBLysw?=
- =?utf-8?B?aGczNS9rNjhHa0JQQmtLMktLYmNocVNBaUdqWkxVL2dTUlBtdFFqc2pQRWtU?=
- =?utf-8?B?YldvZis5V3lNNUt2UzcwNGFUKzA4Qzh4VklZazdnMzdRejJZREg3U2Jwb2VS?=
- =?utf-8?B?K2ZVaTYyMEV0S2hnZGhjVEMxc25IYXFwY01Ca3N2Z3UzTkFEVXFlbFhxTXo0?=
- =?utf-8?B?Nmo1ZTVRUlhhWXFrUzhZM2dKbnJyWlhSK0dML3dPbktwaTBBNXhhMHdaNG8r?=
- =?utf-8?B?UDRWZExxaGt4SUJuWDNiL0FEY0xqU1RpczdMRSt1MjhJWUJvNHdzeEJrOGEy?=
- =?utf-8?B?bUlFMnFuQWVvYStzMGp5V0RwRlJ6bUQ2d2JuVUplTlpjZzdIVEVvQ1F0SGt0?=
- =?utf-8?B?TUsyT0hmWTUyVzFybDBKbTR1QUViUzlKLzFyeVcwd0t0T0xRdGNNSVRjM0FF?=
- =?utf-8?B?K2NRUmZEeGE2V1RIcm5CM1pLVVJtRnI1WDR3cnJHN2NsOHJEcS9OakIyUE5r?=
- =?utf-8?B?SWZDRnlVY0pZSU5EUTV5YjFvZXFXTm4vU1grRXhFMUhsb0wxaElYektlV3J0?=
- =?utf-8?B?Z2pHZkpMNHZNa2xVZ0F4Z1dOMm94bE9tMHZ4a1R6a09qM1FYcFJnckhVbzZQ?=
- =?utf-8?B?UEtZaXdoVHZVdEpYbHphL2N0ZlNOQTFmd0ZXMDJKbWhIcHd3bTRiNkZUR1cw?=
- =?utf-8?B?YmRmcmpHM0MvRmlzMTZRelJDVk05QldiblBGdUdTVTBmL1pxYm9VRElSdUk3?=
- =?utf-8?B?RUhmM3JKVnZqWEhHcTIybElFU25heUxDdHJLeElCMW03NVU0Y3dxdHhjbVdV?=
- =?utf-8?B?dCtFdmdzZzVQWlRjRis5NnZJQ1p3UXBKV3lNVUJxVjNwZllBckFmSkQxZWxR?=
- =?utf-8?Q?R9MPihBSZjqgkMj52D/zbqX0i?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7e7d9f83-da76-4c49-1af0-08dd8732ee3e
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9473.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2025 15:31:37.3089
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1nNMisjincWdTkEYC0511fTaRhkzvYprv5LU1BHZIy1bX5Z2th/JOzamsZFJf2Bd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5941
+References: <CAADnVQL+-LiJGXwxD3jEUrOonO-fX0SZC8496dVzUXvfkB7gYQ@mail.gmail.com>
+ <076e52f6-248a-4a41-a199-3c705cb3d3c5@oracle.com> <CAEf4Bzb9ozx056hm3=zh=4Sh_62EydK_wtJkNpgH9Yy0cuSsUQ@mail.gmail.com>
+ <4aa02e25-7231-40f4-a0ba-e10db3833d81@oracle.com> <CAEf4BzYRnNGGafWS8XoXRHd3zje=8xY1o5_8aVw6vxrUSbEehg@mail.gmail.com>
+ <c8c4dc05-7fa3-4c1f-a652-a470dd6985c7@oracle.com> <e279abde-f4c1-42d2-bcc0-4df174057431@oracle.com>
+ <CAADnVQKi4DARfzQJguZyDQsfXHq7A=QM2FwRwpZe-LJzj+Ujrg@mail.gmail.com>
+ <CAEf4BzYt2sUxRPAR5AbAAXVcOeC2UqgkR24WDEZAAd+kEz=g-w@mail.gmail.com> <CAEf4Bzays+8g7kj4fNS0rBLPTQWzYb_maFkyHyij4ky1xm_GAg@mail.gmail.com>
+In-Reply-To: <CAEf4Bzays+8g7kj4fNS0rBLPTQWzYb_maFkyHyij4ky1xm_GAg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 29 Apr 2025 08:37:07 -0700
+X-Gm-Features: ATxdqUHF4UI4XkFQJ2tVpMLuj4ft5nCtlC74JI0snDUHNzhyXUFxwKyHjHykHRw
+Message-ID: <CAEf4BzZgQMV+Gtiob_K-uuizyuqajyLjnGbKOJLyiGB=DxmY2Q@mail.gmail.com>
+Subject: Re: pahole and gcc-14 issues
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard <eddyz87@gmail.com>, 
+	Ihor Solodrai <ihor.solodrai@linux.dev>, bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon Apr 28, 2025 at 10:41 PM EDT, Yafang Shao wrote:
-> We will use the new @vma parameter to determine whether THP can be used.
-
-This is wrong and a completely hack. hugepage_global_*() are sytem-wide
-functions, so they do not take VMAs. Furthermore, the VMAs passed in
-are not used at all. I notice that in the later patch VMA is used by BPF
-hooks, but that does not justify the addition.
-
-If you really want to do this, you can add new functions that take VMA
-as an input and check hugepage_global_*() to replace some of the if
-conditions below. Something like hugepage_vma_{enable,always}.
-
+On Mon, Apr 28, 2025 at 11:59=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  mm/huge_memory.c |  8 ++++----
->  mm/internal.h    |  8 ++++++--
->  mm/khugepaged.c  | 18 +++++++++---------
->  3 files changed, 19 insertions(+), 15 deletions(-)
+> On Mon, Apr 28, 2025 at 5:33=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Apr 28, 2025 at 3:12=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Mon, Apr 28, 2025 at 8:21=E2=80=AFAM Alan Maguire <alan.maguire@or=
+acle.com> wrote:
+> > > >
+> > > >  <1><4bd05>: Abbrev Number: 58 (DW_TAG_pointer_type)
+> > > >     <4bd06>   DW_AT_byte_size   : 8
+> > > >     <4bd07>   DW_AT_address_class: 2
+> > > >     <4bd08>   DW_AT_type        : <0x301cd>
+> > > >
+> > > > ...which points at an int
+> > > >
+> > > >  <1><301cd>: Abbrev Number: 214 (DW_TAG_base_type)
+> > > >     <301cf>   DW_AT_byte_size   : 4
+> > > >     <301d0>   DW_AT_encoding    : 5     (signed)
+> > > >     <301d1>   DW_AT_name        : int
+> > > >     <301d5>   DW_AT_name        : int
+> > > >
+> > > > ...but note the the DW_AT_address_class attribute in the latter cas=
+e and
+> > > > the two DW_AT_name values. We don't use that address attribute in p=
+ahole
+> > > > as far as I can see, but it might be enough to cause problems.
+> > >
+> > > DW_AT_address_class is there because it's an actual address space
+> > > qualifier in C. The dwarf is correct, but I thought pahole
+> > > will ignore it while converting to BTF, so it shouldn't matter
+> > > from dedup pov.
+> > >
+> > > And since dedup is working for vmlinux BTF, I doubt there are CUs
+> > > where the same type is represented with different dwarf id-s.
+> > > Otherwise dedup wouldn't have worked for vmlinux.
+> > >
+> > > DW_AT_name is concerning. Sounds like it's a gcc bug, but it
+> > > shouldn't be causing dedup issues for modules.
+> > >
+> > > So what is the workaround?
+> >
+> > I'm thinking of generalizing Alan's proposed fix so that all our
+> > existing special equality cases (arrays, identical structs, and now
+> > pointers to identical types) are handled a bit more generically. I'll
+> > try to get a patch out later tonight.
 >
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 39afa14af2f2..7a4a968c7874 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -176,8 +176,8 @@ static unsigned long __thp_vma_allowable_orders(struc=
-t vm_area_struct *vma,
->  		 * were already handled in thp_vma_allowable_orders().
->  		 */
->  		if (enforce_sysfs &&
-> -		    (!hugepage_global_enabled() || (!(vm_flags & VM_HUGEPAGE) &&
-> -						    !hugepage_global_always())))
-> +		    (!hugepage_global_enabled(vma) || (!(vm_flags & VM_HUGEPAGE) &&
-> +						      !hugepage_global_always(vma))))
->  			return 0;
-> =20
->  		/*
-> @@ -234,8 +234,8 @@ unsigned long thp_vma_allowable_orders(struct vm_area=
-_struct *vma,
-> =20
->  		if (vm_flags & VM_HUGEPAGE)
->  			mask |=3D READ_ONCE(huge_anon_orders_madvise);
-> -		if (hugepage_global_always() ||
-> -		    ((vm_flags & VM_HUGEPAGE) && hugepage_global_enabled()))
-> +		if (hugepage_global_always(vma) ||
-> +		    ((vm_flags & VM_HUGEPAGE) && hugepage_global_enabled(vma)))
->  			mask |=3D READ_ONCE(huge_anon_orders_inherit);
-> =20
->  		orders &=3D mask;
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 462d85c2ba7b..aa698a11dd68 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -1626,14 +1626,18 @@ static inline bool reclaim_pt_is_enabled(unsigned=
- long start, unsigned long end,
->  #endif /* CONFIG_PT_RECLAIM */
-> =20
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -static inline bool hugepage_global_enabled(void)
-> +/*
-> + * Checks whether a given @vma can use THP. If @vma is NULL, the check i=
-s
-> + * performed globally by khugepaged during a system-wide scan.
-> + */
-> +static inline bool hugepage_global_enabled(struct vm_area_struct *vma)
->  {
->  	return transparent_hugepage_flags &
->  			((1<<TRANSPARENT_HUGEPAGE_FLAG) |
->  			(1<<TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG));
->  }
-> =20
-> -static inline bool hugepage_global_always(void)
-> +static inline bool hugepage_global_always(struct vm_area_struct *vma)
->  {
->  	return transparent_hugepage_flags &
->  			(1<<TRANSPARENT_HUGEPAGE_FLAG);
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index cc945c6ab3bd..b85e36ddd7db 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -413,7 +413,7 @@ static inline int hpage_collapse_test_exit_or_disable=
-(struct mm_struct *mm)
->  	       test_bit(MMF_DISABLE_THP, &mm->flags);
->  }
-> =20
-> -static bool hugepage_pmd_enabled(void)
-> +static bool hugepage_pmd_enabled(struct vm_area_struct *vma)
->  {
->  	/*
->  	 * We cover the anon, shmem and the file-backed case here; file-backed
-> @@ -423,14 +423,14 @@ static bool hugepage_pmd_enabled(void)
->  	 * except when the global shmem_huge is set to SHMEM_HUGE_DENY.
->  	 */
->  	if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) &&
-> -	    hugepage_global_enabled())
-> +	    hugepage_global_enabled(vma))
->  		return true;
->  	if (test_bit(PMD_ORDER, &huge_anon_orders_always))
->  		return true;
->  	if (test_bit(PMD_ORDER, &huge_anon_orders_madvise))
->  		return true;
->  	if (test_bit(PMD_ORDER, &huge_anon_orders_inherit) &&
-> -	    hugepage_global_enabled())
-> +	    hugepage_global_enabled(vma))
->  		return true;
->  	if (IS_ENABLED(CONFIG_SHMEM) && shmem_hpage_pmd_enabled())
->  		return true;
-> @@ -473,7 +473,7 @@ void khugepaged_enter_vma(struct vm_area_struct *vma,
->  			  unsigned long vm_flags)
->  {
->  	if (!test_bit(MMF_VM_HUGEPAGE, &vma->vm_mm->flags) &&
-> -	    hugepage_pmd_enabled()) {
-> +	    hugepage_pmd_enabled(vma)) {
->  		if (thp_vma_allowable_order(vma, vm_flags, TVA_ENFORCE_SYSFS,
->  					    PMD_ORDER))
->  			__khugepaged_enter(vma->vm_mm);
-> @@ -2516,7 +2516,7 @@ static unsigned int khugepaged_scan_mm_slot(unsigne=
-d int pages, int *result,
-> =20
->  static int khugepaged_has_work(void)
->  {
-> -	return !list_empty(&khugepaged_scan.mm_head) && hugepage_pmd_enabled();
-> +	return !list_empty(&khugepaged_scan.mm_head) && hugepage_pmd_enabled(NU=
-LL);
->  }
-> =20
->  static int khugepaged_wait_event(void)
-> @@ -2589,7 +2589,7 @@ static void khugepaged_wait_work(void)
->  		return;
->  	}
-> =20
-> -	if (hugepage_pmd_enabled())
-> +	if (hugepage_pmd_enabled(NULL))
->  		wait_event_freezable(khugepaged_wait, khugepaged_wait_event());
->  }
-> =20
-> @@ -2620,7 +2620,7 @@ static void set_recommended_min_free_kbytes(void)
->  	int nr_zones =3D 0;
->  	unsigned long recommended_min;
-> =20
-> -	if (!hugepage_pmd_enabled()) {
-> +	if (!hugepage_pmd_enabled(NULL)) {
->  		calculate_min_free_kbytes();
->  		goto update_wmarks;
->  	}
-> @@ -2670,7 +2670,7 @@ int start_stop_khugepaged(void)
->  	int err =3D 0;
-> =20
->  	mutex_lock(&khugepaged_mutex);
-> -	if (hugepage_pmd_enabled()) {
-> +	if (hugepage_pmd_enabled(NULL)) {
->  		if (!khugepaged_thread)
->  			khugepaged_thread =3D kthread_run(khugepaged, NULL,
->  							"khugepaged");
-> @@ -2696,7 +2696,7 @@ int start_stop_khugepaged(void)
->  void khugepaged_min_free_kbytes_update(void)
->  {
->  	mutex_lock(&khugepaged_mutex);
-> -	if (hugepage_pmd_enabled() && khugepaged_thread)
-> +	if (hugepage_pmd_enabled(NULL) && khugepaged_thread)
->  		set_recommended_min_free_kbytes();
->  	mutex_unlock(&khugepaged_mutex);
->  }
+> So I ran out of time, but I'm thinking something like below. It
+> results in identical bpf_testmod.ko compared to Alan's proposed fix,
+> so perhaps we should just go with the simpler approach. But this one
+> should stand the test of time a bit better.
+>
+> In any case, I'd like to be able to handle not just PTR -> TYPE chain,
+> but also some PTR -> MODIFIER* -> TYPE chains at the very least.
+> Because any const in the chain will throw off Alan's heuristic.
+>
 
+Ok, so sleeping on this a bit more, I'm hesitant to do this more
+generic approach, as now we'll be running a risk of potentially
+looping indefinitely (the max_depth check I added doesn't completely
+prevent this).
 
+So, Alan, do you mind sending your proposed patch for formal review
+and BPF CI testing? Just please use btf_is_ptr() check instead of
+explicit kind equality, thanks!
 
-
---=20
-Best Regards,
-Yan, Zi
-
+> I'll try to benchmark and polish the patch tomorrow and post it for
+> proper review.
+>
+>
+> diff --git a/src/btf.c b/src/btf.c
+> index e9673c0ecbe7..e4a3e3183742 100644
+> --- a/src/btf.c
+> +++ b/src/btf.c
+> @@ -4310,6 +4310,8 @@ static bool btf_dedup_identical_arrays(struct
+> btf_dedup *d, __u32 id1, __u32 id2
+>   return btf_equal_array(t1, t2);
+>  }
+>
+> +static bool btf_dedup_identical_types(struct btf_dedup *d, __u32 id1,
+> __u32 id2);
+> +
+>  /* Check if given two types are identical STRUCT/UNION definitions */
+>  static bool btf_dedup_identical_structs(struct btf_dedup *d, __u32
+> id1, __u32 id2)
+>  {
+> @@ -4329,14 +4331,93 @@ static bool btf_dedup_identical_structs(struct
+> btf_dedup *d, __u32 id1, __u32 id
+>   m1 =3D btf_members(t1);
+>   m2 =3D btf_members(t2);
+>   for (i =3D 0, n =3D btf_vlen(t1); i < n; i++, m1++, m2++) {
+> - if (m1->type !=3D m2->type &&
+> -     !btf_dedup_identical_arrays(d, m1->type, m2->type) &&
+> -     !btf_dedup_identical_structs(d, m1->type, m2->type))
+> + if (m1->type !=3D m2->type && !btf_dedup_identical_types(d, m1->type, m=
+2->type))
+> + return false;
+> + }
+> + return true;
+> +}
+> +
+> +static bool btf_dedup_identical_fnprotos(struct btf_dedup *d, __u32
+> id1, __u32 id2)
+> +{
+> + const struct btf_param *p1, *p2;
+> + struct btf_type *t1, *t2;
+> + int n, i;
+> +
+> + t1 =3D btf_type_by_id(d->btf, id1);
+> + t2 =3D btf_type_by_id(d->btf, id2);
+> +
+> + if (!btf_is_func_proto(t1) || !btf_is_func_proto(t2))
+> + return false;
+> +
+> + if (!btf_compat_fnproto(t1, t2))
+> + return false;
+> +
+> + if (!btf_dedup_identical_types(d, t1->type, t2->type))
+> + return false;
+> +
+> + p1 =3D btf_params(t1);
+> + p2 =3D btf_params(t2);
+> + for (i =3D 0, n =3D btf_vlen(t1); i < n; i++, p1++, p2++) {
+> + if (p1->type !=3D p2->type && !btf_dedup_identical_types(d, p1->type, p=
+2->type))
+>   return false;
+>   }
+>   return true;
+>  }
+>
+> +static bool btf_dedup_identical_types(struct btf_dedup *d, __u32 id1,
+> __u32 id2)
+> +{
+> + int max_depth =3D 32;
+> +
+> + while (max_depth-- > 0) {
+> + struct btf_type *t1, *t2;
+> + int k1, k2;
+> +
+> + t1 =3D btf_type_by_id(d->btf, id1);
+> + t2 =3D btf_type_by_id(d->btf, id2);
+> +
+> + k1 =3D btf_kind(t1);
+> + k2 =3D btf_kind(t2);
+> + if (k1 !=3D k2)
+> + return false;
+> +
+> + switch (k1) {
+> + case BTF_KIND_UNKN: /* VOID */
+> + return true;
+> + case BTF_KIND_INT:
+> + return btf_equal_int_tag(t1, t2);
+> + case BTF_KIND_ENUM:
+> + case BTF_KIND_ENUM64:
+> + return btf_compat_enum(t1, t2);
+> + case BTF_KIND_FWD:
+> + case BTF_KIND_FLOAT:
+> + return btf_equal_common(t1, t2);
+> + case BTF_KIND_CONST:
+> + case BTF_KIND_VOLATILE:
+> + case BTF_KIND_RESTRICT:
+> + case BTF_KIND_PTR:
+> + case BTF_KIND_TYPEDEF:
+> + case BTF_KIND_FUNC:
+> + case BTF_KIND_TYPE_TAG:
+> + if (t1->info !=3D t2->info)
+> + return 0;
+> + id1 =3D t1->type;
+> + id2 =3D t2->type;
+> + continue;
+> + case BTF_KIND_ARRAY:
+> + return btf_equal_array(t1, t2);
+> + case BTF_KIND_STRUCT:
+> + case BTF_KIND_UNION:
+> + return btf_dedup_identical_structs(d, id1, id2);
+> + case BTF_KIND_FUNC_PROTO:
+> + return btf_dedup_identical_fnprotos(d, id1, id2);
+> + default:
+> + return false;
+> + }
+> + }
+> + return false;
+> +}
+> +
+> +
+>  /*
+>   * Check equivalence of BTF type graph formed by candidate struct/union =
+(we'll
+>   * call it "candidate graph" in this description for brevity) to a type =
+graph
+> @@ -4458,8 +4539,6 @@ static int btf_dedup_is_equiv(struct btf_dedup
+> *d, __u32 cand_id,
+>   * types within a single CU. So work around that by explicitly
+>   * allowing identical array types here.
+>   */
+> - if (btf_dedup_identical_arrays(d, hypot_type_id, cand_id))
+> - return 1;
+>   /* It turns out that similar situation can happen with
+>   * struct/union sometimes, sigh... Handle the case where
+>   * structs/unions are exactly the same, down to the referenced
+> @@ -4467,7 +4546,7 @@ static int btf_dedup_is_equiv(struct btf_dedup
+> *d, __u32 cand_id,
+>   * types are different, but equivalent) is *way more*
+>   * complicated and requires a many-to-many equivalence mapping.
+>   */
+> - if (btf_dedup_identical_structs(d, hypot_type_id, cand_id))
+> + if (btf_dedup_identical_types(d, hypot_type_id, cand_id))
+>   return 1;
+>   return 0;
+>   }
+>
+> >
+> > >
+> > > We need to find it asap. Since at present we cannot build
+> > > kernels with gcc-14, since modules won't dedup BTF.
+> > > Hence a bunch of selftests/bpf are failing.
+> > > We want to upgrade BPF CI to gcc-14 to catch nginx-like issues,
+> > > but we cannot until this pahole/dedup issue is resolved.
 
